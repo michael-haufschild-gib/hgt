@@ -115,13 +115,15 @@ private theorem exists_bound_riemannZeta_disc_high_abscissa {Θ δ : ℝ}
     _ = E * (2 + |t|) := by dsimp only [E]; ring
 
 set_option maxHeartbeats 1000000 in
-/-- **Three-circles lower bound right of a zero-free frontier.** -/
-theorem exists_three_circles_zeta_lower_bound_of_zeroFree {Θ : ℝ}
+/-- **Three-circles lower bound right of a frontier that is zero-free above a height.**  The
+discs are centred at `4 + i t` with radius below `4`, so only zeros with `|Im z| ≥ |t| − 4` matter:
+zero-freeness right of `Θ` above height `T₀` gives the bound for `|t| ≥ T₀ + 4`. -/
+theorem exists_three_circles_zeta_lower_bound_of_zeroFree_above {Θ T₀ : ℝ}
     (hΘ : (1 : ℝ) / 2 ≤ Θ) (hΘ1 : Θ ≤ 1)
-    (hzf : ∀ z : ℂ, Θ < z.re → riemannZeta z ≠ 0)
+    (hzf : ∀ z : ℂ, Θ < z.re → T₀ ≤ |z.im| → riemannZeta z ≠ 0)
     {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) :
     ∃ B K θ : ℝ, 0 < B ∧ 0 < K ∧ 0 ≤ θ ∧ θ < 1 ∧ ∀ s : ℂ,
-      Θ + δ ≤ s.re → 6 ≤ |s.im| →
+      Θ + δ ≤ s.re → 6 ≤ |s.im| → T₀ + 4 ≤ |s.im| →
         (1 : ℝ) / 4 * Real.exp (-(B * (K * (1 + Real.log (2 + |s.im|))) ^ θ))
           ≤ ‖riemannZeta s‖ := by
   set a : ℝ := 4 with ha
@@ -171,7 +173,7 @@ theorem exists_three_circles_zeta_lower_bound_of_zeroFree {Θ : ℝ}
     rw [hθ, div_lt_one hden]
     have := Real.log_lt_log (by linarith : (0 : ℝ) < a - Θ - δ) hgap2
     linarith
-  refine ⟨B, K, θ, hB0, hK0, hθ0, hθ1, fun s hs ht => ?_⟩
+  refine ⟨B, K, θ, hB0, hK0, hθ0, hθ1, fun s hs ht hT => ?_⟩
   set t : ℝ := s.im with htdef
   have hbase : (1 : ℝ) ≤ 2 + |t| := by linarith [abs_nonneg t]
   have hlogbase : 0 ≤ Real.log (2 + |t|) := Real.log_nonneg hbase
@@ -207,7 +209,17 @@ theorem exists_three_circles_zeta_lower_bound_of_zeroFree {Θ : ℝ}
       simp only [Complex.one_im, zero_sub, abs_neg] at him
       have ht' : 6 ≤ |t| := by simpa [t] using ht
       linarith
-    have hne : ∀ z ∈ ball c R, riemannZeta z ≠ 0 := fun z hz => hzf z (hballre z hz)
+    have hballim : ∀ z ∈ ball c R, T₀ ≤ |z.im| := by
+      intro z hz
+      have hd : ‖z - c‖ < R := by rwa [mem_ball, dist_eq_norm] at hz
+      have him := Complex.abs_im_le_norm (z - c)
+      rw [Complex.sub_im, hcim] at him
+      have h1 := abs_sub_abs_le_abs_sub t z.im
+      rw [abs_sub_comm] at h1
+      have hT' : T₀ + 4 ≤ |t| := hT
+      linarith
+    have hne : ∀ z ∈ ball c R, riemannZeta z ≠ 0 := fun z hz =>
+      hzf z (hballre z hz) (hballim z hz)
     have hf : DifferentiableOn ℂ riemannZeta (ball c R) := by
       intro z hz
       exact (differentiableAt_riemannZeta (hpole z hz)).differentiableWithinAt
@@ -328,15 +340,28 @@ theorem exists_three_circles_zeta_lower_bound_of_zeroFree {Θ : ℝ}
       _ = 1 / 4 := by ring
       _ ≤ ‖riemannZeta s‖ := hval
 
-/-- **Subpolynomial lower bound right of a zero-free frontier.** -/
-theorem exists_zeta_lower_bound_subpolynomial_of_zeroFree {Θ : ℝ}
+/-- **Three-circles lower bound right of a zero-free frontier.** -/
+theorem exists_three_circles_zeta_lower_bound_of_zeroFree {Θ : ℝ}
     (hΘ : (1 : ℝ) / 2 ≤ Θ) (hΘ1 : Θ ≤ 1)
     (hzf : ∀ z : ℂ, Θ < z.re → riemannZeta z ≠ 0)
+    {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) :
+    ∃ B K θ : ℝ, 0 < B ∧ 0 < K ∧ 0 ≤ θ ∧ θ < 1 ∧ ∀ s : ℂ,
+      Θ + δ ≤ s.re → 6 ≤ |s.im| →
+        (1 : ℝ) / 4 * Real.exp (-(B * (K * (1 + Real.log (2 + |s.im|))) ^ θ))
+          ≤ ‖riemannZeta s‖ := by
+  obtain ⟨B, K, θ, hB, hK, hθ0, hθ1, hbd⟩ := exists_three_circles_zeta_lower_bound_of_zeroFree_above
+    (T₀ := 0) hΘ hΘ1 (fun z hz _ => hzf z hz) hδ hδ1
+  exact ⟨B, K, θ, hB, hK, hθ0, hθ1, fun s hs ht => hbd s hs ht (by linarith)⟩
+
+/-- **Subpolynomial lower bound right of a frontier that is zero-free above a height.** -/
+theorem exists_zeta_lower_bound_subpolynomial_of_zeroFree_above {Θ T₀ : ℝ}
+    (hΘ : (1 : ℝ) / 2 ≤ Θ) (hΘ1 : Θ ≤ 1)
+    (hzf : ∀ z : ℂ, Θ < z.re → T₀ ≤ |z.im| → riemannZeta z ≠ 0)
     {δ ε : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hε : 0 < ε) :
-    ∃ κ : ℝ, 0 < κ ∧ ∀ s : ℂ, Θ + δ ≤ s.re → 6 ≤ |s.im| →
+    ∃ κ : ℝ, 0 < κ ∧ ∀ s : ℂ, Θ + δ ≤ s.re → 6 ≤ |s.im| → T₀ + 4 ≤ |s.im| →
       κ * (2 + |s.im|) ^ (-ε) ≤ ‖riemannZeta s‖ := by
   obtain ⟨B, K, θ, hB, hK, hθ0, hθ1, hbd⟩ :=
-    exists_three_circles_zeta_lower_bound_of_zeroFree hΘ hΘ1 hzf hδ hδ1
+    exists_three_circles_zeta_lower_bound_of_zeroFree_above hΘ hΘ1 hzf hδ hδ1
   have hbasepos : ∀ u : ℝ, 2 ≤ u → 0 < K * (1 + Real.log u) :=
     fun u hu => mul_pos hK (by linarith [Real.log_nonneg (by linarith : (1 : ℝ) ≤ u)])
   have hcont : ContinuousOn (fun u : ℝ => Real.exp (ε * Real.log u -
@@ -382,8 +407,8 @@ theorem exists_zeta_lower_bound_subpolynomial_of_zeroFree {Θ : ℝ}
     exact hinner.comp Real.tendsto_log_atTop
   obtain ⟨κ, hκ0, hκ⟩ := exists_pos_lower_bound_of_tendsto_atTop hcont
     (fun u _ => Real.exp_pos _) hlim
-  refine ⟨κ / 4, by positivity, fun s hs ht => ?_⟩
-  have h1 := hbd s hs ht
+  refine ⟨κ / 4, by positivity, fun s hs ht hT => ?_⟩
+  have h1 := hbd s hs ht hT
   set u : ℝ := 2 + |s.im| with hu
   have hu2 : 2 ≤ u := by rw [hu]; linarith [abs_nonneg s.im]
   have hupos : 0 < u := by linarith
@@ -408,6 +433,17 @@ theorem exists_zeta_lower_bound_subpolynomial_of_zeroFree {Θ : ℝ}
     _ ≤ 1 / 4 * Real.exp (-(B * (K * (1 + Real.log u)) ^ θ)) :=
       mul_le_mul_of_nonneg_left hstep (by norm_num)
     _ ≤ ‖riemannZeta s‖ := h1
+
+/-- **Subpolynomial lower bound right of a zero-free frontier.** -/
+theorem exists_zeta_lower_bound_subpolynomial_of_zeroFree {Θ : ℝ}
+    (hΘ : (1 : ℝ) / 2 ≤ Θ) (hΘ1 : Θ ≤ 1)
+    (hzf : ∀ z : ℂ, Θ < z.re → riemannZeta z ≠ 0)
+    {δ ε : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hε : 0 < ε) :
+    ∃ κ : ℝ, 0 < κ ∧ ∀ s : ℂ, Θ + δ ≤ s.re → 6 ≤ |s.im| →
+      κ * (2 + |s.im|) ^ (-ε) ≤ ‖riemannZeta s‖ := by
+  obtain ⟨κ, hκ, h⟩ := exists_zeta_lower_bound_subpolynomial_of_zeroFree_above (T₀ := 0) hΘ hΘ1
+    (fun z hz _ => hzf z hz) hδ hδ1 hε
+  exact ⟨κ, hκ, fun s hs ht => h s hs ht (by linarith)⟩
 
 /-- **The reciprocal-zeta shift datum right of a zero-free frontier.** -/
 theorem exists_invZeta_shift_data_of_zeroFree {Θ : ℝ}

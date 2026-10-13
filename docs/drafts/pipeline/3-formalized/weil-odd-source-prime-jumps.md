@@ -1,7 +1,7 @@
 # Odd Weil pole source: aligned prime jumps
 
 - **ID:** weil-odd-source-prime-jumps
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** `rh-current-frontier-map.md` RW; `CCMRestrictedWeilPolarParitySourceProfile`
 - **Statement:** At every interior spatial point, the actual odd parity prime–Gamma pole source has a nonnegative two-sided jump. Each visible prime power contributes the same positive weight at its two reflected sites.
@@ -14,7 +14,7 @@ Identify exact arithmetic orientation of the actual forced ground source, retain
 
 - [x] 0 → 1: exact source, finite aperture, explicit jump candidates
 - [x] 1 → 2: dependency-closed paper proof below, including collisions and endpoint exclusions
-- [ ] 2 → 3: direct Lean theorem, named build, axiom audit, umbrella import
+- [x] 2 → 3: direct Lean theorem, named build, axiom audit, umbrella import (MUST-1331)
 
 ## Conjecture and attack
 
@@ -45,3 +45,6 @@ If the jump conjecture fails, identify the exact sign-changing term and stronges
 ## Log
 
 - 2026-10-10 — Started after endpoint-rank theorem failed to control the selected constrained ground. No web or literature novelty test per user instruction.
+
+- 2026-10-12 — Formalized (MUST-1331): `RHTower/CCMPolarOddPrimeJumps` (`ccmPolarOddSource_jump`, `ccmPolarOddSource_jump_nonneg`), standard axioms, wired.
+  - **Correction to the paper proof.** The claim "the terms `e^(x/2)e^R` and `e^(−x/2)e^L` cancel exactly" is false: their difference is `e^a(e^(−x/2) − e^(x/2)) = −2e^a sinh(x/2)`. The continuous core is therefore `G_a(x) = e^(x/2)[B(R,L) + e^R + L] − e^(−x/2)[B(L,R) + e^L + R]`. The previous Lean statement omitted the exponentials, was false, and carried the corpus's only `sorry`. The jump law is unchanged, since the extra term is continuous.

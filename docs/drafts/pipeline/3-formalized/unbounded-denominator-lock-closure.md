@@ -1,7 +1,7 @@
 # Rational AP locks with unbounded denominators force RH
 
 - **ID:** unbounded-denominator-lock-closure
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CONJECTURE (C2112), paper programme
 - **Source:** Opus loop row 2106; builds on MUST-1322 and MUST-1327 (`3-formalized/bounded-denominator-lock-closure.md`)
 - **Statement:** a Herglotz producer with lower-line lock `G(1−s) = (Σ_j q_j u_j^{−(s−½)})G(s)` with all `u_j ∈ ℚ_{>0}` and `Σ_j |q_j| max(1, u_j^{−1}) den(u_j)^{½+ε} < ∞` forces RH.
@@ -11,8 +11,8 @@ Close the rational part of the open almost-periodic class in the uniqueness half
 
 ## Gates
 - [x] 0 → 1  well-posed; attack recorded in row 2106 (the `den^{½}` weight is the Gauss-sum size, needed twice)
-- [ ] 1 → 2  paper proof of M1–M3
-- [ ] 2 → 3  Lean
+- [x] 1 → 2  paper proof of M1–M3 (superseded by the Lean proof)
+- [x] 2 → 3  Lean: `RHTower.AbelianTwist.rationalLock_riemannHypothesis` (MUST-1388), weight `Σ_j|c_j|max(1,r_j^{−1})√den(r_j)·8^{ω(den r_j)} < ∞`
 - [ ] 3 → 4  not pursued
 
 ## Programme
@@ -56,3 +56,29 @@ Close the rational part of the open almost-periodic class in the uniqueness half
 
 ## Log
 - 2026-10-12 — created from row 2106.
+- 2026-10-13 — Lean infrastructure for M2 delivered: `RHTower/CharacterProductZeroPlantingTwoLevel` (`exists_twoLevel_charProduct_zero`, MUST-1381).
+  - Zero planting with characters mod `N`, band characters mod `N'` that do not factor through `N` (`Σ|D| ≤ |C(χ₁)|/96`), and any far family with `Σ|e_j| ≤ η`, where `η` depends only on the level-`N` data.
+  - Also `exists_realization` (prime realization at any level with a prime floor `P₀`) and `prod_inv_estimates`.
+  - Remaining Lean for M2: the Gauss-sum character expansion of `e(nb/q)` with smooth parts, and the Bohr-lift identity for the twisted series. The duplicate card `rational-lock-unbounded-denominators.md` is merged here.
+- 2026-10-13 — far-part interface (MUST-1381 addendum 2): `exists_twoLevel_zero_of_far` accepts any far part with `|Φ(S,v)| ≤ η e^{2Σ_S|v_p|}` that is holomorphic in `v`. This covers the den `> D` tail and the perturbation `C^{(D)} − C` of the level-`N` coefficients. The power-series instance is `exists_twoLevel_zero_of_powerSeries`.
+- 2026-10-13 — **M2 formalized** (MUST-1383, `RHTower/LimitPeriodicExpSingleCharacter`). `limitPeriodic_exp_single_character`: if `exp⋆ℓ = Σ_q Ψ_q` with period `q+1` and `Σ_q √(q+1) sup|Ψ_q| < ∞`, then at each `s₀ > 1` at most one character `ξ` mod `N` has `Γ_ξ(s₀) ≠ 0`, where `Γ_ξ = Σ_q Σ_{χ∼ξ} L(s,c_χ)L(s,χ)`. The frequencies `b/q` of `Σ_x β(x)e(nx)` with `Σ|β|√den < ∞` fit after grouping by denominator, since `Ψ_q` is bounded by `Σ_{den x = q+1}|β(x)|`. Remaining: M1 (lock ⟹ expansion) and M3 (pole and analyticity of `Γ` on `Re s > ½`).
+- 2026-10-13 — **M3 formalized** (MUST-1385, `RHTower/LimitPeriodicProducerRH`). `limitPeriodic_producer_riemannHypothesis`: a zero-free producer `G = s(s−1)Γ_ℝF` with `a = Σ_qΨ_q` (period `q+1`, `Σ√(q+1)8^{ω(q+1)}B_q < ∞`) forces RH. Herglotz positivity is not needed. **Remaining: M1 only.** The lock must give `a(n) = Σ_x β(x)e(−nx)` with `Σ|β|den^{½+ε} < ∞`. The Lean inputs are the period law at every real height (`tendsto_far_real_height`, `tendsto_far_translation`) and the bounded-case template `bounded_denominator_lock_periodic` (`ZMod.LFunction_one_sub`). The missing piece is a countable-sum Hurwitz functional equation with bounds uniform in `x₀`.
+- 2026-10-13 — **M1 Lean plan** (module `RHTower/WeilAlmostPeriodicLockCoefficients`). It works for any real frequencies `u_j > 0` with `Σ|c_j|max(1,u_j^{−1}) < ∞`.
+  - A1/A2: `𝒫(x) = √x Σ_n a(n)n^{−3/2} ratSpec 0 c u x n = Σ_{n u_j = x} a(n)c_j√u_j`, and `𝒫(x+1) = 𝒫(x)` (`tendsto_far_real_height`, `tendsto_far_translation`).
+  - Domination: `|w(n,j)|·[n u_j ≤ 1]·(n u_j)^{−σ} ≤ |a(n)|n^{−3/2}|c_j|max(1,u_j^{−1})` for `σ ≤ 3/2`.
+  - A3 (rearrangement, `1 < Re s ≤ 3/2`): `F·V = Σ_{(n,j)} w (n u_j)^{−s} = Σ_{n u_j ≤ 1} w ζ(s, n u_j)`, by `HasSum.tsum_fiberwise` over the value `y`, using the period law to move `y` to `{y} ∈ (0,1]`.
+  - A4: `Hrep(s) = Σ_{n u_j ≤ 1} w (y^{−s} + ζ_EM(s, y+1))` is holomorphic on `−½ < Re s ≤ 3/2`, `s ≠ 1` (`hurwitzZeta_eq_rpow_add_hurwitzZetaEM`, `norm_hurwitzZetaEM_le`).
+  - A5–A7: `GV = s(s−1)Γ_ℝ Hrep` on the lower half strip and line. The lock gives `G(w) = w(w−1)Γ_ℝ(1−w)Hrep(1−w)` on the upper line. Uniqueness on the strip `½ < Re w < 3/2`, `Im w > 0` needs a strip variant of `eq_zero_of_vertical_halfLine`.
+  - A8: `hurwitzZeta_one_sub` per term and `expZeta` as a Dirichlet series on `Re w > 1` give `(F − L(b))(1 + e^{−πiw}) = L(b⁻) − L(b)`.
+  - A9 (Bohr): `a(n) = Σ_{m u_j ≤ 1} a(m)c_j√u_j e(n m u_j)`.
+  - Rational corollary: group by `den(m u_j) | den(u_j)` and apply MUST-1385. The weight is `Σ_j |c_j|max(1,u_j^{−1})√den(u_j)·8^{ω(den u_j)} < ∞`.
+- 2026-10-13 — **CLOSED in Lean.** The Lean statements are:
+  - M1: `apLock_coefficients` (MUST-1387, any real frequencies).
+  - M2: `limitPeriodic_exp_single_character` (MUST-1383).
+  - M3: `limitPeriodic_producer_riemannHypothesis` (MUST-1385).
+  - Assembly: `rationalLock_riemannHypothesis` (MUST-1388).
+  - Modules: `RHTower/{CharacterProductZeroPlantingTwoLevel, LimitPeriodicExpSingleCharacter, LimitPeriodicProducerRH, WeilAlmostPeriodicLockCoefficients, WeilRationalLockRH}`.
+- The paper's weight `den^{½+ε}` is replaced by `√den·8^{ω(den)}`, which is weaker.
+- M1 holds for arbitrary positive real frequencies, so the remaining open lock classes are:
+  - irrational frequencies (`a` almost periodic with irrational spectrum);
+  - rational weights below `√den`.

@@ -64,7 +64,7 @@ private theorem left_action (t u : ℝ) (K : ℕ) (i j : Fin (2 * K + 1)) :
       qKrawtchoukCompanionBirthDeath t u K (qKrawtchoukCompanionMode t j) i := by
   simp only [Matrix.mul_apply, qKrawtchoukCompanionBirthDeathMatrix, add_mul,
     ite_mul, zero_mul, Finset.sum_add_distrib]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, basis_apply]
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, basis_apply]
   rw [birth_up]
   change _ = qKrawtchoukCompanionBirth t u K i * qKrawtchoukCompanionMode t j (i + 1) +
     qKrawtchoukCompanionDeath t i * qKrawtchoukCompanionMode t j (i.val - 1) +
@@ -78,13 +78,14 @@ private theorem right_action (t u : ℝ) (K : ℕ) (i j : Fin (2 * K + 1)) :
       lowerMode t u j * qKrawtchoukCompanionMode t ((j : ℝ) - 1) i := by
   simp only [Matrix.mul_apply, qKrawtchoukCompanionModeMatrix, mul_add,
     mul_ite, mul_zero, Finset.sum_add_distrib]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, basis_apply]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, basis_apply]
   cases hj : j.val with
-  | zero => simp [lowerMode, hj]
+  | zero => simp [lowerMode, mul_comm]
   | succ k =>
       have hp : ((down K j : Fin (2 * K + 1)) : ℝ) = (j : ℝ) - 1 := by
         simp [down, hj]
       rw [hp]
+      simp only [hj]
       ring
 
 /-- The concrete geometric evaluation matrix is invertible. -/
@@ -108,6 +109,7 @@ theorem qKrawtchoukCompanionBirthDeathMatrix_intertwine (t u : ℝ) (K : ℕ) :
 private theorem mode_triangular (t u : ℝ) (K : ℕ) :
     (qKrawtchoukCompanionModeMatrix t u K).BlockTriangular id := by
   intro i j hji
+  dsimp only [id] at hji
   have hij : i ≠ j := by omega
   have hip : i ≠ down K j := by
     intro h
@@ -118,12 +120,16 @@ private theorem mode_triangular (t u : ℝ) (K : ℕ) :
 
 private theorem mode_diagonal (t u : ℝ) (K : ℕ) (i : Fin (2 * K + 1)) :
     qKrawtchoukCompanionModeMatrix t u K i i = qKrawtchoukCompanionModeLevel t u K i := by
-  simp only [qKrawtchoukCompanionModeMatrix, if_true]
+  unfold qKrawtchoukCompanionModeMatrix
+  rw [if_pos rfl]
   by_cases hi : i = down K i
-  · have hv := congrArg Fin.val hi
+  · rw [if_pos hi]
+    have hv := congrArg Fin.val hi
     have hz : i.val = 0 := by dsimp [down] at hv; omega
-    simp [hi, lowerMode, hz]
-  · simp [hi]
+    have h0 : ((i : ℕ) : ℝ) = 0 := by exact_mod_cast hz
+    simp only [lowerMode, h0, mul_zero, Real.exp_zero]
+    ring
+  · rw [if_neg hi, add_zero]
 
 /-- The finite birth-death characteristic polynomial splits into explicit real levels. -/
 theorem qKrawtchoukCompanionBirthDeathMatrix_charpoly (t u : ℝ) (K : ℕ) :

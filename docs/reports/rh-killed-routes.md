@@ -2,7 +2,7 @@
 
 **Scope:** dead = stated mechanism impossible, circular or nonselective. Survivor = retained theorem; **Needs** = changed problem outside obstruction. No-go for a shortcut does not retire its live route.
 
-**Lookup:** [33 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
+**Lookup:** [36 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
 
 **Evidence:** codes as in frontier map; [L] cited Lean declarations, no fresh compilation; [P] paper only; REF = unlocated legacy evidence, unverified here. Conditional, model-only and class restrictions retained.
 
@@ -99,13 +99,13 @@
 - **E:** R:NevanlinnaSignCriterion; R:SuzukiXiDonoghueTarget.
 
 <a id="kr-isg"></a>
-### KR-ISG — Finite prime Ising trees
+### KR-ISG — Prime-Ising and invalid ferromagnetic limits
 
 - **Path:** Balanced prime Ising trees → Lee–Yang Xi limit.
-- **Obstruction:** No unit-pointed Xi limit from balanced finite prime-labelled ferromagnetic trees. Uniform positive frequency floor forbids Xi limit even with zero-free normalizers. Integer-anchored Γ-site chains with real abs(c_k)≤1 have a zero in [0,π/log2], where Ξ is zero-free, at every length; no scalar-normalized locally uniform Xi limit [L].
-- **Survivor:** Resolution requires degree≥R/64. Affine field λ forces a zero within π/λ; normalized E·Ξ producers obey eventual Γ field-density budget, including complex chains [L]. Vanishing-frequency/source-faithful families outside these obstructions.
-- **Needs:** Source-faithful resolution-scaled approximation.
-- **E:** R:PrimeIsingTreeBalancedCentering; R:LeeYangResolutionLaw; R:LeeYangPrimeStabilityNoGo; R:RiemannSiegelLeeYangChain; R:GammaSiteLeeYangChainXiObstruction; R:LeeYangProducerFieldDensity; R:ComplexFugacityChainFieldDensity.
+- **Obstruction [L]:** Balanced prime trees and integer-anchored Γ-site chains fail the Xi limit. For every ferromagnetic Ising graph sequence, constant normalization cannot converge to `E·Ξ`: total field must diverge and phase must asymptotically center at half-field. Centred Griffiths–Simon sequences containing harmonic masses `1/(2k)` from any `K≤7` also fail. GHS plus Lebowitz inequalities do not imply Lee–Yang.
+- **Survivor [L]:** Arbitrary ferromagnetic graphs satisfy Lee–Yang; centred convergence in law, moments or low-frequency real-rooted approximation to `Ξ` implies RH. Slow-field producers require vanishing free variance and interaction-driven magnetization. Field-density and first-zero budgets remain necessary.
+- **Needs:** Source-faithful centred critical graph sequence outside harmonic/anchored classes; W1C.
+- **E:** R:PrimeIsingTreeBalancedCentering; R:LeeYangResolutionLaw; R:LeeYangPrimeStabilityNoGo; R:RiemannSiegelLeeYangChain; R:GammaSiteLeeYangChainXiObstruction; R:LeeYangProducerFieldDensity; R:ComplexFugacityChainFieldDensity; R:LeeYangIsingGraphDatum; R:IsingGraphCenteringLaw; R:IsingHarmonicMagnetizationNoGo; R:IsingSlowFieldCriticality; R:IsingLawConvergenceRH; R:IsingMomentConvergenceRH; R:FerromagneticInequalitiesLeeYangBlind.
 
 <a id="kr-fpr"></a>
 ### KR-FPR — Fixed finite passive realization
@@ -282,10 +282,10 @@
 ### KR-HFR — Fixed-rank heat-Hankel completion
 
 - **Path:** Positivity of finitely many heat-Hankel determinants at every heat time → RH.
-- **Obstruction [L]:** For each rank bound `N`, zeros off-line only above a finite height leave every determinant of rank `≤N` positive at all positive times. Fixed rank has a finite-height horizon.
-- **Survivor [L]:** For each off-line zero, some finite rank detects it at every sufficiently large time; rank depends on lower-frequency count. RH ⇔ every rank is eventually positive in time.
-- **Needs:** Rank-uniform arithmetic sign or vertical prime-chirp bound; HCF/TH.
-- **E:** R:XiGaussianHeatHankelHeightHorizon; R:XiGaussianHeatHankelLargeTimeDetection.
+- **Obstruction [L]:** Rank-`N` tests cannot see off-line zeros above `O(N√log N)` ordinate height. At small heat time, all-rank positivity on the coefficient orthant or stable-root cone holds unconditionally. A bounded `aN` window constant is below the known RH-equivalent growing-window criterion.
+- **Survivor [L]:** Large-time matched-rank inertia counts off-line pairs exactly; positive-node tests detect them. RH ⇔ positivity in every `a=K/N` window, for every `K>0`, equivalently every growing window constant.
+- **Needs:** Rank-uniform arithmetic sign or unbounded window growth; HCF/TH.
+- **E:** R:XiGaussianHeatHankelHeightHorizon; R:XiGaussianHeatHankelLinearHorizon; R:XiGaussianHeatHankelLargeTimeDetection; R:XiGaussianHeatHankelLargeTimeInertia; R:XiGaussianHeatHankelPositiveNodeWitness; R:XiGaussianHeatHankelSincLevelWitness; R:XiHeatStableTestPositivity; R:XiHeatHankelFormOrthantPositivity.
 
 <a id="kr-hus"></a>
 ### KR-HUS — Averaged Husimi slice positivity
@@ -300,10 +300,37 @@
 ### KR-GAP — Fixed-gap lossless realization
 
 - **Path:** `Ξ(t)=Re G(t+ih)` for a lower-Pólya function `G` and fixed `h>0` → RH.
-- **Obstruction [L]:** No such realization exists: it would make all zeros simple with rigid consecutive gaps, contradicting the zeta anti-crystal law.
-- **Survivor [L]:** Exact positive sech/Poisson handoff from `Re ξ(1+it)` to `Ξ`; a lossless realization must have resonances arbitrarily close to the real axis.
+- **Obstruction [L]:** No such realization exists: it would make all zeros simple with rigid consecutive gaps, contradicting the zeta anti-crystal law. Allowing finitely many shallow resonances in a fixed strip does not evade the obstruction.
+- **Survivor [L]:** Exact positive sech/Poisson handoff from `Re ξ(1+it)` to `Ξ`; any lossless Hermite–Biehler realization has infinitely many resonances arbitrarily close to the real axis.
 - **Needs:** Prime-faithful gapless/nonlocal port; PTR/W1C.
-- **E:** R:XiGaplessRealizationLaw; R:ZetaZeroAntiCrystalLaw; R:XiCosineShiftSechHandoff; R:XiCosineShiftPoissonFlow.
+- **E:** R:XiGaplessRealizationLaw; R:XiGaplessRealizationAccumulation; R:ZetaZeroAntiCrystalLaw; R:XiCosineShiftSechHandoff; R:XiCosineShiftPoissonFlow.
+
+<a id="kr-ccp"></a>
+### KR-CCP — Restricted-Weil parity selector
+
+- **Path:** Cofinal even ground states of the restricted Weil form → RH.
+- **Obstruction [L], scoped:** A finite off-line top layer with even ordinate relations has arbitrarily large apertures whose ground states are all odd. The same occurs for every fixed-shape cluster at sufficiently large height, regardless of relations. Thus parity selection fails for these off-line spectra; the general infinite-spectrum case is not classified.
+- **Survivor [L]:** Exact finite-top ground-energy asymptotics and Cauchy/Takagi phase law; full all-aperture energy receiver remains.
+- **Needs:** Joint prime–Gamma–polar source lower bound, not parity alone; RW.
+- **E:** R:CCMParityTopLayerNoGo; R:CCMParityTopLayerGroundEnergyLaw; R:CCMParityLargeHeightCluster.
+
+<a id="kr-cos"></a>
+### KR-COS — Local cosine-to-Xi port
+
+- **Path:** Finite-order/local/compactly carried operator maps `cos(hD)Ξ` to `Ξ` and preserves real zeros.
+- **Obstruction [L]:** No finite-order polynomial-coefficient differential port, finite imaginary-shift port, compactly supported shift-average port or compactly carried analytic port gives the exact map for `h≠0` in its stated class, before zero preservation is considered.
+- **Survivor [L]:** Exact nonlocal sech/Poisson source handoff; cosine defect counts bound deep zeros and are power-saving sparse at each fixed positive depth.
+- **Needs:** Nonlocal prime-faithful zero-loss mechanism for the actual Xi source; PTR.
+- **E:** R:CosineProducerLocalPortObstruction; R:CosineProducerShiftPortObstruction; R:CosineProducerMeasurePortObstruction; R:CosineProducerAnalyticPortObstruction; R:XiCosineShiftDeepZeroBudget; R:XiCosineShiftDefectZeroDensity.
+
+<a id="kr-poi"></a>
+### KR-POI — Positive Poisson zero preservation
+
+- **Path:** Positive sech/Poisson port preserves real zeros of every real-rooted source → Xi real-rootedness.
+- **Obstruction [L]:** For every nonzero port depth, a two-tone real-rooted source `cos 2t+r cos t` gains a nonreal zero exactly when its lower-tone ratio crosses `cosh c/cosh 2c`.
+- **Survivor [L]:** Port is exact, positive, injective and dense-range on the actual source; zero-loss remains possible only with Xi-specific structure.
+- **Needs:** Actual-source zero-count or phase law through the port; PTR.
+- **E:** R:PoissonPortTwoToneZeroLoss; R:XiCosineShiftSechHandoff; R:PaperPoissonContinuumPort.
 
 ## Retired labels
 

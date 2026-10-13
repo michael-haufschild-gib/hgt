@@ -12,6 +12,10 @@ their contribution is `o(b^{m(β₀−½)})` by dominated convergence of the abs
 Consequently a bounded single-base lag sequence excludes every attained off-line maximal real
 part, in particular any finite nonempty set of off-line zeros.  The only obstruction to the full
 single-base criterion is a supremum of real parts that is not attained.
+
+The argument uses only that the spacing `log b` is positive: for every real `ℓ > 0` the
+progression `Φ(mℓ)` is unbounded above under an attained off-line top
+(`exists_lag_progression_gt_of_attainedTop`).
 -/
 
 open Complex Filter Real Topology
@@ -93,25 +97,24 @@ theorem norm_exp_lag_le {L β₁ : ℝ} (hL : 0 ≤ L) {q : XiZeroCopy} (hq : (q
   rw [e]
   exact mul_le_mul_of_nonneg_left (by linarith) hL
 
-/-- The lower-level tail `Σ_{β < β₀} ‖w‖ e^{−L(β₀−β)}` at the exponent `m`. -/
-def lowerTail (β₀ b : ℝ) (m : ℕ) : ℝ :=
-  ∑' q : ↑(topLevel β₀)ᶜ, ‖lagWeight q‖ * Real.exp (-((m : ℝ) * Real.log b * (β₀ - (q.1.1 : ℂ).re)))
+/-- The lower-level tail `Σ_{β < β₀} ‖w‖ e^{−mℓ(β₀−β)}` at the exponent `m` of the spacing `ℓ`. -/
+def lowerTail (β₀ ℓ : ℝ) (m : ℕ) : ℝ :=
+  ∑' q : ↑(topLevel β₀)ᶜ, ‖lagWeight q‖ * Real.exp (-((m : ℝ) * ℓ * (β₀ - (q.1.1 : ℂ).re)))
 
 /-- Below an attained maximum the lower tail tends to zero: dominated convergence. -/
-theorem tendsto_lowerTail {β₀ b : ℝ} (hb : 1 < b) (hmax : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ β₀) :
-    Tendsto (lowerTail β₀ b) atTop (𝓝 0) := by
-  have hlogb : 0 < Real.log b := Real.log_pos hb
+theorem tendsto_lowerTail {β₀ ℓ : ℝ} (hℓ : 0 < ℓ) (hmax : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ β₀) :
+    Tendsto (lowerTail β₀ ℓ) atTop (𝓝 0) := by
   have h := tendsto_tsum_of_dominated_convergence (𝓕 := atTop)
     (f := fun (m : ℕ) (q : ↑(topLevel β₀)ᶜ) =>
-      ‖lagWeight q‖ * Real.exp (-((m : ℝ) * Real.log b * (β₀ - (q.1.1 : ℂ).re))))
+      ‖lagWeight q‖ * Real.exp (-((m : ℝ) * ℓ * (β₀ - (q.1.1 : ℂ).re))))
     (g := fun _ => 0) (bound := fun q : ↑(topLevel β₀)ᶜ => ‖lagWeight q‖)
     (summable_norm_lagWeight.subtype _) ?_ ?_
   · rw [tsum_zero] at h
     exact h
   · intro q
     have hq : (q.1.1 : ℂ).re < β₀ := lt_of_le_of_ne (hmax q.1) q.2
-    have hpos : 0 < Real.log b * (β₀ - (q.1.1 : ℂ).re) := by nlinarith
-    have h1 : Tendsto (fun m : ℕ => (m : ℝ) * (Real.log b * (β₀ - (q.1.1 : ℂ).re))) atTop atTop :=
+    have hpos : 0 < ℓ * (β₀ - (q.1.1 : ℂ).re) := by nlinarith
+    have h1 : Tendsto (fun m : ℕ => (m : ℝ) * (ℓ * (β₀ - (q.1.1 : ℂ).re))) atTop atTop :=
       tendsto_natCast_atTop_atTop.atTop_mul_const hpos
     have h2 := (Real.tendsto_exp_neg_atTop_nhds_zero.comp h1).const_mul ‖lagWeight q‖
     simp only [mul_zero] at h2
@@ -121,32 +124,32 @@ theorem tendsto_lowerTail {β₀ b : ℝ} (hb : 1 < b) (hmax : ∀ q : XiZeroCop
   · filter_upwards with m q
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (norm_nonneg _), abs_of_pos (Real.exp_pos _)]
     have hq : (q.1.1 : ℂ).re ≤ β₀ := hmax q.1
-    have : Real.exp (-((m : ℝ) * Real.log b * (β₀ - (q.1.1 : ℂ).re))) ≤ 1 := by
+    have : Real.exp (-((m : ℝ) * ℓ * (β₀ - (q.1.1 : ℂ).re))) ≤ 1 := by
       rw [Real.exp_le_one_iff]
-      have : 0 ≤ (m : ℝ) * Real.log b * (β₀ - (q.1.1 : ℂ).re) := by
-        apply mul_nonneg (mul_nonneg (Nat.cast_nonneg _) hlogb.le); linarith
+      have : 0 ≤ (m : ℝ) * ℓ * (β₀ - (q.1.1 : ℂ).re) := by
+        apply mul_nonneg (mul_nonneg (Nat.cast_nonneg _) hℓ.le); linarith
       linarith
     exact mul_le_of_le_one_right (norm_nonneg _) this
 
 /-- The lower-level part of the lag value is at most `e^{L(β₀−½)}` times the lower tail. -/
-theorem abs_re_lowerPart_le (β₀ : ℝ) (b m : ℕ) :
+theorem abs_re_lowerPart_le (β₀ ℓ : ℝ) (m : ℕ) :
     |(∑' q : ↑(topLevel β₀)ᶜ, lagWeight q
-        * Complex.exp (((m : ℝ) * Real.log b : ℝ) * ((q.1.1 : ℂ) - 1 / 2))).re|
-      ≤ Real.exp ((m : ℝ) * Real.log b * (β₀ - 1 / 2)) * lowerTail β₀ b m := by
-  set L : ℝ := (m : ℝ) * Real.log b with hLdef
+        * Complex.exp (((m : ℝ) * ℓ : ℝ) * ((q.1.1 : ℂ) - 1 / 2))).re|
+      ≤ Real.exp ((m : ℝ) * ℓ * (β₀ - 1 / 2)) * lowerTail β₀ ℓ m := by
+  set L : ℝ := (m : ℝ) * ℓ with hLdef
   have hsum : Summable fun q : ↑(topLevel β₀)ᶜ =>
       lagWeight q * Complex.exp ((L : ℂ) * ((q.1.1 : ℂ) - 1 / 2)) :=
     (summable_lagWeight_mul_exp L).subtype _
   have hterm : ∀ q : ↑(topLevel β₀)ᶜ,
       ‖lagWeight q * Complex.exp ((L : ℂ) * ((q.1.1 : ℂ) - 1 / 2))‖
         = Real.exp (L * (β₀ - 1 / 2))
-          * (‖lagWeight q‖ * Real.exp (-((m : ℝ) * Real.log b * (β₀ - (q.1.1 : ℂ).re)))) := by
+          * (‖lagWeight q‖ * Real.exp (-((m : ℝ) * ℓ * (β₀ - (q.1.1 : ℂ).re)))) := by
     intro q
     rw [norm_mul, Complex.norm_exp]
     have e : ((L : ℂ) * ((q.1.1 : ℂ) - 1 / 2)).re = L * ((q.1.1 : ℂ).re - 1 / 2) := by
       simp [Complex.mul_re]
     rw [e, show L * ((q.1.1 : ℂ).re - 1 / 2)
-        = L * (β₀ - 1 / 2) + -((m : ℝ) * Real.log b * (β₀ - (q.1.1 : ℂ).re)) by
+        = L * (β₀ - 1 / 2) + -((m : ℝ) * ℓ * (β₀ - (q.1.1 : ℂ).re)) by
         rw [hLdef]; ring, Real.exp_add]
     ring
   have h1 := (Complex.abs_re_le_norm _).trans (norm_tsum_le_tsum_norm hsum.norm)
@@ -159,12 +162,12 @@ theorem integerLag_pow (b m : ℕ) :
   rw [Nat.cast_pow, Real.log_pow]
 
 /-- The unit phase at the exponent `N m'` is within `2π/Q` of `1` on the approximated frequencies. -/
-theorem norm_exp_phase_sub_one_le {γ b : ℝ} {N m' Q : ℕ}
-    (hclose : latticeClose ((m' : ℝ) * (N * γ * Real.log b / (2 * π))) (1 / Q)) :
-    ‖Complex.exp (I * ((((N * m' : ℕ) : ℝ) * Real.log b * γ : ℝ) : ℂ)) - 1‖ ≤ 2 * π / Q := by
+theorem norm_exp_phase_sub_one_le {γ ℓ : ℝ} {N m' Q : ℕ}
+    (hclose : latticeClose ((m' : ℝ) * (N * γ * ℓ / (2 * π))) (1 / Q)) :
+    ‖Complex.exp (I * ((((N * m' : ℕ) : ℝ) * ℓ * γ : ℝ) : ℂ)) - 1‖ ≤ 2 * π / Q := by
   obtain ⟨p, hp⟩ := hclose
-  set x : ℝ := 2 * π * ((m' : ℝ) * (N * γ * Real.log b / (2 * π)) - p) with hx
-  have hθ : (((N * m' : ℕ) : ℝ) * Real.log b * γ : ℝ) = x + p * (2 * π) := by
+  set x : ℝ := 2 * π * ((m' : ℝ) * (N * γ * ℓ / (2 * π)) - p) with hx
+  have hθ : (((N * m' : ℕ) : ℝ) * ℓ * γ : ℝ) = x + p * (2 * π) := by
     rw [hx]; push_cast; field_simp; ring
   have hper : Complex.exp (I * ((p * (2 * π) : ℝ) : ℂ)) = 1 := by
     push_cast
@@ -173,24 +176,22 @@ theorem norm_exp_phase_sub_one_le {γ b : ℝ} {N m' Q : ℕ}
   rw [hθ, Complex.ofReal_add, mul_add, Complex.exp_add, hper, mul_one]
   refine (Real.norm_exp_I_mul_ofReal_sub_one_le).trans ?_
   rw [Real.norm_eq_abs, hx, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 * π)]
-  calc 2 * π * |(m' : ℝ) * (N * γ * Real.log b / (2 * π)) - p| ≤ 2 * π * (1 / Q) :=
+  calc 2 * π * |(m' : ℝ) * (N * γ * ℓ / (2 * π)) - p| ≤ 2 * π * (1 / Q) :=
         mul_le_mul_of_nonneg_left hp.le (by positivity)
     _ = 2 * π / Q := by ring
 
-/-- **An attained off-line maximal real part is detected by every base.**  If some `β₀ > ½` is
-attained and maximal among the real parts of the zeros, then the single-base lag sequence
-`a_{b^m}` is unbounded above for every integer base `b ≥ 2`. -/
-theorem exists_pow_integerLag_gt_of_attainedTop {β₀ : ℝ} (hβ : 1 / 2 < β₀)
-    (h : AttainedTop β₀) {b : ℕ} (hb : 2 ≤ b) (M : ℝ) :
-    ∃ m : ℕ, 1 ≤ m ∧ M < integerLag (b ^ m) := by
+/-- **An attained off-line maximal real part is detected by every progression.**  If some
+`β₀ > ½` is attained and maximal among the real parts of the zeros, then the lag progression
+`Φ(mℓ)` is unbounded above for every spacing `ℓ > 0`. -/
+theorem exists_lag_progression_gt_of_attainedTop {β₀ : ℝ} (hβ : 1 / 2 < β₀)
+    (h : AttainedTop β₀) {ℓ : ℝ} (hℓ : 0 < ℓ) (M : ℝ) :
+    ∃ m : ℕ, 1 ≤ m ∧ M < (weilLagFunction ((m : ℝ) * ℓ)).re := by
   classical
   obtain ⟨htop, hmax⟩ := h
   set c := topWeight β₀ with hcdef
   have hc : 0 < c := topWeight_pos htop
   set W := ∑' q : XiZeroCopy, ‖lagWeight q‖ with hWdef
   have hW0 : 0 ≤ W := tsum_nonneg fun q => norm_nonneg _
-  have hb1 : (1 : ℝ) < b := by exact_mod_cast (by omega : 1 < b)
-  have hlogb : 0 < Real.log b := Real.log_pos hb1
   set T := topLevel β₀ with hTdef
   -- (1) a finite subset of the top level carrying all but `c/8` of the weight
   have hsT : Summable fun q : T => ‖lagWeight q‖ := summable_norm_lagWeight.subtype T
@@ -210,40 +211,40 @@ theorem exists_pow_integerLag_gt_of_attainedTop {β₀ : ℝ} (hβ : 1 / 2 < β�
     have := (div_le_iff₀ hc).mp hQge
     nlinarith [Real.pi_pos]
   -- (3) the scale `N`: the lower tail is below `c/8` and the top modulus beats `M`
-  set r₂ := Real.exp (Real.log b * (β₀ - 1 / 2)) with hr₂
+  set r₂ := Real.exp (ℓ * (β₀ - 1 / 2)) with hr₂
   have hr₂1 : 1 < r₂ := Real.one_lt_exp_iff.mpr (by nlinarith)
   obtain ⟨N₁, hN₁⟩ := Filter.eventually_atTop.mp
-    ((tendsto_lowerTail hb1 hmax).eventually (eventually_le_nhds (by linarith : (0 : ℝ) < c / 8)))
+    ((tendsto_lowerTail hℓ hmax).eventually (eventually_le_nhds (by linarith : (0 : ℝ) < c / 8)))
   obtain ⟨N₂, hN₂⟩ := pow_unbounded_of_one_lt (2 * M / c) hr₂1
   set N := max N₁ N₂ + 1 with hNdef
   have hN0 : 0 < N := by omega
   -- (4) Dirichlet on the scaled top-level frequencies
   let e := F.equivFin
-  let β : Fin F.card → ℝ := fun i => N * zeroOrdinate (e.symm i).1 * Real.log b / (2 * π)
+  let β : Fin F.card → ℝ := fun i => N * zeroOrdinate (e.symm i).1 * ℓ / (2 * π)
   obtain ⟨m', hm'1, -, hclose⟩ := exists_simultaneous_dirichlet β hQ0
   set m := N * m' with hmdef
   have hmN : N ≤ m := by rw [hmdef]; exact Nat.le_mul_of_pos_right N hm'1
   refine ⟨m, by omega, ?_⟩
-  set L : ℝ := m * Real.log b with hLdef
+  set L : ℝ := m * ℓ with hLdef
   have hL0 : 0 ≤ L := by positivity
   -- the phases on `F`
   have hphase : ∀ q ∈ F,
       ‖Complex.exp (I * ((L * zeroOrdinate q.1 : ℝ) : ℂ)) - 1‖ ≤ 2 * π / Q := by
     intro q hq
     have hc' := hclose (e ⟨q, hq⟩)
-    have hβ' : β (e ⟨q, hq⟩) = N * zeroOrdinate q.1 * Real.log b / (2 * π) := by
+    have hβ' : β (e ⟨q, hq⟩) = N * zeroOrdinate q.1 * ℓ / (2 * π) := by
       simp only [β, Equiv.symm_apply_apply]
     rw [hβ'] at hc'
-    have := norm_exp_phase_sub_one_le (b := b) (N := N) (m' := m') hc'
+    have := norm_exp_phase_sub_one_le (ℓ := ℓ) (N := N) (m' := m') hc'
     rw [hLdef, hmdef]
-    have e' : (((N * m' : ℕ) : ℝ) * Real.log b * zeroOrdinate q.1 : ℝ)
-        = ((N * m' : ℕ) : ℝ) * Real.log b * zeroOrdinate q.1 := rfl
+    have e' : (((N * m' : ℕ) : ℝ) * ℓ * zeroOrdinate q.1 : ℝ)
+        = ((N * m' : ℕ) : ℝ) * ℓ * zeroOrdinate q.1 := rfl
     convert this using 4
   -- (5) the value as a top part plus a lower part
   set f : XiZeroCopy → ℂ := fun q => lagWeight q * Complex.exp (L * ((q.1 : ℂ) - 1 / 2)) with hfdef
   have hf : Summable f := summable_lagWeight_mul_exp L
-  have hval : integerLag (b ^ m) = (∑' q : T, f q).re + (∑' q : ↑Tᶜ, f q).re := by
-    rw [integerLag_pow, weilLagFunction_eq_tsum_lagWeight, ← hLdef,
+  have hval : (weilLagFunction ((m : ℝ) * ℓ)).re = (∑' q : T, f q).re + (∑' q : ↑Tᶜ, f q).re := by
+    rw [weilLagFunction_eq_tsum_lagWeight, ← hLdef,
       ← hf.tsum_subtype_add_tsum_subtype_compl T, Complex.add_re]
   -- top part
   set g : T → ℂ := fun q => lagWeight q * Complex.exp (I * ((L * zeroOrdinate q.1 : ℝ) : ℂ))
@@ -315,15 +316,15 @@ theorem exists_pow_integerLag_gt_of_attainedTop {β₀ : ℝ} (hβ : 1 / 2 < β�
     have := (abs_le.mp hgtail).1
     linarith
   -- lower part
-  have hlow : |(∑' q : ↑Tᶜ, f q).re| ≤ Real.exp (L * (β₀ - 1 / 2)) * lowerTail β₀ b m :=
-    abs_re_lowerPart_le β₀ b m
+  have hlow : |(∑' q : ↑Tᶜ, f q).re| ≤ Real.exp (L * (β₀ - 1 / 2)) * lowerTail β₀ ℓ m :=
+    abs_re_lowerPart_le β₀ ℓ m
   -- (6) the numerics
   have hexp2 : Real.exp (L * (β₀ - 1 / 2)) = r₂ ^ m := by
     rw [hr₂, ← Real.exp_nat_mul, hLdef]; congr 1; ring
   have hr₂m : 2 * M / c < r₂ ^ m := by
     calc 2 * M / c < r₂ ^ N₂ := hN₂
       _ ≤ r₂ ^ m := pow_le_pow_right₀ hr₂1.le (by omega)
-  have htailm : lowerTail β₀ b m ≤ c / 8 := hN₁ m (by omega)
+  have htailm : lowerTail β₀ ℓ m ≤ c / 8 := hN₁ m (by omega)
   have hMr : M < c / 2 * r₂ ^ m := by
     have := (div_lt_iff₀ hc).mp hr₂m
     linarith
@@ -333,9 +334,19 @@ theorem exists_pow_integerLag_gt_of_attainedTop {β₀ : ℝ} (hβ : 1 / 2 < β�
   have hr₂pos : 0 < r₂ ^ m := by positivity
   have hkey : r₂ ^ m * (5 * c / 8) ≤ r₂ ^ m * ∑' q : T, (g q).re :=
     mul_le_mul_of_nonneg_left htopge hr₂pos.le
-  have hkey2 : r₂ ^ m * lowerTail β₀ b m ≤ r₂ ^ m * (c / 8) :=
+  have hkey2 : r₂ ^ m * lowerTail β₀ ℓ m ≤ r₂ ^ m * (c / 8) :=
     mul_le_mul_of_nonneg_left htailm hr₂pos.le
   nlinarith
+
+/-- **An attained off-line maximal real part is detected by every base.**  If some `β₀ > ½` is
+attained and maximal among the real parts of the zeros, then the single-base lag sequence
+`a_{b^m}` is unbounded above for every integer base `b ≥ 2`. -/
+theorem exists_pow_integerLag_gt_of_attainedTop {β₀ : ℝ} (hβ : 1 / 2 < β₀)
+    (h : AttainedTop β₀) {b : ℕ} (hb : 2 ≤ b) (M : ℝ) :
+    ∃ m : ℕ, 1 ≤ m ∧ M < integerLag (b ^ m) := by
+  have hb1 : (1 : ℝ) < b := by exact_mod_cast (by omega : 1 < b)
+  obtain ⟨m, hm1, hm⟩ := exists_lag_progression_gt_of_attainedTop hβ h (Real.log_pos hb1) M
+  exact ⟨m, hm1, by rwa [integerLag_pow]⟩
 
 /-- A bounded single-base lag sequence excludes every attained off-line maximal real part. -/
 theorem not_attainedTop_of_forall_le {b : ℕ} (hb : 2 ≤ b) {M : ℝ}

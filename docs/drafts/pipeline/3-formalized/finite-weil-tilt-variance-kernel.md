@@ -91,10 +91,10 @@ increment concerns exact equivalences for the actual probability measures.
 ## Boundary
 
 This identifies the invariant kernel, not its uniform dimension or coefficient
-basis. Quantitative variance limits, prescribed replication rates, and monotone
-intermediate-target schedules remain separate frontiers. Existing mixed-moment
-limits suggest a later route to explicit quadratic-variance limits; none is
-claimed in this increment.
+basis. The subsequent finite-weil-quadratic-covariance-limit increment proves
+the exact quadratic covariance and variance limits, including the limiting
+diagonal-sum kernel, at canonical depths under subcritical tilts. Prescribed
+replication rates and monotone intermediate-target schedules remain open here.
 The invariant kernel is for tilts of the same finite base law at fixed r,k;
 it is not a claim about kernels at different depths or the Gaussian limit.
 The corpus-wide research goal remains active.

@@ -513,3 +513,107 @@
   | ZAL | finite defects at every `h` (under LH) | — | `≥ 0` on `Re s ≥ σ`, `\|Im s\| ≥ T(σ)` | `Φ − (finite wave) = O(e^{au})` for every `a` |
 
   ZAL ⟹ LH ∧ quasi-RH. The arithmetic side (WL) and the analytic sides grade the same three statements, so a producer for any "eventual" or "up to finitely many" form in one language transfers to the others.
+
+## 2026-10-12 addendum (rows 1035–1039; MUST-1332, 1334, 1336 [L]) — route HF as template (d), exactly
+- **Existence half (zeta-free):** PBAP ⟺ Weil cone nonempty [L, MUST-535].
+- **NULL (zeta-free):** a nonzero prime-blind test `F` of the decay class `e^{−(1/2+δ)|x|}` whose pole and archimedean energy vanishes [MUST-1334]. Every (N1) test is NULL.
+- **Carrier law [L, MUST-1336]:** PBAP + NULL ⟹ every cone point's boundary measure lives on the discrete real zero set of `F̂`. The proof uses λ's own spectral identity, not the zeros of ζ.
+- **Uniqueness, two exits:**
+  - (i) real zeros of `F̂` ⊆ critical zero ordinates ⟹ cone = {Λ} (MUST-718);
+  - (ii) integer masses (integer counting) ⟹ λ = Λ and RH (Hamburger, `vonMangoldt_and_riemannHypothesis_of_integer_counting`).
+  - Masses with denominator `k` give real-rooted degree-`k` twins (MUST-670), so exit (ii) fails exactly through the twin door.
+- **Reading:** the ζ-dependence of route HF is now one inclusion of real zero sets, or one integrality. Off-line zeros never enter as hypotheses. The integer-valued object is the atom mass of a cone point's boundary measure. This matches the forced shape (integrality on Dirichlet-ring data, never on eigenvalues).
+
+## 2026-10-12 addendum (rows 1040–1046; MUST-1336 add., 1337, 1338, 1339, 1341 [L]) — the Weil framework on the natural test class
+- The explicit formula, the spectral identity of every cone point, and Weil's criterion all hold in Lean on the decay class `e^{−(1/2+δ)|x|}` (strip half-width above `½`). The prime side is an absolutely convergent Abel series against partial sums. RH ⟺ Weil positivity on real tests of this class.
+- On prime-blind tests the zeta-free energy is literally the zero side. So PBAP is a positivity property of the zero configuration restricted to prime-blind tests, and every cone point reproduces the zero form there.
+- Prime-blind tests cannot separate cone points (differences have spectrum on `±log n`). Uniqueness therefore needs zero-faithfulness (or integrality), and detection (PBAP ⟹ RH) needs prime-blind kernels isolating an off-line quadruple: the deflated twin of (N1).
+- Detection meets the corpus resolution wall. `K(log 2) = 0` forces spectral spread `≳ 1`, so a window around height `γ₀` holds `≍ log γ₀` critical zeros. A detector must nearly vanish on them, which is a local (N1) of multiplicative length about `γ₀`.
+
+## 2026-10-13 addendum (rows 1053–1062; MUST-1346–1351, 1353, 1355 [L]) — one number at large height, two doors to the rest
+- **Height-local receivers read one number.** At large heights the TG Gaussian gap grows at the exact rate `Θ∞ + Θ∞²/8`, and Hadamard positivity holds exactly on `Re s > ½ + Θ∞`. Here `Θ∞ = limsup(Re ρ − ½)` as the height grows (MUST-1347, 1348). The all-height forms read the global `Θ` (MUST-1350). The WL lag and cosine ladders grade the same number. Unconditionally, every positive TG rate holds outside a power-saving set of heights (MUST-1351).
+- **Attainment is the ZAL rung.** Every "RH or non-attained supremum" dichotomy in the corpus (single-base lags, log-dense lags, twisted plateau Weil energies, lower-side lags with resonance) closes as soon as the zeros approach the line (MUST-1349, 1353). So RH = ZAL + (a one-sided arithmetic bound along a single geometric progression, upper side; or along infinitely many prime bases, lower side).
+- **Recurrence is the other door.** Density-free self-recurrence of `ζ` on discs of the right half-strip copies every off-line zero to unbounded heights. It therefore collapses the ladder: RH ⟺ FOL ⟺ ZAL (MUST-1355). Bagchi's strong recurrence fails near off-line zeros with density zero (corpus). Weak recurrence asks for no density and is not refuted by any density estimate.
+- **Reading.** The large-height (asymptotic, height-local) half of RH contains LH and is where analytic producers act. The remaining half is non-asymptotic: either arithmetic (a one-sided prime bound along one progression `b^m`) or dynamical (vertical self-return of `ζ` along some unbounded sequence). Linear arithmetic identities cannot reach the top level, because `ζ(ρ) = 0` cancels the top terms (C1057). So the arithmetic door needs a nonlinear all-scale input. The dynamical door is a Kronecker/Bohr recurrence question for the non-generic point `ω = 1` of the random Euler product.
+
+## 2026-10-13 addendum 2 (rows 1063–1074; MUST-1355 add., 1356 (+add.), 1358 (+adds.), 1360, 1361 [L]) — RH = ZAL ∧ AAL, and who produces each half
+- **Exact split.** RH ⟺ ZAL ∧ AAL. ZAL says the limit superior of `Re ρ − ½` along growing heights is `0`; AAL, the asymptotic abscissa law, says that limit superior equals the supremum. Also RH ⟺ ZAL ∧ (weak recurrence around off-line zeros), which is vacuous under RH. Three-pillar form: RH ⟺ LH ∧ (cosine finiteness at every level) ∧ (lags along `b^m` bounded above).
+- **Receiver classes.**
+  - Every height-local large-height receiver is a ZAL producer: Hadamard, TG Gaussian gap, subtracted lag, cosine (with LH). Their exact gauges read `Θ∞`: TG rate `Θ∞ + Θ∞²/8`, Hadamard abscissa `½ + Θ∞` (and, for a moving gauge `g`, the zero-approach rate `g`), lag exponent `Θ∞`.
+  - Every corpus receiver whose escape is "non-attained supremum" or "off-line chain" is an AAL producer: single-base and log-dense lags, twisted plateau Weil energies, JAS real-amplitude and dressed positivity.
+  - Neither class can reach RH alone.
+- **Attacks on AAL failed, with reasons.** Linear arithmetic identities are zero-consistent (C1057). Almost periodicity of `ζ` in the strip is only Besicovitch, which does not localize (C1068). The random Euler model gives probability `0` to off-line zeros and so does not decide recurrence; Siegel/Deuring–Heilbronn repulsion is too weak; continuous Beurling systems violate AAL (C1071). AAL needs discreteness together with the functional equation, so it is RH-strength.
+- **HF existence half.** A pointwise symbol certificate for prime-blind positivity cannot exist: high-pass cosine series with gap `log 2` change sign within `≈ 4.5`, while the archimedean symbol is negative on `|r| < 6.47` (C1073). The pole term is indispensable, and T5's near-zero margin lives in the pole directions.
+
+## 2026-10-13 addendum 3 (rows 1082–1094; MUST-1364 (+add.), 1365 [L]) — where the large-height half sits
+- **Heat family: both confinement thresholds are exactly 0, unconditionally.**
+  - The zeros of `H_t` lie in a strip iff `t ≥ 0`. For `t = −τ` they reach depth `τ log(height)`. Every zero of the Gaussian-damped series `F_τ` reappears at arbitrarily large heights, translated by `iT + 2τL_T`.
+  - The zeros approach the axis at large height iff `t > 0`, or `t = 0` ∧ ZAL.
+  - So `Ξ` is the first member of the family that is strip-confined. The critical strip is "barely true" in the same sense in which RH is conjecturally barely true (`Λ ≥ 0`). ZAL is the boundary value at `t = 0` of a property that holds to the right and fails to the left.
+  - RH says that the real-rootedness threshold `Λ` equals these two thresholds. No shortcut follows: strip-breaking is a property of absolute time `t < 0`, not of backward flows of real-rooted functions (row 1093).
+- **Arithmetic side: one spacing vs a non-meagre set of spacings.**
+  - Every real lag spacing `ℓ ≠ 0` detects an attained top, because the weights `1/(ρ(1−ρ))` have positive real parts. So one bounded progression gives AAL, and RH ⟺ ZAL ∧ (one bounded progression).
+  - With the Baire criterion, the gap between one good spacing and a non-meagre set of them is exactly ZAL.
+  - Without attainment, a single progression fails only through a dominance-window anti-alignment conspiracy of the top-approaching zeros: the AAL wall in lag coordinates (row 1089).
+  - Height-compressing coordinates (Li/Cayley) make the top always attained. That is why Li needs no ZAL, but it then weighs low zeros (row 1086).
+- **Slice side: WD's large-height heat rate is a `Θ∞` gauge below `½`.**
+  - Size bounds (LH) push the rate only down to `½`: the saddle must stay in the Euler region.
+  - Below `½`, MUST-1333 gives rate → 0 ⟹ ZAL [L]. The converse needs zero-free-region lower bounds for `\|ζ\|` and sign control of `x`-derivatives of order `log t` [P].
+  - So LH and ZAL split the rate exactly at `½` (row 1094).
+- **Reading.** The large-height half of RH (ZAL) sits at a threshold in every family examined:
+  - heat time `0`;
+  - slice heat rate `½ ↦ 0`;
+  - lag spacing sets, nonempty vs non-meagre.
+  The finite half (AAL) is attainment, and it is automatic exactly in compressing coordinates. No mechanism in the corpus moves either half off its threshold.
+
+## 2026-10-13 addendum 4 (rows 1095–1109; MUST-1364 add. 2, 1366 (+add.) [L]; CANNOT-514)
+- **Function-field benchmark of the split (row 1095).** Weil's RH for curves is exactly "ZAL (free, because the spectrum is finite) + one bounded progression (Stepanov along `qⁿ`)". Over `ℚ` the same split asks for ZAL and a √-precision one-sided bound along ONE base `bᵐ`, a weaker target than the full `O(√x)` prime bound. Its auxiliary-polynomial mechanism needs a Frobenius (wall 5).
+- **AAL failures are Siegel-type (rows 1096–1097).** Twisting maps a complex isolated top of `ζ` to a real double zero of the positive family `ζ²ζ(s+iγ)ζ(s−iγ)`. Natural isolated tops (Selberg zetas with small eigenvalues, hypothetical Siegel zeros) are real. Positivity and repulsion technology (Deuring–Heilbronn, Landau–Page) makes exceptional zeros isolated, so it is AAL-hostile.
+- **Milestones in zero language (row 1100, CANNOT-514).** TG's "first milestone `< 1/4`" is exactly quasi-RH, by the corpus exponent law.
+- **ZAL's analytic signature (rows 1104, 1107, [L]).** ZAL alone (no global zero-free half-plane) gives `|ζ| = |t|^{o(1)}` from both sides and `ζ'/ζ = o(log t)` right of the line at large heights.
+- **Size vs structure below the Euler region (rows 1108–1109).** These size bounds cannot carry any heat-type gauge below the Euler threshold (KKL reality rate, WD slice rate), even under RH. That needs `log ζ = O(1)` across Gaussian windows or Faà di Bruno orders `≍ log t`. Below `σ = 1` such gauges are statements about zero structure (dynamics or Hadamard product), not about sizes of `ζ`.
+- **Negative times are fully mapped (MUST-1364 adds.).** `H_{−τ}` reproduces every zero of the Gaussian-damped series along relatively dense heights, with `≫ X` non-real zeros up to `X`, at depth `≥ τ log(height) − C`.
+
+## 2026-10-13 addendum 5 (rows 1112–1117; MUST-1368–1370 [L]) — thin and thick receivers
+- **Where the attainment gap comes from.** A receiver decides RH outright when its test family is thick: an interval or non-meagre set of lag spacings, all prime sets in dyadic windows, all heights, all tests. It also does so when its coordinate compresses height so that every top is attained (Li / Cayley). A thin family in a height-uniform coordinate sees only attained tops: one lag progression, typical JAS phase vectors, one restricted-Weil floor, twisted plateau energies. Its defect relative to RH is exactly AAL, and ZAL closes it.
+- **New closures in Lean.** One lag progression at any spacing (MUST-1365); typical JAS positivity (MUST-1369); restricted Weil ground energy with a subexponential floor (MUST-1370). Under ZAL the decay rate of `μ₀` reads the top excess.
+- **Typical heights.** Local zero counts are regular at every scale down to `κ/log T` simultaneously, off an exponentially small set (MUST-1368). Clusters, and any off-line zeros, live in the exceptional set.
+- **Reading.** Every producer attempt must say which kind it is. A producer for a thin, height-uniform receiver is worth exactly AAL and needs a separate ZAL producer. Only thick or compressing receivers can carry RH alone, and their producers are global sign statements (walls 1, 2, 6).
+
+## 2026-10-13 addendum 6 (rows 1118–1133; MUST-1372 (+adds. 1–3) [L]) — attainment is a coordinate, resolution is the problem
+- **Compression.** A thin receiver `Σ_ρ e^{nh(ρ)}/(ρ(1−ρ))` is RH-complete exactly when its multiplier compresses, i.e. `Re h → 0` at large height. For the lag multiplier `ℓ(ρ − ½)`, compression IS ZAL. `H = z/log(2 − z²)` compresses unconditionally, so RH ⟺ one thin family is `e^{o(n)}` from above. It even detects the Wolff configuration that every single-base lag misses (MUST-1371 vs MUST-1372 add. 3). AAL is the attainment gap of a coordinate, not of the zeros.
+- **Price.** Compression costs resolution: to see a zero `(δ, γ)` one needs primes to `γ^{(2/δ)·w_max/w(γ)}` instead of `γ^{2/δ}`. The rate `w → 0` may be arbitrarily slow, but never free. In compressed coordinates RH becomes uniform local exclusion: each off-line zero must be ruled out individually, at its own height (G5).
+- **Arithmetic does the same job for free.** Integer lags are countable and prime-local, yet RH-complete, because `ψ` is a step function (row 1124). The real dividing line is arithmetic thickness: samplings that see every prime-power jump. The elementary transfer threshold is gap `≍ x^{3/4}`, i.e. `k ≤ 4` for `n^k` samplings (row 1129). Below it, ZAL is needed.
+- **Closure hierarchy (row 1133):** thick, compressing, or arithmetically thick receivers need no extra condition. JAS dressed at infinity needs quasi-RH; its only escape is the boundary chain `Θ = ½`, invisible to every VK-type zero-free region. Thin height-uniform receivers need ZAL.
+- **Two optimal designs (row 1130):** local Gaussian cones at every centre (HCF; proved arithmetic side; optimal resolution `e^{O(1/δ)}`; thick in centres), or one compressing global multiplier (thin; resolution factor `w_max/w`). Every design ends in the same producer: √X-precision for smoothed prime sums against the pole and Gamma terms (wall 1). The heat family fails AAL exactly on `(0, Λ)` (row 1120), so attainment arguments must use non-heat-stable, i.e. arithmetic, input.
+- **Reading.** The split RH = ZAL ∧ AAL is real but not fundamental. AAL disappears under compression or arithmetic thickness, at a resolution cost or for free respectively. What remains in every coordinate is one statement: at every height, prime sums of length `e^{O(1/δ)}` exclude depth-`δ` zeros. That is uniform local exclusion, i.e. the zero-free-region problem extended to the whole strip.
+
+## 2026-10-13 addendum 7 (rows 1139–1140; MUST-1377 (+add.) [L]) — thickness is a power gain, and exponents interpolate under relative gains
+- **Correction to addendum 6.** The `x^{3/4}` threshold of row 1129 is wrong. Every sampling set with power-saving gaps `O(n^{1−δ})` is RH-complete for the integer lags, one-sided from either side, with no ZAL. This includes `{j^m}` for every `m`, prime bases, and primes in progressions. The level set `{k : a_k ≤ M}` itself counts as a sampling set, so a producer needs only a dip in every power window. Without RH, the lag has persistent excursions above every level on whole windows `[n − n^{1−δ}, n]`, for every `δ > 0`.
+- **Mechanism.** The exact slope law `Q(d+1) − Q(d) = (ψ(d) − d)/(d(d+1)) + O(d^{−2})` makes the transfer error relative: `(gap/n)·|ψ − x|/√n`, not `gap/√n`. Landau (one-sided bound → zero half-plane) and von Koch (zero half-plane → Chebyshev error) are inverse to each other on exponents, up to `ε`. An input with a relative power gain `n^{−δ}` breaks this symmetry and lowers the exponent by `δ/2` per round, reaching `0` after `⌈1/δ⌉` rounds.
+- **Refines §3.4 ("partial results do not interpolate").** Exponents DO interpolate when the input carries a relative power gain. Absolute partial results (zero-free regions, densities) carry none. Elementary self-improvement (Selberg–Erdős) has gain `1 − c` or `1/log`. That suffices for the PNT but not for a strip, and Beurling systems satisfy the same identities. Target shape for producers: an arithmetic inequality of the form "error at scale `n` ≤ `n^{−δ}` × current error + `O(√n)`".
+- **True dividing line.** Arithmetic thickness is first-derivative resolution: the lag moves at rate `|ψ − x|/n^{3/2}`. Sampling at log-mesh `e^{−δu}` sees it with a power gain. Log-dense sub-power meshes (gap `n/L(n)`) give gain `1/L` against an `n^ε` loss, so they yield only AAL. Single base gives no gain. Open: whether any sub-power mesh decides RH without ZAL.
+
+## 2026-10-13 addendum 8 (rows 1141–1145; MUST-1378, CANNOT-515 (+add.), CANNOT-516 [L]) — the zero side of thin samplings is closed
+- **Persistent oscillation (MUST-1378).** Unconditionally, the integer lags stay above `a_1 − ε` on whole power windows `[n − n^{1−δ}, n]` infinitely often, and below a fixed `−η` likewise. The ¬RH branch uses the power-gap bootstrap; the RH branch uses Bohr almost periodicity. Multiplicative windows would be AAL-type.
+- **Thin samplings are blind on the zero side, rigorously.** Telescoping circle quadrature produces discrete measures whose moments vanish while the weights are as small as wanted (`Σ|c|^p < ∞` for every `p`). This works:
+  - with complex weights (CANNOT-515);
+  - with sector weights `|c| ≤ 2 Re c` whose arguments tend to `0`, i.e. the sign information that `1/(ρ(1−ρ))` actually carries (CANNOT-515 add.);
+  - for two incommensurable bases at once, on golden-ratio product grids (CANNOT-516).
+- **Consequences.**
+  - The single-base Borel–density programme and two-base rigidity are both dead on the zero side.
+  - Zero density (size) and weight sign together cannot make a thin family see a non-attained top.
+  - With MUST-1363 (non-meagre families decide) and MUST-1374 (countable one-sided families are blind), the zero-side classification of lag-spacing receivers is essentially complete.
+- **Reading.** A thin receiver can only be completed by arithmetic. The one known arithmetic completion is thickness with a relative power gain (MUST-1377). Single and finitely many bases have gaps `≍ n` and no gain, so for them the arithmetic question is open with no mechanism. This is consistent with the closure hierarchy: thin height-uniform receivers need ZAL.
+
+## 2026-10-13 addendum 9 (rows 1148–1153; MUST-1383/1385/1387/1388/1391 [L]) — the almost-periodic uniqueness door is closed
+- **What is proved.** Every Herglotz producer whose lock `G(1−s)/G(s)` is an absolutely convergent generalized Dirichlet series `Σ_j c_j u_j^{−(s−½)}` is the true producer, or RH holds.
+  - This allows arbitrary real frequencies.
+  - The only extra weight is `√den·8^{ω(den)}` on the rational frequencies.
+  - Chain: the period law of the radial limits at every real height; a Hurwitz rearrangement; the functional equation; Bohr's uniqueness theorem; the coefficients `a(n) = Σ_{lock points y ≤ 1} 𝒫(y)e(ny)`. Then irrational points vanish, the rational part is limit-periodic, a single character survives (zero planting across two levels), and the pole at `1` forces RH.
+- **Why irrational spectra die.** This needs no equidistribution of primes. The orbit `y+ℤ` of an irrational point needs a fresh frequency for every translate, while the weights are summable and `a` is bounded. Translation-invariant support plus `ℓ¹` weights is incompatible with irrationality.
+- **Why rational spectra survive the first cut.** A rational frequency meets an orbit infinitely often. So rational locks give limit-periodic `a`, and rigidity then comes from arithmetic (Saias–Weingartner extended to infinitely many moduli), not from combinatorics.
+- **Reading.** The HF uniqueness half is reduced to non-almost-periodic locks: step phases from fractional atoms at the zeros, i.e. the twin door (C13/C2048, positive-density fractional atoms).
+  - Every analytically "nice" deviation of the boundary phase is now excluded: extendable phases (MUST-949–954), all almost-periodic ones (this addendum), and finite fractional mass (corpus).
+  - What remains is the genuinely singular, divisor-supported deviation.
+  - It matches the existence side: there too the obstruction is divisor-supported (atoms at zeros), never smooth.

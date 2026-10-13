@@ -22,6 +22,9 @@ On every turn state what the proof route is you are working on. State what the h
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
 - docs/drafts/pipeline/2-fully-proven/leftovers
+- docs/drafts/pipeline/2-fully-proven/xi
+- docs/drafts/pipeline/2-fully-proven/route BAG
+- docs/drafts/pipeline/2-fully-proven/route TT
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -105,11 +108,12 @@ Keep a working log for yourself and do not pay too much attention what other age
 ## apply external paper to corpus experiment
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
-this is a freak fringe paper and clearly has issues, but take the core ideas seriously for a moment and ask "what if?" "how could i make this work?" "where could it add something interesting to our research?" "is there something that when applied to our lean corpus could suprise us?"
 
 papers:
-- docs/others/rh_v2_final.pdf
-  
+- https://arxiv.org/abs/2610.10584
+- https://arxiv.org/abs/2609.20367
+- https://arxiv.org/abs/2609.24149
+
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
 2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
@@ -245,11 +249,58 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 use the hgtl7 skill workflow on every turn for this open end research task:
 
-contribute significant pieces of knowledge to our lean corpus that moves the frontier in our research (docs/reports/rh-current-frontier-map.md) towards a proof or falsification of the riemann hypothesis. the new knowledge cannot appear anywhere in public literature, your training data nor our lean corpus. It must clearly move the frontier in our research towards a proof or falsification of the Riemann Hypothesis by either:
-- discharging a premise or otherwise remove an obstacle
-- formalizing a significant insight or discovery that gives as a clear hint of what the proof must be
-- proves a core mechanism in a route is mathematically impossible or false so that the route as stated is not viable/valid
-- finding a new route or new approach
+contribute significant pieces of knowledge to our lean corpus to develop the missing producer for any route or route candidate from docs/reports/rh-current-frontier-map.md to develop it into a fully lean-formalized proof of the riemann hypothesis. the new knowledge must clearly move the frontier in our research towards a proof of the Riemann Hypothesis on the producer side.
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures. web search will not deliver the solution.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+
+The goal is met when a proof of the Riemann Hypothesis is fully formalized in lean - unconditionally without premises. 
+
+Skip web searches and novelty check against external research. Do not read old markdown files - only read lean code. Use the search tool for our lean corpus, not just rg.
+
+## 75% 
+use the hgtl7 skill workflow on every turn for this open ended research task: develop a formal unconditional lean-proof that at least 75% of the zeros of the riemann zeta function are on the critical line.
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures. web search will not deliver the solution.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+
+The goal is met when a proof that at least 75% of the riemann zeta zeros lie on the critical line is fully formalized in lean - unconditionally without premises. 
+
+Skip web searches and novelty check against external research. Do not read old markdown files - only read lean code. Use the search tool for our lean corpus, not just rg.
+
+## route candidatesk:
+
+develop all route candidates in docs/reports/rh-current-frontier-map.md into full routes towards a proof or falsification of the riemann hypothesis. 
+
+you are free to pick the route candidate and you are free to pivot to any route candidate whenever you want.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -268,9 +319,7 @@ always look at the big picture, try to understand what all our research is tryin
 
 Keep a working log for yourself and do not pay too much attention what other agents are doing. 
 
-The goal is met when a proof or falsificiation of the Riemann Hypothesis is fully formalized in lean - unconditionally without premises. 
-
-The proof route cannot be about positivity, spectral, energy estimates and bounds. It must be about some new, likely unknown, research field of geometry or topolgy.
+The goal is met when a proof or falsificiation of the Riemann Hypothesis is fully formalized in lean via one of the route candidates - unconditionally without premises. 
 
 ## Remove premises
 
@@ -300,6 +349,34 @@ always look at the big picture, try to understand what all our research is tryin
 Keep a working log for yourself and do not pay too much attention what other agents are doing. 
 
 The goal is met when a proof or falsificiation route of the Riemann Hypothesis is fully formalized in lean - unconditionally without premises. You are free to pick what to work on and when to pivot to another target. But never mark this goal as unachievable - there is always work to do.
+
+## value relations
+Work on our lean corpus in increments on any randomly picked theorems, lemmas, premises.
+
+Test, ideate, speculate and identify value relations, functional dependencies, correspondences, proportionalities to either:
+- discharge a premise
+- partially discharge a premise or otherwise reduce the proof burden
+- reframe a premise or receiver in a different mathematical language that offer a new approach to a discharge
+- create a new lemma/theorem or new RH receiver that delivers significant new mathematical insights (even if not solving RH)
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+always look at the big picture, try to understand what our lean research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow an idea or judgment because it is in your training data. understand what our research is hinting at.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+
+The goal is met when every lemma, theorem, premise has been inspected and nothing new can be found anymore. You are free to pick what to work on and when to pivot to another target. But never mark this goal as unachievable - there is always work to do.
 
 ## paper
 the last paper we have written: docs/drafts/pipeline/4-publication-ready/universal-quantum-recurrence-anatomy more research is already in the lean corpus or as paper proof in the pipeline.
@@ -359,7 +436,7 @@ The goal is met when a proof or falsificiation of the Riemann Hypothesis is full
 
 use the hgtl7 skill workflow on every turn for this open end research task: 
 
-contribute significant pieces of knowledge to our lean corpus that moves the frontier and finds a solution for this problem: docs/reports/weil-work/01-pbap-existence.md
+contribute significant pieces of knowledge to our lean corpus that moves the frontier and finds a solution for this problem: docs/reports/weil-work/07-higher-denominator-rigidity.md
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 

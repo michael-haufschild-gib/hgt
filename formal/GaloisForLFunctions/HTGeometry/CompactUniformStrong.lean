@@ -3,7 +3,7 @@ import Mathlib
 /-!
 # Uniform convergence on compact operator images
 
-A uniformly contractive family indexed by finite coordinate sets and converging strongly to zero
+A uniformly contractive family converging strongly to zero along an arbitrary filter
 converges in operator norm after composition with any compact operator. The source and target
 spaces may differ.
 -/
@@ -18,28 +18,28 @@ variable {X Y ι : Type*}
   [NormedAddCommGroup X] [NormedSpace ℂ X]
   [NormedAddCommGroup Y] [NormedSpace ℂ Y]
 
-/-- Uniform smallness on a compact image for a finite-set-indexed strong-null family. -/
-theorem tendsto_norm_comp_of_isCompactOperator_finset
-    (Q : Finset ι → Y →L[ℂ] Y) (hbdd : ∀ P, ‖Q P‖ ≤ 1)
-    (hptw : ∀ y : Y, Tendsto (fun P => Q P y) atTop (nhds 0))
+/-- Uniform smallness on a compact image for an arbitrary strong-null family. -/
+theorem tendsto_norm_comp_of_isCompactOperator
+    {α : Type*} {l : Filter α}
+    (Q : α → Y →L[ℂ] Y) (hbdd : ∀ P, ‖Q P‖ ≤ 1)
+    (hptw : ∀ y : Y, Tendsto (fun P => Q P y) l (nhds 0))
     (B : X →L[ℂ] Y) (hB : IsCompactOperator B) :
-    Tendsto (fun P => ‖Q P ∘L B‖) atTop (nhds 0) := by
+    Tendsto (fun P => ‖Q P ∘L B‖) l (nhds 0) := by
   classical
-  rw [Metric.tendsto_atTop]
+  rw [Metric.tendsto_nhds]
   intro ε hε
   set S : Set Y := closure (B '' Metric.closedBall 0 1) with hS
   have hScompact : IsCompact S := hB.isCompact_closure_image_closedBall 1
   have hStb : TotallyBounded S := hScompact.totallyBounded
   obtain ⟨t, htfin, htcover⟩ :=
     (Metric.totallyBounded_iff.mp hStb) (ε / 3) (by linarith)
-  have hfin : ∀ᶠ P : Finset ι in atTop, ∀ y ∈ htfin.toFinset, ‖Q P y‖ < ε / 3 := by
+  have hfin : ∀ᶠ P : α in l, ∀ y ∈ htfin.toFinset, ‖Q P y‖ < ε / 3 := by
     rw [Filter.eventually_all_finset]
     intro y hy
     have h := (hptw y).norm
     rw [norm_zero] at h
     exact h.eventually_lt_const (by linarith)
-  obtain ⟨F, hF⟩ := Filter.eventually_atTop.mp hfin
-  refine ⟨F, fun P hFP => ?_⟩
+  filter_upwards [hfin] with P hP
   have hbound : ‖Q P ∘L B‖ ≤ 2 * ε / 3 := by
     refine ContinuousLinearMap.opNorm_le_bound _ (by linarith) (fun x => ?_)
     rcases eq_or_ne x 0 with rfl | hx
@@ -73,7 +73,7 @@ theorem tendsto_norm_comp_of_isCompactOperator_finset
             mul_le_mul_of_nonneg_right (hbdd P) (norm_nonneg _)
           _ = ‖B u - y‖ := one_mul _
           _ ≤ ε / 3 := h3.le
-      have h4 : ‖Q P y‖ < ε / 3 := hF P hFP y hyfin
+      have h4 : ‖Q P y‖ < ε / 3 := hP y hyfin
       have hu' : ‖Q P (B u)‖ ≤ 2 * ε / 3 := by linarith
       have h5 : Q P (B (((‖x‖ : ℂ)) • u)) = ((‖x‖ : ℂ)) • Q P (B u) := by
         rw [map_smul, map_smul]
@@ -88,6 +88,38 @@ theorem tendsto_norm_comp_of_isCompactOperator_finset
         _ = 2 * ε / 3 * ‖x‖ := by ring
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (norm_nonneg _)]
   linarith
+
+/-- The finite-coordinate-set API is the corresponding specialization. -/
+theorem tendsto_norm_comp_of_isCompactOperator_finset
+    (Q : Finset ι → Y →L[ℂ] Y) (hbdd : ∀ P, ‖Q P‖ ≤ 1)
+    (hptw : ∀ y : Y, Tendsto (fun P => Q P y) atTop (nhds 0))
+    (B : X →L[ℂ] Y) (hB : IsCompactOperator B) :
+    Tendsto (fun P => ‖Q P ∘L B‖) atTop (nhds 0) :=
+  tendsto_norm_comp_of_isCompactOperator Q hbdd hptw B hB
+
+/-- A strongly convergent family whose norms never exceed the limit norm has convergent norms. -/
+theorem tendsto_norm_of_strong_tendsto_of_norm_le
+    {α : Type*} {l : Filter α} (Q : α → X →L[ℂ] Y) (S : X →L[ℂ] Y)
+    (hbdd : ∀ a, ‖Q a‖ ≤ ‖S‖)
+    (hptw : ∀ x, Tendsto (fun a => Q a x) l (𝓝 (S x))) :
+    Tendsto (fun a => ‖Q a‖) l (𝓝 ‖S‖) := by
+  apply tendsto_order.mpr
+  constructor
+  · intro c hc
+    by_cases hc0 : c < 0
+    · exact Eventually.of_forall fun a => hc0.trans_le (norm_nonneg _)
+    have hex : ∃ x, c * ‖x‖ < ‖S x‖ := by
+      by_contra h
+      push Not at h
+      exact (not_le_of_gt hc) (S.opNorm_le_bound (le_of_not_gt hc0) h)
+    obtain ⟨x, hx⟩ := hex
+    filter_upwards [((hptw x).norm).eventually (lt_mem_nhds hx)] with a ha
+    by_contra hca
+    have hb := ((Q a).le_opNorm x).trans
+      (mul_le_mul_of_nonneg_right (le_of_not_gt hca) (norm_nonneg x))
+    exact (not_lt_of_ge hb) ha
+  · intro c hc
+    exact Eventually.of_forall fun a => (hbdd a).trans_lt hc
 
 end
 

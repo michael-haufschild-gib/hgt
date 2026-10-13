@@ -19,3 +19,4 @@ KKL-scale detection λ*(γ) ≳ δ/log γ. It is blocked unconditionally by loca
 
 ## Log
 - 2026-10-12 — closed (row 299).
+- 2026-10-12 — open residual resolved non-sharply, unconditionally: KKL-scale detection at heat ≍ δ²/(log(2/δ) log γ) with no clustering hypothesis (row 336; `RHTower/XiSliceKKLScaleOffLineDetection`; card 3-formalized/wd-kkl-scale-detection-absolutely-monotone.md). Linear scale δ/log γ still needs counting regularity: the cluster model gives δ²/(4c) when cL zeros sit at the ordinate.

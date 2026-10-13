@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussSpikeMass
 import GaloisForLFunctions.HTGeometry.PowerSeriesTailBound
+import GaloisForLFunctions.HTGeometry.RectangularSchurBound
 
 /-!
 # Critical discrete Hardy transfer for deletion primitives
@@ -26,37 +27,7 @@ private theorem rectangular_schur (I J : Finset ℕ) (T : ℕ → ℕ → ℝ)
     (hrow : ∀ k ∈ I, ∑ n ∈ J, T k n*w n ≤ C*w k)
     (hcol : ∀ n ∈ J, ∑ k ∈ I, T k n*w k ≤ C*w n) :
     (∑ k ∈ I, (∑ n ∈ J, T k n*b n)^2)  ≤  C^2*∑ n ∈ J, b n^2 := by
-  have hpoint (k : ℕ) (hk : k∈I) :
-      (∑ n ∈ J, T k n*b n)^2  ≤  C*w k*(∑ n ∈ J, T k n*b n^2/w n) := by
-    have hc := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul J
-      (f := fun n => T k n*w n) (g := fun n => T k n*b n^2/w n)
-      (r := fun n => T k n*b n)
-      (fun n _ => mul_nonneg (hT k n) (hw n).le)
-      (fun n _ => div_nonneg (mul_nonneg (hT k n) (sq_nonneg _)) (hw n).le)
-      (fun n _ => by have hn := (hw n).ne'; field_simp; nlinarith)
-    exact hc.trans (mul_le_mul_of_nonneg_right (hrow k hk)
-      (Finset.sum_nonneg (fun n _ => div_nonneg (mul_nonneg (hT k n) (sq_nonneg _)) (hw n).le)))
-  have heq : (∑ k ∈ I, C*w k*(∑ n ∈ J, T k n*b n^2/w n)) =
-      ∑ n ∈ J, C*(b n^2/w n)*(∑ k ∈ I, T k n*w k) := by
-    simp only [Finset.mul_sum]
-    rw [Finset.sum_comm]
-    apply Finset.sum_congr rfl
-    intro n hn
-    apply Finset.sum_congr rfl
-    intro k hk
-    ring
-  calc _  ≤  ∑ k ∈ I, C*w k*(∑ n ∈ J, T k n*b n^2/w n) :=
-         Finset.sum_le_sum hpoint
-       _ = _ := heq
-       _  ≤  ∑ n ∈ J, C^2*b n^2 := by
-         apply Finset.sum_le_sum
-         intro n hn
-         have h := mul_le_mul_of_nonneg_left (hcol n hn)
-           (mul_nonneg hC (div_nonneg (sq_nonneg (b n)) (hw n).le))
-         have hwne := (hw n).ne'
-         calc _ ≤ C*(b n^2/w n)*(C*w n) := h
-              _ = _ := by field_simp
-       _ = _ := by rw [Finset.mul_sum]
+  exact GaloisForLFunctions.weighted_rectangular_sum_sq_le I J T w w b hC hw hT hrow hcol
 
 private theorem power_head {delta : ℝ} (hd : 0 < delta) (hd' : delta < 1) (n : ℕ) :
     (∑ k ∈ Finset.range (n+1), ((k : ℝ)+1)^(delta-1))  ≤

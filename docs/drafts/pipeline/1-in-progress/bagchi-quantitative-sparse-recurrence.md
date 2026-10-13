@@ -6350,3 +6350,7 @@ The actual full Gaussian weighted cubic/zero trace is still open. Next work
 must attack that complete signed source, retaining the nonzero contraction
 main, moving weights, nearby distinct zeros, exponent pairs and mixed terms.
 Growing moments, moving cofactors, positive self-return and RH remain open.
+
+## 2026-10-13 — cross-link: unbounded returns plus ZAL (Opus loop row 1062, MUST-1355 [L])
+- `RHTower/ZetaWeakRecurrenceLadderCollapse` proves that density-free weak recurrence (return shifts beyond every height, for every closed disc in the right half-strip) copies every off-line zero to unbounded heights with real part as close as desired (`exists_zeta_zero_far_of_weaklyRecurrent`). Hence weak recurrence ∧ ZAL ⟹ RH, and RH ⟺ ZAL ⟺ FOL ⟺ eventual Hadamard positivity under weak recurrence. Also: RH ⟺ ZAL ∧ `AsymptoticAbscissaLaw`.
+- This places the card's target on a scale: return count `R(T)` around an off-line zero against the off-line count bound `Z(T)` at level `Re ρ₀ − r`. Any pair with `R(T) > Z(T)` cofinally suffices. The card uses unconditional density `Z(T) = T^{θ}`, which needs quantitative returns. With `Z = O(1)` (that is ZAL, which implies LH), every unbounded return set suffices.

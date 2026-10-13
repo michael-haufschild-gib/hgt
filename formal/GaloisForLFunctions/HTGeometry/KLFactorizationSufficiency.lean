@@ -27,7 +27,7 @@ theorem map_withDensity_comp (R : Measure Ω) {q : Ω → Y} (hq : Measurable q)
     ← lintegral_indicator (hq hB), ← lintegral_indicator hB,
     lintegral_map (f := fun y => B.indicator g y) (by fun_prop) hq]
   refine lintegral_congr fun x => ?_
-  by_cases hx : q x ∈ B <;> simp [Set.indicator_apply, hx]
+  by_cases hx : q x ∈ B <;> simp [hx]
 
 /-- The relative entropy of a `q`-factored density is carried entirely by the observer. -/
 theorem klDiv_map_eq_of_density_comp {P R : Measure Ω} [IsFiniteMeasure P] [IsFiniteMeasure R]
@@ -82,7 +82,7 @@ noncomputable def esscherLaw (μ : Measure Ω) (Q : Ω → ℝ) (c t : ℝ) : Me
 /-- **(OFCC.11)**  Two members of an exponential family differ by a density that factors through
 the scalar statistic. -/
 theorem esscherLaw_eq_withDensity_comp (μ : Measure Ω) {Q : Ω → ℝ} (hQ : Measurable Q)
-    {cs ct : ℝ} (hcs : 0 ≤ cs) (hct : 0 < ct) (s t : ℝ) :
+    {cs ct : ℝ} (_hcs : 0 ≤ cs) (hct : 0 < ct) (s t : ℝ) :
     esscherLaw μ Q cs s
       = (esscherLaw μ Q ct t).withDensity
           ((fun y => ENNReal.ofReal (cs / ct * Real.exp ((t - s) * y))) ∘ Q) := by

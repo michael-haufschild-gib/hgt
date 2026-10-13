@@ -12,7 +12,8 @@ noncomputable section
 open Filter Topology GaloisForLFunctions GaloisForLFunctions.HTGeometry
 open scoped BigOperators InnerProductSpace ENNReal
 
-private theorem finite_rectangle_norm_lower
+/-- A positive finite matrix rectangle forces a lower bound on the complete operator norm. -/
+theorem paperWold_finite_rectangle_norm_lower
     (A : PaperWoldHistory →L[ℂ] PaperWoldHistory) (s u : Finset ℕ)
     (L a : ℝ) (hL : 0 < L) (ha : 0 ≤ a)
     (hs : L ≤ (s.card : ℝ)) (hu : L ≤ (u.card : ℝ))
@@ -69,7 +70,7 @@ private theorem eventual_prime_rectangle_operator_bound
     paperWoldPrimeRectangle_eventual_lower t] with N hN hentry
   have hNp : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
   have hlogp : 0 < Real.log (N : ℝ) := by linarith [hN.2.1]
-  have h := finite_rectangle_norm_lower (A N) (paperWoldPrimeIndices N)
+  have h := paperWold_finite_rectangle_norm_lower (A N) (paperWoldPrimeIndices N)
     (paperWoldPrimeIndices (2 * N)) ((N : ℝ) / (2 * Real.log N))
     (Real.log N ^ 2 / (4096 * (N : ℝ))) (by positivity) (by positivity) hN.2.2.1 hN.2.2.2
     (fun n hn j hj => by rw [he N n hn j hj]; exact hentry n hn j hj)

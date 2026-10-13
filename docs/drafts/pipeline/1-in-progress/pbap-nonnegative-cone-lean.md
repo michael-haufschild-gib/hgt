@@ -98,3 +98,19 @@ This is the one unconditional theorem on the existence half (PBAP) that covers t
     - `Q̃ ⪰ 0` on this plane needs `⟨g,Wg⟩ ≥ ‖V−V̄‖⁴/0.1175 ≈ 0.149`;
     - the rough estimate is `⟨g,Wg⟩ ≈ 0.15–0.2`, so the plane is borderline.
   - So the near-minimizer is the flat profile with depleted edges, and the true margin is probably well below the flat value `0.18‖h‖²`. Any certificate must resolve the edge layer, where `W(u) ~ ½log(1/u)` is singular, at roughly 1% relative precision. The cosh weight in `P` adds only `≈ 0.01`.
+- 2026-10-12 — **The sine bump nearly saturates T5 ([P], hand estimate, Opus loop).**
+  - Exact form for `h ≥ 0` on `(0, ℓ)`, `ℓ = log 2`, with `c = h ⋆ h̃`:
+    - `Q(h) = β·c(0) + ∫_0^ℓ g(x)(c(0) − c(x)) dx`;
+    - `β = 2W(ℓ) + 8 sinh(ℓ/2) − |A0| = 2.99370 + 2.82843 − 5.37218 = 0.44994`, where `W(ℓ) = ∫_ℓ^∞ ω = 2^{−1/2} Σ_k 4^{−k}/(2k + ½) = 1.49685`;
+    - `g = 2ω − 4cosh(x/2)` changes sign once, at `x* ≈ 0.28`.
+  - Checks: the flat profile gives `Q = 0.312 − 0.185 = 0.127`, matching `0.1175 + 0.01` above.
+  - Sine bump `h = sin(πu/ℓ)`: `c(0) = ℓ/2`, `c(0) − c(x) = (ℓ/2)[1 − (1 − s)cos πs − sin(πs)/π]` with `s = x/ℓ`.
+    - `β c(0) = 0.1559`.
+    - `∫ g·(c(0) − c) ≈ −0.155` (Simpson in `s`, step 0.1; `g·(c(0) − c) ≈ π²s/4` near `0`, so the integrand is smooth).
+    - So `Q(sin) ≈ 0.001 ± 0.003`.
+  - Reading: smooth profiles that vanish at both ends sit within about `10^{−3}` of the T5 boundary, two orders below the flat value. Any certificate must resolve that margin. A hand-designed (non-numeric) Lean certificate is therefore not realistic. Sign consistency rests on Zhu/Connes–Consani positivity on this window.
+- 2026-10-13 — **Re-check and two structural notes (Opus loop rows 1054, 1073, 1075).**
+  - Sine bump by hand (Simpson, step 0.1 in `s = x/ℓ`): `∫_0^ℓ g(c(0) − c) = ℓ(ℓ/2)(−0.6454) = −0.1550` against `βc(0) = 0.1559`, so `Q(sin) ≈ +0.0009`, which confirms the 2026-10-12 entry. T5 stays a precision certificate.
+  - A pointwise symbol certificate for prime-blind positivity cannot exist. Weights `λ` with `A(r) − 2Σ_{n≥2}λ(n)n^{−½}cos(r log n) ≥ 0` would need a high-pass cosine series (gap `log 2`) positive on `|r| < 6.47`, where `A < 0`. High-pass functions change sign on intervals of length `≈ π/log 2 ≈ 4.5`. So the pole term (the `n = 1`-type frequency) is indispensable, and T5's tiny margin sits in the pole directions.
+  - Open link (row 1075): does PBAP force "one off-line zero forces infinitely many" (PBAP ∧ FOL ⟹ RH)? A cone point's deviation would have to be an integer-supported Dirichlet series with exactly the finite off-line poles and Herglotz-dominated real part. Sampled waves violate this through Bohr–Landau large values, but no proof covers all deviations.
+  - Correction (row 1076): the "open link" above is retired. `Φ_λ = arch + pole − L_λ` is zeta-free, so `L_λ − L_Λ` inherits any finite set of off-line poles with no constraint on `λ`. PBAP reaches the zeros only through prime-blind detection, i.e. (N1).

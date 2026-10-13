@@ -14,7 +14,11 @@ and the choice `V_T = √(16τT(log T + 3))` give
 (`eventually_norm_negHeatS_div_sub_le`), where `N_T(s) = G(s + a_T) e^{−a_T L_T − τL_T²}`. Almost
 periodicity of `F_τ` supplies heights with `F_τ(w + iT) ≈ F_τ(w)`, and the minimum modulus principle
 gives a zero of `A_τ` near `s_T(w₀)`, whose real part `Re w₀ + τ log(T/2π)` exceeds `½`. Hence
-`H_{−τ}` has non-real zeros of arbitrarily large real part (`riemannHeat_neg_nonreal_zeros_infinite`).
+`H_{−τ}` has non-real zeros of arbitrarily large real part
+(`riemannHeat_neg_nonreal_zeros_infinite`), and their depth grows logarithmically:
+`−Im z ≥ τ log(Re z) − C` along zeros with `Re z → ∞` (`exists_riemannHeat_neg_zero_deep`).
+More precisely, every zero `w₀` of `F_τ` is reproduced within any `ε` by zeros of `H_{−τ}` near
+`−i(s_T(w₀) − ½)` at arbitrarily large `T` (`exists_riemannHeat_neg_zero_near_model`).
 -/
 
 open Complex MeasureTheory Filter Topology Set Metric
@@ -390,43 +394,33 @@ theorem differentiable_negHeatS (τ : ℝ) : Differentiable ℂ (negHeatS τ) :=
   unfold negHeatS
   exact (differentiable_riemannHeat_any (-τ)).comp (by fun_prop)
 
-/-- **Non-real zeros far out.** For every `τ > 0` and `R`, `H_{−τ}` has a zero `z` with
-`Im z < 0` and `Re z ≥ R`. -/
-theorem exists_riemannHeat_neg_zero_im_neg {τ : ℝ} (hτ : 0 < τ) (R : ℝ) :
-    ∃ z : ℂ, riemannHeat (-τ) z = 0 ∧ z.im < 0 ∧ R ≤ z.re := by
+/-- **Every zero of `F_τ` reappears in `H_{−τ}` along a relatively dense set of heights.**  For a
+zero `w₀` of the Gaussian-damped series `F_τ` and every `ε > 0`, there is a gap `L` such that every
+window `[R, R + L]`, `R ≥ R₀`, contains a height `T` with a zero of `H_{−τ}` within `ε` of the model
+point `−i(s_T(w₀) − ½)`, `s_T(w) = w + iT + 2τL_T`.  The heights are almost periods of `F_τ`. -/
+theorem exists_riemannHeat_neg_zero_near_model_dense {τ : ℝ} (hτ : 0 < τ) {w₀ : ℂ}
+    (hw₀ : gaussDirichlet τ w₀ = 0) {ε : ℝ} (hε : 0 < ε) :
+    ∃ L R₀ : ℝ, 0 < L ∧ ∀ R : ℝ, R₀ ≤ R → ∃ T : ℝ, R ≤ T ∧ T ≤ R + L ∧
+      ∃ z : ℂ, riemannHeat (-τ) z = 0 ∧ ‖z - -I * (discPoint τ T w₀ - 1 / 2)‖ ≤ ε := by
   have hF := differentiable_gaussDirichlet hτ
-  obtain ⟨w₀, hw₀⟩ := exists_gaussDirichlet_eq_zero hτ
   have hp : gaussDirichlet τ ((1 : ℝ) : ℂ) ≠ 0 := by
     intro h
     have := one_lt_gaussDirichlet_ofReal hτ 1
     rw [h, norm_zero] at this
     linarith
-  obtain ⟨ρ, δ, hρ, hρ', hδ, hsph⟩ := exists_sphere_lower_of_entire hF hp w₀ (ε := 1 / 2)
-    (by norm_num)
+  obtain ⟨ρ, δ, hρ, hρε, hδ, hsph⟩ := exists_sphere_lower_of_entire hF hp w₀
+    (ε := min ε (1 / 2)) (by positivity)
+  have hρ' : ρ ≤ 1 / 2 := hρε.trans (min_le_right _ _)
   obtain ⟨L₀, hL₀, hap⟩ := isStripAlmostPeriodic_gaussDirichlet hτ w₀.re 1 ρ (by linarith)
     (δ / 5) (by positivity)
   obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp
     (eventually_norm_negHeatS_sub_le hτ w₀ hρ hρ' (ε := δ / 5) (by positivity))
-  set a₀ := max T₁ (max (|R| + |w₀.im| + 1) (2 * Real.pi * Real.exp ((|w₀.re| + 2) / τ) + 1))
-  obtain ⟨T', ⟨hT'a, -⟩, hT'ap⟩ := hap a₀
-  have hT'T₁ : T₁ ≤ T' := le_trans (le_max_left _ _) hT'a
-  have hT'R : |R| + |w₀.im| + 1 ≤ T' := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hT'a
-  have hT'L : 2 * Real.pi * Real.exp ((|w₀.re| + 2) / τ) + 1 ≤ T' :=
-    le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hT'a
-  have hT'pos : 0 < T' := by
-    have : 0 < 2 * Real.pi * Real.exp ((|w₀.re| + 2) / τ) := by positivity
-    linarith
+  have hτπ : 0 ≤ τ * (Real.pi / 2) := by positivity
+  refine ⟨L₀, max T₁ (|w₀.im| + 1), hL₀, fun R hR => ?_⟩
+  obtain ⟨T', ⟨hT'R, hT'L⟩, hT'ap⟩ := hap R
+  have hT'T₁ : T₁ ≤ T' := (le_max_left _ _).trans (hR.trans hT'R)
+  have hT'w : |w₀.im| + 1 ≤ T' := (le_max_right _ _).trans (hR.trans hT'R)
   have happrox := hT₁ T' hT'T₁
-  -- the slope is large
-  have hslope : |w₀.re| + 2 ≤ 2 * τ * (horizontalSlope T').re := by
-    rw [horizontalSlope_re]
-    have h1 : Real.exp ((|w₀.re| + 2) / τ) ≤ T' / (2 * Real.pi) := by
-      rw [le_div_iff₀ (by positivity)]; linarith
-    have h2 := Real.log_le_log (Real.exp_pos _) h1
-    rw [Real.log_exp] at h2
-    rw [div_le_iff₀ hτ] at h2
-    linarith
-  -- the normalised function
   set s : ℂ → ℂ := discPoint τ T'
   set N : ℂ → ℂ := normaliser τ w₀ T'
   have hsre : ∀ w, (s w + lineShift τ w₀ T').re = 2 + w.re - w₀.re := fun w => by
@@ -450,9 +444,7 @@ theorem exists_riemannHeat_neg_zero_im_neg {τ : ℝ} (hτ : 0 < τ) (R : ℝ) :
       rw [hsim] at this
       simp at this
       have := (abs_le.mp hi).1
-      have : 0 ≤ τ * (Real.pi / 2) := by positivity
       have := neg_abs_le w₀.im
-      have := abs_nonneg R
       linarith
   have hNd : DifferentiableOn ℂ (fun w => N (s w)) (closedBall w₀ ρ) := by
     intro w hw
@@ -470,12 +462,14 @@ theorem exists_riemannHeat_neg_zero_im_neg {τ : ℝ} (hτ : 0 < τ) (R : ℝ) :
   have herr : ∀ w ∈ closedBall w₀ ρ, ‖h w - gaussDirichlet τ (w + T' * I)‖ ≤ δ / 5 := by
     intro w hw
     have hN0 : 0 < ‖N (s w)‖ := norm_pos_iff.mpr (hNne w hw)
-    have hsplit : h w - gaussDirichlet τ (w + T' * I) = (negHeatS τ (s w) - N (s w) * gaussDirichlet τ (w + T' * I)) / N (s w) := by
+    have hsplit : h w - gaussDirichlet τ (w + T' * I) =
+        (negHeatS τ (s w) - N (s w) * gaussDirichlet τ (w + T' * I)) / N (s w) := by
       simp only [h]
       field_simp [hNne w hw]
     rw [hsplit, norm_div, div_le_iff₀ hN0]
     exact happrox w hw
-  have hap' : ∀ w ∈ closedBall w₀ ρ, ‖gaussDirichlet τ (w + T' * I) - gaussDirichlet τ w‖ ≤ δ / 5 :=
+  have hap' : ∀ w ∈ closedBall w₀ ρ,
+      ‖gaussDirichlet τ (w + T' * I) - gaussDirichlet τ w‖ ≤ δ / 5 :=
     fun w hw => hT'ap w (hball_re w hw)
   have hsphere : ∀ w ∈ sphere w₀ ρ, ‖h w₀‖ < ‖h w‖ := by
     intro w hw
@@ -486,16 +480,15 @@ theorem exists_riemannHeat_neg_zero_im_neg {τ : ℝ} (hτ : 0 < τ) (R : ℝ) :
     have h3 := hsph w hw
     have h4 := herr w₀ hc
     have h5 := hap' w₀ hc
-    rw [hw₀] at h5
+    rw [hw₀, sub_zero] at h5
     have hc_bound : ‖h w₀‖ ≤ 2 * δ / 5 := by
-      calc ‖h w₀‖ ≤ ‖h w₀ - gaussDirichlet τ (w₀ + T' * I)‖ + ‖gaussDirichlet τ (w₀ + T' * I) - 0‖ := by
-            have := norm_sub_le (h w₀ - gaussDirichlet τ (w₀ + T' * I)) (-(gaussDirichlet τ (w₀ + T' * I) - 0))
-            simp only [sub_neg_eq_add, sub_zero, sub_add_cancel, norm_neg] at this
-            simpa using (norm_add_le (h w₀ - gaussDirichlet τ (w₀ + T' * I)) (gaussDirichlet τ (w₀ + T' * I))).trans_eq' (by simp)
-        _ ≤ δ / 5 + δ / 5 := add_le_add h4 h5
-        _ = 2 * δ / 5 := by ring
+      have := norm_sub_le (h w₀ - gaussDirichlet τ (w₀ + T' * I))
+        (-gaussDirichlet τ (w₀ + T' * I))
+      rw [sub_neg_eq_add, sub_add_cancel, norm_neg] at this
+      linarith
     have hw_bound : 3 * δ / 5 ≤ ‖h w‖ := by
-      have e : gaussDirichlet τ w = (gaussDirichlet τ w - gaussDirichlet τ (w + T' * I)) + (gaussDirichlet τ (w + T' * I) - h w) + h w := by ring
+      have e : gaussDirichlet τ w = (gaussDirichlet τ w - gaussDirichlet τ (w + T' * I)) +
+          (gaussDirichlet τ (w + T' * I) - h w) + h w := by ring
       have := norm_add₃_le (a := gaussDirichlet τ w - gaussDirichlet τ (w + T' * I))
         (b := gaussDirichlet τ (w + T' * I) - h w) (c := h w)
       rw [← e] at this
@@ -506,30 +499,78 @@ theorem exists_riemannHeat_neg_zero_im_neg {τ : ℝ} (hτ : 0 < τ) (R : ℝ) :
   obtain ⟨wz, hwz, hzero⟩ := exists_zero_of_norm_lt_sphere_on hρ hhd hsphere
   have hwzc : wz ∈ closedBall w₀ ρ := ball_subset_closedBall hwz
   have hA : negHeatS τ (s wz) = 0 := by
-    have := hzero
-    simp only [h] at this
-    rcases div_eq_zero_iff.mp this with h0 | h0
+    rcases div_eq_zero_iff.mp hzero with h0 | h0
     · exact h0
     · exact absurd h0 (hNne wz hwzc)
-  refine ⟨-I * (s wz - 1 / 2), hA, ?_, ?_⟩
-  · have e : (-I * (s wz - 1 / 2)).im = -((s wz).re - 1 / 2) := by simp [Complex.mul_im]
-    rw [e]
-    have hsre' : (s wz).re = wz.re + 2 * τ * (horizontalSlope T').re := by
-      simp [s, discPoint]
-    have := (abs_le.mp (hball_re wz hwzc)).1
-    have := neg_abs_le w₀.re
-    rw [hsre']
-    linarith
-  · have e : (-I * (s wz - 1 / 2)).re = (s wz).im := by simp [Complex.mul_re]
-    rw [e]
-    have hsim' : (s wz).im = wz.im + T' + τ * (Real.pi / 2) := by
-      simp [s, discPoint, horizontalSlope]; ring
-    rw [hsim']
-    have := (abs_le.mp (hball_im wz hwzc)).1
-    have := neg_abs_le w₀.im
-    have : 0 ≤ τ * (Real.pi / 2) := by positivity
-    have := le_abs_self R
-    linarith
+  refine ⟨T', hT'R, hT'L, -I * (s wz - 1 / 2), hA, ?_⟩
+  have e : -I * (s wz - 1 / 2) - -I * (discPoint τ T' w₀ - 1 / 2) = -I * (wz - w₀) := by
+    simp only [s, discPoint]; ring
+  rw [e, norm_mul, norm_neg, Complex.norm_I, one_mul]
+  exact (le_of_lt (mem_ball_iff_norm.mp hwz)).trans (hρε.trans (min_le_left _ _))
+
+/-- **Every zero of `F_τ` reappears in `H_{−τ}` at arbitrarily large heights.**  For a zero `w₀`
+of the Gaussian-damped series `F_τ` and every `ε > 0`, there are heights `T ≥ R` with a zero of
+`H_{−τ}` within `ε` of the model point `−i(s_T(w₀) − ½)`, where `s_T(w) = w + iT + 2τL_T`. -/
+theorem exists_riemannHeat_neg_zero_near_model {τ : ℝ} (hτ : 0 < τ) {w₀ : ℂ}
+    (hw₀ : gaussDirichlet τ w₀ = 0) {ε : ℝ} (hε : 0 < ε) (R : ℝ) :
+    ∃ T : ℝ, R ≤ T ∧ ∃ z : ℂ, riemannHeat (-τ) z = 0 ∧
+      ‖z - -I * (discPoint τ T w₀ - 1 / 2)‖ ≤ ε := by
+  obtain ⟨L, R₀, -, h⟩ := exists_riemannHeat_neg_zero_near_model_dense hτ hw₀ hε
+  obtain ⟨T, hT, -, hz⟩ := h (max R R₀) (le_max_right _ _)
+  exact ⟨T, (le_max_left _ _).trans hT, hz⟩
+
+/-- **Non-real zeros at logarithmic depth.** For every `τ > 0` there is `C` such that `H_{−τ}` has
+zeros `z` of arbitrarily large real part with `τ log(Re z) ≤ −Im z + C`: the model point of a zero
+`w₀` of `F_τ` has imaginary part `½ − Re w₀ − τ log(T/2π)`. -/
+theorem exists_riemannHeat_neg_zero_deep {τ : ℝ} (hτ : 0 < τ) :
+    ∃ C : ℝ, ∀ R : ℝ, ∃ z : ℂ, riemannHeat (-τ) z = 0 ∧ R ≤ z.re ∧
+      τ * Real.log z.re ≤ -z.im + C := by
+  obtain ⟨w₀, hw₀⟩ := exists_gaussDirichlet_eq_zero hτ
+  refine ⟨τ * Real.log 2 + τ * Real.log (2 * Real.pi) + |w₀.re| + 1, fun R => ?_⟩
+  have hτπ : 0 ≤ τ * (Real.pi / 2) := by positivity
+  obtain ⟨T, hT, z, hz, hzm⟩ := exists_riemannHeat_neg_zero_near_model hτ hw₀
+    (ε := 1 / 2) (by norm_num) (|R| + |w₀.im| + τ * (Real.pi / 2) + 1)
+  have hTpos : 0 < T := by linarith [abs_nonneg R, abs_nonneg w₀.im]
+  -- the model point sits at height `≈ T` and depth `Re w₀ + τ log(T/2π) − ½`
+  have hre_m : (-I * (discPoint τ T w₀ - 1 / 2)).re = w₀.im + T + τ * (Real.pi / 2) := by
+    simp [discPoint, horizontalSlope, Complex.mul_re]; ring
+  have him_m : -(-I * (discPoint τ T w₀ - 1 / 2)).im =
+      w₀.re + τ * Real.log (T / (2 * Real.pi)) - 1 / 2 := by
+    have e : (-I * (discPoint τ T w₀ - 1 / 2)).im = -((discPoint τ T w₀).re - 1 / 2) := by
+      simp [Complex.mul_im]
+    have hsre : (discPoint τ T w₀).re = w₀.re + 2 * τ * (horizontalSlope T).re := by
+      simp [discPoint]
+    rw [e, hsre, horizontalSlope_re]; ring
+  have hre := abs_le.mp ((Complex.abs_re_le_norm _).trans hzm)
+  have him := abs_le.mp ((Complex.abs_im_le_norm _).trans hzm)
+  rw [Complex.sub_re, hre_m] at hre
+  rw [Complex.sub_im] at him
+  have hRz : R ≤ z.re := by linarith [le_abs_self R, neg_abs_le w₀.im, hre.1]
+  refine ⟨z, hz, hRz, ?_⟩
+  have hzhi : z.re ≤ 2 * T := by linarith [le_abs_self w₀.im, abs_nonneg R, hre.2]
+  have hlog1 : Real.log z.re ≤ Real.log 2 + Real.log T := by
+    rw [← Real.log_mul (by norm_num) hTpos.ne']
+    exact Real.log_le_log (by linarith [abs_nonneg R, neg_abs_le w₀.im, hre.1]) hzhi
+  have hlog2 : Real.log (T / (2 * Real.pi)) = Real.log T - Real.log (2 * Real.pi) :=
+    Real.log_div hTpos.ne' (by positivity)
+  have hmul := mul_le_mul_of_nonneg_left hlog1 hτ.le
+  rw [mul_add] at hmul
+  have hsub := mul_sub τ (Real.log T) (Real.log (2 * Real.pi))
+  rw [hlog2] at him_m
+  linarith [neg_abs_le w₀.re, him.2]
+
+/-- **Non-real zeros far out.** For every `τ > 0` and `R`, `H_{−τ}` has a zero `z` with
+`Im z < 0` and `Re z ≥ R`. -/
+theorem exists_riemannHeat_neg_zero_im_neg {τ : ℝ} (hτ : 0 < τ) (R : ℝ) :
+    ∃ z : ℂ, riemannHeat (-τ) z = 0 ∧ z.im < 0 ∧ R ≤ z.re := by
+  obtain ⟨C, hC⟩ := exists_riemannHeat_neg_zero_deep hτ
+  obtain ⟨z, hz, hR, hlog⟩ := hC (max R (Real.exp ((C + 1) / τ)))
+  refine ⟨z, hz, ?_, (le_max_left _ _).trans hR⟩
+  have h1 : (C + 1) / τ ≤ Real.log z.re := by
+    rw [← Real.log_exp ((C + 1) / τ)]
+    exact Real.log_le_log (Real.exp_pos _) ((le_max_right _ _).trans hR)
+  rw [div_le_iff₀ hτ] at h1
+  linarith [mul_comm τ (Real.log z.re)]
 
 /-- **Newman's conjecture (zeros).** For every `τ > 0`, `H_{−τ}` has infinitely many non-real
 zeros. -/

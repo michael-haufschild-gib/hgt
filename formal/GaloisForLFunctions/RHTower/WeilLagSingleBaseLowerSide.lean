@@ -63,14 +63,15 @@ theorem summable_topLagPart_terms (β₀ : ℝ) (b m : ℕ) :
 
 /-- **The single-base value splits into the top function and a lower part.** -/
 theorem integerLag_pow_eq_top_add (β₀ : ℝ) (b m : ℕ) :
-    ∃ low : ℝ, |low| ≤ Real.exp ((m : ℝ) * Real.log b * (β₀ - 1 / 2)) * lowerTail β₀ b m ∧
+    ∃ low : ℝ,
+      |low| ≤ Real.exp ((m : ℝ) * Real.log b * (β₀ - 1 / 2)) * lowerTail β₀ (Real.log b) m ∧
       integerLag (b ^ m) =
         Real.exp ((m : ℝ) * Real.log b * (β₀ - 1 / 2)) * topLagPart β₀ b m + low := by
   set L : ℝ := m * Real.log b with hLdef
   set T := topLevel β₀ with hTdef
   set f : XiZeroCopy → ℂ := fun q => lagWeight q * Complex.exp (L * ((q.1 : ℂ) - 1 / 2)) with hfdef
   have hf : Summable f := summable_lagWeight_mul_exp L
-  refine ⟨(∑' q : ↑Tᶜ, f q).re, abs_re_lowerPart_le β₀ b m, ?_⟩
+  refine ⟨(∑' q : ↑Tᶜ, f q).re, abs_re_lowerPart_le β₀ (Real.log b) m, ?_⟩
   have hval : integerLag (b ^ m) = (∑' q : T, f q).re + (∑' q : ↑Tᶜ, f q).re := by
     rw [integerLag_pow, weilLagFunction_eq_tsum_lagWeight, ← hLdef,
       ← hf.tsum_subtype_add_tsum_subtype_compl T, Complex.add_re]
@@ -269,7 +270,7 @@ theorem eventually_neg_le_topLagPart {β₀ : ℝ} (hβ : 1 / 2 < β₀)
   have hlogb : 0 < Real.log b := Real.log_pos hb1
   set r := Real.exp (Real.log b * (β₀ - 1 / 2)) with hr
   have hr1 : 1 < r := Real.one_lt_exp_iff.mpr (by nlinarith)
-  have hev1 := (tendsto_lowerTail hb1 hmax).eventually
+  have hev1 := (tendsto_lowerTail hlogb hmax).eventually
     (eventually_le_nhds (show (0 : ℝ) < ε / 2 by positivity))
   have hrpow : Tendsto (fun m : ℕ => |M| / r ^ m) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop (tendsto_pow_atTop_atTop_of_one_lt hr1)
@@ -287,8 +288,10 @@ theorem eventually_neg_le_topLagPart {β₀ : ℝ} (hβ : 1 / 2 < β₀)
   have hrm : 0 < r ^ m := by positivity
   obtain ⟨h1, h2⟩ := hm₁ m hmm₁
   have hlow' := (abs_le.mp hlow).2
-  have hg : r ^ m * (-(|M| / r ^ m) - lowerTail β₀ b m) ≤ r ^ m * topLagPart β₀ b m := by
-    have e : r ^ m * (-(|M| / r ^ m) - lowerTail β₀ b m) = -|M| - r ^ m * lowerTail β₀ b m := by
+  have hg : r ^ m * (-(|M| / r ^ m) - lowerTail β₀ (Real.log b) m) ≤
+      r ^ m * topLagPart β₀ b m := by
+    have e : r ^ m * (-(|M| / r ^ m) - lowerTail β₀ (Real.log b) m) =
+        -|M| - r ^ m * lowerTail β₀ (Real.log b) m := by
       field_simp
     rw [e]
     nlinarith [neg_abs_le M]

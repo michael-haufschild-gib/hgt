@@ -52,3 +52,13 @@ Shift the reflected radial integral `ε∫ e^{L} φ k` to `Re s = 3/2` (lower co
 - 2026-10-12 — MUST-1315: mean-motion law. The AP class is now organized by `m = Σ|q_j|² log ρ_j`: positivity gives `m ≥ 0`, `m = 0` is trivial. Open: `m > 0` with two-sided rational spectra.
 - 2026-10-12 — MUST-1322: bounded-denominator AP locks force periodic coefficients (`bounded_denominator_lock_periodic`). The open AP class splits: (i) bounded denominators, which reduce to single-character rigidity of periodic producers plus the mean-motion sign `m ≤ 0`; (ii) unbounded denominators.
 - 2026-10-12 — MUST-1327: bounded-denominator AP locks force RH (`bounded_denominator_lock_riemannHypothesis`). The almost-periodic class is open only for unbounded denominators.
+- 2026-10-13 — **The almost-periodic class is CLOSED.**
+  - MUST-1388: rational locks with unbounded denominators force RH (`rationalLock_riemannHypothesis`), under the weight `√den·8^{ω(den)}`.
+  - MUST-1391: AP locks with arbitrary real frequencies force RH (`almostPeriodicLock_riemannHypothesis`). Irrational lock points carry no weight (`lockPer_eq_zero_of_irrational`).
+  - Supporting results:
+    - `apLock_coefficients` (MUST-1387): AP lock ⇒ `a(n) = Σ_{0<m u_j≤1} a(m)c_j√u_j e(n m u_j)`;
+    - `limitPeriodic_exp_single_character` (MUST-1383);
+    - `limitPeriodic_producer_riemannHypothesis` (MUST-1385).
+  - Remaining U room in the extendable/AP classification: none for absolutely convergent AP locks, up to the denominator weight.
+  - Open: non-AP non-extendable locks, i.e. step phases from fractional atoms (twins: a real-rooted `F ∈ V_k` gives the producer `s(s−1)Γ_ℝF^{1/k}`, whose lock jumps by `e^{2πi m/k}` at zeros of multiplicity `m ≢ 0 (k)`).
+  - The conclusion is RH, not `λ = Λ`. Upgrading to `λ = Λ` would need the mean-motion law (MUST-1315) for the trivial-class factor `A`.

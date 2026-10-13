@@ -10,7 +10,7 @@ literal finite flat probes retain the positive mass already proved for TT.
 namespace RHTower
 noncomputable section
 open Filter Topology GaloisForLFunctions GaloisForLFunctions.HTGeometry
-open scoped BigOperators InnerProductSpace
+open scoped BigOperators InnerProductSpace ENNReal
 
 theorem paperWoldCriticalCompositeOperator_form (N : ℕ) :
     (inner ℂ (paperWoldFlat N) (paperWoldCriticalCompositeOperator (paperWoldFlat N))).re =
@@ -62,7 +62,7 @@ theorem paperWoldCriticalCompositeOperator_not_compact :
   intro h
   have hf := paperWoldCriticalCompositeOperator_norm_sub_compact_floor
     ⟨paperWoldCriticalCompositeOperator, h⟩
-  simpa using hf
+  norm_num at hf
 
 theorem paperWoldCriticalCompositeOperator_compactIdealDistance_floor :
     (1 / 24 : ℝ) ≤ compactIdealDistance paperWoldCriticalCompositeOperator :=

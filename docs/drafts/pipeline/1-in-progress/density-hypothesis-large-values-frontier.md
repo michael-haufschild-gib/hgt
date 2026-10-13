@@ -22830,3 +22830,5 @@ the spread instance with `R ≍ N/(LV)` windows realises `L ≍ N/V`.)  ∎
    (heights up to (N/V)^{1/2} up to constants).  The spread half (heights up to N/V) stays paper.
    Modules: SelectionResonanceFactorizationGeneralBlock, …GeneralMain (the L = 2 modules are kept).
 ```
+
+- 2026-10-13 cross-link (Opus loop row 1077, MUST-1362 [L]): the "no growing clusters in measure" input attributed to Selberg–Fujii now has a Lean-backed replacement. `RHTower/ZetaTypicalLocalZeroCount` (`exists_volume_localZeroCount_gt_le`): for `κ = R log T ≥ 9·10⁸`, the heights `t ∈ [T, 2T]` with more than `10κ` zero copies within `R` of `t` have measure `≤ C T e^{−√κ/4} + C√T`. Per height, `card_le_of_zetaLogDerivScaleData` bounds the count by `(13R/2)(B + log t + c + 1)` under the typical box data. The tail is stretched-exponential in the cluster scale. It is not Fujii's Gaussian-moment bound for `S(t+h) − S(t)`, but it suffices wherever only "clusters of size → ∞ occupy vanishing measure" is used.
