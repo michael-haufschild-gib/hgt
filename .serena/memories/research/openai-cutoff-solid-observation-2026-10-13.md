@@ -1,0 +1,20 @@
+# TT/HJ/LI finite-cutoff solid observations
+
+Active unbudgeted OpenAI/math mechanical application goal remains active across all39 live/candidate routes. Authoritative ledger docs/reports/rh-current-frontier-map.md. Existing paper/Lean mechanisms are proven inputs. BRIDGE classification; no scientific novelty or RH proof claim.
+
+Verified batch: tmp/hgt-openai-math/cutoff-solid-audits.json. Five leaves,42 theorems+2 definitions=44 public declarations. All5 plain `lake --old env lean <leaf>` final checks warning-free,all44 transitive #print axioms audits standard-only (propext/Classical.choice/Quot.sound),all44 corpus registrations complete,unique umbrella imports,current objects,all direct local dependency objects current. No full/umbrella builds,numerical experiments,heartbeat raises,new axioms or sorries.
+
+Leaves:
+- HTGeometry/PaperCoordinateTail:singleton prefix law,contractive complementary coordinate tails,both left/right cutoff error norm bounds.
+- HTGeometry/LpSolidObservationOrder:pointwise norm domination transports maximal full solid-hull response,including uniformity over arbitrary auxiliary choices jointly with all masks.
+- RHTower/PaperWoldCutoffSolidObservation:literal critical square cutoff equals T composed with input prefix by actual triangular entries;cutoff norm<=1,error norm exactly1,cost infinity at every depth. Uniform full-hull/mask completion,worst response attained,arbitrary moving masks,capstone paperWoldCutoff_masked_completion.
+- RHTower/PaperHurwitzPrefixSolidObservation:actual input prefix defect also equals output prefix composed with full defect. Decay simultaneous over every prefix length AND every coordinate mask of a fixed full history. Unrestricted moving-prefix/mask convergence. Linear prefix norm9/25 and quadratic norm tending1 persist;capstone paperHurwitzPrefix_masked_norm_separation.
+- RHTower/PaperLiCutoffSolidObservation:actual prefix equals output projection of full negative Li operator. At each fixed budget/depth,error norm equals full operator norm (0 if RH,1 otherwise);error cost0 if RH,infinity otherwise. No RH premise. Full masked-history cutoff completion,attained maximum. Increasing budget suppresses ALL prefixes and masks simultaneously,with arbitrary moving choices.
+
+Ledger TT/HJ/LI updated. Main all-route-applications.json latest_verified_batch and route entries point to this audit. Last sequential index passed. Final global lint failed solely because foreign concurrent CosDilationPeriodicMultiplierUnfolding was unwired;no owned findings or stale generated-file errors. Do not modify that unrelated source or claim whole-repo lint clean.
+
+Next plan: tmp/hgt-openai-math/exact-observation-next.json. Candidate exact maximal-response formulas for diagonal HJ/LI and continuous PA multiplier: on a fixed dominated hull a diagonal operator's maximal norm should equal its response to the unmasked history. Existing generic maximum only gives abstract attaining mask. Two lexical searches found0 prior diagonal observation laws;broaden before implementation. Read actual Lean,no cards. PA operator is lpBoundedMulCLM with operator_apply_ae. LpDiagonalMultiplier.lean defines lpDiagonalCLM near91/apply95. Do not assume PCS projections diagonal (not verified).
+
+Build fixes:TT lower bound simpa must explicitly unfold paperWoldCutoffError. LI must `open Classical` for RH case-split proposition declarations. Uniform lambda binder must be `fun a (q : P × Mask)`,not unparenthesized annotation. Metric uniform convergence target0 uses dist_zero_left.
+
+All owned Lean/search/index/lint/registration sessions terminal. Cleanup removes6 owned helpers,retains /tmp/paper-cutoff-axioms.lean as witness. Plans/logs/audit retained. Prior full Walsh boundary and WBF/PA completed batches remain verified;see their memories. No commits/push.

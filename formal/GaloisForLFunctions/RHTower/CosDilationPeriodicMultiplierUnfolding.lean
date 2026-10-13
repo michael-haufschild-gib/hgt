@@ -145,7 +145,7 @@ theorem integral_tsum_dilationAutocorr_abs_mul_periodic_even (hf : Continuous f)
     · rw [abs_of_nonneg h0]
     · rw [abs_of_neg h0, hwe]
   simp only [e] at h
-  exact h.symm
+  exact h
 
 /-! ### Blind-core periodic-multiplier evaluation -/
 
@@ -279,11 +279,9 @@ theorem eq_zero_of_cosDilationKernel_blind_of_half_periodic_mul_nonneg (hf : Con
   have hiz := integral_dilationAutocorr_abs_mul_half_periodic_eq_zero
     hf hα hαβ hsupp h0 hblind hwc hw
   have hae : g =ᵐ[volume] 0 :=
-    (integral_eq_zero_iff_of_nonneg_ae (ae_of_all _ hnonneg) hg_int).mp hiz
-  have hg1 : g 1 = 0 := by
-    have hEq := Filter.EventuallyEq.eq_of_nhds
-      (hae.filter_mono (nhds_le_ae (x := (1 : ℝ))))
-    exact hEq
+    (integral_eq_zero_iff_of_nonneg hnonneg hg_int).mp hiz
+  have heq := (Continuous.ae_eq_iff_eq volume hgc continuous_const).mp hae
+  have hg1 : g 1 = 0 := congrFun heq 1
   simp only [hg, abs_one, mul_eq_zero] at hg1
   have hA1 : dilationAutocorr f 1 = 0 := hg1.resolve_right hw1
   exact eq_zero_of_dilationAutocorr_one_le_zero hf hα hsupp hA1.le y
@@ -407,14 +405,9 @@ theorem dilationAutocorr_boundary_window_eq (hf : Continuous f)
   rw [Finset.sum_insert (by decide), Finset.sum_insert (by decide),
     Finset.sum_insert (by decide), Finset.sum_singleton,
     a1, a2, a3, a4, hxZ, h0] at hP
-  have e' : ((dilationAutocorr f (1 - x) + dilationAutocorr f (1 + x) +
-      dilationAutocorr f (2 - x) : ℝ) : ℂ) =
-      ((2 * cosDilationKernel f 1 * Real.cos (2 * π * x) : ℝ) : ℂ) := by
-    push_cast
-    rw [show ((2 * cosDilationKernel f 1 * Real.cos (2 * π * x) : ℝ) : ℂ) =
-      ((0 + 2 * cosDilationKernel f 1 * Real.cos (2 * π * x) : ℝ) : ℂ) by push_cast; ring, ← hP]
-    push_cast; ring
-  exact Complex.ofReal_injective e'
+  have hP_re := congrArg Complex.re hP
+  simp only [Complex.add_re, Complex.ofReal_re] at hP_re
+  linarith
 
 /-- **Support-boundary node identity at `x = α / β` for `β ≤ (1 + √2) α` (`β² − 2αβ − α² ≤ 0`).**
 If `f` is continuous and supported in `[α, β]` (`0 < α ≤ β`) with `β² − 2αβ − α² ≤ 0`, `Ψ_f(0) = 0`,
@@ -429,7 +422,7 @@ theorem dilationAutocorr_support_boundary_node_eq (hf : Continuous f)
   have hβ0 : 0 < β := lt_of_lt_of_le hα hαβ
   have hβ52 : β ≤ 5 / 2 * α := by
     by_contra hlt
-    push_neg at hlt
+    have hgt : 5 / 2 * α < β := not_le.mp hlt
     nlinarith [sq_nonneg (β - 5 / 2 * α)]
   have hx_lo : β / α - 2 ≤ α / β := by
     rw [sub_le_iff_le_add, ← sub_le_iff_le_add', div_sub_div _ _ hα.ne' hβ0.ne',

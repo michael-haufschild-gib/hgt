@@ -4117,3 +4117,65 @@ Notation: `δ=Re ρ−½`; angular energy of a zero = `Σ_{ρ′≠ρ}cos²θ`, 
       - Painlevé across a vertical line (`differentiableOn_of_off_vertical_line`);
       - a Backlund–Jensen horizontal bound for any bounded holomorphic function with a positive real part at the disc centre (`abs_integral_im_logDeriv_horizontal_le`).
   - Modules `RHTower/LocalRectangleArgumentBound`, `RHTower/WeilAlmostPeriodicLockTrueProducer` (refactors: `limitPeriodic_producer_factor`, `almostPeriodicLock_limitPeriodic`). Standard axioms.
+
+- **MUST-1393 addendum [L] (quantitative density; attainment input = no off-line chain).**
+  - **Quantitative.** If the top `β₀ > ½ + a` is attained at `ρ₀`, then for every `M` the set `{L ≥ 0 : Φ(L) > M e^{aL}}` has upper density `≥ Re(1/(ρ₀(1−ρ₀)))/(4 Σ_ρ|1/(ρ(1−ρ))|)` (`not_volume_le_of_attainedTop`). This is an unconditional measure-type Ω statement for the smoothed one-sided √x bound in finitely-attained-top worlds.
+  - **Weaker attainment input.** ZAL is replaced by ¬JasOffLineChain, the corpus capstone's side condition: when RH fails, a farthest off-line zero exists. This is strictly weaker than ZAL. Results:
+    - RH ⟺ ¬chain ∧ ∃M: `{Φ > M}` has upper density zero;
+    - RH ⟺ ¬chain ∧ JAS level-one interval positivity off a set of log-scales of upper density zero.
+    - Compare the corpus capstone RH ⟺ JasDressedPSD 1 ∧ ¬chain: with the same side condition, the positivity may now fail on any density-zero set of scales.
+  - Module `RHTower/WeilLagFunctionDensityZeroExcursion`. Standard axioms.
+
+- **MUST-1393 addendum 2 [L] (lower density zero suffices).**
+  - **Abstract.** The core inequality `Re Σ_{w_i=B} a_i ≤ δ Σ|a_i|` needs `η∫_E e^{−ηu} ≤ δ` only along some sequence `η → 0⁺`, i.e. lower Abel density.
+  - **Conversion.** Lower density zero (`|E ∩ [0,T_n]| = o(T_n)` along some `T_n → ∞`) ⇒ lower Abel density zero, by the split `J_E(η) ≤ |E∩[0,T]| + e^{−ηT}/η` with `ηT = 2/d`.
+  - **For ζ.**
+    - RH ⟺ ¬JasOffLineChain ∧ ∃M: `{Φ > M}` has lower density zero.
+    - RH ⟺ ¬JasOffLineChain ∧ JAS level-one interval positivity off a set of log-scales of lower density zero.
+  - **Reading.**
+    - The exceptional scale set may have upper density one. For example, with `T_{n+1} = T_n³` the JAS tests may fail at every scale with `log y ∈ [T_n, T_n²]`. With the side condition ¬chain, a producer needs to succeed only on most scales below `T_n` for a sequence `T_n → ∞`.
+    - Sharpness: an attained top forces positive lower density, so no positive density threshold is tolerated uniformly.
+  - Module `RHTower/WeilLagFunctionDensityZeroExcursion`. Standard axioms.
+
+- **MUST-1394 addendum [L] (the log moment is not needed).**
+  - `almostPeriodicLock_trueProducer` now holds under exactly the MUST-1391 hypothesis `Σ_j|c_j|max(1,u_j^{−1})K(u_j) < ∞`. The condition `Σ|c_j||log u_j| < ∞` is dropped. So every Herglotz producer with a weighted almost-periodic lock is the true producer.
+  - **Mechanism.**
+    - The lock phase is taken as a continuous lift `θ` of `v = V(½−i·)`, not as an integral of a velocity (the velocity needs the log moment).
+    - Monotonicity of `θ` comes from the local positivity law at non-zeros of `G`. The zeros of `G` on the line are locally finite, because `A` glues holomorphically across the line (`lineFactor_lowerZeros_finite`). A finite-exception local-to-global lemma does the rest (`le_of_locally_monotone_off_finite`).
+    - The upper bound comes from the rectangle bound (`apLock_shiftedPhase_bound`) and a lift comparison (`phase_sub_le_of_shift`).
+    - The monotone twist theorem (`abelian_twist_power_rigidity`) finishes.
+  - Module `RHTower/WeilAlmostPeriodicLockTrueProducer` (split into four declarations). Standard axioms.
+
+- **MUST-1395 [L] (route JAS needs only one geometric progression of scales, given attainment).**
+  - **Growth-majorant single-base lemma** (`exists_lag_progression_gt_exp_of_attainedTop`). If the top `β₀` is attained and `a < β₀ − ½`, then for every spacing `ℓ > 0` and every `M` some `Φ(mℓ) > M e^{a mℓ}`. This is the corpus Dirichlet argument with the majorant built into the final numerics.
+  - **Capstones.** For every `ℓ > 0`:
+    - RH ⟺ ¬JasOffLineChain ∧ ∃X: level-one constant-vector interval positivity on every `(y, y+L]` with `y = e^{mℓ}` (`riemannHypothesis_iff_not_jasOffLineChain_and_jasProgressionPositive`);
+    - the same with ZAL in place of ¬chain;
+    - the dyadic form `y = 2^m` (`riemannHypothesis_iff_not_jasOffLineChain_and_jasDyadicScalesPositive`).
+  - **Mechanism.** The diagonal Bochner window bound is pointwise in the scale. With the exceptional set equal to the complement of the progression it gives `|Φ(mℓ)| ≤ M e^{(15α/16)mℓ}`, which contradicts the lemma.
+  - **Reading: complete exception law for constant-vector JAS.**
+    - Without a side condition: all scales, or all scales off an exponentially thin set (MUST-1390). Subexponential exceptions down to the Paley–Wiener threshold are conjectural.
+    - With ¬chain: either one geometric progression of scales (a set of measure zero), or all scales off a set of lower density zero (MUST-1393).
+    - Sparse-scale positivity cannot see chains: single-base Wolff and Fejér configurations are blind. So the attainment half of RH is extremely cheap for JAS producers, and all difficulty sits in chain exclusion.
+  - Modules `RHTower/JointAncestryProgressionScales` and `RHTower/JointAncestryChainAttainmentSplit`. The latter gives RH ⟺ quasi-RH ∧ window positivity ∧ constant-vector positivity off lower-density-zero scales. Standard axioms.
+
+- **MUST-1396 [L] (a bounded ζ-quotient and a continuous lock force the true producer; almost periodicity is only needed for the factorization).**
+  - **Statement.** Let `G` be a Herglotz producer for `lam` with `G = s(s−1)Γ_ℝ(s)ζ(s)A(s)` on `Re s > ½` (`s ≠ 1`), where `A` is holomorphic on `Re s > ½` and continuous and bounded on `Re s ≥ ½`. Let the lower-line lock `G(1−s) = V(s)G(s)` hold with `V` continuous, bounded, holomorphic on `½ < Re s < 3/2`, and `|V(½+ε−iy) − V(½−iy)| ≤ ½` for one `ε ∈ (0,¼]` and all `y`. The last condition holds whenever `V` is uniformly continuous on the closed strip (`exists_shift_close_of_uniformContinuousOn`). Then `lam(n) = Λ(n)` for `n ≥ 2`, and RH holds (`RHTower.AbelianTwist.boundedQuotient_lock_trueProducer`).
+  - MUST-1394 is now its corollary (`almostPeriodicLock_trueProducer`): the almost-periodic chain supplies `A`, and `apLock` satisfies the lock conditions.
+  - **Reading.** For the uniqueness half of HF, the only obstruction is an unbounded quotient `G/(s(s−1)Γ_ℝζ)` near the critical line or a discontinuous lock. Both occur exactly in the twin door (fractional atoms, `A ~ ζ^{m−1}`, step phases). Any producer route that yields a bounded quotient and a uniformly continuous lock lands on `Λ`.
+  - Module `RHTower/WeilAlmostPeriodicLockTrueProducer`. Standard axioms.
+
+- **MUST-1397 [L] (under quasi-RH, route JAS lives on a doubly exponentially sparse test family).**
+  - **Uniform window conditions** (`eventually_window_conditions_uniform`). The twelve window conditions of the quasi-RH chain exclusion hold eventually uniformly in `θ ∈ [θ₂/2, θ₂]` with `ε = θc₀/300`.
+    - Most conditions are monotone in `(θ, ε)` and are taken at the extreme parameters.
+    - The scale conditions use the θ-uniform threshold bound and `x^{s(θ)} ≥ x^{s(θ₁)}`.
+    - The cut condition holds pointwise for `x ≥ 3`.
+  - **Chain exclusion on chain-rich windows** (`one_add_sSup_le_of_jasWindowPositivityOn_of_chain`). Window positivity is needed only on a set `W` with the property: for every large peak height γ, some `θ ∈ [θ₂/2, θ₂]` has `⌊γ^{75/θ}⌋ ∈ W`. The proof chooses θ after the peak.
+  - **Doubly exponential windows are chain-rich** (`chainRichWindows_doubleExp`): `θ = 75 log γ/(2^k log 2)` makes the index exactly `2^{2^k}`.
+  - **Capstone** (`riemannHypothesis_iff_quasi_and_doubleExpWindows_and_dyadicScales`). RH ⟺ quasi-RH ∧ level-one log-weight window positivity on `(2^{2^k}, 2^{2^{k+1}}]` ∧ level-one constant-vector positivity at the dyadic scales `y = 2^m`.
+  - **Reading.** Under quasi-RH, all RH content of route JAS sits in two sparse families:
+    - doubly exponential windows, which exclude chains;
+    - one geometric progression of scales, which excludes attained tops.
+
+    The corpus capstone RH ⟺ JasDressedPSD 1 ∧ quasi-RH thus reduces to two countable, very sparse test families.
+  - Module `RHTower/JointAncestrySparseChainExclusion`. Standard axioms.

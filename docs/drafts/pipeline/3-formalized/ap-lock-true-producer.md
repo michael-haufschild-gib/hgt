@@ -83,3 +83,5 @@ So the mean motion is `0`.
   - Open follow-ups:
     - remove the log moment `Σ|c||log u| < ∞`; it is needed only to make the line lock `C¹`, and the monotonicity could come from `local_phase_monotone`;
     - non-AP locks.
+- 2026-10-13 (row 1155): the log moment was removed. The theorem now holds under exactly the MUST-1391 weight. Proof: continuous phase lift; positivity via `local_phase_monotone`; zeros on the line locally finite through the glue; `abelian_twist_power_rigidity`.
+- 2026-10-13 (row 1156): generalized to MUST-1396 (`boundedQuotient_lock_trueProducer`): a bounded quotient and a uniformly continuous bounded lock, holomorphic on `½ < Re < 3/2`, suffice. The AP theorem is a corollary.

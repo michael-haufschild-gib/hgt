@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilLagFunctionFiniteMeasureExcursion
+import GaloisForLFunctions.RHTower.JointAncestryAbscissaStructure
 
 /-!
 # An attained top forces lag excursions of positive density
@@ -8,12 +9,13 @@ For a configuration with summable weights `a_i` and exponents `Re w_i ≤ B`, `B
 `B`. For a set `E` write `J_E(η) = ∫_{E ∩ (0,∞)} e^{−ηu} du`.
 
 **Theorem** (`re_tsum_top_le_of_lagRe_le_except`). If `Φ ≤ M` on `[0, ∞)` outside a measurable set
-`E` with `η J_E(η) ≤ δ` for all small `η > 0`, then `Re c ≤ δ Σ_i |a_i|`.
+`E` with `η J_E(η) ≤ δ` for arbitrarily small `η > 0`, then `Re c ≤ δ Σ_i |a_i|`.
 
-So an excursion set `E` with Abel density zero (`η J_E(η) → 0`) forces `Re c ≤ 0`
-(`re_tsum_top_nonpos_of_lagRe_le_abelDensityZero`). Sets of finite measure have Abel density zero
-(`abelDensityZero_of_volume_ne_top`), and so do sets with `|E ∩ [0, T]| = o(T)`
-(`abelDensityZero_of_upperDensityZero`).
+So an excursion set `E` with lower Abel density zero (`η J_E(η) → 0` along some `η → 0⁺`) forces
+`Re c ≤ 0` (`re_tsum_top_nonpos_of_lagRe_le_lowerAbelDensityZero`). Sets of finite measure, sets
+with `|E ∩ [0, T]| = o(T)`, and even sets with `|E ∩ [0, T]| = o(T)` only along a sequence
+`T → ∞` qualify (`abelDensityZero_of_volume_ne_top`, `abelDensityZero_of_upperDensityZero`,
+`lowerAbelDensityZero_of_lowerDensityZero`).
 
 **Proof.** For real `σ > B`, `∫_0^∞ Φ(u) e^{−σu} du = Re Σ_i a_i/(σ − w_i)`. Off `E` the integrand
 is at most `max(M,0) e^{−σu}`, and on `E` it is at most `W e^{−(σ−B)u}` with `W = Σ|a_i|`. Hence
@@ -31,7 +33,16 @@ all `L ≥ 0` outside a measurable set of Abel density zero, then an attained to
   positive at every scale `y` with `log y` outside a set of log-scales of upper density zero
   (`riemannHypothesis_iff_zerosApproachLine_and_jasPositiveExcept_upperDensityZero`);
 * the asymptotic abscissa law follows from `Φ ≤ M_a e^{aL}` off sets of Abel density zero, for every
-  `a > 0` (`asymptoticAbscissaLaw_of_forall_le_exp_abelDensityZero`).
+  `a > 0` (`asymptoticAbscissaLaw_of_forall_le_exp_abelDensityZero`);
+* "zeros approach the line" may be weakened to the absence of an off-line chain (a farthest off-line
+  zero exists whenever RH fails): RH holds iff there is no off-line chain and the lag excursions, or
+  the exceptional JAS scales, have upper density zero
+  (`riemannHypothesis_iff_not_jasOffLineChain_and_upperDensityZero_lagExcursion`,
+  `riemannHypothesis_iff_not_jasOffLineChain_and_jasPositiveExcept_upperDensityZero`);
+* upper density may be replaced by lower density
+  (`riemannHypothesis_iff_not_jasOffLineChain_and_lowerDensityZero_lagExcursion`,
+  `riemannHypothesis_iff_not_jasOffLineChain_and_jasPositiveExcept_lowerDensityZero`). For example,
+  with `T_{n+1} = T_n³` the JAS tests may fail at every scale with `log y ∈ [T_n, T_n²]`.
 
 Quantitatively (`re_lagWeight_le_of_attainedTop_of_le_exp_except`, `not_volume_le_of_attainedTop`):
 if the top `β₀ > ½ + a` is attained at `ρ₀`, then for every `M` the set of `L ≥ 0` with
@@ -191,7 +202,7 @@ theorem re_tsum_top_le_of_lagRe_le_except [Countable ι] {a w : ι → ℂ}
     (ha : Summable fun i => ‖a i‖) {B : ℝ} (hB0 : 0 < B) (hB : ∀ i, (w i).re ≤ B)
     {E : Set ℝ} (hE : MeasurableSet E) {M δ : ℝ}
     (hM : ∀ t : ℝ, 0 ≤ t → t ∉ E → lagRe a w t ≤ M)
-    (hδ : ∀ᶠ η in 𝓝[>] (0:ℝ), η * abelMass E η ≤ δ) :
+    (hδ : ∃ᶠ η in 𝓝[>] (0:ℝ), η * abelMass E η ≤ δ) :
     (∑' i, if w i = (B : ℂ) then a i else 0).re ≤ (∑' i, ‖a i‖) * δ := by
   obtain ⟨W, hWdef⟩ : ∃ W : ℝ, W = ∑' i, ‖a i‖ := ⟨_, rfl⟩
   rw [← hWdef]
@@ -246,32 +257,42 @@ theorem re_tsum_top_le_of_lagRe_le_except [Countable ι] {a w : ι → ℂ}
   have hlim' : Tendsto (fun σ : ℝ => (σ - B) * (cauchySeries w a σ).re) (𝓝[>] B)
       (𝓝 (∑' i, if w i = (B : ℂ) then a i else 0).re) :=
     hlim.congr fun σ => hre σ
-  have hsub : Tendsto (fun σ : ℝ => σ - B) (𝓝[>] B) (𝓝[>] 0) := by
+  have hadd : Tendsto (fun η : ℝ => B + η) (𝓝[>] (0:ℝ)) (𝓝[>] B) := by
     refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · have h := ((continuous_sub_right B).tendsto B).mono_left (nhdsWithin_le_nhds (s := Ioi B))
+    · have h := ((continuous_const_add B).tendsto 0).mono_left
+        (nhdsWithin_le_nhds (s := Ioi (0:ℝ)))
       simpa using h
-    · filter_upwards [self_mem_nhdsWithin] with σ hσ
-      exact sub_pos.mpr (show B < σ from hσ)
-  have hev : ∀ᶠ σ : ℝ in 𝓝[>] B,
-      (σ - B) * (cauchySeries w a (σ : ℂ)).re ≤ (σ - B) * (max M 0 / σ) + W * δ := by
-    filter_upwards [self_mem_nhdsWithin, hsub.eventually hδ] with σ hσ hδσ
-    have hσ' : B < σ := hσ
-    have hη : 0 < σ - B := sub_pos.mpr hσ'
-    calc (σ - B) * (cauchySeries w a σ).re
-        ≤ (σ - B) * (max M 0 / σ + W * abelMass E (σ - B)) :=
-          mul_le_mul_of_nonneg_left (hineq σ hσ') hη.le
-      _ = (σ - B) * (max M 0 / σ) + W * ((σ - B) * abelMass E (σ - B)) := by ring
-      _ ≤ (σ - B) * (max M 0 / σ) + W * δ := by
-          have := mul_le_mul_of_nonneg_left hδσ hW0
-          linarith
-  have hlim2 : Tendsto (fun σ : ℝ => (σ - B) * (max M 0 / σ) + W * δ) (𝓝[>] B)
-      (𝓝 ((B - B) * (max M 0 / B) + W * δ)) := by
-    have hc : ContinuousAt (fun σ : ℝ => (σ - B) * (max M 0 / σ) + W * δ) B :=
-      (((continuous_sub_right B).continuousAt).mul
-        (continuousAt_const.div continuousAt_id hB0.ne')).add continuousAt_const
+    · filter_upwards [self_mem_nhdsWithin] with η hη
+      show B < B + η
+      linarith [show (0:ℝ) < η from hη]
+  have hF := hlim'.comp hadd
+  have hG : Tendsto (fun η : ℝ => η * (max M 0 / (B + η)) + W * δ) (𝓝[>] (0:ℝ))
+      (𝓝 (0 * (max M 0 / (B + 0)) + W * δ)) := by
+    have hB' : B + 0 ≠ 0 := by rw [add_zero]; exact hB0.ne'
+    have hc : ContinuousAt (fun η : ℝ => η * (max M 0 / (B + η)) + W * δ) 0 :=
+      (continuousAt_id.mul (continuousAt_const.div (continuousAt_const.add continuousAt_id)
+        hB')).add continuousAt_const
     exact hc.tendsto.mono_left nhdsWithin_le_nhds
-  have := le_of_tendsto_of_tendsto hlim' hlim2 hev
-  simpa using this
+  simp only [zero_mul, zero_add] at hG
+  have hfreq : ∃ᶠ η in 𝓝[>] (0:ℝ), (B + η - B) * (cauchySeries w a ((B + η : ℝ) : ℂ)).re ≤
+      η * (max M 0 / (B + η)) + W * δ := by
+    refine (hδ.and_eventually self_mem_nhdsWithin).mono fun η hη => ?_
+    obtain ⟨hδη, hη0⟩ := hη
+    have hη' : (0:ℝ) < η := hη0
+    have h1 := hineq (B + η) (by linarith)
+    rw [show B + η - B = η by ring] at h1 ⊢
+    calc η * (cauchySeries w a ((B + η : ℝ) : ℂ)).re
+        ≤ η * (max M 0 / (B + η) + W * abelMass E η) := mul_le_mul_of_nonneg_left h1 hη'.le
+      _ = η * (max M 0 / (B + η)) + W * (η * abelMass E η) := by ring
+      _ ≤ η * (max M 0 / (B + η)) + W * δ := by
+          have := mul_le_mul_of_nonneg_left hδη hW0
+          linarith
+  by_contra hcon
+  push Not at hcon
+  have hdiff := (hF.sub hG).eventually (lt_mem_nhds (sub_pos.mpr hcon))
+  obtain ⟨η, h1, h2⟩ := (hfreq.and_eventually hdiff).exists
+  simp only [Function.comp] at h2
+  linarith
 
 /-- **Excursions of Abel density zero give a top weight with nonpositive real part.** -/
 theorem re_tsum_top_nonpos_of_lagRe_le_abelDensityZero [Countable ι] {a w : ι → ℂ}
@@ -282,7 +303,7 @@ theorem re_tsum_top_nonpos_of_lagRe_le_abelDensityZero [Countable ι] {a w : ι 
   have hW0 : 0 ≤ ∑' i, ‖a i‖ := tsum_nonneg fun _ => norm_nonneg _
   refine le_of_forall_pos_le_add fun ε hε => ?_
   have hδ : 0 < ε / (∑' i, ‖a i‖ + 1) := by positivity
-  have h := re_tsum_top_le_of_lagRe_le_except ha hB0 hB hE hM (hEd _ hδ)
+  have h := re_tsum_top_le_of_lagRe_le_except ha hB0 hB hE hM (hEd _ hδ).frequently
   have h2 : (∑' i, ‖a i‖) * (ε / (∑' i, ‖a i‖ + 1)) ≤ ε := by
     rw [mul_div_assoc', div_le_iff₀ (by positivity)]; nlinarith
   linarith
@@ -449,6 +470,130 @@ theorem abelDensityZero_of_upperDensityZero {E : Set ℝ} (hE : MeasurableSet E)
     rw [div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]; nlinarith
   linarith
 
+/-! ## Lower densities -/
+
+/-- `E` has lower Abel density zero: `η J_E(η) → 0` along some sequence `η → 0⁺`. -/
+def LowerAbelDensityZero (E : Set ℝ) : Prop :=
+  ∀ δ : ℝ, 0 < δ → ∃ᶠ η in 𝓝[>] (0:ℝ), η * abelMass E η ≤ δ
+
+/-- `E` has lower density zero: for every `ε > 0`, `|E ∩ [0, T]| ≤ εT` for arbitrarily large `T`. -/
+def LowerDensityZero (E : Set ℝ) : Prop :=
+  ∀ ε : ℝ, 0 < ε → ∀ T₀ : ℝ, ∃ T : ℝ, T₀ ≤ T ∧ volume (E ∩ Icc 0 T) ≤ ENNReal.ofReal (ε * T)
+
+theorem AbelDensityZero.lower {E : Set ℝ} (h : AbelDensityZero E) : LowerAbelDensityZero E :=
+  fun δ hδ => (h δ hδ).frequently
+
+theorem UpperDensityZero.lower {E : Set ℝ} (h : UpperDensityZero E) : LowerDensityZero E := by
+  intro ε hε T₀
+  obtain ⟨T₁, hT₁⟩ := h ε hε
+  exact ⟨max T₀ T₁, le_max_left _ _, hT₁ _ (le_max_right _ _)⟩
+
+/-- `J_E(η) ≤ |E ∩ [0, T]| + e^{−ηT}/η`. -/
+theorem abelMass_le_volume_add {E : Set ℝ} (hE : MeasurableSet E) {η T : ℝ} (hη : 0 < η)
+    (hT : 0 ≤ T) :
+    abelMass E η ≤ (volume (E ∩ Icc 0 T)).toReal + Real.exp (-η * T) / η := by
+  have hS : MeasurableSet (E ∩ Icc 0 T) := hE.inter measurableSet_Icc
+  have hfin : volume (E ∩ Icc 0 T) ≠ ⊤ :=
+    ne_top_of_le_ne_top (by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)
+      (measure_mono inter_subset_right)
+  have hI1 : IntegrableOn (fun u => (E ∩ Icc 0 T).indicator (fun _ => (1:ℝ)) u) (Ioi 0) :=
+    ((integrable_indicator_iff hS).mpr (integrableOn_const hfin)).integrableOn
+  have hI2 : IntegrableOn (fun u => (Ioi T).indicator (fun u => Real.exp (-η * u)) u) (Ioi 0) :=
+    ((integrable_indicator_iff measurableSet_Ioi).mpr
+      (exp_neg_integrableOn_Ioi T hη)).integrableOn
+  have hI0 : IntegrableOn (fun u => E.indicator (fun u => Real.exp (-η * u)) u) (Ioi 0) :=
+    (exp_neg_integrableOn_Ioi 0 hη).indicator hE
+  have hbound : ∀ u ∈ Ioi (0:ℝ), E.indicator (fun u => Real.exp (-η * u)) u ≤
+      (E ∩ Icc 0 T).indicator (fun _ => (1:ℝ)) u +
+        (Ioi T).indicator (fun u => Real.exp (-η * u)) u := by
+    intro u hu
+    have hu0 : (0:ℝ) < u := hu
+    have hn1 := Set.indicator_nonneg (s := E ∩ Icc 0 T)
+      (fun (_ : ℝ) _ => (zero_le_one : (0:ℝ) ≤ 1)) u
+    have hn2 := Set.indicator_nonneg (s := Ioi T)
+      (fun (u : ℝ) _ => (Real.exp_pos (-η * u)).le) u
+    by_cases huE : u ∈ E
+    · rw [Set.indicator_of_mem huE]
+      by_cases huT : u ≤ T
+      · rw [Set.indicator_of_mem (show u ∈ E ∩ Icc 0 T from ⟨huE, le_of_lt hu0, huT⟩)]
+        have h1 : Real.exp (-η * u) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+        linarith
+      · push Not at huT
+        rw [Set.indicator_of_mem (show u ∈ Ioi T from huT)]
+        linarith
+    · rw [Set.indicator_of_notMem huE]
+      linarith
+  have e1 : ∫ u in Ioi (0:ℝ), (E ∩ Icc 0 T).indicator (fun _ => (1:ℝ)) u ≤
+      (volume (E ∩ Icc 0 T)).toReal := by
+    rw [setIntegral_indicator hS, setIntegral_const, smul_eq_mul, mul_one]
+    exact ENNReal.toReal_mono hfin (measure_mono inter_subset_right)
+  have e2 : ∫ u in Ioi (0:ℝ), (Ioi T).indicator (fun u => Real.exp (-η * u)) u =
+      Real.exp (-η * T) / η := by
+    rw [setIntegral_indicator measurableSet_Ioi,
+      show Ioi (0:ℝ) ∩ Ioi T = Ioi T from inter_eq_right.mpr (Ioi_subset_Ioi hT),
+      integral_exp_mul_Ioi (by linarith) T, neg_div_neg_eq]
+  calc abelMass E η
+      ≤ ∫ u in Ioi (0:ℝ), ((E ∩ Icc 0 T).indicator (fun _ => (1:ℝ)) u +
+          (Ioi T).indicator (fun u => Real.exp (-η * u)) u) :=
+        setIntegral_mono_on hI0 (hI1.add hI2) measurableSet_Ioi hbound
+    _ ≤ (volume (E ∩ Icc 0 T)).toReal + Real.exp (-η * T) / η := by
+        rw [integral_add hI1 hI2, e2]; linarith
+
+/-- **Lower density zero implies lower Abel density zero.** -/
+theorem lowerAbelDensityZero_of_lowerDensityZero {E : Set ℝ} (hE : MeasurableSet E)
+    (h : LowerDensityZero E) : LowerAbelDensityZero E := by
+  intro δ hδ
+  obtain ⟨d, hd0, hdδ⟩ : ∃ d : ℝ, 0 < d ∧ d ≤ δ := ⟨δ, hδ, le_rfl⟩
+  obtain ⟨ε, hεdef⟩ : ∃ ε : ℝ, ε = (d / 2) ^ 2 := ⟨_, rfl⟩
+  have hε : 0 < ε := by rw [hεdef]; positivity
+  rw [Filter.frequently_iff]
+  intro U hU
+  obtain ⟨r, hr, hrU⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp hU
+  have hr0 : 0 < r := hr
+  obtain ⟨T, hT₀, hvol⟩ := h ε hε (2 / (d * r) + 1)
+  have hdr : 0 < 2 / (d * r) := by positivity
+  have hTpos : 0 < T := by linarith
+  obtain ⟨η, hηdef⟩ : ∃ η : ℝ, η = 2 / (d * T) := ⟨_, rfl⟩
+  have hη : 0 < η := by rw [hηdef]; positivity
+  have hηr : η < r := by
+    have h1 : 2 / (d * r) < T := by linarith
+    rw [div_lt_iff₀ (by positivity)] at h1
+    rw [hηdef, div_lt_iff₀ (by positivity)]
+    nlinarith
+  refine ⟨η, hrU ⟨hη, hηr⟩, ?_⟩
+  have h1 := abelMass_le_volume_add hE hη hTpos.le
+  have hvol' : (volume (E ∩ Icc 0 T)).toReal ≤ ε * T :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hvol
+  have hηT : η * T = 2 / d := by rw [hηdef]; field_simp
+  have h2 : η * abelMass E η ≤ η * (ε * T) + Real.exp (-η * T) := by
+    have hle : abelMass E η ≤ ε * T + Real.exp (-η * T) / η := by linarith
+    have h3 := mul_le_mul_of_nonneg_left hle hη.le
+    have he : η * (Real.exp (-η * T) / η) = Real.exp (-η * T) := by field_simp
+    rw [mul_add, he] at h3
+    exact h3
+  have h3 : η * (ε * T) = d / 2 := by
+    rw [show η * (ε * T) = (η * T) * ε by ring, hηT, hεdef]; field_simp
+  have h4 : Real.exp (-η * T) ≤ d / 2 := by
+    rw [neg_mul, hηT, Real.exp_neg]
+    have h5 : 2 / d ≤ Real.exp (2 / d) := by linarith [Real.add_one_le_exp (2 / d)]
+    rw [inv_le_comm₀ (Real.exp_pos _) (by positivity), inv_div]
+    exact h5
+  linarith
+
+/-- **Excursions of lower Abel density zero give a top weight with nonpositive real part.** -/
+theorem re_tsum_top_nonpos_of_lagRe_le_lowerAbelDensityZero [Countable ι] {a w : ι → ℂ}
+    (ha : Summable fun i => ‖a i‖) {B : ℝ} (hB0 : 0 < B) (hB : ∀ i, (w i).re ≤ B)
+    {E : Set ℝ} (hE : MeasurableSet E) (hEd : LowerAbelDensityZero E) {M : ℝ}
+    (hM : ∀ t : ℝ, 0 ≤ t → t ∉ E → lagRe a w t ≤ M) :
+    (∑' i, if w i = (B : ℂ) then a i else 0).re ≤ 0 := by
+  have hW0 : 0 ≤ ∑' i, ‖a i‖ := tsum_nonneg fun _ => norm_nonneg _
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hδ : 0 < ε / (∑' i, ‖a i‖ + 1) := by positivity
+  have h := re_tsum_top_le_of_lagRe_le_except ha hB0 hB hE hM (hEd _ hδ)
+  have h2 : (∑' i, ‖a i‖) * (ε / (∑' i, ‖a i‖ + 1)) ≤ ε := by
+    rw [mul_div_assoc', div_le_iff₀ (by positivity)]; nlinarith
+  linarith
+
 end
 
 end RHTower.OneSidedConfiguration
@@ -485,7 +630,7 @@ maximal real part `β₀ > ½ + a` be attained at `ρ₀`. If `Φ(L) ≤ M e^{aL
 measurable set `E` with `η J_E(η) ≤ δ` for all small `η > 0`, then
 `Re(1/(ρ₀(1−ρ₀))) ≤ 4 δ Σ_ρ |1/(ρ(1−ρ))|`. -/
 theorem re_lagWeight_le_of_attainedTop_of_le_exp_except {M a β₀ δ : ℝ} {E : Set ℝ}
-    (hE : MeasurableSet E) (hδ : ∀ᶠ η in 𝓝[>] (0:ℝ), η * abelMass E η ≤ δ)
+    (hE : MeasurableSet E) (hδ : ∃ᶠ η in 𝓝[>] (0:ℝ), η * abelMass E η ≤ δ)
     (hM : ∀ L, 0 ≤ L → L ∉ E → weilLagFunctionReal L ≤ M * Real.exp (a * L))
     (htop : AttainedTop β₀) (hlt : 1 / 2 + a < β₀) {q₀ : XiZeroCopy}
     (hq₀ : (q₀.1 : ℂ).re = β₀) : (lagWeight q₀).re ≤ 4 * lagWeightTotal * δ := by
@@ -569,7 +714,8 @@ theorem re_le_half_add_of_attainedTop_of_le_exp_abelDensityZero {M a β₀ : ℝ
   have hW := lagWeightTotal_pos
   have hw := lagWeight_re_pos q₀
   have hδ : 0 < (lagWeight q₀).re / (8 * lagWeightTotal) := by positivity
-  have h := re_lagWeight_le_of_attainedTop_of_le_exp_except hE (hEd _ hδ) hM htop hlt hq₀
+  have h := re_lagWeight_le_of_attainedTop_of_le_exp_except hE (hEd _ hδ).frequently hM htop hlt
+    hq₀
   have h2 : 4 * lagWeightTotal * ((lagWeight q₀).re / (8 * lagWeightTotal)) =
       (lagWeight q₀).re / 2 := by field_simp; ring
   linarith
@@ -625,7 +771,7 @@ theorem not_volume_le_of_attainedTop {M a β₀ δ : ℝ} (htop : AttainedTop β
     linarith
   have hM : ∀ L, 0 ≤ L → L ∉ E → weilLagFunctionReal L ≤ M * Real.exp (a * L) :=
     fun L hL hLE => not_lt.mp fun h => hLE ⟨hL, h⟩
-  have h := re_lagWeight_le_of_attainedTop_of_le_exp_except hEm hev hM htop hlt hq₀
+  have h := re_lagWeight_le_of_attainedTop_of_le_exp_except hEm hev.frequently hM htop hlt hq₀
   have h6 : 4 * lagWeightTotal * δ₂ < (lagWeight q₀).re := by
     have : δ₂ < (lagWeight q₀).re / (4 * lagWeightTotal) := by rw [hδ₂def]; linarith
     rw [lt_div_iff₀ (by positivity)] at this
@@ -745,6 +891,192 @@ theorem riemannHypothesis_iff_zerosApproachLine_and_jasPositiveExcept_upperDensi
   · rintro ⟨hZ, X, S, hS, hSd, hpos⟩
     exact riemannHypothesis_of_zerosApproachLine_of_jasIntervalProductPositiveExcept_abelDensityZero
       hZ hpos hS (abelDensityZero_of_upperDensityZero hS hSd)
+
+/-! ## The attainment input: no off-line chain -/
+
+/-- **Without RH and without an off-line chain, the maximal real part is attained right of the
+line.** A farthest off-line zero `ρ₀` gives the top `½ + |Re ρ₀ − ½|`, attained by `ρ₀` or by its
+reflection `1 − ρ₀`. -/
+theorem exists_attainedTop_of_not_jasOffLineChain (hno : ¬ JasOffLineChain)
+    (hRH : ¬ RiemannHypothesis) : ∃ β₀ : ℝ, 1 / 2 < β₀ ∧ AttainedTop β₀ := by
+  obtain ⟨q₁, hq₁⟩ := exists_xiZeroCopy_re_gt_half_of_not_riemannHypothesis hRH
+  have hfar : ∃ q₀ : XiZeroCopy, (q₀.1 : ℂ).re ≠ 1 / 2 ∧
+      ∀ q : XiZeroCopy, |(q.1 : ℂ).re - 1 / 2| ≤ |(q₀.1 : ℂ).re - 1 / 2| := by
+    by_contra h
+    push Not at h
+    exact hno ⟨⟨q₁, ne_of_gt hq₁⟩, fun q₀ hq₀ => h q₀ hq₀⟩
+  obtain ⟨q₀, hq₀, hmax⟩ := hfar
+  have he : 0 < |(q₀.1 : ℂ).re - 1 / 2| := abs_pos.mpr (sub_ne_zero.mpr hq₀)
+  refine ⟨1 / 2 + |(q₀.1 : ℂ).re - 1 / 2|, by linarith, ?_, fun q => ?_⟩
+  · rcases lt_or_gt_of_ne hq₀ with h | h
+    · refine ⟨xiZeroCopyReflectEquiv q₀, ?_⟩
+      rw [xiZeroCopy_reflect_val, Complex.sub_re, Complex.one_re,
+        abs_of_neg (by linarith : (q₀.1 : ℂ).re - 1 / 2 < 0)]
+      ring
+    · exact ⟨q₀, by rw [abs_of_pos (by linarith : 0 < (q₀.1 : ℂ).re - 1 / 2)]; ring⟩
+  · have := hmax q
+    linarith [le_abs_self ((q.1 : ℂ).re - 1 / 2)]
+
+/-- **RH ⟺ no off-line chain ∧ some lag excursion set has upper density zero.** -/
+theorem riemannHypothesis_iff_not_jasOffLineChain_and_upperDensityZero_lagExcursion :
+    RiemannHypothesis ↔ ¬ JasOffLineChain ∧
+      ∃ M : ℝ, UpperDensityZero {u : ℝ | 0 ≤ u ∧ M < weilLagFunctionReal u} := by
+  constructor
+  · intro h
+    refine ⟨fun hc => ?_, poleSharpConstant, ?_⟩
+    · obtain ⟨⟨q, hq⟩, -⟩ := hc
+      exact hq (xiZeroCopy_re_eq_half_of_riemannHypothesis h q)
+    · rw [lagExcursion_eq_empty_of_riemannHypothesis h]
+      exact upperDensityZero_empty
+  · rintro ⟨hno, M, hd⟩
+    by_contra hRH
+    exact not_attainedTop_of_weilLagFunctionReal_le_abelDensityZero
+      (measurableSet_lagExcursion M)
+      (abelDensityZero_of_upperDensityZero (measurableSet_lagExcursion M) hd)
+      (fun u hu huE => not_lt.mp fun h => huE ⟨hu, h⟩)
+      (exists_attainedTop_of_not_jasOffLineChain hno hRH)
+
+/-- **An attained top and level-one JAS positivity off a set of log-scales of Abel density zero
+give RH.** -/
+theorem riemannHypothesis_of_attainedTop_of_jasIntervalProductPositiveExcept_abelDensityZero
+    (hatt : ¬ RiemannHypothesis → ∃ β₀ : ℝ, 1 / 2 < β₀ ∧ AttainedTop β₀) {X : ℕ} {S : Set ℝ}
+    (hpos : JasIntervalProductPositiveExcept X 1 S) (hS : MeasurableSet S)
+    (hSd : AbelDensityZero S) : RiemannHypothesis := by
+  by_contra hRH
+  obtain ⟨β₀, hβ₀, htop⟩ := hatt hRH
+  obtain ⟨α, hαdef⟩ : ∃ α : ℝ, α = β₀ - 1 / 2 := ⟨_, rfl⟩
+  have hα0 : 0 < α := by rw [hαdef]; linarith
+  have hXi : XiZeroHalfPlaneBound α := by
+    intro ρ hρ
+    obtain ⟨q, rfl⟩ := exists_xiZeroCopy_of_xi_eq_zero hρ
+    have := htop.2 q
+    rw [hαdef]; linarith
+  have hαall := abs_re_sub_half_le_of_xiZeroHalfPlaneBound hXi
+  have hα1 : α < 1 / 2 := by
+    obtain ⟨q₀, hq₀⟩ := htop.1
+    have := xiZeroCopy_re_lt_one q₀
+    rw [hαdef]; linarith
+  have hδ0 : 0 < α / 4 := by linarith
+  have hc0 : 0 < α / 2 := by linarith
+  have hW := eventually_jasPositiveWindow_of_jasIntervalProductPositiveExcept hpos zero_le_one
+    hδ0 (by linarith) hc0 (by linarith)
+  obtain ⟨M, hM⟩ := exists_abs_weilLagFunctionReal_le_exp_of_windows_except hαall hδ0
+    (by linarith) hc0 hW
+  have hmax : max (α / 2) (α - min (α / 2) (α / 4 / 4)) = 15 * α / 16 := by
+    rw [min_eq_right (by linarith), max_eq_right (by linarith)]; ring
+  rw [hmax] at hM
+  have h := re_le_half_add_of_attainedTop_of_le_exp_abelDensityZero hS hSd
+    (fun L hL hLS => (le_abs_self _).trans (hM L hL hLS)) htop
+  linarith
+
+/-- **RH ⟺ no off-line chain ∧ level-one JAS positivity off a set of log-scales of upper density
+zero.** -/
+theorem riemannHypothesis_iff_not_jasOffLineChain_and_jasPositiveExcept_upperDensityZero :
+    RiemannHypothesis ↔ ¬ JasOffLineChain ∧ ∃ (X : ℕ) (S : Set ℝ), MeasurableSet S ∧
+      UpperDensityZero S ∧ JasIntervalProductPositiveExcept X 1 S := by
+  constructor
+  · intro hRH
+    obtain ⟨X, hX⟩ := riemannHypothesis_iff_exists_jasIntervalProductPositive_one.mp hRH
+    refine ⟨fun hc => ?_, X, ∅, MeasurableSet.empty, upperDensityZero_empty,
+      fun y L hy _ hL => hX y L hy hL⟩
+    obtain ⟨⟨q, hq⟩, -⟩ := hc
+    exact hq (xiZeroCopy_re_eq_half_of_riemannHypothesis hRH q)
+  · rintro ⟨hno, X, S, hS, hSd, hpos⟩
+    exact riemannHypothesis_of_attainedTop_of_jasIntervalProductPositiveExcept_abelDensityZero
+      (exists_attainedTop_of_not_jasOffLineChain hno) hpos hS
+      (abelDensityZero_of_upperDensityZero hS hSd)
+
+/-! ## Lower density -/
+
+/-- **Lag excursions of lower Abel density zero bound an attained top.** -/
+theorem re_le_half_add_of_attainedTop_of_le_exp_lowerAbelDensityZero {M a β₀ : ℝ} {E : Set ℝ}
+    (hE : MeasurableSet E) (hEd : LowerAbelDensityZero E)
+    (hM : ∀ L, 0 ≤ L → L ∉ E → weilLagFunctionReal L ≤ M * Real.exp (a * L))
+    (htop : AttainedTop β₀) : β₀ ≤ 1 / 2 + a := by
+  by_contra hlt
+  push Not at hlt
+  obtain ⟨q₀, hq₀⟩ := htop.1
+  have hW := lagWeightTotal_pos
+  have hw := lagWeight_re_pos q₀
+  have hδ : 0 < (lagWeight q₀).re / (8 * lagWeightTotal) := by positivity
+  have h := re_lagWeight_le_of_attainedTop_of_le_exp_except hE (hEd _ hδ) hM htop hlt hq₀
+  have h2 : 4 * lagWeightTotal * ((lagWeight q₀).re / (8 * lagWeightTotal)) =
+      (lagWeight q₀).re / 2 := by field_simp; ring
+  linarith
+
+/-- **An attained top and level-one JAS positivity off a set of log-scales of lower Abel density
+zero give RH.** -/
+theorem riemannHypothesis_of_attainedTop_of_jasIntervalProductPositiveExcept_lowerAbel
+    (hatt : ¬ RiemannHypothesis → ∃ β₀ : ℝ, 1 / 2 < β₀ ∧ AttainedTop β₀) {X : ℕ} {S : Set ℝ}
+    (hpos : JasIntervalProductPositiveExcept X 1 S) (hS : MeasurableSet S)
+    (hSd : LowerAbelDensityZero S) : RiemannHypothesis := by
+  by_contra hRH
+  obtain ⟨β₀, hβ₀, htop⟩ := hatt hRH
+  obtain ⟨α, hαdef⟩ : ∃ α : ℝ, α = β₀ - 1 / 2 := ⟨_, rfl⟩
+  have hα0 : 0 < α := by rw [hαdef]; linarith
+  have hXi : XiZeroHalfPlaneBound α := by
+    intro ρ hρ
+    obtain ⟨q, rfl⟩ := exists_xiZeroCopy_of_xi_eq_zero hρ
+    have := htop.2 q
+    rw [hαdef]; linarith
+  have hαall := abs_re_sub_half_le_of_xiZeroHalfPlaneBound hXi
+  have hα1 : α < 1 / 2 := by
+    obtain ⟨q₀, hq₀⟩ := htop.1
+    have := xiZeroCopy_re_lt_one q₀
+    rw [hαdef]; linarith
+  have hδ0 : 0 < α / 4 := by linarith
+  have hc0 : 0 < α / 2 := by linarith
+  have hW := eventually_jasPositiveWindow_of_jasIntervalProductPositiveExcept hpos zero_le_one
+    hδ0 (by linarith) hc0 (by linarith)
+  obtain ⟨M, hM⟩ := exists_abs_weilLagFunctionReal_le_exp_of_windows_except hαall hδ0
+    (by linarith) hc0 hW
+  have hmax : max (α / 2) (α - min (α / 2) (α / 4 / 4)) = 15 * α / 16 := by
+    rw [min_eq_right (by linarith), max_eq_right (by linarith)]; ring
+  rw [hmax] at hM
+  have h := re_le_half_add_of_attainedTop_of_le_exp_lowerAbelDensityZero hS hSd
+    (fun L hL hLS => (le_abs_self _).trans (hM L hL hLS)) htop
+  linarith
+
+theorem lowerDensityZero_empty : LowerDensityZero (∅ : Set ℝ) :=
+  upperDensityZero_empty.lower
+
+/-- **RH ⟺ no off-line chain ∧ some lag excursion set has lower density zero.** -/
+theorem riemannHypothesis_iff_not_jasOffLineChain_and_lowerDensityZero_lagExcursion :
+    RiemannHypothesis ↔ ¬ JasOffLineChain ∧
+      ∃ M : ℝ, LowerDensityZero {u : ℝ | 0 ≤ u ∧ M < weilLagFunctionReal u} := by
+  constructor
+  · intro h
+    refine ⟨fun hc => ?_, poleSharpConstant, ?_⟩
+    · obtain ⟨⟨q, hq⟩, -⟩ := hc
+      exact hq (xiZeroCopy_re_eq_half_of_riemannHypothesis h q)
+    · rw [lagExcursion_eq_empty_of_riemannHypothesis h]
+      exact lowerDensityZero_empty
+  · rintro ⟨hno, M, hd⟩
+    by_contra hRH
+    obtain ⟨β₀, hβ₀, htop⟩ := exists_attainedTop_of_not_jasOffLineChain hno hRH
+    have := re_le_half_add_of_attainedTop_of_le_exp_lowerAbelDensityZero (M := M) (a := 0)
+      (measurableSet_lagExcursion M)
+      (lowerAbelDensityZero_of_lowerDensityZero (measurableSet_lagExcursion M) hd)
+      (fun u hu huE => by
+        rw [zero_mul, Real.exp_zero, mul_one]; exact not_lt.mp fun h => huE ⟨hu, h⟩) htop
+    linarith
+
+/-- **RH ⟺ no off-line chain ∧ level-one JAS positivity off a set of log-scales of lower density
+zero.** -/
+theorem riemannHypothesis_iff_not_jasOffLineChain_and_jasPositiveExcept_lowerDensityZero :
+    RiemannHypothesis ↔ ¬ JasOffLineChain ∧ ∃ (X : ℕ) (S : Set ℝ), MeasurableSet S ∧
+      LowerDensityZero S ∧ JasIntervalProductPositiveExcept X 1 S := by
+  constructor
+  · intro hRH
+    obtain ⟨X, hX⟩ := riemannHypothesis_iff_exists_jasIntervalProductPositive_one.mp hRH
+    refine ⟨fun hc => ?_, X, ∅, MeasurableSet.empty, lowerDensityZero_empty,
+      fun y L hy _ hL => hX y L hy hL⟩
+    obtain ⟨⟨q, hq⟩, -⟩ := hc
+    exact hq (xiZeroCopy_re_eq_half_of_riemannHypothesis hRH q)
+  · rintro ⟨hno, X, S, hS, hSd, hpos⟩
+    exact riemannHypothesis_of_attainedTop_of_jasIntervalProductPositiveExcept_lowerAbel
+      (exists_attainedTop_of_not_jasOffLineChain hno) hpos hS
+      (lowerAbelDensityZero_of_lowerDensityZero hS hSd)
 
 end
 

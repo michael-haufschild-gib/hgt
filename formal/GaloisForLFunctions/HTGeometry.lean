@@ -17621,6 +17621,7 @@ import GaloisForLFunctions.HTGeometry.SincBackgroundDetectionWindow
 import GaloisForLFunctions.HTGeometry.SincBackgroundHeightWindow
 import GaloisForLFunctions.HTGeometry.InverseDistanceBoxIntegral
 import GaloisForLFunctions.HTGeometry.HermiteGaussianMomentBounds
+import GaloisForLFunctions.HTGeometry.HermitePerturbationRealRoots
 import GaloisForLFunctions.HTGeometry.HermiteGeneratingFunction
 import GaloisForLFunctions.HTGeometry.TrigPolynomialShortArcLowerBound
 import GaloisForLFunctions.HTGeometry.RealMatrixQuadraticFormDetPos
@@ -17746,3 +17747,9 @@ import GaloisForLFunctions.HTGeometry.SymmetricCoshKernelPositiveDefinite
 import GaloisForLFunctions.HTGeometry.PaperCoordinateTail
 
 import GaloisForLFunctions.HTGeometry.LpSolidObservationOrder
+
+import GaloisForLFunctions.HTGeometry.LpSolidDiagonalObservation
+
+import GaloisForLFunctions.HTGeometry.L2PhysicalMultiplierObservation
+
+import GaloisForLFunctions.HTGeometry.LpDisjointEnergy

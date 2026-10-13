@@ -2636,3 +2636,33 @@ INSIGNIFICANT for the goal: even θ = 4/7 leaves 988/1331 < 3/4 under RH, and th
   (4^{1/3} − 1) − 4/7 ≈ 0.0160 in θ; at θ = 4/7 it falls short by 3/4 − 988/1331 = 89/5324 ≈ 0.0167 in proportion.
   The only remaining freedom inside the method is the mollifier shape (multi-piece/Feng), which is the next test.
 - The ζ goal (75%) is still not met.
+
+## Cycle 147 (2026-10-13) — CGG ratio with a Feng-type piece: exact orthogonality, no gain (C181 FALSE)
+
+**Derivation (main terms, under RH; zero sum Σ_γF(ρ) ≈ (1/2π)∫F·[ℓ + ζ'/ζ(s+δ) + ζ'/ζ(1−s+δ)], ratios recipe at
+leading order).** Validated against Σζ'(ρ) ~ TL²/4π, Σ|ζ'(ρ)|² ~ TL⁴/24π, CGG 19/27 (θ=½), 7/8 (θ=1).
+- Single piece: S₁ = ½ + θI, S₂ = 1/3 + θI + θ²I² + J/(12θ) (units (T/2π)L², (T/2π)L³), I = ∫P, J = ∫P'²,
+  J ≥ 1 + 12(I−½)². Sum of squares: ((1+θ)³−1)S₂ − (1+θ)³S₁² = 3(1+θ)(I − (θ+3)/6)² at the J-minimiser, so
+  S₁²/S₂ ≤ 1 − (1+θ)⁻³ with equality for P*(z) = z + θz(1−z).
+- Feng pieces: μ*Λ = −μ·log is a reparametrisation of P. The genuinely new piece μ(h)(Σ_{p|h}log²p/L_y²)Q(x_h)
+  (μ*Λ*Λ = μ(log² − Σ_{p|h}log²p)) enters the recipe as the multiplier φ = Σ_num(−1/(u+b)²) + Σ_den 1/(u+d)²
+  = ∂_u² log Y. Computed: S₁^F = ∫Q·[θ(1−t)² − (θ²/6)(1−t)³]; the cross term with P* has kernel
+  ((1+θ)³/(6θ))·[θ(1−t)² − (θ²/6)(1−t)³] exactly (all coefficients s¹…s⁶ in s = 1 − t; also numeric moments Q = z,
+  z² at θ = 4/7; the PF kernel passes the vanishing checks at α = 0 and β = 0).
+- Hence (P*, 0) is a critical point of the Rayleigh quotient on the enlarged space, therefore its global maximum
+  (S₂ ⪰ 0, Cauchy–Schwarz). The two-piece optimum at θ = 4/7 is still 988/1331 ≈ 0.7423 < 3/4. Verdict C181: FALSE.
+- Positive content (Feng orthogonality law): at the CGG optimum the μ*Λ*Λ direction is exactly orthogonal; the CGG
+  law 1 − (1+θ)⁻³ is the optimum over {μ·P, μ*Λ·P, μ*Λ*Λ·Q}. A 3/4 route via mollified discrete moments needs
+  θ ≥ 4^{1/3} − 1 whatever the mollifier shape in this family.
+
+**Lean (RHTower/ZetaCGGMollifierOptimum.lean, namespace RHTower.CGGMollifier):** `sos_identity`, `denom_pos`,
+`numer_sq_le`, `ratio_le` (S₁²/S₂ ≤ 1 − (1+θ)⁻³), `ratio_eq_of_opt` (equality at I = (θ+3)/6, J = 1 + θ²/3),
+`three_quarters_le_iff` (≥ 3/4 ⟺ (1+θ)³ ≥ 4), `ratio_bound_four_sevenths` (988/1331 < 3/4), `sq_le_mul_of_psd`
+(Cauchy–Schwarz for PSD symmetric bilinear forms via `discrim_le_zero`), `le_of_critical` (a critical point of
+ℓ²/G is the maximum), `fengKernel`, `fengKernel_eq` (the fourteen evaluated cross integrals sum to
+((1+θ)³/(6θ))(θs² − θ²s³/6); `field_simp; ring`). Compiles silently, `lake build` ok, axioms
+[propext, Classical.choice, Quot.sound], lint clean, names unique, wired after ZetaWeightedFrobeniusClose.
+(The kernel integrals themselves are evaluated on paper; Lean checks their sum and the optimisation algebra.)
+- Next: conjecture that orthogonality holds for every Feng order (multiplier ∂_u^k log Y), i.e. the CGG law is the
+  exact optimum over all Feng-type mollifiers; if so, the mollifier route is closed below θ = 4^{1/3} − 1.
+- The ζ goal (75%) is still not met.

@@ -617,3 +617,16 @@
   - Every analytically "nice" deviation of the boundary phase is now excluded: extendable phases (MUST-949–954), all almost-periodic ones (this addendum), and finite fractional mass (corpus).
   - What remains is the genuinely singular, divisor-supported deviation.
   - It matches the existence side: there too the obstruction is divisor-supported (atoms at zeros), never smooth.
+
+## 2026-10-13 addendum 10 (rows 1154–1155; MUST-1394 (+add.) [L]) — the AP door is closed at the uniqueness level
+- **What is proved.** Every Herglotz producer with a weighted almost-periodic lock is the true producer (`lam = Λ`, and RH), under exactly the MUST-1391 weight. Uniqueness and RH now hold on the same class.
+- **Mechanism (new, reusable).**
+  - After the factorization `G = s(s−1)Γ_ℝ ζ A`, the lock passes to `A`, and `A` glues holomorphically across the critical line.
+  - The lock phase then obeys an argument-principle identity:
+    `phase advance of V = (bounded, from the anchor A → 1) − 2π·#(zeros of the glued function near the line)`.
+  - Herglotz positivity pushes the phase up; zeros push it down. So the phase is monotone and bounded, and the monotone twist theorem applies.
+  - This is a Riemann–von Mangoldt identity for producers: the lock counts the zeros the quotient adds or removes relative to `ξ`.
+- **Reading.**
+  - The almost-periodic part enters only to produce the bounded, anchored quotient `A` (M1–M3). The uniqueness step needs only a bounded quotient and a lock that is continuous on a right strip.
+  - So for the uniqueness half the obstruction is exactly unboundedness of `G/(s(s−1)Γ_ℝζ)` near the line. The twin door (fractional atoms, `A ~ ζ^{m−1}`) is the canonical unbounded case, and it is where the lock stops being continuous.
+  - With `k`-th powers this is a degree-`k`, conductor-one, `Γ_ℝ^k` question. It is closed for `k = 2` (half-integer masses, corpus) and for `k = 3` (`k−2` copies of the ξ divisor, corpus). For `k ≥ 4` it meets level-one `GL(k)` cusp forms with trivial spectral parameters: an automorphic, not an analytic, question.

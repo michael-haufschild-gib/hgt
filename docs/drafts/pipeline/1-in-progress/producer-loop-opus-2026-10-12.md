@@ -489,3 +489,28 @@
   - the uniform K₀ bound `√r K₀(r) ≤ √(π/2)`;
   - the Whittaker cone density from L1;
   - signed-basis robustness.
+
+## Row 202 — [L] C208: finite vs infinite dichotomy for decay-class line witnesses (both halves in Lean)
+- **Finite levels are finite-point** (`RHTower/FinitePoissonDecayWitness.exists_finitePoisson_decayWitness`).
+  - Every level N has a decay-class witness that is a finite superposition of s=½ Poisson vectors at finitely many
+    points of ℍ.
+  - The witness is even, S-invariant, ∫h=0, with rate-3/2 profile decay, blind for 2≤m≤N+1, strictly PD.
+  - Generators use two-atom pole filters c=(δ_b+δ_{−b})/(2cosh(b/2)), with weights m=δ−2c+c⋆c on dilations
+    0,±b,±2b.
+  - Multiplier: (1−cos(bτ)/cosh(b/2))² > 0. Tilt: (1−cosh(λb)/cosh(b/2))², a double zero at λ=±½.
+  - Moment error 4√(π/2)√c(2/C+1/C²) → 0 as b→∞.
+- **No exact finite-point witness** (`RHTower/FinitePoissonBlindRigidity.eq_zero_of_finitePoisson_blind`).
+  - Suppose points are pairwise not related by integer translation, and Σa_iφ_{z_i} has vanishing sin and cos moments
+    of h' at all frequencies 2π(n+1), n≥n₀. Then all a_i=0.
+  - Proof: the lowest height dominates, since K₀(cq)/K₀(cq₁) ≤ e^{−c(q−q₁)} (corpus `kMoment_le_exp_mul`).
+    Then a discrete exponential-sum lemma: Σb_i e^{2πinθ_i} → 0 with θ distinct mod 1 forces b=0, by removing
+    one frequency via F(n+1)−e(θ_L)F(n).
+- Standard axioms; the three new modules are `lake --old` clean and wired.
+- **Insight.** An exact (N1) line witness must be an infinite (continuous) Poisson superposition, like Theorem A's
+  arc measure.
+- **Compactness reduction (paper, row 202).** For any compact family of atomic or compactly supported pole filters,
+  Prokhorov makes the N→∞ limit automatic. So C191 ⟸ GL1 for some compact filter family.
+  - GL1: the dual certificate condition "∫U(e^w z) dm_c(w) ≥ 0 on the arc ∀c ⟹ U=0" for Whittaker sums U.
+  - Runge-type flexibility of Whittaker sums on non-wrapping curves (lower dilates e^{−w}A) suggests that
+    certificates exist for 1D (lattice) filter families. So only 2D (continuous-radius) families can work.
+  - Open: GL1 for the full admissible family 𝒜_a (Krein-PD radial profiles modulo cosh(w/2), w sinh(w/2)).

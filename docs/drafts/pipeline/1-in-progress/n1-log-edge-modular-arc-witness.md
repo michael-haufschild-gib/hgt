@@ -156,3 +156,12 @@ density of the Whittaker cone and a signed-basis perturbation at one large `K`. 
 
 The open core (C191) is the `N → ∞` limit. The filter's moment error at `n` is log-normal in `n`, while the arc
 Whittaker moments decay like `e^{−π√3 n}`.
+
+## C208 (row 202): finite-point dichotomy, fully in Lean
+- `FinitePoissonDecayWitness.exists_finitePoisson_decayWitness`: every finite level is achieved by finitely many
+  Poisson points, using two-atom pole filters with weights δ−2c+c⋆c on dilations 0, ±b, ±2b.
+- `FinitePoissonBlindRigidity.eq_zero_of_finitePoisson_blind`: no finite superposition is blind at all large integers.
+  The proof is lowest-height domination plus the discrete exponential-sum lemma.
+- Consequence: exact decay witnesses must be infinite Poisson superpositions.
+- Compactness reduction: C191 ⟸ GL1 for a fixed compact family of pole filters. GL1 is open for continuous-radius
+  families; for lattice families certificates likely exist.

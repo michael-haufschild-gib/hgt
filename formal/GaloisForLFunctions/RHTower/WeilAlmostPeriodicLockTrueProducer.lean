@@ -8,13 +8,22 @@ import GaloisForLFunctions.RHTower.WeilLockMeanMotionRigidity
 
 **Theorem** (`almostPeriodicLock_trueProducer`). Let `G` be a Herglotz producer for the weights
 `lam` with lower-line lock `G(1 − s) = V(s) G(s)`, `V(s) = Σ_j c_j u_j^{−(s−½)}`, where
-`Σ_j |c_j| max(1, u_j^{−1}) K(u_j) < ∞` (the weight of `almostPeriodicLock_riemannHypothesis`) and
-`Σ_j |c_j| |log u_j| < ∞`. Then `lam(n) = Λ(n)` for all `n ≥ 2`, and the Riemann hypothesis holds.
+`Σ_j |c_j| max(1, u_j^{−1}) K(u_j) < ∞` (the weight of `almostPeriodicLock_riemannHypothesis`).
+Then `lam(n) = Λ(n)` for all `n ≥ 2`, and the Riemann hypothesis holds.
 
 So a Herglotz producer with a weighted almost-periodic lock is the true producer.
 
-**Proof.** Write `v(y) = V(½ − iy)` for the lock on the lower line and `g = Im(v' v̄)` for its
-phase velocity.
+**Theorem** (`boundedQuotient_lock_trueProducer`). More generally, a Herglotz producer of the form
+`G = s(s − 1)Γ_ℝ ζ A`, with `A` bounded and continuous on `Re s ≥ ½`, whose lock `V` is continuous,
+bounded, holomorphic on `½ < Re s < 3/2` and uniformly close to its shift
+`V(½ + ε − i·)` (e.g. uniformly continuous on the closed strip,
+`exists_shift_close_of_uniformContinuousOn`), is the true producer. Almost periodicity enters only
+through the factorization. Boundedness of `A` may be relaxed to `|A(s)| ≤ W e^{|Im s|^α}`, `α < 1`
+(`slowQuotient_lock_trueProducer`): the Backlund–Jensen constants then grow like `Y^α`, and the
+monotone lock phase stays below the linear wall.
+
+**Proof.** Write `v(y) = V(½ − iy) = e^{iθ(y)}` for the lock on the lower line, with `θ`
+continuous.
 * The limit-periodic expansion of the coefficients gives `G = s(s − 1)Γ_ℝ ζ A` on `Re s > ½`, with
   `A` continuous and bounded on `Re s ≥ ½` (`limitPeriodic_producer_factor`), and
   `A = exp(Σ lam(n) n^{−s}/log n)/ζ` on `Re s > 1`. Hence `Re A ≥ ½` on a half-plane
@@ -22,14 +31,15 @@ phase velocity.
 * Dividing the lock by `s(s − 1)Γ_ℝ ζ`, which is symmetric under `s ↦ 1 − s`, gives
   `A(½ + iy) = V(½ − iy) A(½ − iy)` for `y > 0` (`lineFactor_lock`).
 * So `E = A` on `Re z ≥ ½` and `E = V(1 − z) A(1 − z)` on `Re z < ½` is holomorphic on
-  `Re z > −½`, `Im z > 0` (`differentiableOn_lockGlue`).
-* Fix `ε` with `|V(½ + ε − iy) − v(y)| ≤ ½`. Then the argument principle for `E` on
+  `Re z > −½`, `Im z > 0` (`differentiableOn_lockGlue`). In particular the zeros of `G` on the
+  line are locally finite (`lineFactor_lowerZeros_finite`), and the positivity law makes `θ`
+  nondecreasing (`local_phase_monotone`, `le_of_locally_monotone_off_finite`).
+* Fix `ε` with `|V(½ + ε − iy) − v(y)| ≤ ½`. The argument principle for `E` on
   `[½ − ε, σ₀] × [Y₀, Y]` and for `A` on `[½ + ε, σ₀] × [−Y, −Y₀]` bounds the phase advance of
-  `V(½ + ε − iy)` from above. The enclosed zeros of `E` only lower it. The horizontal edges are
-  bounded by Backlund–Jensen, and the edges at `σ₀` by `π`.
-* Comparing with `v` gives `∫_{Y₀}^{Y} g ≤ C` at heights `Y → ∞`. The positivity law gives
-  `g ≥ 0`, and `g` is almost periodic. So `g` has mean `0`, hence `g ≡ 0`, the lock is constant,
-  and phase-lock rigidity applies.
+  `V(½ + ε − iy)` from above (`apLock_shiftedPhase_bound`): the enclosed zeros of `E` only lower
+  it, the horizontal edges are bounded by Backlund–Jensen, and the edges at `σ₀` by `2π`.
+* Comparing with `v` (`phase_sub_le_of_shift`) shows that `θ` is bounded above. A monotone
+  bounded lock phase forces the true producer (`abelian_twist_power_rigidity`).
 -/
 
 open Complex Filter Topology Set MeasureTheory Metric
@@ -291,6 +301,13 @@ theorem lineFactor_lock {G A V : ℂ → ℂ}
 /-- The glued function: `A` on `Re z ≥ ½`, and `V(1 − z) A(1 − z)` on `Re z < ½`. -/
 def lockGlue (A V : ℂ → ℂ) (z : ℂ) : ℂ := if 1 / 2 ≤ z.re then A z else V (1 - z) * A (1 - z)
 
+/-- The strip `½ < Re s < 3/2`, where locks are holomorphic. -/
+def lockStrip : Set ℂ := {z : ℂ | 1 / 2 < z.re ∧ z.re < 3 / 2}
+
+theorem isOpen_lockStrip : IsOpen lockStrip :=
+  (isOpen_lt continuous_const Complex.continuous_re).inter
+    (isOpen_lt Complex.continuous_re continuous_const)
+
 /-- The upper domain `Re z > −½`, `Im z > 0`. -/
 def glueDomain : Set ℂ := {z : ℂ | -(1 / 2) < z.re ∧ 0 < z.im}
 
@@ -321,15 +338,29 @@ theorem norm_lockGlue_le {A V : ℂ → ℂ} {WA CV : ℝ}
     exact mul_le_mul ((hVb _).trans (le_max_right _ _)) (hAb _ (by simp; linarith))
       (norm_nonneg _) (le_trans zero_le_one (le_max_left _ _))
 
+/-- The glued function inherits a growth bound `|A| ≤ W e^{|Im s|^α}` on `Re s ≥ ½`. -/
+theorem norm_lockGlue_le_exp {A V : ℂ → ℂ} {WA CV α : ℝ}
+    (hAg : ∀ s : ℂ, 1 / 2 ≤ s.re → ‖A s‖ ≤ WA * Real.exp (|s.im| ^ α)) (hVb : ∀ s, ‖V s‖ ≤ CV)
+    (z : ℂ) : ‖lockGlue A V z‖ ≤ max 1 CV * (WA * Real.exp (|z.im| ^ α)) := by
+  have hWA : 0 ≤ WA * Real.exp (|z.im| ^ α) := by
+    have h := (norm_nonneg _).trans (hAg ((1 / 2 : ℂ) + z.im * I) (by simp))
+    simpa using h
+  rcases le_or_gt (1 / 2) z.re with hz | hz
+  · rw [lockGlue_of_le hz]
+    exact (hAg z hz).trans (le_mul_of_one_le_left hWA (le_max_left _ _))
+  · rw [lockGlue_of_lt hz, norm_mul]
+    have h1 := hAg (1 - z) (by simp; linarith)
+    rw [show (1 - z).im = -z.im by simp, abs_neg] at h1
+    exact mul_le_mul ((hVb _).trans (le_max_right _ _)) h1 (norm_nonneg _)
+      (le_trans zero_le_one (le_max_left _ _))
+
 /-- **The glued function is holomorphic** on `Re z > −½`, `Im z > 0`. -/
-theorem differentiableOn_lockGlue {A : ℂ → ℂ} {c : ℕ → ℂ} {u : ℕ → ℝ} (hu : ∀ j, 0 < u j)
-    (hc : Summable fun j => ‖c j‖ * max 1 (u j)⁻¹)
+theorem differentiableOn_lockGlue {A V : ℂ → ℂ} (hVc : Continuous V)
+    (hVd : DifferentiableOn ℂ V lockStrip)
     (hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
     (hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re})
-    (hlockA : ∀ y : ℝ, 0 < y → A (1 / 2 + y * I) = apLock c u (1 / 2 - y * I) * A (1 / 2 - y * I)) :
-    DifferentiableOn ℂ (lockGlue A (apLock c u)) glueDomain := by
-  set V := apLock c u with hV
-  have hVc : Continuous V := continuous_apLock hu hc
+    (hlockA : ∀ y : ℝ, 0 < y → A (1 / 2 + y * I) = V (1 / 2 - y * I) * A (1 / 2 - y * I)) :
+    DifferentiableOn ℂ (lockGlue A V) glueDomain := by
   have hgc : ContinuousOn (fun z => V (1 - z) * A (1 - z)) {z : ℂ | z.re ≤ 1 / 2} := by
     refine (hVc.comp (continuous_const.sub continuous_id)).continuousOn.mul ?_
     refine hAc.comp (continuous_const.sub continuous_id).continuousOn fun z hz => ?_
@@ -371,7 +402,8 @@ theorem differentiableOn_lockGlue {A : ℂ → ℂ} {c : ℕ → ℂ} {u : ℕ �
       exact lockGlue_of_lt hw
     have h1z : 1 / 2 < (1 - z).re := by simp; linarith
     have h1z' : (1 - z).re < 3 / 2 := by have := hz0.1; simp; linarith
-    have hVd : DifferentiableAt ℂ V (1 - z) := differentiableAt_apLock hu hc h1z h1z'
+    have hVd : DifferentiableAt ℂ V (1 - z) :=
+      hVd.differentiableAt (isOpen_lockStrip.mem_nhds ⟨h1z, h1z'⟩)
     have hAd' : DifferentiableAt ℂ A (1 - z) :=
       (hAd (1 - z) h1z).differentiableAt
         ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds h1z)
@@ -568,218 +600,235 @@ theorem exists_glue_good_height {E : ℂ → ℂ} (hE : AnalyticOnNhd ℂ E glue
     uIcc_of_le (by linarith)]
   exact ⟨Complex.mem_reProdIm.mpr ⟨by simpa using hx, by simpa using hY⟩, h0⟩
 
-/-- **Comparison of the lock with its shift.** If `|v| = 1` and `|V(½ + ε − iy) − v(y)| ≤ ½` on
-`[Y₀, Y]`, then `∫_{Y₀}^{Y} Im(v' v̄) ≤ 2π − ∫_{Y₀}^{Y} Re(V'/V)(½ + ε − iy) dy`. -/
-theorem integral_lineLockVelocity_le {c : ℕ → ℂ} {u : ℕ → ℝ} (hu : ∀ j, 0 < u j)
-    (hc : Summable fun j => ‖c j‖ * max 1 (u j)⁻¹)
-    (hql : Summable fun j => ‖c j‖ * |Real.log (u j)|) {ε Y₀ Y : ℝ} (hε0 : 0 < ε)
-    (hε : ε ≤ 1 / 4) (hY : Y₀ ≤ Y) (hunit : ∀ y ∈ Icc Y₀ Y, ‖lineLock c u y‖ = 1)
-    (hclose : ∀ y ∈ Icc Y₀ Y,
-      ‖apLock c u (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I) - lineLock c u y‖ ≤ 1 / 2) :
-    ∫ y in Y₀..Y, lineLockVelocity c u y ≤
-      2 * Real.pi -
-        ∫ y in Y₀..Y, (logDeriv (apLock c u) (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I)).re := by
-  have hqn : Summable fun j => ‖c j‖ :=
-    Summable.of_nonneg_of_le (fun j => norm_nonneg _)
-      (fun j => le_mul_of_one_le_right (norm_nonneg _) (le_max_left _ _)) hc
-  set V := apLock c u with hV
-  set v := lineLock c u with hv
-  set vd := lineLockDeriv c u with hvd
-  set p : ℝ → ℂ := fun y => ((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I with hp
-  have hpre : ∀ y, (p y).re = 1 / 2 + ε := fun y => by simp [hp]
-  set U : Set ℂ := {z : ℂ | 1 / 2 < z.re ∧ z.re < 3 / 2} with hU
-  have hUo : IsOpen U := (isOpen_lt continuous_const Complex.continuous_re).inter
-    (isOpen_lt Complex.continuous_re continuous_const)
-  have hpU : ∀ y, p y ∈ U := fun y => ⟨by rw [hpre]; linarith, by rw [hpre]; linarith⟩
-  have hVan : AnalyticOnNhd ℂ V U := DifferentiableOn.analyticOnNhd
-    (fun z hz => (differentiableAt_apLock hu hc hz.1 hz.2).differentiableWithinAt) hUo
-  have hpd : ∀ y : ℝ, HasDerivAt p (-I) y := by
-    intro y
-    have := ((hasDerivAt_id y).neg.ofReal_comp.mul_const I).const_add ((1 / 2 + ε : ℝ) : ℂ)
-    simpa [hp] using this
-  have hVp : ∀ y : ℝ, HasDerivAt (fun y => V (p y)) (deriv V (p y) * (-I)) y := fun y =>
-    (hVan _ (hpU y)).differentiableAt.hasDerivAt.comp y (hpd y)
+/-! ## Monotone phases and shifted phases -/
+
+/-- A function continuous on `[c, d]` and locally nondecreasing at every interior point satisfies
+`f c ≤ f d`. -/
+theorem le_of_locally_monotone {f : ℝ → ℝ} {c d : ℝ} (hcd : c ≤ d)
+    (hf : ContinuousOn f (Icc c d))
+    (hloc : ∀ x ∈ Ioo c d, ∃ δ > 0, ∀ y y', x - δ < y → y ≤ y' → y' < x + δ → f y ≤ f y') :
+    f c ≤ f d := by
+  rcases eq_or_lt_of_le hcd with h | hlt
+  · rw [h]
+  have hstep : ∀ c' ∈ Ioo c d, f c' ≤ f d := by
+    intro c' hc'
+    have hclosed : IsClosed ({t | f c' ≤ f t} ∩ Icc c' d) := by
+      rw [Set.inter_comm]
+      exact (hf.mono (Icc_subset_Icc hc'.1.le le_rfl)).preimage_isClosed_of_isClosed isClosed_Icc
+        isClosed_Ici
+    have hsub := hclosed.Icc_subset_of_forall_mem_nhdsWithin
+      (show c' ∈ {t | f c' ≤ f t} from le_refl (f c'))
+      (fun x hx => by
+        obtain ⟨δ, hδ, hmono⟩ := hloc x ⟨hc'.1.trans_le hx.2.1, hx.2.2⟩
+        filter_upwards [Ioo_mem_nhdsGT (show x < x + δ by linarith)] with t ht
+        exact (show f c' ≤ f x from hx.1).trans (hmono x t (by linarith) ht.1.le ht.2))
+    exact hsub ⟨hc'.2.le, le_rfl⟩
+  have hcw : ContinuousWithinAt f (Ioi c) c :=
+    (hf c ⟨le_rfl, hcd⟩).mono_of_mem_nhdsWithin
+      (mem_of_superset (Ioo_mem_nhdsGT hlt) Ioo_subset_Icc_self)
+  refine le_of_tendsto hcw.tendsto ?_
+  filter_upwards [Ioo_mem_nhdsGT hlt] with t ht
+  exact hstep t ht
+
+/-- **Local to global monotonicity off a finite set.** A function continuous on `[c, d]` and
+locally nondecreasing at every interior point outside a finite set satisfies `f c ≤ f d`. -/
+theorem le_of_locally_monotone_off_finite {f : ℝ → ℝ} (T : Finset ℝ) :
+    ∀ {c d : ℝ}, c ≤ d → ContinuousOn f (Icc c d) →
+      (∀ x ∈ Ioo c d, x ∉ T →
+        ∃ δ > 0, ∀ y y', x - δ < y → y ≤ y' → y' < x + δ → f y ≤ f y') → f c ≤ f d := by
+  classical
+  induction T using Finset.induction_on with
+  | empty =>
+    exact fun hcd hf hloc =>
+      le_of_locally_monotone hcd hf fun x hx => hloc x hx (Finset.notMem_empty x)
+  | insert a T haT ih =>
+    intro c d hcd hf hloc
+    by_cases ha : a ∈ Ioo c d
+    · have h1 : f c ≤ f a := ih ha.1.le (hf.mono (Icc_subset_Icc le_rfl ha.2.le))
+        (fun x hx hxT => hloc x ⟨hx.1, hx.2.trans ha.2⟩ (by
+          rw [Finset.mem_insert]; rintro (h | h)
+          · exact (lt_irrefl a) (h ▸ hx.2)
+          · exact hxT h))
+      have h2 : f a ≤ f d := ih ha.2.le (hf.mono (Icc_subset_Icc ha.1.le le_rfl))
+        (fun x hx hxT => hloc x ⟨ha.1.trans hx.1, hx.2⟩ (by
+          rw [Finset.mem_insert]; rintro (h | h)
+          · exact (lt_irrefl a) (h ▸ hx.1)
+          · exact hxT h))
+      exact h1.trans h2
+    · exact ih hcd hf fun x hx hxT => hloc x hx (by
+        rw [Finset.mem_insert]; rintro (h | h)
+        · exact ha (h ▸ hx)
+        · exact hxT h)
+
+/-- **Comparison of a unimodular phase with a nearby smooth function.** Let `v = e^{iθ}` with `θ`
+continuous, and let `W` be differentiable with `|W − v| ≤ ½` on `[Y₀, Y]`. Then
+`θ(Y) − θ(Y₀) ≤ 2π + ∫_{Y₀}^{Y} Im(W'/W)`. -/
+theorem phase_sub_le_of_shift {v W W' : ℝ → ℂ} {θ : ℝ → ℝ} {Y₀ Y : ℝ} (hY : Y₀ ≤ Y)
+    (hθc : ContinuousOn θ (Icc Y₀ Y)) (hθ : ∀ y ∈ Icc Y₀ Y, v y = cexp ((θ y : ℂ) * I))
+    (hvc : ContinuousOn v (Icc Y₀ Y)) (hW : ∀ y ∈ Icc Y₀ Y, HasDerivAt W (W' y) y)
+    (hWc : ContinuousOn (fun y => W' y / W y) (Icc Y₀ Y))
+    (hclose : ∀ y ∈ Icc Y₀ Y, ‖W y - v y‖ ≤ 1 / 2) :
+    θ Y - θ Y₀ ≤ 2 * Real.pi + ∫ y in Y₀..Y, (W' y / W y).im := by
+  have hvn : ∀ y ∈ Icc Y₀ Y, ‖v y‖ = 1 := fun y hy => by
+    rw [hθ y hy, Complex.norm_exp_ofReal_mul_I]
+  have hWne : ∀ y ∈ Icc Y₀ Y, W y ≠ 0 := fun y hy h => by
+    have h1 := hclose y hy
+    rw [h, zero_sub, norm_neg, hvn y hy] at h1
+    norm_num at h1
+  obtain ⟨L, hLc, hLd, hLe⟩ := exists_continuousOn_log_of_hasDerivAt hY hW hWc hWne
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
+    (fun y hy => hLd y (by rwa [uIcc_of_le hY] at hy))
+    ((uIcc_of_le hY).symm ▸ hWc).intervalIntegrable
+  have him := integral_im_eq ((uIcc_of_le hY).symm ▸ hWc).intervalIntegrable
+  rw [hFTC, Complex.sub_im] at him
   -- the comparison function
-  set h : ℝ → ℂ := fun y => v y * conj (V (p y)) with hh
-  set h' : ℝ → ℂ := fun y => vd y * conj (V (p y)) + v y * conj (deriv V (p y) * (-I)) with hh'
-  have hhd : ∀ y, HasDerivAt h (h' y) y := by
-    intro y
-    have h1 := hasDerivAt_lineLock hqn hql y
-    have h2 := (hVp y).star
-    simp only [Complex.star_def] at h2
-    exact h1.mul h2
+  set h : ℝ → ℂ := fun y => v y * conj (W y) with hh
   have hre : ∀ y ∈ Icc Y₀ Y, 1 / 2 ≤ (h y).re := by
     intro y hy
-    have hvy := hunit y hy
-    have hcl := hclose y hy
-    have heq : h y = v y * conj (v y) - v y * conj (v y - V (p y)) := by
+    have heq : h y = v y * conj (v y) - v y * conj (v y - W y) := by
       simp only [hh, map_sub]; ring
     have h1 : (v y * conj (v y)).re = 1 := by
-      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hvy]; simp
-    have h2 : |(v y * conj (v y - V (p y))).re| ≤ 1 / 2 := by
+      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hvn y hy]; simp
+    have h2 : |(v y * conj (v y - W y)).re| ≤ 1 / 2 := by
       refine (Complex.abs_re_le_norm _).trans ?_
-      rw [norm_mul, Complex.norm_conj, hvy, one_mul, norm_sub_rev]
-      exact hcl
+      rw [norm_mul, Complex.norm_conj, hvn y hy, one_mul, norm_sub_rev]
+      exact hclose y hy
     rw [heq, Complex.sub_re, h1]
     linarith [(abs_le.mp h2).2]
-  have hhne : ∀ y ∈ Icc Y₀ Y, h y ≠ 0 := fun y hy h0 => by
-    have := hre y hy; rw [h0] at this; simp at this; linarith
-  have hvne : ∀ y ∈ Icc Y₀ Y, v y ≠ 0 := fun y hy h0 => by
-    have := hunit y hy; rw [h0, norm_zero] at this; exact zero_ne_one this
-  have hVne : ∀ y ∈ Icc Y₀ Y, V (p y) ≠ 0 := fun y hy h0 => by
-    apply hhne y hy; simp [hh, h0]
-  -- the derivative of `log h`
-  have hL : ∀ y ∈ uIcc Y₀ Y, HasDerivAt (fun y => Complex.log (h y)) (h' y / h y) y := by
+  have hslit : ∀ y ∈ Icc Y₀ Y, h y ∈ slitPlane := fun y hy =>
+    Complex.mem_slitPlane_iff.mpr (Or.inl (by linarith [hre y hy]))
+  have hWc' : ContinuousOn W (Icc Y₀ Y) := fun y hy => (hW y hy).continuousAt.continuousWithinAt
+  have hhc : ContinuousOn h (Icc Y₀ Y) := hvc.mul (Complex.continuous_conj.comp_continuousOn hWc')
+  have hloghc : ContinuousOn (fun y => Complex.log (h y)) (Icc Y₀ Y) :=
+    hhc.clog fun y hy => hslit y hy
+  -- the difference of the three phases is a multiple of `2π`
+  set D : ℝ → ℝ := fun y => θ y - (L y).im - (Complex.log (h y)).im with hD
+  have hDc : ContinuousOn (fun y => D y / (2 * Real.pi)) (Icc Y₀ Y) :=
+    ((hθc.sub (Complex.continuous_im.comp_continuousOn hLc)).sub
+      (Complex.continuous_im.comp_continuousOn hloghc)).div_const _
+  have hDint : ∀ y ∈ Icc Y₀ Y, ∃ n : ℤ, D y / (2 * Real.pi) = n := by
     intro y hy
-    rw [uIcc_of_le hY] at hy
-    exact (hhd y).clog_real (Complex.mem_slitPlane_iff.mpr (Or.inl (by linarith [hre y hy])))
-  have hdVc : Continuous fun y => deriv V (p y) := by
-    have hcU : ContinuousOn (deriv V) U := hVan.deriv.continuousOn
-    exact hcU.comp_continuous (by fun_prop) hpU
-  have hVpc : Continuous fun y => V (p y) :=
-    (continuous_apLock hu hc).comp (by fun_prop)
-  have hvc : Continuous v := continuous_lineLock u hqn
-  have hvdc : Continuous vd := continuous_lineLockDeriv hql
-  have hh'c : Continuous h' :=
-    (hvdc.mul (Complex.continuous_conj.comp hVpc)).add
-      (hvc.mul (Complex.continuous_conj.comp (hdVc.mul continuous_const)))
-  have hhc : Continuous h := hvc.mul (Complex.continuous_conj.comp hVpc)
-  have hcont : ContinuousOn (fun y => h' y / h y) (uIcc Y₀ Y) := by
-    rw [uIcc_of_le hY]
-    exact hh'c.continuousOn.div hhc.continuousOn hhne
-  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hL hcont.intervalIntegrable
-  have him := integral_im_eq hcont.intervalIntegrable
-  rw [hFTC] at him
-  -- the imaginary part of `h'/h`
-  have hpt : ∀ y ∈ Icc Y₀ Y, (h' y / h y).im =
-      lineLockVelocity c u y + (logDeriv V (p y)).re := by
-    intro y hy
-    have hvy := hunit y hy
-    have hv0 := hvne y hy
-    have hV0 := hVne y hy
-    have hcv : conj (v y) = (v y)⁻¹ := by
-      have hn : v y * conj (v y) = 1 := by
-        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hvy]; simp
-      exact (eq_inv_of_mul_eq_one_right hn)
-    have hcV : conj (V (p y)) ≠ 0 := (map_ne_zero _).mpr hV0
-    have heq : h' y / h y = vd y * conj (v y) + conj (-I * logDeriv V (p y)) := by
-      rw [logDeriv_apply, hcv]
-      simp only [hh, hh', map_mul, map_neg, map_div₀, Complex.conj_I]
-      field_simp
-    rw [heq]
-    show _ = (vd y * conj (v y)).im + _
-    rw [Complex.add_im]
-    congr 1
-    simp [Complex.mul_im]
-  have hint1 : IntervalIntegrable (lineLockVelocity c u) volume Y₀ Y :=
-    (continuous_lineLockVelocity hqn hql).intervalIntegrable _ _
-  have hlogc : ContinuousOn (fun y => (logDeriv V (p y)).re) (uIcc Y₀ Y) := by
-    rw [uIcc_of_le hY]
-    intro y hy
-    exact (Complex.continuous_re.continuousAt.comp ((analyticAt_logDeriv_of_ne_zero
-      (hVan _ (hpU y)) (hVne y hy)).continuousAt.comp (hpd y).continuousAt)).continuousWithinAt
-  have hint2 : IntervalIntegrable (fun y => (logDeriv V (p y)).re) volume Y₀ Y :=
-    hlogc.intervalIntegrable
-  have hsplit : ∫ y in Y₀..Y, (h' y / h y).im =
-      (∫ y in Y₀..Y, lineLockVelocity c u y) + ∫ y in Y₀..Y, (logDeriv V (p y)).re := by
-    rw [← intervalIntegral.integral_add hint1 hint2]
-    refine intervalIntegral.integral_congr fun y hy => ?_
-    rw [uIcc_of_le hY] at hy
-    exact hpt y hy
-  rw [hsplit] at him
-  have hbd : (Complex.log (h Y) - Complex.log (h Y₀)).im ≤ 2 * Real.pi := by
-    rw [Complex.sub_im, Complex.log_im, Complex.log_im]
-    have h1 := Complex.abs_arg_le_pi (h Y)
-    have h2 := Complex.abs_arg_le_pi (h Y₀)
-    rw [abs_le] at h1 h2
+    have hexp : cexp (Complex.log (h y)) = cexp ((θ y : ℂ) * I + conj (L y)) := by
+      rw [Complex.exp_log (fun h0 => by have := hre y hy; rw [h0] at this; simp at this; linarith),
+        Complex.exp_add, Complex.exp_conj, ← hLe y hy, ← hθ y hy]
+    obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp hexp
+    refine ⟨-n, ?_⟩
+    have him' : (Complex.log (h y)).im = θ y - (L y).im + 2 * Real.pi * n := by
+      rw [hn]; simp [Complex.mul_im]; ring
+    have hpi := Real.pi_pos
+    simp only [hD]
+    rw [him', div_eq_iff (by positivity)]
+    push_cast
+    ring
+  have hDconst := int_valued_const hY hDc hDint
+  have hDeq : D Y = D Y₀ := by
+    have hpi := Real.pi_pos
+    field_simp at hDconst
     linarith
+  simp only [hD] at hDeq
+  have h1 := Complex.abs_arg_le_pi (h Y)
+  have h2 := Complex.abs_arg_le_pi (h Y₀)
+  rw [Complex.log_im, Complex.log_im] at hDeq
+  rw [abs_le] at h1 h2
   linarith
 
 /-! ## The theorem -/
 
-/-- **Almost-periodic locks force the true producer.** Let `G` be a Herglotz producer for the
-weights `lam` with lower-line lock `G(1 − s) = V(s) G(s)`, `V(s) = Σ_j c_j u_j^{−(s−½)}`, with
-`Σ_j |c_j| max(1, u_j^{−1}) K(u_j) < ∞` (`K(u) = √den(u) 8^{ω(den u)}` for rational `u`, `K = 1`
-otherwise) and `Σ_j |c_j| |log u_j| < ∞`. Then `lam(n) = Λ(n)` for all `n ≥ 2`, and the Riemann
-hypothesis holds. -/
-theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
-    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
-    (hΦd : DifferentiableOn ℂ Φ {s : ℂ | 1 / 2 < s.re})
-    (hΦre : ∀ s : ℂ, 1 / 2 < s.re → 0 ≤ (Φ s).re)
-    (hid : ∀ s : ℂ, 1 < s.re →
-      Φ s = zetaArchimedeanDatum s + 1 / (s - 1) - LSeries (lamTwo lam) s)
-    (hGc : ∀ s : ℂ, 1 / 2 ≤ s.re → ContinuousAt G s)
-    (hGd : ∀ s : ℂ, 1 / 2 < s.re → HasDerivAt G (Φ s * G s) s) (hG2 : G 2 = bigG lam 2)
-    {c : ℕ → ℂ} {u : ℕ → ℝ} (hu : ∀ j, 0 < u j)
-    (hcw : Summable fun j => ‖c j‖ * max 1 (u j)⁻¹ * realDenWeight (u j))
-    (hql : Summable fun j => ‖c j‖ * |Real.log (u j)|)
-    (hlock : ∀ τ : ℝ, τ < 0 → G (1 - lineS τ) = apLock c u (lineS τ) * G (lineS τ)) :
-    (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis := by
-  /- the factorization -/
-  obtain ⟨Ψ, B, hB, hW, hΨ⟩ :=
-    almostPeriodicLock_limitPeriodic hsl hΦre hid hGc hGd hG2 hu hcw hlock
-  have hB0 : ∀ q, 0 ≤ B q := fun q => (norm_nonneg _).trans (hB q 0)
-  have h8 : Summable fun q : ℕ => (8 : ℝ) ^ (q + 1).primeFactors.card * B q :=
-    Summable.of_nonneg_of_le (fun q => mul_nonneg (by positivity) (hB0 q)) (fun q => by
-      have hsq : (1 : ℝ) ≤ Real.sqrt ((q : ℝ) + 1) :=
-        Real.one_le_sqrt.mpr (le_add_of_nonneg_left (Nat.cast_nonneg q))
-      calc (8 : ℝ) ^ (q + 1).primeFactors.card * B q
-          = 1 * 8 ^ (q + 1).primeFactors.card * B q := by ring
-        _ ≤ Real.sqrt ((q : ℝ) + 1) * 8 ^ (q + 1).primeFactors.card * B q :=
-          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hsq (by positivity))
-            (hB0 q)) hW
-  obtain ⟨hGK, hFA⟩ := limitPeriodic_producer_factor hsl hΦd hid hGc hGd hG2 hB hW hΨ
-  set A := limitTrivialSeries Ψ with hAdef
-  have hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re} :=
-    differentiableOn_limitTrivialSeries hB h8
-  have hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re} := continuousOn_limitTrivialSeries hB h8
-  set WA : ℝ := ∑' q : ℕ, (8 : ℝ) ^ (q + 1).primeFactors.card * B q with hWA
-  have hAb : ∀ s : ℂ, 1 / 2 ≤ s.re → ‖A s‖ ≤ WA := fun s hs => norm_limitTrivialSeries_le hB h8 hs
+/-- **Backlund–Jensen for the glued function at a positive height.** -/
+theorem glue_horizontal_le {E : ℂ → ℂ} {σ₀ ε M Y : ℝ}
+    (hEan : AnalyticOnNhd ℂ E glueDomain) (hσ₀ : 2 ≤ σ₀) (hε0 : 0 < ε) (hε : ε ≤ 1 / 4)
+    (hY : σ₀ + 1 ≤ Y) (hM : ∀ z ∈ closedBall ((σ₀ : ℂ) + Y * I) σ₀, ‖E z‖ ≤ M)
+    (hre : 1 / 2 ≤ (E ((σ₀ : ℂ) + Y * I)).re)
+    (hne : ∀ x ∈ Icc (1 / 2 - ε) σ₀, E ((x : ℂ) + Y * I) ≠ 0) :
+    |∫ x in (1 / 2 - ε)..σ₀, (logDeriv E ((x : ℂ) + Y * I)).im| ≤
+      (Real.log (M / (1 / 2)) / Real.log (σ₀ / (σ₀ - 1 / 2 + ε)) + 1) * Real.pi := by
+  refine abs_integral_im_logDeriv_horizontal_le (r := σ₀ - 1 / 2 + ε) (R := σ₀)
+    (R₂ := σ₀ + 1 / 4) (by linarith) (by linarith) (by linarith) (by norm_num) ?_ hM hre
+    (by linarith) (by linarith) hne
+  intro z hz
+  refine hEan z ⟨?_, ?_⟩
+  · have h1 := (Complex.abs_re_le_norm (z - ((σ₀ : ℂ) + Y * I))).trans
+      (le_of_lt (mem_ball_iff_norm.mp hz))
+    rw [abs_le] at h1; simp at h1; linarith [h1.1]
+  · have h1 := (Complex.abs_im_le_norm (z - ((σ₀ : ℂ) + Y * I))).trans
+      (le_of_lt (mem_ball_iff_norm.mp hz))
+    rw [abs_le] at h1; simp at h1; linarith [h1.1]
+
+/-- **Backlund–Jensen for the quotient at a negative height.** -/
+theorem quotient_horizontal_le {A : ℂ → ℂ} {σ₀ ε M Y : ℝ}
+    (hAan : AnalyticOnNhd ℂ A {s : ℂ | 1 / 2 < s.re}) (hσ₀ : 2 ≤ σ₀) (hε0 : 0 < ε)
+    (hε : ε ≤ 1 / 4)
+    (hM : ∀ z ∈ closedBall ((σ₀ : ℂ) + ((-Y : ℝ) : ℂ) * I) (σ₀ - 1 / 2 - ε / 2), ‖A z‖ ≤ M)
+    (hre : 1 / 2 ≤ (A ((σ₀ : ℂ) + ((-Y : ℝ) : ℂ) * I)).re)
+    (hne : ∀ x ∈ Icc (1 / 2 + ε) σ₀, A ((x : ℂ) + ((-Y : ℝ) : ℂ) * I) ≠ 0) :
+    |∫ x in (1 / 2 + ε)..σ₀, (logDeriv A ((x : ℂ) + ((-Y : ℝ) : ℂ) * I)).im| ≤
+      (Real.log (M / (1 / 2)) / Real.log ((σ₀ - 1 / 2 - ε / 2) / (σ₀ - 1 / 2 - ε)) + 1) *
+        Real.pi := by
+  refine abs_integral_im_logDeriv_horizontal_le (r := σ₀ - 1 / 2 - ε)
+    (R := σ₀ - 1 / 2 - ε / 2) (R₂ := σ₀ - 1 / 2) (by linarith) (by linarith) (by linarith)
+    (by norm_num) ?_ hM hre (by linarith) (by linarith) hne
+  intro z hz
+  refine hAan z ?_
+  have h1 := (Complex.abs_re_le_norm (z - ((σ₀ : ℂ) + ((-Y : ℝ) : ℂ) * I))).trans_lt
+    (mem_ball_iff_norm.mp hz)
+  rw [abs_lt] at h1; simp at h1; show 1 / 2 < z.re; linarith [h1.1]
+
+/-- `(log(W e^t/½)/L + 1)π = (log(W/½)/L + 1)π + (π/L) t` for `W > 0`. -/
+theorem backlund_const_exp {W L t : ℝ} (hW : 0 < W) (hL : L ≠ 0) :
+    (Real.log (W * Real.exp t / (1 / 2)) / L + 1) * Real.pi =
+      (Real.log (W / (1 / 2)) / L + 1) * Real.pi + Real.pi / L * t := by
+  rw [show W * Real.exp t / (1 / 2) = W / (1 / 2) * Real.exp t by ring,
+    Real.log_mul (by positivity) (Real.exp_pos _).ne', Real.log_exp]
+  field_simp
+  ring
+
+/-- **The shifted lock has bounded phase advance.** Let `A` be holomorphic on `Re s > ½`,
+continuous and bounded on `Re s ≥ ½`, zero-free off `s = 1`, with `Re A ≥ ½` on `Re s ≥ σ₀`, and
+let `A(½ + iy) = V(½ − iy) A(½ − iy)` for `y > 0`, where `V` is continuous, bounded, holomorphic on
+`½ < Re s < 3/2` and unimodular on the lower line. If the shift `V(½ + ε − iy)` stays within `½`
+of `V(½ − iy)`, then its phase advance `−∫_{Y₀}^{Y} Re(V'/V)(½ + ε − iy) dy` is bounded above at
+cofinal heights `Y`. The proof is the argument principle for the glued function on
+`[½ − ε, σ₀] × [Y₀, Y]` and for `A` on `[½ + ε, σ₀] × [−Y, −Y₀]`, with Backlund–Jensen on the
+horizontal edges. -/
+theorem lock_shiftedPhase_bound {A V : ℂ → ℂ} {WA CV α σ₀ ε : ℝ}
+    (hVc : Continuous V) (hVd : DifferentiableOn ℂ V lockStrip) (hVb : ∀ s, ‖V s‖ ≤ CV)
+    (hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
+    (hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re}) (hα : 0 ≤ α)
+    (hAg : ∀ s : ℂ, 1 / 2 ≤ s.re → ‖A s‖ ≤ WA * Real.exp (|s.im| ^ α))
+    (hA0 : ∀ s : ℂ, 1 / 2 < s.re → s ≠ 1 → A s ≠ 0)
+    (hσ₀2 : 2 ≤ σ₀) (hanchor : ∀ s : ℂ, σ₀ ≤ s.re → 1 / 2 ≤ (A s).re)
+    (hlockA : ∀ y : ℝ, 0 < y → A (1 / 2 + y * I) = V (1 / 2 - y * I) * A (1 / 2 - y * I))
+    (hunit : ∀ y : ℝ, 0 < y → ‖V (1 / 2 - y * I)‖ = 1) (hε0 : 0 < ε) (hε14 : ε ≤ 1 / 4)
+    (hclose : ∀ y : ℝ,
+      ‖V (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I) - V (1 / 2 - (y : ℂ) * I)‖ ≤ 1 / 2) :
+    ∃ Y₀ C₀ C₁ D : ℝ, 0 < Y₀ ∧ 0 ≤ C₁ ∧ 0 ≤ D ∧ ∀ T : ℝ, ∃ Y : ℝ, T ≤ Y ∧ Y ≤ max T Y₀ + 2 ∧
+      Y₀ ≤ Y ∧ -(∫ y in Y₀..Y, (logDeriv V (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I)).re) ≤
+        C₀ + C₁ * (Y + D) ^ α := by
   have hUA : IsOpen {s : ℂ | 1 / 2 < s.re} := isOpen_lt continuous_const Complex.continuous_re
   have hAan : AnalyticOnNhd ℂ A {s : ℂ | 1 / 2 < s.re} := hAd.analyticOnNhd hUA
-  have hzA : ∀ s : ℂ, 1 < s.re → zetaOf lam s = riemannZeta s * A s := by
-    intro s hs
-    rw [← hFA s hs]
-    exact (LSeries_dirichletExp (lamLog_zero lam) (lamLog_one lam)
-      (lseriesSummable_of_le (norm_lamLog_le lam) hsl hs)).2.symm
-  obtain ⟨σ₀, hσ₀2, hanchor⟩ := exists_re_ge_half_of_zetaOf_eq hsl hzA
-  have hA0 : ∀ s : ℂ, 1 / 2 < s.re → s ≠ 1 → A s ≠ 0 := fun s hs hs1 h =>
-    G_ne_zero hΦd hGd hG2 hs (by rw [hGK s hs hs1, h]; ring)
   have hAσ : ∀ s : ℂ, σ₀ ≤ s.re → A s ≠ 0 := fun s hs h => by
     have := hanchor s hs; rw [h] at this; simp at this; linarith
-  /- the lock -/
-  have hc : Summable fun j => ‖c j‖ * max 1 (u j)⁻¹ :=
-    Summable.of_nonneg_of_le
-      (fun j => mul_nonneg (norm_nonneg _) (le_trans zero_le_one (le_max_left _ _)))
-      (fun j => le_mul_of_one_le_right
-        (mul_nonneg (norm_nonneg _) (le_trans zero_le_one (le_max_left _ _)))
-        (one_le_realDenWeight _)) hcw
-  have hqn : Summable fun j => ‖c j‖ :=
-    Summable.of_nonneg_of_le (fun j => norm_nonneg _)
-      (fun j => le_mul_of_one_le_right (norm_nonneg _) (le_max_left _ _)) hc
-  set V := apLock c u with hVdef
-  set CV : ℝ := ∑' j, ‖c j‖ * max 1 (u j)⁻¹ with hCV
-  have hVb : ∀ s, ‖V s‖ ≤ CV := norm_apLock_le hu hc
-  have hlockA : ∀ y : ℝ, 0 < y → A (1 / 2 + y * I) = V (1 / 2 - y * I) * A (1 / 2 - y * I) :=
-    fun y hy => lineFactor_lock hGc hGK hAc (continuous_apLock hu hc) hlock hy
-  have hunit : ∀ y : ℝ, 0 < y → ‖lineLock c u y‖ = 1 := fun y hy =>
-    norm_lineLock hsl hΦd hΦre hid hGc hGd hG2 hu hc hlock hy
-  have hline : ∀ y : ℝ, V (1 / 2 - y * I) = lineLock c u y := fun y => apLock_line c hu y
   /- the glued function -/
   set E := lockGlue A V with hEdef
   have hEan : AnalyticOnNhd ℂ E glueDomain :=
-    (differentiableOn_lockGlue hu hc hAd hAc hlockA).analyticOnNhd isOpen_glueDomain
+    (differentiableOn_lockGlue hVc hVd hAd hAc hlockA).analyticOnNhd isOpen_glueDomain
   set WE : ℝ := max 1 CV * WA with hWE
-  have hEb : ∀ z, ‖E z‖ ≤ WE := norm_lockGlue_le hAb hVb
+  have hEb : ∀ z, ‖E z‖ ≤ max 1 CV * (WA * Real.exp (|z.im| ^ α)) := norm_lockGlue_le_exp hAg hVb
+  have hWApos : 0 < WA := by
+    have h1 := hanchor (σ₀ : ℂ) (by simp)
+    have h2 := (Complex.re_le_norm _).trans (hAg (σ₀ : ℂ) (by simp; linarith))
+    have h3 := Real.exp_pos (|((σ₀ : ℂ)).im| ^ α)
+    by_contra hneg
+    push Not at hneg
+    nlinarith
+  have hWEpos : 0 < WE := mul_pos (lt_of_lt_of_le zero_lt_one (le_max_left _ _)) hWApos
   have hEA : ∀ z : ℂ, 1 / 2 ≤ z.re → E z = A z := fun z hz => lockGlue_of_le hz
   have hEL : ∀ z : ℂ, z.re < 1 / 2 → E z = V (1 - z) * A (1 - z) := fun z hz =>
     lockGlue_of_lt hz
   /- the shift -/
-  obtain ⟨ε, hε0, hε14, hclose⟩ := exists_shift_apLock_close hu hc
   set p : ℝ → ℂ := fun y => ((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I with hp
   have hpre : ∀ y, (p y).re = 1 / 2 + ε := fun y => by simp [hp]
-  have hclose' : ∀ y : ℝ, ‖V (p y) - lineLock c u y‖ ≤ 1 / 2 := fun y => by
-    rw [← hline y]; exact hclose y
+  have hclose' : ∀ y : ℝ, ‖V (p y) - V (1 / 2 - (y : ℂ) * I)‖ ≤ 1 / 2 := fun y => hclose y
   have hVp0 : ∀ y : ℝ, 0 < y → V (p y) ≠ 0 := by
     intro y hy h0
     have h1 := hclose' y
@@ -790,48 +839,53 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
   have hAp0 : ∀ y : ℝ, 0 < y → A (p y) ≠ 0 := fun y hy =>
     hA0 _ (by rw [hpre]; linarith) (hp1 y hy)
   /- the constants -/
-  set CBE : ℝ := (Real.log (WE / (1 / 2)) / Real.log (σ₀ / (σ₀ - 1 / 2 + ε)) + 1) * Real.pi
-    with hCBE
-  set CBA : ℝ := (Real.log (WA / (1 / 2)) / Real.log ((σ₀ - 1 / 2 - ε / 2) / (σ₀ - 1 / 2 - ε))
-    + 1) * Real.pi with hCBA
-  set Cfin : ℝ := 6 * Real.pi + 2 * CBE + 2 * CBA with hCfin
+  set gY : ℝ → ℝ := fun Y => Real.exp ((Y + σ₀ + 1) ^ α) with hgY
+  set LE : ℝ := Real.log (σ₀ / (σ₀ - 1 / 2 + ε)) with hLE
+  set LA : ℝ := Real.log ((σ₀ - 1 / 2 - ε / 2) / (σ₀ - 1 / 2 - ε)) with hLA
+  have hLE0 : 0 < LE := Real.log_pos (by rw [one_lt_div (by linarith)]; linarith)
+  have hLA0 : 0 < LA := Real.log_pos (by rw [one_lt_div (by linarith)]; linarith)
+  set CBE : ℝ → ℝ := fun Y => (Real.log (WE * gY Y / (1 / 2)) / LE + 1) * Real.pi with hCBE
+  set CBA : ℝ → ℝ := fun Y => (Real.log (WA * gY Y / (1 / 2)) / LA + 1) * Real.pi with hCBA
+  /- the growth on the Jensen discs -/
+  have hexp_le : ∀ (Y : ℝ) (z : ℂ), 0 ≤ Y → |z.im| ≤ Y + σ₀ + 1 →
+      Real.exp (|z.im| ^ α) ≤ gY Y := by
+    intro Y z hY hz
+    exact Real.exp_le_exp.mpr (Real.rpow_le_rpow (abs_nonneg _) hz hα)
   /- the horizontal bounds -/
   have hhorE : ∀ Y : ℝ, σ₀ + 1 ≤ Y → (∀ x ∈ Icc (1 / 2 - ε) σ₀, E ((x : ℂ) + Y * I) ≠ 0) →
-      |∫ x in (1 / 2 - ε)..σ₀, (logDeriv E ((x : ℂ) + Y * I)).im| ≤ CBE := by
+      |∫ x in (1 / 2 - ε)..σ₀, (logDeriv E ((x : ℂ) + Y * I)).im| ≤ CBE Y := by
     intro Y hY hne
-    refine abs_integral_im_logDeriv_horizontal_le (r := σ₀ - 1 / 2 + ε) (R := σ₀)
-      (R₂ := σ₀ + 1 / 4) (M := WE) (m := 1 / 2) (by linarith)
-      (by linarith) (by linarith) (by norm_num) ?_ (fun z _ => hEb z) ?_ (by linarith) (by linarith)
-      hne
-    · intro z hz
-      refine hEan z ⟨?_, ?_⟩
-      · have h1 := (Complex.abs_re_le_norm (z - ((σ₀ : ℂ) + Y * I))).trans
-          (le_of_lt (mem_ball_iff_norm.mp hz))
-        rw [abs_le] at h1; simp at h1; linarith [h1.1]
-      · have h1 := (Complex.abs_im_le_norm (z - ((σ₀ : ℂ) + Y * I))).trans
-          (le_of_lt (mem_ball_iff_norm.mp hz))
-        rw [abs_le] at h1; simp at h1; linarith [h1.1]
+    refine glue_horizontal_le hEan hσ₀2 hε0 hε14 hY (fun z hz => ?_) ?_ hne
+    · have h1 := (Complex.abs_im_le_norm (z - ((σ₀ : ℂ) + Y * I))).trans
+        (mem_closedBall_iff_norm.mp hz)
+      rw [abs_le] at h1; simp at h1
+      have him : |z.im| ≤ Y + σ₀ + 1 := abs_le.mpr ⟨by linarith [h1.1], by linarith [h1.2]⟩
+      calc ‖E z‖ ≤ max 1 CV * (WA * Real.exp (|z.im| ^ α)) := hEb z
+        _ ≤ max 1 CV * (WA * gY Y) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
+              (hexp_le Y z (by linarith) him) hWApos.le) (le_trans zero_le_one (le_max_left _ _))
+        _ = WE * gY Y := by rw [hWE]; ring
     · rw [hEA _ (by simp; linarith)]
       exact hanchor _ (by simp)
   have hhorA : ∀ Y : ℝ, 0 < Y →
-      |∫ x in (1 / 2 + ε)..σ₀, (logDeriv A ((x : ℂ) + ((-Y : ℝ) : ℂ) * I)).im| ≤ CBA := by
+      |∫ x in (1 / 2 + ε)..σ₀, (logDeriv A ((x : ℂ) + ((-Y : ℝ) : ℂ) * I)).im| ≤ CBA Y := by
     intro Y hY
-    refine abs_integral_im_logDeriv_horizontal_le (r := σ₀ - 1 / 2 - ε)
-      (R := σ₀ - 1 / 2 - ε / 2) (R₂ := σ₀ - 1 / 2) (M := WA) (m := 1 / 2) (by linarith)
-      (by linarith) (by linarith) (by norm_num) ?_ (fun z hz => hAb z ?_) ?_ (by linarith)
-      (by linarith) ?_
-    · intro z hz
-      refine hAan z ?_
-      have h1 := (Complex.abs_re_le_norm (z - ((σ₀ : ℂ) + ((-Y : ℝ) : ℂ) * I))).trans_lt
-        (mem_ball_iff_norm.mp hz)
-      rw [abs_lt] at h1; simp at h1; show 1 / 2 < z.re; linarith [h1.1]
+    refine quotient_horizontal_le hAan hσ₀2 hε0 hε14 (fun z hz => ?_) (hanchor _ (by simp))
+      (fun x hx => ?_)
     · have h1 := (Complex.abs_re_le_norm (z - ((σ₀ : ℂ) + ((-Y : ℝ) : ℂ) * I))).trans
         (mem_closedBall_iff_norm.mp hz)
-      rw [abs_le] at h1; simp at h1; linarith [h1.1]
-    · exact hanchor _ (by simp)
-    · intro x hx
-      refine hA0 _ (by simp; linarith [hx.1]) fun h => ?_
+      have h2 := (Complex.abs_im_le_norm (z - ((σ₀ : ℂ) + ((-Y : ℝ) : ℂ) * I))).trans
+        (mem_closedBall_iff_norm.mp hz)
+      rw [abs_le] at h1 h2; simp at h1 h2
+      have him : |z.im| ≤ Y + σ₀ + 1 := abs_le.mpr ⟨by linarith [h2.1], by linarith [h2.2]⟩
+      calc ‖A z‖ ≤ WA * Real.exp (|z.im| ^ α) := hAg z (by linarith [h1.1])
+        _ ≤ WA * gY Y := mul_le_mul_of_nonneg_left (hexp_le Y z hY.le him) hWApos.le
+    · refine hA0 _ (by simp; linarith [hx.1]) fun h => ?_
       have := congrArg Complex.im h; simp at this; linarith
+  have hCBEle : ∀ Y : ℝ, CBE Y = (Real.log (WE / (1 / 2)) / LE + 1) * Real.pi +
+      Real.pi / LE * (Y + σ₀ + 1) ^ α := fun Y => backlund_const_exp hWEpos hLE0.ne'
+  have hCBAle : ∀ Y : ℝ, CBA Y = (Real.log (WA / (1 / 2)) / LA + 1) * Real.pi +
+      Real.pi / LA * (Y + σ₀ + 1) ^ α := fun Y => backlund_const_exp hWApos hLA0.ne'
   /- the base height -/
   have hz₀ : ((σ₀ : ℂ) + (σ₀ + 1 : ℝ) * I) ∈ glueDomain := ⟨by simp; linarith, by simp; linarith⟩
   have hEz₀ : E ((σ₀ : ℂ) + (σ₀ + 1 : ℝ) * I) ≠ 0 := by
@@ -842,7 +896,8 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
   obtain ⟨Y₀, hY₀, hY₀good⟩ := hgood (σ₀ + 1) le_rfl
   /- the key bound -/
   have hkey : ∀ Y : ℝ, Y₀ < Y → (∀ x ∈ Icc (1 / 2 - ε) σ₀, E ((x : ℂ) + Y * I) ≠ 0) →
-      ∫ y in Y₀..Y, lineLockVelocity c u y ≤ Cfin := by
+      -(∫ y in Y₀..Y, (logDeriv V (p y)).re) ≤
+        4 * Real.pi + CBE Y₀ + CBE Y + CBA Y₀ + CBA Y := by
     intro Y hY hYgood
     have hY₀pos : 0 < Y₀ := by linarith [hY₀.1]
     have hYpos : ∀ y ∈ Icc Y₀ Y, 0 < y := fun y hy => by linarith [hy.1]
@@ -887,7 +942,8 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
         rw [uIcc_of_le (by linarith)] at ht; simp; linarith [ht.2]))
     -- the left edge of the upper rectangle
     have hVan : ∀ y : ℝ, DifferentiableAt ℂ V (p y) := fun y =>
-      differentiableAt_apLock hu hc (by rw [hpre]; linarith) (by rw [hpre]; linarith)
+      hVd.differentiableAt (isOpen_lockStrip.mem_nhds
+        ⟨by rw [hpre]; linarith, by rw [hpre]; linarith⟩)
     have hApd : ∀ y : ℝ, 0 < y → DifferentiableAt ℂ A (p y) := fun y _ =>
       (hAd (p y) (by show 1 / 2 < (p y).re; rw [hpre]; linarith)).differentiableAt
         (hUA.mem_nhds (by show 1 / 2 < (p y).re; rw [hpre]; linarith))
@@ -911,13 +967,8 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
     have hcV : ContinuousOn (fun y => (logDeriv V (p y)).re) (uIcc Y₀ Y) := by
       rw [uIcc_of_le hY.le]
       intro y hy
-      have han : AnalyticAt ℂ V (p y) := by
-        set U : Set ℂ := {z : ℂ | 1 / 2 < z.re ∧ z.re < 3 / 2}
-        have hUo : IsOpen U := (isOpen_lt continuous_const Complex.continuous_re).inter
-          (isOpen_lt Complex.continuous_re continuous_const)
-        exact DifferentiableOn.analyticAt (fun z hz =>
-          (differentiableAt_apLock hu hc hz.1 hz.2).differentiableWithinAt)
-          (hUo.mem_nhds ⟨by rw [hpre]; linarith, by rw [hpre]; linarith⟩)
+      have han : AnalyticAt ℂ V (p y) :=
+        hVd.analyticAt (isOpen_lockStrip.mem_nhds ⟨by rw [hpre]; linarith, by rw [hpre]; linarith⟩)
       exact (Complex.continuous_re.continuousAt.comp ((analyticAt_logDeriv_of_ne_zero han
         (hVp0 y (hYpos y hy))).continuousAt.comp (by fun_prop))).continuousWithinAt
     have hcA : ContinuousOn (fun y => (logDeriv A (p y)).re) (uIcc Y₀ Y) := by
@@ -952,110 +1003,432 @@ theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
     have hB2 := hhorE Y (by linarith [hY₀.1]) hYgood
     have hB3 := hhorA Y (by linarith)
     have hB4 := hhorA Y₀ hY₀pos
-    have hcmp : ∫ y in Y₀..Y, lineLockVelocity c u y ≤
-        2 * Real.pi - ∫ y in Y₀..Y, (logDeriv V (p y)).re :=
-      integral_lineLockVelocity_le hu hc hql hε0 hε14 hY.le
-        (fun y hy => hunit y (hYpos y hy)) (fun y _ => hclose' y)
     rw [hRE, hLE] at hQE
     rw [hLA] at hQE
     rw [abs_le] at hS1 hS2 hB1 hB2 hB3 hB4
     linarith [hS1.1, hS1.2, hS2.1, hS2.2, hB1.1, hB1.2, hB2.1, hB2.2, hB3.1, hB3.2, hB4.1, hB4.2]
-  /- the phase velocity has bounded integral -/
-  set g := lineLockVelocity c u with hgdef
-  have hgc : Continuous g := continuous_lineLockVelocity hqn hql
-  have hpos : ∀ y : ℝ, 0 < y → 0 ≤ g y := fun y hy =>
-    lineLockVelocity_nonneg hsl hΦd hΦre hid hGc hGd hG2 hu hc hql hlock hy
-  have hY₀pos : 0 < Y₀ := by linarith [hY₀.1]
-  have hCBE0 : 0 ≤ CBE := (abs_nonneg _).trans (hhorE Y₀ hY₀.1 hY₀good)
-  have hCBA0 : 0 ≤ CBA := (abs_nonneg _).trans (hhorA Y₀ hY₀pos)
-  have hCfin0 : 0 ≤ Cfin := by rw [hCfin]; have := Real.pi_pos; linarith
-  have hbd : ∀ T : ℝ, Y₀ ≤ T → ∫ y in Y₀..T, g y ≤ Cfin := by
-    intro T hT
-    obtain ⟨Y, hY, hYg⟩ := hgood T (by linarith [hY₀.1])
-    rcases eq_or_lt_of_le (hT.trans hY.1) with h | h
-    · have hTY : T = Y₀ := le_antisymm (h ▸ hY.1) hT
-      rw [hTY, intervalIntegral.integral_same]; exact hCfin0
-    · have hk := hkey Y h hYg
-      have hsplit : ∫ y in Y₀..Y, g y = (∫ y in Y₀..T, g y) + ∫ y in T..Y, g y :=
-        (intervalIntegral.integral_add_adjacent_intervals (hgc.intervalIntegrable _ _)
-          (hgc.intervalIntegrable _ _)).symm
-      have hnn : 0 ≤ ∫ y in T..Y, g y :=
-        intervalIntegral.integral_nonneg hY.1 fun y hy => hpos y (by linarith [hy.1])
-      linarith
-  /- so the mean of the velocity vanishes -/
-  set gC : ℝ → ℂ := fun y => ((g y : ℝ) : ℂ) with hgC
-  have hgCc : Continuous gC := Complex.continuous_ofReal.comp hgc
-  have hgCa : _root_.HTGeometry.IsBohrAlmostPeriodic gC :=
-    isBohrAlmostPeriodic_lineLockVelocity hqn hql
-  have hg00 : 0 ≤ g 0 :=
-    ge_of_tendsto ((hgc.tendsto 0).mono_left nhdsWithin_le_nhds : Tendsto g (𝓝[>] 0) (𝓝 (g 0)))
-      (by filter_upwards [self_mem_nhdsWithin] with z (hz : 0 < z); exact hpos z hz)
-  set K : ℝ := (∫ y in (0 : ℝ)..Y₀, g y) + Cfin with hK
-  have hmeanlim : Tendsto (_root_.GaloisForLFunctions.windowAverage gC) atTop (𝓝 0) := by
-    refine squeeze_zero_norm' ?_ ((tendsto_const_nhds (x := K)).div_atTop tendsto_id)
-    filter_upwards [eventually_ge_atTop Y₀] with T hT
-    have hT0 : 0 < T := hY₀pos.trans_le hT
-    have hwin : _root_.GaloisForLFunctions.windowAverage gC T =
-        (((T⁻¹ * ∫ y in (0 : ℝ)..T, g y) : ℝ) : ℂ) := by
-      simp only [_root_.GaloisForLFunctions.windowAverage, hgC, intervalIntegral.integral_ofReal,
-        Complex.real_smul]
-      push_cast; ring
-    have hsplit : ∫ y in (0 : ℝ)..T, g y = (∫ y in (0 : ℝ)..Y₀, g y) + ∫ y in Y₀..T, g y :=
-      (intervalIntegral.integral_add_adjacent_intervals (hgc.intervalIntegrable _ _)
-        (hgc.intervalIntegrable _ _)).symm
-    have hnn : 0 ≤ ∫ y in (0 : ℝ)..T, g y :=
-      intervalIntegral.integral_nonneg hT0.le fun y hy => by
-        rcases eq_or_lt_of_le hy.1 with h | h
-        · rw [← h]; exact hg00
-        · exact hpos y h
-    rw [hwin, Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_inv, abs_of_pos hT0,
-      abs_of_nonneg hnn, id, inv_mul_eq_div]
-    exact div_le_div_of_nonneg_right (by linarith [hbd T hT]) hT0.le
-  /- the tail: a nonnegative almost-periodic function of mean zero vanishes -/
-  have hga : _root_.HTGeometry.IsBohrAlmostPeriodic g := isBohrAlmostPeriodic_of_ofReal' hgCa
-  have hnorm : _root_.HTGeometry.IsBohrAlmostPeriodic fun t => ‖gC t‖ :=
-    _root_.GaloisForLFunctions.isBohrAlmostPeriodic_norm_real hgCa
-  have hdiff := _root_.GaloisForLFunctions.isBohrAlmostPeriodic_sub (hgCc.norm) hnorm hgc hga
-  have hzero := _root_.HTGeometry.eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero hdiff (by
-    refine tendsto_const_nhds.congr' ?_
-    filter_upwards [eventually_gt_atTop 0] with t ht
-    simp only [hgC, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hpos t ht), sub_self])
-  have hnn : ∀ t, 0 ≤ g t := fun t => by
-    have h := hzero t
-    simp only [hgC, Complex.norm_real, Real.norm_eq_abs] at h
-    have : |g t| = g t := by linarith
-    rw [← this]; exact abs_nonneg _
-  have hmean : _root_.GaloisForLFunctions.bohrMean gC = 0 :=
-    _root_.GaloisForLFunctions.bohrMean_eq hgCc hgCa hmeanlim
-  have hg0 : ∀ t, g t = 0 := by
-    intro t
-    have h := _root_.GaloisForLFunctions.eq_zero_of_bohrMean_eq_zero_of_nonneg hgCc hgCa
-      (fun t => by simp [hgC, hnn t])
-      (fun t => by simp [hgC]) hmean t
-    simpa [hgC] using h
-  /- the lock is constant -/
-  have hphase : ∀ y, lineLockPhase c u y = 0 := by
-    intro y
-    simp only [lineLockPhase]
-    rw [show (fun t => lineLockVelocity c u t) = fun _ => (0 : ℝ) from funext hg0]
-    simp
-  have hconst : ∀ y : ℝ, 0 < y → lineLock c u y = lineLock c u 1 := by
-    intro y hy
-    rw [lineLock_eq_mul_exp_phase hqn hql hunit hy, hphase]
-    simp
-  set κ := lineLock c u 1 with hκ
-  have hκ0 : κ ≠ 0 := by
-    intro h
-    have := hunit 1 one_pos
-    rw [← hκ, h, norm_zero] at this
+  refine ⟨Y₀, 4 * Real.pi + CBE Y₀ + CBA Y₀ + (Real.log (WE / (1 / 2)) / LE + 1) * Real.pi +
+    (Real.log (WA / (1 / 2)) / LA + 1) * Real.pi, Real.pi / LE + Real.pi / LA, σ₀ + 1,
+    by linarith [hY₀.1], by positivity, by linarith, fun T => ?_⟩
+  obtain ⟨Y, hYm, hYg⟩ := hgood (max T Y₀ + 1) (by linarith [le_max_right T Y₀, hY₀.1])
+  have hY : Y₀ < Y := by linarith [le_max_right T Y₀, hYm.1]
+  refine ⟨Y, by linarith [le_max_left T Y₀, hYm.1], by linarith [hYm.2], hY.le, ?_⟩
+  have hk := hkey Y hY hYg
+  rw [hCBEle Y, hCBAle Y] at hk
+  have hr : (Y + (σ₀ + 1)) ^ α = (Y + σ₀ + 1) ^ α := by ring_nf
+  rw [hr]
+  linarith
+
+/-- **Zeros of a factored producer on the lower line are locally finite.** If `G` is continuous
+on `Re s ≥ ½` and equals `s(s − 1)Γ_ℝ ζ A` on `Re s > ½`, `s ≠ 1`, and `A` satisfies the lock
+`A(½ + iy) = V(½ − iy) A(½ − iy)` (so that `A` glues holomorphically across the line), then `G` has
+finitely many zeros on every compact piece of the lower critical line. -/
+theorem lineFactor_lowerZeros_finite {G A V : ℂ → ℂ} (hVc : Continuous V)
+    (hVd : DifferentiableOn ℂ V lockStrip)
+    (hGc : ∀ s : ℂ, 1 / 2 ≤ s.re → ContinuousAt G s)
+    (hGK : ∀ s : ℂ, 1 / 2 < s.re → s ≠ 1 →
+      G s = s * (s - 1) * Gammaℝ s * (riemannZeta s * A s))
+    (hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
+    (hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re})
+    (hlockA : ∀ y : ℝ, 0 < y → A (1 / 2 + y * I) = V (1 / 2 - y * I) * A (1 / 2 - y * I))
+    {z₀ : ℂ} (hz₀ : z₀ ∈ glueDomain) (hEz₀ : lockGlue A V z₀ ≠ 0) :
+    ∀ a b : ℝ, 0 < a → a ≤ b → {x ∈ Icc a b | G (vpt (1 / 2) x) = 0}.Finite := by
+  set E := lockGlue A V with hEdef
+  have hEan : AnalyticOnNhd ℂ E glueDomain :=
+    (differentiableOn_lockGlue hVc hVd hAd hAc hlockA).analyticOnNhd isOpen_glueDomain
+  have hEA : ∀ z : ℂ, 1 / 2 ≤ z.re → E z = A z := fun z hz => lockGlue_of_le hz
+  have hvpt : ∀ x : ℝ, vpt (1 / 2) x = 1 / 2 - ((2 * x : ℝ) : ℂ) * I := fun x => by
+    unfold vpt; push_cast; ring
+  intro a b ha hab
+  have hζU : AnalyticOnNhd ℂ riemannZeta {1}ᶜ :=
+    DifferentiableOn.analyticOnNhd
+      (fun z hz => (differentiableAt_riemannZeta hz).differentiableWithinAt)
+      isOpen_compl_singleton
+  have hcon : IsConnected ({1}ᶜ : Set ℂ) := isConnected_compl_singleton_of_one_lt_rank
+    (by rw [Complex.rank_real_complex]; norm_num) 1
+  have hcod := hζU.preimage_zero_mem_codiscreteWithin (x := 2)
+    (riemannZeta_ne_zero_of_one_lt_re (by norm_num)) (by norm_num) hcon
+  set g₁ : ℝ → ℂ := fun x => vpt (1 / 2) x with hg₁
+  have hg₁c : Continuous g₁ := by simp only [hg₁, vpt]; fun_prop
+  have hg₁i : Function.Injective g₁ := fun x x' h => by
+    have := congrArg Complex.im h; simp [hg₁, vpt] at this; linarith
+  set K : Set ℂ := g₁ '' Icc a b with hK
+  have hKc : IsCompact K := isCompact_Icc.image hg₁c
+  have hK1 : K ⊆ {1}ᶜ := by
+    rintro _ ⟨x, _, rfl⟩ h
+    have := congrArg Complex.re h; simp [hg₁, vpt] at this
+  have hfinζ : (K \ (riemannZeta ⁻¹' {0}ᶜ)).Finite :=
+    hKc.finite_sdiff_of_mem_codiscreteWithin (Filter.codiscreteWithin_mono hK1 hcod)
+  set g₂ : ℝ → ℂ := fun x => (1 / 2 : ℂ) + ((2 * x : ℝ) : ℂ) * I with hg₂
+  have hg₂i : Function.Injective g₂ := fun x x' h => by
+    have := congrArg Complex.im h; simp [hg₂] at this; linarith
+  set z₁ : ℂ := (1 / 2 : ℂ) + ((2 * a : ℝ) : ℂ) * I with hz₁
+  set z₂ : ℂ := (1 / 2 : ℂ) + ((2 * b : ℝ) : ℂ) * I with hz₂
+  have hz₁re : z₁.re = 1 / 2 := by simp [hz₁]
+  have hz₂re : z₂.re = 1 / 2 := by simp [hz₂]
+  have hz₁im : z₁.im = 2 * a := by simp [hz₁]
+  have hz₂im : z₂.im = 2 * b := by simp [hz₂]
+  have hsubE : (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) ⊆ glueDomain := by
+    rw [hz₁re, hz₂re, hz₁im, hz₂im, uIcc_self, uIcc_of_le (by linarith : 2 * a ≤ 2 * b)]
+    intro z hz
+    obtain ⟨hre, him⟩ := Complex.mem_reProdIm.mp hz
+    rw [Set.mem_singleton_iff] at hre
+    exact ⟨by rw [hre]; norm_num, by linarith [him.1]⟩
+  have hfinE := zeros_closedRectangle_finite_of_analyticOnNhd hEan isConnected_glueDomain hz₀
+    hEz₀ hsubE
+  refine ((hfinζ.preimage hg₁i.injOn).union (hfinE.preimage hg₂i.injOn)).subset ?_
+  rintro x ⟨hx, hG0⟩
+  have hre : (vpt (1 / 2) x).re = 1 / 2 := by simp [vpt]
+  rw [eq_lineFactor_of_re_eq_half hGc hGK hAc hre] at hG0
+  have hx0 : 0 < x := ha.trans_le hx.1
+  have hv0' : vpt (1 / 2) x ≠ 0 := fun h => by
+    have h1 := congrArg Complex.re h
+    rw [hre, Complex.zero_re] at h1
+    norm_num at h1
+  have hv1 : vpt (1 / 2) x - 1 ≠ 0 := fun h => by
+    have h1 := congrArg Complex.re h
+    rw [Complex.sub_re, hre, Complex.one_re, Complex.zero_re] at h1
+    norm_num at h1
+  have hΓ : Gammaℝ (vpt (1 / 2) x) ≠ 0 := Gammaℝ_ne_zero_of_re_pos (by rw [hre]; norm_num)
+  rcases mul_eq_zero.mp hG0 with h | h
+  · exact absurd h (mul_ne_zero (mul_ne_zero hv0' hv1) hΓ)
+  rcases mul_eq_zero.mp h with hζ | hA
+  · left
+    exact ⟨⟨x, hx, rfl⟩, by simpa [hg₁] using hζ⟩
+  · right
+    have hl := hlockA (2 * x) (by linarith)
+    rw [← hvpt x, hA, mul_zero] at hl
+    refine ⟨Complex.mem_reProdIm.mpr ⟨?_, ?_⟩, ?_⟩
+    · rw [hz₁re, hz₂re, uIcc_self, Set.mem_singleton_iff]; simp [hg₂]
+    · rw [hz₁im, hz₂im, uIcc_of_le (by linarith)]
+      have him2 : (g₂ x).im = 2 * x := by simp [hg₂]
+      rw [him2]
+      exact ⟨by linarith [hx.1], by linarith [hx.2]⟩
+    · show E (g₂ x) = 0
+      rw [hEA _ (by simp [hg₂]), ← hl]
+
+/-- **Uniformly continuous locks are close to a small shift.** If `V` is uniformly continuous on
+the closed strip `½ ≤ Re s ≤ 3/2`, then `|V(½ + ε − iy) − V(½ − iy)| ≤ ½` for some `ε ∈ (0, ¼]`
+and all `y`. -/
+theorem exists_shift_close_of_uniformContinuousOn {V : ℂ → ℂ}
+    (hV : UniformContinuousOn V {z : ℂ | 1 / 2 ≤ z.re ∧ z.re ≤ 3 / 2}) :
+    ∃ ε : ℝ, 0 < ε ∧ ε ≤ 1 / 4 ∧ ∀ y : ℝ,
+      ‖V (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I) - V (1 / 2 - (y : ℂ) * I)‖ ≤ 1 / 2 := by
+  obtain ⟨δ, hδ, h⟩ := Metric.uniformContinuousOn_iff.mp hV (1 / 2) (by norm_num)
+  set ε : ℝ := min (δ / 2) (1 / 4) with hε
+  have hε0 : 0 < ε := lt_min (by linarith) (by norm_num)
+  have hεδ : ε < δ := lt_of_le_of_lt (min_le_left _ _) (by linarith)
+  refine ⟨ε, hε0, min_le_right _ _, fun y => ?_⟩
+  have h1 : ((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I ∈ {z : ℂ | 1 / 2 ≤ z.re ∧ z.re ≤ 3 / 2} := by
+    simp only [Set.mem_setOf_eq, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im]
+    constructor <;> linarith [min_le_right (δ / 2) (1 / 4 : ℝ)]
+  have h2 : (1 / 2 - (y : ℂ) * I) ∈ {z : ℂ | 1 / 2 ≤ z.re ∧ z.re ≤ 3 / 2} := by
+    simp only [Set.mem_setOf_eq]; constructor <;> norm_num
+  have hd : dist (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I) (1 / 2 - (y : ℂ) * I) < δ := by
+    rw [dist_eq_norm, show ((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I - (1 / 2 - (y : ℂ) * I) =
+      ((ε : ℝ) : ℂ) by push_cast; ring, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hε0]
+    exact hεδ
+  have := h _ h1 _ h2 hd
+  rw [dist_eq_norm] at this
+  exact this.le
+
+/-- **A slowly growing quotient and a continuous lock force the true producer.** Let `G` be a
+Herglotz producer for the weights `lam` that factors as `G = s(s − 1)Γ_ℝ(s) ζ(s) A(s)` on
+`Re s > ½` (`s ≠ 1`), with `A` holomorphic on `Re s > ½`, continuous on `Re s ≥ ½`, and
+`|A(s)| ≤ W e^{|Im s|^α}` there for some `α < 1`. Suppose the lower-line lock
+`G(1 − s) = V(s) G(s)` holds with `V` continuous, bounded, holomorphic on `½ < Re s < 3/2`, and
+uniformly close to a small right shift: `|V(½ + ε − iy) − V(½ − iy)| ≤ ½` for one `ε ∈ (0, ¼]`
+and all `y` (true whenever `V` is uniformly continuous on the closed strip). Then
+`lam(n) = Λ(n)` for all `n ≥ 2`, and RH holds.
+
+No almost periodicity and no boundedness of the quotient is assumed: the obstruction to uniqueness
+is a quotient `G/(s(s − 1)Γ_ℝ ζ)` that is singular at the critical line, not one that is large. -/
+theorem slowQuotient_lock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    (hΦd : DifferentiableOn ℂ Φ {s : ℂ | 1 / 2 < s.re})
+    (hΦre : ∀ s : ℂ, 1 / 2 < s.re → 0 ≤ (Φ s).re)
+    (hid : ∀ s : ℂ, 1 < s.re →
+      Φ s = zetaArchimedeanDatum s + 1 / (s - 1) - LSeries (lamTwo lam) s)
+    (hGc : ∀ s : ℂ, 1 / 2 ≤ s.re → ContinuousAt G s)
+    (hGd : ∀ s : ℂ, 1 / 2 < s.re → HasDerivAt G (Φ s * G s) s) (hG2 : G 2 = bigG lam 2)
+    {A V : ℂ → ℂ} {WA CV α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1)
+    (hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
+    (hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re})
+    (hAg : ∀ s : ℂ, 1 / 2 ≤ s.re → ‖A s‖ ≤ WA * Real.exp (|s.im| ^ α))
+    (hGK : ∀ s : ℂ, 1 / 2 < s.re → s ≠ 1 →
+      G s = s * (s - 1) * Gammaℝ s * (riemannZeta s * A s))
+    (hVc : Continuous V) (hVd : DifferentiableOn ℂ V lockStrip) (hVb : ∀ s, ‖V s‖ ≤ CV)
+    (hshift : ∃ ε : ℝ, 0 < ε ∧ ε ≤ 1 / 4 ∧ ∀ y : ℝ,
+      ‖V (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I) - V (1 / 2 - (y : ℂ) * I)‖ ≤ 1 / 2)
+    (hlock : ∀ τ : ℝ, τ < 0 → G (1 - lineS τ) = V (lineS τ) * G (lineS τ)) :
+    (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis := by
+  have hUA : IsOpen {s : ℂ | 1 / 2 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hzA : ∀ s : ℂ, 1 < s.re → zetaOf lam s = riemannZeta s * A s := by
+    intro s hs
+    have hs1 : s ≠ 1 := fun h => by rw [h] at hs; simp at hs
+    have h1 := G_eq_bigG hsl hid hGd hG2 hs
+    rw [hGK s (by linarith) hs1, bigG] at h1
+    have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs; linarith
+    have hs1' : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
+    have hΓ : Gammaℝ s ≠ 0 := Gammaℝ_ne_zero_of_re_pos (by linarith)
+    have hpre : s * (s - 1) * Gammaℝ s ≠ 0 := mul_ne_zero (mul_ne_zero hs0 hs1') hΓ
+    exact (mul_left_cancel₀ hpre h1).symm
+  obtain ⟨σ₀, hσ₀2, hanchor⟩ := exists_re_ge_half_of_zetaOf_eq hsl hzA
+  have hA0 : ∀ s : ℂ, 1 / 2 < s.re → s ≠ 1 → A s ≠ 0 := fun s hs hs1 h =>
+    G_ne_zero hΦd hGd hG2 hs (by rw [hGK s hs hs1, h]; ring)
+  have hlockA : ∀ y : ℝ, 0 < y → A (1 / 2 + y * I) = V (1 / 2 - y * I) * A (1 / 2 - y * I) :=
+    fun y hy => lineFactor_lock hGc hGK hAc hVc hlock hy
+  have hunit : ∀ y : ℝ, 0 < y → ‖V (1 / 2 - (y : ℂ) * I)‖ = 1 := fun y hy =>
+    norm_lock_eq_one hsl hΦd hΦre hid hGc hGd hG2 hVc hlock hy
+  have hEz₀ : lockGlue A V ((σ₀ : ℂ) + (σ₀ + 1 : ℝ) * I) ≠ 0 := by
+    rw [lockGlue_of_le (by simp; linarith)]
+    exact fun h => by have := hanchor _ (show σ₀ ≤ ((σ₀ : ℂ) + (σ₀ + 1 : ℝ) * I).re by simp)
+                      rw [h] at this; simp at this; linarith
+  have hz₀ : ((σ₀ : ℂ) + (σ₀ + 1 : ℝ) * I) ∈ glueDomain := ⟨by simp; linarith, by simp; linarith⟩
+  have hzfin := lineFactor_lowerZeros_finite hVc hVd hGc hGK hAd hAc hlockA hz₀ hEz₀
+  obtain ⟨ε, hε0, hε14, hclose'⟩ := hshift
+  obtain ⟨Y₀, C₀, C₁, D, hY₀pos, hC₁, hD, hgoodY⟩ :=
+    lock_shiftedPhase_bound hVc hVd hVb hAd hAc hα0 hAg hA0 hσ₀2 hanchor hlockA hunit hε0 hε14
+      hclose'
+  set p : ℝ → ℂ := fun y => ((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I with hp
+  have hpre : ∀ y, (p y).re = 1 / 2 + ε := fun y => by simp [hp]
+  have hVp0 : ∀ y : ℝ, 0 < y → V (p y) ≠ 0 := by
+    intro y hy h0
+    have h1 := hclose' y
+    rw [show V (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I) = V (p y) from rfl, h0,
+      zero_sub, norm_neg, hunit y hy] at h1
+    norm_num at h1
+  /- the lock phase -/
+  set vline : ℝ → ℂ := fun y => V (1 / 2 - (y : ℂ) * I) with hvline
+  have hvc : Continuous vline := hVc.comp (by fun_prop)
+  have hv0 : ‖vline 0‖ = 1 := by
+    have hc0 : ContinuousAt (fun y => ‖vline y‖) 0 :=
+      hvc.norm.continuousAt
+    refine tendsto_nhds_unique (hc0.tendsto.mono_left nhdsWithin_le_nhds :
+      Tendsto (fun y => ‖vline y‖) (𝓝[>] 0) _) (tendsto_const_nhds.congr' ?_)
+    filter_upwards [self_mem_nhdsWithin] with y (hy : 0 < y)
+    exact (hunit y hy).symm
+  have hunit0 : ∀ y : ℝ, 0 ≤ y → ‖vline y‖ = 1 := fun y hy => by
+    rcases eq_or_lt_of_le hy with h | h
+    · rw [← h]; exact hv0
+    · exact hunit y h
+  set w : ℝ → ℂ := fun r => vline (max r 0) with hw
+  have hwc : Continuous w := hvc.comp (continuous_id.max continuous_const)
+  have hw0 : ∀ r, w r ≠ 0 := fun r h => by
+    have := hunit0 (max r 0) (le_max_right _ _)
+    rw [show vline (max r 0) = w r from rfl, h, norm_zero] at this
     exact zero_ne_one this
-  refine phase_lock_rigidity hsl hΦd hΦre hid hGc hGd hG2 le_rfl (inv_ne_zero hκ0)
-    (fun y hy => ?_)
-  have hl := hlock (-(y / 2)) (by linarith)
-  have e1 : lineS (-(y / 2)) = 1 / 2 - ((y : ℝ) : ℂ) * I := by rw [lineS_eq]; push_cast; ring
-  have e2 : (1 : ℂ) - (1 / 2 - (y : ℂ) * I) = 1 / 2 + (y : ℂ) * I := by ring
-  rw [e1, e2, hline y, hconst y hy] at hl
-  rw [hl, ← mul_assoc, inv_mul_cancel₀ hκ0, one_mul]
+  have hUs : IsSimplyConnected (Set.univ : Set ℝ) := by
+    rw [IsSimplyConnected]
+    exact (Homeomorph.Set.univ ℝ).toHomotopyEquiv.simplyConnectedSpace
+  obtain ⟨L, hLc', hLe'⟩ := Complex.exists_continuousOn_eqOn_exp_comp hUs isOpen_univ
+    hwc.continuousOn (by rintro ⟨z, -, hz⟩; exact hw0 z hz)
+  have hLc : Continuous L := continuousOn_univ.mp hLc'
+  have hLe : ∀ r, cexp (L r) = w r := fun r => hLe' (mem_univ r)
+  set θ : ℝ → ℝ := fun r => (L r).im with hθdef
+  have hθc : Continuous θ := Complex.continuous_im.comp hLc
+  have hθv : ∀ y : ℝ, 0 ≤ y → vline y = cexp ((θ y : ℂ) * I) := by
+    intro y hy
+    have h1 : cexp (L y) = vline y := by rw [hLe y]; simp [hw, max_eq_left hy]
+    have h2 : (L y).re = 0 := by
+      have := congrArg norm h1
+      rw [Complex.norm_exp, hunit0 y hy] at this
+      exact Real.exp_eq_one_iff _ |>.mp this
+    rw [← h1]
+    congr 1
+    apply Complex.ext <;> simp [hθdef, h2]
+  /- the positivity law: the lock phase is nondecreasing -/
+  have hG20 : G 2 ≠ 0 := G_ne_zero hΦd hGd hG2 (by norm_num)
+  obtain ⟨P, hP, hPG⟩ := exists_log_producer hΦd hGd
+  set θc : ℝ → ℝ := fun x => θ (2 * x) with hθcdef
+  have hθcc : Continuous θc := hθc.comp (continuous_const.mul continuous_id)
+  have hvpt : ∀ x : ℝ, vpt (1 / 2) x = 1 / 2 - ((2 * x : ℝ) : ℂ) * I := fun x => by
+    unfold vpt; push_cast; ring
+  have hlockc : ∀ x : ℝ, 0 < x → G (1 - vpt (1 / 2) x) =
+      1 * cexp ((θc x : ℂ) * I) * G (vpt (1 / 2) x) := by
+    intro x hx
+    have h := hlock (-x) (by linarith)
+    rw [lineS_neg_eq_vpt] at h
+    rw [h, one_mul, hvpt x]
+    congr 1
+    exact hθv (2 * x) (by linarith)
+  have hθcmono : ∀ a b : ℝ, 0 < a → a ≤ b → θc a ≤ θc b := by
+    intro a b ha hab
+    have hfin := hzfin a b ha hab
+    refine le_of_locally_monotone_off_finite hfin.toFinset hab hθcc.continuousOn ?_
+    intro x hx hxT
+    have hG0 : G (vpt (1 / 2) x) ≠ 0 := fun h => hxT (by
+      rw [Set.Finite.mem_toFinset]; exact ⟨Ioo_subset_Icc_self hx, h⟩)
+    exact local_phase_monotone hsl hΦre hid hGc hGd hG2 hG20 hP hPG hθcc hlockc (ha.trans hx.1) hG0
+  have hθmono : ∀ y y' : ℝ, 0 ≤ y → y ≤ y' → θ y ≤ θ y' := by
+    intro y y' hy hyy'
+    rcases eq_or_lt_of_le hyy' with h | h
+    · rw [h]
+    have hhalf : ∀ t : ℝ, θc (t / 2) = θ t := fun t => by
+      simp only [hθcdef]; congr 1; ring
+    rcases eq_or_lt_of_le hy with h0 | h0
+    · rw [← h0]
+      refine le_of_tendsto (hθc.continuousAt.tendsto.mono_left nhdsWithin_le_nhds :
+        Tendsto θ (𝓝[>] 0) _) ?_
+      filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < y' by linarith)] with t ht
+      have := hθcmono (t / 2) (y' / 2) (by linarith [ht.1]) (by linarith [ht.2])
+      rwa [hhalf, hhalf] at this
+    · have := hθcmono (y / 2) (y' / 2) (by linarith) (by linarith)
+      rwa [hhalf, hhalf] at this
+  /- the lock phase is bounded above -/
+  have hpU : ∀ y, p y ∈ lockStrip := fun y => ⟨by rw [hpre]; linarith, by rw [hpre]; linarith⟩
+  have hVanU : AnalyticOnNhd ℂ V lockStrip := hVd.analyticOnNhd isOpen_lockStrip
+  have hpd : ∀ y : ℝ, HasDerivAt p (-I) y := by
+    intro y
+    have := ((hasDerivAt_id y).neg.ofReal_comp.mul_const I).const_add ((1 / 2 + ε : ℝ) : ℂ)
+    simpa [hp] using this
+  have hVp : ∀ y : ℝ, HasDerivAt (fun y => V (p y)) (deriv V (p y) * (-I)) y := fun y =>
+    (hVanU _ (hpU y)).differentiableAt.hasDerivAt.comp y (hpd y)
+  have hphase : ∀ Y : ℝ, Y₀ ≤ Y → ∀ Cfin : ℝ, -(∫ y in Y₀..Y, (logDeriv V (p y)).re) ≤ Cfin →
+      θ Y - θ Y₀ ≤ 2 * Real.pi + Cfin := by
+    intro Y hY Cfin hk
+    have hcont : ContinuousOn (fun y => deriv V (p y) * (-I) / V (p y)) (Icc Y₀ Y) := by
+      intro y hy
+      have hd : ContinuousAt (fun y => deriv V (p y)) y :=
+        (hVanU.deriv _ (hpU y)).continuousAt.comp (hpd y).continuousAt
+      exact ((hd.mul continuousAt_const).div (hVp y).continuousAt
+        (hVp0 y (hY₀pos.trans_le hy.1))).continuousWithinAt
+    have hcmp := phase_sub_le_of_shift (v := vline) (W := fun y => V (p y))
+      (W' := fun y => deriv V (p y) * (-I)) (θ := θ) hY hθc.continuousOn
+      (fun y hy => hθv y (hY₀pos.le.trans hy.1)) hvc.continuousOn
+      (fun y _ => hVp y) hcont (fun y _ => hclose' y)
+    have hint : (∫ y in Y₀..Y, (deriv V (p y) * (-I) / V (p y)).im) =
+        -∫ y in Y₀..Y, (logDeriv V (p y)).re := by
+      rw [← intervalIntegral.integral_neg]
+      refine intervalIntegral.integral_congr fun y _ => ?_
+      simp only [logDeriv_apply]
+      rw [mul_comm, mul_div_assoc]
+      simp
+    linarith
+  set K₀ : ℝ := 2 * Real.pi + |C₀| with hK₀
+  have hK₀0 : 0 ≤ K₀ := by rw [hK₀]; have := Real.pi_pos; positivity
+  have hbound : ∀ y : ℝ, 0 ≤ y → θ y ≤ θ Y₀ + K₀ + C₁ * (y + Y₀ + 2 + D) ^ α := by
+    intro y hy
+    have hpow0 : 0 ≤ C₁ * (y + Y₀ + 2 + D) ^ α := mul_nonneg hC₁ (by positivity)
+    rcases le_or_gt y Y₀ with h | h
+    · linarith [hθmono y Y₀ hy h, le_abs_self C₀]
+    · obtain ⟨Y, hTY, hYle, hY, hk⟩ := hgoodY y
+      have h1 := hθmono y Y hy hTY
+      have h2 := hphase Y hY _ hk
+      have hYle' : Y + D ≤ y + Y₀ + 2 + D := by
+        have : max y Y₀ = y := max_eq_left h.le
+        linarith
+      have h3 : (Y + D) ^ α ≤ (y + Y₀ + 2 + D) ^ α :=
+        Real.rpow_le_rpow (by linarith [hY₀pos]) hYle' hα0
+      have h4 := mul_le_mul_of_nonneg_left h3 hC₁
+      linarith [le_abs_self C₀]
+  /- the monotone twist theorem -/
+  set Cm : ℝ → ℝ := fun x => θ (2 * max x 0) with hCm
+  have hCmono : Monotone Cm := fun x x' hxx' =>
+    hθmono _ _ (by positivity) (by have := max_le_max hxx' (le_refl (0 : ℝ)); linarith)
+  have hCbd : ∃ α' K : ℝ, α' < 1 ∧ ∀ x : ℝ, 1 ≤ x → Cm x ≤ K * x ^ α' := by
+    refine ⟨α, |θ Y₀| + K₀ + C₁ * (4 + Y₀ + D) ^ α, hα1, fun x hx => ?_⟩
+    have hx0 : 0 ≤ x := by linarith
+    have hb := hbound (2 * x) (by linarith)
+    simp only [hCm, max_eq_left hx0]
+    have hxα : 1 ≤ x ^ α := Real.one_le_rpow hx hα0
+    have hlin : 2 * x + Y₀ + 2 + D ≤ (4 + Y₀ + D) * x := by nlinarith [hY₀pos, hD]
+    have hp : (2 * x + Y₀ + 2 + D) ^ α ≤ (4 + Y₀ + D) ^ α * x ^ α := by
+      rw [← Real.mul_rpow (by linarith [hY₀pos]) hx0]
+      exact Real.rpow_le_rpow (by linarith [hY₀pos]) hlin hα0
+    have hp' := mul_le_mul_of_nonneg_left hp hC₁
+    have hθ0 : θ Y₀ ≤ |θ Y₀| * x ^ α := by
+      calc θ Y₀ ≤ |θ Y₀| := le_abs_self _
+        _ ≤ |θ Y₀| * x ^ α := le_mul_of_one_le_right (abs_nonneg _) hxα
+    have hK : K₀ ≤ K₀ * x ^ α := le_mul_of_one_le_right hK₀0 hxα
+    nlinarith
+  refine abelian_twist_power_rigidity hsl hΦd hΦre hid hGc hGd hG2 hCmono hCbd (κ₀ := 1)
+    (β₀ := 1) fun τ hτ => ?_
+  have hx : 0 < -τ := by linarith
+  have h := hlockc (-τ) hx
+  rw [← lineS_neg_eq_vpt, neg_neg] at h
+  rw [h]
+  congr 3
+  simp only [hCm, hθcdef, one_mul, max_eq_left hx.le]
+
+
+/-- **A bounded quotient and a continuous lock force the true producer.** The case `α = 0` of
+`slowQuotient_lock_trueProducer`: `G = s(s − 1)Γ_ℝ ζ A` with `A` bounded and continuous on
+`Re s ≥ ½`, and a continuous bounded lock holomorphic on `½ < Re s < 3/2` that is uniformly close to
+its small right shift. -/
+theorem boundedQuotient_lock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    (hΦd : DifferentiableOn ℂ Φ {s : ℂ | 1 / 2 < s.re})
+    (hΦre : ∀ s : ℂ, 1 / 2 < s.re → 0 ≤ (Φ s).re)
+    (hid : ∀ s : ℂ, 1 < s.re →
+      Φ s = zetaArchimedeanDatum s + 1 / (s - 1) - LSeries (lamTwo lam) s)
+    (hGc : ∀ s : ℂ, 1 / 2 ≤ s.re → ContinuousAt G s)
+    (hGd : ∀ s : ℂ, 1 / 2 < s.re → HasDerivAt G (Φ s * G s) s) (hG2 : G 2 = bigG lam 2)
+    {A V : ℂ → ℂ} {WA CV : ℝ}
+    (hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
+    (hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re})
+    (hAb : ∀ s : ℂ, 1 / 2 ≤ s.re → ‖A s‖ ≤ WA)
+    (hGK : ∀ s : ℂ, 1 / 2 < s.re → s ≠ 1 →
+      G s = s * (s - 1) * Gammaℝ s * (riemannZeta s * A s))
+    (hVc : Continuous V) (hVd : DifferentiableOn ℂ V lockStrip) (hVb : ∀ s, ‖V s‖ ≤ CV)
+    (hshift : ∃ ε : ℝ, 0 < ε ∧ ε ≤ 1 / 4 ∧ ∀ y : ℝ,
+      ‖V (((1 / 2 + ε : ℝ) : ℂ) + ((-y : ℝ) : ℂ) * I) - V (1 / 2 - (y : ℂ) * I)‖ ≤ 1 / 2)
+    (hlock : ∀ τ : ℝ, τ < 0 → G (1 - lineS τ) = V (lineS τ) * G (lineS τ)) :
+    (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis := by
+  have hWA : 0 ≤ WA := (norm_nonneg _).trans (hAb 1 (by norm_num))
+  refine slowQuotient_lock_trueProducer (WA := WA) (α := 0) hsl hΦd hΦre hid hGc hGd hG2 le_rfl
+    one_pos hAd hAc (fun s hs => ?_) hGK hVc hVd hVb hshift hlock
+  calc ‖A s‖ ≤ WA := hAb s hs
+    _ ≤ WA * Real.exp (|s.im| ^ (0 : ℝ)) :=
+        le_mul_of_one_le_right hWA (Real.one_le_exp (by positivity))
+
+/-- **Almost-periodic locks force the true producer.** Let `G` be a Herglotz producer for the
+weights `lam` with lower-line lock `G(1 − s) = V(s) G(s)`, `V(s) = Σ_j c_j u_j^{−(s−½)}`, with
+`Σ_j |c_j| max(1, u_j^{−1}) K(u_j) < ∞` (`K(u) = √den(u) 8^{ω(den u)}` for rational `u`, `K = 1`
+otherwise). Then `lam(n) = Λ(n)` for all `n ≥ 2`, and the Riemann hypothesis holds. -/
+theorem almostPeriodicLock_trueProducer {lam : ℕ → ℝ} {Φ G : ℂ → ℂ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    (hΦd : DifferentiableOn ℂ Φ {s : ℂ | 1 / 2 < s.re})
+    (hΦre : ∀ s : ℂ, 1 / 2 < s.re → 0 ≤ (Φ s).re)
+    (hid : ∀ s : ℂ, 1 < s.re →
+      Φ s = zetaArchimedeanDatum s + 1 / (s - 1) - LSeries (lamTwo lam) s)
+    (hGc : ∀ s : ℂ, 1 / 2 ≤ s.re → ContinuousAt G s)
+    (hGd : ∀ s : ℂ, 1 / 2 < s.re → HasDerivAt G (Φ s * G s) s) (hG2 : G 2 = bigG lam 2)
+    {c : ℕ → ℂ} {u : ℕ → ℝ} (hu : ∀ j, 0 < u j)
+    (hcw : Summable fun j => ‖c j‖ * max 1 (u j)⁻¹ * realDenWeight (u j))
+    (hlock : ∀ τ : ℝ, τ < 0 → G (1 - lineS τ) = apLock c u (lineS τ) * G (lineS τ)) :
+    (∀ n : ℕ, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n) ∧ RiemannHypothesis := by
+  /- the factorization -/
+  obtain ⟨Ψ, B, hB, hW, hΨ⟩ :=
+    almostPeriodicLock_limitPeriodic hsl hΦre hid hGc hGd hG2 hu hcw hlock
+  have hB0 : ∀ q, 0 ≤ B q := fun q => (norm_nonneg _).trans (hB q 0)
+  have h8 : Summable fun q : ℕ => (8 : ℝ) ^ (q + 1).primeFactors.card * B q :=
+    Summable.of_nonneg_of_le (fun q => mul_nonneg (by positivity) (hB0 q)) (fun q => by
+      have hsq : (1 : ℝ) ≤ Real.sqrt ((q : ℝ) + 1) :=
+        Real.one_le_sqrt.mpr (le_add_of_nonneg_left (Nat.cast_nonneg q))
+      calc (8 : ℝ) ^ (q + 1).primeFactors.card * B q
+          = 1 * 8 ^ (q + 1).primeFactors.card * B q := by ring
+        _ ≤ Real.sqrt ((q : ℝ) + 1) * 8 ^ (q + 1).primeFactors.card * B q :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hsq (by positivity))
+            (hB0 q)) hW
+  obtain ⟨hGK, hFA⟩ := limitPeriodic_producer_factor hsl hΦd hid hGc hGd hG2 hB hW hΨ
+  set A := limitTrivialSeries Ψ with hAdef
+  have hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re} :=
+    differentiableOn_limitTrivialSeries hB h8
+  have hAc : ContinuousOn A {s : ℂ | 1 / 2 ≤ s.re} := continuousOn_limitTrivialSeries hB h8
+  set WA : ℝ := ∑' q : ℕ, (8 : ℝ) ^ (q + 1).primeFactors.card * B q with hWA
+  have hAb : ∀ s : ℂ, 1 / 2 ≤ s.re → ‖A s‖ ≤ WA := fun s hs => norm_limitTrivialSeries_le hB h8 hs
+  have hc : Summable fun j => ‖c j‖ * max 1 (u j)⁻¹ :=
+    Summable.of_nonneg_of_le
+      (fun j => mul_nonneg (norm_nonneg _) (le_trans zero_le_one (le_max_left _ _)))
+      (fun j => le_mul_of_one_le_right
+        (mul_nonneg (norm_nonneg _) (le_trans zero_le_one (le_max_left _ _)))
+        (one_le_realDenWeight _)) hcw
+  exact boundedQuotient_lock_trueProducer hsl hΦd hΦre hid hGc hGd hG2 hAd hAc hAb hGK
+    (continuous_apLock hu hc)
+    (fun z hz => (differentiableAt_apLock hu hc hz.1 hz.2).differentiableWithinAt)
+    (norm_apLock_le hu hc) (exists_shift_apLock_close hu hc) hlock
 
 end
 
