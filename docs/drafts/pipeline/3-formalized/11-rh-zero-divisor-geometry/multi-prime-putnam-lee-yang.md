@@ -36,3 +36,8 @@ No RH leverage. It is the ζ-side complement of MUST-719/722: the critical zeros
   - `RHTower/ZetaZerosLeeYangPutnam` (790 lines). It contains the strip decay of `ξ/Y_a` by maximum modulus on the bands `[2πk, 2π(k+1)]/log 6`, Γ_ℝ strip decay via `Γ(w) = Γ(w+1)/w`, the stripped quotient `E` with the poles at `0, 1` removed by `dslope`, and the Hamburger contradiction `c(1) = 0 = −2α`.
 - Reusable: `exists_quotient_bound_strip` turns edge lower bounds of a divisor of `ξ` into strip decay of the quotient, and `exists_pow_mul_exp_le` gives `x^N e^{−πx/4} ≤ B/(1+x²)`.
 - Verdict unchanged: BRIDGE (corollary of Hamburger). No RH leverage.
+
+## Generalisation (2026-10-14, MUST-1406 [L])
+- `RHTower.StablePutnam.exists_zero_stableDirichlet_riemannZeta_ne_zero`: for every real multiaffine `Q` in any number `k ≥ 1` of variables, stable on the open polydisc, self-reciprocal, with `Σ_{S≠∅}|q_S/q_∅|Π_{j∈S}n_j^{−1} < 1`, the critical zeros of `P(s) = Q(n^{½−s})` are not all zeros of `ζ`. Instance `exists_zero_leeYang_riemannZeta_ne_zero`: bases `2, 3`, all `|a| < 1`.
+- Route (the one proposed at Bohr-card row 64): `H = Σ log n_j(½ − z_j∂_jQ/Q)` is Herglotz by stability, has `Re H = 0` on the line off the zeros of `P` by self-reciprocity, and is a Dirichlet series with constant `½Σ log n_j`. The general Herglotz carrier theorem `RHTower.AtomDomination.eq_zero_of_herglotz_dirichlet_criticalCarrier` (Herglotz explicit formula + MUST-722 + Poisson support lemma) then gives the contradiction. No Bohr heights, no band-wise maximum modulus, no Hamburger.
+- Verdict unchanged: BRIDGE.

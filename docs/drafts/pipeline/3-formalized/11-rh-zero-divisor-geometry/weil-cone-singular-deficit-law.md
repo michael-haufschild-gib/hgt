@@ -114,3 +114,4 @@
 - `WeilFullConePoissonCountingIdentity.poissonCount_sub_eq`: the Poisson-smoothed (width 3/2) spectral count of `μ_lam` minus the Poisson-smoothed zero count of ξ (abscissa 2) equals `Σ(Λ−lam)(n)n^{−2}sin(T log n)/log n` exactly.
 - This sharpens L127's mass lemma (`πN(T) + O(log T)`) to an exact identity with an `O(1)` almost-periodic error.
 - Consequence for the deficit law: zero-atom removal (`R⁺`) is compensated, within `O(1)` in Poisson-smoothed counts, by mass created elsewhere. This is L269's mean balance in exact form.
+- 2026-10-14 — Local form [L], MUST-1402 (`RHTower/WeilConeLocalDeficitLaw`): one window `(T − 2L, T + 2L]` with `log T = o(L)` and `o(L)` deficit weight anywhere on the line forces `Λ`. Generic tool: `abs_le_four_mul_of_logCosSeries_window` (Bohr envelope bound on a single long window). Consequence: deficits of a producer `≠ Λ` are uniformly spread at scale `log T`.

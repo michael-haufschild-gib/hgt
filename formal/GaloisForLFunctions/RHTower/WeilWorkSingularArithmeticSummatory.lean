@@ -20,33 +20,31 @@ noncomputable section
 
 namespace RHTower.WeilSingularArithmetic
 
-private theorem regularPart_power_bound {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+private theorem regularPart_power_bound {lam : ℕ → ℝ} {A : ℂ → ℂ}
+    (hH : HerglotzWeilPositive lam A) (hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
+    {K : ℝ} (hK : 0 ≤ K)
+    (hAK : ∀ s : ℂ, 1 / 2 < s.re → s.re ≤ 2 → ‖A s‖ ≤ K * Real.log (|s.im| + 3))
     {q a : ℝ} (hq : 0 < q) (ha : 0 < a) :
     ∃ (R : ℂ → ℂ) (K : ℝ), 0 ≤ K ∧
       DifferentiableOn ℂ R {s : ℂ | 1 / 2 < s.re} ∧
-      (∀ s : ℂ, 1 < s.re → R s =
-        LSeries (fun n => ((if 2 ≤ n then lam n else 0 : ℝ) : ℂ)) s - 1 / (s - 1)) ∧
+      (∀ s : ℂ, 1 < s.re → R s = LSeries (fun n => ((lam n : ℝ) : ℂ)) s - 1 / (s - 1)) ∧
       ∀ s : ℂ, 1 / 2 + q ≤ s.re → ‖R s‖ ≤ K * (2 + |s.im|) ^ a := by
-  let lam' : ℕ → ℝ := fun n => if 2 ≤ n then lam n else 0
-  have hH := WeilSpectral.herglotzWeilPositive_of_weilPositiveFull hW
   obtain ⟨Φ, hΦd, hΦre, hΦid⟩ := hH.herglotz
-  obtain ⟨K, hK, hAK⟩ := exists_log_bound_zetaArchimedeanDatum
-  let L : ℝ := ∑' n : ℕ, |lam' n| / (n : ℝ) ^ (2 : ℝ)
+  let L : ℝ := ∑' n : ℕ, |lam n| / (n : ℝ) ^ (2 : ℝ)
   let B : ℝ := 2 * (6 * (K + 1 + L)) / (2 * q)
   have hL : 0 ≤ L := tsum_nonneg fun _ => by positivity
   have hB : 0 ≤ B := by dsimp [B]; positivity
-  refine ⟨fun s => zetaArchimedeanDatum s - Φ s,
+  refine ⟨fun s => A s - Φ s,
     B * (2 ^ a / a) + (L + 1), by positivity, ?_, ?_, ?_⟩
-  · exact (differentiableOn_zetaArchimedeanDatum.mono
-      (fun s (hs : 1 / 2 < s.re) => show 0 < s.re by linarith)).sub hΦd
+  · exact hAd.sub hΦd
   · intro s hs
-    change zetaArchimedeanDatum s - Φ s = _
+    change A s - Φ s = _
     rw [hΦid s hs]
     ring
   · intro s hs
     have hb := norm_regularPart_le_of_re_ge hK hH.summable hΦd hΦre hΦid hAK
       (show 0 < 2 * q by positivity) (w := s) (by linarith)
-    change ‖zetaArchimedeanDatum s - Φ s‖ ≤ B * Real.log (|s.im| + 3) + L + 1 at hb
+    change ‖A s - Φ s‖ ≤ B * Real.log (|s.im| + 3) + L + 1 at hb
     have hl : Real.log (|s.im| + 3) ≤ (2 ^ a / a) * (2 + |s.im|) ^ a := by
       calc
         _ ≤ (|s.im| + 3) ^ a / a := Real.log_le_rpow_div (by positivity) ha
@@ -63,14 +61,18 @@ private theorem regularPart_power_bound {lam : ℕ → ℝ} (hW : WeilPositiveFu
           mul_le_mul_of_nonneg_left hp (show 0 ≤ L + 1 by positivity)]
       _ = _ := by ring
 
-/-- Full positivity alone forces square-root, up to epsilon, summatory error
-for the original signed source coefficients. -/
-theorem exists_sharp_source_sum_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
-    {ε : ℝ} (hε : 0 < ε) :
+/-- **Square-root summatory law for a Herglotz datum.**  If `A + 1/(s − 1) − Σ lam(n) n^{−s}`
+continues to a function with nonnegative real part on `Re s > ½`, with `A` holomorphic and of
+logarithmic growth there and `lam(0) = 0`, then `Σ_{n ≤ N} lam(n) = N + O(N^{1/2+ε})`. -/
+theorem exists_sharp_source_sum_le_of_herglotz {lam : ℕ → ℝ} {A : ℂ → ℂ}
+    (hH : HerglotzWeilPositive lam A) (hAd : DifferentiableOn ℂ A {s : ℂ | 1 / 2 < s.re})
+    {K₀ : ℝ} (hK₀ : 0 ≤ K₀)
+    (hAK : ∀ s : ℂ, 1 / 2 < s.re → s.re ≤ 2 → ‖A s‖ ≤ K₀ * Real.log (|s.im| + 3))
+    (h0 : lam 0 = 0) {ε : ℝ} (hε : 0 < ε) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
-      ‖(∑ n ∈ Finset.range (N + 1), ((if 2 ≤ n then lam n else 0 : ℝ) : ℂ)) - N‖ ≤
+      ‖(∑ n ∈ Finset.range (N + 1), ((lam n : ℝ) : ℂ)) - N‖ ≤
         C * ((N : ℝ) + 1) ^ (1 / 2 + ε) := by
-  let b : ℕ → ℂ := fun n => ((if 2 ≤ n then lam n else 0 : ℝ) : ℂ)
+  let b : ℕ → ℂ := fun n => ((lam n : ℝ) : ℂ)
   let q : ℝ := min (ε / 4) (1 / 4)
   let a : ℝ := q / 2
   let c : ℝ := 1 / 2 + q
@@ -82,7 +84,7 @@ theorem exists_sharp_source_sum_le {lam : ℕ → ℝ} (hW : WeilPositiveFull la
   have hc : 0 < c := by dsimp [c]; linarith
   have hc2 : c ≤ 2 := by dsimp [c]; linarith
   have hcr : c + q ≤ 1 / 2 + ε := by dsimp [c]; linarith
-  obtain ⟨R, K, hK, hRd, hRL, hRb⟩ := regularPart_power_bound hW hq ha
+  obtain ⟨R, K, hK, hRd, hRL, hRb⟩ := regularPart_power_bound hH hAd hK₀ hAK hq ha
   have hstrip : verticalStrip c 2 ⊆ {s : ℂ | 1 / 2 < s.re} := by
     intro s hs
     have := hs.1
@@ -100,13 +102,12 @@ theorem exists_sharp_source_sum_le {lam : ℕ → ℝ} (hW : WeilPositiveFull la
   have hpi : 0 < 2 * Real.pi := by positivity
   refine ⟨B / (2 * Real.pi) + 2, by positivity, fun N => ?_⟩
   rcases N.eq_zero_or_pos with rfl | hN
-  · simp
+  · simp [h0]
     positivity
   have hN0 : 0 < (N : ℝ) := by exact_mod_cast hN
   have hN1 : 1 ≤ (N : ℝ) := by exact_mod_cast hN
   have hNX : 1 ≤ (N : ℝ) + 1 := by linarith
-  have hb0 : b 0 = 0 := by simp [b]
-  have hH := WeilSpectral.herglotzWeilPositive_of_weilPositiveFull hW
+  have hb0 : b 0 = 0 := by simp [b, h0]
   have hsum : Summable (fun n : ℕ => ‖b n‖ * (n : ℝ) ^ (-(2 : ℝ))) := by
     refine (hH.summable 2 (by norm_num)).congr fun n => ?_
     simp only [b, Complex.norm_real, Real.norm_eq_abs, Real.rpow_neg (Nat.cast_nonneg n),
@@ -183,6 +184,19 @@ theorem exists_sharp_source_sum_le {lam : ℕ → ℝ} (hW : WeilPositiveFull la
     _ ≤ ‖(∑ n ∈ Finset.range (N + 1), b n) - J‖ + ‖J - N‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
     _ ≤ (B / (2 * Real.pi)) * ((N : ℝ) + 1) ^ (1 / 2 + ε) + 2 := add_le_add herr' hJ
     _ ≤ _ := by nlinarith
+
+/-- Full positivity alone forces square-root, up to epsilon, summatory error
+for the original signed source coefficients. -/
+theorem exists_sharp_source_sum_le {lam : ℕ → ℝ} (hW : WeilPositiveFull lam)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
+      ‖(∑ n ∈ Finset.range (N + 1), ((if 2 ≤ n then lam n else 0 : ℝ) : ℂ)) - N‖ ≤
+        C * ((N : ℝ) + 1) ^ (1 / 2 + ε) := by
+  obtain ⟨K, hK, hAK⟩ := exists_log_bound_zetaArchimedeanDatum
+  exact exists_sharp_source_sum_le_of_herglotz
+    (WeilSpectral.herglotzWeilPositive_of_weilPositiveFull hW)
+    (differentiableOn_zetaArchimedeanDatum.mono
+      (fun s (hs : 1 / 2 < s.re) => show 0 < s.re by linarith)) hK hAK (by simp) hε
 
 /-- Centering by the constant density one gives ordinary Dirichlet convergence
 throughout the critical half-plane, for every full-positive source. -/

@@ -631,3 +631,49 @@
   - So for the uniqueness half the obstruction is exactly unboundedness of `G/(s(s−1)Γ_ℝζ)` near the line. The twin door (fractional atoms, `A ~ ζ^{m−1}`) is the canonical unbounded case, and it is where the lock stops being continuous.
   - With `k`-th powers this is a degree-`k`, conductor-one, `Γ_ℝ^k` question. It is closed for `k = 2` (half-integer masses, corpus) and for `k = 3` (`k−2` copies of the ξ divisor, corpus). For `k ≥ 4` it meets level-one `GL(k)` cusp forms with trivial spectral parameters: an automorphic, not an analytic, question.
 - **Rows 1156–1157 (MUST-1396 (+add.) [L]): the uniqueness obstruction is divisor-supported, not size.** `slowQuotient_lock_trueProducer` needs only three things: a factorization `G = s(s−1)Γ_ℝζA` with `A` continuous up to the line and `|A| ≤ We^{|t|^α}` (`α < 1`); a continuous bounded lock holomorphic on `½ < Re < 3/2`; and uniform closeness of the lock to its shift. Almost periodicity is not used. The exception is a quotient that is singular at the line (`G` not vanishing to full order at some ζ-zero there, or branching as in the twin door), or one not `O(e^{|t|^α})` for any `α < 1`. The twin door is exactly the branching case, where `G^k` has a constant lock. Whether a genuine `lam` can carry it is a converse-theorem (Dirichlet-series), not an analytic, question.
+
+## 2026-10-13 addendum 11 (row 1158; MUST-1399 [L]) — uniqueness is atom domination
+- **What is proved.** A Herglotz producer whose quotient `G/ξ` is bounded on the rays into the zeros is `Λ`. No lock or growth hypothesis is needed. Equivalently, if every atom of the producer's boundary measure is at least the multiplicity of its zero, the producer is `Λ`.
+- **Correction.** Addendum 10's reading ("the uniqueness obstruction is an unbounded quotient") is right, but the lock/phase machinery of MUST-1394/1396 was not needed to prove it. The corpus singular deficit law already contained the mathematics for Weil-positive systems. The lock theorems matter only as producers of the factorization.
+- **Reading.** Every uniqueness failure is a deficit at infinitely many zeros (atoms below multiplicity). With the deficit law, the deficit count is `≫ T`. Twin producers sit at the top of this window (`≍ T log T`). All parked uniqueness items reduce to the same core:
+  - continuous non-AP locks reduce to Ω (no continuous producers);
+  - Ω follows from one NULL test (a prime-blind `F` with `F̂` vanishing on the zeros);
+  - (N1) adds zero-faithfulness.
+
+  So the U-half of HF is one interpolation problem: a nonnegative multiplier `R` with `∫Ξ²R n^{it} = 0` (`n ≥ 2`) that is nonzero at a prescribed real point. Positivity and decay are not the obstruction (row 720). The open part is forcing vanishing at ζ's zeros, and only there.
+
+## 2026-10-14 addendum 12 (rows 1174–1185; MUST-1431/1433/1436/1442 [L]) — the HF route is one ζ-free existence problem, and its rigidity comes from the pole
+- **Uniqueness is closed, unconditionally.**
+  - Every full-cone Weil-positive weight is Λ (MUST-1433), and every Herglotz producer is Λ and gives RH (MUST-1436).
+  - All conditional true-producer theorems (atom domination, AP/rational locks, slow quotient, sparse deficit, minorant, summable deficit, two-geometric, CCM bridge) are subsumed.
+  - The (N1)/Ω/NULL-test half is done (TAMP, MUST-1431).
+- **Existence is RH, in ζ-free form with slack (MUST-1442).**
+  - Producers on Re s > σ₀ with |lam(n)| ≤ log n form an interval [σ*, ∞), with σ* attained.
+  - ½ ≤ σ* ≤ 1 unconditionally: Carlson floor below, Λ with ξ′/ξ above. RH ⟺ σ* = ½.
+  - For σ₀ > ½ the producers need not be Λ. Under RH the cones are fat, and compactness recovers Λ only in the limit.
+- **Every relaxation is exact and none constructs anything** (rows 1182–1184).
+  - Fake families must converge to Λ.
+  - Λ-truncations see off-line zeros via (N^{ρ−s}−1)/(s−ρ).
+  - Pole-cancelling corrections are almost periodic and O(1) at low heights, where the margin is ≍ δ.
+  - Free tails can cancel head terms only through a spectral-gap (Slepian) approximation, frequencies [0, log N] against (log N, ∞), whose cost is exactly the Nyquist wall.
+  - A fixed-δ PBAP needs control uniform in the test support, i.e. zero verification. Even σ* < 1 has quasi-RH strength for every known construction.
+- **Rigidity is a pole phenomenon** (row 1185).
+  - For Dirichlet data without a pole and conductor q ≥ 10 (odd) or q ≥ 216 (even), the archimedean symbol log(q/π) + Re ψ((½+a+ir)/2) is pointwise ≥ 0. So λ = 0 is Weil-positive, the cone is fat, and PBAP is trivial while GRH stays open.
+  - For ζ, the pole term 2cosh(x/2) forces λ to carry the PNT mass, and the modular arc (TAMP) pins its fine structure.
+  - In test terms: PBAP ⟺ Arch(f) + 2(∫f cosh(x/2))² ≥ 2(∫f sinh(x/2))² on blind f. The negative sinh-moment of the odd part is what the archimedean energy must beat, and only blindness can control it.
+- **Reading.** Weil's function-field proof supplies positivity from geometry (Hodge index) and never needs uniqueness. Over ℚ, uniqueness is free and positivity is everything.
+  - A producer must be a positivity source whose output is forced to be the zeros (wall 12). It must see the prime-power nodes exactly (wall 11), act on the Bochner cone (wall 13), and use the pole term essentially (row 1185).
+  - No known object meets all four. The search target is a positive object whose sinh-moment control comes from arithmetic: the pole/PNT cancellation at √x precision, i.e. wall 1 again.
+
+## 2026-10-14 addendum 13 (rh-goal-loop rows 1200–1204; MUST-1452/1458/1463 [L]) — the pole is pinned; single zeros cannot be amplified
+- **Pole weight forced, for any weights (MUST-1463).** If some real weight sequence makes the Weil functional with the pole counted β times nonnegative on every autocorrelation, then β = 1 (`RHTower.eq_one_of_weilPositiveAt`). There is no growth hypothesis. The Weil-to-Herglotz bridge holds at every pole weight (`RHTower/WeilPoleShiftHerglotzBridge`), because polar tests do not see the pole and give absolute convergence for free. Consequences:
+  - the pole-weight window is empty or {1};
+  - RH ⟺ ∃β PrimeBlindPositiveAt β;
+  - for every ε ≠ 0 a blind combination has S_A + εS_P < 0, so no linear slack between energy and pole survives on the blind cone;
+  - under RH, both near-null rays (S_A/|S_P| → 0, either pole sign) exist.
+- **Producers near the line are the primes (MUST-1452).** Relaxed producers on Re s > ½ + δ converge to Λ coefficientwise as δ → 0.
+- **Amplification law (rows 1202, 1204; li-route row 229 independently).** For a hypothetical off-line zero β + iγ, blind amplification of its pairing is bounded in both regimes:
+  - additive (two scales at lag B): e^{(β−½)B} gain against the e^{B/2} blindness cost at the e^B/B prime-power nodes, net e^{(β−1)B};
+  - multiplicative (Euler-product tests): gain ≤ Π_p(1 + p^{−2β}) = ζ(2β)/ζ(4β) < ∞.
+  So "PBAP up to a constant" (F(1) > −∞) is expected to hold unconditionally and is not RH-strength. F(1) = −∞ could only come from collective resonance with critical-line large values of Re ζ, through the prime-blind identity A = (1/π)∫|𝓜u|²(θ′ + 1 − Re ζ(½+it)).
+- **Odd-sector form.** On odd blind f the pole term is −2S(f)² with S(f) = ∫f sinh(x/2). So PBAP_odd is the sharp inequality 2S(f)² ≤ Arch(f⋆f̃). Under RH its best constant is exactly 1, approached but not attained by the pole-negative near-null sequence (MUST-1463, RH case). PBAP is a sharp-constant problem without an extremal function.

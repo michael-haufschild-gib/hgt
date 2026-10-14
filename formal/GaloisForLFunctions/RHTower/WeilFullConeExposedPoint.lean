@@ -391,8 +391,11 @@ theorem eq_vonMangoldt_of_weilPositiveFull_of_atomPairing_eq_zero {lam : ℕ →
 
 /-! ## The supporting inequality for every Weil-positive system -/
 
-/-- Full-cone Weil positivity implies the corpus's polar, level-wise Weil positivity. -/
-theorem weilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+/-- Weil positivity on polar autocorrelations (`f̂(±i/2) = 0`) implies the corpus's polar,
+level-wise Weil positivity. -/
+theorem weilPositive_of_polar {lam : ℕ → ℝ}
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f → paperFT f (I / 2) = 0 →
+      paperFT f (-(I / 2)) = 0 → 0 ≤ (weilFullFunctional lam (EF.weilTest f f)).re) :
     WeilPositive lam := by
   intro a ha f hf hfs hp hm
   have hfc : HasCompactSupport f :=
@@ -409,7 +412,7 @@ theorem weilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveF
       2 * π * (zetaZeroConfig.W f f).re := by
     rw [hWf, Complex.ofReal_re]; field_simp
   rw [hre]
-  have hfull := hW f hf hfc
+  have hfull := hW f hf hfc hp hm
   rw [weilFullFunctional_eq_sub lam hkc, ← weilFullFunctional_vonMangoldt,
     ← zeta_W_eq_weilFullFunctional hf hfc, Complex.sub_re] at hfull
   have hvan : ∀ n : ℕ, N < n → k (Real.log n) = 0 ∧ k (-Real.log n) = 0 := by
@@ -446,6 +449,11 @@ theorem weilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveF
   rw [hsum] at hfull
   have hπ : 0 < π := Real.pi_pos
   nlinarith
+
+/-- Full-cone Weil positivity implies the corpus's polar, level-wise Weil positivity. -/
+theorem weilPositive_of_weilPositiveFull {lam : ℕ → ℝ} (hW : WeilPositiveFull lam) :
+    WeilPositive lam :=
+  weilPositive_of_polar fun f hf hfc _ _ => hW f hf hfc
 
 /-- Polar Weil-positive weights have `Σ |lam(n) − Λ(n)| n^{−2} < ∞`, by the level-wise box
 `|lam(n)| ≤ √n (log n + C₀)`. -/

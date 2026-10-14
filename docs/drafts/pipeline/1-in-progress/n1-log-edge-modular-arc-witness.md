@@ -165,3 +165,89 @@ Whittaker moments decay like `e^{−π√3 n}`.
 - Consequence: exact decay witnesses must be infinite Poisson superpositions.
 - Compactness reduction: C191 ⟸ GL1 for a fixed compact family of pole filters. GL1 is open for continuous-radius
   families; for lattice families certificates likely exist.
+
+## Theorem C (Lean, 2026-10-13): (N1) ⟸ twisted arc minimum principle
+- Generators: `G_α = 𝔐_α²(arc pair)` with `𝔐 = ∂_α² + ¼ + 1/(4sin²α)`, i.e. `(¼ − ∂_v²)²` on log profiles, i.e.
+  `𝒟² = (∂_x x² ∂_x)²` on line vectors.
+  - Spectrum `(τ²+¼)² M_α(τ) > 0`; decay class (double zero at τ = ±i/2); S-symmetric; explicit in x
+    (`RHTower/TwistedArcGenerator`).
+- **[L]** `exists_decayClass_fullLineWitness_of_twistedArcMinimumPrinciple`: if no finite combination of the twisted
+  moments `M_n(u) = ∫ g_u cos(2π(n+2)x)` is strictly positive on `u ∈ [−½,½]`, a decay-class (N1) line witness blind
+  at every integer m ≥ 2 exists (`RHTower/TwistedArcN1Reduction`).
+- Correction of the "arc rigidity ⟹ no decay witness on A" statement above. It holds for *measures* on A only.
+  - Corner-singular functionals at the 2π/3 corner (`c_{3/2}`, the coefficient of `r^{3/2} sin(3θ/2)`) are extra
+    annihilators. The unique decay-class blind arc distribution is `σ* = s₀ν₁ + β₁c_{3/2} = 𝔐^{*2}κ*`.
+  - The twisted minimum principle ⟺ κ* has constant sign.
+  - The holomorphic model gives the positive Riemann–Hilbert annihilator ρ₀ with the same `r^{3/2}` corner law.
+- Open core: the twisted minimum principle (equivalently C224).
+
+## Row 210: the BRS link and the sign structure
+- In the BRS Fourier-interpolation class the decay-class blind witness is `ν̂(0)·V₁`.
+  - V₁ therefore vanishes doubly at the zeros of ζ.
+  - (N1) in that class ⟺ `V₁ ≥ 0` ⟺ the arc spectrum of σ* is positive. TAMP (κ* ≥ 0) is sufficient.
+- `a₁(σ*) = p₀ > 0`, by the minimum principle for `div(y∇v) = 0`. The dual corner solution `S* > 0`, so `c_{3/2}` is a
+  positive functional on corner-flat data.
+- Hand LP in the exact-holomorphic model (Touchard terms included, modes 2–4) finds a positive annihilator. This is
+  evidence, not proof.
+
+## Row 211: spectral density law (Lean) and the weakened open core
+- [L] `RHTower/SelfReciprocalBoundaryDensity`. For h = F(x²) on [−1,1], S-glued:
+  - spectrum(τ)·cosh(πτ) = 2∫_0^π cosh(τθ)K(θ)dθ, with K(θ) = Re[e^{iθ/2}F(e^{2iθ})];
+  - strict PD whenever K ≥ 0 and K ≢ 0.
+- [P] For arc superpositions, K is the Abel (Mehler–Dirichlet–Murphy) transform of the arc density and vanishes on
+  (2π/3, π].
+- Hierarchy: TAMP ⟹ K* ≥ 0 ⟹ (N1) in the BRS class.
+- [P] V₁ = CΞ²|Γ(¾+iτ/2)|²∫cosh(τθ)K*(θ)dθ.
+- [P] The transfer formula K*|_A = 2Re[e^{iθ/2}(A cos 2πe^{iθ} − Σ_{n≠0}h*(e^{iθ}+n))] holds on the scalloped domain
+  ∪D(n,1).
+
+## Row 219: strip-function interface for (N1) (Lean) and the arc factorization
+- [L] `RHTower/StripFactorXiDivisibleBlindTest`. Hypotheses:
+  - Φ holomorphic on |Im z| ≤ b (b > ½), with ‖Φ‖ ≤ Ce^{−ε|Re z|};
+  - Φ(−r) = conj Φ(r);
+  - Φ = Ξ·g on |Im z| ≤ ½, with g zero-free on ℝ;
+  - ∫|Φ(r)|²cos(r log n)dr = 0 for every n ≥ 2.
+
+  Conclusion: `XiDivisibleBlindTest (stripTest Φ)`, hence RH ⟺ PBAP.
+- [P] Arc factorization:
+  - R(½+iz) = c₀Γ(¾+iz/2)Γ(¾−iz/2)∫cosh(zθ)K(θ)dθ, with K supported in [0, 2π/3].
+  - If K ≥ 0, the principal square root works on |Im z| < 3/4, giving Φ = Ξ·√c₀Γ(¾+iz/2)√L.
+- [P] Family alternative: R = Σ_j w_j|Q_j|², with Q_j = Γ(j+¼+iz/2)/Γ(¼+iz/2) and w_j ∝ (weighted moments m_j).
+  - Moment positivity gives a nonnegative family of polynomial multiples of Ξ.
+  - It needs a family version of the XiDivisible rigidity.
+- Remaining formal gaps:
+  - the divisor transfer at an abscissa c ∈ (1,2);
+  - the identification certKernel_c R = κ·(cosine transform of h);
+  - either the Abel representation or the family rigidity.
+
+## Row 220: family (N1) rigidity and blindness transfer (Lean)
+- [L] Three new modules:
+  - `RHTower/DivisorTransferAbscissa`;
+  - `RHTower/DivisorKernelFourierIdentification`;
+  - `RHTower/WeilConeXiDivisibleBlindFamily`.
+- (N1) in Lean now accepts nonnegative families: Σ_j w_j(F_j ⋆ F̃_j)(log n) = 0, with each F̂_j Ξ-divisible.
+- Blindness of Ξ²R reduces to 𝓕h(n) = 0 for a line profile h with G²R = γ·𝓜h(1−·) on the critical line.
+- Remaining instantiation for the arc witness:
+  - DecayBound constants for ΞQ_j;
+  - strip bounds for R = Σw_jQ_j(z)Q_j(−z);
+  - the regularity of h needed by the Fourier/Mellin step.
+- Open core: m_j(κ*) ≥ 0.
+
+## Row 224 — formal chain closed
+- `RHTower/TwistedArcMomentPositiveRH.riemannHypothesis_iff_primeBlindPositive_of_twistedArc_momentPositive` [L]:
+  - Hypotheses: a bounded measurable g on the arc with ∫g·M_n dν = 0 for every n, m_j = ∫g√(y_u/2)u^{2j}dν ≥ 0, and m_0 > 0.
+  - Conclusion: RH ⟺ PBAP.
+- The route therefore has exactly two open inputs: the existence of a moment-positive blind arc density, and PBAP.
+
+## Rows 225–229 — structure of the twisted producer on the bottom arc (paper)
+- The twisted moments are 𝔐²-images of the arc traces of s = ½ Whittaker modes: M_n = 4√y·Δ_{S²}²ṽ_{n+2}, ṽ = w/√y.
+  The lift is the axisymmetric 3D Laplace equation outside the chain of unit balls.
+- Support rigidity: a twisted-blind measure on a compact sub-arc of the open semicircle lives on A. Extended arcs (C237) add
+  nothing.
+- The even twisted annihilator on A is 1-dimensional: κ* = G_clamped(σ*), with σ* the flux of
+  Ṽ* = Z − D_Z + ω(Z)K̃_P (equivalently Ψ_1 + |β_1|K_P).
+  - Ingredients: Z = (I₀ − λK₀)(2πy)cos 2πu; K̃_P the corner Martin kernel; positive weight ω(Z) = |β_1| (corpus).
+  - Blindness is Green's identity.
+- TMP ⟸ C242 (σ* ≥ 0 on A ⟺ the nodal set of Ṽ* avoids A) + clamped-beam positivity (corpus, `nonneg_of_coshSq_clampedBeam`).
+- TAMP needs only m_j(κ*) ≥ 0 (C243).
+- [OPEN CORE] C242, plus the existence theory for Ṽ*.

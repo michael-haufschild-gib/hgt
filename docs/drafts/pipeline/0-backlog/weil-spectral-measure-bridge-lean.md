@@ -36,3 +36,4 @@
   - `deviationPairing_fourier_riemannXi_sq_mul` gives `W_a(𝓕(Ξ²g)) = −∫g(t/2π)dσ`.
   - `deviationPairing_fourier_eq_zero` gives `W_a(𝓕h) = 0` under summable excess.
   - Open items: none for the excess side. A support theorem for `σ` was not needed.
+- 2026-10-14 (rh-goal-loop rows 1180–1181) — the target application, order rigidity for deletions (Weil positivity of Λ − d ⟹ d = 0), is subsumed unconditionally: every full-cone Weil-positive weight is Λ (MUST-1433, `eq_vonMangoldt_of_weilPositiveFull`). Items (b) and (c) are no longer needed for it.

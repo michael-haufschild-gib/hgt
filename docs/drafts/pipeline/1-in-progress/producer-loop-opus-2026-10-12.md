@@ -514,3 +514,2844 @@
   - Runge-type flexibility of Whittaker sums on non-wrapping curves (lower dilates e^{−w}A) suggests that
     certificates exist for 1D (lattice) filter families. So only 2D (continuous-radius) families can work.
   - Open: GL1 for the full admissible family 𝒜_a (Krein-PD radial profiles modulo cosh(w/2), w sinh(w/2)).
+
+## Row 203 — [P] (N1) dual: gamma-twisted Dirichlet positivity (C214); ζζ′-certificate family dead (C213)
+- **Exact dual of (N1).** Witness ⟺ no admissible `Q = Σ q_n n^{-s}` (abs. conv. Re s>1, ≤ double pole at 1,
+  polynomial growth on Re s ≥ ½) with `q₁ ≤ 0` and `Re[Γ_ℝ(s)²Q(s)] ≥ 0` on Re s = ½, ≢ 0. Only θ (Gamma phase)
+  enters; ζ enters only through choices of Q.
+- **ℍ-form.** `Re Γ_ℝ²Q ≥ 0` ⟺ `v ↦ U(ie^v) + U(ie^{-v})` is positive definite, where `U = Σ q_n W_n` plus constant
+  terms (the double pole). So C214 says: the first Whittaker coefficient is ≥ 0 on the cone of T-periodic
+  ¼-eigenfunctions whose S-symmetrised axis profile is PD, and it vanishes only on the trivial element.
+- **C214 (conjecture, Hamburger-type positivity rigidity):** every admissible `Q` with `Re[Γ_ℝ²Q] ≥ 0` on the line
+  has `q₁ ≥ 0`, and `q₁ = 0` forces `Re[Γ_ℝ²Q] ≡ 0`. C214 plus closure ⟹ C191.
+- Test cases:
+  - Dirichlet polynomials and AP series fail C214's hypothesis, by phase rotation (θ′ → ∞).
+  - `L(s,χ)²` fails: the conductor factor `N^s` breaks integer frequencies.
+  - `ζ²(ζ′/ζ)′` has pole order 4; its low-height Re(ζ′/ζ)′ < 0 on t ≈ (1.5, 7.5).
+  - Pole-cancelled variants (`+ζ′`, `−ζ²w`) fail at large t on large values of ζ.
+- **C213 [P], unconditional.** Let `κ > 0` and `M₁ = Σ_{n≥2} r_n n^{-s}` be nice (L¹_loc tempered boundary values,
+  analytic on Re s > ½). Then `Re M₁(½+it) ≤ κθ′(t)` fails for some t.
+  - Proof: pair with `K ≥ 0` where `K̂ = (1−|ξ|/log 2)₊`. Then `∫Re M₁·K = 0` (spectral gap), while
+    `∫θ′K = ½(J − γ − log π) ≈ −0.60`, with `J = ψ(¼)+γ + ∫_0^{2a}e^{-u/4}(u/2a)/(1−e^{-u}) + Σ_k 4^{-k-¼}/(k+¼) ≤ 0.52`.
+  - So the C209 super-decay certificate `−ζ²M₁ − κζζ′` does not exist.
+  - Principle: certificates must carry Laguerre-type double poles at zeros of ζ (FP(1/(t−γ)²) boundary
+    singularities). Simple-pole and AP certificates are blind to the spectral-gap test only when residues are negative.
+- User directive (2026-10-13): no pivots. Stay on C191/C214 until solved.
+
+## Row 204 — [P] (N1) attack: one-sided node form, Herglotz split, tail/low decomposition (C219)
+- **One-sided node form (corrects row 724's "±log n").** `f(n) = n^{-½} G(−log n)` with
+  `G := FT⁻¹[Γ_ℝ(½+it)² E(½+it)]` real, not even. (N1) ⟺ `G(−log n) = 0` (n ≥ 2), `G(0) = f(1) > 0`,
+  `Ĝ/Γ_ℝ² = E > 0`, decay class. The nodes `{−log n}` are one-sided.
+- **Gamma kernel geometry.** `G = k ⋆ e` with `k(x) = 2e^{-x/2}K₀(2πe^{-x})`.
+  - k is super-exponentially small on the node side (`k(−log 2) ≈ 3.5·10⁻⁶`) and has an `e^{-x/2}x` tail on the other.
+  - The tail nodes (n ≥ N₀) only see the far tail of `e = FT⁻¹E`. The low nodes sit in k's transition zone.
+  - This is the scale clash of row 724, now localized to n ≲ e^{O(1)}.
+- **C219 (decomposition conjecture).** (a) For large N₀ there are S-symmetric, decay-class, strictly PD vectors exactly
+  blind at all n ≥ N₀. (b) The low-moment cone of such vectors contains 0 with `f(1) > 0`. (a)+(b) ⟹ C191.
+  - Candidate for (a): `g = B_{N₀}·f` with `B_{N₀}` the strip Blaschke product of `{−log n : n ≥ N₀}`.
+    Near the origin `log B ≈ −c N₀^{1−2p} cosh 2px`, so the scale separation holds.
+  - Risk: B's boundary phase rotation `e^{2p|x|}` against f's decay. This needs `2p < 5/2`, since Γ̃² is analytic in `|Im t| < 5/2`.
+  - (b) is the obstruction: B′/C208 finite-level witnesses spread to `|v| ~ 8π√3 N₀ ≫ log N₀` and collide with B's nodes.
+    Needed: finite-level witnesses concentrated in `|v| ≲ c log N` (C220).
+- **Herglotz split of certificates (under RH).** `M = Q/ζ² = Λ_A + H`, with Laguerre part `Λ_A = (A·ζ′/ζ)′`
+  (double poles `−A(ρ)/(s−ρ)²`) and a regular H.
+  - The certificate condition is `Re H ≥ −Σ Re A(ρ)/(t−γ)²`, not `Re H ≥ 0`, so no Phragmén–Lindelöf contradiction is available.
+  - Regularity at s = 1 forces a ζ′-type double-pole term N whose large values on the line occur in large zero gaps.
+    So a certificate needs joint value/gap control.
+  - Heuristic: C214 is true and (N1) holds. The certificate ζζ″ − 2ζ′² + 2γζζ′ fails both at t = 0 (−0.37) and at
+    every large-t maximum of |Z| (≈ −2γθ′Z²).
+- **Blindness is cheap.** The horocycle smear `∫_0^1 cos(2πt)(T_t)_*μ dt` is blind at every |n| ≠ 1 and kills the zero mode.
+  Equivalently `ĥ = s(ξ)Ĝ` with `s(ξ) = ξ sin πξ/(1−ξ²)`. Everything hard is S-symmetry plus PD.
+
+## Row 205 — [P] C219a reduced to a twisted minimum principle (M4) on the arc; winding heuristic
+- **PD decay-class generators on A.** Put `G_α := (−∂_v² + ¼)² p_α = 𝔐_α² p_α`, where p_α is the arc-pair log profile
+  (S-pair at e^{iα}) and `𝔐 = ∂_α² + ¼ + 1/(4 sin²α)`; the identity is the eigen-equation `(r∂_r)² + ∂_α² + 1/(4sin²α) = 0`.
+  - Spectrum `(τ² + ¼)² M_α(τ) > 0`.
+  - The double zero at τ = ±i/2 kills both the pole and the value, so G_α is decay class (profile `O(e^{−3|v|/2})`).
+  - G_α is S-symmetric.
+  - Every κ ≥ 0 on [π/3, 2π/3] gives a strictly PD decay-class S-symmetric vector `h_κ = ∫G_α dκ`.
+- **Moments.** `ĥ_κ(n) = 2∫ (𝔐²W_n^c)(e^{iα}) dκ(α)`.
+- **Reduction (Theorem-A style, Hahn–Banach + Prokhorov on compact A).** C219a ⟸ (M4).
+  - (M4): for some N₀, no nonzero `U = Σ_{N₀≤n≤N} c_n W_n^c` has `𝔐_α²(U|_A) ≥ 0` on A.
+  - The resulting h_κ is blind at every n ≥ N₀, decay class, S-symmetric, and strictly PD.
+- **Even kernel of 𝔐².** It is span{√sin α, √sin α · log sin α}, i.e. exactly the constant-term traces √y and √y log y.
+  The odd kernel element of 𝔐 is √sin α · log tan(α/2).
+- **Winding heuristic for (M4).**
+  - High modes are approximately holomorphic: `W_n ≈ c n^{−½} Re e^{2πinz}` and `r∂_r ≈ z∂_z`.
+  - So `𝔐²U ≈ Re[z⁴ H]` with H T-periodic holomorphic and `O(q^{N₀})` at the cusp.
+  - On A, z⁴ = e^{4iα} rotates by 4π/3. Re[z⁴H] ≥ 0 confines arg H to a band of width π whose centre moves by 4π/3
+    around the loop q(A), so the winding of H lies in [π/3, 7π/3]/2π = {1}.
+  - H has winding ≥ N₀ ⇒ contradiction for N₀ ≥ 2 in the holomorphic model.
+  - The true trace must allow some U at low modes (arc rigidity), so the low-mode deviation from holomorphy carries the
+    obstruction. For large N₀ the approximation error is O(1/N₀), and (M4) is expected.
+- **Insight.** (N1)-type existence on A is dual to a *twisted argument principle*: a positivity twist `e^{ikα}` from the
+  pole-killing multiplier `(τ²+¼)^{k/2}` against the cusp vanishing order of Whittaker sums. The (N1) threshold
+  (modes ≥ 2, n = 1 free) sits exactly at winding 1 of the k = 4 twist.
+- Next: prove (M4) for large N₀ (control the non-holomorphic remainder of high-mode Whittaker sums on A), then Lean.
+
+## Row 206 — [P] Exact Abel form of (M4); the holomorphic model is a solvable Riemann–Hilbert problem
+- **Exact Abel identity.** `√y K₀(2πny) e^{2πinu} = √y ∫_y^∞ q^n(u+iY) dY/√(Y²−y²)` and `r∂_r = z∂_z` on holomorphic
+  functions give, for `U = Re Σ c_n W_n` and `f = Σ c_n q^n`:
+  - `𝔐²U(z) = √y ∫_y^∞ Re[(L²f)(u+iY)] dY/√(Y²−y²)`, with `L = ∂_z z² ∂_z`;
+  - `L² q^n = (x⁴z⁴ + 8x³z³ + 14x²z² + 4xz) q^n`, with `x = 2πin`.
+  So (M4) is positivity on A of Abel averages of Re Φ along vertical rays, where `Φ = z⁴H₄ + 8z³H₃ + 14z²H₂ + 4zH₁`
+  and `H_k = Σ c_n(2πin)^k q^n` is T-periodic holomorphic.
+- **Vector-level lift.** `φ_z = (2√y/π) ∫_y^∞ P_{u+iY} dY/√(Y²−y²)`, where P is the s = 1 (harmonic) Poisson kernel.
+  The s = ½ Poisson vectors are Abel averages of harmonic Poisson kernels. The lift commutes with translations and
+  dilations but not with S.
+- **Holomorphic model is exactly solvable.** Take positivity `Re[e^{4iα}ℋ] ≥ 0` on q(A), with ℋ = O(q^{N₀}).
+  - Winding: `−4π/3 + 2π(N₀ + Z_int) ∈ [−π, π]`, so N₀ + Z_int = 1. Every N₀ ≥ 2 is excluded.
+  - Dual (exact annihilators): we need `e^{4iα}ρ dα = φ dq` with ρ > 0 and pole order ≤ N₀ at 0. This is a
+    Riemann–Hilbert problem `arg ψ = 4α` on the loop with a corner of interior angle 2π/3.
+  - Index: a simple zero of ψ at the corner absorbs the 4π/3 jump. The particular solution ψ₀ has a simple pole at
+    the cusp, so φ has pole order 2.
+  - The general solution is `ψ₀·R` with R a positive real trigonometric polynomial in the uniformizer, deg R ≤ N₀ − 2.
+    Annihilators exist for every N₀ ≥ 2 (an open cone for N₀ ≥ 3), and ρ vanishes linearly at the corner.
+- **Consequence.** Arc rigidity (exact, N₀ = 2 impossible) shows that the non-holomorphic low-mode corrections
+  (K₀ vs exponential, lower Touchard terms) carry the (N1) obstruction on A. The holomorphic threshold is exactly the
+  (N1) threshold.
+- **C221 (conjecture).** For N₀ ≥ N* the exact moment functionals `𝔐²W_n|_A` (n ≥ N₀) admit a positive annihilator κ
+  that perturbs the RH model annihilator. This gives C219a: exact cofinite blindness, decay class, strict PD,
+  S-symmetry.
+  - Difficulty: the high modes concentrate at the corner, exactly where the model annihilator vanishes.
+
+## Row 207 — [P] (N1) is exactly critical: the holomorphic model has a unique annihilator at N₀ = 2
+- **Twist is topological.** For any curve from ρ to ρ+1 in ℍ, arg z runs from 2π/3 to π/3. So the dilation twist
+  z^k rotates by −kπ/3 for every closing curve, independent of the curve.
+- **Model threshold.** Positivity `Re[z^k ℋ] ≥ 0` forces `N₀ + Z = round(k/6)`. Decay class forces k ≥ 4 (the pole and
+  the value at ±i/2). For k = 4 and k = 6 the model allows positivity only at cusp order 1, so annihilators exist for
+  every N₀ ≥ 2.
+  - With k = 6 the twist closes (rotation −2π), and the annihilator density no longer has a forced corner zero beyond
+    the intrinsic r^{½} harmonic-measure factor.
+- **Criticality.** At N₀ = 2 the model annihilator is unique up to scale (R = positive constant; deg R ≤ N₀ − 2 = 0).
+  For N₀ ≥ 3 the annihilators form an open cone.
+  - So (N1) (blind from n = 2) sits exactly at the rigid threshold of the leading-order problem. Existence is decided
+    by the sign of the subleading non-holomorphic correction (K₀ vs exponential, lower Touchard terms, the y-dependence
+    of the Abel kernel) paired with the unique model annihilator.
+  - On the arc A this sign is wrong or degenerate (arc rigidity, exact). Cofinite blindness (C219a/C221, N₀ ≥ 3) has
+    open-cone slack.
+- **Reading.** This explains the corpus-wide "zero slack / critical scaling / same scale" findings for (N1)
+  (rows 593, 718–726): the integer nodes from n = 2 sit exactly at the winding threshold of the dilation-twisted Gamma
+  phase.
+- **C222 (criterion conjecture).** For an S-symmetric closing configuration C, decay-class (N1) witnesses supported on C
+  (dilation-twisted generators) exist iff `Δ(C) := ⟨ρ₀^C, first-order correction⟩ > 0`. Here ρ₀^C is the unique
+  N₀ = 2 model annihilator; Δ(A) ≤ 0. Next: compute Δ for the arc to see the mechanism, then deform.
+
+## Row 208 — [P] RETRACTION of "no decay witness on A" (rows 198, 205–207); (N1)-on-arc reduced to one sign (C224)
+- **Retraction.** Arc rigidity (row 198) holds only for *measures* on A. The corner of D at ρ ~ ρ+1 has interior angle
+  2π/3. That angle is forced by S-symmetry for every S-symmetric closing curve (the order-3 elliptic point).
+  - It gives corner-singular functionals: `c_{3/2}(F)` is the coefficient of `r^{3/2} sin(3θ/2)` in the T-periodic
+    Dirichlet solution with data F (and likewise c_{9/2}, …).
+  - c_{3/2} is a distribution of order about 3 on A. It annihilates the trace of every T-periodic eigenfunction that
+    is analytic at the corner (all W_n with n ≠ 0, and √y), but `c_{3/2}(√y log y) = −s₀ ≠ 0`.
+  - So, among distributions, `Ann_{n≥2,even}(A) ⊇ span{ν₀, ν₁, c_{3/2}}` (3-dim). The two decay conditions leave the
+    unique `σ* = s₀ν₁ + β₁c_{3/2}`: blind at all n ≥ 2, decay class, S-symmetric, with `a₁ = s₀`.
+  - The rows 205–207 claim "exact fails at N₀ = 2 on A" is withdrawn; it misapplied measure rigidity.
+- **PD via generators.** `σ* = 𝔐^{*2}κ*` with `κ* := (𝔐^{*2})^{−1}σ* ∈ L¹(A)`, which is unique and even.
+  - It exists because σ* ⊥ ker 𝔐² = span{√sin α, √sin α log sin α}, which is exactly the decay class.
+  - Near the corners `κ* ~ C r^{3/2}`, matching the RH model annihilator `ρ₀ ~ r·r^{½}` of row 206.
+  - If κ* ≥ 0, then `h := ∫ G_α dκ*(α)` with `G_α = 𝔐²(arc pair)` has spectrum `(τ²+¼)² ∫ M_α dκ* > 0`. So h is a
+    decay-class, S-symmetric, strictly PD vector blind at every n ≥ 2, i.e. **(N1) holds**.
+- **Equivalence.** By Hahn–Banach + Prokhorov on compact A: κ* ≥ 0 ⟺ (M4)₂′, i.e. for no N does
+  `U = Σ_{n=2}^N c_n W_n^c` satisfy `𝔐²U > 0` on A.
+  - Proof sketch: a U with 𝔐²U = w > 0 has trace `𝒦w + a√y + b√y log y`. That trace is C⁴-approximable by finite
+    sums iff the single linear functional `Λ(w) = ⟨κ*, w⟩` (from c_{3/2} and the ±1 mode) vanishes. So such a U
+    exists iff κ* changes sign.
+- **C224 (main conjecture).** κ* has constant sign on A; equivalently (M4)₂′; equivalently (N1).
+  - Evidence: the leading-twist holomorphic model (row 206) is exactly solvable and gives the positive unique
+    annihilator ρ₀, with the same r^{3/2} corner law.
+  - Exact corrections: K₀ vs exponential is about 1.1% at n = 2, y ≈ 0.87. The 1/(4sin²α) term in 𝔐 is about 0.3%
+    of ∂²; the lower Touchard terms are exact holomorphic parts.
+  - On the ODE side, `𝔐² = (−∂² − V)²` with `V = ¼ + 1/(4sin²α)` and `−∂² − V > 0` (Dirichlet, length π/3).
+    κ* is a clamped-type (r^{3/2}) Green potential of σ*.
+- **Next.**
+  - (i) Rigorous construction of c_{3/2} and the identity `⟨c_{3/2}, U|_A⟩ = 0` for corner-analytic periodic U.
+  - (ii) Prove κ* ≥ 0, by perturbation from ρ₀ with explicit corner control or by a positivity principle for the
+    clamped Green function.
+  - (iii) Lean: generator lemma, the HB/Prokhorov equivalence (Theorem A machinery), and the implication
+    (M4)₂′ ⟹ (N1)-witness.
+
+## Row 209 — [L] (N1) reduced in Lean to the twisted arc minimum principle
+- **New modules** (standard axioms, `lake --old` clean, wired):
+  - `HTGeometry/TwistedCoshKernel`: `T_k = (cosh v − c)^{−1/2−k}` calculus.
+    - Derivatives `T_k′ = −(k+½) sinh T_{k+1}` and the `(¼−∂²)` recursion.
+    - `twCoshKernel = (¼−∂²)²T_0` (explicit 4-term form).
+    - `integral_cos_mul_twSymCoshKernel` (Fourier multiplier `(¼+τ²)²`), `integral_cos_mul_twSymCoshKernel_pos`
+      (strict PD via the corpus `integral_cos_mul_symCoshKernel_pos`), `integral_exp_half_mul_twSymCoshKernel`
+      (mean zero), and the decay `T_1 ≤ 8e^{−3|v|/2}`-type bounds.
+  - `RHTower/TwistedArcGenerator`: the x-space twisted arc vector
+    `g_u = √y(τ_u + τ_{−u})`, `τ_c(x) = 4cxQ^{−3/2} + (42c²−18)x²Q^{−5/2} + 120c(c²−1)x³Q^{−7/2} + 105(1−c²)²x⁴Q^{−9/2}`.
+    - Even and S-invariant; explicit derivative.
+    - `|g_u| ≤ 9000/(1+x²)` and `|g_u′| ≤ 260000/(1+x²)`.
+    - Log profile `√(y/2)(¼−∂²)²𝒦_u`; `∫g_u = 0`; strictly PD log profile; sin/cos moment integration by parts.
+  - `RHTower/TwistedArcN1Reduction`:
+    - `TwistedArcMinimumPrinciple`: for no N and a is `Σ_{n<N} a_n M_n(u) > 0` on all of `u ∈ [−½,½]`, where
+      `M_n(u) = ∫ g_u cos(2π(n+2)x)`.
+    - Separation + Prokhorov give `exists_probabilityMeasure_twArc_annihilating`.
+    - **`exists_decayClass_fullLineWitness_of_twistedArcMinimumPrinciple`**: under the principle there is an h that
+      is even, S-invariant, ∫h = 0, with profile `O(e^{−3|v|/2})`, strictly PD log profile, and
+      `∫h′ sin(2πmx) = 0` for **every** m ≥ 2. This is the full (N1) line witness (the corpus B′ format with ∀n).
+- **Meaning.** The HF producer core (N1) is now an explicit twisted minimum principle on the compact bottom arc. It is
+  a statement about finite sums of Whittaker modes and a fixed 4th-order operator 𝔐², like Theorem A's minimum
+  principle, and has no RH-equivalent content in its form.
+  - In the holomorphic model it holds with winding margin, but it sits at the critical threshold (rows 206–208).
+  - Low-mode checks (rows 208/209 hand calculations, 2–3 modes, sample points 60°–90°) found no positive combination.
+- Open (core): prove `TwistedArcMinimumPrinciple`. Equivalently, the unique corner-singular annihilator κ* has
+  constant sign.
+
+## Row 210 — [P] TAMP: the unique annihilator, the BRS link, a sign decomposition, j-uniformization
+- **BRS link (C226).** The ζ-free decay-class blind space is 1-dimensional and spanned by σ*. The witness
+  ν* = Ξ²R_{σ*} lies in the BRS interpolation class (exponential decay of ν and ν̂). By BRS uniqueness
+  (loop rows 569/571, rh-goal-loop), `ν* = ν̂*(0)·V₁`. Consequences:
+  - V₁ (the BRS dual basis function at n = 1) vanishes **doubly** at every zero of ζ. This corrects the row 571
+    heuristic "V₁ vanishes only simply".
+  - (N1) in the BRS class ⟺ V₁ ≥ 0 ⟺ the arc spectrum of σ* is positive. TAMP (κ* ≥ 0) is sufficient, not necessary.
+- **Signs of the structure constants** (min principle for `div(y∇v) = 0`, `v = V/√y`).
+  - V₀ > 0 in D, so its corner coefficient p₀ > 0, so `a₁(σ*) = s₀ = p₀ > 0` (rigorous).
+  - The dual corner solution S* (`r^{−3/2} sin(3θ/2)`, vanishing on A, decaying at the cusp) is > 0 in D, so its flux
+    `∂_n S* > 0` on A. Hence c_{3/2} is a **positive functional** on data vanishing to second order at the corners.
+  - Near the corners `κ* ≈ β₁(3/π) r^{3/2}`, with `β₁ = −a₁(V₀)`. Then β₁ > 0 if V₀ restricted to y = 1 increases
+    in |u| (plausible).
+- **Sign decomposition.** `κ*(α) = ∫ G(α,β) ∂_n V*(β) dβ`, where G is the clamped Green function of 𝔐² (beam type,
+  presumably ≥ 0) and `V* = s₀V₁ + β₁S*`.
+  - The S* part is positive; the V₁ part is positive mid-arc and negative near the corners.
+  - The corner term dominates near the corners (r^{3/2} vs r²). Positivity of κ* in between is a single quantitative
+    comparison.
+- **Hand LP check (exact-holomorphic model with the full Touchard terms, modes 2–4, sample points 60/70/75/80/90°).**
+  A positive annihilator exists, e.g. weights (0.07, 0.343, 0.451, 1.033, 1), feasible for a ∈ [0.046, 0.097].
+  The K₀/Abel factors only rescale rows and columns positively, plus about 1% corrections. Evidence for TAMP;
+  hand estimate, not a proof.
+- **j-uniformization.** j maps D (the cusp region above A, with T-identified sides) conformally onto ℂ ∖ [0, 1728].
+  - A ↦ the two sides of the slit, the corner ρ ↦ 0 (triple zero: angle 2π/3 ↦ 2π), i ↦ 1728.
+  - Composed with the Joukowski map, D ≅ {|w| > 1}, and the corner r^{3/2} expansions become smooth in w.
+  - At s = 1 (harmonic; W_n = πq^n exactly, twist `(1 + ∂_α²)²`) TAMP is an exactly holomorphic problem with an
+    explicit annihilator space span{dφ, cos φ dφ} ⊕ (corner point functionals).
+- **Next.** Positivity of the clamped Green function of `(∂² + V)²`; the mid-arc comparison for κ*; the s = 1 model as
+  a solvable test case.
+
+## Row 211 — [P] the PD density of an S-symmetric witness is its boundary value on the unit circle
+- **C227 (spectral density law).** Let h be even and S-symmetric (h(1/x) = |x|h(x)), with h(x) = F(x²) on
+  [−1,1] and F(ζ) = Σ c_k ζ^k.
+  - The log profile is P(v) = Σ c_k e^{−(2k+½)|v|}.
+  - The spectrum is Σ c_k·2ν_k/(ν_k²+τ²), with ν_k = 2k+½.
+  - Equivalently, spectrum·cosh(πτ) = 2∫_0^π cosh(τθ)K(θ)dθ, where
+    K(θ) = Σ c_k cos(ν_kθ) = Re[e^{iθ/2}F(e^{2iθ})] = Re[e^{iθ/2}h(e^{iθ})].
+  - The PD density is the rotated boundary value of the continued witness on the unit circle, so PD ⟸ K ≥ 0.
+  - Proof: ∫_0^π cosh(τθ)cos(ν_kθ)dθ = ν_k cosh(πτ)/(ν_k²+τ²), since cos(ν_kπ) = 0 and sin(ν_kπ) = 1. Lean target.
+- **Arc case.** Arc vectors are 2√sinα Σ P_{2k}(cos α)x^{2k} (Legendre generating function). Their K is the
+  Mehler–Dirichlet–Murphy kernel (4/π)√sinα·1_{θ<α}/√(2(cosθ−cosα)), i.e. the Abel transform 𝒜κ.
+  - Arc-supported h: K ≡ 0 on (2π/3, π]. This follows from analyticity across the gap arc plus S-symmetry, which
+    makes e^{iθ/2}h(e^{iθ}) purely imaginary there and real on [0, π/3).
+  - Hierarchy: TAMP (κ* ≥ 0) ⟹ K* = 𝒜κ* ≥ 0 ⟹ Λ ≥ 0 ⟺ (N1) in the BRS class.
+- **Γ-factor law (given the row-210 BRS link).** V₁ = C·Ξ²·|Γ(¾+iτ/2)|²·Λ_{κ*}(τ), with
+  Λ_{κ*}(τ) = ∫_{−2π/3}^{2π/3} cosh(τθ)K*(θ)dθ.
+  - The poles of 1/cosh(πτ) at ±i(2k+3/2) cancel automatically, because arc functions are even-analytic at 0.
+  - So V₁/Ξ² = R* is entire of exponential type π/6, and |Γ(¾+iτ/2)|^{−2}R* is a Laplace transform supported in
+    [−2π/3, 2π/3].
+- **Transfer formula on A.** Blindness gives Σ_n h*(w+n) = A cos 2πw on the scalloped domain Ω = ∪_n D(n,1) ∪ mirror.
+  - The inner boundary value on A continues analytically: h*₋(w) = A cos 2πw − Σ_{n≠0} h*(w+n), with
+    h*(w+n) = ±(w+n)^{−1}h*(1/(w+n)) at interior points.
+  - Outer and inner boundary values are related by e^{iα/2}h₊ = ±conj(e^{iα/2}h₋).
+  - The main term 2Re[e^{iθ/2}A cos(2πe^{iθ})] changes sign on A (≈ +189A at i, ≈ −100A at the corner), so K* on A is a
+    near-cancellation between it and the n = ±1 transfer terms.
+- **Variation diminishing.** cosh(τθ) is a power series in (τθ)² with positive coefficients. If K* has exactly one sign
+  change (− then + toward 2π/3, where the corner law makes it positive), then (N1)-BRS ⟺ Λ(0) = ∫K* ≥ 0.
+- **Correction.** The "smoothness law" (blindness ⟹ h even-smooth at 0) is automatic for arc superpositions and is
+  not a constraint. It is a constraint only for the θ-generators k_θ(|x|) (s=1 half-line Cauchy kernels at
+  e^{i(π−θ)}), whose spectrum is cosh(τθ)/cosh(πτ).
+- **[L] row 211.** `RHTower/SelfReciprocalBoundaryDensity` (standard axioms, `lake --old` clean, wired).
+  - `integral_cos_mul_selfRecProfile`: Lorentzian form Σc_k·2ν_k/(ν_k²+τ²).
+  - `integral_cosh_mul_cos_selfRecExponent`: ∫_0^π cosh(τθ)cos(ν_kθ) = ν_k cosh(πτ)/(ν_k²+τ²).
+  - `integral_cos_mul_selfRecProfile_eq_density`: the spectral density law.
+  - `integral_cos_mul_selfRecProfile_pos`: K ≥ 0 and K ≢ 0 ⟹ strictly PD.
+  - `exp_half_mul_selfRecLine`, `selfRecLine_inv`, `selfRecLine_neg`: the h ↔ profile dictionary and S-symmetry.
+  - `selfRecDensity_eq_re`: K(θ) = Re(e^{iθ/2}F(e^{2iθ})).
+  - Hypothesis: Σ|c_k| < ∞.
+
+## Row 212 — [P→L] the corner coefficient of the unique witness is positive (high-frequency PD)
+- **Decay class at s = ½ means "annihilate the mode-0 space".** ker𝔐² ∩ even = span{√sin α, √sin α·log sin α}, which on A
+  are exactly the traces of the two mode-0 eigenfunctions √y and √y log y.
+  - At s = 1 this fails: the second kernel element is (α−π/2)cos α, which is not a trace of 1. So the s=1 "model" is
+    degenerate (a real zero at τ = 0) and should not be used as a test case.
+- **Clean characterization.** σ* = ∂_nV*, where V* is the unique eigenfunction in D with
+  - V* = 0 on A;
+  - V* − √y I₀(2πy)cos 2πx → 0 at the cusp: no mode-0 part at all, no √y and no √y log y;
+  - the minimal corner singularity β r^{−3/2}sin(3θ'/2).
+  Equivalently V* = V₁ + (β/π)S*, with the reciprocity s₀* = πp₀ (the √y-coefficient of S* equals π times the corner
+  coefficient of V₀).
+- **Theorem (paper, rigorous modulo standard elliptic facts).** β > 0 in the normalization where ĥ*(1) > 0.
+  - β = u₀(φ₁)/p₀ with p₀ > 0 (Hopf), where u₀(φ₁) = ∫_A I₀(2πy)cos(2πx) dω and ω is the cusp harmonic measure of div(y∇·).
+  - **Cosine rearrangement lemma.** ω ≥ 0 and ∫_A K₀(2πy)cos(2πx)dω = 0, because a decaying mode has zero cusp
+    average. Put λ = I₀/K₀ evaluated at y_A(¼). Then (I₀ − λK₀)(2πy_A(x))·cos(2πx) ≥ 0 pointwise on A, since both
+    factors change sign exactly at |x| = ¼ (y_A decreases in |x|, I₀/K₀ increases). Integrating gives u₀(φ₁) > 0.
+- **Consequences.**
+  - The large-τ spectrum Λ_{σ*}(τ) ~ (3β/π)Γ(−3/2)(2π)^{−1/2}τ e^{2πτ/3} > 0, so h* is PD at all high frequencies.
+  - κ* ≈ (8β/(3π)) r^{3/2} > 0 near the corners, and K* > 0 near θ = 2π/3.
+  - The large-τ sign is consistent with the sign of ĥ*(1) (same normalization), so there is no obstruction.
+- **TAMP reduction.** TAMP ⟸ (C230) ∂_nV* > 0 on the open arc, i.e. the negative nodal domain of V* (which descends
+  from the cusp around x = ½) does not reach A, together with positivity of the clamped Green function of (∂²+V)²
+  on [π/3, 2π/3] (2V·L² ≈ 1.2, far below the buckling value 4π² ≈ 39).
+- **[L] row 212.** `RHTower/ModularArcGrowingModePositivity` (standard axioms, `lake --old` clean, wired).
+  - `integral_mul_cos_pos_of_ratio`: the cosine rearrangement inequality on the arc, for general (F, G) with F/G
+    radially decreasing.
+  - `integral_growingWhittakerCos_pos`: a nonzero finite arc measure blind to √yK₀(2πmy)cos(2πmu), m = 1, 2, satisfies
+    ∫√y I₀(2πy)cos(2πu)dν > 0.
+  - `exists_arcWitness_growingWhittakerCos_pos`: the corpus cusp-harmonic arc witness is positive on the growing first
+    mode.
+  - Helper facts: `kMoment_pos_of_pos`, `strictAntiOn_kMoment_zero`, and `measure_abs_ne_quarter_ne_zero` (blindness to
+    mode 2 excludes concentration on |u| = ¼).
+  - This is the sign input of β > 0, i.e. high-frequency PD of the unique witness.
+
+## Row 213 — [P] V* is an eigenfunction on a cone surface of angle 4π/3; the corner is the obstruction from q = 3 being odd
+- **S-oddness.** V* = 0 on A and is even in x. Odd Schwarz reflection across A uses R(z) = 1/z̄ = σ∘S, so V*∘S = −V*
+  while V*∘T = V*.
+- **Not a character.** (S,T) ↦ (−1,+1) is not a character of PSL₂(ℤ) or of any SL₂(ℤ) multiplier system, because
+  χ(ST)³ = −1 ≠ 1.
+  - Hence every S-odd, T-even eigenfunction is double-valued around the orbit of ρ, with monodromy −1 and local
+    exponents r^{3(2k+1)/2}.
+  - V₀ and V₁ take the bounded branch r^{3/2}. V* takes the minimal singular branch r^{−3/2}.
+  - So V* lives on the branched double cover of ℍ/Γ at ρ, which is a hyperbolic cone surface with cone angle 4π/3. It is
+    not a Fuchsian quotient, so there is no Poincaré-series construction.
+- **Contrast with even q.** For the Hecke groups G_q with q even (e.g. q = 6, λ = √3), χ(S) = −1, χ(T_λ) = 1 is a genuine
+  character (χ(ST_λ)^q = 1). The analogous V*_q is then a genuine automorphic eigenfunction with character, with no
+  corner singularity.
+  - The c_{3/2} functional, the r^{3/2} law of κ*, and the 2π/3 corner of D are all exactly the odd-q obstruction at q = 3.
+- **Next.** C230 (∂_nV* > 0 on A) via comparison functions on the cone surface. The even-q analog as a solvable model.
+- **Interface check (Lean).** The corpus (N1) object is `XiDivisibleBlindTest F` (`RHTower/WeilConeXiDivisibleBlindTest`):
+  ExpDecayTest F, crossCorr F F (log n) = 0 for n ≥ 2, and F̂ = Ξ·g on |Im| ≤ ½ with g zero-free on ℝ. Given it,
+  `riemannHypothesis_iff_primeBlindPositive_of_exists_xiDivisibleBlindTest` gives RH ⟺ PBAP.
+  - Bridge from the ζ-free witness: ν = |F̂|² = Ξ²R, with R* = C|Γ(¾+iτ/2)|²Λ_{κ*} positive on ℝ.
+  - Factor R* = g·g^♯ by Hadamard zero-splitting. R* is even, real, order 1 and positive on ℝ, so g is zero-free on ℝ
+    with zeros in ℍ. Krein's log-integral fails (R* ~ e^{π|τ|/6}), but the Hadamard split does not need it.
+  - Blindness transfers by `logNode_blind_iff_certKernel_vanishes` (d ↔ μ⋆μ).
+  - Missing Lean pieces: (a) R* > 0 (the core), (b) the Hadamard spectral factorization, (c) the regularity hypotheses of
+    `integral_xi_sq_mul_cpow_eq_tsum`.
+
+## Row 214 — [P] the arc A is not the whole producer cone: full-semicircle generators, non-uniqueness, and the Lean class
+- **Every point of the unit semicircle is an S-symmetric PD generator**, not just A.
+  - The corpus lemma `integral_cos_mul_symCoshKernel_pos` holds for all |c| < 1.
+  - Its mechanism: symCoshKernel(c,v) = Σ_j 2binom(−½,2j)c^{2j}(cosh v)^{−½−2j} has positive coefficients.
+  - Hence PD of any arc superposition follows already from positivity of the weighted even moments
+    μ_j = ∫u^{2j}(1−u²)^{1/4}dκ(u), which is weaker than κ ≥ 0. In the variable ζ = sech²v = 4x²/(1+x²)²,
+    H = √(2/(1+x²))·G(ζ) with G(ζ) = Σμ_jζ^j, analytic off [4,∞). The corner ρ maps to ζ = 4 and i maps to ζ = ∞.
+    PD ⟸ G absolutely monotone.
+- **The side arcs L₂ carry their own annihilators.** In the cylinder the semicircle is A ∪ L₂, where L₂ = ∂S(D)'s side arcs
+  = S(vertical sides of D), a loop through ρ and the ideal point 0.
+  - The region U₂ = D ∪ S(D) has ∂U₂ = L₂. The fluxes ν₀'', ν₁'' and the corner functional c''_{3/4} (U₂ has angle 4π/3
+    at ρ) of eigenfunctions vanishing on L₂ annihilate every Φ_{≥2}-trace. Green on U₂: the cusp ∞ term vanishes, the
+    cusp 0 term vanishes (exponential decay between two Dirichlet arcs), and the smooth corner term vanishes.
+  - Together with ν₀, ν₁, c on A this gives ≥ 6 annihilators. After the two decay-class conditions, the space of blind
+    decay-class distributions on the semicircle has dimension ≥ 4. Among them is the U₂-analog σ_L* of σ*.
+- **Consistency with BRS.** The L₂ witnesses have mass accumulating at α → 0, so their spectra decay only
+  subexponentially (~e^{−2√(c|τ|)}). Hence they must lie outside the BRS uniqueness class: BRS needs exponential decay,
+  while ν* = Ξ²R* decays like e^{−π|τ|/3}. Compact sub-arcs [ε, π−ε] add nothing: slit tips carry no annihilators because
+  of the ideal-boundary pairing.
+- **The Lean (N1) class is far larger than the BRS class.**
+  - `ExpDecayTest` = C² with decay rate ½+δ in u.
+  - The ζ-free blind space W (even, S-symmetric, ĥ(m) = 0 for m ∉ {±1}, decay class) is infinite-dimensional: it already
+    contains compactly supported smooth elements, because {cos 2πmx} is not complete on intervals longer than 1.
+  - So the frontier phrase "(N1) fails only through the sign of the BRS V₁" holds only inside the BRS-regular class.
+    In the Lean class, (N1) ⟺ PD ∩ W ≠ ∅ (plus factorization and regularity), and V₁ ≥ 0 is sufficient but not necessary.
+  - Known constraint (frontier, CosDilation rigidity): compact PD cores cannot be blind. So a PD element of W must be
+    noncompact, e.g. carry mass near the real axis, which matches the C191 hint.
+- **Dual heuristic.** A certificate against PD ∩ W is a real Dirichlet series D = Σ_{m≥2} a_m m^{−s} with
+  Re[e^{−2iϑ(τ)}D(½+iτ)] > 0 for all τ, where e^{−2iϑ} = Γ_ℝ(s)/Γ_ℝ(1−s) is unimodular on the line.
+  - For finitely many frequencies the phase 2ϑ ~ τ log τ outruns arg D (at most linear growth), so no finite certificate
+    exists. This matches Theorem B′ (all finite levels).
+  - Any obstruction must be an infinite Dirichlet series whose argument tracks 2ϑ(τ): an approximate-functional-equation
+    object.
+- **C232 (open).** TAMP_full: a positive κ on the open semicircle, with fast vanishing at α → 0, π, whose twisted moments
+  annihilate all m ≥ 2. It is weaker than TAMP and gives a non-BRS (N1) line witness.
+- **[L] row 214.** `HTGeometry/SymmetricCoshMomentPositivity` (standard axioms, `lake --old` clean, wired into
+  HTGeometry).
+  - `integral_cos_mul_coshPowerSeries_pos`: Σ_j b_j(cosh v)^{−½−2j} with b_j ≥ 0, summable and b_0 > 0 is strictly PD.
+  - `integral_density_mul_symCoshKernel_eq_tsum`: the moment expansion of ∫k(c)𝒦_c dc for any integrable signed density
+    on [−c₀, c₀], c₀ < 1.
+  - `integral_cos_mul_momentPositive_symCoshKernel_pos`: nonnegative even moments and positive mass ⟹ strictly PD.
+    The PD cone of arc superpositions is now the moment-positive cone (signed densities allowed), not just positive
+    measures.
+  - Consequence (paper): PD of the unique arc witness ⟸ μ_j(κ*) ≥ 0 for all j. All high μ_j are positive by β > 0
+    (row 212, corner dominance), so the open core is finitely many moment inequalities.
+- **Dual structure (paper).** For S-symmetric even h, ĥ(m) = (1/(2π√m))∫S_h(τ)cos(θ(τ)+τ log m)dτ, where
+  e^{iθ} = ζ(½+iτ)/ζ(½−iτ) (the functional-equation phase).
+  - A Farkas certificate against PD ∩ W is a Dirichlet series D (supported on m ≥ 2) with
+    Q = Re[ζ(½+iτ)·conj E(½+iτ)] ≥ 0, where E = D∗μ has zero constant term.
+  - Necessary for any certificate: at every zero γ on the line, E(½+iγ) must have the prescribed phase
+    arg = −ϑ(γ) ± π/2. Otherwise Q changes sign at γ.
+  - The family E = ζ·(positive-real-part series) is excluded by the mean-value argument (zero constant term ⟹ zero mean
+    of Re E). E = ζ − 1 fails at every zero.
+
+## Row 215 — [L] Theorem C upgraded: signed, moment-positive twisted arc measures suffice
+- **[L]** `RHTower/TwistedArcMomentN1Reduction` (standard axioms, `lake --old` clean, wired). Main theorem
+  `exists_decayClass_fullLineWitness_of_momentPositive`.
+  - Input: a finite measure ν on the arc and a bounded measurable signed density g.
+  - Hypotheses: g·ν annihilates every twisted integer moment; m_j = ∫g√(y/2)u^{2j}dν ≥ 0 for all j; m_0 > 0.
+  - Conclusion: the full decay-class (N1) line witness, as in Theorem C. TAMP (g ≥ 0) is the special case.
+  - Also proved: `hasSum_integral_cos_mul_symCoshKernel` (Ŝ_c = Σ 2C(−½,2j)c^{2j}C_j) and
+    `integral_cos_mul_twWitnessWProfile_eq` (spectrum = (¼+τ²)²Σ_j 2C(−½,2j)C_j(τ)m_j).
+- **[P] The open core is now finitely many moment signs.** Twisted-blind signed arc measures are exactly ℝκ*, since the
+  adjoint of 𝔐² is injective on distributions of the closed arc. Hence:
+  - moment-TAMP ⟺ μ_j(κ*) ≥ 0 for all j;
+  - the high-j moments are positive (row 212, β > 0 and corner dominance);
+  - μ_j = Σ_k c_{jk}λ_k with Legendre moments λ_k = c_k(H*)/4, and c_k(h*) = (2k(2k+1))²c_k(H*);
+  - μ_0 ∝ H*(0) = (Mh*)'(0) = ½∫_0^∞ ĥ*(ξ)dξ/ξ, where h*'s Mellin transform has simple zeros at s = 0, 1;
+  - sanity identity: Σ_k (4k+1)c_k(H*) = 0, from κ* vanishing at u = ±1.
+- **[P] Coefficient transfer system.** h* = F*(x²) and blindness give
+  c_k(2k)! = A(−1)^k(2π)^{2k} − 2h*^{(2k)}(1) − 2Σ_m c_m (2m+2k)!/(2m)!·(ζ(2m+2k+1) − 1).
+  This is the Mayer transfer at s = ½ in the Taylor basis, so the moments are its solution functionals.
+
+## Row 216 — [L] one sign change + positive mass suffices for (N1)
+- **[L]** `RHTower/TwistedArcSingleSignChangeN1` (standard axioms, `lake --old` clean, wired).
+  - `moment_ge_of_singleSignChange`: if g ≤ 0 on |u| < u₀ and g ≥ 0 on |u| ≥ u₀, then
+    ∫g√(y/2)u^{2j}dν ≥ u₀^{2j}∫g√(y/2)dν. Reason: (u^{2j} − u₀^{2j})g ≥ 0 pointwise.
+  - `exists_decayClass_fullLineWitness_of_singleSignChange`: a twisted-blind signed arc density with one sign change
+    (− in the centre, + toward the corners) and positive weighted mass gives the decay-class (N1) line witness.
+- **Open core now.** For the unique κ*:
+  - (A) κ* changes sign at most once on [0,½], from − to + (κ* > 0 near the corners is proved via β > 0);
+  - (B) μ_0 = ∫√(y/2)κ* > 0.
+- **[P] Formulas for (B).**
+  - μ_0 ∝ H*(0) = −Σ_{k≥1}(4k+1)c_k(H*), with c_k(H*) = c_k(h*)/(2k(2k+1))². Every arc vector has x²-coefficient
+    2√sinα·P₂(cos α) < 0 on A, so the dominant term is −5c_1(H*), with c_1(H*) = 2∫√sinα P₂(cosα)κ*.
+  - Blindness gives Σ_k c_k*ζ(2k+1) = A/2 at x = 0, the x = ½ identity Σ_k c_k*[4^{−k} + (2^{2k+1}−1)ζ(2k+1) − 2^{2k+1}] = −A/2,
+    and h*''(0) = −4π²A − 2Σ_{n≥1}h*''(n).
+  - μ_0 ∝ −∫log|t|h*(t)dt = c·ĥ*(1) − ∫log|πt/sin πt|·h*(t)dt, where log|πt/sin πt| ≥ 0.
+
+## Row 217 — [L] finite moment certificate; [P] structure of the remaining core
+- **[L]** `RHTower/TwistedArcFiniteMomentCertificateN1` (standard axioms, `lake --old` clean, wired).
+  - `moment_ge_corner_sub`: if g ≥ 0 on |u| ≥ u₁, then μ_j ≥ u₂^{2j}P − u₁^{2j}Bν(arc), where P is the corner mass on |u| ≥ u₂.
+  - `exists_decayClass_fullLineWitness_of_cornerPositive_finiteMoments`: the (N1) line witness follows from
+    - corner positivity,
+    - positive mass,
+    - an explicit J with u₁^{2J}Bν(arc) ≤ u₂^{2J}P,
+    - finitely many μ_j ≥ 0 (1 ≤ j < J).
+  - The producer core is now a finite certificate for κ*. Corner positivity of κ* is proved (row 212, β > 0).
+- **[P] μ_0 via the multiplicative periodization.** Let Θ(x) = Σ_{n≥1} h*(nx). Then:
+  - M[Θ](s) = ζ(s)Mh*(s), so (Mh*)'(0) = −2∫_0^∞ Θ(x) log x dx/x;
+  - Θ(1/k) = 0 for k ≥ 2, and Θ(1) = A/2;
+  - Θ(x) = Σ_k c_k*ζ(2k+1)x^{−2k−1} on [1,∞);
+  - Θ(x) = x^{−1}Σ_{m≥1} ĥ*(m/x) on (0,1).
+- **[P] Deformation heuristic (caveat).** Corner positivity holds uniformly in any family of arcs on which the
+  rearrangement lemma applies (y_A decreasing in |x|).
+  - So along a continuous deformation from a positive base case, TAMP can fail only through an interior double zero.
+  - The dual (certificates concentrating to δ at the touching point) does not forbid this, because traces are
+    almost dense.
+  - The naive flat (horocycle) base case is degenerate: the curvature term in √y log y forces corner functionals with
+    diverging coefficients as the corner angle → π.
+  - Still open: a family with a non-degenerate positive base case and a no-touching mechanism.
+
+## Row 218 — [P] compactness duality for (N1) and a χ-phase rigidity bound (one wrong turn, corrected)
+- **Compactness duality (rigorous framework).** Let K = {P even, PD, P(0) = 1, |P| ≤ C₀e^{−a|v|}, |P'| ≤ C₁e^{−a|v|}}.
+  K is compact in the weighted uniform topology (Arzelà–Ascoli), and the blindness functionals L_m (and ∫h, together
+  with its derivative at s = 1) are continuous on it.
+  - By finite intersection, a witness exists in K ⟺ no finite certificate ℓ = Σ a_m L_m is strictly positive on K.
+  - Mellin–Parseval: ℓ(P) = c∫S_P(τ)Q(τ)dτ with Q = Re[χ(½+iτ)B(½−iτ)], where B = Σ b_m m^{−s} with b_m ∝ a_m√m is a
+    real Dirichlet polynomial supported on m ≥ 2, and χ(½+iτ) = e^{iθ(τ)} = ζ(½+iτ)/ζ(½−iτ).
+  - Tail bound: PD and |P'| ≤ C₁ give ∫_{|τ|>T} S_P ≤ 8πC₁/T.
+- **Wrong turn, corrected.** I first argued that a chirp-approximating B with Q ≥ c on [−T,T] and Σ|b_m| = O(√T) exists for
+  every T. That would kill every finite-envelope witness, including the corpus's positive cusp-harmonic witness h₀
+  (`exists_arcWitness`: PD, blind at all m ≠ 0, finite envelope with a = ½). Since h₀ exists, the claim is false.
+- **Rigorous consequence (χ-phase rigidity).** Apply the duality to h₀. For every real Dirichlet polynomial B on m ≥ 2 and
+  every T: if Re[χ(½+iτ)B(½−iτ)] ≥ c > 0 on |τ| ≤ T, then the bound M of |Q| satisfies M/c ≥ T/(4C₁(h₀)) − 1.
+  - Keeping the χ-rotated Dirichlet polynomial positive on long intervals costs linearly growing ℓ¹ mass.
+  - This quantifies why finite certificates fail (C214) and why the limit step C191 is delicate. Uniform-envelope
+    finite-level witnesses exist ⟺ no certificate with bounded M/c exists.
+- **Status.** All regular (compact-envelope) constructions lead to h*. The producer core stays the finite moment
+  certificate of rows 215–217.
+
+## Row 219 — [L] (N1) from a Ξ-divisible strip function; [P] bridge plan from the arc witness
+- **[L]** `RHTower/StripFactorXiDivisibleBlindTest` (standard axioms, `lake --old` clean, wired into RHTower).
+  - Setting: `StripDecay Φ b ε C` means Φ holomorphic on |Im z| ≤ b with ‖Φ(z)‖ ≤ Ce^{−ε|Re z|}; Φ(−r) = conj Φ(r).
+    The test is `stripTest Φ x = Re (1/2π)∫Φ(r)e^{−irx}dr`.
+  - `expDecayTest_stripTest`: for b > ½ it is C² with |F|, |F'| ≤ Ke^{−b|x|}. Proof: horizontal contour shift to
+    Im z = ∓b; F' is the transform of −izΦ, which is again StripDecay with ε/2; C² via `Real.contDiff_fourier`.
+  - `paperFT_stripTest`: F̂ = Φ on the open strip |Im z| < b. Proof: Fourier inversion on ℝ, strip analyticity of F̂
+    (`differentiableAt_paperFT_of_expDecay`), identity theorem.
+  - `crossCorr_stripTest`: (F ⋆ F̃)(y) = (1/2π)∫|Φ(r)|²cos(ry)dr (Fubini).
+  - `xiDivisibleBlindTest_stripTest` and `riemannHypothesis_iff_primeBlindPositive_of_stripFactor`: if Φ = Ξ·g on
+    |Im z| ≤ ½ with g zero-free on ℝ and ∫|Φ|²cos(r log n) = 0 for n ≥ 2, then `XiDivisibleBlindTest (stripTest Φ)`
+    and RH ⟺ PBAP.
+  - So (N1) is now, in Lean, the existence of a Ξ-divisible strip function of exponential decay whose spectral square
+    has vanishing cosine moments at every log n.
+- **[P] From the arc witness to a strip function (the "Hadamard split").**
+  - With R = Mh/(G(s)G(1−s)) one has R(½+iz) = c₀Γ(¾+iz/2)Γ(¾−iz/2)·L(z), c₀ = 4π^{−3/2}, where
+    L(z) = ∫cosh(zθ)K(θ)dθ and K is the Abel density of the arc measure, supported in [0, 2π/3].
+  - If K ≥ 0 then Re L(r+iy) = ∫cosh(rθ)cos(yθ)K > 0 for |y| < 3/4. So g = √c₀Γ(¾+iz/2)·exp(½log L) is holomorphic on
+    |Im z| < 3/4 with |g|² = R on ℝ, and Φ = Ξg decays like e^{−π|r|/6}.
+  - The factorization is therefore explicit (a principal square root) for every Abel-positive arc density. The
+    restriction θ ≤ 2π/3 (the corner angle) is exactly what puts the strip beyond ½.
+- **[P] Weaker route: families.** By the corpus moment expansion,
+  R(r) = Σ_j w_j|Q_j(r)|² with Q_j(z) = Π_{k<j}(k+¼+iz/2) = Γ(j+¼+iz/2)/Γ(¼+iz/2) and w_j ∝ C(−½,2j)2^{2j}m_j/Γ(½+2j).
+  - Each F̂_j = Ξ·Q_j is a polynomial multiple of Ξ: a fixed universal family (derivatives of Riemann's Φ-kernel).
+  - Moment positivity m_j ≥ 0 gives a nonnegative family whose combined autocorrelation is the arc witness.
+  - A family version of the XiDivisible rigidity would therefore give (N1) from moment positivity alone, which is
+    weaker than Abel positivity.
+  - (N1)_family is the linear-conic problem: find w ≥ 0 with Σ_j w_j(F_j ⋆ F̃_j)(log n) = 0 for every n ≥ 2. The arc
+    generators lie inside this cone, so the cone is strictly larger than the arc cone.
+- **Remaining formal gaps for arc ⟹ (N1).**
+  - (M3) The divisor transfer at an abscissa c ∈ (1,2); the corpus has it at 3, where Mh has a pole.
+  - (M4) certKernel_c R = κ·Ch via the shift c → ½, `soninMellinEvaluation_fourier`, and Mellin inversion.
+  - Either the Abel representation (route a) or the family rigidity theorem (route c).
+
+## Row 220 — [L] divisor transfer at any c > 1, kernel = Fourier transform, and the family (N1) rigidity
+- **[L]** `RHTower/DivisorTransferAbscissa` (standard axioms, `lake --old` clean, wired).
+  - `integral_xi_sq_mul_cpow_eq_tsum_at`: for R holomorphic on ½ ≤ Re s ≤ c (c > 1) with C/(1+t²) bounds,
+    ∫ξ(½+it)²R n^{−½−it} = 2πΣ_m d(m)Ψ_{R,c}(mn), where Ψ_{R,c} = 𝓜^{−1}_c[G²R].
+  - Summability uses only `LSeriesSummable` of d = 1⋆1 at c. The corpus version had c = 3, which crosses the pole of
+    𝓜h at s = 3 for every decay-class arc profile.
+  - `logNode_blind_of_certKernelAt_vanishes`: if Ψ_{R,c} vanishes on ℕ_{≥2}, the test with density Ξ²R is blind.
+- **[L]** `RHTower/DivisorKernelFourierIdentification` (standard axioms, `lake --old` clean, wired).
+  - `mellin_fourier_of_re_eq_half`: 𝓜[𝓕h](s) = (Γ_ℝ(s)/Γ_ℝ(1−s))𝓜h(1−s) on Re s = ½.
+  - `mellinInv_eq_fourier_of_strip`: if G is holomorphic on ½ ≤ Re s ≤ c with 1/(1+t²) decay and equals that ratio on
+    the line, then 𝓜^{−1}_c[G] = 𝓕h. Proof: shift to ½, then Mellin inversion.
+  - `logNode_blind_of_fourier_vanishes`: G²R = γ·𝓜h(1−·) on the line and 𝓕h(n) = 0 for n ≥ 2 ⟹ ∫Ξ²R n^{−it} = 0.
+  - So the corpus line witnesses' blindness (𝓕h(m) = 0) is now formally the (N1) blindness of Ξ²R.
+- **[L]** `RHTower/WeilConeXiDivisibleBlindFamily` (600 lines, standard axioms, `lake --old` clean, wired).
+  - Hypotheses:
+    - F_j is C² with |F_j|, |F_j'| ≤ C_je^{−(½+δ)|x|}, and Σw_jC_j² < ∞ with w_j ≥ 0;
+    - every F̂_j vanishes at all zeros;
+    - Σ_j w_j(F_j⋆F̃_j)(log n) = 0 for every n ≥ 2;
+    - one member with w_{j₀} > 0 has no real zeros off the critical ordinates.
+  - Conclusion: `eq_vonMangoldt_of_xiDivisibleBlindFamily` and
+    `riemannHypothesis_iff_primeBlindPositive_of_xiDivisibleBlindFamily`.
+  - Proof: per-member truncation identity; uniform C_j² bounds on the zeta side (tail majorant) and prime side
+    (summation by parts); dominated convergence in j; the Abel prime pairings cancel after exchanging Σ_j and Σ_n;
+    Fatou in L and in j (counting measure).
+- **Consequence (frontier).** (N1) no longer needs a spectral factorization. Any nonnegative combination
+  Σ_j w_j|Ξg_j|² of Ξ-divisible decay tests with blind total autocorrelation suffices.
+  - For the arc witness, g_j = Q_j = Γ(j+¼+iz/2)/Γ(¼+iz/2) with w_j ∝ C(−½,2j)4^j m_j/Γ(½+2j).
+  - The open core is now exactly the moment positivity m_j(κ*) ≥ 0, plus routine instantiation: the decay constants of
+    ΞQ_j and the strip bounds of R = Σw_jQ_j(z)Q_j(−z), using |R(σ+it)| ≤ Π_k(1+1/(4(k+¼)²))·R(½+it).
+- **[P] Dictionary freedom.** The family theorem accepts any dictionary of Ξ-divisible tests.
+  - With a Gaussian dictionary g_b(z) = e^{−(z−b)²/2}, (N1) reduces to a positive measure ν on ℝ annihilating
+    k_n(b) = ∫Ξ²e^{−(r−b)²}cos(r log n)dr.
+  - The dual certificate is a mean-zero Dirichlet cosine polynomial T with Gaussian-smoothed Ξ²T > 0 everywhere.
+  - Open problem C235: a dictionary in which the annihilation problem is compact and a minimum principle holds.
+
+## Row 221 — [L] the shifted-Gamma dictionary: (N1) as a conic linear problem
+- **[L]** `RHTower/XiShiftedGammaFamily` (standard axioms, `lake --old` clean, wired).
+  - Q_j(z) = ∏_{k<j}(k+¼+iz/2) and Φ_j = Ξ·Q_j = (s(s−1)/2)π^{−s/2}Γ(s/2+j)ζ(s): the completed zeta with its Gamma
+    factor shifted by j.
+  - `norm_shiftedGammaPoly_le_factorial`: ‖Q_j(z)‖ ≤ 3·j!(3/2)^j 3^{|Re z|/2} on |Im z| ≤ 3/2. Proof: integer ceiling
+    of |Re z|/2, then j!C(j+m,j), then C(j+m,j) ≤ (3/2)^j3^m from (2/3+1/3)^{j+m} = 1.
+  - `exists_stripDecay_xiShiftedGamma`: one constant for all j, decay rate 3/4 − (log 3)/2 > 0 on |Im z| ≤ 3/4, via the
+    corpus horizontal decay of Ξ.
+  - `decayBound_stripTest`: explicit, linear decay constants for strip tests.
+  - `exists_decayBound_xiShiftedGammaTest`: |F_j|, |F_j'| ≤ C·j!(3/2)^j e^{−(3/4)|x|}.
+  - `paperFT_xiShiftedGammaTest_gammaOf`: F̂_j vanishes at every nontrivial zero.
+    `riemannZeta_eq_zero_of_paperFT_xiShiftedGammaTest_zero`: F̂_0 = Ξ has only critical real zeros.
+  - `crossCorr_xiShiftedGammaTest`: (F_j⋆F̃_j)(y) = (1/2π)∫|ΞQ_j|²cos(ry).
+  - **`riemannHypothesis_iff_primeBlindPositive_of_shiftedGamma_weights`**: suppose w_j ≥ 0, w_0 > 0,
+    Σ_j w_j(j!)²(9/4)^j < ∞, and Σ_j w_j A_{n,j} = 0 for every n ≥ 2, where A_{n,j} = ∫|Ξ(r)Q_j(r)|²cos(r log n)dr.
+    Then RH ⟺ PBAP.
+- **(N1)_Q is now a conic LP in Lean.** The arc witness with nonnegative moments gives w_j ∝ 4^j m_j/(2j)!, which
+  satisfies the growth bound since |m_j| ≤ 4^{−j}m_0.
+- **[P] Structure of the LP.**
+  - By the kernel identification per j: A_{n,j} = 2π n^{½}Σ_m d(m)Ψ_j(mn), with
+    Ψ_j = (θ(θ−1))²∏_{k<j}(k+½−θ/2)[4π^jx^jK_j(2πx)] and θ = −x∂_x, using π^{−s}Γ(s/2)Γ(s/2+j) = 𝓜[4π^jx^jK_j(2πx)].
+  - After Möbius inversion: Σ_j w_jΨ_j(N) = 0 for every N ≥ 2.
+  - Ψ_0(x) = 4[(t⁴+9t²)K_0(t) − 6t³K_1(t)] with t = 2πx.
+  - Sign pattern: Ψ_j(N) ~ (−1)^j·(positive)·e^{−2πN} for N ≫ j; positive for j ≫ N (concentration at x = ±1).
+- **[P] Dual certificates.** Positive combinations of the |Q_j|² are even and increasing in |r|.
+  - A certificate is a Dirichlet polynomial D (N ≥ 2) with ∫|archXi|²|Q_j|²Re[e^{iθ}D] > 0 for every j, including the
+    limit j = ∞, whose functional is ∫(¼+r²)²Re[e^{iθ}D].
+  - Such a certificate refutes (N1)_Q and moment positivity together. Whether one exists is open (C236).
+
+## Row 222 — [L] second derivatives and Fourier decay of the twisted witness; [P] the shifted-Gamma LP has one candidate per class
+- **[L]** `RHTower/TwistedArcWitnessFourierDecay` (standard axioms, `lake --old` clean, wired).
+  - `monoDeriv`/`abs_monoDeriv_le`: monomials α x^iQ^{−½−j} with i+1 ≤ 2j are closed under d/dx, with
+    |·| ≤ 2298240(1+x²)⁻¹ when |α| ≤ 945 and i, j ≤ 5.
+  - `twPointDeriv2`, `abs_twPointDeriv2_le`, `abs_twArcDeriv2_le`: g_u″ = O(1/(1+x²)) uniformly on the arc.
+  - `hasDerivAt_twWitnessWDeriv`: the weighted witness h is C², with h″ = ∫g·g_u″ dν.
+  - `norm_fourier_twWitnessW_le`: (1+ξ²)|𝓕h(ξ)| ≤ ∫|h| + ∫|h″|/4π², since 𝓕(h″) = (2πiξ)²𝓕h.
+    `integrable_fourier_twWitnessW` follows.
+  - These are the regularity inputs of the kernel identification (`DivisorKernelFourierIdentification`) for arc
+    witnesses.
+- **[P] The base-profile picture of the shifted-Gamma LP.**
+  - Nonnegative w ⟺ base log-profile sech^{½}(v)G(sech²v) with G absolutely monotone, G(σ) = Σw'_jσ^j.
+  - The twisted profile is P = (¼−∂²)²[sech^{½}G(sech²)] = sech^{½}·Σ_j w'_jσ^j(α_j − β_jσ + γ_jσ²), where
+    α_j = 4j²(2j+1)², β_j = s(s+1)(8j²+12j+6), γ_j = s(s+1)(s+2)(s+3), s = ½+2j.
+  - P_0 = −(9/2)sech^{5/2} + (105/16)sech^{9/2}.
+  - Arc points give G_u(σ) = 2Σ_j C(−½,2j)u^{2j}σ^j, with radius 1/u².
+  - The Lean growth bound Σw_j(j!)²(9/4)^j < ∞ allows radius > 9/4, i.e. arc points up to |u| < 2/3: beyond the corners
+    u = ±½. Within the analytic (BRS) class the blind witness is unique, so there the LP has the single candidate
+    h* and (N1)_Q ⟺ m_j(κ*) ≥ 0. Extended arcs (½ < |u| < 2/3) leave the BRS class and add blind directions
+    (conjecture C237: TAMP on an extended arc [−u₀, u₀] with u₀ < 2/3).
+- **[P] Bessel form.** Ψ_j = c_j∏_{k<j}[(k+½−θ/2)(k+θ/2)]Ψ_0, θ = −x∂_x, Ψ_0 ∝ (θ²−θ)²K_0(2πx) = (t⁴+9t²)K_0 − 6t³K_1 (t = 2πx).
+  Rough Bessel values suggest Ψ_0 < 0 on x ∈ (~0.19, ~0.76) and Ψ_0 > 0 at every integer.
+
+## Row 223 — [L] the exact spectral identity and the explicit arc weights
+- **[L]** `RHTower/ShiftedGammaSpectralIdentity` (standard axioms, `lake --old` clean, wired).
+  - `integral_cos_mul_cosh_rpow_neg_eq`: ∫cos(τv)cosh(v)^{−s} = 2^{s−1}|Γ((s+iτ)/2)|²/Γ(s) (closed form, extracted).
+  - `Gamma_add_nat_eq_mul_prod`, `norm_Gamma_shift_eq`: |Γ(¼+j+iτ/2)| = |Γ(¼+iτ/2)|·|Q_j(τ)|.
+  - `norm_archXi_criticalLine_sq`: |G(½+iτ)|² = ((¼+τ²)²/4)π^{−½}|Γ(¼+iτ/2)|².
+  - **`norm_archXi_sq_mul_norm_shiftedGammaPoly_sq`**: |G(½+iτ)|²|Q_j(τ)|² = λ_j(¼+τ²)²C_j(τ), where
+    λ_j = π^{−½}Γ(½+2j)/(4·2^{2j−½}).
+  - `ringChoose_neg_half_eq`: C(−½,n) = (−1)^nΓ(n+½)/(√π n!).
+  - `arcGammaWeight m j = 4√2·4^j m/(2j)!`, with `arcGammaWeight_mul_lambda`: w_jλ_j = 2C(−½,2j)m_j.
+  - `summable_arcGammaWeight`: 0 ≤ m_j ≤ M4^{−j} ⟹ Σw_j(j!)²(9/4)^j < ∞, via (j!)²4^j ≤ (2j+1)(2j)!.
+- **Consequence.** For a moment-positive twisted arc density, the weights w_j = 4√2·4^jm_j/(2j)! satisfy the growth
+  hypothesis of `riemannHypothesis_iff_primeBlindPositive_of_shiftedGamma_weights`. They reproduce the arc spectrum
+  exactly: Σw_j|G|²|Q_j|² = Ŝ_h (by the corpus moment expansion).
+- **Remaining for the formal chain** (module B2b):
+  - holomorphy and strip bounds of R(s) = Σw_jQ_j(z)Q_j(−z);
+  - the critical-line identity G²R = γ·𝓜h(1−·), from the identity above and the corpus moment expansion;
+  - the Fourier/Mellin step applied with h = twWitnessW (regularity from B1);
+  - 𝓕h(n) = 0 from twisted blindness (Fubini);
+  - final assembly.
+
+## Row 224 — [L] TAMP ⟹ (RH ⟺ PBAP), formal chain closed
+- **[L]** `RHTower/ArcGammaMultiplier` (standard axioms, `lake --old` clean, wired).
+  - R(s) = Σ_j w_jQ_j(z)Q_j(−z) with z = −i(s−½). It is holomorphic on |Re s−½| < 3/2, with ‖R‖ ≤ 9S·3^{|Im s|}.
+  - ξ²R = Σw_jΦ_j(z)Φ_j(−z).
+  - ‖ξ²R‖ ≤ C/(1+t²) and ‖G²R‖ ≤ C'/(1+t²) on ½ ≤ Re s ≤ 5/4. The G-bound comes from the Stirling-type
+    |Γ(s/2)| ≤ K(1+|t|)^N e^{−π|t|/4} and polynomial·e^{−at} ≤ k!/a^k.
+  - R(½+iτ) = Σw_j|Q_j(τ)|².
+- **[L]** `RHTower/TwistedArcMomentPositiveRH` (standard axioms, `lake --old` clean, wired).
+  - `mellin_twWitnessW_criticalLine`: 𝓜h(½−iτ) = ∫cos(τv)e^{v/2}h(e^v)dv.
+  - `fourier_ofReal_eq_cos_of_even`: 𝓕 of an even real L¹ function is its cosine transform.
+  - `fourier_twWitnessW_natCast_eq_zero`: 𝓕h(N) = ∫g·M_{N−2}dν = 0 for N ≥ 2 (Fubini).
+  - `archXi_sq_mul_arcGammaMultiplier_criticalLine`: G(s)²R(s) = (Γ_ℝ(s)/Γ_ℝ(1−s))𝓜h(1−s) on Re s = ½, with
+    w_j = 4√2·4^jm_j/(2j)!.
+    - G(s) = (Γ_ℝ(s)/Γ_ℝ(1−s))·conj G(s) on the line, so G² = ratio·|G|².
+    - Then |G|²Σw_j|Q_j|² = (¼+τ²)²Σ2C(−½,2j)C_j m_j is the moment expansion of the witness profile.
+  - `integrableOn_norm_mul_rpow_neg_half`: the t^{−½}-weighted integrability from an O((1+t²)⁻¹) bound.
+  - **`riemannHypothesis_iff_primeBlindPositive_of_twistedArc_momentPositive`**: suppose g is bounded and measurable,
+    ∫g·M_n dν = 0 for every n, m_j ≥ 0 for every j, and m_0 > 0. Then RH ⟺ PBAP.
+- **Meaning.** The earlier corpus statement was "TAMP ⟹ line witness with positive profile", which still needed a
+  spectral factorisation. The whole chain is now unconditional in Lean:
+  TAMP (a positive-moment blind arc density) ⟹ (N1) in the shifted-Gamma dictionary ⟹ RH ⟺ PBAP.
+- **Open inputs on this route (exactly two).**
+  1. Existence of a moment-positive blind arc density. On the analytic class this is m_j(κ*) ≥ 0 for the unique
+     blind density; C237 is the extended-arc variant with |u| < 2/3.
+  2. PBAP.
+- **Row 224 addendum [L].**
+  - `shiftedGammaPoly_ofReal_ne_zero`: Q_j has no real zeros. So every j₀ with w_{j₀} > 0 is zero-faithful
+    (`riemannHypothesis_iff_primeBlindPositive_of_shiftedGamma_weights_of_pos`).
+  - The arc theorem now needs only some m_{j₀} > 0, which admits zero-mass (two-arc type) densities.
+  - `riemannHypothesis_iff_primeBlindPositive_of_twistedArcMinimumPrinciple`: TMP ⟹ (RH ⟺ PBAP).
+- **[P] Twisted moments as tangential operators.**
+  - Notation: arc z = e^{iφ}; W_m = √y K₀(2πmy)cos(2πmu) with ΔW_m = ¼W_m; E = r∂_r the dilation generator.
+  - Then (E²−¼)W = L W on |z| = 1, where L = −∂_φ² − ¼ − 1/(4sin²φ) is tangential and commutes with E.
+  - Hence **M_n = 4·L²w_{n+2}**, with w_m = W_m|_{|z|=1}.
+  - Annihilators of the traces of decaying solutions (modes ≥ 2) are fluxes ∂_nΨ of solutions vanishing on the arc:
+    - Ψ_0: the cusp log mode, giving the harmonic measure ω;
+    - Ψ_1: the m = 1 growing mode;
+    - Ψ_c: the corner singularity r^{−3/2} at the glued corner (interior angle 2π/3). It is symmetric, so it survives
+      in the even sector.
+  - The r³ mode is antisymmetric, so its compatibility condition is void for even data.
+  - So the even twisted annihilator is {κ : κ∘L² ∈ span(ω, χ_1, c_1)}, modulo the 2-dimensional even kernel of L².
+    It is 1-dimensional, which explains the unique κ*.
+
+## Row 225 — [P] bottom-arc rigidity; Mehler admissibility of the whole semicircle (C238 setup)
+- **[P] Rigidity.** On the bottom arc A the even twisted annihilator satisfies κ∘L² ∈ span(ω, χ_1, c_1), and it must
+  vanish on ker L² = span(√y, √y log y)|_A.
+  - Green's identity on F gives ω(√y) = 1 and χ_1(√y) = c_1(√y) = 0. Hence the ω-coefficient is 0.
+  - So κ*∘L² = β_c χ_1 − β_1 c_1, built from the m = 1 growing mode and the r^{−3/2} corner singularity only.
+  - κ* ~ r^{3/2} at the corners, with no point masses. For large j, sign(m_j) = the sign of κ* at the corners.
+  - A smooth clamped twisted-blind density on A must vanish (σ = L²κ would be an untwisted blind measure ⊥ √y, √y log y).
+- **[P] Mehler admissibility (C238a).**
+  - Mehler: P_{−½+iτ}(cos α) = (√2/π)∫_0^α cosh(τφ)(cos φ − cos α)^{−½}dφ, a positive combination of
+    cosh(τφ) = Σ_k τ^{2k}φ^{2k}/(2k)!.
+  - The arc multiplier of the point c = cos α is R_c ∝ |Γ(¾+iτ/2)|²(P_{−½+iτ}(c) + P_{−½+iτ}(−c)).
+  - So R_c = Σ_k w_k|z^kΓ(¾+iz/2)|² with w_k ≥ 0.
+  - The family Φ_k(z) = z^kΓ(¾+iz/2) has |ΞΦ_k| ≲ |t|^k e^{−π|t|/2}, so C_k ~ k!/(π/2−ε)^k.
+  - Σw_kC_k² < ∞ ⟺ max(α, π−α) < π.
+  - Hence every compactly supported positive measure on the open semicircle is (N1)-admissible, extending the range from
+    |c| ≤ ½ (current Lean) or 2/3 (the Q_j bound) to |c| < 1.
+- **C238b (open).** The twisted side-arc minimum principle: a positive measure on a compact part of the side arcs (or of the
+  semicircle) annihilating every M_n. The untwisted version is in the corpus (`whittakerSideArc_coeff_eq_zero`).
+  Near the horn E²(E+1)²(log y) = 0, so the leading cusp terms of a twisted combination vanish.
+
+## Row 226 — C237 FALSE (support rigidity); the arc producer reduces to a single Mehler–Fock positivity
+- **[P] 3D lift.** With W = √y·Ṽ, the equation ΔW = ¼W becomes div(y∇Ṽ) = 0. This is the axisymmetric Laplace equation in ℝ³:
+  axis = u-axis, cylindrical radius = y.
+  - Decaying periodic Whittaker sums are periodic axisymmetric harmonic functions outside the chain ∪_k B(k e_u, 1).
+  - The bottom arc A is the spherical zone |u| ≤ ½ of the unit sphere.
+  - E = r∂_r is the 3D radial generator. On traces E(E+1) = −Δ_{S²} (solid harmonics r^ℓ and r^{−ℓ−1}), so the
+    twisted moment is ∫Δ_{S²}²Ṽ dκ.
+  - The corner is the intersection circle of adjacent spheres (dihedral angle 2π/3). The Kelvin transform is the modular
+    reflection.
+- **[P] Support rigidity (kills C237).** Let κ (or ℓ = L²κ in the twisted case) annihilate the traces of every periodic
+  decaying solution with modes ≥ 2.
+  - Its single-layer potential U below the support equals the m = 0 and m = 1 terms only, so it is smooth there.
+  - On a compact extension E of A (c₀ < 1) the pieces E are slits inside one connected component of the complement.
+    So the jump of ∂_nU across E vanishes, hence κ|_E = 0 (twisted: L²κ = 0 on E with free-end conditions, hence κ|_E = 0).
+  - Conclusion: every blind or twisted-blind signed measure on a compact sub-arc of the open semicircle lives on A, and is
+    zero unless the sub-arc contains A.
+  - Side-arc blind measures (corpus) must reach the cusps, where every Lean family (Q_j or Mehler) degenerates.
+  - **C237 (extended-arc TAMP): FALSE as a source of new directions.**
+- **Positive survivor (exact).** The arc producer is one function κ* (the 1-dimensional even twisted annihilator on A).
+  - **(CORE)** P̂*(τ) := ℓ*(Θ_{iτ}) = (¼+τ²)²∫_A √(sinφ)P_{−½+iτ}(cos φ)dκ*(φ) ≥ 0 for all real τ.
+  - Θ_{iτ} = √(sinφ)P_{−½+iτ}(cosφ) are the eigenfunctions of L (eigenvalue −(¼+τ²)).
+  - CORE is necessary for (N1) through any arc family, and sufficient given a Lean sum-of-squares factorisation of R.
+  - It is strictly weaker than each of m_j(κ*) ≥ 0 (Q_j cone), positivity of the Abel transform of κ* (Mehler cone),
+    and κ* ≥ 0 (TMP).
+- **[P] Large-τ sign.** Θ_{iτ} peaks at the corners (~e^{2πτ/3}), so ℓ*(Θ_{iτ}) ~ (−β_1)·Γ(−3/2)·τ^{3/2}e^{2πτ/3}·(sign of
+  the corner flux), with Γ(−3/2) = 4√π/3 > 0. The large-τ sign of CORE is fixed by sign(β_1), the √y-coefficient of the m = 1
+  growing mode corrected to vanish on A.
+- **Status.** Paper sketches. Next: decide sign(β_1) structurally, and the τ = 0 sign; formalise whichever piece closes.
+
+## Row 227 — [P] sign(β_1) < 0; κ* normalisation; why the explicit ζ-weighted tests fail (Voronoi wall)
+- **[P] β_1 < 0.** Let Ṽ_0 = log ρ + β_0 + Σa_mK_0(2πmρ)cos 2πmu be the cusp Green function: it vanishes on the zone,
+  is positive in Ω, and is axisymmetric-harmonic in the 3D lift.
+  - Moving planes (reflect in u = t, 0 < t ≤ ½; the reflected chain stays inside the obstacle on the relevant range,
+    since (1−2t+u)² ≥ u² for u ≥ t−½) give: Ṽ_0(·,ρ) is nondecreasing in u on [0,½].
+  - Hence ∫Ṽ_0 cos 2πu du = ∫_0^{¼}(f(u) − f(½−u))cos 2πu du ≤ 0, so a_1 < 0 (strong maximum principle).
+  - Green's identity with H = I_0(2πρ)cos 2πu gives ω_∞(H) = −a_1/2 > 0.
+  - β_1 = −ω_∞(H) = a_1/2 < 0.
+- **Normalisation.** Take Ψ_c > 0 near the corner. Then β_c > 0 (Harnack), and ℓ* = β_cχ_1 + |β_1|c_1 with both coefficients
+  positive.
+  - c_1 is a positive density away from the corner, with finite-part (Hadamard) renormalisation at the corner.
+  - χ_1 is positive in the middle of A and negative near the corners.
+  - κ* ~ +r^{3/2} at the corners, and CORE holds for large τ, because f.p.∫e^{−τr}r^{−5/2}dr = Γ(−3/2)τ^{3/2} > 0.
+  - CORE can only fail at moderate τ, if κ* is too negative in the middle of A (τ = 0 weights the middle most).
+- **[P] Voronoi wall for explicit tests.**
+  - P̂ = |ζ|²(¼+τ²)²|φ̂|² gives 𝓕h(N) = Σ_m d(m)·ŵ(log(N/m))·(…), not log(mN). Earlier sign error corrected: the
+    ratios N/m hit every rational, so this is never zero.
+  - The variant P̂ = |ζA|²ν with A a short Dirichlet polynomial fails the same way: the d(m)-sum produces ratios lN/(mk)
+    equal to 1.
+  - Any positive P̂ meets γ(1−s) = ζ(s)/ζ(1−s), so blindness is always a Voronoi d(m)-interpolation. This matches the
+    memory n1-voronoi-maass-interpolation; no shortcut.
+- **[P] Bandlimited witnesses fail.** ĥ supported in [−2,2] is blind automatically. But self-reciprocity h(1/x) = |x|h(x)
+  with smooth ĥ forces h ≡ 0. A non-smooth ĥ needs 𝓜ĥ(1−s)/𝓜ĥ(s) = γ(1−s)², a self-dual functional equation.
+- **[P] The canonical potential Ψ*.** ℓ* is the flux of Ψ* := β_cΨ_1 + |β_1|Ψ_c. Since β_cβ_1 + |β_1|β_c = 0, Ψ* is the
+  unique (up to scale) solution in F with these properties:
+  - it vanishes on A;
+  - its cusp expansion is the pure m = 1 growing mode √y I_0(2πy)cos 2πu plus decaying terms, with no √y and no √y log y;
+  - it has a positive r^{−3/2} singularity at the glued corner.
+  - So κ* is the unique twisted "dual" of a single explicit boundary-value problem: κ*∘L² = ∂_nΨ*|_A.
+- **C240 (conjecture).** Q(μ) := κ*(Θ_λ) (μ = λ²) is entire of order ½ in μ and has only zeros μ > 0 (real λ),
+  with Q(0) > 0.
+  - Then Hadamard gives Q(−τ²) = Q(0)Π(1 + τ²/λ_k²) > 0, which is CORE.
+  - The large-τ positivity is consistent with this; a mechanism would be a self-adjoint (secular-equation) realisation of
+    λ² ↦ ∂_nΨ*-pairing.
+  - [OPEN CORE]: find the self-adjoint structure. Green identities on the dilation sector fail because Ψ* grows like e^{2πy}.
+
+## Row 228 — C241: the continuous Gamma-exponent family escapes rigidity
+- **Family.** Φ_a(z) = Γ(a+iz/2)/Γ(¼+iz/2), a > 3/8.
+  - Poles at Im z = 2(a+k) > ¾, so Φ_a is analytic on the strip. |Φ_a| ~ |z/2|^{a−¼}, so ΞΦ_a decays like e^{−π|t|/4}.
+  - Reality: Φ_a(−τ) = conj Φ_a(τ).
+  - Witness: h_a = 𝒟²ψ_a with ψ_a(x) = |x|^{−½}sech^{2a}(log|x|) = 2^{2a}|x|^{2a−½}(1+x²)^{−2a}.
+  - a = ¼ + j recovers the Q_j / B_j basis (entire R, rigid). Non-integer a − ¼ gives a meromorphic R, so the
+    generator has no compact support on the semicircle, and support rigidity does not apply.
+- **Twisted moments.** M_n(a) = ĥ_a(n+2).
+  - For non-integer a: M_n(a) ≈ C(a)(2a+½)²(2a−½)²(n+2)^{−2a−½} + O(e^{−2πn}), with
+    sign C(a) = −sign(sin(π(2a−½)/2)). So the tail is negative on (3/8, 5/4) and positive on (5/4, 9/4).
+  - For a ≫ n²: M_n(a) ≈ (2πn)⁴·(positive bump), so positive.
+- **C241 (conjecture).** For some compact [a₀, a₁] ⊂ (3/8, ∞) crossing a = 5/4 (and/or reaching large a), a probability
+  measure on [a₀, a₁] annihilates every M_n, n ≥ 0 (Gordan: no Σc_nM_n(a) > 0 on [a₀, a₁]).
+  - Through a measure-indexed family theorem this gives (N1), and so RH ⟺ PBAP.
+- **Immediate kill.** For [a₀, a₁] ⊂ (3/8, 5/4], −M_n is a certificate for large n, so the interval must cross 5/4.
+- **Phase 4 on C241.**
+  - At a = ¼ + j: M_n(a) = (−1)^j E_j(n+2) with E_j(m) ~ m^{2j−½}e^{−2πm}.
+  - On (¼+j, ¼+j+1) the power tail has sign (−1)^{j+1}, from 1/Γ(¼−a).
+  - So on any compact [a₀, a₁] only finitely many alternations occur. A Dirichlet polynomial D with zeros at the odd
+    integers s = 2a_j + ½ in range (exponential-sum Descartes rule) plausibly certifies Σc_nM_n > 0.
+  - **Verdict: C241 (compact) likely FALSE** (not proven).
+- **C241′ (survivor, CM cone).** Write sech^{2a} = e^{−2a·log cosh v}. Positive combinations of the generators are exactly the
+  base profiles B(v) = L(log cosh v) with L completely monotone (Bernstein): L(t) = ∫e^{−2at}dν(a), ν ≥ 0 on (3/8, ∞), with
+  admissibility ∫Γ(2a)²(2/π)^{4a}dν < ∞.
+  - The Q_j cone is ν atomic at a = ¼+j; arc points are CM because (e^t ∓ c)^{−½} expand with positive coefficients.
+  - Conjecture: a CM L ≠ 0 exists whose twisted witness is blind at every integer ≥ 2.
+  - Certificates would need a fixed-sign Laplace transform T_D(a) = ∫e^{−2at}F̃_D(t)dt on all of (3/8, ∞), against infinitely
+    many alternations (integer points up to a ~ N, power tails). This is the same borderline counting as C236.
+  - **Verdict: SURVIVES PRELIMINARY ATTACK.**
+
+## Row 229 — [P] TMP ⟸ (C242 nodal positivity of Ψ*) + (P3 clamped Green positivity)
+- **Construction.**
+  - Let f = ∂_nΨ*|_A. Its corner behaviour is C_f r^{−5/2} with C_f > 0, and Green gives f.p.∫_A w f = 0 for every trace w of
+    a decaying periodic solution with modes ≥ 2.
+  - Let k := ∫G(φ,φ')f(φ')dφ', with G the clamped (k = k' = 0 at both corners) Green's function of L² on A. It converges
+    absolutely, since G = O(r'²) and r'^{2−5/2} is integrable.
+  - Integrate by parts: the (Lw)'k and (Lw)k' terms vanish because k is clamped. The w(a), w'(a) point terms match the
+    finite part of ℓ* exactly because ℓ* ⊥ ker L² = span(√y, √y log y), which holds by the zero √y coefficient of Ψ*.
+  - Hence κ* = k dφ is twisted-blind: ∫M_n dκ* = 4f.p.∫w_{n+2} f = 0.
+  - **This direction needs only Green's identity and the existence of Ψ*, not the trace-closure rigidity.**
+- **Sufficient conditions for TMP (κ* ≥ 0):**
+  - **(P3)** the clamped Green's function of L² = (−∂² − V)², V = ¼ + 1/(4sin²φ) ∈ [½, 7/12], on an interval of length π/3,
+    is ≥ 0. For V = 0 this is the classical positive 1D clamped beam kernel, and V ≪ λ_1(−∂²) = 9.
+  - **(C242)** f ≥ 0 on A, i.e. Ψ* > 0 in a neighbourhood of A (Hopf).
+- **[P] Representation.** Let 𝒫(g) be the solution with data g that decays at the cusp; it exists for every g, with the
+  ω-defect absorbed by the corner Martin kernel K_P (normalised K_P/√y → 1).
+  - Then Ψ*/β_c = Ψ̂ = I-mode − 𝒫(I-mode|_A) = Ψ_1 + |β_1|K_P.
+  - So f is the Cauchy-data mismatch N_I − Λ_𝒫(D_I) of the m = 1 growing mode.
+  - Equivalently, Ψ̂(z) ∝ the m = 1 cusp Fourier coefficient of the decaying Green function G_𝒫(z,·).
+- **Nodal picture.** Ψ̂ → +∞ at the corner P and ≈ √yI_0(2πy)cos 2πu at the cusp, so it is negative near u = ±½ high up.
+  The negative region N must be bounded below by a nodal curve through (½, y*), y* > √3/2.
+  - C242 says this curve, from the cusp at u ≈ ¼ to the cusp at u ≈ ¾, never touches A.
+  - The danger zone is ¼ < |u| < 0.45 on A.
+- **Status.** C242 and P3 are open; this is the new [OPEN CORE]. P3 looks provable (perturbation of the clamped beam).
+  C242 is a quantitative potential-theory statement; the planned attack is explicit max-principle barriers on the corner
+  regions plus the middle region.
+- **[P] Corner weight is positive.** Write 𝒫(g) = D_g − ω(g)K_P. Then Ψ̂ = Ψ_1 + ω(g)K_P with ω(g) = −β_1 = |β_1| > 0, the
+  ω-average of the m = 1 mode data g = I_0(2πy_A)cos 2πu on A.
+  - Green between K̃_P and the cusp Green function gives the exact normalisation C̃_P = 2/(√3π c_0), where ω ≈ (3√3/4)c_0 r^{½}dr
+    near each corner.
+- **[P] Nodal-domain lemma.** div(y∇) has no zeroth-order term, so every negative nodal domain of Ṽ = Ψ̂/√y must reach the
+  cusp. Hence the only negative domain is N_∞, the one around u = ½ at the cusp. C242 ⟺ N_∞ does not touch A.
+- **Heuristic magnitudes** (decision guidance only, not proof).
+  - The corner term |β_1|∂_nK_P ~ 45C_P d^{−5/2} (d = arc distance to the corner) dominates the m = 1 flux near the corners
+    and in the middle.
+  - The margin is thinnest at |u| ≈ 0.27–0.33 (estimated ratio 1.4–1.7). So C242 is plausible but not robust.
+- **C243 (weaker, preferred).** m_j(κ*) ≥ 0 for every j (TAMP for the canonical κ*).
+  - It is robust to a small negative dip of κ* in the danger zone, because κ* ~ +r^{3/2} carries corner-dominated mass
+    (u² ≈ ¼) and that mass controls every m_j.
+  - The Lean chain already accepts TAMP (`…_of_twistedArc_momentPositive`).
+- **Proof programme** (all unconditional classical analysis):
+  - (T1) existence of Ψ_1 and K_P on F (Perron, with cusp and corner asymptotics);
+  - (T2) quantitative flux bounds via explicit barriers;
+  - (T3) Green identity with the corner finite part ⟹ κ* = G_clamped f is twisted-blind;
+  - (T4) P3, clamped Green positivity;
+  - (T5) M_n = 4L²w_{n+2}, connecting to Lean's `twArcMoment`.
+- **Corpus check (after the fact).**
+  - (P3) is already formal: `HTGeometry/ClampedBeamPositivity.nonneg_of_coshSq_clampedBeam`. It is an elementary convexity
+    argument, needs no smallness, and is stated in s = log tan(α/2), where 𝔐 = Δ_{S²} = cosh²s·∂_s².
+  - The twisted operator in the Ṽ-picture is exactly 𝔐²: Lw = −√y·Δ_Sṽ and L²w = √y·Δ_S²ṽ.
+  - β_1 < 0 is already formal: `ModularArcGrowingModePositivity.exists_arcWitness_growingWhittakerCos_pos` (cosine
+    rearrangement: (I₀ − λK₀)(2πy)cos 2πu ≥ 0 on the arc). My moving-plane proof was a REDISCOVERY.
+  - Lesson: run `research` on every sub-claim before deriving it.
+- **Refined [OPEN CORE] (C242), in corpus coordinates.**
+  - Ṽ* = Z − D_Z + ω(Z)K̃_P for any λ, with Z = (I₀ − λK₀)(2πy)cos 2πu ≥ 0 on A (corpus) and D_Z the bounded extension.
+  - The load is σ* = y∂_nṼ*|_A = y∂_n(Z − D_Z) + ω(Z)·y∂_nK̃_P.
+  - TMP ⟸ σ* ≥ 0 on the open arc: the clamped 𝔐²-solution with load σ*/cosh² is then ≥ 0 by the corpus lemma (extended to
+    the r^{−5/2} endpoint load by truncation).
+  - With λ the corpus value (Z vanishes on |u| = ¼ and y = y_{¼} = √15/4), Z − D_Z ≤ 0 on the corner pieces below y_{¼}.
+    The competition is localised to |u| ∈ (¼, ½).
+- **Link to the frontier.** The frontier map says "(N1)/C-PIN fails only through zero-faithfulness (the sign of the BRS V₁)".
+  - In the ξ-divisible (shifted-Gamma / arc) framework, zero-faithfulness is automatic (Q_j has no real zeros, now in Lean),
+    and the residual difficulty is a single sign: the sign of κ*.
+  - Row 229 gives a new geometric form of that sign: **C242, the nodal curve of the canonical arc potential
+    Ṽ* = Z − D_Z + ω(Z)K̃_P avoids the bottom arc**. Together with the corpus clamped-beam lemma, this would make TMP, and with
+    it RH ⟺ PBAP, unconditional.
+- **Next.** A quantitative barrier proof of C242:
+  - (E1) an upper bound for the negative m = 1 flux on ¼ < |u| < 0.4;
+  - (E2) a lower bound for the corner Martin flux with cusp normalisation (C̃_P = 2/(√3πc_0) needs an upper bound on the
+    ω corner coefficient c_0);
+  - (E3) a quantitative lower bound for ω(Z).
+  - Candidate tools: explicit axisymmetric 3D harmonics (solid Legendre and Kelvin images in the unit sphere) and the corpus
+    cosine rearrangement.
+
+## Row 230 — [P] THE TWISTED MINIMUM PRINCIPLE HOLDS (paper proof; (N1) for HF modulo classical PDE inputs)
+**Theorem (TMP).** There is a nonzero finite positive measure on the bottom arc annihilating every twisted moment M_n,
+n ≥ 0. Hence `TwistedArcMinimumPrinciple` holds and, by
+`riemannHypothesis_iff_primeBlindPositive_of_twistedArcMinimumPrinciple` [L], RH ⟺ PBAP.
+
+**Notation.**
+- Ṽ-picture: div(y∇Ṽ) = 0 (the axisymmetric 3D Laplace equation).
+- Arc z = e^{iα}, α ∈ [π/3, 2π/3]; s = log tan(α/2) ∈ [−S, S]; Δ_S = cosh²s·∂_s²; surface measure sin α dα = sech²s ds.
+- ṽ_m = K₀(2πm sin α)cos(2πm cos α), the traces of the decaying modes.
+- P is the glued corner, with interior angle 2π/3 in the cylinder.
+
+**Steps.**
+1. **Bridge.** 𝓕(𝒟f) = −θ(θ+1)𝓕f, with θ = ξ∂_ξ the Euler operator E = r∂_r on (u,y) by homogeneity. On y-harmonic functions
+   E(E+1) = −Δ_S (the 3D Laplacian in spherical coordinates). Hence M_n(u) = 4√y·(Δ_S²ṽ_{n+2})(α_u).
+2. **Potentials** (classical Dirichlet and Martin theory on the cusped domain F).
+   - D_g is the bounded solution with data g = I₀(2πy)cos 2πu on A; its cusp limit is ω(g).
+   - β := ω(g) > 0. This is corpus cosine rearrangement, valid for the cusp harmonic measure, which annihilates the
+     K-modes.
+   - Ψ̃₁ := I₀(2πy)cos 2πu − D_g: it vanishes on A, is regular at P, and has cusp expansion I-mode − β + K-modes.
+   - K̃_P is the corner Martin kernel: positive, zero on A∖P, cusp limit 1, singular term C̃r^{−3/2}sin(3θ/2) at P.
+   - Ṽ* := Ψ̃₁ + βK̃_P: it vanishes on A, its cusp expansion is the I-mode plus K-modes with no constant and no log term,
+     and its corner coefficient is βC̃ > 0.
+3. **Load and deflection.** σ* := sech²s·EṼ*|_A, the flux density in ds; σ* ~ +r^{−5/2} at P.
+   - κ̃* is the clamped solution of (cosh²κ̃'')'' = σ*, even, with κ̃ = κ̃' = 0 at ±S.
+   - M := cosh²κ̃'' satisfies M'' = σ* and M ~ +r^{−½} at the ends. The clamping fixes M(0) through ∫M sech² = 0.
+4. **Blindness.** For an even smooth trace ṽ:
+   ∫(Δ_S²ṽ)κ̃* sin α dα = lim_{s→S}[∫_0^s ṽσ* + ṽ'M − ṽM'] (four integrations by parts; clamping kills the other terms).
+   - 2D Green on F with the excised corner gives the same regularised pairing minus the cusp terms.
+   - The two regularisations differ by a linear functional of the 1-jet of ṽ at P (both are exact for jets O(r²)).
+   - That functional vanishes on Ṽ ≡ 1 and Ṽ = log y: there Δ_S²ṽ = 0, and the cusp terms vanish because Ṽ* has no constant
+     and no log mode. The two jets are independent, so the functional is identically zero.
+   - For ṽ_m with m ≥ 2 the cusp terms are 0 for every height (mode orthogonality), so ∫(Δ_S²ṽ_m)κ̃* = 0.
+5. **Positivity.** M'(s) = Φ(s) := ∫_0^s σ* = ∫_0^s flux(Ψ̃₁) + β∫_0^s flux(K̃_P).
+   - flux(K̃_P) > 0 on the open arc (Hopf).
+   - Ψ̃₁ is regular at P. **Nodal lemma:** div(y∇) has no zeroth-order term, so no nodal domain of Ψ̃₁ is bounded. At the
+     cusp the nodal set has exactly two ends (u = ±¼), so Ψ̃₁ has exactly two nodal domains.
+   - Therefore no nodal arc joins A to A (it would enclose a bounded domain), and flux(Ψ̃₁) changes sign at exactly ±u₁,
+     positive on the central arc (an X-crossing would create a bounded domain).
+   - Green with the constant 1 gives total flux(Ψ̃₁) = 0, so the cumulative flux from the centre is ≥ 0.
+   - Hence Φ > 0, M is nondecreasing on [0, S), M(0) < 0 (otherwise κ̃* would be convex and clamped, hence 0), and M → +∞.
+     So κ̃*'' has sign pattern (+, −, +), and the corpus lemma `nonneg_of_clamped_of_signPattern` (extended to continuous
+     κ̃*' at singular ends) gives κ̃* ≥ 0, κ̃* ≢ 0.
+6. **Conclusion.** dκ* := κ̃* sin α dα / √y is positive, nonzero, and annihilates every M_n, so TMP holds.
+
+**Why the earlier attempts failed.**
+- The load positivity C242 (pointwise σ* ≥ 0) is not needed: the cumulative load suffices.
+- The ω-defect of the m = 1 mode is paid exactly by the corner Martin kernel with positive weight β.
+- The single sign change comes from nodal topology, not from estimates.
+- No numerics are used anywhere.
+
+**Classical inputs to justify or formalise:**
+- (i) Dirichlet problem on F (cusp and glued corner);
+- (ii) the Martin kernel at the corner with its r^{−3/2} asymptotics;
+- (iii) corner regularity (Ψ̃₁ = O(r^{3/2}));
+- (iv) analyticity of nodal sets up to smooth boundary points;
+- (v) the bridge identity.
+- **Row 230 [L] addendum.** New module `HTGeometry/ClampedBeamCumulativeLoad`: standard axioms, `lake --old` clean, wired.
+  - `nonneg_of_clamped_of_signPattern_Ioo`: the corpus sign-pattern lemma with regularity only on (a,b) and u, u' continuous
+    on [a,b]. This admits the r^{−5/2} corner load.
+  - `exists_signPattern_of_ordConnected` and `ordConnected_neg_of_antitone_monotone`.
+  - **`nonneg_of_coshSq_clampedBeam_of_cumulativeLoad`**: if the shear M' = Φ is ≤ 0 on (a,c] and ≥ 0 on [c,b), the clamped
+    𝔐²-deflection is ≥ 0. This is exactly Step 5's 1D conclusion: cumulative flux ≥ 0 ⟹ κ̃* ≥ 0.
+- **Remaining for a formal TMP:**
+  - (i) the bridge M_n = 4√y·Δ_S²ṽ_{n+2};
+  - (ii) the potentials Ψ̃₁ and K̃_P on F with cusp and corner asymptotics (Dirichlet problem and corner Martin kernel; not in
+    mathlib);
+  - (iii) the 1D/2D Green identity with corner jet matching;
+  - (iv) the nodal two-domain lemma for Ψ̃₁.
+  - No search in the corpus finds a refutation of TMP.
+- **Row 230 [L] M1.** `RHTower/TwistedArcLegendreBridge`: standard axioms, `lake --old` clean, wired.
+  - `legendreOp f c = (1−c²)f''(c) − 2c f'(c)` (the spherical Laplacian in c = cos α); `poissonRoot x c = Q_c(x)^{−1/2}`.
+  - `hasDerivAt_poissonRoot`: s' = x s³. `arcQuadTerm_eq_poissonRoot_pow`: Q^{−1/2−k} = s^{2k+1}.
+  - **`twPointVec_eq_legendreOp_sq`**: τ_c(x) = ℒ²[Q_c(x)^{−1/2}](c). The twisted point generator is the spherical
+    bi-Laplacian of the Poisson root in the arc parameter; this is the pointwise form of the bridge, with no relation
+    needed.
+
+## Row 231 — [P] explicit dual of TMP: three cases closed, one provably needs the corner potential
+- **Certificate:** T = ℒ²ṽ > 0 on the arc, where ṽ is the trace of V = Σ_{m≥2}a_mK₀(2πmy)cos 2πmu and ℒ = ∂_u(1−u²)∂_u.
+- **Step 1 (1D).** The even part of ker ℒ² is span(1, log(1−u²)), the traces of the periodic solutions 1 and log y.
+  - h = c₀ + c₁log y matches ṽ's 1-jet at the corner P, with c₁ = −(3/2)ṽ'(½).
+  - The clamped beam (corpus) gives ṽ − h ≥ 0 on the arc, vanishing to second order at P.
+- **Step 2.** U := V − c₀ − c₁log y is a periodic solution with U ≥ 0 on the arc and ∇U(P) = 0 (tangential contact plus
+  symmetry in u = ½).
+- **Step 3 (the cases).**
+  - **(a) c₁ < 0.** U → +∞ at the cusp, so the minimum principle gives U ≥ 0 in F. **Corner Hopf:** a nonnegative
+    (super)solution in a sector of angle 2π/3 > π/2 vanishing to second order at the vertex is ≡ 0 near it (comparison with
+    r^{3/2}sin(3θ/2)). Hence U ≡ 0, so V = c₀ + c₁log y, so V ≡ 0. Contradiction.
+  - **(b) c₁ = 0, c₀ ≤ 0.** The same argument works, since the cusp limit is −c₀ ≥ 0.
+  - **(c) c₁ = 0, c₀ > 0.** V ≥ c₀ > 0 on the arc contradicts the corpus untwisted principle (`whittakerArc_coeff_eq_zero`).
+  - **(d) c₁ > 0** (ṽ increasing inward from P). Not closable explicitly:
+    - Adding an explicit m ≥ 1 comparison function h₁ = −C (C a twisted certificate, ℒ²C ≥ 0) would close (d) whenever
+      C'_t(P) < 0.
+    - But the primal objects show the corner-slope functional C ↦ C'_t(P) is represented by the positive clamped measure
+      (ℒ²)^{−T}[δ'_P + (a/β_c)c₁]: its bending moment is convex and tends to +∞ at the ends, so by the corpus lemma the
+      measure is ≥ 0.
+    - Hence every m ≥ 1 twisted certificate increases inward from P, and **case (d) needs the corner Martin potential**.
+- **Consequence for Lean.**
+  - Cases (a)–(c) are formalisable now (clamped beam, minimum principle, corner Hopf, Legendre bridge).
+  - The full TMP needs the potential-theory library: Dirichlet problem on F, the corner Martin kernel, fluxes, and the
+    nodal two-domain lemma.
+  - The rigidity theory says no explicit shortcut exists.
+
+## Row 232 — [L] stream-function Neumann minimum principle (replaces the nodal two-domain lemma); [P] elementary corner modes; [P] archimedean-family audit of the HF chain
+- **[P] Stream-function form of TMP Step 5.**
+  - For v with div(y∇v) = 0, the stream function χ (χ_u = y v_y, χ_y = −y v_u) solves L*χ := χ_uu + χ_yy − χ_y/y = 0.
+  - v = 0 on the arc ⟹ the radial derivative of χ vanishes on the arc (Neumann).
+  - Evenness plus periodicity plus no log term ⟹ χ = 0 on u = 0 and u = ½.
+  - The cumulative flux Φ(s) through the arc, counted from u = 0, equals χ at the arc point.
+  - So Φ ≥ 0 ⟸ χ ≥ 0 on F₊, which is a mixed Dirichlet–Neumann minimum principle:
+    - barrier w = −(u² + y²), with L*w = −2 and radial derivative −2 on the arc;
+    - no interior minimum (second-derivative test), no arc minimum (one-sided radial derivative), sides and top excluded.
+  - The cusp input is χ* ~ yI₁(2πy) sin 2πu > 0. The corner input is χ* ~ C̃β r^{−3/2}cos(3θ/2) ≥ 0 on the π/3 sector,
+    and the corrections are odd about u = ½.
+  - This removes (C4) (nodal analyticity) and the planar-topology (Jordan) argument from TMP.
+- **[L] `HTGeometry/ModularArcStreamMinimumPrinciple`** (standard axioms, `lake --old` clean, wired):
+  `nonneg_of_neumann_on_modularHalfArc`, `nonneg_of_isLocalMinOn_Ici` (one-sided Fermat), `halfArcRegion`,
+  `isCompact_halfArcRegion`. All hypotheses are local:
+  - interior equation above height b;
+  - Neumann on the open arc;
+  - sign on the sides, near the corner (y ≤ b, minus P), and at the cusp (liminf).
+- **[P] The corner modes are elementary.** In hyperbolic polar coordinates (R, θ) at P, both arcs are geodesic rays
+  (θ = 0 and θ = 2π/3), and (Δ_hyp + ¼)g = 0 separates.
+  - Symmetric Dirichlet modes are sin(μθ), μ = 3(k+½).
+  - With g = (sinh R)^{−½} b(R): b'' = n(n+1) b/sinh²R, n = μ − ½ = 3k+1.
+  - Hence b ∈ span{P_n(coth R), Q_n(coth R)} (Legendre's equation in x = coth R).
+  - For μ = 3/2: b_sing = coth R (~ R^{−1}, so g ~ R^{−3/2}); b_reg = R coth R − 1 (~ R²/3, so g ~ R^{3/2}/3).
+  - So (C2) and (C3) (corner Martin asymptotics, corner regularity) reduce to Fourier sine series in θ plus explicit
+    elementary radial functions. No Kondratiev theory is needed.
+  - The sector expansion is valid for R < d(P, ρ) = log 3; together with the Kelvin-extended cusp expansion (y > √3/2) it
+    covers F.
+  - What remains classical is global existence (C1) only.
+- **[P] Archimedean-family audit (Phase 4 consistency of the HF chain).**
+  - PBAP(γ, q) depends only on the archimedean data, and the Weil cone W(γ, q) is common to every Dirichlet series in
+    the family F(γ, q).
+  - If an (N1) witness existed for a Davenport–Heilbronn member L′ of a family that also contains a GRH member L, then
+    GRH(L) ⟹ PBAP ⟹ W ≠ ∅ ⟹ Λ_{L′} ∈ W ⟹ RH(L′), which is false.
+  - The blindness mechanism (`logNode_blind_of_fourier_vanishes`) is coefficient-blind: Σ_m c(m)Ψ(mn) with Ψ = 0 on
+    integers ≥ 2. So the arithmetic must enter through the witness geometry.
+  - Check: the level-q arc {|z| = q^{−½}} meets u = ±½ above the real axis only for q ≤ 3 (corner angle and cusp
+    structure as at level 1). For q ≥ 4 the region reaches the real axis (new cusps), and the corner Martin kernel and
+    stream-function argument break.
+  - Families with DH members and GRH members first occur at q = 7 (odd: (·/7), χ₆, χ̄₆), where the geometry has already
+    broken.
+  - **Verdict: no inconsistency.** TMP is level-1 specific, matching Hamburger uniqueness.
+  - Function-field analogue: W(g, q) contains Λ_C for every curve of genus g over F_q, so it is not a singleton and no
+    (N1) rigidity exists. The HF route's RH ⟺ PBAP is the number-field-only statement "the archimedean data (Γ_ℝ, 1)
+    admit any positive Weil functional".
+- **Next.**
+  - TMP formalisation:
+    - (i) explicit corner modes in Lean (polar ODE identities);
+    - (ii) global existence (C1): choose Perron in the 3D lift, or Schwarz alternating between the corner sector
+      (elementary modes) and the cusp strip (Fourier–Bessel), or a Fredholm matching argument;
+    - (iii) the Green identity with jet matching.
+  - PBAP: still no producer idea that passes walls 5 and 8.
+
+## Row 233 — TMP is in Lean (other agent, dual route); correction to row 231; [L] node criticality of PBAP
+- **Corpus state.** `RHTower/TwistedArcMinimumPrincipleProof.twistedArcMinimumPrinciple_holds` has standard axioms
+  (checked). So `riemannHypothesis_iff_primeBlindPositive_unconditional` and the unconditional Weil-cone uniqueness
+  `WeilConeUniquenessUnconditional.eq_vonMangoldt_of_weilPositiveFull` hold. The HF route is now exactly: RH ⟺ PBAP.
+- **Correction to row 231.** The claim "case (d) provably needs the corner potential" was FALSE.
+  - The dual proof closes (d) with the certificate's own stream function ψ = Σa_i yK₁(k_iy)sin(k_ix).
+  - Z = ψ − 2G(½)x has a negative ray derivative on the arc, so the minimum principle gives Z ≥ −G(½).
+  - Then ∂_y∂_xψ(ρ) ≤ 0, while the certificate forces √3(G′(½) − 2G(½)) > 0.
+  - Lesson: a positive representation of a linear functional does not exclude sign arguments on an auxiliary explicit
+    function. "Provably needs X" claims need a proof.
+- My potential-theory programme (row 232: M3a/M3b) is obsolete. The Neumann stream principle
+  (`ModularArcStreamMinimumPrinciple`) stays as a general lemma.
+- **[L] `RHTower/PrimeBlindNodeCriticality`** (new):
+  - `PrimeBlindPositiveOn S`: PBAP with blindness required only at the nodes n ∈ S.
+  - `exists_weilPositiveFull_of_primeBlindPositiveOn`: S-restricted Hahn–Banach, using the log vectors restricted to S and
+    the pair tests.
+  - **`primeBlindPositiveOn_iff`**: PBAP_S ⟺ RH ∧ (every prime power lies in S). Unconditional.
+  - `riemannHypothesis_iff_primeBlindPositiveOn_primePowers`: blindness at the prime powers alone characterises RH.
+  - **`not_primeBlindPositiveOn_of_primePower_not_mem`** and **`exists_negative_arch_of_primePower_node_deleted`**:
+    for every prime power m, some nonnegative combination of autocorrelations, blind at every log n with n ≠ m, has
+    negative pole+archimedean part. Unconditional.
+- **Meaning (new wall for PBAP attacks).**
+  - Archimedean positivity on the blind cone is node-critical: the nodes log p^k are exactly the active constraints,
+    with shadow price Λ(p^k) under RH, and the composite non-prime-power nodes (6, 10, 12, …) are redundant.
+  - Any argument that would survive deleting one prime-power node cannot prove PBAP. Examples: Nyquist/sampling
+    density, Beurling–Malliavin completeness, generic uncertainty principles, dilation-free support counting.
+  - Such arguments prove at most PBAP_{ℕ∖{m}}, which is false.
+  - A PBAP proof must see the multiplicative structure: why log 4 matters and log 6 does not.
+- **[L] Positive survivor (same module): unique repair.**
+  - `RepairedBlindPositive S w`: the Weil functional with weights w at the nodes off S, and 0 on S, is ≥ 0 on the
+    S-blind cone.
+  - **`repairedBlindPositive_iff`**: this holds ⟺ RH ∧ w(n) = Λ(n) at every deleted node n ≥ 2.
+  - The archimedean place therefore determines the von Mangoldt weight of every node it is asked to repair, and the
+    only admissible repair weight is exact.
+  - Helper lemmas: `linearCombination_extendOn`, `linearCombination_coeff_add`, `offNodes`.
+- **[P] Tiling reformulation of the PBAP domain.**
+  - G(k log p) = 0 for all k ≥ 1 ⟺ the 2π/log p-periodisation of Ĝ ≥ 0 is constant (Poisson summation).
+  - So PBAP reads: "every nonnegative Paley–Wiener Ĝ that tiles ℝ at every prime period 2π/log p has
+    pole + ∫ĜΩ ≥ 0".
+  - Node criticality: dropping one Fourier mode of one periodisation breaks it.
+  - Blindness kills the p-Euler terms because each is a 2π/log p-periodic, mean-zero function, namely log p·(Poisson
+    kernel − 1).
+  - Wall reading: proving PBAP means finding why Ω (digamma density) dominates on functions tiling at all
+    incommensurable periods 2π/log p. A density or single-period argument cannot work (wall 11).
+
+## Row 234 — [L] the von Mangoldt function as an archimedean unit-node energy (C251 proved)
+- **Definition.** E_m := {A(c) : c ≥ 0, L_n(c) = 0 for all n ≥ 2 with n ≠ m, L_m(c) = 1} (`unitNodeEnergies`): the archimedean
+  energies of combinations that are blind everywhere except at the single node log m, where they carry unit mass.
+- **[L] `RHTower/ArchimedeanUnitNodeEnergy`** (standard axioms, `lake --old` clean, wired):
+  - `isGLB_unitNodeEnergies`: RH ⟹ inf E_m = Λ(m) for every m ≥ 2. This is log p at m = p^k and 0 at every other m.
+  - `not_bddBelow_unitNodeEnergies`: ¬RH ⟹ E_m is unbounded below, for every m.
+  - `riemannHypothesis_iff_bddBelow_unitNodeEnergies`: RH ⟺ E_m is bounded below, for any single m (e.g. m = 2).
+  - Proof: the lower bound is W_Λ ≥ 0; sharpness comes from unique repair; unboundedness comes from ¬PBAP plus a
+    normalized pair test.
+- **Meaning.** Under RH, the archimedean place computes the primes: Λ(m) is the least archimedean energy that puts unit
+  mass at the single node log m. RH is one inequality, inf E_2 > −∞.
+- **[P] Attainment (not formalised).**
+  - Take an arc measure annihilating the twisted moments M_n for n ≥ 1 but not M_0. The stream-function dual proof
+    covers combinations with a₀ = 0, so such a measure exists if the annihilator of modes ≥ 3 is not that of modes ≥ 2.
+  - Its Ξ-divisible test is blind off log 2, and W_Λ = 0 unconditionally, so A = log 2·L_2: an unconditional element
+    of E_2 with energy exactly log 2.
+  - So RH ⟺ this explicit modular witness minimises E_2. Same tightness as PBAP. The open core is the lower bound.
+- **Status of the RH core.** Every reformulation this session (node criticality, unique repair, unit-node energy) is
+  an exact equivalence with the twisted-arc witnesses as extremisers. No producer for the lower bound yet: walls 5, 8,
+  11. The modular transfer only reaches Ξ-divisible tests (R = Ĝ/Ξ² holomorphic), and on those A is attained.
+
+## Row 235 — direct attacks on inf E_2 > −∞ (PBAP): four mechanisms, all reduce to known walls
+- **C252 (Farey–Möbius face of blindness) [P].**
+  - Put g(y) = G(log|y|) and take its additive Fourier transform ĝ. Poisson summation for g(·m), plus Möbius inversion
+    over denominators, gives: G is blind at every log n (n ≥ 2) ⟺ Σ_{a∈ℤ, (a,q)=1} ĝ(a/q) = 2G(0)μ(q) for every q ≥ 1.
+  - So PBAP reads: A(G) ≥ 0 for PD G whose primitive Farey sums are exactly 2G(0)μ.
+  - This bridges HF to the Farey/Franel–Landau and Möbius (MC) lanes. Verdict: BRIDGE, a re-encoding of μ with no
+    positivity mechanism.
+- **C253 (product closure) [P].**
+  - The blind cone is an ideal under pointwise products with PD functions (Schur).
+  - The Lévy jump energy satisfies the Leibniz bound ℰ(G₁G₂) ≤ G₁(0)ℰ(G₂) + G₂(0)ℰ(G₁).
+  - Powers G^k of a hypothetical negative certificate become positive by high-frequency growth; no contradiction.
+  - Verdict: FALSE as a producer (only upper bounds on A of new tests).
+- **Krein local extension.**
+  - RH ⟺ W_a ≠ ∅ at every aperture a. A local lemma W_a ≠ ∅ ⟹ W_{a+δ} ≠ ∅ would need the PD extension on
+    (2a, 2a+2δ) to have the form "A minus atoms at log n".
+  - This is route RW, with known saturation at small apertures.
+  - Quantitative reading: a quadruple at depth δ is compensated by on-line neighbours only if δ ≪ zero spacing
+    (~2π/log γ). The classical zero-free region is borderline, which is wall 1 and the WL lag threshold.
+  - Verdict: REDISCOVERED (RW/WL).
+- **Modular transfer of general tests.**
+  - The divisor transfer reaches only Ξ-divisible tests (R = Ĝ/Ξ² holomorphic), and A is attained (= 0, or
+    = Λ(m)L_m) exactly on those.
+  - For general tests R has poles at zeros, and the transfer returns the zero sum.
+  - Verdict: CIRCULAR.
+- **State.** The RH core in the HF route is the single inequality inf E_2 > −∞ (equivalently PBAP or Weil positivity).
+  Walls 1, 5, 8 and 11 apply. Next: a positivity mechanism that distinguishes prime powers (wall 11) and is not a
+  density/Nyquist count.
+
+## Row 236 — infinite divisibility (wall 6, rediscovered) and the tangent cone at the witness
+- **C254 (Lévy–Khintchine route).**
+  - For σ > 1, ζ(σ+it)/ζ(σ) is an infinitely divisible characteristic function, with Lévy measure on log p^k and masses
+    p^{−kσ}/k. This sees exactly the prime powers, so it would pass wall 11.
+  - For σ > ½ the Steinhaus/Bohr–Jessen model reproduces only the value distribution, not exact positivity.
+  - At σ = ½ positive-definiteness is lost.
+  - The corpus has this: `CriticalPrimeTailEulerLogPositiveDefinite` (safe passivity, off the line) and
+    `EulerActivationLevelCascade` (the critical line is the level-two boundary).
+  - Verdict: REDISCOVERED (walls 6/7).
+  - Interrogation: the archimedean part is itself Lévy–Khintchine:
+    - Ω(t) − Ω(0) = ∫(1 − cos tu)ω(u)du, so on blind PD φ with φ(0) = 1,
+      A = Ω(0) + 2∫ω(1−φ) + pole(φ).
+    - The jump part is ≥ 0, Ω(0) = −|A(0)| < 0, and pole(φ) = 2π(m(i/2) + m(−i/2)) is the spectral density at
+      complex points. That pole term is the only sign-indefinite part.
+    - So PBAP ⟺ jump energy + pole term ≥ |A(0)| on blind PD φ. This is the PD uncertainty form already in memory
+      (≈5.3 relaxed versus 5.372).
+- **C255 (tangent cone at the witness) [P].**
+  - The twisted-arc witness φ* has spectral density m* = |Ξ|²R*, which vanishes exactly at the real zeros, and
+    A(φ*) = 0.
+  - Since A is linear, PBAP ⟺ A ≥ 0 on the closed tangent cone of K at φ*.
+  - That cone consists of blind ψ of any sign whose density is ≥ 0 at the real Ξ-zeros, plus decay and closure
+    conditions.
+  - So the continuum constraint m ≥ 0 on ℝ is replaced by the discrete constraint m_ψ(γ) ≥ 0 at real zeros. Off-line
+    zeros are invisible to the tangent cone, which is where the RH content sits.
+  - The closure (uniform ε near infinitely many zeros, tail decay) is technical.
+  - Verdict: equivalent reformulation, content RH (CIRCULAR as a producer).
+- **State.** Unchanged: the core is inf E_2 > −∞. Candidate mechanisms must pass walls 2 (|ζ|² versus zero sums), 6/7
+  (absolute convergence or statistics) and 11 (prime-power sensitivity) simultaneously.
+
+## Row 237 — Hecke positivity on the modular side: rediscovered; the resonance-width reading
+- **Corpus.** `EisensteinHeckeResonantMoment` and `EisensteinHeckeSecondMoment` [L].
+  - The truncated resonant state Λ^Y E_u at a zeta zero ρ = 1 + 2u has exact Hecke data: mean p^u + p^{ū} and variance
+    2(1 − p^{2 Re u}) = 2(1 − p^{β−1}).
+- **Reading.**
+  - Resonance width η = (1 − β)/2. RH ⟺ every modular resonance has width ¼ (Pavlov–Faddeev).
+  - For an off-line pair (β, 1 − β), the mean Hecke variance is 2 − p^{−½}(p^δ + p^{−δ}) = 2(1 − p^{−½}) − 2p^{−½}(cosh(δ log p) − 1),
+    with δ = β − ½. So off-line pairs carry strictly less Hecke variance than on-line ones.
+- **C256.** A sum rule "average Hecke variance over resonant states ≥ 2(1 − p^{−½})" would give RH.
+  - Attack: the only sum rules over resonances are Hecke-twisted Selberg trace formulas. Their spectral side is the
+    explicit formula twisted at p, with the off-line deficit 2p^{−½}(cosh(δ log p) − 1).
+  - That deficit is Weil's cosh term, so the inequality is Weil positivity restricted to the p-twisted tests.
+  - Bhatia–Davis and the operator-norm bounds (‖T_p‖ on the complement of constants, Kim–Sarnak 7/64) hold for every
+    β ∈ (0, 1). They carry no information.
+  - Verdict: CIRCULAR (walls 8/5). The Hecke structure supplies prime-power sensitivity (wall 11) but its positivity
+    is again the explicit formula.
+- **Session state after rows 233–237.**
+  - The HF route is exactly RH ⟺ PBAP ⟺ inf E_2 > −∞, all in Lean.
+  - Attacks tried, each killed with a recorded reason: Farey–Möbius, product closure, Krein extension, modular
+    transfer, infinite divisibility, tangent cone, Hecke variance.
+  - The missing mechanism must produce a sum-rule inequality over zeros or resonances from a source outside the
+    explicit formula: a geometric Hodge index (wall 5) or an exact identity at σ = ½ that is not a |ζ|² moment
+    (wall 2).
+
+## Row 238 — searching for a modular transfer of general blind tests: constant terms versus Fourier coefficients
+- **Constant-term route (Maass–Selberg).**
+  - ‖Λ^Y E(·,½+it)‖² ≥ 0 gives positivity of 2 log Y − φ′/φ(½+it), with φ(s) = ξ(2s−1)/ξ(2s). That is a statement
+    about ξ′/ξ on Re s = 1.
+  - This is the edge of absolute convergence (Sarnak's nonvanishing on Re s = 1; wall 6).
+  - Reaching Re ξ = ½ this way needs Eisenstein parameters at Re s = ¼, which are non-unitary: no norm, no positivity.
+  - Verdict: wall 6. The Langlands–Shahidi-type edge is structural.
+- **Fourier-coefficient route (Hecke).**
+  - E(z,½) ≡ 0 for SL₂(ℤ). Its s-derivative F₀ has coefficients d(n)·√y K₀(2πny), and its Hecke L-function is ζ(w)²,
+    whose critical line is the unitary point.
+  - **This is why TMP could reach critical-line statements:** the twisted arc moments are the K₀ modes of F₀, and
+    the divisor transfer is its Hecke L-function.
+  - The reach is limited to tests whose spectrum carries the factor ξ² (Mellin of F₀). For a general blind test,
+    Ĝ/ξ² has poles at the zeros, and the transfer returns the zero sum.
+- **[P] Structural statement (new reading).**
+  - Modular positivity reaches the critical line only through Hecke L-functions of unitary Eisenstein data (ζ² at
+    s = ½). The resulting tests are Ξ²-divisible, which is exactly the null face of PBAP.
+  - So modular maximum principles produce the extremisers, not the lower bound.
+  - A lower bound would need a modular object whose Hecke L-function is a positive multiple of ζ²·(1/ζ²-type
+    corrections) on the line. Equivalently, a PD kernel whose Mellin transform divides out ξ². That is the
+    zero-faithfulness wall.
+- **Next.** Either (i) a positivity source that is not modular, or (ii) a second-order modular object: variations of
+  the witness family (s-derivatives beyond F₀, i.e. ∂_s²E at s = ½, whose Hecke data involve d(n) log n) and whether
+  log n weights can carry Λ = μ ∗ log.
+
+## Row 239 — C257: the second s-derivative of E at s = ½ carries the first Laguerre expression (route LA)
+- **[P] Identification.**
+  - The Hecke L-function of E(z,s) is ζ(w+s−½)ζ(w−s+½).
+  - Its first s-derivative at s = ½ vanishes identically; that object is F₀, the source of TMP (d(n)K₀ modes).
+  - Its second s-derivative is 2(ζζ″ − ζ′²)(w) = 2ζ²(log ζ)″. Λ enters through (log ζ)″ = Σ Λ(n) log n·n^{−w}.
+  - After completion, ξξ″ − ξ′² on the critical line is exactly the first Laguerre expression
+    c₂(t) = Ξ′² − ΞΞ″ = Ξ²Σ_ρ(t − γ_ρ)^{−2} (corpus `xiSliceCoeff_two_eq_laguerre`).
+  - So the second-order modular object is to route LA what F₀ is to route HF.
+- **Status of the target in the corpus.**
+  - First Laguerre for all t is weaker than RH (`H:FirstLaguerreNotRealRooted`).
+  - It fails on |t − γ| ≤ δ/2 around any isolated off-line pair (`laguerre_re_neg_near_offLine_pair`). So
+    "first Laguerre for all t" would exclude every isolated near-line off-line pair: a strong partial RH.
+  - The corpus also has `XiRealCriticalPointSignLaw`: RH ⟺ ξ′ ≠ 0 on Re s > ½ ∧ ΞΞ″ < 0 at real critical points.
+- **Attack.**
+  - TMP-type modular arguments produce existence statements (a positive annihilating measure), dual to "no positive
+    certificate".
+  - First Laguerre is a pointwise sign of an explicit function. c₂ = ∫L(w)e^{itw}dw with Laguerre kernel
+    L(w) = ½∫(2u − w)²Φ(u)Φ(w − u)du ≥ 0, so c₂ is positive definite in t, which does not give pointwise positivity.
+  - There is no cone duality to transfer the max-principle mechanism.
+  - The frontier map already excludes generic first-Laguerre/finite-moment positivity as a producer.
+  - Verdict: REDISCOVERED (route LA). The modular identification is new but gives no mechanism.
+- **Lesson.** The modular arc machinery proves cone or existence statements (the positive annihilator, TMP). The RH
+  core in every route is a cone-positivity of the opposite type: a nonempty dual cone (PBAP) or a pointwise sign
+  (LA). Max-principle arguments give the former; nothing in the corpus gives the latter.
+- **Correction and sharpening of the lesson (wall 12, forced dual measure).**
+  - PBAP does have a TMP-like "no certificate" form: no PD blind G with A(G) < 0.
+  - Its Gordan dual is a positive measure on the spectral line representing A modulo the blind constraints.
+  - By uniqueness (Weil cone = {Λ}) and the corpus boundary-measure atomicity (`WeilConeNullAtomicSpectrum`), that
+    measure is forced to be the critical-zero counting measure.
+  - In TMP the dual positive object κ lived on a geometric arc and could be built from potential theory. In PBAP it is
+    pinned to the zeros themselves.
+  - So any PBAP producer is a construction of the zero-counting measure as a positive measure: a spectral realisation
+    (Hilbert–Pólya type).
+  - This is why every route of rows 233–239 terminated at the explicit formula.
+
+## Row 240 — wall 12 against the corpus operator machinery: Krein/Pontryagin reading
+- **Corpus.** Spectral realisations exist only as RH-equivalences (receivers), for example:
+  - `XiHedenmalmReciprocalOperator.xiReciprocalOperator_isSelfAdjoint_iff_rh`;
+  - `SuzukiHilbertPolya`;
+  - the de Branges gauge modules (`DeBrangesExplicitGammaGauge`, `DeBrangesHTGaugeSaturation`);
+  - the FZZ Krein operators (formally self-adjoint, with no definiteness).
+  - None produces definiteness.
+- **C258 (Pontryagin bound from the witnesses).**
+  - Unconditionally W_Λ is a Krein form whose negative index κ counts the off-line zeros.
+  - In a Pontryagin space Π_κ every neutral subspace has dimension ≤ κ, so a large neutral family would bound κ.
+  - Attack: the Ξ-divisible witnesses satisfy W_Λ(F, H) = Σ_ρ F̂(γ_ρ)·(…) = 0 for every H. They lie in the radical,
+    not in a neutral subspace, and the bound does not apply.
+  - Blind subspaces have infinite codimension, so the restriction bound κ(W|_B) ≥ κ − codim is empty.
+  - Verdict: FALSE as a producer.
+- **Survivor (receiver only, not pursued).**
+  - The aperture negative index κ(A) (negative squares of W_Λ on tests supported in [−A, A]) is nondecreasing.
+  - RH ⟺ κ(A) = 0 for all A, and κ(A) = 0 for small A (RW).
+  - Bounds κ(A) ≤ C e^{cA} from zero density would be receivers.
+- **State.** Wall 12 stands. A producer needs an operator or geometry whose definiteness is proved independently of the
+  explicit formula. The corpus contains none, and all its spectral realisations are equivalences.
+
+## Row 241 — the general-test modular dictionary exists (Mayer at s = ½); wall 13: Bochner cone versus pointwise cone
+- **Corpus.** `BlindCoreMayerTransferHalf`: for compact dilation cores, integer blindness ⟺ the inhomogeneous Mayer
+  transfer equation (1 + σ)L_{½}Q_{A_f} = a + b cos 2πx of the Gauss map at the centre of the critical strip.
+  - So general blind tests do have a modular-dynamical dictionary: the boundary dynamics of the modular surface, whose
+    Fredholm determinant is the Selberg zeta function, with resonances at ρ/2.
+- **C259 (Perron–Frobenius route).**
+  - L_s has a positive kernel, so Ruelle–Perron–Frobenius positivity and the minimum principle of TMP act on
+    pointwise-positive cones.
+  - Attack: PBAP's cone is the Bochner cone (Ĝ ≥ 0). Under the arc and Mehler–Fock dictionary it becomes
+    Mehler–Fock-positive distributions, i.e. Bochner–Godement positive-definite zonal functions.
+  - Those are not pointwise-positive arc measures.
+  - The two cones meet exactly in the nonnegative-core sector (f ≥ 0). There the corpus already reduces PBAP to the
+    one-window inequality (`PrimeBlindNonnegativeConeReduction`), which is non-RH, numerically true and still a Prop.
+  - Verdict: positivity methods on pointwise cones reach only the nonnegative-core sector.
+- **Wall 13 (cone mismatch).**
+  - TMP succeeded because (N1) is a pointwise-cone statement: a positive measure on the arc annihilating moments.
+  - PBAP is a Bochner-cone statement. Maximum principles, transfer-operator positivity and Perron–Frobenius preserve
+    pointwise cones only.
+  - A PBAP producer needs a positivity-transfer from the Bochner cone to a pointwise cone that commutes with
+    blindness. That amounts to the spectral realisation of wall 12.
+  - The only sector where both cones coincide (nonnegative cores) is non-RH.
+- **Concrete non-RH Lean target identified (lower priority).** Prove `WindowPositive` (the Weil energy inequality
+  for nonnegative h on (0, log 2), margin ≈ 0.15) without computation. That would make PBAP unconditional on the
+  nonnegative-core sector. Wall 11 suggests this sector carries no RH content.
+
+## Row 242 — wall 13 bridge attempts; WindowPositive feasibility (paper)
+- **Bochner→pointwise maps that commute with blindness.**
+  - G ↦ G² (Schur) keeps PD and blindness and is pointwise ≥ 0. But A(G²) is not controlled by A(G): a negative
+    certificate does not transport. KILLED.
+  - G ↦ G(0) ± G is pointwise ≥ 0 but breaks blindness by a constant at every node. KILLED.
+  - Modulations G·cos(s·) keep PD and blindness but push A to +∞. Useless.
+  - No linear transfer commutes with blindness and carries A, consistent with wall 13.
+- **[P] WindowPositive analysis (non-RH sector, for the record).** Constants:
+  - A(0) = ψ(¼) − log π = −γ − π/2 − 3 log 2 − log π ≈ −5.3721;
+  - ω(x) = Σ_k e^{−(2k+½)x};
+  - for h ≥ 0 on (0, L), L = log 2: RHS = 2∫_L^∞ω + 2∫_0^L[ω(1−c) + 2c cosh(x/2)], where c is the normalised
+    autocorrelation.
+  - **Pointwise relaxation** (c ∈ [0,1], ignoring that c is an autocorrelation):
+    - minimum = 2Σ_k 2^{−(2k+½)}/(2k+½) + 2∫_0^L min(ω, 2cosh(x/2)) ≈ 2.994 + 2.222 = 5.216 < 5.372;
+    - the crossover is at ω = 2cosh(x/2), x* ≈ 0.28.
+  - So the PD/autocorrelation structure must supply about 0.16 (3%). This matches "relaxations fall short".
+  - **Feasible proof route:**
+    - the corpus pole-vanishing ground energy at aperture ½log 2 is ≥ 1/10
+      (`PoleVanishingWeilPositivityHalfLogTwo`, computer-free enclosure certificate);
+    - add the explicit 2-dimensional pole complement span(e^{±x/2}·1_{(0,L)}) and use ℓ₊(h)ℓ₋(h) > 0 for h ≥ 0;
+    - this gives a 3×3 positivity with explicit integrals of exponentials against ω.
+  - Value: makes PBAP unconditional on the nonnegative-core sector, a non-RH sector (walls 11, 13).
+  - Status: recorded target, not started. Its value for the RH core is low.
+
+## Row 243 — semigroup, trace-formula and pseudo-Laplacian attempts at wall 12
+- **Semigroup structure of the nodes.**
+  - log ℕ_{≥2} is closed under addition, so blind G has translates τ_{log m}G that vanish on all of log ℕ_{≥1}.
+  - Translates are not PD. Even symmetrisation G(·+log m) + G(·−log m) meets uncontrolled values at log(n/m).
+  - The blind cone is a multiplicative ideal (Schur), but A is not monotone under products.
+  - Verdict: no positivity mechanism.
+- **Selberg trace formula for SL₂(ℤ).**
+  - The spectral side is positive unconditionally: Maass r_j are real at level 1, and −φ′/φ(½+ir) is a sum of
+    positive Poisson kernels over the resonances ρ/2, all with Re < ½ regardless of RH.
+  - So trace-formula positivity holds for every zero configuration and carries no RH information.
+  - The ζ zeros enter only as resonances: non-unitary, off the spectral axis.
+  - Verdict: wall 6/12.
+- **Pseudo-Laplacian / Lax–Phillips.**
+  - Pseudo-Laplacian eigenvalues solve φ(½+ir) = −a^{2ir}: unitary, but they are not the zeros.
+  - The Lax–Phillips generator has the resonances as spectrum, but it is not self-adjoint. RH ⟺ that spectrum lies on
+    one line.
+  - Verdict: no realisation with forced definiteness. The modular surface realises the ζ zeros only as resonances.
+- **Structural conclusion.**
+  - The unitary objects attached to SL₂(ℤ) (Maass spectrum, Eisenstein continuous spectrum, Hecke Ramanujan edge)
+    are definite but blind to the zeros.
+  - The objects that see the zeros (resonances, scattering poles, truncated resonant states) are non-unitary.
+  - TMP used the one bridge, the F₀ Hecke L-function ζ², which reaches only the null face.
+  - Wall 12 at level 1 is therefore "resonance versus eigenvalue".
+
+## Row 244 — corpus definiteness sources outside level-1 unitary spectrum: Deninger and CCM/prolate
+- **Deninger Calderón–Koszul** (`DeningerArithmeticPositiveCalderonKoszul`): finite-dimensional linear algebra in which
+  a positive Dirichlet-to-Neumann operator is assumed. No arithmetic source of positivity. Verdict: receiver
+  infrastructure (wall 5).
+- **CCM / prolate.**
+  - The prolate operator is self-adjoint for free (it commutes with time-band limiting).
+  - Small-aperture restricted Weil positivity comes from certificates (`PoleVanishingWeilPositivityHalfLogTwo`).
+  - Killed-routes ledger: no-go-100 (prolate parameters cannot share the required unitary transport), CANNOT-03 /
+    HARD LOCK P (positivity alone supplies no upper bound), DG-PRIME-CD0 (cutoff-prime curvature unbounded below).
+  - Matching prolate eigenvalues to the zeros is a spectral identification. It is not supplied by self-adjointness,
+    and the corpus has it only asymptotically or numerically.
+  - Verdict: REDISCOVERED; walls 12 and 13 stand.
+- **Saturation statement.**
+  - Every corpus source of definiteness is one of four kinds:
+    - assumed (Deninger packets);
+    - certified at small aperture only (RW/CCM);
+    - unitary but blind to the zeros (SL₂(ℤ) spectrum, the Selberg trace formula);
+    - a pointwise cone (TMP, Mayer, Perron–Frobenius).
+  - None meets CANNOT-535 to 537 together. A PBAP producer needs a definiteness source of a new kind.
+
+## Row 245 — candidate new definiteness kinds: local Euler factors, Schoenberg total positivity, and the WindowPositive margin
+- **Local Euler factors are Bochner-positive and prime-power supported.**
+  - |1 − p^{−½−it}|^{−2} is a Poisson kernel; its Fourier measure is Σ_k p^{−k/2}δ_{±k log p} + δ₀ ≥ 0.
+  - So each local factor is PD in t and sits exactly on the p-power nodes. This would pass walls 11 and 13 locally.
+  - Finite products are |Σ_{P-smooth} n^{−½−it}|², with positive Fourier measure on log(m/n).
+  - Pairing with blind Ĝ ≥ 0: the integer-ratio terms vanish, and the remaining terms at non-integer ratios are
+    uncontrolled. The infinite product diverges on the line (wall 6), and ζ(½+it) is not infinitely divisible
+    (Lévy mass Σ_p p^{−½} = ∞).
+  - Verdict: local definiteness exists, but the global product is lost at σ = ½.
+- **Schoenberg / total positivity (TP_∞).**
+  - RH ⟺ Ξ ∈ LP ⟺ the reciprocal is the bilateral Laplace transform of a Pólya frequency function: a TP kernel of
+    every order. This is a definiteness kind beyond Bochner.
+  - The archimedean factor is PF (Γ(s) = ∫e^{sx}e^{−e^x}dx is log-concave, and 1/Γ ∈ LP).
+  - The arithmetic factor 1/ζ = Σμ(n)n^{−s} is the transform of a signed measure, so it is not PF. TP of the convolution
+    would itself be the RH content.
+  - The corpus LA route excludes Laguerre–Pólya preimages under polynomial symbols (`XiRealRootedPolynomialPreimage`)
+    and multiplier sequences (`RiemannKernelMomentsNotMultiplier`).
+  - Verdict: equivalent reformulation, no mechanism.
+- **WindowPositive margin, quantified further.**
+  - The PD doubling inequality 1 − C(2x) ≤ 4(1 − C(x)) forces 1 − C(x) ≥ (x/2L)².
+  - That recovers only ≈ 0.007 of the 0.156 gap. The true margin needs the full Bochner structure of C, which is
+    where the corpus's √2 trace certificate does its work.
+  - A Lean proof would need certified enclosures (norm_num). Recorded, not started.
+
+## Row 246 — [L] interpolating RH criteria, including a single-prime Weil criterion
+- **[L] Added to `RHTower/PrimeBlindNodeCriticality`** (standard axioms; `lake --old` clean for this module and for the
+  dependent `ArchimedeanUnitNodeEnergy`):
+  - `riemannHypothesis_iff_repairedBlindPositive_vonMangoldt S`: for every node set S, RH ⟺ the Weil functional with
+    weights Λ off S is ≥ 0 on the S-blind cone. S = ∅ is Weil's criterion; S = ℕ is PBAP.
+  - `riemannHypothesis_iff_singlePrimeWeilPositive p`: RH ⟺ the archimedean part plus the Euler factor at one prime p
+    (weights Λ(p^k)) is ≥ 0 on combinations blind at every node that is not a power of p.
+- **Reading (globalised local Euler positivity).**
+  - The single local factor at p is Bochner-positive with spectrum on the lattice log p·ℤ.
+  - The single-prime criterion says RH is "archimedean + one local factor" positivity on tests tiling at every
+    other prime period 2π/log q.
+  - The remaining infinitely many constraints are the tiling conditions, not Euler factors.
+  - Open: whether tiling at all q ≠ p plus the explicit τ_p-periodic weight log p·(P_p − 1) admits a direct positivity
+    proof. Pointwise, Ω − log 2·(P_2 − 1) ≈ −8.7 at t = 0, so the tiling conditions must carry the argument.
+
+## Row 247 — single-prime criterion at p = 2: averaging and lattice decomposition (both circular)
+- **Averaging that preserves tiling.**
+  - The operators that preserve blindness at every node and the PD cone are exactly Schur multiplication by a PD φ.
+    On the spectral side this is convolution Ĝ ↦ Ĝ ∗ ν with ν a probability measure.
+  - A reduction "W₂(G) ≥ W₂(Gφ) ≥ 0" needs W₂ − W₂∘M_φ ≥ 0 on the same cone: a positivity statement of the same type.
+  - The difference splits into an Ω-smoothing term (Jensen: favourable where Ω is concave, unfavourable near t = 0
+    where Ω is convex), a pole difference, and Σ_k c_k G(k log 2)(1 − φ(k log 2)). All are sign-indefinite.
+  - Verdict: CIRCULAR.
+- **Dyadic lattice decomposition.**
+  - G = G_lat + G_blind, where G_lat interpolates the lattice values G(k log 2) with a fixed PD bump vanishing at the
+    other nodes.
+  - Then W₂(G) = W₂(G_lat) + A(G_blind) + cross terms. A(G_blind) ≥ 0 is PBAP itself.
+  - Verdict: CIRCULAR.
+- **State.** Cycles 235–247 have exhausted the corpus mechanisms and the natural new ones (Farey, Euler-local,
+  Schoenberg TP, Hecke, Mayer, trace formula, Pontryagin, averaging). Each has a recorded kill. The RH core stands as
+  in STATUS MUST-1437–1440 and CANNOT-535–537.
+
+## Row 248 — single-test form via Boas–Kac: self-orthogonality and Steinhaus mimicry
+- **[P] Reduction.**
+  - In dimension 1, every compactly supported PD function is a single autocorrelation g ⋆ g̃ with supp g in half the
+    support (Boas–Kac / Krein).
+  - So PBAP is equivalent to: ⟨f, A f⟩ ≥ 0 for every single f with ⟨f, f(· + log n)⟩ = 0 for all n ≥ 2.
+  - This is positivity of a quadratic form on an intersection of quadrics: f is self-orthogonal under every log-integer
+    translation.
+  - Regularity caveat: the factor g is in L², not C², so the corpus decay-class extension would be needed to close it.
+- **Steinhaus reading.**
+  - The normalised spectral measure μ = |f̂|²dt/‖f‖² integrates every Dirichlet polynomial to its constant term,
+    exactly as the Steinhaus (Haar) measure on the infinite torus does.
+  - So PBAP reads: "every Steinhaus-mimicking spectral measure of compact type has ∫Ω dμ + pole ≥ 0".
+  - The heuristic "mimicry forces spread, and spread forces ∫Ω ≫ 0" is a density argument, killed by wall 11. Deleting
+    one node destroys mimicry at a single character, yet negativity appears.
+- **Verdict.** REFORMULATION. The Boas–Kac formalisation (Krein–Akhiezer factorisation of nonnegative exponential-type
+  functions) would only give PBAP ⟺ single-test PBAP. Not pursued.
+
+## Row 249 — frontier-wide scan of "Needs" lines for a non-RH-hard producer gap
+- I scanned the "Needs" line of every live route and candidate in the frontier map.
+- Almost every route's missing step is recorded as the Weil-positivity receiver, explicit-formula balance or
+  zero-side vanishing ("Core (rows 564/707/714)"). That is wall 12 seen from each route.
+- The only quantitative non-RH milestone is TG's "Gaussian central-gap bound, first milestone < 1/4".
+  - By `GaussianCentralGapRatePowerSaving`, rate e^{sε}√ε ⟺ every zero has b + b²/8 ≤ s (b = Re ρ − ½).
+  - So s < 1/4 is a zero-free strip Re s < ¾ + O(s²): a quasi-Riemann hypothesis, beyond the Vinogradov–Korobov exponent
+    1/4 that the corpus already owns.
+  - No zero-free strip of any positive width is known. Verdict: quasi-RH hard, not a tractable sub-producer.
+- **Conclusion.** The corpus frontier sits at RH or quasi-RH hardness in every route. In the HF route the TMP
+  formalisation removed the last non-RH gap ((N1)). What remains anywhere is a genuine new positivity mechanism,
+  constrained by walls 11–13.
+
+## Row 250 — C260: continuity method in the archimedean shift (new framing; dies at the integrality wall)
+- **Setup.**
+  - Deform only the Gamma factor: Γ_ℝ(s) → Γ_ℝ(s+a), so A_a has spectral density Re ψ(¼ + a/2 + it/2) − log π.
+  - Keep the pole terms and the blindness set log ℕ fixed. PBAP(a) is the deformed statement; RH ⟺ PBAP(0).
+- **Continuity scheme.** Let a₀ := inf{a ≥ 0 : PBAP holds on [a, ∞)}.
+  - (1) PBAP(a) for all a ≥ a* (plausible, non-RH). Blindness at the dense nodes log n kills the large-|x| pole mass,
+    and Ω_a ≈ log(a/2) dominates.
+  - (2) Openness: strict PBAP at a ⇒ PBAP near a, since |A_a − A_{a−δ}|(G) ≤ Cδ·G(0). Non-RH.
+  - (3) Closedness: pointwise limits.
+  - Hence a₀ > 0 forces PBAP(a₀) to hold tightly: inf over normalised blind G of A_{a₀}(G) = 0.
+  - Under RH: a₀ = 0. The witness G* is tight at a = 0, D_a(G*) > 0 for small a, and compactness makes PBAP(a) strict
+    on (0, ε).
+  - Note: Re ψ(x+iy) decreases in x near x = ¼ at large y (Re ψ′ ≈ −1/(4y²)), so A_a is not spectrally monotone in a.
+    This is why a₀ is defined via [a, ∞).
+- **Crux (step 4): no tight threshold at a₀ > 0.**
+  - At a tight point a minimiser (pole-budget compactness, corpus) is a null blind test. Every cone point's boundary
+    measure is then atomic on its real zero set (corpus `WeilConeNullAtomicSpectrum`).
+  - So λ ∈ W(a₀) gives a Herglotz Dirichlet series: L := exp(Σλ_n n^{−s}/log n) is holomorphic and zero-free on
+    Re s > ½, with archimedean data Γ_ℝ(s+a₀).
+  - The hoped-for contradiction was a Hamburger/Hecke converse theorem: no L-function with FE for Γ_ℝ(s+a₀), a₀ ∉ {0, 1}.
+  - **Attack:** threshold objects need not be L-functions.
+    - Herglotz Dirichlet series exist for every a with W(a) ≠ ∅ (fat cones at large a, e.g. λ = 0). They carry no FE.
+    - Their boundary atoms are integers only if L continues meromorphically across the line. That is the corpus
+      integrality gap ("integrality of the atoms of μ_λ on {F̂=0}"; memory archimedean-integrality-obstructions).
+- **Verdict.** FALSE as a producer: step 4 has no mechanism and reduces to the archimedean integrality wall.
+  Positive survivors (non-RH, recorded as possible Lean targets):
+  - (1) large-a PBAP;
+  - (2) openness of strict PBAP in a;
+  - the reformulation RH ⟺ [no tight point of the shifted-Gamma blind problem in (0, ∞)] ∧ (1).
+
+## Row 251 — integrality of atoms at the C260 threshold: the corpus's closed integrality-anchor route
+- **Corpus.** The integrality-anchor law (ULF-INT-001, closed after a nine-candidate loop; CANNOT-186/187, MUST-122) and
+  the archimedean-integrality obstructions manuscript.
+  - Remaining honest directions recorded there: "an F₁ object without characteristic polynomial (test-function-side
+    integrality), or a genuinely new one-signed datum".
+- **Attempt.** Test-function-side integrality: the blind nodes are logarithms of integers, so does blindness force the
+  boundary atoms w_γ of a tight minimiser to be integers?
+  - L := exp(−∫D), with D the Dirichlet series of λ ∈ W(a₀).
+  - The pole term fixes the residue at s = 1 to be 1, so L ~ (s−1)^{−1} there (normalisation c = 1).
+  - At the atoms, L ~ (s−ρ)^{w_γ}. Integrality ⟺ L is single-valued across the critical line.
+  - That needs analytic continuation of L past Re s = ½ (an FE or equivalent). Blindness constrains G's values at
+    log n, not the continuation of L.
+  - Real-coefficient Dirichlet series with meromorphic continuation can carry arbitrary real residues on the line
+    (c·ζ′/ζ-type, c ∉ ℤ), and nothing at the threshold fixes c at the zeros separately from s = 1.
+- **Verdict.** REDISCOVERED (integrality-anchor wall). C260's step 4 stays closed.
+- **Session-level conclusion (rows 233–251).**
+  - All PBAP attacks end at one of three known walls:
+    - the explicit formula / forced dual measure (12);
+    - the cone mismatch (13);
+    - archimedean integrality (F₁).
+  - Node criticality (11) constrains every remaining candidate.
+
+## Row 252 — C260 step 1 (PBAP(a) for large a) analysed: not elementary, needs off-line zero control
+- **Lévy form.** With x = ¼ + a/2:
+  - Ω_a(t) = ψ(x) − log π + ∫_0^∞ ω_a(v)(1 − cos tv)dv, where ω_a(v) = 2e^{−(½+a)v}/(1 − e^{−2v});
+  - A_a(G) = (ψ(x) − log π)G(0) + ∫ω_a(G(0) − G) + pole(G).
+  - The first term is ≈ log(a/2)·G(0), the jump term is ≥ 0, and the pole term is sign-indefinite.
+- **Narrow-bump family.**
+  - f = φ(·−R) − φ(·+R) is blind if the width is ≲ e^{−2R}.
+  - Then pole/G(0) ≈ −w e^R ≳ −e^{−R}: bounded.
+- **Bandwidth heuristic.**
+  - PD Lipschitz control gives |G| ≲ √B·e^{−x} beyond x ≈ ½ log B (B = spectral second moment).
+  - But on [0, ½ log B] only |G| ≤ G(0) is available, so |pole| ≲ B^{1/4}G(0), against a jump gain of only ~log B.
+  - So no elementary bound. Under RH the pole is bounded below by −|Ω_0(0)|G(0), because A_0 ≥ 0 on blind tests. The
+    B^{1/4} scenario is not realised, but proving that unconditionally means controlling the off-line zero sum on
+    blind tests.
+  - Equivalently, PBAP(a) for large a ⟸ Σ_{off-line} Ĝ(γ_ρ) ≥ −K·G(0) − (jump) on blind tests. This is a
+    zero-density-type estimate combined with narrowness from blindness.
+  - Non-RH, but a substantial analytic theorem.
+- **Verdict.** C260's survivors are not cheap. With step 4 dead (row 251), C260 is closed.
+
+## Row 253 — WindowPositive: exact value at the flat profile (paper evaluation)
+- **Flat profile.** h = 1_{(0,L)}, L = log 2, c(x) = 1 − x/L.
+- **Terms of F(h) = 2∫_L^∞ω + 2∫_0^L[ω(1−c) + 2c cosh(x/2)]:**
+  - 2∫_L^∞ω = 2Σ_k 2^{−(2k+½)}/(2k+½) ≈ 2.9937.
+  - ∫_0^L ω·x/L = (1/L)Σ_k [1 − e^{−β_kL}(1+β_kL)]/β_k², with β_k = 2k+½. This is ≈ 0.4027/L ≈ 0.5810.
+  - 2∫_0^L(1 − x/L)cosh(x/2) = 2[2 sinh(L/2) − (2L sinh(L/2) − 4cosh(L/2) + 4)/L] ≈ 0.7001.
+  - Total F(flat) ≈ 2.9937 + 2(0.5810 + 0.7001) ≈ 5.556 > |A(0)| ≈ 5.3721, a margin of 0.184.
+- **Bracketing.**
+  - The flat profile gives 5.556. The pointwise relaxation gives a lower bound of 5.216.
+  - The true minimum lies in between; the corpus records margin ≈ 0.15, so the minimum is ≈ 5.52.
+  - An analytic proof must certify a lower bound ≥ 5.3721 over all autocorrelation profiles of nonnegative functions.
+    This is a copositive variational problem with a 3% gap.
+- **Status.** The target stays recorded. A hand-designed certificate is not feasible without computation, and the
+  sector carries no RH content (CANNOT-535).
+
+## Row 254 — |ζ|²-weighted positivity on blind tests versus the zero sum (wall 2, rediscovered)
+- **Input.** Corpus identity (HF, `CosDilationKernelPositivityRigidity`): blind cores satisfy
+  ∫|ζ(½+it)𝓜f(½+it)|²dt = 2πΨ_f(1) ≥ 0. This is an exact |ζ|²-positivity on the blind cone.
+- **Attempt.** Link it to A(G) = Σ_ρ Ĝ(γ_ρ) through log-concavity:
+  - Jensen: ∫ log|ζ|² dμ ≤ log ∫ |ζ|² dμ;
+  - Poisson–Jensen: zero sums are ∫∫ log|ξ|·ΔH.
+- **Kill.** Mean-square (|ζ|²) control bounds log|ζ| averages from above. Jensen's formula then turns this into upper
+  bounds on zero counts (density estimates N(σ,T)), never a count of exactly zero. Excluding all off-line zeros needs
+  equality in Jensen, which no moment method gives.
+- **Verdict.** REDISCOVERED, wall 2 (|ζ|²-positivity versus log|ζ|; Jensen gap).
+
+## Row 255 — minimum principle on the spectral side and θ zero-freeness (walls LA and 6)
+- **Spectral minimum principle.**
+  - u = Re(ξ′/ξ) is harmonic on Re s > ½ minus the off-line zeros.
+  - Its boundary measure on the line is π Σ δ_γ ≥ 0, and u → +∞ as Re s → ∞. If u were harmonic there, the minimum
+    principle would give u ≥ 0, i.e. RH.
+  - But the poles are the off-line zeros themselves. Circular (corpus LA: RH ⟺ Re(ξ′/ξ) ≥ 0 on Re s > ½).
+- **θ zero-freeness on ℍ.**
+  - log θ is holomorphic on ℍ by the Jacobi triple product.
+  - Its Mellin transform involves ζ(s)ζ(s+1)Γ(s) with divisor-sum coefficients.
+  - Zero-freeness of θ is a product-convergence fact (|q| < 1), wall 6. It carries no critical-line information.
+  - Ray-rotated Mellin transforms of θ give the same Λ(s) with rotated archimedean factors (e^{iφ})^{−s/2}: no new
+    positivity.
+- **Verdict.** Both REDISCOVERED.
+
+## Row 256 — "magic function" / frame certificate for Weil positivity (Cohn–Elkies analogy): killed by spectral singularity
+- **Analogy.**
+  - The TMP witness G* is the primal optimiser of PBAP, playing the role of E8.
+  - The dual certificate is W_Λ ⪰ 0, playing the role of the magic function.
+  - Attempt: certify W_Λ ⪰ 0 as a positive superposition W_Λ(f) = ∫|⟨f, g_u⟩|²dν(u), with explicit modular vectors g_u
+    (twisted arc vectors) and ν ≥ 0 proved by a minimum principle. A mixture weighted by a pointwise-positive measure
+    would bridge wall 13.
+- **Kill (translation averaging).**
+  - W_Λ depends only on f ⋆ f̃, so it is translation invariant.
+  - Averaging the superposition over translations of f gives W_Λ(f) = ∫|f̂(t)|²(∫|ĝ_u(t)|²dν(u))dt. The spectral
+    density is absolutely continuous whenever g_u ∈ L².
+  - Under RH the spectral measure of W_Λ is purely atomic (the zeros; corpus `WeilConeNullAtomicSpectrum`).
+  - So no superposition of L² rank-one forms certifies Weil positivity. A certificate must be spectrally singular,
+    which is wall 12 in sharpened form.
+- **Verdict.** FALSE. Unlike sphere packing, where the magic function is a regular Schwartz function, the RH
+  certificate is forced to be singular.
+
+## Row 257 — singular certificates: Fourier quasicrystals and Lee–Yang (Kurasov–Sarnak) — corpus-explored
+- **Motivation.** Row 256 forces a singular certificate: an atomic positive measure μ with
+  μ̂ = archimedean density − Σ Λ(n)n^{−½}δ_{±log n}.
+- **Known singular positive mechanism.** Kurasov–Sarnak / Olevskii–Ulanovskii: positive Fourier quasicrystals are the
+  zero sets of Lee–Yang-stable exponential polynomials P(e^{iλ₁t}, …), real-rooted by stability on the polydisc.
+- **Attempt.** Use the Bohr lift 1/ζ = Π_p(1 − z_p p^{−s}). Each factor is stable on the polydisc for σ > 0, and a
+  stable, self-reciprocal lift would give real zeros.
+- **Kill.**
+  - The lift converges only for σ > ½ (wall 6).
+  - ξ is not a finite exponential polynomial, and its Fourier side carries a continuous archimedean part, so it is not
+    a quasicrystal.
+  - Corpus: Lee–Yang fake zetas killed (an a.c. density −½ log N appears), multi-prime Putnam/Lee–Yang formalised
+    (`ZetaZerosLeeYangPutnam`), Lee–Yang all graphs (`lee-yang-asano-lean`).
+- **Verdict.** REDISCOVERED (walls 6 and 12). Singular positive certificates that are known to exist (stable
+  polynomials) need a finite toric presentation, which ζ lacks at σ = ½.
+
+## Row 258 — singular certificate via a Sturm–Liouville problem on the arc: killed by the Weyl law
+- **Attempt (towards a spectral realisation).**
+  - The Legendre operator 𝔐 = ∂_u(1−u²)∂_u on the arc u ∈ [−½, ½] is regular, since 1 − u² ≥ ¾.
+  - With self-adjoint boundary conditions at the corners it has real eigenvalues ¼ + τ_j². The secular equation is a
+    combination of P_{−½+iτ}(±½), Q_{−½+iτ}(±½) and their derivatives.
+  - If that secular function were Ξ(τ) times a non-vanishing factor, self-adjointness would give RH. This is the
+    conical-function realisation suggested by row 227 (C240).
+- **Kill (counting).**
+  - A regular SL problem on a compact interval has τ_j ~ πj/ℓ, so N(T) ~ cT.
+  - Zeta zeros have N(T) ~ (T/2π) log T.
+  - Any self-adjoint realisation therefore needs a singular end or infinite volume supplying the log T. At level 1
+    this is the cusp, whose zeta-resonances are non-unitary (row 243), or the adelic class space (wall 5).
+- **Verdict.** FALSE. The compact arc carries the null-face witnesses (TMP) but cannot carry the zeros spectrally.
+
+## Row 259 — infinite-volume version: the TMP half-cylinder F with Dirichlet on the arc — non-arithmetic scattering
+- **Attempt.** Add the cusp to the arc: Δ + ¼ on F (half-cylinder above the arc) with Dirichlet on A.
+  - The cusp supplies continuous spectrum and the log T counting.
+  - Define E_F(z,s) (Dirichlet on A, y^s + φ_F(s)y^{1−s} + decaying) and ask whether the poles of φ_F are the ζ zeros.
+- **Kill.**
+  - Neumann on A gives σ-even functions: exactly the even modular objects (E(z,s), with φ = ξ(2s−1)/ξ(2s), so ζ zeros
+    appear only as non-unitary resonances).
+  - Dirichlet on A gives σ-odd functions. Together with T-periodicity and evenness this character is inconsistent at
+    the 2π/3 corner (rows 230/232), so F with Dirichlet on A is not a quotient of ℍ.
+  - φ_F is then a ratio of arc harmonic measures of (1−u²)^{s/2} and (1−u²)^{(1−s)/2}, with no Hecke or Euler
+    structure. Its poles are not tied to ζ.
+- **Verdict.** FALSE. The arithmetic (Neumann) version sees ζ only through resonances; the Dirichlet version that TMP
+  uses is non-arithmetic. Same resonance-versus-eigenvalue dichotomy as row 243.
+
+## Row 260 — convolving a negative certificate with the witness
+- **Identity [P, unconditional].** For any PD test G and the TMP witness G*, whose spectrum Ĝ* contains |Ξ|²:
+  - Ĝ·Ĝ* vanishes at every zero, so W_Λ(G ⋆ G*) = 0;
+  - hence A(G ⋆ G*) = Σ_n Λ(n) ℓ_n(G ⋆ G*).
+  - This is an exact archimedean–prime balance for every convolution with the witness.
+- **Attack on PBAP.**
+  - G ⋆ G* is not blind: (G ⋆ G*)(log n) = ∫G(y)G*(log n − y)dy.
+  - A(G ⋆ G*) carries no sign information about A(G).
+  - The Schur product G·G* is blind and PD, but A(G·G*) is not controlled by A(G) (row 235).
+- **Verdict.** No transfer. The identity just restates W_Λ ≡ 0 on the Ξ-divisible ideal, for every λ ∈ W.
+
+## Row 261 — summing node energies against the PNT (circular)
+- **Attempt.** Under RH, Σ_{m≤x} inf E_m = ψ(x) ~ x. Can the unconditional PNT force inf E_m > −∞?
+- **Kill.** E_m is either bounded below at every m (RH) or unbounded at every m (¬RH), by
+  `isGLB_unitNodeEnergies` and `not_bddBelow_unitNodeEnergies`. The sum is ψ(x) or −∞, and the PNT carries no
+  information on which.
+- **Finite-aperture variant.**
+  - Λ_A(m) := inf E_m^{(A)}, over tests supported in [−A, A], equals max{λ_m : λ ∈ W_A}.
+  - Under RH this decreases to Λ(m). Nonemptiness of W_A at every A is the RW route (Krein induction).
+- **Verdict.** CIRCULAR.
+
+## Row 262 — regularised Lévy–Khintchine form of the full Weil kernel (tautological on blind tests); lint check
+- **Attempt.**
+  - The full Weil kernel is "constant·δ₀ + 2cosh(x/2) − N", where N = ω(|x|)dx + Σ_n Λ(n)n^{−½}δ_{±log n} is the total
+    Lévy measure of ξ at σ = ½.
+  - On PD tests G(0) − G ≥ 0, so a Lévy–Khintchine split would give positivity, but N has infinite mass because
+    Σ Λ(n)n^{−½} = ∞ (wall 6).
+  - Regularise at N₀: A(G) = ℰ_{N₀}(G) + (Ω(0) − 2ψ_½(N₀))G(0) + pole(G), with ℰ_{N₀} ≥ 0 and ψ_½(N₀) ~ 2√N₀.
+- **Kill.** On blind tests the prime part of ℰ_{N₀} is exactly 2ψ_½(N₀)G(0), which cancels the regularising constant.
+  The identity is tautological.
+- **Maintenance.** `scripts/formal_tools.py lint`: no errors in `PrimeBlindNodeCriticality`,
+  `ArchimedeanUnitNodeEnergy` or `ModularArcStreamMinimumPrinciple`. The two remaining errors belong to other agents'
+  unwired modules.
+
+## Row 263 — Bohr-lift / F. and M. Riesz reading of blindness (corpus Helson lane)
+- **Reading.**
+  - Push the spectral measure μ = Ĝ dt forward to the infinite torus via t ↦ (p^{it})_p.
+  - Its Fourier coefficient at the character of r ∈ ℚ_{>0} is G(log r).
+  - Blindness kills the coefficients on the positive orthant ℕ^∞ ∖ 0, and by symmetry on the negative orthant.
+    Mixed-sign indices (non-integer ratios) are free.
+- **Attempt.** Use an F. and M. Riesz / Helson–Lowdenslager / Bochner-cone theorem (spectrum in a cone forces absolute
+  continuity) to force structure on blind μ.
+- **Kill.**
+  - Those theorems need the spectrum inside a half-space or a line-free cone.
+  - The free set of blind μ (all mixed-sign indices) contains lines, e.g. the direction of log(2/3), so no absolute
+    continuity follows.
+  - Full rational blindness (a half-space) would force G ≡ 0 (known).
+  - Corpus: Helson lane (`helson-stratum-borel`, `helson-haar-null-closed`, `helson-divisor-card-closed`).
+- **Verdict.** REDISCOVERED or insufficient. The orthant structure of ℕ is too weak for Riesz-type rigidity.
+
+## Row 264 — saddle-point (Lagrangian) certificate (circular)
+- L(G, λ) = A(G) − Σ_n λ_n ℓ_n(G) on PD tests.
+- The witness G* (blind, A(G*) = 0) gives L(G*, λ) = 0 for every λ. Λ maximises L(G*, ·) trivially.
+- (G*, Λ) is a saddle ⟺ G* minimises L(·, Λ) ⟺ W_Λ ⪰ 0 ⟺ RH.
+- The only nontrivial half of the saddle certificate is RH itself; the duality gap is 0 iff RH.
+- Verdict: CIRCULAR.
+
+## Row 265 — WindowPositive: spectral form and an analytic proof strategy (non-RH sector; paper)
+- **Spectral form.** For h ≥ 0 on (0, L), normalised spectral density p = |ĥ|²/∫|ĥ|²:
+  - F(h) = 2∫_L^∞ ω + 2∫ p(t)Φ(t)dt, where Φ(t) := ∫_0^L ω(x)(1 − cos xt)dx + 2∫_0^L cosh(x/2)cos(xt)dx.
+  - WindowPositive ⟺ ∫pΦ ≥ (5.3721 − 2.9937)/2 = 1.1892 for every admissible p.
+- **Values.**
+  - Φ(0) = 4 sinh(L/2) ≈ 1.414.
+  - Φ dips to ≈ 0.9 near t ≈ π/L ≈ 4.5: the jump part ≈ ½(log(tL) + γ − Ci(tL)) ≈ 0.88 and the cosh part ≈ 0.01.
+  - Φ → ∞ logarithmically.
+  - So inf_t Φ < 1.19 and the signed problem fails, as expected.
+- **What nonnegativity adds.**
+  - ĥ is the characteristic function of a positive measure, hence PD: p(t) ≤ p(0).
+  - With the support centred, |ĥ(t)|/ĥ(0) ≥ 1 − t²L²/8 for |t| ≤ √8/L ≈ 4.08.
+  - Example: h = bump·(1 + cos 4.5x) puts weights ⅔ at 0 and ⅓ at ±4.5, so ∫pΦ ≈ 0.94 + 0.30 = 1.24 > 1.19, a thin
+    margin.
+- **Strategy (two regimes).**
+  - (a) Flat h, with ‖h‖² ≤ K(∫h)²/L: the guaranteed low-frequency mass from the characteristic-function lower bound
+    sits where Φ ≈ 1.41.
+  - (b) Spiky h: the spectral mass spreads to high t where Φ ≳ ½ log t.
+  - Choose K to balance the regimes. This needs explicit enclosures of Φ on a grid (integrals of e^{−βx}cos(xt)
+    against ω = Σ e^{−(2k+½)x}, all closed-form).
+  - Lean would use the corpus `MidpointRadiusTrigEnclosures` toolkit.
+- **Status.** Recorded plan. Non-RH (CANNOT-535); it would close the frontier map's "numeric" window gap in HF.
+
+## Row 266 — WindowPositive certificate shape (copositive = pointwise-nonnegative + PSD); why it is not hand-tunable
+- **Form.** Q(h) := F(h) − |A(0)|‖h‖² = Lévy(h) + 2∫∫h(x)h(y)cosh((x−y)/2) − 5.3721‖h‖², where
+  Lévy(h) = ∫_0^∞ ω(z)‖h − h(·+z)‖² is a PSD Dirichlet form.
+- **Certificate shape (Diananda-type).** Q = Q_PSD + Q_K, with Q_K(h) = ∫∫h h K and K ≥ 0 pointwise on (−L, L).
+  Then Q ≥ 0 on h ≥ 0.
+  - Natural split: K = 2cosh(z/2) − β ≥ 0 for β ≤ 2, and Q_PSD = Lévy + β(∫h)² − 5.3721‖h‖².
+  - This requires Q_PSD ⪰ 0 on all signed h, which fails at low frequency: for ∫h = 0 and smooth h, Lévy ≈ 2·0.9‖h‖²
+    is far below 5.37‖h‖².
+  - So K must also carry non-constant, z-dependent mass that couples with the low modes. Tuning that split is a
+    semidefinite/LP design problem, which is computation.
+- **Status.** The certificate shape is identified, but it cannot be produced by hand within the no-computation rule.
+  WindowPositive stays a recorded non-RH target.
+
+## Row 267 — multiplicative-Toeplitz Gram matrices of integer translates (corpus-owned)
+- **Attempt.** Positivity of W_Λ on spans of the translates f(· − log n) gives, for narrow f, the matrix
+  [K_arch(log(m/n)) − Λ-atoms at m/n ∈ ℕ^{±1}]_{m,n ≤ N} ⪰ 0.
+  - This is a GCD/Redheffer-type multiplicative Toeplitz positivity; compare Redheffer det = M(N).
+- **Kill.**
+  - The corpus owns this: `WeilPositivityMultiplicativeToeplitzBound` (imported by the one-sided criterion). The
+    Toeplitz-index candidates were closed in the integrality-anchor loop.
+  - Positivity for all N is Weil positivity restricted to translate spans, which is wall 8.
+- **Verdict.** REDISCOVERED.
+
+## Row 268 — Hodge index for Hecke correspondences on X × X (wall 5)
+- **Attempt.** A function-field-style positivity: Hecke correspondences T_n ⊂ X₀(N) × X₀(N) as divisors, with the Hodge
+  index theorem applied to Σ a_n T_n.
+- **Kill.**
+  - Via Eichler–Shimura (T_p ≡ Frob + Ver mod p), this gives the Ramanujan bound for weight-2 cusp forms: the
+    Weil/Deligne mechanism over finite fields.
+  - For ζ the relevant Hecke eigenvalues are Eisenstein (σ₁(n), giving ζ(s)ζ(s−1)). Their positivity is on the
+    1-line, and X(1) has genus 0.
+  - There is no geometric Frobenius whose Hodge index sees the zeros of ζ: wall 5 (no F₁ / geometric Frobenius).
+- **Verdict.** REDISCOVERED (wall 5).
+
+## Row 269 — number-field and extra-node variants (no gain)
+- **PBAP_K for an imaginary quadratic K** (Γ_ℂ, blind at the ideal norms):
+  - GRH(ζ_K) ⟹ RH(ζ), and the blind set is sparser, so the cone is larger and the statement stronger.
+  - With a TMP-type uniqueness it would be equivalent to GRH(ζ_K). Harder, not easier.
+- **PBAP with extra nodes E ⊃ log ℕ** (for example log(ℕ/2)):
+  - The cone is smaller, so the statement is weaker.
+  - The TMP witness is not blind at E, so uniqueness fails and the cone W_E is fat; PBAP_E is non-RH.
+  - Recovering RH as E → ∅ needs uniform control, which is RH again.
+- **Verdict.** No gain in either direction. Node criticality pins the node set exactly to log(prime powers).
+
+## Row 270 — C270 (recorded direction): extend the HF chain to small conductors (q = 3, 4)
+- **Idea.** The TMP geometry is the bottom arc of SL₂(ℤ) with a corner at the elliptic point.
+  - Row 232: at level q the arc |z| = q^{−½} meets u = ±½ above the real axis exactly for q ≤ 3. q = 4 touches the
+    cusp at ½.
+  - A level-q twisted minimum principle (χ-twisted K-Bessel modes for the odd characters χ₋₃ and χ₋₄; for Γ_ℝ(s+1)²,
+    K₁-type modes) would give an (N1) witness for L(s, χ₋q).
+  - With that witness, cone uniqueness gives GRH(L(s,χ₋q)) ⟺ PBAP(Γ_ℝ(s+1), q).
+- **Consistency.** The families F(Γ_ℝ(s+1), 3) and F(Γ_ℝ(s+1), 4) have a single member (one odd character each), so
+  Hamburger-type uniqueness is not contradicted (row 232 audit).
+- **Value.** It extends the corpus RH ⟺ PBAP to GRH for χ₋₃ and χ₋₄. It is a structural extension, not progress on
+  any PBAP core.
+- **Effort.** Large: twisted moments with χ, a new arc geometry, stream-function minimum principle at the new corner,
+  and a divisor transfer for L(s,χ)².
+- **Status.** Recorded as a backlog direction, not started.
+
+## Row 271 — [L] integer blindness is a Möbius law for primitive Farey sums (C252 formalised)
+- **[L] `RHTower/BlindIntegerFareyMoebius`** (standard axioms, `lake --old` clean, wired):
+  - `primitiveFareySum f q` := Σ_{a≥1, gcd(a,q)=1} f̂(a/q);
+  - `tsum_fareyDilate_eq_sum_divisors`: grouping by gcd gives Σ_{k≥1} f̂(k/m) = Σ_{q∣m} primitiveFareySum f q;
+  - `fareyDilateSum_of_blind`: dilated Poisson summation for an integer-blind function;
+  - **`primitiveFareySum_eq_moebius_mul`**: for even Schwartz f with f(0) = 0 and f(n) = 0 for all n ≥ 2,
+    primitiveFareySum f q = μ(q)·f(1) for every q ≥ 2.
+- **Meaning.** For a Weil test, g(y) = G(log|y|) is even and vanishes near 0. Prime blindness of G is exactly
+  g(n) = 0 for n ≥ 2, i.e. the primitive Farey sums of ĝ are the Möbius function times g(1). This is an exact bridge
+  from the HF/PBAP domain to the Farey/Möbius (MC) lane.
+- **Status.** A bridge, not a producer (row 235 verdict). It is new Lean content linking the two lanes.
+- **Row 271 addendum [L]: converse.**
+  - `blind_iff_primitiveFareySum`: for compactly supported even Schwartz f, f(0) = 0 ∧ f(n) = 0 for all n ≥ 2 ⟺
+    the Möbius law for every q ≥ 2.
+  - Mechanism:
+    - the Möbius law makes V(m) = P(1) − f(1), so Poisson summation reads f(0) + 2Σf(mn) = C/m;
+    - comparing m = N+2 and 2N+4 gives C = 0 and f(0) = 0;
+    - downward induction over multiples (`eq_zero_of_multiple_sums`) finishes.
+  - Standard axioms, `lake --old` clean.
+- **Row 271 addendum 2 [L]:** `sum_primitiveFareySum_eq_mertens`.
+  - For an integer-blind f: Σ_{q≤Q+1} P_f(q) = P_f(1) + f(1)·(M(Q+1) − 1).
+  - Blind tests carry the Mertens function exactly in their cumulative Farey sums.
+  - Attack recorded: bounding the left side independently (e.g. O(Q^{½+ε})) would give RH. But the Farey Riemann sums
+    of a fixed smooth ĝ with ∫ĝ = 0 have error governed by M itself (Franel–Landau duality), so this is circular
+    (wall 1/MC).
+
+## Row 272 — C272 blind Riemann–Roch transfer (Weil's hard half on blind tests)
+- **Conjecture.** Weil's curve proof is (easy half) "effective ⇒ positive against ample" plus (hard half) Riemann–Roch,
+  which turns D² > 0 into effectivity. Dictionary on blind tests:
+  - effective ↔ h = g⋆g̃ with g ≥ 0;
+  - ample ↔ the pole functionals ∫h e^{±x/2}.
+  - C272: every blind PD test with Q_arch(h) < 0 forces a blind effective test with Q_arch < 0.
+- **Easy half.** On blind tests it holds modulo `WindowPositive`. `weilArchRe_nonneg_of_primeBlind` (hW) is exactly
+  "effective ⇒ positive". Without blindness the easy half is already RH-equivalent (old loop row 468, shift-pair
+  criterion). Blindness therefore splits Weil's proof cleanly: easy half = a local numeric inequality; hard half = RH.
+- **Kill (CIRCULAR).**
+  - Blind effectivity is window-confined: g ≥ 0 with g⋆g̃(log n) = 0 for all n ≥ 2 has |supp g| ≤ log 2
+    (`DilationFreeSetMeasure`, quantile transport).
+  - A test of support ≤ log 2 cannot resolve an off-line zero. For ĥ of exponential type log 2, the off-line quadruple
+    term is bounded by a fixed multiple of ‖h‖₁, while the on-line density log T dominates at height T.
+  - So under ¬RH the effective sector stays positive (given WindowPositive) while the PD sector goes to −∞. A transfer
+    map would itself decide RH. There is no h⁰(nD)-growth: multiples do not enlarge support.
+- **Lesson.** Over ℚ, blind effectivity is local (length log 2). The RR step would have to manufacture large-support
+  positive objects from Bochner data; no such object exists in the blind world. This is the arithmetic form of
+  "no surface Spec ℤ ×_{F₁} Spec ℤ".
+
+## Row 273 — C273 null-face plus window decomposition of the blind PD cone
+- **Conjecture.** Every blind PD h = h₁ + h₂ with ĥ₁ = Ξ²φ (φ ≥ 0, blind; Q_arch(h₁) = Σ_ρ ĥ₁(γ_ρ) = 0
+  unconditionally) and h₂ a window core (Q_arch ≥ 0 by WindowPositive). This would give PBAP.
+- **Kill (FALSE).**
+  - ĥ₂ would have to interpolate ĥ and ĥ′ at every zero.
+  - ĥ₂ is of exponential type ≤ log 2, so it samples at density ≤ log 2/π, while the zeros have density
+    (1/2π) log(T/2π) → ∞.
+  - Ξ has infinite exponential type, so Ξ²-divisible parts are never compactly supported.
+- **Lesson.** Any positive decomposition of the blind cone needs pieces of infinite spectral type. Finite-aperture
+  sectors are spectrally too thin.
+
+## Row 274 — C274 PBAP on the doubly-positive blind cone D = {h ≥ 0, ĥ ≥ 0, h(log n) = 0}
+- **Kernel form.** For even h:
+  Q_arch(h) = A(0)h(0) + 2∫_0^∞ ω(x)(h(0) − h(x))dx + 4∫_0^∞ h(x)cosh(x/2)dx.
+  - The far kernel 4cosh(x/2) − 2ω(x) > 0 for x > x* ≈ 0.28.
+  - Hence Q_arch(h) ≥ Q_arch(h·1_{[−log 2, log 2]}) for every h ≥ 0: nonnegative mass beyond log 2 only adds energy.
+  - Narrow far bumps forced by node gaps (width e^{−L} at distance L) add ≈ L e^{L} of arch energy, against an
+    off-line term ≈ e^{δL} with δ < ½.
+  - Smooth chirp profiles a(x)sin²(πe^{|x|}) need compensating spectral mass ≈ e^{L/2} at frequency e^{L}. The
+    "chirp tax" L·e^{L/2} beats e^{δL} exactly because δ < ½.
+- **Reduction.** D-PBAP reduces to the local problem on [0, log 2]:
+  −2.378 h(0) + 2∫_0^{ℓ} ω(h(0) − h) + 4∫_0^{ℓ} h cosh ≥ 0.
+  - The pointwise relaxation (0 ≤ h ≤ h(0), PD dropped) gives min 1.124 + 1.099 = 2.223, a shortfall of 0.156.
+    This is the same 5.216 vs 5.372 gap as WindowPositive.
+  - PD is needed near 0: h(c) = h(0) forces c-periodicity, and ω ~ 1/(2x) penalises the drop.
+- **Verdict.** NON-RH (wall 13, now with mechanism). Pole reserve and chirp tax dominate any off-line contribution on
+  D. RH content is carried only by blind PD tests that change sign beyond log 2.
+
+## Row 275 — C275 blind moment calculus (Dirichlet series against blind spectral densities)
+- **Identity [P].** Let Φ be a blind spectral density: entire, Φ̂(log n) = 0 for n ≥ 2, decaying in horizontal strips.
+  Let D = Σ a_n n^{−s} converge absolutely on Re s > 1 and continue meromorphically.
+  - On Re z = 2 every n ≥ 2 term dies after shifting y → y + 3i/2.
+  - The rectangle then gives
+    ∫ D(½+it)Φ(t)dt = a₁Φ̂(0) − 2π Σ_{poles z₀, Re z₀ > ½} Res_{z₀}[D(z)Φ((z−½)/i)],
+    with principal values for singularities on the line.
+- **Instances.**
+  - D = ζ: ∫ζ(½+it)Φ(t)dt = Φ̂(0) − 2πΦ(−i/2), unconditional and exact.
+  - D = ζM for a Dirichlet polynomial M: ∫ζMΦ = Φ̂(0) − 2πM(1)Φ(−i/2). Blind measures mollify exactly at first order.
+  - D = ζ′/ζ: the explicit formula.
+  - D = 1/ζ: RH ⟺ σ ↦ ∫(1/ζ)(σ+it)Φ(t − i(σ−½))dt is constant on (½, 2] for every blind Φ.
+  - D = log ζ (cuts): the blind Jensen formula
+    ∫log|ζ(½+it)|Φ = −2π∫_0^{½}Φ(−iu)du + 2πΣ_{β>½} Re∫_0^{β−½}Φ(γ−iu)du.
+- **Attack.**
+  - |ζ|² = χ(1−s)ζ² carries the χ factor, so on the far line the n ≥ 2 terms become Voronoi transforms that blindness
+    does not kill. The only exact |ζ|² identity is the corpus cos-dilation law (Fourier-side blindness, (N1) type), not
+    PBAP blindness.
+  - Second moments keep the diagonal ν̂(0)Σ|c_n|²/n, so the mollified mean-square floor survives blindness
+    (mollifier lane, `mollified-mean-square-floor`).
+  - Jensen with the first-moment identity only bounds off-line horizontal integrals by the pole reserve. That is
+    density-method strength, not RH.
+- **Verdict.** BRIDGE (Mellin–Perron shift). Positive survivor: PBAP-blindness annihilates every Dirichlet series
+  exactly at first order, so all first moments of ζ-type series against blind spectra are pole data. |ζ|²-positivity
+  needs the χ factor and hence Fourier-side blindness.
+
+## Row 276 — C276 doubly-blind Jensen squeeze
+- **Setting.** g = f ⋆_× f̃ blind on both sides (g(n) = ĝ(n) = 0 for n ≥ 2). The corpus law
+  ∫|ζ𝓜f|² = 2πΨ_f(1) combines with the blind Jensen formula (Φ = |𝓜f|², PBAP-blind) via Jensen,
+  E log|ζ|² ≤ log E|ζ|². This gives
+  Σ_{β>½} Re∫_0^{β−½}Φ(γ−iu)du ≤ ∫_0^{½}Φ(−iu)du + (1/4π) log(Ψ_f(1)/‖f‖²)·∫Φ.
+- **Reading.** Under RH every doubly-blind core satisfies Ψ_f(1) ≥ ‖f‖² exp(−4π∫_0^{½}Φ(−iu)du / ∫Φ).
+  An unconditional doubly-blind core violating this would refute RH.
+- **Verdict.** RECEIVER/FALSIFIER, not a producer. The off-line terms Re∫Φ(γ−iu)du have no sign. Recorded as a test
+  for any future doubly-blind construction.
+
+## Row 277 — blind decay and the Carlson edge (rediscovery check)
+- **Observation.** A Lagrange-interpolation bound at nodes of spacing e^{−u} gives
+  |h(u)| ≤ inf_k (M_k/k!)(k e^{−u})^k. Hence:
+  - a blind PD test whose spectrum decays like e^{−a|t|} decays like exp(−(a/e)e^{u});
+  - a band-limited blind test vanishes (Jensen: e^{r} zeros against exponential type);
+  - Blaschke in the strip |Im| < a forces a < π/2, i.e. spectra cannot decay faster than e^{−(π/2)|t|};
+  - Ξ² decays exactly at that rate.
+- **Corpus check.** Already owned, sharper and in Lean: `PrimeBlindCarlsonThreshold` (rate π/2, polynomial and √|t|
+  room, Ξ²·h blind ⟹ h not tempered), `IntegerBlindLogarithmicCarlsonThreshold` / `...Critical` (exact constant
+  K = π/2 under log room), `StripFactorXiDivisibleBlindTest`.
+- **Verdict.** REDISCOVERED. Positive reading for PBAP: under RH the normalised infimum of Q_arch over blind PD tests is
+  approached only by spectra at the Carlson edge (tail ≍ e^{−π|t|/2} times non-tempered multipliers). Low-frequency
+  concentration is forbidden by Carlson, so every PBAP minimising sequence lives at the edge where the NULL face sits.
+
+## Row 278 — Euler–Maclaurin form of PBAP; exact far-kernel threshold
+- **Change of variables.** In w = e^x:
+  Q_arch(h) = A(0)g(1) + 2∫_1^∞ [√w (g(1) − g(w))/(w² − 1) + (w^{−½} + w^{−3/2}) g(w)] dw, with g(w) = h(log w),
+  g(1/w) = g(w), g′(1) = 0.
+- **Trapezoid split.** Euler–Maclaurin on the integers gives
+  - Q_arch = κ·g(1) − 2·(trapezoid error of Φ), with κ = A(0) + 2 + 2Σ_{k≥0}(ζ(3/2 + 2k) − 1) ≈ 0.1723 > 0;
+  - the sampled Weil coefficient at n ≥ 2 is 2n^{−½}(1 − Λ(n) − 1/(n³ − n)), a pole-regularised von Mangoldt
+    (compare DR);
+  - for blind g only the n = 1 sample survives.
+- **Exact threshold.** The far kernel 4cosh(x/2) − 2ω(x) vanishes exactly at e^x = ρ_plastic (w³ = w + 1), so
+  x* = log ρ_plastic ≈ 0.2812 (row 274).
+- **Abel–Plana.** Abel–Plana would turn Q_arch into a vertical-line integral of g against the Planck weight
+  1/(e^{2πy} − 1), with sin(πw) and Planck combining to e^{−πy}. It needs analyticity on Re w ≥ 1, i.e. Carlson-edge
+  tests only.
+- **Verdict.** BRIDGE (a rewriting; the trapezoid error has no sign).
+
+## Row 279 — [L] blindness at log ℕ forces exponential decay (MUST-1444)
+- **Conjecture.** The converse of the Carlson threshold: blindness plus k spectral moments forces physical decay at
+  rate k.
+- **Proof.** The nodes log n, …, log(n+k) near x span at most 2k e^{−x}. The Rolle cascade then gives
+  |f| ≤ sup|f^{(k)}|·(2k)^k e^{−kx}.
+- **[L] `RHTower/BlindLogNodeDecay`** (standard axioms, `lake --old` clean, wired):
+  - `abs_le_of_zeros_of_iteratedDeriv_le` (Rolle cascade);
+  - `abs_le_of_logNat_zero`;
+  - `norm_charFun_le_of_logNat_blind`: ‖φ_μ(x)‖ ≤ 2(∫|t|^k dμ)(2k)^k e^{−k|x|};
+  - `integrable_norm_charFun_mul_exp_of_logNat_blind`: weight e^{a|x|}, any a < k.
+- **Meaning for PBAP.**
+  - The Weil decay class needs no hypothesis for blind tests with one spectral moment.
+  - Blind spectral measures with all moments have characteristic functions decaying faster than every exponential,
+    so their densities are entire.
+  - With Carlson (`PrimeBlindCarlsonThreshold`), blind spectra are squeezed between "entire" and "decay no faster than
+    e^{−π|t|/2}".
+- **Verdict.** BRIDGE/STRUCTURE (new to the corpus, not a producer).
+- **Next.** The sharp Lagrange factor 1/k! would give doubly exponential decay exp(−c·e^{2|x|}) for Gaussian spectral
+  tails, the Riemann–Pólya rate. Mathlib has no Lagrange interpolation error formula; deferred.
+- **Side note (other agent, CANNOT-539).** For conductor q ≥ 9.3 (odd) the archimedean symbol is nonnegative, so
+  PBAP_χ is vacuous. C270 (row 270) is viable only for q = 3, 4, consistent with row 232.
+
+## Row 280 — the blind cone is invariant under integer dilations
+- **Observation.** For k ∈ ℕ, D_k h(x) = h(kx) satisfies D_k h(log n) = h(log nᵏ) = 0. So D_k preserves
+  integer-blindness, prime-power-blindness (p^j ↦ p^{jk}) and PD. The blind PD cone is also closed under Schur
+  products and modulation h·cos(τx).
+- **Energy under dilation.** Q_arch(D_k h) = (1/k)Σ_ρ ĥ(γ_ρ/k) ≈ A(0)h(0) + h(0)(log k + c_h) → +∞, while the pole
+  part → 0. Schur powers h^m → h(0)^m·(narrow bump) also have Q_arch → +∞.
+- **Real dilations.** For real u, Z_h(u) = (1/u)Σ_ρ ĥ(γ_ρ/u) = a_h(u) − P_h(u). The prime part
+  P_h(u) = 2ΣΛ(n)n^{−½}h(u log n) vanishes at every integer u. RH ⟹ a_h(u) ≥ P_h(u) for all u > 0. The Mellin
+  transform in u gives the Cramér–Guinand pair Σγ^{s−1} ↔ ΣΛ(n)n^{−½}(log n)^{−s} (rediscovered).
+- **Verdict.** STRUCTURE. PBAP violations are infrared: dilation and Schur powers push every blind test to positive
+  energy. A violation must live in wide tests, where the off-line depth δ survives, and no semigroup flow reaches
+  them from the positive sector.
+
+## Row 281 — Poisson split of an off-line contribution
+- **Setting.** For a PD test with spectral density ψ, analytic in the strip |Im| < b, an off-line zero at γ − iδ
+  (0 < δ < b) contributes 2Re ψ(γ − iδ).
+- **Split.** The strip Poisson representation separates it into:
+  - a positive average of ψ ≥ 0 over the real line near γ (harmonic measure 1 − δ/b);
+  - a leakage term from the line Im = −b with harmonic weight δ/b, bounded by ∫|h|e^{b|x|}.
+- **Bound on the leakage.** By MUST-1444, ∫|h|e^{b|x|} ≤ C_b(h(0) + M_k) for blind tests with k > b. Violations
+  therefore need leakage, i.e. tests with spatial extent ≳ 1/δ.
+- **Verdict.** RECEIVER (zero-density-type control); no sign for the sum over off-line zeros.
+
+## Row 282 — [L] sharp interpolation and doubly exponential decay of blind tests (MUST-1444 add.)
+- **[L] `RHTower/BlindLogNodeDecay`** (561 lines, standard axioms, `lake --old` clean):
+  - `exists_iteratedDeriv_eq_zero` (generalised Rolle);
+  - `abs_le_div_factorial_mul_prod` (Lagrange bound);
+  - `abs_le_of_logNat_zero_sharp`;
+  - `norm_charFun_le_of_logNat_blind_sharp`;
+  - `norm_charFun_le_doubleExp_of_logNat_blind`.
+- **Structure of the blind cone.** In w = e^{|x|}, blind PD tests behave like sin(πw)·e^{−cw}. The PW_π cardinal
+  candidate h(0)[sinc(y−1) + sinc(y+1)] is blind and in the Weil class, but its log-spectrum oscillates in sign
+  (Γ(it)(2π)^{−it} phase), so it is not PD. Consistent with Carlson, PD forces non-band-limited structure.
+- **Verdict.** STRUCTURE, not a producer.
+
+## Row 283 — C283 low-frequency pole balance: the bad band
+- **Pole reserve on the real line.** With ψ = ĥ, Q_arch = (1/2π)∫ψA + 2ψ(i/2).
+  - Representing ψ(i/2) by harmonic measure in the strip {0 < Im < b} splits it into a real-line part
+    ∫Π₀^{(b)}ψ (Π₀ > 0) plus leakage from Im = b with weight 1/(2b).
+  - The real-line reserve is at most the half-plane Poisson kernel, 2P_{1/2}(t) = 1/(π(t² + ¼)).
+- **Bad band.** The effective symbol A(t) + 2/(t² + ¼) is positive at t = 0 (−5.37 + 8 = 2.63) but negative on
+  roughly 1 ≲ |t| ≲ 6.3 (A(2) ≈ −1.16 against +0.47). No real-line accounting of the pole closes PBAP. This matches the
+  0.156 window shortfall (rows 266, 274).
+- **Blindness against the bad band.** The prime-2 marginal is Haar on the circle t·log 2 mod 2π. The band
+  ±[1, 6.3] maps into an arc that misses (−0.69, 0.69), so at least 1.386/2π ≈ 22% of the spectral mass must lie in
+  t ∈ (−1, 1) + (2π/log 2)ℤ. Each prime adds such an exclusion.
+- **Verdict.** STRUCTURE. By node criticality no finite set of primes can make the relaxed linear program
+  nonnegative (PBAP restricted to S = {2^j} is false unconditionally). The proof must use all primes' marginals
+  jointly; that joint law is the producer target in these terms.
+
+## Row 284 — C284 conductor dominance via a quadratic field
+- **Conjecture.** For imaginary quadratic K of large discriminant, arch_K(t) = A(t) + A_χ(t) + log d ≥ 0 pointwise
+  (log d > 7.6). The only negative source is then the ζ pole. Prove PBAP_K (blind at S_K = {p^k : χ(p^k) ≠ −1}) by
+  pole-versus-chirp-tax (row 274: tax L·e^{L} beats pole e^{L}), and conclude GRH(ζ_K) ⟹ RH.
+- **Attack.**
+  - PBAP_K ⟹ GRH(ζ_K) needs Weil-cone uniqueness for ζ_K. TMP gives it only for the conductor-1 data Γ_ℝ(s).
+  - With arch_K ≥ 0, fake weights are not excluded: CANNOT-539, where the cone is not a point once the symbol is
+    nonnegative. With a pole, w = 0 still fails (odd two-bump tests make the pole −2e^{L} with bounded arch energy),
+    but small fake perturbations of Λ_K are not ruled out.
+  - Chirp-tax domination is heuristic for generic profiles only; near-null-face tests evade it (row 274).
+- **Verdict.** CIRCULAR/BLOCKED: requires a K-version of TMP uniqueness, which large conductor makes false.
+  Lesson: the RH content of PBAP is exactly the conductor-1 deficit (A(0) = −5.37) balanced by the pole. Any route
+  that buys positivity with conductor loses uniqueness.
+
+## Row 285 — first-Gamma-pole absorption: Q_arch with constant A(0) + 4
+- **Identity [P, exact].** Split ω = e^{−x/2} + ω₁ with ω₁(x) = e^{−5x/2}/(1 − e^{−2x}) (Gamma poles λ_k = 2k + ½,
+  k ≥ 1). The λ₀ = ½ term cancels the e^{−x/2} half of the pole term, giving
+  Q_arch(h) = (A(0) + 4)·h(0) + 2∫_0^∞ ω₁(x)(h(0) − h(x))dx + 2∫_0^∞ h(x)e^{x/2}dx, with A(0) + 4 ≈ −1.372.
+  This is the ξ normalisation s(s−1)/2 (Γ pole at s = 0 against ζ pole at s = 1).
+- **Spectral form.** A(t) = A(0) + Σ_k 2t²/(λ_k(λ_k² + t²)): a Stieltjes function of t², so Ã(P) is A(0) plus an
+  operator-monotone function of P².
+- **Window problem in this form.**
+  - The pointwise crossover e^{x/2} = ω₁(x) is again w³ = w + 1 (plastic number, x* = 0.2812, as in row 278).
+  - Relaxation: 0.6038 + 0.4464 = 1.0502 against the needed 1.372 − 0.1656 = 1.2066, the same 0.156 shortfall.
+- **Verdict.** BRIDGE (normal form). The constant −1.372 is the true conductor-1 deficit once the trivial
+  Γ-pole/ζ-pole cancellation is removed.
+
+## Row 286 — chirp tax in the normal form (heuristic threshold)
+- **Estimate.** A blind test with nonpositive far part (−b·sin²(πe^x) bumps of width w at distance L) loses
+  (bw/2)e^{L/2} through the pole term. PD forces compensating spectral mass ≈ (bw/2)e^{L/2} near frequency e^L,
+  which gains about L per unit of ω₁-Lévy energy and costs 1.372 through h(0). Net ≈ (bw/2)e^{L/2}(L − 2.37).
+- **Reading.** Generic sign-changing blind tests satisfy PBAP once the far part sits beyond L ≈ 2.4. Violations
+  under ¬RH must be fine-tuned near-null-face tests (Carlson edge, row 277), not generic chirps.
+- **Verdict.** HEURISTIC (cannot be made rigorous for near-null tests, which is where RH lives).
+
+## Row 287 — positivity-source census against the walls
+- Already dead in the corpus or in this log:
+  - Hodge index, Riemann–Roch, F₁ (wall 5, rows 272, 468);
+  - spectral realisation (wall 12);
+  - maximum principle and transfer operators (wall 13);
+  - Lee–Yang and stability preservers (W1C);
+  - total positivity (row 245);
+  - Herglotz/Bochner (circular duality);
+  - Gibbs/KMS entropy (wall 6);
+  - Néron–Tate heights (needs an arithmetic surface, wall 5);
+  - automorphic L² norms (these see ζ only on the 1-line; Rankin–Selberg gives |ζ|² mean squares, wall 2);
+  - sieve squares (Selberg routes capped);
+  - prime-torus joint laws (JAS, owned: Kakutani threshold ½);
+  - Mehler–Fock arc kernels (owned: TwistedCoshKernel, SymmetricCosh*).
+- Not yet tried, with obstructions noted:
+  - (a) Löwner/operator monotonicity: only the archimedean symbol is operator monotone; the pole is rank 2, and
+    there is no arithmetic operator-monotone object.
+  - (b) Strong subadditivity / operator convexity of entropy: needs a quantum state family whose relative entropy
+    Hessian is the Weil form. Bost–Connes gives this only for β > 1 (wall 6).
+- **Verdict.** No untried positivity source passes the walls. Consistent with the old-loop row 510 conclusion: the
+  open frontier is a new positivity object.
+
+## Row 288 — [L] prime-circle periodization and the null-test / fake-producer dichotomy (MUST-1447)
+- **[L] `RHTower/PrimeCirclePeriodization`** (standard axioms, `lake --old` clean, wired):
+  - `map_phase_eq_of_blind` / `blind_of_map_phase_eq`: blind at every p^j ⟺ the spectral measure pushes forward to
+    Haar on the p-circle;
+  - `integral_periodic_eq_of_blind`;
+  - `integral_nonneg_of_periodization`: pointwise certificates S ≥ ΣP_i(t log p_i) with zero-mean continuous P_i;
+  - `ae_eq_of_periodization_of_integral_eq_zero`: null blind measures saturate every certificate.
+- **C288 (pole-free data, conductor 3).** For odd χ₋₃ the symbol S₃(t) = Re ψ(¾ + it/2) − log(π/3) is negative only
+  on |t| < 2.14 (S₃(0) = −1.132), and L(s, χ₋₃) has no pole.
+  - Hand estimate: the 2-circle alone allows uniform-on-one-period measures with ∫S₃ ≈ −0.017 (barely negative).
+  - Adding P₅ = −c·cos on the 5-circle lifts the mean of the 2-circle minimum to ≈ +0.007 at c ≈ 0.2. A certificate
+    with primes {2, 5} (or a few more) looks feasible.
+  - If so: a Weil-positive weight on finitely many prime powers, so the Weil cone of χ₋₃ is not a point and PBAP_χ₋₃
+    holds without GRH. That would extend CANNOT-539 from q ≥ 9.3 down to q = 3, i.e. every odd χ.
+  - The exact certificate needs numerically designed P_p (blocked by the no-computation rule). Status: [P-heuristic].
+- **Dichotomy [L-abstract].** For pole-free data, a blind null test with full-support spectrum and a certificate with
+  slack cannot coexist. So level-q TMP (C270) succeeds ⟺ no finite-prime fake producer. Margins are thin at q = 3.
+- **For ζ.** Periodization certificates are exactly the real-line dual of blindness. The pole ψ(i/2) is evaluation off
+  the line; its strip-Poisson split leaves the symbol A/2π + 1/cosh(πt), still negative on about [0.6, 6.3]. No
+  periodization certificate can close ζ's PBAP, consistent with MUST-1445 (arch-only cone empty).
+- **Verdict.** STRUCTURE plus a falsifiable conjecture (C288). The RH producer is untouched: ζ's PBAP lives in the
+  pole, which no real-line certificate reaches.
+
+## Row 289 — C289 pole through the shifted line (strip Poisson + complex periodization)
+- **Attempt.** For an even blind PD h with spectral density ψ, analytic and bounded on 0 ≤ Im ≤ 1:
+  - the strip Poisson kernel at the centre gives ψ(i/2) = ∫Π(t)[ψ(t) + ψ(t + i)]dt, with Π(t) = 1/(2cosh πt);
+  - on Im = 1, ψ(·+i) is the transform of h(x)e^{−x}, which is still blind, so its complex spectral measure is
+    equidistributed on every prime circle (MUST-1447 applies to complex measures through Fourier coefficients);
+  - hence Π may be replaced by Π − ΣP_p(t log p) for zero-mean P_p without changing the second integral.
+- **Kill.**
+  - The leakage term is then bounded by ‖Π − ΣP_p∘phase‖_∞·∫|ψ(·+i)|. Π → 0 at infinity, while a mean-zero
+    almost-periodic D recurs, so inf_D ‖Π − D‖_∞ ≥ ‖Π‖_∞ − o(1). Point evaluation off the line cannot be
+    approximated by real-line periodization.
+  - Weighted versions run into ∫|ψ(·+i)| ≤ 2π∫|f|²cosh(2x), the e^{|x|} growth that blindness does not control.
+- **Verdict.** FAILS (structural). The pole is an off-line point evaluation; blindness constrains only Fourier
+  coefficients at log n on every horizontal line. Precisely: blindness fixes the circle marginals on every line
+  Im = y, never a point value.
+
+## Row 290 — pole-weight rigidity at the true weights (observation)
+- **Fact (unconditional, [P]).** At λ = Λ, Ξ²-divisible tests are null: W_Λ(k) = Σ_ρ k̂(γ_ρ) = 0.
+  - Even null test k̂ = Ξ²: pole = 2Ξ(i/2)² = ½ > 0.
+  - Odd null test k̂ = t²Ξ² (F̂ = itΞ, F real and odd): pole = 2F̂(i/2)F̂(−i/2) = 2·(−¼)(¼) = −1/8 < 0.
+  - So W^β_Λ ≥ 0 forces β = 1 from both sides.
+- **The all-λ version.** It needs null tests that are blind:
+  - β < 1 is done (MUST-1445, via twisted-arc joint blindness);
+  - β > 1 needs a blind odd-type null family (pole < 0). The even TMP family cannot give it, since its pole sum is
+    w₀/2 > 0 and κ is rigid. An odd twisted-arc minimum principle (Γ(¾ + it/2) twist) is the natural candidate.
+- **Verdict.** RECEIVER-side rigidity (open item flagged in MUST-1445; another agent's lane). Not pursued further
+  here.
+
+## Row 291 — C291 real-line pole absorption: the symbols θ′ + 1 − Re ζ and θ′ + 2sin²θ
+- **Setting.** Additive form g(y) = ∫u(xy)u(x)dx with Mellin density |𝓜u(½+it)|² (PD); θ is the Riemann–Siegel
+  theta, so A = 2θ′, χ(½+it) = e^{−2iθ(t)} and Z = e^{iθ}ζ(½+it).
+- **Pole via Poisson [P, checked twice].**
+  - pole = 𝓜g(0) + 𝓜g(1) = ĝ(0), and Poisson with g(0) = 0 gives
+    pole = 2g(1) − 2ĝ(1) + 2Σ_{n≥2}g(n) − 2Σ_{k≥2}ĝ(k).
+  - g(1) = (1/2π)∫|𝓜u|².
+  - ĝ(1) = (1/2π)∫|𝓜u|²χ(½+it)dt (Mellin–Parseval, since 𝓜[2cos 2πy](½−it) = χ(½+it)), so
+    ĝ(1) = (1/2π)∫|𝓜u|²cos 2θ.
+- **(i) Prime-blind tests.** Combined with the blind first-moment identity (row 275):
+  Q_arch = (1/π)∫|𝓜u(½+it)|²·[θ′(t) + 1 − Re ζ(½+it)]dt. The pole becomes the real-line function
+  1 − Re ζ(½+it); S(0) = −2.686 + 1 + 1.460 = −0.226 < 0.
+- **(ii) Doubly blind tests (g(n) = ĝ(n) = 0 for n ≥ 2).** Q_arch = (1/π)∫|𝓜u(½+it)|²·Θ(t)dt with
+  Θ = θ′ + 2sin²θ = θ′ + 1 − cos 2θ, a purely archimedean symbol (no ζ). The pole equals
+  ‖u − JCu‖²-type = (2/π)∫|𝓜u|²sin²θ ≥ 0.
+  - Rough values: Θ(0) = −2.686, Θ(0.25) ≈ −1.58, Θ(0.5) ≈ −0.04, Θ(1) ≈ +0.94, Θ(2.5) < 0, Θ(3.5) ≈ −0.29,
+    Θ(5) ≈ +0.08.
+  - So Θ < 0 on about [0, 0.52) ∪ [2, 4.8], where θ ≈ −π and sin²θ is small.
+- **(iii) Consistency.** The corpus law ∫|ζ𝓜u|² = 2πΨ_u(1) for Fourier-blind cores reads, in these normalisations,
+  ∫|𝓜u|²|ζ(½+it)|² = ∫|𝓜u|²cos 2θ.
+- **Open.**
+  - Is PBAP restricted to doubly blind tests RH-equivalent? If yes: RH ⟺ ∫Θ dμ ≥ 0 for all doubly blind spectral
+    measures, a pole-free and ζ-free real-line form (the most archimedean statement of RH in the corpus).
+  - Obstacle: the cone-uniqueness proof (`eq_vonMangoldt_of_weilPositiveFull`) uses the twisted-arc null family,
+    which is prime-blind but not known to be Fourier-blind. The doubly blind dual cone has extra Fourier-side weights
+    b_k (symbols k^{−½}cos(2θ − t log k)); uniqueness needs a doubly blind Ξ-divisible null family.
+  - Existence of nonzero doubly blind PD tests is itself open. They are not T₂/Voronoi (N1) objects: those are
+    Γ_ℝ²/ζ².
+- **Verdict.** BRIDGE plus an open conjecture C291: doubly blind PBAP ⟺ RH. A Θ-form certificate would still be
+  singular (wall 12) if uniqueness holds. The real-line Θ removes the pole obstruction of rows 283 and 289, not the
+  spectral-realisation wall.
+
+## Row 292 — C291 reduced to a Fourier-repair lemma (R291); [L] Poisson pole lemmas
+- **[L] `RHTower/BlindIntegerFareyMoebius`** (added; standard axioms, `lake --old` clean):
+  - `fourier_zero_eq_poisson`: F(0) = 2f(1) − 2F(1) + 2Σ_{n≥2}f(n) − 2Σ_{k≥2}F(k) for even Schwartz f with f(0) = 0;
+  - `fourier_zero_eq_of_blind`;
+  - `fourier_zero_eq_of_doublyBlind`: F(0) = 2f(1) − 2F(1).
+  These are the formal Poisson step of the pole absorption (row 291).
+- **Reduction.** C291 (doubly blind PBAP ⟺ RH) follows from:
+  - R291 (Fourier repair): for every prime-blind PD test u there is a prime-blind Ξ²-divisible PD null test v with
+    ĝ_v(k) = −ĝ_u(k) for all k ≥ 2.
+  - Proof: w = u + v is doubly blind and PD, and Q_arch(v) = Σ_ρ v̂(γ_ρ) = 0 unconditionally (Ξ²-divisible). So
+    Q_arch(u) = Q_arch(w) ≥ 0, giving PBAP and hence RH (corpus).
+  - The same "repair by null tests" pattern as unique repair (`repairedBlindPositive_iff`).
+- **What R291 asks.** The Fourier values of a Ξ²-divisible test with multiplier φ are Voronoi sums:
+  ĝ_v(k) = (1/2π)∫¼(t² + ¼)²|Γ_ℝ(½+it)|²ζ(½+it)²φ(t)k^{−½+it}dt = Σ_m d(m)m^{−½}V_φ(m/k)k^{−½}.
+  - This is because e^{−2iθ}Ξ² = ¼(t² + ¼)²|Γ_ℝ|²ζ(½+it)².
+  - R291 is therefore a positive-cone Voronoi interpolation problem at the integers, the (N1)/T₂ lane
+    (memory n1-voronoi: "no linear relations among integer values", D = 0, which suggests the integer values are
+    free).
+  - Constraint: the multiplier φ must be non-tempered (PrimeBlindCarlsonThreshold), and the null cone must reach
+    both signs.
+- **Verdict.** REDUCED. C291 ⟸ R291. R291 is open and sits in the (N1) Voronoi lane. Payoff if true: RH ⟺ the
+  Gamma-only symbol θ′ + 2sin²θ integrates nonnegatively against doubly blind spectra. That is still a receiver
+  (wall 12 for certificates), but pole-free.
+
+## Row 293 — R291 as pointedness of the null Fourier image; link to the (N1) witness cone
+- **Duality form of C291.** A doubly blind certificate (a, b) gives the symbol
+  S_{a,b} = Θ − Σa_n n^{−½}cos(t log n) − Σb_k k^{−½}cos(2θ − t log k).
+  - Tested on prime-blind Ξ²-divisible null tests v (Q(v) = 0 unconditionally):
+    ∫μ_v S_{a,b} ∝ Σ_k (2 − b_k)ĝ_v(k).
+  - If the null Fourier image N̂ = {(ĝ_v(k))_{k≥2}} is not pointed (no nonzero c with Σc_kĝ_v(k) ≥ 0 on N̂), every
+    certificate has b ≡ 2. Then a = Λ − 1 by corpus cone uniqueness, and doubly blind PBAP ⟹ RH.
+  - So C291 ⟸ (N̂ not pointed), the density form of R291.
+- **Heuristic for non-pointedness.** If N were all prime-blind |Ξ|²φ (φ ≥ 0), a functional nonneg on N̂ needs a
+  twisted polynomial D_c plus an almost-periodic A_a with D_c + A_a ≥ 0 a.e. Both have Cesàro mean 0 (chirps
+  2θ − t log k; Bohr mean of A_a), which forces D_c + A_a ≡ 0 and hence c = 0, given independence of chirps and
+  almost-periodic functions.
+- **Caveat.** N may be small.
+  - TMP rigidity makes arc-generated null families essentially unique.
+  - But the corpus also has the a-twisted family (a ∈ [0, ¼), `TwistedArcFamilyN1Reduction`) and the two-arc witness
+    h₊ (Fourier-blind at m ≥ 1).
+  - Via the (N1) ⟺ Ξ-divisible-blind correspondence (`WeilConeXiDivisibleBlindTest`), N is at least
+    multi-dimensional.
+  - R291 is a statement about the size of the (N1) witness cone: do its null tests' Fourier values fill
+    sequence space?
+- **Verdict.** OPEN, reduced to the (N1) lane. C291 ⟺? non-pointedness of N̂; only ⟸ is shown. Next: compute the
+  Fourier values of the corpus a-family null tests and test for a common sign functional.
+
+## Row 294 — [L] doubly blind cores: pole = ‖f − JCf‖², mean-zero doubly blind cores vanish
+- **[L] `RHTower/DoublyBlindCorePoleDistance`** (standard axioms, `lake --old` clean, wired):
+  - `cosDilationKernel_zero_eq_integral_sq_sub_inverted`: Ψ_f(0) = ∫_0^∞ (f − JCf)²;
+  - `cosDilationKernel_zero_nonneg_of_doublyBlind`;
+  - `eq_zero_of_doublyBlind_of_cosDilationKernel_zero` and `eq_zero_of_doublyBlind_of_integral_eq_zero`;
+  - supporting lemmas: half-line Plancherel `integral_Ioi_halfLineCosTransform_sq`, inversion unitarity
+    `integral_Ioi_invertedCosTransform_sq`, periodization at the origin
+    `two_mul_dilationAutocorr_one_eq_of_doublyBlind`.
+- **Meaning.**
+  - JC is the Mellin multiplier e^{−2iθ(t)} on L²(0, ∞) (corrected in row 295; it is unitary but not an
+    involution).
+  - For doubly blind tests the pole term is exactly the squared distance from that self-dual subspace, the formal
+    compact-core form of "pole = (2/π)∫|𝓜u|²sin²θ" (row 291).
+  - The corpus result (`CosDilationKernelPositivityRigidity`) needs Ψ_f(n) = 0 for all n ≥ 1. Here PBAP-blindness
+    replaces the n = 1 condition and the conclusion is sharper: the pole cannot vanish.
+- **Consequence for C291.** Doubly blind PBAP has no pole-vanishing sector; its energy is arch(f) + ‖f − JCf‖².
+  RH content would sit in how close doubly blind tests can come to JC-self-duality while keeping arch(f) < 0.
+- **Verdict.** STRUCTURE (new rigidity theorem, formal). Producer status unchanged; C291 / R291 still open.
+
+## Row 295 — JC is the Riemann–Siegel phase operator; correction and reading
+- **Computation.**
+  - 𝓜[JCf](s) = 𝓜[Cf](1 − s) = (Γ_ℝ(1−s)/Γ_ℝ(s))𝓜f(s), i.e. JC = multiplication by e^{−2iθ(t)} on the critical line
+    (corpus local FE `Gammaℝ_mul_mellin_halfLineCosTransform`).
+  - So JC is linear and unitary, with (JC)² = e^{−4iθ} ≠ I.
+  - Hence ‖f − JCf‖² = (1/2π)∫|𝓜f|²|1 − e^{−2iθ}|² = (2/π)∫|𝓜f|²sin²θ, matching row 291 by a second route.
+  - JCf = f ⟹ f = 0 for every L² f (e^{−2iθ} ≠ 1 a.e.). The Lean rigidity of row 294 is the compact-core shadow
+    of this, proved there without Mellin calculus.
+- **Correction.** The ± decomposition f = f₊ + f₋ that I sketched is void, since JC is not an involution. Row 294's
+  "involution" wording has been fixed.
+- **Reading.** With U = e^{−2iθ(D)}, the doubly blind energy symbol is Θ = θ′ + (1 − Re U):
+  - θ′ is the Gamma part of the Wigner time delay of the scattering phase 2θ;
+  - 1 − Re U is the phase defect.
+  - C291 is a constrained positivity of "time delay + phase defect". The Levinson/trace-formula reading of the
+    explicit formula is wall 12 (spectral realisation).
+- **Verdict.** BRIDGE plus correction. C291 / R291 unchanged.
+
+## Row 296 — commutative multiplier picture; Fourier blindness as virtual nodes at log(e^{−A(0)}k)
+- **Multiplier picture.** On the critical line every operator in play is a multiplier in the Mellin frequency t:
+  - dilations D_n ↦ n^{−it};
+  - JC = U = e^{−2iθ(t)};
+  - the archimedean symbol 2θ′.
+  So PBAP and its doubly blind form are linear programs over positive spectral densities ψ. The only
+  non-multiplier, the pole (an off-line point evaluation), is converted by Poisson into ∫ψ(1 − Re U) plus twisted
+  moments ∫ψUk^{it}. No non-commutative structure is available to produce positivity; the dual remains the zero
+  measure (wall 12).
+- **Virtual nodes.** Near t = 0, 2θ(t) ≈ A(0)t with A(0) = ψ(¼) − log π = −5.3722, so
+  U k^{it} ≈ (e^{−A(0)}k)^{it} = (215.3·k)^{it}.
+  - At low frequency, Fourier blindness at k acts like prime-blindness at the virtual nodes log(215.3k).
+  - The constant e^{−A(0)} = 215.3 is exactly the even-character conductor threshold of CANNOT-539
+    (A(0) + log q ≥ 0 ⟺ q ≥ 215.3).
+  - So the second blindness family is the first family dilated by the critical conductor. Doubly blind PBAP is
+    PBAP with an extra node set log ℕ + 5.372 at low frequency.
+- **Verdict.** BRIDGE/numerology with content. It explains why the deficit −5.372 and the conductor 215.3 are
+  the same number on both sides of the Poisson duality. No producer.
+
+## Row 297 — heuristic verdict on C291: probably not RH-equivalent
+- **Argument by analogy with row 269.** Adding blindness at nodes outside log(prime powers) shrinks the test cone
+  and fattens the dual cone.
+  - Row 269: PBAP with extra nodes E ⊃ log ℕ is non-RH because the TMP null family is not blind at E, so cone
+    uniqueness fails.
+  - By row 296, doubly blind PBAP is PBAP with extra virtual nodes log(215.3k) at low frequency (exact form: twisted
+    characters U·k^{it}).
+  - The twisted-arc null family is not Fourier-blind (no corpus statement says so; the (N1) witnesses are
+    Fourier-blind but mean-zero, and the Ξ-divisible family is prime-blind).
+  - So the uniqueness step of C291 has no null family to run on. The Fourier-side weights b_k of a doubly blind
+    certificate are unconstrained by the available null tests.
+- **What would settle it.**
+  - A finite twisted-plus-plain certificate Θ − Σa_n n^{−½}cos(t log n) − Σb_k k^{−½}cos(2θ − t log k) ≥ 0 would make
+    doubly blind PBAP unconditional (C291 false). Hand check: a single low-k twisted term lifting Θ(0) = −2.69
+    overshoots near t ≈ 0.58, so plain terms must rebalance; this is a linear program (numerics).
+  - Conversely, a doubly blind Ξ²-divisible null family would make C291 true (row 293).
+- **Verdict.** C291 PROBABLY FALSE (heuristic). The pole-free Θ-form is then a weaker, non-RH statement. Its value
+  is as a structural law (rows 291, 294–296), not as a route.
+
+## Row 298 — [L] single-node Weil-positive weights for odd conductor q ≥ 7 (C288, partly settled)
+- **[L] `RHTower/OddDirichletSingleNodeFakeProducer`** (standard axioms, `lake --old` clean, wired):
+  - `re_digamma_add_mul_I_sub_ge`: first-Gauss-term growth of Re ψ on vertical lines;
+  - `oddDirichletSingleNodeSymbol_nonneg_of_bounds`;
+  - `oddDirichletSingleNodeSymbol_nonneg_two` (q ≥ 7, node 2);
+  - `oddDirichletSingleNodeSymbol_nonneg_eight_three` (q = 8, node 3);
+  - `integral_oddDirichletSingleNode_nonneg`.
+- **Content.** For odd data with conductor q ≥ 7, a single cosine at log 2 with coefficient c_q ≤ ½ lifts the
+  archimedean symbol to pointwise nonnegativity.
+  - The odd Weil cone therefore contains a weight supported on {2}, far from Λχ, so PBAP_χ is unconditional and
+    vacuous.
+  - This is C288's dichotomy settled on the fake-producer side for q ≥ 7, with no numerics: it is an analytic
+    certificate whose constants are checked by `linarith`.
+- **Boundary.**
+  - q = 3 (c = 1.132) and q = 4 (c = 0.844) are beyond the first-term method, since 16τ²/(27 + 12τ²) < 4/3 < 2c.
+  - q = 5 needs the second Gauss term.
+  - Whether the cone at q = 3, 4 is a point (a level-3/4 analogue of TMP) remains open (C270).
+- **Lesson for RH.** Single-node certificates exist exactly while the deficit is small and there is no pole.
+  - ζ's deficit 5.37 is about 7× beyond the single-node regime, and its pole makes the cone rigid.
+  - The HF uniqueness is a large-deficit phenomenon. Conductors 3 and 4 are the interesting intermediate cases.
+- **Verdict.** CANNOT (new, formal); structure for the HF route, not a producer.
+
+## Row 299 — C299 deforming the data from the fat side (KILLED)
+- **Conjecture.** Deform the archimedean data D(q, m) (conductor q, pole mass m) from a fat cone (q ≥ 216, zero weight
+  admissible) to ζ = D(1, 1), keeping bounded certificates. The weak limit would lie in the ζ cone ⊆ {Λ}, giving RH.
+- **Kill.** Λ ∈ cone(q, 1) ⟺ RH for every q ≥ 1.
+  - Adding log q·‖u‖² is a bounded perturbation, while an off-line zero gives tests with Z(u)/‖u‖² → −∞ (cosh
+    multipliers of type λ, growth e^{2λδ}).
+  - Fake certificates in cone(q, 1) for q > 1 carry no information about Λ.
+  - Continuation therefore needs unbounded weights, which defeats compactness. Verdict: CIRCULAR.
+- **Correction found on the way.** The pole energy is P(h) = ⟨h, e^{x/2}⟩·⟨h, e^{−x/2}⟩ (Lévy–pole form,
+  `RHTower.NonnegativeCone.poleEnergy`): a product of two functionals, with signature (1,1).
+  - It is not positive semidefinite, so cones are not monotone in the pole mass m.
+  - The earlier picture "the pole only helps" holds only on the nonnegative cone (both factors > 0).
+
+## Row 300 — where an off-line zero must show up on blind tests [P]
+- **Arch floor.** For every test, arch(u) ≥ A(0)‖u‖² = −5.37‖u‖², since the symbol is minimal at t = 0.
+  - So a prime-blind test with F(u) = Z(u) ≪ −‖u‖² must have pole P(u) ≪ 0.
+  - Detecting an off-line zero of depth δ with type-λ multipliers needs P ≈ −e^{2λδ}‖u‖².
+- **Positive statement [P].** PBAP fails only through exponentially negative pole energy:
+  P(u) = ab with a = 𝓜u(1) and b = 𝓜u(0) of opposite signs and both large. That needs mass at both ends ±L of the
+  support with opposite signs.
+- **Tradeoff [heuristic].** Blindness of the cross-correlation at the dense nodes log n ≈ 2L (spacing e^{−2L}) forces
+  either:
+  - smooth end pieces with ∫c₊₋ ≈ 0, which kills ab; or
+  - frequency ≳ e^{2L} in the end pieces, which costs arch ≈ 2L per unit mass and shrinks |∫h e^{±x/2}|.
+  - For bump pairs the pole/arch ratio is ≈ e^{−X}/X → 0.
+  - PBAP is exactly the statement that this tradeoff never loses. Its quantitative weakening "P ≥ −C e^{θL}(arch + c)"
+    is a zero-free strip Re ρ < ½ + θ/2 (quasi-RH-hard; consistent with CANNOT-517).
+- **Doubly blind tests.** Their pole is ‖f − JCf‖² ≥ 0 (MUST-1449), hence F ≥ −5.37‖u‖².
+  - They cannot carry the exponential signal; an off-line zero is visible to them only with bounded strength.
+  - This does not refute C291 (a bounded negative value suffices), but it locates C291's content in "mild"
+    detection only.
+
+## Row 301 — blind spectral measures are spread [P]
+- **Not band-limited.** A prime-blind finite measure μ is atomless: its pushforward to each prime circle is Haar
+  (MUST-1447). It is also not band-limited: if μ had compact support, μ̂ would be entire of exponential type with
+  ≫ e^R/R zeros in [0, R], so μ̂ ≡ 0.
+- **One-prime arch floor.** Blindness at the powers of 2 alone gives ∫A dμ ≥ μ(ℝ)·(1/T₂)∫_{−T₂/2}^{T₂/2}A.
+  - Here T₂ = 2π/log 2, using the coset minimum and the evenness and monotonicity of A in |t|.
+  - The value is about −1.5 per unit mass, against −5.37 pointwise.
+  - The window indicator of length log 2 has arch ≈ −1.15 per unit mass [estimate]. So the arch alone stays negative on
+    blind tests, and the pole is indispensable even on windows (Yoshida-type positivity uses it).
+- **Verdict.** Structure only; the constants are estimates and were not formalized (no numerics).
+
+## Row 302 — the conductor-bound reading of window positivity [P]
+- **Reading.** For pole-free data (parity ε, conductor q), every window test (log-support < log 2) is blind at every
+  n ≥ 2. Hence nonempty cone ⟹ arch_{ε,q} ≥ 0 on windows. That is exactly the explicit-formula (Odlyzko–Mestre)
+  lower bound for the conductor.
+- **Estimates** (indicator window, odd data). arch_{odd,1} ≈ −1.04 per unit mass < log 3 = 1.099.
+  - So χ₋₃ sits just above the odd window threshold, and is the minimal-conductor case.
+  - Even pole-free conductor-1 data has negative window energy (≈ −1.15). ζ's window positivity exists only through
+    the pole.
+- **Picture for HF.**
+  - Large conductors: fat cones (CANNOT-539/540).
+  - Near the window threshold: thin cones (conductor 3: no single node, row 303).
+  - ζ: the pole carries window positivity and makes the cone a point.
+- **Conjecture C302 (open).** The odd conductor-3 cone (χ₋₃) contains no finitely supported weight.
+  - True ⟹ χ₋₃ is the first pole-free candidate for an HF-type rigidity, needing a Γ₀(3)-analogue of TMP.
+  - False ⟹ a finite fake exists.
+
+## Row 303 — [L] single-node threshold for odd data lies in (3, 5] (CANNOT-541, MUST-1451)
+- **[L] `RHTower/OddDirichletSingleNodeConductorThreshold`** (standard axioms, `lake --old` exit 0, wired):
+  - `hasSum_re_digamma_vertical_sub`: the exact vertical Gauss expansion;
+  - `sum_range_le_re_digamma_vertical_sub`: finite lower bounds;
+  - `re_digamma_vertical_sub_le`: three terms plus a telescoped tail;
+  - `oddDirichletSingleNodeSymbol_nonneg_two_of_five_le`: q ≥ 5, node 2;
+  - `not_forall_oddConductorThree_singleNodeSymbol_nonneg`: q = 3, no single node at any m ≥ 2 with any weight;
+  - constants `eulerMascheroniConstant_lt_harmonic_sixteen`, `log_five_ge`, `oddDeficit_three_ge`.
+- **Content.** Single-node fakes exist for every odd conductor ≥ 5 and for no odd data at conductor 3.
+  - Conductor 4 (c₄ ≈ 0.844) is undecided by these bounds. Expected feasible at node 2: margin ≈ 0.04 at y ≈ 2 with
+    4–8 Gauss terms and the sixth-order cosine bound.
+- **Link to row 302.** Conductor 3 is the minimal odd conductor and sits just above the odd window threshold. Its
+  cone is the thinnest among actual odd characters.
+  - The next question is C302: does the χ₋₃ cone contain any finite weight?
+  - Two-node trials {2,3} and {2,4} fail on paper (row 302 estimates). A general finite-node obstruction would need a
+    blind measure with negative S₃-energy beyond windows.
+- **Verdict.** MUST/CANNOT (new, formal). Structure for the HF route (which conductors can carry an HF-type
+  rigidity); not an RH producer.
+
+## Row 304 — corpus audit of rows 299–302 (rediscoveries noted)
+- **Already in the corpus**, so rows 299–302 overlap and nothing more is claimed for them:
+  - the pole hyperbolic plane (PBAP ⟺ Arch + 2(∫f cosh)² ≥ 2(∫f sinh)², ULF lane);
+  - "Weil-cone rigidity is a pole phenomenon" (MUST-1442 addendum);
+  - the pole-weight family β (MUST-1445/1446, C190);
+  - blind spectra at the Carlson edge, stronger than my row-301 "not band-limited"
+    (`PrimeBlindCarlsonThreshold`, `IntegerBlindLogarithmicCarlsonCritical`, critical K = π/2);
+  - "finite level is free, rigidity is compactness at infinity".
+- **Also rediscovered: finite-level compactness.** Let C_L be the set of weights on nodes ≤ e^L that make the Weil
+  form PSD on tests of support ≤ L. Then RH ⟺ C_L ≠ ∅ for every L. Proof: compact nested projections give a
+  consistent weight in the full cone, hence Λ by uniqueness. This is exact but constructs nothing (Nyquist wall).
+- **Lesson.** Grep the memory hubs (pole-weight-rigidity-srp, relaxed-producer-abscissa) before any pole/cone
+  cycle.
+
+## Row 305 — C193 (shifted TMP) in potential language; one-dimensional maximum-principle reduction [P]
+- **Dictionary.** Write f(u) = 4Σ a_i K₀(k_i√(1−u²))cos(k_i u), the arc trace of the axisymmetric harmonic function
+  Φ(x,y) = Σ a_i K₀(k_i y)cos(k_i x) in ℝ³ (axis = x-axis, y = distance to the axis). Then:
+  - twisted moments: F/√y = 𝔐²f with 𝔐 the spherical Legendre operator;
+  - on harmonic Φ, 𝔐 = −E(E+1) with E = r∂_r, and E(E+1) + λ₀ = (E+½−α)(E+½+α), α = √(¼ − λ₀);
+  - so C193 is the TMP for Φ' = −(E+½−α)(E+½+α)E²(E+1)²Φ.
+- **Where the proof breaks.** E is the dilation about 0. The wall x = ½ is the mirror exchanging the arcs |z| = 1 and
+  |z−1| = 1. The stream function of the shifted data equals −yψ_xy(½,y) on that wall (computed from ψ = ψ_y =
+  ψ_xx = 0 there), not 0. This matches the recorded obstruction.
+- **Reduction [P].** Suppose (𝔐 − λ₀)F ≥ δ > 0 on [0,½], with F even and λ₀ > 0.
+  - An interior maximum u* of F has 𝔐F(u*) ≤ 0, so F(u*) ≤ −δ/λ₀ < 0. Then −F > 0 on the whole arc,
+    contradicting the TMP (applied to −F).
+  - Hence F attains its maximum on [0,½] only at u = ½, with F(½) ≥ 0 and F′(½⁻) ≥ 0.
+  - So C193 ⟺ excluding the corner configuration "strict maximum of F at the corner ρ". This agrees with and
+    sharpens the recorded corner-local bad case.
+  - Not formalized: `twArcMoment` has no u-derivatives in Lean yet.
+- **Odd sector [P].** All s = ½ point vectors |x − z|⁻¹ with |z| = 1 are self-reciprocal. Odd-sector vectors arise
+  only from mirror pairs v_z − |z|⁻¹v_{1/z̄} off the arc. At the arc they become radial dipoles, whose moments are
+  E Φ on the arc, i.e. odd polynomials in (E + ½), since E + ½ anticommutes with the Kelvin inversion. The operator
+  trick (𝔐 − λ₀), even in (E+½), mixes the sectors: (τ² + α²)H = |τQ|² + α²|Q|².
+- **Verdict.** C193 remains open; the reduction is exact. This is a route decision (SRP), not a producer.
+
+## Row 306 — WindowPositive by pointwise relaxation fails [P]
+- **Setting.** For h ≥ 0 on a window of length ℓ = log 2, with c = h⋆h̃:
+  E ≥ c(0)(A(0) + 2Ω(ℓ)) + 2∫₀^ℓ[ω(c(0) − c) + 2c cosh(x/2)].
+- **Pointwise (box) minimisation over c(x) ∈ [0, c(0)].** The minimiser is c = c(0)·1_{[0,x₀]} with x₀ = log(plastic
+  number), and the bound is c(0)(A(0) + 2Ω(x₀) + 8 sinh(x₀/2)) ≈ c(0)(−5.37 + 4.09 + 1.13) = −0.15·c(0).
+- **Subadditivity.** D(x) = ‖h − h_x‖ is subadditive, which forces c(x) ≤ (1 − ⌈ℓ/x⌉⁻²)c(0). This recovers only
+  ≈ 0.003.
+- **Conclusion.** The positive-definiteness structure (not just pointwise bounds) carries the 0.15 margin, so
+  WindowPositive needs a spectral certificate (numeric-design type; blocked under the no-computation rule).
+- **Verdict.** FAILED analytic route; recorded.
+
+## Row 307 — [L] Fourier-integer-blind cores have support ratio ≥ 3/2 (MUST-1454)
+- **[L] `RHTower/CosDilationBlindSesquiSupportVanishing`.** Theorem
+  `eq_zero_of_cosDilationKernel_blind_of_lt_three_halves_mul`: Ψ_f(n) = 0 for all n ≥ 2 and β < 3α/2 ⟹ f = 0. The
+  corpus short-core theorem needed Ψ_f(0) = 0, i.e. mean zero; this removes that hypothesis below ratio 3/2.
+- **Mechanism.** The Poisson periodization of A_f is a trigonometric polynomial of degree 1. Below ratio 3/2 it has a
+  gap interval (R−1, 2−R) around ½ where every translate |x+k| leaves supp A_f, which forces Ψ_f(0) = Ψ_f(1) = 0.
+- **For C291.** Doubly blind compact cores, if any exist, have support ratio ≥ 3/2.
+- **Open conjecture C307.** None exist below ratio 2.
+  - Degrees-of-freedom heuristic: constraints ≈ Bβ vs freedom ≈ 2B(β−α), so the problem is overdetermined for β < 2α.
+  - With Ψ_f(0) free the two periodization nodes x = 0 and x = ½ give Ψ_f(0) = A_f(1) + A_f(3/2) ≥ (7/12)A_f(1). This
+    is consistent, not contradictory, so C307 needs the full Mayer-type functional equation on [1/R, 1].
+- **Insight [P].** Compactly supported even G with Ĝ(n) = 0 for every |n| ≥ 2 are exactly G = K⋆m.
+  - Here K = 2cos²(πx)·1_{[−½,½]} is the Hann window and m is an even distribution supported in |x| ≤ R − ½.
+  - Reason: Ĝ = [sinc(ξ)/(1−ξ²)]·m̂ by Paley–Wiener–Schwartz, and sinc/(1−ξ²) is the transform of the Hann window,
+    which tiles to 1 + cos 2πx.
+  - For doubly blind cores, the pole Ψ_f(0) equals the mass of m and Ψ_f(1) = ½ m̂(1).
+- **Verdict.** MUST (new, small); structure for the C291 lane, not a producer.
+
+## Row 308 — C307 up to the golden ratio [P]: Fourier-integer-blind cores of ratio R < φ = (1+√5)/2 vanish
+- **Farey transfer form.** For R = β/α < 2, B := A_f|_{[½,1]} (zero below 1/R) satisfies on (½, 1)
+  B(u) + B(φ₁u)/(2−u) + B(φ₂u)/(1+u) = c(u) := Ψ_f(0) + 2Ψ_f(1)cos 2πu, with φ₁u = 1/(2−u) and φ₂u = 1/(1+u).
+  These are the inverse branches of a Farey-type map with a parabolic fixed point at 1; the weights are |φ_j′|^{1/2}
+  (a transfer operator at s = ½).
+- **Region II** (u > R−1, which holds on (1/R, 1) iff R < φ, since R/(R+1) < 1/R). The φ₂-term vanishes. In
+  v = 1/(1−u) the map φ₁ is v ↦ v+1, and B(t) = v·F(v), where F(w) := Σ_{i≥0}(−1)^i g(w+i) and
+  g(x) = c(1 − 1/x)/x. This uses B continuous at 1.
+- **Region I** (u ∈ (R−1, 1/R), nonempty iff R < φ). B(u) = 0 and the φ₂-term is 0, so B(φ₁u) = (2−u)c(u).
+  Comparing with Region II on φ₁((R−1, 1/R)) gives, via F(w) + F(w+1) = g(w):
+  F(w) = 0 for all w ∈ (1/(2−R), R/(R−1)), which is a nonempty interval inside [2, ∞) when 3/2 ≤ R < φ.
+- **Conclusion.**
+  - F extends analytically to Re w > 0, so F ≡ 0.
+  - Euler–Boole summation gives F(w) = ½g(w) − ¼g′(w) + … with g(x) = (Ψ₀ + 2Ψ₁)/x − 4π²Ψ₁/x³ + …. Hence
+    Ψ₀ + 2Ψ₁ = 0.
+  - Then g(x) = −4Ψ₁ sin²(π/x)/x, with positive decreasing terms for x ≥ 2, so the alternating sum is nonzero
+    unless Ψ₁ = 0.
+  - So Ψ_f(0) = Ψ_f(1) = 0, and the short-core theorem gives f = 0.
+- **Status.** [P] for 3/2 ≤ R < φ, which together with the formal R < 3/2 case gives the range R < φ. Not formalized:
+  the analytic-continuation step and the asymptotics are heavy. A finite alternative is a Wronskian or monotonicity
+  bound for σ/β, where β(w) = Σ(−1)^i/(w+i) = ∫₀¹x^{w−1}/(1+x)dx and σ(w) = Σ(−1)^i sin²(π/(w+i))/(w+i).
+- **Beyond φ.** φ₂ enters Region II. The Farey picture suggests the method extends by induction along the
+  Stern–Brocot/Farey tree up to R = 2, which is the degrees-of-freedom threshold.
+- **Verdict.** Structure (C291 lane). The golden ratio threshold is new; the transfer-operator form links doubly
+  blind cores to the Farey map at s = ½.
+
+## Row 309 — [L] the golden-ratio threshold is formal (MUST-1455)
+- **[L] `RHTower/CosDilationBlindGoldenSupportVanishing`** (611 lines; standard axioms; `lake --old` exit 0;
+  wired). Row 308's paper proof is now a Lean theorem, `eq_zero_of_cosDilationKernel_blind_of_golden`.
+  - It uses no asymptotics: after the identity theorem, the recursion at v = 2 and v = 4 gives Ψ_f(0) = 0
+    directly.
+- **Reusable pieces.**
+  - `dilationAutocorr_farey_recursion` (the transfer recursion);
+  - `altHarmonicR_add_one`, `altCosDefectR_add_one` (functional equations);
+  - `norm_cos_sub_one_le` (complex cosine bound on |x| ≤ 4π);
+  - holomorphy of the two alternating series on Re z > ½.
+- **Next.**
+  - Beyond φ the second Farey branch enters Region II; the Stern–Brocot induction toward ratio 2 is C307.
+  - Existence of doubly blind cores at ratio ≥ 2 decides whether C291 means anything on compact tests.
+- **Verdict.** MUST (new, formal). It belongs to the HF/C291 structure lane, not to a producer.
+
+## Row 310 — the next Farey level: blind cores vanish below ratio 5/3 [P]; structure of C307
+- **Two-branch equation [P].** For R < 2 and every v ≥ 2 (periodization at x = 1 − 1/v; the translates
+  k = 0, −2, 1 survive):
+  H(v) + H(v+1) + H(τv)/(v−1) = g(v), with τv = 2 + 1/(v−1) and g(v) = (Ψ₀ + 2Ψ₁cos(2π/v))/v.
+  - τ is the Gauss branch; its fixed point is φ² = (3+√5)/2. H = 0 on [2, w₂] with w₂ = R/(R−1).
+  - The branch term vanishes for v ≥ v* := 1/(2−R), so H = F (the explicit decaying series) on [v*, ∞).
+- **Level two (φ ≤ R < 5/3) [P].**
+  - Since v* ≤ 3, for v ∈ [2, w₂] the equation gives H(τv) = (v−1)F(v).
+  - Where τv ≥ v* (a nondegenerate interval since R < 5/3), this yields the Lewis-type identity
+    (v−1)F(v) = F(2 + 1/(v−1)). Both sides are holomorphic on Re v > 1, so the identity holds for all v > 1.
+  - Letting v → ∞ (vP(v) → ½, vE(v) → 0) gives F(2) = a/2. At v = 2 it gives F(2) = F(3), and with
+    F(2) + F(3) = g(2) this yields b = −a/2.
+  - Then F = a·Σ(−1)^i k(v+i) with k(x) = (3 − cos(2π/x))/(2x), which is positive and decreasing on [2, ∞), so F
+    has the sign of a. At the fixed point φ² the identity forces F(φ²) = 0, hence a = b = 0 and f = 0.
+- **Structure of C307.**
+  - Each further level of the Stern–Brocot/Farey tree adds one Lewis-type identity of the three-term period
+    equation H + T₁H + T₂H = g.
+  - C307 (ratio 2) amounts to showing that a bounded decaying solution vanishing on [2, w₂] must coincide with the
+    one-branch solution. That is a uniqueness statement for Lewis–Zagier-type period functions at s = ½.
+- **Corpus relevance.** The TMP (N1) witness is itself an integer-Fourier-blind (Ψ-blind) PD kernel of decay class,
+  i.e. a noncompact blind core. The compact case is rigid below ratio 5/3 (and conjecturally below 2), which is
+  consistent with the (N1) producer being necessarily noncompact.
+- **Status.** [P] for ratio 5/3, not formalized (incremental over row 309). C307 remains open.
+- **Verdict.** Structure; not producer-relevant beyond the (N1) noncompactness picture.
+
+## Row 311 — [L] the 5/3 Farey level is formal (MUST-1456); correction to row 310
+- **[L] `RHTower/CosDilationBlindFiveThirdsSupportVanishing`.** Row 310's paper proof is now in Lean.
+  - The golden module was refactored to expose the decaying-series solution, uniqueness of decaying solutions, the
+    profile identification and the identity-theorem-on-a-real-interval lemma.
+- **Correction to row 310.** The TMP witness h is Fourier-side blind only: 𝓕h(N) = 0, inversion law, PD log profile.
+  It is not known to vanish at the integers, so it is not known to be doubly blind.
+  - The claim that C291 is non-vacuous via (N1) is withdrawn; the card was corrected.
+  - Precise mechanism (corpus `TwistedArcMomentPositiveRH`): the archimedean shadow h, with 𝓜h ↔ |G|²R, is
+    Fourier-blind exactly when the null kernel ξ²R is integer-blind. Fourier-side blindness of ξ²R is the separate
+    ζ²/Voronoi condition R291.
+- **Verdict.** MUST (new, formal). Blind-core structure; still not a producer.
+
+## Row 312 — Wall 13 test on arc vectors (KILLED quickly); the Gauss–Farey equation is Lewis's equation for E(z, ½) [P]
+- **C312 (Wall 13 via arc energies).** Hoped: E(g_u) ≥ 0 for every arc vector, so superpositions would inherit a
+  sign.
+  - Kill: arc superpositions h = ∫g_u dμ are Fourier-blind archimedean shadows. The prime-blind objects they produce
+    are the null kernels ξ²R, which have E = 0 because K̂ carries the factor ζ(½+it)².
+  - Any kernel whose spectrum carries a ζ factor is null. A kernel that detects zeros cannot come from this mechanism.
+    This is Wall 12 in concrete form.
+  - Variant with |L(½+it,χ)|² in place of |ζ|²: the kernel is null for L(χ), but its ζ-energy is Σ over ζ-zeros,
+    with no unconditional sign. Verdict: CIRCULAR.
+- **Insight [P].** The homogeneous Gauss–Farey equation h(v) + h(v+1) + h(2 + 1/(v−1))/(v−1) = 0 (rows 309–311) is
+  the Lewis–Zagier three-term period equation at s = ½, written in Farey coordinates.
+  - At λ = ¼ there are no cusp forms for SL₂(ℤ) (λ₁ ≈ 91.1). The candidate solutions come from the Eisenstein series
+    E(z, ½) = 2√y + c√y Σ_n d(n)K₀(2πny)cos 2πnx.
+  - Its nonconstant modes are exactly the twisted arc Whittaker modes of the TMP.
+  - So existence or non-existence of compact Fourier-blind cores above ratio 2 (C307 and its converse) is governed by
+    the period function of E(z, ½), whose coefficients are the divisor function d(n), i.e. ζ².
+  - This ties the blind-core lane, the TMP arc and R291 (the ζ²/Voronoi condition) to one object.
+- **Verdict.** Structure. Next possible target: the period function of E(z, ½) as the obstruction or generator of
+  compact Fourier-blind cores at ratio ≥ 2.
+
+## Row 313 — C313 (no compact Fourier-blind cores at any ratio): linearization and the Heisenberg-uniqueness view [P]
+- **Linearization.** The rigidity proofs of rows 307–311 use the core f only at the very last step (A(1) = ‖f‖²).
+  - Everything before that is linear in G := A_f(|x|): continuity, support in [1/R, R], the inversion law
+    G(1/x) = |x|G(x), and Fourier-blindness Ĝ(n) = 0 for |n| ≥ 2.
+  - Linear C313: is there a nonzero continuous inversion-symmetric G, compactly supported away from 0, with Ĝ(n) = 0
+    for all |n| ≥ 2? For R < φ the Farey argument gives no (with g = 0 the regions [2, w₂] and [v*, ∞) cover
+    [2, ∞)); PD is not needed.
+  - Degree-of-freedom count for the linear problem: free data G|_{[1/R,1]} against periodization constraints on
+    [0, ½], so it is overdetermined below R = 2 and underdetermined above.
+- **Heisenberg-uniqueness view.** By inversion, ∫G(x)e^{2πinx}dx = ∫G(t)e^{2πin/t}dt/|t|. So the condition is the
+  lattice-cross annihilation problem on the hyperbola (Hedenmalm–Montes-Rodríguez), with weights 1 and 1/|t| tied
+  by the symmetry, parameters αβ = 4 > 1 (non-uniqueness regime), exceptions n = 0, ±1, and compact support.
+  - The relevant transfer operator is the Gauss-type map at s = ½, consistent with row 312 (Lewis equation for
+    E(z, ½)).
+- **RH relevance (recorded, not new).** Zeros of ζ(2s) are eigenvalue-±1 points of Mayer's L_s (Z(s) = det(1 − L_s²)),
+  so RH ⟺ no such points with ¼ < Re s < ½ off the Maass spectrum. This is a complex-s spectral statement where
+  transfer-operator positivity (real s) does not reach: Wall 13 again.
+- **Status.** C313 open: linear existence above ratio 2 is likely; PD existence unknown.
+- **Verdict.** Structure. No producer.
+
+## Row 314 — C313 in spectral form: chirp blindness, and an envelope heuristic for existence [P]
+- **Spectral form.** With U(t) = 𝓜f(½+it), the core is Fourier-integer-blind iff
+  ∫|U(t)|² e^{i(2θ(t) − t log k)} dt = 0 for all k ≥ 2 (the row-291 chirp symbols). Here θ is the Riemann–Siegel
+  theta and |U|² is entire of exponential type log R.
+- **Linear existence above ratio 2 (sketch).** Write G = h + Jh with Jh(x) = h(1/x)/x and h supported in [1, R].
+  - The periodization becomes, for x ∈ (0, ½]: u(1+x) + u(2−x) + u(1/(1−x))/(1−x) = r(x), with u = h|_{[1,2]} and r
+    fixed by the free data h|_{[2,R]}.
+  - That is one equation on an interval of length ½ for an unknown on an interval of length 1, so it is
+    underdetermined. Choosing u on (1, 3/2] freely, the rest can be solved Farey-recursively.
+  - So the linear form of C313 is very likely false for R ≥ 2. Continuity at the joins was not checked.
+- **Positive-definite existence (heuristic).**
+  - The chirp at k is stationary at t = 2πk with window ≍ √k. Blindness forces the smooth envelope of |U|² to vanish
+    to leading order at every t = 2πk.
+  - The choice f(e^v)e^{v/2} = φ(v + ½) − φ(v − ½) gives |U|² = 4 sin²(t/2)|φ̂|², a double zero at every 2πk. It kills
+    all leading stationary-phase terms at once, with ratio R ≈ e·(support of φ).
+  - Exact blindness needs corrections at every order in k^{−1/2}. Plausible for large R but not proved.
+- **Status.** C313 is probably false at large ratios: compact blind cores likely exist and are built from
+  e-dilation differences. Both directions are open in the PD setting.
+- **Meaning for C291.** If such cores exist, compact doubly blind tests exist once A(n) = 0 is also imposed for
+  2 ≤ n ≤ R (finitely many more conditions).
+- **Verdict.** Structure; open.
+
+## Row 315 — [L] linear Heisenberg-type rigidity below the golden ratio (MUST-1457)
+- **[L] `RHTower/InversionSymmetricFourierBlindRigidity`.** Theorem
+  `eq_zero_of_inversionSymmetric_fourierBlind_of_golden`: continuous, even, inversion-symmetric (G(1/x) = xG(x)),
+  zero on [0, c) with c² + c > 1, and Ĝ(n) = 0 for |n| ≥ 2 ⟹ G = 0.
+  - Also: the general Poisson periodization lemma `tsum_add_eq_of_fourierBlind` for even, compactly supported,
+    Fourier-blind functions.
+- **Linear threshold.** The linear form of C313 now has a formal lower bound φ, with existence above 2 sketched
+  (row 314). The true linear threshold lies in [φ, 2]. The second Farey level (row 311) lifts the lower bound to 5/3
+  for autocorrelations; the same argument should work linearly.
+- **Verdict.** MUST (new, formal). Uniqueness-pair structure; not a producer.
+
+## Row 316 — survey of candidate "Needs" (all RH-equivalent); Farey-tree structure of the linear threshold problem [P]
+- **Candidate survey.** Re-checked every candidate route's "Needs" (APF, BAG, BSH, CDC, CTF, DR, EGC, EWJ, FEL, GTA,
+  HCF, HJ, IRK, JAS, MSC, PBM, PCS, PTR, RFHM, SC, SEC, W1C, WBF). Each core is stated as RH-equivalent (rows 564,
+  707, 714 of the corpus ledger). No candidate has a non-RH handoff that a structural lemma could close.
+- **Producer sources reconsidered.**
+  - Jensen/outerness of (s−1)ζ(s) on Re s > ½ is a one-sided log|ζ| bound. Moments overshoot by Jensen's inequality:
+    Wall 2.
+  - Mollifier/Selberg positivity gives proportions: typical-height lane, saturated.
+  - Λ(n) ≥ 0 only reaches σ > 1: Wall 6.
+  - Transfer-operator (Mayer) positivity is real-s only: Wall 13.
+  - No new source found.
+- **Linear threshold problem, φ < R < 2 [P].**
+  - Regions: Z = [2, w₂) where H = 0, E = [v*, ∞) where H = F, and U = (w₂, v*) unknown.
+  - The Gauss branch τ maps U into itself (τ(w₂) = R + 1 < v* iff R > φ) and contracts to φ²; the shift v ↦ v+1
+    exits U into E in finitely many steps.
+  - With k(u) = H(τu)/(u−1) supported on [2, v*): (u−1)k(u) = F(τu) − Σ_i (−1)^i k(τu + i) on [2, v*), and
+    F(v) = Σ_j (−1)^j k(v + j) on Z.
+  - Rigidity ⟺ this system forces a = b = 0. Level 2 (R < 5/3) is the case where it closes in one step (row 311).
+    Deeper levels are period-function identities for the explicit series F.
+- **Status.**
+  - Linear threshold R* ∈ [φ, ≈3]: φ is formal (row 315); 5/3 is formal for autocorrelations and likely transfers to
+    the linear case; the upper bound ≈3 is from the existence sketch.
+  - Conjecture R* = 2.
+- **Verdict.** Structure; no producer.
+
+## Row 317 — C317: linear 5/3 threshold (MUST-1459) [L]
+- **Statement.** Inversion-symmetric Fourier-blind G (|n| ≥ 2) with support ratio 1/c < 5/3 vanishes. Linear form of MUST-1456; no positive definiteness.
+- **Mechanism.**
+  - Gauss–Farey equation for G, then the Lewis identity on (2, q), then a₀ = a₁ = 0.
+  - New step: τ maps the window [1/(1−c), c/(2c−1)] into itself, so H = −H∘τ/(v−1) is a contraction (factor (1−c)/c < 1). H = 0.
+- **Refactor.** `eq_zero_of_fareySeriesR_lewis_identity` is shared between the dilation module and the linear module.
+- **Status.** Linear threshold R* ∈ [5/3, ≈3]. Conjecture: R* = 2.
+- **Verdict.** Structure; no producer. It is a positivity-free uniqueness statement, which is the direction the user asked for next.
+
+## Row 318 — C318: census of producer mechanisms that do not need positivity
+- **Trigger.** The user asked for routes that do not need positivity. Row 316 had claimed positivity was the only producer route; that claim is withdrawn as unexamined.
+- **Census of the frontier map** (non-positivity routes, with each missing step):
+
+| Route | Missing step | Reduces to |
+|---|---|---|
+| DR, PBM | convergence of Σ(Λ(n)−1)n^{−s}/log n, or Σ(1_P(n) − 1/log n)n^{−s}, at real s > ½ | (a) √x cancellation |
+| MC | Möbius sum ≪ x^{½+ε} | (a) |
+| CTF | bounded-row approximation, or the dual sampling inequality | (a) — the rows are forced to μ |
+| Báez-Duarte, Farey D₁/D₂ | rate bounds | (a) |
+| BAG | deterministic returns | (b) Wall 7; the Bohr support theorem puts returns in a null set |
+| IRK, HJ, CDC, PCS, SC, RFHM, BSH, GTA, EWJ, APF | arithmetic landing | (c) the zero set restated |
+| Speiser | ζ′ has no zeros in 0 < σ < ½ | (c), moved to ζ′ |
+
+  - New candidate MTR (Mayer transfer resonances): the double zeta Ψ_s(x) = Σ_{m,n≥1}(mx+n)^{−2s} satisfies Ψ_s(x) − Ψ_s(x+1) − (x+1)^{−2s}Ψ_s(x/(x+1)) = ζ(2s)(x+1)^{−2s}. So ζ zeros give homogeneous Lewis solutions at s = ρ/2 without the boundary term (1 + x^{−2s}). This is class (c): Lewis–Zagier ties these solutions to E*(z, ρ/2), whose constant term has a single power.
+- **Mechanisms that prove RH-type theorems elsewhere without positivity:**
+  - (i) Symmetry plus exact count, with a dominance parameter: Rankin–Swinnerton-Dyer, period polynomials, Lagarias–Suzuki a_y for y ≥ 1. For ζ no dominance parameter exists, because dominance and convergence to Ξ are opposed (Wall 4). The a_y family is all on-line for y ≥ 1, and the ξ-zeros appear only in the limit y → 0, at (ρ+1)/2.
+  - (ii) Stepanov counting: needs a Frobenius (Wall 5).
+  - (iii) Lee–Yang/Asano contraction: needs an arithmetic ferromagnet (W1C).
+- **Extremality.** Ξ is extremal in every known cone: Weil cone = {Λ}, Λ_dBN = 0, LP-maximal, Carlson edge. So inequality producers have zero slack, and a producer must be an exact identity or a rigidity statement.
+- **Verdict.**
+  - Census survives.
+  - No non-positivity route has a producer step that is not (a), (b) or (c).
+  - (a) is quasi-RH-hard. The classical zero-free-region mechanism near σ = 1 itself uses positivity (3+4cos+cos2, Λ ≥ 0). Turán power sums are positivity-free but local (Wall 3).
+- **Next.** Attack (a) through a positivity-free mechanism, or build a dominance parameter for (i).
+
+## Row 319 — C319–C322: positivity-free mechanisms, attacked one by one
+- **C319 (Riemann's theta split satisfies Hermite–Biehler dominance).**
+  - Write ξ = B + B^# with B(s) = ¼ + (s(s−1)/2)∫₁^∞ ω(x)x^{−(s+1)/2}dx, and B^#(s) = B(1−s).
+  - B and B^# are entire with B ≈ ¼ + cs (c = Σe^{−πn²}), so B has only finitely many zeros. Asymptotically |B| > |B^#| on Re s > ½.
+  - **FALSE**, by the exact identity |B|² − |B^#|² = Re((B − B^#)·conj ξ).
+    - ξ decays like e^{−π|t|/4} while B ± B^# grow linearly. So dominance ⟺ Re((B − B^#)/ξ) > 0, i.e. B − B^# ≈ 2ict must follow the phase of ξ(σ+it).
+    - That phase winds once per nearby zero, so the sign changes.
+  - **Positive survivor.**
+    - Any dominance split of ξ with a polynomially bounded odd part must wind with ξ, i.e. the odd part knows N(T).
+    - The Rankin–Swinnerton-Dyer mechanism needs a noise-reduction parameter: the terms n^{−½}, n ≥ 2, must be small against the main term.
+    - The heat time t is such a parameter, but only above height exp(C/t) (Polymath-type dominance). As t → 0 the dominance region escapes to infinity.
+- **C320 (Lee–Yang in Bohr variables).**
+  - Setup: w_p = p^{−s}. The functional equation is the inversion w_p ↦ 1/(p·conj w_p) through the torus |w_p| = p^{−½}. The critical line is that torus. Lee–Yang would follow from nonvanishing on the polydisc |w_p| < p^{−½}.
+  - **Kill.** Regularize: ζ = G(w)·exp(L(w)), where G = Π(1−w_p)^{−1}e^{−w_p} is holomorphic and nonvanishing on the ℓ²-polydisc, and L = Σ_p w_p. The diagonal lies in the ℓ²-polydisc for Re s > ½, but L is unbounded on ℓ². On the diagonal L is the prime zeta P(s), whose continuation to Re s > ½ is equivalent to RH. So Lee–Yang reduces to core (a).
+- **C321 (relative power gain from Dirichlet-convolution identities, e.g. Σ_d a_d M(x/d) = small).**
+  - The target shape is the corpus "producer target shape": error ≤ n^{−δ}·error + O(√n).
+  - **Kill.** A contraction at exponent θ needs Σ_{d≥2}|a_d|d^{−θ} < |a_1|. Then A(s) = Σa_d d^{−s} is zero-free on Re s ≥ θ. But smallness of the left side needs A/ζ to be analytic there, which is circular.
+  - Lesson: relative gains cannot come from multiplicative convolution. They need additive (lattice) structure. This is the Beurling wall (`regular_integers_do_not_constrain_zeros` [L]).
+- **C322 (relative gain from large-moduli variance, Barban–Davenport–Halberstam / Montgomery–Hooley).**
+  - **Kill.** The q = 1 term is one summand. Transfer caps at the Bombieri–Vinogradov range and gives PNT strength only.
+- **Big-picture insight (new formulation): RH is the degenerate-point problem of every family.**
+  - Every unconditional square-root phenomenon holds for generic or averaged members: large moduli, short intervals, twists n^{−it} with t large, Bohr phases θ ≠ 1 almost surely, heat time t > 0 above height e^{C/t}, cosine level h ≥ ½.
+  - ζ sits at the degenerate point: q = 1, t = 0 twist, θ = (1, 1, …), t = 0 heat time, h = 0.
+  - The corpus states the same thing for Bohr: strong recurrence ⟺ continuity at θ = 1 ⟺ RH.
+  - So a producer must be a rigidity that transfers generic behaviour to the degenerate point (continuity or analyticity in the family parameter at that point), or a symmetry that moves the degenerate point to generic ones. For ζ the only natural symmetry orbit is the vertical translates, a measure-zero curve in the Bohr torus.
+- **Verdict.**
+  - C319–C322 are killed.
+  - Positive survivor: the degenerate-point principle. It tells the next cycle what a positivity-free producer must look like, namely a transfer to the degenerate point.
+
+## Row 320 — C323 killed; C324: the Gauss transfer series reaches 1 + 1/√2 (MUST-1461) [L]
+- **C323 (weak recurrence (WR) heights are closed, so WR at off-line zeros follows from density).**
+  - The closedness half is true. If t_k → t and WR holds at t_k on enlarged compacts, then WR holds at t: Cauchy estimates on the return functions, which are bounded on the enlarged compact.
+  - **Killed:** the set of zero-free heights for a fixed disc has interior gaps around every off-line zero height, so density cannot reach those heights. This is the degenerate-point principle again.
+- **C324 (positivity-free transfer in the blind-core model).**
+  - Statement: inversion-symmetric Fourier-blind G vanish when (1 − c)² < 2c − 1 (1/c < 1 + 1/√2).
+  - Mechanism:
+    - The holomorphic Gauss transfer series S solves S + (S∘τ)/(z−1) = F on Re z > 2, by geometric convergence after two Gauss steps.
+    - On the τ-invariant window [1/(1−c), c/(2c−1)], the equation is two-term exactly when v* < w₂ + 1, i.e. (1 − c)² < 2c − 1. So H = S there, by uniqueness of bounded solutions.
+    - The left edge gives H(τv) = (v−1)F(v) on an interval. The identity theorem gives S(τz) = (z−1)F(z) on Re z > 1, and then S ≡ 0 and F ≡ 0.
+  - Corollary: Ψ-blind cores need β/α ≥ 1 + 1/√2.
+  - The proof is simpler than the 5/3 one (no limit v → ∞, no fixed-point evaluation).
+- **Reading.** This is the first instance in the corpus of the transfer the degenerate-point principle (row 319) asks for. The holomorphic fixed point of a transfer operator carries an identity from a real interval to the whole half-plane, including the degenerate end. It works because the Gauss branch is a strict holomorphic contraction (Denjoy–Wolff type, factor 4/5 after two steps).
+- **Open.**
+  - Below c = 2 − √2 the window equation has three unknown terms. The analogous object is the alternating Mayer-type operator Σ_n (−1)^n H(τ(v+n))/(v+n−1), which is not a sup-norm contraction.
+  - Conjecture C325: the true linear threshold is R* = 1 + 1/√2, with a nonzero solution for c < 2 − √2. Alternatively, a weighted-norm contraction may push the threshold to 2.
+- **Verdict.** Structure plus a new positivity-free transfer technique [L]. Not a producer.
+
+## Row 321 — C326: a holomorphic contraction at ζ's degenerate point? Killed by the cusp principle
+- **Conjecture.** The row-320 template (a holomorphic fixed point of a contracting transfer operator carries an interval identity to the degenerate end) has an arithmetic instance for ζ. Candidate: the Mayer/Lewis operator at s = ρ/2. Here ζ(2s) = 0 makes the double zeta Ψ_s(x) = Σ_{m,n≥1}(mx+n)^{−2s} a homogeneous Lewis solution, since Ψ_s − Ψ_s(·+1) − (x+1)^{−2s}Ψ_s(x/(x+1)) = ζ(2s)(x+1)^{−2s}.
+- **Kill (the cusp principle).**
+  1. In the blind-core model, the contraction worked only because compact support removed the parabolic branch v ↦ v+1: one parabolic step leaves the window. The threshold (1−c)² < 2c−1 is exactly where two parabolic steps fit inside it.
+  2. In every transfer operator attached to ζ (Gauss/Mayer L_s, Farey map, Lewis equation), the parabolic branch is the cusp of PSL(2,ℤ). It carries the pole and the lattice density 1 that Beurling's wall says a producer must use. Its derivative is 1, so it never contracts.
+     - L_σ has leading eigenvalue ≥ 1 for σ ≤ 1. The ζ-relevant s = ρ/2 (Re s < ½) lie in the continued region, where no domination by L_σ holds.
+  3. Closing the cusp (truncation, or a character with χ(T) ≠ 1) restores self-adjoint control: the twisted Laplacian has pure point spectrum, so its zeta zeros sit on Re s = ½ or on the real axis. But it removes ζ, because ζ zeros are exactly the scattering poles of an open cusp.
+- **Positive survivor (dichotomy).**
+  - Closed cusp: automatic location (self-adjointness), no ζ.
+  - Open cusp: ζ present, resonances on the non-unitary line Re s = ¼ (on RH), no self-adjoint control.
+  - So the RH line for the modular surface is not its unitary axis. A positivity-free producer would need a contraction mechanism that survives an open cusp. None is known: the alternating structure (η, the "+" parabolic sign in the blind-core recursion) gives conditional convergence, not contraction.
+- **Verdict.** C326 killed. Degenerate point = cusp = pole = lattice (consistent with rows 316, 319 and the Beurling wall).
+- **Next.** C325, sharpness of 1 + 1/√2 in the blind-core lane.
+  - For c < 2 − √2, the alternating parabolic sum gives H = F − MH with (MH)(v) = Σ_{0≤n<v*−v}(−1)^n H(τ(v+n))/(v+n−1) on the core (w₂, 3], plus the constraint MH = F on [2, w₂].
+  - The term count ⌈v* − v⌉ is piecewise constant, so analyticity breaks at v = v* − n. That piecewise freedom is where a counterexample would live.
+- **C325 (row 321 addendum, paper): 1 + 1/√2 is not sharp.**
+  - The method extends to c > 7/12 (1/c < 12/7 ≈ 1.714).
+  - Setup: for 3 < v* < 3.5, the interval [v*−1, q] with q = 1 + 1/(v*−3) is τ-invariant (τ(q) = v*−1, and τ(v*−1) ≤ q ⟺ v*² − 5v* + 5 ≤ 0). The two-term equation holds there because v+1 ≥ v*. So H = S on [v*−1, q].
+  - For v ∈ [2, min(w₂, 1/(v*−3))], both v+1 and τv lie in [v*−1, q]. So S(z+1) + S(τz)/(z−1) = F(z) + F(z+1) on an interval, hence on Re z > 1, hence S(z+1) − S(z) = F(z+1).
+  - Then a = 0 from the asymptotics: vF(v) = (v/(v−1))S(τv) − S(τ(v+1)) → 0, while (v−1)F(v) → a/2.
+  - Then b = 0 from telescoping S(u) = −bΣ_j e(u+1+2j) with e(w) = (cos(2π/w) − 1)/w < 0. Evaluating at u = 2, 2.5, 3 gives b(P(2) + P(2.5)/2) = 0 with P < 0.
+  - The remaining homogeneous window is a contraction (on J₀ the map v ↦ τ(v+1) has factor 1/v < 1).
+  - Hard limit of this method: v* = φ² + 1 (c ≈ 0.5802, 1/c ≈ 1.7236), where the τ-invariant good interval disappears. Below that the full Lewis three-term structure is needed.
+  - Not formalized: small gain, structural lane.
+
+## Row 322 — C327, C328: regularized Mayer secular equation and the η twist (both killed)
+- **C327 (regularize the cusp out of the Mayer operator).**
+  - Write L_s = L_s^{reg} + P_s, with P_s f = f(0)·ζ(2s, z+1) the rank-one cusp part. L^{reg} converges for Re s > 0.
+  - If ‖L_s^{reg}‖ < 1 on ¼ < Re s < ½, then det(1 − L_s) = 0 reduces to an explicit secular equation, 1 = ⟨δ₀, (1 − L^{reg})^{−1} ζ(2s, ·+1)⟩, built from a convergent transfer series.
+  - **Kill:** this is a restatement. The secular function's zeros in the strip are exactly ρ/2, so locating them is RH again. Removing the cusp from the operator moves it into the rank-one datum ζ(2s, z+1).
+- **C328 (η = (1 − 2^{1−s})ζ is entire; its theta θ₄ has a closed cusp at 0).**
+  - **Kill:** the cusp at ∞ stays open (constant term 1, the s = 0 pole). ζ zeros survive in any modular object with an open cusp, and the parabolic branch at ∞ still has derivative 1.
+- **Toy check of the cusp principle (paper).** The odd blind-core variant (G odd) has the parabolic step H(v) − H(v+1), a non-alternating sum. It still has golden-type uniqueness, because the weight 1/v in H(v) = G(1−1/v)/v pins the cusp value H(∞) = 0. So the sign of the parabolic step is not the whole story. The weight 1/v already supplies a cusp anchor in the compact-support model, and ζ has no such anchor.
+- **State of the producer search (this session).**
+  - Positivity routes end at the walls (2, 6, 11–13).
+  - Non-positivity routes end at the three cores (√x cancellation, Wall 7, zero-set restatement).
+  - The transfer mechanisms all fail at the open cusp.
+  - No producer exists in the corpus or in this session's attempts.
+
+## Row 323 — C329: Hecke–Maass–Selberg at the open cusp (killed); C330: cusp-edge principle; C331: R* = 2 via the Farey operator
+- **C329.**
+  - Setup: truncated resonant states u = Λ^T E*(·, ρ/2) and u' = Λ^T E*(·, (1−ρ̄)/2). Do Gram positivity or Hecke self-adjointness on them see β?
+  - Maass–Selberg in the limit gives:
+    - ‖u‖² = |ξ(ρ−1)|²T^{1−β}/(1−β);
+    - ‖u'‖² = |ξ(1+ρ)|²T^{β}/β;
+    - ⟨u, u'⟩ = 2ξ(ρ−1)ξ(1+ρ)T^{½}.
+  - **Kill:** Cauchy–Schwarz becomes 4β(1−β) ≤ 1, i.e. (2β−1)² ≥ 0, which always holds. Hecke self-adjointness on Λ^T-states only produces explicit boundary identities, which hold for any zero.
+  - **Positive survivor (receiver):** the Gram determinant equals |ξ(ρ−1)ξ(1+ρ)|²·T·(2β−1)²/(β(1−β)). This is a one-signed off-line detector that vanishes iff β = ½. It is one-signed only because it uses ρ's own resonant state (MUST-132 conflict).
+- **C330 (refined cusp principle; structural).**
+  - Clean reformulation of the blind-core problem for c > ½. With u = G on [½, 1],
+    `(1 + T)u = a₀ + 2a₁cos 2πy` on [½, 1], u = 0 on [½, c),
+    where Tu(y) = u(f₁y)·f₁(y) + u(f₂y)·f₂(y), f₁(y) = 1/(2−y) and f₂(y) = 1/(1+y). This follows from `inversionSymmetric_three_term_periodization` plus inversion.
+  - Under z = 1/(1+t), f₁ and f₂ become the two inverse branches of the Farey map, with weights |f'|^{1/2}. So T is the Farey transfer operator at q = ½ (parabolic fixed point y = 1).
+  - So blind cores are the **eigenvalue −1 problem** for the Farey operator at the cusp. Along the parabolic orbit, the solution of (1+T)u = h is an alternating sum Σ(−1)^n W_n h(f₁^n y) with W_n ~ 1/n, which converges. These are the alternating series (altHarmonic, altCosDefect) in `fareySeriesR`. The alternation tames the cusp.
+  - For ζ, the Lewis/Mayer equation at s = ρ/2 is the **eigenvalue +1 problem**, Σ h(f₁^n y)/n. It diverges logarithmically; that divergence is the pole of ζ. Eisenstein period functions solve it for every s, and ζ(2s) = 0 is one extra linear condition.
+  - Reading: ζ's zeros are threshold eigenvalues at the edge λ = 1 of the cusp's continuous spectrum. The tamed analogue (λ = −1, away from the edge) is where the positivity-free transfer methods work (MUST-1455/1456/1459/1461).
+- **C331 (conjecture, structural).** R* = 2 exactly.
+  - Length count in the (1+T) form: the unknown u lives on [c, 1] (length 1 − c), the equations on [½, 1] (length ½). So the system is overdetermined for c > ½ and underdetermined for c < ½.
+  - Route to a proof: a Farey-tree induction that enlarges the set where H equals an explicit analytic expression (as in the √2 and 12/7 arguments) until two expressions meet. Alternatively: invertibility of 1 + T on a Farey–Laplace space, since the cusp's continuous spectrum lies in [0, 1] and −1 is away from it, with no Maass eigenvalue ¼ for SL(2,ℤ).
+  - Curiosity: 5/3 = [1;1,2] and 12/7 = [1;1,2,2] are convergents of 1 + 1/√2 = [1;1,2,2,2,…]. The proven thresholds so far are continued-fraction convergents (or limits) of one expansion.
+- **Verdict.** C329 killed. C330 is a structural principle that sharpens rows 319/321. C331 is an open conjecture in the structural lane. No producer.
+
+## Row 324 — C332: blind cores are the χ-twisted Mayer problem at s = ½ (closed cusp); R* ≥ 2 reduces to a spectral statement
+- **Exact reduction (paper, derived from proven lemmas).**
+  - Setup: H(v) = G(1−1/v)/v. H = 0 on [2, w₂], H = F on [v*, ∞), and E(v): H(v) + H(v+1) + H(τv)/(v−1) = F(v) + F(v+1).
+  - Alternate E over v, v+1, v+2, … (H(v+N) → 0, and F = Σ(−1)^n g(·+n)). This gives, for every v ≥ 2,
+    `H(v) = F(v) − Σ_{n≥0} (−1)^n H(τ(v+n))/(v+n−1)`,
+    and every τ(v+n) lies in (2, 3].
+  - With ϑ(r) := H(2+r), r ∈ (0, 1], the whole system becomes
+    `(1 + M)ϑ = F(2+·)` on (0, 1], ϑ = 0 on (0, w₂−2],
+    where `(Mϑ)(r) = Σ_{m≥1} (−1)^{m−1} ϑ(1/(r+m))/(r+m)`.
+  - M is the Mayer transfer operator of the Gauss map at s = ½, twisted by ε_m = (−1)^{m−1} = χ(S′T^m), with χ(T) = −1 and S′ the reflection [[0,1],[1,0]]. **M does not depend on c**; c enters only through the support condition.
+- **Consequence.** R* ≥ 2 (uniqueness for every c > ½) follows from two facts:
+  - (i) −1 is not an eigenvalue of M on a holomorphic space. After pairing m, m+1, M is nuclear there, so by the Fredholm alternative 1 + M is invertible and ϑ_F = (1+M)^{−1}F is real-analytic.
+  - (ii) Continuous solutions vanishing near 0 coincide with ϑ_F. The sums are finite for such ϑ.
+  - Then ϑ = 0 on (0, w₂−2] forces ϑ_F ≡ 0, hence F ≡ 0, hence a = b = 0 and H ≡ 0.
+  - Fact (i) is, via the twisted Mayer–Lewis–Zagier dictionary, the absence of λ = ¼ Maass forms for PGL(2,ℤ) with the cusp-closing character χ (a level-2 congruence situation, where the spectral gap is expected). The proven thresholds (φ, 5/3, 1 + 1/√2, 12/7 on paper) are partial inversions of 1 + M on subintervals.
+- **Reading (sharp form of the cusp principle).**
+  - Blind cores: χ(T) = −1. The cusp is closed, there is no Eisenstein series, the spectrum is discrete, and positivity-free uniqueness holds; this is the "+" alternation of the Farey series.
+  - RH: χ trivial at s = ρ/2. The cusp is open, Eisenstein and ζ(2s) appear, and the eigenvalue +1 sits at the edge of the continuous spectrum.
+  - The positivity-free transfer methods are exactly the closed-cusp methods. Every RH producer must work in the open-cusp sector.
+- **Verdict.** Structural. C331 is reduced to a closed-cusp spectral statement (open, deep). It is not formalizable now; it needs twisted Mayer nuclearity and Lewis–Zagier. No producer.
+
+## Row 325 — C333: the unitary scattering phase at the open cusp (killed)
+- **Conjecture.** The cusp scattering coefficient φ(s) = ξ(2s−1)/ξ(2s) is unitary on Re s = ½. Its phase −2 arg ξ(1+2it) is computable from the Euler product on the 1-line. It might give a one-signed off-line quantity that does not use ρ's own frequency.
+- **Computation.**
+  - φ is inner on Re s > ½: it is bounded there, |φ| = 1 on the line, and its zeros are at (1+ρ)/2.
+  - So −d/dt arg φ(½+it) = Σ_ρ β/((β/2)² + (t−γ/2)²) + const. This is the Hadamard identity Re ξ'/ξ(1+it) = Σ_ρ (1−β)/|1+it−ρ|², read at σ = 1.
+- **Kill.**
+  - Every zero contributes with positive weight 1 − β, whatever β is, because the unitary axis lies at distance ½ from ζ's critical line. So the phase is one-signed but β-blind.
+  - Pairing ρ with 1−ρ̄ gives f(β) + f(1−β) with f(x) = x/(x² + u²). This is below 2f(½) for u > 1/√3 (concave far field) and above it for small u. Since ∫P_x = π for every x, the far-field deficit is exactly compensated by the near-field surplus.
+  - Detecting β therefore needs test functions varying at scale 1, which is the Weil explicit formula and its positivity again.
+- **Positive survivor (principle).** A one-signed quantity without frequency information comes only from lines at positive distance from all zeros, and every such line is β-blind by mass conservation of Poisson kernels. This sharpens MUST-132.
+- **Verdict.** Killed.
+
+## Row 326 — [L] MUST-1462: the twisted Mayer reduction is formal
+- `RHTower/InversionSymmetricFourierBlindTwistedMayer`:
+  - `eq_sub_sum_of_gauss_farey_steps`: abstract alternating telescoping.
+  - `inversionSymmetric_alternating_parabolic_sum`.
+  - `twistedMayerHalf` and `inversionSymmetric_twistedMayerHalf`.
+- This formalizes the reduction of row 324: blind cores ⟺ (1 + M)ϑ = F with the support condition, M the closed-cusp twisted Mayer operator at s = ½, independent of c.
+- Next steps toward R* = 2:
+  - (a) Nuclearity of the paired operator on a disc around [0, 1] (the pairs m, m+1 give O(1/m²)).
+  - (b) −1 ∉ spec. This is a twisted Lewis–Zagier statement, deep.
+  - (c) Continuous solutions vanishing near 0 are holomorphic.
+- Verdict: structural [L]. No producer.
+
+## Row 327 — C334: threshold tools (killed); C335: Bessel form of the cusp principle (Fermi vs Bose)
+- **C334.** Mourre estimates, virial identities and Carleman unique continuation at the edge of ζ's cusp continuous spectrum.
+  - **Kill:** each of these is a commutator or weight positivity. The dilation-commutator form on the Weil test space is a restricted Weil/PBAP positivity (walls 12/13).
+  - The resonances ρ/2 have Im λ = γ(1−β)/2, which grows with height, so they are not near-real thresholds. A Mourre resonance-free strip in the s-plane is a zero-free region near Re 2s = 1.
+- **C335 (structural, paper; standard ingredients checked).**
+  - Mayer's Laplace representation f = 𝓛φ, together with (z+m)^{−1}e^{−t/(z+m)} = ∫₀^∞ e^{−(z+m)u}J₀(2√(ut))du, turns the twisted operator of MUST-1462 into
+    `M𝓛φ = 𝓛(w·𝓗φ)`, `w(u) = Σ_{m≥1}(−1)^{m−1}e^{−mu} = 1/(e^u+1)`, `𝓗φ(u) = ∫₀^∞J₀(2√(ut))φ(t)dt`.
+  - 𝓗 is unitary on L²(ℝ₊): its Mellin multiplier is Γ(s)/Γ(1−s), of modulus 1 on Re s = ½. So **‖M‖ ≤ sup w = ½ on H²(Re z > 0)**. The closed-cusp operator is a ½-contraction, and −1 ∉ spec on H².
+  - Untwisted (ζ): w(u) = 1/(e^u − 1) = 1/u − β(u). The Bose singular part 1/u is ζ's pole. The remainder β(u) = 1/u − 1/(e^u−1) ∈ (0, ½] is again bounded by ½. This β is the corpus's CTF "chronological Bose" kernel.
+  - So ζ's transfer operator = (Mellin-diagonal pole part with weight 1/u) − (½-bounded part); the blind-core operator is the ½-bounded part alone. **The pole is the only non-contracting piece.**
+  - Distinction from the corpus Fermi Nyman–Beurling lane (PM, closed):
+    - That lane alternates over the integers (η = (1 − 2^{1−s})ζ). The cusp stays open and ζ's zeros remain.
+    - The twist here alternates over the Gauss branches (χ(T) = −1). The cusp closes and ζ disappears.
+- **C331 status (R* = 2).**
+  - Now reduced to: (1 + M) is injective on the solutions that arise, which are continuous on [0, 1] and analytic near 0.
+  - The H² and holomorphic-disc theory gives a unique analytic solution ϑ_F. Then ϑ = ϑ_F, ϑ = 0 near 0, the identity theorem gives F = 0, and so G = 0.
+  - The gap is uniqueness among merely continuous solutions. The C¹ route fails because the m=1 branch has weight 1 and derivative 1 at r = 0.
+  - Lean is not feasible yet: Mathlib has no Bessel J₀, no Hankel–Plancherel, and no Fredholm alternative for compact operators.
+- **Verdict.** C334 killed. C335 is a structural principle: **the pole of ζ is the only non-contracting piece of its transfer operator.** No producer.
+
+## Row 328 — C336: Rouché-type perturbation around ζ's pole part (killed); C331 continuity gap sharpened
+- **Conjecture C336.**
+  - Split ζ's Mayer operator at s (Bessel form, w = 1/(e^u−1) = 1/u − β(u)) as L_s = A_s − B_s:
+    - A_s is the pole part with weight 1/u: Mellin-diagonal after the J_{2s−1} Hankel step, multiplier Γ(w)/Γ(2s−w);
+    - B_s has weight β ≤ ½.
+  - Claim: ‖(1 − A_s)^{−1}B_s‖ < 1 for ¼ < Re s < ½. That would make 1 − L_s invertible there, so ζ(2s) ≠ 0 off Re s = ¼.
+- **Kill (three independent reasons).**
+  1. **Symmetry.** The zero set {ρ/2} is symmetric under s ↦ ½ − s̄. That symmetry is ζ's own functional equation; it is not a symmetry of the modular-surface operator, whose symmetry is s ↦ 1 − s. So the split cannot single out the line Re s = ¼; it can at most give zero-free regions.
+  2. **Zero slack.** On-line zeros accumulate on Re s = ¼ at every height. So any norm bound must reach 1 there, while Rouché needs uniform slack. At best this gives Re s > ¼ + δ(t).
+  3. **Height growth.** The Mellin multipliers Γ(w)/Γ(2s−w) and the weight u^{2σ−1} are not uniformly bounded in t = Im s. So δ(t) ~ 1/log t at best, a classical de la Vallée Poussin-type region, not quasi-RH.
+- **C331 gap sharpened (R* = 2 for continuous G).**
+  - The H² ½-contraction controls analytic solutions.
+  - For merely continuous ϑ (which vanishes on [0, δ], δ = w₂ − 2), the head of the sum, m < 1/δ, has sup-norm size about log(1/δ). That exceeds 1 as c ↓ ½, and there is no cancellation, because the alternation only helps in the tail.
+  - So uniqueness among continuous G near ratio 2 is genuinely open.
+  - New possibility (C337): **R*(continuous) < R*(H²-regular) = 2.** Non-analytic continuous solutions may exist close to ratio 2, invisible to the H² theory. That would be a regularity-dependent threshold, worth testing.
+- **Verdict.** C336 killed. C331 split into an analytic part (reduces to the H² contraction plus continuation) and a continuous part (open; the threshold may be lower).
+
+## Row 329 — [L] MUST-1464: blind-core threshold 12/7
+- The paper argument of row 321 (C325) is now formal. It is simpler than planned: the shift identity gives S(v) = −S(2+1/v)/v, so sup|S| halves on (2, 5/2], with no asymptotics or sums.
+- Proven thresholds in Lean:
+  - golden φ ≈ 1.618 (MUST-1457);
+  - 5/3 (MUST-1459);
+  - 1 + 1/√2 ≈ 1.707 (MUST-1461);
+  - 12/7 ≈ 1.714 (MUST-1464).
+- Conjecture C331: the true threshold is 2. The analytic part reduces to the twisted Mayer ½-contraction (row 327). The continuous part is open, and the threshold may be lower for merely continuous G (C337).
+- Verdict: structural [L]. No producer.
+
+## Row 330 — C337/C338: exact data at the pole; cusp-closing deformation (both killed)
+- **C337 (exact identity at the pole).**
+  - The only exact data at ζ's pole are its Laurent/Taylor jets. Under z = 1 − 1/s the critical line becomes |z| = 1 and the pole goes to z = 0. The jet of log ξ at s = 1 determines ξ.
+  - RH ⟺ Li positivity λ_n ≥ 0 for all n (corpus LI route). Equivalently, a Herglotz/Carathéodory property of the jet's generating function on the disc.
+  - **Kill.**
+    - The transfer from the pole to the zeros is exact (analytic continuation of the jet), but the needed property is positivity of the jet.
+    - Arithmetically, λ_n = (archimedean part) + (prime sum with Laguerre kernels). Bounding the prime sum from below at the (n/2)log n scale is Wall 1.
+    - An off-line zero shows up only as |1 − 1/ρ|^n growth at n ≳ γ²/(½−β), i.e. it is read at its own frequency (MUST-132).
+  - Positive survivor: Li is the degenerate-point principle in pure form. The degenerate point *is* the pole, and RH is positivity of its jet.
+- **C338 (resonances as limits of closed-cusp problems).**
+  - Characters χ_θ(T) = e^{iθ} give twisted Mayer weights w_θ(u) = 1/(e^{u−iθ} − 1), with sup|w_θ| = 1/(2 sin(θ/2)).
+  - For θ ≠ 0 the cusp is closed and the twisted Laplacian is self-adjoint with real spectrum. At θ = 0 the cusp opens and ζ's resonances ρ/2 appear. So the family interpolates Fermi (θ = π) to Bose (θ → 0).
+  - Conjecture: the reality of the spectrum for θ ≠ 0 passes to a constraint on the resonances at θ = 0.
+  - **Kill.** As θ → 0 the real eigenvalues λ_j(θ) accumulate into the continuous spectrum [¼, ∞). The resolvents R_θ converge to R_0 only on the physical sheet. The second-sheet poles (resonances, Im λ = γ(1−β)/2, not small) are not limits of the θ ≠ 0 poles. Fermi's golden rule gives Im λ ~ θ², which applies only to dissolving embedded eigenvalues, not to ζ-resonances.
+  - Positive survivor: the family θ ↦ M_θ is the exact interpolation between the provable (closed-cusp) regime and RH (open cusp). The norm blows up like 1/(2 sin(θ/2)), which is the quantitative cusp principle.
+- **Verdict.** Both killed. Every exact transfer to the pole or cusp ends in a positivity statement at that point, with zero slack.
+- **Correction to row 323 (C329).** The "Gram-determinant off-line detector" is a REDISCOVERY. The corpus has it in Lean as the partner angle law, `RHTower/EisensteinResonantPartnerAngle`: cos² of the angle between the truncated resonant states E*(·, ρ/2) and E*(·, ρ'/2) equals 4Re ρ(1 − Re ρ), and the sine is |2Re ρ − 1|. The lesson, already in memory and not followed here: run the corpus search before every cycle, not after.
+- **Next experiment (C339, structural test of the cusp principle).**
+  - Fourier blindness at shifted integers, Ĝ(n + α) = 0, twists the periodization Σ_k e^{2πikα}G(x+k).
+  - The relative sign between the k = 0 and k = −2 translates sets the parabolic step. α = ¼ gives H(v) − H(v+1), the open-cusp sign: the Farey series becomes non-alternating and the coefficient a carries a pole-like divergence.
+  - Question: does the boundedness anchor H(v) = G(1−1/v)/v → 0 still force uniqueness at small support ratio? If yes, the cusp principle must be refined to "open cusp without an anchor". ζ has no compact-support anchor; its anchor is the pole itself, with weight pinned to 1 (MUST-1458).
+
+## Row 331 — C339: the obstruction is the pole coefficient at an open cusp, not the open cusp (paper)
+- **Odd toy (open cusp).** Take G odd, G(1/x) = xG(x), Fourier-blind at |n| ≥ 2. Then Σ_k G(x+k) = b·sin 2πx (Ĝ(0) = 0), and the recursion is
+  `H(v) − H(v+1) + H(τv)/(v−1) = −b sin(2π/v)/v` (open-cusp parabolic sign).
+  - The anchor H(v) = G(1−1/v)/v → 0 gives the profile F_odd(v) = −bΣ_{k≥0} sin(2π/(v+k))/(v+k). It is holomorphic on Re v > 0 and ~ −2πb/v, and there is no a-term.
+  - On the window, H + KH = F_odd with the same Gauss operator K. So the golden, 5/3, √2 and 12/7 arguments carry over verbatim: the odd toy is rigid without positivity.
+- **Refined cusp principle.**
+  - Positivity-free transfer works when, at the cusp, either the parabolic sum alternates (closed cusp; the a/v pole term is tamed), or the pole coefficient vanishes and a compact-support anchor pins H(∞) = 0.
+  - An anchor is incompatible with an open cusp carrying a nonzero pole term, because Σ a/(v+k) diverges.
+  - ζ has exactly that configuration. The pole coefficient is the residue 1, pinned (MUST-1458). It is the constant term of θ, i.e. the zero lattice vector n = 0.
+  - Every modular realization of ζ carries such a constant term at some open cusp: θ at ∞; θ₂ and θ₄ at the other cusp, giving (2^s−1)ζ(s) and η.
+- **Big-picture reading.** Degenerate point = cusp = pole = constant term = zero lattice vector. RH is a statement about how the arithmetic of the nonzero lattice vectors (primes, via the Euler product) balances the zero vector's contribution. All positivity-free rigidity in the corpus lives where that contribution is absent or alternated away.
+- **Verdict.** Structural principle, sharper than rows 321–327. Formalizing the odd toy is optional (~250 lines, mirrors MUST-1457). No producer.
+
+## Row 332 — C340–C342: window certificates, Krein reflection, pole-free blind positivity (paper; all killed or rediscovered)
+- **C340 (window certificates, non-positivity attempt).**
+  - Let C_L be the set of real weights a on {log n : n ≤ e^L} for which the Weil form (pole + archimedean − Σ a_n n^{−½} h(±log n)) is PSD on tests supported in [−L, L].
+  - C_L uses only Γ_ℝ, the pole and log ℕ. Each C_L is closed, and bounded coordinatewise for L > log n + ε (two-bump tests at ±log n/2).
+  - König compactness plus cone ⊆ {Λ} gives RH ⟺ C_L ≠ ∅ for every L.
+  - Kill (REDISCOVERED): by SDP/Krein duality, C_L ≠ ∅ ⟺ PBAP on window L with all-integer nodes. This is the dual form of the corpus's RH ⟺ PBAP. Elements of C_L are forced towards Λ as L grows, so constructing a certificate is RH at scale L.
+  - On a window, a Dirichlet polynomial certificate D must cancel the pole's e^{u/2} to √X precision (Σ_{n≤X} a_n n^{−½−it} ≈ ∫_1^X x^{−½−it}dx), and its fluctuation must be PD. A model weight such as a ≡ 1 fails because Re ζ(½+it) exceeds the archimedean density log t/2π at some heights.
+- **C341 (relentless step: edge freedom / Krein continuation).**
+  - Grow the window L → L + η, adjusting only the edge weights. PD on (−L, L) extends iff the continuous Krein/Schur reflection coefficient stays in the unit disc.
+  - Kill (REDISCOVERED): this is the Suzuki screw / canonical-system lane (corpus `SuzukiScrewWeilIdentity`, `SuzukiScrewCompactHullParityLaw`, `SuzukiFriedrichsExtension`). The sub-unit condition |γ(u)| < 1 at each u is again window positivity.
+- **C342 (pole-free blind positivity).**
+  - For a primitive χ mod q, the archimedean Weil density (1/2π)(log(q/π) + Re ψ((a+½)/2 + it/2)) satisfies Re ψ(x+iy) ≥ ψ(x), from the series for ψ. So it is everywhere positive once q > πe^{−ψ(¼)} = 8πe^{γ+π/2} ≈ 215.3 (even χ) or q > 8πe^{γ−π/2} ≈ 9.3 (odd χ). These are Serre's constants.
+  - Hence χ-PBAP (positivity on prime-blind PD tests) holds unconditionally for such χ. A proof of "GRH_χ ⟺ χ-PBAP" would prove GRH_χ, so no such equivalence can come from general principles.
+  - RH ⟺ PBAP therefore rests on ζ-specific structure: the pole and the conductor-1 Poisson summation (Hamburger uniqueness; the T₂-self-dual (N1) witness).
+  - For ζ, PBAP is non-trivial because the density is negative on |t| < t₀ ≈ 6.29 (θ'(t₀) = 0) and because the pole terms 2M₊M₋ (M± = ∫g e^{±u/2}) can be negative.
+  - Rough paper estimate: the Fejér test of support ±log 2 (trivially blind) has archimedean part ≈ −1.2 and pole part ≈ +1.4. So the pole is needed even on the trivial window ("pole criticality", the analogue of Wall 11 for the pole). This is not rigorous; no numerics were run.
+- **Correction to row 331.** The big-picture reading "RH = balance of nonzero lattice vectors against the zero vector" overreached.
+  - GRH_χ for χ ≠ χ₀ has no pole: θ_χ has no constant term (χ(0) = 0). It is equally open.
+  - So the cusp principle describes the blind-core transfer mechanism (null face), not where the RH difficulty lies.
+- **Census check (user directive: routes without positivity).** These candidate non-positivity mechanisms were re-examined:
+  - Sturm/Chebyshev orthogonality: Hardy's method; quantitative versions need mollified moments.
+  - Integrality plus continuity (collision counting): WD/TG.
+  - Cohn/Schur–Cohn derivative criterion: Speiser.
+  - Interlacing families / Borcea–Brändén: LP/TT/LA lanes.
+  - Temperedness: RH ⟺ the zero distribution Z = Φ − Σ Λ(n)n^{−½}δ_{±log n} is tempered. Bochner–Schwartz gives temperedness for free from PD, and the non-PD route needs √x cancellation.
+  - Landau/Pringsheim one-sided positivity: every nonnegative arithmetic Dirichlet series has its pole at the abscissa, which masks the zeros. Unmasking needs a one-sided √x bound (Wall 1). Deligne's tensor-power trick works over function fields because H⁰/H² are divided out exactly, which is Wall 5.
+  - No mechanism outside the classes (a)–(c) of row 318 was found.
+- **Verdict.** C340/C341 REDISCOVERED; C342 a structural survivor [P] (pole and conductor-1 dependence of RH ⟺ PBAP). No producer.
+
+## Row 333 — [L] MUST-1465: the open-cusp odd toy is rigid by a sign argument (formalizes row 331)
+- `RHTower/InversionSymmetricOddFourierBlindRigidity`:
+  - `fourier_neg_of_odd`;
+  - `tsum_add_eq_of_odd_fourierBlind`: Σ_k G(x+k) = −2 Im Ĝ(1) sin 2πx;
+  - `eq_zero_of_inversionSymmetric_odd_of_zero_on_Ico`;
+  - `inversionSymmetric_odd_four_term_periodization`;
+  - `inversionSymmetric_odd_parabolic_recursion`: H(v) − H(v+1) = 2 Im Ĝ(1) sin(2π/v)/v for v ≥ max(2, c/(2c−1));
+  - **`eq_zero_of_inversionSymmetric_odd_fourierBlind_of_golden`** (c² + c > 1 ⟹ G = 0).
+- Proof mechanism: at the open cusp the parabolic sum telescopes without alternation. The pole coefficient vanishes (Ĝ(0) = 0). For v > 2 every profile term sin(2π/(v+k))/(v+k) is positive.
+  - From v₀ ∈ (v*, w₂), where H(v₀) = 0: |H(v₀+N)| ≥ |β| sin(2π/v₀)/v₀, while H(v₀+N) → 0. So β = 0, H is 1-periodic near the cusp, and H = 0.
+  - No identity theorem is used, unlike the even, closed-cusp case.
+- Structural comparison:
+  - closed cusp (χ(T) = −1): alternating profile, needs analytic continuation;
+  - open cusp without pole: one-signed profile, elementary;
+  - open cusp with pole: incompatible with a compact-support anchor, since Σ a/(v+k) diverges.
+- Standard axioms; `lake --old` clean; wired into `RHTower.lean`.
+- Verdict: positive survivor of row 331 formalized. Null-face structure; no producer.
+
+## Row 334 — C343–C346 (paper kills) and C337 resolved: [L] CANNOT-551, a continuous Fourier-blind core of ratio 9/5
+- **Corpus check first** (`--mode deep`, Poisson/Voronoi blind positivity). `exists_weilPositiveFull_iff_primeBlindPositive` already contains the SDP duality of C340. The uniqueness uses a Ξ-divisible blind (N1) test (`WeilConeXiDivisibleBlindTest`), so blind cores are exactly the uniqueness witnesses.
+- **C343 (k-PBAP).** Schur multiples h·k of a fixed null core are always blind, and their PBAP reads Σ_ρ k̂(t − γ_ρ) ≥ 0. Killed: k̂ = Ξ²|g|² decays exponentially, so the on-line zero density near γ₀ swamps any off-line term. Strictly weaker than RH (insufficient detection).
+- **C344 (second moment).** For blind h, ∫ĥ|ζ(σ+it)|² = ζ(2σ)Σ_{(a,b)=1}(ab)^{−σ}h(log(a/b)). The continuation to σ = ½ crosses the pole: pole terms ĥ(±i(1−σ))ζ(2σ−1), and ζ(2σ) has a pole at ½. No inequality survives. Killed (Wall 2).
+- **C345 (antichain Gram tests).** These are blind only at narrow widths, so they detect nothing. INSIGNIFICANT.
+- **C346 (theta pointwise positivity).** Killed (Wall 13).
+- **C337 resolved (TRUE): R*(continuous) < 2.** [L] `RHTower/InversionSymmetricFourierBlindContinuousCore`.
+  - `exists_blindCoreMayer_eigen`: the twisted Mayer operator at s = ½ (three branches) has a continuous eigenfunction with eigenvalue −1, supported in [¼, 4/5].
+  - Mechanism: the lift S u(1/(r+m)) = (−1)^{m−1}u(r)/W(r) with W = Σ_{m≤3}1/(r+m) ≥ 13/12 on [0,1]. So MS = id on [0,1] and ‖S‖ ≤ 12/13. Then f = Σ(−1)^k S^k u₀ with M u₀ = 0 satisfies f + Sf = u₀ ≠ 0.
+  - Splitting each value among three Gauss branches is a contraction that only continuous functions can exploit.
+  - `exists_inversionSymmetric_fourierBlind_nine_fifths`: there is a nonzero continuous even G with G(1/x) = xG(x), vanishing on [0, 5/9), with Ĝ(n) = 0 for **every** integer n, supported in 5/9 ≤ |x| ≤ 9/5.
+  - G is built as G(x) = Γ(|x|) + Γ(1/|x|)/|x| with Γ = −M f((2x−1)/(1−x))/(1−x) on [½,1). The eigen-equation at (1−x)/x gives G(x) + G(1+x) + G(2−x) = 0. The periodization then vanishes, and `Real.fourierCoeff_tsum_comp_add` gives Ĝ(n) = 0.
+  - Also proved: `fourier_eq_zero_of_tsum_add_int_eq_zero` (periodization ≡ 0 ⟹ Ĝ(ℤ) = 0).
+  - Standard axioms; `lake --old` clean; wired.
+- **Consequences.**
+  - The continuous threshold satisfies R*_cont ∈ [12/7, 9/5] ≈ [1.714, 1.8].
+  - C331 (R* = 2) is FALSE for continuous G. It can hold at most for regular (H²/analytic, maybe C¹) G, where the analytic Mayer theory applies.
+  - The positivity-free rigidity chain (φ → 5/3 → 1+1/√2 → 12/7) is a continuous-function result, and it is now known to be near-sharp.
+  - This parallels the essential spectrum: on C^α the bounded-digit Mayer operator has essential radius ≥ 1 for small α, and −1 is an actual eigenvalue on continuous functions.
+- **Verdict.** C343–C346 killed. C337 settled with an explicit continuous counterexample (CANNOT-551). Null face, no producer. RH not proved.
