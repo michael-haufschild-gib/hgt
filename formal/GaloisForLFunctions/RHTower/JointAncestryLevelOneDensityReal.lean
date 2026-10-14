@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.JointAncestryLevelOneDensityL2
 import GaloisForLFunctions.RHTower.JointAncestryLocalizedCriterion
 import GaloisForLFunctions.RHTower.WeilLagFunctionHerglotz
+import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 
 /-! # The signed JAS density is real without a critical-line assumption
 
@@ -48,9 +49,19 @@ theorem star_jasLevelOneFiniteDensity (P : Finset Nat.Primes) :
   rw [hx, conj_jasZeroSumDensity]
 
 theorem star_jasLevelOneDensity : star jasLevelOneDensity = jasLevelOneDensity := by
-  have hstar := tendsto_jasLevelOneFiniteDensity.star
-  apply tendsto_nhds_unique hstar
-  simpa only [star_jasLevelOneFiniteDensity] using tendsto_jasLevelOneFiniteDensity
+  obtain ⟨ns, _hns, hlim⟩ :=
+    (tendstoInMeasure_of_tendsto_Lp tendsto_jasLevelOneFiniteDensity).exists_seq_tendsto_ae
+  have hreal : ∀ᵐ x ∂torusHaar Nat.Primes, ∀ N,
+      conj (jasLevelOneFiniteDensity (jasPrimePrefix N) x) =
+        jasLevelOneFiniteDensity (jasPrimePrefix N) x := by
+    refine ae_all_iff.mpr fun N => ?_
+    filter_upwards [coeFn_jasLevelOneFiniteDensity (jasPrimePrefix N)] with x hx
+    rw [hx, conj_jasZeroSumDensity]
+  apply Lp.ext
+  filter_upwards [Lp.coeFn_star jasLevelOneDensity, hlim, hreal] with x hs hx hr
+  rw [hs]
+  exact tendsto_nhds_unique hx.star
+    (hx.congr' (Eventually.of_forall fun N => (hr (ns N)).symm))
 
 theorem ae_im_jasLevelOneDensity_eq_zero :
     ∀ᵐ x ∂torusHaar Nat.Primes, (jasLevelOneDensity x).im = 0 := by

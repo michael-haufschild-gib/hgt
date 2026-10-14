@@ -3355,3 +3355,116 @@ n ≥ 0. Hence `TwistedArcMinimumPrinciple` holds and, by
   - The positivity-free rigidity chain (φ → 5/3 → 1+1/√2 → 12/7) is a continuous-function result, and it is now known to be near-sharp.
   - This parallels the essential spectrum: on C^α the bounded-digit Mayer operator has essential radius ≥ 1 for small α, and −1 is an actual eigenvalue on continuous functions.
 - **Verdict.** C343–C346 killed. C337 settled with an explicit continuous counterexample (CANNOT-551). Null face, no producer. RH not proved.
+
+## Row 335 — C347–C348 (producer, killed); C349 dimension-½ law; [L] CANNOT-552 core of ratio 97/56
+- **Corpus first.** The other agent's `SeparatedBumpPrimeBlindPositivity` proves PBAP for tests that are blind *by support geometry* (log(1/δ) margin). `WeilBlindPoleSignLaw` shows violators are pole-negative and that even tests lose at most γ(0). Lévy form: W_∞ = A(0)‖f‖² + ∫ω‖f − τ_x f‖² + 2P. The remaining PBAP gap is tests that are blind *by cancellation*.
+- **C347 (doubling induction).** D h(u) = h(2u) preserves blindness and PD, and halves the support. Conjecture: W_∞(h) ≥ κ W_∞(Dh) on blind tests, then induct down to the Connes–Consani window. Killed: under RH the difference distribution has spectral measure Σ_ρ (δ_γ − (κ/2)δ_{γ/2}), which is not positive, and node-supported terms cannot cancel the masses at γ/2.
+- **C348 (Adams averaging).** The dilations ψ_m: u ↦ mu (m ∈ ℕ) preserve the blind PD cone: Frobenius-type maps x ↦ x^m. Averages Σ a_m W∘ψ_m have zeros at γ/m with no manifest positivity. Killed (INSIGNIFICANT).
+  - Side observation: in function fields the nodes form a lattice {k log q}. Poisson summation then makes every blind zero-sum equal (L/2π)·2g·h(0), so the FF analogue of PBAP is trivially true and carries no information. For ℚ it is non-trivial because log ℕ is not a lattice.
+- **C349 (dimension-½ law, conjecture).** The homogeneous blind-core problem on support [c, 1/c] has a continuous nonzero solution iff the positive Gauss transfer operator at s = ½, restricted to the survivor set K_δ = {x : Tⁿx ≥ δ ∀n} (δ = (2c−1)/(1−c)), has spectral radius > 1, i.e. iff dim_H K_δ > ½ (Bowen).
+  - Existence: gauged lifting.
+  - Rigidity: |f| ≤ L_δ|f| with ρ(L_δ) < 1.
+  - So the continuous threshold R*_cont = (2+δ*)/(1+δ*) with dim_H K_{δ*} = ½: the critical-line value ½ appears as a Hausdorff dimension.
+  - Prediction: digits {1,2} (dim ≈ 0.531 > ½) give existence near ratio √3; K_{0.4} (ratio 12/7) has dim < ½. So R*_cont ∈ (12/7, √3).
+- **[L] CANNOT-552.** `RHTower/InversionSymmetricFourierBlindSqrtThreeCore`, `exists_inversionSymmetric_fourierBlind_ninety_seven_fifty_sixths`: a nonzero continuous even G with G(1/x) = xG(x), vanishing on [0, 56/97), with Ĝ(n) = 0 for all n ∈ ℤ. Ratio 97/56 ≈ 1.73214 (√3 ≈ 1.73205).
+  - Engine: f is supported on U = (15/41, 11/26) ∪ (15/26, 11/15), which is invariant under the branches r ↦ 1/(r+1) and r ↦ 1/(r+2).
+  - The lift is gauged: w = 7/6 below ½ and 1 above. With D(r) = 1/(r+1) + (7/6)/(r+2), D(11/15) = 535/533 and (7/6)·999/1183 < 533/535, so the lift contracts by 533/535.
+  - Ungauged, the two-branch weight drops below 1 near √3 − 1, so the gauge (a sub-eigenfunction of the positive transfer operator) is essential. This is the first rigorous instance of the dim > ½ mechanism of C349.
+  - Standard axioms; `lake --old` clean; wired.
+- **Bracket.** R*_cont ∈ [12/7, 97/56] ≈ [1.7143, 1.7321], from MUST-1464 and CANNOT-552.
+- **Verdict.** Producer cycles C347/C348 killed. Blind-core threshold bracketed to within 1%; the dimension-½ law is open. Null face. RH not proved.
+
+## Row 336 — C351–C352: localizing the PBAP gap (paper); δ* estimate for the dimension-½ law
+- **Setting (corpus, other agent).** In x-space, for k = f⋆f̃:
+  W_∞(k) = A(0)k(0) + 2∫_0^∞ ω(x)(k(0) − k(x))dx + 4∫_0^∞ cosh(x/2)k(x)dx,
+  with A(0) = ψ(¼) − log π ≈ −5.37 and ω(x) = e^{−x/2}/(1 − e^{−2x}). Tests blind by support geometry are settled (`SeparatedBumpPrimeBlindPositivity`). The gap is tests blind by cancellation.
+- **C351 (large-sieve PBAP).**
+  - Heuristic: if k_low(x) ≈ −h on [X − w, X + w] (two low-frequency components of f at distance X, width w), blindness forces the high-frequency part k_high to equal h at about N = w e^X nodes.
+  - Cauchy–Schwarz plus the mean value theorem: Nh ≤ (k_high(0)·∫|P|²dν)^{1/2} with P = Σ_{n∈N_X} n^{−ir}. If the mean value theorem's off-diagonal term is negligible (frequency R ≫ e^X), then k_high(0) ≳ h√N and the Lévy energy X·h·√(w e^X) beats the pole gain e^{X/2}a²w².
+  - Killed as a producer: the Montgomery–Vaughan error term O(n) ~ e^X dominates exactly when R ≲ e^X.
+  - Survivor (localization): PBAP violators must be blind by cancellation at near-Nyquist frequency R ≍ e^X, where the Dirichlet length is comparable to the height. This is the barrier named in the LA route's Needs and in Walls 1/10, here located inside the PBAP gap.
+- **C352 (divisor-chain uncertainty for blind measures).**
+  - A PD certificate whose spectrum lies in {0} ∪ ±log ℕ must be |Σ_k c_k n_k^{−ir}|² over a divisibility chain. Products over several primes create log-rational frequencies that blindness does not kill.
+  - Only single-prime chains are compatible: Fejér kernels in r·log p, periodic with period 2π/log p. They bound blind mass near 2πj/log p (≤ π²ν(ℝ)/(4(K+1)), K = number of powers ≤ N) but cannot localize to |r| < 6.29, where A < 0.
+  - Killed (INSIGNIFICANT as a producer). Structural reading: positive "kernel" certificates for blindness are one-dimensional (single prime), so they cannot see the multiplicative coupling of Wall 11.
+- **δ* estimate (C349).** K_δ = {x : Tⁿx ≥ δ ∀n}.
+  - For δ = 0.4 (ratio 12/7) a digit 2 must be followed by 2 forever, so K_{0.4} is countable and dim = 0 < ½. This is consistent with MUST-1464.
+  - For δ = (√3−1)/2 ≈ 0.366, K_δ ⊇ E_{1,2}, so dim ≈ 0.531 > ½. This is consistent with CANNOT-552.
+  - So δ* ∈ (0.366, 0.4) and R*_cont = (2+δ*)/(1+δ*) ∈ (12/7, √3), plausibly ≈ 1.72–1.73. Proving rigidity below 12/7 needs both a spectral-radius certificate for the homogeneous part and a new analytic step for (a₀, a₁) below c = 7/12.
+- **Verdict.** No producer. The PBAP gap is localized to near-Nyquist cancellation (C351 survivor). RH not proved.
+
+## Row 337 — C353: two-cluster cancellation-blind tests (paper, REDISCOVERED at Wall 2)
+- **Model.** f = f₁ + f₂ with clusters of width w < log 2 at distance D. The pole cross term is ≈ 2e^{D/2}∫C, where C = f₁ ⋆ f̃₂ is the cross-correlation. Blindness constrains C only on [D − w, D + w].
+- **Mechanism.** Blindness gives Σ_n n^{−½}(n^{½}C)(log n) = 0. By Perron/Poisson this is an exact identity: the pole-weighted mass ∫C e^{y/2} equals minus the pairing of Ĉ with ζ on the critical line (the "first moments are pole data" identity; corpus `ZetaSecondMomentPoleTransfer`, Wall-12/13 refinements).
+  - Bounding the pairing by ∫|Ĉ||ζ(½+ir)| against the Lévy energy ∫|f̂|² log r would need |ζ(½+ir)| ≲ log r where the spectral mass sits.
+  - That fails at large values of ζ. Blind C is anti-aligned with the Dirichlet atoms, so the triangle inequality is lossy, but there is no rigorous gain. This is Wall 2 (|ζ|² vs log|ζ|).
+- **Heuristic margin.**
+  - A first (L²) estimate suggested a PBAP violator: pole ~ √R a²w² against an energy of only log R·a²w.
+  - The correct L¹ (Cauchy–Schwarz on the chirp band) estimate gives energy ≳ log R·hw√R ≈ 0.6 log R·a²w²√R. So PBAP survives this family by a logarithmic margin (compare the log(1/δ) margin of `SeparatedBumpPrimeBlindPositivity`).
+  - A violator would have to sit in the super-Nyquist overlap regime, where the bands of different chirp rates k overlap with multiplicity ~2w√k. That is exactly where the large sieve (C351) applies.
+- **Verdict.** REDISCOVERED (first-moment identity) and killed at Wall 2. Survivor: the log-margin picture for two-cluster tests. No producer.
+
+## Row 338 — [L] MUST-1470: totally Fourier-blind cores need ratio ≥ 212/123 (homogeneous rigidity at δ > 1/φ²)
+- `RHTower/InversionSymmetricFourierBlindTotalRigidity`, `eq_zero_of_inversionSymmetric_totallyFourierBlind`: continuous, even, G(1/x) = xG(x), vanishing on [0, 123/212), Ĝ(n) = 0 for all n ∈ ℤ ⟹ G = 0.
+- **Proof.** Total blindness makes the twisted Mayer equation homogeneous; with δ = 34/89 only two branches act on [0,1]. Three maxima M_A, M_B, M_C of |ϑ| on [34/89, ½], [½, 34/55], [34/55, 1] satisfy:
+  - M_A ≤ (89/123)M_C + (89/212)M_A;
+  - M_B ≤ max((2/3)M_C + (2/5)M_A, (34/55)M_B);
+  - M_C ≤ (55/89)M_B.
+
+  Hence M_B ≤ 0.72 M_B and everything vanishes. The Fibonacci endpoints are tight: 55² = 3025 < 34·89 = 3026 and 55·89 = 4895 < 34·144 = 4896.
+- **Sharp bracket for totally blind continuous cores:** ratio threshold ∈ [212/123, 97/56] ≈ [1.72358, 1.73214], with existence from CANNOT-551/552, whose cores are totally blind.
+- The proof is a positive-operator contraction (the 2-branch transfer operator at s = ½ restricted to the survivor set has spectral radius < 1), matching the existence mechanism (spectral radius > 1 with a gauge). This is direct evidence for the dimension-½ law (C349): the threshold δ* ∈ [0.366, 0.382] sits between the survivor sets of dimension ½ ± ε. Here 1/φ² is the point where the C-interval's second branch first lands in the support.
+- Note: the earlier "hard limit ≈ 1.7236" of the halving method is exactly (4−φ)/(3−φ), the δ = 1/φ² point.
+- The full rigidity (blind only at |n| ≥ 2) below 12/7 still needs a new argument for a₀ = a₁ = 0 when c ∈ (0.5802, 7/12].
+- Standard axioms; `lake --old` clean; wired.
+
+## Row 339 — C354/C355 (user-directed): transfer operators and gauges for PBAP itself
+- **Recast.** A blind PD test is h = g⋆g̃. Put φ(t) = t^{−½}g(log t). Then x^{−½}h(log x) = A_φ(x) = ∫φ(t)φ(xt)dt (dilation autocorrelation):
+  - A_φ is inversion-symmetric: A_φ(1/x) = xA_φ(x).
+  - Its Mellin data on the critical line are |𝓜φ(½+it)|² = ĥ ≥ 0.
+  - Prime-blindness is **pointwise**: A_φ(n) = 0 for n ≥ 2.
+  - The pole term is ∫A_φ = 𝓜φ(0)𝓜φ(1) = Â_φ(0), the value at the cusp point ξ = 0 of the Fourier side.
+- **Where the Mayer structure lives.** The Gauss–Farey/Mayer recursion (MUST-1457…1470) needs ONE function that is inversion-symmetric and whose Fourier transform carries the blindness, i.e. whose periodization has degree 1.
+  - For PBAP that function would be Â_φ = 2C A_φ: Poisson plus pointwise blindness give Σ_k Â_φ(ξ+k) = 2A_φ(1)cos 2πξ.
+  - But C A_φ has Mellin data e^{2iθ(t)}|𝓜φ|², with θ the Riemann–Siegel phase (corpus `CosDilationKernelMellinInversion` docstring).
+  - [L] new: `CosineTransformInversionTwistObstruction.eq_zero_of_inversionSymmetric_of_cosTransform_inversionSymmetric`: a smooth compactly supported f with f and Cf both inversion-symmetric is 0. Mechanism: 𝓜f(½+iτ)(Γ_ℝ(½+iτ)² − Γ_ℝ(½−iτ)²) = 0, and the bracket vanishes only on the half-Gram set θ(τ) ∈ (π/2)ℤ, which is discrete because Q(z) = Γ_ℝ(½−iz)^{−2} − Γ_ℝ(½+iz)^{−2} is entire and Q(−i/4) ≠ 0.
+  - So PBAP's own kernel never admits the Mayer recursion. The two structures are separated by e^{2iθ} and coexist only after ζ(½+it)² absorbs the phase, i.e. on Ξ²-divisible (null-face) tests. That is exactly where the blind-core rigidity theorems live.
+- **Gauge question (C355).**
+  - (i) Without the recursion, there is no equation for a gauge to act on. A "gauged Mayer inequality" for the twisted object Â_φ has a twist defect with Mellin data 2i sin(2θ(t))·ĥ(t), of the same size as the test (|sin 2θ| has mean 2/π), so no smallness is available.
+  - (ii) The pole of ζ is the harmonic divergence Σ_m 1/(r+m) of the untwisted Gauss operator at s = ½. On digits ≤ N the positive operator has spectral radius ≥ H_{N+1} − 1 ~ log N (evaluate at the minimum of any positive gauge). For a test window L the relevant N is about e^L, so the operator expands (rate ~L) rather than contracting. Gauges certify existence there, not positivity.
+  - (iii) Through Mayer–Efrat, zeros of ζ(2s) are ±1-eigenvalues of L_s at s = ρ/2, with Re s < ½: beyond the pole at s = ½, where L_s exists only by analytic continuation and is not a positive operator. A positive sub-eigenfunction (gauge) cannot exist there.
+- **Verdict.** The answer to the user's question is negative and sharp.
+  - The transfer-operator/gauge method is confined to the null face: it is exactly the method that proves the null-face rigidity thresholds.
+  - On PBAP's own kernel the Mayer structure is obstructed by the Riemann–Siegel phase, now proven in Lean.
+  - The pole term sits at the open-cusp divergence, where no contracting gauge exists.
+  - Positive survivor: the half-Gram set θ(τ) ∈ (π/2)ℤ is the exact locus where PBAP data and Mayer data agree. Tests whose spectrum concentrates near half-Gram points have small twist defect; that is a possible new test class to examine (C356).
+
+## Row 340 — C356 (user-directed): spectra near the half-Gram points — killed by the zero-slack principle in cusp form
+- **Setting.** For a test f, the PBAP kernel A_f has Mellin data ĥ = |𝓜f(½+it)|². The Mayer-side kernel B = C A_f has data e^{2iθ}ĥ. The twist defect B − ιB has on-line data 2i sin(2θ(t)) ĥ(t).
+- **Size of the regular defect.** Near a half-Gram point t_k (θ(t_k) = kπ/2), |sin 2θ| ≈ π|t − t_k|/Δ with spacing Δ ≈ π/log T.
+  - A relative defect ε needs spectral concentration within width w ≈ εΔ/π ≈ ε/log T. That forces log-support L ≳ log T/ε, and blindness up to e^L ≳ T^{1/ε}.
+  - Positive Dirichlet-orthogonal measures on the half-Gram set plausibly exist (no Dirichlet polynomial can be ≥ 1 on equidistributed points). So the class is non-empty, but only for very long tests.
+  - Within the trivially blind window (L < log 2), no such concentration is possible once T > ~55.
+- **Zero-slack test (decisive).** The PBAP pole term equals the cusp value of the defect:
+  - (C A_f)(0) = 2(∫f)(∫f/y) = 2𝓜f(1)𝓜f(0) = pole term, while ι(C A_f)(x) = (C A_f)(1/x)/x → 0 as x → 0.
+  - So the singular part of the defect at the cusp is exactly the pole term. It is a residue at s = 0, 1 of γ(s)𝓜A(1−s) − γ(1−s)𝓜A(s), which on-line spectral concentration cannot touch.
+  - Dichotomy:
+    - (a) negligible pole (high-frequency, low exponential moments): W = pole + arch ≈ (log T/2π)·mass, so PBAP holds trivially. W is far from the null face, and no off-line zero is detected, because detection by Phragmén–Lindelöf growth e^{β'L} forces W = Σ_ρ ĥ(γ_ρ) to be hugely negative, hence a hugely negative pole.
+    - (b) RH-relevant (large negative pole): the cusp defect is large.
+  - In neither case is the perturbed Mayer equation a small perturbation where the RH content lies. Independently, B = C A_f is not compactly supported (Paley–Wiener), so there is no anchor or branch truncation, and the untwisted Gauss operator at s = ½ diverges (harmonic sum = pole).
+- **[L] `RHTower/PrimeBlindPoleCuspIdentity`.**
+  - `integral_Ioi_dilationAutocorr`: ∫_0^∞ A_f = (∫f)(∫f/y), by Fubini.
+  - `halfLineCosTransform_dilationAutocorr_zero`: C A_f(0) = 2(∫f)(∫f/y).
+  - `cosDilationKernel_zero_eq`: Ψ_f(0) = 2(∫f)(∫f/y).
+  - `halfLineCosTransform_dilationAutocorr_zero_eq_cosDilationKernel_zero`: C A_f(0) = Ψ_f(0).
+  - Three quantities coincide: the PBAP pole term, the cusp value of the twisted kernel, and the zeroth Farey coefficient a₀ of the null-face problem built from the same f.
+- **Positive survivor.** "PBAP pole term = a₀ of the null-face problem" links the two problems. The blind-core rigidity theorems force a₀ = 0 (indeed f = 0) for Ψ-blind f of small support ratio, so the PBAP test of such an f is never Ψ-blind unless trivial. A possible bridge (C357): for doubly blind f (A_f(n) = 0 and Ψ_f(n) = 0, n ≥ 2), Poisson gives pole = 2‖f‖² − 2Ψ_f(1).
+- **Verdict.** C356 killed. The zero-slack principle holds in cusp form: the pole is the singular part of the archimedean twist defect at the cusp. RH not proved.
+
+## Row 341 — C357: doubly blind tests (A_f(n) = 0 and Ψ_f(n) = 0, n ≥ 2) — REDISCOVERED core, one exact spectral form
+- **Rediscovered.** `RHTower/DoublyBlindCorePoleDistance` already proves pole = Ψ_f(0) = ∫(f − JCf)² for doubly blind f, its nonnegativity, and rigidity (pole = 0 or ∫f = 0 ⟹ f = 0).
+- **New exact form [P].** 𝓜(JCf)(½+it) = e^{−2iθ(t)}𝓜f(½+it), so ‖f − JCf‖² = (1/2π)∫|𝓜f(½+it)|²·4sin²θ(t)dt for every f. Ψ_f(n) = (1/2π)∫|𝓜f|² n^{−½}cos(2θ(t) − t log n)dt. Poisson gives, for every prime-blind f,
+  W(f) = (1/2π)∫|𝓜f(½+it)|²·D(t)dt − 2Σ_{n≥2}Ψ_f(n), with D = 2θ' + 4sin²θ.
+  For doubly blind f the sum vanishes, and W is an on-line multiplier form.
+- **Meaning.** D < 0 only in two fixed low windows (around t = 0 and around the point where θ = −π with θ' < 0, both below t ≈ 6.3). So doubly blind PBAP can fail only through low-frequency spectral concentration. A high off-line zero is invisible to doubly blind tests, because pole ≥ 0 and arch ≈ (log T)·mass. This is the zero-slack principle again.
+- **Verdict.** REDISCOVERED (core) / INSIGNIFICANT (the D-form). The doubly blind class is not RH-detecting at large height. No producer. RH not proved.

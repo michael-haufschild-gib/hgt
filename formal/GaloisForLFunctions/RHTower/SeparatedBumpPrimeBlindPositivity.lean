@@ -14,9 +14,10 @@ Assume the centres are `s`-separated (`|x_i − x_j| ≥ s > 2δ`) and that ever
 `δ < log 2`, then `f ⋆ f̃` vanishes at every `±log n` (`weilTest_bumpSum_log_eq_zero`): the test
 is prime-blind by its support geometry, not by cancellation.
 
-**Theorem** (`exists_le_weilArchRe_bumpSum`).  For such configurations the pole and archimedean
-part of the Weil functional is nonnegative once `δ` is small in terms of `s` alone, whatever the
-number of bumps:
+**Theorem** (`exists_le_weilArchRe_bumpSum`).  For configurations of span `< log(2/δ)` (in
+particular support-blind ones, `abs_sub_lt_log_of_geometry'`) the pole and archimedean part of the
+Weil functional is nonnegative once `δ` is small in terms of `s` alone, whatever the number of
+bumps:
 
 `W_∞(f ⋆ f̃) ≥ ‖f‖² (A(0) + e^{−s/2} log((s − δ)/δ) − 2√2 e^{δ/2} N √δ)`
 
@@ -394,6 +395,16 @@ theorem abs_sub_lt_log_of_geometry {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) {x 
     obtain ⟨n, hn, hclose⟩ := exists_log_near (d := x j - x i) hδ hδ1 (by linarith)
     exact absurd (hgeom j i (Ne.symm hij) n hn) (not_lt.mpr hclose.le)
 
+/-- Support blindness bounds every difference, the diagonal included. -/
+theorem abs_sub_lt_log_of_geometry' {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) {x : Fin N → ℝ}
+    (hgeom : ∀ i j, i ≠ j → ∀ n : ℕ, 2 ≤ n → δ < |x i - x j - Real.log n|) (i j : Fin N) :
+    |x i - x j| < Real.log (2 / δ) := by
+  by_cases hij : i = j
+  · subst hij
+    rw [sub_self, abs_zero]
+    exact Real.log_pos (by rw [lt_div_iff₀ hδ]; linarith)
+  · exact abs_sub_lt_log_of_geometry hδ hδ1 hgeom hij
+
 /-! ## The pole term -/
 
 theorem integral_translate_mul_exp {φ : ℝ → ℝ} (c κ : ℝ) :
@@ -534,33 +545,25 @@ theorem abs_pole_le_of_exp_le {φ : ℝ → ℝ} {δ s : ℝ} (hφ : ContDiff �
           ∫ v, φ v ^ 2) := by ring
     _ = 2 * Real.exp (δ / 2) * (B * δ) * N * ∫ u, f u ^ 2 := by rw [hE]
 
-/-- **The pole term of a support-blind configuration is `O(N √δ ‖f‖²)`.** -/
+/-- **The pole term of a configuration of span `< log(2/δ)` is `O(N √δ ‖f‖²)`.** -/
 theorem abs_pole_le {φ : ℝ → ℝ} {δ s : ℝ} (hφ : ContDiff ℝ 2 φ)
-    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (hδ : 0 < δ) (hδ1 : δ < 1) (hδs : δ < s)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (hδ : 0 < δ) (hδs : δ < s)
     {a x : Fin N → ℝ} (hsep : ∀ i j, i ≠ j → s ≤ |x i - x j|)
-    (hgeom : ∀ i j, i ≠ j → ∀ n : ℕ, 2 ≤ n → δ < |x i - x j - Real.log n|) :
+    (hspan : ∀ i j, |x i - x j| < Real.log (2 / δ)) :
     |2 * ∫ p : ℝ × ℝ, bumpSum φ a x p.1 * bumpSum φ a x p.2 * Real.cosh ((p.1 - p.2) / 2)| ≤
       2 * Real.exp (δ / 2) * Real.sqrt (2 * δ) * N * ∫ u, bumpSum φ a x u ^ 2 := by
-  have hsq2 : 1 ≤ Real.sqrt (2 / δ) := by
-    rw [Real.one_le_sqrt, le_div_iff₀ hδ]
-    linarith
   have hexp : ∀ i j : Fin N, Real.exp (1 / 2 * x i) * Real.exp (-1 / 2 * x j) ≤
       Real.sqrt (2 / δ) := by
     intro i j
     rw [← Real.exp_add]
-    by_cases hij : i = j
-    · subst hij
-      rw [show 1 / 2 * x i + -1 / 2 * x i = 0 by ring, Real.exp_zero]
-      exact hsq2
-    · have hspan := abs_sub_lt_log_of_geometry hδ hδ1 hgeom hij
-      have h2 : 1 / 2 * x i + -1 / 2 * x j ≤ Real.log (2 / δ) / 2 := by
-        have := le_abs_self (x i - x j)
-        linarith
-      calc Real.exp (1 / 2 * x i + -1 / 2 * x j) ≤ Real.exp (Real.log (2 / δ) / 2) :=
-            Real.exp_le_exp.mpr h2
-        _ = Real.sqrt (2 / δ) := by
-            rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (by positivity)]
-            ring_nf
+    have h2 : 1 / 2 * x i + -1 / 2 * x j ≤ Real.log (2 / δ) / 2 := by
+      have := le_abs_self (x i - x j)
+      linarith [hspan i j]
+    calc Real.exp (1 / 2 * x i + -1 / 2 * x j) ≤ Real.exp (Real.log (2 / δ) / 2) :=
+          Real.exp_le_exp.mpr h2
+      _ = Real.sqrt (2 / δ) := by
+          rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (by positivity)]
+          ring_nf
   have hsqrt : Real.sqrt (2 / δ) * δ = Real.sqrt (2 * δ) := by
     rw [show 2 * δ = (2 / δ) * δ ^ 2 by field_simp, Real.sqrt_mul (by positivity),
       Real.sqrt_sq hδ.le]
@@ -591,17 +594,17 @@ theorem levy_sub_abs_pole_le_weilArchRe {φ : ℝ → ℝ} {δ s : ℝ} (hφ : C
     Real.cosh ((p.1 - p.2) / 2))
   nlinarith
 
-/-- **Quantitative prime-blind positivity for separated narrow bumps.** -/
+/-- **Quantitative positivity for separated narrow bumps of span `< log(2/δ)`.** -/
 theorem le_weilArchRe_bumpSum {φ : ℝ → ℝ} {δ s : ℝ} (hφ : ContDiff ℝ 2 φ)
-    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (hδ : 0 < δ) (hδ1 : δ < 1) (hδs : 2 * δ < s)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (hδ : 0 < δ) (hδs : 2 * δ < s)
     {a x : Fin N → ℝ} (hsep : ∀ i j, i ≠ j → s ≤ |x i - x j|)
-    (hgeom : ∀ i j, i ≠ j → ∀ n : ℕ, 2 ≤ n → δ < |x i - x j - Real.log n|) :
+    (hspan : ∀ i j, |x i - x j| < Real.log (2 / δ)) :
     (EF.gammaBracket 0 + Real.exp (-s / 2) * Real.log ((s - δ) / δ) -
         2 * Real.exp (δ / 2) * Real.sqrt (2 * δ) * N) * ∫ u, bumpSum φ a x u ^ 2 ≤
       WeilOneSided.weilArchRe (EF.weilTest (fun u => (bumpSum φ a x u : ℂ))
         (fun u => (bumpSum φ a x u : ℂ))) := by
   have h := levy_sub_abs_pole_le_weilArchRe (a := a) hφ hφs hδ hδs hsep
-  have hpole := abs_pole_le (a := a) hφ hφs hδ hδ1 (by linarith) hsep hgeom
+  have hpole := abs_pole_le (a := a) hφ hφs hδ (by linarith) hsep hspan
   nlinarith
 
 /-- **Packing.**  A finite family of `s`-separated points whose mutual distances stay below `L`
@@ -658,17 +661,16 @@ theorem natCast_le_one_add_div_of_separated {x : Fin N → ℝ} {s L : ℝ} (hs 
     fun i _ j _ => hdiam i j
   rwa [Finset.card_univ, Fintype.card_fin] at h
 
-/-- **Prime-blind positivity for separated narrow bumps, uniformly in the number of bumps.**
-For every separation `s > 0` there is `δ₀ > 0` such that for all `0 < δ < δ₀` every
-configuration of any number of bumps of width `δ`, `s`-separated and blind by support (every
-difference more than `δ` from every `log n`), has nonnegative pole and archimedean energy.
-Blindness confines the centres to an interval of length `log(2/δ)`, so there are at most
-`1 + log(2/δ)/s` of them and the pole loss is `O(√δ log(1/δ))`. -/
+/-- **Positivity for separated narrow bumps of span `< log(2/δ)`, uniformly in the number of
+bumps.**  For every separation `s > 0` there is `δ₀ > 0` such that for all `0 < δ < δ₀` every
+configuration of any number of bumps of width `δ`, `s`-separated and of span `< log(2/δ)`, has
+nonnegative pole and archimedean energy.  There are at most `1 + log(2/δ)/s` centres, so the pole
+loss is `O(√δ log(1/δ))`. -/
 theorem exists_le_weilArchRe_bumpSum {s : ℝ} (hs : 0 < s) :
     ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ < δ₀ → ∀ (N : ℕ) (φ : ℝ → ℝ) (a x : Fin N → ℝ),
       ContDiff ℝ 2 φ → (∀ u, δ / 2 < |u| → φ u = 0) →
       (∀ i j, i ≠ j → s ≤ |x i - x j|) →
-      (∀ i j, i ≠ j → ∀ n : ℕ, 2 ≤ n → δ < |x i - x j - Real.log n|) →
+      (∀ i j, |x i - x j| < Real.log (2 / δ)) →
       0 ≤ WeilOneSided.weilArchRe (EF.weilTest (fun u => (bumpSum φ a x u : ℂ))
         (fun u => (bumpSum φ a x u : ℂ))) := by
   set C : ℝ := |EF.gammaBracket 0| + 1 with hC
@@ -679,13 +681,13 @@ theorem exists_le_weilArchRe_bumpSum {s : ℝ} (hs : 0 < s) :
   have he0 : 0 < e := Real.exp_pos _
   have hε0 : 0 < ε := lt_min (by norm_num) (by positivity)
   have hδ₀pos : 0 < δ₀ := by positivity
-  refine ⟨δ₀, hδ₀pos, fun δ hδ hδlt N φ a x hφ hφs hsep hgeom => ?_⟩
+  refine ⟨δ₀, hδ₀pos, fun δ hδ hδlt N φ a x hφ hφs hsep hspan => ?_⟩
   have hd1 : δ < 1 / 2 := lt_of_lt_of_le hδlt ((min_le_left _ _).trans (min_le_left _ _))
   have hd2 : δ < s / 4 := lt_of_lt_of_le hδlt ((min_le_left _ _).trans (min_le_right _ _))
   have hd3 : δ < ε ^ 2 / 2 := lt_of_lt_of_le hδlt ((min_le_right _ _).trans (min_le_left _ _))
   have hd4 : δ < 2 * Real.exp (-M) :=
     lt_of_lt_of_le hδlt ((min_le_right _ _).trans (min_le_right _ _))
-  have key := le_weilArchRe_bumpSum (a := a) hφ hφs hδ (by linarith) (by linarith) hsep hgeom
+  have key := le_weilArchRe_bumpSum (a := a) hφ hφs hδ (by linarith) hsep hspan
   refine le_trans ?_ key
   refine mul_nonneg ?_ (integral_nonneg fun u => sq_nonneg _)
   have h2δ : 1 ≤ 2 / δ := by rw [le_div_iff₀ hδ]; linarith
@@ -693,8 +695,7 @@ theorem exists_le_weilArchRe_bumpSum {s : ℝ} (hs : 0 < s) :
   have hLg0 : 0 ≤ Lg := Real.log_nonneg h2δ
   -- packing
   have hN : (N : ℝ) ≤ 1 + Lg / s :=
-    natCast_le_one_add_div_of_separated hs hLg0 hsep fun i j hij =>
-      abs_sub_lt_log_of_geometry hδ (by linarith) hgeom hij
+    natCast_le_one_add_div_of_separated hs hLg0 hsep fun i j _ => hspan i j
   -- the logarithmic gain
   have hLgM : M ≤ Lg := by
     have h1 : Real.exp M ≤ 2 / δ := by
@@ -838,8 +839,10 @@ theorem exists_primeBlind_nonneg_bumpSum {s : ℝ} (hs : 0 < s) :
     have := Real.log_two_gt_d9
     have := lt_of_lt_of_le hδlt (min_le_right _ _)
     linarith
+  have hδ1 : δ < 1 := by linarith [lt_of_lt_of_le hδlt (min_le_right _ _)]
   exact ⟨fun n hn => weilTest_bumpSum_log_eq_zero hφs hδ2 hgeom hn,
-    hpos δ hδ (lt_of_lt_of_le hδlt (min_le_left _ _)) N φ a x hφ hφs hsep hgeom⟩
+    hpos δ hδ (lt_of_lt_of_le hδlt (min_le_left _ _)) N φ a x hφ hφs hsep
+      (abs_sub_lt_log_of_geometry' hδ hδ1 hgeom)⟩
 
 end RHTower.SeparatedBump
 

@@ -48,8 +48,8 @@ theorem torusFourierL2_jasLevelOneDensity (n : Nat.Primes →₀ ℤ) :
   apply tsum_congr
   intro q
   rw [map_smul, torusFourierL2_jasLevelOneSectorLimit]
-  simp only [show (1 : ℝ) - 1 / 2 = 1 / 2 by ring,
-    lagWeight, smul_eq_mul, one_div, div_eq_mul_inv, mul_comm]
+  rw [show (1 : ℝ) - 1 / 2 = 1 / 2 by ring]
+  simp only [lagWeight, smul_eq_mul, div_eq_mul_inv, one_mul, mul_comm]
 
 theorem integral_jasLevelOneDensity :
     ∫ x, jasLevelOneDensity x ∂torusHaar Nat.Primes = (poleSharpConstant : ℂ) := by

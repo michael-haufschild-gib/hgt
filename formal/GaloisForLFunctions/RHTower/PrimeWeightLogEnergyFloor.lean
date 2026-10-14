@@ -293,4 +293,44 @@ theorem eventually_sum_vonMangoldt_sq_div_le {ε : ℝ} (hε : 0 < ε) :
   have a2 := (abs_le.mp h).2
   linarith
 
+/-- The Chebyshev weights `θ(k) = log k` on primes, `0` elsewhere. -/
+def thetaWeight (k : ℕ) : ℝ := if k.Prime then Real.log k else 0
+
+/-- **Stability of the energy floor.**  For prime weights normalized by the prime number theorem,
+the energy distance to the Chebyshev weights is controlled by the energy excess over `½ log² T`:
+eventually `Σ_{k ≤ T} (c(k) − θ(k))²/k ≤ Σ_{k ≤ T} c(k)²/k − (½ − ε) log² T`.  Hence weights of
+asymptotically minimal energy are asymptotically the Chebyshev weights: `Λ` is the unique energy
+minimizer up to `o(log² T)` in the energy metric. -/
+theorem eventually_sum_sub_thetaWeight_sq_div_le {c : ℕ → ℝ}
+    (hc : ∀ k, ¬ k.Prime → c k = 0)
+    (hS : Tendsto (fun x => partialSum c x / x) atTop (𝓝 1)) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ T in atTop, ∑ k ∈ Finset.Icc 0 ⌊T⌋₊, (c k - thetaWeight k) ^ 2 / k ≤
+      ∑ k ∈ Finset.Icc 0 ⌊T⌋₊, c k ^ 2 / k - (1 / 2 - ε) * Real.log T ^ 2 := by
+  have hc0 : c 0 = 0 := hc 0 Nat.not_prime_zero
+  have hc1 : c 1 = 0 := hc 1 Nat.not_prime_one
+  have hΛ0 : (fun k => Λ k) 0 = 0 := by simp
+  have hΛ1 : (fun k => Λ k) 1 = 0 := by simp
+  filter_upwards [eventually_abs_sum_logOver_mul_sub_le hc0 hc1 hS (ε := ε / 3) (by linarith),
+    eventually_abs_sum_logOver_mul_sub_le hΛ0 hΛ1 tendsto_partialSum_vonMangoldt_div
+      (ε := ε / 3) (by linarith)] with T h1 h2
+  have hpt : ∀ k ∈ Finset.Icc 0 ⌊T⌋₊,
+      (c k - thetaWeight k) ^ 2 / k ≤ c k ^ 2 / k - 2 * (logOver k * c k) + logOver k * Λ k := by
+    intro k _
+    by_cases hk : k.Prime
+    · have hk0 : (0 : ℝ) < k := by exact_mod_cast hk.pos
+      rw [thetaWeight, if_pos hk, vonMangoldt_apply_prime hk, logOver]
+      apply le_of_eq
+      field_simp
+      ring
+    · rw [thetaWeight, if_neg hk, hc k hk]
+      have := logOver_mul_vonMangoldt_nonneg k
+      simp only [sub_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, zero_div,
+        mul_zero]
+      linarith
+  have hsum := Finset.sum_le_sum hpt
+  rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum] at hsum
+  have a1 := (abs_le.mp h1).1
+  have a2 := (abs_le.mp h2).2
+  linarith
+
 end RHTower.PrimeWeightEnergy
