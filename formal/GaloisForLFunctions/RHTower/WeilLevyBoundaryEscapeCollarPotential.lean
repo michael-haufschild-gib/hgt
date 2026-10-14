@@ -224,7 +224,9 @@ theorem two_mul_autocorr_le_integral_sq_of_half_le {A : Set ℝ} {h : ℝ → �
 theorem antitoneOn_archLevyDensity : AntitoneOn archLevyDensity (Ioi 0) := by
   intro a ha b hb hab
   have h := antitoneOn_jumpKernel ha hb hab
-  rwa [if_pos (mem_Ioi.mp ha), if_pos (mem_Ioi.mp hb)] at h
+  simpa only [jumpKernel, if_pos (mem_Ioi.mp ha), if_pos (mem_Ioi.mp hb),
+    max_eq_left (archLevyDensity_pos (mem_Ioi.mp ha)).le,
+    max_eq_left (archLevyDensity_pos (mem_Ioi.mp hb)).le] using h
 
 /-- `screwRegularKernel` is monotone on `(0, ∞)` because `2 cosh(x / 2)` is monotone and
 `archLevyDensity` is antitone on `(0, ∞)`. -/

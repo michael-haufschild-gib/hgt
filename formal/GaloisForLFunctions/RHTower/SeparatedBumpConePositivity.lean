@@ -197,7 +197,7 @@ theorem integral_autocorr_mul_exp {φ : ℝ → ℝ} {δ : ℝ} (hφ : ContDiff 
   have hfz : ∀ u, A < |u| → f u = 0 := fun u hu => bumpSum_eq_zero hφs a x hu
   set F : ℝ → ℝ → ℝ := fun y u => f u * f (u - y) * Real.exp (y / 2) with hFdef
   have hFc : Continuous (Function.uncurry F) := by
-    simp only [hFdef, Function.uncurry]
+    simp only [hFdef]
     fun_prop
   have hFs : HasCompactSupport (Function.uncurry F) := by
     refine HasCompactSupport.intro ((isCompact_Icc (a := -(2 * A)) (b := 2 * A)).prod
@@ -249,7 +249,7 @@ theorem intervalIntegral_window_le {Y d δ : ℝ} (hY : 0 ≤ Y) (hδ : 0 < δ) 
   split_ifs with hd
   · rw [mul_one, heq, intervalIntegral.integral_of_le (by linarith)]
     have hint : Integrable ((Icc (d - δ) (d + δ)).indicator (1 : ℝ → ℝ)) :=
-      (integrable_indicator_iff measurableSet_Icc).mpr (integrableOn_const)
+      (integrable_indicator_iff measurableSet_Icc).mpr (integrableOn_const measure_Icc_lt_top.ne)
     calc ∫ y in Ioc (-Y) Y, (Icc (d - δ) (d + δ)).indicator 1 y
         ≤ ∫ y, (Icc (d - δ) (d + δ)).indicator (1 : ℝ → ℝ) y :=
           setIntegral_le_integral hint (Eventually.of_forall fun y => by
@@ -281,7 +281,8 @@ theorem window_eq_indicator (d δ : ℝ) :
 theorem intervalIntegrable_window (d δ a b : ℝ) :
     IntervalIntegrable (fun y => if |y - d| ≤ δ then (1 : ℝ) else 0) volume a b := by
   rw [window_eq_indicator]
-  exact ((integrable_indicator_iff measurableSet_Icc).mpr integrableOn_const).intervalIntegrable
+  exact ((integrable_indicator_iff measurableSet_Icc).mpr
+    (integrableOn_const measure_Icc_lt_top.ne)).intervalIntegrable
 
 /-- The number of centres within `M` of a given one is at most `2 + 2M/s`. -/
 theorem card_near_le {s M : ℝ} (hs : 0 < s) (hM : 0 ≤ M) {x : Fin N → ℝ}
@@ -312,12 +313,17 @@ theorem abs_integral_near_le {φ : ℝ → ℝ} {δ s : ℝ} (hφ : ContDiff ℝ
   have hYY : -Y ≤ Y := by linarith
   have hcont : Continuous fun y => autocorr φ a x y * Real.exp (y / 2) :=
     (continuous_autocorr hφ hφs a x).mul (by fun_prop)
-  have hBint : IntervalIntegrable B volume (-Y) Y := by
-    refine (IntervalIntegrable.const_mul ?_ _)
-    refine (IntervalIntegrable.const_mul ?_ _)
-    refine IntervalIntegrable.sum (Finset.univ) fun i _ => ?_
-    refine IntervalIntegrable.sum (Finset.univ) fun j _ => ?_
-    exact (intervalIntegrable_window _ δ _ _).const_mul _
+  have hind_int : ∀ i j, Integrable (ind i j) := fun i j => by
+    simp only [hind]
+    rw [window_eq_indicator]
+    exact (integrable_indicator_iff measurableSet_Icc).mpr
+      (integrableOn_const measure_Icc_lt_top.ne)
+  have hrow_int : ∀ i, Integrable fun y => ∑ j, |a i| * |a j| * ind i j y := fun i =>
+    integrable_finsetSum _ fun j _ => (hind_int i j).const_mul _
+  have hsum_int : Integrable fun y => ∑ i, ∑ j, |a i| * |a j| * ind i j y :=
+    integrable_finsetSum _ fun i _ => hrow_int i
+  have hBint : IntervalIntegrable B volume (-Y) Y :=
+    ((hsum_int.const_mul W).const_mul (Real.exp (Y / 2))).intervalIntegrable
   have hpt : ∀ y ∈ Icc (-Y) Y, |autocorr φ a x y * Real.exp (y / 2)| ≤ B y := by
     intro y hy
     rw [abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -334,15 +340,18 @@ theorem abs_integral_near_le {φ : ℝ → ℝ} {δ s : ℝ} (hφ : ContDiff ℝ
   -- integrate the majorant
   have hBval : ∫ y in -Y..Y, B y = Real.exp (Y / 2) * (W * ∑ i, ∑ j, |a i| * |a j| *
       ∫ y in -Y..Y, ind i j y) := by
+    have hs1 : ∫ y in -Y..Y, ∑ i, ∑ j, |a i| * |a j| * ind i j y =
+        ∑ i, ∫ y in -Y..Y, ∑ j, |a i| * |a j| * ind i j y :=
+      intervalIntegral.integral_finsetSum fun i _ => (hrow_int i).intervalIntegrable
+    have hs2 : ∀ i, ∫ y in -Y..Y, ∑ j, |a i| * |a j| * ind i j y =
+        ∑ j, |a i| * |a j| * ∫ y in -Y..Y, ind i j y := fun i => by
+      rw [intervalIntegral.integral_finsetSum fun j _ =>
+        ((hind_int i j).const_mul _).intervalIntegrable]
+      exact Finset.sum_congr rfl fun j _ => intervalIntegral.integral_const_mul _ _
     simp only [hB]
-    rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
-      intervalIntegral.integral_finsetSum fun i _ => IntervalIntegrable.sum _ fun j _ =>
-        (intervalIntegrable_window _ δ _ _).const_mul _]
+    rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, hs1]
     congr 2
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [intervalIntegral.integral_finsetSum fun j _ =>
-      (intervalIntegrable_window _ δ _ _).const_mul _]
-    exact Finset.sum_congr rfl fun j _ => intervalIntegral.integral_const_mul _ _
+    exact Finset.sum_congr rfl fun i _ => hs2 i
   -- the Schur bound
   set K : Fin N → Fin N → ℝ := fun i j => if |x i - x j| ≤ Y + δ then 1 else 0 with hK
   have hK0 : ∀ i j, 0 ≤ K i j := fun i j => by simp only [hK]; split_ifs <;> norm_num
@@ -398,7 +407,6 @@ theorem abs_integral_left_le {φ : ℝ → ℝ} {δ : ℝ} (hφ : ContDiff ℝ 2
     have := intervalIntegral.integral_comp_div (a := -T) (b := -Y) Real.exp
       (by norm_num : (2 : ℝ) ≠ 0)
     rw [this, integral_exp, smul_eq_mul]
-    ring_nf
   calc |∫ y in -T..-Y, autocorr φ a x y * Real.exp (y / 2)|
       ≤ ∫ y in -T..-Y, |autocorr φ a x y * Real.exp (y / 2)| :=
         intervalIntegral.abs_integral_le_integral_abs hTY
@@ -458,6 +466,303 @@ theorem integral_eq_intervalIntegral_of_vanish {h : ℝ → ℝ} {R T₁ T₂ : 
   rcases hy with h1 | h1
   · rw [abs_of_neg (by linarith)]; linarith
   · rw [abs_of_pos (by linarith)]; linarith
+
+theorem continuous_coneAutocorr {φ : ℝ → ℝ} {δ : ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (c : Fin K → ℝ) (a x : (k : Fin K) → Fin (M k) → ℝ) :
+    Continuous (coneAutocorr φ c a x) :=
+  continuous_finsetSum _ fun _ _ => continuous_const.mul (continuous_autocorr hφ hφs _ _)
+
+theorem exists_coneAutocorr_vanish {φ : ℝ → ℝ} {δ : ℝ} (hφs : ∀ u, δ / 2 < |u| → φ u = 0)
+    (c : Fin K → ℝ) (a x : (k : Fin K) → Fin (M k) → ℝ) :
+    ∃ R : ℝ, 0 ≤ R ∧ ∀ y, R < |y| → coneAutocorr φ c a x y = 0 := by
+  have h := fun k => (hasCompactSupport_autocorr hφs (a k) (x k)).exists_pos_le_norm
+  choose R hR0 hR using h
+  refine ⟨∑ k, R k, Finset.sum_nonneg fun k _ => (hR0 k).le, fun y hy => ?_⟩
+  refine Finset.sum_eq_zero fun k _ => ?_
+  have hk : R k ≤ ∑ k, R k :=
+    Finset.single_le_sum (f := R) (fun k _ => (hR0 k).le) (Finset.mem_univ k)
+  rw [hR k y (by rw [Real.norm_eq_abs]; linarith), mul_zero]
+
+theorem integrable_autocorr_mul_exp {φ : ℝ → ℝ} {δ : ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) {N : ℕ} (a x : Fin N → ℝ) :
+    Integrable fun y => autocorr φ a x y * Real.exp (y / 2) :=
+  ((continuous_autocorr hφ hφs a x).mul (by fun_prop)).integrable_of_hasCompactSupport
+    (hasCompactSupport_autocorr hφs a x).mul_right
+
+/-- The pole of the combination is the combination of the poles. -/
+theorem integral_coneAutocorr_mul_exp {φ : ℝ → ℝ} {δ : ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (c : Fin K → ℝ) (a x : (k : Fin K) → Fin (M k) → ℝ) :
+    ∫ y, coneAutocorr φ c a x y * Real.exp (y / 2) =
+      ∑ k, c k * ∫ y, autocorr φ (a k) (x k) y * Real.exp (y / 2) := by
+  have e : (fun y => coneAutocorr φ c a x y * Real.exp (y / 2)) =
+      fun y => ∑ k, c k * (autocorr φ (a k) (x k) y * Real.exp (y / 2)) := by
+    funext y; simp only [coneAutocorr, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun k _ => by ring
+  rw [e, integral_finsetSum _ fun k _ => (integrable_autocorr_mul_exp hφ hφs _ _).const_mul _]
+  exact Finset.sum_congr rfl fun k _ => integral_const_mul _ _
+
+theorem intervalIntegral_coneAutocorr_mul_exp {φ : ℝ → ℝ} {δ : ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (c : Fin K → ℝ) (a x : (k : Fin K) → Fin (M k) → ℝ)
+    (α β : ℝ) :
+    ∫ y in α..β, coneAutocorr φ c a x y * Real.exp (y / 2) =
+      ∑ k, c k * ∫ y in α..β, autocorr φ (a k) (x k) y * Real.exp (y / 2) := by
+  have e : (fun y => coneAutocorr φ c a x y * Real.exp (y / 2)) =
+      fun y => ∑ k, c k * (autocorr φ (a k) (x k) y * Real.exp (y / 2)) := by
+    funext y; simp only [coneAutocorr, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun k _ => by ring
+  rw [e, intervalIntegral.integral_finsetSum fun k _ =>
+    ((integrable_autocorr_mul_exp hφ hφs _ _).const_mul _).intervalIntegrable]
+  exact Finset.sum_congr rfl fun k _ => intervalIntegral.integral_const_mul _ _
+
+theorem abs_sum_mul_le {c v w : Fin K → ℝ} (hc : ∀ k, 0 ≤ c k) (hvw : ∀ k, |v k| ≤ w k) :
+    |∑ k, c k * v k| ≤ ∑ k, c k * w k :=
+  (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ => by
+    rw [abs_mul, abs_of_nonneg (hc k)]
+    exact mul_le_mul_of_nonneg_left (hvw k) (hc k))
+
+/-- **Lipschitz bound for the combination.** -/
+theorem abs_coneAutocorr_sub_le {φ : ℝ → ℝ} {δ s κ : ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (hδ : 0 < δ) (hδs : 3 * δ < s) (hκ : 0 ≤ κ)
+    (hreg : ∀ h, |h| ≤ δ → ∫ u, (φ u - φ (u - h)) ^ 2 ≤ (κ * h / δ) ^ 2 * ∫ u, φ u ^ 2)
+    {c : Fin K → ℝ} (hc : ∀ k, 0 ≤ c k) {a x : (k : Fin K) → Fin (M k) → ℝ}
+    (hsep : ∀ k i j, i ≠ j → s ≤ |x k i - x k j|) {y y' : ℝ} (hyy : |y - y'| ≤ δ) :
+    |coneAutocorr φ c a x y - coneAutocorr φ c a x y'| ≤
+      κ / δ * |y - y'| * coneMass φ c a x := by
+  have e : coneAutocorr φ c a x y - coneAutocorr φ c a x y' =
+      ∑ k, c k * (autocorr φ (a k) (x k) y - autocorr φ (a k) (x k) y') := by
+    simp only [coneAutocorr, ← Finset.sum_sub_distrib, mul_sub]
+  rw [e]
+  calc |∑ k, c k * (autocorr φ (a k) (x k) y - autocorr φ (a k) (x k) y')|
+      ≤ ∑ k, c k * (κ / δ * |y - y'| * ∫ u, bumpSum φ (a k) (x k) u ^ 2) :=
+        abs_sum_mul_le hc fun k => abs_autocorr_sub_le hφ hφs hδ hδs hκ hreg (hsep k) hyy
+    _ = κ / δ * |y - y'| * coneMass φ c a x := by
+        simp only [coneMass, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun k _ => by ring
+
+theorem log_succ_sub_log_le {n : ℕ} (hn : 1 ≤ n) :
+    Real.log ((n : ℝ) + 1) - Real.log n ≤ 1 / n := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  rw [← Real.log_div (by positivity) hn0.ne']
+  have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < (n + 1) / n by positivity)
+  rw [show ((n : ℝ) + 1) / n - 1 = 1 / n by field_simp; ring] at this
+  exact this
+
+/-- **The pole of a blind combination.** -/
+theorem abs_integral_coneAutocorr_le {φ : ℝ → ℝ} {δ s κ : ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφs : ∀ u, δ / 2 < |u| → φ u = 0) (hδ : 0 < δ) (hδs : 3 * δ < s) (hκ : 0 ≤ κ)
+    (hreg : ∀ h, |h| ≤ δ → ∫ u, (φ u - φ (u - h)) ^ 2 ≤ (κ * h / δ) ^ 2 * ∫ u, φ u ^ 2)
+    {c : Fin K → ℝ} (hc : ∀ k, 0 ≤ c k) {a x : (k : Fin K) → Fin (M k) → ℝ}
+    (hsep : ∀ k i j, i ≠ j → s ≤ |x k i - x k j|) {N₀ : ℕ} (hN₀ : 2 ≤ N₀)
+    (hN₀δ : 1 / (N₀ : ℝ) ≤ δ)
+    (hblind : ∀ n : ℕ, 2 ≤ n → coneAutocorr φ c a x (Real.log n) = 0) :
+    |∫ y, coneAutocorr φ c a x y * Real.exp (y / 2)| ≤
+      (2 / Real.sqrt N₀ + 2 * δ * Real.sqrt N₀ * (2 + 2 * (Real.log N₀ + δ) / s)) *
+        coneMass φ c a x + Real.sqrt 2 * (κ / δ * coneMass φ c a x) / Real.sqrt ((N₀ : ℝ) - 1) := by
+  set g := coneAutocorr φ c a x with hg
+  set C₀ := coneMass φ c a x with hC₀
+  have hC₀0 : 0 ≤ C₀ := Finset.sum_nonneg fun k _ =>
+    mul_nonneg (hc k) (integral_nonneg fun u => sq_nonneg _)
+  have hN0 : (0 : ℝ) < N₀ := by exact_mod_cast (by omega : 0 < N₀)
+  set Y := Real.log N₀ with hY
+  have hY0 : 0 ≤ Y := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ N₀))
+  have hgc : Continuous g := continuous_coneAutocorr hφ hφs c a x
+  have hge : Continuous fun y => g y * Real.exp (y / 2) := hgc.mul (by fun_prop)
+  obtain ⟨R, hR0, hR⟩ := exists_coneAutocorr_vanish hφs c a x
+  set K₁ : ℕ := ⌈Real.exp (R + 1)⌉₊ with hK₁
+  set T₂ : ℝ := Real.log ((N₀ + K₁ : ℕ) : ℝ) with hT₂
+  set T₁ : ℝ := R + 1 + Y with hT₁
+  have hT₂R : R < T₂ := by
+    have h1 : Real.exp (R + 1) ≤ ((N₀ + K₁ : ℕ) : ℝ) := by
+      calc Real.exp (R + 1) ≤ K₁ := Nat.le_ceil _
+        _ ≤ ((N₀ + K₁ : ℕ) : ℝ) := by push_cast; linarith
+    have h2 := Real.log_le_log (Real.exp_pos _) h1
+    rw [Real.log_exp] at h2
+    linarith
+  have hT₂Y : Y ≤ T₂ :=
+    Real.log_le_log hN0 (by push_cast; linarith [(Nat.cast_nonneg K₁ : (0 : ℝ) ≤ K₁)])
+  have hfull : ∫ y, g y * Real.exp (y / 2) = ∫ y in -T₁..T₂, g y * Real.exp (y / 2) :=
+    integral_eq_intervalIntegral_of_vanish hR0 (fun y hy => by
+      show coneAutocorr φ c a x y * Real.exp (y / 2) = 0
+      rw [hR y hy, zero_mul])
+      (by linarith) hT₂R
+  have hii : ∀ α β : ℝ, IntervalIntegrable (fun y => g y * Real.exp (y / 2)) volume α β :=
+    fun α β => hge.intervalIntegrable α β
+  have hsplit : ∫ y in -T₁..T₂, g y * Real.exp (y / 2) =
+      (∫ y in -T₁..-Y, g y * Real.exp (y / 2)) + (∫ y in -Y..Y, g y * Real.exp (y / 2)) +
+        ∫ y in Y..T₂, g y * Real.exp (y / 2) := by
+    rw [intervalIntegral.integral_add_adjacent_intervals (hii _ _) (hii _ _),
+      intervalIntegral.integral_add_adjacent_intervals (hii _ _) (hii _ _)]
+  -- the left tail
+  have hexpm : Real.exp (-Y / 2) = 1 / Real.sqrt N₀ := by
+    rw [show -Y / 2 = -(Y / 2) by ring, Real.exp_neg, Real.exp_half, hY, Real.exp_log hN0,
+      one_div]
+  have hexpp : Real.exp (Y / 2) = Real.sqrt N₀ := by
+    rw [Real.exp_half, hY, Real.exp_log hN0]
+  have hleft : |∫ y in -T₁..-Y, g y * Real.exp (y / 2)| ≤ 2 / Real.sqrt N₀ * C₀ := by
+    rw [hg, intervalIntegral_coneAutocorr_mul_exp hφ hφs]
+    calc |∑ k, c k * ∫ y in -T₁..-Y, autocorr φ (a k) (x k) y * Real.exp (y / 2)|
+        ≤ ∑ k, c k * (2 * Real.exp (-Y / 2) * ∫ u, bumpSum φ (a k) (x k) u ^ 2) :=
+          abs_sum_mul_le hc fun k => abs_integral_left_le hφ hφs _ _ (by linarith)
+      _ = 2 / Real.sqrt N₀ * C₀ := by
+          rw [hexpm, hC₀]; simp only [coneMass, Finset.mul_sum]
+          exact Finset.sum_congr rfl fun k _ => by ring
+  have hnear : |∫ y in -Y..Y, g y * Real.exp (y / 2)| ≤
+      2 * δ * Real.sqrt N₀ * (2 + 2 * (Y + δ) / s) * C₀ := by
+    rw [hg, intervalIntegral_coneAutocorr_mul_exp hφ hφs]
+    calc |∑ k, c k * ∫ y in -Y..Y, autocorr φ (a k) (x k) y * Real.exp (y / 2)|
+        ≤ ∑ k, c k * (2 * δ * Real.exp (Y / 2) * (2 + 2 * (Y + δ) / s) *
+            ∫ u, bumpSum φ (a k) (x k) u ^ 2) :=
+          abs_sum_mul_le hc fun k => abs_integral_near_le hφ hφs hδ (by linarith) (hsep k) hY0
+      _ = 2 * δ * Real.sqrt N₀ * (2 + 2 * (Y + δ) / s) * C₀ := by
+          rw [hexpp, hC₀]; simp only [coneMass, Finset.mul_sum]
+          exact Finset.sum_congr rfl fun k _ => by ring
+  -- the far part
+  have hfar : |∫ y in Y..T₂, g y * Real.exp (y / 2)| ≤
+      Real.sqrt 2 * (κ / δ * C₀) / Real.sqrt ((N₀ : ℝ) - 1) := by
+    refine GaloisForLFunctions.HTGeometry.abs_intervalIntegral_mul_exp_half_le
+      (by positivity) hgc hN₀ (fun n hn y hy => ?_) K₁
+    have hn1 : 1 ≤ n := by omega
+    have hz : g (Real.log n) = 0 := hblind n (by omega)
+    have hyl : 0 ≤ y - Real.log n := by linarith [hy.1]
+    have hyδ : |y - Real.log n| ≤ δ := by
+      rw [abs_of_nonneg hyl]
+      have h1 := log_succ_sub_log_le hn1
+      have h2 : (1 : ℝ) / n ≤ 1 / N₀ := one_div_le_one_div_of_le hN0 (by exact_mod_cast hn)
+      linarith [hy.2]
+    have := abs_coneAutocorr_sub_le (a := a) hφ hφs hδ hδs hκ hreg hc hsep hyδ
+    rw [show coneAutocorr φ c a x (Real.log n) = 0 from hz, sub_zero, abs_of_nonneg hyl] at this
+    calc |g y| ≤ κ / δ * (y - Real.log n) * C₀ := this
+      _ = κ / δ * C₀ * (y - Real.log n) := by ring
+  rw [hfull, hsplit]
+  calc |(∫ y in -T₁..-Y, g y * Real.exp (y / 2)) + (∫ y in -Y..Y, g y * Real.exp (y / 2)) +
+        ∫ y in Y..T₂, g y * Real.exp (y / 2)|
+      ≤ |∫ y in -T₁..-Y, g y * Real.exp (y / 2)| + |∫ y in -Y..Y, g y * Real.exp (y / 2)| +
+        |∫ y in Y..T₂, g y * Real.exp (y / 2)| := abs_add_three _ _ _
+    _ ≤ 2 / Real.sqrt N₀ * C₀ + 2 * δ * Real.sqrt N₀ * (2 + 2 * (Y + δ) / s) * C₀ +
+        Real.sqrt 2 * (κ / δ * C₀) / Real.sqrt ((N₀ : ℝ) - 1) := by gcongr
+    _ = (2 / Real.sqrt N₀ + 2 * δ * Real.sqrt N₀ * (2 + 2 * (Real.log N₀ + δ) / s)) * C₀ +
+        Real.sqrt 2 * (κ / δ * C₀) / Real.sqrt ((N₀ : ℝ) - 1) := by rw [hY]; ring
+
+/-- The constant of the cone margin. -/
+def coneMarginConst (s κ : ℝ) : ℝ :=
+  2 + 12 * (s * Real.exp (-s / 2) / 64) + 12 * (s * Real.exp (-s / 2) / 64) / s *
+    (2 * Real.log 2 + 1) + 4 * κ / (s * Real.exp (-s / 2) / 64) - EF.gammaBracket 0 -
+    Real.exp (-s / 2) * Real.log (s / 2)
+
+/-- **The cone coefficient is nonnegative** for `N₀ ≈ (η/δ)²`, `η = s e^{−s/2}/64`. -/
+theorem cone_coefficient_nonneg {s κ δ : ℝ} {N₀ : ℕ} (hs : 0 < s) (hκ : 0 ≤ κ) (hδ : 0 < δ)
+    (hδη : δ ≤ s * Real.exp (-s / 2) / 64 / 2) (hδs : δ ≤ s / 2) (hδ1 : δ ≤ 1)
+    (hN1 : (s * Real.exp (-s / 2) / 64 / δ) ^ 2 ≤ N₀)
+    (hN2 : (N₀ : ℝ) ≤ (s * Real.exp (-s / 2) / 64 / δ) ^ 2 + 1)
+    (hL : coneMarginConst s κ ≤ 5 / 8 * Real.exp (-s / 2) * Real.log (1 / δ)) :
+    0 ≤ EF.gammaBracket 0 + Real.exp (-s / 2) * Real.log ((s - δ) / δ) -
+      2 * ((2 / Real.sqrt N₀ + 2 * δ * Real.sqrt N₀ * (2 + 2 * (Real.log N₀ + δ) / s)) +
+        Real.sqrt 2 * (κ / δ) / Real.sqrt ((N₀ : ℝ) - 1)) := by
+  set c₀ := Real.exp (-s / 2) with hc₀
+  have hc₀0 : 0 < c₀ := Real.exp_pos _
+  set η := s * c₀ / 64 with hη
+  have hη0 : 0 < η := by positivity
+  have hη1 : η ≤ 1 := by
+    have h := Real.add_one_le_exp (s / 2)
+    have he : c₀ * Real.exp (s / 2) = 1 := by
+      rw [hc₀, ← Real.exp_add, show -s / 2 + s / 2 = 0 by ring, Real.exp_zero]
+    have h2 := mul_le_mul_of_nonneg_left h hc₀0.le
+    have : s * c₀ ≤ 2 := by nlinarith
+    rw [hη]; linarith
+  set q := η / δ with hq
+  have hqη : δ * q = η := by rw [hq]; field_simp
+  have hq2 : 2 ≤ q := by rw [hq, le_div_iff₀ hδ]; linarith
+  set L := Real.log (1 / δ) with hLdef
+  have hq4 : (4 : ℝ) ≤ q ^ 2 := by nlinarith
+  have hN0 : (0 : ℝ) < N₀ := by linarith
+  -- square roots
+  have hsq_ge : q ≤ Real.sqrt N₀ := by
+    rw [show q = Real.sqrt (q ^ 2) from (Real.sqrt_sq (by linarith)).symm]
+    exact Real.sqrt_le_sqrt hN1
+  have hsq_le : Real.sqrt N₀ ≤ q + 1 := by
+    rw [show q + 1 = Real.sqrt ((q + 1) ^ 2) from (Real.sqrt_sq (by linarith)).symm]
+    exact Real.sqrt_le_sqrt (by nlinarith)
+  have hsqm : q ≤ Real.sqrt 2 * Real.sqrt ((N₀ : ℝ) - 1) := by
+    rw [← Real.sqrt_mul (by norm_num),
+      show q = Real.sqrt (q ^ 2) from (Real.sqrt_sq (by linarith)).symm]
+    exact Real.sqrt_le_sqrt (by nlinarith)
+  have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+  have hs2pos : 0 < Real.sqrt 2 := by positivity
+  have hqpos : 0 < q := by linarith
+  have hsqmpos : 0 < Real.sqrt ((N₀ : ℝ) - 1) := by
+    have : 0 < Real.sqrt 2 * Real.sqrt ((N₀ : ℝ) - 1) := lt_of_lt_of_le hqpos hsqm
+    exact pos_of_mul_pos_right this hs2pos.le
+  -- the logarithm of N₀
+  have hlogN : Real.log N₀ ≤ 2 * Real.log 2 + 2 * L := by
+    have h1 : (N₀ : ℝ) ≤ (2 / δ) ^ 2 := by
+      have hq1 : q ≤ 1 / δ := by rw [hq]; exact div_le_div_of_nonneg_right hη1 hδ.le
+      have : (2 / δ) ^ 2 = 4 * (1 / δ) ^ 2 := by ring
+      have hq1sq : q ^ 2 ≤ (1 / δ) ^ 2 := pow_le_pow_left₀ hqpos.le hq1 2
+      nlinarith
+    have h2 := Real.log_le_log hN0 h1
+    rw [Real.log_pow, show (2 : ℝ) / δ = 2 * (1 / δ) by ring,
+      Real.log_mul (by norm_num) (by positivity)] at h2
+    push_cast at h2
+    linarith
+  have hlogN0 : 0 ≤ Real.log N₀ := Real.log_nonneg (by linarith)
+  -- the three losses
+  have hT1 : 2 / Real.sqrt N₀ ≤ 1 := by
+    rw [div_le_one (lt_of_lt_of_le hqpos hsq_ge)]; linarith
+  have hX : 2 + 2 * (Real.log N₀ + δ) / s ≤ 2 + 2 * (2 * Real.log 2 + 2 * L + 1) / s := by
+    gcongr
+  have hT2 : 2 * δ * Real.sqrt N₀ * (2 + 2 * (Real.log N₀ + δ) / s) ≤
+      3 * η * (2 + 2 * (2 * Real.log 2 + 2 * L + 1) / s) := by
+    have h1 : 2 * δ * Real.sqrt N₀ ≤ 3 * η := by
+      have := mul_le_mul_of_nonneg_left hsq_le hδ.le
+      linarith
+    have hX0 : 0 ≤ 2 + 2 * (Real.log N₀ + δ) / s := by positivity
+    calc 2 * δ * Real.sqrt N₀ * (2 + 2 * (Real.log N₀ + δ) / s)
+        ≤ 3 * η * (2 + 2 * (Real.log N₀ + δ) / s) := mul_le_mul_of_nonneg_right h1 hX0
+      _ ≤ 3 * η * (2 + 2 * (2 * Real.log 2 + 2 * L + 1) / s) :=
+          mul_le_mul_of_nonneg_left hX (by positivity)
+  have hT3 : Real.sqrt 2 * (κ / δ) / Real.sqrt ((N₀ : ℝ) - 1) ≤ 2 * κ / η := by
+    rw [div_le_div_iff₀ hsqmpos hη0]
+    have h1 : Real.sqrt 2 * (κ / δ) * η = Real.sqrt 2 * κ * q := by
+      rw [← hqη]; field_simp
+    rw [h1]
+    have h2 : Real.sqrt 2 * κ * q ≤ Real.sqrt 2 * κ * (Real.sqrt 2 * Real.sqrt ((N₀ : ℝ) - 1)) :=
+      mul_le_mul_of_nonneg_left hsqm (by positivity)
+    have e : Real.sqrt 2 * κ * (Real.sqrt 2 * Real.sqrt ((N₀ : ℝ) - 1)) =
+        2 * κ * Real.sqrt ((N₀ : ℝ) - 1) := by
+      rw [show Real.sqrt 2 * κ * (Real.sqrt 2 * Real.sqrt ((N₀ : ℝ) - 1)) =
+        (Real.sqrt 2 * Real.sqrt 2) * κ * Real.sqrt ((N₀ : ℝ) - 1) by ring, hs2]
+    linarith
+  -- the gain
+  have hgain : Real.log (s / 2) + L ≤ Real.log ((s - δ) / δ) := by
+    have h1 : s / 2 * (1 / δ) ≤ (s - δ) / δ := by
+      rw [div_eq_mul_one_div (s - δ)]
+      exact mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+    have h2 := Real.log_le_log (by positivity) h1
+    rwa [Real.log_mul (by positivity) (by positivity)] at h2
+  have hgain' : c₀ * (Real.log (s / 2) + L) ≤ c₀ * Real.log ((s - δ) / δ) :=
+    mul_le_mul_of_nonneg_left hgain hc₀0.le
+  have hηs : 24 * η / s = 3 / 8 * c₀ := by rw [hη]; field_simp; ring
+  have hkey : 3 * η * (2 + 2 * (2 * Real.log 2 + 2 * L + 1) / s) =
+      6 * η + 6 * η / s * (2 * Real.log 2 + 1) + 12 * η / s * L := by
+    field_simp; ring
+  have hηs' : 12 * η / s * L = 3 / 16 * c₀ * L := by
+    rw [show 12 * η / s = (24 * η / s) / 2 by ring, hηs]; ring
+  unfold coneMarginConst at hL
+  rw [← hc₀, ← hη] at hL
+  have hκη : 4 * κ / η = 2 * (2 * κ / η) := by ring
+  have hT2' : 2 * δ * Real.sqrt N₀ * (2 + 2 * (Real.log N₀ + δ) / s) ≤
+      6 * η + 6 * η / s * (2 * Real.log 2 + 1) + 3 / 16 * c₀ * L := by
+    rw [← hηs', ← hkey]; exact hT2
+  have hsum : 2 / Real.sqrt N₀ + 2 * δ * Real.sqrt N₀ * (2 + 2 * (Real.log N₀ + δ) / s) +
+      Real.sqrt 2 * (κ / δ) / Real.sqrt ((N₀ : ℝ) - 1) ≤
+      1 + (6 * η + 6 * η / s * (2 * Real.log 2 + 1) + 3 / 16 * c₀ * L) + 2 * κ / η :=
+    add_le_add (add_le_add hT1 hT2') hT3
+  have hg2 : c₀ * Real.log (s / 2) + c₀ * L ≤ c₀ * Real.log ((s - δ) / δ) := by
+    rw [← mul_add]; exact hgain'
+  have e1 : 12 * η / s * (2 * Real.log 2 + 1) = 2 * (6 * η / s * (2 * Real.log 2 + 1)) := by
+    ring
+  have e2 : 5 / 8 * c₀ * L = c₀ * L - 2 * (3 / 16 * c₀ * L) := by ring
+  linarith [hsum, hg2, hL, e1, e2, hκη]
 
 end Cone
 

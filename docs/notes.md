@@ -81,3 +81,5 @@ Notice two remarkable facts about $\Phi_\infty(s)$ on $\operatorname{Re} s = \fr
 
 ## addition other route
 WeilMarkovOddPositivity.lean: RH holds iff the archimedean-minus-prime form is ≥0 on odd tests, a pure positivity statement with no pole or index. Or:  RH is positivity of the archimedean-minus-prime form on odd tests
+
+WeilMarkovPrimitiveHyperplane.lean: RH is equivalent to M ≥ 0 on the hyperplane ∫f·cosh(x/2) = 0 — combined with M(Φ_L) < 0, this captures the "exactly one negative square" law. RH is positivity of the archimedean-minus-prime form on the primitive hyperplane.

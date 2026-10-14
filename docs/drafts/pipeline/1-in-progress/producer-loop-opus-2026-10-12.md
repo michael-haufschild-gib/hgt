@@ -3468,3 +3468,14 @@ n ≥ 0. Hence `TwistedArcMinimumPrinciple` holds and, by
   For doubly blind f the sum vanishes, and W is an on-line multiplier form.
 - **Meaning.** D < 0 only in two fixed low windows (around t = 0 and around the point where θ = −π with θ' < 0, both below t ≈ 6.3). So doubly blind PBAP can fail only through low-frequency spectral concentration. A high off-line zero is invisible to doubly blind tests, because pole ≥ 0 and arch ≈ (log T)·mass. This is the zero-slack principle again.
 - **Verdict.** REDISCOVERED (core) / INSIGNIFICANT (the D-form). The doubly blind class is not RH-detecting at large height. No producer. RH not proved.
+
+## Row 342 — C358: inversion-parity split of PBAP — premise FALSE; exact survivor = additivity + hyperbolic-plane pole
+- **Conjecture.** In log scale, even (inversion-symmetric) tests have pole 2|∫f e^{−u/2}|² ≥ 0 and odd tests have pole −2|∫f e^{−u/2}|² ≤ 0 (corpus `WeilBlindPoleSignLaw.weilPoleTerm_even/odd`). Conjecture: PBAP ⟺ PBAP_even ∧ PBAP_odd, with PBAP_even unconditional, so that RH ⟺ PBAP_odd.
+- **Kill.** For a one-sided blind f, the parity parts f ± ιf have autocorrelation 2A_f(n) ± [(f∗f)(log n) + (f∗f)(−log n)]. The term (f∗f)(log n) ≠ 0 in general. So parity parts of blind tests are not blind, and the split fails.
+- **Exact survivor [P, elementary].**
+  - For even g_e and odd g_o, the cross-correlation C(τ) = ∫g_e(x)g_o(x+τ)dx is odd in τ. So A_{g_e+g_o} = A_{g_e} + A_{g_o} pointwise, and W₀(g_e+g_o) = W₀(g_e) + W₀(g_o).
+  - So PBAP ⟺ W₀(g_e) + W₀(g_o) ≥ 0 whenever A_{g_e}(log n) + A_{g_o}(log n) = 0 for all n ≥ 2. The two sectors couple only through the blindness sum.
+  - The pole is G(i/2)² − |Ψ(i/2)|² (G = ĝ_e real even, Ψ = −iĝ_o real odd). This is the hyperbolic plane (signature (1,1)), i.e. the H·V part of the function-field Hodge-index picture.
+  - Dual reading: RH ⟺ (arch − primes) ≥ 0 on primitive tests (pole amplitudes zero) ⟺ (pole + arch) ≥ 0 on blind tests. Primitive ∧ blind leaves the arch alone, which is RH-free.
+- **Heuristic [P].** The even sector cannot detect high off-line zeros: its pole is ≥ 0 and its arch is ≈ (log T/2π)·mass. Converting an odd detecting test ψ to an even one via tψ/γ₀ shrinks the pole by 1/(4γ₀²) and destroys blindness; the prime terms absorb the difference. Whether RH ⟺ PBAP_odd is open: it needs an odd (N1) blind test (F̂ = iΞq, q odd real; F̂(0) = 0 is harmless because an atom at r = 0 cannot be produced by integer weights).
+- **Verdict.** FALSE (premise) / REDISCOVERED (parity bookkeeping, corpus CCM even/odd splits). No producer. RH not proved.
