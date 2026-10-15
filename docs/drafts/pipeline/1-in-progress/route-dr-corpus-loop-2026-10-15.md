@@ -1259,3 +1259,81 @@ Anti-laziness: the literal pullback and both endpoint choices were worked
 out rather than replacing admission by an assumption. No effort-based
 deferral, external search, numerical work, peer edit, or auxiliary Lean
 module. Actual root/source convergence remains the active hard task.
+
+## Positive arithmetic convolution roots: baseline still unresolved
+
+Continued the user's actual infinite-limit request. No half-strip
+certificate, new Lean theorem, or verified convergence was obtained.
+Read the current positive half-coefficient, fractional-pole, Vitali,
+causal-source and cell-remainder Lean statements. The proposed source is
+already in the corpus; do not count its reconstruction as new progress.
+
+Write b(n)=zetaBinomialHalf(n), and normalize the existing kernel by
+
+    k(t) = [exp(t)/sqrt(t) - integral_0^t exp(u)/sqrt(u) du]/sqrt(pi),
+    q(t) = sum_{n <= exp(t)} b(n)*k(t-log(n)),  t > 0.
+
+All source sums at finite t are finite. In the absolute Euler chamber,
+
+    Laplace(q)(s)^2 = (s-1)*zeta(s)/s^2.
+
+The source-level square can also be evaluated without a continuation
+assumption. The kernel identity k*k(t)=1-t, followed by the finite
+coefficient identity b*b=1, gives, away from logarithmic integer endpoints
+(and therefore almost everywhere),
+
+    (q*q)(t) = floor(exp(t)) - integral_0^t floor(exp(u)) du
+             = 1-frac(exp(t)) + integral_0^t frac(exp(u)) du.
+
+Hence 0 <= q*q(t) <= 1+t almost everywhere. This is an exact calculation for the actual
+arithmetic source, not proof that q has a convergent Laplace integral
+on the target half-strip. The local convolutions are justified by the
+integrable inverse-square-root singularities and finite sums on compact
+time intervals; alternatively k*k follows from its absolutely convergent
+Laplace transform and uniqueness in the Euler chamber.
+
+Attacked the tempting implication from this positive polynomially bounded
+convolution square to weighted integrability of q. It is not a valid
+general principle. PositiveConvolutionSquareGrowth.lean already contains
+an explicit real causal counterexample, with a positive exponentially
+decaying convolution square but failed absolute Laplace integration at
+3/4. Read its construction and the relevant declarations; no new build
+audit was run. This failed shortcut is REDISCOVERED, not a new no-go or
+a reason to retire DR.
+
+The actual arithmetic distinction remains in b. Existing
+ZetaPoleHalfCellRemainder.lean already proves that subtracting the old
+atoms' right-endpoint baseline on each logarithmic integer cell leaves
+weighted absolute mass summable for every sigma>1/2. Its explicit
+baseline is
+
+    B_N = sum_{1 <= n < N} b(n)*K(log(N+1)-log(n)),
+
+where K=sqrt(pi)*k is the corpus normalization. No bound on B_N is
+asserted there. Absolute Laplace convergence of the whole source would
+require the unresolved baseline mass sum
+
+    sum_N |B_N| * N^(-sigma) * log(1+1/N) < infinity
+
+for every sigma>1/2. Removing B_N changes the Euler-chamber transform;
+the convergent remainder alone is not an attached Kummer root. Likewise,
+convolution-root identities do not license taking roots in this stronger
+weighted source space. No such closure or admission theorem was proved.
+
+Anti-theatre: this cycle recovered existing constructions and rejected an
+already refuted inference. No certificate progress or scientific novelty
+claim. Anti-laziness: the actual arithmetic convolution square and exact
+uncontrolled source term were worked out, rather than assuming normality
+or substituting an unrelated scalar limit. No auxiliary formalization,
+numerical work, external research, peer-file changes, commits or pushes.
+Next work remains the arithmetic convergence mechanism itself; do not
+repeat the positive-square argument as a proposed proof.
+
+Three owned research searches finished with exit 0: 23458 (Kummer
+completion, partial=false, errors=[]), 37636 (fractional counting,
+partial=true after malformed local-model JSON and a reranking deadline),
+and 65285 (causal root growth, partial=true after a semantic deadline).
+The first and third report complete source inventory, with compiler
+metadata mostly pending/stale; the second reports pending coverage.
+Used the available Lean hits and direct source verification. No
+exhaustive absence or fresh compilation claim follows from these searches.

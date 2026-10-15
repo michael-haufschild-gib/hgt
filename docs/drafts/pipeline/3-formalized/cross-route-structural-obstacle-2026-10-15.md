@@ -1,6 +1,6 @@
-# Cross-route structural obstacle
+# Finite Meyer spectral source synthesis with one common Xi boundary
 
-Status: in progress. No mathematical contribution claimed.
+Status: FORMALIZED. All four theorem modules and the final axiom audit pass. Repository-wide lint reports only unrelated concurrent modules, detailed below.
 
 ## Contract
 
@@ -34,9 +34,12 @@ These rule out presenting positive metric replacement or contractivity as the mi
 
 1. Correct the scalar Ward phase to a differentiable lossless family. Rejected as a receiver: `RoutePScalarUnitaryCompletionRegularityNoGo` proves that the proposed differentiability already implies RH. Square-root time reparametrization changes the clock but supplies no arithmetic comparison; insufficient as the requested contribution.
 2. Use the exact Xi cap to make scalar translated boundaries preserve cohomology. Rejected: `PrimeRotationXiSourceTransport` proves that a holomorphic scalar correction preserving the local Xi ideal kills its whole quotient. The actual native-clock boundary defect is surjective, not zero.
-3. **Current conjecture:** every finite full Xi jet quotient of literal Meyer cohomology admits a source-constructed section intertwining the negative logarithmic derivative. Construct this section by repeated causal division of the fixed actual Xi boundary. No global inverse-Mellin spectral-synthesis premise is needed.
+3. **Proved:** every finite full Xi jet quotient of literal Meyer cohomology admits a source-constructed section intertwining the negative logarithmic derivative. Constructed by repeated causal division of the fixed actual Xi boundary, without a global inverse-Mellin spectral-synthesis premise.
+4. **Proved consequence:** the section realizes every finite packet endomorphism faithfully and preserves composition.
+5. **Proved cross-route identification:** after its exact phase normalization, the actual source has centered Mellin transform equal to the existing Hedenmalm divided chain, through every actual Xi multiplicity. Its Jordan recurrence holds before passage through the entire comparison map.
+6. **Proved structural refinement:** every finite raw source packet has the same universal one-boundary generator defect. Its coefficient is exactly the sum of bottom-chain coefficients. No packet-dependent arithmetic boundary is needed.
 
-## Exact current target
+## Proven statement
 
 Let H be the all-derivative, all-exponential-decay logarithmic target, B the literal Meyer Poisson boundary range, and Q = H/B. Let A = -d/dt on Q. For every finite set S of actual Xi divisor points, let J_S be the existing full multiplicity jet packet, E_S : Q -> J_S its existing evaluation map, and T_S the action on jets induced by multiplication by s.
 
@@ -56,19 +59,20 @@ For a genuine Xi divisor rho of multiplicity m, iterate this operation g_k=U_rho
 
 For finite S, sum the resulting chain spans. Evaluation is block triangular and invertible on the coefficient space, giving L_S by its inverse. The derivative recurrence shows the chain span is A-invariant. The existing Mellin derivative identity gives E_S A = T_S E_S, so injectivity of evaluation on the chain span proves A L_S=L_S T_S. Then P_S^2=P_S, im(P_S)=im(L_S), and A P_S=P_S A. For disjoint S,T, outside-support jet vanishing gives P_S P_T=P_T P_S=0.
 
-Every step is elementary integral calculus or an explicitly identified unconditional corpus theorem. Formal verification remains pending; no implementation or significance claim has yet passed audit.
+Every step is integral calculus or an explicitly identified unconditional corpus theorem. All four implementation modules now pass direct Lean audits. The dependency audit below records the remaining integration checks separately.
 
-## Implementation checkpoint
+## Formalization
 
 - `DeningerMeyerCausalDivision.lean`: direct Lean audit passed; targeted dependency build passed. All-derivative/all-exponential decay, the actual causal source, generator identity, and exact entire Mellin division are formalized.
-- `DeningerMeyerXiCausalChains.lean`: actual multiplicity chains, local orders, off-divisor vanishing, and quotient generator are under Lean audit.
-- `DeningerMeyerFiniteXiCausalSplitting.lean`: finite triangular synthesis, invariant section/projector, disjoint packet separation, and faithful finite operator lifting are written; verification pending.
+- `DeningerMeyerXiCausalChains.lean`: actual multiplicity chains, local orders, off-divisor vanishing, and quotient generator passed direct Lean audit.
+- `DeningerMeyerFiniteXiCausalSplitting.lean`: finite triangular synthesis, invariant section/projector, disjoint packet separation, and faithful finite operator lifting passed direct Lean audit.
+- `DeningerMeyerHedenmalmSourceRealization.lean`: exact Hedenmalm transform, centered source recurrence, universal common-boundary decomposition, and exact projector dimension passed direct Lean audit.
 - New consequence of the conjecture: every finite packet endomorphism B lifts by L_S B E_S, preserving composition and remaining faithful. This makes finite spectral operator constructions available inside literal Meyer cohomology, rather than only its jet quotients.
 - Coverage caveat: research search reports semantic coverage unavailable and some cached generations stale. Exhaustive Lean text search found no preexisting Meyer causal/Jordan/source-projector declarations outside these new files. Mathematical dependencies are verified directly, not accepted from search status.
 
 ## Cross-route identification
 
-The new actual sources realize the existing Hedenmalm divided chains exactly. With alpha = -i(rho-1/2), write C_k(z) for the corpus's iterated divided difference of XiC at alpha. Existing partial factorization gives XiC(z)=(z-alpha)^k C_k(z). The causal source gives XiC(z)=i^k(z-alpha)^k M(g_k)(1/2+iz). Away from alpha cancellation yields M(g_k)(1/2+iz)=(-i)^k C_k(z). Both sides are entire, so continuity extends equality to alpha. Thus this is a source realization of the existing Hedenmalm chain, not just a second family with the same multiplicity. This bridge is dependency-closed on paper and queued for formal audit.
+The new actual sources realize the existing Hedenmalm divided chains exactly. With alpha = -i(rho-1/2), write C_k(z) for the corpus's iterated divided difference of XiC at alpha. Existing partial factorization gives XiC(z)=(z-alpha)^k C_k(z). The causal source gives XiC(z)=i^k(z-alpha)^k M(g_k)(1/2+iz). Away from alpha cancellation yields M(g_k)(1/2+iz)=(-i)^k C_k(z). Both sides are entire, so continuity extends equality to alpha. Rescaling the source by i^k realizes C_k exactly. The centered Jordan recurrence holds in the actual cohomology. Both statements passed Lean.
 
 ## Exact common-boundary decomposition
 
@@ -77,3 +81,20 @@ The fixed Xi cap produces a stronger source-level identity. Index a finite packe
 A G(c) = J(c) + [sum_(rho,j=0) c_(rho,j)] Z(f_Xi).
 
 This is an exact outer-product decomposition of the source defect: every finite packet uses the same single actual boundary vector, independently of its size and multiplicities. Proof: expand A through the finite sum, apply the established chain recurrence termwise, split j=0 from j>0, and collect the common g_0=Z(f_Xi). This does not assume closure or global spectral synthesis. The paper proof is complete before formalization.
+
+## Structural significance audit
+
+The obstruction addressed is the gap between finite dual/quotient spectral data and invariant classes constructed from actual arithmetic sources. The proof discharges source admission explicitly: repeated causal integrals land in the full Meyer target, exact Xi factorization admits every step, and the finite jet matrix is proved invertible. The section is generator-invariant, not merely a vector-space splitting. Linear independence and the exact finite dimension preserve all multiplicities. The Hedenmalm identification ties the construction to the existing divided-chain route. The common-boundary identity identifies the exact arithmetic source defect before quotienting.
+
+The resulting new class of available constructions is every finite packet endomorphism, realized faithfully as L_S B E_S on literal Meyer cohomology, with composition preserved. The identity of this finite operator calculus is P_S, not the identity on the whole cohomology.
+
+Scope is algebraic finite spectral synthesis. No topological continuity of the projectors, infinite-packet convergence, completeness of the divisor chains, vanishing of the jet-invisible kernel, positive inner product, or RH is asserted. These remain distinct research obligations. The contribution does not retire any RH route.
+
+## Integration audit
+
+- Direct `lake --old env lean <module>.lean` audits passed for all four new leaves. For dependent leaves the same foreground command also exported the needed `.olean` with `-o`. No full or umbrella build was run; no heartbeat increase, numerical experiment, or added axiom was used.
+- All four leaves are explicitly imported in `formal/GaloisForLFunctions/RHTower.lean`.
+- Fresh exact lexical research search returns `deningerMeyerHedenmalmSource_transform` in its new module.
+- `scripts/formal_tools.py lint` was rerun after wiring. It reports no error for this contribution. Repository-wide exit status is 1 because two unrelated modules are unreachable from the RH umbrella: `CHMDStage16GrowthPositivityCollapseAndTwoPointCriterion` and `CHMDStage20TwoPointCoshSinhClosedFormsAndRhoCosShiftDecomposition`. These concurrent changes were left untouched.
+- Final `/tmp` scratch audit passed under `lake --old env lean`, verifying the used mathlib names against this toolchain and printing axioms for twelve principal results: causal decay admission, Xi class recurrence, source independence, section right-inverse, projector commutation, disjoint projectors, composition-preserving and faithful operator lifting, exact Hedenmalm transform, centered Jordan recurrence, common-boundary decomposition, and exact finite dimension. Every result depends only on `propext`, `Classical.choice`, and `Quot.sound`. No `sorryAx` or new axiom occurs.
+- Scratch scripts, logs, and search outputs created for this task were removed after recording these results. Valid compiled leaf artifacts remain available for downstream imports.

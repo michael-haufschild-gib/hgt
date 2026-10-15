@@ -57,6 +57,69 @@ directional mask on finite packets. It proves neither the global sign nor infini
    **OPEN CORE:** the exact theta product fibers are signed, so finite graph positivity
    alone does not yield the integrated source sign. Need an exact modular reassembly of
    those fibers, not another spectral-gap estimate. Investigating this mechanism.
+6. Use the existing mixed Euler/Xi Burnol Gram as the global contraction. **REJECTED:**
+   `FrankensteinPrimitiveXiMixedBurnolSchurGap` proves strict mixed Schur residual at every
+   primitive/Xi pair. Ordinary positive block compression has the wrong direction. Its exact
+   survivor is already formalized: signed completion must occur before positive compression.
+7. Apply the infinite signed Möbius recovery and the matrix Hardy contraction of the Ward
+   phase. **INSUFFICIENT, WITH AN EXACT ORIENTATION WARNING:**
+   `GammaSewnMobiusXiWardHardySaturation` proves strict contractivity of this phase exactly
+   when RH fails. RH requires unitary saturation. `GammaSewnSynchronizedRecoveryContraction`
+   preserves both the literal full-source tangent and, separately, the selected anti-causal
+   tangent, but its Hardy bound is on the latter. No budget-preserving identification of the
+   requested residue trace follows. `HedenmalmThetaSourceJuliaPythagoras` already identifies
+   the surviving discrepancy coordinate; unit normalization does not erase it.
+8. Pass the exact finite prime-depth cubic commutator cancellation to the completed source.
+   **UNDER INVESTIGATION:** `PrimeBurnolThetaCubicTraceCancellation` proves zero for each
+   admitted fixed-reference finite trace, while explicitly leaving the unbounded completed
+   source domain unproved. Need an actual trace-ideal realization of the coupled source,
+   not an assumed cyclicity or a newly defined vanishing reporter.
+   `SoninGammaClockNuclearLimit` admits the Gamma clock with a fixed Schwartz test, explicitly
+   not the joint prime/polar source. `SoninCoherentWardCubic` has zero first trace but an exact
+   negative cubic interference square. Neither identifies the requested joint cubic.
+9. Preserve both Green--Stokes channels and assign the interior its natural Krein sign.
+   **REJECTED FOR THIS CANDIDATE:**
+   `SourceHorizontalWoldBVCompleteSplitPrimitiveBudgetFirewall` proves that the signed limit
+   is `8/3 * normSq c`, still strictly above its literal primitive budget for `c != 0`.
+   This rules out mere sign reassignment; it is not a no-go for every possible WD producer.
+10. Use source-native causal Xi splittings to obtain a faithful Hilbert contraction.
+    **ADMISSION GAP REMAINS:** `DeningerMeyerFiniteXiCausalSplitting` gives actual finite
+    full-multiplicity projectors commuting with the generator, but no such norm comparison.
+    `DeningerMeyerHalfDensityXiGraphClosure` gives explicit graph-null sequences off line:
+    completion norm tends to zero while Xi evaluation stays nonzero. Closing the full-source
+    graph cannot supply a single-valued repair. `BurnolPoissonSubordinateWall` also shows that
+    prime-log smoothness does not supply the missing all-prime inverse admission.
+11. Complete the bilateral Loewner kernel by its single shared ghost and use that completion's
+    trace. **INSUFFICIENT:** `XiWardCubicBilateralSharedGhostCompletion` already proves
+    `K_a = P_a P_a* - G_a G_a*`, with `P_a(lambda)=2lambda/(lambda^2-a^2)` and
+    `G_a(lambda)=2a/(lambda^2-a^2)`. Adding the ghost is positive, but increases the positive
+    column's norm strictly when `a>0`. Need an independently derived Gamma/polar cancellation
+    of that amplified corner. Rescaling it back by definition would change the source.
+
+### Divisor-graph paper observation (not yet a global proof)
+
+For `N = product p^(a_p)`, the graph implicit in `PhiDivisorEnergy.divisorEnergy` is the
+Cartesian product of complete graphs on the exponent coordinates, with each p-edge weighted
+by `log p`. Every vertex has weighted degree `sum a_p log p = log N`. Its Laplacian has exact
+tensor eigenvalues `sum_{p in S} (a_p+1) log p`, with the constant factor in coordinates not
+in S. Complementation reverses each exponent coordinate. This algebra does not settle the
+source form: the theta product fiber multiplying each graph is signed away from its center,
+and the polar/Gamma term has not been reassembled with it. No positivity claim is made.
+
+The signed-fiber obstruction persists after integration for one fixed graph. At `N=2`, its
+energy is `log 2 * (v(u)-v(u-log 2))^2`. Choose an odd smooth bump pair supported near `+T,-T`,
+with disjoint translates and T sufficiently large. All four intervals supporting that square
+lie in the negative tails of `fiber 2`. Its integral is then strictly negative. This is a
+paper falsification of graph-by-graph positivity, not a formalized theorem. The positive
+all-prime sum in `WeilPhiDoobDivisorEnergy` uses resummation across fibers. Any next attempt
+must retain that resummation and the Gamma/polar term together.
+
+## Checkpoint
+
+No new Lean declaration has been written for the global task. No global theorem, source
+contraction, or RH proof has been obtained. The active research goal remains open. Next
+conjectures must address an exact nonlocal arithmetic cancellation, rather than reuse a
+positive completion, a local residue landing, or a conditional source criterion.
 
 ## Open core
 

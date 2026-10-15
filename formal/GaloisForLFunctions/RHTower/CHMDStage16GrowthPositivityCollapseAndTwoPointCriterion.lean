@@ -740,7 +740,7 @@ theorem false_of_extension_of_blowup {a : ℝ} {F G : ℂ → ℂ} {Q : Set ℂ}
     (hQ : (Q ∩ Metric.closedBall p₀ 3).Finite)
     (hFd : ∀ z : ℂ, a < z.re → DifferentiableAt ℂ F z)
     (hG : ∀ z : ℂ, z ∉ Q → AnalyticAt ℂ G z)
-    (hFG : ∀ s : ℂ, 1 / 2 < s.re → F s = G s)
+    (hFG : ∀ s : ℂ, 1 / 2 < s.re → F s = G s) (ha : 0 ≤ a)
     (hp₀a : a < p₀.re) (hp₀half : p₀.re < 1 / 2) {c : ℝ} (hc : 0 < c)
     (hblow : ∃ ε > 0, ∃ C : ℝ, ∀ d : ℂ, 0 < ‖d‖ → ‖d‖ < ε → c / ‖d‖ - C ≤ ‖G (p₀ + d)‖) :
     False := by
@@ -886,8 +886,8 @@ theorem exists_extension_of_le_exp {c : ℝ} (hc : |c| = 1) {a M : ℝ} (ha0 : 0
 theorem im_kgFreq_le_of_le_exp {c : ℝ} (hc : |c| = 1) {a M : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2)
     (hM : ∀ u : ℝ, 0 ≤ u → c * chmdWave u ≤ M * Real.exp (a * u))
     (ρ₀ : zetaZeroConfig.carrier) : (kgFreq ρ₀).im ≤ a := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra hle
+  have hlt : a < (kgFreq ρ₀).im := not_le.mp hle
   obtain ⟨F, hFd, hFG⟩ := exists_extension_of_le_exp hc ha0 ha hM
   set p₀ : ℂ := -(I * kgFreq ρ₀) with hp₀
   have hp₀re : p₀.re = (kgFreq ρ₀).im := by
@@ -920,7 +920,7 @@ theorem im_kgFreq_le_of_le_exp {c : ℝ} (hc : |c| = 1) {a M : ℝ} (ha0 : 0 ≤
     rw [norm_neg, sub_neg_eq_add, norm_div] at h1
     linarith
   exact false_of_extension_of_blowup hQ hFd
-    (fun z hz => analyticAt_const.mul (analyticAt_kgPoleSeries hz)) hFG
+    (fun z hz => analyticAt_const.mul (analyticAt_kgPoleSeries hz)) hFG ha0
     (by rw [hp₀re]; exact hlt) (by rw [hp₀re]; exact (abs_lt.mp (abs_im_kgFreq_lt ρ₀)).2)
     ((half_pos (norm_kgWeight_pos ρ₀)).trans_le (norm_kgResidue_ge ρ₀)) hblow
 
@@ -946,7 +946,7 @@ zero. -/
 theorem abs_im_kgFreq_le_of_neg_exp_le_chmdWave {a M : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2)
     (hM : ∀ u : ℝ, 0 ≤ u → -(M * Real.exp (a * u)) ≤ chmdWave u)
     (ρ : zetaZeroConfig.carrier) : |(kgFreq ρ).im| ≤ a :=
-  abs_im_kgFreq_le_of_le_exp (c := -1) (by simp) ha0 ha
+  abs_im_kgFreq_le_of_le_exp (c := -1) (by simp) ha0 ha (M := M)
     (fun u hu => by rw [neg_one_mul]; linarith [hM u hu]) ρ
 
 /-- **The exact growth law of the causal wave.** For `0 ≤ a < 1/2`: an upper exponential bound on
@@ -1051,18 +1051,26 @@ theorem abs_chmdWave_le_zero_value_of_rh (hRH : RiemannHypothesis) (y : ℝ) :
   rw [chmdWave_eq_tsum_re y, chmdWave_eq_tsum_re 0]
   have hterm : ∀ ρ : zetaZeroConfig.carrier,
       |(zetaZeroConfig.mult ρ : ℝ) * (Complex.cos (y * kgFreq ρ) * kgWeight ρ).re| ≤
-        (zetaZeroConfig.mult ρ : ℝ) * (Complex.cos (0 * kgFreq ρ) * kgWeight ρ).re := by
+        (zetaZeroConfig.mult ρ : ℝ) *
+          (Complex.cos (((0 : ℝ) : ℂ) * kgFreq ρ) * kgWeight ρ).re := by
     intro ρ
     obtain ⟨him, hw, hwre⟩ := kgFreq_kgWeight_of_rh hRH ρ
-    have hreal : kgFreq ρ = (((kgFreq ρ).re : ℝ) : ℂ) := by
+    set r : ℝ := (kgFreq ρ).re with hr
+    set w : ℝ := (kgWeight ρ).re with hwdef
+    have hreal : kgFreq ρ = (r : ℂ) := by
       apply Complex.ext
-      · simp
+      · simp [hr]
       · simp [him]
-    rw [hreal, hw, ← Complex.ofReal_mul, ← Complex.ofReal_cos, ← Complex.ofReal_mul,
-      Complex.ofReal_re, zero_mul, Real.cos_zero, one_mul, abs_mul, Nat.abs_cast, abs_mul,
-      abs_of_nonneg hwre]
-    gcongr
-    exact Real.abs_cos_le_one _
+    have e1 : (Complex.cos (y * kgFreq ρ) * kgWeight ρ).re = Real.cos (y * r) * w := by
+      rw [hreal, hw, ← Complex.ofReal_mul, ← Complex.ofReal_cos, ← Complex.ofReal_mul,
+        Complex.ofReal_re]
+    have e0 : (Complex.cos (((0 : ℝ) : ℂ) * kgFreq ρ) * kgWeight ρ).re = w := by
+      rw [hreal, hw, ← Complex.ofReal_mul, ← Complex.ofReal_cos, ← Complex.ofReal_mul,
+        Complex.ofReal_re, zero_mul, Real.cos_zero, one_mul]
+    rw [e1, e0, abs_mul, Nat.abs_cast, abs_mul, abs_of_nonneg hwre]
+    have hc := Real.abs_cos_le_one (y * r)
+    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+    exact mul_le_mul_of_nonneg_left (mul_le_of_le_one_left hwre hc) hm
   have hs0 := summable_re_cosTerm 0
   have hsy := summable_re_cosTerm y
   calc |∑' ρ : zetaZeroConfig.carrier,
@@ -1253,7 +1261,7 @@ theorem riemannHypothesis_iff_kgPoleSeries_positiveReal :
         rw [le_div_iff₀ htpos]
         calc 2 * (|C| + 1) * t ≤ 2 * (|C| + 1) * (‖A‖ / (2 * (|C| + 1))) := by gcongr
           _ = ‖A‖ := by field_simp
-      linarith
+      linarith [abs_nonneg C]
     rcases lt_or_gt_of_ne hne with hneg | hposβ
     · apply hmain (reflectZero ρ)
       rw [kgFreq_reflectZero, Complex.conj_im]

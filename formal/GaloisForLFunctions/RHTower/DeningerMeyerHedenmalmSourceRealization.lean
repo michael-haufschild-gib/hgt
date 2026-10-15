@@ -43,6 +43,8 @@ private theorem causalSource_centered_transform (rho : XiDivisorSupport)
   have hI : (-I) ^ k * I ^ k = 1 := by
     rw [← mul_pow]
     simp
+  change deningerMeyerCenteredMellin (deningerMeyerXiCausalSource rho k hk) z =
+    (-I) ^ k * xiThetaDividedChain (xiSpectralPointSupport rho) k z
   rw [← hcancel, ← mul_assoc, hI, one_mul]
 
 /-- Canonical actual source of the existing Hedenmalm divided chain, including its phase. -/
@@ -142,6 +144,32 @@ theorem deningerMeyerFiniteXiRawSource_generator (S : Finset XiDivisorSupport)
   by_cases hq : q.2.val = 0
   · simp [hq, hzero, smul_add]
   · simp [hq]
+
+theorem deningerMeyerFiniteXiCausalProjector_range (S : Finset XiDivisorSupport) :
+    LinearMap.range (deningerMeyerFiniteXiCausalProjector S) =
+      LinearMap.range (deningerMeyerFiniteXiCausalSynthesis S) := by
+  apply le_antisymm
+  · rintro _ ⟨u, rfl⟩
+    exact deningerMeyerFiniteXiCausalProjector_mem_range S u
+  · rintro _ ⟨c, rfl⟩
+    exact ⟨deningerMeyerFiniteXiCausalSynthesis S c,
+      deningerMeyerFiniteXiCausalProjector_synthesis S c⟩
+
+theorem deningerMeyerFiniteXiCausalProjector_finiteDimensional (S : Finset XiDivisorSupport) :
+    FiniteDimensional ℂ (LinearMap.range (deningerMeyerFiniteXiCausalProjector S)) := by
+  rw [deningerMeyerFiniteXiCausalProjector_range]
+  infer_instance
+
+/-- Exact finite spectral dimension: every full-multiplicity jet slot has an actual source mode. -/
+theorem deningerMeyerFiniteXiCausalProjector_finrank (S : Finset XiDivisorSupport) :
+    Module.finrank ℂ (LinearMap.range (deningerMeyerFiniteXiCausalProjector S)) =
+      Fintype.card (DeningerMeyerFiniteXiJetSlot S) := by
+  have hinj : Function.Injective (deningerMeyerFiniteXiCausalSynthesis S) := by
+    intro c d h
+    apply deningerMeyerFiniteXiCausalJetMap_injective S
+    exact congrArg (deningerMeyerFiniteXiJetPacketLM S) h
+  rw [deningerMeyerFiniteXiCausalProjector_range, LinearMap.finrank_range_of_inj hinj]
+  exact Module.finrank_pi ℂ
 
 end
 end RHTower

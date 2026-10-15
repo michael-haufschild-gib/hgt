@@ -4,7 +4,7 @@
 
 **Lookup:** [36 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
 
-**Evidence:** codes as in frontier map; [L] cited Lean declarations, no fresh compilation; [P] paper only; REF = unlocated legacy evidence, unverified here. Conditional, model-only and class restrictions retained.
+**Evidence:** codes as in frontier map; [L] cited Lean declarations, no fresh compilation; [L-source] committed but umbrella-unwired/unaudited here; [P] paper only; REF = unlocated legacy evidence, unverified here. Conditional, model-only and class restrictions retained.
 
 ## Dead mechanisms
 
@@ -932,7 +932,7 @@ CIRCULAR (24):
 - no-go-399 SQB tensor-square unitarity as finite packet selector. [L] E: R:MaassTensorSquareMultiplicity, P1:selberg-density-quartic-facts
 - no-go-422 CLG degree-twelve correction with nonnegative global derivative. [L] E: R:ThetaCuspPolynomialFluxMiddleReserve, R:ThetaCuspDegreeTwelveFluxBoundary, R:ThetaCuspActualOddHeadVariance
 
-### Singular descent, formation and completion (29) — constrains CDC, JAS, RFHM, PCS, SC, MC, RN
+### Singular descent, formation and completion (30) — constrains CDC, JAS, RFHM, PCS, SC, MC, RN, HF
 
 - no-go-181 BW barrelled Wold certificate. E: REF
 - no-go-166 controlled arithmetic Leibniz/formal-deformation producer. E: REF
@@ -963,6 +963,7 @@ CIRCULAR (24):
 - no-go-333 C1 positive nuclear-root transport of Route-N projective leakage. [L] E: R:GammaSewnPluckerRouteNProjectiveLeakageNoGo, R:DeningerPrimeGammaLowerCauchyFiniteGramApproximation
 - no-go-360 RHist scalar positive darkness with finite continuous-observer price. [L] E: R:XiCanonicalRepairPairPositiveDarkHistoryNoGo, R:DeningerBigWittCrossPrimeRHistPriceEscape
 - no-go-372 RHist square-root singular rescaling. [L] E: R:DeningerBigWittCrossPrimeRHistSingularRescalingNoGo
+- Native Meyer log-clock boundary invariance fails at every Xi divisor point. Survivor: actual relative clock defect surjects onto finite full-jet packets; causal Xi chains give finite invariant cohomology sections, not a descended clock. [L-source] E: R:DeningerMeyerNativeClockBoundaryDefect; R:DeningerMeyerXiCausalChains; R:DeningerMeyerFiniteXiCausalSplitting.
 
 ### Ward, Suzuki, prime–Gamma and operator landing (76) — constrains WD, SZ, RP, PA, RN, W1C, SEC, MSC, APF, HF
 
@@ -1044,7 +1045,7 @@ CIRCULAR (24):
 - no-go-414 P/SP-E positive-semidefinite active-head strict cross. [L] E: R:SPEQuantileRieszRoutePActiveHeadHistorySurvival, R:RoutePPrimitiveBurnolGramModularFaithfulness
 - no-go-423 SEC asymptotic adjacent Calkin-small seam selection. Compact-ideal trace cost=0 iff endpoint charges equal, otherwise ∞; off-line cofinal edges remain infinitely costly despite essential norm→0. [L] E: R:XiPrimeSeamAdjacentEssentialNormNoGo; R:PaperPrimeSeamIdealTrace
 
-### Analytic roots, multiplicity and regularization (12) — constrains DR; KR-TWN, KR-UCF
+### Analytic roots, multiplicity and regularization (13) — constrains DR; KR-TWN, KR-UCF
 
 - no-go-454 Mass-only bounds for a unit-height off-line Poisson bump. [L] E: R:DisplacementMassBlindness, R:CriticalLinePoissonPotential
 - no-go-260 compact Thorin/Markov/seam-log Hankel. E: REF
@@ -1058,6 +1059,7 @@ CIRCULAR (24):
 - no-go-060 symplectic doubling, universal even multiplicity, or quadratic-symbol orientation. E: REF
 - no-go-339 one-point Cauchy marginal as horizontal-displacement detector. [L] E: R:PoissonSmoothedPicketFenceCauchyLaw, P1:cauchy-marginal-horizontal-displacement-blindness
 - no-go-371 MPLF bounded forward raw-jet recovery. [L] E: R:MeixnerRootPrimeLaplaceForwardBridgeNoGo, R:MeixnerRootPrimeLaplaceCofinalGramClassification
+- Prime-Hilbert `C∞` Euler-curve germ cannot agree with actual `log|ζ(σ)|` on the far prime curve. Survivor: finite `Cᵏ` models with explicit derivative growth; no common smooth handoff. [L] E: R:PrimeCurveVacuumRigidity; R:PrimeCurveFiniteSmoothModels; R:PrimeCurveFiniteSmoothJets.
 
 ### Other finite, scalar and source-blind selectors (87) — constrains class kills (route-class obstructions) and all routes
 
