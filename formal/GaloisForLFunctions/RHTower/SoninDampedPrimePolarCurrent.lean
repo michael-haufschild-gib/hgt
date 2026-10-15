@@ -176,7 +176,8 @@ def soninDampedCurrentOrbit (z : ℂ) (u : ℝ) : SoninL2 :=
     (rayDilate (Real.exp u) (bandIndicator 1) +
       rayDilate (Real.exp (-u)) (bandIndicator 1))
 
-private theorem head_dilated_band (u : ℝ) {w : ℂ} (hw : 1 / 2 < w.re) :
+/-- Exact head Mellin transform of the physical dilation of the unit interval. -/
+theorem soninHeadMellin_dilated_bandIndicator (u : ℝ) {w : ℂ} (hw : 1 / 2 < w.re) :
     soninHeadMellin (rayDilate (Real.exp u) (bandIndicator 1)) w =
       (Real.exp (u / 2) : ℂ) * (min 1 (Real.exp (-u)) : ℝ) ^ w / w := by
   rw [dilation_bandIndicator_one (Real.exp_pos _),
@@ -194,7 +195,7 @@ theorem soninHeadMellin_dampedCurrentOrbit {z w : ℂ} {u : ℝ}
   have h2 : 1 ≤ Real.exp u := Real.one_le_exp hu
   rw [soninDampedCurrentOrbit, ← soninHeadMellinCLM_apply w hw,
     map_smul, map_add, soninHeadMellinCLM_apply, soninHeadMellinCLM_apply,
-    head_dilated_band u hw, head_dilated_band (-u) hw,
+    soninHeadMellin_dilated_bandIndicator u hw, soninHeadMellin_dilated_bandIndicator (-u) hw,
     neg_neg, min_eq_right h1, min_eq_left h2, Complex.ofReal_one, Complex.one_cpow]
   rw [GaloisForLFunctions.cpow_ofReal_exp]
   simp only [smul_eq_mul, Complex.ofReal_exp]

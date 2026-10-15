@@ -253,11 +253,10 @@ theorem abs_blindKernel_le_of_eq_zero_endpoints_split {c : WeilTestFn →₀ ℝ
     (hu : u ∈ Icc a b) (T : ℝ) :
     |blindKernel c u| ≤ 2 * (∫ τ in {τ : ℝ | T ≤ |τ|}, specDensityC c τ) +
       (b - a) * ∫ τ in {τ : ℝ | |τ| < T}, |τ| * specDensityC c τ := by
-  set ρ := specDensityC c with hρ
-  have hρ0 : ∀ τ, 0 ≤ ρ τ := specDensityC_nonneg hc
-  have hρc : Continuous ρ := continuous_specDensityC c
-  set lam := (b - u) / (b - a) with hlam
+  have hρ0 : ∀ τ, 0 ≤ specDensityC c τ := specDensityC_nonneg hc
+  have hρc : Continuous (specDensityC c) := continuous_specDensityC c
   have hba : 0 < b - a := by linarith
+  set lam := (b - u) / (b - a) with hlam
   have hl0 : 0 ≤ lam := div_nonneg (by linarith [hu.2]) hba.le
   have hl1 : lam ≤ 1 := by rw [hlam, div_le_one hba]; linarith [hu.1]
   -- the defect function
@@ -269,67 +268,66 @@ theorem abs_blindKernel_le_of_eq_zero_endpoints_split {c : WeilTestFn →₀ ℝ
   have hE2 : ∀ τ, |E τ| ≤ 2 := fun τ => abs_cos_interp_defect_le_two τ a b u lam hl0 hl1
   have hElip : ∀ τ, |E τ| ≤ |τ| * (b - a) := fun τ =>
     abs_cos_interp_defect_le_lipschitz hab.le hu hl0 hl1
+  have hi_u := integrable_specDensityC_mul_cos c u
+  have hi_a := integrable_specDensityC_mul_cos c a
+  have hi_b := integrable_specDensityC_mul_cos c b
+  have hi_ab : Integrable fun τ => lam * (specDensityC c τ * Real.cos (τ * a)) +
+      (1 - lam) * (specDensityC c τ * Real.cos (τ * b)) := (hi_a.const_mul _).add (hi_b.const_mul _)
   -- K(u) = ∫ ρ E
-  have hKu : blindKernel c u = ∫ τ, ρ τ * E τ := by
+  have hKu : blindKernel c u = ∫ τ, specDensityC c τ * E τ := by
     rw [blindKernel_eq_integral] at ha hb
     rw [blindKernel_eq_integral]
-    rw [← hρ] at ha hb ⊢
-    have h0 : lam * ∫ τ, ρ τ * Real.cos (τ * a) + (1 - lam) * ∫ τ, ρ τ * Real.cos (τ * b) = 0 := by
-      linear_combination lam * ha + (1 - lam) * hb
-    have hi_u : Integrable fun τ => ρ τ * Real.cos (τ * u) := integrable_specDensityC_mul_cos c u
-    have hi_a : Integrable fun τ => ρ τ * Real.cos (τ * a) := integrable_specDensityC_mul_cos c a
-    have hi_b : Integrable fun τ => ρ τ * Real.cos (τ * b) := integrable_specDensityC_mul_cos c b
-    have h1 : ∫ τ, ρ τ * E τ = ∫ τ, (ρ τ * Real.cos (τ * u) -
-        (lam * (ρ τ * Real.cos (τ * a)) + (1 - lam) * (ρ τ * Real.cos (τ * b)))) := by
+    have h1 : ∫ τ, specDensityC c τ * E τ = ∫ τ, (specDensityC c τ * Real.cos (τ * u) -
+        (lam * (specDensityC c τ * Real.cos (τ * a)) +
+          (1 - lam) * (specDensityC c τ * Real.cos (τ * b)))) := by
       refine integral_congr_ae (Filter.Eventually.of_forall fun τ => ?_)
       simp only [hE]
       ring
-    have hi_ab : Integrable fun τ => lam * (ρ τ * Real.cos (τ * a)) +
-        (1 - lam) * (ρ τ * Real.cos (τ * b)) := (hi_a.const_mul _).add (hi_b.const_mul _)
     rw [h1, integral_sub hi_u hi_ab,
-      integral_add (f := fun τ => lam * (ρ τ * Real.cos (τ * a)))
-        (g := fun τ => (1 - lam) * (ρ τ * Real.cos (τ * b))) (hi_a.const_mul _) (hi_b.const_mul _),
-      MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul, h0, sub_zero]
+      integral_add (f := fun τ => lam * (specDensityC c τ * Real.cos (τ * a)))
+        (g := fun τ => (1 - lam) * (specDensityC c τ * Real.cos (τ * b)))
+        (hi_a.const_mul _) (hi_b.const_mul _),
+      MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul, ha, hb]
+    ring
   -- integrability of ρ E and the two majorants
-  have hρE : Integrable fun τ => ρ τ * E τ := by
-    refine (integrable_specDensityC c).const_mul 2 |>.mono' (hρc.mul hEc).aestronglyMeasurable
-      (Filter.Eventually.of_forall fun τ => ?_)
-    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 τ)]
-    nlinarith [hE2 τ, hρ0 τ]
-  have hρabs : Integrable fun τ => ρ τ * |E τ| := by
+  have hρabs : Integrable fun τ => specDensityC c τ * |E τ| := by
     refine (integrable_specDensityC c).const_mul 2 |>.mono' (hρc.mul hEc.abs).aestronglyMeasurable
       (Filter.Eventually.of_forall fun τ => ?_)
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 τ), abs_abs]
     nlinarith [hE2 τ, hρ0 τ]
-  have hρτ : Integrable fun τ => (b - a) * (|τ| * ρ τ) :=
+  have hρτ : Integrable fun τ => (b - a) * (|τ| * specDensityC c τ) :=
     (integrable_abs_mul_specDensityC c).const_mul _
   -- |K(u)| ≤ ∫ ρ |E|
-  have h1 : |blindKernel c u| ≤ ∫ τ, ρ τ * |E τ| := by
+  have h1 : |blindKernel c u| ≤ ∫ τ, specDensityC c τ * |E τ| := by
     rw [hKu]
-    have := norm_integral_le_integral_norm (μ := volume) fun τ => ρ τ * E τ
+    have := norm_integral_le_integral_norm (μ := volume) fun τ => specDensityC c τ * E τ
     rw [Real.norm_eq_abs] at this
     refine this.trans (le_of_eq ?_)
     refine integral_congr_ae (Filter.Eventually.of_forall fun τ => ?_)
-    show ‖ρ τ * E τ‖ = ρ τ * |E τ|
+    show ‖specDensityC c τ * E τ‖ = specDensityC c τ * |E τ|
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 τ)]
   -- split at the threshold
-  set S : Set ℝ := {τ : ℝ | |τ| < T} with hS
-  have hSm : MeasurableSet S := measurableSet_lt continuous_abs.measurable measurable_const
-  have hSc : Sᶜ = {τ : ℝ | T ≤ |τ|} := by
-    ext τ; simp [hS, not_lt]
-  have hsplit : ∫ τ, ρ τ * |E τ| = (∫ τ in S, ρ τ * |E τ|) + ∫ τ in Sᶜ, ρ τ * |E τ| :=
-    (integral_add_compl hSm hρabs).symm
-  have hlow : ∫ τ in S, ρ τ * |E τ| ≤ ∫ τ in S, (b - a) * (|τ| * ρ τ) := by
+  have hSm : MeasurableSet {τ : ℝ | |τ| < T} :=
+    measurableSet_lt continuous_abs.measurable measurable_const
+  have hSc : {τ : ℝ | |τ| < T}ᶜ = {τ : ℝ | T ≤ |τ|} := by
+    ext τ; simp [not_lt]
+  have hsplit : ∫ τ, specDensityC c τ * |E τ| =
+      (∫ τ in {τ : ℝ | |τ| < T}, specDensityC c τ * |E τ|) +
+        ∫ τ in {τ : ℝ | T ≤ |τ|}, specDensityC c τ * |E τ| := by
+    rw [← hSc]
+    exact (integral_add_compl hSm hρabs).symm
+  have hlow : ∫ τ in {τ : ℝ | |τ| < T}, specDensityC c τ * |E τ| ≤
+      ∫ τ in {τ : ℝ | |τ| < T}, (b - a) * (|τ| * specDensityC c τ) := by
     refine setIntegral_mono_on hρabs.integrableOn hρτ.integrableOn hSm fun τ _ => ?_
     have := mul_le_mul_of_nonneg_left (hElip τ) (hρ0 τ)
     nlinarith [this]
-  have hhigh : ∫ τ in Sᶜ, ρ τ * |E τ| ≤ ∫ τ in Sᶜ, 2 * ρ τ := by
+  have hhigh : ∫ τ in {τ : ℝ | T ≤ |τ|}, specDensityC c τ * |E τ| ≤
+      ∫ τ in {τ : ℝ | T ≤ |τ|}, 2 * specDensityC c τ := by
     refine setIntegral_mono_on hρabs.integrableOn
-      ((integrable_specDensityC c).const_mul 2).integrableOn hSm.compl fun τ _ => ?_
+      ((integrable_specDensityC c).const_mul 2).integrableOn (hSc ▸ hSm.compl) fun τ _ => ?_
     have := mul_le_mul_of_nonneg_left (hE2 τ) (hρ0 τ)
     linarith
   rw [MeasureTheory.integral_const_mul] at hlow hhigh
-  rw [hSc] at hhigh hsplit
   linarith
 
 end

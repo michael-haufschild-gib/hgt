@@ -1,0 +1,9 @@
+TG remains active, RH incomplete. This continuation closed no hard gap and added no Lean code. Previous turn classified no progress toward proof gap. Revalidated current SoninPrimePolarResidueExclusion retains finite native energy premise. No source-bound theorem found.
+
+Working log updated: docs/drafts/pipeline/1-in-progress/tg-native-covariance-transfer-2026-10-15.md. Read current SoninPrimePolarJetLcmCovariance entirety: exact jet LCM self-convolution = -jet, two-coordinate Mobius/gcd fibre, full physical kernel with high LCMs, proper powers, polar crosses, terminal square. No estimate.
+
+Paper (not Lean) local classification: squarefree n dividing k*m; r exclusive prime factors on k, s exclusive on m, t common. Bivariate LCM product (-x)^r(-y)^s(xy-x-y)^t. Mixed derivative at(1,1) gives jetLcmIncidence=mu(n)*(r*s-t). Recovers negative diagonal at r=s=0. Positive mixed rs survives. Summing all n at fixed k,m just recovers prime-power pair indicator. Verdict BRIDGE, not producer; no novelty claim; avoid an identity-only Lean leaf for this.
+
+Checked CCMPrimeDeficitEulerForceEnergy: full force critical coefficient energy <= (log N)^2/4*(1+log N)^4 uniformly in Euler modulus. CCMPrimeDeficitEulerForceOrthogonality is disjoint SUPPORT only; delayed physical profiles are not orthogonal. Cannot import this coefficient bound into native energy. Checked CCMPrimeDeficitMobiusCenteredEnergy: explicit work keeps (gamma+1)*(expT*harmonicMu-MuPrefix) - log(2pi)/2*sum mu*(T-logn), centered remainder diagonal <=49/4. No favorable sign or full mixed-work bound follows.
+
+No complete new paper proof of arithmetic bound. Do not mark goal complete/blocked merely because research is hard. No external input needed. Continue actual signed cancellation, not receiver/index/constant optimization. Session25644 corpus search polled terminal exit0. Sessionless jet lexical search completed. Owned /tmp search outputs cleaned at cycle end.

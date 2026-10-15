@@ -9,10 +9,12 @@ import GaloisForLFunctions.RHTower.WeilPositivityConductorObstruction
 Let `φ` be the even bump of the far-bump construction, `k = φ ⋆ φ̃`, `J = ∫ φ(x) e^{−x/2} dx`, and
 `e_a = φ(· − a) + φ(· + a)` the even far bump.  For a real even `C²` test `g` supported in
 `[−R, R]` put `P = ∫ g(x) e^{−x/2} dx` and `c_a = P / ((e^{−a/2} + e^{a/2}) J)`.  Then
-`G_a = g − c_a e_a` is even and pole-free (`∫ G_a e^{−x/2} = 0`), so Weil positivity on even tests
-at any pole weight `β` gives `W(G_a) ≥ 0` at pole weight one.
+`G_a = g − c_a e_a` is even and pole-free (`∫ G_a e^{−x/2} = 0`), so Weil positivity on even
+pole-free tests (`WeilPositiveEvenPolar`, implied by even positivity at any pole weight) gives
+`W(G_a) ≥ 0`.
 
-**Theorem** (`realWeil_ge_of_weilPositiveEvenAt`).  There is `M ≥ 0` such that for every `a ≥ R + 1`
+**Theorem** (`realWeil_ge_of_weilPositiveEvenPolar`).  There is `M ≥ 0` such that for every
+`a ≥ R + 1`
 
 `W(g) ≥ 2P² − 4 c_a T(a) + 2 c_a² S(a) − M (|c_a| + c_a²)`,
 
@@ -260,7 +262,7 @@ theorem crossCorr_evenFarBump_right {g : ℝ → ℝ} (hg : Continuous g) (hgc :
 
 /-- The atoms of `g ⋆ ẽ_a` are `2T(a)` once the far bump has left the support of `g`. -/
 theorem atomPairing_crossCorr_evenFarBump (lam : ℕ → ℝ) {g : ℝ → ℝ} (hg : Continuous g)
-    (hgc : HasCompactSupport g) (hge : ∀ x, g (-x) = g x) {R : ℝ}
+    (hgc : HasCompactSupport g) (hge : ∀ x, g (-x) = g x) {R : ℝ} (hR : 0 ≤ R)
     (hgs : ∀ x, R < |x| → g x = 0) {a : ℝ} (ha : R + 1 ≤ a) :
     atomPairing lam (crossCorr g (evenFarBump a)) = 2 * farCrossSum lam g a := by
   unfold atomPairing farCrossSum
@@ -285,7 +287,7 @@ theorem atomPairing_crossCorr_evenFarBump (lam : ℕ → ℝ) {g : ℝ → ℝ} 
 def farArch (F : ℝ → ℝ) : ℝ :=
   1 / (2 * Real.pi) * ∫ r : ℝ, ‖paperFT (fun u => (F u : ℂ)) r‖ ^ 2 * EF.gammaBracket r
 
-theorem tsupport_ofReal_subset {F : ℝ → ℝ} {R : ℝ} (hF : ∀ x, R < |x| → F x = 0) :
+theorem tsupport_ofReal_subset_Icc_of_abs_gt {F : ℝ → ℝ} {R : ℝ} (hF : ∀ x, R < |x| → F x = 0) :
     tsupport (fun u => (F u : ℂ)) ⊆ Icc (-R) R := by
   refine closure_minimal (fun x hx => ?_) isClosed_Icc
   rw [Function.mem_support] at hx
@@ -295,17 +297,17 @@ theorem tsupport_ofReal_subset {F : ℝ → ℝ} {R : ℝ} (hF : ∀ x, R < |x| 
   have hR : R < |x| := lt_abs.mpr (by rcases hc with h | h <;> [right; left] <;> linarith)
   rw [hF x hR, Complex.ofReal_zero]
 
-theorem hasCompactSupport_of_abs_gt {F : ℝ → ℝ} {R : ℝ} (hF : ∀ x, R < |x| → F x = 0) :
+theorem hasCompactSupport_of_abs_gt_eq_zero {F : ℝ → ℝ} {R : ℝ} (hF : ∀ x, R < |x| → F x = 0) :
     HasCompactSupport F :=
   HasCompactSupport.intro (isCompact_Icc (a := -R) (b := R)) fun x hx => by
     rw [mem_Icc, not_and_or, not_le, not_le] at hx
     exact hF x (lt_abs.mpr (by rcases hx with h | h <;> [right; left] <;> linarith))
 
-theorem integrable_normSq_paperFT_mul_gammaBracket {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F) {R : ℝ}
+theorem integrable_normSq_paperFT_ofReal_mul_gammaBracket {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F) {R : ℝ}
     (hFs : ∀ x, R < |x| → F x = 0) :
     Integrable fun r : ℝ => ‖paperFT (fun u => (F u : ℂ)) r‖ ^ 2 * EF.gammaBracket r := by
   have h := integrable_normSq_paperFT_mul_arch (contDiff_ofReal_comp hF)
-    (tsupport_ofReal_subset hFs)
+    (tsupport_ofReal_subset_Icc_of_abs_gt hFs)
   refine h.congr (Eventually.of_forall fun r => ?_)
   show ‖paperFT (fun u => (F u : ℂ)) r‖ ^ 2 * archimedeanWeilSymbol (r / (2 * π)) =
     ‖paperFT (fun u => (F u : ℂ)) r‖ ^ 2 * EF.gammaBracket r
@@ -333,12 +335,12 @@ theorem farArch_sub_smul {F₁ F₂ : ℝ → ℝ} (h₁ : ContDiff ℝ 2 F₁) 
     (hs₁ : ∀ x, R < |x| → F₁ x = 0) (hs₂ : ∀ x, R < |x| → F₂ x = 0) (c : ℝ) :
     farArch (fun x => F₁ x - c * F₂ x) =
       (1 + c) * farArch F₁ - c * farArch (fun x => F₁ x + F₂ x) + (c + c ^ 2) * farArch F₂ := by
-  have hc₁ := hasCompactSupport_of_abs_gt hs₁
-  have hc₂ := hasCompactSupport_of_abs_gt hs₂
+  have hc₁ := hasCompactSupport_of_abs_gt_eq_zero hs₁
+  have hc₂ := hasCompactSupport_of_abs_gt_eq_zero hs₂
   have hs₃ : ∀ x, R < |x| → F₁ x + F₂ x = 0 := fun x hx => by rw [hs₁ x hx, hs₂ x hx, add_zero]
-  have hI₁ := integrable_normSq_paperFT_mul_gammaBracket h₁ hs₁
-  have hI₂ := integrable_normSq_paperFT_mul_gammaBracket h₂ hs₂
-  have hI₃ := integrable_normSq_paperFT_mul_gammaBracket (h₁.add h₂) hs₃
+  have hI₁ := integrable_normSq_paperFT_ofReal_mul_gammaBracket h₁ hs₁
+  have hI₂ := integrable_normSq_paperFT_ofReal_mul_gammaBracket h₂ hs₂
+  have hI₃ := integrable_normSq_paperFT_ofReal_mul_gammaBracket (h₁.add h₂) hs₃
   have hpt : ∀ r : ℝ, ‖paperFT (fun u => ((F₁ u - c * F₂ u : ℝ) : ℂ)) r‖ ^ 2 =
       (1 + c) * ‖paperFT (fun u => (F₁ u : ℂ)) r‖ ^ 2 -
         c * ‖paperFT (fun u => ((F₁ u + F₂ u : ℝ) : ℂ)) r‖ ^ 2 +
@@ -359,18 +361,20 @@ theorem farArch_sub_smul {F₁ F₂ : ℝ → ℝ} (h₁ : ContDiff ℝ 2 F₁) 
     rw [e1, e2, norm_sub_ofReal_mul_sq]
   unfold farArch
   have e : (fun r : ℝ => ‖paperFT (fun u => ((F₁ u - c * F₂ u : ℝ) : ℂ)) r‖ ^ 2 *
-      EF.gammaBracket r) = fun r =>
+      EF.gammaBracket r) = fun r : ℝ =>
       (1 + c) * (‖paperFT (fun u => (F₁ u : ℂ)) r‖ ^ 2 * EF.gammaBracket r) -
         c * (‖paperFT (fun u => ((F₁ u + F₂ u : ℝ) : ℂ)) r‖ ^ 2 * EF.gammaBracket r) +
         (c + c ^ 2) * (‖paperFT (fun u => (F₂ u : ℂ)) r‖ ^ 2 * EF.gammaBracket r) := by
     funext r; rw [hpt r]; ring
-  rw [e, integral_add ((hI₁.const_mul _).sub (hI₃.const_mul _)) (hI₂.const_mul _),
-    integral_sub (hI₁.const_mul _) (hI₃.const_mul _), integral_const_mul, integral_const_mul,
-    integral_const_mul]
+  have i12 : Integrable fun r : ℝ =>
+      (1 + c) * (‖paperFT (fun u => (F₁ u : ℂ)) r‖ ^ 2 * EF.gammaBracket r) -
+        c * (‖paperFT (fun u => ((F₁ u + F₂ u : ℝ) : ℂ)) r‖ ^ 2 * EF.gammaBracket r) :=
+    (hI₁.const_mul _).sub (hI₃.const_mul _)
+  rw [e, integral_add i12 (hI₂.const_mul _), integral_sub (hI₁.const_mul _) (hI₃.const_mul _),
+    integral_const_mul, integral_const_mul, integral_const_mul]
   ring
 
-theorem abs_farArch_le {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F) {R : ℝ}
-    (hFs : ∀ x, R < |x| → F x = 0) :
+theorem abs_farArch_le (F : ℝ → ℝ) :
     |farArch F| ≤ 1 / (2 * Real.pi) *
       ∫ r : ℝ, ‖paperFT (fun u => (F u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r| := by
   unfold farArch
@@ -389,31 +393,31 @@ theorem integral_evenFarBump_arch_le (a : ℝ) :
       farBumpArchMass :=
   integral_normSq_mul_abs_gammaBracket_le 2 (norm_paperFT_evenFarBump_le a)
 
-theorem abs_farArch_evenFarBump_le {a : ℝ} (ha : 0 ≤ a) :
+theorem abs_farArch_evenFarBump_le (a : ℝ) :
     |farArch (evenFarBump a)| ≤ 1 / (2 * Real.pi) * farBumpArchMass :=
-  (abs_farArch_le (contDiff_evenFarBump a) (fun x hx => evenFarBump_eq_zero ha hx)).trans
+  (abs_farArch_le (evenFarBump a)).trans
     (mul_le_mul_of_nonneg_left (integral_evenFarBump_arch_le a) (by positivity))
 
 theorem integrable_normSq_paperFT_mul_abs_gammaBracket {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
     {R : ℝ} (hFs : ∀ x, R < |x| → F x = 0) :
     Integrable fun r : ℝ => ‖paperFT (fun u => (F u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r| := by
-  refine (integrable_normSq_paperFT_mul_gammaBracket hF hFs).norm.congr
+  refine (integrable_normSq_paperFT_ofReal_mul_gammaBracket hF hFs).norm.congr
     (Eventually.of_forall fun r => ?_)
   simp only [Real.norm_eq_abs, abs_mul, abs_of_nonneg (sq_nonneg ‖paperFT (fun u => (F u : ℂ)) r‖)]
 
 theorem abs_farArch_add_evenFarBump_le {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) {R : ℝ} (hR : 0 ≤ R)
     (hgs : ∀ x, R < |x| → g x = 0) {a : ℝ} (ha : R ≤ a) :
     |farArch (fun x => g x + evenFarBump a x)| ≤ 1 / (2 * Real.pi) *
-      (2 * ∫ r : ℝ, ‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r| +
+      (2 * (∫ r : ℝ, ‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r|) +
         2 * farBumpArchMass) := by
   have ha0 : 0 ≤ a := hR.trans ha
   have hes : ∀ x, a + 1 < |x| → evenFarBump a x = 0 := fun x hx => evenFarBump_eq_zero ha0 hx
   have hgs' : ∀ x, a + 1 < |x| → g x = 0 := fun x hx => hgs x (by linarith)
   have hs : ∀ x, a + 1 < |x| → g x + evenFarBump a x = 0 := fun x hx => by
     rw [hgs' x hx, hes x hx, add_zero]
-  have hgc := hasCompactSupport_of_abs_gt hgs
+  have hgc := hasCompactSupport_of_abs_gt_eq_zero hgs
   have hec := hasCompactSupport_evenFarBump a
-  refine (abs_farArch_le (hg.add (contDiff_evenFarBump a)) hs).trans
+  refine (abs_farArch_le (fun x => g x + evenFarBump a x)).trans
     (mul_le_mul_of_nonneg_left ?_ (by positivity))
   have hIg := integrable_normSq_paperFT_mul_abs_gammaBracket hg hgs
   have hIe := integrable_normSq_paperFT_mul_abs_gammaBracket (contDiff_evenFarBump a) hes
@@ -430,15 +434,14 @@ theorem abs_farArch_add_evenFarBump_le {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
         fun u => ((1 * g u + 1 * evenFarBump a u : ℝ) : ℂ) by funext u; push_cast; ring, this]
       push_cast; ring
     rw [e]
-    have hsq : ‖paperFT (fun u => (g u : ℂ)) r + paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r‖ ^ 2
+    have hsq : ‖paperFT (fun u => (g u : ℂ)) r +
+        paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r‖ ^ 2
         ≤ 2 * ‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 +
           2 * ‖paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r‖ ^ 2 := by
-      have := norm_add_le (paperFT (fun u => (g u : ℂ)) r)
-        (paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r)
-      nlinarith [norm_nonneg (paperFT (fun u => (g u : ℂ)) r),
-        norm_nonneg (paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r),
-        norm_nonneg (paperFT (fun u => (g u : ℂ)) r +
-          paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r)]
+      have h1 := pow_le_pow_left₀ (norm_nonneg _) (norm_add_le (paperFT (fun u => (g u : ℂ)) r)
+        (paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r)) 2
+      nlinarith [sq_nonneg (‖paperFT (fun u => (g u : ℂ)) r‖ -
+        ‖paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r‖)]
     have hG := abs_nonneg (EF.gammaBracket r)
     nlinarith
   calc ∫ r : ℝ, ‖paperFT (fun u => ((g u + evenFarBump a u : ℝ) : ℂ)) r‖ ^ 2 *
@@ -446,7 +449,7 @@ theorem abs_farArch_add_evenFarBump_le {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
       ≤ ∫ r : ℝ, (2 * (‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r|) +
         2 * (‖paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r‖ ^ 2 * |EF.gammaBracket r|)) :=
         integral_mono hIs ((hIg.const_mul 2).add (hIe.const_mul 2)) hpt
-    _ = 2 * ∫ r : ℝ, ‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r| +
+    _ = 2 * (∫ r : ℝ, ‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r|) +
         2 * ∫ r : ℝ, ‖paperFT (fun u => ((evenFarBump a u : ℝ) : ℂ)) r‖ ^ 2 *
           |EF.gammaBracket r| := by
         rw [integral_add (hIg.const_mul 2) (hIe.const_mul 2), integral_const_mul,
@@ -476,8 +479,8 @@ theorem re_weilFullFunctional_ofReal_eq (lam : ℕ → ℝ) {F : ℝ → ℝ} (h
     (weilFullFunctional lam (EF.weilTest (fun u => (F u : ℂ)) (fun u => (F u : ℂ)))).re =
       (weilPoleTerm (EF.weilTest (fun u => (F u : ℂ)) (fun u => (F u : ℂ)))).re + farArch F -
         atomPairing lam (crossCorr F F) := by
-  rw [re_weilFullFunctional_ofReal, weilArchRe_weilTest_eq (Complex.continuous_ofReal.comp hF)
-    (hFc.comp_left Complex.ofReal_zero)]
+  rw [re_weilFullFunctional_ofReal, weilArchRe_weilTest_eq (f := fun u => (F u : ℂ))
+    (Complex.continuous_ofReal.comp hF) (hFc.comp_left Complex.ofReal_zero)]
   unfold farArch
   ring
 
@@ -504,19 +507,36 @@ theorem integral_sub_farCoeff_mul_exp {g : ℝ → ℝ} (hg : Continuous g) (hgc
   field_simp
   ring
 
-/-- **The far-bump inequality for even tests.**  Weil positivity on even tests at any pole weight
-bounds the Weil functional of a real even test `g` (supported in `[−R, R]`) from below by the window
-sums: for `a ≥ R + 1`, `W(g) ≥ 2P² − 4c_a T(a) + 2c_a² S(a) − M(|c_a| + c_a²)`. -/
-theorem realWeil_ge_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ} (h : WeilPositiveEvenAt β lam)
+/-- Weil positivity on even tests whose transform vanishes at `i/2`; the pole term is absent. -/
+def WeilPositiveEvenPolar (lam : ℕ → ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f → (∀ x, f (-x) = f x) →
+    paperFT f (I / 2) = 0 → 0 ≤ (weilFullFunctional lam (EF.weilTest f f)).re
+
+theorem weilPositiveEvenPolar_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ}
+    (h : WeilPositiveEvenAt β lam) : WeilPositiveEvenPolar lam := by
+  intro f hf hfc hfe h0
+  have hpos := h f hf hfc hfe
+  rw [re_weilPoleWeightFunctional_eq_add] at hpos
+  have h1 : paperFT f (-I / 2) = 0 := by
+    rw [show (-I / 2 : ℂ) = -(I / 2) by ring, paperFT_neg_of_even hfe]; exact h0
+  have hpole : (weilPoleTerm (EF.weilTest f f)).re = 0 := by
+    rw [weilPoleTerm_weilTest_eq hf.continuous hfc, h0, h1]; simp
+  rw [hpole, mul_zero, add_zero] at hpos
+  exact hpos
+
+/-- **The far-bump inequality for even tests.**  Weil positivity on even pole-free tests bounds the
+Weil functional of a real even test `g` (supported in `[−R, R]`) from below by the window sums: for
+`a ≥ R + 1`, `W(g) ≥ 2P² − 4c_a T(a) + 2c_a² S(a) − M(|c_a| + c_a²)`. -/
+theorem realWeil_ge_of_weilPositiveEvenPolar {lam : ℕ → ℝ} (hpf : WeilPositiveEvenPolar lam)
     {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) {R : ℝ} (hR : 0 ≤ R) (hgs : ∀ x, R < |x| → g x = 0)
     (hge : ∀ x, g (-x) = g x) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ a : ℝ, R + 1 ≤ a →
       2 * (∫ x, g x * Real.exp (-x / 2)) ^ 2 - 4 * farCoeff g a * farCrossSum lam g a +
           2 * farCoeff g a ^ 2 * farSum lam a - M * (|farCoeff g a| + farCoeff g a ^ 2) ≤
         (weilFullFunctional lam (EF.weilTest (fun u => (g u : ℂ)) (fun u => (g u : ℂ)))).re := by
-  have hgc := hasCompactSupport_of_abs_gt hgs
+  have hgc := hasCompactSupport_of_abs_gt_eq_zero hgs
   set Bg : ℝ := 1 / (2 * Real.pi) *
-      (2 * ∫ r : ℝ, ‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r| +
+      (2 * (∫ r : ℝ, ‖paperFT (fun u => (g u : ℂ)) r‖ ^ 2 * |EF.gammaBracket r|) +
         2 * farBumpArchMass) with hBg
   set Be : ℝ := 1 / (2 * Real.pi) * farBumpArchMass with hBe
   refine ⟨|farArch g| + |Bg| + 2 * |Be|, by positivity, fun a ha => ?_⟩
@@ -529,15 +549,15 @@ theorem realWeil_ge_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ} (h : We
   have hGd : ContDiff ℝ 2 G := hg.sub (contDiff_const.mul (contDiff_evenFarBump a))
   have hGs : ∀ x, a + 1 < |x| → G x = 0 := fun x hx => by
     simp only [hG, hgs' x hx, hes x hx, mul_zero, sub_zero]
-  have hGc := hasCompactSupport_of_abs_gt hGs
+  have hGc := hasCompactSupport_of_abs_gt_eq_zero hGs
   have hGe : ∀ x, G (-x) = G x := fun x => by simp only [hG, he, hge, evenFarBump_neg]
   -- positivity on the pole-free combination
-  have hpos := h (fun u => (G u : ℂ)) (contDiff_ofReal_comp hGd)
-    (hGc.comp_left Complex.ofReal_zero) (fun x => by simp only [hGe])
-  rw [re_weilPoleWeightFunctional_eq_add, re_weilFullFunctional_ofReal_eq lam hGd.continuous hGc,
-    re_weilPoleTerm_ofReal_even hGd.continuous hGc hGe] at hpos
   have hP0 : ∫ u, G u * Real.exp (-u / 2) = 0 := integral_sub_farCoeff_mul_exp hg.continuous hgc a
-  rw [hP0] at hpos
+  have hpos := hpf (fun u => (G u : ℂ)) (contDiff_ofReal_comp hGd)
+    (hGc.comp_left Complex.ofReal_zero) (fun x => by simp only [hGe])
+    (by rw [paperFT_ofRealFun_I_div_two, hP0, Complex.ofReal_zero])
+  rw [re_weilFullFunctional_ofReal_eq lam hGd.continuous hGc,
+    re_weilPoleTerm_ofReal_even hGd.continuous hGc hGe, hP0] at hpos
   -- archimedean polarization
   have harch : farArch G = (1 + c) * farArch g - c * farArch (fun x => g x + e x) +
       (c + c ^ 2) * farArch e :=
@@ -547,8 +567,8 @@ theorem realWeil_ge_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ} (h : We
   have hatoms : atomPairing lam (crossCorr G G) = atomPairing lam (crossCorr g g) -
       4 * c * farCrossSum lam g a + 2 * c ^ 2 * farSum lam a := by
     rw [hG', atomPairing_add_smul_expand lam hg.continuous hgc (continuous_evenFarBump a)
-      (hasCompactSupport_evenFarBump a) (-c), he,
-      atomPairing_crossCorr_evenFarBump lam hg.continuous hgc hge hgs ha,
+      (hasCompactSupport_evenFarBump a) (-c),
+      atomPairing_crossCorr_evenFarBump lam hg.continuous hgc hge hR hgs ha,
       atomPairing_evenFarBump lam ha0]
     ring
   -- the test itself
@@ -557,7 +577,7 @@ theorem realWeil_ge_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ} (h : We
   rw [hg_eq]
   -- bounds on the archimedean remainders
   have hAs := abs_farArch_add_evenFarBump_le hg hR hgs (show R ≤ a by linarith)
-  have hAe := abs_farArch_evenFarBump_le ha0
+  have hAe := abs_farArch_evenFarBump_le a
   rw [← hBg] at hAs
   rw [← hBe] at hAe
   have hrem : |(-c) * farArch g + c * farArch (fun x => g x + e x) - (c + c ^ 2) * farArch e| ≤
@@ -572,7 +592,7 @@ theorem realWeil_ge_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ} (h : We
     calc |(-c) * farArch g + c * farArch (fun x => g x + e x) - (c + c ^ 2) * farArch e|
         ≤ |(-c) * farArch g| + |c * farArch (fun x => g x + e x)| +
           |(c + c ^ 2) * farArch e| :=
-          (abs_sub _ _).trans (add_le_add_right (abs_add_le _ _) _)
+          (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
       _ ≤ |c| * |farArch g| + |c| * |Bg| + (|c| + c ^ 2) * |Be| := by linarith
       _ ≤ (|farArch g| + |Bg| + 2 * |Be|) * (|c| + c ^ 2) := by
           have := abs_nonneg c
@@ -584,6 +604,15 @@ theorem realWeil_ge_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ} (h : We
     (c + c ^ 2) * farArch e)
   rw [harch, hatoms] at hpos
   nlinarith
+
+theorem realWeil_ge_of_weilPositiveEvenAt {β : ℝ} {lam : ℕ → ℝ} (h : WeilPositiveEvenAt β lam)
+    {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) {R : ℝ} (hR : 0 ≤ R) (hgs : ∀ x, R < |x| → g x = 0)
+    (hge : ∀ x, g (-x) = g x) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ a : ℝ, R + 1 ≤ a →
+      2 * (∫ x, g x * Real.exp (-x / 2)) ^ 2 - 4 * farCoeff g a * farCrossSum lam g a +
+          2 * farCoeff g a ^ 2 * farSum lam a - M * (|farCoeff g a| + farCoeff g a ^ 2) ≤
+        (weilFullFunctional lam (EF.weilTest (fun u => (g u : ℂ)) (fun u => (g u : ℂ)))).re :=
+  realWeil_ge_of_weilPositiveEvenPolar (weilPositiveEvenPolar_of_weilPositiveEvenAt h) hg hR hgs hge
 
 end RHTower.EvenSector
 

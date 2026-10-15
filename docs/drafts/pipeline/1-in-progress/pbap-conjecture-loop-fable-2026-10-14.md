@@ -251,3 +251,18 @@ The prime-blind LP is now described completely at the level of its value functio
   * Appended to the module: `nodeArchEnergy_ge_of_blind_of_curvature_le`, `div_nodeArchEnergy_ge_of_blind_of_curvature_le`
     — on the sub-cone of blind combinations with curvature ≤ κ·mass the energy ratio is ≥ γ(0) − 2 − 6κ at every level;
     a blind family with energy ratio → −∞ must have curvature/mass → ∞ (spectral mass escaping to high frequency).
+- 2026-10-15 — **Row 13 [L]. Spectral tail of the blind pole (MUST-1516).** Two modules, standard axioms, clean, built, wired.
+  * `PrimeBlindKernelSpectral`: spectral density `ρ_f = ‖f̂‖²/(2π)` (via `integral_normSq_paperFT_mul_cos_eq`),
+    `K_c(x) = ∫ ρ_c cos(τx)`, integrability of `ρ_c`, `|τ|ρ_c`, `√|τ|ρ_c`, `τ²ρ_c` (decay `‖f̂‖ ≤ C/(1+|τ|)²`), split gap
+    estimate `|K_c(u)| ≤ 2∫_{|τ|≥T}ρ + (b−a)∫_{|τ|<T}|τ|ρ` on `[a,b]` with `K_c(a) = K_c(b) = 0` (interpolation defect of the
+    cosine, Lipschitz constant `|τ|`; no derivative of `K_c` needed).
+  * `PrimeBlindPoleSpectralTail`: telescoping sums `Σ_{n≤m} n^{−1/2} ≤ 2√m`, `Σ_{n∈[m,N)} n^{−3/2} ≤ 2/√(m−1)`; per gap
+    `∫_{gap_n}|K|2cosh ≤ (2√2/√n)(2μ_{≥n} + I_{<n}/n)`; gap sums as one spectral integral `∫ρ Σ gapWeight`; pointwise
+    `Σ_{n∈[n₀,N)} gapWeight n τ ≤ 20√|τ|` for `|τ| ≥ n₀`, `≤ 6|τ|/√(n₀−1)` below; localized tail theorem and the global
+    floor `P(c) ≥ −(4·mass + 58∫√|τ|ρ_c)`.
+  * Observation during the proof: the first-order (Lipschitz) split gives the same weight `√|τ|` as the second-order
+    (curvature) split would — the loss of one gap factor is exactly compensated by one less power of `|τ|` in the moment;
+    the elementary gap method saturates at `√|τ|`. Beating `|τ|^{1/4}` (ζ-defect + convexity) needs the node vanishing on
+    the high-frequency part, i.e. the anti-resonance statement; the chirp cost heuristic (covering mass `2∫a e^{x/2}` vs
+    pole gain `2∫a e^{x/2}`) is the `√|τ|`-weight statement read at the exponential scale `τ ≈ e^x`: it is now a theorem
+    in the form of the localized tail bound, not a bounded pole floor.

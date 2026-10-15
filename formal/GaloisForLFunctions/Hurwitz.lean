@@ -51,6 +51,10 @@ import GaloisForLFunctions.Hurwitz.JointUpperEndDifferentialIndependence
 import GaloisForLFunctions.Hurwitz.IntegerTranslationDifferentialMatroid
 import GaloisForLFunctions.Hurwitz.IntegerTranslationCompleteRelationIdeal
 import GaloisForLFunctions.Hurwitz.AnchorTransversality
+import GaloisForLFunctions.Hurwitz.JointAnchorContinuity
+import GaloisForLFunctions.Hurwitz.JointAnchorRegularity
+import GaloisForLFunctions.Hurwitz.AnchorLevelGraph
+import GaloisForLFunctions.Hurwitz.AnchorGraphContact
 
 /- ## Complete area inventory -/
 import GaloisForLFunctions.Hurwitz.AnalyticContinuation

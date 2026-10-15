@@ -1,0 +1,13 @@
+TG goal remains active; no new hard gap closed in this cycle. Previous cycle's native source -> quantized residue exclusion is verified in SoninPrimePolarResidueExclusion. Current attempt must PRODUCE actual arithmetic bound, not add receivers/index identities.
+
+Working card: docs/drafts/pipeline/1-in-progress/tg-native-covariance-transfer-2026-10-15.md. No Lean edits/builds this cycle; no numerical experiments. Only this working card and this memory added.
+
+Read relevant native grid norm, signed/chronological energy, full response, cubic safe-Euler carrier, Burnol synthesis and full Gram, Selberg symmetry, Mobius floor residual/Gram, coprime balance and head control. Deep corpus searches completed partial=false, compiler coverage mostly source-only/stale, semantic coverage warning. Suggested energy ingredients were inapplicable; no producer found.
+
+Exact missing cancellation: c_n=prime indicator - polar cellmass, A_n=prefix c. Native norm^2=2a(sum c_n^2/(n+2)+2sum c_n A_(n-1)/(n+2)), equivalently accumulated positive A_n^2/((n+2)(n+3)) plus endpoint square. Prime diagonal diverges; signed prime-polar interaction must cancel it. Endpoint crossings and convergent harmonic discrepancy do not control accumulated energy.
+
+Tested bounded columnwise import of subunit cubic budget: Burnol base prime column norm^2=1/(4p log(p)^2); native ground column norm^2=2a/p. A bounded map sending each literal column to the native atom would require 8a log(p)^2 <= ||T||^2 for every prime; impossible. This is a paper-level transfer test, NOT new Lean theorem, and does not rule out collective compensated source admission. Normalizing columns does not automatically fix covariance: Burnol normalized correlation=(2sqrt(uv)/(u+v))^3, native=exp(-|u-v|/2); quadratic versus linear separation loss. Normalized arithmetic-column obstruction not fully formalized; do not count as completed no-go closure or pivot to it as RH progress.
+
+Divisor route: ccmPrimeDeficitCriticalEnergy + ccmPrimeDeficitCoprimeCrossWork bounded by49/4, not either term. Complete small coprime rows omit endpoint row and large-index block. Whole-period sieve averages omit actual anchored boundary. Existing signed floor inversions expose but do not bound this term. Selberg symmetry O(N) remainder insufficient at critical exponent. No source bound inferred.
+
+Preserve all unrelated concurrent work. No goal completion/block/pause. Next work remains actual signed arithmetic source producer. Three /tmp/tg-native-*-search.json files scheduled for owned cleanup at cycle end.
