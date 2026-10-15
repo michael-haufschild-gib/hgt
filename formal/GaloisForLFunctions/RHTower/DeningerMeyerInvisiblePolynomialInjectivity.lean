@@ -35,11 +35,12 @@ theorem deningerMeyerInvisiblePolynomial_shift_surjective (rho : ℂ) :
   refine ⟨Module.AEval'.of deningerMeyerInvisibleGenerator v, ?_⟩
   change (X - C rho : ℂ[X]) •
     Module.AEval'.of deningerMeyerInvisibleGenerator v = u
-  rw [sub_smul, Module.AEval'.X_smul_of, Module.AEval.C_smul]
-  change Module.AEval'.of deningerMeyerInvisibleGenerator
-    ((deningerMeyerInvisibleGenerator -
-      rho • (LinearMap.id : Module.End ℂ DeningerMeyerInvisible)) v) = u
-  rw [hv, LinearEquiv.apply_symm_apply]
+  apply (Module.AEval'.of deningerMeyerInvisibleGenerator).symm.injective
+  rw [Module.AEval.of_symm_smul]
+  change (aeval deningerMeyerInvisibleGenerator (X - C rho)) v =
+    (Module.AEval'.of deningerMeyerInvisibleGenerator).symm u
+  rw [map_sub, aeval_X, aeval_C]
+  exact hv
 
 /-- Every nonzero polynomial acts surjectively on the actual invisible sector. -/
 theorem deningerMeyerInvisiblePolynomial_smul_surjective
@@ -57,7 +58,6 @@ theorem deningerMeyerInvisiblePolynomial_smul_surjective
         refine ⟨w, ?_⟩
         change ((Multiset.map (fun rho => X - C rho) (rho ::ₘ L)).prod) • w = u
         rw [Multiset.map_cons, Multiset.prod_cons, mul_smul]
-        change (X - C rho : ℂ[X]) • ((L.map (fun rho => X - C rho)).prod • w) = u
         rw [show (L.map (fun rho => X - C rho)).prod • w = v from hw]
         exact hv
   intro u

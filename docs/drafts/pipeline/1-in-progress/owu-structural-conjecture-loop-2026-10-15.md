@@ -34,3 +34,71 @@ The first acronym search found no OWU declarations. Deep natural-language search
 ## Audit
 
 No new mathematical result or completion claim yet.
+
+## Further attacks
+
+5. Boundary twisted-arc parameter `a = 1/4`: its Mellin factor is
+   `r² (1/4+r²)`, but its nonzero mass introduces a pole in the divisor
+   transfer. A further twist would give `r²(1/4+r²)²` and remove that
+   defect. Positive annihilation for these third-order arc moments remains
+   unproved. The existing minimum principle does not establish it.
+6. Endpoint saturation `β = 1`: the two existing asymptotic inequalities
+   pin the leading Dirichlet residue, but do not supply a small-energy
+   vector with nontrivial fixed mixed pairings. No rigidity conclusion.
+
+## Current candidate: automatic squared-variable Pick continuation
+
+This is an automatic consequence to prove from the actual odd cone, not an
+extra producer assumption. Intended structural output: the arithmetic Weil
+function of every odd-positive source continues holomorphically to
+`Re s > 1/2, Im s > 0` and its reflected lower quadrant. Thus any obstruction
+inside the right critical half-plane is confined to the real segment. This
+does not assert weight uniqueness or remove the remaining real segment.
+
+### Paper argument to audit and formalize
+
+Write `F(a) = weilFunction lam (1/2+a)` for `Re a > 1/2`.
+For such `a`, set `h_a(x) = sign(x) exp(-a |x|)`. Smooth compact odd
+approximations are obtained by reflecting and subtracting the corpus's
+`WeilHerglotz.testFn a j`. For any finite complex linear combination:
+
+* Fourier transforms converge to `2 i r/(a²+r²)`; the existing one-sided
+  exponential bounds give an integrable `O(log(2+|r|)/(1+r²))` archimedean
+  majorant.
+* Polar transforms converge since `Re a > 1/2`.
+* Correlations converge pointwise and are bounded by
+  `C(1+|x|) exp(-b|x|)` for a fixed `b > 1/2`. Odd-cone absolute Dirichlet
+  convergence, with a smaller exponent, dominates all arithmetic terms.
+
+Odd positivity therefore passes to these finite sums. For the complex
+linear spectral functional `L` and `Re a > 1/2`, direct pole evaluation,
+the Cauchy Fourier identity, and holomorphic continuation of the real
+Poisson–digamma identity give
+
+`L(1/(a²+r²)) = F(a)/a`.
+
+Partial fractions give the proposed exact Gram identity
+
+`Q(h_a,h_b)/4 = (a F(a) - conj(b F(b)))/(a²-conj(b)²)`.
+
+Use indices `Re a > 1/2, Im a > 0`; the denominator cannot vanish. This
+Gram kernel is positive semidefinite. Set
+`q(a) = -i a²` and `H(a) = -i a F(a)`. Then `Re q(a)>0`, and this same
+kernel is `(H(a)+conj H(b))/(q(a)+conj q(b))`. The corpus theorem
+`HTGeometry.exists_caratheodory_interpolant` supplies a holomorphic `G`
+with nonnegative real part on the full right half-plane, interpolating
+these data. Define
+
+`F_cont(a) = i G(-i a²)/a` for `Re a>0, Im a>0`.
+
+This is holomorphic, agrees with the actual source on `Re a>1/2`, and
+satisfies `Im(a F_cont(a)) >= 0`. Complex reflection gives the lower
+quadrant. The exact Gram identity and convergence steps remain to be
+checked in Lean; no completed contribution is claimed yet.
+
+### Toolchain check
+
+`lake --old env lean /tmp/owu_probe.lean` passed with imports of the odd
+strip-positivity module, the actual one-sided exponential approximation
+module, and Carathéodory–Nevanlinna–Pick. This only verifies existing API
+availability, not the candidate theorem.

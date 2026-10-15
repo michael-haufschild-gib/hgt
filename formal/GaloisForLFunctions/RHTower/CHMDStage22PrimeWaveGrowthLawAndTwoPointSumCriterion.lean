@@ -143,6 +143,7 @@ theorem chmdPrimeWave_neg (u : ℝ) : chmdPrimeWave (-u) = chmdPrimeWave u := by
 
 /-- Continuity of `chmdPoleWave`. -/
 theorem continuous_chmdPoleWave : Continuous chmdPoleWave := by
+  change Continuous (fun u => chmdPoleWave u)
   simp_rw [chmdPoleWave_eq]
   fun_prop
 
@@ -194,9 +195,10 @@ theorem abs_chmdArchWave_le (u : ℝ) :
   dsimp only
   rw [abs_mul, abs_mul, abs_of_pos (sechSqHalf_pos r)]
   calc |Real.cos (u * Real.sqrt (r ^ 2 + 2))| * sechSqHalf r * |EF.gammaBracket r|
-      ≤ 1 * sechSqHalf r * |EF.gammaBracket r| := by
-        gcongr
-        exact Real.abs_cos_le_one _
+      ≤ 1 * sechSqHalf r * |EF.gammaBracket r| :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right (Real.abs_cos_le_one _) (sechSqHalf_pos r).le)
+          (abs_nonneg _)
     _ = sechSqHalf r * |EF.gammaBracket r| := by ring
 
 /-- The uniform bound constant for the combined Pole + Archimedean wave:
@@ -545,7 +547,7 @@ theorem neg_chmdOffLineSinhDefect_le_two_mul_sub (y : ℝ) :
       ∑' ρ : zetaZeroConfig.carrier,
         (zetaZeroConfig.mult ρ : ℝ) *
           (4 * Complex.sin ((y : ℂ) * kgFreq ρ / 2) ^ 2 * kgWeight ρ).re := by
-    unfold chmdWave CHMDGrowthCollapse.kgFreq kgWeight
+    unfold chmdWave CHMDGrowthCollapse.kgFreq CHMDGrowthCollapse.kgWeight
     exact two_mul_cosineShiftFn_sechHalf_zero_sub_eq_tsum_four_sin_sq y
   rw [hdiff]
   unfold chmdOffLineSinhDefect
@@ -578,7 +580,7 @@ theorem neg_chmdOffLineSinhDefect_le_two_mul_add (y : ℝ) :
       ∑' ρ : zetaZeroConfig.carrier,
         (zetaZeroConfig.mult ρ : ℝ) *
           (4 * Complex.cos ((y : ℂ) * kgFreq ρ / 2) ^ 2 * kgWeight ρ).re := by
-    unfold chmdWave CHMDGrowthCollapse.kgFreq kgWeight
+    unfold chmdWave CHMDGrowthCollapse.kgFreq CHMDGrowthCollapse.kgWeight
     exact two_mul_cosineShiftFn_sechHalf_zero_add_eq_tsum_four_cos_sq y
   rw [hsum]
   unfold chmdOffLineSinhDefect

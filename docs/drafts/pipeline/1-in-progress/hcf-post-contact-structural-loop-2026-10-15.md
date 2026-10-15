@@ -48,8 +48,17 @@ Search/conjecture ledger follows as the work progresses.
    next regular head, every intervening head is singular, and recursion
    produces a cofinal regular ladder without a generic-time assumption.
    This is an exact classification, not a positivity receiver or estimate.
-   Formalization in progress. Full inertia and source orientation are not
-   claimed by this argument.
+   Core classification, cofinality, covering existence and uniqueness now
+   pass Lean. The exact kernel parametrization is a linear isomorphism from
+   `Fin (min k (d-k)) -> R`; its nullity formula and the constant
+   anti-diagonal Gram block also pass focused Lean builds. Full inertia and
+   source orientation are not claimed by this argument.
+3. Every genuine gap should produce an explicit hyperbolic plane orthogonal
+   to its old head. Let Q = X^(d-1) P, delta = L(P Q) != 0 and
+   R = Q - L(Q^2)/(2 delta) P. Then L(P^2) = L(R^2) = 0 and
+   L(P R) = delta. Hence U = P + R/delta and V = P - R/delta have
+   Gram matrix diag(2,-2). This is a constructive resolution of the zero
+   pivot, not a sign assumption. Paper proof closed; Lean audit underway.
 
 Corpus searches used the documented research command in deep mode, followed
 by exhaustive focused Lean-source searches. The normal-block search was

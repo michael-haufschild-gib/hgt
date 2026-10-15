@@ -104,7 +104,7 @@ private theorem invisibleModuloFinite_injective :
   intro u v huv
   have hF : deningerMeyerInvisiblePolynomialInclusion u -
       deningerMeyerInvisiblePolynomialInclusion v ∈ finiteCausalPolynomialRange :=
-    Submodule.Quotient.eq.mp huv
+    (Submodule.Quotient.eq finiteCausalPolynomialRange).mp huv
   rw [← map_sub] at hF
   apply sub_eq_zero.mp
   apply (Module.AEval'.of deningerMeyerInvisibleGenerator).symm.injective
@@ -140,7 +140,8 @@ theorem deningerMeyerInvisible_exists_causalRetraction :
   · intro u hu
     have hq : finiteCausalPolynomialRange.mkQ
         (Module.AEval'.of deningerMeyerCohomologyGenerator u) = 0 :=
-      Submodule.Quotient.mk_eq_zero.mpr ((mem_finiteCausalPolynomialRange _).mpr hu)
+      (Submodule.Quotient.mk_eq_zero finiteCausalPolynomialRange).mpr
+        ((mem_finiteCausalPolynomialRange _).mpr hu)
     change (Module.AEval'.of deningerMeyerInvisibleGenerator).symm
       (r (finiteCausalPolynomialRange.mkQ
         (Module.AEval'.of deningerMeyerCohomologyGenerator u))) = 0
