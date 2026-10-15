@@ -3,9 +3,9 @@ import GaloisForLFunctions.RHTower.FiniteOffLineConverse
 import GaloisForLFunctions.RHTower.WeilConditionalConstantSignRigidity
 
 /-!
-# CHMD Stage 16: Growth–Positivity Collapse of the Causal Wave and the Two-Point Criterion
+# CHMD: Growth–Positivity Collapse of the Causal Wave and the Two-Point Criterion
 
-This module establishes the sixteenth stage of the **Causal Hyperbolic–Modular Duality (CHMD)**
+This module continues the **Causal Hyperbolic–Modular Duality (CHMD)**
 formalization in `RHTower`. Stage 15 gave the unconditional zero-side series of the causal wave
 $$\varphi_\Lambda(y) := \operatorname{cosineShiftFn}\ \Lambda\ \operatorname{sechHalf}\ y
   = \sum_{\rho} m_\rho \operatorname{Re}\bigl(\cos(y\,\rho_\rho)\,w_\rho\bigr),
@@ -55,7 +55,7 @@ open scoped BigOperators ComplexConjugate
 
 noncomputable section
 
-namespace RHTower.CHMDStage16
+namespace RHTower.CHMDGrowthCollapse
 
 open WeilOneSided WeilSpectral GaloisForLFunctions.HTGeometry RHTower.EvenSector
 open RHTower.CHMDStage1 RHTower.CHMDStage3 RHTower.CHMDStage4
@@ -1268,6 +1268,6 @@ theorem riemannHypothesis_iff_kgPoleSeries_positiveReal :
       linarith
     · exact hmain ρ hposβ
 
-end RHTower.CHMDStage16
+end RHTower.CHMDGrowthCollapse
 
 end

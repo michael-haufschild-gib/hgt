@@ -114,12 +114,30 @@ paper falsification of graph-by-graph positivity, not a formalized theorem. The 
 all-prime sum in `WeilPhiDoobDivisorEnergy` uses resummation across fibers. Any next attempt
 must retain that resummation and the Gamma/polar term together.
 
+Next paper conjecture to test: apply Jacobi resummation to a complete cusp-sum index before
+grouping by divisor product, retaining the Gamma and polar boundary terms exactly. Seek a
+positive quadratic identity for that joint expression with its literal coefficients. No such
+identity has been derived; this is a proposed mechanism, not a new premise or a proof claim.
+
 ## Checkpoint
 
 No new Lean declaration has been written for the global task. No global theorem, source
 contraction, or RH proof has been obtained. The active research goal remains open. Next
 conjectures must address an exact nonlocal arithmetic cancellation, rather than reuse a
 positive completion, a local residue landing, or a conditional source criterion.
+
+## Verification at checkpoint
+
+- Foreground `lake --old env lean GaloisForLFunctions/RHTower/XiWardGlobalCapRightZeroSum.lean`
+  passed. This rechecks an existing frontier theorem; it is not a new global contraction.
+- Temporary import audit of `ae_forall_xiWardGlobalCap_re_nonneg`,
+  `ae_xiWardGlobalCap_eq_zero_iff`, and
+  `riemannHypothesis_iff_norm_xiRightWardBoundarySourcePhaseCrossRatio_eq_one` passed.
+  Their printed axioms were only `propext`, `Classical.choice`, `Quot.sound`.
+- `scripts/formal_tools.py lint` reported two unrelated unreachable modules in concurrent
+  workspace work: `RHTower.CHMDStage16GrowthPositivityCollapseAndTwoPointCriterion` and
+  `HTGeometry.LogCurvatureEndpointRigidity`. No new Lean modules or umbrella changes belong
+  to this global-contraction attempt.
 
 ## Open core
 
