@@ -48,3 +48,9 @@
   - With 𝒟 = −(x∂_x)(x∂_x+1) ↔ −θ(θ+1) (θ = k∂_k), the Mellin transform of Ŵ_ν is c·(w(w−1))²·2^{w−2}Γ(w/2)²·A_ν(w), where A_ν(w) = ∫ √y F_w(u) dν(u) is a Legendre (conical, at w = ½+it) transform of ν. It is entire of exponential type ≤ π/6 in Im w.
   - This matches K_t(u) = √(y/2)·₂F₁(¼+it/2, ¼−it/2; ½; u²) from row 1198 (w = ½ + it).
 - 2026-10-14 — the β > 1 motivation is resolved without odd null tests. MUST-1458 [L] `RHTower/WeilPoleWeightAtMostOne` proves β ≤ 1 for every Herglotz datum, by the pole-free density ceiling plus an Abelian argument. This card keeps only its structural question: is the arc null face one ray?
+- 2026-10-15 (opus row 1234) — potential-theoretic mechanism [P].
+  - The arc measure ν gives the tangential multipole layer σ = (L_uᵗ)²(√y ν) on the band |u| ≤ ½ of the unit sphere. The 3D axisymmetric reading follows from `ArcBesselModeLegendreIntertwining`.
+  - Blindness ⟺ the periodic array of bands has interior field b·I₀(2πρ)cos 2πz inside the Ford-arc tube.
+  - Dimension count: interior mode +1, symmetric corner mode +1 (exterior wedge 2π/3, mode r^{−3/2}, ν ~ ε^{3/2}), range conditions −2, automatic zero charge +1, total = 1. This matches the index law.
+  - The corner exponent ε^{3/2} is confirmed independently by the Carlson-edge phase condition.
+  - Open for a proof: layer-potential trace theory with distributional densities on the piecewise-smooth Ford-arc tube, plus the edge (Kondratiev) expansion.

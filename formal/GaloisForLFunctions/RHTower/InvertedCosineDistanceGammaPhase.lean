@@ -212,7 +212,7 @@ theorem cosDilationKernel_one_eq_integral_gammaPhase (hf : ContDiff ℝ ∞ f) {
 theorem integral_sq_sub_invertedCosTransform_eq (hf : ContDiff ℝ ∞ f) {α β : ℝ} (hα : 0 < α)
     (hsupp : ∀ y, f y ≠ 0 → α ≤ y ∧ y ≤ β) :
     ∫ y in Ioi 0, (f y - invertedCosTransform f y) ^ 2 =
-      2 * ∫ y in Ioi 0, f y ^ 2 - 2 * cosDilationKernel f 1 := by
+      2 * (∫ y in Ioi 0, f y ^ 2) - 2 * cosDilationKernel f 1 := by
   have h1 := integrableOn_sq_of_support hf hsupp
   have h2 := integrableOn_mul_invertedCosTransform hf hα hsupp
   have h3 := integrableOn_invertedCosTransform_sq hf hα hsupp

@@ -283,3 +283,4 @@ Paper unless marked; ζ-free statements are labelled as such.
    - tied to the integers' Lévy capacity Cap < |Ω(0)| (row 446). That Cap < |Ω(0)| holds is certified by G₀; Cap ≈ |Ω(0)| itself is a rough estimate.
    - RH says Cap plus the pole covers the anomaly on every blind test.
 6. **Pitt/Beckner** (row 450). In log coordinates Beckner's sharp log-uncertainty is exactly Ω ≥ Ω(0): the anomaly is Beckner's constant. The arithmetic half of Weil positivity is the same Pitt monotonicity for the multiplier ζ, which is RH.
+- 2026-10-15 (opus loop row 1217): the L10 pole-order case **κ > d is CLOSED [L]** by MUST-1477, `RHTower.forall_re_weilDegreePoleFunctional_nonneg_iff`: W_{d,κ}(lam) ≥ 0 on every autocorrelation ⟺ κ = d ∧ RH ∧ lam = dΛ, for any real weights. It follows from W_{d,κ} = d·W_{κ/d}(lam/d) and `eq_one_of_weilPositiveAt` (MUST-1463). No odd blind family is needed.

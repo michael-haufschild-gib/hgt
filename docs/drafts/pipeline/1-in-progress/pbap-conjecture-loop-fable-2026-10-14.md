@@ -2,7 +2,7 @@
 
 - **ID:** pbap-loop-fable-2026-10-14
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE (loop) with THEOREM (Lean) rows
+- **Type:** CONJECTURE (loop) with THEOREM (Lean) rows 1–6 (MUST-1478, 1479, 1480, 1483, 1485)
 - **Source:** docs/reports/rh-current-frontier-map.md (route HF, "Needs: prove PBAP"); STATUS MUST-1431/1437/1439
 - **Statement:** PBAP (pole + archimedean energy ≥ 0 on every nonnegative blind combination of autocorrelations) is RH; this card runs a conjecture → Lean → learn loop on its structure.
 
@@ -21,6 +21,25 @@ recorded failure with the exact obstruction.
 Reading of the corpus (frontier map + STATUS only): PBAP is a sharp LP with unique dual `Λ`, infinite-dimensional
 equality face (Ξ²-divisible tests), node-critical at every prime power, pole-critical (β = 1, depth ½), trivial on
 the nonnegative and support-blind sectors. A direct proof must be primal (no certificate other than `Λ` exists).
+
+## Synthesis after rows 1–6 (2026-10-14)
+The prime-blind LP is now described completely at the level of its value function and duality:
+* **Gradient law.** `inf {A(c) − P(c) : L(c) = v, P(c) = p} = Σ Λ(n) v_n − p` under RH (rows 1–2); the primes are
+  the node prices and the pole has price exactly `−1`. Every fibre is unbounded below without RH.
+* **Where the RH content sits.** RH ⟺ the archimedean symbol integral is ≥ 0 on blind combinations of total pole
+  mass zero (row 2). Unconditionally the symbol alone is ≥ `−3.37·mass` on blind combinations (row 3, one prime)
+  and negative somewhere on them (pole-weight rigidity). So the symbol has a definite negative part on the blind
+  cone, bounded between `M₁* ∈ (0, 3.37]`, and the single constraint `P(c) = 0` must remove it entirely; pointwise
+  (periodization) certificates cannot see that constraint. All RH content is on pole-light tests
+  (`P(c) < 3.37·mass`); pole-heavy blind tests are unconditionally positive.
+* **Null face.** Every `Ξ`-divisible blind test is pole-light: pole ≤ `3.37·mass` (row 4).
+* **Finite levels.** The admissible pole weights at level `L` form a compact interval shrinking to `{1}`
+  unconditionally; RH ⟺ no window is empty (row 5). Determinant form: RH ⟺ the pole weight demanded by
+  pole-positive blind combinations never exceeds the one allowed by pole-negative ones (row 6).
+* **What a proof of PBAP must do.** It must use `P(c) = 0` (equivalently `K̂(i/2) = 0`, the `s(1−s)` factor of `ξ`)
+  in a non-pointwise way, at every prime power, and it must beat the symbol's negative part exactly. The only
+  known such mechanism is the explicit formula itself. The small-level windows (`2L < log 2`) are nonempty iff the
+  signed window positivity holds (open, numeric margin ≈ 0.15; other agents on the Lévy–cosh route).
 
 ## Log
 - 2026-10-14 — created. Mission: contribute to PBAP.
@@ -42,3 +61,95 @@ the nonnegative and support-blind sectors. A direct proof must be primal (no cer
   Reading: MUST-1439 (single node, positive mass) is the restriction of a linear law. The convex value function
   of the archimedean LP has no kinks; its gradient is the von Mangoldt function. Composite nodes are free in both
   directions, prime powers cost `log p` one way and refund `log p` the other way.
+- 2026-10-14 — **Row 2 [L]. The value function with the pole as a coordinate has gradient `(Λ, −1)`;
+  RH ⟺ zero-pole blind positivity.** Module `RHTower/ArchimedeanPoleValueFunction` (standard axioms,
+  `lake env lean` clean, wired).
+  * Blind tests of both pole signs by support (`adjTestFn ±1`: two bumps at `±1/5`, autocorrelation inside
+    `(−log 2, log 2)`): `pole_adjTestFn_one_pos`, `pole_adjTestFn_neg_one_neg`; every real pole mass is
+    realised by a blind nonnegative combination (`exists_blind_nodePoleMass_eq`).
+  * `poleFibre v p` = values `A(c) − P(c)` (archimedean symbol only) over nonnegative `c` with node vector `v`
+    and total pole mass `p`; nonempty for every `(v, p)`.
+  * `poleValue_eq` (RH): `inf poleFibre v p = Σ_n Λ(n) v_n − p`. Proof: sublinearity, Hahn–Banach on
+    `(LogIndex →₀ ℝ) × ℝ`, then the touching linear functional `g₁(v) + b p` makes the weights `g₁(e_n)`
+    Weil-positive at pole weight `−b`, so `b = −1` (`eq_one_of_weilPositiveAt`) and `g₁ = Λ` (cone uniqueness).
+    Special case `poleValue_zero_left`: blind combinations of pole mass `p` have archimedean part ≥ `−p`, sharply.
+  * `riemannHypothesis_iff_zeroPoleBlindPositive`: RH ⟺ `(1/2π)∫ A(r) dμ_c ≥ 0` for every nonnegative blind `c`
+    with total pole mass `0`. Proof: Farkas (`exists_of_nonneg_on_null_cone`) on `Option LogIndex`, generators
+    = pole-corrected pair tests (pair test + blind adjuster) and the two adjusters; the dual weights are
+    Weil-positive at pole weight `1 − lam none`, forced to `1`, then full-cone positive ⟹ RH.
+  * `riemannHypothesis_iff_forall_le_poleFibre`, `not_bddBelow_poleFibre`, `riemannHypothesis_iff_bddBelow_poleFibre`.
+  Reading: MUST-1439 (node prices `Λ`) and MUST-1463 (pole weight exactly `1`) are the two components of one
+  gradient. The pole is a coordinate with marginal price `−1`; under ¬RH there is a blind, pole-free
+  combination with negative archimedean symbol integral. The polar-constrained PBAP of the corpus (each test
+  pole-free) is the special case of the zero-total-pole criterion.
+- 2026-10-14 — **Row 3 [L]. One-prime certificate and the slack invariants.** Module
+  `RHTower/BlindArchimedeanNodeTwoCertificate` (standard axioms, `lake env lean` clean, wired).
+  * Pointwise: `2(1 − cos(r log 2)) ≤ γ(r) − γ(0)` for all real `r`, from the first two Gauss terms of the
+    vertical digamma expansion (`two_mul_one_sub_cos_le_gammaBracket_sub`).
+  * Integrated: for every test, `Re P(k) + (γ(0) + 2)‖f‖² − √2 ℓ₂(f) ≤ weilArchRe k`
+    (`node_two_certificate_le_weilArchRe`); on combinations blind at `2`, `P(c) + (γ(0)+2) mass(c) ≤ A(c)`
+    (`sum_node_two_certificate_of_blind_two`). The anomaly `γ(0) ≈ −5.37` of `WeilBlindPoleSignLaw` becomes
+    `γ(0) + 2 ≈ −3.37` from the single prime `2`.
+  * Slack invariants: `BlindSymbolSlack M` (symbol integral ≥ `−M·mass` on blind combinations) holds for
+    `M = −γ(0) − 2 ≈ 3.37` (`blindSymbolSlack_node_two`) and fails for every `M ≤ 0`
+    (`not_blindSymbolSlack_of_nonpos`, from `exists_blind_arch_add_mul_pole_neg` at `ε = −1`). So the symbol alone
+    has a definite negative part on the blind cone, of relative size in `(0, 3.37]`.
+    `ZeroPoleBlindSymbolSlack M` (total pole mass zero) holds for all `M > 0` iff RH
+    (`riemannHypothesis_iff_forall_pos_zeroPoleBlindSymbolSlack`).
+  Reading: two zeta-free numbers `M₁* = inf{M : BlindSymbolSlack M} ∈ (0, 3.37]` and
+  `M₀* = inf{M : ZeroPoleBlindSymbolSlack M} ∈ [0, M₁*]` with RH ⟺ `M₀* = 0`. Periodization certificates
+  (finitely many primes, pointwise in `r`) can only lower the upper bound on `M₁*`; they cannot see the pole
+  constraint, which must remove the entire negative part. This is CANNOT-539/MUST-1447 in quantitative form.
+  Next: sharpen the certificate with more nodes (3, 4 = 2², 5, 7) to locate `M₁*`; a certificate for `M₀*`
+  needs the pole constraint, i.e. a non-pointwise mechanism.
+- 2026-10-14 — **Row 4 [L]. Decay-class certificate and the pole of (N1) witnesses.** Module
+  `RHTower/BlindDecayClassPoleCertificate` (standard axioms, `lake env lean` clean, wired). Also appended to
+  `ArchimedeanPoleValueFunction`: `riemannHypothesis_iff_forall_blind_archOnly_add_posPart_nonneg` (RH ⟺ the
+  symbol's deficit on a blind combination never exceeds its positive pole mass) and the sector criteria
+  `riemannHypothesis_iff_blind_nonposPole_sector`, `riemannHypothesis_iff_blind_nonnegPole_sector`.
+  * Truncation (`truncTest`, `tendsto_paperFT_truncTest`, `tendsto_crossCorr_truncTest`,
+    `tendsto_archPoleEnergy_truncTest`) transfers the node-two certificate to the exponential decay class:
+    `2 Re(F̂(i/2) conj F̂(−i/2)) + (γ(0)+2)∫F² − 2 (F⋆F̃)(log 2) ≤ archPoleEnergy F`
+    (`pole_add_anomaly_sub_node_two_le_archPoleEnergy`).
+  * For `Ξ`-divisible prime-blind tests (`archPoleEnergy = 0`): pole ≤ `(−γ(0) − 2)∫F²`
+    (`pole_le_of_xiDivisibleBlindTest`), and with `F̂ = Ξ g`, `Ξ(±i/2) = ½`:
+    `Re(g(i/2) conj g(−i/2)) ≤ 2(−γ(0) − 2)∫F²` (`re_g_mul_conj_g_le_of_xiDivisibleBlindTest`).
+  Reading: every (N1) witness has pole-to-mass ratio ≤ 3.37, a bound coming from the prime 2 alone; the null
+  face is "pole-light". Under RH the maximal pole-to-mass ratio on the null face equals `M₁*` (Row 3).
+- Failed/abandoned conjectures this session (for the record):
+  * C-even: "RH ⟺ PBAP on even tests" — not attempted in Lean; obstacle: even tests cannot realise `−e_j` exactly
+    (negative node values drag in `e_{j²}, e_{j³}`), so the two-sided Farkas lemma does not apply as stated.
+  * C-ξ-form: writing zero-pole tests as `k = (¼ − ∂²)k₁` with `k₁` compactly supported (the `s(1−s)` factor of
+    `ξ`) gives no new certificate: the periodization family becomes `(r²+¼)cos(r log n)`, the same LP.
+  * C-min-at-0: "the blind clock `Z_k(r) = ⟨T, k e^{irx}⟩` is minimised at `r = 0`" — false (spectral mass near
+    `r₀ = 30` makes `Z_k(30) < Z_k(0)` under RH via the zero-free ordinate range below `14`).
+- 2026-10-14 — **Row 5 [L]. The pole-weight window at finite level squeezes to `{1}`; RH ⟺ every level window
+  is nonempty.** Module `RHTower/PrimeBlindPoleWeightLevelWindow` (standard axioms, `lake env lean` clean, wired).
+  * `PrimeBlindPositiveAtLevel L β`: `A(c) + (β − 1)P(c) ≥ 0` on nonnegative blind combinations of tests supported
+    in `[−L, L]`; `levelWindow L` = admissible `β`. Antitone in `L`, an interval, closed; for `L ≥ 3/10` contained in
+    the explicit compact interval `[windowLower, windowUpper]` cut out by the two-bump tests of both pole signs.
+  * `exists_level_not_mem_levelWindow`: every `β ≠ 1` is excluded beyond some level (MUST-1463 at the primal level:
+    the violating blind combination has finite support).
+  * `exists_level_forall_abs_sub_one_lt`: for every `ε > 0` all windows beyond some level lie in `(1−ε, 1+ε)`,
+    unconditionally (nested compact sets intersected with the bands `[1+ε, β₊]`, `[β₋, 1−ε]`).
+  * `riemannHypothesis_iff_forall_level_exists_mem_levelWindow`: RH ⟺ ∀ L ∃ β, β ∈ levelWindow L. The pole weight
+    is free at each finite level and determined only in the limit; RH says the squeeze never empties the window.
+  Reading: a finite-level RH criterion in which the pole weight is a free parameter — "at every level some pole
+  weight works". Under ¬RH the windows become empty at a finite level `L₀`, a zeta-free measure of RH failure;
+  under RH they contain `1` and shrink to it. Next: locate the window at small levels explicitly (`L < log 2/2`,
+  no nodes), where `levelWindow L` is the set of `β` with `βP(f) + arch(f) ≥ 0` on `[−L, L]`.
+- 2026-10-14 — **Row 6 [L]. Determinant criterion.** Appended to `PrimeBlindPoleWeightLevelWindow`:
+  `riemannHypothesis_iff_forall_blind_det_nonpos`: RH ⟺ for all blind `c₁` (`P(c₁) > 0`) and `c₂` (`P(c₂) < 0`),
+  `arch(c₁) P(c₂) ≤ arch(c₂) P(c₁)`. With `q(c) = −arch(c)/P(c)` (the pole weight making `c` null): the weight
+  demanded by every pole-positive blind combination is at most the weight allowed by every pole-negative one;
+  under RH both sandwich `1`. Proof ⟸: a zero-pole violator `c` plus `s·adj₊` against `adj₋` gives
+  `arch(c)P(adj₋) ≤ s·K` for all `s > 0`, impossible since `arch(c)P(adj₋) > 0`.
+  Reading: the level windows are `[β⁻(L), β⁺(L)]` with `β⁻(L) = sup q` over pole-positive, `β⁺(L) = inf q` over
+  pole-negative level-`L` blind combinations; `β⁻` increases, `β⁺` decreases; RH ⟺ `β⁻(L) ≤ β⁺(L)` for all `L`,
+  and then both tend to `1` (Row 5). Under ¬RH they cross at a finite level.
+- 2026-10-14 — **Row 7 [L]. Window nonemptiness = two finite-level inequalities.** Appended to
+  `PrimeBlindPoleWeightLevelWindow`: `levelWindow_nonempty_iff` (for `L ≥ 3/10`): the level-`L` window is nonempty
+  iff (i) level-`L` blind zero-pole combinations have nonnegative energy and (ii) the determinant inequality
+  `arch(c₁)P(c₂) ≤ arch(c₂)P(c₁)` holds for level-`L` blind `c₁` (`P > 0`), `c₂` (`P < 0`). The admissible weight is
+  `sSup` of the demanded weights `1 − A(c)/P(c)` over pole-positive combinations. With Row 5:
+  RH ⟺ ∀ L, (i)_L ∧ (ii)_L — a family of finite-level, pole-weight-free criteria.

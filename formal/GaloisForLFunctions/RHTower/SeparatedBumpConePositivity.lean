@@ -6,18 +6,29 @@ import GaloisForLFunctions.HTGeometry.TwoModeSquareCombination
 # Prime-blind positivity on the cone of separated narrow bumps
 
 For a configuration `f = Σ_j a_j φ(· − x_j)` (`bumpSum`) write `R(y) = ∫ f(u) f(u − y) du`
-(`autocorr`).  This file proves the tools for nonnegative combinations `g = Σ_k c_k R_k` of such
-autocorrelations that vanish at every `log n`, `n ≥ 2`, the cancellation being allowed across the
-tests:
+(`autocorr`).
 
-* `abs_autocorr_le`: `|R(y)| ≤ ‖f‖²`;
-* `abs_autocorr_sub_le`: if the bump has `L²` modulus `‖φ − φ(· − h)‖ ≤ (κ|h|/δ)‖φ‖` for
-  `|h| ≤ δ` and the centres are `s`-separated with `s > 3δ`, then
-  `|R(y) − R(y′)| ≤ (κ/δ)|y − y′| ‖f‖²` for `|y − y′| ≤ δ`;
-* `integral_autocorr_mul_exp`: the pole is the exponential moment
-  `(∫ f e^{u/2})(∫ f e^{−u/2}) = ∫ R(y) e^{y/2} dy`;
-* `abs_integral_near_le`: `|∫_{−Y}^{Y} R(y) e^{y/2} dy| ≤ 2δ e^{Y/2} (2 + 2(Y + δ)/s) ‖f‖²`;
-* `abs_integral_left_le`: `|∫_{−T}^{−Y} R(y) e^{y/2} dy| ≤ 2 e^{−Y/2} ‖f‖²`.
+**Theorem** (`exists_cone_primeBlind_nonneg`).  For every separation `s > 0` and regularity
+`κ ≥ 0` there is `δ₀ > 0` such that for `0 < δ < δ₀` the following holds.  Let `φ` be a `C²` bump
+supported in `[−δ/2, δ/2]` with `‖φ − φ(· − h)‖² ≤ (κ h/δ)² ‖φ‖²` for `|h| ≤ δ`, and let
+`g = Σ_k c_k R_k` (`c_k ≥ 0`) be a combination of autocorrelations of configurations with
+`s`-separated centres and arbitrary amplitudes, vanishing at every `log n`, `n ≥ 2`.  The blindness
+is only required for the combination, so cancellation across the tests is allowed.  Then
+`Σ_k c_k W_∞(f_k ⋆ f̃_k) ≥ 0`.
+
+Proof.
+* *Lévy gain against the signed pole* (`le_weilArchRe_add_pole`):
+  `W_∞(f ⋆ f̃) ≥ (A(0) + e^{−s/2} log((s−δ)/δ))‖f‖² + 2∫ R(y) e^{y/2} dy`, the pole being the
+  exponential moment of the autocorrelation (`integral_autocorr_mul_exp`).
+* *Near lags* `|y| ≤ log N₀` (`abs_integral_near_le`): only pairs at distance `≤ log N₀ + δ`
+  contribute, each on a window of length `2δ`, so the part is `≤ 2δ √N₀ (2 + 2(log N₀ + δ)/s)‖f‖²`.
+  Left tail: `≤ 2‖f‖²/√N₀` (`abs_integral_left_le`).
+* *Far lags* `y ≥ log N₀`: `g` vanishes at every `log n` and is `(κ/δ)Σc_k‖f_k‖²`-Lipschitz on
+  scale `δ` (`abs_coneAutocorr_sub_le`), so the exponential tail is
+  `≤ √2 (κ/δ) Σc_k‖f_k‖² / √(N₀ − 1)`
+  (`GaloisForLFunctions.HTGeometry.abs_intervalIntegral_mul_exp_half_le`).
+* With `N₀ ≈ (η/δ)²`, `η = s e^{−s/2}/64`, every loss is `≤ (3/8) e^{−s/2} log(1/δ) + O_{s,κ}(1)`
+  while the Lévy gain is `e^{−s/2} log(1/δ) + O_s(1)` (`cone_coefficient_nonneg`).
 -/
 
 open Complex MeasureTheory Set Filter Topology
@@ -763,6 +774,100 @@ theorem cone_coefficient_nonneg {s κ δ : ℝ} {N₀ : ℕ} (hs : 0 < s) (hκ :
     ring
   have e2 : 5 / 8 * c₀ * L = c₀ * L - 2 * (3 / 16 * c₀ * L) := by ring
   linarith [hsum, hg2, hL, e1, e2, hκη]
+
+/-- **Prime-blind positivity on the cone of separated narrow bumps.**  For every separation
+`s > 0` and regularity `κ ≥ 0` there is `δ₀ > 0` with the following property.  Let `0 < δ < δ₀`,
+let `φ` be a `C²` bump supported in `[−δ/2, δ/2]` with `L²` modulus
+`‖φ − φ(· − h)‖² ≤ (κ h/δ)² ‖φ‖²` for `|h| ≤ δ`, and let `f_k = Σ_j a_{kj} φ(· − x_{kj})` be any
+finite family of configurations with `s`-separated centres and any amplitudes.  If the
+combination `Σ_k c_k f_k ⋆ f̃_k` with `c_k ≥ 0` vanishes at every `log n`, `n ≥ 2` (cancellation
+across the tests allowed), then `Σ_k c_k W_∞(f_k ⋆ f̃_k) ≥ 0`. -/
+theorem exists_cone_primeBlind_nonneg {s κ : ℝ} (hs : 0 < s) (hκ : 0 ≤ κ) :
+    ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ < δ₀ → ∀ φ : ℝ → ℝ, ContDiff ℝ 2 φ →
+      (∀ u, δ / 2 < |u| → φ u = 0) →
+      (∀ h, |h| ≤ δ → ∫ u, (φ u - φ (u - h)) ^ 2 ≤ (κ * h / δ) ^ 2 * ∫ u, φ u ^ 2) →
+      ∀ (K : ℕ) (M : Fin K → ℕ) (c : Fin K → ℝ) (a x : (k : Fin K) → Fin (M k) → ℝ),
+      (∀ k, 0 ≤ c k) → (∀ k i j, i ≠ j → s ≤ |x k i - x k j|) →
+      (∀ n : ℕ, 2 ≤ n → coneAutocorr φ c a x (Real.log n) = 0) →
+      0 ≤ ∑ k, c k * WeilOneSided.weilArchRe (EF.weilTest (fun u => (bumpSum φ (a k) (x k) u : ℂ))
+        (fun u => (bumpSum φ (a k) (x k) u : ℂ))) := by
+  set c₀ := Real.exp (-s / 2) with hc₀
+  have hc₀0 : 0 < c₀ := Real.exp_pos _
+  set η := s * c₀ / 64 with hη
+  have hη0 : 0 < η := by positivity
+  set C₂ := coneMarginConst s κ with hC₂
+  set X : ℝ := 8 / 5 * Real.exp (s / 2) * |C₂| with hX
+  refine ⟨min (min (min (s / 4) (η / 2)) (min (η ^ 2) 1)) (Real.exp (-X)), by positivity,
+    fun δ hδ hδlt φ hφ hφs hreg K M c a x hc hsep hblind => ?_⟩
+  have hd1 : δ < s / 4 := lt_of_lt_of_le hδlt
+    ((min_le_left _ _).trans ((min_le_left _ _).trans (min_le_left _ _)))
+  have hd2 : δ < η / 2 := lt_of_lt_of_le hδlt
+    ((min_le_left _ _).trans ((min_le_left _ _).trans (min_le_right _ _)))
+  have hd3 : δ < η ^ 2 := lt_of_lt_of_le hδlt
+    ((min_le_left _ _).trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have hd4 : δ < 1 := lt_of_lt_of_le hδlt
+    ((min_le_left _ _).trans ((min_le_right _ _).trans (min_le_right _ _)))
+  have hd5 : δ < Real.exp (-X) := lt_of_lt_of_le hδlt (min_le_right _ _)
+  -- the cut-off index
+  set N₀ : ℕ := ⌈(η / δ) ^ 2⌉₊ with hN₀
+  have hN1 : (η / δ) ^ 2 ≤ N₀ := Nat.le_ceil _
+  have hN2 : (N₀ : ℝ) ≤ (η / δ) ^ 2 + 1 := (Nat.ceil_lt_add_one (sq_nonneg _)).le
+  have hq2 : 2 ≤ η / δ := by rw [le_div_iff₀ hδ]; linarith
+  have hN₀2 : 2 ≤ N₀ := by
+    have : (2 : ℝ) ≤ N₀ := by nlinarith
+    exact_mod_cast this
+  have hN0 : (0 : ℝ) < N₀ := by exact_mod_cast (by omega : 0 < N₀)
+  have h1N : 1 / (N₀ : ℝ) ≤ δ := by
+    rw [div_le_iff₀ hN0]
+    have h1 : (η / δ) ^ 2 * δ = η ^ 2 / δ := by field_simp
+    have h2 : 1 ≤ η ^ 2 / δ := by rw [le_div_iff₀ hδ]; linarith
+    nlinarith
+  have hL : C₂ ≤ 5 / 8 * c₀ * Real.log (1 / δ) := by
+    have h1 : X < Real.log (1 / δ) := by
+      rw [one_div, Real.log_inv, lt_neg]
+      have := Real.log_lt_log hδ hd5
+      rwa [Real.log_exp] at this
+    have he : c₀ * Real.exp (s / 2) = 1 := by
+      rw [hc₀, ← Real.exp_add, show -s / 2 + s / 2 = 0 by ring, Real.exp_zero]
+    have h2 : 5 / 8 * c₀ * X = |C₂| := by rw [hX]; linear_combination |C₂| * he
+    have h3 := le_abs_self C₂
+    nlinarith
+  have hcoef := cone_coefficient_nonneg (N₀ := N₀) hs hκ hδ hd2.le (by linarith) hd4.le hN1 hN2
+    hL
+  -- the per-test Lévy bounds and the pole of the combination
+  have hk : ∀ k, (EF.gammaBracket 0 + c₀ * Real.log ((s - δ) / δ)) *
+      (∫ u, bumpSum φ (a k) (x k) u ^ 2) +
+        2 * ∫ y, autocorr φ (a k) (x k) y * Real.exp (y / 2) ≤
+      WeilOneSided.weilArchRe (EF.weilTest (fun u => (bumpSum φ (a k) (x k) u : ℂ))
+        (fun u => (bumpSum φ (a k) (x k) u : ℂ))) :=
+    fun k => le_weilArchRe_add_pole hφ hφs hδ (by linarith) (hsep k)
+  have hP := abs_integral_coneAutocorr_le hφ hφs hδ (by linarith) hκ hreg hc hsep hN₀2 h1N hblind
+  set G := EF.gammaBracket 0 + c₀ * Real.log ((s - δ) / δ) with hG
+  set C₀ := coneMass φ c a x with hC₀
+  have hC₀0 : 0 ≤ C₀ := Finset.sum_nonneg fun k _ =>
+    mul_nonneg (hc k) (integral_nonneg fun u => sq_nonneg _)
+  have hlower : G * C₀ + 2 * ∫ y, coneAutocorr φ c a x y * Real.exp (y / 2) ≤
+      ∑ k, c k * WeilOneSided.weilArchRe (EF.weilTest (fun u => (bumpSum φ (a k) (x k) u : ℂ))
+        (fun u => (bumpSum φ (a k) (x k) u : ℂ))) := by
+    rw [integral_coneAutocorr_mul_exp hφ hφs, hC₀]
+    unfold coneMass
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun k _ => ?_
+    calc G * (c k * ∫ u, bumpSum φ (a k) (x k) u ^ 2) +
+          2 * (c k * ∫ y, autocorr φ (a k) (x k) y * Real.exp (y / 2))
+        = c k * (G * (∫ u, bumpSum φ (a k) (x k) u ^ 2) +
+            2 * ∫ y, autocorr φ (a k) (x k) y * Real.exp (y / 2)) := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left (hk k) (hc k)
+  have hab := neg_abs_le (∫ y, coneAutocorr φ c a x y * Real.exp (y / 2))
+  have hid : G * C₀ - 2 * ((2 / Real.sqrt N₀ + 2 * δ * Real.sqrt N₀ *
+      (2 + 2 * (Real.log N₀ + δ) / s)) * C₀ +
+        Real.sqrt 2 * (κ / δ * C₀) / Real.sqrt ((N₀ : ℝ) - 1)) =
+      C₀ * (G - 2 * ((2 / Real.sqrt N₀ + 2 * δ * Real.sqrt N₀ *
+        (2 + 2 * (Real.log N₀ + δ) / s)) + Real.sqrt 2 * (κ / δ) / Real.sqrt ((N₀ : ℝ) - 1))) := by
+    ring
+  have hfin := mul_nonneg hC₀0 hcoef
+  rw [← hid] at hfin
+  linarith
 
 end Cone
 

@@ -72,3 +72,4 @@ So, unlike function fields, fatness of the functional-equation class does not fa
   - Wired in `GaloisForLFunctions/RHTower.lean` after `WeilPoleWeightAtMostOne` (2026-10-14).
 - **Final paper statement:** a Dirichlet series with real coefficients, a₁ = 1, gamma factor Γ_ℝ(s)^d, conductor 1, finite order and only critical zeros is ζ^d.
   - Remaining paper inputs: the Hadamard product, Weil's explicit formula, and PNT for T (for the linear bound), plus summability of λ_T for σ > 1.
+- 2026-10-15 (opus loop row 1217): **κ > d is CLOSED [L]** by MUST-1477, `RHTower.forall_re_weilDegreePoleFunctional_nonneg_iff`: W_{d,κ}(lam) ≥ 0 on all autocorrelations ⟺ κ = d ∧ RH ∧ lam = dΛ, for any real weights. No odd blind family is needed: W_{d,κ} = d·W_{κ/d}(lam/d), and pole weight ≠ 1 empties the cone (MUST-1463, `eq_one_of_weilPositiveAt`, via the β-Herglotz bridge). The classification is complete for every κ.
