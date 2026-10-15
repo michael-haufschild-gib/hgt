@@ -1,8 +1,20 @@
 # DR: vertical-convolution realization of an arithmetic Kummer germ
 
 Status: candidate fails on paper by an exact arithmetic obstruction.
-Positive finite-interpolation survivor and Lean closure still pending.
+Positive finite-interpolation survivor checked in the companion draft;
+full finite-measure and Euler-germ identification closure still pending.
 Do not retire the candidate before that closure. RH and DR remain active.
+
+User scope correction: stop ancillary formalization and work directly on
+the missing arithmetic Kummer continuation. This card is retained unfinished,
+not promoted, not a half-strip certificate, and not the next work item.
+Companion draft: `route-dr-vertical-convolution-coefficient-work-2026-10-15.lean`.
+The exact draft passed direct Lean checking with no diagnostics before being
+moved unchanged from `/tmp/hgt_dr_vertical_root_uniform_work.lean`.
+It proves the prime/multiple-of-six logarithmic-frequency gap, coefficient
+non-uniform-continuity, and exact finite exponential-sum interpolation.
+It does not yet prove the finite-measure Fourier theorem, Euler-root identity,
+or the stated escape corollary. No production module was added.
 
 ## Intended construction and exact conjecture
 

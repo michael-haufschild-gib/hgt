@@ -4,6 +4,10 @@ optimize lean code. no raising heartbeat hacks.
 
 do not pivot on unanswered mathematical problems. your job is precisely to solve problems that neither our lean corpus nor literature have solved yet. EVEN IF THIS MEANS TO INVENT A COMPLETE NEW FIELD OR BRANCH OF MATHEMATICS and to fail for weeks and months on tens of thousands of conjectures.
 
+do not just optimize numbers and estimates - solve the true hard obstacles that block your route from turning into a proof of the riemann hypothesis. 
+
+your route is HF
+
 do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
 
 Reminder: 
@@ -245,11 +249,32 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 8) use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (january to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
 
+##  create new knowledge
+
+make one significant contribution that overcomes a hard mathematical obstacle in route HCF from docs/reports/rh-current-frontier-map.md. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle which significantly moves the frontier in the proof route. 
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures. web search will not deliver the solution.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you.
+
 ## hgtl7 create new knowledge
 
 use the hgtl7 skill workflow on every turn for this open end research task:
 
-contribute significant pieces of knowledge to our lean corpus to develop the missing producer for any route or route candidate from docs/reports/rh-current-frontier-map.md to develop it into a fully lean-formalized proof of the riemann hypothesis. the new knowledge must clearly move the frontier in our research towards a proof of the Riemann Hypothesis on the producer side.
+develop route HF from docs/reports/rh-current-frontier-map.md into a fully lean-formalized proof of the riemann hypothesis. 
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -270,7 +295,10 @@ Keep a working log for yourself and do not pay too much attention what other age
 
 The goal is met when a proof of the Riemann Hypothesis is fully formalized in lean - unconditionally without premises. 
 
-Skip web searches and novelty check against external research. Do not read old markdown files - only read lean code. Use the search tool for our lean corpus, not just rg.
+Use the search tool for our lean corpus, not just rg. Skip web searches and novelty checks against external research. Do not read old markdown files - only read lean code. 
+
+Never call this goal unachievable, always conjecture, learn from failures and pivot where necessary.
+
 
 ## 75% 
 use the hgtl7 skill workflow on every turn for this open ended research task: develop a formal unconditional lean-proof that at least 75% of the zeros of the riemann zeta function are on the critical line.
@@ -456,3 +484,32 @@ always look at the big picture, try to understand what all our research is tryin
 Keep a working log for yourself and do not pay too much attention what other agents are doing. 
 
 The goal is met when your assigned problem is fully solved and provably solved via lean formalization.
+
+
+##
+Our current map of routes and route candidates for a formal proof of the Riemann Hypothesis: docs/reports/rh-current-frontier-map.md
+
+A ledger of crisp facts about what the proof must or cannot be like: docs/reports/STATUS.md
+
+Your task: Assume all our routes and route candidate are dead ends and will not deliver the RH proof no matter how much time we spend on them. They all will get stuck at some point at an obstacle they are unable to overcome. Some are already stuck, some routes are killed. 
+
+But all the work so far and especially the failures tell us something about the nature of the problem. I want you to do a deep research on our lean corpus, on the routes and route candidates, on the failures/nogos/positive findings and come up with a new route that is founded on learning from all these failures and is able to circumvent them through an innovative rethinking and change of perspective.
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow a route because it is in your training data. understand what our research is hinting at.
+
+maintain working log for yourself. do not write lean code yet. understand why we failed so far on every route and what this teaches us about where the actual proof route must go - potentially through developing a whole new field of mathematics.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+Do not search the web or check for novelty or read our old markdown files. Only read the two documents provided and otherwise only research in our large lean corpus using the search tool for the lean corpus.

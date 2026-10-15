@@ -909,3 +909,193 @@ source/search/log files were removed by exact path and absence verified.
 No owned prime-curve Lean process remains. Persistent state is in the
 archived card, live log, production modules, and Serena memory
 `route-dr/prime-curve-vacuum-rigidity-sharp-closure-2026-10-15`.
+
+## User correction: work on the actual half-strip obstruction
+
+User explicitly redirected: "certify the half-strip", then "stop this
+busywork ... work on the actual hard obstacle to overcome". This controls
+the next work. Do not continue auxiliary interpolation formalization,
+estimate optimization, generic no-go classifications, or new conditional
+RH equivalence modules as a substitute for the arithmetic construction.
+
+The finite vertical-measure candidate remains unfinished in its own card.
+Its already checked scratch proof was preserved unchanged as
+`route-dr-vertical-convolution-coefficient-work-2026-10-15.lean` next to that
+card. Arithmetic gap and finite interpolation are checked; finite-measure
+Fourier continuity, genuine Euler-root identification, and escape packaging
+are not. The candidate is not retired. No production Lean changes this cycle.
+
+Actual target remains Omega={Re(s)>1/2, Im(s)>0}. Around a hypothetical zero
+rho of order m, the degree-d Euler root returns with multiplier
+exp(2*pi*i*m/d). Need an arithmetic construction forcing trivial return,
+not merely a small multiplier as d grows or a root on the punctured domain.
+The singular first prime trace is the unresolved source term; the higher
+prime-power terms already extend holomorphically on Omega.
+
+Direct attempted mechanism: simultaneous prime-phase inversion. On Re(s)>1,
+the all-prime sign twist has Euler product prod_p(1+p^(-s))^(-1) and equals
+zeta(2*s)/zeta(s); the corpus has the exact Liouville Dirichlet identity in
+`LiouvilleDirichletSeries.lean`. Since zeta(2*s) has no zero on Omega,
+the twist reverses local divisor charge: m becomes -m. An independently
+constructed holomorphic realization of this arithmetic twist on Omega
+would forbid every positive charge and certify the half-strip. Merely
+defining it as the quotient does not do this: the quotient is meromorphic,
+and its possible poles are precisely the obstacle.
+
+Paper attack on source-level inversion: write P(s)=sum_p p^(-s) initially
+in Re(s)>1. The remaining logarithmic Euler sums H_plus and H_minus,
+starting with prime powers k>=2, converge on Re(s)>1/2. The two germs are
+exp(P+H_plus) and exp(-P+H_minus), and their product is zeta(2*s).
+The regularized Hilbert-Schmidt determinants therefore handle both higher
+parts but leave opposite singular first traces. A holomorphic realization
+of both first-trace exponentials has NOT been constructed. Assigning it
+through a determinant normalization, a line-bundle trivialization, or the
+quotient would reinsert the missing no-pole statement. This is an open
+construction attempt, not a proved advancement or a newly established
+obstruction theorem. Do not spend the next cycle formalizing that identity.
+
+Broad deep corpus search completed partial=false/errors=[]; its semantic
+hits were mostly unrelated Euler-characteristic material. Inventory was
+complete but many compiler entries were pending/stale; no exhaustive
+absence or fresh-compilation claim follows. Targeted current Lean source
+confirms the actual prime monodromy residue and the Liouville identity.
+No external searches, numerical jobs, or new Lean builds after the scope
+correction. RH and the half-strip remain unproved. Keep the goal active.
+
+Anti-theatre: the checked auxiliary draft is not progress on trivializing
+actual monodromy. The direct source inversion attempt has an explicit
+unresolved holomorphy step and yields no certificate. Anti-laziness: remain
+on that arithmetic obstruction (or an actual construction addressing the
+same charge), rather than closing incidental formalization tasks.
+
+## User-directed infinite limit on the target half-strip
+
+Latest instruction: "then use an infinite limit that converges only on the
+target half-strip and establish that convergence". The finite-factorization
+attempt exposed the right domain issue: a finite identity expressing Xi as
+products of genuine entire Poisson boundaries propagates globally and
+doubles each positive Xi zero order. An infinite locally uniform limit on
+Omega need not propagate to the critical-line boundary. Constructing that
+limit, with its actual arithmetic attachment, is now the task.
+
+Exact target: construct arithmetic holomorphic Q_N on Omega, without
+dividing by Xi or assuming its nonvanishing, such that Xi^2 Q_N tends to Xi
+locally uniformly there. Equivalently one can construct compatible actual
+Euler Kummer roots there. This target has NOT been proved. Runge division
+by Xi, idempotence of the boundary ideal, or normality assumed as a premise
+would merely insert the missing result.
+
+Current source checks: DeningerMeyerPoissonMellinFactorization gives the
+actual factorization B_f=zeta*M_f and zero annihilation. The exact Xi cap
+source and full-jet boundary inclusion already exist. DeningerPreimageContinuous
+gives local convergence of the physical Mobius inverse on x>0; it gives no
+control at x=0 and hence no Mellin convergence throughout Omega.
+
+Candidate under attack: use finite arithmetic inverse sources with a
+cutoff tending to the excluded physical endpoint, and prove local normal
+convergence of their scalar Mellin transforms on Omega. Raw Abel-damped
+Mobius sums would have the correct reciprocal Euler germ. The unproved
+step is removing the endpoint cutoff in the scalar transform. A weighted
+Hilbert-space sum can converge for Re(s)>1/2 while evaluation at the
+endpoint is unbounded; that convergence must not be presented as the
+required scalar limit. No new conditional criterion will be formalized.
+
+Both previously owned searches (sessions 36868 and 91670) are terminal,
+exit 0. Their JSON has partial=false and errors=[]; substantial compiler
+metadata is pending/stale. The boundary-square search did not yield an
+arithmetic factorization producer. The Liouville harmonic search returns
+already conditional one-sided criteria; that side direction is not the
+current task. No numerical work or external search. No new Lean build or
+production edit. The half-strip and RH remain unproved.
+
+### Explicit compensated Kummer limit, still unproved
+
+Use Omega={Re(s)>1/2, Im(s)>0} and s0=2+i. Define the holomorphic
+function a on Omega by
+
+    a(s0) = integral_2^infinity x^(-s0)/log(x) dx,
+    a'(s) = -2^(1-s)/(s-1).
+
+Omega is convex and excludes 1, so the primitive exists without a zeta
+nonvanishing assumption. On Re(s)>1 it equals the convergent integral
+integral_2^infinity x^(-s)/log(x) dx. For X>=2 set
+
+    L_X(s) = a(s)
+      + sum_{p<=X} sum_{k>=1} p^(-k*s)/k
+      - integral_2^X x^(-s)/log(x) dx,
+    R_{d,X}(s) = exp(L_X(s)/d),  d>=1.
+
+Every finite-cutoff R_{d,X} is holomorphic and nonzero on Omega. The
+root sections are exactly compatible: R_{de,X}^e=R_{d,X}. On Re(s)>1
+they converge to the marked Euler root. Thus this candidate does not
+replace the arithmetic germ by an unrelated nonzero exponential. The
+continuous counterterm removes the pole contribution rather than the
+singular first prime trace itself.
+
+The exact unresolved Cauchy assertion is, for every compact K in Omega,
+
+    sup_{s in K} | sum_{X<p<=Y} p^(-s)
+                    - integral_X^Y x^(-s)/log(x) dx | -> 0
+    as Y>=X->infinity.
+
+The k>=2 part already has a normally summable tail, by comparison with
+sum_p p^(-2*min_K Re(s)). It cannot supply the missing first-trace
+convergence. A locally uniform limit of L_X would supply all compatible
+actual roots and certify Omega. No proof of the displayed Cauchy assertion
+has been found. This is an explicit BRIDGE under attack, not a proved
+producer or a novelty claim. Do not formalize the implication as progress.
+
+Connection to the requested infinite boundary factorization: write
+Xi(s)=C(s)*zeta(s), where the explicit Gamma completion factor C is a
+holomorphic unit on Omega. Then Q_X=C^(-1)*exp(-L_X) is already defined
+without division by Xi. If the unresolved convergence holds, Xi^2 Q_X
+tends locally uniformly to Xi. Each known holomorphic Q_X can itself be
+approximated on a compact exhaustion of Omega by polynomials, without any
+assumption about Xi zeros. Polynomial multiples of Xi are actual cap
+boundaries in the existing corpus. A diagonal approximation would then
+give the required infinite sum/product-source factorization. The only
+unproved certificate-producing step remains the first-trace limit above.
+
+### Rejected bounded-operator shortcut
+
+For D_n f(x)=f(n*x) on L2((0,infinity),dx), ||D_n||=n^(-1/2).
+Consequently both sum_n n^(-s) D_n and sum_n mu(n)n^(-s) D_n converge
+absolutely in operator norm for Re(s)>1/2 and are mutually inverse, by
+Dirichlet convolution. Applied to exp(-x), this really constructs a
+Hilbert-valued inverse source on the desired half-plane. It does NOT
+construct the scalar reciprocal zeta or its Kummer roots there.
+
+Reason: the required endpoint trace f->f(0) is unbounded even on the
+dilation orbit of exp(-x): exp(-N*x) has L2 norm (2N)^(-1/2) tending to
+zero and endpoint value 1. Therefore bounded-operator inversion, its
+fractional powers, and Hilbert-space convergence cannot be passed through
+that trace. This rejects that proof step, not the infinite-limit task.
+The positive operator identity is elementary background, not a new RH
+rung; no auxiliary Lean module will be made for it.
+
+Further source audit: PrimeBoundaryPoissonJumpField and
+PrimeBoundaryWickExpansion establish actual compensated symmetric
+probability limits; those omit the required scalar first trace. The
+ThetaRenewalPrimeBoundary header and initial proofs establish an
+absolutely summable *paired* source current whose admitted counterterm
+still retains the full Xi divisor. None supplies the displayed limit.
+
+The exact compensated-root corpus search finished (session 91501, exit 0).
+Its result is partial=true because the local filter/judge returned malformed
+JSON, with inventory complete and compiler metadata mostly pending/stale.
+Available hits cover finite Euler logarithms, quadratic random Euler
+approximations, Euler connections and prime source definitions; they do
+not establish the displayed convergence. No exhaustive absence claim.
+The earlier local-limit search also finished (58169, exit 0,
+partial=false/errors=[]); its Montel and Dirichlet-convergence hits carry
+the missing normality/convergence as hypotheses.
+
+Anti-theatre: the finite-stage construction and rejected trace passage do
+not certify a single new zero-free point. No novelty or scientific theorem
+is claimed. Another conditional Lean bridge would not solve the task.
+Anti-laziness: the actual scalar convergence and arithmetic attachment
+were attacked; no effort estimate or infrastructure detour was used to
+avoid them. The corpus was checked. Remain on the compensated first trace,
+with the unbounded endpoint trace excluded as a purported proof method.
+No new Lean module, build, axiom audit, lint or umbrella change this cycle.
+Full RH objective stays active; no external blocker exists.

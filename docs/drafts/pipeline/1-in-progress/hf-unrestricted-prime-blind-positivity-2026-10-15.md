@@ -4,7 +4,7 @@ Status: IN PROGRESS, resumed by user. Original goal: unconditional Lean proof of
 
 ## Controlling user correction
 
-User rejected the isolated-prime reflection branch below as busywork. Do not formalize it or continue sharpening obstructions. No new Lean code until a credible paper-proof strategy addresses HF's actual unrestricted positivity obstacle. On resumption, read broadly across the current Lean corpus, synthesize the big picture, and reason about a mechanism that could close the main gap. The side conjecture below is historical working reasoning, not an authorized next task. No research leaf was created. The owned scratch API check exited with errors before cancellation; its file was removed.
+User rejected the isolated-prime reflection branch below as busywork. Do not formalize it or continue sharpening obstructions. Latest user instruction now permits Lean code for significant milestone discoveries. Formalize the complete quadratic prime-energy divisor decomposition, with convergence and all mixed terms, while keeping unrestricted HF positivity as the main objective. This does not authorize reviving the rejected isolated-prime branch. The owned scratch API check from that historical branch exited with errors before cancellation; its file was removed.
 
 ## Constraints
 
@@ -66,6 +66,75 @@ Any proposed positive realization must annihilate the existing Xi-divisible null
 ### Reading and verification state
 
 No web or novelty checks; no numerical mathematical experiments; no new Lean source or builds. Corpus search results were inspected alongside actual Lean statements. `/tmp/hf-dilation-energy-search.json` reports partial coverage and poor candidates, so it supplies no additional proof evidence. The source reads above do not replace a fresh compilation audit when an eventual main proof is ready.
+
+### Paper continuation: the full quadratic divisor lift
+
+This is a calculation toward the main sign, not a positivity proof. Following the latest user instruction, its full quadratic identity is now the significant milestone being formalized. The linear divisor rearrangement already exists in `RiemannKernelTransformInjectivity.lean` (`cuspTerm_add_log`, `tsum_shift_cuspSeries_eq`). It must not be reported as a new advance.
+
+Write
+
+\[
+ \psi(t)=(4\pi^2t^4-6\pi t^2)e^{-\pi t^2},\qquad
+ \Phi(x)=e^{x/2}\sum_{m\ge1}\psi(me^x),\qquad
+ G_r(t)=\psi(t)\psi(r/t).
+\]
+
+For a real compactly supported smooth `v`, put `a_t(m)=v(log(t/m))`. On the divisors of an integer `N`, define
+
+\[
+ D_N(a)=\sum_{m\mid k\mid N,\ m<k}\Lambda(k/m)(a(m)-a(k))^2.
+\]
+
+The complete prime Doob energy has the paper identity
+
+\[
+ E_{\rm prime}(v)=\sum_{N\ge2}\int_0^\infty G_N(t)D_N(a_t)\,\frac{dt}{t}.
+\tag{Q1}
+\]
+
+Derivation: write each original jump with endpoints `x,x-log d`; use `Phi(x-log d)=Phi(log d-x)`; expand both full cusp series. Their half-density factors cancel the original `1/sqrt d`. Set `t=m exp x`, `k=md`, `N=mnd`. The two test values become `a_t(m),a_t(k)`, and the Gaussian factors become `psi(t),psi(N/t)`. This retains every prime power and every pair of theta indices. Absolute exchanges follow for compact `v`: one endpoint lies in its fixed compact support, while the other theta argument has Gaussian decay as `d` grows; near a zero shift, the squared difference is quadratic in the shift.
+
+The graph in (Q1) is a weighted Cartesian product of complete graphs on prime exponents. Its vertex degree is exactly
+
+\[
+ \sum_{d\mid m}\Lambda(d)+\sum_{d\mid N/m}\Lambda(d)=\log N.
+\]
+
+If `p^e` is the exact power of `p` in `N`, its part of `D_N` is
+
+\[
+ (e+1)\log p\sum_{b\mid N/p^e}\sum_{j=0}^{e}
+ \left(a(bp^j)-\frac1{e+1}\sum_{i=0}^{e}a(bp^i)\right)^2.
+\tag{Q2}
+\]
+
+Thus the full prime graph has an exact conditional-variance decomposition, not an isolated-prime estimate. **This does not yet imply the desired sign:** `G_N` is signed outside its central region. The Gaussian weight and the archimedean contribution must be treated together.
+
+The same change of variables carries the Gamma jump energy to a continuum of cofactor pairs `m,n` with `mn<r`. Its coefficient is
+
+\[
+ \sqrt d\,\omega(\log d)=\frac1{1-d^{-2}},\qquad d=\frac r{mn},
+\]
+
+where the actual source defines `omega(x)=exp(-x/2)/(1-exp(-2*x))`. The polar jump kernel `2 cosh(x/2)` has coefficient `d+1`. Indeed, using `integral Phi*cosh(x/2)=1/2`, its energy is `mu(v^2)-2(C(v)^2-S(v)^2)`, with `C(v)=integral Phi*v*cosh(x/2)` and `S(v)=integral Phi*v*sinh(x/2)`. Consequently the full Weil form at `Phi*v` becomes
+
+\[
+ \sum_{N\ge2}\int_0^\infty G_N(t)D_N(a_t)\frac{dt}{t}
+ +\int_1^\infty\!\frac{dr}{r}\int_0^\infty\!G_r(t)
+ \sum_{mn<r}\left(\frac1{(r/(mn))^2-1}-\frac r{mn}\right)
+ \left(v(\log(t/m))-v(\log(tn/r))\right)^2\frac{dt}{t}.
+\tag{Q3}
+\]
+
+Main proof obligation remains the sign of the **combined** expression (Q3), or the weaker existing odd-sector gap `E_arch+E_prime >= mu(v^2)`. The next paper step must use Poisson symmetry to combine the divisor variances with the continuous cofactor term and preserve the known Xi-divisible radical. Latest user instruction authorizes formalizing significant milestones; the complete quadratic decomposition, rather than an isolated finite graph lemma, is the current Lean target. No positivity theorem, RH proof, or novelty claim is made here.
+
+Search/read state: `/tmp/hf-theta-divisor-search.json`, `/tmp/hf-rational-gram-energy-search.json`, and `/tmp/hf-theta-divisor-quadratic-search.json` finished; all report `partial=false`, but semantic coverage is unavailable and compiler metadata is mostly stale/pending. Actual sources additionally inspected: `WeilWorkPBAPGramPackets.lean` (arbitrary PSD null Gram matrices retain rational cross terms), `ThetaCuspPrimeArchSourceEquation.lean` (literal source equation), and `RiemannKernelTransformInjectivity.lean` (existing divisor rearrangement). No numerical mathematical computation.
+
+Formalization checkpoint after latest authorization: `formal/GaloisForLFunctions/RHTower/WeilPhiDoobDivisorEnergy.lean` is being written. Q1 is expressed in logarithmic coordinates, with `fiber N u = cuspTerm R 1 u * cuspTerm R N (-u)` and test values `v(u-log m)`. The full theorem is not yet present or verified. Current analytic subproof establishes a common integrable envelope
+
+`|fiber N u| <= (4*pi^2+6*pi)^2 * N^4 * exp(-pi*N) * (2+exp(2*u)+exp(-2*u))*exp(-pi*cosh(2*u))`.
+
+This proves absolute convergence for bounded continuous tests before any triple-series regrouping. The planned finite-fiber equivalence sends `(m,d,n)` to `N=m*d*n`, `(k,n)=(m*d,n)`, `(m,d)`, using two divisor antidiagonals. Finish the complete identity before treating this as a formalized milestone. Targeted source checks only; no umbrella build or heartbeat increase.
 
 ## Cycle 1: reflected-prime positivity
 

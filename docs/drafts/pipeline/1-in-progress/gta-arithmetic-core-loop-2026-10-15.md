@@ -1165,3 +1165,76 @@ assumed positivity, boundedness, or completion property. No such identity has
 yet been derived. Keep the common forcing and every mixed term throughout;
 zero imaginary current, unit reciprocal charge, and bounded compensated current
 do not give zero real transverse current.
+
+## Actual paired form and full theta-current search
+
+Classification: corpus-search progress only; no new theorem, no selector proof.
+The previous next action (derive the full arithmetic pairing on actual divided
+theta modes) was already completed elsewhere in the corpus. Do not repeat its
+cutoff construction. `EigenPairGuinandWeilIdentity.lean:498` gives the exact
+prime--archimedean pairing, with the pole contribution in the archimedean
+factor and absolute convergence. `XiThetaEigenGramLaw.lean` identifies it with
+the conjugation-supported Gram matrix. An off-real mode has zero diagonal
+Weil value but can have nonzero pairing with its conjugate mode. Isotropy
+therefore cannot annihilate the strictly signed Euler-deletion current.
+Moreover first divided modes have zero divisor evaluation at multiple roots;
+strict positivity of their finite Gram matrices is RH AND simplicity
+(`EigenPairGuinandWeilIdentity.lean:516`). Do not accidentally strengthen RH to
+simplicity. Higher divided chains would be needed for a faithful multiplicity
+argument, but their construction alone is not an authorized next deliverable.
+
+Completed searches this continuation:
+- `/tmp/gta-paired-mode-ground-form-search.json`
+- `/tmp/gta-deletion-mellin-current-search.json`
+- `/tmp/gta-product-bessel-current-search.json`
+- `/tmp/gta-full-current-selector-search.json`
+- `/tmp/gta-odd-ground-folding-search.json`
+
+All reported `partial=false`; coverage is a source snapshot with many compiler
+entries pending or stale. Broad semantic Bessel/product queries mostly returned
+irrelevant matches. Exact `thetaCuspCenterMixedFourierCurrent` search was useful.
+No new Lean audit was run in this continuation; source statements were inspected.
+
+The full theta current is already the cofinal completed product-fibre sum and
+the transverse derivative of norm-square Xi, including every mixed term:
+`ThetaCuspWignerGammaXiTransverseEnergyUniversalityLaw.lean:41`.
+`ThetaCuspCompletedProductFiberWignerNoGo.lean:466` supplies a negative first
+completed Wigner fibre. Cofinal drop repair restores physical source-product
+monotonicity, not Fourier positivity. Product-shell divisor phases can be
+negative. The two-K-Bessel Mellin product theorem has a sharp absolute
+convergence chamber; its regularized continuation cannot be treated as a
+positive norm. Its source header also records the four-Lambda/four-Xi
+normalization mismatch. None supplies a positive representation of the full
+current.
+
+Exact-current search found unconditional positivity for a >= 1/2 and for
+|b| <= 218/25, and conditional positivity above a zero half-plane bound. The
+whole physical strip 0<a<1/2 at arbitrary b remains unproved. The signed-jet,
+Gaussian-Hankel and raw-Hankel conditions are equivalences, not producers.
+
+The newer `CCMRestrictedWeilRealRootedGroundState.lean:621` removes the ground
+simplicity assumption: some nonzero polar ground has no nonreal transform
+zeros except the imposed polar points at every aperture. It does not prove
+nonnegative ground energy or identify the limiting transform with Xi.
+`CCMNonnegativeGroundStateRH.lean` requires nonnegative physical ground states
+or a quantitative overlap hypothesis. Real-rooted Fourier transform does not
+give either requirement. Thus this stronger CCM result still does not transfer
+the selector to GTA.
+
+Other failed handoffs checked: positive real-tilt theta variance only controls
+the real Laplace axis; thin half-line odd Markov positivity excludes only a
+restricted test class; reflected trivial-zero squares leave the product-prime
+pairing signed on general tests. The Doob identity retains its negative cosh
+mass. No automatic maximum-principle or index-one conclusion follows.
+
+Informal Mellin comparison (NOT a proved deliverable): the mixed deletion
+prefix energy plausibly becomes a positive critical-line norm of a deleted
+Dirichlet quotient divided by s-rho. Reflection preserves that norm and flips
+the transverse prefactor, which is consistent with opposite currents, not
+zero current. Normalizations and function spaces were not fully audited; do
+not cite this as a theorem.
+
+No Lean source or umbrella edits. No owned search or Lean process remains.
+Selector remains the only next mathematical deliverable. The full coupled
+arithmetic sign is still the live obstacle; this search did not circumvent it.
+Avoid another survey of these same modules or another conditional wrapper.

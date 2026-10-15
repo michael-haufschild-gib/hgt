@@ -1397,3 +1397,252 @@ to the arithmetic bulk. Merely postulating a Hilbert norm equal to Q is
 CIRCULAR: it is positivity restated. No explicit, independently defined
 positive factorization has been found. Full divisor multiplicities are
 still required, and none are silently replaced by G'(w) != 0.
+
+### Native-sign audit after the repeated proof request
+
+The requested nonnegativity is not proved. No new repo Lean module or
+orientation theorem was added in this pass. The existing simple-zero
+mixed-action theorem is not an all-multiplicity sign proof.
+
+The scratch audit of the two rejected repairs now terminates with exit 0
+under `lake --old env lean /tmp/rn-native-cusp-audit.lean`. Its first
+example proves the integral of k times its complete two-ended action is
+zero, using both actual source equations. Its second example proves the
+scalar contradiction with a separate positive square of the actual
+half-density charge 1/2. Five imported theorem axiom audits list only
+propext, Classical.choice and Quot.sound. An earlier scratch rewrite
+failed on the syntactic distinction between `-(1/2)` and `-1/2`; it was
+corrected before this successful audit. These are verifications of the
+stated rejected repair, not a native nonnegativity proof.
+
+Further attack: positive real part of the nonvanishing renewal charge
+cannot, by itself, convert an indefinite native form into a positive
+one. At a zero of order m, multiplication by an analytic unit acts on
+the truncated local jet algebra by a triangular matrix whose diagonal
+is the nonzero constant coefficient of that unit. It is invertible at
+every finite m. For any Hermitian form H and this map T, the transported
+form is H(Tx,Ty); any negative witness v remains the negative witness
+T^{-1}v. Thus positivity of the transported form is equivalent to
+positivity of the original. This is an elementary coordinate-change
+argument, classified REDISCOVERED, not an assertion that the full native
+jet-form identification has already been formalized. An additional
+arithmetic identity would still be needed to establish the sign.
+
+The current deep native-mixed search completed with partial=false. Its
+compiler coverage remained mostly pending/stale; candidate lemmas,
+source arguments and proposed ingredient sets were inspected. The
+suggested combination of mixed symmetry and modular cusp identities
+does not imply positivity. A lexical search for the two exact energy
+names returned their separate definitions, nonnegativity of the prime
+energy, and decomposition/rigidity theorems; none of those returned
+statements supplies the required comparison. No external search was
+used, as requested.
+
+Anti-theatre/anti-laziness assessment: no new scientific knowledge or
+native orientation advance in this pass. The positive charge and
+coordinate facts are existing results; the elementary congruence audit
+does not justify novelty. No step was omitted because of estimated
+effort. The hardest sign was attacked, but its positive producer was not
+found. Continue RN with the exact coupled bulk/cusp arithmetic identity
+as the target; do not replace it by more normalization corollaries,
+simple-zero restrictions, assumed positivity, or operator eigenvalues.
+
+### Coupled null-source cusp reduction and the all-order native pairing
+
+Previous turn: no progress on the native sign. This pass keeps the exact
+sign target. The following is a paper bridge, not a positivity theorem;
+its all-order native integral statements have not yet been formalized.
+The external novelty phase remains omitted by the user's instruction.
+
+Write k=thetaCuspFullSource, G(z)=integral exp(z*x)k(x)dx, and let S be
+the literal sum of the forward and backward prime/Gamma/two-pole actions.
+Use the sesquilinear convention B(f,g)=integral conjugate(f) Sg.
+The existing source equation and evenness give Sk=0. Every translate
+k_h(x)=k(x-h) is also null, since every term of S is translation
+invariant. This statement concerns the complete action, not each term.
+
+Paper domain: finite linear combinations of translates of k and causal
+jets at zeros. Every function and its x derivative decays faster than
+every exponential. Products in the mixed action are absolutely admitted:
+for every A>0, the cross-correlation integral of absolute values is
+bounded by C_A exp(-A*|u|), by taking decay exponent 2A and using
+|x|+|x+u|>=|u|. The all-prime exchange then follows from
+Lambda(n)<=log(n), choosing A>1/2. At u=0 the compensated Gamma numerator
+is O(u) in L2, since ||f(.+u)-f||_2<=u||f'||_2 for 0<u<=1; the other
+coefficient difference is O(u). Cauchy--Schwarz admits its pairing with
+f. For u>=1 the Gamma coefficients decay or are bounded by a decaying
+exponential. Both polar terms are admitted by the arbitrary exponential
+cross-correlation bound. These arguments justify symmetry and translation
+invariance on this domain without a source-quotient Schwartz hypothesis.
+
+All-order causal construction: if w is a zero of G of exact order m>=1,
+put
+
+  U_j(w,x) = integral_(t>0) t^j/j! exp(w*t) k(x+t) dt,
+  d_w = G^(m)(w)/m!,       V_w=U_(m-1)(w,.)/d_w.
+
+For j<m, all whole-line moments through order j vanish. The equivalent
+tail formula is exp(-w*x)/j! times the integral over t>x of
+(t-x)^j exp(w*t)k(t). Splitting its zero whole-line polynomial moment
+turns it into the negative left tail. Evenness therefore gives
+
+  U_j(w,x)=(-1)^(j+1) U_j(-w,-x).
+
+The right and left tails prove arbitrary exponential decay. One way to
+make the bound explicit is to expand (t-x)^j and apply the existing
+rightCausalResponse exponential estimate to each real source t^r k(t),
+whose exponential moments are finite and whose w-moment is zero for
+r<=j. Multiplication by a fixed power of x is absorbed by one more
+exponential margin. Differentiation gives U_0'=-w U_0-k and, for j>0,
+U_j'=-w U_j-U_(j-1), so derivatives have the same admission.
+
+The forward arithmetic exchange is valid at all these orders. For
+|Re w|<1/2 and r=t-x>0,
+
+  r^j/j! * exp(Re(w)*r) <= 4^j exp(3*r/4).
+
+This follows from the jth nonnegative term of exp(r/4). It dominates
+the weighted joint absolute source integrands by the existing
+integrable_gammaLaplace_rightRay, integrable_polarLaplace_rightRay and
+integrable_primeLaplace_rightRay at real abscissa 3/4. Hence Fubini
+commutes the causal integral with each literal action. The forward
+source equation yields
+
+  A+ U_j = x U_j + (j+1) U_(j+1).
+
+For j<m, the reflection formula gives the literal backward action by
+the reflected forward one, including its absolute domain. Adding gives
+
+  S U_j(w,x) = exp(-w*x) G^(j+1)(w)/j!.
+
+In particular S U_j=0 for j<m-1 and S V_w=m exp(-w*x). No parameter
+derivative of an identity restricted to the zero set is used here.
+
+The bilateral transform obeys
+
+  (z-w)^(j+1) L(U_j)(z)=G(z),             j<m.
+
+Proof: integrate the displayed x-ODE against exp(z*x), with the
+two-ended decay proving every integration by parts; start with
+(z-w)L(U_0)=G and induct. At z=w, split the x integral at zero and use
+the right-tail representation on x>=0 and the negative left-tail
+representation on x<=0. Fubini integrates the polynomial over 0<=x<=t
+or t<=x<=0, respectively, and gives
+
+  L(U_j)(w)=G^(j+1)(w)/(j+1)!.
+
+All double integrals in this split are absolutely bounded by the
+(j+1)st absolute exponential moment of k. Thus L(V_w)(w)=1, while
+L(V_w)(v)=0 at every other zero v. Reflection eta(w)=-conjugate(w)
+preserves the exact order m; the actual source-moment classification
+and reflections already occur in XiHedenmalmThetaJetSource.
+
+It follows that on the top causal jets the native pairing is
+
+  B(V_w,V_v) = m_v if w=eta(v), and 0 otherwise.
+
+Every lower jet is in the radical of this finite jet pairing: its
+action is zero, and the reverse mixed pairing vanishes by the same
+transform evaluations. A critical top jet contributes weight m_w;
+an off-axis reflected pair has matrix [[0,m_w],[m_w,0]], so
+Q(V_w-V_eta(w))=-2m_w. This is the exact multiplicity diagnostic, not
+the opposite inequality needed to exclude the pair.
+
+The actual renewal seam is retained at each order. With w=-2lambda,
+F(lambda)=G(-2lambda), c=Theta(1), and C the full renewal charge, the
+existing seam identity and differentiation of absolutely convergent
+half-line integrals give, for j<m,
+
+  (-2)^j j! U_j(-2lambda,0)
+    = i C^(j)(lambda) - c (d/dlambda)^j lambda.
+
+The omitted F^(j)/2 term is zero by exact order, not by a simplicity
+assumption. With R=F/C, the nonzero terminal normalization is
+
+  d_w = C(lambda) R^(m)(lambda) / ((-2)^m m!).
+
+Here all lower R jets vanish and C(lambda) is the actual source-proved
+unit. This uses the complete charge, including its higher seam jets.
+
+Coupled cusp reduction: define M_+(f)=integral exp(x/2)f(x)dx and
+M_-(f)=integral exp(-x/2)f(x)dx. For a fixed nonzero real h, write
+r=exp(h/2), D=r^2-r^(-2), p=M_+(f), q=M_-(f), and set
+
+  alpha=2(r*p-r^(-1)*q)/D,
+  beta =2(r*q-r^(-1)*p)/D,
+  P_h f=f-alpha*k_h-beta*k_(-h).
+
+The existing completed source moments G(1/2)=G(-1/2)=1/2 show that the
+moment matrix of (k_h,k_(-h)) is
+(1/2)[[r,r^(-1)],[r^(-1),r]], with nonzero determinant D/4.
+Thus M_+(P_h f)=M_-(P_h f)=0. The cusp data remain recoverable in the
+two explicit coefficients alpha,beta; they have not been set to zero
+in the original field.
+
+On the transform side the subtraction is exactly
+L(P_h f)(z)=L(f)(z)-G(z)(alpha*exp(h*z)+beta*exp(-h*z)).
+At every full zero of G of order n, this changes none of the transform
+jets of orders 0 through n-1. Thus the correction preserves all divisor
+jet data, not merely its values at distinct or simple zeros.
+
+For every causal top jet, its mixed pairing with k_h is zero because
+S V_w=m exp(-w*x) and L(k_h)(-w)=exp(-w*h)G(-w)=0. Lower jets have
+zero action. The reverse pairing is zero because S k_h=0. Hence
+
+  B(P_h f,P_h g)=B(f,g)
+
+on every finite span of the admitted causal jets, with no bound on
+multiplicity. The full polar action itself is exactly
+
+  S_polar f(x)=exp(x/2) M_-(f)+exp(-x/2) M_+(f),
+
+since exp(|x-y|/2)+exp(-|x-y|/2)=2cosh((x-y)/2). Consequently
+the projected field has zero polar action, and its prime--Gamma pairing
+equals the original complete pairing. This is a coupled null-source
+cancellation, not the false addition of a separate positive cusp square.
+
+Status and next obstruction: this paper reduction leaves the native
+sign exactly intact. At a hypothetical off-axis zero, the projected
+normal field still has prime--Gamma value -2m. Proving that this value
+must be nonnegative requires a genuine prime--Gamma positivity producer;
+moment neutrality supplies none. The reduction is classified BRIDGE /
+REDISCOVERED parent null-form algebra, not new scientific knowledge.
+No all-order Lean result or RH result is claimed. Formalization of the
+displayed native higher-jet domains/action and coupled projection is
+pending; the existing simple-zero module alone does not verify them.
+
+Verification: the current existing all-order source-jet module
+XiHedenmalmThetaJetSource.lean passed a foreground
+`lake --old env lean GaloisForLFunctions/RHTower/XiHedenmalmThetaJetSource.lean`
+audit, terminal exit 0 without diagnostics. This verifies its actual
+multiplicity/source-moment and reflection inputs, not the new native
+higher-jet action or projection proof above. Both current deep searches
+completed with partial=false and mostly pending/stale compiler metadata.
+Their candidate lemmas, source arguments and proposed ingredient sets
+were inspected. No returned statement supplied native positivity.
+
+Anti-theatre: no scientific novelty is claimed; the new record is a
+paper coupling of established source identities with causal integration
+and null-form algebra. The native-sign frontier has not moved. The
+useful advance is explicit preservation of every divisor jet while
+carrying the two cusp moments as recoverable coefficients. Anti-laziness:
+no step was omitted for estimated effort; the direct prime--Gamma
+comparison was examined and remains unproved. Corpus checks were run.
+Keep the positive arithmetic producer as the next hard target; merely
+assuming positivity on the cusp-neutral representatives is circular.
+
+### Native higher-jet action: formal verification in progress
+
+The next verification target is the all-order literal arithmetic action
+in the paper proof above. Polynomial causal weights require absolute
+joint admission before exchanging the prime series and compensated Gamma
+and pole integrals. Establish the weighted-tail bound using the open
+exponential margin from Re(w) <= 1/2 to 3/4, then commute the literal
+actions. No simple-zero assumption and no positive-form hypothesis may
+enter this bridge. The native mixed sign remains unproved.
+
+The current producer search completed with partial=false; refresh reports
+background_indexer_running, and compiler coverage remains mostly pending
+or stale. Candidate lemmas, source arguments and ingredient sets supplied
+no checked native-sign producer. Formal verification is therefore not
+being presented as a solution of the sign inequality.

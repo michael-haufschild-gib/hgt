@@ -1365,4 +1365,288 @@ Cycle 14 final native leaf passed actual-path Lean warningfree, including
 all-multiplicity surjectivity, zero unshifted map, exact physical Mellin
 translation on every derivative, and actual failure of Poisson-boundary
 invariance. All three Cycle 14 leaves are wired once into RHTower.lean.
-Cycle 15 exact Xi cap-source leaf is now under verification.
+Cycle 15 exact Xi cap-source leaf subsequently passed its actual-path check.
+
+## Cycle 16 — paper trace integrality beyond finite Weyl polynomials
+
+User steering: stop bridge formalization and obstruction busywork. Solve the
+projective construction or actual trace integrality. No Lean files were
+written in this cycle. The subsequent explicit instruction is to construct
+the rational idempotent from the Poisson source while retaining Xi
+multiplicity. Retaining means the canonical Chern pairing, not merely the
+dimension of an auxiliary vector space.
+
+### Closed paper argument: rational idempotent trace
+
+Let R be the finite twisted Laurent algebra of the two native Weyl
+generators. Let A be its rotation C* closure with its canonical trace tau,
+and M the finite von Neumann algebra in the trace GNS representation. Write
+tau_n for the unnormalized matrix trace. Let D be the Ore division ring
+of R. The following argument establishes two exact statements:
+
+1. For T in M_{m,n}(R),
+   tau_m(proj closure(range T)) = rank_D(T), and
+   tau_n(proj ker T) = n - rank_D(T).
+2. If E in M_n(A) is idempotent, b is a nonzero element of R, and
+   E(b I_n) = B for B in M_n(R), then
+   tau_n(E) = rank_D(B), an integer between 0 and n.
+
+These are paper results, not Lean-verified results. They require no
+spectral gap, no bounded inverse for b, and no assumed agreement of the
+formal and analytic traces on arbitrary rational elements.
+
+Proof of the algebraic preliminaries. A nonzero finite Laurent polynomial
+has a lexicographically largest exponent in Z^2. The largest exponent in
+a product has a unique nonzero coefficient, multiplied by a nonzero Weyl
+phase. Thus R is a domain. For nonzero a,b in R, take square boxes F_N in
+Z^2 and a finite square K containing both supports and 0. Both a R_{F_N}
+and b R_{F_N} have complex dimension |F_N| and lie in R_{F_N+K}.
+Since |F_N+K|/|F_N| tends to 1, their intersection is nonzero for large N.
+This gives a common nonzero right multiple. The identical argument with
+right multiplication gives a common nonzero left multiple. Thus R is an
+Ore domain, and finitely many fractions admit common right denominators.
+
+Proof of analytic rank for algebraically injective matrices. Suppose
+S: R^r -> R^m is injective. In the GNS space l2(Z^2), its restriction to
+vectors supported in F_N has image of dimension r|F_N|, supported in
+F_N+K. Let Q be its closed-range projection and Q_N the orthogonal
+projection onto that finite-dimensional image. Then Q_N <= Q and
+Q_N <= chi_{F_N+K}. Twisted right translations commute with Q, so the
+sum of its m diagonal coefficients is constant at every lattice point.
+Consequently
+
+  r |F_N| <= Tr(chi_{F_N+K} Q chi_{F_N+K})
+            = |F_N+K| tau_m(Q).
+
+Passing to the limit gives tau_m(Q) >= r. Polar decomposition gives the
+opposite inequality and
+tau_m(Q) = r - tau_r(proj ker S). Thus tau_m(Q)=r and ker S=0.
+Applying this to a scalar a and its adjoint shows that each nonzero
+element of R is injective with dense range.
+
+Proof for an arbitrary T. Put r=rank_D(T). Choose r D-independent
+columns of T. Their polynomial column matrix is algebraically injective,
+so the closed range of T has trace at least r. Choose a D-basis of ker_D T
+and clear the denominators of each column on the right. This gives a
+polynomial matrix K with n-r D-independent columns and T K=0. The preceding
+argument shows that its closed range has trace n-r and lies in ker T.
+Polar decomposition of T now bounds its range trace above by r. Both
+inequalities are equalities. This proves statement 1.
+
+Proof for E. The operator b I_n has dense range. Therefore the closure of
+range B = range(E b I_n) is the closed range of E. If P is the orthogonal
+projection onto that range, P E=E and E P=P. Cyclicity gives
+tau_n(E)=tau_n(P). Statement 1 applied to B gives statement 2.
+
+Every bounded element of the Ore rational envelope has such a common
+denominator. One way to justify the identification is that each nonzero
+element of R has a densely defined affiliated inverse, so the Ore field
+embeds in affiliated operators. The bounded rational envelope means the
+intersection of this embedded Ore field with M; it does NOT mean all of
+M or all of A. The statement with the explicit witness E b=B avoids
+requiring affiliated-operator machinery in the theorem's hypotheses.
+
+The Ore field also embeds in the already constructed formal quantum
+Laurent division ring. Matrix rank is unchanged by this division-ring
+extension. Diagonalizing an idempotent over that field proves that its
+formal trace is the same rank. Hence the analytic/formal trace discrepancy
+vanishes on bounded rational idempotents even though it does not vanish
+on individual rational resolvents. This repairs that particular trace
+comparison; it does not show that an arithmetic transgression is rational.
+
+### Attacks and applicability
+
+- The proof uses the trace GNS representation on l2(Z^2), not the concrete
+  l2(Z) representation without justification. Their traces agree on the
+  finite Weyl algebra and hence on its norm closure. Faithfulness of the
+  latter representation is not needed for the displayed trace equality.
+- Matrix traces are unnormalized. No factor 1/n is suppressed.
+- Right denominators match the right D-vector-space convention for column
+  matrices. The opposite-algebra statement handles the source's left
+  module/right multiplication presentation.
+- A gapped spectral-band projection of a polynomial Hamiltonian is not
+  a kernel projection of a polynomial matrix merely because it comes
+  from continuous functional calculus. The theorem does not assert that.
+- Nontrivial smooth rotation projections are not counterexamples: common
+  finite-Weyl denominators for them have not been supplied and cannot be
+  inferred from smoothness or boundedness.
+- No numerical experiment or spectral zero count enters this argument.
+
+Corpus search /tmp/irk-ore-projection-integrality-search.json completed
+with partial=false. It found the existing division-ring idempotent trace
+and finite-Weyl trace comparison, but no applicable analytic Ore-rank
+comparison among its hits. An exhaustive project Lean text search for
+the relevant combinations did not locate one. This is not an external
+novelty claim. Verdict: BRIDGE with a closed paper proof of the broader
+trace comparison; actual Poisson projective construction remains OPEN.
+
+### Direct construction attempts: keep the required Chern coordinate
+
+The exact cap source has boundary transform F(s)=Xi(s). Its physical
+clock gives G(s)=Xi(s+a). On a neighborhood of a zero rho at which G(rho)
+is nonzero, the normalized column (F,G) gives an honest smooth rank-one
+graph projection. This does not solve the requested construction:
+the column is a global nonvanishing frame on that neighborhood, so its
+line bundle is trivial. The order d of F/G is a marked transition order,
+not an absolute Chern number of this graph projection. As the disk shrinks
+to rho, its smooth curvature integral tends to zero. Attaching a cap with
+degree d is an additional transgression, not a property of the graph.
+
+For the actual full Xi jet relation R_rho(V)=V I-D_rho, the eigenvalue is
+lambda=p^{-(rho-1/2)}. Off the critical line, |lambda| differs from 1.
+The relation is then invertible in the rotation C* algebra: the scalar
+factor V-lambda is invertible, and the remaining triangular nilpotent
+part is inverted by a finite series. Its completed kernel/cokernel
+projection is therefore zero. This direct rational construction loses
+the entire source torsion and is rejected. It is not called a
+multiplicity-preserving projectivization.
+
+The alternative local Hardy/Toeplitz defect has finite rank d and keeps
+the full local quotient. Its compact projection maps to zero in the
+rotation Calkin quotient. Tensoring it with a prescribed rotation
+projection would insert a chosen K-class; it would not prove arithmetic
+trace integrality. This construction is also not accepted as the answer.
+
+The exact outstanding construction now has a concrete algebraic witness
+target: from the actual relative Poisson source, produce E_rho, b_rho,
+and B_rho with E_rho^2=E_rho, E_rho b_rho=B_rho, nonzero finite-Weyl
+b_rho, finite-Weyl B_rho, and canonical Chern pairing equal to the full
+off-line multiplicity. The trace result above then supplies integrality
+without any additional trace-comparison premise. No such E_rho or source
+transgression has yet been constructed. Merely assuming its existence
+would leave the central IRK problem untouched.
+
+The actual Möbius inverse was checked as a possible source retraction in
+DeningerMobiusPoissonRangeClassification.lean. It is continuous on the
+literal Poisson range. Its regularity at the radial origin is an explicit
+domain restriction; the file does not provide a retraction from the full
+target onto that range. Therefore it cannot yet supply the needed bounded
+idempotent. The next attack must use additional global source structure,
+not silently extend this inverse to every cochain.
+
+## Cycle 17 — attempted adelic construction through a finite-place corner
+
+Previous goal turn classification: progress, specifically the closed paper
+rank/trace argument in Cycle 16. It did not construct the required source
+idempotent. Current target remains that construction, with full multiplicity
+in its canonical Chern pairing. No additional Lean code was written.
+
+### Candidate and actual source evidence
+
+Candidate: cancel the real native Weyl phase with an opposite finite-place
+clock in the global Poisson source; then remove the finite-place factor
+through its unramified corner. If that passage were multiplicative on the
+source projection and preserved the relevant trace, global ordinary trace
+integrality could give the missing real rotation trace condition.
+
+The corpus provides considerably more than a formal product formula:
+
+- CCMRationalAdelicMoritaTraceFormula.lean constructs the ordinary
+  trace-class representation of the actual algebraic adelic crossed product
+  and proves its trace equals the rational orbit sum of the identity
+  coefficient.
+- CCMRationalAdelicSourceContinuousTraceNormField.lean constructs an actual
+  algebra homomorphism from the unitized cyclic source to continuous fields
+  of unitized trace-norm operators.
+- CCMRationalAdelicTensorHaarMobiusCompression.lean constructs, for every
+  actual algebraic Bruhat tensor, an even Schwartz source whose Meyer sum
+  equals its profinite Haar-averaged rational trace after removing the
+  zero mode. Vanishing of both Tate endpoints puts this source in the
+  actual Meyer cap. This is a linear compression identity, not a proved
+  homomorphism taking idempotents to idempotents.
+- FieldOnePadicUnitBallNormalizedHaar.lean fixes the additive local Haar
+  normalization mu(Z_p)=1. FieldOnePadicBruhatFourierL2.lean embeds actual
+  Bruhat vectors in that Haar L2. FieldOnePadicUnitInvariantL2.lean averages
+  over compact units; its range retains the entire valuation direction.
+- The existing strict adelic prime-isotropy comparison is not a hidden
+  answer: CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean explicitly
+  proves its retained class maps to a resolved Xi boundary, and hence to
+  zero in target H1. Its Stokes regulator does not repair that loss.
+
+The corpus search /tmp/irk-global-clock-corner-search.json completed with
+partial=false and no errors; session 36014 exited 0. The sources above were
+read directly. No external search or numerical experiment was used.
+
+### Exact test on the unramified local source
+
+Put r=1/p and use additive Haar measure mu(Z_p)=1. The valuation shells
+A_n=p^n Z_p^* have measure (1-r) r^n. This follows from the p equal additive
+cosets in Z_p and Haar scaling, for all integer n. Their normalized
+indicators e_n=((1-r)r^n)^(-1/2) 1_{A_n} form the orthonormal shell basis
+of the unit-invariant subspace. The actual unramified vector v=1_{Z_p}
+has norm one and expansion
+
+  v = sqrt(1-r) sum_{n>=0} r^(n/2) e_n.
+
+The point 0 has Haar measure zero, so it contributes no additional term.
+The native local clock C acts by C e_n=omega^n e_n, where
+omega=exp(-i log(p)/q) for the positive native clock denominator q. Its
+phase is of infinite order by the native prime irrationality already
+proved in the corpus. Let e=|v><v|. The exact geometric series gives
+
+  <v,Cv> = c = (1-r)/(1-r omega),
+  e C e = c e,
+  1-|c|^2 = 2 r (1-Re(omega)) / |1-r omega|^2 > 0.
+
+Thus the actual unramified rank-one corner turns the unitary native clock
+into a strict contraction. For a real-place unitary U, compressing U tensor
+C to H_real tensor Cv gives c U, which is not unitary. Opposite-phase
+cancellation in a larger tensor algebra therefore does not itself produce
+a unital star homomorphism to the real rotation algebra through this
+corner. The failure is present on the actual unramified source vector;
+it is not a generic auxiliary counterexample.
+
+For any orthogonal projection P and any orthogonal corner e, put X=ePe.
+Then
+
+  X-X^2 = eP(1-e)Pe = ((1-e)Pe)^*((1-e)Pe).
+
+Hence X is a projection precisely when (1-e)Pe=0, equivalently when P
+commutes with e. The Haar/Mobius linear trace formula above does not prove
+this condition for a proposed arithmetic P. No arithmetic P was produced
+here; the calculation rejects the claim that compression alone would
+provide the missing idempotence and trace comparison.
+
+Verdict for the automatic finite-corner construction: FALSE.
+
+### Positive survivor: the source forces its valuation completion
+
+There is an exact minimal-completion statement, not only a negative test.
+The closed C-invariant span of the actual v is all l2 of the nonnegative
+valuation shells. For a fixed n>=0, the finite means
+
+  (1/N) sum_{k=0}^{N-1} omega^(-nk) C^k v
+
+converge in norm to sqrt(1-r) r^(n/2) e_n. On the m-th coordinate this is
+the ordinary geometric mean of omega^(m-n); infinite order gives limit
+zero for m!=n and one for m=n. Domination by the summable squared
+coefficients of v proves norm convergence. Every shell therefore belongs
+to the generated closed subspace, and the reverse inclusion follows from
+support. In particular no finite-dimensional clock-invariant subspace
+contains v.
+
+Normalized prime dilation S f(x)=sqrt(p) f(x/p) satisfies S e_n=e_(n+1)
+and C S=omega S C. Adding S and S^{-1} to the generated orbit gives every
+integer shell, hence the complete bilateral rotation representation on
+l2(Z). Retaining covariance is possible, but the finite-place factor is
+then another infinite rotation representation. Its ordinary identity
+trace is infinite; an integer finite-dimensional trace cannot be carried
+through this replacement. Compact-unit averaging retains this valuation
+space rather than replacing it by the one-dimensional span of v.
+
+This positive survivor is proved on paper only. Per the user's instruction,
+it is not being formalized as another obstruction leaf. It does not retire
+IRK, nor does it rule out a source-specific projection satisfying the exact
+multiplicative-domain condition. It rules out obtaining that condition
+merely from the global linear Haar/Mobius trace formula or from phase
+cancellation.
+
+### Continuation target
+
+Keep the full valuation orbit in any further global-source construction.
+Do not reuse the finite unramified corner as a trace-preserving algebra
+map. The concrete remaining target is a source-specific projective
+transgression with the full Xi divisor Chern pairing and a proved trace
+comparison. Global trace-class source representations are available;
+their connection to such an idempotent is still open. No RH conclusion,
+new scientific novelty, or successful projective construction is claimed.

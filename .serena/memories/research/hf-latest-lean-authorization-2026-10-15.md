@@ -1,0 +1,7 @@
+# Latest HF steering — 2026-10-15
+
+User explicitly superseded the earlier blanket Lean freeze: “you can now also continue writing lean code for the significant milestone discoveries”. This overrides old freeze statements in `mem:research/hf-main-obstacle-only-2026-10-15` and `mem:research/hf-divisor-variance-paper-2026-10-15`.
+
+Current authorized formalization: complete quadratic prime-energy divisor decomposition Q1 (all theta index pairs and all prime powers, with unconditional absolute convergence), and its arithmetic graph structure. Paper derivation and current plan are in docs/drafts/pipeline/1-in-progress/hf-unrestricted-prime-blind-positivity-2026-10-15.md, section “Paper continuation: the full quadratic divisor lift”. Do not replace it with isolated-prime sector lemmas or helper-only claims of progress. The main HF obligation remains combined Gamma–prime–pole positivity; divisor weights are signed, so graph positivity alone does not prove RH.
+
+Stay HF. No web, external novelty checks, mathematical numerical experiments, commits, blanket builds, axioms, sorry, or heartbeat escalation. Local corpus search and targeted Lean checks are authorized. Active overarching RH goal remains incomplete. As of this update no new project Lean source has yet been written; scratch name validation underway.
