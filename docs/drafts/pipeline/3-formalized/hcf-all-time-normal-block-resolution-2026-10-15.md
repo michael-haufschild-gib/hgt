@@ -1,6 +1,6 @@
 # HCF structural research after first-contact rigidity
 
-Status: active; no new qualifying result yet.
+Status: formalized and directly audited; one unrelated repository lint failure recorded below.
 
 Objective: a further unconditional structural advance for HCF, beyond the
 completed single-window transition and finite first-contact rigidity. An
@@ -58,7 +58,48 @@ Search/conjecture ledger follows as the work progresses.
    R = Q - L(Q^2)/(2 delta) P. Then L(P^2) = L(R^2) = 0 and
    L(P R) = delta. Hence U = P + R/delta and V = P - R/delta have
    Gram matrix diag(2,-2). This is a constructive resolution of the zero
-   pivot, not a sign assumption. Paper proof closed; Lean audit underway.
+   pivot, not a sign assumption. Paper proof and focused Lean build complete.
+
+## Actual source and result
+
+`heatHankel_mapReal_eq_momentRows` expresses the actual complex heat pairing
+of a real polynomial with an arbitrary complex polynomial in its real moment
+rows. Consequently the existing actual heat-form nondegeneracy theorem proves
+`nondegenerate_heatRealMoments` without any new source premise.
+
+`hcf_normal_block_resolution` produces the unique covering block at every
+positive heat time and every rank, its next invertible head, its complete
+matrix kernel, and its exact nullity. `hcf_regular_heads_cofinal` excludes a
+terminal singular tail. `hcf_singular_section_resolution` produces, for any
+singular section, the explicit orthogonal hyperbolic plane before the next
+regular head. Each capstone takes only the positive heat time and rank.
+
+Files:
+- HTGeometry/MomentHankelNormalBlocks.lean
+- HTGeometry/MomentHankelNormalKernel.lean
+- HTGeometry/MomentHankelHyperbolicResolution.lean
+- RHTower/XiGaussianHeatNormalBlockResolution.lean
+
+All four focused `lake --old build +Module:olean` targets pass. The final
+actual-source build and warning cleanup pass. Umbrellas are wired without
+building them. All four final direct `lake env lean` audits of the actual tree
+files pass without warnings, sequentially in one foreground job. Eight
+`#print axioms` checks in `/tmp` return only `propext`, `Classical.choice`,
+and `Quot.sound`. No added axioms, hypotheses in the actual capstones,
+heartbeat changes, numerical experiments, or full/umbrella builds were used.
+
+Final corpus search finds both actual capstones in their source module.
+`git diff --check` passes for the touched scope. `scripts/formal_tools.py lint`
+completed with one unrelated error: concurrent module
+`RHTower.EvenSectorDetunedReflection` is unreachable from its umbrella. All
+four new modules here are wired; the unrelated work was preserved.
+Owned `/tmp/hcf3*` proof probes, search results and audit logs were removed
+after their results were recorded. No owned build or search process remains.
+
+Scope: this closes the singular-pivot obstruction in finite-section geometry,
+including arbitrary singular heat times and multiple-dimensional kernels.
+It does not prove full block-inertia counting or select the RH/source-positive
+branch. No such source claim is hidden in a hypothesis of the capstones.
 
 Corpus searches used the documented research command in deep mode, followed
 by exhaustive focused Lean-source searches. The normal-block search was

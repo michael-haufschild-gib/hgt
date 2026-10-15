@@ -2,7 +2,7 @@
 
 **Scope:** dead = stated mechanism impossible, circular or nonselective. Survivor = retained theorem; **Needs** = changed problem outside obstruction. No-go for a shortcut does not retire its live route.
 
-**Lookup:** [36 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
+**Lookup:** [37 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Live routes/candidates: [frontier map](rh-current-frontier-map.md#find-a-route).
 
 **Evidence:** codes as in frontier map; [L] cited Lean declarations, no fresh compilation; [L-source] committed but umbrella-unwired/unaudited here; [P] paper only; REF = unlocated legacy evidence, unverified here. Conditional, model-only and class restrictions retained.
 
@@ -106,6 +106,15 @@
 - **Survivor [L]:** Arbitrary ferromagnetic graphs satisfy Lee–Yang; centred convergence in law, moments or low-frequency real-rooted approximation to `Ξ` implies RH. Slow-field producers require vanishing free variance and interaction-driven magnetization. Field-density and first-zero budgets remain necessary.
 - **Needs:** Source-faithful centred critical graph sequence outside harmonic/anchored classes; W1C.
 - **E:** R:PrimeIsingTreeBalancedCentering; R:LeeYangResolutionLaw; R:LeeYangPrimeStabilityNoGo; R:RiemannSiegelLeeYangChain; R:GammaSiteLeeYangChainXiObstruction; R:LeeYangProducerFieldDensity; R:ComplexFugacityChainFieldDensity; R:LeeYangIsingGraphDatum; R:IsingGraphCenteringLaw; R:IsingHarmonicMagnetizationNoGo; R:IsingSlowFieldCriticality; R:IsingLawConvergenceRH; R:IsingMomentConvergenceRH; R:FerromagneticInequalitiesLeeYangBlind.
+
+<a id="kr-srp"></a>
+### KR-SRP — Super-residue full Weil cone
+
+- **Path:** Full Weil-positive weights at pole weights `β>1` approaching 1 → compact limit at `β=1` → RH.
+- **Obstruction [L]:** `WeilPositiveAt β λ` forces `β=1` for every real weight sequence; `PrimeBlindPositiveAt β` also forces `β=1`. Thus the proposed super-residue full cones are empty, not merely lacking a producer.
+- **Survivor [L]:** Pole weight one is rigid in the full Weil cone. The even-only `β>1` question is different and remains [EWU](rh-current-frontier-map.md#ewu); no-go for full positivity does not settle that parity-restricted cone.
+- **Needs:** Even-sector source/uniqueness mechanism at `β>1`, or critical-weight PBAP; no full-cone deformation in pole weight is available.
+- **E:** R:WeilPoleWeightForcedOne; R:EvenSectorDoublePoleExclusion; R:OddSectorPoleWeightAtMostOne.
 
 <a id="kr-fpr"></a>
 ### KR-FPR — Fixed finite passive realization

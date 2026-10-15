@@ -1,6 +1,7 @@
-# Global equivariant source splitting
+# Global equivariant source splitting and coherent resolvents
 
-Status: all four direct leaf audits passed; final axiom and repository lint gates pending.
+Status: formalized. Four direct leaf audits, 18 principal axiom audits, local
+mathlib name audit, and final repository lint passed.
 
 ## Objective
 
@@ -67,6 +68,8 @@ observable operators, with their algebraic relations, to actual source classes.
   or that the chosen splitting is canonical, continuous, or positive.
 - Infinite observable operators must act on the actual comparison image. This
   theorem does not manufacture arbitrary entire-function source admission.
+- No continuous dilation action, positive metric, or trace comparison is deduced
+  from this algebraic splitting.
 - All final source statements must be unconditional. Polynomial factorization,
   divisibility, finite-mode disjointness, and extension are proof obligations.
 - No numerical experiments, web searches, new axioms, heartbeat changes, full
@@ -104,3 +107,46 @@ into RHTower; run formal lint; remove only owned scratch artifacts.
   All off-divisor shifts on the actual global source space are bijective, their
   inverses satisfy the exact resolvent identity, and the algebraic spectrum is
   exactly `{rho | xi rho = 0}`. All four leaves are wired into RHTower.
+
+## Contribution and changed frontier
+
+The unknown global invisible sector need not be proved zero before constructing
+a faithful, generator-compatible actual source model for every admitted
+observable datum. Its causal divisibility makes it an injective complex-polynomial
+module. Applying extension after quotienting out the finite causal span splits
+off that sector while preserving every original Hedenmalm causal packet.
+
+The resulting source subspace is genuinely global: the projected log-Gaussian
+is outside every finite causal range. Its full algebraic spectrum is the actual
+Xi zero set. Every homogeneous finite-product equation has precisely its finite
+resonant packet of solutions; off-divisor equations have unique solutions, and
+the solution operators satisfy the resolvent identity. The whole endomorphism
+algebra of the actual comparison image now acts faithfully on this invariant
+actual source subspace. This removes the algebraic global extension obstruction;
+the remaining questions concern topology, symmetry-compatible choices, metric,
+and trace, rather than existence of an equivariant global source section.
+
+## Final audit record
+
+For each of the four leaves, the final direct command was
+`lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<leaf>.olean GaloisForLFunctions/RHTower/<leaf>.lean`.
+Every command exited 0 with no warnings. No full or umbrella build was run.
+
+A separate scratch audit imported the final spectrum leaf, checked the main
+statements, and printed axioms of 18 principal results. Every result used only
+`propext`, `Classical.choice`, and `Quot.sound`; no new axiom or admitted proof.
+The scratch name audit also exited 0. `git diff --check` passed.
+
+The first repository lint output reported three concurrently created HTGeometry
+modules missing umbrella imports. Capturing the complete lint output again after
+those external changes settled exited 0, with no errors or diagnostics on the
+new leaves. Existing large-file warnings remain. No unrelated module was edited.
+
+Search used the actual Lean corpus and installed dependencies. The main deep
+search had complete inventory coverage; compiler metadata was often source-only.
+The Gaussian search returned useful hits with a partial local-judge diagnostic.
+All used mathematical inputs were inspected in source and checked by Lean.
+No numerical experiments, web search, or external novelty audit was used.
+
+Owned scratch audits, search outputs, and lint capture are removed at completion;
+the four current compiled leaf artifacts remain for downstream imports.
