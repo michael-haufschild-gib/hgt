@@ -22,7 +22,14 @@ Use current Lean sources and corpus search. No external search, numerical experi
 
 ## Conjecture ledger
 
-Pending: investigate how odd positivity constrains the missing even sector without introducing an independent positivity hypothesis.
+1. **Unrestricted parity transfer by translating odd tests — rejected.** The current odd cosine-shift measure lives on `rho`, with `z^2 = rho^2 - 2`. Its spectral square is `z^2 A A#`. Dividing by `z^2` to recover even positivity changes sign on the imaginary segment. This is a structural sign obstruction, not a missing decay estimate. Source: `OddSectorPoleFreeResonatorPositivity`, especially `specSq_oddLift` and the final resonator theorem.
+2. **Reuse the full twisted-arc blind certificate unchanged — rejected.** The existing even null argument integrates a positive lift against an even representing measure. In the odd representation the same expression acquires `1/z^2`; positive real and imaginary contributions can balance. No vanishing follows.
+3. **Replace each shifted-Gamma test by an odd test preserving its spectral modulus — false.** At frequency zero an odd transform vanishes, whereas `XiC(0) * shiftedGammaPoly j 0` is nonzero. Every nonzero nonnegative diagonal mixture retains that constant mode. This does not refute correlated, off-diagonal combinations or a different null construction.
+4. **Next conjecture:** a correlated Gamma covariance can annihilate the constant mode while retaining prime blindness and the Xi factor. First open core: construct the covariance with the required two constraints; neither may be assumed as a new producer premise.
+
+## Search limitations
+
+The first acronym search found no OWU declarations. Deep natural-language searches returned partial results and weak semantic matches; exact lexical queries and source reads recovered the actual odd spectral machinery. The indexed corpus includes stale/uncompiled entries, so source discovery is not a Lean audit. Serena symbol lookup rejects Lean paths as ignored; use exact `rg` discovery and source reads for Lean.
 
 ## Audit
 

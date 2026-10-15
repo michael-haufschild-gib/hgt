@@ -29,3 +29,30 @@ the completed prime--Gamma source. Ground-generator classification allows
 derivative chains, so generator existence alone does not prove simplicity.
 
 Search/conjecture ledger follows as the work progresses.
+
+## Conjecture loop
+
+1. Ground-generator existence might force simplicity. Rejected: the actual
+   polynomial-generator theorem allows derivative chains. Boundary-source
+   nonvanishing on the whole constrained sector does not imply nonvanishing
+   or injectivity on the ground space. No valid source argument closes this.
+2. At every heat time, regular Hankel heads should be cofinal, and every gap
+   should have an exact polynomial-kernel classification. Paper mechanism:
+   after a regular head of size n, take its canonical monic admission P.
+   Nondegeneracy gives a first j with L(X^j P) nonzero; orthogonality gives
+   j >= n. Set d = j - n + 1. Then the block X^r P, 0 <= r < d,
+   is orthogonal to the old head and has a nonzero constant anti-diagonal,
+   with zero entries before it. For 0 <= k <= d, the kernel at size n+k
+   consists exactly of Pq with deg q < min(k,d-k). Polynomial division and
+   the highest coefficient of q prove both directions. Thus n+d is the
+   next regular head, every intervening head is singular, and recursion
+   produces a cofinal regular ladder without a generic-time assumption.
+   This is an exact classification, not a positivity receiver or estimate.
+   Formalization in progress. Full inertia and source orientation are not
+   claimed by this argument.
+
+Corpus searches used the documented research command in deep mode, followed
+by exhaustive focused Lean-source searches. The normal-block search was
+partial but its file inventory complete; no existing normal-index/kernel-gap
+classification was found. Ground search completed. Source declarations are
+checked directly rather than trusting stale compiler-index metadata.
