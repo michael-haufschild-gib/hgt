@@ -1099,3 +1099,163 @@ avoid them. The corpus was checked. Remain on the compensated first trace,
 with the unbounded endpoint trace excluded as a purported proof method.
 No new Lean module, build, axiom audit, lint or umbrella change this cycle.
 Full RH objective stays active; no external blocker exists.
+
+## Source differentiation attack on the infinite limit
+
+Revalidation found that the preceding continuous pole compensation repeats
+the earlier Ein/pole-filled construction recorded in the route-dr
+entire-pole-counterterm memory. It is not a new mechanism. The explicit
+finite compatible roots remain valid, but their unresolved normality is
+the same first-trace problem. Do not restart that normalization as a new
+research cycle. No certificate progress in the preceding turn.
+
+Tested a source-level alternative within DR: make the actual boundary
+image stable under differentiation on Omega. This would lower the order
+of a hypothetical positive-order zero and contradict preservation of its
+full divisor. The candidate arithmetic lift is explicit, rather than
+assuming stability of the image.
+
+For a Schwartz cap source f, on x>0 define
+
+    B f(x) = sum_{n>=1} f(n*x),
+    V f(x) = sum_{n>=1} Lambda(n)*f(n*x),
+    nabla f(x) = log(x)*f(x) - V f(x).
+
+The sums converge absolutely at each fixed positive x, locally uniformly
+away from 0. Schwartz decay also permits the double sum below. The exact
+divisor identity sum_{d|k} Lambda(d)=log(k) gives
+
+    B(V f)(x) = sum_{k>=1} log(k)*f(k*x),
+    B(nabla f)(x) = log(x)*B f(x).
+
+This is an actual physical source identity. It does not say that nabla f
+is a Meyer cap or that its Mellin transform is holomorphic on Omega.
+On Re(s)>1, absolute Mellin summation gives
+
+    M(nabla f)(s) = (M f)'(s) + (zeta'/zeta)(s)*M f(s).
+
+For the exact Xi cap, M f=C is the explicit nonzero Gamma completion
+factor on Omega. Thus the meromorphic continuation of this source
+transform is C' + C*zeta'/zeta. At a hypothetical zero rho of order m,
+its residue is m*C(rho), which is nonzero. Consequently the proposed
+source admission is exactly the unresolved pole-removal issue; it does
+not follow from pointwise convergence of the physical dilation sum.
+
+The finite-shift form is equally explicit. For fixed t and x>0,
+
+    h_t(x) = sum_{n>=1} mu(n)*(n*x)^t*B f(n*x)
+
+converges by rapid decay at infinity, and divisor cancellation yields
+B h_t=x^t B f. In an absolute-convergence right half-plane its Mellin
+transform is Xi(s+t)/zeta(s). A rightward shift large enough to put s+t
+in Re>1 makes the numerator nonzero, but no holomorphic Mellin admission
+on Omega has been proved. This is the infinitesimal/finite source version
+of the existing scalar translation conductor obstruction, not a repair.
+
+Verdict: BRIDGE, with the tempting inference from pointwise source
+convergence to holomorphic Mellin admission rejected. No positive
+half-strip convergence theorem was obtained. The exact algebraic source
+identity is background for the attack, not a claimed new RH rung, and
+will not be turned into auxiliary Lean code.
+
+Corpus evidence this cycle: ThetaNaturalScheduleEulerOscillation.lean
+1-135 confirms the raw natural Euler schedule's oscillating envelope;
+Sieve/VonMangoldtPerron.lean 1-60 verifies the exact Lambda Dirichlet
+identity only on Re>1. PrimeRotationXiSourceTransport declarations and
+comments confirm the existing meromorphic conductor/zero-pole transport
+classification. The first 110 lines of the new WeilPhiDoobDivisorEnergy
+file give a divisor-energy coordinate representation, not a source
+admission theorem; no claim about its full result is made and no peer
+file was changed.
+
+Two owned deep searches finished: prime-tail normality (session 29897)
+and logarithmic source derivation (90958), both exit 0, partial=false,
+errors=[]. Inventory complete; compiler coverage mostly pending/stale.
+Available hits provide Mellin identities and conditional continuation,
+not the missing admission. No exhaustive absence claim. No external
+research, numerical computation, Lean build, or production edit.
+
+Anti-theatre: no scientific novelty or zero-free certificate this cycle;
+the compensation was rediscovered and differentiation re-expresses the
+same obstruction. Avoid both as purported solved steps next time.
+Anti-laziness: the actual infinite source and its Mellin attachment were
+attacked directly; no effort estimate was used to skip work. Next work
+must establish actual local convergence/admission, not prove another
+equivalent criterion. DR and the full RH goal stay active and unproved.
+
+## Causal-division pullback and the two endpoint tails
+
+Previous turn classified as no progress on the certificate. Current tree
+now contains DeningerMeyerCausalDivision.lean (272 lines when read): it
+constructs a causal inverse of the target Euler generator at a vanishing
+Mellin moment, with all-weight decay and all derivatives retained. Read
+the entire source. This is a genuine target-space construction, but the
+theorem does not assert membership in the Poisson boundary image. No new
+compilation or axiom audit of that peer-owned working file was run here.
+
+Tested whether this new construction provides the missing infinite source
+limit. The pullback can be calculated explicitly. Let f be the exact Xi
+cap, C=M f, and rho in Omega. On the positive ray put
+
+    u_R(x) = x^(-rho) * integral_x^infinity t^(rho-1)*f(t) dt,
+    u_L(x) = -x^(-rho) * integral_0^x t^(rho-1)*f(t) dt.
+
+Both solve (-x*d/dx-rho)u=f, and
+
+    u_R(x)-u_L(x) = C(rho)*x^(-rho).
+
+C(rho) is nonzero on Omega. The right solution decays rapidly at
+infinity but contains C(rho)*x^(-rho) at zero. The left solution is
+smooth at zero but contains -C(rho)*x^(-rho) at infinity. Neither is a
+Schwartz cap. Their Mellin integrals give the same meromorphic expression
+C(s)/(s-rho), in their respective strips of convergence; changing causal
+orientation moves the nonzero homogeneous term to the other endpoint.
+
+The literal positive dilation sum of u_R does converge for each x>0.
+Absolute tail Fubini gives
+
+    B u_R(x) = x^(-rho) * integral_x^infinity t^(rho-1)*B f(t) dt.
+
+At a hypothetical Xi zero rho, the right-hand side is precisely the
+all-weight target division supplied by the new source file. Thus the
+target division really does have a pointwise Poisson representation, but
+its displayed preimage is outside the admissible source class. Its
+Mellin pole cancels one order of the Xi zero. This is not an argument for
+absence of rho.
+
+The Hilbert resolvent does not repair the issue: for Re(rho)>1/2, u_L is
+square integrable (its nonzero power tail is at infinity), whereas u_R
+is not square integrable at zero. The L2 branch still has a Mellin pole
+at rho, and its ordinary positive dilation series has a non-summable
+leading n^(-rho) tail when Re(rho)<1. A regularized Poisson action is not
+the cap boundary action used by the divisor-annihilation theorem.
+
+Verdict: using target-space causal division as automatic boundary
+division is CIRCULAR. The exact target construction is retained; no
+claim that it supplies an arithmetic root or localized boundary-square
+factorization. This is an applicability audit, not a new no-go theorem
+or a retired DR route. Do not formalize the elementary tail calculation
+as a substitute for the requested convergence proof.
+
+Also read the current XiWardCubicParabolicSourceLanding.lean (194 lines)
+and HTGeometry/ParabolicCauchyAveraging.lean (145 lines). Their parabolic
+average retains the endpoint multiplicity and kills the moving pole.
+The Euler-arithmetic equality is stated on the absolute Euler chamber;
+the global object uses the continued logarithmic derivative. It detects
+the retained charge, not its vanishing. No uniform arithmetic
+cutoff/limit interchange on Omega has been supplied by these results.
+
+Searches 19872 (causal-division source) and 93953 (causal pullback) both
+finished with exit 0, partial=false, errors=[]. Inventory complete and
+compiler metadata mostly pending/stale. Hits include the new causal
+decay theorem, existing range classification, and specified closed-range
+theorems. None of those statements identifies the divided target as a
+Poisson boundary. No exhaustive missing-proof claim is made.
+
+Anti-theatre: no new scientific result, no half-strip certification,
+and no Lean proof this cycle. Current source constructions were checked
+for the actual missing implication, not treated as a solved producer.
+Anti-laziness: the literal pullback and both endpoint choices were worked
+out rather than replacing admission by an assumption. No effort-based
+deferral, external search, numerical work, peer edit, or auxiliary Lean
+module. Actual root/source convergence remains the active hard task.

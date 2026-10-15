@@ -173,7 +173,7 @@ private theorem integrable_fiber {N : ℕ} (hN : 0 < N) : Integrable (fiber N) :
 /-- One divisor edge, with both theta indices retained in the product index. -/
 def edge (v : ℝ → ℝ) (m d n : ℕ) (u : ℝ) : ℝ :=
   ArithmeticFunction.vonMangoldt d * fiber (m * d * n) u *
-    (v (u - Real.log m) - v (u - Real.log (m * d))) ^ 2
+    (v (u - Real.log m) - v (u - Real.log ((m * d : ℕ) : ℝ))) ^ 2
 
 private theorem cusp_pair_to_fiber {m d n : ℕ} (hm : 0 < m) (hd : 0 < d) (x : ℝ) :
     cuspTerm riemannCuspPoly m x * cuspTerm riemannCuspPoly n (Real.log d - x) =
@@ -193,7 +193,8 @@ private theorem cusp_pair_to_fiber {m d n : ℕ} (hm : 0 < m) (hd : 0 < d) (x : 
 private theorem continuous_edge {v : ℝ → ℝ} (hv : Continuous v) (m d n : ℕ) :
     Continuous (edge v m d n) := by
   unfold edge
-  have h : Continuous (fun u => v (u - Real.log m) - v (u - Real.log (m * d))) := by fun_prop
+  have h : Continuous (fun u => v (u - Real.log m) -
+      v (u - Real.log ((m * d : ℕ) : ℝ))) := by fun_prop
   exact (continuous_const.mul (continuous_fiber _)).mul (h.pow 2)
 
 private theorem difference_sq_le {v : ℝ → ℝ} {M : ℝ} (_hM : 0 ≤ M)
@@ -263,14 +264,15 @@ private theorem edge_bound {v : ℝ → ℝ} {M : ℝ} (hM : 0 ≤ M)
     have hdN' : ((d : ℕ) : ℝ) ≤ N := by exact_mod_cast hdN
     linarith [ArithmeticFunction.vonMangoldt_le_log (n := (d : ℕ))]
   have hdif := difference_sq_le hM hv (u - Real.log (m : ℕ))
-    (u - Real.log ((m : ℕ) * (d : ℕ)))
+    (u - Real.log (((m : ℕ) * (d : ℕ) : ℕ) : ℝ))
   have hpoly := fiber_bound hN u
+  have henv := envelope_nonneg u
   have hdec : (N : ℝ) ^ 5 * Real.exp (-Real.pi * N) ≤
       seqBound m * seqBound d * seqBound n := by
     simpa only [N, Nat.cast_mul] using product_decay_le m d n
   rw [edge, norm_mul, norm_mul, Real.norm_of_nonneg hΛ0,
     Real.norm_of_nonneg (sq_nonneg (v (u - Real.log (m : ℕ)) -
-      v (u - Real.log ((m : ℕ) * (d : ℕ)))))]
+      v (u - Real.log (((m : ℕ) * (d : ℕ) : ℕ) : ℝ))))]
   calc
     _ ≤ ((N : ℝ) * (polyBound ^ 2 * (N : ℝ) ^ 4 * Real.exp (-Real.pi * N) * envelope u)) *
         (4 * M ^ 2) :=
@@ -321,7 +323,8 @@ private def chainEquiv : (Σ N : ℕ+, Chains N) ≃ (ℕ+ × ℕ+) × ℕ+ wher
     rintro ⟨⟨N, hN⟩, ⟨⟨⟨k, n⟩, hkn⟩, ⟨⟨m, d⟩, hmd⟩⟩⟩
     have h1 := (Nat.mem_divisorsAntidiagonal.mp hkn).1
     have h2 := (Nat.mem_divisorsAntidiagonal.mp hmd).1
-    dsimp only at h1 h2
+    change k * n = N at h1
+    change m * d = k at h2
     subst k
     subst N
     rfl
@@ -336,20 +339,35 @@ private theorem hasSum_chains {F : ℕ → ℕ → ℕ → ℝ}
   have hh := (chainEquiv.hasSum_iff (f := f)).mpr hF.hasSum
   apply hh.sigma
   intro N
-  simpa only [Chains, f, Function.comp_apply, chainEquiv, Equiv.coe_fn_mk,
-    Fintype.sum_sigma, Finset.univ_eq_attach, Finset.sum_attach] using
-    (hasSum_fintype (fun c : Chains N => f (chainEquiv ⟨N, c⟩)))
+  have hsum :
+      (∑ c ∈ (N : ℕ).divisorsAntidiagonal.attach,
+        ∑ q ∈ c.val.1.divisorsAntidiagonal.attach, F q.val.1 q.val.2 c.val.2) =
+      ∑ c ∈ (N : ℕ).divisorsAntidiagonal, ∑ q ∈ c.1.divisorsAntidiagonal, F q.1 q.2 c.2 := by
+    calc
+      _ = ∑ c ∈ (N : ℕ).divisorsAntidiagonal.attach,
+          ∑ q ∈ c.val.1.divisorsAntidiagonal, F q.1 q.2 c.val.2 := by
+        apply Finset.sum_congr rfl
+        intro c _
+        exact c.val.1.divisorsAntidiagonal.sum_attach (fun q => F q.1 q.2 c.val.2)
+      _ = _ := (N : ℕ).divisorsAntidiagonal.sum_attach
+        (fun c => ∑ q ∈ c.1.divisorsAntidiagonal, F q.1 q.2 c.2)
+  have hfin := hasSum_fintype (fun c : Chains N => f (chainEquiv ⟨N, c⟩))
+  simp only [Chains, f, chainEquiv, Equiv.coe_fn_mk, PNat.mk_coe,
+    Fintype.sum_sigma, Finset.univ_eq_attach] at hfin
+  rw [hsum] at hfin
+  exact hfin
 
 private theorem divisor_integrand_eq (v : ℝ → ℝ) (N : ℕ) (u : ℝ) :
     fiber N u * divisorEnergy N (fun m => v (u - Real.log m)) =
       ∑ c ∈ N.divisorsAntidiagonal, ∑ q ∈ c.1.divisorsAntidiagonal,
         edge v q.1 q.2 c.2 u := by
-  rw [Nat.sum_divisorsAntidiagonal]
+  rw [Nat.sum_divisorsAntidiagonal (fun k n =>
+    ∑ q ∈ k.divisorsAntidiagonal, edge v q.1 q.2 n u)]
   unfold divisorEnergy
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k hk
-  rw [Nat.sum_divisorsAntidiagonal, Finset.mul_sum]
+  rw [Nat.sum_divisorsAntidiagonal (fun m d => edge v m d (N / k) u), Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro m hm
   rw [edge, Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors hm),
@@ -429,18 +447,31 @@ private theorem integral_prime_eq {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ
     (∫ u, phiDoobPrimeJump v d u) =
       ∑' p : ℕ+ × ℕ+, ∫ u, edge v p.1 d p.2 u := by
   have hs := (primeFirstEquiv.summable_iff).mpr (summable_integral_norm_edge hv hM hvM)
+  change Summable (fun q : ℕ+ × (ℕ+ × ℕ+) => ∫ u, ‖edge v q.2.1 q.1 q.2.2 u‖) at hs
   have hd : Summable (fun p : ℕ+ × ℕ+ =>
       ∫ x, ‖edge v p.1 d p.2 (x + Real.log (p.1 : ℕ))‖) := by
-    simpa only [primeFirstEquiv, Equiv.coe_fn_mk, Function.comp_apply,
-      integral_add_right_eq_self] using hs.prod_factor d
+    exact (hs.prod_factor d).congr (fun p =>
+      (integral_add_right_eq_self (fun u => ‖edge v p.1 d p.2 u‖)
+        (Real.log (p.1 : ℕ))).symm)
   have hi := integral_tsum_of_summable_integral_norm
     (fun p : ℕ+ × ℕ+ => (integrable_edge hv hM hvM p.1 d p.2).comp_add_right
       (Real.log (p.1 : ℕ))) hd
   simp_rw [tsum_shifted_edge_eq, integral_add_right_eq_self] at hi
   simpa only [sub_eq_add_neg, integral_add_right_eq_self] using hi.symm
 
+/-- The complete original prime-jump series converges for every bounded continuous test. -/
+theorem summable_integral_primeJump {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
+    (hM : 0 ≤ M) (hvM : ∀ u, |v u| ≤ M) :
+    Summable (fun d : ℕ+ => ∫ u, phiDoobPrimeJump v d u) := by
+  have hs : Summable (fun p : (ℕ+ × ℕ+) × ℕ+ => ∫ u, edge v p.1.1 p.1.2 p.2 u) :=
+    (summable_integral_norm_edge hv hM hvM).of_norm_bounded
+      (fun p => norm_integral_le_integral_norm _)
+  have hp := primeFirstEquiv.summable_iff.mpr hs
+  change Summable (fun q : ℕ+ × (ℕ+ × ℕ+) => ∫ u, edge v q.2.1 q.1 q.2.2 u) at hp
+  simpa only [integral_prime_eq hv hM hvM] using hp.prod
+
 /-- The complete prime Doob energy is an absolutely convergent sum of divisor-graph energies.
-Both theta indices, all rational mixed terms, and every prime power occur in this identity. -/
+Every pair of theta indices and every prime power occur in this identity. -/
 theorem primeEnergy_divisor_hasSum {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
     (hM : 0 ≤ M) (hvM : ∀ u, |v u| ≤ M) :
     HasSum (fun N : ℕ+ => ∫ u, fiber N u * divisorEnergy N (fun m => v (u - Real.log m)))
@@ -449,13 +480,16 @@ theorem primeEnergy_divisor_hasSum {v : ℝ → ℝ} (hv : Continuous v) {M : �
     (summable_integral_norm_edge hv hM hvM).of_norm_bounded
       (fun p => norm_integral_le_integral_norm _)
   have hp := primeFirstEquiv.summable_iff.mpr hs
+  change Summable (fun q : ℕ+ × (ℕ+ × ℕ+) => ∫ u, edge v q.2.1 q.1 q.2.2 u) at hp
   have ht : (∑' d : ℕ+, ∫ u, phiDoobPrimeJump v d u) =
       ∑' p : (ℕ+ × ℕ+) × ℕ+, ∫ u, edge v p.1.1 p.1.2 p.2 u := by
     simp_rw [integral_prime_eq hv hM hvM]
     rw [← hp.tsum_prod]
-    exact primeFirstEquiv.tsum_eq _
+    exact primeFirstEquiv.tsum_eq
+      (fun p : (ℕ+ × ℕ+) × ℕ+ => ∫ u, edge v p.1.1 p.1.2 p.2 u)
   rw [ht]
-  simpa only [integral_divisor_eq hv hM hvM] using hasSum_chains hs
+  simpa only [integral_divisor_eq hv hM hvM] using
+    hasSum_chains (F := fun m d n => ∫ u, edge v m d n u) hs
 
 /-- Exact quadratic divisor decomposition of the full prime term. -/
 theorem primeEnergy_eq_tsum_divisorEnergy {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
@@ -463,6 +497,49 @@ theorem primeEnergy_eq_tsum_divisorEnergy {v : ℝ → ℝ} (hv : Continuous v) 
     (∑' d : ℕ+, ∫ u, phiDoobPrimeJump v d u) =
       ∑' N : ℕ+, ∫ u, fiber N u * divisorEnergy N (fun m => v (u - Real.log m)) :=
   (primeEnergy_divisor_hasSum hv hM hvM).tsum_eq.symm
+
+/-- The full quadratic identity on the compactly supported test class. -/
+theorem primeEnergy_eq_tsum_divisorEnergy_compact {v : ℝ → ℝ}
+    (hv : Continuous v) (hvc : HasCompactSupport v) :
+    (∑' d : ℕ+, ∫ u, phiDoobPrimeJump v d u) =
+      ∑' N : ℕ+, ∫ u, fiber N u * divisorEnergy N (fun m => v (u - Real.log m)) := by
+  obtain ⟨M, hM⟩ := hvc.exists_bound_of_continuous hv
+  exact primeEnergy_eq_tsum_divisorEnergy hv ((norm_nonneg (v 0)).trans (hM 0))
+    (fun u => by simpa only [Real.norm_eq_abs] using hM u)
+
+private theorem primeEnergy_nat_eq_pnat {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
+    (hM : 0 ≤ M) (hvM : ∀ u, |v u| ≤ M) :
+    (∑' d : ℕ, ∫ u, phiDoobPrimeJump v d u) = ∑' d : ℕ+, ∫ u, phiDoobPrimeJump v d u := by
+  have hs := Equiv.pnatEquivNat.symm.summable_iff.mpr (summable_integral_primeJump hv hM hvM)
+  change Summable (fun d : ℕ => ∫ u, phiDoobPrimeJump v (d + 1) u) at hs
+  have hz : (∫ u, phiDoobPrimeJump v 0 u) = 0 := by
+    simp only [phiDoobPrimeJump, vonMangoldtAtom, show ¬2 ≤ (0 : ℕ) by omega, if_false,
+      zero_mul, integral_zero]
+  rw [tsum_eq_zero_add' hs, hz, zero_add]
+  exact Equiv.pnatEquivNat.symm.tsum_eq (fun d : ℕ+ => ∫ u, phiDoobPrimeJump v d u)
+
+/-- The divisor decomposition with exactly the natural-number prime sum used by the Doob form. -/
+theorem primeEnergy_nat_eq_tsum_divisorEnergy {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
+    (hM : 0 ≤ M) (hvM : ∀ u, |v u| ≤ M) :
+    (∑' d : ℕ, ∫ u, phiDoobPrimeJump v d u) =
+      ∑' N : ℕ+, ∫ u, fiber N u * divisorEnergy N (fun m => v (u - Real.log m)) :=
+  (primeEnergy_nat_eq_pnat hv hM hvM).trans (primeEnergy_eq_tsum_divisorEnergy hv hM hvM)
+
+/-- The exact prime term in the HF Dirichlet criterion, expressed on divisor graphs. -/
+theorem primeEnergy_nat_eq_tsum_divisorEnergy_compact {v : ℝ → ℝ}
+    (hv : Continuous v) (hvc : HasCompactSupport v) :
+    (∑' d : ℕ, ∫ u, phiDoobPrimeJump v d u) =
+      ∑' N : ℕ+, ∫ u, fiber N u * divisorEnergy N (fun m => v (u - Real.log m)) := by
+  obtain ⟨M, hM⟩ := hvc.exists_bound_of_continuous hv
+  exact primeEnergy_nat_eq_tsum_divisorEnergy hv ((norm_nonneg (v 0)).trans (hM 0))
+    (fun u => by simpa only [Real.norm_eq_abs] using hM u)
+
+/-- Positivity of the complete signed divisor average follows from the original prime jumps. -/
+theorem tsum_divisorEnergy_nonneg {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
+    (hM : 0 ≤ M) (hvM : ∀ u, |v u| ≤ M) :
+    0 ≤ ∑' N : ℕ+, ∫ u, fiber N u * divisorEnergy N (fun m => v (u - Real.log m)) := by
+  rw [← primeEnergy_eq_tsum_divisorEnergy hv hM hvM]
+  exact tsum_nonneg (fun d => integral_nonneg (fun u => phiDoobPrimeJump_nonneg v d u))
 
 end
 

@@ -69,7 +69,7 @@ No web or novelty checks; no numerical mathematical experiments; no new Lean sou
 
 ### Paper continuation: the full quadratic divisor lift
 
-This is a calculation toward the main sign, not a positivity proof. Following the latest user instruction, its full quadratic identity is now the significant milestone being formalized. The linear divisor rearrangement already exists in `RiemannKernelTransformInjectivity.lean` (`cuspTerm_add_log`, `tsum_shift_cuspSeries_eq`). It must not be reported as a new advance.
+This is a calculation toward the main sign, not a proof of full Weil positivity. Following the latest user instruction, its full quadratic prime identity (Q1) has now been formalized. The linear divisor rearrangement already exists in `RiemannKernelTransformInjectivity.lean` (`cuspTerm_add_log`, `tsum_shift_cuspSeries_eq`). It must not be reported as a new advance.
 
 Write
 
@@ -126,15 +126,29 @@ where the actual source defines `omega(x)=exp(-x/2)/(1-exp(-2*x))`. The polar ju
 \tag{Q3}
 \]
 
-Main proof obligation remains the sign of the **combined** expression (Q3), or the weaker existing odd-sector gap `E_arch+E_prime >= mu(v^2)`. The next paper step must use Poisson symmetry to combine the divisor variances with the continuous cofactor term and preserve the known Xi-divisible radical. Latest user instruction authorizes formalizing significant milestones; the complete quadratic decomposition, rather than an isolated finite graph lemma, is the current Lean target. No positivity theorem, RH proof, or novelty claim is made here.
+Main proof obligation remains the sign of the **combined** expression (Q3), or the weaker existing odd-sector gap `E_arch+E_prime >= mu(v^2)`. The next paper step must use Poisson symmetry to combine the divisor variances with the continuous cofactor term and preserve the known Xi-divisible radical. Latest user instruction authorizes formalizing significant milestones; the complete quadratic prime decomposition is now verified. Q2's Cartesian-product variance formula and Q3's combined formula remain paper statements. No full Weil positivity theorem, RH proof, or novelty claim is made here.
 
 Search/read state: `/tmp/hf-theta-divisor-search.json`, `/tmp/hf-rational-gram-energy-search.json`, and `/tmp/hf-theta-divisor-quadratic-search.json` finished; all report `partial=false`, but semantic coverage is unavailable and compiler metadata is mostly stale/pending. Actual sources additionally inspected: `WeilWorkPBAPGramPackets.lean` (arbitrary PSD null Gram matrices retain rational cross terms), `ThetaCuspPrimeArchSourceEquation.lean` (literal source equation), and `RiemannKernelTransformInjectivity.lean` (existing divisor rearrangement). No numerical mathematical computation.
 
-Formalization checkpoint after latest authorization: `formal/GaloisForLFunctions/RHTower/WeilPhiDoobDivisorEnergy.lean` is being written. Q1 is expressed in logarithmic coordinates, with `fiber N u = cuspTerm R 1 u * cuspTerm R N (-u)` and test values `v(u-log m)`. The full theorem is not yet present or verified. Current analytic subproof establishes a common integrable envelope
+Verified formalization: `formal/GaloisForLFunctions/RHTower/WeilPhiDoobDivisorEnergy.lean`. Q1 is expressed in logarithmic coordinates, with `fiber N u = cuspTerm R 1 u * cuspTerm R N (-u)` and test values `v(u-log m)`. The proof establishes the common integrable envelope
 
 `|fiber N u| <= (4*pi^2+6*pi)^2 * N^4 * exp(-pi*N) * (2+exp(2*u)+exp(-2*u))*exp(-pi*cosh(2*u))`.
 
-This proves absolute convergence for bounded continuous tests before any triple-series regrouping. The planned finite-fiber equivalence sends `(m,d,n)` to `N=m*d*n`, `(k,n)=(m*d,n)`, `(m,d)`, using two divisor antidiagonals. Finish the complete identity before treating this as a formalized milestone. Targeted source checks only; no umbrella build or heartbeat increase.
+This proves absolute convergence for bounded continuous tests before any triple-series regrouping. The verified finite-fiber equivalence sends `(m,d,n)` to `N=m*d*n`, `(k,n)=(m*d,n)`, `(m,d)`, using two divisor antidiagonals. The theorem retains every theta-index pair and every prime power.
+
+Public results in namespace `RHTower.PhiDivisorEnergy`:
+
+- `summable_integral_norm_edge`: absolute convergence of all three indices before regrouping.
+- `summable_integral_primeJump`: convergence of the original prime-jump integrals.
+- `primeEnergy_divisor_hasSum`: the full divisor-integral series has the original prime energy as its sum.
+- `primeEnergy_nat_eq_tsum_divisorEnergy_compact`: Q1 with exactly the natural-number prime sum used by the HF Dirichlet criterion, for every real continuous compactly supported test.
+- `tsum_divisorEnergy_nonneg`: positivity of the complete signed divisor average, inherited from the actual prime energy. This does not supply the missing Gamma–prime–pole lower bound.
+
+Validation completed: targeted `lake env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilPhiDoobDivisorEnergy.olean GaloisForLFunctions/RHTower/WeilPhiDoobDivisorEnergy.lean` exits 0 without warnings. `/tmp/hf-divisor-energy-20261015-audit.lean` validated the core declarations and mathlib names; `/tmp/hf-divisor-energy-final-20261015-audit.lean` validated the final natural-index capstone. All audited statements depend only on `propext`, `Classical.choice`, and `Quot.sound`. The leaf is imported by `formal/GaloisForLFunctions/RHTower.lean`.
+
+Repository-wide `scripts/formal_tools.py lint` exits 1, reporting unrelated modules unreachable from their umbrellas: `RHTower.CHMDStage17ComplexWavePacketFactorizationAndCoshSinhDecomposition`, `RHTower.DeningerMeyerCausalDivision`, and `HTGeometry.ParabolicCauchyAveraging`. No error for the new HF leaf was reported. Unrelated modules were not edited. No umbrella build, heartbeat increase, web search, numerical experiment, commit, or push was performed by this work.
+
+Resume paper work on the combined Gamma–prime–pole sign. The isolated-prime sector branch remains excluded. The overarching RH goal remains active and incomplete.
 
 ## Cycle 1: reflected-prime positivity
 
