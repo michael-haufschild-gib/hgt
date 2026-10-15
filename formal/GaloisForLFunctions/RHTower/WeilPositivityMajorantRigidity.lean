@@ -579,12 +579,17 @@ theorem polarAutocorr_ge (L c y : ℝ) :
 
 /-! ## The excess of a supersystem -/
 
-/-- The excess `Σ_{2 ≤ n ≤ K} (lam(n) − Λ(n))/n` of a Weil-positive supersystem is `o(log K)`. -/
-theorem exists_excess_le_log {lam : ℕ → ℝ} (hW : WeilPositive lam)
+/-- The excess `Σ_{2 ≤ n ≤ K} (lam(n) − Λ(n))/n` of a supersystem under the log-density ceiling
+is `o(log K)`. -/
+theorem exists_excess_le_log_of_log_density_le {lam : ℕ → ℝ}
+    (hD : ∀ ε : ℝ, 0 < ε → ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
+      ∑ n ∈ Finset.Icc 2 N, ∑ m ∈ Finset.Icc 1 N,
+        (if n * m ≤ N then lam n / (n * m) else 0) ≤ (1 / 2 + ε) * Real.log N ^ 2)
     (hge : ∀ n, 2 ≤ n → (ArithmeticFunction.vonMangoldt n : ℝ) ≤ lam n) {ε : ℝ} (hε : 0 < ε) :
     ∃ K₀ : ℕ, ∀ K : ℕ, K₀ ≤ K →
       ∑ n ∈ Finset.Icc 2 K, (lam n - ArithmeticFunction.vonMangoldt n) / n ≤ ε * Real.log K := by
-  obtain ⟨N₀, hN₀⟩ := weil_supersystem_excess_small (lam := lam) hW (ε := ε / 4) (by positivity)
+  obtain ⟨N₀, hN₀⟩ := supersystem_excess_small_of_log_density_le (lam := lam) hD (ε := ε / 4)
+    (by positivity)
   refine ⟨max N₀ 2, fun K hK => ?_⟩
   have hK2 : 2 ≤ K := le_trans (le_max_right _ _) hK
   have hKN : N₀ ≤ K * K := le_trans (le_trans (le_max_left _ _) hK) (Nat.le_mul_self K)
@@ -790,10 +795,16 @@ theorem polarAtom_ge (L : ℝ) {c : ℝ} (hc : 0 ≤ c) {C : ℝ} (hC0 : 0 ≤ C
 
 /-! ## The theorem -/
 
-/-- **No Weil-positive weight system majorizes `Λ`.** If `lam` is Weil-positive (polar tests,
-every level) and `lam(n) ≥ Λ(n)` for all `n ≥ 2`, then `lam(n) = Λ(n)` for all `n ≥ 2`.
-Unconditional. -/
-theorem eq_vonMangoldt_of_weilPositive_of_ge {lam : ℕ → ℝ} (hW : WeilPositive lam)
+/-- **Majorant rigidity from the ceiling and the polar Riemann differences.**  If `lam` obeys the
+log-density ceiling, has nonnegative finite-atom symbol energy on every polar second difference
+`Φχ_L − α Φχ_L(· − c) − α Φχ_L(· + c)` (`L, c ≥ 0`), and `lam(n) ≥ Λ(n)` for all `n ≥ 2`, then
+`lam(n) = Λ(n)` for all `n ≥ 2`. -/
+theorem eq_vonMangoldt_of_ge_of_log_density_le {lam : ℕ → ℝ}
+    (hD : ∀ ε : ℝ, 0 < ε → ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
+      ∑ n ∈ Finset.Icc 2 N, ∑ m ∈ Finset.Icc 1 N,
+        (if n * m ≤ N then lam n / (n * m) else 0) ≤ (1 / 2 + ε) * Real.log N ^ 2)
+    (hP : ∀ L c : ℝ, 0 ≤ L → 0 ≤ c → 0 ≤ ∫ τ : ℝ, ‖paperFT (polarRiemannDifference L c) τ‖ ^ 2 *
+      weilAtomSymbol lam ⌊Real.exp (2 * (L + c))⌋₊ (τ / (2 * π)))
     (hge : ∀ n, 2 ≤ n → (ArithmeticFunction.vonMangoldt n : ℝ) ≤ lam n) :
     ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n := by
   by_contra hne
@@ -822,7 +833,7 @@ theorem eq_vonMangoldt_of_weilPositive_of_ge {lam : ℕ → ℝ} (hW : WeilPosit
   -- the shift
   set ε' := δ₀ / (96 * (CK * G) + 96) with hε'
   have hε'pos : 0 < ε' := by positivity
-  obtain ⟨K₀, hK₀⟩ := exists_excess_le_log hW hge hε'pos
+  obtain ⟨K₀, hK₀⟩ := exists_excess_le_log_of_log_density_le hD hge hε'pos
   set M : ℝ := max (max L 1) K₀ with hM
   have hM1 : 1 ≤ M := le_trans (le_max_right _ _) (le_max_left _ _)
   have hML : L ≤ M := le_trans (le_max_left _ _) (le_max_left _ _)
@@ -861,7 +872,8 @@ theorem eq_vonMangoldt_of_weilPositive_of_ge {lam : ℕ → ℝ} (hW : WeilPosit
   have hfd : ContDiff ℝ 2 (polarRiemannDifference L c) := contDiff_polarRiemannDifference L c
   have hfs : tsupport (polarRiemannDifference L c) ⊆ Icc (-a) a := tsupport_polarRiemannDifference hc0
   obtain ⟨hp, hm⟩ := paperFT_polarRiemannDifference_pole L c
-  have hpos := hW a ha0 _ hfd hfs hp hm
+  have hpos : 0 ≤ ∫ τ : ℝ, ‖paperFT (polarRiemannDifference L c) τ‖ ^ 2 *
+      weilAtomSymbol lam ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)) := hP L c hL0.le hc0
   rw [integral_weilAtomSymbol_eq_sub hfd hfs lam] at hpos
   have hWf := zeta_W_eq_integral_weilAtomSymbol_vonMangoldt hfd hfs hp hm
   rw [← hN] at hpos hWf
@@ -921,6 +933,17 @@ theorem eq_vonMangoldt_of_weilPositive_of_ge {lam : ℕ → ℝ} (hW : WeilPosit
     nlinarith [mul_nonneg hCK0 hG0]
   have := mul_le_mul_of_nonneg_left (hsm.trans hSmall) (by positivity : (0 : ℝ) ≤ 8 * CK)
   linarith
+
+/-- **No Weil-positive weight system majorizes `Λ`.** If `lam` is Weil-positive (polar tests,
+every level) and `lam(n) ≥ Λ(n)` for all `n ≥ 2`, then `lam(n) = Λ(n)` for all `n ≥ 2`.
+Unconditional. -/
+theorem eq_vonMangoldt_of_weilPositive_of_ge {lam : ℕ → ℝ} (hW : WeilPositive lam)
+    (hge : ∀ n, 2 ≤ n → (ArithmeticFunction.vonMangoldt n : ℝ) ≤ lam n) :
+    ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n :=
+  eq_vonMangoldt_of_ge_of_log_density_le (fun _ hε => weil_log_density_le hW hε)
+    (fun L c hL hc => hW _ (by linarith) _ (contDiff_polarRiemannDifference L c)
+      (tsupport_polarRiemannDifference hc) (paperFT_polarRiemannDifference_pole L c).1
+      (paperFT_polarRiemannDifference_pole L c).2) hge
 
 /-! ## RH as the existence of a Weil-positive majorant -/
 

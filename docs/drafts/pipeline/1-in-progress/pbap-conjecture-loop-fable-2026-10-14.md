@@ -153,3 +153,101 @@ The prime-blind LP is now described completely at the level of its value functio
   `arch(c₁)P(c₂) ≤ arch(c₂)P(c₁)` holds for level-`L` blind `c₁` (`P > 0`), `c₂` (`P < 0`). The admissible weight is
   `sSup` of the demanded weights `1 − A(c)/P(c)` over pole-positive combinations. With Row 5:
   RH ⟺ ∀ L, (i)_L ∧ (ii)_L — a family of finite-level, pole-weight-free criteria.
+- 2026-10-15 — **Reading `docs/notes.md` against the LP structure (judged conjectures, no Lean needed).**
+  * Track 2 of the notes ("add a Poisson/Mayer counterterm `Σ w_n (k(log n)+k(−log n))` so the combined kernel is
+    PSD without sign restrictions") is RH itself: any `k`-independent counterterm making `W_∞ + Σ w_n ℓ_n ≥ 0` on all
+    autocorrelations is a Weil-positive weight vector, hence `w = Λ` by `eq_vonMangoldt_of_weilPositiveFull`, and the
+    resulting "positive form" is the zero sum `Σ_ρ |f̂(γ_ρ)|²`, which is a measure, not a function. `k`-dependent
+    (nonlinear) counterterms do not help either: on a blind spectral measure every counterterm integrates to `0`, so a
+    pointwise certificate `γ + D ≥ −M` can only lower `M₁*`, never see the pole constraint. Row 8 below records the
+    finite-counterterm version in Lean.
+  * Perspective A of the notes (Poisson collapse of `Σ_n φ(ny)` to `n = 1` on the blind cone) is realised by the other
+    agents' MUST-1481: on the blind cone the pole mass is the critical-line ζ-defect
+    `P = (1/π)∫|f̂|²(1 − Re ζ(½+it))`, so PBAP ⟺ `∫ s dμ ≥ 0` for blind `μ` with `s = γ/2 + 1 − Re ζ(½+it)`; `s(0) ≈ −0.23`
+    and `s` is unbounded below (large values of `ζ`), so no pointwise proof; elementary form of the same defect:
+    Euler–Maclaurin on the multiplicative lift `h(y) = (1+1/y) y^{−1/2}·2Re k(log y)`, `P = 2k(0) − ∫_1^∞ ({y}−½) h'`
+    `= (5/3)k(0) − ½∫_1^∞ B̃₂(y) h''(y) dy` (not formalised; same content as MUST-1481).
+  * The pole coordinate is the ζ-mean: `P/k(0) = 2(1 − ⟨Re ζ⟩_μ)`. The sector criteria of Row 4 read: RH ⟺ blind
+    spectral measures with ζ-mean `≥ 1` have nonnegative `γ`-mean; the pole-light RH-critical sector is `⟨Re ζ⟩_μ > 0.2`.
+  * Track 1 of the notes (nonnegative-cone `WindowPositive` on `(0, log 2)`, deficit `−0.1448` at the plastic crossover)
+    is not implied by the corpus `√2` theorem `one_tenth_le_ccmRestrictedWeilPolarGroundEnergy_halfLogTwo`: that result
+    lives on the pole-vanishing subspace (`IsPolarConstrained`, `F(±½) = 0`), while nonnegative tests have `P > 0`.
+    Judged: RH-irrelevant (support `< log 2` sees no zero), other agents active; not pursued.
+  * The Markov additions (`WeilMarkovOddPositivity`, `WeilMarkovPrimitiveHyperplane`) are the Λ-weighted parallels of
+    Row 4's sectors: on blind tests `W_Λ = W_∞`, odd tests and the primitive hyperplane `F(½)+F(−½) = 0` have `P ≤ 0`,
+    so they sit inside the nonpositive-pole sector. The full form splits by parity without cross term
+    (`k_f = k_{f_e} + k_{f_o}` for real `f`), the blind constraint couples the parities (MUST-1501–1504 parity–sign table).
+  * Single-test PBAP: every nonnegative blind combination is `g⋆g̃` for an `L²` function `g` (take `ĝ = √(Σ c_i|f̂_i|²)`), but
+    `g` compactly supported needs Krein's spectral factorisation of nonnegative entire functions of exponential type —
+    not in the corpus or Mathlib; a multi-session project with reformulation value only. Not started.
+- 2026-10-15 — **Row 8 [L]. No finite certificate (CANNOT-557).** Module `RHTower/PrimeBlindFiniteCertificateObstruction`
+  (standard axioms, `lake env lean` clean, `lake build --old` built, wired after `PrimeBlindPoleWeightLevelWindow`).
+  `not_weilPositiveFull_of_finite_support`, `not_weilPositiveFull_of_eventually_zero`,
+  `not_weilPositiveFull_of_eventually_const`, `infinite_support_of_weilPositiveFull`,
+  `not_exists_finite_support_weilPositiveFull`: a weight vector with finite support, or vanishing beyond some node, or
+  eventually constant, is never Weil-positive (uniqueness pins `lam(2^k) = log 2`, `lam(3^k) = log 3`).
+  Reading: PBAP cannot be certified by `W_∞` plus finitely many node terms, nor by `W_∞` plus a constant-coefficient
+  Dirichlet tail (the shape of the ζ-defect rewriting). Together with Row 3 (`M₁* > 0`) and MUST-1490 this closes every
+  "symbol + counterterm" approach: the only Weil-positive correction is the full `Λ`, i.e. RH.
+- 2026-10-15 — **Row 9 [L]. Finite-level Farkas and strong duality (MUST-1508).** Module
+  `RHTower/PrimeBlindFiniteLevelFarkas` (standard axioms, `lake env lean` clean, `lake build --old` built, wired after
+  `PrimeBlindFiniteCertificateObstruction`).
+  * Two-bump tests with prescribed centres (`pairTestAt j σ a b`): autocorrelation
+    `(1+σ²)K + σ(K(·+d) + K(·−d))`, `d = b − a`; node values (`logValue_pairTestAt`): if `|d − log j| < 2r_j` the only node
+    value is at `j` and equals `σ(K(log j − d) + K(d − log j))/√j > 0·σ` (bump autocorrelation positive below the diameter,
+    `bumpCorr_pos`); the node gap `1/(j+1) = 4r_j` kills every other node.
+  * Level producers (`levelPairTestFn L n σ`): centred at `±log n/2` when `log n ≤ 2L − 2r_n`, at the ends `±(L − r_n)`
+    otherwise; level `L`, node vector `σ·levelWeight L n · e_n` with positive weight, for every `log n < 2L`.
+  * Level-`L` autocorrelations vanish at all lags `|Y| ≥ 2L` (`weilTest_eq_zero_of_levelTest`, endpoint included: the
+    integrand lives on one point), so node vectors of level-`L` combinations are supported on `log n < 2L` and the projection
+    `levelProj L` fixes them.
+  * Generic level Farkas (`levelBlindNonneg_iff_exists_weights`): for any per-test functional `Φ`, nonnegativity on the blind
+    level-`L` cone ⟺ ∃ node weights with `Σ lam ℓ(f) ≤ Φ(f)` on level-`L` tests; weights supported below `2L`
+    (`exists_weights_support_of_levelBlindNonneg`). Proof: level value function + lift + Hahn–Banach with the zero functional.
+  * Instances: `primeBlindPositiveAtLevel_iff_exists_weights` (pole weight `β`), `levelFloors_eq_levelMargins` (strong
+    duality: floors of the blind functional = margins of level Weil forms, as sets), RH ⟺ ∀L ∃(β, lam) level-Weil-positive
+    ⟺ ∀L ∃lam level-Weil-positive at β = 1.
+  Reading: PBAP is a tower of finite semi-infinite LPs indexed by the level, each with finitely many dual variables; RW's
+  aperture certificates with node counterterms are level-`L` dual feasibility witnesses; under ¬RH the tower fails at a
+  finite level. Open: the exponential rate at which the level floors go to `−∞` under ¬RH should be `2(Θ − ½)` (needs the
+  explicit formula); under RH the floors stay `≥ 0` and tend to `0`.
+- 2026-10-15 — **Row 10 [L]. The level value (MUST-1511).** Module `RHTower/PrimeBlindLevelFloor` (standard axioms, clean, built,
+  wired). Pole bound `|Re P(k_f)| ≤ 4Le^L‖f‖²` for level-`L` tests (`norm_paperFT_sq_le` at `±i/2`, product ≤ mean of
+  squares); floor `γ(0) − 4|β|Le^L ∈ levelFloors L β`; floors bounded above by the energy-to-mass ratio of the blind two-bump
+  test (its mass is positive: value `1` at `1/5`); floors closed; so `levelFloors L β = Iic (levelValueAt L β)` for
+  `L ≥ 3/10`, blind positivity ⟺ `0 ≤ levelValueAt`, window `= {β : 0 ≤ p_L(β)}`, antitone in `L`, RH ⟺ ∀L ≥ 3/10,
+  `0 ≤ p_L(1)`. Reading: `p_L(1)` is THE zeta-free finite-level RH observable; its a priori bound `−4Le^L` is the
+  PBAP shadow of the trivial bound `Θ ≤ 1`.
+- 2026-10-15 — **Row 11 [L]. Certificates squeeze onto Λ (MUST-1512).** Module `RHTower/PrimeBlindLevelCertificateSqueeze`
+  (standard axioms, clean, built, wired). `levelCertificates L := weilBox ∩ {LevelWeilPositiveAt L 1}` with the canonical box
+  from `coordBound` (pair tests); compact, antitone; `Λ ∈` at every level under RH; RH ⟺ all nonempty (Cantor + uniqueness);
+  unconditional squeeze `∀n ε ∃N ∀L ≥ N ∀μ ∈ levelCertificates L, |μ n − Λ n| < ε`; any choice `μ_L` tends to `Λ`
+  coordinatewise. Reading: the von Mangoldt function is the limit of finite-level archimedean LP certificates — the primes are
+  recovered from the archimedean tower; node-weight analogue of Row 5.
+- Conjecture queue after rows 8–11 (not attempted): (i) rate law `p_L(1) ≍ −e^{2(Θ−½)L}` under ¬RH (needs explicit formula);
+  (ii) `p_L(1) → 0` under RH via truncated Ξ-divisible blind tests; (iii) make the squeeze quantitative: an explicit level
+  `N(n, ε)` would be a zeta-free effective statement about `Λ(n)` — its proof needs the compactness argument replaced by
+  explicit tests, which is where the arithmetic re-enters.
+- 2026-10-15 — **Direct attack on the pole dichotomy. Row 12 [L] (MUST-1514): blind pole floor in mass and curvature.**
+  Module `RHTower/PrimeBlindPoleCurvatureFloor` (standard axioms, clean, built, wired).
+  * `P(c) = ∫ K_c · 2cosh(x/2)` with `K_c` the even real autocorrelation; blind ⟹ `K_c(log n) = 0`; gap estimate
+    `|K_c(x)| ≤ M·gap²` (Rolle + mean value), `gap ≤ 1/n ≤ 2e^{−x}` ⟹ `|K_c(x)| ≤ 4Me^{−2x}` for `x ≥ log 2`;
+    tails `≤ 6Me^{−x}`, middle `≤ (5/2)·mass` on `|x| ≤ log 2`; total `P(c) ≥ −(4·mass + 6·M)`;
+    `A(c) ≥ (γ(0) − 2)mass − 6M` with Row 3.
+  * Analysis of the dichotomy (bounded pole floor?): (i) pair tests, two-bump and multi-point configurations have
+    `P/mass → 0` at large lag (bump width ≤ node gap `e^{−x}` kills the `e^{x/2}`); (ii) chirp-type kernels
+    `−a(x)(1 − cos 2πe^{x})` carry negative lag mass but need covering spectral mass `≈ 2∫a e^{x/2}` (stationary phase,
+    density `t^{−1/2}`), the same order as the pole gain, and the covering generates second-generation node values at
+    doubled lags — exact blindness with large negative lag content is expensive; (iii) under RH the null face at height
+    `T` has `P/mass = −arch/mass ≈ −γ(T) ≈ −log T`, so a bounded floor (weight `t^0`) is NOT expected even under RH:
+    the sharp pole-floor weight is `log⁺|t|` with coefficient exactly that of `γ` (that statement is PBAP). Known
+    rigorous weights: elementary gap argument gives `t²` (this row; refinable to `t^{1/2}` by a frequency split per
+    gap), ζ-defect + convexity (MUST-1481) gives `t^{1/4+ε}`, Lindelöf would give `t^{ε}`.
+  * Consequence for the tower: the question "is `p_∞ = inf_L p_L(1)` finite" is NOT decided by the pole alone; the
+    heuristic (balanced dimension count: blind tests of level `L` resolve zeros at height `e^{2L}` with resolution
+    equal to their spacing; peaked blind densities exist by projection) favours `p_L(1) → −∞` at rate `e^{2(Θ−½)L}`
+    under ¬RH, i.e. RH ⟺ `p_L(1)` bounded below, and any unconditional floor `−Ce^{aL}` with `a < 1` would be a
+    zero-free strip. Rigorously open in both directions.
+  * Appended to the module: `nodeArchEnergy_ge_of_blind_of_curvature_le`, `div_nodeArchEnergy_ge_of_blind_of_curvature_le`
+    — on the sub-cone of blind combinations with curvature ≤ κ·mass the energy ratio is ≥ γ(0) − 2 − 6κ at every level;
+    a blind family with energy ratio → −∞ must have curvature/mass → ∞ (spectral mass escaping to high frequency).

@@ -767,18 +767,14 @@ theorem sum_mul_conj_eq (N : ℕ) (c : ℕ → ℂ) :
 
 /-! ### The multiplicative Toeplitz bound -/
 
-/-- **The Weil–Toeplitz bound at one level.**  For `N ≥ 1` and a coefficient vector `c` supported
-in `[1, N]`, positivity of the finite-atom Weil symbol with weights `lam` on the polar-constrained
-`C²` tests at the single level `a_N = log N / 2 + 1/(4(N+1))` gives
+/-- **The Weil–Toeplitz bound from one resonator.**  For `N ≥ 1` and a coefficient vector `c`
+supported in `[1, N]`, nonnegativity of the finite-atom Weil symbol with weights `lam` on the
+single resonator `Σ_m c(m) g_w(· − log m + (log N)/2)`, `w = 1/(N+1)`, gives
 `2 ∑_{2 ≤ n ≤ N} lam(n) n^{-1/2} Re ∑_m c(nm) conj(c m) ≤ (log N + C₀) ∑_m |c m|²`
 with the absolute constant `C₀ = log 2 + 9/2 + profileRatio/2`. -/
-theorem weil_multiplicativeToeplitz_bound_at {lam : ℕ → ℝ} {N : ℕ} (hN : 1 ≤ N) (c : ℕ → ℂ)
-    (hc : ∀ m, N < m → c m = 0)
-    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f →
-      tsupport f ⊆ Icc (-(Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4))
-        (Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4) →
-      paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →
-      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam
+theorem weil_multiplicativeToeplitz_bound_of_resonator {lam : ℕ → ℝ} {N : ℕ} (hN : 1 ≤ N)
+    (c : ℕ → ℂ) (hc : ∀ m, N < m → c m = 0)
+    (hW : 0 ≤ ∫ τ : ℝ, ‖paperFT (resonator N c (1 / ((N : ℝ) + 1))) τ‖ ^ 2 * weilAtomSymbol lam
         ⌊Real.exp (2 * (Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4))⌋₊ (τ / (2 * π))) :
     2 * ∑ n ∈ Finset.Icc 2 N, lam n / Real.sqrt n *
         (∑ m ∈ Finset.Icc 1 N, c (n * m) * conj (c m)).re ≤
@@ -805,8 +801,7 @@ theorem weil_multiplicativeToeplitz_bound_at {lam : ℕ → ℝ} {N : ℕ} (hN :
   have hFcs : HasCompactSupport F :=
     hasCompactSupport_of_support_subset_abs (Λ := a) fun u hu => by
       by_contra h; push Not at h; exact hu (hFvan u h)
-  obtain ⟨hp1, hp2⟩ := paperFT_resonator_pole (N := N) (c := c) hw
-  have hpos := hW F hF2 hFs hp1 hp2
+  have hpos := hW
   rw [integral_weilAtomSymbol_eq_arch_sub hF2 hFs lam] at hpos
   -- the autocorrelation masses
   set k0r : ℝ := ∫ t, gR w t ^ 2 with hk0r
@@ -953,6 +948,29 @@ theorem weil_multiplicativeToeplitz_bound_at {lam : ℕ → ℝ} {N : ℕ} (hN :
     _ ≤ (Real.log N + (Real.log 2 + 9 / 2 + profileRatio / 2)) * sumc := by
         apply mul_le_mul_of_nonneg_right _ hsum
         rw [hα]; linarith
+
+/-- **The Weil–Toeplitz bound at one level.**  For `N ≥ 1` and a coefficient vector `c` supported
+in `[1, N]`, positivity of the finite-atom Weil symbol with weights `lam` on the polar-constrained
+`C²` tests at the single level `a_N = log N / 2 + 1/(4(N+1))` gives
+`2 ∑_{2 ≤ n ≤ N} lam(n) n^{-1/2} Re ∑_m c(nm) conj(c m) ≤ (log N + C₀) ∑_m |c m|²`
+with the absolute constant `C₀ = log 2 + 9/2 + profileRatio/2`. -/
+theorem weil_multiplicativeToeplitz_bound_at {lam : ℕ → ℝ} {N : ℕ} (hN : 1 ≤ N) (c : ℕ → ℂ)
+    (hc : ∀ m, N < m → c m = 0)
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f →
+      tsupport f ⊆ Icc (-(Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4))
+        (Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4) →
+      paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →
+      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam
+        ⌊Real.exp (2 * (Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4))⌋₊ (τ / (2 * π))) :
+    2 * ∑ n ∈ Finset.Icc 2 N, lam n / Real.sqrt n *
+        (∑ m ∈ Finset.Icc 1 N, c (n * m) * conj (c m)).re ≤
+      (Real.log N + (Real.log 2 + 9 / 2 + profileRatio / 2)) * ∑ m ∈ Finset.Icc 1 N, ‖c m‖ ^ 2 := by
+  have hw : (0 : ℝ) < 1 / ((N : ℝ) + 1) := by positivity
+  obtain ⟨hp1, hp2⟩ := paperFT_resonator_pole (N := N) (c := c) hw
+  exact weil_multiplicativeToeplitz_bound_of_resonator hN c hc
+    (hW _ (contDiff_resonator N c _ 2)
+      (tsupport_subset_of_vanish fun u hu => sum_translates_eq_zero
+        (fun v hv => gC_eq_zero hw hv) hu) hp1 hp2)
 
 /-! ### Density corollaries -/
 

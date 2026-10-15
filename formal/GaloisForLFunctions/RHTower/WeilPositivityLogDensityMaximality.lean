@@ -80,18 +80,19 @@ theorem eventually_gibbsEnergy_ge {ε : ℝ} (hε : 0 < ε) :
     nlinarith
   nlinarith
 
-/-- **No Weil-positive supersystem of `Λ` has positive log-density excess.**  If `lam ≥ Λ`
-pointwise and `lam` is Weil-positive, then `Σ_{n ≥ 2, nm ≤ N} (lam(n) − Λ(n))/(nm) = o((log N)²)`:
-the density ceiling `1` of Weil positivity is attained by `Λ` itself. -/
-theorem weil_supersystem_excess_small {lam : ℕ → ℝ}
-    (hW : ∀ a : ℝ, 0 ≤ a → ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
-      paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →
-      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)))
+/-- **A system under the log-density ceiling has no positive log-density excess over `Λ`.**  If
+`Σ_{n ≥ 2, nm ≤ N} lam(n)/(nm) ≤ (1/2 + ε)(log N)²` eventually for every `ε > 0`, then
+`Σ_{n ≥ 2, nm ≤ N} (lam(n) − Λ(n))/(nm) ≤ ε (log N)²` eventually: the ceiling is attained by
+`Λ` itself. -/
+theorem supersystem_excess_small_of_log_density_le {lam : ℕ → ℝ}
+    (hD : ∀ ε : ℝ, 0 < ε → ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
+      ∑ n ∈ Finset.Icc 2 N, ∑ m ∈ Finset.Icc 1 N,
+        (if n * m ≤ N then lam n / (n * m) else 0) ≤ (1 / 2 + ε) * Real.log N ^ 2)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
       ∑ n ∈ Finset.Icc 2 N, ∑ m ∈ Finset.Icc 1 N,
         (if n * m ≤ N then (lam n - vonMangoldt n) / (n * m) else 0) ≤ ε * Real.log N ^ 2 := by
-  obtain ⟨N₁, h₁⟩ := weil_log_density_le hW (ε := ε / 2) (by linarith)
+  obtain ⟨N₁, h₁⟩ := hD (ε / 2) (by linarith)
   obtain ⟨N₂, h₂⟩ := eventually_gibbsEnergy_ge (ε := ε / 2) (by linarith)
   refine ⟨max N₁ N₂, fun N hN => ?_⟩
   have hu := h₁ N (le_trans (le_max_left _ _) hN)
@@ -111,15 +112,29 @@ theorem weil_supersystem_excess_small {lam : ℕ → ℝ}
   rw [hsplit]
   nlinarith
 
-/-- **Constant shifts are not Weil-positive.**  For every `c > 0`, the weights
-`Λ(n) + c` (a heavy perturbation: `Σ c n^{-1/2} = ∞`) violate Weil positivity at some level. -/
-theorem vonMangoldt_add_const_not_weilPositive {c : ℝ} (hc : 0 < c) :
-    ¬ (∀ a : ℝ, 0 ≤ a → ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
+/-- **No Weil-positive supersystem of `Λ` has positive log-density excess.**  If `lam ≥ Λ`
+pointwise and `lam` is Weil-positive, then `Σ_{n ≥ 2, nm ≤ N} (lam(n) − Λ(n))/(nm) = o((log N)²)`:
+the density ceiling `1` of Weil positivity is attained by `Λ` itself. -/
+theorem weil_supersystem_excess_small {lam : ℕ → ℝ}
+    (hW : ∀ a : ℝ, 0 ≤ a → ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
       paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →
-      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 *
-        weilAtomSymbol (fun n => (vonMangoldt n : ℝ) + c) ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π))) := by
-  intro hW
-  obtain ⟨N₀, hN₀⟩ := weil_supersystem_excess_small hW (ε := c / 16) (by linarith)
+      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
+      ∑ n ∈ Finset.Icc 2 N, ∑ m ∈ Finset.Icc 1 N,
+        (if n * m ≤ N then (lam n - vonMangoldt n) / (n * m) else 0) ≤ ε * Real.log N ^ 2 :=
+  supersystem_excess_small_of_log_density_le (fun _ hε' => weil_log_density_le hW hε') hε
+
+/-- **Constant shifts break the log-density ceiling.**  For every `c > 0`, the weights
+`Λ(n) + c` (a heavy perturbation: `Σ c n^{-1/2} = ∞`) exceed `(1/2 + ε)(log N)²` for some `ε > 0`
+at arbitrarily large `N`. -/
+theorem vonMangoldt_add_const_not_log_density_le {c : ℝ} (hc : 0 < c) :
+    ¬ (∀ ε : ℝ, 0 < ε → ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
+      ∑ n ∈ Finset.Icc 2 N, ∑ m ∈ Finset.Icc 1 N,
+        (if n * m ≤ N then ((vonMangoldt n : ℝ) + c) / (n * m) else 0) ≤
+          (1 / 2 + ε) * Real.log N ^ 2) := by
+  intro hD
+  obtain ⟨N₀, hN₀⟩ := supersystem_excess_small_of_log_density_le hD (ε := c / 16) (by linarith)
   -- lower bound for the excess over the square `n, m ≤ K = ⌊√N⌋`
   set L : ℝ := 8 with hL
   obtain ⟨N₁, hN₁⟩ : ∃ N₁ : ℕ, ∀ N : ℕ, N₁ ≤ N → L ≤ Real.log N := by
@@ -225,6 +240,15 @@ theorem vonMangoldt_add_const_not_weilPositive {c : ℝ} (hc : 0 < c) :
   have hprod := mul_pos hc (pow_pos hlog0 2)
   have hchain := hsum_ge.trans hex
   nlinarith
+
+/-- **Constant shifts are not Weil-positive.**  For every `c > 0`, the weights
+`Λ(n) + c` (a heavy perturbation: `Σ c n^{-1/2} = ∞`) violate Weil positivity at some level. -/
+theorem vonMangoldt_add_const_not_weilPositive {c : ℝ} (hc : 0 < c) :
+    ¬ (∀ a : ℝ, 0 ≤ a → ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
+      paperFT f (I / 2) = 0 → paperFT f (-(I / 2)) = 0 →
+      0 ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 *
+        weilAtomSymbol (fun n => (vonMangoldt n : ℝ) + c) ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π))) :=
+  fun hW => vonMangoldt_add_const_not_log_density_le hc fun _ hε => weil_log_density_le hW hε
 
 end
 

@@ -8990,3 +8990,122 @@ n ≥ 0. Hence `TwistedArcMinimumPrinciple` holds and, by
 - **Conjecture.** For fixed σ > ½, t ↦ log|ζ(σ + it)| is the real part of an analytic function away from zeros. A Phragmén–Lindelöf-type convexity of the averaged function ∫log|ζ(σ + it)|w(t)dt in σ, combined with its value at σ = 2 (Euler product) and at σ = ½ (FE symmetry), might exclude zeros in ½ < σ < 1 via a strict-convexity argument.
 - **Attack.** σ ↦ ∫log|ζ(σ + it)|w(t)dt is convex exactly up to the Jensen/Littlewood zero-count term: the second σ-derivative equals the zero density (Riesz measure) in the strip (rows 828, 894, 1019). "Strict convexity excludes zeros" is the circular statement "no Riesz mass in the strip". The FE symmetry gives the value at σ = ½ from the value at σ = ½ (trivial), not an independent boundary datum.
 - **Verdict.** CIRCULAR (Wall 2; rows 828, 894, 952). No salvage.
+
+## Row 1063 — environment note
+- Repository access was restored. Rows 1057–1062 were appended from the scratchpad staging file, and the staging file was deleted. STATUS max ids are unchanged: MUST-1504, CANNOT-556.
+
+## Row 1064 — C1127 even-cone rigidity at every pole weight for summable deviations (killed: REDISCOVERED)
+- **Conjecture.** If `WeilPositiveEvenAt β lam` for some real β and Σ_{n≥2}|lam(n) − Λ(n)|·n^{−½} < ∞, then RH holds and lam = Λ on n ≥ 2. This is C1053 restricted to absolutely summable deviations.
+- **Proof sketch [P].**
+  - Take a pole-free even test u. Its even shifts u_h = (u(·−h) + u(·+h))/2 stay pole-free and even.
+  - Write D = Λ − lam. The D-pairing is bounded uniformly in h: |⟨D, g_{u_h}⟩| ≤ 2‖D‖_{ℓ¹(n^{−½})}‖u‖₂².
+  - So W_Λ(u_h) = ½W_Λ(u) + ½R_u(h) is bounded below uniformly in h, where R_u(h) = Σ_ρ û(γ_ρ)² cos(hγ_ρ).
+  - Landau's theorem applies to the Laplace transform of R_u + C ≥ 0. Its poles at s = iz₀ = δ + iγ₀ (γ₀ ≠ 0) carry residue û(z₀)², and none of them is real, so every off-line zero is excluded.
+  - Under RH, uniqueness follows from the Ξ-divisible family: D̂ is a continuous almost-periodic function with mean 0 and D̂ ≥ 0 off the real zeros, so D = 0.
+- **Attack.**
+  - This is Landau's classical one-sided oscillation theorem plus a bounded perturbation. The corpus already has the one-sided Landau machinery (`ChebyshevDeficitPrimitiveOneSidedRH`, `WeilLagFunctionPositivePart.re_le_half_add_of_oneSidedMeasure_laplace`, `PrimeCountingLiLandau`) and producer convergence (MUST-1452).
+  - The summability hypothesis is exactly where Wall 1 does not bite.
+- **Verdict.** REDISCOVERED (Landau + bounded perturbation).
+- **Positive survivor [P].** The exact Wall-1 threshold for absorbing an off-line zero ρ₀ = ½ + δ + iγ₀ into an even cone at any pole weight. The deviation must be of size D(n) ≍ n^{δ−½}·2Re n^{−iγ₀}. That size tends to 0 but is not summable against n^{−½}: the node count near x = e^{2a} is e^{2a}, against an off-line gain cosh²(aδ). No Lean: a classical-type statement.
+
+## Row 1065 — C1128 Dirichlet-series absorption of off-line poles (killed: BRIDGE to C1195)
+- **Conjecture.** Suppose RH fails and lam is even-Weil-positive at some β > 1. Then G = L_lam − L_Λ continues to Re s > ½ with residue −1 at every off-line zero, and its boundary real part on Re s = ½ is ≥ −(an integrable bump function). Conjecture: no Dirichlet series over n ≥ 2 can do this, so the even window is empty without RH (C892).
+- **Attack.**
+  - The exact absorber G_exact = Σ_off[1/(s − ρ*) − 1/(s − ρ)], with ρ* = 1 − ρ̄, has the right poles and a nonnegative boundary real part (Poisson bumps 2δ/((t−γ)² + δ²)). It is the logarithmic derivative of the Blaschke-reflected ξ*.
+  - But G_exact is a Laplace transform of a continuous density, not a node measure. Its node discretisations −ζ(s − ρ₀ + 1) + 1 have boundary values −Re ζ(1 − δ + iτ), which are unbounded below by Bohr density.
+  - A general node-supported absorber G = G_exact + H needs Re H(½ + it) ≥ −(integrable). Only the boundary carries a constraint: inside, Herglotz gives just Re L_lam ≤ ½ψ(s/2) + O(1), which is slack ≍ ½ log|t|.
+  - Bohr's boundedness theorem needs a one-sided bound on a whole half-plane, not on one line. The exp-trick e^{L_lam} with |e^{L_lam}| ≤ C|s|^{½} reproduces the relaxed Herglotz producer condition (MUST-1442), which is exact but non-constructive.
+- **Verdict.** BRIDGE. C892 is the even-sector form of the corpus's open C1195 (a sub-zero-set measure with Fourier support in ±log ℕ, i.e. a crystalline absorber). No salvage beyond the reformulation: C892 ⟺ no node-supported Dirichlet series has a nonnegative-boundary Blaschke reflection of the off-line zeros.
+
+## Row 1066 — C1129 pole-free twisted-arc null family localising the even imaginary spectrum (killed: contradicts the single-ray law)
+- **Conjecture.**
+  - At pole weight β the twisted-arc null identity becomes Σ_j w_j L_{lam,β}(Φ_jΦ_j^#) = (β − 1)·w₀·P(F₀). This holds because Q_j(i/2) = 0 for j ≥ 1, so only F₀ carries a pole.
+  - If there were a second blind arc measure m′ with m′₀ = 0 (pole-free), a PD real-line density, and Σ_j w′_j p_j(y) > 0 on 0 ≤ y ≤ √2 except at y = ½, then ν_S^{(β)} on {ρ² ≤ 2} would be the single pole atom (β − 1)c·δ_{y=½}.
+  - Then W_{lam,β} = W_{lam,1} + (β − 1)P with W_{lam,1} carried by real spectrum, which gives full positivity, so RH and lam = Λ. That is C892: RH ⟺ ∃β PBAP_even(β), and equivalently the clean pole-free form RH ⟺ Arch ≥ 0 on the cone of prime-blind, pole-free (∫f cosh(x/2) = 0) even tests.
+- **Attack.**
+  - Σ_j w_j p_j(y) = ∫P_{y−½}(u) dm(u) is a Legendre transform of the arc measure, and P₀ ≡ 1, so the pole weight is the total mass of m.
+  - A pole-free localiser needs ∫dm′ = 0, ∫log((1+u)/2) dm′ = 0 (stationarity at ν = 0), joint blindness, and PD on ℝ. That is a second PD blind null ray.
+  - The corpus's single-ray law (odd-sector card row 1234, [P]) says the PD blind Ξ-divisible null face is one ray: the TMP ray, with pole w₀/2 > 0. Signed blind combinations are not PD, so ∫Σ w′_j g_j dν_S no longer bounds the imaginary mass.
+- **Verdict.** FALSE modulo the [P] single-ray law. Null tests can bound the even imaginary spectral mass at β > 1 only through one moment, (β − 1)w₀P(F₀). They cannot localise it at the pole.
+- **Positive survivor [P].** For every β and every lam even-positive at β, the TMP-weighted imaginary spectral mass satisfies ∫_{ρ²≤2} Ξ(iy)² cos²(y/2) Σ_j w_j p_j(y) dν_S^{(β)} ≤ (β − 1)·w₀·P(F₀). This is a one-moment bound, so even β > 1 fakes can carry imaginary (fake real-zero) mass only within this budget. Not formalized: it is a receiver-side moment bound with no RH consequence.
+- **Lesson for C892.** It cannot be settled by null tests in the even sector, because pole terms are ≥ 0 there. It needs either a crystalline-absorber exclusion (C1128/C1195) or an approximate-null limiting argument.
+
+## Row 1067 — C1130 far-bump approximate null vectors reduce the even pole weight to the weights' own density (structural survivor [P])
+- **Conjecture (C892 attack by approximate null tests).** If lam is even-Weil-positive at some pole weight β, then lam is also even-positive at β′ = d, where d is the smoothed density of lam. If d ≤ 1, monotonicity and MUST-1495 then give RH and lam = Λ.
+- **Mechanism [P].**
+  - Far bumps: let e_a = c_a[φ(· − a) + φ(· + a)] with pole value ê_a(i/2) = 1, so c_a ≍ e^{−a/2}.
+  - Arch(e_a) → 0, and the pole term is 2.
+  - The node sum at lag 2a is ≈ 2d. This is the pole/PNT balance of row 844 applied to lam.
+  - So W_{lam,β′}(e_a) → 2(β′ − d). For a fixed even f the cross term B_{lam,β′}(f, e_a) → 2f̂(i/2)(β′ − d).
+  - At β′ = d both limits vanish. Then f − f̂(i/2)e_a is pole-free, so W_{lam,β}(f − f̂(i/2)e_a) = W_{lam,d}(f − f̂(i/2)e_a) ≥ 0, and letting a → ∞ gives W_{lam,d}(f) ≥ 0.
+  - Requirement: lam has a smoothed density d along some a_k → ∞ for every fixed compactly supported profile. The far-bump test alone gives limsup density ≤ β.
+- **Spectral reading [P].**
+  - In the even (λ = z²) spectral measure, ê_a(iy) ≍ e^{(y−½)a}. Bounded W(e_a) therefore kills all imaginary spectrum with y > ½ at any admissible pole weight.
+  - At the minimal pole weight d* = min{β : lam even-positive at β}, the pole atom y = ½ is also empty: otherwise β could be lowered.
+  - So the imaginary spectrum at d* lives on 0 ≤ y < ½, i.e. on fake REAL zeros s = ½ ± y in (0, 1). These contribute +2|f̂(iy)|² to even forms, the wrong sign for detection.
+  - By MUST-1500, d* ≥ 1. And d* = 1 ⟺ (corpus chain) RH with lam = Λ.
+- **Consequence.** C892 (RH ⟺ ∃β PBAP_even(β)) ⟺ no even-positive weight datum has minimal pole weight d* > 1 ⟺ even-positive data cannot carry fake real zeros in (½, 1) together with extra density d − 1 > 0.
+- **Verdict.** SURVIVES as a reduction [P], not a proof. Open core: an even-sector density ceiling d ≤ 1. The full-sector ceiling (MUST-1458) uses odd information; even tests only give d ≤ β.
+- **Lean.** Not yet. The imaginary-spectrum statements need the even Bochner/sech representation at general β, and the corpus has it only at β = 1. The limiting argument alone needs a density hypothesis on lam, so it would be conditional.
+
+## Row 1068 — C1131 even-sector density ceiling d ≤ 1 (killed: no obstruction found; BRIDGE to C1128/C1195)
+- **Conjecture.** Every lam that is even-Weil-positive at some β has smoothed density ≤ 1. With row 1067 this would give C892.
+- **Attack.**
+  - Spectral side: extra density d − 1 > 0 must be realised by a node measure. Any node discretisation of a density-(d−1) continuum has a real-line symbol (d−1)Re ζ(½ + ir) + (density-zero Dirichlet series) (row 1019). The positivity budget off the real zeros is zero (Arch is already spent by the Λ-part).
+  - So a fake needs a density-(d−1) Dirichlet series whose boundary real part is ≤ 0 off a discrete set. The natural candidates fail by large values: Λ-built (D′ = cΛ gives smooth part +cγ/2 > 0) and comb-built (Re ζ(½ + it) unbounded above).
+  - No general theorem excludes all such series. Mean values do not decide it: the atom budget π·N(T) ≍ T log T dwarfs mean-zero oscillation.
+  - The argument-principle constant shifts by d − 1 (7/8 ↦ 7/8 + d − 1), but μ_R need not be integer-valued, so there is no integrality obstruction.
+- **Verdict.** BRIDGE: same open core as C1128/C1195 (crystalline absorbers). The even sector's only extra freedom is fake real zeros in (½, 1). Odd tests detect these with the negative sign, which is exactly the information the even sector lacks.
+- **Positive survivor [P].** The even window question is now one-dimensional in the spectral sense. Fake data differ from Λ only by (a) real-line mass off the zeros and (b) fake real zeros in (½, 1), with a total TMP-weighted budget of (d* − 1)w₀P(F₀) (row 1066). C892 holds iff this budget is always 0.
+
+## Row 1069 — C1132 even-sector density ceiling via the multiplicative Toeplitz bound (killed: mirror cross-lags)
+- **Conjecture.**
+  - The density ceiling of MUST-1458 is `weil_log_density_le`: Σ_{nm≤N} lam(n)/(nm) ≤ (½ + ε)(log N)². It comes from polar resonators Σ_m c(m)g_w(x − log m + ½log N), with g_w = ψ_w″ − ψ_w/4 pole-free.
+  - If it held for EVEN polar tests, then even-positive lam would have Riesz-mean density d ≤ 1.
+  - A two-scale argument would then give liminf_a [2D(e^a) − D(e^{2a})] ≤ 1: the Riesz mean of the far-bump integrand is 2R(A) − R(2A), and liminf_A(2R(A) − R(2A)) ≤ limsup R. With the far-bump identity W_{lam,1}(f) + 2f̂(i/2)²(2D₁(a) − D₂(2a) − 1) ≥ o(1) (row 1067 without the density-existence hypothesis), this would give even positivity at β = 1 and hence C892.
+- **Attack.**
+  - The resonator is not even. Its even symmetrisation f = R + R(−·) adds mirror cross-lags x_m + x_{m′} = log(mm′/N) + 2X. These hit ±log n off the multiplicative diagonal, with weights c(m)c(m′) of uncontrolled sign.
+  - Pushing the resonator out (X → ∞) makes the nodes denser than the width w = 1/(N+1). The cross part then sees lam's short-interval fluctuation at scale e^{2X}·mm′·w. Its smooth main term vanishes because ĝ_w(±i/2) = 0, but the fluctuation of an arbitrary even-positive lam is uncontrolled.
+  - A non-even test's autocorrelation is even-type only if ĝ(iy) ≥ 0 and ĝ = F² with F even. Pole-free resonators do not satisfy this.
+- **Verdict.** Killed (no transfer of the full-cone ceiling to the even sector).
+- **Positive survivor [P].** C892 reduces exactly to an even-sector Riesz-density ceiling. Precisely: if every even-positive lam satisfies limsup (2/(log N)²)Σ_{nm≤N} lam(n)/(nm) ≤ 1, then RH ⟺ ∃β PBAP_even(β). The reduction needs two pieces of the paper proof: the far-bump inequality with cross-scale densities, and the 2R(A) − R(2A) Riesz argument. Profile independence of the Riesz means needs |Σ_{n≤x} lam(n)/n| = O(log x); this is open for arbitrary even-positive lam, and only the √x log x growth bound is known.
+
+## Row 1070 — C1133 moment obstruction to even fakes that do not delete zeros (survivor [P], RH-world)
+- **Conjecture.**
+  - Work in the RH world (Z a positive measure on ℝ). Suppose lam is even-positive with minimal pole weight d* > 1 and spectral measure ν = Z + σ_R + ν_I, with σ_R ≥ 0 (no true zero deleted) and ν_I on 0 ≤ y < ½.
+  - Small-support even tests (supp ⊂ (−½log 2, ½log 2)) have no prime terms. Hence FT(σ_R + ν_I)(x) = 2(d* − 1)cosh(x/2) on (−log 2, log 2).
+- **Proof [P].**
+  - σ_R is a finite positive measure, since its FT is continuous at 0. At x = 0: σ_R(ℝ) = 2(d* − 1) − ν_I(total) ≥ 0.
+  - Second derivative at 0: −∫r² dσ_R = (d* − 1)/2 − ∫y² dν_I ≤ 0.
+  - But y < ½ gives ∫y² dν_I < ¼ν_I(total) ≤ (d* − 1)/2, a contradiction unless d* = 1 and ν_I = 0.
+- **Verdict.** SURVIVES [P] as a receiver statement. Under RH, every fake in the even cone above pole weight 1 must DELETE true zero mass: its real spectrum is not ≥ Z. Fake real zeros alone, or extra real mass alone, cannot pay for d* > 1, because the cosh(x/2) Taylor coefficients outgrow every y < ½.
+- **Reading for C892 (¬RH).** Without RH, Z is complex, and the fake must convert off-line quadruples into real or fake-real-zero mass while deleting true mass. The moment obstruction pins the trade: 2(d* − 1)·(¼)^k = Σ (moment contributions). Deletion is the only negative resource, and it sits at the zeros, where the Ξ-divisible family is blind.
+- **Lean.** Not formalized: RH-world only, receiver-side.
+
+## Row 1071 — C1134 analytic-continuation (Lukacs) rigidity for even fakes, and the far-bump difference law (killed + small survivor)
+- **Conjecture.**
+  - On small supports (|x| < log 2) the even form of lam at pole weight d is node-free: FT(ν) = arch + 2d cosh(x/2) there, while FT(Z_all) = arch + 2cosh(x/2) unconditionally. So FT(ν − Z_on) = FT(Z_off) + 2(d − 1)cosh(x/2) on the interval.
+  - If ν − Z_on were a finite positive measure minus finitely many deleted atoms (finitely many off-line zeros), Lukacs's theorem would apply: a characteristic function that is analytic near 0 is analytic in a strip. The identity would then hold on all of ℝ, and growth comparison (e^{x/2} against e^{δx}, δ < ½, and against non-oscillating cosh(yx), y < ½) would force d = 1, Z_off = ∅ and ν_I ⊂ {0}, i.e. C892 for such fakes.
+- **Attack.** The finite-type hypothesis is trivially self-defeating. Globally, FT(ν − Z_all) = 2(d − 1)cosh(x/2) + (Λ − lam)-nodes. A finite measure has a continuous FT, but the node part is atomic, so finite type already forces lam = Λ with no analysis. Every genuine fake perturbs infinitely many zeros. Then ν − Z_on has infinite variation, its FT is singular at 0 (log-density tails), and the Lukacs, moment (row 1070) and growth arguments all lose their grip.
+- **Verdict.** INSIGNIFICANT as stated (the finite-type class is empty for trivial reasons).
+- **Small survivor [P] (far-bump difference law).**
+  - Take far bumps e_a, e_b with pole value 1 and a < b < 2a. The difference e_b − e_a is pole-free, so W_{lam,β}(e_b − e_a) ≥ 0 is β-independent.
+  - Expanding exactly in the normalized log-scale densities D(x) (profile φ⋆φ) gives D(2a) + D(2b) − 2D(a + b) ≤ κ²·arch(e_b − e_a) + 2e^{−a}D(b − a) → 0.
+  - So the smoothed density of every weight system that is positive on the pole-free even cone is asymptotically midpoint-concave in u = log x, i.e. log-concave in the geometric-mean sense, and bounded above by β (row 1067).
+  - Concavity allows only oscillation on the log log x scale. It does not give the ceiling d ≤ 1: for concave D, 2D(a) − D(2a) is pushed up toward the limit d, not below 1.
+- **Lesson.** C892 is now pinned to the same object as C1195: infinitely-supported zero-perturbing measures with node-supported Fourier transform. Finite-type, moment and analytic-continuation tools see only finite perturbations. Stop attacking C892 head-on without a crystalline-measure input; record it as an open corpus question.
+
+## Row 1072 — corpus check
+- New corpus modules since row 1063 (other agent): `PrimeBlindFiniteCertificateObstruction` (finitely supported, eventually-zero or eventually-constant weights are never Weil-positive), `WeilMarkovArchimedeanWideTestNegativity` (Arch < 0 on wide tests, Ω(r) ≤ Ω(0) + m₂r² with m₂ ≤ 18), `WeilOddBlindPoleWeightWindow` (MUST-1505), and further Markov-ratio PBAP modules. None of them touches crystalline absorbers (C1195/C892). STATUS max ids: MUST-1505, CANNOT-556.
+
+## Row 1073 — C1135 PBAP_even as a sharp blind uncertainty principle for the Lévy generator (killed: Wall 12)
+- **Conjecture.**
+  - The arch symbol in λ = r² is γ(λ) = γ(0) + Σ_k (1/a_k)·λ/(4a_k² + λ), with a_k = k + ¼. This is a complete Bernstein function with poles at λ = −(2k + ½)². These are the Gamma poles s = −2k, and the k = 0 pole sits exactly at the ζ-pole point λ = −¼.
+  - So PBAP_even(1) reads E_Lévy(f) + P(f) ≥ |γ(0)|·‖f‖² ≈ 5.37‖f‖² on the blind even cone: a spectral-gap / uncertainty inequality for the subordinate-Brownian (Lévy) generator on node-orthogonal autocorrelations.
+  - Conjecture: a Γ₂ / Bakry–Émery or Beurling–Deny argument restricted to the node constraints proves it.
+- **Attack.**
+  - Under RH the inequality is sharp, with extremal (null) direction the TMP Ξ-divisible blind test (W = 0). Any proof must therefore produce Ξ's zero set as its equality case.
+  - Γ₂ / curvature methods give gaps on whole spaces or on subspaces invariant under the semigroup. The blind subspace is not invariant: heat flow multiplies f̂ by e^{−tλ}, which does not preserve g(log n) = 0 (C507: the blind cone has no convolution symmetry).
+  - Lagrange duality for the sharp constant forces the multipliers Λ and the dual certificate −ζ′/ζ on the line (MUST-1442 producer uniqueness).
+  - The quantitative partial versions are exactly the other agent's Markov spectral-second-moment lane, whose thresholds are capped by the null family's second moment.
+- **Verdict.** CIRCULAR (Wall 12). The extremizer is Ξ-built, and semigroup methods need invariance that blindness destroys. No salvage beyond the CBF reading: the Gamma poles in λ coincide with the trivial zeros, and the first one with the ζ pole. This explains why the pole weight 1 is rigid (row 821, MUST-1458).
