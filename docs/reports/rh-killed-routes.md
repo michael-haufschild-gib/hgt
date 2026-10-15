@@ -963,7 +963,7 @@ CIRCULAR (24):
 - no-go-333 C1 positive nuclear-root transport of Route-N projective leakage. [L] E: R:GammaSewnPluckerRouteNProjectiveLeakageNoGo, R:DeningerPrimeGammaLowerCauchyFiniteGramApproximation
 - no-go-360 RHist scalar positive darkness with finite continuous-observer price. [L] E: R:XiCanonicalRepairPairPositiveDarkHistoryNoGo, R:DeningerBigWittCrossPrimeRHistPriceEscape
 - no-go-372 RHist square-root singular rescaling. [L] E: R:DeningerBigWittCrossPrimeRHistSingularRescalingNoGo
-- Native Meyer log-clock boundary invariance fails at every Xi divisor point. Survivor: actual relative clock defect surjects onto finite full-jet packets; causal Xi chains give finite invariant cohomology sections, not a descended clock. [L-source] E: R:DeningerMeyerNativeClockBoundaryDefect; R:DeningerMeyerXiCausalChains; R:DeningerMeyerFiniteXiCausalSplitting.
+- Native Meyer log-clock boundary invariance fails at every Xi divisor point. Survivor: actual relative clock defect surjects onto finite full-jet packets; causal Xi chains give finite invariant cohomology sections, not a descended clock. [L] E: R:DeningerMeyerNativeClockBoundaryDefect; R:DeningerMeyerXiCausalChains; R:DeningerMeyerFiniteXiCausalSplitting.
 
 ### Ward, Suzuki, prime–Gamma and operator landing (76) — constrains WD, SZ, RP, PA, RN, W1C, SEC, MSC, APF, HF
 

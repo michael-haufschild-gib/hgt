@@ -32,7 +32,7 @@ Available tool set has no `update_plan` or `multi_tool_use.parallel`; this card 
 
 ## Current attack
 
-Paper reasoning only. Broad source reading now covers the unrestricted HF cone, its actual null family, the Phi-Doob form, twisted-arc minimum principle, arithmetic Hodge constructions, and the Sonin/co-Poisson source spaces. The target remains unrestricted HF positivity. No main positivity theorem or credible complete proof has been obtained; no Lean work is queued.
+The complete prime-energy divisor identity below is formalized; work on the main sign is on paper. Broad source reading covers the unrestricted HF cone, its actual null family, the Phi-Doob form, twisted-arc minimum principle, arithmetic Hodge constructions, and the Sonin/co-Poisson source spaces. The target remains unrestricted HF positivity. No main positivity theorem or complete proof has been obtained; no further Lean work is queued without a significant proved milestone.
 
 The present attempt is to derive a positive arithmetic quotient energy whose boundary value is the **entire** archimedean-plus-pole form. The source-defined co-Poisson quotient is available in the corpus; the equality with the HF form still needs a proof. Merely declaring a positive norm, invoking GNS, or assuming a positive limiting trace does not supply that equality.
 
@@ -149,6 +149,148 @@ Validation completed: targeted `lake env lean -o .lake/build/lib/lean/GaloisForL
 Repository-wide `scripts/formal_tools.py lint` exits 1, reporting unrelated modules unreachable from their umbrellas: `RHTower.CHMDStage17ComplexWavePacketFactorizationAndCoshSinhDecomposition`, `RHTower.DeningerMeyerCausalDivision`, and `HTGeometry.ParabolicCauchyAveraging`. No error for the new HF leaf was reported. Unrelated modules were not edited. No umbrella build, heartbeat increase, web search, numerical experiment, commit, or push was performed by this work.
 
 Resume paper work on the combined Gamma–prime–pole sign. The isolated-prime sector branch remains excluded. The overarching RH goal remains active and incomplete.
+
+## Continuation: full covariance and critical-line compensation
+
+This continuation produced no new HF positivity theorem and no new Lean code. Keep the main goal active. The Gaussian Gram attempt did not produce a factorization of the full form. `WeilWorkSingularArithmeticGaussianPairing.lean` assumes `WeilPositiveFull`; its positive measure cannot be used to establish that premise.
+
+The pole-to-zeta calculation attempted here is already formalized in `PrimeBlindPoleCriticalZetaDefect.lean`. For the symmetrized spectral measure `dν(t)=(1/(2π)) sum c_f |fhat(t)|² dt`, of mass `m`, integer blindness gives
+
+    pole + Gamma = integral (2 + gammaBracket(t) - 2 Re zeta(1/2+it)) dν(t).
+
+Do not re-formalize or call this a discovery. The source also proves the first-moment identity and a second-moment lower bound. `InvertedCosineDistanceGammaPhase.lean` gives a positive distance for *doubly* blind tests; ordinary integer blindness does not provide its extra cosine-dilation vanishing premise.
+
+An exact auxiliary calculation for a finite prime set P retains all rational covariance terms. For σ>0 put
+
+    Z_P,σ(t) = product_{p in P} (1-p^(-σ-it))^(-1),
+    A_P,σ(t) = sum_{p in P,k>=1} log(p) p^(-k(σ+it)).
+
+The finite Euler products have absolutely convergent expansions for every σ>0. Integer blindness therefore gives `integral Z dν=m` and `integral A dν=0`. Consequently
+
+    V_P(σ) = integral |Z_P,σ-1|² dν
+           = integral |Z_P,σ|² dν - m >= 0,
+    V_P'(σ) = -2 Re integral (|Z_P,σ|²-1) A_P,σ dν.
+
+Differentiation is justified locally in σ by the bounded finite Euler product and its uniformly convergent geometric derivatives. This is an auxiliary variance identity, not a significant milestone or a sign proof for the derivative. The factor `|Z|²-1` retains the mixed numerator/denominator correlations. Neither blindness nor positivity of `V_P` determines the sign needed in the derivative. No replacement of this covariance by a Haar average is allowed.
+
+The unresolved constructive step is to identify a positive realization of the **combined** critical Gamma–prime–pole form, with the Euler covariance and pole residue both retained. An unrenormalized positive Euler norm does not yet give this realization. The full Phi-divisor formula (Q3) remains the concrete source expression to match; the known Xi-divisible radical must be preserved. Do not formalize the auxiliary variance calculation or another conditional positivity wrapper while this step is missing.
+
+Additional actual Lean sources read: `WeilWorkPBAPGramPackets`, `WeilPaperPacketCoprimeFibre`, `WeilPaperPacketArchEnergy` (declaration inventory), `WeilPaperCovarianceDualAttainment`, `WeilWorkSingularArithmeticEulerPolydisk`, `WeilWorkSingularArithmeticHarmonicPositive`, `PrimeBlindLevelFloor`, `PrimeBlindPoleCurvatureFloor`, `WeilBlindPoleSignLaw`, and `ThetaRenewalExitDensity`. The renewal denominator is an auxiliary one-sided object; it does not supply full Weil positivity. `PrimeArchFiniteKMSLocalMomentClosure` and `PrimeArchConnesReflectionMain` retain their source-matching or saturation hypotheses.
+
+Completed local searches: `/tmp/hf-combined-poisson-search-20261015.json`, `/tmp/hf-weil-poisson-search-20261015.json`, `/tmp/hf-gaussian-full-gram-search-20261015.json`, `/tmp/hf-integer-blind-zeta-mean-20261015.json`. Deep searches report `partial=false` but semantic coverage unmeasured and compiler freshness mostly pending/stale. Candidates were checked against source rather than treated as proof evidence. No web search, numerical mathematical experiment, build, or commit in this continuation.
+
+## Continuation: theta cutoff and the two pole moments
+
+Main sign remains unproved. No new Lean milestone, source edit, or build in this continuation. The following paper calculation records the boundary term needed by a Gaussian/co-Poisson factorization; it is not queued for standalone formalization.
+
+Keep the physical normalization above and put
+
+    b(x) = -2*pi*x^2*exp(-pi*x^2),
+    q_N(x) = sum_{1 <= n <= N} psi(n*x),
+    R = N + 1/2,
+    qhat_N(x) = q_N(x) - R*b(R*x).
+
+The primitive identity `psi(x) = d/dx (-2*pi*x^3*exp(-pi*x^2))` gives
+
+    integral psi(x) dx = 0,       integral psi(x) dx/x = -1,
+    integral b(x) dx = -1/2,     integral b(x) dx/x = -1.
+
+Consequently every finite `q_N` has moments `0` and `-N`, whereas the completed theta source `q` has moments `1/2` and `1/2`. The corrected finite function `qhat_N` has **both moments exactly `1/2`**. For a correction of the form `-R*b(R*x)`, the first moment is `1/2` for every positive `R`; matching the second forces `R=N+1/2`. This explains why retaining only the leading escaping mass is insufficient for the quadratic pole pairing.
+
+There is an exact midpoint-cell representation, not merely a formal asymptotic. On the cell `[k-1/2,k+1/2]` let
+
+    K(t) = (1/2)*(1/2 - abs(t-k))^2.
+
+Then `0 <= K <= 1/8`, and Taylor's formula integrated on each cell gives
+
+    qhat_N(x) - q(x) = x^2 * integral_R^infinity K(t)*psi''(t*x) dt.
+
+Indeed `qhat_N = sum_{n<=N} psi(n*x) + integral_R^infinity psi(t*x) dt`; the displayed remainder is the sum of integral-minus-midpoint-sample errors over the tail cells. Gaussian decay justifies their absolute sum. In particular its `dx` norm tends to zero, as does its `dx/x` norm, by the explicit majorants
+
+    ||qhat_N-q||_{L1(dx)} <= (16*R^2)^(-1) * integral y^2*abs(psi''(y)) dy,
+    ||qhat_N-q||_{L1(dx/x)} <= (8*R)^(-1) * integral y*abs(psi''(y)) dy.
+
+The uncorrected escape can also be justified without exchanging a divergent theta integral: right-cell quadrature gives
+
+    ||q_N-q-N*b(N*.)||_{L1(dx)} <= N^(-1)*integral y*abs(psi'(y)) dy.
+
+Thus `q_N(x) dx` tends weakly, against bounded continuous functions on `[0,infinity)`, to `q(x) dx - (1/2)*delta_0`. The midpoint correction additionally fixes the second Mellin boundary moment exactly.
+
+For a general suitable seed `f`, the same correction is the finite operator
+
+    T_N f(x) = sum_{n<=N} f(n*x) - integral_0^(N+1/2) f(t*x) dt.
+
+It specializes to `qhat_N` on `psi`. Its Mellin multiplier in `0 < Re(s) < 1` is
+
+    sum_{n<=N} n^(-s) + (N+1/2)^(1-s)/(s-1).
+
+This identifies the exact linear counterterm but does **not** give a positive quadratic realization. A scalar boundary mass or a nonnegative Peano kernel does not control the mixed Gamma-prime-pole terms. Those terms, including cross terms between different dilations of the boundary profile, remain in the main proof obligation. No inference from scalar positivity to a positive Gram matrix is justified here.
+
+Next concrete main attempt: combine the divisor graph's conditional variances with the Gamma term into one positive variance identity. The full product fiber has signed tails; on `1 <= t <= N`, both Gaussian-polynomial factors in `G_N(t)` are nonnegative. A proposed identity must account exactly for the remaining tails and the pole boundary, retain arbitrary test values and all mixed terms, and annihilate the known Xi-divisible radical. No such identity or comparison has been proved. Do not substitute a per-prime estimate, an isolated graph spectral gap, or a new conditional wrapper for this task.
+
+Focused corpus checks completed: `/tmp/hf-matrix-minimum-search-20261015.json`, `/tmp/hf-theta-boundary-pole-search-20261015.json`, `/tmp/hf-odd-ground-state-search-20261015.json`, and `/tmp/hf-actual-positivity-producer-20261015.json`. All searches terminated; none supplies a new unconditional producer. Coverage warnings remain, so this is not an exhaustive absence claim. `EulerMaclaurinCountertermQuadratureAndOneSidedPBAP` already has general unit-cell identities; `WeilPhiDoobArchimedeanJumpAndHalfLineFolding` already has the exact odd-sector gap criterion. Do not repackage either as a discovery. No numerical mathematical experiment or web search was used.
+
+## Continuation: correlated Gamma prediction and the full quadratic remainder
+
+No main HF positivity proof or new Lean code in this continuation. The constructive paper object below retains the complete arithmetic Gram matrix. Its identification with the full HF form is still unfinished; do not formalize it merely as another positive candidate.
+
+For `alpha > 0`, the unit Gaussian scale vectors
+
+    h_(alpha,x)(r) = sqrt(2/Gamma(alpha))*(2*pi)^(alpha/2)
+                     *exp(alpha*x)*r^(alpha-1/2)*exp(-pi*exp(2*x)*r^2)
+
+in `L2((0,infinity),dr)` have Gram kernel
+
+    K_alpha(x,y) = cosh(x-y)^(-alpha).
+
+This follows by the Gamma integral. Distinct scale vectors are linearly independent: remove their common power of `r`, and successively extract the slowest decaying Gaussian from a finite exponential sum. Thus every finite matrix on distinct nodes is positive definite.
+
+Choose finite anchor nodes `A` and finite arithmetic nodes `S` (e.g. `log 2,...,log N`). Let `E_alpha` be the Schur complement of the `S` block of `K_alpha`; equivalently it is the Gram matrix of the anchor vectors after orthogonal projection off the span of the arithmetic vectors. For `beta > alpha > 0`, there is the **all-rank finite-increment inequality**
+
+    E_beta >= E_alpha Hadamard K_(beta-alpha)|_(A x A).
+
+Proof: `K_alpha - diag(E_alpha,0)` is positive semidefinite. Take its Schur product with the positive correlation matrix `K_(beta-alpha)`; use `K_beta = K_alpha Hadamard K_(beta-alpha)`. The resulting inequality for the full matrix descends to its Schur complement. This retains all off-diagonal arithmetic correlations. Increasing finite arithmetic sets gives the same finite-increment inequality for the closed-span projection, by convergence of orthogonal projections. No differentiability of that infinite limit has been established.
+
+At finite arithmetic depth, differentiation is legitimate and gives the positive kernel
+
+    L_alpha(x,y) = d/dalpha E_alpha(x,y) + log(cosh(x-y))*E_alpha(x,y).
+
+The Gamma spectral probability density of `K_alpha` is
+
+    p_alpha(t) = 2^(alpha-2)*abs(Gamma((alpha+i*t)/2))^2/(pi*Gamma(alpha)),
+    d/dalpha log p_alpha(t)
+      = log 2 - digamma(alpha) + Re digamma((alpha+i*t)/2).
+
+The minimizer's coefficient derivatives drop out of the derivative of the residual Gram matrix by its orthogonality equations. Hence, at `alpha=1/2`, `E_alpha'` is the actual archimedean conductor pairing of the residual packets minus
+
+    (digamma(1/2)-log(2*pi))*E_(1/2).
+
+This is an exact Gamma-generator match. It is not yet the HF match: `L_alpha` also contains the anchor separation term, and neither the pole nor the prime contribution has been absorbed. In particular, normalized prediction monotonicity alone cannot be called full Weil positivity. Projection onto the dilates of one Gaussian is also not a representation theorem for every finite prime-blind mixture.
+
+The finite boundary Gaussian from the preceding continuation makes the remaining terms explicit. Put `g(x)=exp(-pi*x^2)`, `b(x)=-2*pi*x^2*g(x)`, and, for any finitely supported real coefficients `a_n` on positive integers, put
+
+    f(x) = sum a_n*b(n*x),       g_a(x) = sum a_n*g(n*x),
+    A(s) = sum a_n*n^(-s),
+    f_alpha(x) = -2*pi*sum a_n*(n*x)^(alpha-1/2)*g(n*x).
+
+Then `f_(5/2)=f`. Gamma recurrence gives, with the physical normalization of this card,
+
+    W_Lambda(f) = (d/dalpha ||f_alpha||_2^2)|_(alpha=5/2)
+                 - ||g_a||_2^2 + A(0)*A(1)
+                 - 2*sum_(d>=2) Lambda(d)*integral f(x)*f(d*x) dx.
+
+Here `W_Lambda(f)` means the Weil form of the log test `u -> exp(u/2)*f(exp u)`. To check the identity: `Mellin b(s)=-s*Gamma_R(s)/2`, `Mellin g(s)=Gamma_R(s)/2`, and
+
+    Re digamma(5/4+i*t/2) - Re digamma(1/4+i*t/2)
+       = 1/(t^2+1/4).
+
+Thus the Gamma recurrence subtracts exactly `||g_a||_2^2`. The two pole moments are `Mellin f(0)=-A(0)` and `Mellin f(1)=-A(1)/2`, giving exactly `A(0)*A(1)`. The displayed prime series converges absolutely: the dilation pairing is `O(d^(-3))` because `f(x)=O(x^2)` at zero and is a finite Gaussian-polynomial sum at infinity. Shape differentiation is justified in a neighborhood of `5/2` by the same Gaussian integrability. No sign has been established for the combined remainder.
+
+Next main obligation is an exact coupling of this correlated Gamma-shape derivative with the entire prime operator, the Gaussian resolvent term, and both pole moments. It must cover arbitrary finite mixtures and preserve the Xi-divisible radical. A per-product-fiber spectral-gap estimate or a scalar conductor coordinate does not supply that coupling. Retain this as the concrete constructive attempt; no more standalone cutoff or covariance helper formalization.
+
+Source checks: `GammaConductorSchurCapacity` concerns independent diagonal prime channels and has an unbounded scalar cost; `GammaConductorSchurResidual` and `GammaConductorSchurStrictDefiniteness` retain the actual correlated Gamma kernel. Their strict residual positivity is already in the corpus. `ThetaCuspGaussianScaleOperator` does not identify its first-pair scale operator with the full native source operator. `WeilPositivityFiniteLevelExistence` is a compactness reduction with finite-level existence still required. `RelaxedHerglotzProducerFloor` retains the producer premise at the critical boundary. None was used as an unconditional HF producer.
+
+Finished searches: `/tmp/hf-divisor-gamma-variance-20261015.json`, `/tmp/hf-quadratic-green-producer-20261015.json`, `/tmp/hf-finite-weil-full-limit-20261015.json`, `/tmp/hf-gamma-prediction-monotonicity-20261015.json`. Search coverage warnings remain; actual source statements were checked. No owned live jobs, numerical mathematical experiment, web search, build, or commit.
 
 ## Cycle 1: reflected-prime positivity
 
