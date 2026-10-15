@@ -1236,3 +1236,133 @@ scratch Lean/part files and completed old search files are removed; audit
 scripts/log/names and the two next-source searches are retained. Latest
 full lint has only the unrelated ThetaRenewalReflectedArithmetic umbrella
 failure. The unconditional RH goal is active and not complete.
+
+## Cycle 14 — actual Poisson boundary clock defect
+
+Target stays the global IRK source-to-topology construction. The induced
+integer clock in PrimeRotationModule is external; it is not log-variable
+modulation. A literal Mellin translation need not preserve Poisson range.
+The secondary two-collar regulator has no proved identification with this
+IRK source, so its boundary annihilation cannot be imported as that claim.
+
+Exact source conjecture: let B(s) be the entire Mellin transform of the
+Poisson image of the fixed meyerPoissonTestSource. For every finite array
+of distinct points in 0 < Re(s) < 1 and every finite jet depth m, there is
+a positive native clock denominator q such that the map taking an actual
+cap source f to the derivatives through order m-1 of M(Zf) at rho_i+i/q
+is onto the full finite jet space. All sources can be chosen from the
+finite span of negative Euler iterates of the same fixed cap test.
+Thus this is a concrete relative boundary defect, not an assumed quotient
+clock action. In particular every full finite Xi multiplicity packet is
+hit. This does not construct a K0 class or prove trace integrality.
+
+Attack verdict: BRIDGE. The underlying interpolation is classical
+Hermite interpolation and multiplication by an analytic unit. It is not
+claimed novel. The improvement required here is actual Poisson-source
+provenance with all jets, rather than an abstract target or diagonal count.
+No external audit, per user instruction. Corpus searches:
+irk-global-modulation-search, irk-boundary-jet-transgression-search,
+irk-euler-source-search (all /tmp JSON files). No numerical experiments.
+
+Dependency-closed paper proof:
+1. For strong log g, exp(s t)g(t), exp(s t)g'(t), and
+   s exp(s t)g(t) are integrable by all-weight decay. Whole-line integration
+   by parts gives M(g')=-s M(g). Cap is Euler-stable and differentiation
+   commutes with its actual Poisson map. Therefore the negative Euler
+   iterate E^n f has boundary transform s^n M(Zf).
+2. Consequently the finite source sum sum c_n E^n f has transform P(s)B(s)
+   for P(s)=sum c_n s^n. This is an actual cap source, with no lift premise.
+3. B is entire and nonzero: at s=2 its exact zeta-times-source factorization
+   has two nonzero factors. Hence its zeros are isolated. For each of the
+   finitely many rho_i, B(rho_i+t) is nonzero for all sufficiently small
+   nonzero t. Take a common radius and a native t=i/q inside it. Translation
+   preserves distinctness and the positive real parts of the nodes.
+4. On jets at the translated nodes, multiplication by B is invertible:
+   analytic order of P B equals that of P since B(node) != 0. Thus zero
+   product jets force zero polynomial jets. Hermite interpolation makes
+   the degree < K*m polynomial jet map bijective; composing with this
+   unit multiplication is bijective. Step 2 realizes it on actual sources.
+5. For variable multiplicities choose m at least their maximum and project
+   the uniform packet. This retains every requested derivative. For the
+   unshifted actual Xi nodes, all these boundary jets vanish by the existing
+   full-multiplicity Poisson annihilation theorem. The shifted map is
+   therefore a genuine nontrivial failure of descent of the physical clock.
+
+Open core after this bridge: construct the relative noncommutative
+projective/transgression class from these literal boundary relations and
+prove its arithmetic trace constraint. Surjectivity alone cannot impose
+critical-line placement and must not be advertised as doing so.
+
+Cycle 14 first leaf verified warningfree on its actual path:
+DeningerMeyerBoundaryEulerSource.lean. Actual integration-by-parts and
+cap negative Euler polynomial synthesis now compile. Fresh olean/ilean
+written. Full-jet and native-clock leaves remain under verification.
+
+Possible next topological construction to attack, not a proved result:
+compactify the meromorphic Xi gauge as a graph projection. Graph
+projections have integer canonical trace when their entries lie in the
+rotation algebra, while local poles can create a Chern obstruction.
+The serious issue is membership/covariance: a general Xi gauge on the
+vertical spectral line is not automatically periodic in the prime phase,
+nor an element of the rotation C* algebra. Bounded entries alone prove
+nothing about that membership. A measurable factor completion would also
+lose discrete trace range. Thus graph completion may give a concrete place
+to attack arithmetic descent, but cannot be asserted as the missing lift.
+No graph projection is being substituted for a source theorem.
+
+Cycle 14 physical-clock identification added to native leaf draft: the raw
+log modulation exp(a*t)g(t) has Mellin transform M(g)(s+a), including every
+spectral derivative. Surjective full Xi defects therefore give actual cap
+boundaries whose modulation has no literal cap-boundary preimage. This is
+stronger source provenance than the earlier local-principal-ideal no-go.
+All-weight admission of modulation is not yet asserted by this raw identity.
+
+Hard-obstacle analysis to retain:
+- Euler interpolation uses the additive Mellin coordinate. Earlier Cycle 5
+  already proved that adjoining that coordinate to the clock algebra gives
+  a commutator equal to 1 and destroys a normalized cyclic trace. Source
+  generation by Euler iterates is not permission to extend the trace to all
+  source operators.
+- The physical clock fails boundary descent; the induced external integer
+  clock has exact boundary invariance but is a different module. Identifying
+  external clock shifts with physical modulation changes the boundary
+  complex. The new full-jet defect must be retained in that change, rather
+  than quotiented away.
+- One possible genuine next construction is a relative derived periodization
+  of that induced complex, with the clock-defect object surviving in its
+  index class. A declaration that the ordinary quotient already admits the
+  physical clock is now explicitly ruled out at the actual source level.
+- Global two-shift Bezout/synthesis is not available: avoiding finitely many
+  zeros at a native rational-imaginary step does not avoid all Xi zeros at
+  once, nor prove growth-controlled Mellin division. No such implication is
+  used in Cycle 14.
+
+## Cycle 15 — exact global Xi cap generator
+
+The explicit Mellin formula for meyerPoissonTestSource implies the stronger
+source identity B(s)=xi(s)/(4*pi^2). This identifies the fixed source in
+Cycle 14 with the exact global Xi factor, not merely a function sharing
+local nonvanishing properties. Verdict: BRIDGE; the identity is a theta/
+Mellin calculation and is not claimed novel scientific knowledge.
+Corpus search /tmp/irk-fixed-boundary-xi-search.json is partial=false and
+returned no applicable ready-made identity among its hits. Exhaustive
+source-text search found no direct meyerPoissonTest/xi named comparison.
+
+Closed paper proof: on Re(s)>1, Poisson Mellin factorization gives zeta(s)
+times (s-1)/4 * pi^(-(s+4)/2) * Gamma((s+2)/2). The Gamma recurrence changes
+the final factor into (s/2)Gamma(s/2). Multiply by 4*pi^2 and combine powers
+of the positive number pi; the result is exactly
+s(s-1)/2 * Gamma_R(s) * zeta(s) = xi(s). Both boundary transform and xi are
+entire, so equality holds globally by the identity theorem. Therefore the
+scaled actual cap source 4*pi^2 * meyerPoissonTestSource has boundary Mellin
+transform exactly xi. Negative Euler polynomial synthesis gives P(s)xi(s)
+from actual cap sources. The ratio of the source boundary transform at s
+and its physical-clock translate at s+a is exactly xi(s)/xi(s+a), including
+Lean's totalized values at poles; all previous meromorphic gauge theorems
+therefore attach to this actual global cap source.
+
+Cycle 14 final native leaf passed actual-path Lean warningfree, including
+all-multiplicity surjectivity, zero unshifted map, exact physical Mellin
+translation on every derivative, and actual failure of Poisson-boundary
+invariance. All three Cycle 14 leaves are wired once into RHTower.lean.
+Cycle 15 exact Xi cap-source leaf is now under verification.

@@ -243,7 +243,7 @@ theorem integral_sub_oddFarCoeff_mul_exp {g : ℝ → ℝ} (hg : Continuous g) (
     funext x; ring
   rw [e, integral_sub hig (hio.const_mul _), integral_const_mul, integral_oddFarBump_mul_exp]
   unfold oddFarCoeff
-  rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hJ, div_self hE, mul_one, sub_self]
+  rw [div_mul_cancel₀ _ (mul_ne_zero hE hJ), sub_self]
 
 /-- **Pole-Free Coefficient of an Odd Far Bump**:
 `oddFarCoeff (oddFarBump b) a = (Real.exp (-b / 2) - Real.exp (b / 2)) / (Real.exp (-a / 2) - Real.exp (a / 2))`. -/

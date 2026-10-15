@@ -2,10 +2,12 @@ import Mathlib.NumberTheory.LSeries.Injectivity
 import Mathlib.Analysis.Asymptotics.Lemmas
 
 /-!
-Working proof for the DR prime-curve vacuum-regularity audit.
-Only Dirichlet coefficient separation is formalized here. The Hilbert-curve
-Taylor argument and finite-smoothness source models remain outstanding.
-This file is a draft artifact, not an integrated RH proof module.
+Archived dependency for the DR prime-curve vacuum-regularity audit.
+These statements are integrated and strengthened in
+RHTower.PrimeCurveCoefficient, in PrimeCurveVacuumRigidity.lean.
+The complete actual-curve obstruction and sharp finite-smoothness survivor
+are now formalized there and in PrimeCurveFiniteSmoothModels/Jets.lean.
+This historical dependency artifact is not an RH proof.
 -/
 
 open Filter Topology

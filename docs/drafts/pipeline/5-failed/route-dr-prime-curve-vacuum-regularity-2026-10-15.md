@@ -1,9 +1,9 @@
 # DR: vacuum regularity of an actual prime-curve source
 
-Status: exact finite-C^k existence, derivative, and norm survivor formalized.
-Actual-curve Taylor and truncation control formalized. The complete
-smooth-germ obstruction remains paper work. No RH certificate.
-DR and the unconditional RH goal remain active.
+Status: FALSE — smooth vacuum producer excluded on the actual arithmetic
+curve. Exact finite-C^k existence, derivative, sharp norm lower bound,
+attainment, and C-infinity obstruction fully formalized. No RH certificate.
+Only this producer class is retired. DR and the unconditional RH goal remain active.
 
 Previous turn ruled out automatic root gain from a normalized Frobenius
 action. This cycle tests a different proposed producer: a holomorphic
@@ -158,15 +158,16 @@ Current Lean files inspected:
 No exact matching theorem was found in the searches inspected so far;
 this is not a claim of exhaustive absence from the corpus or literature.
 
-## Outstanding work
+## Audit and continuation scope
 
-1. Audit the exact smooth-germ obstruction and finite-C^k survivor against
-   current Taylor and Dirichlet machinery; keep quantifiers as above.
-2. Decide the scientific contribution relative to the parent results.
+1. The exact smooth-germ obstruction and sharp finite-C^k survivor are
+   now proved and formalized with actual-curve quantifiers as stated.
+2. Novelty/significance beyond the standard parent arguments remains
+   unestablished. External literature searches are excluded by the user.
    New Lean infrastructure alone does not meet the research goal.
-3. Finish the actual-curve prime-coefficient obstruction. The exact finite-C^k
-   construction, derivative, and norm are formalized below; do not retire
-   the candidate before the remaining closure work.
+3. No-go closure is complete for this candidate: the positive survivor
+   has an explicit construction, exact derivative, sharp lower bound,
+   and matching norm. This does not retire DR or singular source models.
 4. Continue at the actual source attachment with the singular first-prime
    coordinate retained. Smooth finite-energy vacuum regularization cannot
    be assumed to supply it. The requested half-strip remains uncertified.
@@ -313,3 +314,102 @@ to vanish. The remaining formal work is these radial Taylor, truncation,
 finite multilinear expansion, and prime-product identification steps.
 This is a proof refinement of the recorded paper theorem, not a new
 scientific conjecture or a claim that the half-strip is certified.
+
+## Derivative, norm, and Taylor control now formalized
+
+`RHTower/PrimeCurveFiniteSmoothJets.lean` closes the exact positive
+survivor: `hasFDerivAt_finiteSmoothModel` and
+`norm_fderiv_finiteSmoothModel` identify the derivative of the explicit
+model and prove its norm is sqrt(pi(2^k)), for k>=1.
+`exists_finiteSmoothGerm_with_derivative` packages the C^(k+1) model,
+its genuine Euler-curve identity, derivative, and norm. No continuation
+or RH premise occurs. Direct Lean check exited 0 silently; scratch axiom
+audits of the main statements returned only propext, Classical.choice,
+Quot.sound.
+
+`norm_lowerBound_of_prime_coordinates` gives the corresponding lower
+bound for any bounded reader with the specified finite prime values.
+`no_bounded_all_prime_reader` rules out a bounded reader taking value 1
+on every prime unit vector, by Riesz representation and nonsummability
+of the constant sequence. These reader hypotheses are not yet derived
+from actual-curve agreement in the integrated corpus.
+
+`RHTower/PrimeCurveTaylorControl.lean` now proves the analytic transfer
+needed for that derivation. Direct production Lean compilation exited 0
+silently. It contains:
+
+- The scalar radial derivative identity and a local Taylor remainder
+  O(||x||^(k+1)) obtained from scalar Taylor's theorem.
+- Hilbert norm truncation bounded by
+  (N+1)^(1-sigma)*||v(1)|| for sigma>=1, and hence an omitted tail
+  o(N^(-sigma)) for every N>=1.
+- Convergence of the actual curve and its finite truncations to zero.
+- Transfer of vanishing on the actual curve to an o(N^(-sigma)) value
+  on the truncated curve, using the strict derivative of a C^1 germ.
+- `truncated_radial_taylor_isLittleO`: for a C^(k+1) function vanishing
+  on the actual curve, its degree-k truncated radial Taylor polynomial
+  is o(N^(-sigma)) whenever 1<=N<2^(k+1).
+
+The remaining link is finite multilinear expansion, extraction of the
+prime coefficient, and combination with the bounded-reader contradiction.
+The C^1 endpoint at p=2 needs the Frechet little-o remainder instead of
+the nonsharp Taylor bound. The smooth-germ no-go is not yet claimed as
+formally complete. Both new production modules are wired into the RH
+tower umbrella. Final lint/index and the control-module axiom audit are
+still pending at this checkpoint. They were subsequently completed below.
+
+## Final closure of this producer class
+
+`RHTower/PrimeCurveVacuumRigidity.lean` completes the actual-curve proof.
+The finite Taylor polynomial is expanded over ordered prime words. Its
+integer frequency is the product of the word's prime entries. A prime
+frequency has word length exactly one. The finite exponential sum is
+identified with a genuine, everywhere-convergent finite Dirichlet series;
+Mathlib's dominant-coefficient theorem then extracts every coefficient
+through the cutoff. This does not assume agreement on finite prime packets.
+
+For k>=2 the strict cutoff p<2^k supplies sufficient decay. At k=1,
+p=2, the Frechet little-o remainder controls the degree-one Taylor
+polynomial directly. Both cases are proved, with no dropped endpoint.
+
+Main integrated statements, in `RHTower.PrimeCurveModel`:
+
+- `prime_fderiv_zero_of_vanishing_curve_sharp`: a C^k germ vanishing on
+  the actual curve has derivative zero at e_p for p<=2^k.
+- `prime_fderiv_eq_one_of_euler_curve`: a C^k germ matching the genuine
+  Euler logarithm has derivative value 1 at those same prime coordinates.
+- `norm_fderiv_lowerBound_of_euler_curve`: its derivative norm is at
+  least sqrt(pi(2^k)); `finiteSmoothModel k` attains that bound exactly.
+- `no_smooth_euler_curve_germ`: no open neighborhood of zero carries
+  one C-infinity function with eventual actual-curve Euler agreement.
+
+The no-go is unconditional. The Euler identity is the actual zeta identity
+on the real Euler domain. No RH, continuation, zero exclusion, or bounded
+all-prime reader is assumed. The bounded-reader contradiction is derived
+from actual-curve agreement and smoothness. The sharp finite-order models
+remain a nontrivial positive survivor, with all claimed parts formalized.
+
+Paper corollary for the intended Kummer application: a smooth complex-valued
+source R near the vacuum, with R(0) nonzero and R(v(sigma))^d=zeta(sigma),
+would give G=d*log|R| on a smaller neighborhood. This is a smooth Euler
+logarithm, contradicting the theorem. This conversion is an explicit paper
+corollary; no separate Lean theorem for complex-valued R is claimed here.
+Singular vacuum sources and sources defined away from the vacuum remain
+outside the obstruction.
+
+Validation: all three new production modules passed direct Lean checks;
+the integrated rigidity module and its dependencies also compiled to their
+required object files. The final scratch axiom audit of the positive model,
+Taylor transfer, sharp vanishing theorem, norm lower bound, and smooth-germ
+no-go returned only propext, Classical.choice, Quot.sound. Formal lint exited
+0, with repository large-file warnings only. Index generation exited 0.
+No full or umbrella build was run. The original coefficient-only draft is
+archived alongside this card; its statements are integrated and strengthened
+in `RHTower.PrimeCurveCoefficient`.
+
+Verdict: FALSE for the proposed smooth vacuum producer; SURVIVES for the
+sharp finite-order construction/classification. This settles the tested
+obstacle rather than replacing its missing proof by an assumption. It adds
+no zero-free half-strip, no compatible global root section, and no RH proof.
+The next unresolved work stays within DR: actual arithmetic attachment of
+Kummer roots with the singular first trace retained.

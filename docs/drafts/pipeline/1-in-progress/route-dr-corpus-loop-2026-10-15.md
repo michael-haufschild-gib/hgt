@@ -847,3 +847,65 @@ The old coefficient-separation draft remains needed. Do not retire the
 candidate or call the full boundary theorem formalized yet. No half-strip
 or RH certificate was gained. Standard parent theory explains this positive
 construction; scientific novelty remains unestablished. Keep DR active.
+
+## Actual-curve vacuum boundary fully verified
+
+The previous outstanding work is now closed. Added and directly compiled:
+
+- `RHTower/PrimeCurveFiniteSmoothJets.lean`: the explicit finite-C^k
+  model has derivative the finite prime reader and norm sqrt(pi(2^k)).
+  It also supplies the bounded all-prime reader contradiction and the
+  packaged model/identity/derivative/norm existence theorem.
+- `RHTower/PrimeCurveTaylorControl.lean`: actual Hilbert prime curve,
+  finite truncation, radial Taylor bound, and transfer of actual-curve
+  vanishing to a finite Taylor polynomial with the required decay.
+- `RHTower/PrimeCurveVacuumRigidity.lean`: finite multilinear expansion,
+  prime-frequency isolation, Dirichlet coefficient extraction, the C^1
+  endpoint, the sharp norm lower bound, and the full smooth-germ no-go.
+
+Exact final result: a C^k germ on real ell^2(primes), k>=1, matching
+log|zeta(sigma)| on the actual vector (p^-sigma) for all sufficiently
+large real sigma has derivative value 1 at every e_p with p<=2^k.
+Its derivative norm is at least sqrt(pi(2^k)). The explicit finite model
+attains that bound. No single C-infinity germ has the matching property.
+The proof derives these coefficients from actual-curve agreement; it does
+not assume agreement on arbitrary finite prime packets. No continuation
+or RH premise enters. The k=1, p=2 endpoint is included.
+
+All new production checks exited 0, silent. Their required object files
+were generated for dependency checks. The final scratch axiom audit of
+the positive model, Taylor transfer, sharp coefficient theorem, sharp
+norm bound, and C-infinity contradiction returned only propext,
+Classical.choice, Quot.sound. Formal lint exited 0 with repository
+large-file warnings. Index generation exited 0. No full or umbrella build.
+The three modules are wired into the RHTower umbrella.
+
+Moved the completed negative candidate and archived coefficient draft to
+`5-failed/route-dr-prime-curve-vacuum-regularity-2026-10-15.md` and
+`5-failed/route-dr-prime-curve-vacuum-coefficient-work-2026-10-15.lean`.
+The positive survivor's construction, derivative, sharp bound, and
+attainment are all fully formalized. The original coefficient draft is
+superseded by `RHTower.PrimeCurveCoefficient` in the integrated module.
+
+Paper Kummer corollary: a complex-valued smooth source R near zero with
+R(0) nonzero and R(v(sigma))^d=zeta(sigma) would yield the forbidden smooth
+germ d*log|R|. This corollary has not separately been packaged in Lean.
+
+Anti-theatre: this is a precise exclusion of a proposed source class,
+with its sharp positive survivor. It gives no compatible global root
+sections or zero-free half-strip. Scientific novelty/significance beyond
+standard Taylor, Dirichlet, prime, and Hilbert arguments is unestablished.
+Anti-laziness: the actual-curve coefficient link, the sharp endpoint, and
+the exact positive classification were completed rather than left as
+assumptions. Only this smooth-vacuum producer is retired. DR stays active;
+the next unresolved work is arithmetic attachment of Kummer roots with
+the singular first trace retained. The RH goal remains active.
+
+Final cached lexical lookup finds `exists_finiteSmoothGerm_with_derivative`,
+`truncated_radial_taylor_isLittleO`, and `no_smooth_euler_curve_germ` in
+their integrated modules. The lexical output has no partial/coverage
+fields; no additional freshness claim is inferred. All 25 owned temporary
+source/search/log files were removed by exact path and absence verified.
+No owned prime-curve Lean process remains. Persistent state is in the
+archived card, live log, production modules, and Serena memory
+`route-dr/prime-curve-vacuum-rigidity-sharp-closure-2026-10-15`.

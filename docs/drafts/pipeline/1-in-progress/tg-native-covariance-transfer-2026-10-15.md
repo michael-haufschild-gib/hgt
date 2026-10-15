@@ -330,3 +330,78 @@ The source search for causal prime-power coercivity completed with `partial=fals
 Anti-theatre audit: the checked result strengthens the fixed-modulus obstruction by allowing factorial moduli to grow while retaining the exact cubic causal restriction. Its positive prime-window lower bound is explicit. It does not prove the actual deficit grows too fast, disprove signed cancellation, bound the zero-counting cubic, or advance the missing arithmetic upper estimate. No external scientific novelty is claimed.
 
 Anti-laziness audit: the arithmetic coefficients, complete ordered prime-pair square, and deleted-force distinction were retained. The failed inference is closed with a positive theorem rather than a generic index lemma. The original arbitrary-coefficient spline proposal is still unproved, not refuted by this result. The main next obligation remains a signed bound for the actual source, such as the existing affine coprime lower-bound target; replacing it with a positive renewal contraction is now explicitly excluded by this causal argument alone. TG and unconditional RH remain active and unresolved.
+
+## Continuation: actual neutral quadratic work and phase normalization
+
+No new dependency-closed paper proof, Lean theorem, or arithmetic upper bound was obtained in this cycle. The moving-Euler lower bound above remains the last newly verified result. No Lean files were changed and no build or lint run is claimed for this documentation-only continuation.
+
+The signed-action attempt used the actual coefficient vector from `CCMPrimeDeficitNeutralWork.lean`. At `N = floor(exp(T/2))`, it retains `mu(n)` for `n <= N`, has coefficient `-(n/N) * sum_{j<=N} mu(j)/j` for `N < n <= 2N`, and vanishes afterward. Its harmonic moment vanishes exactly. With `R` the complete divisor pole remainder, the unresolved full quadratic work is
+
+```
+Q(T) = sum_{m,n <= 2N} a_N(m) a_N(n) R(T - log(m) - log(n)).
+```
+
+Existing source theorems give `D(T) = L(T) - Q(T)`, a critical-scale polynomial bound on `L`, and a critical-scale polynomial bound on the entire absolute diagonal of `Q`. They do not give that bound on the unequal-label sum. `CCMPrimeDeficitCompletePole.ccmPrimeDeficitDivisorSource_harmonic_neutral_bound` retains the square of the coefficient l1 mass. Removing the exponential pole therefore does not itself supply the missing square-root-scale cancellation.
+
+The attempted variational shortcut did not close this gap. `CCMPrimeDeficitCoefficientAction` and `LogarithmicReconstructionVariation` establish exact stationarity at the actual Möbius vector, but the Hessian is the signed complete doubled-source form. No minimizing or maximizing property was established for the actual vector. The two-point determinant in `CCMPrimeDeficitShortSourceMatrix` does not by itself decide the restriction to harmonic-neutral vectors; it was not used to claim such a no-go. Free coefficients beyond the half cutoff preserve the reconstruction action, but no extension with both controlled coefficient cost and controlled full quadratic work was constructed.
+
+The direct zero-counting transfer was also checked again, without claiming novelty. `CubicArithmeticRectangleSource` already realizes actual enclosed Xi multiplicity as an ordinary anchored cubic trace. `CubicCirculantWindingIntegral` uses the actual phase `f/|f|` and proves
+
+```
+(phase(f))' / phase(f) = f'/f - (log |f|)'.
+```
+
+The exact derivative integrates away; the reciprocal factor in `f'/f` remains. No estimate for this normalized current or its cubic realization by the TG source budget was proved. The arbitrary completion-frame identities in `PrimeBurnolSourceFrameCubicHolonomy` do not identify that frame with the required arithmetic phase. `PrimeBurnolThetaCubicTraceCancellation` concerns its specified admitted traces and masks; its cancellation was not transferred to the actual zero-counting cubic. The inspected source-response determinant theorem in `CCMSourceResponseDeterminantDichotomy` requires a positive-semidefinite metric and boundary hypotheses, and does not discharge the actual signed arithmetic inequality. The critical-line feature projection equality in `HedenmalmWardGreenRemovableExtensionKernelProjection` is explicitly equivalent to RH, so it cannot be inserted as an unconditional producer.
+
+Search accounting: `signed Euler action cancellation renewal critical source bound` ended partial with reranking unfinished; `harmonic neutral actual Mobius quadratic deficit Hessian lower bound` ended partial with semantic retrieval unfinished. Both reported older coverage-generation snapshots and unavailable semantic coverage. `orthogonal Riesz projection arithmetic trace defect zero exclusion` ended partial with two queries, the deadline, and filtering/judging unfinished. Exact relevant Lean statements were inspected. These searches prove neither exhaustive absence nor external novelty. No external literature search or numerical experiment was performed.
+
+Anti-theatre audit: no new scientific knowledge or frontier movement this cycle. Several checks repeated existing corpus distinctions; another generic stationary-action, phase, or index receiver would repeat that work. The next cycle must attempt a proof of the actual unequal-label cancellation or an estimate on the same normalized arithmetic cubic that counts zeros. The route remains TG; this is not a reason to pivot or retire it.
+
+Anti-laziness audit: the unresolved signed mixed term and reciprocal normalization were confronted directly. Neither was replaced with a diagonal, averaged-sign, or separately supplied index estimate. No effort-based scope reduction, extra RH premise, axiom, or substitute Lean module was introduced. The affine coprime lower-bound target and native source admission remain unproved. The unconditional RH goal remains active, with no external-state blocker.
+
+## Continuation: cross-route one-sided tools recovered and applied
+
+User correction: search other routes' and agents' Lean work for usable mechanisms, including previously proved two-sided-to-one-sided reductions. The temporary goal pause was followed by an explicit active status. The full objective remains unconditional Lean RH through TG.
+
+This audit found a directly applicable theorem that the preceding cycles missed. `ChebyshevDeficitPrimitiveOneSidedRH.lean:580` already proves RH from either signed linear envelope of `exp(-T/2) D(T)`. Its public lower and upper versions are at lines 649 and 666:
+
+```
+forall T >= 0, -B (1+T) exp(T/2) <= D(T)  ==> RH
+forall T >= 0,  D(T) <= B (1+T) exp(T/2)  ==> RH.
+```
+
+The proof uses a positive comparison measure and Landau's theorem. Its real-axis continuation is justified by nonvanishing of the pole-removed zeta function on the positive real axis; the resulting half-plane continuation excludes actual zeros. This is existing corpus mathematics, not a new result or an unconditional proof of the bound.
+
+### Exact consequence for the current TG work
+
+Let `W(T) = ccmPrimeDeficitShortQuadraticWork T`. The existing unconditional error estimate is `|D(T)-W(T)| <= 7 exp(T/2)`. Thus **either** of
+
+```
+W(T) <= B (1+T) exp(T/2),
+-B (1+T) exp(T/2) <= W(T),
+```
+
+for every nonnegative `T`, suffices: transfer the selected side to `D` with constant `B+7` and apply the existing one-sided theorem. Both compositions were checked in `/tmp/tg_cross_route_one_sided_audit.lean` using `lake env lean`; the command exited 0. This is an applicability audit with explicit unproved arithmetic premises, not a new conditional leaf or a claimed solution.
+
+For the exact neutral decomposition `D=L-Q`, the sufficient lower comparison is
+
+```
+Q(T) >= L(T) - B (1+T) exp(T/2).
+```
+
+That composition also passed the same Lean scratch audit. It retains the actual linear term and every mixed pair. No global sign of `Q`, no absolute bound on `Q`, and no positivity on all coefficient vectors is required by this target. The comparison itself remains the open arithmetic core. The existing polynomial bound on `L` is not silently replaced by a linear one. The alternative attempt to impose an eventual fixed sign was not selected; no new sign theorem or no-go is claimed.
+
+### Other routes' reusable mechanisms
+
+- `CCMUnitRieszSuzukiGreenPositiveInverse.lean:103,125,236` gives an exact inverse with positive coefficients: `g(t) + (3/2) integral(g) + (1/2) integral(integral(g))`. Its order preservation transfers a one-sided bound on the actual corrected Green source to the opposite signed Suzuki bound, retaining the boundary correction. This is a concrete positive inverse, unlike the signed Möbius inverse. It cannot be transferred between those operators without an identity.
+- `MobiusDivisorOneSidedPowerGapBootstrap.lean:241,596,610,632` gives one-sided subpower control, sampling on arbitrary fixed positive integer powers, and adaptive power-window criteria for the actual Möbius-divisor Abel moment. Its proof combines endpoint monotonicity with a two-step contraction of the supremal zero displacement. A bounded upper sample is required in every sufficiently late window of width `n^(1-delta)`, for some `delta>0`; arbitrary cofinal returns do not meet that hypothesis.
+- `MobiusDivisorLowerStripPowerGapBootstrap.lean:491,515,867,881,903` supplies the lower-bound mirror. Its source-level unconditional sample transport is `min(A(k)/k,0) - (n-k)/sqrt(n) <= A(n)/n` for `1<=k<=n`, giving a direct square-root-gap lower transport before the general power-gap bootstrap. These lower-mirror statements were inspected in source, not included in the scratch import audit.
+- `GaussianPrimeBudgetOneSidedLaw.lean:695,947` needs only weighted integrability of the **positive excess** above a Gaussian prime-versus-continuum budget, for every positive Laplace weight. A pointwise bound or two-sided absolute norm is not needed. It supplies actual zero exclusion through the same positive/negative-part Landau mechanism. Transport of TG's source to this specific Gaussian excess is still required before use.
+- `WeilParityPoleOneSidedRH.lean:118,125` shows either single literal parity test at every aperture already decides RH. Lines 206 and 358 give even-pole majorant and odd-pole nonnegative-minorant criteria with explicit arithmetic order hypotheses. They do not construct such a positive comparison system.
+- `CCMPrimeDeficitBohrFlux.lean:378,412` had already applied the one-sided deficit theorem and proved cofinal two-sign oscillation of the actual incoming deficit. Reproving a generic one-sign obstruction would repeat existing work. `MertensSquareRootOmega.lean:706` and `WeilLagFunctionOneSided.lean:477` supply further one-sided endpoints, inspected in source.
+
+Scratch validation: the actual deficit criterion, upper power-sampling criterion, and Gaussian excess equivalence imported successfully. Their axiom audits returned only `propext`, `Classical.choice`, and `Quot.sound`. Both signed short-work transfers and the neutral lower comparison elaborated successfully. No new Lean repository module, umbrella edit, arithmetic hypothesis discharge, numerical experiment, or full build was made.
+
+Search accounting: the neutral-positivity deep query was partial with two subqueries and semantic retrieval unfinished; the sign-oscillation deep query completed with `partial=false`. The unrestricted cross-route deep query was partial at reranking and reported older coverage and unavailable semantic coverage. Rephrasing directly to lexical `oneSided riemannHypothesis` recovered the relevant criterion family, including the lower power-gap mirror. This is a warning against relying only on broad semantic rankings or restricting discovery to the current source-module prefix.
+
+Anti-theatre: these are recovered existing tools, not new scientific knowledge. The mathematical frontier has not moved, but the next proof obligation has been corrected: one signed envelope on the actual short quadratic work is enough. Anti-laziness: exact carriers, signs, window quantifiers, and boundary corrections were checked; the direct TG compositions were run in Lean. The next research cycle must attack that one-sided arithmetic inequality and check cross-route mechanisms before inventing another receiver. TG remains active and the inequality remains unproved.

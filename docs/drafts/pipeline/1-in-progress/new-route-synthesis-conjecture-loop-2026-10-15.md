@@ -386,9 +386,9 @@ With Stages 1–3 in place, the entire RH frontier reduces to two dual, mutually
 
 ---
 
-## Part V: Lean 4 Formalization Ledger (CHMD Stages 1–4)
+## Part V: Lean 4 Formalization Ledger (CHMD Stages 1–12)
 
-All four stages of the CHMD architecture have been formalized with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations, audited via `lake env lean`, compiled via `lake build --old`, and wired into `formal/GaloisForLFunctions/RHTower.lean`:
+All twelve stages of the CHMD architecture have been formalized with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations, audited via `lake env lean`, compiled via `lake build --old`, and wired into `formal/GaloisForLFunctions/RHTower.lean`:
 
 1. **Stage 1 (`formal/GaloisForLFunctions/RHTower/CHMDStage1MultiplicativeResolventAndClampedBeam.lean`):**
    - `RHTower.CHMDStage1.weilPositiveEvenPolar_iff`: Even pole-free positivity holds if and only if `RiemannHypothesis` holds and `lam n = Λ(n)` for all `n ≥ 2`.
@@ -415,3 +415,28 @@ All four stages of the CHMD architecture have been formalized with zero `sorry`,
    - `RHTower.CHMDStage4.evenWeilDensity_specSq_nonneg_of_sechHalf_measure`, `RHTower.CHMDStage4.weilPositiveFull_of_sechHalf_measure`, `RHTower.CHMDStage4.riemannHypothesis_and_eq_vonMangoldt_of_sechHalf_measure`, `RHTower.CHMDStage4.riemannHypothesis_and_eq_vonMangoldt_of_positiveDefinite_sechHalf`: Single-function sech-measure and Bochner rigidity—positivity of the single 1D function `cosineShiftFn lam sechHalf` alone forces `ν{ρ² ≤ 2} = 0`, `ν{ρ² > 2 ∧ Ξ(√(ρ²-2)) ≠ 0} = 0`, `WeilPositiveFull lam`, `lam = Λ` on $n \ge 2$, and `RiemannHypothesis`.
    - `RHTower.CHMDStage4.sum_sum_cosineShiftFn_eq_add_evenWeilDensity_unconditional`, `RHTower.CHMDStage4.sum_sum_cosineShiftFn_sechHalf_vonMangoldt_eq`: Unconditional elliptic–hyperbolic decomposition of the Toeplitz quadratic form of `cosineShiftFn lam Φ` into `cosComb` and `sinComb` even Weil energies.
    - `RHTower.CHMDStage4.riemannHypothesis_iff_forall_sum_sum_cosineShiftFn_sechHalf_nonneg`, `RHTower.CHMDStage4.riemannHypothesis_iff_positiveDefiniteOnReal_cosineShiftFn_sechHalf`, `RHTower.CHMDStage4.riemannHypothesis_iff_exists_sechHalf_measure_vonMangoldt`, `RHTower.CHMDStage4.riemannHypothesis_iff_forall_cosComb_sinComb_sechHalf_nonneg`, `RHTower.CHMDStage4.chmd_four_stage_master_equivalence`: Master CHMD four-stage equivalence theorems.
+
+5. **Stage 5 (`formal/GaloisForLFunctions/RHTower/CHMDStage5FourModeGaussCoercivityAndPolarCone.lean`):**
+   - Formalizes `fourModeGaussPairSum`, `fourModeResidualPoleKernel`, `fourMode_gauss_le_markovArchRe`, `fourMode_gauss_pole_le_weilArchRe`, and `fourModeShiftedArchDensity r = Re ψ(17/4 + ir/2) - log π > 42 / 585 > 0` for all $r \in \mathbb{R}$, together with atom-free 4-mode sufficiency criteria on the even polar cone (`ArchimedeanNonnegOnEvenPolarNonnegCone`).
+
+6. **Stage 6 (`formal/GaloisForLFunctions/RHTower/CHMDStage6PolarDoubleZeroAndContinuumLogMomentCollapse.lean`):**
+   - Formalizes the double zero of `specSq (paperFT f)` at $\pm i/2$ on the even polar subspace, the clamped-beam $M = 4$ Gauss-mode lower bound, the collapse of the continuum `lebesguePart` integral to `2 * logMoment f` on the polar hyperplane, and the two-bump hyperbolic-secant normalization `farSum lam a / cosh(a/2)`.
+
+7. **Stage 7 (`formal/GaloisForLFunctions/RHTower/CHMDStage7HyperbolicCoshFactorizationAndEvenSubblindDecomposition.lean`):**
+   - Formalizes exact hyperbolic `cosh` addition/subtraction/sum-to-product identities, the exact identity `evenArchPole β c = evenArchOnly c + β * (c.sum polePair)`, and the unconditional equivalence of `PrimeSubblindPositiveEvenAt β`, `PrimeBlindPositiveEvenAt 1`, `ArchimedeanNonnegOnEvenPolarNonnegCone`, and `RiemannHypothesis`.
+
+8. **Stage 8 (`formal/GaloisForLFunctions/RHTower/CHMDStage8EvenWindowPosPartAndTwoBumpMidpointConvexity.lean`):**
+   - Formalizes the even-window positive-part inequality, two-bump midpoint convexity of `farSum lam a / cosh(a/2)` under `WeilPositiveEvenPolar lam`, and the scale-doubling inequality `farSum lam (2 * a) ≤ 2 * cosh(a / 2)² * farSum lam a`.
+
+9. **Stage 9 (`formal/GaloisForLFunctions/RHTower/CHMDStage9OddTwoBumpConcavityAndJointParityElimination.lean`):**
+   - Formalizes `WeilPositiveOddPolar lam`, the odd two-bump midpoint concavity law for `farSum lam a / sinh(a/2)`, and the three Joint Parity Elimination Laws eliminating the lower endpoint, midpoint, or upper endpoint between even and odd polar two-bump inequalities.
+
+10. **Stage 10 (`formal/GaloisForLFunctions/RHTower/CHMDStage10HyperbolicWronskianAndPolarWindowDifferenceLaws.lean`):**
+    - Formalizes `farSum_eq_zero_of_nonpos`, pure even-sector scale-doubling `farSum lam (2 * a) ≤ cosh(a / 2) * farSum lam a`, exact hyperbolic Wronskian identities for $c = \cosh(b/2)/\cosh(a/2)$ and $s = \sinh(b/2)/\sinh(a/2)$, Wronskian-cleared joint parity elimination laws, and the scale-tripling inequality `farSum lam (3 * a) ≤ (2 * cosh a + 1) * farSum lam a`.
+
+11. **Stage 11 (`formal/GaloisForLFunctions/RHTower/CHMDStage11SechSquareToeplitzSpectralDecomposition.lean`):**
+    - Unifies `sechHalf : ℂ → ℂ` with `sechSqHalf : ℝ → ℝ` (`norm_sechHalf_ofReal_sq`, `specSq_sechHalf_ofReal_re`), proves `evenPolePart (specSq sechHalf) = 2 / cos(1/4)² > 2` and the exact prime Fourier weight `(1 / π) ∫ r, (specSq sechHalf r).re * cos(r log n) = 4 log n / sinh(π log n) > 0` (`n ≥ 2`), introduces the nonnegative wave-packet weight `trigPacketWeight t c ρ`, and establishes the exact three-part spectral decomposition of the decisive Toeplitz quadratic form `∑ i, ∑ j, c i * c j * cosineShiftFn lam sechHalf (t j - t i)` (`sum_sum_cosineShiftFn_sechHalf_eq_trigPacketWeight_parts`, `riemannHypothesis_iff_forall_trigPacketWeight_sechSqHalf_prime_le_pole_add_arch`).
+
+12. **Stage 12 (`formal/GaloisForLFunctions/RHTower/CHMDStage12FourModeDigammaToeplitzCoercivity.lean`):**
+    - Defines the 4-mode Lorentzian spectral weight `fourModeGaussSpectralWeight r = 1/(1/4 + r²) + 5/(25/4 + r²) + 9/(81/4 + r²) + 13/(169/4 + r²) ≤ 3248 / 585`, proves `EF.gammaBracket r = fourModeShiftedArchDensity r - fourModeGaussSpectralWeight r`, establishes unconditional $L^1$ coercivity `(42 / 585) * ∫ r, (K r).re ≤ ∫ r, (K r).re * fourModeShiftedArchDensity r` (`forty_two_div_585_mul_integral_le_fourModeShifted`, `fifty_six_div_195_le_integral_sechSqHalf_fourModeShiftedArchDensity`), and yields the exact positive-minus-positive decomposition and $L^1$-coercive lower bound for the decisive `sechHalf` Toeplitz form (`sum_sum_cosineShiftFn_sechHalf_eq_fourModeShifted_parts`, `coercive_l1_sub_fourModeGauss_sub_prime_le_sum_sum_cosineShiftFn_sechHalf`, `riemannHypothesis_iff_forall_fourModeGauss_add_prime_le_pole_add_fourModeShifted`, `riemannHypothesis_of_forall_fourModeGauss_add_prime_le_l1_coercive`).
+

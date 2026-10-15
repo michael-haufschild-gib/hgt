@@ -1232,3 +1232,168 @@ and causal-integral methods is claimed. Anti-laziness: the full sign was
 investigated directly and the apparent finite-form shortcuts audited;
 it remains unproved. Next cycle must attack that actual mixed sign and
 its multiplicity data, not accumulate normalization corollaries.
+
+### Native mixed-pairing audit
+
+Previous cycle classified as progress: verified reflected literal action,
+not orientation. Current mission remains RN charge orientation. No external
+searches or old reports read. Mixed-cut search returned partial coverage;
+atom-quadratic search completed but did not produce an applicable native
+positive factorization. The atom expansion proposal has an unclosed cusp
+interchange: each atom has zero critical Mellin charge while the completed
+source has nonzero charge. An unsigned whole-line atom Gram cannot be
+substituted without proving that exact missing boundary contribution.
+The first-atom positive-ray domination theorem does not close this step.
+
+Selected exact diagnostic: evaluate the whole-line pairing of the literal
+full arithmetic actions on two admitted causal fields. This is BRIDGE,
+not a claim of a new positivity theorem. Unlike a generic quartet algebra
+identity, the integral here must use the actual full arithmetic action and
+prove its whole-line admission. The sign question is not replaced by it.
+
+Dependency-closed paper proof for the first-order sector: assume G(w)=0.
+The established two-ended exponential bounds on U_w imply that
+x^j exp(zx) U_w(x) is absolutely integrable for every complex z and every
+natural j: choose decay exponent |Re z|+2, dominate by a constant times
+|x|^j exp(-2|x|). The causal ODE gives
+
+  (exp(zx) U_w)'=(z-w) exp(zx) U_w-exp(zx)k.
+
+Both the function and its derivative are integrable; whole-line FTC gives
+(z-w) L(U_w)(z)=G(z). At z=w use instead the derivative of
+x exp(wx)U_w: its integral is L(U_w)(w)-G'(w)=0. Thus L(U_w)(w)=G'(w).
+These identities require neither an off-axis assumption nor simplicity.
+
+When G'(w) is nonzero, V_w=U_w/G'(w) has transform 1 at w and zero
+at every distinct zero of G. At a full zero v in the arithmetic strip,
+the already verified literal action on V_v is exp(-vx). Therefore
+
+  B(w,v)=integral conj(V_w(x)) [S U_v(x)/G'(v)] dx
+
+is absolutely integrable and equals conjugate L(V_w)(-conj(v)). For
+eta=-conj(w), reflection and real-source symmetry make eta a zero and
+G'(eta) nonzero whenever G'(w) is nonzero. If Re(w) is nonzero,
+B(w,w)=B(eta,eta)=0 and B(w,eta)=B(eta,w)=1. Consequently the complete
+linear-combination action paired with V_w-V_eta is exactly -2. At a
+critical simple zero the self-pairing is 1. This is the exact native
+first-order indefinite block, not a proof that it cannot occur.
+
+Plan: verify FTC/derivative APIs; prove weighted admission and exact
+Laplace evaluations; evaluate literal mixed action; audit its connection
+to the signed jump form without assuming positivity; run foreground Lean,
+axiom and lint gates, wire module, clean scratch. Higher-order charge jets
+and the native nonnegativity proof remain required for full orientation.
+
+Verification result: ThetaRenewalMixedArithmetic.lean compiles with
+`lake --old env lean` (terminal exit 0). All 23 public declarations were
+checked by scratch `#print axioms`; dependencies are only propext,
+Classical.choice and Quot.sound. The module is imported once by RHTower.
+The compiler emitted a tactic suggestion, not an error. `git diff --check`
+passed. Repository lint exited 1 because the unrelated untracked module
+GaloisForLFunctions.RHTower.DeningerMeyerNativeClockBoundaryDefect was not
+reachable from its umbrella. No changes were made to that module.
+Its import subsequently appeared from concurrent workspace work. A second
+lint run exited 1 on another unrelated untracked module,
+GaloisForLFunctions.RHTower.DeningerMeyerExactXiCapSource. The RN module
+remained imported exactly once; repository lint is not claimed passing.
+
+Domain audit: thetaFullArithmeticQuadratic accepts Schwartz ground
+profiles chi and proves prime jump energy minus the complete continuous
+jump energy. The new pairing instead integrates the complete pointwise
+action on U/G'. Its inner prime/Gamma/pole expressions are the literal
+ones, and the resulting whole-line density is absolutely integrable.
+This does NOT yet prove that (U/G')/k is Schwartz or justify every
+termwise whole-line rearrangement needed to identify it with the older
+ground-profile form. No such equality is used in the new theorems.
+
+The final boundary-orientation deep search completed with partial=false;
+compiler coverage remained mostly pending or stale. Candidate lemmas,
+source arguments and ingredient sets were inspected. Hits included the
+already proved RN admission/reflected-action identities, positive finite
+divisor Grams with different definitions, and unrelated normal-boundary
+results. None supplied the native mixed sign. The finite divisor Gram
+must not be identified with this pairing merely because both are Grams.
+Broadening to a lexical OR search restricted to ThetaRenewal returned
+the existing charge-coordinate, admission and reflected-action results;
+no additional orientation proof was obtained from those hits.
+
+Current classification: BRIDGE. New verified content is the exact
+whole-line action pairing and its simple-zero reflected block, with
+weighted admission proved rather than assumed. Parent methods are causal
+integration, whole-line FTC and polarization; no scientific novelty or
+orientation theorem is claimed. The all-order formula in the previous
+entry remains a paper outline, not a formal theorem. Full multiplicity,
+native nonnegativity and unconditional RH remain open in this work.
+
+Direct sign attack retained: factor the actual prime-minus-continuous
+mixed form through the theta atom/divisor identities while carrying the
+modular cusp charge. The atom critical-charge mismatch prevents dropping
+that contribution. A finite positive divisor Gram, a single-cut tail
+identity, or the finite modular seam jet algebra supplies no proof that
+the missing contribution has the required sign. No positive factorization
+has been obtained. RN remains active; the mixed sign and cusp contribution
+remain the hard target, not tighter scalar estimates or an operator-zero
+realization.
+
+Owned search/API/axiom/lint scratch files were removed after their commands
+terminated. No own Lean or search process remains running.
+
+### Full mixed sign, with the cusp term retained
+
+Previous goal turn: progress, since the actual mixed pairing was proved
+and audited. User now explicitly requires the native mixed sign with
+modular cusp charge and all multiplicities. No weakening to simple zeros,
+individual cuts, finite positive Grams or an operator-zero realization is
+accepted as completion.
+
+Current-state corpus audit finds CCMThetaGroundRHCriterion: the complete
+ground energy comparison on all smooth compact source cores is exactly
+equivalent to RH. Its comparison is explicitly unproved in that module.
+The finite-pair/two-node theta tail signs concern different kernels and
+cannot be silently substituted. The exact atom transform is also checked:
+its factor a-1/2 vanishes at the boundary where the completed charge is 1/2.
+
+Plan: derive the cusp correction in a native mixed factorization; attack
+its sign without importing RH or choosing only critical/simple zeros;
+carry all divisor jets in the proposed identity. Only a dependency-closed
+paper result will be sent to Lean. Keep every failed factorization and
+its surviving exact content explicit. No external search is used, per
+the user's research constraint.
+
+Candidate A: on a natural native-action domain containing k, write
+Q(f)=P(f)+alpha*|M(f)|^2, where P is nonnegative, alpha>0 and
+M(f)=integral exp(x/2) f(x) dx is the actual retained cusp functional.
+Verdict FALSE. Complete_theta_source_equation at x and -x, together
+with evenness, gives S k=0 pointwise for the full two-sided arithmetic
+action. Hence Q(k)=integral conj(k) S k=0. The completed half-density
+identity gives M(k)=1/2, so the proposed right side is at least alpha/4.
+This is a complete paper falsification of that independent positive
+cusp-summand repair. It does not exclude coupled factorizations, and it
+does not by itself apply to a domain deliberately excluding k.
+
+Positive survivor of A: any sum-of-squares factorization of this native
+form must annihilate k componentwise; if it has the native translation
+symmetry, it must annihilate the complete theta translation orbit.
+The corpus already proves the corresponding stronger positive-form
+radical/ordinary-L2 nonclosability classification in
+HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw. This is
+REDISCOVERED parent positivity/radical theory, not a new sign theorem.
+The correction must enter with coupled cancellation; appending a positive
+charge square is not a valid solution.
+
+Candidate B: a scalar correction with uniformly bounded orders at the
+two ports completes every finite Euler stage without losing the reflected
+charges. Verdict FALSE by the existing ThetaEulerTwoPortJetPole theorem
+thetaEulerStage_divisor_price: its required orders are -1 at +1/2 and
+|P| at -1/2. PrimeExhaustion.tendsto_card makes the second unbounded.
+The exact positive survivor, already formalized there, is this divisor
+order law and the normalized right-port derivative charge 1/2. This
+rules out bounded-order scalar repairs, not every scalar function or a
+matrix correction of fixed dimension with unbounded analytic order.
+
+The stronger remaining candidate must preserve the actual complete
+charge as a holomorphic function and couple its entire boundary data
+to the arithmetic bulk. Merely postulating a Hilbert norm equal to Q is
+CIRCULAR: it is positivity restated. No explicit, independently defined
+positive factorization has been found. Full divisor multiplicities are
+still required, and none are silently replaced by G'(w) != 0.

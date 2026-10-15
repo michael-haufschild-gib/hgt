@@ -982,3 +982,186 @@ bounds all compiled. Promoted to ThetaParityFiniteHead.lean and wired once.
 Needed import olean next; final direct/axiom audits still pending.
 Rank-one sign deep search complete snapshot but no applicable determinant lemma;
 lexical det/vecMulVec query used next.
+
+Directed-square checkpoint: /tmp/gta-parity-square.lean run21825 terminal exit0,
+empty log. Actual normalized Gram cores K,H, PSD square root Q, T=QHQ,
+M=T-ab^T=Q(H-uv^T)Q; AB/BA charpoly identity; finite weighted eigenvector
+transport; no positive real charpoly root above R=pi^2||D||^2; p_M(t)>0 for
+all t>R. All compiled without K inverse, residue sign premises, or added axioms.
+Promoted ThetaParityFeedbackSquare.lean, wired once. Needed import build and
+final source/axiom audits pending.
+
+Next scratch /tmp/gta-parity-residues.lean uses corpus singular determinant lemma
+bgv_det_diagonal_add_vecMulVec from HTGeometry/BorisovGabberVasiuDeterminant.lean.
+Target exact secular expansion in the real reference eigenframe, exterior
+simplicity and strict sign (-1)^#{higher eigenvalues} r_i>0. Not compiled yet.
+Reference spectrum search complete snapshot: approxNumber_eq_singVal available;
+no actual A_N/T_N comparison found. A possible finite transfer is A A*=S S*,
+S*S=T, S=V Q. Positive energy eigenvector e with A*A e=mu e maps to
+w=S*A e with T w=mu w and ||w||=mu||e||. This preserves multiplicity via
+inner products, avoids K inverse, and can transfer arbitrary finite divergent
+energy eigenspaces to T. That comparison remains unformalized.
+
+## User correction: selector only
+
+User explicitly rejects further constraints, side no-go formalization, and
+auxiliary milestones as next deliverables. Goal resumed ACTIVE. Sole accepted
+next mathematical deliverable is the actual unconditional GTA critical-wall
+selector with complete proof and Lean verification. Residue-alternation and
+reference-level transfer work is PARKED, not completed or retired. Build73807
+for ThetaParityFeedbackSquare exited0; no owned Lean process remains. New head
+and square module final audits remain pending; no additional Lean is launched
+until a dependency-closed selector proof is available.
+
+Selector context: literal transverse quadratic remainder is
+HS(D)^2-Re tr(D^2)-nonnormalSchurEnergy. Existing exact Fourier-current coordinate
+is J(a,b)=2Re(xi'(1/2+a+ib)*conj(xi(1/2+a+ib))). Corpus already identifies
+nonnegativity for all 0<a<1/2,b real with RH. This equivalence is not a producer.
+Direct source expression is 16 integral_(u,t>0) u sinh(2au)
+phi(u+t)phi(u-t) cos(2bt). Actual source prime-Gamma-pole Ward equation and
+all-product-fibre summation are available. Individual completed fibre positivity
+is already false; theta source equation alone gives no signed-energy sign.
+Target now an actual source proof of J>=0 (or equally strong direct transverse
+mode exclusion), not another named hypothesis or necessary condition.
+
+## Cross-route corpus search requested by user
+
+Selector remains sole mathematical deliverable. User requested corpus search for
+unconventional reuse of other routes. No new conditional Lean module was added.
+Deep searches covered transverse selection, Fourier positivity, Doob cancellation,
+odd supersolutions, positive extension, deletion-current closure, positive
+commutators, and prime-harmonic admission. Exact lexical searches supplemented
+them. Results are `/tmp/gta-crossroute-*-search.json` and
+`/tmp/gta-crossroute-*-lexical.json`. Initial two deep requests completed; most
+subsequent deep requests reported partial coverage. Index reports source snapshot,
+background refresh, and many source-only compiler records. Proposed ingredient
+sets are not proofs; several incorrectly connect positivity or vanishing of
+different quantities. Actual source statements were checked instead.
+
+Useful imports, with exact applicability:
+
+1. `WeilPhiDoobArchimedeanJumpAndHalfLineFolding.lean:689` proves the full
+   source identity `markovEnergy(Phi*v) = E_Gamma(v) + E_prime(v) -
+   integral Phi(x)*cosh(x/2)*v(x)^2 dx`, for compact C2 real v. Both jump energies
+   are nonnegative. Unlike the earlier GTA diagonal Ward energy, this includes
+   the actual nonlocal Gamma cross terms. `XiSliceHusimiHeatDictionary.lean:37`
+   proves Phi is exactly thetaCuspFullSource. The sharp pole-mass domination on
+   all odd tests is still RH-equivalent, not established by this identity.
+
+2. `EulerDeletionMixedCurrentGram.lean:342,383` proves strict signed current for
+   every nonzero finite complex mixture at an off-wall actual zero, retaining all
+   cross terms. Current vanishes iff the zero is critical or every coefficient
+   is zero. This is a usable transverse detector. The attempted shortcut from
+   zero landing fails: `EulerDeletionReflectedChronologicalCurrent.lean:176`
+   annihilates only the imaginary current; the real current is a surviving
+   chronological remainder. No GTA identity forcing that real current to zero
+   was found. Also ordinary theta prime deletion has multiplier (1-p^-s), whereas
+   pole-clearing Dirichlet deletion has (1-p^(1-s)); they cannot be silently
+   identified. A translated theta source Phi-sqrt(p)*Phi(.+log p) has the latter
+   bilateral Laplace multiplier by the existing translation formula; this
+   algebraic observation does not identify their quadratic currents.
+
+3. `HedenmalmGammaSewnRouteRKreinGaugeBridge.lean:180` proves the actual signed
+   marked prime sequence is summable iff centered grade t=0. At t!=0 its charge
+   is -sign(t)/p modulo l1; the Route R/Hedenmalm charges differ by the bounded
+   invertible Fisher gauge p^2/(p+1)^2. Potential selector mechanism: derive this
+   precise summability from GTA eigenmode admission. No such derivation found.
+   Compactness alone supplies none. The positive marked energy diverges even at
+   t=0, so retain the signed difference. Product-continuous linear landing is
+   already excluded by XiShiftedHankelBoundaryCoronaLandingNoGo.
+
+4. `HTGeometry/PrimeHarmonicEulerFormationTangent.lean:595` supplies an actual
+   Euler Haar-frame trichotomy: neutral tilt -> nonzero Haar frame; positive tilt
+   -> zero trace norm; negative tilt -> divergent end-window norm. This is a
+   route-independent dynamic selection mechanism, but a GTA mode-to-frame
+   comparison preserving its normalization is not supplied by the theorem.
+
+Rejected ready-made handoffs: CCM real Fourier zeros require a simple odd ground
+with specific frequency and eta, not arbitrary GTA eigenmodes; Sonin positive
+all-prime operators still require their all-moment source weld; Deninger Hodge
+purity assumes positive flow-compatible Hodge data and Xi inclusion. FZZ positive
+Gram feedback is blind on its coupling kernel. None is an unconditional GTA
+selector, and no further no-go formalization is authorized as next deliverable.
+
+Verification: `/tmp/gta-crossroute-candidate-audit.lean`, run with
+`lake --old env lean` (no output object), exited 0. Six exact imported declarations
+checked, each #print axioms only propext/Classical.choice/Quot.sound: Doob full
+identity; mixed-current strict sign and nullspace classification; Route R/Fisher
+charge equality and summability iff; CCM finite odd-ground real-zero theorem.
+Log `/tmp/gta-crossroute-candidate-audit.log`. This checks reusable imports,
+not a new selector proof. No owned Lean process remains.
+
+Assessment: useful existing knowledge recovered; no new mathematical theorem or
+critical-wall selector established. Continue with actual source coupling using
+these identities; do not resume parked residue-alternation work or replace the
+missing construction by a named positivity/admission hypothesis.
+
+## Actual-mode transfer audit after cross-route search
+
+Continuation classification: progress on the requested corpus investigation and
+verification; no new selector proof or new mathematical theorem. Goal stays
+ACTIVE. No external-input blocker. User's selector-only restriction still holds.
+
+Completed deep searches (all returned partial=false):
+`/tmp/gta-mode-prime-intertwiner-search.json`,
+`/tmp/gta-anomaly-cyclicity-search.json`,
+`/tmp/gta-coupled-positive-commutator-search.json`, and
+`/tmp/gta-formation-strictness-search.json`. Coverage is a source snapshot with
+many pending compiler records; generated ingredient sets sometimes combine
+unrelated algebraic declarations and are not proofs. All search jobs terminated.
+
+Tested the literal mode-to-prime-frame handoff rather than assuming its tilt.
+The actual source mode satisfies
+`f_z' + i*z*f_z = i*z*phi`, `integral f_z = M` at a Xi divisor, and
+`(B+1/z) T_p f_z = r_p`. Here `T_p f(x)=p^(-1/2) f(x+log p)` and
+`r_p(x)=i*p^(-1/2)*integral_[x,x+log p] phi` is nonzero and identical for the
+two reflected divisor modes. On Haar L2, change of variables gives
+`||T_p f_z||^2 = p^(-1)||f_z||^2`: this marginal has no transverse tilt.
+The frame theorem uses clock log(log p)-L, whereas literal translation uses
+log p. Neither the required clock comparison nor a phase-sensitive grade
+identification follows from the norm formula. This does not exclude other
+coupled transfers; it invalidates treating the literal marginal as that transfer.
+
+Existing source code settles the relevant carrier facts: the anomaly leaves
+the original reciprocal-theta compact fibre but belongs to Haar L1 and L2;
+its complete real-translation orbit is Haar-L2 cyclic. The exponential
+critical rigging makes all strip evaluations continuous and integer shifts
+contractive, yet its normalized character energy already exceeds one at z=i/4.
+That example is not asserted to be a Xi zero. Thus ambient contractivity does
+not itself prove the needed half-density inequality for actual divisor modes.
+No new carrier/no-go module was added.
+
+Additional exact cross-route coupling recovered:
+`HedenmalmThetaXiMassConnectionGreenCompensation.lean` identifies the phase-linear
+sum of the polarized theta Green packet and ordered half-density prime
+connection with archimedean terms minus prime-square/higher-power terms.
+This sum is unconditionally bounded on positive vertical time lines.
+`HedenmalmThetaXiMassCompensatedAsymptoticCarrier.lean` gives its exact two-residue
+future carrier. `XiHeatCassiniWoldThetaGreenCompensation.lean` proves that removing
+the finite Euler trace leaves the same carrier. These are genuine GTA/arithmetic
+identities, but a bounded sum permits cancellation of unbounded summands;
+they do not supply the separate current bound that selects the wall.
+
+`DirectSubunitEscapeCapacityFusion.lean` does not close that gap: its own exact
+formation-relative law includes a non-summable completion companion. The
+remaining primitive source sequence is summable only after subtracting that
+companion. `IntegralCurvedTateCoherentPrimitiveIndex.lean` identifies coherent
+primitive existence with RH, rather than constructing the primitive. Do not
+promote either statement into an unconditional selector.
+
+Verification: `/tmp/gta-coupled-transfer-audit.lean` imported four existing
+modules and checked seven exact declarations with `#print axioms`.
+`lake --old env lean /tmp/gta-coupled-transfer-audit.lean` exited 0; log
+`/tmp/gta-coupled-transfer-audit.log`. Every printed axiom list was exactly
+propext/Classical.choice/Quot.sound. Objects existed and were newer than sources;
+this was an import audit, not a rebuild of all source dependencies. No owned
+Lean process remains; no Lean source or umbrella was changed in this continuation.
+
+Next live mathematical attack: evaluate the full Gamma/prime/pole quadratic
+identity on the actual paired divided-source modes, with cutoff removal proved,
+and compare it to the strict mixed Euler-deletion current. The target is an
+actual identity forcing the real transverse current to vanish, not another
+assumed positivity, boundedness, or completion property. No such identity has
+yet been derived. Keep the common forcing and every mixed term throughout;
+zero imaginary current, unit reciprocal charge, and bounded compensated current
+do not give zero real transverse current.
