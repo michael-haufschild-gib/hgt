@@ -41,13 +41,16 @@ theorem exists_interior_odd_form_approximation (a : SuzukiPositiveAperture)
   choose g hg using hv
   have hlim' : Tendsto (fun n => (g n).toCCMFormVector) atTop (𝓝 u.1) := by
     simpa only [hg] using hlim
-  have hc : Continuous (ccmRestrictedWeilOddPart a) :=
-    continuous_const.smul (continuous_id.sub (ccmArchimedeanFormReflection a).continuous)
+  have hc : Continuous (ccmRestrictedWeilOddPart a) := by
+    change Continuous (fun v : CCMArchimedeanFormDomain a =>
+      (2 : ℂ)⁻¹ • (v - ccmArchimedeanFormReflection a v))
+    exact (continuous_const : Continuous (fun _ : CCMArchimedeanFormDomain a => (2 : ℂ)⁻¹)).smul
+      (continuous_id.sub (ccmArchimedeanFormReflection a).continuous)
   have hu : ccmRestrictedWeilOddPart a u.1 = u.1 := by
     rw [ccmRestrictedWeilOddPart,u.2,sub_neg_eq_add,← two_smul ℂ u.1,smul_smul,
       inv_mul_cancel₀ (two_ne_zero : (2 : ℂ) ≠ 0),one_smul]
   refine ⟨fun n => oddInteriorSource (g n),?_⟩
-  simpa only [oddInteriorSource_formVector,hu] using (hc.tendsto u.1).comp hlim'
+  simpa only [Function.comp_def,oddInteriorSource_formVector,hu] using (hc.tendsto u.1).comp hlim'
 
 def formProfile {a : SuzukiPositiveAperture} (u : OddFormSource a) : ℝ → ℂ :=
   energyProfile a (ccmArchimedeanFormToAperture a u.1)
@@ -67,9 +70,10 @@ theorem exists_interior_odd_observable_approximation (a : SuzukiPositiveAperture
     have hp := ((continuous_energyProfile a).tendsto _).comp
       (((ccmArchimedeanFormToAperture a).continuous.tendsto _).comp hf)
     have hx := ((continuous_apply x).tendsto _).comp hp
-    simpa only [energyProfile_interiorCCMSource,interiorProfile,formProfile] using hx
+    simpa only [Function.comp_def,energyProfile_interiorCCMSource,interiorProfile,formProfile] using hx
   · have hq := ((continuous_ccmRestrictedWeilSourceQuadratic a).tendsto _).comp hf
-    simpa only [sourceEnergy_interiorCCMSource,interiorEnergy,interiorProfile,formEnergy] using hq
+    simpa only [Function.comp_def,sourceEnergy_interiorCCMSource,interiorEnergy,interiorProfile,
+      formEnergy] using hq
 
 def formLogValue {a : SuzukiPositiveAperture} (u : OddFormSource a) (j : LogIndex) : ℝ :=
   (formProfile u (Real.log j) + formProfile u (-Real.log j)).re / Real.sqrt j
@@ -81,7 +85,8 @@ theorem trace_tendsto_of_profile_tendsto {a : SuzukiPositiveAperture}
     Tendsto (fun n => interiorTrace (f n) j) atTop (𝓝 (formLogValue u j)) := by
   have h := ((Complex.continuous_re.tendsto _).comp
     ((hf (Real.log j)).add (hf (-Real.log j)))).div_const (Real.sqrt j)
-  simpa only [interiorTrace,logVector_apply,logValue,interiorProfile,formLogValue] using h
+  simpa only [Function.comp_def,interiorTrace,logVector_apply,logValue,interiorProfile,
+    formLogValue] using h
 
 theorem formLogValue_eq_zero_outside {a : SuzukiPositiveAperture}
     (u : OddFormSource a) (j : LogIndex) (hj : j ∉ apertureNodes a) :

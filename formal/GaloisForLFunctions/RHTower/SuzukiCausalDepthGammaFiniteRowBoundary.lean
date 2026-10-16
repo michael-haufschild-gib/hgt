@@ -54,7 +54,7 @@ theorem suzukiGammaBoundaryCorrectedRow_coordinate
         suzukiGammaBoundaryRowVector h a k (Sum.inl pe) = _
     rw [ih, hrow]
     field_simp [hc]
-    <;> ring
+    ring
 
 /-- Exact decomposition into a Hilbert row and one boundary coefficient times the first row. -/
 theorem suzukiGammaFiniteRow_boundary_decomposition
@@ -126,7 +126,8 @@ theorem suzukiGammaTwoLeg_finite_packet_pairing
         (starRingEnd ℂ) (c pe) * d qe *
           (((pe.1 : ℝ) * (qe.1 : ℝ) *
             suzukiCausalDepthGammaSchurKernel h.1 a.1 pe qe : ℝ) : ℂ) := by
-  simp only [sum_inner, inner_sum, inner_smul_left, inner_smul_right,
-    suzukiGammaTwoLegColumn_inner, mul_assoc]
+  rw [sum_inner]
+  simp only [inner_sum, inner_smul_left, inner_smul_right,
+    suzukiGammaTwoLegColumn_inner, mul_assoc, mul_left_comm]
 
 end RHTower

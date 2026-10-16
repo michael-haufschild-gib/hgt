@@ -1,4 +1,4 @@
-# OWU: structural sign obstruction
+# OWU: exact arithmetic-fibre recovery
 
 Status: PAPER PROOF COMPLETE; Lean verification in progress. No verified result claimed yet.
 
@@ -42,6 +42,10 @@ line and real cut, so positivity of further odd tests alone cannot remove the cu
    aperture enlargement. Status: dependency-closed paper proof below. The current
    energy-completion theorem has only the native-to-completed inclusion; it
    does not show that completed blind minima are limits of native blind tests.
+3. Normalized blind recovery and equality of the smooth infimum with the attained
+   complete minimum. Status: paper proof complete; final Lean module checking.
+   The recovered mass tends to one, so normalization on a positive tail preserves
+   exact blindness and the energy limit.
 
 ## Paper proof: exact arithmetic recovery
 
@@ -98,7 +102,8 @@ Verified with foreground `lake --old env lean -j 1`:
 
 - `OddSectorInteriorTraceCoordinates`: PASS, no warnings.
 - `OddSectorInteriorTraceRepair`: PASS, no warnings.
+- `OddSectorSmoothFormDensity`: PASS, no warnings.
 
-Both finished modules are wired into `RHTower.lean`. Smooth form density is now
-being checked; exact recovery and the final axiom/lint audit remain pending.
+All three finished modules are wired into `RHTower.lean`. The exact recovery
+module and final axiom/lint audit remain pending.
 No computational experiments or new axioms.

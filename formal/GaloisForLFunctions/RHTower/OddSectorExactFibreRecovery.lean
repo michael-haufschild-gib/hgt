@@ -53,7 +53,9 @@ theorem exists_exact_fibre_recovery (a : SuzukiPositiveAperture) (u : OddFormSou
   choose f hfP hfT hfE using fun n => exists_interior_purification_moments a (c n) (hc n)
   refine ⟨f,?_,?_,?_⟩
   · intro n
-    rw [hfT,c,map_add,mixtureTrace,linearCombination_single,one_smul]
+    rw [hfT]
+    dsimp only [c]
+    rw [map_add,mixtureTrace,linearCombination_single,one_smul]
     change interiorTrace (g n) + mixtureTrace a (traceRepair a (v n)) = formTrace u
     rw [traceRepair_trace a (v n) (hvs n),v]
     abel
@@ -71,7 +73,7 @@ theorem interiorProfile_blind_of_trace_zero {a : SuzukiPositiveAperture}
     (f : InteriorWindowedSmoothOddTestFn a) (hf : interiorTrace f = 0) :
     interiorProfile f ∈ blindProfiles := by
   intro j
-  change interiorProfile f (Real.log j) = 0
+  change EF.weilTest f.1.1.1.1 f.1.1.1.1 (Real.log j) = 0
   rw [← energyProfile_interiorCCMSource]
   apply (energyProfile_eq_zero_iff_odd_trace_zero (odd_interiorCCMSource f) _).2
   rw [energyProfile_interiorCCMSource]
@@ -141,19 +143,20 @@ theorem exists_smooth_blind_unit_recovery (a : SuzukiPositiveAperture) (u : Blin
     simp
   have hM : Tendsto (fun n => (interiorProfile (f n) 0).re) atTop (𝓝 (1 : ℝ)) := by
     have h := (Complex.continuous_re.tendsto _).comp (hP 0)
-    simpa only [formProfile,w,energyProfile_zero,u.2.2.1,one_pow,Complex.ofReal_re] using h
+    simpa only [Function.comp_def,formProfile,w,energyProfile_zero,u.2.2.1,one_pow,
+      Complex.ofReal_re] using h
   obtain ⟨N,hN⟩ := eventually_atTop.mp ((tendsto_order.mp hM).1 0 zero_lt_one)
   choose g hgP hgE using fun n : ℕ => exists_mass_normalization (f (n+N))
     ((hT (n+N)).trans hw) (hN (n+N) (Nat.le_add_left N n))
   have hshift : Tendsto (fun n : ℕ => n+N) atTop atTop := tendsto_add_atTop_nat N
   have hi : Tendsto (fun n => (interiorProfile (f (n+N)) 0).re⁻¹) atTop (𝓝 (1 : ℝ)) := by
-    simpa only [inv_one] using (hM.comp hshift).inv₀ one_ne_zero
+    simpa only [Function.comp_def,inv_one] using (hM.comp hshift).inv₀ one_ne_zero
   refine ⟨g,?_,?_⟩
   · intro x
     have h := hi.smul ((hP x).comp hshift)
-    simpa only [hgP,Pi.smul_apply,one_smul,formProfile,w] using h
+    simpa only [Function.comp_def,hgP,Pi.smul_apply,one_smul,formProfile,w] using h
   · have h := hi.mul (hE.comp hshift)
-    simpa only [hgE,one_mul,formEnergy,w] using h
+    simpa only [Function.comp_def,hgE,one_mul,formEnergy,w] using h
 
 /-- The attained complete minimum is approached by normalized single smooth
 odd sources satisfying every arithmetic constraint exactly. -/

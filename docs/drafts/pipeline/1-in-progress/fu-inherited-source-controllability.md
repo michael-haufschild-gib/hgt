@@ -22,5 +22,21 @@ Conjecture ledger:
 2. Every finite retained-prime source field has full positive span after a finite complementary completion. Already solved more strongly in `RetainedPrimeLandauSeparation`, `RetainedPrimeFiniteSourceMargin`, and `RetainedPrimeBoundedBatches`; do not repackage this as new work. `MobiusDivisorFiniteDepthPrimeCancellation` also treats finite delayed fields over inherited cores.
 3. Neutralizing all retained receiving coordinates pays insertion of the prescribed retained field. Rejected: insertion also merges residual fibres outside that field. Their inherited covariance is not controlled by the receiving vector. The existing two-coordinate positive-debt circuit addresses exactly this extra quadratic quantity.
 4. Iterated fixed-core spectral payment might produce cofinal energy control. Still unresolved: `MobiusDivisorPrimeBlockEnergyEscape` proves exponential limiting energy for natural exhaustive cores, so limit-first arguments cannot be promoted to moving-cutoff control without controlling escaping spectral mass.
+5. Admit primes at a common nontrivial zero of the continuous child source. Rejected as the deliverable: zero insertion work on a real clock does not pay original integer-clock drift; treating it as a solution would merely move the debt.
+6. Paid least-missing-prime exhaustion at a fixed proportional clock. Paper mechanism below; checking the existing source lemmas and formal dependencies before implementation.
+
+## Candidate 6: paper proof
+
+Write `H(K)` for the complete signed child source. Existing PNT cancellation gives `H(K)/K^(3/2) -> 0`. Existing source windows give fixed positive and negative singleton intervals, each with amplitude at least a fixed positive multiple of `sqrt(M)` and prime count asymptotic to its interval width times `M/log(M)`.
+
+Choose one sufficiently large integer clock factor `A`, divisible by the source-window clock modulus. At `M=A*r`, the mandatory prime's singleton is `-sqrt(r)*H(A)`. Thus a bounded number `K(A)` of opposite-sign singleton helpers covers its magnitude, with `K(A)/A -> 0`. Choose `A` so both witness windows have asymptotic prime counts strictly larger than `(K(A)+2)*pi(r)`.
+
+Start with every prime below a sufficiently large fixed seed bound. At each stage let `r` be the least missing prime. All primes below `r` have already been processed, and `r>A`, so the state is terminal at `A*r`. Every remaining prime is a scalar singleton. The small child core is complete, hence its coefficient is independent of the inherited history.
+
+Maintain `card(P) <= D*pi(r)` with fixed `D=K(A)+1` (enlarge harmlessly if required). Each source window has more than `card(P)+K(A)` primes, so at least `K(A)` remain fresh. If the mandatory singleton has favorable sign against the receiving head, insert it directly. Otherwise select opposite-sign helpers until their mass crosses its magnitude. The final total singleton mass has sign opposite the receiving head; its overshoot square is paid by selected singleton squares. Consequently the complete raw energy is no larger than the pre-block energy. The logarithmic clock weights only add nonnegative removed-square credit. Scalar endpoint ordering pays every prefix of the whole block, with the mandatory prime included.
+
+Each block uses at most `D` primes. The next least missing prime has prime count at least one larger, preserving the counting invariant. Mandatory primes strictly increase; every prime is eventually processed. All bounds and source supplies are fixed before constructing this infinite inherited history.
+
+The intended theorem is an actual prime-exhaustive schedule whose complete logarithmic insertion work is paid at every block's own original integer cutoff. It does not assert a bound for cutoff drift or for completed action at earlier cutoffs.
 
 Significance gate: a generic cone receiver is insufficient. Any survivor must discharge its source hypotheses on the actual arithmetic profiles and explicitly identify the finite inherited obstruction removed.
