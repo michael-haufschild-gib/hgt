@@ -9,7 +9,7 @@ complete Gamma, prime-power, negative mass and polar expression is retained.
 -/
 
 noncomputable section
-open MeasureTheory Set Filter Topology
+open MeasureTheory Set Filter Topology Zeta23
 
 namespace RHTower.PaperThetaEndpoint
 open CHMDDoobGraph
@@ -38,8 +38,7 @@ theorem nativeWeilGraph_quantile (f : ThetaNativeDomain) (L : ℂ →L[ℝ] ℝ)
   rw [nativeWeilGraph, ← ThetaQuantileArithmetic.weilEnergy_pull]
   apply ThetaQuantileArithmetic.weilEnergy_congr
   intro t ht
-  rw [nativeClosedQuantile_interior f ht]
-  rfl
+  exact congrArg L (nativeClosedQuantile_interior f ht).symm
 
 /-- These arithmetic values are limits of the original compact smooth Weil tests. -/
 theorem nativeWeilGraph_compact_approximation (f : ThetaNativeDomain) (L : ℂ →L[ℝ] ℝ) :

@@ -1,6 +1,6 @@
 # CHMD: compact smooth operator core
 
-Status: IN PROGRESS. Unconditional RH remains the goal.
+Status: FORMALISED IN LEAN 4. Unconditional RH remains the goal.
 
 ## Verified starting point
 
@@ -9,7 +9,7 @@ self-adjoint with the same maximal domain; L-G is bounded. Spatial cutoffs
 preserve that domain and give compactly supported graph approximations.
 Compact smooth form density alone does not give operator-core density.
 
-## Theorem (targeted Lean build verified)
+## Theorem
 
 Compact C2 sources form an operator core for both actual generators. Every
 maximal-domain vector is the limit of compact C2 domain vectors, with their
@@ -58,11 +58,11 @@ chi_n * (rho_j*f) / Theta. Finally diagonalize with the already-proved
 spatial operator cutoffs. A common support bound for all mollifiers is not
 needed because the fixed outer cutoff is part of W_n.
 
-Do not identify Dom(G) globally with {u:Theta*u in Dom(A)}. The proposed
-ordinary-domain admission is only after compact spatial localization.
+Do not identify Dom(G) globally with {u:Theta*u in Dom(A)}. The forward
+ordinary-domain admission is proved after compact spatial localization.
 The existing Gamma-clock generator uses kappa/t and is not A.
 
-## Work plan
+## Completed workflow
 
 1. Audit corpus support and build the correct stationary operator.
 2. Establish compact-source transfer into its maximal domain.
@@ -79,13 +79,35 @@ commutator; bounded theta transform and local inverse; complete-form local
 operator-domain transfer in both directions; local compact C2 graph-norm
 approximation in the actual mass space.
 
-The capstone targeted build passed. Nine new leaves are wired once into
-RHTower. Final plain checks and all-declaration axiom audit are running.
+The capstone targeted `lake --old build` passed. Nine new leaves, containing
+143 declarations in 1206 lines, are wired once into RHTower. Final
+`lake env lean <file>` checks passed with empty logs for all nine new leaves,
+both generalized existing helper modules, and the prior compact-support core
+(12 files). The all-declaration `#print axioms` audit passed for all 182
+declarations in the nine new and two generalized modules; only `propext`,
+`Classical.choice`, and `Quot.sound` occur. Mathlib API probes passed.
+The checked source hashes were unchanged at the end of the audit. All 28
+owned scratch files were removed after the audit process exited successfully.
 Global lint exited 1 on five unrelated unwired leaves:
 CHMDLevySymbolLowerBound, CHMDWindowFourierTail,
 PaperThetaNativeArithmeticResolvent, PaperThetaNativeQuantileDomain,
 WeilCutEvenMeanZeroDeficit. No defect was reported in this contribution.
-Cleanup remains. No RH proof claimed.
+No full or umbrella build, heartbeat increase, web search, numerical
+experiment, commit, or push was performed. No RH proof claimed.
+
+## Lean capstone
+
+`formal/GaloisForLFunctions/RHTower/CHMDCompactSmoothOperatorCore.lean`:
+
+- `stationaryGenerator_compact_smooth_graph_closure`
+- `stationaryGenerator_compact_smooth_core`
+- `arithmeticGenerator_compact_smooth_core`
+- `arithmeticGenerator_compact_smooth_graph_closure`
+
+Local domain transfer is in `CHMDStationaryLocalOperatorDomain.lean`, notably
+`localized_theta_mem_volume_domain`, `stationary_of_volume_mem_domain`, and
+`stationary_of_volume_apply`. Local graph convergence is
+`localStationarySmooth_tendsto` in `CHMDStationaryLocalSmoothCore.lean`.
 
 ## Exact contribution and frontier
 

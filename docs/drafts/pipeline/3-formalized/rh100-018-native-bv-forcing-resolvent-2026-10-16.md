@@ -1,9 +1,11 @@
-# Contribution 018 investigation
+# 018 — Whole native BV forcing through the singular theta quantile
 
 Baseline: **17/100**. Previous turn classified as verified progress from all
 ten current source/artifact pairs, unique umbrella imports, exact main theorem
 declarations and the current ledger. Goal attachment reread; the full target
 remains 100 significant independently justified contributions.
+
+Status: **formalized and audited; contribution 018, total 18/100**.
 
 Mission: unconditional structural RH progress from current Lean evidence.
 Continue the hgtl7 conjecture/attack/paper-proof/formalization workflow. No web,
@@ -44,7 +46,7 @@ Conjecture log:
   representative, and admission to the complete signed CHMD graph.** This
   removes the finite-Xi-packet restriction from native inhomogeneous solving.
 
-Dependency-closed paper proof (formalization in progress):
+Dependency-closed paper proof (all seven leaves now audited):
 Write rho for the positive normalized theta density and C(z)=integral
 rho(x) exp(i z x)=XiC(z)/mass. For continuous BV g let
 J(z,g)=integral rho(x) exp(i z x) g(x) and
@@ -97,10 +99,50 @@ retrieval. Deep reports were non-partial with no errors; compiler metadata
 was predominantly source-only/stale, so applicability is checked in source
 and must be audited by Lean. No old research markdown or web was used.
 
-Audit checkpoints:
-- `HTGeometry/BoundedVariationKernelIntegral.lean`: direct leaf audit passed;
-  arbitrary-partition product telescoping and integration are kernel checked.
-- `RHTower/PaperThetaForcedTail.lean`: direct leaf audit passed; actual forced
-  tail has finite right-ray variation, decay and the literal derivative.
-- Both finished leaves wired uniquely in their umbrellas. Remaining five
-  leaves await their sequential direct audits; no umbrella build is run.
+Formal result:
+`nativeThetaImaginaryEquation_existsUnique_full_source (r : ℝˣ)
+(g : ThetaContinuousBV)` constructs a unique `ThetaNativeDomain` solution of
+the literal pointwise equation `(A-i*r)f=g`, together with compact absolute
+continuity and the complete signed arithmetic graph representative of every
+real-linear component. The equation also has a cleared native parametrix at
+every complex parameter, without a spectral premise. The auxiliary regular
+parameter construction is not the unconditional main statement: nonvanishing
+on the imaginary axis is proved from the positive actual theta integral.
+
+Direct audits passed, sequentially, using `lake --old env lean -o ... <leaf>`:
+- `HTGeometry/BoundedVariationKernelIntegral.lean`
+- `RHTower/PaperThetaForcedTail.lean`
+- `RHTower/PaperThetaForcedConnection.lean`
+- `RHTower/PaperThetaNativeUniqueness.lean`
+- `RHTower/PaperThetaNativeResolvent.lean`
+- `RHTower/PaperThetaNativeQuantileDomain.lean`
+- `RHTower/PaperThetaNativeArithmeticResolvent.lean`
+
+All 58 public theorem declarations passed a separate `/tmp` `#print axioms`
+audit. Every dependency list is exactly `propext`, `Classical.choice`,
+`Quot.sound`; no added axiom or admitted proof. All seven source/artifact
+pairs are fresh and each leaf has exactly one theorem-area umbrella import.
+No full or umbrella build, numerical experiment or heartbeat increase ran.
+
+Global `scripts/formal_tools.py lint` exited 1 on three unrelated concurrent
+umbrella omissions, preserved without importing unaudited work:
+`CHMDLevySymbolLowerBound`, `CHMDWindowFourierTail`,
+`WeilCutEvenMeanZeroDeficit`. Its other output was existing large-file warnings.
+
+Assessment: this closes a native domain obstruction. The weighted tail now
+acts on arbitrary continuous BV forcing and its output survives both the
+singular coordinate and the complete arithmetic form domain. This is an
+actual inhomogeneous solution theorem, not just a variation estimate or an
+RH receiver. The integrating factor and Hilbert inverse were already known
+in the corpus; they are not counted as new. Original-Frechet spectral density,
+arbitrary Hilbert-packet source realization and directed prime--Gamma work
+orientation remain open. No external priority claim is made. Routine word
+iteration or weaker forcing-domain extensions cannot count as another
+contribution without a separate structural obstacle.
+
+Housekeeping completed: `scripts/formal_tools.py index` rewrote the three
+formal inventories and refreshed the Lean search database (7 changed,
+0 removed). All eight exact owned `/tmp/hgt_rh018_*` scratch files were
+removed after the audits. This card moves to `3-formalized`; the ledger
+counts the complete result once as contribution 018. The 100-result goal
+remains active. No commit or push was made.

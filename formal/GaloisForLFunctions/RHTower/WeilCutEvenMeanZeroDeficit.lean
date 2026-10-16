@@ -591,4 +591,330 @@ theorem paperFT_twoBumpTest_I_mul {b : ℝ → ℝ} (hb : Continuous b) (hbc : H
     ring
   rw [e, ← Complex.ofReal_mul]
 
+/-! ## Bounds on the spectral weight of the two-bump test -/
+
+/-- Real-line decay constants of a `C²` compactly supported profile:
+`|b̂(v)| ≤ N₀` and `v² |b̂(v)| ≤ N₂`. -/
+theorem exists_profile_bounds {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b) (hbc : HasCompactSupport b) :
+    ∃ N₀ N₂ : ℝ, 0 ≤ N₀ ∧ 0 ≤ N₂ ∧ ∀ v : ℝ,
+      ‖paperFT (fun x => (b x : ℂ)) v‖ ≤ N₀ ∧ v ^ 2 * ‖paperFT (fun x => (b x : ℂ)) v‖ ≤ N₂ := by
+  set g : ℝ → ℂ := fun x => (b x : ℂ) with hg
+  have hgd : ContDiff ℝ 2 g := Complex.ofRealCLM.contDiff.comp hb
+  have hgc : HasCompactSupport g := hbc.comp_left Complex.ofReal_zero
+  obtain ⟨R, -, hR⟩ := hgc.exists_pos_le_norm
+  have hsupp : ∀ u, g u ≠ 0 → |u| ≤ R := fun u hu => by
+    by_contra h
+    exact hu (hR u (by rw [Real.norm_eq_abs]; exact (not_le.mp h).le))
+  refine ⟨∫ u, ‖g u‖, ∫ u, ‖deriv (deriv g) u‖, integral_nonneg fun _ => norm_nonneg _,
+    integral_nonneg fun _ => norm_nonneg _, fun v => ⟨?_, ?_⟩⟩
+  · have := norm_paperFT_le (hgd.continuous.integrable_of_hasCompactSupport hgc) hsupp (v : ℂ)
+    rwa [Complex.ofReal_im, abs_zero, zero_mul, Real.exp_zero, one_mul] at this
+  · have := norm_paperFT_mul_sq_le hgd hsupp (v : ℂ)
+    rw [Complex.ofReal_im, abs_zero, zero_mul, Real.exp_zero, one_mul, Complex.norm_real,
+      Real.norm_eq_abs, sq_abs] at this
+    linarith
+
+/-- `4(1 − cos(vL))² ≤ 4L² v²`. -/
+theorem four_mul_one_sub_cos_sq_le (L v : ℝ) :
+    4 * (1 - Real.cos (v * L)) ^ 2 ≤ 4 * L ^ 2 * v ^ 2 := by
+  have hc1 : 1 - Real.cos (v * L) ≤ (v * L) ^ 2 / 2 := by
+    linarith [Real.one_sub_sq_div_two_le_cos (x := v * L)]
+  have hc0 : 0 ≤ 1 - Real.cos (v * L) := by linarith [Real.cos_le_one (v * L)]
+  have hc2 : 1 - Real.cos (v * L) ≤ 2 := by linarith [Real.neg_one_le_cos (v * L)]
+  by_cases h : (v * L) ^ 2 ≤ 4
+  · have h1 : (1 - Real.cos (v * L)) ^ 2 ≤ ((v * L) ^ 2 / 2) ^ 2 := pow_le_pow_left₀ hc0 hc1 2
+    have h2 : (v * L) ^ 2 * (v * L) ^ 2 ≤ 4 * (v * L) ^ 2 :=
+      mul_le_mul_of_nonneg_right h (sq_nonneg _)
+    nlinarith
+  · have h' : 4 < (v * L) ^ 2 := not_le.mp h
+    have h1 : (1 - Real.cos (v * L)) ^ 2 ≤ 4 := by nlinarith
+    nlinarith
+
+/-- On the critical ordinates the two-bump weight is `O(L²)`, uniformly in the ordinate. -/
+theorem spectralWeight_twoBumpTest_le_of_pos {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b)
+    (hbc : HasCompactSupport b) (hbe : ∀ x, b (-x) = b x) {N₀ N₂ : ℝ}
+    (hN : ∀ v : ℝ, ‖paperFT (fun x => (b x : ℂ)) v‖ ≤ N₀ ∧
+      v ^ 2 * ‖paperFT (fun x => (b x : ℂ)) v‖ ≤ N₂)
+    (L : ℝ) {ζ : ℂ} (hζ : ‖ζ‖ = 1) (h1 : ζ ≠ 1) (hγ : 0 < circleOrd ζ) :
+    oddSpectralWeight (twoBumpTest b L) ζ ≤ 4 * L ^ 2 * (N₀ ^ 2 + N₂ ^ 2) := by
+  have hfd := contDiff_twoBumpTest hb L
+  have hfc := hasCompactSupport_twoBumpTest hbc L
+  have hfe := twoBumpTest_neg hbe L
+  rw [spectralWeight_eq_of_pos hfd hfc hζ h1 hγ, paperFT_twoBumpTest_zero hb.continuous hbc,
+    norm_zero, zero_pow two_ne_zero, sub_zero]
+  set v := Real.sqrt (circleOrd ζ) with hv
+  have hv0 : 0 < v := Real.sqrt_pos.mpr hγ
+  have hv2 : v ^ 2 = circleOrd ζ := Real.sq_sqrt hγ.le
+  have hneg : ‖paperFT (twoBumpTest b L) (-(v : ℂ))‖ = ‖paperFT (twoBumpTest b L) v‖ := by
+    rw [paperFT_neg_of_even hfe]
+  rw [hneg, norm_paperFT_twoBumpTest_ofReal hb.continuous hbc, ← hv2]
+  obtain ⟨hN0, hN2⟩ := hN v
+  set B := ‖paperFT (fun x => (b x : ℂ)) v‖ with hB
+  have hB0 : 0 ≤ B := norm_nonneg _
+  have hA : (1 + (v ^ 2) ^ 2) * B ^ 2 ≤ N₀ ^ 2 + N₂ ^ 2 := by
+    have e1 : B ^ 2 ≤ N₀ ^ 2 := pow_le_pow_left₀ hB0 hN0 2
+    have e2 : (v ^ 2 * B) ^ 2 ≤ N₂ ^ 2 := pow_le_pow_left₀ (by positivity) hN2 2
+    nlinarith
+  have hkey := four_mul_one_sub_cos_sq_le L v
+  rw [div_le_iff₀ (by positivity)]
+  calc (1 + (v ^ 2) ^ 2) * (((2 * (1 - Real.cos (v * L)) * B) ^ 2 +
+        (2 * (1 - Real.cos (v * L)) * B) ^ 2) / 2) =
+        (4 * (1 - Real.cos (v * L)) ^ 2) * ((1 + (v ^ 2) ^ 2) * B ^ 2) := by ring
+    _ ≤ (4 * L ^ 2 * v ^ 2) * (N₀ ^ 2 + N₂ ^ 2) :=
+        mul_le_mul hkey hA (by positivity) (by positivity)
+    _ = 4 * L ^ 2 * (N₀ ^ 2 + N₂ ^ 2) * v ^ 2 := by ring
+
+/-- On the cut at distance `≥ r₀` from the centre the two-bump weight is at most
+`−4((2cosh(r₀L) − 2) ∫b)²`. -/
+theorem spectralWeight_twoBumpTest_le_of_cut {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b)
+    (hbc : HasCompactSupport b) (hbn : ∀ x, 0 ≤ b x) (hbe : ∀ x, b (-x) = b x) {L r₀ : ℝ}
+    (hL : 0 ≤ L) (hr₀ : 0 ≤ r₀) {ζ : ℂ} (hζ : ‖ζ‖ = 1) (h1 : ζ ≠ 1)
+    (hγ : -(1 / 4) ≤ circleOrd ζ) (hγ' : circleOrd ζ ≤ -(r₀ ^ 2)) (hγ'' : circleOrd ζ < 0) :
+    oddSpectralWeight (twoBumpTest b L) ζ ≤
+      -(4 * ((2 * Real.cosh (r₀ * L) - 2) * ∫ u, b u) ^ 2) := by
+  have hfd := contDiff_twoBumpTest hb L
+  have hfc := hasCompactSupport_twoBumpTest hbc L
+  have hfe := twoBumpTest_neg hbe L
+  rw [spectralWeight_eq_of_neg_of_even hfd hfc hfe hζ h1 hγ hγ'',
+    paperFT_twoBumpTest_zero hb.continuous hbc, norm_zero, zero_pow two_ne_zero, zero_sub,
+    paperFT_twoBumpTest_I_mul hb.continuous hbc, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+  set r := Real.sqrt (-circleOrd ζ) with hr
+  have hr0 : r₀ ≤ r := by
+    rw [hr]
+    exact (Real.le_sqrt hr₀ (by linarith)).mpr (by linarith)
+  have hE : ∫ u, b u ≤ expMoment b r := integral_le_expMoment hb.continuous hbc hbn hbe r
+  have hint0 : 0 ≤ ∫ u, b u := integral_nonneg hbn
+  have hcosh : 2 * Real.cosh (r₀ * L) - 2 ≤ 2 * Real.cosh (r * L) - 2 := by
+    have : Real.cosh (r₀ * L) ≤ Real.cosh (r * L) := by
+      rw [Real.cosh_le_cosh, abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
+      exact mul_le_mul_of_nonneg_right hr0 hL
+    linarith
+  have hcosh0 : 0 ≤ 2 * Real.cosh (r₀ * L) - 2 := by linarith [Real.one_le_cosh (r₀ * L)]
+  have hprod : (2 * Real.cosh (r₀ * L) - 2) * ∫ u, b u ≤
+      (2 * Real.cosh (r * L) - 2) * expMoment b r :=
+    mul_le_mul hcosh hE hint0 (by linarith)
+  have hsq : ((2 * Real.cosh (r₀ * L) - 2) * ∫ u, b u) ^ 2 ≤
+      ((2 * Real.cosh (r * L) - 2) * expMoment b r) ^ 2 :=
+    pow_le_pow_left₀ (by positivity) hprod 2
+  have hγpos : 0 < -circleOrd ζ := by linarith
+  rw [div_le_iff₀ hγpos]
+  nlinarith [hsq, mul_nonneg (sq_nonneg ((2 * Real.cosh (r * L) - 2) * expMoment b r))
+    (sq_nonneg (circleOrd ζ)), sq_nonneg ((2 * Real.cosh (r₀ * L) - 2) * ∫ u, b u)]
+
+/-! ## Cut removal -/
+
+/-- The part of the cut at distance at least `r₀` from the centre. -/
+def cutSet (r₀ : ℝ) : Set ℝ :=
+  {θ | circleMap 0 1 θ ≠ 1 ∧ -(1 / 4) ≤ angleOrd θ ∧ angleOrd θ ≤ -(r₀ ^ 2)}
+
+theorem measurable_angleOrd : Measurable angleOrd := by
+  unfold angleOrd circleOrd
+  exact Complex.measurable_im.comp ((measurable_const.add (measurable_circleMap 0 1)).div
+    (measurable_const.sub (measurable_circleMap 0 1)))
+
+theorem measurableSet_cutSet (r₀ : ℝ) : MeasurableSet (cutSet r₀) := by
+  show MeasurableSet ({θ | circleMap 0 1 θ ≠ 1} ∩
+    ({θ | -(1 / 4) ≤ angleOrd θ} ∩ {θ | angleOrd θ ≤ -(r₀ ^ 2)}))
+  exact ((measurable_circleMap 0 1 (measurableSet_singleton 1)).compl).inter
+    ((measurableSet_le measurable_const measurable_angleOrd).inter
+      (measurableSet_le measurable_angleOrd measurable_const))
+
+/-- `u²/2 ≤ 2cosh u − 2` for `u ≥ 0`. -/
+theorem sq_div_two_le_two_cosh_sub_two {u : ℝ} (hu : 0 ≤ u) : u ^ 2 / 2 ≤ 2 * Real.cosh u - 2 := by
+  rw [Real.cosh_eq]
+  have h1 := Real.quadratic_le_exp_of_nonneg hu
+  have h2 := Real.add_one_le_exp (-u)
+  linarith
+
+/-- **Cut removal at a fixed distance.**  If the full Weil functional is nonnegative on every even
+mean-zero test, the Nevanlinna measure has no mass on the cut at distance `≥ r₀` from the centre. -/
+theorem measure_cutSet_eq_zero {lam : ℕ → ℝ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    {Ψ : ℂ → ℂ} (hΨd : DifferentiableOn ℂ Ψ oddWeilSlitDomain)
+    (hΨe : ∀ s : ℂ, 1 < s.re → Ψ s = weilFunction lam s)
+    {ν : Measure ℝ} [IsFiniteMeasure ν] {c : ℝ}
+    (hsupp : ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ ∈ Iio (-(1 / 4 : ℝ))} = 0)
+    (hrep : ∀ a : ℂ, 0 < a.re → 0 < a.im →
+      a * Ψ (1 / 2 + a) =
+        (∫ θ, I * hrKernel (1 / 2 - I * a ^ 2) (circleMap 0 1 θ) ∂ν) - c)
+    (hpos : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f → (∀ x, f (-x) = f x) →
+      paperFT f 0 = 0 → 0 ≤ (weilFullFunctional lam (EF.weilTest f f)).re)
+    {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b) (hbc : HasCompactSupport b) (hbn : ∀ x, 0 ≤ b x)
+    (hbe : ∀ x, b (-x) = b x) (hbint : 0 < ∫ u, b u) {r₀ : ℝ} (hr₀ : 0 < r₀) :
+    ν (cutSet r₀) = 0 := by
+  obtain ⟨N₀, N₂, hN0, hN2, hN⟩ := exists_profile_bounds hb hbc
+  set M : ℝ := ν.real univ with hM
+  have hM0 : 0 ≤ M := measureReal_nonneg
+  set A : ℝ := 4 * (N₀ ^ 2 + N₂ ^ 2) with hA
+  have hA0 : 0 ≤ A := by positivity
+  set Ib : ℝ := ∫ u, b u with hIb
+  set m : ℝ := ν.real (cutSet r₀) with hm
+  have hm0 : 0 ≤ m := measureReal_nonneg
+  have key : ∀ L : ℝ, 0 ≤ L →
+      4 * ((2 * Real.cosh (r₀ * L) - 2) * Ib) ^ 2 * m ≤ A * L ^ 2 * M := by
+    intro L hL
+    set f := twoBumpTest b L with hf
+    have hfd := contDiff_twoBumpTest hb L
+    have hfc := hasCompactSupport_twoBumpTest hbc L
+    have hfe := twoBumpTest_neg hbe L
+    have hf0 := paperFT_twoBumpTest_zero hb.continuous hbc L
+    have hW := hpos f hfd hfc hfe hf0
+    rw [re_weilFullFunctional_eq_integral_spectralWeight_sub hsl hΨd hΨe hsupp hrep hfd hfc, hf0,
+      norm_zero, zero_pow two_ne_zero, mul_zero, sub_zero] at hW
+    set K : ℝ := 4 * ((2 * Real.cosh (r₀ * L) - 2) * Ib) ^ 2 with hK
+    have hAL : 0 ≤ A * L ^ 2 := by positivity
+    have hbound : ∀ ζ : ℂ, ‖ζ‖ = 1 → ζ ≠ 1 → 0 < circleOrd ζ →
+        oddSpectralWeight f ζ ≤ A * L ^ 2 := fun ζ hζ h1 hγ => by
+      have := spectralWeight_twoBumpTest_le_of_pos hb hbc hbe hN L hζ h1 hγ
+      rw [hA]; linarith
+    set φ : ℝ → ℝ := fun θ =>
+      A * L ^ 2 - (A * L ^ 2 + K) * (cutSet r₀).indicator (fun _ => (1 : ℝ)) θ with hφ
+    have hae : ∀ᵐ θ ∂ν, oddSpectralWeight f (circleMap 0 1 θ) ≤ φ θ := by
+      filter_upwards [ae_support_of_measure_eq_zero hsupp] with θ hθ
+      simp only [hφ]
+      by_cases hc : θ ∈ cutSet r₀
+      · rw [Set.indicator_of_mem hc, mul_one]
+        obtain ⟨h1, hγ, hγ'⟩ := hc
+        have hγ'' : circleOrd (circleMap 0 1 θ) < 0 := by
+          change angleOrd θ < 0
+          nlinarith
+        have := spectralWeight_twoBumpTest_le_of_cut hb hbc hbn hbe hL hr₀.le
+          (norm_circleMap_one θ) h1 hγ hγ' hγ''
+        linarith
+      · rw [Set.indicator_of_notMem hc, mul_zero, sub_zero]
+        by_cases h1 : circleMap 0 1 θ = 1
+        · rw [h1, oddSpectralWeight_one hfd hfc]; exact hAL
+        · have hγ : -(1 / 4) ≤ circleOrd (circleMap 0 1 θ) := hθ.resolve_left h1
+          rcases lt_trichotomy (circleOrd (circleMap 0 1 θ)) 0 with hneg | hzero | hposγ
+          · rw [spectralWeight_eq_of_neg_of_even hfd hfc hfe (norm_circleMap_one θ) h1 hγ hneg,
+              hf0, norm_zero, zero_pow two_ne_zero, zero_sub, neg_div]
+            have : 0 ≤ (1 + circleOrd (circleMap 0 1 θ) ^ 2) *
+                ‖paperFT f (I * Real.sqrt (-circleOrd (circleMap 0 1 θ)))‖ ^ 2 /
+                (-circleOrd (circleMap 0 1 θ)) := div_nonneg (by positivity) (by linarith)
+            linarith
+          · have : circleMap 0 1 θ = -1 := by
+              rw [eq_bdryPt_circleOrd (norm_circleMap_one θ) h1, hzero, bdryPt_zero]
+            rw [this]
+            exact spectralWeight_neg_one_le_of_forall_pos hfd hfc hbound
+          · exact hbound _ (norm_circleMap_one θ) h1 hposγ
+    have hΘi := integrable_spectralWeight_circleMap hsupp hfd hfc
+    have hind : Integrable ((cutSet r₀).indicator fun _ => (1 : ℝ)) ν :=
+      (integrable_const (1 : ℝ)).indicator (measurableSet_cutSet r₀)
+    have hφi : Integrable φ ν := (integrable_const _).sub (hind.const_mul _)
+    have hle := integral_mono_ae hΘi hφi hae
+    have hφint : ∫ θ, φ θ ∂ν = A * L ^ 2 * M - (A * L ^ 2 + K) * m := by
+      simp only [hφ]
+      rw [integral_sub (integrable_const _) (hind.const_mul _), integral_const, integral_const_mul,
+        integral_indicator_const _ (measurableSet_cutSet r₀)]
+      simp only [smul_eq_mul, mul_one, hM, hm]
+      ring
+    rw [hφint] at hle
+    nlinarith [hW, hle, mul_nonneg hAL hm0]
+  have hcosh : ∀ L : ℝ, 0 ≤ L → r₀ ^ 2 * L ^ 2 / 2 ≤ 2 * Real.cosh (r₀ * L) - 2 := fun L hL => by
+    have := sq_div_two_le_two_cosh_sub_two (u := r₀ * L) (by positivity)
+    rw [mul_pow] at this
+    exact this
+  have hIb0 : 0 < Ib := hbint
+  have hm_eq : m = 0 := by
+    by_contra hne
+    have hmpos : 0 < m := lt_of_le_of_ne hm0 (Ne.symm hne)
+    set D : ℝ := r₀ ^ 4 * Ib ^ 2 * m with hD
+    have hD0 : 0 < D := by positivity
+    obtain ⟨n, hn⟩ := exists_nat_gt (A * M / D + 1)
+    have hn1 : (1 : ℝ) ≤ n := by linarith [div_nonneg (mul_nonneg hA0 hM0) hD0.le]
+    have hnpos : (0 : ℝ) < n := by linarith
+    have h1 := key n hnpos.le
+    have h2 := hcosh n hnpos.le
+    have h3 : r₀ ^ 2 * (n : ℝ) ^ 2 / 2 * Ib ≤ (2 * Real.cosh (r₀ * n) - 2) * Ib :=
+      mul_le_mul_of_nonneg_right h2 hIb0.le
+    have h4 : (r₀ ^ 2 * (n : ℝ) ^ 2 / 2 * Ib) ^ 2 ≤ ((2 * Real.cosh (r₀ * n) - 2) * Ib) ^ 2 :=
+      pow_le_pow_left₀ (by positivity) h3 2
+    -- `D n⁴ ≤ A n² M`, hence `D n² ≤ A M`
+    have h5 : D * (n : ℝ) ^ 4 ≤ A * (n : ℝ) ^ 2 * M := by
+      have : 4 * (r₀ ^ 2 * (n : ℝ) ^ 2 / 2 * Ib) ^ 2 * m ≤ A * (n : ℝ) ^ 2 * M := by
+        nlinarith [h4, h1, hm0]
+      rw [hD]
+      nlinarith [this]
+    have h6 : D * (n : ℝ) ^ 2 ≤ A * M := by
+      have hn2 : (0 : ℝ) < (n : ℝ) ^ 2 := by positivity
+      have : D * (n : ℝ) ^ 2 * (n : ℝ) ^ 2 ≤ A * M * (n : ℝ) ^ 2 := by nlinarith [h5]
+      exact le_of_mul_le_mul_right this hn2
+    have h7 : A * M / D < (n : ℝ) ^ 2 := by
+      calc A * M / D < n := by linarith
+        _ ≤ (n : ℝ) ^ 2 := by nlinarith
+    rw [div_lt_iff₀ hD0] at h7
+    linarith
+  exact (MeasureTheory.measureReal_eq_zero_iff.mp hm_eq).resolve_right (measure_ne_top ν _)
+
+/-- **Cut removal.**  If the Weil functional is nonnegative on every even mean-zero test, the
+Nevanlinna measure of the odd Weil function has no mass on the real cut. -/
+theorem cut_measure_eq_zero_of_even_meanZero_nonneg {lam : ℕ → ℝ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    {Ψ : ℂ → ℂ} (hΨd : DifferentiableOn ℂ Ψ oddWeilSlitDomain)
+    (hΨe : ∀ s : ℂ, 1 < s.re → Ψ s = weilFunction lam s)
+    {ν : Measure ℝ} [IsFiniteMeasure ν] {c : ℝ}
+    (hsupp : ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ ∈ Iio (-(1 / 4 : ℝ))} = 0)
+    (hrep : ∀ a : ℂ, 0 < a.re → 0 < a.im →
+      a * Ψ (1 / 2 + a) =
+        (∫ θ, I * hrKernel (1 / 2 - I * a ^ 2) (circleMap 0 1 θ) ∂ν) - c)
+    (hpos : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f → (∀ x, f (-x) = f x) →
+      paperFT f 0 = 0 → 0 ≤ (weilFullFunctional lam (EF.weilTest f f)).re) :
+    ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ < 0} = 0 := by
+  let bump : ContDiffBump (0 : ℝ) := ⟨1, 2, one_pos, one_lt_two⟩
+  have hbint : 0 < ∫ u, bump u := by
+    refine bump.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero bump.hasCompactSupport
+      bump.nonneg' (x := 0) ?_
+    rw [bump.one_of_mem_closedBall (Metric.mem_closedBall_self bump.rIn_pos.le)]
+    exact one_ne_zero
+  have hsub : {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ < 0} ⊆
+      {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ ∈ Iio (-(1 / 4 : ℝ))} ∪
+        ⋃ k : ℕ, cutSet (1 / ((k : ℝ) + 1)) := by
+    rintro θ ⟨h1, hγ⟩
+    by_cases hq : angleOrd θ < -(1 / 4)
+    · exact Or.inl ⟨h1, hq⟩
+    · have hq' : -(1 / 4) ≤ angleOrd θ := not_lt.mp hq
+      refine Or.inr (Set.mem_iUnion.mpr ?_)
+      have hpos' : 0 < -angleOrd θ := by linarith
+      obtain ⟨k, hk⟩ := exists_nat_gt (1 / (-angleOrd θ))
+      refine ⟨k, h1, hq', ?_⟩
+      have hk0 : (0 : ℝ) < k := lt_trans (by positivity) hk
+      have hk1 : 1 / (k : ℝ) < -angleOrd θ := by
+        rw [div_lt_iff₀ hk0]
+        rw [div_lt_iff₀ hpos'] at hk
+        linarith
+      have hk2 : (1 / ((k : ℝ) + 1)) ^ 2 ≤ 1 / (k : ℝ) := by
+        rw [div_pow, one_pow, div_le_div_iff₀ (by positivity) hk0]
+        nlinarith
+      linarith
+  refine measure_mono_null hsub (measure_union_null hsupp (measure_iUnion_null fun k => ?_))
+  exact measure_cutSet_eq_zero hsl hΨd hΨe hsupp hrep hpos bump.contDiff bump.hasCompactSupport
+    bump.nonneg' bump.neg hbint (by positivity)
+
+/-! ## The converse: no cut mass gives mean-zero positivity -/
+
+/-- **Converse.**  Without cut mass the full Weil functional is nonnegative on every mean-zero
+test, of either parity. -/
+theorem weilFullFunctional_nonneg_of_cut_eq_zero {lam : ℕ → ℝ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    {Ψ : ℂ → ℂ} (hΨd : DifferentiableOn ℂ Ψ oddWeilSlitDomain)
+    (hΨe : ∀ s : ℂ, 1 < s.re → Ψ s = weilFunction lam s)
+    {ν : Measure ℝ} [IsFiniteMeasure ν] {c : ℝ}
+    (hsupp : ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ ∈ Iio (-(1 / 4 : ℝ))} = 0)
+    (hrep : ∀ a : ℂ, 0 < a.re → 0 < a.im →
+      a * Ψ (1 / 2 + a) =
+        (∫ θ, I * hrKernel (1 / 2 - I * a ^ 2) (circleMap 0 1 θ) ∂ν) - c)
+    (hcut : ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ < 0} = 0)
+    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) (h0 : paperFT f 0 = 0) :
+    0 ≤ (weilFullFunctional lam (EF.weilTest f f)).re := by
+  rw [re_weilFullFunctional_eq_integral_spectralWeight_sub hsl hΨd hΨe hsupp hrep hf hfc, h0,
+    norm_zero, zero_pow two_ne_zero, mul_zero, sub_zero]
+  refine integral_nonneg_of_ae ?_
+  have hae : ∀ᵐ θ ∂ν, circleMap 0 1 θ = 1 ∨ 0 ≤ circleOrd (circleMap 0 1 θ) := by
+    rw [ae_iff]
+    refine measure_mono_null (fun θ hθ => ?_) hcut
+    simp only [Set.mem_setOf_eq, not_or, not_le] at hθ
+    exact ⟨hθ.1, hθ.2⟩
+  filter_upwards [hae] with θ hθ
+  exact spectralWeight_nonneg_of_meanZero_of_not_cut hf hfc h0 (norm_circleMap_one θ) hθ
+
 end RHTower.OddResolvent

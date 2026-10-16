@@ -145,11 +145,17 @@ theorem levyForm_eq_fourier {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : Has
       (1 / (2 * Real.pi)) * (∫ r, fourierSq g r * levySymbol r) = levyForm g := by
   have hgC := hg.continuous
   have hg1 : Integrable g := hgC.integrable_of_hasCompactSupport hgc
-  have hg2 : Integrable fun u => g u ^ 2 :=
-    (hgC.pow 2).integrable_of_hasCompactSupport
-      (hgc.comp_left (g := fun y : ℝ => y ^ 2) (by simp))
-  obtain ⟨hint, heq⟩ := integral_paperFT_ofReal_sq_mul_gammaBracket_eq_bochner hgC hg1 hg2
-    (integrable_fourierSq_mul_gammaBracket hg hgc)
+  have hgc2 : HasCompactSupport fun u => g u ^ 2 := by
+    have h := hgc.mul_left (f := g)
+    have he : (fun u => g u ^ 2) = g * g := by
+      funext u
+      simp [pow_two]
+    rw [he]
+    exact h
+  have hg2 : Integrable fun u => g u ^ 2 := (hgC.pow 2).integrable_of_hasCompactSupport hgc2
+  have hintR := integrable_fourierSq_mul_gammaBracket hg hgc
+  unfold fourierSq at hintR
+  obtain ⟨hint, heq⟩ := integral_paperFT_ofReal_sq_mul_gammaBracket_eq_bochner hgC hg1 hg2 hintR
   refine ⟨hint, ?_⟩
   have hsplit : (∫ r, fourierSq g r * levySymbol r) =
       (∫ r, fourierSq g r * EF.gammaBracket r) - (∫ r, fourierSq g r) * EF.gammaBracket 0 := by
@@ -162,7 +168,9 @@ theorem levyForm_eq_fourier {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : Has
   rw [hsplit, integral_fourierSq_eq hg hgc, mul_sub]
   have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
   have heq' : (1 / (2 * Real.pi)) * (∫ r, fourierSq g r * EF.gammaBracket r) =
-      EF.gammaBracket 0 * (∫ u, g u ^ 2) + levyForm g := heq
+      EF.gammaBracket 0 * (∫ u, g u ^ 2) + levyForm g := by
+    unfold fourierSq levyForm
+    exact heq
   have h2π : (1 / (2 * Real.pi)) * (2 * Real.pi) = 1 := by
     field_simp
   linear_combination heq' - ((∫ u, g u ^ 2) * EF.gammaBracket 0) * h2π
@@ -181,7 +189,7 @@ theorem measurableSet_highFreq (T : ℝ) : MeasurableSet (highFreq T) :=
 
 /-- **Uniform high-frequency tail**: `(log(T/2) − levyConst) ∫_{|r| ≥ T} |ĝ|² ≤ 2π Q(g)`. -/
 theorem fourier_tail_le {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {T : ℝ}
-    (hT : 4 ≤ T) (hL : 0 ≤ Real.log (T / 2) - levyConst) :
+    (hT : 4 ≤ T) :
     (Real.log (T / 2) - levyConst) * ∫ r in highFreq T, fourierSq g r ≤ 2 * Real.pi * levyForm g := by
   have hint := integrable_fourierSq_mul_levySymbol hg hgc
   have h1 : (Real.log (T / 2) - levyConst) * ∫ r in highFreq T, fourierSq g r ≤

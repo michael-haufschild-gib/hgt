@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **17 / 100**.
+Completed after goal activation: **18 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -247,10 +247,27 @@ unrelated concurrent CHMD umbrella omissions, listed on the card. Arbitrary
 infinite native synthesis, geometric cup identification and positivity remain
 open. Card: `3-formalized/rh100-017-original-convolution-spectral-invariance-2026-10-16.md`.
 
+018: whole native BV forcing through the singular theta quantile. Every
+continuous whole-line BV forcing has a unique literal solution of `(A-i*r)f=g`
+for every nonzero real r, with a common two-ended trace and global BV. Exact
+theta-moment cancellation joins the two forced tails; antitone source-ratio
+increments telescope before integration over arbitrary partitions. RN's
+singular quantile preserves variation and gives actual compact absolute
+continuity. CHMD admission retains the complete signed Weil expression and
+original compact smooth graph/energy approximation. This removes finite-Xi-
+packet membership from native solving and uniqueness; the existing Hilbert
+inverse and integrating factor alone did not pay this native regularity.
+Seven direct leaf audits and all 58 public standard-axiom audits passed.
+Artifacts are fresh, imports unique, indexes refreshed, and all 8 owned
+scratch files removed. Global lint reports three unrelated concurrent
+umbrella omissions, listed on the card. Original spectral synthesis and
+directed prime--Gamma work sign remain open.
+Card: `3-formalized/rh100-018-native-bv-forcing-resolvent-2026-10-16.md`.
+
 ## Next investigation
 
-No eighteenth contribution is counted. Do not count routine corollaries or
-repackagings of 001–017 as further contributions. Resume broad Lean-corpus
+No nineteenth contribution is counted. Do not count routine corollaries or
+repackagings of 001–018 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -314,6 +331,12 @@ calculus consequences do not count again. The arithmetic sharp has not been
 identified with the Hilbert adjoint.
 
 ## Continuation rules
+
+Whole continuous-BV native forcing, compact AC transport, complete arithmetic
+admission and whole-domain uniqueness belong together to 018. Routine word
+iteration or weaker forcing-domain extensions do not count again without a
+separate structural obstacle. This result does not realize arbitrary Hilbert
+packets as original sources or give a sign to directed prime--Gamma work.
 
 Use current Lean corpus and documented research search, not old reports or web
 search. Record each conjecture, exact failure or proof, source theorem inputs,
