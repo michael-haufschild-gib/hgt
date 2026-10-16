@@ -142,10 +142,14 @@ theorem not_summable_suzukiGammaTwoLegColumn_first_norm_sq
       calc C = (h.1 * Real.sqrt h.1)⁻¹ ^ 2 * Real.log 2 *
           (1 / 8) * (1 / 9) * (1 / 16) := by dsimp [C]; ring
            _ ≤ _ := by gcongr
-    apply (mul_le_mul_iff_of_pos_right hp).mp
-    convert hmain using 1
-    · field_simp
-    · ring
+    calc
+      C * (1 / (p : ℝ)) ≤
+          ((h.1 * Real.sqrt h.1)⁻¹ ^ 2 * Real.log (p : ℝ) *
+            ((p : ℝ) / ((p : ℝ) + 1)) ^ 3 *
+            (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2 *
+            (1 - xiMobiusContinuousApertureDiskNode ((h.1 / 2) * a.1) p) ^ 4) *
+            (1 / (p : ℝ)) := mul_le_mul_of_nonneg_right hmain (by positivity)
+      _ = _ := by field_simp [hp.ne', hden.ne']
   intro hsum
   have hs : Summable (fun p : Nat.Primes => C * (1 / (p : ℝ))) :=
     Summable.of_norm_bounded_eventually hsum (by
@@ -176,7 +180,7 @@ theorem no_bounded_suzukiGammaTwoLeg_column_realization
     have hn := congrArg norm hid
     simpa [v, RCLike.inner_apply] using hn
   apply not_summable_suzukiGammaTwoLegColumn_first_norm_sq h a
-  exact (hs.comp_injective hi).congr fun p => by rw [hrow]
+  exact (hs.comp_injective hi).congr fun p => congrArg (fun r : ℝ => r ^ 2) (hrow p)
 
 /-- The actual closed synthesis has no bounded extension to its ambient Hilbert space. -/
 theorem suzukiGammaTwoLegClosedSynthesis_no_bounded_extension
@@ -190,8 +194,9 @@ theorem suzukiGammaTwoLegClosedSynthesis_no_bounded_extension
   rcases (LinearPMap.mem_graph_iff _).mp
       (suzukiGammaTwoLegClosedSynthesis_single_graph h a (Sum.inl (p, 0))) with
     ⟨x, hx, hy⟩
-  rw [← hx, hT x]
-  exact hy
+  change (x : SuzukiCausalDepthGammaTraceL2) = lp.single 2 (Sum.inl (p, 0)) (1 : ℂ) at hx
+  change suzukiGammaTwoLegClosedSynthesis h a x = suzukiGammaTwoLegColumn h a (p, 0) at hy
+  exact (congrArg T hx.symm).trans ((hT x).trans hy)
 
 /-- The literal inverse-Wold two-leg source weight is recovered, without changing its tail. -/
 theorem suzukiGammaTwoLegColumn_sourceNormal_coordinate

@@ -151,8 +151,18 @@ This construction uses cancellation between neighboring Gamma coordinates, not a
 
 ### Verified structural core and next conjecture
 
-Direct Lean audits now verify boundary cancellation, canonical graph closure, zero vertical kernel, dense domain, exact finite-packet recovery, and exact Gram kernel `p*q*GammaSchur(pe,qe)`. The unboundedness audit remains in progress.
+Direct Lean audits now verify boundary cancellation, canonical graph closure, zero vertical kernel, dense domain, exact finite-packet recovery, exact Gram kernel `p*q*GammaSchur(pe,qe)`, nonexistence of a bounded extension, and the fixed premise-free canonical theorem. The finite-row boundary classification audit remains in progress.
 
 The stronger conjecture is an exact boundary-domain classification. For a finite complex family `a_k`, the source row `sum_k a_k*v_pe(k)` is representable by an arithmetic-sector Hilbert vector if and only if `sum_k a_k*c_k=0`.
 
 Paper proof: set `b_k(pe)=v_pe(k)` and `R_k=c_(k+1)*b_k-c_k*b_(k+1)`. Each `R_k` is a Hilbert row. Induction gives a Hilbert row `W_k=c_0*b_k-c_k*b_0`, using `W_0=0` and `W_(k+1)=(c_(k+1)/c_k)*W_k-(c_0/c_k)*R_k`. Therefore `c_0*sum a_k*b_k-(sum a_k*c_k)*b_0=sum a_k*W_k` is a Hilbert row. A zero boundary coefficient suffices. A nonzero boundary coefficient would make `b_0` a Hilbert row, contradicting its prime-harmonic divergence. This classifies the obstruction as one explicit boundary functional on finite Gamma tests. It is not a new assumption on the source.
+
+### Unboundedness and exact scope
+
+At depth zero the first row satisfies the exact identity
+
+`|b_0(p,0)|^2 = C_h^2 log(p) [p/(p+1)]^2 [(p-1)/(p+1)]^2 [1-disk((h/2)a,p)]^4 /(p+1)`,
+
+where `C_h=(h sqrt(h))^-1`. The disk term tends to zero. The displayed square therefore dominates a positive multiple of `1/p` eventually. Prime-harmonic divergence rules out a Hilbert representative of this row. If a bounded operator reproduced the columns, its adjoint applied to the first Gamma coordinate would be such a representative. Thus no bounded extension exists.
+
+The old amplitude-admission predicate remains false. The positive theorem constructs a different, non-diagonal closed graph for the **same columns and finite energy kernel**. It does not assert that the forbidden amplitude vector becomes square-summable, nor that the minimal closed graph equals every maximal extension. The exact finite-row boundary condition and canonical graph closure are the structural advance. The completed signed Robin/Ward comparison remains unresolved.

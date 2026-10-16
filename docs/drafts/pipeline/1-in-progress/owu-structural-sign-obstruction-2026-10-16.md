@@ -94,5 +94,11 @@ purification, and normalization. None assumes positivity or RH.
 - `OddSectorExactFibreRecovery`: exact all-trace recovery, normalized blind
   recovery, and a smooth sequence approaching the attained complete minimum.
 
-Current verification: coordinate module had one ambiguous cast in a symbolic
-inequality; fixed and rechecking. No computational experiments or new axioms.
+Verified with foreground `lake --old env lean -j 1`:
+
+- `OddSectorInteriorTraceCoordinates`: PASS, no warnings.
+- `OddSectorInteriorTraceRepair`: PASS, no warnings.
+
+Both finished modules are wired into `RHTower.lean`. Smooth form density is now
+being checked; exact recovery and the final axiom/lint audit remain pending.
+No computational experiments or new axioms.

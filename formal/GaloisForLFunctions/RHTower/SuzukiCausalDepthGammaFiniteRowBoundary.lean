@@ -81,7 +81,7 @@ theorem no_suzukiGammaFirstRow_hilbert_representative (h a : Set.Ioi (0 : ℝ)) 
     exact congrArg Prod.fst (Sum.inl.inj hpq)
   have hs := (HilbertSchmidt.summable_coe_sq v).comp_injective hi
   apply not_summable_suzukiGammaTwoLegColumn_first_norm_sq h a
-  exact hs.congr fun p => by rw [hv]
+  exact hs.congr fun p => congrArg (fun z : ℂ => ‖z‖ ^ 2) (hv p)
 
 /-- Exact domain classification for every finite Gamma test row of the actual source. -/
 theorem suzukiGammaFiniteRow_hilbert_iff_boundary_zero
@@ -115,5 +115,18 @@ theorem suzukiGammaFiniteRow_hilbert_iff_boundary_zero
     change (suzukiGammaBoundaryCoefficient 0 : ℂ)⁻¹ * W (Sum.inl pe) = _
     rw [hW, hB]
     simp [hc]
+
+/-- Every polarized finite energy pairing retains the literal two-leg Gamma kernel. -/
+theorem suzukiGammaTwoLeg_finite_packet_pairing
+    (h a : Set.Ioi (0 : ℝ)) (s t : Finset (Nat.Primes × ℕ))
+    (c d : (Nat.Primes × ℕ) → ℂ) :
+    inner ℂ (∑ pe ∈ s, c pe • suzukiGammaTwoLegColumn h a pe)
+        (∑ qe ∈ t, d qe • suzukiGammaTwoLegColumn h a qe) =
+      ∑ pe ∈ s, ∑ qe ∈ t,
+        (starRingEnd ℂ) (c pe) * d qe *
+          (((pe.1 : ℝ) * (qe.1 : ℝ) *
+            suzukiCausalDepthGammaSchurKernel h.1 a.1 pe qe : ℝ) : ℂ) := by
+  simp only [sum_inner, inner_sum, inner_smul_left, inner_smul_right,
+    suzukiGammaTwoLegColumn_inner, mul_assoc]
 
 end RHTower

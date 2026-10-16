@@ -45,16 +45,18 @@ theorem exists_interior_purification_moments (a : SuzukiPositiveAperture)
       interiorTrace f = mixtureTrace a c ∧ interiorEnergy f = mixtureEnergy a c := by
   classical
   let e := (Fintype.equivFin c.support).symm
-  let F : Fin c.support.card → InteriorWindowedSmoothOddTestFn a := fun i => (e i).1
-  let b : Fin c.support.card → ℝ≥0 := fun i => ⟨c (F i),hc (F i)⟩
+  let F : Fin (Fintype.card c.support) → InteriorWindowedSmoothOddTestFn a := fun i => (e i).1
+  let b : Fin (Fintype.card c.support) → ℝ≥0 := fun i => ⟨c (F i),hc (F i)⟩
   obtain ⟨f,hf⟩ := exists_interior_window_purification a F b
   have hP : interiorProfile f = mixtureProfile a c := by
     rw [interiorProfile,hf]
     change (fun x => ∑ i, (c (F i) : ℂ)*interiorProfile (F i) x) = _
     funext x
     have he := e.sum_comp (fun i : c.support => (c i.1 : ℂ)*interiorProfile i.1 x)
+    rw [Finset.univ_eq_attach,
+      Finset.sum_attach c.support (fun g => (c g : ℂ)*interiorProfile g x)] at he
     simpa only [F,mixtureProfile,linearCombination_apply,Finsupp.sum,Finset.sum_apply,
-      Pi.smul_apply,Complex.real_smul,Finset.univ_eq_attach,Finset.sum_attach] using he
+      Pi.smul_apply,Complex.real_smul] using he
   refine ⟨f,hP,?_,?_⟩
   · ext j
     change logValue f.1.1.1.1 j = _
@@ -76,8 +78,9 @@ theorem exists_interior_purification_moments (a : SuzukiPositiveAperture)
       simp only [mixtureProfile,linearCombination_apply,Finsupp.sum]
       rfl
     change (weilFullFunctional lam (interiorProfile f)).re = _
-    rw [hP,hp,weilFullFunctional_sum lam _ (fun g _ =>
-      (admissible_weilTest g.1.1.1.2.1 g.1.1.1.2.2).smul _)]
+    rw [hP,hp,weilFullFunctional_sum lam c.support
+      (k := fun g => (c g : ℂ) • interiorProfile g) (fun g _ =>
+        (admissible_weilTest g.1.1.1.2.1 g.1.1.1.2.2).smul _)]
     simp only [weilFullFunctional_smul,Complex.re_sum,Complex.mul_re,Complex.ofReal_re,
       Complex.ofReal_im,zero_mul,sub_zero,mixtureEnergy,linearCombination_apply,
       Finsupp.sum,smul_eq_mul,interiorEnergy,nativeProfileEnergy,lam,interiorProfile]
@@ -96,7 +99,10 @@ theorem mem_apertureNodes (a : SuzukiPositiveAperture) (j : LogIndex) :
   · intro hj
     refine ⟨⟨j.2,?_⟩,hj⟩
     apply (Nat.le_floor_iff (Real.exp_nonneg _)).2
-    exact (Real.lt_exp_iff_log_lt (by exact_mod_cast (show 0 < j.1 by omega))).2 hj |>.le
+    calc
+      (j : ℝ) = Real.exp (Real.log (j : ℕ)) :=
+        (Real.exp_log (by exact_mod_cast (show 0 < j.1 by omega))).symm
+      _ ≤ Real.exp (2*a.1) := (Real.exp_lt_exp.mpr hj).le
 
 theorem interiorTrace_support_subset {a : SuzukiPositiveAperture}
     (f : InteriorWindowedSmoothOddTestFn a) : (interiorTrace f).support ⊆ apertureNodes a := by
@@ -111,7 +117,7 @@ theorem interiorTrace_support_subset {a : SuzukiPositiveAperture}
     filter_upwards with t
     simp only [ContinuousLinearMap.mul_apply',neg_sub]
     by_cases ht : f.1.1.1.1 t=0
-    · rw [ht,zero_mul]
+    · simp only [ht,zero_mul,Pi.zero_apply]
     · have hs := f.2 (subset_tsupport _ ht)
       have hfz : f.1.1.1.1 (t-y)=0 := by
         by_contra hh
@@ -119,7 +125,7 @@ theorem interiorTrace_support_subset {a : SuzukiPositiveAperture}
         have hab : |y| < 2*a.1 := abs_lt.mpr ⟨by linarith [hs.1,hs'.2],
           by linarith [hs.2,hs'.1]⟩
         linarith
-      rw [hfz,map_zero,mul_zero]
+      simp only [hfz,map_zero,mul_zero,Pi.zero_apply]
   apply Finsupp.mem_support_iff.mp hj
   change logValue f.1.1.1.1 j = 0
   unfold logValue
@@ -159,8 +165,8 @@ theorem coordinate_spec (a : SuzukiPositiveAperture) (j : apertureNodes a) :
 
 def traceRepair (a : SuzukiPositiveAperture) (v : LogIndex →₀ ℝ) :
     InteriorWindowedSmoothOddTestFn a →₀ ℝ :=
-  ∑ j : apertureNodes a, max (v j.1) 0 • positiveCoordinate a j +
-    max (-v j.1) 0 • negativeCoordinate a j
+  ∑ j : apertureNodes a, (max (v j.1) 0 • positiveCoordinate a j +
+    max (-v j.1) 0 • negativeCoordinate a j)
 
 theorem traceRepair_nonneg (a : SuzukiPositiveAperture) (v : LogIndex →₀ ℝ)
     (f : InteriorWindowedSmoothOddTestFn a) : 0 ≤ traceRepair a v f := by
@@ -181,7 +187,8 @@ theorem traceRepair_trace (a : SuzukiPositiveAperture) (v : LogIndex →₀ ℝ)
     · rw [max_eq_left hr,max_eq_right (by linarith)]; ring
     · rw [max_eq_right hr,max_eq_left (by linarith)]; ring
   simp_rw [hm]
-  rw [Finset.univ_eq_attach,Finset.sum_attach]
+  rw [Finset.univ_eq_attach,
+    Finset.sum_attach (apertureNodes a) (fun j => Finsupp.single j (v j))]
   exact (Finsupp.sum_of_support_subset v hv (fun j r => Finsupp.single j r)
     (fun _ _ => Finsupp.single_zero _)).symm.trans (Finsupp.sum_single v)
 
