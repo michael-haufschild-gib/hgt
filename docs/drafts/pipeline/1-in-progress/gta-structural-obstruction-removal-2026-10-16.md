@@ -98,3 +98,34 @@ absence. No external search or novelty claim was made.
 is not a route retirement. The unresolved mathematical work is a source-specific
 mechanism controlling transverse feedback, or a proved structural reduction
 that materially eliminates part of that mechanism. Neither was established.
+
+## Resumed attack: fixed-source closure, 2026-10-16
+
+The previous stopping decision was premature. Work resumes on the concrete
+closure conjecture, rather than treating its missing proof as an endpoint.
+
+Write H = L2(k^-1 dx), R = closure(span{k^(n)}), and F_f(z) = integral
+f(x) exp(i z x) dx. Target: R equals the subspace of f in H for which
+F_f / XiC extends to an entire function, including all zero multiplicities.
+This equality is a proposed structural theorem, not a proved premise.
+
+Attack sequence:
+1. Use Cauchy--Schwarz in the actual reciprocal-density norm to control the
+   source Laplace transform; do not replace H by the Meyer topology.
+2. Combine the corpus's Xi-division exponential-type argument with complex
+   Stirling differences. Test whether the entire quotient's analytic carrier
+   must lie in the closure of the actual complex translation domain.
+3. For carriers strictly inside that domain, recover an H-valued integral of
+   literal theta translations. Their derivative-history membership is already
+   established. Prove the critical boundary passage in H, not merely locally
+   uniformly in transform coordinates.
+4. If the boundary claim fails, construct the counterexample and identify the
+   strongest surviving closure theorem before changing conjecture.
+
+A useful intermediate target is automatic strip analyticity of an H source
+whose transform is Xi-divisible. On diagonal complex rays, the actual Gamma
+Stirling main term is better than the crude rectangular Gamma floor. In
+centered Laplace coordinates, the expected quotient type on a diagonal is
+(log(2)/4 + pi/8) times the height, strictly below pi/4. Propagating between
+opposite diagonal rays would force Fourier decay and exclude rough invisible
+sources. These statements are current paper-proof targets, not Lean results.

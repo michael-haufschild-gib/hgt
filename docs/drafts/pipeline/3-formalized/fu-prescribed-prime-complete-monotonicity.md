@@ -1,8 +1,9 @@
-# FU: structural cancellation research
+# FU: prescribed-prime complete monotonicity
 
-Status: in progress. Target: one unconditional structural theorem that removes
-an actual obstruction in FU; no improved estimate, RH receiver, or numerical
-certificate qualifies.
+Status: formalized. Dependency-closed paper proof, direct leaf checks, and
+axiom audits passed. Full-repository lint is blocked by unrelated unfinished
+umbrella imports, recorded below. The result constructs a common preparation
+for all Boolean grades of an arbitrary prescribed finite prime block.
 
 ## Evidence and constraints
 
@@ -27,13 +28,13 @@ leaves cumulative signed correlation unresolved.
    Likely elementary from the all-label product interpolation already proved;
    insufficient structural progress even if formalized. Do not pursue as the
    requested contribution.
-3. Investigate simultaneous source-faithful control of several prescribed
+3. Investigated simultaneous source-faithful control of several prescribed
    prime interactions. Existing inherited-core construction controls one
    prescribed insertion, with an explicit delayed net-repayment obstruction.
-   Determine whether joint control removes a real compatibility obstruction
-   or merely repackages sequential one-prime preparation.
+   Proved one common preparation for every vertex and every nonempty Boolean
+   grade, strengthening the initial edge-only conjecture.
 
-## Surviving conjecture: prescribed prime cube preparation
+## Proved theorem: prescribed prime cube preparation
 
 For every nonempty inherited finite prime core P and every finite disjoint
 target prime block T, there is an actual helper core S beyond any prescribed
@@ -69,7 +70,8 @@ preserve all previously arranged signs, including all intermediate cores.
 ### Dependency-closed paper mechanism
 
 Write E_P(t) for the literal finite Euler multiplier at 1+it and
-w_P(t)=|Mellin(head_P)(1+it)|^2. The corpus proves w_P continuous,
+w_P(t)=|mellin(head_P)(-(1+it))|^2, using the corpus's Mellin convention.
+The corpus proves w_P continuous,
 nonnegative, integrable, and strictly positive at zero. The exact release
 coefficient for p is a strictly positive arithmetic factor times
 integral w_P(t) cos(t log p) dt. Disjoint insertion of A multiplies w_P by
@@ -112,6 +114,32 @@ differences are consequently integrals of products of target cosines times
 positive intermediate weights. A negative product contains a negative
 factor, so the same phase-gap argument applies without a new analytic input.
 
+More explicitly, let rho(P)=squarefreeDensity times product(p in P) p/(p+1).
+The exact physical diagonal identity and the dilation spectrum at 1 give
+
+    κ(P) = rho(P)/(2 pi) integral_R w_P(t) dt.
+
+For disjoint prime sets P,U, the normalized Euler identity gives
+
+    rho(P union U) w_(P union U)(t)
+      = rho(P) w_P(t) product(p in U) (1-c_p cos(t log p)).
+
+Expanding the finite product over the powerset therefore proves
+
+    sum(E subset D) (-1)^|E| κ(P union E)
+      = rho(P)/(2 pi) product(p in D) c_p
+        times integral_R w_P(t) product(p in D) cos(t log p) dt.
+
+All finite sums commute with the integrals because the weights are
+integrable and the cosine products are bounded by 1 in absolute value.
+Apply the common selector to exactly the finite family
+f_(A,D)(t)=w_(P union A)(t) product(p in D) cos(t log p), where A is a target
+subset and D is a nonempty disjoint target subset. Each test is continuous,
+integrable, and strictly positive at zero; each negative test has a negative
+target cosine. This verifies every selector premise from the literal source.
+The fixed-core normalized limits commute with each finite alternating sum,
+so positivity of its limit gives the asserted strict original-energy sign.
+
 No claim about total net helper cost or an exhaustive infinite schedule
 follows. Those remain separate from finite sign compatibility.
 
@@ -133,23 +161,60 @@ cutoff threshold follows preparation and is common to every face.
 Verdict: SURVIVES PRELIMINARY ATTACK against the available Lean corpus.
 External novelty is neither checked nor claimed, as instructed.
 
-## Formalization progress
+### Significance and remaining boundary
+
+The contribution is the actual simultaneous preparation, not the auxiliary
+spectral identity or a sharper energy estimate. It removes finite
+prescribed-prime sign frustration at every Boolean grade. The construction
+retains the inherited core and uses one common set of arbitrarily distant
+helper primes. Previously proved single-prime reversals and chosen reserve
+pairs do not establish that quantifier pattern.
+
+The theorem does not assert κ(P union S)<=κ(P). The helper mass budget can
+depend on P,T, and the common cutoff threshold can depend on the chosen S.
+Thus no infinite schedule or helper-debt payment is smuggled into the result.
+The next FU obstacle is control of that actual preparation debt along an
+exhaustive moving-core history. No effort-based deferral or numerical
+experiment is used in this contribution.
+
+## Formalization and verification
 
 - Reusable one-prime analytic machinery exposed in `PrimePreparation`;
   original module directly checked without changing its public theorems.
 - Finite disjoint prime-cluster synthesis directly checked.
 - Common positive selection for arbitrary finite compatible signed tests
   directly checked.
-- Exact all-order Boolean spectrum and complete prescribed-cube theorem
-  written; direct checks and final audits in progress.
+- Exact all-order Boolean spectrum and complete prescribed-cube theorem,
+  including the closed premise-free capstone, directly checked.
+- All four new modules wired into `formal/GaloisForLFunctions/RHTower.lean`.
+- Final source checks use `lake --old env lean <leaf>`, one foreground Lean
+  process at a time. No full or umbrella build, numerical experiment,
+  added axiom, placeholder, or heartbeat increase was used.
+- `git diff --check` passed for task files.
+- Full `scripts/formal_tools.py lint` ran twice. The final run exited 1
+  solely for eleven unrelated modules unreachable from the umbrella:
+  `PaperThetaEntireNativeMode`, `PaperThetaNativeAnalyticInverse`,
+  `PaperThetaNativeCounterSource`, `PaperThetaNativeEntireRepair`,
+  `PaperThetaNativeGrushin`, `PaperThetaNativeGrushinArithmetic`,
+  `PaperThetaNativeMomentIdentity`, `PaperThetaNativeResonantSplitting`,
+  `PaperThetaNativeScalarReduction`, `SuzukiCausalDepthGammaBoundaryCancellation`,
+  and `SuzukiCausalDepthGammaClosedSource`. These belong to concurrent work;
+  no FU reachability or forbidden-declaration error was reported. Existing
+  large-file warnings were also emitted. Full output: `/tmp/fu-final-lint.log`.
+- `lake --old env lean /tmp/fu-final-audit.lean` exited 0. All six audited
+  public results, including `mobiusDivisorPreparedPrimeCube_unconditional`,
+  depend only on `propext`, `Classical.choice`, and `Quot.sound`. No custom
+  axiom or `sorryAx` occurs in their dependency closures.
 
-## Work sequence
+## Work completed
 
-1. Establish exact corpus frontier and attack candidate statements.
-2. Complete a dependency-closed paper proof for a surviving structural claim.
-3. Formalize the exact result, wire leaf imports, run direct leaf and axiom
-   audits, then formal lint. No full builds or numerical experiments.
-4. Evaluate significance honestly; continue if the result fails the target.
+1. Established the corpus frontier and rejected weaker or obstructed ideas.
+2. Completed the dependency-closed paper proof, including the stronger
+   all-order conjecture exposed during formalization.
+3. Formalized the exact result, wired leaf imports, ran direct leaf and axiom
+   audits, and recorded the unrelated full-repository lint failure.
+4. Audited the contribution's significance and its exact finite/cofinal
+   boundary. External novelty was not audited, as instructed.
 
 Pre-existing modified files include the frontier map and unrelated native
 theta modules. Preserve their changes.

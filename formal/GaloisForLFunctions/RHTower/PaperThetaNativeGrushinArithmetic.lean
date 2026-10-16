@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PaperThetaNativeScalarReduction
+import GaloisForLFunctions.RHTower.PaperThetaNativeGrushin
 import GaloisForLFunctions.RHTower.PaperThetaNativeArithmeticResolvent
 
 /-! # Resonant block solving in the full native arithmetic domain
@@ -10,7 +10,7 @@ retains the full signed arithmetic form.
 
 noncomputable section
 open MeasureTheory Set Filter Topology Complex
-open scoped BoundedContinuousFunction
+open scoped BoundedContinuousFunction ContDiff
 
 namespace RHTower.PaperThetaEndpoint
 open CHMDDoobGraph GaloisForLFunctions.HTGeometry
@@ -57,11 +57,20 @@ private theorem nativeCounterSource_clamp (z : ℂ) (x : ℝ) :
       rw [hc, nativeCounterSource_zero (by norm_num), nativeCounterSource_zero (hy.trans (le_abs_self x))]
     · rw [nativeClampedCoordinate_eq ⟨hx,hy⟩]
 
+/-- The correction is a genuine smooth source, with no interior point charge. -/
+theorem nativeCounterSource_smooth (z : ℂ) : ContDiff ℝ ∞ (nativeCounterSource z) := by
+  have he : (nativeCounterSource z : ℝ → ℂ) =
+      fun x : ℝ => exp (-(I*z)*(x : ℂ))*(baseCutoff x : ℂ) := funext (nativeCounterSource_apply z)
+  rw [he]
+  exact (((show ContDiff ℝ ∞ (fun _ : ℝ => -(I*z)) from contDiff_const).mul
+    (Complex.ofRealCLM.contDiff : ContDiff ℝ ∞ (fun x : ℝ => (x : ℂ)))).cexp).mul
+    (Complex.ofRealCLM.contDiff.comp (baseCutoff.contDiff : ContDiff ℝ ∞ baseCutoff))
+
 theorem nativeCounterSource_boundedVariation (z : ℂ) :
     BoundedVariationOn (nativeCounterSource z) univ := by
   have hc : Monotone nativeClampedCoordinate := fun _ _ h =>
     max_le_max le_rfl (min_le_min le_rfl h)
-  have hb := hc.monotoneOn.boundedVariationOn (fun x _ => nativeClampedCoordinate_bound x)
+  have hb := (hc.monotoneOn univ).boundedVariationOn (fun x _ => nativeClampedCoordinate_bound x)
   obtain ⟨C,hC⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
     (nativeCounterSource_hasCompactSupport z) (nativeCounterSource_contDiff z) (by norm_num)
   have h := hC.comp_boundedVariationOn hb

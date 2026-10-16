@@ -131,6 +131,7 @@ theorem exists_mobiusDivisorPreparedPrimeCube
         apply integral_congr_ae
         apply Eventually.of_forall
         intro t
+        dsimp only
         rw [heq, clusterWeight_union (P ∪ A) S (hQ A hA).2 hSprime hAS]
         dsimp [f]
         ring
@@ -183,10 +184,10 @@ theorem mobiusDivisorPreparedPrimeCube_unconditional :
   · intro p hp
     rcases mem_insert.mp hp with rfl | hp
     · exact Nat.prime_two
-    · obtain ⟨q, _, rfl⟩ := mem_image.mp hp
+    · obtain ⟨q, _, rfl⟩ := Finset.mem_image.mp hp
       exact q.property
   · intro p hp
-    obtain ⟨q, _, rfl⟩ := mem_image.mp (mem_sdiff.mp hp).1
+    obtain ⟨q, _, rfl⟩ := Finset.mem_image.mp (Finset.mem_sdiff.mp hp).1
     exact q.property
   · apply Finset.disjoint_left.mpr
     intro p hp hpU

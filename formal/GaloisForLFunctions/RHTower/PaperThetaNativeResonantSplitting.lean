@@ -62,9 +62,7 @@ theorem nativeResonant_full_solution (z : NativeResonantParameter)
   · intro he
     have hb : nativeGrushinBlock z (v,0) =
         (g,boundedResolventTrace nativeCompactParameter v) := by
-      change (nativePencil z v+0 • nativeCounterSource z,
-        boundedResolventTrace nativeCompactParameter v) = _
-      rw [he, zero_smul, add_zero]
+      rw [nativeGrushinBlock_apply,he,zero_smul,add_zero]
     have hi := nativeGrushinInverse_left z (v,0)
     rw [hb] at hi
     have hs := congrArg Prod.snd hi
@@ -101,6 +99,7 @@ theorem nativeResonant_range (z : NativeResonantParameter) :
     exact (nativeResonant_full_solution z g v).mp hv |>.1
   · intro hg
     refine ⟨nativeResonantParticular z g, ?_⟩
+    change nativePencil z (nativeResonantParticular z g) = g
     rw [nativeResonantParticular_equation, show boundedThetaMomentCLM z g = 0 from hg,
       zero_div, zero_smul, sub_zero]
 

@@ -137,9 +137,11 @@ forcing through every complex parameter; this is the substantive positive
 construction, not only the block-algebra normal form.
 
 Implementation checkpoint: NativeMomentIdentity, NativeCounterSource and
-NativeGrushin and NativeAnalyticInverse pass direct leaf audits. Scalar
-reduction is being audited; arithmetic admission, exact resonant splitting
-and entire rank-one repair leaves are written but not yet audited. The
+NativeGrushin, NativeAnalyticInverse, NativeScalarReduction and
+NativeGrushinArithmetic pass clean direct leaf audits. EntireNativeMode and
+NativeResonantSplitting and NativeEntireRepair also pass cleanly. All nine
+leaves are wired once into RHTower; no umbrella build was run. The final
+dependency/API audit and repository lint/index checks are running. The
 operator-valued differentiation proofs use explicit spaces to avoid expensive
 typeclass reconstruction; heartbeat limits remain unchanged.
 One accidentally overlapping leaf invocation was immediately

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaNativeGrushinArithmetic
+import GaloisForLFunctions.RHTower.PaperThetaNativeScalarReduction
 import GaloisForLFunctions.RHTower.PaperThetaCutMeyerCurrent
 import GaloisForLFunctions.RHTower.PaperThetaMeyerFredholmMultiplicity
 

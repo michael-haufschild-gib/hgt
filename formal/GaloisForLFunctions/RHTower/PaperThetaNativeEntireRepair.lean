@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaNativeGrushinArithmetic
+import GaloisForLFunctions.RHTower.PaperThetaNativeScalarReduction
 
 /-! # One actual source channel repairs the native pencil globally
 
@@ -77,7 +78,9 @@ private theorem nativeRepairedPencil_ker (z : ℂ) (v : NativeContinuousSpace)
   have hs := congrArg Prod.snd hi
   rw [nativeGrushinInverse_scalar_zero] at hs
   have ht : t = 0 := by linear_combination hs
-  have hb0 : nativeGrushinBlock z (v,0) = 0 := by simpa only [ht,mul_zero] using hb
+  have hb0 : nativeGrushinBlock z (v,0) = 0 := by
+    have h : nativeGrushinBlock z (v,0) = (0,0) := by simpa only [ht,mul_zero] using hb
+    exact h.trans (Prod.ext rfl rfl)
   exact congrArg Prod.fst (nativeGrushinBlock_ker z (v,0) hb0)
 
 theorem nativeRepairedPencil_injective (z : ℂ) : Function.Injective (nativeRepairedPencil z) := by
@@ -140,7 +143,7 @@ theorem nativeRepairedNativeSolution_equation (z : ℂ) (g : ThetaContinuousBV) 
       (nativeEffectiveScalar z-1)*(-nativeBoundaryCorrection z (nativeBVUniform g) 0) := by
     simp only [nativeBoundaryCorrection,nativeEffectiveScalar,mul_zero,zero_mul,add_zero]
     ring
-  change thetaSpatialAction (nativeGrushinBV z g _) x-z*nativeGrushinBV z g _ x+_ = _
+  unfold nativeRepairedNativeSolution
   rw [nativeGrushinBV_trace]
   rwa [hc] at h
 
@@ -168,7 +171,8 @@ theorem nativeRepairedNativeSolution_unique (z : ℂ) (g : ThetaContinuousBV)
   have ht : thetaTailTrace f = -nativeBoundaryCorrection z (nativeBVUniform g) 0 := by
     change t = -((boundedThetaMomentCLM z (nativeBVUniform g)+z*0*flatConnection z)/
       (nativeCounterMass : ℂ))
-    simp only [mul_zero,zero_mul,add_zero,neg_div]
+    simp only [mul_zero,zero_mul,add_zero]
+    rw [← neg_div]
     apply (eq_div_iff (Complex.ofReal_ne_zero.mpr nativeCounterMass_pos.ne')).2
     linear_combination hm+t*hd
   exact (nativeGrushinBV_unique z g _ f ((nativeEffectiveScalar z-1)*t) ht he).1

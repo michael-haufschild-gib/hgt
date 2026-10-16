@@ -95,8 +95,8 @@ theorem nativePencil_global_scalar_reduction (z : ℂ) :
       nativeGrushinBlock z (v,0)+(0,p.2) := by
     simp only [nativeStabilizedPencil,nativeTraceShear,nativeSolutionShear,
       nativeGrushinBlock_apply,ContinuousLinearMap.comp_apply,ContinuousLinearMap.prod_apply,
-      ContinuousLinearMap.coe_fst',ContinuousLinearMap.coe_snd',Prod.fst,Prod.snd,
-      ContinuousLinearMap.add_apply,ContinuousLinearMap.sub_apply,
+      ContinuousLinearMap.coe_fst',ContinuousLinearMap.coe_snd',
+      _root_.add_apply,_root_.sub_apply,
       zero_smul,add_zero,Prod.mk_add_mk]
     exact congrArg (fun c => (nativePencil z v,c)) (add_comm _ _)
   change nativeGrushinInverse z

@@ -13,6 +13,7 @@ without changing any deattenuated source column.
 
 open Filter Topology
 open scoped BigOperators ENNReal
+set_option autoImplicit false
 
 noncomputable section
 
@@ -50,6 +51,8 @@ private theorem reciprocal_le_normalizedCentralBinom (n : ℕ) :
       1 / ((n : ℝ) + 1 + 1) ≤
           (1 / ((n : ℝ) + 1)) * (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2) := by
         apply (div_le_div_iff₀ (by positivity) hd).2
+        rw [show 1 / ((n : ℝ) + 1) * (2 * n + 1) * (n + 1 + 1) =
+          ((2 * n + 1) * (n + 2)) / (n + 1) by ring]
         apply (le_div_iff₀ hn).2
         nlinarith
       _ ≤ _ := div_le_div_of_nonneg_right
@@ -64,7 +67,7 @@ theorem not_summable_sq_suzukiGammaBoundaryCoefficient :
       1 / ((k : ℝ) + 4) ≤ suzukiGammaBoundaryCoefficient (k + 1) ^ 2 := by
     simpa [suzukiGammaBoundaryCoefficient, suzukiCausalDepthGammaSurvivingDegree,
       semilocalArchimedeanJacobiNormalization_sq_eq_normalizedCentralBinom,
-      Nat.cast_add, Nat.cast_ofNat, add_assoc] using
+      Nat.cast_add, Nat.cast_ofNat, add_assoc, show (3 : ℝ) + 1 = 4 by norm_num] using
       reciprocal_le_normalizedCentralBinom (k + 3)
   have hs : Summable (fun k : ℕ => 1 / ((k : ℝ) + 4)) :=
     Summable.of_nonneg_of_le (fun _ => by positivity) hlower htail
@@ -79,7 +82,7 @@ theorem suzukiCausalDepthGamma_prime_mul_boundaryDefect_le_two
   have hp : (1 : ℝ) ≤ pe.1 := by exact_mod_cast pe.1.property.one_lt.le
   have hn : 0 < n := by
     dsimp [n, xiGammaEulerValuationNat]
-    positivity
+    exact_mod_cast pow_pos pe.1.property.pos (pe.2 + 1)
   have hpn : (pe.1 : ℝ) ≤ n := by
     dsimp [n, xiGammaEulerValuationNat]
     push_cast
@@ -97,27 +100,26 @@ theorem suzukiCausalDepthGamma_prime_mul_boundaryDefect_le_two
     field_simp
     ring
   rw [htanh, hexp]
-  apply (le_div_iff₀ (by positivity : 0 < n + 1)).1
-  rw [mul_div_assoc]
+  rw [← mul_div_assoc]
   apply (div_le_iff₀ (by positivity : 0 < n + 1)).2
   nlinarith
 
 /-- The actual two-leg column, with no change to its Gamma coordinates. -/
 def suzukiGammaTwoLegColumn
-    (h a : SuzukiPositiveAperture) (pe : Nat.Primes × ℕ) :
+    (h a : Set.Ioi (0 : ℝ)) (pe : Nat.Primes × ℕ) :
     SuzukiCausalDepthGammaTraceL2 :=
   (pe.1 : ℂ) • suzukiCausalDepthGammaFeatureOperator h.1 a.1 h.2 a.2
     (lp.single 2 (Sum.inl pe) (1 : ℂ))
 
 theorem suzukiGammaTwoLegColumn_inr
-    (h a : SuzukiPositiveAperture) (pe : Nat.Primes × ℕ) (k : ℕ) :
+    (h a : Set.Ioi (0 : ℝ)) (pe : Nat.Primes × ℕ) (k : ℕ) :
     suzukiGammaTwoLegColumn h a pe (Sum.inr k) =
       ((pe.1 : ℝ) * suzukiCausalDepthGammaWeightedFeature h.1 a.1 pe k : ℝ) := by
   simp [suzukiGammaTwoLegColumn, suzukiCausalDepthGammaFeatureOperator_apply_inr,
-    lp.single_apply, ← Complex.ofReal_mul]
+    lp.single_apply, Pi.single_apply, Complex.ofReal_mul]
 
 theorem suzukiGammaTwoLegColumn_inl
-    (h a : SuzukiPositiveAperture) (pe qe : Nat.Primes × ℕ) :
+    (h a : Set.Ioi (0 : ℝ)) (pe qe : Nat.Primes × ℕ) :
     suzukiGammaTwoLegColumn h a pe (Sum.inl qe) = 0 := by
   simp [suzukiGammaTwoLegColumn, suzukiCausalDepthGammaFeatureOperator_apply_inl]
 
@@ -129,7 +131,7 @@ def suzukiGammaBoundaryRow (h a : ℝ) (k : ℕ) (pe : Nat.Primes × ℕ) : ℝ 
       ((pe.1 : ℝ) * suzukiCausalDepthGammaWeightedFeature h a pe (k + 1))
 
 theorem abs_suzukiGammaBoundaryRow_le
-    (h a : SuzukiPositiveAperture) (k : ℕ) (pe : Nat.Primes × ℕ) :
+    (h a : Set.Ioi (0 : ℝ)) (k : ℕ) (pe : Nat.Primes × ℕ) :
     |suzukiGammaBoundaryRow h.1 a.1 k pe| ≤
       4 * suzukiCausalDepthGammaWeight h.1 a.1 pe := by
   let r := Real.tanh (suzukiCausalDepthGammaFrequency pe)
@@ -137,6 +139,7 @@ theorem abs_suzukiGammaBoundaryRow_le
   let w := suzukiCausalDepthGammaWeight h.1 a.1 pe
   have hr0 : 0 ≤ r := (tanh_pos_of_pos (suzukiCausalDepthGammaFrequency_pos pe)).le
   have hr1 : r < 1 := Real.tanh_lt_one _
+  have hrdef : 0 ≤ 1 - r := sub_nonneg.mpr hr1.le
   have hw : 0 ≤ w := (suzukiCausalDepthGammaWeight_pos h.2 a.2 pe).le
   have hphi0 : 0 ≤ phi := (semilocalArchimedeanCharacteristic_pos _).le
   have hphi1 : phi ≤ 1 := by
@@ -159,14 +162,13 @@ theorem abs_suzukiGammaBoundaryRow_le
     | zero =>
       simp [suzukiGammaBoundaryRow, suzukiCausalDepthGammaWeightedFeature,
         suzukiCausalDepthGammaFeature, suzukiGammaBoundaryCoefficient,
-        suzukiCausalDepthGammaSurvivingDegree, r, phi, w]
+        suzukiCausalDepthGammaSurvivingDegree, gammaConductorJacobiFeature, r, phi, w]
       ring
     | succ k =>
       simp only [Nat.succ_ne_zero, ↓reduceIte, mul_one]
       simp only [suzukiGammaBoundaryRow, suzukiCausalDepthGammaWeightedFeature,
         suzukiCausalDepthGammaFeature, suzukiGammaBoundaryCoefficient,
-        suzukiCausalDepthGammaSurvivingDegree]
-      change _ = _
+        suzukiCausalDepthGammaSurvivingDegree, gammaConductorJacobiFeature]
       dsimp [r, phi, w]
       rw [show k + 1 + 3 = (k + 3) + 1 by omega, pow_succ]
       ring
@@ -179,12 +181,15 @@ theorem abs_suzukiGammaBoundaryRow_le
 
 /-- All prime depths are admitted by each cancelled row. -/
 theorem summable_sq_suzukiGammaBoundaryRow
-    (h a : SuzukiPositiveAperture) (k : ℕ) :
+    (h a : Set.Ioi (0 : ℝ)) (k : ℕ) :
     Summable (fun pe : Nat.Primes × ℕ => suzukiGammaBoundaryRow h.1 a.1 k pe ^ 2) := by
-  apply Summable.of_nonneg_of_le (fun _ => sq_nonneg _) _
+  refine Summable.of_nonneg_of_le (fun _ => sq_nonneg _) ?_
     ((summable_sq_suzukiCausalDepthGammaWeight_allPrime h.2 a.2).mul_left 16)
   intro pe
   have hb := abs_suzukiGammaBoundaryRow_le h a k pe
-  nlinarith [sq_abs (suzukiGammaBoundaryRow h.1 a.1 k pe)]
+  have hw := (suzukiCausalDepthGammaWeight_pos h.2 a.2 pe).le
+  have hs := (sq_le_sq₀ (abs_nonneg _) (by positivity :
+    0 ≤ 4 * suzukiCausalDepthGammaWeight h.1 a.1 pe)).2 hb
+  nlinarith only [hs, sq_abs (suzukiGammaBoundaryRow h.1 a.1 k pe)]
 
 end RHTower
