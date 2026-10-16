@@ -72,7 +72,9 @@ lemma eventually_window_capacity (a b c : ℕ) (ha : 2 ≤ a) (hab : a < b)
     have hc' := (div_le_iff₀ hlar).mp (show
       (((b:ℝ)-a)/2*r)/Real.log ((a:ℝ)*r) ≤
         ((primesInIoc (a*r) (b*r)).card:ℝ) by
-      convert hcount using 1 <;> push_cast <;> field_simp <;> ring)
+      convert hcount using 1
+      push_cast
+      field_simp)
     linarith only [hc']
   have hlog2 : Real.log ((a:ℝ)*r) ≤ 2*Real.log (r:ℝ) := by
     rw [Real.log_mul haR.ne' hrR.ne']

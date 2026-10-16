@@ -99,11 +99,15 @@ theorem exists_primeCapacity : Nonempty PrimeCapacity := by
   let j := 112*(b+1)*n
   have hu : 2 ≤ u := by dsimp [u]; nlinarith
   have huv : u < v := by dsimp [u,v]; nlinarith
-  have hw : 8*(4*n) ≤ v-u := by dsimp [u,v]; nlinarith
+  have hw : 8*(4*n) ≤ v-u := by
+    have hh : 8*(4*n)+u ≤ v := by dsimp [u,v]; nlinarith
+    omega
   have hj : 1 ≤ j := by dsimp [j]; nlinarith
   have hcountU := eventually_window_capacity u v (4*n) hu huv hw
   have hcountV := eventually_window_capacity (2*j) (3*j) (4*n)
-    (by omega) (by omega) (by dsimp [j] at *; nlinarith)
+    (by omega) (by omega) (by
+      have hh : 8*(4*n)+2*j ≤ 3*j := by dsimp [j]; nlinarith
+      omega)
   obtain ⟨B, hB⟩ := eventually_atTop.mp (hcountU.and hcountV)
   refine ⟨⟨A, n, max B (A+2), ?_, hn, by omega, ?_⟩⟩
   · dsimp [A,C]; nlinarith
@@ -127,7 +131,7 @@ theorem exists_primeCapacity : Nonempty PrimeCapacity := by
     rw [positive_source b (64*n*r) q hb hwin, ← he] at hsign
     have hroot : Real.sqrt (n*r:ℕ) ≤ Real.sqrt (64*n*r:ℕ) := by
       apply Real.sqrt_le_sqrt
-      exact_mod_cast (show n*r ≤ 64*n*r by omega)
+      exact_mod_cast Nat.mul_le_mul_right r (show n ≤ 64*n by omega)
     have hlow : a*Real.sqrt (n*r:ℕ) ≤ singletonSource (A*r) q :=
       (mul_le_mul (min_le_left _ _) hroot (Real.sqrt_nonneg _) hc.le).trans hsign
     refine ⟨hqp, ?_, ?_, htarget.trans ?_⟩
@@ -144,11 +148,11 @@ theorem exists_primeCapacity : Nonempty PrimeCapacity := by
     rw [← he] at hsign
     have hroot : Real.sqrt (n*r:ℕ) ≤ Real.sqrt (j*r:ℕ) := by
       apply Real.sqrt_le_sqrt
-      exact_mod_cast (show n*r ≤ j*r by dsimp [j]; nlinarith)
+      exact_mod_cast Nat.mul_le_mul_right r (show n ≤ j by dsimp [j]; nlinarith)
     have hlow : a*Real.sqrt (n*r:ℕ) ≤ -singletonSource (A*r) q := by
       have hh := mul_le_mul (min_le_right c (1/40)) hroot
         (Real.sqrt_nonneg _) (by norm_num : (0:ℝ) ≤ 1/40)
-      exact hh.trans (by simpa only [div_eq_mul_inv, mul_comm] using hsign)
+      exact hh.trans (by simpa only [div_eq_mul_inv, one_mul, mul_comm] using hsign)
     refine ⟨hqp, ?_, ?_, htarget.trans ?_⟩
     · have hlowr : r ≤ 2*j*r := by nlinarith
       omega

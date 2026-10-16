@@ -20,14 +20,13 @@ open HedenmalmThetaSource HedenmalmQuantile
 theorem nativeCompactResolvent_constant (c : ℂ) :
     nativeCompactResolvent (nativeConstantCLM c) = nativeConstantCLM (I*c) := by
   symm
-  apply boundedNativeResolvent_unique nativeCompactParameter _ _ (I*c)
-    differentiable_const tendsto_const_nhds
+  apply boundedNativeResolvent_unique nativeCompactParameter (nativeConstantCLM c)
+    (nativeConstantCLM (I*c)) (I*c) (differentiable_const (I*c)) tendsto_const_nhds
   intro x
   change deriv (fun _ : ℝ => I*c) x+sourceLogDerivative x*(I*c-I*c)+
     I*nativeCompactParameter.val*(I*c) = -I*c
   rw [deriv_const, sub_self, mul_zero, zero_add, zero_add, nativeCompactParameter_val]
-  ring_nf
-  simp only [Complex.I_sq]
+  rw [← pow_two I, Complex.I_sq]
   ring
 
 theorem nativeSourceComparison_constant (c : ℂ) :
@@ -47,6 +46,7 @@ theorem nativeSourceComparison_kernel :
     LinearMap.ker nativeSourceComparison.toLinearMap = LinearMap.range nativeConstantCLM.toLinearMap := by
   apply le_antisymm
   · intro v hv
+    change nativeSourceComparison v = 0 at hv
     have hr : boundedNativeResidual nativeCompactParameter v = 0 :=
       nativeQuantileMap_injective (by simpa only [map_zero] using hv)
     let t := boundedResolventTrace nativeCompactParameter v
@@ -67,7 +67,7 @@ theorem nativeSourceComparison_kernel :
     rw [deriv_const, sub_self, mul_zero, zero_add, zero_add] at he
     change -I*t = v x
     linear_combination (norm := ring_nf) I*he
-    simp only [Complex.I_sq]
+    simp only [pow_succ, Complex.I_sq]
     ring
   · rintro v ⟨c,rfl⟩
     exact nativeSourceComparison_constant c
@@ -77,6 +77,7 @@ theorem nativeSourceComparison_eq_zero_on_root {mu : ℂ} (hmu : mu ≠ I)
     (hv : v ∈ maxGenEigenspace nativeCompactResolvent.toLinearMap mu)
     (hJ : nativeSourceComparison v = 0) : v = 0 := by
   obtain ⟨c,hc⟩ := nativeSourceComparison_kernel.le hJ
+  change nativeConstantCLM c = v at hc
   have hk : nativeCompactResolvent v = I • v := by
     rw [← hc, nativeCompactResolvent_constant]
     rfl
@@ -112,8 +113,8 @@ private theorem thetaPencils_commute (z : ℂ) :
   intro v
   change thetaSourcePencil z (thetaSourcePencil I v) =
     thetaSourcePencil I (thetaSourcePencil z v)
-  simp only [thetaSourcePencil, _root_.add_apply, ContinuousLinearMap.one_apply,
-    ContinuousLinearMap.smul_apply, map_add, map_smul]
+  simp only [thetaSourcePencil, _root_.add_apply, one_apply_eq_self,
+    _root_.smul_apply, map_add, map_smul]
   module
 
 theorem nativeSourceComparison_pencil_power_kernel (z : ℂ) (n : ℕ)
@@ -134,7 +135,10 @@ theorem nativeSourceComparison_pencil_power_kernel (z : ℂ) (n : ℕ)
           (thetaSourcePencil I (nativeSourceComparison (nativePencil z v))) =
           thetaSourcePencil I (((thetaSourcePencil z).toLinearMap ^ n)
             (nativeSourceComparison (nativePencil z v))) from hc]
-      rw [ih (nativePencil z v) (by simpa only [pow_succ, Module.End.mul_apply] using hv), map_zero]
+      have hprev : ((nativePencil z).toLinearMap ^ n) (nativePencil z v) = 0 := by
+        rw [pow_succ, Module.End.mul_apply] at hv
+        exact hv
+      rw [ih (nativePencil z v) hprev, map_zero]
 
 def nativeXiResolventValue (rho : XiDivisorSupport) : ℂ :=
   (xiSpectralPointSupport rho-I)⁻¹
@@ -156,7 +160,7 @@ theorem nativeXiResolventValue_ne_I (rho : XiDivisorSupport) :
   rw [h] at hp
   have hz : xiSpectralPointSupport rho = 0 := by
     linear_combination (norm := ring_nf) -I*hp
-    simp only [Complex.I_sq]
+    simp only [pow_succ, Complex.I_sq]
     ring
   exact XiC_zero_ne (hz ▸ XiC_xiSpectralPointSupport_eq_zero rho)
 
@@ -173,14 +177,16 @@ theorem nativeSourceComparison_mem_root (rho : XiDivisorSupport)
       mul_inv_cancel₀ (xiSpectralPointSupport_sub_I_ne_zero rho)]
   have hG : (nativePencil z).toLinearMap =
       (I-z) • (nativeCompactResolvent.toLinearMap-nativeXiResolventValue rho • 1) := by
-    ext u
+    apply LinearMap.ext
+    intro u
     change u+(I-z) • nativeCompactResolvent u =
       (I-z) • (nativeCompactResolvent u-nativeXiResolventValue rho • u)
     rw [smul_sub, smul_smul, hs, neg_one_smul]
     abel
   have hF : (thetaSourcePencil z).toLinearMap =
       z • (thetaKernelOperator.toLinearMap-(-z⁻¹) • 1) := by
-    ext u
+    apply LinearMap.ext
+    intro u
     change u+z • thetaKernelOperator u = z • (thetaKernelOperator u-(-z⁻¹) • u)
     rw [smul_sub, smul_smul, mul_neg, mul_inv_cancel₀ hz, neg_one_smul]
     abel

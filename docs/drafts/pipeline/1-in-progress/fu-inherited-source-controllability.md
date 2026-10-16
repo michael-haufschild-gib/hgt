@@ -49,3 +49,22 @@ makes the consumption invariant immediate. This is the same exhaustion proof
 with explicit skipped stages, avoiding a separate least-missing-prime recursion.
 All nonempty blocks still pay their mandatory prime and helpers against the
 inherited pre-block state. Strictly increasing proportional clocks remain.
+
+Exact constants: choose the corpus positive window `b >= 8`, amplitude
+`c > 0`, and put `a = min(c,1/40)`, `C = 448*(b+1)`. Choose `n >= 1`
+with `abs(H(C*n)) <= n*a*sqrt(n)` and set `A=C*n`, `D=2*n`.
+Positive helpers lie in `(64*b*n*r,64*(b+1)*n*r]`; negative helpers lie
+in `(224*(b+1)*n*r,336*(b+1)*n*r]`. Each has the required sign and
+magnitude at least `a*sqrt(n*r)`. Both windows eventually contain at least
+`4*n*pi(r)` primes. The inherited core has at most `2*n*pi(r)` elements,
+leaving at least `n` fresh helpers of each sign. At most `n+1 <= D` primes
+enter each nonempty block.
+
+The mandatory singleton identity is exact:
+`singleton(A*r,r) = -sqrt(r)*H(A)`. Helper child cores are fully processed
+because their primes exceed `r > A+1`. Signed supply is consequently
+independent of every preceding helper choice and of the receiving head.
+
+Formalization: scalar paid block and fixed source/count capacity compiled.
+Signed supply, inherited extension, and exhaustive history are being checked
+leaf by leaf. No capstone verification claimed yet.

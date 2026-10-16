@@ -125,9 +125,16 @@ Weil energy. It does not assert convergence of a chosen purified source in
 form norm. The common minimum's sign and the OWU slit-cut obstruction remain
 open; no RH equivalence or positivity receiver is the main result.
 
-Repository audit: `scripts/formal_tools.py index` completed. The first
-`lint --check-generated` run found no errors in these modules, but failed on
-five unrelated unwired modules (`MobiusDivisorExhaustionPrimeCapacity`,
+Repository audit: `scripts/formal_tools.py index` completed. Final
+`lint --check-generated` found no errors in these modules, but failed on seven
+unrelated unwired modules (`MobiusDivisorExhaustionPrimeCapacity`,
 `MobiusDivisorExhaustionSignedSupply`, `MobiusDivisorMandatoryScalarBlock`,
+`MobiusDivisorPaidExhaustionStep`, `MobiusDivisorPaidPrimeExhaustion`,
 `PaperThetaNativeQuantileComparison`, `PaperThetaNativeRootTransport`) and
-concurrently stale `LEAN_API.md` / `LEAN_OVERVIEW.md`. Final refresh/check pending.
+concurrent generated-index drift in `LEAN_API.md` / `LEAN_OVERVIEW.md`.
+Indexes were regenerated again after that check. No full repository lint pass
+is claimed while that concurrent work remains in progress.
+
+All four compiled module artifacts were checked current against their source
+timestamps. Owned search, API-check, axiom-audit and lint scratch files were
+removed. No owned build/check process remains running.

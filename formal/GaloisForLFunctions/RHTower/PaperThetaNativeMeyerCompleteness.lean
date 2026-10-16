@@ -27,7 +27,8 @@ theorem nativePencil_pow_kernel_iff (rho : XiDivisorSupport) (n : ℕ)
       mul_inv_cancel₀ (xiSpectralPointSupport_sub_I_ne_zero rho)]
   have he : (nativePencil z).toLinearMap =
       (I-z) • (nativeCompactResolvent.toLinearMap-nativeXiResolventValue rho • 1) := by
-    ext u
+    apply LinearMap.ext
+    intro u
     change u+(I-z) • nativeCompactResolvent u =
       (I-z) • (nativeCompactResolvent u-nativeXiResolventValue rho • u)
     rw [smul_sub, smul_smul, hs, neg_one_smul]
