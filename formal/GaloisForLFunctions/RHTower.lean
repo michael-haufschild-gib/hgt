@@ -27440,3 +27440,4 @@ import GaloisForLFunctions.RHTower.CHMDWindowLocalization
 import GaloisForLFunctions.RHTower.CHMDNoWeylAboveThreshold
 import GaloisForLFunctions.RHTower.WeilCutEvenMeanZeroDeficit
 import GaloisForLFunctions.RHTower.WeilCutFreeHolomorphicExtension
+import GaloisForLFunctions.RHTower.CHMDPurePointAboveThreshold

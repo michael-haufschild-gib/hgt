@@ -132,3 +132,22 @@ declarations; compiler coverage largely pending/stale/source-only). The broad
 contour report timed out partially in text/source/semantic retrieval; its
 available hits were retained. Source verification, not retrieval rank or
 compiler metadata, determines applicability.
+
+Formalization progress (still **18/100**, no completion claim):
+- `HTGeometry/EntireDividedDifferenceContour.lean` and
+  `HTGeometry/DividedDifferenceCauchyProjection.lean` pass direct leaf Lean
+  audits. They prove entireness through the moving diagonal and the exact
+  inside/outside Cauchy identities. No individual zero residues are used.
+- `RHTower/DeningerMeyerSourceSeries.lean` is under its first direct audit.
+  The source convergence step simplifies using existing original Frechet
+  completeness: summability of every defining gauge gives source summability.
+  A weighted Mellin-line bound pays each gauge. Continuous Mellin jets then
+  pass the full germs directly to the source sum, avoiding an intermediate
+  compact-open reconstruction limit.
+- The same paper proof can use the central rectangle and disjoint upper/lower
+  shell rectangles as separate summands. Each Xi germ belongs to exactly one
+  block. Finite sums have finite full-Xi support by the existing band-finiteness
+  theorem. Telescoping is optional and not needed for density.
+- Additional owned scratch: `/tmp/hgt_rh019_topology_api.lean`.
+  Original `/tmp/hgt_rh019_api.lean` remains for exact cleanup. Eight owned
+  search JSON files remain. No subagents or full builds have been run.
