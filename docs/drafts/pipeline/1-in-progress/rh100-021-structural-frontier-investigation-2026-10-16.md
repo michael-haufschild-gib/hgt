@@ -163,3 +163,31 @@ Implementation checkpoint:
   one summable scalar sequence controls both uniform and BV convergence, and
   its tails also dominate the fixed CHMD L2 edge difference of stripCutControl.
   This is a paper proof plan, not yet a verified global theorem.
+- PaperThetaContourControl now passed without warnings; unused tilt premises
+  were removed. PaperThetaContourSpace also passed: actual bounded continuous
+  periods, common norm/increment control, subtraction/scalar laws, and vanishing
+  of every entire Xi-divisible period are formalized. Both are uniquely wired.
+- PaperThetaNativeContourBlocks passed and is wired. It defines the actual
+  native schedule blocks and proves their exact source transform and boundary
+  vanishing. PaperThetaGaussianNativeSeries passed after namespace/scalar
+  simplifications and is wired. Its gaussian_nativeXiBlock_control constructs
+  a summable nonnegative scalar sequence controlling BOTH uniform norm and
+  every increment against V_(3/2), for every genuine original source and every
+  positive Gaussian parameter. The native Gaussian sum is now a defined BCF.
+- PaperThetaStripSeries is in its first direct audit. It upgrades this precise
+  common-control mechanism to bounded variation and strong globalBVSize
+  convergence of finite heads. PaperThetaStripArithmeticSeries is drafted:
+  the actual source mass embedding is faithful; fixed BV control admits every
+  full edge; graph summability plus the existing source-injective closed graph
+  identifies its sum with the literal uniform sum. Neither leaf is wired yet.
+- DeningerMeyerGaussianFaithfulness is drafted, not audited: genuine Poisson
+  boundaries have entire Xi quotients, and the nowhere-zero Gaussian multiplier
+  preserves the original quotient kernel. Its inverse is used only as an
+  entire multiplier in the division identity, never as an admitted inverse
+  Gaussian convolution on the original source.
+- Remaining global work: audit the three drafts; identify the native sum's
+  transform with the existing source sum via the two continuous moment maps;
+  prove native kernel exactly equals the original Poisson range; descend the
+  constructed linear map, prove it faithful, and expose its BV/full-graph
+  approximation. Only then final closed capstone, axiom audit, lint/index,
+  cleanup and count increment. Current count remains 20/100.

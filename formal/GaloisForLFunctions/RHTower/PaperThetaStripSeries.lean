@@ -47,7 +47,8 @@ theorem stripSeries_increment {f : ℕ → NativeContinuousSpace} {c : ℕ → �
     ‖(∑' n, f n) y-(∑' n, f n) x‖ ≤ (∑' n, c n)*|stripCutControl B y-stripCutControl B x| := by
   have hf := hc.of_norm_bounded hn
   have he : (∑' n, f n) y-(∑' n, f n) x = ∑' n, (f n y-f n x) :=
-    (BoundedContinuousFunction.evalCLM ℂ y-BoundedContinuousFunction.evalCLM ℂ x).map_tsum hf
+    ((BoundedContinuousFunction.evalCLM ℂ y : NativeContinuousSpace →L[ℂ] ℂ)-
+      BoundedContinuousFunction.evalCLM ℂ x).map_tsum hf
   rw [he]
   exact tsum_of_norm_bounded (hc.hasSum.mul_right _) (fun n => hi n x y)
 
@@ -80,7 +81,8 @@ theorem stripSeries_globalBV {f : ℕ → NativeContinuousSpace} {c : ℕ → �
   have hp : Tendsto (fun N => ENNReal.ofReal ‖((∑' n, f n)-(∑ n ∈ Finset.range N, f n)) 0‖)
       atTop (𝓝 0) := by
     have ht : Tendsto (fun N => ENNReal.ofReal (r N)) atTop (𝓝 0) := by
-      simpa using ENNReal.continuous_ofReal.continuousAt.tendsto.comp hrt
+      simpa only [Function.comp_def, ENNReal.ofReal_zero] using
+        ENNReal.continuous_ofReal.continuousAt.tendsto.comp hrt
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds ht
       (Eventually.of_forall fun _ => bot_le)
     exact Eventually.of_forall fun N => by
@@ -89,7 +91,8 @@ theorem stripSeries_globalBV {f : ℕ → NativeContinuousSpace} {c : ℕ → �
   have hv : Tendsto (fun N => eVariationOn
       (fun x => ((∑' n, f n)-(∑ n ∈ Finset.range N, f n)) x) univ) atTop (𝓝 0) := by
     have ht : Tendsto (fun N => ENNReal.ofReal (r N*(4*stripTailControl B 0))) atTop (𝓝 0) := by
-      simpa using ENNReal.continuous_ofReal.continuousAt.tendsto.comp (hrt.mul_const (4*stripTailControl B 0))
+      simpa only [Function.comp_def, zero_mul, ENNReal.ofReal_zero] using
+        ENNReal.continuous_ofReal.continuousAt.tendsto.comp (hrt.mul_const (4*stripTailControl B 0))
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds ht
       (Eventually.of_forall fun _ => bot_le)
     exact Eventually.of_forall fun N => by rw [he]; exact hvar N
