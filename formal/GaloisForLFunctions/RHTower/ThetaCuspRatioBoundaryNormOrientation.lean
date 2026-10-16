@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.SourceSign
+import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.RealCore
 import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.SplitRe
 import GaloisForLFunctions.RHTower.ThetaCuspRatioBoundaryCertificate.SplitIm
 import Mathlib.Topology.MetricSpace.Thickening
@@ -27,6 +27,9 @@ regularization is `A + y B = h⁶ G`.  This file proves:
 namespace HTGeometry.ThetaRatioInfinity
 noncomputable section
 open MvPolynomial ThetaRatioSource ThetaRatioSquare Filter Topology
+
+/-- The admissible boundary parameter range `0 ≤ s ≤ S`, `S = (6/5)(361/25)`. -/
+def boundaryNormS78 : ℝ := (6/5)*(361/25)
 
 /-! ### Real low parts and the real-cast bridge -/
 
@@ -220,16 +223,19 @@ theorem boundaryRegularCore77_zero (s : ℝ) :
     boundaryImHighColumn77_19,boundaryImHighColumn77_20,boundaryImHighColumn77_21]
   ring
 
-theorem boundaryRegularCore77_zero_pos {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryS77) :
-    0<boundaryRegularCore77 0 s :=
-  boundaryRegularCore77_global_pos le_rfl (by norm_num [boundaryH77]) hs0 hs1
+theorem boundaryRegularCore77_zero_pos {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryNormS78) :
+    0<boundaryRegularCore77 0 s := by
+  rw [boundaryRegularCore77_zero]
+  have hS : s^2≤boundaryNormS78^2 := pow_le_pow_left₀ hs0 hs1 2
+  norm_num [boundaryNormS78] at hS ⊢
+  nlinarith
 
 theorem boundaryNormHat78_zero (s : ℝ) :
     boundaryNormHat78 0 s=-boundaryNormB0*boundaryRegularCore77 0 s/3 := by
   rw [boundaryNormHat78,boundaryNormJ78_zero]
   ring
 
-theorem boundaryNormHat78_zero_neg {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryS77) :
+theorem boundaryNormHat78_zero_neg {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryNormS78) :
     boundaryNormHat78 0 s<0 := by
   rw [boundaryNormHat78_zero]
   have := mul_pos boundaryNormB0_pos (boundaryRegularCore77_zero_pos hs0 hs1)
@@ -338,38 +344,44 @@ theorem exists_strip_neg_of_continuous {f : ℝ×ℝ → ℝ} (hf : Continuous f
 /-- **Uniform orientation.**  There is one `ε > 0` such that, simultaneously for all
 `s ∈ [0, S]` and `0 ≤ h < ε`: `G > 0`, `B > 0`, `J < 0`, `Â < 0`, `G J < 0`, `2A + βB < 0`. -/
 theorem boundaryNorm78_uniform_strip :
-    ∃ ε>0, ε≤boundaryH77 ∧ ∀ h s, 0≤h → h<ε → 0≤s → s≤boundaryS77 →
+    ∃ ε>0, ε≤4/5 ∧ ∀ h s, 0≤h → h<ε → 0≤s → s≤boundaryNormS78 →
       0<boundaryRegularCore77 h s ∧ 0<boundaryNormB78 h s ∧ boundaryNormJ78 h s<0 ∧
         boundaryNormAHat78 h s<0 ∧ boundaryNormHat78 h s<0 ∧ boundaryNormTrace78 h s<0 := by
   have hB0 := boundaryNormB0_pos
+  obtain ⟨e0, he0, h0⟩ := exists_strip_neg_of_continuous continuous_boundaryRegularCore77.neg
+    (a := 0) (b := boundaryNormS78) (fun s hs => by
+      have := boundaryRegularCore77_zero_pos hs.1 hs.2
+      simp only [neg_lt_zero]; exact this)
   obtain ⟨e1, he1, h1⟩ := exists_strip_neg_of_continuous continuous_boundaryNormB78.neg
-    (a := 0) (b := boundaryS77) (fun s _ => by
+    (a := 0) (b := boundaryNormS78) (fun s _ => by
       simp only [boundaryNormB78_zero]; linarith)
   obtain ⟨e2, he2, h2⟩ := exists_strip_neg_of_continuous continuous_boundaryNormJ78
-    (a := 0) (b := boundaryS77) (fun s _ => by
+    (a := 0) (b := boundaryNormS78) (fun s _ => by
       simp only [boundaryNormJ78_zero]; linarith)
   obtain ⟨e3, he3, h3⟩ := exists_strip_neg_of_continuous continuous_boundaryNormAHat78
-    (a := 0) (b := boundaryS77) (fun s _ => by
+    (a := 0) (b := boundaryNormS78) (fun s _ => by
       simp only [boundaryNormAHat78_zero]; linarith)
   obtain ⟨e4, he4, h4⟩ := exists_strip_neg_of_continuous continuous_boundaryNormHat78
-    (a := 0) (b := boundaryS77) (fun s hs => boundaryNormHat78_zero_neg hs.1 hs.2)
+    (a := 0) (b := boundaryNormS78) (fun s hs => boundaryNormHat78_zero_neg hs.1 hs.2)
   obtain ⟨e5, he5, h5⟩ := exists_strip_neg_of_continuous continuous_boundaryNormTrace78
-    (a := 0) (b := boundaryS77) (fun s _ => by
+    (a := 0) (b := boundaryNormS78) (fun s _ => by
       simp only [boundaryNormTrace78_zero]; linarith)
-  have hH : (0:ℝ)<boundaryH77 := by norm_num [boundaryH77]
-  refine ⟨min (min (min e1 e2) (min e3 e4)) (min e5 boundaryH77), ?_, ?_, ?_⟩
-  · exact lt_min (lt_min (lt_min he1 he2) (lt_min he3 he4)) (lt_min he5 hH)
-  · exact le_trans (min_le_right _ _) (min_le_right _ _)
+  have hH : (0:ℝ)<4/5 := by norm_num
+  refine ⟨min (min (min e1 e2) (min e3 e4)) (min e5 (min e0 (4/5))), ?_, ?_, ?_⟩
+  · exact lt_min (lt_min (lt_min he1 he2) (lt_min he3 he4)) (lt_min he5 (lt_min he0 hH))
+  · exact le_trans (min_le_right _ _) (le_trans (min_le_right _ _) (min_le_right _ _))
   · intro h s hh0 hhe hs0 hs1
-    have hs : s ∈ Set.Icc 0 boundaryS77 := ⟨hs0, hs1⟩
+    have hs : s ∈ Set.Icc 0 boundaryNormS78 := ⟨hs0, hs1⟩
     have habs : |h|=h := abs_of_nonneg hh0
-    have hlt (e : ℝ) (he : min (min (min e1 e2) (min e3 e4)) (min e5 boundaryH77)≤e) : |h|<e := by
+    have hlt (e : ℝ)
+        (he : min (min (min e1 e2) (min e3 e4)) (min e5 (min e0 (4/5)))≤e) : |h|<e := by
       rw [habs]; linarith
-    refine ⟨boundaryRegularCore77_global_pos hh0 ?_ hs0 hs1, ?_, h2 h s (hlt e2 ?_) hs,
+    refine ⟨?_, ?_, h2 h s (hlt e2 ?_) hs,
       h3 h s (hlt e3 ?_) hs, h4 h s (hlt e4 ?_) hs, h5 h s (hlt e5 ?_) hs⟩
-    · have := hlt boundaryH77 (le_trans (min_le_right _ _) (min_le_right _ _))
-      rw [habs] at this
-      exact this.le
+    · have := h0 h s (hlt e0 (le_trans (min_le_right _ _) (le_trans (min_le_right _ _)
+        (min_le_left _ _)))) hs
+      simp only [neg_lt_zero] at this
+      exact this
     · have := h1 h s (hlt e1 (le_trans (min_le_left _ _) (le_trans (min_le_left _ _)
         (min_le_left _ _)))) hs
       simp only [neg_lt_zero] at this
@@ -383,7 +395,7 @@ theorem boundaryNorm78_uniform_strip :
 coefficient is negative, the physical value `A + y B = h⁶ G` positive, the conjugate value
 `A + (β - y) B` negative, and the norm `N` negative. -/
 theorem boundaryNorm78_orientation :
-    ∃ ε>0, ε≤boundaryH77 ∧ ∀ h s, 0<h → h<ε → 0≤s → s≤boundaryS77 →
+    ∃ ε>0, ε≤4/5 ∧ ∀ h s, 0<h → h<ε → 0≤s → s≤boundaryNormS78 →
       boundaryNormA78 h s<0 ∧
       0<boundaryNormA78 h s+boundaryNormY78 h s*boundaryNormB78 h s ∧
       boundaryNormA78 h s+(boundaryNormBeta78 h-boundaryNormY78 h s)*boundaryNormB78 h s<0 ∧
@@ -401,7 +413,7 @@ theorem boundaryNorm78_orientation :
 
 /-- `N` has exact order six at zero clock: no factorization `N = h⁷ D` with `D` continuous at
 zero holds on any punctured right neighbourhood. -/
-theorem boundaryNorm78_not_seventh_order {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryS77) :
+theorem boundaryNorm78_not_seventh_order {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryNormS78) :
     ¬ ∃ D : ℝ → ℝ, ContinuousAt D 0 ∧
       ∀ᶠ h in 𝓝[>] (0:ℝ), boundaryNorm78 h s=h^7*D h := by
   rintro ⟨D, hD, hev⟩
@@ -501,7 +513,7 @@ theorem boundaryNormSlope78_source {h : ℝ} (hh : h≠0) (s : ℝ) :
 /-- **Negative source norm and trace.**  On the strip `0 < h < ε`, the norm of the boundary
 reduced slope is the negative real `N / h⁴⁴`, and `2 W.re + b W.im` and `W.re` are negative reals. -/
 theorem boundaryNormSlope78_norm_trace_neg :
-    ∃ ε>0, ε≤boundaryH77 ∧ ∀ h s, 0<h → h<ε → 0≤s → s≤boundaryS77 →
+    ∃ ε>0, ε≤4/5 ∧ ∀ h s, 0<h → h<ε → 0≤s → s≤boundaryNormS78 →
       QuadraticAlgebra.norm (boundaryNormSlope78 h s)=((boundaryNorm78 h s/h^44 : ℝ) : ℂ) ∧
       boundaryNorm78 h s/h^44<0 ∧
       2*(boundaryNormSlope78 h s).re+boundaryB (h:ℂ)⁻¹*(boundaryNormSlope78 h s).im=
@@ -568,7 +580,7 @@ theorem boundaryNormSlope78_pole_limits (s : ℝ) :
     filter_upwards [self_mem_nhdsWithin] with h hpos
     exact ((boundaryNormSlope78_pole_identities (ne_of_gt hpos) s).2).symm
 
-theorem boundaryNorm78_clock_zero_value_pos {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryS77) :
+theorem boundaryNorm78_clock_zero_value_pos {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boundaryNormS78) :
     0<155520-567/64*s^2 := by
   rw [←boundaryRegularCore77_zero]
   exact boundaryRegularCore77_zero_pos hs0 hs1

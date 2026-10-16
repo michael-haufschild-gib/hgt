@@ -2,7 +2,7 @@
 
 **State:** RH open. 21 live routes; 23 candidates. No route has a source-derived RH-closing sign or bound.
 
-**Lean checkpoint:** b34b70dc66bf536bda171b5c2cf85934e157d111. [L] = tracked, root-imported Lean declaration (not recompiled for this ledger); [S] = source-only, unwired, or uncommitted declaration, not counted as proved; [P] = paper claim. R:X = formal/GaloisForLFunctions/RHTower/X.lean; H:X = formal/GaloisForLFunctions/HTGeometry/X.lean. E = source modules, not extra premises. Paths are proposed; only Established facts are proved.
+**Lean checkpoint:** 407bf463c272bdf618eb714ec4e551f3d5129b2c. [L] = tracked, root-imported Lean declaration (not recompiled for this ledger); [S] = source-only, unwired, or uncommitted declaration, not counted as proved; [P] = paper claim. R:X = formal/GaloisForLFunctions/RHTower/X.lean; H:X = formal/GaloisForLFunctions/HTGeometry/X.lean. E = source modules, not extra premises. Paths are proposed; only Established facts are proved.
 
 **Classification:** Live = exact RH receiver plus explicit source-producer problem. Candidate = incomplete source handoff or independent producer mechanism. Killed = scoped mechanism refuted/circular/nonselective; see [killed routes](rh-killed-routes.md). One route may have alternate receivers for one source architecture.
 
@@ -38,8 +38,9 @@
 
 - **Path:** Complete prime−Gamma−polar form → nonnegative constrained ground energy at every aperture → RH.
 - **Established [L]:** RH iff all-aperture negative index vanishes. Compact self-adjoint threshold pencil computes exact finite index and minimal positive repair. Odd/primitive positivity, full mixed Φ explicit formula, and exact Doob identity retain every prime cross-term; small apertures are positive. Literal Fejér box energy gives another one-sided receiver.
+- **Source-only [S]:** Any finite family of distinct nonreal Xi spectral orbits yields an equally dimensional compact polar-zero test subspace with strictly negative complete Weil form and an L²-relative gap on sufficiently large support; the support threshold is existential.
 - **Open:** All-aperture lower bound for the actual signed form, including joint Gamma/prime-edge/polar terms; equivalent cofinal ground-state or Fejér-box source bound.
-- **E:** R:WeilMarkovOddPositivity; R:WeilMarkovPrimitiveHyperplane; R:WeilMarkovOneBoundState; R:WeilFejerBoxEnergyRH; R:PaperRestrictedWeilGroundThreshold.
+- **E:** R:WeilMarkovOddPositivity; R:WeilMarkovPrimitiveHyperplane; R:WeilMarkovOneBoundState; R:WeilFejerBoxEnergyRH; R:PaperRestrictedWeilGroundThreshold; [S] R:WeilCompactOrbitInertia.
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -110,10 +111,10 @@
 ### CHMD — Causal Hyperbolic–Modular Duality
 
 - **Path:** Exact Weil source → causal prime-wave or Möbius-rest one-sided bound, or theta-Doob odd-sector half-bound → RH.
-- **Established [L]:** Toeplitz/sech positivity, one-sided Λ-prime-wave bounds, and absence of odd resolvent eigenstates above 1/2 are RH-equivalent. Full signed BV/Doob graph, bounded Weil operator, discrete finite-multiplicity spectrum above 1/2, and zero-sample/polar decomposition are constructed. Local odd sign and bounded kernel estimates do not give global positivity.
-- **Source-only [S]:** Integrated deficit = Λ-free Möbius rest + transient head; the head's conjugated-Laplacian pairing is uniformly bounded. Either uniform one-sided bound on the rest pairing is RH-equivalent. Every finite family of distinct nonreal Xi spectral orbits gives compact, polar-annihilating tests with strictly negative Gram matrix; compact polar synthesis identifies its complex Gram with the complete Weil quadratic form. These are zero-side detection identities, not positivity.
+- **Established [L]:** Toeplitz/sech positivity, one-sided Λ-prime-wave bounds, absence of odd resolvent eigenstates above 1/2, and a uniform one-sided conjugated-Laplacian bound on the Λ-free Möbius-rest pairing are RH-equivalent. The integrated deficit splits into Möbius rest plus a transient head with uniformly bounded pairing. Full signed BV/Doob graph, bounded Weil operator, discrete spectrum above 1/2, and zero-sample/polar decomposition exist; none gives global positivity.
+- **Source-only [S]:** Every finite family of distinct nonreal Xi spectral orbits yields an equally dimensional compact polar-zero test subspace with strictly negative complete Weil form and an L²-relative gap on sufficiently large support. This detects zeros, not a source sign.
 - **Open:** Source-derived uniform one-sided bound on the complete Möbius-rest/discrepancy pairing, full Weil-operator positivity, or exclusion of odd bound states above 1/2.
-- **E:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDDoobSourceGraph; R:CHMDSpectralRiemannCriterion; R:CHMDOddSectorCriterion; [S] R:CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection; [S] R:CHMDCompactOrbitInertia; [S] R:CHMDCompactTestSynthesis.
+- **E:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDDoobSourceGraph; R:CHMDSpectralRiemannCriterion; R:CHMDOddSectorCriterion; R:CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection; [S] R:WeilCompactOrbitInertia.
 
 <a id="th"></a>
 ### TH — Theta moment positivity
@@ -127,10 +128,10 @@
 ### RN — Theta renewal and singular comparison
 
 - **Path:** Literal theta renewal/connection source → divisor-faithful winding or directed boundary-work sign → RH.
-- **Established [L]:** Global compact native Green operator and whole-BV forcing solver retain the full arithmetic form. Every native generalized Xi root block equals the original Meyer packet with full multiplicity. Fixed-Gaussian whole-source native realization, full-range generator intertwining, and exact finite-packet repair/convolution preserve source data; none orients the signed work.
-- **Source-only [S]:** Generic one-channel root projection is intrinsic to its pencil; its reduced inverse satisfies both complementary identities. The native resonant channel's first nonzero moment occurs at full Xi multiplicity. Root wiring for these modules is uncommitted/unverified. Fixed Cauchy-pole quartet defect is nonnegative and vanishes iff RH; it is a zero-side receiver.
-- **Open:** Mixed prime+Gamma≥pole inequality with all cusp terms, all-order seam/cusp projection, and arithmetic boundary-current orientation; Gaussian removal in native BV remains separate.
-- **E:** R:PaperThetaNativeResolvent; R:PaperThetaNativeMeyerCompleteness; R:PaperThetaOriginalArithmeticRealization; R:PaperThetaWholeMeyerGenerator; [S] H:OneChannelCanonicalSplitting; [S] R:PaperThetaConfluentNativeChannel; [S] R:XiReciprocalSquareFixedCauchySource.
+- **Established [L]:** Global native Green/whole-BV solver, full-multiplicity Meyer packets, fixed-Gaussian realization and generator intertwining retain the source. Intrinsic one-channel projection has kernel equal to the Xi-multiplicity pencil range; exact confluent moments, all-power defects/solvers, BV repeated-resonance profiles, and complete signed arithmetic value are constructed. No source orientation follows.
+- **Source-only [S]:** Fixed Cauchy-pole quartet defect vanishes iff RH. On a specified nonlinear theta-ratio boundary strip, the reduced slope has positive physical value but negative conjugate value, norm and trace; a positive-norm shortcut fails there.
+- **Open:** Mixed prime+Gamma≥pole inequality with all cusp terms, global seam/cusp gluing, and arithmetic boundary-current orientation; Gaussian removal from fixed-Gaussian realization remains separate.
+- **E:** R:PaperThetaNativeResolvent; R:PaperThetaNativeMeyerCompleteness; R:PaperThetaOriginalArithmeticRealization; R:PaperThetaWholeMeyerGenerator; R:PaperThetaConfluentNativeSolvability; R:PaperThetaConfluentNativeRegularity; R:PaperThetaConfluentNativeArithmetic; [S] R:XiReciprocalSquareFixedCauchySource; [S] R:ThetaCuspRatioBoundaryNormOrientation.
 
 <a id="wd"></a>
 ### WD — Ward orientation and horizontal collision
@@ -160,10 +161,9 @@
 ### PM — Physical-model routes
 
 - **Path:** FZZ or PW-B physical source → admitted Ward/energy identity → Haar approximation or growth receiver → RH.
-- **Established [L]:** FZZ parity/Mellin and Haar receivers, witness signature, exact Fourier LlogL reconstruction with all cross-terms, weak retarded realization, and compact-cutoff two-response action equal to the full source contact.
-- **Source-only [S]:** Complementary-rate retarded responses have wedge-exhaustion source-contact limit and absolutely admitted native-corrected action; limit/native leaves are unwired.
+- **Established [L]:** FZZ parity/Mellin and Haar receivers, witness signature, exact Fourier LlogL reconstruction with all cross-terms, weak retarded realization, compact-cutoff two-response contact identity, complementary-rate wedge-exhaustion limit, and absolutely admitted native-corrected action.
 - **Open:** Haar-target approximation and small-damping L² admission; PW-B source-contact action must imply optical magnitude, ordered cap, and all-divisor extinction. Pure-Ξ no-collision remains open.
-- **E:** R:FermiNymanBeurlingHaarTarget; R:PaperFermiFourierCriterion; R:ThetaCuspHawkingBMPWRetardedWeakNative; R:ThetaCuspHawkingBMPWTwoResponseAction; [S] R:ThetaCuspHawkingBMPWTwoResponseActionLimit; [S] R:ThetaCuspHawkingBMPWNativeTwoResponseAction.
+- **E:** R:FermiNymanBeurlingHaarTarget; R:PaperFermiFourierCriterion; R:ThetaCuspHawkingBMPWRetardedWeakNative; R:ThetaCuspHawkingBMPWTwoResponseAction; R:ThetaCuspHawkingBMPWTwoResponseActionLimit; R:ThetaCuspHawkingBMPWNativeTwoResponseAction.
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -298,18 +298,19 @@
 <a id="msc"></a>
 ### MSC — Möbius−Sonin transport
 
-- **Path:** Nonpower source transport preserving divisor/conormal → energy receiver.
+- **Path:** Fixed squarefree arithmetic Hilbert source preserving strict-right divisor/conormal → Sonin energy sign → RH.
 - **Established [L]:** Real-power rigging moves the divisor; polynomial and broad LP multiplier transports cannot preserve the required Ξ preimage.
-- **Open:** Nondiagonal, nonpower arithmetic transport mixing Dirichlet coefficients while preserving divisor and conormal.
-- **E:** R:HedenmalmGammaSewnSquarefreeFisherThresholdTrackedRigging; R:XiRealRootedPolynomialPreimage.
+- **Source-only [S]:** A fixed density+squarefree-discrepancy Hilbert source recovers μ² coefficients, the squarefree partition and its derivative on Re s>1/2 away from s=1; its strict-right zeros have Xi multiplicities and its overlap/Fisher conormal matches the original. Literal Dirichlet columns can remain non-ℓ²; this Hilbert observation asserts no positive Sonin energy.
+- **Open:** Source-faithful bridge from this squarefree Hilbert observation to a nonnegative Sonin/Weil energy or other RH-closing sign, retaining the complete signed arithmetic source; divisor/conormal preservation alone is not a sign producer.
+- **E:** R:HedenmalmGammaSewnSquarefreeFisherThresholdTrackedRigging; R:XiRealRootedPolynomialPreimage; [S] R:SquarefreeDiscrepancyHilbertTransport; [S] R:HedenmalmSquarefreeSummatoryConormalTransport.
 
 <a id="owu"></a>
 ### OWU — Odd Weil-weight uniqueness
 
 - **Path:** Odd-positive arithmetic weight → cut removal/ray sign → λ=Λ → RH.
-- **Established [L]:** Odd positivity yields a Nevanlinna spectral measure and slit Herglotz continuation. Even mean-zero sign removes real-cut mass; one all-scale dilation ray plus odd positivity forces λ=Λ. Odd source purification, exact blind fibres and attained corrected ground eigenspace hold. Its transforms are precisely P(w²)F_G(w), deg P<dim S, with a common generator factor.
+- **Established [L]:** Odd positivity yields a Nevanlinna measure/slit continuation; even mean-zero sign removes real-cut mass; an all-scale dilation ray forces λ=Λ. Odd blind fibres and corrected ground eigenspace exist. Their transforms are P(w²)F_G(w), deg P<dim S; the canonical generator has only axis zeros, all nonzero zeros simple, and positive evaluation representatives give exact finite spectral interpolation and energy decomposition.
 - **Open:** Nonnegative blind odd minimum, existence of an odd-positive arithmetic weight, and its all-scale ray sign. Ground factor need not be blind; no independent sign producer.
-- **E:** R:OddWeilSpectralMeasure; R:WeilDilationRayCriterion; R:OddSectorBlindVariationalAttainment; R:OddSectorGroundPolynomialStructure.
+- **E:** R:OddWeilSpectralMeasure; R:WeilDilationRayCriterion; R:OddSectorBlindVariationalAttainment; R:OddSectorGroundPolynomialStructure; R:OddSectorGroundZeroInterpolation; R:OddSectorExactSpectralInterpolation.
 
 <a id="pbm"></a>
 ### PBM — Prime boundary monodromy

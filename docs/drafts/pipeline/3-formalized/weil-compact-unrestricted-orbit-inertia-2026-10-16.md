@@ -1,7 +1,14 @@
 # Compact polar realization of unrestricted finite Xi orbit inertia
 
-Status: paper argument completed; formalization started. Uncounted under the
-100-theorem goal until exact statement, builds, axioms, and significance audit.
+Status: FORMALIZED. Contribution 2 / 100; counted once, including all helpers.
+
+- **ID:** weil-compact-unrestricted-orbit-inertia-2026-10-16
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Source:** whole local Lean corpus; no external novelty claim.
+- **Primary theorem:**
+  `RHTower.exists_compact_polar_negative_subspace_of_distinct_Xi_orbits`
+  in `formal/GaloisForLFunctions/RHTower/WeilCompactOrbitInertia.lean`.
 
 ## Target and significance test
 
@@ -29,8 +36,9 @@ continued-Cauchy source transport will not be counted.
 - `CHMDBirmanSchwingerBound.lean`: continuous bounded Weil bilinear form;
   negative definiteness survives finite compact-core perturbation. Its
   existing approximation theorem does not preserve exact polar samples.
-- `CHMDPolarPlane.lean`: actual independent polar graph vectors. Neither a
-  compact right inverse nor constrained compact-core density is yet audited.
+- `CHMDPolarPlane.lean`: actual independent polar graph vectors. The proof
+  instead uses a section on the finite observation range, so it requires no
+  separate choice of an explicit compact polar frame.
 - `ZetaWeilFiniteLevelInertia.lean`: `weilNegIndex` uses complex C2 compact
   tests with both exact polar cancellations and an L2-relative negative gap.
   Its lower theorem assumes separated isolated visible pairs and loses two
@@ -50,7 +58,7 @@ Whole-corpus hybrid searches completed with usable Lean hits, `partial=false`,
 stale coverage snapshot warnings, and unavailable semantic-coverage metrics.
 Only Lean results were used as mathematical evidence. No web or numerical work.
 
-## Proposed proof, with outstanding audits explicit
+## Proof design and completed obligations
 
 1. Choose one imaginary cardinal graph vector for each distinct nonreal
    symmetry orbit. Universal pairings give an exact negative diagonal across
@@ -62,15 +70,15 @@ Only Lean results were used as mathematical evidence. No web or numerical work.
    linear right section S with image in D, continuous because its domain is
    finite-dimensional. Correct any approximant d by
    `d - S(P(d)-P(p))`. This remains in D, matches all selected samples of p,
-   and converges to p in the complete graph norm. This general proof needs
-   toolchain/API verification and exact source-map instantiation.
+   and converges to p in the complete graph norm. This argument is formalized
+   in `HTGeometry/DenseCoreFiniteConstraints.lean` and instantiated at both poles.
 3. Apply that construction simultaneously to the finite negative family.
    Continuity of the signed Weil form preserves a strict negative gap on its
    real coefficient sphere. Exact polar cancellation avoids dimension loss.
 4. Audit real-source polarization and complexify the negative family: the
-   complex Weil quadratic form should split into the real and imaginary
-   coefficient energies. This identity must be checked, not presumed from
-   pointwise real-valuedness.
+   complex Weil quadratic form splits into the real and imaginary coefficient
+   energies. `re_W_compact_synthesis_eq_gram` verifies the exact identity,
+   using the complete arithmetic Weil split.
 5. A finite union of compact supports gives a common interval. A bound on the
    L2 norm of finite combinations converts the coefficient gap into a positive
    L2-relative margin. Negative definiteness proves linear independence.
@@ -88,7 +96,11 @@ Only Lean results were used as mathematical evidence. No web or numerical work.
   approximants and limits must live in the already proved full CHMD graph.
 - Nonquantitative existence does not retain the explicit support budgets of
   the Nyquist theorem. No effective threshold is claimed.
-- This is a new candidate, not a completed paper proof or counted theorem.
+- This theorem does not assert that any off-line zero exists or prove RH.
+
+The development checkpoints below retain the intermediate audit trail. The
+final verification and counting decision at the end supersede their pending
+statuses.
 
 ## Plan
 
@@ -202,3 +214,61 @@ The support/L2 leaf's remaining default-heartbeat failure was localized to
 elaboration of squared compact support through composition. Its proof now
 uses the direct product-support lemma, with explicit function types; the
 limit remains unchanged. The next standalone check is running.
+
+## Final audit and significance decision, 2026-10-17
+
+[PROVED HERE] For any `k` distinct nonreal fourfold centered-Xi symmetry
+orbits with representatives of positive real part, there are `A > 0`,
+`epsilon > 0`, and a complex subspace V of dimension exactly k such that,
+for every `b >= A`, every f in V is C2, supported in `[-b,b]`, and has both
+polar Fourier samples zero. Every nonzero f in V satisfies
+`Re W(f,f) < -epsilon * integral |f|^2` for the complete zeta Weil form.
+
+This removes the separation/visibility restrictions for realizing arbitrary
+finite orbit families in the literal compact polar test domain. It retains
+the selected family's entire negative dimension and controls all mixtures
+with one L2-relative margin. The existing continued-Cauchy classifications do
+not supply these compact tests; the inspected finite-window lower bounds
+retain separation or explicit visibility/window hypotheses. This domain and
+finite-family realization is the structural contribution. Generic density,
+complexification, and norm-conversion helpers count zero separately.
+
+Scope limits: the support threshold is existential; no effective size bound,
+fixed-window infinite-family claim, maximal-index formula, or independent
+direction for each multiplicity copy is asserted. External novelty has not
+been researched because the user requires local-corpus-only work.
+
+All five final standalone leaf builds exited 0 with empty logs, using
+`lake --old env lean -j 1 -o ...` sequentially. All seven public declarations
+were audited from a `/tmp` import file: exit 0, axioms only `propext`,
+`Classical.choice`, and `Quot.sound`. The printed primary signature has only
+the stated Xi-zero/orbit hypotheses. No heartbeat limit was raised.
+
+Final source hashes, rechecked after all builds:
+
+| Leaf | SHA-256 |
+| --- | --- |
+| HTGeometry/DenseCoreFiniteConstraints | `64da85a6ad61667ad6b98245a0820e3a05b8d2b9534502e09762ce4c94522107` |
+| RHTower/CHMDCompactOrbitInertia | `e7df0f59e4756fba579e229babcdf42e21a7c7fdf983b1b67f1061ee3823db01` |
+| RHTower/CHMDCompactTestSynthesis | `844b7eb299a04b72824da066c2bc21ed351d07be8fe5097b780d37d2f1adace4` |
+| RHTower/WeilCompactNegativeSubspace | `bb2d494e9c9c31c5ebafad6858e8fb8f4a605f106e8db47138cc755ca6896e86` |
+| RHTower/WeilCompactOrbitInertia | `428f00a6edd22a2a841ec010b49f2e62368c3f485ad037af102e1d5d13733b46` |
+
+Each leaf has exactly one direct theorem-area umbrella import. Whitespace
+checks passed. `scripts/formal_tools.py index` exited 0.
+`scripts/formal_tools.py lint --check-generated` exited 1 solely on six
+unrelated concurrently added modules missing umbrella reachability:
+
+- `FiniteWeilNodalAdjacentCoupling`
+- `FiniteWeilNodalMixtureTransport`
+- `HedenmalmSquarefreeSummatoryConormalTransport`
+- `LeeYangPrimePivotSpinPartitionSpectrum`
+- `SquarefreeDiscrepancyHilbertTransport`
+- `ThetaCuspRatioBoundaryNormOrientation`
+
+No error concerned this contribution, forbidden declarations, or stale
+generated files. Unrelated modules were left to their owners. No umbrella or
+full build was run. The frontier-map report remained untouched.
+
+All owned build/search/index/lint handles finished. Twenty-one exact owned
+scratch files were removed after the evidence was recorded; none remain.

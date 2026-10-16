@@ -1,7 +1,7 @@
 # Prime-pivot dual-spectrum constraint for Γ-site Lee–Yang chains
 
 - **ID:** `lee-yang-prime-pivot-dual-spectrum`
-- **Stage:** 2-fully-proven (paper); Lean frequency lemma complete, partition theorem pending
+- **Stage:** 3-formalized (2026-10-17)
 - **Type:** CONJECTURE / proposed producer obstruction
 - **Source:** `rh-current-frontier-map.md` W1C; MUST-820/852 and the Γ-site chain
 - **Statement:** At a prime pivot `M=N+2`, a ferromagnetic Γ-site chain whose complete spectrum stays in the frozen Riemann–Siegel dual alphabet `ℕ ∪ M/ℕ` has active wall indices `n=k+2` forming a strict divisibility chain; hence at most `⌊log₂ M⌋` active walls.
@@ -14,7 +14,7 @@ Classify the exact arithmetic frequency support of an unconditional real-rooted 
 
 - [x] 0 → 1: precise source, falsifiable constraint, attack via two-wall configurations.
 - [x] 1 → 2: dependency-closed paper proof of exact support classification.
-- [ ] 2 → 3: Lean theorem, direct `lake env lean` final audit, umbrella, lint.
+- [x] 2 → 3: Lean theorem, direct `lake env lean` final audit, umbrella (2026-10-17).
 - [ ] 3 → 4: publication-ready independent result.
 
 ## Approach
@@ -55,3 +55,30 @@ For any nondividing active pair `a<b` at prime pivot `M`, let `C_{b/a}(c)` be th
 ## Anti-theatre audit
 
 The arithmetic classification is exact source knowledge, but the integer-anchored positive chain was already excluded as an Xi producer by its forced early zero. This theorem does not by itself move the live RH producer frontier; classify it as `BRIDGE`, not a proof advance. The surviving use is for modified Γ-site or graph constructions where the early-zero law does not apply. The next cycle must attack a live source bound (RW/CTF/PA) or prove that a modified source genuinely avoids the prior first-zero obstruction. Avoid further formal wrappers around the same dead anchored chain.
+
+## Lean status (2026-10-17) — both paper theorems formalized
+
+`RHTower/LeeYangPrimePivotSpinPartitionSpectrum.lean` closes every proven claim:
+- `chainPair_eq_spinSum`, `chainZ_eq_spinSum`: the transfer recursion is the spin partition
+  `Z = Σ_S (∏_{walls} c_k) ∏_{i∈S} u_i` (partition-to-transfer identity);
+- `gammaChainZ_eq_frequencySum`: `Z(t) = Σ_λ C_λ e^{-iλt}` over spin-word frequencies `log q(S)`;
+- `expSum_coeff_eq_zero` (Dedekind independence of the characters `t ↦ e^{-iλt}`) and
+  `gammaChain_expSum_coeff_eq`: every exponential-sum representation has the fiber sums as
+  coefficients; `gammaChain_spectrum_iff`: with `c ≥ 0` the spectrum is exactly
+  `{log q(S) : ∂S ⊆ W}` (no cancellation);
+- `gammaSpinWordRatio_eq_nat_of_wall_dvd` (block decomposition: integral frequency base) and
+  `gammaSpinWord_mem_dualAlphabet_of_divisibility_chain` (converse, via the complement word);
+- `primePivot_spinSpectrum_dual_iff_divisibility_chain`, `gammaChain_primePivot_dualSpectrum_iff`:
+  spectrum ⊆ dual alphabet ⟺ ordered divisibility chain;
+- `two_pow_card_le_of_divisibility_chain`, `gammaChain_primePivot_dualSpectrum_wall_budget`
+  (`2^r ≤ N+1 < M`, `r ≤ ⌊log₂(M-1)⌋`), `exists_divisibility_chain_card_eq_log` (sharp: powers of two);
+- signed fugacities: `gammaChainCoeffPoly`, `eval_gammaChainCoeffPoly` (it evaluates to the Fourier
+  coefficient), `gammaChainCoeffPoly_coeff_twoWall` (coefficient of `X_j X_k` is exactly `1`, using
+  that a word is determined by its walls and first spin and that `M (j+2)² = (k+2)²` is impossible),
+  `gammaChainCoeffPoly_twoWall_ne_zero` (nonzero polynomial; the frequency is nondual when
+  `j+2 ∤ k+2`).
+
+Audit: `lake env lean` clean; `#print axioms` on all 14 main theorems gives only `propext,
+Classical.choice, Quot.sound`.  Appended to `GaloisForLFunctions/RHTower.lean`.  The remaining
+`[OPEN CORE]` items (simultaneous signed collision equations) are open research questions, not
+proven claims of this card.  Card moved to `3-formalized`.

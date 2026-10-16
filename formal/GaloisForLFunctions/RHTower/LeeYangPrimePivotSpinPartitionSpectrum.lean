@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LeeYangPrimePivotDualSpectrum
 import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
-import Mathlib.Algebra.MvPolynomial.Basic
+import Mathlib.Algebra.MvPolynomial.Eval
 import Mathlib.LinearAlgebra.LinearIndependent.Basic
 import Mathlib.Data.Nat.Log
 
@@ -56,19 +56,27 @@ theorem gammaSpinWeight_succ_of_wall (c : ℕ → ℝ) {k : ℕ} {S : Finset ℕ
     (hw : GammaSpinWallAt S k) :
     gammaSpinWeight c (k + 1) S = c k * gammaSpinWeight c k S := by
   unfold gammaSpinWeight gammaSpinWalls
-  rw [range_succ, filter_insert, if_pos hw, prod_insert (by simp)]
+  rw [range_add_one, filter_insert, if_pos hw, prod_insert (by simp)]
 
 theorem gammaSpinWeight_succ_of_not_wall (c : ℕ → ℝ) {k : ℕ} {S : Finset ℕ}
     (hw : ¬GammaSpinWallAt S k) :
     gammaSpinWeight c (k + 1) S = gammaSpinWeight c k S := by
   unfold gammaSpinWeight gammaSpinWalls
-  rw [range_succ, filter_insert, if_neg hw]
+  rw [range_add_one, filter_insert, if_neg hw]
 
 theorem gammaSpinWalls_insert_succ (k : ℕ) (S : Finset ℕ) :
     gammaSpinWalls k (insert (k + 1) S) = gammaSpinWalls k S := by
   ext i
-  simp only [mem_gammaSpinWalls, GammaSpinWallAt, mem_insert]
-  constructor <;> rintro ⟨hi, hw⟩ <;> refine ⟨hi, ?_⟩ <;> omega
+  simp only [mem_gammaSpinWalls]
+  constructor <;> rintro ⟨hi, hw⟩ <;> refine ⟨hi, ?_⟩
+  · have h1 : i ∈ insert (k + 1) S ↔ i ∈ S := by simp [show i ≠ k + 1 by omega]
+    have h2 : i + 1 ∈ insert (k + 1) S ↔ i + 1 ∈ S := by simp [show i ≠ k by omega]
+    unfold GammaSpinWallAt at hw ⊢
+    rwa [h1, h2] at hw
+  · have h1 : i ∈ insert (k + 1) S ↔ i ∈ S := by simp [show i ≠ k + 1 by omega]
+    have h2 : i + 1 ∈ insert (k + 1) S ↔ i + 1 ∈ S := by simp [show i ≠ k by omega]
+    unfold GammaSpinWallAt at hw ⊢
+    rwa [h1, h2]
 
 /-! ### The spin expansion of the transfer recursion -/
 
@@ -81,7 +89,9 @@ theorem chainPair_eq_spinSum (c : ℕ → ℝ) (u : ℕ → ℂ) (k : ℕ) :
         (if k ∈ S then (gammaSpinWeight c k S : ℂ) * ∏ i ∈ S, u i else 0) := by
   induction k with
   | zero =>
-    simp [chainPair, gammaSpinWeight, gammaSpinWalls, range_one, powerset_singleton]
+    rw [range_add_one, range_zero, sum_powerset_insert (notMem_empty 0),
+      sum_powerset_insert (notMem_empty 0)]
+    simp [chainPair, gammaSpinWeight, gammaSpinWalls]
   | succ k ih =>
     obtain ⟨hA, hB⟩ := ih
     have hk : k + 1 ∉ range (k + 1) := by simp
@@ -96,14 +106,10 @@ theorem chainPair_eq_spinSum (c : ℕ → ℝ) (u : ℕ → ℂ) (k : ℕ) :
       tauto
     have hwall' (t : Finset ℕ) (ht : t ∈ (range (k + 1)).powerset) :
         GammaSpinWallAt (insert (k + 1) t) k ↔ k ∉ t := by
+      have h1 : k ∈ insert (k + 1) t ↔ k ∈ t := by simp
       unfold GammaSpinWallAt
-      simp only [mem_insert, self_eq_add_right, one_ne_zero, false_or, true_or, not_true_eq_false,
-        and_false, and_true, or_false]
-      constructor
-      · rintro h
-        exact h
-      · intro h
-        exact h
+      rw [h1]
+      simp
     have hweight (t : Finset ℕ) (ht : t ∈ (range (k + 1)).powerset) :
         gammaSpinWeight c (k + 1) t =
           if k ∈ t then c k * gammaSpinWeight c k t else gammaSpinWeight c k t := by
@@ -120,7 +126,7 @@ theorem chainPair_eq_spinSum (c : ℕ → ℝ) (u : ℕ → ℂ) (k : ℕ) :
       · rw [gammaSpinWeight_succ_of_wall c ((hwall' t ht).mpr hkt)]
         unfold gammaSpinWeight
         rw [gammaSpinWalls_insert_succ]
-    rw [range_succ (k + 1), sum_powerset_insert hk, sum_powerset_insert hk]
+    rw [range_add_one (n := k + 1), sum_powerset_insert hk, sum_powerset_insert hk]
     constructor
     · have h2 : ∑ t ∈ (range (k + 1)).powerset,
           (if k + 1 ∈ insert (k + 1) t then (0 : ℂ) else
@@ -212,15 +218,15 @@ theorem realExpCharacter_injective : Function.Injective realExpCharacter := by
   intro lam mu h
   by_contra hne
   have hd : lam - mu ≠ 0 := sub_ne_zero.mpr hne
-  have he := congrArg (fun χ : Multiplicative ℝ →* ℂ => χ (Multiplicative.ofAdd (π / (lam - mu)))) h
+  have he := congrArg (fun χ : Multiplicative ℝ →* ℂ => χ (Multiplicative.ofAdd (Real.pi / (lam - mu)))) h
   simp only [realExpCharacter, MonoidHom.coe_mk, OneHom.coe_mk, toAdd_ofAdd] at he
   obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp he
   have him := congrArg Complex.im hn
   simp only [Complex.neg_im, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
     Complex.ofReal_im, Complex.add_im, Complex.intCast_re, Complex.intCast_im, Complex.mul_re,
     Complex.re_ofNat, Complex.im_ofNat] at him
-  have hkey : (lam - mu) * (π / (lam - mu)) = π := mul_div_cancel₀ π hd
-  have hpi : (π : ℝ) * (2 * (n : ℝ) + 1) = 0 := by nlinarith [hkey]
+  have hkey : (lam - mu) * (Real.pi / (lam - mu)) = Real.pi := mul_div_cancel₀ Real.pi hd
+  have hpi : Real.pi * (2 * (n : ℝ) + 1) = 0 := by nlinarith [hkey]
   have h2n : (2 * (n : ℝ) + 1) = 0 := (mul_eq_zero.mp hpi).resolve_left Real.pi_ne_zero
   have : (2 * n + 1 : ℤ) = 0 := by exact_mod_cast h2n
   omega
@@ -255,8 +261,15 @@ theorem gammaChain_expSum_coeff_eq (c : ℕ → ℝ) (N : ℕ) (Λ : Finset ℝ)
         cexp (-(I * x * t)) = ∑ x ∈ F, (gammaChainCoeff c N x : ℂ) * cexp (-(I * x * t)) := by
       simp_rw [ite_mul, zero_mul]
       rw [sum_ite_mem, union_inter_cancel_right]
-    simp only [d, sub_mul, sum_sub_distrib, hΛ, hF, ← hrep t, ← gammaChainZ_eq_frequencySum]
-    exact sub_self _
+    have hsplit : ∑ x ∈ Λ ∪ F, d x * cexp (-(I * x * t)) =
+        ∑ x ∈ Λ ∪ F, (if x ∈ Λ then a x else 0) * cexp (-(I * x * t)) -
+          ∑ x ∈ Λ ∪ F, (if x ∈ F then (gammaChainCoeff c N x : ℂ) else 0) *
+            cexp (-(I * x * t)) := by
+      rw [← sum_sub_distrib]
+      refine sum_congr rfl fun x _ => ?_
+      simp only [d]
+      ring
+    rw [hsplit, hΛ, hF, ← hrep t, gammaChainZ_eq_frequencySum, sub_self]
   have hd := expSum_coeff_eq_zero (Λ ∪ F) d hzero lam (mem_union_left _ hlam)
   simp only [d, if_pos hlam] at hd
   exact sub_eq_zero.mp hd
@@ -287,7 +300,7 @@ theorem gammaChainCoeff_ne_zero_iff {c : ℕ → ℝ} (hc : ∀ k, 0 ≤ c k) (N
       ∃ S, GammaSpinWordAllowed N (gammaActiveWalls c N) S ∧ gammaSpinFrequency S = lam := by
   unfold gammaChainCoeff
   rw [Ne, sum_eq_zero_iff_of_nonneg (fun S _ => gammaSpinWeight_nonneg hc N S)]
-  push_neg
+  push Not
   constructor
   · rintro ⟨S, hS, hw⟩
     obtain ⟨hSp, hfreq⟩ := mem_filter.mp hS
@@ -413,7 +426,7 @@ theorem gammaSpinWordRatio_eq_nat_of_wall_dvd :
     rw [hratio, hq, hm]
     push_cast
     field_simp
-  · push_neg at hgap
+  · push Not at hgap
     have hS' : S = range (b + 1) := by
       ext x
       simp only [mem_range]
@@ -431,8 +444,10 @@ theorem gammaSpinWordRatio_eq_nat_of_wall_dvd :
 theorem gammaSpinWallAt_sdiff_iff {N : ℕ} {S : Finset ℕ} {i : ℕ} (hi : i < N) :
     GammaSpinWallAt (range (N + 1) \ S) i ↔ GammaSpinWallAt S i := by
   unfold GammaSpinWallAt
-  simp only [mem_sdiff, mem_range]
-  constructor <;> rintro (⟨h1, h2⟩ | ⟨h1, h2⟩) <;> omega
+  have h1 : i < N + 1 := by omega
+  have h2 : i + 1 < N + 1 := by omega
+  simp only [mem_sdiff, mem_range, h1, h2, true_and]
+  tauto
 
 /-- **Converse.**  If the allowed walls form an ordered divisibility chain, every allowed spin word
 has frequency base in the dual alphabet `ℕ ∪ M/ℕ`, `M = N + 2`. -/
@@ -443,12 +458,12 @@ theorem gammaSpinWord_mem_dualAlphabet_of_divisibility_chain (N : ℕ) (W : Fins
   obtain ⟨hSsub, hSW⟩ := hS
   have hhigh (T : Finset ℕ) (hT : T ⊆ range (N + 1)) (hNT : N ∉ T) (i : ℕ)
       (hw : GammaSpinWallAt T i) : i < N := by
-    by_contra hiN
-    push_neg at hiN
+    by_contra hiN'
+    have hiN : N ≤ i := not_lt.mp hiN'
     unfold GammaSpinWallAt at hw
     rcases hw with ⟨hiT, _⟩ | ⟨_, hiT⟩
     · have := mem_range.mp (hT hiT)
-      exact hNT (show i = N by omega ▸ hiT)
+      exact hNT ((show i = N by omega) ▸ hiT)
     · have := mem_range.mp (hT hiT)
       omega
   by_cases hN : N ∈ S
@@ -562,9 +577,12 @@ theorem exists_two_pow_card_le_of_divisibility_chain (W : Finset ℕ)
       have hka := hlt k hks
       have hm2 : 2 ≤ m := by
         by_contra h
-        interval_cases m <;> omega
+        have hm1 : m ≤ 1 := by omega
+        have := Nat.mul_le_mul_left (k + 2) hm1
+        omega
       rw [pow_succ, hm]
-      nlinarith
+      calc 2 ^ s.card * 2 ≤ (k + 2) * 2 := Nat.mul_le_mul_right 2 hk
+        _ ≤ (k + 2) * m := Nat.mul_le_mul_left _ hm2
 
 /-- **Wall budget.**  An ordered divisibility chain of walls below `N` has `2 ^ r ≤ N + 1`, so
 `2 ^ r < M = N + 2` and `r ≤ ⌊log₂ (N + 1)⌋`. -/
@@ -590,7 +608,8 @@ theorem gammaChain_primePivot_dualSpectrum_wall_budget {c : ℕ → ℝ} (hc : �
     2 ^ (gammaActiveWalls c N).card < N + 2 ∧
       (gammaActiveWalls c N).card ≤ Nat.log 2 (N + 1) := by
   have hchain := (gammaChain_primePivot_dualSpectrum_iff hc N hM Λ a hrep).mp hdual
-  obtain ⟨h1, h2⟩ := two_pow_card_le_of_divisibility_chain N _ (filter_subset _ _) hchain
+  obtain ⟨h1, h2⟩ := two_pow_card_le_of_divisibility_chain N (gammaActiveWalls c N)
+    (filter_subset _ _) hchain
   exact ⟨by omega, h2⟩
 
 /-- **Sharpness.**  The walls `k = 2^(j+1) - 2`, `j < ⌊log₂ (N + 1)⌋`, form an ordered
@@ -707,14 +726,15 @@ theorem sum_single_one_eq_pair_iff {T : Finset ℕ} {j k : ℕ} (hjk : j ≠ k) 
   · intro h
     ext x
     have hx := congrArg (fun f : ℕ →₀ ℕ => f x) h
-    simp only [Finsupp.coe_finset_sum, Finset.sum_apply, Finsupp.single_apply,
+    simp only [Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.single_apply,
       Finsupp.coe_add, Pi.add_apply] at hx
     rw [sum_ite_eq'] at hx
     rw [mem_insert, mem_singleton]
     by_cases hxT : x ∈ T
     · simp only [hxT, if_true] at hx
+      simp only [hxT, true_iff]
       by_contra hne
-      push_neg at hne
+      push Not at hne
       rw [if_neg (Ne.symm hne.1), if_neg (Ne.symm hne.2)] at hx
       omega
     · simp only [hxT, if_false] at hx
@@ -755,13 +775,13 @@ theorem gammaChainCoeffPoly_coeff_twoWall (N j k : ℕ) (hM : (N + 2).Prime) (hj
   rw [sum_boole]
   have hset : ((range (N + 1)).powerset.filter
       (fun S => gammaSpinWordRatio S = ((k + 2 : ℕ) : ℚ) / (j + 2))).filter
-        (fun S => {j, k} = gammaSpinWalls N S) = {I₀} := by
+        (fun S => gammaSpinWalls N S = {j, k}) = {I₀} := by
     ext S
     simp only [mem_filter, mem_powerset, mem_singleton]
     constructor
     · rintro ⟨⟨hS, hq⟩, hw⟩
       have hwI : gammaSpinWalls N S = gammaSpinWalls N I₀ := by
-        rw [← hw, gammaSpinWalls_interval N j k hjk hkN]
+        rw [hw, gammaSpinWalls_interval N j k hjk hkN]
       have h0I : 0 ∉ I₀ := by simp [I₀]
       by_cases h0 : 0 ∈ S
       · exfalso
@@ -791,7 +811,7 @@ theorem gammaChainCoeffPoly_coeff_twoWall (N j k : ℕ) (hM : (N + 2).Prime) (hj
       · exact eq_of_gammaSpinWalls_eq hS hI₀sub hwI (by simp [h0, h0I])
     · rintro rfl
       exact ⟨⟨hI₀sub, gammaSpinWordRatio_interval j k hjk.le⟩,
-        (gammaSpinWalls_interval N j k hjk hkN).symm⟩
+        gammaSpinWalls_interval N j k hjk hkN⟩
   rw [hset, card_singleton, Nat.cast_one]
 
 /-- The two-wall coefficient polynomial is nonzero; for a nondividing pair its frequency is not

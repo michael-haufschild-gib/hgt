@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 1 / 100.
+Status: ACTIVE. Count verified for this goal: 2 / 100.
 
 ## User requirements
 
@@ -37,9 +37,20 @@ novelty is not claimed: user forbids external novelty research.
    Global lint remains red on unrelated concurrent unwired modules and
    generated-file drift; the card records the exact failing modules.
 
+2. Unrestricted compact polar realization of finite nonreal Xi orbit inertia.
+   Card: `../3-formalized/weil-compact-unrestricted-orbit-inertia-2026-10-16.md`.
+   Inputs: exact CHMD cardinal graph sources, dense-core finite constraints,
+   complete Weil complexification, and finite-window inertia. Every k distinct
+   fourfold nonreal Xi orbits gives an actual complex k-dimensional compact
+   C2 polar-zero test space with a common support interval and strict
+   L2-relative negative margin, without separation or visibility premises.
+   Five leaves compile cleanly; all seven public declarations use only
+   standard axioms; all five imports are wired. Counted once. Latest global
+   lint flags six unrelated unwired modules, listed in the card.
+
 ## Working plan
 
-1. Contribution 1 complete. Recheck significance and exact scope before
+1. Contributions 1 and 2 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -50,23 +61,18 @@ novelty is not claimed: user forbids external novelty research.
 
 ## Uncounted next lead
 
-Primary next candidate: `weil-compact-unrestricted-orbit-inertia-2026-10-16.md`.
-Crosses exact CHMD cardinal graph sources, dense-core finite constraints,
-and finite-window Weil inertia. Target: compact polar negative subspaces for
-arbitrary finite nonreal Xi orbit families, removing spacing/visibility
-premises and two-dimensional polar loss. Proof design only; no new count.
-Inspected source comparisons and precise remaining obligations are in the card.
-
-Investigate a source-domain strengthening involving CHMD, after finishing the
-current candidate. Whole-corpus search identified
-`CHMDCompactStationaryJump.integrable_stationaryJump` and the HTGeometry
-Sobolev derivative/translation machinery. Source reads confirm the former
-requires actual jump-domain admission; uniform convergence alone does not
-supply it. A proposed positive clock-cone synthesis in a Sobolev or jump-graph
-topology is therefore a new open conjecture, not a corollary of the current
-candidate. Audit the literal Abel derivative and dual distribution transform
-before asserting it. Do not assume classical smoothness across arithmetic
-breakpoints or count routine Sobolev estimates as a contribution.
+Primary next candidate:
+`docs/drafts/pipeline/2-fully-proven/positive-clock-graph-synthesis-2026-10-17.md`.
+A complete paper argument now uses BV admission and positive smoothing to
+upgrade late positive clock density to the complete CHMD graph. It avoids the
+earlier distribution-dual/H1 detour. The actual integrable velocity supplies
+global variation of the literal Abel profile. Uniform convergence with a
+common variation bound then controls the full graph norm, retaining every
+prime jump. Positive regularization preserves the closed clock cone; removing
+regularization reaches compact graph targets. Existing Banach-valued prime
+capacity supplies distinct-prime realization only after this topology gap is
+closed. Formalization is in progress and remains uncounted. Supporting bounds
+and the prime-realization corollary will count together as one contribution.
 
 ## Environment
 

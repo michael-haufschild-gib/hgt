@@ -1,6 +1,6 @@
 # Exact adjacent transport inside every ordered nodal probability fiber
 
-Status: dependency-closed paper proof; Lean not yet written.
+Status: dependency-closed paper proof; formalized in Lean (stage 3, 2026-10-17).
 Date: 2026-10-10. Internal verdict: BRIDGE / survives preliminary attack. Local Lean corpus only; no external novelty claim.
 
 Target: for every strictly increasing real node family h : Fin(r+2) -> Real, the positive and negative probability profiles of its normalized nodal-weight vector admit a unique coupling supported on adjacent indices. This coupling is the unique optimal coupling for the cost abs(h_i-h_j). Its edge masses are positive and sum to one. With index cost abs(i-j), its cost is exactly one, at every order and for every node spacing. For any two probability mixtures in the fiber, the optimal index cost is exactly abs(a-b), while their l1 distance is 2*abs(a-b).
@@ -27,3 +27,35 @@ Failure audit: alternating signs and zero total mass alone do not suffice. For u
 Prior-corpus audit so far: `barycentric transport` with per-module cap removed returned fifteen declarations in three modules. All fifteen statements/definitions were inspected: CCM rank-one source-faithful Markov transport and its source-sign/RH equivalences, two prime-jet interpolation reporters, and one quantile-cell quadratic debt inequality. None states adjacent nodal coupling or prefix sign rigidity. `nodal cumulative` returned one two-atom cascade summability theorem, inspected and unrelated. Exhaustive relevant source-text search found the LagrangeRectangleContour partial-fraction identity and rectangle-integral representation; both inspected, and the additional call sites use those same identities. Other matches were adjacent-degree energy/trace coupling and a squared nodal-weight reporter norm, inspected and unrelated. No nodal prefix-sum sign theorem was found in the focused moment/canonical modules. Follow-up `adjacent coupling` returned seven declarations, all inspected: five Sonin adjacent-norm convergence/tomography declarations plus the already-read Jacobi trace and arithmetic Ward identities. None is a probability coupling. `nodal prefix` returned zero hits. These completed results are logged under /tmp/hgt-adjacent-coupling-search.json and /tmp/hgt-nodal-prefix-search.json. Installed Lagrange.lean exposes nodalWeight as a product of inverse gaps at line638 and derivative/interpolation/partial-fraction identities, but the targeted declaration search found no ready-made nodal-weight deletion identity.
 
 Lean strategy: finite raw-weight deletion identity, preferably through available product reindexing or the corpus's moment-annihilator classification; then prefix-sign induction; positive adjacent-flow conservation; explicit coupling and dual potential; canonical index/log-cost roots; full-mixture uniqueness. Verify every new API against the installed toolchain. Do not replace the exact coupling and lower-bound claim with an arbitrary definition named transport cost.
+
+## Lean status (2026-10-17) — every claim formalized, general node families
+
+The earlier `WeilLogShift*` chain covered only the canonical logarithmic nodes.  Two new modules
+prove the card for every strictly increasing `h : Fin (r+2) → ℝ` (all `r`, all spacings):
+
+`RHTower/FiniteWeilNodalAdjacentCoupling.lean`
+- `finiteWeilNormalizedMomentDual_parity`: every nodal weight carries the sign `(-1)^(r+1-i)`
+  (from `finiteWeilNormalizedMomentDual_last_pos` and adjacent alternation);
+- `finiteWeilNodalProfiles_spec`: `P`, `Q` disjoint probabilities, `Σ|P-Q| = 2`, equal moments `p ≤ r`;
+- `finiteWeilNodalPrefixDifference_pos` (strict prefix-sign law, from the deletion recurrence
+  `finiteWeilNodalPrefix_sign`), `finiteWeilNodalEdgeMass_pos`, `finiteWeilNodalEdgeMass_sum` (= 1);
+- `finiteWeilNodalCoupling` (explicit adjacent coupling), `finiteWeilNodalTransport_eq_of_banded`
+  (unique among couplings supported on adjacent indices);
+- `finiteWeilNodalCoupling_index_cost` (= 1), `finiteWeilNodalTransport_index_unique_minimizer`.
+
+`RHTower/FiniteWeilNodalMixtureTransport.lean`
+- `finiteWeilNodalTransport_node_unique_minimizer`: unique optimal coupling for `|h_i - h_j|`
+  (and `..._ordered_unique_minimizer` for every strictly increasing reembedding);
+  `finiteWeilNodalCoupling_ordered_cost` (= `Σ m_i (x_{i+1}-x_i)`), `..._node_cost_bounds`
+  (between any gap bounds; with the existing `finiteWeilCanonicalLogTransportCost_bounds` this gives
+  `1/(k+r+3) ≤ cost ≤ 1/(k+2)` for logarithmic nodes);
+- `finiteWeilNodalMomentFiber_iff` (fiber = segment of mixtures), `finiteWeilNodalMixture_abs_distance`
+  (`ℓ¹ = 2|a-b|`), `finiteWeilNodalMixtureTransport_index_unique_minimizer` (cost exactly `|a-b|`),
+  `finiteWeilNodalMixtureTransport_ordered_unique_minimizer`, `..._ordered_cost_eq_zero_iff`,
+  `finiteWeilNodalMixtureCoupling_self_off_diagonal` (diagonal at `a = b`);
+- `finiteWeilCanonical*_eq_nodal`: the canonical chain is the case `h = log nodes`;
+- `alternating_zero_sum_prefix_signs_not_forced`: the `(u,-v,v,-u)` failure-audit example.
+
+Audit: both files pass `lake env lean` with no errors or warnings; `#print axioms` on all 19 main
+theorems (scratch copy) gives only `propext, Classical.choice, Quot.sound`.  Both modules are appended
+to `GaloisForLFunctions/RHTower.lean`; name scan found no collisions.  Card moved to `3-formalized`.

@@ -203,11 +203,18 @@ private theorem hilbertEvaluation_jet_admission {s : ℂ} (hs : 1 / 2 < s.re) :
       hilbertEvaluationJetFunction s := by
     funext t
     exact (hasDerivAt_hilbertEvaluationFunction s t).deriv
-  rw [heq] at hm h
-  refine ⟨hm, ?_⟩
+  have hm' : MemLp (hilbertEvaluationJetFunction s) 2 := by
+    simpa only [heq] using hm
+  have hclass : hm.toLp (fun t => deriv (fun w => hilbertEvaluationFunction w t) s) =
+      hm'.toLp (hilbertEvaluationJetFunction s) := by
+    apply Lp.ext
+    filter_upwards [hm.coeFn_toLp, hm'.coeFn_toLp] with t ht ht'
+    rw [ht, ht']
+    exact congrFun heq t
+  refine ⟨hm', ?_⟩
   change HasDerivAt (l2Family volume hilbertEvaluationFunction)
     (l2Family volume hilbertEvaluationJetFunction s) s
-  rw [l2Family_eq_toLp volume hilbertEvaluationJetFunction s hm]
+  rw [l2Family_eq_toLp volume hilbertEvaluationJetFunction s hm', ← hclass]
   exact h
 
 /-- Strong holomorphy holds in the fixed Hilbert space, not only after scalar observation. -/
@@ -371,7 +378,8 @@ theorem memLp_clockSourceFunction : MemLp clockSourceFunction 2 := by
   apply memLp_hilbertSourceFunction.of_le
     (measurable_hilbertSourceFunction.div (by fun_prop)).aestronglyMeasurable
   filter_upwards with t
-  rw [clockSourceFunction, norm_div, Complex.norm_real, Real.norm_eq_abs,
+  change ‖hilbertSourceFunction t / ((1 + |t| : ℝ) : ℂ)‖ ≤ ‖hilbertSourceFunction t‖
+  rw [norm_div, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (by positivity : 0 < 1 + |t|)]
   apply (div_le_iff₀ (by positivity : 0 < 1 + |t|)).2
   nlinarith [mul_nonneg (norm_nonneg (hilbertSourceFunction t)) (abs_nonneg t)]

@@ -89,12 +89,12 @@ theorem hasDerivAt_partitionVector {s : ℂ} (hs : s ∈ transportDomain) :
     HasDerivAt partitionVector (partitionJet s) s := by
   have hh : HasDerivAt (fun z : ℂ => z / (z - 1))
       (-1 / (s - 1) ^ (2 : ℕ)) s := by
-    convert (hasDerivAt_id s).div ((hasDerivAt_id s).sub_const 1)
-      (sub_ne_zero.mpr hs.2) using 1 <;> ring
+    exact ((hasDerivAt_id s).div ((hasDerivAt_id s).sub_const 1)
+      (sub_ne_zero.mpr hs.2)).congr_deriv (by simp only [id_eq]; ring)
   have ht : HasDerivAt (fun z : ℂ => z • hilbertEvaluation z)
       (hilbertEvaluation s + s • hilbertEvaluationJet s) s := by
-    simpa only [Pi.smul_apply, one_smul, add_comm] using
-      (hasDerivAt_id s).smul (hasDerivAt_hilbertEvaluation hs.1)
+    exact ((hasDerivAt_id s).smul (hasDerivAt_hilbertEvaluation hs.1)).congr_deriv
+      (by simp only [id_eq, one_smul, add_comm])
   exact (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ LogHilbert).symm.toContinuousLinearMap
     |>.hasFDerivAt.comp_hasDerivAt s (hh.prodMk ht)
 
@@ -108,8 +108,7 @@ theorem inner_arithmeticSource_partitionVector {s : ℂ} (hs : s ∈ transportDo
     inner ℂ arithmeticSource (partitionVector s) =
       GaloisForLFunctions.squarefreePartition s := by
   rw [arithmeticSource, partitionVector, WithLp.prod_inner_apply]
-  simp only [WithLp.toLp_fst, WithLp.toLp_snd, RCLike.inner_apply,
-    star_def, Complex.conj_ofReal, inner_smul_right]
+  simp only [RCLike.inner_apply, Complex.conj_ofReal, inner_smul_right]
   rw [inner_hilbertSource_evaluation hs.1, moment_eq_quotient hs.1 hs.2]
   have hs0 : s ≠ 0 := by intro h; subst s; norm_num [transportDomain] at hs
   have hz : riemannZeta (2 * s) ≠ 0 :=
@@ -133,6 +132,65 @@ theorem inner_arithmeticSource_partitionJet {s : ℂ} (hs : s ∈ transportDomai
     (hasDerivAt_partitionVector hs)
   exact (h.congr_of_eventuallyEq
     (inner_arithmeticSource_partitionVector_eventuallyEq hs).symm).deriv.symm
+
+/-- Partition produced by the fixed arithmetic clock source and its explicit density channel. -/
+def fixedClockPartition (s : ℂ) : ℂ :=
+  (Sieve.squarefreeDensity : ℂ) * s / (s - 1) +
+    s * inner ℂ clockSource (clockEvaluation s)
+
+/-- Spectral derivative produced using the same evaluation vector and the fixed source tangent. -/
+def fixedClockPartitionJet (s : ℂ) : ℂ :=
+  -(Sieve.squarefreeDensity : ℂ) / (s - 1) ^ (2 : ℕ) +
+    inner ℂ clockSource (clockEvaluation s) +
+      s * inner ℂ clockSourceJet (clockEvaluation s)
+
+theorem fixedClockPartition_eq {s : ℂ} (hs : s ∈ transportDomain) :
+    fixedClockPartition s = GaloisForLFunctions.squarefreePartition s := by
+  rw [← inner_arithmeticSource_partitionVector hs, fixedClockPartition,
+    inner_clockSource_evaluation hs.1, arithmeticSource, partitionVector,
+    WithLp.prod_inner_apply]
+  simp only [RCLike.inner_apply, Complex.conj_ofReal, inner_smul_right]
+  rw [inner_hilbertSource_evaluation hs.1]
+  ring
+
+/-- The source clock tangent, rather than a new spectral input, produces the partition jet. -/
+theorem fixedClockPartitionJet_eq {s : ℂ} (hs : s ∈ transportDomain) :
+    fixedClockPartitionJet s = deriv GaloisForLFunctions.squarefreePartition s := by
+  rw [← inner_arithmeticSource_partitionJet hs, fixedClockPartitionJet,
+    inner_clockSource_evaluation hs.1, inner_clockSourceJet_evaluation hs.1,
+    arithmeticSource, partitionJet, WithLp.prod_inner_apply]
+  simp only [RCLike.inner_apply, Complex.conj_ofReal, inner_add_right, inner_smul_right]
+  rw [inner_hilbertSource_evaluation hs.1, inner_hilbertSource_evaluationJet hs.1]
+  ring
+
+/-- The full pointed Fisher numerator produced by the fixed arithmetic source/tangent pair. -/
+def fixedClockFisher (sigma epsilon u : ℂ) : ℂ :=
+  (2 * epsilon / GaloisForLFunctions.squarefreePartition sigma) *
+    (fixedClockPartitionJet (sigma + u * epsilon) +
+      GaloisForLFunctions.squarefreeFixedCurrent sigma *
+        fixedClockPartition (sigma + u * epsilon))
+
+theorem fixedClockFisher_eq (sigma epsilon u : ℂ)
+    (hs : sigma + u * epsilon ∈ transportDomain) :
+    fixedClockFisher sigma epsilon u =
+      GaloisForLFunctions.squarefreeFisherScore sigma epsilon u := by
+  rw [fixedClockFisher, fixedClockPartitionJet_eq hs, fixedClockPartition_eq hs,
+    GaloisForLFunctions.squarefreeFisherScore,
+    deriv_squarefreeBoundaryOverlap_eq_affine_partition
+      (analyticAt_squarefreePartition_of_half_lt_re hs.1 hs.2)]
+  simp only [GaloisForLFunctions.squarefreeBoundaryOverlap, div_eq_mul_inv]
+  ring
+
+/-- Source-produced overlap and source-produced Fisher numerator retain the original conormal. -/
+theorem fixedClockConormal_eq (sigma epsilon u : ℂ)
+    (hs : sigma + u * epsilon ∈ transportDomain) :
+    fixedClockFisher sigma epsilon u /
+        (fixedClockPartition (sigma + u * epsilon) /
+          GaloisForLFunctions.squarefreePartition sigma) =
+      GaloisForLFunctions.squarefreeFisherScore sigma epsilon u /
+        GaloisForLFunctions.squarefreeBoundaryOverlap sigma epsilon u := by
+  rw [fixedClockFisher_eq sigma epsilon u hs, fixedClockPartition_eq hs]
+  rfl
 
 /-- The overlap column uses the original affine coordinate, with no spectral translation. -/
 def overlapVector (sigma epsilon u : ℂ) : ArithmeticHilbert :=
