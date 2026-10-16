@@ -57,7 +57,7 @@ theorem generatorOfResolvent_formalSelfAdjoint (R : MassSpace →L[ℝ] MassSpac
   obtain ⟨v, rfl⟩ := hy
   have hs : ⟪R u, v⟫_ℝ = ⟪u, R v⟫_ℝ :=
     ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp hsa u v
-  rw [generatorOfResolvent_apply, generatorOfResolvent_apply, inner_sub_left, inner_sub_right, hs]
+  erw [generatorOfResolvent_apply, generatorOfResolvent_apply, inner_sub_left, inner_sub_right, hs]
 
 theorem generatorOfResolvent_adjoint_identity (R : MassSpace →L[ℝ] MassSpace)
     (hR : Function.Injective R) (hsa : IsSelfAdjoint R)
@@ -143,7 +143,7 @@ theorem arithmeticGenerator_nonneg (u : arithmeticGenerator.domain) :
   obtain ⟨w, rfl⟩ := hu
   have h := arithmeticGenerator_form w (rieszLift w)
   change ⟪arithmeticGenerator ⟨resolvent w, _⟩, resolvent w⟫_ℝ = _ at h
-  rw [h, real_inner_self_eq_norm_sq]
+  erw [h, real_inner_self_eq_norm_sq]
   positivity
 
 theorem stationaryGenerator_nonneg (u : stationaryGenerator.domain) :
@@ -152,7 +152,7 @@ theorem stationaryGenerator_nonneg (u : stationaryGenerator.domain) :
   obtain ⟨w, rfl⟩ := hu
   have h := stationaryGenerator_form w (stationaryRieszLift w)
   change ⟪stationaryGenerator ⟨stationaryResolvent w, _⟩, stationaryResolvent w⟫_ℝ = _ at h
-  rw [h, real_inner_self_eq_norm_sq]
+  erw [h, real_inner_self_eq_norm_sq]
   positivity
 
 theorem arithmeticGenerator_domain_eq_stationary :
