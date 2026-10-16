@@ -62,7 +62,8 @@ theorem massCutoff_tendsto (u : MassSpace) :
       (measurable_const : Measurable (fun _ : ℝ => (1 : ℝ)))
       (by norm_num : (0 : ℝ) ≤ 1) (fun _ => by norm_num) u] with x hx
     simpa using hx
-  exact he ▸ h
+  rw [he] at h
+  exact h
 
 def cutoffSlope (n : ℕ) (e : ℝ × ℝ) : ℝ :=
   (cutoff n (left e) - cutoff n (right e)) / e.1
@@ -116,6 +117,7 @@ theorem cutoff_difference_sq_le (n : ℕ) {e : ℝ × ℝ} (ht : 0 < e.1) :
       cutoff_le_one n (left e), cutoff_le_one n (right e)]
   have h2 := cutoff_difference_le n (left e) (right e)
   simp only [left, right, sub_add_cancel_left, abs_neg, abs_of_pos ht] at h2
+  change |cutoff n (left e) - cutoff n (right e)| ≤ (cutoffLipschitz : ℝ) * e.1 at h2
   nlinarith [abs_nonneg (cutoff n (left e) - cutoff n (right e)),
     sq_abs (cutoff n (left e) - cutoff n (right e))]
 
@@ -132,7 +134,7 @@ theorem memLp_cutoff_correction (n : ℕ) (u : MassSpace) :
   refine (hi.const_mul (cutoffLipschitz : ℝ)).mono'
     (hm.pow_const 2).aestronglyMeasurable ?_
   have ht : ∀ᵐ e ∂archMeasure, 0 < e.1 :=
-    (withDensity_absolutelyContinuous archBase _).ae archBase_fst_pos
+    (withDensity_absolutelyContinuous archBase _).ae_le archBase_fst_pos
   filter_upwards [ht] with e he
   rw [Real.norm_of_nonneg (sq_nonneg _), mul_pow]
   exact (mul_le_mul_of_nonneg_right (cutoff_difference_sq_le n he) (sq_nonneg (u (right e)))).trans_eq
@@ -143,7 +145,8 @@ theorem memLp_cutoff_arch (n : ℕ) (p : ArchGraph) :
   have h0 := memLp_mul_of_bound (μ := archMeasure) (p := 2)
     ((cutoff_contDiff n).continuous.measurable.comp measurable_snd)
     (by norm_num : (0 : ℝ) ≤ 1) (fun e => cutoff_norm_le_one n (left e)) p.val.snd
-  have h1 := h0.ae_eq (p.property.mono fun e he => congrArg (fun y => cutoff n (left e) * y) he)
+  have hp : p.val.snd =ᵐ[archMeasure] difference p.val.fst := p.property
+  have h1 := h0.ae_eq (hp.mono fun e he => congrArg (fun y => cutoff n (left e) * y) he)
   refine (h1.add (memLp_cutoff_correction n p.val.fst)).ae_eq ?_
   filter_upwards [] with e
   simp only [Pi.add_apply, difference]
@@ -168,6 +171,8 @@ theorem archCutoffCommutator_tendsto (u : MassSpace) :
     (cutoffSlopeOperator_tendsto (archMomentRight u))
   have hr := (archMomentRight.adjoint.continuous.tendsto 0).comp
     (cutoffSlopeOperator_tendsto (archMomentLeft u))
-  simpa only [map_zero, sub_zero] using hl.sub hr
+  change Tendsto (fun n => archMomentLeft.adjoint (cutoffSlopeOperator n (archMomentRight u)) -
+    archMomentRight.adjoint (cutoffSlopeOperator n (archMomentLeft u))) atTop (𝓝 0)
+  simpa only [Function.comp_def, map_zero, sub_zero] using hl.sub hr
 
 end RHTower.CHMDDoobGraph

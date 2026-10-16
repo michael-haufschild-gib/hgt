@@ -56,7 +56,7 @@ theorem archCutoff_edge_pairing (n : ℕ) (p q : ArchGraph) :
     ← integral_sub (cutoff_integrable_mul _ _) (cutoff_integrable_mul _ _),
     archCutoffCommutator_inner, integral_archMoment]
   have ht : ∀ᵐ e ∂archMeasure, 0 < e.1 :=
-    (withDensity_absolutelyContinuous archBase _).ae archBase_fst_pos
+    (withDensity_absolutelyContinuous archBase _).ae_le archBase_fst_pos
   apply integral_congr_ae
   filter_upwards [archCutoff_edge_ae n p, archCutoff_edge_ae n q,
     p.property, q.property, ht] with e hp hq hpe hqe he
@@ -67,7 +67,7 @@ theorem archCutoff_edge_pairing (n : ℕ) (p q : ArchGraph) :
   rw [hp, hq, hpe, hqe]
   dsimp only [difference, cutoffSlope]
   field_simp [he.ne']
-  <;> ring
+  ring
 
 theorem arch_graph_inner (p q : ArchGraph) :
     ⟪p, q⟫_ℝ = ⟪archSourceMap p, archSourceMap q⟫_ℝ + ⟪p.val.snd, q.val.snd⟫_ℝ := by
@@ -124,7 +124,9 @@ theorem fullCutoffCommutator_tendsto (u : MassSpace) :
     Tendsto (fun n => fullCutoffCommutator n u) atTop (𝓝 0) := by
   have hp := (primeGenerator.continuous.tendsto u).comp (massCutoff_tendsto u)
   have hq := massCutoff_tendsto (primeGenerator u)
-  simpa only [zero_add, sub_self] using
+  change Tendsto (fun n => archCutoffCommutator n u + primeGenerator (massCutoff n u) -
+    massCutoff n (primeGenerator u)) atTop (𝓝 0)
+  simpa only [Function.comp_def, zero_add, sub_self] using
     ((archCutoffCommutator_tendsto u).add hp).sub hq
 
 end RHTower.CHMDDoobGraph

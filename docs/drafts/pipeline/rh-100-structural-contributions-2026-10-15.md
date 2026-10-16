@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **16 / 100**.
+Completed after goal activation: **17 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -231,10 +231,26 @@ also recorded there. The general inverse is proved on the faithful completion;
 preservation of the original Frechet image and positivity remain open.
 Card: `3-formalized/rh100-016-global-convolution-fredholm-weil-trace-2026-10-16.md`.
 
+017: source-class spectral invariance of arbitrary repaired original
+convolution. Full-germ exponential localization on horizontally escaping
+denominator divisors preserves every Mellin strip weight; source-class Bezout
+division then constructs an actual original kernel h with B_g^(-1)=I+C_h for
+every original g. The repair is a continuous automorphism of literal original
+Meyer cohomology, and arbitrary convolution equations have an exact finite
+compatibility reduction there. RN's faithful full-jet native range comparison
+transports the repair and its inverse to every admitted finite theta packet,
+with unique compact absolutely continuous solutions. This closes the general
+inverse-preservation gap left by 016. Ten direct leaf audits and all 51 public
+standard-axiom audits passed. Imports are unique, artifacts fresh, indexes
+refreshed and all 17 owned scratch files removed. Global lint reports three
+unrelated concurrent CHMD umbrella omissions, listed on the card. Arbitrary
+infinite native synthesis, geometric cup identification and positivity remain
+open. Card: `3-formalized/rh100-017-original-convolution-spectral-invariance-2026-10-16.md`.
+
 ## Next investigation
 
-No seventeenth contribution is counted. Do not count routine corollaries or
-repackagings of 001–016 as further contributions. Resume broad Lean-corpus
+No eighteenth contribution is counted. Do not count routine corollaries or
+repackagings of 001–017 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -289,10 +305,13 @@ Faithful whole-source trace-class convolution, exact finite resonance
 reduction, original causal realization of exceptional completed forcing,
 full compact Weil/CCM composition traces and native-factor uniqueness belong
 to 016. Routine Fredholm corollaries and further trace identities do not count
-again. A general repaired inverse is only known on the faithful Hilbert
-completion. The literal source image may need an independent regularity or
-spectral-invariance theorem; finite causal realization alone does not pay it.
-The arithmetic sharp has not been identified with the Hilbert adjoint.
+again. Contribution 017 now pays original-source preservation by a separate
+full-germ strip interpolation and Bezout construction; finite causal
+realization alone was insufficient. Its continuous source inverse, exact
+original compatibility reduction and finite native theta solutions count
+together as one contribution. Routine spectral-invariance or holomorphic
+calculus consequences do not count again. The arithmetic sharp has not been
+identified with the Hilbert adjoint.
 
 ## Continuation rules
 

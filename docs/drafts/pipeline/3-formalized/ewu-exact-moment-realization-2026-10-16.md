@@ -1,6 +1,6 @@
 # EWU: exact joint trace and energy realization
 
-Status: dependency-closed paper proof; Lean verification in progress. Sources: current Lean
+Status: formalized; dependency-closed paper proof and Lean audits passed. Sources: current Lean
 corpus only. No numerical experiments, web search, or novelty audit.
 
 ## Target
@@ -17,7 +17,7 @@ trace, and exactly the same archimedean energy. No RH or positivity premise in t
    exists. Rejected by the following rigidity mechanism: under RH zero Weil energy forces
    the transform to vanish at every Xi zero; SuzukiTitchmarshUniqueness forces the entire
    transform to vanish; Fourier injectivity forces the source to vanish.
-3. Exact joint moments are realizable. Paper proof closed below; formalization in progress.
+3. Exact joint moments are realizable. Paper proof, formalization, and audits complete below.
 
 ## Proof mechanism and dependency audit
 
@@ -63,5 +63,24 @@ scalarization realizes both by one actual smooth even pole-free source.
 
 ## Verification
 
-Pending: dependency-closed Lean proofs, individual foreground builds with --old,
-direct lake env lean audits, axiom audit, umbrella wiring, and formal lint.
+All three individual `lake --old build` targets passed and their oleans were produced:
+
+* `EvenSectorCompactBoundaryRigidity`: transform uniqueness, strict compact Weil excess,
+  and unconditional strict descent in every nontrivial actual fibre.
+* `EvenSectorPositiveBlindEnergy`: a positive-energy smooth blind source and exact
+  energy raising within a fixed whole arithmetic fibre.
+* `EvenSectorExactMomentRealization`: `full_mixture_single_smooth_exact_moments` and
+  `singleSmooth_energy_fibre_eq`. Both capstones have no RH, positivity, factorization,
+  approximation, or attainment premise.
+
+All three modules are wired into `RHTower.lean`. No umbrella or full build was run.
+All 132 referenced Mathlib names passed separate `/tmp` `#check` and explicit
+`have := @Name` probes. The 16 public declarations passed `#print axioms`: only
+`propext`, `Classical.choice`, and `Quot.sound` occur. No added axioms, proof holes,
+heartbeat changes, or numerical experiments.
+
+Final direct `lake env lean` audits of all three source files passed sequentially,
+each with exit status 0 and no diagnostics.
+The last global lint run reported only four concurrently developed, unrelated unwired
+modules: `CHMDArchMomentPullback`, `CHMDOperatorCutoffCommutator`,
+`CHMDOperatorCutoffForm`, and `CHMDPrimeWindowTail`. No EWU lint failures.

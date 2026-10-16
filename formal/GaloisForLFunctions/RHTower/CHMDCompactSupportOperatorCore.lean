@@ -132,4 +132,34 @@ theorem stationaryGenerator_compact_support_core :
   intro n
   exact arithmeticGeneratorCutoff_compact n (stationaryToArithmetic u)
 
+/-- The closure of the compactly supported part is the full arithmetic operator graph. -/
+theorem arithmeticGenerator_compact_graph_closure :
+    closure {z : MassSpace × MassSpace | z ∈ arithmeticGenerator.graph ∧
+      ∃ f : ℝ → ℝ, HasCompactSupport f ∧ z.1 =ᵐ[massMeasure] f} =
+      (arithmeticGenerator.graph : Set (MassSpace × MassSpace)) := by
+  apply Set.Subset.antisymm
+  · exact arithmeticGenerator_isClosed.closure_subset_iff.mpr fun _ h => h.1
+  · intro z hz
+    obtain ⟨u, rfl⟩ := (LinearPMap.mem_graph_iff' arithmeticGenerator).mp hz
+    have h := arithmeticGeneratorCutoff_tendsto u
+    apply mem_closure_of_tendsto (h.1.prodMk_nhds h.2)
+    exact Eventually.of_forall fun n =>
+      ⟨arithmeticGenerator.mem_graph (arithmeticGeneratorCutoff n u),
+        arithmeticGeneratorCutoff_compact n u⟩
+
+/-- The same graph closure holds for the actual stationary pullback generator. -/
+theorem stationaryGenerator_compact_graph_closure :
+    closure {z : MassSpace × MassSpace | z ∈ stationaryGenerator.graph ∧
+      ∃ f : ℝ → ℝ, HasCompactSupport f ∧ z.1 =ᵐ[massMeasure] f} =
+      (stationaryGenerator.graph : Set (MassSpace × MassSpace)) := by
+  apply Set.Subset.antisymm
+  · exact stationaryGenerator_isClosed.closure_subset_iff.mpr fun _ h => h.1
+  · intro z hz
+    obtain ⟨u, rfl⟩ := (LinearPMap.mem_graph_iff' stationaryGenerator).mp hz
+    have h := stationaryGeneratorCutoff_tendsto u
+    apply mem_closure_of_tendsto (h.1.prodMk_nhds h.2)
+    exact Eventually.of_forall fun n =>
+      ⟨stationaryGenerator.mem_graph (stationaryGeneratorCutoff n u),
+        arithmeticGeneratorCutoff_compact n (stationaryToArithmetic u)⟩
+
 end RHTower.CHMDDoobGraph

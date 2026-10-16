@@ -1,4 +1,12 @@
-# Contribution 017 investigation
+# 017: Original-source convolution spectral invariance
+
+Status: **FORMALIZED**. One structural contribution, spanning HF and RN.
+
+Main result: for every original all-weight Meyer source g, the complete
+Fredholm inverse from 016 equals I+C_h for an actual original source h.
+The repaired operator is a continuous automorphism of literal original
+Meyer cohomology, and every admitted finite native theta packet has unique
+compact absolutely continuous repaired solutions for arbitrary source symbols.
 
 Baseline: **16/100**. The previous goal turn is verified progress: nine
 current artifacts and unique umbrella imports implement faithful whole-source
@@ -43,13 +51,12 @@ Plan:
    This would give actual continuous source-class solutions for arbitrary
    forcing, retaining the original finite Xi compatibility conditions.
 
-The proposed mechanism uses the geometry of the *denominator's* zero set,
-not interpolation on the Xi divisor. Put D=1+M_b, where b=g-g*p_g is the
-already admitted finite-block repair source. D is nonzero at every Xi point
+The successful mechanism uses the geometry of the *denominator's* zero set.
+Put D=1+M_b, where b represents the actual class [g]-P_g[g]. D is nonzero at every Xi point
 and tends uniformly to one at vertical infinity in every fixed strip.
 Its zeros, with all multiplicities, are therefore finite in each closed
-vertical strip. A Gaussian Hermite interpolation construction on this
-horizontally escaping divisor should provide an entire strip-rapid H whose
+vertical strip. Full-germ exponential localization on this
+horizontally escaping divisor provides an entire strip-rapid H whose
 jets there equal those of 1/xi. Then U=(1-xi*H)/D is entire, U-1 is strip
 rapid, and reconstruction gives the required original inverse source.
 
@@ -71,17 +78,17 @@ The smallness mechanism is simpler than a variable-width Gaussian. If
 integer n put t(z)=exp(n*sigma*(z-w)) and
 L(z)=1-(1-t(z))^m. At w, L-1 vanishes to order at least m. On |Re z|<=r,
 |t(z)|<=exp(-n*delta), and the finite geometric identity gives
-|L(z)|<=m*2^(m-1)*exp(-n*delta). L is bounded on every fixed vertical strip,
+|L(z)|<=m*2^m*exp(-n*delta). L is bounded on every fixed vertical strip,
 so F_w*L remains in S. By taking n sufficiently large, this product is
 arbitrarily small in any specified finite list of strip seminorms without
-changing any interpolation conditions. Nodes with Re w=0 belong to a
-finite exceptional set and need no localization.
+changing any interpolation conditions. Negative inner radii give an empty
+strip and impose no smallness condition.
 
 The zeros of D are finite in every closed vertical strip: D tends uniformly
 to one at vertical infinity, and its remaining zeros lie in a compact set;
 the analytic identity theorem excludes accumulation. Thus |Re w| tends to
 infinity cofinitely. Choose an injection e of the node set into N. At w
-localize on radius |Re w|/2 with polynomial weight order floor(|Re w|/2),
+localize on radius |Re w|-1 with polynomial weight order floor(|Re w|),
 to bound that seminorm by 2^(-e(w)). Every fixed strip and weight is then
 dominated by this summable majorant outside finitely many nodes. The finite
 head is already in S. Hence H=sum_w F_w*L_w is entire and belongs to S.
@@ -98,9 +105,8 @@ Poisson boundary by global Xi synthesis. Therefore I+C_h is a two-sided
 inverse of I+C_b on the original Meyer quotient; fixed-source convolution
 continuity pays the original topology.
 
-For arbitrary g, realize the complete finite resonant-block projector by
-the existing causal section with constant jet one and higher jets zero.
-Let p_g be a source representative and b=g-g*p_g. Full Hasse multiplication
+For arbitrary g, choose a source b representing [g]-P_g[g], using the
+existing complete finite causal projector. Full Hasse multiplication
 shows 1+M_b is nonzero at every Xi point: it is one on the resonant blocks
 and 1+M_g on the complement. This supplies the preceding hypotheses
 unconditionally. Its inverse agrees with 016's Hilbert inverse by faithful
@@ -111,12 +117,16 @@ Paper attacks: unrestricted interpolation was insufficient; strip geometry
 now supplies weighted convergence. Jet multiplicities are retained. Radius
 and weight cutoffs depend on horizontal escape, not on an arbitrary
 enumeration. No inverse-preservation premise, zero-confinement premise or
-uniform source regularity estimate is assumed. Formal verification remains
-open; no contribution is counted until it passes.
+uniform source regularity estimate is assumed. The main construction is
+unconditional for every original g. The result acts on literal original
+cohomology; it does not assert invertibility on the prequotient source space.
+The Xi divisor itself does not escape horizontally, so arbitrary infinite
+Xi-packet admission does not follow from this interpolation theorem.
 
 ## Formal progress
 
 Direct `lake --old env lean -o ...` audits passed, with no heartbeat changes:
+
 - `DeningerMeyerStripJetLocalization`: original finite germ and bounded
   exponential full-jet localizer.
 - `DeningerMeyerStripCardinal`: full denominator multiplicities and arbitrary
@@ -140,9 +150,47 @@ Direct audits also passed for `DeningerMeyerConvolutionRepairSource`,
 `DeningerMeyerOriginalConvolutionInverse`: the unconditional inverse is an
 actual source convolution; the literal original quotient has a continuous
 repair automorphism, and the exact finite compatibility reduction now holds
-there. `PaperThetaConvolutionFredholm` is written and in direct audit. It
+there. `PaperThetaConvolutionFredholm` also passed its direct audit. It
 combines RN's faithful finite native spatial comparison and full-jet range
 classification with the new source-preserving inverse to construct compact
 absolutely continuous native solutions for arbitrary source symbols.
-No new umbrella imports, final axiom audit, lint/index, cleanup, ledger
-increment or completion claim yet. Contribution count remains **16/100**.
+## Final audit
+
+All ten leaves passed direct foreground `lake --old env lean -o ...`
+audits, one owned Lean process at a time. All 51 public declarations passed
+`#print axioms` in `/tmp`: only `propext`, `Classical.choice`, `Quot.sound`.
+The combined final API/axiom audit exited zero. An earlier API-only harness
+used unconstrained polymorphic `have` declarations; replacing those checks
+by `#check @Name` resolved the harness universe errors. The mathematical
+axiom output was standard in both runs.
+
+All ten imports are unique in `RHTower.lean`, every new compiled artifact is
+newer than its source, and no admitted proof, added axiom, opaque/unsafe
+declaration, native computation or heartbeat increase occurs in these leaves.
+No full or umbrella build, numerical experiment, web search, subagent,
+external novelty check, commit or push was used. Index generation passed.
+
+Global `scripts/formal_tools.py lint` reports only three concurrent unrelated
+missing umbrella imports, preserved rather than wiring unverified work:
+
+- `GaloisForLFunctions.RHTower.CHMDArchMomentPullback`
+- `GaloisForLFunctions.RHTower.CHMDOperatorCutoffForm`
+- `GaloisForLFunctions.RHTower.CHMDPrimeWindowTail`
+
+No lint error names a module from this contribution. Existing large-file
+warnings remain. All 17 owned scratch files were removed by exact path:
+nine search JSON files, four exploratory API files, the final axiom/API file
+and three logs.
+
+## Scope and next frontier
+
+The removed obstacle was preservation of the original Frechet image by the
+general repaired inverse. The construction is a full source-class Bezout
+producer, not an inverse-preservation premise or a numerical bound. The
+critical distinction is horizontal escape of denominator zeros; arbitrary
+Xi-packet interpolation remains unavailable. General prequotient source
+inversion, arbitrary infinite native spatial synthesis, identification of
+the arithmetic sharp with the Hilbert adjoint, geometric cup/trace
+identification, positive Hodge compatibility and directed RN work sign are
+not proved here. Routine holomorphic-calculus consequences of this inversion
+must not be counted as a new contribution.
