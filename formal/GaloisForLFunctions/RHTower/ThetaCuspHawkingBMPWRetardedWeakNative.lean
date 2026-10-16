@@ -310,7 +310,35 @@ theorem fullRetardedResponse_test_fubini (q : XiZeroCopy)
   simpa only [retardedTestDensity_source_integral,
     retardedTestDensity_target_integral] using h.symm
 
-private theorem eventWave_continuous_compact {phi : Event → ℂ}
+/-- Absolute admission of the literal retarded response against a compact test. -/
+theorem fullRetardedResponse_test_integrable (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hphi : Continuous phi) (hc : HasCompactSupport phi) :
+    Integrable (fun r : Event => fullRetardedResponse q branch b a r.1 r.2 X k * phi r) := by
+  have hi := retardedTestDensity_integrable q branch b a X k phi hphi hc
+  simpa only [retardedTestDensity_source_integral] using hi.integral_prod_right
+
+theorem fullRetardedResponse_source_test_integrable (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hphi : Continuous phi) (hc : HasCompactSupport phi) :
+    Integrable (fun p : Event => timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+      (∫ r : Event, angularDirichletKernel q branch (r.1-p.1) r.2 p.2 X k * phi r))
+      eventMeasure := by
+  have hi := retardedTestDensity_integrable q branch b a X k phi hphi hc
+  simpa only [retardedTestDensity_target_integral] using hi.integral_prod_left
+
+theorem fullRetardedResponse_test_target_integrable_ae (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hphi : Continuous phi) (hc : HasCompactSupport phi) :
+    ∀ᵐ p : Event ∂eventMeasure, Integrable (fun r : Event =>
+      timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+        (angularDirichletKernel q branch (r.1-p.1) r.2 p.2 X k * phi r)) := by
+  have hi := retardedTestDensity_integrable q branch b a X k phi hphi hc
+  filter_upwards [hi.prod_right_ae] with p hp
+  apply hp.congr
+  exact ae_of_all _ (fun r => by dsimp only [retardedTestDensity]; ring)
+
+theorem eventWave_continuous_compact {phi : Event → ℂ}
     (hp : ContDiff ℝ ∞ phi) (hc : HasCompactSupport phi) :
     Continuous (eventWave phi) ∧ HasCompactSupport (eventWave phi) := by
   have hd (v : Event) : ContDiff ℝ ∞ (eventDir v phi) :=
@@ -334,22 +362,37 @@ def retardedCoupledBulkAt (q : XiZeroCopy) (branch b : Bool) (a : ℂ)
     (X k : ℝ) (phi : Event → ℂ) (p : Event) : ℂ :=
   ∫ r : Event, retardedCoupledBulkDensity q branch b a X k phi p r
 
-/-- The actual infinite-source retarded response has the full angular source
-vertex and the undropped full-plus-native bulk action. -/
-theorem fullRetardedResponse_weak_with_native (q : XiZeroCopy) (branch b : Bool)
+theorem retardedCoupledBulkDensity_target_integrable_ae (q : XiZeroCopy)
+    (branch b : Bool) (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hp : ContDiff ℝ ∞ phi) (hc : HasCompactSupport phi) :
+    ∀ᵐ p : Event ∂eventMeasure,
+      Integrable (retardedCoupledBulkDensity q branch b a X k phi p) := by
+  obtain ⟨hwcont, hwcompact⟩ := eventWave_continuous_compact hp hc
+  have hi := retardedTestDensity_integrable q branch b a X k
+    (eventWave phi) hwcont hwcompact
+  filter_upwards [hi.prod_right_ae] with p hfull
+  have hres := (futureResidual_integrable q branch p.1 p.2 X k phi hp hc).const_mul
+    (timeReducedCoefficient (physicalRate q b) a p.1 p.2)
+  apply (hfull.sub hres).congr
+  filter_upwards with r
+  dsimp only [Pi.sub_apply]
+  rw [futureResidual_kernel q branch p.1 p.2 X k phi hp r]
+  dsimp only [retardedTestDensity, retardedCoupledBulkDensity]
+  ring
+
+private theorem retarded_weak_source_ae (q : XiZeroCopy) (branch b : Bool)
     (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
     (hp : ContDiff ℝ ∞ phi) (hc : HasCompactSupport phi) :
-    (∫ r : Event, fullRetardedResponse q branch b a r.1 r.2 X k * eventWave phi r) =
-      ∫ p : Event, timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+    (fun p : Event => timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+      (∫ r : Event, angularDirichletKernel q branch (r.1-p.1) r.2 p.2 X k *
+        eventWave phi r)) =ᵐ[eventMeasure]
+      (fun p : Event => timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
           (fullAngularField q branch ![X, Real.exp k] *
             (phi p - phi (p.1,-p.2))) +
-        retardedCoupledBulkAt q branch b a X k phi p ∂eventMeasure := by
+        retardedCoupledBulkAt q branch b a X k phi p) := by
   obtain ⟨hwcont,hwcompact⟩ := eventWave_continuous_compact hp hc
   have hi := retardedTestDensity_integrable q branch b a X k
     (eventWave phi) hwcont hwcompact
-  rw [fullRetardedResponse_test_fubini q branch b a X k
-    (eventWave phi) hwcont hwcompact]
-  apply integral_congr_ae
   filter_upwards [hi.prod_right_ae] with p hfull
   have hres : Integrable (fun r : Event =>
       timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
@@ -392,6 +435,38 @@ theorem fullRetardedResponse_weak_with_native (q : XiZeroCopy) (branch b : Bool)
     _ = _ := by
       rw [integral_const_mul,
         futureResidual_integral q branch p.1 p.2 X k phi hp hc]
+
+/-- The source and native bulk in the weak equation form an absolutely admitted
+source action; this rules out totalized-integral cancellation in later insertions. -/
+theorem fullRetardedResponse_weak_source_integrable (q : XiZeroCopy) (branch b : Bool)
+    (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hp : ContDiff ℝ ∞ phi) (hc : HasCompactSupport phi) :
+    Integrable (fun p : Event => timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+        (fullAngularField q branch ![X, Real.exp k] * (phi p - phi (p.1,-p.2))) +
+      retardedCoupledBulkAt q branch b a X k phi p) eventMeasure := by
+  obtain ⟨hwcont, hwcompact⟩ := eventWave_continuous_compact hp hc
+  have hi := retardedTestDensity_integrable q branch b a X k
+    (eventWave phi) hwcont hwcompact
+  have hj : Integrable (fun p : Event => timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+      (∫ r : Event, angularDirichletKernel q branch (r.1-p.1) r.2 p.2 X k *
+        eventWave phi r)) eventMeasure := by
+    simpa only [retardedTestDensity_target_integral] using hi.integral_prod_left
+  exact hj.congr (retarded_weak_source_ae q branch b a X k phi hp hc)
+
+/-- The actual infinite-source retarded response has the full angular source
+vertex and the undropped full-plus-native bulk action. -/
+theorem fullRetardedResponse_weak_with_native (q : XiZeroCopy) (branch b : Bool)
+    (a : ℂ) (X k : ℝ) (phi : Event → ℂ)
+    (hp : ContDiff ℝ ∞ phi) (hc : HasCompactSupport phi) :
+    (∫ r : Event, fullRetardedResponse q branch b a r.1 r.2 X k * eventWave phi r) =
+      ∫ p : Event, timeReducedCoefficient (physicalRate q b) a p.1 p.2 *
+          (fullAngularField q branch ![X, Real.exp k] *
+            (phi p - phi (p.1,-p.2))) +
+        retardedCoupledBulkAt q branch b a X k phi p ∂eventMeasure := by
+  obtain ⟨hwcont, hwcompact⟩ := eventWave_continuous_compact hp hc
+  rw [fullRetardedResponse_test_fubini q branch b a X k
+    (eventWave phi) hwcont hwcompact]
+  exact integral_congr_ae (retarded_weak_source_ae q branch b a X k phi hp hc)
 
 end
 end RHTower.D4BMPWRetardedWeakNative

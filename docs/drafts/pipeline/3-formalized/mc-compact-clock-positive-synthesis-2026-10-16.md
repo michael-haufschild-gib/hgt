@@ -1,6 +1,7 @@
-# MC: structural obstruction removal
+# MC: positive source synthesis on a whole compact clock interval
 
-Status: IN PROGRESS. No contribution established yet.
+Status: FORMALIZED. Four modules pass direct Lean checks, the capstones pass
+the axiom audit, and repository formal lint passes.
 
 ## Objective
 
@@ -10,7 +11,7 @@ conditional receivers, computational evidence, and generic rearrangements do not
 meet the task. Use the Lean corpus as the research source; no web or external
 novelty audit. Preserve unrelated existing edits.
 
-## Plan
+## Completed research plan
 
 1. Recover the current frontier and obstruction from indexed Lean declarations
    and their full statements/proofs.
@@ -73,7 +74,7 @@ novelty audit. Preserve unrelated existing edits.
    cutoff after its remaining primes are processed. These different
    quantifiers cannot be interchanged.
 
-## Current unresolved point
+## Whole-interval synthesis and its remaining boundary
 
 ### Continuation: whole clock intervals
 
@@ -96,20 +97,23 @@ These are existing results, not contributions of this investigation.
    prime payments do not imply a divergent total payment along the constructed
    history.
 
-8. **Positive dilation cone on an entire compact clock interval. ACTIVE;
-   paper argument completed, formalization in progress.** For the actual complete continuous Abel source `A`, conjecture
-   that the positive cone of `u ↦ A(exp(t+u))`, with arbitrarily late `t`, is
-   dense in `C([0,L], R)` for each finite `L`. This would remove the restriction
-   to finitely many fixed receiving coefficients. Proposed mechanism: a
+8. **Positive dilation cone on an entire compact clock interval. PROVED IN
+   LEAN.** For the actual complete continuous Abel source `A`, put
+   `f(t) = exp(-3t/2) A(exp t)`. For every `a >= 0` and real threshold `T`,
+   the positive cone of `u ↦ f(t-u)`, `t > T`, is uniformly dense in
+   `C([0,a], R)`. This removes the restriction to finitely many fixed
+   receiving coefficients. Mechanism: a
    separating continuous functional has an entire Fourier--Borel transform of
    finite exponential type; eventual one-sidedness of its source convolution
    permits Landau continuation; surviving simple critical poles force that
    transform to vanish. The corpus proves a superlinear simple-critical-zero
    census and the required general exponential-type nonannihilation theorem.
-   Remaining proof obligations: the literal Banach-valued source transform,
-   compact-head subtraction, real-axis Landau continuation, injectivity of the
-   compact functional transform, and cone separation. No density theorem or
-   actual prime-history consequence is claimed yet.
+   The literal Banach-valued source transform, compact-head subtraction,
+   real-axis Landau continuation, injectivity of the compact functional
+   transform, and cone separation are all formalized. One finite positive
+   mixture is strictly negative throughout the entire interval. A separate
+   theorem transfers this sign to the unnormalized complete Abel source,
+   with every positive dilation weight explicit.
 
    Important audit: density alone does not provide uniformly bounded synthesis
    coefficients, simultaneous actual-prime block rounding, or a history that
@@ -151,29 +155,37 @@ clock trajectories with one common finite positive synthesis. It gives no
 uniform bound on synthesis coefficients or source depths. Transfer from
 these positive mixtures to exhaustive actual-prime histories is not proved.
 
-Formal progress: the generic meromorphic tail-separation proof and the
-literal Banach source transform / compact-dual injectivity have passed
-scratch Lean checks. Source-specific pole separation and the final cone
-producer are still being checked. No completed contribution is claimed yet.
+Formal modules, in dependency order:
 
-No unconditional construction has been found that retains the actual full
-signed source and removes the changing-cutoff obstruction. For the square
+- `MobiusDivisorCompactClockTailSeparation`: generic meromorphic tail-pole
+  exclusion with compact head retained.
+- `MobiusDivisorCompactClockSource`: literal Banach source transform and
+  injective compact-dual Fourier--Borel transform.
+- `MobiusDivisorCompactClockSeparation`: surviving simple critical pole and
+  unconditional negative pairing beyond every threshold.
+- `MobiusDivisorCompactClockCone`: whole-space positive cone density, finite
+  uniform approximation, and uniform negativity for the literal Abel source.
+
+The theorem retains the actual full signed source and removes the finite-test
+restriction in source synthesis. It does not remove the changing-cutoff
+payment obstruction. For the square
 bilinear formulation, principal counterterms and high-product remainder
 remain jointly uncontrolled. A theorem merely restating their required
 control, a finite-rank steering corollary, or another local cancellation
 identity would not meet the requested contribution.
 
-No route is newly retired. All negative results above were already proved
-in the corpus. No new positive survivor or paper proof is claimed.
+No route is newly retired. The negative results used above were already
+proved in the corpus. The new positive result is the infinite-dimensional
+compact-clock synthesis theorem, with the dependency-closed proof above.
 
 ## Search and source audit
 
 Used the documented `scripts/formal_tools.py research` command in lexical,
 hybrid, and deep modes, including searches across all indexed Lean areas and
 dependencies. Inspected candidate lemmas and source arguments, then read
-relevant Lean statements/proofs. Search reported no unfinished stages in
-the completed semantic requests, but warned of older coverage snapshots and
-unmeasured semantic coverage; search results are leads, not a completeness
+relevant Lean statements/proofs. Some requests returned partial results;
+coverage reports also warned of older snapshots and unmeasured semantic
+coverage. Search results were leads, not a completeness
 certificate. No web search, external novelty audit, or numerical experiment
 was performed. Only the explicitly requested MC frontier entry and operational
 instructions were read as repository Markdown; historical research cards
@@ -181,14 +193,38 @@ were not used.
 
 ## Self-audit
 
-- No new mathematical knowledge established; requested frontier advance not achieved.
-- Existing corpus results killed the proposed mechanisms before code was added.
-- Formalizing their immediate consequences would be theorem packaging, not
-  the requested structural breakthrough.
-- Paper-proof and Lean phases remain uncompleted because no qualifying exact
-  theorem has survived the mathematical audit.
+- The new producer gives uniform positive synthesis in the entire continuous
+  clock space, beyond existing control of fixed finite receiving fields.
+- The capstone is unconditional: interval width, depth threshold, target,
+  and positive approximation tolerance are its only input data.
+- This is a qualitative structural theorem, not an improved arithmetic bound,
+  RH equivalence, or receiver requiring an unproved cancellation hypothesis.
+- Bounded synthesis costs, actual-prime realization, exhaustive histories,
+  and changing-cutoff payment remain open. Density alone supplies none of them.
 
 ## Verification
 
-No Lean source changed, so no build or new axiom audit was run. Existing user
-edits were preserved. This card records incomplete research, not completion.
+All four new modules were checked individually and their oleans generated by
+`lake --old env lean -j 1 -o <olean> <module.lean>` from `formal/`, one build
+process at a time. They are wired into `GaloisForLFunctions.RHTower`; the root
+umbrella inherits that import through `MainTheorems`. No full or umbrella
+build was run, and no heartbeat limit was increased.
+
+A `/tmp` audit using `lake --old env lean` printed axioms for the generic
+tail theorem, exact source transform, source-specific separation, cone
+density, finite approximation, and unnormalized-source negativity. Every
+result depends only on `propext`, `Classical.choice`, and `Quot.sound`.
+
+The first `scripts/formal_tools.py lint` run found only four unrelated missing
+umbrella imports. Their repair and olean builds are explicitly user-authorized;
+all four are now wired and directly built: `PaperThetaNativeQuantileComparison`,
+`PaperThetaNativeRootTransport`, `PaperThetaNativeMeyerCompleteness`, and
+`XiNewtonDiscCurvature`. Building them exposed elaboration failures in the last
+three modules; their proof steps were repaired and rechecked.
+
+Final `lake --old env lean -j 1 /tmp/hgt_mc_final_audit.lean` succeeds, importing
+the completed MC cone, native Meyer completeness, and Xi curvature modules.
+All nine audited capstones depend only on the three standard axioms above.
+All eight task oleans exist and are newer than their sources.
+Final `scripts/formal_tools.py lint` passes with existing large-file warnings;
+the scoped `git diff --check` passes. Task scratch files were removed.

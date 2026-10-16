@@ -1,7 +1,6 @@
-Viewed CHMDGrowthPositivityCollapseAndTwoPointCriterion.lean:1-120
-Viewed CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean:1-120
+# PHASE 1
 
-In our Lean corpus, the terminal receiver for the CHMD causal-wave route is already 100% formalized and unconditional in [CHMDGrowthPositivityCollapseAndTwoPointCriterion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDGrowthPositivityCollapseAndTwoPointCriterion.lean) and [CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean).
+our Lean corpus, the terminal receiver for the CHMD causal-wave route is already 100% formalized and unconditional in [CHMDGrowthPositivityCollapseAndTwoPointCriterion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDGrowthPositivityCollapseAndTwoPointCriterion.lean) and [CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean).
 
 Here is the exact architecture of what is already wired in Lean, what we just proved, why one apparent continuation is a dead end, and what the genuine remaining bridge to `RiemannHypothesis` is.
 
@@ -113,3 +112,113 @@ That identity — $L[\cosh(\cdot/2)](y) = \cos(y\sqrt{7/4})$ — is what all the
 
 
 Note: Even under RH, Δ(s) only satisfies Δ(s) = O(s²), so the window bound grows with L. The one-sided bound on ∫₀^∞ ∂_sK_y Δ, uniform in y, still needs cancellation in the pairing as y grows. That is Wall 1, now posed against a kernel bounded in both variables.
+
+
+
+# PHASE 2
+### 1. Why We Are Stuck: The Exact Mathematical Diagnosis
+
+In the three modules just completed — [CHMDPoleDensityLawAndChebyshevDiscrepancyTransport.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPoleDensityLawAndChebyshevDiscrepancyTransport.lean), [CHMDChebyshevDiscrepancyDerivativeTransportLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDChebyshevDiscrepancyDerivativeTransportLaw.lean), and [CHMDPrimeKernelDerivativeUniformBound.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeKernelDerivativeUniformBound.lean) — the causal Klein–Gordon wave was reduced to the exact transport identity ([`chmdPrimeWave_eq_pole_add_derivative_transport`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDChebyshevDiscrepancyDerivativeTransportLaw.lean#L688-L702)):
+$$\operatorname{chmdPrimeWave}(y) = \operatorname{chmdPoleWave}(y) + 2K_y(0) - S(y) - \int_0^\infty \partial_s K_y(s)\,\Delta(s)\,ds, \qquad \Delta(s) = \Psi(s) - 2e^{s/2},$$
+with $|2K_y(0) - S(y)| \le 16/\pi$ and $|\partial_s K_y(s)| \le \frac{8\log 2}{\pi}$ uniformly in $(y,s)$ ([`abs_kernelDeriv_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeKernelDerivativeUniformBound.lean#L244-L250)).
+
+Why does the route stall right here? There are **two structural obstructions** — one analytic and one arithmetic — that explain why **no further bound on the kernel $K_y$ or $\partial_s K_y$ alone** can ever close Step 3:
+
+#### Obstruction A: $K_y(s)$ is a faithful mode propagator with a non-oscillatory wave front
+By [`chmdPrimeKernel_eq_lightCone`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPoleDensityLawAndChebyshevDiscrepancyTransport.lean#L685-L703), the prime–pole transport is the light-cone transmutation $L[T_0](y)$ of the **massless discrepancy transport**
+$$T_0(v) = \sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}}\bigl(D(\log n+v)+D(\log n-v)\bigr) - \int_{\mathbb{R}}\bigl(D(s+v)+D(s-v)\bigr)e^{s/2}\,ds = -\int_0^\infty \bigl(D'(s+v)+D'(s-v)\bigr)\Delta(s)\,ds + O(e^{-v/2}).$$
+1. **No oscillation at the wave front $s = y$:** For $v > 0$, $D(s-v) = \frac{2(s-v)}{\sinh(\pi(s-v))}$ is a **strictly positive** bump of fixed width $O(1)$ and mass $1/\pi$ centered at $s = v$. Thus $T_0(v)$ simply reads off the local average of the discrepancy measure $d\Delta(s)$ in a unit window around $s = v$.
+2. **No oscillation inside the light cone that kills off-line modes:** In Fourier space,
+   $$\int_{\mathbb{R}} K_y(s)\,e^{i\gamma s}\,ds = \cos\bigl(y\sqrt{\gamma^2+2}\bigr)\operatorname{sech}^2(\gamma/2).$$
+   If $\Delta(s)$ contains an explicit-formula mode $e^{i\gamma_\rho s}$ from a zero $\rho = \tfrac12 + i\gamma_\rho$, the pairing $-\int_0^\infty \partial_s K_y(s)\,\Delta(s)\,ds$ transports it directly to $\cos\bigl(y\sqrt{\gamma_\rho^2+2}\bigr)\operatorname{sech}^2(\gamma_\rho/2)$, which grows exponentially in $y$ whenever $\operatorname{Im}\gamma_\rho \ne 0$.
+3. **Why integrating by parts in $s$ again does not help:** Even under RH, $\Delta(s) = O(s^2)$ and $\Omega_\pm(1)$, while its primitives in $s$ still oscillate with $O(1)$ amplitude over the light cone $[0,y]$ of length $y$. Meanwhile, $\int_0^y |\partial_s^k K_y(s)|\,ds$ grows at least linearly with the light-cone length $y$ (because the Bessel profile $J_1(\sqrt{2y^2(1-t^2)})/\sqrt{1-t^2}$ has $L^1$-norm $\asymp y$ on $t \in [-1,1]$).
+
+#### Obstruction B (The Countermodel Barrier): The chain so far is arithmetic-blind beyond Chebyshev's bound
+Look at what properties of $\Lambda(n)$ were actually used in `MUST-1566`–`MUST-1568`:
+1. $\Lambda(n) \ge 0$, and
+2. Chebyshev's elementary upper bound $\Psi(s) \le (2\log 4 + 16)e^{s/2}$ ([`chebyshevStep_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDChebyshevDiscrepancyDerivativeTransportLaw.lean#L533-L547)).
+
+Nothing else about the primes was used! Now suppose $\widetilde{\Lambda}(n) \ge 0$ is **any fake non-negative weight system** (such as a Beurling prime system or the two-shift / Diamond–Montgomery–Vorhauer countermodels recorded in [STATUS.md](file:///Users/michael/Documents/code/hgt/docs/reports/STATUS.md#L11-L26)) that has PNT density $\widetilde{\Psi}(s) \sim 2e^{s/2}$, satisfies $\widetilde{\Psi}(s) \le C e^{s/2}$, and has an **off-line zero** $\rho_0 = \tfrac12 + \delta + i\gamma_0$ ($\delta > 0$).
+- Every single theorem in `MUST-1566`, `MUST-1567`, and `MUST-1568` holds verbatim for $\widetilde{\Lambda}$ and $\widetilde{\Delta}(s) = \widetilde{\Psi}(s) - 2e^{s/2}$ against the **exact same kernel** $\partial_s K_y(s)$.
+- Yet for $\widetilde{\Lambda}$, the integral $\int_0^\infty \partial_s K_y(s)\,\widetilde{\Delta}(s)\,ds$ blows up like $e^{\delta y}$!
+
+**Conclusion:** To bound $\int_0^\infty \partial_s K_y(s)\,\Delta(s)\,ds$, we **must** eliminate $\Delta(s)$ (or constrain it) using the **defining arithmetic equation of $\Lambda(n)$** that separates the true von Mangoldt function from fake non-negative weights:
+$$\sum_{d \mid n} \Lambda(d) = \log n \qquad (\Lambda * 1 = \log \iff \Lambda = \mu * \log).$$
+
+---
+
+### 2. How to Resolve It: The New Path in Our Lean Corpus
+
+We do **not** need to invent the arithmetic elimination of $\Lambda$ from scratch — our Lean corpus has already built three exact, unconditional arithmetic mechanisms that inject $\Lambda * 1 = \log$ (and the Euler product/Dirichlet series identity $-\zeta'/\zeta = \Lambda$). The missing link is **welding the CHMD Klein–Gordon transport law to these arithmetic conservation laws**.
+
+Here are the three concrete ways to resolve the obstruction, ranked by how directly they plug into `MUST-1566`–`MUST-1568`:
+
+---
+
+#### Path 1 (Direct Multiplicative-Delay Conservation & Möbius Reconstruction of the CHMD Discrepancy)
+Look at what the corpus already proved for the unweighted logarithmic Chebyshev deficit primitive in:
+- [CCMPrimeDeficitDilationConservation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationConservation.lean) ([`ccmLogChebyshevDeficitPrimitive_dilation_conservation`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationConservation.lean#L73-L90))
+- [CCMPrimeDeficitDilationUniformBound.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationUniformBound.lean) ([`abs_ccmPrimeDeficitDilationRemainder_le_uniform`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationUniformBound.lean#L142-L144))
+- [CCMPrimeDeficitDilationInversion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationInversion.lean) ([`ccmLogChebyshevDeficitPrimitive_eq_moebius_dilation`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationInversion.lean#L20-L31))
+- [CCMPrimeDeficitMobiusCenteredEnergy.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitMobiusCenteredEnergy.lean) ([`ccmPrimeDeficitMobiusCenteredDiagonal_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitMobiusCenteredEnergy.lean#L64-L92))
+- [CCMPrimeDeficitMobiusTailLocalization.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitMobiusTailLocalization.lean) ([`abs_ccmLogChebyshevDeficitPrimitive_sub_moebius_tail_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitMobiusTailLocalization.lean#L123-L131))
+
+**How this resolves the CHMD obstruction:**
+1. **Bridge $\Delta(s) = \Psi(s) - 2e^{s/2}$ to `ccmLogChebyshevDeficitPrimitive`:**
+   By Abel summation / integration by parts (already formalized in [`unitRieszChebyshevRayIntegral_eq_deficitPrimitive`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleCompressionRHCriterion.lean#L58-L62)), the $\sqrt{\cdot}$-weighted discrepancy $\Delta(s) = \sum_{\log n < s}\frac{\Lambda(n)}{\sqrt{n}} - 2e^{s/2}$ is expressed directly in terms of the ordinary Chebyshev deficit $e^t - \psi(e^t)$ and its primitive `ccmLogChebyshevDeficitPrimitive`.
+2. **Apply the Multiplicative-Delay Conservation Law $\sum_{d \mid k} \Lambda(d) = \log k$ Directly to the CHMD Transport $T(y)$:**
+   In [CHMDPoleDensityLawAndChebyshevDiscrepancyTransport.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPoleDensityLawAndChebyshevDiscrepancyTransport.lean#L923), the transport is
+   $$T(y) = \sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}} K_y(\log n) - \int_0^\infty K_y(s) e^{s/2}\,ds = -\int_0^\infty \partial_s K_y(s)\,\Delta(s)\,ds + 2K_y(0).$$
+   If we form the **multiplicative-delay sum** of the prime kernel along the divisor lattice $m \ge 1$,
+   $$\sum_{m=1}^\infty \frac{1}{\sqrt{m}} \sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}} K_y(\log n + \log m) = \sum_{k=2}^\infty \frac{\log k}{\sqrt{k}} K_y(\log k),$$
+   the unknown prime weights $\Lambda(n)$ **disappear completely** via $\sum_{d \mid k} \Lambda(d) = \log k$ ([`ArithmeticFunction.vonMangoldt_sum`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationConservation.lean#L64))!
+3. **Why $\sum_{k=1}^\infty \frac{\log k}{\sqrt{k}} K_y(\log k)$ cancels the pole wave to $O(1)$ unconditionally:**
+   Unlike $\sum_n \frac{\Lambda(n)}{\sqrt{n}} K_y(\log n)$, the elementary logarithmic sum $\sum_{k=1}^\infty \frac{\log k}{\sqrt{k}} K_y(\log k)$ has the **exact Euler–Maclaurin / sawtooth decomposition** with leading density $\int_0^\infty s e^{s/2} K_y(s)\,ds + \gamma \int_0^\infty e^{s/2} K_y(s)\,ds$, and its centered remainder is **uniformly bounded** by integration by parts against the bounded derivative $|\partial_s K_y(s)| \le \frac{8\log 2}{\pi}$ from `MUST-1568`!
+4. **Invert via Möbius (`moebiusCoeff`):**
+   Just as [`ccmLogChebyshevDeficitPrimitive_eq_moebius_dilation`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitDilationInversion.lean#L20-L31) reconstructs the Chebyshev primitive from the bounded elementary dilation source `ccmPrimeDeficitDilationSource`, Möbius inversion in the shift variable reconstructs the CHMD transport $T(y)$ (or its light-cone pre-image $T_0(v)$) as a **folded Möbius–kernel pairing** where the $e^{s/2}$ pole has already been cancelled on every divisor fiber and the elementary source is **uniformly bounded** ($|\text{remainder}| \le 7/2$).
+
+---
+
+#### Path 2 (Replacing the Flat Step $\Delta(s)$ by the Quotient-Block Telescoped Higher-Cesàro / Square-Root Riesz Möbius Kernel)
+Why did `abs_setIntegral_kernelDeriv_mul_discrepancy_le` in `MUST-1568` lose control as $L \to \infty$? Because it paired $\partial_s K_y(s)$ with the **0-th Cesàro step discrepancy** $\Delta(s) = \Psi(s) - 2e^{s/2}$, whose divisor-hyperbola error has $O(\sqrt{X})$ boundary variation.
+
+Look at what Modules 31–33 of `RHTower` already proved in:
+- [MobiusDivisorCesaroAndSquareGridSqrtRieszBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MobiusDivisorCesaroAndSquareGridSqrtRieszBridge.lean)
+- [HomothetyEigenchannelsAndSecondCesaroDivisorBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/HomothetyEigenchannelsAndSecondCesaroDivisorBridge.lean)
+- [QuotientBlockTelescopingAndHigherCesaroHyperbolaKernels.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/QuotientBlockTelescopingAndHigherCesaroHyperbolaKernels.lean)
+
+Specifically:
+1. By integrating by parts **once more** (or using the `ccmLogChebyshevDeficitPrimitive` / `chebyshevSqrtRieszAction` bridge), the pairing $-\int_0^\infty \partial_s K_y(s)\,\Delta(s)\,ds$ becomes a pairing of $\partial_s^2 K_y(s)$ (or the light-cone Bessel kernel directly!) against the **First-Cesàro / Square-Root Riesz primitive** of $\Delta$.
+2. On the First- and Second-Cesàro / Cell-Integral Square-Root Riesz levels, [`sum_mobius_sub_primitive_dilation_eq_divisorDefect_kernel`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/QuotientBlockTelescopingAndHigherCesaroHyperbolaKernels.lean#L200-L235) and [`divisorUnsignedSecondCesaroDilationChannel_one_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/QuotientBlockTelescopingAndHigherCesaroHyperbolaKernels.lean#L68-L73) prove that:
+   - The quotient fibers telescope in closed form;
+   - The terminal-band weights factor as **exact non-negative squares** (`((M - q*d)^2 / 2 ≥ 0` and `(1/3)(√M - √(q*d))^2(√M + 2√(q*d)) ≥ 0`);
+   - The centered divisor hyperbola $\sum_{k=1}^{j-1} \operatorname{centeredDivisorHyperbola}(k) \le 0$ contributes **unconditionally non-positively** (zero hyperbola loss!).
+
+---
+
+#### Path 3 (Coupling the CHMD Wave Transport to the Pointwise Theta Harmonic Identity & Complete Prime-Chain Variance Factorization)
+Look at the other half of the `CHMD` track already in the corpus:
+- [CHMDThetaHarmonicIdentity.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDThetaHarmonicIdentity.lean) ([`theta_harmonic_identity`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDThetaHarmonicIdentity.lean#L159-L161)):
+  $$\sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}}\bigl(\Theta(x+\log n) + \Theta(x-\log n)\bigr) - \cosh(x/2) = -(\gamma + \log\pi)\Theta(x) + \int_0^\infty \bigl[2\nu(u)\Theta(x) - \omega(u)\bigl(\Theta(x+u)+\Theta(x-u)\bigr)\bigr]\,du.$$
+- [CHMDPrimeChainSourceFactorization.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean) ([`doob_source_eq_chain_variances_sub_cosh`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean#L185-L190)):
+  For any Doob-transformed test function $\phi = \Theta \cdot v$, the crossing prime quadratic form factors **pointwise at every product index $N = nm$ and logarithmic cut $u$** into a sum of **non-negative conditional chain variances** `chainDensity N p b v u ≥ 0` over prime factors $p \mid N$!
+
+Notice the striking duality between `CHMDThetaHarmonicIdentity` and `CHMDPoleDensityLawAndChebyshevDiscrepancyTransport`:
+- In `CHMDPoleDensityLaw`, we replaced the $\cosh(v/2)$ pole wave by the integral $\int_{\mathbb{R}}(D(s+v)+D(s-v))e^{s/2}\,ds$, which left us with a **linear** discrepancy $\Delta(s) = \Psi(s) - 2e^{s/2}$ that ignores multiplicative factorization $N = nm$.
+- In [`theta_harmonic_identity`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDThetaHarmonicIdentity.lean#L159-L161), $\cosh(x/2)$ is **already equal** to the symmetric prime shift of Riemann's theta kernel $\Theta(x)$ minus bounded archimedean terms! And when squared into the Doob energy, the multiplicative relation $\log n + \log m = \log(nm)$ on product fibers $N = nm$ turns the prime sum into a sum of **non-negative bipartite prime-chain variances** ([`chainDensity_nonneg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean#L49-L57)).
+
+---
+
+### 3. Concrete Next Step to Formalize Immediately
+
+To break out of the linear kernel-bound trap of `MUST-1568` and inject the arithmetic identity $\Lambda * 1 = \log$ into the CHMD transport chain, the cleanest, highest-leverage next module is reducing the CHMD RH criterion purely to the Möbius tail (proving that the small-divisor transient contribution to the CHMD transport is unconditionally uniformly bounded in $y \ge 0$ via `abs_kernelDeriv_le` (`MUST-1568`)):
+
+**`CHMDDilationConservationAndMobiusDiscrepancyTransport.lean`** (welding `MUST-1566`–`MUST-1568` to `CCMPrimeDeficitDilationConservation` / `CCMPrimeDeficitMobiusTailLocalization`):
+1. **Exact Bridge from $\Delta(s)$ (`chebyshevDiscrepancy`) to `ccmLogChebyshevDeficitPrimitive`:**
+   Prove the exact identity relating the CHMD discrepancy $\Delta(s) = \Psi(s) - 2e^{s/2}$ and its integral $\int_0^L \Delta(s)\,ds$ to the unweighted Chebyshev deficit $e^t - \psi(e^t)$ and `ccmLogChebyshevDeficitPrimitive` via Stieltjes/Lebesgue integration by parts:
+   $$\int_0^\infty \partial_s K_y(s)\,\Delta(s)\,ds = -\int_0^\infty \bigl(\partial_s^2 K_y(s) - \tfrac12 \partial_s K_y(s)\bigr)\,e^{-s/2}\operatorname{ccmLogChebyshevDeficitPrimitive}(s)\,ds \quad (\text{up to explicit boundary terms}).$$
+2. **Inject the Multiplicative-Delay Conservation & Möbius Reconstruction into the CHMD Transport:**
+   Substitute the unconditional Möbius-dilation decomposition [`ccmLogChebyshevDeficitPrimitive_eq_moebius_split`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitMobiusTailLocalization.lean#L103-L107) (which came from $\sum_{d \mid k} \Lambda(d) = \log k$ and has **uniformly bounded** centered dilation source $|\operatorname{ccmPrimeDeficitDilationRemainder}(u)| \le 7/2$ and small-divisor head $|\operatorname{ccmPrimeDeficitMobiusTransientHead}(s)| \le (s+14)/4 = O(s) \ll e^{s/2}$) directly into the CHMD derivative transport integral!
+3. **Resulting Elimination of $\Lambda(n)$:**
+   - The small-divisor transient head ($d \le e^{s/2}$) is $O(s)$, so when multiplied by $e^{-s/2}$ it decays exponentially like $O(s e^{-s/2})$! Paired against the uniformly bounded $|\partial_s K_y(s)| \le \frac{8\log 2}{\pi}$ from `MUST-1568`, its contribution to $\int_0^\infty \partial_s K_y(s)\,\Delta(s)\,ds$ is **unconditionally uniformly bounded in $y$ on $[0,\infty)$**!
+   - This kills the entire small-divisor part of the CHMD integral unconditionally using `MUST-1568`, and reduces the CHMD transport $T(y)$ purely to the **explicit Möbius work + large-divisor Möbius tail** (`ccmPrimeDeficitMobiusExplicitWork` + `ccmPrimeDeficitMobiusTransientTail`), where $\Lambda(n)$ has been completely eliminated in favor of $\mu(n)$ and elementary bounded sawtooth remainders.

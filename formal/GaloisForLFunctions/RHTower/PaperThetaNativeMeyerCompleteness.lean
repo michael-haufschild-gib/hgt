@@ -52,7 +52,7 @@ theorem nativePencil_basis (S : Finset XiDivisorSupport) (q : DeningerMeyerFinit
   simp only [thetaFinitePacketGenerator, Fintype.linearCombination_apply_single,
     one_smul, thetaFiniteStep] at he
   by_cases h : q.2.val = 0
-  · simp only [h, dite_true, map_sub, map_add, map_smul, map_zero, add_zero] at he
+  · simp only [h, dite_true, map_sub, map_smul, add_zero] at he
     rw [dif_pos h]
     change nativeFiniteBasis S q+(I-xiSpectralPointSupport q.1.1) •
       nativeCompactResolvent (nativeFiniteBasis S q) = 0
@@ -96,8 +96,7 @@ theorem nativeFiniteBasis_pencil_power (S : Finset XiDivisorSupport) (rho : ↥S
       (nativeFiniteBasis S ⟨rho,⟨n,hn⟩⟩) = 0 := by
   induction n with
   | zero =>
-      simpa only [pow_one, nativePencil_basis, dif_pos rfl] using
-        nativePencil_basis S ⟨rho,⟨0,hn⟩⟩
+      simpa using nativePencil_basis S ⟨rho,⟨0,hn⟩⟩
   | succ n ih =>
       have hnp : n < xiSupportMultiplicity rho.1 := by omega
       have hc := congrArg (fun T : Module.End ℂ NativeContinuousSpace =>
@@ -107,7 +106,7 @@ theorem nativeFiniteBasis_pencil_power (S : Finset XiDivisorSupport) (rho : ↥S
       change ((nativePencil (xiSpectralPointSupport rho.1)).toLinearMap ^ (n+1))
         (nativePencil (xiSpectralPointSupport rho.1)
           (nativeFiniteBasis S ⟨rho,⟨n+1,hn⟩⟩)) = 0
-      rw [nativePencil_basis, dif_neg (Nat.succ_ne_zero n)]
+      rw [nativePencil_basis S ⟨rho,⟨n+1,hn⟩⟩, dif_neg (Nat.succ_ne_zero n)]
       change ((nativePencil (xiSpectralPointSupport rho.1)).toLinearMap ^ (n+1))
         (nativeCompactResolvent (nativeFiniteBasis S ⟨rho,⟨n,hnp⟩⟩)) = 0
       rw [show ((nativePencil (xiSpectralPointSupport rho.1)).toLinearMap ^ (n+1))
@@ -138,7 +137,7 @@ theorem nativeFiniteSynthesis_singleton_le_root (rho : XiDivisorSupport) :
 theorem nativeFiniteSynthesis_singleton_finrank (rho : XiDivisorSupport) :
     Module.finrank ℂ (LinearMap.range (nativeFiniteSynthesis {rho})) = xiSupportMultiplicity rho := by
   rw [LinearMap.finrank_range_of_inj (nativeFiniteSynthesis_injective {rho})]
-  simp [DeningerMeyerFiniteXiJetPacket, Module.finrank_pi, DeningerMeyerFiniteXiJetSlot,
+  simp [DeningerMeyerFiniteXiJetPacket, DeningerMeyerFiniteXiJetSlot,
     DeningerArithmeticJetIndex, Fintype.card_sigma]
 
 /-- Full completeness: no bounded continuous generalized Xi mode lies outside
@@ -167,7 +166,9 @@ theorem nativeXiRootSynthesis_bijective (rho : XiDivisorSupport) :
   · intro c d h
     exact nativeFiniteSynthesis_injective {rho} (congrArg Subtype.val h)
   · intro v
-    obtain ⟨c,hc⟩ := nativeXiRootBlock_eq_original_packet rho ▸ v.property
+    have hv : v.val ∈ LinearMap.range (nativeFiniteSynthesis {rho}) :=
+      (nativeXiRootBlock_eq_original_packet rho).le v.property
+    obtain ⟨c,hc⟩ := hv
     exact ⟨c,Subtype.ext hc⟩
 
 /-- Canonical coordinates for the entire original-space generalized block. -/

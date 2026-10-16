@@ -60,7 +60,7 @@ theorem laplacian_xiNewtonDiscMargin (c z : ℂ) (r : ℝ) :
   have hd := contDiffAt_normSq_analytic hx.deriv
   have ha := contDiffAt_normSq_analytic hA
   change Laplacian.laplacian
-    (fun w => r ^ 2 * normSq (deriv xi w) - normSq (A w)) z = _
+    ((fun w => r ^ 2 * normSq (deriv xi w)) - fun w => normSq (A w)) z = _
   have hrd : ContDiffAt ℝ 2 (fun w => r ^ 2 * normSq (deriv xi w)) z :=
     contDiffAt_const.mul hd
   rw [hrd.laplacian_sub ha]

@@ -47,8 +47,10 @@ theorem nativeSourceComparison_kernel :
   apply le_antisymm
   · intro v hv
     change nativeSourceComparison v = 0 at hv
-    have hr : boundedNativeResidual nativeCompactParameter v = 0 :=
-      nativeQuantileMap_injective (by simpa only [map_zero] using hv)
+    have hr : boundedNativeResidual nativeCompactParameter v = 0 := by
+      apply nativeQuantileMap_injective
+      change nativeSourceComparison v = nativeQuantileMap 0
+      simpa only [map_zero] using hv
     let t := boundedResolventTrace nativeCompactParameter v
     have hk : nativeCompactResolvent v = nativeConstantCLM t := by
       ext x
@@ -67,7 +69,7 @@ theorem nativeSourceComparison_kernel :
     rw [deriv_const, sub_self, mul_zero, zero_add, zero_add] at he
     change -I*t = v x
     linear_combination (norm := ring_nf) I*he
-    simp only [pow_succ, Complex.I_sq]
+    simp only [Complex.I_sq, Complex.I_pow_three]
     ring
   · rintro v ⟨c,rfl⟩
     exact nativeSourceComparison_constant c
@@ -129,8 +131,6 @@ theorem nativeSourceComparison_pencil_power_kernel (z : ℂ) (n : ℕ)
       change ((thetaSourcePencil z).toLinearMap ^ n)
         (thetaSourcePencil z (nativeSourceComparison v)) = 0
       rw [nativeSourceComparison_pencil]
-      change ((thetaSourcePencil z).toLinearMap ^ n)
-          (thetaSourcePencil I (nativeSourceComparison (nativePencil z v))) = _
       rw [show ((thetaSourcePencil z).toLinearMap ^ n)
           (thetaSourcePencil I (nativeSourceComparison (nativePencil z v))) =
           thetaSourcePencil I (((thetaSourcePencil z).toLinearMap ^ n)
@@ -160,7 +160,7 @@ theorem nativeXiResolventValue_ne_I (rho : XiDivisorSupport) :
   rw [h] at hp
   have hz : xiSpectralPointSupport rho = 0 := by
     linear_combination (norm := ring_nf) -I*hp
-    simp only [pow_succ, Complex.I_sq]
+    simp only [Complex.I_sq, Complex.I_pow_three]
     ring
   exact XiC_zero_ne (hz ▸ XiC_xiSpectralPointSupport_eq_zero rho)
 
