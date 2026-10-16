@@ -844,7 +844,7 @@ theorem measure_cutSet_eq_zero {lam : ℕ → ℝ}
         _ ≤ (n : ℝ) ^ 2 := by nlinarith
     rw [div_lt_iff₀ hD0] at h7
     linarith
-  exact (MeasureTheory.measureReal_eq_zero_iff.mp hm_eq).resolve_right (measure_ne_top ν _)
+  exact (measureReal_eq_zero_iff (measure_ne_top ν _)).mp hm_eq
 
 /-- **Cut removal.**  If the Weil functional is nonnegative on every even mean-zero test, the
 Nevanlinna measure of the odd Weil function has no mass on the real cut. -/
