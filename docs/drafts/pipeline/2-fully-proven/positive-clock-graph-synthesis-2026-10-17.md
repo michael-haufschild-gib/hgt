@@ -195,3 +195,18 @@ continuous full signed Weil form, including both polar moments.
   `partial=false`, mixed/stale compiler snapshot. Both candidate lemmas and
   source arguments inspected. No new Lean code for this conjecture.
 - The frontier-map report is read-only and is not an output of this work.
+- Formalization checkpoint: `BoundedVariationUniformJump`,
+  `BoundedVariationNormAlgebra`, and `CHMDBVUniformGraph` compiled with empty
+  logs. `BoundedVariationPrimitive` also compiled before adding the compact
+  C1 specialization; that edit and the clock/continuity leaves await builds.
+  No supporting lemma is counted separately.
+- Kernel implementation found in the whole corpus:
+  `HTGeometry.LinftyDensityControl.linftyBochnerControl` already handles a
+  Banach-valued integrable kernel. Compose it with
+  `ContinuousMap.toLp` at exponent infinity to obtain the C(K) regularizer.
+  A graph-valued compact kernel can therefore replace the derivative estimate
+  in step 3 without adding a new integration framework.
+- `ProperCone.hyperplane_separation_point` can establish positive Bochner
+  integration directly: a separating continuous linear functional would have
+  a negative integral, contradicting pointwise nonnegativity. No probability
+  normalization or finite-quadrature machinery is required.

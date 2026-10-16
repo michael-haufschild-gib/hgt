@@ -57,8 +57,8 @@ theorem boundaryReLow77_ofReal (h r : ℝ) :
     boundaryReLowColumn76_11,boundaryReLowColumn76_12,boundaryReLowColumn76_13,
     boundaryReLowColumn76_14,boundaryReLowColumn76_15,boundaryReLowColumn76_16,
     boundaryReLowColumn76_17,boundaryReLowColumn76_18,boundaryReLowColumn76_19,
-    boundaryReLowColumn76_20,boundaryReLowColumn76_21,boundaryReLowColumn76_22] <;>
-    push_cast <;> ring
+    boundaryReLowColumn76_20,boundaryReLowColumn76_21,boundaryReLowColumn76_22]
+  ring
 
 theorem boundaryImLow77_ofReal (h r : ℝ) :
     ((boundaryImLow77 h r : ℝ) : ℂ)=boundaryImLow76 (h:ℂ) (r:ℂ) := by
@@ -69,8 +69,8 @@ theorem boundaryImLow77_ofReal (h r : ℝ) :
     boundaryImLowColumn76_11,boundaryImLowColumn76_12,boundaryImLowColumn76_13,
     boundaryImLowColumn76_14,boundaryImLowColumn76_15,boundaryImLowColumn76_16,
     boundaryImLowColumn76_17,boundaryImLowColumn76_18,boundaryImLowColumn76_19,
-    boundaryImLowColumn76_20,boundaryImLowColumn76_21] <;>
-    push_cast <;> ring
+    boundaryImLowColumn76_20,boundaryImLowColumn76_21]
+  ring
 
 /-- The compact first coefficient as a real polynomial. -/
 def boundaryCompactA77 (h r : ℝ) : ℝ := boundaryReLow77 h r+h^6*boundaryReHigh77 h r
@@ -320,6 +320,17 @@ theorem continuous_boundaryNormTrace78 :
   unfold boundaryNormTrace78 boundaryNormBeta78
   fun_prop
 
+theorem continuous_boundaryNormHat78_clock (s : ℝ) :
+    Continuous (fun h : ℝ => boundaryNormHat78 h s) := by
+  have hc := continuous_boundaryNormHat78.comp (continuous_id.prodMk (continuous_const (y := s)))
+  exact hc
+
+theorem continuous_boundaryNormAHat78_clock (s : ℝ) :
+    Continuous (fun h : ℝ => boundaryNormAHat78 h s) := by
+  have hc := continuous_boundaryNormAHat78.comp
+    (continuous_id.prodMk (continuous_const (y := s)))
+  exact hc
+
 /-! ### Uniform orientation on a clock strip -/
 
 /-- A continuous function negative on the compact face `{0} × [a, b]` stays negative on a whole
@@ -351,10 +362,10 @@ theorem boundaryNorm78_uniform_strip :
   obtain ⟨e0, he0, h0⟩ := exists_strip_neg_of_continuous continuous_boundaryRegularCore77.neg
     (a := 0) (b := boundaryNormS78) (fun s hs => by
       have := boundaryRegularCore77_zero_pos hs.1 hs.2
-      simp only [neg_lt_zero]; exact this)
+      simp only [Pi.neg_apply, neg_lt_zero]; exact this)
   obtain ⟨e1, he1, h1⟩ := exists_strip_neg_of_continuous continuous_boundaryNormB78.neg
     (a := 0) (b := boundaryNormS78) (fun s _ => by
-      simp only [boundaryNormB78_zero]; linarith)
+      simp only [Pi.neg_apply, boundaryNormB78_zero]; linarith)
   obtain ⟨e2, he2, h2⟩ := exists_strip_neg_of_continuous continuous_boundaryNormJ78
     (a := 0) (b := boundaryNormS78) (fun s _ => by
       simp only [boundaryNormJ78_zero]; linarith)
@@ -380,11 +391,11 @@ theorem boundaryNorm78_uniform_strip :
       h3 h s (hlt e3 ?_) hs, h4 h s (hlt e4 ?_) hs, h5 h s (hlt e5 ?_) hs⟩
     · have := h0 h s (hlt e0 (le_trans (min_le_right _ _) (le_trans (min_le_right _ _)
         (min_le_left _ _)))) hs
-      simp only [neg_lt_zero] at this
+      simp only [Pi.neg_apply, neg_lt_zero] at this
       exact this
     · have := h1 h s (hlt e1 (le_trans (min_le_left _ _) (le_trans (min_le_left _ _)
         (min_le_left _ _)))) hs
-      simp only [neg_lt_zero] at this
+      simp only [Pi.neg_apply, neg_lt_zero] at this
       exact this
     · exact le_trans (min_le_left _ _) (le_trans (min_le_left _ _) (min_le_right _ _))
     · exact le_trans (min_le_left _ _) (le_trans (min_le_right _ _) (min_le_left _ _))
@@ -417,8 +428,7 @@ theorem boundaryNorm78_not_seventh_order {s : ℝ} (hs0 : 0≤s) (hs1 : s≤boun
     ¬ ∃ D : ℝ → ℝ, ContinuousAt D 0 ∧
       ∀ᶠ h in 𝓝[>] (0:ℝ), boundaryNorm78 h s=h^7*D h := by
   rintro ⟨D, hD, hev⟩
-  have hc : Continuous (fun h : ℝ => boundaryNormHat78 h s) :=
-    continuous_boundaryNormHat78.comp (continuous_id.prodMk continuous_const)
+  have hc := continuous_boundaryNormHat78_clock s
   have hlim1 : Tendsto (fun h : ℝ => boundaryNormHat78 h s) (𝓝[>] 0)
       (𝓝 (boundaryNormHat78 0 s)) := (hc.tendsto 0).mono_left nhdsWithin_le_nhds
   have hlim2 : Tendsto (fun h : ℝ => h*D h) (𝓝[>] 0) (𝓝 (0*D 0)) :=
@@ -439,8 +449,7 @@ theorem boundaryNormA78_not_second_order (s : ℝ) :
     ¬ ∃ D : ℝ → ℝ, ContinuousAt D 0 ∧
       ∀ᶠ h in 𝓝[>] (0:ℝ), boundaryNormA78 h s=h^2*D h := by
   rintro ⟨D, hD, hev⟩
-  have hc : Continuous (fun h : ℝ => boundaryNormAHat78 h s) :=
-    continuous_boundaryNormAHat78.comp (continuous_id.prodMk continuous_const)
+  have hc := continuous_boundaryNormAHat78_clock s
   have hlim1 : Tendsto (fun h : ℝ => boundaryNormAHat78 h s) (𝓝[>] 0)
       (𝓝 (boundaryNormAHat78 0 s)) := (hc.tendsto 0).mono_left nhdsWithin_le_nhds
   have hlim2 : Tendsto (fun h : ℝ => h*D h) (𝓝[>] 0) (𝓝 (0*D 0)) :=
@@ -498,7 +507,7 @@ theorem boundaryNormSlope78_source {h : ℝ} (hh : h≠0) (s : ℝ) :
     unfold boundaryNormAlpha78 boundaryNormY78
     push_cast
     rw [←hbeta]
-    linear_combination (h:ℂ)^2*hroot
+    linear_combination -(h:ℂ)^2*hroot
   refine ⟨hA, hB, halpha, hbeta, ?_, ?_⟩
   · rw [QuadraticAlgebra.norm_def]
     unfold boundaryNorm78
@@ -562,20 +571,24 @@ theorem boundaryNormSlope78_pole_limits (s : ℝ) :
         (𝓝 ((-boundaryNormB0*(155520-567/64*s^2)/3 : ℝ) : ℂ)) ∧
       Tendsto (fun h : ℝ => (h:ℂ)^21*(boundaryNormSlope78 h s).re) (𝓝[>] 0)
         (𝓝 ((-boundaryNormB0/3 : ℝ) : ℂ)) := by
-  have hcN : Continuous (fun h : ℝ => ((boundaryNormHat78 h s : ℝ) : ℂ)) :=
-    Complex.continuous_ofReal.comp
-      (continuous_boundaryNormHat78.comp (continuous_id.prodMk continuous_const))
-  have hcA : Continuous (fun h : ℝ => ((boundaryNormAHat78 h s : ℝ) : ℂ)) :=
-    Complex.continuous_ofReal.comp
-      (continuous_boundaryNormAHat78.comp (continuous_id.prodMk continuous_const))
+  have hcN : Continuous (fun h : ℝ => ((boundaryNormHat78 h s : ℝ) : ℂ)) := by
+    have hc := Complex.continuous_ofReal.comp (continuous_boundaryNormHat78_clock s)
+    exact hc
+  have hcA : Continuous (fun h : ℝ => ((boundaryNormAHat78 h s : ℝ) : ℂ)) := by
+    have hc := Complex.continuous_ofReal.comp (continuous_boundaryNormAHat78_clock s)
+    exact hc
   constructor
-  · have hlim := (hcN.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0:ℝ)))
-    rw [boundaryNormHat78_zero, boundaryRegularCore77_zero] at hlim
+  · have hlim : Tendsto (fun h : ℝ => ((boundaryNormHat78 h s : ℝ) : ℂ)) (𝓝[>] 0)
+        (𝓝 ((-boundaryNormB0*(155520-567/64*s^2)/3 : ℝ) : ℂ)) := by
+      refine (hcN.tendsto' 0 _ ?_).mono_left nhdsWithin_le_nhds
+      simp only [boundaryNormHat78_zero, boundaryRegularCore77_zero]
     refine hlim.congr' ?_
     filter_upwards [self_mem_nhdsWithin] with h hpos
     exact ((boundaryNormSlope78_pole_identities (ne_of_gt hpos) s).1).symm
-  · have hlim := (hcA.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Set.Ioi (0:ℝ)))
-    rw [boundaryNormAHat78_zero] at hlim
+  · have hlim : Tendsto (fun h : ℝ => ((boundaryNormAHat78 h s : ℝ) : ℂ)) (𝓝[>] 0)
+        (𝓝 ((-boundaryNormB0/3 : ℝ) : ℂ)) := by
+      refine (hcA.tendsto' 0 _ ?_).mono_left nhdsWithin_le_nhds
+      simp only [boundaryNormAHat78_zero]
     refine hlim.congr' ?_
     filter_upwards [self_mem_nhdsWithin] with h hpos
     exact ((boundaryNormSlope78_pole_identities (ne_of_gt hpos) s).2).symm

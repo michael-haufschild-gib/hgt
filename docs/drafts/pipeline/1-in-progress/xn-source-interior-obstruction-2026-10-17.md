@@ -40,8 +40,9 @@ The first question is whether Xi-specific source structure can pay the interior 
 origin-centered disc containing the roots can map into itself under T: the
 corpus's two-fixed-point Schwarz rigidity would make T the identity on that
 disc, contradicting its derivative at 1. This rules out the proposed inference,
-not the Xi route. Scratch verification is in progress; do not count it as a new
-research contribution.
+not the Xi route. Scratch Lean verification passed with only `propext`,
+`Classical.choice`, and `Quot.sound`; do not count this generic counterexample
+as a new research contribution.
 
 ### C2: normalized scalar damping of the actual Xi Newton map
 
@@ -69,32 +70,95 @@ For every T and epsilon>0 there is p on the critical line above T with
    If xi'(p)=0, its left side must vanish.
 2. For any compact K, xi' has finitely many zeros in K by isolated zeros and
    compactness. Let V be the finite set of their nonzero xi-values. The explicit
-   polynomial `A_K(w)=prod_{v in V}(1-w/v)` has `A_K(0)=1` and cancels every
+   polynomial `A_K(w)=prod_{v in V}(1-w/v)(1-w/conj(v))` has `A_K(0)=1` and cancels every
    nonroot critical pole in K by (1). It is entire and D_A is analytic near K.
+   Each paired factor is Schwarz real, hence so is A_K. Xi's reflection law
+   then makes D_A commute with reflection in the critical line. Pairing adds
+   harmless repeated factors when a critical value is real.
 3. At any Xi zero rho, `D_A(rho)=N(rho)=rho`. Differentiating
    `D_A=s-A(xi)(s-N)` gives `D_A'(rho)=N'(rho)`, since A(0)=1 and
    `rho-N(rho)=0`. This preserves the local Newton first jet at every root,
    without assuming simplicity.
-4. No continuous A at 0 with A(0)=1 can remove all sufficiently high critical
+4. No entire A with A(0)=1 can remove all sufficiently high critical
    poles. Continuity gives epsilon>0 on which A is nonzero. The actual Xi
    critical-value accumulation theorem supplies p above any prescribed T with
    a nonzero xi-value in that neighborhood. The necessary condition in (1)
    fails. In particular no entire normalized scalar damping is globally analytic.
+5. In fact the globally analytic scalar dampings are exactly `A=0`. If a
+   nonzero entire A vanished on a neighborhood of 0, the identity theorem would
+   make it identically zero. Otherwise isolated zeros give a punctured disk
+   around 0 on which A is nonzero. A nonzero Xi critical value lies in that disk
+   at arbitrarily large height, so (1) again forces a pole. Conversely A=0 gives
+   the identity map. No quantitative estimate is used in this classification.
 
 This is a dependency-closed finite-repair/global-obstruction argument. It does
 **not** supply line-centered invariant discs or the arithmetic source sign. It
 must not be counted as fulfilling the requested significant advance. The
-strongest positive survivor currently identified is explicit compact-region
-pole cancellation preserving all root first jets; Lean verification is pending.
+strongest positive survivor is explicit compact-region pole cancellation
+preserving reflection and all root first jets. Its working-tree module is
+`formal/GaloisForLFunctions/RHTower/XiNewtonScalarDamping.lean`, wired into
+`RHTower.lean`; final module and axiom audits passed.
+
+Cancellation still fixes each cancelled critical point: the totalized quotient
+is zero there, and the proved analytic extension agrees with that value. A disc
+containing both a Xi zero and a distinct cancelled critical point would have
+two fixed points. Schwarz rigidity would force the repaired map to be the
+identity on that disc. Near the Xi zero, A(xi) is nonzero by A(0)=1, while xi
+and xi' are nonzero on a sufficiently small punctured neighborhood. The
+identity would then force the nonzero Newton displacement to vanish, a
+contradiction. Thus this scalar repair does not remove the geometric
+critical-point obstruction; no requested significant advance is claimed.
+
+## Search coverage
+
+Whole-corpus deep searches covered Newton-disc source derivatives, critical
+points and signed theta covariance, and entire interpolation. Their returned
+declarations/source arguments were treated as leads and checked in Lean
+source. Compiler coverage was predominantly source-only and semantic coverage
+was reported unavailable. The final scalar-damping search returned useful
+critical-value hits but was partial (`text_retrieval: interrupted`). Exhaustive
+`rg` searches located the actual XN modules and critical-value accumulation
+uses. No external search or novelty claim was made.
 
 ## Next conjecture
 
 A successful desingularization must use more than the value xi(s), or must
 abandon normalized holomorphic dependence at the accumulating critical value.
-The remaining task is a source-derived derivative-sensitive construction with
-an invariant-region law. Arbitrary entire interpolation would not supply that
-law and is rejected as a replacement endpoint.
+Derivative dependence is not yet a solution: the corpus also gives vertical
+decay of Xi's first derivative (`XiCDerivStripDecay`). A continuous controller of
+the two raw values `(xi,xi')` may be forced to incompatible limits along high
+simple roots and high nonroot critical points. This is a new conjecture requiring
+its own full paper and Lean audit; it is not asserted as proved.
+
+The remaining positive target is a source-derived construction with an
+invariant-region law. Arbitrary entire interpolation supplies no such law and
+is rejected as a replacement endpoint.
+
+## Verification
+
+- Targeted final check, from `formal/`, exited 0:
+  `lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/XiNewtonScalarDamping.olean GaloisForLFunctions/RHTower/XiNewtonScalarDamping.lean`.
+- A separate `/tmp` import and `#print axioms` audit of all eight public theorems
+  exited 0. Each depends only on `propext`, `Classical.choice`, and `Quot.sound`.
+- `scripts/formal_tools.py index` exited 0 and indexed the new declarations.
+- `scripts/formal_tools.py lint --check-generated` exited 1. Concurrent,
+  out-of-scope modules were unreachable from their theorem-area umbrellas:
+  `CHMDBVUniformConvergence`, `CHMDBVUniformGraph`,
+  `MobiusDivisorCriticalBVProfile`, `ThetaCuspRatioBoundaryNormOrientation`,
+  `BoundedVariationNormAlgebra`, `BoundedVariationPrimitive`, and
+  `BoundedVariationUniformJump`. Generated `formal/LEAN_API.md` and
+  `formal/LEAN_OVERVIEW.md` were also stale after concurrent source changes.
+  No lint error identified the new XN module. Global lint is not claimed to pass.
+- `git diff --check` passed. The new module contains no forbidden proof
+  placeholder, added axiom, unsafe declaration, or heartbeat override.
+- The frontier-map SHA-256 remained identical to its entry value. No web,
+  numerical experiment, full build, commit, or push was performed for this work.
 
 ## Status
 
-XN remains open. No route has been credited toward the full thread goal.
+The exact scalar-damping classification and constructive finite-region survivor
+have paper proofs and verified Lean proofs. XN's invariant-region/source-sign
+obstruction remains open. This does not meet the requested significant frontier
+advance; no route has been credited toward the full thread goal. The goal stays
+active. Per the one-new-route-per-turn instruction, select a different route or
+candidate next turn and retain XN as unfinished.

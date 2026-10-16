@@ -213,32 +213,22 @@ theorem exists_abs_mobiusFold_le (y : ℝ) :
 /-- Summability of `|μ(m)| C e^{−c log m}` for `c > 1`. -/
 theorem summable_moebius_mul_exp_neg_log {c : ℝ} (hc : 1 < c) (C : ℝ) :
     Summable fun m : ℕ => |moebiusCoeff m| * (C * Real.exp (-(c * Real.log m))) := by
-  have hC : ∀ m : ℕ, |moebiusCoeff m| * (C * Real.exp (-(c * Real.log m))) ≤
-      |C| * ((m : ℝ) ^ c)⁻¹ := by
-    intro m
-    rcases Nat.eq_zero_or_pos m with hm | hm
-    · subst hm
-      simp only [moebiusCoeff, ArithmeticFunction.map_zero, Int.cast_zero, abs_zero, zero_mul,
-        Nat.cast_zero, Real.zero_rpow (by linarith : c ≠ 0), inv_zero, mul_zero, le_refl]
-    · have hm' : (0 : ℝ) < m := by exact_mod_cast hm
-      have he : Real.exp (-(c * Real.log m)) = ((m : ℝ) ^ c)⁻¹ := by
-        rw [Real.rpow_def_of_pos hm', ← Real.exp_neg]
-        congr 1
-        ring
-      rw [he]
-      have h1 := abs_moebiusCoeff_le_one m
-      have h2 : C * ((m : ℝ) ^ c)⁻¹ ≤ |C| * ((m : ℝ) ^ c)⁻¹ :=
-        mul_le_mul_of_nonneg_right (le_abs_self C) (by positivity)
-      calc |moebiusCoeff m| * (C * ((m : ℝ) ^ c)⁻¹)
-          ≤ |moebiusCoeff m| * (|C| * ((m : ℝ) ^ c)⁻¹) :=
-            mul_le_mul_of_nonneg_left h2 (abs_nonneg _)
-        _ ≤ 1 * (|C| * ((m : ℝ) ^ c)⁻¹) :=
-            mul_le_mul_of_nonneg_right h1 (by positivity)
-        _ = _ := one_mul _
   refine Summable.of_norm_bounded (g := fun m : ℕ => |C| * ((m : ℝ) ^ c)⁻¹)
     ((Real.summable_nat_rpow_inv.mpr hc).mul_left |C|) fun m => ?_
-  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  exact hC m
+  rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_abs, abs_of_pos (Real.exp_pos _)]
+  rcases Nat.eq_zero_or_pos m with hm | hm
+  · subst hm
+    simp [moebiusCoeff, Real.zero_rpow (by linarith : c ≠ 0)]
+  · have hm' : (0 : ℝ) < m := by exact_mod_cast hm
+    have he : Real.exp (-(c * Real.log m)) = ((m : ℝ) ^ c)⁻¹ := by
+      rw [Real.rpow_def_of_pos hm', ← Real.exp_neg]
+      congr 1
+      ring
+    rw [he]
+    have h1 := abs_moebiusCoeff_le_one m
+    calc |moebiusCoeff m| * (|C| * ((m : ℝ) ^ c)⁻¹) ≤ 1 * (|C| * ((m : ℝ) ^ c)⁻¹) :=
+          mul_le_mul_of_nonneg_right h1 (by positivity)
+      _ = _ := one_mul _
 
 /-- **The deficit pairing is the folded Möbius series**:
 `∫_0^∞ D(s) f_y''(s) ds = Σ_m μ(m) Φ_y(log m)`. -/
@@ -346,7 +336,8 @@ theorem integral_deficitPrimitive_mul_conjugatedLaplacian_eq_tsum_mobiusFold (y 
       · rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hlt), moebiusCoeff]
         ring
       · rw [Set.indicator_of_notMem (by simp [Set.mem_Ioi, heq]), heq, sub_self,
-          ccmPrimeDeficitDilationSource_zero, zero_mul, mul_zero, zero_mul]
+          ccmPrimeDeficitDilationSource_zero]
+        simp
   have hzero : ∀ s ∉ Ioi (0 : ℝ), (∑' m, F m s) = 0 := by
     intro s hs
     have hs0 : s ≤ 0 := by simpa [Set.mem_Ioi, not_lt] using hs
@@ -573,7 +564,7 @@ theorem mobiusFold_eq (y : ℝ) {v : ℝ} (hv : 0 ≤ v) :
   ring
 
 /-- The remainder fold is bounded by `7 C e^{−v/2}` uniformly in the time `y`. -/
-theorem abs_remainderFold_le (y : ℝ) {v : ℝ} (hv : 0 ≤ v) :
+theorem abs_remainderFold_le (y v : ℝ) :
     |remainderFold y v| ≤ 7 * laplacianBound * Real.exp (-(v / 2)) := by
   unfold remainderFold
   have hdom : IntegrableOn (fun u : ℝ => 7 / 2 * laplacianBound * Real.exp (-(v / 2)) *

@@ -80,3 +80,31 @@ scratch file: only `propext`, `Classical.choice`, `Quot.sound`. Wired in `RHTowe
 
 ## Log
 - 2026-10-17 — created directly in 3-formalized; STATUS MUST-1569.
+
+## Folded Möbius series (second module)
+Module `formal/GaloisForLFunctions/RHTower/CHMDMobiusFoldedTransportOfKleinGordonPrimeWave.lean` (same namespace).
+- `ccmPrimeDeficitDilationSource_zero`, `abs_ccmPrimeDeficitDilationSource_le`: `S(0) = 0`, `|S(u)| ≤ (7/2 + 5/3 + log(2π)/2) e^u`.
+- `setIntegral_Ioi_shift`: `∫_ℓ^∞ g = ∫_0^∞ g(· + ℓ)`.
+- `mobiusFold`, `exists_abs_mobiusFold_le`: `Φ_y(v) = ∫_0^∞ S(u) f_y''(u+v) du`, `|Φ_y(v)| ≤ C_y e^{−(π−½)v}`.
+- `integral_deficitPrimitive_mul_conjugatedLaplacian_eq_tsum_mobiusFold`,
+  `chebyshevDiscrepancyTransport_eq_sub_tsum_mobiusFold`: `∫_0^∞ D f_y'' = Σ_m μ(m) Φ_y(log m)`, `T(y) = K_y(0) − Σ_m μ(m) Φ_y(log m)`
+  (Tonelli with indicator terms; the lattice points `s = log m` are harmless because `S(0) = 0`).
+- `integral_Ioi_exp_sub_mul_conjugatedLaplacian` (pole-density IBP from base point `v`), `mobiusFold_eq`:
+  `Φ_y(v) = (γ+1−log(2π)/2) f_y(v) + (γ+1)e^{−v}∫_v^∞ K_y e^{s/2} + ∫_0^∞ R f_y''(·+v)`.
+- `abs_remainderFold_le`: `|∫_0^∞ R(u) f_y''(u+v) du| ≤ 7C e^{−v/2}` uniformly in `y`.
+- `mobiusWave`, `mobiusTailPairing`, `remainderFoldSeries` (each summable), `chebyshevDiscrepancyTransport_eq_mobius_pieces`,
+  `riemannHypothesis_iff_mobius_pieces_bddAbove` / `_bddBelow`.
+Audit: `lake env lean` clean, `lake build --old` olean, `#print axioms` standard (`propext`, `Classical.choice`, `Quot.sound`),
+wired after the first module. STATUS MUST-1570.
+- 2026-10-17 — folded Möbius series module added; Phase 2 Path 1 complete; STATUS MUST-1570.
+
+## Lattice pole replacement (third module)
+Module `formal/GaloisForLFunctions/RHTower/CHMDLatticePoleReplacementAndSignedPrimeWave.lean` (same namespace).
+- `conjugatedDerivBound = (8 log 2 + 2)/π`, `abs_conjugatedKernelDeriv_le : |f_y'(s)| ≤ C₁ e^{−s/2}`, `abs_conjugatedKernel_sub_le`.
+- `latticeCell y n = ∫_{log(n+1)}^{log(n+2)} K_y e^{s/2}`, `abs_latticeCell_sub_le : |cell − f_y(log(n+1))| ≤ 2C₁ (n+1)^{−3/2}`
+  (unit pole mass per cell, `integral_exp`), `tsum_latticeCell` (adjacent intervals + `intervalIntegral_tendsto_integral_Ioi`).
+- `latticeWave`, `latticeBudget = Σ (n+1)^{−3/2}`, `abs_latticeWave_sub_integral_le` (uniform in `y`).
+- `signedPrimeWave y = Σ_n (Λ(n+1) − 1) f_y(log(n+1))`, `chebyshevDiscrepancyTransport_eq_signedPrimeWave_add`,
+  `abs_chebyshevDiscrepancyTransport_sub_signedPrimeWave_le`, `riemannHypothesis_iff_signedPrimeWave_bddAbove` / `_bddBelow`.
+Audit: `lake env lean` clean, `lake build --old` olean, `#print axioms` standard, wired. STATUS MUST-1571.
+- 2026-10-17 — lattice pole replacement module added; Phase 2 Path 2 assessed (its channels are the Dirichlet-convolution form of Path 1); STATUS MUST-1571.
