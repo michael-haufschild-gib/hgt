@@ -42,6 +42,22 @@ def nativeBulkAt (q : XiZeroCopy) (branch b : Bool) (a : ℂ)
     nativeDirichletCausalKernel q (r.1 - p.1) r.2 p.2 X k /
       (Real.cosh r.2 : ℂ) ^ (2 : ℕ) * phi r
 
+/-- The inner native target integral is absolutely admitted for almost every source. -/
+theorem nativeBulk_target_integrable_ae (q : XiZeroCopy) (branch b : Bool) (a : ℂ)
+    (X k : ℝ) (phi : Event → ℂ) (hp : ContDiff ℝ ∞ phi) (hc : HasCompactSupport phi) :
+    ∀ᵐ p : Event ∂eventMeasure, Integrable (fun r : Event =>
+      timeReducedCoefficient (physicalRate q b) a p.1 p.2 * parameter q branch *
+        nativeDirichletCausalKernel q (r.1 - p.1) r.2 p.2 X k /
+          (Real.cosh r.2 : ℂ) ^ (2 : ℕ) * phi r) := by
+  filter_upwards [retardedCoupledBulkDensity_target_integrable_ae q branch b a X k phi hp hc,
+    fullRetardedResponse_test_target_integrable_ae q branch b a X k _
+      (bulkTest_continuous q branch phi hp.continuous) (bulkTest_compact q branch phi hc)]
+    with p hcoupled hfull
+  apply (hcoupled.sub hfull).congr
+  exact ae_of_all _ (fun r => by
+    dsimp only [Pi.sub_apply, retardedCoupledBulkDensity, bulkTest]
+    ring)
+
 private theorem nativeBulkAt_split (q : XiZeroCopy) (branch b : Bool) (a : ℂ)
     (X k : ℝ) (phi : Event → ℂ) (hp : ContDiff ℝ ∞ phi) (hc : HasCompactSupport phi) :
     nativeBulkAt q branch b a X k phi =ᵐ[eventMeasure]
@@ -142,6 +158,27 @@ theorem complementary_native_action_tendsto (q : XiZeroCopy) (branch : Bool)
   exact Eventually.of_forall (fun n =>
     (nativeTwoResponseAction_eq (wedgeWindow n) (wedgeWindow_smooth n) (wedgeWindow_compact n)
       (wedgeWindow_support n) q branch true false a d X k).symm)
+
+/-- Every wave integral and every outer native integral in the concrete
+complementary-rate action is absolutely admitted, without analytic premises. -/
+theorem complementary_native_action_admitted (q : XiZeroCopy) (branch : Bool)
+    (a d : ℂ) (X k : ℝ) (n : ℕ) :
+    Integrable (fun p : Event => fullRetardedResponse q branch true a p.1 p.2 X k *
+      eventWave (responseTest (wedgeWindow n) q branch false d X k) p) ∧
+    Integrable (fun p : Event => fullRetardedResponse q branch false d p.1 p.2 X k *
+      eventWave (responseTest (wedgeWindow n) q branch true a X k) p) ∧
+    Integrable (nativeBulkAt q branch true a X k
+      (responseTest (wedgeWindow n) q branch false d X k)) eventMeasure ∧
+    Integrable (nativeBulkAt q branch false d X k
+      (responseTest (wedgeWindow n) q branch true a X k)) eventMeasure :=
+  ⟨responseTest_wave_integrable _ (wedgeWindow_smooth n) (wedgeWindow_compact n)
+      (wedgeWindow_support n) q branch true false a d X k,
+    responseTest_wave_integrable _ (wedgeWindow_smooth n) (wedgeWindow_compact n)
+      (wedgeWindow_support n) q branch false true d a X k,
+    responseTest_native_integrable _ (wedgeWindow_smooth n) (wedgeWindow_compact n)
+      (wedgeWindow_support n) q branch true false a d X k,
+    responseTest_native_integrable _ (wedgeWindow_smooth n) (wedgeWindow_compact n)
+      (wedgeWindow_support n) q branch false true d a X k⟩
 
 end
 end RHTower.D4BMPWNativeTwoResponseAction

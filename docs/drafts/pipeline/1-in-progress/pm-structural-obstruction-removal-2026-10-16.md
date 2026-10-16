@@ -125,7 +125,18 @@ the work plan is tracked here.
 
 - `ThetaCuspHawkingBMPWRetardedTriangle.lean`: direct Lean audit passed.
 - `ThetaCuspHawkingBMPWRetardedRegularity.lean`: direct Lean audit passed.
-- Weak-action admission helpers, two-response insertion, exhaustion, and native
-  bulk cancellation: written, audits in progress. No final contribution claimed.
+- `ThetaCuspHawkingBMPWRetardedWeakNative.lean`: added absolute action-admission
+  helpers and preserved the existing weak identity; direct Lean audit passed.
+- Two-response insertion, exhaustion, and native bulk cancellation: written,
+  audits in progress. No final contribution claimed.
 - No heartbeat increases. No numerical experiments. Only one owned Lean process
   at a time; dependency objects emitted by direct foreground leaf checks.
+
+## Exact analytic scope
+
+The native term retains the order: integrate the target event, then the physical
+source event. Inner native integrability holds for almost every source; the
+resulting source function is integrable. No joint absolute native Fubini theorem
+is claimed. Full/full cancellation uses the existing jointly integrable full
+kernel and is therefore an admitted Fubini operation. The exhaustion limit is
+for the combined wave-minus-native action, not for its two components separately.

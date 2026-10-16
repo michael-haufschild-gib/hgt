@@ -1,9 +1,9 @@
 # Actual-prime realization of compact-clock controls
 
-Status: paper proof complete; Lean implementation in progress.
+Status: FORMALIZED. Paper proof, three leaf builds, and axiom audit complete.
 
-Parent goal: `cross-route-100-theorems-2026-10-16.md`. This candidate is not
-yet counted. The goal now requires 100 qualifying results, not one.
+Parent goal: `../1-in-progress/cross-route-100-theorems-2026-10-16.md`.
+Counted as contribution 1 of 100. Supporting lemmas and modules count once.
 
 ## Task and scope
 
@@ -134,12 +134,8 @@ Processing a canonical small-prime core retains the exact singleton law;
 additional already-processed large primes outside the selected block do not
 change those singleton values.
 
-## Explicit remaining obligations
+## Scope limits
 
-- Implement and directly audit Lean realization, including distinctness,
-  common scale, complete interval norm, and vanishing diagonal term.
-- Prove literal-source and integer-fibre corollaries rather than merely
-  describe their expected translation.
 - No paid exhaustion, monotonicity of every prime prefix, global energy
   control, or RH proof has been established by this construction.
 - The target profile is fixed before the scale varies. There is no uniform
@@ -147,20 +143,20 @@ change those singleton values.
   histories. The common normalization is essential; no bounded unnormalized
   synthesis cost is asserted.
 
-## Implementation checkpoint
+## Completed implementation
 
 - `MobiusDivisorPrimeWindowSynthesis.lean`: generic positive Banach-vector
   synthesis by one finite prime set; the proof retains both the first moment
   and quadratic diagonal from the same subsets of disjoint prime windows.
 - `MobiusDivisorPrimeClockRealization.lean`: specialization to the compact
   Abel-source cone, exporting actual normalized prime atoms.
-- First sampling compilation exposed typing/rewrite issues, not a failed
-  mathematical inference. These were corrected. The sampling leaf now passes
-  direct `lake --old env lean -j 1 -o ...` compilation with empty output.
-  The Abel specialization also passes direct leaf compilation with empty
-  output. Exact terminal-fibre conversion is currently being checked.
-- No existing Lean source has been modified by this candidate. Serena cannot
-  address this ignored Lean tree; edits use read-before-write patches.
+- `MobiusDivisorPrimeClockTerminalControl.lean`: exact Abel evaluation,
+  one canonical small-prime core, freshness, and simultaneous control of
+  literal singleton fibres at every integer cutoff in the clock interval.
+- All three targeted `lake --old env lean -j 1 -o ...` builds exit 0 with
+  empty output. No full or umbrella build was run; no heartbeat was raised.
+- Existing Lean source changes are the three imports in `RHTower.lean`.
+  Serena cannot address this ignored Lean tree; edits used precise patches.
 - Whole-corpus search for the exact realization mechanism was run after the
   statement became precise. Closest inspected hits:
   `PrimeCoShiftRowGraph.exists_prime_uniform_vector` dilutes a constant
@@ -171,3 +167,42 @@ change those singleton values.
   `PrimeArchFiniteKMSLocalMomentClosure` defines a missing positive moment
   closure and receives it as a hypothesis; this construction does not claim
   to discharge that RH-strength hypothesis.
+
+## Final audit
+
+- The final `/tmp` audit imports the terminal leaf, checks the used mathlib
+  names against this toolchain, and prints axioms for all eight public
+  declarations. Exit 0. Every declaration uses only `propext`,
+  `Classical.choice`, and `Quot.sound`; no new axiom or admitted proof.
+- The main exports are
+  `PrimePreparation.eventually_exists_prime_vector_synthesis`,
+  `eventually_exists_criticalPrimeClock_realization`, and
+  `eventually_exists_terminalPrimeClock_control`, under `RHTower`.
+- All three imports appear once in `formal/GaloisForLFunctions/RHTower.lean`.
+- `scripts/formal_tools.py index` exits 0. Global
+  `scripts/formal_tools.py lint --check-generated` exits 1: ten concurrently
+  added, unrelated modules are unwired and generated API/overview files
+  changed after indexing. No error names any of these three leaves. The
+  failing modules are `CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection`,
+  `FiniteWeilNodalAdjacentCoupling`, `FiniteWeilNodalMixtureTransport`,
+  `ThetaCuspHawkingBMPWRetardedRegularity`, `ThetaCuspHawkingBMPWRetardedTriangle`,
+  `ThetaCuspHawkingBMPWTwoResponseAction`, `ThetaCuspHawkingBMPWTwoResponseActionLimit`,
+  `OneChannelPowerSolvability`, `OneChannelRootObservability`, and
+  `OneChannelRootProjection`. Their work is preserved. Global lint is not
+  claimed clean; formalization status records the successful leaf audits.
+- Audited SHA-256 values:
+  - window synthesis: `09796e1d7c31bb6a202e236ca4ddcea7eeb98c2c6ec56e5294fa63ec22020457`
+  - clock realization: `fc4f59675c8311c139fbb0030dd3d87d39af9fdb092c23d9619292b6ceaea5cf`
+  - terminal control: `3c31fba2dd042735148e47efc160ed800b69b9d89f1768497fe6699e21853cd6`
+
+## Significance decision
+
+COUNT ONCE. The earlier cone theorem allowed independently chosen positive
+real weights. This theorem removes that relaxation: at every sufficiently
+large common scale, distinct actual primes produce any prescribed compact
+clock target, while the same prime block has arbitrarily small normalized
+quadratic diagonal. The terminal theorem places this control in the literal
+divisor geometry under one common processed core. Thus discrete availability
+and diagonal cost are jointly removed as obstructions to prescribed finite
+window control. No additional positivity or RH-strength source premise is
+assumed. The scale-dependent and exhaustive-history problems remain open.

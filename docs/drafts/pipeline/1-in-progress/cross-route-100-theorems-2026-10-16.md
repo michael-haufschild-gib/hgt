@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 0 / 100.
+Status: ACTIVE. Count verified for this goal: 1 / 100.
 
 ## User requirements
 
@@ -26,22 +26,21 @@ novelty is not claimed: user forbids external novelty research.
 
 ## Verified contributions
 
-None yet counted under the 100-theorem requirement.
-
-## Active candidate
-
 1. Actual-prime realization of arbitrary compact-clock controls with vanishing
-   quadratic diagonal cost. Card:
-   `mc-prime-clock-realization-2026-10-16.md`.
+   normalized quadratic diagonal cost. Card:
+   `../3-formalized/mc-prime-clock-realization-2026-10-16.md`.
    Inputs: compact-clock separation (complete Abel source, Fourier–Borel
    detection, critical-line zero supply), prime-window capacity from the PNT
    corpus, and exact terminal divisor-fibre geometry. Paper proof complete;
-   Lean implementation underway. Not counted.
+   three Lean leaves compile cleanly; all eight public declarations have
+   only standard axioms; all three imports are wired. Counted once.
+   Global lint remains red on unrelated concurrent unwired modules and
+   generated-file drift; the card records the exact failing modules.
 
 ## Working plan
 
-1. Finish and audit the current candidate; reject or rework if it is only a
-   routine bridge rather than the requested structural advance.
+1. Contribution 1 complete. Recheck significance and exact scope before
+   counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
 3. Record failed conjectures, their exact obstruction, and positive survivors.
