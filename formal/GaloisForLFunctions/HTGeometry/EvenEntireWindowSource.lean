@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.EvenEntireCompactSource
+import Zeta23.ExplicitFormula.Bridge
 
 /-!
 # Exact windows for even inverse transforms
@@ -119,6 +120,6 @@ theorem compactInverse_eq_of_paperFT {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
   rw [compactInverse_eq_fourierInv,hV]
   exact hf.continuous.fourierInv_fourier_eq
     (hf.continuous.integrable_of_hasCompactSupport hfs)
-    (Zeta23.ExplicitFormula.integrable_fourier_of_contDiff_two hf hfs)
+    (Zeta23.EF.integrable_fourier_of_contDiff_two hf hfs)
 
 end GaloisForLFunctions.HTGeometry

@@ -20,7 +20,8 @@ theorem tendsto_thetaWeight_atTop (z : ℂ) :
   convert ht using 1
   funext x
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_pos (thetaSource.normalized_pos x), norm_sourceChar, normalized_reflection]
+    abs_of_pos (thetaSource.normalized_pos x), norm_sourceChar, Function.comp_apply,
+    normalized_reflection]
   congr 2
   ring
 
@@ -33,15 +34,16 @@ theorem nativeODE_zero_of_trace_zero (z : ℂ) (f : ℝ → ℂ)
     have hρ0 : (thetaSource.normalized x : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (thetaSource.normalized_pos x).ne'
     have hc : HasDerivAt (sourceChar z) (I*z*sourceChar z x) x := by
-      simpa only [sourceChar, mul_comm] using
+      simpa [sourceChar, mul_comm] using
         (((hasDerivAt_id (x : ℂ)).const_mul (I*z)).cexp).comp_ofReal
     refine ((hρ.mul hc).mul (hf x).hasDerivAt).congr_deriv ?_
     have hx := he x
     dsimp [sourceLogDerivative] at hx
     field_simp at hx
+    simp only [Pi.mul_apply]
     linear_combination sourceChar z x*hx
-  have hc : ∀ x, w x = w 0 :=
-    is_const_of_deriv_eq_zero (fun x => (hw x).differentiableAt) (fun x => (hw x).deriv) _
+  have hc : ∀ x, w x = w 0 := fun x =>
+    is_const_of_deriv_eq_zero (fun x => (hw x).differentiableAt) (fun x => (hw x).deriv) x 0
   have hz : Tendsto w atTop (𝓝 0) := by
     simpa only [mul_zero] using (tendsto_thetaWeight_atTop z).mul ht
   have hconst : Tendsto w atTop (𝓝 (w 0)) :=

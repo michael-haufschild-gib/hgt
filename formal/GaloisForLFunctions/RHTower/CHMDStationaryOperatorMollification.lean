@@ -39,13 +39,17 @@ theorem volumeResolvent_smooth (n : ℕ) (w : StationaryVolumeSpace) :
     volumeResolvent (volumeSmooth n w) = volumeSmooth n (volumeResolvent w) := by
   rw [volumeSmooth, ← volumeResolvent.integral_comp_comm (integrable_volumeSmooth n w)]
   apply integral_congr_ae
-  exact Eventually.of_forall fun a => by rw [map_smul, volumeResolvent_translate]
+  exact Eventually.of_forall fun a => by
+    change volumeResolvent (mollifier n a • volumeTranslate (-a) w) = _
+    rw [map_smul, volumeResolvent_translate]
 
 def volumeGeneratorSmooth (n : ℕ) (u : volumeGenerator.domain) : volumeGenerator.domain :=
   ⟨volumeSmooth n (u : StationaryVolumeSpace),
     ⟨volumeSmooth n ((u : StationaryVolumeSpace) + volumeGenerator u), by
-      rw [volumeResolvent_smooth,
-        generatorOfResolvent_identity volumeResolvent volumeResolvent_injective u]⟩⟩
+      change volumeResolvent (volumeSmooth n ((u : StationaryVolumeSpace) + volumeGenerator u)) = _
+      rw [volumeResolvent_smooth]
+      exact congrArg (volumeSmooth n)
+        (generatorOfResolvent_identity volumeResolvent volumeResolvent_injective u)⟩⟩
 
 theorem volumeGeneratorSmooth_apply (n : ℕ) (u : volumeGenerator.domain) :
     volumeGenerator (volumeGeneratorSmooth n u) = volumeSmooth n (volumeGenerator u) := by
@@ -55,7 +59,7 @@ theorem volumeGeneratorSmooth_apply (n : ℕ) (u : volumeGenerator.domain) :
       ⟨volumeResolvent (volumeSmooth n w), ⟨volumeSmooth n w, rfl⟩⟩ := by
     apply Subtype.ext
     exact (volumeResolvent_smooth n w).symm
-  rw [he, volumeGenerator_resolvent, volumeGenerator_resolvent, volumeSmooth_sub,
+  erw [he, volumeGenerator_resolvent, volumeGenerator_resolvent, volumeSmooth_sub,
     volumeResolvent_smooth]
 
 theorem volumeGeneratorSmooth_tendsto (u : volumeGenerator.domain) :

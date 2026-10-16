@@ -49,24 +49,28 @@ theorem boundedVariationOn_forcedRightTail {z : ℂ} {g : ThetaContinuousBV}
     have hr : BoundedVariationOn (fun x => forcedRightTail (-z) g.reflect (-x)) (Iic (0 : ℝ)) :=
       ne_top_of_le_ne_top hb (eVariationOn.comp_le_of_antitoneOn _
         (s := Ici (0 : ℝ)) (t := Iic (0 : ℝ)) (fun x : ℝ => -x)
-        (fun _ _ _ _ h => neg_le_neg h) (fun x hx => neg_nonneg.mpr hx))
+        (fun _ _ _ _ h => neg_le_neg h) (fun x hx => by
+          change 0 ≤ -x
+          exact neg_nonneg.mpr hx))
     have hn := boundedVariation_affine hr 0 (-1)
     have he : forcedRightTail z g = fun x => 0+(-1)*forcedRightTail (-z) g.reflect (-x) := by
       funext x
       simpa using forcedRightTail_reflection hzero x
-    rwa [he]
+    rw [he]
+    exact hn
   have hr := boundedVariationOn_forcedRightTail_ray z g 0
-  have hs : IsGreatest (Iic (0 : ℝ)) 0 := ⟨le_rfl, fun _ h => h⟩
-  have ht : IsLeast (Ici (0 : ℝ)) 0 := ⟨le_rfl, fun _ h => h⟩
+  have hs : IsGreatest (Iic (0 : ℝ)) 0 := ⟨by simp, fun _ h => h⟩
+  have ht : IsLeast (Ici (0 : ℝ)) 0 := ⟨by simp, fun _ h => h⟩
   change eVariationOn (forcedRightTail z g) univ ≠ ⊤
-  rw [← Iic_union_Ici (0 : ℝ), eVariationOn.union _ hs ht]
+  rw [← Iic_union_Ici (a := (0 : ℝ)), eVariationOn.union _ hs ht]
   exact ENNReal.add_ne_top.mpr ⟨hl, hr⟩
 
 theorem tendsto_forcedRightTail_atBot {z : ℂ} {g : ThetaContinuousBV}
     (hzero : forcedMoment z g = 0) :
     Tendsto (forcedRightTail z g) atBot (𝓝 0) := by
   have h := ((tendsto_forcedRightTail_atTop (-z) g.reflect).comp tendsto_neg_atBot_atTop).neg
-  simpa only [neg_zero, ← forcedRightTail_reflection hzero] using h
+  simp only [neg_zero] at h
+  exact h.congr fun x => (forcedRightTail_reflection hzero x).symm
 
 /-- The literal differential domain, with its actual common endpoint trace. -/
 structure ThetaNativeDomain extends ThetaContinuousBV where
@@ -113,7 +117,9 @@ theorem nativeZeroMomentSolution_trace (z : ℂ) (g : ThetaContinuousBV) (c : �
     (hzero : forcedMoment z g = 0) :
     thetaTailTrace (nativeZeroMomentSolution z g c hzero) = c := by
   have ht := ((tendsto_forcedRightTail_atTop z g).const_mul I).const_add c
-  simpa only [mul_zero, add_zero] using ht.limUnder_eq
+  simp only [mul_zero, add_zero] at ht
+  change limUnder atTop (fun x => c+I*forcedRightTail z g x) = c
+  exact ht.limUnder_eq
 
 theorem nativeZeroMomentSolution_equation (z : ℂ) (g : ThetaContinuousBV) (c : ℂ)
     (hzero : forcedMoment z g = 0) (x : ℝ) :
@@ -126,6 +132,7 @@ theorem nativeZeroMomentSolution_equation (z : ℂ) (g : ThetaContinuousBV) (c :
     z*(c+I*forcedRightTail z g x) = _
   ring_nf
   simp [Complex.I_sq]
+  ring
 
 /-- A complete native parametrix, paid on every original continuous BV forcing. -/
 def nativeThetaParametrix (z : ℂ) (g : ThetaContinuousBV) : ThetaNativeDomain :=

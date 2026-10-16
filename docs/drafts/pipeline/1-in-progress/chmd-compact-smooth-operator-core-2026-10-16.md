@@ -21,17 +21,25 @@ Construct the ordinary-volume stationary difference graph for the actual
 kernel kappa, and its actual generator A. Translation invariance should make
 compact convolution mollifiers commute with A and converge in graph norm.
 
-For compactly supported u in Dom(G), put f=Theta*u. To prove f in Dom(A),
-split every stationary form test q by a smooth cutoff chi=1 near supp(f).
-The local test chi*q/Theta belongs to the actual ground graph; G's form
-identity supplies its pairing. The complementary separated-support pairing
-is an ordinary-L2 bounded functional. Riesz representation then gives the
-ordinary operator-domain admission of f.
+Let J:u -> Theta*u from the mass Hilbert space to ordinary L2. Let W_n be
+the bounded local inverse f -> chi_n*f/Theta. Then J W_n=M_n, and W_n J is
+the mass cutoff. The actual first Levy moment supplies the bounded ordinary
+commutator C_n=[A,M_n] through endpoint pullbacks and their adjoints.
 
-Mollify f, divide the resulting smooth compact functions by positive Theta,
-and transfer convergence to the mass space. The mass convergence is local;
-generator-image convergence uses bounded Theta/cosh. Finally diagonalize
-with the already-proved spatial operator cutoffs.
+For compactly supported u in Dom(G), choose n with the mass cutoff fixing u.
+Writing f=J u, the complete form identity becomes
+E(f,q)=<W_n* G u + C_n f,q>. Thus f belongs to Dom(A), with the displayed
+actual generator image. This avoids an independent far-field kernel lemma.
+Conversely, f=J u in Dom(A) gives u in Dom(G) and G u=J* A f, by testing
+against the complete ground graph and Riesz uniqueness.
+
+Take u_j=W_n S_j f, where S_j is the Bochner mollifier average. Then
+J u_j=M_n S_j f is in Dom(A). The exact commutator gives convergence of
+A M_n S_j f to A f. Boundedness of W_n and J* gives graph convergence in
+the mass space. Each u_j has the compact C2 representative
+chi_n * (rho_j*f) / Theta. Finally diagonalize with the already-proved
+spatial operator cutoffs. A common support bound for all mollifiers is not
+needed because the fixed outer cutoff is part of W_n.
 
 Do not identify Dom(G) globally with {u:Theta*u in Dom(A)}. The proposed
 ordinary-domain admission is only after compact spatial localization.
@@ -46,4 +54,9 @@ The existing Gamma-clock generator uses kappa/t and is not A.
 
 ## Validation
 
-Pending. No smooth operator-core or RH proof claimed yet.
+Verified targeted builds: correct ordinary-volume generator; translation
+covariance of its literal graph and resolvent; strong Bochner mollification
+preserving its operator domain and both graph coordinates. Representative
+identification needed one missing explicit corpus import; recheck running.
+Local inverse and first-moment commutator leaves drafted, not yet verified.
+No smooth operator-core or RH proof claimed yet.

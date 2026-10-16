@@ -216,8 +216,8 @@ theorem hasDerivAt_forcedRightTail (z : ℂ) (g : ThetaContinuousBV) (x : ℝ) :
   have ht : HasDerivAt (fun x => ∫ y in Ioi x, flatCharDensity z y*g y)
       (-flatCharDensity z x*g x) x := by
     simp_rw [forcedTail_integral_split]
-    convert (hasDerivAt_const x (forcedMoment z g)).sub hI using 1 <;>
-      simp only [Pi.sub_apply, Pi.mul_apply, zero_sub, neg_mul]
+    convert hI.const_sub (forcedMoment z g) using 1 <;>
+      first | rfl | simp only [Pi.mul_apply, neg_mul]
   have he : HasDerivAt (fun x : ℝ => Complex.exp (-(I*z)*(x : ℂ)))
       (-(I*z)*Complex.exp (-(I*z)*(x : ℂ))) x := by
     simpa [mul_comm] using

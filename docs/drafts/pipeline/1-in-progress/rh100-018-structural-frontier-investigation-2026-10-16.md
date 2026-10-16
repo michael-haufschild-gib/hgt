@@ -39,7 +39,7 @@ Conjecture log:
   representative, and admission to the complete signed CHMD graph.** This
   removes the finite-Xi-packet restriction from native inhomogeneous solving.
 
-Dependency-closed paper proof (formalization pending):
+Dependency-closed paper proof (formalization in progress):
 Write rho for the positive normalized theta density and C(z)=integral
 rho(x) exp(i z x)=XiC(z)/mass. For continuous BV g let
 J(z,g)=integral rho(x) exp(i z x) g(x) and
@@ -91,3 +91,11 @@ Searches used whole-corpus deep retrieval and targeted Meyer lexical/deep
 retrieval. Deep reports were non-partial with no errors; compiler metadata
 was predominantly source-only/stale, so applicability is checked in source
 and must be audited by Lean. No old research markdown or web was used.
+
+Audit checkpoints:
+- `HTGeometry/BoundedVariationKernelIntegral.lean`: direct leaf audit passed;
+  arbitrary-partition product telescoping and integration are kernel checked.
+- `RHTower/PaperThetaForcedTail.lean`: direct leaf audit passed; actual forced
+  tail has finite right-ray variation, decay and the literal derivative.
+- Both finished leaves wired uniquely in their umbrellas. Remaining five
+  leaves await their sequential direct audits; no umbrella build is run.

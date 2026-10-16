@@ -106,11 +106,11 @@ theorem memLp_archMoment_right (v : MassSpace) :
   nlinarith only [h]
 
 section Pullback
-variable (a : ℝ × ℝ → ℝ) (η : Measure (ℝ × ℝ))
-  (ha : Measure.QuasiMeasurePreserving a η massMeasure)
-  (hm : ∀ v : MassSpace, MemLp (v ∘ a) 2 η)
+variable {μ : Measure ℝ} (a : ℝ × ℝ → ℝ) (η : Measure (ℝ × ℝ))
+  (ha : Measure.QuasiMeasurePreserving a η μ)
+  (hm : ∀ v : Lp ℝ 2 μ, MemLp (v ∘ a) 2 η)
 
-def admittedPullbackLM : MassSpace →ₗ[ℝ] Lp ℝ 2 η where
+def admittedPullbackLM : Lp ℝ 2 μ →ₗ[ℝ] Lp ℝ 2 η where
   toFun v := (hm v).toLp (v ∘ a)
   map_add' v w := by
     apply Lp.ext
@@ -127,12 +127,12 @@ def admittedPullbackLM : MassSpace →ₗ[ℝ] Lp ℝ 2 η where
     change (hm (c • v)).toLp _ e = (c • (hm v).toLp _) e
     rw [h1, h3, h2, h4]
 
-theorem admittedPullbackLM_ae (v : MassSpace) :
+theorem admittedPullbackLM_ae (v : Lp ℝ 2 μ) :
     admittedPullbackLM a η ha hm v =ᵐ[η] v ∘ a := (hm v).coeFn_toLp
 
 theorem continuous_admittedPullbackLM : Continuous (admittedPullbackLM a η ha hm) := by
   apply LinearMap.continuous_of_isClosed_graph
-  have heq : ((admittedPullbackLM a η ha hm).graph : Set (MassSpace × Lp ℝ 2 η)) =
+  have heq : ((admittedPullbackLM a η ha hm).graph : Set (Lp ℝ 2 μ × Lp ℝ 2 η)) =
       {p | p.2 =ᵐ[η] p.1 ∘ a} := by
     ext p
     change p.2 = admittedPullbackLM a η ha hm p.1 ↔ p.2 =ᵐ[η] p.1 ∘ a
@@ -154,10 +154,10 @@ theorem continuous_admittedPullbackLM : Continuous (admittedPullbackLM a η ha h
   filter_upwards [ha.ae hs, he, hg] with e h1 h2 h3
   exact tendsto_nhds_unique h2 ((h1.comp hms.tendsto_atTop).congr fun n => (h3 n).symm)
 
-def admittedPullback : MassSpace →L[ℝ] Lp ℝ 2 η :=
+def admittedPullback : Lp ℝ 2 μ →L[ℝ] Lp ℝ 2 η :=
   ⟨admittedPullbackLM a η ha hm, continuous_admittedPullbackLM a η ha hm⟩
 
-theorem admittedPullback_ae (v : MassSpace) :
+theorem admittedPullback_ae (v : Lp ℝ 2 μ) :
     admittedPullback a η ha hm v =ᵐ[η] v ∘ a := admittedPullbackLM_ae a η ha hm v
 
 end Pullback
