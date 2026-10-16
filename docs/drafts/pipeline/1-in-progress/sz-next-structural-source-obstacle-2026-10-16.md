@@ -28,7 +28,7 @@ Paper mechanism for conjecture 3:
 
 This is a domain/completion theorem, not the unresolved signed prime--polar--Gamma Ward comparison. The individual graph equality now passes direct Lean audit.
 
-Formal progress: `SuzukiGammaJacobiTailCore.lean`, `SuzukiCausalDepthGammaSourceRegularization.lean`, and `SuzukiCausalDepthGammaMaximalSource.lean` pass direct `lake --old env lean -j 1` audits and are wired into `RHTower.lean`. Together they prove the exact tail identity, admissible regularization, and minimal = maximal. The stronger Cesàro and universal joint-core modules are awaiting audit. No umbrella build is run.
+Formal progress: `SuzukiGammaJacobiTailCore.lean`, `SuzukiCausalDepthGammaSourceRegularization.lean`, `SuzukiCausalDepthGammaMaximalSource.lean`, and `SuzukiCausalDepthGammaCesaroSource.lean` pass direct `lake --old env lean -j 1` audits and are wired into `RHTower.lean`. Together they prove the exact tail identity, admissible regularization, minimal = maximal, and full-sequence Cesàro graph convergence. The universal joint-core module is under audit. No umbrella build is run.
 
 4. Stronger conjecture exposed by the construction: the same literal finite source packets form a **joint graph core for every finite family of Gamma parameters**. The radial input multiplier is parameter-independent. Sum the finitely many nonnegative output-tail energies and choose one sequence of good shifts; every component then converges. Each regularized joint output is the continuous image of the same finite input approximants. This removes the additional common-domain/completion ambiguity in mixed-aperture pairings. Paper argument is dependency-closed once conjecture 3's analytic details are checked; formalization pending.
 

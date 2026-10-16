@@ -129,21 +129,23 @@ theorem tendsto_suzukiGammaRegularizedSynthesis_mean_error_sq
 
 /-- Parameter-independent averaged input regularization. -/
 def suzukiGammaCesaroSource (N : ℕ) : H →L[ℂ] H :=
-  Complex.ofReal ((N : ℝ)⁻¹) • ∑ n ∈ Finset.range N, suzukiGammaSourceRegularization n
+  algebraMap ℝ ℂ ((N : ℝ)⁻¹) • ∑ n ∈ Finset.range N, suzukiGammaSourceRegularization n
 
 /-- The corresponding averaged output uses the literal two-leg columns. -/
 def suzukiGammaCesaroSynthesis (h a : Set.Ioi (0 : ℝ)) (N : ℕ) : H →L[ℂ] H :=
-  Complex.ofReal ((N : ℝ)⁻¹) • ∑ n ∈ Finset.range N, suzukiGammaRegularizedSynthesis h a n
+  algebraMap ℝ ℂ ((N : ℝ)⁻¹) • ∑ n ∈ Finset.range N, suzukiGammaRegularizedSynthesis h a n
 
 theorem suzukiGammaCesaroSource_apply (N : ℕ) (u : H) :
     suzukiGammaCesaroSource N u =
       (N : ℝ)⁻¹ • ∑ n ∈ Finset.range N, suzukiGammaSourceRegularization n u := by
-  rw [suzukiGammaCesaroSource, _root_.smul_apply, _root_.sum_apply, Complex.coe_smul]
+  rw [suzukiGammaCesaroSource, _root_.smul_apply, _root_.sum_apply]
+  exact IsScalarTower.algebraMap_smul ℂ _ _
 
 theorem suzukiGammaCesaroSynthesis_apply (h a : Set.Ioi (0 : ℝ)) (N : ℕ) (u : H) :
     suzukiGammaCesaroSynthesis h a N u =
       (N : ℝ)⁻¹ • ∑ n ∈ Finset.range N, suzukiGammaRegularizedSynthesis h a n u := by
-  rw [suzukiGammaCesaroSynthesis, _root_.smul_apply, _root_.sum_apply, Complex.coe_smul]
+  rw [suzukiGammaCesaroSynthesis, _root_.smul_apply, _root_.sum_apply]
+  exact IsScalarTower.algebraMap_smul ℂ _ _
 
 theorem tendsto_suzukiGammaCesaroSource (u : H) :
     Tendsto (fun N => suzukiGammaCesaroSource N u) atTop (𝓝 u) := by

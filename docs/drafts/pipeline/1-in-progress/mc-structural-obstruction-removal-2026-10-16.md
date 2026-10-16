@@ -96,8 +96,8 @@ These are existing results, not contributions of this investigation.
    prime payments do not imply a divergent total payment along the constructed
    history.
 
-8. **Positive dilation cone on an entire compact clock interval. ACTIVE,
-   UNPROVED.** For the actual complete continuous Abel source `A`, conjecture
+8. **Positive dilation cone on an entire compact clock interval. ACTIVE;
+   paper argument completed, formalization in progress.** For the actual complete continuous Abel source `A`, conjecture
    that the positive cone of `u ↦ A(exp(t+u))`, with arbitrarily late `t`, is
    dense in `C([0,L], R)` for each finite `L`. This would remove the restriction
    to finitely many fixed receiving coefficients. Proposed mechanism: a
@@ -115,6 +115,46 @@ These are existing results, not contributions of this investigation.
    coefficients, simultaneous actual-prime block rounding, or a history that
    retains payment after the cutoff changes. Those implications need separate
    proofs and must not be smuggled into the conjecture's significance claim.
+
+### Exact paper argument for conjecture 8
+
+Write `f(t) = exp(-3t/2) A(exp t)`, the corpus's literal
+`criticalAbelLogProfile`. It is continuous, bounded, and zero for `t <= 0`.
+For `a >= 0` put `v_t(u) = f(t-u)` in `C([0,a], R)`.
+
+1. A continuous real functional `L` has a canonical complexification. Its
+   transform `F(s) = L_C(u -> exp(-s*u))` is entire with finite exponential
+   type. If `F` vanishes identically, exponential difference quotients force
+   all polynomial moments of `L` to vanish. Polynomial density forces `L=0`.
+2. Banach integration and the literal causal cutoff give the exact identity
+   `Laplace(L(v_t))(s) = F(s) Laplace(f)(s)` for `Re(s)>0`. The proof uses
+   the actual complete source, not a replacement spectral function.
+3. For `g(t)=exp(t)L(v_t)`, the continued transform is
+   `F(s-1) M(s+1/2)`, where `M` is the completed critical Abel Mellin source.
+   It is meromorphic everywhere and analytic at every real `s>1/4`.
+4. If `L != 0`, the corpus's superlinear census of simple critical zeros
+   forces `F(-1/2+it) != 0` at some such zero. The source's genuine simple
+   pole survives, giving the product a pole at real part `1/2`.
+5. If `L(v_t)` were nonnegative after a finite depth, its positive tail,
+   with compact head retained, would have a real convergence abscissa.
+   Landau and real-axis analyticity force that abscissa to `1/4`. The
+   reconstructed transform is analytic on `Re(s)>1/4`; meromorphic identity
+   propagation contradicts the pole from step 4.
+6. Thus every nonzero continuous functional takes a strictly negative value
+   on `v_t` beyond every depth threshold. Hahn--Banach separation implies
+   that the positive cone of these late profiles is uniformly dense in the
+   entire continuous-function space. In particular, a finite positive
+   mixture is strictly negative throughout the whole clock interval.
+
+The substantive upgrade is from finite receiving vectors to all continuous
+clock trajectories with one common finite positive synthesis. It gives no
+uniform bound on synthesis coefficients or source depths. Transfer from
+these positive mixtures to exhaustive actual-prime histories is not proved.
+
+Formal progress: the generic meromorphic tail-separation proof and the
+literal Banach source transform / compact-dual injectivity have passed
+scratch Lean checks. Source-specific pole separation and the final cone
+producer are still being checked. No completed contribution is claimed yet.
 
 No unconditional construction has been found that retains the actual full
 signed source and removes the changing-cutoff obstruction. For the square

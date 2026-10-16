@@ -30,7 +30,12 @@ Two modules, namespace `RHTower.CHMDChebyshevTransport`, wired in `RHTower.lean`
 Meaning: the KG propagation of the PNT density `e^{s/2}ds` is exactly the ζ-pole wave; after this exact transport
 the prime wave contains no `e^{y/2}` object, and the light-cone route's one-sided bound is the pairing of the classical
 √-weighted Chebyshev discrepancy with the exponentially localized odd kernel `∂_sK_y` (Wall 1 in KG coordinates).
-Open: uniform-in-y bound on `∂_sK_y` via the Fourier form (not built); Step 3 of cmhd-plan = one-sided uniform bound on `∫∂_sK_y Δ`.
+## Module 3: `RHTower/CHMDPrimeKernelDerivativeUniformBound` (MUST-1568)
+- `kernelDeriv_eq_kernelDerivFourier`: `∂_sK_y(s) = −(1/π)∫ cos(y√(r²+2)) sech²(r/2) r sin(rs) dr`; `kernelDeriv_neg`, `kernelDeriv_zero`.
+- `integral_abs_mul_sechSqHalf`: `∫|r| sech²(r/2) dr = 8 log 2` (primitive `sechMomentPrimitive`).
+- `abs_kernelDeriv_le`: `|∂_sK_y(s)| ≤ 8 log 2/π` uniformly in y, s; `abs_chmdPrimeKernel_sub_le` (uniform Lipschitz);
+  `abs_setIntegral_kernelDeriv_mul_discrepancy_le` (window estimate, uniform in y).
+Open: Step 3 of cmhd-plan = one-sided uniform bound on `∫_0^∞ ∂_sK_y Δ`; under RH Δ = O(s²) so window bounds grow — cancellation needed (Wall 1).
 
 Lean notes: clamp the Bessel parameter (`clampUnit`) for Fubini on the restricted product measure; give `(f := …)` to
 `norm_integral_le_of_norm_le`; `(μ := volume)` for `integral_sub_right_eq_self`; `IntegrableOn.congr_fun` must be called with

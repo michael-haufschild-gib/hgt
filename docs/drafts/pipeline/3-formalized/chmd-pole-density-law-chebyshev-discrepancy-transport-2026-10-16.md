@@ -92,3 +92,15 @@ and `∂_sK_y` (`exists_abs_chmdPrimeKernel_le`, `exists_abs_kernelDeriv_le`). A
 
 ## Log (continued)
 - 2026-10-16 — function-form module added; STATUS MUST-1567.
+
+## Uniform derivative bound (third module)
+Module `formal/GaloisForLFunctions/RHTower/CHMDPrimeKernelDerivativeUniformBound.lean` (same namespace).
+- `hasDerivAt_chmdPrimeKernel_fourier`, `kernelDeriv_eq_kernelDerivFourier`: `∂_sK_y(s) = −(1/π)∫ cos(y√(r²+2)) sech²(r/2) r sin(rs) dr`
+  (dominated differentiation with bound `|r| sech²(r/2)`, then uniqueness of derivatives against the light-cone form).
+- `kernelDeriv_neg`, `kernelDeriv_zero`: odd in `s`.
+- `integral_abs_mul_sechSqHalf`: `∫ |r| sech²(r/2) dr = 8 log 2` via `G(r) = 4r eʳ/(1+eʳ) − 4 log(1+eʳ)`.
+- `abs_kernelDeriv_le`: `|∂_sK_y(s)| ≤ 8 log 2/π` for all `y, s`; `abs_chmdPrimeKernel_sub_le`: uniform Lipschitz bound.
+- `abs_setIntegral_kernelDeriv_mul_discrepancy_le`: `|∫_{(0,L]} ∂_sK_y Δ| ≤ (8 log 2/π)∫_{(0,L]}|Δ|` for every `y`.
+Limit of the estimate: under RH `Δ(s) = O(s²)`, so the window bound grows with `L`; the one-sided bound still needs
+cancellation in the pairing. Audit: `lake --old env lean` clean, standard axioms, wired. STATUS MUST-1568.
+- 2026-10-16 — uniform derivative bound module added; STATUS MUST-1568.

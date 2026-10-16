@@ -37,8 +37,9 @@ def suzukiGammaJointEquationGraph {J : Type*}
 theorem suzukiGammaJointEquationGraph_isClosed {J : Type*}
     (h a : J → Set.Ioi (0 : ℝ)) :
     IsClosed (suzukiGammaJointEquationGraph h a : Set (H × (J → H))) := by
-  change IsClosed (⋂ j, {z : H × (J → H) |
-    (z.1, z.2 j) ∈ suzukiGammaSourceEquationGraph (h j) (a j)})
+  change IsClosed {z : H × (J → H) |
+    ∀ j, (z.1, z.2 j) ∈ suzukiGammaSourceEquationGraph (h j) (a j)}
+  rw [Set.setOf_forall]
   apply isClosed_iInter
   intro j
   exact (suzukiGammaSourceEquationGraph_isClosed (h j) (a j)).preimage
@@ -97,14 +98,15 @@ theorem suzukiGammaCesaroSynthesis_mem_jointClosedGraph {J : Type*}
     intro n _
     exact suzukiGammaRegularizedSynthesis_mem_jointClosedGraph h a n u
   have he : (suzukiGammaCesaroSource N u, fun j => suzukiGammaCesaroSynthesis (h j) (a j) N u) =
-      Complex.ofReal ((N : ℝ)⁻¹) • ∑ n ∈ Finset.range N,
+      algebraMap ℝ ℂ ((N : ℝ)⁻¹) • ∑ n ∈ Finset.range N,
         (suzukiGammaSourceRegularization n u, fun j => suzukiGammaRegularizedSynthesis (h j) (a j) n u) := by
+    rw [IsScalarTower.algebraMap_smul]
     apply Prod.ext
-    · simp [suzukiGammaCesaroSource_apply]
+    · simp [suzukiGammaCesaroSource_apply, Prod.fst_sum]
     · funext j
-      simp [suzukiGammaCesaroSynthesis_apply, Finset.sum_apply]
+      simp [suzukiGammaCesaroSynthesis_apply, Prod.snd_sum, Finset.sum_apply]
   rw [he]
-  exact (suzukiGammaJointClosedGraph h a).smul_mem (Complex.ofReal ((N : ℝ)⁻¹)) hs
+  exact (suzukiGammaJointClosedGraph h a).smul_mem (algebraMap ℝ ℂ ((N : ℝ)⁻¹)) hs
 
 /-- **Common literal finite-packet core for every Gamma parameter family.**
 Taking the actual source closure commutes with imposing all these parameter

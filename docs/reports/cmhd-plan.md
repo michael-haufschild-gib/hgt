@@ -100,3 +100,16 @@ That identity — $L[\cosh(\cdot/2)](y) = \cos(y\sqrt{7/4})$ — is what all the
 - Stieltjes integration by parts over the prime powers (`tsum_chmdPrimeWeight_mul_kernel_eq`): $\sum_n \frac{\Lambda(n)}{\sqrt n}K_y(\log n) = -\int_0^\infty \partial_sK_y(s)\,\Psi(s)\,ds$ with $\Psi(s) = \sum_{\log n < s}\Lambda(n)/\sqrt n$ (Chebyshev bound $\Psi(s) \le (2\log 4 + 16)e^{s/2}$ from Zeta23).
 - **Function form** (`chmdPrimeWave_eq_pole_add_derivative_transport`): $\operatorname{chmdPrimeWave}(y) = \operatorname{chmdPoleWave}(y) + 2K_y(0) - S(y) - \int_0^\infty \partial_sK_y(s)\,\Delta(s)\,ds$, $\Delta(s) = \Psi(s) - 2e^{s/2}$, $|2K_y(0) - S(y)| \le 16/\pi$. Hence `RiemannHypothesis ↔ ∫_0^∞ ∂_sK_y Δ bounded above on [0,∞) ↔ bounded below` (`riemannHypothesis_iff_integral_kernelDeriv_mul_discrepancy_bddAbove/bddBelow`).
 - Step 3 now reads: a one-sided bound, uniform in $y \ge 0$, on the pairing of the classical $\sqrt{\cdot}$-weighted Chebyshev discrepancy $\Delta$ with the exponentially localized odd kernel $\partial_sK_y$.
+
+
+### done: formal/GaloisForLFunctions/RHTower/CHMDPrimeKernelDerivativeUniformBound.lean
+
+**Uniform bound on the derivative kernel (the Step-3 pairing is against a kernel bounded in both variables)**:
+- Fourier form (`kernelDeriv_eq_kernelDerivFourier`): $\partial_sK_y(s) = -\frac1\pi\int\cos(y\sqrt{r^2+2})\,\mathrm{sech}^2(r/2)\,r\sin(rs)\,dr$; odd in $s$.
+- Exact first moment (`integral_abs_mul_sechSqHalf`): $\int|r|\,\mathrm{sech}^2(r/2)\,dr = 8\log 2$.
+- **Uniform bound** (`abs_kernelDeriv_le`): $|\partial_sK_y(s)| \le 8\log 2/\pi$ for all $y, s$, removing the $e^{\pi|y|}e^{y^2/2}$ factor of the light-cone estimates; uniform Lipschitz bound for $K_y$ (`abs_chmdPrimeKernel_sub_le`).
+- Window estimate (`abs_setIntegral_kernelDeriv_mul_discrepancy_le`): $\bigl|\int_{(0,L]}\partial_sK_y\,\Delta\bigr| \le \frac{8\log 2}{\pi}\int_{(0,L]}|\Delta|$ uniformly in $y$.
+- What it does not give: under RH, $\Delta(s) = O(s^2)$ only, so $\int_0^L|\Delta|$ grows with $L$; the uniform bound controls each finite window, while the one-sided bound of Step 3 still needs cancellation in the pairing as $y\to\infty$.
+
+
+Note: Even under RH, Δ(s) only satisfies Δ(s) = O(s²), so the window bound grows with L. The one-sided bound on ∫₀^∞ ∂_sK_y Δ, uniform in y, still needs cancellation in the pairing as y grows. That is Wall 1, now posed against a kernel bounded in both variables.
