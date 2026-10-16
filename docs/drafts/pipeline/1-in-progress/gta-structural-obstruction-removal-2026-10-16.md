@@ -156,3 +156,24 @@ sources. These statements are current paper-proof targets, not Lean results.
   Compact-open transform convergence, Meyer topology convergence, and membership in all weaker
   weighted completions do not by themselves prove it. Do not replace this missing step with
   an assumption or claim this session complete on the basis of the auxiliary work.
+
+### Next conjecture: the intrinsic analytic strip
+
+The diagonal is not the best sector. At the corpus's sector parameter `delta = pi/3`,
+`cos(delta)=1/2` and
+`D(delta)=-log(2)/4 + pi*sqrt(3)/12`. The Laplace-doubling contribution is
+`log(2)/4` per unit radius, so it cancels exactly. Sector PL should therefore give
+`|q(t)| <= C_eta exp(eta*|t|)` for every `eta > pi/6`. Combined with Xi's horizontal
+decay, this predicts an analytic representative of every Xi-divisible actual Hilbert
+source on `|Im x| < pi/12`. This is an automatic regularity statement, not a new
+growth assumption on the source or quotient.
+
+Lean has checked the exact conormal norm, all exponential moments, the Laplace
+doubling limit, and the actual-source transform envelope in the scratch development.
+The sector-to-real-axis and inverse-Fourier steps are being checked. No capstone is
+claimed yet. The full derivative-history closure still needs its own norm argument.
+
+Further closure attacks under examination: first-atom/Euler inversion and a norm model
+for the quotient's analytic carrier. The known source translations are not bounded on
+the full Hilbert space; neither Meyer Gaussian smoothing nor compact-open quotient
+dilation can be treated as Hilbert regularization without proof.

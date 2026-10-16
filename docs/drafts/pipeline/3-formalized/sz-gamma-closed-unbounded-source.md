@@ -1,6 +1,6 @@
 # SZ: closed two-leg Gamma synthesis and its exact finite-row boundary domain
 
-Status: paper proof complete; four Lean modules directly audited. Final dependency and repository lint audits in progress.
+Status: formalized. Paper proof, four direct Lean audits, and dependency audits complete. Repository-wide lint has unrelated wiring failures, listed below.
 
 ## Structural contribution
 
@@ -109,4 +109,6 @@ Each of the four modules passed a foreground, direct `lake --old env lean -j 1 -
 
 Corpus searches used names, statements, proof bodies, and source arguments. Some hybrid searches returned partial results or source-only compiler coverage; candidate facts were checked against Lean source and the final toolchain. Search coverage is not represented as an exhaustive novelty claim.
 
-Final axiom and repository lint results are recorded below after completion.
+`#print axioms` for the canonical theorem, exact boundary classification, and polarized pairing returned only `propext`, `Classical.choice`, and `Quot.sound`. No additional axioms or open mathematical premises occur. All four local build artifacts are newer than their source files.
+
+The repository-wide `scripts/formal_tools.py lint --check-generated` run found four unrelated modules unreachable from the umbrella: `MobiusDivisorExhaustionPrimeCapacity`, `MobiusDivisorMandatoryScalarBlock`, `OddSectorExactFibreRecovery`, and `PaperThetaNativeQuantileComparison`. It also detected generated reports invalidated by concurrent source changes. After regeneration, the repeat check still found those four modules and a newly stale `LEAN_API.md`; the overview freshness issue cleared. The SZ imports pass the reachability check. Reports were refreshed once more at handoff. No unrelated source or import was changed to mask the global lint failures, and no repository-wide green lint result is claimed.

@@ -40,3 +40,12 @@ Each block uses at most `D` primes. The next least missing prime has prime count
 The intended theorem is an actual prime-exhaustive schedule whose complete logarithmic insertion work is paid at every block's own original integer cutoff. It does not assert a bound for cutoff drift or for completed action at earlier cutoffs.
 
 Significance gate: a generic cone receiver is insufficient. Any survivor must discharge its source hypotheses on the actual arithmetic profiles and explicitly identify the finite inherited obstruction removed.
+
+Formal construction choice: scan consecutive primes `r_k = Nat.nth Nat.Prime (B+k)`.
+If a scanned prime already occurs among previous helpers, take an empty block;
+otherwise use the paid mandatory block. Initial core contains all primes below
+`r_0`. Then every smaller prime remains processed, and `pi(r_k)=B+k+1`
+makes the consumption invariant immediate. This is the same exhaustion proof
+with explicit skipped stages, avoiding a separate least-missing-prime recursion.
+All nonempty blocks still pay their mandatory prime and helpers against the
+inherited pre-block state. Strictly increasing proportional clocks remain.

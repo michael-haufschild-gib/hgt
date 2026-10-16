@@ -41,7 +41,8 @@ lemma singleton_eq_source (M : ℕ) (P : Finset ℕ) {p : ℕ} (hp : p.Prime)
 
 lemma singletonSource_mul (A r : ℕ) (hr : 0 < r) :
     singletonSource (A*r) r = -Real.sqrt r * completeSource A := by
-  simp [singletonSource, divisorPrimeClipWeight, Nat.mul_div_cancel A hr]
+  simp [singletonSource, divisorPrimeClipWeight, Nat.mul_div_cancel A hr,
+    mul_comm (Real.sqrt (A:ℝ)) (Real.sqrt (r:ℝ))]
 
 /-- A fixed-width prime window dominates any smaller fixed counting budget. -/
 lemma eventually_window_capacity (a b c : ℕ) (ha : 2 ≤ a) (hab : a < b)
@@ -49,18 +50,18 @@ lemma eventually_window_capacity (a b c : ℕ) (ha : 2 ≤ a) (hab : a < b)
     ∀ᶠ r : ℕ in atTop, c * Nat.primeCounting r ≤ (primesInIoc (a*r) (b*r)).card := by
   have haR : (0 : ℝ) < a := by exact_mod_cast (show 0 < a by omega)
   have hratio : (1 : ℝ) < (b:ℝ)/a := (one_lt_div haR).mpr (by exact_mod_cast hab)
-  have hc := ((tendsto_natCast_atTop_atTop : Tendsto (fun r : ℕ => (r:ℝ)) atTop atTop).
-    const_mul_atTop haR).eventually (eventually_primeCount_window_ge hratio)
+  have hc := ((tendsto_natCast_atTop_atTop : Tendsto (fun r : ℕ => (r:ℝ)) atTop atTop).const_mul_atTop haR).eventually
+    (eventually_primeCount_window_ge hratio)
   have hp := tendsto_primeCounting_nat_ratio.eventually (eventually_lt_nhds (by norm_num : (1:ℝ)<2))
   have hl := (Real.tendsto_log_atTop.comp
     (tendsto_natCast_atTop_atTop : Tendsto (fun r : ℕ => (r:ℝ)) atTop atTop)).eventually_ge_atTop
       (Real.log a)
   filter_upwards [hc, hp, hl, eventually_ge_atTop (2:ℕ)] with r hcount hprime hlog hr
   have hrR : (0 : ℝ) < r := by exact_mod_cast (show 0 < r by omega)
-  have hlr : 0 < Real.log (r:ℝ) := Real.log_pos (by exact_mod_cast hr)
+  have hlr : 0 < Real.log (r:ℝ) := Real.log_pos (by exact_mod_cast (show 1 < r by omega))
   have hlar : 0 < Real.log ((a:ℝ)*r) := Real.log_pos (by
     have ha1 : (1:ℝ) ≤ a := by exact_mod_cast (show 1 ≤ a by omega)
-    have hr1 : (1:ℝ) < r := by exact_mod_cast hr
+    have hr1 : (1:ℝ) < r := by exact_mod_cast (show 1 < r by omega)
     nlinarith)
   have habr : a*r ≤ b*r := Nat.mul_le_mul_right r hab.le
   have harg : (b:ℝ)/a*((a:ℝ)*r) = ((b*r:ℕ):ℝ) := by push_cast; field_simp
@@ -68,13 +69,14 @@ lemma eventually_window_capacity (a b c : ℕ) (ha : 2 ≤ a) (hab : a < b)
     Nat.floor_natCast, Nat.floor_natCast, ← card_primesInIoc habr] at hcount
   have hlow : ((b:ℝ)-a)*r ≤
       2*((primesInIoc (a*r) (b*r)).card:ℝ)*Real.log ((a:ℝ)*r) := by
-    have hc' := (le_div_iff₀ hlar).mp (show
+    have hc' := (div_le_iff₀ hlar).mp (show
       (((b:ℝ)-a)/2*r)/Real.log ((a:ℝ)*r) ≤
         ((primesInIoc (a*r) (b*r)).card:ℝ) by
       convert hcount using 1 <;> push_cast <;> field_simp <;> ring)
     linarith only [hc']
   have hlog2 : Real.log ((a:ℝ)*r) ≤ 2*Real.log (r:ℝ) := by
     rw [Real.log_mul haR.ne' hrR.ne']
+    change Real.log (a:ℝ) ≤ Real.log (r:ℝ) at hlog
     linarith only [hlog]
   have hlow' : ((b:ℝ)-a)*r ≤
       4*((primesInIoc (a*r) (b*r)).card:ℝ)*Real.log (r:ℝ) := by
@@ -88,7 +90,8 @@ lemma eventually_window_capacity (a b c : ℕ) (ha : 2 ≤ a) (hab : a < b)
     exact ht'.le
   have hw : 8*(c:ℝ) ≤ (b:ℝ)-a := by
     have hh : 8*c+a ≤ b := by omega
-    exact_mod_cast (show (8*c+a:ℕ) ≤ b from hh)
+    have hh' : 8*(c:ℝ)+a ≤ b := by exact_mod_cast hh
+    linarith only [hh']
   have hcpi := mul_le_mul_of_nonneg_left hpi (show 0 ≤ 4*(c:ℝ) by positivity)
   have hwr := mul_le_mul_of_nonneg_right hw hrR.le
   have hfinal : (c:ℝ)*(Nat.primeCounting r:ℝ) ≤ (primesInIoc (a*r) (b*r)).card := by
@@ -97,13 +100,14 @@ lemma eventually_window_capacity (a b c : ℕ) (ha : 2 ≤ a) (hab : a < b)
 
 private lemma source_normalized :
     Tendsto (fun M : ℕ => completeSource M / ((M:ℝ)*Real.sqrt M)) atTop (𝓝 0) := by
-  have hi := tendsto_const_nhds.div_atTop (Real.tendsto_log_atTop.comp
+  have hi : Tendsto (fun M : ℕ => (1:ℝ)/Real.log M) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (Real.tendsto_log_atTop.comp
     (tendsto_natCast_atTop_atTop : Tendsto (fun M : ℕ => (M:ℝ)) atTop atTop))
   have h := tendsto_sum_mobiusDivisorDilationChannel_log_normalized.mul hi
   simp only [mul_zero] at h
   apply h.congr'
   filter_upwards [eventually_ge_atTop (2:ℕ)] with M hM
-  have hl : Real.log (M:ℝ) ≠ 0 := ne_of_gt (Real.log_pos (by exact_mod_cast hM))
+  have hl : Real.log (M:ℝ) ≠ 0 := ne_of_gt (Real.log_pos (by exact_mod_cast (show 1 < M by omega)))
   change completeSource M * Real.log M / ((M:ℝ)*Real.sqrt M) *
     ((1:ℝ)/Real.log M) = _
   field_simp
@@ -114,19 +118,22 @@ lemma exists_source_scale (C : ℕ) (hC : 0 < C) (a : ℝ) (ha : 0 < a) :
     ∃ n : ℕ, 1 ≤ n ∧ |completeSource (C*n)| ≤ (n:ℝ)*a*Real.sqrt n := by
   have hC' : (0:ℝ) < C := by exact_mod_cast hC
   have hclock : Tendsto (fun n : ℕ => C*n) atTop atTop :=
-    tendsto_atTop_mono (fun n => by nlinarith) tendsto_id
+    tendsto_atTop_mono (fun n => by change n ≤ C*n; nlinarith) tendsto_id
   have ht := ((source_normalized.comp hclock).abs).const_mul ((C:ℝ)*Real.sqrt C)
   simp only [abs_zero, mul_zero] at ht
   obtain ⟨n, hn, hs⟩ := ((eventually_ge_atTop (1:ℕ)).and
     (ht.eventually (eventually_lt_nhds ha))).exists
-  have hn' : (0:ℝ) < n := by exact_mod_cast hn
+  have hn' : (0:ℝ) < n := by exact_mod_cast (show 0 < n by omega)
   have hsqrt : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn'
   have he : (C:ℝ)*Real.sqrt C *
       |completeSource (C*n) / ((C*n:ℕ)*Real.sqrt (C*n:ℕ))| =
       |completeSource (C*n)| / ((n:ℝ)*Real.sqrt n) := by
-    rw [abs_div, abs_of_pos (by positivity), Nat.cast_mul,
+    have hnC : (0:ℝ) < (C*n:ℕ) := by exact_mod_cast (Nat.mul_pos hC (show 0<n by omega))
+    rw [abs_div, abs_of_pos (mul_pos hnC (Real.sqrt_pos.mpr hnC)), Nat.cast_mul,
       Real.sqrt_mul hC'.le]
     field_simp
+  change (C:ℝ)*Real.sqrt C *
+      |completeSource (C*n) / ((C*n:ℕ)*Real.sqrt (C*n:ℕ))| < a at hs
   rw [he] at hs
   refine ⟨n, hn, ?_⟩
   have hh := (div_lt_iff₀ (mul_pos hn' hsqrt)).mp hs

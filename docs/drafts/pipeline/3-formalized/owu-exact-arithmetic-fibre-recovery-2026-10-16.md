@@ -1,6 +1,6 @@
 # OWU: exact arithmetic-fibre recovery
 
-Status: PAPER PROOF COMPLETE; Lean verification in progress. No verified result claimed yet.
+Status: FORMALIZED. All four modules and the axiom audit pass.
 
 ## Objective and scope
 
@@ -39,11 +39,11 @@ line and real cut, so positivity of further odd tests alone cannot remove the cu
    resolvent transport cannot be assumed: its integration-by-parts boundary
    terms are not killed by the existing arc conditions. No route retired.
 2. Exact recovery of complete odd sources in each arithmetic fibre, with no
-   aperture enlargement. Status: dependency-closed paper proof below. The current
-   energy-completion theorem has only the native-to-completed inclusion; it
-   does not show that completed blind minima are limits of native blind tests.
+   aperture enlargement. Status: PROVED AND FORMALIZED. Before this result,
+   energy completion supplied only the native-to-completed inclusion and did
+   not recover completed blind minima by native blind tests.
 3. Normalized blind recovery and equality of the smooth infimum with the attained
-   complete minimum. Status: paper proof complete; final Lean module checking.
+   complete minimum. Status: PROVED AND FORMALIZED.
    The recovered mass tends to one, so normalization on a positive tail preserves
    exact blindness and the energy limit.
 
@@ -83,11 +83,11 @@ complete blind minimizer this removes the relaxation gap between the smooth
 test problem and the attained complete-domain problem. It does not determine
 the sign of that common minimum.
 
-Dependencies to audit in Lean: fixed-aperture signed coordinate construction,
+Dependencies audited in Lean: fixed-aperture signed coordinate construction,
 boundary trace vanishing, odd smooth-core sequence, exact positive repair,
 purification, and normalization. None assumes positivity or RH.
 
-## Formalization in progress
+## Formalization
 
 - `OddSectorInteriorTraceCoordinates`: both signed coordinate rays strictly
   inside every active aperture.
@@ -103,7 +103,31 @@ Verified with foreground `lake --old env lean -j 1`:
 - `OddSectorInteriorTraceCoordinates`: PASS, no warnings.
 - `OddSectorInteriorTraceRepair`: PASS, no warnings.
 - `OddSectorSmoothFormDensity`: PASS, no warnings.
+- `OddSectorExactFibreRecovery`: PASS, no warnings.
 
-All three finished modules are wired into `RHTower.lean`. The exact recovery
-module and final axiom/lint audit remain pending.
-No computational experiments or new axioms.
+All four modules are wired into `RHTower.lean`; no umbrella or full build ran.
+The scratch `#print axioms` audit covered all 39 public declarations. Every
+declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`.
+No added axioms, proof holes, numerical experiments, or heartbeat increases.
+
+Main declarations in `OddSectorExactFibreRecovery`:
+
+- `exists_exact_fibre_recovery`: every complete odd source has single smooth
+  strict-interior recovery in its exact all-integer arithmetic fibre.
+- `exists_smooth_blind_unit_recovery`: recovery with exact blindness and unit
+  physical norm at every step.
+- `exists_blind_minimizer_without_relaxation_gap`: the smooth blind unit infimum
+  equals an attained complete blind odd minimum, unconditionally for every
+  positive aperture.
+
+Recovery is convergence of the entire profile pointwise and of the literal
+Weil energy. It does not assert convergence of a chosen purified source in
+form norm. The common minimum's sign and the OWU slit-cut obstruction remain
+open; no RH equivalence or positivity receiver is the main result.
+
+Repository audit: `scripts/formal_tools.py index` completed. The first
+`lint --check-generated` run found no errors in these modules, but failed on
+five unrelated unwired modules (`MobiusDivisorExhaustionPrimeCapacity`,
+`MobiusDivisorExhaustionSignedSupply`, `MobiusDivisorMandatoryScalarBlock`,
+`PaperThetaNativeQuantileComparison`, `PaperThetaNativeRootTransport`) and
+concurrently stale `LEAN_API.md` / `LEAN_OVERVIEW.md`. Final refresh/check pending.

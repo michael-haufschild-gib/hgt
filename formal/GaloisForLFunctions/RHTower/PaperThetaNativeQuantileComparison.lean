@@ -33,7 +33,9 @@ theorem nativeQuantileMap_ae (v : NativeContinuousSpace) :
 
 theorem nativeQuantileMap_injective : Function.Injective nativeQuantileMap := by
   intro v w h
-  have he := (lawToUnitInterval thetaSource).injective h
+  have he : BoundedContinuousFunction.toLp 2 thetaSource.law ℂ v =
+      BoundedContinuousFunction.toLp 2 thetaSource.law ℂ w :=
+    (lawToUnitInterval thetaSource).injective h
   have hlp : (BoundedContinuousFunction.toLp 2 thetaSource.law ℂ v : ℝ → ℂ)
       =ᵐ[thetaSource.law] BoundedContinuousFunction.toLp 2 thetaSource.law ℂ w := by
     rw [he]
@@ -107,7 +109,8 @@ theorem nativeResidual_zero_tail (v : NativeContinuousSpace) (x : ℝ) :
     (by simpa only [mul_zero, sub_zero] using
       (ht.sub ((tendsto_boundedThetaTail_atTop 0 h).const_mul I))) (fun y => ?_)
   · exact sub_eq_zero.mp (congrFun hz x)
-  · rw [deriv_sub (hr y) (hs y),
+  · rw [show deriv (fun y => r y-I*boundedThetaTail 0 h y) y =
+        deriv r y-deriv (fun y => I*boundedThetaTail 0 h y) y from deriv_sub (hr y) (hs y),
       ((hasDerivAt_boundedThetaTail 0 h y).const_mul I).deriv]
     have he := boundedNativeResolvent_ode nativeCompactParameter v y
     rw [nativeCompactParameter_val] at he
@@ -123,8 +126,6 @@ theorem nativeResidual_zero_tail (v : NativeContinuousSpace) (x : ℝ) :
       BoundedContinuousFunction.smul_apply, smul_eq_mul]
     dsimp only [nativeCompactResolvent] at *
     linear_combination (norm := ring_nf) he
-    simp only [Complex.I_sq]
-    ring
 
 /-- Exact comparison on every bounded continuous forcing. -/
 theorem thetaKernel_native_source_identity (v : NativeContinuousSpace) :

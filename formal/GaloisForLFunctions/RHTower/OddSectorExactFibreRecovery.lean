@@ -57,7 +57,8 @@ theorem exists_exact_fibre_recovery (a : SuzukiPositiveAperture) (u : OddFormSou
     dsimp only [c]
     rw [map_add,mixtureTrace,linearCombination_single,one_smul]
     change interiorTrace (g n) + mixtureTrace a (traceRepair a (v n)) = formTrace u
-    rw [traceRepair_trace a (v n) (hvs n),v]
+    rw [traceRepair_trace a (v n) (hvs n)]
+    dsimp only [v]
     abel
   · intro x
     have ht := traceRepair_observable_tendsto a (profileObservable a x) v hv
