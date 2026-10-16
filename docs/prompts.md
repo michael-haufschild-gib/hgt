@@ -256,6 +256,7 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 make one significant contribution that overcomes a hard mathematical obstacle by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md into a new significant insight that enables a whole new class of solutions to at least one route. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle which significantly moves the frontier in the proof route. 
 
 On every new turn:
+
 make one significant contribution that overcomes a hard mathematical obstacle for route OWU from docs/reports/rh-current-frontier-map.md. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle and remove an obstruction which significantly moves the frontier in the proof route.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
