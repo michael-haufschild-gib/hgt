@@ -55,8 +55,8 @@ private theorem integrable_polynomial_exp (b : ℝ) (hb : 0 < b) :
       (fun t : ℝ => t ^ n * Real.exp (-b * t)) (Ioi 0) := by
     simpa only [Real.rpow_natCast, Real.rpow_one] using
       (integrableOn_rpow_mul_exp_neg_mul_rpow
-        (s := (n : ℝ)) (p := 1) (by linarith [Nat.cast_nonneg (R := ℝ) n]) le_rfl hb)
-  refine ((h 0).add (((h 1).const_mul 2).add (h 2))).congr_fun
+        (s := (n : ℝ)) (p := 1) (by linarith [Nat.cast_nonneg (α := ℝ) n]) le_rfl hb)
+  refine IntegrableOn.congr_fun ((h 0).add (((h 1).const_mul 2).add (h 2)))
     (fun t _ => ?_) measurableSet_Ioi
   dsimp
   ring
@@ -92,8 +92,8 @@ theorem norm_hilbertSourceFunction_le {t : ℝ} (ht : 0 < t) :
   have hw : 0 < Real.exp (-t / 2) := Real.exp_pos _
   have hd : 0 < 1 + t := by linarith
   have hexp : Real.sqrt (Real.exp t) * Real.exp (-t / 2) = 1 := by
-    rw [← Real.exp_half, ← Real.exp_add]
-    convert Real.exp_zero using 1 <;> ring
+    rw [← Real.exp_half, ← Real.exp_add, show t / 2 + -t / 2 = 0 by ring,
+      Real.exp_zero]
   rw [hilbertSourceFunction, indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht), Complex.norm_real,
     Real.norm_eq_abs, abs_div, abs_mul, abs_of_pos hw, abs_of_pos hd]
   calc
@@ -109,8 +109,10 @@ theorem memLp_hilbertSourceFunction : MemLp hilbertSourceFunction 2 := by
   have hi : IntegrableOn (fun t : ℝ => 16 / (1 + t) ^ (2 : ℕ)) (Ioi 0) := by
     have h := (integrableOn_add_rpow_Ioi_of_lt
       (a := -2) (c := 0) (m := 1) (by norm_num) (by norm_num)).const_mul 16
-    refine h.congr_fun (fun t _ => ?_) measurableSet_Ioi
-    simp [Real.rpow_neg_ofNat, div_eq_mul_inv, add_comm]
+    refine IntegrableOn.congr_fun h (fun t ht => ?_) measurableSet_Ioi
+    rw [Real.rpow_neg (add_nonneg (show 0 ≤ t from le_of_lt ht) zero_le_one),
+      Real.rpow_two]
+    simp only [div_eq_mul_inv, add_comm]
   have hib := (integrable_indicator_iff measurableSet_Ioi).2 hi
   apply hib.mono'
     (measurable_hilbertSourceFunction.aestronglyMeasurable.norm.pow 2)
@@ -123,7 +125,7 @@ theorem memLp_hilbertSourceFunction : MemLp hilbertSourceFunction 2 := by
     calc
       ‖hilbertSourceFunction t‖ ^ (2 : ℕ) ≤ (4 / (1 + t)) ^ (2 : ℕ) := by
         gcongr
-      _ = 16 / (1 + t) ^ (2 : ℕ) := by ring
+      _ = 16 / (1 + t) ^ (2 : ℕ) := by rw [div_pow]; norm_num
   · simp [hilbertSourceFunction, ht]
 
 /-- The source is fixed before a spectral point or a zero is selected. -/
@@ -156,11 +158,10 @@ theorem hasDerivAt_hilbertEvaluationFunction (s : ℂ) (t : ℝ) :
   by_cases ht : 0 < t
   · simp only [hilbertEvaluationFunction, hilbertEvaluationJetFunction,
       indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht)]
-    have harg : HasDerivAt (fun z : ℂ => -(z - 1 / 2) * (t : ℂ)) (-(t : ℂ)) s := by
-      convert (((hasDerivAt_id s).sub_const (1 / 2)).neg.mul_const (t : ℂ)) using 1 <;>
-        simp
-    convert ((Complex.hasDerivAt_exp _).comp s harg).const_mul
-      (((1 + t : ℝ) : ℂ)) using 1 <;> ring
+    have harg : HasDerivAt (fun z : ℂ => -(z - 1 / 2) * (t : ℂ)) (-(t : ℂ)) s :=
+      (((hasDerivAt_id s).sub_const (1 / 2)).neg.mul_const (t : ℂ)).congr_deriv (by ring)
+    exact (((Complex.hasDerivAt_exp _).comp s harg).const_mul
+      (((1 + t : ℝ) : ℂ))).congr_deriv (by ring)
   · simpa [hilbertEvaluationFunction, hilbertEvaluationJetFunction, ht] using
       (hasDerivAt_const s (0 : ℂ))
 
@@ -168,9 +169,9 @@ theorem hasDerivAt_hilbertEvaluationFunction (s : ℂ) (t : ℝ) :
 def hilbertEvaluationJet (s : ℂ) : LogHilbert :=
   l2Family volume hilbertEvaluationJetFunction s
 
-/-- Strong holomorphy holds in the fixed Hilbert space, not only after scalar observation. -/
-theorem hasDerivAt_hilbertEvaluation {s : ℂ} (hs : 1 / 2 < s.re) :
-    HasDerivAt hilbertEvaluation (hilbertEvaluationJet s) s := by
+private theorem hilbertEvaluation_jet_admission {s : ℂ} (hs : 1 / 2 < s.re) :
+    MemLp (hilbertEvaluationJetFunction s) 2 ∧
+      HasDerivAt hilbertEvaluation (hilbertEvaluationJet s) s := by
   let R : ℝ := (s.re - 1 / 2) / 2
   let a : ℂ := (((s.re + 1 / 2) / 2 : ℝ) : ℂ)
   have hR : 0 < R := by dsimp [R]; linarith
@@ -194,14 +195,31 @@ theorem hasDerivAt_hilbertEvaluation {s : ℂ} (hs : 1 / 2 < s.re) :
   have hd : ∀ t : ℝ, DifferentiableOn ℂ
       (fun z => hilbertEvaluationFunction z t) (ball s R) :=
     fun t z _ => (hasDerivAt_hilbertEvaluationFunction z t).differentiableAt.differentiableWithinAt
-  have h := hasDerivAt_l2Family_of_cauchy_dominated volume hilbertEvaluationFunction
+  obtain ⟨hm, h⟩ := exists_memLp_deriv_hasDerivAt_l2Family_of_cauchy_dominated
+    volume hilbertEvaluationFunction
     s R hR (fun t => ‖hilbertEvaluationFunction a t‖) hb
     (fun z _ => (measurable_hilbertEvaluationFunction z).aestronglyMeasurable) hd hbound
-  have heq : (fun z t => deriv (fun w => hilbertEvaluationFunction w t) z) =
-      hilbertEvaluationJetFunction := by
-    funext z t
-    exact (hasDerivAt_hilbertEvaluationFunction z t).deriv
-  simpa only [heq, hilbertEvaluation, hilbertEvaluationJet] using h
+  have heq : (fun t => deriv (fun w => hilbertEvaluationFunction w t) s) =
+      hilbertEvaluationJetFunction s := by
+    funext t
+    exact (hasDerivAt_hilbertEvaluationFunction s t).deriv
+  rw [heq] at hm h
+  refine ⟨hm, ?_⟩
+  change HasDerivAt (l2Family volume hilbertEvaluationFunction)
+    (l2Family volume hilbertEvaluationJetFunction s) s
+  rw [l2Family_eq_toLp volume hilbertEvaluationJetFunction s hm]
+  exact h
+
+/-- Strong holomorphy holds in the fixed Hilbert space, not only after scalar observation. -/
+theorem hasDerivAt_hilbertEvaluation {s : ℂ} (hs : 1 / 2 < s.re) :
+    HasDerivAt hilbertEvaluation (hilbertEvaluationJet s) s :=
+  (hilbertEvaluation_jet_admission hs).2
+
+theorem hilbertEvaluationJet_ae {s : ℂ} (hs : 1 / 2 < s.re) :
+    (hilbertEvaluationJet s : ℝ → ℂ) =ᵐ[volume] hilbertEvaluationJetFunction s := by
+  rw [hilbertEvaluationJet, l2Family_eq_toLp volume hilbertEvaluationJetFunction s
+    (hilbertEvaluation_jet_admission hs).1]
+  exact (hilbertEvaluation_jet_admission hs).1.coeFn_toLp
 
 theorem analyticOnNhd_hilbertEvaluation :
     AnalyticOnNhd ℂ hilbertEvaluation {s : ℂ | 1 / 2 < s.re} := by
@@ -253,21 +271,19 @@ theorem inner_hilbertSource_evaluation {s : ℂ} (hs : 1 / 2 < s.re) :
       indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht),
       indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht),
       indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht)]
-    simp only [star_def, Complex.conj_ofReal]
-    have hd : (((1 + t : ℝ) : ℂ)) ≠ 0 := by
+    simp only [Complex.conj_ofReal]
+    have hd : (1 + (t : ℂ)) ≠ 0 := by
       exact_mod_cast (show 1 + t ≠ 0 by linarith)
     have hexp : Complex.exp (-(s - 1 / 2) * (t : ℂ)) *
-        Complex.exp ((-t / 2 : ℝ) : ℂ) = Complex.exp (-s * (t : ℂ)) := by
+        Complex.exp (-(t : ℂ) / 2) = Complex.exp (-s * (t : ℂ)) := by
       rw [← Complex.exp_add]
-      push_cast
       congr 1
       ring
     push_cast
-    rw [Complex.ofReal_exp]
     calc
       _ = (error (Real.exp t) : ℂ) *
           (Complex.exp (-(s - 1 / 2) * (t : ℂ)) *
-            Complex.exp ((-t / 2 : ℝ) : ℂ)) := by field_simp [hd]; ring
+            Complex.exp (-(t : ℂ) / 2)) := by field_simp [hd]
       _ = _ := by rw [hexp]
   · simp [hilbertEvaluationFunction, hilbertSourceFunction, ht]
 
@@ -279,14 +295,13 @@ theorem hilbertSourceFunction_recovers_count {t : ℝ} (ht : 0 < t) :
   rw [hilbertSourceFunction, indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht)]
   have hden : 1 + t ≠ 0 := by linarith
   have hexp : Real.exp (t / 2) * Real.exp (-t / 2) = 1 := by
-    rw [← Real.exp_add]
-    convert Real.exp_zero using 1 <;> ring
+    rw [← Real.exp_add, show t / 2 + -t / 2 = 0 by ring, Real.exp_zero]
   have h : ((1 + t) * Real.exp (t / 2)) *
         (error (Real.exp t) * Real.exp (-t / 2) / (1 + t)) +
         Sieve.squarefreeDensity * Real.exp t = count (Real.exp t) := by
     calc
       _ = error (Real.exp t) * (Real.exp (t / 2) * Real.exp (-t / 2)) +
-          Sieve.squarefreeDensity * Real.exp t := by field_simp [hden]; ring
+          Sieve.squarefreeDensity * Real.exp t := by field_simp [hden]
       _ = _ := by rw [hexp]; simp [error]
   exact_mod_cast h
 
@@ -327,7 +342,7 @@ theorem hilbertCountReadout_source (n : ℕ) :
     filter_upwards [hilbertSource_ae.filter_mono (ae_mono Measure.restrict_le_self),
       ae_restrict_mem measurableSet_Ioo] with t hsource ht
     have ht0 : 0 < t :=
-      (Real.log_nonneg (by linarith [Nat.cast_nonneg (R := ℝ) n])).trans_lt ht.1
+      (Real.log_nonneg (by linarith [Nat.cast_nonneg (α := ℝ) n])).trans_lt ht.1
     rw [hsource, hilbertSourceFunction_recovers_count ht0,
       count_exp_on_log_interval n ht]
   rw [hilbertCountReadout, hI, setIntegral_const]
@@ -347,5 +362,119 @@ theorem hilbertCountReadout_source_difference (n : ℕ) :
   simp only [count, Nat.floor_natCast]
   rw [Finset.sum_Icc_succ_top (by omega : 1 ≤ (n + 1) + 1)]
   simp [Nat.add_assoc]
+
+/-- A reciprocal continuum clock factor admits the source and its first clock moment. -/
+def clockSourceFunction (t : ℝ) : ℂ :=
+  hilbertSourceFunction t / ((1 + |t| : ℝ) : ℂ)
+
+theorem memLp_clockSourceFunction : MemLp clockSourceFunction 2 := by
+  apply memLp_hilbertSourceFunction.of_le
+    (measurable_hilbertSourceFunction.div (by fun_prop)).aestronglyMeasurable
+  filter_upwards with t
+  rw [clockSourceFunction, norm_div, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (by positivity : 0 < 1 + |t|)]
+  apply (div_le_iff₀ (by positivity : 0 < 1 + |t|)).2
+  nlinarith [mul_nonneg (norm_nonneg (hilbertSourceFunction t)) (abs_nonneg t)]
+
+/-- Fixed arithmetic source in the domain of the logarithmic multiplication clock. -/
+def clockSource : LogHilbert :=
+  memLp_clockSourceFunction.toLp clockSourceFunction
+
+/-- Its genuine clock tangent, admitted without an arithmetic cancellation hypothesis. -/
+def clockSourceJet : LogHilbert := clockSource - hilbertSource
+
+/-- The opposite clock factor acts on the holomorphic evaluation family. -/
+def clockEvaluation (s : ℂ) : LogHilbert :=
+  hilbertEvaluation s - hilbertEvaluationJet s
+
+theorem clockSource_ae :
+    (clockSource : ℝ → ℂ) =ᵐ[volume] clockSourceFunction :=
+  memLp_clockSourceFunction.coeFn_toLp
+
+/-- The admitted tangent is exactly multiplication of the actual source by `-t`. -/
+theorem clockSourceJet_ae :
+    (clockSourceJet : ℝ → ℂ) =ᵐ[volume]
+      fun t => -(t : ℂ) * (clockSource : ℝ → ℂ) t := by
+  filter_upwards [Lp.coeFn_sub clockSource hilbertSource, clockSource_ae,
+    hilbertSource_ae] with t hsub hclock hsource
+  change (clockSource - hilbertSource : LogHilbert) t = _
+  rw [hsub, Pi.sub_apply, hclock, hsource, clockSourceFunction]
+  by_cases ht : 0 < t
+  · rw [abs_of_pos ht]
+    have hd : (1 + (t : ℂ)) ≠ 0 := by exact_mod_cast (show 1 + t ≠ 0 by linarith)
+    push_cast
+    field_simp [hd]
+    ring
+  · simp [hilbertSourceFunction, ht]
+
+/-- The two admitted source columns reconstruct the complete original arithmetic source. -/
+theorem clockSource_sub_clockSourceJet : clockSource - clockSourceJet = hilbertSource := by
+  simp [clockSourceJet]
+
+theorem analyticOnNhd_hilbertEvaluationJet :
+    AnalyticOnNhd ℂ hilbertEvaluationJet {s : ℂ | 1 / 2 < s.re} := by
+  intro s hs
+  apply (analyticOnNhd_hilbertEvaluation.deriv s hs).congr
+  filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs] with z hz
+  exact (hasDerivAt_hilbertEvaluation hz).deriv
+
+theorem analyticOnNhd_clockEvaluation :
+    AnalyticOnNhd ℂ clockEvaluation {s : ℂ | 1 / 2 < s.re} :=
+  analyticOnNhd_hilbertEvaluation.sub analyticOnNhd_hilbertEvaluationJet
+
+/-- Reciprocal source/evaluation clock factors preserve the full arithmetic moment. -/
+theorem inner_clockSource_evaluation {s : ℂ} (hs : 1 / 2 < s.re) :
+    inner ℂ clockSource (clockEvaluation s) = moment s := by
+  rw [← inner_hilbertSource_evaluation hs, L2.inner_def, L2.inner_def]
+  apply integral_congr_ae
+  filter_upwards [clockSource_ae, hilbertSource_ae, hilbertEvaluation_ae hs,
+    hilbertEvaluationJet_ae hs,
+    Lp.coeFn_sub (hilbertEvaluation s) (hilbertEvaluationJet s)] with t hc hh he hj hsub
+  change inner ℂ ((clockSource : ℝ → ℂ) t)
+    ((hilbertEvaluation s - hilbertEvaluationJet s : LogHilbert) t) = _
+  rw [hsub, Pi.sub_apply, hc, hh, he, hj]
+  by_cases ht : 0 < t
+  · simp only [clockSourceFunction, hilbertSourceFunction, hilbertEvaluationFunction,
+      hilbertEvaluationJetFunction,
+      indicator_of_mem (show t ∈ Ioi (0 : ℝ) from ht), RCLike.inner_apply,
+      abs_of_pos ht, map_div₀, Complex.conj_ofReal]
+    have hd : (1 + (t : ℂ)) ≠ 0 := by exact_mod_cast (show 1 + t ≠ 0 by linarith)
+    push_cast
+    field_simp [hd]
+    ring
+  · simp [clockSourceFunction, hilbertSourceFunction, hilbertEvaluationFunction,
+      hilbertEvaluationJetFunction, ht]
+
+theorem inner_hilbertSource_evaluationJet {s : ℂ} (hs : 1 / 2 < s.re) :
+    inner ℂ hilbertSource (hilbertEvaluationJet s) = deriv moment s := by
+  have h := (innerSL ℂ hilbertSource).hasFDerivAt.comp_hasDerivAt s
+    (hasDerivAt_hilbertEvaluation hs)
+  apply Eq.symm
+  apply HasDerivAt.deriv
+  apply h.congr_of_eventuallyEq
+  filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs] with z hz
+  exact (inner_hilbertSource_evaluation hz).symm
+
+/-- The same evaluation vector observes the value and its genuine arithmetic clock tangent. -/
+theorem inner_clockSourceJet_evaluation {s : ℂ} (hs : 1 / 2 < s.re) :
+    inner ℂ clockSourceJet (clockEvaluation s) = deriv moment s := by
+  rw [clockSourceJet, inner_sub_left, inner_clockSource_evaluation hs,
+    clockEvaluation, inner_sub_right, inner_hilbertSource_evaluation hs,
+    inner_hilbertSource_evaluationJet hs]
+  ring
+
+/-- A fixed source and its admitted clock tangent give the arithmetic moment and its derivative
+on the whole strict-right half-plane, and retain the original arithmetic source exactly. -/
+theorem fixedArithmeticClockPair :
+    clockSource - clockSourceJet = hilbertSource ∧
+      ((clockSourceJet : ℝ → ℂ) =ᵐ[volume]
+        fun t => -(t : ℂ) * (clockSource : ℝ → ℂ) t) ∧
+      AnalyticOnNhd ℂ clockEvaluation {s : ℂ | 1 / 2 < s.re} ∧
+      ∀ s : {s : ℂ // 1 / 2 < s.re},
+        inner ℂ clockSource (clockEvaluation s) = moment s ∧
+        inner ℂ clockSourceJet (clockEvaluation s) = deriv moment s :=
+  ⟨clockSource_sub_clockSourceJet, clockSourceJet_ae, analyticOnNhd_clockEvaluation,
+    fun s => ⟨inner_clockSource_evaluation s.property,
+      inner_clockSourceJet_evaluation s.property⟩⟩
 
 end RHTower.SquarefreeDiscrepancy

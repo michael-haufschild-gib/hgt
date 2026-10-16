@@ -24,6 +24,7 @@ Construct one unconditional structural contribution to MSC that removes a hard o
 1. Stable Hilbert mixing retaining both literal analysis columns: rejected by existing Bessel wall. Do not pursue.
 2. Arithmetic summatory cancellation alone: already present in `SquarefreeDiscrepancyMellin`. Its continuation and square-root estimate are inputs, not contributions.
 3. Fixed arithmetic Hilbert source with a strongly holomorphic evaluation family and exact conormal transport: survives preliminary attack. The Bessel obstruction assumes retention of both literal coefficient analysis columns; this construction first sums coefficients and removes the source-derived density. No divisor is used to construct it.
+4. The first construction admits evaluation jets but does not itself establish that the fixed source lies in the logarithmic clock domain. A reciprocal factor on the continuum source repairs this: h0=h/(1+t), h1=h0-h=-t h0, K_s=k_s-k'_s=(1+t)k_s. Both h0 and h1 lie in the same L2 space, and inner(h0,K_s)=M(s), inner(h1,K_s)=M'(s). This strengthens the transport to a fixed arithmetic source/Fisher-tangent pair. The already-proved strong holomorphy supplies K_s without new arithmetic bounds. Formalization in progress.
 
 ## Exact conjecture and dependency-closed proof
 
@@ -41,7 +42,17 @@ V(s) = (s, s(s-1) k_s). These definitions use the counting coefficients and thei
 2. h is real. Change variables x = exp t in the absolutely convergent moment to obtain inner(h,k_s) = M(s). Hence Q(s) := inner(U,V(s)) = c s + s(s-1) M(s) = (s-1) Z_sq(s), including the continued value Q(1)=c. The spectral argument s is unchanged.
 3. For s != 1, define W(s)=V(s)/(s-1). Then inner(U,W(s)) = Z_sq(s). Strong differentiation gives inner(U,W'(s)) = Z'_sq(s), with both vectors admitted to the same fixed Hilbert space.
 4. At a safe real base sigma>1, divide W(sigma+u epsilon) by Z_sq(sigma). This equals the original overlap B(u) under the fixed source functional. The vector 2(epsilon W'(sigma+u epsilon) + epsilon A_sq(sigma) W(sigma+u epsilon))/Z_sq(sigma) reproduces the original division-free Fisher numerator. Thus the full divisor orders and the exact meromorphic conormal, including multiplicity residue 2m, are preserved. This is an identity of source and jet vectors, not an RH implication.
-5. Arithmetic fidelity is before analytic evaluation: undo the positive weight in h and add c exp t to recover the squarefree counting staircase. Its values at integer cutoffs recover every coefficient by consecutive differences. An a.e. version can use interval averages; do not claim this strengthening until formalized.
+5. Arithmetic fidelity holds in the actual L2 quotient, not just at chosen point values. Undo the positive weight in h and add c exp t. On the nonempty interval (log(n+1),log(n+2)) the resulting function equals the constant count(n+1) almost everywhere. Divide its interval integral by log(n+2)-log(n+1) to recover that count. Differences of consecutive readouts recover mu(n+2)^2; the first count recovers mu(1)^2. Thus the source transport retains every coefficient through representative-independent interval readouts.
+
+## Implementation
+
+- `RHTower/SquarefreeDiscrepancyHilbertTransport.lean`: fixed L2 source, explicit evaluation/jet family, strong holomorphy, exact Mellin pairing, interval recovery of counts and coefficient differences.
+- `RHTower/HedenmalmSquarefreeSummatoryConormalTransport.lean`: density channel, full partition value/jet vectors, exact overlap/Fisher/conormal identities, germ and divisor preservation, premise-free physical-admission theorem.
+- Serena symbol lookup is unavailable for these ignored Lean paths; new modules use standard file edits.
+
+## Internal source audit
+
+Searches covered the whole `GaloisForLFunctions` corpus; the index reported complete inventory but semantic coverage unavailable and some source/compiler freshness warnings. Relevant statements were read directly in Lean. Broad deep-search hits were mostly unrelated; exact squarefree-discrepancy search supplied the actual Mellin source. No external novelty claim is made.
 
 ## Scope and attack
 
@@ -52,4 +63,4 @@ V(s) = (s, s(s-1) k_s). These definitions use the counting coefficients and thei
 
 ## Verification
 
-Pending. No new theorem claimed.
+The base `SquarefreeDiscrepancyHilbertTransport.lean` passed a foreground direct Lean audit with no diagnostics. A strengthening to an admitted source clock tangent and the MSC module remain under verification.

@@ -167,3 +167,38 @@ and polar dimension loss but still assumes height separation and an explicit
 window/tail budget. The candidate's new claim is unrestricted finite-family
 compact realization; the support threshold is non-effective. Its coefficient
 gap-to-subspace helper is not itself a new counted research contribution.
+
+The revised compact-Gram argument passed its portion of two combined scratch
+checks; its final standalone leaf build is still pending. Those scratch runs
+found coercion errors and default-heartbeat exhaustion in the downstream test
+synthesis and support/L2 proof. The coercions are corrected, and the argument
+is split into separate real/imaginary Weil, envelope, support, and L2 lemmas.
+No heartbeat limit was increased. Another combined check is in progress.
+
+Additional source comparison: `XiWeilCauchyCoreMultiplicity` already identifies
+the fibrewise mean-zero annihilator of the Cauchy core, and
+`XiWeilSpectralFoldIndexConservation` already classifies finite continued-Cauchy
+negative blocks by distinct off-real spectral locations modulo conjugation.
+Those observations are prior work, not new contributions. The present target
+remains actual compact polar test realization. Its dimension is one per
+selected fourfold Xi symmetry orbit; it does not claim the maximal index or
+one independent direction per multiplicity copy.
+
+`CHMDCompactOrbitInertia.lean` now has a final standalone targeted build with
+exit 0 and empty log. The downstream synthesis leaf is building next. Verified
+source hashes so far:
+
+- Dense finite constraints:
+  `64da85a6ad61667ad6b98245a0820e3a05b8d2b9534502e09762ce4c94522107`.
+- Compact orbit Gram:
+  `e7df0f59e4756fba579e229babcdf42e21a7c7fdf983b1b67f1061ee3823db01`.
+
+Count remains unchanged pending the actual-test theorem and all remaining gates.
+
+`CHMDCompactTestSynthesis.lean` also passed its final standalone targeted build
+with exit 0 and empty log. Its source hash is
+`844b7eb299a04b72824da066c2bc21ed351d07be8fe5097b780d37d2f1adace4`.
+The support/L2 leaf's remaining default-heartbeat failure was localized to
+elaboration of squared compact support through composition. Its proof now
+uses the direct product-support lemma, with explicit function types; the
+limit remains unchanged. The next standalone check is running.

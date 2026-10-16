@@ -17,8 +17,6 @@ noncomputable section
 
 namespace RHTower.CHMDDoobGraph
 
-open WeilWorkPBAP
-
 private theorem compact_sum {ι V : Type*} [NormedAddCommGroup V]
     (s : Finset ι) (f : ι → ℝ → V) (hf : ∀ i, HasCompactSupport (f i)) :
     HasCompactSupport (∑ i ∈ s, f i) := by
@@ -122,6 +120,23 @@ private theorem re_W_real_synthesis {k : ℕ} (f : Fin k → ℝ → ℝ)
   change sourceEnergy (testLift (fun x => ∑ i, c i * f i x) h.1 h.2) = _
   rw [testLift_real_synthesis, sourceEnergy_sum_eq]
 
+private theorem re_W_split (f : ℝ → ℂ) (hf : ContDiff ℝ 2 f)
+    (hc : HasCompactSupport f) :
+    (zetaZeroConfig.W f f).re =
+      (zetaZeroConfig.W (fun x => ((f x).re : ℂ)) (fun x => ((f x).re : ℂ))).re +
+      (zetaZeroConfig.W (fun x => ((f x).im : ℂ)) (fun x => ((f x).im : ℂ))).re := by
+  have hr : ContDiff ℝ 2 (fun x => ((f x).re : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp (Complex.reCLM.contDiff.comp hf)
+  have hi : ContDiff ℝ 2 (fun x => ((f x).im : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp (Complex.imCLM.contDiff.comp hf)
+  have hrc : HasCompactSupport (fun x => ((f x).re : ℂ)) :=
+    hc.comp_left (g := fun z : ℂ => (z.re : ℂ)) (by simp)
+  have hic : HasCompactSupport (fun x => ((f x).im : ℂ)) :=
+    hc.comp_left (g := fun z : ℂ => (z.im : ℂ)) (by simp)
+  rw [zeta_W_eq_weilFullFunctional hf hc, zeta_W_eq_weilFullFunctional hr hrc,
+    zeta_W_eq_weilFullFunctional hi hic]
+  exact CHMDPolar.re_weilFullFunctional_split _ ⟨f, hf, hc⟩
+
 /-- Complexification is literal: the original signed Gram is the complete
 Weil quadratic form of the corresponding compact polar combination. -/
 theorem re_W_compact_synthesis_eq_gram {k : ℕ} (f : Fin k → ℝ → ℝ)
@@ -134,24 +149,15 @@ theorem re_W_compact_synthesis_eq_gram {k : ℕ} (f : Fin k → ℝ → ℝ)
         (sourcePair (testLift (f i) (hf i) (hc i))
           (testLift (f j) (hf j) (hc j)) : ℂ)) c).re := by
   let F : ℝ → ℂ := fun x => ∑ i, c i * (f i x : ℂ)
-  have hF := compact_synthesis (fun i x => (f i x : ℂ))
+  have hF : ContDiff ℝ 2 F ∧ HasCompactSupport F := compact_synthesis (fun i x => (f i x : ℂ))
     (fun i => Complex.ofRealCLM.contDiff.comp (hf i))
     (fun i => (hc i).comp_left Complex.ofReal_zero) c
   let r : ℝ → ℝ := fun x => ∑ i, (c i).re * f i x
   let s : ℝ → ℝ := fun x => ∑ i, (c i).im * f i x
-  have hr := real_synthesis f hf hc (fun i => (c i).re)
-  have hs := real_synthesis f hf hc (fun i => (c i).im)
-  have hsplit : (zetaZeroConfig.W F F).re =
-      (zetaZeroConfig.W (fun x => (r x : ℂ)) (fun x => (r x : ℂ))).re +
-      (zetaZeroConfig.W (fun x => (s x : ℂ)) (fun x => (s x : ℂ))).re := by
-    have hrC : ContDiff ℝ 2 (fun x => (r x : ℂ)) := Complex.ofRealCLM.contDiff.comp hr.1
-    have hsC : ContDiff ℝ 2 (fun x => (s x : ℂ)) := Complex.ofRealCLM.contDiff.comp hs.1
-    have hrc : HasCompactSupport (fun x => (r x : ℂ)) := hr.2.comp_left Complex.ofReal_zero
-    have hsc : HasCompactSupport (fun x => (s x : ℂ)) := hs.2.comp_left Complex.ofReal_zero
-    rw [zeta_W_eq_weilFullFunctional hF.1 hF.2,
-      zeta_W_eq_weilFullFunctional hrC hrc, zeta_W_eq_weilFullFunctional hsC hsc]
-    convert CHMDPolar.re_weilFullFunctional_split _ ⟨F, hF.1, hF.2⟩ using 1 <;>
-      simp [F, r, s, paperRealPartTestFn, paperImagPartTestFn, Complex.mul_re, Complex.mul_im]
+  have hre (x : ℝ) : (F x).re = r x := by simp [F, r, Complex.mul_re]
+  have him (x : ℝ) : (F x).im = s x := by simp [F, s, Complex.mul_im]
+  have hsplit := re_W_split F hF.1 hF.2
+  simp only [hre, him] at hsplit
   change (zetaZeroConfig.W F F).re = _
   rw [hsplit]
   dsimp only [r, s]
@@ -159,7 +165,7 @@ theorem re_W_compact_synthesis_eq_gram {k : ℕ} (f : Fin k → ℝ → ℝ)
     ← Finset.sum_add_distrib]
   simp only [dotProduct, mulVec, Pi.star_apply, Complex.star_def, Finset.mul_sum,
     Complex.re_sum, Complex.mul_re, Complex.mul_im, Complex.conj_re, Complex.conj_im,
-    Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero, zero_add]
+    Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
   apply Finset.sum_congr rfl
   intro i _
   rw [← Finset.sum_add_distrib]

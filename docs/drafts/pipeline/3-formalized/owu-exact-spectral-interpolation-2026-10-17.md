@@ -1,6 +1,7 @@
-# OWU: next obstruction after canonical ground factorization
+# OWU: nondegenerate ground zeros and exact spectral interpolation
 
-Status: PAPER PROOF CLOSED; Lean implementation pending (2026-10-17).
+Status: FORMALIZED (2026-10-17). Direct Lean and axiom audits pass. Repository-wide
+lint is blocked by eleven unrelated modules missing from their umbrellas.
 
 ## Scope and plan
 
@@ -134,3 +135,49 @@ the sign of the unshifted blind minimum, exclude imaginary-axis zeros, claim
 completeness of an infinite interpolation expansion, or claim RH.
 
 `docs/reports/rh-current-frontier-map.md` is read-only and will not be edited.
+
+## Final theorem and verification
+
+Capstone: `RHTower.OddSector.exists_canonical_oddGround_exact_interpolation`,
+`formal/GaloisForLFunctions/RHTower/OddSectorExactSpectralInterpolation.lean:107`.
+Its only top-level argument is a positive aperture. It constructs the actual
+canonical generator, infinitely many distinct squared nonzero zeros, odd
+cardinal vectors, and strictly positive norming constants. For every finite
+data vector it supplies the exact interpolation energy and classifies every
+minimizer modulo the actual ground space.
+
+- `OddSectorPairedGroundDivision.lean`: generalized spectral balance compiles;
+  the previous paired-ground theorem now reuses it.
+- `OddSectorGroundPolynomialStructure.lean`: rebuilt successfully against that
+  dependency, with its statements unchanged.
+- `OddSectorGroundZeroInterpolation.lean`: compiles without warnings. Includes
+  full-form transfer, positive norming constants, simple nonzero zeros, actual
+  positive evaluation representatives, and infinitely many distinct squared
+  nodes. Proof-script failures were coefficient simplification, function
+  normalization, and set coercions; the paper argument did not change.
+- `OddSectorExactSpectralInterpolation.lean`: final direct check passes without
+  warnings. Existence of interpolation nodes is not a supplied premise.
+- Every build uses foreground `lake --old env lean -j 1`, one Lean process at a
+  time. Only needed leaves are checked; no full or umbrella build.
+- Final command form, from `formal/`, for each needed leaf:
+  `lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<module>.olean GaloisForLFunctions/RHTower/<module>.lean`.
+- A separate `/tmp` audit imported the final leaf and ran `#print axioms` on
+  all eleven new public declarations. Every declaration depends only on
+  `propext`, `Classical.choice`, and `Quot.sound`. No added axioms, open
+  mathematical assumptions, admitted proofs, numerical experiments, or
+  heartbeat changes.
+- Both new modules are imported by `formal/GaloisForLFunctions/RHTower.lean`.
+  No umbrella build was run.
+- All four checked leaf `.olean` files are newer than their sources. Scoped
+  `git diff --check` passes. Refreshed lexical research finds the capstone at
+  its actual source location. All thirteen owned `/tmp/owu2-*` scratch files
+  were removed; no matching scratch remains.
+- `scripts/formal_tools.py lint` exits 1 only for these unrelated, concurrently
+  developed modules missing from their theorem-area umbrellas:
+  `CHMDCompactOrbitInertia`, `CHMDCompactTestSynthesis`,
+  `FiniteWeilNodalAdjacentCoupling`, `FiniteWeilNodalMixtureTransport`,
+  `HedenmalmSquarefreeSummatoryConormalTransport`,
+  `LeeYangPrimePivotSpinPartitionSpectrum`, `SquarefreeDiscrepancyHilbertTransport`,
+  `ThetaCuspRatioBoundaryNormOrientation`, `WeilCompactNegativeSubspace`,
+  `WeilCompactOrbitInertia`, and `HTGeometry.DenseCoreFiniteConstraints`.
+  No OWU error was reported; unrelated work was preserved.

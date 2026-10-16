@@ -20,6 +20,7 @@ open Complex MeasureTheory Set Filter Topology
 open scoped InnerProductSpace
 
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 namespace RHTower.SquarefreeDiscrepancy
 
@@ -29,6 +30,26 @@ abbrev ArithmeticHilbert := WithLp 2 (ℂ × LogHilbert)
 /-- A single arithmetic source, independent of the spectral point and the safe base. -/
 def arithmeticSource : ArithmeticHilbert :=
   WithLp.toLp 2 ((Sieve.squarefreeDensity : ℂ), hilbertSource)
+
+/-- Recover the arithmetic coefficients using interval averages of the Hilbert class. -/
+def arithmeticCoefficient (v : ArithmeticHilbert) : ℕ → ℂ
+  | 0 => 0
+  | 1 => hilbertCountReadout v.snd v.fst 0
+  | n + 2 => hilbertCountReadout v.snd v.fst (n + 1) -
+      hilbertCountReadout v.snd v.fst n
+
+/-- Summatory transport retains every squarefree coefficient, including both endpoints. -/
+theorem arithmeticCoefficient_source (n : ℕ) :
+    arithmeticCoefficient arithmeticSource n =
+      ((ArithmeticFunction.moebius n : ℤ) : ℂ) ^ (2 : ℕ) := by
+  match n with
+  | 0 => simp [arithmeticCoefficient]
+  | 1 =>
+      change hilbertCountReadout hilbertSource (Sieve.squarefreeDensity : ℂ) 0 = _
+      rw [hilbertCountReadout_source]
+      simp [count]
+  | n + 2 =>
+      exact_mod_cast hilbertCountReadout_source_difference n
 
 /-- Value vector for the original squarefree partition, including its density pole. -/
 def partitionVector (s : ℂ) : ArithmeticHilbert :=
@@ -57,7 +78,7 @@ theorem arithmeticSource_ne_zero : arithmeticSource ≠ 0 := by
 /-- Admission does not collapse the physical spectral column, even at a divisor. -/
 theorem partitionVector_ne_zero {s : ℂ} (hs : s ∈ transportDomain) :
     partitionVector s ≠ 0 := by
-  have hs0 : s ≠ 0 := by intro h; subst s; norm_num at hs
+  have hs0 : s ≠ 0 := by intro h; subst s; norm_num [transportDomain] at hs
   intro h
   have hh : s / (s - 1) = 0 :=
     congrArg (fun v : ArithmeticHilbert => v.fst) h
@@ -90,7 +111,7 @@ theorem inner_arithmeticSource_partitionVector {s : ℂ} (hs : s ∈ transportDo
   simp only [WithLp.toLp_fst, WithLp.toLp_snd, RCLike.inner_apply,
     star_def, Complex.conj_ofReal, inner_smul_right]
   rw [inner_hilbertSource_evaluation hs.1, moment_eq_quotient hs.1 hs.2]
-  have hs0 : s ≠ 0 := by intro h; subst s; norm_num at hs
+  have hs0 : s ≠ 0 := by intro h; subst s; norm_num [transportDomain] at hs
   have hz : riemannZeta (2 * s) ≠ 0 :=
     riemannZeta_ne_zero_of_one_lt_re (by simp only [two_mul, add_re]; linarith [hs.1])
   unfold GaloisForLFunctions.squarefreePartition
@@ -156,6 +177,17 @@ theorem summatoryConormal_eq (sigma epsilon u : ℂ)
   rw [inner_arithmeticSource_fisherVector sigma epsilon u hs,
     inner_arithmeticSource_overlapVector sigma epsilon u hs]
 
+/-- Conormal fidelity is an equality of germs, so it retains the complete polar part. -/
+theorem summatoryConormal_eventuallyEq (sigma epsilon u : ℂ)
+    (hs : sigma + u * epsilon ∈ transportDomain) :
+    (fun v => inner ℂ arithmeticSource (fisherVector sigma epsilon v) /
+        inner ℂ arithmeticSource (overlapVector sigma epsilon v)) =ᶠ[𝓝 u]
+      (fun v => GaloisForLFunctions.squarefreeFisherScore sigma epsilon v /
+        GaloisForLFunctions.squarefreeBoundaryOverlap sigma epsilon v) := by
+  have hc : Continuous (fun v : ℂ => sigma + v * epsilon) := by fun_prop
+  filter_upwards [(isOpen_transportDomain.preimage hc).mem_nhds hs] with v hv
+  exact summatoryConormal_eq sigma epsilon v hv
+
 /-- The Hilbert observation retains every multiplicity of the strict-right Xi divisor. -/
 theorem analyticOrderAt_hilbertPartition_eq_xi
     (s : {s : ℂ // 1 / 2 < s.re ∧ s.re < 1}) :
@@ -173,7 +205,10 @@ theorem analyticOrderAt_hilbertPartition_eq_xi
 /-- A fixed, nonzero arithmetic source admits every physical strict-right spectral point
 and both value and derivative columns, although its literal Dirichlet column is not in ℓ². -/
 theorem physicalSummatoryHilbertAdmission :
-    arithmeticSource ≠ 0 ∧ AnalyticOnNhd ℂ partitionVector transportDomain ∧
+    arithmeticSource ≠ 0 ∧
+      (∀ n : ℕ, arithmeticCoefficient arithmeticSource n =
+        ((ArithmeticFunction.moebius n : ℤ) : ℂ) ^ (2 : ℕ)) ∧
+      AnalyticOnNhd ℂ partitionVector transportDomain ∧
       ∀ rho : {s : ℂ // 1 / 2 < s.re ∧ s.re < 1},
         partitionVector rho ≠ 0 ∧
         inner ℂ arithmeticSource (partitionVector rho) =
@@ -184,7 +219,8 @@ theorem physicalSummatoryHilbertAdmission :
           ¬ Summable (fun n : ℕ =>
             ‖infiniteMobiusCriticalComplexDampedSignedWeight sigma
               (mscPhysicalZeroCoordinate rho sigma) n‖ ^ (2 : ℕ)) := by
-  refine ⟨arithmeticSource_ne_zero, analyticOnNhd_partitionVector, ?_⟩
+  refine ⟨arithmeticSource_ne_zero, arithmeticCoefficient_source,
+    analyticOnNhd_partitionVector, ?_⟩
   intro rho
   have hs : (rho : ℂ) ∈ transportDomain := ⟨rho.property.1, by
     intro h

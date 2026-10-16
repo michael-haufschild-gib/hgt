@@ -109,44 +109,47 @@ theorem exists_canonical_oddGround_exact_interpolation (a : SuzukiPositiveApertu
       (∀ z : ℂ, unitaryLaplace (timeRep a G) z = 0 → z.re = 0 ∨ z.im = 0) ∧
       (∀ z : ℂ, z ≠ 0 → unitaryLaplace (timeRep a G) z = 0 →
         deriv (unitaryLaplace (timeRep a G)) z ≠ 0) ∧
-      (∃ z : ℕ → ℂ, Function.Injective (fun n => (z n)^2) ∧
-        ∀ n, z n ≠ 0 ∧ unitaryLaplace (timeRep a G) (z n) = 0) ∧
-      ∀ (n : ℕ) (z : Fin n → ℂ), (∀ i, z i ≠ 0 ∧ unitaryLaplace (timeRep a G) (z i) = 0) →
-        Function.Injective (fun i => (z i)^2) →
-        ∃ e : Fin n → CCMArchimedeanFormDomain a, ∃ ρ : Fin n → ℝ,
-          (∀ i, 0 < ρ i) ∧
-          (∀ i j, unitaryLaplace (timeRep a (e j)) (z i) = if i=j then 1 else 0) ∧
-          (∀ i (u : CCMArchimedeanFormDomain a), ccmArchimedeanFormReflection a u = -u →
-            arithmeticShiftedForm a (e i) u = (ρ i : ℂ)*unitaryLaplace (timeRep a u) (z i)) ∧
-          ∀ b : Fin n → ℂ,
-            ccmArchimedeanFormReflection a (∑ i, b i • e i) = -(∑ i, b i • e i) ∧
-            (∀ i, unitaryLaplace (timeRep a (∑ j, b j • e j)) (z i) = b i) ∧
-            (arithmeticShiftedForm a (∑ i, b i • e i) (∑ i, b i • e i)).re =
-              ∑ i, ρ i * ‖b i‖^2 ∧
-            ∀ u : CCMArchimedeanFormDomain a, ccmArchimedeanFormReflection a u = -u →
-              (∀ i, unitaryLaplace (timeRep a u) (z i) = b i) →
-              (arithmeticShiftedForm a u u).re = (∑ i, ρ i * ‖b i‖^2) +
-                (arithmeticShiftedForm a (u-∑ i, b i • e i) (u-∑ i, b i • e i)).re ∧
-              ((arithmeticShiftedForm a u u).re = ∑ i, ρ i * ‖b i‖^2 ↔
-                u-∑ i, b i • e i ∈ oddArithmeticGroundSpace a) := by
+      ∃ (z : ℕ → ℂ) (e : ℕ → CCMArchimedeanFormDomain a) (ρ : ℕ → ℝ),
+        Function.Injective (fun i => (z i)^2) ∧
+        (∀ i, z i ≠ 0 ∧ unitaryLaplace (timeRep a G) (z i) = 0) ∧
+        (∀ i, ccmArchimedeanFormReflection a (e i) = -e i) ∧
+        (∀ i, 0 < ρ i) ∧
+        (∀ i j, unitaryLaplace (timeRep a (e j)) (z i) = if i=j then 1 else 0) ∧
+        (∀ i (u : CCMArchimedeanFormDomain a), ccmArchimedeanFormReflection a u = -u →
+          arithmeticShiftedForm a (e i) u = (ρ i : ℂ)*unitaryLaplace (timeRep a u) (z i)) ∧
+        ∀ (n : ℕ) (b : Fin n → ℂ),
+          ccmArchimedeanFormReflection a (∑ i : Fin n, b i • e i) = -(∑ i : Fin n, b i • e i) ∧
+          (∀ i : Fin n, unitaryLaplace (timeRep a (∑ j : Fin n, b j • e j)) (z i) = b i) ∧
+          (arithmeticShiftedForm a (∑ i : Fin n, b i • e i) (∑ i : Fin n, b i • e i)).re =
+            ∑ i : Fin n, ρ i * ‖b i‖^2 ∧
+          ∀ u : CCMArchimedeanFormDomain a, ccmArchimedeanFormReflection a u = -u →
+            (∀ i : Fin n, unitaryLaplace (timeRep a u) (z i) = b i) →
+            (arithmeticShiftedForm a u u).re = (∑ i : Fin n, ρ i * ‖b i‖^2) +
+              (arithmeticShiftedForm a (u-∑ i : Fin n, b i • e i) (u-∑ i : Fin n, b i • e i)).re ∧
+            ((arithmeticShiftedForm a u u).re = ∑ i : Fin n, ρ i * ‖b i‖^2 ↔
+              u-∑ i : Fin n, b i • e i ∈ oddArithmeticGroundSpace a) := by
   classical
   obtain ⟨G,hG,hcross,_⟩ := exists_canonical_oddArithmeticGround_generator a
   have hc (z : ℂ) (hz : unitaryLaplace (timeRep a G) z = 0) : conj (z^2) = z^2 := by
     rcases hcross z hz with hr | hi
     · apply Complex.ext <;> simp [pow_two,Complex.mul_re,Complex.mul_im,hr]
     · apply Complex.ext <;> simp [pow_two,Complex.mul_re,Complex.mul_im,hi]
-  refine ⟨G,hG,hcross,fun z hz0 hz => oddGroundGenerator_deriv_ne_zero a hG hz0 (hc z hz) hz,
-    exists_ccm_transform_squared_zero_sequence a G,?_⟩
-  intro n z hz hinj
+  obtain ⟨z,hinj,hz⟩ := exists_ccm_transform_squared_zero_sequence a G
   choose e ρ heo heval hρ hrep hzero using fun i =>
     exists_oddGround_zero_representative a hG (hz i).1 (hc (z i) (hz i).2) (hz i).2
-  have hcard (i j : Fin n) :
+  have hcard (i j : ℕ) :
       unitaryLaplace (timeRep a (e j)) (z i) = if i=j then 1 else 0 := by
     by_cases hij : i=j
     · subst j
       rw [heval,if_pos rfl]
     · rw [if_neg hij]
       exact hzero j (z i) (hz i).2 (fun he => hij (hinj he))
-  exact ⟨e,ρ,hρ,hcard,hrep,finite_interpolation a n z e ρ heo hcard hrep⟩
+  refine ⟨G,hG,hcross,fun w hw0 hw => oddGroundGenerator_deriv_ne_zero a hG hw0 (hc w hw) hw,
+    z,e,ρ,hinj,hz,heo,hρ,hcard,hrep,?_⟩
+  intro n
+  apply finite_interpolation a n (fun i : Fin n => z i) (fun i : Fin n => e i)
+    (fun i : Fin n => ρ i) (fun i => heo i) ?_ (fun i => hrep i)
+  intro i j
+  simpa only [Fin.val_inj] using hcard i j
 
 end RHTower.OddSector

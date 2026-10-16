@@ -55,13 +55,16 @@ theorem exists_odd_paired_div (a : SuzukiPositiveAperture)
   have hP : P ≠ 0 := by
     intro he
     have he' := congrArg (fun p : ℂ[X] => p.coeff 2) he
-    simpa [P] using he'
+    simp only [P,Polynomial.coeff_sub,Polynomial.coeff_X_pow,Polynomial.coeff_C,
+      ite_true,OfNat.ofNat_ne_zero,ite_false,sub_zero] at he'
+    simp at he'
   have hodd : (fun w : ℂ => unitaryLaplace (timeRep a v) (-w)) =
       fun w => -unitaryLaplace (timeRep a v) w := by
     apply Continuous.ext_on (dense_univ.sdiff_finite (Polynomial.finite_setOf_isRoot hP))
       ((transform_continuous a v).comp continuous_neg) (transform_continuous a v).neg
     intro w hw
     have hw' : w^2-z^2 ≠ 0 := by simpa [P,Polynomial.IsRoot.def] using hw.2
+    change unitaryLaplace (timeRep a v) (-w) = -unitaryLaplace (timeRep a v) w
     apply mul_left_cancel₀ hw'
     have he := hfac (-w)
     rw [neg_sq,odd_transform_neg a hu,hfac w] at he
@@ -204,7 +207,7 @@ theorem oddGroundGenerator_quotient_pos (a : SuzukiPositiveAperture)
       Polynomial.eval_C,Polynomial.eval_one,one_mul]
     linear_combination -he
   have he := congrArg (fun p : ℂ[X] => p.eval (z^2)) hpoly
-  simpa using he
+  simp at he
 
 private theorem zeroQuotient_annihilates (a : SuzukiPositiveAperture)
     {G : CCMArchimedeanFormDomain a} (hG : G ∈ oddArithmeticGroundSpace a)
@@ -243,10 +246,13 @@ theorem oddGroundGenerator_deriv_ne_zero (a : SuzukiPositiveAperture)
   have hdv := (CCMXiStrip.differentiable_unitaryLaplace a.2.le
     (integrable_timeRep a v) (supportedIn_timeRep a v) z).hasDerivAt
   have hd := (((hasDerivAt_id z).pow 2).sub_const (z^2)).mul hdv
+  change HasDerivAt (fun w : ℂ => (w^2-z^2)*unitaryLaplace (timeRep a v) w)
+    ((2 : ℂ)*z^1*1*unitaryLaplace (timeRep a v) z +
+      (z^2-z^2)*deriv (unitaryLaplace (timeRep a v)) z) z at hd
+  simp only [pow_one,mul_one,sub_self,zero_mul,add_zero] at hd
   rw [funext hfac]
   rw [hd.deriv]
-  simpa only [pow_one,mul_one,sub_self,zero_mul,add_zero] using
-    mul_ne_zero (mul_ne_zero (two_ne_zero : (2 : ℂ) ≠ 0) hz0) hvz
+  exact mul_ne_zero (mul_ne_zero (two_ne_zero : (2 : ℂ) ≠ 0) hz0) hvz
 
 /-- An actual positive Riesz representative for evaluation at every nonzero generator zero. -/
 theorem exists_oddGround_zero_representative (a : SuzukiPositiveAperture)
@@ -309,7 +315,9 @@ theorem exists_ccm_transform_squared_zero_sequence (a : SuzukiPositiveAperture)
     (integrable_timeRep a u) (supportedIn_timeRep a u)
   let A : ℝ := 2 * Real.pi * a.1
   let B : ℝ := ∫ x : ℝ, ‖timeRep a u x‖
-  have hA : 0 ≤ A := by dsimp only [A]; positivity
+  have hA : 0 ≤ A := by
+    dsimp only [A]
+    exact mul_nonneg (by positivity) a.2.le
   have hB : 0 ≤ B := integral_nonneg fun x => norm_nonneg _
   have hg (w : ℂ) : ‖unitaryLaplace (timeRep a u) w‖ ≤
       Real.exp ((A+B)*(1+‖w‖)^(1 : ℝ)) := by
@@ -336,8 +344,7 @@ theorem exists_ccm_transform_squared_zero_sequence (a : SuzukiPositiveAperture)
     ((hdec.mono_left atBot_le_cocompact).comp Filter.tendsto_neg_atTop_atBot)
   let S : Set ℂ := {z | unitaryLaplace (timeRep a u) z = 0 ∧ z ≠ 0}
   have hS : S.Infinite := by
-    simpa only [S,Set.mem_sdiff,Set.mem_setOf_eq,Set.mem_singleton_iff] using
-      hinf.sdiff (Set.finite_singleton 0)
+    exact (hinf.sdiff (Set.finite_singleton 0)).mono fun _ hz => ⟨hz.1,hz.2⟩
   have hsq : ((fun z : ℂ => z^2) '' S).Infinite := by
     intro hfin
     apply hS (hfin.of_finite_fibers (fun z : ℂ => z^2) ?_)
@@ -345,7 +352,7 @@ theorem exists_ccm_transform_squared_zero_sequence (a : SuzukiPositiveAperture)
     have hP : (X^2-C c : ℂ[X]) ≠ 0 := by
       intro he
       have he' := congrArg (fun p : ℂ[X] => p.coeff 2) he
-      simpa using he'
+      simp at he'
     apply (Polynomial.finite_setOf_isRoot hP).subset
     intro z hz
     simp only [Polynomial.IsRoot.def,Polynomial.eval_sub,Polynomial.eval_pow,

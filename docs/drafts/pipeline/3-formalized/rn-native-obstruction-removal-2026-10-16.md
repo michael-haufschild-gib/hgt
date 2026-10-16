@@ -1,7 +1,8 @@
 # RN: intrinsic full-multiplicity native splitting
 
-Status: paper proof complete; all eight production Lean leaves passed direct
-audits without diagnostics. Axiom and formal-lint gates remain in progress.
+Status: FORMALIZED, 2026-10-17. All eight production Lean leaves passed direct
+audits without diagnostics. Axiom audit passed. Repository-wide formal lint
+is blocked by 13 unrelated modules missing umbrella imports; details below.
 
 Objective: remove a structural obstacle in RN with an unconditional theorem,
 not an estimate, RH equivalence, or receiver. Use current Lean corpus only.
@@ -198,3 +199,49 @@ This does not prove the directed arithmetic sign or remove Gaussian
 regularization from global whole-source synthesis. Existing native Meyer
 completeness is used as an input already proved in the corpus, not claimed
 as new work.
+
+## Final audits
+
+Each of the eight leaves above was audited directly with
+`lake --old env lean <module.lean>` (one process at a time, one or two Lean
+worker threads), exporting its current `.olean` and `.ilean`. All exited 0
+without diagnostics. No heartbeat override, numerical experiment, full build,
+or umbrella build was used to validate the contribution.
+
+Scratch `#check @...` verified that the concrete capstones take only actual
+Xi points, orders, and original forcing. Scratch `#print axioms` checked
+`obstruction_order`, `projection_independent`, and the concrete exact-order,
+projection-kernel, solver, defect, spatial-equation, and full-arithmetic
+theorems. Every closure contains only `propext`, `Classical.choice`, and
+`Quot.sound`; no added axiom or `sorryAx`.
+
+The authoritative `scripts/formal_tools.py lint` exited 1. Its complete error
+set consists of these unrelated modules missing theorem-area umbrella imports:
+
+```text
+RHTower.CHMDCompactOrbitInertia
+RHTower.CHMDCompactTestSynthesis
+RHTower.FiniteWeilNodalAdjacentCoupling
+RHTower.FiniteWeilNodalMixtureTransport
+RHTower.HedenmalmSquarefreeSummatoryConormalTransport
+RHTower.LeeYangPrimePivotSpinPartitionSpectrum
+RHTower.OddSectorExactSpectralInterpolation
+RHTower.OddSectorGroundZeroInterpolation
+RHTower.SquarefreeDiscrepancyHilbertTransport
+RHTower.ThetaCuspRatioBoundaryNormOrientation
+RHTower.WeilCompactNegativeSubspace
+RHTower.WeilCompactOrbitInertia
+HTGeometry.DenseCoreFiniteConstraints
+```
+
+No RN leaf or forbidden-declaration error was reported. Those unrelated,
+concurrently edited modules were left untouched. Existing large-file warnings
+also remain. Task-scoped `git diff --check` passed.
+
+An import-artifact audit covered all 9,426 local modules in the capstone's
+dependency closure and found no missing `.olean` files. A targeted Lake
+build was stopped when it began rebuilding a broad dependency chain; six
+interrupted dependency artifacts were restored by direct leaf checks with
+their sources unchanged. All owned build processes exited. Task scratch
+proofs, searches, and diagnostic files were removed. The frontier map was
+never edited by this work.
