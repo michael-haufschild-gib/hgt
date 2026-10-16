@@ -85,6 +85,22 @@ namespace `RHTower.OddResolvent`, wired into `RHTower.lean`):
    quartic-versus-quadratic growth, no exponential estimates needed (`E(Tr) ≥ 2 + T²r²/6`).
 5. Wide tests `φ(x/T)/T` would need `T`-explicit real-line decay; the bound `T²γB ≤ N₂` with
    `B = φ̂(T√γ)` suffices because the `1/γ` weight is only needed for `γ ≥ δ`.
+6. Source at pole weight `0` (`PrimeBlindPositiveOddAt 0`, open in the corpus, not known to imply
+   RH): by Farkas and the Nevanlinna characterisation it is a real Dirichlet series `D` with
+   `Re D(½+0+iτ) ≤ w(τ)` on the whole line and no pole condition. The archimedean density is a
+   deep narrow well: `w(0) = ½ψ(¼) − ½log π ≈ −2.69`, `w(1) ≈ −1.0`, `w(2) ≈ −0.57`,
+   `w(4) ≈ −0.23`, zero crossing near `τ ≈ 6.3`, then `w ≈ 0.24` at `10`, `0.5` at `17`, `1.1` at
+   `45`, growing like `½ log τ`. For `Λ` under RH the inequality is an equality a.e. (the slack is the
+   singular zero measure). Any `D` absolutely convergent on the line has `Re D` almost periodic with
+   mean zero and coefficient mass `≥ 2.69`; the lowest node `log 2` forces sign changes at scale
+   `≈ 2`, so one-signed coefficients fail at `τ ≈ 2–4`, smooth coefficient profiles give
+   amplitude `≈ 2.69/(1+τ²)` which exceeds `w` near the crossing `τ ≈ 6.5`, and generic mixed
+   profiles have fluctuations `≈ 2.69/√K` against `w ≈ 0.05–0.2` on `[7, 10]`. Expected outcome:
+   no absolutely convergent source exists; sources must carry a singular boundary measure on the
+   line, i.e. they are `Λ`-like. Not formalised; it is a conjecture for the next loop
+   (`no odd-positive weight at pole weight 0 with Σ|λ(n)|n^{−1/2} < ∞`).
+7. Pole-weight transfer `β → 1` by adding `(1−β)·𝟙` fails on the line (`1 − Re ζ(½+iτ)` changes
+   sign); the pole weight is not a free parameter of the source problem.
 
 ## Gates
 - [x] 0 → 1  well-posed

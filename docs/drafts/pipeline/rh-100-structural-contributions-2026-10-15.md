@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **18 / 100**.
+Completed after goal activation: **19 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -260,14 +260,31 @@ inverse and integrating factor alone did not pay this native regularity.
 Seven direct leaf audits and all 58 public standard-axiom audits passed.
 Artifacts are fresh, imports unique, indexes refreshed, and all 8 owned
 scratch files removed. Global lint reports three unrelated concurrent
-umbrella omissions, listed on the card. Original spectral synthesis and
+umbrella omissions, listed on the card. Native infinite-packet synthesis and
 directed prime--Gamma work sign remain open.
 Card: `3-formalized/rh100-018-native-bv-forcing-resolvent-2026-10-16.md`.
 
+019: actual finite native modes are dense in the ORIGINAL strong Meyer
+cohomology topology, unconditionally and with every Xi multiplicity retained.
+Entire divided-difference contour projectors remove the need to estimate
+individual residues or assume zero separation. Good horizontal contours and
+Gaussian regularization give summable disjoint blocks in every original source
+gauge; source completeness, global Xi synthesis and Gaussian removal reach all
+original classes. RN's exact native full-jet range identifies every finite head.
+Thus every original forcing and its exact repaired convolution solution are
+simultaneous original-topology limits of actual finite native exact-solution
+pairs. This pays the original-Frechet density gap beyond Hilbert density.
+Eleven direct leaf audits and all 76 public standard-axiom audits passed.
+All artifacts are fresh and imports unique. Global formal lint passes; indexes
+are refreshed and exactly 16 owned scratch files were removed. Native BV
+convergence, prescribed arbitrary infinite packets, compact-open topological
+identification and positive Hodge compatibility remain open.
+Card: `3-formalized/rh100-019-original-topology-native-density-2026-10-16.md`.
+
 ## Next investigation
 
-No nineteenth contribution is counted. Do not count routine corollaries or
-repackagings of 001–018 as further contributions. Resume broad Lean-corpus
+No twentieth contribution is counted. Do not count routine corollaries or
+repackagings of 001–019 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -289,9 +306,9 @@ corollaries do not count again. Literal Euler inversion still needs genuine
 source admission; pointwise Xi-jet division and Floquet closure do not supply it.
 The complete native Hasse Hilbert admission, global zero-radical Paugam form,
 and totality of the literal theta current factors belong to 008. They do not
-assert that every Hilbert packet is an original source, that finite causal
-sources are dense in the original Frechet topology, or that the form is the
-arithmetic cup/trace. These distinctions must survive future conjectures.
+assert that every Hilbert packet is an original source or that the form is the
+arithmetic cup/trace. Contribution 019 separately pays finite causal density
+in the original Frechet topology. These distinctions must survive future conjectures.
 Any next target must be checked against current Lean source, including other
 active routes.
 The full original Hilbert flow, its compact-time trace-class calculus, complete
@@ -331,6 +348,12 @@ calculus consequences do not count again. The arithmetic sharp has not been
 identified with the Hilbert adjoint.
 
 ## Continuation rules
+
+Original-topology finite native density, grouped full-germ contour source
+synthesis and finite native exact-solution approximation belong together to
+019. Routine density or continuous-operator consequences do not count again.
+The theorem does not give arbitrary infinite-packet admission, native BV
+convergence, compact-open topological identification or positive Hodge compatibility.
 
 Whole continuous-BV native forcing, compact AC transport, complete arithmetic
 admission and whole-domain uniqueness belong together to 018. Routine word

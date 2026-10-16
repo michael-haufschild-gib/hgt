@@ -88,7 +88,8 @@ theorem massMixedFunctional_eq_genImage {v : ℝ → ℝ} (hv : ContDiff ℝ 2 v
     rintro _ ⟨p, rfl⟩
     rw [massMixedFunctional_source p (contDiff_phiDoobTest hv) (hasCompactSupport_phiDoobTest hc),
       ← sourcePair_testLift_eq_mixed p (contDiff_phiDoobTest hv) (hasCompactSupport_phiDoobTest hc),
-      testLift_phi, sourcePair_symm, sourcePair_compactLift]
+      testLift_phi v hv hc, sourcePair_symm, sourcePair_compactLift hv hc p]
+    rfl
   exact congrFun he w
 
 theorem massMixedZeroOperator_eq_zero_of_samples {w : MassSpace}

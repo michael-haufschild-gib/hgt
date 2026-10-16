@@ -1,4 +1,39 @@
-# Contribution 019 investigation
+# Contribution 019: original-topology native density
+
+Status: **FORMALIZED, AUDITED — 19/100**. One structural contribution combining
+HF original source synthesis and topology with RN actual native range and
+finite convolution solvability.
+
+The unconditional theorem `RHTower.deningerMeyerFiniteNativeModes_dense` proves
+that actual finite native full-multiplicity Xi modes are dense in the original
+strong Meyer-cohomology topology. Entire divided-difference contour blocks
+retain whole Xi germs; grouped contour control gives a convergent series in
+all original source gauges. Global Xi synthesis identifies its class, and
+Gaussian source removal reaches every original forcing.
+
+`RHTower.deningerMeyerOriginalConvolution_nativeApproximation` gives finite
+native forcing/solution pairs for EVERY original source symbol and forcing:
+the repaired equation is exact at each stage, and both sequences converge in
+the original quotient topology to the original forcing and its unique repaired
+solution. This removes the original-Frechet finite-mode approximation obstacle.
+It is not an arbitrary infinite-packet admission or a native BV convergence result.
+
+Main source: `formal/GaloisForLFunctions/RHTower/DeningerMeyerFiniteNativeDensity.lean`.
+All eleven leaves passed direct `lake --old env lean` audits with fresh oleans;
+all eleven umbrella imports are unique. All 76 public declarations passed the
+exhaustive axiom audit using only `propext`, `Classical.choice`, `Quot.sound`.
+Global formal lint passed, with only existing large-file warnings. Formal API,
+gap and overview indexes and the Lean search index were refreshed. Exactly 16
+owned scratch files were removed. No full or umbrella builds, new axioms,
+proof placeholders, heartbeat changes, numerical experiments, commits or pushes.
+
+Remaining: convergence of native BV representatives, prescribed arbitrary
+infinite packets, compact-open topological identification, geometric cup/trace
+identification, positive Hodge compatibility and directed prime--Gamma work sign.
+Routine density, finite approximation and continuous-operator consequences
+belong to this same contribution and must not be counted again.
+
+## Research history (chronological)
 
 Baseline: **18/100**. Previous goal turn classified as progress: all seven
 018 source/artifact pairs are fresh, uniquely wired, and the current main
@@ -281,3 +316,18 @@ Final scope review:
 - This does not assert an unconditional basis expansion of an unsmoothed input, convergence in native BV norms, admission of arbitrary prescribed infinite packets, a continuous inverse to compact-open comparison, a geometric cup identification, positive Hodge compatibility, or RH.
 - Global `scripts/formal_tools.py lint` exited 0: formal lint passed. Its only output besides success is existing large-file warnings. All earlier unrelated umbrella omissions are now absent.
 - Axiom audit remains running; count stays 18 until terminal audit and cleanup.
+
+Axiom-audit script repair:
+- The first exhaustive audit printed standard axioms for 74 declarations, including both capstones. Its two errors were generated names truncated at an apostrophe: rectangleIntegral'_const_mul and rectangleIntegral'_sub. Source names were verified, the scratch script corrected, and the full 76-declaration audit rerun. No project proof changed.
+- Frontier map HF/RN now records the proved density and exact-solution approximation, with native BV and positivity limits explicit.
+- Formal index refresh is running. Owned cleanup additionally includes /tmp/hgt_rh019_lint.log and /tmp/hgt_rh019_index.log.
+
+Final closure:
+- Corrected exhaustive axiom audit exited 0; all 76 declarations matched the
+  source manifest and used only the three standard logical axioms.
+- Index command exited 0 and refreshed LEAN_API, LEAN_GAPS, LEAN_OVERVIEW and
+  the Lean search database. No new source changes followed the direct audits.
+- Final audit verified every one of the eleven source/olean pairs and unique
+  umbrella imports. Exactly the sixteen recorded /tmp/hgt_rh019_* files were
+  deleted; the owned prefix is empty. No owned build remains active.
+- Contribution 019 counts once. The 100-contribution goal remains active.

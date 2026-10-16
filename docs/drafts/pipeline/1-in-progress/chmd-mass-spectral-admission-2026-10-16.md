@@ -51,3 +51,28 @@ domain restriction from the spectral nullspace/sampling description.
 
 No new axioms, RH premise, simplicity premise, finiteness of off-line zeros,
 numerical experiments, or heartbeat increases.
+
+## Paper-proof closure and stronger survivor
+
+The joint-kernel argument succeeds. Four new leaves currently pass their
+targeted builds: `CHMDMassFourierReadout`, `CHMDMassMixedExplicitFormula`,
+`CHMDMassSpectralAdmission`, and `CHMDMassSamplingCompleteness`. The sampling
+kernel span closes to the mass-orthogonal complement of `ker(R-1/2)`, and every
+mass vector has a unique reduced representative with its original samples.
+This is completeness of the literal dual kernels, not a cardinal-series
+expansion or an exclusion of primitive bound states.
+
+The proof exposes a stronger statement, now being formalised in
+`CHMDMassPolarCompletion`: vanishing Xi-zero samples alone implies maximal
+operator-domain admission. Subtract the actual polar graph source matching
+both polar samples; the remaining mass vector is critical by the proved
+joint-kernel theorem. The mixed graph formula then identifies the signed
+generator image as
+
+`b(w) = -Re F_w(i/2) k^- - Re F_w(-i/2) k^+`,
+
+where `k^+` and `k^-` are the actual real mass Fourier kernels at the poles.
+Riesz uniqueness gives `R(2w+b(w))=w`, hence `Lw=w+b(w)` on the maximal domain.
+All polar coefficients and the critical remainder are explicit and unique.
+
+Final leaf audits, axiom audits, root wiring, lint, and cleanup remain pending.
