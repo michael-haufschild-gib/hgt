@@ -25,4 +25,69 @@ Plan:
 3. Complete dependency-closed paper proof before new Lean. Then direct leaf
    audits, axioms, umbrella wiring, lint/index, exact cleanup and count audit.
 
-No new mathematical assertion or contribution accepted yet.
+Conjecture log:
+- Original-Frechet finite-mode density: the available Hilbert density and
+  nuclear seminorm-family statements do not pay original convergence. No
+  density claim accepted. Inverse closure from 017 does not repair this gap.
+- A new compact theta inverse: rejected as duplicate. The current
+  `HedenmalmThetaSourceCompressedInverseDeterminant` already has the Hilbert
+  inverse and exact spectrum. Its existence does not establish BV regularity
+  of arbitrary forced solutions through the singular quantile.
+- Selected conjecture: **every continuous whole-line BV forcing has a unique
+  literal native solution at every nonzero imaginary shift, with a common
+  two-ended trace, whole-line BV, an absolutely continuous closed-quantile
+  representative, and admission to the complete signed CHMD graph.** This
+  removes the finite-Xi-packet restriction from native inhomogeneous solving.
+
+Dependency-closed paper proof (formalization pending):
+Write rho for the positive normalized theta density and C(z)=integral
+rho(x) exp(i z x)=XiC(z)/mass. For continuous BV g let
+J(z,g)=integral rho(x) exp(i z x) g(x) and
+R(z,g)(x)=integral_{h>0} [rho(x+h)/rho(x)] exp(i z h) g(x+h).
+All integrals converge absolutely: g is bounded, and every tilted source
+ratio is integrable (`PaperThetaSourceRatio`). When z*C(z) is nonzero set
+tau=-J(z,g)/(z*C(z)), h=g+z*tau, and f=tau+i*R(z,h).
+
+1. The weighted forcing h has zero total character moment. Changing
+   variables and using theta reflection identifies the right-tail formula
+   with -R(-z,h(-.))(-x) on the left. This is exact cancellation before
+   dividing by the superexponentially small density.
+2. Each R(z,h) has BV on every right ray. For a finite increasing partition
+   x_j>=a, expand a product increment into the source-ratio difference and
+   the forcing difference. Source ratios are positive decreasing in x.
+   Their increments telescope; forcing increments sum to TV(h). Integrate
+   the resulting bound (supnorm(h)+TV(h))*ratio(t,a)*exp(-Im(z)*t).
+   Both rays therefore have finite variation. This is the new regularity
+   mechanism; individual pointwise bounds do not prove it.
+3. The same bound without increments controls |R| by supnorm(h) times the
+   positive tilted tail/density ratio. The already-proved relative-tail
+   theorem makes that ratio tend to zero. Hence both traces of f are tau.
+4. Differentiating the absolutely convergent tail gives
+   R'=-(rho'/rho+i*z)R-h. Consequently
+   i*(f'+(rho'/rho)*(f-tau))-z*f=g pointwise.
+5. For uniqueness subtract two solutions. Multiplication by
+   rho(x)*exp(i*z*x) turns the zero-tail homogeneous equation into a
+   constant. Its right limit is zero. Thus every homogeneous solution with
+   tail c equals -c*flatQuotient(z). The existing whole-line boundedness
+   selector forces c=0 when z!=0 and XiC(z)!=0.
+6. For z=i*r, C(z) is the integral of the strictly positive density
+   rho(x)*exp(-r*x), so C(z)!=0 without RH. Every nonzero imaginary shift
+   is therefore admitted. Iterating the inverse handles arbitrary finite
+   words on the entire forcing class, with uniqueness in the native class.
+7. The theta quantile preserves variation. Matching traces and interior
+   differentiability give the closed-interval derivative primitive and AC
+   by the existing RN FTC mechanism. CHMD's unconditional BV admission then
+   puts every solution in the full mass/prime/Gamma jump graph and retains
+   the exact signed Weil expression.
+
+Scope attack: no spectral-series convergence, arbitrary Hilbert-packet
+realization, self-adjointness, or positivity is inferred. The forcing class
+is the literal continuous BV space, not its image under a spectral map.
+The conclusion is an actual inhomogeneous solution and domain preservation,
+not a new RH equivalence. Existing finite-packet theorems are recovered but
+do not supply this infinite-dimensional native domain theorem.
+
+Searches used whole-corpus deep retrieval and targeted Meyer lexical/deep
+retrieval. Deep reports were non-partial with no errors; compiler metadata
+was predominantly source-only/stale, so applicability is checked in source
+and must be audited by Lean. No old research markdown or web was used.

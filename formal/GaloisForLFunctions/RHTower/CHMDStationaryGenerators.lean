@@ -18,14 +18,18 @@ noncomputable section
 namespace RHTower.CHMDDoobGraph
 open CHMDPolar
 
+section ResolventGenerator
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
+
 /-- Invert an injective resolvent on its range, then subtract the identity. -/
-def generatorOfResolvent (R : MassSpace →L[ℝ] MassSpace) (hR : Function.Injective R) :
-    MassSpace →ₗ.[ℝ] MassSpace where
+def generatorOfResolvent (R : H →L[ℝ] H) (hR : Function.Injective R) :
+    H →ₗ.[ℝ] H where
   domain := R.range
   toFun := (LinearEquiv.ofInjective R.toLinearMap hR).symm.toLinearMap - R.range.subtype
 
-theorem generatorOfResolvent_apply (R : MassSpace →L[ℝ] MassSpace) (hR : Function.Injective R)
-    (w : MassSpace) :
+omit [CompleteSpace H] in
+theorem generatorOfResolvent_apply (R : H →L[ℝ] H) (hR : Function.Injective R)
+    (w : H) :
     generatorOfResolvent R hR ⟨R w, ⟨w, rfl⟩⟩ = w - R w := by
   change (LinearEquiv.ofInjective R.toLinearMap hR).symm ⟨R w, ⟨w, rfl⟩⟩ - R w = w - R w
   have h : (LinearEquiv.ofInjective R.toLinearMap hR).symm ⟨R w, ⟨w, rfl⟩⟩ = w := by
@@ -33,23 +37,24 @@ theorem generatorOfResolvent_apply (R : MassSpace →L[ℝ] MassSpace) (hR : Fun
     exact LinearEquiv.ofInjective_symm_apply _ _
   rw [h]
 
-theorem generatorOfResolvent_identity (R : MassSpace →L[ℝ] MassSpace) (hR : Function.Injective R)
+omit [CompleteSpace H] in
+theorem generatorOfResolvent_identity (R : H →L[ℝ] H) (hR : Function.Injective R)
     (u : (generatorOfResolvent R hR).domain) :
-    R ((u : MassSpace) + generatorOfResolvent R hR u) = u := by
-  change R ((u : MassSpace) + ((LinearEquiv.ofInjective R.toLinearMap hR).symm u - u)) = u
-  have h : (u : MassSpace) + ((LinearEquiv.ofInjective R.toLinearMap hR).symm u - u) =
+    R ((u : H) + generatorOfResolvent R hR u) = u := by
+  change R ((u : H) + ((LinearEquiv.ofInjective R.toLinearMap hR).symm u - u)) = u
+  have h : (u : H) + ((LinearEquiv.ofInjective R.toLinearMap hR).symm u - u) =
       (LinearEquiv.ofInjective R.toLinearMap hR).symm u := by abel
   rw [h]
   exact LinearEquiv.ofInjective_symm_apply _ _
 
-theorem generatorOfResolvent_dense (R : MassSpace →L[ℝ] MassSpace) (hR : Function.Injective R)
-    (hsa : IsSelfAdjoint R) : Dense ((generatorOfResolvent R hR).domain : Set MassSpace) := by
-  change Dense (R.range : Set MassSpace)
+theorem generatorOfResolvent_dense (R : H →L[ℝ] H) (hR : Function.Injective R)
+    (hsa : IsSelfAdjoint R) : Dense ((generatorOfResolvent R hR).domain : Set H) := by
+  change Dense (R.range : Set H)
   rw [Submodule.dense_iff_topologicalClosure_eq_top, Submodule.topologicalClosure_eq_top_iff,
     R.orthogonal_range, hsa.adjoint_eq]
   exact LinearMap.ker_eq_bot.mpr hR
 
-theorem generatorOfResolvent_formalSelfAdjoint (R : MassSpace →L[ℝ] MassSpace)
+theorem generatorOfResolvent_formalSelfAdjoint (R : H →L[ℝ] H)
     (hR : Function.Injective R) (hsa : IsSelfAdjoint R) :
     (generatorOfResolvent R hR).IsFormalAdjoint (generatorOfResolvent R hR) := by
   rintro ⟨x, hx⟩ ⟨y, hy⟩
@@ -60,22 +65,22 @@ theorem generatorOfResolvent_formalSelfAdjoint (R : MassSpace →L[ℝ] MassSpac
   erw [generatorOfResolvent_apply, generatorOfResolvent_apply, inner_sub_left, inner_sub_right, hs]
   rfl
 
-theorem generatorOfResolvent_adjoint_identity (R : MassSpace →L[ℝ] MassSpace)
+theorem generatorOfResolvent_adjoint_identity (R : H →L[ℝ] H)
     (hR : Function.Injective R) (hsa : IsSelfAdjoint R)
     (u : (generatorOfResolvent R hR).adjoint.domain) :
-    R ((u : MassSpace) + (generatorOfResolvent R hR).adjoint u) = u := by
+    R ((u : H) + (generatorOfResolvent R hR).adjoint u) = u := by
   apply ext_inner_right ℝ
   intro z
   have h := LinearPMap.adjoint_isFormalAdjoint (generatorOfResolvent_dense R hR hsa)
     u ⟨R z, ⟨z, rfl⟩⟩
   rw [generatorOfResolvent_apply, inner_sub_right] at h
-  have hs : ⟪R ((u : MassSpace) + (generatorOfResolvent R hR).adjoint u), z⟫_ℝ =
-      ⟪(u : MassSpace) + (generatorOfResolvent R hR).adjoint u, R z⟫_ℝ :=
+  have hs : ⟪R ((u : H) + (generatorOfResolvent R hR).adjoint u), z⟫_ℝ =
+      ⟪(u : H) + (generatorOfResolvent R hR).adjoint u, R z⟫_ℝ :=
     ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp hsa _ z
   rw [hs, inner_add_left]
   linarith
 
-theorem generatorOfResolvent_isSelfAdjoint (R : MassSpace →L[ℝ] MassSpace)
+theorem generatorOfResolvent_isSelfAdjoint (R : H →L[ℝ] H)
     (hR : Function.Injective R) (hsa : IsSelfAdjoint R) :
     IsSelfAdjoint (generatorOfResolvent R hR) := by
   rw [LinearPMap.isSelfAdjoint_def]
@@ -91,6 +96,8 @@ theorem generatorOfResolvent_isSelfAdjoint (R : MassSpace →L[ℝ] MassSpace)
       exact add_left_cancel h
   · exact (generatorOfResolvent_formalSelfAdjoint R hR hsa).le_adjoint
       (generatorOfResolvent_dense R hR hsa)
+
+end ResolventGenerator
 
 def arithmeticGenerator : MassSpace →ₗ.[ℝ] MassSpace :=
   generatorOfResolvent resolvent resolvent_injective

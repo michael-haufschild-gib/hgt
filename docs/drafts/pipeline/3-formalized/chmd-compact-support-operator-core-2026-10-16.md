@@ -61,7 +61,7 @@ The capstone proves exact graph closure, not just a conditional approximation
 criterion: `arithmeticGenerator_compact_graph_closure` and
 `stationaryGenerator_compact_graph_closure` (lines 136 and 151).
 
-Global formal lint exits 1 solely for four other unfinished/unwired modules:
+Global formal lint exits 1 solely for four other unwired modules:
 CHMDFarFieldEnergy, CHMDPrimeWindowTail, XiGaussianHeatRegularTransfer,
 HTGeometry.MomentNormalBlockRecurrence. No proof-debt lint error. Those modules
 were not changed or wired by this task. No full/umbrella build or commit/push.
@@ -103,3 +103,5 @@ cutoffs. These are future obligations, not consequences already formalised here.
 
 Do not assert the global identity Dom(G)={u:Theta*u in Dom(A)}. The proposed
 ordinary-domain admission applies after compact spatial localization.
+
+Cleanup complete: all owned jobs terminal; 14 exact owned scratch files removed.
