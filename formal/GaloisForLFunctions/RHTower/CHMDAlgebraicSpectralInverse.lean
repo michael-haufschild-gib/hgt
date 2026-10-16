@@ -5,7 +5,8 @@ import GaloisForLFunctions.RHTower.CHMDPhaseKernelSynthesis
 
 The signed generator images of finite-sample sources are exactly the algebraic
 span of the literal divisor and polar Fourier kernels. Every vector in that
-span has a unique finite-sample preimage orthogonal to the critical eigenspace.
+span has a unique maximal-domain preimage orthogonal to the critical eigenspace;
+that preimage automatically has finite sample support.
 No closed-range assumption or infinite cardinal expansion is used.
 -/
 
@@ -46,22 +47,24 @@ theorem polar_real_kernels_mem_finiteSampleImageSpace :
       massFourierReadout_source _ (by norm_num : |(I/2 : ℂ).im| ≤ 1/2),
       massFourierReadout_source _ (by norm_num : |(-I/2 : ℂ).im| ≤ 1/2),
       ground_fourier_pole, hgm]
-    norm_num
+    norm_num [kp, km]
   have ho : massPolarImage (sourceMap oddPolarVector) =
       (1/2 : ℝ) • km - (1/2 : ℝ) • kp := by
     rw [massPolarImage,
       massFourierReadout_source _ (by norm_num : |(I/2 : ℂ).im| ≤ 1/2),
       massFourierReadout_source _ (by norm_num : |(-I/2 : ℂ).im| ≤ 1/2),
       oddPolarVector_fourier_plus_pole, oddPolarVector_fourier_minus_pole]
-    norm_num
+    norm_num [kp, km]
   have hp : -(massPolarImage (sourceMap (constantLift 1)) +
       massPolarImage (sourceMap oddPolarVector)) = kp := by rw [hg, ho]; module
   have hm : massPolarImage (sourceMap oddPolarVector) -
       massPolarImage (sourceMap (constantLift 1)) = km := by rw [hg, ho]; module
   constructor
-  · rw [← hp]
+  · change kp ∈ finiteSampleImageSpace
+    rw [← hp]
     exact finiteSampleImageSpace.neg_mem (finiteSampleImageSpace.add_mem hground hodd)
-  · rw [← hm]
+  · change km ∈ finiteSampleImageSpace
+    rw [← hm]
     exact finiteSampleImageSpace.sub_mem hodd hground
 
 theorem massSampleImagKernel_eq_zero_of_re_zero (a : MassSamplePoint) (ha : a.val.re = 0) :
@@ -112,10 +115,9 @@ theorem reduced_resolvent_preimage {w b : MassSpace}
       congrArg resolvent (by module)
     _ = _ := by rw [map_sub, hw, map_smul, hc, smul_smul]; norm_num
 
-theorem reduced_resolvent_preimage_unique {u v b : MassSpace}
-    (hu : u ∈ massCriticalSpaceᗮ) (hv : v ∈ massCriticalSpaceᗮ)
+theorem critical_difference_of_resolvent_preimages {u v b : MassSpace}
     (hru : resolvent ((2 : ℝ) • u + b) = u)
-    (hrv : resolvent ((2 : ℝ) • v + b) = v) : u = v := by
+    (hrv : resolvent ((2 : ℝ) • v + b) = v) : u-v ∈ massCriticalSpace := by
   have hd : resolvent ((2 : ℝ) • (u-v)) = u-v := by
     calc
       _ = resolvent (((2 : ℝ) • u + b) - ((2 : ℝ) • v + b)) :=
@@ -125,8 +127,25 @@ theorem reduced_resolvent_preimage_unique {u v b : MassSpace}
     have h := congrArg (fun x : MassSpace => (1/2 : ℝ) • x) hd
     rw [map_smul, smul_smul] at h
     norm_num at h
-    exact h
-  have hc : u-v ∈ massCriticalSpace := (mem_massCriticalSpace _).mpr he
+    simpa only [map_sub] using h
+  exact (mem_massCriticalSpace _).mpr he
+
+theorem samples_eq_of_resolvent_preimages {u v b : MassSpace}
+    (hru : resolvent ((2 : ℝ) • u + b) = u)
+    (hrv : resolvent ((2 : ℝ) • v + b) = v) (a : MassSamplePoint) :
+    massFourierReadout u a = massFourierReadout v a := by
+  have hc := critical_difference_of_resolvent_preimages hru hrv
+  have hs := mass_silent_of_resolvent_half ((mem_massCriticalSpace _).mp hc)
+  have h := (mass_silent_iff_all_samples _).mp hs a
+  rw [← massFourierReadoutCLM_apply _ (massSamplePoint_strip a), map_sub,
+    massFourierReadoutCLM_apply, massFourierReadoutCLM_apply] at h
+  exact sub_eq_zero.mp h
+
+theorem reduced_resolvent_preimage_unique {u v b : MassSpace}
+    (hu : u ∈ massCriticalSpaceᗮ) (hv : v ∈ massCriticalSpaceᗮ)
+    (hru : resolvent ((2 : ℝ) • u + b) = u)
+    (hrv : resolvent ((2 : ℝ) • v + b) = v) : u = v := by
+  have hc := critical_difference_of_resolvent_preimages hru hrv
   have ho : u-v ∈ massCriticalSpaceᗮ := massCriticalSpaceᗮ.sub_mem hu hv
   exact sub_eq_zero.mp (inner_self_eq_zero.mp (Submodule.inner_right_of_mem_orthogonal hc ho))
 
@@ -165,5 +184,46 @@ theorem exists_unique_reduced_finite_sample_generator_inverse (b : MassSpace)
     have h := arithmeticGenerator_identity u
     rw [he] at h
     simpa only [two_smul, add_assoc] using h
+
+theorem finite_samples_of_sampling_forcing {w b : MassSpace}
+    (hb : b ∈ massSamplingSpan) (hw : resolvent ((2 : ℝ) • w + b) = w) :
+    ∃ S : Finset zetaZeroConfig.carrier, FiniteMassSampleSupport S w := by
+  obtain ⟨v, ⟨_, ⟨S, hS⟩, hv⟩, _⟩ := exists_unique_reduced_finite_sample_preimage b hb
+  refine ⟨S, fun ρ hρ => ⟨?_, ?_⟩⟩
+  · exact (samples_eq_of_resolvent_preimages hw hv (zeroMassSamplePoint ρ)).trans (hS ρ hρ).1
+  · exact (samples_eq_of_resolvent_preimages hw hv
+      (negMassSamplePoint (zeroMassSamplePoint ρ))).trans (hS ρ hρ).2
+
+/-- Within the actual maximal domain, an algebraic sampling image is
+equivalent to finite sample support of the source. -/
+theorem finite_sample_generator_image_iff (u : arithmeticGenerator.domain) :
+    arithmeticGenerator u - (u : MassSpace) ∈ massSamplingSpan ↔
+      ∃ S : Finset zetaZeroConfig.carrier, FiniteMassSampleSupport S u := by
+  constructor
+  · intro hb
+    apply finite_samples_of_sampling_forcing hb
+    calc
+      _ = resolvent ((u : MassSpace) + arithmeticGenerator u) :=
+        congrArg resolvent (by module)
+      _ = _ := arithmeticGenerator_identity u
+  · rintro ⟨S, hS⟩
+    have he : arithmeticGenerator u = (u : MassSpace) + massFiniteImage S u :=
+      arithmeticGenerator_finite_samples hS
+    rw [he, add_sub_cancel_left]
+    exact massFiniteImage_mem_samplingSpan S u
+
+/-- The signed arithmetic generator has an exact reduced inverse on the
+algebraic sampling span, unique among all maximal-domain vectors. -/
+theorem exists_unique_reduced_generator_inverse (b : MassSpace) (hb : b ∈ massSamplingSpan) :
+    ∃! u : arithmeticGenerator.domain, (u : MassSpace) ∈ massCriticalSpaceᗮ ∧
+      arithmeticGenerator u - (u : MassSpace) = b := by
+  obtain ⟨u, hu, huniq⟩ := exists_unique_reduced_finite_sample_generator_inverse b hb
+  refine ⟨u, ⟨hu.1, hu.2.2⟩, ?_⟩
+  intro v hv
+  apply huniq v
+  refine ⟨hv.1, ?_, hv.2⟩
+  apply (finite_sample_generator_image_iff v).mp
+  rw [hv.2]
+  exact hb
 
 end RHTower.CHMDDoobGraph

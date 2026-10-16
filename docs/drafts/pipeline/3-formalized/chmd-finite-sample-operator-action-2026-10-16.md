@@ -1,6 +1,6 @@
-# CHMD: finite spectral samples determine the actual generator image
+# CHMD: exact algebraic inverse and finite-sample generator classification
 
-Status: IN PROGRESS. RH remains unproved; goal active.
+Status: FORMALIZED. RH remains unproved; goal active.
 
 Previous turn: progress. Automatic mass-domain admission was proved for vanishing
 Xi samples, including the explicit polar image. This turn must reach nonzero
@@ -159,3 +159,68 @@ the finite support. Consequently uniqueness of the reduced inverse holds among
 all maximal-domain vectors, without a finite-support restriction on competitors.
 This stronger statement uses the same audited corpus ingredients and has a
 dependency-closed paper proof; it is included in the capstone closure.
+
+## Final result and audit
+
+Seven leaves, 1,083 lines and 104 declarations, all imported exactly once by
+`GaloisForLFunctions/RHTower.lean`:
+
+- `CHMDMassWeakGenerator`: compact-core weak identities give actual resolvent
+  preimages and maximal-domain admission (8 declarations).
+- `CHMDMassWeightedKernels`: literal mass kernels for complex sample weights
+  and translated cosine phases (12).
+- `CHMDFiniteSampleGenerator`: arbitrary finite-support mass sources belong to
+  the maximal domain, with exact full signed image and divisor energy (18).
+- `CHMDCardinalOperatorAction`: actual cardinal and translated-cardinal
+  operator action, and an unconditional positive cardinal packet (22).
+- `CHMDFiniteSampleRange`: finite-sample images form a submodule; translated
+  phase kernels are actual members (16).
+- `CHMDPhaseKernelSynthesis`: finite-dimensional phase separation puts every
+  literal Xi sampling kernel in that image submodule (13).
+- `CHMDAlgebraicSpectralInverse`: exact range equality, source classification,
+  and unique reduced inverse among all maximal-domain vectors (15).
+
+The capstone statements are `finiteSampleImageSpace_eq_samplingSpan`,
+`finite_sample_generator_image_iff`, and
+`exists_unique_reduced_generator_inverse`. The second quantifies over the
+actual maximal domain; the third requires only that the forcing vector belong
+to the stated algebraic sampling span. No RH, zero simplicity, finite number
+of off-line zeros, closed range, or convergent infinite expansion is assumed.
+
+All seven targeted `lake --old build` checks passed. Final plain `lake env lean`
+checks of all seven leaves exited 0 with empty logs. Axiom audits covered every
+one of the 104 declarations; only `propext`, `Classical.choice`, and `Quot.sound`
+occurred. Toolchain API probes passed. The index refresh and authoritative
+`scripts/formal_tools.py lint --check-generated` both exited 0. `git diff --check`
+passed. No full or umbrella build, heartbeat increase, numerical experiment,
+external search, commit, or push was performed.
+All 34 owned temporary search, proof-probe, and audit files were deleted and
+their absence verified; all owned process handles are terminal.
+
+The user's Birman--Schwinger pointer was checked again with the corpus tool.
+`orthonormal_primitive_bound_states_le` is already at
+`CHMDBirmanSchwingerBound.lean:471`; its finite-off-line-zero hypothesis and
+`k <= 2 * offLineZeros.ncard` conclusion are explicit. The negative compact-test
+index argument is at line 382. These existing results are not reproved here.
+The broad hybrid query returned useful hits but was partial, with interrupted
+text/source retrieval; coverage was 72,890/72,890 inventoried files. An exact
+lexical query returned the counting theorem. The six earlier discovery queries
+all completed without partial results or errors; compiler metadata still does
+not certify global absence or applicability.
+
+This closes exact finite-support operator inversion, rather than only individual
+cardinal graph admission. It does not exclude primitive bound states or supply
+an infinite cardinal expansion. Those remain the RH-facing frontier. External
+scientific novelty was not assessed, following the user's explicit restriction.
+
+SHA256 of the audited sources:
+
+```
+CHMDMassWeakGenerator ee2a8ebef54cab58565e8155048a04435216f6aee89e5e60fe98a5b59c5a78f3
+CHMDMassWeightedKernels edf445ebd66d469c21dd7d802c9f1396b90ef1ad62c23a3c53d72e1c86805288
+CHMDFiniteSampleGenerator 0dcafe09ada4440a25a132016e60da6a1c65047f1c9b6ee3c9e471dc8f4fc657
+CHMDCardinalOperatorAction dcd20e4f0cb98c74fb070eb525164ba8463fb52edad0fd847ca5b7fb4f07c104
+CHMDFiniteSampleRange a9272684f1a50e33e4846fd6dc2577dd46c63bc41a3ea3b221145d2ff89457e1
+CHMDPhaseKernelSynthesis c274e981cc90f762ea3758ab492d09b27d63b5b4b723a13b2253820c73dd24f7
+CHMDAlgebraicSpectralInverse da6911aa177624f31a4ead8575de9ab01623e791d6d95cd118b6c53067a90af7
+```
