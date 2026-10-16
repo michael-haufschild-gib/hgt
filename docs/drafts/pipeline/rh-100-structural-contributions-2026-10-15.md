@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **19 / 100**.
+Completed after goal activation: **20 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -281,10 +281,27 @@ convergence, prescribed arbitrary infinite packets, compact-open topological
 identification and positive Hodge compatibility remain open.
 Card: `3-formalized/rh100-019-original-topology-native-density-2026-10-16.md`.
 
+020: compact native theta resolvent on the entire supremum-norm space of
+bounded continuous forcing. Actual theta-moment cancellation joins both tails;
+source-ratio decay and the literal ODE give global uniform compactness without
+changing the spatial norm. Compact Fredholm theory and native homogeneous
+classification identify the COMPLETE NONZERO spectrum with the transformed
+Xi divisor plus the constant mode. Every full-multiplicity finite original
+Meyer packet embeds injectively, and this same global operator solves its
+centered generator equation with all Jordan predecessors retained. This closes
+global native compact-operator realization beyond finite spatial modules and
+the prior BV forcing theorem. Six direct leaf audits, the API audits and all
+85 public standard-axiom audits passed. Imports are unique, artifacts fresh,
+final global lint passes, indexes are refreshed, and exactly 15 owned scratch
+files were removed. Native BV compactness, arbitrary original-source spatial
+realization, maximal generalized-eigenspace multiplicity equality and positivity
+are not asserted.
+Card: `3-formalized/rh100-020-compact-native-xi-resolvent-2026-10-16.md`.
+
 ## Next investigation
 
-No twentieth contribution is counted. Do not count routine corollaries or
-repackagings of 001–019 as further contributions. Resume broad Lean-corpus
+No twenty-first contribution is counted. Do not count routine corollaries or
+repackagings of 001–020 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -348,6 +365,14 @@ calculus consequences do not count again. The arithmetic sharp has not been
 identified with the Hilbert adjoint.
 
 ## Continuation rules
+
+The source-defined compact resolvent on all bounded continuous native forcing,
+its complete nonzero Xi spectrum and faithful finite Meyer restriction belong
+together to 020. Routine compact Fredholm consequences, weaker forcing-domain
+extensions and further finite-packet transports do not count again. Its native
+uniform space is not identified with the original Meyer topology, native BV
+norm or faithful Hilbert completion. No dense generator-domain, semigroup,
+arbitrary infinite packet realization or positive Hodge theorem was proved.
 
 Original-topology finite native density, grouped full-germ contour source
 synthesis and finite native exact-solution approximation belong together to

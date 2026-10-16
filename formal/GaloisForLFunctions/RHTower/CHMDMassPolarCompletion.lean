@@ -53,11 +53,13 @@ theorem massPolarGraph_poles (w : MassSpace) :
   · rw [massPolarGraph, graphFourierReadout_add _ _ (by norm_num),
       graphFourierReadout_smul _ _ (by norm_num), graphFourierReadout_smul _ _ (by norm_num),
       ground_fourier_pole, oddPolarVector_fourier_plus_pole]
-    apply Complex.ext <;> simp [massPolarCosine, massPolarSine, hp] <;> ring
+    apply Complex.ext <;> simp [massPolarCosine, massPolarSine, hp]
+    ring
   · rw [massPolarGraph, graphFourierReadout_add _ _ (by norm_num),
       graphFourierReadout_smul _ _ (by norm_num), graphFourierReadout_smul _ _ (by norm_num),
       hg, oddPolarVector_fourier_minus_pole]
-    apply Complex.ext <;> simp [massPolarCosine, massPolarSine, hm] <;> ring
+    apply Complex.ext <;> simp [massPolarCosine, massPolarSine, hm]
+    ring
 
 theorem massFourierReadout_sub_source (w : MassSpace) (p : SourceGraph) {z : ℂ}
     (hz : |z.im| ≤ 1/2) :
@@ -162,7 +164,9 @@ theorem mass_zero_samples_unique_polar_decomposition {w : MassSpace}
     abel
   · intro r hr
     unfold massPolarRemainder
-    rw [hr.2]
-    abel
+    calc
+      r = (sourceMap (massPolarGraph w) + r) - sourceMap (massPolarGraph w) := by abel
+      _ = w - sourceMap (massPolarGraph w) :=
+        congrArg (fun u : MassSpace => u - sourceMap (massPolarGraph w)) hr.2.symm
 
 end RHTower.CHMDDoobGraph

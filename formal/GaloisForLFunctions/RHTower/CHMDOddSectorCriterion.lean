@@ -307,7 +307,7 @@ theorem sourceEnergy_nonneg_of_rh_odd (hRH : RiemannHypothesis) (p : SourceGraph
   set Φ : SourceGraph → SourceGraph := fun q => (1 / 2 : ℝ) • (q - reflectGraph q) with hΦ
   have hΦc : Continuous Φ := by
     show Continuous fun q : SourceGraph => (1 / 2 : ℝ) • (q - reflectGraph q)
-    exact continuous_const.smul (continuous_id.sub continuous_reflectGraph)
+    exact (continuous_id.sub continuous_reflectGraph).const_smul (1 / 2 : ℝ)
   have hΦp : Φ p = p := by
     simp only [hΦ]
     rw [reflectGraph_eq_neg_of_odd hp, sub_neg_eq_add, ← two_smul ℝ p, smul_smul]
