@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.OneChannelPowerSolvability
+import GaloisForLFunctions.HTGeometry.OneChannelCanonicalSplitting
 import GaloisForLFunctions.RHTower.PaperThetaNativeMeyerCompleteness
 import GaloisForLFunctions.RHTower.PaperThetaNativeResonantSplitting
 

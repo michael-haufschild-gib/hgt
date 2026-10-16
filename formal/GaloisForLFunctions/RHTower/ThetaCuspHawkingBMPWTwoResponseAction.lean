@@ -16,7 +16,8 @@ open scoped ContDiff
 namespace RHTower.D4BMPWTwoResponseAction
 open D4BMModularCore D4BMJointSource D4BMFullAngularCausalPeierls
 open D4BMGlobalAngularResponse D4BMGeneralTemporalTransposition
-open D4BMPWRetardedRegularity D4BMPWRetardedWeakNative
+open D4BMPWRetardedRegularity
+open D4BMPWRetardedWeakNative hiding Event
 
 noncomputable section
 set_option autoImplicit false
@@ -48,12 +49,15 @@ theorem wedgeWindow_support (n : ℕ) : tsupport (wedgeWindow n) ⊆ physicalWed
   have hg : Continuous (fun z : Event => (-z.2, -(z.1 + z.2))) := by fun_prop
   have hh := tsupport_comp_subset_preimage (physicalWindow n) hg hr
   have hneg := physicalWindow_tsupport_subset_physical n hh
-  exact ⟨by simpa using hneg, physicalWindow_tsupport_subset_physical n hl⟩
+  change -(p.1 + p.2) < 0 at hneg
+  exact ⟨by linarith, physicalWindow_tsupport_subset_physical n hl⟩
 
 theorem wedgeWindow_eventually_one (p : Event) (hp : p ∈ physicalWedge) :
     ∀ᶠ n in atTop, wedgeWindow n p = 1 := by
   filter_upwards [physicalWindow_eventually_eq_one p hp.2,
-    physicalWindow_eventually_eq_one (-p.2, -(p.1 + p.2)) (by simpa using hp.1)]
+    physicalWindow_eventually_eq_one (-p.2, -(p.1 + p.2)) (by
+      change -(p.1 + p.2) < 0
+      linarith [hp.1])]
     with n hn hn'
   simp only [wedgeWindow, hn, hn', mul_one]
 
@@ -136,7 +140,8 @@ theorem responseTest_bulk_integrable (chi : Event → ℝ) (hs : ContDiff ℝ �
   have htotal := physical_weak_integrable chi hs hc hw q branch b c a d X k
   have hsource := (responseTest_source_integrable chi hs hc hw q branch b c a d X k).const_mul
     (fullAngularField q branch ![X, Real.exp k])
-  simpa only [Pi.sub_apply, add_sub_cancel_left] using htotal.sub hsource
+  apply (htotal.sub hsource).congr
+  exact ae_of_all _ (fun p => by dsimp only [Pi.sub_apply]; ring)
 
 private theorem responseTest_weak (chi : Event → ℝ) (hs : ContDiff ℝ ∞ chi)
     (hc : HasCompactSupport chi) (hw : tsupport chi ⊆ physicalWedge)

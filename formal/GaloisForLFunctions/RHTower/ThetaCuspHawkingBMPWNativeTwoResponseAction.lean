@@ -14,7 +14,8 @@ open scoped ContDiff
 namespace RHTower.D4BMPWNativeTwoResponseAction
 open D4BMModularCore D4BMJointSource D4BMGlobalAngularResponse
 open D4BMFullAngularCausalPeierls D4BMFullAngularReconstruction D4BMNativeCircle
-open D4BMGeneralTemporalTransposition D4BMPWRetardedWeakNative
+open D4BMGeneralTemporalTransposition
+open D4BMPWRetardedWeakNative hiding Event
 open D4BMPWTwoResponseAction D4BMPWTwoResponseActionLimit
 
 noncomputable section

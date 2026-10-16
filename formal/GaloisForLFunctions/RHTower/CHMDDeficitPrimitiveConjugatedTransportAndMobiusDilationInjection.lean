@@ -428,8 +428,9 @@ def conjugatedLaplacian (y s : ℝ) : ℝ :=
 
 theorem hasDerivAt_exp_neg_half (s : ℝ) :
     HasDerivAt (fun s : ℝ => Real.exp (-(s / 2))) (-(Real.exp (-(s / 2)) / 2)) s := by
-  have := (((hasDerivAt_id' s).div_const 2).neg).exp
-  refine this.congr_deriv ?_
+  have h := (Real.hasDerivAt_exp (-(s / 2))).comp s (((hasDerivAt_id' s).div_const 2).neg)
+  refine h.congr_deriv ?_
+  show Real.exp (-(s / 2)) * -(1 / 2) = -(Real.exp (-(s / 2)) / 2)
   ring
 
 theorem hasDerivAt_conjugatedKernel (y s : ℝ) :
@@ -444,6 +445,7 @@ theorem hasDerivAt_conjugatedKernelDeriv (y s : ℝ) :
   have h := (hasDerivAt_exp_neg_half s).mul
     ((hasDerivAt_kernelDeriv y s).sub ((hasDerivAt_chmdPrimeKernel_right y s).div_const 2))
   refine h.congr_deriv ?_
+  simp only [Pi.sub_apply]
   unfold conjugatedLaplacian
   ring
 
@@ -485,7 +487,7 @@ theorem abs_conjugatedLaplacian_le (y s : ℝ) :
       ≤ |kernelDeriv2 y s| + |kernelDeriv y s| + |chmdPrimeKernel y s| / 4 := by
         refine (abs_add_le _ _).trans ?_
         rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 4)]
-        linarith [abs_sub _ (kernelDeriv2 y s) (kernelDeriv y s)]
+        linarith [abs_sub (kernelDeriv2 y s) (kernelDeriv y s)]
     _ ≤ 1 / π * sechSecondMoment + 8 * Real.log 2 / π + 4 / π / 4 := by gcongr
     _ = _ := by ring
 
@@ -511,7 +513,7 @@ theorem exists_abs_conjugatedLaplacian_le (y : ℝ) :
         refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
         refine (abs_add_le _ _).trans ?_
         rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 4)]
-        linarith [abs_sub _ (kernelDeriv2 y s) (kernelDeriv y s)]
+        linarith [abs_sub (kernelDeriv2 y s) (kernelDeriv y s)]
     _ ≤ Real.exp (-(s / 2)) * ((C₂ + C₁ + C₀ / 4) * Real.exp (-((π - 1) * s))) := by
         refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
         have : |chmdPrimeKernel y s| / 4 ≤ C₀ / 4 * Real.exp (-((π - 1) * s)) := by
@@ -577,7 +579,7 @@ theorem tendsto_mul_exp_neg_mul_atTop {c : ℝ} (hc : 0 < c) :
 
 /-- A function dominated by `C e^{−cs}` on the half-line, multiplied by `s − ℓ`, tends to zero. -/
 theorem tendsto_sub_mul_of_abs_le {g : ℝ → ℝ} {C c : ℝ} (hc : 0 < c)
-    (hg : ∀ s, 0 ≤ s → |g s| ≤ C * Real.exp (-(c * s))) (ℓ : ℝ) :
+    (hg : ∀ s, 0 ≤ s → |g s| ≤ C * Real.exp (-(c * s))) {ℓ : ℝ} (hℓ : 0 ≤ ℓ) :
     Tendsto (fun s => (s - ℓ) * g s) atTop (𝓝 0) := by
   have h := (tendsto_mul_exp_neg_mul_atTop hc).const_mul C
   rw [mul_zero] at h
@@ -612,8 +614,8 @@ theorem tendsto_exp_mul_of_abs_le {g : ℝ → ℝ} {C c a : ℝ} (hac : a < c)
         congr 2
         ring
 
-/-- `s ≤ 2 e^{s/2}` for `s ≥ 0`. -/
-theorem le_two_mul_exp_half {s : ℝ} (hs : 0 ≤ s) : s ≤ 2 * Real.exp (s / 2) := by
+/-- `s ≤ 2 e^{s/2}`. -/
+theorem le_two_mul_exp_half (s : ℝ) : s ≤ 2 * Real.exp (s / 2) := by
   have := Real.add_one_le_exp (s / 2)
   linarith
 
@@ -636,7 +638,7 @@ theorem integrableOn_sub_mul_of_abs_le {g : ℝ → ℝ} {C c : ℝ} (hc : 1 / 2
   have hs0 : 0 ≤ s := hℓ.trans hsl.le
   rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (sub_nonneg.mpr hsl.le)]
   calc (s - ℓ) * |g s| ≤ (2 * Real.exp (s / 2)) * (C * Real.exp (-(c * s))) :=
-        mul_le_mul (by linarith [le_two_mul_exp_half hs0]) (hg s hs0) (abs_nonneg _)
+        mul_le_mul (by linarith [le_two_mul_exp_half s]) (hg s hs0) (abs_nonneg _)
           (by positivity)
     _ = 2 * C * Real.exp (-(c - 1 / 2) * s) := by
         rw [show 2 * Real.exp (s / 2) * (C * Real.exp (-(c * s))) =
@@ -668,7 +670,7 @@ theorem integral_Ioi_sub_mul_conjugatedLaplacian (y : ℝ) {ℓ : ℝ} (hℓ : 0
   have htend : Tendsto g atTop (𝓝 0) := by
     obtain ⟨C₁, _, hC₁⟩ := exists_abs_conjugatedKernelDeriv_le y
     obtain ⟨C₀, _, hC₀⟩ := exists_abs_conjugatedKernel_le y
-    have h1 := tendsto_sub_mul_of_abs_le hpi hC₁ ℓ
+    have h1 := tendsto_sub_mul_of_abs_le hpi hC₁ hℓ
     have h0 : Tendsto (fun s => conjugatedKernel y s) atTop (𝓝 0) := by
       have := tendsto_exp_mul_of_abs_le (a := 0) hpi hC₀
       simpa using this
@@ -816,8 +818,12 @@ theorem vonMangoldt_mul_exp_eq_chmdPrimeWeight_mul_exp (n : ℕ) :
     rw [if_pos hn]
     have hsqrt : Real.sqrt n = Real.exp (Real.log n / 2) := by
       rw [Real.exp_half, Real.exp_log hn0]
-    rw [hsqrt, div_eq_mul_inv, ← Real.exp_neg, mul_assoc, ← Real.exp_add]
-    congr 2
+    have hexp : Real.exp (-((π - 1 / 2) * Real.log n)) =
+        (Real.exp (Real.log n / 2))⁻¹ * Real.exp (-((π - 1) * Real.log n)) := by
+      rw [← Real.exp_neg, ← Real.exp_add]
+      congr 1
+      ring
+    rw [hsqrt, hexp]
     ring
 
 /-- `Λ(n) f_y(log n) = (Λ(n)/√n) K_y(log n)`. -/
@@ -832,7 +838,7 @@ theorem vonMangoldt_mul_conjugatedKernel_log (y : ℝ) (n : ℕ) :
     rw [if_pos hn]
     have hsqrt : Real.sqrt n = Real.exp (Real.log n / 2) := by
       rw [Real.exp_half, Real.exp_log hn0]
-    rw [hsqrt, div_eq_mul_inv, ← Real.exp_neg]
+    rw [hsqrt, Real.exp_neg]
     ring
 
 /-! ## Section 8: the conjugated transport identity -/
@@ -877,9 +883,14 @@ theorem integral_deficitPrimitive_mul_conjugatedLaplacian (y : ℝ) :
     (Ioi (Real.log n)).indicator
       (fun s => -(ArithmeticFunction.vonMangoldt n * ((s - Real.log n) * conjugatedLaplacian y s))) s
     with hF
-  have hFint : ∀ n, Integrable (F n) := fun n =>
-    (((integrableOn_sub_mul_conjugatedLaplacian y (Real.log_natCast_nonneg n)).const_mul
-      (ArithmeticFunction.vonMangoldt n)).neg).integrable_indicator measurableSet_Ioi
+  have hFint : ∀ n, Integrable (F n) := by
+    intro n
+    have h : IntegrableOn
+        (fun s => -(ArithmeticFunction.vonMangoldt n * ((s - Real.log n) * conjugatedLaplacian y s)))
+        (Ioi (Real.log n)) :=
+      ((integrableOn_sub_mul_conjugatedLaplacian y (Real.log_natCast_nonneg n)).const_mul
+        (ArithmeticFunction.vonMangoldt n)).neg
+    exact h.integrable_indicator measurableSet_Ioi
   -- each integral is the prime-weighted kernel value
   have hFval : ∀ n, ∫ s, F n s = -(chmdPrimeWeight n * chmdPrimeKernel y (Real.log n)) := by
     intro n
@@ -894,10 +905,10 @@ theorem integral_deficitPrimitive_mul_conjugatedLaplacian (y : ℝ) :
     have hln := Real.log_natCast_nonneg n
     have hΛ := ArithmeticFunction.vonMangoldt_nonneg (n := n)
     set ℓ := Real.log n with hℓ
+    set B : ℝ := C * (2 / c) * Real.exp (-(c / 2 * ℓ)) with hB
     -- pointwise domination by an exponential
     have hbound : ∀ s, ‖F n s‖ ≤ (Ioi ℓ).indicator
-        (fun s => ArithmeticFunction.vonMangoldt n * (C * (2 / c)) * Real.exp (-(c / 2 * ℓ)) *
-          Real.exp (-(c / 2 * s))) s := by
+        (fun s => ArithmeticFunction.vonMangoldt n * (B * Real.exp (-(c / 2 * s)))) s := by
       intro s
       simp only [hF]
       by_cases hs : s ∈ Ioi ℓ
@@ -913,11 +924,10 @@ theorem integral_deficitPrimitive_mul_conjugatedLaplacian (y : ℝ) :
           have h1 : c / 2 * (s - ℓ) ≤ Real.exp (c / 2 * (s - ℓ)) := by
             linarith [Real.add_one_le_exp (c / 2 * (s - ℓ))]
           have h2 : s - ℓ ≤ 2 / c * Real.exp (c / 2 * (s - ℓ)) := by
-            rw [le_div_iff₀' (by positivity : (0 : ℝ) < 2 / c)] at h1
-            rw [← mul_le_mul_left (by positivity : (0 : ℝ) < c / 2)]
-            calc c / 2 * (s - ℓ) ≤ Real.exp (c / 2 * (s - ℓ)) := h1
-              _ = c / 2 * (2 / c * Real.exp (c / 2 * (s - ℓ))) := by
-                  field_simp
+            have h3 : 2 / c * (c / 2 * (s - ℓ)) ≤ 2 / c * Real.exp (c / 2 * (s - ℓ)) :=
+              mul_le_mul_of_nonneg_left h1 (by positivity)
+            have h4 : 2 / c * (c / 2 * (s - ℓ)) = s - ℓ := by field_simp
+            linarith
           calc (s - ℓ) * Real.exp (-(c * s))
               ≤ 2 / c * Real.exp (c / 2 * (s - ℓ)) * Real.exp (-(c * s)) :=
                 mul_le_mul_of_nonneg_right h2 (Real.exp_pos _).le
@@ -931,32 +941,31 @@ theorem integral_deficitPrimitive_mul_conjugatedLaplacian (y : ℝ) :
           _ = C * ((s - ℓ) * Real.exp (-(c * s))) := by ring
           _ ≤ C * (2 / c * Real.exp (-(c / 2 * ℓ)) * Real.exp (-(c / 2 * s))) :=
               mul_le_mul_of_nonneg_left hkey hC0
-          _ = C * (2 / c) * Real.exp (-(c / 2 * ℓ)) * Real.exp (-(c / 2 * s)) := by ring
+          _ = B * Real.exp (-(c / 2 * s)) := by rw [hB]; ring
       · rw [Set.indicator_of_notMem hs, Set.indicator_of_notMem hs, norm_zero]
     have hint : Integrable fun s => (Ioi ℓ).indicator
-        (fun s => ArithmeticFunction.vonMangoldt n * (C * (2 / c)) * Real.exp (-(c / 2 * ℓ)) *
-          Real.exp (-(c / 2 * s))) s := by
+        (fun s => ArithmeticFunction.vonMangoldt n * (B * Real.exp (-(c / 2 * s)))) s := by
       refine IntegrableOn.integrable_indicator ?_ measurableSet_Ioi
-      have h : IntegrableOn (fun x : ℝ => ArithmeticFunction.vonMangoldt n * (C * (2 / c)) *
-          Real.exp (-(c / 2 * ℓ)) * Real.exp (-(c / 2) * x)) (Ioi ℓ) :=
+      have h : IntegrableOn (fun x : ℝ => ArithmeticFunction.vonMangoldt n * B *
+          Real.exp (-(c / 2) * x)) (Ioi ℓ) :=
         (exp_neg_integrableOn_Ioi ℓ hc2).const_mul _
       refine h.congr_fun (fun s _ => ?_) measurableSet_Ioi
       simp only [neg_mul]
+      ring
     have hmono := integral_mono_of_nonneg (μ := volume) (f := fun s => ‖F n s‖)
       (g := fun s => (Ioi ℓ).indicator
-        (fun s => ArithmeticFunction.vonMangoldt n * (C * (2 / c)) * Real.exp (-(c / 2 * ℓ)) *
-          Real.exp (-(c / 2 * s))) s)
+        (fun s => ArithmeticFunction.vonMangoldt n * (B * Real.exp (-(c / 2 * s)))) s)
       (Eventually.of_forall fun s => norm_nonneg _) hint (Eventually.of_forall hbound)
     refine hmono.trans (le_of_eq ?_)
-    rw [integral_indicator measurableSet_Ioi, integral_const_mul, integral_Ioi_exp_neg_mul' hc2]
+    rw [integral_indicator measurableSet_Ioi, integral_const_mul, integral_const_mul,
+      integral_Ioi_exp_neg_mul' hc2]
     have hsplit : Real.exp (-(c / 2 * ℓ)) * Real.exp (-(c / 2 * ℓ)) = Real.exp (-(c * ℓ)) := by
       rw [← Real.exp_add]; congr 1; ring
     have hw := vonMangoldt_mul_exp_eq_chmdPrimeWeight_mul_exp n
-    rw [← hℓ, hc] at hw
-    calc ArithmeticFunction.vonMangoldt n * (C * (2 / c)) * Real.exp (-(c / 2 * ℓ)) *
-          ((c / 2)⁻¹ * Real.exp (-(c / 2 * ℓ)))
+    rw [← hℓ, ← hc] at hw
+    calc ArithmeticFunction.vonMangoldt n * (B * ((c / 2)⁻¹ * Real.exp (-(c / 2 * ℓ))))
         = ArithmeticFunction.vonMangoldt n * Real.exp (-(c * ℓ)) * (C * (2 / c) * (c / 2)⁻¹) := by
-          rw [← hsplit]; ring
+          rw [← hsplit, hB]; ring
       _ = _ := by rw [hw]
   have hFsum : Summable fun n => ∫ s, ‖F n s‖ := by
     refine Summable.of_nonneg_of_le (fun n => integral_nonneg fun s => norm_nonneg _)
@@ -986,13 +995,12 @@ theorem integral_deficitPrimitive_mul_conjugatedLaplacian (y : ℝ) :
   have hzero : ∀ s ∉ Ioi (0 : ℝ), (∑' n, F n s) = 0 := by
     intro s hs
     have hs0 : s ≤ 0 := by simpa [Set.mem_Ioi, not_lt] using hs
-    refine tsum_eq_zero_of_summable_zero ?_ |>.trans rfl |> fun _ => ?_
-    · exact summable_zero
     rw [hpt s]
-    have : (∑' n : ℕ, ArithmeticFunction.vonMangoldt n * max (s - Real.log n) 0) = 0 := by
-      refine tsum_eq_zero_of_forall_eq_zero fun n => ?_  -- placeholder name, fixed below
+    have : (fun n : ℕ => ArithmeticFunction.vonMangoldt n * max (s - Real.log n) 0) =
+        fun _ => 0 := by
+      funext n
       rw [max_eq_right (by linarith [Real.log_natCast_nonneg n]), mul_zero]
-    rw [this, mul_zero, neg_zero]
+    rw [this, tsum_zero, mul_zero, neg_zero]
   rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero,
     setIntegral_congr_fun measurableSet_Ioi hpt',
     integral_sub (integrableOn_deficitPrimitive_mul_conjugatedLaplacian y)
@@ -1052,6 +1060,170 @@ theorem riemannHypothesis_iff_integral_deficitPrimitive_mul_conjugatedLaplacian_
     have h3 := integral_deficitPrimitive_mul_conjugatedLaplacian y
     obtain ⟨h2a, h2b⟩ := abs_le.mp h2
     linarith
+
+
+/-! ## Section 9: injecting the Möbius-dilation decomposition of the integrated deficit -/
+
+/-- The Λ-free Möbius part of the integrated Chebyshev deficit: the explicit work, the Mertens
+channel and the large-divisor transient tail of the Möbius-dilation reconstruction. -/
+def mobiusDeficitRest (T : ℝ) : ℝ :=
+  ccmPrimeDeficitMobiusExplicitWork T +
+    ccmPrimeDeficitDilationLimit * (∑ n ∈ Finset.Icc 1 ⌊Real.exp T⌋₊, moebiusCoeff n) +
+      ccmPrimeDeficitMobiusTransientTail T
+
+/-- `D = (Λ-free Möbius part) + (small-divisor head)` on the forward half-line. -/
+theorem ccmLogChebyshevDeficitPrimitive_eq_mobiusDeficitRest_add_head {T : ℝ} (hT : 0 ≤ T) :
+    ccmLogChebyshevDeficitPrimitive T =
+      mobiusDeficitRest T + ccmPrimeDeficitMobiusTransientHead T := by
+  rw [ccmLogChebyshevDeficitPrimitive_eq_moebius_split hT]
+  unfold mobiusDeficitRest
+  ring
+
+/-- A sum over `1 ≤ n ≤ ⌊φ s⌋₊` of measurable summands is measurable in `s`. -/
+theorem measurable_sum_Icc_floor {g : ℕ → ℝ → ℝ} (hg : ∀ n, Measurable (g n)) {φ : ℝ → ℝ}
+    (hφ : Measurable φ) :
+    Measurable fun s => ∑ n ∈ Finset.Icc 1 ⌊φ s⌋₊, g n s := by
+  have h : Measurable fun p : ℝ × ℕ => ∑ n ∈ Finset.Icc 1 p.2, g n p.1 :=
+    measurable_from_prod_countable_left fun N => Finset.measurable_sum _ fun n _ => hg n
+  exact h.comp (measurable_id.prodMk (Nat.measurable_floor.comp hφ))
+
+theorem measurable_floor_exp_cast : Measurable fun T : ℝ => ((⌊Real.exp T⌋₊ : ℕ) : ℝ) :=
+  measurable_from_nat.comp (Nat.measurable_floor.comp Real.measurable_exp)
+
+theorem measurable_ccmPrimeDeficitDilationSource : Measurable ccmPrimeDeficitDilationSource := by
+  unfold ccmPrimeDeficitDilationSource
+  refine ((Real.measurable_exp.mul (measurable_sum_Icc_floor (fun n => measurable_const)
+    Real.measurable_exp)).sub measurable_floor_exp_cast).sub
+    (measurable_sum_Icc_floor (fun n => ?_) Real.measurable_exp)
+  exact measurable_const.mul (measurable_id.sub measurable_const)
+
+theorem measurable_ccmPrimeDeficitDilationRemainder :
+    Measurable ccmPrimeDeficitDilationRemainder := by
+  unfold ccmPrimeDeficitDilationRemainder
+  exact (measurable_ccmPrimeDeficitDilationSource.sub
+    (measurable_const.mul (Real.measurable_exp.sub measurable_const))).add
+    (measurable_const.mul measurable_id)
+
+theorem measurable_ccmPrimeDeficitMobiusTransientHead :
+    Measurable ccmPrimeDeficitMobiusTransientHead := by
+  unfold ccmPrimeDeficitMobiusTransientHead
+  refine measurable_sum_Icc_floor (fun n => ?_) (Real.measurable_exp.comp (measurable_id.div_const 2))
+  exact measurable_const.mul
+    ((measurable_ccmPrimeDeficitDilationRemainder.comp (measurable_id.sub measurable_const)).sub
+      measurable_const)
+
+/-- The head budget `∫_0^∞ (s + 14)/4 · e^{−s/2} ds`. -/
+def headBudget : ℝ := ∫ s in Ioi (0 : ℝ), (s + 14) / 4 * Real.exp (-(s / 2))
+
+theorem integrableOn_headBudget :
+    IntegrableOn (fun s : ℝ => (s + 14) / 4 * Real.exp (-(s / 2))) (Ioi (0 : ℝ)) := by
+  have h1 := (_root_.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 1 (r := 1 / 2) (by norm_num)).const_mul
+    (1 / 4)
+  have h0 := (_root_.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 (r := 1 / 2) (by norm_num)).const_mul
+    (7 / 2)
+  refine (h1.add h0).integrableOn.congr_fun (fun s hs => ?_) measurableSet_Ioi
+  have hs0 : 0 ≤ s := le_of_lt hs
+  simp only [pow_one, pow_zero, one_mul, abs_of_nonneg hs0]
+  rw [show -(1 / 2 : ℝ) * s = -(s / 2) by ring]
+  ring
+
+theorem headBudget_nonneg : 0 ≤ headBudget :=
+  setIntegral_nonneg measurableSet_Ioi fun s hs =>
+    mul_nonneg (by linarith [le_of_lt (Set.mem_Ioi.mp hs)]) (Real.exp_pos _).le
+
+theorem integrableOn_head_mul_conjugatedLaplacian (y : ℝ) :
+    IntegrableOn (fun s => ccmPrimeDeficitMobiusTransientHead s * conjugatedLaplacian y s)
+      (Ioi (0 : ℝ)) := by
+  refine (integrableOn_headBudget.const_mul laplacianBound).mono'
+    (measurable_ccmPrimeDeficitMobiusTransientHead.mul
+      (continuous_conjugatedLaplacian y).measurable).aestronglyMeasurable ?_
+  rw [ae_restrict_iff' measurableSet_Ioi]
+  refine Eventually.of_forall fun s hs => ?_
+  have hs0 : 0 ≤ s := le_of_lt hs
+  rw [Real.norm_eq_abs, abs_mul]
+  calc |ccmPrimeDeficitMobiusTransientHead s| * |conjugatedLaplacian y s|
+      ≤ (s + 14) / 4 * (laplacianBound * Real.exp (-(s / 2))) :=
+        mul_le_mul (abs_ccmPrimeDeficitMobiusTransientHead_le hs0) (abs_conjugatedLaplacian_le y s)
+          (abs_nonneg _) (by linarith)
+    _ = laplacianBound * ((s + 14) / 4 * Real.exp (-(s / 2))) := by ring
+
+/-- **The small-divisor head pairs to a bounded quantity**, uniformly in the Klein–Gordon time. -/
+theorem abs_integral_head_mul_conjugatedLaplacian_le (y : ℝ) :
+    |∫ s in Ioi (0 : ℝ), ccmPrimeDeficitMobiusTransientHead s * conjugatedLaplacian y s| ≤
+      laplacianBound * headBudget := by
+  have hint : IntegrableOn (fun s : ℝ => laplacianBound * ((s + 14) / 4 * Real.exp (-(s / 2))))
+      (Ioi (0 : ℝ)) :=
+    integrableOn_headBudget.const_mul laplacianBound
+  have h := norm_integral_le_of_norm_le (μ := volume.restrict (Ioi (0 : ℝ)))
+    (f := fun s => ccmPrimeDeficitMobiusTransientHead s * conjugatedLaplacian y s) hint
+    ((ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun s hs => by
+      have hs0 : 0 ≤ s := le_of_lt hs
+      rw [Real.norm_eq_abs, abs_mul]
+      calc |ccmPrimeDeficitMobiusTransientHead s| * |conjugatedLaplacian y s|
+          ≤ (s + 14) / 4 * (laplacianBound * Real.exp (-(s / 2))) :=
+            mul_le_mul (abs_ccmPrimeDeficitMobiusTransientHead_le hs0)
+              (abs_conjugatedLaplacian_le y s) (abs_nonneg _) (by linarith)
+        _ = laplacianBound * ((s + 14) / 4 * Real.exp (-(s / 2))) := by ring))
+  rw [Real.norm_eq_abs, integral_const_mul] at h
+  exact h
+
+theorem integrableOn_mobiusDeficitRest_mul_conjugatedLaplacian (y : ℝ) :
+    IntegrableOn (fun s => mobiusDeficitRest s * conjugatedLaplacian y s) (Ioi (0 : ℝ)) := by
+  refine ((integrableOn_deficitPrimitive_mul_conjugatedLaplacian y).sub
+    (integrableOn_head_mul_conjugatedLaplacian y)).congr_fun (fun s hs => ?_) measurableSet_Ioi
+  simp only [Pi.sub_apply]
+  rw [ccmLogChebyshevDeficitPrimitive_eq_mobiusDeficitRest_add_head (le_of_lt hs)]
+  ring
+
+/-- The Λ-free Möbius pairing is the full deficit pairing minus the head pairing. -/
+theorem integral_mobiusDeficitRest_mul_conjugatedLaplacian (y : ℝ) :
+    ∫ s in Ioi (0 : ℝ), mobiusDeficitRest s * conjugatedLaplacian y s =
+      (∫ s in Ioi (0 : ℝ), ccmLogChebyshevDeficitPrimitive s * conjugatedLaplacian y s) -
+        ∫ s in Ioi (0 : ℝ), ccmPrimeDeficitMobiusTransientHead s * conjugatedLaplacian y s := by
+  rw [← integral_sub (integrableOn_deficitPrimitive_mul_conjugatedLaplacian y)
+    (integrableOn_head_mul_conjugatedLaplacian y)]
+  refine setIntegral_congr_fun measurableSet_Ioi fun s hs => ?_
+  rw [ccmLogChebyshevDeficitPrimitive_eq_mobiusDeficitRest_add_head (le_of_lt hs)]
+  ring
+
+/-- **Riemann hypothesis through the Λ-free Möbius pairing (upper form)**: the small-divisor head
+is absorbed into a uniform constant. -/
+theorem riemannHypothesis_iff_integral_mobiusDeficitRest_mul_conjugatedLaplacian_bddAbove :
+    RiemannHypothesis ↔ ∃ M : ℝ, ∀ y : ℝ, 0 ≤ y →
+      (∫ s in Ioi (0 : ℝ), mobiusDeficitRest s * conjugatedLaplacian y s) ≤ M := by
+  rw [riemannHypothesis_iff_integral_deficitPrimitive_mul_conjugatedLaplacian_bddAbove]
+  constructor
+  · rintro ⟨M, hM⟩
+    refine ⟨M + laplacianBound * headBudget, fun y hy => ?_⟩
+    have h1 := hM y hy
+    have h2 := abs_le.mp (abs_integral_head_mul_conjugatedLaplacian_le y)
+    have h3 := integral_mobiusDeficitRest_mul_conjugatedLaplacian y
+    linarith [h2.1]
+  · rintro ⟨M, hM⟩
+    refine ⟨M + laplacianBound * headBudget, fun y hy => ?_⟩
+    have h1 := hM y hy
+    have h2 := abs_le.mp (abs_integral_head_mul_conjugatedLaplacian_le y)
+    have h3 := integral_mobiusDeficitRest_mul_conjugatedLaplacian y
+    linarith [h2.2]
+
+/-- **Riemann hypothesis through the Λ-free Möbius pairing (lower form).** -/
+theorem riemannHypothesis_iff_integral_mobiusDeficitRest_mul_conjugatedLaplacian_bddBelow :
+    RiemannHypothesis ↔ ∃ M : ℝ, ∀ y : ℝ, 0 ≤ y →
+      -M ≤ ∫ s in Ioi (0 : ℝ), mobiusDeficitRest s * conjugatedLaplacian y s := by
+  rw [riemannHypothesis_iff_integral_deficitPrimitive_mul_conjugatedLaplacian_bddBelow]
+  constructor
+  · rintro ⟨M, hM⟩
+    refine ⟨M + laplacianBound * headBudget, fun y hy => ?_⟩
+    have h1 := hM y hy
+    have h2 := abs_le.mp (abs_integral_head_mul_conjugatedLaplacian_le y)
+    have h3 := integral_mobiusDeficitRest_mul_conjugatedLaplacian y
+    linarith [h2.2]
+  · rintro ⟨M, hM⟩
+    refine ⟨M + laplacianBound * headBudget, fun y hy => ?_⟩
+    have h1 := hM y hy
+    have h2 := abs_le.mp (abs_integral_head_mul_conjugatedLaplacian_le y)
+    have h3 := integral_mobiusDeficitRest_mul_conjugatedLaplacian y
+    linarith [h2.1]
 
 end
 

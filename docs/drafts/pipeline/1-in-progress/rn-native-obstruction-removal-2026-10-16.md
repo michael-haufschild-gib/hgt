@@ -1,6 +1,8 @@
 # RN native obstruction removal
 
-Status: research in progress; no new theorem claimed.
+Status: paper proof complete; generic algebra and native channel checked in
+Lean scratch files. Native bounded-operator and BV/arithmetic transport audits
+remain in progress.
 
 Objective: remove a structural obstacle in RN with an unconditional theorem,
 not an estimate, RH equivalence, or receiver. Use current Lean corpus only.
@@ -42,7 +44,7 @@ OPEN: reciprocal Xi introduces exponential contour growth, whereas the
 original source has rapid polynomial vertical decay. Existing summability
 proof cannot be specialized to zero regularization. No impossibility claimed.
 
-C3 under investigation: construct the full confluent source/cusp projection
+C3: construct the full confluent source/cusp projection
 on arbitrary native forcing, retaining every Xi multiplicity and exact
 solvability at repeated resonance. Determine whether current scalar moment
 repair and original-source duality already imply a stronger result.
@@ -84,9 +86,23 @@ For W=ker O and a=a_(m-1), set
 For y in W, NH y=y. All m readings of H y vanish: the first m-1
 shift to readings of y; the last cancels exactly against a. Kernel
 uniqueness gives HN x=x on W. Iteration therefore solves N^k on W at
-every order. On E, N is nilpotent; (1+N)^(-1) is its finite geometric
-series. Combining both sectors yields an explicit invertible repair
-N+P on the whole space, deleting exactly the full original Xi block.
+every order. In the coordinates O on E, N is the shift
+
+    O(Nx)_j = 0 (j=0), O(x)_(j-1) (j>0).
+
+For an arbitrary order k, retain only slots j<k in O(g), reconstruct
+them in E, and call the resulting finite correction D_k g. Define R_k g
+by reconstructing the shifted readings O(g)_(j+k), with zero outside
+the m slots. Then N^k R_k g = P g-D_k g. Therefore
+
+    S_k g = H^k(g-Pg)+R_k g,
+    N^k S_k g = g-D_k g.
+
+D_k is idempotent. Its vanishing is equivalent to exactly the first
+min(k,m) actual readings vanishing. Every solution of N^k x=g is S_k g
+plus an element of ker N^k, and exists exactly when those readings vanish.
+This is a constructed solver with a specific original-packet correction;
+the range criterion is a corollary, not the contribution's endpoint.
 
 All operators above are bounded in the original uniform norm: B,c,L are
 bounded, and inversion only occurs in the finite-dimensional observed
@@ -97,8 +113,35 @@ solutions retain compact AC and full arithmetic admission after the
 fixed Green operator. This last transport must be checked directly in
 Lean, not inferred from uniform-norm boundedness.
 
+Write K=(D-i)^(-1), where D is the literal spatial theta action. The
+existing Green equation gives (D-z)K=N_z, and K commutes with N_z.
+Induction, applied to actual functions at each step, gives
+
+    (D-z)^k K^k S_k g = N_z^k S_k g = g-D_k g.
+
+K preserves BV: its bounded-continuous solution equals the existing
+native BV solution by whole-domain uniqueness. Thus for k>0 the
+constructed K^k S_k g belongs to the actual native domain, with compact
+AC representative and the unchanged full prime/Gamma/polar Weil form.
+No domain, trace matching, regularity, or arithmetic-admission premise
+is left for the caller beyond supplying an original continuous BV forcing.
+
 Verdict: survives the algebraic attack. This targets full original-space
 resonant projection/solving, not the still-open directed arithmetic sign.
+
+## C4: eliminate auxiliary counter-source dependence
+
+C3 exposes a stronger invariant. Its complementary space W is exactly
+range N^m: all m readings vanish on N^m x, and H^m supplies a preimage
+for every element of W. Therefore P is the unique projection onto the
+intrinsic maximal generalized kernel E along the intrinsic range N^m.
+Any other one-channel parametrix for the same pencil gives the same P,
+regardless of its counter-source, trace normalization, or partial inverse.
+
+The reduced inverse T=H(1-P) satisfies NT=TN=1-P and PT=TP=0.
+It is an actual bounded complementary solver. The projection and native
+splitting thus no longer depend on an auxiliary Grushin bump choice.
+Paper proof complete; Lean scratch audit pending.
 
 ## Audit constraints
 
@@ -106,3 +149,6 @@ Pre-existing changes: frontier map, RHTower umbrella, native root transport
 and completeness, XiNewtonDiscCurvature, and unrelated cards/report. Preserve.
 Search reports may be source-only or stale: declarations require direct Lean
 audit before relying on a new formal result.
+
+User constraint added during work: docs/reports/rh-current-frontier-map.md
+is read-only. Record results here and in Lean, never edit that map.

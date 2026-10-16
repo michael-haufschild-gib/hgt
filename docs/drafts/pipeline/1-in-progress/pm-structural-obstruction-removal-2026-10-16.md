@@ -9,6 +9,7 @@ An estimate, an RH equivalence, a receiver, or a formalization-only increment do
 the task. Research from the current Lean corpus; no web search, external novelty audit, or
 historical Markdown review. No numerical experiments, full builds, added axioms, or
 heartbeat increases. Preserve unrelated work in the shared tree.
+`docs/reports/rh-current-frontier-map.md` is read-only for this task.
 
 ## Work plan
 
@@ -68,7 +69,7 @@ assert separate convergence of the cap and native bulk.
 
 1. Set p=t+x and r=t-x, so the open physical wedge is 0<p<r. In source
    coordinates A=s+y and B=s-y, the Jacobian is 1/2. The source vanishes for
-   A<=0; the radial wall is B=A. Direct causality imposes A<=p and B<=r.
+   A<0; the radial wall is B=A. Direct causality imposes A<=p and B<=r.
    Image causality imposes A<=r and B<=p; together with B>=A this reduces
    to A<=p and B<=p. Thus the actual retarded event integral is exactly
    one quarter of the direct triangle integral minus the image triangle integral.
@@ -127,8 +128,10 @@ the work plan is tracked here.
 - `ThetaCuspHawkingBMPWRetardedRegularity.lean`: direct Lean audit passed.
 - `ThetaCuspHawkingBMPWRetardedWeakNative.lean`: added absolute action-admission
   helpers and preserved the existing weak identity; direct Lean audit passed.
-- Two-response insertion, exhaustion, and native bulk cancellation: written,
-  audits in progress. No final contribution claimed.
+- `ThetaCuspHawkingBMPWTwoResponseAction.lean`: finite two-response insertion
+  and absolute action admission passed direct Lean audit.
+- Exhaustion and native bulk cancellation: written, audits in progress.
+  No final contribution claimed.
 - No heartbeat increases. No numerical experiments. Only one owned Lean process
   at a time; dependency objects emitted by direct foreground leaf checks.
 
@@ -140,3 +143,24 @@ resulting source function is integrable. No joint absolute native Fubini theorem
 is claimed. Full/full cancellation uses the existing jointly integrable full
 kernel and is therefore an admitted Fubini operation. The exhaustion limit is
 for the combined wave-minus-native action, not for its two components separately.
+
+## Candidate final interface (audit pending)
+
+`D4BMPWNativeTwoResponseAction.complementary_native_action_tendsto` quantifies
+only over the actual zero copy, angular branch, source amplitudes, and angular
+base coordinates. Its canonical cutoffs are `D4BMPWTwoResponseAction.wedgeWindow`.
+The finite action is defined from the actual retarded fields, the event wave
+operator, and the original native Dirichlet kernel. No source pairing occurs in
+that definition.
+
+`complementary_native_action_admitted` supplies the four outer integrability
+statements without analytic premises. `nativeBulk_target_integrable_ae` supplies
+inner target admission. `nativeTwoResponseAction_tendsto_of_exhaustion` proves
+independence across all smooth compact wedge cutoffs between zero and one that
+converge to one in the wedge.
+
+The closed obstruction is intended to be the two-response **event-action
+domain**, not identification with the Einstein/optical current, the fixed-grade
+PW magnitude, or the ordered extinction step. Regularity is in the event
+coordinates with angular base coordinates fixed. No uniform angular limit or
+cusp integration is asserted.

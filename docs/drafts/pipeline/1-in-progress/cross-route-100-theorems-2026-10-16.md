@@ -50,6 +50,13 @@ novelty is not claimed: user forbids external novelty research.
 
 ## Uncounted next lead
 
+Primary next candidate: `weil-compact-unrestricted-orbit-inertia-2026-10-16.md`.
+Crosses exact CHMD cardinal graph sources, dense-core finite constraints,
+and finite-window Weil inertia. Target: compact polar negative subspaces for
+arbitrary finite nonreal Xi orbit families, removing spacing/visibility
+premises and two-dimensional polar loss. Proof design only; no new count.
+Inspected source comparisons and precise remaining obligations are in the card.
+
 Investigate a source-domain strengthening involving CHMD, after finishing the
 current candidate. Whole-corpus search identified
 `CHMDCompactStationaryJump.integrable_stationaryJump` and the HTGeometry
@@ -62,6 +69,9 @@ before asserting it. Do not assume classical smoothness across arithmetic
 breakpoints or count routine Sobolev estimates as a contribution.
 
 ## Environment
+
+User restriction, 2026-10-17: `docs/reports/rh-current-frontier-map.md` is
+read-only for this agent. Preserve all existing and concurrent changes there.
 
 `update_plan` is not exposed in this session; this file carries the persistent
 plan and audit ledger. Serena symbol access rejects the ignored Lean tree;

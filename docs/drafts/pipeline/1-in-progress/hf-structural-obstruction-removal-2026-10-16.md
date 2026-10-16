@@ -1,7 +1,7 @@
 # HF: structural obstruction removal
 
-Status: paper proof closed; Lean verification in progress. No verified
-contribution claimed yet.
+Status: paper proof closed; all three Lean leaf audits passed. Final
+transitive-axiom and repository lint gates are in progress.
 
 ## Contract
 
@@ -36,7 +36,7 @@ open. The route also names arithmetic cup/trace identification as unresolved.
 2. Original-source upper/lower spectral splitting: OPEN, not selected. The
    Hilbert sign multiplier does not prove preservation of the all-weight
    source. Gaussian half-contours do not supply Gaussian removal.
-3. Whole-source differential realization: SURVIVES PRELIMINARY ATTACK.
+3. Whole-source differential realization: PROVED AND LEAF-AUDITED.
    The existing faithful Gaussian native map intertwines the original
    centered generator with the literal theta differential action on EVERY
    original Meyer class. Consequently its image lies in the native domain,
@@ -112,15 +112,57 @@ the whole original-source image, not only a collection of finite packets.
 This closes whole-range generator compatibility, not Gaussian removal,
 positive Hodge compatibility, or RH.
 
+## Assessment
+
+The obstruction was passage from bounded-continuous/BV contour synthesis
+to the domain of an unbounded differential operator. Finite-packet
+intertwining and uniform convergence alone do not justify that passage.
+The exact cut-trace cancellation supplies a bounded Green identity for
+each contour; passing that identity through both original-source series
+constructs whole-domain membership and the actual generator action.
+
+This is a closed construction on every original cohomology class, with
+the existing fixed faithful Gaussian map. It also proves preservation of
+that whole image by the actual compact Green operator and retains every
+finite differential word's complete signed arithmetic expression. It is
+neither an estimate improvement nor a conditional positivity receiver.
+
+No positivity, removal of Gaussian regularization, identification of
+source/native topologies, or arbitrary infinite-packet interpolation is
+claimed. No external novelty claim is made. The earlier spectral-splitting
+candidate remains open; no route was retired on its basis.
+
+User subsequently declared `docs/reports/rh-current-frontier-map.md`
+read-only. This task's earlier HF/RN edits were precisely reverted,
+preserving pre-existing changes. The result is recorded here and in Lean.
+
 ## Verification
 
 Lean implementation is in `PaperThetaMomentSeparation`,
 `PaperThetaContourGenerator`, and `PaperThetaWholeMeyerGenerator`.
-`PaperThetaMomentSeparation` and `PaperThetaContourGenerator` pass direct
-`lake --old env lean -j 1` leaf audits, with no warnings. The combined
-scratch audit exposed source-subtype coercions and a pointwise application
-rewrite in the whole-source passage; corrected. Its direct leaf audit and
-the final standard-axiom audit remain pending.
+All three pass direct `lake --old env lean -j 1` leaf audits, with no
+warnings. Source-subtype coercions and pointwise applications were made
+explicit. A dependent rewrite exceeded the default heartbeat budget;
+separate Mellin/block equalities and direct bounded-linear tsum transport
+eliminate it without raising any limit. All three modules are wired into
+`RHTower.lean`; formal indexes are refreshed.
+
+The final standard-axiom audit encountered missing pre-existing import
+artifacts during concurrent cache rebuilding. Only required missing leaves
+are being compiled, sequentially, without any full or umbrella build.
+The axiom audit remains pending.
+
+`scripts/formal_tools.py lint --check-generated` ran. Its only errors were
+ten unrelated concurrent modules not yet reachable from their umbrellas:
+`CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection`,
+`FiniteWeilNodalAdjacentCoupling`, `FiniteWeilNodalMixtureTransport`,
+`PaperThetaConfluentNativeChannel`,
+`ThetaCuspHawkingBMPWNativeTwoResponseAction`,
+`ThetaCuspHawkingBMPWTwoResponseAction`,
+`ThetaCuspHawkingBMPWTwoResponseActionLimit`,
+`OneChannelPowerSolvability`, `OneChannelRootObservability`,
+`OneChannelRootProjection`. No proof-debt violation was reported. Those
+unfinished modules were not changed or wired by this task.
 
 The exact-proposition search and exhaustive source-name search found no
 existing whole-range native generator identity. Deep searches for the
