@@ -15,7 +15,7 @@ namespace RHTower.EvenSector
 open WeilOneSided
 
 def nonnegativeRealCoefficients {ι : Type*} (c : ι →₀ ℝ≥0) : ι →₀ ℝ :=
-  c.mapRange (fun r => (r : ℝ)) NNReal.coe_zero
+  c.mapRange (fun r : ℝ≥0 => (r : ℝ)) NNReal.coe_zero
 
 theorem nonnegativeRealCoefficients_nonneg {ι : Type*} (c : ι →₀ ℝ≥0) (i : ι) :
     0 ≤ nonnegativeRealCoefficients c i := (c i).coe_nonneg

@@ -21,7 +21,7 @@ theorem dense_sourceMap_range : Dense (sourceMap.range : Set MassSpace) := by
   apply (Lp.dense_hasCompactSupport_contDiff (F := ℝ) (μ := massMeasure) (p := 2)
     (by norm_num)).mono
   rintro u ⟨v, huv, hc, hs⟩
-  refine ⟨compactLift v (hs.of_le (by norm_num)) hc, ?_⟩
+  refine ⟨compactLift v (hs.of_le (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2)) hc, ?_⟩
   apply Lp.ext
   exact (compact_memLp_mass hs.continuous hc).coeFn_toLp.trans huv.symm
 
@@ -30,7 +30,8 @@ theorem resolvent_injective : Function.Injective resolvent := by
   have hr : rieszLift u = rieszLift v := source_projection_injective h
   apply dense_sourceMap_range.eq_of_inner_left ℝ
   rintro _ ⟨q, rfl⟩
-  rw [← inner_rieszLift u q, ← inner_rieszLift v q, hr]
+  exact (inner_rieszLift u q).symm.trans
+    ((congrArg (fun p => ⟪p, q⟫_ℝ) hr).trans (inner_rieszLift v q))
 
 theorem dense_stationaryGroundSourceMap_range :
     Dense (stationaryGroundSourceMap.range : Set MassSpace) := by
@@ -56,8 +57,9 @@ theorem groundPerturbation_symmetric (u v : MassSpace) :
     ⟪groundPerturbation u, v⟫_ℝ = ⟪u, groundPerturbation v⟫_ℝ := by
   change ⟪primeGenerator u + groundPotentialOperator u, v⟫_ℝ =
     ⟪u, primeGenerator v + groundPotentialOperator v⟫_ℝ
-  rw [inner_add_left, inner_add_right, groundPotentialOperator_symmetric,
-    ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp primeGenerator_isSelfAdjoint u v]
+  rw [inner_add_left, inner_add_right, groundPotentialOperator_symmetric]
+  congr 1
+  exact ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp primeGenerator_isSelfAdjoint u v
 
 theorem fullGround_inner_decomposition (p q : SourceGraph) :
     ⟪p, q⟫_ℝ = ⟪fullGroundEquiv p, fullGroundEquiv q⟫_ℝ +
@@ -66,7 +68,10 @@ theorem fullGround_inner_decomposition (p q : SourceGraph) :
   have hp : archSourceMap (graphArchEquiv p) = sourceMap p := graphArchEquiv_source p
   have hq : archSourceMap (graphArchEquiv q) = sourceMap q := graphArchEquiv_source q
   rw [hp, hq]
-  change _ = _ + ⟪primeGenerator (sourceMap p) + groundPotentialOperator (sourceMap p), sourceMap q⟫_ℝ
+  change ⟪fullGroundEquiv p, fullGroundEquiv q⟫_ℝ +
+    ⟪groundPotentialOperator (sourceMap p), sourceMap q⟫_ℝ +
+      ⟪primeGenerator (sourceMap p), sourceMap q⟫_ℝ =
+        _ + ⟪primeGenerator (sourceMap p) + groundPotentialOperator (sourceMap p), sourceMap q⟫_ℝ
   rw [inner_add_left]
   ring
 
@@ -100,13 +105,14 @@ theorem stationaryResolvent_injective : Function.Injective stationaryResolvent :
   have hr : stationaryRieszLift u = stationaryRieszLift v := stationaryGroundSourceMap_injective h
   apply dense_stationaryGroundSourceMap_range.eq_of_inner_left ℝ
   rintro _ ⟨q, rfl⟩
-  rw [← inner_stationaryRieszLift u q, ← inner_stationaryRieszLift v q, hr]
+  exact (inner_stationaryRieszLift u q).symm.trans
+    ((congrArg (fun p => ⟪p, q⟫_ℝ) hr).trans (inner_stationaryRieszLift v q))
 
 theorem stationaryRieszLift_full (w : MassSpace) :
     stationaryRieszLift (w - groundPerturbation (resolvent w)) = fullGroundEquiv (rieszLift w) := by
   apply stationaryRieszLift_unique
   intro q
-  have h := inner_rieszLift w (fullGroundEquiv.symm q)
+  have h := (inner_rieszLift w (fullGroundEquiv.symm q)).symm
   rw [fullGround_inner_decomposition, fullGroundEquiv.apply_symm_apply] at h
   have hs : sourceMap (fullGroundEquiv.symm q) = stationaryGroundSourceMap q :=
     fullGroundEquiv_symm_source q

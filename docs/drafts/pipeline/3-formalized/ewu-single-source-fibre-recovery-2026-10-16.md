@@ -1,6 +1,6 @@
 # EWU single-source arithmetic fibre recovery
 
-Status: conjecturing; no new theorem claimed.
+Status: formalized; five modules built and directly audited; capstone axioms audited.
 
 Goal: overcome the remaining source-realization obstruction after exact smooth
 autocorrelation scalarization. Existing exact-fibre recovery returns C² finite
@@ -19,21 +19,26 @@ Conjecture loop:
    mechanism: convolution changes autocorrelation samples at log n. Survivor:
    a fixed compact support window leaves only finitely many changed samples.
 2. Smooth exact-fibre recovery with one actual even pole-free source exists
-   for every full C² positive finite mixture, with energy converging to its
-   original cost from the epigraph. SURVIVES PRELIMINARY ATTACK: correct all
-   finite arithmetic defects by positive smooth coordinate rows with vanishing
-   correction cost; then scalarize the corrected mixture exactly.
+   for every full C² positive finite mixture, with arbitrarily small energy
+   excess. SURVIVES: correct all finite arithmetic defects by positive smooth
+   coordinate rows with vanishing correction cost; then scalarize the
+   corrected mixture exactly. For full-source mixtures this is upper-energy
+   recovery, not a claim of convergence to their exact energy.
+3. For C² even-polar mixtures, the same construction recovers the entire
+   profile pointwise and the actual energy as limits, while every whole
+   arithmetic trace is exact at every stage. PROVED IN LEAN in
+   `exists_single_smooth_exact_fibre_limit`.
 
-Proposed mechanism: even compact mollification preserves the literal pole
-zeros; Fourier multiplier domination controls the actual archimedean energy;
+Mechanism: even compact mollification preserves the literal pole
+zeros; Weil-energy convergence and the explicit formula recover archimedean energy convergence;
 uniform support gives a fixed finite coordinate set; signed coordinate rays
 correct the entire trace using nonnegative coefficients tending to zero;
 exact smooth scalarization produces a single source. This targets a source
 construction and exact-fibre closure law, not a positivity receiver.
 
-Remaining audits: finish the dependency-closed paper proof; formalize; build
-only needed leaf targets with `--old`; direct `lake env lean` checks; axiom
-checks in `/tmp`; umbrella wiring; formal lint; cleanup.
+All five modules are wired into the RHTower umbrella. All five direct
+`lake env lean` checks, four capstone axiom audits, and the explicit
+Mathlib-name probe passed.
 
 ## Dependency-closed paper proof
 
@@ -84,6 +89,47 @@ actual energy converges. Thus the result can state density inside every exact
 arithmetic fibre, jointly for profile evaluation and energy, rather than only
 an upper-energy recovery inequality.
 
-Formal progress: `EvenSectorSmoothApproximation.lean` passed direct Lean
-checking. Its common finite trace support and actual energy convergence have
-no positivity or RH premise.
+## Formal statements
+
+- `EvenSectorSmoothApproximation.lean`: smooth pole-free approximation,
+  pointwise autocorrelation convergence, one common finite arithmetic support,
+  actual archimedean energy convergence.
+- `EvenSectorScalarizationMoments.lean`: exact scalarization preserves the
+  entire profile, whole arithmetic trace, and actual energy.
+- `EvenSectorSmoothTraceCorrection.lean`: positive smooth correction of any
+  finite signed trace defect; every linear observable of the correction
+  vanishes when that defect tends to zero on a fixed finite support.
+- `EvenSectorSmoothFibreDensity.lean`: exact-fibre single-source density,
+  jointly for the whole pointwise profile and actual energy.
+- `EvenSectorSingleSourceFibreRecovery.lean`: unconditional bundled-data
+  capstones `smooth_single_source_exact_fibre_density`,
+  `exists_single_smooth_trace`, `full_mixture_single_smooth_recovery`, and
+  `singleSmooth_energy_fibre_closure_eq`.
+
+The last closure identity holds for every finitely supported arithmetic
+trace v. It identifies the closed energy epigraph of actual single smooth
+even-polar sources in that exact fibre with the full C² positive-mixture
+epigraph closure. This removes the regularity and convexification obstruction
+in fibre recovery; it is a source realization theorem, not an RH receiver.
+
+## Verification
+
+All five modules built via the targeted
+`lake --old build GaloisForLFunctions.RHTower.EvenSectorSingleSourceFibreRecovery`.
+Every module passed final direct `lake env lean <module>.lean` checking,
+sequentially, with no diagnostics. All five oleans are current. No full or
+umbrella build was run.
+
+All four unconditional capstones were checked with `#print axioms` in a
+`/tmp` scratch file. Their only axioms are `propext`, `Classical.choice`, and
+`Quot.sound`. No added axioms, proof stubs, numeric experiments, or heartbeat
+increases occur. All 195 Mathlib constants referenced by the five `.ilean`
+files passed both `#check` and an explicit `have := @Name` probe against
+this toolchain. `git diff --check` passed for the owned changes.
+
+`scripts/formal_tools.py lint` reports no errors in these five modules or their
+wiring. Its eight errors are unrelated concurrent unwired modules:
+`CHMDStationaryGenerators`, `CHMDStationaryGroundDomain`,
+`CHMDStationaryGroundEquivalence`, `CHMDStationaryGroundGraph`,
+`CHMDStationaryGroundPotential`, `CHMDStationaryOperatorDomain`,
+`OddWeilLineKernel`, and `OddWeilSpectralMeasure`.

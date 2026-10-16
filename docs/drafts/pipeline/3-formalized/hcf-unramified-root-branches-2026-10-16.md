@@ -1,6 +1,6 @@
 # HCF: resolve individual escaping roots without ramification
 
-Status: paper proof closed; Lean integration and audits in progress.
+Status: formalized; all focused builds, direct source audits and axiom/API audits passed. Repository-wide lint reports unrelated concurrent umbrella omissions, listed below.
 
 ## Starting frontier
 
@@ -11,7 +11,30 @@ The previous contribution identifies the complete weighted polynomial X^n Q_(d,k
 1. A determinant multiplicity alone does not determine matrix partial multiplicities; do not infer a full analytic matrix normal form from scalar Toda order.
 2. Conjecture: every nonzero root of the escape polynomial is simple. Its coefficients suggest two exact identities: Q_(d+1,k+1)'=(k+1)Q_(d,k), and Q_(d+1,k+1)=(X+d)Q_(d,k)-X Q_(d,k)'. A common root with the derivative would descend inductively to the constant polynomial. The positive constant coefficient excludes zero.
 3. Conjecture: these simple roots lift to unique real-analytic scaled root branches of the actual weighted admission. Dividing by t-a gives genuine unramified simple poles, with residues exactly the distinct roots of Q. The full analytic coefficient-vector extension already exists in the corpus.
-4. The recurrence and induction proofs passed direct Lean checking. The coefficient-space implicit branch, scalar restriction, punctured-germ uniqueness and exact meromorphic order −1 also passed direct checking. The actual-source integration is written and awaiting its dependency builds.
+4. The recurrence and induction proofs passed direct Lean checking. The coefficient-space implicit branch, scalar restriction, punctured-germ uniqueness and exact meromorphic order −1 also passed direct checking. No analytic complex-time extension is assumed.
+5. The all-time actual-source construction passed `lake env lean`. The finite residue set has exactly k elements; choosing its branches and intersecting finitely many neighborhoods proves simultaneous actual-root equations and injectivity on one punctured neighborhood. All three focused `lake --old build +Module:olean` builds passed.
+
+## Formal artifacts
+
+- `formal/GaloisForLFunctions/HTGeometry/HeatEscapeSimpleRoots.lean`: derivative/raising recurrences, nonzero simple residues, separability, exact root count, and weighted root transport.
+- `formal/GaloisForLFunctions/HTGeometry/AnalyticMonicRootGerm.lean`: coefficient-space implicit branch pulled back to real analytic coefficients, uniqueness against punctured continuous root germs, and exact simple-pole order.
+- `formal/GaloisForLFunctions/RHTower/XiGaussianHeatEscapingBranches.lean`: actual-source `HeatAdmissionEscapingBranch`, branch separation, `hcf_heat_admission_unramified_branches`, and simultaneous `hcf_heat_admission_escape_packet`. Both capstones take only positive time and rank.
+
+All three modules are wired into their theorem-area umbrellas. The frontier map records the new unramified-branch result.
+
+## Audit record
+
+All three final source files passed direct audits, each run alone in the foreground:
+
+```text
+lake env lean GaloisForLFunctions/HTGeometry/HeatEscapeSimpleRoots.lean
+lake env lean GaloisForLFunctions/HTGeometry/AnalyticMonicRootGerm.lean
+lake env lean GaloisForLFunctions/RHTower/XiGaussianHeatEscapingBranches.lean
+```
+
+Each module also passed its focused `lake --old build +Module:olean`. No full or umbrella build ran. A `/tmp` scratch audit checked 57 mathlib API names and printed axioms for 15 new theorems, including both actual-source capstones. Every axiom list was exactly `[propext, Classical.choice, Quot.sound]`; there were no audit errors or warnings. No numerical experiments, extra axioms, admissions, heartbeat/recursion increases or web/novelty searches were used. Owned scratch sources, search outputs and build logs were removed after recording results.
+
+`scripts/formal_tools.py lint` ran after wiring. No HCF error was reported. The repository-wide gate failed on eight unrelated concurrent RHTower umbrella omissions: `CHMDStationaryGenerators`, `CHMDStationaryGroundDomain`, `CHMDStationaryGroundEquivalence`, `CHMDStationaryGroundGraph`, `CHMDStationaryGroundPotential`, `CHMDStationaryOperatorDomain`, `OddWeilLineKernel`, and `OddWeilSpectralMeasure`. These lie outside this task's write scope.
 
 ## Closed paper argument
 

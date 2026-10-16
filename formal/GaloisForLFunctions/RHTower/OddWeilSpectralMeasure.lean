@@ -492,18 +492,17 @@ theorem oddLineKernel_eq_gPair {t : ℝ} (ht : t ≠ 0) {ζ : ℂ} (hζ : ‖ζ�
   have hu : lineA t ^ 2 + (circleOrd ζ : ℂ) ≠ 0 := lineA_sq_add_ne_zero ht _
   have hρ0 : ρ ≠ 0 := by
     intro h
-    rw [h] at hρ
-    simp at hρ
-    exact hγ0 (by rw [hρ])
+    rw [h, zero_pow two_ne_zero] at hρ
+    exact hγ0 (by linear_combination hρ)
+  have hγρ : (circleOrd ζ : ℂ) = -ρ ^ 2 := by linear_combination hρ
   have hfac : (lineA t - ρ) * (lineA t + ρ) = lineA t ^ 2 + (circleOrd ζ : ℂ) := by
-    rw [← neg_neg (circleOrd ζ : ℂ), ← hρ]; ring
+    rw [hγρ]; ring
   have hm : lineA t - ρ ≠ 0 := left_ne_zero_of_mul (hfac ▸ hu)
   have hp : lineA t + ρ ≠ 0 := right_ne_zero_of_mul (hfac ▸ hu)
   unfold gPair
   rw [linePt_sub_half, show (1 : ℂ) - 1 / 2 = 1 / 2 by norm_num, linePt_sub_half,
     show linePt t - (1 / 2 + ρ) = lineA t - ρ by rw [← linePt_sub_half]; ring,
     show linePt t - (1 - (1 / 2 + ρ)) = lineA t + ρ by rw [← linePt_sub_half]; ring]
-  have hγρ : (circleOrd ζ : ℂ) = -ρ ^ 2 := by linear_combination -hρ
   rw [hγρ] at hu ⊢
   field_simp
   ring
@@ -579,7 +578,8 @@ theorem oddSpectralWeight_eq_of_ne {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hf
   have eρ : (1 / (2 * Real.pi) : ℂ) *
       ∫ t, lineTransform f t * gPair (1 / 2 + ρ) (((5 / 4 : ℝ) : ℂ) + t * I) =
       Hfn k (1 / 2 + ρ) + Hfn k (1 - (1 / 2 + ρ)) := by rw [← hpairρ]; rfl
-  rw [e₀, eρ, show (1 : ℂ) - 1 / 2 = 1 / 2 by norm_num, hH0, add_zero, mul_zero, zero_add]
+  rw [e₀, eρ, show (1 : ℂ) - 1 / 2 = 1 / 2 by norm_num, hH0]
+  simp
 
 /-- The transform of an odd autocorrelation at a real shift of the centre:
 `H(½ + r) = −|f̂(ir)|²`. -/
@@ -592,8 +592,6 @@ theorem Hfn_weilTest_half_add_ofReal {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
   rw [e, EF.paperFT_weilTest hf.continuous hf.continuous hfc hfc, map_neg, map_mul, Complex.conj_I,
     Complex.conj_ofReal, neg_mul, neg_neg, paperFT_neg_of_odd hodd, neg_mul, Complex.mul_conj,
     Complex.normSq_eq_norm_sq]
-  push_cast
-  ring
 
 /-- **On the critical ordinates** (`γ > 0`): `Θ_f(ζ) = (1 + γ²)|f̂(√γ)|²/γ`. -/
 theorem oddSpectralWeight_eq_of_pos {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
@@ -601,20 +599,22 @@ theorem oddSpectralWeight_eq_of_pos {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (h
     (hγ : 0 < circleOrd ζ) :
     oddSpectralWeight f ζ =
       (1 + circleOrd ζ ^ 2) * ‖paperFT f (Real.sqrt (circleOrd ζ))‖ ^ 2 / circleOrd ζ := by
-  set γ := circleOrd ζ with hγdef
-  set r := Real.sqrt γ with hr
-  have hr2 : r ^ 2 = γ := Real.sq_sqrt hγ.le
-  have hρ : ((r : ℂ) * I) ^ 2 = -(γ : ℂ) := by
+  have hr2 : Real.sqrt (circleOrd ζ) ^ 2 = circleOrd ζ := Real.sq_sqrt hγ.le
+  have hρ : ((Real.sqrt (circleOrd ζ) : ℂ) * I) ^ 2 = -(circleOrd ζ : ℂ) := by
     rw [mul_pow, I_sq, ← Complex.ofReal_pow, hr2]; ring
-  rw [oddSpectralWeight_eq_of_ne hf hfc hodd hζ h1 hγ.ne' hρ (by simp; norm_num) (by simp; norm_num)]
-  have ha : (1 / 2 : ℂ) + (r : ℂ) * I = ((1 / 2 : ℝ) : ℂ) + r * I := by push_cast; ring
-  have hb : (1 : ℂ) - (1 / 2 + (r : ℂ) * I) = ((1 / 2 : ℝ) : ℂ) - r * I := by push_cast; ring
+  rw [oddSpectralWeight_eq_of_ne hf hfc hodd hζ h1 hγ.ne' hρ (by simp; norm_num)
+    (by simp; norm_num)]
+  have ha : (1 / 2 : ℂ) + (Real.sqrt (circleOrd ζ) : ℂ) * I =
+      ((1 / 2 : ℝ) : ℂ) + Real.sqrt (circleOrd ζ) * I := by push_cast; ring
+  have hb : (1 : ℂ) - (((1 / 2 : ℝ) : ℂ) + (Real.sqrt (circleOrd ζ) : ℂ) * I) =
+      ((1 / 2 : ℝ) : ℂ) - Real.sqrt (circleOrd ζ) * I := by push_cast; ring
   rw [ha, hb, Hfn_weilTest_critical hf.continuous hfc, Hfn_weilTest_critical_neg hf.continuous hfc,
     paperFT_neg_of_odd hodd, norm_neg]
-  have e : ((1 + (γ : ℂ) ^ 2) / (2 * γ)) *
-      (((‖paperFT f r‖ ^ 2 : ℝ) : ℂ) + ((‖paperFT f r‖ ^ 2 : ℝ) : ℂ)) =
-      (((1 + γ ^ 2) * ‖paperFT f r‖ ^ 2 / γ : ℝ) : ℂ) := by
-    have hγ0 : (γ : ℂ) ≠ 0 := by exact_mod_cast hγ.ne'
+  have e : ((1 + (circleOrd ζ : ℂ) ^ 2) / (2 * circleOrd ζ)) *
+      (((‖paperFT f (Real.sqrt (circleOrd ζ))‖ ^ 2 : ℝ) : ℂ) +
+        ((‖paperFT f (Real.sqrt (circleOrd ζ))‖ ^ 2 : ℝ) : ℂ)) =
+      (((1 + circleOrd ζ ^ 2) * ‖paperFT f (Real.sqrt (circleOrd ζ))‖ ^ 2 / circleOrd ζ : ℝ) : ℂ) := by
+    have hγ0 : (circleOrd ζ : ℂ) ≠ 0 := by exact_mod_cast hγ.ne'
     push_cast
     field_simp
     ring
@@ -626,42 +626,35 @@ theorem oddSpectralWeight_eq_of_neg {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (h
     (hγ : -(1 / 4) ≤ circleOrd ζ) (hγ' : circleOrd ζ < 0) :
     oddSpectralWeight f ζ =
       (1 + circleOrd ζ ^ 2) * ‖paperFT f (I * Real.sqrt (-circleOrd ζ))‖ ^ 2 / (-circleOrd ζ) := by
-  set γ := circleOrd ζ with hγdef
-  set r := Real.sqrt (-γ) with hr
-  have hr2 : r ^ 2 = -γ := Real.sq_sqrt (by linarith)
-  have hρ : ((r : ℂ)) ^ 2 = -(γ : ℂ) := by rw [← Complex.ofReal_pow, hr2]; push_cast; ring
-  have hr12 : r ≤ 1 / 2 := by
-    rw [hr, show (1 / 2 : ℝ) = Real.sqrt (1 / 4) by
+  have hr2 : Real.sqrt (-circleOrd ζ) ^ 2 = -circleOrd ζ := Real.sq_sqrt (by linarith)
+  have hρ : ((Real.sqrt (-circleOrd ζ) : ℂ)) ^ 2 = -(circleOrd ζ : ℂ) := by
+    rw [← Complex.ofReal_pow, hr2]; push_cast; ring
+  have hr12 : Real.sqrt (-circleOrd ζ) ≤ 1 / 2 := by
+    rw [show (1 / 2 : ℝ) = Real.sqrt (1 / 4) by
       rw [show (1 / 4 : ℝ) = (1 / 2) ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt (by linarith)
-  have hr0 : 0 ≤ r := Real.sqrt_nonneg _
+  have hr0 : 0 ≤ Real.sqrt (-circleOrd ζ) := Real.sqrt_nonneg _
   rw [oddSpectralWeight_eq_of_ne hf hfc hodd hζ h1 hγ'.ne hρ (by simp; linarith)
     (by simp; linarith)]
-  have hb : (1 : ℂ) - (1 / 2 + (r : ℂ)) = (1 / 2 : ℂ) + ((-r : ℝ) : ℂ) := by push_cast; ring
+  have hb : (1 : ℂ) - (1 / 2 + (Real.sqrt (-circleOrd ζ) : ℂ)) =
+      (1 / 2 : ℂ) + ((-Real.sqrt (-circleOrd ζ) : ℝ) : ℂ) := by push_cast; ring
   rw [hb, Hfn_weilTest_half_add_ofReal hf hfc hodd, Hfn_weilTest_half_add_ofReal hf hfc hodd]
-  have hneg : paperFT f (I * ((-r : ℝ) : ℂ)) = -paperFT f (I * r) := by
+  have hneg : paperFT f (I * ((-Real.sqrt (-circleOrd ζ) : ℝ) : ℂ)) =
+      -paperFT f (I * Real.sqrt (-circleOrd ζ)) := by
     rw [← paperFT_neg_of_odd hodd]; congr 1; push_cast; ring
   rw [hneg, norm_neg]
-  have e : ((1 + (γ : ℂ) ^ 2) / (2 * γ)) *
-      (-((‖paperFT f (I * r)‖ ^ 2 : ℝ) : ℂ) + -((‖paperFT f (I * r)‖ ^ 2 : ℝ) : ℂ)) =
-      (((1 + γ ^ 2) * ‖paperFT f (I * r)‖ ^ 2 / (-γ) : ℝ) : ℂ) := by
-    have hγ0 : (γ : ℂ) ≠ 0 := by exact_mod_cast hγ'.ne
+  have e : ((1 + (circleOrd ζ : ℂ) ^ 2) / (2 * circleOrd ζ)) *
+      (-((‖paperFT f (I * Real.sqrt (-circleOrd ζ))‖ ^ 2 : ℝ) : ℂ) +
+        -((‖paperFT f (I * Real.sqrt (-circleOrd ζ))‖ ^ 2 : ℝ) : ℂ)) =
+      (((1 + circleOrd ζ ^ 2) * ‖paperFT f (I * Real.sqrt (-circleOrd ζ))‖ ^ 2 /
+        (-circleOrd ζ) : ℝ) : ℂ) := by
+    have hγ0 : (circleOrd ζ : ℂ) ≠ 0 := by exact_mod_cast hγ'.ne
     push_cast
     field_simp
     ring
   rw [e, Complex.ofReal_re]
 
 /-! ## The centre `ζ = −1` by continuity -/
-
-theorem circleOrd_bdryPt (γ : ℝ) : circleOrd (bdryPt γ) = γ := by
-  unfold circleOrd bdryPt discPt
-  have hd : (2 * ((1 / 2 : ℂ) + γ * I) + 1) ≠ 0 := bdry_two_mul_add_one_ne_zero γ
-  have e : (1 + (2 * ((1 / 2 : ℂ) + γ * I) - 3) / (2 * ((1 / 2 : ℂ) + γ * I) + 1)) /
-      (1 - (2 * ((1 / 2 : ℂ) + γ * I) - 3) / (2 * ((1 / 2 : ℂ) + γ * I) + 1)) = γ * I := by
-    field_simp
-    ring
-  rw [e]
-  simp
 
 theorem bdryPt_ne_one (γ : ℝ) : bdryPt γ ≠ 1 := by
   intro h
@@ -671,6 +664,17 @@ theorem bdryPt_ne_one (γ : ℝ) : bdryPt γ ≠ 1 := by
   have := congrArg Complex.re h
   simp at this
   linarith
+
+theorem bdryPt_injective {γ γ' : ℝ} (h : bdryPt γ = bdryPt γ') : γ = γ' := by
+  have h' := congrArg halfPt h
+  unfold bdryPt at h'
+  rw [halfPt_discPt (bdry_two_mul_add_one_ne_zero γ),
+    halfPt_discPt (bdry_two_mul_add_one_ne_zero γ')] at h'
+  have := congrArg Complex.im h'
+  simpa using this
+
+theorem circleOrd_bdryPt (γ : ℝ) : circleOrd (bdryPt γ) = γ :=
+  bdryPt_injective (eq_bdryPt_circleOrd (norm_bdryPt γ) (bdryPt_ne_one γ)).symm
 
 theorem bdryPt_zero : bdryPt 0 = -1 := by
   unfold bdryPt discPt
@@ -709,14 +713,11 @@ theorem continuousAt_oddLineKernel_neg_one {t : ℝ} (ht : t ≠ 0) :
     intro h
     have hw1 : w = -1 := by linear_combination -h
     have hs0 := two_mul_chart_add_one_ne_zero t
-    rw [linePt_sub_half] at hs0
     have := congrArg halfPt hw1
     rw [hw, linePt_sub_half, halfPt_discPt hs0] at this
     have h2 := congrArg Complex.re this
-    have h3 := congrArg Complex.im this
-    simp [halfPt, lineA_sq_re, lineA_sq_im] at h2 h3
-    norm_num at h2 h3
-    nlinarith [sq_nonneg t]
+    simp [halfPt, lineA_sq_im] at h2
+    exact ht (by linarith)
   have e : (fun ζ : ℂ => oddLineKernel ζ (linePt t)) =
       fun ζ => I * ((ζ + w) / (ζ - w)) / (linePt t - 1 / 2) := rfl
   rw [e]

@@ -35,3 +35,13 @@ Global theta Lipschitz regularity bounds the absolute difference by C|x-y| times
 The first two leaves now pass targeted Lean builds: `CHMDStationaryGroundDomain` proves the maximal domain cancellation, and `CHMDStationaryGroundPotential` identifies its defect with the explicit bounded multiplication operator. Closed pullback graph, graph equivalence and resolvent identities are being checked next.
 
 Domain distinction: the source form domain is exactly the set of mass-L2 u for which Theta*u has stationary jump energy. The pullback generator is constructed from that closed form. No identification of its operator domain with `{u : Theta*u in Dom(A)}` is asserted; the weighted output condition can be weaker. No compact operator-core conclusion follows merely from the form-domain cancellation.
+
+## Closed operator construction
+
+The stationary pullback graph is closed by simultaneous almost-everywhere subsequences of source and edge coordinates. Its source-preserving equivalence with the archimedean graph is continuous by the closed graph theorem. The exact squared-norm identity polarises to an exact graph inner-product identity. Both graph equivalence and inner-product decomposition now pass targeted builds.
+
+Put K=P+V. Riesz representation of the two complete graph inner products yields
+
+    Rg(w-K Rw)=Rw,       R(w+K Rg w)=Rg w.
+
+Thus the resolvent ranges coincide. To realise actual operators, first observe that the full source projection has dense range: every compact smooth mass-L2 class occurs as a genuine compact lift, and these classes are dense. The same holds for the stationary source projection by the proved domain equivalence. Their Riesz resolvents are injective and self-adjoint. Define A_R=R^{-1}-I on range(R). For u in Dom(A_R*), testing its adjoint identity on Rz for every z gives R(u+A_R*u)=u. Hence u lies in range(R), and the adjoint agrees with A_R. This is a dependency-closed self-adjointness argument, with no compact operator-core premise. The exact operator identity is A_full=A_ground+K on their common domain. The corresponding Lean leaves are being checked.
