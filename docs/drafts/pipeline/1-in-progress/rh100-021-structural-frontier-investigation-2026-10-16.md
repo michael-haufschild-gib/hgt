@@ -191,3 +191,92 @@ Implementation checkpoint:
   constructed linear map, prove it faithful, and expose its BV/full-graph
   approximation. Only then final closed capstone, axiom audit, lint/index,
   cleanup and count increment. Current count remains 20/100.
+- PaperThetaStripSeries and PaperThetaStripArithmeticSeries now both passed
+  direct audits and are wired. The latter also proves that the literal mass
+  map on bounded continuous profiles is injective, using the actual positive
+  CHMD mass density. Thus graph completion cannot erase these profiles.
+- GaussianFaithfulness's first audit found one unapplied function product
+  inside the final commutative-ring identity. Explicit Pi.mul_apply reduction
+  corrects it; its second direct audit is running. SourceSynthesis,
+  NativeCohomology and OriginalArithmeticRealization are drafted but unaudited.
+
+Dependency-closed paper argument for the final construction:
+1. For every original source g, F(s)=exp(s^2)*M_g(s) is a genuine admitted
+   Gaussian source transform. Use the already constructed zero-free Xi
+   schedule. Integrate -i*(F/xi)*cutQuotient(thetaParameter(s),cut,x) around
+   its central and paired outer rectangles.
+2. Each cut charge contains xi(s). Cancel it on the actual border. The
+   remaining charge integrand is entire, so Cauchy kills it before taking
+   any limit. Every period is cut independent and spatially continuous.
+3. On this fixed strip a single monotone bounded V controls all increments.
+   The Gaussian quotient theorem and GaussianContourMass give a summable
+   scalar sequence controlling both period norms and V-increments. Uniform
+   completeness constructs f_g, while telescoping partitions give BV and
+   strong globalBV convergence of the same finite heads.
+4. The fixed BV function V has its complete CHMD edge difference in L2.
+   Every period edge and every tail edge are dominated by scalar multiples
+   of that one difference. Therefore the actual graph vectors are summable.
+   Their source projections commute with summation; source injectivity of
+   the closed graph identifies their sum with the literal f_g lift. No prime
+   truncation, replacement edge or artificial completed source is introduced.
+5. The exact kernel Mellin identity gives, for all complex u,
+   thetaMoment(thetaParameter(u),f_g) = i*(u-1/2)/mass * M_h(u), where h is
+   HF's original-source contour sum. If f_g=0, continuity across u=1/2 and
+   Mellin injectivity force h=0. HF's gaussian_sum_class makes the Gaussian
+   class of g zero. Its entire quotient can be divided by the nowhere-zero
+   exponential; global original Xi synthesis then makes g a genuine boundary.
+   Conversely a genuine boundary has an entire Xi quotient, hence every
+   native period vanishes by Cauchy. This proves the exact kernel statement.
+6. Period and series linearity now descend to an injective linear map from
+   the WHOLE original quotient into bounded continuous BV functions. The
+   faithful literal mass embedding makes its full graph lift injective too.
+   Exact complexWeilEnergy_eq_fullBV retains both scalar components, every
+   prime-power term, the archimedean term, mass subtraction and polar terms;
+   graph convergence passes the finite contours through this entire form.
+
+Scope boundary: the construction uses ONE fixed actual Gaussian convolution.
+It does not assert an admitted inverse Gaussian source operator, BV convergence
+as Gaussian damping is removed, arbitrary prescribed infinite packets,
+schedule independence, topological equivalence, positivity, RH or a generator
+intertwining theorem on the newly constructed whole class range. Those are
+separate conjectures; none is used as an input or counted from this work.
+- GaussianFaithfulness and NativeSourceSynthesis now passed direct leaf audits
+  without warnings and are wired. The latter proves the exact infinite source
+  transform and nativeGaussianSource_eq_zero_iff: the actual native function
+  vanishes exactly on the genuine original Poisson boundary range. The first
+  synthesis audit needed explicit beta reduction and replacement of a missing
+  tsum_eq_zero API by the proved pointwise zero block identity; no mathematical
+  input changed. NativeCohomology is now in its first audit.
+- Added a concrete solving consequence to the final draft: the newly
+  constructed BV profile of EVERY original class feeds RN's actual whole-domain
+  resolvent. It yields a unique literal native solution with compact AC
+  transport and the complete arithmetic graph/form. This uses the paid BV
+  admission, not a supplied native-representative premise, and is part of 021.
+- All 17 owned leaves and 125 public declarations are inventoried in the
+  prepared final /tmp axiom audit. Fourteen original leaves plus SourceSynthesis
+  have passed so far; NativeCohomology and OriginalArithmeticRealization remain
+  to audit. All passed leaves are uniquely wired. No contribution count change.
+- NativeCohomology passed without warnings and is wired. Its linear quotient
+  map is injective on all original classes and its image has actual global BV.
+  Dependent proof arguments required `simp only` with explicit differentiability
+  proofs when replacing the Gaussian source function; raw rewriting could not
+  transport these proof arguments. No new hypothesis was introduced.
+- The final OriginalArithmeticRealization leaf is now in its first audit. Its
+  fixed Gaussian/schedule map, full graph injectivity, literal source and edge
+  formulas, complete Weil identity, strong contour approximation, and actual
+  whole-class native inhomogeneous solving are all included. Count stays 20
+  until this leaf, all 125 axiom/API checks, lint/index and cleanup are complete.
+- The final leaf's mathematical proof now passed. The existential summability
+  proof binder was renamed `_hc` to remove its unused-name warning; the final
+  clean leaf audit is running. Full graph injectivity, exact complete Weil
+  expression, strong BV/graph contour convergence, and unique native solving
+  for every original class all elaborated. Axiom/API and final repository
+  checks still precede counting 021. Prepared audit: 125 public declarations
+  and 38 explicit installed-toolchain API checks.
+- All 17 final direct leaf audits now passed without warnings. Every source
+  has a fresh object and every umbrella import occurs exactly once. The closed
+  capstone is nativeMeyer_full_arithmetic_realization; the actual solution
+  theorem is nativeMeyer_inhomogeneous_full_source; the simultaneous global
+  BV/full-graph/full-Weil approximation is nativeMeyerArithmeticMap_contour_approximation.
+  The combined /tmp audit of 125 public declarations and 38 APIs is running.
+  No umbrella or full build was run. Final lint/index/cleanup and count remain.

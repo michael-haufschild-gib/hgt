@@ -70,6 +70,7 @@ theorem deningerMeyer_gaussian_boundary_iff (g : DeningerMeyerStrongLogTarget)
     apply deningerMeyer_boundary_of_entireXiDivision G (he.mul hH)
     intro s
     rw [hM, hdiv]
+    dsimp only [Pi.mul_apply]
     ring
 
 end RHTower

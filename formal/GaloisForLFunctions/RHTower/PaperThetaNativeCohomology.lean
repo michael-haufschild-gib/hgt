@@ -27,7 +27,7 @@ theorem nativeXiBlock_sub (S : DeningerMeyerXiContourSchedule)
 
 theorem nativeXiBlock_const_mul (S : DeningerMeyerXiContourSchedule)
     {F : ℂ → ℂ} (hF : Differentiable ℂ F) (c : ℂ) (n : ℕ) :
-    nativeXiBlock S (fun s => c*F s) (differentiable_const.mul hF) n = c • nativeXiBlock S F hF n := by
+    nativeXiBlock S (fun s => c*F s) (by fun_prop) n = c • nativeXiBlock S F hF n := by
   apply BoundedContinuousFunction.ext
   intro x
   cases n with
@@ -41,7 +41,8 @@ theorem nativeXiBlock_const_mul (S : DeningerMeyerXiContourSchedule)
 theorem nativeGaussianSource_sub (S : DeningerMeyerXiContourSchedule)
     (g h : DeningerMeyerStrongLogTarget) {ε : ℝ} (hε : 0 < ε) :
     nativeGaussianSource S (g-h) ε hε = nativeGaussianSource S g ε hε-nativeGaussianSource S h ε hε := by
-  have he : deningerGaussianMellinRegularization ε (deningerMeyerStrongLogMellin (g-h)) =
+  have he : deningerGaussianMellinRegularization ε
+      (deningerMeyerStrongLogMellin (g-h : DeningerMeyerStrongLogTarget)) =
       fun s => deningerGaussianMellinRegularization ε (deningerMeyerStrongLogMellin g) s-
         deningerGaussianMellinRegularization ε (deningerMeyerStrongLogMellin h) s := by
     funext s
@@ -50,14 +51,16 @@ theorem nativeGaussianSource_sub (S : DeningerMeyerXiContourSchedule)
         exp ((ε:ℂ)*s^2)*(deningerMeyerStrongLogMellinLM s h)
     rw [map_sub, mul_sub]
   unfold nativeGaussianSource
-  rw [he]
-  simp_rw [nativeXiBlock_sub]
+  simp only [he, nativeXiBlock_sub S
+    (deningerMeyerStrongLogMellin_gaussianRegular g hε).differentiable
+    (deningerMeyerStrongLogMellin_gaussianRegular h hε).differentiable]
   exact (gaussian_nativeXiBlock_summable S g hε).tsum_sub (gaussian_nativeXiBlock_summable S h hε)
 
 theorem nativeGaussianSource_smul (S : DeningerMeyerXiContourSchedule)
     (g : DeningerMeyerStrongLogTarget) {ε : ℝ} (hε : 0 < ε) (c : ℂ) :
     nativeGaussianSource S (c • g) ε hε = c • nativeGaussianSource S g ε hε := by
-  have he : deningerGaussianMellinRegularization ε (deningerMeyerStrongLogMellin (c • g)) =
+  have he : deningerGaussianMellinRegularization ε
+      (deningerMeyerStrongLogMellin (c • g : DeningerMeyerStrongLogTarget)) =
       fun s => c*deningerGaussianMellinRegularization ε (deningerMeyerStrongLogMellin g) s := by
     funext s
     change exp ((ε:ℂ)*s^2)*(deningerMeyerStrongLogMellinLM s (c • g)) =
@@ -65,8 +68,8 @@ theorem nativeGaussianSource_smul (S : DeningerMeyerXiContourSchedule)
     rw [map_smul, smul_eq_mul]
     ring
   unfold nativeGaussianSource
-  rw [he]
-  simp_rw [nativeXiBlock_const_mul]
+  simp only [he, nativeXiBlock_const_mul S
+    (deningerMeyerStrongLogMellin_gaussianRegular g hε).differentiable c]
   exact (gaussian_nativeXiBlock_summable S g hε).tsum_const_smul c
 
 def nativeGaussianSourceLM (S : DeningerMeyerXiContourSchedule) (ε : ℝ) (hε : 0 < ε) :

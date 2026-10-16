@@ -34,7 +34,7 @@ theorem nativeGaussianSource_transform (S : DeningerMeyerXiContourSchedule)
   have hn := gaussian_nativeXiBlock_summable S g hε
   let c : ℂ := I*(u-1/2)/(thetaSource.mass : ℂ)
   have he := (c • deningerMeyerStrongLogMellinJetCLM 0 u).map_tsum hs
-  simp only [ContinuousLinearMap.smul_apply, smul_eq_mul,
+  simp only [smul_apply, smul_eq_mul,
     deningerMeyerStrongLogMellinJetCLM_apply, deningerMeyerStrongLogMellinJetLM_eq_iteratedDeriv,
     iteratedDeriv_zero, DeningerMeyerXiContourSchedule.xiBlockSource_mellin] at he
   unfold nativeGaussianSource
@@ -70,6 +70,8 @@ theorem nativeGaussianSource_eq_zero_iff (S : DeningerMeyerXiContourSchedule)
     have hsrc : nativeGaussianOriginalSource S g ε hε = 0 := by
       apply deningerMeyerStrongLogMellin_injective
       funext u
+      change deningerMeyerStrongLogMellin (nativeGaussianOriginalSource S g ε hε) u =
+        deningerMeyerStrongLogMellin (0 : DeningerMeyerStrongLogTarget) u
       rw [congrFun he u]
       exact (show deningerMeyerStrongLogMellin (0 : DeningerMeyerStrongLogTarget) u = 0 from
         (deningerMeyerStrongLogMellinLM u).map_zero).symm
@@ -82,13 +84,14 @@ theorem nativeGaussianSource_eq_zero_iff (S : DeningerMeyerXiContourSchedule)
   · intro hg
     obtain ⟨H, hH, hdiv⟩ := deningerMeyer_entireXiDivision_of_boundary g hg
     have hh : Differentiable ℂ (fun s : ℂ => exp ((ε:ℂ)*s^2)*H s) := by fun_prop
-    unfold nativeGaussianSource
-    apply tsum_eq_zero
-    intro n
-    apply nativeXiBlock_of_entire_division S _ hh _ n
-    intro s
-    dsimp [deningerGaussianMellinRegularization]
-    rw [hdiv]
-    ring
+    have hb (n : ℕ) : nativeXiBlock S
+        (deningerGaussianMellinRegularization ε (deningerMeyerStrongLogMellin g))
+        (deningerMeyerStrongLogMellin_gaussianRegular g hε).differentiable n = 0 := by
+      apply nativeXiBlock_of_entire_division S _ hh _ n
+      intro s
+      dsimp [deningerGaussianMellinRegularization]
+      rw [hdiv]
+      ring
+    simp only [nativeGaussianSource, hb, tsum_zero]
 
 end RHTower.PaperThetaEndpoint
