@@ -10,7 +10,7 @@ Fixed-window purification already removes finite mixture rank, including strict-
 
 1. Smooth purification should survive every energy-bounded limit as a smooth source. Rejected: the actual logarithmic form norm does not provide smoothness. No claim of a smooth limiting source is justified.
 2. Use the actual complete CCM form domain instead. Conjecture: at every fixed positive aperture and finite energy budget, the pointwise closure of normalized finite positive smooth even polar mixture profiles consists of profiles of actual even polar form-domain vectors in the same aperture and budget. This removes both infinite-mixture rank and phase-selection escape.
-3. After proving this, seek actual attainment with the arithmetic observations imposed, rather than a conditional minimizer receiver.
+3. Actual blind attainment at every positive aperture. Paper proof succeeds: the narrow three-bump family can be placed strictly inside any aperture and below the first integer lag; its central value proves nonzero mass, so rescale to norm one. All complex integer-lag constraints are closed in physical L2. Intersect them with the compact even polar energy sublevel at this feasible source's own energy. The existing lower-semicontinuous extended actual quadratic attains its minimum there, and every feasible vector outside that sublevel has greater energy. Thus a normalized even polar blind minimizer exists unconditionally. Evenness makes each correlation real and symmetric, so these are exactly the EWU real arithmetic constraints. Both pole coordinates and the finite prime sum vanish; the optimized energy is the actual archimedean integral.
 
 ## Dependency-closed paper argument for conjecture 2
 
@@ -19,6 +19,13 @@ Write J for the compact embedding of the actual CCM archimedean form domain into
 The complete autocorrelation h -> <translation(-h)f,f> depends continuously on f in physical L2, pointwise in h (in fact uniformly). Its image of that compact set is compact and closed in the product space of complex profiles. Every normalized budgeted positive finite mixture lies in that image: exact interior-window purification gives one smooth even polar source; the existing smooth CCM/zeta identity identifies its energy, and its correlation at zero identifies its norm. Hence the entire pointwise closure lies in the same actual single-source image. No coherent choice of phases along the approximating family is needed.
 
 Preserves: actual aperture, full profile, normalization, both pole constraints, every arithmetic observation, finite completed energy budget. Does not assert smoothness at the boundary, positivity of the blind minimum, or equality of energy along arbitrary convergent sequences.
+
+## New source modules
+
+- `EvenSectorEnergyCompletion.lean`: compact physical budgets, actual single-source profile image, exact native-source bridges, purification of the whole pointwise completion.
+- `EvenSectorBlindVariationalAttainment.lean`: blind feasibility at every aperture, equivalence with real symmetric trace cancellation, actual archimedean energy identity, unconditional blind minimizer.
+
+Initial Lean pass found only cast/coercion/orientation elaboration issues in the bridges; the compactness and closed-image argument checked without additional mathematical premises. Refinement is in progress.
 
 ## Corpus evidence
 

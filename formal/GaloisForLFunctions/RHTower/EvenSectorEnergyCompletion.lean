@@ -37,6 +37,7 @@ theorem energyProfile_zero (a : SuzukiPositiveAperture) (f : suzukiApertureHilbe
   simp only [energyProfile, ccmApertureCorrelation, neg_zero,
     logTranslationCLM_zero_apply, inner_self_eq_norm_sq_to_K]
   simp only [Complex.ofReal_pow, Submodule.norm_coe]
+  rfl
 
 /-- Normalized even polar physical sources in the actual Weil-energy sublevel. -/
 def physicalEvenPolarBudget (a : SuzukiPositiveAperture) (B : ℝ) :
@@ -129,8 +130,10 @@ theorem energyProfile_interiorCCMSource {a : SuzukiPositiveAperture}
     inner_logTranslationCLM_ccmComplexSmoothFormVector]
   apply integral_congr_ae
   filter_upwards with x
-  simp only [interiorCCMSource, EF.tilde, ContinuousLinearMap.mul_apply,
-    neg_sub, sub_eq_add_neg, mul_comm]
+  change star (f.1.1.1.1 (x + -h)) * f.1.1.1.1 x =
+    f.1.1.1.1 x * conj (f.1.1.1.1 (-(h-x)))
+  rw [neg_sub, sub_eq_add_neg, mul_comm]
+  rfl
 
 theorem sourceEnergy_interiorCCMSource {a : SuzukiPositiveAperture}
     (f : InteriorWindowedSmoothEvenPolarTestFn a) :
@@ -180,10 +183,14 @@ theorem polar_interiorCCMSource {a : SuzukiPositiveAperture}
   constructor
   · rw [polarMoment_eq_paperFT]
     change paperFT f.1.1.1.1 (-(((1 / 2 : ℝ) : ℂ) * I)) = 0
-    convert hp using 1 <;> push_cast <;> ring
+    have harg : -(((1 / 2 : ℝ) : ℂ) * I) = -(I/2) := by push_cast; ring
+    rw [harg]
+    exact hp
   · rw [polarMoment_eq_paperFT]
     change paperFT f.1.1.1.1 (-(((-1 / 2 : ℝ) : ℂ) * I)) = 0
-    convert hm using 1 <;> push_cast <;> ring
+    have harg : -(((-1 / 2 : ℝ) : ℂ) * I) = I/2 := by push_cast; ring
+    rw [harg]
+    exact hm
 
 theorem nativeEnergyProfiles_subset_completed (a : SuzukiPositiveAperture) (B : ℝ) :
     nativeEnergyProfiles a B ⊆ completedEnergyProfiles a B := by

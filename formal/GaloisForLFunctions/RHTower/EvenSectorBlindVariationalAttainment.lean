@@ -32,6 +32,39 @@ def BlindUnitSource (a : SuzukiPositiveAperture) : Type :=
     ‖ccmArchimedeanFormToAperture a u‖ = 1 ∧
     energyProfile a (ccmArchimedeanFormToAperture a u) ∈ blindProfiles}
 
+theorem energyProfile_even {a : SuzukiPositiveAperture} {u : CCMArchimedeanFormDomain a}
+    (hu : CCMEvenSector.IsEven a u) :
+    Function.Even (energyProfile a (ccmArchimedeanFormToAperture a u)) := by
+  intro h
+  have hr : l2Reflection (ccmArchimedeanFormToAperture a u).1 =
+      (ccmArchimedeanFormToAperture a u).1 := by
+    rw [← ccmArchimedeanFormToAperture_reflection, hu]
+  have hh := inner_logTranslationCLM_reflection h (ccmArchimedeanFormToAperture a u).1
+  rw [hr] at hh
+  simpa only [energyProfile, ccmApertureCorrelation, neg_neg] using hh
+
+theorem energyProfile_neg (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) (h : ℝ) :
+    energyProfile a f (-h) = conj (energyProfile a f h) := by
+  simp only [energyProfile, ccmApertureCorrelation, neg_neg]
+  rw [inner_logTranslationCLM]
+  exact inner_conj_symm _ _
+
+/-- Complex blindness and the original real symmetric arithmetic trace coincide in the even sector. -/
+theorem energyProfile_eq_zero_iff_trace_zero {a : SuzukiPositiveAperture}
+    {u : CCMArchimedeanFormDomain a} (hu : CCMEvenSector.IsEven a u) (h : ℝ) :
+    energyProfile a (ccmArchimedeanFormToAperture a u) h = 0 ↔
+      (energyProfile a (ccmArchimedeanFormToAperture a u) h +
+        energyProfile a (ccmArchimedeanFormToAperture a u) (-h)).re = 0 := by
+  have he := energyProfile_even hu h
+  have hc := energyProfile_neg a (ccmArchimedeanFormToAperture a u) h
+  have hi := congrArg Complex.im (hc.symm.trans he)
+  simp only [Complex.conj_im] at hi
+  rw [he, Complex.add_re]
+  constructor
+  · intro hz; rw [hz]; simp
+  · intro hr
+    apply Complex.ext <;> simp only [Complex.zero_re, Complex.zero_im] <;> linarith
+
 theorem energyProfile_smul (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a)
     (c : ℂ) (h : ℝ) :
     energyProfile a (c • f) h = conj c * c * energyProfile a f h := by
@@ -94,6 +127,31 @@ theorem isCompact_blindPhysicalBudget (a : SuzukiPositiveAperture) (B : ℝ) :
     IsCompact (physicalEvenPolarBudget a B ∩ energyProfile a ⁻¹' blindProfiles) :=
   (isCompact_physicalEvenPolarBudget a B).inter_right
     (isClosed_blindProfiles.preimage (continuous_energyProfile a))
+
+/-- On the actual blind polar domain, the optimized energy is exactly the archimedean integral. -/
+theorem sourceQuadratic_blind_eq_gamma {a : SuzukiPositiveAperture} (u : BlindUnitSource a) :
+    ccmRestrictedWeilSourceQuadratic a u.1 =
+      ∫ ξ : ℝ, 2 * gammaHardyPhaseRate (2 * Real.pi * ξ) *
+        ‖(u.1.1 : ℝ → ℂ) ξ‖ ^ 2 := by
+  have hp := u.2.1.1
+  have hm := u.2.1.2
+  simp only [ccmRestrictedWeilSourceQuadratic, hp, hm, map_zero,
+    mul_zero, add_zero, Complex.zero_re]
+  have hz : ∑ n ∈ Finset.Icc 2 (Nat.floor (Real.exp (2 * a.1))),
+      (ArithmeticFunction.vonMangoldt n : ℝ) * (1 / Real.sqrt n) *
+        (inner ℂ (logTranslationCLM (Real.log n) (ccmArchimedeanFormToAperture a u.1).1)
+            (ccmArchimedeanFormToAperture a u.1).1 +
+          inner ℂ (logTranslationCLM (-Real.log n) (ccmArchimedeanFormToAperture a u.1).1)
+            (ccmArchimedeanFormToAperture a u.1).1).re = 0 := by
+    apply Finset.sum_eq_zero
+    intro n hn
+    have hminus := u.2.2.2.2 ⟨n, (Finset.mem_Icc.mp hn).1⟩
+    have hplus := energyProfile_even u.2.2.1 (Real.log n)
+    rw [hminus] at hplus
+    simp only [energyProfile, ccmApertureCorrelation, neg_neg] at hplus hminus
+    rw [hplus, hminus]
+    simp
+  rw [hz, sub_zero]
 
 /-- **Blind attainment at every aperture.** The actual complete Weil energy
 has a normalized even polar arithmetic-blind minimizer. Neither RH nor blind
