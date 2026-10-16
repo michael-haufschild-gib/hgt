@@ -75,6 +75,47 @@ novelty audit. Preserve unrelated existing edits.
 
 ## Current unresolved point
 
+### Continuation: whole clock intervals
+
+Fresh source inspection found that `MobiusDivisorPaidPrimeExhaustion` now
+constructs an exhaustive history whose blocks are paid at their assigned
+cutoffs. Its theorem does not transport payment between cutoffs. Arbitrary
+retained finite fields and simultaneous finite Boolean phase gates are also
+already solved (`RetainedPrimeBoundedBatches`, `MobiusDivisorPreparedPrimeCube`).
+These are existing results, not contributions of this investigation.
+
+6. **Repay prescribed debt using arbitrarily delayed bounded-mass preparation.
+   Rejected: FALSE.** The new clock-delayed insertion theorem in
+   `MobiusDivisorInheritedPrimeInsertionProducer` separates a favorable
+   insertion marginal from payment of the original debt. Bounded halfweight
+   preparation can leave a fixed positive net debt at arbitrarily late clocks.
+
+7. **Iterate local quantitative debt payments to complete repayment.
+   Rejected as a proof: MISSING STEP.** Payment constants and admissible helper
+   thresholds depend on the changing core. The available per-step reciprocal
+   prime payments do not imply a divergent total payment along the constructed
+   history.
+
+8. **Positive dilation cone on an entire compact clock interval. ACTIVE,
+   UNPROVED.** For the actual complete continuous Abel source `A`, conjecture
+   that the positive cone of `u ↦ A(exp(t+u))`, with arbitrarily late `t`, is
+   dense in `C([0,L], R)` for each finite `L`. This would remove the restriction
+   to finitely many fixed receiving coefficients. Proposed mechanism: a
+   separating continuous functional has an entire Fourier--Borel transform of
+   finite exponential type; eventual one-sidedness of its source convolution
+   permits Landau continuation; surviving simple critical poles force that
+   transform to vanish. The corpus proves a superlinear simple-critical-zero
+   census and the required general exponential-type nonannihilation theorem.
+   Remaining proof obligations: the literal Banach-valued source transform,
+   compact-head subtraction, real-axis Landau continuation, injectivity of the
+   compact functional transform, and cone separation. No density theorem or
+   actual prime-history consequence is claimed yet.
+
+   Important audit: density alone does not provide uniformly bounded synthesis
+   coefficients, simultaneous actual-prime block rounding, or a history that
+   retains payment after the cutoff changes. Those implications need separate
+   proofs and must not be smuggled into the conjecture's significance claim.
+
 No unconditional construction has been found that retains the actual full
 signed source and removes the changing-cutoff obstruction. For the square
 bilinear formulation, principal counterterms and high-product remainder

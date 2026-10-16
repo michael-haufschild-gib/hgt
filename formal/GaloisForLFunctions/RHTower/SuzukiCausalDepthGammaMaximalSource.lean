@@ -100,9 +100,10 @@ private theorem functional_eq_of_single
     F = G := by
   apply lp.ext_continuousLinearMap (by norm_num : (2 : ENNReal) ≠ ⊤)
   intro i
-  ext z
+  apply ContinuousLinearMap.ext
+  intro z
   change F (lp.single 2 i z) = G (lp.single 2 i z)
-  have hs : lp.single 2 i z = z • lp.single 2 i (1 : ℂ) := by
+  have hs : (lp.single 2 i z : H) = z • lp.single 2 i (1 : ℂ) := by
     rw [← lp.single_smul, smul_eq_mul, mul_one]
   rw [hs, map_smul, map_smul, heq]
 
@@ -220,27 +221,18 @@ private theorem tendsto_zero_of_norm_sq
   have ht := Real.continuous_sqrt.continuousAt.tendsto.comp hf
   simpa only [Function.comp_def, Real.sqrt_sq (norm_nonneg _), Real.sqrt_zero] using ht
 
-/-- Every square-summable solution of the actual cancellation equations is
-approximated in graph norm by the explicitly regularized original source. -/
-theorem suzukiGammaSourceEquationGraph_regularized_approximation
+/-- A vanishing Jacobi tail energy suffices for convergence of the entire
+regularized output, including the exceptional first boundary coordinate. -/
+theorem tendsto_suzukiGammaRegularizedSynthesis_of_tailEnergy
     (h a : Set.Ioi (0 : ℝ)) {u v : H}
-    (huv : (u, v) ∈ suzukiGammaSourceEquationGraph h a) :
-    ∃ ν : ℕ → ℕ, (∀ N, N ≤ ν N) ∧
-      Tendsto (fun N => suzukiGammaSourceRegularization (ν N) u) atTop (𝓝 u) ∧
-      Tendsto (fun N => suzukiGammaRegularizedSynthesis h a (ν N) u) atTop (𝓝 v) := by
+    (huv : (u, v) ∈ suzukiGammaSourceEquationGraph h a)
+    {ν : ℕ → ℕ} (hνtop : Tendsto ν atTop atTop)
+    (hE : Tendsto (fun N => suzukiGammaJacobiTailEnergy
+      (fun j => ‖v (Sum.inr (j + 1))‖ ^ 2) (ν N)) atTop (𝓝 0)) :
+    Tendsto (fun N => suzukiGammaRegularizedSynthesis h a (ν N) u) atTop (𝓝 v) := by
   let b : ℕ → ℝ := fun j => ‖v (Sum.inr (j + 1))‖ ^ 2
-  have hb : Summable b := summable_feature_tail v
-  have hb0 : ∀ j, 0 ≤ b j := fun j => sq_nonneg _
-  have hex (N : ℕ) : ∃ n ≥ N, suzukiGammaJacobiTailEnergy b n < 1 / ((N : ℝ) + 1) :=
-    exists_suzukiGammaJacobiTailEnergy_lt hb hb0 N (by positivity)
-  choose ν hν hsmall using hex
-  have hνtop : Tendsto ν atTop atTop := tendsto_atTop_mono hν tendsto_id
   have hu := (tendsto_suzukiGammaSourceRegularization u).comp hνtop
   let e : ℕ → H := fun N => v - suzukiGammaRegularizedSynthesis h a (ν N) u
-  have hE : Tendsto (fun N => suzukiGammaJacobiTailEnergy b (ν N)) atTop (𝓝 0) := by
-    apply squeeze_zero (fun N => suzukiGammaJacobiTailEnergy_nonneg hb0 (ν N))
-      (fun N => (hsmall N).le)
-    exact tendsto_one_div_add_atTop_nhds_zero_nat
   have herr (N : ℕ) :
       (u - suzukiGammaSourceRegularization (ν N) u, e N) ∈
         suzukiGammaSourceEquationGraph h a := by
@@ -263,9 +255,11 @@ theorem suzukiGammaSourceEquationGraph_regularized_approximation
   have he1 := tendsto_zero_of_norm_sq (fun N => e N (Sum.inr 1)) he1sq
   have hinner : Tendsto (fun N => inner ℂ (suzukiGammaBoundaryRowVector h a 0)
       (u - suzukiGammaSourceRegularization (ν N) u)) atTop (𝓝 0) := by
-    have hd := tendsto_const_nhds.sub hu
+    have hd : Tendsto (fun N => u - suzukiGammaSourceRegularization (ν N) u)
+        atTop (𝓝 0) := by
+      simpa only [Function.comp_def, sub_self] using (tendsto_const_nhds (x := u)).sub hu
     have hi := (innerSL ℂ (suzukiGammaBoundaryRowVector h a 0)).continuous.tendsto 0
-    simpa only [sub_self, map_zero] using hi.comp hd
+    simpa only [Function.comp_def, sub_self, map_zero, innerSL_apply_apply] using hi.comp hd
   have he0 : Tendsto (fun N => e N (Sum.inr 0)) atTop (𝓝 0) := by
     have ht := (hinner.add (he1.const_mul (suzukiGammaBoundaryCoefficient 0 : ℂ))).div_const
       (suzukiGammaBoundaryCoefficient 1 : ℂ)
@@ -276,14 +270,35 @@ theorem suzukiGammaSourceEquationGraph_regularized_approximation
     apply (div_eq_iff (boundaryCoefficient_ne_zero 1)).2
     linear_combination -hr
   have hesq : Tendsto (fun N => ‖e N‖ ^ 2) atTop (𝓝 0) := by
+    change Tendsto (fun N => suzukiGammaJacobiTailEnergy b (ν N)) atTop (𝓝 0) at hE
     have ht := he0.norm.pow 2 |>.add hE
     simpa only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
       zero_add, ← hsplit] using ht
   have he := tendsto_zero_of_norm_sq e hesq
-  have hv : Tendsto (fun N => suzukiGammaRegularizedSynthesis h a (ν N) u) atTop (𝓝 v) := by
-    have ht := tendsto_const_nhds.sub he
-    simpa only [e, sub_sub_cancel, sub_zero] using ht
-  exact ⟨ν, hν, hu, hv⟩
+  have ht := (tendsto_const_nhds (x := v)).sub he
+  simpa only [e, sub_sub_cancel, sub_zero] using ht
+
+/-- Every square-summable solution of the actual cancellation equations is
+approximated in graph norm by the explicitly regularized original source. -/
+theorem suzukiGammaSourceEquationGraph_regularized_approximation
+    (h a : Set.Ioi (0 : ℝ)) {u v : H}
+    (huv : (u, v) ∈ suzukiGammaSourceEquationGraph h a) :
+    ∃ ν : ℕ → ℕ, (∀ N, N ≤ ν N) ∧
+      Tendsto (fun N => suzukiGammaSourceRegularization (ν N) u) atTop (𝓝 u) ∧
+      Tendsto (fun N => suzukiGammaRegularizedSynthesis h a (ν N) u) atTop (𝓝 v) := by
+  let b : ℕ → ℝ := fun j => ‖v (Sum.inr (j + 1))‖ ^ 2
+  have hb : Summable b := summable_feature_tail v
+  have hb0 : ∀ j, 0 ≤ b j := fun j => sq_nonneg _
+  have hex (N : ℕ) : ∃ n ≥ N, suzukiGammaJacobiTailEnergy b n < 1 / ((N : ℝ) + 1) :=
+    exists_suzukiGammaJacobiTailEnergy_lt hb hb0 N (by positivity)
+  choose ν hν hsmall using hex
+  have hνtop : Tendsto ν atTop atTop := tendsto_atTop_mono hν tendsto_id
+  have hE : Tendsto (fun N => suzukiGammaJacobiTailEnergy b (ν N)) atTop (𝓝 0) := by
+    apply squeeze_zero (fun N => suzukiGammaJacobiTailEnergy_nonneg hb0 (ν N))
+      (fun N => (hsmall N).le)
+    exact tendsto_one_div_add_atTop_nhds_zero_nat
+  exact ⟨ν, hν, (tendsto_suzukiGammaSourceRegularization u).comp hνtop,
+    tendsto_suzukiGammaRegularizedSynthesis_of_tailEnergy h a huv hνtop hE⟩
 
 /-- **Minimal equals maximal for the literal two-leg Suzuki Gamma source.**
 The continuous cancellation equations impose exactly the finite-packet graph

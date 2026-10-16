@@ -73,3 +73,22 @@ scratch file: only `propext`, `Classical.choice`, `Quot.sound`. Wired in `RHTowe
 
 ## Log
 - 2026-10-16 — created directly in 3-formalized (paper proof and Lean module completed in one pass); STATUS MUST-1566.
+
+## Function form (second module)
+Module `formal/GaloisForLFunctions/RHTower/CHMDChebyshevDiscrepancyDerivativeTransportLaw.lean`
+(same namespace). With the space derivative `∂_sK_y(s) = D'(s+y) + D'(s−y) − (y²/2)∫B(2y²(1−t²))(D'(s+yt)+D'(s−yt))dt`
+(`kernelDeriv`, `hasDerivAt_chmdPrimeKernel_right`), the classical step `Ψ(s) = Σ_{log n < s} Λ(n)/√n`
+(`chebyshevStep`, Chebyshev bound `chebyshevStep_le`) and `Δ = Ψ − 2e^{s/2}` (`chebyshevDiscrepancy`):
+- `tsum_chmdPrimeWeight_mul_kernel_eq`: `Σ_n (Λ(n)/√n) K_y(log n) = −∫_0^∞ ∂_sK_y Ψ` (Stieltjes IBP over prime powers;
+  `K_y(ℓ) = −∫_ℓ^∞ ∂_sK_y`, Tonelli with `Σ n·n^{−(π−1)} < ∞`).
+- `integral_Ioi_kernelDeriv_mul_two_exp_half`: `∫_0^∞ ∂_sK_y · 2e^{s/2} = −2K_y(0) − ∫_0^∞ K_y e^{s/2}`.
+- `chmdPrimeWave_eq_pole_add_derivative_transport`: `chmdPrimeWave y = chmdPoleWave y + 2K_y(0) − poleShadow y − ∫_0^∞ ∂_sK_y Δ`,
+  `|2K_y(0) − poleShadow y| ≤ 16/π`; `chebyshevDiscrepancyTransport_eq`.
+- `riemannHypothesis_iff_integral_kernelDeriv_mul_discrepancy_bddAbove` / `_bddBelow`.
+Analytic inputs: `D'` via the analytic complex kernel `2/S` (`dAlembertDeriv`, explicit formula off the origin,
+`|D'(v)| ≤ C(1+|v|)e^{−π|v|}` by compactness near 0 and `sinh x ≥ e^x/4` beyond), decay `e^{−(π−1)|s|}` of `K_y`
+and `∂_sK_y` (`exists_abs_chmdPrimeKernel_le`, `exists_abs_kernelDeriv_le`). Audit: `lake --old env lean` clean,
+`#print axioms` standard, wired after the first module. STATUS MUST-1567.
+
+## Log (continued)
+- 2026-10-16 — function-form module added; STATUS MUST-1567.

@@ -40,7 +40,8 @@ theorem inner_arithmeticGroundCompact (a : SuzukiPositiveAperture)
     ((blindMinimum a : ℂ) • ccmArchimedeanFormToAperture a u -
       arithmeticRemainder a (ccmArchimedeanFormToAperture a u))) v = _
   rw [(ccmArchimedeanFormToAperture a).adjoint_inner_left,inner_sub_left,
-    inner_smul_left,Complex.conj_ofReal]
+    inner_smul_left (ccmArchimedeanFormToAperture a u)
+      (ccmArchimedeanFormToAperture a v) (blindMinimum a : ℂ),Complex.conj_ofReal]
 
 theorem arithmeticGroundCompact_fixed_iff (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) :
@@ -89,7 +90,7 @@ theorem blind_minimum_iff_mem_arithmeticGroundSpace (a : SuzukiPositiveAperture)
   · intro hu
     have h := congrArg Complex.re ((mem_arithmeticGroundSpace_iff a u.1).mp hu u.1)
     rw [arithmeticForm_diagonal a ⟨u.1,u.2.1⟩,formTrace_blind,
-      inner_self_eq_norm_sq_to_K] at h
+      inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (ccmArchimedeanFormToAperture a u.1)] at h
     simpa [formEnergy,u.2.2.1] using h
 
 theorem arithmeticGroundSpace_nontrivial (a : SuzukiPositiveAperture) :
@@ -115,7 +116,9 @@ theorem arithmeticGroundSpace_operator (a : SuzukiPositiveAperture) (u : arithme
     (denseRange_ccmArchimedeanFormToAperture a) u.1
   intro v
   change arithmeticForm a u.1 v = _
-  rw [(mem_arithmeticGroundSpace_iff a u.1).mp u.2 v,inner_smul_left,Complex.conj_ofReal]
+  rw [(mem_arithmeticGroundSpace_iff a u.1).mp u.2 v,
+    inner_smul_left (ccmArchimedeanFormToAperture a u.1)
+      (ccmArchimedeanFormToAperture a v) (blindMinimum a : ℂ),Complex.conj_ofReal]
 
 /-- Unconditional finite-dimensional reduction of the entire blind odd optimizer set,
 with the represented operator equation on every vector of the produced space. -/

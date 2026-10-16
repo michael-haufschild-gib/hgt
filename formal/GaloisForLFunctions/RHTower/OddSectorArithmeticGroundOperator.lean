@@ -13,7 +13,7 @@ belongs to the represented operator domain and is an actual eigenvector.
 -/
 
 open Complex MeasureTheory Set Filter Topology
-open scoped InnerProduct
+open scoped InnerProduct ComplexConjugate
 noncomputable section
 namespace RHTower.OddSector
 open EvenSector WeilOneSided GaloisForLFunctions.HTGeometry
@@ -28,12 +28,13 @@ theorem arithmeticCorrection_isSelfAdjoint (a : SuzukiPositiveAperture) :
   classical
   rw [ContinuousLinearMap.isSelfAdjoint_iff']
   unfold arithmeticCorrection
-  rw [map_sum]
-  apply Finset.sum_congr rfl
-  intro j _
-  have h := ccmPrimeTransportOperator_isSelfAdjoint a j.1
-  rw [ContinuousLinearMap.isSelfAdjoint_iff'] at h
-  rw [ContinuousLinearMap.adjoint.map_smulₛₗ,Complex.conj_ofReal,h]
+  generalize (Finset.univ : Finset (apertureNodes a)) = s
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert j s hj ih =>
+      rw [Finset.sum_insert hj,ContinuousLinearMap.adjoint.map_add,ih,
+        ContinuousLinearMap.adjoint.map_smulₛₗ,Complex.conj_ofReal,
+        (ccmPrimeTransportOperator_isSelfAdjoint a j.1).adjoint_eq]
 
 theorem inner_arithmeticCorrection (a : SuzukiPositiveAperture)
     (f g : suzukiApertureHilbert a) :
@@ -60,9 +61,12 @@ def arithmeticRemainder (a : SuzukiPositiveAperture) :
   ccmRestrictedWeilBoundedRemainder a - arithmeticCorrection a
 
 theorem arithmeticRemainder_isSelfAdjoint (a : SuzukiPositiveAperture) :
-    IsSelfAdjoint (arithmeticRemainder a) :=
-  (ccmRestrictedWeilBoundedRemainder_isSelfAdjoint a).sub
-    (arithmeticCorrection_isSelfAdjoint a)
+    IsSelfAdjoint (arithmeticRemainder a) := by
+  rw [ContinuousLinearMap.isSelfAdjoint_iff']
+  unfold arithmeticRemainder
+  rw [ContinuousLinearMap.adjoint.map_sub,
+    (ccmRestrictedWeilBoundedRemainder_isSelfAdjoint a).adjoint_eq,
+    (arithmeticCorrection_isSelfAdjoint a).adjoint_eq]
 
 def arithmeticForm (a : SuzukiPositiveAperture)
     (u v : CCMArchimedeanFormDomain a) : ℂ :=
@@ -74,7 +78,7 @@ theorem arithmeticForm_eq (a : SuzukiPositiveAperture)
     arithmeticForm a u v = ccmRestrictedWeilForm a u v -
       inner ℂ (arithmeticCorrection a (ccmArchimedeanFormToAperture a u))
         (ccmArchimedeanFormToAperture a v) := by
-  simp only [arithmeticForm,arithmeticRemainder,ContinuousLinearMap.sub_apply,
+  simp only [arithmeticForm,arithmeticRemainder,sub_apply,
     inner_sub_left,ccmRestrictedWeilForm]
   ring
 
@@ -120,30 +124,39 @@ theorem arithmeticShiftedForm_neg_left (a : SuzukiPositiveAperture)
 theorem arithmeticShiftedForm_smul_left (a : SuzukiPositiveAperture)
     (u v : CCMArchimedeanFormDomain a) (c : ℂ) :
     arithmeticShiftedForm a (c • u) v = conj c * arithmeticShiftedForm a u v := by
-  simp only [arithmeticShiftedForm,arithmeticForm,map_smul,inner_smul_left]
+  simp [arithmeticShiftedForm,arithmeticForm,map_smul]
   ring
 
 theorem arithmeticShiftedForm_smul_right (a : SuzukiPositiveAperture)
     (u v : CCMArchimedeanFormDomain a) (c : ℂ) :
     arithmeticShiftedForm a u (c • v) = c * arithmeticShiftedForm a u v := by
-  simp only [arithmeticShiftedForm,arithmeticForm,map_smul,inner_smul_right]
+  simp [arithmeticShiftedForm,arithmeticForm,map_smul]
   ring
 
 theorem arithmeticShiftedForm_conj (a : SuzukiPositiveAperture)
     (u v : CCMArchimedeanFormDomain a) :
     arithmeticShiftedForm a v u = conj (arithmeticShiftedForm a u v) := by
   simp only [arithmeticShiftedForm,arithmeticForm,map_sub,map_add,map_mul,Complex.conj_ofReal]
-  rw [inner_conj_symm u v,inner_conj_symm (ccmArchimedeanFormToAperture a u)
-    (ccmArchimedeanFormToAperture a v),inner_conj_symm]
-  rw [(arithmeticRemainder_isSelfAdjoint a).isSymmetric]
+  rw [inner_conj_symm v u,inner_conj_symm (ccmArchimedeanFormToAperture a v)
+    (ccmArchimedeanFormToAperture a u),
+    inner_conj_symm (ccmArchimedeanFormToAperture a v)
+      (arithmeticRemainder a (ccmArchimedeanFormToAperture a u))]
+  exact congrArg (fun z : ℂ => inner ℂ v u + z - (blindMinimum a : ℂ) *
+    inner ℂ (ccmArchimedeanFormToAperture a v) (ccmArchimedeanFormToAperture a u))
+      ((arithmeticRemainder_isSelfAdjoint a).isSymmetric
+        (ccmArchimedeanFormToAperture a v) (ccmArchimedeanFormToAperture a u))
 
 theorem arithmeticShiftedForm_diagonal (a : SuzukiPositiveAperture) (u : OddFormSource a) :
     (arithmeticShiftedForm a u.1 u.1).re =
       formEnergy u - (∑ j : apertureNodes a,blindMultiplier a j * formTrace u j.1) -
         blindMinimum a * ‖ccmArchimedeanFormToAperture a u.1‖ ^ 2 := by
   rw [arithmeticShiftedForm,Complex.sub_re,arithmeticForm_diagonal,
-    inner_self_eq_norm_sq_to_K]
-  simp
+    inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (ccmArchimedeanFormToAperture a u.1)]
+  have hreal (r : ℝ) : ((blindMinimum a : ℂ) * (r : ℂ) ^ 2).re = blindMinimum a * r ^ 2 := by
+    simp [pow_two,Complex.mul_re]
+  exact congrArg (fun t : ℝ =>
+    formEnergy u - (∑ j : apertureNodes a,blindMultiplier a j * formTrace u j.1) - t)
+      (hreal ‖ccmArchimedeanFormToAperture a u.1‖)
 
 theorem arithmeticShiftedForm_odd_nonneg (a : SuzukiPositiveAperture) (u : OddFormSource a) :
     0 ≤ (arithmeticShiftedForm a u.1 u.1).re := by
@@ -271,7 +284,9 @@ theorem blind_minimizer_operator_eigenstate (a : SuzukiPositiveAperture)
     (denseRange_ccmArchimedeanFormToAperture a) u.1
   intro v
   change arithmeticForm a u.1 v = _
-  rw [arithmeticForm_ground_equation a u hu v,inner_smul_left,Complex.conj_ofReal]
+  rw [arithmeticForm_ground_equation a u hu v,
+    inner_smul_left (ccmArchimedeanFormToAperture a u.1)
+      (ccmArchimedeanFormToAperture a v) (blindMinimum a : ℂ),Complex.conj_ofReal]
 
 /-- At every positive aperture, an actual blind unit minimizer is an eigenstate of the
 finite arithmetic-corrected operator at its exact odd-sector ground value. -/
