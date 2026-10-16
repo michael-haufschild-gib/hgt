@@ -1,4 +1,5 @@
-import GaloisForLFunctions.RHTower.EvenSectorSmoothSourceScalarization
+import GaloisForLFunctions.RHTower.EvenSectorWindowPurification
+import GaloisForLFunctions.RHTower.WeilFullConeBochnerMeasure
 import GaloisForLFunctions.HTGeometry.CompactPrimitive
 
 /-!
@@ -20,7 +21,7 @@ open GaloisForLFunctions.HTGeometry.EvenHermitianFactor
 
 noncomputable section
 namespace RHTower.OddSector
-open WeilOneSided EvenSector
+open WeilOneSided EvenSector WeilSpectral
 
 private theorem compact_even_primitive {f : ℝ → ℂ}
     (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) (ho : Function.Odd f) :
@@ -54,11 +55,44 @@ private theorem compact_even_primitive {f : ℝ → ℂ}
     have hn := intervalIntegral.integral_comp_neg (a := R) (b := x) f
     simp_rw [hodd,intervalIntegral.integral_neg] at hn
     have hr := intervalIntegral.integral_symm (f := f) (μ := volume) (a := -x) (b := -R)
-    have ha := intervalIntegral.integral_add_adjacent_intervals
+    have ha := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hf.continuous.intervalIntegrable (-R) R) (hf.continuous.intervalIntegrable R x)
     rw [hz,zero_add] at ha
     dsimp [g]
     linear_combination hn + hr + ha
+
+private theorem even_primitive_window {g : ℝ → ℂ}
+    (hg : ContDiff ℝ ∞ g) (hgc : HasCompactSupport g) (he : Function.Even g)
+    (R : ℝ≥0) (hs : tsupport (deriv g) ⊆ Icc (-(R : ℝ)) R) :
+    tsupport g ⊆ Icc (-(R : ℝ)) R := by
+  obtain ⟨B,hB⟩ := hgc.isCompact.isBounded.subset_closedBall 0
+  have hz (x : ℝ) (hx : (R : ℝ)<x) : g x=0 := by
+    let y := max x (|B|+1)
+    have hy : (R : ℝ)<y := hx.trans_le (le_max_left _ _)
+    have hgy : g y=0 := by
+      apply image_eq_zero_of_notMem_tsupport
+      intro hm
+      have hb := hB hm
+      rw [Metric.mem_closedBall,Real.dist_eq,sub_zero] at hb
+      have hby : |B|+1≤y := le_max_right _ _
+      linarith [le_abs_self y,le_abs_self B]
+    have hd : EqOn (deriv g) 0 (Ioi (R : ℝ)) := by
+      intro t ht
+      apply image_eq_zero_of_notMem_tsupport
+      intro hm
+      exact (not_le_of_gt ht) (hs hm).2
+    have hh := isOpen_Ioi.is_const_of_deriv_eq_zero isPreconnected_Ioi
+      (hg.differentiable (by simp)).differentiableOn hd hx hy
+    exact hh.trans hgy
+  apply closure_minimal _ isClosed_Icc
+  intro x hx
+  by_contra hn
+  simp only [mem_Icc,not_and_or,not_le] at hn
+  apply hx
+  rcases hn with hn | hn
+  · rw [← he x]
+    exact hz (-x) (by linarith)
+  · exact hz x hn
 
 private def evenSpectrum {N : ℕ} (g : Fin N → ℝ → ℂ) (a : Fin N → ℝ≥0) (z : ℂ) : ℂ :=
   ∑ i, (a i : ℂ)*paperFT (g i) z*conj (paperFT (g i) (conj z))
@@ -147,7 +181,9 @@ private theorem scalarize_even {N : ℕ} (g : Fin N → ℝ → ℂ) (a : Fin N 
     (hg : ∀ i, ContDiff ℝ ∞ (g i)) (hgc : ∀ i, HasCompactSupport (g i))
     (he : ∀ i, Function.Even (g i)) :
     ∃ G : ℝ → ℂ, ContDiff ℝ ∞ G ∧ HasCompactSupport G ∧ Function.Even G ∧
-      ∀ z, evenSpectrum g a z=paperFT G z*conj (paperFT G (conj z)) := by
+      (∀ z, evenSpectrum g a z=paperFT G z*conj (paperFT G (conj z))) ∧
+      ∀ R : ℝ≥0, (∀ i, tsupport (g i) ⊆ Icc (-(R : ℝ)) R) →
+        tsupport G ⊆ Icc (-(R : ℝ)) R := by
   have hH : Differentiable ℂ (evenSpectrum g a) := by
     apply Differentiable.fun_sum
     intro i _
@@ -204,7 +240,42 @@ private theorem scalarize_even {N : ℕ} (g : Fin N → ℝ → ℂ) (a : Fin N 
     nlinarith
   obtain ⟨G,hG,hGc,hGe,hGt⟩ := exists_smooth_compact_source hq hqe hqs hdec
     (show 0≤M+1 by linarith) hA him
-  exact ⟨G,hG,hGc,hGe,fun z => by rw [hGt,hGt]; exact hi z⟩
+  refine ⟨G,hG,hGc,hGe,(fun z => by rw [hGt,hGt]; exact hi z),?_⟩
+  intro R hw
+  let L (i : Fin N) := ∫ u : ℝ, ‖g i u‖
+  let D := ∑ i, (a i : ℝ)*(L i)^2
+  have hD : 0≤D := Finset.sum_nonneg fun i _ => mul_nonneg (a i).coe_nonneg (sq_nonneg _)
+  have hwindow (y : ℝ) (hy : 0≤y) :
+      ‖q ((y : ℂ)*I)‖≤Real.sqrt D*Real.exp ((R : ℝ)*y) := by
+    have hb (i : Fin N) :
+        ‖paperFT (g i) ((y : ℂ)*I)‖≤L i*Real.exp ((R : ℝ)*y) := by
+      have hs (u : ℝ) (hu : (R : ℝ) < |u|) : g i u=0 := by
+        apply image_eq_zero_of_notMem_tsupport
+        intro hm
+        exact (not_le_of_gt hu) (abs_le.mpr (hw i hm))
+      have hh := norm_testTransform_le_exp (hg i).continuous (hgc i) R.coe_nonneg hs
+        ((y : ℂ)*I) (K := y) (by simp [abs_of_nonneg hy])
+      simpa only [testTransform,paperFT,L,mul_comm] using hh
+    have hs : ‖q ((y : ℂ)*I)‖^2≤D*(Real.exp ((R : ℝ)*y))^2 := by
+      rw [hnorm _ (Or.inl (by simp))]
+      dsimp only [D]
+      rw [Finset.sum_mul]
+      apply Finset.sum_le_sum
+      intro i _
+      calc
+        _ ≤ (a i : ℝ)*(L i*Real.exp ((R : ℝ)*y))^2 :=
+          mul_le_mul_of_nonneg_left
+            (pow_le_pow_left₀ (norm_nonneg _) (hb i) 2) (a i).coe_nonneg
+        _ = _ := by ring
+    have hsq : (Real.sqrt D*Real.exp ((R : ℝ)*y))^2=D*(Real.exp ((R : ℝ)*y))^2 := by
+      rw [mul_pow,Real.sq_sqrt hD]
+    have hpos : 0≤Real.sqrt D*Real.exp ((R : ℝ)*y) := by positivity
+    nlinarith [norm_nonneg (q ((y : ℂ)*I))]
+  obtain ⟨M₂,hM₂⟩ := hdec 2
+  have hs := compactInverse_tsupport_subset_axis_window hq hqe hqs
+    (Real.sqrt_nonneg D) hM₂ hwindow
+  rwa [compactInverse_eq_of_paperFT (hG.of_le
+    (WithTop.coe_le_coe.mpr (show (2 : ℕ∞)≤⊤ from le_top))) hGc hqe hGt] at hs
 
 /-- Smooth compact odd tests, with the same underlying test type as odd Farkas. -/
 def SmoothOddTestFn : Type := {f : WeilOddTestFn // ContDiff ℝ ∞ f.1.1}
@@ -213,15 +284,17 @@ def SmoothOddTestFn : Type := {f : WeilOddTestFn // ContDiff ℝ ∞ f.1.1}
 def oddMixtureProfile {N : ℕ} (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) (u : ℝ) : ℂ :=
   ∑ i, (a i : ℂ)*EF.weilTest (F i).1.1.1 (F i).1.1.1 u
 
-/-- One actual smooth compact odd source realizes the entire mixture spectrum. -/
-theorem exists_smoothOdd_spectral_scalarization {N : ℕ}
+/-- Exact spectral scalarization retains every common closed source window. -/
+theorem exists_smoothOdd_spectral_scalarization_with_window {N : ℕ}
     (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) :
-    ∃ f : SmoothOddTestFn, ∀ z : ℂ,
+    ∃ f : SmoothOddTestFn, (∀ z : ℂ,
       (∑ i, (a i : ℂ)*paperFT (F i).1.1.1 z*conj (paperFT (F i).1.1.1 (conj z)))=
-        paperFT f.1.1.1 z*conj (paperFT f.1.1.1 (conj z)) := by
+        paperFT f.1.1.1 z*conj (paperFT f.1.1.1 (conj z))) ∧
+      ∀ R : ℝ≥0, (∀ i, tsupport (F i).1.1.1 ⊆ Icc (-(R : ℝ)) R) →
+        tsupport f.1.1.1 ⊆ Icc (-(R : ℝ)) R := by
   choose g hg hgc he hgd using fun i =>
     compact_even_primitive (F i).2 (F i).1.1.2.2 (F i).1.2
-  obtain ⟨G,hG,hGc,hGe,hGi⟩ := scalarize_even g a hg hgc he
+  obtain ⟨G,hG,hGc,hGe,hGi,hGw⟩ := scalarize_even g a hg hgc he
   have hD : ContDiff ℝ ∞ (deriv G) := (contDiff_infty_iff_deriv.mp hG).2
   have hDo : Function.Odd (deriv G) := by
     intro x
@@ -229,33 +302,47 @@ theorem exists_smoothOdd_spectral_scalarization {N : ℕ}
     rw [deriv_comp_neg] at h
     linear_combination -h
   let f : SmoothOddTestFn :=
-    ⟨⟨⟨deriv G,hD.of_le (by exact_mod_cast (show (2 : ℕ∞)≤⊤ from le_top)),hGc.deriv⟩,hDo⟩,hD⟩
+    ⟨⟨⟨deriv G,hD.of_le (WithTop.coe_le_coe.mpr (show (2 : ℕ∞)≤⊤ from le_top)),
+      hGc.deriv⟩,hDo⟩,hD⟩
   have hp (i : Fin N) (z : ℂ) :
       paperFT (F i).1.1.1 z=-(I*z)*paperFT (g i) z := by
     rw [← hgd i]
-    exact paperFT_deriv_of_compact ((hg i).of_le (by
-      exact_mod_cast (show (1 : ℕ∞)≤⊤ from le_top))) (hgc i) z
+    exact paperFT_deriv_of_compact ((hg i).of_le
+      (WithTop.coe_le_coe.mpr (show (1 : ℕ∞)≤⊤ from le_top))) (hgc i) z
   have hGp (z : ℂ) : paperFT f.1.1.1 z=-(I*z)*paperFT G z :=
-    paperFT_deriv_of_compact (hG.of_le (by
-      exact_mod_cast (show (1 : ℕ∞)≤⊤ from le_top))) hGc z
-  refine ⟨f,fun z => ?_⟩
-  calc
-    _ = z^2*evenSpectrum g a z := by
-      unfold evenSpectrum
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro i _
-      rw [hp,hp]
-      simp only [map_mul,map_neg,Complex.conj_I,Complex.conj_conj]
-      ring_nf
-      rw [Complex.I_sq]
-      ring
-    _ = paperFT f.1.1.1 z*conj (paperFT f.1.1.1 (conj z)) := by
-      rw [hGi,hGp,hGp]
-      simp only [map_mul,map_neg,Complex.conj_I,Complex.conj_conj]
-      ring_nf
-      rw [Complex.I_sq]
-      ring
+    paperFT_deriv_of_compact (hG.of_le
+      (WithTop.coe_le_coe.mpr (show (1 : ℕ∞)≤⊤ from le_top))) hGc z
+  refine ⟨f,?_,?_⟩
+  · intro z
+    calc
+      _ = z^2*evenSpectrum g a z := by
+        unfold evenSpectrum
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro i _
+        rw [hp,hp]
+        simp only [map_mul,map_neg,Complex.conj_I,Complex.conj_conj]
+        ring_nf
+        rw [Complex.I_sq]
+        ring
+      _ = paperFT f.1.1.1 z*conj (paperFT f.1.1.1 (conj z)) := by
+        rw [hGi,hGp,hGp]
+        simp only [map_mul,map_neg,Complex.conj_I,Complex.conj_conj]
+        ring_nf
+        rw [Complex.I_sq]
+        ring
+  · intro R hw
+    exact tsupport_deriv_subset.trans (hGw R fun i =>
+      even_primitive_window (hg i) (hgc i) (he i) R (by rw [hgd]; exact hw i))
+
+/-- One actual smooth compact odd source realizes the entire mixture spectrum. -/
+theorem exists_smoothOdd_spectral_scalarization {N : ℕ}
+    (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) :
+    ∃ f : SmoothOddTestFn, ∀ z : ℂ,
+      (∑ i, (a i : ℂ)*paperFT (F i).1.1.1 z*conj (paperFT (F i).1.1.1 (conj z)))=
+        paperFT f.1.1.1 z*conj (paperFT f.1.1.1 (conj z)) := by
+  obtain ⟨f,hf,-⟩ := exists_smoothOdd_spectral_scalarization_with_window F a
+  exact ⟨f,hf⟩
 
 private theorem oddMixtureProfile_contDiff {N : ℕ}
     (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) :
@@ -269,15 +356,20 @@ private theorem oddMixtureProfile_compact {N : ℕ}
     (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) :
     HasCompactSupport (oddMixtureProfile F a) := by
   classical
-  exact HasCompactSupport.finset_sum fun i _ =>
-    (EF.weilTest_hasCompactSupport (F i).1.1.2.2 (F i).1.1.2.2).mul_left
+  change HasCompactSupport (fun u => ∑ i, (a i : ℂ)*EF.weilTest (F i).1.1.1 (F i).1.1.1 u)
+  convert! HasCompactSupport.finset_sum (s := Finset.univ)
+    (f := fun i u => (a i : ℂ)*EF.weilTest (F i).1.1.1 (F i).1.1.1 u)
+    (fun i _ => (EF.weilTest_hasCompactSupport (F i).1.1.2.2 (F i).1.1.2.2).mul_left) using 1
+  funext u
+  simp
 
 private theorem oddMixtureProfile_transform {N : ℕ}
     (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) (z : ℂ) :
     paperFT (oddMixtureProfile F a) z=
       ∑ i, (a i : ℂ)*paperFT (F i).1.1.1 z*conj (paperFT (F i).1.1.1 (conj z)) := by
   classical
-  unfold paperFT oddMixtureProfile
+  change (∫ u : ℝ, (∑ i, (a i : ℂ)*EF.weilTest (F i).1.1.1 (F i).1.1.1 u)*
+    cexp (I*z*u))=_
   simp_rw [Finset.sum_mul]
   rw [integral_finsetSum]
   · apply Finset.sum_congr rfl
@@ -288,7 +380,6 @@ private theorem oddMixtureProfile_transform {N : ℕ}
     change (a i : ℂ)*paperFT (EF.weilTest (F i).1.1.1 (F i).1.1.1) z=_
     rw [EF.paperFT_weilTest (F i).1.1.2.1.continuous (F i).1.1.2.1.continuous
       (F i).1.1.2.2 (F i).1.1.2.2]
-    ring
   · intro i _
     have hc := (EF.weilTest_contDiff (F i).1.1.2.1 (F i).1.1.2.1.continuous
       (F i).1.1.2.2).continuous
@@ -302,8 +393,8 @@ private theorem eq_of_compact_paperFT_eq {f g : ℝ → ℂ}
     (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g)
     (hfc : HasCompactSupport f) (hgc : HasCompactSupport g)
     (he : ∀ z, paperFT f z=paperFT g z) : f=g := by
-  have hfi := hf.continuous.integrable_of_hasCompactSupport hfc
-  have hgi := hg.continuous.integrable_of_hasCompactSupport hgc
+  have hfi : Integrable f := hf.continuous.integrable_of_hasCompactSupport hfc
+  have hgi : Integrable g := hg.continuous.integrable_of_hasCompactSupport hgc
   have hF : 𝓕 f=𝓕 g := by
     funext x
     rw [Zeta23.fourier_eq_paperFT,Zeta23.fourier_eq_paperFT,he]
@@ -313,18 +404,67 @@ private theorem eq_of_compact_paperFT_eq {f g : ℝ → ℂ}
     _ = 𝓕⁻ (𝓕 g) := by rw [hF]
     _ = g := hg.continuous.fourierInv_fourier_eq hgi (EF.integrable_fourier_of_contDiff_two hg hgc)
 
+/-- Whole-profile scalarization preserves every common source window exactly. -/
+theorem exists_smoothOdd_exact_autocorrelation_with_window {N : ℕ}
+    (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) :
+    ∃ f : SmoothOddTestFn, EF.weilTest f.1.1.1 f.1.1.1=oddMixtureProfile F a ∧
+      ∀ R : ℝ≥0, (∀ i, tsupport (F i).1.1.1 ⊆ Icc (-(R : ℝ)) R) →
+        tsupport f.1.1.1 ⊆ Icc (-(R : ℝ)) R := by
+  obtain ⟨f,hf,hw⟩ := exists_smoothOdd_spectral_scalarization_with_window F a
+  refine ⟨f,eq_of_compact_paperFT_eq
+    (EF.weilTest_contDiff f.1.1.2.1 f.1.1.2.1.continuous f.1.1.2.2)
+    (oddMixtureProfile_contDiff F a) (EF.weilTest_hasCompactSupport f.1.1.2.2 f.1.1.2.2)
+    (oddMixtureProfile_compact F a) (fun z => ?_),hw⟩
+  rw [EF.paperFT_weilTest f.1.1.2.1.continuous f.1.1.2.1.continuous
+    f.1.1.2.2 f.1.1.2.2,oddMixtureProfile_transform,hf]
+
 /-- **Exact odd source scalarization.** Every finite positive mixture of smooth
 compact odd autocorrelations is one smooth compact odd autocorrelation, with
 equality at every real lag. -/
 theorem exists_smoothOdd_exact_autocorrelation {N : ℕ}
     (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) :
     ∃ f : SmoothOddTestFn, EF.weilTest f.1.1.1 f.1.1.1=oddMixtureProfile F a := by
-  obtain ⟨f,hf⟩ := exists_smoothOdd_spectral_scalarization F a
-  refine ⟨f,eq_of_compact_paperFT_eq
-    (EF.weilTest_contDiff f.1.1.2.1 f.1.1.2.1.continuous f.1.1.2.2)
-    (oddMixtureProfile_contDiff F a) (EF.weilTest_hasCompactSupport f.1.1.2.2 f.1.1.2.2)
-    (oddMixtureProfile_compact F a) (fun z => ?_)⟩
-  rw [EF.paperFT_weilTest f.1.1.2.1.continuous f.1.1.2.1.continuous
-    f.1.1.2.2 f.1.1.2.2,oddMixtureProfile_transform,hf]
+  obtain ⟨f,hf,-⟩ := exists_smoothOdd_exact_autocorrelation_with_window F a
+  exact ⟨f,hf⟩
+
+private theorem oddMixtureProfile_functional {N : ℕ}
+    (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) (lam : ℕ → ℝ) :
+    weilFullFunctional lam (oddMixtureProfile F a)=
+      ∑ i, (a i : ℂ)*weilFullFunctional lam (EF.weilTest (F i).1.1.1 (F i).1.1.1) := by
+  classical
+  have hp : oddMixtureProfile F a=
+      ∑ i, (a i : ℂ) • EF.weilTest (F i).1.1.1 (F i).1.1.1 := by
+    funext u
+    simp only [oddMixtureProfile,Finset.sum_apply,Pi.smul_apply,smul_eq_mul]
+  rw [hp,weilFullFunctional_sum lam _ (fun i _ =>
+    (admissible_weilTest (F i).1.1.2.1 (F i).1.1.2.2).smul _)]
+  simp only [weilFullFunctional_smul]
+
+private theorem logValue_of_oddMixtureProfile {N : ℕ}
+    {F : Fin N → SmoothOddTestFn} {a : Fin N → ℝ≥0} {f : SmoothOddTestFn}
+    (hf : EF.weilTest f.1.1.1 f.1.1.1=oddMixtureProfile F a) (n : ℕ) :
+    logValue f.1.1.1 n=∑ i, (a i : ℝ)*logValue (F i).1.1.1 n := by
+  unfold logValue
+  rw [hf]
+  simp only [oddMixtureProfile,← Finset.sum_add_distrib,Complex.re_sum,Finset.sum_div]
+  apply Finset.sum_congr rfl
+  intro i _
+  simp only [Complex.add_re,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,
+    zero_mul,sub_zero]
+  ring
+
+/-- **Arithmetic and energy preservation.** One odd source preserves every
+integer trace and the actual Weil functional for every arithmetic weight
+system, as well as the complete autocorrelation profile. -/
+theorem exists_smoothOdd_exact_moments {N : ℕ}
+    (F : Fin N → SmoothOddTestFn) (a : Fin N → ℝ≥0) :
+    ∃ f : SmoothOddTestFn,
+      EF.weilTest f.1.1.1 f.1.1.1=oddMixtureProfile F a ∧
+      (∀ n : ℕ, logValue f.1.1.1 n=∑ i, (a i : ℝ)*logValue (F i).1.1.1 n) ∧
+      ∀ lam : ℕ → ℝ, weilFullFunctional lam (EF.weilTest f.1.1.1 f.1.1.1)=
+        ∑ i, (a i : ℂ)*weilFullFunctional lam (EF.weilTest (F i).1.1.1 (F i).1.1.1) := by
+  obtain ⟨f,hf⟩ := exists_smoothOdd_exact_autocorrelation F a
+  exact ⟨f,hf,logValue_of_oddMixtureProfile hf,fun lam => by
+    rw [hf,oddMixtureProfile_functional]⟩
 
 end RHTower.OddSector

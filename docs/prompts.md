@@ -257,7 +257,7 @@ make one significant contribution that overcomes a hard mathematical obstacle by
 
 On every new turn:
 
-make one significant contribution that overcomes a hard mathematical obstacle for route CMHD from docs/reports/rh-current-frontier-map.md in the research route outlined in docs/reports/cmhd-plan.md
+make one significant contribution that overcomes a hard mathematical obstacle for route MC from docs/reports/rh-current-frontier-map.md.
 
 it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle and remove an obstruction which significantly moves the frontier in the proof route.
 
@@ -276,7 +276,7 @@ always look at the big picture, try to understand what all our research is tryin
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
 
-do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you.
+do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you. do not look for shortcuts - we are too far in the research, there are no more shortcuts.
 
 Goal is met when you have identified and formalized 100 significant contributions that overcome a hard mathematical obstacle as requested.
 

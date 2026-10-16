@@ -114,8 +114,78 @@ Limits: no positive Hodge form, directed arithmetic sign, removal of Gaussian
 regularization in the original Meyer embedding, or RH. Maximal native Jordan
 dimension equality is not counted separately; the exact analytic reduction
 is the structural target here.
+Analyticity is in the original uniform operator norm, including simultaneous
+function/action graph coordinates. BV, compact AC and full Weil admission hold
+at each parameter. No BV-norm or full arithmetic-graph-norm analyticity of the
+new uncut family is asserted.
 
 Verdict: SURVIVES PRELIMINARY ATTACK relative to the current corpus. The basic
 scalar-channel algebra alone would be insignificant; the target includes its
 unconditional literal native construction, global operator-norm analyticity,
 full original Xi multiplicities and complete arithmetic admission.
+
+Additional structural consequence included in this contribution: take g=0 and
+t=1. The inverse gives an entire uniform family q_z in the ORIGINAL continuous
+native differential domain, satisfying (A-z)q_z=-e(z)b_z with both traces one.
+At every Xi point it is exactly minus the original theta mode, by the actual
+homogeneous ODE uniqueness theorem. This replaces the earlier discontinuous
+movable-cut family by a continuous, classically differentiable whole-plane
+family, while retaining the full divisor in a genuine compact smooth source.
+No delta charge is discarded: the scalar e has exactly its original Xi order.
+It admits continuous resonant source continuation and arbitrary native BV
+forcing through every complex parameter; this is the substantive positive
+construction, not only the block-algebra normal form.
+
+Implementation checkpoint: NativeMomentIdentity, NativeCounterSource and
+NativeGrushin and NativeAnalyticInverse pass direct leaf audits. Scalar
+reduction is being audited; arithmetic admission, exact resonant splitting
+and entire rank-one repair leaves are written but not yet audited. The
+operator-valued differentiation proofs use explicit spaces to avoid expensive
+typeclass reconstruction; heartbeat limits remain unchanged.
+One accidentally overlapping leaf invocation was immediately
+interrupted (exit 130); subsequent owned Lean invocations are sequential.
+
+022-A follow-up: the analytic reduction suggests a chain-polynomial proof.
+For N=G(w), N^n v=0 and N^(n-1)v nonzero, put
+p(z)=sum_{j<n}(z-w)^j K^j N^(n-1-j)v. Then
+G(z)p(z)=-(z-w)^n K^n v, while L(p(w)) is nonzero by block injectivity.
+The inverse scalar row forces e(z)L(p(z)) to be divisible by (z-w)^n;
+analytic order would therefore exclude chains beyond the Xi multiplicity.
+This paper mechanism has not been formalized, and no maximal Jordan-space
+classification is claimed or counted. The completed target of 022-B is the
+global analytic native source continuation and inverse, including literal
+full arithmetic admission, rather than this prospective corollary.
+
+Exact resonant splitting included in 022-B: at z=0 or XiC(z)=0, write
+r_z(g)=fst(B(z)^(-1)(g,0)) and u_z=fst(B(z)^(-1)(0,1)). Then
+G(z)r_z(g)=g-(M_z(g)/D)b_z, L(r_z(g))=0, G(z)u_z=0,
+and L(u_z)=1. Consequently G(z)v=g precisely when M_z(g)=0 and
+v=r_z(g)+L(v)u_z. This constructs all resonant solutions and identifies
+the full range as ker M_z and the kernel as the line C u_z, on the whole
+uniform domain. The correction projection g -> g-(M_z(g)/D)b_z has
+exactly that range and kernel C b_z. These are consequences of the
+constructed global inverse, not an additional contribution count.
+
+022-C (positive strengthening of the same construction): the augmentation can
+be removed by one actual rank-one native source repair. Write
+B inverse=[E,Eplus;Eminus,e]. Set
+F(z)=G(z)+(e(z)-1) b_z L and R(z)=E(z)-Eplus(z)Eminus(z).
+The block identities give L E=0, L Eplus=1, G E+b Eminus=1,
+and G Eplus+b e=0. Hence L R=-Eminus and F R=1. If Fv=0,
+B(v,(e-1)Lv)=(0,Lv), so inversion of the scalar row gives
+(e-1)Lv=e Lv, whence Lv=0 and B(v,0)=0; therefore v=0.
+Thus F is bijective and R F=1. All displayed blocks and e are entire,
+so both the repaired original-space pencil and its explicit inverse are
+entire in operator norm. This produces a global source-defined automorphism
+on the original uniform space without a spectral projection, a denominator
+nonvanishing premise, or an enlarged output space. It is part of 022, not a
+new contribution count. It changes the equation by the explicitly retained
+rank-one source term; it does not invert the unrepaired pencil at its zeros.
+
+For each continuous BV forcing g, the repaired differential equation itself
+has a unique ThetaNativeDomain solution: take t=-M_z(g)/D and the explicit
+Grushin BV solution. Its correction coefficient is (e-1)t. Conversely the
+integrated moment identity for any repaired solution reduces to M_z(g)+Dt=0,
+forcing that same trace, after which native prescribed-trace uniqueness applies.
+Thus this repair solves all actual continuous BV inputs at all parameters,
+with the complete CHMD arithmetic expression and compact AC representative.

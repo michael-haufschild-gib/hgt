@@ -12,7 +12,7 @@ open MeasureTheory Set Filter Topology Complex
 open scoped BoundedContinuousFunction
 
 namespace RHTower.PaperThetaEndpoint
-open HedenmalmThetaSource
+open HedenmalmThetaSource HedenmalmQuantile
 
 theorem boundedThetaMoment_source_equation (z : ℂ) (f g : NativeContinuousSpace) (t : ℂ)
     (hf : Differentiable ℝ f)
@@ -58,6 +58,7 @@ theorem nativeCompactResolvent_moment (z : ℂ) (v : NativeContinuousSpace) :
   change deriv (nativeCompactResolvent v) x+
     sourceLogDerivative x*(nativeCompactResolvent v x-boundedResolventTrace nativeCompactParameter v)+
     I*z*nativeCompactResolvent v x = -I*(v x+(I-z)*nativeCompactResolvent v x)
+  dsimp only [nativeCompactResolvent]
   linear_combination h
 
 end RHTower.PaperThetaEndpoint

@@ -35,10 +35,12 @@ open Finset Set Filter Topology MeasureTheory
 namespace RHTower
 open GaloisForLFunctions.HTGeometry
 
-private def clusterWindow (η x : ℝ) : Finset ℕ :=
+namespace PrimePreparation
+
+def clusterWindow (η x : ℝ) : Finset ℕ :=
   primesInIoc ⌊x⌋₊ ⌊(1+η)*x⌋₊
 
-private lemma cluster_capacity {η s : ℝ} (hη : 0 < η) (hs : 0 ≤ s) :
+lemma cluster_capacity {η s : ℝ} (hη : 0 < η) (hs : 0 ≤ s) :
     ∀ᶠx : ℝ in atTop,⌈s*Real.sqrt x⌉₊ ≤ (clusterWindow η x).card := by
   have hc := eventually_primeCount_window_ge (by linarith : (1:ℝ) < 1+η)
   have hl := (isLittleO_log_rpow_atTop (by norm_num : (0:ℝ) < 1/2)).tendsto_div_nhds_zero
@@ -73,7 +75,7 @@ private lemma cluster_capacity {η s : ℝ} (hη : 0 < η) (hs : 0 ≤ s) :
     nlinarith only [hceil,hcount,hroot1]
   exact_mod_cast hh
 
-private lemma cluster_members {η x : ℝ} (hη : 0 ≤ η) (hx : 0 ≤ x) {p : ℕ}
+lemma cluster_members {η x : ℝ} (hη : 0 ≤ η) (hx : 0 ≤ x) {p : ℕ}
     (hp : p ∈ clusterWindow η x) : p.Prime ∧ x < (p:ℝ) ∧ (p:ℝ) ≤ (1+η)*x := by
   obtain ⟨hp, hlo, hhi⟩ := mem_primesInIoc hp
   refine ⟨hp,(Nat.floor_lt hx).mp hlo,?_⟩
@@ -106,7 +108,7 @@ private lemma paired_cluster_supply {η s r : ℝ}
   have hlo := (hdataB p hpB).2.1
   nlinarith only [hhi,hlo,mul_lt_mul_of_pos_right hr hx]
 
-private lemma cluster_weight_bounds {η s x : ℝ} (hη : 0 ≤ η) (hs : 0 < s) (hx : 1 ≤ x)
+lemma cluster_weight_bounds {η s x : ℝ} (hη : 0 ≤ η) (hs : 0 < s) (hx : 1 ≤ x)
     (A : Finset ℕ) (hcard : A.card=⌈s*Real.sqrt x⌉₊)
     (hA : ∀ p ∈ A,x < (p:ℝ) ∧ (p:ℝ) ≤ (1+η)*x) :
     s/Real.sqrt (1+η) ≤ ∑ p ∈ A,(Real.sqrt p)⁻¹ ∧
@@ -139,7 +141,7 @@ private lemma cluster_weight_bounds {η s x : ℝ} (hη : 0 ≤ η) (hs : 0 < s)
     rw [he]
     exact hcl.le
 
-private lemma product_norm_bound {ι : Type*} (S : Finset ι) (z : ι → ℂ) :
+lemma product_norm_bound {ι : Type*} (S : Finset ι) (z : ι → ℂ) :
     ‖∏ i ∈ S, (1+z i)‖ ≤ Real.exp (∑ i ∈ S, ‖z i‖) := by
   rw [norm_prod]
   apply le_trans _ (Real.prod_one_add_le_exp_sum S (fun i => norm_nonneg (z i)))
@@ -192,10 +194,10 @@ private lemma product_exp_error {ι : Type*} (S : Finset ι) (z : ι → ℂ)
         exact le_mul_of_one_le_left (by positivity) heone
       _ = _ := by ring
 
-private def primeWave (p : ℕ) (t : ℝ) : ℂ :=
+def primeWave (p : ℕ) (t : ℝ) : ℂ :=
   (((Real.sqrt p)⁻¹:ℝ):ℂ)*Complex.exp ((-(t*Real.log p):ℝ)*Complex.I)
 
-private lemma primeWave_norm (p : ℕ) (t : ℝ) :
+lemma primeWave_norm (p : ℕ) (t : ℝ) :
     ‖primeWave p t‖ = (Real.sqrt p)⁻¹ := by
   unfold primeWave
   rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,
@@ -251,9 +253,9 @@ private lemma cluster_square_weights {x : ℝ} (hx : 0 < x) (A : Finset ℕ)
   simpa only [one_div,pow_two,div_eq_mul_inv,one_mul] using
     mul_le_mul_of_nonneg_left hw (inv_nonneg.mpr (Real.sqrt_nonneg (p:ℝ)))
 
-private def clusterGate (c θ : ℝ) : ℝ := max 0 (-Real.cos θ-c)
+def clusterGate (c θ : ℝ) : ℝ := max 0 (-Real.cos θ-c)
 
-private lemma clusterGate_continuous (c : ℝ) : Continuous (clusterGate c) := by
+lemma clusterGate_continuous (c : ℝ) : Continuous (clusterGate c) := by
   unfold clusterGate
   fun_prop
 
@@ -261,12 +263,12 @@ private lemma clusterGate_periodic (c : ℝ) : Function.Periodic (clusterGate c)
   intro θ
   simp only [clusterGate,Real.cos_add_two_pi]
 
-private lemma clusterGate_bounds {c : ℝ} (hc : 0 ≤ c) (θ : ℝ) :
+lemma clusterGate_bounds {c : ℝ} (hc : 0 ≤ c) (θ : ℝ) :
     0 ≤ clusterGate c θ ∧ clusterGate c θ ≤ 1 := by
   refine ⟨le_max_left _ _,max_le zero_le_one ?_⟩
   linarith [Real.neg_one_le_cos θ]
 
-private lemma clusterGate_mean_pos {c : ℝ} (hc : c < 1) :
+lemma clusterGate_mean_pos {c : ℝ} (hc : c < 1) :
     0 < ∫ θ in (0:ℝ)..2*Real.pi, clusterGate c θ := by
   have h := intervalIntegral.integral_lt_integral_of_continuousOn_of_le_of_exists_lt
     (show (0:ℝ) < 2*Real.pi by positivity) continuous_const.continuousOn
@@ -277,7 +279,7 @@ private lemma clusterGate_mean_pos {c : ℝ} (hc : c < 1) :
         by simp only [clusterGate,Real.cos_pi,neg_neg]; exact lt_max_of_lt_right (by linarith)⟩)
   simpa only [intervalIntegral.integral_zero] using h
 
-private lemma clusterGate_integer_periods (c : ℝ) {d : ℝ} (hd : 0 < d)
+lemma clusterGate_integer_periods (c : ℝ) {d : ℝ} (hd : 0 < d)
     {n : ℕ} (hn : 0 < n) :
     (∫ t in (0:ℝ)..d, clusterGate c ((2*Real.pi*n/d)*t)) =
       d/(2*Real.pi)*(∫ θ in (0:ℝ)..2*Real.pi, clusterGate c θ) := by
@@ -291,7 +293,7 @@ private lemma clusterGate_integer_periods (c : ℝ) {d : ℝ} (hd : 0 < d)
   rw [mul_zero,he,hper,smul_eq_mul]
   field_simp
 
-private def clusterCos (α θ β : ℝ) : ℝ := Real.cos θ+α*Real.cos (θ+β)
+def clusterCos (α θ β : ℝ) : ℝ := Real.cos θ+α*Real.cos (θ+β)
 
 private lemma clusterCos_sq (α θ β : ℝ) :
     (clusterCos α θ β)^2+(Real.sin θ+α*Real.sin (θ+β))^2 =
@@ -312,7 +314,7 @@ private lemma clusterCos_lower {α : ℝ} (hα : 0 ≤ α) (θ β : ℝ) :
   unfold clusterCos
   linarith [Real.neg_one_le_cos θ]
 
-private lemma clusterCos_negative_region {α : ℝ} (hα : 0 ≤ α) {θ β : ℝ}
+lemma clusterCos_negative_region {α : ℝ} (hα : 0 ≤ α) {θ β : ℝ}
     (hβ : Real.cos β ≤ 0) : -Real.sqrt (1+α^2) ≤ clusterCos α θ β := by
   have hsq := clusterCos_sq α θ β
   have hαβ : α*Real.cos β ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hα hβ
@@ -383,7 +385,7 @@ private lemma cluster_primeWave_euler {p : ℕ} (hp : p.Prime) (t : ℝ) :
   push_cast
   ring
 
-private lemma cluster_euler_product (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) (t : ℝ) :
+lemma cluster_euler_product (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) (t : ℝ) :
     divisorCoreMellinEuler P (1+(t:ℂ)*Complex.I) = ∏ p ∈ P,(1-primeWave p t) := by
   apply Finset.prod_congr rfl
   intro p hp
@@ -425,7 +427,7 @@ private lemma cluster_unit_one_pos :
   rw [integral_complex_ofReal,Complex.ofReal_re]
   exact hp
 
-private def clusterMellin (P : Finset ℕ) (t : ℝ) : ℂ :=
+def clusterMellin (P : Finset ℕ) (t : ℝ) : ℂ :=
   mellin (fun x : ℝ => (mobiusDivisorContinuousHead P x:ℂ)) (-(1+(t:ℂ)*Complex.I))
 
 private lemma clusterMellin_zero_ne (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) :
@@ -463,12 +465,12 @@ private lemma clusterMellin_continuous (P : Finset ℕ) : Continuous (clusterMel
     (s := 1+(t:ℂ)*Complex.I) (by simp; norm_num)).continuousAt
   exact h.comp (f := fun u : ℝ => 1+(u:ℂ)*Complex.I) (x := t) (by fun_prop)
 
-private def clusterWeight (P : Finset ℕ) (t : ℝ) : ℝ := ‖clusterMellin P t‖^2
+def clusterWeight (P : Finset ℕ) (t : ℝ) : ℝ := ‖clusterMellin P t‖^2
 
-private lemma clusterWeight_continuous (P : Finset ℕ) : Continuous (clusterWeight P) :=
+lemma clusterWeight_continuous (P : Finset ℕ) : Continuous (clusterWeight P) :=
   (clusterMellin_continuous P).norm.pow 2
 
-private lemma clusterWeight_zero_pos (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) :
+lemma clusterWeight_zero_pos (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) :
     0 < clusterWeight P 0 := by
   exact sq_pos_of_pos (norm_pos_iff.mpr (clusterMellin_zero_ne P hP))
 
@@ -490,7 +492,7 @@ private lemma clusterWeight_pair (P : Finset ℕ) (hP : P.Nonempty)
   rw [Complex.normSq_eq_norm_sq]
   rfl
 
-private lemma clusterWeight_integrable (P : Finset ℕ) (hP : P.Nonempty)
+lemma clusterWeight_integrable (P : Finset ℕ) (hP : P.Nonempty)
     (hPrime : ∀ p ∈ P,p.Prime) : Integrable (clusterWeight P) := by
   have hi := integrable_exp_mul_divisorCoreMellinPair_one P hP 0
   simp only [Complex.ofReal_zero,zero_mul,Complex.exp_zero,one_mul,
@@ -659,7 +661,7 @@ private lemma exists_positive_cluster_model {α : ℝ} (hα : 0 < α) (ω : ℝ)
     _ ≤ _ := clusterModel_integral_lower hs.le hα.le hc hm hd ω w hwi hw hlocal hn
 
 private def clusterEta (r : ℝ) (n : ℕ) : ℝ := (r-1)/(2*((n:ℝ)+1))
-private def clusterScale (d : ℝ) (n : ℕ) : ℝ := Real.exp (2*Real.pi*n/d)
+def clusterScale (d : ℝ) (n : ℕ) : ℝ := Real.exp (2*Real.pi*n/d)
 
 private lemma clusterEta_pos {r : ℝ} (hr : 1 < r) (n : ℕ) : 0 < clusterEta r n := by
   unfold clusterEta
@@ -680,7 +682,7 @@ private lemma clusterEta_tendsto (r : ℝ) : Tendsto (clusterEta r) atTop (𝓝 
   dsimp [clusterEta]
   field_simp
 
-private lemma clusterScale_tendsto {d : ℝ} (hd : 0 < d) : Tendsto (clusterScale d) atTop atTop := by
+lemma clusterScale_tendsto {d : ℝ} (hd : 0 < d) : Tendsto (clusterScale d) atTop atTop := by
   have h : Tendsto (fun n : ℕ => (2*Real.pi/d)*(n:ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop.const_mul_atTop (by positivity)
   apply (Real.tendsto_exp_atTop.comp h).congr'
@@ -717,7 +719,7 @@ private lemma cluster_phase_norm (x t : ℝ) :
   simp only [Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,Complex.I_re,Complex.I_im,
     mul_zero,zero_mul,zero_sub,neg_zero,Real.exp_zero]
 
-private lemma cluster_mass_tendsto {s : ℝ} (hs : 0 < s)
+lemma cluster_mass_tendsto {s : ℝ} (hs : 0 < s)
     (eta X : ℕ → ℝ) (A : ℕ → Finset ℕ)
     (he0 : ∀ n,0 ≤ eta n) (he : Tendsto eta atTop (𝓝 0))
     (hX1 : ∀ n,1 ≤ X n) (hX : Tendsto X atTop atTop)
@@ -740,7 +742,7 @@ private lemma cluster_mass_tendsto {s : ℝ} (hs : 0 < s)
     (fun n => (cluster_weight_bounds (he0 n) hs (hX1 n) (A n) (hcard n) (hA n)).1)
     (fun n => (cluster_weight_bounds (he0 n) hs (hX1 n) (A n) (hcard n) (hA n)).2)
 
-private lemma cluster_squares_tendsto {s : ℝ} (hs : 0 < s)
+lemma cluster_squares_tendsto {s : ℝ} (hs : 0 < s)
     (eta X : ℕ → ℝ) (A : ℕ → Finset ℕ)
     (he0 : ∀ n,0 ≤ eta n) (he : Tendsto eta atTop (𝓝 0))
     (hX1 : ∀ n,1 ≤ X n) (hX : Tendsto X atTop atTop)
@@ -756,7 +758,7 @@ private lemma cluster_squares_tendsto {s : ℝ} (hs : 0 < s)
   exact cluster_square_weights (lt_of_lt_of_le zero_lt_one (hX1 n)) (A n)
     (fun p hp => (hA n p hp).1.le)
 
-private lemma cluster_wave_sum_tendsto {s : ℝ} (hs : 0 < s)
+lemma cluster_wave_sum_tendsto {s : ℝ} (hs : 0 < s)
     (eta X : ℕ → ℝ) (A : ℕ → Finset ℕ)
     (he0 : ∀ n,0 ≤ eta n) (he : Tendsto eta atTop (𝓝 0))
     (hX1 : ∀ n,1 ≤ X n) (hX : Tendsto X atTop atTop)
@@ -788,7 +790,7 @@ private lemma cluster_wave_sum_tendsto {s : ℝ} (hs : 0 < s)
         _ ≤ _ := norm_add_le _ _
     _ ≤ _ := add_le_add hn hamp.le
 
-private lemma cluster_product_exp_tendsto {ι : Type*} (S : ℕ → Finset ι) (z : ℕ → ι → ℂ)
+lemma cluster_product_exp_tendsto {ι : Type*} (S : ℕ → Finset ι) (z : ℕ → ι → ℂ)
     {c : ℝ} (hm : Tendsto (fun n => ∑ i ∈ S n, ‖z n i‖) atTop (𝓝 c))
     (hq : Tendsto (fun n => ∑ i ∈ S n, ‖z n i‖^2) atTop (𝓝 0))
     (hz : ∀ n,∀ i ∈ S n, ‖z n i‖ ≤ 1) :
@@ -800,7 +802,7 @@ private lemma cluster_product_exp_tendsto {ι : Type*} (S : ℕ → Finset ι) (
     simpa only [mul_zero] using he.mul hq
   exact squeeze_zero_norm (fun n => product_exp_error (S n) (z n) (hz n)) hbound
 
-private lemma cluster_exp_difference_tendsto (f g : ℕ → ℂ) {C : ℝ}
+lemma cluster_exp_difference_tendsto (f g : ℕ → ℂ) {C : ℝ}
     (hfg : Tendsto (fun n => f n-g n) atTop (𝓝 0)) (hg : ∀ n, ‖g n‖ ≤ C) :
     Tendsto (fun n => Complex.exp (f n)-Complex.exp (g n)) atTop (𝓝 0) := by
   have hn : Tendsto (fun n => ‖f n-g n‖) atTop (𝓝 0) := by simpa using hfg.norm
@@ -827,7 +829,7 @@ private lemma cluster_norm_sq_error {z v : ℂ} {C : ℝ} (hz : ‖z‖ ≤ C) (
       (by linarith) (add_nonneg (norm_nonneg _) (norm_nonneg _)) (norm_nonneg _)
     _ = _ := by ring
 
-private lemma cluster_norm_sq_tendsto (f g : ℕ → ℂ) {C : ℝ}
+lemma cluster_norm_sq_tendsto (f g : ℕ → ℂ) {C : ℝ}
     (hfg : Tendsto (fun n => f n-g n) atTop (𝓝 0))
     (hf : ∀ᶠ n in atTop, ‖f n‖ ≤ C) (hg : ∀ᶠ n in atTop, ‖g n‖ ≤ C) :
     Tendsto (fun n => ‖f n‖^2-‖g n‖^2) atTop (𝓝 0) := by
@@ -982,11 +984,11 @@ private lemma exists_cluster_multiplier_sequence {s r d : ℝ} (hs : 0 < s) (hr 
   simpa only [clusterExponent_model] using cluster_norm_sq_tendsto _ _ htotal
     (Filter.Eventually.of_forall (fun n => hprod n t)) (Filter.Eventually.of_forall (fun n => hmod n t))
 
-private lemma cluster_euler_continuous (S : Finset ℕ) :
+lemma cluster_euler_continuous (S : Finset ℕ) :
     Continuous (fun t : ℝ => divisorCoreMellinEuler S (1+(t:ℂ)*Complex.I)) :=
   (differentiable_divisorCoreMellinEuler S).continuous.comp (by fun_prop)
 
-private lemma cluster_weighted_euler_integrable (S : Finset ℕ) (w : ℝ → ℝ) (ω C : ℝ)
+lemma cluster_weighted_euler_integrable (S : Finset ℕ) (w : ℝ → ℝ) (ω C : ℝ)
     (hw : Integrable w) (hC : ∀ t : ℝ, ‖divisorCoreMellinEuler S (1+(t:ℂ)*Complex.I)‖ ≤ C) :
     Integrable (fun t : ℝ => w t*Real.cos (ω*t)*‖divisorCoreMellinEuler S (1+(t:ℂ)*Complex.I)‖^2) := by
   have hc : Continuous (fun t : ℝ => Real.cos (ω*t)*‖divisorCoreMellinEuler S (1+(t:ℂ)*Complex.I)‖^2) :=
@@ -1061,7 +1063,7 @@ private lemma exists_positive_actual_cluster {r : ℝ} (hr : 1 < r)
   rw [he] at hn
   linarith
 
-private lemma clusterWeight_union (P S : Finset ℕ) (hP : ∀ p ∈ P,p.Prime)
+lemma clusterWeight_union (P S : Finset ℕ) (hP : ∀ p ∈ P,p.Prime)
     (hS : ∀ p ∈ S,p.Prime) (hPS : Disjoint P S) (t : ℝ) :
     clusterWeight (P ∪ S) t = clusterWeight P t*‖divisorCoreMellinEuler S (1+(t:ℂ)*Complex.I)‖^2 := by
   have hprime : ∀ p ∈ P ∪ S,p.Prime := by
@@ -1077,7 +1079,7 @@ private lemma clusterWeight_union (P S : Finset ℕ) (hP : ∀ p ∈ P,p.Prime)
   simp only [norm_mul,mul_pow]
   ring
 
-private lemma cluster_dilation_spectrum (P : Finset ℕ) (hP : P.Nonempty)
+lemma cluster_dilation_spectrum (P : Finset ℕ) (hP : P.Nonempty)
     (hprime : ∀ p ∈ P,p.Prime) {r : ℝ} (hr : 0 < r) :
     mobiusDivisorDilationMean P r = r/(2*Real.pi)*∫ t,clusterWeight P t*Real.cos (Real.log r*t) := by
   let F : ℝ → ℂ := fun t => Complex.exp ((Real.log r:ℂ)*(1+(t:ℂ)*Complex.I))*
@@ -1295,7 +1297,7 @@ private lemma prefix_union_budget (P S : Finset ℕ) (hS : ∀ p ∈ S,p.Prime)
       have h := prefix_insert_budget (P ∪ S) hp hpP hprod hprevious M
       convert h using 1; ring
 
-private lemma prefix_halfweight_budget (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) (M : ℕ) :
+lemma prefix_halfweight_budget (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prime) (M : ℕ) :
     mobiusDivisorSelectionEnergy M P ≤
       ((9/25:ℝ)*Real.exp (4*∑ p ∈ P,(Real.sqrt p)⁻¹))*(M:ℝ)^2 := by
   have h := prefix_union_budget ∅ P hP (by norm_num : (0:ℝ) ≤ 9/25)
@@ -1307,6 +1309,10 @@ private lemma prefix_halfweight_budget (P : Finset ℕ) (hP : ∀ p ∈ P,p.Prim
   rw [← mul_sum] at he
   simpa only [div_eq_mul_inv] using mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_left he (by norm_num : (0:ℝ) ≤ 9/25)) (sq_nonneg (M:ℝ))
+
+end PrimePreparation
+
+open PrimePreparation
 
 /-- Fresh actual preparation makes any prescribed missing prime release energy
 over an arbitrary inherited nonempty core and on a common integer-cutoff tail. -/
