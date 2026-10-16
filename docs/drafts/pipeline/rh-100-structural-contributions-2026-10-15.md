@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **14 / 100**.
+Completed after goal activation: **15 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -192,10 +192,28 @@ umbrella import, named in the card. Geometric cup/trace identification,
 positive Hodge compatibility and directed nonlinear work sign remain open.
 Card: `3-formalized/rh100-014-global-convolution-duality-gauges-2026-10-16.md`.
 
+015: strong parameter calculus on the original charged theta BV family.
+One bounded monotone control joins both native tails and pays cross-cut
+increments through their common trace. Cauchy remainders telescope over
+every partition, giving actual difference-quotient convergence in point
+value plus total variation. The singular quantile preserves this convergence
+in the original closed-interval BV norm. CHMD admission then gives an entire
+family in the complete complex arithmetic difference graph, globally
+convergent Taylor synthesis and differentiation through the full signed
+real/imaginary Weil energies, retaining every prime power and both poles.
+At full Xi multiplicity, lower graph jets are cut independent while the
+first charged graph jet distinguishes every cut. Eight direct leaf audits,
+the API audit and all 66 public standard-axiom audits passed; imports are
+unique, artifacts fresh and 16 scratch files removed. Global lint reports
+eight unrelated missing umbrella imports, detailed in the card. The BV
+derivative is proved directly on original functions; no new bundled BV
+Banach space or arbitrary infinite native Xi-packet realization is claimed.
+Card: `3-formalized/rh100-015-strong-bv-theta-arithmetic-calculus-2026-10-16.md`.
+
 ## Next investigation
 
-No fifteenth contribution is counted. Do not count routine corollaries or
-repackagings of 001–014 as further contributions. Resume broad Lean-corpus
+No sixteenth contribution is counted. Do not count routine corollaries or
+repackagings of 001–015 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -206,8 +224,10 @@ Meyer source factorizations belong to 007; they do not supply nonlinear or
 prime–Gamma boundary-work sign. Parameter-differentiated admission, AC branches,
 actual L1 jet currents, uncut lower-multiplicity slots and the terminal Meyer
 current belong to 009. Finite combinations and repackagings are not further
-contributions. BV-norm holomorphy remains unclaimed. Strong spatial Jordan identities
-are now paid by contribution 013.
+contributions. Strong BV parameter differentiation and entire arithmetic
+graph Taylor calculus are now paid by contribution 015. Arbitrary infinite
+native Xi-packet synthesis remains open. Strong spatial Jordan identities
+are paid by contribution 013.
 The faithful full-Jordan closed generator, compact source inverse, exact
 entire Xi determinant, its full algebraic multiplicities, and the resulting
 RN gluing-rank interpretation belong to 010. Routine spectral/determinant

@@ -1,6 +1,6 @@
 # CHMD: operator core and physical spectral synthesis
 
-Status: investigation. RH goal active; no new theorem claimed.
+Status: archimedean operator-core investigation remains active. Arithmetic form/operator-domain removal is now formally proved; RH remains unproved.
 
 ## Current evidence
 
@@ -48,3 +48,42 @@ Therefore each endpoint pullback is a bounded map from mass L2 to prime-edge L2,
 For finite prime sets increasing to all n, indicator projections QN on the prime-edge space converge strongly to identity. Thus PN=Dp* QN Dp converges strongly to P, with positive residual P-PN. This uses the actual edge coordinate log n; inactive n=0,1 have zero measure, and distinct n>=2 have distinct log n. An alternative uses the increasing restricted measures and their quadratic forms. No operator-norm convergence is claimed.
 
 Third deep search completed without partial flag, inventory 72719/72719 and no inventory errors; most compiler states remain pending/stale. Its proposed Schur-block ingredient set does not establish the needed prime measure theorem. Direct exhaustive rg found the existing Chebyshev square-root sum in `ZetaSymbolArchimedeanHorizon` and a sharper constant in `FreeLagTraceCertificateObstruction`; the former avoids a larger import surface.
+
+## Operator-domain strengthening forced by the form identity
+
+The bounded-prime statement yields more than equality of form domains. Let R be the corpus full arithmetic resolvent and Ra the Riesz resolvent of the actual archimedean graph. Polarization of the exact graph norm identity gives
+
+`<p,q>full = <Tp,Tq>arch + <P source(p),source(q)>mass`,
+
+where T preserves sources. Riesz uniqueness therefore proves both identities
+
+`Ra(w - P Rw) = Rw`, and `R(w + P Ra w) = Ra w`.
+
+Consequently `range(R)=range(Ra)`: the full and archimedean generators have exactly the same operator domain. Their actual operator graph relations obey
+
+`R(u+v)=u iff Ra(u+v-Pu)=u`.
+
+The graph change `(u,v) -> (u,v-Pu)` is a bounded invertible triangular map, with inverse adding Pu. Thus arithmetic introduces neither a form-domain boundary nor an operator-domain boundary. This is a dependency-closed consequence of the proved arithmetic admission mechanism; the separate archimedean compact operator-core conjecture remains open. Formalisation now targets this stronger exact operator-domain result as well.
+
+## Archimedean core mechanism: next audit, not yet Lean
+
+The candidate half-density identity has now been checked algebraically. With c(x)=cosh(x/2), a(x)=sqrt(Theta(x)/c(x)), and Uu=sqrt(Theta*c)u, the archimedean generator is `U La U^-1 = a A a + V`, where A is the stationary symmetric jump generator and
+
+`V(x)=c(x)^-1 integral_{t>0} kappa(t)(Theta(x+t)+Theta(x-t)-2Theta(x)) dt`.
+
+Theta's global Lipschitz bound and the first Levy moment bound V. Bounded second derivative and positivity of Theta imply the Glaeser inequality `|Theta'|^2 <= 2 M Theta` by Taylor expansion at displacement `-Theta'/M`; this gives a bounded Lipschitz square root, hence bounded Lipschitz a. This generic square-root step has not yet been found in the corpus or formalised.
+
+For a positive selfadjoint stationary A and bounded selfadjoint a with bounded commutator C=[A,a], a preserves Dom(A). Set J_e=(1+e A)^-1. The exact commutator
+
+`[a A a,J_e] = a (e A J_e) C J_e + J_e C (e J_e A) a`
+
+is uniformly bounded and tends strongly to zero, since e A J_e tends strongly to zero. Applying the adjoint identity to any u in Dom((aAa)*) shows J_e u -> u and aAa J_e u -> (aAa)*u. Thus closure(aAa)=(aAa)* and the sandwich is essentially selfadjoint on Dom(A). A core for A is a core for this sandwich because its graph norm is bounded by the A graph norm. Adding bounded V and the now-bounded prime operator preserves that core.
+
+A Fourier multiplier construction of stationary A is possible, but a purely variational route may fit the corpus better: use the same closed difference graph on unweighted Lebesgue L2; smooth convolutions commute with its generator and map all L2 into its operator domain because the kernel has finite first displacement moment. Then cutoffs have bounded commutators with norm tending to zero as their Lipschitz constants shrink. Smoothing followed by cutoffs should prove compact smooth operator-core density. These admission, commutation and limiting steps still require a closed paper audit and Lean proofs; no core or synthesis result is claimed from this paragraph.
+
+Latest core-mechanism corpus search finished with partial=false, inventory 72734/72734, no inventory errors. Candidates included a square-root Lipschitz theorem for a positive quadratic form (not arbitrary positive smooth functions), algebraic bounded resolvent commutators, and maximal multiplication selfadjointness. No candidate supplies the required CHMD operator core. Existing `HedenmalmClosedWeightedDerivative.thetaWeightedDerivative_hasCore` is an actual PMap core theorem, but for a different weighted derivative. Its graph-closure method and `HTGeometry.MaximalMultiplicationSelfAdjoint` may provide formal infrastructure; neither proves the new jump-core claim.
+
+
+## Verified arithmetic domain contribution
+
+See `../3-formalized/chmd-prime-operator-domain-2026-10-16.md`. Five new leaves prove every mass-L2 source admits the full prime difference, construct its bounded positive selfadjoint generator, identify full/archimedean form graphs, and prove exact equality of their actual operator domains with a bounded invertible change of generator graph coordinates. All five targeted builds and final plain Lean audits passed; all 76 declarations have only standard axioms. The original compact archimedean operator-core and physical synthesis conjectures remain open. Do not infer them from equality of form domains or from this bounded perturbation theorem.

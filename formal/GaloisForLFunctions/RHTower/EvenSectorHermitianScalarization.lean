@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.EvenHermitianSpectralFactor
 import GaloisForLFunctions.HTGeometry.CompactTestTransform
-import GaloisForLFunctions.RHTower.EvenSectorExactFibreRecovery
+import GaloisForLFunctions.RHTower.PrimitiveHyperplaneBlindPositivity
+import GaloisForLFunctions.RHTower.EvenSectorFullPositivity
 
 /-!
 # Global even scalarization of actual EWU mixture spectra

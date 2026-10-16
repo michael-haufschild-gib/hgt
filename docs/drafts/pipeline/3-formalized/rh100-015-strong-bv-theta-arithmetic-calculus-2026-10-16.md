@@ -140,7 +140,9 @@ formalized, ensuring the stronger topology does not erase the obstruction.
   `HTGeometry.EvenHermitianCanonicalFactor`,
   `HTGeometry.EvenHermitianSpectralFactor`.
   None belongs to this contribution. Unrelated work is preserved.
-- Scratch cleanup and final metadata check are recorded below after execution.
+- Sixteen owned scratch files removed; none remain. Final metadata check
+  confirms all eight artifacts current and all eight imports unique. No
+  owned Lean process remains. No commits or pushes made.
 
 ## Scope
 

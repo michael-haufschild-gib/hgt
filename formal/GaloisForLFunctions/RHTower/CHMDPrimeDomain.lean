@@ -15,7 +15,7 @@ namespace RHTower.CHMDDoobGraph
 abbrev allPrimeMeasure : Measure (ℝ × ℝ) := Measure.sum primeMeasure
 
 theorem summable_primeWeight (x : ℝ) : Summable (fun n : ℕ => primeWeight n x) := by
-  convert (summable_prime_row_plus x).mul_left (riemannKernelReal x) using 1
+  convert! (summable_prime_row_plus x).mul_left (riemannKernelReal x) using 1
   funext n
   unfold primeWeight
   ring
@@ -46,13 +46,14 @@ theorem tsum_primeWeight_le (x : ℝ) :
 theorem massDensity_neg (x : ℝ) : massDensity (-x) = massDensity x := by
   simp only [massDensity, WeilExcess.riemannKernelReal_neg, neg_div, Real.cosh_neg]
 
-theorem map_add_right_withDensity (w : ℝ → ℝ≥0∞) (a : ℝ) :
+theorem map_add_right_withDensity (w : ℝ → ENNReal) (a : ℝ) :
     Measure.map (fun x : ℝ => x + a) (volume.withDensity w) =
       volume.withDensity (fun x => w (x - a)) := by
   ext s hs
-  rw [Measure.map_apply (by fun_prop) hs,
-    withDensity_apply _ ((measurable_id.add_const a) hs), withDensity_apply _ hs,
-    ← lintegral_indicator ((measurable_id.add_const a) hs), ← lintegral_indicator hs]
+  have htr : Measurable (fun x : ℝ => x + a) := by fun_prop
+  rw [Measure.map_apply htr hs,
+    withDensity_apply _ (htr hs), withDensity_apply _ hs,
+    ← lintegral_indicator (htr hs), ← lintegral_indicator hs]
   calc
     _ = ∫⁻ x : ℝ, (s.indicator (fun y => w (y - a))) (x + a) := by
       apply lintegral_congr
@@ -63,13 +64,15 @@ theorem map_add_right_withDensity (w : ℝ → ℝ≥0∞) (a : ℝ) :
 theorem map_prime_left (n : ℕ) :
     Measure.map left (primeMeasure n) =
       volume.withDensity (fun x => ENNReal.ofReal (primeWeight n x)) := by
-  rw [primeMeasure, Measure.map_map measurable_snd (by fun_prop)]
+  rw [primeMeasure, Measure.map_map (show Measurable left from measurable_snd) (by fun_prop)]
+  change Measure.map id _ = _
   exact Measure.map_id
 
 theorem map_prime_right (n : ℕ) :
     Measure.map right (primeMeasure n) =
       volume.withDensity (fun x => ENNReal.ofReal (primeWeight n (-x))) := by
-  rw [primeMeasure, Measure.map_map (measurable_snd.add measurable_fst) (by fun_prop)]
+  rw [primeMeasure, Measure.map_map
+    (show Measurable right from measurable_snd.add measurable_fst) (by fun_prop)]
   change Measure.map (fun x : ℝ => x + Real.log n) _ = _
   rw [map_add_right_withDensity]
   congr 1
@@ -83,33 +86,37 @@ theorem map_prime_right (n : ℕ) :
 
 theorem map_allPrime_left_le :
     Measure.map left allPrimeMeasure ≤ ENNReal.ofReal (2 * primeRowConstant) • massMeasure := by
-  rw [Measure.map_sum measurable_snd.aemeasurable]
+  rw [Measure.map_sum (show AEMeasurable left allPrimeMeasure from measurable_snd.aemeasurable)]
   simp_rw [map_prime_left]
   rw [← withDensity_tsum (fun n => (continuous_primeWeight n).measurable.ennreal_ofReal),
     massMeasure, ← withDensity_smul _ continuous_massDensity.measurable.ennreal_ofReal]
   apply withDensity_mono
   filter_upwards [] with x
-  simp only [Pi.smul_apply, smul_eq_mul, tsum_apply]
+  simp only [Pi.smul_apply, smul_eq_mul, ENNReal.tsum_apply]
   change (∑' n : ℕ, ENNReal.ofReal (primeWeight n x)) ≤
     ENNReal.ofReal (2 * primeRowConstant) * ENNReal.ofReal (massDensity x)
   rw [← ENNReal.ofReal_tsum_of_nonneg (fun n => primeWeight_nonneg n x)
-      (summable_primeWeight x), ← ENNReal.ofReal_mul (by positivity)]
+      (summable_primeWeight x), ← ENNReal.ofReal_mul
+        (mul_nonneg (by norm_num) primeRowConstant_nonneg)]
   exact ENNReal.ofReal_le_ofReal (tsum_primeWeight_le x)
 
 theorem map_allPrime_right_le :
     Measure.map right allPrimeMeasure ≤ ENNReal.ofReal (2 * primeRowConstant) • massMeasure := by
-  rw [Measure.map_sum (measurable_snd.add measurable_fst).aemeasurable]
+  rw [Measure.map_sum (show AEMeasurable right allPrimeMeasure from
+    (measurable_snd.add measurable_fst).aemeasurable)]
   simp_rw [map_prime_right]
-  rw [← withDensity_tsum (fun n =>
-    ((continuous_primeWeight n).comp continuous_neg).measurable.ennreal_ofReal),
+  rw [← withDensity_tsum (fun n => show Measurable
+    (fun x : ℝ => ENNReal.ofReal (primeWeight n (-x))) from
+      ((continuous_primeWeight n).comp continuous_neg).measurable.ennreal_ofReal),
     massMeasure, ← withDensity_smul _ continuous_massDensity.measurable.ennreal_ofReal]
   apply withDensity_mono
   filter_upwards [] with x
-  simp only [Pi.smul_apply, smul_eq_mul, tsum_apply]
+  simp only [Pi.smul_apply, smul_eq_mul, ENNReal.tsum_apply]
   change (∑' n : ℕ, ENNReal.ofReal (primeWeight n (-x))) ≤
     ENNReal.ofReal (2 * primeRowConstant) * ENNReal.ofReal (massDensity x)
   rw [← ENNReal.ofReal_tsum_of_nonneg (fun n => primeWeight_nonneg n (-x))
-      (summable_primeWeight (-x)), ← ENNReal.ofReal_mul (by positivity)]
+      (summable_primeWeight (-x)), ← ENNReal.ofReal_mul
+        (mul_nonneg (by norm_num) primeRowConstant_nonneg)]
   apply ENNReal.ofReal_le_ofReal
   simpa only [massDensity_neg] using tsum_primeWeight_le (-x)
 
@@ -123,12 +130,12 @@ theorem nonsingular_allPrime_right :
 
 theorem memLp_allPrime_left {v : ℝ → ℝ} (hv : MemLp v 2 massMeasure) :
     MemLp (v ∘ left) 2 allPrimeMeasure := by
-  have h := hv.of_measure_le_smul (by simp) map_allPrime_left_le
+  have h := hv.of_measure_le_smul ENNReal.ofReal_ne_top map_allPrime_left_le
   exact (memLp_map_measure_iff h.aestronglyMeasurable measurable_snd.aemeasurable).mp h
 
 theorem memLp_allPrime_right {v : ℝ → ℝ} (hv : MemLp v 2 massMeasure) :
     MemLp (v ∘ right) 2 allPrimeMeasure := by
-  have h := hv.of_measure_le_smul (by simp) map_allPrime_right_le
+  have h := hv.of_measure_le_smul ENNReal.ofReal_ne_top map_allPrime_right_le
   exact (memLp_map_measure_iff h.aestronglyMeasurable
     (measurable_snd.add measurable_fst).aemeasurable).mp h
 

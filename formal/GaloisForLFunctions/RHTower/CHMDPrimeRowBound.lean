@@ -70,7 +70,7 @@ theorem prime_shell_bound {C : ℝ} (hC : 0 ≤ C)
         calc
           _ = Real.sqrt (Real.exp ((x + k + 1) / 2) * Real.exp ((x + k + 1) / 2)) := by
             rw [← Real.exp_add]
-            congr 2 <;> ring
+            congr 2; ring
           _ = _ := Real.sqrt_mul_self (Real.exp_pos _).le
       rw [hsqrt, ← Real.exp_nat_mul]
       calc

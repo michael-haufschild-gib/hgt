@@ -47,7 +47,7 @@ theorem gammaSourceTerm_eq (x u : ℝ) :
 
 theorem integrableOn_gammaSourceTerm_real (x : ℝ) : IntegrableOn (gammaSourceTerm x) (Ioi 0) := by
   have h := (gammaSourceTerm_integrable x).re
-  simpa only [Complex.ofReal_re] using h
+  exact h.congr (Eventually.of_forall fun u => by simp)
 
 /-- Integrability of the symmetrized archimedean integrand. -/
 theorem integrableOn_symArchTerm (x : ℝ) : IntegrableOn (symArchTerm x) (Ioi 0) := by
@@ -77,35 +77,27 @@ theorem summable_primeShift_left (x : ℝ) :
   · exact mul_le_mul_of_nonneg_left (le_add_of_nonneg_left (riemannKernelReal_pos _).le)
       (vonMangoldtAtom_nonneg n)
 
+theorem cosh_mul_theta_shift_eq (x u : ℝ) :
+    2 * Real.cosh (u / 2) * riemannKernelReal (x + u) =
+      2 * Real.cosh (x / 2) * massDensity (u + x) - 2 * Real.sinh (x / 2) * sinhDensity (u + x) := by
+  unfold massDensity sinhDensity
+  rw [show (u + x) / 2 = x / 2 + u / 2 by ring, Real.cosh_add, Real.sinh_add, add_comm u x]
+  have h := Real.cosh_sq_sub_sinh_sq (x / 2)
+  linear_combination (-(2 * riemannKernelReal (x + u) * Real.cosh (u / 2))) * h
+
 /-- The full-line polar moment of the translated kernel. -/
 theorem integral_cosh_mul_theta_shift (x : ℝ) :
     (∫ u, 2 * Real.cosh (u / 2) * riemannKernelReal (x + u)) = Real.cosh (x / 2) := by
-  have hsub : (fun u : ℝ => 2 * Real.cosh (u / 2) * riemannKernelReal (x + u)) =
-      fun u => (fun y => 2 * Real.cosh ((y - x) / 2) * riemannKernelReal y) (u + x) := by
-    funext u
-    simp only [add_sub_cancel_right, add_comm]
-  rw [hsub, integral_add_right_eq_self]
-  have hpt : ∀ y : ℝ, 2 * Real.cosh ((y - x) / 2) * riemannKernelReal y =
-      2 * Real.cosh (x / 2) * massDensity y - 2 * Real.sinh (x / 2) * sinhDensity y := by
-    intro y
-    unfold massDensity sinhDensity
-    rw [sub_div, Real.cosh_sub]
-    ring
-  simp_rw [hpt]
-  rw [integral_sub ((integrable_massDensity.const_mul _)) (integrable_sinhDensity.const_mul _),
+  simp_rw [cosh_mul_theta_shift_eq]
+  have hshift := integral_add_right_eq_self (μ := volume)
+    (fun y => 2 * Real.cosh (x / 2) * massDensity y - 2 * Real.sinh (x / 2) * sinhDensity y) x
+  rw [hshift, integral_sub ((integrable_massDensity.const_mul _)) (integrable_sinhDensity.const_mul _),
     integral_const_mul, integral_const_mul, integral_massDensity, integral_sinhDensity]
   ring
 
 theorem integrable_cosh_mul_theta_shift (x : ℝ) :
     Integrable fun u : ℝ => 2 * Real.cosh (u / 2) * riemannKernelReal (x + u) := by
-  have hpt : (fun u : ℝ => 2 * Real.cosh (u / 2) * riemannKernelReal (x + u)) =
-      fun u => (fun y => 2 * Real.cosh (x / 2) * massDensity y -
-        2 * Real.sinh (x / 2) * sinhDensity y) (u + x) := by
-    funext u
-    unfold massDensity sinhDensity
-    rw [show (u + x) / 2 = x / 2 + u / 2 by ring, Real.cosh_add, add_comm u x]
-    ring
-  rw [hpt]
+  simp_rw [cosh_mul_theta_shift_eq]
   exact ((integrable_massDensity.const_mul _).sub (integrable_sinhDensity.const_mul _)).comp_add_right x
 
 /-- The two polar half-line integrals combine into the polar rate. -/
@@ -122,7 +114,7 @@ theorem polar_halfLine_sum (x : ℝ) :
     congr 1
     funext u
     rw [neg_div, Real.cosh_neg, show x + -u = x - u by ring]
-  rw [hneg, add_comm, integral_Iic_add_Ioi (integrable_cosh_mul_theta_shift x).integrableOn
+  rw [hneg, add_comm, intervalIntegral.integral_Iic_add_Ioi (integrable_cosh_mul_theta_shift x).integrableOn
     (integrable_cosh_mul_theta_shift x).integrableOn, integral_cosh_mul_theta_shift]
 
 /-- The real one-sided complete theta source equation. -/
@@ -132,32 +124,36 @@ theorem oneSided_source_equation (x : ℝ) :
       (∑' n : ℕ, vonMangoldtAtom n * riemannKernelReal (x + Real.log n)) =
       x * riemannKernelReal x := by
   have h := literal_complete_theta_source_equation x
-  simp only [thetaCuspFullSource_eq_riemannKernelReal] at h
-  rw [integral_ofReal, integral_ofReal, ← Complex.ofReal_tsum] at h
-  have hsum : (∑' n : ℕ, ArithmeticFunction.vonMangoldt n / Real.sqrt n *
-      riemannKernelReal (x + Real.log n)) =
-      ∑' n : ℕ, vonMangoldtAtom n * riemannKernelReal (x + Real.log n) := by
-    apply tsum_congr
-    intro n
+  have hg : (fun u : ℝ => (((Real.exp (-2 * u) * thetaCuspFullSource x -
+      Real.exp (-u / 2) * thetaCuspFullSource (x + u)) / (1 - Real.exp (-2 * u)) : ℝ) : ℂ)) =
+      fun u : ℝ => ((gammaSourceTerm x u : ℝ) : ℂ) := by
+    funext u
+    rfl
+  have hp : (fun u : ℝ => ((2 * Real.cosh (u / 2) * thetaCuspFullSource (x + u) : ℝ) : ℂ)) =
+      fun u : ℝ => ((2 * Real.cosh (u / 2) * riemannKernelReal (x + u) : ℝ) : ℂ) := by
+    funext u
+    rw [thetaCuspFullSource_eq_riemannKernelReal]
+  have hsum : (fun n : ℕ => ((ArithmeticFunction.vonMangoldt n / Real.sqrt n *
+      thetaCuspFullSource (x + Real.log n) : ℝ) : ℂ)) =
+      fun n : ℕ => ((vonMangoldtAtom n * riemannKernelReal (x + Real.log n) : ℝ) : ℂ) := by
+    funext n
+    rw [thetaCuspFullSource_eq_riemannKernelReal]
     unfold vonMangoldtAtom
     split_ifs with hn
     · rfl
     · have h2 : n < 2 := lt_of_not_ge hn
       interval_cases n <;> simp
-  have h' : (((-archConstantReal * riemannKernelReal x + (∫ u in Ioi (0 : ℝ), gammaSourceTerm x u) +
+  rw [hg, hp, hsum, integral_complex_ofReal, integral_complex_ofReal, ← Complex.ofReal_tsum,
+    thetaCuspFullSource_eq_riemannKernelReal] at h
+  have h2 : ((-archConstantReal * riemannKernelReal x + (∫ u in Ioi (0 : ℝ), gammaSourceTerm x u) +
       (∫ u in Ioi (0 : ℝ), 2 * Real.cosh (u / 2) * riemannKernelReal (x + u)) -
       (∑' n : ℕ, vonMangoldtAtom n * riemannKernelReal (x + Real.log n)) : ℝ) : ℂ) =
       ((x * riemannKernelReal x : ℝ) : ℂ) := by
-    rw [← hsum]
-    push_cast
     unfold archConstantReal
-    push_cast
-    convert h using 2
-    · congr 1
-      funext u
-      unfold gammaSourceTerm
-      simp only [thetaCuspFullSource_eq_riemannKernelReal]
-  exact Complex.ofReal_injective h'
+    simp only [Complex.ofReal_add, Complex.ofReal_sub, Complex.ofReal_mul, Complex.ofReal_neg,
+      Complex.ofReal_div, Complex.ofReal_ofNat] at h ⊢
+    linear_combination h
+  exact Complex.ofReal_injective h2
 
 /-- **The pointwise harmonic identity of the theta kernel.** -/
 theorem theta_harmonic_identity (x : ℝ) :
@@ -192,7 +188,6 @@ theorem theta_harmonic_identity (x : ℝ) :
     intro n
     ring
   rw [hpolar'] at h2
-  unfold primeKernelSum
   rw [← hprime, ← hgamma, ← hpolar]
   linarith
 
