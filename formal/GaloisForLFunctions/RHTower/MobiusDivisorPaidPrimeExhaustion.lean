@@ -100,6 +100,7 @@ theorem exists_mobiusDivisorPaidPrimeExhaustion :
     ∃ A D : ℕ, 2 ≤ A ∧ 1 ≤ D ∧
     ∃ r : ℕ → ℕ, ∃ P : ℕ → Finset ℕ, ∃ l : ℕ → List ℕ,
       StrictMono r ∧ StrictMono (fun k => A*r k) ∧
+      P 0 = mobiusDivisorSelectionPrimes (r 0) ∧
       (∀ k, (r k).Prime) ∧
       (∀ k p, p ∈ P k → p.Prime) ∧
       (∀ p : ℕ, p.Prime → ∃ k, p ∈ P k) ∧
@@ -119,7 +120,7 @@ theorem exists_mobiusDivisorPaidPrimeExhaustion :
     exact Nat.nth_strictMono Nat.infinite_setOf_prime (Nat.add_lt_add_left hij w.threshold)
   have hupdate (k : ℕ) : P (k+1) = P k ∪ (l k).toFinset := rfl
   refine ⟨w.factor,2*w.budget,w.factor_large,by have := w.budget_pos; omega,
-    scan w,P,l,hmono,?_,scan_prime w,?_,?_,hupdate,?_,?_⟩
+    scan w,P,l,hmono,?_,rfl,scan_prime w,?_,?_,hupdate,?_,?_⟩
   · intro i j hij
     exact Nat.mul_lt_mul_of_pos_left (hmono hij) (by have := w.factor_large; omega)
   · intro k p hp

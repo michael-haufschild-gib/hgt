@@ -42,7 +42,9 @@ private lemma child_core (A r q : ℕ) (P : Finset ℕ) (hr : 0 < r)
     (hcore : ∀ s : ℕ, s.Prime → s < r → s ∈ P) :
     mobiusDivisorSelectionPrimes (A*r/q+1) ⊆ P := by
   have hq : 0 < q := hr.trans_le hrq
-  have hd : A*r/q < A+1 := (Nat.div_lt_iff_lt_mul hq).mpr (by nlinarith)
+  have hd : A*r/q < A+1 := (Nat.div_lt_iff_lt_mul hq).mpr
+    ((Nat.mul_le_mul_left A hrq).trans_lt
+      (Nat.mul_lt_mul_of_pos_right (Nat.lt_succ_self A) hq))
   intro s hs
   obtain ⟨hsr, hsp⟩ := mem_filter.mp hs
   have hslt := mem_range.mp hsr

@@ -125,7 +125,9 @@ theorem exists_primeCapacity : Nonempty PrimeCapacity := by
   · intro q hq
     obtain ⟨hqp, hqlo, hqhi⟩ := mem_primesInIoc hq
     have hwin : q ∈ primesInIoc (b*(64*n*r)) ((b+1)*(64*n*r)) := by
-      convert hq using 1 <;> dsimp [u,v] <;> congr 1 <;> ring
+      convert hq using 1
+      dsimp [u,v]
+      congr 1 <;> ring
     have he : A*r = 7*(b+1)*(64*n*r) := by dsimp [A,C]; ring
     have hsign := hf (64*n*r) q hwin
     rw [positive_source b (64*n*r) q hb hwin, ← he] at hsign

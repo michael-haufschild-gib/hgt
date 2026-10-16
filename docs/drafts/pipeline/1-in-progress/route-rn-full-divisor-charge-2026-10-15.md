@@ -1646,3 +1646,93 @@ background_indexer_running, and compiler coverage remains mostly pending
 or stale. Candidate lemmas, source arguments and ingredient sets supplied
 no checked native-sign producer. Formal verification is therefore not
 being presented as a solution of the sign inequality.
+
+### All-order literal native action verified (2026-10-16)
+
+The interrupted turn was progress: its complete scratch proof passed,
+including axiom checks. The resumed turn inspected the surviving scratch
+and current tree, installed `ThetaRenewalCausalMoments.lean`, and ran the
+required foreground `lake --old env lean` audit on that exact module.
+The audit terminated with exit 0 and no diagnostics. The module is wired
+once into `RHTower.lean`. No umbrella build or heartbeat override was used.
+
+Write W_j(w,x)=exp(-wx) integral_(t>x) (t-x)^j k(t) exp(wt) dt.
+The module proves absolute joint admission of all weighted Gamma, pole,
+and prime integrands; literal forward action A+W_j=x W_j+W_(j+1);
+the complete graded reflection defect; and the literal backward action
+under lower moment vanishing. The final theorem is
+
+  (A+ + A-) W_j(w,x) = exp(-wx) integral_R t^(j+1) k(t) exp(wt) dt,
+
+assuming the source moments through j vanish and -1/2<=Re(w)<=1/2.
+Order j is arbitrary. The input moments are explicit, not replaced by a
+simple-zero hypothesis or a positive-form premise. Both original pole
+kernels and every original prime coefficient remain in the definitions.
+The scratch axiom audit for weighted admission, forward action, reflection
+and the final forcing theorem reported only propext, Classical.choice,
+and Quot.sound.
+
+This completes the all-order literal-action portion of the previous paper
+bridge. It does not yet formalize the full higher-jet mixed pairing,
+all-order RN seam, or coupled cusp projection. It does not prove native
+mixed positivity or RH. Classification: BRIDGE, no scientific novelty
+claim. The actual sign target remains E_prime+E_Gamma>=E_pole, with the
+cusp moments retained or accounted for by the recorded coupled projection.
+
+The fresh producer search returned partial=false with no errors, but
+refresh incomplete (background_indexer_running) and mainly pending/stale
+compiler metadata. All returned candidate statements, source arguments,
+and proposed ingredient sets were inspected; no checked statement
+supplies this comparison. A focused source-only mixed-cut investigation
+is in progress; no new positivity lemma is asserted.
+
+Repository lint exited 1: eight unrelated modules were unreachable from
+the RHTower umbrella (MobiusDivisorExhaustionPrimeCapacity,
+MobiusDivisorExhaustionSignedSupply, MobiusDivisorMandatoryScalarBlock,
+MobiusDivisorPaidExhaustionStep, MobiusDivisorPaidPrimeExhaustion,
+PaperThetaNativeMeyerCompleteness, PaperThetaNativeQuantileComparison,
+PaperThetaNativeRootTransport). No RN-module error was reported. These
+concurrently edited modules were not changed. The requested index command
+completed successfully. Diff whitespace checks passed.
+
+### Source-only mixed-cut investigation; sign still open
+
+For k_a(t)=k(t-a), the translated forward source law is
+A+ k_a(t)=(t-a)k_a(t), and the backward law has the opposite sign.
+This suggests auditing the literal mixed crossing current against
+
+  K_x(a,b)=integral_(t>x) (2t-a-b) k(t-a) k(t-b) dt.
+
+The two source laws give the candidate current derivative
+-(2x-a-b)k(x-a)k(x-b); vanishing at the infinite boundary would identify
+the current with K_x. This mixed-current/domain identification has not
+been formalized here and is not being substituted for a sign proof.
+
+There is a direct paper entrywise positivity proof. Put m=(a+b)/2,
+d=(a-b)/2, and q(s)=k(s-d)k(s+d). Then q is positive and even, and
+
+  K_x(a,b)=integral_(|x-m|)^infinity 2s q(s) ds > 0.
+
+Absolute convergence follows from the source's exponential moments.
+Evenness removes the negative lower interval, and strict positivity on
+every nonempty positive interval gives the strict inequality. This proves
+only entrywise positivity. It says nothing about sums with signed or
+complex coefficients. The exact unresolved target is positivity of the
+finite Gram matrices K_x(a_i,a_j), together with a valid transfer to the
+full admitted causal-jet span. Assuming either the Gram sign or the
+transfer would not solve RN. For the Gaussian comparison kernel
+k(t)=exp(-c*t^2), c>0, direct integration gives the rank-one Gram
+K_x(a,b)=k(x-a)k(x-b)/(2c); this does not prove the theta case.
+
+Verdict: BRIDGE, with the matrix sign as OPEN CORE. No novelty or native
+positivity claim. The score-based integration-by-parts attempt did not
+produce a positive remainder, so it is not a proof. Deep mixed-cut search
+completed partial=false; its returned ingredients concern different
+kernels. The lexical follow-up supplied no matching producer either.
+
+The action bridge is also being connected to the actual divisor rather
+than leaving lower moment vanishing as caller inputs. Scratch
+`/tmp/rn-divisor-moments.lean` imports the existing all-order Xi source
+classification and instantiates the frequency as -I*xiSpectralPointSupport.
+It is under foreground audit; no result from that unfinished audit is
+claimed in this entry.

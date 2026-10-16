@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaRenewalCausalArithmetic
+import GaloisForLFunctions.RHTower.XiHedenmalmThetaJetSource
 
 /-!
 # Native arithmetic action on all renewal causal moments
@@ -12,8 +13,10 @@ forward-plus-backward action is the next whole source moment multiplied
 by `exp(-w*x)`.
 
 The statements allow arbitrary finite order and keep both pole kernels.
-They establish arithmetic action and admission, without a positivity
-assertion for the mixed form.
+The actual Xi divisor supplies every required vanishing moment and strip
+bound, so the final action theorem covers every multiplicity slot without
+additional premises. These are arithmetic action and admission results,
+without a positivity assertion for the mixed form.
 -/
 
 noncomputable section
@@ -656,5 +659,56 @@ theorem fullCausalMomentArithmeticAction_eq_nextMoment {j : ℕ} {w : ℂ}
     rw [thetaCausalMoment_whole_eq_of_lower_vanish (fun i hi => hvan i (by omega)), hvan j le_rfl]
   rw [fullCausalMomentArithmeticAction_eq hv hlo hhi,
     thetaCausalMoment_whole_eq_of_lower_vanish (fun i hi => hvan i (by omega))]
+
+/-- The ordinary Laplace moments at the full divisor differ from the Xi jets only by a unit. -/
+theorem thetaCausalMoment_divisor_source_jet (rho : XiDivisorSupport) (j : ℕ) :
+    (∫ t : ℝ, thetaCuspFourierLaplaceJetIntegrand j (xiSpectralPointSupport rho) t) =
+      (-Complex.I) ^ j * ∫ t : ℝ, (t : ℂ) ^ j * (thetaCuspFullSource t : ℂ) *
+        Complex.exp ((-Complex.I * xiSpectralPointSupport rho) * t) := by
+  rw [← integral_const_mul]
+  apply integral_congr_ae
+  filter_upwards with t
+  simp only [thetaCuspFourierLaplaceJetIntegrand, thetaCuspFourierLaplaceIntegrand, mul_pow]
+  ring
+
+/-- Exact vanishing order of the native source moments at every Xi divisor. -/
+theorem thetaCausalMoment_divisor_source_order (rho : XiDivisorSupport) :
+    (∀ j < xiSupportMultiplicity rho,
+      (∫ t : ℝ, (t : ℂ) ^ j * (thetaCuspFullSource t : ℂ) *
+        Complex.exp ((-Complex.I * xiSpectralPointSupport rho) * t)) = 0) ∧
+    (∫ t : ℝ, (t : ℂ) ^ xiSupportMultiplicity rho * (thetaCuspFullSource t : ℂ) *
+      Complex.exp ((-Complex.I * xiSpectralPointSupport rho) * t)) ≠ 0 := by
+  have h := (xiSupportMultiplicity_eq_iff_thetaCuspFourierLaplaceJet rho
+    (xiSupportMultiplicity rho)).mp rfl
+  constructor
+  · intro j hj
+    have hz := h.1 j hj
+    rw [thetaCausalMoment_divisor_source_jet] at hz
+    exact (mul_eq_zero.mp hz).resolve_left (pow_ne_zero _ (neg_ne_zero.mpr Complex.I_ne_zero))
+  · intro hz
+    apply h.2
+    rw [thetaCausalMoment_divisor_source_jet, hz, mul_zero]
+
+/-- The complete literal action on every slot of every actual Xi multiplicity chain. -/
+theorem fullCausalMomentArithmeticAction_at_divisor
+    (rho : XiDivisorSupport) (j : Fin (xiSupportMultiplicity rho)) (x : ℝ) :
+    causalMomentArithmeticAction j.val (-Complex.I * xiSpectralPointSupport rho) x +
+      reflectedCausalMomentArithmeticAction j.val (-Complex.I * xiSpectralPointSupport rho) x =
+      Complex.exp (-((-Complex.I * xiSpectralPointSupport rho) * x)) *
+        ∫ t : ℝ, (t : ℂ) ^ (j.val + 1) * (thetaCuspFullSource t : ℂ) *
+          Complex.exp ((-Complex.I * xiSpectralPointSupport rho) * t) := by
+  let q : XiZeroCopy := ⟨rho, ⟨0, xiSupportMultiplicity_pos rho⟩⟩
+  have hz : XiC (xiSpectralPointSupport rho) = 0 := by
+    simpa only [q, xiSpectralPoint_eq_support] using XiC_xiSpectralPoint_eq_zero q
+  have hb := xiC_zero_im_mem_openHalf hz
+  have hre : (-Complex.I * xiSpectralPointSupport rho).re =
+      (xiSpectralPointSupport rho).im := by simp [Complex.mul_re]
+  apply fullCausalMomentArithmeticAction_eq_nextMoment
+  · intro i hi
+    exact (thetaCausalMoment_divisor_source_order rho).1 i (lt_of_le_of_lt hi j.isLt)
+  · rw [hre]
+    exact hb.1.le
+  · rw [hre]
+    exact hb.2.le
 
 end RHTower.ThetaSourceWard

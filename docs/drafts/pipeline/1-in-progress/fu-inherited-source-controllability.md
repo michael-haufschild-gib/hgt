@@ -65,6 +65,7 @@ The mandatory singleton identity is exact:
 because their primes exceed `r > A+1`. Signed supply is consequently
 independent of every preceding helper choice and of the receiving head.
 
-Formalization: scalar paid block and fixed source/count capacity compiled.
-Signed supply, inherited extension, and exhaustive history are being checked
-leaf by leaf. No capstone verification claimed yet.
+Formalization: scalar paid block, fixed source/count capacity, and the closed
+signed arithmetic supply compiled and are wired into `RHTower.lean`.
+Inherited extension and exhaustive history are being checked leaf by leaf.
+No capstone verification claimed yet.
