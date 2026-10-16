@@ -58,6 +58,7 @@ theorem generatorOfResolvent_formalSelfAdjoint (R : MassSpace →L[ℝ] MassSpac
   have hs : ⟪R u, v⟫_ℝ = ⟪u, R v⟫_ℝ :=
     ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp hsa u v
   erw [generatorOfResolvent_apply, generatorOfResolvent_apply, inner_sub_left, inner_sub_right, hs]
+  rfl
 
 theorem generatorOfResolvent_adjoint_identity (R : MassSpace →L[ℝ] MassSpace)
     (hR : Function.Injective R) (hsa : IsSelfAdjoint R)

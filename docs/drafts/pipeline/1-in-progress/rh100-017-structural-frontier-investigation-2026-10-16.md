@@ -53,6 +53,96 @@ horizontally escaping divisor should provide an entire strip-rapid H whose
 jets there equal those of 1/xi. Then U=(1-xi*H)/D is entire, U-1 is strip
 rapid, and reconstruction gives the required original inverse source.
 
-[OPEN CORE] Prove the full-multiplicity Gaussian interpolation theorem with
-all-strip rapid decay. Bare entire Bezout and compact-open convergence do
-not discharge it. No new Lean file has been written for this conjecture.
+## Dependency-closed paper construction
+
+Write S for the entire all-strip rapid class already reconstructed into the
+original Meyer source. For each zero w of D, let m be its full analytic
+order and D_w=D/(z-w)^m, with its entire extension. D_w is bounded on each
+vertical strip: use bounded D outside the unit disc at w and continuity on
+the remaining compact part. The corpus's unconditional source Mellin jet
+independence and finite dual surjectivity already realize any finite germ
+at any complex w, without a new Gaussian construction. Apply them to the
+germ 1/(xi*D_w). Multiplying the resulting Mellin transform by D_w gives
+F_w in S, matching the germ 1/xi at w
+through order m-1 and vanishing to the required D-order at every other node.
+
+The smallness mechanism is simpler than a variable-width Gaussian. If
+|Re w|>r, let sigma be the sign of Re w and delta=|Re w|-r>0. For a positive
+integer n put t(z)=exp(n*sigma*(z-w)) and
+L(z)=1-(1-t(z))^m. At w, L-1 vanishes to order at least m. On |Re z|<=r,
+|t(z)|<=exp(-n*delta), and the finite geometric identity gives
+|L(z)|<=m*2^(m-1)*exp(-n*delta). L is bounded on every fixed vertical strip,
+so F_w*L remains in S. By taking n sufficiently large, this product is
+arbitrarily small in any specified finite list of strip seminorms without
+changing any interpolation conditions. Nodes with Re w=0 belong to a
+finite exceptional set and need no localization.
+
+The zeros of D are finite in every closed vertical strip: D tends uniformly
+to one at vertical infinity, and its remaining zeros lie in a compact set;
+the analytic identity theorem excludes accumulation. Thus |Re w| tends to
+infinity cofinitely. Choose an injection e of the node set into N. At w
+localize on radius |Re w|/2 with polynomial weight order floor(|Re w|/2),
+to bound that seminorm by 2^(-e(w)). Every fixed strip and weight is then
+dominated by this summable majorant outside finitely many nodes. The finite
+head is already in S. Hence H=sum_w F_w*L_w is entire and belongs to S.
+Locally uniform convergence passes to every derivative, giving precisely
+the full prescribed germs at all nodes. No separation or multiplicity bound
+on the nodes is used, and the empty and finite node cases are included.
+
+Since 1-xi*H vanishes through every D-order, entire analytic division gives
+U=(1-xi*H)/D. On each strip D is bounded away from zero outside a compact
+rectangle. There U-1=(-M_b-xi*H)/D is rapidly decreasing; continuity handles
+the compact rectangle. Thus U-1 is in S and reconstructs an actual h.
+The identity (1+M_b)(1+M_h)=1-xi*H makes the convolution error an actual
+Poisson boundary by global Xi synthesis. Therefore I+C_h is a two-sided
+inverse of I+C_b on the original Meyer quotient; fixed-source convolution
+continuity pays the original topology.
+
+For arbitrary g, realize the complete finite resonant-block projector by
+the existing causal section with constant jet one and higher jets zero.
+Let p_g be a source representative and b=g-g*p_g. Full Hasse multiplication
+shows 1+M_b is nonzero at every Xi point: it is one on the resonant blocks
+and 1+M_g on the complement. This supplies the preceding hypotheses
+unconditionally. Its inverse agrees with 016's Hilbert inverse by faithful
+source comparison and uniqueness. This is an original-source inverse
+construction, not another assumed admission condition.
+
+Paper attacks: unrestricted interpolation was insufficient; strip geometry
+now supplies weighted convergence. Jet multiplicities are retained. Radius
+and weight cutoffs depend on horizontal escape, not on an arbitrary
+enumeration. No inverse-preservation premise, zero-confinement premise or
+uniform source regularity estimate is assumed. Formal verification remains
+open; no contribution is counted until it passes.
+
+## Formal progress
+
+Direct `lake --old env lean -o ...` audits passed, with no heartbeat changes:
+- `DeningerMeyerStripJetLocalization`: original finite germ and bounded
+  exponential full-jet localizer.
+- `DeningerMeyerStripCardinal`: full denominator multiplicities and arbitrary
+  smallness in a chosen weighted strip seminorm.
+- `DeningerMeyerStripSeries`: all-strip weighted convergence and every jet's
+  locally uniform passage to the limit.
+- `DeningerMeyerHorizontalInterpolation`: arbitrary full germs on horizontally
+  escaping divisors, without separation or multiplicity constraints.
+- `DeningerMeyerUnitZeroGeometry`: every unitized source has that geometry.
+- `DeningerMeyerStripBezout`: inverse correction and Bezout coefficient are
+  both in the original all-weight Mellin class.
+
+The formal construction improves the paper bookkeeping: localize every
+node on radius |Re w|-1 with weight floor(|Re w|). Negative radii impose no
+condition, so no exceptional-node branch is needed. Both cutoffs are
+cofinal. The repair source is selected directly from the class
+[g]-P_g[g], avoiding an auxiliary projection kernel.
+
+Direct audits also passed for `DeningerMeyerConvolutionRepairSource`,
+`DeningerMeyerConvolutionInverseSource` and
+`DeningerMeyerOriginalConvolutionInverse`: the unconditional inverse is an
+actual source convolution; the literal original quotient has a continuous
+repair automorphism, and the exact finite compatibility reduction now holds
+there. `PaperThetaConvolutionFredholm` is written and in direct audit. It
+combines RN's faithful finite native spatial comparison and full-jet range
+classification with the new source-preserving inverse to construct compact
+absolutely continuous native solutions for arbitrary source symbols.
+No new umbrella imports, final axiom audit, lint/index, cleanup, ledger
+increment or completion claim yet. Contribution count remains **16/100**.

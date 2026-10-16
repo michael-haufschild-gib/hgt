@@ -1,6 +1,6 @@
 # CHMD: compact operator core for the singular archimedean generator
 
-Status: investigation. RH goal active. Previous continuation was verified progress: full arithmetic domain removal. Prior main operator/domain source hashes revalidated; no current operator-core theorem found in the CHMD leaves. Architecture/testing docs absent. Plan tooling unavailable; this card tracks the task.
+Status: compact operator-core target remains open. Verified structural progress: [stationary ground-state domains, self-adjoint generators and kernel rigidity](../3-formalized/chmd-stationary-ground-generators-2026-10-16.md). RH goal active. Prior arithmetic-domain source hashes were revalidated; no current compact operator-core theorem was found. Architecture/testing docs absent. Plan tooling unavailable; this card tracks the task.
 
 ## Intended structural result
 
@@ -32,7 +32,7 @@ Before constructing an operator core, formalise the actual maximal-domain ground
 
 Global theta Lipschitz regularity bounds the absolute difference by C|x-y| times the sum of the two theta-weighted squares. The first Levy moment and mass-L2 admission make this integrable, without compact support, pointwise regularity of u, or square-root estimates. Consequently the maximal archimedean domain is exactly the pullback of the stationary jump domain by S. Fubini and translation turn the integrated defect into the bounded potential V above. This gives an exact closed-form and resolvent reduction, not yet an operator-core theorem. The compact-core target remains open.
 
-The first two leaves now pass targeted Lean builds: `CHMDStationaryGroundDomain` proves the maximal domain cancellation, and `CHMDStationaryGroundPotential` identifies its defect with the explicit bounded multiplication operator. Closed pullback graph, graph equivalence and resolvent identities are being checked next.
+`CHMDStationaryGroundDomain` proves the maximal domain cancellation; `CHMDStationaryGroundPotential` identifies its defect with the explicit bounded multiplication operator. The closed pullback graph, graph equivalence, exact resolvent identities, actual self-adjoint operators and stationary kernel classification are now formalised in seven audited leaves.
 
 Domain distinction: the source form domain is exactly the set of mass-L2 u for which Theta*u has stationary jump energy. The pullback generator is constructed from that closed form. No identification of its operator domain with `{u : Theta*u in Dom(A)}` is asserted; the weighted output condition can be weaker. No compact operator-core conclusion follows merely from the form-domain cancellation.
 
@@ -44,4 +44,12 @@ Put K=P+V. Riesz representation of the two complete graph inner products yields
 
     Rg(w-K Rw)=Rw,       R(w+K Rg w)=Rg w.
 
-Thus the resolvent ranges coincide. To realise actual operators, first observe that the full source projection has dense range: every compact smooth mass-L2 class occurs as a genuine compact lift, and these classes are dense. The same holds for the stationary source projection by the proved domain equivalence. Their Riesz resolvents are injective and self-adjoint. Define A_R=R^{-1}-I on range(R). For u in Dom(A_R*), testing its adjoint identity on Rz for every z gives R(u+A_R*u)=u. Hence u lies in range(R), and the adjoint agrees with A_R. This is a dependency-closed self-adjointness argument, with no compact operator-core premise. The exact operator identity is A_full=A_ground+K on their common domain. The corresponding Lean leaves are being checked.
+Thus the resolvent ranges coincide. To realise actual operators, first observe that the full source projection has dense range: every compact smooth mass-L2 class occurs as a genuine compact lift, and these classes are dense. The same holds for the stationary source projection by the proved domain equivalence. Their Riesz resolvents are injective and self-adjoint. Define A_R=R^{-1}-I on range(R). For u in Dom(A_R*), testing its adjoint identity on Rz for every z gives R(u+A_R*u)=u. Hence u lies in range(R), and the adjoint agrees with A_R. This is a dependency-closed self-adjointness argument, with no compact operator-core premise. The exact operator identity is A_full=A_ground+K on their common domain. All these statements passed targeted builds, final direct Lean checks and all-declaration axiom audits.
+
+The stationary generator also has trivial kernel: zero edge energy forces Theta*u constant, ordinary Lebesgue-L2 admission forces that constant zero, and Theta positivity forces u=0. This proves strict quadratic positivity without a uniform gap. It does not prove the RH critical sign inequality.
+
+## Remaining core obstacle
+
+Prove the compact smooth class is an operator core for the actual stationary pullback generator. The exact bounded perturbation then transfers that core to the full generator. A stationary Fourier multiplier/core construction, half-density coefficient regularity and a bounded-commutator approximation remain candidate ingredients. Do not replace this obligation with the already proved form core, self-adjointness of the associated operator, or the trivial-kernel theorem.
+
+Validation details and the seven unrelated repository-lint wiring errors are recorded on the formalised card. No full or umbrella build was run.
