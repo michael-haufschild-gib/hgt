@@ -20,8 +20,7 @@ theorem deningerMeyerXiContour_entireRegular {F : ℂ → ℂ}
   have hc : ContinuousOn (fun w => F w/xi w) (RectangleBorder a b) :=
     hF.continuous.continuousOn.div
       deningerMeyerXi_entireRegular.differentiable.continuous.continuousOn hnz
-  obtain ⟨M, hM⟩ := (GaloisForLFunctions.HTGeometry.isCompact_rectangleBorder a b)
-    .exists_bound_of_continuousOn hc
+  obtain ⟨M, hM⟩ := (GaloisForLFunctions.HTGeometry.isCompact_rectangleBorder a b).exists_bound_of_continuousOn hc
   let T := |a.im|+|b.im|
   have hT : 0 ≤ T := by dsimp [T]; positivity
   have haT : -T ≤ a.im := by dsimp [T]; linarith [neg_le_abs a.im, abs_nonneg b.im]
@@ -73,7 +72,7 @@ private theorem xi_order_le_of_local_factor (rho : XiDivisorSupport)
     (xiSupportMultiplicity rho : ℕ∞) = analyticOrderAt xi (rho : ℂ) :=
       (xi_analyticOrderAt_support rho).symm
     _ ≤ analyticOrderAt xi (rho : ℂ)+analyticOrderAt H (rho : ℂ) :=
-      le_add_of_nonneg_right (zero_le _)
+      le_add_of_nonneg_right zero_le
     _ = analyticOrderAt (xi*H) (rho : ℂ) :=
       (analyticOrderAt_mul
         (deningerMeyerXi_entireRegular.differentiable.analyticAt _) hH).symm
@@ -113,7 +112,8 @@ theorem deningerMeyerXiContour_outside_jet {F : ℂ → ℂ}
   let H := rectangleCauchyTransform (fun w => F w/xi w) a b
   have hH := xi_contour_coefficient_analytic hF hab hab' hnz
     (fun h => hρ (rectangleBorder_subset_rectangle a b h))
-  have hclosed : IsClosed (Rectangle a b) := isClosed_uIcc.reProdIm isClosed_uIcc
+  have hclosed : IsClosed (Rectangle a b) :=
+    (isCompact_uIcc.reProdIm isCompact_uIcc).isClosed
   have he : deningerMeyerXiContour F a b =ᶠ[𝓝 (rho : ℂ)]
       (fun z => xi z*(-H z)) := by
     filter_upwards [hclosed.isOpen_compl.mem_nhds hρ] with z hz

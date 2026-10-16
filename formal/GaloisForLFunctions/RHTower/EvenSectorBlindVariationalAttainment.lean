@@ -23,9 +23,10 @@ def blindProfiles : Set (ℝ → ℂ) :=
   {P | ∀ n : LogIndex, P (Real.log (n : ℕ)) = 0}
 
 theorem isClosed_blindProfiles : IsClosed blindProfiles := by
-  change IsClosed (⋂ n : LogIndex, {P : ℝ → ℂ | P (Real.log (n : ℕ)) = 0})
-  exact isClosed_iInter fun n : LogIndex =>
-    isClosed_eq (continuous_apply (Real.log (n : ℕ))) continuous_const
+  unfold blindProfiles
+  rw [setOf_forall]
+  refine isClosed_iInter fun n => ?_
+  exact isClosed_eq (continuous_apply (Real.log (n : ℕ))) continuous_const
 
 /-- Actual unit even polar sources with every arithmetic observation zero. -/
 def BlindUnitSource (a : SuzukiPositiveAperture) : Type :=
@@ -48,7 +49,7 @@ theorem energyProfile_neg (a : SuzukiPositiveAperture) (f : suzukiApertureHilber
     energyProfile a f (-h) = conj (energyProfile a f h) := by
   simp only [energyProfile, ccmApertureCorrelation, neg_neg]
   rw [inner_logTranslationCLM]
-  exact inner_conj_symm _ _
+  exact (inner_conj_symm (𝕜 := ℂ) f.1 (logTranslationCLM (-h) f.1)).symm
 
 /-- Complex blindness and the original real symmetric arithmetic trace coincide in the even sector. -/
 theorem energyProfile_eq_zero_iff_trace_zero {a : SuzukiPositiveAperture}
@@ -129,17 +130,15 @@ theorem isCompact_blindPhysicalBudget (a : SuzukiPositiveAperture) (B : ℝ) :
   (isCompact_physicalEvenPolarBudget a B).inter_right
     (isClosed_blindProfiles.preimage (continuous_energyProfile a))
 
-/-- Even a pointwise completion of blind mixtures has an actual single blind source. -/
+/-- Blindness may be imposed after pointwise completion: approximating mixtures
+need not satisfy the arithmetic constraints exactly. -/
 theorem closure_nativeBlindProfiles_has_source (a : SuzukiPositiveAperture) (B : ℝ) :
-    closure (nativeEnergyProfiles a B ∩ blindProfiles) ⊆
+    closure (nativeEnergyProfiles a B) ∩ blindProfiles ⊆
       {P | ∃ u : BlindUnitSource a, ccmRestrictedWeilSourceQuadratic a u.1 ≤ B ∧
         energyProfile a (ccmArchimedeanFormToAperture a u.1) = P} := by
-  intro P hP
-  have hc := closure_nativeEnergyProfiles_subset_completed a B
-    (closure_mono inter_subset_left hP)
+  rintro P ⟨hP, hb⟩
+  have hc := closure_nativeEnergyProfiles_subset_completed a B hP
   obtain ⟨u, hp, he, hn, hQ, hu⟩ := (mem_completedEnergyProfiles_iff a B P).mp hc
-  have hb : P ∈ blindProfiles :=
-    closure_minimal inter_subset_right isClosed_blindProfiles hP
   exact ⟨⟨u, hp, he, hn, by rw [hu]; exact hb⟩, hQ, hu⟩
 
 /-- On the actual blind polar domain, the optimized energy is exactly the archimedean integral. -/
@@ -206,5 +205,18 @@ theorem exists_blind_minimizer (a : SuzukiPositiveAperture) :
       ccmRestrictedWeilExtendedSourceQuadratic_embedding] at hh
     exact EReal.coe_le_coe_iff.mp hh
   · exact hQ.trans (le_of_not_ge hvB)
+
+/-- One actual blind minimizer also controls every blind slice of the
+finite-energy mixture completion, including limits of asymptotically blind mixtures. -/
+theorem exists_blind_minimizer_for_mixture_completion (a : SuzukiPositiveAperture) :
+    ∃ u : BlindUnitSource a,
+      (∀ v : BlindUnitSource a,
+        ccmRestrictedWeilSourceQuadratic a u.1 ≤ ccmRestrictedWeilSourceQuadratic a v.1) ∧
+      ∀ B : ℝ, (closure (nativeEnergyProfiles a B) ∩ blindProfiles).Nonempty →
+        ccmRestrictedWeilSourceQuadratic a u.1 ≤ B := by
+  obtain ⟨u, hu⟩ := exists_blind_minimizer a
+  refine ⟨u, hu, fun B ⟨P, hP⟩ => ?_⟩
+  obtain ⟨v, hv, -⟩ := closure_nativeBlindProfiles_has_source a B hP
+  exact (hu v).trans hv
 
 end RHTower.EvenSector
