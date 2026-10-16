@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HeatEscapeNonreal
 import Mathlib.Algebra.Polynomial.Derivative
+import Mathlib.FieldTheory.Separable
 
 /-!
 # No ramification in a heat escaping packet
@@ -113,7 +114,7 @@ theorem heatEscapePolynomial_root_simple {d k : ℕ} (hkd : k < d)
       rw [heatEscapePolynomial_derivative] at hd
       have hk0 : (k + 1 : ℂ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero k
       have hzold : aeval z (heatEscapePolynomial d k) = 0 := by
-        simp only [map_mul, aeval_C, map_add, map_natCast, map_one] at hd
+        simp only [map_mul, map_add, map_natCast, map_one] at hd
         exact (mul_eq_zero.mp hd).resolve_left hk0
       have hrec := congrArg (aeval z : ℝ[X] →ₐ[ℝ] ℂ) (heatEscapePolynomial_raise hk)
       simp only [hz, map_sub, map_mul, map_add, aeval_X, aeval_C, hzold,
@@ -130,6 +131,21 @@ theorem heatEscapePolynomial_shift_root_simple {d k : ℕ} (hkd : k < d)
   simp only [map_add, map_mul, hz, mul_zero, zero_add, map_pow, aeval_X]
   exact mul_ne_zero (pow_ne_zero _ (heatEscapePolynomial_root_ne_zero hkd hz))
     (heatEscapePolynomial_root_simple hkd hz)
+
+/-- Simplicity is a theorem about the entire packet, not an assumed root condition. -/
+theorem heatEscapePolynomial_separable {d k : ℕ} (hkd : k < d) :
+    (heatEscapePolynomial d k).Separable := by
+  apply (Polynomial.isCoprime_iff_aeval_ne_zero_of_isAlgClosed ℝ ℂ _ _).mpr
+  intro z
+  by_cases hz : aeval z (heatEscapePolynomial d k) = 0
+  · exact Or.inr (heatEscapePolynomial_root_simple hkd hz)
+  · exact Or.inl hz
+
+/-- A degree `k` packet has exactly `k` distinct complex residues. -/
+theorem heatEscapePolynomial_card_rootSet {d k : ℕ} (hkd : k < d) :
+    Fintype.card ((heatEscapePolynomial d k).rootSet ℂ) = k := by
+  rw [Polynomial.card_rootSet_eq_natDegree (heatEscapePolynomial_separable hkd)
+    (IsAlgClosed.splits _), heatEscapePolynomial_natDegree]
 
 /-- Weighted blow-up preserves monicity and degree even at scale zero. -/
 theorem weightedPolynomial_monic_natDegree {p : ℝ[X]} {N : ℕ}
@@ -151,7 +167,8 @@ theorem weightedPolynomial_aeval {p : ℝ[X]} {N : ℕ} {ε : ℝ}
       (ε : ℂ) ^ N * aeval (z / (ε : ℂ)) p := by
   rw [weightedPolynomial_eq hp hε]
   simp only [map_mul, aeval_C, aeval_comp, aeval_X, map_pow]
-  simp only [algebraMap.coe_inv, Complex.algebraMap_eq_ofReal]
+  change (ε : ℂ) ^ N * aeval (((ε⁻¹ : ℝ) : ℂ) * z) p = _
+  rw [Complex.ofReal_inv]
   rw [div_eq_mul_inv, mul_comm (ε : ℂ)⁻¹ z]
 
 theorem weightedPolynomial_aeval_eq_zero_iff {p : ℝ[X]} {N : ℕ} {ε : ℝ}

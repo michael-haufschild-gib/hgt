@@ -99,7 +99,10 @@ theorem stationaryGround_edge_energy (p : stationaryGroundGraph) :
     apply integral_congr_ae
     filter_upwards [p.property] with e he
     rw [he]
-  rw [heq, stationaryMeasure, integral_weighted archBase
+  rw [heq]
+  change (∫ e, difference (thetaProduct p.val.fst) e ^ 2
+    ∂archBase.withDensity (fun e => ENNReal.ofReal (archLevyDensity e.1))) = _
+  rw [integral_weighted archBase (w := fun e : ℝ × ℝ => archLevyDensity e.1)
     (measurable_archLevyDensity.comp measurable_fst)]
   · rfl
   · have ht : ∀ᵐ e ∂archBase, 0 < e.1 :=

@@ -46,7 +46,8 @@ theorem analytic_monic_root_germ {N : ℕ} {c : ℝ → Fin N → ℂ} {a : ℝ}
       have hp := hc.continuousAt.prodMk hs
       change Tendsto (fun t => (c t, s t)) (𝓝 a) (𝓝 (c a, s a)) at hp
       simpa only [hsa] using hp
-    have he := (hpair.eventually
+    have he : ∀ᶠ t in 𝓝[≠] a, F (c t, s t) = F (c a, z) ↔ b (c t) = s t :=
+      (hpair.eventually
       (cdf.eventually_apply_eq_iff_implicitFunction hω hi)).filter_mono nhdsWithin_le_nhds
     filter_upwards [he, hseq] with t ht hst
     exact ht.mp (by simpa only [F, monicCoeffRelation_eq_eval, hz] using hst)

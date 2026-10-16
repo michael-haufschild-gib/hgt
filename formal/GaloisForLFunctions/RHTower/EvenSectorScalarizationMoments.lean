@@ -39,13 +39,13 @@ theorem exists_smooth_scalarization_profile (c : SmoothEvenPolarTestFn →₀ �
   rw [Finsupp.sum_mapDomain_index (fun _ => by simp)
     (fun _ a b => by push_cast; ring)]
   dsimp only [d]
-  rw [Finsupp.sum_mapRange_index (fun _ => by simp)]
+  erw [Finsupp.sum_mapRange_index (fun _ => by simp)]
   simp only [smoothMixtureProfile,linearCombination_apply,Finsupp.sum,
     Finset.sum_apply,Pi.smul_apply,Complex.real_smul]
   apply Finset.sum_congr rfl
   intro g _
-  rw [show ((Real.toNNReal (c g) : ℝ≥0) : ℂ)=(c g : ℂ) by
-    rw [← Complex.ofReal_coe_nnreal,Real.coe_toNNReal _ (hc g)]]
+  change (((Real.toNNReal (c g) : ℝ≥0) : ℝ) : ℂ)*_=(c g : ℂ)*_
+  rw [Real.coe_toNNReal _ (hc g)]
 
 theorem trace_eq_of_smooth_profile {f : SmoothEvenPolarTestFn}
     {c : SmoothEvenPolarTestFn →₀ ℝ}

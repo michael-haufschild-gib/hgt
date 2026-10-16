@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CHMDStationaryGroundEquivalence
 import GaloisForLFunctions.RHTower.CHMDPrimeOperatorDomain
+import Mathlib.Analysis.Normed.Lp.SmoothApprox
 
 /-!
 # Exact stationary pullback of the full CHMD operator domain
@@ -15,6 +16,26 @@ open scoped InnerProductSpace
 noncomputable section
 namespace RHTower.CHMDDoobGraph
 open CHMDPolar
+
+theorem dense_sourceMap_range : Dense (sourceMap.range : Set MassSpace) := by
+  apply (Lp.dense_hasCompactSupport_contDiff (F := ℝ) (μ := massMeasure) (p := 2)
+    (by norm_num)).mono
+  rintro u ⟨v, huv, hc, hs⟩
+  refine ⟨compactLift v (hs.of_le (by norm_num)) hc, ?_⟩
+  apply Lp.ext
+  exact (compact_memLp_mass hs.continuous hc).coeFn_toLp.trans huv.symm
+
+theorem resolvent_injective : Function.Injective resolvent := by
+  intro u v h
+  have hr : rieszLift u = rieszLift v := source_projection_injective h
+  apply dense_sourceMap_range.eq_of_inner_left ℝ
+  rintro _ ⟨q, rfl⟩
+  rw [← inner_rieszLift u q, ← inner_rieszLift v q, hr]
+
+theorem dense_stationaryGroundSourceMap_range :
+    Dense (stationaryGroundSourceMap.range : Set MassSpace) := by
+  rw [← full_source_domain_eq_stationary]
+  exact dense_sourceMap_range
 
 def fullGroundEquiv : SourceGraph ≃L[ℝ] stationaryGroundGraph :=
   graphArchEquiv.trans archGroundEquiv
@@ -73,6 +94,13 @@ theorem stationaryResolvent_isPositive : stationaryResolvent.IsPositive :=
 
 theorem stationaryResolvent_isSelfAdjoint : IsSelfAdjoint stationaryResolvent :=
   stationaryResolvent_isPositive.isSelfAdjoint
+
+theorem stationaryResolvent_injective : Function.Injective stationaryResolvent := by
+  intro u v h
+  have hr : stationaryRieszLift u = stationaryRieszLift v := stationaryGroundSourceMap_injective h
+  apply dense_stationaryGroundSourceMap_range.eq_of_inner_left ℝ
+  rintro _ ⟨q, rfl⟩
+  rw [← inner_stationaryRieszLift u q, ← inner_stationaryRieszLift v q, hr]
 
 theorem stationaryRieszLift_full (w : MassSpace) :
     stationaryRieszLift (w - groundPerturbation (resolvent w)) = fullGroundEquiv (rieszLift w) := by

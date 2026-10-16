@@ -31,3 +31,7 @@ Before constructing an operator core, formalise the actual maximal-domain ground
       = (Theta(y)-Theta(x))(Theta(x)u(x)^2-Theta(y)u(y)^2).
 
 Global theta Lipschitz regularity bounds the absolute difference by C|x-y| times the sum of the two theta-weighted squares. The first Levy moment and mass-L2 admission make this integrable, without compact support, pointwise regularity of u, or square-root estimates. Consequently the maximal archimedean domain is exactly the pullback of the stationary jump domain by S. Fubini and translation turn the integrated defect into the bounded potential V above. This gives an exact closed-form and resolvent reduction, not yet an operator-core theorem. The compact-core target remains open.
+
+The first two leaves now pass targeted Lean builds: `CHMDStationaryGroundDomain` proves the maximal domain cancellation, and `CHMDStationaryGroundPotential` identifies its defect with the explicit bounded multiplication operator. Closed pullback graph, graph equivalence and resolvent identities are being checked next.
+
+Domain distinction: the source form domain is exactly the set of mass-L2 u for which Theta*u has stationary jump energy. The pullback generator is constructed from that closed form. No identification of its operator domain with `{u : Theta*u in Dom(A)}` is asserted; the weighted output condition can be weaker. No compact operator-core conclusion follows merely from the form-domain cancellation.

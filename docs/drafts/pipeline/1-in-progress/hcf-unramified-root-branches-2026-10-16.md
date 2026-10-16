@@ -1,6 +1,6 @@
 # HCF: resolve individual escaping roots without ramification
 
-Status: conjecture and dependency-closed proof investigation.
+Status: paper proof closed; Lean integration and audits in progress.
 
 ## Starting frontier
 
@@ -11,6 +11,15 @@ The previous contribution identifies the complete weighted polynomial X^n Q_(d,k
 1. A determinant multiplicity alone does not determine matrix partial multiplicities; do not infer a full analytic matrix normal form from scalar Toda order.
 2. Conjecture: every nonzero root of the escape polynomial is simple. Its coefficients suggest two exact identities: Q_(d+1,k+1)'=(k+1)Q_(d,k), and Q_(d+1,k+1)=(X+d)Q_(d,k)-X Q_(d,k)'. A common root with the derivative would descend inductively to the constant polynomial. The positive constant coefficient excludes zero.
 3. Conjecture: these simple roots lift to unique real-analytic scaled root branches of the actual weighted admission. Dividing by t-a gives genuine unramified simple poles, with residues exactly the distinct roots of Q. The full analytic coefficient-vector extension already exists in the corpus.
+4. The recurrence and induction proofs passed direct Lean checking. The coefficient-space implicit branch, scalar restriction, punctured-germ uniqueness and exact meromorphic order −1 also passed direct checking. The actual-source integration is written and awaiting its dependency builds.
+
+## Closed paper argument
+
+At a common root of Q_(d+1,k+1) and its derivative, the derivative recurrence forces Q_(d,k)=0. Its constant coefficient excludes the zero root. The raising recurrence then forces Q_(d,k)'=0. Induction on k terminates at Q_(d,0)=1. Thus Q_(d,k) is separable for k<d and has exactly k distinct complex roots, all nonzero.
+
+Write W_t(X)=(t-a)^N P_N(t,X/(t-a)). Its analytic coefficient extension at a is X^n Q_(d,k). Each root z of Q is simple in this whole limit, since z≠0. Apply the holomorphic implicit-function theorem in the space of all monic complex coefficient vectors, then restrict scalars and compose with the actual real-analytic coefficient vector. This gives an analytic scaled root r with r(a)=z. The original admission root is r(t)/(t-a), of exact meromorphic order −1. Local pointwise implicit-function uniqueness pulls back to uniqueness against any continuous scaled admission-root germ. Distinct residues separate the actual branches near the contact.
+
+This resolves ramification and individual root trajectories at infinity. It does not select the global no-transition/source-sign branch.
 
 ## Corpus leads
 

@@ -76,3 +76,14 @@ All steps use unconditional existing identities or elementary finite positive
 combination and dominated-convergence arguments. Blind-fibre positivity is
 neither assumed nor proved. Exact equality of arbitrary C² autocorrelation
 profiles with smooth profiles is not claimed.
+
+Stronger survivor exposed during formalization: the corrected single-source
+autocorrelations converge pointwise to the entire original C² even-polar
+mixture profile, while every arithmetic coordinate is already exact and the
+actual energy converges. Thus the result can state density inside every exact
+arithmetic fibre, jointly for profile evaluation and energy, rather than only
+an upper-energy recovery inequality.
+
+Formal progress: `EvenSectorSmoothApproximation.lean` passed direct Lean
+checking. Its common finite trace support and actual energy convergence have
+no positivity or RH premise.

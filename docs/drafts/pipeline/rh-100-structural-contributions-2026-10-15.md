@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **15 / 100**.
+Completed after goal activation: **16 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -210,10 +210,31 @@ derivative is proved directly on original functions; no new bundled BV
 Banach space or arbitrary infinite native Xi-packet realization is claimed.
 Card: `3-formalized/rh100-015-strong-bv-theta-arithmetic-calculus-2026-10-16.md`.
 
+016: faithful global convolution and finite full-Jordan Fredholm reduction.
+Every original Meyer source has an actual whole-line convolution operator
+on the faithful full-Hasse completion. Original generator identities factor
+it through two genuine Hilbert--Schmidt resolvents, paying trace-class
+admission; its kernel is exactly the actual Poisson range. Complete actual
+Xi resonance blocks of its unitization are finite, and replacing those blocks
+by the identity gives a proved bounded inverse. Every convolution equation
+reduces exactly to its finite causal block equation and the uniquely solved
+complement; every exceptional completed forcing has an original causal source.
+This admits arbitrary original-source convolution symbols with zeros, beyond
+polynomial words and exponential gauges. RN current factors fix the operator
+uniquely. Whole-line compact traces and composition traces give the full
+Weil/CCM functional, retaining time zero, Gamma, prime powers and both poles.
+Nine direct leaf audits, the API audit and all 79 public standard-axiom audits
+passed. Imports are unique, artifacts fresh, indexes refreshed and thirteen
+scratch files removed. Global lint reports thirteen unrelated missing
+umbrella imports, listed on the card; a corrected build-overlap incident is
+also recorded there. The general inverse is proved on the faithful completion;
+preservation of the original Frechet image and positivity remain open.
+Card: `3-formalized/rh100-016-global-convolution-fredholm-weil-trace-2026-10-16.md`.
+
 ## Next investigation
 
-No sixteenth contribution is counted. Do not count routine corollaries or
-repackagings of 001–015 as further contributions. Resume broad Lean-corpus
+No seventeenth contribution is counted. Do not count routine corollaries or
+repackagings of 001–016 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -263,6 +284,15 @@ convolution class has not been identified with a geometric graded cup, and
 the gauges preserve local spectral support rather than confining zeros.
 Joint continuity of the bilinear product and parameter continuity of the
 nonlinear exponential were not asserted.
+
+Faithful whole-source trace-class convolution, exact finite resonance
+reduction, original causal realization of exceptional completed forcing,
+full compact Weil/CCM composition traces and native-factor uniqueness belong
+to 016. Routine Fredholm corollaries and further trace identities do not count
+again. A general repaired inverse is only known on the faithful Hilbert
+completion. The literal source image may need an independent regularity or
+spectral-invariance theorem; finite causal realization alone does not pay it.
+The arithmetic sharp has not been identified with the Hilbert adjoint.
 
 ## Continuation rules
 

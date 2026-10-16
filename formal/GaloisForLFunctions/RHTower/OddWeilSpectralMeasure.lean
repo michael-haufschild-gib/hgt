@@ -419,7 +419,7 @@ theorem re_weilFullFunctional_eq_integral_oddSpectralWeight {lam : ℕ → ℝ}
     calc |c| * (‖lineTransform f t‖ / ‖lineA t‖) ≤ |c| * (‖lineTransform f t‖ * (4 / 3)) :=
           mul_le_mul_of_nonneg_left this (abs_nonneg c)
       _ = |c| * (4 / 3) * ‖lineTransform f t‖ := by ring
-  have hswap : (∫ t, ∫ θ, g (t, θ) ∂ν) = ∫ θ, ∫ t, g (t, θ) ∂ν :=
+  have hswap : (∫ t, ∫ θ, g (t, θ) ∂ν) = ∫ θ, (∫ t, g (t, θ)) ∂ν :=
     integral_integral_swap (f := fun t θ => g (t, θ)) hgi
   rw [integral_congr_ae hsub, integral_sub hgi.integral_prod_left hci, hswap, integral_const_mul]
   -- the `c`-term vanishes: `(1/2π) ∫ F/(w − ½) = H(½) = |f̂(0)|² = 0`
@@ -453,16 +453,364 @@ theorem re_weilFullFunctional_eq_integral_oddSpectralWeight {lam : ℕ → ℝ}
   rw [mul_sub, mul_left_comm, hcterm, mul_zero, sub_zero]
   -- real part of the `ν`-integral
   have hJi : Integrable (fun θ => ∫ t, g (t, θ)) ν := hgi.integral_prod_right
-  have hre : (∫ θ, ∫ t, g (t, θ) ∂ν).re = ∫ θ, (∫ t, g (t, θ)).re ∂ν := by
+  have hre : (∫ θ, (∫ t, g (t, θ)) ∂ν).re = ∫ θ, (∫ t, g (t, θ)).re ∂ν := by
     have h := integral_re hJi
     simp only [RCLike.re_to_complex] at h
-    exact h.symm.trans rfl
+    exact h.symm
   rw [show (1 / (2 * Real.pi) : ℂ) = ((1 / (2 * Real.pi) : ℝ) : ℂ) by push_cast; ring,
     Complex.re_ofReal_mul, hre, ← integral_const_mul]
   refine integral_congr_ae (Eventually.of_forall fun θ => ?_)
   simp only [oddSpectralWeight]
   rw [show (1 / (2 * Real.pi) : ℂ) = ((1 / (2 * Real.pi) : ℝ) : ℂ) by push_cast; ring,
     Complex.re_ofReal_mul]
-  rfl
+
+/-! ## Evaluation of the spectral weight -/
+
+/-- `Θ_f(1) = 0`: the linear term has purely imaginary line integral. -/
+theorem oddSpectralWeight_one {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
+    oddSpectralWeight f 1 = 0 := by
+  unfold oddSpectralWeight
+  have h : ∀ t : ℝ, lineTransform f t * oddLineKernel 1 (linePt t) =
+      lineTransform f t * (((5 / 4 : ℝ) : ℂ) + t * I - 1 / 2) := by
+    intro t
+    rw [oddLineKernel_one, ← linePt_sub_half, linePt_eq]
+  simp_rw [h]
+  rw [show (1 / (2 * Real.pi) : ℂ) = ((1 / (2 * Real.pi) : ℝ) : ℂ) by push_cast; ring,
+    Complex.re_ofReal_mul]
+  unfold lineTransform
+  rw [re_integral_line_weilTest_linear hf hfc, mul_zero]
+
+/-- Partial fractions: `K_ζ(w) = −(1/γ) g_{½}(w)/2 + ((1 + γ²)/(2γ)) g_{½+ρ}(w)`, `ρ² = −γ`. -/
+theorem oddLineKernel_eq_gPair {t : ℝ} (ht : t ≠ 0) {ζ : ℂ} (hζ : ‖ζ‖ = 1) (h1 : ζ ≠ 1)
+    (hγ : circleOrd ζ ≠ 0) {ρ : ℂ} (hρ : ρ ^ 2 = -(circleOrd ζ : ℂ)) :
+    oddLineKernel ζ (linePt t) =
+      -(1 / (circleOrd ζ : ℂ)) * (gPair (1 / 2) (linePt t) / 2) +
+        ((1 + (circleOrd ζ : ℂ) ^ 2) / (2 * circleOrd ζ)) * gPair (1 / 2 + ρ) (linePt t) := by
+  rw [oddLineKernel_eq ht hζ h1]
+  have ha0 : lineA t ≠ 0 := lineA_ne_zero t
+  have hγ0 : (circleOrd ζ : ℂ) ≠ 0 := by rwa [Ne, Complex.ofReal_eq_zero]
+  have hu : lineA t ^ 2 + (circleOrd ζ : ℂ) ≠ 0 := lineA_sq_add_ne_zero ht _
+  have hρ0 : ρ ≠ 0 := by
+    intro h
+    rw [h] at hρ
+    simp at hρ
+    exact hγ0 (by rw [hρ])
+  have hfac : (lineA t - ρ) * (lineA t + ρ) = lineA t ^ 2 + (circleOrd ζ : ℂ) := by
+    rw [← neg_neg (circleOrd ζ : ℂ), ← hρ]; ring
+  have hm : lineA t - ρ ≠ 0 := left_ne_zero_of_mul (hfac ▸ hu)
+  have hp : lineA t + ρ ≠ 0 := right_ne_zero_of_mul (hfac ▸ hu)
+  unfold gPair
+  rw [linePt_sub_half, show (1 : ℂ) - 1 / 2 = 1 / 2 by norm_num, linePt_sub_half,
+    show linePt t - (1 / 2 + ρ) = lineA t - ρ by rw [← linePt_sub_half]; ring,
+    show linePt t - (1 - (1 / 2 + ρ)) = lineA t + ρ by rw [← linePt_sub_half]; ring]
+  have hγρ : (circleOrd ζ : ℂ) = -ρ ^ 2 := by linear_combination -hρ
+  rw [hγρ] at hu ⊢
+  field_simp
+  ring
+
+/-- Integrability of `F · g_{z₀}` on the line for `1 − 5/4 < Re z₀ < 5/4`. -/
+theorem integrable_lineTransform_mul_gPair {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {z₀ : ℂ} (h1 : 1 - 5 / 4 < z₀.re) (h2 : z₀.re < 5 / 4) :
+    Integrable fun t : ℝ => lineTransform f t * gPair z₀ (((5 / 4 : ℝ) : ℂ) + t * I) := by
+  set k : ℝ → ℂ := EF.weilTest f f with hk
+  have hkd : ContDiff ℝ 2 k := EF.weilTest_contDiff hf hf.continuous hfc
+  have hkc : HasCompactSupport k := EF.weilTest_hasCompactSupport hfc hfc
+  set kn : ℝ → ℂ := fun u => k (-u) with hkn
+  have hknd : ContDiff ℝ 2 kn := hkd.comp contDiff_neg
+  have hknc : HasCompactSupport kn := hkc.comp_homeomorph (Homeomorph.neg ℝ)
+  obtain ⟨C, -, hC⟩ := norm_Hfn_le hkd hkc
+  obtain ⟨Cn, -, hCn⟩ := norm_Hfn_le hknd hknc
+  have hH := differentiable_Hfn hkd hkc
+  have hHn := differentiable_Hfn hknd hknc
+  have hCs : ∀ σ t : ℝ, 1 - 5 / 4 ≤ σ → σ ≤ 5 / 4 → ‖Hfn k (σ + t * I)‖ ≤ C / (1 + t ^ 2) :=
+    fun σ t h1 h2 => hC σ t (by norm_num at h1 ⊢; linarith) (by norm_num at h2 ⊢; linarith)
+  have hCsn : ∀ σ t : ℝ, 1 - 5 / 4 ≤ σ → σ ≤ 5 / 4 → ‖Hfn kn (σ + t * I)‖ ≤ Cn / (1 + t ^ 2) :=
+    fun σ t h1 h2 => hCn σ t (by norm_num at h1 ⊢; linarith) (by norm_num at h2 ⊢; linarith)
+  have hle : 1 - 5 / 4 ≤ (5 / 4 : ℝ) := by norm_num
+  have hne0 : (5 / 4 : ℝ) ≠ z₀.re := ne_of_gt h2
+  have hne1 : (5 / 4 : ℝ) ≠ (1 - z₀).re := by simp; linarith
+  have i1 := integrable_line_div hH hCs hle le_rfl hne0
+  have i2 := integrable_line_div hH hCs hle le_rfl hne1
+  have i3 := integrable_line_div hHn hCsn hle le_rfl hne0
+  have i4 := integrable_line_div hHn hCsn hle le_rfl hne1
+  refine (((i1.add i2).add i3).add i4).congr (Eventually.of_forall fun t => ?_)
+  simp only [Pi.add_apply, lineTransform, gPair, hk]
+  rw [Hfn_mirror (EF.weilTest f f) (5 / 4) t]
+  ring
+
+/-- **Evaluation at a point with `γ ≠ 0`.**  With `ρ² = −γ` and the pole `½ + ρ` in the strip,
+`Θ_f(ζ) = Re[((1 + γ²)/(2γ))(H(½ + ρ) + H(½ − ρ))]`. -/
+theorem oddSpectralWeight_eq_of_ne {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hodd : ∀ x, f (-x) = -f x) {ζ : ℂ} (hζ : ‖ζ‖ = 1) (h1 : ζ ≠ 1)
+    (hγ : circleOrd ζ ≠ 0) {ρ : ℂ} (hρ : ρ ^ 2 = -(circleOrd ζ : ℂ))
+    (hρ1 : 1 - 5 / 4 < (1 / 2 + ρ).re) (hρ2 : (1 / 2 + ρ).re < 5 / 4) :
+    oddSpectralWeight f ζ =
+      (((1 + (circleOrd ζ : ℂ) ^ 2) / (2 * circleOrd ζ)) *
+        (Hfn (EF.weilTest f f) (1 / 2 + ρ) + Hfn (EF.weilTest f f) (1 - (1 / 2 + ρ)))).re := by
+  set k : ℝ → ℂ := EF.weilTest f f with hk
+  have hkd : ContDiff ℝ 2 k := EF.weilTest_contDiff hf hf.continuous hfc
+  have hkc : HasCompactSupport k := EF.weilTest_hasCompactSupport hfc hfc
+  obtain ⟨C, -, hC⟩ := norm_Hfn_le hkd hkc
+  have hH := differentiable_Hfn hkd hkc
+  have hCs : ∀ σ t : ℝ, 1 - 5 / 4 ≤ σ → σ ≤ 5 / 4 → ‖Hfn k (σ + t * I)‖ ≤ C / (1 + t ^ 2) :=
+    fun σ t h1 h2 => hC σ t (by norm_num at h1 ⊢; linarith) (by norm_num at h2 ⊢; linarith)
+  have hpair₀ := two_line_pair hH (c := 5 / 4) hCs (z₀ := 1 / 2) (by norm_num) (by norm_num)
+  have hpairρ := two_line_pair hH (c := 5 / 4) hCs (z₀ := 1 / 2 + ρ) hρ1 hρ2
+  have hH0 : Hfn k (1 / 2) = 0 := by
+    unfold Hfn
+    rw [sub_self, zero_div, hk, EF.paperFT_weilTest hf.continuous hf.continuous hfc hfc,
+      paperFT_zero_of_odd hodd, zero_mul]
+  have hi₀ := integrable_lineTransform_mul_gPair hf hfc (z₀ := 1 / 2) (by norm_num) (by norm_num)
+  have hiρ := integrable_lineTransform_mul_gPair hf hfc hρ1 hρ2
+  set A : ℂ := -(1 / (circleOrd ζ : ℂ)) / 2 with hA
+  set B : ℂ := (1 + (circleOrd ζ : ℂ) ^ 2) / (2 * circleOrd ζ) with hB
+  have hsplit : ∀ᵐ t ∂volume, lineTransform f t * oddLineKernel ζ (linePt t) =
+      A * (lineTransform f t * gPair (1 / 2) (((5 / 4 : ℝ) : ℂ) + t * I)) +
+        B * (lineTransform f t * gPair (1 / 2 + ρ) (((5 / 4 : ℝ) : ℂ) + t * I)) := by
+    filter_upwards [WeilHerglotz.ae_ne_real 0] with t ht
+    rw [oddLineKernel_eq_gPair ht hζ h1 hγ hρ, ← linePt_eq, hA, hB]
+    ring
+  unfold oddSpectralWeight
+  rw [integral_congr_ae hsplit, integral_add (hi₀.const_mul A) (hiρ.const_mul B),
+    integral_const_mul, integral_const_mul, mul_add, mul_left_comm, mul_left_comm (1 / (2 * Real.pi : ℂ))]
+  have e₀ : (1 / (2 * Real.pi) : ℂ) *
+      ∫ t, lineTransform f t * gPair (1 / 2) (((5 / 4 : ℝ) : ℂ) + t * I) =
+      Hfn k (1 / 2) + Hfn k (1 - 1 / 2) := by rw [← hpair₀]; rfl
+  have eρ : (1 / (2 * Real.pi) : ℂ) *
+      ∫ t, lineTransform f t * gPair (1 / 2 + ρ) (((5 / 4 : ℝ) : ℂ) + t * I) =
+      Hfn k (1 / 2 + ρ) + Hfn k (1 - (1 / 2 + ρ)) := by rw [← hpairρ]; rfl
+  rw [e₀, eρ, show (1 : ℂ) - 1 / 2 = 1 / 2 by norm_num, hH0, add_zero, mul_zero, zero_add]
+
+/-- The transform of an odd autocorrelation at a real shift of the centre:
+`H(½ + r) = −|f̂(ir)|²`. -/
+theorem Hfn_weilTest_half_add_ofReal {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) (hodd : ∀ x, f (-x) = -f x) (r : ℝ) :
+    Hfn (EF.weilTest f f) ((1 / 2 : ℂ) + r) = -((‖paperFT f (I * r)‖ ^ 2 : ℝ) : ℂ) := by
+  unfold Hfn
+  have e : ((1 / 2 : ℂ) + r - 1 / 2) / I = -(I * r) := by
+    rw [add_sub_cancel_left, div_eq_mul_inv, Complex.inv_I]; ring
+  rw [e, EF.paperFT_weilTest hf.continuous hf.continuous hfc hfc, map_neg, map_mul, Complex.conj_I,
+    Complex.conj_ofReal, neg_mul, neg_neg, paperFT_neg_of_odd hodd, neg_mul, Complex.mul_conj,
+    Complex.normSq_eq_norm_sq]
+  push_cast
+  ring
+
+/-- **On the critical ordinates** (`γ > 0`): `Θ_f(ζ) = (1 + γ²)|f̂(√γ)|²/γ`. -/
+theorem oddSpectralWeight_eq_of_pos {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hodd : ∀ x, f (-x) = -f x) {ζ : ℂ} (hζ : ‖ζ‖ = 1) (h1 : ζ ≠ 1)
+    (hγ : 0 < circleOrd ζ) :
+    oddSpectralWeight f ζ =
+      (1 + circleOrd ζ ^ 2) * ‖paperFT f (Real.sqrt (circleOrd ζ))‖ ^ 2 / circleOrd ζ := by
+  set γ := circleOrd ζ with hγdef
+  set r := Real.sqrt γ with hr
+  have hr2 : r ^ 2 = γ := Real.sq_sqrt hγ.le
+  have hρ : ((r : ℂ) * I) ^ 2 = -(γ : ℂ) := by
+    rw [mul_pow, I_sq, ← Complex.ofReal_pow, hr2]; ring
+  rw [oddSpectralWeight_eq_of_ne hf hfc hodd hζ h1 hγ.ne' hρ (by simp; norm_num) (by simp; norm_num)]
+  have ha : (1 / 2 : ℂ) + (r : ℂ) * I = ((1 / 2 : ℝ) : ℂ) + r * I := by push_cast; ring
+  have hb : (1 : ℂ) - (1 / 2 + (r : ℂ) * I) = ((1 / 2 : ℝ) : ℂ) - r * I := by push_cast; ring
+  rw [ha, hb, Hfn_weilTest_critical hf.continuous hfc, Hfn_weilTest_critical_neg hf.continuous hfc,
+    paperFT_neg_of_odd hodd, norm_neg]
+  have e : ((1 + (γ : ℂ) ^ 2) / (2 * γ)) *
+      (((‖paperFT f r‖ ^ 2 : ℝ) : ℂ) + ((‖paperFT f r‖ ^ 2 : ℝ) : ℂ)) =
+      (((1 + γ ^ 2) * ‖paperFT f r‖ ^ 2 / γ : ℝ) : ℂ) := by
+    have hγ0 : (γ : ℂ) ≠ 0 := by exact_mod_cast hγ.ne'
+    push_cast
+    field_simp
+    ring
+  rw [e, Complex.ofReal_re]
+
+/-- **On the cut** (`−¼ ≤ γ < 0`): `Θ_f(ζ) = (1 + γ²)|f̂(i√(−γ))|²/(−γ)`. -/
+theorem oddSpectralWeight_eq_of_neg {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hodd : ∀ x, f (-x) = -f x) {ζ : ℂ} (hζ : ‖ζ‖ = 1) (h1 : ζ ≠ 1)
+    (hγ : -(1 / 4) ≤ circleOrd ζ) (hγ' : circleOrd ζ < 0) :
+    oddSpectralWeight f ζ =
+      (1 + circleOrd ζ ^ 2) * ‖paperFT f (I * Real.sqrt (-circleOrd ζ))‖ ^ 2 / (-circleOrd ζ) := by
+  set γ := circleOrd ζ with hγdef
+  set r := Real.sqrt (-γ) with hr
+  have hr2 : r ^ 2 = -γ := Real.sq_sqrt (by linarith)
+  have hρ : ((r : ℂ)) ^ 2 = -(γ : ℂ) := by rw [← Complex.ofReal_pow, hr2]; push_cast; ring
+  have hr12 : r ≤ 1 / 2 := by
+    rw [hr, show (1 / 2 : ℝ) = Real.sqrt (1 / 4) by
+      rw [show (1 / 4 : ℝ) = (1 / 2) ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    exact Real.sqrt_le_sqrt (by linarith)
+  have hr0 : 0 ≤ r := Real.sqrt_nonneg _
+  rw [oddSpectralWeight_eq_of_ne hf hfc hodd hζ h1 hγ'.ne hρ (by simp; linarith)
+    (by simp; linarith)]
+  have hb : (1 : ℂ) - (1 / 2 + (r : ℂ)) = (1 / 2 : ℂ) + ((-r : ℝ) : ℂ) := by push_cast; ring
+  rw [hb, Hfn_weilTest_half_add_ofReal hf hfc hodd, Hfn_weilTest_half_add_ofReal hf hfc hodd]
+  have hneg : paperFT f (I * ((-r : ℝ) : ℂ)) = -paperFT f (I * r) := by
+    rw [← paperFT_neg_of_odd hodd]; congr 1; push_cast; ring
+  rw [hneg, norm_neg]
+  have e : ((1 + (γ : ℂ) ^ 2) / (2 * γ)) *
+      (-((‖paperFT f (I * r)‖ ^ 2 : ℝ) : ℂ) + -((‖paperFT f (I * r)‖ ^ 2 : ℝ) : ℂ)) =
+      (((1 + γ ^ 2) * ‖paperFT f (I * r)‖ ^ 2 / (-γ) : ℝ) : ℂ) := by
+    have hγ0 : (γ : ℂ) ≠ 0 := by exact_mod_cast hγ'.ne
+    push_cast
+    field_simp
+    ring
+  rw [e, Complex.ofReal_re]
+
+/-! ## The centre `ζ = −1` by continuity -/
+
+theorem circleOrd_bdryPt (γ : ℝ) : circleOrd (bdryPt γ) = γ := by
+  unfold circleOrd bdryPt discPt
+  have hd : (2 * ((1 / 2 : ℂ) + γ * I) + 1) ≠ 0 := bdry_two_mul_add_one_ne_zero γ
+  have e : (1 + (2 * ((1 / 2 : ℂ) + γ * I) - 3) / (2 * ((1 / 2 : ℂ) + γ * I) + 1)) /
+      (1 - (2 * ((1 / 2 : ℂ) + γ * I) - 3) / (2 * ((1 / 2 : ℂ) + γ * I) + 1)) = γ * I := by
+    field_simp
+    ring
+  rw [e]
+  simp
+
+theorem bdryPt_ne_one (γ : ℝ) : bdryPt γ ≠ 1 := by
+  intro h
+  have hd : (2 * ((1 / 2 : ℂ) + γ * I) + 1) ≠ 0 := bdry_two_mul_add_one_ne_zero γ
+  unfold bdryPt discPt at h
+  rw [div_eq_one_iff_eq hd] at h
+  have := congrArg Complex.re h
+  simp at this
+  linarith
+
+theorem bdryPt_zero : bdryPt 0 = -1 := by
+  unfold bdryPt discPt
+  norm_num
+
+theorem continuous_bdryPt : Continuous bdryPt := by
+  have heq : bdryPt = fun γ : ℝ => (2 * ((1 / 2 : ℂ) + γ * I) - 3) / (2 * ((1 / 2 : ℂ) + γ * I) + 1) :=
+    rfl
+  rw [heq]
+  exact Continuous.div (by fun_prop) (by fun_prop) fun γ => bdry_two_mul_add_one_ne_zero γ
+
+theorem measurable_oddLineKernel_linePt (ζ : ℂ) :
+    Measurable fun t : ℝ => oddLineKernel ζ (linePt t) := by
+  have hw : Measurable linePt := continuous_linePt.measurable
+  have hs : Measurable fun t : ℝ => (1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2 :=
+    measurable_const.sub (measurable_const.mul ((hw.sub measurable_const).pow_const 2))
+  have hd : Measurable fun t : ℝ => discPt ((1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2) := by
+    have e : (fun t : ℝ => discPt ((1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2)) =
+        fun t => (2 * ((1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2) - 3) /
+          (2 * ((1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2) + 1) := rfl
+    rw [e]
+    exact ((measurable_const.mul hs).sub measurable_const).div
+      ((measurable_const.mul hs).add measurable_const)
+  have e : (fun t : ℝ => oddLineKernel ζ (linePt t)) =
+      fun t => I * ((ζ + discPt ((1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2)) /
+        (ζ - discPt ((1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2))) / (linePt t - 1 / 2) := rfl
+  rw [e]
+  exact (measurable_const.mul ((measurable_const.add hd).div (measurable_const.sub hd))).div
+    (hw.sub measurable_const)
+
+/-- The kernel is continuous in `ζ` at `ζ = −1` for `t ≠ 0`. -/
+theorem continuousAt_oddLineKernel_neg_one {t : ℝ} (ht : t ≠ 0) :
+    ContinuousAt (fun ζ : ℂ => oddLineKernel ζ (linePt t)) (-1) := by
+  set w : ℂ := discPt ((1 / 2 : ℂ) - I * (linePt t - 1 / 2) ^ 2) with hw
+  have hne : (-1 : ℂ) - w ≠ 0 := by
+    intro h
+    have hw1 : w = -1 := by linear_combination -h
+    have hs0 := two_mul_chart_add_one_ne_zero t
+    rw [linePt_sub_half] at hs0
+    have := congrArg halfPt hw1
+    rw [hw, linePt_sub_half, halfPt_discPt hs0] at this
+    have h2 := congrArg Complex.re this
+    have h3 := congrArg Complex.im this
+    simp [halfPt, lineA_sq_re, lineA_sq_im] at h2 h3
+    norm_num at h2 h3
+    nlinarith [sq_nonneg t]
+  have e : (fun ζ : ℂ => oddLineKernel ζ (linePt t)) =
+      fun ζ => I * ((ζ + w) / (ζ - w)) / (linePt t - 1 / 2) := rfl
+  rw [e]
+  refine ContinuousAt.div (continuousAt_const.mul (ContinuousAt.div ?_ ?_ hne)) continuousAt_const
+    (by rw [linePt_sub_half]; exact lineA_ne_zero t)
+  · exact continuousAt_id.add continuousAt_const
+  · exact continuousAt_id.sub continuousAt_const
+
+/-- `Θ_f(−1) ≥ 0`: limit of the values on the critical ordinates `γ = 1/(n+1)`. -/
+theorem oddSpectralWeight_neg_one_nonneg {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) (hodd : ∀ x, f (-x) = -f x) :
+    0 ≤ oddSpectralWeight f (-1) := by
+  set ζn : ℕ → ℂ := fun n => bdryPt (1 / ((n : ℝ) + 1)) with hζn
+  have hpos : ∀ n : ℕ, (0 : ℝ) < 1 / ((n : ℝ) + 1) := fun n => by positivity
+  have hseq : Tendsto ζn atTop (𝓝 (-1)) := by
+    rw [← bdryPt_zero]
+    exact continuous_bdryPt.continuousAt.tendsto.comp tendsto_one_div_add_atTop_nhds_zero_nat
+  have hval : ∀ n, 0 ≤ oddSpectralWeight f (ζn n) := by
+    intro n
+    rw [oddSpectralWeight_eq_of_pos hf hfc hodd (norm_bdryPt _) (bdryPt_ne_one _)
+      (by rw [circleOrd_bdryPt]; exact hpos n)]
+    rw [circleOrd_bdryPt]
+    positivity
+  obtain ⟨D, hD0, hD⟩ := exists_norm_lineTransform_le hf hfc
+  have hFc := continuous_lineTransform hf hfc
+  have hlim : Tendsto (fun n => oddSpectralWeight f (ζn n)) atTop
+      (𝓝 (oddSpectralWeight f (-1))) := by
+    unfold oddSpectralWeight
+    refine (Complex.continuous_re.tendsto _).comp (Tendsto.const_mul _ ?_)
+    refine tendsto_integral_of_dominated_convergence
+      (fun t => 2 * D / (1 + t ^ 2) ^ 2 * (44 * (1 + t ^ 2))) ?_ ?_ ?_ ?_
+    · intro n
+      exact (hFc.measurable.mul (measurable_oddLineKernel_linePt _)).aestronglyMeasurable
+    · have : Integrable fun t : ℝ => 2 * D * 44 * (1 + t ^ 2)⁻¹ :=
+        integrable_inv_one_add_sq.const_mul _
+      refine this.congr (Eventually.of_forall fun t => ?_)
+      field_simp
+    · intro n
+      filter_upwards [WeilHerglotz.ae_ne_real 0] with t ht
+      rw [norm_mul]
+      exact mul_le_mul (hD t) (norm_oddLineKernel_le ht (norm_bdryPt _)
+        (Or.inr (by rw [circleOrd_bdryPt]; linarith [hpos n]))) (norm_nonneg _) (by positivity)
+    · filter_upwards [WeilHerglotz.ae_ne_real 0] with t ht
+      exact Tendsto.const_mul _ ((continuousAt_oddLineKernel_neg_one ht).tendsto.comp hseq)
+  exact ge_of_tendsto' hlim hval
+
+/-- **The spectral weight is nonnegative on the support.** -/
+theorem oddSpectralWeight_nonneg {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hodd : ∀ x, f (-x) = -f x) {ζ : ℂ} (hζ : ‖ζ‖ = 1)
+    (hs : ζ = 1 ∨ -(1 / 4) ≤ circleOrd ζ) : 0 ≤ oddSpectralWeight f ζ := by
+  by_cases h1 : ζ = 1
+  · rw [h1, oddSpectralWeight_one hf hfc]
+  · have hγ : -(1 / 4) ≤ circleOrd ζ := hs.resolve_left h1
+    by_cases h0 : circleOrd ζ = 0
+    · have : ζ = -1 := by rw [eq_bdryPt_circleOrd hζ h1, h0, bdryPt_zero]
+      rw [this]
+      exact oddSpectralWeight_neg_one_nonneg hf hfc hodd
+    · rcases lt_or_gt_of_ne h0 with hneg | hpos
+      · rw [oddSpectralWeight_eq_of_neg hf hfc hodd hζ h1 hγ hneg]
+        exact div_nonneg (by positivity) (by linarith)
+      · rw [oddSpectralWeight_eq_of_pos hf hfc hodd hζ h1 hpos]
+        positivity
+
+/-! ## The odd Herglotz bridge -/
+
+/-- **A slit continuation with the sign law makes the weights odd Weil-positive.** -/
+theorem weilPositiveOdd_of_slit {lam : ℕ → ℝ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    {Ψ : ℂ → ℂ} (hΨd : DifferentiableOn ℂ Ψ oddWeilSlitDomain)
+    (hΨe : ∀ s : ℂ, 1 < s.re → Ψ s = weilFunction lam s)
+    (hΨs : ∀ s : ℂ, 1 / 2 < s.re → s.im ≠ 0 → 0 ≤ s.im * (((s - 1 / 2) * Ψ s).im)) :
+    WeilPositiveOdd lam := by
+  obtain ⟨ν, hfin, c, hsupp, hrep⟩ := exists_nevanlinna_measure_of_slit hΨd hΨe hΨs
+  intro f hf hfc hodd
+  rw [re_weilFullFunctional_eq_integral_oddSpectralWeight hsl hΨd hΨe hsupp hrep hf hfc hodd]
+  refine integral_nonneg_of_ae ?_
+  filter_upwards [ae_support_of_measure_eq_zero hsupp] with θ hθ
+  exact oddSpectralWeight_nonneg hf hfc hodd (norm_circleMap_one θ) hθ
+
+/-- **The odd Weil cone is the set of weights with a slit continuation obeying the
+squared-variable sign law.** -/
+theorem weilPositiveOdd_iff_exists_slit {lam : ℕ → ℝ} :
+    WeilPositiveOdd lam ↔
+      (∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ) ∧
+      ∃ Ψ : ℂ → ℂ, DifferentiableOn ℂ Ψ oddWeilSlitDomain ∧
+        (∀ s : ℂ, 1 < s.re → Ψ s = weilFunction lam s) ∧
+        ∀ s : ℂ, 1 / 2 < s.re → s.im ≠ 0 → 0 ≤ s.im * (((s - 1 / 2) * Ψ s).im) := by
+  constructor
+  · intro hW
+    refine ⟨fun σ hσ => OddSector.summable_abs_div_rpow_of_weilPositiveOddAt_anyWeight
+      (weilPositiveOddAt_one_iff.mpr hW) hσ, ?_⟩
+    obtain ⟨Ψ, hΨd, hΨe, hΨs⟩ := exists_weilFunction_slit_continuation hW
+    exact ⟨Ψ, hΨd, hΨe, hΨs⟩
+  · rintro ⟨hsl, Ψ, hΨd, hΨe, hΨs⟩
+    exact weilPositiveOdd_of_slit hsl hΨd hΨe hΨs
 
 end RHTower.OddResolvent

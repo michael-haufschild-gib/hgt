@@ -119,8 +119,11 @@ theorem integral_thetaGroundCorrection {v : ℝ → ℝ} (hv : Measurable v)
     filter_upwards with t
     exact integral_add_right_eq_self (fun x => thetaGroundRow v (-1) (t, x)) t
   change (∫ e, thetaGroundRow v 1 e + thetaGroundRow v (-1) (e.1, e.2 + e.1) ∂archBase) = _
-  rw [integral_add hp hshift, heq, ← integral_add hp hm,
-    archBase, integral_prod_symm _ (hp.add hm)]
+  rw [integral_add hp hshift, heq, ← integral_add hp hm]
+  have hf : (∫ e, thetaGroundRow v 1 e + thetaGroundRow v (-1) e ∂archBase) =
+      ∫ x, ∫ t in Ioi (0 : ℝ), thetaGroundRow v 1 (t, x) + thetaGroundRow v (-1) (t, x) := by
+    exact integral_prod_symm (fun e => thetaGroundRow v 1 e + thetaGroundRow v (-1) e) (hp.add hm)
+  rw [hf]
   rw [massMeasure, integral_weighted volume continuous_massDensity.measurable
     (Eventually.of_forall fun x => (massDensity_pos x).le)]
   apply integral_congr_ae

@@ -35,7 +35,7 @@ theorem nonsingular_stationary_right :
 theorem memLp_stationary_difference_iff {v : ℝ → ℝ} (hv : Measurable v) :
     MemLp (difference v) 2 stationaryMeasure ↔ Integrable (stationaryJump v) archBase := by
   rw [memLp_two_iff_integrable_sq (measurable_difference hv).aestronglyMeasurable,
-    stationaryMeasure, integrable_weighted_iff archBase
+    stationaryMeasure, integrable_weighted_iff archBase (w := fun e : ℝ × ℝ => archLevyDensity e.1)
       (measurable_archLevyDensity.comp measurable_fst)]
   · rfl
   · have ht : ∀ᵐ e ∂archBase, 0 < e.1 :=
