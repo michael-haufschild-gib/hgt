@@ -1,10 +1,10 @@
-# FU: inherited source controllability
+# FU: paid prime exhaustion
 
-Status: investigation; no claimed theorem yet.
+Status: formalized; all five leaves and the closed capstone passed direct Lean and axiom audits.
 
 Objective: remove a structural obstruction beyond prescribed-prime finite-cube sign preparation. No numerical experiments, external search, new hypotheses, or estimate-only deliverable.
 
-Plan:
+Completed workflow:
 1. Recover the exact remaining obstruction from current Lean statements and corpus search.
 2. Conjecture and attack structural mechanisms; record failures and positive survivors.
 3. Complete a dependency-closed proof before formalization.
@@ -23,7 +23,7 @@ Conjecture ledger:
 3. Neutralizing all retained receiving coordinates pays insertion of the prescribed retained field. Rejected: insertion also merges residual fibres outside that field. Their inherited covariance is not controlled by the receiving vector. The existing two-coordinate positive-debt circuit addresses exactly this extra quadratic quantity.
 4. Iterated fixed-core spectral payment might produce cofinal energy control. Still unresolved: `MobiusDivisorPrimeBlockEnergyEscape` proves exponential limiting energy for natural exhaustive cores, so limit-first arguments cannot be promoted to moving-cutoff control without controlling escaping spectral mass.
 5. Admit primes at a common nontrivial zero of the continuous child source. Rejected as the deliverable: zero insertion work on a real clock does not pay original integer-clock drift; treating it as a solution would merely move the debt.
-6. Paid least-missing-prime exhaustion at a fixed proportional clock. Paper mechanism below; checking the existing source lemmas and formal dependencies before implementation.
+6. Paid prime exhaustion at a fixed proportional clock. The paper mechanism below is formalized by the closed capstone `exists_mobiusDivisorPaidPrimeExhaustion`.
 
 ## Candidate 6: paper proof
 
@@ -42,11 +42,11 @@ The intended theorem is an actual prime-exhaustive schedule whose complete logar
 Significance gate: a generic cone receiver is insufficient. Any survivor must discharge its source hypotheses on the actual arithmetic profiles and explicitly identify the finite inherited obstruction removed.
 
 Formal construction choice: scan consecutive primes `r_k = Nat.nth Nat.Prime (B+k)`.
-If a scanned prime already occurs among previous helpers, take an empty block;
-otherwise use the paid mandatory block. Initial core contains all primes below
+If a scanned prime already occurs among previous helpers, an empty block is
+admissible; otherwise use the paid mandatory block. Initial core contains all primes below
 `r_0`. Then every smaller prime remains processed, and `pi(r_k)=B+k+1`
-makes the consumption invariant immediate. This is the same exhaustion proof
-with explicit skipped stages, avoiding a separate least-missing-prime recursion.
+makes the consumption invariant immediate. This is the same exhaustion proof,
+allowing already processed mandatory primes and avoiding a separate least-missing-prime recursion.
 All nonempty blocks still pay their mandatory prime and helpers against the
 inherited pre-block state. Strictly increasing proportional clocks remain.
 
@@ -65,7 +65,60 @@ The mandatory singleton identity is exact:
 because their primes exceed `r > A+1`. Signed supply is consequently
 independent of every preceding helper choice and of the receiving head.
 
-Formalization: scalar paid block, fixed source/count capacity, and the closed
-signed arithmetic supply compiled and are wired into `RHTower.lean`.
-Inherited extension and exhaustive history are being checked leaf by leaf.
-No capstone verification claimed yet.
+Formalization: all five leaves, including the closed capstone
+`exists_mobiusDivisorPaidPrimeExhaustion`, passed direct
+`lake --old env lean` checks without warnings. All five are wired into
+`RHTower.lean`. The axiom and repository lint audit results are recorded below.
+
+## Exact result and remaining frontier
+
+The closed theorem `RHTower.exists_mobiusDivisorPaidPrimeExhaustion` constructs
+fixed integers `A >= 2`, `D >= 1`, increasing primes `r_k`, finite cores `P_k`,
+and ordered blocks `l_k`. The initial core is exactly the primes below `r_0`.
+Each block is fresh and duplicate-free, contains at most `D` primes, and
+contains the mandatory prime unless an earlier helper block already processed
+it. Cores satisfy `P_(k+1) = P_k union l_k`; every prime eventually belongs.
+
+At the literal integer cutoff `M_k=A*r_k`, every prefix of `l_k` satisfies
+both `E(M_k,P_k union prefix) <= E(M_k,P_k)` and
+`W_1(M_k,P_k union prefix) <= W_1(M_k,P_k)`, where `W_1` is the complete
+logarithmically weighted clock energy. The baseline precedes all helpers.
+There is no sign or energy premise on the inherited receiving head.
+
+This removes the combined mandatory-insertion and helper-depletion
+obstruction for one actual prime-exhaustive inherited history. The seed is a
+fixed finite initial core; its preparation is not claimed to be paid by this
+theorem. Cutoff drift between `M_k` and `M_(k+1)` remains unresolved. These
+local comparisons cannot be telescoped across changing cutoffs without a
+separate drift argument. No uniform energy bound or completed critical-action
+bound is claimed.
+
+## Audit record
+
+Direct foreground checks used `lake --old env lean <leaf> -o <leaf.olean>`
+for all five leaves, with one Lean process at a time:
+
+- `MobiusDivisorMandatoryScalarBlock.lean`
+- `MobiusDivisorExhaustionPrimeCapacity.lean`
+- `MobiusDivisorExhaustionSignedSupply.lean`
+- `MobiusDivisorPaidExhaustionStep.lean`
+- `MobiusDivisorPaidPrimeExhaustion.lean`
+
+All exited 0; final versions produced no warnings. No umbrella build ran.
+All five imports are present in the theorem-area umbrella.
+
+The temporary-file audit `lake --old env lean /tmp/fu_paid_exhaustion_audit.lean`
+exited 0. It checked toolchain lemma names and printed the axioms of
+`mandatory_prime_block`, `exists_primeCapacity`, and the final capstone.
+Each depends only on `propext`, `Classical.choice`, and `Quot.sound`.
+The capstone has no hypotheses. No new axioms, numerical experiments,
+heartbeat increases, or external novelty searches were used. Scratch audit
+files and search outputs were removed after recording these results.
+
+`scripts/formal_tools.py lint` exited 1 solely for eight unrelated unreachable
+modules: `OddSectorArithmeticGroundOperator`, `OddSectorExactDualAttainment`,
+`PaperThetaNativeMeyerCompleteness`, `PaperThetaNativeQuantileComparison`,
+`PaperThetaNativeRootTransport`, `SuzukiCausalDepthGammaMaximalSource`,
+`SuzukiCausalDepthGammaSourceRegularization`, and `SuzukiGammaJacobiTailCore`.
+No forbidden declarations or reachability errors were reported in these five
+leaves. Unrelated concurrent work was left intact.

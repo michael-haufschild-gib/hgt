@@ -1736,3 +1736,34 @@ than leaving lower moment vanishing as caller inputs. Scratch
 classification and instantiates the frequency as -I*xiSpectralPointSupport.
 It is under foreground audit; no result from that unfinished audit is
 claimed in this entry.
+
+The divisor connection subsequently passed its scratch proof and axiom
+audit. It is now installed in `ThetaRenewalCausalMoments.lean`:
+`thetaCausalMoment_divisor_source_order` proves exact source-moment
+vanishing order, and `fullCausalMomentArithmeticAction_at_divisor` applies
+to every rho:XiDivisorSupport, j:Fin(xiSupportMultiplicity rho), and x:Real,
+with no additional hypotheses. Frequency -I*xiSpectralPointSupport rho
+matches the corpus's negative-Fourier-exponential convention. The Xi
+source-jet classification discharges the moments, and the actual zero
+strip theorem discharges both strip bounds. The terminal moment is
+nonzero; no multiplicity is discarded.
+
+Final installed-module `lake --old env lean` audit terminated exit 0
+without diagnostics. Both added divisor theorems depend only on propext,
+Classical.choice, and Quot.sound. Umbrella import occurs once; index
+refresh completed and diff whitespace checks passed. The final repository
+lint still exited 1 on seven concurrent unrelated unreachable modules:
+MobiusDivisorPaidExhaustionStep, MobiusDivisorPaidPrimeExhaustion,
+OddSectorExactDualAttainment, PaperThetaNativeMeyerCompleteness,
+PaperThetaNativeQuantileComparison, PaperThetaNativeRootTransport, and
+SuzukiGammaJacobiTailCore. No RN-module lint error was reported.
+
+Anti-theatre: no scientific novelty is asserted; known analytic methods
+were checked on the literal all-order source. Actual divisor action is
+now formal, but native mixed positivity is still open. Anti-laziness: no
+step was deferred because of estimated effort; the source-only mixed-cut
+attack did not yield a positive Gram representation. Both deep searches
+and the lexical follow-up were inspected. Stay with RN and attack the
+mixed matrix inequality from the modular source, rather than collecting
+more action identities. Cleanup removes owned completed searches and
+scratch files; no own process remains running. The RH goal stays active.

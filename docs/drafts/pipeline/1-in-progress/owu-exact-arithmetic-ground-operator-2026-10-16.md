@@ -1,6 +1,6 @@
 # OWU: exact arithmetic ground operator
 
-Status: paper proof under audit; Lean not started.
+Status: paper proof closed; Lean formalization in progress.
 
 Objective: remove the nonlinear quadratic-constraint qualification obstruction in the attained odd blind problem. Produce an actual finite arithmetic correction and an actual blind eigenstate at every positive aperture, with zero tolerance and no sign assumption.
 
@@ -18,8 +18,9 @@ Search: `research "odd blind multiplier dual attainment" --mode deep --budget-se
 ## Conjecture sequence
 
 1. A positive-tolerance covariance certificate can be sent directly to zero tolerance. Rejected as a proof: its coefficient compactness divides by tolerance, so it gives no zero-tolerance limit.
-2. Instead, the exact attained blind minimum admits finite arithmetic multipliers by positive-mixture purification and full signed coordinate reachability. Under paper audit.
-3. Those same multipliers make every blind minimizer a true eigenvector of one arithmetic-corrected represented operator. Under paper audit; an odd-sector variational equation alone is insufficient for full operator-domain membership.
+2. Instead, the exact attained blind minimum admits finite arithmetic multipliers by positive-mixture purification and full signed coordinate reachability. Paper proof closed; `OddSectorExactDualAttainment.lean` passed direct Lean audit.
+3. Those same multipliers make every blind minimizer a true eigenvector of one arithmetic-corrected represented operator. Paper proof closed. An odd-sector variational equation alone is insufficient for full operator-domain membership; reflection supplies the missing even variations.
+4. The whole set of blind minimizers lies in one produced finite-dimensional linear eigenspace. Paper proof: K=J*(mI-R+C_lambda)J is compact, and the full ground equation says Ku=u. Its eigenvalue-one space is finite dimensional. Conversely a blind unit vector in this space has Q=m. This gives an exact finite-dimensional classification of the nonlinear optimizer set, rather than only a stationarity condition.
 
 ## Dependency-closed paper argument
 
@@ -35,9 +36,11 @@ Equality holds at u because T(u)=0 and ||Ju||=1. Define C_lambda as the finite s
 
 The same argument applies to every blind minimizer for this single lambda: no simplicity assumption, constraint-gradient independence, positive tolerance, or sign assumption occurs.
 
+The corpus supplies full reflection invariance of the Weil form (`ccmRestrictedWeilForm_reflection`), translation-reflection transport, the quadratic null-direction lemma, and represented operator-domain membership. These close the paper dependencies. Compactness of the physical form embedding closes the finite-dimensional eigenspace argument in conjecture 4.
+
 ## Open frontier retained
 
-No assertion that m>=0. No cofinal compatibility or global positive arithmetic source. The original pole term remains intact. This task is not an RH equivalence.
+No assertion that m>=0. No cofinal compatibility or global positive arithmetic source. The original pole term remains intact. The floor is on the odd sector; no ordering against the corrected operator's even sector is claimed. The finite space may also contain even eigenvectors at the same eigenvalue. Its blind odd unit section is the exact optimizer set. This task is not an RH equivalence.
 
 ## Verification and cleanup
 

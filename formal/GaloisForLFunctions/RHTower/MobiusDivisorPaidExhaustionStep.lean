@@ -122,7 +122,7 @@ theorem paid_extension (w : PrimeCapacity) (r : ℕ) (P : Finset ℕ)
         ∑ q ∈ S, singletonSource (w.factor*r) q :=
       sum_congr rfl (fun q hq => he q (mem_insert_of_mem (mem_union_left _ hq)))
     rw [heS]
-    exact (mul_le_mul_left hnR).mp hh
+    exact le_of_mul_le_mul_left hh hnR
   have hcoverT : |mobiusDivisorSelectionFibre (w.factor*r) P {r}| ≤
       ∑ q ∈ T, -mobiusDivisorSelectionFibre (w.factor*r) P {q} := by
     rw [he r (mem_insert_self _ _)]
@@ -133,7 +133,7 @@ theorem paid_extension (w : PrimeCapacity) (r : ℕ) (P : Finset ℕ)
       sum_congr rfl (fun q hq => congrArg Neg.neg
         (he q (mem_insert_of_mem (mem_union_right _ hq))))
     rw [heT]
-    exact (mul_le_mul_left hnR).mp hh
+    exact le_of_mul_le_mul_left hh hnR
   obtain ⟨l,hnd,hrl,hln,hl,hpaid⟩ := mandatory_prime_block (w.factor*r) P S T r w.budget
     (terminal_of_core _ _ P (by omega) hcore) hdata hrS hrT hSn.le hTn.le
     hSsign hTsign hcoverS hcoverT

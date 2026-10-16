@@ -26,4 +26,8 @@ Paper mechanism for conjecture 3:
 - Telescope the cancellation equations: the output-tail discrepancy of this pair is exactly the normalized backward shift. D_n*u tends to u by square-summable domination. The first surviving coordinate is fixed continuously by the first cancelled row, so it converges too.
 - Hence every maximal graph pair is a limit of minimal graph pairs. The reverse inclusion is already proved. No extra output/source hypotheses remain in the graph equality.
 
-This is a domain/completion theorem, not the unresolved signed prime--polar--Gamma Ward comparison. It is not yet formalized or claimed proved.
+This is a domain/completion theorem, not the unresolved signed prime--polar--Gamma Ward comparison. Graph equality is not yet formalized or claimed proved.
+
+Formal progress: `SuzukiGammaJacobiTailCore.lean` passes direct `lake --old env lean -j 1` audit. It proves the exact central-binomial block identity, averaged Jacobi tail energy tends to zero for every summable energy sequence, and arbitrarily late shifts have arbitrarily small energy. `SuzukiCausalDepthGammaSourceRegularization.lean` is being checked next. No umbrella imports added until modules are finished.
+
+4. Stronger conjecture exposed by the construction: the same literal finite source packets form a **joint graph core for every finite family of Gamma parameters**. The radial input multiplier is parameter-independent. Sum the finitely many nonnegative output-tail energies and choose one sequence of good shifts; every component then converges. Each regularized joint output is the continuous image of the same finite input approximants. This removes the additional common-domain/completion ambiguity in mixed-aperture pairings. Paper argument is dependency-closed once conjecture 3's analytic details are checked; formalization pending.

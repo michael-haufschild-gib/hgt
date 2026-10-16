@@ -122,7 +122,9 @@ theorem exists_exact_interior_multiplier (a : SuzukiPositiveAperture) :
       rw [hT]
       ext k
       simp only [Finsupp.subtypeDomain_apply,Finsupp.single_apply]
-      rw [show j.1 = k.1 ↔ j = k from ⟨Subtype.ext,congrArg Subtype.val⟩])
+      by_cases h : j = k
+      · subst k; rw [if_pos rfl,if_pos rfl]
+      · rw [if_neg (fun he => h (Subtype.ext he)),if_neg h])
     (fun j => by
       obtain ⟨p,m,kp,km,hp,-,hT,-⟩ := hsign j
       refine ⟨p,kp,hp,?_⟩
@@ -130,7 +132,9 @@ theorem exists_exact_interior_multiplier (a : SuzukiPositiveAperture) :
       rw [hT]
       ext k
       simp only [Finsupp.subtypeDomain_apply,Finsupp.single_apply]
-      rw [show j.1 = k.1 ↔ j = k from ⟨Subtype.ext,congrArg Subtype.val⟩])
+      by_cases h : j = k
+      · subst k; rw [if_pos rfl,if_pos rfl]
+      · rw [if_neg (fun he => h (Subtype.ext he)),if_neg h])
     (blind_residual_nonneg_on_null_cone a)
   refine ⟨lam,fun f => ?_⟩
   have h := hlam f
