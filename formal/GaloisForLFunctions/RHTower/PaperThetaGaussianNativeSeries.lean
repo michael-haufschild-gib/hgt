@@ -9,9 +9,10 @@ after actual Gaussian source regularization, without separating any zeros.
 
 noncomputable section
 open MeasureTheory Set Filter Topology Complex
-open scoped BoundedContinuousFunction DeningerMeyerNaturalTopology
+open scoped BoundedContinuousFunction
 
 namespace RHTower.PaperThetaEndpoint
+open scoped DeningerMeyerNaturalTopology
 
 theorem gaussian_nativeXiBlock_control (S : DeningerMeyerXiContourSchedule)
     (g : DeningerMeyerStrongLogTarget) {ε : ℝ} (hε : 0 < ε) :
@@ -80,7 +81,7 @@ theorem gaussian_nativeXiBlock_control (S : DeningerMeyerXiContourSchedule)
         (fun s hs => by
           obtain ⟨hr₁, hr₂, _, hi, _⟩ := S.upper_geometry n hs
           exact ⟨hmass n s (Or.inl hs), thetaContourParameter_strip hr₁ hr₂,
-            by simpa [U, add_assoc] using thetaContourParameter_norm hr₁ hr₂ hi⟩)
+            by have ht := thetaContourParameter_norm hr₁ hr₂ hi; dsimp [U]; linarith⟩)
       have hl := hstep (deningerXiContourLeft (-S.height (n+1))) (deningerXiContourRight (-U))
         (S.lower_nonzero n) (by
           simp only [deningerXiContourRight_re, deningerXiContourLeft_re,
@@ -92,7 +93,7 @@ theorem gaussian_nativeXiBlock_control (S : DeningerMeyerXiContourSchedule)
         (fun s hs => by
           obtain ⟨hr₁, hr₂, _, hi, _⟩ := S.lower_geometry n hs
           exact ⟨hmass n s (Or.inr hs), thetaContourParameter_strip hr₁ hr₂,
-            by simpa [U, add_assoc] using thetaContourParameter_norm hr₁ hr₂ hi⟩)
+            by have ht := thetaContourParameter_norm hr₁ hr₂ hi; dsimp [U]; linarith⟩)
       have hcd : c (n+1) = 2*D := by dsimp [c, D, mass, P, U]; ring
       rw [hcd]
       constructor

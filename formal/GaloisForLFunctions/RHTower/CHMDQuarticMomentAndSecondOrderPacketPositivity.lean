@@ -571,8 +571,7 @@ theorem sum_sum_mul_pow_four_sub {N : ℕ} (t c : Fin N → ℝ) :
         (6 * (c i * t i ^ 2)) * (c j * t j ^ 2) -
         (4 * (c i * t i ^ 3)) * (c j * t j) + (c i * t i ^ 4) * c j := by
     intro i j; ring
-  simp_rw [e, Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.sum_mul,
-    ← Finset.mul_sum]
+  simp only [e, Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.sum_mul]
   ring
 
 theorem sum_sum_mul_pow_four_sub_of_degenerate {N : ℕ} (t c : Fin N → ℝ)
@@ -1004,12 +1003,21 @@ theorem inverseLightConeTransmute_chmdPrimeKernel (y u : ℝ) :
       y ^ 2 / 2 * ∫ t in (-1 : ℝ)..1,
         lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) * chmdPrimeKernel (y * t) u := by
     unfold chmdPrimeKernel
-    have hpull := intervalIntegral.integral_const_mul (a := (-1 : ℝ)) (b := 1) (1 / π)
-      (fun t => lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) *
-        ∫ r, Real.cos (y * t * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r * Real.cos (r * u))
-    rw [← mul_assoc, mul_comm (1 / π) (y ^ 2 / 2), mul_assoc, ← hpull]
-    congr 1
-    refine intervalIntegral.integral_congr fun t _ => ?_
+    have hpull : (∫ t in (-1 : ℝ)..1, (1 / π) *
+        (lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) *
+          ∫ r, Real.cos (y * t * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r * Real.cos (r * u))) =
+        (1 / π) * ∫ t in (-1 : ℝ)..1,
+          lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) *
+            ∫ r, Real.cos (y * t * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r * Real.cos (r * u) :=
+      intervalIntegral.integral_const_mul _ _
+    have hcongr : (∫ t in (-1 : ℝ)..1, (1 / π) *
+        (lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) *
+          ∫ r, Real.cos (y * t * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r * Real.cos (r * u))) =
+        ∫ t in (-1 : ℝ)..1,
+          lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) *
+            (1 / π * ∫ r, Real.cos (y * t * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r * Real.cos (r * u)) :=
+      intervalIntegral.integral_congr fun t _ => by ring
+    rw [← hcongr, hpull]
     ring
   rw [← h1, h, mul_add, hint]
   rfl
@@ -1198,9 +1206,11 @@ theorem inverseLightConeTransmute_chmdPoleWave (y : ℝ) :
   rw [cosh_half_eq_inverseLightCone, mul_add]
   unfold inverseLightConeTransmute
   simp_rw [chmdPoleWave_eq]
-  have hpull := intervalIntegral.integral_const_mul (a := (-1 : ℝ)) (b := 1)
-    (2 / Real.cos (1 / 4 : ℝ) ^ 2)
-    (fun t => lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) * Real.cos (y * t * Real.sqrt (7 / 4)))
+  have hpull : (∫ t in (-1 : ℝ)..1, (2 / Real.cos (1 / 4 : ℝ) ^ 2) *
+      (lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) * Real.cos (y * t * Real.sqrt (7 / 4)))) =
+      (2 / Real.cos (1 / 4 : ℝ) ^ 2) * ∫ t in (-1 : ℝ)..1,
+        lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) * Real.cos (y * t * Real.sqrt (7 / 4)) :=
+    intervalIntegral.integral_const_mul _ _
   have hcongr : (∫ t in (-1 : ℝ)..1,
       lightConeBesselReal (-2 * y ^ 2 * (1 - t ^ 2)) *
         (2 / Real.cos (1 / 4 : ℝ) ^ 2 * Real.cos (y * t * Real.sqrt (7 / 4)))) =
