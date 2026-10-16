@@ -30,13 +30,14 @@ structure DeningerMeyerXiContourSchedule where
 /-- A literal schedule selected from the unconditional good-height theorem. -/
 def deningerMeyerXiContourSchedule : DeningerMeyerXiContourSchedule := by
   classical
+  apply Classical.choice
   obtain ⟨M, n₀, hsel⟩ := exists_xi_horizontal_ratio_nat_bound
   let N := max n₀ 10
   have hN : 10 ≤ N := le_max_right _ _
   have hinput := fun n : ℕ => hsel (N+4*(n : ℝ))
     (by dsimp [N]; linarith [le_max_left n₀ 10, Nat.cast_nonneg (α := ℝ) n])
   choose T hL hU hratio using hinput
-  refine ⟨M, N, hN, T, hL, hU, ?_, ?_⟩
+  refine ⟨⟨M, N, hN, T, hL, hU, ?_, ?_⟩⟩
   · intro n σ hσ₁ hσ₂
     have hT : 0 ≤ T n := by linarith [hL n, Nat.cast_nonneg (α := ℝ) n]
     calc
@@ -56,8 +57,8 @@ namespace DeningerMeyerXiContourSchedule
 
 variable (S : DeningerMeyerXiContourSchedule)
 
-theorem height_ge (n : ℕ) : 10+4*(n : ℝ) ≤ S.height n :=
-  (add_le_add_right S.offset_ge _).trans (S.lower n)
+theorem height_ge (n : ℕ) : 10+4*(n : ℝ) ≤ S.height n := by
+  linarith [S.offset_ge, S.lower n]
 
 theorem height_pos (n : ℕ) : 0 < S.height n := by
   linarith [S.height_ge n, Nat.cast_nonneg (α := ℝ) n]
@@ -101,7 +102,7 @@ theorem deningerXiContour_edge_floor (s : ℂ) (hs : s.re = -1 ∨ s.re = 2) :
     Real.exp (-(Real.pi*|s.im|/4))/(3*Real.pi) ≤ ‖xi s‖ := by
   rcases hs with hs | hs
   · have he : 1-s = 2+((-s.im : ℝ) : ℂ)*I := by
-      apply Complex.ext <;> simp [hs] <;> ring
+      apply Complex.ext <;> norm_num [hs]
     have h := xi_floor_two (-s.im)
     rw [← he, xi_one_sub] at h
     simpa only [abs_neg] using h
@@ -118,8 +119,8 @@ theorem deningerXiContour_inverse_of_floor {z : ℂ} {P t : ℝ}
     rw [hz, norm_zero, mul_zero] at h
     linarith
   refine ⟨hnz, ?_⟩
-  have hd := (div_le_div_iff₀ (norm_pos_iff.mpr hnz) hp).mpr (by simpa using h)
-  change 1/‖xi z‖ ≤ P/(Real.exp (-(Real.pi*t/4))/(3*Real.pi)) at hd
+  have hd : 1/‖xi z‖ ≤ P/(Real.exp (-(Real.pi*t/4))/(3*Real.pi)) :=
+    (div_le_div_iff₀ (norm_pos_iff.mpr hnz) hp).mpr (by simpa only [one_mul] using h)
   rw [norm_inv, inv_eq_one_div]
   calc
     1/‖xi z‖ ≤ P/(Real.exp (-(Real.pi*t/4))/(3*Real.pi)) := hd

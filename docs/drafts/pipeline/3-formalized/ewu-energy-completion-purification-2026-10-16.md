@@ -1,6 +1,6 @@
 # EWU: purification survives finite-energy completion
 
-Status: in progress. Scope: unconditional structural existence; no RH sign claim.
+Status: formalized and audited. Scope: unconditional structural existence; no RH sign claim.
 
 ## Obstruction
 
@@ -26,7 +26,13 @@ Preserves: actual aperture, full profile, normalization, both pole constraints, 
 - `EvenSectorEnergyCompletion.lean`: compact physical budgets, actual single-source profile image, exact native-source bridges, purification of the whole pointwise completion.
 - `EvenSectorBlindVariationalAttainment.lean`: blind feasibility at every aperture, equivalence with real symmetric trace cancellation, actual archimedean energy identity, unconditional blind minimizer.
 
-The completion module has built successfully. The attainment module's feasibility and actual archimedean identity checked on its first build; remaining type-inference/closed-set elaboration issues are being resolved. No mathematical premise was added.
+Both modules built successfully, then passed final direct Lean audits without diagnostics. Elaboration repairs concerned casts, conjugation notation, and closed-set syntax; no mathematical premise was added.
+
+## Exact frontier change
+
+`closure_nativeEnergyProfiles_subset_completed` removes loss of actual sources under pointwise completion of normalized finite positive mixtures with a fixed aperture and finite actual Weil-energy budget. `closure_nativeBlindProfiles_has_source` allows arithmetic blindness only at the limiting profile, so approximate constraints introduce no additional source-realization obstruction. `exists_blind_minimizer` proves an actual normalized even polar blind minimum at every positive aperture. `sourceQuadratic_blind_eq_gamma` identifies its objective with the literal archimedean integral, and `exists_blind_minimizer_for_mixture_completion` places every blind mixed-limit budget above that attained pure minimum.
+
+The new proof avoids the need for a continuous or coherent selection of entire factors. The surviving hard question is the sign of the attained blind minimum. Smooth attainment, equality of energy along arbitrary profile limits, a converse density theorem for every completed blind source, and uniform control as aperture tends to infinity are not asserted.
 
 ## Corpus evidence
 
@@ -40,8 +46,12 @@ Fresh corpus research searches executed; deep searches report complete source in
 
 ## Audit checklist
 
-- [ ] Source and paper proof complete.
-- [ ] Foreground leaf olean build with --old.
-- [ ] Direct lake env lean final audit.
-- [ ] Mathlib-name probes and axiom audit in /tmp.
-- [ ] Umbrella imports, formal lint, owned scratch cleanup.
+- [x] Source and dependency-closed paper proofs complete.
+- [x] Foreground `lake --old build GaloisForLFunctions.RHTower.EvenSectorBlindVariationalAttainment`; both new oleans built and checked fresh. No full or umbrella build.
+- [x] Final `lake env lean GaloisForLFunctions/RHTower/EvenSectorEnergyCompletion.lean` and `lake env lean GaloisForLFunctions/RHTower/EvenSectorBlindVariationalAttainment.lean`: exit 0, no diagnostics. Source hashes unchanged after audit.
+- [x] All 118 referenced Mathlib declarations checked in `/tmp`, then probed with explicit `have := @Name` declarations. All 34 public declarations audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
+- [x] Both theorem-area umbrella imports present exactly once; `git diff --check` clean.
+- [x] `scripts/formal_tools.py lint` executed. It reports nine unrelated unwired modules: DeningerMeyerGaussianContourMass, DeningerMeyerSourceSeries, DeningerMeyerXiContourBounds, DeningerMeyerXiContourHeights, DeningerMeyerXiContourQuotient, DeningerMeyerXiContourSource, WeilDilationRayCriterion, HTGeometry.DividedDifferenceCauchyProjection, HTGeometry.EntireDividedDifferenceContour. No new-module error. Foreign work preserved.
+- [x] All 23 owned temporary audit/search files removed; fresh oleans retained.
+
+No computations or numerical experiments, added axioms, proof holes, heartbeat increases, web searches, novelty audit, or commits by this agent.

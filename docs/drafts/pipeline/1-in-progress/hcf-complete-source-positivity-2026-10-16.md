@@ -64,6 +64,12 @@ the new pivot's sign unresolved.
    sign. `WeilCutEvenMeanZeroDeficit` assumes odd Weil positivity and leaves a
    negative cut contribution; its cut-elimination conclusion also needs
    even mean-zero positivity. Those premises were not discharged.
+9. **A positive Sonin source supplies the missing complete Gram form.**
+   `SoninAllPrimePositiveMomentWeldFrontier` constructs a positive all-prime
+   trace-class operator family, but still requires exact convergence of its
+   trace moments to `normalizedPrimeArchMoment`. The family and the target
+   moment functional are separately defined. No proof of that identification
+   was obtained; covariance positivity cannot substitute for it.
 
 ## Remaining source statement
 
@@ -86,7 +92,23 @@ Corpus searches used the documented research command, including whole-RHTower
 and HTGeometry deep searches and a CHMD lexical search. Candidate statements
 were checked against Lean source. No web search or numerical experiment was
 used. No new Lean theorem or umbrella import has been added in this attempt.
-Direct Lean declaration and axiom audit is pending.
+
+A focused `lake --old build` of the five imported existing leaves completed
+successfully. Direct `lake env lean /tmp/hcf12-source-audit.lean` then exited 0.
+It checked the exact types and axiom closures of the heat-Hankel RH criterion,
+the polar-transfer identity and its RH-conditional comparison, the positive
+gauge obstruction, and the nonreal-orbit energy identity. All five used only
+`propext`, `Classical.choice`, and `Quot.sound`. This verifies the cited baseline
+statements, not the requested missing positivity theorem.
+
+`scripts/formal_tools.py lint` exited 1 with eight unrelated modules unreachable
+from their umbrellas: `DeningerMeyerGaussianContourMass`,
+`DeningerMeyerSourceSeries`, `DeningerMeyerXiContourBounds`,
+`DeningerMeyerXiContourHeights`, `DeningerMeyerXiContourSource`,
+`WeilDilationRayCriterion`, `DividedDifferenceCauchyProjection`, and
+`EntireDividedDifferenceContour`. Those modules were not edited in this attempt.
+The research-card diff passed `git diff --check`; all owned scratch files were
+removed. The card remains in progress, with no completion claim.
 
 No claim of complete positivity is made. Only a dependency-closed unconditional
 proof, checked directly in Lean with standard axioms, can close this card.

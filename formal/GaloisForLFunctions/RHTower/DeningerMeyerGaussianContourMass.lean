@@ -100,7 +100,6 @@ theorem deningerGaussianContourMass_eventually {ε : ℝ} (hε : 0 < ε)
     nlinarith
   have hsmall : v*(2*L) ≤ 1 := by
     apply (mul_le_mul_iff_left₀ hL).mp
-    change L*(v*(2*L)) ≤ L*1
     nlinarith [hvL, hEL]
   have hnL : ((n : ℝ)+1)^2 ≤ 2*L := by
     dsimp [L]

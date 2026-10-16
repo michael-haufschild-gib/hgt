@@ -171,3 +171,113 @@ Further progress:
   weighted bounds for `exp(B*t-e*t^2)`. These imply eventual block domination by
   `(n+1)^(-2)` along heights above `n`. The same summable majorant works for every
   strip and derivative weight. No numerical calculation is involved.
+
+Current owned module status:
+- Passed direct audits: `EntireDividedDifferenceContour`,
+  `DividedDifferenceCauchyProjection`, `DeningerMeyerSourceSeries`,
+  `DeningerMeyerXiContourBounds`, `DeningerMeyerXiContourSource`,
+  `DeningerMeyerGaussianContourMass`.
+- `DeningerMeyerXiContourHeights` is under first audit; it constructs actual
+  spaced good heights from the existing horizontal-ratio theorem.
+- `DeningerMeyerXiContourQuotient` is written but not yet audited. It currently
+  contains contour geometry, zero-freeness and inverse-Xi control. Append the
+  Gaussian Mellin input quotient theorem before its final audit.
+- No new leaf has been wired into an umbrella yet. No nineteenth contribution
+  is counted. Existing passes remain ingredients until original density closes.
+
+Latest status:
+- Heights and Quotient now pass direct audits. The latter proves the actual
+  Gaussian Mellin-input quotient bound on both shell borders, using the good
+  height floors and the fixed-edge Xi floor.
+- `DeningerMeyerXiContourSeries.lean` is under first audit. It defines central
+  block 0 and upper+lower shell block n+1, proves each is original strip-regular,
+  and proves weighted eventual domination by the common majorant and actual
+  source summability. No axiom or placeholder is present in the written code.
+- `/tmp/hgt_rh019_density_api.lean` has been created but not run yet. It checks
+  the Nat.find, continuous series, closure and finite-native range interfaces
+  needed for the capstone. Total owned API scratch: api, topology_api,
+  contour_api, density_api (all prefixed hgt_rh019_).
+
+Capstone implementation plan:
+1. Add a germ/partition leaf after Series. Prove schedule height StrictMono
+   directly from upper/lower offset bounds. Xi roots cannot have absolute
+   ordinate equal to any scheduled height (`horizontal_ne_zero`, plus
+   `xi_eq_zero_of_mem_divisor_support rho`). Choose the least n with
+   abs(im rho) < height n using Nat.find; it exists from height_ge and
+   exists_nat_gt. Block n preserves the full input germ and all other blocks
+   vanish there. For n=0 use central rectangle; for n=k+1 choose the positive
+   or negative shell according to the root ordinate. Inside/outside jet laws
+   are already paid in XiContourSource.
+2. Continuity of `deningerMeyerStrongLogMellinJetCLM` passes the summable source
+   series to every full jet. `tsum_eq_single` identifies its jet with the input.
+   `deningerMeyerCohomology_eq_of_XiJets_eq` identifies the source sum class with
+   the Gaussian-smoothed input class.
+3. Every natural finite head lies in actual native range for
+   `(xiSupportsUpTo_finite (height N)).toFinset`: outside that set every block
+   in range N has zero full jets, and jet evaluation is linear. Use exactly
+   `PaperThetaEndpoint.mem_meyerFiniteHedenmalmRange_iff`.
+4. Quotient continuity and source summability put each Gaussian class in the
+   closure of the finite native ranges. Existing Gaussian source removal puts
+   every original class in that closure. State the unconditional Dense theorem.
+5. An original-topology finite-solution approximation result for the existing
+   repaired convolution inverse can demonstrate the new solution class, but
+   is part of this ONE contribution. No BV/native amplitude convergence claim.
+6. Then final leaf/axiom audits, unique umbrella imports, lint/index, exact
+   scratch cleanup, formalized card, ledger19/map/memory. Keep goal active100.
+
+Latest audit update:
+- `DeningerMeyerXiContourSeries` passes, including actual ORIGINAL source
+  summability of the Gaussian contour blocks. Nine owned leaves now pass.
+- `DeningerMeyerXiContourGerms` is written, not yet audited. It contains the
+  generic band jet formula, strict monotonicity of heights, block-window jet
+  formula and unique block membership of each actual Xi root via Nat.find.
+- Density API scratch is now running. Next: audit Germs, then add the capstone
+  density/finite-solution approximation leaf. No umbrella wiring/count yet.
+- Exact finite inverse invariance is available in
+  `PaperThetaConvolutionFredholm.meyerFiniteConvolutionInverse_mem`; this source
+  was read in full. Together with the existing continuous original inverse,
+  density gives finite native solutions converging in original cohomology for
+  EVERY original forcing and EVERY original convolution kernel. Native BV
+  amplitude convergence is not asserted.
+
+Capstone draft update:
+- Density API finished. The actual sequence interface is
+  `mem_closure_iff_seq_limit` (not Dense.exists_seq_tendsto). `map_tsum`,
+  `HasSum.tendsto_sum_nat`, Nat.find_min/spec, native range iff and band finiteness
+  interfaces were verified. Exploratory API errors are only absent candidate
+  names; the scratch files are not project leaves and will be removed.
+- Germs is under first direct audit.
+- `DeningerMeyerFiniteNativeDensity.lean` has been written but is NOT audited.
+  It contains continuous-jet identification of the source sum, native finite
+  head membership, Gaussian closure, and the closed unconditional theorem
+  `deningerMeyerFiniteNativeModes_dense`. Final finite-solution approximation
+  corollary remains to add after density checks.
+- Serena symbol lookup was attempted for the original inverse continuity
+  theorem and rejected because the formal path is ignored. Source rg/reads
+  remain the available fallback for Lean symbols.
+
+Integration update:
+- Germs now passes. The full-multiplicity block partition is verified.
+- All TEN passed ingredient leaves are uniquely wired into HTGeometry/RHTower
+  umbrellas. No umbrella build was run.
+- FiniteNativeDensity is under its first direct leaf audit. It now also contains
+  `deningerMeyerOriginalConvolution_nativeApproximation`, for every original
+  forcing/kernel, with finite native forcing/solution ranges, exact repaired
+  equations, and original-topology convergence of both sequences.
+- The capstone is not wired or counted until its audit passes. Still18/100.
+
+Capstone direct audit passed:
+- `lake --old env lean -o .../DeningerMeyerFiniteNativeDensity.olean GaloisForLFunctions/RHTower/DeningerMeyerFiniteNativeDensity.lean` exited 0, no warnings.
+- `deningerMeyerFiniteNativeModes_dense` is closed and unconditional in the original scoped quotient topology.
+- `deningerMeyerOriginalConvolution_nativeApproximation` pays exact finite native repaired equations and original-topology convergence for every original forcing and source symbol.
+- All eleven leaves are now uniquely wired. Ten ingredient artifacts plus the capstone artifact are fresh. No umbrella build.
+- Final audit covers all 76 new public declarations via /tmp/hgt_rh019_axioms.lean; log /tmp/hgt_rh019_axioms.log. Both are owned cleanup paths.
+- Lean repairs were parameter inclusion in the Gaussian-closure helper and replacing unnecessary simplification with definitional equality. No hypotheses or heartbeat changes.
+
+Final scope review:
+- This closes the specifically recorded original-Frechet finite causal density obstacle. It is stronger than Hilbert density because the contour series converges in every defining original source gauge before passing to the literal quotient.
+- The closed main theorem has no premises. The solution theorem quantifies only over actual source data and arbitrary actual cohomology forcing. All existence and regularity inputs are discharged in the corpus.
+- Grouped divided-difference contours retain the complete local Xi germ without individual residue estimates or separation assumptions. Gaussian removal then reaches every original class.
+- This does not assert an unconditional basis expansion of an unsmoothed input, convergence in native BV norms, admission of arbitrary prescribed infinite packets, a continuous inverse to compact-open comparison, a geometric cup identification, positive Hodge compatibility, or RH.
+- Global `scripts/formal_tools.py lint` exited 0: formal lint passed. Its only output besides success is existing large-file warnings. All earlier unrelated umbrella omissions are now absent.
+- Axiom audit remains running; count stays 18 until terminal audit and cleanup.
