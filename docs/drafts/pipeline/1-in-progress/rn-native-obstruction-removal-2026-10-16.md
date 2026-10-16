@@ -1,8 +1,7 @@
-# RN native obstruction removal
+# RN: intrinsic full-multiplicity native splitting
 
-Status: paper proof complete; generic algebra and native channel checked in
-Lean scratch files. Native bounded-operator and BV/arithmetic transport audits
-remain in progress.
+Status: paper proof complete; all eight production Lean leaves passed direct
+audits without diagnostics. Axiom and formal-lint gates remain in progress.
 
 Objective: remove a structural obstacle in RN with an unconditional theorem,
 not an estimate, RH equivalence, or receiver. Use current Lean corpus only.
@@ -74,6 +73,10 @@ a_j = c(w_j). The first nonzero a_j occurs exactly at j=m-1:
    injective on E. Thus m <= n+1.
 
 Consequently the m actual integral readings O:E->C^m are an isomorphism.
+In particular, a rank-one normalization by c(v) is unavailable when m>1:
+the channel identities force c(v)=0 in that case. The positive replacement
+is the entire confluent observation map, whose invertibility is proved at
+the actual multiplicity. No simplicity conjecture is introduced.
 Define P = inclusion * (O|E)^(-1) * O on the WHOLE native space. Then
 P^2=P, range P=E, ker P=ker O, and PN=NP. This constructs the full
 projection from source readings, without a simplicity, separation, finite
@@ -141,9 +144,18 @@ regardless of its counter-source, trace normalization, or partial inverse.
 The reduced inverse T=H(1-P) satisfies NT=TN=1-P and PT=TP=0.
 It is an actual bounded complementary solver. The projection and native
 splitting thus no longer depend on an auxiliary Grushin bump choice.
-Paper proof complete; Lean scratch audit pending.
+Paper proof complete; Lean scratch audit passed. All four generic production
+leaves passed direct `lake --old env lean -j 1 <file>` audits with no diagnostics.
 
 ## Audit constraints
+
+Hypothesis discharge: the generic algebra packages exact inverse identities
+in OneChannelParametrix. PaperThetaConfluentNativeChannel proves every field
+for the literal native Grushin construction and proves finite dimension and
+rank from the existing original-source Meyer theorem. Native conclusions
+take only an actual Xi divisor point, an order, and original forcing; there
+is no user-supplied parametrix, projection, simplicity, positivity, or
+spectral-completeness premise.
 
 Pre-existing changes: frontier map, RHTower umbrella, native root transport
 and completeness, XiNewtonDiscCurvature, and unrelated cards/report. Preserve.
@@ -152,3 +164,37 @@ audit before relying on a new formal result.
 
 User constraint added during work: docs/reports/rh-current-frontier-map.md
 is read-only. Record results here and in Lean, never edit that map.
+
+## Formal deliverables
+
+- HTGeometry/OneChannelRootObservability.lean: first surviving source reading
+  occurs at the exact maximal-root dimension minus one; full observability.
+- HTGeometry/OneChannelRootProjection.lean: whole-space projection and
+  explicit two-sided inverse on its observed complement.
+- HTGeometry/OneChannelPowerSolvability.lean: constructed solvers for every
+  power, exact idempotent finite defects, and complete solution classification.
+- HTGeometry/OneChannelCanonicalSplitting.lean: intrinsic kernel
+  `range (N^m)`, independence from auxiliary parametrices, reduced inverse.
+- RHTower/PaperThetaConfluentNativeChannel.lean: all generic identities and
+  finite-dimension obligations proved for the literal native theta operators.
+- RHTower/PaperThetaConfluentNativeSolvability.lean: bounded native operators,
+  exact original Meyer range/kernel, every-order solvers and source defects.
+- RHTower/PaperThetaConfluentNativeRegularity.lean: original BV preservation,
+  equality of uniform and BV Green solutions, literal repeated spatial action.
+- RHTower/PaperThetaConfluentNativeArithmetic.lean: explicit native-domain
+  profiles for every positive order, actual repeated equations, compact AC,
+  and full signed prime/Gamma/mass/polar Weil transport.
+
+All paths above are under `formal/GaloisForLFunctions/`. Finished modules
+are wired into their respective umbrellas; no umbrella build was run.
+
+## Scope and remaining frontier
+
+The removed obstruction is full-multiplicity source extraction and repeated
+resonant solving on arbitrary original forcing, including actual native
+regularity and arithmetic admission. The projection is intrinsic; it no
+longer requires a chosen finite forcing packet or a simple-zero normalization.
+This does not prove the directed arithmetic sign or remove Gaussian
+regularization from global whole-source synthesis. Existing native Meyer
+completeness is used as an input already proved in the corpus, not claimed
+as new work.

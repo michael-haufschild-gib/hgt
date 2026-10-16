@@ -138,3 +138,32 @@ successful build of this new supporting leaf is claimed yet.
 
 The frontier-map report is read-only by user instruction; it is not an output
 of this work. All other concurrent worktree edits remain outside this candidate.
+
+## Formalization checkpoint, 2026-10-17
+
+`DenseCoreFiniteConstraints.lean` passed its targeted Lean build with exit 0
+and an empty log. The exact finite-observation correction is now verified.
+
+Four downstream leaves are drafted, not yet verified:
+
+- `CHMDCompactOrbitInertia.lean`: normalized cardinal Gram, exact-polar compact
+  approximation, and the retained negative coefficient gap.
+- `CHMDCompactTestSynthesis.lean`: literal complete Weil form of a finite
+  complex combination equals the signed original-graph Gram.
+- `WeilCompactNegativeSubspace.lean`: the synthesis range has the full complex
+  dimension, common compact interval, and a strict ordinary-L2-relative gap.
+- `WeilCompactOrbitInertia.lean`: the primary unrestricted Xi orbit theorem,
+  including the same subspace in every larger window.
+
+The first compact-Gram build exposed a missing strip-readout import and
+function-versus-matrix notation. Both are corrected; the next targeted build
+is still running. No axiom audit, umbrella wiring, or count change yet.
+
+A fresh whole-corpus hybrid search returned `partial=false`, 73,035 indexed
+files and 1,081,325 declarations, with compiler coverage still a mixed/stale
+snapshot. Both `candidate_lemmas` and `source_arguments` were inspected.
+Direct comparison confirms that `WeilNyquistInertia` already avoids isolation
+and polar dimension loss but still assumes height separation and an explicit
+window/tail budget. The candidate's new claim is unrestricted finite-family
+compact realization; the support threshold is non-effective. Its coefficient
+gap-to-subspace helper is not itself a new counted research contribution.

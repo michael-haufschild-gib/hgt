@@ -109,58 +109,75 @@ theorem odd_transform_neg (a : SuzukiPositiveAperture)
   rw [← CCMEvenSector.unitaryLaplace_reflection,hu]
   exact (evalAt a w).map_neg u
 
-private theorem shifted_diagonal_split (a : SuzukiPositiveAperture)
-    (u v w : CCMArchimedeanFormDomain a)
-    (hs : ∀ t : ℝ, ‖unitaryLaplace (timeRep a u) t‖^2 =
+/-- Equality of spectral sums preserves the full corrected diagonal, including the pole term. -/
+theorem arithmeticShiftedForm_diagonal_balance (a : SuzukiPositiveAperture)
+    (u x v w : CCMArchimedeanFormDomain a)
+    (hs : ∀ t : ℝ, ‖unitaryLaplace (timeRep a u) t‖^2 +
+      ‖unitaryLaplace (timeRep a x) t‖^2 =
       ‖unitaryLaplace (timeRep a v) t‖^2 + ‖unitaryLaplace (timeRep a w) t‖^2)
-    (hp : poleTerm a u = poleTerm a v + poleTerm a w) :
-    (arithmeticShiftedForm a u u).re =
+    (hp : poleTerm a u + poleTerm a x = poleTerm a v + poleTerm a w) :
+    (arithmeticShiftedForm a u u).re + (arithmeticShiftedForm a x x).re =
       (arithmeticShiftedForm a v v).re + (arithmeticShiftedForm a w w).re := by
-  have hN : ‖ccmArchimedeanFormToAperture a u‖^2 =
+  have hN : ‖ccmArchimedeanFormToAperture a u‖^2 +
+      ‖ccmArchimedeanFormToAperture a x‖^2 =
       ‖ccmArchimedeanFormToAperture a v‖^2 + ‖ccmArchimedeanFormToAperture a w‖^2 := by
     rw [← integral_norm_sq_eq,← integral_norm_sq_eq,← integral_norm_sq_eq,
+      ← integral_norm_sq_eq,
+      ← integral_add (integrable_norm_sq_unitaryLaplace a u)
+        (integrable_norm_sq_unitaryLaplace a x),
       ← integral_add (integrable_norm_sq_unitaryLaplace a v)
         (integrable_norm_sq_unitaryLaplace a w)]
     exact integral_congr_ae (Eventually.of_forall hs)
-  have hQ : ccmRestrictedWeilSourceQuadratic a u =
+  have hQ : ccmRestrictedWeilSourceQuadratic a u +
+      ccmRestrictedWeilSourceQuadratic a x =
       ccmRestrictedWeilSourceQuadratic a v + ccmRestrictedWeilSourceQuadratic a w := by
     rw [source_eq_integral_add_pole,source_eq_integral_add_pole,
-      source_eq_integral_add_pole,hp]
-    have hI : (∫ t : ℝ,levelSymbol a t*‖unitaryLaplace (timeRep a u) t‖^2) =
+      source_eq_integral_add_pole,source_eq_integral_add_pole]
+    have hI : (∫ t : ℝ,levelSymbol a t*‖unitaryLaplace (timeRep a u) t‖^2) +
+        (∫ t : ℝ,levelSymbol a t*‖unitaryLaplace (timeRep a x) t‖^2) =
         (∫ t : ℝ,levelSymbol a t*‖unitaryLaplace (timeRep a v) t‖^2) +
           ∫ t : ℝ,levelSymbol a t*‖unitaryLaplace (timeRep a w) t‖^2 := by
-      rw [← integral_add (integrable_levelSymbol_mul a v) (integrable_levelSymbol_mul a w)]
-      exact integral_congr_ae (Eventually.of_forall fun t => by simp only [hs t,mul_add])
-    rw [hI]
-    ring
+      rw [← integral_add (integrable_levelSymbol_mul a u) (integrable_levelSymbol_mul a x),
+      ← integral_add (integrable_levelSymbol_mul a v) (integrable_levelSymbol_mul a w)]
+      exact integral_congr_ae (Eventually.of_forall fun t => by
+        dsimp only
+        rw [← mul_add,hs t,mul_add])
+    linarith
   have ht (s : ℝ) :
       (inner ℂ (logTranslationCLM s (ccmArchimedeanFormToAperture a u).1)
-        (ccmArchimedeanFormToAperture a u).1).re =
+        (ccmArchimedeanFormToAperture a u).1).re +
+      (inner ℂ (logTranslationCLM s (ccmArchimedeanFormToAperture a x).1)
+        (ccmArchimedeanFormToAperture a x).1).re =
       (inner ℂ (logTranslationCLM s (ccmArchimedeanFormToAperture a v).1)
         (ccmArchimedeanFormToAperture a v).1).re +
       (inner ℂ (logTranslationCLM s (ccmArchimedeanFormToAperture a w).1)
         (ccmArchimedeanFormToAperture a w).1).re := by
     rw [re_inner_logTranslation_eq_integral_cos,re_inner_logTranslation_eq_integral_cos,
-      re_inner_logTranslation_eq_integral_cos,
+      re_inner_logTranslation_eq_integral_cos,re_inner_logTranslation_eq_integral_cos,
+      ← integral_add (integrable_cos_mul_norm_sq_ccmFormDomain a u s)
+        (integrable_cos_mul_norm_sq_ccmFormDomain a x s),
       ← integral_add (integrable_cos_mul_norm_sq_ccmFormDomain a v s)
         (integrable_cos_mul_norm_sq_ccmFormDomain a w s)]
     apply integral_congr_ae
-    filter_upwards [freq_ae a u,freq_ae a v,freq_ae a w] with t hu hv hw
-    rw [hu,hv,hw,hs t,mul_add]
+    filter_upwards [freq_ae a u,freq_ae a x,freq_ae a v,freq_ae a w] with t hu hx hv hw
+    rw [hu,hx,hv,hw,← mul_add,hs t,mul_add]
   have hA :
       (inner ℂ (arithmeticCorrection a (ccmArchimedeanFormToAperture a u))
-        (ccmArchimedeanFormToAperture a u)).re =
+        (ccmArchimedeanFormToAperture a u)).re +
+      (inner ℂ (arithmeticCorrection a (ccmArchimedeanFormToAperture a x))
+        (ccmArchimedeanFormToAperture a x)).re =
       (inner ℂ (arithmeticCorrection a (ccmArchimedeanFormToAperture a v))
         (ccmArchimedeanFormToAperture a v)).re +
       (inner ℂ (arithmeticCorrection a (ccmArchimedeanFormToAperture a w))
         (ccmArchimedeanFormToAperture a w)).re := by
     simp only [inner_arithmeticCorrection,Complex.re_sum,inner_ccmPrimeTransportOperator,
       Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,zero_mul,sub_zero,Complex.add_re]
-    rw [← Finset.sum_add_distrib]
+    rw [← Finset.sum_add_distrib,← Finset.sum_add_distrib]
     apply Finset.sum_congr rfl
     intro j _
-    rw [ht,ht]
-    ring
+    have hp := ht (Real.log j.1)
+    have hm := ht (-Real.log j.1)
+    linear_combination (blindMultiplier a j / Real.sqrt j.1) * (hp + hm)
   have hi (x : CCMArchimedeanFormDomain a) :
       (inner ℂ (ccmArchimedeanFormToAperture a x) (ccmArchimedeanFormToAperture a x)).re =
         ‖ccmArchimedeanFormToAperture a x‖^2 := by
@@ -169,8 +186,21 @@ private theorem shifted_diagonal_split (a : SuzukiPositiveAperture)
   simp only [arithmeticShiftedForm,arithmeticForm_eq,Complex.sub_re,
     ccmRestrictedWeilForm_self_re_eq_source,Complex.mul_re,Complex.ofReal_re,
     Complex.ofReal_im,zero_mul,sub_zero,hi]
-  rw [hQ,hA,hN]
-  ring
+  linear_combination hQ - hA - blindMinimum a * hN
+
+private theorem shifted_diagonal_split (a : SuzukiPositiveAperture)
+    (u v w : CCMArchimedeanFormDomain a)
+    (hs : ∀ t : ℝ, ‖unitaryLaplace (timeRep a u) t‖^2 =
+      ‖unitaryLaplace (timeRep a v) t‖^2 + ‖unitaryLaplace (timeRep a w) t‖^2)
+    (hp : poleTerm a u = poleTerm a v + poleTerm a w) :
+    (arithmeticShiftedForm a u u).re =
+      (arithmeticShiftedForm a v v).re + (arithmeticShiftedForm a w w).re := by
+  have hzero (z : ℂ) : unitaryLaplace (timeRep a (0 : CCMArchimedeanFormDomain a)) z = 0 :=
+    (evalAt a z).map_zero
+  have h := arithmeticShiftedForm_diagonal_balance a u 0 v w
+    (fun t => by rw [hzero,norm_zero,zero_pow (by omega),add_zero]; exact hs t)
+    (by simpa [poleTerm,hzero] using hp)
+  simpa [arithmeticShiftedForm,arithmeticForm] using h
 
 /-- Paired division retains the exact corrected odd ground, including its signed pole term. -/
 theorem exists_oddArithmeticGround_div (a : SuzukiPositiveAperture)

@@ -2,7 +2,7 @@
 
 **State:** RH open. 21 live routes; 23 candidates. No route has a source-derived RH-closing sign or bound.
 
-**Lean checkpoint:** 650c70e67663ed2c2555b9d3490e078f865445f6. [L] = tracked, root-imported Lean declaration (not recompiled for this ledger); [S] = source-only/unwired declaration, not counted as proved; [P] = paper claim. R:X = formal/GaloisForLFunctions/RHTower/X.lean; H:X = formal/GaloisForLFunctions/HTGeometry/X.lean. E = source modules, not extra premises. Paths are proposed; only Established facts are proved.
+**Lean checkpoint:** b34b70dc66bf536bda171b5c2cf85934e157d111. [L] = tracked, root-imported Lean declaration (not recompiled for this ledger); [S] = source-only, unwired, or uncommitted declaration, not counted as proved; [P] = paper claim. R:X = formal/GaloisForLFunctions/RHTower/X.lean; H:X = formal/GaloisForLFunctions/HTGeometry/X.lean. E = source modules, not extra premises. Paths are proposed; only Established facts are proved.
 
 **Classification:** Live = exact RH receiver plus explicit source-producer problem. Candidate = incomplete source handoff or independent producer mechanism. Killed = scoped mechanism refuted/circular/nonselective; see [killed routes](rh-killed-routes.md). One route may have alternate receivers for one source architecture.
 
@@ -109,11 +109,11 @@
 <a id="chmd"></a>
 ### CHMD — Causal Hyperbolic–Modular Duality
 
-- **Path:** Exact Weil source → causal prime wave one-sided bound or theta-Doob resolvent odd-sector half-bound → RH.
+- **Path:** Exact Weil source → causal prime-wave or Möbius-rest one-sided bound, or theta-Doob odd-sector half-bound → RH.
 - **Established [L]:** Toeplitz/sech positivity, one-sided Λ-prime-wave bounds, and absence of odd resolvent eigenstates above 1/2 are RH-equivalent. Full signed BV/Doob graph, bounded Weil operator, discrete finite-multiplicity spectrum above 1/2, and zero-sample/polar decomposition are constructed. Local odd sign and bounded kernel estimates do not give global positivity.
-- **Source-only [S]:** Integrated Chebyshev-deficit/conjugated-kernel transport gives another equivalent one-sided pairing. No formal Möbius-tail sign payment in that unwired module.
-- **Open:** Source-derived uniform one-sided signed discrepancy pairing, full Weil-operator positivity, or exclusion of odd bound states above 1/2.
-- **E:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDDoobSourceGraph; R:CHMDSpectralRiemannCriterion; R:CHMDOddSectorCriterion; [S] R:CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection.
+- **Source-only [S]:** Integrated deficit = Λ-free Möbius rest + transient head; the head's conjugated-Laplacian pairing is uniformly bounded. Either uniform one-sided bound on the rest pairing is RH-equivalent. Every finite family of distinct nonreal Xi spectral orbits gives compact, polar-annihilating tests with strictly negative Gram matrix; compact polar synthesis identifies its complex Gram with the complete Weil quadratic form. These are zero-side detection identities, not positivity.
+- **Open:** Source-derived uniform one-sided bound on the complete Möbius-rest/discrepancy pairing, full Weil-operator positivity, or exclusion of odd bound states above 1/2.
+- **E:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDDoobSourceGraph; R:CHMDSpectralRiemannCriterion; R:CHMDOddSectorCriterion; [S] R:CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection; [S] R:CHMDCompactOrbitInertia; [S] R:CHMDCompactTestSynthesis.
 
 <a id="th"></a>
 ### TH — Theta moment positivity
@@ -128,9 +128,9 @@
 
 - **Path:** Literal theta renewal/connection source → divisor-faithful winding or directed boundary-work sign → RH.
 - **Established [L]:** Global compact native Green operator and whole-BV forcing solver retain the full arithmetic form. Every native generalized Xi root block equals the original Meyer packet with full multiplicity. Fixed-Gaussian whole-source native realization, full-range generator intertwining, and exact finite-packet repair/convolution preserve source data; none orients the signed work.
-- **Source-only [S]:** Generic one-channel root projection/power solvability and exact native resonant moment order are not yet a root-imported native projection. Fixed Cauchy-pole quartet defect is nonnegative and vanishes iff RH; it is a zero-side receiver.
+- **Source-only [S]:** Generic one-channel root projection is intrinsic to its pencil; its reduced inverse satisfies both complementary identities. The native resonant channel's first nonzero moment occurs at full Xi multiplicity. Root wiring for these modules is uncommitted/unverified. Fixed Cauchy-pole quartet defect is nonnegative and vanishes iff RH; it is a zero-side receiver.
 - **Open:** Mixed prime+Gamma≥pole inequality with all cusp terms, all-order seam/cusp projection, and arithmetic boundary-current orientation; Gaussian removal in native BV remains separate.
-- **E:** R:PaperThetaNativeResolvent; R:PaperThetaNativeMeyerCompleteness; R:PaperThetaOriginalArithmeticRealization; R:PaperThetaWholeMeyerGenerator; [S] R:PaperThetaConfluentNativeChannel; [S] R:XiReciprocalSquareFixedCauchySource.
+- **E:** R:PaperThetaNativeResolvent; R:PaperThetaNativeMeyerCompleteness; R:PaperThetaOriginalArithmeticRealization; R:PaperThetaWholeMeyerGenerator; [S] H:OneChannelCanonicalSplitting; [S] R:PaperThetaConfluentNativeChannel; [S] R:XiReciprocalSquareFixedCauchySource.
 
 <a id="wd"></a>
 ### WD — Ward orientation and horizontal collision
@@ -160,10 +160,10 @@
 ### PM — Physical-model routes
 
 - **Path:** FZZ or PW-B physical source → admitted Ward/energy identity → Haar approximation or growth receiver → RH.
-- **Established [L]:** FZZ parity/Mellin and Haar receivers, witness signature, exact Fourier LlogL reconstruction with all cross-terms, and weak retarded realization.
-- **Source-only [S]:** Literal complementary-rate retarded responses have compact-cutoff source-contact action and native-corrected wedge-exhaustion limit; action leaves are unwired.
+- **Established [L]:** FZZ parity/Mellin and Haar receivers, witness signature, exact Fourier LlogL reconstruction with all cross-terms, weak retarded realization, and compact-cutoff two-response action equal to the full source contact.
+- **Source-only [S]:** Complementary-rate retarded responses have wedge-exhaustion source-contact limit and absolutely admitted native-corrected action; limit/native leaves are unwired.
 - **Open:** Haar-target approximation and small-damping L² admission; PW-B source-contact action must imply optical magnitude, ordered cap, and all-divisor extinction. Pure-Ξ no-collision remains open.
-- **E:** R:FermiNymanBeurlingHaarTarget; R:PaperFermiFourierCriterion; R:ThetaCuspHawkingBMPWRetardedWeakNative; [S] R:ThetaCuspHawkingBMPWNativeTwoResponseAction.
+- **E:** R:FermiNymanBeurlingHaarTarget; R:PaperFermiFourierCriterion; R:ThetaCuspHawkingBMPWRetardedWeakNative; R:ThetaCuspHawkingBMPWTwoResponseAction; [S] R:ThetaCuspHawkingBMPWTwoResponseActionLimit; [S] R:ThetaCuspHawkingBMPWNativeTwoResponseAction.
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -372,8 +372,9 @@
 
 - **Path:** Arithmetic operator/domain or centred ferromagnetic producer → real-rooted Ξ → RH.
 - **Established [L]:** Bare operator lacks point spectrum/compact resolvent. Lee–Yang holds for finite ferromagnetic graphs; an Ising magnetization limit Ξ/Ξ(0) would imply RH. Field-density/centering constraints and LP-maximality exclude finite-order, fixed-depth and simple prime-log ports.
+- **Source-only [S]:** At a prime Γ-site pivot, nonnegative-fugacity dual-spectrum containment forces active walls into a divisibility chain with sharp logarithmic size bound. Each nondividing wall pair has a nondual two-wall frequency with nonzero coefficient polynomial; signed cancellation lies on a proper algebraic locus.
 - **Open:** Source-defined couplings with centred slow-field law converging to Riemann's measure, or a faithful arithmetic scattering denominator; interaction-driven critical edge density required.
-- **E:** R:WeightOneCliffordSpectralNoGo; R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:RiemannKernelLaguerrePolyaSymbol.
+- **E:** R:WeightOneCliffordSpectralNoGo; R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:RiemannKernelLaguerrePolyaSymbol; [S] R:LeeYangPrimePivotSpinPartitionSpectrum.
 
 <a id="wbf"></a>
 ### WBF — Source certificates

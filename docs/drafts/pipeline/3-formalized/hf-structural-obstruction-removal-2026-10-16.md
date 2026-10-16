@@ -1,7 +1,8 @@
 # HF: structural obstruction removal
 
-Status: paper proof closed; all three Lean leaf audits passed. Final
-transitive-axiom and repository lint gates are in progress.
+Status: formalized, 2026-10-17. All three Lean leaf audits and the final
+transitive-axiom audit passed. Repository lint reported unrelated concurrent
+modules not yet wired into their umbrellas; details below.
 
 ## Contract
 
@@ -36,7 +37,7 @@ open. The route also names arithmetic cup/trace identification as unresolved.
 2. Original-source upper/lower spectral splitting: OPEN, not selected. The
    Hilbert sign multiplier does not prove preservation of the all-weight
    source. Gaussian half-contours do not supply Gaussian removal.
-3. Whole-source differential realization: PROVED AND LEAF-AUDITED.
+3. Whole-source differential realization: FORMALIZED; STANDARD-AXIOM AUDITED.
    The existing faithful Gaussian native map intertwines the original
    centered generator with the literal theta differential action on EVERY
    original Meyer class. Consequently its image lies in the native domain,
@@ -147,10 +148,29 @@ separate Mellin/block equalities and direct bounded-linear tsum transport
 eliminate it without raising any limit. All three modules are wired into
 `RHTower.lean`; formal indexes are refreshed.
 
-The final standard-axiom audit encountered missing pre-existing import
-artifacts during concurrent cache rebuilding. Only required missing leaves
-are being compiled, sequentially, without any full or umbrella build.
-The axiom audit remains pending.
+The final standard-axiom audit initially encountered missing pre-existing
+import artifacts during concurrent cache rebuilding. Required missing
+leaves were restored sequentially; no dependency source was changed and no
+full or umbrella build was run. The final audit then passed:
+`lake --old env lean -j 1 /tmp/hf_final_axioms.lean` (exit 0).
+
+The scratch file imported `PaperThetaWholeMeyerGenerator` and printed the
+axioms of all nine results below in namespace `RHTower.PaperThetaEndpoint`:
+
+- `boundedThetaMoment_ext`
+- `xiContour_centered_shift`
+- `nativeCompactResolvent_xiContour_shift`
+- `nativeGaussianClassMap_generator`
+- `nativeMeyer_whole_differential_realization`
+- `nativeMeyerDifferentialRealization`
+- `nativeMeyerProfileMap_word`
+- `nativeMeyerProfileMap_word_equation`
+- `nativeMeyerProfileMap_word_fullWeil`
+
+Every result reported exactly `[propext, Classical.choice, Quot.sound]`.
+No extra axiom, proof hole, numerical experiment, raised heartbeat limit,
+or unfinished theorem was introduced. Task-owned scratch files were
+removed after completion.
 
 `scripts/formal_tools.py lint --check-generated` ran. Its only errors were
 ten unrelated concurrent modules not yet reachable from their umbrellas:

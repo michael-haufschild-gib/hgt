@@ -1,6 +1,8 @@
-# PM: structural obstruction removal
+# PM: admitted complementary-response event action
 
-Status: in progress. No contribution claimed yet.
+Status: formalized, 2026-10-17. All six module audits and the final dependency
+audit passed. Repository lint reports unrelated umbrella-reachability errors,
+listed below.
 
 ## Contract
 
@@ -20,7 +22,7 @@ heartbeat increases. Preserve unrelated work in the shared tree.
 5. Formalize, audit with foreground `lake env lean`, check axioms and lint, and wire imports.
 6. Assess whether the result actually removes the obstruction; continue if it does not.
 
-## Current evidence
+## Starting frontier
 
 The PM entry identifies Haar approximation and small-damping L² admission on the FZZ branch;
 complementary-rate two-response insertion, ordered cap, and all-divisor extinction on PW-B.
@@ -40,32 +42,36 @@ Current source inspection includes both branches to avoid treating a receiver as
    and `amplitudeCrossedFlux_eq` give degrees four and eight; the two-amplitude
    incidence theorem forces criticality rather than producing it.
 4. Retain the anomaly and insert both literal retarded responses into the wave action.
-   Current target: construct the compactly cut-off two-response action from the actual
+   PROVED: construct the compactly cut-off two-response action from the actual
    retarded fields, prove its exact source contact with the native bulk retained, and
    pass to an exhaustion of the physical wedge. This is an action-domain construction,
    not a claim of optical extinction or of equality to the PW magnitude.
 
 ## Current proof mechanism
 
-Write U_b for the full retarded response and N_b for its native counterpart, H for
-the full angular source vertex, and f_b for the physical reduced time source.
-The existing weak equation is
+Write U_b for the full retarded response, H for the full angular source vertex,
+and f_b for the physical reduced time source. Write B_b[phi] for the native
+kernel action: integrate f_b times lambda sech(x)^2 K_native times phi over
+the target event, then integrate over the physical source event. The order is
+part of the definition. After admitting full-kernel Fubini, the existing weak
+equation reads
 
-    box U_b = H f_b + lambda sech(x)^2 (U_b + N_b).
+    integral U_b box(phi) = H integral f_b phi
+      + integral lambda sech(x)^2 U_b phi + B_b[phi].
 
 For a smooth compact cutoff chi inside the physical wedge, use chi U_c and chi U_b
 as the two weak tests. Their skew difference gives the actual cut-off action
 
-    integral [U_b box(chi U_c) - U_c box(chi U_b)
-      - chi lambda sech(x)^2 (N_b U_c - N_c U_b)]
+    integral [U_b box(chi U_c) - U_c box(chi U_b)]
+      - (B_b[chi U_c] - B_c[chi U_b])
       = H integral chi (f_b U_c - f_c U_b).
 
-Both same-channel terms cancel algebraically; the native mixed term is retained.
+The full/full terms cancel algebraically; the native mixed action is retained.
 The existing absolute two-event source admission controls the right-hand side on
 an exhaustion, so the combined action has an unconditional limit. It does not
 assert separate convergence of the cap and native bulk.
 
-### Paper proof of the proposed construction
+### Dependency-closed paper proof
 
 1. Set p=t+x and r=t-x, so the open physical wedge is 0<p<r. In source
    coordinates A=s+y and B=s-y, the Jacobian is 1/2. The source vanishes for
@@ -85,14 +91,17 @@ assert separate convergence of the cap and native bulk.
    Evaluation at the continuous angleMap of the fixed unit-square variables
    recovers the exact closed-cone radius. Compose with the smooth physical
    time source and smooth full angular field. Compact unit-cube parameter
-   integration proves joint smoothness in p,r,X,k on 0<p<r.
+   integration proves smoothness in p,r on 0<p<r, with X,k fixed.
 3. Let chi be smooth with compact support in that wedge. The product chi U_b
    is globally smooth: within the wedge use step 2; off its support it vanishes
    on a neighborhood. It is therefore a valid test for the existing actual
    weak equation. Apply the equation twice with tests chi U_c and chi U_b.
    The reflected source vertex vanishes because the tests have negative radial
-   support. All terms are integrable by compact target support and the existing
-   full/native kernel growth admission. Subtract, retaining both bulk terms.
+   support. Compact target support and existing full-kernel admission give
+   integrability of the wave action. The weak equation then admits the coupled
+   source action; subtracting its admitted contact admits the outer coupled
+   bulk. Inner coupled admission follows from the kernel weak law and full
+   target admission. Subtract the two identities, retaining both bulk terms.
 4. Choose chi_n from compact time/radial windows, multiplied by smooth onset
    and radial inner cutoffs, with 0<=chi_n<=1 and eventual value 1 at each
    point of the wedge. The source-response skew is absolutely integrable by
@@ -109,10 +118,9 @@ assert separate convergence of the cap and native bulk.
    it is not a redefinition of the contact pairing. The same dominated
    convergence argument works for every bounded smooth wedge exhaustion.
 
-This closes the paper argument for admission of the combined action. Separate
-cap/native limits, Einstein-current incidence, fixed-grade magnitude, and
-extinction are not consequences. Formalization must verify every step before
-any contribution is claimed.
+The six checked modules formalize this construction and admission of the combined
+action. Separate cap/native limits, Einstein-current incidence, fixed-grade
+magnitude, and extinction are not consequences.
 
 ## Corpus search notes
 
@@ -130,8 +138,32 @@ the work plan is tracked here.
   helpers and preserved the existing weak identity; direct Lean audit passed.
 - `ThetaCuspHawkingBMPWTwoResponseAction.lean`: finite two-response insertion
   and absolute action admission passed direct Lean audit.
-- Exhaustion and native bulk cancellation: written, audits in progress.
-  No final contribution claimed.
+- `ThetaCuspHawkingBMPWTwoResponseActionLimit.lean`: exhaustion and cutoff
+  independence passed direct Lean audit.
+- `ThetaCuspHawkingBMPWNativeTwoResponseAction.lean`: literal native action,
+  absolute iterated admission, full/full cancellation, and the unconditional
+  complementary-rate limit passed direct Lean audit.
+- All five new modules are imported by `GaloisForLFunctions.RHTower`.
+- All six module checks used foreground `lake --old env lean -j 1`, with one
+  owned Lean process at a time. Each emitted object is newer than its source.
+- Final `lake --old env lean -j 1 /tmp/pm_final_audit.lean` exited 0. It checked
+  both exported complementary-action theorem types, verified the used Mathlib
+  names, and printed transitive axioms for the triangle identity, response
+  regularity, native cancellation, action limit, and absolute admission.
+  Every printed axiom list was exactly `propext`, `Classical.choice`, `Quot.sound`.
+  No added axioms or proof placeholders occur. The temporary audit file was
+  removed after recording the result.
+- `scripts/formal_tools.py lint` exited 1: 11 unrelated modules are unreachable
+  from their theorem-area umbrellas. No PM module is unreachable, and no banned
+  declaration was reported. The reported modules are:
+  `RHTower.CHMDCompactOrbitInertia`, `RHTower.CHMDCompactTestSynthesis`,
+  `RHTower.CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection`,
+  `RHTower.FiniteWeilNodalAdjacentCoupling`, `RHTower.FiniteWeilNodalMixtureTransport`,
+  `RHTower.LeeYangPrimePivotSpinPartitionSpectrum`,
+  `RHTower.OddSectorExactSpectralInterpolation`, `RHTower.OddSectorGroundZeroInterpolation`,
+  `RHTower.WeilCompactNegativeSubspace`, `RHTower.WeilCompactOrbitInertia`, and
+  `HTGeometry.DenseCoreFiniteConstraints`. These concurrent modules are outside
+  this task's write scope; the global lint gate is not claimed clean.
 - No heartbeat increases. No numerical experiments. Only one owned Lean process
   at a time; dependency objects emitted by direct foreground leaf checks.
 
@@ -144,7 +176,7 @@ is claimed. Full/full cancellation uses the existing jointly integrable full
 kernel and is therefore an admitted Fubini operation. The exhaustion limit is
 for the combined wave-minus-native action, not for its two components separately.
 
-## Candidate final interface (audit pending)
+## Final theorem interface
 
 `D4BMPWNativeTwoResponseAction.complementary_native_action_tendsto` quantifies
 only over the actual zero copy, angular branch, source amplitudes, and angular
@@ -159,8 +191,15 @@ inner target admission. `nativeTwoResponseAction_tendsto_of_exhaustion` proves
 independence across all smooth compact wedge cutoffs between zero and one that
 converge to one in the wedge.
 
-The closed obstruction is intended to be the two-response **event-action
-domain**, not identification with the Einstein/optical current, the fixed-grade
-PW magnitude, or the ordered extinction step. Regularity is in the event
+The removed obstruction is the two-response **event-action domain**. The prior
+weak law accepted arbitrary smooth compact tests but did not admit the literal
+retarded responses. Moving cone boundaries and the closed-cone radius obstructed
+that insertion. Exact source triangles and smooth logarithmic coordinates now
+give response regularity; explicit wedge cutoffs produce valid response-valued
+tests and a cutoff-independent action limit.
+
+Identification with the Einstein/optical current, the fixed-grade PW magnitude,
+and the ordered extinction step remain open. Regularity is in the event
 coordinates with angular base coordinates fixed. No uniform angular limit or
-cusp integration is asserted.
+cusp integration is asserted. The next distinct obstruction is the ordered
+top-time trace of this admitted action with its native correction retained.

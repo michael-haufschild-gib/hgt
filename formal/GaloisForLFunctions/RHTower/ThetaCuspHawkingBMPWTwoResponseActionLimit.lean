@@ -77,7 +77,7 @@ private theorem sourceTest_tendsto (chi : ℕ → Event → ℝ)
     by_cases hpos : 0 < p.1 + p.2
     · have hz : p ∈ physicalWedge := ⟨hpos, hp.2⟩
       have ht : Tendsto (fun n => (chi n p : ℂ)) atTop (𝓝 (1 : ℂ)) := by
-        simpa only [Complex.ofReal_one] using
+        simpa only [Function.comp_def, Complex.ofReal_one] using
           Complex.continuous_ofReal.continuousAt.tendsto.comp (hl p hz)
       simpa only [responseTest, one_mul] using
         (tendsto_const_nhds.mul (ht.mul tendsto_const_nhds))
@@ -97,7 +97,9 @@ theorem twoResponseAction_tendsto_of_exhaustion (chi : ℕ → Event → ℝ)
     Tendsto (fun n => twoResponseAction (chi n) q branch b c a d X k) atTop
       (𝓝 (fullAngularField q branch ![X, Real.exp k] *
         fullCausalSourcePair q branch b c a d X k)) := by
-  have hlim := tendsto_const_nhds.mul
+  have hH : Tendsto (fun _ : ℕ => fullAngularField q branch ![X, Real.exp k]) atTop
+      (𝓝 (fullAngularField q branch ![X, Real.exp k])) := tendsto_const_nhds
+  have hlim := hH.mul
     ((sourceTest_tendsto chi hs hc hw hb hl q branch b c a d X k).sub
       (sourceTest_tendsto chi hs hc hw hb hl q branch c b d a X k))
   rw [fullCausalSourcePair_eq_retarded_skew]
@@ -116,7 +118,9 @@ theorem twoResponseAction_tendsto (q : XiZeroCopy) (branch b c : Bool)
     (fun n p => ⟨wedgeWindow_nonneg n p, wedgeWindow_le_one n p⟩)
     _ q branch b c a d X k
   intro p hp
-  exact tendsto_const_nhds.congr' (wedgeWindow_eventually_one p hp).symm
+  apply tendsto_const_nhds.congr'
+  filter_upwards [wedgeWindow_eventually_one p hp] with n hn
+  exact hn.symm
 
 /-- Both complementary physical rates enter the actual action with no analytic premises. -/
 theorem complementary_twoResponseAction_tendsto (q : XiZeroCopy) (branch : Bool)

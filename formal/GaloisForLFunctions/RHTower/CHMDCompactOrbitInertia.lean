@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CHMDUniversalCardinalPairing
+import GaloisForLFunctions.RHTower.CHMDStripFourierReadout
 import GaloisForLFunctions.HTGeometry.DenseCoreFiniteConstraints
 import GaloisForLFunctions.HTGeometry.EventualNegDefFromEntrywise
 import Mathlib.Topology.Sequences
@@ -33,7 +34,9 @@ private theorem cardinal_im_polar {a : ℂ} (F : CardinalGraphFrame a)
   rw [polarObservation_apply]
   simp only [graphFourierReadout_of_source F.im_source]
   have h := cardinalRealSource_poles ha hz (-I)
-  simpa [cardinalRealSource, Complex.mul_re] using Prod.ext h.1 h.2
+  apply Prod.ext
+  · simpa [cardinalRealSource, Complex.mul_re] using h.1
+  · simpa [cardinalRealSource, Complex.mul_re] using h.2
 
 private def normalizedCardinalImag {a : ℂ} (F : CardinalGraphFrame a) : SourceGraph :=
   (Real.sqrt (cardinalPositiveMass a))⁻¹ • F.imVector
@@ -87,7 +90,7 @@ theorem exists_compact_polar_negative_gram {k : ℕ} (a : Fin k → ℂ)
       (∀ i, graphFourierReadout (q i) (I/2) = 0 ∧
         graphFourierReadout (q i) (-I/2) = 0) ∧
       ∀ c : Fin k → ℂ,
-        (star c ⬝ᵥ (fun i j => (sourcePair (q i) (q j) : ℂ)).mulVec c).re
+        (star c ⬝ᵥ Matrix.mulVec (fun i j => (sourcePair (q i) (q j) : ℂ)) c).re
           ≤ -(1/2 : ℝ) * ‖c‖^2 := by
   classical
   have hF : ∀ i, Nonempty (CardinalGraphFrame (a i)) :=

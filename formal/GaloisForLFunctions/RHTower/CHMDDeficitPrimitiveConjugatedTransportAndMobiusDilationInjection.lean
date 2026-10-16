@@ -1084,7 +1084,8 @@ theorem measurable_sum_Icc_floor {g : ℕ → ℝ → ℝ} (hg : ∀ n, Measurab
     (hφ : Measurable φ) :
     Measurable fun s => ∑ n ∈ Finset.Icc 1 ⌊φ s⌋₊, g n s := by
   have h : Measurable fun p : ℝ × ℕ => ∑ n ∈ Finset.Icc 1 p.2, g n p.1 :=
-    measurable_from_prod_countable_left fun N => Finset.measurable_sum _ fun n _ => hg n
+    measurable_from_prod_countable_left fun N =>
+      Finset.measurable_sum (Finset.Icc 1 N) fun n _ => hg n
   exact h.comp (measurable_id.prodMk (Nat.measurable_floor.comp hφ))
 
 theorem measurable_floor_exp_cast : Measurable fun T : ℝ => ((⌊Real.exp T⌋₊ : ℕ) : ℝ) :=
@@ -1123,7 +1124,7 @@ theorem integrableOn_headBudget :
     (7 / 2)
   refine (h1.add h0).integrableOn.congr_fun (fun s hs => ?_) measurableSet_Ioi
   have hs0 : 0 ≤ s := le_of_lt hs
-  simp only [pow_one, pow_zero, one_mul, abs_of_nonneg hs0]
+  simp only [Pi.add_apply, pow_one, pow_zero, one_mul, abs_of_nonneg hs0]
   rw [show -(1 / 2 : ℝ) * s = -(s / 2) by ring]
   ring
 
