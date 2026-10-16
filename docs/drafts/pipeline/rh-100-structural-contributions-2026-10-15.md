@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **12 / 100**.
+Completed after goal activation: **14 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -163,10 +163,39 @@ is a contribution-012 leaf. Original-Frechet averaging/nuclear trace, arithmetic
 cup/Paugam identification and positive Hodge compatibility remain open.
 Card: `3-formalized/rh100-012-source-flow-lefschetz-2026-10-16.md`.
 
+013: an intrinsic native theta spatial generator, using the function's actual
+endpoint trace to remove the affine source term. Strong spatial differentiation
+of every parameter jet gives faithful full Jordan chains. Every finite original
+Meyer source module has an exact native differential realization, intertwining
+all scalar-shift words. Every finite imaginary-shift word has a unique native
+solution for arbitrary forcing within its admitted finite Xi packet, including
+all multiplicities, with an actual compact AC representative. Seven direct leaf
+audits and 57 standard-axiom audits passed; all seven imports are wired and
+artifacts fresh. Global lint reports two unrelated concurrent HT modules missing
+imports, named in the card. Infinite native synthesis and directed current-work
+orientation remain open.
+Card: `3-formalized/rh100-013-native-theta-meyer-spatial-solvability-2026-10-16.md`.
+
+014: global nonlinear calculus in the original Meyer source. Centered entire
+Mellin operations reconstruct actual all-weight sources; products are literal
+absolutely convergent convolutions and the actual Poisson range is an ideal.
+Exponential corrections descend independently of representatives and give
+continuous source and quotient automorphisms, exact inverses, admitted roots
+and unique literal solutions for every forcing. Convolution is adjoint to
+weighted inversion for the complete global Paugam form; every anti-invariant
+source therefore generates a pairing-preserving global automorphism. Full jet
+action proves invariance of every finite native theta packet and supplies
+unique compact AC native solutions. Nine direct leaf audits and all 76 public
+standard-axiom audits passed; imports are unique, artifacts fresh and scratch
+removed. Global lint reports one unrelated concurrent module missing its
+umbrella import, named in the card. Geometric cup/trace identification,
+positive Hodge compatibility and directed nonlinear work sign remain open.
+Card: `3-formalized/rh100-014-global-convolution-duality-gauges-2026-10-16.md`.
+
 ## Next investigation
 
-No thirteenth contribution is counted. Do not count routine corollaries or
-repackagings of 001–012 as further contributions. Resume broad Lean-corpus
+No fifteenth contribution is counted. Do not count routine corollaries or
+repackagings of 001–014 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -177,8 +206,8 @@ Meyer source factorizations belong to 007; they do not supply nonlinear or
 prime–Gamma boundary-work sign. Parameter-differentiated admission, AC branches,
 actual L1 jet currents, uncut lower-multiplicity slots and the terminal Meyer
 current belong to 009. Finite combinations and repackagings are not further
-contributions. BV-norm holomorphy and strong spatial Jordan identities remain
-unclaimed.
+contributions. BV-norm holomorphy remains unclaimed. Strong spatial Jordan identities
+are now paid by contribution 013.
 The faithful full-Jordan closed generator, compact source inverse, exact
 entire Xi determinant, its full algebraic multiplicities, and the resulting
 RN gluing-rank interpretation belong to 010. Routine spectral/determinant
@@ -197,6 +226,23 @@ belong to 012. Routine smoothing, trace-ideal and scalar-trace consequences
 cannot be counted again. The Hilbert completion is not asserted to consist
 entirely of original Meyer classes, and the new trace identity does not supply
 positive Hodge compatibility or the missing directed RN work sign.
+
+The intrinsic native spatial generator, finite full-multiplicity Meyer
+comparison, and admitted imaginary-shift-word solvability belong to 013.
+Routine finite-space compatibility and further word consequences do not count
+again. This comparison uses causal-chain coefficients; the Hilbert Hasse data
+alone do not supply a bounded inverse change of coordinates or an arbitrary
+infinite native theta expansion.
+
+Original-source centered entire calculus, the actual convolution ideal,
+intrinsic exponentiation, continuous exponential gauge inversion, full Paugam
+adjunction and anti-invariant symplectic gauges belong to 014. Their finite
+native realizations and compact AC solutions also belong to 014. Routine
+gauge identities, roots and transports do not count again. The alternating
+convolution class has not been identified with a geometric graded cup, and
+the gauges preserve local spectral support rather than confining zeros.
+Joint continuity of the bilinear product and parameter continuity of the
+nonlinear exponential were not asserted.
 
 ## Continuation rules
 

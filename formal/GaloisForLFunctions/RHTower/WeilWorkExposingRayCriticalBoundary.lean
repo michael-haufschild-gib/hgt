@@ -9,8 +9,9 @@ Abel ceiling therefore gives a single first-order upper bound, uniform
 in every real twist. In particular, after quadratic scaling, every
 positive upper bound holds on one neighborhood for all twists at once.
 No Laurent expansion, residue, coefficient sign or full positivity is
-assumed. This pays the arithmetic part of CRITICAL-ONE-POLE-PROOF.md;
-the source-kernel derivation of its Laurent expansion remains separate.
+assumed. `CriticalCancellation` uses holomorphy to remove the quadratic
+boundary defect, and `CriticalOnePole` then completes the one-pole extension
+by large translated differences. No source-kernel Laurent expansion is needed.
 -/
 
 open MeasureTheory Filter Topology Set

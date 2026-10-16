@@ -1,0 +1,14 @@
+# HCF exact singular heat dynamics — 2026-10-16
+
+New unconditional actual-source result beyond the all-time block inertia/census: at any positive heat time a, between consecutive regular Hankel heads n and n+d, the exact heat-time order of Δ_(n+k) is k(d-k), including endpoints. Dividing by (t-a)^(k(d-k)) leaves an analytic nonzero germ. The product of values at opposite small displacements has sign (-1)^(k(d-k)), so crossing versus tangency is fixed. This does not exclude singularities or orient the full prime–Gamma source.
+
+Lean files:
+- formal/GaloisForLFunctions/HTGeometry/HankelHeatToda.lean (namespace HTGeometry): hasDerivAt_consecutiveHankelRows, hasDerivAt_hankelBorderMatrix_zero, hasDerivAt_hankelBorderMatrix_one_zero, hankelBorder_condensation.
+- formal/GaloisForLFunctions/HTGeometry/AnalyticTodaMultiplicity.lean (HTGeometry): meromorphicOrderAt_curvature, toda_multiplicity_block, eventually_reflection_sign_of_analyticOrderAt.
+- formal/GaloisForLFunctions/RHTower/XiGaussianHeatTodaMultiplicity.lean (RHTower): hcf_heat_toda, hcf_heat_block_multiplicity, hcf_all_time_heat_multiplicity, hcf_heat_singular_normal_form, hcf_heat_crossing_parity. heatMomentMultiplicity is the natural analytic order at positive time.
+
+Mechanism: heat moment derivatives shift index with a minus sign. Consecutive-row determinant differentiation leaves only the terminal border; differentiating along consecutive columns leaves the double border. Existing two-border condensation supplies Toda where the preceding head is invertible. Existing isolated zeros plus continuity extend Toda to every positive time, including simultaneous singularities. At an analytic zero of order m>0, f'/f has order -1, its derivative order -2; hence f f''-(f')² has order 2m-2. Actual nonflatness gives finite orders. The recurrence m_k+m_(k+2)=2m_(k+1)-2 with regular endpoints m_0=m_d=0 forces k(d-k). Existing canonical normal blocks discharge all source-side premises.
+
+All actual capstones take only positive heat time and intrinsic rank/block indices. Focused --old olean builds and final direct lake env lean audits passed for all three files without warnings. Ten axiom audits returned only propext, Classical.choice, Quot.sound. Umbrellas wired. Global formal lint was blocked solely by concurrent unwired CHMDComplexKernelReadout, CHMDMixedZeroOperator, CHMDStripFourierReadout modules; no HCF lint errors. No numerical experiments, web, added axioms, heartbeat changes, or commits.
+
+Card: docs/drafts/pipeline/3-formalized/hcf-singular-heat-dynamics-2026-10-16.md. HCF frontier map updated. Ground simplicity was reconsidered first but not inferred: nonzero source functional on the whole space does not imply injectivity on a ground eigenspace, and finite-dimensional derivative chains alone do not establish simplicity.

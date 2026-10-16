@@ -91,3 +91,8 @@ the zero-side wave carries the primes as its boundary singularities (Cramér in 
   identity at mass² −2; `Φ₀ = L⁻¹[Φ]` on the strip, `L`, `L⁻¹` mutually inverse; `kgZeroWave_inverseLightCone_cramer`:
   `L⁻¹[Φ]`, built from the KG wave alone, continues beyond the strip with simple poles (`MeromorphicAt`,
   `meromorphicOrderAt = −1`) at all `±log n ± i`, residues `s₂(2i/π)Λ(n)/√n`. Φ itself stays pole + log (CANNOT-560).
+- 2026-10-16 — pivot of (1) to the true statement (MUST-1540), `RHTower/CHMDKleinGordonPrimeBranchStructure`:
+  `kgZeroWave_cramer_branch` — Φ continues beyond the strip (segment-regular points), boundary singular set exactly
+  `±log n ± i` (n = 1 or Λ(n) ≠ 0), and at each prime point `Φ = L/(z−q) − L z B(2(z²−q²)) Log(1 − z/q) + H`, H
+  holomorphic, cut along the ray through q, jump `2πi L z B(2(z²−q²))`. Ingredients: Bessel divided difference Q
+  (entire), log integral along the light-cone segment, polar split of the massless continuation.

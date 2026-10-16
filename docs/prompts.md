@@ -250,8 +250,13 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 8) use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (january to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
 
 ##  create new knowledge
+ 
 
-make one significant contribution that overcomes a hard mathematical obstacle in route HCF from docs/reports/rh-current-frontier-map.md. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle which significantly moves the frontier in the proof route. 
+
+make one significant contribution that overcomes a hard mathematical obstacle by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md into a new significant insight that enables a whole new class of solutions to at least one route. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle which significantly moves the frontier in the proof route. 
+
+On every new turn:
+make one significant contribution that overcomes a hard mathematical obstacle for route CHMD from docs/reports/rh-current-frontier-map.md. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle which significantly moves the frontier in the proof route.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -269,6 +274,8 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 
 do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you.
+
+Goal is met when you have identified and formalized 100 significant contributions that overcome a hard mathematical obstacle as requested.
 
 ## hgtl7 create new knowledge
 

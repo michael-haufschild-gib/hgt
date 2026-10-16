@@ -1,17 +1,19 @@
-import GaloisForLFunctions.RHTower.WeilWorkExposingRayOnePoleTransfer
+import GaloisForLFunctions.RHTower.WeilWorkExposingRayCriticalOnePole
 import GaloisForLFunctions.RHTower.WeilWorkExposingRayFibreDensity
 
 /-!
-# Exact one-pole fibre recovery below logarithmic spectral cost
+# Exact one-pole fibre recovery through the critical logarithmic spectral cost
 
-For `0 ≤ β < 1`, the weighted spectral L1 closures of every whole integer
+For `0 ≤ β ≤ 1`, the weighted spectral L1 closures of every whole integer
 fibre of finite positive one-pole and two-pole source mixtures coincide.
 Every original row may choose either half-pole; every recovery row kills
 both. All raw integer atoms, including the entire zero tail, remain exact.
 
 The source classes and exponent range are domain conditions. No coefficient
-growth, positivity, energy, RH or recovery premise is added. The full-source
-case above the half exponent and the critical gamma-energy problem remain open.
+growth, positivity, energy, RH or recovery premise is added. At the critical
+endpoint, large translated differences and arithmetic Laplace cancellation
+replace the sublinear cosh argument. The unrestricted full-source case remains
+separate; cone nonemptiness and the exposing-ray energy inequality are not asserted.
 -/
 
 open MeasureTheory Filter Topology Set Finsupp Zeta23
@@ -22,9 +24,9 @@ open WeilOneSided
 /-- Actual compact C2 source with at least one of the two half-pole zeros. -/
 def OnePoleSource := {f : WeilTestFn // ∃ s : ℝ,s^2=1/4 ∧ paperFT f.1 ((s:ℂ)*Complex.I)=0}
 
-variable {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β < 1)
+variable {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
 
-abbrev density := logDensityL1 hβ hβ1.le
+abbrev density := logDensityL1 hβ hβ1
 
 /-- Whole integer fibre of finite positive actual one-pole mixtures. -/
 def onePoleFibre (v : LogIndex →₀ ℝ) : Set (Lp ℝ 1 (volume : Measure ℝ)) :=
@@ -89,7 +91,9 @@ private theorem polarFibre_convex (v : LogIndex →₀ ℝ) : Convex ℝ (polarF
   · rw [map_add,map_smul,map_smul,ht,hu,← add_smul,hab,one_smul]
   · rw [map_add,map_smul,map_smul,hx,hy]
 
-private theorem support_fibre {ι J : Type*} (T : ι → J →₀ ℝ) (D : ι → ℝ)
+/-- A lower cost on one feasible exact fibre has an arithmetic supporting
+functional when both signed coordinate directions are reachable. -/
+theorem support_fibre {ι J : Type*} (T : ι → J →₀ ℝ) (D : ι → ℝ)
     (hn : ∀ j, ∃ i, T i = Finsupp.single j (-1))
     (hp : ∀ j, ∃ i, T i = Finsupp.single j 1)
     (v : J →₀ ℝ) (s : ℝ)
@@ -196,14 +200,29 @@ private theorem onePole_pairing_bound (b : LogIndex → ℝ)
     (h : ∀ p : PolarSource,linearCombination ℝ b (logVector p.1) ≤ ell (density hβ hβ1 p.1)) :
     ∀ f : OnePoleSource,linearCombination ℝ b (logVector f.1) ≤ ell (density hβ hβ1 f.1) := by
   have hp : ∀ f : WeilTestFn,(∃ a,IsPolarTest a f.1) →
-      atomValue (rawWeights b) f.1 ≤ ell (logDensityL1 hβ hβ1.le f) := by
+      atomValue (rawWeights b) f.1 ≤ ell (logDensityL1 hβ hβ1 f) := by
     intro f hf
     rw [← pairing_eq_atomValue]
     exact h ⟨f,hf⟩
   intro f
   obtain ⟨s,hs,hzero⟩ := f.2
   rw [pairing_eq_atomValue]
-  exact log_separator_onePole hβ hβ1 hs hp f.1 hzero
+  by_cases hlt : β < 1
+  · exact log_separator_onePole hβ hlt hs hp f.1 hzero
+  have he : β=1 := le_antisymm hβ1 (le_of_not_gt hlt)
+  subst β
+  apply critical_separator_onePole hp f.1
+  have hsign : s=1/2 ∨ s=-(1/2) := by
+    rcases le_total 0 s with h | h
+    · exact Or.inl (by nlinarith only [hs,h])
+    · exact Or.inr (by nlinarith only [hs,h])
+  rcases hsign with rfl | rfl
+  · left
+    have hp : ((1/2:ℝ):ℂ)*Complex.I=Complex.I/2 := by push_cast; ring
+    simpa only [hp] using hzero
+  · right
+    have hp : ((-(1/2):ℝ):ℂ)*Complex.I=-(Complex.I/2) := by push_cast; ring
+    simpa only [hp] using hzero
 
 private theorem onePoleFibre_subset_closure_polarFibre (v : LogIndex →₀ ℝ) :
     onePoleFibre hβ hβ1 v ⊆ closure (polarFibre hβ hβ1 v) := by
@@ -250,6 +269,14 @@ theorem closure_polarFibre_eq_onePoleFibre (v : LogIndex →₀ ℝ) :
   apply le_antisymm
   · exact closure_mono (polarFibre_subset_onePoleFibre hβ hβ1 v)
   · exact closure_minimal (onePoleFibre_subset_closure_polarFibre hβ hβ1 v) isClosed_closure
+
+/-- **Critical fibre completion.** Every exact whole integer fibre has the
+same logarithmically weighted spectral closure with one pole or both poles
+annihilated on every source. This identity has no analytic premise. -/
+theorem critical_fibre_closure_eq (v : LogIndex →₀ ℝ) :
+    closure (polarFibre (by norm_num : (0:ℝ)≤1) le_rfl v) =
+      closure (onePoleFibre (by norm_num : (0:ℝ)≤1) le_rfl v) :=
+  closure_polarFibre_eq_onePoleFibre (by norm_num) le_rfl v
 
 /-- Arbitrary weighted recovery of each actual finite positive one-pole mixture,
 with the whole integer trace exact and both zeros on every recovery row. -/

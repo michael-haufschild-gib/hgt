@@ -18,4 +18,6 @@ Modules (namespace RHTower.CHMDLightCone unless noted):
 
 13. CHMDKleinGordonInverseLightCone (MUST-1539) — cos_mul_eq_inverseLightCone (mass² −2), masslessZeroWave_eq_inverseLightConeTransmuteC (Φ₀ = L⁻¹[Φ] on strip), L/L⁻¹ mutually inverse, meromorphicAt_order_eq_neg_one_of_tendsto, masslessBoundaryWave_simple_pole, kgZeroWave_inverseLightCone_cramer (continuation of L⁻¹[Φ] has order −1 poles at all ±log n ± i).
 
-Key fact: genuine simple poles only for the massless wave Φ₀ = L⁻¹[Φ]; the KG causal wave Φ has pole + log branch and provably no meromorphic continuation.
+14. CHMDKleinGordonPrimeBranchStructure (MUST-1540) — lightConeBesselQuot Q (entire divided difference, B(x)−B(y)=(x−y)Q), integral_div_mul_sub_eq_log_one_sub, exists_masslessBoundaryWave_polar_split, kgBoundaryWave_prime_branch (Φ = L/(z−q) − L z B(2(z²−q²)) Log(1−z/q) + H, H holomorphic), tendsto_kgBoundaryWave_jump (jump 2πi L z B), kgZeroWave_cramer_branch (combined true KG Cramér theorem).
+
+Key fact: genuine simple poles only for Φ₀ = L⁻¹[Φ]; the KG causal wave Φ = simple pole + Bessel-log branch exactly (MUST-1540), no meromorphic continuation (CANNOT-560).

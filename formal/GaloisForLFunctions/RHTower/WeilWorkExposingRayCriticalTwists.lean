@@ -21,7 +21,8 @@ def signedHarmonicDensity (lam : ℕ → ℝ) (N : ℕ) : ℝ :=
   ∑ n ∈ Finset.Icc 2 N, ∑ m ∈ Finset.Icc 1 N,
     if n*m ≤ N then lam n / ((n : ℝ)*m) else 0
 
-private theorem positive_twisted_harmonic_bound {lam : ℕ → ℝ} {N : ℕ} {B : ℝ}
+/-- A complex multiplicative Toeplitz ceiling controls every unitary harmonic twist. -/
+theorem positive_twisted_harmonic_bound {lam : ℕ → ℝ} {N : ℕ} {B : ℝ}
     (hBound : ∀ c : ℕ → ℂ, (∀ m, N < m → c m = 0) →
       2 * ∑ n ∈ Finset.Icc 2 N, lam n / Real.sqrt n *
         (∑ m ∈ Finset.Icc 1 N, c (n*m)*conj (c m)).re ≤

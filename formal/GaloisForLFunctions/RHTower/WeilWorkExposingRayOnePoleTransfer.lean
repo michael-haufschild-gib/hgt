@@ -8,7 +8,9 @@ Every actual weighted polar separator is nonnegative on each compact C2
 source killing either half-pole, for logarithmic exponent `0 ≤ β < 1`.
 The compact primitive, normalized differences, weighted L1 limit and
 arithmetic-pairing limit are all produced. No growth or recovery premise
-is added. The full-source and critical gamma-energy problems remain open.
+is added. `WeilWorkExposingRayCriticalOnePole` separately completes the endpoint
+beta = 1 using large differences and arithmetic Laplace cancellation. The
+unrestricted full-source problem is separate.
 -/
 
 open MeasureTheory Filter Topology Set Complex Zeta23
