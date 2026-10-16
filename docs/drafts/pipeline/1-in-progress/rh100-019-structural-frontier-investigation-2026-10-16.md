@@ -151,3 +151,23 @@ Formalization progress (still **18/100**, no completion claim):
 - Additional owned scratch: `/tmp/hgt_rh019_topology_api.lean`.
   Original `/tmp/hgt_rh019_api.lean` remains for exact cleanup. Eight owned
   search JSON files remain. No subagents or full builds have been run.
+
+Further progress:
+- `DeningerMeyerSourceSeries.lean` now passes: gauge summability implies actual
+  source summability; one weighted Mellin line controls each original gauge.
+- `DeningerMeyerXiContourBounds.lean` now passes. For each strip and weight,
+  a single Xi constant controls EVERY block by its contour quotient, boundary
+  length and a polynomial height weight. The padded-rectangle maximum principle
+  removes the interior cluster singularities. This is an ingredient, not a
+  counted estimate contribution.
+- `DeningerMeyerXiContourSource.lean` is written and under first direct audit:
+  actual inverse-Mellin source, exact inside full jets, exact outside zero jets.
+- Remaining work: actual good-height sequence and Gaussian quotient control;
+  summability of its disjoint blocks; finite native range membership; original
+  cohomology density; audits, umbrellas, lint/index, cleanup, ledger/map/memory.
+- Additional owned scratch: `/tmp/hgt_rh019_contour_api.lean`.
+- An elementary simplification avoids quantitative asymptotic machinery:
+  Gaussian regularization of the entire function `exp(-i*B*s)` supplies arbitrary
+  weighted bounds for `exp(B*t-e*t^2)`. These imply eventual block domination by
+  `(n+1)^(-2)` along heights above `n`. The same summable majorant works for every
+  strip and derivative weight. No numerical calculation is involved.

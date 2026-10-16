@@ -12,7 +12,7 @@ domain. This proves attainment, without assuming a sign for the minimum.
 -/
 
 open Complex MeasureTheory Set Filter Topology Zeta23
-open scoped InnerProduct NNReal
+open scoped InnerProduct NNReal ComplexConjugate
 
 noncomputable section
 namespace RHTower.EvenSector
@@ -23,6 +23,7 @@ def blindProfiles : Set (ℝ → ℂ) :=
   {P | ∀ n : LogIndex, P (Real.log (n : ℕ)) = 0}
 
 theorem isClosed_blindProfiles : IsClosed blindProfiles := by
+  change IsClosed (⋂ n : LogIndex, {P : ℝ → ℂ | P (Real.log (n : ℕ)) = 0})
   exact isClosed_iInter fun n : LogIndex =>
     isClosed_eq (continuous_apply (Real.log (n : ℕ))) continuous_const
 
@@ -115,7 +116,7 @@ theorem nonempty_blindUnitSource (a : SuzukiPositiveAperture) :
   have hr0 : 0 < r := norm_pos_iff.mpr hu
   let c : ℂ := (r : ℂ)⁻¹
   refine ⟨⟨c • u, (polar_interiorCCMSource f).smul c,
-    (even_interiorCCMSource f).smul c, ?_, ?_⟩⟩
+    (even_interiorCCMSource f).smul a c, ?_, ?_⟩⟩
   · rw [map_smul, norm_smul]
     change ‖(r : ℂ)⁻¹‖ * r = 1
     rw [norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr0,
@@ -127,6 +128,19 @@ theorem isCompact_blindPhysicalBudget (a : SuzukiPositiveAperture) (B : ℝ) :
     IsCompact (physicalEvenPolarBudget a B ∩ energyProfile a ⁻¹' blindProfiles) :=
   (isCompact_physicalEvenPolarBudget a B).inter_right
     (isClosed_blindProfiles.preimage (continuous_energyProfile a))
+
+/-- Even a pointwise completion of blind mixtures has an actual single blind source. -/
+theorem closure_nativeBlindProfiles_has_source (a : SuzukiPositiveAperture) (B : ℝ) :
+    closure (nativeEnergyProfiles a B ∩ blindProfiles) ⊆
+      {P | ∃ u : BlindUnitSource a, ccmRestrictedWeilSourceQuadratic a u.1 ≤ B ∧
+        energyProfile a (ccmArchimedeanFormToAperture a u.1) = P} := by
+  intro P hP
+  have hc := closure_nativeEnergyProfiles_subset_completed a B
+    (closure_mono inter_subset_left hP)
+  obtain ⟨u, hp, he, hn, hQ, hu⟩ := (mem_completedEnergyProfiles_iff a B P).mp hc
+  have hb : P ∈ blindProfiles :=
+    closure_minimal inter_subset_right isClosed_blindProfiles hP
+  exact ⟨⟨u, hp, he, hn, by rw [hu]; exact hb⟩, hQ, hu⟩
 
 /-- On the actual blind polar domain, the optimized energy is exactly the archimedean integral. -/
 theorem sourceQuadratic_blind_eq_gamma {a : SuzukiPositiveAperture} (u : BlindUnitSource a) :
@@ -167,7 +181,7 @@ theorem exists_blind_minimizer (a : SuzukiPositiveAperture) :
     rw [← ccmArchimedeanFormToAperture_reflection, u₀.2.2.1]
   obtain ⟨f, hf, hmin⟩ := LowerSemicontinuousOn.exists_isMinOn ⟨_, h₀⟩
     (isCompact_blindPhysicalBudget a B)
-    (lowerSemicontinuous_ccmRestrictedWeilExtendedSourceQuadratic a).lowerSemicontinuousOn
+    ((lowerSemicontinuous_ccmRestrictedWeilExtendedSourceQuadratic a).lowerSemicontinuousOn K)
   obtain ⟨hn, he, hp, hm, u, hJ, hQ⟩ := hf.1
   have hue : CCMEvenSector.IsEven a u := by
     apply ccmArchimedeanFormToAperture_injective a
@@ -175,7 +189,7 @@ theorem exists_blind_minimizer (a : SuzukiPositiveAperture) :
     rw [ccmArchimedeanFormToAperture_reflection, hJ, he]
   let w : BlindUnitSource a := ⟨u, by
     refine ⟨?_, hue, ?_, ?_⟩
-    · exact ⟨by simpa only [IsPolarConstrained, hJ] using hp,
+    · exact ⟨by simpa only [hJ] using hp,
         by simpa only [hJ] using hm⟩
     · rw [hJ]; exact hn
     · rw [hJ]; exact hf.2⟩
@@ -186,6 +200,8 @@ theorem exists_blind_minimizer (a : SuzukiPositiveAperture) :
       refine ⟨⟨v.2.2.2.1, ?_, v.2.1.1, v.2.1.2, v.1, rfl, hvB⟩, v.2.2.2.2⟩
       rw [← ccmArchimedeanFormToAperture_reflection, v.2.2.1]
     have hh := hmin hvK
+    change ccmRestrictedWeilExtendedSourceQuadratic a f ≤
+      ccmRestrictedWeilExtendedSourceQuadratic a (ccmArchimedeanFormToAperture a v.1) at hh
     rw [← hJ, ccmRestrictedWeilExtendedSourceQuadratic_embedding,
       ccmRestrictedWeilExtendedSourceQuadratic_embedding] at hh
     exact EReal.coe_le_coe_iff.mp hh

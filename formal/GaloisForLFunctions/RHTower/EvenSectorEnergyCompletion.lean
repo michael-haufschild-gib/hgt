@@ -15,7 +15,7 @@ the Weil form is assumed.
 -/
 
 open Complex MeasureTheory Set Filter Topology Zeta23
-open scoped InnerProduct NNReal
+open scoped InnerProduct NNReal ComplexConjugate
 
 noncomputable section
 namespace RHTower.EvenSector

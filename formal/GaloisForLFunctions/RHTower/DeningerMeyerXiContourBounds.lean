@@ -34,9 +34,9 @@ private theorem xi_rectangle_padding {a b : ℂ} (ha : a.re = -1) (hb : b.re = 2
     intro w hw
     rcases hw with ⟨hre, him⟩
     have hre' : -1 ≤ w.re ∧ w.re ≤ 2 := by
-      simpa only [ha, hb, uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 2), mem_Icc] using hre
+      simpa only [ha, hb, uIcc_of_le (by norm_num : (-1 : ℝ) ≤ 2), mem_preimage, mem_Icc] using hre
     have him' : a.im ≤ w.im ∧ w.im ≤ b.im := by
-      simpa only [uIcc_of_le hab, mem_Icc] using him
+      simpa only [uIcc_of_le hab, mem_preimage, mem_Icc] using him
     have hrn := Complex.abs_re_le_norm (w-z)
     have hin := Complex.abs_im_le_norm (w-z)
     simp only [sub_re, sub_im] at hrn hin
@@ -47,7 +47,7 @@ private theorem xi_rectangle_padding {a b : ℂ} (ha : a.re = -1) (hb : b.re = 2
     · linarith [neg_le_abs (w.im-z.im)]
   refine ⟨fun hz => ?_, fun w hw => hsep w (rectangleBorder_subset_rectangle a b hw)⟩
   have := hsep z hz
-  simpa using this
+  norm_num at this
 
 private theorem xi_cauchy_bound {A : ℂ → ℂ} {a b z : ℂ} {M : ℝ}
     (hM : 0 ≤ M) (hA : ∀ w ∈ RectangleBorder a b, ‖A w‖ ≤ M)
@@ -97,7 +97,8 @@ theorem deningerMeyerXiContour_weighted_bound (r : ℝ) (K : ℕ) :
     obtain ⟨hout, hsep⟩ := xi_rectangle_padding ha hb hab hR haT hbT hu
     have hc := xi_cauchy_bound hM hmass hsep
     have hc' : ‖rectangleCauchyTransform (fun w => F w/xi w) a b u‖ ≤ L := by
-      simpa [ha, hb, L] using hc
+      norm_num [ha, hb, L] at hc ⊢
+      exact hc
     rw [deningerMeyerXiContour, entireDividedDifferenceContour_outside hF
       deningerMeyerXi_entireRegular.differentiable.continuous.continuousOn hnz hout,
       norm_mul, norm_neg]
@@ -114,12 +115,12 @@ theorem deningerMeyerXiContour_weighted_bound (r : ℝ) (K : ℕ) :
       · exact Or.inr (Or.inr (Or.inl h.le))
       · exact Or.inr (Or.inr (Or.inr h.ge))
     calc ‖deningerMeyerXiContour F a b u‖ ≤ ‖xi u‖*L := hext u hout
-      _ ≤ |C₀|*L := mul_le_mul_of_nonneg_right (hxi₀ u (abs_le.mpr ⟨hu₁, hu₂⟩)) hL
+      _ ≤ |C₀| * L := mul_le_mul_of_nonneg_right (hxi₀ u (abs_le.mpr ⟨hu₁, hu₂⟩)) hL
       _ = L*|C₀| := mul_comm _ _
   have hwT : 1 ≤ (1+(T+1)^2)^K := one_le_pow₀ (by nlinarith [sq_nonneg (T+1)])
   have hzR : |z.re| ≤ R := hz.trans hrR
   have hfinal : ‖deningerMeyerXiContour F a b z‖*(1+z.im^2)^K ≤
-      L*|C₀|*(1+(T+1)^2)^K := by
+      L*|C₀| * (1+(T+1)^2)^K := by
     by_cases hzin : -(T+1) ≤ z.im ∧ z.im ≤ T+1
     · have hnorm := hinside z (abs_le.mp hzR).1 (abs_le.mp hzR).2 hzin.1 hzin.2
       have hsq : z.im^2 ≤ (T+1)^2 := by nlinarith [hzin.1, hzin.2]
@@ -134,11 +135,11 @@ theorem deningerMeyerXiContour_weighted_bound (r : ℝ) (K : ℕ) :
             (‖xi z‖*L)*(1+z.im^2)^K := mul_le_mul_of_nonneg_right (hext z hout) (by positivity)
         _ = L*(‖xi z‖*(1+z.im^2)^K) := by ring
         _ ≤ L*|C₀| := mul_le_mul_of_nonneg_left (hxi z hzR) hL
-        _ ≤ L*|C₀|*(1+(T+1)^2)^K := by
+        _ ≤ L*|C₀| * (1+(T+1)^2)^K := by
           exact le_mul_of_one_le_right (mul_nonneg hL (abs_nonneg _)) hwT
   calc
     ‖deningerMeyerXiContour F a b z‖*(1+z.im^2)^K ≤
-        L*|C₀|*(1+(T+1)^2)^K := hfinal
+        L*|C₀| * (1+(T+1)^2)^K := hfinal
     _ = _ := by dsimp [L]; ring
 
 end
