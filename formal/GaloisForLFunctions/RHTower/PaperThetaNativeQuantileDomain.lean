@@ -94,8 +94,9 @@ theorem nativeClosedQuantile_primitive (f : ThetaNativeDomain) (t : Icc (0 : ℝ
     nativeClosedQuantile f t.val = thetaTailTrace f+
       ∫ x in (0 : ℝ)..t.val, deriv (nativeClosedQuantile f) x := by
   have hs : Icc (0 : ℝ) t.val ⊆ Icc 0 1 := Icc_subset_Icc le_rfl t.property.2
-  have ht := (intervalIntegrable_deriv_nativeClosedQuantile f).mono_set (by
-    simpa only [uIcc_of_le t.property.1, uIcc_of_le zero_le_one] using hs)
+  have ht : IntervalIntegrable (deriv (nativeClosedQuantile f)) volume 0 t.val :=
+    (intervalIntegrable_deriv_nativeClosedQuantile f).mono_set (by
+      simpa only [uIcc_of_le t.property.1, uIcc_of_le zero_le_one] using hs)
   have he := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le t.property.1
     ((continuousOn_nativeClosedQuantile f).mono hs)
     (fun x hx => (differentiableAt_nativeClosedQuantile f

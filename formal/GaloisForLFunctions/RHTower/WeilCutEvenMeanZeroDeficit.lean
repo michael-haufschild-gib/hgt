@@ -373,4 +373,222 @@ theorem spectralWeight_nonneg_of_meanZero_of_not_cut {f : ℝ → ℂ} (hf : Con
       rw [this]
       exact spectralWeight_neg_one_nonneg_of_meanZero hf hfc h0
 
+/-! ## Integrability of the spectral weight -/
+
+/-- The spectral weight is `ν`-integrable along the circle. -/
+theorem integrable_spectralWeight_circleMap {ν : Measure ℝ} [IsFiniteMeasure ν]
+    (hsupp : ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ ∈ Iio (-(1 / 4 : ℝ))} = 0)
+    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
+    Integrable (fun θ => oddSpectralWeight f (circleMap 0 1 θ)) ν := by
+  obtain ⟨D, hD0, hD⟩ := exists_norm_lineTransform_le hf hfc
+  have hFc : Continuous (lineTransform f) := continuous_lineTransform hf hfc
+  have hae : ∀ᵐ θ ∂ν, circleMap 0 1 θ = 1 ∨ -(1 / 4) ≤ circleOrd (circleMap 0 1 θ) :=
+    ae_support_of_measure_eq_zero hsupp
+  set g : ℝ × ℝ → ℂ := fun p => lineTransform f p.1 * oddLineKernel (circleMap 0 1 p.2) (linePt p.1)
+    with hg
+  have hgm : Measurable g := (hFc.measurable.comp measurable_fst).mul measurable_oddLineKernel_prod
+  set M : ℝ := ν.real univ with hM
+  have hM0 : 0 ≤ M := by positivity
+  have hpt : ∀ t : ℝ, t ≠ 0 →
+      ∀ᵐ θ ∂ν, ‖g (t, θ)‖ ≤ ‖lineTransform f t‖ * (44 * (1 + t ^ 2)) := by
+    intro t ht
+    filter_upwards [hae] with θ hθ
+    simp only [hg, norm_mul]
+    exact mul_le_mul_of_nonneg_left (norm_oddLineKernel_le ht (norm_circleMap_one θ) hθ)
+      (norm_nonneg _)
+  have hint : ∀ t : ℝ, t ≠ 0 → Integrable (fun θ => g (t, θ)) ν := fun t ht =>
+    Integrable.mono' (integrable_const (‖lineTransform f t‖ * (44 * (1 + t ^ 2))))
+      (hgm.comp measurable_prodMk_left).aestronglyMeasurable (hpt t ht)
+  have hgi : Integrable g (volume.prod ν) := by
+    rw [integrable_prod_iff hgm.aestronglyMeasurable]
+    constructor
+    · filter_upwards [WeilHerglotz.ae_ne_real 0] with t ht
+      exact hint t ht
+    · refine (integrable_inv_one_add_sq.const_mul (2 * D * 44 * M)).mono'
+        hgm.aestronglyMeasurable.norm.integral_prod_right' ?_
+      filter_upwards [WeilHerglotz.ae_ne_real 0] with t ht
+      rw [Real.norm_of_nonneg (integral_nonneg fun θ => norm_nonneg _)]
+      calc ∫ θ, ‖g (t, θ)‖ ∂ν ≤ ∫ _θ, ‖lineTransform f t‖ * (44 * (1 + t ^ 2)) ∂ν :=
+            integral_mono_ae (hint t ht).norm (integrable_const _) (hpt t ht)
+        _ = ‖lineTransform f t‖ * (44 * (1 + t ^ 2)) * M := by
+            rw [integral_const, smul_eq_mul, hM]; ring
+        _ ≤ 2 * D / (1 + t ^ 2) ^ 2 * (44 * (1 + t ^ 2)) * M := by gcongr; exact hD t
+        _ = 2 * D * 44 * M * (1 + t ^ 2)⁻¹ := by field_simp
+  have hJi : Integrable (fun θ => ∫ t, g (t, θ)) ν := hgi.integral_prod_right
+  have e : (fun θ => oddSpectralWeight f (circleMap 0 1 θ)) =
+      fun θ => ((1 / (2 * Real.pi) : ℂ) * ∫ t, g (t, θ)).re := by
+    funext θ
+    simp only [oddSpectralWeight, hg]
+  rw [e]
+  exact (hJi.const_mul _).re
+
+/-! ## The two-bump even mean-zero test -/
+
+/-- `f_L = b(· − L) − 2 b + b(· + L)` for a real profile `b`. -/
+def twoBumpTest (b : ℝ → ℝ) (L : ℝ) (x : ℝ) : ℂ :=
+  (b (x - L) : ℂ) - 2 * (b x : ℂ) + (b (x + L) : ℂ)
+
+theorem twoBumpTest_neg {b : ℝ → ℝ} (hb : ∀ x, b (-x) = b x) (L x : ℝ) :
+    twoBumpTest b L (-x) = twoBumpTest b L x := by
+  unfold twoBumpTest
+  rw [show -x - L = -(x + L) by ring, show -x + L = -(x - L) by ring, hb, hb, hb]
+  ring
+
+theorem contDiff_twoBumpTest {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b) (L : ℝ) :
+    ContDiff ℝ 2 (twoBumpTest b L) := by
+  unfold twoBumpTest
+  have h1 : ContDiff ℝ 2 fun x : ℝ => (b (x - L) : ℂ) :=
+    Complex.ofRealCLM.contDiff.comp (hb.comp (contDiff_id.sub contDiff_const))
+  have h2 : ContDiff ℝ 2 fun x : ℝ => (b x : ℂ) := Complex.ofRealCLM.contDiff.comp hb
+  have h3 : ContDiff ℝ 2 fun x : ℝ => (b (x + L) : ℂ) :=
+    Complex.ofRealCLM.contDiff.comp (hb.comp (contDiff_id.add contDiff_const))
+  exact (h1.sub (contDiff_const.mul h2)).add h3
+
+theorem hasCompactSupport_twoBumpTest {b : ℝ → ℝ} (hbc : HasCompactSupport b) (L : ℝ) :
+    HasCompactSupport (twoBumpTest b L) := by
+  have h1 : HasCompactSupport fun x : ℝ => (b (x - L) : ℂ) :=
+    (hbc.comp_homeomorph (Homeomorph.subRight L)).comp_left Complex.ofReal_zero
+  have h2 : HasCompactSupport fun x : ℝ => (b x : ℂ) := hbc.comp_left Complex.ofReal_zero
+  have h3 : HasCompactSupport fun x : ℝ => (b (x + L) : ℂ) :=
+    (hbc.comp_homeomorph (Homeomorph.addRight L)).comp_left Complex.ofReal_zero
+  exact (h1.sub (h2.mul_left)).add h3
+
+/-- Translation multiplies the transform by `e^{izx}`. -/
+theorem paperFT_comp_sub_const (h : ℝ → ℂ) (x : ℝ) (z : ℂ) :
+    paperFT (fun u => h (u - x)) z = Complex.exp (I * z * x) * paperFT h z := by
+  unfold paperFT
+  have := integral_sub_right_eq_self (μ := volume)
+    (fun v : ℝ => h v * Complex.exp (I * z * ((v + x : ℝ) : ℂ))) x
+  simp only [sub_add_cancel] at this
+  rw [this, ← integral_const_mul]
+  congr 1; funext v
+  push_cast
+  rw [mul_add, Complex.exp_add]; ring
+
+/-- The transform of the two-bump test: `(e^{izL} + e^{−izL} − 2) b̂(z)`. -/
+theorem paperFT_twoBumpTest {b : ℝ → ℝ} (hb : Continuous b) (hbc : HasCompactSupport b)
+    (L : ℝ) (z : ℂ) :
+    paperFT (twoBumpTest b L) z =
+      (Complex.exp (I * z * L) + Complex.exp (-(I * z * L)) - 2) *
+        paperFT (fun x => (b x : ℂ)) z := by
+  set g : ℝ → ℂ := fun x => (b x : ℂ) with hg
+  have hgc : Continuous g := Complex.continuous_ofReal.comp hb
+  have hgs : HasCompactSupport g := hbc.comp_left Complex.ofReal_zero
+  have hi : ∀ (k : ℝ → ℂ), Continuous k → HasCompactSupport k →
+      Integrable fun u : ℝ => k u * Complex.exp (I * z * u) := fun k hk hkc =>
+    (hk.mul (by fun_prop)).integrable_of_hasCompactSupport hkc.mul_right
+  have h1 : paperFT (fun u : ℝ => g (u - L)) z = Complex.exp (I * z * L) * paperFT g z :=
+    paperFT_comp_sub_const g L z
+  have h3 : paperFT (fun u : ℝ => g (u + L)) z = Complex.exp (-(I * z * L)) * paperFT g z := by
+    have := paperFT_comp_sub_const g (-L) z
+    simp only [sub_neg_eq_add, Complex.ofReal_neg] at this
+    rw [this]
+    congr 2
+    ring
+  have hsplit : twoBumpTest b L = fun u => (fun u => g (u - L)) u - 2 * g u + (fun u => g (u + L)) u := by
+    funext u; simp only [twoBumpTest, hg]
+  rw [hsplit]
+  have e : ∀ u : ℝ, ((fun u => g (u - L)) u - 2 * g u + (fun u => g (u + L)) u) *
+      Complex.exp (I * z * u) =
+      g (u - L) * Complex.exp (I * z * u) - 2 * (g u * Complex.exp (I * z * u)) +
+        g (u + L) * Complex.exp (I * z * u) := by intro u; ring
+  unfold paperFT
+  simp_rw [e]
+  rw [integral_add, integral_sub, integral_const_mul]
+  · change paperFT (fun u => g (u - L)) z - 2 * paperFT g z + paperFT (fun u => g (u + L)) z =
+      (Complex.exp (I * z * L) + Complex.exp (-(I * z * L)) - 2) * paperFT g z
+    rw [h1, h3]
+    ring
+  · exact hi _ (hgc.comp (continuous_id.sub continuous_const))
+      ((hgs.comp_homeomorph (Homeomorph.subRight L)))
+  · exact (hi g hgc hgs).const_mul 2
+  · exact (hi _ (hgc.comp (continuous_id.sub continuous_const))
+      ((hgs.comp_homeomorph (Homeomorph.subRight L)))).sub ((hi g hgc hgs).const_mul 2)
+  · exact hi _ (hgc.comp (continuous_id.add continuous_const))
+      ((hgs.comp_homeomorph (Homeomorph.addRight L)))
+
+theorem paperFT_twoBumpTest_zero {b : ℝ → ℝ} (hb : Continuous b) (hbc : HasCompactSupport b)
+    (L : ℝ) : paperFT (twoBumpTest b L) 0 = 0 := by
+  rw [paperFT_twoBumpTest hb hbc]
+  simp only [mul_zero, zero_mul, neg_zero, Complex.exp_zero]
+  norm_num
+
+/-- On the real line: `|f̂_L(v)| = 2(1 − cos(vL)) |b̂(v)|`. -/
+theorem norm_paperFT_twoBumpTest_ofReal {b : ℝ → ℝ} (hb : Continuous b)
+    (hbc : HasCompactSupport b) (L v : ℝ) :
+    ‖paperFT (twoBumpTest b L) v‖ = 2 * (1 - Real.cos (v * L)) * ‖paperFT (fun x => (b x : ℂ)) v‖ := by
+  rw [paperFT_twoBumpTest hb hbc, norm_mul]
+  congr 1
+  have e : Complex.exp (I * v * L) + Complex.exp (-(I * v * L)) - 2 =
+      ((2 * (Real.cos (v * L) - 1) : ℝ) : ℂ) := by
+    have h := Complex.two_cos ((v * L : ℝ) : ℂ)
+    push_cast at h ⊢
+    rw [show I * v * L = (v * L) * I by ring, show -((v : ℂ) * L * I) = -(v * L) * I by ring,
+      ← h]
+    ring
+  rw [e, Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by nlinarith [Real.cos_le_one (v * L)])]
+  ring
+
+/-- The exponential moment `∫ b(u) e^{−ru} du`. -/
+def expMoment (b : ℝ → ℝ) (r : ℝ) : ℝ := ∫ u, b u * Real.exp (-(r * u))
+
+theorem paperFT_ofReal_I_mul (b : ℝ → ℝ) (r : ℝ) :
+    paperFT (fun x => (b x : ℂ)) (I * r) = ((expMoment b r : ℝ) : ℂ) := by
+  unfold paperFT expMoment
+  rw [← integral_complex_ofReal]
+  congr 1; funext u
+  simp only
+  rw [Complex.ofReal_mul, Complex.ofReal_exp]
+  congr 2
+  push_cast
+  ring_nf
+  rw [I_sq]
+  ring
+
+/-- For an even nonnegative profile the exponential moment dominates the mass. -/
+theorem integral_le_expMoment {b : ℝ → ℝ} (hb : Continuous b) (hbc : HasCompactSupport b)
+    (hbn : ∀ x, 0 ≤ b x) (hbe : ∀ x, b (-x) = b x) (r : ℝ) :
+    ∫ u, b u ≤ expMoment b r := by
+  have hi : ∀ s : ℝ, Integrable fun u : ℝ => b u * Real.exp (-(s * u)) := fun s =>
+    (hb.mul (by fun_prop)).integrable_of_hasCompactSupport hbc.mul_right
+  have hrefl : expMoment b r = ∫ u, b u * Real.exp (r * u) := by
+    unfold expMoment
+    rw [← integral_neg_eq_self]
+    congr 1; funext u
+    rw [hbe]; congr 2; ring
+  have h2 : 2 * expMoment b r = ∫ u, b u * (Real.exp (-(r * u)) + Real.exp (r * u)) := by
+    have := integral_add (hi r) (by simpa using hi (-r))
+    rw [two_mul]
+    nth_rewrite 2 [hrefl]
+    unfold expMoment
+    rw [← integral_add (hi r) (by simpa using hi (-r))]
+    congr 1; funext u; ring
+  have h3 : ∫ u, 2 * b u ≤ ∫ u, b u * (Real.exp (-(r * u)) + Real.exp (r * u)) := by
+    refine integral_mono ((hb.integrable_of_hasCompactSupport hbc).const_mul 2) ?_ fun u => ?_
+    · have := (hi r).add (by simpa using hi (-r))
+      refine this.congr (Eventually.of_forall fun u => ?_)
+      simp only [Pi.add_apply]
+      ring
+    · have hc : 2 ≤ Real.exp (-(r * u)) + Real.exp (r * u) := by
+        have := Real.one_le_cosh (r * u)
+        rw [Real.cosh_eq] at this
+        linarith
+      nlinarith [hbn u]
+  rw [integral_const_mul] at h3
+  linarith
+
+/-- On the imaginary axis: `f̂_L(ir) = (2 cosh(rL) − 2) · expMoment b r`. -/
+theorem paperFT_twoBumpTest_I_mul {b : ℝ → ℝ} (hb : Continuous b) (hbc : HasCompactSupport b)
+    (L r : ℝ) :
+    paperFT (twoBumpTest b L) (I * r) = (((2 * Real.cosh (r * L) - 2) * expMoment b r : ℝ) : ℂ) := by
+  rw [paperFT_twoBumpTest hb hbc, paperFT_ofReal_I_mul]
+  have e : Complex.exp (I * (I * r) * L) + Complex.exp (-(I * (I * r) * L)) - 2 =
+      ((2 * Real.cosh (r * L) - 2 : ℝ) : ℂ) := by
+    rw [show I * (I * r) * L = ((-(r * L) : ℝ) : ℂ) by push_cast; ring_nf; rw [I_sq]; ring,
+      show -(((-(r * L) : ℝ) : ℂ)) = ((r * L : ℝ) : ℂ) by push_cast; ring,
+      ← Complex.ofReal_exp, ← Complex.ofReal_exp, Real.cosh_eq]
+    push_cast
+    ring
+  rw [e, ← Complex.ofReal_mul]
+
 end RHTower.OddResolvent

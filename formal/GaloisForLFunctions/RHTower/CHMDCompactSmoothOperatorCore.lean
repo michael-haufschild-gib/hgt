@@ -57,10 +57,12 @@ theorem stationaryGenerator_compact_smooth_core :
   choose v hv using fun n => (LinearPMap.mem_graph_iff' stationaryGenerator).mp (hz n).1
   have ht' : Tendsto (fun n => ((v n : MassSpace), stationaryGenerator (v n))) atTop
       (𝓝 ((u : MassSpace), stationaryGenerator u)) := ht.congr fun n => (hv n).symm
-  refine ⟨v, fun n => ?_, ht'.fst, ht'.snd⟩
-  have h := (hz n).2
-  rw [← hv n] at h
-  exact h
+  refine ⟨v, fun n => ?_, ?_, ?_⟩
+  · have h := (hz n).2
+    rw [← hv n] at h
+    exact h
+  · exact (continuous_fst.tendsto ((u : MassSpace), stationaryGenerator u)).comp ht'
+  · exact (continuous_snd.tendsto ((u : MassSpace), stationaryGenerator u)).comp ht'
 
 /-- The bounded ground perturbation transfers the same compact C2 core to the arithmetic generator. -/
 theorem arithmeticGenerator_compact_smooth_core :

@@ -18,8 +18,8 @@ theorem flatConnection_imaginary_ne_zero (r : ℝ) :
     flatConnection (I*(r : ℂ)) ≠ 0 := by
   let F : ℝ → ℝ := fun x => thetaSource.normalized x*Real.exp (-r*x)
   have hi : Integrable F := by
-    simpa only [norm_flatCharDensity, Complex.mul_im, Complex.I_re, Complex.I_im,
-      Complex.ofReal_re, Complex.ofReal_im, zero_mul, one_mul, add_zero]
+    simpa only [F, norm_flatCharDensity, Complex.mul_im, Complex.I_re, Complex.I_im,
+      Complex.ofReal_re, Complex.ofReal_im, zero_mul, one_mul, add_zero, zero_add]
       using (integrable_flatCharDensity_all (I*(r : ℂ))).norm
   have hc : Continuous F := by
     dsimp [F]

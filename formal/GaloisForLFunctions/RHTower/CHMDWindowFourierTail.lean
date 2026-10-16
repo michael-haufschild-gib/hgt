@@ -64,16 +64,18 @@ theorem integrable_fourierSq_mul_gammaBracket {g : ℝ → ℝ} (hg : ContDiff �
     have := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < 2 + |r|)
     linarith
   have h4 : |EF.gammaBracket r| ≤ K * (1 + |r|) := by
-    have := le_abs_self EvenSector.gammaLogConst
+    have h6 := le_abs_self EvenSector.gammaLogConst
     have h5 : 0 ≤ |r| := abs_nonneg r
+    have h7 : 0 ≤ |EvenSector.gammaLogConst| * |r| := mul_nonneg (abs_nonneg _) h5
+    rw [hK]
     nlinarith
   have hpos : 0 < 1 + |r| := by positivity
   calc fourierSq g r * |EF.gammaBracket r|
       ≤ N ^ 2 / ((1 + |r|) ^ 2) ^ 2 * (K * (1 + |r|)) :=
         mul_le_mul h1 h4 (abs_nonneg _) (by positivity)
     _ = N ^ 2 * K * ((1 + |r|) ^ 3)⁻¹ := by
+        rw [div_mul_eq_mul_div, div_eq_iff (by positivity)]
         field_simp
-        ring
 
 theorem integrable_fourierSq {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
     Integrable (fourierSq g) := by
@@ -98,8 +100,21 @@ theorem integrable_fourierSq_mul_levySymbol {g : ℝ → ℝ} (hg : ContDiff ℝ
   have h := (integrable_fourierSq_mul_gammaBracket hg hgc).sub
     ((integrable_fourierSq hg hgc).mul_const (EF.gammaBracket 0))
   refine h.congr (Eventually.of_forall fun r => ?_)
-  simp only [levySymbol]
+  simp only [Pi.sub_apply, levySymbol]
   ring
+
+/-- A compactly supported function vanishes outside a symmetric interval. -/
+theorem exists_support_radius {g : ℝ → ℝ} (hgc : HasCompactSupport g) :
+    ∃ a : ℝ, 0 < a ∧ ∀ x, g x ≠ 0 → -a ≤ x ∧ x ≤ a := by
+  obtain ⟨a, ha0, ha⟩ := hgc.exists_pos_le_norm
+  refine ⟨a, ha0, fun x hx => ?_⟩
+  by_contra h
+  apply hx
+  apply ha
+  rw [Real.norm_eq_abs]
+  by_contra h'
+  rw [not_le] at h'
+  exact h ⟨(abs_lt.mp h').1.le, (abs_lt.mp h').2.le⟩
 
 theorem tsupport_ofReal_subset {g : ℝ → ℝ} {a : ℝ} (hsupp : ∀ x, g x ≠ 0 → -a ≤ x ∧ x ≤ a) :
     tsupport (fun u => (g u : ℂ)) ⊆ Icc (-a) a := by
@@ -113,7 +128,7 @@ theorem tsupport_ofReal_subset {g : ℝ → ℝ} {a : ℝ} (hsupp : ∀ x, g x �
 /-- Plancherel for compactly supported `C²` real functions. -/
 theorem integral_fourierSq_eq {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
     ∫ r, fourierSq g r = 2 * Real.pi * ∫ u, g u ^ 2 := by
-  obtain ⟨a, _, hsupp⟩ := CHMDTranslation.support_interval hgc
+  obtain ⟨a, _, hsupp⟩ := exists_support_radius hgc
   have hf : ContDiff ℝ 2 fun u => (g u : ℂ) := Complex.ofRealCLM.contDiff.comp hg
   have h := integral_norm_sq_paperFT_eq hf (tsupport_ofReal_subset hsupp)
   unfold fourierSq
@@ -131,7 +146,8 @@ theorem levyForm_eq_fourier {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : Has
   have hgC := hg.continuous
   have hg1 : Integrable g := hgC.integrable_of_hasCompactSupport hgc
   have hg2 : Integrable fun u => g u ^ 2 :=
-    (hgC.pow 2).integrable_of_hasCompactSupport (hgc.comp_left (by simp))
+    (hgC.pow 2).integrable_of_hasCompactSupport
+      (hgc.comp_left (g := fun y : ℝ => y ^ 2) (by simp))
   obtain ⟨hint, heq⟩ := integral_paperFT_ofReal_sq_mul_gammaBracket_eq_bochner hgC hg1 hg2
     (integrable_fourierSq_mul_gammaBracket hg hgc)
   refine ⟨hint, ?_⟩
@@ -147,10 +163,9 @@ theorem levyForm_eq_fourier {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : Has
   have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
   have heq' : (1 / (2 * Real.pi)) * (∫ r, fourierSq g r * EF.gammaBracket r) =
       EF.gammaBracket 0 * (∫ u, g u ^ 2) + levyForm g := heq
-  rw [heq']
-  unfold levyForm
-  field_simp
-  ring
+  have h2π : (1 / (2 * Real.pi)) * (2 * Real.pi) = 1 := by
+    field_simp
+  linear_combination heq' - ((∫ u, g u ^ 2) * EF.gammaBracket 0) * h2π
 
 theorem levyForm_nonneg {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
     0 ≤ levyForm g := by
@@ -171,7 +186,7 @@ theorem fourier_tail_le {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasComp
   have hint := integrable_fourierSq_mul_levySymbol hg hgc
   have h1 : (Real.log (T / 2) - levyConst) * ∫ r in highFreq T, fourierSq g r ≤
       ∫ r in highFreq T, fourierSq g r * levySymbol r := by
-    rw [← integral_mul_left]
+    rw [← integral_const_mul]
     refine setIntegral_mono_on ((integrable_fourierSq hg hgc).const_mul _).integrableOn
       hint.integrableOn (measurableSet_highFreq T) fun r hr => ?_
     have hr' : T ≤ |r| := hr
@@ -182,9 +197,7 @@ theorem fourier_tail_le {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasComp
       mul_nonneg (fourierSq_nonneg g r) (levySymbol_nonneg r))
   have h3 := (levyForm_eq_fourier hg hgc).2
   have hpi : 0 < Real.pi := Real.pi_pos
-  have h4 : (∫ r, fourierSq g r * levySymbol r) = 2 * Real.pi * levyForm g := by
-    rw [← h3]
-    field_simp
+  rw [one_div_mul_eq_div, div_eq_iff (by positivity)] at h3
   linarith
 
 end RHTower.CHMDPolar

@@ -34,7 +34,9 @@ theorem nativeODE_zero_of_trace_zero (z : ℂ) (f : ℝ → ℂ)
     have hρ0 : (thetaSource.normalized x : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (thetaSource.normalized_pos x).ne'
     have hc : HasDerivAt (sourceChar z) (I*z*sourceChar z x) x := by
-      simpa [sourceChar, mul_comm] using
+      change HasDerivAt (fun y : ℝ => Complex.exp (I*z*(y : ℂ)))
+        (I*z*Complex.exp (I*z*(x : ℂ))) x
+      simpa [mul_comm] using
         (((hasDerivAt_id (x : ℂ)).const_mul (I*z)).cexp).comp_ofReal
     refine ((hρ.mul hc).mul (hf x).hasDerivAt).congr_deriv ?_
     have hx := he x

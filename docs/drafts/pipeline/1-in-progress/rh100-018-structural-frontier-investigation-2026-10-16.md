@@ -33,6 +33,11 @@ Conjecture log:
   `HedenmalmThetaSourceCompressedInverseDeterminant` already has the Hilbert
   inverse and exact spectrum. Its existence does not establish BV regularity
   of arbitrary forced solutions through the singular quantile.
+  The current `HedenmalmThetaComplexResolventRow` already identifies the
+  full inverse's scalar moment row, and `HedenmalmThetaRealResolventTrace`
+  constructs its pinned AC primitive. Neither states whole-line BV of the
+  source-relative forced profile. The new partition argument addresses that
+  precise regularity gap; the integrating factor itself is not counted new.
 - Selected conjecture: **every continuous whole-line BV forcing has a unique
   literal native solution at every nonzero imaginary shift, with a common
   two-ended trace, whole-line BV, an absolutely continuous closed-quantile
@@ -72,8 +77,8 @@ tau=-J(z,g)/(z*C(z)), h=g+z*tau, and f=tau+i*R(z,h).
    selector forces c=0 when z!=0 and XiC(z)!=0.
 6. For z=i*r, C(z) is the integral of the strictly positive density
    rho(x)*exp(-r*x), so C(z)!=0 without RH. Every nonzero imaginary shift
-   is therefore admitted. Iterating the inverse handles arbitrary finite
-   words on the entire forcing class, with uniqueness in the native class.
+   is therefore admitted. The output is again continuous BV, so it can be
+   supplied as a forcing to the same construction.
 7. The theta quantile preserves variation. Matching traces and interior
    differentiability give the closed-interval derivative primitive and AC
    by the existing RN FTC mechanism. CHMD's unconditional BV admission then
