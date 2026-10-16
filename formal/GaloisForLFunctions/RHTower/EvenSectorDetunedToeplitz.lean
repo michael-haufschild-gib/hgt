@@ -26,13 +26,15 @@ private theorem packet_mass {N : ℕ} (hN : 1 ≤ N) {c : ℕ → ℝ}
     (hk : EF.weilTest g g 0 = (k : ℂ)) :
     ∫ t : ℝ, ‖paperFT (packet N c g) t‖ ^ 2 =
       4 * Real.pi * k * ∑ m ∈ Finset.Icc 1 N, c m ^ 2 := by
-  have h := integral_normSq_paperFT_mul_cos_eq (contDiff_packet hg) (packet_tsupport hgs) 0
+  have h := integral_normSq_paperFT_mul_cos_eq (f := packet N c g)
+    (contDiff_packet hg) (packet_tsupport hgs) 0
   simp only [mul_zero, Real.cos_zero, mul_one, neg_zero] at h
   have hz := weilTest_packet_log hN hg.continuous hgc hvan hc (n := 1) le_rfl
   simp only [Nat.cast_one, Real.log_one, one_mul, ← pow_two] at hz
   rw [h, hz, hk]
   simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-    Complex.ofNat_re, Complex.ofNat_im, mul_zero, zero_mul, sub_zero]
+    show (2 : ℂ).re = 2 from rfl, show (2 : ℂ).im = 0 from rfl,
+    mul_zero, sub_zero]
   ring
 
 /-- Arbitrary real coefficient signs are admitted by the detuned even packet. -/
@@ -45,7 +47,7 @@ theorem signed_toeplitz {lam : ℕ → ℝ} (hpf : WeilPositiveEvenPolar lam)
   have hw : 0 < w := width_pos N
   have hw1 : w ≤ 1 := by
     unfold w width
-    exact div_le_one_of_le₀ (by positivity : (1 : ℝ) ≤ (height N : ℝ) + 1) (by positivity)
+    exact div_le_one_of_le₀ (by linarith [Nat.cast_nonneg (α := ℝ) (height N)]) (by positivity)
   have hwD : w * ((height N : ℝ) + 1) = 1 := by
     dsimp [w, width]
     field_simp
@@ -91,8 +93,7 @@ theorem signed_toeplitz {lam : ℕ → ℝ} (hpf : WeilPositiveEvenPolar lam)
     rw [weilTest_packet_log hN (contDiff_gC w 0).continuous (hasCompactSupport_gC hw) hvan0 hc hn,
       weilTest_packet_neg_log hN (contDiff_gC w 0).continuous (hasCompactSupport_gC hw) hvan0 hc hn,
       hk0]
-    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.ofNat_re, Complex.ofNat_im, mul_zero, zero_mul, sub_zero, S]
+    norm_num [Complex.add_re, Complex.mul_re, S]
     ring
   have hS0 : ∀ n, N < n → S n = 0 := by
     intro n hn
@@ -149,7 +150,7 @@ theorem signed_toeplitz {lam : ℕ → ℝ} (hpf : WeilPositiveEvenPolar lam)
       have heq : ((height N : ℝ) + 1) * (1 + w * |t|) = (height N : ℝ) + 1 + |t| := by
         rw [mul_add, mul_one, ← mul_assoc, mul_comm ((height N : ℝ) + 1) w, hwD, one_mul]
       rw [heq]
-      positivity
+      linarith [Nat.cast_nonneg (α := ℝ) (height N)]
     have hlog : Real.log (1 + |t|) ≤ Real.log ((height N : ℝ) + 1) + w * |t| := by
       calc _ ≤ Real.log (((height N : ℝ) + 1) * (1 + w * |t|)) :=
           Real.log_le_log (by positivity) hle
@@ -171,6 +172,8 @@ theorem signed_toeplitz {lam : ℕ → ℝ} (hpf : WeilPositiveEvenPolar lam)
   have harch : (∫ t : ℝ, ‖paperFT F t‖ ^ 2 * archimedeanWeilSymbol (t / (2 * Real.pi))) ≤
       A * (4 * Real.pi * k0 * sumc) + B * (4 * Real.pi * k1 * sumc) := by
     have h := integral_mono hint1 ((hint2.const_mul A).add (hint3.const_mul B)) hpt
+    change (∫ t : ℝ, ‖paperFT F t‖ ^ 2 * archimedeanWeilSymbol (t / (2 * Real.pi))) ≤
+      ∫ t : ℝ, A * ‖paperFT F t‖ ^ 2 + B * ‖paperFT F' t‖ ^ 2 at h
     rwa [integral_add (hint2.const_mul A) (hint3.const_mul B), integral_const_mul,
       integral_const_mul, hmass0, hmass1] at h
   have hratio : B * k1 ≤ profileRatio / 2 * k0 := by

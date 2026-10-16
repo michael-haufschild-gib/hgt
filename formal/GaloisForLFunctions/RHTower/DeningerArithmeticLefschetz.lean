@@ -11,8 +11,9 @@ This module combines three independently proved Euler-line identities:
 
 The result is the analytic equality predicted by Deninger's Proposition 3.2 on `(0,∞)`.
 No RH, zero simplicity, special test family, or cohomological positivity assumption is used.
-Its middle trace distribution is defined from `XiZeroCopy`, so it is not yet the Lefschetz trace
-of an independently constructed arithmetic flow.  Source-to-trace transport remains open.
+Its middle trace distribution is defined from `XiZeroCopy`. The separate module
+`DeningerMeyerFlowLefschetz` identifies it with the operator trace of compact smooth averages
+of the original Meyer flow on its faithful full-Hasse Hilbert completion.
 -/
 
 open Complex MeasureTheory
@@ -101,7 +102,8 @@ theorem deningerArithmeticScalarExplicitFormula_proved :
 /--
 Unconditional Xi explicit-formula distributional identity predicted by Deninger's program, on the
 full space of smooth compactly supported positive-time tests.  This theorem does not identify the
-left side with the trace of a source-native arithmetic cohomology.
+left side with a source-flow operator trace; that transport is proved in
+`DeningerMeyerFlowLefschetz` on the faithful Hasse completion.
 -/
 theorem deningerArithmeticDistributionalLefschetz :
     deningerArithmeticAlternatingTraceDistribution =

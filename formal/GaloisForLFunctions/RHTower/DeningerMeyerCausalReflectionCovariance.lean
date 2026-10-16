@@ -21,14 +21,16 @@ theorem deningerMeyerStrongLogGenerator_J (g : DeningerMeyerStrongLogTarget) :
         deningerMeyerStrongLogJ (deningerMeyerStrongLogGenerator g) := by
   apply deningerMeyerStrongLogMellin_injective
   funext s
-  have hm : deningerMeyerStrongLogMellin
+  change deningerMeyerStrongLogMellin _ s =
+    deningerMeyerStrongLogMellinLM s
       (deningerMeyerStrongLogJ g -
-        deningerMeyerStrongLogJ (deningerMeyerStrongLogGenerator g)) s =
-      deningerMeyerStrongLogMellin (deningerMeyerStrongLogJ g) s -
-        deningerMeyerStrongLogMellin
-          (deningerMeyerStrongLogJ (deningerMeyerStrongLogGenerator g)) s :=
-    (deningerMeyerStrongLogMellinLM s).map_sub _ _
-  rw [hm, deningerMeyerStrongLogGenerator_mellin,
+        deningerMeyerStrongLogJ (deningerMeyerStrongLogGenerator g))
+  rw [map_sub]
+  change deningerMeyerStrongLogMellin _ s =
+    deningerMeyerStrongLogMellin (deningerMeyerStrongLogJ g) s -
+      deningerMeyerStrongLogMellin
+        (deningerMeyerStrongLogJ (deningerMeyerStrongLogGenerator g)) s
+  rw [deningerMeyerStrongLogGenerator_mellin,
     deningerMeyerStrongLogMellin_J, deningerMeyerStrongLogMellin_J,
     deningerMeyerStrongLogGenerator_mellin]
   ring
@@ -84,12 +86,11 @@ theorem deningerMeyerXiCausalSource_J (rho : XiDivisorSupport) (k : ℕ)
   intro s hs
   apply mul_left_cancel₀ (pow_ne_zero k (sub_ne_zero.mpr hs))
   rw [deningerMeyerStrongLogMellin_J]
-  have hm : deningerMeyerStrongLogMellin
-      ((-1 : ℂ) ^ k • deningerMeyerXiCausalSource (xiZeroReflectEquiv rho) k hkr) s =
-      (-1 : ℂ) ^ k * deningerMeyerStrongLogMellin
-        (deningerMeyerXiCausalSource (xiZeroReflectEquiv rho) k hkr) s :=
-    (deningerMeyerStrongLogMellinLM s).map_smul _ _
-  rw [hm]
+  change (s - (xiZeroReflectEquiv rho : ℂ)) ^ k *
+      deningerMeyerStrongLogMellin (deningerMeyerXiCausalSource rho k hk) (1 - s) =
+    (s - (xiZeroReflectEquiv rho : ℂ)) ^ k * deningerMeyerStrongLogMellinLM s
+      ((-1 : ℂ) ^ k • deningerMeyerXiCausalSource (xiZeroReflectEquiv rho) k hkr)
+  rw [map_smul]
   calc
     (s - (xiZeroReflectEquiv rho : ℂ)) ^ k *
         deningerMeyerStrongLogMellin (deningerMeyerXiCausalSource rho k hk) (1 - s) =

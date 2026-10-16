@@ -1,0 +1,21 @@
+# RH goal contribution 011: BV full-Weil singular transport
+
+Goal remains active. Ledger now 11/100: docs/drafts/pipeline/rh-100-structural-contributions-2026-10-15.md. Formalized card: docs/drafts/pipeline/3-formalized/rh100-011-bv-full-weil-singular-transport-2026-10-16.md. Current frontier map updated in CHMD and RN.
+
+Five new audited leaves: HTGeometry/BoundedVariationTranslationIntegral; RHTower/ThetaBVArithmeticAdmission; RHTower/ThetaBVWeilForm; RHTower/ThetaQuantileArithmeticForm; RHTower/PaperThetaConfluentArithmeticWork.
+
+Structural result: every globally BV real profile, including jumps/singular continuous variation, enters the literal complete CHMD source/difference graph. Whole-line BV translation integrability pays the actual Gamma diagonal; finite full prime-edge mass pays every prime. Both polar moments extend continuously on the graph. sourceWeilPair = sourcePair + 2 C C - 2 S S is the unique continuous full Weil quadratic-form extension of original compact C² tests. Polarization and original compact C² graph approximation preserve literal full Weil values.
+
+With p=thetaSource.cdfFun, Q=quantileFun and r=normalized, the exact compact shift is p(Q(t)+h), and original densities divide by r(Q(t)). Complete form transport retains Gamma continuum, every prime-power edge, negative mass, both signed poles. Explicit Gamma product integrability, individual prime integrability and prime summability prevent default-zero integral shortcuts. No quantile-speed bound.
+
+RN supplies unconditional BV of every cut parameter jet. For every n,z,interior cut, ell:Complex ->L[Real] Real and real polynomial P, cutParameterJet_fullWeil_transport/source/smooth_approximation give a concrete arithmetic source vector and exact transported full form with original compact C² test limits. HF/Meyer actual spectral rank supplies the terminal charged order; meyerRank_exists_discontinuous_arithmetic_response proves at least one genuinely discontinuous real component is admitted.
+
+Scope: canonical continuous real full-form extension identified with original C² Weil values and their limits. Do not assert a literal spectral/Fourier formula directly evaluated on discontinuous complex BV. No positivity, causal orientation, directed nonlinear boundary-current identity, BV-norm holomorphy, spatial Jordan equation or RH proof. These remain open; routine corollaries of 011 do not count again.
+
+Audits: all five leaves passed foreground lake --old env lean -o target.olean leaf.lean; mathlib API scratch passed. All 81 public declaration #print axioms audits show only propext, Classical.choice, Quot.sound. Five umbrella imports exactly once; all five leaves plus seven direct local prerequisites fresh. No full/umbrella build, numerical experiments, holes, new axioms or heartbeat overrides. All owned /tmp/hgt_rh011* scratch/search/audit files removed; no owned process left.
+
+Global lint was run. Sole error: separately/concurrently created CHMDKleinGordonBoundarySingularity was unreachable from RHTower umbrella and lacked an olean; its source was created during final audit. Left that work untouched. None of 011's files triggered errors. Do not claim global lint passed.
+
+Earlier candidates deferred (not disproved): literal Euler inversion still needs actual periodic Poisson-boundary surjectivity; finite rational/Hilbert division is insufficient. A coordinate trace identity alone does not pay actual-source full-flow calculus/group extension.
+
+Lean lessons: Polynomial.contDiff_aeval at order1 works with `simpa using P.contDiff_aeval (𝕜 := ℝ) 1`; restrictive simp/manual induction produced instance-diamond heartbeat timeout, fixed without raising limit. No Real.continuous_tanh: use sinh/cosh quotient with positive cosh. Integral-congruence functions often require `dsimp only` before rewrite. Explicitly provide `(fun x => f x / normalized x)` to quantile integral rewrite; pointwise Pi division can block rw. Source full-form uniqueness uses closed equality set and closure_minimal, not nonexistent Dense.equalizer. Run only one owned foreground Lean process.

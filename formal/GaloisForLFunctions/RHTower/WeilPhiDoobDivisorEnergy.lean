@@ -283,7 +283,8 @@ private theorem edge_bound {v : ℝ → ℝ} {M : ℝ} (hM : 0 ≤ M)
     _ ≤ _ := mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left hdec (by positivity)) (envelope_nonneg u)
 
-private theorem integrable_edge {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
+/-- Each complete theta-divisor edge is integrable for bounded continuous input. -/
+theorem integrable_edge {v : ℝ → ℝ} (hv : Continuous v) {M : ℝ}
     (hM : 0 ≤ M) (hvM : ∀ u, |v u| ≤ M) (m d n : ℕ+) : Integrable (edge v m d n) :=
   (integrable_envelope.const_mul _).mono' (continuous_edge hv m d n).aestronglyMeasurable
     (ae_of_all _ (edge_bound hM hvM m d n))
@@ -330,7 +331,8 @@ private def chainEquiv : (Σ N : ℕ+, Chains N) ≃ (ℕ+ × ℕ+) × ℕ+ wher
     rfl
   right_inv := fun _ => rfl
 
-private theorem hasSum_chains {F : ℕ → ℕ → ℕ → ℝ}
+/-- Absolute triple sums regroup by their product into finite divisor chains. -/
+theorem hasSum_chains {F : ℕ → ℕ → ℕ → ℝ}
     (hF : Summable (fun p : (ℕ+ × ℕ+) × ℕ+ => F p.1.1 p.1.2 p.2)) :
     HasSum (fun N : ℕ+ => ∑ c ∈ (N : ℕ).divisorsAntidiagonal,
       ∑ q ∈ c.1.divisorsAntidiagonal, F q.1 q.2 c.2)
@@ -416,7 +418,8 @@ private theorem tsum_cusp_pnat (R : ℝ[X]) (x : ℝ) :
   have hh := Equiv.pnatEquivNat.symm.tsum_eq (fun m : ℕ+ => cuspTerm R m x)
   exact hh.symm
 
-private theorem tsum_shifted_edge_eq (v : ℝ → ℝ) (d : ℕ+) (x : ℝ) :
+/-- Summing both theta indices recovers the actual prime jump at every point. -/
+theorem tsum_shifted_edge_eq (v : ℝ → ℝ) (d : ℕ+) (x : ℝ) :
     (∑' p : ℕ+ × ℕ+, edge v p.1 d p.2 (x + Real.log (p.1 : ℕ))) =
       phiDoobPrimeJump v d (x - Real.log (d : ℕ)) := by
   have h1 := summable_cusp_pnat riemannCuspPoly x
@@ -436,7 +439,8 @@ private theorem tsum_shifted_edge_eq (v : ℝ → ℝ) (d : ℕ+) (x : ℝ) :
     simp only [hd1, ArithmeticFunction.vonMangoldt_apply_one, vonMangoldtAtom]
     norm_num
 
-private def primeFirstEquiv : (ℕ+ × (ℕ+ × ℕ+)) ≃ ((ℕ+ × ℕ+) × ℕ+) where
+/-- Reordering the complete edge indices with the prime-power index first. -/
+def primeFirstEquiv : (ℕ+ × (ℕ+ × ℕ+)) ≃ ((ℕ+ × ℕ+) × ℕ+) where
   toFun p := ((p.2.1, p.1), p.2.2)
   invFun p := (p.1.2, (p.1.1, p.2))
   left_inv := fun _ => rfl

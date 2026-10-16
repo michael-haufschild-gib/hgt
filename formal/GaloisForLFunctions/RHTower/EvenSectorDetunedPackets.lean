@@ -34,10 +34,12 @@ private theorem weilTest_finite_translates {ι : Type*} {S : Finset ι}
   have hint : ∀ m k : ι,
       Integrable fun t : ℝ => g (t - x m) * conj (g (t - y - x k)) := by
     intro m k
-    exact ((hg.comp (continuous_id.sub continuous_const)).mul
-      (continuous_conj.comp (hg.comp ((continuous_id.sub continuous_const).sub continuous_const))))
-      .integrable_of_hasCompactSupport
-        (hgc.comp_homeomorph (Homeomorph.subRight (x m))).mul_right
+    have h1 : Continuous fun t : ℝ => g (t - x m) :=
+      hg.comp (continuous_id.sub continuous_const)
+    have h2 : Continuous fun t : ℝ => conj (g (t - y - x k)) :=
+      continuous_conj.comp (hg.comp ((continuous_id.sub continuous_const).sub continuous_const))
+    exact (h1.mul h2).integrable_of_hasCompactSupport
+      (hgc.comp_homeomorph (Homeomorph.subRight (x m))).mul_right
   rw [integral_congr_ae (Eventually.of_forall hpt),
     integral_finsetSum _ fun m _ => integrable_finsetSum _ fun k _ => (hint m k).const_mul _]
   refine Finset.sum_congr rfl fun m _ => ?_
@@ -84,7 +86,9 @@ theorem hasCompactSupport_packet {N : ℕ} {c : ℕ → ℝ} {g : ℝ → ℂ}
       HasCompactSupport fun u => ∑ p ∈ s, (c p.2 : ℂ) * g (u - signedCenter N p) := by
     intro s
     induction s using Finset.induction_on with
-    | empty => simpa using (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℂ))
+    | empty =>
+      simp only [Finset.sum_empty]
+      exact (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℂ))
     | insert p s hp ih =>
       simp only [Finset.sum_insert hp]
       exact ((hg.comp_homeomorph (Homeomorph.subRight (signedCenter N p))).mul_left).add ih
@@ -97,9 +101,8 @@ theorem deriv_packet {N : ℕ} {c : ℕ → ℝ} {g : ℝ → ℂ}
     unfold packet
     apply HasDerivAt.fun_sum
     intro p _
-    have hshift := (hg (u - signedCenter N p)).hasDerivAt.comp u
-      ((hasDerivAt_id u).sub_const (signedCenter N p))
-    simpa using hshift.const_mul (c p.2 : ℂ)
+    exact ((hg (u - signedCenter N p)).hasDerivAt.comp_sub_const u
+      (signedCenter N p)).const_mul (c p.2 : ℂ)
   exact h.deriv
 
 theorem paperFT_packet {N : ℕ} {c : ℕ → ℝ} {g : ℝ → ℂ}
@@ -127,10 +130,8 @@ theorem weilTest_packet_of_reflected_zero {N : ℕ} {c : ℕ → ℝ} {g : ℝ �
            K (y + center N m + center N k) + K (y + center N m - center N k)) := by
     unfold packet
     rw [weilTest_finite_translates hg hgc]
-    simp only [signs, Finset.sum_product, signedCenter, Fin.sum_univ_two,
-      Matrix.cons_val_zero, Matrix.cons_val_one, sub_neg_eq_add, add_neg_eq_sub,
-      Complex.conj_ofReal]
-    simp only [Finset.sum_add_distrib, mul_add]
+    simp [signs, Finset.sum_product, signedCenter, Fin.sum_univ_two,
+      K, Finset.sum_add_distrib, mul_add, ← sub_eq_add_neg]
     ring
   rw [heq]
   have hpt : ∀ m ∈ Finset.Icc 1 N, ∀ k ∈ Finset.Icc 1 N,
@@ -141,8 +142,16 @@ theorem weilTest_packet_of_reflected_zero {N : ℕ} {c : ℕ → ℝ} {g : ℝ �
         y - (center N m + center N k))).trans (hzminus m hm k hk)
     · exact (congrArg K (by ring : y + center N m + center N k =
         y + (center N m + center N k))).trans (hzplus m hm k hk)
-  simp_rw [Finset.sum_congr rfl fun m hm => Finset.sum_congr rfl fun k hk => by
-    rw [(hpt m hm k hk).1, (hpt m hm k hk).2, add_zero, add_zero]]
+  have hremove : (∑ m ∈ Finset.Icc 1 N, ∑ k ∈ Finset.Icc 1 N,
+        (c m : ℂ) * (c k : ℂ) *
+          (K (y - center N m + center N k) + K (y - center N m - center N k) +
+           K (y + center N m + center N k) + K (y + center N m - center N k))) =
+      ∑ m ∈ Finset.Icc 1 N, ∑ k ∈ Finset.Icc 1 N,
+        (c m : ℂ) * (c k : ℂ) *
+          (K (y - center N m + center N k) + K (y + center N m - center N k)) := by
+    refine Finset.sum_congr rfl fun m hm => Finset.sum_congr rfl fun k hk => ?_
+    rw [(hpt m hm k hk).1, (hpt m hm k hk).2, add_zero, add_zero]
+  rw [hremove]
   simp_rw [mul_add, Finset.sum_add_distrib]
   have hswap : (∑ m ∈ Finset.Icc 1 N, ∑ k ∈ Finset.Icc 1 N,
       (c m : ℂ) * (c k : ℂ) * K (y + center N m - center N k)) =

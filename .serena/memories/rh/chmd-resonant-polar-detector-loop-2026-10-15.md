@@ -1,0 +1,15 @@
+# CHMD resonant polar detector — 2026-10-15
+
+Active user goal: unconditional premise-free RH proof through CHMD; corpus-only, no web, no old research markdown, no numerical experiments, no new bounds/equivalences/conditional receivers as claimed breakthroughs. RH remains unproved. Do not mark goal complete or call the local result significant RH progress.
+
+New leaf `formal/GaloisForLFunctions/RHTower/CHMDResonantPolarPackets.lean`, namespace `RHTower.CHMDPolarDetector`, imported in RHTower umbrella. For actual zero rho write kgFreq=u+iv, b=kgWeight, m=mult>0; h=2*pi/u and c=cos(h*sqrt(7/4)). Times [0,h,2h,3h], coefficients [1,-(1+2c),1+2c,-1] have polynomial (1-q)(1-2cq+q^2). Exact weight: 8*(1-cos(hw))*(cos(hw)-c)^2. Pole is exactly zero. Selected multiplicity-weighted energy = -8*m*(cosh(hv)-1)*(cosh(hv)-c)^2*Re b. Nonpositive; strictly negative iff rho.re != 1/2; zero iff critical line. Exact full zero-sum and pole-free prime–arch formula included. Full sum sign is NOT proved: all other zero contributions remain.
+
+Key theorems: fourPoint_weight; detector_pole_zero; selectedEnergy_eq; selectedEnergy_nonpos; selectedEnergy_neg_iff_offLine; selectedEnergy_eq_zero_iff_criticalLine; detectorEnergy_zero_side; detectorEnergy_prime_arch.
+
+Validation: leaf `lake --old build` exit0 (152s); final `lake env lean GaloisForLFunctions/RHTower/CHMDResonantPolarPackets.lean` exit0 no diagnostics; /tmp #print axioms for eight listed theorems only propext, Classical.choice, Quot.sound. No heartbeat increases. `scripts/formal_tools.py index` exit0. `lint` exit1 at audit because concurrent unrelated DeningerMeyerCausalReflectionCovariance, EvenSectorDetunedPackets, EvenSectorDetunedReflection lacked umbrella imports; no CHMD error. Scoped diff --check passed. Other sessions repeatedly committed shared files, including CHMD artifacts; this agent made no commit. Preserve concurrent work.
+
+Tracking card `docs/drafts/pipeline/1-in-progress/chmd-convolution-defect-elimination-2026-10-15.md` has paper proof, formal audit and open core. Next problem: independent arithmetic source mechanism forcing full detector sign / eliminating hyperbolic defect, without assuming RH-equivalent positivity. Xi convolution annihilation kills all zero modes including possible off-line modes. Positive shadow measure is not yet identified with causal wave. General self-adjoint KG energy theorems do not provide identification. `PaperPrimeArchCurrentOperator` positivity explicitly remains RH-equivalent. General finite source negative-index classification already exists in XiWeilSpectralFoldIndexConservation; avoid duplication.
+
+Searches were complete as retrieval but compiler coverage had many pending/stale entries; only Lean checks establish proofs. No further receiver/bound was added. Not a route retirement/no-go theorem.
+
+Serena symbol lookup rejected Lean path as ignored, used rg/bounded source and apply_patch. Selectively `open GaloisForLFunctions.HTGeometry (sechSqHalf)`; broad open creates kgFreq ambiguity. Scratch source/search files cleaned after evidence recorded. No owned process left running.
