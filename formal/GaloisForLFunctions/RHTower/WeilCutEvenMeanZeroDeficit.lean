@@ -707,11 +707,6 @@ theorem spectralWeight_twoBumpTest_le_of_cut {b : ℝ → ℝ} (hb : ContDiff �
 def cutSet (r₀ : ℝ) : Set ℝ :=
   {θ | circleMap 0 1 θ ≠ 1 ∧ -(1 / 4) ≤ angleOrd θ ∧ angleOrd θ ≤ -(r₀ ^ 2)}
 
-theorem measurable_angleOrd : Measurable angleOrd := by
-  unfold angleOrd circleOrd
-  exact Complex.measurable_im.comp ((measurable_const.add (measurable_circleMap 0 1)).div
-    (measurable_const.sub (measurable_circleMap 0 1)))
-
 theorem measurableSet_cutSet (r₀ : ℝ) : MeasurableSet (cutSet r₀) := by
   show MeasurableSet ({θ | circleMap 0 1 θ ≠ 1} ∩
     ({θ | -(1 / 4) ≤ angleOrd θ} ∩ {θ | angleOrd θ ≤ -(r₀ ^ 2)}))
@@ -916,5 +911,24 @@ theorem weilFullFunctional_nonneg_of_cut_eq_zero {lam : ℕ → ℝ}
     exact ⟨hθ.1, hθ.2⟩
   filter_upwards [hae] with θ hθ
   exact spectralWeight_nonneg_of_meanZero_of_not_cut hf hfc h0 (norm_circleMap_one θ) hθ
+
+/-- **The real cut is the even mean-zero deficit.**  For the Nevanlinna data of an odd Weil-positive
+weight, nonnegativity of the Weil functional on even mean-zero tests is equivalent to the vanishing
+of the cut measure. -/
+theorem even_meanZero_nonneg_iff_cut_eq_zero {lam : ℕ → ℝ}
+    (hsl : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => |lam n| / (n : ℝ) ^ σ)
+    {Ψ : ℂ → ℂ} (hΨd : DifferentiableOn ℂ Ψ oddWeilSlitDomain)
+    (hΨe : ∀ s : ℂ, 1 < s.re → Ψ s = weilFunction lam s)
+    {ν : Measure ℝ} [IsFiniteMeasure ν] {c : ℝ}
+    (hsupp : ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ ∈ Iio (-(1 / 4 : ℝ))} = 0)
+    (hrep : ∀ a : ℂ, 0 < a.re → 0 < a.im →
+      a * Ψ (1 / 2 + a) =
+        (∫ θ, I * hrKernel (1 / 2 - I * a ^ 2) (circleMap 0 1 θ) ∂ν) - c) :
+    (∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f → (∀ x, f (-x) = f x) →
+      paperFT f 0 = 0 → 0 ≤ (weilFullFunctional lam (EF.weilTest f f)).re) ↔
+    ν {θ | circleMap 0 1 θ ≠ 1 ∧ angleOrd θ < 0} = 0 :=
+  ⟨fun hpos => cut_measure_eq_zero_of_even_meanZero_nonneg hsl hΨd hΨe hsupp hrep hpos,
+    fun hcut _ hf hfc _ h0 =>
+      weilFullFunctional_nonneg_of_cut_eq_zero hsl hΨd hΨe hsupp hrep hcut hf hfc h0⟩
 
 end RHTower.OddResolvent

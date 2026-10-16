@@ -225,7 +225,7 @@ theorem exists_window_levyForm_bound {R : ℝ} (hR : 0 ≤ R) :
     have hPJ := integrable_shift_jump hvC hvc t
     have hI : (∫ u, (g u - g (u + t)) ^ 2) ≤
         2 / m ^ 2 * (∫ x, phiDoobArchShiftJump v t x) + t ^ 2 * (c * V) := by
-      rcases le_or_lt t 1 with ht1 | ht1
+      rcases le_or_gt t 1 with ht1 | ht1
       · -- short jumps
         have hpt' : ∀ u, (g u - g (u + t)) ^ 2 ≤ 2 / m ^ 2 * phiDoobArchShiftJump v t u +
             2 * (L : ℝ) ^ 2 * t ^ 2 * windowSq (R + 3) v (u + t) := by
@@ -358,7 +358,9 @@ theorem exists_window_levyForm_bound {R : ℝ} (hR : 0 ≤ R) :
     exact setIntegral_mono_on hLHS hG measurableSet_Ioi hpt
   have h2 : (∫ t in Ioi (0 : ℝ), G t) = 2 / m ^ 2 * J + A₂ * (c * V) := by
     simp only [hG_def]
-    rw [integral_add (hJt.const_mul _) (hsq.mul_const _), integral_const_mul, integral_mul_const]
+    rw [integral_add (hJt.const_mul _) (hsq.mul_const _), integral_const_mul, integral_mul_const,
+      hJ, hA₂]
+    rfl
   calc levyForm g ≤ ∫ t in Ioi (0 : ℝ), G t := h1
     _ = 2 / m ^ 2 * J + A₂ * (c * V) := h2
     _ ≤ (2 / m ^ 2 + A₂ * c) * (J + V) := by
