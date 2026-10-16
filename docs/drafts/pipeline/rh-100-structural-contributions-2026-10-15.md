@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **21 / 100**.
+Completed after goal activation: **22 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -420,3 +420,24 @@ structural consequence, and unresolved limitations on its card. Keep the goal
 active until 100 independently justified contributions are audited. Do not count
 the number of files or theorems as contributions. No numerical experiments,
 added axioms, heartbeat increases, full builds, or umbrella builds.
+022: an entire source-defined repair of the whole native theta pencil.
+One compact smooth modulated source has the same positive theta moment at
+every complex parameter. With the actual two-ended trace this constructs a
+global analytic block inverse on all bounded continuous forcing, an exact
+stable diagonalization with scalar z XiC(z)/(mass D), and an explicit entire
+rank-one repaired automorphism of the ORIGINAL uniform space. Every continuous
+BV forcing has a unique literal repaired solution at every parameter, with
+compact AC transport and the complete signed Weil expression. The resulting
+uncut native entire mode recovers the original theta modes at Xi; every actual
+Meyer causal source factors its defect, whose order equals the full HF
+Fredholm rank. Resonant range, kernel and all solutions are explicitly split.
+This removes the native cut discontinuity and parameter exclusions for actual
+source continuation and repaired inhomogeneous solving. Nine clean direct
+leaf audits, all 119 public standard-axiom audits and 51 installed API checks
+passed. Imports are unique, objects fresh, indexes refreshed, and 16 owned
+scratch files removed. Global lint reports five unrelated concurrent umbrella
+omissions, named in the card. No unrepaired inverse at Xi zeros, maximal native
+Jordan classification, BV/Weil-graph-norm analyticity, positivity or RH is
+claimed. All consequences above count together as ONE contribution.
+Card: `3-formalized/rh100-022-entire-native-source-repair-2026-10-16.md`.
+

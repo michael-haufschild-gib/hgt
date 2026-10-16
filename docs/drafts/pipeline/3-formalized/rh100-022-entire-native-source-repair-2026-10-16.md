@@ -1,6 +1,6 @@
-# Contribution 022: structural frontier investigation
+# Contribution 022: entire native source repair
 
-Status: investigating; no contribution counted.
+Status: FORMALIZED. Contribution 022; one structural contribution counted.
 
 Mission: unconditional structural progress on actual arithmetic RH sources.
 
@@ -141,7 +141,8 @@ NativeGrushin, NativeAnalyticInverse, NativeScalarReduction and
 NativeGrushinArithmetic pass clean direct leaf audits. EntireNativeMode and
 NativeResonantSplitting and NativeEntireRepair also pass cleanly. All nine
 leaves are wired once into RHTower; no umbrella build was run. The final
-dependency/API audit and repository lint/index checks are running. The
+dependency/API audit passes. Repository lint has the unrelated omissions
+listed below. The
 operator-valued differentiation proofs use explicit spaces to avoid expensive
 typeclass reconstruction; heartbeat limits remain unchanged.
 One accidentally overlapping leaf invocation was immediately
@@ -191,3 +192,53 @@ integrated moment identity for any repaired solution reduces to M_z(g)+Dt=0,
 forcing that same trace, after which native prescribed-trace uniqueness applies.
 Thus this repair solves all actual continuous BV inputs at all parameters,
 with the complete CHMD arithmetic expression and compact AC representative.
+
+## Formal result and audit
+
+All files are in `formal/GaloisForLFunctions/RHTower/`, namespace
+`RHTower.PaperThetaEndpoint`:
+
+1. `PaperThetaNativeMomentIdentity.lean`: exact integrated native source obstruction.
+2. `PaperThetaNativeCounterSource.lean`: actual compact source with constant positive moment.
+3. `PaperThetaNativeGrushin.lean`: global constructed block inverse, all forcing and traces.
+4. `PaperThetaNativeAnalyticInverse.lean`: entire inverse and actual function/action graph.
+5. `PaperThetaNativeScalarReduction.lean`: explicit invertible shears and full Xi divisor.
+6. `PaperThetaNativeGrushinArithmetic.lean`: smooth correction, BV solving and full arithmetic admission.
+7. `PaperThetaEntireNativeMode.lean`: uncut continuous entire family, actual Meyer factorization and rank.
+8. `PaperThetaNativeResonantSplitting.lean`: explicit complete resonant range, kernel and solutions.
+9. `PaperThetaNativeEntireRepair.lean`: entire original-space automorphism and unique repaired native BV solving.
+
+Main capstones: `nativePencil_global_scalar_reduction`,
+`nativeEntireMode_full_source`, `nativeEffectiveScalar_meyer_rank`,
+`nativeResonant_full_solution`, `nativePencil_entire_source_repair`, and
+`nativeRepaired_full_arithmetic`.
+
+Each leaf passed a foreground direct audit of the form
+`lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/M.olean GaloisForLFunctions/RHTower/M.lean`.
+No full build or umbrella build was run. All nine objects are fresh and all
+nine imports occur exactly once in `GaloisForLFunctions/RHTower.lean`.
+All 119 public declarations have only `propext`, `Classical.choice` and
+`Quot.sound` dependencies, or none. The combined final scratch audit also
+checks 51 installed APIs; its final corrected rerun passes with exit 0 and
+no warnings. The scratch probe initially qualified the root lemma
+`integral_complex_ofReal` with the wrong namespace; the actual proof already
+used the correct name. No theorem or mathematical assumption changed.
+
+Repository `scripts/formal_tools.py lint` reported five unrelated concurrent
+umbrella omissions, with no error or warning in these nine leaves:
+`OddSectorInteriorTraceCoordinates`, `OddSectorInteriorTraceRepair`,
+`SuzukiCausalDepthGammaBoundaryCancellation`, `SuzukiCausalDepthGammaClosedSource`,
+and `SuzukiCausalDepthGammaUnboundedSource`. Existing large-file warnings also
+remain. These unfinished foreign modules were preserved. Index generation
+passed. All 16 owned scratch files are removed after recording these results;
+the final index refresh includes this formalized card and the updated ledger.
+
+Research searches used the documented corpus tool, not web or literature
+novelty searches. The last deep chain search was partial with all 72,949 files
+inventoried; retrieved source arguments were checked in actual Lean files.
+It exposed the existing Hedenmalm compact-Hilbert root-block classification,
+which is distinct from the still-unproved whole-native Jordan classification.
+
+Count this whole construction once. The scalar algebra, resonant splitting,
+entire mode, arithmetic transport and rank-one repair are components of 022,
+not separate contribution claims.

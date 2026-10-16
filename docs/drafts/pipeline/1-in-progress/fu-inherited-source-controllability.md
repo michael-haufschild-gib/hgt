@@ -19,6 +19,8 @@ Corpus findings:
 
 Conjecture ledger:
 1. Iterating distant bounded-mass helpers repays arbitrary fixed debt. Rejected: the current delayed-repayment obstruction retains the fixed initial head and rules this out. Positive lesson: distinguish marginal sign preparation from net repayment.
-2. Every finite retained-prime source field has full positive span after a finite complementary completion. Under attack: combine exact zero critical mass with causal independence; then transfer finite witnesses to a literal finite processed core.
+2. Every finite retained-prime source field has full positive span after a finite complementary completion. Already solved more strongly in `RetainedPrimeLandauSeparation`, `RetainedPrimeFiniteSourceMargin`, and `RetainedPrimeBoundedBatches`; do not repackage this as new work. `MobiusDivisorFiniteDepthPrimeCancellation` also treats finite delayed fields over inherited cores.
+3. Neutralizing all retained receiving coordinates pays insertion of the prescribed retained field. Rejected: insertion also merges residual fibres outside that field. Their inherited covariance is not controlled by the receiving vector. The existing two-coordinate positive-debt circuit addresses exactly this extra quadratic quantity.
+4. Iterated fixed-core spectral payment might produce cofinal energy control. Still unresolved: `MobiusDivisorPrimeBlockEnergyEscape` proves exponential limiting energy for natural exhaustive cores, so limit-first arguments cannot be promoted to moving-cutoff control without controlling escaping spectral mass.
 
 Significance gate: a generic cone receiver is insufficient. Any survivor must discharge its source hypotheses on the actual arithmetic profiles and explicitly identify the finite inherited obstruction removed.

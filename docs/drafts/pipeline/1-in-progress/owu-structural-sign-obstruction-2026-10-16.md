@@ -1,6 +1,6 @@
 # OWU: structural sign obstruction
 
-Status: IN PROGRESS. No new theorem claimed.
+Status: PAPER PROOF COMPLETE; Lean verification in progress. No verified result claimed yet.
 
 ## Objective and scope
 
@@ -39,7 +39,7 @@ line and real cut, so positivity of further odd tests alone cannot remove the cu
    resolvent transport cannot be assumed: its integration-by-parts boundary
    terms are not killed by the existing arc conditions. No route retired.
 2. Exact recovery of complete odd sources in each arithmetic fibre, with no
-   aperture enlargement. Status: paper proof being checked below. The current
+   aperture enlargement. Status: dependency-closed paper proof below. The current
    energy-completion theorem has only the native-to-completed inclusion; it
    does not show that completed blind minima are limits of native blind tests.
 
@@ -82,3 +82,17 @@ the sign of that common minimum.
 Dependencies to audit in Lean: fixed-aperture signed coordinate construction,
 boundary trace vanishing, odd smooth-core sequence, exact positive repair,
 purification, and normalization. None assumes positivity or RH.
+
+## Formalization in progress
+
+- `OddSectorInteriorTraceCoordinates`: both signed coordinate rays strictly
+  inside every active aperture.
+- `OddSectorInteriorTraceRepair`: finite positive exact correction and its
+  vanishing in every linear observable.
+- `OddSectorSmoothFormDensity`: odd form-norm approximation and the strict
+  finite arithmetic support of complete odd sources.
+- `OddSectorExactFibreRecovery`: exact all-trace recovery, normalized blind
+  recovery, and a smooth sequence approaching the attained complete minimum.
+
+Current verification: coordinate module had one ambiguous cast in a symbolic
+inequality; fixed and rechecking. No computational experiments or new axioms.

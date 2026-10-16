@@ -129,3 +129,30 @@ centered Laplace coordinates, the expected quotient type on a diagonal is
 (log(2)/4 + pi/8) times the height, strictly below pi/4. Propagating between
 opposite diagonal rays would force Fourier decay and exclude rough invisible
 sources. These statements are current paper-proof targets, not Lean results.
+
+### Closure attack checkpoint: regularity and the unresolved endpoint
+
+- Direct resolvent shortcut fails as stated: `HedenmalmThetaExteriorPseudospectralSeparation`
+  proves exponential growth of the full source resolvent even on zero-free exterior lines.
+  No bounded-resolvent assumption may be inserted.
+- The exact Hilbert Fourier majorant is `||F_f(z)|| <= ||f|| sqrt(L(2 Im z))`, with
+  `L(y)=integral exp(y*x) k(x) dx`. In the corpus's positive-character convention the argument
+  is `-2 Im z`. This comes from the actual conormal's squared norm, not a topology change.
+- New intermediate conjecture: every Hilbert source whose transform is entirely Xi-divisible
+  has an analytic representative on a fixed nonzero horizontal strip. Paper mechanism:
+  `log(sqrt(L(2y))/L(y))/y -> log(2)/2`; the already-proved sectorial Gamma comparison at
+  angle pi/4 contributes `pi/8-log(2)/4`. Thus the quotient has growth at most
+  `exp((pi/8+log(2)/4+epsilon)|t|)` on the real frequency axis by sector PL. Xi's decay
+  `exp(-delta|t|)`, delta arbitrarily close to pi/4, leaves a positive Fourier decay margin.
+  Fourier inversion then supplies the analytic representative. This is a proof plan; the
+  full theorem is not yet Lean-verified.
+- `/tmp/gta-closure-gamma-20261016.lean` verified the diagonal log-Gamma difference and exact
+  Stirling main-term calculation. These auxiliary estimates do not satisfy the user's task.
+  The corpus already has a sharper general sector comparison in `ThetaTailSectorialGammaBound`,
+  so prefer reuse over landing redundant Gamma lemmas.
+- `/tmp/gta-closure-energy-20261016.lean` is checking the exact conormal norm and exponential
+  moments for arbitrary Hilbert sources. No new Lean module has been landed yet.
+- Full closure still needs a genuine Hilbert-norm argument at the critical carrier boundary.
+  Compact-open transform convergence, Meyer topology convergence, and membership in all weaker
+  weighted completions do not by themselves prove it. Do not replace this missing step with
+  an assumption or claim this session complete on the basis of the auxiliary work.

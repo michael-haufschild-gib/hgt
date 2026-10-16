@@ -59,9 +59,10 @@ theorem exists_exact_fibre_recovery (a : SuzukiPositiveAperture) (u : OddFormSou
     abel
   · intro x
     have ht := traceRepair_observable_tendsto a (profileObservable a x) v hv
+    change Tendsto (fun n => mixtureProfile a (traceRepair a (v n)) x) atTop (𝓝 0) at ht
     have h := (hP x).add ht
     simpa only [hfP,c,map_add,mixtureProfile,linearCombination_single,one_smul,
-      Pi.add_apply,profileObservable,LinearMap.coe_mk,AddHom.coe_mk,add_zero] using h
+      Pi.add_apply,add_zero] using h
   · have ht := traceRepair_observable_tendsto a (mixtureEnergy a) v hv
     have h := hE.add ht
     simpa only [hfE,c,map_add,mixtureEnergy,linearCombination_single,one_smul,add_zero] using h
@@ -167,5 +168,27 @@ theorem exists_blind_minimizer_with_smooth_recovery (a : SuzukiPositiveAperture)
           (𝓝 (ccmRestrictedWeilSourceQuadratic a u.1)) := by
   obtain ⟨u,hu⟩ := exists_blind_minimizer a
   exact ⟨u,hu,exists_smooth_blind_unit_recovery a u⟩
+
+/-- **No relaxation gap.** The smooth blind unit infimum equals an attained
+complete blind odd minimum at every positive aperture. -/
+theorem exists_blind_minimizer_without_relaxation_gap (a : SuzukiPositiveAperture) :
+    ∃ u : BlindUnitSource a,
+      (∀ v : BlindUnitSource a,
+        ccmRestrictedWeilSourceQuadratic a u.1 ≤ ccmRestrictedWeilSourceQuadratic a v.1) ∧
+      sInf (Set.range (fun f : SmoothBlindUnitSource a => interiorEnergy f.1)) =
+        ccmRestrictedWeilSourceQuadratic a u.1 := by
+  obtain ⟨u,hu,f,-,hE⟩ := exists_blind_minimizer_with_smooth_recovery a
+  have hlo (g : SmoothBlindUnitSource a) :
+      ccmRestrictedWeilSourceQuadratic a u.1 ≤ interiorEnergy g.1 := by
+    have h := hu g.toBlindUnitSource
+    simpa only [SmoothBlindUnitSource.toBlindUnitSource,sourceEnergy_interiorCCMSource,
+      interiorEnergy,interiorProfile] using h
+  have hb : BddBelow (Set.range (fun f : SmoothBlindUnitSource a => interiorEnergy f.1)) :=
+    ⟨ccmRestrictedWeilSourceQuadratic a u.1,by rintro _ ⟨g,rfl⟩; exact hlo g⟩
+  have hn : (Set.range (fun f : SmoothBlindUnitSource a => interiorEnergy f.1)).Nonempty :=
+    ⟨interiorEnergy (f 0).1,f 0,rfl⟩
+  refine ⟨u,hu,le_antisymm ?_ ?_⟩
+  · exact ge_of_tendsto hE (Eventually.of_forall fun n => csInf_le hb ⟨f n,rfl⟩)
+  · exact le_csInf hn (by rintro _ ⟨g,rfl⟩; exact hlo g)
 
 end RHTower.OddSector

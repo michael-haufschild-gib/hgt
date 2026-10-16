@@ -90,6 +90,8 @@ theorem not_summable_suzukiGammaTwoLegColumn_first_norm_sq
     (h a : Set.Ioi (0 : ℝ)) :
     ¬ Summable (fun p : Nat.Primes =>
       ‖suzukiGammaTwoLegColumn h a (p, 0) (Sum.inr 0)‖ ^ 2) := by
+  have hh : 0 < h.1 := h.2
+  have ha : 0 < a.1 := a.2
   let C : ℝ := (h.1 * Real.sqrt h.1)⁻¹ ^ 2 * Real.log 2 / 1152
   have hC : 0 < C := by dsimp [C]; positivity
   have hscale : 0 < (h.1 / 2) * a.1 := by positivity
@@ -100,9 +102,9 @@ theorem not_summable_suzukiGammaTwoLegColumn_first_norm_sq
       (Filter.Tendsto.const_mul_atTop hscale
         GaloisForLFunctions.HTGeometry.tendsto_primeRealLog_cofinite_atTop))
     refine ht.congr fun p => ?_
-    rw [xiMobiusContinuousApertureDiskNode]
-    congr 1
-    ring
+    change Real.exp (-(((h.1 / 2) * a.1) * Real.log (p : ℝ))) =
+      Real.exp (-((h.1 / 2) * a.1) * Real.log (p : ℝ))
+    rw [neg_mul]
   have hsmall : ∀ᶠ p : Nat.Primes in cofinite,
       xiMobiusContinuousApertureDiskNode ((h.1 / 2) * a.1) p < 1 / 2 :=
     hdisk.eventually (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))
@@ -141,13 +143,14 @@ theorem not_summable_suzukiGammaTwoLegColumn_first_norm_sq
           (1 / 8) * (1 / 9) * (1 / 16) := by dsimp [C]; ring
            _ ≤ _ := by gcongr
     apply (mul_le_mul_iff_of_pos_right hp).mp
-    convert hmain using 1 <;> field_simp <;> ring
+    convert hmain using 1
+    · field_simp
+    · ring
   intro hsum
   have hs : Summable (fun p : Nat.Primes => C * (1 / (p : ℝ))) :=
     Summable.of_norm_bounded_eventually hsum (by
       filter_upwards [hlower] with p hp
-      simpa [Real.norm_eq_abs, abs_of_nonneg (by positivity :
-        0 ≤ C * (1 / (p : ℝ)))] using hp)
+      simpa [Real.norm_eq_abs, abs_of_pos hC] using hp)
   exact Nat.Primes.not_summable_one_div ((summable_mul_left_iff hC.ne').mp hs)
 
 /-- No bounded operator can reproduce even the depth-zero literal source columns. -/
@@ -173,8 +176,7 @@ theorem no_bounded_suzukiGammaTwoLeg_column_realization
     have hn := congrArg norm hid
     simpa [v, RCLike.inner_apply] using hn
   apply not_summable_suzukiGammaTwoLegColumn_first_norm_sq h a
-  simpa only [Function.comp_apply, hrow] using
-    hs.comp_injective hi
+  exact (hs.comp_injective hi).congr fun p => by rw [hrow]
 
 /-- The actual closed synthesis has no bounded extension to its ambient Hilbert space. -/
 theorem suzukiGammaTwoLegClosedSynthesis_no_bounded_extension
@@ -185,7 +187,7 @@ theorem suzukiGammaTwoLegClosedSynthesis_no_bounded_extension
   rintro ⟨T, hT⟩
   apply no_bounded_suzukiGammaTwoLeg_column_realization h a
   refine ⟨T, fun p => ?_⟩
-  rcases LinearPMap.mem_graph_iff.mp
+  rcases (LinearPMap.mem_graph_iff _).mp
       (suzukiGammaTwoLegClosedSynthesis_single_graph h a (Sum.inl (p, 0))) with
     ⟨x, hx, hy⟩
   rw [← hx, hT x]
@@ -203,7 +205,7 @@ theorem suzukiGammaTwoLegColumn_sourceNormal_coordinate
 /-- A fixed, unconditional closed realization of the canonical two-leg Gamma source.
 Its finite packets are literal, its domain is dense, and bounded realization is impossible. -/
 theorem suzukiGammaCanonicalTwoLegSource_closed_dense_unbounded :
-    let h : Set.Ioi (0 : ℝ) := ⟨1, zero_lt_one⟩
+    let h : Set.Ioi (0 : ℝ) := ⟨1, by norm_num⟩
     (suzukiGammaTwoLegClosedSynthesis h h).IsClosed ∧
       Dense ((suzukiGammaTwoLegClosedSynthesis h h).domain : Set SuzukiCausalDepthGammaTraceL2) ∧
       (∀ s : Finset (Nat.Primes × ℕ), ∀ c : (Nat.Primes × ℕ) → ℂ,
