@@ -68,7 +68,8 @@ noncomputable section
 namespace RHTower.CHMDLightConeBesselZero
 
 open WeilOneSided WeilSpectral GaloisForLFunctions.HTGeometry RHTower.EvenSector
-open RHTower.CHMDStage11 RHTower.CHMDStage22 RHTower.CHMDLightCone RHTower.CHMDQuarticMoment
+open RHTower.CHMDStage11 RHTower.CHMDStage18 RHTower.CHMDStage22 RHTower.CHMDGrowthCollapse
+  RHTower.CHMDLightCone RHTower.CHMDQuarticMoment
 
 /-! ## Section 1: Forward Light-Cone Linearity and Three-Part Transmutation of `chmdWave` -/
 
@@ -95,14 +96,14 @@ theorem continuous_masslessArchWave : Continuous masslessArchWave := by
   have h : masslessArchWave = inverseLightConeTransmute chmdArchWave :=
     funext fun y => (inverseLightConeTransmute_chmdArchWave y).symm
   rw [h]
-  exact continuous_inverseLightConeTransmute continuous_chmdArchWave
+  exact continuous_inverseLightConeTransmute CHMDStage22.continuous_chmdArchWave
 
 /-- The massless d'Alembert prime wave `masslessPrimeWave` (`P₀`) is continuous on `ℝ`. -/
 theorem continuous_masslessPrimeWave : Continuous masslessPrimeWave := by
   have h : masslessPrimeWave = inverseLightConeTransmute chmdPrimeWave :=
     funext fun y => (inverseLightConeTransmute_chmdPrimeWave y).symm
   rw [h]
-  exact continuous_inverseLightConeTransmute continuous_chmdPrimeWave
+  exact continuous_inverseLightConeTransmute CHMDStage22.continuous_chmdPrimeWave
 
 /-- Scalar linearity of `lightConeTransmute`. -/
 theorem lightConeTransmute_const_mul (c : ℝ) (A : ℝ → ℝ) (y : ℝ) :
@@ -177,7 +178,10 @@ theorem chmdWave_eq_lightConeTransmute (y : ℝ) :
     fun_prop
   have harch : Continuous (fun v : ℝ => 1 / (2 * π) * masslessArchWave v) :=
     continuous_const.mul continuous_masslessArchWave
-  rw [lightConeTransmute_sub (hpole.add harch) continuous_masslessPrimeWave,
+  have hpa : Continuous (fun v : ℝ =>
+      2 / Real.cos (1 / 4 : ℝ) ^ 2 * Real.cosh (v / 2) + 1 / (2 * π) * masslessArchWave v) :=
+    hpole.add harch
+  rw [lightConeTransmute_sub hpa continuous_masslessPrimeWave,
     lightConeTransmute_add hpole harch,
     lightConeTransmute_const_mul (1 / (2 * π)) masslessArchWave,
     ← chmdPoleWave_eq_lightConeTransmute,
@@ -218,7 +222,7 @@ theorem norm_lightConeBesselZeroTerm_le (w : ℂ) (k : ℕ) :
   have hk : (0 : ℝ) < k ! := by exact_mod_cast Nat.factorial_pos k
   have hk1 : (1 : ℝ) ≤ k ! := by exact_mod_cast Nat.succ_le_of_lt (Nat.factorial_pos k)
   unfold lightConeBesselZeroTerm
-  rw [norm_div, norm_pow, norm_div, norm_neg, norm_mul, Complex.norm_natCast, Complex.norm_natCast,
+  rw [norm_div, norm_pow, norm_div, norm_neg, norm_mul, Complex.norm_natCast,
     show ‖(4 : ℂ)‖ = 4 by norm_num]
   exact div_le_div_of_nonneg_left (by positivity) hk (le_mul_of_one_le_right hk.le hk1)
 
@@ -304,7 +308,7 @@ theorem hasDerivAt_lightConeBesselZeroTerm_succ (w : ℂ) (k : ℕ) :
         (((k + 1)! : ℂ) * ((k + 1)! : ℂ))) w := by
     refine (((((hasDerivAt_id w).neg).div_const (4 : ℂ)).pow (k + 1)).div_const
       (((k + 1)! : ℂ) * ((k + 1)! : ℂ))).congr_deriv ?_
-    ring
+    simp only [Pi.neg_apply, id_eq]
   refine hd.congr_deriv ?_
   unfold lightConeBesselTerm
   rw [Nat.add_sub_cancel, Nat.factorial_succ]
@@ -312,7 +316,6 @@ theorem hasDerivAt_lightConeBesselZeroTerm_succ (w : ℂ) (k : ℕ) :
   have hk1 : ((k + 1 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero k
   push_cast
   field_simp
-  ring
 
 /-- **Exact complex derivative law**: `(d/dw) lightConeBesselZero(w) = -(1/4) lightConeBessel(w)`. -/
 theorem hasDerivAt_lightConeBesselZero (w₀ : ℂ) :
@@ -350,11 +353,9 @@ theorem differentiable_lightConeBesselZero : Differentiable ℂ lightConeBesselZ
 `(d/dx) lightConeBesselZeroReal(x) = -(1/4) lightConeBesselReal(x)`. -/
 theorem hasDerivAt_lightConeBesselZeroReal (x : ℝ) :
     HasDerivAt lightConeBesselZeroReal (-1 / 4 * lightConeBesselReal x) x := by
-  have hc : HasDerivAt (fun y : ℝ => lightConeBesselZero (y : ℂ))
-      (-1 / 4 * lightConeBessel (x : ℂ)) x := by
-    simpa using HasDerivAt.scomp x (hasDerivAt_lightConeBesselZero (x : ℂ))
-      Complex.ofRealCLM.hasDerivAt
-  have hre := Complex.reCLM.hasDerivAt.comp x hc
+  have hc := HasDerivAt.scomp x (hasDerivAt_lightConeBesselZero (x : ℂ))
+    Complex.ofRealCLM.hasDerivAt
+  have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hc
   refine hre.congr_deriv ?_
   rw [← ofReal_lightConeBesselReal]
   simp [Complex.reCLM_apply]
@@ -392,7 +393,8 @@ theorem hasDerivAt_lightConeBesselZero_light_cone (c y t : ℝ) :
       fun s : ℝ => ((lightConeBesselZeroReal (c * y ^ 2 * (1 - s ^ 2)) : ℝ) : ℂ) :=
     funext fun s => (ofReal_lightConeBesselZeroReal _).symm
   rw [hfun]
-  exact Complex.ofRealCLM.hasDerivAt.comp t (hasDerivAt_lightConeBesselZeroReal_light_cone c y t)
+  exact Complex.ofRealCLM.hasFDerivAt.comp_hasDerivAt t
+    (hasDerivAt_lightConeBesselZeroReal_light_cone c y t)
 
 /-- **Exact Bessel Derivative Law on the Light Cone (`deriv`, complex `lightConeBesselZero` form)**. -/
 theorem deriv_lightConeBesselZero_light_cone (c y t : ℝ) :
@@ -444,8 +446,12 @@ theorem besselJ_zero_eq_integral (x : ℝ) :
     intro u
     have h := besselJ_odd_eq_integral 0 u
     simp only [mul_zero, zero_add, Nat.cast_one, one_mul] at h
-    rw [h, ← neg_mul_eq_mul_neg, ← intervalIntegral.integral_neg]
-    ring_nf
+    have hneg : (∫ θ in (0 : ℝ)..Real.pi / 2, (-Real.sin θ * Real.sin (u * Real.sin θ))) =
+        -(∫ θ in (0 : ℝ)..Real.pi / 2, Real.sin θ * Real.sin (u * Real.sin θ)) := by
+      rw [← intervalIntegral.integral_neg]
+      exact intervalIntegral.integral_congr fun θ _ => by ring
+    rw [h, hneg]
+    ring
   have hF_cont : Continuous (fun p : ℝ × ℝ => -Real.sin p.2 * Real.sin (p.1 * Real.sin p.2)) := by
     fun_prop
   have hswap : (∫ u in (0 : ℝ)..x, ∫ θ in (0 : ℝ)..Real.pi / 2,
@@ -462,6 +468,7 @@ theorem besselJ_zero_eq_integral (x : ℝ) :
         (-Real.sin θ * Real.sin (u * Real.sin θ)) u := by
       intro u
       refine (((hasDerivAt_id u).mul_const (Real.sin θ)).cos).congr_deriv ?_
+      dsimp only [id]
       ring
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hd u)
       ((by fun_prop : Continuous fun u : ℝ =>
@@ -477,7 +484,6 @@ theorem besselJ_zero_eq_integral (x : ℝ) :
       intervalIntegrable_const, intervalIntegral.integral_const, smul_eq_mul, mul_one, sub_zero]
     have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
     field_simp
-    ring
   linarith
 
 /-- **Uniform bound `|J₀(x)| ≤ 1`** for all `x : ℝ`. -/
@@ -506,8 +512,8 @@ theorem abs_lightConeBesselZeroReal_le_one {w : ℝ} (hw : 0 ≤ w) :
 theorem abs_lightConeBesselZeroReal_light_cone_le_one {c : ℝ} (hc : 0 ≤ c) (y : ℝ) {t : ℝ}
     (ht : |t| ≤ 1) :
     |lightConeBesselZeroReal (c * y ^ 2 * (1 - t ^ 2))| ≤ 1 := by
-  have ht2 : t ^ 2 ≤ 1 := by nlinarith [abs_nonneg t, sq_abs t]
-  exact abs_lightConeBesselZeroReal_le_one (by nlinarith [sq_nonneg y])
+  have ht2 : 0 ≤ 1 - t ^ 2 := by nlinarith [abs_nonneg t, sq_abs t]
+  exact abs_lightConeBesselZeroReal_le_one (by positivity)
 
 /-! ## Section 3: Integration by Parts of `lightConeTransmute` and Cumulative Prime-Wave Identities -/
 
@@ -527,7 +533,7 @@ theorem lightConeTransmute_eq_of_even {A : ℝ → ℝ} (hA_cont : Continuous A)
   have hneg : ∫ t in (-1 : ℝ)..0, f t = ∫ t in (0 : ℝ)..1, f t := by
     have hc := intervalIntegral.integral_comp_neg (a := (-1 : ℝ)) (b := 0) f
     simp only [neg_neg, neg_zero] at hc
-    rw [hc]
+    rw [← hc]
     refine intervalIntegral.integral_congr fun t _ => ?_
     simp only [f, neg_sq, mul_neg, hA_even]
   rw [hsplit, hneg]
@@ -585,7 +591,7 @@ theorem cumulativeMasslessPrimeWave_mul_eq (y t : ℝ) :
   · have hc := intervalIntegral.integral_comp_mul_left (a := (0 : ℝ)) (b := t)
       masslessPrimeWave hy
     simp only [mul_zero, smul_eq_mul] at hc
-    rw [← hc]
+    rw [hc]
     field_simp
 
 /-- Strict positivity of the cumulative d'Alembert prime wave for `x > 0`. -/
@@ -593,7 +599,8 @@ theorem cumulativeMasslessPrimeWave_pos {x : ℝ} (hx : 0 < x) :
     0 < cumulativeMasslessPrimeWave x := by
   unfold cumulativeMasslessPrimeWave
   exact intervalIntegral.integral_pos hx continuous_masslessPrimeWave.continuousOn
-    (fun s _ => (masslessPrimeWave_pos s).le) (masslessPrimeWave_pos x)
+    (fun s _ => (masslessPrimeWave_pos s).le)
+    ⟨x, Set.right_mem_Icc.mpr hx.le, masslessPrimeWave_pos x⟩
 
 theorem cumulativeMasslessPrimeWave_nonneg {x : ℝ} (hx : 0 ≤ x) :
     0 ≤ cumulativeMasslessPrimeWave x := by
@@ -670,8 +677,8 @@ theorem mul_integral_besselJ_zero_masslessPrimeWave_eq (y : ℝ) :
         lightConeBesselZeroReal (2 * y ^ 2 * (1 - t ^ 2)) * masslessPrimeWave (y * t) := by
     refine intervalIntegral.integral_congr fun t ht => ?_
     rw [Set.uIcc_of_le (by norm_num)] at ht
-    have ht2 : t ^ 2 ≤ 1 := by nlinarith [ht.1, ht.2]
-    rw [lightConeBesselZeroReal_eq_besselJ_zero_sqrt (by nlinarith [sq_nonneg y])]
+    have ht2 : 0 ≤ 1 - t ^ 2 := by nlinarith [ht.1, ht.2]
+    rw [lightConeBesselZeroReal_eq_besselJ_zero_sqrt (by positivity)]
   rw [hcongr]
   exact mul_integral_lightConeBesselZeroReal_masslessPrimeWave_eq y
 
@@ -717,6 +724,13 @@ theorem chmdPrimeWave_eq_lightConeBesselZeroReal_and_cumulative (y : ℝ) :
     refine continuous_iff_continuousAt.mpr fun t => ?_
     exact (intervalIntegral.integral_hasDerivAt_right (hP.intervalIntegrable 0 t)
       (hP.stronglyMeasurableAtFilter volume (nhds t)) hP.continuousAt).continuousAt
+  have hi1 : IntervalIntegrable
+      (fun t : ℝ => lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) * masslessPrimeWave (y * t))
+      volume 0 1 := (hB.mul hP).intervalIntegrable 0 1
+  have hi2 : IntervalIntegrable
+      (fun t : ℝ => t * lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) *
+        (∫ u in (0 : ℝ)..t, masslessPrimeWave (y * u)))
+      volume 0 1 := (((by fun_prop : Continuous fun t : ℝ => t).mul hB).mul hC).intervalIntegrable 0 1
   have hsplit : (∫ t in (0 : ℝ)..1,
       lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) *
         (masslessPrimeWave (y * t) - t * ∫ u in (0 : ℝ)..t, masslessPrimeWave (y * u))) =
@@ -725,9 +739,7 @@ theorem chmdPrimeWave_eq_lightConeBesselZeroReal_and_cumulative (y : ℝ) :
       (∫ t in (0 : ℝ)..1,
         t * lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) *
           (∫ u in (0 : ℝ)..t, masslessPrimeWave (y * u))) := by
-    rw [← intervalIntegral.integral_sub
-      ((hB.mul hP).intervalIntegrable 0 1)
-      (((by fun_prop : Continuous fun t : ℝ => t).mul hB |>.mul hC).intervalIntegrable 0 1)]
+    rw [← intervalIntegral.integral_sub hi1 hi2]
     exact intervalIntegral.integral_congr fun t _ => by ring
   rw [hsplit, chmdPrimeWave_eq_half_lightCone, integral_lightConeBesselZeroReal_masslessPrimeWave_eq]
   ring
@@ -749,6 +761,13 @@ theorem mul_chmdPrimeWave_eq_besselJ_zero_and_cumulative (y : ℝ) :
     continuous_masslessPrimeWave.comp (by fun_prop)
   have hC : Continuous (fun t : ℝ => cumulativeMasslessPrimeWave (y * t)) :=
     continuous_cumulativeMasslessPrimeWave.comp (by fun_prop)
+  have hi1 : IntervalIntegrable
+      (fun t : ℝ => y * (lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) * masslessPrimeWave (y * t)))
+      volume 0 1 := (continuous_const.mul (hB.mul hP)).intervalIntegrable 0 1
+  have hi2 : IntervalIntegrable
+      (fun t : ℝ => t * lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) *
+        cumulativeMasslessPrimeWave (y * t))
+      volume 0 1 := (((by fun_prop : Continuous fun t : ℝ => t).mul hB).mul hC).intervalIntegrable 0 1
   have hsplit : (∫ t in (0 : ℝ)..1,
       lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) *
         (y * masslessPrimeWave (y * t) - t * cumulativeMasslessPrimeWave (y * t))) =
@@ -757,10 +776,7 @@ theorem mul_chmdPrimeWave_eq_besselJ_zero_and_cumulative (y : ℝ) :
       (∫ t in (0 : ℝ)..1,
         t * lightConeBesselReal (2 * y ^ 2 * (1 - t ^ 2)) *
           cumulativeMasslessPrimeWave (y * t)) := by
-    rw [← intervalIntegral.integral_const_mul,
-      ← intervalIntegral.integral_sub
-        ((continuous_const.mul (hB.mul hP)).intervalIntegrable 0 1)
-        (((by fun_prop : Continuous fun t : ℝ => t).mul hB |>.mul hC).intervalIntegrable 0 1)]
+    rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_sub hi1 hi2]
     exact intervalIntegral.integral_congr fun t _ => by ring
   change y * chmdPrimeWave y =
     y * masslessPrimeWave y - cumulativeMasslessPrimeWave y +
@@ -790,13 +806,15 @@ theorem abs_integral_lightConeBesselZeroReal_masslessPrimeWave_le (y : ℝ) :
     refine intervalIntegral.integral_mono_on (by norm_num)
       (hP.neg.intervalIntegrable 0 1) ((hB0.mul hP).intervalIntegrable 0 1) fun t ht => ?_
     have hta : |t| ≤ 1 := abs_le.mpr ⟨by linarith [ht.1], ht.2⟩
-    have hb := (abs_le.mp (abs_lightConeBesselZeroReal_light_cone_le_one (by norm_num) y hta)).1
+    have hb := (abs_le.mp (abs_lightConeBesselZeroReal_light_cone_le_one
+      (by norm_num : (0 : ℝ) ≤ 2) y hta)).1
     have hp := (masslessPrimeWave_pos (y * t)).le
     nlinarith
   · refine intervalIntegral.integral_mono_on (by norm_num)
       ((hB0.mul hP).intervalIntegrable 0 1) (hP.intervalIntegrable 0 1) fun t ht => ?_
     have hta : |t| ≤ 1 := abs_le.mpr ⟨by linarith [ht.1], ht.2⟩
-    have hb := (abs_le.mp (abs_lightConeBesselZeroReal_light_cone_le_one (by norm_num) y hta)).2
+    have hb := (abs_le.mp (abs_lightConeBesselZeroReal_light_cone_le_one
+      (by norm_num : (0 : ℝ) ≤ 2) y hta)).2
     have hp := (masslessPrimeWave_pos (y * t)).le
     nlinarith
 

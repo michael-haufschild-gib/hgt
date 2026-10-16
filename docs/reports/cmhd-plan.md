@@ -77,9 +77,9 @@ That identity — $L[\cosh(\cdot/2)](y) = \cos(y\sqrt{7/4})$ — is what all the
 3. **Step 3 — Exponential Lower-Order Bound on $L[P_0](y)$ $\implies$ `RiemannHypothesis`**:
    By [`chmdPrimeWave_growth_law`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean#L36-L39), any reduction of the growth exponent of $\operatorname{chmdPrimeWave}(y) = L[P_0](y)$ from $1/2$ to $a < 1/2$ forces $|\operatorname{Im}\rho_\rho| \le a$ for all zeros $\rho$, and bounding $\operatorname{chmdPrimeWave}(y)$ below on $[0, \infty)$ triggers [`riemannHypothesis_iff_chmdPrimeWave_bddBelow`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean#L40-L44) to conclude `RiemannHypothesis`.
 
-### Immediate Next Formal Target
+### done: formal/GaloisForLFunctions/RHTower/CHMDLightConeBesselZeroAndIntegrationByParts.lean
 
-The next concrete module to build on this path is the **Light-Cone Pole-Prime Cancellation & $J_0$ Integration-by-Parts Identity**:
+**Light-Cone Pole-Prime Cancellation & $J_0$ Integration-by-Parts Identity**:
 - Formalize the linearity identity $\operatorname{chmdWave}(y) = L\bigl[\frac{2}{\cos^2(1/4)}\cosh(\cdot/2) + \frac{1}{2\pi}\operatorname{masslessArchWave} - P_0\bigr](y)$,
 - Formalize the exact Bessel derivative law $\frac{d}{dt}\bigl[\operatorname{lightConeBesselZero}(c y^2(1-t^2))\bigr] = \frac{c y^2 t}{2}\operatorname{lightConeBesselReal}(c y^2(1-t^2))$ (where $\operatorname{lightConeBesselZero}(w) = \sum_k \frac{(-w/4)^k}{(k!)^2} = J_0(\sqrt{w})$), and
 - Integrate `lightConeTransmute` by parts to express $\operatorname{chmdPrimeWave}(y)$ in terms of the cumulative d'Alembert prime wave $\int_0^{yt} P_0(s)\,ds$ and the bounded kernel $J_0$.

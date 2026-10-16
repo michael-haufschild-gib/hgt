@@ -257,7 +257,9 @@ make one significant contribution that overcomes a hard mathematical obstacle by
 
 On every new turn:
 
-make one significant contribution that overcomes a hard mathematical obstacle for route OWU from docs/reports/rh-current-frontier-map.md. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle and remove an obstruction which significantly moves the frontier in the proof route.
+make one significant contribution that overcomes a hard mathematical obstacle for route CMHD from docs/reports/rh-current-frontier-map.md in the research route outlined in docs/reports/cmhd-plan.md
+
+it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle and remove an obstruction which significantly moves the frontier in the proof route.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 

@@ -2,7 +2,7 @@
 
 Goal source: user attachment `ebde8af8-c5dc-4d8d-97d6-73a1f8c7d782/pasted-text-1.txt`.
 
-Completed after goal activation: **20 / 100**.
+Completed after goal activation: **21 / 100**.
 
 Count one contribution only after a dependency-closed structural theorem removes
 a specific hard route obstacle, enables a new class of actual constructions, and
@@ -298,10 +298,30 @@ realization, maximal generalized-eigenspace multiplicity equality and positivity
 are not asserted.
 Card: `3-formalized/rh100-020-compact-native-xi-resolvent-2026-10-16.md`.
 
+021: whole original Meyer cohomology admits a faithful literal native BV and
+complete arithmetic-graph realization after ONE fixed genuine Gaussian source
+regularization. Xi cancels the cut charge before contour summation. One common
+monotone strip control, combined with HF's Gaussian good-height theorem, pays
+uniform, strong BV and full prime/archimedean edge convergence for every original
+source. The exact Mellin identity and global Xi synthesis identify the native
+kernel precisely with genuine Poisson boundaries. The resulting graph map is
+linear and injective on the whole original quotient; all signed Weil terms pass
+through the same finite contours. Every original class now gives actual BV
+forcing for a unique native whole-domain solution with compact AC and complete
+arithmetic transport. Seventeen direct leaf audits, all 125 public standard-axiom
+audits and 38 installed API checks passed. Objects are fresh, imports unique,
+indexes refreshed and exactly 23 owned scratch files removed. Global lint's
+sole failure is the unrelated concurrent, unwired and uncompiled
+CHMDLightConeBesselZeroAndIntegrationByParts module; this is recorded, not hidden
+or changed. Gaussian removal in BV, arbitrary prescribed infinite packets,
+whole-range generator intertwining, topology identification and positivity
+remain open.
+Card: `3-formalized/rh100-021-whole-original-native-arithmetic-realization-2026-10-16.md`.
+
 ## Next investigation
 
-No twenty-first contribution is counted. Do not count routine corollaries or
-repackagings of 001–020 as further contributions. Resume broad Lean-corpus
+No twenty-second contribution is counted. Do not count routine corollaries or
+repackagings of 001–021 as further contributions. Resume broad Lean-corpus
 conjecturing toward a distinct hard obstruction. Global invisible-sector
 vanishing is now proved; full-jet reconstruction and consequences of the
 global projector being the identity belong to contribution 006. Arbitrary
@@ -365,6 +385,14 @@ calculus consequences do not count again. The arithmetic sharp has not been
 identified with the Hilbert adjoint.
 
 ## Continuation rules
+
+Fixed-Gaussian whole-original-class native BV/arithmetic realization, exact
+Poisson kernel, faithful graph embedding, full-Weil contour convergence and the
+resulting whole-class native forcing solutions belong together to 021. Routine
+Gaussian-parameter changes, further moment/contour identities and resolvent
+corollaries do not count again. An inverse Gaussian source operator, undamped
+BV convergence, arbitrary prescribed infinite packets, whole-range generator
+intertwining, topology identification and positivity were not proved.
 
 The source-defined compact resolvent on all bounded continuous native forcing,
 its complete nonzero Xi spectrum and faithful finite Meyer restriction belong

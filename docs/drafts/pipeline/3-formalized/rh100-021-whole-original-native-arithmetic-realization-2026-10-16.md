@@ -1,4 +1,83 @@
-# Contribution 021 investigation
+# Contribution 021: whole original Meyer classes in the native arithmetic graph
+
+Formalized. Goal progress: **21/100**. This is one structural contribution.
+
+One fixed genuine Gaussian source regularization now realizes EVERY original
+Meyer cohomology class faithfully by a literal continuous BV theta profile and
+an actual vector of the complete complex CHMD arithmetic graph. The same finite
+contours converge in global BV, graph norm and the complete signed Weil form.
+Every original class consequently supplies actual BV forcing for a unique
+whole-domain native solution, with compact AC transport and the full arithmetic
+form. No native-admission, positivity, zero-separation or simplicity premise is
+supplied to this construction.
+
+The obstacle was the gap between original-source contour convergence and
+native variation/full-edge convergence. Xi cancels the theta cut charge before
+summation; one bounded monotone spatial control governs an entire spectral
+strip. HF's Gaussian good-height bounds then pay that whole control. The exact
+Mellin identity connects the native sum to the original source sum. Global Xi
+synthesis and the nonvanishing Gaussian multiplier identify its kernel exactly
+with genuine Poisson boundaries. Positive CHMD mass density prevents the
+completed graph from erasing any resulting continuous profile.
+
+Closed capstone in `RHTower.PaperThetaEndpoint`:
+- `nativeMeyer_full_arithmetic_realization`
+- `nativeMeyerArithmeticMap_injective`
+- `nativeMeyerArithmeticMap_contour_approximation`
+- `nativeMeyerArithmeticMap_fullWeil`
+- `nativeMeyer_inhomogeneous_full_source`
+
+All appear in `formal/GaloisForLFunctions/RHTower/PaperThetaOriginalArithmeticRealization.lean`.
+The exact infinite source-transform/kernel theorem is in
+`PaperThetaNativeSourceSynthesis.lean`; the actual quotient map is in
+`PaperThetaNativeCohomology.lean`.
+
+Final verification:
+- 17 direct foreground leaf audits passed, using `lake --old env lean -o ... <module>.lean`.
+- All 125 public declarations passed the final `/tmp` axiom audit. Only
+  `propext`, `Classical.choice`, `Quot.sound` occur. All 38 explicit installed
+  API checks passed; the final combined audit produced no warnings or errors.
+- All 17 objects are fresh and all umbrella imports unique. No full or umbrella
+  build, numerical experiment, heartbeat increase, added axiom or proof hole.
+- Formal/API/gap/overview/search indexes refreshed. Exactly 23 owned temporary
+  files removed; no `hgt_rh021_` scratch remains.
+- Global lint was run twice and its sole error is the unrelated concurrent
+  `CHMDLightConeBesselZeroAndIntegrationByParts` module being unreachable from
+  `RHTower.lean`. It has no compiled object. Its proof/import was left unchanged;
+  all 17 contribution modules pass the owned proof, wiring and lint checks.
+  Existing large-file warnings are unrelated. Global lint is NOT reported green.
+- HF and RN frontier entries updated. No commit or push was performed by this agent.
+
+Scope: one fixed genuine Gaussian convolution, with no admitted inverse
+Gaussian operator asserted. Removing damping in BV, arbitrary prescribed
+infinite packets, source/native topology identification, schedule independence,
+whole-range generator intertwining and positive Hodge/directed arithmetic sign
+remain open. Routine parameter variants, further contour identities or native
+resolvent corollaries do not count as another contribution.
+
+Owned leaves (all under `formal/GaloisForLFunctions/RHTower/`):
+- `PaperThetaStripControl.lean`
+- `PaperThetaCutPrimitive.lean`
+- `PaperThetaCutTransform.lean`
+- `PaperThetaXiContour.lean`
+- `PaperThetaContourFubini.lean`
+- `PaperThetaContourExchange.lean`
+- `PaperThetaContourMellin.lean`
+- `PaperThetaContourControl.lean`
+- `PaperThetaContourSpace.lean`
+- `PaperThetaNativeContourBlocks.lean`
+- `PaperThetaGaussianNativeSeries.lean`
+- `PaperThetaStripSeries.lean`
+- `PaperThetaStripArithmeticSeries.lean`
+- `DeningerMeyerGaussianFaithfulness.lean`
+- `PaperThetaNativeSourceSynthesis.lean`
+- `PaperThetaNativeCohomology.lean`
+- `PaperThetaOriginalArithmeticRealization.lean`
+
+## Investigation record
+
+The entries below preserve the conjecture and audit sequence. Their interim
+counts and incomplete statuses are historical; the final status above governs.
 
 Baseline: **20/100**. Previous goal turn is verified progress: all six 020
 source/olean pairs remain fresh and uniquely wired; its three closed capstones
