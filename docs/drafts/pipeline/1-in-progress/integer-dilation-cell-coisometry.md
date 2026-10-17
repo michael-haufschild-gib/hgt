@@ -1,7 +1,7 @@
 # Integer dilation, cell aggregation and exact infinite variance
 
 - **ID:** integer-dilation-cell-coisometry
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Statement:** Construct actual physical L² dilation and ℓ² block aggregation, prove their cell-analysis intertwining, and discharge the infinite variance defect.
 
@@ -47,3 +47,13 @@ Plan: recheck corpus and primary operator/measure-change sources; write a
 dependency-closed paper proof; then formalize actual maps, exact identities,
 convergence and sharpness. Keep serial direct leaf checks and all-public
 axiom audit; no full build, numerical experiment or heartbeat increase.
+
+Dependency-closed paper now written before Lean:
+`docs/reports/BiScaleUncertainty/IntegerDilationCellCoisometry.md`.
+Use all real dilation parameters and all natural block sizes, with the zero
+operators at scale0, so the principal laws need no nonzero-scale premise.
+Formal scope: actual physical dilation; integer block aggregation and prefix
+calculus; adjoint replication/coisometry; exact convergent variance and full
+physical defect; integer successor covariance and sharp equality states.
+Uncounted until serial leaf checks, all-public axiom audit, principal
+signatures, umbrella, index and lint review. update_plan remains unavailable.

@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Twenty substantive results are Lean verified: compensated multiplier Gram
+contributions. Twenty-one substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -24,7 +24,8 @@ its signed Gram formula and unconditional moment/plastic transfer (14), and the 
 finite-filter lattice comparison with explicit unconditional plastic gain (11), and hyperbolic
 variance rigidity with the exact strict-gain domain and full plastic certificate (13), and finite-filter
 support escape with a strictly positive Schur residual and exact plastic correction (13), and the actual
-folded-source variance with its exact coherent equality domain and full plastic correction (9). Supporting theorem
+folded-source variance with its exact coherent equality domain and full plastic correction (9), and
+actual nonzero-mean coherent attainment with the optimal universal coefficient and full plastic transfer (12). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -851,8 +852,8 @@ Lean-verified result in
   distinct from the strictly positive finite-filter Schur residual.
 - E_cell=0 iff P(x)=O/d throughout [0,1]. Hence the exact coherent
   moment endpoint is an equality precisely for constant folded sources.
-  This does not assert that every nonzero source has positive cell slack,
-  or that a nonzero constant-fold source has been constructed.
+  This does not assert that every nonzero source has positive cell slack.
+  The following attainment result constructs nonzero constant-fold sources.
 - For every f and every collar cutoff N, the full functional satisfies
   I_opt+R_plastic-2d*C_local+2d*g_res+2d²E_cell<=P_plastic(F).
   Both corrections are actual source energies, with all summability and
@@ -863,8 +864,8 @@ Lean-verified result in
 This is one contribution: identification of the full coherent defect with an
 actual folded-source energy, its equality domain, and its plastic transfer.
 Generic periodization identities are supporting tools only. No external
-novelty claim. Next attainment question: construct nonzero canonical odd
-sources with constant folds, and distinguish zero-mean from nonzero-mean attainment.
+novelty claim. Nonzero-mean attainment is settled below. Nonzero zero-fold
+sources and the full kernel of the fold map remain separate questions.
 
 Final actual-source compilation and all nine public theorem axiom audits passed
 without warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has302
@@ -875,3 +876,42 @@ Twenty contributions, 294 supporting public theorem audits; full goal ACTIVE.
 Final global lint after one bounded refresh reports eight unrelated unreachable
 modules and concurrent drift in LEAN_API/LEAN_OVERVIEW; no owned lifting module
 flagged. Exact snapshot on master card. No global clean gate claimed.
+
+## Actual coherent attainment and the sharp universal coefficient
+
+Lean-verified result in
+`formal/GaloisForLFunctions/BiScaleUncertainty/CoherentMomentAttainment.lean`.
+
+- With d=log2 and t(x)=max(0,1-|x|), set
+  p(u)=(t(u/d-2)+t(u/d+2))/2 and F_a(u)=a*p(u)/sinh(u/2).
+  The profile is even, supported in [-3d,3d], and identically zero on
+  [-d,d]. Division therefore defines an actual compact continuous odd
+  source, including at0; no missing regularity or inversion premise remains.
+- The sinh multiplier is exactly a*p. On x in [0,1], only lattice
+  indices -3,-2,1,2 contribute. Their profile values are respectively
+  x/2,(1-x)/2,x/2,(1-x)/2. Thus the actual fold equals a on the closed
+  cell. The canonical odd-source map fixes F_a.
+- Exact values: cellMean(F_a)=a, O(F_a)=d*a, E_cell(F_a)=0,
+  C_exact(F_a)=d*a². Also F_a=0 iff a=0. In particular F_1 is a
+  nonzero-mean equality case of the exact coherent moment bound, while
+  retaining strictly positive local Schur slack by contribution19.
+- For every real c, the universal inequality O(odd f)²<=c*C_exact(odd f)
+  for all actual compact continuous f holds iff log2<=c. The source F_1
+  proves necessity; the existing coherent bound and C_exact>=0 prove
+  sufficiency. This establishes the best coefficient within the actual
+  odd hyperbolic source class, not only for arbitrary periodic functions.
+- For every signed a and collar cutoff N,
+  I_opt(F_a,N)+R_plastic(F_a)-2(log2)²a²<=P_plastic(F_a).
+  No source-grid blindness, smoothness beyond continuity, or universal
+  plastic positivity is claimed. Generic tent identities and scalar
+  homogeneity support this one attainment/sharpness contribution.
+
+Final actual-source compilation and all12 public theorem axiom audits passed
+without warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has249
+lines, two public definitions and twelve public theorems; SHA256
+`f97dc36c6f8330117cdf3ebc823250ff6dd79573fe9f4d6f06123684beb3b161`.
+Umbrella wired; all14 public declarations indexed. README and source20 unchanged.
+Twenty-one contributions, 306 supporting public theorem audits; full goal ACTIVE.
+The sub-log2 universal-coefficient route is closed with this positive survivor in
+`docs/drafts/pipeline/5-failed/sublog-coherent-moment-coefficient-2026-10-17.md`.
+Final global lint after one bounded refresh is pending; exact snapshot on master card.

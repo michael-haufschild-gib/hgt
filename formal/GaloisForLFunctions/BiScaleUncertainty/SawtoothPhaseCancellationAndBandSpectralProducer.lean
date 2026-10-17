@@ -227,22 +227,39 @@ theorem dyadic_sawtooth_phase_diff_stirling_sandwich {m : ℕ} (hm : 1 ≤ m) (k
   exact ⟨stirling_lower_bound_dyadicChebyshevDiffSeq_two_mul hm,
     dyadicChebyshevDiffSeq_two_mul_le_stirling_upper_bound hm⟩
 
-/-- **Exact Cumulative Identity Linking the Sawtooth Phase Sum to `floorSummatory chebyshevPsi`:**
+/-- **Exact Cumulative Identity for the Möbius-Log Sawtooth Phase Sum:**
 For every `N : ℕ`, summing the Möbius-log sawtooth phase $\Phi_{\mathrm{fract}}(N, n)$ over
-`1 ≤ n ≤ N` recovers the harmonic drift times $\sum_{n=1}^N n$ minus `floorSummatory chebyshevPsi N`:
+`1 ≤ n ≤ N` recovers the harmonic drift times $\sum_{n=1}^N n$ minus $\sum_{n=1}^N \psi(n)$:
 $$\sum_{n=1}^N \Phi_{\mathrm{fract}}(N, n)
   = \left(\sum_{n=1}^N n\right) H_{\mu\log}(N)
-    - \operatorname{floorSummatory}\,\operatorname{chebyshevPsi}\,N.$$ -/
-theorem sum_weightedFractSumSeq_eq_harmonic_mul_sum_sub_floorSummatory (N : ℕ) :
+    - \sum_{n=1}^N \psi(n).$$ -/
+theorem sum_weightedFractSumSeq_eq_harmonic_mul_sum_sub_sum_chebyshevPsi (N : ℕ) :
     (∑ n ∈ Finset.Icc 1 N, weightedFractSumSeq vonMangoldtDivisorWeight N n) =
       (∑ n ∈ Finset.Icc 1 N, (n : ℝ)) * moebiusLogHarmonicSum N -
-        floorSummatory RHTower.chebyshevPsi N := by
-  unfold floorSummatory
+        ∑ n ∈ Finset.Icc 1 N, RHTower.chebyshevPsi n := by
   rw [Finset.sum_mul, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun n hn => ?_
   obtain ⟨_, hnN⟩ := Finset.mem_Icc.mp hn
   have h := chebyshevPsiSeq_eq_common_cutoff_harmonic_sub_fractSum n (N - n)
   rw [Nat.add_sub_of_le hnN, chebyshevPsiSeq_eq_chebyshevPsi] at h
+  linarith
+
+/-- **Exact Hyperbolic-Grid Cumulative Identity Linking the Sawtooth Phase to `floorSummatory chebyshevPsi`:**
+Summing $\Phi_{\mathrm{fract}}(N, \lfloor N / n \rfloor)$ over `1 ≤ n ≤ N` recovers the Dirichlet
+divisor summatory times $H_{\mu\log}(N)$ minus `floorSummatory chebyshevPsi N`:
+$$\sum_{n=1}^N \Phi_{\mathrm{fract}}(N, \lfloor N / n \rfloor)
+  = \left(\sum_{n=1}^N \left\lfloor\frac{N}{n}\right\rfloor\right) H_{\mu\log}(N)
+    - \operatorname{floorSummatory}\,\operatorname{chebyshevPsi}\,N.$$ -/
+theorem sum_weightedFractSumSeq_div_eq_harmonic_mul_divisor_sub_floorSummatory (N : ℕ) :
+    (∑ n ∈ Finset.Icc 1 N, weightedFractSumSeq vonMangoldtDivisorWeight N (N / n)) =
+      (∑ n ∈ Finset.Icc 1 N, ((N / n : ℕ) : ℝ)) * moebiusLogHarmonicSum N -
+        floorSummatory RHTower.chebyshevPsi N := by
+  unfold floorSummatory
+  rw [Finset.sum_mul, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  have hdiv_le : N / n ≤ N := Nat.div_le_self N n
+  have h := chebyshevPsiSeq_eq_common_cutoff_harmonic_sub_fractSum (N / n) (N - N / n)
+  rw [Nat.add_sub_of_le hdiv_le, chebyshevPsiSeq_eq_chebyshevPsi] at h
   linarith
 
 /-! ## §3. Band-Limited Critical-Line Spectral Density Producers & Full Weil Functional Bounds -/
@@ -268,85 +285,150 @@ theorem band_spectralDensity_integral_le_laplaceEnergyProducerBound (N : ℕ) (�
   (band_le_laplaceEnergy N).trans (laplaceEnergy_le_laplaceEnergyProducerBound N)
 
 /-- **Band-Split Packet Energy Producer Bound (`packetEnergy_le_band_spectralDensity_add_remainder`):**
-For every `f : C_c(ℝ, ℝ)` and `N : ℕ`, the prime–polar packet energy `packetEnergy f N` is
-controlled by the critical-line band integral $\int_{|\xi| \le \sqrt{N+2}} S_N(\xi)\,d\xi$ plus
-the $O(\log N)$ high-frequency remainder `bandRemainderProducer N`: -/
-theorem packetEnergy_le_band_spectralDensity_add_remainder (f : C_c(ℝ, ℝ)) (N : ℕ) :
-    packetEnergy f N ≤
+For every `C¹` compactly supported source `f` and `N : ℕ`, the prime–polar packet energy
+`packetEnergy f N` is controlled by the critical-line band integral
+$\int_{|\xi| \le \sqrt{N+2}} S_N(\xi)\,d\xi$ plus the $O(\log N)$ high-frequency remainder
+`bandRemainderProducer N`: -/
+theorem packetEnergy_le_band_spectralDensity_add_remainder (f : C_c(ℝ, ℝ))
+    (hf : ContDiff ℝ 1 (f : ℝ → ℝ)) (N : ℕ) :
+    SignedPrimePolar.packetEnergy f N ≤
       (∫ u, |ChebyshevGauge.gaugeDerivative f u|) ^ 2 *
         ((∫ ξ in Icc (-bandFrequency N) (bandFrequency N), spectralDensity N ξ) +
           bandRemainderProducer N) := by
-  refine (CausalCorrelationPacketRepresentation.packetEnergy_le_laplaceEnergy f N).trans ?_
+  refine (ChebyshevGauge.packetEnergy_le_laplaceEnergy f hf N).trans ?_
   exact mul_le_mul_of_nonneg_left (laplaceEnergy_le_band_add_linear N) (sq_nonneg _)
 
 /-- **Derivative-Free Band-Split Collar Packet Energy Producer Bound:**
-For every `f : C_c(ℝ, ℝ)`, `a < b`, and `N : ℕ`, the collar-smoothed packet energy is controlled
-by `collarGaugeBudget f a b` times the critical-line band integral plus `bandRemainderProducer N`,
-with **no derivatives of `f` and no boundary terms**: -/
+For every continuous `f : C_c(ℝ, ℝ)` and `a b : ℝ`, `N : ℕ` (with **zero differentiability
+hypotheses**!), the collar-smoothed packet energy is controlled by `collarGaugeBudget f a b` times
+the critical-line band integral plus `bandRemainderProducer N`, with **no derivatives of `f` and
+no boundary terms**: -/
 theorem collar_packetEnergy_le_band_spectralDensity_add_remainder
-    (f : C_c(ℝ, ℝ)) {a b : ℝ} (hab : a < b) (N : ℕ) :
-    packetEnergy (collarSource f a b) N ≤
-      collarGaugeBudget f a b *
+    (f : C_c(ℝ, ℝ)) (a b : ℝ) (N : ℕ) :
+    SignedPrimePolar.packetEnergy (SignedPrimePolar.collarSource f a b) N ≤
+      SignedPrimePolar.collarGaugeBudget f a b *
         ((∫ ξ in Icc (-bandFrequency N) (bandFrequency N), spectralDensity N ξ) +
-          bandRemainderProducer N) := by
-  refine (collar_packetEnergy_le_budget_mul_laplaceEnergy f hab N).trans ?_
-  have hbud : 0 ≤ collarGaugeBudget f a b := by
-    unfold collarGaugeBudget
-    have hE : 0 ≤ collarEnergy f a b := collarEnergy_nonneg f hab
-    positivity
-  exact mul_le_mul_of_nonneg_left (laplaceEnergy_le_band_add_linear N) hbud
+          bandRemainderProducer N) :=
+  (collar_packetEnergy_le_budget_mul_laplaceEnergy f a b N).trans
+    (mul_le_mul_of_nonneg_left (laplaceEnergy_le_band_add_linear N)
+      (SignedPrimePolar.collarGaugeBudget_nonneg f a b))
 
-/-- **Band-Limited Critical-Line Spectral Lower Bound on `weilFullFunctional` (`RealWeilTestFn`):**
-For every `f : RealWeilTestFn` and `a < b`, `c : ℝ`, the full Weil explicit-formula functional of
-`Λ` is bounded below directly in terms of the critical-line band integral
-$\int_{|\xi| \le \sqrt{N+2}} S_N(\xi)\,d\xi$ plus `bandRemainderProducer N`: -/
-theorem RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_bandSpectral_lower_bound
-    (f : RealWeilTestFn) {a b : ℝ} (hab : a < b) (c : ℝ) :
-    (1 - 2 * Real.exp c) * biScaleLevyEnergy f.source +
+namespace RealWeilTestFn
+
+/-- **Band-Limited Critical-Line Spectral Bound on `weilFullFunctional` (`RealWeilTestFn`):** -/
+theorem weilFullFunctional_vonMangoldt_bandSpectral_bound
+    (f : RealWeilTestFn) (c : ℝ) :
+    |(weilFullFunctional
+          (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+          (EF.weilTest f.1.1 f.1.1)).re -
+        poleWeightArchRe 0 f.1| ≤
+      Real.exp c * autocorr f.source 0 +
+        Real.exp (-c) *
+          ((∫ t, |ChebyshevGauge.gaugeDerivative f.toCompactlySupported t|) ^ 2 *
+            ((∫ ξ in Icc (-bandFrequency f.supportScale) (bandFrequency f.supportScale),
+                spectralDensity f.supportScale ξ) +
+              bandRemainderProducer f.supportScale)) := by
+  have hid := f.re_weilFullFunctional_vonMangoldt_eq_poleWeightArchRe_zero_sub_two_pairing
+  have hsub :
+      (weilFullFunctional
+          (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+          (EF.weilTest f.1.1 f.1.1)).re -
+        poleWeightArchRe 0 f.1 =
+      -(2 * SignedPrimePolar.pairing f.supportScale (autocorr f.source)) := by
+    linarith only [hid]
+  rw [hsub, abs_neg, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
+  refine (BiScaleUncertainty.two_mul_abs_pairing_le_exp_add_packetEnergy
+    f.toCompactlySupported f.supportScale c).trans ?_
+  refine add_le_add le_rfl ?_
+  exact mul_le_mul_of_nonneg_left
+    (BiScaleUncertainty.packetEnergy_le_band_spectralDensity_add_remainder
+      f.toCompactlySupported f.contDiff_one_source f.supportScale)
+    (Real.exp_pos (-c)).le
+
+/-- **Band-Limited Critical-Line Spectral Lower Bound on `weilFullFunctional` (`RealWeilTestFn`):** -/
+theorem weilFullFunctional_vonMangoldt_bandSpectral_lower_bound
+    (f : RealWeilTestFn) (c : ℝ) :
+    biScaleLevyEnergy f.source +
         EF.gammaBracket 0 * (EF.weilTest f.1.1 f.1.1 0).re -
-        Real.exp c *
-          (4 * (b - a) / 3 * (Real.exp b + 1) ^ 2 *
-            collarEnergy f.toCompactlySupported a b) -
-        collarGaugeBudget f.toCompactlySupported a b *
-          ((∫ ξ in Icc (-bandFrequency f.supportScale) (bandFrequency f.supportScale),
-              spectralDensity f.supportScale ξ) +
-            bandRemainderProducer f.supportScale) /
-          Real.exp c ≤
+        Real.exp c * autocorr f.source 0 -
+        Real.exp (-c) *
+          ((∫ t, |ChebyshevGauge.gaugeDerivative f.toCompactlySupported t|) ^ 2 *
+            ((∫ ξ in Icc (-bandFrequency f.supportScale) (bandFrequency f.supportScale),
+                spectralDensity f.supportScale ξ) +
+              bandRemainderProducer f.supportScale)) ≤
       (weilFullFunctional
         (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
         (EF.weilTest f.1.1 f.1.1)).re := by
-  have h1 := f.weilFullFunctional_vonMangoldt_eq_arch_sub_pairing
-  have h2 := two_mul_abs_pairing_le_collar_packetEnergy f.toCompactlySupported hab c
-  have h3 := collar_packetEnergy_le_band_spectralDensity_add_remainder
-    f.toCompactlySupported hab f.supportScale
-  have hdiv :
-      packetEnergy (collarSource f.toCompactlySupported a b) f.supportScale / Real.exp c ≤
-        collarGaugeBudget f.toCompactlySupported a b *
-          ((∫ ξ in Icc (-bandFrequency f.supportScale) (bandFrequency f.supportScale),
-              spectralDensity f.supportScale ξ) +
-            bandRemainderProducer f.supportScale) /
-          Real.exp c :=
-    div_le_div_of_nonneg_right h3 (Real.exp_pos c).le
-  have habs := le_abs_self (SignedPrimePolar.pairing (autocorr f.toCompactlySupported) f.supportScale)
-  linarith
+  have habs := f.weilFullFunctional_vonMangoldt_bandSpectral_bound c
+  have hlow := neg_le_of_abs_le habs
+  have hpole := f.poleWeightArchRe_zero_eq_gamma_add_biScaleLevyEnergy
+  linarith only [hlow, hpole]
+
+end RealWeilTestFn
 
 /-- **Band-Limited Critical-Line Spectral Lower Bound on `RealEvenPolarTestFn`:** -/
-theorem RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_bandSpectral_lower_bound
-    (f : RealEvenPolarTestFn) {a b : ℝ} (hab : a < b) (c : ℝ) :
-    (1 - 2 * Real.exp c) * biScaleLevyEnergy f.source +
+theorem RealEvenPolarTestFn.weilFullFunctional_vonMangoldt_bandSpectral_lower_bound
+    (g : RealEvenPolarTestFn) (c : ℝ) :
+    biScaleLevyEnergy g.source +
+        EF.gammaBracket 0 * (EF.weilTest g.1.1.1 g.1.1.1 0).re -
+        Real.exp c * autocorr g.source 0 -
+        Real.exp (-c) *
+          ((∫ t, |ChebyshevGauge.gaugeDerivative
+              (RealEvenPolarTestFn.toCompactlySupported g) t|) ^ 2 *
+            ((∫ ξ in Icc (-bandFrequency (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale)
+                (bandFrequency (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale),
+                spectralDensity (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale ξ) +
+              bandRemainderProducer (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale)) ≤
+      (weilFullFunctional
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+        (EF.weilTest g.1.1.1 g.1.1.1)).re :=
+  (RealEvenPolarTestFn.toRealWeilTestFn g).weilFullFunctional_vonMangoldt_bandSpectral_lower_bound c
+
+namespace RealOddTestFn
+
+/-- **Band-Limited Critical-Line Spectral Lower Bound on `RealOddTestFn`:** -/
+theorem weilFullFunctional_vonMangoldt_bandSpectral_lower_bound
+    (f : RealOddTestFn) (c : ℝ) :
+    biScaleLevyEnergy f.source +
         EF.gammaBracket 0 * (EF.weilTest f.1.1.1 f.1.1.1 0).re -
-        Real.exp c *
-          (4 * (b - a) / 3 * (Real.exp b + 1) ^ 2 *
-            collarEnergy f.toCompactlySupported a b) -
-        collarGaugeBudget f.toCompactlySupported a b *
-          ((∫ ξ in Icc (-bandFrequency f.supportScale) (bandFrequency f.supportScale),
-              spectralDensity f.supportScale ξ) +
-            bandRemainderProducer f.supportScale) /
-          Real.exp c ≤
+        Real.exp c * autocorr f.source 0 -
+        Real.exp (-c) *
+          ((∫ t, |ChebyshevGauge.gaugeDerivative f.toCompactlySupported t|) ^ 2 *
+            ((∫ ξ in Icc (-bandFrequency f.toRealWeilTestFn.supportScale)
+                (bandFrequency f.toRealWeilTestFn.supportScale),
+                spectralDensity f.toRealWeilTestFn.supportScale ξ) +
+              bandRemainderProducer f.toRealWeilTestFn.supportScale)) ≤
       (weilFullFunctional
         (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
         (EF.weilTest f.1.1.1 f.1.1.1)).re :=
-  f.toRealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_bandSpectral_lower_bound hab c
+  f.toRealWeilTestFn.weilFullFunctional_vonMangoldt_bandSpectral_lower_bound c
+
+end RealOddTestFn
+
+namespace RealHyperplaneGenerator
+
+/-- **Band-Limited Critical-Line Spectral Lower Bound on `RealHyperplaneGenerator`:** -/
+theorem weilFullFunctional_vonMangoldt_bandSpectral_lower_bound
+    (x : RealHyperplaneGenerator) (c : ℝ) :
+    biScaleLevyEnergy (RealHyperplaneGenerator.source x) +
+        EF.gammaBracket 0 *
+          (EF.weilTest (RealHyperplaneGenerator.toRealWeilTestFn x).1.1
+            (RealHyperplaneGenerator.toRealWeilTestFn x).1.1 0).re -
+        Real.exp c * autocorr (RealHyperplaneGenerator.source x) 0 -
+        Real.exp (-c) *
+          ((∫ t, |ChebyshevGauge.gaugeDerivative
+              (RealHyperplaneGenerator.toRealWeilTestFn x).toCompactlySupported t|) ^ 2 *
+            ((∫ ξ in Icc (-bandFrequency (RealHyperplaneGenerator.toRealWeilTestFn x).supportScale)
+                (bandFrequency (RealHyperplaneGenerator.toRealWeilTestFn x).supportScale),
+                spectralDensity (RealHyperplaneGenerator.toRealWeilTestFn x).supportScale ξ) +
+              bandRemainderProducer (RealHyperplaneGenerator.toRealWeilTestFn x).supportScale)) ≤
+      (weilFullFunctional
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+        (EF.weilTest (RealHyperplaneGenerator.toRealWeilTestFn x).1.1
+          (RealHyperplaneGenerator.toRealWeilTestFn x).1.1)).re :=
+  (RealHyperplaneGenerator.toRealWeilTestFn x).weilFullFunctional_vonMangoldt_bandSpectral_lower_bound c
+
+end RealHyperplaneGenerator
 
 end
 

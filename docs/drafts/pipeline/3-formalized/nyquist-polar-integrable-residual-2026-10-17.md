@@ -1,10 +1,10 @@
 # Explicit Nyquist polar producer modulo an integrable residual
 
 - **ID:** nyquist-polar-integrable-residual-2026-10-17
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Scope:** Infinite-Grid Tail Rigidity Beyond Trap 5; general signed correlations.
-- **Status:** Dependency-closed paper proof complete; Lean formalization in progress; uncounted.
+- **Status:** Certified package 14 of 100; counted once. Global lint has unrelated import errors.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistPolarIntegrableResidual.md`
 - **Guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
 
@@ -28,8 +28,8 @@ For compactly supported H, the exact actual polar integral decomposition is
 The first series is finite for each such H. This locates every discontinuity
 of the polar functional in the explicitly produced cell-average term, while the
 weight-approximation residual is uniformly controlled independently of support,
-energy or source count. Apply the decomposition to actual normalized correlations
-and to the diffuse producer after its certificate is complete.
+energy or source count. The decomposition is certified for actual normalized
+correlations and for the diffuse producer.
 
 ## Paper proof mechanism
 
@@ -64,9 +64,9 @@ escape, rather than another assumed positivity receiver.
 
 - [x] Focused prior-corpus search; existing producer identified.
 - [x] Dependency-closed paper proof and strongest positive-survivor audit.
-- [ ] Exact Lean formalization with actual integrals and explicit bounds.
-- [ ] Direct leaves, exhaustive axiom/API checks, umbrella wiring and lint.
-- [ ] Count once only if the full connected result adds a substantive tool.
+- [x] Exact Lean formalization with actual integrals and explicit bounds.
+- [x] Direct leaves, exhaustive axiom/API checks and umbrella wiring; lint executed.
+- [x] Count the full connected result once, as package 14.
 
 ## Strongest paper survivor
 
@@ -101,13 +101,16 @@ Implementation uses zero-based cell k=[log(k+1),log(k+2)] and tail N starting
 at log(N+1), so its unconditional rate is 1/sqrt(N+1). This is exactly the
 paper's positive-integer indexing. The kernel is the pointwise sum of the
 disjoint cell indicators times their explicit residual densities; its local
-form and integrability will be proved before constructing the operator.
+form and integrability are proved before the operator construction.
 
 The six formal leaves are `NyquistResidualMass`, `NyquistResidualPartition`,
 `NyquistResidualKernel`, `NyquistResidualOperator`, `NyquistPolarDecomposition`
-and `NyquistPolarSourceEscape`. The first five pass their direct leaf checks and
-are wired into the umbrella. The actual-source endpoint is being checked;
-the full package remains uncounted until all gates pass.
+and `NyquistPolarSourceEscape`. All six pass their direct leaf checks without
+diagnostics and are wired into the umbrella. All 81 public declarations
+(67 theorems, 14 definitions) have exhaustive axiom checks, with only
+`propext`, `Classical.choice` and `Quot.sound`. The premise-free endpoint
+`exists_smooth_diffuse_nyquistProducer_escape` constructs actual smooth sources
+whose producer diverges while their residuals converge.
 
 The follow-up search `/tmp/nyquist-point-producer-deep.json` completed with
 `partial=false`, no errors and a complete file inventory. Its coverage snapshot
@@ -117,3 +120,30 @@ were inspected. Several hits are this package's own newly indexed drafts, not
 independent evidence. Existing point-sample quadrature retains the polar-density
 cost in `EulerMaclaurinLevyQuadratureAndSFreeCellBounds`; its generated ingredient
 proposal does not discharge a bounded all-tail node-quadrature estimate.
+
+## Certificate
+
+- All six direct `lake --old env lean` checks pass; the final four use `-j 1`.
+- All 81 exact API name/module pairs and six unique imports verified.
+- Source hashes unchanged throughout the final axiom/API audit.
+- The read-only guide retains SHA256
+  `dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+- Index refresh exits 0. Authoritative lint exits 1 solely for nine foreign
+  modules missing umbrella reachability: `ExponentialTentMoments`,
+  `PhysicalCollarMixture`, `PhysicalPriceResponse`, `RegularizedGramDescent`,
+  `RegularizedGramGeometry`, `RegularizedGramIteration`, `RegularizedPhysicalGram`,
+  `SawtoothPhaseCancellationAndBandSpectralProducer`,
+  `SignedPrimePolarSourceParameters`. No error concerns this package, and this
+  lint snapshot reports no active proof hole. No repository-wide green claim.
+
+Leaf logs: `/tmp/nyquist-residual-{mass,partition,kernel,operator}-leaf.log` and
+`/tmp/nyquist-polar-{decomposition,source-escape}-leaf.log`.
+Final audit logs: `/tmp/nyquist-residual-{axioms,index,lint}.log`.
+Complete manifests: `/tmp/nyquist_residual_{declarations,source_hashes,axiom_coverage,verification}.json`.
+Scratch axiom audit: `/tmp/nyquist_residual_axioms.lean`.
+
+## Next question
+
+The unproved candidate `../0-backlog/nyquist-weight-order-threshold-2026-10-17.md`
+asks for the exact growth threshold and minimal Taylor order of an integrable
+weight residual. No further contribution is counted for that candidate.

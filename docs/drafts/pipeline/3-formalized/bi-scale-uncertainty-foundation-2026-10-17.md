@@ -635,9 +635,39 @@
       Compactly supported continuous coprime $(2, 3)$ factorial producer in $C_c(\mathbb{R}, \mathbb{R})$
       with exact collar correction and $O(\log N / \sqrt{N})$ pairing bound.
 
+34. **Pillar XXXIV — `formal/GaloisForLFunctions/BiScaleUncertainty/SawtoothPhaseCancellationAndBandSpectralProducer.lean`**
+    - `moebiusLogHarmonicSum`,
+      `chebyshevPsiSeq_eq_common_cutoff_harmonic_sub_fractSum`,
+      `chebyshevErrorSeq_eq_common_cutoff_harmonic_drift_sub_fractSum`,
+      `vonMangoldt_succ_eq_common_cutoff_harmonic_sub_addDiff_fractSum`,
+      `vonMangoldt_succ_sub_one_eq_common_cutoff_drift_sub_addDiff_fractSum`,
+      `dyadicChebyshevDiffSeq_two_mul_eq_fractSum_diff`:
+      Common-cutoff harmonic-drift cancellation and pure sawtooth-phase representation
+      $\operatorname{dyadicChebyshevDiffSeq}(2m) = \Phi_{\mathrm{fract}}(2m+k, 2m) - 2\,\Phi_{\mathrm{fract}}(2m+k, m)$.
+    - `abs_vonMangoldtDivisorWeight_le_log`, `fractDivSeq_bounds`,
+      `abs_weightedFractSumSeq_vonMangoldt_le_floorSummatory`,
+      `abs_weightedFractSumSeq_vonMangoldt_le_stirling`,
+      `abs_dyadic_sawtooth_phase_diff_le`,
+      `dyadic_sawtooth_phase_diff_stirling_sandwich`,
+      `sum_weightedFractSumSeq_eq_harmonic_mul_sum_sub_sum_chebyshevPsi`,
+      `sum_weightedFractSumSeq_div_eq_harmonic_mul_divisor_sub_floorSummatory`:
+      Log-factorial bound on individual sawtooth sums, $\log$-free linear bound and Stirling
+      sandwich on the dyadic sawtooth phase difference, and exact cumulative identities.
+    - `bandRemainderProducer`, `bandRemainderProducer_nonneg`,
+      `band_spectralDensity_integral_le_laplaceEnergyProducerBound`,
+      `packetEnergy_le_band_spectralDensity_add_remainder`,
+      `collar_packetEnergy_le_band_spectralDensity_add_remainder`,
+      `RealWeilTestFn.weilFullFunctional_vonMangoldt_bandSpectral_bound`,
+      `RealWeilTestFn.weilFullFunctional_vonMangoldt_bandSpectral_lower_bound`,
+      `RealEvenPolarTestFn.weilFullFunctional_vonMangoldt_bandSpectral_lower_bound`,
+      `RealOddTestFn.weilFullFunctional_vonMangoldt_bandSpectral_lower_bound`,
+      `RealHyperplaneGenerator.weilFullFunctional_vonMangoldt_bandSpectral_lower_bound`:
+      Band-limited critical-line spectral density producer bounds on `packetEnergy`,
+      `collarSource`, and `weilFullFunctional Λ` across all explicit-formula test spaces.
+
 ## Audit Status
-- **Module Verification**: All 33 Pillars (`ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXIII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Module Verification**: All 34 Pillars (`SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXIV; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 
 
 

@@ -79,6 +79,10 @@
     variance with the entire remaining coherent moment slack, classify zero
     slack by constancy on the cell, and transfer this explicit correction to
     the full plastic functional. Verify all summability from compact support.
+26. Construct actual compact odd constant-fold sources with prescribed signed
+    amplitude. Prove their exact nonzero moment and coherent price, settle
+    attainment and the best universal coherent moment constant, and retain
+    the explicit full plastic receiver on this family.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -1758,3 +1762,69 @@ contribution20/100, with the generic identities counted only as supporting tools
 - Owned `/tmp/hml_cell_api.lean` and `/tmp/hml_cell_lint.txt` removed;
   absence, all12 indexed declarations, unchanged source20/source19/README
   hashes and final whitespace checks verified.
+
+## Twenty-first result: nonzero coherent attainment and the optimal constant
+
+Dependency-closed paper proof before Lean implementation. Reuse the existing
+unit tent t(x)=max(0,1-|x|), a specialization of HTGeometry.tentReal.
+Put d=log2 and p(u)=(t(u/d-2)+t(u/d+2))/2. This is continuous, even,
+supported in [-3d,3d], and zero on [-d,d]. For every signed amplitude a,
+define F_a(u)=a*p(u)/sinh(u/2), with the usual value0 at u=0. The numerator
+vanishes throughout a neighborhood of the only zero of the denominator.
+Consequently F_a is an actual compact continuous odd source, and multiplying
+by sinh(u/2) recovers a*p(u) at every point, including0.
+
+For x in [0,1], only lattice indices -3,-2,1,2 contribute to the folded
+profile. Their values are x/2,(1-x)/2,x/2,(1-x)/2, summing to1. Thus
+cellFold(F_a)=a on the closed cell, with no infinite-tail remainder or
+summability assumption. Contribution20 gives cellMean(F_a)=a,
+O(F_a)=d*a, E_cell(F_a)=0 and C_exact(F_a)=d*a². The canonical odd-source
+map fixes F_a. In particular F_1 is nonzero, has nonzero moment, and attains
+the exact coherent moment bound, despite its strictly positive local Schur
+slack from contribution19.
+
+This settles the universal coefficient sharply: for every real c,
+[for all actual sources f, O(odd f)²<=c*C_exact(odd f)] iff d<=c.
+Necessity follows from F_1, since d²<=c*d and d>0. For sufficiency,
+the known coherent bound and C_exact>=0 give monotonicity in c; nonnegativity
+itself follows from the exact cell-energy identity. This is sharpness within
+the actual odd hyperbolic image, not merely within arbitrary periodic functions.
+The full receiver on this family is
+I_opt(F_a,N)+R_plastic(F_a)-2d²a²<=P_plastic(F_a).
+No source-grid blindness or universal plastic positivity is claimed.
+
+Corpus audit: direct hybrid query `compact odd sinh source constant periodization
+tent partition unity attainment` with --any and BiScale module filter was partial
+(unfinished text/source retrieval, older coverage snapshot, semantic coverage
+unmeasured). Existing multiplier parity, exact cell identity, causal tent and
+Sobolev tent-source results were inspected. No actual odd constant-fold attainment
+was found. Reuse the established HTGeometry tent cutoff, whose compiled artifact
+is present; avoid coupling to concurrently edited causal-tent modules. One
+contribution: actual nonzero-mean attainment and the optimal universal coefficient,
+including its source construction and functional transfer. Exact source and
+capstone now verified in Lean: contribution21/100.
+
+### Verification of the twenty-first result
+
+- Final actual-source audit53536 exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/CoherentMomentAttainment.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/CoherentMomentAttainment.olean`.
+  Source has249 lines, two public definitions and twelve public theorems;
+  SHA256f97dc36c6f8330117cdf3ebc823250ff6dd79573fe9f4d6f06123684beb3b161.
+  No source edit after this successful audit.
+- Initial API67916 exited0. Initial source80452 required the Topology notation
+  scope, explicit finite-set sum expansion and the correctly oriented product
+  nonnegativity lemma. All fixed; no theorem premise or conclusion changed,
+  no heartbeat/recursion changes. Final API/public-axiom audit9459 exited0
+  without warnings. All12 public theorem audits use only `propext`,
+  `Classical.choice`, `Quot.sound`. Source and scratch-audit name lists match
+  exactly; total306 supporting public theorem audits.
+- Umbrella wired; index40554 exited0 (0 changed) and all14 public declarations
+  were indexed. Lint92309 exited1 on12 unrelated unreachable modules, plus
+  concurrent LEAN_API/LEAN_OVERVIEW drift. No owned lifting module flagged.
+  Bounded refresh44693 exited0 (6 changed), all14 declarations remain indexed.
+  Follow-up lint pending; no global clean-gate claim.
+- Failed-route card records both sharpness obstruction and actual positive
+  attainment survivor:
+  `docs/drafts/pipeline/5-failed/sublog-coherent-moment-coefficient-2026-10-17.md`.
+  Exact source construction, positive survivor and full capstone have passed
+  final source compilation and all12 public theorem axiom audits.

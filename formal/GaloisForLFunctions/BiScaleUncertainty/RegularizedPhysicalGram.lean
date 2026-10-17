@@ -73,7 +73,9 @@ theorem regularizedGramCoefficient_error (ρ : PhysicalCollarPartition n) (f : C
   have hi := (ρ.integrableOn_signedGramKernel f).sub (ρ.integrableOn_regularizedGramKernel f hε)
   have hc : IntegrableOn (fun _ : ℝ => ε * autocorr f 0) (Ioo 0 logarithmicCollarRadius) :=
     integrableOn_const (by rw [Real.volume_Ioo]; exact ENNReal.ofReal_ne_top)
-  have hn := integral_nonneg (μ := volume.restrict (Ioo 0 logarithmicCollarRadius))
+  have hn := integral_nonneg
+    (f := fun y : ℝ => ρ.signedGramKernel f y - ρ.regularizedGramKernel f ε y)
+    (μ := volume.restrict (Ioo 0 logarithmicCollarRadius))
     (fun y => (ρ.regularizedGramKernel_error f hε y).1)
   have hu := integral_mono_ae hi hc
     (Filter.Eventually.of_forall fun y => (ρ.regularizedGramKernel_error f hε y).2)
@@ -169,7 +171,7 @@ theorem integrableOn_regularizedGramRemainder (ρ η : PhysicalCollarPartition n
 theorem integral_regularizedGramRemainder_nonneg (ρ η : PhysicalCollarPartition n)
     (f : C_c(ℝ, ℝ)) (ε : ℝ) :
     0 ≤ ∫ y in Ioo 0 logarithmicCollarRadius, ρ.regularizedGramRemainder η f ε y :=
-  setIntegral_nonneg measurableSet_Ioo fun y hy => ρ.regularizedGramRemainder_nonneg η f ε hy.1
+  setIntegral_nonneg measurableSet_Ioo fun _y hy => ρ.regularizedGramRemainder_nonneg η f ε hy.1
 
 theorem integral_regularizedGramRemainder (ρ η : PhysicalCollarPartition n) (f : C_c(ℝ, ℝ))
     {ε : ℝ} (hε : 0 ≤ ε) :
@@ -181,11 +183,16 @@ theorem integral_regularizedGramRemainder (ρ η : PhysicalCollarPartition n) (f
   rw [integral_sub
     (f := fun y => ρ.regularizedGramKernel f ε y - η.regularizedGramKernel f ε y +
       2 * autocorr f 0 * (η.mass y - ρ.mass y))
+    (g := fun y => 2 * autocorr f 0 * ((ρ.regularizedGramPrice f ε).fibreCost η y -
+      (ρ.regularizedGramPrice f ε).fibreCost ρ y))
     (((ρ.integrableOn_regularizedGramKernel f hε).sub (η.integrableOn_regularizedGramKernel f hε)).add
       ((η.integrableOn_mass.sub ρ.integrableOn_mass).const_mul _))
     ((((ρ.regularizedGramPrice f ε).integrableOn_fibreCost η).sub
       ((ρ.regularizedGramPrice f ε).integrableOn_fibreCost ρ)).const_mul _),
-    integral_add ((ρ.integrableOn_regularizedGramKernel f hε).sub (η.integrableOn_regularizedGramKernel f hε))
+    integral_add
+      (f := fun y => ρ.regularizedGramKernel f ε y - η.regularizedGramKernel f ε y)
+      (g := fun y => 2 * autocorr f 0 * (η.mass y - ρ.mass y))
+      ((ρ.integrableOn_regularizedGramKernel f hε).sub (η.integrableOn_regularizedGramKernel f hε))
       ((η.integrableOn_mass.sub ρ.integrableOn_mass).const_mul _),
     integral_sub (ρ.integrableOn_regularizedGramKernel f hε) (η.integrableOn_regularizedGramKernel f hε),
     integral_const_mul, integral_const_mul, integral_sub η.integrableOn_mass ρ.integrableOn_mass,

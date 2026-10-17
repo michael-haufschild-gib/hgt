@@ -103,10 +103,11 @@ Scratch and complete manifests: `/tmp/finite_train_topology_axioms.lean`,
 `/tmp/finite_train_topology_source_hashes.json`,
 `/tmp/finite_train_topology_axiom_coverage.json`.
 
-## Next paper result, uncounted
+## Connected successor
 
-`../2-fully-proven/nyquist-polar-integrable-residual-2026-10-17.md` proves on paper
+`nyquist-polar-integrable-residual-2026-10-17.md` now certifies
 that the explicit Nyquist producer has an absolutely summable all-tail residual,
 with exact operator norm A_N<=1/sqrt(N). Its actual polar decomposition locates
 the diffuse escape in weighted cell averages while the correction is uniformly
-stable. Lean formalization has not started. The 100-package goal remains active.
+stable. Its six leaves and all 81 public declarations are audited as package 14.
+The 100-package goal remains active.

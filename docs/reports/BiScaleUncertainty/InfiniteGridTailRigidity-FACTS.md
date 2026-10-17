@@ -3,7 +3,7 @@
 ## Scope and counting
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
-Target: 100 significant mathematical packages. Certified packages in this ledger: **13**.
+Target: 100 significant mathematical packages. Certified packages in this ledger: **14**.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
 
 Field guide: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only.
@@ -476,7 +476,7 @@ Certificate: `docs/drafts/pipeline/3-formalized/finite-train-topology-and-diffus
   bounds with a quadratic-collar constant `K`; its derivative-free inequality retains an `N`
   factor. Do not conflate those estimates with the present uniform logarithmic Levy modulus.
 
-## Next paper result: an integrable Nyquist polar residual
+## Certified package 14: an integrable Nyquist polar residual
 
 The existing explicit constants C_n=nyquistPolarConstant(n) have cell error
 0<=cosh-C_n<=1/(4sqrt(n)). Multiplication by cell length gives residual mass
@@ -489,9 +489,37 @@ Q(H_n)->infinity while correlations and energies converge. The weighted
 cell-average term carries the escape; the residual is uniformly controlled.
 
 Dependency-closed paper proof: `NyquistPolarIntegrableResidual.md`.
-Card: `docs/drafts/pipeline/2-fully-proven/nyquist-polar-integrable-residual-2026-10-17.md`.
-Lean formalization has not started, and this result is uncounted. Existing cell
+Card: `docs/drafts/pipeline/3-formalized/nyquist-polar-integrable-residual-2026-10-17.md`.
+Six direct leaves pass without diagnostics. All 81 public declarations
+(67 theorems, 14 definitions), 81 API entries, six imports and unchanged source
+hashes are audited; only standard logical axioms occur. The actual residual
+series is absolutely summable. Compact inputs have eventually zero cell sums.
+Global uniform correlation convergence makes residuals converge; polar continuity
+is therefore exactly producer continuity. The premise-free diffuse endpoint
+proves Q(H_n)>=((n+2)/4)P_seed-1->infinity with convergent residuals and energies,
+compact correlation closure and uniform signed traces. Count once. Existing cell
 L2/dyadic producer bounds and package 1's weighted sample defects are not new.
+
+The latest global lint snapshot has nine foreign modules missing umbrella
+reachability: `ExponentialTentMoments`, `PhysicalCollarMixture`,
+`PhysicalPriceResponse`, `RegularizedGramDescent`, `RegularizedGramGeometry`,
+`RegularizedGramIteration`, `RegularizedPhysicalGram`,
+`SawtoothPhaseCancellationAndBandSpectralProducer`, `SignedPrimePolarSourceParameters`.
+No error concerns this package, and the snapshot reports no active proof hole.
+Index refresh and exhaustive own certificate checks pass. README hash unchanged.
+
+## Next candidate: weight growth and producer order
+
+For w_beta(x)=cosh(beta x), beta>0, approximate the weight on each logarithmic
+cell by its degree-m Taylor polynomial at the left endpoint. Conjecture:
+the positive residual is integrable exactly when beta<m+1, with sharp tail
+mass asymptotic beta^(m+1)/(2(m+2)!(m+1-beta))*N^(beta-m-1).
+This alters weight approximation, not source regularity. Candidate only;
+paper and Lean proof remain open. Card:
+`docs/drafts/pipeline/0-backlog/nyquist-weight-order-threshold-2026-10-17.md`.
+Current deep search inspected all 20 candidates and 20 source arguments;
+the suggested decaying-weight argument does not prove this growing-weight
+classification. Focused Taylor/Nyquist lexical search found no declaration.
 
 Separate origin refinement: for fixed finite-energy f, R(q_n)->0 and bounded J(q_n)
 should imply J(f+q_n)-J(f)-J(q_n)->0 without support separation. A split mixed-increment

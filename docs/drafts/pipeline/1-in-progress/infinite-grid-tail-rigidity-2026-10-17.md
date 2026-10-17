@@ -47,7 +47,7 @@ This is uniform over changing sources and nonzero coefficients. Complete proofs 
 
 ## Certified frontier
 
-Thirteen significant packages certified:
+Fourteen significant packages certified:
 
 1. Canonical tail detection and the uniform linear energy barrier for separated two-copy sources,
    including the stronger local-energy inequality (22 theorems).
@@ -111,11 +111,19 @@ Thirteen significant packages certified:
     Global lint remains blocked by unrelated concurrent drafts, including one
     foreign `sorry`; the complete package certificate records the snapshot.
 
-The 100-package objective remains active with 13 certified packages. Next: formalize
-the explicit Nyquist producer's integrable all-tail residual. Its complete paper
-proof gives exact operator norm A_N<=1/sqrt(N) and locates diffuse polar escape
-in the weighted cell-average term. Card:
-`../2-fully-proven/nyquist-polar-integrable-residual-2026-10-17.md` (uncounted).
+14. Explicit Nyquist polar production modulo an actual positive integrable kernel.
+    Its all-tail residual has exact operator norm A_N<=1/sqrt(N); compact-source
+    polar integrals split exactly into produced cell averages and that stable
+    correction. Actual diffuse sources have divergent producer values and
+    convergent residuals (67 theorems, 14 definitions; 81 standard-axiom audits).
+    Card: `../3-formalized/nyquist-polar-integrable-residual-2026-10-17.md`.
+    Six clean leaf checks, all API entries/imports and source hashes verified.
+    Global lint has nine unrelated missing imports; no error in this package.
+
+The 100-package objective remains active with 14 certified packages. Next candidate:
+classify the exact exponential growth threshold and Taylor order for a summable
+weight residual. Card:
+`../0-backlog/nyquist-weight-order-threshold-2026-10-17.md` (unproved, uncounted).
 Mixed-energy decoupling and global polar closedness remain separate open refinements.
 
 ## Constraints

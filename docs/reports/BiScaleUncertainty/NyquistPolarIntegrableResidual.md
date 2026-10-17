@@ -2,7 +2,7 @@
 
 ## Domain and status
 
-Dependency-closed paper proof; Lean formalization in progress, uncounted. The topic
+Dependency-closed paper proof and Lean certificate; package 14, counted once. The topic
 remains infinite-grid tail rigidity for general signed correlations. The field
 README is read-only. Existing Nyquist producer constants and their pointwise error
 bounds are reused inputs, not new results.
@@ -133,5 +133,27 @@ No floor counterterm subtraction, arithmetic positivity assertion, or deduction
 of global polar closedness from unweighted tail decay is made. The existing cell
 L2 and dyadic error theorems are not counted anew. The additional object is the
 bounded residual operator on the whole half-line, together with its stable
-decomposition of actual polar escape. Corpus search and remaining formal gates
+decomposition of actual polar escape. Corpus search and the formal certificate
 are recorded on the associated pipeline card.
+
+## Lean certificate
+
+Six leaves certify the complete result: `NyquistResidualMass`,
+`NyquistResidualPartition`, `NyquistResidualKernel`, `NyquistResidualOperator`,
+`NyquistPolarDecomposition`, `NyquistPolarSourceEscape`. Implementation indexes
+cell k by [log(k+1),log(k+2)] and tail N by log(N+1); its bound
+`nyquistResidualTailScale N=1/sqrt(N+1)` is exactly the positive-integer indexing
+used above. The kernel uses half-open cells `(log n,log(n+1)]`.
+
+All six direct leaf checks pass without diagnostics. All 81 public declarations
+(67 theorems, 14 definitions) have only standard logical axioms. All 81 exact
+API entries, all six umbrella imports and unchanged source hashes are verified.
+The source endpoint constructs actual diffuse smooth sources, with divergent
+producer values, convergent residuals and energies, compact correlation closure
+and uniform signed logarithmic trace tails.
+
+Index refresh passes. Global lint reports nine unrelated missing umbrella imports;
+none concerns this package, and that snapshot reports no active proof hole.
+The full list, logs and manifests are in
+`docs/drafts/pipeline/3-formalized/nyquist-polar-integrable-residual-2026-10-17.md`.
+The field README remains unchanged and read-only. No full or umbrella build ran.

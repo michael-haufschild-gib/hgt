@@ -71,8 +71,12 @@ The direct `ExponentialTentMoments.lean` leaf check passes with empty diagnostic
 `/tmp/spp10_tent_energy.lean`, positive/constant ramp moments in
 `/tmp/spp10_ramp_moments.lean`, and the generalized ramp plus shifted grid lemma
 in `/tmp/spp10_ramp_core.lean`. Those drafts are not certified yet.
-The actual source contrast and final arithmetic/energy endpoint still need Lean
-implementation. Main count remains 9/100.
+The tent source-energy draft now passes in scratch form; its final leaf check
+is running as `ExponentialTentSourceEnergy.lean`. The separate polar branch
+moments and scalar atomic sum are drafted in `/tmp/spp10_ramp_pairing.lean`,
+which depends on the two unchecked ramp drafts. The actual source contrast and
+final arithmetic/energy endpoint still need Lean implementation. Main count
+remains 9/100.
 
 Searches `/tmp/spp10-convolution-search.json` and `/tmp/spp10-tent-search.json`
 are partial (reranking deadline and semantic retrieval timeout respectively).

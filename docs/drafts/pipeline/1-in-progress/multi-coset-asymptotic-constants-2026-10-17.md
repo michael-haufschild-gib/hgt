@@ -456,7 +456,7 @@ no exhaustive novelty claim. No new regularized producer or rate is claimed here
 
 The preceding turn is verified progress (package 12). The next contribution must
 discharge curvature for actual signed packets, rather than assume a Gram lower
-bound. Work plan: [ ] regularized packet support and quadratic remainder;
+bound. Work plan: [x] regularized packet support and quadratic remainder;
 [ ] actual physical mixture, integrability and uniform integrated curvature;
 [ ] measurable regularized minimum response and damped producer;
 [ ] original-objective reconciliation and quantitative iteration;
@@ -496,6 +496,20 @@ the larger preserves monotonicity and the allocation error, so the limiting
 coefficient would equal S∞ with error at most R(δ+1)/(n+1)+2R tail_n.
 This is a dependency-closed paper target, not a completed Lean result or a new
 claim about the unrestricted source infimum.
+
+Implementation now spans seven owned leaves: `RegularizedGramGeometry`,
+`PhysicalCollarMixture`, `PhysicalPriceResponse`, `RegularizedPhysicalGram`,
+`RegularizedGramDescent`, `RegularizedGramIteration`, `QuantitativeGramProducer`.
+The first two compile without diagnostics. The generic minimum-price response
+uses equal sharing among all active minimizers; it does not require a pure
+tie-breaker. It is instantiated with actual regularized source prices, not supplied
+as an analytic oracle. The iteration compares against every admissible physical
+partition before taking a supremum. This is the intended significant advance:
+replace the unresolved gap in package 12 by a source-uniform allocation error and
+prove that a concrete monotone producer reaches S∞. It does not establish a sharp
+unrestricted source constant or a matching lower asymptotic for the cutoff tail.
+Current count stays 12/100 until all seven leaves and the final audits pass.
+Verification checkpoint: `/tmp/bsu-regularized-checkpoint.json`.
 
 `PairedCollarCapacity.lean` now passes direct verification of block/radial capacity,
 unordered nonnegative error bounds, and exact padding. `PairedCollarCutoffStability.lean`

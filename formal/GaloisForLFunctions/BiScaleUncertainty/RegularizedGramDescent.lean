@@ -58,7 +58,7 @@ theorem regularizedGramRemainder_mixture_le (ρ η : PhysicalCollarPartition n) 
     _ ≤ (τ : ℝ) ^ 2 * (2 * autocorr f 0 * fibreMassBound n * (ρ.mass y + η.mass y)) / (2 * ε) :=
       div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left (ρ.gramPacket_displacement_sq_le η f y)
         (sq_nonneg _)) (by positivity)
-    _ = _ := by field_simp; ring
+    _ = _ := by field_simp [hε.ne']; ring
 
 /-- The integrated curvature is explicit in physical mass and smoothing scale. -/
 theorem integral_regularizedGramRemainder_mixture_le (ρ η : PhysicalCollarPartition n)

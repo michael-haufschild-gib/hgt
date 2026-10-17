@@ -69,7 +69,7 @@ private theorem quadratic_recurrence_bound (B : ℝ) (hB : 0 ≤ B) (E : ℕ →
     have hm := mul_le_mul_of_nonneg_left ih hcoef
     have hr := h (t + 1)
     have he : (1 - 2 / x) * (4 * B / x) + B * (2 / x) ^ 2 = 4 * B * (x - 1) / x ^ 2 := by
-      field_simp
+      field_simp [hx.ne']
       ring
     have hu : 4 * B * (x - 1) / x ^ 2 ≤ 4 * B / (x + 1) := by
       apply (div_le_div_iff₀ hx2 hxx).2
@@ -119,7 +119,7 @@ private theorem producer_curvature_budget (f : C_c(ℝ, ℝ)) (n k : ℕ) :
   have he : 4 * regularizedCurvature f n (1 / ((k : ℝ) + 1)) * ((k : ℝ) + 1) =
       autocorr f 0 * (8 * fibreMassBound n * transportedMass n * ((k : ℝ) + 1) ^ 2) := by
     unfold regularizedCurvature
-    field_simp
+    field_simp [hk.ne']
     ring
   rw [he]
   nlinarith only [hm, autocorr_zero_nonneg f]

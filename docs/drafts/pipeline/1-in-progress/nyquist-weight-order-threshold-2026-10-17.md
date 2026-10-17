@@ -1,7 +1,7 @@
 # Nyquist weight order and the threshold for an integrable residual
 
 - **ID:** nyquist-weight-order-threshold-2026-10-17
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Scope:** Infinite-Grid Tail Rigidity Beyond Trap 5; explicit weight producers.
 - **Source:** The integrable polar residual package and the field guide
@@ -9,7 +9,7 @@
 - **Statement:** For beta>0 and Taylor degree m>=0, the logarithmic-cell
   Taylor producer for cosh(beta x) has an integrable residual exactly when
   beta<m+1.
-- **Status:** Candidate only; no completed paper proof, new Lean or contribution count.
+- **Status:** Paper audit in progress; no new Lean or contribution count.
 
 ## Goal
 
@@ -69,6 +69,18 @@ source is not a resolution of that remaining uniform-control problem.
 - [ ] Actual positive kernel, bounded operator and threshold formalized in Lean.
 - [ ] All direct leaves, axioms, API entries, imports and formal lint checked.
 - [ ] Count once only if the complete classification adds a substantive tool.
+
+## Execution plan
+
+1. Refresh the corpus boundary and identify exact Taylor, power-tail and source-scaling inputs.
+2. Prove positivity, explicit cell bounds, the sharp mass asymptotic and all threshold cases on paper.
+3. Prove the bounded operator and exact compact-input decomposition below the threshold;
+   construct actual smooth low-energy source witnesses at and above it.
+4. Formalize the complete connected theorem in direct Lean leaves, one process at a time.
+5. Audit all declarations, axioms, API entries, imports and lint; update the ledger only then.
+
+The original 100-package objective remains active with 14 certified packages.
+This card carries task tracking because `update_plan` is unavailable.
 
 ## No-go closure
 

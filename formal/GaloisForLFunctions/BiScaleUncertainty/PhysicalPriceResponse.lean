@@ -208,7 +208,11 @@ theorem integrableOn_fibreCost (Q : CollarPrice) (ρ : PhysicalCollarPartition n
   apply integrable_finsetSum
   intro k hk
   have h := (Q.integrableOn_weight_price ρ false k hk).add (Q.integrableOn_weight_price ρ true k hk)
-  simpa only [collarSignedOffset, Bool.false_eq_true, ↓reduceIte, ← sub_eq_add_neg, Pi.add_apply] using h
+  change IntegrableOn (fun y =>
+    ρ.weight false k y * Q.value k (logarithmicCollarNode k + collarSignedOffset false y) +
+    ρ.weight true k y * Q.value k (logarithmicCollarNode k + collarSignedOffset true y))
+      (Ioo 0 logarithmicCollarRadius) at h
+  simpa only [IntegrableOn, collarSignedOffset, Bool.false_eq_true, ↓reduceIte, ← sub_eq_add_neg] using h
 
 theorem integral_fibreCost (Q : CollarPrice) (ρ : PhysicalCollarPartition n) :
     (∫ y in Ioo 0 logarithmicCollarRadius, Q.fibreCost ρ y) = Q.linearCost ρ := by
