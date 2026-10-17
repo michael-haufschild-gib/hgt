@@ -760,7 +760,7 @@ independent-sphere allocation hierarchy has a tail-driven leading coefficient.
 
 Active package-15 plan; verified count remains 14/100:
 [x] prove exact forced node-2 shares on a fixed positive offset interval;
-[ ] lower-bound both whole-sign norms and the paired kernel gain uniformly;
+[x] lower-bound both whole-sign norms and the paired kernel gain uniformly;
 [ ] integrate, optimize, and pass to strict separation of the limiting constants;
 [ ] derive eventual selection of the paired branch and actual-source improvement;
 [ ] direct leaf checks, all-theorem axiom audits, wiring, index, lint and ledger.

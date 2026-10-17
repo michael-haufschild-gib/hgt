@@ -35,6 +35,8 @@
 - **Statement (module 15, `IntegerBlockVarianceBridge.lean`, bridge to `SobolevShear.finiteBlockVariance`):** with `u_j = E(X+j)`: `X·D_X = finiteBlockVariance X u + (Σ_{j<X} u_j − X u_0)²` (exact); hence `Var_X(E)/(16X³) − 2 ≤ c_k ≤ 4Var_X(E)/X³ + 4(Σu − Xu_0)²/X³ + 10` for `X = 2^k`: the fine block energy is the in-block variance of the integer Chebyshev error normalized by `X³` plus the normalized mean deviation.
 - **Statement (module 16, `WindowEnergyArithmeticQuadrature.lean`):** on the cell of `n`, `R_N(t) = e^{−t/2}(ψ(n) + 1 − t − e^t)`; closed form `∫_{cell} e^{−t}(c+1−t−e^t)² = F_c(log(n+1)) − F_c(log n)` with `F_c(t) = −e^{−t}((c+1−t)² − 2(c+1−t) + 2) − 2(c+1)t + t² + e^t`; **`∫_0^L R_N² = Σ_{n=1}^{N+1}(F_{ψ(n)}(log(n+1)) − F_{ψ(n)}(log n))`** and `laplaceEnergy N = that sum + R_N(L)²`: the Wall-1 energy as a finite arithmetic quadratic form in the values `ψ(n)`.
 
+- **Statement (module 17, `PoleRegionNetSignedMass.lean`):** `ν̂_N(0) = pairing N 1 = Σ_{n≤N+2} Λ(n)/√n − 4 sinh(L/2)` (net signed mass); Mertens-type identity `Σ_{n≤N+2} Λ(n)/√n − 4 sinh(L/2) = ½∫_0^L Ẽ + Ẽ(L) − 1 + 2e^{−L/2}` (the classical `Σ Λ(n)/√n = √x + ψ(x)/√x − 1 + ½∫_1^x (ψ(u)−u)u^{−3/2}du`); `S_N(0) = 4 (pairing N 1)²`.
+
 ## Goal
 Give the field an exact quadratic (energy) form of the Chebyshev discrepancy, complementing the linear Stieltjes coupling of Pillar XV. The operator `f ↦ f' − f/2 = e^{u/2}(e^{−u/2}f)'` is the derivative in the critical-line gauge; the signed packet energy is, up to bounded source constants, the energy of `Ẽ` against the positive-definite gauge kernel `autocorr(f' − f/2)`. Uniform stabilization of the packet energy over all `C¹` compact sources is therefore equivalent to at most linear growth of `∫_1^X (ψ(x)−x)²/x² dx` in `log X` (the mean-square form of Wall 1). The field now owns Wall 1 as a statement about its own native energy.
 
@@ -134,6 +136,8 @@ Module 14 (`FermiNymanBrickDictionary.lean`, same namespace; imports the paralle
 Module 15 (`IntegerBlockVarianceBridge.lean`): `blockErrorSeq`, `blockDeviationSum_eq_sum_range`, `mul_blockDeviationSum_eq_finiteBlockVariance_add`, `finiteBlockVariance_le_mul_blockDeviationSum`, `finiteBlockVariance_div_le_blockEnergy`, `blockEnergy_le_finiteBlockVariance_add`.
 Module 16 (`WindowEnergyArithmeticQuadrature.lean`): `cellWindowPrimitive`, `hasDerivAt_cellWindowPrimitive`, `integral_cell_window_sq`, `cellWindowPrimitive_log`, `causalResponse_sq_eq_on_cell`, `integral_cell_causalResponse_sq`, `integral_sq_causalResponse_window_eq_sum`, `laplaceEnergy_eq_sum_add_endpoint`.
 
+Module 17 (`PoleRegionNetSignedMass.lean`): `frequencyCharacter_zero`, `criticalPoint_zero`, `fourierPairing_zero_eq_pairing_one`, `integral_polarDensity_Icc`, `pairing_one_eq`, `netSignedMass_eq_chebyshev_integral`, `spectralDensity_zero`.
+
 ## What this changes in the open core
 - Pillar XV's linear Chebyshev work is now matched by a quadratic law: the packet energy (the field's cancellation-sensitive Gram energy) is the Chebyshev mean square smoothed by the gauge derivative. The "finite-window, no stabilization" caveat of Pillar XV.5 is resolved into an exact criterion: stabilization ⟺ `∫_0^L Ẽ² = O(L)` ⟺ mean-square RH.
 - All compression/Bessel/Krein tools act on the right-hand side `autocorr(f' − f/2)`; the arithmetic lives entirely in `Ẽ`.
@@ -171,6 +175,7 @@ Module 16 (`WindowEnergyArithmeticQuadrature.lean`): `cellWindowPrimitive`, `has
 ## Log
 - 2026-10-17 — module 1 built, wired, axioms standard; moved directly to 3-formalized.
 - 2026-10-17 — module 2 (Nyquist-cell quadrature, window law, classical comparison) built, wired, axioms standard.
+- 2026-10-18 — module 17 (zero frequency = net signed mass; Mertens-type identity for Σ Λ(n)/√n via the Chebyshev-error integral; S_N(0) = 4(pairing N 1)²) built, wired, axioms standard; lint clean apart from the parallel agents' in-flight modules.
 - 2026-10-17 — modules 15 (variance bridge) and 16 (arithmetic quadrature of the window energy) built, wired, axioms standard.
 - 2026-10-17 — module 14 (exponential change of variables, L²(0,1] = gauge space, Fermi–Nyman bulk = dyadic block, brick readings, brick = √(2X)·chain input) built, wired, axioms standard.
 - 2026-10-17 — module 13 (block response in raw-error form, two-sided cell law, dyadic block energy ≍ discrete deviation sum, chain input in integer-error form, discrete headline) built, wired.

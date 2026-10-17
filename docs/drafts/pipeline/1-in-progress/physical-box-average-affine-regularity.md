@@ -101,12 +101,12 @@ pullback and Demkowicz Energy Spaces references inspected and linked in paper.
 No absence or external novelty claim. update_plan unavailable; this card
 records the plan. No subagents authorized or used.
 
-All six planned leaves are written. PhysicalTranslationContinuity,
-PhysicalBoxAverage, PhysicalBoxProfile, PhysicalBoxVariance and
-PhysicalBoxAffineRegularity pass serial direct checks without diagnostics.
-PhysicalBoxGraphControl is checking in owned session94354; no second owned
-Lean process. All-public audit and integration gates are pending. Correct MemLp congruence API is
-MemLp.ae_eq; final combined audit includes it. No certified increment.
+All six leaves pass serial direct checks without diagnostics and have current
+normal outputs. Six unique umbrella imports are wired. Manifest:599lines,
+61public=53theorems+8definitions. Final combined Lean audit is live in owned
+session15697:61public axiom checks,28 principal signatures and73 API probes.
+Index/lint/catalog gates are pending. Scoped artifact/whitespace checks pass;
+README hash is unchanged. No certified increment until final gates complete.
 
 Next uncounted conjecture is recorded in
 ../0-backlog/compact-physical-box-producers.md: actual compact logarithmic
