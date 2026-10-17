@@ -44,16 +44,21 @@ theorem archWeight_half_exponential_remainder {x : ℝ} (hx : logarithmicCollarR
     ring
   have hid : archLevySinhWeight x - 2 * Real.exp (-x / 2) =
       (2 * Real.exp (-(5 / 2) * x)) / (1 - Real.exp (-2 * x)) := by
+    have halg (a q : ℝ) (hq : 1 - q ≠ 0) :
+        2 * (a / (1 - q)) - 2 * a = (2 * (a * q)) / (1 - q) := by
+      field_simp
+      ring
     rw [archLevySinhWeight, RHTower.ArchimedeanAnomaly.exp_half_div_sinh_eq hxp,
       RHTower.archLevyDensity, he]
-    field_simp [hd.ne']
-    ring
+    exact halg _ _ hd.ne'
   rw [hid]
   constructor
   · positivity
   · have h := div_le_div_of_nonneg_left (by positivity : 0 ≤ 2 * Real.exp (-(5 / 2) * x))
       (by norm_num : (0 : ℝ) < 1 / 2) (show (1 / 2 : ℝ) ≤ 1 - Real.exp (-2 * x) by linarith)
-    convert h using 1 <;> ring
+    calc
+      _ ≤ (2 * Real.exp (-(5 / 2) * x)) / (1 / 2 : ℝ) := h
+      _ = _ := by ring
 
 theorem collarEndpointTailMass_exponential_error (n : ℕ) :
     0 ≤ collarEndpointTailMass n - 4 * Real.exp (-logarithmicCollarEndpoint n / 2) ∧
@@ -122,7 +127,7 @@ theorem collarEndpointTailMass_error (n : ℕ) :
         mul_le_mul_of_nonneg_left he (by norm_num)
       _ ≤ ((n + 2 : ℕ) : ℝ) * (1 / (((n + 2 : ℕ) : ℝ) ^ 2)) :=
         mul_le_mul_of_nonneg_right (by linarith) (by positivity)
-      _ = _ := by field_simp [hN.ne']; ring
+      _ = _ := by field_simp [hN.ne']
   constructor
   · simpa only [mul_one_div] using h.1
   · have h' : collarEndpointTailMass n - 4 / Real.sqrt ((n + 2 : ℕ) : ℝ) ≤
@@ -141,6 +146,8 @@ theorem tendsto_inverse_collarCutoff :
 theorem tendsto_inverse_sqrt_collarCutoff :
     Tendsto (fun n : ℕ => 1 / Real.sqrt ((n + 2 : ℕ) : ℝ)) atTop (𝓝 0) := by
   have h := (Real.continuous_sqrt.tendsto 0).comp tendsto_inverse_collarCutoff
+  change Tendsto (fun n : ℕ => Real.sqrt (1 / ((n + 2 : ℕ) : ℝ)))
+    atTop (𝓝 (Real.sqrt 0)) at h
   simpa only [Real.sqrt_div zero_le_one, Real.sqrt_one, Real.sqrt_zero] using h
 
 theorem collarEndpointTailMass_tendsto : Tendsto collarEndpointTailMass atTop (𝓝 0) := by

@@ -50,11 +50,29 @@ set_option autoImplicit false
 
 /-! ## §1. Reflection Anti-Symmetry & Complete-Period Second Moment of `centeredDiscreteSawtooth` -/
 
-/-- **Reflection Anti-Symmetry of `centeredDiscreteSawtooth`:**
-For every modulus `d > 0` and `1 ≤ r < d`,
-$$\widetilde{B}_1(d, d - r) = -\widetilde{B}_1(d, r).$$ -/
-theorem centeredDiscreteSawtooth_reflect {d r : ℕ} (hr1 : 1 ≤ r) (hrd : r < d) :
-    centeredDiscreteSawtooth d (d - r) = -centeredDiscreteSawtooth d r := by
+/-- **Period-Reversal Anti-Symmetry of `centeredDiscreteSawtooth`:**
+For every modulus `d > 0` and residue `r < d`, reversing `r ↦ d - 1 - r` flips the sign of
+`centeredDiscreteSawtooth`:
+$$\widetilde{B}_1(d, d - 1 - r) = -\widetilde{B}_1(d, r).$$ -/
+theorem centeredDiscreteSawtooth_reflect {d r : ℕ} (hrd : r < d) :
+    centeredDiscreteSawtooth d (d - 1 - r) = -centeredDiscreteSawtooth d r := by
+  have hd : 0 < d := by omega
+  have hdR : (d : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hd.ne'
+  have hlt1 : d - 1 - r < d := by omega
+  have hle1 : r ≤ d - 1 := by omega
+  have hmod1 : (d - 1 - r) % d = d - 1 - r := Nat.mod_eq_of_lt hlt1
+  have hmod2 : r % d = r := Nat.mod_eq_of_lt hrd
+  rw [centeredDiscreteSawtooth_eq_mod_sub_half hd (d - 1 - r),
+    centeredDiscreteSawtooth_eq_mod_sub_half hd r, hmod1, hmod2,
+    Nat.cast_sub hle1, Nat.cast_sub hd, Nat.cast_one]
+  field_simp [hdR]
+  ring
+
+/-- **Additive-Inverse Reciprocity of `centeredDiscreteSawtooth`:**
+For every modulus `d > 0` and non-zero residue `1 ≤ r < d`,
+$$\widetilde{B}_1(d, d - r) + \widetilde{B}_1(d, r) = \frac{1}{d}.$$ -/
+theorem centeredDiscreteSawtooth_sub_add_self {d r : ℕ} (hr1 : 1 ≤ r) (hrd : r < d) :
+    centeredDiscreteSawtooth d (d - r) + centeredDiscreteSawtooth d r = 1 / (d : ℝ) := by
   have hd : 0 < d := by omega
   have hdR : (d : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hd.ne'
   have hmod1 : (d - r) % d = d - r := Nat.mod_eq_of_lt (Nat.sub_lt hd hr1)

@@ -105,7 +105,6 @@ theorem blockEnergy_le_finiteBlockVariance_add (N : ℕ) {k : ℕ}
         4 * ((∑ j ∈ Finset.range (2 ^ k), blockErrorSeq (2 ^ k) j) -
           ((2 ^ k : ℕ) : ℝ) * blockErrorSeq (2 ^ k) 0) ^ 2 / (((2 ^ k : ℕ) : ℝ)) ^ 3 := by
     field_simp
-    ring
   linarith
 
 end

@@ -83,12 +83,13 @@ source is not a resolution of that remaining uniform-control problem.
 4. Formalize the complete connected theorem in direct Lean leaves, one process at a time.
 5. Audit all declarations, axioms, API entries, imports and lint; update the ledger only then.
 
-Ten direct leaves pass and are wired: `NyquistWeightJets`,
+Twelve direct leaves pass and are wired: `NyquistWeightJets`,
 `NyquistWeightTaylorRemainder`, `NyquistWeightCells`,
 `NyquistWeightCellAsymptotic`, `NyquistPowerTails`,
 `NyquistPositiveTailComparison`, `NyquistWeightKernel`,
 `NyquistWeightTailMass`, `NyquistWeightOperator`, and
-`NyquistWideSourceEnergy`. All final logs are clean except two informational
+`NyquistWideSourceEnergy`, `NyquistPositivePrefixComparison`, and `NyquistPrefixScales`.
+All final logs are clean except two informational
 `ring` suggestions in `NyquistWeightCellAsymptotic` (no errors or warnings).
 
 These certificates cover the explicit Taylor jets and positive remainder,
@@ -103,13 +104,28 @@ Remaining proof organization:
 - Critical/supercritical prefixes: transfer ratios through positive divergent
   prefixes, using telescoping logarithmic/power increments. The relevant
   derivative and slope APIs pass their names probe. The prefix-transfer leaf
-  is being checked; it is not yet counted as verified.
+  passes with a clean log. `NyquistPrefixScales` also passes its final direct
+  check with a clean log. It proves the
+  explicit power-increment limit, exact telescoping sums, and both normalized
+  reference-prefix limits. `NyquistWeightPrefixMass` composes these results in
+  a draft awaiting its direct check.
 - Exact signed cell moments and compact-input producer decomposition, absolute
   cell summation, and the uniform-convergence equivalence.
 - Actual-source norm sharpness and supercritical divergence under every
   positive energy ceiling, using the checked common source family.
 - Minimum integer degree, the three calibrations, and the complete package's
   direct-leaf, axiom, API, import, index, and lint audits.
+
+Additional drafts awaiting direct checks: `NyquistWeightProducer` (signed cell
+moments, compact-input exact identity, absolute residual summation and
+convergence equivalence), `NyquistWideResidualLimit` (actual-source subcritical
+limit and exact best constant under every positive energy ceiling), and
+`NyquistWideResidualEscape` (eventual finite-prefix lower bounds and actual-source
+divergence at/above threshold), and `NyquistWeightCalibrations` (minimum degree,
+arbitrary actual signed source error, equality with the original polar producer,
+and all three calibration constants). The producer API probe's unused nonexistent
+`HasSum.congr` and `Real.rpow_neg_one_half` were removed; the latter is replaced
+by `Real.rpow_neg` and `Real.sqrt_eq_rpow`. The remaining names are being checked together.
 
 Trap 10 alignment: these are explicit unconditional Nyquist-cell producers.
 The beta=1/2, degree-zero calibration must identify the existing

@@ -524,8 +524,11 @@ cell majorant, the sharp cell asymptotic and exact summability threshold for
 every tail, plus two-sided power-tail bounds and transfer of a ratio limit
 to positive summable tails. The actual kernel integrability criterion, compact-input
 integrability beyond the threshold, explicit subcritical tail bound, and sharp
-tail mass asymptotic are also checked. Operator, sharp prefix asymptotics,
-decomposition, and actual-source certificates remain unfinished; package count stays 14.
+tail mass asymptotic are also checked. The positive integral operator has a
+checked exact norm and explicit bound. The actual common smooth source family
+has checked energy decay, pointwise correlation limit one, and a growing
+positive plateau. Sharp prefix asymptotics, producer decomposition, and the
+source-sharpness endpoints remain unfinished; package count stays 14.
 Card: `docs/drafts/pipeline/2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md`.
 Current deep search inspected all 20 candidates and 20 source arguments;
 the suggested decaying-weight argument does not prove this growing-weight

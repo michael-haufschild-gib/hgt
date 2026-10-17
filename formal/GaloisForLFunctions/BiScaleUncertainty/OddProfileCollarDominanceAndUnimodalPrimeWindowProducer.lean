@@ -112,8 +112,7 @@ theorem integrableOn_kernelDeriv_mul_chebyshevDiscrepancy (y : ℝ) :
   have h := (integrableOn_kernelDeriv_mul_chebyshevStep y).sub
     (integrableOn_kernelDeriv_mul_two_exp_half y)
   refine h.congr_fun (fun s _ => ?_) measurableSet_Ioi
-  dsimp only
-  unfold chebyshevDiscrepancy
+  simp only [Pi.sub_apply, chebyshevDiscrepancy]
   ring
 
 /-- **Exact Finite-Window + Exponential-Tail Split of the CHMD Derivative Pairing:**
@@ -158,7 +157,7 @@ $$0 \;\le\; \int_{x \in Ioo\,0\,t} \operatorname{oddProfileCollarDiffSq}(a, w, t
 theorem integral_oddProfileCollarDiffSq_nonneg {a : ℝ} (ha : 0 < a)
     (w : ℝ → ℝ) (t : ℝ) :
     0 ≤ ∫ x in Ioo (0 : ℝ) t, oddProfileCollarDiffSq a w t x :=
-  setIntegral_nonneg measurableSet_Ioo fun x hx => oddProfileCollarDiffSq_nonneg ha hx w
+  setIntegral_nonneg measurableSet_Ioo fun _ hx => oddProfileCollarDiffSq_nonneg ha hx w
 
 /-- **Individual Collar Dominance Bound (`oddProfileCollarDiffSq` and `primeCrossing` vs. `oddProfileCollarMixed`):**
 For every $a > 0$, every continuous compactly supported even $w : \mathbb{R} \to \mathbb{R}$, and
@@ -209,7 +208,7 @@ theorem oddProfileShiftJump_add_collarMixed_eq_two_Ioi_add_primeCrossing (a : �
       ∫ x in Ioo (0 : ℝ) (Real.log d), oddProfileCollarDiffSq a w (Real.log d) x := rfl
   rw [hcol] at hfold
   have hmix := primeCrossing_oddPolarWeight_add_oddProfileCollar_eq_mixed a hw hwc heven d
-  linear_combination vonMangoldtAtom d * hfold + hmix
+  linear_combination vonMangoldtAtom d * hfold - hmix
 
 /-- **Strict Non-Negativity of the Collar-Completed $m_a$-Doob Shift Jump:**
 For every $a > 0$, every continuous compactly supported even $w : \mathbb{R} \to \mathbb{R}$, and

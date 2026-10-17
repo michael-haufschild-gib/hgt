@@ -27,7 +27,7 @@ theorem abs_sourceFactorialCausal_linear {N : ℕ} (hN : 1 ≤ N) {x : ℝ} (hx 
         (((continuous_exponentialTentDensity δ).mul continuous_const).integrableOn_Icc) measurableSet_Icc
       intro t ht
       have hb := sourceFactorialRamp_abs_sub_le hN (x-t) (-t)
-      rw [sourceFactorialRamp_zero_of_nonpos hN (by linarith [ht.1]), sub_zero,
+      rw [sourceFactorialRamp_zero_of_nonpos (x := -t) hN (by linarith [ht.1]), sub_zero,
         show x-t-(-t) = x by ring, abs_of_nonneg hx] at hb
       have het : Real.exp (t/2) ≤ 2 := (Real.exp_le_exp.mpr (by linarith [ht.2])).trans he
       rw [abs_mul, abs_mul, abs_of_nonneg (exponentialTentDensity_nonneg δ t), abs_of_pos (Real.exp_pos _)]
@@ -60,7 +60,7 @@ theorem abs_sourceFactorialCausal_archWeight_le {N : ℕ} (hN : 1 ≤ N) {x : �
   calc
     _ ≤ (2*Real.exp (x/2)/Real.sqrt N)*archLevySinhWeight x :=
       mul_le_mul_of_nonneg_right (abs_sourceFactorialCausal_le hN x) (archLevySinhWeight_pos hx).le
-    _ = (2*Real.exp (x/2)/(Real.sqrt N*x))*(x*archLevySinhWeight x) := by field_simp; ring
+    _ = (2*Real.exp (x/2)/(Real.sqrt N*x))*(x*archLevySinhWeight x) := by field_simp
     _ ≤ (2*Real.exp (x/2)/(Real.sqrt N*x))*((2*x+1)*Real.exp (-(1/2*x))) :=
       mul_le_mul_of_nonneg_left (mul_archLevySinhWeight_le hx) (by positivity)
     _ = (2*(2*x+1)/(Real.sqrt N*x))*(Real.exp (x/2)*Real.exp (-(1/2*x))) := by ring
@@ -112,7 +112,7 @@ theorem abs_integral_sourceFactorialCausal_archWeight_le (n : ℕ) :
       _ = _ := by
         rw [← intervalIntegral.integral_of_le ha.le, intervalIntegral.integral_const]
         dsimp [a]
-        simp only [sub_zero, smul_eq_mul]
+        simp only [sub_zero]
         field_simp
   have htruncate : (∫ x in Ioi a, J x) = ∫ x in Ioc a b, J x := by
     apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi (fun _ hx => hx.1)
@@ -125,7 +125,7 @@ theorem abs_integral_sourceFactorialCausal_archWeight_le (n : ℕ) :
     rw [sourceFactorialCausal_tail hN hLx, zero_mul, abs_zero]
   have hci : ContinuousOn (fun x : ℝ => 1/x) (Icc a b) :=
     continuousOn_const.div continuousOn_id (fun x hx => (ha.trans_le hx.1).ne')
-  have hii := hci.intervalIntegrable_of_Icc hab
+  have hii : IntervalIntegrable (fun x : ℝ => 1/x) volume a b := hci.intervalIntegrable_of_Icc hab
   have hiJ : IntervalIntegrable J volume a b :=
     (intervalIntegrable_iff_integrableOn_Ioc_of_le hab).2
       (hi.mono_set (fun _ hx => ha.trans hx.1))

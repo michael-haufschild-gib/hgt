@@ -1,7 +1,7 @@
 # Actual box averaging and quantitative affine regularity
 
 - **ID:** physical-box-average-affine-regularity
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** continuum-coprime-shear; physical-affine-commutator-producers
 - **Statement:** Construct physical L² box averages with exact variance loss, actual derivative, and an unconditional affine commutator bound that vanishes with the gap.
@@ -78,3 +78,30 @@ Full physical translations do not imply half-line invertibility or completed
 divisor-domain invariance. No RH task, numerical experiment, added axiom,
 receiver-only equivalence, or pre-floor counterterm subtraction. Trap10
 requires actual producers and unconditional errors. Field README is read-only.
+
+
+## Active proof scope
+
+Dependency-closed paper proof completed before field Lean code:
+docs/reports/BiScaleUncertainty/PhysicalBoxAverageAffineRegularity.md.
+Use the strongly continuous L² translation orbit and Bochner interval
+averages. Exact interval cancellation replaces the proposed kernel-L¹
+argument; it gives the same coefficient for arbitrary real gaps. Include
+actual continuous representative, a.e. derivative and strong orbit derivative,
+one- and two-fold variance losses, strong approximation and compact graph
+commutator energy control. Six planned leaves: PhysicalTranslationContinuity,
+PhysicalBoxAverage, PhysicalBoxProfile, PhysicalBoxVariance,
+PhysicalBoxAffineRegularity, PhysicalBoxGraphControl. No certified increment
+until serial leaves, axioms, API, umbrella, index and lint gates. Count18/100.
+
+Current query all20 candidates inspected; no source arguments or ideas.
+partial=true, text/source interrupted, deadline/vector-proof incomplete,
+generation1447551 pending, refresh incomplete. Primary mathlib continuous
+pullback and Demkowicz Energy Spaces references inspected and linked in paper.
+No absence or external novelty claim. update_plan unavailable; this card
+records the plan. No subagents authorized or used.
+
+All six planned leaves are written, still unverified. API probe session32685
+terminated with one unknown name, MemLp.congr; local source supplies
+MemLp.ae_eq. The main continuous-pullback, Bochner/FTC and slope interfaces
+were verified. Serial direct leaf checks now begin. No certified increment.

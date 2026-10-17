@@ -28,7 +28,7 @@ theorem factorialSourceRight_jump_energy_lower (n : ℕ) :
   have hnp : (0 : ℝ) < ((n+1 : ℕ) : ℝ) := by positivity
   let a : ℝ := 1/((n+1 : ℕ) : ℝ)
   have ha : 0 < a := by dsimp [a]; positivity
-  have ha1 : a ≤ 1 := (div_le_iff₀ hnp).2 (by simpa using hn)
+  have ha1 : a ≤ 1 := (div_le_iff₀ hnp).2 (by linarith)
   have hwidth : 2*sourceFactorialWidth (n+1) ≤ a := by
     have hh := (sourceFactorialWidth_bounds (by omega : 1 ≤ n+1)).2
     have hh' := (le_div_iff₀ (by positivity : 0 < 12*((n+1 : ℕ) : ℝ))).1 hh
@@ -39,7 +39,7 @@ theorem factorialSourceRight_jump_energy_lower (n : ℕ) :
     exact (factorialSourceRight_energy_bounds n).1
   have hci : ContinuousOn (fun x : ℝ => 1/x) (Icc a 1) :=
     continuousOn_const.div continuousOn_id (fun x hx => (ha.trans_le hx.1).ne')
-  have hii := hci.intervalIntegrable_of_Icc ha1
+  have hii : IntervalIntegrable (fun x : ℝ => 1/x) volume a 1 := hci.intervalIntegrable_of_Icc ha1
   have hi : IntervalIntegrable (fun x => (autocorr (factorialSourceRight n) 0-
       autocorr (factorialSourceRight n) x)*archLevySinhWeight x) volume a 1 :=
     (intervalIntegrable_iff_integrableOn_Ioc_of_le ha1).2

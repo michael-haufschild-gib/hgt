@@ -21,9 +21,9 @@ theorem integral_le_constant_of_small_support {F : ℝ → ℝ} {r C : ℝ}
     (hbound : ∀ y ∈ Ioo 0 logarithmicCollarRadius, F y ≤ if y ≤ r then C else 0) :
     (∫ y in Ioo 0 logarithmicCollarRadius, F y) ≤ C * r := by
   have hconst : IntegrableOn (fun _ : ℝ => C) (Ioc 0 r) := by
-    apply integrableOn_const
-    rw [Real.volume_Ioc]
-    exact ENNReal.ofReal_ne_top
+    exact integrableOn_const (by
+      rw [Real.volume_Ioc]
+      exact ENNReal.ofReal_ne_top)
   have hm := integral_mono_ae (hF.integrable_indicator measurableSet_Ioo)
     (hconst.integrable_indicator measurableSet_Ioc) (Filter.Eventually.of_forall (fun y => by
       by_cases hy : y ∈ Ioo 0 logarithmicCollarRadius
@@ -55,9 +55,13 @@ theorem integral_concentratedExtend_penalty_le (ρ : PhysicalCollarPartition n)
     ((ρ.concentratedExtend hm).integrableOn_radialPenalty.sub ρ.integrableOn_radialPenalty)
     (by positivity : 0 ≤ 1 / ((n + 2 : ℕ) : ℝ)) (by norm_num : (0 : ℝ) ≤ 8192)
     (fun y hy => ρ.concentratedExtend_penalty_le hm hn hy)
+  change (∫ y in Ioo 0 logarithmicCollarRadius,
+    ((ρ.concentratedExtend hm).radialPenalty y - ρ.radialPenalty y)) ≤
+    8192 * (1 / ((n + 2 : ℕ) : ℝ)) at h
   rw [integral_sub (ρ.concentratedExtend hm).integrableOn_radialPenalty
     ρ.integrableOn_radialPenalty] at h
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 theorem integral_concentratedRetract_penalty_le (η : PhysicalCollarPartition m)
     (hm : n ≤ m) (hn : 6 ≤ n) :
@@ -68,9 +72,13 @@ theorem integral_concentratedRetract_penalty_le (η : PhysicalCollarPartition m)
     ((η.concentratedRetract hm).integrableOn_radialPenalty.sub η.integrableOn_radialPenalty)
     (by positivity : 0 ≤ 2 / ((n + 2 : ℕ) : ℝ)) (by norm_num : (0 : ℝ) ≤ 6144)
     (fun y hy => η.concentratedRetract_penalty_le hm hn hy)
+  change (∫ y in Ioo 0 logarithmicCollarRadius,
+    ((η.concentratedRetract hm).radialPenalty y - η.radialPenalty y)) ≤
+    6144 * (2 / ((n + 2 : ℕ) : ℝ)) at h
   rw [integral_sub (η.concentratedRetract hm).integrableOn_radialPenalty
     η.integrableOn_radialPenalty] at h
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 theorem concentratedExtend_coefficient_lower (ρ : PhysicalCollarPartition n)
     (hm : n ≤ m) (hn : 6 ≤ n) :

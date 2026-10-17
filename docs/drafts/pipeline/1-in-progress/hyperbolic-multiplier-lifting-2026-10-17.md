@@ -1949,67 +1949,6 @@ contribution22/100.
   removed via apply_patch; absence verified. Final scoped diff and explicit
   source/document whitespace checks passed, including the new Lean file.
 
-## Twenty-fifth result: escape at fixed coherent data and the sharp plastic infimum
-
-Dependency-closed paper proof before Lean implementation. Let d=log2,
-F=odd(f), R=representative(f), S(u)=sinh(u/2)R(u), and P=cellFold(F).
-The actual source R is supported in d<|u|<3d, S is compact continuous and
-even, and its folded profile is exactly P. For n>=0 put L=(n+4)d and
-r_n(u)=S(u-L)/sinh(u/2). Nonzero numerator requires |u-L|<3d, hence
-(n+1)d<u<(n+7)d. It vanishes on a whole neighborhood of0; division thus
-defines an actual compact continuous source with positive support.
-Set E_n=oddCompactSource(r_n).
-
-The sinh multiplier of r_n is exactly S(u-L), including at0. Integer
-reindexing gives cellFold(r_n)=P on the entire real line. Reflection sends
-cellFold(h)(x) to -cellFold(h)(-x); taking the odd source part therefore
-averages the fold with its reflection. Since P is even, cellFold(E_n)=P.
-Every E_n is an actual compact odd source with exactly preserved full
-coherent fold, signed moment and exact coherent price.
-
-On the nonzero numerator support, u>(n+1)d and sinh(u/2)>=u/2.
-Consequently r_n(u)^2<=4*S(u-L)^2/((n+1)d)^2. Translation invariance of
-the integral gives h_(r_n)(0)<=4*h_S(0)/((n+1)d)^2. Positive support makes
-r_n(u)r_n(-u)=0, so the odd projection has exactly half its energy:
-h_(E_n)(0)=h_(r_n)(0)/2<=2*h_S(0)/((n+1)d)^2.
-This is a concrete producer bound with zero fold-reconstruction error.
-
-Let M=integral_(0,infinity) levyCoshKernel(screwSignThreshold,x) dx,
-an explicitly integrable positive kernel mass. For every actual source h,
-0<=J(h)<=2*M*h_h(0), by the unconditional autocorrelation bound. Hence,
-with O=integral F(u)sinh(u/2)du and C_f=8*M*h_S(0)/d²,
-0<=Q(E_n)+2O²<=C_f/(n+1)².
-All constants are source-defined; no unspecified asymptotic or integrability
-premise remains. For any epsilon>0, choose n>C_f/epsilon. Since
-(n+1)²>=n+1, this proves Q(E_n)<-2O²+epsilon.
-
-Define the actual coherent class by odd(g)=g and cellFold(g)=P. Every member
-has the same moment O and Q(g)=2J(g)-2O², so -2O² is a lower bound. The
-constructed E_n belong to the class and approach it, proving the exact
-greatest lower bound. Attainment forces J(g)=0. The positive kernel weight
-and continuity force the autocorrelation difference to vanish on x>0;
-at a lag beyond compact support this gives original energy0 and g=0.
-Thus the infimum is attained iff P=0, and then the zero source attains it.
-In particular, nonzero coherent classes have no global plastic minimizer,
-despite contribution24's exact minima on every individual kernel line.
-
-One contribution, implemented as source construction plus variational
-capstone modules if needed: exact coherent-data escape, quantitative energy
-decay, sharp full-functional infimum and complete attainment boundary.
-The positive survivor of nonattainment is the explicit minimizing family and
-sharp value, not the bare obstruction. No prime-grid blindness, source-energy
-normalization, smoothness beyond continuity, or positivity of the full
-functional on arbitrary odd sources is claimed. Paper proof closed; Lean pending.
-
-Corpus audit: direct hybrid query `coherent fold fixed moment outward translated
-source vanishing energy plastic infimum nonattainment`, --any with BiScale filter,
-partial59.21s. Inspected existing outward fixed-energy cancellation (different
-invariants), actual fold/attainment/retraction, kernel and line-minimizer APIs,
-and exact plastic kernel integrability. Exhaustive source searches found no
-fixed-full-fold escape or coherent-class plastic infimum theorem. Unfinished
-text/source stages, older coverage snapshot and unmeasured semantic coverage
-preclude a completeness claim. No external novelty claim.
-
 ## Twenty-third result: the actual coherent kernel and plastic-positive splitting
 
 Dependency-closed paper proof before Lean implementation. Write O for the
@@ -2211,3 +2150,68 @@ inside coherent classes. No external novelty or complete-search claim.
 - Owned `/tmp/hml_plastic_line_api.lean` and `/tmp/hml_plastic_line_lint.txt`
   removed via apply_patch; absence verified. Final scoped diff and explicit
   source/document whitespace checks passed, including the new Lean file.
+
+## Twenty-fifth result: escape at fixed coherent data and the sharp plastic infimum
+
+Dependency-closed paper proof before Lean implementation. Let d=log2,
+F=odd(f), R=representative(f), S(u)=sinh(u/2)R(u), and P=cellFold(F).
+The actual source R is supported in d<|u|<3d, S is compact continuous and
+even, and its folded profile is exactly P. For n>=0 put L=(n+4)d and
+r_n(u)=S(u-L)/sinh(u/2). Nonzero numerator requires |u-L|<3d, hence
+(n+1)d<u<(n+7)d. It vanishes on a whole neighborhood of0; division thus
+defines an actual compact continuous source with positive support.
+Set E_n=oddCompactSource(r_n).
+
+The sinh multiplier of r_n is exactly S(u-L), including at0. Integer
+reindexing gives cellFold(r_n)=P on the entire real line. Reflection sends
+cellFold(h)(x) to -cellFold(h)(-x); taking the odd source part therefore
+averages the fold with its reflection. Since P is even, cellFold(E_n)=P.
+Every E_n is an actual compact odd source with exactly preserved full
+coherent fold, signed moment and exact coherent price.
+
+On the nonzero numerator support, u>(n+1)d and sinh(u/2)>=u/2.
+Consequently r_n(u)^2<=4*S(u-L)^2/((n+1)d)^2. Translation invariance of
+the integral gives h_(r_n)(0)<=4*h_S(0)/((n+1)d)^2. Positive support makes
+r_n(u)r_n(-u)=0, so the odd projection has exactly half its energy:
+h_(E_n)(0)=h_(r_n)(0)/2<=2*h_S(0)/((n+1)d)^2.
+This is a concrete producer bound with zero fold-reconstruction error.
+
+Let M=integral_(0,infinity) levyCoshKernel(screwSignThreshold,x) dx,
+an explicitly integrable positive kernel mass. For every actual source h,
+0<=J(h)<=2*M*h_h(0), by the unconditional autocorrelation bound. Hence,
+with O=integral F(u)sinh(u/2)du and C_f=8*M*h_S(0)/d²,
+0<=Q(E_n)+2O²<=C_f/(n+1)².
+All constants are source-defined; no unspecified asymptotic or integrability
+premise remains. For any epsilon>0, choose n>C_f/epsilon. Since
+(n+1)²>=n+1, this proves Q(E_n)<-2O²+epsilon.
+
+Define the actual coherent class by odd(g)=g and cellFold(g)=P. Every member
+has the same moment O and Q(g)=2J(g)-2O², so -2O² is a lower bound. The
+constructed E_n belong to the class and approach it, proving the exact
+greatest lower bound. Attainment forces J(g)=0. The positive kernel weight
+and continuity force the autocorrelation difference to vanish on x>0;
+at a lag beyond compact support this gives original energy0 and g=0.
+Thus the infimum is attained iff P=0, and then the zero source attains it.
+In particular, nonzero coherent classes have no global plastic minimizer,
+despite contribution24's exact minima on every individual kernel line.
+The same sharp value classifies negative members: a coherent class contains
+a source with Q<0 iff its signed hyperbolic moment is nonzero. If the moment
+vanishes, Q=2J>=0 on the whole class; otherwise the explicit approximating
+family eventually lies below0.
+
+One contribution, implemented as source construction plus variational
+capstone modules if needed: exact coherent-data escape, quantitative energy
+decay, sharp full-functional infimum and complete attainment boundary.
+The positive survivor of nonattainment is the explicit minimizing family and
+sharp value, not the bare obstruction. No prime-grid blindness, source-energy
+normalization, smoothness beyond continuity, or positivity of the full
+functional on arbitrary odd sources is claimed. Paper proof closed; Lean pending.
+
+Corpus audit: direct hybrid query `coherent fold fixed moment outward translated
+source vanishing energy plastic infimum nonattainment`, --any with BiScale filter,
+partial59.21s. Inspected existing outward fixed-energy cancellation (different
+invariants), actual fold/attainment/retraction, kernel and line-minimizer APIs,
+and exact plastic kernel integrability. Exhaustive source searches found no
+fixed-full-fold escape or coherent-class plastic infimum theorem. Unfinished
+text/source stages, older coverage snapshot and unmeasured semantic coverage
+preclude a completeness claim. No external novelty claim.

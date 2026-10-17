@@ -70,14 +70,14 @@ theorem tendsto_nyquist_positive_prefix_ratio {a b : ℕ → ℝ}
       apply (le_div_iff₀ hBM).mpr
       calc
         (c - ε / 2 + CLower / B M) * B M = (c - ε / 2) * B M + CLower := by
-          field_simp [show B M ≠ 0 from hBM.ne'] <;> ring
+          field_simp [show B M ≠ 0 from hBM.ne']
         _ ≤ A M := hlow M hLM
     have hupp' : A M / B M ≤ c + ε / 2 + CUpper / B M := by
       apply (div_le_iff₀ hBM).mpr
       calc
         A M ≤ (c + ε / 2) * B M + CUpper := hupp M hLM
         _ = (c + ε / 2 + CUpper / B M) * B M := by
-          field_simp [show B M ≠ 0 from hBM.ne'] <;> ring
+          field_simp [show B M ≠ 0 from hBM.ne']
     rw [Real.dist_eq]
     apply abs_lt.mpr
     constructor <;> linarith

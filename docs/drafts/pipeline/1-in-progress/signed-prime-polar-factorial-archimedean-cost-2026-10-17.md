@@ -85,8 +85,6 @@ Lipschitz existence does not provide the required explicit source bounds.
 clamp, tent, product and zero-extension estimates only.
 
 Implementation under verification:
-`SignedPrimePolarSourceJumpUpper.lean`, `SignedPrimePolarTentJumpLower.lean`,
-`SignedPrimePolarCausalJumpBounds.lean`, and
 `SignedPrimePolarSourceArchimedeanCertificate.lean`.
 These files target the actual admissions, energy bounds, exact signed difference
 and normalized lower bound. They are not yet verified or counted.
@@ -107,10 +105,20 @@ L¹ bound 20 N.
 with empty `/tmp/spp11-source-jump-domain.log` and its olean written. This verifies
 the actual F_N, G_N, P_N and M_N jump-domain admissions, the exact sum law,
 absolute integrability of H_N w, and the exact signed difference −2∫H_Nw.
-The numerical upper/lower and normalized bounds are still unverified. These
+The full numerical upper/lower and normalized endpoint remains unverified. These
 domain and identity lemmas do not independently increment the contribution count.
 
 The upper-energy leaf passed compilation with two unused-tactic warnings.
-Those tactics were removed; the cleaned source awaits its final direct check.
-The tent lower-bound leaf is the next independent check. Contribution count
-remains 10/100; no package-11 ledger entry has been added.
+Those tactics were removed; the cleaned source passed its final direct check,
+exit 0 with empty `/tmp/spp11-source-jump-upper.log` and olean written.
+`SignedPrimePolarTentJumpLower.lean` passed its direct leaf check, exit 0,
+empty `/tmp/spp11-tent-jump-lower.log`, and olean written. The actual tent has
+energy at least 6 exp(−1/2) N log N.
+Contribution count remains 10/100; no package-11 ledger entry has been added.
+`SignedPrimePolarCausalJumpBounds.lean` passed direct compilation, exit 0, with
+empty `/tmp/spp11-causal-jump-bounds.log` and olean written. The actual signed
+energy difference is at most 2B, with B as stated in the paper. Only the final
+assembly/normalization leaf and closing audits remain. Count stays 10/100.
+
+Hashes for eight verified leaves are recorded in
+`/tmp/spp11-verified-support-manifest.json`.
