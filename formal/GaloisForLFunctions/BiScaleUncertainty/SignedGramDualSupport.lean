@@ -1,4 +1,4 @@
-import GaloisForLFunctions.BiScaleUncertainty.SignedGramCutoffHierarchy
+import GaloisForLFunctions.BiScaleUncertainty.SignedGramCapacity
 
 /-!
 # Supporting prices for the full measured translation Gram matrix
@@ -36,8 +36,9 @@ theorem packetScale_eq_norm (f : C_c(ℝ, ℝ)) (M : Finset ι) (a t : ι → �
 
 theorem covariance_eq_inner (f : C_c(ℝ, ℝ)) (M : Finset ι) (a t : ι → ℝ) (W x : ℝ) :
     covariance f M a t W x = RCLike.re (inner ℂ (packet f M a t W) (translationFeature f x)) := by
-  simp [packet, covariance, inner_add_left, sum_inner, inner_smul_left,
-    translationFeature_inner]
+  simp only [packet, inner_add_left, sum_inner]
+  simp_rw [inner_smul_left, translationFeature_inner]
+  simp [covariance]
 
 theorem covariance_abs_le (f : C_c(ℝ, ℝ)) (M : Finset ι) (a t : ι → ℝ) (W x : ℝ) :
     |covariance f M a t W x| ≤ packetScale f M a t W := by
@@ -53,7 +54,8 @@ theorem covariance_abs_le (f : C_c(ℝ, ℝ)) (M : Finset ι) (a t : ι → ℝ)
 theorem signedSlope_bounds (f : C_c(ℝ, ℝ)) (M : Finset ι) (a t : ι → ℝ) (W x : ℝ) :
     -1 ≤ signedSlope f M a t W x ∧ signedSlope f M a t W x ≤ 1 := by
   apply abs_le.mp
-  rw [signedSlope, abs_div, abs_of_nonneg (Real.sqrt_nonneg _)]
+  have hs : 0 ≤ packetScale f M a t W := Real.sqrt_nonneg _
+  rw [signedSlope, abs_div, abs_of_nonneg hs]
   exact div_le_one_of_le₀ (covariance_abs_le f M a t W x) (Real.sqrt_nonneg _)
 
 theorem price_bounds (f : C_c(ℝ, ℝ)) (M : Finset ι) (a t : ι → ℝ) (W x : ℝ) :
@@ -69,7 +71,8 @@ theorem packet_inner_eq (f : C_c(ℝ, ℝ)) (M : Finset ι) (a b t : ι → ℝ)
   change RCLike.re (inner ℂ (packet f M a t W)
     ((W : ℂ) • translationFeature f 0 + ∑ i ∈ M, (b i : ℂ) • translationFeature f (t i))) = _
   rw [inner_add_right, inner_sum]
-  simp [inner_smul_right]
+  simp_rw [inner_smul_right]
+  simp
 
 theorem covariance_difference (f : C_c(ℝ, ℝ)) (M : Finset ι) (a b t : ι → ℝ) (W : ℝ) :
     (∑ i ∈ M, (b i - a i) * covariance f M a t W (t i)) =
@@ -88,8 +91,7 @@ theorem signedSlope_support (f : C_c(ℝ, ℝ)) (M : Finset ι) (a b t : ι → 
   · simp only [signedSlope, hz, div_zero, mul_zero, Finset.sum_const_zero, sub_zero]
     exact Real.sqrt_nonneg _
   · have hp : 0 < packetScale f M a t W := lt_of_le_of_ne (Real.sqrt_nonneg _) (Ne.symm hz)
-    simp only [signedSlope, mul_div_assoc, ← Finset.sum_div]
-    rw [← mul_div_assoc]
+    simp only [signedSlope, ← mul_div_assoc, ← Finset.sum_div]
     apply (div_le_iff₀ hp).2
     rw [covariance_difference]
     have h := mul_le_mul_of_nonneg_left
@@ -117,7 +119,7 @@ theorem dualRemainder_eq_combined (f : C_c(ℝ, ℝ)) (M : Finset ι) (a b t : �
       2 * autocorr f 0 * ((∑ i ∈ M, b i * price f M a t W (t i)) -
         ∑ i ∈ M, a i * price f M a t W (t i)) := by
   unfold dualRemainder kernel packetScale price
-  simp only [mul_add, mul_div_assoc, mul_one, Finset.sum_div, Finset.sum_add_distrib,
+  simp only [← mul_div_assoc, ← Finset.sum_div, mul_add, mul_one, Finset.sum_add_distrib,
     sub_mul, Finset.sum_sub_distrib]
   ring
 

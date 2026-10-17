@@ -17,11 +17,13 @@ namespace GaloisForLFunctions.BiScaleUncertainty.SobolevShear
 def coprimeExtensionL (d : ℕ) : TraceData →L[ℝ] Velocity :=
   Real.sqrt 2 • (tentSynthesis d).toContinuousLinearMap
 
-@[simp] theorem coprimeExtensionL_apply (d : ℕ) (a : TraceData) :
+@[simp]
+theorem coprimeExtensionL_apply (d : ℕ) (a : TraceData) :
     coprimeExtensionL d a = coprimeExtension d a := by
   simp [coprimeExtensionL, coprimeExtension]
 
-@[simp] theorem coprimeCoefficients_extension (d : ℕ) (a : TraceData) :
+@[simp]
+theorem coprimeCoefficients_extension (d : ℕ) (a : TraceData) :
     coprimeCoefficients d (coprimeExtension d a) = a := by
   simp [coprimeCoefficients, coprimeExtension, tentAnalysis_tentSynthesis, smul_smul]
 
@@ -98,7 +100,8 @@ def twoGridData (d e : ℕ) (a b : TraceData) : TwoGridData d e :=
 def twoGridExtension (d e : ℕ) : TwoGridData d e →L[ℝ] Velocity :=
   ((coprimeExtensionL d).coprod (coprimeExtensionL e)).comp (twoGridDataSpace d e).subtypeL
 
-@[simp] theorem twoGridExtension_apply (d e : ℕ) (v : TwoGridData d e) :
+@[simp]
+theorem twoGridExtension_apply (d e : ℕ) (v : TwoGridData d e) :
     twoGridExtension d e v = coprimeExtension d v.1.1 + coprimeExtension e v.1.2 := by
   simp [twoGridExtension]
 

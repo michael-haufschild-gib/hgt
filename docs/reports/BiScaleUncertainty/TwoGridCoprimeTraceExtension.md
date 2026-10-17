@@ -1,7 +1,6 @@
 # Joint infinite coprime trace interpolation
 
-Status: dependency-closed paper proof; Lean verification pending. One package,
-not yet counted. Spacings m=d+2 and n=e+2 are arbitrary integers at least two.
+Status: **[PROVED HERE]**, Lean-certified as one connected package, **12/100**. Spacings m=d+2 and n=e+2 are arbitrary integers at least two.
 
 ## Concrete data and construction
 
@@ -105,3 +104,18 @@ lemmas and 17 source arguments inspected, partial=false, errors=[]; it finds
 individual-grid synthesis, projection and finite interpolation defects, no joint
 domain. Semantic coverage is unmeasured and background refresh incomplete.
 No inference of global novelty from incomplete semantic coverage.
+
+
+## Lean certificate
+
+Four leaves: `TwoGridTraceData`, `TwoGridTraceStability`, `TwoGridTraceSharpness`,
+`TwoGridTraceMinimality`. All final direct leaf checks pass without diagnostics;
+normal compiled outputs are newer than sources. All 49 public declarations
+(40 theorems, seven definitions, one abbreviation, one instance) have exact axiom
+coverage with only propext, Classical.choice and Quot.sound. Thirteen main
+signatures were inspected; no unproved analytic admission premise occurs.
+Four umbrella imports and all 48 catalog-supported public declarations are
+verified. Named instance is separately axiom-audited. Global lint reports ten
+unrelated concurrent unreachable modules; no package, proof-debt or generated-file
+error. Exact errors and evidence paths are recorded in `ContinuumCoprimeShear-FACTS.md`.
+The field README was read fully and remained read-only.

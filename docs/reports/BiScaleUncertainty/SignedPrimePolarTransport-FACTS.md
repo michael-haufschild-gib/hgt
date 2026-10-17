@@ -2,7 +2,7 @@
 
 ## Counting rule
 
-Target: 100 substantive, independently justified contributions. Verified packages: 5.
+Target: 100 substantive, independently justified contributions. Verified packages: 7.
 Helpers, equivalent restatements, and classical partial summation do not count separately.
 
 Field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read
@@ -51,7 +51,7 @@ Both leaves pass `lake --old env lean <leaf> -o <leaf.olean>` without diagnostic
 Six endpoint axiom audits in `/tmp/spp_final_axioms.lean` pass, with only propext,
 Classical.choice and Quot.sound; printed main signatures contain no extra premise.
 Both leaves are wired into `BiScaleUncertainty.lean`; indexes were regenerated.
-The latest repository lint result is recorded with contribution 5 below.
+The latest repository lint result is recorded with contribution 7 below.
 Earlier package logs: `/tmp/spp-final-axioms.log`, `/tmp/spp-index.log`, `/tmp/spp-lint.log`.
 
 Boundary of contribution 1: its result is at every finite integer cutoff;
@@ -263,6 +263,118 @@ Global lint exits 1 solely for unrelated concurrent unwired
 Fresh search `/tmp/spp5-search.json` reports partial=false/errors=[], semantic
 coverage unmeasured and refresh deferred. No external novelty claim.
 
+## Contribution 6: exact gauge geometry and correlation-based packet budget
+
+Paper: `SignedPrimePolarGaugeCorrelation.md`. Lean leaves:
+`AnnularGaugeEnergy.lean` and `SignedPrimePolarCorrelationBudget.lean`.
+
+For every actual compact continuous f, set A=exp(a), d=exp(b), g=collarSource,
+s=g', k=s-g/2, B=||g||², R=h(0), and T=multiplierSourceRadius f. Then
+
+∫s²=2(R-h(d))/d²,   ∫sg=0,
+∫k²=2(R-h(d))/d²+B/4=:E_g.
+
+Changing A translates g; B and E_g are independent of A. The actual gauge
+source vanishes outside [A-T,A+d+T], so its admitted L¹ norm satisfies
+
+G²≤(2T+d)E_g=:collarGaugeBudget.
+
+This eliminates the constructed gauge norm from contribution 5:
+
+Q_N(f)≤6(10+e(L)²)B+6(2T+d)E_g∫₀ᴸe²+2M_N²(R+B-2H(0)).
+
+The resulting `correlationGaugeBound` transfers to global signed Lévy–sinh
+transport at every N=N₀(f)+K, with independent smoothing and transport collars.
+All main statements use only actual C_c sources and numerical parameters.
+No derivative of f, source nonvanishing, grid blindness, or arithmetic estimate
+is assumed. The source radius is derived from f, not an extra hypothesis;
+it need not be minimal. The entire exact-energy/support/transport package counts
+once. Generic integration by parts and Cauchy–Schwarz are reused inputs.
+
+Public endpoints in `SignedPrimePolar`:
+- `integral_collarSourceSlope_sq`, `integral_collarSourceSlope_mul_collarSource`.
+- `integral_collarGaugeSource_sq`, `collarEnergy_position_invariant`.
+- `collarGaugeEnergy_position_invariant`, `collarGaugeSource_zero_off_interval`.
+- `collarGaugeL1_sq_le_budget`, `collarGaugeBudget_position_invariant`.
+- `packetEnergy_le_correlationGaugeBound`.
+- `abs_fullPairing_sub_work_le_correlationGauge_levy`.
+
+Both leaves pass direct `lake --old env lean <leaf> -o <leaf.olean>` with empty
+diagnostics. Final scratch audit exits 0; nine endpoint axiom reports contain
+only propext, Classical.choice, Quot.sound. Printed main signatures have no extra
+premises. Imports are wired; index refresh exits 0. Evidence:
+`/tmp/spp6-energy-build.log`, `/tmp/spp6-budget-build.log`,
+`/tmp/spp6_final_axioms.lean`, `/tmp/spp6-final-axioms.log`, `/tmp/spp6-index.log`.
+
+Global lint exits 1 on fourteen unrelated concurrent modules unreachable from
+the field umbrella: AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis,
+DistantCopyCompactness, DistantCopyCorrelationTopology, DistantCopyEnergyTopology,
+DistantCopyPolarTopology, DistantCopySharpness,
+HyperbolicGaugeMeanSquareChebyshevWeilSynthesis, SignedGramDualSupport,
+SignedGramPhysicalPrices, SignedGramTrialCertificate, TwoGridTraceData,
+TwoGridTraceMinimality, TwoGridTraceSharpness, TwoGridTraceStability.
+No task-local error is reported; see `/tmp/spp6-lint.log`.
+Both package searches report partial=false/errors=[]; semantic coverage remains
+unmeasured and index refresh was deferred. No external novelty claim.
+
+## Contribution 7: exact signed collar compensation
+
+Paper: `SignedPrimePolarOptimalCollar.md`. Lean leaves:
+`SignedPrimePolarScaledCollar.lean` and `SignedPrimePolarOptimalCollar.lean`.
+
+The fixed coefficient in f=g+(f-g) is replaced by every real t. Actual packet
+linearity and exact source energy give, for η=exp(c), C=H(0), R=h(0), B=||g||²,
+
+Q_N(f)≤F(t)=(1+η)t²U+(1+1/η)M_N²(R-2tC+t²B),
+
+where U=3(10+e(L)²)B+3collarGaugeBudget∫₀ᴸe² is an admitted upper bound
+for Q_N(g). It satisfies U≥30B. Set
+
+D=(1+η)U+(1+1/η)M_N²B, E=(1+1/η)M_N²C,
+t*=E/D, V=(1+1/η)M_N²R-E²/D.
+
+The exact excess identity is F(t)-V=D(t-t*)², including D=0. The actual
+source Gram inequality discharges degeneracy: D≥U≥30B, so D=0 forces B=0,
+then C=E=0. Consequently Q_N(f)≤V≤F(t), and F(t)=V iff D=0 or t=t*.
+The coefficient retains the sign of covariance; no positivity of C is imposed.
+
+The capped certificate Z=min(M_N²R,V) satisfies Q_N(f)≤Z≤M_N²R. At η=1,
+F(1)=correlationGaugeBound, so Z is no worse than both prior budgets. The
+exact uncapped gain is D(1-t*)². At every η, strict improvement over the mass
+estimate occurs exactly when M_N²R/η<E²/D. Smoothness alone does not assert
+strict gain. Global coherent and Lévy transport use Z at N=N₀(f)+K, retaining
+independent smoothing, splitting, and transport parameters.
+
+All main signatures use actual compact continuous sources and numerical inputs
+only. No source derivative, denominator/source nonvanishing, covariance sign,
+grid blindness, or arithmetic error estimate is assumed. Optimality is for this
+scalar trial family with fixed smoothing and η; no joint width optimization or
+cutoff-uniform estimate is claimed. The full compensation/degeneracy/comparison/
+transport package counts once, not each algebraic identity.
+
+Public endpoints in `SignedPrimePolar`:
+- `autocorr_sub_smul_collar_zero`, `packetEnergy_le_collarTrialBound`.
+- `collarTrialBound_excess`, `collarTrialBound_eq_optimum_iff`.
+- `packetEnergy_le_optimizedPacketBound`, `optimizedPacketBound_le_mass`.
+- `optimizedPacketBound_lt_mass_iff`.
+- `optimizedPacketBound_le_correlationGaugeBound`, `correlationGaugeBound_sub_optimum`.
+- `fullPairing_sub_work_sq_le_optimized`, `abs_fullPairing_sub_work_le_optimized_levy`.
+
+Both direct leaf checks exit 0 with empty diagnostics. Twelve endpoint axiom
+reports in the scratch audit contain only propext, Classical.choice, Quot.sound;
+main signatures have no extra premises. Imports are wired, index refresh exits 0.
+Evidence: `/tmp/spp7-scaled-build.log`, `/tmp/spp7-optimal-build.log`,
+`/tmp/spp7_final_axioms.lean`, `/tmp/spp7-final-axioms.log`, `/tmp/spp7-index.log`.
+Global lint exits 1 solely for six unrelated concurrent unwired modules:
+CausalExponentialResponseAndLaplaceEnergy,
+ExplicitNyquistPolarAndChebyshevFactorialProducer, FiniteGridRunLength,
+FoldFreeKernelGramAndFranelGcdCancellation, RealizedCoherentCancellation,
+SuccessorSequenceHilbert. No task-local error (`/tmp/spp7-lint.log`).
+
+Both package searches report partial=false/errors=[]; snapshot compiler coverage
+has many pending/stale entries. Retrieved finite-partition Gram optimization is
+distinct from this actual collar-source family. No external novelty claim.
+
 ## Failure boundaries and remaining frontier
 
 - Scalar support stabilization does not establish packet-energy stabilization:
@@ -273,10 +385,21 @@ coverage unmeasured and refresh deferred. No external novelty claim.
   energy, while retaining its mixed arithmetic–continuum terms.
 - The finite-window Cauchy–Schwarz bound is a refinement, not a prime-cancellation
   estimate. Obtaining useful control of Q_L is a new quantitative problem.
-- Contribution 4 gives joint lower control of Q_L; contribution 5 supplies a
-  rough-source upper bound with a genuine M_L²||f-g||² remainder. Neither yields
-  cutoff-uniform packet control. Next: quantify the gauge cost and roughness
-  directly in terms of the original source's translation geometry.
+- Contribution 4 gives joint lower control of Q_L; contributions 5–7 supply a
+  rough-source upper bound with a genuine M_L²||f-g||² remainder. None yields
+  cutoff-uniform packet control. The gauge budget is position independent;
+  smoothing error still depends on position through H(0). Quantitative width
+  selection and control of that remainder remain open. Contribution 7 removes
+  the fixed-coefficient loss, not the residual itself. Multiple-collar compensation
+  remains parked in `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`.
+  Trap 10 prioritizes explicit unconditional producers over further receivers.
+- Active uncounted package: the real-ratio rectangle lift of the factorial bi-null
+  stencil. Its paper proof gives an actual signed prime–polar pairing bound
+  (10 log(4N+1)+3)/sqrt(N), retaining a harmonic correction in [0,1].
+  The test has value zero at the origin and value 2 at log(4N), so it is nontrivial
+  but cannot itself be a nonzero autocorrelation. Its scalar cancellation does
+  not discharge the arbitrary-correlation packet problem. Lean verification pending.
+  See `SignedPrimePolarFactorialProducer.md` and its in-progress card.
 - Search returned finite discrete Gram precedents, not this mixed construction.
   Both searches report partial=false and errors=[]; semantic coverage is unmeasured,
   refresh was deferred to the running indexer, and much compiler coverage was

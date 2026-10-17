@@ -400,8 +400,7 @@ theorem unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_bound
           SignedPrimePolar.packetEnergy f.toCompactlySupported N /
               (2 * Real.exp c * Real.exp b ^ 2) *
             ∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y := by
-    change |SignedPrimePolar.pairing N (autocorr (f.toCompactlySupported : ℝ → ℝ)) - _| ≤ _
-      at hpack
+    rw [show (f.toCompactlySupported : ℝ → ℝ) = f.source from rfl] at hpack
     linarith only [hpack, hmul]
   have h2 := mul_le_mul_of_nonneg_left hcomb zero_le_two
   have hrhs_eq :

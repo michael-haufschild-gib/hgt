@@ -2,6 +2,7 @@ import GaloisForLFunctions.BiScaleUncertainty.AllParityWeilPoleWeightFunctionalA
 import GaloisForLFunctions.BiScaleUncertainty.ChebyshevGaugeNyquistCellQuadrature
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarRoughGauge
 import GaloisForLFunctions.BiScaleUncertainty.AnnularGaugeEnergy
+import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarCorrelationBudget
 
 /-!
 # Pillar XXVIII: Hyperbolic-Gauge Mean-Square Chebyshev & Nyquist-Cell Weil Functional Synthesis
@@ -22,9 +23,10 @@ This module synthesizes:
    $$\sum_{n=1}^{N+1} \frac{(\psi(n) - m_n)^2}{n(n+1)}
      \;\le\; \int_0^{\operatorname{cutoff} N} \tilde{E}(t)^2\,dt
      \;\le\; \sum_{n=1}^{N+1} \frac{(\psi(n) - m_n)^2}{n(n+1)} + 2;$$
-4. **Rough-Source Collar Gauge Control** (`SignedPrimePolarRoughGauge`), which replaces the
-   derivative gauge $f' - f/2$ by the derivative-free finite-difference collar slope on an
-   independent smoothing collar $[e^{a_0}, e^{a_0} + e^{b_0}]$.
+4. **Rough-Source & Correlation-Only Collar Gauge Control** (`SignedPrimePolarRoughGauge`,
+   `SignedPrimePolarCorrelationBudget`), which replaces the derivative gauge $f' - f/2$ by the
+   derivative-free finite-difference collar slope (`roughGaugeBound`) and bounds its $L^1$ norm in
+   terms of source correlation and support radius (`correlationGaugeBound`).
 
 Because every explicit-formula test function `f : RealWeilTestFn` has $C^2$ compactly supported
 source `f.source`, it automatically satisfies `ContDiff ℝ 1 f.source` with **zero regularity
@@ -34,19 +36,17 @@ Weil explicit-formula functional `(weilFullFunctional Λ (weilTest f f)).re` in 
   $(1 - 2e^c)\,\operatorname{biScaleLevyEnergy}(f.\mathrm{source})$,
 - the annular Chebyshev work functional $\operatorname{chebyshevWork}(f, a, b, N)$, and
 - either the continuous mean-square Chebyshev gauge bound (`smoothGaugeBound`), the discrete
-  Nyquist-cell centered Chebyshev sum (`discreteCellGaugeBound`), or the derivative-free rough
-  collar gauge bound (`roughGaugeBound`).
+  Nyquist-cell centered Chebyshev sum (`discreteCellGaugeBound`), the derivative-free rough collar
+  gauge bound (`roughGaugeBound`), or the correlation-only gauge bound (`correlationGaugeBound`).
 -/
 
-open MeasureTheory Set Filter
-open scoped BigOperators CompactlySupported
-open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm RHTower.WeilMarkovPole
-open GaloisForLFunctions.WeilExplicit
+open Complex MeasureTheory Set Filter Topology Finsupp
+open Zeta23
+open RHTower RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm RHTower.WeilMarkovPole
+open RHTower.EvenSector RHTower.WeilOneSided RHTower.WeilPoleWeight
+open scoped RealInnerProductSpace BigOperators CompactlySupported ArithmeticFunction
 
 namespace GaloisForLFunctions.BiScaleUncertainty
-
-local notation "EF" => GaloisForLFunctions.WeilExplicit.ExplicitFormula
-local notation "WMS" => RHTower.WeilMarkovSigning
 
 noncomputable section
 set_option autoImplicit false
@@ -72,17 +72,15 @@ theorem discreteChebyshevCellSum_nonneg (N : ℕ) :
 
 /-- For every `N : ℕ`, `SignedPrimePolar.cutoff N = Real.log ((N + 2 : ℕ) : ℝ)`. -/
 theorem cutoff_eq_log_nat (N : ℕ) :
-    SignedPrimePolar.cutoff N = Real.log ((N + 2 : ℕ) : ℝ) := by
-  unfold SignedPrimePolar.cutoff
-  congr 1
-  push_cast
-  ring
+    SignedPrimePolar.cutoff N = Real.log ((N + 2 : ℕ) : ℝ) := rfl
 
 /-- For every `N : ℕ`, `Real.exp (SignedPrimePolar.cutoff N) = (N : ℝ) + 2`. -/
 theorem exp_cutoff_eq (N : ℕ) :
     Real.exp (SignedPrimePolar.cutoff N) = (N : ℝ) + 2 := by
   unfold SignedPrimePolar.cutoff
-  exact Real.exp_log (by positivity)
+  rw [Real.exp_log (by positivity : (0 : ℝ) < ((N + 2 : ℕ) : ℝ))]
+  push_cast
+  rfl
 
 /-- **Unconditional Mean-Square Chebyshev Dictionary at `cutoff N`:**
 For every `N : ℕ` (with **zero hypotheses**!),
@@ -361,85 +359,122 @@ theorem unconditional_weilFullFunctional_vonMangoldt_roughGauge_lower_bound
       (by positivity)
   linarith only [hrough]
 
+/-- **Unconditional Full Weil Functional Correlation-Only Collar Gauge Lower Bound on
+`RealWeilTestFn` (`RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_correlationGauge_lower_bound`):**
+For EVERY `f : RealWeilTestFn`, smoothing collar `a₀ b₀ : ℝ`, and transport collar `a b c : ℝ`
+(with **zero hypotheses**!), the full Weil functional is bounded below using only source
+correlations and support radius (`correlationGaugeBound`):
+$$(1 - 2 e^c)\,\operatorname{biScaleLevyEnergy}(f.\mathrm{source})
+  + \Omega(0)\,(\operatorname{weilTest}\,f\,f\,0).\mathrm{re}
+  - 2\,\operatorname{chebyshevWork}(f.\mathrm{toCompactlySupported}, a, b, f.\mathrm{supportScale})
+  - \frac{\operatorname{correlationGaugeBound}(f.\mathrm{toCompactlySupported}, a_0, b_0, f.\mathrm{supportScale})}{e^c e^{2b}}
+    \int_{e^a}^{e^a + e^b} e^{-y/2}\sinh y\,dy$$
+$$\le\; (\operatorname{weilFullFunctional}\,\Lambda\,(\operatorname{weilTest}\,f\,f)).\mathrm{re}.$$ -/
+theorem unconditional_weilFullFunctional_vonMangoldt_correlationGauge_lower_bound
+    (f : RealWeilTestFn) (a₀ b₀ a b c : ℝ) :
+    (1 - 2 * Real.exp c) * biScaleLevyEnergy f.source +
+        EF.gammaBracket 0 * (EF.weilTest f.1.1 f.1.1 0).re -
+        2 * SignedPrimePolar.chebyshevWork f.toCompactlySupported a b f.supportScale -
+        SignedPrimePolar.correlationGaugeBound f.toCompactlySupported a₀ b₀ f.supportScale /
+            (Real.exp c * Real.exp b ^ 2) *
+          (∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y) ≤
+      (weilFullFunctional
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+        (EF.weilTest f.1.1 f.1.1)).re := by
+  refine le_trans ?_
+    (f.unconditional_weilFullFunctional_vonMangoldt_roughGauge_lower_bound a₀ b₀ a b c)
+  have hcorr :
+      SignedPrimePolar.roughGaugeBound f.toCompactlySupported a₀ b₀ f.supportScale /
+          (Real.exp c * Real.exp b ^ 2) *
+        (∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y) ≤
+      SignedPrimePolar.correlationGaugeBound f.toCompactlySupported a₀ b₀ f.supportScale /
+          (Real.exp c * Real.exp b ^ 2) *
+        (∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y) := by
+    refine mul_le_mul_of_nonneg_right ?_ (integral_exp_neg_half_mul_sinh_nonneg a b)
+    exact div_le_div_of_nonneg_right
+      (SignedPrimePolar.roughGaugeBound_le_correlationGaugeBound
+        f.toCompactlySupported a₀ b₀ f.supportScale)
+      (by positivity)
+  linarith only [hcorr]
+
 end RealWeilTestFn
 
 /-! ## §3. Unconditional Lifts to `RealEvenPolarTestFn`, `RealSmoothEvenPolarTestFn`, and `RealOddTestFn` -/
 
-namespace RealEvenPolarTestFn
-
 /-- Every `g : RealEvenPolarTestFn` embeds into `RealWeilTestFn`. -/
-def toRealWeilTestFn (g : RealEvenPolarTestFn) : RealWeilTestFn :=
+def RealEvenPolarTestFn.toRealWeilTestFn (g : RealEvenPolarTestFn) : RealWeilTestFn :=
   ⟨g.1.1, g.2⟩
 
 @[simp]
-theorem toRealWeilTestFn_source (g : RealEvenPolarTestFn) :
-    g.toRealWeilTestFn.source = g.source := rfl
+theorem RealEvenPolarTestFn.toRealWeilTestFn_source (g : RealEvenPolarTestFn) :
+    (RealEvenPolarTestFn.toRealWeilTestFn g).source = g.source := rfl
 
-theorem contDiff_one_source (g : RealEvenPolarTestFn) :
-    ContDiff ℝ 1 (g.toCompactlySupported : ℝ → ℝ) :=
+theorem RealEvenPolarTestFn.contDiff_one_source (g : RealEvenPolarTestFn) :
+    ContDiff ℝ 1 (RealEvenPolarTestFn.toCompactlySupported g : ℝ → ℝ) :=
   g.contDiff_source.of_le one_le_two
 
 /-- **Unconditional Full Weil Functional Smooth Hyperbolic-Gauge Lower Bound on
 `RealEvenPolarTestFn`:**
 For EVERY `g : RealEvenPolarTestFn` and EVERY `a b c : ℝ` (with **zero hypotheses**!), -/
-theorem unconditional_weilFullFunctional_vonMangoldt_smoothGauge_lower_bound
+theorem RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_smoothGauge_lower_bound
     (g : RealEvenPolarTestFn) (a b c : ℝ) :
     (1 - 2 * Real.exp c) * biScaleLevyEnergy g.source +
         EF.gammaBracket 0 * (EF.weilTest g.1.1.1 g.1.1.1 0).re -
         2 * SignedPrimePolar.chebyshevWork
-          g.toCompactlySupported a b g.toRealWeilTestFn.supportScale -
+          (RealEvenPolarTestFn.toCompactlySupported g) a b
+          (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale -
         BiScaleUncertainty.smoothGaugeBound
-            g.toCompactlySupported g.toRealWeilTestFn.supportScale /
+            (RealEvenPolarTestFn.toCompactlySupported g)
+            (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale /
             (Real.exp c * Real.exp b ^ 2) *
           (∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y) ≤
       (weilFullFunctional
         (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
         (EF.weilTest g.1.1.1 g.1.1.1)).re :=
-  g.toRealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_smoothGauge_lower_bound a b c
+  (RealEvenPolarTestFn.toRealWeilTestFn g).unconditional_weilFullFunctional_vonMangoldt_smoothGauge_lower_bound
+    a b c
 
 /-- **Unconditional Full Weil Functional Discrete Nyquist-Cell Lower Bound on
 `RealEvenPolarTestFn`:**
 For EVERY `g : RealEvenPolarTestFn` and EVERY `a b c : ℝ` (with **zero hypotheses**!), -/
-theorem unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
+theorem RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
     (g : RealEvenPolarTestFn) (a b c : ℝ) :
     (1 - 2 * Real.exp c) * biScaleLevyEnergy g.source +
         EF.gammaBracket 0 * (EF.weilTest g.1.1.1 g.1.1.1 0).re -
         2 * SignedPrimePolar.chebyshevWork
-          g.toCompactlySupported a b g.toRealWeilTestFn.supportScale -
+          (RealEvenPolarTestFn.toCompactlySupported g) a b
+          (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale -
         BiScaleUncertainty.discreteCellGaugeBound
-            g.toCompactlySupported g.toRealWeilTestFn.supportScale /
+            (RealEvenPolarTestFn.toCompactlySupported g)
+            (RealEvenPolarTestFn.toRealWeilTestFn g).supportScale /
             (Real.exp c * Real.exp b ^ 2) *
           (∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y) ≤
       (weilFullFunctional
         (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
         (EF.weilTest g.1.1.1 g.1.1.1)).re :=
-  g.toRealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
+  (RealEvenPolarTestFn.toRealWeilTestFn g).unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
     a b c
-
-end RealEvenPolarTestFn
-
-namespace RealSmoothEvenPolarTestFn
 
 /-- **Unconditional Full Weil Functional Discrete Nyquist-Cell Lower Bound on
 `RealSmoothEvenPolarTestFn`:**
 For EVERY `g : RealSmoothEvenPolarTestFn` and EVERY `a b c : ℝ` (with **zero hypotheses**!), -/
-theorem unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
+theorem RealSmoothEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
     (g : RealSmoothEvenPolarTestFn) (a b c : ℝ) :
-    (1 - 2 * Real.exp c) * biScaleLevyEnergy g.source +
+    (1 - 2 * Real.exp c) * biScaleLevyEnergy g.toRealEvenPolar.source +
         EF.gammaBracket 0 * (EF.weilTest g.1.1.1.1 g.1.1.1.1 0).re -
         2 * SignedPrimePolar.chebyshevWork
-          g.toCompactlySupported a b g.toRealEvenPolarTestFn.toRealWeilTestFn.supportScale -
+          (RealEvenPolarTestFn.toCompactlySupported g.toRealEvenPolar) a b
+          (RealEvenPolarTestFn.toRealWeilTestFn g.toRealEvenPolar).supportScale -
         BiScaleUncertainty.discreteCellGaugeBound
-            g.toCompactlySupported g.toRealEvenPolarTestFn.toRealWeilTestFn.supportScale /
+            (RealEvenPolarTestFn.toCompactlySupported g.toRealEvenPolar)
+            (RealEvenPolarTestFn.toRealWeilTestFn g.toRealEvenPolar).supportScale /
             (Real.exp c * Real.exp b ^ 2) *
           (∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y) ≤
       (weilFullFunctional
         (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
         (EF.weilTest g.1.1.1.1 g.1.1.1.1)).re :=
-  g.toRealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
-    a b c
-
-end RealSmoothEvenPolarTestFn
+  RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
+    g.toRealEvenPolar a b c
 
 namespace RealOddTestFn
 
@@ -481,6 +516,91 @@ theorem unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bou
     a b c
 
 end RealOddTestFn
+
+namespace RealHyperplaneGenerator
+
+/-- **Unconditional Full Weil Functional Discrete Nyquist-Cell Lower Bound on
+`RealHyperplaneGenerator`:**
+For EVERY `x : RealHyperplaneGenerator` and EVERY `a b c : ℝ` (with **zero hypotheses**!), -/
+theorem unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
+    (x : RealHyperplaneGenerator) (a b c : ℝ) :
+    (1 - 2 * Real.exp c) * biScaleLevyEnergy (RealHyperplaneGenerator.source x) +
+        EF.gammaBracket 0 *
+          (EF.weilTest (RealHyperplaneGenerator.toRealWeilTestFn x).1.1
+            (RealHyperplaneGenerator.toRealWeilTestFn x).1.1 0).re -
+        2 * SignedPrimePolar.chebyshevWork
+          (RealHyperplaneGenerator.toRealWeilTestFn x).toCompactlySupported a b
+          (RealHyperplaneGenerator.toRealWeilTestFn x).supportScale -
+        BiScaleUncertainty.discreteCellGaugeBound
+            (RealHyperplaneGenerator.toRealWeilTestFn x).toCompactlySupported
+            (RealHyperplaneGenerator.toRealWeilTestFn x).supportScale /
+            (Real.exp c * Real.exp b ^ 2) *
+          (∫ y in Real.exp a..Real.exp a + Real.exp b, Real.exp (-y / 2) * Real.sinh y) ≤
+      (weilFullFunctional
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+        (EF.weilTest (RealHyperplaneGenerator.toRealWeilTestFn x).1.1
+          (RealHyperplaneGenerator.toRealWeilTestFn x).1.1)).re :=
+  (RealHyperplaneGenerator.toRealWeilTestFn x).unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound
+    a b c
+
+end RealHyperplaneGenerator
+
+/-! ## §4. Smooth Hyperbolic-Gauge $L^2$ Energy Decomposition -/
+
+/-- Compactly supported $C^1$ sources are orthogonal to their own derivatives in $L^2(\mathbb{R})$:
+$$\int_{\mathbb{R}} f'(u)\,f(u)\,du = 0.$$ -/
+theorem integral_deriv_mul_self_eq_zero (f : C_c(ℝ, ℝ)) (hf : ContDiff ℝ 1 (f : ℝ → ℝ)) :
+    (∫ u, deriv (f : ℝ → ℝ) u * f u) = 0 := by
+  have hd : ∀ u : ℝ, HasDerivAt (fun u => (f : ℝ → ℝ) u * (f : ℝ → ℝ) u)
+      (2 * (deriv (f : ℝ → ℝ) u * f u)) u := by
+    intro u
+    have hdu : HasDerivAt (f : ℝ → ℝ) (deriv (f : ℝ → ℝ) u) u :=
+      ((hf.differentiable one_ne_zero) u).hasDerivAt
+    exact (hdu.mul hdu).congr_deriv (by ring)
+  have hc : Continuous (fun u => 2 * (deriv (f : ℝ → ℝ) u * f u)) :=
+    continuous_const.mul ((hf.continuous_deriv le_rfl).mul f.continuous)
+  have hs : HasCompactSupport (fun u => (f : ℝ → ℝ) u * (f : ℝ → ℝ) u) :=
+    f.hasCompactSupport.mul_right
+  have hz := HTGeometry.integral_deriv_eq_zero_of_hasCompactSupport hd hc hs
+  rw [integral_const_mul] at hz
+  linarith only [hz]
+
+/-- **Exact $L^2$ Energy Identity for the Smooth Hyperbolic-Gauge Derivative:**
+For any $C^1$ compactly supported source $f$, the cross term in $(f' - f/2)^2$ vanishes identically:
+$$\int_{\mathbb{R}} \left(f'(u) - \frac{f(u)}{2}\right)^2 du
+  = \int_{\mathbb{R}} f'(u)^2\,du + \frac{1}{4}\operatorname{autocorr}(f, 0).$$ -/
+theorem integral_gaugeDerivative_sq (f : C_c(ℝ, ℝ)) (hf : ContDiff ℝ 1 (f : ℝ → ℝ)) :
+    (∫ u, ChebyshevGauge.gaugeDerivative (f : ℝ → ℝ) u ^ 2) =
+      (∫ u, deriv (f : ℝ → ℝ) u ^ 2) + autocorr f 0 / 4 := by
+  have h1 : Integrable (fun u => deriv (f : ℝ → ℝ) u ^ 2) :=
+    integrable_sq (hf.continuous_deriv le_rfl) f.hasCompactSupport.deriv
+  have h2 : Integrable (fun u => deriv (f : ℝ → ℝ) u * f u) :=
+    ((hf.continuous_deriv le_rfl).mul f.continuous).integrable_of_hasCompactSupport
+      f.hasCompactSupport.deriv.mul_right
+  have h3 : Integrable (fun u => (f : ℝ → ℝ) u ^ 2 / 4) :=
+    (integrable_sq f.continuous f.hasCompactSupport).div_const 4
+  have hsub : Integrable (fun u => deriv (f : ℝ → ℝ) u ^ 2 - deriv (f : ℝ → ℝ) u * f u) :=
+    h1.sub h2
+  have he : (fun u => ChebyshevGauge.gaugeDerivative (f : ℝ → ℝ) u ^ 2) =
+      fun u => deriv (f : ℝ → ℝ) u ^ 2 - deriv (f : ℝ → ℝ) u * f u + (f : ℝ → ℝ) u ^ 2 / 4 := by
+    funext u
+    unfold ChebyshevGauge.gaugeDerivative
+    ring
+  rw [he, integral_add hsub h3, integral_sub h1 h2,
+    integral_deriv_mul_self_eq_zero f hf, sub_zero,
+    integral_div, integral_sq_eq_autocorr_zero (f : ℝ → ℝ)]
+
+/-- **Unconditional Smooth Hyperbolic-Gauge $L^2$ Energy Identity on `RealWeilTestFn`:**
+For EVERY `f : RealWeilTestFn` (with **zero hypotheses**!),
+$$\int_{\mathbb{R}} \bigl(\operatorname{gaugeDerivative}(f.\mathrm{source}, u)\bigr)^2\,du
+  = \int_{\mathbb{R}} \bigl(f.\mathrm{source}'(u)\bigr)^2\,du
+    + \frac{(\operatorname{weilTest}\,f\,f\,0).\mathrm{re}}{4}.$$ -/
+theorem RealWeilTestFn.integral_gaugeDerivative_sq (f : RealWeilTestFn) :
+    (∫ u, ChebyshevGauge.gaugeDerivative f.source u ^ 2) =
+      (∫ u, deriv f.source u ^ 2) + (EF.weilTest f.1.1 f.1.1 0).re / 4 := by
+  have h := BiScaleUncertainty.integral_gaugeDerivative_sq
+    f.toCompactlySupported f.contDiff_one_source
+  rwa [show (f.toCompactlySupported : ℝ → ℝ) = f.source from rfl, f.autocorr_eq 0] at h
 
 end
 

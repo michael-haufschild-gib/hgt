@@ -22,8 +22,13 @@ def normalizedPolarMoment (f : ℝ → ℝ) : ℝ :=
 theorem integrable_normalizedPolarIntegrand {f : ℝ → ℝ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
     Integrable (fun x => normalizedSourceCorrelation f x * Real.cosh (x / 2)) := by
-  apply (((continuous_autocorr hf hfc).div_const _).mul (by fun_prop)).integrable_of_hasCompactSupport
-  exact ((hasCompactSupport_autocorr hfc).div_const _).mul_right
+  have hi : Integrable (fun x => autocorr f x * Real.cosh (x / 2)) :=
+    ((continuous_autocorr hf hfc).mul (by fun_prop)).integrable_of_hasCompactSupport
+      (hasCompactSupport_autocorr hfc).mul_right
+  convert hi.div_const (autocorr f 0) using 1
+  funext x
+  dsimp [normalizedSourceCorrelation]
+  ring
 
 theorem normalizedPolarMoment_eq_integral (f : ℝ → ℝ) :
     normalizedPolarMoment f = ∫ x in Ioi 0,

@@ -70,4 +70,9 @@ This is one package: exact gauge geometry, its source-derived support budget,
 and elimination of the gauge-cost interface in signed transport. The actual
 roughness term remains; no cutoff-uniform packet bound or arithmetic asymptotic
 is claimed. T need not be the minimal support radius. No external novelty claim.
-Formal verification is pending.
+Both Lean leaves pass direct `lake --old env lean <leaf> -o <leaf.olean>` with
+empty diagnostics. Nine endpoint axiom reports in `/tmp/spp6-final-axioms.log`
+contain only propext, Classical.choice, Quot.sound; printed main signatures have
+only source and numerical inputs. Imports are wired and index refresh passes.
+Global lint reports fourteen unrelated concurrent wiring errors, listed in
+`SignedPrimePolarTransport-FACTS.md`; no task-local error is reported.

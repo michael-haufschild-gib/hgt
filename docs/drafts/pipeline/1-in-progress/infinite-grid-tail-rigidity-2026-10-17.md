@@ -9,6 +9,8 @@
 - **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
   Keep general signed correlation statements primary; use all-grid constructions as
   sharpness witnesses. Research topic remains infinite-grid tail rigidity beyond Trap 5.
+  Trap 10 requires explicit producers with unconditional error bounds; avoid receiver-only
+  reformulations and pre-floor counterterm subtraction. The guide remains read-only.
 
 ## First conjecture
 
@@ -45,7 +47,7 @@ This is uniform over changing sources and nonzero coefficients. Complete proofs 
 
 ## Certified frontier
 
-Eleven significant packages certified:
+Twelve significant packages certified:
 
 1. Canonical tail detection and the uniform linear energy barrier for separated two-copy sources,
    including the stronger local-energy inequality (22 theorems).
@@ -92,10 +94,17 @@ Eleven significant packages certified:
     without grid blindness or a common support bound (17 public theorems).
     Card: `../3-formalized/signed-grid-trace-compactness-2026-10-17.md`.
 
-The 100-package objective remains active. Next: classify distant-copy compactness
-and polar continuity by their exact amplitude scales. This preserves the original
+12. Exact distant-copy classification: global correlation compactness and uniform
+    signed trace decay iff the mixing coefficient tends to zero; energy converges
+    for arbitrary amplitudes, while polar continuity requires weighted mixing decay.
+    Actual smooth witnesses separate pointwise grid behavior, compactness and polar
+    continuity (35 public theorems, 8 definitions; 43 standard-axiom audits).
+    Card: `../3-formalized/distant-copy-topology-classification-2026-10-17.md`.
+
+The 100-package objective remains active. Next: growing finite trains, grouped
+coefficient compactness and diffuse packet escape. This preserves the original
 tail-rigidity topic and retains general signed samples. Candidate:
-`../0-backlog/distant-copy-topology-classification-2026-10-17.md`.
+`finite-train-topology-and-diffuse-escape-2026-10-17.md` (paper complete; Lean pending).
 Mixed-energy decoupling and true polar-tail control remain separate open refinements.
 
 ## Constraints

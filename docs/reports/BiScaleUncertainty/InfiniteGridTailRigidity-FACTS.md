@@ -3,14 +3,16 @@
 ## Scope and counting
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
-Target: 100 significant mathematical packages. Certified packages in this ledger: **11**.
+Target: 100 significant mathematical packages. Certified packages in this ledger: **12**.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
 
 Field guide: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only.
-Its nine traps guide this same tail-rigidity topic. General correlation estimates retain
+Its ten traps guide this same tail-rigidity topic. General correlation estimates retain
 signed node values; all-grid families provide verified special cases and sharpness
 witnesses, not substitutes for signed arithmetic or polar coercivity. Origin concentration
-and exponentially weighted polar-tail control remain distinct questions.
+and exponentially weighted polar-tail control remain distinct questions. Trap 10 requires
+explicit producers and unconditional quantitative bounds; receiver-only reformulations and
+pre-floor counterterm subtraction are excluded. The README remains read-only for this work.
 
 ## Established inputs
 
@@ -382,6 +384,45 @@ Paper: `SignedGridTraceCompactness.md`; formalized card:
 `signed-grid-trace-compactness-2026-10-17.md`. Logs and seven foreign unwired modules
 from the global lint run are listed in the paper. No owned lint error. Count once.
 
+## Certified package 12: exact distant-copy topology and polar continuity
+
+For an actual compact C² source f with positive mass and correlation radius D>0,
+put g=f-a f(.-T), T>D, and b=a/(1+a²). Arbitrary real amplitudes satisfy
+
+    H_g-H_f=-b(H_f(.-T)+H_f(.+T)),
+    ||H_g-H_f||_infinity=|b|,  H_g(T)=-b,  |b|<=1/2.
+
+For T_n>=D+1 tending to infinity, all amplitudes share an explicit energy ceiling;
+energies converge to E(f), and every fixed correlation window eventually agrees
+exactly with H_f. Global uniform correlation convergence, compact correlation
+closure, and uniform signed-grid tail decay are each equivalent to b_n->0.
+
+The actual normalized polar density is integrable and has the exact moment law
+
+    P(g)=(1-2b cosh(T/2))P(f).
+
+If P(f)!=0, polar continuity holds exactly when b_n cosh(T_n/2)->0. This is a
+strictly stronger scale of control. A concrete nonnegative smooth compact bump
+has positive mass and positive polar moment, discharging the witness interface.
+
+Two unconditional smooth constructions separate the topologies. Unit-amplitude
+copies have eventually zero samples at every fixed grid node and convergent
+energies, but noncompact correlations. Polar-attenuated copies have zero polar
+moment, globally convergent correlations, convergent energies, compact correlation
+closure and uniform signed trace decay, yet the limiting seed has positive polar
+moment. No exact full-grid blindness is asserted for this polar family.
+Positive survivors: the exact unweighted and polar-weighted amplitude criteria.
+
+Certificates: five `DistantCopy{CorrelationTopology,EnergyTopology,PolarTopology,
+Compactness,Sharpness}.lean` leaves; 35 public theorems and 8 definitions, plus one
+transitively audited private helper. All five direct leaf checks pass without
+diagnostics; all 43 public axiom audits contain only standard logical axioms.
+Every import/API pair verified; index passed. Global lint has five foreign unwired
+modules, named in `DistantCopyTopologyClassification.md`; no owned lint error.
+Formalized card: `distant-copy-topology-classification-2026-10-17.md`.
+Logs: `/tmp/distant-copy-*-leaf.log` and `/tmp/distant-copy-topology-{axioms,index,lint}.log`.
+Count the connected classification once, not its reused copy algebra or each endpoint.
+
 ## Boundaries and next conjectures
 
 - A shrinking mesh alone gives no uniform modulus for a varying family of sources.
@@ -398,20 +439,18 @@ from the global lint run are listed in the paper. No owned lint error. Count onc
 
 ## Next exact conjecture
 
-Classify the topology of separated copies g=f-a f(.-T) for a fixed actual source
-with correlation radius D and T>D. Set b=a/(1+a²). Existing exact algebra suggests
-||H_g-H_f||_infinity=|b| and H_g(T)=-b. For T_n->infinity, energies should converge
-to E(f) for arbitrary amplitudes, while global correlation convergence and compact
-closure should hold exactly when b_n->0. Taking a_n=1 and a short-support seed
-should prove pointwise eventual grid blindness and energy convergence insufficient
-for compactness; the exact amplitude criterion is the positive survivor.
-
-The polar-moment refinement predicts P(H_g)=(1-2b cosh(T/2))P(H_f). If proved,
-it separates correlation compactness from polar continuity through an exact weighted
-amplitude condition. Audit the polar identity and concrete nonzero-moment source
-before claiming this refinement. Candidate and corpus evidence:
-`docs/drafts/pipeline/0-backlog/distant-copy-topology-classification-2026-10-17.md`.
-All these next statements remain unproved and uncounted.
+For separated finite trains with arbitrary varying packet counts, conjecture the
+exact correlation error is max_(k>0)|A_k|/Q, where A_k are grouped signed lag
+coefficients and Q is coefficient mass. Escaping spacing should imply energy
+convergence uniformly in count and coefficients; compactness should be equivalent
+to vanishing of that maximum. Equal coefficients at indices 1,3,9,... may realize
+diffuse escape: distinct differences give normalized active coefficients 1/q,
+despite no dominant source packet. Audit the polar symbol product and an actual
+diverging-polar-moment witness. Candidate, proof mechanism and corpus evidence:
+`docs/drafts/pipeline/1-in-progress/finite-train-topology-and-diffuse-escape-2026-10-17.md`.
+The complete paper proof is now recorded in `FiniteTrainTopologyAndDiffuseEscape.md`;
+Lean certification remains pending and this package is uncounted. Critical sqrt(n)-weighted
+polar-copy sample defects already belong to package 1; do not count restatements.
 
 Separate origin refinement: for fixed finite-energy f, R(q_n)->0 and bounded J(q_n)
 should imply J(f+q_n)-J(f)-J(q_n)->0 without support separation. A split mixed-increment

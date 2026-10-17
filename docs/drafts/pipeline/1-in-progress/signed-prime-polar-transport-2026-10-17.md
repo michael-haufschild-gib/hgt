@@ -14,11 +14,18 @@ full-half-line scalar pairing and Chebyshev work are now admitted and coupled.
 Scalar support stabilization does not imply packet norm stabilization.
 The coherent collar Schur constraint now gives joint lower control of packet
 energy. A source-only upper bound now retains the explicit roughness remainder.
-Next: quantify its gauge cost and roughness using original-source translation geometry.
+The exact gauge energy and its support budget now eliminate the constructed
+gauge norm. Signed scalar compensation is now optimized exactly, including
+degenerate cases. Trap 10 now redirects the next package to an explicit producer:
+lift the factorial bi-null stencil to the actual signed prime–polar measure,
+using real-ratio continuum cutoffs and an unconditional harmonic correction bound.
+Multiple-collar receivers are parked; width selection and residual control remain open.
 
 Authoritative field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
-Read all 242 lines on 2026-10-17; read-only by user instruction. Section 3.3 directly
-supports this topic. Preserve arbitrary correlation signs and actual prime weights.
+Read fully on 2026-10-17, then read the complete update adding Section 3.5 and
+Trap 10; read-only by user instruction. Section 3.3 directly supports this topic.
+Preserve arbitrary correlation signs and actual prime weights; construct explicit
+producers with unconditional bounds before extending receiver machinery.
 
 ## Proof plan and verification
 
@@ -41,21 +48,48 @@ supports this topic. Preserve arbitrary correlation signs and actual prime weigh
 - [x] Audit both coherent-Schur leaves, ten axiom reports, and main signatures.
 - [x] Establish the rough-source upper bound, deriving C¹ regularity from the actual
   continuous source; verify both leaves, endpoint/dependency axioms, and signatures.
-- [ ] Quantify gauge cost and smoothing error directly from source correlations.
+- [x] Derive exact collar gauge energy, position invariance, actual support budget,
+  and the resulting correlation-based packet and global transport bounds.
+- [x] Optimize signed scalar collar compensation, classify all minimizers, and
+  prove exact gain and strict-improvement criteria with global transport.
+- [ ] Derive a useful coherent multiple-collar certificate, retaining all cross terms.
+- [ ] Quantify width selection and the remaining smoothing error.
 
 ## Current frontier
 
-Five substantive contributions are formalized:
+Seven substantive contributions are formalized:
 - `3-formalized/annular-signed-prime-polar-chebyshev-coupling-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-packet-gram-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-halfline-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-coherent-schur-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-rough-gauge-2026-10-17.md`.
+- `3-formalized/signed-prime-polar-gauge-correlation-2026-10-17.md`.
+- `3-formalized/signed-prime-polar-optimal-collar-2026-10-17.md`.
 
-The overall target remains 100, with 95 further distinct contributions unproved.
+The overall target remains 100, with 93 further distinct contributions unproved.
 Packet construction, exact Gram representation, mass comparison, and transport
 corollaries form one contribution. Likewise the coherent collar construction,
 Schur constraint, and energy certificate are one contribution, not separate counts.
+
+Parked uncounted candidate: `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`.
+Initial search `/tmp/spp7-next-search.json` reports partial=false/errors=[];
+it also retrieves current source-only declarations, not proof certification.
+Target a full coherent mixture transport certificate, not a polarization identity alone.
+
+Active uncounted candidate: `1-in-progress/signed-prime-polar-factorial-producer-2026-10-17.md`.
+Concrete test R_K(x)=exp(x/2) sum_{j=1}^K 1_[0,log(K/j)](x), with real K/j.
+The normalized bi-null combination should have literal fullPairing bounded by
+(10 log(4N+1)+3)/sqrt(N), using the existing factorial bound and a paired-reciprocal
+harmonic correction. No assumed Chebyshev estimate or adjustable producer weights.
+
+Secondary uncounted candidate: reduce B(d) to the triangular correlation integral
+2d⁻²∫₀ᵈ(d-t)h(t)dt, then derive width response and reconstruction from d²B(d).
+The existing double-average theorem is the starting point. A classical integral
+rearrangement alone does not qualify as another contribution: pursue only if it
+closes a distinct width-selection or signed-transport question. Follow-up semantic
+search disconnected; lexical fallback returned 52 declarations, including the
+existing double average and unrelated triangular Gram/pair-count results.
+Evidence: `/tmp/spp6-next-search.json`, `/tmp/spp6-next-lexical.json`.
 
 ## Research discipline
 

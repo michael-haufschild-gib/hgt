@@ -27,8 +27,12 @@ theorem escapingCopyCenter_separated (D : ℝ) (n : ℕ) : D + 1 ≤ escapingCop
   linarith
 
 theorem tendsto_escapingCopyCenter (D : ℝ) : Tendsto (escapingCopyCenter D) atTop atTop := by
-  simpa only [escapingCopyCenter, add_comm] using
+  change Tendsto (fun n : ℕ => D + 2 + (n : ℝ)) atTop atTop
+  convert
     tendsto_atTop_add_const_right atTop (D + 2) (tendsto_natCast_atTop_atTop (R := ℝ))
+    using 1
+  funext n
+  exact add_comm _ _
 
 theorem tendsto_polarCopy_mixing_zero (T : ℕ → ℝ) (hT : Tendsto T atTop atTop) :
     Tendsto (fun n => copyMixingCoefficient (Real.exp (-T n / 2))) atTop (𝓝 0) := by
@@ -37,11 +41,15 @@ theorem tendsto_polarCopy_mixing_zero (T : ℕ → ℝ) (hT : Tendsto T atTop at
     intro b
     filter_upwards [hT.eventually (eventually_ge_atTop (-2 * b))] with n hn
     linarith
-  have he := Real.tendsto_exp_atBot.comp hz
+  have he : Tendsto (fun n => Real.exp (-T n / 2)) atTop (𝓝 0) := by
+    simpa only [Function.comp_def] using Real.tendsto_exp_atBot.comp hz
   have hd : Tendsto (fun n => 1 + Real.exp (-T n / 2) ^ 2) atTop (𝓝 1) := by
     simpa only [zero_pow (by norm_num : (2 : ℕ) ≠ 0), add_zero] using
       tendsto_const_nhds.add (he.pow 2)
-  simpa only [copyMixingCoefficient, Pi.div_apply, zero_div] using he.div hd one_ne_zero
+  have hq := he.div hd one_ne_zero
+  change Tendsto (fun n => Real.exp (-T n / 2) / (1 + Real.exp (-T n / 2) ^ 2))
+    atTop (𝓝 ((0 : ℝ) / 1)) at hq
+  simpa only [copyMixingCoefficient, zero_div] using hq
 
 private theorem exists_short_positive_polar_seed :
     ∃ (f : C_c(ℝ, ℝ)) (D : ℝ), ContDiff ℝ (↑(⊤ : ℕ∞)) (f : ℝ → ℝ) ∧
@@ -79,7 +87,8 @@ theorem exists_smooth_pointwise_grid_blind_noncompact :
   refine ⟨copyEnergyCeiling f D, F, G, copyEnergyCeiling_nonneg f.continuous f.hasCompactSupport hR D,
     hf, fun n => contDiff_subtractCopy hf 1 (escapingCopyCenter D n), hgrid, ?_, ?_, ?_⟩
   · intro m hm
-    have he := eventually_subtractCopy_correlation_eq_on_window f.continuous f.hasCompactSupport hs
+    have he := eventually_subtractCopy_correlation_eq_on_window (f := (f : ℝ → ℝ))
+      f.continuous f.hasCompactSupport hs
       (fun _ => 1) (escapingCopyCenter D) (tendsto_escapingCopyCenter D) (abs_nonneg (Real.log (m : ℝ)))
     filter_upwards [he] with n hn
     change normalizedSourceCorrelation (subtractCopy f 1 (escapingCopyCenter D n)) (Real.log (m : ℝ)) = 0

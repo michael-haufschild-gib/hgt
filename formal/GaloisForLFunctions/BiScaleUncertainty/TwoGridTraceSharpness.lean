@@ -81,7 +81,7 @@ private theorem exists_twoGrid_angle_vectors (d e : ℕ)
   have hinner : ⟪T y, y⟫ = ‖T y‖ ^ 2 := by
     rw [hty, ← real_inner_self_eq_norm_sq]
     have h := (coprimeProjector d).adjoint_inner_right (coprimeProjector d y) y
-    rw [coprimeProjector_adjoint, coprimeProjector_apply,
+    simp only [coprimeProjector_adjoint, coprimeProjector_apply,
       coprimeProjection_idempotent] at h
     exact h.symm
   refine ⟨x, y, hpx, hqy, hry, hz, ?_, ?_⟩
@@ -91,8 +91,8 @@ private theorem exists_twoGrid_angle_vectors (d e : ℕ)
   · dsimp only [x]
     rw [real_inner_smul_left, hinner, hnorm]
     have hinv : (Real.sqrt c)⁻¹ * c = Real.sqrt c := by
-      rw [← hsq]
       field_simp
+      nlinarith only [hsq]
     rw [← mul_assoc, hinv]
 
 private theorem coefficients_norm_sq_of_fixed (d : ℕ) (x : Velocity)
@@ -119,7 +119,8 @@ private theorem twoGrid_extremizers_of_vectors (d e : ℕ) (x y : Velocity)
     rw [← coprimeProjection_eq_extension]
     exact hy
   have hmem (a : TraceData) : (a, coprimeCoefficients e y) ∈ twoGridDataSpace d e := by
-    change coprimeProjector (coprimeLcm d e) (coprimeExtensionL e _) = 0
+    change coprimeProjector (coprimeLcm d e)
+      (coprimeExtensionL e (coprimeCoefficients e y)) = 0
     rw [coprimeExtensionL_apply, hey, hr]
   let vp : TwoGridData d e := ⟨(coprimeCoefficients d x, coprimeCoefficients e y), hmem _⟩
   let vm : TwoGridData d e := ⟨(-coprimeCoefficients d x, coprimeCoefficients e y), hmem _⟩
@@ -133,7 +134,6 @@ private theorem twoGrid_extremizers_of_vectors (d e : ℕ) (x y : Velocity)
   have hpos : 0 < ‖y‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hn)
   have hep : twoGridExtension d e vp = x + y := by
     rw [twoGridExtension_apply]
-    change coprimeExtension d _ + coprimeExtension e _ = _
     rw [hex, hey]
   have hem : twoGridExtension d e vm = -x + y := by
     rw [twoGridExtension_apply]
@@ -161,7 +161,7 @@ theorem twoGridExtension_sharp (d e : ℕ) :
     have hc : Real.sqrt (coprimeAngleSquare d e) = 0 := by
       simp [coprimeAngleSquare, hg]
     have hm : twoGridMass d e v = 1 := by
-      simp [twoGridMass, v, norm_sq_traceData, lp.single_apply]
+      simp [twoGridMass, v]
     have he := twoGridExtension_stability d e v
     rw [hc] at he
     norm_num at he

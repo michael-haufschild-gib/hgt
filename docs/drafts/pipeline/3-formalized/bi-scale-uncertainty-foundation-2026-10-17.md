@@ -378,6 +378,167 @@
       off-diagonal reduction, and unconditional multi-node dyadic-coset signed collar bounds on
       `RealEvenPolarTestFn` and `RealSmoothEvenPolarTestFn`.
 
+25. **Pillar XXV — `formal/GaloisForLFunctions/BiScaleUncertainty/OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`**
+    - `RealWeilTestFn`, `RealOddTestFn`, `RealHyperplaneGenerator`:
+      Real-valued Weil test space (`{f : WeilTestFn // ∀ u, (f.1 u).im = 0}`), real odd test space,
+      and primitive-hyperplane generator sum type (`RealOddTestFn ⊕ RealEvenPolarTestFn`).
+    - `re_weilPoleTerm_ofReal_eq_cosh_sq_sub_sinh_sq`,
+      `weilArchRe_ofReal_eq_pole_add_gamma_add_biScaleLevyEnergy`,
+      `weilArchRe_ofReal_eq_cosh_sq_sub_sinh_sq_add_gamma_add_biScaleLevyEnergy`:
+      Universal physical-space pole decomposition and archimedean identities for arbitrary real
+      $f \in C^2_c(\mathbb{R})$.
+    - `RealWeilTestFn.poleWeightArchRe_eq`,
+      `RealWeilTestFn.poleWeightArchRe_zero_eq_gamma_add_biScaleLevyEnergy`,
+      `RealWeilTestFn.unconditional_vonMangoldt_all_scale_signed_poleWeightArchRe_zero_lower_bound`:
+      Universal pole-weight archimedean decomposition and unconditional all-scale von Mangoldt
+      signed lower bound across the entire real Weil test space.
+    - `RealOddTestFn.integral_source_mul_cosh_eq_zero`,
+      `RealOddTestFn.re_weilPoleTerm_eq_neg_two_mul_sinh_sq`,
+      `RealOddTestFn.poleWeightArchRe_zero_eq_gamma_add_biScaleLevyEnergy`,
+      `RealOddTestFn.weilArchRe_add_two_mul_sinh_sq_eq_gamma_add_biScaleLevyEnergy`,
+      `RealOddTestFn.unconditional_dyadic_signed_poleWeightArchRe_zero_lower_bound`,
+      `RealOddTestFn.unconditional_vonMangoldt_all_scale_signed_poleWeightArchRe_zero_lower_bound`,
+      `RealOddTestFn.unconditional_vonMangoldt_all_scale_signed_weilArchRe_sinh_lower_bound`,
+      `RealOddTestFn.unconditional_dyadic_coset_multi_node_signed_collar_bound`:
+      Exact odd-sector Sinh-Capacity Weil identity at $\beta = 1$ and unconditional odd-sector
+      coercivity bounds.
+    - `RealHyperplaneGenerator.poleWeightArchRe_zero_eq_gamma_add_biScaleLevyEnergy`,
+      `RealHyperplaneGenerator.unconditional_vonMangoldt_all_scale_signed_lower_bound`:
+      Unified primitive-hyperplane generator coercivity across both odd and even-polar generators.
+
+26. **Pillar XXVI — `formal/GaloisForLFunctions/BiScaleUncertainty/IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`**
+    - `integral_multi_node_signed_collar_offDiag_ge`,
+      `origin_collar_integral_le_biScaleLevyEnergy`,
+      `shifted_collar_integral_le_biScaleLevyEnergy`,
+      `dyadic_coset_integrated_multi_node_signed_collar_ge`:
+      Unconditional integrated multi-node signed collar off-diagonal inequality and origin/shifted
+      collar Lévy bounds.
+    - `RealEvenPolarTestFn.unconditional_dyadic_coset_integrated_multi_node_signed_collar_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_dyadic_coset_integrated_multi_node_signed_collar_bound`,
+      `RealWeilTestFn.unconditional_dyadic_coset_integrated_multi_node_signed_collar_bound`,
+      `RealOddTestFn.unconditional_dyadic_coset_integrated_multi_node_signed_collar_bound`:
+      Unconditional integrated multi-node dyadic-coset signed collar bounds across all explicit-formula
+      test spaces.
+
+27. **Pillar XXVII — `formal/GaloisForLFunctions/BiScaleUncertainty/AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`**
+    - `four_mul_integral_Ioi_autocorr_mul_cosh_eq_re_weilPoleTerm`,
+      `two_mul_integral_Ioi_polarDensity_autocorr_eq_re_weilPoleTerm`:
+      Universal identity between the continuum polar counterterm of `SignedPrimePolar.pairing` and
+      the real part of `weilPoleTerm` for arbitrary real $f \in C^2_c(\mathbb{R})$.
+    - `RealWeilTestFn.two_mul_prime_sum_add_polar_tail_eq_two_pairing_add_pole`,
+      `RealWeilTestFn.linearCombination_vonMangoldt_logVector_eq_two_pairing_add_pole`,
+      `RealWeilTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_pairing`,
+      `RealWeilTestFn.re_weilFullFunctional_vonMangoldt_eq_poleWeightArchRe_zero_sub_two_pairing`:
+      Universal Pole-to-Chebyshev Absorption Theorem on `RealWeilTestFn` at $\beta = 1$ with zero
+      parity or polar-vanishing hypotheses.
+    - `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_lower_bound`,
+      `RealOddTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_pairing`,
+      `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_lower_bound`:
+      Unconditional full Weil functional Chebyshev–Packet bounds across all parities.
+
+28. **Pillar XXVIII — `formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`**
+    - `discreteChebyshevCellSum`, `smoothGaugeBound`, `discreteCellGaugeBound`,
+      `integral_normalizedLogError_sq_cutoff_eq_chebyshev_mean_square`,
+      `integral_normalizedLogError_sq_cutoff_eq_sum_center_add_floor`,
+      `sum_center_sq_le_integral_cutoff_le`,
+      `packetEnergy_le_smoothGaugeBound`, `packetEnergy_le_discreteCellGaugeBound`:
+      Unconditional cutoff-level Nyquist-cell quadrature and hyperbolic-gauge mean-square Chebyshev
+      packet bounds for every $N : \mathbb{N}$.
+    - `RealWeilTestFn.contDiff_one_source`, `RealWeilTestFn.signedSource_eq_gauge`,
+      `RealWeilTestFn.packetEnergy_le_smoothGaugeBound`,
+      `RealWeilTestFn.packetEnergy_le_discreteCellGaugeBound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_smoothGauge_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_smoothGauge_lower_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_roughGauge_lower_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_correlationGauge_lower_bound`:
+      100% unconditional full Weil functional lower bounds controlled by the continuous mean-square
+      Chebyshev gauge bound, the discrete Nyquist-cell centered Chebyshev sum, the derivative-free
+      rough collar gauge bound, and the correlation-only collar gauge bound.
+    - `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_smoothGauge_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound`,
+      `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_smoothGauge_lower_bound`,
+      `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound`,
+      `RealHyperplaneGenerator.unconditional_weilFullFunctional_vonMangoldt_discreteCellGauge_lower_bound`:
+      Unconditional lifts across `RealEvenPolarTestFn`, `RealSmoothEvenPolarTestFn`,
+      `RealOddTestFn`, and `RealHyperplaneGenerator`.
+    - `integral_deriv_mul_self_eq_zero`, `integral_gaugeDerivative_sq`,
+      `RealWeilTestFn.integral_gaugeDerivative_sq`:
+      Exact $L^2$ orthogonality $\int f' f = 0$ and hyperbolic-gauge derivative energy decomposition
+      $\int (f' - f/2)^2 = \int (f')^2 + \frac{1}{4} h_f(0)$.
+
+29. **Pillar XXIX — `formal/GaloisForLFunctions/BiScaleUncertainty/ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`**
+    - `nyquistPolarConstant`, `nyquistPolarConstant_eq_sqrt_avg`,
+      `sqrt_succ_sub_sqrt_le`, `nyquistPolarConstant_succ_sub_le`,
+      `nyquist_cell_cosh_sub_polarConstant_bounds`,
+      `nyquist_cell_polar_producer_l2_error_le`:
+      Explicit Nyquist-cell polar producer $\operatorname{nyquistPolarConstant}(n) = \cosh((\log n)/2) = \frac{\sqrt{n} + 1/\sqrt{n}}{2}$,
+      pointwise Nyquist-cell drift bound $0 \le \cosh(x/2) - \operatorname{nyquistPolarConstant}(n) \le \frac{1}{4\sqrt{n}}$,
+      and unconditional $L^2$ approximation bound $\int_{\log n}^{\log(n+1)} (\cosh(x/2) - \operatorname{nyquistPolarConstant}(n))^2\,dx \le \frac{1}{16 n^2}$.
+    - `nyquist_cell_producer_consumer_residual_sq_le`,
+      `dyadic_window_polar_producer_l2_error_sum_le`:
+      Instantiated Nyquist-cell Producer–Consumer Residual Theorem (eliminating the uninstantiated
+      producer weight $W$ from Pillar XII) and unconditional $O(1/N)$ dyadic-window producer $L^2$
+      error bound $\le \frac{1}{16 N}$.
+    - `stirlingResidual`, `floorSummatory_chebyshevPsi_eq_main_add_stirlingResidual`,
+      `stirlingResidual_bounds`:
+      Unconditional $O(\log k)$ Stirling residual sandwich $1 \le T(k) - (k \log k - k) \le \log(k+1) + 1$
+      for $T(k) = \operatorname{floorSummatory}\;\operatorname{chebyshevPsi}\;k$.
+    - `chebyshevAlternatingProducer`, `chebyshevAlternatingProducer_eq_linear_add_stirling`,
+      `abs_chebyshevAlternatingProducer_sub_linear_le`,
+      `floorSummatory_chebyshevPsi_eq_sum_vonMangoldt_mul_div`,
+      `chebyshevPsi_two_mul_sub_le_alternatingProducer`,
+      `chebyshevPsi_two_mul_sub_le_linear_add_log`,
+      `chebyshevAlternatingProducer_le_chebyshevPsi_two_mul`,
+      `linear_sub_log_le_chebyshevPsi_two_mul`,
+      `chebyshevBiNullProducer`, `chebyshevBiNullProducer_eq_alternating_diff`,
+      `chebyshevBiNullProducer_eq_stirling_second_diff`,
+      `abs_chebyshevBiNullProducer_le`:
+      Explicit first-order Chebyshev–Nyman–Beurling alternating producer $T(2N) - 2T(N)$ with exact
+      double-pole cancellation, unconditional $O(\log N)$ linear tracking bound
+      $|T(2N) - 2T(N) - (2\log 2)N| \le 2\log(2N+1) + 1$, two-sided Chebyshev prime-generating
+      sandwich $\psi(2N) - \psi(N) \le T(2N) - 2T(N) \le \psi(2N)$, and second-order bi-null
+      Chebyshev producer $T(4N) - 4T(2N) + 4T(N)$ cancelling both $N \log N$ and $N$ poles
+      identically with unconditional bound $|T(4N) - 4T(2N) + 4T(N)| \le 5\log(4N+1) + 1$.
+
+30. **Pillar XXX — `formal/GaloisForLFunctions/BiScaleUncertainty/UnconditionalChebyshevCellAndArchimedeanWeilProducer.lean`**
+    - `generalChebyshevStencilProducer`, `floorSummatory_chebyshevPsi_mul_eq`,
+      `generalChebyshevStencilProducer_eq`, `abs_generalBiNullChebyshevProducer_le`,
+      `coprimeTwoThreeChebyshevProducer`, `coprimeTwoThreeChebyshevProducer_eq_alternating_diff`,
+      `coprimeTwoThreeChebyshevProducer_eq_stirling_comb`,
+      `abs_coprimeTwoThreeChebyshevProducer_le`:
+      Exact pole–slope–Stirling decomposition for general finite dilation stencils $\sum_{a \in s} c_a T(aN)$,
+      general unconditional $O(\log N)$ bi-null producer bound, and the explicit coprime $(2, 3)$
+      Chebyshev–Nyman–Beurling producer $T(6N) - 2T(3N) - 3T(2N) + 6T(N)$ with unconditional bound
+      $|T(6N) - 2T(3N) - 3T(2N) + 6T(N)| \le 12\log(6N+1) + 2$.
+    - `chebyshevProducerSlope`, `abs_chebyshev_psi_sub_self_le`,
+      `abs_logError_le_exp`, `abs_normalizedLogError_le_exp_half`,
+      `normalizedLogError_cutoff_sq_le`, `abs_chebyshev_psi_sub_cellCenter_le`,
+      `nyquist_cell_chebyshev_term_le`, `discreteChebyshevCellSum_le`,
+      `integral_normalizedLogError_sq_cutoff_le`:
+      Unconditional pointwise and Nyquist-cell Chebyshev producer bounds:
+      $|\psi(n) - m_n| \le (\log 4 + 3)n$, $(\psi(n) - m_n)^2 / (n(n+1)) \le (\log 4 + 3)^2$, and
+      $\operatorname{discreteChebyshevCellSum}(N) \le (\log 4 + 3)^2 (N + 1)$.
+    - `archimedeanPacketProducerBound`,
+      `discreteCellGaugeBound_le_archimedeanPacketProducerBound`,
+      `packetEnergy_le_archimedeanPacketProducerBound`,
+      `two_mul_abs_pairing_le_exp_add_packetEnergy`,
+      `two_mul_abs_pairing_le_archimedeanPacketProducerBound`:
+      100% prime-free archimedean packet and pairing producer bounds eliminating `chebyshevWork`,
+      `normalizedLogError`, `discreteChebyshevCellSum`, and `Chebyshev.psi`.
+    - `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`,
+      `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`,
+      `RealHyperplaneGenerator.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`:
+      Unconditional prime-free archimedean full Weil functional lower bounds across all explicit-formula
+      test spaces.
+
 ## Audit Status
-- **Module Verification**: All 24 Pillars (`WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXIV; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Module Verification**: All 30 Pillars (`UnconditionalChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXX; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+
+

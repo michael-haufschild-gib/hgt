@@ -54,7 +54,7 @@ theorem levyDistantCopy_dist_seed (f : C_c(ℝ, ℝ)) (hf : ContDiff ℝ 2 (f : 
       Real.dist_eq] at hb
     change |normalizedSourceCorrelation (subtractCopy f a T) T - normalizedSourceCorrelation f T| ≤ _ at hb
     rwa [normalizedSourceCorrelation_subtractCopy_error_at_center
-      f.continuous f.hasCompactSupport hR hD hs hsep] at hb
+      (f := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport hR hD hs hsep] at hb
 
 /-- Escaping copies form a relatively compact correlation family exactly when their mixing decays. -/
 theorem isCompact_closure_distantCopies_iff (f : C_c(ℝ, ℝ))
@@ -75,8 +75,8 @@ theorem isCompact_closure_distantCopies_iff (f : C_c(ℝ, ℝ))
     filter_upwards [hT.eventually (eventually_ge_atTop A)] with n hn
     have hb := hA (G n) (mem_range_self n) (T n) (hn.trans (le_abs_self _))
     change |normalizedSourceCorrelation (subtractCopy f (a n) (T n)) (T n)| < ε at hb
-    rw [normalizedSourceCorrelation_subtractCopy_center f.continuous f.hasCompactSupport hR hD hs
-      (by linarith [hsep n]), abs_neg] at hb
+    rw [normalizedSourceCorrelation_subtractCopy_center (f := (f : ℝ → ℝ)) (T := T n)
+      f.continuous f.hasCompactSupport hR hD hs (by linarith [hsep n]), abs_neg] at hb
     simpa only [Real.dist_eq, sub_zero] using hb
   · intro hb
     have hg : Tendsto (fun n => (G n).complexCorrelation) atTop (𝓝 F.complexCorrelation) := by

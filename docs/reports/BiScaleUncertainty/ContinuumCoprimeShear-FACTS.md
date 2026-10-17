@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **11 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **13 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -1102,25 +1102,157 @@ transition checks pass. Unrelated work preserved; all owned processes terminal.
 Final index log: `/tmp/coprime-angle-index-final.log`.
 Package 11 is **progress**; count **11/100**, goal active.
 
-## Next falsifiable candidate — infinite joint two-grid interpolation
+## Certified package 12 — sharp infinite joint trace interpolation
 
-In progress: `docs/drafts/pipeline/1-in-progress/two-grid-coprime-trace-extension.md`.
-Construct an actual ℓ² nodal extension on the union of two divisor grids,
-counting common nodes once. Proposed energy is 2Σv²−2Σ_adjacent v_a v_(a+1).
-Conjectured sharp lower/upper constants: (2,2) for noncoprime spacings,
-(1,3) for coprime spacings at least three, and (2−√2,2+√2) when one is two.
-Every integer/logarithmic trace, cross-term convergence, minimum-energy defect
-and equality case require proof. This is prescribed-value interpolation,
-distinct from projection's intrinsic curvature data. All unproved and uncounted.
-Fresh search inspected all 20 candidate and 20 source entries, finding
-single-grid extension and finite trace defects but no joint construction.
-No partial stages/errors; snapshot older, semantic unmeasured, refresh incomplete.
+For m=d+2,n=e+2, shared nodes belong to the first grid. The actual closed data
+space D={(a,b)∈ℓ²×ℓ²:R(E_e b)=0} is equivalent to b_j=0 whenever m divides
+n(j+1). Arbitrary ℓ² pair data map into D by deleting the common component.
+E(a,b)=E_d a+E_e b has every integer and logarithmic trace, with zero values at
+all off-union integer nodes. M=‖a‖²+‖b‖² counts union values once; the ambient
+product Banach norm is max(‖a‖,‖b‖), not √M.
 
+Exact energy is 2M−2Σ_j a_j[B(m(j+1)−1)+B(m(j+1)+1)], where B is the second
+primitive. The scalar series is summable, and its explicit divisibility formula
+reads the two adjacent second-family values. Shared nodes have no active neighbors;
+within-family adjacency is impossible. Thus every adjacent union edge occurs once.
 
-Paper-proof refinement: joint data are the concrete kernel
-`R(E_e b)=0` in ℓ²×ℓ², equivalent to vanishing second-family coefficients at
-shared nodes. Exact energy contains the signed adjacent interaction. Minimum
-energy fixes every integer trace, including zero off-union values; prescribing
-only union values is a different problem. Dependency-closed proof is in
-`TwoGridCoprimeTraceExtension.md`. Lean checks pending; this is not a new
-certification and count remains 11/100.
+Sharp lower/upper factors are (2,2) if gcd(m,n)≥2, (1,3) for coprime m,n≥3,
+and (2−√2,2+√2) for the coprime spacing-two case. Both are attained by actual
+positive-mass data. E is injective with closed range equal to V_m+V_n; no closure
+of the algebraic sum is needed. Mechanism: |⟨E_d a,E_e b⟩|≤√c M from the
+proved reduced product T=PQ−R. Its positive square A=T* T obeys A²=cA;
+choose y=Az≠0, x=Ty/√c, then take coefficients of (±x,y). The zero-angle
+case uses a single nonzero first-family tent. No spectral admission assumption.
+
+For every physical q, exact competitor energy retains two summable residual
+curvature pairings. Matching every integer trace kills them, leaving excess
+‖q−E(a,b)‖²; equality iff q=E(a,b). Prescribing only union traces is a different
+variational problem. The main mismatch identity is unconditional. No unweighted
+logarithmic H¹ or full affine operator identification is claimed.
+
+Paper: `TwoGridCoprimeTraceExtension.md`. Stage-3 card:
+`docs/drafts/pipeline/3-formalized/two-grid-coprime-trace-extension.md`.
+Four leaves: TwoGridTraceData, TwoGridTraceStability, TwoGridTraceSharpness,
+TwoGridTraceMinimality. All four final serial direct checks pass with empty logs;
+normal outputs are newer than sources. All 49 public declarations (40 theorems,
+7 definitions, 1 abbreviation, 1 instance) were axiom-audited with exact coverage;
+only propext, Classical.choice, Quot.sound. Thirteen main signatures inspected.
+Four unique imports, all 48 catalog-supported public entries at current source
+lines and scoped whitespace verified. Named instance audited separately.
+
+Final `lint --check-generated` exits 1 solely for ten unrelated concurrent
+unreachable modules: AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis,
+DistantCopyCompactness, DistantCopyCorrelationTopology, DistantCopyEnergyTopology,
+DistantCopyPolarTopology, DistantCopySharpness,
+HyperbolicGaugeMeanSquareChebyshevWeilSynthesis, SignedGramDualSupport,
+SignedGramPhysicalPrices, SignedGramTrialCertificate. No own, proof-debt or
+stale-generated error. Existing large-file warnings remain. No full build,
+new axiom, numerical experiment or heartbeat increase. README remained read-only.
+
+Evidence: `/tmp/two-grid-{data,stability,sharpness,minimality}-build.log`,
+`/tmp/two_grid_axioms.lean`, `/tmp/two-grid-axioms.log`,
+`/tmp/two-grid-audit-names.json`, `/tmp/two-grid-api-entries.txt`,
+`/tmp/two-grid-index-final.log`, `/tmp/two-grid-lint-final.log`.
+Focused corpus search: all16 candidates/all17 source arguments inspected;
+partial=false/errors=[], semantic unmeasured, refresh incomplete. Classical hat
+interpolation checked in the primary Driscoll–Braun textbook; no external novelty
+claim for parent methods. One significant package, count12/100, goal active.
+
+Lean lessons: `real_inner_comm x y` rewrites ⟪y,x⟫ to ⟪x,y⟫.
+`HasSum.congr_fun` expects new summand = old summand. The bundled scaled
+synthesis and scalar-inside synthesis are propositionally, not definitionally,
+equal; rewrite the application lemma explicitly. Keep attributes on separate
+lines so generated catalog captures declarations. Avoid `convert` when a known
+limit equality can be rewritten directly; it can expose stuck lp coercions.
+
+## Certified package 13 — finite-grid longest-run coercivity
+
+`docs/drafts/pipeline/3-formalized/finite-grid-run-length-coercivity.md` and
+`FiniteGridRunLengthCoercivity.md`: for the actual family {d+2}∪{e+2:e∈D},
+the longest active run r satisfies 1≤r<L and is attained in one lcm period.
+The actual masked successor T=P R* P is a contraction with T^r=0. Its
+existing sine bound gives sharp factors 2±2cos(π/(r+1)); finite sine and
+alternating-sine packets attain both. Unit-cell synthesis S(v−Rv) gives the
+infinite physical L² interpolant, all integer/log traces, exact adjacent
+energy, closed range and the unconditional curvature-mismatch identity.
+Matching every integer trace yields exact minimum-energy defect and uniqueness.
+The dependency-closed paper proof and exact Lean package are certified.
+One mathematical package: certified count 13/100, goal active.
+
+The focused corpus query's eight candidate/eight source entries and deep query's
+twenty candidate/twenty source entries/one ingredient group were all inspected.
+No finite-family theorem found; both searches partial with interrupted retrieval
+or semantic timeout, semantic coverage unmeasured and refresh incomplete.
+Exact search located reusable existing finite sine and nilpotent-contraction
+proofs. Classical discrete Wirtinger theory checked against Izmestiev's primary
+paper; no external novelty claim for the parent result.
+
+Trap 10 discipline: retain actual producers and proved error bounds. This
+package constructs its interpolant and exact competitor error, with no
+Chebyshev/floor-sum input. For the supplied factorial example, the first
+stencil retains 2N log 2; only its centered remainder is O(log N). The second
+stencil cancels that term. Symbolic Stirling justification and source appear
+in the paper. README remains read-only; research stays on coprime shear.
+
+### Formal evidence and reusable facts
+
+Eight leaves, all final serial direct normal-output `lake --old env lean`
+checks exit 0 with empty logs and current compiled outputs:
+FiniteGridRunLength (150 lines,18 public), SuccessorSequenceHilbert (131,12),
+IntegerHatTraceExtension (132,20), FiniteGridTraceData (125,20),
+FiniteGridTraceStability (180,18), FinitePathSinePackets (138,15),
+FiniteGridTraceSharpness (113,12), FiniteGridTwoSpacingRuns (190,9).
+Total 1159 lines, 124 public declarations: 98 theorems,23 definitions,2 abbreviations,
+1 instance. Exact axiom audit covers all 124, only propext/Classical.choice/Quot.sound;
+eighteen principal signatures and 35 mathlib probes inspected. The main masked
+producer bound accepts arbitrary ambient TraceData, with mask mass explicitly
+summed over active nodes. Variational corollaries follow the unconditional
+curvature-mismatch identity and fix every off-union integer trace to zero.
+
+Eight unique imports wired. All 123 catalog-supported public entries match
+exact source lines; the named complete-space instance is separately audited.
+Global final lint exits 1 for unrelated concurrent unreachable modules:
+CoprimeShearArithmeticWeightsAndChebyshevCellIncrement,
+FiniteIntegerTrainCompactness,FiniteIntegerTrainEnergy,FiniteIntegerTrainPackets,
+FiniteIntegerTrainPeak,FiniteIntegerTrainPolar,FiniteIntegerTrainProducers,
+FoldFreeKernelGramAndFranelGcdCancellation,LocalCoherentFilter,
+SignedPrimePolarFactorialLift,SignedPrimePolarFactorialProducer,
+SignedPrimePolarHarmonicCorrection,TernaryPacketPolarGrowth,TernaryPacketTrain;
+also LEAN_API/LEAN_OVERVIEW drift. No own/proof-debt error; existing large-file
+warnings. Refreshed index afterward and reverified own exact coverage. Preserve
+other agents' files. Scoped whitespace and stage transition pass. No fullbuild,
+numerical experiment, heartbeat increase or added axiom.
+
+Evidence: /tmp/finite-grid-{run,data,stability,sharpness,two-spacing}-build.log,
+/tmp/successor-sequence-build.log, /tmp/integer-hat-build.log,
+/tmp/finite-path-sine-build.log, /tmp/finite_grid_axioms.lean,
+/tmp/finite-grid-axioms.log, /tmp/finite-grid-audit-names.json,
+/tmp/finite-grid-api-entries.txt, /tmp/finite-grid-index-post-lint.log,
+/tmp/finite-grid-lint-final.log.
+
+Lean proof facts: orthonormal shifted lp.single vectors construct the right
+shift directly; its Hilbert adjoint reads successor coordinates. Explicit
+HasSum types prevent stuck PreLp coercions when mapping inner products.
+Use `change` to expose ambient subtype norms and the concrete identity-map
+application before rewriting. Nat.dvd_add_iff_right/left point from the
+smaller divisibility statement to the sum; use `.mpr` to remove the known
+divisible summand. Finite sine recurrence plus shifted finite sums proves
+attainment exactly. Forced alternation proves the four-node two-grid obstruction
+within existing heartbeats; broad propositional splitting timed out.
+The generated API has hundreds of thousands of rows: stream it once and match
+short declaration name, module and source location, not fully qualified names.
+Guard potentially long metadata jobs; /tmp/check_finite_grid_catalog.py is the
+small verified single-pass checker. Public instances are not catalog rows.
+
+## Next unproved candidate — arbitrary divisor-family gap classification
+
+`docs/drafts/pipeline/0-backlog/infinite-divisor-run-gap-classification.md`.
+Conjectured equivalence: bounded active runs, a positive uniform interpolation
+constant, and closed range. In the unbounded case construct actual unit sine
+packets with energies tending to zero; retain the exact positive classification
+as the obstruction's survivor. No new Lean or paper proof yet.
+All20 candidates and all5 source arguments from the focused next-query inspected;
+hits include this finite-family package but no arbitrary-family classifier.
+Partial=true, interrupted text/source retrieval, coverage generation1445834
+pending, semantic unmeasured, source-only compiler metadata, refresh incomplete.
+Reaudit corpus and primary closed-range theory before proof. Uncounted.

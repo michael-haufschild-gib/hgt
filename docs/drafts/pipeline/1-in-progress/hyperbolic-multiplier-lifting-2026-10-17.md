@@ -52,6 +52,17 @@
     eventual affine correction law, remove its finite boundary intercept from the
     moment limit, quantify the improvement over absolute lattice budgets, and
     transfer the sharper unconditional penalty to the full plastic receiver.
+19. Realize the cancellation gain on actual smooth odd sources. Reuse the fixed-energy
+    six-packet family, isolate its negative correlation at the second dyadic lag,
+    and prove arbitrarily large correction savings without losing its first-lag zero.
+20. Construct a normalized coherent difference producer with its leading source
+    component removed. Prove its unconditional finite-length energy error and
+    transfer the resulting sharp asymptotic coefficient into the odd moment and
+    full plastic functional. Preserve signed source data and handle zero energy.
+21. Exploit actual compact source support to construct a finite symmetric
+    hyperbolic filter reproducing the entire coherent centered pairing. Prove
+    its exact boundary law, retain its signed Schur energy, and transfer the
+    resulting unconditional moment price to the full plastic functional.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -1120,4 +1131,251 @@ hybrid partial63.16s, unfinished text/source stages, unmeasured semantic coverag
 partial compiler freshness. Targeted lexical Toeplitz query returned732/103.
 Actual source lattice, packet, lag-coalescence and finite-train grouping laws read;
 no corresponding signed correction limit receiver appeared in returned candidates.
-Paper proof complete; formalization pending.
+Paper proof and exact formalization complete. Verification follows.
+
+### Verification of the thirteenth result
+
+- Final actual-source audit exited 0 without warnings, session5677:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SignedCoherentMomentReceiver.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/SignedCoherentMomentReceiver.olean`.
+- Source SHA256 `73bee1950bc1b31f37fc71bc01781b0ccf59377d14df72022b048571d929cc64`;
+  317 lines, four definitions and 13 public theorems. Source12 hash unchanged.
+  No source edit after the successful audit.
+- Namespace `SignedCoherentMoment`; exact triangular and eventual affine laws,
+  unconditional actual odd-moment and full plastic receivers, nonnegativity,
+  exact comparison with the absolute budget, conditional strictness and secondary
+  source-zero recovery are all proved. No arbitrary-weight signed frame claimed.
+- Mathlib APIs verified in scratch. `lake --old env lean /tmp/hml_signed_api.lean`
+  exited 0 without warnings, session33513. All 13 public theorems use only
+  `propext`, `Classical.choice`, `Quot.sound`; source and audit lists match exactly.
+  This is contribution **13/100**, 211 public supporting theorem audits in total.
+  The complete 100-contribution goal remains ACTIVE.
+- Umbrella import added. Canonical README remains read-only and unchanged,
+  SHA256 `80c91d482d9dfcfeb86508edcf5551d34d34a5ef333d3fab64be78e75dd67507`.
+- Lean details: finite-support preimage injectivity needs both an explicit map
+  and `change` to expose its integer equality. `positivity` does not solve
+  `1<=N+1` directly; derive it from `0<=N`. Multiply the exact budget-gap
+  identity by `log 2` before polynomial arithmetic for the plastic gain.
+  No theorem weakened, heartbeat hack, full build, numerical experiment,
+  commit or push. Index and global lint are audited separately below.
+- Index sessions29589 and69956 exited 0; all 17 public declarations are present
+  in `formal/LEAN_API.md`. The second refresh was justified by generated drift
+  during concurrent source work, not by a new change to this module.
+- Final `scripts/formal_tools.py lint --check-generated`, session43918, exited 1:
+  16 unrelated modules remain unreachable from the BiScale umbrella:
+  `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis`, `AnnularGaugeEnergy`,
+  `DistantCopyCompactness`, `DistantCopyCorrelationTopology`,
+  `DistantCopyEnergyTopology`, `DistantCopyPolarTopology`, `DistantCopySharpness`,
+  `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis`, `SignedGramDualSupport`,
+  `SignedGramPhysicalPrices`, `SignedGramTrialCertificate`,
+  `SignedPrimePolarCorrelationBudget`, `TwoGridTraceData`, `TwoGridTraceMinimality`,
+  `TwoGridTraceSharpness`, `TwoGridTraceStability`. Concurrent drift in
+  `formal/LEAN_API.md` also remains in this final snapshot. The earlier lint
+  session35773 additionally flagged `formal/LEAN_OVERVIEW.md`; the second refresh
+  removed that error. No owned lifting module was flagged. Existing large-file
+  warnings remain. No repository-wide clean gate is claimed or inferred.
+- Owned `/tmp/hml_signed_api.lean` and `/tmp/hml_signed_lint.txt` removed;
+  absence verified. All owned source/API/search/index/lint handles are terminal.
+  Final whitespace checks passed. Source and read-only README hashes unchanged.
+  Contribution13/100 complete; full goal remains ACTIVE.
+
+## Fourteenth paper theorem: unbounded realized cancellation at fixed source energy
+
+Reuse the smooth odd six-packet source from contribution4, with packet mass m>0,
+weighted mass H>0, d=log2 and c=2sinh(d/2)H>0. Put F_T=source(|T|+d).
+Its source energy is R=6m and h_F(d)=0. The extra outward shift makes all
+reflection-crossing pairs miss the lag2d. Exactly two within-half pairs remain,
+with coefficient products -1 each, so h_F(2d)=-2m for every real T.
+
+The known multiplier law gives h_S(d)=c*sinh(|T|+3d). Cauchy--Schwarz gives
+h_S(d)<=R_S, and sinh(x)>=x for x>=0. Since M=R+2R_S and mu=M/R,
+2c|T|<=R*mu(F_T). Thus the source mean grows with outward position at fixed R.
+At integer lag2 the actual correction satisfies the exact law
+cosh(d)*e_2=m*(cosh(d)^2-mu(F_T)). No support estimate enters this identity.
+
+For every actual compact f and integer k, the signed-budget gap obeys
+C_abs-C_signed=2sum max(-e,0)>=-2e_k. Apply this to F_T,k=2. With
+b=2c/(3cosh(d))>0, combine the preceding identities to obtain
+b|T|-2m*cosh(d)<=C_abs(F_T)-C_signed(F_T).
+Hence for every real A there is a smooth odd source of the same positive energy
+6m, still blind at d, whose signed moment-budget improvement exceeds A.
+For that same source and every collar cutoff N, the old full plastic certificate
+plus 2d*A is strictly below P(F). This is a realized unbounded quantitative gain,
+not a sign condition or a universal positivity statement.
+
+Corpus audit: initial query576 declarations/66modules, hybridpartial51.34s,
+unfinished text/source stages, unmeasured semantic coverage and partial compiler
+freshness. Broad lexical packet query26353/6944 supplied existing finite translation
+expansion. Actual six-packet and finite-train proofs inspected. Reuse both rather
+than construct a new bump family. No matching fixed-energy cancellation realization
+appeared among inspected candidates; no external novelty claimed. Paper proof
+complete; exact formalization and all public axiom audits complete.
+
+### Verification of the fourteenth result
+
+- Final actual-source audit, session68224, exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/RealizedCoherentCancellation.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/RealizedCoherentCancellation.olean`.
+- Source SHA256 `23f205f2ec505806a23334d70a7e65c4945580c8b57f6e88d9d35d03b6a09d86`;
+  235 lines, three public definitions and13 public theorems. Source13 hash
+  unchanged. No source edit after the successful actual-source audit.
+- Namespace `RealizedCoherentCancellation`; main existence and all-cutoff plastic
+  statements take only real A. Smoothness, oddness, fixed positive source energy,
+  first-lag zero and the strict gain are constructed, not supplied as premises.
+  All36 finite pairs checked; only two survive at lag2d. Signed second-lag source
+  data remain explicit; this is not an infinite-grid blindness assertion.
+- `lake --old env lean /tmp/hml_realized_api.lean`, session93222, exited0 without
+  warnings. All13 public theorem axioms are only `propext`, `Classical.choice`,
+  `Quot.sound`; source/audit lists match exactly. Contribution **14/100**, with
+  224 public supporting theorem audits. Full goal remains ACTIVE.
+- Umbrella import added. Index37473 exited0; all16 public declarations indexed.
+  README remains read-only and unchanged, SHA256
+  `80c91d482d9dfcfeb86508edcf5551d34d34a5ef333d3fab64be78e75dd67507`.
+- Lean details: write nested absolute values with explicit `abs (...)`. Flatten
+  finite-six sums first, then `dsimp` coefficient arrays before arithmetic. This
+  avoids recursive simplification depth failure without increasing any limit.
+  Eliminate the nonzero-lag branch explicitly before field arithmetic. No theorem
+  weakened, heartbeat hack, full build, numerical experiment, commit or push.
+- `scripts/formal_tools.py lint --check-generated`, session53753, exited1 on six
+  unrelated modules unreachable from the BiScale umbrella:
+  `CausalExponentialResponseAndLaplaceEnergy`, `FiniteGridRunLength`,
+  `FiniteGridTraceData`, `FoldFreeKernelGramAndFranelGcdCancellation`,
+  `IntegerHatTraceExtension`, `SuccessorSequenceHilbert`. Concurrent drift in
+  `formal/LEAN_API.md` and `formal/LEAN_OVERVIEW.md` was also reported.
+  No owned lifting module was flagged. Existing large-file warnings remain;
+  no repository-wide pass is claimed. Final index39621 exited0 afterward,
+  refreshing three concurrently changed sources. No later clean lint gate claimed.
+- Owned `/tmp/hml_realized_api.lean` and `/tmp/hml_realized_lint.txt` removed;
+  absence verified. All owned source/API/search/index/lint handles terminal.
+  Final whitespace checks passed; source and read-only README hashes unchanged.
+  Contribution14/100 complete; full goal remains ACTIVE.
+
+## Fifteenth paper theorem: explicit coherent source cancellation
+
+For any actual compact continuous source f, put d=log2, R=h_f(0),
+v_k=h_f(kd)/cosh(kd/2) (k>=1), kappa=sum v_k and eta=sum k*v_k.
+Both sums are finite by compact autocorrelation support. The uniform difference
+packet P_N has covariance K_N=(N+1)kappa-eta once all nonzero source samples
+are included: positive and negative lags combine, with multiplicity N+1-k.
+The already proved collision/lattice estimate gives ||P_N||²<=2Gamma(N+1)².
+
+Construct r_N=P_N/(N+1)-(kappa/R)f as an actual C_c source. Its exact energy is
+||P_N||²/(N+1)²-2(kappa/R)K_N/(N+1)+(kappa/R)²R. Thus eventually
+||r_N||²<=D+B/(N+1), D=2Gamma-kappa²/R, B=2kappa*eta/R.
+All divisions are real totalized divisions; for R=0 the same identities hold.
+This is an explicit producer with an unconditional signed O(1/N) energy error.
+Nonnegative actual energies and the limit imply D>=0, without a new premise.
+
+The centered weighted source q is orthogonal to f, so its pairing with P_N/(N+1)
+equals its pairing with r_N. Cauchy--Schwarz and the established affine correction
+E_N=(N+1)sigma-tau give
+G_S/(N+1)<=R_S+sigma-tau/(N+1)+sqrt(Q*(D+B/(N+1))).
+The actual compact chain-packet integral inequality, divided by (N+1)², has
+span/(N+1)->d. Passing to the limit yields O²<=d*C_proj with
+C_proj=R_S+sigma+sqrt(Q*D), and C_proj>=0 on canonical odd sources.
+The same optimized collar and exact plastic decomposition then give the full
+unconditional plastic bound with this smaller moment price.
+
+Comparison: C_signed-C_proj=sqrt(2QGamma)-sqrt(QD)>=0. Its product with
+sqrt(2QGamma)+sqrt(QD) is Q*kappa²/R, retaining the full recovered source
+component. This is a coherent-direction theorem, not an arbitrary-weight frame.
+No sign assumption on source samples and no Chebyshev/RH premise is used.
+
+Corpus audit: query "coherent difference packet signed Gram source projection limit"
+with --any and BiScale module filter returned1402 declarations/134modules;
+hybridpartial59.84s, unfinished text/source stages, semantic coverage unmeasured,
+compiler freshnesspartial. Existing finite Schur projection, lag coalescence,
+lattice frame and signed affine correction were inspected. New content is the
+explicit normalized producer and its unconditional finite-length error, yielding
+the source-projected asymptotic moment coefficient. No external novelty claim.
+Paper argument and exact formal verification complete. Canonical README fully read
+at260lines, SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933;
+Trap10 applied within the existing multiplier topic. README remains read-only.
+
+### Verification of the fifteenth result
+
+- Final actual-source audit, session80305, exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/CoherentSourceProjection.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/CoherentSourceProjection.olean`.
+- Source SHA256 `77cc97109b5001a42f7cf41d50d5a1649a2c3bf9a08c37addfc85c1b5124bd06`;
+  433 lines, seven public definitions and ten public theorems. No source edit
+  after the successful actual-source audit. Previous source14 hash unchanged.
+- `lake --old env lean /tmp/hml_projection_api.lean`, session95823, exited0 without
+  warnings. Every public theorem printed only `propext`, `Classical.choice`,
+  `Quot.sound`; all ten source/audit names match. New limit and integral APIs
+  also checked in that scratch file. Contribution **15/100**, 234 public supporting
+  theorem audits; full goal ACTIVE.
+- Namespace `CoherentSourceProjection`. Producer energy, limiting energy
+  nonnegativity, odd moment and full plastic capstones take actual C_c sources,
+  with no added analytic premise. The producer removes the leading source part;
+  finite-N exact orthogonality and attainment of its upper price are not claimed.
+- Umbrella wired. Index70245 exited0; all17 public declarations indexed. Canonical
+  README hash remains dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933.
+- Lean details: simplify every Nat cast after reflection; division preserves
+  compact support by multiplication with a constant inverse. Normalize local
+  source aliases before linear arithmetic. Unfold a partially applied sequence
+  definition before matching its Tendsto proof. Zero-energy branches use exact
+  totalized-division identities. No limit/heartbeat hacks, weakened capstone,
+  full builds, numerical experiments, commits or pushes.
+- `scripts/formal_tools.py lint --check-generated`, session76320, exited1:
+  21 unrelated BiScale modules are unreachable from their umbrella:
+  `CoprimeShearArithmeticWeightsAndChebyshevCellIncrement`, `FiniteGridRunLength`,
+  `FiniteGridTraceData`, `FiniteGridTraceSharpness`, `FiniteGridTraceStability`,
+  `FiniteGridTwoSpacingRuns`, `FiniteIntegerTrainCompactness`,
+  `FiniteIntegerTrainEnergy`, `FiniteIntegerTrainPackets`, `FiniteIntegerTrainPeak`,
+  `FiniteIntegerTrainPolar`, `FiniteIntegerTrainProducers`, `FinitePathSinePackets`,
+  `FoldFreeKernelGramAndFranelGcdCancellation`, `IntegerHatTraceExtension`,
+  `SignedPrimePolarFactorialLift`, `SignedPrimePolarFactorialProducer`,
+  `SignedPrimePolarHarmonicCorrection`, `SuccessorSequenceHilbert`,
+  `TernaryPacketPolarGrowth`, `TernaryPacketTrain`.
+  Concurrent drift in `formal/LEAN_API.md` and `formal/LEAN_OVERVIEW.md` was also
+  reported. Existing large-file warnings remain. No owned lifting module was
+  flagged; no repository-wide clean gate is claimed. Other agents' sources were
+  preserved. Final index73086 exited0 afterward, refreshing seven changed sources;
+  no later clean global lint gate claimed.
+- Owned `/tmp/hml_projection_api.lean` and `/tmp/hml_projection_lint.txt` removed;
+  absence verified. All owned source/API/search/index/lint handles terminal.
+  Final whitespace checks passed; source and read-only README hashes unchanged.
+  Contribution15/100 complete; full goal remains ACTIVE.
+
+## Sixteenth paper theorem: an exact finite coherent filter
+
+The relevant limit needs only pairing with q=(cosh(u)-mu)f. Choose an intrinsic
+integer L with L*log2>2*multiplierSourceRadius(f). For k>=L the original source
+and every pointwise multiplier of it have zero correlation at (k+1)log2:
+both source factors cannot be nonzero. Thus distant translates contribute
+exactly zero to q's pairing, not merely a small geometric tail.
+
+Construct A_L(u)=sum_(k=1)^L [f(u+kd)+f(u-kd)]/(2cosh(kd/2)), d=log2,
+as an actual compact continuous source. Put K=<f,A_L> and r=A_L-(K/R)f.
+Its exact energy is H=||A_L||²-K²/R>=0, including R=0. The finite Gram
+retains all signed cross entries. Centered orthogonality gives <q,r>=<q,A_L>.
+The odd cross-correlation identity at +/-kd yields
+sigma+<q,A_L>=2sum_(k=1)^L h_S(kd).
+
+The full coherent multiplier Gram is eventually exactly
+G_S(N)=(N+1)[R_S+sigma+<q,A_L>]-2sum_(k=1)^L k*h_S(kd).
+This is an exact finite producer for the limiting pairing. The fixed boundary
+term disappears from the actual compact chain-packet integral inequality.
+Cauchy--Schwarz on q and r yields the unconditional bound
+O²<=d*C_local, C_local=R_S+sigma+sqrt(QH)>=0 on canonical odd sources.
+The same optimized collar transfers it to I_opt+R_plastic-2d*C_local<=P.
+No unknown producer estimate, source-zero hypothesis or support premise remains;
+the cutoff is constructed from the actual source. H is a finite signed source
+Gram, replacing the absolute Gamma majorant. Pointwise dominance over every
+earlier budget is not assumed; the earlier verified bound remains available.
+
+Corpus query "coherent difference packet signed filter energy limit" returned
+1477 declarations/165modules, hybridpartial53.53s, unfinished text/source stages,
+semantic coverage unmeasured and partial compiler freshness. Existing centered
+cross identity, coherent packet support/integral law and projected source Gram
+were inspected. SignedGramCapacity supplies norm-triangle machinery, but actual
+support shows a tail approximation is unnecessary for this pairing. No external
+priority claim. Paper proof complete; formal verification pending.
+
+The finite Gram has the explicit original-source formula
+||A_L||²=sum_(k,l=1)^L [h_f((l-k)d)+h_f((l+k)d)] /
+  [2cosh(kd/2)cosh(ld/2)]. Thus signed difference and reflected-sum lags both
+survive. Its source covariance is exactly kappa from contribution15 because
+all omitted original-source samples vanish. The strongest endpoint before
+Cauchy--Schwarz is O²<=d[R_S+sigma+<q,A_L>]; the local Schur budget follows.
+Source orthogonality of r is also unconditional: if R=0, integral
+Cauchy--Schwarz forces K=0. These strengthen the same finite-producer result,
+not additional contribution counts.

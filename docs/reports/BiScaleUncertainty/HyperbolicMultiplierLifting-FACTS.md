@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Twelve substantive results are Lean verified: compensated multiplier Gram
+contributions. Fifteen substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -15,12 +15,19 @@ coherent-packet odd-moment control with its unconditional plastic receiver and l
 specialization (12), and the fourth-moment variational jump receiver with its exact
 variance identity and full secant/plastic transfers (18), and the attained hyperbolic-ray
 certificate with signed activation criterion and full receivers (16), and the unconditional
-source-lattice multiplier frame, odd-moment penalty and full plastic receiver (16). Supporting theorem
+source-lattice multiplier frame, odd-moment penalty and full plastic receiver (16), and signed
+coherent cancellation with its exact boundary law and sharper full plastic receiver (13), and
+unbounded realized cancellation at fixed source energy with its full plastic transfer (13), and
+the explicit coherent source-cancelling producer with its unconditional energy error and
+sharper odd moment/plastic bound (10). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
 by user instruction. Main results retain signed source correlations; source-grid zeros
 appear only in secondary specializations. Research scope remains multiplier lifting.
+Trap10 applies here through explicit compact-source producers and proved quantitative
+energy errors before functional transfers. It does not redirect this topic to RH or
+Chebyshev bounds. No independent analytic estimate may be left as a capstone premise.
 
 ## Exact laws
 
@@ -64,7 +71,7 @@ appear only in secondary specializations. Research scope remains multiplier lift
 - **Secant is not plastic:** the actual plastic kernel is piecewise
   `levyCoshKernel`, with a signed pairing involving `2 cosh - levyCoshKernel`.
   Kernel resemblance does not identify the two functionals.
-- **Contribution counting:** ten field-specific results, not one contribution per
+- **Contribution counting:** fourteen field-specific results, not one contribution per
   declaration. Cauchy–Schwarz and ground-state representation are classical mechanisms.
   External novelty is unestablished; exact-phrase search was inconclusive.
 
@@ -549,5 +556,128 @@ Namespace `SourceLattice`; capstones `odd_sinhGram_le_latticeFrame`,
 `latticeFrame_of_source_zeros`. All 16 public theorem axiom audits passed with only
 `propext`, `Classical.choice`, `Quot.sound`. Twelve contributions, 198 public
 supporting theorem audits. Umbrella and index updated; canonical README unchanged.
-Remaining frontier includes sharper lattice costs retaining cancellation and quantitative
-domination of moment/variance costs by positive original energies. Full goal remains active.
+The next result preserves cancellation in the coherent correction. Quantitative
+domination of moment/variance costs by positive original energies remains open.
+
+## Signed coherent correction survives the moment limit
+
+- For the preceding actual correction samples, define sigma=sum_Z e_k,
+  tau=2sum_(m>=0)(m+1)e_(m+1), and
+  C_signed=R_S+sigma+sqrt(2Q Gamma). Compactness makes both sums finite.
+  These quantities admit every signed source correlation.
+- Exact pair counting gives E_N(1)=2sum_(m<N)(N-m)e_(m+1). Once N covers
+  the finite support, E_N(1)=(N+1)sigma-tau exactly. Boundary effects have a
+  fixed intercept; the extensive coefficient keeps its sign.
+- For canonical odd F, actual coherent multiplier packets satisfy
+  G_S(1)<=C_signed(N+1)-tau eventually. The packet support inequality and
+  integer growth remove the fixed intercept, without any sign premise on tau:
+  O^2<=log2*C_signed(F). Consequently C_signed(F)>=0; no max is inserted.
+  This is a coherent-direction bound, not an arbitrary-weight frame estimate.
+- N_minus=sum_Z max(-e_k,0)>=0 measures the exact improvement:
+  C_abs-C_signed=2N_minus. Thus C_signed<=C_abs for every compact source,
+  strictly whenever any correction sample is negative. Actual-source realization
+  is proved in the next result.
+- The full unconditional receiver is
+  I_opt+R_plastic-2log2*C_signed<=P, equivalently
+  I_opt+R_plastic-2log2*C_abs+4log2*N_minus<=P.
+  The collar is unchanged, and the exact gain is visible in source data.
+- Positive dyadic source zeros recover C_signed=R_S+sqrt(2V) exactly.
+  This is secondary; the main moment and plastic receivers assume only actual
+  compact input. No universal plastic positivity or all-vector optimum is claimed.
+- This is one contribution sharpening the odd moment penalty by signed source
+  cancellation. Triangular counting and the affine limit lemma are supporting
+  machinery. No external novelty claim.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/SignedCoherentMomentReceiver.lean`.
+Final actual-source compile passed without warnings; 317 lines, source SHA256
+`73bee1950bc1b31f37fc71bc01781b0ccf59377d14df72022b048571d929cc64`.
+Namespace `SignedCoherentMoment`; capstones `sourceCorrection_one_eventually_affine`,
+`odd_moment_sq_le_coherentBudget`, `latticeFrame_sub_coherentBudget`, and
+`odd_plasticCrossover_ge_cancellation_gain`. All 13 public theorem axiom audits
+passed with only `propext`, `Classical.choice`, `Quot.sound`. Thirteen contributions,
+211 public supporting theorem audits. Umbrella wired; index/lint evidence is on the
+master card. Canonical README remains read-only and unchanged.
+The next result discharges actual-source realization of strict gains. The other
+frontiers remain open.
+
+## Unbounded cancellation realized at fixed original energy
+
+- Reuse the smooth odd six-packet family, with d=log2, packet mass m>0 and
+  weighted packet mass H>0. Set F_T=source(|T|+d). For every real T,
+  h_F(0)=6m, h_F(d)=0 and h_F(2d)=-2m. Exactly two within-half pairs survive
+  at the second lag; all reflection-crossing pairs are separated from it.
+- Write c=2sinh(d/2)H>0. The existing exact multiplier law gives
+  h_S(d)=c*sinh(|T|+3d). Since h_S(d)<=R_S and M=R+2R_S,
+  2c|T|<=6m*mu(F_T). This derives mean growth from the actual source family.
+- The correction at integer lag2 obeys the exact balance
+  cosh(d)e_2=m(cosh(d)^2-mu(F_T)). Together with
+  C_abs-C_signed=2sum max(-e,0)>=-2e_2, it yields
+  C_abs(F_T)-C_signed(F_T)>=b|T|-2m*cosh(d),
+  b=2c/(3cosh(d))>0. This explicit bound uses only one correction sample.
+- Consequently, every real A admits an actual smooth odd source with the same
+  positive original energy6m and first-lag zero, whose signed-budget gain exceeds A.
+  For that same source, every N satisfies
+  I_opt(F,N)+R_plastic(F)-2d*C_abs(F)+2d*A<P(F).
+  Thus the conditional gain from the previous result is realized and unbounded
+  at fixed original energy; absolute correction mass can overprice coherent packets
+  arbitrarily under these constraints.
+- This is a budget-separation theorem. No moment-bound attainment, full-grid
+  blindness, universal plastic positivity or optimality over all controls is asserted.
+  One contribution; packet enumeration and scalar growth arguments are supporting
+  machinery. No new bump family or external novelty claim.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/RealizedCoherentCancellation.lean`.
+Final actual-source audit passed without warnings; 235 lines, source SHA256
+`23f205f2ec505806a23334d70a7e65c4945580c8b57f6e88d9d35d03b6a09d86`.
+Namespace `RealizedCoherentCancellation`; capstones `outwardSource_second_correlation`,
+`outwardSource_correction_balance`, `outwardSource_gap_lower`, and
+`exists_smooth_odd_fixedEnergy_plastic_gain`. All 13 public theorem axiom audits
+passed with only `propext`, `Classical.choice`, `Quot.sound`. Fourteen contributions,
+224 public supporting theorem audits. Umbrella wired; all16 public declarations
+indexed. Canonical README unchanged; global lint snapshot is on the master card.
+Remaining frontier: cancellation in the coherent difference-Gram price, all-control
+optimization, and comparison of moment/variance costs with positive original energies.
+Full goal remains active.
+
+## Explicit coherent producer and recovered source energy
+
+- Put d=log2, R=h_f(0), v_k=h_f(kd)/cosh(kd/2) for k>=1,
+  kappa=sum v_k and eta=sum k*v_k. Compact source correlations make both sums
+  finite. For the actual uniform difference packet P_N, with m=N+1, its source
+  covariance is exactly m*kappa-eta after the finite source support is included.
+- The concrete compact producer r_N=P_N/m-(kappa/R)f satisfies
+  ||r_N||²=||P_N||²/m²-2(kappa/R)<f,P_N>/m+kappa²/R.
+  Consequently, eventually
+  ||r_N||²<=D+B/m, D=2Gamma-kappa²/R, B=2kappa*eta/R.
+  This retains the sign of the explicit inverse-length boundary term. All real
+  divisions are totalized; the theorem includes R=0. Nonnegative producer
+  energies force D>=0, so this is not an assumed Schur or analytic bound.
+- Since q=(cosh(u)-mu)f is orthogonal to f, source cancellation changes no pairing
+  with q. With Q=||q||² and the previous signed correction sigma, the actual odd
+  source F=oddCompactSource f obeys
+  O(F)²<=d*C_proj(F), C_proj=R_S+sigma+sqrt(Q*D)>=0.
+  The finite boundary terms vanish in the compact chain-packet integral limit.
+  Thus I_opt(F,N)+R_plastic(F)-2d*C_proj(F)<=P(F) for every collar cutoff N.
+- C_proj<=C_signed. The exact gain law is
+  (C_signed-C_proj)*(sqrt(2QGamma)+sqrt(QD))=Q*kappa²/R.
+  The same full plastic certificate therefore improves by exactly
+  2d*(C_signed-C_proj). No source-zero or sign hypothesis is needed.
+- The producer cancels the limiting source component; it is not claimed exactly
+  orthogonal to f at every finite N. D is a proved asymptotic upper price, not a
+  claim that the producer energy attains D. The moment coefficient controls the
+  coherent direction, not all signed packet weights. No universal plastic
+  positivity or literature-priority claim.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/CoherentSourceProjection.lean`.
+Final actual-source audit passed without warnings; 433 lines, seven public
+definitions and ten public theorems. SHA256
+`77cc97109b5001a42f7cf41d50d5a1649a2c3bf9a08c37addfc85c1b5124bd06`.
+All ten public axiom audits use only `propext`, `Classical.choice`, `Quot.sound`.
+Fifteen contributions, 234 public supporting theorem audits. Umbrella wired;
+all17 public declarations indexed. Canonical README fully read at260lines,
+hash `dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`,
+unchanged by this work. Latest global lint snapshot is recorded on the master card.
+Remaining frontier: replace absolute correlation mass in the coherent difference
+cost by the actual signed filter energy; realize and classify projection gains;
+optimize all signed controls and compare moment costs with positive original energies.
+Full goal remains ACTIVE at15/100.

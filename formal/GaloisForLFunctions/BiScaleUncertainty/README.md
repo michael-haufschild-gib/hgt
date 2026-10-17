@@ -139,16 +139,22 @@ functional.
   $(v(n) - v(n-1))^2 + (v(n+1) - v(n))^2 = 2 v(n)^2$. In the continuum, rough logarithmic Sobolev
   primitives, path-congestion kernels, modulus velocities, and Markov clamps transfer multiplicative
   and nodal sign-change energies into additive Dirichlet energy.
-- **Producer–Consumer Duality:** By Hilbert-space orthogonal projection, any consumer lower bound on
-  correlations constrained at $\{\log n\}$ is dual to the $L^2$ approximation error
-  $\|p - \sum_{n \in s} c_n e_n\|^2$ of the polar functional $p$ by translates at $\log n$,
-  bridging Weil consumer routes directly to FZZ-P / Nyman–Beurling / Báez-Duarte producer routes.
+- **Producer–Consumer Duality & Explicit Producers:** By Hilbert-space orthogonal projection, any
+  consumer lower bound on correlations constrained at $\{\log n\}$ is dual to the $L^2$
+  approximation error $\|p - \sum_{n \in s} c_n e_n\|^2$ of the polar functional $p$ by translates
+  at $\log n$. On each Nyquist cell $[\log n, \log(n+1)]$, the explicit polar producer
+  $\operatorname{nyquistPolarConstant}(n) = \cosh((\log n)/2) = \frac{\sqrt{n} + 1/\sqrt{n}}{2}$
+  approximates $\cosh(x/2)$ in $L^2$ to within $\frac{1}{16 n^2}$ (and $\frac{1}{16 N}$ across a
+  dyadic window). On the arithmetic side, applying dyadic Nyman–Beurling dilation stencils directly
+  to the Chebyshev floor summatory $T(N) = \sum_{d \le N} \psi(\lfloor N/d \rfloor) = \sum_{m \le N} \log m$
+  produces $T(2N) - 2T(N) = (2\log 2)N + O(\log N)$ and the bi-null producer
+  $|T(4N) - 4T(2N) + 4T(N)| \le 5\log(4N+1) + 1$, bypassing $O(\sqrt{N})$ divisor noise completely.
 
 ---
 
-## 4. The Nine Structural Traps (Obstructions & Design Laws)
+## 4. The Ten Structural Traps (Obstructions & Design Laws)
 
-Every researcher working in `BiScaleUncertainty` must know the following nine traps—each formally
+Every researcher working in `BiScaleUncertainty` must know the following ten traps—each formally
 proved as an obstruction or countermodel in the repository—and the exact mechanism that resolves it:
 
 1. **Trap 1 — The Spectral-Moment / Derivative-Truncation Trap:**
@@ -212,6 +218,17 @@ proved as an obstruction or countermodel in the repository—and the exact mecha
    - *Resolution:* Always formulate theorems for **general signed correlations** $h_f(\log n) \in \mathbb{R}$
      using signed collar leverage, the all-scale von Mangoldt weight $w_\Lambda(n)$, and
      Chebyshev–polar Stieltjes transport.
+10. **Trap 10 — The Receiver-Only / Pre-Floor Divisor-Contamination Trap:**
+    Building more receivers that merely reformulate Weil positivity into unproved Chebyshev bounds
+    ("RH is $X$"), or subtracting the discrete counterterm $j$ *before* floor summation
+    ($\sum_{d \le N} (\psi - \mathrm{id} + 2\gamma)(\lfloor N/d \rfloor)$), replaces the smooth
+    archimedean counterterm by Dirichlet's divisor summatory $D(N) = \sum_{d \le N} \lfloor N/d \rfloor$,
+    contaminating the $O(\log N)$-smooth Chebyshev factorial sum $T(N) = \sum_{m \le N} \log m$ with
+    $O(\sqrt{N})$ divisor noise.
+    - *Resolution:* Construct **explicit producers** with unconditional error bounds: instantiate the
+      Nyquist-cell polar producer $\operatorname{nyquistPolarConstant}(n) = \cosh((\log n)/2)$
+      ($O(1/n^2)$ cell $L^2$ error) and apply pole-cancelling dilation stencils directly to $T(N)$
+      ($T(2N) - 2T(N)$ and $T(4N) - 4T(2N) + 4T(N)$) to achieve unconditional $O(\log N)$ bounds.
 
 ---
 
@@ -221,16 +238,16 @@ Do **not** read every file sequentially—use the repository search tool to find
 lemmas, and proof patterns:
 ```bash
 scripts/formal_tools.py research "allScaleVonMangoldtWeight"
+scripts/formal_tools.py research "chebyshevBiNullProducer nyquistPolarConstant"
 scripts/formal_tools.py research "chebyshevWork packetEnergy"
 scripts/formal_tools.py research "coshMultiplier signed collar"
-scripts/formal_tools.py research "coprime trace projection"
 ```
 
 ### Engineering & Mathematical Discipline for Future Agents
-1. **Unconditional Theorems First:** State main theorems **unconditionally** on concrete
-   explicit-formula objects (`RealEvenPolarTestFn`, `RealSmoothEvenPolarTestFn`, `C_c(ℝ, ℝ)`, `ℕ`, `ℝ`)
-   rather than hiding obstructions behind unverified hypotheses (such as assuming $h_f(\log n) = 0$,
-   assuming $S(f)$ bounds, or assuming unproved moment vanishings).
+1. **Unconditional Producers First:** Do not add more receiver-only "RH $\leftrightarrow X$"
+   reformulations or leave producer weights $W(x)$ uninstantiated. Construct explicit producers and
+   prove their unconditional quantitative bounds on concrete objects (`RealWeilTestFn`,
+   `RealEvenPolarTestFn`, `C_c(ℝ, ℝ)`, `ℕ`, `ℝ`).
 2. **Lean 4 Performance on `RealEvenPolarTestFn`:** Because `RealEvenPolarTestFn` is a nested
    `Subtype`, never run bare `linarith` or `nlinarith` when `g : RealEvenPolarTestFn` is in the
    local context (it recursively unfolds `Subtype.property` and stalls); always use
@@ -240,3 +257,4 @@ scripts/formal_tools.py research "coprime trace projection"
    [`formal/GaloisForLFunctions/BiScaleUncertainty.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty.lean),
    verify `#print axioms` via a `/tmp` scratch file (only `[propext, Classical.choice, Quot.sound]`
    allowed), and keep zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+

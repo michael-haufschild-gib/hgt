@@ -25,8 +25,9 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    Nodal mass coercivity, strict modulus contraction and actual Markov clamping are proved.
    Infinite coprime extension, exact projection, and gcd/lcm classification of
    projection interactions, sharp angles and exact alternating rates are proved.
-   Construct joint two-grid trace extensions, extend admission beyond compact
-   support, and identify closed-graph APIs.
+   Joint two-grid trace extension, sharp stability and the closed sum are proved.
+   Finite divisor families now have sharp longest-run constants and actual sine attainers.
+   Extend to arbitrary divisor families, admission beyond compact support, and closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -82,10 +83,14 @@ traces or a constructed interpolant.
   intersections; three leaves, all 30 public declarations audited.
 - [x] Sharp arithmetic projection angles, norm attainment and exact alternating
   errors; four leaves, all 45 public declarations audited.
+- [x] Joint infinite two-grid traces, exact adjacent energy, sharp attained stability,
+  closed algebraic sum and minimum-energy defect; four leaves, 49 declarations audited.
+- [x] Finite divisor-family interpolation, sharp longest-run factors, explicit
+  sine attainers, closed range and exact mismatch; eight leaves, 124 declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **11 / 100**. Formalized packages:
+Certified count: **13 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -96,7 +101,9 @@ Certified count: **11 / 100**. Formalized packages:
 `../3-formalized/rough-markov-clamp-domain.md`, and
 `../3-formalized/infinite-coprime-trace-extension.md`, and
 `../3-formalized/coprime-projection-arithmetic-commutator.md`, and
-`../3-formalized/coprime-projection-angle-gap.md`.
+`../3-formalized/coprime-projection-angle-gap.md`, and
+`../3-formalized/two-grid-coprime-trace-extension.md`, and
+`../3-formalized/finite-grid-run-length-coercivity.md`.
 
 ## Current exact result and next frontier
 
@@ -277,9 +284,42 @@ pass. All imports and generated API entries verified at current source lines.
 Field README remained read-only. Repository lint details are in the fact ledger.
 This turn is **progress**; certified count **11/100**, goal active.
 
+## Certified package 12: joint infinite trace interpolation
+
+Actual nonredundant ℓ² data realize all union-grid integer/logarithmic traces.
+Exact adjacent energy has sharp attained factors (2,2), (1,3), or
+(2−√2,2+√2) according to arithmetic spacings. Extension is injective, with
+closed range equal to the algebraic sum of both individual ranges. Unconditional
+competitor identity retains trace mismatch; matching all integer traces yields
+exact minimum-energy defect and uniqueness.
+
+Four final direct checks, all49 public axiom audits, thirteen main signatures,
+four imports and all48 catalog-supported entries pass. Named instance is
+separately audited. Global lint has ten unrelated concurrent missing imports,
+recorded in the fact ledger. README remains read-only. Package12 is progress;
+goal remains active at12/100.
+
+## Certified package 13: sharp finite-family run coercivity
+
+For every actual finite nonempty divisor family, maximum active run r is
+constructed, positive, below the lcm period, and attained in one period.
+The physical L² producer S(v−Rv) realizes every integer/log trace and has
+sharp factors 2±2cos(π/(r+1)). Actual finite sine packets attain both factors.
+The masked successor is proved contractive and nilpotent at r; no gap is
+assumed. Closed range, exact adjacent energy, unconditional mismatch, unique
+minimum for matching traces, and the two-grid r=1,2,3 recovery all check.
+
+Eight leaf checks and all 124 public-declaration axiom audits pass cleanly;
+only standard axioms. Eight imports and 123 supported API entries verified.
+Global lint reports fourteen unrelated concurrent unreachable modules plus
+generated drift; index refreshed afterward. Exact details are in the ledger.
+README was fully read and kept read-only; Trap 10 is applied through actual
+producers and proved errors. This turn is progress; goal remains active at 13/100.
+
 ## Next candidate
 
-`two-grid-coprime-trace-extension.md`: construct infinite joint
-nodal interpolation on the union of two divisor grids, with exact adjacent-node
-energy, sharp arithmetic stability constants and minimum-energy defect.
-Unproved and uncounted; corpus limitations and construction obligations on card.
+`../0-backlog/infinite-divisor-run-gap-classification.md`: for arbitrary divisor
+families, bounded active runs should characterize positive coercivity and
+closed range. Unbounded runs should produce normalized finite sine packets
+with energy tending to zero. Unproved and uncounted; corpus limitations and
+the required positive classification are recorded on the card.

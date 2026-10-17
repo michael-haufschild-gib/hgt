@@ -25,7 +25,7 @@ theorem twoGrid_cross_bound (d e : ℕ) (v : TwoGridData d e) :
     simp only [reducedCoprimeProduct, sub_apply, mul_apply_eq_comp, hq, hr, sub_zero]
   have hi : ⟪x, y⟫ = ⟪x, reducedCoprimeProduct d e y⟫ := by
     rw [ht, ← coprimeProjector_adjoint d,
-      ContinuousLinearMap.adjoint_inner_right, coprimeProjector_adjoint, hp]
+      ContinuousLinearMap.adjoint_inner_right, hp]
   have hn : ‖x‖ * ‖y‖ ≤ twoGridMass d e v := by
     have hx := norm_sq_coprimeExtension d v.1.1
     have hy := norm_sq_coprimeExtension e v.1.2
@@ -110,8 +110,7 @@ theorem coprimeExtension_eraseCommon (d e : ℕ) (b : TraceData) :
     coprimeExtension e (twoGridEraseCommon d e b) =
       coprimeExtension e b - coprimeProjector (coprimeLcm d e) (coprimeExtension e b) := by
   unfold twoGridEraseCommon
-  change coprimeExtensionL e (b - _) = _
-  rw [map_sub, coprimeExtensionL_apply, coprimeExtensionL_apply, coprimeLcm_comm d e,
+  rw [← coprimeExtensionL_apply e (b - _), map_sub, coprimeExtensionL_apply, coprimeExtensionL_apply, coprimeLcm_comm d e,
     coprimeExtension_coefficients_lcm]
 
 /-- Every algebraic sum admits the canonical nonredundant joint data. -/
@@ -121,7 +120,7 @@ theorem range_twoGridExtension (d e : ℕ) :
   ext q
   constructor
   · rintro ⟨v, rfl⟩
-    exact ⟨v.1.1, v.1.2, rfl⟩
+    exact ⟨v.1.1, v.1.2, (twoGridExtension_apply d e v).symm⟩
   · rintro ⟨a, b, rfl⟩
     refine ⟨twoGridData d e (a + coprimeCoefficients d
       (coprimeProjector (coprimeLcm d e) (coprimeExtension e b))) b, ?_⟩

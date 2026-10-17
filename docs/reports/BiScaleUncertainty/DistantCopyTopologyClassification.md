@@ -137,4 +137,30 @@ energy envelope and full-line cosh product. Logs:
 `/tmp/distant-copy-topology-research.txt`, `/tmp/distant-copy-polar-lexical.txt`.
 No exhaustive external priority claim is made.
 
-Dependency-closed paper proof complete. Lean certificate pending; not counted.
+Certified package 12. Five direct `lake --old env lean` leaf checks pass without
+diagnostics: `DistantCopyCorrelationTopology.lean` (10 theorems, 2 definitions),
+`DistantCopyEnergyTopology.lean` (8 theorems, 2 definitions),
+`DistantCopyPolarTopology.lean` (8 theorems, 1 definition),
+`DistantCopyCompactness.lean` (4 theorems, 2 definitions), and
+`DistantCopySharpness.lean` (5 public theorems, 1 definition, 1 private helper).
+All 43 public declaration audits use only `propext`, `Classical.choice`, and
+`Quot.sound`; the private seed construction is covered transitively. Every umbrella
+import and API name/module pair was checked. Index refresh passed; no umbrella build ran.
+
+The exact endpoints include `levyDistantCopy_dist_seed`,
+`isCompact_closure_distantCopies_iff`, `uniformSignedGridTail_distantCopies_iff`,
+`tendsto_normalizedPolarMoment_subtractCopy_iff`,
+`exists_smooth_pointwise_grid_blind_noncompact`, and
+`exists_smooth_polar_balanced_nonpolar_uniform_limit`. The normalized polar density
+is explicitly integrable, and its integral equals `normalizedPolarMoment`.
+
+Global formal lint reports only five concurrent foreign modules missing umbrella
+reachability: `CausalExponentialResponseAndLaplaceEnergy`, `FiniteGridRunLength`,
+`FoldFreeKernelGramAndFranelGcdCancellation`, `RealizedCoherentCancellation`, and
+`SuccessorSequenceHilbert`. No owned leaf has a lint error; repository-wide green
+is not claimed. Leaf logs: `/tmp/distant-copy-{correlation,energy,polar,compactness,sharpness}-leaf.log`.
+Final scratch: `/tmp/distant_copy_topology_axioms.lean`; audit logs:
+`/tmp/distant-copy-topology-{axioms,index,lint}.log`.
+
+Count this connected classification and its actual witnesses once. The read-only
+field README retains SHA256 `80c91d482d9dfcfeb86508edcf5551d34d34a5ef333d3fab64be78e75dd67507`.
