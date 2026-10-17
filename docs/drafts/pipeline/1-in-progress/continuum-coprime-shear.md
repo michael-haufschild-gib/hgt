@@ -31,7 +31,8 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    Their physical energy completion, conservation laws and escaping trace producers are proved.
    Explicit physical component projections and exact convergent approximation error are proved.
    Actual dilation/block coisometry, convergent variance and sharp packets are proved.
-   Extend to physical affine commutator producers, SourceGraph coupling and closed-graph APIs.
+   Actual physical affine action, sharp commutator norm, nonattainment and finite producers are proved.
+   Extend to actual regularized velocities, SourceGraph coupling and closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -99,10 +100,12 @@ traces or a constructed interpolant.
   convergent error with negative-half-line accounting; five leaves,87 declarations audited.
 - [x] Actual physical dilation, integer block producers, exact infinite variance,
   successor covariance and sharp equality; five leaves,72 declarations audited.
-- [ ] Closed-form identification and full affine operator uncertainty.
+- [x] Physical affine action, exact positive commutator defect, sharp norm and
+  nonattainment with explicit finite producers; six leaves,76 declarations audited.
+- [ ] Full SourceGraph coupling and closed-form operator identification.
 - [ ] 100 significant contributions.
 
-Certified count: **17 / 100**. Formalized packages:
+Certified count: **18 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -119,7 +122,8 @@ Certified count: **17 / 100**. Formalized packages:
 `../3-formalized/infinite-divisor-run-gap-classification.md`, and
 `../3-formalized/divisor-trace-energy-completion.md`, and
 `../3-formalized/divisor-component-averaging-projection.md`, and
-`../3-formalized/integer-dilation-cell-coisometry.md`.
+`../3-formalized/integer-dilation-cell-coisometry.md`, and
+`../3-formalized/physical-affine-commutator-producers.md`.
 
 ## Current exact result and next frontier
 
@@ -398,10 +402,27 @@ listed in paper/card/ledger; no own or proof-debt error. Index refreshed.
 Trap10 applied through explicit unconditional producers. README fully read
 and unchanged. Paper preceded Lean. Counted once:17/100, goal active.
 
+## Certified package 18: physical affine commutator producers
+
+Actual translations, primitive anchors and affine covariance hold for all
+real parameters. The commutator has exact positive defect
+4|a|‖q‖²−‖Cq‖²=|a|‖τ_(b(a−1))q+q‖². Cell analysis and primitive
+injectivity prove antiperiodic rigidity. Normalized finite alternating
+packets give exact error2|a|/N, forcing sharp norm2√|a| at nonzero gap.
+C=0 iff a=0 or a=1 or b=0; a nonzero C has no nonzero norm attainer.
+A small nonzero geometric gap does not give small full-space operator norm.
+
+All six direct leaves pass without diagnostics; all76 public axiom checks
+use only standard axioms.29 principal signatures and73 API probes pass;
+six imports and76 exact catalog locations verified. Global lint exits1 for
+22 unrelated unreachable modules and concurrent LEAN_API drift; exact list
+is on the stage3 card. No own/proof-debt error. Index refreshed separately.
+Paper preceded Lean. README remains unchanged. Certified18/100, goal active.
+
 ## Next candidate
 
-`../0-backlog/physical-affine-commutator-producers.md`: construct actual
-physical translations and anchored affine action; determine sharp
-commutator norm/nonattainment with explicit alternating finite packets.
-Unproved and uncounted; no Lean assigned. Primary-source and paper-proof
-audits still required. Preserve full-space versus half-line distinctions.
+`../0-backlog/physical-box-average-affine-regularity.md`: construct actual
+L² box averages, exact variance loss and derivative, then bound their affine
+commutator by the gap-to-width ratio. Unproved/uncounted; no Lean assigned.
+Corpus audit completed with partial coverage; primary-source and full paper
+proof still required. Existing compact continuous averaging is a parent.

@@ -15,6 +15,10 @@ def nyquistWeightTailBound (β : ℝ) (m N : ℕ) : ℝ :=
   ((2 : ℝ) ^ β * β ^ (m + 1) / ((m + 2).factorial : ℝ)) *
     (1 + 1 / ((m : ℝ) + 1 - β)) * ((N + 1 : ℕ) : ℝ) ^ (β - ((m : ℝ) + 1))
 
+theorem nyquistWeightTailMass_zero_parameter (m N : ℕ) :
+    nyquistWeightTailMass 0 m N = 0 := by
+  simp [nyquistWeightTailMass, nyquistWeightCellMass_zero_parameter]
+
 theorem nyquistWeightTailMass_le {β : ℝ} (hβ : 0 < β) (m N : ℕ)
     (hlt : β < (m : ℝ) + 1) :
     nyquistWeightTailMass β m N ≤ nyquistWeightTailBound β m N := by
@@ -47,7 +51,8 @@ theorem tendsto_nyquistWeightTailBound {β : ℝ} (m : ℕ) (hlt : β < (m : ℝ
       atTop (𝓝 0) := by
     simpa only [Function.comp_def, neg_sub] using
       (tendsto_rpow_neg_atTop (by linarith : 0 < (m : ℝ) + 1 - β)).comp hn
-  simpa only [nyquistWeightTailBound, mul_zero] using ht.const_mul
+  unfold nyquistWeightTailBound
+  simpa only [mul_zero] using ht.const_mul
     (((2 : ℝ) ^ β * β ^ (m + 1) / ((m + 2).factorial : ℝ)) *
       (1 + 1 / ((m : ℝ) + 1 - β)))
 
@@ -82,7 +87,8 @@ theorem tendsto_nyquistWeightTailMass_normalized {β : ℝ} (hβ : 0 < β) (m : 
     field_simp [(hpos N).ne']
   have hq : -p - 1 = (m : ℝ) + 1 - β := by dsimp [p]; push_cast; ring
   have he : p + 1 = β - ((m : ℝ) + 1) := by dsimp [p]; push_cast; ring
-  simpa only [heq, hq, he, mul_one_div] using ht
+  have ht' := ht.congr' (Eventually.of_forall heq)
+  simpa only [hq, he, mul_one_div] using ht'
 
 end
 end GaloisForLFunctions.BiScaleUncertainty

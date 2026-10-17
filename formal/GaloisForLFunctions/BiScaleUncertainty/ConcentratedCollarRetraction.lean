@@ -141,6 +141,7 @@ theorem concentratedRetract_weight_le (η : PhysicalCollarPartition m) (hm : n �
     unfold rightRepairWeight weight density
     dsimp [x]
     ring_nf
+    exact le_rfl
   · change (if x ∈ Ioo logarithmicCollarRadius (logarithmicCollarEndpoint n) then
         η.share k x + (1 - η.oldShareSum n x) * (rightNode n).share k x else 0) *
         archLevySinhWeight x ≤ _

@@ -62,4 +62,4 @@ are partial (reranking deadline and semantic timeout). Available candidates and
 source arguments were inspected; no external novelty claim follows from retrieval.
 
 Next uncounted question:
-`0-backlog/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
+`1-in-progress/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.

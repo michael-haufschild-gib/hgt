@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Twenty-three substantive results are Lean verified: compensated multiplier Gram
+contributions. Twenty-four substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -27,7 +27,8 @@ support escape with a strictly positive Schur residual and exact plastic correct
 folded-source variance with its exact coherent equality domain and full plastic correction (9), and
 actual nonzero-mean coherent attainment with the optimal universal coefficient and full plastic transfer (12), and
 the canonical fixed-annulus retraction preserving full odd coherent data and pricing the original plastic functional (14), and
-the actual coherent kernel splitting, nonzero zero-fold family and unconditional plastic nonnegativity (25). Supporting theorem
+the actual coherent kernel splitting, nonzero zero-fold family and unconditional plastic nonnegativity (25), and
+exact source-realized plastic line minimization with coherent-data preservation and full gain transfer (21). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -991,8 +992,8 @@ Let O(f)=oddCompactSource f and R(f) be the annular representative.
   Energy control for R(f), or after adding a kernel cost, remains open.
 
 No original-energy orthogonality, plastic additivity between the coordinates,
-strict plastic positivity, prime-grid blindness or extra source smoothness
-is asserted. This is one substantive kernel/decomposition contribution;
+prime-grid blindness or extra source smoothness is asserted. Strictness on
+nonzero kernel sources is established below. This is one substantive kernel/decomposition contribution;
 supporting linearity and quadratic scaling are not separate contributions.
 
 Direct source compilation and all25 public theorem axiom audits passed without
@@ -1004,4 +1005,51 @@ Source and audit theorem-name lists also match exactly. Twenty-three contributio
 345 supporting public theorem audits; full goal ACTIVE. The energy-control no-go
 is closed with this formally verified positive survivor in
 `docs/drafts/pipeline/5-failed/coherent-price-controls-source-energy-2026-10-17.md`.
-Final global lint snapshot pending after one bounded refresh; no global clean-gate claim.
+Final global lint after one bounded refresh reports10 unrelated unreachable
+modules, with no generated-file drift and no owned lifting module flagged.
+Exact snapshot on master card; no repository-wide clean-gate claim.
+
+## Exact plastic minimization within a coherent class
+
+Lean-verified module
+`formal/GaloisForLFunctions/BiScaleUncertainty/PlasticCoherentLineMinimizer.lean`.
+For arbitrary actual inputs f,g, set F=oddCompactSource(f), H=kernelPart(g),
+Q=plasticCrossover, q=Q(H), and b=(Q(F+H)-Q(F)-Q(H))/2.
+
+- q=0 iff H=0, and q>0 iff H!=0. The positive jump integral vanishes only
+  for the zero compact source: zero integral forces its continuous correlation
+  difference to vanish on x>0, including a lag beyond its support diameter.
+  Thus nonzero coherent-kernel directions have strictly positive plastic curvature.
+- The actual compact odd source F_t=F+t*H satisfies
+  Q(F_t)=Q(F)+2tb+t²q for every real t. Original signed pair integrals are
+  admitted through the existing unconditional integrability theorems.
+- The full fold is preserved for every t, hence so are the signed hyperbolic
+  moment and exact coherent price. Finite lattice support discharges the
+  summability needed for the public fold add/scalar identity.
+- Define t_*=-b/q, F_*=F_(t_*), and G=b²/q, including total division at q=0.
+  When q=0, H=0 and b=0, so F_*=F and G=0. Universally,
+  Q(F_*)=Q(F)-G and Q(F_t)=Q(F_*)+q(t-t_*)².
+  The source F_* therefore attains the minimum on the entire prescribed line.
+  Equality holds iff H=0 or t=t_*; improvement is strict iff b!=0.
+- For every cutoff N, the original full functional receives the bound
+  I_opt(F_*,N)+R_plastic(F_*)-2*O_moment(F)²+G<=Q(F).
+  Collar and remainder belong to the actual corrected source; the signed
+  moment belongs to its preserved coherent class. No free analytic, curvature,
+  integrability or step-selection premise remains.
+
+This is one actual-source minimization and gain-transfer contribution.
+Generic quadratic algebra and completion of the square are supporting tools.
+No minimizer over the whole coherent fiber, convergence of repeated corrections,
+source-energy orthogonality, preservation of source-grid zeros, or universal
+plastic positivity is claimed. The theorem minimizes the original plastic
+functional along the chosen line, not only a surrogate lower bound.
+
+Direct source compilation and all21 public theorem axiom audits passed without
+warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has354 lines,
+five public definitions and21 public theorems; SHA256
+`23c31eead3da768eea9f6ee378b02c857bff49e44bea5fe9f6c740ad263a6023`.
+Umbrella wired; all26 public declarations indexed with exact source/API and
+source/audit name-list matches. Twenty-four contributions,366 supporting public
+theorem audits; full goal ACTIVE. Final global lint after one bounded refresh
+reports22 unrelated unreachable modules and concurrent LEAN_API drift; no owned
+lifting module flagged. Exact snapshot on master card; no global clean-gate claim.

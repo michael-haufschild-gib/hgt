@@ -83,32 +83,39 @@ source is not a resolution of that remaining uniform-control problem.
 4. Formalize the complete connected theorem in direct Lean leaves, one process at a time.
 5. Audit all declarations, axioms, API entries, imports and lint; update the ledger only then.
 
-Verified direct leaves: `NyquistWeightJets.lean`,
-`NyquistWeightTaylorRemainder.lean`, and `NyquistWeightCells.lean`. They prove
-the explicit derivative jets, finite producer identity, nonnegative remainders,
-two-sided endpoint-jet mass bounds, scaled logarithmic cell width limit, and
-the unconditional power majorant with constant 2^beta beta^(m+1)/(m+2)!.
-All three direct leaf checks exit 0 with clean final logs; imports are wired.
-`NyquistWeightCellAsymptotic.lean` also exits 0 and is wired. It proves the sharp
-cell constant, asymptotic equivalence, and exact summability threshold for
-every tail. Its current log contains two informational `ring` suggestions,
-with no errors or warnings. Kernel integrability, full tail/prefix
-asymptotics, operator norm, and actual-source sharpness remain in progress;
-these intermediate leaves do not constitute another package.
+Ten direct leaves pass and are wired: `NyquistWeightJets`,
+`NyquistWeightTaylorRemainder`, `NyquistWeightCells`,
+`NyquistWeightCellAsymptotic`, `NyquistPowerTails`,
+`NyquistPositiveTailComparison`, `NyquistWeightKernel`,
+`NyquistWeightTailMass`, `NyquistWeightOperator`, and
+`NyquistWideSourceEnergy`. All final logs are clean except two informational
+`ring` suggestions in `NyquistWeightCellAsymptotic` (no errors or warnings).
 
-Drafts awaiting direct checks: `NyquistWeightKernel.lean` (actual positive
-kernel and integrability equivalence) and `NyquistWideSourceEnergy.lean`
-(one dilation-energy constant for every positive source scaling).
+These certificates cover the explicit Taylor jets and positive remainder,
+all-cell power bound, sharp cell asymptotic, exact integrability threshold,
+explicit and sharp subcritical tail mass, locally integrable actual kernel,
+positive bounded integral operator with exact norm, and literal infinite
+positive mass at/above threshold. The common actual smooth source family has
+pointwise correlation limit one, a quantitative growing plateau, and energy
+bound K/(j+1). Its sharpness endpoints remain to be composed.
 
-`NyquistPowerTails.lean` passes its direct check with a clean log and is wired.
-It proves two-sided integral bounds, the explicit finite tail bound, and
-the sharp power-tail ratio. `NyquistPositiveTailComparison.lean` and
-`NyquistWeightTailMass.lean` are drafted for the transfer to actual residual
-masses; direct checks remain pending. The kernel's first check found two
-function-form mismatches in its zero-parameter and compact-input proofs;
-both are corrected in source, awaiting recheck.
-The kernel draft now also treats beta=0 explicitly, so subsequent bounded
-operators can cover the entire nonnegative subcritical range.
+Remaining proof organization:
+- Critical/supercritical prefixes: transfer ratios through positive divergent
+  prefixes, using telescoping logarithmic/power increments. The relevant
+  derivative and slope APIs pass their names probe. The prefix-transfer leaf
+  is being checked; it is not yet counted as verified.
+- Exact signed cell moments and compact-input producer decomposition, absolute
+  cell summation, and the uniform-convergence equivalence.
+- Actual-source norm sharpness and supercritical divergence under every
+  positive energy ceiling, using the checked common source family.
+- Minimum integer degree, the three calibrations, and the complete package's
+  direct-leaf, axiom, API, import, index, and lint audits.
+
+Trap 10 alignment: these are explicit unconditional Nyquist-cell producers.
+The beta=1/2, degree-zero calibration must identify the existing
+`nyquistPolarConstant` producer. No receiver-only Chebyshev premise or
+pre-floor subtraction enters this tail-rigidity package. The factorial-stencil
+route is a separate topic and does not replace the assigned research topic.
 
 The original 100-package objective remains active with 14 certified packages.
 This card carries task tracking because `update_plan` is unavailable.

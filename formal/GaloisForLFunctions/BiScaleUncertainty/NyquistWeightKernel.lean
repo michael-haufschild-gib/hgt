@@ -170,7 +170,7 @@ theorem integrable_nyquistWeightKernel_iff_nonneg {β : ℝ} (hβ : 0 ≤ β) (m
     · intro _
       positivity
     · intro _
-      exact integrable_zero
+      exact integrable_zero ℝ ℝ volume
   · exact integrable_nyquistWeightKernel_iff hpos m N
 
 /-- Below the threshold this is the actual positive tail mass. -/

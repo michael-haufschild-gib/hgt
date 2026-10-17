@@ -23,16 +23,18 @@ variable {n m : ℕ}
 
 /-- Splice actual partitions along an arbitrary measurable physical region. -/
 def splice (ρ η : PhysicalCollarPartition n) (S : Set ℝ) (hS : MeasurableSet S) :
-    PhysicalCollarPartition n where
-  share k x := if x ∈ S then ρ.share k x else η.share k x
-  measurable_share k := Measurable.ite hS (ρ.measurable_share k) (η.measurable_share k)
-  nonneg := by intro k x; split_ifs <;> first | exact ρ.nonneg k x | exact η.nonneg k x
-  supported := by intro k x hx; split_ifs <;> first | exact ρ.supported k x hx | exact η.supported k x hx
-  partition := by
-    intro x
-    by_cases hx : x ∈ S
-    · simpa only [if_pos hx] using ρ.partition x
-    · simpa only [if_neg hx] using η.partition x
+    PhysicalCollarPartition n := by
+  classical
+  exact {
+    share := fun k x => if x ∈ S then ρ.share k x else η.share k x
+    measurable_share := fun k => Measurable.ite hS (ρ.measurable_share k) (η.measurable_share k)
+    nonneg := by intro k x; split_ifs <;> first | exact ρ.nonneg k x | exact η.nonneg k x
+    supported := by intro k x hx; split_ifs <;> first | exact ρ.supported k x hx | exact η.supported k x hx
+    partition := by
+      intro x
+      by_cases hx : x ∈ S
+      · simpa only [if_pos hx] using ρ.partition x
+      · simpa only [if_neg hx] using η.partition x }
 
 def concentratedExtend (ρ : PhysicalCollarPartition n) (hm : n ≤ m) :
     PhysicalCollarPartition m :=
@@ -61,18 +63,18 @@ theorem concentratedExtend_weight (ρ : PhysicalCollarPartition n) (hm : n ≤ m
     (σ : Bool) (k : ℕ) (y : ℝ) :
     (ρ.concentratedExtend hm).weight σ k y =
       collarArrayPad n (fun σ k => ρ.weight σ k y) σ k + rightTailWeight m n σ k y := by
+  classical
   let x := logarithmicCollarNode k + collarSignedOffset σ y
+  change (if x < logarithmicCollarEndpoint n then
+      (if x < logarithmicCollarEndpoint n then (if k < n + 1 then ρ.share k x else 0)
+        else (equalMultiplicity m).share k x)
+      else (rightNode m).share k x) * archLevySinhWeight x =
+    (if k < n + 1 then ρ.share k x * archLevySinhWeight x else 0) +
+      (if x < logarithmicCollarEndpoint n then 0 else (rightNode m).share k x * archLevySinhWeight x)
   by_cases hx : x < logarithmicCollarEndpoint n
-  · by_cases hk : k < n + 1 <;>
-      simp only [concentratedExtend, weight, density, splice, extend, mem_Iio,
-        collarArrayPad, rightTailWeight, if_pos hx, if_pos hk, if_neg hk, zero_mul, add_zero]
-  · have hz : ρ.weight σ k y = 0 := by
-      have hs := ρ.supported k x (fun hc => hx hc.2.2)
-      change ρ.share k x * archLevySinhWeight x = 0
-      rw [hs, zero_mul]
-    by_cases hk : k < n + 1 <;>
-      simp only [concentratedExtend, weight, density, splice, mem_Iio, collarArrayPad,
-        rightTailWeight, if_neg hx, if_pos hk, if_neg hk, hz, zero_add]
+  · by_cases hk : k < n + 1 <;> simp [hx, hk]
+  · have hs := ρ.supported k x (fun hc => hx hc.2.2)
+    by_cases hk : k < n + 1 <;> simp [hx, hk, hs]
 
 theorem pad_weight_le_concentratedExtend (ρ : PhysicalCollarPartition n) (hm : n ≤ m)
     (σ : Bool) (k : ℕ) (y : ℝ) :

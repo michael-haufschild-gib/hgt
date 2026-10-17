@@ -27,7 +27,7 @@ theorem exp_neg_two_collarRadius :
     Real.exp (-2 * logarithmicCollarRadius) = (1 / 2 : ℝ) := by
   rw [show -2 * logarithmicCollarRadius = -Real.log 2 by
     unfold logarithmicCollarRadius; ring, Real.exp_neg, Real.exp_log (by norm_num)]
-  rfl
+  simp only [one_div]
 
 theorem archWeight_at_signed_node_le (k : ℕ) (σ : Bool) {y : ℝ}
     (hy : y ∈ Ioo 0 logarithmicCollarRadius) :
@@ -49,15 +49,17 @@ theorem archWeight_at_signed_node_le (k : ℕ) (σ : Bool) {y : ℝ}
     rw [← exp_logarithmicCollarNode_half, ← Real.exp_sub]
     exact Real.exp_le_exp.mpr (by linarith)
   have heδ : Real.exp (logarithmicCollarRadius / 2) ≤ 2 := by
-    rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2)]
-    apply Real.exp_le_exp.mpr
-    unfold logarithmicCollarRadius
-    linarith [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
+    calc
+      _ ≤ Real.exp (Real.log 2) := by
+        apply Real.exp_le_exp.mpr
+        unfold logarithmicCollarRadius
+        linarith [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
+      _ = 2 := Real.exp_log (by norm_num)
   have he' := he.trans (div_le_div_of_nonneg_right heδ (Real.sqrt_nonneg _))
   change archLevySinhWeight x ≤ _
   calc
     _ ≤ 4 * Real.exp (-x / 2) := by
-      simpa only [show -(1 / 2 : ℝ) * x = -x / 2 by ring] using hw
+      simpa only [show -(1 / 2 * x : ℝ) = -x / 2 by ring] using hw
     _ ≤ 4 * (2 / Real.sqrt ((k + 2 : ℕ) : ℝ)) :=
       mul_le_mul_of_nonneg_left he' (by norm_num)
     _ = _ := by ring
@@ -92,8 +94,9 @@ theorem inverse_sqrt_step (k : ℕ) :
   have hs := Real.sq_sqrt (show (0 : ℝ) ≤ ((k + 2 : ℕ) : ℝ) by positivity)
   have ht := Real.sq_sqrt (show (0 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) by positivity)
   apply (div_le_iff₀ (Real.sqrt_pos.mpr (by positivity : (0 : ℝ) < ((k + 2 : ℕ) : ℝ)))).mpr
-  push_cast at hs ht
-  nlinarith [sq_nonneg (Real.sqrt ((k + 2 : ℕ) : ℝ) - Real.sqrt ((k + 1 : ℕ) : ℝ))]
+  have hd := sq_nonneg (Real.sqrt ((k + 2 : ℕ) : ℝ) - Real.sqrt ((k + 1 : ℕ) : ℝ))
+  push_cast at hs ht hd ⊢
+  nlinarith
 
 theorem sum_range_inverse_sqrt_le (n : ℕ) :
     (∑ k ∈ Finset.range n, 1 / Real.sqrt ((k + 2 : ℕ) : ℝ)) ≤
@@ -122,7 +125,10 @@ theorem logarithmicArrayMass_le_sqrt_cutoff (n : ℕ) (a : Bool → ℕ → ℝ)
     intro k hk
     have h1 := ha false k hk
     have h2 := ha true k hk
-    linarith
+    calc
+      _ ≤ 8 / Real.sqrt ((k + 2 : ℕ) : ℝ) + 8 / Real.sqrt ((k + 2 : ℕ) : ℝ) :=
+        add_le_add h1 h2
+      _ = _ := by ring
   have hs := mul_le_mul_of_nonneg_left (sum_range_inverse_sqrt_le (n + 1))
     (by norm_num : (0 : ℝ) ≤ 16)
   norm_num only [Nat.add_assoc] at hs
@@ -173,7 +179,10 @@ theorem logarithmicArrayMass_le_inverse_sqrt_offset (n : ℕ) (a : Bool → ℕ 
     (fun _ => by positivity) (fun k hk => by
       have h1 := ha false k (Finset.mem_range.mpr hk)
       have h2 := ha true k (Finset.mem_range.mpr hk)
-      linarith) hz
+      calc
+        _ ≤ 8 / Real.sqrt ((k + 2 : ℕ) : ℝ) + 8 / Real.sqrt ((k + 2 : ℕ) : ℝ) :=
+          add_le_add h1 h2
+        _ = _ := by ring) hz
   have hm : logarithmicArrayMass n a ≤ 32 * Real.sqrt ((L + 1 : ℕ) : ℝ) := by
     calc
       _ ≤ ∑ k ∈ Finset.range L, 16 / Real.sqrt ((k + 2 : ℕ) : ℝ) := hsum
@@ -193,7 +202,8 @@ theorem logarithmicArrayMass_le_inverse_sqrt_offset (n : ℕ) (a : Bool → ℕ 
     nlinarith
   have hroot : Real.sqrt ((L + 1 : ℕ) : ℝ) * Real.sqrt y ≤ 2 := by
     rw [← Real.sqrt_mul (by positivity : (0 : ℝ) ≤ ((L + 1 : ℕ) : ℝ))]
-    exact Real.sqrt_le_iff.mpr ⟨by norm_num, by norm_num; exact hLy⟩
+    exact Real.sqrt_le_iff.mpr ⟨by norm_num,
+      by simpa only [show (2 : ℝ) ^ 2 = 4 by norm_num] using hLy⟩
   have hr := (le_div_iff₀ (Real.sqrt_pos.mpr hy)).mpr hroot
   calc
     _ ≤ 32 * Real.sqrt ((L + 1 : ℕ) : ℝ) := hm

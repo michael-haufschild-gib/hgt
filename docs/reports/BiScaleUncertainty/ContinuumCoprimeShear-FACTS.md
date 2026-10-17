@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **17 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **18 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -1579,17 +1579,113 @@ Type tsum_nonneg conclusions to fix SummationFilter; type zero_pow's exponent.
 Use a separately normalized inner-prefix identity for numeric primitive traces.
 At zero scale, first prove the variance function itself is the zero function.
 
-## Next unproved candidate — physical affine commutator producers
+## Certified package 18 — physical affine action and explicit commutator producers
 
-`docs/drafts/pipeline/0-backlog/physical-affine-commutator-producers.md`.
-Construct actual physical translations/anchored affine action; seek sharp
-commutator norm2√|a| when a≠0 and b(a−1)≠0, nonattainment, and explicit
-alternating packet error2/N. Unproved/uncounted, no Lean assigned. Reaudit
-primary sources and prove every normalization before formalization.
-Two corpus queries each had20 candidate and20 source statements inspected.
-Older continuous affine bounds, compact-source translations, coprime
-projection norms and packet Gram formulas are parents. Current drafts were
-indexed while unverified and give no independent certification. Queries
-partial, text/source interrupted; generations1446938 and1447034 pending,
-refresh incomplete. Evidence /tmp/integer-dilation-next-search.json and
-/tmp/physical-affine-commutator-search.json. No absence/novelty conclusion.
+Actual physical L² translations τ_bq(t)=q(t+b) form linear isometries with
+τ_bτ_c=τ_(b+c), τ_0=id and inverseτ_(-b). Their primitives satisfy
+F_(τ_bq)(t)=F_q(t+b)−F_q(b). Primitive injectivity is proved from actual
+a.e. derivatives. For b≥0 this realizes logarithmic shear with the exact
+anchor correction. Anchored states (d,q), representing d+F_q(t), transform
+as (d+F_q(b),τ_bq); translations and dilations compose exactly.
+For every real a,b, τ_bA_a=A_aτ_(ab), including zero/negative scales.
+
+Define actual bounded C_(a,b)=A_aτ_b−τ_bA_a and c=b(a−1). Then
+
+    ‖C_(a,b)q‖²=|a|‖τ_cq−q‖²,
+    4|a|‖q‖²−‖C_(a,b)q‖²=|a|‖τ_cq+q‖².
+
+The second identity is an exact positive defect, with no analytic admission
+premise. Actual cell analysis intertwines τ_1 with the sequence left shift.
+An antiperiodic ℓ² sequence is zero since its squares are constant and
+summable. Applying cell analysis to every translate of an antiperiodic L²
+state forces its primitive to vanish. Dilation covers every nonzero period;
+the zero-period case is algebraic. Consequently, for all c,q,
+
+    τ_cq=−q iff q=0,
+    ‖τ_cq−q‖²=4‖q‖² iff q=0.
+
+For actual unit-cell indicators e_j, p_N=Σ_(j<N)(−1)^j e_j has energyN
+and unit-shift difference energy4N−2 when N≥1. Normalize the explicit
+scaled packet A_(1/c)p_N by √(|1/c|N) to get P_(c,N). At c=0 the
+constructed packet is zero; at c≠0 it is unit and
+
+    ‖τ_cP_(c,N)−P_(c,N)‖²=4−2/N,
+    ‖C_(a,b)P_(c,N)‖²=|a|(4−2/N),
+    4|a|−‖C_(a,b)P_(c,N)‖²=2|a|/N,  c=b(a−1)≠0.
+
+Finite overlaps and two boundary cells prove these exact formulas. The
+producer defect tends to zero. Thus, for every real a,b,
+
+    ‖C_(a,b)‖=if b(a−1)=0 then0 else2√|a|,
+    C_(a,b)=0 iff a=0 or a=1 or b=0,
+    ‖C_(a,b)q‖=‖C_(a,b)‖‖q‖ iff C_(a,b)=0 or q=0.
+
+A nonzero affine gap can be arbitrarily small while full physical-space
+operator norm is maximal. Every nonzero state has strict loss for a
+nonzero commutator, but explicit finite producers approach the sharp bound.
+Small-gap operator control therefore needs a specified regularized range,
+state constraint, or quantitative antiperiodic defect. Existing pointwise
+primitive resistance bounds control a different quantity and remain valid.
+
+Full-space invertibility does not imply a group on the positive half-line.
+No completed-divisor-domain invariance, full SourceGraph identification,
+unweighted logarithmic H1 or RH statement follows. Classical pullback,
+affine representation theory and finite orthogonal packets are parents;
+no external novelty claim. Trap10 is addressed by actual producers with
+unconditional exact errors. No receiver-only equivalence or pre-floor
+counterterm subtraction. README was read fully and remains unchanged.
+
+Six leaves / lines / public declarations: PhysicalTranslation120/17,
+PhysicalAffineAction137/23, PhysicalAntiperiodicRigidity117/7,
+AlternatingPhysicalPackets92/8, PhysicalAffineProducers103/15,
+PhysicalAffineSharpNorm105/6. Total674lines,76public=66theorems+9defs+1abbrev.
+Counted once: certified18/100; overall goal remains active.
+All six serial direct leaf checks have empty logs/current normal outputs.
+All76 public axiom checks use only propext,Classical.choice,Quot.sound;
+29 principal signatures and73 mathlib API probes checked. Six unique
+imports and76 exact catalog locations verified, including after index
+refresh. No full/umbrella build, heartbeat increase or numerical experiment.
+
+Global lint --check-generated exits1 for22 unrelated unreachable modules
+and concurrent LEAN_API drift. Exact names are recorded in the package
+card and /tmp/physical-affine-lint-errors.json.381 large-file warnings;
+no own/proof-debt error. Index refreshed after lint; global green is not
+claimed. Evidence: /tmp/physical-affine-{axioms,lint-final,index-post-lint}.log,
+/tmp/physical-affine-{audit-names,manifest-report,leaf-checks,lint-errors}.json,
+/tmp/physical-affine-api-entries.txt and /tmp/physical_affine_axioms.lean.
+Paper: PhysicalAffineCommutatorProducers.md, completed before Lean.
+Card: docs/drafts/pipeline/3-formalized/physical-affine-commutator-producers.md.
+
+Corpus main query: all20 candidate statements inspected, no source
+arguments/ideas/ingredient sets returned. partial=true; text/source
+interrupted, generation1447234 pending, refresh incomplete, source_only.
+Earlier two queries each had20 candidate and20 source statements inspected.
+No absence/novelty inference. Primary mathlib Lp pullback and UCLA
+translation/Haar representation sources are linked in the paper.
+
+Lean lessons: expose compMeasurePreserving through `change` before its a.e.
+rewrite; unfolding the linear-isometry coercion with `simpa` failed. Give
+integral_comp_add_right explicit interval endpoints. Normalize reciprocal
+limits with div_eq_mul_inv and associative multiplication. field_simp may
+finish the packet normalization completely; a subsequent ring then fails
+with no goals. In scratch `have := @Name` API probes, pin polymorphic
+universe levels rather than leaving unresolved universe metavariables.
+
+## Next unproved candidate — actual box averaging and affine regularity
+
+`docs/drafts/pipeline/0-backlog/physical-box-average-affine-regularity.md`.
+For h=exp(s), seek actual L² operator M_s q(t)=(F_q(t+h)−F_q(t))/h,
+with derivative(τ_hq−q)/h, contraction, exact double translation-variance
+loss, and commutator bound2√|a|min(1,|b(a−1)|/h)‖q‖. Investigate strong
+approximation as s→−∞. Unproved/uncounted; no Lean assigned. Classical
+Steklov averaging is a parent; the target is unconditional field coupling.
+
+All20 candidate and20 source-argument statements inspected in
+/tmp/physical-affine-next-search.json. Existing compact continuous annular
+averages already have C¹ regularity, contraction and exact remainder;
+the two relevant sources were read. General actual physical L² membership,
+variance integrability and commutator estimate remain obligations. Own
+package18 drafts appeared while checking and are not independent evidence.
+Search partial, text/source interrupted, deadline/reranking unfinished,
+generation1447449 pending, refresh incomplete. Primary-source and paper
+proof audits remain required; no absence/novelty conclusion.

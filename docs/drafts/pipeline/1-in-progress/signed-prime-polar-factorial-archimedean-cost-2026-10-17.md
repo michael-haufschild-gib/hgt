@@ -15,9 +15,9 @@ values for their contrast, and its unconditional small prime–polar pairing.
 It does not yet supply quantitative archimedean jump energies of those sources.
 That missing budget matters for the derivative-free signed transport bounds.
 
-Candidate: prove explicit bounds of order sqrt(N) log(N+1) for the actual source
-energies, and a much smaller signed difference. These rates are conjectural;
-neither a domain certificate nor an asymptotic theorem is counted here.
+The dependency-closed paper proof below gives explicit bounds of order
+sqrt(N) log(N+1) for the actual source energies and a much smaller signed
+difference. Lean verification remains pending; no new contribution is counted.
 
 ## Approach and existing inputs
 
@@ -53,7 +53,7 @@ is inferred from these searches.
 ## Gates
 
 - [x] Audit prior actual-source increment and finite-energy results more broadly.
-- [ ] Prove the concrete sources belong to the literal jump-energy domain.
+- [x] Prove the concrete sources belong to the literal jump-energy domain.
 - [x] Obtain quantitative growth and a useful signed-difference theorem on paper.
 - [ ] Formalize the actual numeric-index-only endpoint and audit its dependencies.
 
@@ -69,7 +69,7 @@ U=2sqrt(N)[6+32(log(6Q)+π)+60(log(24000N)+π)].
 For the actual balanced sources, target literal domain admission, energies between
 6exp(−1/2)sqrt(N)log N−B and U, exact difference −2∫H_Nw with magnitude ≤2B,
 and normalized lower bound (3/23)exp(−1/2)log N−[41+2log(10^6)]/6.
-No factor four enters the signed difference. All Lean work for this endpoint is
+No factor four enters the signed difference. The complete Lean endpoint remains
 pending; contribution count remains 10/100.
 
 `/tmp/spp11-source-increment-search.json` reports partial=false/errors=[], full
@@ -77,3 +77,40 @@ file inventory, primarily pending/source-only compiler metadata, and deferred
 refresh. Available candidate lemmas, source arguments and ingredient sets were
 inspected. Direct source reads confirm existing C² hypotheses; generic local
 Lipschitz existence does not provide the required explicit source bounds.
+
+## Lean checkpoint
+
+`CompactProfileLipschitz.lean` passed a direct leaf compilation to its olean;
+`/tmp/spp11-profile.log` was empty, exit 0. This verifies the exponential,
+clamp, tent, product and zero-extension estimates only.
+
+Implementation under verification:
+`SignedPrimePolarSourceJumpUpper.lean`, `SignedPrimePolarTentJumpLower.lean`,
+`SignedPrimePolarCausalJumpBounds.lean`, and
+`SignedPrimePolarSourceArchimedeanCertificate.lean`.
+These files target the actual admissions, energy bounds, exact signed difference
+and normalized lower bound. They are not yet verified or counted.
+
+`SignedPrimePolarTentRegularity.lean` passed direct compilation, exit 0; its log
+`/tmp/spp11-tent-regularity.log` contains an informational ring-tactic suggestion,
+no errors. `CompactLipschitzLevyEnergy.lean` passed direct compilation, exit 0,
+with empty `/tmp/spp11-lipschitz-levy.log`. Both oleans were written. The source
+certificate is implemented but remains unverified. API probes
+`/tmp/spp11_api.lean` and `/tmp/spp11_finite_api.lean` also terminated with exit 0.
+
+`SignedPrimePolarRampRegularity.lean` passed direct leaf compilation, exit 0,
+with empty `/tmp/spp11-ramp-regularity.log` and its olean written. This verifies
+the actual ramp's global Lipschitz constant 10000 N^4, pointwise bound 5, and
+L¹ bound 20 N.
+
+`SignedPrimePolarSourceJumpDomain.lean` passed direct leaf compilation, exit 0,
+with empty `/tmp/spp11-source-jump-domain.log` and its olean written. This verifies
+the actual F_N, G_N, P_N and M_N jump-domain admissions, the exact sum law,
+absolute integrability of H_N w, and the exact signed difference −2∫H_Nw.
+The numerical upper/lower and normalized bounds are still unverified. These
+domain and identity lemmas do not independently increment the contribution count.
+
+The upper-energy leaf passed compilation with two unused-tactic warnings.
+Those tactics were removed; the cleaned source awaits its final direct check.
+The tent lower-bound leaf is the next independent check. Contribution count
+remains 10/100; no package-11 ledger entry has been added.

@@ -1,8 +1,8 @@
 # Continuum coprime shear: current facts
 
-Active goal: 100 significant connected mathematical contributions in continuum coprime shear / noncommutative (ax+b) uncertainty. Certified **17/100**. Each turn contributes one package, never count supporting declarations separately. Do not mark goal complete. User forbids hgtl7, RH work, numerical experiments/computational proof shortcuts, full/umbrella builds, added axioms or unproved analytic admission premises. Read attachment `/Users/michael/.codex/attachments/907cbf01-0e78-40fa-8e48-f157b655c095/pasted-text-1.txt` first each turn; read the full field README at `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (260 lines at package 17). User explicitly makes this README read-only; old docs/reports/BiScaleUncertainty/README.md is gone. Search corpus before new conjectures/Lean. Serial foreground `lake --old env lean <leaf>` with normal `-o` outputs, scratch axiom audits only. No heartbeat increases. Preserve concurrent work; no commits/push. update_plan unavailable, overarching pipeline card tracks plan. No subagents used or authorized. Serena ignores Lean paths, so direct edits used. Architecture/testing docs absent at last init.
+Active goal: 100 significant connected mathematical contributions in continuum coprime shear / noncommutative (ax+b) uncertainty. Certified **18/100**. Each turn contributes one package, never count supporting declarations separately. Do not mark goal complete. User forbids hgtl7, RH work, numerical experiments/computational proof shortcuts, full/umbrella builds, added axioms or unproved analytic admission premises. Read attachment `/Users/michael/.codex/attachments/907cbf01-0e78-40fa-8e48-f157b655c095/pasted-text-1.txt` first each turn; read the full field README at `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (260 lines at package 18). User explicitly makes this README read-only; old docs/reports/BiScaleUncertainty/README.md is gone. Search corpus before new conjectures/Lean. Serial foreground `lake --old env lean <leaf>` with normal `-o` outputs, scratch axiom audits only. No heartbeat increases. Preserve concurrent work; no commits/push. update_plan unavailable, overarching pipeline card tracks plan. No subagents used or authorized. Serena ignores Lean paths, so direct edits used. Architecture/testing docs absent at last init.
 
-Authoritative ledger: `docs/reports/BiScaleUncertainty/ContinuumCoprimeShear-FACTS.md` (now >500 lines: use ranges). Overarching card `docs/drafts/pipeline/1-in-progress/continuum-coprime-shear.md`. Goal remains active. All owned jobs terminal at completion of package 17.
+Authoritative ledger: `docs/reports/BiScaleUncertainty/ContinuumCoprimeShear-FACTS.md` (now >500 lines: use ranges). Overarching card `docs/drafts/pipeline/1-in-progress/continuum-coprime-shear.md`. Goal remains active. All owned jobs terminal at completion of package 18.
 
 ## Certified package 1
 `ContinuumShearDirichlet.lean` (29 public theorems) and `ContinuumMultiplicativeEdgeControl.lean` (5). Actual continuous physical primitives, arbitrary continuous log velocities, exact interval/cell defects, weighted log Dirichlet energy, dilated cells, affine commutator resistance b(exp s-1), finite weighted multiplicative/nodal edges. Shear log(exp x+b), b>=0, is a semigroup, not globally invertible/unitary. Stage3 `continuum-trace-affine-edge-control.md`. Direct checks and all34 axiom audits passed.
@@ -260,10 +260,119 @@ Helpers /tmp/check_integer_dilation_{audit,catalog}.py and /tmp/refresh_integer_
 
 Corpus main query all20candidate+20source statements read; partialtrue/text+source interrupted, inventory73727 complete,snapshot1446744/current1446745; compiler mostlypending/sourceonly,refreshincomplete/backgroundindexer. Focused lexical dilation all9statements read, no semantic/compiler coverage. Existing finite shear/trace and cell synthesis are parents; no absence/noveltyproof. Primary mathlib Haar normed-space scalar substitution and intervalIntegral oriented substitution docs inspected, links in paper.
 
-NEXT UNPROVED/UNCOUNTED: docs/drafts/pipeline/0-backlog/physical-affine-commutator-producers.md.
-Construct actual full physical L2 translations tau_bq(t)=q(t+b), norm isometry/inverse, primitive F_tau(t)=F_q(t+b)-F_q(b). Exact tau_b A_a=A_a tau_ab incla0; anchored states(c,q) transform(c+F_q(b),tau_bq). Seek sharp ||A_a tau_b-tau_b A_a||=2sqrt|a| ifa!=0,b(a-1)!=0, nonattainment for nonzero q, explicit finite alternating disjoint packets with squared normalized translation-defect4-2/N. Need prove every sign/normalization/edgecase and audit classical parents before Lean. Actual full-space translation retains negative endpoint packet; do not replace with unilateral shift or infer unitary group on positive halfline. No completed-divisor-domain invariance or fullSourceGraph assumption. No Lean assigned.
-Two initial queries all20candidate+20source statements inspected each: actual L2 physical translation dilation anchored primitive affine action (/tmp/integer-dilation-next-search.json,generation1446938pending); sharp translation dilation commutator norm alternating disjoint packets nonattainment (/tmp/physical-affine-commutator-search.json,generation1447034pending). Bothpartial/text+sourceinterrupted/refreshincomplete; noideas/ingredientsets. Continuous affine estimate, compact-source translation membership, prior coprime projection norms, packet Gram and dyadic anchored producers are parents. Own17drafts appeared whileunverified, notindependentcertification. No absence/externalnoveltyclaim. Reaudit primary sources and sharpen paper proof next turn.
 
 Lean lessons: explicit integrand in integral_comp_mul_left, MemLp.zero not memLp_zero, space after abs delimiter before * to avoid |* lexer. Rewrite dependent ite conditions with simp, not rw motive. CLM ext introduce vector only; generic ext descends to coordinates. lp.norm_single needs explicit positive-exponent argument under simp only. abs_of_nonneg Nat.cast_nonneg needs real type annotation. le_of_mul_le_mul_right h positive, not (mul_le_mul_right positive).mp. Type tsum_nonneg conclusion to fix SummationFilter. Type exponent in zero_pow proof. In zero-scale HasSum, first show variance FUNCTION=zero by funext. For numeric primitive traces, capture inner_prefixCell, rw inner_prefixCell_unitCell there, norm_num, then symmetry; rewriting real numeral with Nat-cast pattern directly failed. Expand Nat.mul_add without Nat.add_assoc for block-shift subtraction, then Nat.add_sub_cancel. Remove unused simp/seqfocus diagnostics and recheck affected leaf. Serena find_symbol rejects ignored Lean paths; direct small patches used.
 
-Continue one substantive connected package per new turn. Do not mark overall goal complete at17.
+Continue one substantive connected package per new turn. Do not mark overall goal complete at18.
+
+
+## Certified package 18 — physical affine action and explicit commutator producers
+
+Actual physical L² translations τ_bq(t)=q(t+b) form linear isometries with
+τ_bτ_c=τ_(b+c), τ_0=id and inverseτ_(-b). Their primitives satisfy
+F_(τ_bq)(t)=F_q(t+b)−F_q(b). Primitive injectivity is proved from actual
+a.e. derivatives. For b≥0 this realizes logarithmic shear with the exact
+anchor correction. Anchored states (d,q), representing d+F_q(t), transform
+as (d+F_q(b),τ_bq); translations and dilations compose exactly.
+For every real a,b, τ_bA_a=A_aτ_(ab), including zero/negative scales.
+
+Define actual bounded C_(a,b)=A_aτ_b−τ_bA_a and c=b(a−1). Then
+
+    ‖C_(a,b)q‖²=|a|‖τ_cq−q‖²,
+    4|a|‖q‖²−‖C_(a,b)q‖²=|a|‖τ_cq+q‖².
+
+The second identity is an exact positive defect, with no analytic admission
+premise. Actual cell analysis intertwines τ_1 with the sequence left shift.
+An antiperiodic ℓ² sequence is zero since its squares are constant and
+summable. Applying cell analysis to every translate of an antiperiodic L²
+state forces its primitive to vanish. Dilation covers every nonzero period;
+the zero-period case is algebraic. Consequently, for all c,q,
+
+    τ_cq=−q iff q=0,
+    ‖τ_cq−q‖²=4‖q‖² iff q=0.
+
+For actual unit-cell indicators e_j, p_N=Σ_(j<N)(−1)^j e_j has energyN
+and unit-shift difference energy4N−2 when N≥1. Normalize the explicit
+scaled packet A_(1/c)p_N by √(|1/c|N) to get P_(c,N). At c=0 the
+constructed packet is zero; at c≠0 it is unit and
+
+    ‖τ_cP_(c,N)−P_(c,N)‖²=4−2/N,
+    ‖C_(a,b)P_(c,N)‖²=|a|(4−2/N),
+    4|a|−‖C_(a,b)P_(c,N)‖²=2|a|/N,  c=b(a−1)≠0.
+
+Finite overlaps and two boundary cells prove these exact formulas. The
+producer defect tends to zero. Thus, for every real a,b,
+
+    ‖C_(a,b)‖=if b(a−1)=0 then0 else2√|a|,
+    C_(a,b)=0 iff a=0 or a=1 or b=0,
+    ‖C_(a,b)q‖=‖C_(a,b)‖‖q‖ iff C_(a,b)=0 or q=0.
+
+A nonzero affine gap can be arbitrarily small while full physical-space
+operator norm is maximal. Every nonzero state has strict loss for a
+nonzero commutator, but explicit finite producers approach the sharp bound.
+Small-gap operator control therefore needs a specified regularized range,
+state constraint, or quantitative antiperiodic defect. Existing pointwise
+primitive resistance bounds control a different quantity and remain valid.
+
+Full-space invertibility does not imply a group on the positive half-line.
+No completed-divisor-domain invariance, full SourceGraph identification,
+unweighted logarithmic H1 or RH statement follows. Classical pullback,
+affine representation theory and finite orthogonal packets are parents;
+no external novelty claim. Trap10 is addressed by actual producers with
+unconditional exact errors. No receiver-only equivalence or pre-floor
+counterterm subtraction. README was read fully and remains unchanged.
+
+Six leaves / lines / public declarations: PhysicalTranslation120/17,
+PhysicalAffineAction137/23, PhysicalAntiperiodicRigidity117/7,
+AlternatingPhysicalPackets92/8, PhysicalAffineProducers103/15,
+PhysicalAffineSharpNorm105/6. Total674lines,76public=66theorems+9defs+1abbrev.
+Counted once: certified18/100; overall goal remains active.
+All six serial direct leaf checks have empty logs/current normal outputs.
+All76 public axiom checks use only propext,Classical.choice,Quot.sound;
+29 principal signatures and73 mathlib API probes checked. Six unique
+imports and76 exact catalog locations verified, including after index
+refresh. No full/umbrella build, heartbeat increase or numerical experiment.
+
+Global lint --check-generated exits1 for22 unrelated unreachable modules
+and concurrent LEAN_API drift. Exact names are recorded in the package
+card and /tmp/physical-affine-lint-errors.json.381 large-file warnings;
+no own/proof-debt error. Index refreshed after lint; global green is not
+claimed. Evidence: /tmp/physical-affine-{axioms,lint-final,index-post-lint}.log,
+/tmp/physical-affine-{audit-names,manifest-report,leaf-checks,lint-errors}.json,
+/tmp/physical-affine-api-entries.txt and /tmp/physical_affine_axioms.lean.
+Paper: PhysicalAffineCommutatorProducers.md, completed before Lean.
+Card: docs/drafts/pipeline/3-formalized/physical-affine-commutator-producers.md.
+
+Corpus main query: all20 candidate statements inspected, no source
+arguments/ideas/ingredient sets returned. partial=true; text/source
+interrupted, generation1447234 pending, refresh incomplete, source_only.
+Earlier two queries each had20 candidate and20 source statements inspected.
+No absence/novelty inference. Primary mathlib Lp pullback and UCLA
+translation/Haar representation sources are linked in the paper.
+
+Lean lessons: expose compMeasurePreserving through `change` before its a.e.
+rewrite; unfolding the linear-isometry coercion with `simpa` failed. Give
+integral_comp_add_right explicit interval endpoints. Normalize reciprocal
+limits with div_eq_mul_inv and associative multiplication. field_simp may
+finish the packet normalization completely; a subsequent ring then fails
+with no goals. In scratch `have := @Name` API probes, pin polymorphic
+universe levels rather than leaving unresolved universe metavariables.
+
+## Next unproved candidate — actual box averaging and affine regularity
+
+`docs/drafts/pipeline/0-backlog/physical-box-average-affine-regularity.md`.
+For h=exp(s), seek actual L² operator M_s q(t)=(F_q(t+h)−F_q(t))/h,
+with derivative(τ_hq−q)/h, contraction, exact double translation-variance
+loss, and commutator bound2√|a|min(1,|b(a−1)|/h)‖q‖. Investigate strong
+approximation as s→−∞. Unproved/uncounted; no Lean assigned. Classical
+Steklov averaging is a parent; the target is unconditional field coupling.
+
+All20 candidate and20 source-argument statements inspected in
+/tmp/physical-affine-next-search.json. Existing compact continuous annular
+averages already have C¹ regularity, contraction and exact remainder;
+the two relevant sources were read. General actual physical L² membership,
+variance integrability and commutator estimate remain obligations. Own
+package18 drafts appeared while checking and are not independent evidence.
+Search partial, text/source interrupted, deadline/reranking unfinished,
+generation1447449 pending, refresh incomplete. Primary-source and paper
+proof audits remain required; no absence/novelty conclusion.

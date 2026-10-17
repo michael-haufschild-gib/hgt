@@ -55,5 +55,6 @@ Actual-source audit99254 and all25 public theorem axiom audits14114 exited0
 without warnings; only `propext`, `Classical.choice`, `Quot.sound`.
 Source SHA256 `a66ab901bde6e45677acc2e0e8ab35f1a4e4402fca415863936d64a08c7e0dcf`.
 Umbrella wired; all27 public declarations indexed. No full build or numerical
-experiment. Global lint reports unrelated modules and concurrent generated
-drift; exact snapshot on master card. No global clean-gate or external novelty claim.
+experiment. Final global lint reports10 unrelated unreachable modules and no
+generated-file drift; exact snapshot on master card. No global clean-gate or
+external novelty claim.

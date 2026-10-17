@@ -62,7 +62,7 @@ theorem abs_blockResponse_le {a u v t : ℝ} (hu : u ≤ t) (htv : t ≤ v) :
 theorem intervalIntegrable_blockResponse_sq (a u v : ℝ) :
     IntervalIntegrable (fun t => blockResponse a t ^ 2) volume u v := by
   wlog huv : u ≤ v generalizing u v
-  · exact (this v u (le_of_not_le huv)).symm
+  · exact (this v u (not_le.1 huv).le).symm
   rw [intervalIntegrable_iff, uIoc_of_le huv]
   refine Measure.integrableOn_of_bounded (M := (Real.exp (|u| / 2) *
       ((Chebyshev.psi (Real.exp v) + Real.exp v) + (Chebyshev.psi (Real.exp a) + Real.exp a) +
@@ -142,12 +142,14 @@ theorem integral_cell_blockResponse_sq_bounds {X n : ℕ} (hX : 1 ≤ X) (hn : X
   have hXn : (X : ℝ) ≤ n := by exact_mod_cast hn
   have hn2' : (n : ℝ) + 1 ≤ 2 * X := by exact_mod_cast hn2
   have hle : Real.log (n : ℝ) ≤ Real.log ((n : ℝ) + 1) := Real.log_le_log hn0 (by linarith)
-  set c : ℝ := cellError n - cellError X + n with hc
-  set d : ℝ := cellError n - cellError X with hd
-  set A : ℝ → ℝ := fun t => Real.exp (-t / 2) * (c - Real.exp t) with hA
-  set B : ℝ → ℝ := fun t => Real.exp (-t / 2) * (t - Real.log X) with hB
+  obtain ⟨d, hd⟩ : ∃ d : ℝ, d = cellError n - cellError X := ⟨_, rfl⟩
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = d + n := ⟨_, rfl⟩
+  obtain ⟨A, hA⟩ : ∃ A : ℝ → ℝ, A = fun t => Real.exp (-t / 2) * (c - Real.exp t) := ⟨_, rfl⟩
+  obtain ⟨B, hB⟩ : ∃ B : ℝ → ℝ, B = fun t => Real.exp (-t / 2) * (t - Real.log X) := ⟨_, rfl⟩
   have hAc : Continuous A := by rw [hA]; fun_prop
   have hBc : Continuous B := by rw [hB]; fun_prop
+  have hAt : ∀ t, A t = Real.exp (-t / 2) * (c - Real.exp t) := fun t => by rw [hA]
+  have hBt : ∀ t, B t = Real.exp (-t / 2) * (t - Real.log X) := fun t => by rw [hB]
   -- the a.e. identity on the cell
   have hcell : (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), blockResponse (Real.log X) t ^ 2) =
       ∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), (A t - B t) ^ 2 := by
@@ -156,24 +158,23 @@ theorem integral_cell_blockResponse_sq_bounds {X n : ℕ} (hX : 1 ≤ X) (hn : X
       rw [ae_iff]; simp
     filter_upwards [hne] with t ht hmem
     rw [uIoc_of_le hle] at hmem
-    rw [blockResponse_log_eq_on_cell hX hn ⟨hmem.1.le, lt_of_le_of_ne hmem.2 ht⟩]
+    rw [blockResponse_log_eq_on_cell hX hn ⟨hmem.1.le, lt_of_le_of_ne hmem.2 ht⟩, hAt, hBt, hc, hd]
   -- the squared main part
-  set p : ℝ := 1 / ((n : ℝ) * ((n : ℝ) + 1)) with hp
-  have hp0 : 0 < p := by positivity
+  obtain ⟨p, hp⟩ : ∃ p : ℝ, p = 1 / ((n : ℝ) * ((n : ℝ) + 1)) := ⟨_, rfl⟩
+  have hp0 : 0 < p := by rw [hp]; positivity
   have hA2 : (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), A t ^ 2) =
       (c - cellCenter n) ^ 2 * p + cellFloor n := by
     rw [hp, ← div_eq_mul_one_div, ← cell_energy_eq_center_sq_add_floor c hn1,
       ← integral_cell_gauge_sq c hn1]
     refine intervalIntegral.integral_congr fun t _ => ?_
-    show (Real.exp (-t / 2) * (c - Real.exp t)) ^ 2 = Real.exp (-t) * (c - Real.exp t) ^ 2
-    rw [mul_pow, sq (Real.exp (-t / 2)), ← Real.exp_add]
+    rw [hAt, mul_pow, sq (Real.exp (-t / 2)), ← Real.exp_add]
     congr 2; ring
   -- the squared transient
   have hB2 : (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), B t ^ 2) ≤ p := by
     rw [hp, ← integral_cell_exp_neg hn1]
-    refine intervalIntegral.integral_mono_on hle (hBc.pow 2).intervalIntegrable
+    refine intervalIntegral.integral_mono_on hle ((hBc.pow 2).intervalIntegrable _ _)
       ((Real.continuous_exp.comp continuous_neg).intervalIntegrable _ _) fun t ht => ?_
-    show (Real.exp (-t / 2) * (t - Real.log X)) ^ 2 ≤ Real.exp (-t)
+    rw [hBt]
     have h1 : 0 ≤ t - Real.log X := by linarith [ht.1, Real.log_le_log hX0 hXn]
     have h2 : t - Real.log X ≤ 1 := by
       have hlog2 : Real.log (2 * (X : ℝ)) = Real.log 2 + Real.log X :=
@@ -184,27 +185,31 @@ theorem integral_cell_blockResponse_sq_bounds {X n : ℕ} (hX : 1 ≤ X) (hn : X
     have he : Real.exp (-t / 2) ^ 2 = Real.exp (-t) := by
       rw [sq, ← Real.exp_add]; congr 1; ring
     rw [mul_pow, he]
-    have : (t - Real.log X) ^ 2 ≤ 1 := by nlinarith
-    nlinarith [Real.exp_pos (-t)]
+    have : (t - Real.log X) ^ 2 ≤ 1 := by nlinarith only [h1, h2]
+    nlinarith only [Real.exp_pos (-t), this]
   -- centre deviation
   have hm : |(n : ℝ) - cellCenter n| ≤ 1 := by
     rw [abs_le]; constructor <;> linarith [le_cellCenter hn1, cellCenter_le hn1]
   have he2 : ((n : ℝ) - cellCenter n) ^ 2 ≤ 1 := by
     rw [← sq_abs]; exact pow_le_one₀ (abs_nonneg _) hm
-  have hcm : c - cellCenter n = d + ((n : ℝ) - cellCenter n) := by rw [hc, hd]; ring
+  have hcm : c - cellCenter n = d + ((n : ℝ) - cellCenter n) := by rw [hc]; ring
   have hsq_up : (c - cellCenter n) ^ 2 ≤ 2 * d ^ 2 + 2 := by
-    rw [hcm]; nlinarith [sq_nonneg (d - ((n : ℝ) - cellCenter n))]
+    rw [hcm]; nlinarith only [sq_nonneg (d - ((n : ℝ) - cellCenter n)), he2]
   have hsq_lo : d ^ 2 / 2 - 1 ≤ (c - cellCenter n) ^ 2 := by
-    rw [hcm]; nlinarith [sq_nonneg (d + 2 * ((n : ℝ) - cellCenter n))]
+    rw [hcm]; nlinarith only [sq_nonneg (d + 2 * ((n : ℝ) - cellCenter n)), he2]
   have hfloor0 : 0 ≤ cellFloor n := cellFloor_nonneg hn1
   have hfloor : cellFloor n ≤ 2 * p := by
-    rw [hp]; have := cellFloor_le hn1; linarith [show 2 / ((n : ℝ) * ((n : ℝ) + 1)) =
-      2 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) by ring]
+    rw [hp]
+    have := cellFloor_le hn1
+    have e : 2 / ((n : ℝ) * ((n : ℝ) + 1)) = 2 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) := by ring
+    linarith
   -- cell size comparisons
-  have hpq : p ≤ 1 / (X : ℝ) ^ 2 := by
-    rw [hp]; exact div_le_div_of_nonneg_left zero_le_one (by positivity) (by nlinarith)
-  have hqp : 1 / (4 * (X : ℝ) ^ 2) ≤ p := by
-    rw [hp]; exact div_le_div_of_nonneg_left zero_le_one (by positivity) (by nlinarith)
+  obtain ⟨q, hq⟩ : ∃ q : ℝ, q = 1 / (X : ℝ) ^ 2 := ⟨_, rfl⟩
+  obtain ⟨q4, hq4⟩ : ∃ q4 : ℝ, q4 = 1 / (4 * (X : ℝ) ^ 2) := ⟨_, rfl⟩
+  have hpq : p ≤ q := by
+    rw [hp, hq]; exact div_le_div_of_nonneg_left zero_le_one (by positivity) (by nlinarith)
+  have hqp : q4 ≤ p := by
+    rw [hp, hq4]; exact div_le_div_of_nonneg_left zero_le_one (by positivity) (by nlinarith)
   -- the two integral comparisons
   have hABi : IntervalIntegrable (fun t => (A t - B t) ^ 2) volume
       (Real.log (n : ℝ)) (Real.log ((n : ℝ) + 1)) := ((hAc.sub hBc).pow 2).intervalIntegrable _ _
@@ -215,32 +220,39 @@ theorem integral_cell_blockResponse_sq_bounds {X n : ℕ} (hX : 1 ≤ X) (hn : X
   have hup : (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), (A t - B t) ^ 2) ≤
       2 * (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), A t ^ 2) +
         2 * ∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), B t ^ 2 := by
-    rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul,
-      ← intervalIntegral.integral_add (hA2i.const_mul 2) (hB2i.const_mul 2)]
+    have e : 2 * (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), A t ^ 2) +
+        2 * (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), B t ^ 2) =
+        ∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), (2 * A t ^ 2 + 2 * B t ^ 2) := by
+      rw [intervalIntegral.integral_add (hA2i.const_mul 2) (hB2i.const_mul 2),
+        intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+    rw [e]
     exact intervalIntegral.integral_mono_on hle hABi ((hA2i.const_mul 2).add (hB2i.const_mul 2))
-      fun t _ => by nlinarith [sq_nonneg (A t + B t)]
-  have hlo : (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), A t ^ 2) / 2 -
-      (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), B t ^ 2) ≤
-      ∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), (A t - B t) ^ 2 := by
-    rw [div_eq_mul_one_div, mul_comm, ← intervalIntegral.integral_const_mul,
-      ← intervalIntegral.integral_sub (hA2i.const_mul _) hB2i]
-    exact intervalIntegral.integral_mono_on hle ((hA2i.const_mul _).sub hB2i) hABi
-      fun t _ => by nlinarith [sq_nonneg (A t - 2 * B t)]
+      fun t _ => by nlinarith only [sq_nonneg (A t + B t)]
+  have hlo : (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), A t ^ 2) -
+      2 * (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), B t ^ 2) ≤
+      2 * ∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), (A t - B t) ^ 2 := by
+    have e : (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), A t ^ 2) -
+        2 * (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), B t ^ 2) =
+        ∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1), (A t ^ 2 - 2 * B t ^ 2) := by
+      rw [intervalIntegral.integral_sub hA2i (hB2i.const_mul 2), intervalIntegral.integral_const_mul]
+    rw [e, ← intervalIntegral.integral_const_mul]
+    exact intervalIntegral.integral_mono_on hle (hA2i.sub (hB2i.const_mul 2)) (hABi.const_mul 2)
+      fun t _ => by nlinarith only [sq_nonneg (A t - 2 * B t)]
   rw [hcell]
   have hd0 : 0 ≤ d ^ 2 := sq_nonneg d
   have h1 : (c - cellCenter n) ^ 2 * p ≤ (2 * d ^ 2 + 2) * p :=
     mul_le_mul_of_nonneg_right hsq_up hp0.le
   have h2 : (d ^ 2 / 2 - 1) * p ≤ (c - cellCenter n) ^ 2 * p :=
     mul_le_mul_of_nonneg_right hsq_lo hp0.le
-  have h3 : d ^ 2 * p ≤ d ^ 2 * (1 / (X : ℝ) ^ 2) := mul_le_mul_of_nonneg_left hpq hd0
-  have h4 : d ^ 2 * (1 / (4 * (X : ℝ) ^ 2)) ≤ d ^ 2 * p := mul_le_mul_of_nonneg_left hqp hd0
-  have e1 : 4 * d ^ 2 / (X : ℝ) ^ 2 + 10 / (X : ℝ) ^ 2 =
-      4 * (d ^ 2 * (1 / (X : ℝ) ^ 2)) + 10 * (1 / (X : ℝ) ^ 2) := by ring
-  have e2 : d ^ 2 / (16 * (X : ℝ) ^ 2) - 3 / (2 * (X : ℝ) ^ 2) =
-      (d ^ 2 * (1 / (4 * (X : ℝ) ^ 2))) / 4 - 3 / 2 * (1 / (X : ℝ) ^ 2) := by ring
+  have h3 : d ^ 2 * p ≤ d ^ 2 * q := mul_le_mul_of_nonneg_left hpq hd0
+  have h4 : d ^ 2 * q4 ≤ d ^ 2 * p := mul_le_mul_of_nonneg_left hqp hd0
+  have e1 : 4 * (cellError n - cellError X) ^ 2 / (X : ℝ) ^ 2 + 10 / (X : ℝ) ^ 2 =
+      4 * (d ^ 2 * q) + 10 * q := by rw [hq, hd]; ring
+  have e2 : (cellError n - cellError X) ^ 2 / (16 * (X : ℝ) ^ 2) - 3 / (2 * (X : ℝ) ^ 2) =
+      (d ^ 2 * q4) / 4 - 3 / 2 * q := by rw [hq, hq4, hd]; ring
   constructor
-  · rw [e2]; nlinarith [hlo, hA2, hB2, h2, h4, hpq, hfloor0]
-  · rw [e1]; nlinarith [hup, hA2, hB2, h1, h3, hpq, hfloor]
+  · rw [e2]; linarith [hlo, hA2, hB2, h2, h4, hpq, hfloor0]
+  · rw [e1]; linarith [hup, hA2, hB2, h1, h3, hpq, hfloor]
 
 /-! ## The dyadic block energy -/
 
@@ -295,8 +307,9 @@ theorem blockEnergy_log_two_bounds (N : ℕ) {k : ℕ} (hk : (k + 1) * Real.log 
     have h := integral_cell_blockResponse_sq_bounds hX (Nat.le_add_right X j)
       (show X + j + 1 ≤ 2 * X by omega)
     have e1 : ((X + j : ℕ) : ℝ) = (X : ℝ) + j := by push_cast; ring
-    have e2 : ((X + j : ℕ) : ℝ) + 1 = (X : ℝ) + ((j + 1 : ℕ) : ℝ) := by push_cast; ring
-    rw [e1, e2] at h
+    have e2 : (X : ℝ) + (j : ℝ) + 1 = (X : ℝ) + ((j + 1 : ℕ) : ℝ) := by push_cast; ring
+    rw [e1] at h
+    rw [e2] at h
     exact h
   constructor
   · -- lower bound
@@ -304,7 +317,7 @@ theorem blockEnergy_log_two_bounds (N : ℕ) {k : ℕ} (hk : (k + 1) * Real.log 
     rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul,
       ← Finset.sum_div, ← hdev] at hs
     have hX2 : (X : ℝ) * (3 / (2 * (X : ℝ) ^ 2)) ≤ 2 := by
-      rw [show (X : ℝ) * (3 / (2 * (X : ℝ) ^ 2)) = 3 / (2 * X) by field_simp; ring]
+      rw [show (X : ℝ) * (3 / (2 * (X : ℝ) ^ 2)) = 3 / (2 * X) by field_simp]
       rw [div_le_iff₀ (by positivity)]; nlinarith
     linarith
   · -- upper bound
@@ -312,7 +325,7 @@ theorem blockEnergy_log_two_bounds (N : ℕ) {k : ℕ} (hk : (k + 1) * Real.log 
     rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul,
       ← Finset.sum_div, ← Finset.mul_sum, ← hdev] at hs
     have hX2 : (X : ℝ) * (10 / (X : ℝ) ^ 2) ≤ 10 := by
-      rw [show (X : ℝ) * (10 / (X : ℝ) ^ 2) = 10 / X by field_simp; ring]
+      rw [show (X : ℝ) * (10 / (X : ℝ) ^ 2) = 10 / X by field_simp]
       rw [div_le_iff₀ hX0]; nlinarith
     linarith
 

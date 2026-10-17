@@ -94,6 +94,16 @@
     and its amplitude family. Transfer optimized multiplier bounds with zero
     moment penalty and prove plastic nonnegativity on this actual kernel.
     Audit the obstruction to controlling original energy by coherent price.
+29. Resolve the full plastic interaction along an actual zero-fold source
+    direction. Prove strict plastic curvature on nonzero kernel sources,
+    construct the exact minimizing source on every such line, preserve its
+    coherent fold, and transfer its explicit energy gain into the original
+    full optimized multiplier bound. Include degenerate zero directions.
+30. Construct outward actual sources with an exactly fixed full coherent fold
+    and unconditional inverse-square energy decay. Use their plastic values
+    to determine the sharp infimum on every actual odd coherent class and
+    classify attainment. Close any nonattainment obstruction with the explicit
+    minimizing producer, exact infimum and equality domain.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -1939,6 +1949,67 @@ contribution22/100.
   removed via apply_patch; absence verified. Final scoped diff and explicit
   source/document whitespace checks passed, including the new Lean file.
 
+## Twenty-fifth result: escape at fixed coherent data and the sharp plastic infimum
+
+Dependency-closed paper proof before Lean implementation. Let d=log2,
+F=odd(f), R=representative(f), S(u)=sinh(u/2)R(u), and P=cellFold(F).
+The actual source R is supported in d<|u|<3d, S is compact continuous and
+even, and its folded profile is exactly P. For n>=0 put L=(n+4)d and
+r_n(u)=S(u-L)/sinh(u/2). Nonzero numerator requires |u-L|<3d, hence
+(n+1)d<u<(n+7)d. It vanishes on a whole neighborhood of0; division thus
+defines an actual compact continuous source with positive support.
+Set E_n=oddCompactSource(r_n).
+
+The sinh multiplier of r_n is exactly S(u-L), including at0. Integer
+reindexing gives cellFold(r_n)=P on the entire real line. Reflection sends
+cellFold(h)(x) to -cellFold(h)(-x); taking the odd source part therefore
+averages the fold with its reflection. Since P is even, cellFold(E_n)=P.
+Every E_n is an actual compact odd source with exactly preserved full
+coherent fold, signed moment and exact coherent price.
+
+On the nonzero numerator support, u>(n+1)d and sinh(u/2)>=u/2.
+Consequently r_n(u)^2<=4*S(u-L)^2/((n+1)d)^2. Translation invariance of
+the integral gives h_(r_n)(0)<=4*h_S(0)/((n+1)d)^2. Positive support makes
+r_n(u)r_n(-u)=0, so the odd projection has exactly half its energy:
+h_(E_n)(0)=h_(r_n)(0)/2<=2*h_S(0)/((n+1)d)^2.
+This is a concrete producer bound with zero fold-reconstruction error.
+
+Let M=integral_(0,infinity) levyCoshKernel(screwSignThreshold,x) dx,
+an explicitly integrable positive kernel mass. For every actual source h,
+0<=J(h)<=2*M*h_h(0), by the unconditional autocorrelation bound. Hence,
+with O=integral F(u)sinh(u/2)du and C_f=8*M*h_S(0)/d²,
+0<=Q(E_n)+2O²<=C_f/(n+1)².
+All constants are source-defined; no unspecified asymptotic or integrability
+premise remains. For any epsilon>0, choose n>C_f/epsilon. Since
+(n+1)²>=n+1, this proves Q(E_n)<-2O²+epsilon.
+
+Define the actual coherent class by odd(g)=g and cellFold(g)=P. Every member
+has the same moment O and Q(g)=2J(g)-2O², so -2O² is a lower bound. The
+constructed E_n belong to the class and approach it, proving the exact
+greatest lower bound. Attainment forces J(g)=0. The positive kernel weight
+and continuity force the autocorrelation difference to vanish on x>0;
+at a lag beyond compact support this gives original energy0 and g=0.
+Thus the infimum is attained iff P=0, and then the zero source attains it.
+In particular, nonzero coherent classes have no global plastic minimizer,
+despite contribution24's exact minima on every individual kernel line.
+
+One contribution, implemented as source construction plus variational
+capstone modules if needed: exact coherent-data escape, quantitative energy
+decay, sharp full-functional infimum and complete attainment boundary.
+The positive survivor of nonattainment is the explicit minimizing family and
+sharp value, not the bare obstruction. No prime-grid blindness, source-energy
+normalization, smoothness beyond continuity, or positivity of the full
+functional on arbitrary odd sources is claimed. Paper proof closed; Lean pending.
+
+Corpus audit: direct hybrid query `coherent fold fixed moment outward translated
+source vanishing energy plastic infimum nonattainment`, --any with BiScale filter,
+partial59.21s. Inspected existing outward fixed-energy cancellation (different
+invariants), actual fold/attainment/retraction, kernel and line-minimizer APIs,
+and exact plastic kernel integrability. Exhaustive source searches found no
+fixed-full-fold escape or coherent-class plastic infimum theorem. Unfinished
+text/source stages, older coverage snapshot and unmeasured semantic coverage
+preclude a completeness claim. No external novelty claim.
+
 ## Twenty-third result: the actual coherent kernel and plastic-positive splitting
 
 Dependency-closed paper proof before Lean implementation. Write O for the
@@ -2017,8 +2088,126 @@ No external novelty claim.
   also match exactly, with no sampling. Source22 and read-only README hashes
   unchanged. Initial lint52636 exited1 on12 unrelated unreachable modules,
   with concurrent LEAN_API/LEAN_GAPS/LEAN_OVERVIEW drift and existing large-file
-  warnings. No owned lifting module flagged. One bounded refresh98119 running;
-  no repository-wide clean-gate claim.
+  warnings. No owned lifting module flagged. Bounded refresh98119 exited0
+  (6 changed); all27 indexed declarations still match the source exactly.
+- Final lint61591 exited1 on10 unrelated unreachable modules:
+  `CollarMeshBounds`, `CollarRadialPenalty`, `ConcentratedCollarExtension`,
+  `ConcentratedCollarRetraction`, `DyadicBlockEnergyDiscreteDeviation`,
+  `NyquistPositiveTailComparison`, `NyquistWeightKernel`, `NyquistWeightTailMass`,
+  `NyquistWideSourceEnergy`, `RightNodeCollarPartition`. No generated-file
+  drift remains in this final snapshot; existing large-file warnings remain.
+  No owned lifting module flagged. Stop after this bounded refresh;
+  unrelated modules untouched, no repository-wide clean-gate claim.
 - Exact positive survivor and full capstone audited; no-go closure recorded in
   `docs/drafts/pipeline/5-failed/coherent-price-controls-source-energy-2026-10-17.md`.
   Contribution23/100 complete; full goal ACTIVE.
+- Source23/source22 and read-only README hashes unchanged after all gates.
+  All owned search, Lean, index and lint handles terminal. No source edits
+  after final source and axiom audits, no heartbeat/recursion changes, no
+  full build, numerical experiment, commit or push.
+- Owned `/tmp/hml_kernel_api.lean` and `/tmp/hml_kernel_lint.txt` removed via
+  apply_patch; absence verified. Final scoped diff and explicit source/document
+  whitespace checks passed, including the new source and failed-route card.
+
+## Twenty-fourth result: exact plastic minimization within a coherent class
+
+Dependency-closed paper proof before Lean implementation. Let F=odd(f),
+H=kernelPart(g), Q=plasticCrossover, and J=plasticJumpEnergy. First prove
+J(h)=0 iff h=0 for every actual compact continuous source h. Its integrand
+is nonnegative and its Levy weight is strictly positive on x>0. A zero
+integral therefore forces h_h(0)-h_h(x)=0 almost everywhere there. This
+difference is continuous, so it vanishes throughout the open half-line.
+At x=2*multiplierSourceRadius(h)+1, compact support makes h_h(x)=0;
+thus h_h(0)=0 and continuity forces h=0. Conversely the zero source is
+immediate. Since the kernel source has zero hyperbolic moment, Q(H)=2J(H).
+Consequently q=Q(H)>=0, with q=0 iff H=0 and q>0 iff H is nonzero.
+
+For arbitrary compact sources U,V and real t, pointwise expansion gives
+Q(U+tV)=(1-t)Q(U)+(t²-t)Q(V)+tQ(U+V). The same three-source identity
+holds for both the origin autocorrelation and the signed pair integral;
+all three integrands are already unconditionally integrable. This avoids
+assuming a cross-integral exists. Put b=(Q(F+H)-Q(F)-Q(H))/2. Then
+Q(F+tH)=Q(F)+2tb+t²q.
+
+Define the actual source ray F_t=F+tH, step t_*=-b/q and corrected source
+F_*=F_(t_*), using Lean's total division. If q=0 then H=0 and b=0,
+so the construction is the original source and the gain is0. Otherwise
+q>0 and completing the square gives, for every signed t,
+Q(F_t)=Q(F_*)+q(t-t_*)²,
+Q(F_*)=Q(F)-b²/q.
+Thus F_* attains the minimum on the entire actual source line; equality
+occurs iff H=0 or t=t_*. Improvement is strict iff b!=0. This minimizes
+the original signed plastic functional, not merely one of its lower bounds.
+
+All F_t are actual compact odd sources. Finite lattice support proves
+cellFold(F_t)=cellFold(F), since cellFold(H)=0. The complete coherent
+class, signed moment and exact coherent price are preserved. In particular,
+the existing full optimized bound applied to F_* gives
+I_opt(F_*,N)+R_plastic(F_*)-2*O_moment(F)²+b²/q<=Q(F)
+for every cutoff N, with an actual correction source and a nonnegative
+explicit gain. No scalar step, integrability, curvature or convergence
+premise is left to the caller.
+
+One contribution: exact source-realized line minimization inside a coherent
+class, with strict curvature, preserved coherent data and full functional
+gain transfer. Generic quadratic identities and scalar completion of the
+square are supporting tools. No global minimizer over the whole fiber,
+convergence of repeated corrections, source-energy orthogonality, preservation
+of original source-grid zeros, or universal plastic positivity is asserted.
+Exact source construction and full capstone now Lean verified: contribution24/100.
+
+Corpus audit: direct hybrid query `plastic crossover polarization zero moment
+kernel convex affine source fiber quadratic`, --any with BiScale filter,
+partial55.89s; unfinished text/source retrieval, older coverage snapshot,
+semantic coverage unmeasured. Inspected original plastic definition, its
+integrability and exact jump/moment decomposition, kernel splitting and
+source-energy rigidity. Exact source searches found no plastic line minimizer
+inside coherent classes. No external novelty or complete-search claim.
+
+### Verification of the twenty-fourth result
+
+- Initial API2446 exited0 without warnings. First actual-source audit86214
+  found a missing threshold namespace, set/zero-function reductions,
+  integral-addition matching and compact-source/function coercions. Added
+  explicit source types, typed integrability statements and pointwise
+  negation reduction; removed two unnecessary tactic-focus warnings.
+  Mathematical statements unchanged. Supplemental API96864 exited0 without
+  warnings. Source19250 left only a pointwise-negation reduction; fixed with
+  explicit real-valued oddness identities. One owned Lean process at a time.
+- Final actual-source77794 exited0 without warnings, using the prescribed
+  direct command:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/PlasticCoherentLineMinimizer.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/PlasticCoherentLineMinimizer.olean`.
+  Source has354 lines, five public definitions and21 public theorems;
+  SHA25623c31eead3da768eea9f6ee378b02c857bff49e44bea5fe9f6c740ad263a6023.
+  No source edits after this audit. Final API/all21 axiom audit48588 exited0
+  without warnings; all use only `propext`, `Classical.choice`, `Quot.sound`.
+  Source/audit theorem-name lists match exactly. Total366 supporting public
+  theorem audits; contribution24/100 complete, full goal ACTIVE.
+  README/source23 hashes unchanged; umbrella import wired.
+- Index64902 exited0 (6 changed). All26 public declarations indexed, with an
+  exact source/API name-list match. Initial lint9701 exited1 on27 unrelated
+  unreachable modules plus LEAN_API/LEAN_OVERVIEW drift and existing large-file
+  warnings. No owned lifting module flagged. Bounded refresh2222 exited0
+  (5 changed); all26 public declarations still match the indexed API exactly.
+- Final lint14313 exited1 on22 unrelated unreachable modules:
+  `CollarEndpointTailMass`, `CollarMeshBounds`, `CollarRadialPenalty`,
+  `CompactLipschitzLevyEnergy`, `CompactProfileLipschitz`,
+  `ConcentratedCollarExtension`, `ConcentratedCollarPenalty`,
+  `ConcentratedCollarRetraction`, `FermiNymanBrickDictionary`,
+  `LogarithmicArrayRadialComparison`, `NyquistWideSourceEnergy`,
+  `RightNodeCollarPartition`, `SharpCollarAsymptotics`, `SharpCollarCutoffComparison`,
+  `SignedPrimePolarCausalJumpBounds`, `SignedPrimePolarRampRegularity`,
+  `SignedPrimePolarSourceArchimedeanCertificate`, `SignedPrimePolarSourceJumpDomain`,
+  `SignedPrimePolarSourceJumpUpper`, `SignedPrimePolarTentJumpLower`,
+  `SignedPrimePolarTentRegularity`, `VasyuninReciprocityAndExactTailGramProducer`.
+  Concurrent LEAN_API drift and existing large-file warnings remain. No owned
+  lifting module flagged. Stop after this bounded refresh; unrelated sources
+  untouched, no repository-wide clean-gate claim.
+- Source24/source23 and read-only README hashes unchanged after all gates.
+  All owned search, Lean, index and lint handles terminal. One owned Lean
+  process at a time; no source edits after final source and axiom audits,
+  heartbeat/recursion changes, full build, numerical experiment, commit or push.
+  Contribution24/100 complete; full goal ACTIVE.
+- Owned `/tmp/hml_plastic_line_api.lean` and `/tmp/hml_plastic_line_lint.txt`
+  removed via apply_patch; absence verified. Final scoped diff and explicit
+  source/document whitespace checks passed, including the new Lean file.

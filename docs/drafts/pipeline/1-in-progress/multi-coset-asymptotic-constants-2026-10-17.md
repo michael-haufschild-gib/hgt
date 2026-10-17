@@ -629,8 +629,9 @@ bound give P_∞; taking M→∞ in the comparison proves its rate.
 ## Candidate sharp leading saturation law [paper argument; formal audit pending]
 
 Current implementation plan (uncounted; verified count remains 13/100):
-[ ] construct an exact measurable right-node partition and concentrated extension/retraction;
-[ ] prove uniform square-root fibre mass bounds and radial penalty comparisons;
+[x] construct an exact measurable right-node partition and concentrated extension/retraction;
+[x] prove uniform square-root fibre mass bounds and abstract radial perturbation bounds;
+[x] specialize radial comparisons to both actual cutoff constructions;
 [ ] integrate the concentrated penalties and identify the leading tail term;
 [ ] direct leaf checks, all-theorem axiom audit, wiring, index and ledger evidence.
 Reuse the existing `logarithmicCeilLag_bounds` mesh theorem; its source and compiled
@@ -651,6 +652,12 @@ on the repair interval it bounds the increment by 6144. Integrating gives errors
 coefficient 4 and simplify the proof by avoiding fractional-power integration.
 All pending array bounds must be instantiated by the actual extension/retraction;
 generic perturbation lemmas alone do not complete this contribution.
+Seven leaves now compile without diagnostics: `RightNodeCollarPartition`,
+`CollarRadialPenalty`, `CollarMeshBounds`, `ConcentratedCollarExtension`, and
+`ConcentratedCollarRetraction`, together with `LogarithmicArrayRadialComparison`
+and `ConcentratedCollarPenalty`. Endpoint-tail analysis, integrated cutoff comparison
+and the optimized asymptotic capstone remain in verification.
+Checkpoint: `/tmp/bsu-sharp-tail-checkpoint.json`; count remains 13/100.
 
 The preceding one-sided rate can be sharpened on paper to
 
@@ -740,6 +747,35 @@ shared-origin radial penalty is only order N^(−1). This identifies why the
 independent-sphere allocation hierarchy has a tail-driven leading coefficient.
 
 ## Boundaries and next conjecture
+
+### Forced first-node coupling gap (new paper candidate; uncounted)
+
+The current sharp-tail package remains the active formalization. A subsequent
+route can potentially remove the unresolved strict-limit-gap branch. The source
+formula `pairedKernel_sub_kernel` uses whole-sign block norms A,B and equals
+2AB divided by sqrt(W²+(A+B)²)+sqrt(W²+A²+B²). It is not a sum of separately
+paired coset deficits. This exact source formula was inspected.
+
+Set e=log(3)−log(2)−δ=log(3/(2sqrt(2)))>0 (9>8), a=e/3, b=2e/3.
+For cutoff N≥3 and y∈[a,b], both x=log(2)−y and x=log(2)+y lie in the physical
+window but below log(3)−δ. No node j≥3 covers either point. Exact partitioning
+therefore forces the share of node 2 to be one on both sides. Since x<log(3),
+w(x)≥2exp(−x/2)≥2/sqrt(3)>1. Thus A,B≥1 for every admissible partition,
+uniformly in N. On [a,b], W≤W0=2/(1−exp(−2a)). Each denominator root is at
+most W+A+B, so the paired gain is at least AB/(W+A+B), hence at least
+1/(W0+2): AB≥1 and 2AB≥A+B imply AB(W0+2)≥W+A+B.
+
+Integrating gives the candidate uniform gap
+pairedCoefficient(ρ)−coefficient(ρ)≥(b−a)/(W0+2)>0 for every N≥3 and every ρ.
+Taking suprema would give Q_N≥P_N+g and Q∞≥P∞+g. Combined with an analogous
+sharp tail law for the paired radial norm, this would force the delayed-product
+hierarchy's N^(−1/4) branch eventually, rather than leave a rate dichotomy.
+Formal obligations: exact first-node exclusion, interval placement and weight
+bounds, denominator estimate and integration, then supremum/limit transfer.
+Nothing in this candidate is counted or Lean-certified yet. It does not assert
+a strict optimized gap for the unrelated full signed-Gram or unrestricted source
+infimum. Broad lexical search returned mainly other producer families; the focused
+forced-collar search and field text search are recorded under /tmp/bsu-sharp-tail-*.
 
 - A fixed narrow smooth source gives a finite N-independent upper bound. Divergence as log N→∞ is impossible for this admissible class.
 - Arbitrary physical overlap allocation must conserve density. Origin weight cannot be spent once per odd coset.
