@@ -1,10 +1,11 @@
 import GaloisForLFunctions.BiScaleUncertainty.NyquistResidualPartition
 import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.Topology.ContinuousMap.Bounded.Normed
 
 /-! # Integrability and exact mass of the explicit Nyquist residual kernel -/
 
 open MeasureTheory Set Filter Topology
-open scoped BigOperators
+open scoped BigOperators BoundedContinuousFunction
 
 namespace GaloisForLFunctions.BiScaleUncertainty
 
@@ -70,7 +71,7 @@ theorem integral_mul_nyquistResidualKernel_le (N : ℕ) (H : ℝ →ᵇ ℝ) :
     _ ≤ ∫ x, ‖H‖ * nyquistResidualKernel N x :=
       norm_integral_le_of_norm_le ((integrable_nyquistResidualKernel N).const_mul ‖H‖)
         (Eventually.of_forall fun x => by
-          rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg (nyquistResidualKernel_nonneg N x)]
+          simp only [norm_mul, Real.norm_eq_abs, abs_of_nonneg (nyquistResidualKernel_nonneg N x)]
           exact mul_le_mul_of_nonneg_right (H.norm_coe_le_norm x) (nyquistResidualKernel_nonneg N x))
     _ = _ := by rw [integral_const_mul, integral_nyquistResidualKernel, mul_comm]
 

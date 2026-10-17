@@ -47,7 +47,7 @@ This is uniform over changing sources and nonzero coefficients. Complete proofs 
 
 ## Certified frontier
 
-Twelve significant packages certified:
+Thirteen significant packages certified:
 
 1. Canonical tail detection and the uniform linear energy barrier for separated two-copy sources,
    including the stronger local-energy inequality (22 theorems).

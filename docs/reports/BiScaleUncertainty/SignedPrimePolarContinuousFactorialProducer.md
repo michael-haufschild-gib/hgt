@@ -1,6 +1,6 @@
 # Continuous factorial producer preserving the arithmetic grid
 
-Status: dependency-closed paper proof; Lean verification in progress. One package,
+Status: dependency-closed paper proof and Lean-verified package. One package,
 not separate counts for interpolation, cancellation, or norm estimates.
 
 For N≥1 put ε=1/(4N), A=1+ε and
@@ -69,12 +69,11 @@ Inserting the nonnegative gaps f(2k+2)−f(2k+3) shows
 
 Apply this to f(j)=qε(j exp(x)/(4N)). It follows that
 |S_N(x)|≤2exp(x/2)/sqrt(N). On its support, integration gives
-∫ℝ S_N²≤(4/N)(4N+1−1)=16. The looser public bound 20 is also valid.
-(Using exp(L) instead of exp(L)−1 gives 16+4/N≤20.)
+∫ℝ S_N²≤(4/N)(4N+1−1)=16.
 
-For log(2N+1)<x≤log(4N), only j=1 in Uε,4N survives, with ramp value 1.
-Indeed j≥2 gives j exp(x)/(4N)>(4N+2)/(4N)>A, and already
-exp(x)/(2N)>(2N+1)/(2N)>A kills both smaller lifts. Thus
+For log(2N+1)≤x≤log(4N), only j=1 in Uε,4N survives, with ramp value 1.
+Indeed j≥2 gives j exp(x)/(4N)≥(4N+2)/(4N)>A, and already
+exp(x)/(2N)≥(2N+1)/(2N)>A kills both smaller lifts. Thus
 S_N(x)=exp(x/2)/sqrt(N) throughout this interval. Nonnegativity of its
 square and interval integration imply
 ∫ℝ S_N²≥(4N−(2N+1))/N=2−1/N≥1.
@@ -95,3 +94,19 @@ Search `/tmp/spp9-search.json` returned a complete file inventory but partial
 deep reasoning and mostly source-only compiler metadata. Its candidates and
 source arguments were inspected; continuity and finite-integral tools are
 reusable, while the proposed coprime-grid ingredient set is inapplicable.
+
+## Lean certificate
+
+The actual compact continuous object is `SignedPrimePolar.continuousFactorialProducer`.
+`continuousFactorialProducer_certificate (n : ℕ)` bundles exact grid preservation,
+the unconditional pairing bound and 1≤∫S_(n+1)²≤16. Exact pairing and domain
+admission are proved separately, along with the autocorrelation exclusion.
+
+The five leaves `AntitoneDyadicStencil.lean`, `ClampedExponentialRamp.lean`,
+`SignedPrimePolarContinuousFactorialLift.lean`,
+`SignedPrimePolarContinuousFactorialProducer.lean`, and
+`SignedPrimePolarContinuousFactorialEnergy.lean` pass final direct checks with
+empty diagnostics. Fourteen scratch axiom audits use only propext,
+Classical.choice and Quot.sound. Imports and index are updated. Global lint
+reports eight unrelated unwired modules; no package-local error. Full evidence
+and the exact list are recorded in `SignedPrimePolarTransport-FACTS.md`.

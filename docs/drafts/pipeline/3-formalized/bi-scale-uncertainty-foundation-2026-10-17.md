@@ -503,22 +503,22 @@
       Chebyshev producer $T(4N) - 4T(2N) + 4T(N)$ cancelling both $N \log N$ and $N$ poles
       identically with unconditional bound $|T(4N) - 4T(2N) + 4T(N)| \le 5\log(4N+1) + 1$.
 
-30. **Pillar XXX — `formal/GaloisForLFunctions/BiScaleUncertainty/UnconditionalChebyshevCellAndArchimedeanWeilProducer.lean`**
+30. **Pillar XXX — `formal/GaloisForLFunctions/BiScaleUncertainty/ChebyshevCellAndArchimedeanWeilProducer.lean`**
     - `generalChebyshevStencilProducer`, `floorSummatory_chebyshevPsi_mul_eq`,
       `generalChebyshevStencilProducer_eq`, `abs_generalBiNullChebyshevProducer_le`,
       `coprimeTwoThreeChebyshevProducer`, `coprimeTwoThreeChebyshevProducer_eq_alternating_diff`,
       `coprimeTwoThreeChebyshevProducer_eq_stirling_comb`,
       `abs_coprimeTwoThreeChebyshevProducer_le`:
       Exact pole–slope–Stirling decomposition for general finite dilation stencils $\sum_{a \in s} c_a T(aN)$,
-      general unconditional $O(\log N)$ bi-null producer bound, and the explicit coprime $(2, 3)$
-      Chebyshev–Nyman–Beurling producer $T(6N) - 2T(3N) - 3T(2N) + 6T(N)$ with unconditional bound
+      general $O(\log N)$ bi-null producer bound, and the explicit coprime $(2, 3)$
+      Chebyshev–Nyman–Beurling producer $T(6N) - 2T(3N) - 3T(2N) + 6T(N)$ with bound
       $|T(6N) - 2T(3N) - 3T(2N) + 6T(N)| \le 12\log(6N+1) + 2$.
     - `chebyshevProducerSlope`, `abs_chebyshev_psi_sub_self_le`,
       `abs_logError_le_exp`, `abs_normalizedLogError_le_exp_half`,
       `normalizedLogError_cutoff_sq_le`, `abs_chebyshev_psi_sub_cellCenter_le`,
       `nyquist_cell_chebyshev_term_le`, `discreteChebyshevCellSum_le`,
       `integral_normalizedLogError_sq_cutoff_le`:
-      Unconditional pointwise and Nyquist-cell Chebyshev producer bounds:
+      Pointwise and Nyquist-cell Chebyshev producer bounds:
       $|\psi(n) - m_n| \le (\log 4 + 3)n$, $(\psi(n) - m_n)^2 / (n(n+1)) \le (\log 4 + 3)^2$, and
       $\operatorname{discreteChebyshevCellSum}(N) \le (\log 4 + 3)^2 (N + 1)$.
     - `archimedeanPacketProducerBound`,
@@ -534,10 +534,10 @@
       `RealSmoothEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`,
       `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`,
       `RealHyperplaneGenerator.unconditional_weilFullFunctional_vonMangoldt_archimedeanProducer_lower_bound`:
-      Unconditional prime-free archimedean full Weil functional lower bounds across all explicit-formula
+      Prime-free archimedean full Weil functional lower bounds across all explicit-formula
       test spaces.
 
-31. **Pillar XXXI — `formal/GaloisForLFunctions/BiScaleUncertainty/UnconditionalLaplaceEnergyAndRoughCollarWeilProducer.lean`**
+31. **Pillar XXXI — `formal/GaloisForLFunctions/BiScaleUncertainty/LaplaceEnergyAndRoughCollarWeilProducer.lean`**
     - `chebyshevPsi_one_eq_zero`, `sum_dyadic_chebyshevPsi_diff_eq`,
       `dyadicCumulativeChebyshevProducer`,
       `chebyshevPsi_two_pow_le_dyadicCumulativeChebyshevProducer`,
@@ -545,17 +545,17 @@
       `chebyshevPsi_two_pow_le_linear_add_log`:
       All-scale telescoping dyadic Chebyshev factorial producer
       $\operatorname{dyadicCumulativeChebyshevProducer}(K) = \sum_{k=0}^{K-1} (T(2^{k+1}) - 2T(2^k))$
-      and unconditional Stirling-only dyadic Chebyshev upper bound
+      and Stirling-only dyadic Chebyshev upper bound
       $\psi(2^K) \le (2\log 2)(2^K - 1) + K(2\log(2^K + 1) + 1)$.
     - `laplaceEnergyProducerBound`, `laplaceEnergy_le_laplaceEnergyProducerBound`,
       `normalizedLogError_cutoff_sq_le_laplaceEnergy`,
       `packetEnergy_le_laplaceEnergy_gauge`:
-      Unconditional prime-free archimedean producer bound on `laplaceEnergy N` and direct Laplace
+      Prime-free archimedean producer bound on `laplaceEnergy N` and direct Laplace
       Gram energy control of `packetEnergy f N`.
     - `primeWeight_le_vonMangoldt`, `sum_primeWeight_le_chebyshev_psi`,
       `integral_polarDensity_cutoff_eq`, `massProducerBound`,
       `mass_le_massProducerBound`, `mass_sq_le_massProducerBound_sq`:
-      Unconditional prime-free archimedean producer bound on `SignedPrimePolar.mass N`.
+      Prime-free archimedean producer bound on `SignedPrimePolar.mass N`.
     - `archimedeanCollarPacketProducerBound`, `archimedeanCorrelationGaugeProducerBound`,
       `archimedeanCollarTrialProducerBound`,
       `packetEnergy_le_archimedeanCorrelationGaugeProducerBound`,
@@ -569,10 +569,10 @@
       Derivative-free, correlation-only, 100% prime-free archimedean packet, pairing, and full Weil
       functional bounds across all explicit-formula test spaces.
 
-32. **Pillar XXXII — `formal/GaloisForLFunctions/BiScaleUncertainty/UnconditionalCoprimeFactorialLiftAndSpectralLaplaceProducer.lean`**
+32. **Pillar XXXII — `formal/GaloisForLFunctions/BiScaleUncertainty/CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`**
     - `coprimeHarmonicCorrection`, `coprimeHarmonicCorrection_eq_pairs`,
       `coprimeHarmonicCorrection_bounds`:
-      Unconditional $[0, 3]$ bound on the coprime $(2, 3)$ harmonic second difference
+      $[0, 3]$ bound on the coprime $(2, 3)$ harmonic second difference
       $6N(H_{6N} - H_{3N} - H_{2N} + H_N)$.
     - `factorialCoprimeTwoThree`, `factorialCoprimeTwoThree_zero`,
       `factorialCoprimeTwoThree_top`, `factorialCoprimeTwoThree_ne_autocorr`,
@@ -582,7 +582,7 @@
       `factorialCoprimeTwoThree_producer`:
       Explicit coprime $(2, 3)$ real-ratio factorial-lift producer for `fullPairing` with exact
       evaluation $(2\,\operatorname{coprimeTwoThreeChebyshevProducer}(N) - \operatorname{coprimeHarmonicCorrection}(N))/\sqrt{N}$
-      and unconditional $O(\log N / \sqrt{N})$ bound $\le (24\log(6N+1) + 7)/\sqrt{N}$.
+      and $O(\log N / \sqrt{N})$ bound $\le (24\log(6N+1) + 7)/\sqrt{N}$.
     - `norm_fourierPairing_le_massProducerBound`,
       `spectral_fourierPairing_integral_le_laplaceEnergyProducerBound`,
       `packetEnergy_le_spectral_fourierPairing`,
@@ -594,12 +594,50 @@
       `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_lower_bound`,
       `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_lower_bound`,
       `RealHyperplaneGenerator.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_lower_bound`:
-      Unconditional prime-free critical-line spectral Laplace producer bounds and boundary-free
+      Prime-free critical-line spectral Laplace producer bounds and boundary-free
       multiplicative full Weil functional lower bounds across all explicit-formula test spaces.
 
+33. **Pillar XXXIII — `formal/GaloisForLFunctions/BiScaleUncertainty/ChebyshevHeadAndShearCellProducer.lean`**
+    - `chebyshev_psi_natCast_eq_chebyshevPsi`, `chebyshevPsiSeq_eq_chebyshevPsi`,
+      `dyadicChebyshevDiffSeq_two_mul_eq`,
+      `sub_alternatingProducer_le_dyadicChebyshevDiffSeq_two_mul`,
+      `dyadicChebyshevDiffSeq_two_mul_le_two_mul_sub_alternatingProducer`,
+      `stirling_lower_bound_dyadicChebyshevDiffSeq_two_mul`,
+      `dyadicChebyshevDiffSeq_two_mul_le_stirling_upper_bound`,
+      `dyadicChebyshevDiffSeq_two_mul_two_pow_le_cumulative_sub_alternating`,
+      `dyadicChebyshevDiffSeq_two_mul_two_pow_le_stirling_linear_add_log`:
+      Exact bridge $\operatorname{Chebyshev.psi}(m) = \operatorname{RHTower.chebyshevPsi}(m)$,
+      two-sided Stirling producer sandwich for $\operatorname{dyadicChebyshevDiffSeq}(2m)$, and
+      pure-Stirling upper bound at dyadic scales $2 \cdot 2^K$.
+    - `abs_chebyshevErrorSeq_le`, `chebyshevErrorSeq_sq_div_cell_le`,
+      `integerCenteredChebyshevCellSum_le`, `vonMangoldt_shear_harmonic_sum_le`,
+      `archimedeanIntegerCenteredGaugeProducerBound`,
+      `integerCenteredGaugeBound_le_archimedeanProducer`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_archimedeanIntegerCenteredProducer_lower_bound`:
+      Linear producer bound $\operatorname{integerCenteredChebyshevCellSum}(N) \le (\log 4 + 3)^2 (N + 1)$,
+      harmonic bilinear von Mangoldt shear sum bound, and prime-free integer-centered gauge producer.
+    - `abs_two_mul_chebyshev_psi_half_sub_le`, `sq_two_mul_chebyshev_psi_half_sub_le`,
+      `integrableOn_inv_sq_Ioc`, `integral_inv_sq_Ioc`,
+      `integral_wall_one_chebyshev_head_le`,
+      `logMobiusFermiErrorEnergy_le_tail_add_head_producer`:
+      Closed-form bound $\int_{1/(N+1)}^1 (2\psi(1/(2t)) - \psi(1/t))^2\,dt \le (\log 4 + 4)^2 N$
+      and resulting head producer bound on `logMobiusFermiErrorEnergy N`.
+    - `coprimeFactorialCollar`, `smoothFactorialCoprimeTwoThree`,
+      `continuousCoprimeFactorialProducer`,
+      `smoothFactorialCoprimeTwoThree_at_log`,
+      `smoothFactorialCoprimeTwoThree_admissible`,
+      `fullPairing_smoothFactorialCoprimeTwoThree_correction`,
+      `fullPairing_smoothFactorialCoprimeTwoThree_eq`,
+      `abs_fullPairing_smoothFactorialCoprimeTwoThree_le`,
+      `continuousCoprimeFactorialProducer_zero`,
+      `continuousCoprimeFactorialProducer_top`,
+      `continuousCoprimeFactorialProducer_ne_autocorr`:
+      Compactly supported continuous coprime $(2, 3)$ factorial producer in $C_c(\mathbb{R}, \mathbb{R})$
+      with exact collar correction and $O(\log N / \sqrt{N})$ pairing bound.
+
 ## Audit Status
-- **Module Verification**: All 32 Pillars (`UnconditionalCoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `UnconditionalLaplaceEnergyAndRoughCollarWeilProducer.lean`, `UnconditionalChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Module Verification**: All 33 Pillars (`ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXIII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 
 
 

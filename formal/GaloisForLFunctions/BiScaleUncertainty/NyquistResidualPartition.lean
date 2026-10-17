@@ -99,7 +99,8 @@ theorem nyquistResidualKernel_eq_tail_indicator (N : ℕ) :
   · rw [indicator_of_mem hx]
     obtain ⟨k, hk⟩ := mem_iUnion.mp ((iUnion_nyquistResidualCell N).symm ▸ hx)
     rw [nyquistResidualKernel_on_cell N k hk]
-    simpa only [Nat.zero_add] using (nyquistResidualKernel_on_cell 0 (N + k) hk).symm
+    simpa only [Nat.zero_add] using
+      (nyquistResidualKernel_on_cell 0 (N + k) (by simpa only [Nat.zero_add] using hk)).symm
   · rw [indicator_of_notMem hx, nyquistResidualKernel_eq_zero N (le_of_not_gt hx)]
 
 end

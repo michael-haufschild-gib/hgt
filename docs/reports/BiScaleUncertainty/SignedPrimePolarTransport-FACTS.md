@@ -2,7 +2,7 @@
 
 ## Counting rule
 
-Target: 100 substantive, independently justified contributions. Verified packages: 8.
+Target: 100 substantive, independently justified contributions. Verified packages: 9.
 Helpers, equivalent restatements, and classical partial summation do not count separately.
 
 Field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read
@@ -411,7 +411,7 @@ The test has fixed top amplitude: W_N(0)=0 and W_N(log(4N))=2. The formal
 `factorialBiNull_ne_autocorr` proves it cannot be the autocorrelation of any
 compact continuous real source. This is a scalar producer for the actual signed
 measure, not a uniform packet estimate or a positivity theorem. It is discontinuous;
-constructing a continuous producer with exact grid preservation is the next target.
+Contribution 9 supplies a continuous producer with exact grid preservation.
 
 Public endpoints in `SignedPrimePolar` include `factorialLift_at_log`,
 `tsum_primeTerm_factorialLift`, `fullPairing_factorialLift_eq`,
@@ -446,6 +446,61 @@ report partial=false with complete file inventory; compiler metadata remains
 mostly source-only/pending and semantic coverage unmeasured. Candidate lemmas and
 source arguments were inspected. No external novelty claim follows from retrieval.
 
+## Contribution 9: continuous grid-preserving producer with nonvanishing L² size
+
+`SignedPrimePolarContinuousFactorialProducer.md` gives the dependency-closed paper
+proof. For N≥1 set ε=1/(4N), qε(t)=min(1,max(0,(1+ε−t)/ε)), and
+Uε,K(x)=exp(x/2) Σ_{j=1}^K qε(j exp(x)/K). The concrete test is
+S_N=(Uε,4N−4Uε,2N+4Uε,N)/sqrt(N), defined on all real x.
+The stencil cancels exactly on x≤0 and vanishes above log(4N+1), so S_N is
+compact and continuous. The bound εK≤1 implies qε(jn/K)=1_{jn≤K}; thus
+S_N(log n)=W_N(log n) for every integer n≥1, with no exceptional grid endpoint.
+
+Piecewise FTC evaluates the single-ramp polar integral, retaining both exponential
+branches. The additional correction is εK H_K/2+Kρ(ε), where
+ρ(ε)=((1+ε)log(1+ε)−ε)/ε. The linear ρ term cancels, giving
+
+ν(S_N)=[2B_N−(1+1/(8N))C_N]/sqrt(N),
+|ν(S_N)|≤[10log(4N+1)+3+1/(8N)]/sqrt(N).
+
+The actual atom sequence has finite support and is absolutely summable; the polar
+integrand is globally integrable. No discrepancy estimate is assumed. No discrete
+counterterm is inserted into a floor sum.
+
+Finite antitone pairing bounds the dyadic ramp stencil in [−2,1]. Consequently
+S_N(x)²≤4exp(x)/N and ∫ℝ S_N²≤16. On the full closed interval
+[log(2N+1),log(4N)] the test is exp(x/2)/sqrt(N); hence ∫ℝ S_N²≥2−1/N≥1.
+The pairing bound therefore does not arise from vanishing L² size.
+
+The actual object `continuousFactorialProducer (n : ℕ) : C_c(ℝ,ℝ)` uses N=n+1.
+The main `continuousFactorialProducer_certificate` has only that integer input
+and bundles exact grid preservation, the pairing bound, and 1≤∫S_N²≤16.
+Exact evaluation and domain admission are separately certified by
+`fullPairing_smoothFactorialBiNull_eq` and `smoothFactorialBiNull_admissible`.
+`continuousFactorialProducer_ne_autocorr` retains the genuine domain boundary:
+origin value zero and top value two exclude a real-source autocorrelation.
+
+This resolves a continuity and nonvanishing-size obstruction, not arbitrary
+source-packet control. Construction, finite antitone cancellation, FTC, grid
+preservation, pairing and energy bounds count as one package. No external novelty
+claim follows from the partial corpus searches.
+
+All five final direct `lake --old env lean <leaf> -o <olean>` checks pass with empty
+diagnostics: `AntitoneDyadicStencil`, `ClampedExponentialRamp`,
+`SignedPrimePolarContinuousFactorialLift`, `SignedPrimePolarContinuousFactorialProducer`,
+and `SignedPrimePolarContinuousFactorialEnergy`. Fourteen scratch axiom audits use
+only propext, Classical.choice and Quot.sound. The printed main signature has no
+free analytic or arithmetic premise. All five imports occur once; index refresh
+passes and includes the public endpoint. Evidence: `/tmp/spp9-*-final.log`,
+`/tmp/spp9_final_axioms.lean`, `/tmp/spp9-final-axioms.log`, `/tmp/spp9-index.log`.
+
+Global lint reports eight unrelated concurrent unwired modules and no package-local
+error (`/tmp/spp9-lint.log`): DiscrepancyTransformLaw, NyquistPolarDecomposition,
+NyquistPolarSourceEscape, NyquistResidualKernel, NyquistResidualMass,
+NyquistResidualOperator, NyquistResidualPartition, and
+SelbergSieveTailQuadraticFormAndTruncatedDivisorGram. No full build or umbrella
+build was run. README remains read-only and unmodified by this work.
+
 ## Failure boundaries and remaining frontier
 
 - Scalar support stabilization does not establish packet-energy stabilization:
@@ -464,18 +519,19 @@ source arguments were inspected. No external novelty claim follows from retrieva
   the fixed-coefficient loss, not the residual itself. Multiple-collar compensation
   remains parked in `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`.
   Trap 10 prioritizes explicit unconditional producers over further receivers.
-- Contribution 8 supplies an explicit unconditional scalar producer. It does not
-  discharge the arbitrary-correlation packet problem. Next uncounted candidate:
-  `1-in-progress/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
-  A common dilation average over [1,1+1/(4N)] should preserve every prime-grid
-  value while producing a compact continuous test, with exact pairing
-  [2 B_N−(1+1/(8N))C_N]/sqrt(N). Uniform nonvanishing L² size is also targeted.
-  A dependency-closed paper proof now exists in
-  `SignedPrimePolarContinuousFactorialProducer.md`; Lean verification is in progress.
-  The finite antitone stencil and exact single-ramp integral pass direct leaf checks;
-  the full continuous-producer package remains uncounted. Initial search
-  `/tmp/spp8-next-search.json` reports partial=false/errors=[] and retrieves grid
-  interpolation precedents; inspect their exact scope before new code.
+- Contributions 8–9 give explicit unconditional scalar producers, including a
+  compact continuous family with fixed positive lower L² size. They do not
+  discharge arbitrary-correlation packet control. Next uncounted candidate:
+  `1-in-progress/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
+  A causal convolution construction may realize a grid-preserving producer as an
+  actual mixed source correlation and a polarized autocorrelation difference.
+  Source-energy cost must be quantified; shrinking collars may make it grow.
+  Search `/tmp/spp9-next-search.json` is partial with interrupted text/source
+  retrieval. Candidates and source arguments were inspected; full precursor
+  inspection and a broader convolution search were completed for the dependency-closed
+  paper proof in `SignedPrimePolarFactorialSourceFactorization.md`. It constructs
+  actual source contrasts with predicted equal origin energies in [6N,46N].
+  Full Lean verification remains in progress; this package is not counted yet.
 - The prior multiple-collar search returned finite discrete Gram precedents, not
   that mixed construction.
   Both searches report partial=false and errors=[]; semantic coverage is unmeasured,

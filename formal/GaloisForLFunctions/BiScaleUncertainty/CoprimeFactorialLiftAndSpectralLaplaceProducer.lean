@@ -1,6 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarFactorialProducer
 import GaloisForLFunctions.BiScaleUncertainty.SpectralLaplaceEnergyCriticalLine
-import GaloisForLFunctions.BiScaleUncertainty.UnconditionalLaplaceEnergyAndRoughCollarWeilProducer
+import GaloisForLFunctions.BiScaleUncertainty.LaplaceEnergyAndRoughCollarWeilProducer
 
 /-!
 # Pillar XXXII: Unconditional Coprime `(2, 3)` Factorial-Lift Producer & Boundary-Free Spectral Laplace Weil Producers

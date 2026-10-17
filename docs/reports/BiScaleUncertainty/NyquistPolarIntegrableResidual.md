@@ -2,7 +2,7 @@
 
 ## Domain and status
 
-Dependency-closed paper proof; Lean formalization pending, uncounted. The topic
+Dependency-closed paper proof; Lean formalization in progress, uncounted. The topic
 remains infinite-grid tail rigidity for general signed correlations. The field
 README is read-only. Existing Nyquist producer constants and their pointwise error
 bounds are reused inputs, not new results.

@@ -732,8 +732,8 @@ exit 0, empty log. Evidence `/tmp/bsu-dyadic-final.exit`,
 `/tmp/bsu-dyadic-{manifest,integrity,audit-coverage}.json`.
 All 33 owned imports occur once; all 29 earlier source hashes are unchanged.
 Index refresh and three requested capstone discoveries pass
-(`/tmp/bsu-dyadic-discovery.json`). Global lint's eleven foreign umbrella failures
-are listed above. Read-only README hash remains
+(`/tmp/bsu-dyadic-discovery.json`). At that package-11 audit, global lint reported
+eleven foreign umbrella failures (`/tmp/bsu-dyadic-lint-final.log`). Read-only README hash remains
 `dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
 Temporary API probe removed; all owned jobs terminal. No full/umbrella build,
 numerical experiment, heartbeat increase, commit or push.
@@ -745,3 +745,30 @@ indices before rewriting atom pairings. Use an explicit real-valued `change`
 for `RCLike.re` of coerced real inner products. Expose beta-redexes before
 rewriting antitone function values; use the verified `Nat.pow_le_pow_right`
 for natural cutoff bounds.
+
+Physical minimum-response package SHA-256 values:
+
+- Selector: `2f409903d0f7e1e62e3767d985a58e567c5e59bd4eabed71e09d4c7cd000e9db`.
+- Linear optimality: `ea4d38d015470d288fb2ee6b7bcf009ac573c722e1aa832045a77cfdbc080ec9`.
+- Cutoff ladder: `1a5cb7a77fe22c3a88b0ebef726e29561a87b95cd8f02210baf31ca21faa824b`.
+
+All three leaves compile without diagnostics. All 43 public theorem axiom audits
+pass exactly once in `/tmp/bsu_minimum_response_axioms.lean`, using only `propext`,
+`Classical.choice`, and `Quot.sound`. Printed capstones and concrete selection,
+response, cost, accepted-step and ladder definitions inspected.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SignedGramResponseLadder.lean`;
+exit 0, empty log. Evidence `/tmp/bsu-minimum-response-final.exit`,
+`/tmp/bsu-minimum-response-{selection,optimality,ladder,axioms,final,index}.log`, and
+`/tmp/bsu-minimum-response-{manifest,integrity,audit-coverage}.json`.
+All 36 owned imports occur once; all 33 earlier source hashes remain unchanged.
+Index refresh and three requested capstone discoveries pass
+(`/tmp/bsu-minimum-response-discovery.json`). Latest global lint has six foreign
+umbrella failures listed above. README remains byte-identical at the current
+260-line hash. Temporary API probe removed; all owned jobs terminal.
+
+Reusable repair: for a measurable selection cell, prove its explicit equality
+with the intersection of the active collar and the price-equality set before
+applying measurability. Broad simp can turn the target into measurability of a
+Prop-valued predicate. Scratch API audits must open the same namespaces used
+by unqualified API checks.

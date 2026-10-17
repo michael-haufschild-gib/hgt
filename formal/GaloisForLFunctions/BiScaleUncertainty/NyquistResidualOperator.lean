@@ -3,7 +3,7 @@ import GaloisForLFunctions.BiScaleUncertainty.NyquistResidualKernel
 /-! # The positive Nyquist residual operator and its exact norm -/
 
 open MeasureTheory Set Filter Topology
-open scoped BigOperators
+open scoped BigOperators BoundedContinuousFunction
 
 namespace GaloisForLFunctions.BiScaleUncertainty
 
@@ -90,6 +90,7 @@ theorem nyquistCellResidual_eq_integral_kernel (N k : ℕ) (H : ℝ →ᵇ ℝ) 
       ∫ x in nyquistResidualCell (N + k), H x * nyquistResidualKernel N x := by
   apply setIntegral_congr_fun (measurableSet_nyquistResidualCell (N + k))
   intro x hx
+  change H x * nyquistResidualDensity (N + k) x = H x * nyquistResidualKernel N x
   rw [nyquistResidualKernel_on_cell N k hx]
 
 theorem norm_nyquistCellResidual_le (H : ℝ →ᵇ ℝ) (k : ℕ) :
@@ -100,9 +101,15 @@ theorem norm_nyquistCellResidual_le (H : ℝ →ᵇ ℝ) (k : ℕ) :
       norm_integral_le_of_norm_le
         ((integrable_nyquistResidualKernel 0).integrableOn.const_mul ‖H‖)
         (Eventually.of_forall fun x => by
-          rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg (nyquistResidualKernel_nonneg 0 x)]
+          simp only [norm_mul, Real.norm_eq_abs, abs_of_nonneg (nyquistResidualKernel_nonneg 0 x)]
           exact mul_le_mul_of_nonneg_right (H.norm_coe_le_norm x) (nyquistResidualKernel_nonneg 0 x))
     _ = _ := by rw [integral_const_mul, integral_nyquistResidualKernel_cell]
+
+theorem summable_norm_nyquistCellResidual (H : ℝ →ᵇ ℝ) (N : ℕ) :
+    Summable (fun k => ‖nyquistCellResidual H (N + k)‖) :=
+  Summable.of_nonneg_of_le (fun k => norm_nonneg (nyquistCellResidual H (N + k)))
+    (fun k => norm_nyquistCellResidual_le H (N + k))
+    ((summable_nyquistResidualMass N).mul_left ‖H‖)
 
 theorem summable_nyquistCellResidual (H : ℝ →ᵇ ℝ) (N : ℕ) :
     Summable (fun k => nyquistCellResidual H (N + k)) :=

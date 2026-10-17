@@ -11,7 +11,7 @@ integrable residual converges under global uniform correlation convergence.
 
 open MeasureTheory Set Filter Topology
 open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm RHTower.WeilMarkovPole
-open scoped BigOperators
+open scoped BigOperators BoundedContinuousFunction
 
 namespace GaloisForLFunctions.BiScaleUncertainty
 
@@ -36,9 +36,10 @@ theorem LevyEnergySource.norm_realCorrelation_le_one (f : LevyEnergySource K) :
 theorem LevyEnergySource.hasCompactSupport_realCorrelation (f : LevyEnergySource K) :
     HasCompactSupport (⇑f.realCorrelation) := by
   change HasCompactSupport (fun x => autocorr f.source x / autocorr f.source 0)
-  simpa only [Pi.mul_apply, div_eq_mul_inv] using
-    (hasCompactSupport_autocorr f.source.hasCompactSupport).mul_right
-      (f' := fun _ => (autocorr f.source 0)⁻¹)
+  have hh := (hasCompactSupport_autocorr f.source.hasCompactSupport).mul_right
+    (f' := fun _ => (autocorr f.source 0)⁻¹)
+  change HasCompactSupport (fun x => autocorr f.source x * (autocorr f.source 0)⁻¹) at hh
+  simpa only [div_eq_mul_inv] using hh
 
 def LevyEnergySource.nyquistProducer (f : LevyEnergySource K) (N : ℕ) : ℝ :=
   nyquistPolarProducer N f.realCorrelation

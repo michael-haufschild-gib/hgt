@@ -29,7 +29,8 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    Finite divisor families now have sharp longest-run constants and actual sine attainers.
    Arbitrary divisor families now have an exact run-gap/closed-range classifier.
    Their physical energy completion, conservation laws and escaping trace producers are proved.
-   Extend to explicit component projections, admission beyond compact support, and closed-graph APIs.
+   Explicit physical component projections and exact convergent approximation error are proved.
+   Extend to actual dilation/cell operators, admission beyond compact support, and closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -93,10 +94,12 @@ traces or a constructed interpolant.
   sharp bounded factors and normalized near-null producers; five leaves, 76 declarations audited.
 - [x] Physical energy completion, finite-component conservation, exact trace recovery,
   and explicit ramp producers with error1/N; five leaves,73 declarations audited.
+- [x] Explicit component averaging, unique physical best approximation and exact
+  convergent error with negative-half-line accounting; five leaves,87 declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **15 / 100**. Formalized packages:
+Certified count: **16 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -111,7 +114,8 @@ Certified count: **15 / 100**. Formalized packages:
 `../3-formalized/two-grid-coprime-trace-extension.md`, and
 `../3-formalized/finite-grid-run-length-coercivity.md`, and
 `../3-formalized/infinite-divisor-run-gap-classification.md`, and
-`../3-formalized/divisor-trace-energy-completion.md`.
+`../3-formalized/divisor-trace-energy-completion.md`, and
+`../3-formalized/divisor-component-averaging-projection.md`.
 
 ## Current exact result and next frontier
 
@@ -353,11 +357,27 @@ only standard axioms.13 principal signatures and52 API probes inspected.
 Five imports and72 catalog entries verified. Global lint exits1 solely for
 six unrelated unreachable modules, listed in the card and ledger; no own or
 generated-index error. Paper preceded Lean; README remains read-only.
-Current certified count15/100; goal remains active.
+Package15 is counted once toward the active goal.
+
+## Certified package 16: explicit component averaging
+
+For every physical L² input, integrate on unit cells, subtract each finite
+arithmetic component mean, retain infinite-tail coefficients, and synthesize.
+This is the unique nearest completed divisor state. Its exact error equals
+noncellular energy plus the convergent sum of squared component primitive
+increments divided by component lengths. First-cell and negative-half-line
+errors are explicit; full-family correction is just the first-cell average.
+No analytic admission premise. One connected contribution.
+
+All five direct leaves and all87 public axiom checks pass, only standard
+axioms;17 principal signatures and50 API probes checked. Five imports and87
+catalog entries verified. Global lint exits1 for eight unrelated unreachable
+modules and concurrent generated-index drift; exact list in card and ledger.
+Indexes refreshed separately. README remains read-only. Certified16/100.
 
 ## Next candidate
 
-`../0-backlog/divisor-component-averaging-projection.md`: construct explicit
-component-mean subtraction for arbitrary physical L² input and an exact
-noncellular/component-mean error decomposition. Unproved and uncounted;
-corpus caveats are on the card. No Lean assigned.
+`../0-backlog/integer-dilation-cell-coisometry.md`: construct actual physical
+dilation and ℓ² block aggregation, cell-analysis intertwining, exact infinite
+variance and successor covariance. Unproved and uncounted; corpus caveats
+are on the card. No Lean assigned. Do not assume divisor-domain invariance.

@@ -75,6 +75,10 @@
     strictly positive energy, and recover the exact Cauchy--Schwarz slack in
     the full plastic functional. Close the nonzero-saturation route with this
     positive survivor rather than a bare nonattainment statement.
+25. Fold the actual sinh multiplier onto a unit lattice cell. Identify its
+    variance with the entire remaining coherent moment slack, classify zero
+    slack by constancy on the cell, and transfer this explicit correction to
+    the full plastic functional. Verify all summability from compact support.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -1681,3 +1685,76 @@ and capstone are now verified: contribution19/100, one substantive result.
   full build, commit or push. Contribution19/100 complete; full goal ACTIVE.
 - Owned `/tmp/hml_schur_api.lean` and `/tmp/hml_schur_lint.txt` removed;
   absence and final whitespace checks verified.
+
+## Twentieth result: actual folded-source variance (paper proof)
+
+Write d=log2, F=oddCompactSource f, S=sinhCompact(1/2)F and
+g(x)=S(dx). Define P(x)=sum over k in Z of g(x+k). Compact support makes
+this sum locally finite, hence continuous and 1-periodic. Splitting the real
+line into unit cells gives integral_0^1 P=(integral S)/d=O/d. Apply the
+same unfolding to gP: its periodization is P² because P is periodic.
+Consequently integral_0^1 P²=integral_R gP. Only finitely many translates
+can intersect support(g), so expand the latter integral into the finite sum
+of autocorrelations. Scaling gives integral_0^1 P²=(sum_k h_S(kd))/d.
+The previously verified finite-filter identity, with its actual support
+cutoff, identifies this full signed sum as C=R_S+sigma+beta.
+
+Construct the continuous cell residual e(x)=P(x)-O/d and its actual
+energy E=integral_0^1 e². Expanding the square gives the exact identity
+d²E=dC-O². Thus E>=0, and continuity makes E=0 equivalent to P being
+constant O/d on the closed cell. Strict coherent moment slack is equivalent
+to a nonconstant folded source there. Combining C=C_local-g_res with the
+existing optimized secant collar yields the full plastic lower bound
+I_opt+R_plastic-2d*C_local+2d*g_res+2d²E<=P_plastic(F).
+All terms come from the actual source; signed lattice data are retained,
+and zero sources need no separate hypothesis. This identifies and realizes
+the remaining slack as an explicit cell-energy producer; it does not assert
+universal plastic positivity or a positive gap for every nonzero source.
+Existence of a nonzero source with constant fold is not claimed here.
+
+Corpus audit: direct hybrid query `periodization autocorrelation lattice cell
+integral moment equality` with --any and the BiScale module filter was partial
+(unfinished text/source retrieval, older coverage snapshot, semantic coverage
+unmeasured). Relevant existing coherent endpoint and finite filter were
+inspected; exact source searches found no folded-source defect identity.
+Installed mathlib provides unit-cell integral decomposition and local normal
+convergence. Those classical mechanisms are supporting tools, not separate
+contributions or external novelty claims. Exact result now Lean verified:
+contribution20/100, with the generic identities counted only as supporting tools.
+
+### Verification of the twentieth result
+
+- Final actual-source audit50204 exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FoldedHyperbolicCellDefect.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/FoldedHyperbolicCellDefect.olean`.
+  Source has302 lines, three public definitions and nine public theorems;
+  SHA2569ca67e26ad5db447e31ae6da2e5b78831c3a55eb5a1134f6e752d6ba77af3df6.
+  No source edits after this final audit.
+- Initial source checks29692,20753,79999 exposed continuous-map coercions,
+  explicit product-integral function types and nested natural/integer/real
+  casts. Corrected with typed integral statements and cast normalization.
+  No mathematical premise or conclusion changed; no heartbeat/recursion changes.
+- Initial scratch API75792 identified an invalid guessed closure-field name;
+  replaced by the inspected `closure_interior_Icc` theorem. Final source uses
+  the verified interval-integral zero criterion and explicit measure parameters.
+  Final API/public-axiom audit3011 exited0 without warnings. All nine public
+  theorems use only `propext`, `Classical.choice`, `Quot.sound`. Source and audit
+  name lists match exactly. Total294 supporting public theorem audits.
+- Umbrella wired; index54567 exited0 (9 changed), with all12 public declarations
+  indexed. Global lint93408 exited1 on11 unrelated unreachable modules and
+  concurrent drift in LEAN_API/LEAN_OVERVIEW, plus existing large-file warnings.
+  No owned lifting module flagged. README and source19 hashes unchanged.
+  Bounded index27445 exited0 (0 changed), all12 public declarations remained
+  indexed. Final lint62005 exited1 on eight unrelated unreachable modules:
+  `DyadicRenewalChain`, `ExponentialTentMoments`, `NyquistPolarSourceEscape`,
+  `PhysicalCollarMixture`, `PhysicalPriceResponse`, `RegularizedGramGeometry`,
+  `RegularizedPhysicalGram`, `SignedPrimePolarSourceParameters`.
+  Concurrent drift remains in LEAN_API/LEAN_OVERVIEW, plus existing large-file
+  warnings. No owned lifting module flagged. Stop the bounded refresh here;
+  unrelated sources untouched, no repository-wide clean-gate claim.
+- Source20 and read-only README hashes unchanged after indexing. All owned
+  Lean, search, index and lint handles are terminal. One owned Lean process
+  at a time; no numerical experiments, full build, commit or push.
+  Contribution20/100 complete; full100-contribution goal remains ACTIVE.
+- Owned `/tmp/hml_cell_api.lean` and `/tmp/hml_cell_lint.txt` removed;
+  absence, all12 indexed declarations, unchanged source20/source19/README
+  hashes and final whitespace checks verified.

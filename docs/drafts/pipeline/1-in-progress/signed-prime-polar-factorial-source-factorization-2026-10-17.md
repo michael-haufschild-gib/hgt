@@ -1,8 +1,8 @@
 # Actual source factorization of a grid-preserving factorial producer
 
 - **ID:** signed-prime-polar-factorial-source-factorization
-- **Stage:** 0-backlog
-- **Type:** CANDIDATE / UNCOUNTED
+- **Stage:** 1-in-progress
+- **Type:** PAPER-PROVED / LEAN IN PROGRESS / UNCOUNTED
 - **Scope:** Signed prime–polar transport; explicit actual-source producer.
 - **Objective:** Construct explicit compact continuous real sources whose mixed
   correlation, or polarized autocorrelation difference, preserves the factorial
@@ -48,9 +48,34 @@ and `UnconditionalCoprimeFactorialLiftAndSpectralLaplaceProducer.lean`.
 Their full scope must be inspected before code. Broaden the next documented
 search to mathlib convolution continuity, associativity, support, and L² bounds.
 
-- [ ] Audit existing source-factorization and factorial-producer precedents.
-- [ ] Dependency-closed paper proof, including source-energy growth.
+- [x] Audit existing source-factorization and factorial-producer precedents.
+- [x] Dependency-closed paper proof, including source-energy growth.
 - [ ] Actual C_c sources and numeric-index-only public endpoint in Lean.
 - [ ] Direct leaf checks, axioms, umbrella, lint and index.
 
-No part of this candidate is counted or claimed formalized.
+The dependency-closed proof is now in
+`docs/reports/BiScaleUncertainty/SignedPrimePolarFactorialSourceFactorization.md`.
+It constructs the initial ramp and exponential tent directly, avoiding rough
+triple-convolution associativity. The actual autocorrelation contrast has exact
+prime-grid values, an unconditional pairing bound and squared L² size in [2,32].
+Both actual sources have equal origin energy in [6N,46N]. All Lean verification
+remains pending; no part of the package is counted yet.
+
+## Implementation checkpoint
+
+The direct `ExponentialTentMoments.lean` leaf check passes with empty diagnostics
+(`/tmp/spp10-tent-final.log`). The causal moment reuses the inspected bilateral
+`HTGeometry.integral_tiltedTentFullProfile`; it is not a separate contribution.
+`SignedPrimePolarSourceParameters.lean` also passes its final direct check
+(`/tmp/spp10-parameters-final.log`). Source-energy proofs are staged in
+`/tmp/spp10_tent_energy.lean`, positive/constant ramp moments in
+`/tmp/spp10_ramp_moments.lean`, and the generalized ramp plus shifted grid lemma
+in `/tmp/spp10_ramp_core.lean`. Those drafts are not certified yet.
+The actual source contrast and final arithmetic/energy endpoint still need Lean
+implementation. Main count remains 9/100.
+
+Searches `/tmp/spp10-convolution-search.json` and `/tmp/spp10-tent-search.json`
+are partial (reranking deadline and semantic retrieval timeout respectively).
+Available candidates and source arguments were inspected. The quadratic profile
+in `integral_tent_mul_exp_interval` is not the required piecewise linear tent;
+the bilateral linear-tent transform is applicable and reused.

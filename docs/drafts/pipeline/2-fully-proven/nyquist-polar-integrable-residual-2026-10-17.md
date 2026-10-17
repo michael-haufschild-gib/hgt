@@ -102,3 +102,18 @@ at log(N+1), so its unconditional rate is 1/sqrt(N+1). This is exactly the
 paper's positive-integer indexing. The kernel is the pointwise sum of the
 disjoint cell indicators times their explicit residual densities; its local
 form and integrability will be proved before constructing the operator.
+
+The six formal leaves are `NyquistResidualMass`, `NyquistResidualPartition`,
+`NyquistResidualKernel`, `NyquistResidualOperator`, `NyquistPolarDecomposition`
+and `NyquistPolarSourceEscape`. The first five pass their direct leaf checks and
+are wired into the umbrella. The actual-source endpoint is being checked;
+the full package remains uncounted until all gates pass.
+
+The follow-up search `/tmp/nyquist-point-producer-deep.json` completed with
+`partial=false`, no errors and a complete file inventory. Its coverage snapshot
+was five generations behind and semantic coverage was unavailable; every returned
+candidate was source-only. All 20 candidate statements and 20 source arguments
+were inspected. Several hits are this package's own newly indexed drafts, not
+independent evidence. Existing point-sample quadrature retains the polar-density
+cost in `EulerMaclaurinLevyQuadratureAndSFreeCellBounds`; its generated ingredient
+proposal does not discharge a bounded all-tail node-quadrature estimate.

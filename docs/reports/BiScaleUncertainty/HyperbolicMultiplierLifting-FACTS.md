@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Nineteen substantive results are Lean verified: compensated multiplier Gram
+contributions. Twenty substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -23,7 +23,8 @@ sharper odd moment/plastic bound (10), and the exact finite coherent filter with
 its signed Gram formula and unconditional moment/plastic transfer (14), and the quantitative
 finite-filter lattice comparison with explicit unconditional plastic gain (11), and hyperbolic
 variance rigidity with the exact strict-gain domain and full plastic certificate (13), and finite-filter
-support escape with a strictly positive Schur residual and exact plastic correction (13). Supporting theorem
+support escape with a strictly positive Schur residual and exact plastic correction (13), and the actual
+folded-source variance with its exact coherent equality domain and full plastic correction (9). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -833,3 +834,44 @@ modules and concurrent drift in LEAN_API/LEAN_OVERVIEW; no owned lifting module
 flagged. Exact snapshot on master card. No global clean gate claimed.
 Remaining frontier: optimize actual source-supported producers, quantify useful
 residual lower bounds, and compare exact signed moment prices with positive source energies.
+
+## Folded sinh source and the remaining coherent defect
+
+Lean-verified result in
+`formal/GaloisForLFunctions/BiScaleUncertainty/FoldedHyperbolicCellDefect.lean`.
+
+- Put d=log2, F=oddCompactSource f, S=sinhCompact(1/2)F, and
+  P(x)=sum_(k in Z) S(d(x+k)). Actual compact support makes this sum
+  locally finite. It is a continuous 1-periodic source, with
+  integral_0^1 P=O/d and integral_0^1 P²=C/d, where
+  O=integral F(u)sinh(u/2) and C=R_S+sigma+beta=C_local-g_res.
+- The explicit cell residual e=P-O/d has nonnegative energy
+  E_cell=integral_0^1 e². Its exact identity is
+  d² E_cell=d*C-O². This is the remaining coherent moment slack,
+  distinct from the strictly positive finite-filter Schur residual.
+- E_cell=0 iff P(x)=O/d throughout [0,1]. Hence the exact coherent
+  moment endpoint is an equality precisely for constant folded sources.
+  This does not assert that every nonzero source has positive cell slack,
+  or that a nonzero constant-fold source has been constructed.
+- For every f and every collar cutoff N, the full functional satisfies
+  I_opt+R_plastic-2d*C_local+2d*g_res+2d²E_cell<=P_plastic(F).
+  Both corrections are actual source energies, with all summability and
+  support requirements discharged. This recovers the original exact moment
+  penalty geometrically; it does not claim a stronger endpoint than that
+  penalty or universal plastic positivity. Signed source data remain unrestricted.
+
+This is one contribution: identification of the full coherent defect with an
+actual folded-source energy, its equality domain, and its plastic transfer.
+Generic periodization identities are supporting tools only. No external
+novelty claim. Next attainment question: construct nonzero canonical odd
+sources with constant folds, and distinguish zero-mean from nonzero-mean attainment.
+
+Final actual-source compilation and all nine public theorem axiom audits passed
+without warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has302
+lines, three public definitions and nine public theorems; SHA256
+`9ca67e26ad5db447e31ae6da2e5b78831c3a55eb5a1134f6e752d6ba77af3df6`.
+Umbrella wired; all12 public declarations indexed. README and source19 unchanged.
+Twenty contributions, 294 supporting public theorem audits; full goal ACTIVE.
+Final global lint after one bounded refresh reports eight unrelated unreachable
+modules and concurrent drift in LEAN_API/LEAN_OVERVIEW; no owned lifting module
+flagged. Exact snapshot on master card. No global clean gate claimed.

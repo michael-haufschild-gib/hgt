@@ -18,6 +18,8 @@
 
 - **Statement (module 7, `BandLimitedLaplaceEnergy.lean`):** With Mertens (`Zeta23 Mertens.sum_mangoldt_div_eq_log`) and Chebyshev (`Chebyshev.psi_le_const_mul_self`): `D₁ ≤ L(L + log4 + 4)`, `D₂ ≤ L(log4+4)(N+2)`; at the band frequency `ξ₀ = √(N+2) = e^{L/2}`: `laplaceEnergy N ≤ ∫_{|ξ|≤√(N+2)} S_N + (52(log4+4)/π³) L + (32 + 8(log4+4))/π² + 4/(3π⁴)` and `∫_{|ξ|≤√(N+2)} S_N ≤ laplaceEnergy N`. Hence `∫_0^L Ẽ² ≤ 2·band + (104(log4+4)/π³) L + C` and `band ≤ 2∫_0^L Ẽ² + 2 + R_N(L)²`: **band energy `O(L^A)` ⟺ `∫_0^L Ẽ² = O(L^A) ∧ Ẽ(L)² = O(L^A)`** (the mean-square and the endpoint Chebyshev error), unconditionally and with explicit constants; the high-frequency part is settled with `A = 1`.
 
+- **Statement (module 8, `DiscrepancyTransformLaw.lean`):** Stieltjes form of the pairing for any `C¹` `f`: `pairing N f = f(0) + Ẽ(L) f(L) − ∫_0^L Ẽ (f'−f/2) − ∫_0^L e^{−t/2} f` (real and complex versions); applied to `χ_ξ`: `ν̂_N(ξ) = s(ξ)∫_0^L Ẽ χ_ξ + Ẽ(L)χ_ξ(L) + 1 − (1−e^{−sL})/s`; hence `𝓕 R_N = 𝓕(Ẽ·1_{[0,L]}) + B_N` with `‖B_N(ξ)‖ ≤ (|Ẽ(L)|+5)/‖s(ξ)‖`. The boundary term is the endpoint jump `Ẽ(L)` of the sharp window; its high-frequency energy `≍ Ẽ(L)²/ξ₀` is why the causal response (continuous at `L`) and not `Ẽ·1_{[0,L]}` is the band-limited object.
+
 ## Goal
 Give the field an exact quadratic (energy) form of the Chebyshev discrepancy, complementing the linear Stieltjes coupling of Pillar XV. The operator `f ↦ f' − f/2 = e^{u/2}(e^{−u/2}f)'` is the derivative in the critical-line gauge; the signed packet energy is, up to bounded source constants, the energy of `Ẽ` against the positive-definite gauge kernel `autocorr(f' − f/2)`. Uniform stabilization of the packet energy over all `C¹` compact sources is therefore equivalent to at most linear growth of `∫_1^X (ψ(x)−x)²/x² dx` in `log X` (the mean-square form of Wall 1). The field now owns Wall 1 as a statement about its own native energy.
 
@@ -81,6 +83,11 @@ Module 7 (`BandLimitedLaplaceEnergy.lean`, same namespace):
 - `laplaceEnergy_le_band_add_explicit`, `band_remainder_le`, `laplaceEnergy_le_band_add_linear`, `band_le_laplaceEnergy`.
 - `chebyshev_mean_square_le_band_add_linear`, `band_le_chebyshev_mean_square` — Wall 1 ⟺ band energy, both directions.
 
+Module 8 (`DiscrepancyTransformLaw.lean`, same namespace):
+- `pairing_eq_stieltjes_gauge`, `pairingC_add`, `pairingC_eq_re_add_im`, `integral_ofReal_add_I_mul_ofReal`, `pairingC_eq_stieltjes_gauge`.
+- `frequencyCharacter_re/_im`, `frequencyCharacter_eq_cos_add_I_mul`, `gaugeDerivative_cos_freq`, `gaugeDerivative_neg_sin_freq`, `gaugeDerivative_frequencyCharacter` (= `−s χ`), `integral_exp_neg_half_mul_frequencyCharacter`.
+- `fourierPairing_eq_discrepancy_transform`, `fourier_windowed_normalizedLogError`, `boundaryTransform`, `fourier_causalResponse_eq_windowed_add_boundary`, `norm_criticalPoint_ge_half`, `norm_boundaryTransform_le`.
+
 ## What this changes in the open core
 - Pillar XV's linear Chebyshev work is now matched by a quadratic law: the packet energy (the field's cancellation-sensitive Gram energy) is the Chebyshev mean square smoothed by the gauge derivative. The "finite-window, no stabilization" caveat of Pillar XV.5 is resolved into an exact criterion: stabilization ⟺ `∫_0^L Ẽ² = O(L)` ⟺ mean-square RH.
 - All compression/Bessel/Krein tools act on the right-hand side `autocorr(f' − f/2)`; the arithmetic lives entirely in `Ẽ`.
@@ -92,7 +99,8 @@ Module 7 (`BandLimitedLaplaceEnergy.lean`, same namespace):
 - Wall 1 is now fully discrete inside the field: packet-energy stabilization ⟺ `Σ_{n<M} (ψ(n) − n)²/(n(n+1)) = O(log M)`. Each Nyquist cell contributes `(ψ(n) − m_n)²/(n(n+1))` plus a universal floor `c_n ≈ 1/(12n²)`; the centre `m_n = n + ½ − 1/(6n) + …` is the exact exponential-gauge mean of the cell.
 
 ## Next conjectures (queued)
-- Band-interior structure (module 8): inside `|ξ| ≤ √x` the atomic mean square alone is `≈ 2√x·D₁ ≈ √x L²` (Montgomery–Vaughan lower side), so the band bound `O(L)` demands cancellation `A_N ≈ P_N` of relative size `x^{−1/4}L^{−1/2}`; make the pole-subtraction exact: `A_N(ξ) − P_N(ξ)` as the field's "discrepancy transform" of `Δ(x) = ψ(x) − x`, i.e. `ν̂_N(ξ) = −(s−1)… ∫_1^x (ψ(u) − u) u^{−s−1} du`-type Mellin identity (the Stieltjes identity of module 1 in frequency form).
+- Dyadic renewal chain (module 9): `R_N(t) = e^{−(t−a)/2}R_N(a) + e^{−t/2}[(ψ(e^t)−ψ(e^a)) − (e^t−e^a) − (t−a)]` for `0 ≤ a ≤ t ≤ L` (Markov law from the window formula); block chain `x_{k+1} = e^{−h/2}x_k + r_k`, `x_0 = 1`; `∫_0^{Kh} R_N² ≍ Σ x_k² + Σ c_k` and `Σ x_k² ≍ Σ r_k²` (discrete Young for the geometric kernel); dyadic `h = log 2`: Wall 1 ⟺ `Σ_k (ψ(2^{k+1})−ψ(2^k)−2^k)²/2^k = O(K)` ∧ `Σ_k c_k = O(K)` (coarse block discrepancies + fine intra-block energies).
+- Band-interior structure (done in module 8 as the discrepancy transform law; next: explicit-formula side via the corpus Montgomery/Perron material): inside `|ξ| ≤ √x` the atomic mean square alone is `≈ 2√x·D₁ ≈ √x L²` (Montgomery–Vaughan lower side), so the band bound `O(L)` demands cancellation `A_N ≈ P_N` of relative size `x^{−1/4}L^{−1/2}`; make the pole-subtraction exact: `A_N(ξ) − P_N(ξ)` as the field's "discrepancy transform" of `Δ(x) = ψ(x) − x`, i.e. `ν̂_N(ξ) = −(s−1)… ∫_1^x (ψ(u) − u) u^{−s−1} du`-type Mellin identity (the Stieltjes identity of module 1 in frequency form).
 - Dyadic Markov chain (position side) and the jump-energy law remain queued.
 - Band structure: inside the band, Montgomery–Vaughan still controls `∫_{|ξ|≤√x} ‖A_N‖² ≈ 2√x D₁ ≈ √x L²`, so the band bound `O(L)` requires cancellation `A_N ≈ P_N` of relative size `x^{−1/4}L^{−1/2}` on average: the explicit formula `A_N − P_N = −Σ_ρ x^{ρ−s}/(ρ−s) + …` in the field's language.
 - Dyadic Markov chain of the response: semigroup law `R_N(t) = e^{−(t−a)/2} R_N(a) + (K ⋆ ν_N|_{(a,t]})(t)`; block-edge chain `x_{k+1} = x_k/√2 + r_k`; window energy `∫_{block k} R_N² = ½x_k² + 2 b_k x_k + c_k`; `laplaceEnergy ≍ Σ_k x_k² + Σ_k c_k`, `Σ x_k² ≍ Σ r_k²`.
@@ -105,6 +113,7 @@ Module 7 (`BandLimitedLaplaceEnergy.lean`, same namespace):
 ## Log
 - 2026-10-17 — module 1 built, wired, axioms standard; moved directly to 3-formalized.
 - 2026-10-17 — module 2 (Nyquist-cell quadrature, window law, classical comparison) built, wired, axioms standard.
+- 2026-10-17 — module 8 (Stieltjes form of the pairing for general C¹ test functions, real and complex; discrepancy transform law ν̂_N = s∫Ẽχ + boundary; 𝓕R_N = 𝓕(Ẽ1) + B_N with ‖B_N‖ ≤ (|Ẽ(L)|+5)/‖s‖) built, wired, axioms standard.
 - 2026-10-17 — module 7 (Mertens + Chebyshev diagonals, band frequency √(N+2), explicit band theorem, Wall 1 ⟺ band energy both directions) built, wired, axioms standard.
 - 2026-10-17 — module 6 (atomic part = corpus Dirichlet polynomial, Montgomery–Vaughan two-sided mean square, integration by parts against 1/u², high-frequency window/tail law, band-plus-remainder decomposition, diagonal sums ≤ L·ψ and L·ΣΛ/n) built, wired, axioms standard.
 - 2026-10-17 — module 5 (complex pairing, critical point, 𝓕K = 1/s, 𝓕R_N = ν̂_N/s, Plancherel form of the Laplace energy, Dirichlet dictionary) built, wired.

@@ -44,7 +44,9 @@
     where it supports the concrete construction.
 16. [x] Construct a measurable least-price physical response, prove exact linear
     optimality and actual gain, then build an accepted-response cutoff ladder.
-17. [ ] Develop general signed multi-column Schur-coupled growth and matching
+17. [ ] Audit norm regularization and a quantitative damped physical response;
+    reconcile its error with the original full-Gram objective.
+18. [ ] Develop general signed multi-column Schur-coupled growth and matching
     finite-limit asymptotics. These and the full 100-contribution objective remain open.
 
 Package 12 constructs an actual measurable minimum-price physical response,
@@ -376,7 +378,7 @@ Implementation plan: [x] `SignedGramMinimumResponse.lean` (measurable pure
 selection and admissible response); [x] `SignedGramResponseOptimality.lean`
 (attained linear minimum, equality classification and exact actual gain);
 [x] `SignedGramResponseLadder.lean` (accepted update, monotone cutoff producer,
-finite limit and source certificate); [ ] direct leaf/axiom/lint/index/integrity audits.
+finite limit and source certificate); [x] direct leaf/axiom/lint/index/integrity audits.
 Keep prior 33 owned leaves unchanged, wire new leaves, preserve read-only README.
 All three leaves are written and wired, and all three dependency checks pass
 without diagnostics. All 43 public theorem axiom audits pass exactly once, only
@@ -416,6 +418,84 @@ filter and strict positivity after two specified projections. It does not state
 arbitrary finite-translate independence or the full signed-node anchored lower
 bound. Reuse that support argument where applicable; do not count the other
 agent's filter result. Its source was read, not independently Lean-audited here.
+
+Alternative to conditioning, preferred for the next audit rather than presumed
+proved: regularize the actual packet norm by an extra coordinate ε·sqrt(R), ε>0.
+For P the actual signed packet, set
+K_ε=R(W+mass)−sqrt(R)·sqrt(||P||²+ε²R). The intended reconciliation is
+0≤K−K_ε≤εR, hence 0≤C−C_ε≤εδR. Prove integrability from this bounded difference
+and the existing combined kernel; never integrate the singular anchor separately.
+The augmented norm is at least ε·sqrt(R), so its quadratic remainder should admit
+a bound without an assumed Gram lower bound. The zero-energy source must be
+handled explicitly.
+
+The candidate physical prices use P/sqrt(||P||²+ε²R); their boundedness,
+measurability, transport and actual minimum-price response must all be discharged.
+Let M_n=2(n+1)·logarithmicCollarWeightBound(n), and T_n be the common integrated
+physical mass. Existing weight bounds suggest ||P_η−P_ρ||² has integral at most
+4R M_n T_n, giving quadratic loss Bτ² with B=2R M_n T_n/ε. For a damped minimum
+response with τ_t=2/(t+2), the desired regularized-objective gap recurrence is
+e_(t+1)≤(1−τ_t)e_t+Bτ_t². If established, e_1≤B and induction gives
+e_t≤4B/(t+2), t≥1. The remaining original-objective error would be at most
+εδR+4B/(t+2). These rates and the underlying curvature estimate are not yet
+formalized or counted; audit every factor and analytic obligation first.
+At fixed ε, acceptance in the regularized objective preserves this recurrence.
+Across cutoffs or ε changes, compare the produced actual coefficient with the
+physical extension of the prior partition to retain monotone original certificates.
+This route may avoid conditioning altogether; fixed-source Gram rigidity remains
+a useful independent structural question.
+
+Regularization search `/tmp/bsu-minimum-response-next-regularization-search.log`
+completed in 57.84s, but proposed Sobolev curvature ingredients do not address this
+packet norm problem. Rephrased lexical search returned two unrelated origin
+regularization results; field text search found source averaging, not this
+augmented packet norm. Source-only older coverage, semantic completeness unmeasured;
+no exhaustive novelty claim. No new regularized producer or rate is claimed here.
+
+### Regularized physical producer: current proof audit (uncounted)
+
+The preceding turn is verified progress (package 12). The next contribution must
+discharge curvature for actual signed packets, rather than assume a Gram lower
+bound. Work plan: [ ] regularized packet support and quadratic remainder;
+[ ] actual physical mixture, integrability and uniform integrated curvature;
+[ ] measurable regularized minimum response and damped producer;
+[ ] original-objective reconciliation and quantitative iteration;
+[ ] direct Lean, all-theorem axioms, wiring, index and ledger audit.
+
+Write R=h_f(0), H(a)=sqrt(R)||P_a|| and
+H_e(a)=sqrt(H(a)^2+(eR)^2), e>0. Then
+0≤H_e−H≤eR. With z=sum_i(b_i−a_i)covariance_a(t_i), the exact identity is
+2H_e(a)[H_e(b)−H_e(a)−Rz/H_e(a)]
+=R||P_b−P_a||²−[H_e(b)−H_e(a)]².
+Support follows from Cauchy for the augmented packet; the identity yields
+0≤remainder≤||P_b−P_a||²/(2e). For R=0 every term vanishes.
+This retains every signed Gram entry, even when the original packet vanishes.
+
+For actual partitions with fibre masses A,B≤M, triangle inequality gives
+||P_b−P_a||²≤R(A+B)²≤2RM(A+B). Exact mass transport then bounds its integral
+by 4RMT. A physical convex mixture has packet difference τ(P_b−P_a), hence
+integrated regularized remainder≤(2RMT/e)τ². Every integrated expression is a
+combined kernel, bounded price cost or bounded difference; the singular origin
+anchor is never integrated separately. These derivations remain uncounted until
+their concrete Lean statements and producer are verified.
+
+For the iteration, avoid introducing an attained regularized optimizer. For each
+actual competitor η, its objective difference from the current iterate is at most
+the attained regularized linear gain G_e. The schedule τ_t=2/(t+2) gives
+C_e(η)−C_e(ρ_(t+1))≤(1−τ_t)[C_e(η)−C_e(ρ_t)]+Bτ_t².
+At t=0 the incumbent term vanishes, giving error≤B. Induction gives
+C_e(η)−C_e(ρ_t)≤4B/(t+2), t≥1: the induction step reduces to
+(t+1)(t+3)≤(t+2)². Take the supremum over actual competitors only afterwards.
+Original-objective error is then at most eδR+4B/(t+2).
+
+An explicit source-independent work schedule is e_k=1/(k+1) and
+t(n,k)=ceil(8 M_n T_n (k+1)²)+1. Its target allocation error is
+R(δ+1)/(k+1). At cutoff n choose k=n and compare this candidate's original
+coefficient with the physical extension of the previous cutoff producer. Keeping
+the larger preserves monotonicity and the allocation error, so the limiting
+coefficient would equal S∞ with error at most R(δ+1)/(n+1)+2R tail_n.
+This is a dependency-closed paper target, not a completed Lean result or a new
+claim about the unrestricted source infimum.
 
 `PairedCollarCapacity.lean` now passes direct verification of block/radial capacity,
 unordered nonnegative error bounds, and exact padding. `PairedCollarCutoffStability.lean`
@@ -1196,4 +1276,29 @@ remains active and incomplete.
   modules listed in the facts ledger and `/tmp/bsu-dyadic-lint-final.log`.
   No foreign source was modified. Temporary API probe removed; all owned jobs
   terminal. No full/umbrella build, numerical experiment, heartbeat increase,
-  commit or push. This is one significant contribution: **11/100**, goal active.
+  commit or push. This package brought the cumulative count to **11/100**.
+
+- Physical response package: `SignedGramMinimumResponse.lean` (12 public
+  theorems), `SignedGramResponseOptimality.lean` (14), and
+  `SignedGramResponseLadder.lean` (17). All three dependency checks pass without
+  diagnostics. All 43 public theorem axiom audits pass exactly once, only
+  `propext`, `Classical.choice`, and `Quot.sound`. Actual selection cells, response,
+  linear cost, accepted step and ladder definitions and capstone signatures inspected.
+- SHA-256: selector `2f409903d0f7e1e62e3767d985a58e567c5e59bd4eabed71e09d4c7cd000e9db`;
+  optimality `ea4d38d015470d288fb2ee6b7bcf009ac573c722e1aa832045a77cfdbc080ec9`;
+  ladder `1a5cb7a77fe22c3a88b0ebef726e29561a87b95cd8f02210baf31ca21faa824b`.
+- Final direct command:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SignedGramResponseLadder.lean`;
+  exit 0, empty log. Durable exit `/tmp/bsu-minimum-response-final.exit`; evidence
+  `/tmp/bsu-minimum-response-{selection,optimality,ladder,axioms,final}.log`,
+  `/tmp/bsu_minimum_response_axioms.lean`, and
+  `/tmp/bsu-minimum-response-{manifest,integrity,audit-coverage}.json`.
+- Index refresh and all three requested capstone discoveries pass, in
+  `/tmp/bsu-minimum-response-index.log` and `/tmp/bsu-minimum-response-discovery.json`.
+  All 36 owned imports occur once; all 33 prior source hashes remain unchanged.
+  Read-only README remains byte-identical. Scoped whitespace passes. Global lint
+  exits 1 for six foreign unwired modules listed in the facts ledger and
+  `/tmp/bsu-minimum-response-lint-final.log`; no own failure or foreign edit.
+  Temporary API probe removed; all owned Lean, search and index jobs terminal.
+  No full/umbrella build, numerical experiment, heartbeat increase, commit or push.
+  Count this complete construction once: **12/100**, full goal active.

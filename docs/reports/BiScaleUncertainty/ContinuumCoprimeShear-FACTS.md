@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **15 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **16 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -1414,14 +1414,91 @@ of real lp singles simplify to scalar multiplication with the relevant one
 on the left. Full-family ramp data need their definition explicitly unfolded
 when using intervalTraceData_at. No heartbeat changes were needed.
 
-## Next unproved candidate — explicit component averaging
+## Certified package 16 — explicit component averaging and best approximation
 
-`docs/drafts/pipeline/0-backlog/divisor-component-averaging-projection.md`.
-Seek the nearest completed physical state by averaging q on each unit cell,
-subtracting each finite-component mean, and retaining infinite-tail coefficients.
-Prove exact error as noncellular residual plus finite-component mean energy.
-Unproved/uncounted; no Lean assigned. All20 candidates and20 source arguments
-from the initial search inspected; old cell decompositions and single-grid
-projection are relevant. Completion drafts were indexed before verification,
-not independent evidence. Search partial, interrupted text/source retrieval,
-generation1446251 pending, refresh incomplete. Reaudit before paper proof.
+For arbitrary divisor family d,D, let A(k) be its active-edge predicate and
+C_A its certified completed current space. The canonical first missing edge
+e(k) identifies every finite component I_j=[s(j),j+1) exactly once, at its
+missing endpoint j. Components have positive length L_j. An endless active
+tail receives zero mean correction.
+
+For actual w∈ℓ², construct μ_w(k) as its finite-component average, or zero
+on an infinite tail. Then μ_w=w−P_Cw, so μ_w is square-summable and
+c_w=w−μ_w belongs to C_A. Neither membership nor convergence is assumed.
+The nonnegative endpoint charges Γ_j(w)=(Σ_Ij w)²/L_j at missing edges,
+zero at active edges, form a convergent series with sum ‖μ_w‖². Proof:
+group the actual summable squared residual by canonical endpoint fibres.
+
+For every physical q∈L²(ℝ), B=S* is actual bounded cell analysis,
+b_k=(Bq)_k=∫_(k,k+1]q=F(k+1)−F(k), F(t)=∫₀ᵗq. The explicit producer
+P_Aq=S(c_b) has range exactly closure(range E_A), is idempotent and
+contractive, and has cell coefficients b_k−μ_b(k). Its exact error is
+
+    ‖q−P_Aq‖² = ‖q−Qq‖² + Σ_(j:¬A(j))(F(j+1)−F(s(j)))²/L_j,
+    Qq=S(Bq).
+
+The arithmetic series is proved convergent for every q,d,D. For every
+completed competitor v, the excess squared error equals ‖c_b−v‖²,
+proving unique best approximation. There is no finite-family, run-gap,
+trace-summability or physical-domain admission premise.
+
+The negative half-line is explicit: q⁻=1_(-∞,0]q is an actual L² class,
+Bq⁻=P_Aq⁻=0, and
+
+    ‖q−Qq‖²=∫_(-∞,0]q²+‖q−q⁻−Qq‖².
+
+The first producer cell and primitive trace at1 vanish. For D=ℕ,
+P_Aq=Qq−b_0 unitCell0 and error=‖q−Qq‖²+b_0². This explicitly handles
+the nonclosed old-range case. Trap10 directs this contribution toward an
+instantiated producer with unconditional exact error, within continuum shear.
+No factorial/RH receiver, full SourceGraph, affine-unitary or unweighted
+logarithmic H1 identification is claimed.
+
+Five leaves / lines / public declarations: DivisorCellEndpoints137/17,
+DivisorComponentAverages129/16, DivisorComponentCharge83/7,
+PhysicalCellAveraging136/19, DivisorPhysicalProjection226/28.
+Total711 lines,87 public declarations:72 theorems and15 definitions.
+All five serial direct leaf checks pass without diagnostics. All87 public
+axiom checks pass with only propext,Classical.choice,Quot.sound;17 principal
+signatures inspected and50 mathlib API probes checked. Five unique imports
+and87 catalog entries match source locations. README fully read, read-only.
+Paper preceded Lean; no full build, numerical experiment or heartbeat increase.
+
+Global lint --check-generated exits1 for eight unrelated unreachable modules:
+DyadicRenewalChain, ExponentialTentMoments, NyquistPolarSourceEscape,
+PhysicalCollarMixture, PhysicalPriceResponse, RegularizedGramGeometry,
+RegularizedPhysicalGram, SignedPrimePolarSourceParameters; also concurrent
+LEAN_API/LEAN_OVERVIEW drift. No own or proof-debt error. Index refreshed
+after lint; own catalog coverage checked separately. Do not claim global lint
+passed. Exact evidence: /tmp/divisor-averaging-{axioms,lint-final,index-post-lint}.log,
+/tmp/divisor-averaging-audit-names.json, /tmp/divisor-averaging-api-entries.txt,
+/tmp/divisor-averaging-lint-errors.json, /tmp/divisor_averaging_axioms.lean.
+Paper: `DivisorComponentAveragingProjection.md`. Card:
+`docs/drafts/pipeline/3-formalized/divisor-component-averaging-projection.md`.
+Counted once; certified16/100, overall goal active.
+
+Corpus: all20 candidates and20 source arguments inspected; partial=true,
+text/source interrupted, snapshot1446427 vs current1446428, refresh incomplete,
+compiler coverage mostly pending/source-only. Existing component/closed-space
+results reused; search gives no absence or external novelty proof. Primary
+MIT18.102 orthogonal-decomposition and official mathlib projection sources
+checked as classical parents; paper links them.
+
+Lean facts: parenthesize a squared norm used as a HasSum argument, otherwise
+parsing can attempt to square a proposition. Use an explicitly typed calc step
+with Finset.tsum_subtype' when coercion transparency defeats rw. Nat.card_Ico
+is the interval cardinality theorem. To prove a zero tsum, establish every
+summand zero and simplify with tsum_zero. Actual MemLp.indicator.toLp and
+ae_restrict_mem give the physical negative-half-line split directly.
+
+## Next unproved candidate — integer dilation and cell coisometry
+
+`docs/drafts/pipeline/0-backlog/integer-dilation-cell-coisometry.md`.
+Construct actual A_mq(t)=m q(mt) and B_mw(j)=Σ_(r<m)w(mj+r), prove
+cell-analysis intertwining, exact coisometry/adjoint and the convergent
+infinite variance defect; seek B_m R^m=R B_m. No Lean assigned, uncounted.
+All20 candidates and20 source arguments inspected; existing finite dilated
+trace defects are parents. Search partial, text/source interrupted,
+generation1446587 pending, refresh incomplete. Draft hits were unverified
+and not independent evidence. Reaudit before paper proof. Do not assume
+completed divisor spaces are dilation-invariant: the first trace becomes F(m).

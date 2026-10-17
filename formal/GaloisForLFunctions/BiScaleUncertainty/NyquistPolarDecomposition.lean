@@ -3,7 +3,7 @@ import GaloisForLFunctions.BiScaleUncertainty.NyquistResidualOperator
 /-! # Exact polar production by cell averages, with a stable all-tail residual -/
 
 open MeasureTheory Set Filter Topology
-open scoped BigOperators
+open scoped BigOperators BoundedContinuousFunction
 
 namespace GaloisForLFunctions.BiScaleUncertainty
 
@@ -58,6 +58,7 @@ theorem nyquistPolarCellAverage_eventually_zero (H : ℝ →ᵇ ℝ)
       _ = ∫ _x in nyquistResidualCell k, (0 : ℝ) := by
         apply setIntegral_congr_fun (measurableSet_nyquistResidualCell k)
         intro x hx
+        change H x * nyquistResidualDensity k x = 0
         rw [hzero x hx, zero_mul]
       _ = 0 := by simp
 

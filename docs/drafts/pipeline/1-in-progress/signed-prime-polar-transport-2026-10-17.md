@@ -18,8 +18,9 @@ The exact gauge energy and its support budget now eliminate the constructed
 gauge norm. Signed scalar compensation is now optimized exactly, including
 degenerate cases. Trap 10 has now led to an explicit producer: the factorial
 bi-null stencil is lifted to the actual signed prime–polar measure, with real-ratio
-continuum cutoffs and an unconditional harmonic correction bound. Next: a compact
-continuous producer preserving every prime-grid value and nonvanishing L² size.
+continuum cutoffs and an unconditional harmonic correction bound. A compact
+continuous producer now preserves every prime-grid value with 1≤∫S_N²≤16.
+Next: actual source factorization with an explicit source-energy cost.
 Multiple-collar receivers are parked; width selection and residual control remain open.
 
 Authoritative field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
@@ -55,13 +56,14 @@ producers with unconditional bounds before extending receiver machinery.
   prove exact gain and strict-improvement criteria with global transport.
 - [x] Construct and certify an explicit factorial producer for the actual signed
   measure, including domain admission, harmonic correction and unconditional rate.
-- [ ] Construct a continuous producer preserving the prime grid and nonvanishing L² size.
+- [x] Construct a continuous producer preserving the prime grid and nonvanishing L² size.
+- [ ] Factor an explicit producer through actual compact continuous sources and quantify cost.
 - [ ] Derive a useful coherent multiple-collar certificate, retaining all cross terms (parked).
 - [ ] Quantify width selection and the remaining smoothing error.
 
 ## Current frontier
 
-Eight substantive contributions are formalized:
+Nine substantive contributions are formalized:
 - `3-formalized/annular-signed-prime-polar-chebyshev-coupling-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-packet-gram-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-halfline-2026-10-17.md`.
@@ -70,8 +72,9 @@ Eight substantive contributions are formalized:
 - `3-formalized/signed-prime-polar-gauge-correlation-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-optimal-collar-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-factorial-producer-2026-10-17.md`.
+- `3-formalized/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
 
-The overall target remains 100, with 92 further distinct contributions unproved.
+The overall target remains 100, with 91 further distinct contributions unproved.
 Packet construction, exact Gram representation, mass comparison, and transport
 corollaries form one contribution. Likewise the coherent collar construction,
 Schur constraint, and energy certificate are one contribution, not separate counts.
@@ -87,13 +90,20 @@ real K/j. Its normalized bi-null combination has literal fullPairing bounded by
 The test is discontinuous and cannot be an autocorrelation: its origin is zero,
 but its value at log(4N) is 2. The complete producer package counts once.
 
+Contribution 9 constructs the actual C_c producer with exact grid values,
+pairing [2B_N−(1+1/(8N))C_N]/sqrt(N), and 1≤∫S_N²≤16. All five final leaf
+checks and fourteen standard-axiom audits pass. Imports and index are updated;
+global lint reports eight unrelated unwired modules and no package-local error.
+Construction, exact arithmetic preservation, and nonvanishing energy count once.
+
 Next uncounted candidate:
-`1-in-progress/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
-Average a small common dilation to obtain a concrete C_c test while preserving
-all prime-grid values. Target the exact harmonic correction after averaging and
-uniform positive lower/upper L² bounds. The dependency-closed paper proof is now
-written; full Lean verification is in progress. Search `/tmp/spp8-next-search.json` has partial=false/errors=[];
-source-only retrieval is not proof certification.
+`1-in-progress/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
+Construct actual compact continuous sources via causal convolution, retaining
+the exact grid and an unconditional pairing bound. Quantify source-energy cost;
+do not infer uniform packet control from scalar cancellation. Initial search
+`/tmp/spp9-next-search.json` is partial; full predecessor and convolution audits
+are now recorded in its dependency-closed paper proof. Lean verification is
+in progress; the candidate remains uncounted.
 
 Secondary uncounted candidate: reduce B(d) to the triangular correlation integral
 2d⁻²∫₀ᵈ(d-t)h(t)dt, then derive width response and reconstruction from d²B(d).

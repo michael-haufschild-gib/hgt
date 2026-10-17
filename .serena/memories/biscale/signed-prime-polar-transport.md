@@ -1,72 +1,55 @@
-# Signed prime–polar research lane
+# Signed prime–polar transport — 2026-10-17
 
-Independent BiScaleUncertainty research. User goal:100 significant theorem packages; **8/100 verified**, goal ACTIVE,92 outstanding. No RH work, hgtl7 skill, numerical experiments, grid blindness, inflated helper counts, commits, or umbrella builds. Main endpoints use actual C_c sources and numerical inputs without extra analytic hypotheses. One foreground Lean process per agent.
+Mission: quantitative coupling of the actual von Mangoldt atomic measure and both branches of the continuum polar measure, retaining signed correlations. Independent BiScaleUncertainty topic; do not work on RH, use hgtl7, or run numerical experiments. The user's attachment `/Users/michael/.codex/attachments/e9ef520a-4498-4562-99e8-1c42812df597/pasted-text-1.txt` governs the ongoing research goal. Read it before continuing if context is missing.
 
-Authoritative README: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read fully, then complete update adding Section3.5 and Trap10 read. **READ-ONLY by explicit user instruction.** Section3.3 directs this lane; Trap9 preserves actual prime weights and arbitrary signed correlations. Trap10 now prioritizes explicit unconditional producers: no further receiver-only reformulations and no pre-floor linear counterterm subtraction. Do not edit old/new README.
-Canonical ledger: `docs/reports/BiScaleUncertainty/SignedPrimePolarTransport-FACTS.md`.
-Parent card: `docs/drafts/pipeline/1-in-progress/signed-prime-polar-transport-2026-10-17.md`.
-Read attachment each new turn: `/Users/michael/.codex/attachments/e9ef520a-4498-4562-99e8-1c42812df597/pasted-text-1.txt`.
+## Goal and state
 
-## Verified packages
+100 significant theorem packages requested; **9/100 verified**, 91 remain. Goal ACTIVE. Latest turn: verified progress. Count one coherent mathematical package, never helpers or reformulations. Primary ledger: `docs/reports/BiScaleUncertainty/SignedPrimePolarTransport-FACTS.md`. Parent card: `docs/drafts/pipeline/1-in-progress/signed-prime-polar-transport-2026-10-17.md`.
 
-1. `AnnularCorrelationTransport.lean` + `SignedPrimePolarCoupling.lean`: construct C1 collar correlation H for arbitrary compact continuous f. Actual weights Λ(n)/sqrt(n), polar density2cosh(x/2), L=log(N+2). Exact work H0+exp(-L/2)H(L)E(L)-integral exp(-x/2)(V-H/2)E-integral exp(-x/2)H, E=ψ(exp x)-exp x. Uniform Krein mass cost and annular Levy/reciprocal bound. Paper `SignedPrimePolarTransport.md`.
+Authoritative `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` was read fully including Trap 10; READ-ONLY. Stay on Section 3.3. Trap 10 prioritizes explicit unconditional producers and forbids subtracting the discrete linear counterterm before floor summation. Do not replace real-ratio continuum cutoffs by floored ones. No commit/push; preserve other lanes' concurrent work. No agents spawned.
 
-2. `SignedPrimePolarPacket.lean` + `SignedPrimePolarGramTransport.lean`: actual compact atomicSource, polarSource, signedSource P_N. Q_N=integral P_N² is full iterated signed pairing of h(s-t), retaining both negative prime–polar terms. Actual source support proves Fubini. Q_N<=M_N²R; signed increment²<=2Q_N(R-h(y)); signed annular transport replaces mass with Q_N. Paper `SignedPrimePolarPacketGram.md`.
+## Verified packages 1–8
 
-3. `SignedPrimePolarHalfLineDomain.lean` + `SignedPrimePolarHalfLineTransport.lean`: source cutoff N0 kills h and all positive right-annular H,V tails. Literal n>=2 sum finitely supported/absolutely summable; polar/work kernels integrable. Upper endpoint vanishes; fullPairing H=fullChebyshevWork. Every N=N0+K gives global scalar transport retaining finite Q_N. Paper `SignedPrimePolarHalfLine.md`.
+1. C1 annular average and exact signed Chebyshev coupling, retaining origin, upper endpoint and exp(-x/2) polar shadow.
+2. Actual signed source packet, both negative mixed Gram terms, Q≤M²h(0), and transport.
+3. Full-half-line scalar admission and actual source cutoffs; not full packet stabilization.
+4. Coherent collar source, double Gram energy and joint Schur lower certificate.
+5. Rough-source gauge upper estimate with genuine M²||f-g||² remainder; no original source derivative assumed.
+6. Exact gauge energy 2(R-h(d))/d²+B/4, position invariance and support budget removing the constructed gauge norm.
+7. Signed scalar collar coefficient optimized exactly, including degenerate cases; fixed-width scalar trial only, no residual closure.
+8. Real-ratio factorial lift R_K(x)=exp(x/2) sum_{j=1}^K 1_[0,log(K/j)](x). Actual atomic sum T(K), polar integral K H_K−K+KlogK−T(K). W_N=(R_4N−4R_2N+4R_N)/sqrtN has pairing (2B_N−C_N)/sqrtN, 0≤C_N≤1 and unconditional bound (10log(4N+1)+3)/sqrtN. W_N(0)=0, W_N(log4N)=2, so not an autocorrelation. Package8 verified through three leaves and twelve standard-axiom checks; historic evidence in ledger.
 
-4. `AnnularCorrelationSource.lean` + `SignedPrimePolarCoherentSchur.lean`: actual backward collar g(u)=d^-1 integral_I f(u-y), I=[exp a,exp a+d], d=exp b. With C=H0, B=integral g², R=h0, D=pairing h, W=work, Q=packetEnergy, mixed covariance integral g(u)f(u+t)=H(t); B=d^-2 double integral_I h(z-y),0<=B<=R, integral gP=W. Nonnegative actual residual norms B-C²/R,Q-D²/R. (W-CD/R)²<=(B-C²/R)(Q-D²/R); (D-W)²<=Qδ where δ=R+B-2C; D²/R+(W-CD/R)²/(B-C²/R)<=Q. Global at N0+K, including zero-source cases. Paper `SignedPrimePolarCoherentSchur.md`.
+## Package 9 — verified continuous producer
 
-5. `AnnularSourceRegularity.lean` + `SignedPrimePolarRoughGauge.lean`: g is C1 with s=(f(u-A)-f(u-A-d))/d. k=s-g/2 actual compact gauge source; G=integral|k| admitted. Exact remainder ||f-g||²=δ. Weighted upper Q_N(f)<=3(1+eta)(10+eL²)B+3(1+eta)G² integral e²+(1+1/eta)M²δ, eta=exp c, e=exp(-x/2)E. eta1 gives roughGaugeBound coefficients6,6,2. Global coherent/Levy transport with independent smoothing/transport collars. Reuses compiled, exact-axiom-audited `ChebyshevGauge.packetEnergy_le_chebyshev_mean_square` on constructed g; no derivative of original f. Paper `SignedPrimePolarRoughGauge.md`.
+Paper: `docs/reports/BiScaleUncertainty/SignedPrimePolarContinuousFactorialProducer.md`.
+Card: `docs/drafts/pipeline/3-formalized/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
 
-6. `AnnularGaugeEnergy.lean` + `SignedPrimePolarCorrelationBudget.lean`: integral s²=2(R-h(d))/d²; integral sg=0; integral k²=E_g=2(R-h(d))/d²+B/4. Changing A translates g; B,E_g independent of A. k vanishes outside[A-T,A+d+T], T=actual multiplierSourceRadius f, so G²<=(2T+d)E_g=collarGaugeBudget. Substitute into rough bound for correlationGaugeBound and global Levy transport. T derived from f, not assumed or necessarily minimal. Paper `SignedPrimePolarGaugeCorrelation.md`.
+ε=1/(4N); qε(t)=min(1,max(0,(1+ε−t)/ε)); Uε,K(x)=exp(x/2) sum_{j=1}^K qε(j exp(x)/K). Define S_N=(Uε,4N−4Uε,2N+4Uε,N)/sqrtN globally. It is continuous, supported in [0,log(4N+1)], and S_N(log n)=W_N(log n) for every integer n≥1, including all endpoints. Actual atomic sequence remains finite and absolutely summable; polar integrand is globally integrable.
 
-7. `SignedPrimePolarScaledCollar.lean` + `SignedPrimePolarOptimalCollar.lean`: actual signed scalar compensation f=tg+(f-tg), all real t. Exact residual R-2tC+t²B. Define U=3(10+eL²)B+3collarGaugeBudget*integral e²>=30B. Q_N(f)<=F(t)=(1+eta)t²U+(1+1/eta)M²(R-2tC+t²B). D=(1+eta)U+(1+1/eta)M²B, E=(1+1/eta)M²C, t*=E/D, V=(1+1/eta)M²R-E²/D. Exact F(t)-V=D(t-t*)² including D0: D>=U>=30B forces B0 then C=E0 by actual Gram inequality. Every minimizer classified: F(t)=V iff D0 or t=t*. Z=optimizedPacketBound=min(M²R,V) gives Q<=Z<=M²R. At eta1 F(1)=correlationGaugeBound, hence Z<=old bound; exact uncapped gain D(1-t*)². Strict gain threshold: Z<M²R iff M²R/eta<E²/D. Global coherent and Levy transport take original source plus numeric parameters only. All optimization/degeneracy/comparison/transport counts once. Paper `SignedPrimePolarOptimalCollar.md`; card `3-formalized/signed-prime-polar-optimal-collar-2026-10-17.md`.
+Piecewise FTC gives the extra polar correction ε K H_K/2+Kρ(ε), ρ=((1+ε)log(1+ε)−ε)/ε. Linear ρ terms cancel. Exact pairing:
+ν(S_N)=[2B_N−(1+1/(8N))C_N]/sqrtN,
+|ν(S_N)|≤[10log(4N+1)+3+1/(8N)]/sqrtN.
 
-8. `SignedPrimePolarHarmonicCorrection.lean` + `SignedPrimePolarFactorialLift.lean` + `SignedPrimePolarFactorialProducer.lean`: explicit compact measurable R_K(x)=exp(x/2) sum_{j=1}^K indicator_[0,log(K/j)](x), REAL K/j. Actual atomic sum is T(K); full polar integral is K H_K-K+K log K-T(K). Hence nu(R_K)=2T(K)-K log K-K H_K+K. For W_N=(R_4N-4R_2N+4R_N)/sqrt(N), nu(W_N)=(2 B_N-C_N)/sqrt(N), C_N=4N(H_4N-2H_2N+H_N) in [0,1] by adjacent reciprocal pairing. Reuse existing abs_chebyshevBiNullProducer_le to obtain |nu(W_N)|<=(10 log(4N+1)+3)/sqrt(N). Literal atoms finite/absolutely summable and polar term integrable, all constructed. Public factorialBiNull_producer(n:Nat) bundles admission+bound at N=n+1, no analytic/arithmetic premise or free weights. W_N(0)=0, W_N(log4N)=2; factorialBiNull_ne_autocorr proves no compact continuous real source has this autocorrelation. It is a discontinuous scalar producer, not a uniform packet or positivity result. Counts once; original numerical B_N theorem is reused, not counted again. Paper `SignedPrimePolarFactorialProducer.md`; card `3-formalized/signed-prime-polar-factorial-producer-2026-10-17.md`.
+A finite antitone sequence stencil lies in [-2,1], proving S_N²≤4exp(x)/N. On the CLOSED band [log(2N+1),log(4N)], S_N=exp(x/2)/sqrtN. Therefore 1≤∫ℝ S_N²≤16. Small pairing is not caused by vanishing L² norm. Still not an autocorrelation; no uniform signed-packet control or positivity follows.
 
-## Verification
+Namespace `GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar`.
+Actual C_c object: `continuousFactorialProducer (n : ℕ)` uses N=n+1.
+Main numeric-index-only endpoint: `continuousFactorialProducer_certificate` bundles grid preservation, pairing bound, and both squared L² bounds. Exact pairing: `fullPairing_smoothFactorialBiNull_eq`; domain: `smoothFactorialBiNull_admissible`; boundary: `continuousFactorialProducer_ne_autocorr`.
 
-All eight packages have direct leaf passes and standard axiom audits. Package8 three final leaves exit0 with empty logs /tmp/spp8-harmonic.log, /tmp/spp8-lift.log, /tmp/spp8-producer.log. Scratch /tmp/spp8_final_axioms.lean passes twelve reports, only propext,Classical.choice,Quot.sound; main signature has only n:Nat (/tmp/spp8-final-axioms.log). Imports wired, index exits0 (/tmp/spp8-index.log), scoped whitespace passes. Latest recorded global lint exits1 solely for eleven unrelated concurrent unwired modules; exact list in lane FACTS ledger and /tmp/spp8-lint.log. No task-local error. Do not edit other lanes.
+Five leaves pass final direct `lake --old env lean <leaf> -o <olean>` checks with empty diagnostics: AntitoneDyadicStencil, ClampedExponentialRamp, SignedPrimePolarContinuousFactorialLift, SignedPrimePolarContinuousFactorialProducer, SignedPrimePolarContinuousFactorialEnergy. Antitone helper imports were narrowed and rechecked. Fourteen #print axioms reports use only propext/Classical.choice/Quot.sound. Main #check confirms only n:ℕ input. All imports wired exactly once; index refresh exit0 and endpoint present in LEAN_API.
+Evidence `/tmp/spp9-*-final.log`, `/tmp/spp9_final_axioms.lean`, `/tmp/spp9-final-axioms.log`, `/tmp/spp9-index.log`, `/tmp/spp9-lint.log`. Global lint exit1 for eight unrelated unwired modules: DiscrepancyTransformLaw, NyquistPolarDecomposition, NyquistPolarSourceEscape, NyquistResidualKernel, NyquistResidualMass, NyquistResidualOperator, NyquistResidualPartition, SelbergSieveTailQuadraticFormAndTruncatedDivisorGram. No task-local error. No full/umbrella builds. All owned Lean/search/index/lint processes are terminal.
 
-Shared .olean files disappeared during checking; direct restores of unchanged Coupling and GramTransport passed. A temporary snapshot of field artifacts provided LEAN_PATH fallback for later direct checks. All actual dependencies were present in shared tree before the overlay and obsolete spp8 API probes were removed. No owned Lean/search/lint/index process remains active. Final axiom scratch/logs and research search evidence retained. No source edits to restored dependencies. Do not launch full builds to fix isolated missing artifacts.
+## Next uncounted candidate
 
-## Boundaries and next target
+`docs/drafts/pipeline/0-backlog/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
+Aim for actual compact continuous sources with explicit energy cost, not another scalar receiver or formal polarization identity. Candidate: A=1+1/(4N), δ=logA/3, k(t)=exp(3t/2)1_[0,δ](t)/(expδ−1), H_N=W_N*k*k*k. Potential sources F(u)=(W_N*k)(−u), G(u)=(k*k)(u). Mixed correlation should be H_N; supports on opposite half-lines should give equal origin energies for F±G and autocorrelation difference 2H_N on x≥0. Product dilation remains ≤A, suggesting exact grid preservation and explicit mean dilation [(1+expδ)/2]^3. ALL of this is a candidate, not proved/countable yet. Quantify source norm growth from shrinking collars; do not infer uniform packet control.
 
-Scalar support stabilization does NOT imply Q_N stabilization: distant translates retain energy. No infinite packet or cutoff-uniform Q bound. H is mixed correlation, not assumed autocorrelation. H0 and negative-exponential polar shadow cannot be dropped; E0=-1 fixes boundary sign. Schur gives joint lower control; rough upper bounds retain actual source residuals. Gauge budget position invariant but δ depends on A via H0. New explicit gauge budget is an upper bound on G², not claimed smaller than G².
+`/tmp/spp9-next-search.json` is partial with interrupted text/source retrieval. Candidates and source arguments were inspected. Before code inspect `exists_sourceTranslate_local_cross_zero` in FiniteSourceEnergyScalarization.lean, `ChebyshevGauge.continuous_windowedTranslate`, and neighboring UnconditionalCoprimeFactorialLiftAndSpectralLaplaceProducer.lean. Broaden documented search to mathlib convolution continuity, associativity, support, L² bounds. No source factorization paper audit yet. Multiple-collar receiver candidate remains parked.
 
-Package7 optimizes only the scalar trial family at fixed smoothing and eta. It removes coefficient-one loss, not the residual. No joint width optimization. At eta1 capped bound no worse than mass and contribution6; other eta compare with their own trial family. Smoothness alone does not imply strict gain.
+## Lean workflow and reusable details
 
-Package8 is verified and counted. It avoids pre-floor divisor contamination by real-ratio continuum cutoffs, but does not discharge arbitrary-correlation packet control. Its discontinuous test is not an autocorrelation, as formally certified.
+One owned foreground Lean process at a time; finite checks only; no heartbeat increases. Verify new mathlib names in /tmp with this toolchain. #print axioms only /tmp. `update_plan` unavailable; cards track work. Serena active Python project cannot extract Lean symbols; use precise read-before-edit patches.
 
-Next producer candidate: `0-backlog/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`. Average a tiny common dilation lambda∈[1,1+1/(4N)] to obtain a concrete C_c test while preserving every prime-grid value. Expected exact pairing [2B_N-(1+1/(8N))C_N]/sqrt(N), with nonvanishing and bounded L2 norm to audit. This is unproved/unformalized and uncounted. Keep the package8 discontinuous test distinct from an autocorrelation: its origin is 0 but top value is 2.
+Use typed literal lambdas before integral_add/sub rewrites. `Continuous.intervalIntegrable` needs both endpoints explicitly. `HasCompactSupport.mul_left` has implicit multiplier: use `(f := ...)`, not a positional argument. `HasCompactSupport.of_support_subset_isCompact` uses binder K. For squared compact integrability, `apply continuous_sq.integrable_of_hasCompactSupport` before supplying support avoids competing Real measurable-space instances inferred by an untyped `simpa using`.
 
-Multiple-collar compensation is parked: `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`. Preserve cross-correlations if revisited, but follow Trap10 producer priority first.
-Secondary uncounted width candidate: B(d)=2d^-2 integral_0^d(d-t)h(t)dt, reconstruct from d²B(d). A classical rearrangement alone does NOT count; pursue only if it closes a distinct width/transport question.
-
-## Search evidence
-
-Package8 /tmp/spp8-producer-search.json and /tmp/spp8-lift-search.json: partial=false, full file inventory, candidate lemmas and source arguments inspected. Compiler metadata mostly pending/source-only and semantic coverage unmeasured. Follow-up /tmp/spp8-next-search.json: partial=false/errors=[], retrieves smooth logarithmic-grid sources, finite-grid interpolation and current producer source; source retrieval is not certification. No retrieved statement supplies the real-ratio lift plus harmonic correction. No external novelty claim.
-
-Package7 `/tmp/spp7-search.json`, `/tmp/spp7-opt-search.json`: partial=false/errors=[], candidates/source arguments inspected. Retrieved finite-partition Gram optimization and smooth-gauge bounds are distinct. Snapshot compiler coverage includes many pending/stale entries. No external novelty claim.
-Followup `/tmp/spp7-next-search.json`: partial=false/errors=[], includes own source-only declarations before compilation; do not treat search as kernel certification. Field rg found no mixed-collar gauge kernel endpoint.
-Prior width semantic search `/tmp/spp6-next-search.json` disconnected, partial=true; lexical fallback `/tmp/spp6-next-lexical.json` returned52 declarations, existing double average/unrelated triangular matrix and pair-count results.
-
-## Lean/workflow details
-
-- Infinite-sum linearity is Summable.tsum_add/sub (not root tsum_add/sub); tsum_mul_left and tsum_div_const exist. Probe new APIs in /tmp before use.
-- Use open _root_.RHTower for floorSummatory; unqualified RHTower can resolve a different namespace inside GaloisForLFunctions.
-- A reverse Nat.cast_mul rewrite need not match literal real 4*N. Supply an explicit cast equality proved by push_cast.
-- Package8 harmonic correction uses lightweight Mathlib.NumberTheory.Harmonic.Bounds; it does not need the heavy factorial producer import.
-
-- update_plan unavailable; cards carry executable plans. Serena active project Python cannot extract Lean symbols; use precise patches. Preserve concurrent edits.
-- Whole C_c coercion matters: write `autocorr ((f-t • g : C_c(ℝ,ℝ)) : ℝ → ℝ)` to avoid elaboration as a difference of coerced functions. Typed literal-lambda integrability facts avoid Pi.sub/Pi.mul rewrite mismatches; in particular give hsub/htm/htg explicit types before integral_add/sub.
-- Explicit named Fubini integrands avoid coercion/heartbeat loops. No heartbeat increases.
-- `autocorr_source_const_mul` reused from FiniteSourceEnergyScalarization. C_c smul API `CompactlySupportedContinuousMap.smul_apply`; packetEnergy_smul and signedSource_smul_apply now public.
-- `continuous_parametric_integral_of_continuous` root; `integral_integral_swap_of_hasCompactSupport` MeasureTheory.
-- Generic API probes need explicit universe levels, e.g. HTGeometry.sq_integral_mul_le.{0}, integral_const_mul.{0,0}, Finset.mul_sum.{0,0}.
-- `Finset.sum_div`, not sum_div_distrib. `summable_of_ne_finset_zero` exists; Function.HasFiniteSupport.summable does not.
-- HasCompactSupport.div_const nonexistent: use mul_right reciprocal. Derivative products: HasDerivAt.mul then congr_deriv.
-- Compact IBP helper `HTGeometry.integral_deriv_eq_zero_of_hasCompactSupport` takes pointwise HasDerivAt, Continuous derivative, HasCompactSupport function.
-- Source radius in HyperbolicJumpEnergyTransfer: multiplierSourceRadius,pos,abs_le_multiplierSourceRadius. Restricted Cauchy via HTGeometry.sq_integral_mul_le; setIntegral_eq_integral_of_forall_compl_eq_zero uses pointwise off-set vanishing.
-- RealEvenPolarTestFn tactics need explicit `linarith only`/`nlinarith only` facts per README. General transport endpoints retain arbitrary C_c sources; the explicit package8 producer has only its numerical index and is a compact measurable test, not a C_c source or autocorrelation.
+`Summable.tsum_add/sub`, `tsum_div_const`, `tsum_mul_left`; finite sum division is `Finset.sum_div`. Use `summable_of_ne_finset_zero`, not nonexistent finite-support method. `open _root_.RHTower` for floorSummatory when shadowed. Real cast products sometimes need explicit equalities. C_c coercions need whole-expression type annotations. Shared .olean files vanished during package8; restore only actual unchanged dependency leaves if needed, never full build. No overlay currently needed.
