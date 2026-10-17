@@ -1,141 +1,158 @@
 # Multi-chain Gram research ledger
 
-This is a working mathematical state ledger, not a chronological log. Update or replace entries when evidence changes. Scope: Bi-Scale Uncertainty and coupling across odd dyadic cosets. No literature-wide novelty claims; mathematical frontier evidence comes from the local corpus.
+Working state, not history. Replace superseded entries; retain failed mechanisms and their witnesses. Scope: independent Bi-Scale Uncertainty, coupling across odd dyadic cosets. Novelty checks use the local corpus; no literature-wide priority claim.
 
 ## Established facts
 
-### Full Gram energy replaces independent coset penalties
+### F1. Full Gram energy gives exact origin leverage
 
-For real translation autocorrelation `h`, let `R=h(0)`, `v_t=U_t g`, `P=Σ_i w_i v_(t_i)`, `Q=||P||²`, `B=Σ_i w_i h(t_i)`, and `W>0`. Then
+For actual real autocorrelation `h`, set `R=h(0)`, `v_t=U_t g`, `P=Σ_i w_i v_(t_i)`, `Q=||P||²`, `B=Σ_i w_i h(t_i)`, and `W>0`. Then
 
 `W(R-h(y))+Σ_i w_i(R-h(t_i-y))`
 
 `= RΣ_i w_i - B - Q/(2W) + ||W(v_y-g)-P||²/(2W)`.
 
-- **Status:** Paper proof and Lean proof complete. Certified by `autocorr_gram_leverage_remainder`, `autocorr_gram_leverage_bound`, and `autocorr_odd_coset_gram_leverage` in `MultiChainToeplitzGramCoupling.lean`.
-- **Consequence:** Rational leverage holds for arbitrary actual autocorrelations and arbitrary real weights; no sign or definiteness premise is needed. Exact zeros remove `B`.
-- **Evidence:** [Proof card](../../drafts/pipeline/1-in-progress/bi-scale-multichain-gram-coupling-2026-10-17.md).
-- **Use:** Retain `Q`, including its off-diagonal terms, instead of replacing it by independent chain envelopes.
+- **Status:** Paper and Lean verified. Arbitrary real weights and actual compactly supported continuous tests; `W=exp(a)` parametrizes positive weights without an added premise.
+- **Evidence:** `autocorr_gram_leverage_remainder`, `autocorr_gram_leverage_bound`, `autocorr_odd_coset_gram_leverage` in `MultiChainToeplitzGramCoupling.lean`.
+- **Use:** Keep every cross entry in `Q`. Keep anchor error `B` until actual zeros remove it.
 
-### Exact cost of forgetting cross-coset correlations
+### F2. Exact loss from forgetting cross-coset compatibility
 
-For finite packets `P_m`,
+For finite real Hilbert packets,
 
 `D=(Σ_m ||P_m||)²-||Σ_m P_m||²`
 
 ` =Σ_(m,m') (||P_m|| ||P_m'||-<P_m,P_m'>) ≥ 0`.
 
-For orthogonal within-coset families, write `||P_m||²=R a_m²`. The best independently allocated rational penalty is `R(Σ_m a_m)²/(2W)`. Retaining the full Gram form improves the lower bound by **exactly** `D/(2W)`.
+The coupled rational bound improves the **optimally allocated** independent-packet bound by exactly `D/(2W)`. Equality holds exactly when every pair of nonzero packets is positively collinear; the all-zero family is included.
 
-- **Status:** Paper and Lean proofs complete: `packetPartitionLoss_eq_sum`, `packetPartitionLoss_nonneg`, `packet_coupling_gain`, and `packetPartitionLoss_eq_zero_iff`.
-- **Equality:** `D=0` exactly when every pair of nonzero packets is positively collinear (vacuously true if every packet is zero). Strictness requires misalignment, not a negative cross-correlation.
-- **Use:** The correct target is a quantitative lower bound for `D`, rather than estimating each cross entry by an unrelated absolute value.
+- **Status:** Paper and Lean verified: `packetPartitionLoss_eq_sum`, `packetPartitionLoss_nonneg`, `packet_coupling_gain`, `packetPartitionLoss_eq_zero_iff`.
+- **Use:** Seek a lower bound for `D`. Negative cross correlations are unnecessary: failure of positive alignment already gives gain.
+- **Benchmark:** With orthogonal within-coset chains and `||P_m||²=R a_m²`, the independent penalty is `R(Σ a_m)²/(2W)`. `SharedOriginMultiCosetLeverage.lean` already proves the sharp independent-block support bound and an attaining witness. That source was inspected, not independently audited here. Its result is not counted as our contribution.
 
-### Arithmetic cross blocks have more zeros than a coset partition records
+### F3. Synchronized chains admit a robust sine improvement
 
-`G_((m,k),(m',l))=h(log(m/m')+(k-l)log 2)` is Toeplitz in dyadic exponents. If `m'=q m` for an odd integer `q>1`, integer-ratio grid zeros annihilate every cross entry with `l≥k` (provided the actual grid cutoff contains the participating nodes). Reversing block orientation reverses the triangle.
+Let the two chain nodes be `base+k log 2` and `base+b+k log 2`, for `0≤k<L`, with the **same** real coefficient vector `c`. Put `S=Σ c_k²` and `ρ=cos(π/(L+1))`. Define
 
-- **Status:** Paper consequence of the established divisibility-pair orthogonality theorem; specialized block theorem not formalized.
-- **Evidence:** `autocorr_log_divisibility_pair_orth` in `MultiplicativeChainBesselAndOriginLeverage.lean`.
-- **Use:** Investigate strictly triangular cross-block contractions and synchronized weights. This can force a uniform improvement that qualitative nonalignment alone does not provide.
+`Γ_ij=h((j-i)log 2)`, `C_ij=h((j-i)log 2-b)`,
 
-### Current corpus benchmark: shared-origin block relaxation
+`δ=||Γ-RI||`, `ε=||C-strictUpper(C)||`.
 
-`SharedOriginMultiCosetLeverage.lean` now supplies `shared_origin_leverage_bound`,
-`shared_origin_leverage_rational_bound`, and `shared_origin_support_attained`.
-The denominator penalty uses `(Σ_m √Σ_k w_(m,k)²)²`; this is sharp when only separate
-chain sphere constraints are retained. Its source explicitly imposes no compatibility
-between different blocks on the attaining witness.
+All matrix norms mean **Euclidean operator norms**. For every actual test, without a grid-zero or frame premise,
 
-- **Status:** Source inspected; this ledger does not claim to have independently audited that module.
-- **Consequence:** Our contribution is the additional full-Gram compatibility correction `D/(2W)`, not discovery of the shared-origin block formula.
-- **Use:** Compare future uniform improvements against this sharp relaxation, not an unoptimized allocation.
+`Q=||P_base+P_(base+b)||² ≤ 2(1+ρ)(R+δ+ε)S`,
 
-## Failed assumptions and scope boundaries
+`4RS-Q ≥ 2[(1-ρ)R-(1+ρ)(δ+ε)]S`.
 
-- **Invalid shortcut:** Distinct odd cosets are mutually orthogonal. Only within-coset differences are automatically integer logarithms; cross correlations usually survive. Explicit counterexample under grid constraints alone: choose `log(5/3)<L<log 2` and a continuous nonnegative function supported on `[0,L]`, positive on `(0,L)` (e.g. `u(L-u)` inside that interval and zero outside). Every `h(log n)` for `n≥2` vanishes by disjoint support, but `h(log(5/3))>0` by positive overlap. Thus cosets based at `3` and `5` have a strictly positive cross correlation despite the full zero grid. This counterexample asserts no polar neutrality.
-- **Invalid shortcut:** Every cross correlation must be negative to improve leverage. Improvement compares `Q` with the optimized partition envelope `R(Σ a_m)²`, not with the smaller diagonal-only value `RΣ a_m²`.
-- **Unjustified inference:** Strict inequality for each compactly supported test gives a uniform positive gain over all tests. Qualitative strictness does not supply a uniform gap.
-- **Attainment boundary:** The square-root Gram estimate is a sharp support bound over Hilbert vectors of the prescribed norm. A translation orbit need not contain its maximizing vector.
-- **Zero-block boundary:** Optimal allocation `W_m=W a_m/Σ a_m` gives zero budget to zero packets. Omit zero packets or use an infimum; do not claim an attained optimum over strictly positive budgets for all blocks.
-- **Novelty boundary:** The packet defect and positive-ray classification derive from classical Hilbert geometry. Existing corpus already has scalar complex triangle-equality machinery (`HTGeometry.CalibrationSpectrumMechanics.weighted_triangle_eq_iff`). Count the Bi-Scale coupling result once, not each algebraic helper.
+The resulting origin bound is
 
-## Open questions that determine next actions
+`E ≥ 2RΣ c_k - B - (1+ρ)(R+δ+ε)S/W`.
 
-1. Prove a quantitative arithmetic lower bound for `D`, uniform over admissible correlations, using triangular cross blocks from multiplicatively related odd cosets.
-2. Construct the coefficient-space contraction of synchronized dyadic packets and prove arithmetic nilpotence, then apply the existing numerical-radius theorem without an extra analytic premise.
-3. Establish the exact equality/nonattainment classification for actual compactly supported translates, beyond abstract Hilbert packet geometry.
-4. Compare the coupled exact square-root bound against optimized partitioning in Lean, not only on paper.
+- **Status:** Paper and Lean verified. Final direct-source, axiom, generated-index, and formal-lint audits passed.
+- **Evidence:** `synchronizedDyadicGramEnergy_le_sine`, `synchronizedDyadic_gain_with_errors`, `synchronizedDyadic_origin_leverage`, `oddCoset_synchronized_origin_leverage` in `SynchronizedCosetSineLeverage.lean`.
+- **Proof mechanism:** Actual synthesis gives `C=B†A` and `A†A=B†B=Γ`. The strictly upper truncation `T` is nilpotent by construction. Normalize by its actual norm, separating the zero case, then apply the existing sharp nilpotent numerical-radius theorem. Since `||T||≤||C||+ε`, `|<Cx,x>|≤[ρ||C||+(1+ρ)ε]||x||²`. Also `||A||²,||B||²,||C||≤R+δ`. Expand the packet norm square.
+- **Use:** At exact zeros, recover the uniform sine gain. With errors, this bound certifies positive gain over the exact-grid benchmark when `(1+ρ)(δ+ε)<(1-ρ)R` and `S>0`. The theorem does not assert that arbitrary defects are small.
 
-## Contribution accounting
+### F4. Every defect entry is an actual integer-log sample
 
-- Target: 100 significant contributions.
-- Verified contribution 1: Gram-resolved origin leverage with exact partition-loss correction.
-- Verified count: **1 / 100**. Candidate contribution 2 remains uncounted until its arithmetic bridge is formalized and audited.
-- All supporting algebraic lemmas belong to contribution 1; they do not increase the count.
+Take odd integers `m,q≥3`, `base=log m`, and `b=log q`. Lean represents them as `2*m₀+3` and `2*q₀+3`.
 
-## Concrete next test: two levels in cosets `m` and `3m`
+- Off-diagonal within-chain entries are `h(log(2^|i-j|))`; the defect diagonal is exactly zero.
+- In orientation `C=B†A`, `C-strictUpper(C)` has entries zero for `i<j`, and `h(log(q 2^(i-j)))` for `j≤i`.
+- The nodes themselves are exactly `log(m2^i)` and `log(qm2^i)`.
+- **Evidence:** `dyadicWithinGram_grid_entry`, `dyadicWithinDefect_grid_formula`, `oddCoset_triangularError_grid_formula`, `oddCoset_pairNode_inl`, `oddCoset_pairNode_inr`.
+- **Consequence:** Pinning `h(log r)=0` for `2≤r≤N`, with `N≥qm2^(L-1)`, removes both defects and every anchor sample. Then `Q≤2R(1+ρ)S`, `D≥2R(1-ρ)S`, and the rational gain is at least `R(1-ρ)S/W`.
+- **Formal boundary:** The actual-entry identities and unconditional error-aware inequalities are formalized. The finite-cutoff zero-grid corollary is a paper substitution, not a separately packaged Lean theorem with extra hypotheses.
+- **Minimal instance:** `L=2`, unit coefficients, nodes `{m,2m,3m,6m}`. Only `{2m,3m}` can have nonzero cross correlation. `ρ=1/2`, so `Q≤6R` versus independent numerator `8R`; gain at least `R/W`. `chainSineFactor_one` proves the exact coefficient symbolically. The four-node specialization is not a separate counted contribution.
 
-Nodes `{m,2m,3m,6m}` have exactly one potentially nonzero off-diagonal correlation under the integer-log zero grid: the pair `{2m,3m}`. Every other ratio, in its larger-to-smaller orientation, is an integer. For equal unit weights,
+### F5. Unequal coefficient profiles retain a quantified coupling gain
 
-`Q=4R+2h(log(3/2)) ≤ 6R`.
+Keep F3's actual errors and put `K=R+δ`, `G=(1-ρ)R-(1+ρ)(δ+ε)`. For arbitrary coefficient vectors `c,d`, let `r=||c||`, `s=||d||`, `u=normalize(c)`, `v=normalize(d)`, and `η=||u-v||`. Normalization sends zero to zero. Set
 
-The two independent dyadic chains have optimized penalty numerator `R(√2+√2)²=8R`. Thus `D≥2R`, giving a **uniform** improvement of at least `R/W` in the rational leverage bound. Include the origin anchor only when all selected nodes are grid zeros (e.g. odd `m≥3`, cutoff `N≥6m`); choosing `m=1` introduces the origin itself and must be treated separately.
+`gain=rs [max(0, sqrt(2G)-sqrt(K)η)]²`.
 
-- **Status:** Paper candidate, not counted or Lean-certified. This follows directly from the inspected divisibility theorem and Cauchy–Schwarz envelope; its formal bridge and exact comparison remain to be written.
-- **Next action:** Audit this minimal arithmetic example before attempting general nilpotent-contraction bounds. It separates an actual uniform arithmetic gain from the generic measured-gain identity.
+Here `sqrt(t)=√max(0,t)`, matching Lean's total real square root. Let `A₀,A₁` be the actual synthesis maps of the two chains. Then
 
-## Reusable nilpotent-contraction machinery already in the corpus
+`||A₀c+A₁d||² ≤ K(r+s)²-gain`,
 
-The numerical-radius theorem itself is **not** an open problem here.
+`D=(||A₀c||+||A₁d||)²-||A₀c+A₁d||² ≥ gain-2δrs`.
 
-- `HTGeometry.nilpotent_contraction_real_inner_gap` in `HTGeometry/NilpotentContractionInterference.lean` proves the elementary deficit `Re<x,Cx> ≤ (1-1/(2N²))||x||²` for a contraction with `C^N=0` (in denominator-free form).
-- `RHTower.norm_inner_nilpotent_contraction_le_sine` in `RHTower/CCMNilpotentContractionSine.lean` proves the sharper `|<Tx,x>| ≤ cos(π/(N+1))||x||²`. Its statement and proof are general Hilbert-space mathematics despite its storage location. The proof uses finite defect-chain telescoping and the existing sharp chain inequality.
-- **Evidence status:** Both actual sources inspected; imports/API and axiom audits for use in this topic remain pending.
-- **Next action:** Construct the cross-coset coefficient-space contraction and derive its nilpotence from arithmetic zeros. Do not spend a contribution reproving the existing numerical-radius theorem. Do not assume contractivity or nilpotence as new input interfaces.
+The latter adds `(gain-2δrs)/(2W)` directly to the measured, optimally partitioned origin lower bound, retaining the exact anchor error.
 
-## Candidate contribution 2: synchronized cosets have a uniform sine gap
+- **Status:** Dependency-closed paper proof complete; formal implementation undergoing final verification. Not counted yet.
+- **Evidence:** `dyadic_profile_energy_bound`, `dyadicPairPartitionLoss_ge_profile`, `dyadic_profile_partition_origin_leverage` in `ProfileStableCosetLeverage.lean`. `dyadicProfileGain_pos_iff` characterizes positivity of the certificate itself.
+- **Mechanism:** Lower and upper Gram bounds give `||A₀x-A₁x||²≥2G||x||²`. Triangle inequality spends at most `sqrt(K)||u-v||` of this separation. The weighted norm identity transfers it to arbitrary amplitudes. For unit profiles, `p=||A₀u||`, `q=||A₁v||` satisfy `(p-q)²≤2δ`; the exact identity `D=rs[||A₀u-A₁v||²-(p-q)²]` gives the measured-partition correction.
+- **Use at exact pinning:** With `δ=ε=0`, `R>0`, and both coefficients nonzero, positive gain is certified for `η<sqrt(2(1-ρ))`, equivalently `Re⟨u,v⟩>ρ`. Amplitudes may differ arbitrarily. This removes exact coefficient synchronization as a structural restriction.
+- **Use with errors:** This certificate proves positive improvement of the true measured partition bound when `gain>2δrs`; `gain>0` alone is insufficient. For nonzero coefficients the certificate condition is equivalent to `sqrt(2G)>sqrt(K)η+sqrt(2δ)`.
+- **Boundary:** These are positivity criteria for the explicit lower-bound certificate, not necessary conditions for actual `D>0`. Zero certificate does not imply zero actual gain. The error-free/coherence reformulations are paper consequences; the unconditional inequalities and general certificate criterion are the intended Lean scope.
 
-**Exact proposed theorem.** Let `m≥3` and `q≥3` be odd integers, `L≥1`, and `N≥qm 2^(L-1)`. Assume the actual real autocorrelation is zero on the integer-log grid through `N`. In the two cosets based at `m` and `qm`, use the same real coefficient vector `(c_0,...,c_(L-1))`. Put `S=Σ_k c_k²`, `R=h(0)`, and `ρ_L=cos(π/(L+1))`. Then
+## Failed mechanisms and boundaries
 
-`Q=||P_m+P_(qm)||² ≤ 2R(1+ρ_L) S`,
+- **Distinct odd cosets are not orthogonal.** Under grid constraints alone, choose `log(5/3)<L<log 2` and a continuous nonnegative bump supported on `[0,L]`, positive inside, e.g. `u(L-u)` there and zero elsewhere. Disjoint support gives every `h(log n)=0` for `n≥2`; overlap gives `h(log(5/3))>0`. This counterexample asserts no polar neutrality. Do not discard cross entries between cosets `3` and `5`.
+- **Sine numerical radius is not a bilinear bound.** Unrelated coefficient vectors produce `<a,Cb>`, not `<c,Cc>`. The explicit operator `T(x₁,x₂)=(x₂,0)` has `T²=0`, norm one, and sends one coordinate unit vector to the other. Do not replace its operator norm by `ρ` in arbitrary bilinear pairings. F5 instead retains a profile mismatch term. This operator counterexample does not assert realization by an actual translation autocorrelation.
+- **Qualitative strictness is not a uniform gap.** Compact support may exclude exact alignment without excluding approximating sequences. F3's uniformity comes from arithmetic triangularity and finite chain length.
+- **Sharpness is unproved for actual translation orbits.** Sharp abstract nilpotent numerical radius does not prove its extremizer is realizable by these autocorrelations. The Hilbert support optimum need not lie on a one-parameter translation orbit.
+- **Origin cannot be silently treated as a zero node.** Using `m=1` introduces `h(0)`. Keep `B`, or use odd bases at least three and sufficient grid cutoff.
+- **Zero packets require care in optimization.** `W_m=W a_m/Σa_m` assigns zero budget to zero packets. Omit them or state an infimum; do not assert attainment with all budgets strictly positive.
+- **Classical helpers are not separate research contributions.** Packet triangle geometry and the existing nilpotent theorem are inputs. Count each substantive Bi-Scale result once.
 
-`D≥2R(1-ρ_L)S`.
+## Reusable local machinery and proof failures
 
-Thus the rational leverage bound improves uniformly over the sharp independent-block relaxation by at least `R(1-ρ_L)S/W`. Its lower bound becomes
+- `RHTower.norm_inner_nilpotent_contraction_le_sine` in `RHTower/CCMNilpotentContractionSine.lean`: sharp `cos(π/(N+1))` numerical-radius theorem. General Hilbert mathematics despite its storage namespace; using it adds no RH objective.
+- `HTGeometry.nilpotent_contraction_real_inner_gap`: weaker elementary deficit `1/(2N²)`; do not reprove it as a new result.
+- `HTGeometry.StrictlyLowering.pow_eq_zero_of_strictlyUpper`: constructed strict triangularity implies finite nilpotence.
+- `HTGeometry.finiteSynthesis` and `adjoint_finiteSynthesis_apply`: actual coefficient synthesis and Gram composition.
+- `ContinuousLinearMap.norm_adjoint` and `norm_comp_le` do not exist in this toolchain. Use `LinearIsometryEquiv.norm_map` for adjoints and `.opNorm_comp_le` for composition.
+- Broad `simp` on a self-inner product can turn it back into a norm before sums expand. Use ordered `rw [norm_sq_eq_re_inner, sum_inner]` and `simp_rw` for finite packet energies.
+- For a real integral cast to complex, use explicit `Complex.ofReal (∫ ...)`; a type annotation alone can change the inferred integrand. The lemma is root `integral_ofReal`.
+- `inner_self_eq_norm_sq_to_K` introduces `RCLike` casts that reverse `Complex.ofReal_pow` rewriting may not match. Force explicit `Complex.ofReal` in the target, then expand `pow_two` and `Complex.mul_re` when needed.
+- For real weighted norm identities, `norm_add_sq_real` and `norm_sub_sq_real` avoid residual `RCLike.re` expressions that stop `ring`.
+- `ContinuousLinearMap.map_smul_of_tower` is namespaced; no root `map_smul_of_tower` exists here. It transports real normalization through complex-linear synthesis.
+- `rw [sub_div]` rewrites only one matching numerator. Use `simp only [sub_div] at hcost ⊢` before linear arithmetic when both sides and the target contain differences over the shared origin weight.
+- An imported theorem's axiom audit covers private dependencies; audit every new public theorem, not only the headline bound.
 
-`E ≥ R(2Σ_k c_k - (1+ρ_L)S/W)`.
+## Next research decisions
 
-**Paper proof.** If `R=0`, every translate is zero. Otherwise divide both orthogonal chains by `√R`, producing two isometries `A,B: ℂ^L→H` by finite synthesis. The coefficient-space map `T=A*B` is a contraction because both synthesis maps are isometries. Its `(i,j)` entry is `h(log q+(j-i)log 2)/R`, which vanishes for `j≥i`: the ratio `q2^(j-i)` is an integer in the pinned grid. Hence `T` is strictly lower triangular and `T^L=0`. The existing sharp numerical-radius theorem gives `Re<c,Tc>≤ρ_L||c||²`. Expand `||√R Ac+√R Bc||²` to obtain the claimed `Q` bound. Substitute into the proved Gram-resolved leverage formula and the definition of `D`.
+1. Determine the strongest useful coefficient-profile certificate. F5 supplies a quantitative mismatch term; its triangle estimate is not claimed optimal. The absolute numerical-radius input suggests sign/phase variants, but automatic variants alone must not become separate counted contributions.
+2. Test whether actual translation autocorrelations can approach the abstract sine constant. Either construct admissible near-extremizers or prove an additional orbit rigidity gap. No sharpness claim before this audit.
+3. Extend from a pair of multiplicatively related odd cosets to a network. Pairwise summation alone is not automatically a significant new contribution; seek a stronger joint compatibility constraint.
+4. Formalize the coupled exact square-root comparison if it exposes information beyond the already verified rational loss identity.
 
-- **Status:** Dependency-closed paper argument using the inspected nilpotent numerical-radius theorem; actual coefficient-space construction, arithmetic triangularity, and the application are not yet formalized. Not counted.
-- **Important boundary:** The shared coefficient vector is essential to this proof. Arbitrary unrelated vectors give a bilinear pairing, not a numerical-radius expression; nilpotence does not improve the operator norm below one.
-- **Sharpness boundary:** No claim that the constant is optimal among actual translation autocorrelations. Sharpness for abstract nilpotent contractions alone does not prove realizability by a logarithmic translation orbit.
-- **Next action:** Formalize the arithmetic synthesis construction without accepting contractivity, orthogonality, or nilpotence as external interfaces. The four-node `L=2` instance is the minimal validation case.
+## Candidate next result: realize the nilpotent shift by actual pulse trains
 
+**Uncounted construction to audit.** For odd `q≥3`, choose spacing `a=log(q/2)`, and a train of `M+1` sufficiently narrow, disjoint smooth packets at spacing `a`. Exact overlap counting should give `h(a)/h(0)=M/(M+1)`. The arithmetic obstruction needed for isolation is `log n≠k a` for integer `n≥2` and integer `k`: positive `k` would make `n=q^k/2^k` an integer, impossible for odd `q`; negative `k` gives a value below one.
 
-## Verification evidence for contribution 1
+For any fixed chain length, the other cross lags `(j-i)log 2-log q` coincide with a train difference only when `j=i+1`. Choose packet width below the positive minimum of the finitely many forbidden distances. The proposed actual cross matrix is then `C=R[M/(M+1)]S`, where `S` is the one-step strictly upper shift, while `Γ=RI` and the required integer-log anchors vanish. A sine coefficient vector would give
 
-- Module: `formal/GaloisForLFunctions/BiScaleUncertainty/MultiChainToeplitzGramCoupling.lean`.
-- Source SHA-256: `5fae9738e06f22f6da8e9f54a3b407c7b0c96dbacc48e4debcf4fae8692fecba`.
-- `lake build --old +GaloisForLFunctions.BiScaleUncertainty.MultiChainToeplitzGramCoupling`: PASS.
-- Final `lake env lean GaloisForLFunctions/BiScaleUncertainty/MultiChainToeplitzGramCoupling.lean`: PASS, no output or warnings.
-- `#print axioms` for **all 14 theorems**, via a scratch module checked with `lake env lean`: each uses only `[propext, Classical.choice, Quot.sound]`; no added axiom, `sorryAx`, or `Lean.ofReduceBool`.
-- Umbrella import and generated API entries present; `scripts/formal_tools.py index` completed.
-- Final `scripts/formal_tools.py lint --check-generated`: PASS, with existing unrelated large-file warnings.
-- Formal scope: unconditional in displayed data; arbitrary real weights; compactly supported continuous actual tests; arbitrary real Hilbert packets. No claim that square-root refinements or the synchronized-coset sine gap are already formalized here.
+`Q=2R[1+ρ M/(M+1)] Σc_k²`,
 
+approaching the existing sine upper bound. This would settle its sharpness for actual translation autocorrelations, not merely abstract contractions. It must not be claimed before the finite-lag isolation, source construction, and sine-vector identity are verified. Global integer-grid pinning and polar/even packaging are stronger possible extensions requiring their own audits.
 
-## Robust form of the synchronized-chain sine gap (active proof)
+**Local evidence:** `RHTower.EvenSector.SmoothBlindInterpolation.train_autocorr`, `train_autocorr_zero`, and `train_autocorr_spacing` in `EvenSectorSmoothBlindInterpolationObstruction.lean` were inspected. They already prove smooth centered pulse-train overlap counts, but only for a fixed spacing and a single blind node. Their theorem does not supply the new arbitrary-spacing/full finite-grid construction. Lexical corpus search returned all 13 matching declarations in that module; the first `pulseTrain` name query had no hits, then broadening to `train autocorr` found the actual API.
 
-For arbitrary test `f`, define the within-chain matrix `Γ_ij=h((j-i)log 2)` and cross matrix `C_ij=h((j-i)log 2-log q)`. All matrix norms below are **Euclidean operator norms**, not coefficient supremum norms. Let
+## Contribution accounting and verification
 
-`δ=||Γ-RI||`, `ε=||C-strictUpper(C)||`, `ρ=cos(π/(L+1))`.
+Target: 100 significant contributions. Verified count: **2 / 100**. Programme remains active.
 
-The stronger, premise-free target is
+1. **Verified:** Gram-resolved origin leverage and exact optimized partition loss (F1–F2).
+2. **Verified:** Robust synchronized-coset sine leverage with actual arithmetic defect formulas (F3–F4). All new operator, feature, and arithmetic helpers belong to this single contribution.
 
-`||P_m+P_(qm)||² ≤ 2(1+ρ)(R+δ+ε) Σ_k c_k²`.
+Contribution 1 evidence:
 
-Complete paper argument: the strictly upper part `T` of `C` is nilpotent with exponent `L`; normalize it by its actual norm and apply the existing sharp numerical-radius theorem. Since `||T||≤||C||+ε`, one obtains `|<Cx,x>|≤[ρ||C||+(1+ρ)ε]||x||²`. Actual synthesis gives `C=B†A` and `A†A=B†B=Γ`; hence `||C||≤||A||||B||≤R+δ`. Expand the norm of the packet sum and bound both diagonal energies by `(R+δ)||c||²`. No unproved contractivity/nilpotence input occurs. When actual grid zeros hold, `δ=ε=0`, giving candidate contribution 2 exactly.
+- `MultiChainToeplitzGramCoupling.lean`, SHA-256 `5fae9738e06f22f6da8e9f54a3b407c7b0c96dbacc48e4debcf4fae8692fecba`.
+- Targeted build and final direct `lake env lean` passed; direct audit had no warnings.
+- All 14 public theorems depend only on `propext`, `Classical.choice`, `Quot.sound`.
+- Umbrella wiring, generated API, index refresh, and `scripts/formal_tools.py lint --check-generated` passed.
 
-This formula keeps grid errors explicit; it is not a replacement of the uniform sine-gap target by a weaker theorem. Its error-free specialization is the full arbitrary-length target. Formal construction and audit remain in progress; verified contribution count stays 1.
+Contribution 2 evidence:
+
+- Sources: `TriangularGramSineBound.lean` (11 public theorems) and `SynchronizedCosetSineLeverage.lean` (18 public theorems, one private integrability theorem).
+- Targeted `lake build --old +GaloisForLFunctions.BiScaleUncertainty.SynchronizedCosetSineLeverage`: PASS. Both owned leaves rebuilt successfully.
+- Final direct `lake env lean` on each owned leaf: PASS, empty output, no warnings.
+- All 29 public theorems audited via `lake env lean /tmp/bsu-synchronized-axioms.lean`: only `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx` or `Lean.ofReduceBool`.
+- Both umbrella imports and generated API entries present. `scripts/formal_tools.py index`: PASS. `scripts/formal_tools.py lint --check-generated`: PASS, with unrelated existing large-file warnings.
+- `TriangularGramSineBound.lean` SHA-256: `4ba95b34e5069843278eb980af7f627952846eacc1c2d948c0dbf4a8e2c7c8bc`.
+- `SynchronizedCosetSineLeverage.lean` SHA-256: `cc95f4f1bb9cbe18e75834237d3ad1310cd9bb46ff5cd7adf16d51f09974d658`.
+- Owned prototype scratch files removed; successful axiom-audit scratch and logs retained. No commits or numerical experiments.
+
+Full dependency-closed paper arguments and implementation state: [research card](../../drafts/pipeline/1-in-progress/bi-scale-multichain-gram-coupling-2026-10-17.md).

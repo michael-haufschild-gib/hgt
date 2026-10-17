@@ -141,7 +141,9 @@ Consequently the supremum over subpartitions equals the supremum over partitions
 - Optimal origin splitting is exact; the equal-multiplicity physical allocation need not be globally optimal.
 - The relaxed finite-dimensional extremizer need not be a globally realizable positive-definite correlation.
 - Paper proof above is complete. Lean audit status is recorded in the pipeline card; paper claims are not automatically Lean claims.
-- Next conjecture: characterize optimal physical allocations by a measurable dual potential, and decide whether fractional overlap splitting can strictly outperform every pointwise single-node assignment.
+- [CollarAllocationDuality.md](CollarAllocationDuality.md) now proves a measurable dual certificate
+  and exact global comparison remainder on paper. A zero certificate proves optimality;
+  existence of a partition with such a certificate and the role of fractional splitting remain open.
 
 ## Formal theorem scope
 

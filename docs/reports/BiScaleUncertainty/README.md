@@ -207,6 +207,10 @@ cone and the singular Lévy–sinh energy `biScaleLevyEnergy`:
   strictly positive finite real coefficient for compact-continuous sources. Physical shares use
   equal multiplicity; their global optimization remains open. Working facts and failures:
   [transport ledger](OriginCollarTransport-FACTS.md).
+- `CollarAllocationDuality.lean`: Explicit marginal prices, exact radial/directional comparison
+  remainder, aggregate-norm rigidity, and quantitative improvement under added collar capacity.
+  The continuous physical-allocation gap theorem is paper-proven; its complete Lean integration
+  remains open.
 - `DistantCopyPolarEnforcement.lean`: Distant translated-copy subtraction proving Trap 5 (exponentially
   small archimedean energy perturbation under finite-grid polar enforcement).
 

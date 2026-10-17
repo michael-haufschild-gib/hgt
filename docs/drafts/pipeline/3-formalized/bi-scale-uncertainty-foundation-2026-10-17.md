@@ -65,3 +65,84 @@
    - `RealSmoothEvenPolarTestFn.weilArchRe_ge_folded_collar_of_log_two_blind`:
      Direct specialization to smooth real EWU tests (`RealSmoothEvenPolarTestFn`).
 
+5. **Pillar V — `formal/GaloisForLFunctions/BiScaleUncertainty/CliqueSphereDualityAndExtremalTheory.lean`**
+   - `clique_sphere_quadratic_defect_identity`, `clique_sphere_weighted_sub_ge`:
+     Division-free quadratic sphere defect identity and multi-node clique sphere lower bound
+     `cliqueSphereDualityFactor s w * R ≤ ∑ i ∈ s, w_i (R - u_i)`.
+   - `clique_sphere_extremizer_norm_sq`, `clique_sphere_extremizer_achieves_bound`:
+     Exact extremal saturation on the Euclidean sphere along the ray `u_i* = (w_i / W₂) R`.
+   - `autocorr_weighted_clique_collar_ge`, `autocorr_clique_uniform_collar_sum_ge`,
+     `integral_autocorr_clique_collar_ge`:
+     Clique-Rank Amplification Law `((s.card : ℝ) - √(s.card : ℝ)) * h(0) ≤ ∑ i ∈ s, (h(0) - h(y - t_i))`
+     and multi-node clique collar integral lower bound.
+
+6. **Pillar VI — `formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicShiftCommutatorAndParityIntertwining.lean`**
+   - `sinhMultiplier_even_of_odd`, `coshMultiplier_odd_of_odd`,
+     `cosh_mul_cosh_shift_sub_sinh_mul_sinh_shift`, `sinh_shift_mul_cosh_sub_cosh_shift_mul_sinh`:
+     Odd-to-even hyperbolic parity intertwining and exact pointwise shift-addition/commutator laws.
+   - `autocorr_coshMultiplier_sub_sinhMultiplier`, `autocorr_coshMultiplier_zero_eq`,
+     `autocorr_coshMultiplier_eq_sinhMultiplier_of_zero`:
+     The Fundamental Hyperbolic Autocorrelation Intertwining Law
+     `autocorr (coshMultiplier α f) x - autocorr (sinhMultiplier α f) x = cosh(α x) * autocorr f x`
+     and zero-grid coincidence of `cosh`- and `sinh`-autocorrelations.
+   - `autocorr_coshMultiplier_sub_ge_of_zero`,
+     `autocorr_coshMultiplier_harmonic_subgrid_ge_of_nonpos`:
+     Unconditional `cosh`-increment coercivity `h(0) ≤ h_{C_α f}(0) - h_{C_α f}(x₀)` at zero nodes
+     and `h(0) / m^2 ≤ h_{C_α f}(0) - h_{C_α f}(x₀ / m)` on harmonic sub-grids.
+
+7. **Pillar VII — `formal/GaloisForLFunctions/BiScaleUncertainty/CoprimeShearAndMultiplicativeGraphUncertainty.lean`**
+   - `addDiff_mulShift_eq_sum_addDiff`, `mulShift_addShift_comm_eq_sum_addDiff`,
+     `mulJump_eq_sum_addDiff`:
+     Exact non-commutative multiplicative-additive telescoping identities.
+   - `lagrange_finset_sum_sq_sub_sq_sum`, `sq_sum_le_card_mul_sum_sq`,
+     `sum_addDiff_mulShift_sq_le`:
+     Bi-Scale Multiplicative-to-Additive Dirichlet Energy Inequality
+     `∑ n ∈ range N, (v(k(n + 1)) - v(kn))^2 ≤ k * ∑ m ∈ range (k * N), (v(m + 1) - v(m))^2`.
+   - `not_dvd_succ_of_dvd`, `addDiff_sq_eq_sq_of_dvd_support`,
+     `neighbor_addDiff_sq_eq_two_mul_sq_of_dvd_support`:
+     Coprime successor orthogonality (`gcd(n, n + 1) = 1`) and full additive neighbor coercivity on
+     divisor-supported fibers.
+   - `nodal_mulJump_sq_decomp`, `four_mul_nodal_cross_le_mulJump_sq`,
+     `four_mul_nodal_cross_le_addDiff_sum_sq`:
+     Beurling–Deny nodal decomposition `(v(kn) - v(n))^2 = (|v(kn)| - |v(n)|)^2 + 4(v⁺(kn)v⁻(n) + v⁻(kn)v⁺(n))`
+     and additive Dirichlet control of opposite-sign multiplicative cross terms.
+
+8. **Pillar VIII — `formal/GaloisForLFunctions/BiScaleUncertainty/AbstractBiScaleSystemAndSchurKreinCoupling.lean`**
+   - `inner_scaledFrameResidual_eq`, `norm_sq_scaledFrameResidual_eq`, `abstract_finset_bessel_sq_le`:
+     Division-free orthogonal-frame residual identity and Bessel inequality in any real inner
+     product space `E`.
+   - `abstract_schur_krein_residual_coupling`, `abstract_orthogonal_target_frame_inner_sq_le`:
+     Universal Multi-Node Schur–Krein Residual Coupling Inequality
+     `(R ⟪x, y⟫ - ∑ i ∈ s, ⟪e_i, x⟫ ⟪e_i, y⟫)^2 ≤ (R ‖x‖^2 - ∑ i ∈ s, ⟪e_i, x⟫^2) (R ‖y‖^2 - ∑ i ∈ s, ⟪e_i, y⟫^2)`.
+   - `autocorr_schur_krein_two_collar_coupling`, `autocorr_collar_inner_sq_le_of_zero_lag`:
+     Two-collar autocorrelation coupling across arbitrary lags and across a zero lag `h(z - y) = 0`.
+
+9. **Pillar IX — `formal/GaloisForLFunctions/BiScaleUncertainty/CosecantSecantDualDecomposition.lean`**
+   - `archLevySinhWeight_eq_half_csch_add_half_sech`, `archDualLevySinhWeight_eq_half_csch_sub_half_sech`,
+     `archLevySinhWeight_eq_sech_add_dual`:
+     Exact cosecant–secant and forward–dual decompositions
+     `e^{x/2}/sinh x = 1/cosh(x/2) + e^{-x/2}/sinh x`.
+   - `biScaleLevyEnergy_eq_secant_add_dual`, `biScaleSecantEnergy_le_biScaleLevyEnergy`,
+     `biScaleDualLevyEnergy_le_biScaleLevyEnergy`:
+     Exact positive splitting of `biScaleLevyEnergy` into the smooth secant functional and the
+     functional-equation dual Lévy–sinh functional.
+   - `autocorr_mul_archSechHalfWeight_eq_cosh_sub_sinh`:
+     Exact identity between `h_f(x) / cosh(x/2)` and the `α = 1/4` hyperbolic multiplier difference.
+
+10. **Pillar X — `formal/GaloisForLFunctions/BiScaleUncertainty/DisjointCollarCliqueDivergenceAndTuransProblem.lean`**
+    - `intervalIntegral_periodic_collar_sum_eq`, `intervalIntegral_periodic_collar_sum_eq_of_continuousOn`:
+      Exact periodic-collar tiling identities on `[t₀, t₀ + K δ]`.
+    - `integral_periodic_clique_weighted_sub_ge`, `integral_autocorr_sub_ge_of_arithmetic_zeros`:
+      Weighted periodic-clique integral bound and the Beurling–Turán Window Divergence Theorem
+      `δ ((M + 1) - √(M + 1)) h(0) ≤ ∫ x in 0..((M + 1) * δ), (h(0) - h(x))`.
+    - `integral_autocorr_le_sqrt_of_arithmetic_zeros`:
+      Universal Square-Root Cancellation Law `∫ x in 0..((M + 1) * δ), h(x) ≤ δ √(M + 1) h(0)` for
+      any positive-definite autocorrelation vanishing at `m δ` (`1 ≤ m ≤ M`).
+    - `biScaleLevyEnergy_ge_dyadic_clique_integral`:
+      Unconditional dyadic-clique lower bound `dyadicCliqueLevyConstant M * h(0) ≤ biScaleLevyEnergy f`
+      for `C²_c(ℝ)` functions vanishing at `m log 2` (`1 ≤ m ≤ M`).
+
+## Audit Status
+- **Umbrella Verification**: `lake env lean GaloisForLFunctions/BiScaleUncertainty.lean` passes with exit code `0` (all 25 modules wired).
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–X; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+

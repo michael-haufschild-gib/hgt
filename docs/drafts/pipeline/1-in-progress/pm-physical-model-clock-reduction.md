@@ -1143,3 +1143,28 @@ content of FZZ-P is the energy of approximants on `(0,δ)` as `δ → 0`, equiva
 witnesses at the origin (poles of the Mellin continuation at the mirror zeros). The dyadic decoration is
 one explicit unimodular factor on both sides, so FZZ-P is exactly Beurling's outer-function form of
 Nyman–Beurling for `Ξ(s)/s²` (`(s−1)ζ(s)/s²` outer on `Re s > 1/2`). Producer status: Wall 1 unchanged.
+
+### PM-21 (proved, Lean) — germ laws: linear mass at the origin, log-mean on the top octave
+
+Target set by the user after PM-20: "control global L² approximation at 0, equivalently all global
+witnesses' dyadic self-similarity". The germ of a witness is measured by its mass function
+`m_w(x) = ∫_0^x |w|²`. Module `RHTower/FermiNymanWitnessGermLaws.lean` (wired, axioms standard, lint clean):
+- `IsL2FermiWitness.ae_selfSimilar_iff_linearMass` (**unconditional dichotomy**): an L² witness is a.e.
+  dyadically self-similar ⟺ `m_w(x) ≤ C x` on `(0,1]`. Mechanism ⟸: under linear mass every dilation
+  average is bounded by `η⁻¹(1+η)²√C` (`norm_dilationAverage_le_of_linearMass`), hence a bounded continuous
+  witness, hence self-similar; `w_η(t/2) = w_η(t)` with the primitive form and `u ↦ u/2` gives
+  `∫_s^t (w(u/2) − w(u)) u⁻² = 0` for all `0<s<t≤1` (`setIntegral_sub_comp_half_div_sq_eq_zero`), then
+  Lebesgue differentiation (`ae_eq_zero_Ioc_of_forall_setIntegral_Ioc_eq_zero`). ⟹: `m(x/2) = m(x)/2`.
+- `riemannHypothesis_iff_forall_l2FermiWitness_linearMass`: **RH ⟺ every L² witness has at most linear
+  mass at the origin**; `riemannHypothesis_iff_forall_l2FermiWitness_dyadicMass_bounded`: RH ⟺ the dyadic
+  dilation is power-bounded on witnesses (`2^k m_w(2^{−k}) ≤ C`). Zero witness: `m = x^{2σ−1}/(2σ−1)`,
+  superlinear (`not_linearMass_powerWitness`). Also `IsL2FermiWitness.ae_selfSimilar_of_riemannHypothesis`.
+- `riemannHypothesis_iff_fermiNymanWitness_dyadicLogMean_eq_zero`: **RH ⟺ `∫_{1/2}^1 w(t)dt/t = 0` for every
+  continuous witness** — a single linear functional (the pairing with `t⁻¹1_{(1/2,1]}`, Mellin symbol
+  `B_sp(s)·√2(1−2^{−s})/s`), versus the quadratic half-mass criterion. Zero witness value
+  `(1−2^{1−ρ̄})/(ρ̄−1) ≠ 0` (`dyadicLogMean_powerWitness`).
+Meaning: the germ-control target is now stated exactly: RH ⟺ no witness carries superlinear mass at
+`0` ⟺ `sup_k ‖D^k|_W‖ < ∞` (spectral radius of the dyadic dilation on `W` is `2^{1−inf Re ρ}` over
+off-line zeros). Structural kill recorded: every inequality derivable from the witness equation alone is
+satisfied by the zero witnesses `t^{ρ̄−1}` (they solve it), so no estimate internal to `W` can force
+linear mass; the only input is the zero set of `η` (restatement core (c)). Producer status: Wall 1.

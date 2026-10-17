@@ -140,7 +140,7 @@ theorem cosh_sub_one_eq_two_mul_sinh_half_sq (α x : ℝ) :
   rw [Real.cosh_eq, Real.sinh_eq, ht2, ht1, Real.exp_add, Real.exp_add]
   have hexp : Real.exp t * Real.exp (-t) = 1 := by
     rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
-  linear_combination -hexp
+  linear_combination hexp
 
 /-- **Pointwise Pythagorean Relation Between `coshMultiplier` and `sinhMultiplier`:**
 At every point `u ∈ ℝ`, `(coshMultiplier α f u)^2 - (sinhMultiplier α f u)^2 = f(u)^2`. -/
