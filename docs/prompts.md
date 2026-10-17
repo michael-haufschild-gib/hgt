@@ -26,8 +26,6 @@ On every turn state what the proof route is you are working on. State what the h
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
 - docs/drafts/pipeline/2-fully-proven/leftovers
-- docs/drafts/pipeline/2-fully-proven/xi
-- docs/drafts/pipeline/2-fully-proven/route BAG
 - docs/drafts/pipeline/2-fully-proven/route TT
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
@@ -204,24 +202,31 @@ goal is met when RH proof is formalized.
 
 ## computations
 lets change the method and run experiments with computations.
-
-here is a runpod for you to use:
-ssh root@38.80.152.147 -p 36812 -i ~/.ssh/id_ed25519
-
 task:
 - design computations that can deliver new insights and knowledge or could simply surprise you
 - use extensively the scientific methods to design experiments and mingle-mangle experiments: docs/meta/scientific-method.md
 
-Computation rules:
+
+here is a runpod for you to use for computations if needed:
+ssh root@213.173.111.73 -p 21771 -i ~/.ssh/id_ed25519
+
+**Computation rules:**
 
 - no computations that you could also predict the result of if you would honestly try
-- use extensively the scientific methods to design experiments and mingle-mangle experiments: docs/meta/scientific-method.md - every experiment you design turn into multiple experiments using these methods
 - no hour long computations
 - optimize for multi-core
-- when an experiment has finished, download results into a folder in computations/. write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
+- when computations have finished, download results into a folder in computations/. write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are
 - document noteworthy new insights/facts in most token-efficient form for future ai agents to read in computations/results.md (short facts, no file references, no log, no diary, just the pure facts)
   
-only run computations that can suprise you and lead to new insights and ideas and approaches to solve the hard open mathematical problems we are stuck at.
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
 
 use the scientific methods to design experiments: docs/meta/scientific-method.md 
 do not run hour long computation and do not run computations whose result you could also predict by reasoning.
@@ -249,42 +254,13 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 8) use arxiv search and single word and broad searches for finding papers not directly related to the problem and see if there is anything useful in the found papers - do not search for your problem or narrow searches, prefer most receent papers (january to september 2026). example searches: "hawking", "commutator", "recurrence", "cauchy", ... - these are examples, create your own search terms. most papers will be useless, but a few will allow to bring in solutions from fields far away from your actual problem
 
-##  create new knowledge
- 
-
-
-make one significant contribution that overcomes a hard mathematical obstacle by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md into a new significant insight that enables a whole new class of solutions to at least one route. it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle which significantly moves the frontier in the proof route. 
+##  create new knowledge - one new fact
 
 On every new turn:
 
-make one significant contribution that overcomes a hard mathematical obstacle for route MC from docs/reports/rh-current-frontier-map.md.
+make one significant contribution that overcomes a hard mathematical obstacle for route PA from docs/reports/rh-current-frontier-map.md. it must overcome a hard obstacle and remove an obstruction or prop interface or hypothesis which significantly moves the frontier in the proof route and cleary moves us closer to finalizing the formal rh proof.
 
-it cannot be an improved estimate or bound, not another RH equivalence or receiver, but must structurally overcome a hard obstacle and remove an obstruction which significantly moves the frontier in the proof route.
-
-your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
-
-do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
-
-always look at the big picture, try to understand what all our research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures. web search will not deliver the solution.
-
-**Lean rules:**
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
-3. No computations
-4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave staleclean up after yourself.
-7. Optimize lean code. No raising heartbeat hacks.
-
-do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you. do not look for shortcuts - we are too far in the research, there are no more shortcuts.
-
-Goal is met when you have identified and formalized 100 significant contributions that overcome a hard mathematical obstacle as requested.
-
-## hgtl7 create new knowledge
-
-use the hgtl7 skill workflow on every turn for this open end research task:
-
-develop route HF from docs/reports/rh-current-frontier-map.md into a fully lean-formalized proof of the riemann hypothesis. 
+make one significant contribution that overcomes a hard mathematical obstacle or delivers a highly significant insight by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md your finding must contribute something of significant value directly or indirectly to routes CHMD + HF + OWU + EWU. 
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -301,17 +277,17 @@ always look at the big picture, try to understand what all our research is tryin
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
 
-Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you. 
 
-The goal is met when a proof of the Riemann Hypothesis is fully formalized in lean - unconditionally without premises. 
+docs/reports/rh-current-frontier-map.md is read only for you
 
-Use the search tool for our lean corpus, not just rg. Skip web searches and novelty checks against external research. Do not read old markdown files - only read lean code. 
-
-Never call this goal unachievable, always conjecture, learn from failures and pivot where necessary.
+do not look for shortcuts - we are too far in the research, there are no more shortcuts.
 
 
-## 75% 
-use the hgtl7 skill workflow on every turn for this open ended research task: develop a formal unconditional lean-proof that at least 75% of the zeros of the riemann zeta function are on the critical line.
+## create new knowledge - cross route towards one route
+On every new turn:
+
+make one significant contribution that overcomes a hard mathematical obstacle or delivers a highly significant insight by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md your finding must contribute something of significant value directly or indirectly to routes CHMD + HF + OWU + EWU. 
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -328,36 +304,13 @@ always look at the big picture, try to understand what all our research is tryin
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
 
-Keep a working log for yourself and do not pay too much attention what other agents are doing. 
+do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you. 
 
-The goal is met when a proof that at least 75% of the riemann zeta zeros lie on the critical line is fully formalized in lean - unconditionally without premises. 
+docs/reports/rh-current-frontier-map.md is read only for you
 
-Skip web searches and novelty check against external research. Do not read old markdown files - only read lean code. Use the search tool for our lean corpus, not just rg.
+goal is met when you have found 20 such signficant insights.
 
-## route candidatesk:
 
-develop all route candidates in docs/reports/rh-current-frontier-map.md into full routes towards a proof or falsification of the riemann hypothesis. 
-
-you are free to pick the route candidate and you are free to pivot to any route candidate whenever you want.
-
-your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
-
-do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are - we are further than literature in many parts.
-
-always look at the big picture, try to understand what all our research is trying to tell you about the nature of the problem and its possible solutions. do not blindly follow a route because it is in your training data. understand what our research is hinting at.
-
-**Lean rules:**
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
-3. No computations
-4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave staleclean up after yourself.
-7. Optimize lean code. No raising heartbeat hacks.
-
-Keep a working log for yourself and do not pay too much attention what other agents are doing. 
-
-The goal is met when a proof or falsificiation of the Riemann Hypothesis is fully formalized in lean via one of the route candidates - unconditionally without premises. 
 
 ## Remove premises
 
@@ -513,13 +466,5 @@ always look at the big picture, try to understand what all our research is tryin
 
 maintain working log for yourself. do not write lean code yet. understand why we failed so far on every route and what this teaches us about where the actual proof route must go - potentially through developing a whole new field of mathematics.
 
-**Lean rules:**
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
-3. No computations
-4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave staleclean up after yourself.
-7. Optimize lean code. No raising heartbeat hacks.
 
-Do not search the web or check for novelty or read our old markdown files. Only read the two documents provided and otherwise only research in our large lean corpus using the search tool for the lean corpus.
+

@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 13 / 100.
+Status: ACTIVE. Count verified for this goal: 14 / 100.
 
 ## User requirements
 
@@ -208,9 +208,25 @@ novelty is not claimed: user forbids external novelty research.
     preservation, not self-adjointness or quadratic-form positivity. No RH or
     positive Xi-determinant claim. The entire realization counts once.
 
+14. Exact drift-loss and backward-prime recovery law for arbitrary positive
+    Levy evolution, including infinite jump activity. Card:
+    `../3-formalized/prime-burnol-levy-drift-inverse-2026-10-17.md`.
+    Finite-cutoff inverse cancellation proves pure-jump injectivity; the full
+    kernel is precisely the initial deterministic-drift window. The entire
+    actual-prime backward graph is admitted, closability is equivalent to zero
+    drift time, and canonical closed minimum-norm recovery is constructed.
+    The literal prime-harmonic jump measure has infinite mass and a closed
+    unbounded inverse at every positive time. Fifteen targeted leaves pass;
+    136 named public axiom lists are standard; 25 signatures and 12 definitions
+    audited; all hashes, fresh objects and imports verified. Index passes.
+    Both lint modes report only foreign unwired
+    `CHMDResolventNodalCrossPositivityAndBalancedRayleighExcess` and 381 existing
+    size warnings. No own-module or generated-index failure. One structural
+    result, not separate counts for its analytic and inverse helpers.
+
 ## Working plan
 
-1. Contributions 1–13 complete. Recheck significance and exact scope before
+1. Contributions 1–14 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -267,13 +283,13 @@ reformulation or another density corollary would not meet the significance bar.
 The coefficient-companion lead was rejected: the actual theta-source operator
 already has the global normalized-Xi determinant identity. Ordinary Levy
 subordination and a static Gaussian/GNS replacement were not selected as
-standalone contributions. A stronger candidate now has a complete paper proof:
-`prime-burnol-levy-drift-inverse-2026-10-17.md`. It admits arbitrary infinite
-jump activity and identifies the exact backward prime graph: only deterministic
-drift creates an initial-window vertical fibre; pure jumps remain injective.
-The finite-jump inverse/tail argument, canonical minimum-norm recovery and
-literal infinite-prime jump example are one proposed result. Lean verification
-and final significance review remain; count is still 13/100.
+standalone contributions. The stronger drift-loss and inverse-admission
+result is now verified as contribution 14; see its formalized card above.
+
+User steering on 2026-10-17: investigate what other routes and unrelated Lean
+can provide for PA. Inspect actual source obligations, distinguish transfers
+already discharged from proposed mechanisms, and do not count another RH
+equivalence or a conditional receiver. PA cross-corpus investigation is active.
 
 Other exploratory searches compared prime-only Laplace completeness and
 generic natural boundaries. Generic density consequences, repackaging the

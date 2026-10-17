@@ -66,3 +66,17 @@ fixed admissible continuation; `|r − r_m| ≤ Cθ^m`, `r_m` has the same Höld
 
 ## Log
 - 2026-10-17 — paper proof written (steps 1–8); module 1 started.
+- 2026-10-17 — Lean modules compiled (standard axioms pending final audit), reusing the corpus Riesz
+  projection layer (`RieszProjection`, `ResolventPerturbation`):
+  `HTGeometry/FiniteRankTraceDeterminant` (finite-rank trace/det, `det(1−f)=exp(−Σtr fⁿ/n)`,
+  multiplicativity, `|tr| ≤ dim·‖X‖`, similarity invariance);
+  `HTGeometry/RieszProjectionPowerCalculus` (`aⁿP` moments, outer inverse `G_n`, nested projections,
+  idempotence from a circle, finite rank of `1−P` from `Tⁿ=F+S`, range of `1−P` in absorbing closed
+  subspaces); `HTGeometry/QuasiCompactSpectralCircle` (finite-rank Fredholm determinant ⇒ a circle
+  in the resolvent set between any two radii above `‖S‖^{1/N}`);
+  `HTGeometry/HolomorphicRieszFamily` (holomorphic Riesz projections, Kato transformation,
+  holomorphic outer trace/det); `HTGeometry/SymbolicShiftSpace` (words, periodic points, Birkhoff
+  sums, distortion, closing lemma, compactness, `periodicOrbitSum` bridge);
+  `HTGeometry/SymbolicHolderSpace` (Banach space `F_ϑ`, `ofLinear` operator builder).
+  Next: transfer operators (n-th power formula, Lasota–Yorke, perturbation, `E_N`, level spaces,
+  trace identity), main estimate, continuation, corollary.

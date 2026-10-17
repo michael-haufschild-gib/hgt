@@ -1,8 +1,8 @@
 # Positive prime-clock evolution: exact drift loss and inverse admission
 
-Status: IN PROGRESS. Candidate contribution 14; **not counted**.
-Paper proof below is complete at the mathematical level. Lean construction and
-final significance audit remain. This card does not assert a classification of
+Status: FORMALIZED. Verified contribution 14, counted once.
+Dependency-closed paper proof, targeted Lean checks, public axiom audit,
+signature audit and final significance review completed on 2026-10-17. This card does not assert a classification of
 all positive C0 semigroups from arbitrary operator data.
 
 ## Exact target
@@ -196,7 +196,7 @@ No RH, zero locations, numerical experiment or fitted covariance is used.
 Use one owned Lean process, normal heartbeat limits, no umbrella build.
 Preserve foreign changes. The frontier map remains read-only.
 
-## Formal checkpoint — candidate remains uncounted
+## Historical formal checkpoint — before final audit
 
 Targeted single-worker builds passed for:
 
@@ -236,3 +236,76 @@ their final leaf remains to check.
 No umbrella wiring, generated index, final axiom audit or lint for this candidate
 yet. These helpers are parts of one candidate, not separately counted results.
 Verified ledger remains **13/100**.
+
+## Final verification and significance — 2026-10-17
+
+All fifteen leaves passed targeted `lake --old env lean -j 1 -o ...` checks
+with empty final logs. The final concrete-prime example passed too: its
+exponent diverges, its forward evolution is injective with norm one, and its
+actual backward-prime graph is the graph of a closed unbounded inverse at
+every positive time. No full or umbrella build and no heartbeat increase.
+
+A separate /tmp import audit checked all 136 named public definitions and
+theorems. Every axiom list contains only `propext`, `Classical.choice` and
+`Quot.sound` (or a subset). A second /tmp file printed all 25 principal
+signatures and 12 defining objects. The physical Hilbert carrier, actual prime
+columns, natural measure hypotheses, graph equality, minimum-norm inverse and
+concrete infinite-prime measure were inspected; no admission, RH, positivity
+or injectivity premise was smuggled into the data. All fifteen source hashes
+matched their checked versions, all objects were fresh, and every leaf occurs
+exactly once in its theorem-area umbrella.
+
+`scripts/formal_tools.py index` exited 0. Both `lint` and
+`lint --check-generated` exited 1 solely for concurrent foreign unwired module
+`GaloisForLFunctions.RHTower.CHMDResolventNodalCrossPositivityAndBalancedRayleighExcess`,
+plus 381 existing large-file warnings. No own-module, forbidden-declaration or
+generated-index error was reported. Foreign work was preserved.
+
+The last deep novelty search covered an inventory of 61,576 Lean files and
+1,084,559 declarations, but returned partial results because its final judging
+stage produced malformed JSON; semantic completeness was not measured and
+compiler freshness was mixed. Its proposed unrelated jump-set ingredient was
+rejected. A subsequent lexical search for pure-jump injectivity returned only
+this contribution's own theorem. Direct source searches for pure jumps,
+backward-prime graphs, subordinators and drift kernels found no competing
+result beyond the previously audited source mechanisms. These are internal
+comparison checks, not a proof of external novelty or exhaustive semantic
+coverage. Direct kernel-checked Lean remains the evidence.
+
+**Counting decision:** this is one structural result. The bounded inverse of
+each cutoff cancels the full pure-jump evolution into a contractive tail that
+converges strongly to identity. That mechanism proves injectivity even when
+the cutoff inverses have no common bound. Combining it with literal drift
+support and actual-prime density admits an entire new infinite-activity
+positive evolution/recovery class and resolves its exact graph obstruction.
+The explicit prime-harmonic source proves this class is not restricted to
+bounded finite-jump generators. The analytic estimates, graph helpers and
+minimum-norm construction are not separate contributions.
+
+Limits: no classification of arbitrary positive semigroups from operator data;
+no self-adjointness, RH, bounded inverse in the infinite-prime example, or
+external publication novelty. The paper's usual equivalence with the standard
+Levy integrability parametrization is explanatory; Lean takes the finite
+control-measure data displayed above. The frontier map was never written.
+
+### Checked source fingerprints
+
+| Leaf | Lines | Named public declarations | SHA-256 |
+|---|---:|---:|---|
+| `HTGeometry/LevyLaplaceKernel` | 160 | 14 | `71e89c0f45ad076ecbd03089474852115e358526d1ed9bf1dea4da5ee408241e` |
+| `HTGeometry/LevyLaplaceExponent` | 73 | 8 | `0e46e6f5d1e21f4903b663d4d7d68aeb300fdb69cd150b9573272832cae7e875` |
+| `HTGeometry/LevyLaplaceTruncation` | 92 | 9 | `789b0bfae2a8e218930e5f6cefa3837888d2e252b82c4934d22cf2915f60c69f` |
+| `HTGeometry/LevyFiniteJumpMeasure` | 69 | 7 | `3c84538b218c8a4c1886a851d1be0558dc722d4e7354704c66952d0597a484a9` |
+| `HTGeometry/BurnolWeightedShiftKernel` | 76 | 3 | `1b1ad66445350ae618e89ea50ee9ea18e2f6f1950f50b535d09a372dcecf75d1` |
+| `HTGeometry/LevyLaplaceLimits` | 74 | 4 | `f3cb04444cd4832a5fba98257bd601eafb5fac04be1f5b7d43e6ce268e1ddd8a` |
+| `RHTower/PrimeBurnolLevySymbol` | 83 | 15 | `1c0215262d93713d10ef4fe625bc476740751ee2836e5d53b1742cb575b6d411` |
+| `RHTower/PrimeBurnolLevyEvolution` | 115 | 9 | `98e2b6d7979236196e3c581d9090e36e3219d5e859ceabc94e2e8f86e8e7427e` |
+| `RHTower/PrimeBurnolPureJumpInjectivity` | 72 | 5 | `b9153e3aef72457a1f743dd5d9e06ca347c9593ef1ca5b1b366cb5ba578be161` |
+| `RHTower/PrimeBurnolLevyInverseGraph` | 153 | 14 | `ebe4f1a6657ea7a654093f5734359fe7d029b1aa61821149aa83090334188217` |
+| `RHTower/PrimeBurnolLevyMinimumInverse` | 116 | 14 | `a9a01d70ad344885a8fac26281486f1926b49c2c2e9f3bd41f119dbed28bbda1` |
+| `RHTower/PrimeBurnolLevyPrimeAction` | 85 | 5 | `132f66589fd93e182674cc0898eeb78ff73af5d5183b67a64e4307281f30e29e` |
+| `RHTower/PrimeBurnolLevyAsymptotics` | 131 | 8 | `715130099a806c3166059a4f243239255ba838bebfce27162cfcc9d2bc100d95` |
+| `RHTower/PrimeBurnolPrimeLevyMeasure` | 104 | 11 | `4fa3050101b31f55df08f551be6f0cc40d10b74856621ea8b40cd8f275c6317e` |
+| `RHTower/PrimeBurnolPrimeLevyExample` | 110 | 10 | `ebe6a19fb41e59215d69627a20196eb51a14c3fcac8381b14768e0fb5e0e8751` |
+
+Owned temporary audit/search/build artifacts cleaned after persistence: 83 files.

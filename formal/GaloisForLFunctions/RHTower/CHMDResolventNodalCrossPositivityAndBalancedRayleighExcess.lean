@@ -76,11 +76,11 @@ theorem inner_resolvent_posGraph_and_negGraph_of_eigenvector {ν : ℝ} {v : Mas
     congrArg (fun r : SourceGraph => r.val.fst) (posGraph_sub_negGraph q).symm
   have hp : ⟪resolvent q.val.fst, (posGraph q).val.fst⟫_ℝ =
       ν * ‖(posGraph q).val.fst‖ ^ 2 := by
-    rw [hq_eig, real_inner_smul_left, real_inner_comm q.val.fst (posGraph q).val.fst,
+    rw [hq_eig, real_inner_smul_left, real_inner_comm (posGraph q).val.fst q.val.fst,
       inner_posGraph_self_fst]
   have hn : ⟪resolvent q.val.fst, (negGraph q).val.fst⟫_ℝ =
       -ν * ‖(negGraph q).val.fst‖ ^ 2 := by
-    rw [hq_eig, real_inner_smul_left, real_inner_comm q.val.fst (negGraph q).val.fst,
+    rw [hq_eig, real_inner_smul_left, real_inner_comm (negGraph q).val.fst q.val.fst,
       inner_negGraph_self_fst]
     ring
   have hp_exp : ⟪resolvent q.val.fst, (posGraph q).val.fst⟫_ℝ =
@@ -266,17 +266,16 @@ theorem neg_sq_mul_sourcePair_le_inner_resolvent_posGraph_negGraph_mul
   have hcs_p := norm_fst_pow_four_le_inner_resolvent_mul (posGraph q)
   have hcs_n := norm_fst_pow_four_le_inner_resolvent_mul (negGraph q)
   have hcs_abs := norm_fst_pow_four_le_inner_resolvent_mul (absGraph q)
-  rw [norm_absGraph_fst] at hcs_abs
   have hp_mul := mul_le_mul_of_nonneg_left hcs_p hν.le
   have hn_mul := mul_le_mul_of_nonneg_left hcs_n hν.le
   have habs_mul := mul_le_mul_of_nonneg_left hcs_abs hν.le
   have hp_eq : ν * (⟪resolvent (posGraph q).val.fst, (posGraph q).val.fst⟫_ℝ *
-      (2 * ‖(posGraph q).val.fst‖ ^ 2 + sourceEnergy (posGraph q))) =
+      (sourceEnergy (posGraph q) + 2 * ‖(posGraph q).val.fst‖ ^ 2)) =
       (ν * ‖(posGraph q).val.fst‖ ^ 2 +
         ⟪resolvent (posGraph q).val.fst, (negGraph q).val.fst⟫_ℝ) *
       (‖(posGraph q).val.fst‖ ^ 2 + ν * sourcePair (posGraph q) (negGraph q)) := by
     calc ν * (⟪resolvent (posGraph q).val.fst, (posGraph q).val.fst⟫_ℝ *
-          (2 * ‖(posGraph q).val.fst‖ ^ 2 + sourceEnergy (posGraph q)))
+          (sourceEnergy (posGraph q) + 2 * ‖(posGraph q).val.fst‖ ^ 2))
         = ⟪resolvent (posGraph q).val.fst, (posGraph q).val.fst⟫_ℝ *
             (ν * (2 * ‖(posGraph q).val.fst‖ ^ 2 + sourceEnergy (posGraph q))) := by ring
       _ = (ν * ‖(posGraph q).val.fst‖ ^ 2 +
@@ -284,12 +283,12 @@ theorem neg_sq_mul_sourcePair_le_inner_resolvent_posGraph_negGraph_mul
           (‖(posGraph q).val.fst‖ ^ 2 + ν * sourcePair (posGraph q) (negGraph q)) := by
         rw [hp_res, hp_E]
   have hn_eq : ν * (⟪resolvent (negGraph q).val.fst, (negGraph q).val.fst⟫_ℝ *
-      (2 * ‖(negGraph q).val.fst‖ ^ 2 + sourceEnergy (negGraph q))) =
+      (sourceEnergy (negGraph q) + 2 * ‖(negGraph q).val.fst‖ ^ 2)) =
       (ν * ‖(negGraph q).val.fst‖ ^ 2 +
         ⟪resolvent (posGraph q).val.fst, (negGraph q).val.fst⟫_ℝ) *
       (‖(negGraph q).val.fst‖ ^ 2 + ν * sourcePair (posGraph q) (negGraph q)) := by
     calc ν * (⟪resolvent (negGraph q).val.fst, (negGraph q).val.fst⟫_ℝ *
-          (2 * ‖(negGraph q).val.fst‖ ^ 2 + sourceEnergy (negGraph q)))
+          (sourceEnergy (negGraph q) + 2 * ‖(negGraph q).val.fst‖ ^ 2))
         = ⟪resolvent (negGraph q).val.fst, (negGraph q).val.fst⟫_ℝ *
             (ν * (2 * ‖(negGraph q).val.fst‖ ^ 2 + sourceEnergy (negGraph q))) := by ring
       _ = (ν * ‖(negGraph q).val.fst‖ ^ 2 +
@@ -297,12 +296,12 @@ theorem neg_sq_mul_sourcePair_le_inner_resolvent_posGraph_negGraph_mul
           (‖(negGraph q).val.fst‖ ^ 2 + ν * sourcePair (posGraph q) (negGraph q)) := by
         rw [hn_res, hn_E]
   have habs_eq : ν * (⟪resolvent (absGraph q).val.fst, (absGraph q).val.fst⟫_ℝ *
-      (2 * ‖(absGraph q).val.fst‖ ^ 2 + sourceEnergy (absGraph q))) =
+      (sourceEnergy (absGraph q) + 2 * ‖(absGraph q).val.fst‖ ^ 2)) =
       (ν * ‖q.val.fst‖ ^ 2 +
         4 * ⟪resolvent (posGraph q).val.fst, (negGraph q).val.fst⟫_ℝ) *
       (‖q.val.fst‖ ^ 2 + 4 * ν * sourcePair (posGraph q) (negGraph q)) := by
     calc ν * (⟪resolvent (absGraph q).val.fst, (absGraph q).val.fst⟫_ℝ *
-          (2 * ‖(absGraph q).val.fst‖ ^ 2 + sourceEnergy (absGraph q)))
+          (sourceEnergy (absGraph q) + 2 * ‖(absGraph q).val.fst‖ ^ 2))
         = ⟪resolvent (absGraph q).val.fst, (absGraph q).val.fst⟫_ℝ *
             (ν * (2 * ‖(absGraph q).val.fst‖ ^ 2 + sourceEnergy (absGraph q))) := by ring
       _ = (ν * ‖q.val.fst‖ ^ 2 +
@@ -311,7 +310,7 @@ theorem neg_sq_mul_sourcePair_le_inner_resolvent_posGraph_negGraph_mul
         rw [habs_res, habs_E]
   rw [hp_eq] at hp_mul
   rw [hn_eq] at hn_mul
-  rw [habs_eq] at habs_mul
+  rw [habs_eq, norm_absGraph_fst] at habs_mul
   exact ⟨by linarith, by linarith, by linarith⟩
 
 /-- **Unconditional Nonnegativity and Quantitative Cross-Jump Lower Bound on `⟪resolvent (posGraph q).val.fst, (negGraph q).val.fst⟫_ℝ`**:
@@ -334,7 +333,7 @@ theorem neg_sq_mul_sourcePair_le_inner_resolvent_posGraph_negGraph
       have hsum := norm_posGraph_fst_sq_add_negGraph_fst_sq q
       have hsq0 : ‖(posGraph q).val.fst‖ ^ 2 = 0 := by
         linarith [sq_nonneg ‖(posGraph q).val.fst‖, sq_nonneg ‖(negGraph q).val.fst‖]
-      exact pow_eq_zero hsq0
+      exact sq_eq_zero_iff.mp hsq0
     have hpos_fst : (posGraph q).val.fst = 0 := norm_eq_zero.mp hpos0
     have hpos_eq0 : posGraph q = 0 :=
       source_projection_injective (hpos_fst.trans (by rfl))
@@ -354,8 +353,8 @@ theorem neg_sq_mul_sourcePair_le_inner_resolvent_posGraph_negGraph
       exact mul_pos hν (add_pos_of_pos_of_nonneg hq_pos (sq_nonneg _))
     have hlhs_nn : 0 ≤ -ν ^ 2 * ‖q.val.fst‖ ^ 2 * sourcePair (posGraph q) (negGraph q) := by
       nlinarith
-    have hres_nn : 0 ≤ ⟪resolvent (posGraph q).val.fst, (negGraph q).val.fst⟫_ℝ :=
-      nonneg_of_mul_nonneg_right (hlhs_nn.trans h3) hdenom_pos
+    have hres_nn : 0 ≤ ⟪resolvent (posGraph q).val.fst, (negGraph q).val.fst⟫_ℝ := by
+      nlinarith
     have hdenom_le : ‖q.val.fst‖ ^ 2 + 4 * ν * sourcePair (posGraph q) (negGraph q) ≤
         ‖q.val.fst‖ ^ 2 := by
       nlinarith
