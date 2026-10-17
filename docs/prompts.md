@@ -256,9 +256,11 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 ##  create new knowledge - one new fact
 
+read fully and understand: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+
 On every new turn:
 
-make one significant contribution that overcomes a hard mathematical obstacle for route FZZ-P from docs/reports/rh-current-frontier-map.md. it must overcome a hard obstacle and remove an obstruction or prop interface or hypothesis which significantly moves the frontier in the proof route and cleary moves us closer to finalizing the formal rh proof.
+make one significant contribution to our BiScaleUncertainty framework and one or more proof routes from docs/reports/rh-current-frontier-map.md. it must overcome a hard obstacle and remove an obstruction or prop interface or hypothesis which significantly moves the frontier in the proof route and cleary moves us closer to finalizing the formal rh proof. be biased towards producers, but not exclusively.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -277,12 +279,12 @@ always look at the big picture, try to understand what all our research is tryin
 
 do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you. 
 
-docs/reports/rh-current-frontier-map.md is read only for you
+docs/reports/rh-current-frontier-map.md and formal/GaloisForLFunctions/BiScaleUncertainty/README.md are read only for you
 
-do not look for shortcuts - we are too far in the research, there are no more shortcuts.
-
+goal is met when RH is proven unconditionally in lean.
 
 ## create new knowledge - cross route towards one route
+
 On every new turn:
 
 make one significant contribution that overcomes a hard mathematical obstacle or delivers a highly significant insight by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md your finding must contribute something of significant value directly or indirectly to routes TT, LA, TH, HCF, HJ. 
@@ -468,14 +470,14 @@ maintain working log for yourself. do not write lean code yet. understand why we
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+do not use the hgtl7 skill. do not focus on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field and traps to consider: formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
 
 On every new turn:
 
 make one significant contribution to your research topic. a contribution is significant if it does at least one of the following:
 - overcomes a mathematical obstacle in the field
 - delivers new valuable insights into the nature of the field
-- discharges a hypotheses, prop interface relevant to the field
+- develops a mathematical tool that helps to overcome a significant mathematical obstacle in our hard "walls" docs/reports/walls-ledger.md
 - delivers a new proven fact that answers questions arising from the nature of the field and its underlying motivation
 - broadens or sharpens the mathematical toolset of the field to be able to answer new questions, provide solutions otherwise not possible, or even ask new questions
 - closes gaps to turn the field as whole into a true new field of mathematics by established standards in the mathematical community
@@ -494,13 +496,13 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BiScaleUncertainty/
+8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BezoutValuationIncidence
 
 Goal is met when you have made 100 signifcant contributions to the new field of mathematics.
 
-Keep a knowledge ledger for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
+Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 
-formal/GaloisForLFunctions/BiScaleUncertainty/README.md is read-only for you.
+formal/GaloisForLFunctions/BezoutValuationIncidence/README.md is read-only for you
 
 use the search tool for our lean corpus, not just rg or grep.
 
@@ -512,7 +514,10 @@ Your topic of research:
 
 do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 
-make significant contributions to develop and advance this new field of mathematics to a state where it provides all mathematical tools needed to fully destroy, shatter, and overcome wall 1 in docs/reports/walls-ledger.md
+on every turn:
+
+pick one wall except wall 1 from docs/reports/walls-ledger.md
+then make significant contributions to develop and advance the BiScaleUncertainty field of mathematics that it can provide the mathematical tools needed to fully destroy, shatter, and overcome the wall you have picked 
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -528,11 +533,14 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Lean code relevant for the field itself goes into formal/GaloisForLFunctions/BiScaleUncertainty/
-
-formal/GaloisForLFunctions/BiScaleUncertainty/README.md is read-only for you.
+8. Lean code relevant for the field itself goes into formal/GaloisForLFunctions/BiScaleUncertainty/ otherwise use RHTower or HTGeometry as usual
 
 use the search tool for our lean corpus, not just rg or grep.
+
+formal/GaloisForLFunctions/BiScaleUncertainty/README.md and the wall-ledger are read-only for you.
+
+the goal is met when all walls 2 to 15 are demolished and no longer a mathematical obstacle.
+
 
 ## 6. Canonical Open Problems & Guide for Future Research Agents
 

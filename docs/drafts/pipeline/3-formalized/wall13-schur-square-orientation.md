@@ -1,8 +1,8 @@
 # Wall 13: Schur-square transfer and signed reconstruction
 
 - **ID:** BSU-W13-SSO
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; dependency-closed paper proof recorded below
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean); C1 and the exact positive survivor of falsified C2
 - **Scope:** BiScaleUncertainty, Wall 13 (cone mismatch). No RH work.
 - **Goal:** Identify precisely what information a pointwise-positive Bochner transfer loses, and construct its signed recovery within an actual compact-source family.
 
@@ -33,7 +33,7 @@ evidence, not proof certification.
 
 Let h(x)=integral f(u)f(u+x)du and R=h(0), for a compact continuous real source.
 
-**C1: the square profile preserves the Bochner cone and every zero. PROVED ON PAPER.**
+**C1: the square profile preserves the Bochner cone and every zero. PROVED IN LEAN.**
 Set F_x(u,v)=f(u+x)f(v+x). Product integration gives
 integral F_x F_y=h(y-x)^2. Therefore every finite Gram quadratic form of h^2
 is the integral of a literal square. Also h(x)^2=0 iff h(x)=0. This is the
@@ -50,7 +50,7 @@ Both summands are nonnegative since |h(x)|<=R. Integration against the positive
 Lévy-sinh weight gives an exact extended-energy decomposition, without an
 integrability premise or subtraction of infinities. This is the positive survivor.
 
-**C2: squared data determine signed polar balance. FALSE ON PAPER.**
+**C2: squared data determine signed polar balance. FALSIFIED IN LEAN.**
 Choose a positive correlation support radius D from compactness and T=2D+1.
 For g_a(u)=f(u)-a f(u-T), k(a)=a/(1+a^2), and H=h/R (division interpreted
 as zero for the zero source), the existing exact copy formula gives
@@ -89,7 +89,34 @@ polar neutrality. Smoothness and compact support are preserved by the explicit c
 - **Boundary:** arbitrary sources may have many independent correlation components. This does not prove any blind-source lower bound or close Wall 13.
 - **Representation boundary:** the square has a literal source on the product plane with diagonal translations. No scalar one-dimensional factorization or decomposition into individually blind fibres is asserted.
 - **Paper status:** proofs above use only compact integrability, existing copy identities, and polynomial identities.
-- **Lean status:** pending.
+- **Lean status:** all exact positive survivors and the smooth counterexample formalized and axiom-audited. See the exported results and verification below.
+- **Failed-route record:** [square-only polar recovery](../5-failed/wall13-square-only-polar-recovery.md).
+
+## Exported results and verification
+
+All declarations are under `GaloisForLFunctions.BiScaleUncertainty`.
+
+| Leaf | Main exported results | Public declarations |
+|---|---|---:|
+| `SchurSquareCorrelation` | `SchurSquare.integral_tensorPacket_sq`, `gram_nonneg`, `levyEnergy_add_quarticDefect`, `levyEnergy_le` | 17 |
+| `SeparatedCopySquareClassification` | `SeparatedSquare.square_profiles_eq_iff`, `profiles_eq_iff`, `correlation_reconstruction` | 17 |
+| `SchurSquarePolarAmbiguity` | `SeparatedSquare.exists_smooth_same_square_distinct_polar`, `polarMoment_not_factor_through_square`, `exists_smooth_same_zeros_distinct_polar` | 3 |
+
+The 37 public declarations comprise 29 theorems and eight concrete definitions.
+All theorem signatures and definition bodies were inspected. The counterexample
+is existential with no premises; the family results quantify over actual compact
+continuous sources and cover zero mass. No supplied positivity, factorization,
+integrability, or desired-conclusion certificate occurs in their statements.
+
+- Each leaf passed `lake --old env lean -j 1 <leaf> -o <its normal .olean>` from `formal/`, serially, with empty logs. The capstone also passed a final direct `lake --old env lean -j 1 GaloisForLFunctions/BiScaleUncertainty/SchurSquarePolarAmbiguity.lean` with empty output.
+- `/tmp/bsu_wall13_axioms.lean` printed axioms for every public declaration, all 29 theorem signatures, and all eight definitions. Only `propext`, `Classical.choice`, and `Quot.sound` occurred. Exit 0, no warnings; log `/tmp/bsu-wall13-axioms-r2.log`.
+- Installed-toolchain API probes passed. No heartbeat changes, numerical experiments, axioms, placeholders, or full/umbrella builds.
+- Exactly one umbrella import per new leaf; corresponding compiled outputs newer than sources. Hash/freshness manifest: `/tmp/bsu-wall13-verified-manifest.json`.
+- `scripts/formal_tools.py index` passed and refreshed generated indexes. A subsequent documented lexical corpus search returned `polarMoment_not_factor_through_square` from the correct leaf; `/tmp/bsu-wall13-discoverability.json`.
+- **Repository lint did not pass:** exit 1, exactly one error, `owned module unreachable from theorem-area umbrella GaloisForLFunctions.BiScaleUncertainty: GaloisForLFunctions.BiScaleUncertainty.FactorialWeilGram`. This concurrent module is outside this package. The other 381 messages concern large files. No lint error names these three leaves. Log: `/tmp/bsu-wall13-lint.log`.
+- Read-only field README and walls ledger matched their starting SHA-256 values. Scoped whitespace check passed.
+
+These checks certify the stated package, not Wall 13 or the full research goal.
 
 ## Next conjecture from the obstruction (unproved)
 
@@ -115,10 +142,11 @@ which is not independent evidence. Semantic coverage remains unmeasured.
 
 - [x] Corpus audit and concrete wall-specific mechanism.
 - [x] Dependency-closed paper proof.
-- [ ] Exact theorem package formalized and axiom-audited.
-- [ ] Leaf checks, wiring, index and lint inspected.
-- [ ] Record next conjecture and remaining full-goal scope.
+- [x] Exact theorem package formalized and axiom-audited.
+- [x] Leaf checks, wiring, index and lint inspected; global lint failure recorded above.
+- [x] Record next conjecture and remaining full-goal scope.
 
 ## Log
 
 - 2026-10-18 — New active wall-specific task. Prior paused/cleared contribution-count programs are not revived. Full goal remains walls 2–15; this package is not completion.
+- 2026-10-18 — Three leaves formalized, wired and audited; square-only polar recovery retired with its exact positive survivor. Wall 13 remains open. C3 is the next unproved conjecture.

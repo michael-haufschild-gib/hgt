@@ -48,8 +48,10 @@ so D/N tends to +infinity and eventually D>=N>0. Complete the square, retaining 
 
 The error E_n²/(2N) tends to zero. This bound is uniform in both real coefficients and assumes no positivity of A. The exact minimum in d is c²(A-M²/(4D)), attained at d=-cM/(2D).
 
-All inequalities above follow from the displayed source bounds and elementary real algebra; Lean verification remains pending. This does not prove positivity of A, positivity of the span, or RH. The pure-ramp sign is the remaining arithmetic obstacle for this span.
+All inequalities above follow from the displayed source bounds and elementary real algebra; Lean verification remains pending. This does not prove positivity of A, positivity of the span, or RH. The exact remaining condition for this span is the sign of A-M²/(4D); the unconditional bound isolates a sufficient ramp margin of order log²(N)/N². Positivity of A alone, without a margin, is not enough.
 
 ## Status
 
-Paper proof complete. No new Lean module written yet. Prior turn classified as progress: three verified coercivity modules and eighteen audited public theorems. No active Lean process at start of this card. No external novelty claim or numerical experiment.
+Paper proof complete. Draft modules: `FactorialWeilGram.lean`, `FactorialWeilMixedDecay.lean`, `FactorialTentWeilCoercivity.lean`, `FactorialWeilGramDecoupling.lean`. The final uniform lower bound uses the simpler explicit error bound `(36 log N + 26 log 5 + 14 + 2 log 1000000)/sqrt N`; its square divided by `2N` tends to zero. API probe passed after correcting two root-namespace names. `FactorialWeilGram.lean` passed its direct check in session `41982`; its final log is `/tmp/bsu-FactorialWeilGram.log`. Mixed-decay draft errors concerned a numeral cast, topology notation scope, and the squeeze-lemma argument name; the latter was resolved against the actual mathlib source. Remaining three sequential leaf checks run in tool session `15301`; revalidate before launching another Lean process. These three remain unverified until their direct checks pass. Axiom audit for all seventeen public endpoints is prepared in `/tmp/biscale_weil_gram_axioms.lean`, not yet run.
+
+Prior turn classified as progress: three verified coercivity modules and eighteen audited public theorems. No external novelty claim or numerical experiment.

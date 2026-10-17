@@ -1,4 +1,5 @@
 import GaloisForLFunctions.BiScaleUncertainty.FactorialWeilCoercivity
+import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarSourceCertificate
 
 /-! The literal full Weil form on the entire factorial ramp–tent span. -/
 
@@ -47,8 +48,10 @@ theorem factorialSource_combination_autocorr (n : ℕ) (c d x : ℝ) :
         (c*factorialSourceLeft n (u+x)+d*factorialSourceRight n (u+x)) = _
       ring
     _ = _ := by
-      rw [integral_add ((hLL.const_mul _).add (hRR.const_mul _)) ((hLR.add hRL).const_mul _),
-        integral_add (hLL.const_mul _) (hRR.const_mul _)]
+      have hadd := integral_add ((hLL.const_mul (c^2)).add (hRR.const_mul (d^2))) ((hLR.add hRL).const_mul (c*d))
+      simp only [Pi.add_apply] at hadd
+      rw [hadd,
+        integral_add (hLL.const_mul (c^2)) (hRR.const_mul (d^2))]
       simp only [integral_const_mul]
       rw [integral_add hLR hRL, factorialSource_mixed_forward, factorialSource_mixed_reverse,
         ← factorialSourceContrast_eq]
@@ -73,14 +76,17 @@ private theorem combination_pairing (n : ℕ) (c d : ℝ) :
         c*d*primeTerm (factorialSourceContrast n) j := by
     funext j
     unfold primeTerm
-    split_ifs <;> simp only [factorialSource_combination_autocorr] <;> ring
+    split_ifs
+    · rw [factorialSource_combination_autocorr]
+      ring
+    · ring
   have hs : (∑' j, primeTerm (autocorr (c • factorialSourceLeft n+d • factorialSourceRight n)) j) =
       c^2*(∑' j, primeTerm (autocorr (factorialSourceLeft n)) j)+
       d^2*(∑' j, primeTerm (autocorr (factorialSourceRight n)) j)+
       c*d*(∑' j, primeTerm (factorialSourceContrast n) j) := by
-    rw [hp, Summable.tsum_add ((hLs.of_abs.mul_left _).add (hRs.of_abs.mul_left _))
-        (hCs.of_abs.mul_left _),
-      Summable.tsum_add (hLs.of_abs.mul_left _) (hRs.of_abs.mul_left _)]
+    rw [hp, Summable.tsum_add ((hLs.of_abs.mul_left (c^2)).add (hRs.of_abs.mul_left (d^2)))
+        (hCs.of_abs.mul_left (c*d)),
+      Summable.tsum_add (hLs.of_abs.mul_left (c^2)) (hRs.of_abs.mul_left (d^2))]
     simp only [tsum_mul_left]
   have hi : (∫ x in Ici (0 : ℝ), polarDensity x*
         autocorr (c • factorialSourceLeft n+d • factorialSourceRight n) x) =
@@ -95,8 +101,10 @@ private theorem combination_pairing (n : ℕ) (c d : ℝ) :
       funext x
       rw [factorialSource_combination_autocorr]
       ring
-    rw [he, integral_add ((hLi.const_mul _).add (hRi.const_mul _)) (hCi.const_mul _),
-      integral_add (hLi.const_mul _) (hRi.const_mul _)]
+    have hadd := integral_add ((hLi.const_mul (c^2)).add (hRi.const_mul (d^2))) (hCi.const_mul (c*d))
+    simp only [Pi.add_apply] at hadd
+    rw [he, hadd,
+      integral_add (hLi.const_mul (c^2)) (hRi.const_mul (d^2))]
     simp only [integral_const_mul]
   unfold fullPairing
   rw [hs, hi]
@@ -116,12 +124,13 @@ private theorem combination_jump (n : ℕ) (c d : ℝ) :
       contrast_zero, factorialSourceContrast_eq_of_nonneg n hx.le]
     ring
   unfold biScaleLevyEnergy
-  rw [integral_congr_ae he,
-    integral_sub (((factorialSourceLeft_jump_integrable n).const_mul _).add
-      ((factorialSourceRight_jump_integrable n).const_mul _))
-      ((integrableOn_sourceFactorialCausal_archWeight n).const_mul _),
-    integral_add ((factorialSourceLeft_jump_integrable n).const_mul _)
-      ((factorialSourceRight_jump_integrable n).const_mul _)]
+  have hsub := integral_sub (((factorialSourceLeft_jump_integrable n).const_mul (c^2)).add
+      ((factorialSourceRight_jump_integrable n).const_mul (d^2)))
+      ((integrableOn_sourceFactorialCausal_archWeight n).const_mul (c*d))
+  simp only [Pi.add_apply] at hsub
+  rw [integral_congr_ae he, hsub,
+    integral_add ((factorialSourceLeft_jump_integrable n).const_mul (c^2))
+      ((factorialSourceRight_jump_integrable n).const_mul (d^2))]
   simp only [integral_const_mul]
 
 theorem factorialSpanWeil_eq_complete (n : ℕ) (c d : ℝ) :
