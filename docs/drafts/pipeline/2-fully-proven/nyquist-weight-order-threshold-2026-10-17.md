@@ -83,12 +83,13 @@ source is not a resolution of that remaining uniform-control problem.
 4. Formalize the complete connected theorem in direct Lean leaves, one process at a time.
 5. Audit all declarations, axioms, API entries, imports and lint; update the ledger only then.
 
-Twelve direct leaves pass and are wired: `NyquistWeightJets`,
+Thirteen direct leaves pass and are wired: `NyquistWeightJets`,
 `NyquistWeightTaylorRemainder`, `NyquistWeightCells`,
 `NyquistWeightCellAsymptotic`, `NyquistPowerTails`,
 `NyquistPositiveTailComparison`, `NyquistWeightKernel`,
 `NyquistWeightTailMass`, `NyquistWeightOperator`, and
-`NyquistWideSourceEnergy`, `NyquistPositivePrefixComparison`, and `NyquistPrefixScales`.
+`NyquistWideSourceEnergy`, `NyquistPositivePrefixComparison`, `NyquistPrefixScales`,
+and `NyquistWeightPrefixMass`.
 All final logs are clean except two informational
 `ring` suggestions in `NyquistWeightCellAsymptotic` (no errors or warnings).
 
@@ -107,8 +108,9 @@ Remaining proof organization:
   passes with a clean log. `NyquistPrefixScales` also passes its final direct
   check with a clean log. It proves the
   explicit power-increment limit, exact telescoping sums, and both normalized
-  reference-prefix limits. `NyquistWeightPrefixMass` composes these results in
-  a draft awaiting its direct check.
+  reference-prefix limits. `NyquistWeightPrefixMass` also passes its final
+  direct check with a clean log: critical and supercritical sharp prefix
+  constants are verified for every fixed starting cell.
 - Exact signed cell moments and compact-input producer decomposition, absolute
   cell summation, and the uniform-convergence equivalence.
 - Actual-source norm sharpness and supercritical divergence under every
@@ -125,7 +127,8 @@ divergence at/above threshold), and `NyquistWeightCalibrations` (minimum degree,
 arbitrary actual signed source error, equality with the original polar producer,
 and all three calibration constants). The producer API probe's unused nonexistent
 `HasSum.congr` and `Real.rpow_neg_one_half` were removed; the latter is replaced
-by `Real.rpow_neg` and `Real.sqrt_eq_rpow`. The remaining names are being checked together.
+by `Real.rpow_neg` and `Real.sqrt_eq_rpow`. The complete corrected producer names
+probe now exits 0; every remaining signature was inspected.
 
 Trap 10 alignment: these are explicit unconditional Nyquist-cell producers.
 The beta=1/2, degree-zero calibration must identify the existing

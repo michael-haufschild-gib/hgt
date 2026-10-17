@@ -2,7 +2,7 @@
 
 ## Counting rule
 
-Target: 100 substantive, independently justified contributions. Verified packages: 10.
+Target: 100 substantive, independently justified contributions. Verified packages: 11.
 Helpers, equivalent restatements, and classical partial summation do not count separately.
 
 Field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read
@@ -541,7 +541,7 @@ actual domain admission, and both contrast L² bounds. No analytic/arithmetic
 interface or unproved discrepancy bound remains in its hypotheses.
 The family is a signed difference of autocorrelations, not a positivity result
 or a bound on arbitrary signed packets. Source origin energy is distinct from
-archimedean jump energy; the latter remains a quantitative frontier.
+archimedean jump energy; contribution 11 below closes that latter cost for this family.
 
 Thirteen final direct leaf checks pass with empty logs: ExponentialTentMoments,
 ExponentialTentSourceEnergy, SignedPrimePolarSourceParameters,
@@ -567,6 +567,59 @@ RightNodeCollarPartition, and RoutePMVarianceToWitnessSynthesisAndCriticalStripB
 No package-local error is reported (`/tmp/spp10-lint.log`). No full or umbrella
 build, computation experiment, commit, or push was performed. README was not edited.
 
+## Contribution 11: actual jump-energy growth with signed cancellation
+
+Paper: `SignedPrimePolarFactorialArchimedeanCost.md`. The numeric-index-only
+endpoint is `SignedPrimePolar.factorialSourceArchimedean_certificate` in
+`SignedPrimePolarSourceArchimedeanCertificate.lean:97`.
+For N=n+1, set r=sqrt(N), L=log(4N+1), Q=10^6 N^5,
+B=[6L+7+2log Q]/r and
+U=2r[6+32(log(6Q)+π)+60(log(24000N)+π)]. Both actual balanced sources belong
+to the literal jump-energy domain and satisfy
+
+6exp(−1/2)r log N−B ≤ E(P_N), E(M_N) ≤ U,
+E(P_N)−E(M_N)=−2∫H_Nw,   |E(P_N)−E(M_N)|≤2B.
+
+Each normalized energy is at least
+(3/23)exp(−1/2)log N−[41+2log(10^6)]/6.
+Thus the constructed pair has growing normalized jump cost despite its small
+signed contrast. This does not claim every source factorization has that cost.
+Explicit Lipschitz/L¹ estimates admit the nonsmooth sources; the narrow factor
+forces the lower bound, and exact quadratic identities preserve the mixed terms.
+The generic admission and classical log-tail ingredients count only within this
+single actual-source package. No unproved Chebyshev interface or pre-floor
+counterterm enters the endpoint.
+
+Nine direct leaf checks passed: CompactProfileLipschitz,
+CompactLipschitzLevyEnergy, SignedPrimePolarTentRegularity,
+SignedPrimePolarRampRegularity, SignedPrimePolarSourceJumpDomain,
+SignedPrimePolarSourceJumpUpper, SignedPrimePolarTentJumpLower,
+SignedPrimePolarCausalJumpBounds, SignedPrimePolarSourceArchimedeanCertificate.
+Eight final logs are empty; the tent regularity log has an informational ring
+suggestion and no error. Eleven scratch axiom audits use only propext,
+Classical.choice and Quot.sound. All nine source hashes match the recorded
+verified versions and each import is wired once. Index refresh passed and lists
+the endpoint. Evidence: `/tmp/spp11-final-manifest.json`, `/tmp/spp11-*.log`,
+`/tmp/spp11_final_axioms.lean`. API scratch files were removed; final evidence
+remains. No full/umbrella build, numerical experiment, commit or push. README
+was not edited.
+
+Global lint exits 1 for 22 unrelated concurrent unwired modules:
+CoherentFiberPlasticInfimum, CollarEndpointTailMass, CollarMeshBounds,
+ConcentratedCollarExtension, ConcentratedCollarPenalty, ConcentratedCollarRetraction,
+LogarithmicArrayRadialComparison, NyquistWeightCalibrations, NyquistWeightPrefixMass,
+NyquistWeightProducer, NyquistWideResidualEscape, NyquistWideResidualLimit,
+OutwardCoherentEscape, PhysicalBoxAffineRegularity, PhysicalBoxAverage,
+PhysicalBoxGraphControl, PhysicalBoxProfile, PhysicalBoxVariance,
+PhysicalTranslationContinuity, SharpCollarAsymptotics, SharpCollarCutoffComparison,
+WindowEnergyArithmeticQuadrature. No package-local error is reported.
+
+The increment search reports partial=false/errors=[] and a complete inventory,
+with predominantly pending/source-only compiler metadata and deferred refresh.
+The inspected C² and local-Lipschitz existence results do not supply the actual
+numeric endpoint. This audit supports local reuse decisions, not an external
+novelty or absence claim.
+
 ## Failure boundaries and remaining frontier
 
 - Scalar support stabilization does not establish packet-energy stabilization:
@@ -585,19 +638,21 @@ build, computation experiment, commit, or push was performed. README was not edi
   the fixed-coefficient loss, not the residual itself. Multiple-collar compensation
   remains parked in `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`.
   Trap 10 prioritizes explicit unconditional producers over further receivers.
-- Contributions 8–10 give explicit unconditional scalar producers and actual
-  compact source admission with nonvanishing contrast size. They do not discharge
+- Contributions 8–11 give explicit unconditional scalar producers, actual compact
+  source admission, nonvanishing contrast size and quantitative jump costs. They do not discharge
   arbitrary-correlation packet control. The source-factorization card is now
   `3-formalized/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
+  The jump-energy card is now
+  `3-formalized/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
   Next uncounted question:
-  `1-in-progress/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
-  Quantify the literal jump energies of the balanced sources and their signed
-  difference. Existing linear/logarithmic tail and parallelogram estimates require
-  C² sources, whereas these explicit ramps and tents are only continuous.
-  Actual increment bounds and integrability must be established.
-  The new factorization search is partial with a disconnected semantic worker;
-  lexical fallbacks and inspected declarations establish this interface mismatch,
-  not an absence theorem or external novelty. Their detailed coverage is in the card.
+  `0-backlog/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
+  Investigate actual signed packet energy localized to the support of reflected
+  balanced sources. The finite j≤K cap must be retained unless its redundancy
+  is proved in the precise collar. Global packet stabilization remains unproved.
+  Two new audits report partial=false/errors=[], full inventories, unmeasured
+  semantic completeness, predominantly pending/stale compiler metadata and
+  deferred refresh. Relevant factorial grid and mixed-support statements were
+  inspected; no complete local packet endpoint or external novelty is inferred.
 - The prior multiple-collar search returned finite discrete Gram precedents, not
   that mixed construction.
   Both searches report partial=false and errors=[]; semantic coverage is unmeasured,

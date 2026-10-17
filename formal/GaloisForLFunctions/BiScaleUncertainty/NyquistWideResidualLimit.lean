@@ -55,7 +55,8 @@ theorem tendsto_nyquistWideResidual_subcritical {β : ℝ} (hβ : 0 ≤ β) (m N
     (Eventually.of_forall fun x => by
       simpa only [one_mul] using
         (tendsto_nyquistWideCorrelation x).mul_const (nyquistWeightKernel β m N x))
-  simpa only [nyquistWideResidual, integral_nyquistWeightKernel hβ m N hlt] using ht
+  unfold nyquistWideResidual
+  simpa only [integral_nyquistWeightKernel hβ m N hlt] using ht
 
 theorem exists_nyquistWideResidual_near_norm {β ε C : ℝ} (hβ : 0 ≤ β) (m N : ℕ)
     (hlt : β < (m : ℝ) + 1) (hε : 0 < ε) (hC : C < nyquistWeightTailMass β m N) :

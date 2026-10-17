@@ -749,7 +749,71 @@
       Critical-line ($\beta = 1/2$) Nyquist Taylor cell mass producer bounds at orders $m = 0$ and
       $m = 1$, plus cumulative finite-horizon inverse-square bound.
 
-## Audit Status
-- **Module Verification**: All 37 Pillars (`DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`, `FoldFreeLogMobiusAndPlancherelCausalProducer.lean`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`, `SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXVII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+38. **Pillar XXXVIII — `formal/GaloisForLFunctions/BiScaleUncertainty/FactorialSourceWeilContrastAndDivisorResponseProducer.lean`**
+    - `divisorSampledCausalResponse`, `divisorSampledCausalResponse_eq_floorSummatory`,
+      `divisorSampledCausalResponse_eq_fullPairing_factorialLift`,
+      `divisorSampledCausalResponse_eq_pairing_factorialLift`,
+      `divisorSampledCausalResponse_bounds`:
+      Divisor-sampled causal response at integer scale $1 \le K \le N+2$, its cutoff invariance and
+      equality with `fullPairing (factorialLift K)`, and the unconditional $K\log K$-free linear
+      channel $-2K \le \operatorname{divisorSampledCausalResponse}(N, K) \le -K + 2\log(K+1) + 2$.
+    - `divisorSampledCausalResponse_biNull_eq`, `abs_divisorSampledCausalResponse_biNull_le`,
+      `sq_pairing_le_laplaceEnergyProducerBound_mul`, `abs_pairing_le_sqrt_laplaceEnergyProducerBound`:
+      Exact $(1, -4, 4)$ dyadic bi-null cancellation of the divisor-sampled causal response down to
+      $|R_N^{\mathrm{div}}(4K) - 4 R_N^{\mathrm{div}}(2K) + 4 R_N^{\mathrm{div}}(K)| \le 10\log(4K+1) + 3$,
+      and prime-free gauge Sobolev dual-norm producer bounds.
+    - `RealWeilTestFn.fullPairing_autocorr_eq_pairing`,
+      `RealWeilTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_fullPairing`,
+      `RealWeilTestFn.re_weilFullFunctional_contrast_of_autocorr_zero_eq`,
+      `fullPairing_autocorr_factorialSource_contrast_eq`,
+      `pairing_autocorr_factorialSource_contrast_eq`,
+      `abs_fullPairing_factorialSourceProducer_div_autocorr_zero_le`,
+      `factorialSource_contrast_and_divisorResponse_master`:
+      Cutoff-free half-line `weilFullFunctional Λ` identity, equal-origin contrast cancellation, and
+      $O(\log(n+1)/(n+1))$ normalized prime–polar contrast ratio on `factorialSourcePlus n` /
+      `factorialSourceMinus n`.
 
+39. **Pillar XXXIX — `formal/GaloisForLFunctions/BiScaleUncertainty/OddProfileCollarDominanceAndUnimodalPrimeWindowProducer.lean`**
+    - `chebyshevDiscrepancy_bounds_of_nonneg`, `abs_chebyshevDiscrepancy_le_of_nonneg`,
+      `abs_kernelDeriv_mul_chebyshevDiscrepancy_le_of_nonneg`,
+      `integrableOn_kernelDeriv_mul_chebyshevDiscrepancy`,
+      `integral_Ioi_kernelDeriv_mul_chebyshevDiscrepancy_split`:
+      Unconditional pointwise channel $-2e^{s/2} \le \Delta(s) \le (2\log 4 + 14)e^{s/2}$, half-line
+      integrability of `kernelDeriv y s * chebyshevDiscrepancy s`, and exact finite-window +
+      exponential-tail split at any cutoff $L \ge 0$.
+    - `phiDoobCollarSumSq_nonneg`, `primeCrossing_oddPolarWeight_nonneg`,
+      `integral_oddProfileCollarDiffSq_nonneg`, `oddProfileCollar_and_primeCrossing_le_mixed`,
+      `oddProfileShiftJump_add_collarMixed_eq_two_Ioi_add_primeCrossing`,
+      `oddProfileShiftJump_add_collarMixed_nonneg`:
+      Individual dominance of both `oddProfileCollarDiffSq` and `primeCrossing (oddPolarWeight a w) d`
+      by the ground-state collar mixed integral `oddProfileCollarMixed`, and strict non-negativity
+      of the collar-completed $m_a$-Doob shift jump for secondary odd profiles $f = m_a w$.
+    - `neg_sameSideCross_le_oppositeSideBonus_sub`,
+      `neg_sum_sameSideCross_le_sum_oppositeSideBonus_sub`,
+      `levy_abs_add_bonus_sub_sum_sameSideCross_le_sourceEnergy_of_antitoneOn`:
+      Unimodal low-prime window producer lower bound on `sourceEnergy` for one-signed odd tests with
+      antitone Doob tail.
+
+40. **Pillar XL — `formal/GaloisForLFunctions/BiScaleUncertainty/NodalLobeEnergyAndDyadicDilationDefectProducer.lean`**
+    - `posGraph_five_term_jump_le_potential_of_eigenvector`,
+      `negGraph_five_term_jump_le_potential_of_eigenvector`,
+      `sum_nodalLobe_five_term_jump_le_potential_of_eigenvector`:
+      Unconditional $(1 + \operatorname{thetaGroundPotentialBound})$ upper bounds on the five-term
+      positive-lobe, negative-lobe, and summed two-lobe jump energies for any `resolvent` eigenvector.
+    - `two_inner_primeShift_posGraph_negGraph_le_sum_primeGenerator`,
+      `neg_two_inner_fullGroundEquiv_posGraph_negGraph_lt_sum_stationaryEnergy_of_ne_zero`,
+      `neg_two_sourcePair_posGraph_negGraph_lt_sum_nodalLobe_jump_of_ne_zero`:
+      Dominance of twice the prime-shift cross-lobe coupling by the sum of lobe prime Dirichlet
+      energies, and strict dominance of twice the stationary and total cross-jump penalties by the
+      sum of the two nodal-lobe jump energies for every non-zero `p : SourceGraph`.
+    - `dyadic_physicalDilation_trace_defect`,
+      `dyadic_physicalDilation_trace_energy_le_and_eq_iff`,
+      `rightNode_collar_mesh_and_coefficient_decomposition`,
+      `chmd_four_tools_biScale_producer_master`:
+      Dyadic ($m = 2$) dilation trace defect on `Velocity`, right-node collar mesh width
+      $((k+1)y \le 1)$ and radial-penalty decomposition, and master synthesis of all four CHMD
+      producer tools.
+
+## Audit Status
+- **Module Verification**: All 40 Pillars (`NodalLobeEnergyAndDyadicDilationDefectProducer.lean`, `OddProfileCollarDominanceAndUnimodalPrimeWindowProducer.lean`, `FactorialSourceWeilContrastAndDivisorResponseProducer.lean`, `DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`, `FoldFreeLogMobiusAndPlancherelCausalProducer.lean`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`, `SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XL; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.

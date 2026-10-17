@@ -57,8 +57,8 @@ Status: both `PhysicalCollarCutoffMonotonicity.lean` and
 `PhysicalCollarCutoffStability.lean` compiled without diagnostics. All 35 public
 theorems passed scratch axiom audits, using only `propext`, `Classical.choice`, and
 `Quot.sound`. Printed signatures confirm unconditional cutoff statements. The
-required final direct leaf recheck passed, exit 0, no diagnostics. The error rate is an upper bound,
-not a proved optimal rate.
+required final direct leaf recheck passed, exit 0, no diagnostics. That package
+proved an upper rate; the sharp leading law below now identifies its exact scale.
 
 For every finite trial partition ρ, the verified dual-gap corollary gives
 
@@ -68,24 +68,45 @@ This encloses the allocation limit without assuming an attained optimizer. The
 finite dual gap Gρ and the cutoff error have distinct roles; neither bounds the
 gap to the true source infimum.
 
-## Candidate leading asymptotic
+## Sharp leading allocation asymptotic
 
-A further paper argument in the card gives
+For N=n+2≥8, Lean proves
 
-    P_∞−P_N = 4/sqrt(N)+O(1/N).
+    |P_∞−P_N−4/sqrt(N)| ≤ 12289/N,
+    sqrt(N)(P_∞−P_N) → 4.
 
-It compares the deficit to T_N=∫_(log N,∞)w from both sides. Extending old partitions
-by right-node cell assignments adds all tail mass but only O(1/N) radial penalty.
-Conversely, remove future-node shares and fill their holes below log N using the next
-old grid node; these holes occur only above log(N+1)−δ and their new offsets are
-O(1/N), so the repair penalty is O(1/N). The explicit constants and endpoint
-assignments are in the card. T_N=4/sqrt(N)+O(N^(−5/2)) follows by integrating the
-exponential remainder of w.
+Here P_N is exactly the independent signed-coset allocation optimum. The remainder
+constant is explicit, not claimed optimal. With T_N=∫_(log N,∞)w, the sharper
+intermediate comparison is
 
-Status: paper argument requiring formal audit; uncounted. The exact tail-law corpus
-query returned finite-array capacity comparison and existing duality, but no matching
-earlier asymptotic theorem. Semantic coverage was unmeasured, so this is not evidence
-of exhaustive absence or literature-wide novelty. Log: `/tmp/bsu-allocation-tail-search.log`.
+    T_N−8192/N ≤ P_∞−P_N ≤ T_N+12288/N,
+    0 ≤ T_N−4/sqrt(N) ≤ 1/N.
+
+The actual right-node partition assigns high physical points to ceil(exp x), with
+exact endpoint handling and open-window truncation. Its concentrated extension
+retains every old fibre and adds weights only on 0<y≤1/N. The actual concentrated
+retraction keeps old shares and fills their missing fraction with the right-node
+partition; repair weights vanish above 2/N. Uniform mesh bounds give fibre mass
+≤32sqrt(N) and added right-cell mass ≤64/sqrt(y). Rationalizing the radial norm
+then gives integrated penalties ≤8192/N and ≤12288/N. All estimates concern the
+constructed partitions, with no error premise or optimizer-attainment assumption.
+The singular origin weight is never integrated separately.
+
+The endpoint analysis also proves the stronger exponential remainder
+T_N−4exp(−log(N)/2)≤(8/5)exp(−5log(N)/2). Taking suprema in the finite
+partition comparisons, then the existing monotone limit, gives the leading law.
+Every actual smooth nonzero grid source at cutoff N therefore satisfies
+
+    J_arch(f)/h_f(0) ≥ P_∞−4/sqrt(N)−12289/N.
+
+All ten leaves and all 79 theorem axiom audits pass. Final direct audit is pending;
+the verified-package count remains 13 until that audit and integrity checks finish.
+The retained finer-constant paper argument on the card is not independently
+Lean-certified; the formal threshold and constants are those displayed here.
+Deep discovery was partial (97.55s), and all 11 lexical hits in five modules were
+inspected. Existing ceil-mesh, radial and block-norm tools were reused. Semantic
+coverage was unmeasured; no exhaustive novelty claim. Evidence:
+`/tmp/bsu-sharp-tail-search.log` and `/tmp/bsu-sharp-tail-lexical.json`.
 
 Mechanism worth retaining: high-node physical mass costs order N^(−1/2), while
 its optimized origin penalty costs only order N^(−1) because it can be concentrated

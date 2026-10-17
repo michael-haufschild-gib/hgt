@@ -98,7 +98,7 @@ theorem tendsto_nyquistWeightPrefixMass_supercritical {β : ℝ} (m N : ℕ)
   change ((nyquistWeightPrefixMass β m N M /
     (∑ k ∈ Finset.range M, nyquistPowerIncrement r (N + k))) *
     ((∑ k ∈ Finset.range M, nyquistPowerIncrement r (N + k)) /
-      ((M + 1 : ℕ) : ℝ) ^ r)) = _
+      ((M + 1 : ℕ) : ℝ) ^ r)) = nyquistWeightPrefixMass β m N M / ((M + 1 : ℕ) : ℝ) ^ r
   field_simp [hM.ne']
 
 end

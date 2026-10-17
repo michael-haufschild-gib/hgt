@@ -32,8 +32,9 @@ cost to O(sqrt(N)). Their disjoint source supports give equal origin energies.
 
 Arithmetic cancellation acts directly on T(N). No pre-floor counterterm,
 Chebyshev discrepancy hypothesis, grid blindness, or positivity conclusion is used.
-This constructs an actual source contrast; arbitrary signed packet control and
-quantitative archimedean jump energy remain open.
+This constructs an actual source contrast; it leaves arbitrary signed packet
+control and quantitative jump energy open. Contribution 11 subsequently closes
+the jump-energy question for this family.
 
 ## Verification
 
@@ -61,5 +62,5 @@ Searches `/tmp/spp10-convolution-search.json` and `/tmp/spp10-tent-search.json`
 are partial (reranking deadline and semantic timeout). Available candidates and
 source arguments were inspected; no external novelty claim follows from retrieval.
 
-Next uncounted question:
-`1-in-progress/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
+Subsequent completed jump-energy package:
+`3-formalized/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.

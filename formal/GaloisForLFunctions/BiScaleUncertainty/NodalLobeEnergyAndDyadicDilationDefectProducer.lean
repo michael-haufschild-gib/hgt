@@ -71,6 +71,7 @@ open _root_.RHTower.CHMDClosedJump
 open _root_.RHTower.CHMDTranslation
 open _root_.RHTower.CHMDChebyshevTransport
 open _root_.RHTower.ThetaSourceWard
+open _root_.RHTower.ArchimedeanAnomaly
 open GaloisForLFunctions.BiScaleUncertainty.SobolevShear
 open SignedPrimePolar ChebyshevGauge
 

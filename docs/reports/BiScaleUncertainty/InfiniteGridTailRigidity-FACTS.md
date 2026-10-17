@@ -527,8 +527,10 @@ integrability beyond the threshold, explicit subcritical tail bound, and sharp
 tail mass asymptotic are also checked. The positive integral operator has a
 checked exact norm and explicit bound. The actual common smooth source family
 has checked energy decay, pointwise correlation limit one, and a growing
-positive plateau. Sharp prefix asymptotics, producer decomposition, and the
-source-sharpness endpoints remain unfinished; package count stays 14.
+positive plateau. Sharp critical logarithmic and supercritical power prefix
+asymptotics are now checked, including their exact coefficients for every
+fixed starting cell. Producer decomposition and source-sharpness endpoints
+remain unfinished; package count stays 14.
 Card: `docs/drafts/pipeline/2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md`.
 Current deep search inspected all 20 candidates and 20 source arguments;
 the suggested decaying-weight argument does not prove this growing-weight

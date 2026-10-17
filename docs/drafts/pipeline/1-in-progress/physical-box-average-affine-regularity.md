@@ -38,19 +38,19 @@ norm convergence or regularity for unrestricted unsmoothed states.
 ## Approach and gates
 
 - [x] Initial corpus query and existing compact-source averaging inspected.
-- [ ] Primary-source audit and complete paper proof, including actual L²
+- [x] Primary-source audit and complete paper proof, including actual L²
   membership, joint measurability, finite variance integrals and derivative.
 - [ ] Formalize the exact paper theorem, with serial direct leaf checks,
   all-public axiom audit, principal signatures, umbrella/index/lint review.
-- [ ] Identify how the constructed range couples to the established
+- [x] Identify how the constructed range couples to the established
   primitive/compact-source graph calculus without importing admission premises.
 
-Use Jensen/Fubini for membership and variance, endpoint differences for the
-derivative, and the exact L¹ difference of translated interval kernels for
-the commutator bound. These are proposed mechanisms, not completed proofs.
+Use norm-continuous Bochner orbits for membership, inner-product functionals
+for variance, endpoint differences for the derivative, and oriented interval
+cancellation for the commutator bound. The paper proves these mechanisms.
 Classical Steklov averages and convolution are parent theories. Contribution
-must be the actual field operator/producer/defect coupling, not a renamed
-classical inequality. No Lean file assigned; uncounted.
+is the actual field operator/producer/defect coupling. Six leaves assigned
+below; uncounted until formal certification.
 
 ## Corpus evidence and limits
 
@@ -101,7 +101,9 @@ pullback and Demkowicz Energy Spaces references inspected and linked in paper.
 No absence or external novelty claim. update_plan unavailable; this card
 records the plan. No subagents authorized or used.
 
-All six planned leaves are written, still unverified. API probe session32685
-terminated with one unknown name, MemLp.congr; local source supplies
-MemLp.ae_eq. The main continuous-pullback, Bochner/FTC and slope interfaces
-were verified. Serial direct leaf checks now begin. No certified increment.
+All six planned leaves are written. PhysicalTranslationContinuity,
+PhysicalBoxAverage and PhysicalBoxProfile pass serial direct checks without
+diagnostics. PhysicalBoxVariance is checking in owned session88134; no
+second owned Lean process. AffineRegularity, GraphControl, all-public audit
+and integration gates are pending. Correct MemLp congruence API is MemLp.ae_eq;
+final combined audit includes it. No certified increment.

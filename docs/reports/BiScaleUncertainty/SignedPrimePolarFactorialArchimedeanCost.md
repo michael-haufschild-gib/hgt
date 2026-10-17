@@ -1,7 +1,8 @@
 # Archimedean cost and signed cancellation of the balanced factorial sources
 
-Status: dependency-closed paper proof; Lean verification pending. Uncounted until
-one actual-source endpoint closes the domain, growth, and signed-difference claims.
+Status: dependency-closed paper proof and Lean certificate verified; contribution 11.
+`SignedPrimePolar.factorialSourceArchimedean_certificate` has only n:ℕ as input
+and closes the actual domain, growth, signed-difference and normalized-cost claims.
 All notation P_N,M_N,F_N,G_N,H_N,δ,ε is from
 `SignedPrimePolarFactorialSourceFactorization.md`, with N≥1 and r=sqrt(N).
 Write E(f)=∫₀∞(h_f(0)−h_f(x))w(x)dx, w(x)=exp(x/2)/sinh(x).
@@ -152,3 +153,15 @@ compiler metadata was predominantly pending/source-only and refresh was deferred
 Candidate lemmas and source arguments were inspected. Retrieved C² source lemmas
 and compact local-Lipschitz existence results do not supply the explicit bounds.
 No external novelty claim follows from this audit.
+
+## Verification
+
+Nine direct leaf compilations passed and wrote oleans. Eleven scratch axiom
+audits, including the complete endpoint, use only propext, Classical.choice and
+Quot.sound. Current source hashes match `/tmp/spp11-final-manifest.json`.
+Every new module is imported once; index refresh passed and lists the endpoint
+in `SignedPrimePolarSourceArchimedeanCertificate.lean:97`.
+Global lint exits 1 for 22 unrelated unwired modules, listed in the facts ledger;
+no package-local error occurs. Evidence: `/tmp/spp11-*.log` and
+`/tmp/spp11_final_axioms.lean`. No full/umbrella build or numerical experiment
+was run. The field README was not edited.

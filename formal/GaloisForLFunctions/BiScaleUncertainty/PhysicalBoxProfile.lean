@@ -64,8 +64,11 @@ theorem hasDerivAt_primitive_physicalBoxAverage (s : ℝ) (q : Velocity) (t : �
   have h := ((((hasDerivAt_physicalSecondPrimitive q (t+Real.exp s)).comp_add_const
     t (Real.exp s)).sub (hasDerivAt_physicalSecondPrimitive q t)).sub_const
       (physicalSecondPrimitive q (Real.exp s))).const_smul (Real.exp s)⁻¹
-  simpa only [Pi.smul_apply, Pi.sub_apply, smul_eq_mul, ← primitive_physicalBoxAverage,
-    physicalBoxProfile] using h
+  change HasDerivAt (fun x => (Real.exp s)⁻¹ *
+    (physicalSecondPrimitive q (x+Real.exp s)-physicalSecondPrimitive q x-
+      physicalSecondPrimitive q (Real.exp s)))
+    ((Real.exp s)⁻¹ * (primitive q (t+Real.exp s)-primitive q t)) t at h
+  simpa only [← primitive_physicalBoxAverage, physicalBoxProfile] using h
 
 theorem ae_physicalBoxAverage (s : ℝ) (q : Velocity) :
     physicalBoxAverage s q =ᵐ[volume] physicalBoxProfile s q := by
@@ -106,6 +109,9 @@ theorem absolutelyContinuous_physicalBoxProfile (s : ℝ) (q : Velocity) (a b : 
   have h := (absolutelyContinuous_primitive (physicalBoxDerivative s q) a b).add
     ((contDiffOn_const : ContDiffOn ℝ 1
       (fun _ : ℝ => (Real.exp s)⁻¹ * primitive q (Real.exp s)) (Set.uIcc a b)).absolutelyContinuousOnInterval)
-  simpa only [Pi.add_apply, ← physicalBoxProfile_eq_anchored] using h
+  change AbsolutelyContinuousOnInterval
+    (fun t => primitive (physicalBoxDerivative s q) t+
+      (Real.exp s)⁻¹ * primitive q (Real.exp s)) a b at h
+  simpa only [← physicalBoxProfile_eq_anchored] using h
 
 end GaloisForLFunctions.BiScaleUncertainty.SobolevShear

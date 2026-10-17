@@ -22,7 +22,9 @@ continuum cutoffs and an unconditional harmonic correction bound. A compact
 continuous producer now preserves every prime-grid value with 1≤∫S_N²≤16.
 Actual source factorization now preserves the grid with nonvanishing contrast size
 and equal source origin energies in [6sqrt(N),46sqrt(N)].
-Next: quantitative archimedean jump cost of these explicit sources.
+The literal jump energies are now quantified: individual cost grows on the
+sqrt(N) log N scale, with signed difference O(log N/sqrt(N)).
+Next: localized signed packet energy of the reflected actual sources.
 Multiple-collar receivers are parked; width selection and residual control remain open.
 
 Authoritative field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
@@ -60,13 +62,14 @@ producers with unconditional bounds before extending receiver machinery.
   measure, including domain admission, harmonic correction and unconditional rate.
 - [x] Construct a continuous producer preserving the prime grid and nonvanishing L² size.
 - [x] Factor an explicit producer through actual compact continuous sources and quantify cost.
-- [ ] Establish quantitative archimedean jump energies of the balanced factorial sources.
+- [x] Establish quantitative archimedean jump energies of the balanced factorial sources.
+- [ ] Bound actual signed packet energy on the explicit factorial-source support window.
 - [ ] Derive a useful coherent multiple-collar certificate, retaining all cross terms (parked).
 - [ ] Quantify width selection and the remaining smoothing error.
 
 ## Current frontier
 
-Ten substantive contributions are formalized:
+Eleven substantive contributions are formalized:
 - `3-formalized/annular-signed-prime-polar-chebyshev-coupling-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-packet-gram-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-halfline-2026-10-17.md`.
@@ -77,8 +80,9 @@ Ten substantive contributions are formalized:
 - `3-formalized/signed-prime-polar-factorial-producer-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
+- `3-formalized/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
 
-The overall target remains 100, with 90 further distinct contributions unproved.
+The overall target remains 100, with 89 further distinct contributions unproved.
 Packet construction, exact Gram representation, mass comparison, and transport
 corollaries form one contribution. Likewise the coherent collar construction,
 Schur constraint, and energy certificate are one contribution, not separate counts.
@@ -107,12 +111,19 @@ unconditional bound [10log(4N+1)+3+1/(4N)]/sqrt(N). Thirteen direct leaf checks
 and fifteen standard-axiom audits pass; imports and index are updated. Global
 lint reports nine unrelated unwired modules, listed in the ledger.
 
+Contribution 11 admits both actual nonsmooth sources to the literal jump-energy
+domain and quantifies their individual growth, exact signed difference and
+normalized logarithmic lower cost. Nine direct leaf checks and eleven standard
+axiom audits pass. All imports and the index are updated. Global lint reports
+22 unrelated unwired modules and no package-local error; details are in the ledger.
+
 Next uncounted candidate:
-`1-in-progress/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
-Quantify actual jump-energy growth and signed differences of these balanced sources.
-Existing logarithmic-tail and parallelogram results require C²; the concrete ramp
-and tent require direct increment bounds and integrability. No uniform packet
-control follows from the current scalar cancellation.
+`0-backlog/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
+Seek an explicit local packet budget on the reflected sources' actual support,
+using the real-ratio factorial stencil and partial polar moments. Both the bound
+and its transport consequence remain conjectural. Two new searches and direct
+packet/moment source reads are recorded in that card. No uniform global packet
+control follows from the scalar cancellation or jump-energy certificate.
 
 Secondary uncounted candidate: reduce B(d) to the triangular correlation integral
 2d⁻²∫₀ᵈ(d-t)h(t)dt, then derive width response and reconstruction from d²B(d).

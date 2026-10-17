@@ -113,7 +113,8 @@ theorem escapingSource_plastic_error (f : C_c(ℝ, ℝ)) (n : ℕ) :
       4 * mass * (2 * escapeEnergy f / (((n : ℝ) + 1) * d) ^ 2) := by
     unfold plasticEscapeConstant
     dsimp [mass, d]
-    field_simp [d_pos.ne', (show (n : ℝ) + 1 ≠ 0 by positivity)] <;> ring
+    field_simp [d_pos.ne', (show (n : ℝ) + 1 ≠ 0 by positivity)]
+    ring
   rw [hc]
   constructor <;> nlinarith only [he, hj.1, hj.2, hm]
 

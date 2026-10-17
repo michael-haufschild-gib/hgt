@@ -43,13 +43,13 @@ theorem hasDerivAt_cellWindowPrimitive (c t : ℝ) :
       (-2 * (c + 1 - t) + 2) t := by
     have := ((ha.pow 2).sub (ha.const_mul 2)).add_const 2
     refine this.congr_deriv ?_
-    norm_num <;> ring
+    norm_num
   have h3 : HasDerivAt (fun t : ℝ => -2 * (c + 1) * t + t ^ 2 + Real.exp t)
       (-2 * (c + 1) + 2 * t + Real.exp t) t := by
     have := (((hasDerivAt_id t).const_mul (-2 * (c + 1))).add (hasDerivAt_pow 2 t)).add
       (Real.hasDerivAt_exp t)
     refine this.congr_deriv ?_
-    norm_num <;> ring
+    norm_num
   have h : HasDerivAt (fun t : ℝ => -Real.exp (-t) * ((c + 1 - t) ^ 2 - 2 * (c + 1 - t) + 2) +
       (-2 * (c + 1) * t + t ^ 2 + Real.exp t))
       (Real.exp (-t) * ((c + 1 - t) ^ 2 - 2 * (c + 1 - t) + 2) +
@@ -67,7 +67,7 @@ theorem hasDerivAt_cellWindowPrimitive (c t : ℝ) :
 
 /-- **Closed-form cell energy:**
 `∫_{log n}^{log(n+1)} e^{−t}(c + 1 − t − e^t)² = F_c(log(n+1)) − F_c(log n)`. -/
-theorem integral_cell_window_sq (c : ℝ) {n : ℕ} (hn : 1 ≤ n) :
+theorem integral_cell_window_sq (c : ℝ) (n : ℕ) :
     (∫ t in Real.log (n : ℝ)..Real.log ((n : ℝ) + 1),
         Real.exp (-t) * (c + 1 - t - Real.exp t) ^ 2) =
       cellWindowPrimitive c (Real.log ((n : ℝ) + 1)) - cellWindowPrimitive c (Real.log (n : ℝ)) :=
@@ -111,7 +111,7 @@ theorem integral_cell_causalResponse_sq (N : ℕ) {n : ℕ} (hn : 1 ≤ n) (hnN 
         cellWindowPrimitive (Chebyshev.psi (n : ℝ)) (Real.log (n : ℝ)) := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   have hle : Real.log (n : ℝ) ≤ Real.log ((n : ℝ) + 1) := Real.log_le_log hn0 (by linarith)
-  rw [← integral_cell_window_sq (Chebyshev.psi (n : ℝ)) hn]
+  rw [← integral_cell_window_sq (Chebyshev.psi (n : ℝ)) n]
   refine intervalIntegral.integral_congr_ae ?_
   have hne : ∀ᵐ t ∂(volume : Measure ℝ), t ≠ Real.log ((n : ℝ) + 1) := by
     rw [ae_iff]; simp
