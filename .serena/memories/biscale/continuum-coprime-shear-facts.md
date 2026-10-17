@@ -1,8 +1,8 @@
 # Continuum coprime shear: current facts
 
-Active goal: 100 significant connected mathematical contributions in continuum coprime shear / noncommutative (ax+b) uncertainty. Certified **18/100**. Each turn contributes one package, never count supporting declarations separately. Do not mark goal complete. User forbids hgtl7, RH work, numerical experiments/computational proof shortcuts, full/umbrella builds, added axioms or unproved analytic admission premises. Read attachment `/Users/michael/.codex/attachments/907cbf01-0e78-40fa-8e48-f157b655c095/pasted-text-1.txt` first each turn; read the full field README at `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (260 lines at package 18). User explicitly makes this README read-only; old docs/reports/BiScaleUncertainty/README.md is gone. Search corpus before new conjectures/Lean. Serial foreground `lake --old env lean <leaf>` with normal `-o` outputs, scratch axiom audits only. No heartbeat increases. Preserve concurrent work; no commits/push. update_plan unavailable, overarching pipeline card tracks plan. No subagents used or authorized. Serena ignores Lean paths, so direct edits used. Architecture/testing docs absent at last init.
+Active goal: 100 significant connected mathematical contributions in continuum coprime shear / noncommutative (ax+b) uncertainty. Certified **19/100**. Each turn contributes one package, never count supporting declarations separately. Do not mark goal complete. User forbids hgtl7, RH work, numerical experiments/computational proof shortcuts, full/umbrella builds, added axioms or unproved analytic admission premises. Read attachment `/Users/michael/.codex/attachments/907cbf01-0e78-40fa-8e48-f157b655c095/pasted-text-1.txt` first each turn; read the full field README at `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (260 lines at package 19). User explicitly makes this README read-only; old docs/reports/BiScaleUncertainty/README.md is gone. Search corpus before new conjectures/Lean. Serial foreground `lake --old env lean <leaf>` with normal `-o` outputs, scratch axiom audits only. No heartbeat increases. Preserve concurrent work; no commits/push. update_plan unavailable, overarching pipeline card tracks plan. No subagents used or authorized. Serena ignores Lean paths, so direct edits used. Architecture/testing docs absent at last init.
 
-Authoritative ledger: `docs/reports/BiScaleUncertainty/ContinuumCoprimeShear-FACTS.md` (now >500 lines: use ranges). Overarching card `docs/drafts/pipeline/1-in-progress/continuum-coprime-shear.md`. Goal remains active. All owned jobs terminal at completion of package 18.
+Authoritative ledger: `docs/reports/BiScaleUncertainty/ContinuumCoprimeShear-FACTS.md` (now >500 lines: use ranges). Overarching card `docs/drafts/pipeline/1-in-progress/continuum-coprime-shear.md`. Goal remains active. All owned jobs terminal at completion of package 19. Final package19 audit evidence retained; obsolete standalone probe and one-use documentation draft removed.
 
 ## Certified package 1
 `ContinuumShearDirichlet.lean` (29 public theorems) and `ContinuumMultiplicativeEdgeControl.lean` (5). Actual continuous physical primitives, arbitrary continuous log velocities, exact interval/cell defects, weighted log Dirichlet energy, dilated cells, affine commutator resistance b(exp s-1), finite weighted multiplicative/nodal edges. Shear log(exp x+b), b>=0, is a semigroup, not globally invertible/unitary. Stage3 `continuum-trace-affine-edge-control.md`. Direct checks and all34 axiom audits passed.
@@ -358,21 +358,113 @@ finish the packet normalization completely; a subsequent ring then fails
 with no goals. In scratch `have := @Name` API probes, pin polymorphic
 universe levels rather than leaving unresolved universe metavariables.
 
-## Next unproved candidate — actual box averaging and affine regularity
+## Certified package 19 — actual box producers and quantitative affine regularity
 
-`docs/drafts/pipeline/0-backlog/physical-box-average-affine-regularity.md`.
-For h=exp(s), seek actual L² operator M_s q(t)=(F_q(t+h)−F_q(t))/h,
-with derivative(τ_hq−q)/h, contraction, exact double translation-variance
-loss, and commutator bound2√|a|min(1,|b(a−1)|/h)‖q‖. Investigate strong
-approximation as s→−∞. Unproved/uncounted; no Lean assigned. Classical
-Steklov averaging is a parent; the target is unconditional field coupling.
+For arbitrary q∈V=L²(ℝ) and s∈ℝ, put h=exp(s). The actual translation
+orbit is norm-continuous. Its Bochner average and finite difference define
+bounded linear operators
 
-All20 candidate and20 source-argument statements inspected in
-/tmp/physical-affine-next-search.json. Existing compact continuous annular
-averages already have C¹ regularity, contraction and exact remainder;
-the two relevant sources were read. General actual physical L² membership,
-variance integrability and commutator estimate remain obligations. Own
-package18 drafts appeared while checking and are not independent evidence.
-Search partial, text/source interrupted, deadline/reranking unfinished,
-generation1447449 pending, refresh incomplete. Primary-source and paper
-proof audits remain required; no absence/novelty conclusion.
+    M_s q=h⁻¹∫₀ʰτ_uq du,     D_s q=h⁻¹(τ_hq−q),
+    ‖M_s q‖≤‖q‖,             ‖D_s q‖≤2h⁻¹‖q‖.
+
+Primitive evaluation is a bounded inner-product functional represented by
+1_(0,t]−1_(t,0]. Passing it through the Bochner integral identifies the
+actual continuous representative m_(s,q)(t)=h⁻¹(F_q(t+h)−F_q(t)).
+It equals F_(D_s q)(t)+h⁻¹F_q(h); hence it is locally absolutely
+continuous, and both m and its actual a.e. derivative D_s q lie in L².
+The strong translation orbit has derivative τ_cD_s q at every real c.
+
+Exact Gram expansion retains every cross-shift term:
+
+    ∫₀ʰ‖τ_uq−M_s q‖²du=h(‖q‖²−‖M_s q‖²),
+    ∫₀ʰ∫₀ʰ‖τ_uq−τ_vq‖²dvdu=2h²(‖q‖²−‖M_s q‖²).
+
+Oriented interval cancellation gives
+τ_cM_s q−M_s q=h⁻¹∫₀ᶜ(τ_(u+h)q−τ_uq)du, for every real c.
+Together with contraction, this proves
+
+    ‖τ_cM_s q−M_s q‖≤2 min(1,|c|/h)‖q‖,
+    ‖C_(a,b)M_s q‖≤2√|a| min(1,|b(a−1)|/h)‖q‖.
+
+The squared and operator-composition bounds also hold, including zero and
+negative affine parameters. Thus the explicit regularized range restores
+small-gap control despite the maximal unrestricted commutator norm.
+
+The derivative at zero of the orbit primitive proves M_s q→q strongly
+as s→−∞; the exact averaging loss tends to zero. Compact source Dirichlet
+mass is bounded by ofReal(‖q‖²). For every compact source ψ and nonnegative
+line-weight sequence, its already constructed finite resistance R_ψ gives
+
+    E_ψ(q)≤R_ψ ofReal(‖q‖²),
+    E_ψ(C_(a,b)M_s q)
+      ≤R_ψ ofReal(4|a| min(1,|b(a−1)|/h)²‖q‖²),
+    E_ψ(M_s q−q)→0.
+
+Thus the actual regular producers approximate every input in physical norm
+and each compact-source jump energy. No regularity or analytic admission
+premise on q is used. Classical Steklov averaging, FTC and Hilbert variance
+are parents; the contribution is their actual affine/graph realization.
+No optimality of the gap coefficient, operator-norm approximation, full
+uncut SourceGraph closure, completed divisor-domain invariance, unweighted
+logarithmic H1 or RH conclusion is claimed. Trap10 is addressed through
+explicit unconditional producers and exact errors. No pre-floor subtraction.
+
+Six serial direct leaf checks pass without diagnostics; all normal outputs
+are current. All61 public axiom checks use only propext,Classical.choice,
+Quot.sound.28 principal signatures and73 mathlib API probes pass. Six unique
+umbrella imports and61 exact catalog locations verified.599lines total,
+53theorems+8definitions. Paper proof preceded field Lean. README remains
+unchanged, SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933.
+No full/umbrella build, heartbeat increase or numerical experiment.
+
+Global lint --check-generated exits1 for seven unrelated unreachable modules:
+ConfinedCoherentPlasticGap, ForcedFirstCollar, SignedLcmFractionalDefectAndCompleteFibreCollapse, SignedPrimePolarClampedPrimeSum, SignedPrimePolarRealFactorialStencil, StrictPairedCollarLimit, UniformPairedCollarGain.
+There are381 existing large-file warnings; no own, proof-debt or generated
+index errors. Repository-wide green is not claimed. Concurrent files preserved.
+
+Evidence: /tmp/physical-box-axioms.log, /tmp/physical_box_axioms.lean,
+/tmp/physical-box-{audit-names,manifest-report,leaf-checks,lint-errors}.json,
+/tmp/physical-box-api-entries.txt, /tmp/physical-box-index.log and
+/tmp/physical-box-lint-final.log. Paper:
+docs/reports/BiScaleUncertainty/PhysicalBoxAverageAffineRegularity.md.
+Card: docs/drafts/pipeline/3-formalized/physical-box-average-affine-regularity.md.
+One connected contribution, certified19/100; overall goal remains active.
+
+Current corpus audit inspected all20 candidate statements; no source
+arguments, proof ideas or ingredient sets returned. Search partial=true,
+text/source interrupted, deadline/vector-proof stage incomplete,
+generation1447551 pending, refresh incomplete/background indexer.
+Earlier candidate audit inspected20 candidates and20 source arguments.
+Own drafts found in later searches are not independent certification.
+Primary mathlib continuous-pullback and Demkowicz Energy Spaces references
+are linked in the paper. No absence or external novelty claim.
+
+Lean lessons: use MemLp.ae_eq for a.e. replacement and le_min to prove
+nonnegativity of a minimum. zero_le has an implicit ENNReal argument.
+Use mul_le_mul_right instead of deprecated mul_le_mul_left'. Give shifted
+interval rewrites explicit integrands and endpoints. Beta-reduce integrands
+before norm rewrites; expose pointwise functions before derivative/AC rewrites.
+Simplify the orbit primitive at zero before unfolding its integral definition.
+Type constant limits explicitly. innerSL and its apply lemmas have two
+universe parameters even when the printed signature lacks a leading @.
+
+## Next unproved candidate — compact logarithmic states
+
+Card: docs/drafts/pipeline/0-backlog/compact-physical-box-producers.md.
+Compact physical velocity alone leaves a constant primitive tail. Seek
+positive-interval truncation plus an explicit distant zero-integral
+compensator, followed by box smoothing, to construct actual compact C¹
+logarithmic states. Target convergence of physical velocities to the positive
+half-line component, and compact-source jump convergence to the original
+logarithmic state. Proposed compensator norm is at most exp(−r/2)‖q‖.
+The card gives all scales, support endpoints and error terms. Unproved and
+uncounted; no Lean assigned. Primary-source and full paper-proof gates remain.
+
+Two queries each inspected20 candidates and20 source-argument statements;
+no proof ideas/ingredient sets. First partial deadline/reranking,
+generation1447717 pending. Second partial deadline/semantic coverage,
+inventory73830 complete, snapshot1447809/current1447810, retrieval1447801;
+compiler mostly pending/source-only, refresh incomplete. Evidence:
+/tmp/physical-box-next-search.json and /tmp/compact-log-primitive-next-search.json.
+Existing negativePhysicalVelocity and logarithmic transport are relevant
+parents. No absence/novelty inference.

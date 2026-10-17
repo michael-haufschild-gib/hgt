@@ -23,7 +23,7 @@ domains, cutoff stabilization, and consequences for actual pairings remain open.
 ## Gates
 
 - [x] 0 → 1: audit precedents; fix the exact window and numeric cutoff.
-- [ ] 1 → 2: dependency-closed paper proof, including real-ratio factorial and
+- [x] 1 → 2: dependency-closed paper proof, including real-ratio factorial and
   partial polar-moment bounds; no Chebyshev-error hypothesis.
 - [ ] 2 → 3: exact actual-source Lean endpoint, direct leaf checks, scratch axiom
   audit and formal lint. User forbids full or umbrella builds.
@@ -88,7 +88,7 @@ or generic gauge budgets, not the proposed actual-source local norm bound.
 
 ## Current proof plan
 
-- [ ] Real-scale factorial stencil: integer floor carries cost at most seven
+- [x] Real-scale factorial stencil: integer floor carries cost at most seven
   logarithmic terms, giving |T(floor(4v))−4T(floor(2v))+4T(floor(v))|
   ≤12log(4v+1)+1 for v≥0.
 - [ ] Actual clamped prime packet: discharge both finite caps and bound the
@@ -100,7 +100,13 @@ or generic gauge budgets, not the proposed actual-source local norm bound.
 - [ ] Prove cutoff stabilization and localized actual-pairing consequences;
   perform direct leaf and axiom audits, index, lint, ledger and cleanup.
 
-No package-12 endpoint is yet proved. Helper lemmas alone do not count.
+Paper argument: `docs/reports/BiScaleUncertainty/SignedPrimePolarFactorialLocalPacket.md`.
+The signed carry calculation sharpens the real-scale bound to 9log(4v+1)+1.
+`SignedPrimePolarRealFactorialStencil.lean` and
+`SignedPrimePolarClampedPrimeSum.lean` pass direct leaf checks (2026-10-18).
+The latter proves the actual finite-cap prime-sum sandwich and its two-carry
+smoothing error. The physical-packet identification and envelope leaves are
+being formalized; the complete package remains uncounted.
 
 ## No-go closure
 

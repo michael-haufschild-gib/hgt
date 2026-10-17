@@ -102,10 +102,12 @@ traces or a constructed interpolant.
   successor covariance and sharp equality; five leaves,72 declarations audited.
 - [x] Physical affine action, exact positive commutator defect, sharp norm and
   nonattainment with explicit finite producers; six leaves,76 declarations audited.
+- [x] Actual physical box producers, exact variance, constructed derivatives,
+  affine gap bounds and compact-source graph approximation; six leaves,61 declarations audited.
 - [ ] Full SourceGraph coupling and closed-form operator identification.
 - [ ] 100 significant contributions.
 
-Certified count: **18 / 100**. Formalized packages:
+Certified count: **19 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -123,7 +125,8 @@ Certified count: **18 / 100**. Formalized packages:
 `../3-formalized/divisor-trace-energy-completion.md`, and
 `../3-formalized/divisor-component-averaging-projection.md`, and
 `../3-formalized/integer-dilation-cell-coisometry.md`, and
-`../3-formalized/physical-affine-commutator-producers.md`.
+`../3-formalized/physical-affine-commutator-producers.md`, and
+`../3-formalized/physical-box-average-affine-regularity.md`.
 
 ## Current exact result and next frontier
 
@@ -419,10 +422,26 @@ six imports and76 exact catalog locations verified. Global lint exits1 for
 is on the stage3 card. No own/proof-debt error. Index refreshed separately.
 Paper preceded Lean. README remains unchanged. Certified18/100, goal active.
 
+## Certified package 19: actual box producers and affine regularity
+
+For every physical L² input, the actual Bochner box average is a contraction
+with continuous locally absolutely continuous representative and explicit L²
+derivative (τ_hq−q)/h. Centered and pair variances equal its exact energy
+loss. Interval cancellation gives the affine factor
+2√|a|min(1,|b(a−1)|/h). Strong approximation also holds in every compact-source
+jump energy, with explicit finite resistance bounds. No analytic admission
+premise. One connected producer/defect/graph contribution.
+
+Six leaves and all61 public axiom checks pass with only standard axioms;
+28 principal signatures and73 API probes pass. Six imports and61 exact
+catalog locations verified. Global lint fails only for seven unrelated
+unreachable modules, listed on the stage3 card; no own/proof-debt/index error.
+Paper preceded Lean. README remains unchanged. Certified19/100; goal active.
+
 ## Next candidate
 
-`../0-backlog/physical-box-average-affine-regularity.md`: construct actual
-L² box averages, exact variance loss and derivative, then bound their affine
-commutator by the gap-to-width ratio. Unproved/uncounted; no Lean assigned.
-Corpus audit completed with partial coverage; primary-source and full paper
-proof still required. Existing compact continuous averaging is a parent.
+../0-backlog/compact-physical-box-producers.md: construct compact logarithmic
+states using positive-interval truncation, explicit zero-integral tail
+compensation and box smoothing. Compact velocity alone is insufficient.
+Two partial corpus audits inspected20 candidates and20 source statements
+each. Unproved/uncounted; primary-source and paper-proof gates remain.

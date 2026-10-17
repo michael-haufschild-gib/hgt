@@ -38,6 +38,7 @@ theorem atomic_smoothFactorialLift_eq {K : ℕ} (hK : 1 ≤ K)
   simp_rw [ht]
   have hs : Real.sqrt (m : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hm0).ne'
   field_simp
+  simp only [mul_comm]
 
 private theorem clamped_stencil_bound {ε v : ℝ} {N M : ℕ}
     (hε : 0 < ε) (hv : 0 < v) (hcap : v ≤ 2*(N : ℝ))
@@ -60,7 +61,7 @@ private theorem clamped_stencil_bound {ε v : ℝ} {N M : ℕ}
   have hl2 := hlog ((1+ε)*(2*v)) ⟨by positivity, by nlinarith⟩
   have hl1 := hlog ((1+ε)*v) ⟨by positivity, by nlinarith⟩
   have hl0 := hlog (4*v) ⟨by positivity, by nlinarith⟩
-  have hln : 0 ≤ Real.log (4*(1+ε)*v+1) := Real.log_nonneg (by positivity)
+  have hln : 0 ≤ Real.log (4*(1+ε)*v+1) := Real.log_nonneg (by nlinarith)
   have ha := abs_le.mp (abs_realFactorialBiNull_le hv.le)
   unfold realFactorialBiNull at ha
   rw [hl4] at h4
@@ -102,7 +103,7 @@ theorem atomicSource_factorialRamp_eq (n : ℕ) (u : ℝ) (K : ℕ) :
           4*clampedPrimeFactorialSum (sourceFactorialCollar (n+1)) (n+1) (K+2)
             (((n+1 : ℕ) : ℝ)*Real.exp (-u))) := by
   change (∑ m ∈ Finset.Icc 1 (K+2), primeWeight m*sourceFactorialRamp (n+1) (u+Real.log m)) = _
-  simp_rw [sourceFactorialRamp, rampBiNull, mul_div_assoc, mul_add, mul_sub,
+  simp only [sourceFactorialRamp, rampBiNull, ← mul_div_assoc, mul_add, mul_sub,
     Finset.sum_div, Finset.sum_add_distrib, Finset.sum_sub_distrib]
   have he (a b : ℝ) : a*(4*b) = 4*(a*b) := by ring
   simp_rw [he, ← Finset.mul_sum]
@@ -127,7 +128,7 @@ theorem factorial_packet_log_bound {N : ℕ} (hN : 1 ≤ N) {u : ℝ}
   have he : Real.exp u*Real.exp (-u) = 1 := by rw [← Real.exp_add]; simp
   have hunit : 1 ≤ 5*(N : ℝ)*Real.exp (-u) := by
     have h := mul_le_mul_of_nonneg_right hexp (Real.exp_pos (-u)).le
-    rwa [he, ← mul_assoc] at h
+    rwa [he] at h
   have hcoef : 4*(1+sourceFactorialCollar N)*(N : ℝ) ≤ 8*(N : ℝ) := by nlinarith
   have harg : 4*(1+sourceFactorialCollar N)*((N : ℝ)*Real.exp (-u))+1 ≤
       (13*(N : ℝ))*Real.exp (-u) := by
@@ -146,7 +147,7 @@ theorem abs_atomicSource_factorialRamp_le (n : ℕ) {u : ℝ}
       19*Real.exp (u/2)/Real.sqrt (n+1 : ℕ) *
         (1+Real.log (13*((n+1 : ℕ) : ℝ))-u) := by
   let N := n+1
-  have hn : (1 : ℝ) ≤ N := by dsimp [N]; positivity
+  have hn : (1 : ℝ) ≤ N := by exact_mod_cast (show 1 ≤ N by dsimp [N]; omega)
   have hN : 1 ≤ N := by dsimp [N]; omega
   have hc := factorial_packet_collar_bounds hN hlo
   have hv : 0 < (N : ℝ)*Real.exp (-u) := by positivity

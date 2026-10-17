@@ -263,8 +263,23 @@ partial residual masses grow as (1/4)log M. The linear weight producer m=1
 restores integrability at that same beta, with A_N~1/(12N).
 
 Taylor's theorem, the power-series convergence test and dominated convergence
-are established tools, not new contributions. The proposed connected contribution
+are established tools, not new contributions. The connected contribution
 is the exact logarithmic-cell weight/order classification, its explicit bounded
 producer and norm asymptotics, and the single actual low-energy smooth family
 that proves sharpness and the failure of every insufficient producer order.
 No prime quadrature, arithmetic positivity or RH claim is included.
+
+## 8. Formal certificate
+
+The complete result is formalized in seventeen direct Lean leaves, with
+159 theorems and 27 definitions. All 186 public declarations have scratch
+axiom audits using only standard logical axioms; all API entries, imports,
+and source hashes are checked. The certificate is
+`docs/drafts/pipeline/3-formalized/nyquist-weight-order-threshold-2026-10-17.md`.
+It records five unrelated global lint failures; none concerns this package.
+
+Lean uses zero-based cell k with n=k+1, tail N starting at log(N+1), and
+prefixes containing M cells. Thus its displayed normalizations are log(M+1)
+and (M+1)^(beta-m-1), with the same sharp constants as the fixed-index-shift
+limits above. The degree-zero beta=1/2 producer, kernel, and cell/tail masses
+are proved equal to the original Nyquist polar construction.

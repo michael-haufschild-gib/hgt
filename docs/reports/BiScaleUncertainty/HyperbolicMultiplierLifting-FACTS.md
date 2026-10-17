@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Twenty-five substantive results are Lean verified: compensated multiplier Gram
+contributions. Twenty-six substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -29,7 +29,8 @@ actual nonzero-mean coherent attainment with the optimal universal coefficient a
 the canonical fixed-annulus retraction preserving full odd coherent data and pricing the original plastic functional (14), and
 the actual coherent kernel splitting, nonzero zero-fold family and unconditional plastic nonnegativity (25), and
 exact source-realized plastic line minimization with coherent-data preservation and full gain transfer (21), and
-explicit outward sources with fixed full coherent data, inverse-square plastic error, sharp fiber infimum and complete attainment/sign classification (21 across two modules). Supporting theorem
+explicit outward sources with fixed full coherent data, inverse-square plastic error, sharp fiber infimum and complete attainment/sign classification (21 across two modules), and
+the explicit confinement gap, full-fold price rigidity and necessary support escape for every sufficiently accurate coherent near-minimizer (15). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -1111,7 +1112,7 @@ the master card; no repository-wide clean-gate or external novelty claim.
 
 ## Quantitative confinement and necessary support escape
 
-Dependency-closed paper theorem; Lean audit pending in
+Lean-verified module
 `formal/GaloisForLFunctions/BiScaleUncertainty/ConfinedCoherentPlasticGap.lean`.
 Let d=log2, c=screwSignThreshold, B_N=(N+1)d/2 and T_N=2B_N+c.
 Define t_N=archLevyAntideriv(T_N)>0 and
@@ -1142,3 +1143,16 @@ One substantive confinement/escape contribution. The constants contain no
 unestimated analytic input. Fixed-window membership is an exact geometric
 domain restriction, not an integrability or positivity premise. No sharpness
 of the gap coefficient or existence of a minimizer under confinement is claimed.
+Support escape asserts a nonzero source value outside the window; it does not
+assert a lower bound on escaped mass or energy decay for every minimizing family.
+
+Direct source audit and all15 public theorem axiom audits passed without warnings;
+only `propext`, `Classical.choice`, `Quot.sound`. Source has339 lines, six public
+definitions and15 public theorems; SHA256
+`7658ac3917d9d3d363679ca40ba2f1fa37805f56bf43d1e54ceedd2c0992a830`.
+Umbrella wired; all21 public declarations match the indexed API, and all15
+source/audit theorem names match exactly. Twenty-six contributions,27 verified
+modules,402 supporting public theorem audits; full goal ACTIVE. Final global
+lint reports four unrelated unreachable modules and no generated-file drift;
+no owned lifting module issue. Exact snapshot on master card; no global clean-gate
+or external novelty claim.

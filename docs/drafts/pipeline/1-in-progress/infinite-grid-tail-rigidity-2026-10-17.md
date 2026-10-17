@@ -47,7 +47,7 @@ This is uniform over changing sources and nonzero coefficients. Complete proofs 
 
 ## Certified frontier
 
-Fourteen significant packages certified:
+Fifteen significant packages certified:
 
 1. Canonical tail detection and the uniform linear energy barrier for separated two-copy sources,
    including the stronger local-energy inequality (22 theorems).
@@ -120,11 +120,18 @@ Fourteen significant packages certified:
     Six clean leaf checks, all API entries/imports and source hashes verified.
     Global lint has nine unrelated missing imports; no error in this package.
 
-The 100-package objective remains active with 14 certified packages. The next
-complete paper classifies the exact exponential growth threshold and Taylor
-order for a summable weight residual, with sharp constants and actual smooth
-source witnesses whose energies tend to zero. Lean formalization is in progress.
-Card: `../2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md` (uncounted).
+15. Exact weight-growth/Taylor-order classification for logarithmic-cell producers:
+    residual integrable iff beta<m+1, minimum degree floor(beta), explicit bounds,
+    sharp tail and critical/supercritical prefix constants, exact bounded operator
+    norm and signed compact-input decomposition. One actual smooth source family
+    proves norm sharpness and divergence under every positive energy ceiling.
+    Original Nyquist producer and all three calibration constants are recovered.
+    Card: `../3-formalized/nyquist-weight-order-threshold-2026-10-17.md`.
+    Seventeen checked leaves; 159 theorems, 27 definitions; 186 standard-axiom
+    audits and API entries; all imports and source hashes verified. Global lint
+    reports five unrelated missing imports; no error concerns this package.
+
+The 100-package objective remains active with 15 certified packages.
 Mixed-energy decoupling and global polar closedness remain separate open refinements.
 
 ## Constraints

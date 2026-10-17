@@ -1,15 +1,15 @@
 # Nyquist weight order and the threshold for an integrable residual
 
 - **ID:** nyquist-weight-order-threshold-2026-10-17
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Scope:** Infinite-Grid Tail Rigidity Beyond Trap 5; explicit weight producers.
 - **Source:** The integrable polar residual package and the field guide
   `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
 - **Statement:** For beta>0 and Taylor degree m>=0, the logarithmic-cell
   Taylor producer for cosh(beta x) has an integrable residual exactly when
   beta<m+1.
-- **Status:** Dependency-closed paper proof complete; Lean in progress, uncounted.
+- **Status:** Complete paper theorem formalized and audited; package 15/100.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistWeightOrderThreshold.md`.
 
 ## Goal
@@ -70,15 +70,15 @@ source is not a resolution of that remaining uniform-control problem.
 
 - [x] Current corpus inspected; exact novelty boundary established.
 - [x] Dependency-closed paper proof and sharp positive-survivor audit.
-- [ ] Actual positive kernel, bounded operator and threshold formalized in Lean.
-- [ ] All direct leaves, axioms, API entries, imports and formal lint checked.
-- [ ] Count once only if the complete classification adds a substantive tool.
+- [x] Actual positive kernel, bounded operator and threshold formalized in Lean.
+- [x] All direct leaves, axioms, API entries, imports and formal lint checked.
+- [x] Count the complete producer-order classification once, as package 15.
 
 ## Execution plan
 
 1. Refresh the corpus boundary and identify exact Taylor, power-tail and source-scaling inputs.
 2. Prove positivity, explicit cell bounds, the sharp mass asymptotic and all threshold cases on paper.
-3. Prove the bounded operator and exact compact-input decomposition below the threshold;
+3. Prove the bounded operator below the threshold and exact compact-input decomposition at every beta>=0;
    construct actual smooth low-energy source witnesses at and above it.
 4. Formalize the complete connected theorem in direct Lean leaves, one process at a time.
 5. Audit all declarations, axioms, API entries, imports and lint; update the ledger only then.
@@ -108,18 +108,32 @@ The formal indexing uses zero-based cells k with n=k+1, so tail N begins at
 log(N+1), and a prefix of M cells has normalizations log(M+1) and (M+1)^r.
 These are the paper's limits under the corresponding fixed shifts of indices.
 
-The complete audit inventory has 186 public declarations: 159 theorems and
-27 definitions. Scratch axiom audit is running. Exhaustive source hashes,
-API entries, umbrella imports, index refresh and formal lint remain to be
-checked before promotion and counting. Audit scripts are
-`/tmp/nyquist_weight_certificate.py` and `/tmp/nyquist_weight_verify.py`.
+The complete audit on 2026-10-18 covers 186 public declarations: 159 theorems
+and 27 definitions. Every declaration has a scratch `#print axioms` certificate
+using only `propext`, `Classical.choice`, and `Quot.sound` (or no axioms).
+All 186 exact name/module API pairs and all 17 umbrella imports are verified.
+Source hashes match the final direct checks; the read-only guide hash is
+unchanged. `scripts/formal_tools.py index` exits 0.
+
+Global `scripts/formal_tools.py lint` exits 1 solely on five unrelated missing
+umbrella imports: `ConfinedCoherentPlasticGap`,
+`SignedLcmFractionalDefectAndCompleteFibreCollapse`,
+`SignedPrimePolarClampedPrimeSum`, `SignedPrimePolarFactorialAtomicPacket`,
+and `SignedPrimePolarRealFactorialStencil`. No error concerns this package;
+the snapshot reports no active proof hole. No repository-wide green claim.
+
+Final leaf checks use `lake --old env lean -j 1 -o <olean> <leaf>`.
+The axiom audit uses `lake --old env lean -j 1 /tmp/nyquist_weight_axioms.lean`.
+Complete manifests are `/tmp/nyquist_weight_{declarations,source_hashes,axiom_coverage,verification}.json`;
+audit logs are `/tmp/nyquist-weight-{axioms,index,lint}.log`.
+Audit scripts are `/tmp/nyquist_weight_certificate.py` and `/tmp/nyquist_weight_verify.py`.
 
 Trap 10 alignment: these are explicit unconditional Nyquist-cell producers.
 No receiver-only Chebyshev premise or pre-floor subtraction enters this
 package. The factorial-stencil route remains a separate research topic.
 The field guide remains read-only and its hash matches the fully read version.
 
-The original 100-package objective remains active with 14 certified packages.
+The original 100-package objective remains active with 15 certified packages.
 This card carries task tracking because `update_plan` is unavailable.
 
 ## Paper and input audit
@@ -144,11 +158,12 @@ tests and broad-source scaling are reused inputs, not counted as new results.
 
 The strongest positive survivor is the full producer-order hierarchy and its
 sharp norm on actual smooth correlations under arbitrarily small positive
-energy ceilings. Formalize this complete result; do not count just its negative
-integrability threshold or an easier isolated helper.
+energy ceilings. This complete result is formalized and counted once; its
+negative threshold and helper lemmas are not separate contributions.
 
 ## No-go closure
 
 If the proposed threshold or asymptotic fails, extract the exact corrected
 classification or replacement producer. Do not retire the route with a negation
-alone. The complete paper result is proved; its Lean certificate remains open.
+alone. Here the exact positive producer hierarchy and actual-source sharpness
+are both proved on paper and certified in Lean.

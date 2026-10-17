@@ -1,7 +1,7 @@
 # Compact logarithmic states from compensated physical producers
 
 - **ID:** compact-physical-box-producers
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** continuum-coprime-shear; physical-box-average-affine-regularity
 - **Statement:** Construct compact logarithmic primitive states from arbitrary physical velocities using interval truncation, explicit zero-integral compensation and box smoothing, with quantitative errors and compact-source graph convergence.
@@ -43,8 +43,8 @@ the negative physical component by positive-supported velocities.
 ## Gates
 
 - [x] Initial corpus audit and exact source-text search.
-- [ ] Reaudit applicable source declarations and primary parent theories.
-- [ ] Complete paper proof of actual restrictions, compensator, preservation
+- [x] Reaudit applicable source declarations and primary parent theories.
+- [x] Complete paper proof of actual restrictions, compensator, preservation
   of zero integral under smoothing, compact logarithmic support, derivative,
   all limits and graph coupling.
 - [ ] Formalize only the audited theorem; serial leaf checks, all-public
@@ -77,9 +77,48 @@ prove vanishing tails directly. Since h<α, the second primitive at h is zero;
 the zero-integral compensator makes the original primitive zero above β+L.
 This could avoid a separate global Fubini argument for compact support.
 
-Unproved and uncounted; no Lean assigned. The physical box package must
-finish certification first. Remain on continuum coprime shear. Do not infer
+Unproved and uncounted; no Lean assigned. The physical box package is now
+certified as contribution19/100. Remain on continuum coprime shear. Do not infer
 full uncut SourceGraph closure, completed divisor-domain preservation, or
 operator-norm convergence from this proposed local approximation. No RH
 work, numerical experiments, analytic admission premises, or pre-floor
 counterterm subtraction. Field README remains read-only.
+
+## Active proof scope
+
+Previous goal turn classified as progress: package19 current artifact check
+passed at this turn's initialization. Attachment and all260 README lines
+read; README remains read-only. Relevant Serena memory read, architecture
+and testing docs remain absent. No subagents; update_plan unavailable, this
+card records the plan. Certified count remains19/100.
+
+Prove the entire proposed producer construction, plus an explicit bound for
+source mass so convergence controls source mass and jump energy together.
+Use K(ψ)=∫ψ(x)²exp(x)dx and the unconditional primitive bound
+|F_q(exp x)|²≤exp(x)‖q‖² to bound sourceMass(ψ,q,0) by K(ψ)‖q‖².
+Approximate zero-anchored states F_q(exp x); do not claim global physical
+energy approximation of arbitrary added constants. Complete paper proof
+before field Lean; then serial leaf, axiom, API, umbrella, catalog and lint
+audits. No new field Lean is written yet.
+
+Current semantic query returned no candidates or source arguments;
+partial=true, deadline/vector-statement unfinished, generation1447962
+pending, refresh incomplete. Broadened to lexical exact existing objects.
+No absence inference. Evidence /tmp/compact-physical-current-search.json.
+
+Dependency-closed paper proof now written before field Lean:
+docs/reports/BiScaleUncertainty/CompactLogarithmicPhysicalProducers.md.
+It includes exact compensator energy m_n²/L, orthogonal compensated energy,
+the stronger norm factor sqrt(1+exp(−r)), explicit compact C¹ source and
+weighted derivative, visible-component approximation, affine bounds, and
+the whole compact source-mass-plus-jump form estimate and convergence.
+The input remains an arbitrary actual physical L² vector; no added analytic
+admission premise. Count remains19/100 until formal certification.
+
+Lexical query returned14 declarations (36 total lexical matches under the
+default per-module cap), no candidate/source-argument sections or semantic
+coverage metadata. All14 returned declarations inspected; applicable source
+definitions read. Existing negativePhysicalVelocity, primitive/box APIs,
+sourceMass and compact jump bounds are parents. Online mathlib indicator
+docs and Demkowicz translation/regularization arguments inspected; local
+source governs API signatures. No absence or external novelty claim.

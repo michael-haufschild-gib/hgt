@@ -142,9 +142,9 @@ Final audit logs: `/tmp/nyquist-residual-{axioms,index,lint}.log`.
 Complete manifests: `/tmp/nyquist_residual_{declarations,source_hashes,axiom_coverage,verification}.json`.
 Scratch axiom audit: `/tmp/nyquist_residual_axioms.lean`.
 
-## Next question
+## Connected extension
 
-The complete paper `../2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md`
+The complete certificate `nyquist-weight-order-threshold-2026-10-17.md`
 proves the exact growth threshold and minimal Taylor order of an integrable
-weight residual, with actual smooth low-energy source sharpness. Its Lean
-formalization is in progress; no further contribution is counted yet.
+weight residual, with actual smooth low-energy source sharpness. Its complete
+Lean formalization is certified as package 15.

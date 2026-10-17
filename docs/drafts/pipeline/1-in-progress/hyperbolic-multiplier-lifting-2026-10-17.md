@@ -109,6 +109,11 @@
     the multiplier-energy and positive tail costs explicitly, then determine
     whether every minimizing family in a nonzero coherent class must leave
     each fixed source window. Paper and corpus audit before new Lean.
+32. Bound the canonical annular lift from its full coherent data. Prove an
+    exact profile-weighted cell energy identity, uniform upper/lower source
+    energy bounds and stability between representatives. Transfer these into
+    the actual representative's plastic excess and the original source's full
+    plastic functional with its explicit zero-fold component cost retained.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -2258,9 +2263,9 @@ Verification and integration for contribution25:
   apply_patch; absence verified. Final source and read-only README hashes
   unchanged. Scoped diff and new-file whitespace checks passed.
 
-## Twenty-sixth result under construction: quantitative confinement gap
+## Twenty-sixth result: quantitative confinement gap
 
-Dependency-closed paper proof before Lean. Let d=log2, c=screwSignThreshold,
+Dependency-closed paper proof, now formalized. Let d=log2, c=screwSignThreshold,
 B_N=(N+1)d/2, T_N=2B_N+c, A_N=(2N+1)sinh(B_N/2)^2, and
 t_N=archLevyAntideriv(T_N). All three B_N,A_N,t_N are strictly positive;
 t_N is exactly the plastic kernel mass on (T_N,infinity), with its known
@@ -2307,3 +2312,91 @@ variance bound. Source searches found no coherent-class confinement-gap
 theorem. Used exact finite-filter pairing, cell-square identity and elementary
 plastic tail primitive. Unfinished text/source retrieval, older coverage
 snapshot and unmeasured semantic coverage preclude completeness/priority claims.
+
+Verification and integration for contribution26 (2026-10-18):
+- Source `ConfinedCoherentPlasticGap.lean`:339 lines,6 public definitions,
+  15 public theorems. Final actual-source audit1915 exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/ConfinedCoherentPlasticGap.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/ConfinedCoherentPlasticGap.olean`
+  from `formal`. SHA256
+  `7658ac3917d9d3d363679ca40ba2f1fa37805f56bf43d1e54ceedd2c0992a830`.
+- API45912 and all15 public theorem axiom audit34033 exited0 without warnings;
+  only `propext`, `Classical.choice`, `Quot.sound`. Exact source/audit name-set
+  match. Initial API97709 needed an explicit second universe on the periodicity
+  lemma. Source9960 found one nested tactic syntax error in the tail proof;
+  extracting the zero-correlation step fixed it without changing statements.
+- One owned Lean process at a time; no source edits after final source/axiom
+  audits. No full build, heartbeat/recursion changes, numerical experiment,
+  subagent, commit or push. No no-go retired in this contribution.
+- Umbrella wired. Index54083 exited0, writing LEAN_API, LEAN_GAPS and
+  LEAN_OVERVIEW; search DB3 changed/0 removed. All21 public declarations
+  match the indexed API exactly.
+- Lint97434 (`scripts/formal_tools.py lint --check-generated`) exited1 on
+  four unrelated unreachable modules: `SignedLcmFractionalDefectAndCompleteFibreCollapse`,
+  `SignedPrimePolarClampedPrimeSum`, `SignedPrimePolarFactorialAtomicPacket`,
+  `SignedPrimePolarRealFactorialStencil`. Existing large-file warnings remain.
+  No generated-file drift or owned lifting module issue. No bounded refresh
+  needed; unrelated sources untouched. No repository-wide clean-gate claim.
+- Prior capstone and read-only README hashes unchanged. Master plan31 and
+  facts section26 complete. Contribution26/100 complete:27 verified modules,
+  402 public theorem audits. Full goal remains ACTIVE. Support escape means
+  an actual nonzero value outside each fixed window, not a claimed lower bound
+  on escaped mass or original-energy decay for every minimizing family.
+- All owned corpus, Lean, index and lint handles terminal. Scratch
+  `/tmp/hml_confinement_api.lean` and `/tmp/hml_confinement_lint.txt` removed
+  through apply_patch; absence verified. Final scoped diff/source whitespace
+  checks passed and source/README hashes stayed unchanged after cleanup.
+
+## Twenty-seventh result under construction: bounded annular coherent lifting
+
+Dependency-closed paper proof before Lean. Let d=log2, A=attainingSource(1),
+p(u)=sinh(u/2)A(u)=attainmentProfile(u), F=odd(f), P_f=cellFold(F),
+C_f=coherentPrice(f), R_f(u)=A(u)P_f(u/d), and K_f=F-R_f.
+The explicit symmetric tent profile has 0<=p<=1 and sums to1 on every
+integer lattice cell. Its support lies in d<|u|<3d, as does A.
+
+For H_f(u)=p(u)P_f(u/d)^2, integer-cell periodization and the exact
+partition identity give integral H_f=d*integral_0^1 P_f^2=C_f.
+All functions are actual compact continuous functions. On the unit cell
+only finitely many shifts contribute, so the sum/integral interchange is
+finite; scaling by d is ordinary Haar change of variables.
+
+Put kappa=1/sinh(d/2)^2>0. On nonzero profile support,
+|sinh(u/2)|>=sinh(d/2), and p²<=p, hence A(u)^2<=kappa*p(u).
+Multiplying by P_f(u/d)^2 and integrating yields h_(R_f)(0)<=kappa*C_f.
+The representative lies in confinement window N=5, whose radius is3d.
+The already proved confined energy inequality gives
+C_f/confinementCost(5)<=h_(R_f)(0)<=kappa*C_f.
+This is uniform control for the explicit representative, compatible with
+the earlier no-go for controlling arbitrary original energy by coherent price.
+
+Odd projection, full fold and multiplication by A are linear, so
+R_(f+t*g)=R_f+t*R_g. Applying the energy bounds to f-g and the cell-square
+identity gives both-sided stability in the exact folded-profile distance:
+d*integral_0^1(P_f-P_g)^2/confinementCost(5)
+<=h_(R_f-R_g)(0)<=kappa*d*integral_0^1(P_f-P_g)^2.
+This concerns realized coherent profiles; no abstract completion or optimal
+energy lift is asserted.
+
+Write Q for the original signed plastic functional, O_f for the preserved
+signed moment, and V for its known origin potential. The exact jump law,
+generic J(R)<=V*h_R(0), and confinement gap give
+confinementGap(f,5)<=Q(R_f)+2O_f²<=2*V*kappa*C_f.
+Finally F-2K_f=R_f-K_f stays in the same full coherent class, so its Q is
+at least -2O_f². The exact quadratic line identity gives
+Q(F)+Q(F-2K_f)=2Q(R_f)+2Q(K_f).
+Therefore the full original functional satisfies
+Q(F)+2O_f²<=4*V*kappa*C_f+2Q(K_f).
+The kernel cost is an explicit actual-source functional, known nonnegative,
+not an assumed estimate or omitted signed cross term.
+
+One substantive bounded-lift and full-functional decomposition contribution;
+linearity, finite periodization and quadratic algebra are supporting steps.
+No source-grid blindness, universal odd plastic positivity, best constants,
+orthogonal decomposition or minimizing representative is claimed.
+
+Corpus query `annular representative bounded right inverse coherent fold
+original energy norm`, --any, BiScale filter, returned partial61.17s. Existing
+annular retraction, full cell-square identity, original-energy no-go, outward
+producer and confinement bound were inspected. Exact source searches found
+no energy/stability bound for this annular lift. Unfinished text/source stages
+and unmeasured semantic coverage preclude completeness or external priority claims.

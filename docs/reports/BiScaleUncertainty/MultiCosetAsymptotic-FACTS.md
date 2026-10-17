@@ -153,8 +153,9 @@ monotonicity, source-energy control, and finite convergence, with upper bound
 and arithmetic product-admission condition. Final direct recheck passed, exit 0,
 without diagnostics.
 
-No strict improvement of C_N over P_N, sharp convergence rate, or equality with the
-true source infimum is asserted. Sharpness applies only to the paired-sphere support.
+Package 15 below proves eventual strict improvement of C_N over P_N. Sharp
+convergence and equality with the true source infimum remain separate questions.
+The finite support sharpness here applies only to the paired-sphere relaxation.
 The full-grid capped-support construction below retains high nodes without the
 loss caused by separately summing low/high block norms.
 
@@ -182,8 +183,43 @@ premise. The bound is for the product-coupled subhierarchy, not the full Gram co
 compilation without diagnostics. All 30 theorem axiom/signature audits pass using
 only `propext`, `Classical.choice`, and `Quot.sound`. Final direct recheck passed,
 exit 0, no diagnostics.
-The error exponent is an upper bound, not a proved sharp rate. Matching leading laws
-and strict improvement C_∞>P_∞ remain open.
+The error exponent is an upper bound, not a proved sharp rate. The matching paired
+leading law remains open; package 15 proves C_∞≥P_∞+g with explicit g>0.
+
+## Uniform paired gap and strict limiting separation
+
+Set δ=log2/2, e=log3−log2−δ, a=e/3, b=2e/3, and
+
+    W0=2/(1−exp(−2a)),   g=(b−a)/(W0+2)>0.
+
+For every physical cutoff N≥3 and every admissible partition ρ, Lean proves
+
+    pairedCoefficient(ρ)≥coefficient(ρ)+g,
+    Q_N≥P_N+g,   Q∞≥P∞+g>P∞.
+
+Exact partitioning forces node-2 share one at both points log2±y for y∈(a,b]:
+both points lie below the left edge of every later collar. Their actual weights
+are at least one, hence both whole-sign block norms A,B are at least one. Since
+W≤W0, the rationalized gain
+2AB/(sqrt(W²+(A+B)²)+sqrt(W²+A²+B²)) is at least 1/(W0+2).
+Integrate this bound on (a,b], use nonnegative gain elsewhere, then take suprema
+and monotone limits. No maximizing partition or external error premise is needed.
+
+Consequently C_N=Q_floor(sqrt N) for all sufficiently large N. Every actual
+smooth nonzero N-grid source obeys
+
+    J_arch(f)/h_f(0) ≥ P∞+g−16exp(δ/2)/N^(1/4),   N≥4,
+
+and eventually has normalized energy greater than P∞+g/2, uniformly over sources.
+For any admitted physical frame K≥8, K²≤N, the sharper inherited bound is
+P∞+g−4/sqrt(K)−12289/K. Thus the independent limiting coefficient cannot be
+asymptotically sharp for actual growing-grid sources. A fixed low-node allocation
+constraint preserves a nonvanishing coupling benefit even while cutoff tails vanish.
+
+This gap concerns Q versus P. It does not identify the full measured-Gram limit,
+the unrestricted source infimum, or an optimal value of g. The exact paired
+leading tail and the resulting fourth-root leading constant remain unproved.
+All three leaves, all 25 theorem axiom audits, and final direct check pass.
 
 ## Exact full-grid capped support
 
@@ -576,7 +612,7 @@ and `/tmp/bsu-regularized-lexical{,-page2,-page3}.log`.
 
 ## Research accounting
 
-Lean-verified significant packages: **14/100**: (1) general source transfer and
+Lean-verified significant packages: **15/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
@@ -604,19 +640,20 @@ responses and finite iteration, followed by a monotone producer reaching S∞ wi
 explicit allocation and cutoff errors for actual sources;
 (14) actual concentrated cutoff extension and retraction, matching physical-tail
 comparison, exact leading allocation constant four with explicit O(1/N) error,
-and the resulting actual grid-source certificate.
+and the resulting actual grid-source certificate;
+(15) exact forced first-node allocation, a uniform integrated paired gain over
+all partitions, strict optimized limiting separation, eventual paired-branch
+selection, and quantitative actual-source improvement above the independent limit.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Latest global lint reports 12 unrelated modules unreachable from the umbrella:
-`NyquistWeightCalibrations`, `NyquistWeightPrefixMass`, `NyquistWeightProducer`,
-`NyquistWideResidualEscape`, `NyquistWideResidualLimit`, `PhysicalBoxAffineRegularity`,
-`PhysicalBoxAverage`, `PhysicalBoxGraphControl`, `PhysicalBoxProfile`,
-`PhysicalBoxVariance`, `PhysicalTranslationContinuity`, and
-`WindowEnergyArithmeticQuadrature`. Those concurrent files were not modified.
-All 53 owned leaves are wired. Evidence: `/tmp/bsu-sharp-tail-lint.log` and
-`/tmp/bsu-sharp-tail-integrity.json`.
+Latest global lint reports five unrelated modules unreachable from the umbrella:
+`ConfinedCoherentPlasticGap`, `SignedLcmFractionalDefectAndCompleteFibreCollapse`,
+`SignedPrimePolarClampedPrimeSum`, `SignedPrimePolarFactorialAtomicPacket`, and
+`SignedPrimePolarRealFactorialStencil`. Those concurrent files were not modified.
+All 56 owned leaves are wired. Evidence: `/tmp/bsu-paired-gap-lint.log` and
+`/tmp/bsu-paired-gap-integrity.json`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -950,13 +987,73 @@ before clearing denominators. Supply constant-integrability arguments through
 differences with `change` before rewriting integrals. Expand composed limits
 before simplifying square roots. Avoid redundant tactics after `field_simp`.
 
-Next paper candidate, uncounted: a fixed interval near offset zero forces node-2
-share one on both signs for every cutoff N≥3. Let e=log3−log2−δ>0,
-a=e/3, b=2e/3 and W0=2/(1−exp(−2a)). On [a,b], the whole-sign norms
-A,B are at least one and W≤W0, so the paired kernel gain should be at least
-1/(W0+2). Integration would give a uniform gap g=(b−a)/(W0+2)>0 and hence
-Q∞≥P∞+g. Exact node exclusion, weight bounds, integration and supremum transfer
-still need Lean proofs. Combined with an analogous paired leading-tail law, this
-would select the delayed coupled hierarchy's N^(−1/4) branch. Neither claim is
-counted or certified yet. The complete paper argument and scope limits are on
-the owned card.
+The forced first-node gap proposed at the package-14 audit is now certified in
+package 15 below, including eventual paired-branch selection. The paired leading
+tail and the exact fourth-root saturation law remain the next uncounted candidates.
+
+## Uniform paired gap verification (package 15)
+
+Three leaves, respectively 10, 7 and 8 public theorems:
+
+- `ForcedFirstCollar`: `a06b3ca66acb31311f88a0d97822b31f1d1e834df2582d215c0606488493802a`.
+- `UniformPairedCollarGain`: `7d788a7d463068841fd81d712f957aa6ef413556ab9eb11a13cdfe3d123025cc`.
+- `StrictPairedCollarLimit`: `136b5da409462a77805ce5b82548c84d77692f770bf269f49b03419dd6ebc31c`.
+
+All three dependency compiles pass with empty logs. All 25 public theorem axiom
+audits pass exactly once, using only `propext`, `Classical.choice`, and `Quot.sound`.
+Twelve signatures and six explicit constant definitions were printed and inspected.
+Evidence: `/tmp/bsu_paired_gap_axioms.lean`, `/tmp/bsu-paired-gap-axioms.log`,
+and `/tmp/bsu-paired-gap-audit-coverage.json`.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/StrictPairedCollarLimit.lean`;
+exit 0, empty log, no `-o`. Evidence `/tmp/bsu-paired-gap-final.{log,exit}`.
+Dependency logs: `/tmp/bsu-paired-gap-{first,uniform,limit}.log`.
+
+Index refresh exits 0. All three requested capstones are discoverable:
+`limitingCollarCoefficient_lt_limitingProductCoupled`,
+`eventually_productCoupled_eq_paired`, and `uniformPaired_source_fourth_root_bound`.
+All eight returned declarations were inspected. Evidence:
+`/tmp/bsu-paired-gap-{index.log,discovery.json,discovery-coverage.json}`.
+All 56 owned imports occur exactly once; all 53 prior source hashes and all three
+current hashes match their manifests. Read-only README is unchanged at
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Scoped whitespace passes. Global lint exits 1 for five foreign unwired modules
+listed in the facts ledger and `/tmp/bsu-paired-gap-lint.log`; no own failure.
+Integrity: `/tmp/bsu-paired-gap-{manifest,integrity}.json`.
+API scratch removed; successful axiom scratch and logs retained. All owned jobs
+terminal. No full/umbrella build, numerical experiment, heartbeat increase, commit
+or push. This is one significant contribution: **15/100**; full goal active.
+
+The first and final leaves passed on their first check. The uniform-gain leaf
+needed only removal of a redundant `ring` after `field_simp` had already closed
+the goal. Existing physical partition conservation, single-coordinate norm bounds,
+and paired radial rationalization suffice; no optimizer-attainment interface was added.
+
+## Next paired leading-tail candidate [paper proof; uncounted]
+
+Write A,B for the whole-sign norms and R=sqrt(A²+B²). The paired kernel equals
+physical mass minus r_W(R), with r_W(R)=sqrt(W²+R²)−W. R≤A+B≤mass.
+The existing paired radial capacity theorem at W=0 gives monotonicity and a
+unit l1 perturbation bound for R; signwise zero-padding preserves R. Therefore
+the actual concentrated extension and retraction from package 14 should satisfy
+the same radial budgets 8192/N and 12288/N, now with R in place of A+B.
+The same endpoint tail and supremum argument would give
+
+    |Q∞−Q_N−4/sqrt(N)|≤12289/N,   N≥8.
+
+Exact obligations: define the paired array norm and integrable physical radial
+penalty, prove padding and unordered perturbation comparisons, specialize them to
+both actual constructions, then integrate and pass through the paired suprema.
+None of these new paired tail statements is yet Lean-certified.
+
+Package 15 already proves C_N=Q_K eventually, K=floor(sqrt N). Once the paired
+tail law is verified, floor arithmetic gives K≥sqrt(N)/2 and 0≤sqrt(N)−K<1.
+Hence 0≤1/sqrt(K)−1/N^(1/4)≤1/K for K≥1. For sufficiently large N,
+
+    |Q∞−C_N−4/N^(1/4)|≤12293/K≤24586/sqrt(N),
+    N^(1/4)(Q∞−C_N)→4.
+
+This is a dependency-closed paper route to the exact coupled saturation exponent
+and leading coefficient. The floor normalization and paired tail estimate both
+remain formal obligations. It concerns the delayed paired hierarchy only, not
+full measured-Gram or unrestricted-source optimality.

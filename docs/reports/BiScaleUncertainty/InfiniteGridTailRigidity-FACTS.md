@@ -3,7 +3,7 @@
 ## Scope and counting
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
-Target: 100 significant mathematical packages. Certified packages in this ledger: **14**.
+Target: 100 significant mathematical packages. Certified packages in this ledger: **15**.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
 
 Field guide: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only.
@@ -500,7 +500,7 @@ proves Q(H_n)>=((n+2)/4)P_seed-1->infinity with convergent residuals and energie
 compact correlation closure and uniform signed traces. Count once. Existing cell
 L2/dyadic producer bounds and package 1's weighted sample defects are not new.
 
-The latest global lint snapshot has nine foreign modules missing umbrella
+The package 14 lint snapshot had nine foreign modules missing umbrella
 reachability: `ExponentialTentMoments`, `PhysicalCollarMixture`,
 `PhysicalPriceResponse`, `RegularizedGramDescent`, `RegularizedGramGeometry`,
 `RegularizedGramIteration`, `RegularizedPhysicalGram`,
@@ -508,38 +508,53 @@ reachability: `ExponentialTentMoments`, `PhysicalCollarMixture`,
 No error concerns this package, and the snapshot reports no active proof hole.
 Index refresh and exhaustive own certificate checks pass. README hash unchanged.
 
-## Next paper theorem: weight growth and producer order
+## 15. Exact weight growth, producer order, and energy-sharp residual norms
 
-For w_beta(x)=cosh(beta x), beta>0, approximate the weight on each logarithmic
-cell by its degree-m Taylor polynomial at the left endpoint. The paper proves:
-the positive residual is integrable exactly when beta<m+1, with sharp tail
-mass asymptotic beta^(m+1)/(2(m+2)!(m+1-beta))*N^(beta-m-1).
-This alters weight approximation, not source regularity. One actual smooth
-nonnegative source family has E_j<=K/(j+1); its residual tends to the full
-kernel mass below the threshold and diverges at or above it. This proves
-sharpness under every positive energy ceiling. Complete paper:
-`NyquistWeightOrderThreshold.md`. Lean formalization is in progress; uncounted.
-Checked Lean facts now include positive Taylor remainders, the explicit
-cell majorant, the sharp cell asymptotic and exact summability threshold for
-every tail, plus two-sided power-tail bounds and transfer of a ratio limit
-to positive summable tails. The actual kernel integrability criterion, compact-input
-integrability beyond the threshold, explicit subcritical tail bound, and sharp
-tail mass asymptotic are also checked. The positive integral operator has a
-checked exact norm and explicit bound. The actual common smooth source family
-has checked energy decay, pointwise correlation limit one, and a growing
-positive plateau. Sharp critical logarithmic and supercritical power prefix
-asymptotics are now checked, including their exact coefficients for every
-fixed starting cell. Actual-source subcritical sharpness is checked: the same
-tail mass is the exact best constant under every positive energy ceiling.
-The exact compact-input producer decomposition, absolute subcritical cell
-summation, and uniform-convergence equivalence are checked. The common source
-family's residual diverges at/above threshold despite energy tending to zero;
-the corresponding no-finite-bound statement is checked. Calibrations and the
-complete package audit remain unfinished; package count stays 14.
-Card: `docs/drafts/pipeline/2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md`.
-Current deep search inspected all 20 candidates and 20 source arguments;
-the suggested decaying-weight argument does not prove this growing-weight
-classification. Focused Taylor/Nyquist lexical search found no declaration.
+For w_beta(x)=cosh(beta x), beta>0, the degree-m cell-left Taylor producer
+has a nonnegative locally integrable residual. It is integrable exactly when
+beta<m+1; the minimum degree is floor(beta). Set
+c=beta^(m+1)/(2(m+2)!), q=m+1-beta, and B=2^beta beta^(m+1)/(m+2)!.
+Cell mass satisfies alpha_n~c n^(beta-m-2). Below threshold,
+A_N<=B(1+1/q)N^-q and A_N~(c/q)N^-q. At threshold the mass prefix is
+asymptotic to c log M; above it the prefix is asymptotic to
+c M^(beta-m-1)/(beta-m-1). Every tail has infinite positive mass at/above
+threshold. For beta=0 every residual is zero.
+
+The actual positive bounded residual operator has exact norm A_N, attained
+by constant one, and an absolutely summable cell-integral representation.
+Its Lipschitz constant is A_N and its tail norm tends to zero. For signed
+compact continuous inputs, explicit Taylor-weighted cell moments give an
+exact polar-integral decomposition at every beta>=0, including above the
+threshold. Below threshold, global uniform convergence makes convergence
+of polar integrals equivalent to convergence of these produced moments.
+Every actual normalized signed source has error at most the explicit tail
+bound, independently of support, source count, energy, or derivative bounds.
+
+One fixed nonnegative smooth bump supplies f_j(u)=p(u/(j+1)), independently
+of beta,m,N. Its normalized correlations have norm at most one, tend to one
+pointwise, and stay at least 1/2 on a growing interval; E_j<=K/(j+1)->0.
+Its residuals tend to A_N below threshold and to infinity at/above it.
+Consequently A_N remains the exact best constant under every positive energy
+ceiling, and no finite constant exists at/above threshold under such a ceiling.
+These sources lack uniform grid tails; this is not a counterexample under
+uniform trace tightness or global uniform correlation convergence.
+
+The beta=1/2,m=0 producer, kernel and masses equal the preceding Nyquist
+construction, now with A_N~1/(4 sqrt N). At beta=1,m=0 the prefix grows as
+(1/4)log M; degree one restores integrability with A_N~1/(12N).
+The mechanism changes the weight approximation order, without assuming
+uncontrolled regularity of the source. General signed inputs remain primary.
+
+Complete paper: `NyquistWeightOrderThreshold.md`.
+Certificate: `docs/drafts/pipeline/3-formalized/nyquist-weight-order-threshold-2026-10-17.md`.
+Seventeen direct leaves pass, with 159 theorems and 27 definitions. All 186
+public declarations have standard-logical-axiom audits; all API entries,
+imports and source hashes are verified. Index refresh exits 0; README hash
+is unchanged. Global lint exits 1 only on five unrelated missing imports:
+`ConfinedCoherentPlasticGap`, `SignedLcmFractionalDefectAndCompleteFibreCollapse`,
+`SignedPrimePolarClampedPrimeSum`, `SignedPrimePolarFactorialAtomicPacket`,
+and `SignedPrimePolarRealFactorialStencil`. No error concerns this package,
+and no active proof hole is reported. Count this full classification once.
 
 Separate origin refinement: for fixed finite-energy f, R(q_n)->0 and bounded J(q_n)
 should imply J(f+q_n)-J(f)-J(q_n)->0 without support separation. A split mixed-increment

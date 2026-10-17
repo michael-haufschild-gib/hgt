@@ -1,7 +1,7 @@
 # Actual physical box averages and quantitative affine regularity
 
-Status: dependency-closed paper proof before Lean. One connected proposed
-contribution, uncounted until formal certification. Topic: continuum coprime
+Status: dependency-closed paper proof completed before Lean, now formally
+certified as one connected contribution (19/100). Topic: continuum coprime
 shear, actual additive regularity and multiplicative graph control.
 
 ## Construct the operator in the physical Hilbert space
@@ -214,4 +214,36 @@ No RH work, numerical experiment, derivative-moment truncation of a Lévy
 functional, pre-floor subtraction or added analytic hypothesis. This
 physical Sobolev construction does not claim an unweighted logarithmic H1
 identification. Field README fully read and read-only. All theorems above
-are proved on paper; formal certification remains pending.
+are proved on paper and formally certified below.
+
+## Formal certificate
+
+| Module | Lines | Public declarations |
+|---|---:|---:|
+| PhysicalTranslationContinuity | 78 | 12 |
+| PhysicalBoxAverage | 116 | 13 |
+| PhysicalBoxProfile | 117 | 16 |
+| PhysicalBoxVariance | 88 | 6 |
+| PhysicalBoxAffineRegularity | 115 | 9 |
+| PhysicalBoxGraphControl | 85 | 5 |
+
+Six serial direct leaf checks pass without diagnostics; all normal outputs
+are current. All61 public axiom checks use only propext,Classical.choice,
+Quot.sound.28 principal signatures and73 mathlib API probes pass. Six unique
+umbrella imports and61 exact catalog locations verified.599lines total,
+53theorems+8definitions. Paper proof preceded field Lean. README remains
+unchanged, SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933.
+No full/umbrella build, heartbeat increase or numerical experiment.
+
+Global lint --check-generated exits1 for seven unrelated unreachable modules:
+ConfinedCoherentPlasticGap, ForcedFirstCollar, SignedLcmFractionalDefectAndCompleteFibreCollapse, SignedPrimePolarClampedPrimeSum, SignedPrimePolarRealFactorialStencil, StrictPairedCollarLimit, UniformPairedCollarGain.
+There are381 existing large-file warnings; no own, proof-debt or generated
+index errors. Repository-wide green is not claimed. Concurrent files preserved.
+
+Evidence: /tmp/physical-box-axioms.log, /tmp/physical_box_axioms.lean,
+/tmp/physical-box-{audit-names,manifest-report,leaf-checks,lint-errors}.json,
+/tmp/physical-box-api-entries.txt, /tmp/physical-box-index.log and
+/tmp/physical-box-lint-final.log. Paper:
+docs/reports/BiScaleUncertainty/PhysicalBoxAverageAffineRegularity.md.
+Card: docs/drafts/pipeline/3-formalized/physical-box-average-affine-regularity.md.
+One connected contribution, certified19/100; overall goal remains active.

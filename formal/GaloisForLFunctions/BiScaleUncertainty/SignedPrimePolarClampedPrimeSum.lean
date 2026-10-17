@@ -91,7 +91,7 @@ theorem clampedPrimeFactorialSum_bounds {ε v : ℝ} {K M : ℕ}
     have h2R : (2 : ℝ) ≤ m := by exact_mod_cast hm2
     have hwK : v/(m : ℝ) ≤ K := by
       apply (div_le_iff₀ hmR).2
-      nlinarith [Nat.cast_nonneg K]
+      nlinarith [(Nat.cast_nonneg K : (0 : ℝ) ≤ K)]
     have hc := clamped_count_bounds hε (div_pos hv hmR) (Nat.floor_le_of_le hwK)
     have he (j : ℕ) : (j : ℝ)/(v/(m : ℝ)) = (j : ℝ)*(m : ℝ)/v := by field_simp
     simp_rw [he] at hc

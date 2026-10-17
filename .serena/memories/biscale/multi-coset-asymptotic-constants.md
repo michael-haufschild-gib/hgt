@@ -4,7 +4,7 @@ Independent BiScaleUncertainty; no RH research, hgtl7, numerical experiments, ad
 
 Authoritative owned card: docs/drafts/pipeline/1-in-progress/multi-coset-asymptotic-constants-2026-10-17.md. Crisp facts: docs/reports/BiScaleUncertainty/MultiCosetAsymptotic-FACTS.md. Full proofs, statuses, hashes, and next candidates there. User relocated and rewrote field context: authoritative README is formal/GaloisForLFunctions/BiScaleUncertainty/README.md, explicitly READ-ONLY for this agent. Initially read all 242 lines; SHA-256 80c91d482d9dfcfeb86508edcf5551d34d34a5ef333d3fab64be78e75dd67507 was unchanged through package10 verification. User then revised README to260 lines and supplied Trap10. Read the full new260-line version; current SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933. External revision, never edited by this agent. Do not edit it. Old docs/reports path is obsolete. Updated guidance requires general signed correlations, not hidden blind-grid premises. Grid constants remain specialized theorems; add unconditional actual-source receivers retaining measured signed Gram data. Stay on multi-coset asymptotic/source-energy topic; do not adopt separate RH/prime-polar objectives. docs/architecture.md and docs/testing.md absent (rechecked). No subagents authorized/spawned. update_plan unavailable; card tracks plan. Serena ignores formal Lean paths; use narrow shell reads after symbol-tool failure. Do not modify other agents' work.
 
-## Certified progress: 14/100 significant packages
+## Certified progress: 15/100 significant packages
 
 1. PhysicalCollarSourceEnergy.lean: exact arbitrary-partition signed ENNReal transport; source-energy bound for actual compact continuous grid sources including infinite energy; allocation supremum bound without attainment; normalized actual compact C2 nonzero-source bound; positive monotone envelope/finite limit. All19 theorem axiom audits and final direct leaf pass, only standard3 axioms. SHA256 423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792. Logs /tmp/bsu-physical-source-{final,axioms,index,lint}.log and scratch /tmp/bsu_physical_source_axioms.lean.
 
@@ -81,7 +81,7 @@ SignedGramCutoffComparison 6be920f79c818fa42fdde188b73593c1bed983a76d0e52c9f5d8c
 SignedGramCutoffHierarchy 7a0da76505f74745f800ee50fe6323540464d74274095fc051209cb46782327d
 Manifests /tmp/bsu-signed-gram-{manifest,integrity,audit-coverage}.json, prior23 hashes /tmp/bsu-signed-gram-prior-hashes.json. All26 own imports once; prior23 unchanged; read-only README hash unchanged. Index refreshed,17 new hierarchy declarations discoverable; no stale own outputs. Temporary API probe /tmp/bsu_signed_capacity_api.lean deleted viaapply_patch; audits retained.
 
-At the package9 audit, global lint exited1 for FOUR foreign concurrent unwired leaves: ChebyshevGaugeNyquistCellQuadrature, DistantCopyCorrelationTopology, DistantCopyEnergyTopology, SignedCoherentMomentReceiver. /tmp/bsu-signed-gram-lint-final.log supersedes earlier four/five lists. Do not modify foreign work. No full builds, numerical experiments, heartbeat raises, commits or pushes. All owned Lean/search/index/lint jobs terminal. Package9 brought progress to9/100; current total14/100 and goal remains active.
+At the package9 audit, global lint exited1 for FOUR foreign concurrent unwired leaves: ChebyshevGaugeNyquistCellQuadrature, DistantCopyCorrelationTopology, DistantCopyEnergyTopology, SignedCoherentMomentReceiver. /tmp/bsu-signed-gram-lint-final.log supersedes earlier four/five lists. Do not modify foreign work. No full builds, numerical experiments, heartbeat raises, commits or pushes. All owned Lean/search/index/lint jobs terminal. Package9 brought progress to9/100; current total15/100 and goal remains active.
 
 Proof repairs: normalize sqrtR*(sqrtR*A) with rw [←mul_assoc,←pow_two,Real.sq_sqrt...] before nlinarith; it will not automatically multiply square identity by A. Before integral_sub, explicit change to pointwise subtraction to remove function subtraction wrapper. Signed finite product sums use sub_eq_add_neg and add_comm, not reverse subtraction rewrite.
 
@@ -97,13 +97,13 @@ Hashes:
 support a082cd5a304a9c32d550f5bc55afdad2bd202fb8d65751ac1c871c90321a2396
 prices f241f55eda32e59665150b4bae5a0e9feba0d4dc701e3ecac2d336fcdd0c75e3
 trial fd195d5c55de946103bb41e241f335655d30f0aabaf535c33f58b90ac883ca8b
-/tmp/bsu-signed-dual-{manifest,integrity,audit-coverage}.json. All29 ownimports once,26priorhashes unchanged. Index refresh/discovery pass. API probe deleted; audit/logs retained. At the package10 audit, global lint reported12 foreign unwired leaves: CausalExponentialResponseAndLaplaceEnergy, DistantCopyCompactness, DistantCopyCorrelationTopology, DistantCopyEnergyTopology, DistantCopyPolarTopology, DistantCopySharpness, FiniteGridRunLength, FoldFreeKernelGramAndFranelGcdCancellation, RealizedCoherentCancellation, SignedPrimePolarOptimalCollar, SignedPrimePolarScaledCollar, SuccessorSequenceHilbert. /tmp/bsu-signed-dual-lint-final.log. Do not modify foreignwork. No fullbuilds/numerics/heartbeat hacks/commits/pushes. Package10 counts once; cumulative total at that audit10/100. Current total14/100, goalACTIVE.
+/tmp/bsu-signed-dual-{manifest,integrity,audit-coverage}.json. All29 ownimports once,26priorhashes unchanged. Index refresh/discovery pass. API probe deleted; audit/logs retained. At the package10 audit, global lint reported12 foreign unwired leaves: CausalExponentialResponseAndLaplaceEnergy, DistantCopyCompactness, DistantCopyCorrelationTopology, DistantCopyEnergyTopology, DistantCopyPolarTopology, DistantCopySharpness, FiniteGridRunLength, FoldFreeKernelGramAndFranelGcdCancellation, RealizedCoherentCancellation, SignedPrimePolarOptimalCollar, SignedPrimePolarScaledCollar, SuccessorSequenceHilbert. /tmp/bsu-signed-dual-lint-final.log. Do not modify foreignwork. No fullbuilds/numerics/heartbeat hacks/commits/pushes. Package10 counts once; cumulative total at that audit10/100. Current total15/100, goalACTIVE.
 
 Lean repairs: broadsimp may turn complex-real scalar into real action before inner_smul_left/right matches. Expand packets with simp only then simp_rw inner_smul then simp. re_inner_comm unavailable; explicit packet expression and inner identities avoid it. Common denominators: ←mul_div_assoc and ←Finset.sum_div. Measurable.div_const at root namespace. Name packetScale nonneg before abs simplification. Explicit types for nonnegative scalar products prevent unresolved numeral metavariables before nlinarith. Integral add/sub use explicit integrands to avoid function subtraction wrapper.
 
 ## Package11: explicit smooth dyadic producer and sharp anchored minimum, verified
 
-Four leaves in formal/GaloisForLFunctions/BiScaleUncertainty/: DyadicDifferenceSource (14 public theorems), DyadicAnchoredProducer (19), DyadicTriangularOptimality (6), DyadicGramConditioning (16). Namespace DyadicDifference. ONE significant package, cumulative11/100 at that audit; current total14/100, goal remainsACTIVE.
+Four leaves in formal/GaloisForLFunctions/BiScaleUncertainty/: DyadicDifferenceSource (14 public theorems), DyadicAnchoredProducer (19), DyadicTriangularOptimality (6), DyadicGramConditioning (16). Namespace DyadicDifference. ONE significant package, cumulative11/100 at that audit; current total15/100, goal remainsACTIVE.
 
 Set d=log2. Literal ContDiffBump at0 with inner radiusd/8, outerd/4 defines smooth compact g; g(0)=1 and Rg>0. Fixed actual source f(u)=g(u)-g(u+d) is C∞ compact, Rf=2Rg>0. e_j=T_(jd)g are orthogonal with norm²Rg. Full lattice correlation: hf(zd)=Rg(2·1_(z=0)-1_(z=1)-1_(z=-1)), z integer.
 
@@ -120,7 +120,7 @@ Prior discovery /tmp/bsu-dyadic-producer-search.log:387decl98modules, partial/so
 
 ## Package12: actual minimum-price response and monotone cutoff producer, verified
 
-Three leaves in formal/GaloisForLFunctions/BiScaleUncertainty/: SignedGramMinimumResponse (12 public theorems), SignedGramResponseOptimality (14), SignedGramResponseLadder (17). ONE significant package, total12/100 at that audit; current total14/100 and full goal ACTIVE. Namespace PhysicalCollarPartition.
+Three leaves in formal/GaloisForLFunctions/BiScaleUncertainty/: SignedGramMinimumResponse (12 public theorems), SignedGramResponseOptimality (14), SignedGramResponseLadder (17). ONE significant package, total12/100 at that audit; current total15/100 and full goal ACTIVE. Namespace PhysicalCollarPartition.
 
 For actual f:C_c and incumbent rho at cutoff n, E_k consists of active physical points with k<=n and gramPhysicalPrice_k=gramPriceFloor. F_k=E_k minus union_(j<k)E_j are measurable disjoint cells covering the physical interval. gramMinimumResponse has shares exactly1_(F_k), with unique selected index at every physical point. Exclude inactive collars BEFORE tie-breaking: masked inactive price1 can tie an active minimum1. All measurability, support and exact mass conservation are discharged; zero source included.
 
@@ -137,7 +137,7 @@ At the package12 audit, global lint exit1 for6 foreign unwired modules: Antitone
 
 ## Package13: quantitative regularized full-Gram producer, verified
 
-ONE significant contribution; cumulative13/100 at that audit, current14/100, full goal ACTIVE. Seven new leaves under formal/GaloisForLFunctions/BiScaleUncertainty/: RegularizedGramGeometry (13 public theorems), PhysicalCollarMixture (10), PhysicalPriceResponse (15), RegularizedPhysicalGram (14), RegularizedGramDescent (7), RegularizedGramIteration (5), QuantitativeGramProducer (13): total77 public theorems.
+ONE significant contribution; cumulative13/100 at that audit, current15/100, full goal ACTIVE. Seven new leaves under formal/GaloisForLFunctions/BiScaleUncertainty/: RegularizedGramGeometry (13 public theorems), PhysicalCollarMixture (10), PhysicalPriceResponse (15), RegularizedPhysicalGram (14), RegularizedGramDescent (7), RegularizedGramIteration (5), QuantitativeGramProducer (13): total77 public theorems.
 
 For actual compact continuous real f, R=h_f(0), delta=log2/2, N=n+2. H=sqrt(R)||P_a||. H_e=sqrt(H²+(eR)²), K_e=R(W+mass)-H_e. For e>=0, 0<=K-K_e<=eR, and coefficient loss 0<=C-C_e<=e delta R. Every signed measured Gram entry remains. For e>0, regularized remainder D_e=H_e(b)-H_e(a)-R sum_i(b_i-a_i)cov_a(t_i)/H_e(a) obeys
 2H_e(a)D_e=R||P_b-P_a||²-(H_e(b)-H_e(a))² and 0<=D_e<=||P_b-P_a||²/(2e). Zero source and zero original packet are included; no Gram conditioning assumed.
@@ -202,7 +202,7 @@ Integrity evidence: `/tmp/bsu-regularized-{manifest,integrity}.json`.
 Temporary API probe and two obsolete drafts removed; successful audit scratch
 and logs retained. All owned jobs terminal. No full/umbrella build, numerical
 experiment, heartbeat increase, commit or push. This construction counts once:
-At the package-13 audit: **13/100**; current total **14/100**, full objective active.
+At the package-13 audit: **13/100**; current total **15/100**, full objective active.
 
 Reusable repairs: unfold `IntegrableOn` explicitly when transporting a pointwise
 integrable sum. Give real integrands and integration functions explicitly before
@@ -221,7 +221,7 @@ P_N only, not the full signed-Gram optimum or unrestricted source infimum.
 
 Package10 now certifies full measured signed-Gram trial gaps. User Trap10 steering: prioritize explicit producers with unconditional error bounds, not receiver-only reformulations with unresolved hypotheses. No pre-floor subtraction of discrete counterterms. Stay on multi-coset quantitative source-energy topic; no RH work. Existing ExplicitNyquistPolarAndChebyshevFactorialProducer.lean source states nyquist_cell_polar_producer_l2_error_le (integral squared error<=1/(16n²)), abs_chebyshevAlternatingProducer_sub_linear_le (|T2N-2TN-2Nlog2|<=2log(2N+1)+1), abs_chebyshevBiNullProducer_le (|T4N-4T2N+4TN|<=5log(4N+1)+1). Important correction: raw first stencil is NOT O(logN), only its centered error. Cell bound is squared L2 norm, not norm. Source proof bodies inspected; scratch import audit FAILED solely because this foreign module's .olean is absent. No fresh Lean-verification claim. /tmp/bsu-trap10-reference-audit.log; failed probe deleted. Existing producers not counted as this agent's contributions. Trap10 search /tmp/bsu-trap10-stencil-search.log:22 declarations1module, partial/source-only/older/semanticunmeasured.
 
-NEXT PRIORITY: formalize the forced first-node uniform paired coupling gap, then prove the paired leading tail law. The independent leading law is now certified in package14: |P∞−P_N−4/sqrtN|≤12289/N for N≥8. Fixed small offsets force node2 share=1 on both signs for every N≥3, suggesting a uniform positive paired gain. This is a dependency-closed paper candidate on the card, still uncounted and not Lean-certified. Do not assume strict Q∞>P∞ merely from gain for selected partitions. Once proved, combine with a paired 4/sqrtN leading law to settle the delayed coupled hierarchy's N^(-1/4) branch. Do not transfer P_N/Q_N laws to full S_N(f), blind-grid H_N or unrestricted source infimum.
+NEXT PRIORITY: formalize the paired leading tail and exact delayed fourth-root saturation law. Package15 now proves explicit uniform g>0 with Q_N≥P_N+g for N≥3 and Q∞≥P∞+g; eventual paired-branch selection is also Lean-certified. Reuse actual concentrated extension/retraction from package14. Define paired array norm R=sqrt(A²+B²), prove its padding and unit l1 perturbation properties using paired radial capacity at W=0, and instantiate the same8192/N and12288/N radial budgets. Target |Q∞−Q_N−4/sqrtN|≤12289/N forN≥8; then eventual C_N=Q_floor√N plus floor arithmetic should yield |Q∞−C_N−4/N^(1/4)|≤24586/sqrtN and scaled limit4. These paired tail and floor-normalization claims remain paper-only and uncounted. Do not transfer to full S_N(f), H_N or unrestricted source optimum.
 
 Search /tmp/bsu-minimum-response-next-regularization-search.log completed57.84s; proposed Sobolev curvature ingredients are not this packet problem. Rephrased lexical search2 unrelated origin-regularization hits; field text search finds source averaging, no augmented-packet norm implementation. Source-only/older/semanticunmeasured, no exhaustive novelty claim.
 
@@ -229,12 +229,12 @@ Secondary structural route: signedGramShift is fixed in fibre y, only weights/an
 
 Secondary structural candidate, paper mechanism only: distinct finite translates of nonzero compact continuous f are linearly independent. Choose smallest active shift, supremum of support, source value in final interval shorter than shift gap; all other terms vanish there. Continuity gives positive L² norm. With fixed positive anchor, norm equality would imply identical weights and strict kernel concavity; optimizer existence/converse not proved. Corpus deep independence search irrelevant; lexical translate independent 156decl mostly special-function differential independence. No formal claim/count.
 
-Further open: exact nonzero-lag multi-column support, unequal-size product-zero constraints, strict optimized gaps, matching leading laws. Do not identify S∞/R with blind-grid H∞.
+Further open: exact nonzero-lag multi-column support, unequal-size product-zero constraints, strict H∞ versus Q∞ separation, paired matching leading laws and full measured-Gram sharpness. The Q∞ versus P∞ strict gap is closed by package15. Do not identify S∞/R with blind-grid H∞.
 
 The formerly paper-only activation criterion is now fully certified in package7. Finite-vector sharpness still does not assert actual autocorrelation realization.
 The sandwich and same-limit hierarchy route is now proved via new capacity, padding, and actual constraint inclusion. Uniform low cutoff still ignores valid products with unequal node sizes; these may yield a sharper hierarchy. Strict B_N>C_N is not proved.
 
-Package14 now certifies the independent leading law with explicit rational remainder12289/N and thresholdN≥8. The card retains an older finer-constant paper proof atN≥4; those refined constants remain unformalized. Actual formal tail offsets≤1/N, repair offsets≤2/N; physical mass isN^(-1/2) and radial penaltyO(N^-1). The paired analogue is still unproved. The new forced-node2 uniform-gain paper candidate may establish strictQ∞>P∞, then select the N^(-1/4) branch once the paired leading law is formalized. Neither subsequent claim is counted yet.
+Package14 certifies the independent leading law with explicit rational remainder12289/N forN≥8; the older finer constants atN≥4 remain paper-only. Package15 now proves the formerly conjectural uniform first-node paired gap and eventual paired-branch selection. Only the paired leading tail and exact delayed fourth-root law remain unproved in that route; see the dependency-closed paper argument below.
 
 Corpus logs /tmp/bsu-paired-sphere-search.log, /tmp/bsu-capped-block-search.log, /tmp/bsu-paired-cutoff-search.log: hybrid useful source-only hits, no exact lexical hits, semantic coverage unmeasured; not exhaustive absence or novelty. Product-zero activation caution: -log2/+log3 first pinned at N=6; old-node Gram constraints can change with cutoff. Do not transfer local allocation tail laws to full Gram cone without new proof.
 
@@ -305,13 +305,83 @@ before clearing denominators. Supply constant-integrability arguments through
 differences with `change` before rewriting integrals. Expand composed limits
 before simplifying square roots. Avoid redundant tactics after `field_simp`.
 
-Next paper candidate, uncounted: a fixed interval near offset zero forces node-2
-share one on both signs for every cutoff N≥3. Let e=log3−log2−δ>0,
-a=e/3, b=2e/3 and W0=2/(1−exp(−2a)). On [a,b], the whole-sign norms
-A,B are at least one and W≤W0, so the paired kernel gain should be at least
-1/(W0+2). Integration would give a uniform gap g=(b−a)/(W0+2)>0 and hence
-Q∞≥P∞+g. Exact node exclusion, weight bounds, integration and supremum transfer
-still need Lean proofs. Combined with an analogous paired leading-tail law, this
-would select the delayed coupled hierarchy's N^(−1/4) branch. Neither claim is
-counted or certified yet. The complete paper argument and scope limits are on
-the owned card.
+The forced first-node gap proposed at the package-14 audit is now certified in
+package 15 below, including eventual paired-branch selection. The paired leading
+tail and the exact fourth-root saturation law remain the next uncounted candidates.
+
+
+## Package15: uniform paired gain and strict limiting separation [Lean verified]
+
+Let e=log3−log2−δ>0, a=e/3, b=2e/3, W0=2/(1−exp(−2a)), g=(b−a)/(W0+2)>0.
+For all physical cutoffsN≥3 and every admissible partitionρ, pairedCoefficientρ≥coefficientρ+g. Thus Q_N≥P_N+g and Q∞≥P∞+g>P∞. Exact share conservation forces node2 share1 on both branches at offsetsy∈(a,b]; later collars cannot cover either point. Their weights≥1 force both whole-sign normsA,B≥1. WithW≤W0, the rationalized paired gain≥1/(W0+2). Integrate and take suprema/limits without optimizer attainment.
+
+The product hierarchy C_N eventually equals Q_floor(sqrtN), and eventuallyC_N>P∞+g/2. Every actual smooth nonzeroN-grid source has normalized energy≥P∞+g−16exp(δ/2)/N^(1/4) forN≥4, and eventuallyenergy>P∞+g/2 uniformly over all sources. For each admitted frameK≥8,K²≤N, the stronger inherited bound isP∞+g−4/sqrtK−12289/K. This excludes asymptotic sharpness of the independent limiting certificate for actual growing-grid sources. The constantg is not claimed optimal, and there is no identification with full measured-Gram or unrestricted source optimality.
+
+All3leaves25theorems form ONE significant contribution, cumulative15/100; goalACTIVE. All53 prior owned sources remain unchanged. This turn made verified progress.
+
+## Uniform paired gap verification (package 15)
+
+Three leaves, respectively 10, 7 and 8 public theorems:
+
+- `ForcedFirstCollar`: `a06b3ca66acb31311f88a0d97822b31f1d1e834df2582d215c0606488493802a`.
+- `UniformPairedCollarGain`: `7d788a7d463068841fd81d712f957aa6ef413556ab9eb11a13cdfe3d123025cc`.
+- `StrictPairedCollarLimit`: `136b5da409462a77805ce5b82548c84d77692f770bf269f49b03419dd6ebc31c`.
+
+All three dependency compiles pass with empty logs. All 25 public theorem axiom
+audits pass exactly once, using only `propext`, `Classical.choice`, and `Quot.sound`.
+Twelve signatures and six explicit constant definitions were printed and inspected.
+Evidence: `/tmp/bsu_paired_gap_axioms.lean`, `/tmp/bsu-paired-gap-axioms.log`,
+and `/tmp/bsu-paired-gap-audit-coverage.json`.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/StrictPairedCollarLimit.lean`;
+exit 0, empty log, no `-o`. Evidence `/tmp/bsu-paired-gap-final.{log,exit}`.
+Dependency logs: `/tmp/bsu-paired-gap-{first,uniform,limit}.log`.
+
+Index refresh exits 0. All three requested capstones are discoverable:
+`limitingCollarCoefficient_lt_limitingProductCoupled`,
+`eventually_productCoupled_eq_paired`, and `uniformPaired_source_fourth_root_bound`.
+All eight returned declarations were inspected. Evidence:
+`/tmp/bsu-paired-gap-{index.log,discovery.json,discovery-coverage.json}`.
+All 56 owned imports occur exactly once; all 53 prior source hashes and all three
+current hashes match their manifests. Read-only README is unchanged at
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Scoped whitespace passes. Global lint exits 1 for five foreign unwired modules
+listed in the facts ledger and `/tmp/bsu-paired-gap-lint.log`; no own failure.
+Integrity: `/tmp/bsu-paired-gap-{manifest,integrity}.json`.
+API scratch removed; successful axiom scratch and logs retained. All owned jobs
+terminal. No full/umbrella build, numerical experiment, heartbeat increase, commit
+or push. This is one significant contribution: **15/100**; full goal active.
+
+The first and final leaves passed on their first check. The uniform-gain leaf
+needed only removal of a redundant `ring` after `field_simp` had already closed
+the goal. Existing physical partition conservation, single-coordinate norm bounds,
+and paired radial rationalization suffice; no optimizer-attainment interface was added.
+
+## Next paired leading-tail candidate [paper proof; uncounted]
+
+Write A,B for the whole-sign norms and R=sqrt(A²+B²). The paired kernel equals
+physical mass minus r_W(R), with r_W(R)=sqrt(W²+R²)−W. R≤A+B≤mass.
+The existing paired radial capacity theorem at W=0 gives monotonicity and a
+unit l1 perturbation bound for R; signwise zero-padding preserves R. Therefore
+the actual concentrated extension and retraction from package 14 should satisfy
+the same radial budgets 8192/N and 12288/N, now with R in place of A+B.
+The same endpoint tail and supremum argument would give
+
+    |Q∞−Q_N−4/sqrt(N)|≤12289/N,   N≥8.
+
+Exact obligations: define the paired array norm and integrable physical radial
+penalty, prove padding and unordered perturbation comparisons, specialize them to
+both actual constructions, then integrate and pass through the paired suprema.
+None of these new paired tail statements is yet Lean-certified.
+
+Package 15 already proves C_N=Q_K eventually, K=floor(sqrt N). Once the paired
+tail law is verified, floor arithmetic gives K≥sqrt(N)/2 and 0≤sqrt(N)−K<1.
+Hence 0≤1/sqrt(K)−1/N^(1/4)≤1/K for K≥1. For sufficiently large N,
+
+    |Q∞−C_N−4/N^(1/4)|≤12293/K≤24586/sqrt(N),
+    N^(1/4)(Q∞−C_N)→4.
+
+This is a dependency-closed paper route to the exact coupled saturation exponent
+and leading coefficient. The floor normalization and paired tail estimate both
+remain formal obligations. It concerns the delayed paired hierarchy only, not
+full measured-Gram or unrestricted-source optimality.
