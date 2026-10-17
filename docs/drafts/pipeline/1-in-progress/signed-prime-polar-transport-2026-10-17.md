@@ -2,8 +2,9 @@
 
 - **ID:** signed-prime-polar-transport
 - **Stage:** 1-in-progress
+- **Session status:** INACTIVE; all opened implementation packages closed on 2026-10-18.
 - **Type:** CANDIDATE
-- **Scope:** Independent BiScaleUncertainty; 100 substantial contributions requested.
+- **Scope:** Independent BiScaleUncertainty; close the already-open local packet package.
 - **Ledger:** `docs/reports/BiScaleUncertainty/SignedPrimePolarTransport-FACTS.md`
 
 ## Current mathematical target
@@ -24,7 +25,8 @@ Actual source factorization now preserves the grid with nonvanishing contrast si
 and equal source origin energies in [6sqrt(N),46sqrt(N)].
 The literal jump energies are now quantified: individual cost grows on the
 sqrt(N) log N scale, with signed difference O(log N/sqrt(N)).
-Next: localized signed packet energy of the reflected actual sources.
+Localized signed packet energy of the reflected actual sources is now bounded
+by 300000sqrt(N), uniformly for cutoffs K≥10N on the explicit source window.
 Multiple-collar receivers are parked; width selection and residual control remain open.
 
 Authoritative field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
@@ -63,13 +65,13 @@ producers with unconditional bounds before extending receiver machinery.
 - [x] Construct a continuous producer preserving the prime grid and nonvanishing L² size.
 - [x] Factor an explicit producer through actual compact continuous sources and quantify cost.
 - [x] Establish quantitative archimedean jump energies of the balanced factorial sources.
-- [ ] Bound actual signed packet energy on the explicit factorial-source support window.
+- [x] Bound actual signed packet energy on the explicit factorial-source support window.
 - [ ] Derive a useful coherent multiple-collar certificate, retaining all cross terms (parked).
 - [ ] Quantify width selection and the remaining smoothing error.
 
 ## Current frontier
 
-Eleven substantive contributions are formalized:
+Twelve substantive contributions are formalized:
 - `3-formalized/annular-signed-prime-polar-chebyshev-coupling-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-packet-gram-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-halfline-2026-10-17.md`.
@@ -81,8 +83,11 @@ Eleven substantive contributions are formalized:
 - `3-formalized/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
+- `3-formalized/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
 
-The overall target remains 100, with 89 further distinct contributions unproved.
+The user cleared the broader 100-contribution goal on 2026-10-18. Closure of
+the already-open local packet package, including verification, wiring and
+cleanup, is complete. Parked research questions are not active work.
 Packet construction, exact Gram representation, mass comparison, and transport
 corollaries form one contribution. Likewise the coherent collar construction,
 Schur constraint, and energy certificate are one contribution, not separate counts.
@@ -117,15 +122,17 @@ normalized logarithmic lower cost. Nine direct leaf checks and eleven standard
 axiom audits pass. All imports and the index are updated. Global lint reports
 22 unrelated unwired modules and no package-local error; details are in the ledger.
 
-Next uncounted candidate:
-`0-backlog/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
-Seek an explicit local packet budget on the reflected sources' actual support,
-using the real-ratio factorial stencil and partial polar moments. Both the bound
-and its transport consequence remain conjectural. Two new searches and direct
-packet/moment source reads are recorded in that card. No uniform global packet
-control follows from the scalar cancellation or jump-energy certificate.
+Contribution 12 is complete:
+`3-formalized/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
+The actual local packet budget is 300000sqrt(N), with ratio to h(0) at most
+50000, cutoff stabilization and literal scalar/increment pairing bounds.
+All nine direct leaf checks and fourteen standard-axiom audits pass; every
+import is wired once and the API index is refreshed. Repository lint reports
+five unrelated unwired modules, listed in the ledger, and no package-local
+error. Three searches and the exact scope boundary are recorded on the card.
+No uniform global packet control follows from the local theorem.
 
-Secondary uncounted candidate: reduce B(d) to the triangular correlation integral
+Parked uncounted candidate: reduce B(d) to the triangular correlation integral
 2d⁻²∫₀ᵈ(d-t)h(t)dt, then derive width response and reconstruction from d²B(d).
 The existing double-average theorem is the starting point. A classical integral
 rearrangement alone does not qualify as another contribution: pursue only if it
@@ -141,11 +148,14 @@ Search found local collar transport and kernel-specific Chebyshev identities;
 no retrieved result supplies this complete rough-source coupling. Search coverage
 and partial results are recorded per package in the facts ledger; no external
 novelty claim follows.
-The 100-contribution goal remains active after any individual package.
+The former 100-contribution goal is cleared; no new package is authorized by
+the closure request.
 
 ## State
 
-Current turn made verified progress. The 100-contribution goal remains active.
+Closure is complete. No unfinished or unwired implementation remains in this
+package, and all owned verification processes are terminal. The broader goal
+is cleared; remaining unchecked research questions above are parked.
 The full-half-line scalar theorem is complete; a uniform signed-packet estimate
 remains unproved. Latest lint and index results are recorded in the facts ledger.
 `update_plan` is unavailable; this card carries the executable plan.

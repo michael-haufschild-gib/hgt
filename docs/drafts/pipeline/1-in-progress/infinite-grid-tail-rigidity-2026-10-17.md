@@ -5,6 +5,8 @@
 - **Type:** CANDIDATE
 - **Scope:** Independent BiScaleUncertainty research; no RH objective.
 - **Goal:** 100 significant contributions in this research topic, counted by mathematical packages, not helper lemmas.
+- **Run status:** User cleared the goal on 2026-10-18. Research run closed at 15 certified
+  packages; the original 100-package objective is not claimed complete.
 - **Ledger:** `docs/reports/BiScaleUncertainty/InfiniteGridTailRigidity-FACTS.md`
 - **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
   Keep general signed correlation statements primary; use all-grid constructions as
@@ -131,8 +133,23 @@ Fifteen significant packages certified:
     audits and API entries; all imports and source hashes verified. Global lint
     reports five unrelated missing imports; no error concerns this package.
 
-The 100-package objective remains active with 15 certified packages.
+The user cleared the 100-package goal with 15 certified packages.
 Mixed-energy decoupling and global polar closedness remain separate open refinements.
+
+## Closeout
+
+The critical Nyquist finite-part successor has a completed paper proof and an explicit
+signed-source classification. Card:
+`../2-fully-proven/nyquist-critical-finite-part-2026-10-18.md`.
+No Lean implementation was started for that successor; it is uncounted and has no
+pending code or import wiring. Research does not resume automatically.
+
+Exhaustive code closeout: all 60 owned modules have unique umbrella imports and all
+580 public declaration/API pairs are present exactly once. Package 15's certificate
+was revalidated. The sole stale compactness artifact was rebuilt successfully and
+all 12 current public declarations passed a fresh standard-axiom audit. No Lean
+source changes were needed. Fresh global lint reports only 18 foreign missing
+imports; the ledger records the exact snapshot. All owned jobs finished.
 
 ## Constraints
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.SharpPairedCollarComparison
 import GaloisForLFunctions.BiScaleUncertainty.PairedCollarCutoffStability
+import GaloisForLFunctions.BiScaleUncertainty.SharpCollarAsymptotics
 
 /-!
 # Sharp leading saturation of paired signed-coset allocation
@@ -105,7 +106,18 @@ theorem sharpPairedCollar_source_lower_bound {n m : ℕ} (hn : 6 ≤ n)
       biScaleLevyEnergy f.1.1 / RHTower.ArchimedeanAnomaly.autocorr f.1.1 0 := by
   have h := (abs_le.mp (pairedOptimalCoefficient_sharp_leading_error hn)).2
   have hf := PhysicalCollarPartition.pairedOptimalCoefficient_le_normalized_energy f hcut
-  linarith
+  linarith only [h, hf]
+
+/-- The common leading tail cancels: the coupling gain stabilizes at inverse-cutoff rate. -/
+theorem pairedGain_sharp_saturation_error {n : ℕ} (hn : 6 ≤ n) :
+    |(limitingProductCoupledCoefficient - limitingCollarCoefficient) -
+      (PhysicalCollarPartition.pairedOptimalCoefficient n -
+        PhysicalCollarPartition.optimalCoefficient n)| ≤ 24578 / ((n + 2 : ℕ) : ℝ) := by
+  have hp := abs_le.mp (optimalCoefficient_sharp_leading_error hn)
+  have hq := abs_le.mp (pairedOptimalCoefficient_sharp_leading_error hn)
+  apply abs_le.mpr
+  simp only [div_eq_mul_inv] at hp hq ⊢
+  constructor <;> linarith only [hp.1, hp.2, hq.1, hq.2]
 
 end
 end GaloisForLFunctions.BiScaleUncertainty

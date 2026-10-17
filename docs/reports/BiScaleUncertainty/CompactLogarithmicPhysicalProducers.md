@@ -1,8 +1,10 @@
 # Compact logarithmic states from compensated physical producers
 
-Status: dependency-closed paper proof before field Lean. Proposed connected
-contribution20; uncounted until formal certification. Topic: continuum
-coprime shear, physical Dirichlet energy and actual compact source forms.
+Status: dependency-closed paper proof completed before field Lean. The
+restriction foundation is formally certified in PhysicalIntervalRestriction.lean.
+The full producer theorem is uncounted and not formally certified; further
+formalization is inactive after the user cleared the research goal. Topic:
+continuum coprime shear, physical Dirichlet energy and actual compact source forms.
 
 ## Visible physical velocity and interval restriction
 
@@ -237,7 +239,14 @@ parents was then run. No absence or external novelty claim is inferred.
 The new insight is the exact zero-integral compensation cost and its coupling
 to actual compact logarithmic support and source-mass-plus-jump convergence.
 
-All displayed claims have dependency-closed paper proofs above. Formal
-certification is pending; no contribution increment yet. No field Lean was
-written before this proof. Field README is read-only; no RH work, numerical
-experiment, analytic admission premise or pre-floor counterterm subtraction.
+All displayed claims have dependency-closed paper proofs above. The completed
+restriction leaf certifies the actual interval and positive-half-line maps,
+their exact norm integrals, contraction, idempotence, logarithmic primitive
+preservation, integrability and primitive tails. Its16 public declarations
+passed direct Lean and axiom audits and are wired into the umbrella.
+The full compensated producer theorem has not been formally certified and
+does not increment the19 certified contributions. Further formalization is
+inactive; no unfinished producer modules exist. No field Lean was written
+before this paper proof. The field README remains read-only and unchanged;
+no RH work, numerical experiment, analytic admission premise or pre-floor
+counterterm subtraction is introduced.

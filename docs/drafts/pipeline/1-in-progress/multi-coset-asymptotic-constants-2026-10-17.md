@@ -1,10 +1,14 @@
 # Multi-coset asymptotic constants
 
 - Stage: 1-in-progress
+- Activity: closed at the user's request; all opened implementation work verified and wired.
 - Type: CANDIDATE
 - Scope: independent BiScaleUncertainty; no RH objective, no hgtl7.
 - Brief: `/Users/michael/.codex/attachments/14cea3d2-a6f6-463f-bcd2-5d8a6947ba60/pasted-text-1.txt`.
 - Objective: 100 significant contributions toward sharp monotone finite-grid energy bounds combining signed collar partition, clique sphere duality, and Schur residual coupling. Auxiliary lemmas are not separate contributions.
+- Current instruction: the user cleared the broader goal and requested completion
+  of all open work. Package 16 is complete, verified and wired. No new contribution
+  is being started.
 
 ## Current plan
 
@@ -47,8 +51,10 @@
 17. [x] Prove norm regularization and quantitative damped physical responses;
     reconcile the original objective, construct a monotone producer reaching S∞,
     and verify its unconditional allocation and cutoff errors.
-18. [ ] Develop general signed multi-column Schur-coupled growth and matching
-    finite-limit asymptotics. These and the full 100-contribution objective remain open.
+18. Deferred, unstarted research: general signed multi-column Schur-coupled growth
+    and full measured-Gram matching asymptotics. The broader goal was cleared.
+19. [x] Finish paired leading-tail and delayed fourth-root asymptotics, verify all
+    six leaves and 37 public theorems, wire imports, refresh indexes and close work.
 
 Package 13 constructs a finite regularized physical response iteration with an
 unconditional allocation error. Comparing its original coefficient with the
@@ -114,8 +120,13 @@ Package 15 proves an explicit uniform gap Q_N≥P_N+g for N≥3 and Q∞≥P∞+
 with g>0. The delayed hierarchy eventually selects its paired branch; actual
 grid-source energies eventually exceed P∞+g/2. All three leaves, all 25 theorem
 axiom audits, and final direct check pass.
-Progress: 15/100. Latest lint reports five unrelated concurrent umbrella failures.
-Next: paired leading tail and exact fourth-root saturation; full goal remains active.
+Package 16 proves |Q∞−Q_N−4/sqrt(N)|≤12289/N and the exact delayed fourth-root
+leading constant four, with eventual remainder 24586/sqrt(N). The coupling gain
+Q_N−P_N stabilizes at rate 24578/N. All six leaves, 37 theorem axiom audits and
+the final direct check pass. All 62 owned imports are wired exactly once.
+Verified total: 16/100. Latest lint reports ten unrelated concurrent umbrella
+failures and no own failure. The broader goal was cleared; all opened work is
+closed and no new contribution is being started.
 
 Current signed-capacity search `/tmp/bsu-signed-capacity-search.log` finds 586
 declarations in 83 modules. It supplies actual translation-packet norm identities
@@ -1188,7 +1199,7 @@ finite-allocation error and quantitative limiting actual-source trial certificat
 At the package-10 audit, the cumulative count was **10/100**. Its three leaves form one package.
 At the package-10 audit, global lint reported twelve unrelated unwired modules.
 Do not count reused shared-origin geometry or individual helper lemmas. Matching
-paired leading asymptotics remain paper-only; the independent law is now package 14.
+paired leading asymptotics are now certified in package 16; the independent law is package 14.
 Both activation leaves form one package.
 This turn made concrete progress; the full objective
 remains active and incomplete.
@@ -1514,7 +1525,7 @@ before simplifying square roots. Avoid redundant tactics after `field_simp`.
 
 The forced first-node gap proposed at the package-14 audit is now certified in
 package 15 below, including eventual paired-branch selection. The paired leading
-tail and the exact fourth-root saturation law remain the next uncounted candidates.
+tail and exact fourth-root saturation law are now certified in package 16 below.
 
 ## Uniform paired gap verification (package 15)
 
@@ -1554,40 +1565,96 @@ needed only removal of a redundant `ring` after `field_simp` had already closed
 the goal. Existing physical partition conservation, single-coordinate norm bounds,
 and paired radial rationalization suffice; no optimizer-attainment interface was added.
 
-## Next paired leading-tail candidate [paper proof; uncounted]
+## Exact paired tail and delayed fourth-root law [Lean verified; package 16]
 
-Active package-16 plan; verified count remains 15/100:
-[ ] paired array norm, padding, mass perturbation and integrable radial penalty;
-[ ] instantiate both actual concentrated cutoff constructions and integrate errors;
-[ ] prove the paired optimum's exact leading tail with explicit remainder;
-[ ] control floor-square-root normalization and prove coupled fourth-root saturation;
-[ ] actual-source bounds, direct checks, all-theorem axiom audit, wiring and ledger.
-Preserve all 56 prior owned sources and the read-only README. The preceding goal
-turn made verified progress (package 15); no owned Lean process remains live.
+For physical cutoff N=n+2≥8, the paired allocation optimum satisfies
 
-Write A,B for the whole-sign norms and R=sqrt(A²+B²). The paired kernel equals
-physical mass minus r_W(R), with r_W(R)=sqrt(W²+R²)−W. R≤A+B≤mass.
-The existing paired radial capacity theorem at W=0 gives monotonicity and a
-unit l1 perturbation bound for R; signwise zero-padding preserves R. Therefore
-the actual concentrated extension and retraction from package 14 should satisfy
-the same radial budgets 8192/N and 12288/N, now with R in place of A+B.
-The same endpoint tail and supremum argument would give
+    |Q∞−Q_N−4/sqrt(N)|≤12289/N,
+    sqrt(N)(Q∞−Q_N)→4.
 
-    |Q∞−Q_N−4/sqrt(N)|≤12289/N,   N≥8.
+The independent and paired optima share the same leading physical tail. Their
+coupling gain therefore stabilizes faster:
 
-Exact obligations: define the paired array norm and integrable physical radial
-penalty, prove padding and unordered perturbation comparisons, specialize them to
-both actual constructions, then integrate and pass through the paired suprema.
-None of these new paired tail statements is yet Lean-certified.
+    |(Q∞−P∞)−(Q_N−P_N)|≤24578/N.
 
-Package 15 already proves C_N=Q_K eventually, K=floor(sqrt N). Once the paired
-tail law is verified, floor arithmetic gives K≥sqrt(N)/2 and 0≤sqrt(N)−K<1.
-Hence 0≤1/sqrt(K)−1/N^(1/4)≤1/K for K≥1. For sufficiently large N,
+For the delayed product-admitted hierarchy C_N, eventually
 
-    |Q∞−C_N−4/N^(1/4)|≤12293/K≤24586/sqrt(N),
+    |Q∞−C_N−4/N^(1/4)|≤24586/sqrt(N),
     N^(1/4)(Q∞−C_N)→4.
 
-This is a dependency-closed paper route to the exact coupled saturation exponent
-and leading coefficient. The floor normalization and paired tail estimate both
-remain formal obligations. It concerns the delayed paired hierarchy only, not
-full measured-Gram or unrestricted-source optimality.
+Every actual smooth nonzero N-grid source eventually satisfies, uniformly in the
+source,
+
+    J_arch(f)/h_f(0)≥Q∞−4/N^(1/4)−24586/sqrt(N).
+
+For each admitted physical frame K≥8 with K²≤N, the fully explicit bound is
+Q∞−4/sqrt(K)−12289/K. The eventual fourth-root theorem does not supply a numeric
+branch-switch threshold. The remainder constants are certified upper bounds,
+not optimal constants. These laws concern paired allocation and its delayed
+hierarchy; no full measured-Gram or unrestricted source optimum is identified.
+
+Proof mechanism: R=sqrt(A²+B²), where A and B are the whole-sign coset norms.
+The existing radial capacity theorem at W=0 gives R monotonicity and unit added-
+mass capacity; signwise zero-padding preserves R, and R≤A+B≤physical mass.
+The paired coefficient is physical mass minus the integral of
+r_W(R)=sqrt(W²+R²)−W. This penalty is integrable as mass minus paired kernel;
+the singular weight W is never integrated separately.
+
+The actual concentrated extension adds weights only at offsets y≤1/N. The actual
+retraction repairs the old window only at y≤2/N. Their proven integrated radial
+costs are at most 8192/N and 12288/N. Thus, for M≥N≥8, with T_N the endpoint
+weight tail,
+
+    T_N−T_M−8192/N≤Q_M−Q_N≤T_N−T_M+12288/N.
+
+Take suprema and limits without optimizer attainment. The exact endpoint estimate
+0≤T_N−4/sqrt(N)≤1/N gives the paired law. For K=floor(sqrt(N)), the certified
+floor estimate 0≤1/sqrt(K)−1/N^(1/4)≤1/K and 1/K≤2/sqrt(N), together with
+package 15's eventual paired-branch selection, gives the fourth-root law. No
+caller-supplied Chebyshev estimate, desired error bound, or energy inequality is
+used. The construction and its error estimates implement the producer discipline
+required by Trap 10.
+
+### Verification and closure
+
+All six dependency checks pass with empty logs. Public theorem counts are
+14, 2, 5, 6, 6 and 4, respectively: all 37 were axiom-audited exactly once,
+using only `propext`, `Classical.choice` and `Quot.sound`. Thirteen signatures
+and six concrete definitions were printed and inspected. Final source hashes:
+
+- `PairedArrayRadialGeometry`: `bc05970eaac4022afe7acb2eca209d738384a34e5300210d7494d6ca068279c3`.
+- `ConcentratedPairedCollarPenalty`: `d9fd2a88fd83c1adcd5dcdf487f29b699f1fb9cb0880b1ba0a8f36b64fc55840`.
+- `SharpPairedCollarComparison`: `97a5c0dc3ebdf3a8cedbdf49f921af9e1ca64a01435fe079b87d45538f4d2351`.
+- `SharpPairedCollarAsymptotics`: `8a90ec7a92f459f4e87cb6df9af7bea4d791120b7c26a4dc1255a85cd3d648b9`.
+- `FourthRootCutoffNormalization`: `adfa18ac2f4a3ac89ed1ea08d4ed18dc0a734927e0fffe95f4fd87845ad78c03`.
+- `SharpProductCoupledAsymptotics`: `2c5c8255e654cd5000b2a6a08720d348924d81ec28282d71f561e6993b610718`.
+
+The required final direct command passes with exit 0 and no diagnostics:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SharpProductCoupledAsymptotics.lean`.
+It uses no output-object flag. Evidence: `/tmp/bsu-paired-tail-final.{log,exit}`;
+axiom evidence: `/tmp/bsu_paired_tail_axioms.lean`,
+`/tmp/bsu-paired-tail-axioms.log`, `/tmp/bsu-paired-tail-audit-coverage.json`.
+Dependency logs use labels `geometry`, `penalty`, `comparison`, `asymptotics`,
+`normalization` and `coupled` under `/tmp/bsu-paired-tail-*.log`.
+
+Index refresh passes. All four requested capstones are discoverable; all 20
+returned declaration records were inspected. Evidence:
+`/tmp/bsu-paired-tail-{index.log,discovery.json,discovery-coverage.json}`.
+All 62 owned imports occur exactly once. All 56 prior owned sources and the
+read-only README remain unchanged; README SHA-256 is
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Scoped whitespace passes. Global lint exits 1 solely for ten concurrent unwired
+modules outside this work:
+`AnnularCoherentEnergyBounds`, `SignedPrimePolarClampedPrimeSum`,
+`SignedPrimePolarFactorialAtomicPacket`, `SignedPrimePolarFactorialLocalCertificate`,
+`SignedPrimePolarFactorialLocalEnergy`, `SignedPrimePolarFactorialPacketEnvelope`,
+`SignedPrimePolarFactorialPolarPacket`, `SignedPrimePolarLocalizedPacket`,
+`SignedPrimePolarRealFactorialStencil`, and `SignedPrimePolarReflectedTentPacket`.
+Evidence: `/tmp/bsu-paired-tail-lint.log` and the manifest/integrity JSON files.
+
+The temporary API probe is removed; successful audit scratch and verification
+logs are retained. All owned jobs are terminal. No full or umbrella build,
+added axiom, numerical experiment, heartbeat increase, commit or push was used.
+The six leaves form one contribution: cumulative verified total **16/100**.
+The user cleared the broader goal and requested closure of open work. All opened
+implementation work is now verified and wired; no next contribution is started.

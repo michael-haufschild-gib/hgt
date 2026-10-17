@@ -1,8 +1,8 @@
 # Continuum coprime shear: current facts
 
-Active goal: 100 significant connected mathematical contributions in continuum coprime shear / noncommutative (ax+b) uncertainty. Certified **19/100**. Each turn contributes one package, never count supporting declarations separately. Do not mark goal complete. User forbids hgtl7, RH work, numerical experiments/computational proof shortcuts, full/umbrella builds, added axioms or unproved analytic admission premises. Read attachment `/Users/michael/.codex/attachments/907cbf01-0e78-40fa-8e48-f157b655c095/pasted-text-1.txt` first each turn; read the full field README at `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (260 lines at package 19). User explicitly makes this README read-only; old docs/reports/BiScaleUncertainty/README.md is gone. Search corpus before new conjectures/Lean. Serial foreground `lake --old env lean <leaf>` with normal `-o` outputs, scratch axiom audits only. No heartbeat increases. Preserve concurrent work; no commits/push. update_plan unavailable, overarching pipeline card tracks plan. No subagents used or authorized. Serena ignores Lean paths, so direct edits used. Architecture/testing docs absent at last init.
+The user cleared the research goal at certified **19/100** and requested closure of open work. No autonomous research continuation is authorized. The PhysicalIntervalRestriction leaf, wiring and audits are complete. No owned work or process remains active; stop unless the user requests new work. Supporting declarations do not increment the contribution count; do not recreate the cleared goal. User forbids hgtl7, RH work, numerical experiments/computational proof shortcuts, full/umbrella builds, added axioms or unproved analytic admission premises. Read attachment `/Users/michael/.codex/attachments/907cbf01-0e78-40fa-8e48-f157b655c095/pasted-text-1.txt` first each turn; read the full field README at `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (260 lines at package 19). User explicitly makes this README read-only; old docs/reports/BiScaleUncertainty/README.md is gone. Search corpus before new conjectures/Lean. Serial foreground `lake --old env lean <leaf>` with normal `-o` outputs, scratch axiom audits only. No heartbeat increases. Preserve concurrent work; no commits/push. update_plan unavailable, overarching pipeline card tracks plan. No subagents used or authorized. Serena ignores Lean paths, so direct edits used. Architecture/testing docs absent at last init.
 
-Authoritative ledger: `docs/reports/BiScaleUncertainty/ContinuumCoprimeShear-FACTS.md` (now >500 lines: use ranges). Overarching card `docs/drafts/pipeline/1-in-progress/continuum-coprime-shear.md`. Goal remains active. All owned jobs terminal at completion of package 19. Final package19 audit evidence retained; obsolete standalone probe and one-use documentation draft removed.
+Authoritative ledger: `docs/reports/BiScaleUncertainty/ContinuumCoprimeShear-FACTS.md` (now >500 lines: use ranges). Overarching card `docs/drafts/pipeline/0-backlog/continuum-coprime-shear.md`. Goal is inactive following the user's explicit clear instruction. All owned jobs terminal at completion of package 19. Final package19 audit evidence retained; obsolete standalone probe and one-use documentation draft removed.
 
 ## Certified package 1
 `ContinuumShearDirichlet.lean` (29 public theorems) and `ContinuumMultiplicativeEdgeControl.lean` (5). Actual continuous physical primitives, arbitrary continuous log velocities, exact interval/cell defects, weighted log Dirichlet energy, dilated cells, affine commutator resistance b(exp s-1), finite weighted multiplicative/nodal edges. Shear log(exp x+b), b>=0, is a semigroup, not globally invertible/unitary. Stage3 `continuum-trace-affine-edge-control.md`. Direct checks and all34 axiom audits passed.
@@ -448,23 +448,64 @@ Simplify the orbit primitive at zero before unfolding its integral definition.
 Type constant limits explicitly. innerSL and its apply lemmas have two
 universe parameters even when the printed signature lacks a leading @.
 
-## Next unproved candidate — compact logarithmic states
+## Closed restriction foundation and inactive paper theorem
 
-Card: docs/drafts/pipeline/0-backlog/compact-physical-box-producers.md.
-Compact physical velocity alone leaves a constant primitive tail. Seek
-positive-interval truncation plus an explicit distant zero-integral
-compensator, followed by box smoothing, to construct actual compact C¹
-logarithmic states. Target convergence of physical velocities to the positive
-half-line component, and compact-source jump convergence to the original
-logarithmic state. Proposed compensator norm is at most exp(−r/2)‖q‖.
-The card gives all scales, support endpoints and error terms. Unproved and
-uncounted; no Lean assigned. Primary-source and full paper-proof gates remain.
+The user cleared the 100-contribution goal at certified19/100 and requested
+closure of open work. No autonomous continuation is authorized. Do not
+recreate the goal. The supporting restriction foundation does not increment
+the contribution count.
 
-Two queries each inspected20 candidates and20 source-argument statements;
-no proof ideas/ingredient sets. First partial deadline/reranking,
-generation1447717 pending. Second partial deadline/semantic coverage,
-inventory73830 complete, snapshot1447809/current1447810, retrieval1447801;
-compiler mostly pending/source-only, refresh incomplete. Evidence:
-/tmp/physical-box-next-search.json and /tmp/compact-log-primitive-next-search.json.
-Existing negativePhysicalVelocity and logarithmic transport are relevant
-parents. No absence/novelty inference.
+PhysicalIntervalRestriction.lean constructs actual bounded linear
+contractions R_(a,b)q=1_(a,b]q and P₊q=1_(0,∞)q. Squared norms equal the
+corresponding restricted integrals of q². P₊q=q−negativePhysicalVelocity(q),
+P₊ is idempotent, and F_(P₊q)(t)=F_q(t) for t≥0, hence logarithmic primitives
+agree everywhere. Interval restrictions are integrable with integral ∫_(a,b]q.
+For 0≤a≤b their primitives vanish below a and equal ∫_a^bq above b; the
+left-tail theorem also allows arbitrary b. No analytic admission premise.
+
+The completed leaf has171 lines,16public declarations=14theorems+2defs.
+Direct serial leaf check with normal olean passes without diagnostics.
+All16public axiom checks use only propext,Classical.choice,Quot.sound.
+All16signatures and24mathlib API probes pass. One unique umbrella import
+and16exact API catalog locations verified. Index refreshed. Global lint
+--check-generated exits1 for16 UNRELATED unreachable modules and381 existing
+large-file warnings; no own/proof-debt/generated-index error. Exact names in
+the stage2 card and /tmp/physical-restriction-lint-summary.json.
+Do not claim repository-wide lint passed.
+
+The full compensated compact logarithmic producer theorem has a complete
+dependency-closed paper proof, written before field Lean:
+docs/reports/BiScaleUncertainty/CompactLogarithmicPhysicalProducers.md.
+It includes exact compensation energy m_n²/L, zero primitive tails,
+actual compact C¹ logarithmic sources, visible-component approximation,
+affine costs, and compact source-mass-plus-jump convergence. Beyond the
+restriction foundation these results are NOT formally certified. No
+unfinished compensator/smoothing/form-convergence modules were started.
+
+Card: docs/drafts/pipeline/2-fully-proven/compact-physical-box-producers.md.
+Inactive program: docs/drafts/pipeline/0-backlog/continuum-coprime-shear.md.
+Former stage1 paths are gone. Card preserves corpus coverage limitations
+and primary-source references. No absence/novelty claim. README read fully
+and unchanged, SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933.
+Trap10 applied as explicit producer discipline without changing research
+topic; no RH work, numerical experiment or pre-floor subtraction.
+
+All owned Lean/search/index/lint jobs are terminal. Obsolete scratch
+drafts and failed probe logs removed. Retained final evidence:
+ /tmp/physical-interval-restriction-build.log,
+ /tmp/physical_restriction_axioms.lean,
+ /tmp/physical-restriction-axioms.log,
+ /tmp/physical-restriction-audit-names.json,
+ /tmp/physical-restriction-api-entries.txt,
+ /tmp/physical-restriction-index.log,
+ /tmp/physical-restriction-lint.log,
+ /tmp/physical-restriction-lint-summary.json.
+No full/umbrella build, heartbeat increase, added axiom, commit or push.
+
+Lean lessons: use explicit measurableSet_Ioc/Ioi arguments when forwarding
+private restriction lemmas. Use simp only for indicator cases; broad simp
+can change Lp coercions before an a.e. equality matches. Expose the
+restrictedVelocity function with change in mkContinuous's norm bound.
+Normalize RingHom.id in map_smul' by change before Lp.ext. Give positive
+interval membership the explicit type u∈Ioi 0. Rewrite the actual set
+intersection before invoking measure restriction congruence.

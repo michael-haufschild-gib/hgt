@@ -87,17 +87,20 @@ theorem factorialRamp_weighted_abs (n : ℕ) (x : ℝ) :
   · calc
       _ ≤ Real.exp (x/2)*(2*Real.exp (x/2)/Real.sqrt (n+1 : ℕ)) :=
         mul_le_mul_of_nonneg_left hr (Real.exp_pos _).le
-      _ = _ := by rw [mul_div_assoc, ← mul_assoc, mul_comm _ 2, mul_assoc, he1]
+      _ = 2*(Real.exp (x/2)*Real.exp (x/2))/Real.sqrt (n+1 : ℕ) := by ring
+      _ = _ := by rw [he1]
   · calc
       _ ≤ Real.exp (-(x/2))*(2*Real.exp (x/2)/Real.sqrt (n+1 : ℕ)) :=
         mul_le_mul_of_nonneg_left hr (Real.exp_pos _).le
-      _ = _ := by rw [mul_div_assoc, ← mul_assoc, mul_comm _ 2, mul_assoc, he2, mul_one]
+      _ = 2*(Real.exp (-(x/2))*Real.exp (x/2))/Real.sqrt (n+1 : ℕ) := by ring
+      _ = _ := by rw [he2, mul_one]
 
 private theorem factorialRamp_interval_tail (n : ℕ) (w : ℝ → ℝ) (hw : Continuous w)
     (u b : ℝ) (hb : Real.log (4*((n+1 : ℕ) : ℝ)+1) ≤ b) :
     (∫ x in u..b, w x*factorialRampSource n x) =
       ∫ x in u..Real.log (4*((n+1 : ℕ) : ℝ)+1), w x*factorialRampSource n x := by
-  have hc := hw.mul (factorialRampSource n).continuous
+  have hc : Continuous (fun x => w x*factorialRampSource n x) :=
+    hw.mul (factorialRampSource n).continuous
   have hz : (∫ x in Real.log (4*((n+1 : ℕ) : ℝ)+1)..b,
       w x*factorialRampSource n x) = 0 := by
     calc
@@ -105,9 +108,10 @@ private theorem factorialRamp_interval_tail (n : ℕ) (w : ℝ → ℝ) (hw : Co
         apply intervalIntegral.integral_congr
         intro x hx
         rw [uIcc_of_le hb] at hx
+        change w x*factorialRampSource n x = 0
         rw [factorialRampSource_tail n hx.1, mul_zero]
       _ = 0 := by simp
-  have h := intervalIntegral.integral_add_adjacent_intervals
+  have h := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
     (hc.intervalIntegrable u (Real.log (4*((n+1 : ℕ) : ℝ)+1)))
     (hc.intervalIntegrable (Real.log (4*((n+1 : ℕ) : ℝ)+1)) b)
   rw [hz, add_zero] at h
@@ -171,7 +175,7 @@ theorem factorialRamp_partial_moments (n : ℕ) {u : ℝ}
         rw [intervalIntegral.integral_div, intervalIntegral.integral_const_mul, integral_exp,
           Real.exp_zero]
   constructor
-  · have hsplit := intervalIntegral.integral_add_adjacent_intervals
+  · have hsplit := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hp.intervalIntegrable 0 u) (hp.intervalIntegrable u L)
     have heq : (∫ x in u..L, Real.exp (x/2)*factorialRampSource n x) =
         (∫ x in (0 : ℝ)..L, Real.exp (x/2)*factorialRampSource n x)-
@@ -198,16 +202,18 @@ private theorem factorialRamp_interval_head (n : ℕ) (w : ℝ → ℝ) (hw : Co
     {u : ℝ} (hu : u ≤ 0) :
     (∫ x in u..Real.log (4*((n+1 : ℕ) : ℝ)+1), w x*factorialRampSource n x) =
       ∫ x in (0 : ℝ)..Real.log (4*((n+1 : ℕ) : ℝ)+1), w x*factorialRampSource n x := by
-  have hc := hw.mul (factorialRampSource n).continuous
+  have hc : Continuous (fun x => w x*factorialRampSource n x) :=
+    hw.mul (factorialRampSource n).continuous
   have hz : (∫ x in u..(0 : ℝ), w x*factorialRampSource n x) = 0 := by
     calc
       _ = ∫ _x in u..(0 : ℝ), (0 : ℝ) := by
         apply intervalIntegral.integral_congr
         intro x hx
         rw [uIcc_of_le hu] at hx
+        change w x*factorialRampSource n x = 0
         rw [factorialRampSource_zero_of_nonpos n hx.2, mul_zero]
       _ = 0 := by simp
-  have h := intervalIntegral.integral_add_adjacent_intervals
+  have h := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
     (hc.intervalIntegrable u 0) (hc.intervalIntegrable 0 (Real.log (4*((n+1 : ℕ) : ℝ)+1)))
   rw [hz, zero_add] at h
   exact h.symm
@@ -244,8 +250,8 @@ theorem abs_polarSource_factorialRamp_le (n : ℕ) {u : ℝ}
     _ ≤ 5*A*(B-u) := by
       by_cases hu : 0 ≤ u
       · have hm := factorialRamp_partial_moments n hu hhi
-        have h := add_le_add (mul_le_mul_of_nonneg_left hm.1 (Real.exp_pos _).le)
-          (mul_le_mul_of_nonneg_left hm.2 (Real.exp_pos _).le)
+        have h := add_le_add (mul_le_mul_of_nonneg_left hm.1 (Real.exp_pos (-(u/2))).le)
+          (mul_le_mul_of_nonneg_left hm.2 (Real.exp_pos (u/2)).le)
         have he : Real.exp (-(u/2))*Real.exp u = Real.exp (u/2) := by
           rw [← Real.exp_add]; congr 1; ring
         have heq : Real.exp (-(u/2))*(2*Real.exp u/r)+Real.exp (u/2)*(2*(L-u)/r) =
@@ -257,13 +263,14 @@ theorem abs_polarSource_factorialRamp_le (n : ℕ) {u : ℝ}
             _ = _ := by rw [he]; ring
         change _ ≤ Real.exp (-(u/2))*(2*Real.exp u/r)+Real.exp (u/2)*(2*(L-u)/r) at h
         rw [heq] at h
+        have hmono := mul_le_mul_of_nonneg_left (show 1+L-u ≤ B-u by linarith) hA
         exact h.trans (by nlinarith [mul_nonneg hA hBu])
       · have hu0 : u ≤ 0 := by linarith
         rw [factorialRamp_interval_head n _ (by fun_prop) hu0,
           factorialRamp_interval_head n _ (by fun_prop) hu0]
         have hm := factorialRamp_full_moments n
-        have h := add_le_add (mul_le_mul_of_nonneg_left hm.1 (Real.exp_pos _).le)
-          (mul_le_mul_of_nonneg_left hm.2 (Real.exp_pos _).le)
+        have h := add_le_add (mul_le_mul_of_nonneg_left hm.1 (Real.exp_pos (-(u/2))).le)
+          (mul_le_mul_of_nonneg_left hm.2 (Real.exp_pos (u/2)).le)
         have he : Real.exp (-(u/2)) = Real.exp (u/2)*Real.exp (-u) := by
           rw [← Real.exp_add]; congr 1; ring
         have heq : Real.exp (-(u/2))*(2/r)+Real.exp (u/2)*((5*L+1)/r) =

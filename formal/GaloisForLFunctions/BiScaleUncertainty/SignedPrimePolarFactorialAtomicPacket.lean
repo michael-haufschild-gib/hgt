@@ -102,11 +102,12 @@ theorem atomicSource_factorialRamp_eq (n : ℕ) (u : ℝ) (K : ℕ) :
             (2*((n+1 : ℕ) : ℝ)*Real.exp (-u))+
           4*clampedPrimeFactorialSum (sourceFactorialCollar (n+1)) (n+1) (K+2)
             (((n+1 : ℕ) : ℝ)*Real.exp (-u))) := by
+  have hadd (a b c : ℝ) : a*(b+c) = a*b+a*c := mul_add a b c
   change (∑ m ∈ Finset.Icc 1 (K+2), primeWeight m*sourceFactorialRamp (n+1) (u+Real.log m)) = _
-  simp only [sourceFactorialRamp, rampBiNull, ← mul_div_assoc, mul_add, mul_sub,
-    Finset.sum_div, Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  simp only [sourceFactorialRamp, rampBiNull, ← mul_div_assoc, hadd, mul_sub,
+    ← Finset.sum_div, Finset.sum_add_distrib, Finset.sum_sub_distrib]
   have he (a b : ℝ) : a*(4*b) = 4*(a*b) := by ring
-  simp_rw [he, ← Finset.mul_sum]
+  simp only [he, ← Finset.mul_sum]
   rw [atomic_smoothFactorialLift_eq (by omega : 1 ≤ 4*(n+1)),
     atomic_smoothFactorialLift_eq (by omega : 1 ≤ 2*(n+1)),
     atomic_smoothFactorialLift_eq (by omega : 1 ≤ n+1)]

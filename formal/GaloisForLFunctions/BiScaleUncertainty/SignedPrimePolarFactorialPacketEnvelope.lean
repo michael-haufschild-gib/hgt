@@ -45,8 +45,11 @@ theorem integral_factorialPacketEnvelope_sq_le {N : ℕ} (hN : 1 ≤ N) :
     have hD := (hasDerivAt_id x).const_sub B
     have hQ := ((hD.pow 2).add (hD.const_mul 2)).add_const 2
     convert (((Real.hasDerivAt_exp x).mul hQ).div_const (N : ℝ)) using 1 <;>
-      first | rfl | dsimp [P]; ring
-  have hL : 0 ≤ L := Real.log_nonneg (by dsimp [L]; linarith)
+      first
+      | rfl
+      | (funext y; dsimp [P]; ring)
+      | (dsimp; ring)
+  have hL : 0 ≤ L := Real.log_nonneg (by change 1 ≤ 4*(N : ℝ)+1; linarith)
   have hδ := sourceFactorialWidth_pos hN
   have ha : -3*sourceFactorialWidth N ≤ L := by linarith
   have heq : (∫ u in Icc (-3*sourceFactorialWidth N) L,

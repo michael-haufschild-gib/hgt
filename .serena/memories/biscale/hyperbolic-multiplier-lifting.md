@@ -1,10 +1,10 @@
 # Hyperbolic multiplier lifting: verified facts
 
-Independent BiScaleUncertainty program. No RH work, no hgtl7 skill, no numerical experiments. User requires 100 significant contributions, one per turn; supporting lemmas/classical inequalities are not separate contributions. Count: **26/100**, goal ACTIVE. Read brief every new turn: `/Users/michael/.codex/attachments/88558842-9142-47a9-bda1-a9d243d1a408/pasted-text-1.txt` and complete field `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (READ-ONLY; user instruction).
+Independent BiScaleUncertainty program. No RH work, no hgtl7 skill, no numerical experiments. User requires 100 significant contributions, one per turn; supporting lemmas/classical inequalities are not separate contributions. Count: **27/100**, goal CLEARED by user on 2026-10-18. User then requested completion of open work; that closure is finished. Do not restart or continue the 100-contribution program without a new user instruction. Read brief every new turn: `/Users/michael/.codex/attachments/88558842-9142-47a9-bda1-a9d243d1a408/pasted-text-1.txt` and complete field `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (READ-ONLY; user instruction).
 
 Authoritative facts: `docs/reports/BiScaleUncertainty/HyperbolicMultiplierLifting-FACTS.md`. Paper proofs, plan, commands and latest global lint status: `docs/drafts/pipeline/1-in-progress/hyperbolic-multiplier-lifting-2026-10-17.md` (now >500 lines; use ranges). Preserve other agents' concurrent edits. No commits/push/full builds.
 
-Twenty-seven verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
+Twenty-eight verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
 1. HyperbolicMultiplierGramTransfer.lean — compensated secant/signed-kernel transfer with measured sine Gram defect; 13 public theorem audits. SHA256 12ec9a1f19c416d8d0601c1c1e133880318a69cb43d84e3a133034fd8b387444.
 2. HyperbolicJumpEnergyTransfer.lean — signed-sinh squared-jump law, actual source-support envelope, uncompensated collar and full secant receiver; 19 audits. SHA256 56fb077bbe28fbae0d143d8a62f68db8bbcc87c5c3c941c2e0b43feea856e2b4.
 3. PlasticCrossoverGramReceiver.lean — exact positive-remainder decomposition and actual signed plastic receiver, odd/source-origin forms; 18 audits. SHA256 c34e886a83d099242571f9bdcb2b4e49fd3841608fad2448b9615e2ee49cd923.
@@ -39,7 +39,9 @@ Twenty-seven verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/
 26. CoherentFiberPlasticInfimum.lean — explicit inverse-square plastic error, exact coherent-fiber GLB and full attainment/negative-member classification;12 public theorem audits. SHA256686fc6dc698969f4b1345e4b67554030002ece865296e367f0ee6007c6baefc3. Modules25/26 together form contribution25, not two contributions.
 27. ConfinedCoherentPlasticGap.lean — explicit finite-window coherent price and plastic tail costs, positive confinement gap and necessary support escape for all sufficiently accurate coherent near-minimizers;15 public theorem audits. SHA2567658ac3917d9d3d363679ca40ba2f1fa37805f56bf43d1e54ceedd2c0992a830. Contribution26.
 
-All twenty-seven actual-source compilations passed without warnings. All 402 public theorem axiom audits use only propext, Classical.choice, Quot.sound. Each is wired into BiScale umbrella. Sixth module has 408 lines, namespace `GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGram`. Actual source and emitted olean audited; no source edits after successful compile. Fifth hash revalidated during sixth turn. Global lint is independent and can fail on concurrent modules/generated drift; exact latest snapshot is on master card. Never claim repository-wide clean gate without evidence.
+28. AnnularCoherentEnergyBounds.lean — bounded actual annular lift, exact profile-weighted energy, two-sided profile-distance stability and full original plastic control with explicit kernel cost;9 public theorem audits. SHA256203ec8cc29bea0cf2834d221c53d082ad722158b7f897089c8628527a19bae0c. Contribution27, completed only to close open work after goal clearing.
+
+All twenty-eight actual-source compilations passed without warnings. All 411 public theorem axiom audits use only propext, Classical.choice, Quot.sound. Each is wired into BiScale umbrella. Sixth module has 408 lines, namespace `GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGram`. Actual source and emitted olean audited; no source edits after successful compile. Fifth hash revalidated during sixth turn. Global lint is independent and can fail on concurrent modules/generated drift; exact latest snapshot is on master card. Never claim repository-wide clean gate without evidence.
 
 Exact established mathematics:
 - Correct scale alpha=1/2. C=C_(1/2)f, S=S_(1/2)f, R=hf0, RS=hS0. hC-hS=cosh(x/2)hf and RC=R+RS. Source zero means hC=hS, not multiplier zero. A source clique diagonalizes GC-GS, not GS. Deltaf sech=R(sech-sech^2)+(DeltaC-DeltaS)sech^2, so dropping cosine companion after lower DeltaS bound has wrong sign.
@@ -596,3 +598,45 @@ Audits: initialAPI97709 failed only periodicity lemma universe count; corrected 
 Umbrella wired. Index54083 exit0 wroteLEAN_API/LEAN_GAPS/LEAN_OVERVIEW, searchDB3changed0removed. All21publicnames exactmatch. Lint97434 exit1 onfour unrelated unreachablemodules: SignedLcmFractionalDefectAndCompleteFibreCollapse, SignedPrimePolarClampedPrimeSum, SignedPrimePolarFactorialAtomicPacket, SignedPrimePolarRealFactorialStencil. Existinglargefilewarnings remain; no generated drift/noownedliftingissue. No boundedrefreshneeded, unrelatedsourcesuntouched, no global clean-gate claim. Priorcapstone/read-onlyREADME hashesunchangedafterallgates. No full/umbrella build, heartbeat/recursion hack, numerical experiment, commit/push. Allownedsearch/Lean/index/lint handles terminal. Owned/tmp/hml_confinement_api.lean and/tmp/hml_confinement_lint.txt deletedviaapply_patch; absenceverified. Scopedgitdiff/sourcewhitespacecheckspassed.
 
 Next turn27: read brief fully, verify authoritative currentworktree/README hash, corpus-first dependency-closed paper research. Do not count rephrasing confinement inequality/zero-price classification as new contributions. Fixed-window minimizers and bounded optimal representatives remain separate questions; necessary support escape alone does not establish mass escape, universal sourceenergy decay, or convergence of kernel-line corrections. Keep actual-source producer discipline and fulloriginalsignedplastic functional.
+
+
+## Contribution27 closed; research goal cleared — 2026-10-18
+
+User cleared the active research goal during first Lean check, then explicitly said "finish any open work to not leave unfinished or unwired code behind". Completed ONLY the open annular energy module, its verification, umbrella wiring, index, lint review, facts/card and cleanup. No automatic research continuation authorized. Goal tool confirmed null after clearing; no goal was recreated. Historical ACTIVE labels earlier in this memory describe prior snapshots, not current authorization.
+
+Module28: formal/GaloisForLFunctions/BiScaleUncertainty/AnnularCoherentEnergyBounds.lean, namespace GaloisForLFunctions.BiScaleUncertainty.AnnularCoherentEnergyBounds. 324 lines,1 public definition,9 public theorems. SHA256203ec8cc29bea0cf2834d221c53d082ad722158b7f897089c8628527a19bae0c. Imports ConfinedCoherentPlasticGap only. One substantive contribution: bounded actual-source coherent lifting, stable in full profile data, with full original plastic bound retaining kernel cost. Supporting linearity/periodization/quadratic algebra are not extra contributions.
+
+Paper proof:
+Let d=log2, A=attainingSource1, p=sinh(u/2)A=attainmentProfile, F=odd f, P_f=cellFold F, C_f=coherentPrice f, R_f=representative f, K_f=kernelPart f, O_f=fiberMoment f and V=levyCoshPotential screwSignThreshold. Actual p lies between0 and1 and its integer shifts sum to1. Support is d<|u|<3d. Finite cell shifts suffice, then Haar scaling gives integral p(u)P_f(u/d)^2 du=d*integral_0^1 P_f²=C_f. kappa=1/sinh(d/2)^2>0 and A²<=kappa*p imply h_Rf0<=kappa*C_f. Rf lies in confinement window5 (radius3d), hence C_f/confinementCost5<=h_Rf0<=kappa*C_f.
+R_(f+t*g)=Rf+t*Rg. Apply to f-g: both-sided h_(Rf-Rg)0 bounds in d*integral_0^1(P_f-P_g)², with same constants.
+Full representative plastic excess: confinementGap f5<=Q(Rf)+2O_f²<=2V*kappa*C_f.
+Full original plastic bound: Q(F)+2O_f²<=4V*kappa*C_f+2Q(Kf). Proof uses coherentRay f f(-1)=Rf and coherentRay f f(-2)=Rf-Kf in same full class; Q(F)+Q(Rf-Kf)=2Q(Rf)+2Q(Kf), and Q(Rf-Kf)>=-2O_f². No unknown signed cross term discarded. Q(Kf) is explicit actual-source cost, nonnegative by prior kernel theorem.
+
+Public API:
+- integral_profile_fold_sq
+- def annularEnergyFactor and annularEnergyFactor_pos
+- representative_energy_upper
+- representative_add_smul
+- coherentPrice_representative
+- representative_energy_bounds
+- representative_difference_bounds
+- representative_plastic_bounds
+- odd_plastic_coherent_kernel_upper
+
+Boundaries: realized coherent profiles only; no abstract completion, sharp constants, orthogonal split, minimum-energy representative, source-grid zero hypothesis, universal odd plastic positivity or external priority claim. Earlier no-go for controlling arbitrary original energy by coherent price remains intact. This is an explicit producer with unconditional error/energy bounds, consistent with Trap10 and independent BiScale topic.
+
+Corpus query annular representative bounded right inverse coherent fold original energy norm (--any, BiScale filter) returned partial61.17s; no existing exact bounded-lift result found in available hits/source searches. Unfinished text/source retrieval and unmeasured semantic coverage rule out completeness claims.
+
+Verification:
+- Initial API53026 passed warning-free. First uncaptured source PIDs96132/96296 stopped on user goal clear; terminal absence verified.
+- Source8781 and68917 hit compact-support elaboration timeouts. Named arguments alone insufficient; change unitProfile/P helper abbrevs to private defs and make support function goals explicit. Focused support probe76466 passed after adding correct parent namespace (first probe9482 had missing namespace names).
+- Source57359 found explicit unfolding and C_c/continuous-map coercion steps. Added simp-only unitProfile/P where needed, and explicit change on integral HasSum equality and beta-applied cell integrand.
+- Final direct source87735 exited0 warning-free using lake --old env lean GaloisForLFunctions/BiScaleUncertainty/AnnularCoherentEnergyBounds.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/AnnularCoherentEnergyBounds.olean from formal. No source edits afterward.
+- Final /tmp API+all9 public theorem axiom audit11133 exited0 warning-free; only propext, Classical.choice, Quot.sound. Exact source/audit name match.
+- One owned Lean process at a time; no heartbeat/recursion changes, full/umbrella build, numerical experiment, subagent, commit, push or no-go retirement.
+- Umbrella wired. Index10682 exited0: generated LEAN_API/LEAN_GAPS/LEAN_OVERVIEW, searchDB3 changed/0 removed. Exact public source/API set match (10 declarations).
+- Global lint49410 exited1 on TEN unrelated unreachable modules: FactorialCompleteFormCoercivity; SignedPrimePolarClampedPrimeSum; SignedPrimePolarFactorialAtomicPacket; SignedPrimePolarFactorialLocalCertificate; SignedPrimePolarFactorialLocalEnergy; SignedPrimePolarFactorialPacketEnvelope; SignedPrimePolarFactorialPolarPacket; SignedPrimePolarLocalizedPacket; SignedPrimePolarRealFactorialStencil; SignedPrimePolarReflectedTentPacket. All other output was existing large-file warnings. No generated drift or owned lifting module issue; no refresh needed. No repository-wide clean-gate claim.
+- Docs facts header/section27 and master plan32/result27 completed. Current status explicitly goal CLEARED and open work finished. Total27 contributions/28 verified modules/411 supporting public theorem audits.
+- Scratch /tmp/hml_annular_energy_api.lean, /tmp/hml_annular_energy_support.lean, /tmp/hml_annular_energy_lint.txt deleted via apply_patch, absence verified. All owned handles terminal. Final scoped diff/whitespace passed. Source/README/prior annular/confinement hashes unchanged. README read-only hash dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933. No unfinished or unwired code remains from this work.
+
+Lean lessons: regular private defs avoid huge reducible unfolding through C_c support constructors; then simp only must explicitly list those defs where target uses their expanded expressions. Change HasSum/tsum equalities to explicitly typed C_c lambdas before rewrites, and change beta-applied integrands to pointwise equations before rw. Do not raise heartbeat limits to hide inference problems.

@@ -1,9 +1,12 @@
 # Hyperbolic multiplier lifting: facts and boundaries
 
+Research goal cleared on 2026-10-18. User-requested completion of the open
+annular energy module is finished; no further research runs remain authorized.
+
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Twenty-six substantive results are Lean verified: compensated multiplier Gram
+contributions. Twenty-seven substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -30,7 +33,8 @@ the canonical fixed-annulus retraction preserving full odd coherent data and pri
 the actual coherent kernel splitting, nonzero zero-fold family and unconditional plastic nonnegativity (25), and
 exact source-realized plastic line minimization with coherent-data preservation and full gain transfer (21), and
 explicit outward sources with fixed full coherent data, inverse-square plastic error, sharp fiber infimum and complete attainment/sign classification (21 across two modules), and
-the explicit confinement gap, full-fold price rigidity and necessary support escape for every sufficiently accurate coherent near-minimizer (15). Supporting theorem
+the explicit confinement gap, full-fold price rigidity and necessary support escape for every sufficiently accurate coherent near-minimizer (15), and
+bounded annular lifting with exact weighted energy, two-sided stability and an original plastic bound retaining the explicit kernel cost (9). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -1156,3 +1160,48 @@ modules,402 supporting public theorem audits; full goal ACTIVE. Final global
 lint reports four unrelated unreachable modules and no generated-file drift;
 no owned lifting module issue. Exact snapshot on master card; no global clean-gate
 or external novelty claim.
+
+## Bounded annular lifting of full coherent data
+
+Lean-verified module, completed under the user's instruction to finish open work:
+`formal/GaloisForLFunctions/BiScaleUncertainty/AnnularCoherentEnergyBounds.lean`.
+Write d=log2, p=attainmentProfile, A=attainingSource(1),
+F=odd(f), P_f=cellFold(F), C_f=coherentPrice(f), R_f=representative(f),
+K_f=kernelPart(f), O_f=fiberMoment(f), and V=levyCoshPotential(screwSignThreshold).
+The canonical actual source is R_f(u)=A(u)P_f(u/d), supported in d<|u|<3d.
+
+- The actual tent partition gives the exact weighted identity
+  integral p(u)P_f(u/d)^2 du=d*integral_0^1 P_f(x)^2 dx=C_f.
+  Compact support reduces the cell sum to finitely many shifts.
+- With kappa=1/sinh(d/2)^2>0, the pointwise bound A²<=kappa*p yields
+  C_f/confinementCost(5)<=h_(R_f)(0)<=kappa*C_f.
+  Both constants are explicit and independent of the input source.
+- The lift is linear. Consequently the same bounds hold for R_f-R_g,
+  with C_f replaced by d*integral_0^1(P_f-P_g)^2. Thus it controls
+  perturbations of the complete realized coherent profile.
+- The original signed plastic excess of this actual representative satisfies
+  confinementGap(f,5)<=Q(R_f)+2O_f²<=2*V*kappa*C_f.
+- The original odd source retains its explicit kernel cost:
+  Q(F)+2O_f²<=4*V*kappa*C_f+2Q(K_f).
+  This follows from the exact quadratic law and the proved coherent-class
+  lower bound for R_f-K_f; it discards no unknown signed cross term.
+
+One substantive bounded-lift/stability and full-functional decomposition result.
+The earlier zero-fold obstruction still rules out controlling arbitrary original
+source energy by coherent price alone. No sharp constants, orthogonality,
+energy-minimizing representative, abstract completion or universal odd plastic
+positivity is asserted. All inputs are actual compact continuous sources;
+there is no source-grid zero hypothesis or unproved analytic estimate.
+
+Direct source check87735 and all9 public theorem axiom audits11133 passed
+without warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has
+324 lines, one public definition and nine public theorems; SHA256
+`203ec8cc29bea0cf2834d221c53d082ad722158b7f897089c8628527a19bae0c`.
+Umbrella wired; all10 public declarations match the regenerated API exactly,
+and all9 theorem names match the axiom audit. Totals:27 contributions,
+28 verified modules,411 supporting public theorem audits. Research goal remains
+cleared; this closes the open work without restarting the program.
+
+Global lint49410 exited1 on ten unrelated unreachable modules, with no generated
+drift or issue in this lifting module. Exact list is on the master card; no
+repository-wide clean-gate or external priority claim. Read-only README unchanged.

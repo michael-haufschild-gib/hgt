@@ -71,7 +71,7 @@ theorem logarithmicPairedArrayNorm_le_add_mass (n : ℕ) (a b e : Bool → ℕ �
     (ha true) (fun k => le_add_of_nonneg_right (he true k))
   have hr := pairedRadial_monotone_bounds 0 (logarithmicSignNorm_nonneg n (a false))
     (logarithmicSignNorm_nonneg n (a true)) (sub_nonneg.mp hf.1) (sub_nonneg.mp ht.1)
-  simp only [zero_pow, zero_add] at hr
+  norm_num only [zero_add] at hr
   change 0 ≤ logarithmicPairedArrayNorm n (fun σ k => a σ k + e σ k) -
       logarithmicPairedArrayNorm n a ∧
     logarithmicPairedArrayNorm n (fun σ k => a σ k + e σ k) - logarithmicPairedArrayNorm n a ≤

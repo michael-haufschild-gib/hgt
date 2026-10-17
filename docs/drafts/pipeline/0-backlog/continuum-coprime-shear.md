@@ -1,16 +1,17 @@
 # Continuum coprime shear and affine uncertainty
 
 - **ID:** continuum-coprime-shear
-- **Stage:** 1-in-progress
+- **Stage:** 0-backlog
+- **Status:** Inactive; user cleared the research goal. Code closure audit is complete.
 - **Type:** CANDIDATE
 - **Statement:** Lift Pillar VII to logarithmic coordinates with actual additive Dirichlet energy, exact interpolation defects, and multiplicative graph coupling.
 
 ## Scope and completion
 
 Independent BiScaleUncertainty research; no RH work and no hgtl7 workflow.
-User's attachment requires 100 significant contributions. Count mathematical
-packages, not supporting lemmas. Goal remains active until that target and its
-verification obligations are met.
+The former target was 100 significant contributions. The user cleared that
+goal at 19 certified packages and requested closure of open code. Supporting
+lemmas do not increment the count. Further research requires a new request.
 
 Knowledge ledger: `docs/reports/BiScaleUncertainty/ContinuumCoprimeShear-FACTS.md`.
 The requested `update_plan` tool is unavailable; this card records the plan.
@@ -34,7 +35,7 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    Actual physical affine action, sharp commutator norm, nonattainment and finite producers are proved.
    Extend to actual regularized velocities, SourceGraph coupling and closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
-6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
+6. Research continuation is inactive following the user’s stop instruction.
 
 ## First candidate
 
@@ -436,12 +437,13 @@ Six leaves and all61 public axiom checks pass with only standard axioms;
 28 principal signatures and73 API probes pass. Six imports and61 exact
 catalog locations verified. Global lint fails only for seven unrelated
 unreachable modules, listed on the stage3 card; no own/proof-debt/index error.
-Paper preceded Lean. README remains unchanged. Certified19/100; goal active.
+Paper preceded Lean. README remains unchanged. Certified19/100; the goal was subsequently cleared by the user.
 
-## Next candidate
+## Inactive paper-proved continuation
 
-../0-backlog/compact-physical-box-producers.md: construct compact logarithmic
-states using positive-interval truncation, explicit zero-integral tail
-compensation and box smoothing. Compact velocity alone is insufficient.
-Two partial corpus audits inspected20 candidates and20 source statements
-each. Unproved/uncounted; primary-source and paper-proof gates remain.
+../2-fully-proven/compact-physical-box-producers.md contains the completed
+paper proof for compensated compact logarithmic producers. The restriction
+foundation is fully formalized, checked, wired and indexed; broader formal
+producer construction was not started. Supporting lemmas do not increment
+certified19/100. The user cleared the goal and requested closure. No further
+research is active or authorized without a new request.

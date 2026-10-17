@@ -1,7 +1,10 @@
 # Local packet bounds for the actual factorial sources
 
-Status: paper argument; Lean certification in progress. Uncounted until the
-actual-source endpoint and dependency audits pass.
+Status: formalized in Lean, 2026-10-18. The actual-source endpoint is
+`SignedPrimePolar.factorialLocalPacket_certificate` in
+`formal/GaloisForLFunctions/BiScaleUncertainty/SignedPrimePolarFactorialLocalCertificate.lean`.
+All nine leaves pass direct checks; fourteen dependency audits use only standard
+Lean axioms. This is one theorem package.
 
 ## Statement
 
@@ -17,7 +20,7 @@ For the literal signed translation packet
 Q_K f(u)=Σ_{1≤m≤K+2} Λ(m)/sqrt(m) f(u+log m)
           −∫₀^{log(K+2)} 2cosh(t/2)f(u+t)dt,
 
-the proposed certificate is
+the verified certificate is
 
 ∫_J |Q_(10N)V±|² ≤ 300000 sqrt(N).
 
@@ -36,9 +39,10 @@ For integers a≤b and b≤X, monotonicity of log gives
 0≤T(b)−T(a)≤(b−a)log(X+1).
 
 The integer stencil already satisfies |A(k)|≤5log(4k+1)+1, also at k=0.
-The two carry errors therefore give
+The upper carry contributes between 0 and 3log(4v+1), and the middle
+carry contributes between −4log(4v+1) and 0. Keeping their signs gives
 
-|A(v)|≤12log(4v+1)+1.                                      (1)
+|A(v)|≤9log(4v+1)+1.                                       (1)
 
 We next use finite-sum sandwiches, avoiding any regularity assumption on a
 real-scale factorial step function. For K∈{N,2N,4N}, u∈J, let v_K=K exp(−u).
@@ -62,12 +66,12 @@ at most two. Put v=N exp(−u), U=(1+ε)v, and H=log(4U+1).
 Each smoothing correction E_K=S_K−T(floor(v_K)) lies in [0,2H].
 Consequently |E_(4N)−4E_(2N)+4E_N|≤10H. Combining with (1),
 
-|atomicSource R (10N) u|≤exp(u/2)/r · (22H+1).
+|atomicSource R (10N) u|≤exp(u/2)/r · (19H+1).
 
 Because ε≤1 and exp(u)≤4N+1≤5N, we have 4U+1≤13N exp(−u).
 With B=1+log(13N), this proves the convenient envelope
 
-|atomicSource R (10N) u|≤22 exp(u/2)/r · (B−u).            (3)
+|atomicSource R (10N) u|≤19 exp(u/2)/r · (B−u).            (3)
 
 This is an explicit estimate for the constructed arithmetic packet, not a
 restatement of an assumed discrepancy estimate.
@@ -94,7 +98,7 @@ full moments directly; exp(−u)≤5/4 makes the coefficient at most
 
 Together with (3), the actual signed packet satisfies
 
-|Q_(10N)R(u)|≤27 exp(u/2)/r · (B−u).                      (4)
+|Q_(10N)R(u)|≤24 exp(u/2)/r · (B−u).                      (4)
 
 The prime and polar terms are combined in Q before its energy is taken.
 The bound uses triangle inequality after arithmetic cancellation within (3);
@@ -106,7 +110,7 @@ At u=L, exp(L)/N≤5 and 1≤B−L≤4, hence
 
 ∫_J exp(u)/N · (B−u)² du≤130.
 
-Equation (4) gives ∫_J |Q_(10N)R|²≤94770≤100000.
+Equation (4) gives ∫_J |Q_(10N)R|²≤74880≤100000.
 
 ## Narrow source and balancing
 

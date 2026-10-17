@@ -2,7 +2,8 @@
 
 ## Counting rule
 
-Target: 100 substantive, independently justified contributions. Verified packages: 11.
+Verified packages: 12. The user cleared the broader 100-contribution goal on
+2026-10-18. Closure of the already-open local packet package is complete.
 Helpers, equivalent restatements, and classical partial summation do not count separately.
 
 Field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read
@@ -620,6 +621,42 @@ The inspected C² and local-Lipschitz existence results do not supply the actual
 numeric endpoint. This audit supports local reuse decisions, not an external
 novelty or absence claim.
 
+## Contribution 12: actual factorial-source local packet budget
+
+Paper: `SignedPrimePolarFactorialLocalPacket.md`. Completed card:
+`3-formalized/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
+The main endpoint `SignedPrimePolar.factorialLocalPacket_certificate (n : ℕ)`
+instantiates both reflected balanced sources, N=n+1, δ=log(1+1/(4N))/3,
+J=[−3δ,log(4N+1)], and every cutoff K=10N+k. It proves
+∫_J |Q_K V±|²≤300000sqrt(N), 6sqrt(N)≤h(0)≤46sqrt(N),
+pairing(K,h)²≤50000h(0)², and the literal increment bound
+pairing(K,h(·+y)−h)²≤600000sqrt(N)(h(0)−h(y)) for |y|≤δ.
+The local energy ratio is at most 50000 and the packet stabilizes on J.
+There is no discrepancy or local-budget premise.
+
+Signed floor carries give |A(v)|≤9log(4v+1)+1. Finite-cap clamped prime
+sums and their smoothing error yield atomic envelope coefficient 19; actual
+partial polar moments give coefficient 5. The broad signed packet coefficient
+is 24, its squared envelope integral is at most 130, and its energy is at most
+100000. The reflected narrow packet contributes at most 9/N. Balancing then
+gives the explicit local bound. No pre-floor counterterm is used.
+
+Nine direct leaf checks and fourteen standard-axiom audits pass. All nine imports
+are wired once, source hashes are recorded, and the refreshed API index lists the
+main endpoint at SignedPrimePolarFactorialLocalCertificate.lean:146. Seven logs
+are empty; two contain unused-tactic warnings without errors. Evidence:
+`/tmp/spp12-final-manifest.json`, `/tmp/spp12_final_axioms.lean`,
+`/tmp/spp12-final-axioms.log`, `/tmp/spp12-index.log`, `/tmp/spp12-lint.log`.
+Temporary implementation/API helpers were removed; final evidence is retained.
+README was not edited; no full/umbrella build, numerical experiment, commit or push.
+
+Global lint exits 1 solely for five unrelated unwired modules:
+CompactFiniteJumpWeilFormula, FactorialCompleteFormCoercivity,
+FactorialWeilCoercivity, SchurSquareCorrelation, SeparatedCopySquareClassification.
+No package-local error occurs. Search coverage and boundaries are recorded on
+the completed card. The complete construction and its transport consequences
+count once. The broader goal is cleared and this package's closure is complete.
+
 ## Failure boundaries and remaining frontier
 
 - Scalar support stabilization does not establish packet-energy stabilization:
@@ -644,15 +681,11 @@ novelty or absence claim.
   `3-formalized/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
   The jump-energy card is now
   `3-formalized/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
-  Next uncounted question:
-  `0-backlog/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
-  Investigate actual signed packet energy localized to the support of reflected
-  balanced sources. The finite j≤K cap must be retained unless its redundancy
-  is proved in the precise collar. Global packet stabilization remains unproved.
-  Two new audits report partial=false/errors=[], full inventories, unmeasured
-  semantic completeness, predominantly pending/stale compiler metadata and
-  deferred refresh. Relevant factorial grid and mixed-support statements were
-  inspected; no complete local packet endpoint or external novelty is inferred.
+  Contribution 12 now closes the actual signed packet budget on the reflected
+  source window; its card is
+  `3-formalized/signed-prime-polar-factorial-local-packet-2026-10-17.md`.
+  Finite j≤K cap redundancy is proved in the precise collar. Full-real-line
+  packet stabilization remains unproved and is outside the closed work package.
 - The prior multiple-collar search returned finite discrete Gram precedents, not
   that mixed construction.
   Both searches report partial=false and errors=[]; semantic coverage is unmeasured,

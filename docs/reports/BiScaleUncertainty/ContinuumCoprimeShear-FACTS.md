@@ -2,8 +2,9 @@
 
 ## Scope and certified contribution count
 
-Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **19 / 100**. Supporting algebra,
+Former target: 100 substantive mathematical packages in continuum coprime shear
+and multiplicative/additive regularity. User cleared the goal at **19 / 100**
+certified packages; research continuation is inactive. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -1761,23 +1762,31 @@ Simplify the orbit primitive at zero before unfolding its integral definition.
 Type constant limits explicitly. innerSL and its apply lemmas have two
 universe parameters even when the printed signature lacks a leading @.
 
-## Next unproved candidate — compact logarithmic states
+## Completed restriction foundation and paper-proved compact producers
 
-Card: docs/drafts/pipeline/0-backlog/compact-physical-box-producers.md.
-Compact physical velocity alone leaves a constant primitive tail. Seek
-positive-interval truncation plus an explicit distant zero-integral
-compensator, followed by box smoothing, to construct actual compact C¹
-logarithmic states. Target convergence of physical velocities to the positive
-half-line component, and compact-source jump convergence to the original
-logarithmic state. Proposed compensator norm is at most exp(−r/2)‖q‖.
-The card gives all scales, support endpoints and error terms. Unproved and
-uncounted; no Lean assigned. Primary-source and full paper-proof gates remain.
+The user cleared the research goal at19 certified packages. No autonomous
+continuation is authorized; this foundation does not increment the count.
 
-Two queries each inspected20 candidates and20 source-argument statements;
-no proof ideas/ingredient sets. First partial deadline/reranking,
-generation1447717 pending. Second partial deadline/semantic coverage,
-inventory73830 complete, snapshot1447809/current1447810, retrieval1447801;
-compiler mostly pending/source-only, refresh incomplete. Evidence:
-/tmp/physical-box-next-search.json and /tmp/compact-log-primitive-next-search.json.
-Existing negativePhysicalVelocity and logarithmic transport are relevant
-parents. No absence/novelty inference.
+PhysicalIntervalRestriction.lean constructs the actual linear contractions
+R_(a,b)q=1_(a,b]q and P₊q=1_(0,∞)q. Their squared norms equal the respective
+restricted integrals of q². P₊q=q−negativePhysicalVelocity(q), P₊ is
+idempotent, and F_(P₊q)(t)=F_q(t) for t≥0. Thus logarithmic primitives agree
+exactly. R_(a,b)q is integrable and integrates to ∫_(a,b]q. For 0≤a≤b its
+primitive vanishes below a and equals ∫_a^bq above b. The left-tail theorem
+also allows arbitrary b. These are actual L² constructions without analytic
+admission premises.
+
+The complete leaf has171 lines,16 public declarations (14theorems,2defs).
+Direct leaf check, all16 axiom audits, all16 signature checks and24 API
+probes pass. Only propext,Classical.choice,Quot.sound occur. One unique
+umbrella import and16 exact catalog positions verified. No unfinished
+compensator or smoothing modules were started.
+
+The broader compact logarithmic producer theorem has a complete paper proof
+in CompactLogarithmicPhysicalProducers.md. Its exact compensation energy,
+compact C¹ source, quantitative approximation, affine costs and compact
+source-mass-plus-jump convergence remain uncounted and not formally certified.
+Card: docs/drafts/pipeline/2-fully-proven/compact-physical-box-producers.md.
+Research program: docs/drafts/pipeline/0-backlog/continuum-coprime-shear.md.
+The card records corpus coverage, primary sources and exact lint findings.
+No novelty or corpus-absence claim. README remains unchanged and read-only.

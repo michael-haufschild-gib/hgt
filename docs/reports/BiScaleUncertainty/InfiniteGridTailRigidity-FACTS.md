@@ -4,6 +4,7 @@
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
 Target: 100 significant mathematical packages. Certified packages in this ledger: **15**.
+User cleared this goal on 2026-10-18; the research run is closed, not complete at 100.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
 
 Field guide: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only.
@@ -13,6 +14,47 @@ witnesses, not substitutes for signed arithmetic or polar coercivity. Origin con
 and exponentially weighted polar-tail control remain distinct questions. Trap 10 requires
 explicit producers and unconditional quantitative bounds; receiver-only reformulations and
 pre-floor counterterm subtraction are excluded. The README remains read-only for this work.
+
+## Run closeout, 2026-10-18
+
+User cleared the goal and requested closure of open work without unfinished or unwired
+code. Exhaustive closeout inventory covers all 60 owned modules from the 15 certified
+packages: each has exactly one umbrella import; all 580 public source declaration/API
+pairs occur exactly once; no owned proof holes or heartbeat overrides were found.
+All compiled artifacts exist. Package 13, 14 and 15 source hashes match their retained
+certificates; all 60 source hashes remain unchanged during closeout. Package 15's full
+17-leaf/186-declaration certificate was revalidated successfully.
+The only artifact older than its source, `InfiniteGridCorrelationCompactness.olean`,
+was rebuilt by a direct single-worker leaf check, which passed without diagnostics.
+All 12 public declarations in that current leaf passed a fresh scratch axiom audit
+with only standard logical axioms. Every owned compiled artifact is now at least
+as recent as its source. No Lean source changes were needed for closeout.
+
+The successor `NyquistCriticalFinitePart.md` has a complete paper proof and is retained
+at `docs/drafts/pipeline/2-fully-proven/nyquist-critical-finite-part-2026-10-18.md`.
+No Lean source was started for it, and no result is added to the certified count.
+Its contribution is the explicit absolutely summable critical cell discrepancy,
+canonical finite part, quantitative signed broad-test expansion and actual-source
+zero-mean/nonzero-mean classification. It remains paper-only.
+
+Fresh formal lint exits 1 on 18 foreign missing imports, with no owned diagnostic:
+`AnnularCoherentEnergyBounds`, `BarbanVehovLogarithmicDiagonalAndKerPCauchyPinch`,
+`ConcentratedPairedCollarPenalty`, `FourthRootCutoffNormalization`,
+`KerPCenteredSieveAndFirstSecondMomentReciprocity`, `PairedArrayRadialGeometry`,
+`SharpPairedCollarAsymptotics`, `SharpPairedCollarComparison`,
+`SharpProductCoupledAsymptotics`, `SignedLcmFractionalDefectAndCompleteFibreCollapse`,
+`SignedPrimePolarClampedPrimeSum`, `SignedPrimePolarFactorialAtomicPacket`,
+`SignedPrimePolarFactorialLocalEnergy`, `SignedPrimePolarFactorialPacketEnvelope`,
+`SignedPrimePolarFactorialPolarPacket`, `SignedPrimePolarLocalizedPacket`,
+`SignedPrimePolarRealFactorialStencil`, `SignedPrimePolarReflectedTentPacket`.
+All 381 warnings concern unrelated large files; no active proof hole is reported.
+This is a concurrent-tree snapshot, not a repository-wide green claim.
+
+Closeout manifests/logs: `/tmp/infinite-grid-closeout-{modules,source-hashes,verification}.json`
+and `/tmp/infinite-grid-closeout-lint.{log,exit}`. The read-only guide still has SHA256
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Fresh leaf/audit logs: `/tmp/infinite-grid-closeout-compactness-{leaf,axioms}.{log,exit}`.
+All owned jobs finished. No full build, commit or push was performed.
 
 ## Established inputs
 
