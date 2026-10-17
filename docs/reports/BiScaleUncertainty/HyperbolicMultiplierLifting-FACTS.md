@@ -3,15 +3,24 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Eight substantive results are Lean verified: compensated multiplier Gram
+contributions. Twelve substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
 full secant/plastic receiver (15), the source Schur envelope with its all-center
 comparison, exact clique boundary and full receiver (16), arithmetic collision
 control with its doubled-zero/dyadic specialization and full receiver (24), and the
-uniform dyadic multiplier frame with explicit source errors and full receiver (19). Supporting theorem
+uniform dyadic multiplier frame with explicit source errors and full receiver (19), and
+coherent-packet odd-moment control with its unconditional plastic receiver and logarithmic-grid
+specialization (12), and the fourth-moment variational jump receiver with its exact
+variance identity and full secant/plastic transfers (18), and the attained hyperbolic-ray
+certificate with signed activation criterion and full receivers (16), and the unconditional
+source-lattice multiplier frame, odd-moment penalty and full plastic receiver (16). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
+
+Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
+by user instruction. Main results retain signed source correlations; source-grid zeros
+appear only in secondary specializations. Research scope remains multiplier lifting.
 
 ## Exact laws
 
@@ -55,7 +64,7 @@ counts are not contribution counts. No literature-priority claim.
 - **Secant is not plastic:** the actual plastic kernel is piecewise
   `levyCoshKernel`, with a signed pairing involving `2 cosh - levyCoshKernel`.
   Kernel resemblance does not identify the two functionals.
-- **Contribution counting:** eight field-specific results, not one contribution per
+- **Contribution counting:** ten field-specific results, not one contribution per
   declaration. Cauchy–Schwarz and ground-state representation are classical mechanisms.
   External novelty is unestablished; exact-phrase search was inconclusive.
 
@@ -108,11 +117,16 @@ returned only `propext`, `Classical.choice`, `Quot.sound`. Source SHA256:
 `c34e886a83d099242571f9bdcb2b4e49fd3841608fad2448b9615e2ee49cd923`.
 Umbrella import and index refresh completed; current global lint status is on the master card.
 
-Remaining questions: quantitatively dominate source-variance and collar-support costs
-by the positive secant and plastic remainder energies. The coherent-packet estimate
-below replaces the independent negative odd moment by actual source data, with a
-support-radius-free moment penalty on the full logarithmic source grid. This does
-not prove positivity of the complete functional or remove the collar support factor.
+Remaining questions: optimize over all signed control vectors and quantitatively dominate
+the source-variance/quadratic moment costs by positive original energies. The canonical
+hyperbolic ray now has an explicit attained optimum and signed activation criterion.
+The coherent-packet
+estimate replaces the independent negative odd moment; the fourth-moment variational
+receiver below removes the collar support-radius factor. On the full logarithmic
+source grid neither penalty needs an explicit support radius. The source-lattice budgets
+below now remove that grid hypothesis from the radius-free moment penalty as well.
+This does not establish
+positivity of the complete functional or extend the compact-source domain.
 The cosine companion is removed and the actual signed plastic receiver is established.
 The fourth result excludes source-energy-only leakage estimates from odd parity and a
 single logarithmic zero. The fifth supplies exact centered weighted control of the
@@ -312,7 +326,7 @@ audits in total. Latest global lint status is recorded on the master card.
 - The uniform dyadic collision problem is resolved below: A<=2(sum v_i^2)^2
   yields a multiplier frame radius from actual source variance. The coherent-packet
   theorem then replaces the separate odd moment by a source-data budget. Quantitative
-  domination of variance and collar-support costs remains open.
+  domination of variance and the replacement quadratic control cost remains open.
 - Existing finite-train lag grouping, arithmetic clique orthogonality and
   Cauchy--Schwarz are reused. Exact multiplier collision control and the actual
   receiver count as one contribution. No literature-priority claim.
@@ -401,3 +415,139 @@ Actual-source compilation passed without warnings; source SHA256
 Main namespace `DyadicHyperbolicMoment`; capstones `odd_moment_sq_le_budget`,
 `odd_plasticCrossover_ge_momentBudget`, `odd_logGrid_moment_sq_le_frame`, and
 `odd_logGrid_plasticCrossover_ge_frame`.
+All 12 public theorem axiom audits passed with only `propext`, `Classical.choice`,
+`Quot.sound`. Nine contributions, 148 public supporting theorem audits in total.
+The full 100-contribution goal remains active; latest global lint status is on the master card.
+
+## Fourth-moment variational receiver replaces the collar support radius
+
+- For every actual compact f and real alpha, let m(u)=sinh(alpha u), S=mf,
+  R=||f||^2, R_S=||mf||^2 and T=||m^2 f||^2. The earlier source moments obey
+  M=R+2R_S, W=R+4R_S+4T, hence the exact identity 4RT=V+4R_S^2.
+  This identity includes zero-energy sources; no division by R is used.
+- Put H(x)=T cosh(alpha x)^2+(T+R_S)sinh(alpha x)^2. For h=f-f(.+x)
+  and w(u)=m(u)m(u+x), translation invariance and the symmetric endpoint identity
+  give int w^2 h^2<=4H. Integrating (h-a*w*h)^2>=0 and using the exact weighted
+  jump law gives Delta_f(x)>=2a[cosh(alpha x)R_S-hS(x)]-2a^2H(x), every real a.
+  Compactness supplies integrability; no numerical support radius occurs.
+- At alpha=1/2, nodes t_i, real b_i, signed controls a_i and x_i=t_i-y, set
+  v_i=2b_i^2 sech(x_i/2)a_i and Q=sum_i 2b_i^2 sech(x_i/2)H(x_i)a_i^2.
+  The actual collar is at least R_S sum_i v_i cosh(x_i/2)-sqrt(R_S G_S(v))-Q.
+  The full actual Gram is retained; no sign condition on controls is needed.
+- For canonical odd F on dyadic chains, replacing G_S by frameGramUpper(F,N,v)
+  produces fourthFrameBound. Its continuous coefficients integrate to
+  I4_N(a)<=J_sech(F), where I4_N(a)=integral_(0..log2) fourthFrameBound(F,N,a,-y)dy.
+  Therefore I4_N(a)+R_plastic-2O^2<=P(F), unconditionally. The ninth finite
+  moment budget gives I4_N(a)+R_plastic-2M_M<=P(F), again unconditionally.
+- Full logarithmic source blindness gives the further actual receiver
+  I4_N(a)+R_plastic-2log2(R_S+sqrt(2V))<=P(F). Neither the collar nor this moment
+  penalty contains a support radius. The domain remains actual compact sources;
+  source weighted variance and the quadratic control cost remain explicit.
+- This trades a support envelope for measured quadratic energies. It need not
+  dominate every earlier bound, and no universal positivity, optimal control or
+  external-priority claim is made. Cauchy--Schwarz, completed squares and elementary
+  hyperbolic identities are supporting mechanisms, not separate contributions.
+- Corpus audit: 449 declarations/75 modules, hybrid partial47.97s; text/source
+  unfinished, semantic coverage unmeasured, compiler freshness partial. Existing
+  jump and Gram laws were read and reused; no corresponding fourth-moment
+  variational receiver appeared in the returned candidates.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/FourthMomentJumpReceiver.lean`.
+Actual-source compilation passed without warnings; source SHA256
+`8d9747052621b15517162d5e00e039c667a1fb0de1c5af6c6495e54d5d159e24`.
+Main namespace `FourthMomentJump`; capstones `fourthEnergy_variance_identity`,
+`source_increment_ge_variational`, `odd_secantEnergy_ge_fourthFrame`,
+`odd_plasticCrossover_ge_fourthFrame_momentBudget`, and
+`odd_logGrid_plasticCrossover_ge_fourthFrame`.
+All 18 public theorem axiom audits passed with only `propext`, `Classical.choice`,
+`Quot.sound`. Ten contributions, 166 public supporting theorem audits in total.
+The full 100-contribution goal remains active; latest global lint status is on the master card.
+
+## Attained hyperbolic-ray certificate and signed activation
+
+- For d=log2, x_i=id-y, c_i=cosh(x_i/2), define B=sum_(i=0)^N c_i^2,
+  D=(1/2)sum_i H(x_i)c_i^3, U=frameGramUpper(f,N,c), and
+  A=R_S B-sqrt(R_S max(U,0)). All signed source-frame errors remain in U.
+- For canonical odd F, controls a_i=lambda*c_i^2/2 give weights v_i=lambda*c_i.
+  Exact Gram scaling and the fourth-moment transfer imply
+  lambda*A-lambda^2*D <= secantJumpCollar for every lambda>=0.
+- The scale lambda*=max(A,0)/(2D) attains C=max(A,0)^2/(4D), and every
+  nonnegative scale on this ray gives a bound <=C. This is a ray optimum;
+  no claim of optimality over all control vectors.
+- Degenerate sources need no assumption: T=0 forces R_S=0 by
+  4RT=V+4R_S^2 and V>=0, so H=D=A=C=lambda*=0. If T>0, H>0 and the
+  nonempty chain gives D>0. Consequently C is nonnegative and continuous in y
+  for every fixed actual compact source, including T=0.
+- Exact signed-source activation: C>0 iff A>0 iff
+  R_S max(U,0)<(R_S B)^2. On a doubled source-zero chain, U=(R_S+sqrt(2V))B;
+  if R_S>0 this becomes sqrt(2V)<R_S(B-1). Main receiver does not assume zeros.
+- I_C=integral_(0..d) C(F,N,-y)dy <= J_sech(F), hence
+  I_C+R_plastic-2O^2<=P(F), and I_C+R_plastic-2momentBudget(F,M)<=P(F),
+  every independent N,M. Full logarithmic source blindness additionally permits
+  the moment cost 2d(R_S+sqrt(2V)). Collar certificate has no support radius
+  or free controls. The complete plastic functional need not be positive.
+- The contribution discharges the free scale along a canonical geometric profile,
+  supplies its exact activation boundary, and connects the explicit bound to the
+  full original functional. Classical scalar quadratic optimization is supporting
+  machinery, not another contribution. No external-priority claim.
+- Corpus audit: 1037 declarations/83 modules, hybrid partial59.05s;
+  text/source retrieval unfinished, semantic coverage unmeasured and compiler
+  freshness partial. Existing fourth-moment, frame and allocation results reused.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/OptimizedHyperbolicRayReceiver.lean`.
+Final actual-source compile passed without warnings; 324 lines, source SHA256
+`862c9717d24a6f8a0f1efb03367e34432176d26340faf9656bc38be36167602c`.
+Namespace `HyperbolicRay`; capstones `optimalScale_attains`, `odd_collar_ge_optimized`,
+`optimizedCollar_pos_iff`, `odd_secantEnergy_ge_optimized`, and
+`odd_plasticCrossover_ge_optimized_momentBudget`.
+All 16 public theorem axiom audits passed with only `propext`, `Classical.choice`,
+`Quot.sound`. Eleven contributions, 182 public supporting theorem audits in total.
+Umbrella and index updated; canonical README unchanged. Full goal remains active;
+latest global lint status is on the master card.
+
+## Original-source lattice costs replace the moment blindness hypothesis
+
+- For every actual compact f, the integer sequence h_k=h_f(k log2) has finite
+  support. Its intrinsic mass Gamma=sum_(k in Z)|h_k| is therefore a finite
+  real sum. No summability or chosen support-radius premise is supplied.
+- With mu=sourceMean(f,1/2), Q=||q_mu||^2, define e_0=0 and
+  e_k=(mu-cosh(k log2/2)^2)h_k/(2cosh(k log2/2)) for k!=0.
+  Its intrinsic mass E=sum_Z|e_k| is finite too. Both sequences are even.
+  Signed correlations are admitted explicitly; these costs use absolute values
+  and can overpay cancellation.
+- Finite lattice rows inject into Z. The symmetric Schur estimate yields
+  sum_(i,j) w_i w_j k(j-i) <= (sum_Z|k|)sum_i w_i^2 for every even finite-support
+  kernel k. Thus the exact sourceCorrection is <=E*W2, and the coalesced
+  source difference Gram is <=Gamma*A_collision<=2Gamma*W2^2.
+- Consequently canonical odd F satisfies G_S(w)<=C(F)*W2 for all chain lengths
+  and arbitrary signed coefficients, where C=R_S+E+sqrt(2Q Gamma)>=0.
+  This replaces source-grid blindness with quantified original-source data.
+  No multiplier correlations or assumed frame bound enter the constant.
+- Coherent packets obey (N+1)^2 O^2 <= (2B+N log2)C(N+1). Integer growth
+  eliminates B and N, proving O^2<=log2*C(F) unconditionally. The optimized
+  collar I_opt from the preceding result therefore gives
+  I_opt+R_plastic-2log2*C(F)<=P(F), every actual canonical odd source.
+  Neither the collar nor this moment penalty has an explicit support-radius factor.
+- If all positive dyadic source samples vanish, Gamma=R and E=0. The exact
+  identity Q*R=V recovers C=R_S+sqrt(2V), including zero-energy inputs.
+  The earlier grid-bound constant is recovered exactly, not with a larger baseline.
+- This is one contribution: a uniform multiplier frame and full moment/plastic
+  receiver replacing the blindness hypothesis by finite intrinsic lattice costs.
+  Classical Schur bounds and the packet limit argument are supporting machinery.
+  Finite moment budgets can still be sharper; no universal plastic positivity,
+  all-control optimum, noncompact extension or external-priority claim.
+- Corpus searches: 835 declarations/85 modules, partial57.83s, and 599/93,
+  partial78.38s. Text/source retrieval unfinished, semantic coverage unmeasured,
+  compiler freshness partial. Actual centered/collision/frame, packet and Schur
+  proofs were inspected and reused.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/SourceLatticeMultiplierFrame.lean`.
+Final actual-source compile passed without warnings; 318 lines, source SHA256
+`68a380d612b38045195d2f1aa62428ffeb050afe993bc7e72da5f203559a3302`.
+Namespace `SourceLattice`; capstones `odd_sinhGram_le_latticeFrame`,
+`odd_moment_sq_le_latticeFrame`, `odd_plasticCrossover_ge_latticeFrame`, and
+`latticeFrame_of_source_zeros`. All 16 public theorem axiom audits passed with only
+`propext`, `Classical.choice`, `Quot.sound`. Twelve contributions, 198 public
+supporting theorem audits. Umbrella and index updated; canonical README unchanged.
+Remaining frontier includes sharper lattice costs retaining cancellation and quantitative
+domination of moment/variance costs by positive original energies. Full goal remains active.

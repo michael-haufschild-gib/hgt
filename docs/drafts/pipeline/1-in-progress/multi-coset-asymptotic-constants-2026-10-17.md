@@ -28,7 +28,22 @@
 10. [x] Formalize exact full-grid activation, scalar quadratic deficit, rationalized
     physical gain, and the almost-everywhere equality/strictness criterion; transfer
     the gain identity to actual source energy.
-11. [ ] Develop sharp Schur-coupled growth and matching finite-limit asymptotics. The general transfer does not settle these or the full 100-contribution objective.
+11. [x] Prove exact two-column Schur support, including the general measured-lag
+    rotation bound and zero-lag sharp support/attainment. Derive the actual
+    four-coordinate dyadic collar constraint from grid zeros, optimize physical
+    coefficient splitting, and combine its certificate with the capped hierarchy.
+12. [x] Add a full measured signed-Gram certificate for arbitrary compact continuous
+    sources, as required by the updated read-only field README. Keep the blind-grid
+    hierarchy explicitly specialized; do not promote it to a general signed theorem.
+13. [x] Prove full measured signed-Gram capacity, physical cutoff monotonicity,
+    retraction stability, optimized finite limit, and unconditional source receiver.
+14. [ ] Develop general signed multi-column Schur-coupled growth and matching
+    finite-limit asymptotics. These and the full 100-contribution objective remain open.
+
+Next concrete candidate, uncounted: formalize the measured signed-Gram physical
+dual gap proved on paper below. It should turn every trial partition into a
+finite-allocation plus cutoff certificate without assuming packet positivity or
+optimizer attainment. The source-dependent limit is not identified with H∞.
 
 Current mathematical results: P_N is monotone with an explicit tail error; product-zero
 coupling gives attained paired-sphere support and a stronger physical coefficient Q_K.
@@ -40,19 +55,106 @@ the same Q_∞ limit, and the inherited N^(−1/4) upper error hold for actual s
 The exact activation criterion and rationalized physical gain are now verified too:
 coupling is strict precisely where squared maximal low fractions sum above one;
 integrated gain is strict precisely when inactivity fails almost everywhere.
-All 26 new axiom/signature audits and final direct recheck pass. Next: unequal
-product pairs, general nonzero Schur residuals, strict optimized gaps, and matching
-leading-law audits below.
-Previous goal turn is classified as progress: full-grid capped monotonicity,
-hierarchy comparison, and quantitative actual-source saturation passed direct Lean
-and all 58 axiom audits. Current activation work extends that verified result.
+Exact two-column Schur support now produces an optimized dyadic physical kernel
+and monotone H_N≥B_N with Q∞≤H∞≤tailMass. The full measured signed-Gram
+receiver applies to arbitrary compact continuous sources, without grid blindness;
+it retains every signed cross-coset entry and cancels the singular origin weight.
+The new signed-profile hierarchy S_N(f) is monotone and satisfies
+0≤S_∞/R−S_N/R≤8·2^(1/4)/(sqrt(N)(1−2/N²)); its limit bounds actual extended
+source energy. All three new leaves compile cleanly; all 34 public theorem audits
+and the final direct leaf check pass. This completed package brings progress to
+9/100. Latest global lint reports four unrelated concurrent umbrella failures.
+Next: measured-Gram trial certificates, exact nonzero-lag support, and sharp asymptotics.
 
-Latest goal turn is classified as progress: all three product-coupling leaves and
-41 axiom audits passed, adding actual source coupling and a monotone hierarchy.
-Current search `/tmp/bsu-paired-cutoff-search.log` locates reusable physical tail,
-array-capacity, and paired-support inputs; semantic coverage remains unmeasured.
-The next package must prove its own paired capacity law before using the old tail
-argument. A prior independent-allocation rate is not a proof of coupled saturation.
+Current signed-capacity search `/tmp/bsu-signed-capacity-search.log` finds 586
+declarations in 83 modules. It supplies actual translation-packet norm identities
+and the physical retention construction. Search is partial, source-only hits,
+older coverage snapshot, semantic coverage unmeasured; no exhaustive novelty claim.
+The following dependency-closed argument is paper-proved and Lean-audited.
+
+### Fixed-source signed-Gram cutoff theorem (package 9, verified)
+
+Fix any compact continuous real source f, R=h_f(0), and δ=log(2)/2. At fixed
+offset y let v_t=T_t f in L², so ||v_t||=sqrt(R). For finite signed nodes t_i,
+put P(a)=W v_0+Σa_i v_ti and K(a)=R(W+Σa_i)−sqrt(R)||P(a)||. The packet
+norm identity identifies this expression exactly with the existing full measured
+Gram kernel, including all cross-coset and anchor entries.
+
+For b_i≥0, Q=Σb_i v_ti has norm at most sqrt(R)Σb_i. Both triangle inequalities
+give | ||P(a+b)||−||P(a)|| |≤sqrt(R)Σb_i. Hence
+0≤K(a+b)−K(a)≤2RΣb_i. This needs neither nonnegative a nor positive W.
+Taking b−a as increment proves coordinate monotonicity. If b_i≤a_i+e_i and
+e_i≥0, monotonicity and capacity give K(b)−K(a)≤2RΣe_i. Zero-padding leaves
+both packet and mass unchanged, hence preserves K exactly.
+
+For physical partitions, extension increases padded weights coordinatewise, so
+every incumbent signed-Gram coefficient increases. For a large partition η and
+smaller cutoff N, retract below log(N)−δ using the already-proved physical repair.
+At each signed node the repaired weight a equals the original b in the protected
+region; outside it, b≤a+e with e=b times the retention indicator. Thus the loss
+is ≤2R times the retention fibre. Exact physical transport bounds its integral by
+T_N=∫_(log(N)−δ)^∞ w. No off-diagonal Gram locality is assumed: packet capacity
+controls all changes to the full matrix simultaneously.
+
+Let S_N(f)=sup_ρ ∫K_ρ. Existing 0≤K≤2R mass and exact partition mass transport
+give 0≤S_N≤2R∫_(δ,∞)w. Extension gives actual S_N monotonicity; retraction gives
+S_M−S_N≤2R T_N for M≥N. Therefore S_N↑S_∞ and
+0≤S_∞−S_N≤2R T_N≤8R·2^(1/4)/(sqrt(N)(1−2/N²)). The existing actual-source
+receiver bounds each coefficient by the full ENNReal increment energy; supremum
+preserves this bound. For compact C² sources, S_∞≤J_arch(f). Dividing by R≥0
+also yields the normalized certificate with total division covering R=0.
+
+These are source-dependent certificates for general signed correlations. They
+neither identify S_∞/R with H∞ nor give a positive uniform constant on all sources.
+The error is an upper bound, not a matching asymptotic or sharp-rate claim.
+Plan: [x] finite packet capacity/padding; [x] physical cutoff comparison;
+[x] optimized limit and actual-source certificate; [x] direct/axiom/lint audits.
+The global gate reports only the four unrelated wiring failures recorded below.
+
+### Next candidate: measured signed-Gram trial certificate (uncounted)
+
+Corpus search `/tmp/bsu-signed-gram-dual-search.log` finds 1108 declarations in
+119 modules, including the independent-coset physical dual certificate and exact
+bounded-cost transport. Search is partial, source-only hits, older coverage
+snapshot, semantic coverage unmeasured. Exhaustive source-pattern search found
+no existing full measured signed-Gram physical dual-gap declaration; this is not
+a claim of exhaustive mathematical novelty.
+
+At a fixed fibre write P_a=Wv_0+Σa_i v_i, G_a=||P_a||², H_a=sqrt(RG_a), and
+q_i=Re⟨P_a,v_i⟩/H_a with total division. Cauchy gives |q_i|≤1. If R=0 all
+translation vectors vanish. If P_a=0 all numerators vanish. In both cases q=0.
+Otherwise z_a=P_a/||P_a|| is a unit vector, H_a=sqrt(R)||P_a||, and the norm
+support inequality gives the nonnegative exact remainder
+
+    r(a,b)=H_b−H_a−RΣ(b_i−a_i)q_i ≥0.
+
+At P_a=0 the same expression is H_b≥0. Thus no strict packet-positivity premise
+is needed. Define p_i=(1+q_i)/2∈[0,1]. The exact kernel difference is
+
+    K_b−K_a=2RΣ(b_i−a_i)−2RΣ(b_i−a_i)p_i−r(a,b).
+
+All q_i are quotients of finite measured-Gram expressions, hence measurable;
+their bounds make costs integrable. Pull p_i back to physical x using the actual
+signed offset. Let p_min(x) be the finite minimum over active collars, using
+masked price 1 outside a collar. Set
+
+    Slack(ρ,η)=∫[Ση_k(x)w(x)p_ρ,k(x)−w(x)p_min(x)]dx ≥0,
+    Gap(ρ)=2R Slack(ρ,ρ).
+
+Exact physical transport and equality of total physical mass give
+
+    Cρ+Gap(ρ)−Cη=2R Slack(ρ,η)+∫r(ρ,η) ≥0.
+
+Integrability of r follows from its expression in kernel, mass and bounded-price
+cost differences, avoiding separate integration of the singular anchor. Hence
+0≤S_N−Cρ≤Gap(ρ), zero Gap certifies optimality, and package 9 yields
+0≤S_∞−Cρ≤Gap(ρ)+2R T_N. This is a usable finite-partition certificate retaining
+all measured signed cross entries. No optimizer or positive packet is assumed.
+Formalization remains open; count nothing until source transfer and audits pass.
+Implementation plan: [ ] full-Gram covariance, bounded prices and norm-support remainder;
+[ ] measurable physical prices and exact transport; [ ] exact dual gap, finite
+optimization and limiting trial certificate; [ ] direct and axiom audits, wiring,
+lint, ledger. No prior package is counted again.
 
 `PairedCollarCapacity.lean` now passes direct verification of block/radial capacity,
 unordered nonnegative error bounds, and exact padding. `PairedCollarCutoffStability.lean`
@@ -66,7 +168,8 @@ Its explicit extension proves monotonicity of P_N and equality with the running 
 `PhysicalCollarCutoffStability.lean` implements the complementary retraction and explicit
 inverse-square-root error; direct compilation produced a current compiled output with no
 diagnostics. All 35 public theorem axiom audits and the final direct leaf recheck passed.
-Current global lint passes; earlier concurrent missing-import failures are obsolete.
+Global lint passed at that package's final check; see latest package evidence below
+for current concurrent umbrella failures.
 These two leaves form one contribution package; padding lemmas are not separate contributions.
 
 Current signed-coupling package: `PairedCosetSphereDuality.lean` passes direct
@@ -499,9 +602,125 @@ equality makes the independent branch dominate with scale N^(−1/2). Strict
 improvement of the limiting optimum is presently unproved. Do not infer it merely
 from the positive gain for some fixed physical partitions.
 
+## Two-column Schur support and physical splitting [Lean verified]
+
+For two real vectors u,v on a finite frame, write U=Σu², V=Σv², D=Σuv.
+The Schur domain is U≤R², V≤R², (Rc−D)²≤(R²−U)(R²−V), R≥0.
+For every real r,s, its residual quadratic form is nonnegative, hence
+
+    Σ(ru+sv)² ≤ R²(r²+s²)+2Rc rs.
+
+Proof: set A=R²−U, B=R²−V, C=Rc−D. If A>0, multiply
+Ar²+2Crs+Bs² by A to obtain (Ar+Cs)²+s²(AB−C²)≥0.
+If A=0, C=0 follows and the claim is immediate. This retains general measured
+lag c; zero target lag c=0 makes every unit rotation a simultaneous Bessel pair.
+
+For weight vectors a,b define A=Σa², B=Σb², C=Σab and
+
+    ν(a,b)=sqrt(A+B+2 sqrt(AB−C²)).
+
+The zero-lag Schur support is exactly Rν(a,b). Rotate both weights and states
+by the same real unit rotation until the two rotated weight vectors are
+orthogonal. The Lean construction uses a polynomial intermediate-value argument:
+q(t)=(1−t²)C+t(B−A) takes opposite endpoint values at −1 and 1.
+For a root t, use r=1/sqrt(1+t²), s=t/sqrt(1+t²). Then r²+s²=1 and
+the rotated pairing is q(t)/(1+t²)=0. The two rotated state norms
+are at most R, so support is at most R times the sum of rotated weight norms.
+The sum squares to A+B+2sqrt(AB−C²), because trace and Gram determinant are
+rotation invariant. For attainment, take the two normalized orthogonal rotated
+weight directions (zero on zero blocks), scale by R, and rotate back. This is
+finite-vector attainment, not autocorrelation realization. In particular
+ν≤sqrt A+sqrt B, with equality exactly when C=0.
+
+Actual source receiver: for d=log2, the frame {0,d,2d} is orthogonal under
+N≥4 grid pinning. Targets y and y+d have zero mutual correlation. Their
+columns are (u0,u1,u2) and (v,u0,u1), where u0=h(y), u1=h(d−y),
+u2=h(2d−y), v=h(d+y). Thus each coefficient split λ,μ∈[0,1] yields
+
+    W u0+a u1+b u2+c v ≤ R ν((λW, μa, b), (c,(1−λ)W,(1−μ)a)).
+
+Optimize the right side over the compact square. Its minimum is continuous in
+the four weights, at least W for nonnegative W,a,b,c (test the feasible matrix
+with columns (1,0,0),(0,1,0)), and at most W+a+b+c. The corresponding kernel
+is therefore nonnegative and at most a+b+c. Use actual physical weights on
+the two sides of node2 and the left side of node4; every unselected term in
+the physical source fibre is nonnegative. Pointwise max with the existing
+capped kernel retains all previous bounds and integrates by exact signed
+physical transport. Let Tρ be the integral of this maximum kernel, and let
+T_N=supρ Tρ for N≥4, with T_N=P_N for N=2,3. The finite envelope
+H_N=max_(2≤K≤N) T_K is monotone. Each source on the N-grid restricts to
+every smaller K-grid; applying the K-certificate to that same source proves
+H_N≤J_arch(f)/h_f(0). This does not assume monotonicity of the raw T_N.
+
+Both kernels lie between zero and the full allocated mass. Exact transport
+therefore gives Tρ≤∫_(δ,log N)w≤tailMass independently of ρ and N.
+Suprema and the finite envelope yield 0<B_N≤H_N≤tailMass, where B_N
+is the previous full-grid capped coefficient. Thus H_N increases to a finite
+H∞, and Q∞≤H∞≤tailMass. No equality with Q∞, rate to H∞, or sharp
+actual-source asymptotic follows from this comparison. The extended-energy
+theorems retain zero sources and infinite energy; C² and h(0)>0 enter only
+when converting to the normalized real-energy ratio.
+
+Strict finite-cone separation: with W=a=b=1,c=0 and λ=μ=1/2, the displayed
+support squared is 2+sqrt(3)/2<3, whereas the independent origin/clique sphere
+support is sqrt3. This is an exact symbolic comparison, not a numerical
+experiment. It does not establish strict improvement for optimized physical
+partitions or a sharp actual-source constant. The general nonzero measured-lag
+rotation theorem remains distinct from the zero-lag support specialization.
+
+Corpus evidence: `/tmp/bsu-schur-pair-search.log`, 669 declarations in 67 modules,
+117 after module cap, partial retrieval and older indexed coverage. The actual
+Schur and source Bessel theorems are verified inputs. Scoped exhaustive text
+search found no two-column/nuclear-support declaration in BiScaleUncertainty;
+no exhaustive mathematical novelty claim is made. Do not broaden searches
+into unrelated research cards.
+
 ## Accounting
 
-Seven significant packages are Lean-verified, including all axiom/signature audits:
+### Updated field guidance and signed receiver [Lean verified]
+
+Read all 242 lines of the relocated, read-only
+`formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (SHA-256
+`80c91d482d9dfcfeb86508edcf5551d34d34a5ef333d3fab64be78e75dd67507`).
+Its homogeneous-blind-subspace obstruction requires retaining measured signed
+node correlations. The existing H_N theorem remains a grid-blind specialization,
+not a general signed-correlations result. Stay on multi-coset source-energy
+constants; do not adopt the README's separate RH/prime-polar research objectives.
+
+The corpus supplies `translationPacket_correlation_le`, which retains the entire
+measured Gram matrix. For an arbitrary compact continuous source, put R=h(0),
+take signed nodes τ_i and nonnegative weights a_i, and let A=Σa_i. Anchor the
+packet at node 0 with weight W≥0. Its full Gram energy is
+
+    G=R W²+2W Σa_i h(τ_i)+Σ_i,j a_i a_j h(τ_j−τ_i).
+
+The packet bound gives W h(y)+Σa_i h(τ_i−y)≤sqrt(RG). Consequently
+K=R(W+A)−sqrt(RG) bounds the actual weighted origin-plus-collar increment.
+All signed node values and cross-coset entries remain present.
+
+The pointwise envelope |h|≤R gives G≤R(W+A)² and hence K≥0. Evaluating
+the same packet bound at y=0 gives sqrt(RG)≥RW+Σa_i h(τ_i)≥RW−RA.
+Thus K≤2RA: the singular origin weight cancels exactly, without an origin
+cutoff, derivative bound, or artificial truncation of the certificate.
+The same origin evaluation gives the stronger capacity law
+K≤Σa_i(R−h(τ_i)). It retains the measured signed node deficits and reduces
+to RA on the blind grid.
+
+For the full physical array take τ_(false,k)=log(k+2), τ_(true,k)=−log(k+2),
+and a_(σ,k)=ρ.weight σ k y. Evenness identifies both signed physical costs.
+The bound 2R massρ(y) proves integrability. Exact signed transport yields the
+extended-energy bound for every f:C_c(ℝ,ℝ), without grid zeros, supplied Gram
+data, or an analytic-energy interface. C² regularity converts it to real energy;
+normalization divides both sides by R, including total division at R=0.
+On the blind-grid domain, taking the maximum with H_N retains both certificates.
+This source-dependent signed coefficient is not a uniform constant for arbitrary
+unconstrained sources, and is not identified with the sharp source infimum.
+
+The full signed physical receiver is part of the same Schur package, not a
+separate contribution count. Exact nonzero-lag multi-column support and growth
+of optimized signed-data certificates remain substantive next targets.
+
+Nine significant packages are Lean-verified, including all axiom/signature audits:
 (1) arbitrary-partition energy transfer and optimized certificates;
 (2) actual cutoff monotonicity, retraction stability, and quantitative saturation;
 (3) paired-sphere support, actual product-zero source transfer, and monotone coupled hierarchy;
@@ -510,8 +729,13 @@ Seven significant packages are Lean-verified, including all axiom/signature audi
 (6) full-grid capped capacity, cutoff monotonicity, optimized hierarchy comparison,
 common finite limit, and quantitative actual-source certification;
 (7) exact capped activation, quadratic extremal defect, rationalized physical gain,
-almost-everywhere equality/strictness classification, and actual-source gain transfer.
-Count **7/100** mathematical contributions. Global formal lint now passes.
+almost-everywhere equality/strictness classification, and actual-source gain transfer;
+(8) exact two-column Schur support, optimized dyadic physical refinement and
+monotone hierarchy, plus the unconditional full measured signed-Gram receiver;
+(9) full measured signed-Gram capacity, actual physical cutoff monotonicity and
+retraction, optimized finite limit, inverse-square-root error, and actual-source receiver.
+Count **9/100** completed mathematical contributions. The three new leaves form one package.
+Latest global lint reports four unrelated unwired modules from concurrent work.
 Do not count reused shared-origin geometry or individual helper lemmas. Matching
 leading asymptotics remain paper-only. Both activation leaves form one package.
 This turn made concrete progress; the full objective
@@ -611,3 +835,50 @@ remains active and incomplete.
   exit 0, no diagnostics. New imports and capstone index entries verified; global
   lint passes. All owned jobs exited; temporary API probe removed with `apply_patch`.
   No full build, numerical experiment, heartbeat increase, commit, or push.
+
+- Schur package: `TwoColumnSchurGeometry.lean`, `TwoColumnSchurSupport.lean`,
+  `DyadicSchurSupport.lean`, `DyadicSchurCollarEnergy.lean`,
+  `SchurCappedCollarHierarchy.lean`, and `SignedPhysicalGramEnergy.lean`.
+  All six compile without diagnostics. All 85 public theorem axiom/signature
+  audits pass: 69 in `/tmp/bsu_schur_pair_axioms.lean`, 16 in
+  `/tmp/bsu_signed_physical_gram_axioms.lean`; every public theorem exactly once,
+  only `propext`, `Classical.choice`, `Quot.sound`. General source signatures and
+  actual Gram/kernel definitions were printed and inspected.
+- SHA-256: geometry `91e66c439bb52ef3cc5f0fb32fc15e47c2614949a8d10d23620e90ae46c29ab9`;
+  support `249f9bea751b9ba8c5a5ce8c88fd1c6b3c3cab292266c8cbf95bba37be9e7980`;
+  dyadic `37f23f952324a5bc85b3a628e4b2994ccbc99a94a80c6e1cbd2fdf884327ef30`;
+  physical `c120590bca4fb721c66ea317804b9631cc90d7e582d7ddbb2664da08212fd5a9`;
+  hierarchy `8ef01a80da29ed464c42d9df631539908297b10158cb6c5606967ecf855ee573`;
+  signed Gram `9dc409594e17bd54b97b38b351addc11dd869ebea53f14d4c1087c3151383c33`.
+- Final direct command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SignedPhysicalGramEnergy.lean`;
+  exit 0, no diagnostics. Evidence: `/tmp/bsu-schur-pair-final.log`,
+  `/tmp/bsu-schur-pair-axioms.log`, `/tmp/bsu-signed-physical-gram-axioms.log`,
+  `/tmp/bsu-schur-pair-final-manifest.json`, `/tmp/bsu-schur-pair-final-integrity.json`.
+  All 23 owned module imports occur once; all 17 earlier source hashes remain
+  unchanged. Index refresh and capstone discovery pass; scoped whitespace clean.
+- At the package 8 audit, global lint exited 1 for five unrelated concurrent modules unreachable
+  from the umbrella, listed in the facts ledger and `/tmp/bsu-schur-pair-lint-final.log`.
+  None was modified. The read-only relocated README remains byte-identical.
+  All owned jobs exited; both temporary API probes removed with `apply_patch`.
+  No full/umbrella build, numerical experiment, heartbeat increase, commit, or push.
+
+- Signed-Gram cutoff package: `SignedGramCapacity.lean` (8 public theorems),
+  `SignedGramCutoffComparison.lean` (7), `SignedGramCutoffHierarchy.lean` (19).
+  All three compile without diagnostics. All 34 public theorem axiom audits pass
+  exactly once, only `propext`, `Classical.choice`, `Quot.sound`. Printed source
+  signatures and packet/supremum definitions confirm the actual-source domain.
+- SHA-256: capacity `95469f4664f01de5dd302d81a58445005f8d4d020dbe993fb2bc8e85101da435`;
+  comparison `6be920f79c818fa42fdde188b73593c1bed983a76d0e52c9f5d8c23321ec4a2e`;
+  hierarchy `7a0da76505f74745f800ee50fe6323540464d74274095fc051209cb46782327d`.
+- Final command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SignedGramCutoffHierarchy.lean`;
+  exit 0, empty diagnostics. Durable exit record `/tmp/bsu-signed-gram-final.exit`.
+  Evidence `/tmp/bsu-signed-gram-{capacity,comparison,hierarchy,axioms,final}.log`,
+  `/tmp/bsu_signed_gram_cutoff_axioms.lean`, and
+  `/tmp/bsu-signed-gram-{manifest,integrity,audit-coverage}.json`.
+- All 26 own imports occur once; all 23 previous source hashes remain unchanged.
+  Index refresh and lexical discovery pass. Latest global lint exits 1 only for
+  `ChebyshevGaugeNyquistCellQuadrature`, `DistantCopyCorrelationTopology`,
+  `DistantCopyEnergyTopology`, and `SignedCoherentMomentReceiver`, all foreign
+  concurrent unwired modules. Evidence `/tmp/bsu-signed-gram-lint-final.log`.
+  Read-only README remains byte-identical. No full/umbrella build, numerical job,
+  heartbeat increase, commit or push. The dual-gap candidate above is uncounted.

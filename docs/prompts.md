@@ -500,6 +500,10 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 Keep a knowledge ledger for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 
+formal/GaloisForLFunctions/BiScaleUncertainty/README.md is read-only for you.
+
+use the search tool for our lean corpus, not just rg or grep.
+
 Your topic of research: 
 
 
@@ -526,7 +530,9 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Lean code relevant for the field itself goes into formal/GaloisForLFunctions/BiScaleUncertainty/
 
+formal/GaloisForLFunctions/BiScaleUncertainty/README.md is read-only for you.
 
+use the search tool for our lean corpus, not just rg or grep.
 
 ## 6. Canonical Open Problems & Guide for Future Research Agents
 

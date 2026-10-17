@@ -1,9 +1,9 @@
 # Origin concentration and exact energy continuity
 
 - **ID:** infinite-grid-origin-energy-2026-10-17
-- **Stage:** 1-in-progress
-- **Type:** THEOREM CANDIDATE
-- **Scope:** Independent BiScaleUncertainty; proposed connected package 9.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Scope:** Independent BiScaleUncertainty; certified connected package 9/100.
 - **Paper:** `docs/reports/BiScaleUncertainty/InfiniteGridOriginEnergy.md`
 
 ## Statement
@@ -20,9 +20,19 @@ contains exactly the limiting kernel's energy there plus the entire defect.
   Discovery complete; source-only candidates, older-generation coverage, semantic coverage unmeasured.
 - [x] Inspect actual source integrability, Fatou, interval splitting, and dominated convergence APIs.
 - [x] Dependency-closed paper proof, including simultaneous correlation/energy subsequence extraction.
-- [ ] Formalize tail stability, shrinking core, and exact continuity criterion.
-- [ ] Formalize localization of every convergent energy defect.
-- [ ] Direct leaf checks, complete axiom audit, umbrella/API wiring, formal lint.
+- [x] Formalize tail stability, shrinking core, and exact continuity criterion.
+- [x] Formalize localization of every convergent energy defect and actual subsequence extraction.
+- [x] Direct leaf checks, complete axiom audit, umbrella/API wiring, formal lint.
+
+## Certificate
+
+`CorrelationOriginEnergy.lean` (ten theorems, two definitions) and
+`InfiniteGridOriginConcentration.lean` (seven theorems) pass direct leaf checks
+without diagnostics. All nineteen declaration audits use only `propext`,
+`Classical.choice`, and `Quot.sound`. Every API entry and both imports verified.
+Logs: `/tmp/infinite-grid-origin-{core-leaf,concentration-leaf,axioms,index,lint}.log`.
+Global lint fails only on concurrent foreign unwired `SignedPrimePolarGramTransport`
+and `SignedPrimePolarPacket`; neither owned leaf has a lint error.
 
 ## Boundary and next conjecture
 

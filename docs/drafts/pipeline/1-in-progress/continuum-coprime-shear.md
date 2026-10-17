@@ -23,8 +23,10 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    analytic inputs. Extend explicitly constructed continuous primitives to L2 velocities.
 4. Compact-source coercivity, rigidity and the actual rough modulus are proved.
    Nodal mass coercivity, strict modulus contraction and actual Markov clamping are proved.
-   Construct infinite coprime trace extensions,
-   extend admission beyond compact support, and identify closed-graph APIs.
+   Infinite coprime extension, exact projection, and gcd/lcm classification of
+   projection interactions, sharp angles and exact alternating rates are proved.
+   Construct joint two-grid trace extensions, extend admission beyond compact
+   support, and identify closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -74,10 +76,16 @@ traces or a constructed interpolant.
   two leaves, 22 theorems, all 26 public declarations audited.
 - [x] Actual rough unit clamp, exact local energy splitting, firm full-graph/form
   contraction and equality classification; two leaves, all 39 public declarations audited.
+- [x] Infinite coprime extension and exact best-approximation projection;
+  two leaves, all 52 public declarations audited.
+- [x] Arithmetic classification of infinite projection commutators and range
+  intersections; three leaves, all 30 public declarations audited.
+- [x] Sharp arithmetic projection angles, norm attainment and exact alternating
+  errors; four leaves, all 45 public declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **8 / 100**. Formalized packages:
+Certified count: **11 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -85,7 +93,10 @@ Certified count: **8 / 100**. Formalized packages:
 `../3-formalized/compact-source-variance-coercivity.md`, and
 `../3-formalized/rough-sobolev-modulus-nodal-defect.md`, and
 `../3-formalized/compact-nodal-mass-coercivity.md`, and
-`../3-formalized/rough-markov-clamp-domain.md`.
+`../3-formalized/rough-markov-clamp-domain.md`, and
+`../3-formalized/infinite-coprime-trace-extension.md`, and
+`../3-formalized/coprime-projection-arithmetic-commutator.md`, and
+`../3-formalized/coprime-projection-angle-gap.md`.
 
 ## Current exact result and next frontier
 
@@ -225,10 +236,50 @@ and whitespace checks pass. Existing large-file warnings remain. No added axiom,
 full build, numerical experiment or heartbeat increase. All owned processes terminal.
 This turn is **progress**, certified count **8/100**, goal active.
 
+## Certified package 9: infinite coprime traces and exact projection
+
+Constructed actual ℓ²-to-L² tent extension E with every integer trace and energy
+2Σv². For arbitrary physical q, centered second differences a_j are derived as
+square-summable data; Pq=E(a/2) is the projection onto the closed extension range.
+Proved exact energy splitting, exact best-approximation error, idempotence,
+residual orthogonality and both equality classifiers. No extra analytic premise.
+
+Both final direct leaf checks and all 52 public axiom audits pass without
+warnings; twelve main signatures inspected. Imports/maps/index/scoped whitespace
+checks pass. Global lint reports nine unrelated concurrent unreachable modules,
+listed in the ledger; no error concerns these leaves. All owned processes terminal.
+This turn is **progress**; certified count **9/100**, goal active.
+
+## Certified package 10: arithmetic projection commutators
+
+For actual infinite tent spaces, V_m∩V_n=V_lcm(m,n) for every m,n≥2.
+The projections commute exactly when gcd(m,n)≥2; their product is then the lcm
+projection. Coprime spacings have an explicit tent witness with commutator
+primitive trace exactly 1/2, including spacing two. The infinite steps use
+actual convergent series and exact traces, without analytic admission premises.
+
+Three direct leaf checks and all 30 public axiom audits pass; nine main
+signatures inspected. All imports and generated API entries present. The
+relocated field README was read fully and left read-only. Global lint details
+are in the fact ledger. This turn is **progress**; certified count **10/100**,
+goal active.
+
+## Certified package 11: sharp angles and exact alternating errors
+
+For T=P_mP_n−P_lcm, proved T²=cT and ‖T‖²=c. The commutator has squared
+norm c(1−c), with c=0,1/4,1/2 determined by gcd and the spacing-two exception.
+Both norms are attained by actual nonzero velocities. Every positive iterate
+has exact error (P_mP_n)^k−P_lcm=c^(k−1)T and squared norm c^(2k−1).
+Main statements are unconditional; no admitted decomposition or spectral premise.
+
+Four direct leaf checks, all 45 public axiom audits and twelve main signatures
+pass. All imports and generated API entries verified at current source lines.
+Field README remained read-only. Repository lint details are in the fact ledger.
+This turn is **progress**; certified count **11/100**, goal active.
+
 ## Next candidate
 
-`../0-backlog/infinite-coprime-trace-extension.md`: remove finite-cutoff dependence
-by constructing an ℓ²-to-L² coprime tent extension and the exact orthogonal projection
-of an arbitrary physical velocity onto its closed range. Corpus query found finite
-building blocks but no matching infinite result; coverage caveats are recorded in
-the card. Unproved and uncounted.
+`two-grid-coprime-trace-extension.md`: construct infinite joint
+nodal interpolation on the union of two divisor grids, with exact adjacent-node
+energy, sharp arithmetic stability constants and minimum-energy defect.
+Unproved and uncounted; corpus limitations and construction obligations on card.

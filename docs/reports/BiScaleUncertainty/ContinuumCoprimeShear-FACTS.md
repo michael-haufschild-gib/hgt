@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **8 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **11 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -95,7 +95,8 @@ semantic coverage was unmeasured, so absence is not established exhaustively.
 
 1. Global Sobolev-space identification and rigidity beyond the L2 primitive layer
    and finite coprime trace realization now certified by package 2.
-2. Infinite coprime trace domains beyond the certified finite interpolants.
+2. Arithmetic interaction and commutation of the infinite coprime projections
+   constructed by package 9.
 3. Direct identification with existing SourceGraph closed-graph and ground-transform
    APIs, beyond the constructed mixed measure's energy-domain results.
 4. Closed form/Sobolev extension and precise affine operator uncertainty.
@@ -849,18 +850,277 @@ with no execution errors/partial stages. Semantic coverage and source/compiler
 freshness incomplete. Classical contraction theory is background, not an
 external novelty claim; primary links are in the paper. Package 8 is **progress**.
 
-## Next falsifiable candidate — infinite coprime trace extension
+## Package 9 — infinite coprime extension and exact orthogonal projection
 
-Backlog: `docs/drafts/pipeline/0-backlog/infinite-coprime-trace-extension.md`.
-Construct an actual L² tent-velocity extension of arbitrary ℓ² values at positive
-multiples of d+2, with all other integer traces zero and energy exactly 2Σv².
-Then derive the ℓ² second-difference data of any q and its exact orthogonal
-projection/energy defect onto this infinite coprime interpolation subspace.
-This removes finite-cutoff dependence from the current trace construction.
+For d∈ℕ, m=d+2 and n_j=m(j+1), define h_j as the difference of the actual
+L² indicators of (n_j−1,n_j] and (n_j,n_j+1]. Their normalized family h_j/√2
+is orthonormal. Actual ℓ² data v have a convergent L² extension E_d(v)=Σv_jh_j,
+with every nonnegative integer trace specified exactly:
 
-Focused query `infinite square summable coprime divisor trace interpolation L2
-velocity energy isometry` completed without errors/partial stages. All 20
-candidate lemmas and 20 source arguments inspected; finite constructions and
-finite defects found, no matching infinite extension/projection result.
-Snapshot older than index, semantic coverage unmeasured, refresh incomplete.
-Unproved and uncounted. Goal remains active at **8/100**.
+    primitive E_d(v)(n) = v_(n/m−1) if 0<n and m divides n, else 0,
+    ∫ℝ E_d(v)² = 2Σ_jv_j².
+
+Logarithmic traces at log n_j equal v_j. Existing rough logarithmic transport
+supplies local absolute continuity, actual derivative and weighted interval
+energy for this constructed velocity. The full physical energy includes the
+negative half-line; no unproved global logarithmic-energy identification is used.
+
+### Intrinsic coefficients, exact defect and rigidity
+
+For every actual physical L² q, with F=primitive q,
+
+    a_j = 2F(n_j)−F(n_j−1)−F(n_j+1)
+
+is square summable. The proof constructs normalized synthesis S:ℓ²→ₗᵢL² and
+its Hilbert adjoint A, with (Aq)_j=a_j/√2. Therefore b=Aq/√2 is actual ℓ²,
+b_j=a_j/2, and P_dq=SAq=E_d(b) is the orthogonal projection onto the closed
+tent-extension range. This range is the closed span of the normalized tents.
+
+    ∫q² = ½Σa_j² + ∫(q−P_dq)²,
+    ∫(q−E_d(v))² = ∫(q−P_dq)² + 2Σ(b_j−v_j)².
+
+Projection fixes every extension, is idempotent, and its residual is orthogonal
+to every extension. The first equality yields the sharp curvature bound, with
+equality iff q belongs to the extension range. The second proves that E_d(b)
+is the unique nearest extension. The core theorems assume neither neighboring
+trace zeros nor summability of a raw function: all convergence follows from
+actual ℓ²/Hilbert input types and the adjoint construction. If neighboring traces
+vanish, a_j=2F(n_j) recovers sharp infinite coprime coercivity as a paper consequence.
+No closed SourceGraph or unitary affine-group identification is asserted.
+
+### Formal evidence and reusable facts
+
+- `CoprimeTentHilbertFrame.lean`: 197 lines, 17 public theorems, 8 definitions,
+  one abbreviation. `InfiniteCoprimeTraceProjection.lean`: 260 lines, 23 public
+  theorems and 3 definitions. Namespace `SobolevShear`.
+- Both final serial direct leaf checks passed without diagnostics; normal
+  compiled outputs are newer than their sources. No full/umbrella build,
+  numerical experiment, heartbeat increase or added axiom.
+- Every one of 52 public declarations audited with exact name coverage; only
+  `propext`, `Classical.choice`, `Quot.sound`. Twelve main signatures inspected.
+- Both imports and both maps wired; all 40 theorem names indexed. Index refresh
+  passed. Scoped whitespace check passed. Repository-wide whitespace check
+  found one unrelated blank line at EOF in `bi-scale-uncertainty-foundation-2026-10-17.md`.
+- Global lint exited 1 only for nine concurrent unreachable field modules:
+  `DyadicSchurCollarEnergy`, `DyadicSchurSupport`, `FourthMomentJumpReceiver`,
+  `InfiniteGridStrictEnergyLoss`, `ShortSupportEnergyInjection`,
+  `SmallSourceCorrelationStability`, `TwoColumnSchurGeometry`,
+  `TwoColumnSchurSupport`, `UnitEnergySmallSources`. No error concerns either
+  new leaf. Existing large-file warnings remain; unrelated work was preserved.
+
+`L2.inner_indicatorConstLp_one` turns primitive evaluation into a continuous
+Hilbert functional. The indicator-intersection theorem needs explicit finite
+measure arguments, avoiding its expensive default finiteness tactic. Map the
+convergent series with `innerSL.hasSum`; simplify tent pairings before general
+primitive pairings. `Orthonormal.orthogonalFamily.linearIsometry` constructs the
+actual synthesis; its adjoint derives summability without a Bessel admission
+premise. When rewriting an energy identity, pass d explicitly: d does not occur
+on the left side, so an unqualified rewrite can leave a metavariable.
+
+Fresh corpus search inspected all 20 candidate lemmas and all 20 source arguments.
+Finite construction/defect results existed; no matching infinite construction
+or projection found. No partial stages or errors, but snapshot freshness and
+semantic coverage remain incomplete. NPTEL's Riesz–Fischer/projection parent
+theory was checked; no external novelty claim for these classical tools.
+
+Paper: `InfiniteCoprimeTraceExtension.md`.
+Card: `docs/drafts/pipeline/3-formalized/infinite-coprime-trace-extension.md`.
+Evidence: `/tmp/coprime-tent-frame-build.log`,
+`/tmp/infinite-coprime-projection-build.log`, `/tmp/infinite_coprime_axioms.lean`,
+`/tmp/infinite-coprime-axioms.log`, `/tmp/infinite-coprime-index.log`,
+`/tmp/infinite-coprime-lint.log`. All owned verification processes are terminal.
+Package 9 is **progress**; certified count **9/100**, goal active.
+
+## Package 10 — arithmetic classification of infinite projection commutators
+
+**Certified 2026-10-17. One connected contribution.** For every pair of spacings
+m=d+2,n=e+2≥2, let V_m,V_n be the actual closed infinite tent-extension ranges,
+P_m,P_n their constructed projections, and L=lcm(m,n). Proved:
+
+    V_m ∩ V_n = V_L,
+    P_m P_n = P_n P_m  iff  gcd(m,n)≥2,
+    gcd(m,n)≥2  implies  P_m P_n=P_L.
+
+The cross-tent Gram formula is 2 at equal centers, −1 at adjacent centers,
+zero otherwise. A shared divisor greater than one excludes adjacency, so
+projection retains precisely coincident centers. Mapping the convergent Hilbert
+series extends this calculation to the full infinite operators. Nested projection
+absorption and self-adjointness give the lcm product. Intersection for arbitrary
+spacings uses every integer trace: coefficients outside the common multiples
+vanish, and the lcm projection fixes every nonzero summand. It does not assume
+that intersections of closed spans equal spans of intersected index sets.
+
+For gcd(m,n)=1, a modular inverse gives positive active centers a=b+1 with
+m|a,n|b. Input q=H_a is fixed by P_m. At b the P_m P_n trace is zero while
+the P_n P_m trace is −1/2. Thus
+
+    primitive((P_m P_n−P_n P_m)H_a)(b)=1/2.
+
+This exact witness includes m=2 or n=2, where a tent may have two adjacent
+partners. No leakage, operator, summability or analytic admission premise is
+assumed. The unconditional main iff quantifies arbitrary d,e and actual L² q.
+This is an arithmetic interaction inside the continuum Dirichlet domain;
+unitary affine-group and closed SourceGraph identifications remain open.
+
+### Formal evidence and reusable facts
+
+| Leaf | Lines | Public theorems | Definitions |
+| --- | ---: | ---: | ---: |
+| `CoprimeProjectionCrossGram.lean` | 112 | 12 | 1 |
+| `CoprimeProjectionLattice.lean` | 122 | 9 | 1 |
+| `CoprimeProjectionCommutator.lean` | 101 | 7 | 0 |
+
+All direct serial leaf checks and the exact-coverage audit of all 30 public
+declarations pass. Only standard axioms `propext`, `Classical.choice`,
+`Quot.sound`; nine main signatures inspected. All three imports wired, and all
+30 declarations appear in the generated API under the correct module. No full
+or umbrella build, heartbeat increase, numerical experiment or added axiom.
+
+`ContinuousLinearMap.hasSum` transports actual tent series; self-adjointness
+supplies reverse nested absorption. Use `ContinuousLinearMap.ext` explicitly:
+bare `ext q` can descend into Lp's a.e.-equality representation. `lp.ext` leaves
+a function equality, so follow it with `funext`. Use `simp only` to rewrite an
+iff inside a natural-divisibility conditional; `rw` may produce an ill-typed
+dependent `Decidable` motive. Put attributes on their own lines so the API
+indexer sees every declaration.
+
+The relocated 242-line `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`
+was read fully after the user's update and treated as read-only. The old report
+README is gone; module mapping is recorded here and in the generated API.
+
+Fresh corpus search inspected all 20 candidate lemmas and all 20 source
+arguments. Single-family projections and finite trace results existed; no
+cross-family classifier found. No partial stages or errors, semantic coverage
+unmeasured, background refresh incomplete. Primary Hilbert projection and
+Bezout/lcm sources are linked in the paper; no external novelty claim for those
+classical tools.
+
+Paper: `CoprimeProjectionCommutator.md`.
+Card: `docs/drafts/pipeline/3-formalized/coprime-projection-arithmetic-commutator.md`.
+Evidence: `/tmp/coprime-cross-gram-build.log`,
+`/tmp/coprime-projection-lattice-build.log`,
+`/tmp/coprime-projection-commutator-build.log`,
+`/tmp/coprime_commutator_axioms.lean`, `/tmp/coprime-commutator-axioms.log`,
+`/tmp/coprime-commutator-index.log`, `/tmp/coprime-commutator-lint-final.log`.
+Final `scripts/formal_tools.py lint` exits 1 solely for three concurrent
+unreachable field modules: `HyperbolicGaugeChebyshevEnergyRepresentation`,
+`OptimizedHyperbolicRayReceiver`, and `SignedPhysicalGramEnergy`. No error
+concerns this package; existing large-file warnings remain. Earlier
+`--check-generated` also caught index drift; the index was refreshed afterward,
+and exact coverage of all 30 package declarations was verified. Unrelated work
+was preserved. Scoped whitespace, compiled-output freshness, unique imports,
+and stage-transition checks pass. All owned verification processes are terminal.
+
+Package 10 is **progress**; certified count **10/100**, goal active.
+
+## Package 11 — sharp arithmetic angles and alternating projection errors
+
+**Certified 2026-10-17. One connected contribution.** For actual infinite
+projections P=P_m,Q=P_n, m,n≥2, let R=P_lcm(m,n), T=PQ−R and K=PQ−QP.
+Define c=0 when gcd(m,n)≥2, c=1/2 when the spacings are coprime and one is two,
+and c=1/4 otherwise. Proved unconditionally:
+
+    T²=cT,                   ‖T‖²=c,
+    K³=−c(1−c)K,             ‖K‖²=c(1−c),
+    (PQ)^k−R=c^(k−1)T,       ‖(PQ)^k−R‖²=c^(2k−1)  (k≥1).
+
+Both operator norms are attained by actual nonzero physical L² velocities.
+The square-root forms are also formalized. Thus coprime spacings at least
+three give norms 1/2 and √3/4; spacing two changes them to 1/√2 and 1/2.
+The arithmetic angle is independent of how large the coprime spacings are.
+The resulting alternating-projection rate is exact, not an upper estimate.
+
+### Proof mechanism and boundary
+
+After removing coincident centers, spacings at least three allow only isolated
+adjacent pairs. A non-even center in a spacing at least three has two positive
+even neighbors, producing a two-arm star for spacing two. Exact analysis
+coefficients give projection −H_a/2 in the first case and −(H_a+H_a')/2 in
+the second. These are identities for actual infinite projections, derived from
+actual finite ℓ² coefficient data. The positive-half-line boundary loses no arm.
+
+Mapping convergent tent series proves T²=cT on the full L² space. Projection
+algebra gives A=TT*, A²=cA and K³=−c(1−c)K. The C*-norm identity plus the
+previous exact noncommutation witness supplies the exact norms. For attainment,
+use B=S^* S for S=T or K: B≠0, choose x with Bx≠0, and q=Bx satisfies Bq=λq,
+so ‖Sq‖²=λ‖q‖². In the commuting case a nonzero tent attains both zero norms.
+No spectral, decomposition, summability or analytic admission premise is used.
+
+This closes the quantitative two-projection problem in the actual continuum
+Dirichlet velocity domain. It does not identify a unitary affine representation,
+a closed SourceGraph form, or a joint prescribed-value trace extension.
+
+### Formal evidence and reusable facts
+
+| Leaf | Lines | Public theorems | Definitions |
+| --- | ---: | ---: | ---: |
+| `CoprimeProjectionNeighbors.lean` | 141 | 10 | 1 |
+| `CoprimeProjectionAnglePolynomial.lean` | 150 | 10 | 2 |
+| `CoprimeProjectionAngleNorm.lean` | 271 | 16 | 1 |
+| `CoprimeAlternatingProjectionRate.lean` | 64 | 5 | 0 |
+
+All four final serial direct leaf checks pass without diagnostics. Every one of
+45 public declarations audited with exact name coverage; only standard axioms.
+Twelve main signatures inspected, including unconditional norm attainments and
+iteration laws. Four unique umbrella imports, all 45 API entries at current
+source lines, and current compiled outputs verified. The field README was read
+fully and remained read-only. No full/umbrella build, numerical experiment,
+heartbeat increase or added axiom.
+
+Refolding a definition with `simp [← definition]` is invalid; expose an iff
+lemma and refold that lemma instead. When applying an equality-on-tents lemma
+to a composed/scaled operator, supply d,e explicitly and `change` the pointwise
+goal before invoking the tent identity. This avoids a genuine 200000-heartbeat
+definitional-equality failure without increasing limits. Use explicit arguments
+when refolding `coprimeProjector_apply`; an unqualified reverse rewrite can
+target the wrong projection. C*-norm lemmas live in `CStarRing`. Bare
+`have := @Name` probes may need explicit universe levels; the final scratch
+audit verified these API probes as well. Prefer `sub_apply` and
+`mul_apply_eq_comp` to deprecated continuous-linear-map aliases.
+
+Fresh focused corpus query inspected all 20 candidate lemmas and all 20 source
+arguments. Existing projection classifier and generic Gram tools found, no
+matching angle classification. Results were partial without execution errors;
+refresh incomplete, semantic coverage not supplied. The classical
+Friedrichs-angle/alternating-projection parent theory was checked in
+Badea–Grivaux–Müller, linked in the paper. No external novelty claim for it.
+
+Paper: `CoprimeProjectionAngleGap.md`.
+Card: `docs/drafts/pipeline/3-formalized/coprime-projection-angle-gap.md`.
+Evidence: `/tmp/coprime-projection-neighbors-build.log`,
+`/tmp/coprime-angle-polynomial-build.log`, `/tmp/coprime-angle-norm-build.log`,
+`/tmp/coprime-alternating-projection-build.log`, `/tmp/coprime_angle_axioms.lean`,
+`/tmp/coprime-angle-axioms.log`, `/tmp/coprime-angle-index.log`,
+`/tmp/coprime-angle-lint.log`. Global `lint --check-generated` exits 1 for
+four unrelated concurrent unreachable modules: `AnnularSourceRegularity`,
+`SignedGramCapacity`, `SignedGramCutoffComparison`, and
+`SignedGramCutoffHierarchy`, plus drift in `LEAN_API.md`/`LEAN_OVERVIEW.md`.
+No error concerns this package; no active proof-debt error. Existing large-file
+warnings remain. Index refreshed afterward; all 45 exact current-source API
+entries and compiled-output freshness reverified. Scoped whitespace and stage
+transition checks pass. Unrelated work preserved; all owned processes terminal.
+Final index log: `/tmp/coprime-angle-index-final.log`.
+Package 11 is **progress**; count **11/100**, goal active.
+
+## Next falsifiable candidate — infinite joint two-grid interpolation
+
+In progress: `docs/drafts/pipeline/1-in-progress/two-grid-coprime-trace-extension.md`.
+Construct an actual ℓ² nodal extension on the union of two divisor grids,
+counting common nodes once. Proposed energy is 2Σv²−2Σ_adjacent v_a v_(a+1).
+Conjectured sharp lower/upper constants: (2,2) for noncoprime spacings,
+(1,3) for coprime spacings at least three, and (2−√2,2+√2) when one is two.
+Every integer/logarithmic trace, cross-term convergence, minimum-energy defect
+and equality case require proof. This is prescribed-value interpolation,
+distinct from projection's intrinsic curvature data. All unproved and uncounted.
+Fresh search inspected all 20 candidate and 20 source entries, finding
+single-grid extension and finite trace defects but no joint construction.
+No partial stages/errors; snapshot older, semantic unmeasured, refresh incomplete.
+
+
+Paper-proof refinement: joint data are the concrete kernel
+`R(E_e b)=0` in ℓ²×ℓ², equivalent to vanishing second-family coefficients at
+shared nodes. Exact energy contains the signed adjacent interaction. Minimum
+energy fixes every integer trace, including zero off-union values; prescribing
+only union values is a different problem. Dependency-closed proof is in
+`TwoGridCoprimeTraceExtension.md`. Lean checks pending; this is not a new
+certification and count remains 11/100.

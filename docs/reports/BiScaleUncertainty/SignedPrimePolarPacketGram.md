@@ -132,8 +132,10 @@ cancellation-sensitive replacement for unsigned-mass transport. Support helpers,
 Fubini, the Gram identity, comparison, and the Chebyshev corollary count together.
 
 Formal leaves: `SignedPrimePolarPacket.lean` and
-`SignedPrimePolarGramTransport.lean`. Certification status is recorded in the
-companion ledger after direct Lean checks and endpoint axiom audits.
+`SignedPrimePolarGramTransport.lean`. Both direct leaf checks and the final seven-endpoint axiom audit pass.
+The only reported axioms are propext, Classical.choice, and Quot.sound. Main
+signatures contain only the actual compact source and numerical parameters.
+Imports are wired; the companion ledger records the separate global lint result.
 
 The result concerns each actual finite window. Compact support makes the scalar
 pairing eventually insensitive to larger cutoffs, but does **not** imply the

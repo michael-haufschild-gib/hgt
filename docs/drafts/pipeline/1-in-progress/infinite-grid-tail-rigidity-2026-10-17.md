@@ -6,6 +6,9 @@
 - **Scope:** Independent BiScaleUncertainty research; no RH objective.
 - **Goal:** 100 significant contributions in this research topic, counted by mathematical packages, not helper lemmas.
 - **Ledger:** `docs/reports/BiScaleUncertainty/InfiniteGridTailRigidity-FACTS.md`
+- **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
+  Keep general signed correlation statements primary; use all-grid constructions as
+  sharpness witnesses. Research topic remains infinite-grid tail rigidity beyond Trap 5.
 
 ## First conjecture
 
@@ -42,7 +45,7 @@ This is uniform over changing sources and nonzero coefficients. Complete proofs 
 
 ## Certified frontier
 
-Eight significant packages certified:
+Eleven significant packages certified:
 
 1. Canonical tail detection and the uniform linear energy barrier for separated two-copy sources,
    including the stronger local-energy inequality (22 theorems).
@@ -73,9 +76,27 @@ Eight significant packages certified:
    the energy ceiling, with actual integrability of the limiting singular density
    (17 public theorems).
    Card: `../3-formalized/infinite-grid-correlation-compactness-2026-10-17.md`.
+9. Exact energy continuity criterion for uniformly convergent all-grid correlations:
+   uniform smallness of origin energy is necessary and sufficient. Every bounded-energy
+   source sequence admits a subsequence whose entire energy defect is localized at zero;
+   every positive-cutoff energy tail converges (17 theorems).
+   Card: `../3-formalized/infinite-grid-origin-energy-2026-10-17.md`.
+10. Actual smooth sources with one common short support converge in squared L² distance
+    and uniformly in normalized correlation while retaining a fixed positive energy gap.
+    General signed-source statement and constructed all-grid witnesses; a subsequence
+    realizes strictly positive origin concentration (12 theorems).
+    Card: `../3-formalized/infinite-grid-strict-energy-loss-2026-10-17.md`.
+11. Exact criterion for bounded-energy correlation compactness: uniform decay of
+    general signed logarithmic traces iff uniform continuum tails iff compact closure
+    in the global supremum norm. Includes global uniform subsequence extraction
+    without grid blindness or a common support bound (17 public theorems).
+    Card: `../3-formalized/signed-grid-trace-compactness-2026-10-17.md`.
 
-The 100-package objective remains active. Next: classify possible energy loss at the singular
-origin under uniform correlation convergence, then continue source realization and polar-tail control.
+The 100-package objective remains active. Next: classify distant-copy compactness
+and polar continuity by their exact amplitude scales. This preserves the original
+tail-rigidity topic and retains general signed samples. Candidate:
+`../0-backlog/distant-copy-topology-classification-2026-10-17.md`.
+Mixed-energy decoupling and true polar-tail control remain separate open refinements.
 
 ## Constraints
 

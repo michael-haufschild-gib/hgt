@@ -3,8 +3,14 @@
 ## Scope and counting
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
-Target: 100 significant mathematical packages. Certified packages in this ledger: **8**.
+Target: 100 significant mathematical packages. Certified packages in this ledger: **11**.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
+
+Field guide: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only.
+Its nine traps guide this same tail-rigidity topic. General correlation estimates retain
+signed node values; all-grid families provide verified special cases and sharpness
+witnesses, not substitutes for signed arithmetic or polar coercivity. Origin concentration
+and exponentially weighted polar-tail control remain distinct questions.
 
 ## Established inputs
 
@@ -279,6 +285,103 @@ Global lint failed only on concurrent foreign unwired `RHTower.FermiNymanDyadicF
 `BiScaleUncertainty.DyadicMultiplierFrameBound`, `BiScaleUncertainty.SignedPrimePolarCoupling`.
 Neither owned leaf has a lint error. This connected compactness/energy result counts once.
 
+## Certified package 9: exact energy continuity and localization of every defect
+
+For actual bounded-energy all-grid correlations H_n converging uniformly to H,
+write C_H(a)=integral_(0,a](1-H)w and T_H(a)=integral_(a,infinity)(1-H)w.
+Every positive-cutoff tail converges, even under merely pointwise correlation convergence.
+Uniform tail error is at most `||G-H||_(x>a) integral_a^infinity w`.
+Each integrable kernel has C_H(a)->0 as a decreases to zero; finite families admit
+one positive common cutoff. The exact split is E(H)=C_H(a)+T_H(a).
+
+The source energies converge to E(H) IFF for every epsilon>0 there is a>0 with
+C_Hn(a)<epsilon for ALL n. Eventual uniform control is equivalent: shrink the cutoff
+to control the finite prefix. Thus the exact obstruction is origin concentration.
+If E_n->L, D=L-E(H)>=0 and C_Hn(a)->D+C_H(a) for EVERY a>0; then a↓0 leaves D.
+Every bounded-energy actual-source sequence admits a strict subsequence along which
+both correlations and energies converge, with precisely this defect formula.
+No energy can be lost on any region bounded away from zero, including the infinite tail.
+
+Certificates: `CorrelationOriginEnergy.lean` (10 theorems, 2 definitions) and
+`InfiniteGridOriginConcentration.lean` (7 theorems). Both direct leaf checks pass
+without diagnostics. All 19 declaration dependency audits use only `propext`,
+`Classical.choice`, `Quot.sound`; both imports and every generated API entry verified.
+Paper: `InfiniteGridOriginEnergy.md`; card: `infinite-grid-origin-energy-2026-10-17.md`.
+Logs: `/tmp/infinite-grid-origin-{core-leaf,concentration-leaf,axioms,index,lint}.log`.
+Global lint fails only on concurrent foreign unwired `SignedPrimePolarGramTransport`
+and `SignedPrimePolarPacket`; neither owned leaf has a lint error. Count this connected
+criterion/defect classification once. Package 10 supplies strict positive loss.
+
+## Certified package 10: strict energy loss with fixed support and strong source convergence
+
+Unconditionally, actual smooth compact real sources f and g_n exist with positive
+masses, one common support [-B,B], one energy ceiling K, and a fixed d>0 such that
+integral |g_n-f|²->0, their normalized correlations converge globally uniformly, yet
+E(g_n)>=E(f)+d for every n. The general signed-source theorem imposes no grid premise.
+The constructed witnesses additionally have 2B<log 2, hence every logarithmic-grid
+correlation is exactly zero. These are proved sharpness properties, not hypotheses.
+
+For any source radius b>0 and mass tolerance eta>0, an actual smooth source q exists
+with 0<R_q<eta and J(q)=1. Compress a concrete bump until the logarithmic energy
+lower bound gives E>1/eta, then divide by sqrt(J). The source parallelogram selects
+a sign retaining J(f)+1 while bounding the sum energy by 2(J(f)+1).
+
+Set b=log(2)/16, t_n=1/(n+1), R=R_f, A=J(f), and choose q_n with
+R_qn<min(t_n²,R/(2A+1)). Translating it by 4b makes supports disjoint. The selected
+g_n=f+s_n q_n(.-4b) has mass R+R_qn, support radius 5b, and
+
+    E(f)+1/(2R) <= E(g_n) <= 2(A+1)/R,
+    sup_x |H_gn(x)-H_f(x)| <= t_n(R+3)/R,
+    integral |g_n-f|² <= t_n².
+
+An energy-convergent subsequence has a defect D>=1/(2R)>0. Package 9 places D in
+every fixed positive origin interval. Strong source convergence and a common compact
+support do not replace uniform smallness of origin energy. Polar constraints and
+weighted polar-tail closedness are not asserted.
+
+Certificates: `SmallSourceCorrelationStability.lean` (4), `UnitEnergySmallSources.lean`
+(4), `ShortSupportEnergyInjection.lean` (1), `InfiniteGridStrictEnergyLoss.lean` (3).
+All four direct leaf checks pass without diagnostics; all 12 theorem dependency audits
+use only `propext`, `Classical.choice`, `Quot.sound`. All imports/API pairs verified;
+index refresh passed. Paper: `InfiniteGridStrictEnergyLoss.md`; formalized card:
+`infinite-grid-strict-energy-loss-2026-10-17.md`. Logs are listed in the paper.
+Global lint reports only foreign unwired `HyperbolicGaugeChebyshevEnergyRepresentation`
+and `OptimizedHyperbolicRayReceiver`; no owned leaf has a lint error. Count once.
+
+## Certified package 11: signed logarithmic trace criterion for compactness
+
+For any family S of actual compact C² positive-mass sources with one normalized
+energy ceiling K, the following are equivalent, with arbitrary signed node values:
+
+1. For every epsilon>0, some N>=2 gives |H_f(log n)|<epsilon for all f in S and n>=N.
+2. For every epsilon>0, some A>0 gives |H_f(x)|<epsilon for all f in S and |x|>=A.
+3. The normalized correlations have compact closure in the global supremum norm.
+
+The signed sampling estimate retains the node value:
+c T|H_f(T)-H_f(log ceil(exp T))|²<=8K, c=exp(-1/2), T>=0.
+For any epsilon>0, radius 1+8max(K,0)/(c epsilon²) makes the sampling error less
+than epsilon for every source. Thus general signed trace decay controls continuum
+tails. The energy modulus supplies equicontinuity. For compactness necessity, finite
+uniform nets have centers in the actual source family; finitely many compact
+correlation supports have one common cutoff. No decay property of an unconstructed
+limit is assumed. Empty families and arbitrary real K are covered.
+
+Every uniformly trace-tight source sequence has a strict subsequence of correlations
+converging uniformly on the entire line to a continuous real kernel. No grid-zero,
+common-support, derivative-bound, or polar hypothesis appears in the criterion.
+This is a correlation compactness theorem, not source realization, polar closedness,
+or continuity of the singular energy.
+
+Certificates: `SignedGridEnergySources.lean` (9 public theorems, 2 definitions,
+1 structure), `SignedGridTailEquivalence.lean` (3 theorems, 2 definitions),
+`SignedGridTraceCompactness.lean` (5 public theorems, 1 private helper). All three
+direct leaf checks pass without diagnostics. All 22 public declaration audits use
+only `propext`, `Classical.choice`, `Quot.sound`, covering the private helper
+transitively. All imports/API pairs verified; index refresh passed.
+Paper: `SignedGridTraceCompactness.md`; formalized card:
+`signed-grid-trace-compactness-2026-10-17.md`. Logs and seven foreign unwired modules
+from the global lint run are listed in the paper. No owned lint error. Count once.
+
 ## Boundaries and next conjectures
 
 - A shrinking mesh alone gives no uniform modulus for a varying family of sources.
@@ -295,24 +398,25 @@ Neither owned leaf has a lint error. This connected compactness/energy result co
 
 ## Next exact conjecture
 
-Determine whether uniform convergence can lose a strictly positive amount of source
-energy, and classify the exact obstruction. Candidate theorem: for uniformly convergent
-normalized all-grid correlations H_n->H with bounded energy, E_n->J(H) iff the origin
-integrals `integral_(0,a] (1-H_n)w` tend to zero uniformly in n as a decreases to zero.
-Away from zero, uniform convergence should control the energy difference by
-`||H_n-H||_infinity integral_a^infinity w`; no energy defect can remain away from the origin.
+Classify the topology of separated copies g=f-a f(.-T) for a fixed actual source
+with correlation radius D and T>D. Set b=a/(1+a²). Existing exact algebra suggests
+||H_g-H_f||_infinity=|b| and H_g(T)=-b. For T_n->infinity, energies should converge
+to E(f) for arbitrary amplitudes, while global correlation convergence and compact
+closure should hold exactly when b_n->0. Taking a_n=1 and a short-support seed
+should prove pointwise eventual grid blindness and energy convergence insufficient
+for compactness; the exact amplitude criterion is the positive survivor.
 
-Potential actual-source counterexample: combine a fixed smooth seed and a vanishing-mass
-compressed bump with disjoint source supports inside one interval shorter than log 2.
-The complete grid is then automatic. Compression at scale L with mass about 1/log L
-could retain nonzero energy while its normalized correlation vanishes uniformly. This
-requires proving the sharp fixed-seed asymptotic E(compressed)=log L+O(1), controlling
-cross terms, and constructing all source parameters. No strict-loss example is claimed yet.
-The criterion and counterexample are unproved and uncounted; audit both before implementation.
+The polar-moment refinement predicts P(H_g)=(1-2b cosh(T/2))P(H_f). If proved,
+it separates correlation compactness from polar continuity through an exact weighted
+amplitude condition. Audit the polar identity and concrete nonzero-moment source
+before claiming this refinement. Candidate and corpus evidence:
+`docs/drafts/pipeline/0-backlog/distant-copy-topology-classification-2026-10-17.md`.
+All these next statements remain unproved and uncounted.
 
-Search `/tmp/infinite-grid-energy-defect-search.txt` was partial with no useful hits;
-broadened lexical search `/tmp/infinite-grid-energy-defect-lexical.txt` found the existing
-coefficient-one compression upper bound and local correlation energy stability.
-The recent `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean` was also inspected:
-its global error retains `R/(2 eta) integral rho²`; the polar-cell cost is `R/(2 eta n)`.
-These are not a uniform global polar-tail closedness result. Continue that question separately.
+Separate origin refinement: for fixed finite-energy f, R(q_n)->0 and bounded J(q_n)
+should imply J(f+q_n)-J(f)-J(q_n)->0 without support separation. A split mixed-increment
+estimate could yield prescribed energy defects instead of sign selection. Unproved.
+
+Polar-tail control remains separate. The inspected Euler–Maclaurin bound retains
+`R/(2 eta) integral rho²`, with polar-cell cost `R/(2 eta n)`; it is not global polar
+tail closedness. Neither the new strict-loss example nor signed trace decay resolves it.

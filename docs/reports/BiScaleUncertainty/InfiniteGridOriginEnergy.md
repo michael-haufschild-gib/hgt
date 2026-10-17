@@ -104,7 +104,24 @@ of integrals are standard tools reused here. The connected contribution is their
 complete application to the actual infinite-grid source class and the resulting
 defect classification. Strict-loss source construction remains separate work.
 
-## Formal status
+## Formal certificate
 
-Dependency-closed paper proof complete. Lean formalization in progress; no package
-count increment until direct leaf and full endpoint audits pass.
+Both direct `lake --old env lean` leaf checks passed without diagnostics:
+`CorrelationOriginEnergy.lean` (ten theorems, two definitions) and
+`InfiniteGridOriginConcentration.lean` (seven theorems). Separate scratch dependency
+audits of all nineteen declarations contain only `propext`, `Classical.choice`,
+and `Quot.sound`. Both imports and all nineteen generated API entries are verified.
+
+Principal endpoints:
+
+- `correlationTailEnergy_abs_sub_le`: quantitative tail stability.
+- `tendsto_correlationTailEnergy_of_pointwise`: pointwise convergence suffices away from zero.
+- `infiniteGrid_energy_convergence_iff_uniform_origin`: the exact criterion, for every sequence member.
+- `infiniteGrid_origin_energy_defect`: the same defect occurs in every fixed origin interval.
+- `exists_infiniteGrid_origin_defect_limit`: unconditional extraction from the actual source class.
+
+Logs: `/tmp/infinite-grid-origin-{core-leaf,concentration-leaf,axioms,index,lint}.log`.
+The authoritative global lint reports only two concurrent foreign unwired modules:
+`BiScaleUncertainty.SignedPrimePolarGramTransport` and
+`BiScaleUncertainty.SignedPrimePolarPacket`. Neither owned leaf has a lint error.
+This connected criterion and defect classification is certified package 9/100.

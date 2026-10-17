@@ -255,6 +255,128 @@ of the fourth-root error is proved. Unequal-size product-zero pairs, general
 nonzero Schur residual coupling, and actual autocorrelation realization remain open.
 The package is not a theorem identifying the true sharp source-energy constant.
 
+## Two-column Schur refinement
+
+For finite columns u,v, let U=Σu², V=Σv², D=Σuv. The residual conditions
+U,V≤R² and (Rc−D)²≤(R²−U)(R²−V) imply, for every real r,s,
+
+    Σ(ru+sv)² ≤ R²(r²+s²)+2Rc rs.
+
+The zero-lag domain c=0 is invariant under simultaneous unit rotations.
+For weights a,b with A=Σa², B=Σb², C=Σab, its exact support is
+
+    R ν(a,b),    ν(a,b)=sqrt(A+B+2sqrt(AB−C²)),    R≥0.
+
+Finite-vector maximizers exist, including degenerate weights. Moreover
+ν≤sqrt A+sqrt B, with equality iff C=0. This attainment concerns finite
+vectors; autocorrelation realization is not proved.
+
+For actual grid sources with N≥4, d=log2 supplies the orthogonal frame
+{0,d,2d} and zero-lag target pair y,y+d. Writing u0=h(y), u1=h(d−y),
+u2=h(2d−y), v=h(d+y), every split λ,μ∈[0,1] yields
+
+    W u0+a u1+b u2+c v ≤ h(0)ν((λW,μa,b),(c,(1−λ)W,(1−μ)a)).
+
+The minimum S(W,a,b,c) over that compact square is attained and continuous.
+For nonnegative weights, W≤S≤W+a+b+c. Thus W+a+b+c−S is a
+nonnegative kernel bounded by a+b+c. Literal physical weights use node2's
+left and right sides and node4's left side. All unselected source costs remain
+nonnegative. Maximizing this kernel with the old full-grid capped kernel
+preserves every old partition certificate, with no duplicated origin interval.
+
+Let T_N optimize this maximum over physical partitions, and H_N=max_(K≤N)T_K,
+using P_K for K=2,3. The paper proof gives
+
+    B_N≤H_N≤J_arch(f)/h_f(0),    0<H_N↑H∞≤tailMass,    Q∞≤H∞.
+
+Source restriction proves envelope monotonicity; raw T_N monotonicity is not
+claimed. The extended-energy version includes zero sources and infinite energy.
+No equality H∞=Q∞, strict optimized gap, rate to H∞, or sharp source infimum
+is established. The general nonzero-lag rotation bound does not yet give an
+exact nonzero-lag support formula or its physical hierarchy.
+
+Strict finite-cone separation is symbolic: W=a=b=1,c=0 and λ=μ=1/2
+give ν²=2+sqrt3/2<3, below the old one-column sphere support squared.
+This is not a numerical experiment and does not prove a strict physical optimum gap.
+
+Status: all five Schur leaves compile cleanly; all 69 public theorem axiom/signature
+audits pass with standard axioms only. The general signed extension below adds
+16 audited theorems. The final direct leaf check passes; all six leaves form one package.
+
+## Full measured signed-Gram receiver
+
+Authoritative field context now lives at the read-only path
+`formal/GaloisForLFunctions/BiScaleUncertainty/README.md`. All 242 lines were read;
+SHA-256 `80c91d482d9dfcfeb86508edcf5551d34d34a5ef333d3fab64be78e75dd67507`.
+Its blind-subspace obstruction requires keeping general signed correlations.
+Uniform blind-grid constants remain meaningful specializations, not general
+signed-source theorems. Research scope remains multi-coset source-energy bounds.
+
+For any compact continuous source, let R=h(0), A=Σa_i, a_i≥0, W≥0, and
+retain every measured signed entry in the origin-anchored Gram energy
+
+    G=R W²+2W Σa_i h(τ_i)+Σ_i,j a_i a_j h(τ_j−τ_i).
+    K=R(W+A)−sqrt(RG).
+
+The existing translation-packet Cauchy theorem supplies the pointwise source
+bound. The envelope |h|≤R gives G≤R(W+A)², hence K≥0. Evaluating the
+same packet at the origin gives sqrt(RG)≥RW−RA, hence K≤2RA.
+This is exact singular-origin cancellation; no derivative moment, origin cutoff,
+or artificial clipping of the kernel is needed.
+More precisely K≤Σa_i(R−h(τ_i)): measured signed node deficits control
+capacity, reducing to RA on the blind grid.
+
+Use all physical signed nodes τ_(false,k)=log(k+2), τ_(true,k)=−log(k+2)
+with their actual partition weights. Then A=massρ, K is measurable and
+integrable, and exact signed transport gives ∫K≤J_arch(f) for actual sources.
+The extended-energy formulation applies to every f:C_c(ℝ,ℝ), including zero
+and infinite-energy sources. C² gives the real-energy ratio, including total
+division at R=0. No grid-zero or caller-supplied Gram estimate enters this result.
+On the blind-grid domain, max(H_N,∫K/R) retains both source certificates.
+
+This signed coefficient depends on actual source correlations; it is not a
+positive uniform constant for unrestricted sources. Exact general nonzero-lag
+multi-column support and asymptotics of optimized signed-data certificates
+remain open. Status: compiled and audited, including all 16 public theorems,
+the concrete source/kernel definitions, and the final direct leaf check.
+
+## Full signed-Gram cutoff stability for each actual source
+
+For the exact anchored packet P(a)=W T_0f+Σa_i T_tif, the Gram deficit is
+K(a)=R(W+Σa_i)−sqrt(R)||P(a)||. Both triangle inequalities prove
+
+    0≤K(a+b)−K(a)≤2RΣb_i,   b_i≥0.
+
+The incumbent weights and anchor W may have either sign. Consequently K is
+coordinatewise monotone, and any nonnegative cover b_i≤a_i+e_i gives
+K(b)−K(a)≤2RΣe_i. Zero-padding preserves the exact mass and packet. This
+controls all signed cross-coset entries simultaneously; no Gram locality is used.
+
+For a fixed actual compact continuous source f, define S_N(f)=sup_ρ ∫K_ρ over
+physical partitions through N. Actual extension and retention retraction give
+
+    0≤S_N(f)↑S_∞(f)≤2R∫_(δ,∞)w,
+    0≤S_∞(f)−S_N(f)≤2R∫_(log N−δ,∞)w,
+    0≤S_∞(f)/R−S_N(f)/R≤8·2^(1/4)/(sqrt(N)(1−2/N²)),  N≥2.
+
+The normalized statement includes R=0 by total division. The limiting extended
+energy theorem takes only f:C_c(ℝ,ℝ), covers infinite energy, and has no grid-zero
+or assumed analytic interface. Compact C² sources satisfy S_N/R≤S_∞/R≤J_arch/R.
+This proves an upper cutoff rate, not a matching asymptotic. S_∞ depends on f;
+it is not identified with H∞ or the sharp uniform source constant.
+
+Status: all three leaves compile without diagnostics; all 34 public theorems
+pass axiom audits, only propext, Classical.choice, Quot.sound. Final direct
+`lake --old env lean` recheck passed, exit 0, empty diagnostics log.
+
+Next uncounted candidate: a physical dual gap for any trial partition using the
+full measured Gram packet. With q_i=Re⟨P,T_tif⟩/sqrt(RG), total division makes
+q_i=0 at a zero packet; Cauchy gives −1≤q_i≤1. Prices (1+q_i)/2 lie in [0,1]
+and can reuse exact physical cost transport. Norm support should give a
+nonnegative remainder and a trial bound S_∞−Cρ≤Gapρ+2R T_N. Unlike the
+independent-coset dual gap, these prices retain every signed cross-coset entry.
+No strict positivity of the packet or existence of an optimizer may be assumed.
+
 ## Limits that must remain visible
 
 - P_N optimizes the independent signed-coset sphere relaxation. It is not identified
@@ -272,7 +394,7 @@ The package is not a theorem identifying the true sharp source-energy constant.
 
 ## Research accounting
 
-Lean-verified significant packages: **7/100**: (1) general source transfer and
+Lean-verified significant packages: **9/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
@@ -282,15 +404,21 @@ support and finite-vector attainment, followed by full-grid physical source tran
 (6) capped capacity and cutoff comparisons, the optimized monotone full-grid
 hierarchy, common finite limit, and quantitative actual-source certification;
 (7) exact capped activation, quadratic extremal deficit, rationalized physical
-gain, almost-everywhere equality/strictness, and actual-source gain transfer.
+gain, almost-everywhere equality/strictness, and actual-source gain transfer;
+(8) exact two-column Schur support, optimized dyadic physical refinement and
+monotone hierarchy, plus the unconditional full measured signed-Gram receiver;
+(9) measured signed-Gram capacity, actual physical cutoff monotonicity/retraction,
+optimized finite limit, explicit inverse-square-root error, and actual-source receiver.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Current global lint exits 0: `formal lint passed`. Earlier concurrent missing-import
-failures are obsolete. All seventeen owned leaves are reachable. Index refresh
-passed, with activation and actual-source capstones discoverable. Evidence:
-`/tmp/bsu-capped-activation-lint.log`, `/tmp/bsu-capped-activation-index.log`.
+Latest global lint exits 1 for four unrelated modules unreachable from the umbrella:
+`ChebyshevGaugeNyquistCellQuadrature`, `DistantCopyCorrelationTopology`,
+`DistantCopyEnergyTopology`, and `SignedCoherentMomentReceiver`. Those concurrent
+files were not modified. All twenty-six owned leaves are wired; new capstones are indexed.
+Evidence: `/tmp/bsu-signed-gram-lint-final.log`, `/tmp/bsu-signed-gram-index.log`,
+and `/tmp/bsu-signed-gram-discovery.log`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -387,3 +515,49 @@ owned process and keep polling its handle instead of restarting after an observa
 For a supremum-range goal left in `(fun ρ => ...) ρ` form, use an explicit `change`
 before rewriting the all-low coefficient identity. Natural-number nonlinear
 contradictions may need explicit `Nat.zero_le k` and `Nat.zero_le (k ^ 2)` inputs.
+
+Schur package SHA-256 values:
+
+- Geometry: `91e66c439bb52ef3cc5f0fb32fc15e47c2614949a8d10d23620e90ae46c29ab9`.
+- Exact support: `249f9bea751b9ba8c5a5ce8c88fd1c6b3c3cab292266c8cbf95bba37be9e7980`.
+- Dyadic splitting: `37f23f952324a5bc85b3a628e4b2994ccbc99a94a80c6e1cbd2fdf884327ef30`.
+- Physical refinement: `c120590bca4fb721c66ea317804b9631cc90d7e582d7ddbb2664da08212fd5a9`.
+- Monotone hierarchy: `8ef01a80da29ed464c42d9df631539908297b10158cb6c5606967ecf855ee573`.
+- Full signed-Gram receiver: `9dc409594e17bd54b97b38b351addc11dd869ebea53f14d4c1087c3151383c33`.
+
+All six leaves compile cleanly; all 85 public theorems audited exactly once,
+69 in `/tmp/bsu_schur_pair_axioms.lean` and 16 in
+`/tmp/bsu_signed_physical_gram_axioms.lean`. Only `propext`, `Classical.choice`,
+and `Quot.sound`; general-source signatures and concrete Gram definitions inspected.
+Final command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SignedPhysicalGramEnergy.lean`;
+exit 0, no diagnostics. Logs `/tmp/bsu-schur-pair-{axioms,final,index,lint-final}.log`
+and `/tmp/bsu-signed-physical-gram-axioms.log`; complete integrity manifests
+`/tmp/bsu-schur-pair-final-{manifest,integrity}.json`. All 23 owned imports occur
+once; all 17 earlier hashes unchanged. README remains byte-identical and read-only.
+Both temporary API probes removed; all owned jobs exited. Global lint's unrelated
+concurrent failures are listed above. Partial searches `/tmp/bsu-schur-pair-search.log`
+and `/tmp/bsu-signed-schur-search.log` do not justify exhaustive novelty claims.
+
+Signed-Gram cutoff SHA-256 values:
+
+- Capacity: `95469f4664f01de5dd302d81a58445005f8d4d020dbe993fb2bc8e85101da435`.
+- Physical comparison: `6be920f79c818fa42fdde188b73593c1bed983a76d0e52c9f5d8c23321ec4a2e`.
+- Optimized hierarchy: `7a0da76505f74745f800ee50fe6323540464d74274095fc051209cb46782327d`.
+
+All three leaves compile cleanly; all 34 public theorems audited exactly once in
+`/tmp/bsu_signed_gram_cutoff_axioms.lean`. Only `propext`, `Classical.choice`,
+`Quot.sound`; concrete source, packet and supremum definitions inspected.
+Final direct command `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SignedGramCutoffHierarchy.lean`
+passed with exit 0 and no diagnostics. Evidence `/tmp/bsu-signed-gram-final.exit`,
+`/tmp/bsu-signed-gram-{capacity,comparison,hierarchy,axioms,final}.log`, and
+`/tmp/bsu-signed-gram-{manifest,integrity,audit-coverage}.json`. All 26 own imports
+occur once, all 23 earlier hashes unchanged, read-only README unchanged.
+Index and new capstone discovery pass. Latest global lint failures are listed
+above; no foreign file was modified to clear them. Initial capacity and next dual
+searches are partial, with older coverage and unmeasured semantic completeness.
+
+Lean repairs: normalize sqrt(R)*(sqrt(R)*A) by associativity and sq_sqrt before
+arithmetic tactics; the nonlinear tactic does not automatically multiply the
+square identity by A. For integral_sub, expose the pointwise difference using
+`change` before rewriting the integral of a function subtraction. Normalize
+signed offsets with `sub_eq_add_neg` before commuting addition.

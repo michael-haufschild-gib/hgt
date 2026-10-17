@@ -45,29 +45,30 @@ private theorem integral_pairing (F : ℝ → ℝ → ℝ)
     continuous_parametric_integral_of_continuous
       ((continuous_polarDensity.comp continuous_snd).mul
         (hF.comp (continuous_snd.prodMk continuous_fst))) isCompact_Icc
+  have hn (n : ℕ) : IntegrableOn (fun y => primeWeight n * F (Real.log n) y) (Icc a b) :=
+    (continuous_const.mul (hF.comp (continuous_const.prodMk continuous_id))).integrableOn_Icc
   simp only [pairing]
   rw [integral_sub hs.integrableOn_Icc hp.integrableOn_Icc,
-    integral_finsetSum _ (fun n _ =>
-      (continuous_const.mul (hF.comp (continuous_const.prodMk continuous_id))).integrableOn_Icc)]
+    integral_finsetSum _ (fun n _ => hn n)]
   simp_rw [integral_const_mul]
   congr 1
-  rw [integral_integral_Icc_swap _
+  rw [integral_integral_Icc_swap (fun y t => polarDensity t * F t y)
     ((continuous_polarDensity.comp continuous_snd).mul
       (hF.comp (continuous_snd.prodMk continuous_fst)))]
   simp_rw [integral_const_mul]
 
 private theorem pairing_sub (N : ℕ) (H K : ℝ → ℝ) (hH : Continuous H) (hK : Continuous K) :
     pairing N (fun t => H t - K t) = pairing N H - pairing N K := by
-  have hiH := (continuous_polarDensity.mul hH).integrableOn_Icc (μ := volume)
-    (a := (0 : ℝ)) (b := cutoff N)
-  have hiK := (continuous_polarDensity.mul hK).integrableOn_Icc (μ := volume)
-    (a := (0 : ℝ)) (b := cutoff N)
+  have hiH : IntegrableOn (fun t => polarDensity t * H t) (Icc 0 (cutoff N)) :=
+    (continuous_polarDensity.mul hH).integrableOn_Icc
+  have hiK : IntegrableOn (fun t => polarDensity t * K t) (Icc 0 (cutoff N)) :=
+    (continuous_polarDensity.mul hK).integrableOn_Icc
   simp only [pairing, mul_sub, Finset.sum_sub_distrib, integral_sub hiH hiK]
   ring
 
 private theorem pairing_div (N : ℕ) (H : ℝ → ℝ) (d : ℝ) :
     pairing N (fun t => H t / d) = pairing N H / d := by
-  simp only [pairing, mul_div_assoc, integral_div, Finset.sum_div_distrib, sub_div]
+  simp only [pairing, ← mul_div_assoc, integral_div, ← Finset.sum_div, sub_div]
 
 /-- Exact interchange of signed pairing and annular source transport. -/
 theorem pairing_average_sub_eq (f : C_c(ℝ, ℝ)) (a b : ℝ) (N : ℕ) :
@@ -81,15 +82,18 @@ theorem pairing_average_sub_eq (f : C_c(ℝ, ℝ)) (a b : ℝ) (N : ℕ) :
         autocorr f (t + y) - autocorr f t) / Real.exp b := by
     rw [correlationAverage, annularAverage_eq_shift,
       integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hab]
-    rw [intervalIntegral.integral_sub
-      ((hh.comp (continuous_const.add continuous_id)).intervalIntegrable _ _)
-      intervalIntegrable_const, intervalIntegral.integral_const]
+    have hi : IntervalIntegrable (fun y => autocorr f (t + y)) volume
+        (Real.exp a) (Real.exp a + Real.exp b) :=
+      (hh.comp (continuous_const.add continuous_id)).intervalIntegrable _ _
+    have hk : IntervalIntegrable (fun _y : ℝ => autocorr f t) volume
+        (Real.exp a) (Real.exp a + Real.exp b) := intervalIntegrable_const
+    rw [intervalIntegral.integral_sub hi hk, intervalIntegral.integral_const]
     dsimp
     field_simp
     ring
   rw [← pairing_sub N _ _ (continuous_correlationAverage f a b) hh]
   simp_rw [he]
-  rw [pairing_div, ← integral_pairing _
+  rw [pairing_div, ← integral_pairing (fun t y => autocorr f (t + y) - autocorr f t)
     ((hh.comp (continuous_fst.add continuous_snd)).sub (hh.comp continuous_fst)),
     intervalIntegral.integral_of_le hab, ← integral_Icc_eq_integral_Ioc]
 
@@ -137,7 +141,7 @@ theorem abs_pairing_sub_chebyshevWork_le_packet (f : C_c(ℝ, ℝ)) (a b : ℝ) 
   apply div_le_div_of_nonneg_right _ (Real.exp_pos b).le
   have hab : Real.exp a ≤ Real.exp a + Real.exp b := le_add_of_nonneg_right (Real.exp_pos b).le
   have hh := continuous_autocorr_compact f
-  have hc := continuous_pairing_parametric _
+  have hc := continuous_pairing_parametric (fun t y => autocorr f (t + y) - autocorr f t)
     ((hh.comp (continuous_fst.add continuous_snd)).sub (hh.comp continuous_fst)) N
   calc
     _ ≤ ∫ y in Real.exp a..Real.exp a + Real.exp b,

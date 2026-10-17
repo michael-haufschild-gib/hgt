@@ -293,7 +293,91 @@
       Unconditional all-scale signed coercivity and Weil functional lower bounds across all dyadic
       shells simultaneously.
 
-## Audit Status
-- **Module Verification**: All 20 Pillars (`EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XX; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+21. **Pillar XXI — `formal/GaloisForLFunctions/BiScaleUncertainty/VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`**
+    - `vonMangoldtLogRatio`, `vonMangoldtLogRatio_nonneg`, `vonMangoldtLogRatio_le_one`,
+      `vonMangoldtLogRatio_prime`, `vonMangoldtLogRatio_two`:
+      Normalized von Mangoldt ratio $\theta_\Lambda(n) = \Lambda(n) / \log n \in [0, 1]$.
+    - `allScaleVonMangoldtWeight`, `allScaleVonMangoldtWeight_nonneg`,
+      `allScaleVonMangoldtWeight_le_allScaleCriticalWeight`,
+      `allScaleVonMangoldtWeight_le_two_div_sqrt_succ`,
+      `allScaleVonMangoldtWeight_prime_eq`, `allScaleVonMangoldtWeight_two_pos`,
+      `allScaleVonMangoldtWeight_sub_sq_div_two_ge`:
+      All-scale von Mangoldt critical-line weight $w_\Lambda(n) = \theta_\Lambda(n)\,\varpi_n$ and
+      quadratic origin-regularization bound $\frac{1}{2} w_\Lambda(n) \le w_\Lambda(n) - \frac{w_\Lambda(n)^2}{2 \varpi_n}$.
+    - `allScaleVonMangoldtCoerciveConstant`, `allScaleVonMangoldtCoerciveConstant_pos`,
+      `allScaleVonMangoldtCoerciveConstant_mono`,
+      `nyquist_cell_vonMangoldt_all_scale_signed_coercivity`,
+      `global_vonMangoldt_all_scale_signed_coercivity`,
+      `RealEvenPolarTestFn.unconditional_vonMangoldt_all_scale_signed_weil_lower_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_vonMangoldt_all_scale_signed_weil_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_coshMultiplier_vonMangoldt_all_scale_signed_coercivity`:
+      Unconditional all-scale von Mangoldt signed coercivity and Weil functional lower bounds.
+    - `RealEvenPolarTestFn.integral_Ioi_autocorr_mul_cosh_eq_zero`,
+      `RealEvenPolarTestFn.unconditional_hyperbolic_lobe_conservation`,
+      `RealEvenPolarTestFn.unconditional_weilArchRe_nonneg_iff`,
+      `RealEvenPolarTestFn.vonMangoldt_prime_sum_eq_pairing_sub_polar_tail`:
+      Unconditional polar vanishing, hyperbolic lobe conservation, and Chebyshev–polar truncation
+      bridge on `RealEvenPolarTestFn`.
 
+22. **Pillar XXII — `formal/GaloisForLFunctions/BiScaleUncertainty/ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`**
+    - `RealEvenPolarTestFn.toCompactlySupported`, `RealEvenPolarTestFn.coe_toCompactlySupported`:
+      Canonical embedding of `RealEvenPolarTestFn` into `C_c(ℝ, ℝ)`.
+    - `annular_levy_integral_le_biScaleLevyEnergy`,
+      `RealEvenPolarTestFn.annular_levy_integral_le_weilArchRe`:
+      Unconditional global annular Lévy domination by `biScaleLevyEnergy` and `weilArchRe`.
+    - `RealEvenPolarTestFn.prime_sum_add_polar_tail_eq_pairing`,
+      `RealEvenPolarTestFn.unconditional_chebyshev_packet_weil_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_chebyshev_packet_weil_bound`,
+      `RealEvenPolarTestFn.unconditional_chebyshev_mass_weil_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_chebyshev_mass_weil_bound`,
+      `RealEvenPolarTestFn.unconditional_joint_all_scale_and_chebyshev_weil_synthesis`:
+      Unconditional cancellation-sensitive Chebyshev–Packet–Weil and Chebyshev–Mass–Weil
+      explicit-formula bounds and joint all-scale synthesis on `RealEvenPolarTestFn` and
+      `RealSmoothEvenPolarTestFn`.
+
+23. **Pillar XXIII — `formal/GaloisForLFunctions/BiScaleUncertainty/WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`**
+    - `RealEvenPolarTestFn.weilTest_neg_re_eq`,
+      `RealEvenPolarTestFn.logValue_eq_two_mul_autocorr_div_sqrt`,
+      `RealEvenPolarTestFn.logValue_eq_two_mul_weilTest_re_div_sqrt`,
+      `RealEvenPolarTestFn.logValue_mul_vonMangoldt_eq_two_mul_primeWeight`:
+      Exact `logValue` and `primeWeight` identities on `RealEvenPolarTestFn`.
+    - `RealEvenPolarTestFn.poleWeightArchRe_eq_weilArchRe`,
+      `RealEvenPolarTestFn.poleWeightArchRe_eq_gamma_add_biScaleLevyEnergy`,
+      `RealEvenPolarTestFn.re_weilPoleWeightFunctional_eq_re_weilFullFunctional`:
+      Pole-weight invariance of `poleWeightArchRe` and `weilPoleWeightFunctional` on
+      `RealEvenPolarTestFn`.
+    - `RealEvenPolarTestFn.supportRadius`, `RealEvenPolarTestFn.supportScale`,
+      `RealEvenPolarTestFn.polar_tail_eq_zero_of_supportScale_le`,
+      `RealEvenPolarTestFn.prime_sum_eq_pairing_of_supportScale_le`,
+      `RealEvenPolarTestFn.linearCombination_vonMangoldt_logVector_eq_of_supportScale_le`:
+      Canonical support scale and exact vanishing of both the polar tail and prime tail above
+      `supportScale g`.
+    - `RealEvenPolarTestFn.re_weilFullFunctional_vonMangoldt_eq_weilArchRe_sub_two_pairing`,
+      `RealEvenPolarTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_pairing`,
+      `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_bound`,
+      `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_lower_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_chebyshev_packet_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_all_scale_lower_bound`:
+      100% unconditional full Weil functional identities and Chebyshev–Packet / all-scale bounds on
+      `RealEvenPolarTestFn` and `RealSmoothEvenPolarTestFn`.
+
+24. **Pillar XXIV — `formal/GaloisForLFunctions/BiScaleUncertainty/MultiNodeSignedCliqueWeilCoercivity.lean`**
+    - `integral_finset_sum_shift_sq`, `autocorr_gram_quad_nonneg`,
+      `autocorr_gram_quad_eq_diag_add_offDiag`:
+      Exact multi-node shift Gram identity and diagonal-plus-off-diagonal decomposition.
+    - `autocorr_multi_node_signed_collar_gram_ge`,
+      `autocorr_multi_node_signed_collar_offDiag_ge`:
+      Unconditional multi-node signed collar Gram and off-diagonal inequalities with zero blindness
+      or orthogonality assumptions.
+    - `dyadicCosetNode`, `dyadicCosetNode_sub_eq`, `autocorr_dyadicCosetNode_sub_eq`,
+      `RealEvenPolarTestFn.unconditional_multi_node_signed_collar_offDiag_bound`,
+      `RealEvenPolarTestFn.unconditional_dyadic_coset_multi_node_signed_collar_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_dyadic_coset_multi_node_signed_collar_bound`:
+      Coset-invariance of dyadic node differences (`t_i - t_j = (i - j) log 2`), prime-`2`-power
+      off-diagonal reduction, and unconditional multi-node dyadic-coset signed collar bounds on
+      `RealEvenPolarTestFn` and `RealSmoothEvenPolarTestFn`.
+
+## Audit Status
+- **Module Verification**: All 24 Pillars (`WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXIV; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
