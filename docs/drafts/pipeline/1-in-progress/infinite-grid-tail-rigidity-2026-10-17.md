@@ -120,10 +120,11 @@ Fourteen significant packages certified:
     Six clean leaf checks, all API entries/imports and source hashes verified.
     Global lint has nine unrelated missing imports; no error in this package.
 
-The 100-package objective remains active with 14 certified packages. Next candidate:
-classify the exact exponential growth threshold and Taylor order for a summable
-weight residual. Card:
-`../0-backlog/nyquist-weight-order-threshold-2026-10-17.md` (unproved, uncounted).
+The 100-package objective remains active with 14 certified packages. The next
+complete paper classifies the exact exponential growth threshold and Taylor
+order for a summable weight residual, with sharp constants and actual smooth
+source witnesses whose energies tend to zero. Lean formalization is in progress.
+Card: `../2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md` (uncounted).
 Mixed-energy decoupling and global polar closedness remain separate open refinements.
 
 ## Constraints

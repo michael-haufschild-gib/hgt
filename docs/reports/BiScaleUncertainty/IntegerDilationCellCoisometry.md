@@ -1,7 +1,16 @@
 # Actual dilation, integer block aggregation and infinite variance
 
-Status: dependency-closed paper proof, before Lean implementation.
-One connected proposed contribution; uncounted until formal verification.
+Status: paper proof preceded Lean; all five leaves and all72 public declarations
+now verified. Certified contribution17/100, counted once as a connected package.
+
+Trap 10 alignment: the producer here is the explicit block replication
+T_m z, its right inverse T_m z/m, and the physical packet S(T_m δ_0).
+Their bounds and exact error decomposition are unconditional on actual
+L²/ℓ² inputs. They belong to the continuum coprime-shear topic; no Weil
+positivity receiver or unproved Chebyshev estimate enters. Arithmetic
+stencils, if later coupled to these operators, must act on the unmodified
+factorial floor sum T(N), with smooth counterterms handled after summation.
+The present integer block index is not a pre-floor arithmetic counterterm.
 
 ## Physical dilation on the actual energy space
 
@@ -157,3 +166,34 @@ prefix and successor results are parents; no matching infinite operator
 package appeared. Focused lexical `dilation` returned9 declarations, including
 the finite discrete shift estimate and continuum shear law; no semantic or
 compiler coverage supplied. No absence or external novelty conclusion.
+
+
+## Formal certificate
+
+Namespace: GaloisForLFunctions.BiScaleUncertainty.SobolevShear.
+Five leaves: PhysicalDilation (156lines/17public), IntegerBlockAggregation
+(101/14), IntegerBlockCoisometry (125/12), IntegerBlockVariance (133/13),
+IntegerDilationTraceDefect (152/16). Total667lines,72public declarations:
+62theorems and10definitions. All five serial direct leaf checks have empty
+logs and current normal compiled outputs. No full or umbrella build.
+
+All72 public declarations pass #print axioms in /tmp/integer_dilation_axioms.lean;
+only propext,Classical.choice,Quot.sound occur. All23 principal signatures
+inspected: no admitted integrability, summability or analytic estimate.
+All53 mathlib API probes pass. Five unique imports and72 exact catalog
+locations verified. Key certificates: hasSum_integerBlockVariance,
+integerBlockSum_shift, physicalDilation_trace_defect,
+physicalDilation_trace_energy_eq_iff, blockPhysicalPacket_trace_energy,
+dilation_two_outside_divisor_completion.
+
+Global lint --check-generated exits1 for nine unrelated unreachable modules:
+CenteredRamanujanVarianceAndAbelCofactorCancellation, CoherentKernelSplitting,
+DivisorAverageChebyshevAndDyadicBlockVarianceProducer,
+MultiOctaveStepBrickPartitionAndWitnessDyadicPositivity,
+NyquistWeightCellAsymptotic, NyquistWeightKernel, NyquistWideSourceEnergy,
+RightNodeCollarPartition, RoutePMVarianceToWitnessSynthesisAndCriticalStripBridge;
+also concurrent LEAN_API/LEAN_OVERVIEW drift. No own or proof-debt error.
+Indexes refreshed after lint; global lint is not claimed green.
+Evidence: /tmp/integer-dilation-{axioms,lint-final,index-post-lint}.log,
+/tmp/integer-dilation-{audit-names,leaf-checks,lint-errors}.json,
+/tmp/integer-dilation-api-entries.txt. README hash unchanged.

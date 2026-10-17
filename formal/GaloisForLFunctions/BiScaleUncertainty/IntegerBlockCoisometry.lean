@@ -18,9 +18,10 @@ def integerBlockReplicate (m : ℕ) : TraceData →L[ℝ] TraceData := (integerB
 
 theorem integerBlockReplicate_zero (z : TraceData) : integerBlockReplicate 0 z = 0 := by
   have h : integerBlockSum 0 = 0 := by
-    ext w
+    apply ContinuousLinearMap.ext
+    intro w
     exact integerBlockSum_zero w
-  simp only [integerBlockReplicate, h, map_zero, ContinuousLinearMap.zero_apply]
+  simp only [integerBlockReplicate, h, map_zero, zero_apply]
 
 theorem integerBlockReplicate_coordinate (m : ℕ) (z : TraceData) (k : ℕ) :
     integerBlockReplicate m z k = if m = 0 then 0 else z (k/m) := by
@@ -82,11 +83,14 @@ theorem norm_integerBlockSum (m : ℕ) : ‖integerBlockSum m‖ = Real.sqrt (m 
     · have h := (integerBlockSum m).le_opNorm
         (integerBlockReplicate m (lp.single 2 0 (1 : ℝ)))
       rw [integerBlockSum_replicate, norm_smul, integerBlockReplicate_norm] at h
-      simp only [lp.norm_single, Real.norm_eq_abs, abs_one, mul_one,
-        abs_of_nonneg (Nat.cast_nonneg m)] at h
+      rw [lp.norm_single (by norm_num)] at h
+      simp only [Real.norm_eq_abs, abs_one, mul_one,
+        abs_of_nonneg (Nat.cast_nonneg m : (0 : ℝ) ≤ (m : ℝ))] at h
       have hs : 0 < Real.sqrt (m : ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast Nat.pos_of_ne_zero hm)
-      apply le_of_mul_le_mul_right (b := Real.sqrt (m : ℝ)) _ hs
-      nlinarith only [h, Real.sq_sqrt (Nat.cast_nonneg m)]
+      have hmul : Real.sqrt (m : ℝ)*Real.sqrt (m : ℝ) ≤
+          ‖integerBlockSum m‖*Real.sqrt (m : ℝ) := by
+        nlinarith only [h, Real.sq_sqrt (Nat.cast_nonneg m)]
+      exact le_of_mul_le_mul_right hmul hs
 
 def integerBlockMean (m : ℕ) : TraceData →L[ℝ] TraceData :=
   (m : ℝ)⁻¹ • (integerBlockReplicate m ∘L integerBlockSum m)
@@ -116,6 +120,6 @@ theorem integerBlockMean_defect (m : ℕ) (w : TraceData) :
       Real.norm_eq_abs, sq_abs, integerBlockReplicate_energy,
       real_inner_smul_right, hi]
     field_simp
-    <;> ring
+    ring
 
 end GaloisForLFunctions.BiScaleUncertainty.SobolevShear

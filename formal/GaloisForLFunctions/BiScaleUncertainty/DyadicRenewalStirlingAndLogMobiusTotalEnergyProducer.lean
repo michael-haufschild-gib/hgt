@@ -203,9 +203,11 @@ theorem L2FermiWitness.integral_dyadicHaar_sub_logMobiusFermiApprox_mul_conj_eq
   have hdiff_sq : IntegrableOn (fun t => ‖dyadicHaar t - logMobiusFermiApprox N t‖ ^ 2) (Ioc (0 : ℝ) 1) :=
     integrableOn_normSq_dyadicHaar_sub_logMobiusFermiApprox N
   have happrox_sq : IntegrableOn (fun t => ‖logMobiusFermiApprox N t‖ ^ 2) (Ioc (0 : ℝ) 1) := by
-    have heq : (fun t => logMobiusFermiApprox N t) =
-        fun t => dyadicHaar t - (dyadicHaar t - logMobiusFermiApprox N t) := by
-      funext t; ring
+    have heq : (fun t => ‖logMobiusFermiApprox N t‖ ^ 2) =
+        fun t => ‖dyadicHaar t - (dyadicHaar t - logMobiusFermiApprox N t)‖ ^ 2 := by
+      funext t
+      congr 2
+      ring
     rw [heq]
     exact integrableOn_normSq_sub measurable_dyadicHaar
       (measurable_dyadicHaar.sub (measurable_logMobiusFermiApprox N))
@@ -282,9 +284,9 @@ theorem chebyshev_psi_two_pow_succ_sub_bounds (k : ℕ) :
     0 ≤ Chebyshev.psi ((2 : ℝ) ^ (k + 1)) - Chebyshev.psi ((2 : ℝ) ^ k) ∧
       Chebyshev.psi ((2 : ℝ) ^ (k + 1)) - Chebyshev.psi ((2 : ℝ) ^ k) ≤
         chebyshevAlternatingProducer (2 ^ k) := by
+  refine ⟨sub_nonneg.mpr (Chebyshev.psi_mono (pow_le_pow_right₀ (by norm_num) (Nat.le_succ k))), ?_⟩
   rw [chebyshev_psi_two_pow_succ_eq k, chebyshev_psi_two_pow_eq k]
-  exact ⟨chebyshevPsi_two_mul_sub_nonneg (2 ^ k),
-    chebyshevPsi_two_mul_sub_le_alternatingProducer (2 ^ k)⟩
+  exact chebyshevPsi_two_mul_sub_le_alternatingProducer (2 ^ k)
 
 /-- **Stirling Producer Upper Bound on the Dyadic Chebyshev Block Increment:**
 For every `k : ℕ`,
@@ -294,7 +296,7 @@ theorem chebyshev_psi_two_pow_succ_sub_le_stirling (k : ℕ) :
     Chebyshev.psi ((2 : ℝ) ^ (k + 1)) - Chebyshev.psi ((2 : ℝ) ^ k) ≤
       (2 * Real.log 2) * (2 : ℝ) ^ k + (2 * Real.log (2 * (2 : ℝ) ^ k + 1) + 1) := by
   have h1 := (chebyshev_psi_two_pow_succ_sub_bounds k).2
-  have h2 := chebyshevAlternatingProducer_le_stirling_linear_add_log (m := 2 ^ k) Nat.one_le_two_pow
+  have h2 := (abs_le.mp (abs_chebyshevAlternatingProducer_sub_linear_le (N := 2 ^ k) Nat.one_le_two_pow)).2
   rw [Nat.cast_pow, Nat.cast_ofNat] at h2
   linarith
 
@@ -411,6 +413,18 @@ theorem integral_sq_causalResponse_le_dyadic_stirlingProducer (N : ℕ) {K : ℕ
   refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
   exact Finset.sum_le_sum fun j _ => (abs_chainInput_log_two_le_producer j).2
 
+/-- **Unconditional Producer Bound on the Discrepancy Transform Boundary Term `boundaryTransform N ξ`:**
+Combining `norm_boundaryTransform_le` from `DiscrepancyTransformLaw` with
+`abs_normalizedLogError_le_exp_half (cutoff N)` eliminates the unestimated boundary jump `|Ẽ(L)|`:
+$$\|\operatorname{boundaryTransform}(N, \xi)\|
+  \;\le\; \frac{(\log 4 + 3) e^{\operatorname{cutoff}(N) / 2} + 5}{\|s(\xi)\|}.$$ -/
+theorem norm_boundaryTransform_le_producer (N : ℕ) (ξ : ℝ) :
+    ‖boundaryTransform N ξ‖ ≤
+      (chebyshevProducerSlope * Real.exp (cutoff N / 2) + 5) / ‖criticalPoint ξ‖ := by
+  refine (norm_boundaryTransform_le N ξ).trans ?_
+  refine div_le_div_of_nonneg_right ?_ (norm_nonneg _)
+  exact add_le_add (abs_normalizedLogError_le_exp_half (cutoff N)) le_rfl
+
 /-! ## §3. Explicit Möbius & Von Mangoldt Producer Specializations of the Selberg `Λ²`-Sieve Tail -/
 
 /-- The raw Möbius divisor weight `c(d) = μ(d)` as a real sequence. -/
@@ -475,6 +489,21 @@ theorem sievedDivisorMeanSquare_vonMangoldt_le_selberg_diagonal_add_floorSummato
   exact pow_le_pow_left₀ (Finset.sum_nonneg fun _ _ => abs_nonneg _)
     (sum_abs_vonMangoldtDivisorWeight_le_floorSummatory N) 2
 
+/-- For every `n : ℕ`, the divisor sum of `vonMangoldtDivisorWeight d = -μ(d) log d` over divisors
+of `n + 1` equals `Λ(n + 1)`. -/
+theorem sum_divisors_vonMangoldtDivisorWeight_succ_eq (n : ℕ) :
+    (∑ d ∈ (n + 1).divisors, vonMangoldtDivisorWeight d) =
+      ArithmeticFunction.vonMangoldt (n + 1) := by
+  have h1 := (sievedDivisorSum_succ_eq_full_divisorSum n 0 vonMangoldtDivisorWeight).symm
+  rw [Nat.add_zero] at h1
+  rw [h1, sievedDivisorSum_succ_eq_sum_filter_Icc,
+    ← addDiff_weightedFloorSumSeq_eq_sum_filter_dvd]
+  have h2 : weightedFloorSumSeq vonMangoldtDivisorWeight (n + 1) =
+      logMoebiusFloorSumSeq (n + 0 + 1) := by
+    funext m
+    simpa using weightedFloorSumSeq_vonMangoldt_eq_logMoebius (n + 1) m
+  rw [h2, addDiff_logMoebiusFloorSumSeq_below_cutoff n 0]
+
 /-- **Unconditional Origin-Tail Selberg Sieve Mean-Square Bound for Von Mangoldt Weights (`N + 1 ≤ k ≤ N + K`):**
 On the bulk head `1 ≤ k ≤ N`, `∑_{d ∣ k} (-μ(d) log d) = Λ(k)`, so isolating the small-$t$ origin
 tail `N + 1 ≤ k ≤ N + K` subtracts the exact prime-power bulk energy `∑_{k=1}^N Λ(k)²`:
@@ -493,8 +522,10 @@ theorem tailSievedDivisorMeanSquare_vonMangoldt_le_selberg_diagonal_add_floorSum
   have h1 := tailSievedDivisorMeanSquare_le_selberg_diagonal N K vonMangoldtDivisorWeight
   have hhead : (∑ k ∈ Finset.Icc 1 N, (∑ d ∈ k.divisors, vonMangoldtDivisorWeight d) ^ (2 : ℕ)) =
       ∑ k ∈ Finset.Icc 1 N, (ArithmeticFunction.vonMangoldt k) ^ (2 : ℕ) := by
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [sum_divisors_vonMangoldtDivisorWeight_eq k]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    obtain ⟨hk1, _⟩ := Finset.mem_Icc.mp hk
+    have hk_eq : k = (k - 1) + 1 := by omega
+    rw [hk_eq, sum_divisors_vonMangoldtDivisorWeight_succ_eq (k - 1)]
   rw [hhead] at h1
   have hl1 : (∑ d ∈ Finset.Icc 1 N, |vonMangoldtDivisorWeight d|) ^ (2 : ℕ) ≤
       floorSummatory RHTower.chebyshevPsi N ^ (2 : ℕ) :=

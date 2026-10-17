@@ -190,7 +190,7 @@ theorem smoothFactorialLift_shift_at_log {ε t : ℝ} {K n : ℕ}
   · have hjn' : (K : ℝ)+1 ≤ (j : ℝ)*(n : ℝ) := by
       exact_mod_cast (show K+1 ≤ j*n by omega)
     have hlo : (K : ℝ)*(1+ε) ≤ (j : ℝ)*Real.exp (Real.log (n : ℝ)-t) := by
-      apply (mul_le_mul_right (Real.exp_pos t)).mp
+      apply (mul_le_mul_iff_left₀ (Real.exp_pos t)).mp
       calc
         _ ≤ (K : ℝ)+1 := hbudget
         _ ≤ (j : ℝ)*(n : ℝ) := hjn'

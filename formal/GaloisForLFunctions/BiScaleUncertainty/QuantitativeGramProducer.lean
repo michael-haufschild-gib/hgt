@@ -32,7 +32,10 @@ theorem producer_le_quantitativeGramCoefficient (f : C_c(ℝ, ℝ)) (n : ℕ) :
   cases n with
   | zero => exact le_rfl
   | succ n =>
-    change _ ≤ (if _ then _ else _).signedGramCoefficient f
+    let old := (quantitativeGramLadder f n).extend (Nat.le_succ n)
+    let fresh := quantitativeGramProducer f (n + 1) (n + 1)
+    change fresh.signedGramCoefficient f ≤
+      (if old.signedGramCoefficient f ≤ fresh.signedGramCoefficient f then fresh else old).signedGramCoefficient f
     split_ifs with h
     · exact le_rfl
     · exact (lt_of_not_ge h).le
@@ -42,7 +45,10 @@ theorem quantitativeGramCoefficient_monotone (f : C_c(ℝ, ℝ)) :
   apply monotone_nat_of_le_succ
   intro n
   have he := (quantitativeGramLadder f n).signedGramCoefficient_le_extend (Nat.le_succ n) f
-  change quantitativeGramCoefficient f n ≤ (if _ then _ else _).signedGramCoefficient f
+  let old := (quantitativeGramLadder f n).extend (Nat.le_succ n)
+  let fresh := quantitativeGramProducer f (n + 1) (n + 1)
+  change quantitativeGramCoefficient f n ≤
+    (if old.signedGramCoefficient f ≤ fresh.signedGramCoefficient f then fresh else old).signedGramCoefficient f
   split_ifs with h
   · exact he.trans h
   · exact he
@@ -121,7 +127,9 @@ theorem quantitativeGramNormalizedCoefficient_error (f : C_c(ℝ, ℝ)) (n : ℕ
       positivity [logarithmicCollarRadius_pos]
     · have hRp := lt_of_le_of_ne (autocorr_zero_nonneg f) (Ne.symm hR)
       apply (div_le_iff₀ hRp).2
-      simpa only [mul_div_assoc, mul_comm, mul_left_comm] using ha.2
+      calc
+        _ ≤ autocorr f 0 * (logarithmicCollarRadius + 1) / ((n : ℝ) + 1) := ha.2
+        _ = _ := by ring
   have hn := div_nonneg ha.1 (autocorr_zero_nonneg f)
   rw [sub_div] at hA hn
   have ht := signedGramNormalizedCoefficient_quantitative_saturation f n

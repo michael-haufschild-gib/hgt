@@ -20,7 +20,9 @@ degenerate cases. Trap 10 has now led to an explicit producer: the factorial
 bi-null stencil is lifted to the actual signed prime–polar measure, with real-ratio
 continuum cutoffs and an unconditional harmonic correction bound. A compact
 continuous producer now preserves every prime-grid value with 1≤∫S_N²≤16.
-Next: actual source factorization with an explicit source-energy cost.
+Actual source factorization now preserves the grid with nonvanishing contrast size
+and equal source origin energies in [6sqrt(N),46sqrt(N)].
+Next: quantitative archimedean jump cost of these explicit sources.
 Multiple-collar receivers are parked; width selection and residual control remain open.
 
 Authoritative field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
@@ -57,13 +59,14 @@ producers with unconditional bounds before extending receiver machinery.
 - [x] Construct and certify an explicit factorial producer for the actual signed
   measure, including domain admission, harmonic correction and unconditional rate.
 - [x] Construct a continuous producer preserving the prime grid and nonvanishing L² size.
-- [ ] Factor an explicit producer through actual compact continuous sources and quantify cost.
+- [x] Factor an explicit producer through actual compact continuous sources and quantify cost.
+- [ ] Establish quantitative archimedean jump energies of the balanced factorial sources.
 - [ ] Derive a useful coherent multiple-collar certificate, retaining all cross terms (parked).
 - [ ] Quantify width selection and the remaining smoothing error.
 
 ## Current frontier
 
-Nine substantive contributions are formalized:
+Ten substantive contributions are formalized:
 - `3-formalized/annular-signed-prime-polar-chebyshev-coupling-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-packet-gram-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-halfline-2026-10-17.md`.
@@ -73,8 +76,9 @@ Nine substantive contributions are formalized:
 - `3-formalized/signed-prime-polar-optimal-collar-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-factorial-producer-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
+- `3-formalized/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
 
-The overall target remains 100, with 91 further distinct contributions unproved.
+The overall target remains 100, with 90 further distinct contributions unproved.
 Packet construction, exact Gram representation, mass comparison, and transport
 corollaries form one contribution. Likewise the coherent collar construction,
 Schur constraint, and energy certificate are one contribution, not separate counts.
@@ -96,14 +100,19 @@ checks and fourteen standard-axiom audits pass. Imports and index are updated;
 global lint reports eight unrelated unwired modules and no package-local error.
 Construction, exact arithmetic preservation, and nonvanishing energy count once.
 
+Contribution 10 constructs actual compact continuous source pairs with equal origin
+energy in [6sqrt(N),46sqrt(N)]. Their autocorrelation contrast preserves every
+positive integer grid value, has squared L² norm in [2,32], and satisfies the
+unconditional bound [10log(4N+1)+3+1/(4N)]/sqrt(N). Thirteen direct leaf checks
+and fifteen standard-axiom audits pass; imports and index are updated. Global
+lint reports nine unrelated unwired modules, listed in the ledger.
+
 Next uncounted candidate:
-`1-in-progress/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
-Construct actual compact continuous sources via causal convolution, retaining
-the exact grid and an unconditional pairing bound. Quantify source-energy cost;
-do not infer uniform packet control from scalar cancellation. Initial search
-`/tmp/spp9-next-search.json` is partial; full predecessor and convolution audits
-are now recorded in its dependency-closed paper proof. Lean verification is
-in progress; the candidate remains uncounted.
+`1-in-progress/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
+Quantify actual jump-energy growth and signed differences of these balanced sources.
+Existing logarithmic-tail and parallelogram results require C²; the concrete ramp
+and tent require direct increment bounds and integrability. No uniform packet
+control follows from the current scalar cancellation.
 
 Secondary uncounted candidate: reduce B(d) to the triangular correlation integral
 2d⁻²∫₀ᵈ(d-t)h(t)dt, then derive width response and reconstruction from d²B(d).

@@ -44,18 +44,20 @@
     where it supports the concrete construction.
 16. [x] Construct a measurable least-price physical response, prove exact linear
     optimality and actual gain, then build an accepted-response cutoff ladder.
-17. [ ] Audit norm regularization and a quantitative damped physical response;
-    reconcile its error with the original full-Gram objective.
+17. [x] Prove norm regularization and quantitative damped physical responses;
+    reconcile the original objective, construct a monotone producer reaching S∞,
+    and verify its unconditional allocation and cutoff errors.
 18. [ ] Develop general signed multi-column Schur-coupled growth and matching
     finite-limit asymptotics. These and the full 100-contribution objective remain open.
 
-Package 12 constructs an actual measurable minimum-price physical response,
-classifies all linear-cost minimizers, and proves its exact gain. An accepted
-response after each physical cutoff extension produces monotone source-energy
-coefficients, with remaining error bounded by min(gap, curvature remainder) plus
-the cutoff tail. This continues the explicit-producer direction required by Trap 10.
-Next: quantitative damped responses and a justified curvature bound. The produced
-limit is not identified with S∞, nor the source-dependent optimum with H∞.
+Package 13 constructs a finite regularized physical response iteration with an
+unconditional allocation error. Comparing its original coefficient with the
+previous physical extension gives a monotone producer converging to S∞, with
+explicit allocation and cutoff errors. This advances the producer direction
+required by Trap 10. Equality with S∞ remains open for the older unsmoothed
+package-12 ladder. The source-dependent S∞/R is not identified with H∞ or the
+unrestricted sharp source infimum. Next: matching cutoff asymptotics and general
+nonzero-lag multi-column Schur support.
 
 Updated field context: read all 260 lines of the relocated read-only README after
 the user's Trap 10 message; SHA-256
@@ -100,8 +102,12 @@ measurable minimum-price response and an accepted-response cutoff ladder. The
 ladder's coefficients are monotone with finite produced limit; their certified
 post-response error is min(gap, curvature remainder) plus cutoff tail. All three
 new leaves, all 43 public theorem axiom audits, and the final direct leaf check pass.
-Progress: 12/100. Latest global lint reports six unrelated concurrent umbrella failures.
-Next: quantitative damped responses, nonzero-lag support, and sharp asymptotics.
+Package 13 now proves unconditional regularized curvature, an explicit finite
+allocation schedule, and a new monotone producer reaching S∞. Its normalized
+allocation error is at most (δ+1)/(n+1), plus the existing cutoff tail to S∞.
+All seven new leaves, all 77 public theorem axiom audits, and final direct check pass.
+Progress: 13/100. Latest lint reports 15 unrelated concurrent umbrella failures.
+Next: nonzero-lag support and sharp asymptotics; full goal remains active.
 
 Current signed-capacity search `/tmp/bsu-signed-capacity-search.log` finds 586
 declarations in 83 modules. It supplies actual translation-packet norm identities
@@ -394,7 +400,8 @@ older coverage; semantic completeness unmeasured. Exhaustive field-source search
 found no minimum-price response implementation. This is not an exhaustive
 mathematical novelty claim.
 
-Next uncounted direction: a damped minimum-price response with a proved curvature
+Historical package-12 candidate, superseded by regularization below: a damped
+minimum-price response with a proved curvature
 bound at each fixed source and cutoff. The packet nodes in `signedGramShift` do
 not depend on the physical fibre variable; only their weights and origin anchor
 do. A positive actual finite Gram residual could therefore control every fibre
@@ -452,15 +459,14 @@ regularization results; field text search found source averaging, not this
 augmented packet norm. Source-only older coverage, semantic completeness unmeasured;
 no exhaustive novelty claim. No new regularized producer or rate is claimed here.
 
-### Regularized physical producer: current proof audit (uncounted)
+### Regularized physical producer (package 13, verified)
 
-The preceding turn is verified progress (package 12). The next contribution must
-discharge curvature for actual signed packets, rather than assume a Gram lower
-bound. Work plan: [x] regularized packet support and quadratic remainder;
-[ ] actual physical mixture, integrability and uniform integrated curvature;
-[ ] measurable regularized minimum response and damped producer;
-[ ] original-objective reconciliation and quantitative iteration;
-[ ] direct Lean, all-theorem axioms, wiring, index and ledger audit.
+This contribution discharges curvature for actual signed packets without an
+assumed Gram lower bound. Completed plan: [x] regularized packet support and
+quadratic remainder; [x] actual physical mixture, integrability and uniform
+integrated curvature; [x] measurable regularized minimum response and damped
+producer; [x] original-objective reconciliation and quantitative iteration;
+[x] direct Lean, all-theorem axioms, wiring, index and ledger audit.
 
 Write R=h_f(0), H(a)=sqrt(R)||P_a|| and
 H_e(a)=sqrt(H(a)^2+(eR)^2), e>0. Then
@@ -476,8 +482,8 @@ For actual partitions with fibre masses A,B≤M, triangle inequality gives
 by 4RMT. A physical convex mixture has packet difference τ(P_b−P_a), hence
 integrated regularized remainder≤(2RMT/e)τ². Every integrated expression is a
 combined kernel, bounded price cost or bounded difference; the singular origin
-anchor is never integrated separately. These derivations remain uncounted until
-their concrete Lean statements and producer are verified.
+anchor is never integrated separately. These statements, including zero-source
+and vanishing-original-packet cases, are now Lean-verified.
 
 For the iteration, avoid introducing an attained regularized optimizer. For each
 actual competitor η, its objective difference from the current iterate is at most
@@ -489,26 +495,29 @@ C_e(η)−C_e(ρ_t)≤4B/(t+2), t≥1: the induction step reduces to
 Original-objective error is then at most eδR+4B/(t+2).
 
 An explicit source-independent work schedule is e_k=1/(k+1) and
-t(n,k)=ceil(8 M_n T_n (k+1)²)+1. Its target allocation error is
+t(n,k)=ceil(8 M_n T_n (k+1)²)+1. Its proved allocation error is
 R(δ+1)/(k+1). At cutoff n choose k=n and compare this candidate's original
 coefficient with the physical extension of the previous cutoff producer. Keeping
-the larger preserves monotonicity and the allocation error, so the limiting
-coefficient would equal S∞ with error at most R(δ+1)/(n+1)+2R tail_n.
-This is a dependency-closed paper target, not a completed Lean result or a new
-claim about the unrestricted source infimum.
+the larger preserves monotonicity and the allocation error. The limiting
+coefficient equals S∞ with error at most R(δ+1)/(n+1)+2R tail_n.
+This is now Lean-verified for actual compact continuous sources, including zero.
+For compact C² sources the normalized coefficients bound J_arch/R from below.
+It makes no claim about the unrestricted sharp source infimum or numerical
+computational complexity of the finite functional construction.
 
 Implementation now spans seven owned leaves: `RegularizedGramGeometry`,
 `PhysicalCollarMixture`, `PhysicalPriceResponse`, `RegularizedPhysicalGram`,
 `RegularizedGramDescent`, `RegularizedGramIteration`, `QuantitativeGramProducer`.
-The first two compile without diagnostics. The generic minimum-price response
+All seven compile without diagnostics. The generic minimum-price response
 uses equal sharing among all active minimizers; it does not require a pure
 tie-breaker. It is instantiated with actual regularized source prices, not supplied
 as an analytic oracle. The iteration compares against every admissible physical
-partition before taking a supremum. This is the intended significant advance:
-replace the unresolved gap in package 12 by a source-uniform allocation error and
-prove that a concrete monotone producer reaches S∞. It does not establish a sharp
+partition before taking a supremum. Inner damped steps need no acceptance test;
+only the outer cutoff ladder compares original coefficients. The advance is a
+source-uniform normalized allocation error and a concrete monotone producer
+reaching S∞. It does not establish a sharp
 unrestricted source constant or a matching lower asymptotic for the cutoff tail.
-Current count stays 12/100 until all seven leaves and the final audits pass.
+Count this construction once: 13/100 after all seven leaves and final audits pass.
 Verification checkpoint: `/tmp/bsu-regularized-checkpoint.json`.
 
 `PairedCollarCapacity.lean` now passes direct verification of block/radial capacity,
@@ -619,6 +628,30 @@ bound give P_∞; taking M→∞ in the comparison proves its rate.
 
 ## Candidate sharp leading saturation law [paper argument; formal audit pending]
 
+Current implementation plan (uncounted; verified count remains 13/100):
+[ ] construct an exact measurable right-node partition and concentrated extension/retraction;
+[ ] prove uniform square-root fibre mass bounds and radial penalty comparisons;
+[ ] integrate the concentrated penalties and identify the leading tail term;
+[ ] direct leaf checks, all-theorem axiom audit, wiring, index and ledger evidence.
+Reuse the existing `logarithmicCeilLag_bounds` mesh theorem; its source and compiled
+artifact were inspected. Preserve the old 43 owned leaves and read-only README.
+The preceding turn made verified progress; no live owned process remains from it.
+
+Concrete formalization refinement (paper-proved, not yet counted): use the existing
+ceil mesh `0≤log(ceil(exp x))−x≤exp(−x)` and a right-node partition above log 4,
+with equalMultiplicity below. For N≥8, tail filling is supported on y≤1/N;
+old-window repair is supported on y≤exp(δ)/N≤2/N. Thus the old 4/N repair width
+can be improved without controlling the ceil index separately. Rational constants
+suffice: each signed node weight≤8/sqrt(j), every old fibre mass≤32sqrt(N),
+and right-cell tail mass≤64/sqrt(y) for 0<y≤1. Also 1≤2y w(y).
+The radial increment obeys 2W(r_W(B)−r_W(A))≤2AG+G² when B≤A+G.
+On the tail-extension interval this bounds the penalty increment by 8192;
+on the repair interval it bounds the increment by 6144. Integrating gives errors
+8192/N and 12288/N respectively. These coarser constants preserve leading
+coefficient 4 and simplify the proof by avoiding fractional-power integration.
+All pending array bounds must be instantiated by the actual extension/retraction;
+generic perturbation lemmas alone do not complete this contribution.
+
 The preceding one-sided rate can be sharpened on paper to
 
     P_∞−P_N = 4/sqrt(N) + O(1/N),   N→∞.
@@ -651,7 +684,12 @@ weights lie in the same odd coset.
 **Lower bound on the missing tail (N≥4).** Extend any N-partition to M>N by
 assigning every cell (log(j−1),log j], N<j≤M, entirely to its right node j.
 These cells are valid left collars since log(j/(j−1))≤1/(j−1)≤1/N<δ.
-Old physical shares are unchanged. New densities vanish unless 0<y≤1/N.
+Keep old shares on x<log N. At the junction x=log N, assign unit share to
+the old node N; truncate every new cell by the open M-window, so x=log M
+receives no share. These singleton corrections are required by the exact
+physical partition law: the uncorrected half-closed cells omit log N and include
+log M. Old signed fibres are unchanged at every y>0, since the only old-node
+correction is at its own zero offset. New densities vanish unless 0<y≤1/N.
 An active j also satisfies j≤1+1/y. Therefore their aggregate norm obeys
 
     G(y) ≤ cΣ_(j=2)^(floor(1+1/y)) j^(−1/2) ≤ g/sqrt(y),
@@ -1092,7 +1130,7 @@ retraction, optimized finite limit, inverse-square-root error, and actual-source
 (10) full measured-Gram dual support, exact physical dual gap and complementarity,
 finite-allocation error and quantitative limiting actual-source trial certificates.
 At the package-10 audit, the cumulative count was **10/100**. Its three leaves form one package.
-Latest global lint reports twelve unrelated unwired modules from concurrent work.
+At the package-10 audit, global lint reported twelve unrelated unwired modules.
 Do not count reused shared-origin geometry or individual helper lemmas. Matching
 leading asymptotics remain paper-only. Both activation leaves form one package.
 This turn made concrete progress; the full objective
@@ -1315,4 +1353,56 @@ remains active and incomplete.
   `/tmp/bsu-minimum-response-lint-final.log`; no own failure or foreign edit.
   Temporary API probe removed; all owned Lean, search and index jobs terminal.
   No full/umbrella build, numerical experiment, heartbeat increase, commit or push.
-  Count this complete construction once: **12/100**, full goal active.
+  Count this complete construction once: **12/100** at that audit, full goal active.
+
+
+## Regularized quantitative producer verification (package 13)
+
+Seven leaves, respectively 13, 10, 15, 14, 7, 5 and 13 public theorems:
+
+- `RegularizedGramGeometry`: `c70f58673b66f62b8eaa10a5a9388875b59b71c159f0248bf083cfe68a69fabf`.
+- `PhysicalCollarMixture`: `59e5a05dd8abb8ed2a943fad03a934664ee6a918734c2a2a51429627f5ef811f`.
+- `PhysicalPriceResponse`: `19332c0ba583e30daeb39d12bd726b7e37c83d8615eaf2a0c28242b66fe50336`.
+- `RegularizedPhysicalGram`: `037a3ecc363d2a919a8ae47f476d9f1b908d275a72ae33ad692996ac59b9aa2e`.
+- `RegularizedGramDescent`: `7bb77eb3e38a5a7b302dbec8062b92f2c19211942e7d04049388f74a3d71f65c`.
+- `RegularizedGramIteration`: `14b0fb7387867441fb31ee3d1bd1e5d0342a32630e127068e45cd6494df16e2d`.
+- `QuantitativeGramProducer`: `1941ad65cb071a04258ae520efbf53f43432e400b3d59e338d76d4dc75e2c111`.
+
+All seven dependency compiles pass with empty logs. All 77 public theorems were
+axiom-audited exactly once; only `propext`, `Classical.choice`, and `Quot.sound`.
+Nine capstone signatures and eight concrete definitions were printed and inspected.
+Audit: `/tmp/bsu_regularized_axioms.lean`, `/tmp/bsu-regularized-axioms.log`, and
+`/tmp/bsu-regularized-audit-coverage.json`.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/QuantitativeGramProducer.lean`;
+exit 0, empty log, no `-o`. Evidence `/tmp/bsu-regularized-final.{log,exit}`.
+Dependency logs: `/tmp/bsu-regularized-{geometry,mixture,response,physical,descent,iteration,producer}.log`.
+
+Index refresh exits 0. Three requested exact capstones are discoverable:
+`quantitativeGram_source_certificate`, `iSup_quantitativeGramCoefficient`, and
+`quantitativeGramProducer_error`. Evidence `/tmp/bsu-regularized-index.log`,
+`/tmp/bsu-regularized-discovery.json`, and discovery-coverage JSON.
+All 43 owned imports occur exactly once, all 36 prior source hashes remain
+unchanged, all seven current hashes match the manifest, and scoped whitespace
+passes. Read-only README is byte-identical at
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Global lint exits 1 for the 15 foreign unwired modules listed in the facts ledger
+and `/tmp/bsu-regularized-lint.log`; no own failure or foreign edit.
+Integrity evidence: `/tmp/bsu-regularized-{manifest,integrity}.json`.
+Temporary API probe and two obsolete drafts removed; successful audit scratch
+and logs retained. All owned jobs terminal. No full/umbrella build, numerical
+experiment, heartbeat increase, commit or push. This construction counts once:
+**13/100**, full objective active.
+
+Reusable repairs: unfold `IntegrableOn` explicitly when transporting a pointwise
+integrable sum. Give real integrands and integration functions explicitly before
+`integral_nonneg`, `integral_sub`, and `integral_add`. Normalize successor casts
+with selected `Nat.cast_add`, `Nat.cast_one`, `Nat.cast_succ`, and `add_assoc`
+lemmas before recurrence inequalities. Annotate old/fresh dependent partitions
+in recursive ladder branches; normalize final scalar order using `ring`.
+
+Next sharp-tail candidate remains paper-only and uncounted. Its right-node tail
+extension must assign the endpoint x=log N to old node N and truncate each new
+cell by the open log M window. This repairs the exact partition law while leaving
+old fibres unchanged for y>0. The candidate leading law concerns independent
+P_N only, not the full signed-Gram optimum or unrestricted source infimum.

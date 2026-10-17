@@ -468,10 +468,9 @@ No strict ascent, vanishing gaps, or equality L=S∞ is asserted.
 
 All three leaves and the final direct check pass without diagnostics. All 43
 public theorem axiom audits pass exactly once with the standard three axioms.
-Next uncounted direction: quantify damped responses, using a proved fixed-cutoff
-Gram residual or an explicitly controlled norm regularization. Source-dependent
-coercivity must not be replaced by a cutoff-uniform assumption. Generic finite
-translate independence and its curvature consequences remain unproved here.
+Package 13 below resolves quantitative damping through controlled norm
+regularization. Generic finite translate independence and its fixed-cutoff Gram
+consequences remain unproved here; cutoff-uniform coercivity is not assumed.
 Search `/tmp/bsu-minimum-response-search.log` returned useful source-only price,
 partition and cover arguments; older coverage, semantic completeness unmeasured.
 
@@ -488,6 +487,53 @@ Producer reference status: source signatures/proofs inspected, but a scratch
 import audit failed because its `.olean` is absent. No fresh Lean audit claimed;
 `/tmp/bsu-trap10-reference-audit.log`. The failed temporary probe was removed.
 
+## Quantitative full-Gram producer (package 13, verified)
+
+For actual f:C_c(ℝ,ℝ), write R=h_f(0), δ=log(2)/2 and N=n+2. Regularize the
+actual signed packet scale H=sqrt(R)||P|| to H_ε=sqrt(H²+(εR)²). The combined
+kernel loses between 0 and εR, so 0≤C−C_ε≤εδR. All measured signed Gram entries
+are retained. No packet nonvanishing or Gram conditioning premise is required.
+
+The actual regularized price is measurable and lies in [0,1]. Equal sharing
+among active minimum-price collars constructs a measurable physical partition
+attaining the linear minimum. Physical convex mixtures are actual partitions.
+With M_n=2(n+1)·logarithmicCollarWeightBound(n) and
+T_n=∫_(δ,log(n+2))w, the integrated norm remainder for a mixture step τ satisfies
+0≤D_ε≤Bτ², B=2R M_n T_n/ε. Integrability is proved through combined kernels
+and bounded differences, without separately integrating the singular anchor.
+
+Starting from equalMultiplicity, apply the produced minimum-price response with
+step τ_t=2/(t+2). For every actual competitor η, the regularized objective error
+after t+1 steps is at most 4B/(t+3); original error adds only εδR.
+Choose ε=1/(k+1) and run ceil(8M_nT_n(k+1)²)+1 steps. Then
+
+    0 ≤ S_n(f) − C(quantitativeGramProducer f n k) ≤ R(δ+1)/(k+1).
+
+This finite functional construction has a work count independent of f. It is
+not a numerical computational-complexity claim. No optimizer attainment or
+supplied error assumption enters the producer.
+
+At cutoff n, set k=n and keep the larger original coefficient between this
+fresh producer and the physical extension of the previous result. The resulting
+A_n=quantitativeGramCoefficient f n is monotone, 0≤A_n≤S_n, and
+A_n→S∞ with iSup A_n=S∞. Its normalized certificate is
+
+    0 ≤ S∞/R − A_n/R ≤ (δ+1)/(n+1) + 8·2^(1/4)/(sqrt(N)(1−2/N²)).
+
+Zero sources are included. Arbitrary compact continuous sources have the actual
+finite-window extended-energy bound; compact C² sources have
+A_n/R≤S∞/R≤J_arch/R. This new ladder reaches S∞; no such equality is established
+for the older unsmoothed gramResponseLadder. S∞/R is still not identified with
+the blind-grid H∞ or the unrestricted sharp source infimum.
+
+All seven leaves compile cleanly; all 77 public theorem axiom audits and the
+final direct leaf check pass. Count this as one significant package.
+Deep curvature search was partial (100.31s); all 60 lexical hits across 14 modules
+were inspected and supplied existing packet/remainder dependencies, not this
+regularized physical producer. Source-only coverage, semantic completeness
+unmeasured; no exhaustive novelty claim. Evidence `/tmp/bsu-regularized-curvature-search.log`
+and `/tmp/bsu-regularized-lexical{,-page2,-page3}.log`.
+
 ## Limits that must remain visible
 
 - P_N optimizes the independent signed-coset sphere relaxation. It is not identified
@@ -503,12 +549,13 @@ import audit failed because its `.olean` is absent. No fresh Lean audit claimed;
   autocorrelation extremizer. Optimizer attainment is not needed for the bounds.
 - Tail control of this allocation optimum does not automatically control the error
   to the true source infimum, or the error of a stronger Schur-coupled hierarchy.
-- The constructed response ladder has a finite limit below S∞. Equality of those
-  limits and a rate forcing its allocation gap to zero remain open.
+- The older unsmoothed response ladder has a finite limit below S∞; equality and
+  gap decay remain open for that ladder. Package 13's regularized quantitative
+  ladder reaches S∞ with proved allocation and cutoff errors.
 
 ## Research accounting
 
-Lean-verified significant packages: **12/100**: (1) general source transfer and
+Lean-verified significant packages: **13/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
@@ -530,17 +577,25 @@ full-Gram minimum, unique positive triangular coefficients, exact squared-distan
 remainder, and logarithmic cutoff degeneration;
 (12) an actual measurable pure minimum-price response, attained linear optimum
 and complete equality classification, exact accepted-response error, and a
-monotone physical cutoff producer with finite limit and actual-source certificates.
+monotone physical cutoff producer with finite limit and actual-source certificates;
+(13) unconditional regularized signed-packet curvature, realized physical minimum
+responses and finite iteration, followed by a monotone producer reaching S∞ with
+explicit allocation and cutoff errors for actual sources.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Latest global lint reports six unrelated modules unreachable from the umbrella:
-`AntitoneDyadicStencil`, `BandLimitedLaplaceEnergy`, `ClampedExponentialRamp`,
-`FiniteFilterSchurResidual`, `NyquistResidualMass`,
-`SignedPrimePolarContinuousFactorialLift`. Those concurrent files were not modified.
-All thirty-six owned leaves are wired. Evidence:
-`/tmp/bsu-minimum-response-lint-final.log` and `/tmp/bsu-minimum-response-integrity.json`.
+Latest global lint reports 15 unrelated modules unreachable from the umbrella:
+`CenteredRamanujanVarianceAndAbelCofactorCancellation`,
+`FoldFreeLogMobiusAndPlancherelCausalProducer`, `IntegerBlockAggregation`,
+`IntegerBlockCoisometry`, `IntegerBlockVariance`, `IntegerDilationTraceDefect`,
+`MultiOctaveStepBrickPartitionAndWitnessDyadicPositivity`, `NyquistWeightCells`,
+`NyquistWeightJets`, `NyquistWeightTaylorRemainder`, `PhysicalDilation`,
+`RoutePMVarianceToWitnessSynthesisAndCriticalStripBridge`,
+`SignedPrimePolarCausalMoments`, `SignedPrimePolarSourceEnergy`,
+`SignedPrimePolarSourceFactorization`. Those concurrent files were not modified.
+All 43 owned leaves are wired. Evidence: `/tmp/bsu-regularized-lint.log` and
+`/tmp/bsu-regularized-integrity.json`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -763,8 +818,8 @@ exit 0, empty log. Evidence `/tmp/bsu-minimum-response-final.exit`,
 `/tmp/bsu-minimum-response-{manifest,integrity,audit-coverage}.json`.
 All 36 owned imports occur once; all 33 earlier source hashes remain unchanged.
 Index refresh and three requested capstone discoveries pass
-(`/tmp/bsu-minimum-response-discovery.json`). Latest global lint has six foreign
-umbrella failures listed above. README remains byte-identical at the current
+(`/tmp/bsu-minimum-response-discovery.json`). At the package-12 audit global lint
+had six foreign umbrella failures; see that run's log. README remained byte-identical at the current
 260-line hash. Temporary API probe removed; all owned jobs terminal.
 
 Reusable repair: for a measurable selection cell, prove its explicit equality
@@ -772,3 +827,55 @@ with the intersection of the active collar and the price-equality set before
 applying measurability. Broad simp can turn the target into measurability of a
 Prop-valued predicate. Scratch API audits must open the same namespaces used
 by unqualified API checks.
+
+
+## Regularized quantitative producer verification (package 13)
+
+Seven leaves, respectively 13, 10, 15, 14, 7, 5 and 13 public theorems:
+
+- `RegularizedGramGeometry`: `c70f58673b66f62b8eaa10a5a9388875b59b71c159f0248bf083cfe68a69fabf`.
+- `PhysicalCollarMixture`: `59e5a05dd8abb8ed2a943fad03a934664ee6a918734c2a2a51429627f5ef811f`.
+- `PhysicalPriceResponse`: `19332c0ba583e30daeb39d12bd726b7e37c83d8615eaf2a0c28242b66fe50336`.
+- `RegularizedPhysicalGram`: `037a3ecc363d2a919a8ae47f476d9f1b908d275a72ae33ad692996ac59b9aa2e`.
+- `RegularizedGramDescent`: `7bb77eb3e38a5a7b302dbec8062b92f2c19211942e7d04049388f74a3d71f65c`.
+- `RegularizedGramIteration`: `14b0fb7387867441fb31ee3d1bd1e5d0342a32630e127068e45cd6494df16e2d`.
+- `QuantitativeGramProducer`: `1941ad65cb071a04258ae520efbf53f43432e400b3d59e338d76d4dc75e2c111`.
+
+All seven dependency compiles pass with empty logs. All 77 public theorems were
+axiom-audited exactly once; only `propext`, `Classical.choice`, and `Quot.sound`.
+Nine capstone signatures and eight concrete definitions were printed and inspected.
+Audit: `/tmp/bsu_regularized_axioms.lean`, `/tmp/bsu-regularized-axioms.log`, and
+`/tmp/bsu-regularized-audit-coverage.json`.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/QuantitativeGramProducer.lean`;
+exit 0, empty log, no `-o`. Evidence `/tmp/bsu-regularized-final.{log,exit}`.
+Dependency logs: `/tmp/bsu-regularized-{geometry,mixture,response,physical,descent,iteration,producer}.log`.
+
+Index refresh exits 0. Three requested exact capstones are discoverable:
+`quantitativeGram_source_certificate`, `iSup_quantitativeGramCoefficient`, and
+`quantitativeGramProducer_error`. Evidence `/tmp/bsu-regularized-index.log`,
+`/tmp/bsu-regularized-discovery.json`, and discovery-coverage JSON.
+All 43 owned imports occur exactly once, all 36 prior source hashes remain
+unchanged, all seven current hashes match the manifest, and scoped whitespace
+passes. Read-only README is byte-identical at
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Global lint exits 1 for the 15 foreign unwired modules listed in the facts ledger
+and `/tmp/bsu-regularized-lint.log`; no own failure or foreign edit.
+Integrity evidence: `/tmp/bsu-regularized-{manifest,integrity}.json`.
+Temporary API probe and two obsolete drafts removed; successful audit scratch
+and logs retained. All owned jobs terminal. No full/umbrella build, numerical
+experiment, heartbeat increase, commit or push. This construction counts once:
+**13/100**, full objective active.
+
+Reusable repairs: unfold `IntegrableOn` explicitly when transporting a pointwise
+integrable sum. Give real integrands and integration functions explicitly before
+`integral_nonneg`, `integral_sub`, and `integral_add`. Normalize successor casts
+with selected `Nat.cast_add`, `Nat.cast_one`, `Nat.cast_succ`, and `add_assoc`
+lemmas before recurrence inequalities. Annotate old/fresh dependent partitions
+in recursive ladder branches; normalize final scalar order using `ring`.
+
+Next sharp-tail candidate remains paper-only and uncounted. Its right-node tail
+extension must assign the endpoint x=log N to old node N and truncate each new
+cell by the open log M window. This repairs the exact partition law while leaving
+old fibres unchanged for y>0. The candidate leading law concerns independent
+P_N only, not the full signed-Gram optimum or unrestricted source infimum.

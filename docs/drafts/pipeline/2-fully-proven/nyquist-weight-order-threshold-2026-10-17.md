@@ -9,7 +9,7 @@
 - **Statement:** For beta>0 and Taylor degree m>=0, the logarithmic-cell
   Taylor producer for cosh(beta x) has an integrable residual exactly when
   beta<m+1.
-- **Status:** Dependency-closed paper proof complete; Lean pending, uncounted.
+- **Status:** Dependency-closed paper proof complete; Lean in progress, uncounted.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistWeightOrderThreshold.md`.
 
 ## Goal
@@ -20,23 +20,23 @@ Identify the least explicit weight-producer order that restores a summable error
 This changes the weight approximation, without assuming a bound on derivatives
 or spectral second moments of the source.
 
-## Candidate construction
+## Explicit construction
 
 On I_n=[log n,log(n+1)], let w_beta(x)=cosh(beta x), and set
 
     p_(beta,m,n)(x)=sum_(j=0..m) w_beta^(j)(log n) (x-log n)^j/j!.
 
-The proposed residual kernel is w_beta-p_(beta,m,n) on each half-open cell.
-The conjectured cell-mass asymptotic for beta>0 is
+The residual kernel is w_beta-p_(beta,m,n) on each half-open cell.
+The proved cell-mass asymptotic for beta>0 is
 
     alpha_(beta,m,n) / n^(beta-m-2) -> beta^(m+1)/(2(m+2)!).
 
-Consequently, below the threshold, the actual all-tail residual operator should
-have exact norm A_N with
+Consequently, below the threshold, the actual all-tail residual operator has
+exact norm A_N with
 
     A_N ~ beta^(m+1)/(2(m+2)!(m+1-beta)) * N^(beta-m-1).
 
-At and above the threshold, the positive kernel should have infinite mass and
+At and above the threshold, the positive kernel has infinite mass and
 unbounded action on compactly supported continuous inputs of supremum norm one.
 The beta=0 case has zero residual. One actual nonnegative smooth source family,
 chosen independently of beta,m,N, has normalized correlations H_j(x)=H(x/(j+1))
@@ -82,6 +82,33 @@ source is not a resolution of that remaining uniform-control problem.
    construct actual smooth low-energy source witnesses at and above it.
 4. Formalize the complete connected theorem in direct Lean leaves, one process at a time.
 5. Audit all declarations, axioms, API entries, imports and lint; update the ledger only then.
+
+Verified direct leaves: `NyquistWeightJets.lean`,
+`NyquistWeightTaylorRemainder.lean`, and `NyquistWeightCells.lean`. They prove
+the explicit derivative jets, finite producer identity, nonnegative remainders,
+two-sided endpoint-jet mass bounds, scaled logarithmic cell width limit, and
+the unconditional power majorant with constant 2^beta beta^(m+1)/(m+2)!.
+All three direct leaf checks exit 0 with clean final logs; imports are wired.
+`NyquistWeightCellAsymptotic.lean` also exits 0 and is wired. It proves the sharp
+cell constant, asymptotic equivalence, and exact summability threshold for
+every tail. Its current log contains two informational `ring` suggestions,
+with no errors or warnings. Kernel integrability, full tail/prefix
+asymptotics, operator norm, and actual-source sharpness remain in progress;
+these intermediate leaves do not constitute another package.
+
+Drafts awaiting direct checks: `NyquistWeightKernel.lean` (actual positive
+kernel and integrability equivalence) and `NyquistWideSourceEnergy.lean`
+(one dilation-energy constant for every positive source scaling).
+
+`NyquistPowerTails.lean` passes its direct check with a clean log and is wired.
+It proves two-sided integral bounds, the explicit finite tail bound, and
+the sharp power-tail ratio. `NyquistPositiveTailComparison.lean` and
+`NyquistWeightTailMass.lean` are drafted for the transfer to actual residual
+masses; direct checks remain pending. The kernel's first check found two
+function-form mismatches in its zero-parameter and compact-input proofs;
+both are corrected in source, awaiting recheck.
+The kernel draft now also treats beta=0 explicitly, so subsequent bounded
+operators can cover the entire nonnegative subcritical range.
 
 The original 100-package objective remains active with 14 certified packages.
 This card carries task tracking because `update_plan` is unavailable.

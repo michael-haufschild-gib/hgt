@@ -83,6 +83,17 @@
     amplitude. Prove their exact nonzero moment and coherent price, settle
     attainment and the best universal coherent moment constant, and retain
     the explicit full plastic receiver on this family.
+27. Construct a canonical actual odd representative in a fixed annulus for
+    every folded coherent class. Prove preservation of the entire fold,
+    moment, signed coherent price and cell defect, idempotence and equality
+    classification, then price the original plastic functional using this
+    fixed-support representative without changing its other source terms.
+28. Split every actual odd source into its annular representative and an
+    explicit zero-fold source. Prove the kernel projection, exact coordinate
+    uniqueness and vanishing moment price; construct a nonzero kernel source
+    and its amplitude family. Transfer optimized multiplier bounds with zero
+    moment penalty and prove plastic nonnegativity on this actual kernel.
+    Audit the obstruction to controlling original energy by coherent price.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -1844,3 +1855,170 @@ capstone now verified in Lean: contribution21/100.
 - Owned `/tmp/hml_attainment_api.lean` and `/tmp/hml_attainment_lint.txt`
   removed; absence, all14 indexed declarations, unchanged source21/source20/
   README hashes and final whitespace checks verified, including new files.
+
+## Twenty-second result: a fixed-annulus retraction of odd coherent classes
+
+Dependency-closed paper proof before Lean implementation. Let d=log2,
+F=oddCompactSource f and P_f=cellFold F. Integer negation in the defining
+sum, together with evenness of the sinh multiplier of F, proves P_f even.
+It is already continuous and 1-periodic. Let A=attainingSource(1), the
+actual compact odd source from contribution21, and define
+R_f(u)=A(u)*P_f(u/d). This is a genuine compact continuous odd source.
+Nonzero values of A require one of its two unit tents to be nonzero, hence
+d<|u|<3d. Thus the support of every R_f lies in the same fixed annulus,
+independent of the original source radius.
+
+Periodicity extends cellFold(A)=1 from [0,1] to all real arguments.
+In the fold of R_f, P_f((d(x+k))/d)=P_f(x+k)=P_f(x). Pull this scalar
+out of the integer sum; the remaining sum is cellFold(A)=1. Therefore
+cellFold(R_f)=P_f pointwise on the entire real line. No tail or integrability
+premise is introduced. Since R_f is odd, its canonical odd-source image
+equals itself. The construction is consequently idempotent, R_(R_f)=R_f,
+and R_f=R_g iff P_f=P_g. This is an explicit canonical representative of
+the full fold class, not only a scalar moment match.
+
+Contribution20 identifies the cell mean, square norm and centered variance
+with O/d, C_exact/d and E_cell. Fold preservation therefore proves
+O(R_f)=O(F), C_exact(R_f)=C_exact(F), E_cell(R_f)=E_cell(F).
+The original optimized plastic receiver becomes
+I_opt(F,N)+R_plastic(F)-2d*C_exact(R_f)+2d²E_cell(R_f)<=P_plastic(F).
+Only the moment-price data are replaced by the representative. Original
+source energy, individual lattice correlations, collar energy, plastic
+remainder and plastic value are not asserted to be preserved. Arbitrary
+signed actual sources and zero sources are included; no blindness premise.
+
+One contribution: exact fixed-support reduction of the full odd coherent
+class, with canonical retraction and the original functional transfer.
+Generic periodicity and tent facts are supporting tools only. Direct hybrid
+query `compact source periodization fixed support representative odd coherent
+moment preservation` with --any and the BiScale module filter was partial
+(62.43s, unfinished text/source retrieval, older coverage snapshot, semantic
+coverage unmeasured). Existing moment and fold/attainment results were inspected;
+exact source searches found no canonical fixed-annulus fold representative.
+No external novelty claim. Exact construction and full capstone now verified:
+contribution22/100.
+
+### Verification of the twenty-second result
+
+- Initial API12657 exited0. Actual-source audit76347 compiled the new module
+  on its first check, exiting0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/AnnularCoherentRetraction.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/AnnularCoherentRetraction.olean`.
+  Source has167 lines, one public definition and fourteen public theorems;
+  SHA256376b1420b5b868bb8f5cfd99683fbb28d7229d70f733375eb69d3f7c45fd3a9b.
+  No source edits after this final audit; no heartbeat or recursion changes.
+- Final API/all14 public theorem axiom audit70440 exited0 without warnings.
+  All use only `propext`, `Classical.choice`, `Quot.sound`. Source and
+  scratch-audit name lists match exactly; total320 supporting public theorem audits.
+- Umbrella wired; index65963 exited0 (4 changed). All15 public declarations
+  indexed; source and generated API name lists match exactly. Initial global
+  lint32836 exited1 on17 unrelated unreachable modules plus concurrent
+  LEAN_API/LEAN_OVERVIEW drift and existing large-file warnings. No owned
+  lifting module flagged. Bounded refresh24366 exited0 (1 changed); all15
+  declarations remain indexed with an exact source/API name-list match.
+- Final lint64548 is terminal. Its retained log reports21 unrelated
+  unreachable modules: `CenteredRamanujanVarianceAndAbelCofactorCancellation`,
+  `ExponentialRectangleAndDivisorAverageLaw`, `IntegerBlockAggregation`,
+  `IntegerBlockCoisometry`, `IntegerBlockVariance`, `IntegerDilationTraceDefect`,
+  `MultiOctaveStepBrickPartitionAndWitnessDyadicPositivity`, `NyquistWeightJets`,
+  `NyquistWeightTaylorRemainder`, `PhysicalCollarMixture`, `PhysicalDilation`,
+  `PhysicalPriceResponse`, `QuantitativeGramProducer`, `RegularizedGramDescent`,
+  `RegularizedGramGeometry`, `RegularizedGramIteration`, `RegularizedPhysicalGram`,
+  `RoutePMVarianceToWitnessSynthesisAndCriticalStripBridge`,
+  `SignedPrimePolarCausalMoments`, `SignedPrimePolarSourceEnergy`,
+  `SignedPrimePolarSourceFactorization`. Concurrent LEAN_API/LEAN_OVERVIEW
+  drift and existing large-file warnings remain. No owned lifting module
+  flagged. The final process return code was not retained across compaction;
+  the complete log establishes the non-clean gate. No further drift refresh,
+  unrelated source changes, or repository-wide clean-gate claim.
+- Final source22/source21 and read-only README hashes unchanged. No source
+  edits after actual-source and axiom audits. All owned search, Lean, index
+  and lint handles terminal; one owned Lean process at a time. No numerical
+  experiment, full build, commit or push. Contribution22/100 complete;
+  full goal ACTIVE.
+- Owned `/tmp/hml_retraction_api.lean` and `/tmp/hml_retraction_lint.txt`
+  removed via apply_patch; absence verified. Final scoped diff and explicit
+  source/document whitespace checks passed, including the new Lean file.
+
+## Twenty-third result: the actual coherent kernel and plastic-positive splitting
+
+Dependency-closed paper proof before Lean implementation. Write O for the
+canonical odd-source projection, R for contribution22's annular representative,
+d=log2, and P=cellFold. Define K(f)=O(f)-R(f). At each fixed cell argument,
+the sampled sinh source has finite integer support: compact source support
+bounds |d(x+k)|, hence bounds k. Thus P is additive and homogeneous without
+any summability premise. O is linear by its explicit antisymmetrization; R
+is linear because R(f)(u)=A(u)P(O(f))(u/d). Consequently K is linear.
+
+R(f) is odd and P(R(f))=P(O(f)), so K(f) is odd and P(K(f))=0. Therefore
+R(K(f))=0, K(K(f))=K(f), K(R(f))=0 and O(f)=R(f)+K(f). Applying R and K
+shows the exact coordinate classification
+O(f)=R(g)+K(h) iff R(f)=R(g) and K(f)=K(h).
+This is a direct-sum decomposition on actual compact odd sources; it is not
+an orthogonal decomposition for the original source energy.
+
+The fold integral and square integral give O_moment(K(f))=0 and
+C_exact(K(f))=0; the cell defect is also zero. The exact plastic decomposition
+therefore reduces to P_plastic(K(f))=J_secant(K(f))+R_plastic(K(f)).
+Substituting the zero moment
+into the already proven full optimized plastic inequality gives
+I_opt(K(f),N)+R_plastic(K(f))<=P_plastic(K(f)). Both terms on the left
+are nonnegative, so every produced kernel source has nonnegative plastic
+value, with an unconditional full multiplier bound at every cutoff.
+
+The kernel is nontrivial. Set B(u)=A(u/2), a compact continuous odd source,
+and W=K(B). At u=4d, B(4d)=A(2d)=1/(2*sinh d), while R(B)(4d)=0 by its
+annular support. Hence W is nonzero and its original energy E=h_W(0)>0.
+The explicit family W_a=a*W is odd, has identically zero fold, moment and
+coherent price, and h_(W_a)(0)=a²E. Its plastic value is nonnegative and
+retains the full zero-penalty optimized bound. In particular no real scalar
+c can satisfy h_(O(f))(0)<=c*C_exact(O(f)) for every actual input f: W
+already contradicts it. The positive survivor is the exact kernel splitting
+and its actual plastic-positive producer, not only this obstruction.
+
+One contribution: expose and construct the full coherent kernel, identify
+its role in source reconstruction and its unconditional plastic positivity.
+Supporting linearity identities and scalar energy homogeneity are not separate
+contributions. No original-energy orthogonality, full plastic additivity,
+prime-grid blindness, smoothness beyond continuity, or strict plastic
+positivity is claimed. Exact construction, positive survivor and full capstone
+now Lean verified: contribution23/100.
+
+Corpus audit: direct hybrid query `odd coherent cell fold kernel compact source
+telescoping translation decomposition`, --any with BiScale module filter,
+partial65.24s. Inspected fold/attainment/retraction, odd-source and variance
+rigidity predecessors. Exact source searches found no coherent-kernel splitting
+or nonzero zero-fold producer. Unfinished text/source retrieval, older coverage
+snapshot and unmeasured semantic coverage prevent a completeness claim.
+No external novelty claim.
+
+### Verification of the twenty-third result
+
+- API audit70668 exited0 without warnings after correcting qualified tsum
+  names, explicit universe arguments, `div_eq_zero_iff`'s disjunction and
+  `mul_lt_mul_iff_right₀`. No heartbeat or recursion changes.
+- Process-discipline correction: source38905 was accidentally started before
+  the initial API process ended. Its owned Lean/lake PIDs were terminated;
+  the handle returned exit143. No replacement started before the remaining
+  API handle terminated. All subsequent Lean checks are serialized.
+- First completed actual-source audit11409 found reversed absolute-value
+  estimates in the finite-support proof, an over-broad distributivity rewrite,
+  coercion reduction and scalar-module rewriting issues. Corrected with
+  explicit scalar inequalities and pointwise source proofs. Mathematical
+  statements unchanged. Final actual-source audit99254 exited0 without
+  warnings, using the prescribed direct command:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/CoherentKernelSplitting.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/CoherentKernelSplitting.olean`.
+  Source has337 lines, two public definitions and25 public theorems;
+  SHA256a66ab901bde6e45677acc2e0e8ab35f1a4e4402fca415863936d64a08c7e0dcf.
+  No source edits after this audit. Final API/all25 axiom audit14114 exited0
+  without warnings; every public theorem uses only `propext`,
+  `Classical.choice`, `Quot.sound`. Total345 supporting public theorem audits.
+- Umbrella wired; index16188 exited0 (6 changed). All27 public declarations
+  indexed; exact source/API name-list match. Source/audit theorem-name lists
+  also match exactly, with no sampling. Source22 and read-only README hashes
+  unchanged. Initial lint52636 exited1 on12 unrelated unreachable modules,
+  with concurrent LEAN_API/LEAN_GAPS/LEAN_OVERVIEW drift and existing large-file
+  warnings. No owned lifting module flagged. One bounded refresh98119 running;
+  no repository-wide clean-gate claim.
+- Exact positive survivor and full capstone audited; no-go closure recorded in
+  `docs/drafts/pipeline/5-failed/coherent-price-controls-source-energy-2026-10-17.md`.
+  Contribution23/100 complete; full goal ACTIVE.

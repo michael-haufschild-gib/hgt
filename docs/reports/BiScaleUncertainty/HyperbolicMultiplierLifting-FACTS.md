@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Twenty-one substantive results are Lean verified: compensated multiplier Gram
+contributions. Twenty-three substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -25,7 +25,9 @@ finite-filter lattice comparison with explicit unconditional plastic gain (11), 
 variance rigidity with the exact strict-gain domain and full plastic certificate (13), and finite-filter
 support escape with a strictly positive Schur residual and exact plastic correction (13), and the actual
 folded-source variance with its exact coherent equality domain and full plastic correction (9), and
-actual nonzero-mean coherent attainment with the optimal universal coefficient and full plastic transfer (12). Supporting theorem
+actual nonzero-mean coherent attainment with the optimal universal coefficient and full plastic transfer (12), and
+the canonical fixed-annulus retraction preserving full odd coherent data and pricing the original plastic functional (14), and
+the actual coherent kernel splitting, nonzero zero-fold family and unconditional plastic nonnegativity (25). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -917,3 +919,89 @@ The sub-log2 universal-coefficient route is closed with this positive survivor i
 Final global lint after one bounded refresh reports16 unrelated unreachable
 modules and concurrent drift in LEAN_API/LEAN_OVERVIEW; no owned lifting module
 flagged. Exact snapshot on master card. No global clean-gate claim.
+
+## Canonical fixed-annulus representatives of odd coherent classes
+
+Lean-verified result in
+`formal/GaloisForLFunctions/BiScaleUncertainty/AnnularCoherentRetraction.lean`.
+
+- For arbitrary actual f, let F=oddCompactSource f, d=log2 and
+  P_f=cellFold F. The fold is continuous, 1-periodic and even.
+  With A=attainingSource(1), the explicit representative
+  R_f(u)=A(u)*P_f(u/d) is an actual compact continuous odd source.
+  Its support is contained in d<|u|<3d, independently of the input radius.
+- The entire fold is preserved: cellFold(R_f)=P_f on all real arguments.
+  The periodic factor is constant along each summation lattice, while
+  cellFold(A)=1. This gives exact zero reconstruction error without a tail
+  hypothesis or a source-zero assumption.
+- The constructor is idempotent, R_(R_f)=R_f, and R_f=R_g iff P_f=P_g.
+  Representatives therefore distinguish exactly the full folded coherent
+  classes. No linearity or source-norm optimization is asserted here.
+- Mean, signed odd moment, exact signed coherent price and cell defect are
+  preserved: cellMean(R_f)=cellMean(F), O(R_f)=O(F),
+  C_exact(R_f)=C_exact(F), E_cell(R_f)=E_cell(F).
+- The original full functional consequently obeys
+  I_opt(F,N)+R_plastic(F)-2d*C_exact(R_f)+2d²E_cell(R_f)<=P_plastic(F).
+  The original collar and remainder stay attached to F. Original source
+  energy, individual lattice correlations and full plastic value are not
+  asserted to be preserved. No universal plastic positivity follows.
+
+One contribution: exact canonical reduction of full odd coherent classes to
+a fixed annulus, with preservation laws and transfer to the original functional.
+Periodic identities and tent support facts are supporting tools only.
+
+Final actual-source compilation and all14 public theorem axiom audits passed
+without warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has167
+lines, one public definition and fourteen public theorems; SHA256
+`376b1420b5b868bb8f5cfd99683fbb28d7229d70f733375eb69d3f7c45fd3a9b`.
+Umbrella wired; all15 public declarations indexed, with an exact name-list match.
+README and source21 unchanged. Twenty-two contributions,320 supporting public
+theorem audits; full goal ACTIVE. Final global lint after one bounded refresh
+reports21 unrelated unreachable modules and concurrent LEAN_API/LEAN_OVERVIEW
+drift; no owned lifting module flagged. Exact snapshot on master card.
+No repository-wide clean-gate claim.
+
+## Actual coherent kernel and a plastic-nonnegative source splitting
+
+Module `formal/GaloisForLFunctions/BiScaleUncertainty/CoherentKernelSplitting.lean`.
+Let O(f)=oddCompactSource f and R(f) be the annular representative.
+
+- K(f)=O(f)-R(f) is an actual compact continuous odd source with zero fold.
+  It is an idempotent projection; R(K(f))=0 and K(R(f))=0. Moreover
+  K(f)=O(f) iff cellFold(O(f))=0, so it reaches the entire odd zero-fold domain.
+- O(f)=R(f)+K(f). Exact coordinate uniqueness is
+  O(f)=R(g)+K(h) iff R(f)=R(g) and K(f)=K(h).
+  Pointwise finite lattice support proves the fold linearity used here;
+  no infinite-sum convergence premise is imposed.
+- The signed hyperbolic moment, exact coherent price and cell defect of K(f)
+  all vanish. Its full plastic value is exactly
+  P_plastic(K(f))=J_secant(K(f))+R_plastic(K(f)).
+  At every cutoff N,
+  I_opt(K(f),N)+R_plastic(K(f))<=P_plastic(K(f)), hence P_plastic(K(f))>=0.
+  This is an unconditional conclusion for an explicitly produced source.
+- The kernel contains a concrete nonzero family. With d=log2,
+  A=attainingSource(1), B(u)=A(u/2), define W_a=K(a*B)=a*K(B).
+  At u=4d, K(B)(4d)=1/(2*sinh d) is nonzero because R(B)(4d)=0.
+  Thus W_a=0 iff a=0, and h_(W_a)(0)=a²h_(W_1)(0), with positive energy
+  exactly for a!=0. Every W_a has zero fold and coherent price and retains
+  the full zero-penalty plastic bound.
+- No real scalar c bounds original energy by c*C_exact on all actual odd
+  sources. W_1 alone refutes every c. The positive survivor is the exact
+  decomposition and the constructed plastic-nonnegative kernel above.
+  Energy control for R(f), or after adding a kernel cost, remains open.
+
+No original-energy orthogonality, plastic additivity between the coordinates,
+strict plastic positivity, prime-grid blindness or extra source smoothness
+is asserted. This is one substantive kernel/decomposition contribution;
+supporting linearity and quadratic scaling are not separate contributions.
+
+Direct source compilation and all25 public theorem axiom audits passed without
+warnings, using only `propext`, `Classical.choice`, `Quot.sound`. Source has337 lines,
+two public definitions and25 public theorems; SHA256
+`a66ab901bde6e45677acc2e0e8ab35f1a4e4402fca415863936d64a08c7e0dcf`.
+Umbrella wired; all27 public declarations indexed with an exact name-list match.
+Source and audit theorem-name lists also match exactly. Twenty-three contributions,
+345 supporting public theorem audits; full goal ACTIVE. The energy-control no-go
+is closed with this formally verified positive survivor in
+`docs/drafts/pipeline/5-failed/coherent-price-controls-source-energy-2026-10-17.md`.
+Final global lint snapshot pending after one bounded refresh; no global clean-gate claim.

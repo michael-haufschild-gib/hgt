@@ -66,5 +66,5 @@ precedents impose autocorrelation zeros and do not supply this construction.
 No external novelty claim is inferred from retrieval. The finite stencil, ramp
 calculus, arithmetic preservation and norm certificates count together once.
 
-Next uncounted candidate:
-`0-backlog/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
+The subsequent actual-source construction is now formalized in
+`3-formalized/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.

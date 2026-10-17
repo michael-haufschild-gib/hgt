@@ -1,7 +1,8 @@
-# Actual source factorization and its linear energy cost
+# Actual source factorization and square-root source-energy cost
 
-Status: dependency-closed paper proof; Lean verification in progress. This is one
-candidate package, uncounted until the actual-source endpoint is verified.
+Status: dependency-closed paper proof and verified Lean source certificate.
+This construction, its arithmetic preservation, contrast size, and balanced source
+cost count together as contribution 10.
 
 ## Explicit parameters and sources
 
@@ -27,7 +28,7 @@ Finally define the actual compact continuous sources
 
 F_N(u)=R_N(−u),
 G_N(u)=exp(u/2)ρ_N(u),
-P_N=F_N+G_N, M_N=F_N−G_N.
+c_N=N^(1/4), P_N=c_N F_N+G_N/c_N, M_N=c_N F_N−G_N/c_N.
 
 F_N vanishes on the positive half-line; G_N vanishes off [0,2δ]. Both vanish
 at zero, so F_N(u)G_N(u)=0 for every u. No unproved regularity interface occurs:
@@ -118,26 +119,29 @@ also give J_N²=H_N²+H_N(−·)² pointwise, so 2≤∫J_N²≤32.
 In particular J_N(0)=0 and J_N(log(4N))=2. This is an actual autocorrelation
 difference; it is not itself an autocorrelation or a positivity certificate.
 
-## The source-energy cost is linear, not hidden
+## Reciprocal scaling balances the source-energy cost
 
 The product F_NG_N vanishes pointwise. Therefore
 
-h_(P_N)(0)=h_(M_N)(0)=∫F_N²+∫G_N².
+h_(P_N)(0)=h_(M_N)(0)=sqrt(N)∫F_N²+∫G_N²/sqrt(N).
 
 For the upper bound, 0≤τδ≤δ and ε≥δ give, on [0,2δ],
 ρ_N≤δE²/ε² and G_N²=exp(t)ρ_N²≤δE⁴ρ_N/ε².
 Thus ∫G_N²≤E⁴/δ≤2/δ≤30N. Since ∫F_N²≤16≤16N,
-both source origin energies are at most 46N.
+the unbalanced sums F_N±G_N have origin energy at most 46N.
 
 For the lower bound, integrate the nonnegative square
 (ρ_N−1/(2δ))² on [0,2δ]. Its expansion, ∫ρ_N=1 and interval length 2δ imply
 ∫ρ_N²≥1/(2δ). Since exp(t)≥1 there, ∫G_N²≥1/(2δ)≥6N.
-Therefore the exact equal source energies satisfy
+Thus the unbalanced source energies lie in [6N,46N]. Balancing the factors
+improves the cost without changing any mixed correlation: c_N·c_N^(-1)=1.
+Writing r=sqrt(N)>0, the balanced source energy is r∫F_N²+∫G_N²/r.
+The bounds 0≤∫F_N²≤16 and 6N≤∫G_N²≤30N, together with N=r², give
 
-6N≤h_(P_N)(0)=h_(M_N)(0)≤46N.
+6sqrt(N)≤h_(P_N)(0)=h_(M_N)(0)≤46sqrt(N).
 
 The same explicit family combines nonvanishing contrast size and a vanishing
-scalar pairing bound with a provably growing source-energy cost. It supplies
+scalar pairing bound with a quantified square-root source-energy cost. It supplies
 actual source admission while keeping that cost visible; it does not establish
 uniform control of arbitrary signed source packets.
 
@@ -154,3 +158,13 @@ translation and elementary FTC. The further tent search retrieved
 `HTGeometry.integral_tiltedTentFullProfile`; the Lean tent moment reuses that
 bilateral transform by translation. Its classical moment calculation is an
 ingredient, not a separate contribution. No external novelty claim is inferred.
+
+## Lean certificate
+
+The concrete C_c family is `factorialSourceProducer`; its sources are
+`factorialSourcePlus` and `factorialSourceMinus`. The full endpoint is
+`factorialSourceProducer_certificate` in module `SignedPrimePolarSourceCertificate`
+and namespace `GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar`. Its sole input is n:ℕ, with N=n+1. All thirteen leaf checks
+pass; fifteen axiom audits use only propext, Classical.choice and Quot.sound.
+Imports and index are updated. Global lint reports nine unrelated unwired modules,
+listed in `SignedPrimePolarTransport-FACTS.md`; no task-local error is reported.

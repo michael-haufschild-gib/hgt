@@ -30,7 +30,8 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    Arbitrary divisor families now have an exact run-gap/closed-range classifier.
    Their physical energy completion, conservation laws and escaping trace producers are proved.
    Explicit physical component projections and exact convergent approximation error are proved.
-   Extend to actual dilation/cell operators, admission beyond compact support, and closed-graph APIs.
+   Actual dilation/block coisometry, convergent variance and sharp packets are proved.
+   Extend to physical affine commutator producers, SourceGraph coupling and closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -96,10 +97,12 @@ traces or a constructed interpolant.
   and explicit ramp producers with error1/N; five leaves,73 declarations audited.
 - [x] Explicit component averaging, unique physical best approximation and exact
   convergent error with negative-half-line accounting; five leaves,87 declarations audited.
+- [x] Actual physical dilation, integer block producers, exact infinite variance,
+  successor covariance and sharp equality; five leaves,72 declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **16 / 100**. Formalized packages:
+Certified count: **17 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -115,7 +118,8 @@ Certified count: **16 / 100**. Formalized packages:
 `../3-formalized/finite-grid-run-length-coercivity.md`, and
 `../3-formalized/infinite-divisor-run-gap-classification.md`, and
 `../3-formalized/divisor-trace-energy-completion.md`, and
-`../3-formalized/divisor-component-averaging-projection.md`.
+`../3-formalized/divisor-component-averaging-projection.md`, and
+`../3-formalized/integer-dilation-cell-coisometry.md`.
 
 ## Current exact result and next frontier
 
@@ -375,9 +379,29 @@ catalog entries verified. Global lint exits1 for eight unrelated unreachable
 modules and concurrent generated-index drift; exact list in card and ledger.
 Indexes refreshed separately. README remains read-only. Certified16/100.
 
+## Certified package 17: integer dilation and block producers
+
+Actual physical dilation A_aq(t)=a q(at) has exact energy |a|‖q‖² and
+primitive F_q(at). Integer block aggregation intertwines cell analysis with
+dilation, has sharp norm√m, explicit replication adjoint/right inverse, and
+successor covariance H_mR^m=R H_m. The convergent block-variance series is
+the exact defect. The physical defect also retains noncellular energy.
+Explicit packet S(T_mδ_0) attains energies m and m². Equality is classified.
+Dilation by2 moves unitCell1 outside every completed divisor domain; the
+unrestricted positive operator/producer calculus is fully formalized.
+
+All five direct leaves pass without diagnostics; all72 public axiom checks
+use only standard axioms.23 principal signatures and53 API probes checked;
+five unique imports and72 exact catalog locations verified. Global lint
+exits1 for nine unrelated unreachable modules and concurrent index drift,
+listed in paper/card/ledger; no own or proof-debt error. Index refreshed.
+Trap10 applied through explicit unconditional producers. README fully read
+and unchanged. Paper preceded Lean. Counted once:17/100, goal active.
+
 ## Next candidate
 
-`../0-backlog/integer-dilation-cell-coisometry.md`: construct actual physical
-dilation and ℓ² block aggregation, cell-analysis intertwining, exact infinite
-variance and successor covariance. Unproved and uncounted; corpus caveats
-are on the card. No Lean assigned. Do not assume divisor-domain invariance.
+`../0-backlog/physical-affine-commutator-producers.md`: construct actual
+physical translations and anchored affine action; determine sharp
+commutator norm/nonattainment with explicit alternating finite packets.
+Unproved and uncounted; no Lean assigned. Primary-source and paper-proof
+audits still required. Preserve full-space versus half-line distinctions.

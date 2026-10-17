@@ -665,10 +665,91 @@
       Band-limited critical-line spectral density producer bounds on `packetEnergy`,
       `collarSource`, and `weilFullFunctional Λ` across all explicit-formula test spaces.
 
+35. **Pillar XXXV — `formal/GaloisForLFunctions/BiScaleUncertainty/DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`**
+    - `norm_logMobiusFermiApprox_coeff_le_one`, `norm_logMobiusFermiApprox_le_three_mul`,
+      `normSq_dyadicHaar_sub_logMobiusFermiApprox_le`,
+      `integral_normSq_dyadicHaar_sub_logMobiusFermiApprox_tail_le`,
+      `logMobiusTotalEnergyProducer`,
+      `logMobiusFermiErrorEnergy_le_total_producer`,
+      `logMobiusFermiErrorEnergy_succ_succ_le_total_producer`,
+      `L2FermiWitness.integral_logMobiusFermiApprox_mul_conj_eq_zero`,
+      `L2FermiWitness.norm_sq_dyadicHaar_pairing_le_logMobiusTotalEnergyProducer`:
+      Closed-form tail energy bound $\int_0^{1/(N+1)} \|\mathrm{dyadicHaar}(t) - A_N(t)\|^2\,dt \le \frac{(1+3N)^2}{N+1}$,
+      total energy producer bound $\operatorname{logMobiusFermiErrorEnergy}(N) \le \frac{(1+3N)^2}{N+1} + \frac{(\log 4 + 4)^2 N}{(\log N)^2}$,
+      exact orthogonality of every $L^2$ Fermi witness to `logMobiusFermiApprox N`, and unconditional
+      dyadic-Haar pairing bound.
+    - `chebyshev_psi_two_pow_eq`, `chebyshev_psi_two_pow_succ_eq`,
+      `chebyshev_psi_two_pow_succ_sub_bounds`, `chebyshev_psi_two_pow_succ_sub_le_stirling`,
+      `chainInput_log_two_alternating_sandwich`, `chainInput_log_two_le_stirling`,
+      `dyadicRenewalStirlingInputProducer`, `abs_chainInput_log_two_le_producer`,
+      `sum_chainState_log_two_sq_le_stirlingProducer`,
+      `integral_sq_causalResponse_le_dyadic_stirlingProducer`,
+      `norm_boundaryTransform_le_producer`:
+      Hypothesis-free Stirling producer bounds on the dyadic renewal chain (`chainInput (log 2) k`,
+      `chainState (log 2) K`, `causalResponse N`, and `boundaryTransform N`).
+    - `abs_moebiusDivisorWeight_le_one`, `sum_abs_moebiusDivisorWeight_le`,
+      `sievedDivisorMeanSquare_moebius_le_selberg_diagonal_add_sq`,
+      `sum_abs_vonMangoldtDivisorWeight_le_floorSummatory`,
+      `sievedDivisorMeanSquare_vonMangoldt_le_selberg_diagonal_add_floorSummatory_sq`,
+      `sum_divisors_vonMangoldtDivisorWeight_succ_eq`,
+      `tailSievedDivisorMeanSquare_vonMangoldt_le_selberg_diagonal_add_floorSummatory_sq`:
+      Explicit Möbius and von Mangoldt instantiation of the Selberg sieve tail quadratic form and
+      exact cancellation of all smooth divisor sums $1 \le n \le N$ under `vonMangoldtDivisorWeight`.
+
+36. **Pillar XXXVI — `formal/GaloisForLFunctions/BiScaleUncertainty/FoldFreeLogMobiusAndPlancherelCausalProducer.lean`**
+    - `logMobiusHarmonicShadow`, `foldFreeLogMobiusFermiApprox`, `foldFreeLogMobiusErrorEnergy`,
+      `integral_logMobiusFermiApprox_mul_canonicalSelfSimilar`,
+      `logMobiusHarmonicShadow_eq_finiteHarmonicSum_add_moebiusLogHarmonicSum`,
+      `integral_foldFreeLogMobiusFermiApprox_mul_canonicalSelfSimilar`,
+      `logMobiusFermiErrorEnergy_eq_foldFree_add_shadow_sq`,
+      `foldFreeLogMobiusErrorEnergy_le_producer_sub_shadow`,
+      `logMobiusHarmonicShadow_sq_le_two_mul_producer`,
+      `L2FermiWitness.integral_foldFreeLogMobiusFermiApprox_mul_conj_eq_zero`,
+      `L2FermiWitness.norm_sq_dyadicHaar_pairing_le_foldFree_producer`:
+      Exact inner product $\langle \operatorname{logMobiusFermiApprox}(N), t^{-1/2}\rangle = \operatorname{logMobiusHarmonicShadow}(N)$,
+      fold-free orthogonal projection, and Pythagoras identity
+      $\operatorname{logMobiusFermiErrorEnergy}(N) = \operatorname{foldFreeLogMobiusErrorEnergy}(N) + \tfrac{1}{2}\operatorname{logMobiusHarmonicShadow}(N)^2$.
+    - `integral_polar_sourceFactorialCausal`, `fullPairing_sourceFactorialCausal_eq`,
+      `abs_fullPairing_sourceFactorialCausal_le`, `abs_fullPairing_causalFactorialProducer_le`:
+      Exact full prime-polar pairing identity
+      $\operatorname{fullPairing}(\operatorname{sourceFactorialCausal}\,N) = \frac{2\,\operatorname{chebyshevBiNullProducer}(N) - c_N\,\operatorname{harmonicCorrection}(N)}{\sqrt{N}}$
+      and unconditional $O(\log N / \sqrt{N})$ bound for `causalFactorialProducer n`.
+    - `integral_fourier_mul_spectralDensity_le_laplaceProducer`:
+      Plancherel–Laplace spectral producer bridge bounding $\int \|\mathcal{F}f(\xi)\|^2 (\tfrac{1}{4} + 4\pi^2\xi^2) S_N(\xi)\,d\xi$
+      by `laplaceEnergyProducerBound N`.
+    - `franelGramEntry_eq_gcd_div_lcm`, `one_div_twelve_lcm_le_franelGramEntry`,
+      `franelGramEntry_eq_one_div_twelve_lcm_of_coprime`:
+      Exact Franel–Selberg GCD–LCM Gram law $\operatorname{franelGramEntry}(a, b) = \frac{\gcd(a+1,b+1)}{12\,\operatorname{lcm}(a+1,b+1)}$
+      and pointwise dominance over the smooth Selberg LCM kernel.
+
+37. **Pillar XXXVII — `formal/GaloisForLFunctions/BiScaleUncertainty/DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`**
+    - `log_add_one_le_realHarmonic`, `realHarmonic_le_one_add_log`, `realHarmonic_bounds`,
+      `log_le_realHarmonic`, `sum_logError_log_ratio_bounds`,
+      `sum_sqrt_mul_normalizedLogError_bounds`, `mul_log_add_one_sub_log_le_one`,
+      `pairing_factorialLift_bounds`, `fullPairing_factorialLift_bounds`:
+      Two-sided logarithmic bounds $\log(K+1) \le H_K \le 1 + \log K$ and exact $K\log K$-free
+      linear channels $-2K \le \sum_{j=1}^K \operatorname{logError}(\log(K/j)) \le -K + \log(K+1) + 1$
+      and $-2K \le \operatorname{pairing}_N(\operatorname{factorialLift}\,K) \le -K + 2\log(K+1) + 2$.
+    - `quantitativeGramCoefficient_factorialSourcePlus_allocation_error`,
+      `quantitativeGramCoefficient_factorialSourceMinus_allocation_error`,
+      `quantitativeGramCoefficient_factorialSourcePlus_limiting_error`,
+      `quantitativeGram_and_roughCollar_producer_package`:
+      Instantiation of the monotone quantitative Gram producer on `factorialSourcePlus m` and
+      `factorialSourceMinus m` with $46\sqrt{m+1}(r_0+1)/(n+1)$ allocation error and joint
+      rough-collar producer package.
+    - `finiteBlockVariance_two`, `integerBlockVariance_two`, `integerBlockSum_two`,
+      `summable_dyadicHaar_detail_sq`, `dyadicHaar_detail_tsum_eq`,
+      `dyadicHaar_energy_conservation`, `integerBlockSum_two_energy_eq_iff`:
+      Closed-form dyadic Haar block variance $(w(2j+1) - w(2j))^2$, exact wavelet energy
+      conservation $\sum_j (w(2j+1) - w(2j))^2 + \|\operatorname{integerBlockSum}\,2\,w\|^2 = 2\|w\|^2$,
+      and pairwise constancy characterization.
+    - `nyquistWeightCellMass_half_zero_le`, `nyquistWeightCellMass_half_one_le_rpow`,
+      `rpow_neg_five_halves_le_inv_sq`, `nyquistWeightCellMass_half_one_le_inv_sq`,
+      `sum_nyquistWeightCellMass_half_one_le`:
+      Critical-line ($\beta = 1/2$) Nyquist Taylor cell mass producer bounds at orders $m = 0$ and
+      $m = 1$, plus cumulative finite-horizon inverse-square bound.
+
 ## Audit Status
-- **Module Verification**: All 34 Pillars (`SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXIV; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
-
-
-
+- **Module Verification**: All 37 Pillars (`DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`, `FoldFreeLogMobiusAndPlancherelCausalProducer.lean`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`, `SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXVII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 

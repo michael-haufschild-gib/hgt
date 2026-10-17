@@ -508,15 +508,18 @@ reachability: `ExponentialTentMoments`, `PhysicalCollarMixture`,
 No error concerns this package, and the snapshot reports no active proof hole.
 Index refresh and exhaustive own certificate checks pass. README hash unchanged.
 
-## Next candidate: weight growth and producer order
+## Next paper theorem: weight growth and producer order
 
 For w_beta(x)=cosh(beta x), beta>0, approximate the weight on each logarithmic
-cell by its degree-m Taylor polynomial at the left endpoint. Conjecture:
+cell by its degree-m Taylor polynomial at the left endpoint. The paper proves:
 the positive residual is integrable exactly when beta<m+1, with sharp tail
 mass asymptotic beta^(m+1)/(2(m+2)!(m+1-beta))*N^(beta-m-1).
-This alters weight approximation, not source regularity. Candidate only;
-paper and Lean proof remain open. Card:
-`docs/drafts/pipeline/0-backlog/nyquist-weight-order-threshold-2026-10-17.md`.
+This alters weight approximation, not source regularity. One actual smooth
+nonnegative source family has E_j<=K/(j+1); its residual tends to the full
+kernel mass below the threshold and diverges at or above it. This proves
+sharpness under every positive energy ceiling. Complete paper:
+`NyquistWeightOrderThreshold.md`. Lean formalization is in progress; uncounted.
+Card: `docs/drafts/pipeline/2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md`.
 Current deep search inspected all 20 candidates and 20 source arguments;
 the suggested decaying-weight argument does not prove this growing-weight
 classification. Focused Taylor/Nyquist lexical search found no declaration.

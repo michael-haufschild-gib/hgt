@@ -2,7 +2,7 @@
 
 ## Counting rule
 
-Target: 100 substantive, independently justified contributions. Verified packages: 9.
+Target: 100 substantive, independently justified contributions. Verified packages: 10.
 Helpers, equivalent restatements, and classical partial summation do not count separately.
 
 Field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read
@@ -501,6 +501,72 @@ NyquistResidualOperator, NyquistResidualPartition, and
 SelbergSieveTailQuadraticFormAndTruncatedDivisorGram. No full build or umbrella
 build was run. README remains read-only and unmodified by this work.
 
+## Contribution 10: actual balanced sources with square-root energy cost
+
+`SignedPrimePolarFactorialSourceFactorization.md` proves the complete package.
+Set δ=log(1+1/(4N))/3, ε=exp(δ)−1, and let R_N be the continuous factorial
+ramp stencil with collar ε. Put ρ_N(t)=exp(t) max(0,min(t,2δ−t))/ε²,
+F_N(u)=R_N(−u), G_N(u)=exp(u/2)ρ_N(u), and c_N=N^(1/4).
+The actual compact continuous sources are P_N=c_N F_N+G_N/c_N and
+M_N=c_N F_N−G_N/c_N. All parameters are explicit functions of N.
+
+The density has mass one. Integer separation throughout its collar proves that
+H_N(x)=∫F_N(u)G_N(u+x)du satisfies H_N(log n)=W_N(log n) for every n≥1.
+Finite-rectangle Fubini retains both polar branches and gives
+
+ν(H_N)=[2B_N−a_N C_N]/sqrt(N),
+a_N=[(1+exp(δ))/2]³ ∈ [1,1+1/(4N)].
+
+Reciprocal scaling preserves the mixed correlation. The genuine source contrast
+J_N=(h_(P_N)−h_(M_N))/2 equals H_N(x)+H_N(−x). Thus it has the same actual
+prime-grid values and the unconditional full-half-line bound
+
+|ν(J_N)|≤[10log(4N+1)+3+1/(4N)]/sqrt(N).
+
+The atomic sequence is finitely supported and absolutely summable; the polar
+integrand is admitted. The top band is retained exactly, giving 1≤∫H_N²≤16
+and 2≤∫J_N²≤32. This is not a vanishing-test construction.
+
+The source factors are pointwise disjoint, so the two source origin energies are
+exactly equal. The tent has 6N≤∫G_N²≤30N and the reflected ramp has ∫F_N²≤16.
+The unbalanced construction would cost O(N). Reciprocal N^(1/4) scaling removes
+that avoidable loss and proves
+
+6sqrt(N)≤h_(P_N)(0)=h_(M_N)(0)≤46sqrt(N).
+
+The numeric-index-only endpoint `factorialSourceProducer_certificate (n : ℕ)`
+uses N=n+1. It bundles the literal autocorrelation contrast, both source costs,
+every positive integer grid value, the exact signed pairing and its bound,
+actual domain admission, and both contrast L² bounds. No analytic/arithmetic
+interface or unproved discrepancy bound remains in its hypotheses.
+The family is a signed difference of autocorrelations, not a positivity result
+or a bound on arbitrary signed packets. Source origin energy is distinct from
+archimedean jump energy; the latter remains a quantitative frontier.
+
+Thirteen final direct leaf checks pass with empty logs: ExponentialTentMoments,
+ExponentialTentSourceEnergy, SignedPrimePolarSourceParameters,
+ClampedExponentialBranchMoments, SignedPrimePolarRampCore,
+SignedPrimePolarRampMoments, SignedPrimePolarCausalSource,
+SignedPrimePolarCausalMoments, SignedPrimePolarCausalEnergy,
+SignedPrimePolarCausalPairing, SignedPrimePolarSourceFactorization,
+SignedPrimePolarSourceEnergy, and SignedPrimePolarSourceCertificate.
+Fifteen scratch axiom audits use only propext, Classical.choice and Quot.sound;
+`#check` confirms the main theorem has only n:ℕ as input. All thirteen imports
+are wired once. Index refresh passes and lists the endpoint. Evidence:
+`/tmp/spp10-*-final.log`, `/tmp/spp10_final_axioms.lean`,
+`/tmp/spp10-final-axioms.log`, `/tmp/spp10-index.log`.
+The reused classical tent transform, branch moments, reciprocal scaling and
+polarization are ingredients of this single package, not separate contributions.
+
+Global lint exits 1 for nine unrelated concurrent unwired modules:
+CenteredRamanujanVarianceAndAbelCofactorCancellation, CoherentKernelSplitting,
+DivisorAverageChebyshevAndDyadicBlockVarianceProducer,
+MultiOctaveStepBrickPartitionAndWitnessDyadicPositivity,
+NyquistWeightCellAsymptotic, NyquistWeightKernel, NyquistWideSourceEnergy,
+RightNodeCollarPartition, and RoutePMVarianceToWitnessSynthesisAndCriticalStripBridge.
+No package-local error is reported (`/tmp/spp10-lint.log`). No full or umbrella
+build, computation experiment, commit, or push was performed. README was not edited.
+
 ## Failure boundaries and remaining frontier
 
 - Scalar support stabilization does not establish packet-energy stabilization:
@@ -519,19 +585,19 @@ build was run. README remains read-only and unmodified by this work.
   the fixed-coefficient loss, not the residual itself. Multiple-collar compensation
   remains parked in `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`.
   Trap 10 prioritizes explicit unconditional producers over further receivers.
-- Contributions 8–9 give explicit unconditional scalar producers, including a
-  compact continuous family with fixed positive lower L² size. They do not
-  discharge arbitrary-correlation packet control. Next uncounted candidate:
-  `1-in-progress/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
-  A causal convolution construction may realize a grid-preserving producer as an
-  actual mixed source correlation and a polarized autocorrelation difference.
-  Source-energy cost must be quantified; shrinking collars may make it grow.
-  Search `/tmp/spp9-next-search.json` is partial with interrupted text/source
-  retrieval. Candidates and source arguments were inspected; full precursor
-  inspection and a broader convolution search were completed for the dependency-closed
-  paper proof in `SignedPrimePolarFactorialSourceFactorization.md`. It constructs
-  actual source contrasts with predicted equal origin energies in [6N,46N].
-  Full Lean verification remains in progress; this package is not counted yet.
+- Contributions 8–10 give explicit unconditional scalar producers and actual
+  compact source admission with nonvanishing contrast size. They do not discharge
+  arbitrary-correlation packet control. The source-factorization card is now
+  `3-formalized/signed-prime-polar-factorial-source-factorization-2026-10-17.md`.
+  Next uncounted question:
+  `1-in-progress/signed-prime-polar-factorial-archimedean-cost-2026-10-17.md`.
+  Quantify the literal jump energies of the balanced sources and their signed
+  difference. Existing linear/logarithmic tail and parallelogram estimates require
+  C² sources, whereas these explicit ramps and tents are only continuous.
+  Actual increment bounds and integrability must be established.
+  The new factorization search is partial with a disconnected semantic worker;
+  lexical fallbacks and inspected declarations establish this interface mismatch,
+  not an absence theorem or external novelty. Their detailed coverage is in the card.
 - The prior multiple-collar search returned finite discrete Gram precedents, not
   that mixed construction.
   Both searches report partial=false and errors=[]; semantic coverage is unmeasured,

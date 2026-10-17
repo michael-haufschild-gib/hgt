@@ -55,8 +55,10 @@ theorem integerBlockSum_comp (m n : ℕ) (w : TraceData) :
     integerBlockSum m (integerBlockSum n w) = integerBlockSum (m*n) w := by
   apply lp.ext
   funext j
-  simp only [integerBlockSum_prefix_difference, cellPrefixL_integerBlockSum]
-  congr 2 <;> ring
+  rw [integerBlockSum_prefix_difference, cellPrefixL_integerBlockSum,
+    cellPrefixL_integerBlockSum, integerBlockSum_prefix_difference]
+  rw [show n*(m*(j+1)) = (m*n)*(j+1) by ring,
+    show n*(m*j) = (m*n)*j by ring]
 
 theorem unitCellAnalysis_physicalDilation (m : ℕ) (q : Velocity) :
     unitCellAnalysis (physicalDilation m q) = integerBlockSum m (unitCellAnalysis q) := by
@@ -92,7 +94,8 @@ theorem integerBlockSum_single (m k : ℕ) (hm : 0 < m) (a : ℝ) :
   apply lp.ext
   funext j
   rw [integerBlockSum_coordinate]
-  simp only [lp.single_apply, Pi.single_apply, Finset.sum_ite_eq',
-    mem_integerBlock_iff m j k hm, eq_comm]
+  simp only [lp.single_apply, Pi.single_apply]
+  rw [Finset.sum_ite_eq']
+  simp only [mem_integerBlock_iff m j k hm, eq_comm (a := k/m) (b := j)]
 
 end GaloisForLFunctions.BiScaleUncertainty.SobolevShear

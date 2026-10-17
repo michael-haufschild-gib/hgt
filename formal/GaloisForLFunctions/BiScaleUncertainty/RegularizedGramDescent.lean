@@ -26,7 +26,10 @@ theorem linearCost_mixture (Q : CollarPrice) (ρ η : PhysicalCollarPartition n)
     funext x
     simp only [physicalCost, mixture_density, add_mul, mul_assoc, Finset.sum_add_distrib, ← Finset.mul_sum]
   unfold linearCost
-  rw [he, integral_add ((Q.integrable_physicalCost ρ).integrableOn.const_mul _)
+  rw [he, integral_add
+    (f := fun x => (1 - (τ : ℝ)) * Q.physicalCost ρ x)
+    (g := fun x => (τ : ℝ) * Q.physicalCost η x)
+    ((Q.integrable_physicalCost ρ).integrableOn.const_mul _)
     ((Q.integrable_physicalCost η).integrableOn.const_mul _), integral_const_mul, integral_const_mul]
 
 end CollarPrice
@@ -58,16 +61,18 @@ theorem regularizedGramRemainder_mixture_le (ρ η : PhysicalCollarPartition n) 
     _ ≤ (τ : ℝ) ^ 2 * (2 * autocorr f 0 * fibreMassBound n * (ρ.mass y + η.mass y)) / (2 * ε) :=
       div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left (ρ.gramPacket_displacement_sq_le η f y)
         (sq_nonneg _)) (by positivity)
-    _ = _ := by field_simp [hε.ne']; ring
+    _ = _ := by field_simp [hε.ne']
 
 /-- The integrated curvature is explicit in physical mass and smoothing scale. -/
 theorem integral_regularizedGramRemainder_mixture_le (ρ η : PhysicalCollarPartition n)
     (f : C_c(ℝ, ℝ)) {ε : ℝ} (hε : 0 < ε) (τ : Icc (0 : ℝ) 1) :
     (∫ y in Ioo 0 logarithmicCollarRadius, ρ.regularizedGramRemainder (ρ.mixture η τ) f ε y) ≤
       regularizedCurvature f n ε * (τ : ℝ) ^ 2 := by
+  have hi : IntegrableOn (fun y => (autocorr f 0 * fibreMassBound n / ε * (τ : ℝ) ^ 2) *
+      (ρ.mass y + η.mass y)) (Ioo 0 logarithmicCollarRadius) :=
+    (ρ.integrableOn_mass.add η.integrableOn_mass).const_mul _
   have h := integral_mono_ae (ρ.integrableOn_regularizedGramRemainder (ρ.mixture η τ) f hε.le)
-    ((ρ.integrableOn_mass.add η.integrableOn_mass).const_mul
-      (autocorr f 0 * fibreMassBound n / ε * (τ : ℝ) ^ 2)) (by
+    hi (by
       filter_upwards [ae_restrict_mem measurableSet_Ioo] with y hy
       exact ρ.regularizedGramRemainder_mixture_le η f hε τ hy.1)
   rw [integral_const_mul, integral_add ρ.integrableOn_mass η.integrableOn_mass,

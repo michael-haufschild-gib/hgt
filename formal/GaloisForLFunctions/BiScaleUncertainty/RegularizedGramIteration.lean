@@ -41,7 +41,7 @@ theorem regularizedIterate_recurrence (f : C_c(ℝ, ℝ)) {ε : ℝ} (hε : 0 < 
   have hc := mul_le_mul_of_nonneg_left
     ((regularizedIterate f ε n t).regularizedGram_comparison η f hε.le)
     (regularizedStepSize t).property.1
-  change 2 / ((t : ℝ) + 2) * _ - _ ≤
+  change 2 / ((t : ℝ) + 2) * _ - regularizedCurvature f n ε * (2 / ((t : ℝ) + 2)) ^ 2 ≤
     (regularizedIterate f ε n (t + 1)).regularizedGramCoefficient f ε - _ at hg
   change 2 / ((t : ℝ) + 2) * _ ≤ 2 / ((t : ℝ) + 2) * _ at hc
   nlinarith only [hg, hc]
@@ -78,7 +78,7 @@ private theorem quadratic_recurrence_bound (B : ℝ) (hB : 0 ≤ B) (E : ℕ →
       rw [he]
       exact hu
     dsimp [x] at hm hb
-    push_cast at hr ⊢
+    norm_num only [Nat.cast_add, Nat.cast_one, Nat.cast_succ, add_assoc] at hr hb ⊢
     nlinarith only [hm, hr, hb]
 
 /-- Uniform competitor error after finitely many actual physical updates. -/
@@ -86,7 +86,8 @@ theorem regularizedIterate_error (f : C_c(ℝ, ℝ)) {ε : ℝ} (hε : 0 < ε)
     (η : PhysicalCollarPartition n) (t : ℕ) :
     η.regularizedGramCoefficient f ε - (regularizedIterate f ε n (t + 1)).regularizedGramCoefficient f ε ≤
       4 * regularizedCurvature f n ε / ((t : ℝ) + 3) :=
-  quadratic_recurrence_bound _ (regularizedCurvature_nonneg f n hε.le) _
+  quadratic_recurrence_bound _ (regularizedCurvature_nonneg f n hε.le)
+    (fun t => η.regularizedGramCoefficient f ε - (regularizedIterate f ε n t).regularizedGramCoefficient f ε)
     (regularizedIterate_recurrence f hε η) t
 
 /-- Reconciliation with the unsmoothed source coefficient costs only one error budget. -/

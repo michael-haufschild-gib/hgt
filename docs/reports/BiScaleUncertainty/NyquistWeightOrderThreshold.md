@@ -2,8 +2,8 @@
 
 ## Scope and status
 
-Dependency-closed paper proof, with the paper and corpus audit complete. No new
-Lean has been written for this package, and no contribution is counted yet.
+Dependency-closed paper proof, with the paper and corpus audit complete. Lean
+formalization is in progress, and no contribution is counted yet.
 This continues infinite-grid tail rigidity for general signed correlations.
 The field guide `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` is read-only.
 

@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **16 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **17 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -1491,14 +1491,105 @@ is the interval cardinality theorem. To prove a zero tsum, establish every
 summand zero and simplify with tsum_zero. Actual MemLp.indicator.toLp and
 ae_restrict_mem give the physical negative-half-line split directly.
 
-## Next unproved candidate — integer dilation and cell coisometry
+## Certified package 17 — actual dilation, block producers and infinite variance
 
-`docs/drafts/pipeline/0-backlog/integer-dilation-cell-coisometry.md`.
-Construct actual A_mq(t)=m q(mt) and B_mw(j)=Σ_(r<m)w(mj+r), prove
-cell-analysis intertwining, exact coisometry/adjoint and the convergent
-infinite variance defect; seek B_m R^m=R B_m. No Lean assigned, uncounted.
-All20 candidates and20 source arguments inspected; existing finite dilated
-trace defects are parents. Search partial, text/source interrupted,
-generation1446587 pending, refresh incomplete. Draft hits were unverified
-and not independent evidence. Reaudit before paper proof. Do not assume
-completed divisor spaces are dilation-invariant: the first trace becomes F(m).
+For all a∈ℝ, actual physical L² dilation A_aq(t)=a q(at) is bounded linear,
+with ‖A_aq‖²=|a|‖q‖², A_aA_b=A_(ab), A_1=id, A_0=0, and
+F_(A_aq)(t)=F_q(at). Negative and zero scales are included. Positive integer
+dilation becomes the logarithmic shift x↦x+log(n+1) of the actual primitive.
+Null-set transport and L² membership are proved, not supplied as premises.
+
+With certified cell synthesis S, analysis B=S*, and Q=SB, H_m=B A_m S is
+an actual bounded ℓ² operator for every m∈ℕ, including0. Prefixes satisfy
+p_n(H_mw)=p_(mn)(w), giving H_mw(j)=Σ_(r<m)w_(mj+r). For arbitrary
+physical q, B A_mq=H_m Bq. H_mH_n=H_(mn), H_0=0,H_1=id, and the actual
+successor power satisfies H_mR^m=R H_m. The shift-power coordinate and
+prefix formulas are proved; no discrete-output summability premise.
+
+Explicit adjoint T_m=H_m* has coordinates z_(k/m) for m>0 and T_0=0.
+H_mT_m=m id, ‖T_mz‖²=m‖z‖²; T_mz/m gives an explicit right inverse
+at positive scale. ‖H_m‖=√m is sharp. The bounded block mean
+K_m=(1/m)T_mH_m is idempotent and
+
+    m‖w−K_mw‖²=m‖w‖²−‖H_mw‖².
+
+Finite pair variance V_j(m,w)=Σ_(r<m)Σ_(s<r)(w_(mj+r)−w_(mj+s))²
+has HasSum m‖w‖²−‖H_mw‖², proved by grouping the actual ℓ² square
+series into quotient fibres. Thus the variance is summable for every input.
+Energy equality holds iff every m-block is constant, vacuously at m=0.
+The full physical defect is
+
+    m‖q‖²−‖B A_mq‖²=m‖q−Qq‖²+Σ_j V_j(m,Bq).
+
+For m>0 equality holds iff q=Qq and Bq is block-constant. Actual sharp
+packet q_m=S(T_mδ_0) has energy m and dilated-analysis energy m², and is
+nonzero for m>0. The noncellular residual retains all negative-half-line
+energy through package16's exact split. No analytic admission premise.
+
+Domain boundary: unitCell1 belongs to every full-family completed divisor
+range, but A_2(unitCell1) lies outside every completed divisor range, since
+its first primitive trace is1 and all such completed traces vanish there.
+The positive survivor is the exact unrestricted operator/producer/defect
+calculus, fully proved on paper and in Lean. No full SourceGraph, full
+unitary affine group, unweighted logarithmic H1 or RH identification.
+Classical substitution, Hilbert adjoints and variance are parent theories.
+
+Trap10 alignment: explicit replication, right inverse and physical packet
+with unconditional exact energies and errors; no receiver-only equivalence
+or pre-floor counterterm subtraction. Future arithmetic coupling must apply
+stencils directly to factorial T(N). README fully read260lines and hash
+unchanged; no hgtl7 workflow, numerical experiments or heartbeat increase.
+
+Five leaves / lines / public declarations: PhysicalDilation156/17,
+IntegerBlockAggregation101/14, IntegerBlockCoisometry125/12,
+IntegerBlockVariance133/13, IntegerDilationTraceDefect152/16.
+Total667lines,72public=62theorems+10defs. Counted once, certified17/100.
+All five serial direct leaf checks have empty logs/current normal outputs.
+All72 public axiom checks pass with only propext,Classical.choice,Quot.sound;
+23 principal signatures and53 mathlib API probes checked. Five unique
+imports and72 exact catalog locations verified. No full/umbrella build.
+
+Global lint --check-generated exits1 for nine unrelated unreachable modules:
+CenteredRamanujanVarianceAndAbelCofactorCancellation, CoherentKernelSplitting,
+DivisorAverageChebyshevAndDyadicBlockVarianceProducer,
+MultiOctaveStepBrickPartitionAndWitnessDyadicPositivity,
+NyquistWeightCellAsymptotic, NyquistWeightKernel, NyquistWideSourceEnergy,
+RightNodeCollarPartition, RoutePMVarianceToWitnessSynthesisAndCriticalStripBridge;
+also concurrent LEAN_API/LEAN_OVERVIEW drift. No own/proof-debt error.
+Indexes refreshed after lint; global lint is not claimed green.
+Evidence: /tmp/integer-dilation-{axioms,lint-final,index-post-lint}.log,
+/tmp/integer-dilation-{audit-names,leaf-checks,lint-errors}.json,
+/tmp/integer-dilation-api-entries.txt and /tmp/integer_dilation_axioms.lean.
+Paper: IntegerDilationCellCoisometry.md, written before Lean.
+Card: docs/drafts/pipeline/3-formalized/integer-dilation-cell-coisometry.md.
+
+Corpus: all20 candidates and20 source arguments inspected; partial=true,
+text/source interrupted, inventory73727 complete, snapshot1446744/current1446745;
+compiler mostly pending/source-only, refresh incomplete/background_indexer.
+Lexical dilation query returned9 declarations, no semantic/compiler coverage.
+Existing finite shear/trace and actual cell synthesis are parents. No absence
+or external novelty proof. Primary mathlib Haar and oriented interval
+substitution docs checked and linked in paper.
+
+Lean lessons: give integral_comp_mul_left an explicit integrand; generic rw
+can miss the higher-order match. Use simp to rewrite dependent ite conditions.
+CLM ext should introduce only the vector, not recursively each coordinate.
+lp.norm_single needs its positive-exponent proof when used with simp only.
+Type tsum_nonneg conclusions to fix SummationFilter; type zero_pow's exponent.
+Use a separately normalized inner-prefix identity for numeric primitive traces.
+At zero scale, first prove the variance function itself is the zero function.
+
+## Next unproved candidate — physical affine commutator producers
+
+`docs/drafts/pipeline/0-backlog/physical-affine-commutator-producers.md`.
+Construct actual physical translations/anchored affine action; seek sharp
+commutator norm2√|a| when a≠0 and b(a−1)≠0, nonattainment, and explicit
+alternating packet error2/N. Unproved/uncounted, no Lean assigned. Reaudit
+primary sources and prove every normalization before formalization.
+Two corpus queries each had20 candidate and20 source statements inspected.
+Older continuous affine bounds, compact-source translations, coprime
+projection norms and packet Gram formulas are parents. Current drafts were
+indexed while unverified and give no independent certification. Queries
+partial, text/source interrupted; generations1446938 and1447034 pending,
+refresh incomplete. Evidence /tmp/integer-dilation-next-search.json and
+/tmp/physical-affine-commutator-search.json. No absence/novelty conclusion.
