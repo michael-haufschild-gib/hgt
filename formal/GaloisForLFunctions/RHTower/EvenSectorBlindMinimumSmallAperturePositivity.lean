@@ -106,7 +106,9 @@ theorem evenBlindMinimum_mul_norm_sq_le {a : SuzukiPositiveAperture}
       Real.norm_eq_abs, abs_of_pos hr0, inv_pow] at hle
     have hr2 : 0 < r ^ 2 := pow_pos hr0 2
     have hmul := mul_le_mul_of_nonneg_right hle hr2.le
-    rwa [inv_mul_cancel_left₀ hr2.ne'] at hmul
+    have hcancel : (r ^ 2)⁻¹ * ccmRestrictedWeilSourceQuadratic a u * r ^ 2 =
+        ccmRestrictedWeilSourceQuadratic a u := by field_simp
+    rwa [hcancel] at hmul
 
 /-! ## Unconditional positivity up to and past the prime `2` -/
 
@@ -225,6 +227,7 @@ theorem forall_evenBlindMinimum_nonneg_iff_primeBlindPositiveEvenPolar :
       unfold fullMixtureEnergy
       rw [Finsupp.linearCombination_mapDomain, linearCombination_apply]
       simp only [Function.comp_apply, smul_eq_mul]
+      rfl
     obtain ⟨a, u, hle⟩ := exists_aperture_evenBlindMinimum_mul_le_smooth_blind f
       (hft.trans hd_trace)
     rw [← hd_energy, ← hfe]
