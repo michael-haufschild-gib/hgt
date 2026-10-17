@@ -1,0 +1,15 @@
+# RN: continuous native normalization obstruction (2026-10-17)
+
+User objective remains active and unmet. Thread attempted XN, HF, IRK, EGC, OWU, RN; no qualifying positive contribution credited under user's strict criterion. RN remains live. Only continuous extension of the exact finite native normalization is ruled out.
+
+New verified module: formal/GaloisForLFunctions/RHTower/PaperThetaUnregularizedExtensionObstruction.lean. Seven public theorems; wired into formal/GaloisForLFunctions/RHTower.lean at current line 27500.
+
+Key result: actual first causal Xi sources with Mellin xi(s)/(s-rho_m) tend to zero in every original weighted-derivative gauge along deningerMeyerXiVerticalEscape. Exterior integer Mellin lines have denominator norm >=1; dominated convergence pays all derivative gauges. Weights 0 and 1 lie between -1 and 2. Continuous quotient generator then shows rho_m^N times each actual first causal/Hedenmalm class tends to zero for every N. Every continuous observation preserves this. Actual zeroth native theta jets retain tail trace -1 and uniform norm >=1. Therefore no continuous linear map on the original quotient can agree with all existing finite native synthesis maps. Full multiplicity retained; no simplicity or RH premise.
+
+Canonical lake --old env lean -j1 -o module audit exited 0 without warnings. Separate /tmp #print axioms audit of all seven public theorems exited 0: only propext, Classical.choice, Quot.sound. Index refreshed (1 changed, 0 removed). Formal lint completed with exit 1: ten unrelated concurrently developed modules lacked theorem-area umbrella imports; no finding named this module. Existing large-file warnings remain. Scoped git diff --check passed. Owned /tmp API, axiom, and research-search files were removed and absence checked. No owned jobs remain.
+
+Own card: docs/drafts/pipeline/5-failed/rn-native-gaussian-removal-2026-10-17.md. Contains full paper proof, positive survivor, scope limitations, conjecture loop, verification. Negative variant closed with formalized positive source-topology survivor. This is NOT credited as user's requested positive advance toward RH.
+
+Do NOT infer pointwise divergence of the particular Gaussian family on a fixed source: requires proving actual epsilon-map continuity and exact finite-packet limits, not merely injectivity. Do NOT infer all-source native BV convergence from Gaussian removal in original topology. Current native contour majorant has exp(pi*T/4-epsilon*T^2); setting epsilon=0 is not justified. Whole arithmetic sign remains open. Changing to weak/spectral target or invoking density to pass the arithmetic form does not solve the original target.
+
+No web, experiments, full/umbrella builds, heartbeat increases, commits, subagents, frontier-map edits. Serena symbol operations reject Lean paths as ignored; used filesystem fallback. Other sessions changing unrelated files; preserve them.

@@ -1,8 +1,8 @@
 # Maximal literal domain of the critical prime-log Laplace synthesis
 
 - **ID:** prime-log-maximal-laplace-domain-2026-10-17
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper proof complete; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper proof and exact Lean proof complete)
 - **Source:** whole local Lean corpus; next independent lead in the 100-theorem goal
 - **Statement:** The closed finite-prime cubic Laplace synthesis has exactly
   the maximal literal L2 domain, with a canonical damping semigroup that
@@ -11,8 +11,9 @@
 ## Goal
 
 Replace an abstract graph-closure admission condition by an exact condition
-on the actual infinite Dirichlet-Laplace source. Determine whether the endpoint
-at time zero imposes a hidden boundary condition. This is uncounted. A generic
+on the actual infinite Dirichlet-Laplace source. The closed domain has no
+additional boundary condition at time zero. Counted once as contribution 4.
+A generic
 closed-operator wrapper, another unboundedness statement, or an assumed graph
 approximation would not meet the significance requirement.
 
@@ -22,25 +23,25 @@ prime l2 source. For t > 0, put
 `F_a(t) = 2 t sum_p a_p (log p)^2 p^(-1/2-t)`.
 
 Positive-time evaluation is already a bounded source functional in the corpus.
-The proposed exact theorem is
+The proved exact theorem is
 
 `a in domain(closure T) iff F_a in L2((0,infinity),dt)`,
 
 with `closure T(a)` equal to the literal L2 class of F_a. For epsilon > 0,
-`M_epsilon(a)_p = p^(-epsilon) a_p` should map the entire source l2 into the
+`M_epsilon(a)_p = p^(-epsilon) a_p` maps the entire source l2 into the
 closed domain, with a Hilbert-Schmidt synthesized output. On the closed graph,
-it should intertwine with the contraction
+it intertwines with the contraction
 
 `R_epsilon(F)(t) = t/(t+epsilon) F(t+epsilon)`.
 
-All these conclusions would count together as one structural contribution.
+All these conclusions count together as one structural contribution.
 There is no RH assumption or missing arithmetic cancellation premise.
 
 ## Gates
 
 - [x] 0 → 1: precise source-pure candidate and explicit endpoint mechanism.
 - [x] 1 → 2: dependency-closed paper proof and complete local novelty/significance audit.
-- [ ] 2 → 3: exact Lean theorem, targeted single-job builds, axioms and wiring.
+- [x] 2 → 3: exact Lean theorem, targeted single-job builds, axioms and wiring.
 - [ ] 3 → 4: publication audit if authorized.
 
 ## Source evidence
@@ -87,15 +88,14 @@ There is no RH assumption or missing arithmetic cancellation premise.
 
 The completed audit below checks norm/measure normalizations, pointwise
 representatives, Hilbert–Schmidt synthesis, strong weighted translation and
-the distinction from an abstract completion wrapper. Lean verification of
-the exact final statement remains the counting gate.
+the distinction from an abstract completion wrapper. Lean verification below
+discharges the final counting gate.
 
 ## No-go closure
 
-No obstruction proved. If the proposed maximality fails, identify and audit
-the exact boundary defect or strongest surviving domain/core classification.
-If the statement is already present or only routine bookkeeping, record that
-and do not count it as new.
+No new route is retired. The existing obstruction to a bounded critical
+synthesis remains valid. Its positive survivor is the exact maximal closed
+domain and unconditional damped source class proved here on paper and in Lean.
 
 ## Completed paper and source audit
 
@@ -164,8 +164,51 @@ source-admission premise. It constructs the full damped l2 source class and
 classifies every undamped admissible source by its literal profile. All
 domain, damping, intertwining and core conclusions count together once.
 
+## Exact formal result and verification
+
+Primary declarations in `RHTower/PrimeLogLaplaceMaximalDomain.lean`:
+
+- `primeLogCriticalLaplaceClosure_domain_iff`: for every actual prime-l2
+  source a, membership in the original closed domain is equivalent to
+  `MemLp (primeLogCriticalLaplaceProfile a) 2 (volume.restrict (Ioi 0))`.
+- `primeLogCriticalLaplaceClosure_graph_iff`: the graph consists exactly of
+  pairs whose output equals the literal source profile almost everywhere.
+
+The profile is defined through the existing source evaluation vector, and
+`primeLogCriticalLaplaceProfile_tsum` proves the literal infinite-prime
+series identity at every positive time. The unconditional class is supplied
+by `primeLogLaplaceDamped_pair_mem_closureGraph`: every positive damping
+of every actual prime-l2 source lies in this same closed graph. Its actual
+synthesis is Hilbert–Schmidt by
+`primeLogLaplaceDampedSynthesis_isHilbertSchmidt`. No RH, bounded critical
+extension, assumed source admission or graph approximation occurs in these
+signatures. The weighted-shift identity and strong zero-time limits are
+proved, not additional hypotheses.
+
+Four final targeted `lake --old env lean -j 1 -o ...` builds exited 0 with
+empty logs. Every new module is imported exactly once by its area umbrella.
+All four output oleans were newer than their unchanged source files.
+A separate `/tmp` audit checked the two primary signatures, both unconditional
+damping signatures and 12 supporting/primary axiom closures: only
+`propext`, `Classical.choice`, `Quot.sound`. `scripts/formal_tools.py index`
+exited 0; `scripts/formal_tools.py lint --check-generated` exited 0 with
+`formal lint passed` and existing large-file warnings. No umbrella build,
+heartbeat increase or frontier-map edit was performed.
+
+Final source SHA-256:
+
+| Module beneath `formal/GaloisForLFunctions` | SHA-256 |
+| --- | --- |
+| `HTGeometry/BurnolWeightedShiftStrongContinuity.lean` | `da2f5de2ad5326568be9bc5268153a315cd336569e937d8d902ae791ae1930bf` |
+| `RHTower/PrimeLogLaplaceClosedGraphLiteral.lean` | `1d483d983bfc03b5c8ea471ff5fbd85b76a10a8fd784279c6555130978f7c92b` |
+| `RHTower/PrimeLogLaplaceDamping.lean` | `015a3e8385217218fc021d67a3d6443b6e3da4d660361d08a149923a4010e5b3` |
+| `RHTower/PrimeLogLaplaceMaximalDomain.lean` | `63930d0851d91e72813b2769b3c0edb76183b76d31fa15921215bb02396ae39a` |
+
 ## Log
 
+- 2026-10-17: all final gates passed; counted once as contribution 4/100.
+  Rechecked all four final source hashes, then deleted 20 exact owned search,
+  scratch, diagnostic and build/audit temporary files. No owned Lean job remains.
 - 2026-10-17: `PrimeLogLaplaceDamping.lean` compiles with an empty log.
   The entire damped l2 source is admitted to the original closed graph;
   its actual output is Hilbert–Schmidt. The final maximal-domain leaf is

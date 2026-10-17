@@ -60,6 +60,20 @@ the blind constraint. No such claim is assumed.
    simplicity results concern other operators or require sign data; the
    finite Farkas correction here has unrestricted signs. No simplicity claim
    has been proved for this operator.
+5. **Endpoint density saturation forces the weights: no proof found.**
+   `OddSectorPoleDensityLaw` already identifies density one at pole weight
+   one using the corpus ceiling. This scalar asymptotic does not supply the
+   pointwise minorant required by `WeilOddConeMinorantRigidity`. No equality
+   case of the underlying quadratic forms has been established.
+6. **Transfer the existing blind Xi family into the odd sector: unresolved.**
+   `WeilConeUniquenessUnconditional` supplies a jointly blind shifted-Gamma
+   family with a positive zeroth weight. Its spectral density at frequency
+   zero is positive. An odd test has transform zero there, so preserving
+   this density cannot provide an odd family. Differentiating the family
+   changes the node constraints to second derivatives of autocorrelations;
+   their vanishing is not supplied by the existing twisted-arc theorem.
+   Constructing a different odd blind Xi family remains a possible source
+   problem; no existence claim has been made.
 
 ## Actual unshifted target
 
@@ -79,3 +93,12 @@ coverage snapshots and unavailable semantic coverage; most candidates have
 source-only compiler metadata. Candidate statements were checked in current
 Lean source. No new Lean theorem, experiment, web search, or frontier-map
 edit has been made in this turn.
+
+## Turn outcome
+
+No significant OWU obstruction has been removed. In particular, neither
+the blind minimum sign, an odd-positive arithmetic weight, nor the missing
+cut/ray sign has been constructed. No new Lean module or receiver was added.
+This attempt earns **no credit** toward the requested 44-route objective.
+The route remains open and this card remains in progress; this is not a
+no-go theorem or route retirement. The global goal remains active.

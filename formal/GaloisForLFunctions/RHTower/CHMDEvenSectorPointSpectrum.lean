@@ -393,4 +393,46 @@ theorem riemannHypothesis_iff_even_point_spectrum_above_half :
       rw [h2 w heven heig, hprim, mul_zero, zero_smul]
     · exact h1 μ w hμ hμ1 heven heig
 
+theorem constantLift_fst_eq_smul_oneL (c : ℝ) : (constantLift c).val.fst = c • oneL := by
+  apply Lp.ext
+  have h1 : ((constantLift c).val.fst : ℝ → ℝ) =ᵐ[massMeasure] fun _ => c :=
+    (memLp_const c : MemLp (fun _ : ℝ => c) 2 massMeasure).coeFn_toLp
+  have h2 : (oneL : ℝ → ℝ) =ᵐ[massMeasure] fun _ => (1 : ℝ) :=
+    (memLp_const 1 : MemLp (fun _ : ℝ => (1 : ℝ)) 2 massMeasure).coeFn_toLp
+  filter_upwards [h1, Lp.coeFn_smul c oneL, h2] with x hx1 hsmul hx2
+  rw [hx1, hsmul, Pi.smul_apply, hx2, smul_eq_mul, mul_one]
+
+/-- **Unconditional simplicity of the ground eigenvalue `1` of the arithmetic resolvent.**
+By ergodicity of the archimedean jump measure (`edge_zero_iff_constant`), any fixed vector of `R`
+has zero graph edge and is therefore a scalar multiple of `oneL`. -/
+theorem eq_smul_oneL_of_resolvent_eq {w : MassSpace} (heig : resolvent w = w) :
+    w = (2 * ⟪w, oneL⟫_ℝ) • oneL := by
+  have hedge : ‖(rieszLift w).val.snd‖ ^ 2 = 0 := by
+    rw [edge_norm_sq_rieszLift, heig, real_inner_self_eq_norm_sq, sub_self]
+  have hsnd : (rieszLift w).val.snd = 0 :=
+    norm_eq_zero.mp (sq_eq_zero_iff.mp hedge)
+  obtain ⟨c, hc⟩ := (edge_zero_iff_constant (rieszLift w)).mp hsnd
+  have hw : w = c • oneL := by
+    calc w = resolvent w := heig.symm
+    _ = (rieszLift w).val.fst := rfl
+    _ = (constantLift c).val.fst := by rw [hc]
+    _ = c • oneL := constantLift_fst_eq_smul_oneL c
+  have hc_eq : c = 2 * ⟪w, oneL⟫_ℝ := by
+    have h1 : ⟪w, oneL⟫_ℝ = c * (1 / 2) := by
+      rw [hw, real_inner_smul_left, real_inner_self_eq_norm_sq, norm_oneL_sq]
+    linarith
+  rw [hc_eq] at hw
+  exact hw
+
+/-- **Strict spectral bound on the primitive hyperplane.** Every nonzero primitive eigenvector of
+the arithmetic resolvent has eigenvalue strictly below `1`. -/
+theorem eigenvalue_lt_one_of_primitive {μ : ℝ} {w : MassSpace} (hw : w ≠ 0)
+    (hprim : ⟪w, oneL⟫_ℝ = 0) (heig : resolvent w = μ • w) : μ < 1 := by
+  apply lt_of_le_of_ne (eigenvalue_le_one hw heig)
+  intro hμ
+  subst hμ
+  rw [one_smul] at heig
+  apply hw
+  rw [eq_smul_oneL_of_resolvent_eq heig, hprim, mul_zero, zero_smul]
+
 end RHTower.CHMDPolar

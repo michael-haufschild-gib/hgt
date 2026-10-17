@@ -1,4 +1,5 @@
-import GaloisForLFunctions.RHTower.CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion
+import GaloisForLFunctions.RHTower.CHMDLightConePrimeKernelDecomposition
+import GaloisForLFunctions.HTGeometry.SechComplexFourierTransform
 
 /-!
 # The half-time secant factor: the two-point sum packet as a single spectral square
@@ -244,6 +245,265 @@ theorem riemannHypothesis_iff_forall_evenWeilDensity_specSq_halfTimeSecant_nonne
     have := h y
     rw [← half_two_point_sum_eq_evenWeilDensity_halfTimeSecant] at this
     linarith
+
+
+/-! ## Section 5: the light-cone transmutation of the half-time test from `sech(πx)` -/
+
+open GaloisForLFunctions.HTGeometry RHTower.CHMDLightCone
+
+/-- The initial profile `g₀(x) = sech(πx)`, the inverse Fourier transform of `sech(r/2)`. -/
+def sechPiProfile (x : ℝ) : ℝ := (Real.cosh (π * x))⁻¹
+
+theorem sechPiProfile_pos (x : ℝ) : 0 < sechPiProfile x := inv_pos.mpr (Real.cosh_pos _)
+
+theorem sechPiProfile_neg (x : ℝ) : sechPiProfile (-x) = sechPiProfile x := by
+  unfold sechPiProfile
+  rw [mul_neg, Real.cosh_neg]
+
+theorem continuous_inv_cosh_half : Continuous fun r : ℝ => (Real.cosh (r / 2))⁻¹ :=
+  (by fun_prop : Continuous fun r : ℝ => Real.cosh (r / 2)).inv₀ fun r => (Real.cosh_pos _).ne'
+
+/-- `sech(r/2)` is integrable on the line. -/
+theorem integrable_inv_cosh_half : Integrable fun r : ℝ => (Real.cosh (r / 2))⁻¹ := by
+  have h := (_root_.HTGeometry.integrable_cosh_rpow_neg one_pos).comp_mul_left'
+    (R := (1 / 2 : ℝ)) (by norm_num)
+  refine h.congr (Eventually.of_forall fun r => ?_)
+  simp only
+  rw [Real.rpow_neg (Real.cosh_pos _).le, Real.rpow_one, show (1 / 2 : ℝ) * r = r / 2 by ring]
+
+theorem integrable_inv_cosh_half_mul_cos (x : ℝ) :
+    Integrable fun r : ℝ => (Real.cosh (r / 2))⁻¹ * Real.cos (r * x) := by
+  refine integrable_inv_cosh_half.mono' (continuous_inv_cosh_half.mul (by fun_prop)).aestronglyMeasurable
+    (Eventually.of_forall fun r => ?_)
+  have hc : 0 < (Real.cosh (r / 2))⁻¹ := inv_pos.mpr (Real.cosh_pos _)
+  simp only [norm_mul, Real.norm_eq_abs, abs_of_pos hc]
+  exact mul_le_of_le_one_right hc.le (Real.abs_cos_le_one _)
+
+theorem integrable_ofReal_inv_cosh_half_mul_cexp (x : ℝ) :
+    Integrable fun r : ℝ =>
+      (((Real.cosh (r / 2))⁻¹ : ℝ) : ℂ) * Complex.exp (((x * r : ℝ) : ℂ) * I) := by
+  refine integrable_inv_cosh_half.norm.mono'
+    ((Complex.continuous_ofReal.comp continuous_inv_cosh_half).mul (by fun_prop)).aestronglyMeasurable
+    (Eventually.of_forall fun r => ?_)
+  rw [norm_mul, Complex.norm_real, Complex.norm_exp_ofReal_mul_I, mul_one]
+
+/-- **The sech Fourier pair**: `∫ sech(r/2) cos(rx) dr = 2π sech(πx)`. -/
+theorem integral_inv_cosh_half_mul_cos (x : ℝ) :
+    ∫ r : ℝ, (Real.cosh (r / 2))⁻¹ * Real.cos (r * x) = 2 * π * sechPiProfile x := by
+  have hz : |(((-2 * x : ℝ)) : ℂ).im| < 1 := by simp
+  have h := integral_cexp_div_cosh hz
+  have hcosh : Complex.cosh ((Real.pi : ℂ) * (((-2 * x : ℝ)) : ℂ) / 2) =
+      ((Real.cosh (π * x) : ℝ) : ℂ) := by
+    rw [show (Real.pi : ℂ) * (((-2 * x : ℝ)) : ℂ) / 2 = -((π * x : ℝ) : ℂ) by push_cast; ring,
+      Complex.cosh_neg, Complex.ofReal_cosh]
+  rw [hcosh] at h
+  have hsub := MeasureTheory.Measure.integral_comp_div
+    (fun t : ℝ => Complex.exp (-((((-2 * x : ℝ)) : ℂ) * (t : ℂ)) * I) / (Real.cosh t : ℂ)) 2
+  beta_reduce at hsub
+  rw [h, abs_two] at hsub
+  have hre := integral_re (integrable_ofReal_inv_cosh_half_mul_cexp x)
+  simp only [RCLike.re_to_complex] at hre
+  calc ∫ r : ℝ, (Real.cosh (r / 2))⁻¹ * Real.cos (r * x)
+      = ∫ r : ℝ, ((((Real.cosh (r / 2))⁻¹ : ℝ) : ℂ) * Complex.exp (((x * r : ℝ) : ℂ) * I)).re := by
+        refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+        simp only
+        rw [Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re, mul_comm x r]
+    _ = (∫ r : ℝ, (((Real.cosh (r / 2))⁻¹ : ℝ) : ℂ) * Complex.exp (((x * r : ℝ) : ℂ) * I)).re := hre
+    _ = (∫ r : ℝ, Complex.exp (-((((-2 * x : ℝ)) : ℂ) * ((r / 2 : ℝ) : ℂ)) * I) /
+          (Real.cosh (r / 2) : ℂ)).re := by
+        congr 2
+        funext r
+        rw [show -((((-2 * x : ℝ)) : ℂ) * ((r / 2 : ℝ) : ℂ)) * I = ((x * r : ℝ) : ℂ) * I by
+          push_cast; ring, Complex.ofReal_inv]
+        ring
+    _ = ((2 : ℝ) • ((Real.pi : ℂ) / ((Real.cosh (π * x) : ℝ) : ℂ))).re := by rw [hsub]
+    _ = 2 * π * sechPiProfile x := by
+        rw [Complex.real_smul, ← Complex.ofReal_div, ← Complex.ofReal_mul, Complex.ofReal_re]
+        unfold sechPiProfile
+        ring
+
+/-- The cosine-modulated sech pair: `∫ cos(ar) sech(r/2) cos(rx) dr = π (sech(π(x+a)) + sech(π(x−a)))`. -/
+theorem integral_cos_mul_inv_cosh_half_mul_cos (a x : ℝ) :
+    ∫ r : ℝ, Real.cos (a * r) * (Real.cosh (r / 2))⁻¹ * Real.cos (r * x) =
+      π * (sechPiProfile (x + a) + sechPiProfile (x - a)) := by
+  have hpt : ∀ r : ℝ, Real.cos (a * r) * (Real.cosh (r / 2))⁻¹ * Real.cos (r * x) =
+      (1 / 2) * ((Real.cosh (r / 2))⁻¹ * Real.cos (r * (x + a))) +
+        (1 / 2) * ((Real.cosh (r / 2))⁻¹ * Real.cos (r * (x - a))) := by
+    intro r
+    rw [mul_add, mul_sub, Real.cos_add, Real.cos_sub, mul_comm r a]
+    ring
+  simp_rw [hpt]
+  rw [integral_add ((integrable_inv_cosh_half_mul_cos _).const_mul _)
+    ((integrable_inv_cosh_half_mul_cos _).const_mul _), integral_const_mul, integral_const_mul,
+    integral_inv_cosh_half_mul_cos, integral_inv_cosh_half_mul_cos]
+  ring
+
+theorem sechSqHalf_mul_cosh_half (r : ℝ) :
+    sechSqHalf r * Real.cosh (r / 2) = (Real.cosh (r / 2))⁻¹ := by
+  rw [sechSqHalf_eq_cosh, Real.rpow_neg (Real.cosh_pos _).le, Real.rpow_two]
+  have hc := (Real.cosh_pos (r / 2)).ne'
+  field_simp
+
+/-- The real-line restriction of the half-time factor, `cos((y/2)√(r²+2)) sech(r/2)`. -/
+def halfTimeProfileSymbol (y r : ℝ) : ℝ :=
+  Real.cos (y / 2 * Real.sqrt (r ^ 2 + 2)) * (Real.cosh (r / 2))⁻¹
+
+theorem continuous_halfTimeProfileSymbol (y : ℝ) : Continuous (halfTimeProfileSymbol y) :=
+  (by fun_prop : Continuous fun r : ℝ => Real.cos (y / 2 * Real.sqrt (r ^ 2 + 2))).mul
+    continuous_inv_cosh_half
+
+theorem abs_halfTimeProfileSymbol_le (y r : ℝ) :
+    |halfTimeProfileSymbol y r| ≤ (Real.cosh (r / 2))⁻¹ := by
+  unfold halfTimeProfileSymbol
+  rw [abs_mul, abs_of_pos (inv_pos.mpr (Real.cosh_pos _))]
+  exact mul_le_of_le_one_left (inv_pos.mpr (Real.cosh_pos _)).le (Real.abs_cos_le_one _)
+
+theorem halfTimeSecant_ofReal (y r : ℝ) :
+    halfTimeSecant y r = (halfTimeProfileSymbol y r : ℂ) := by
+  unfold halfTimeSecant halfTimeProfileSymbol
+  rw [rhoC_ofReal, sechHalf_ofReal, ← Complex.ofReal_mul, ← Complex.ofReal_cos, ← Complex.ofReal_mul]
+
+/-- The half-time test as a cosine transform of its symbol. -/
+theorem stripTest_halfTimeSecant_eq_integral (y x : ℝ) :
+    stripTest (halfTimeSecant y) x =
+      1 / (2 * π) * ∫ r : ℝ, halfTimeProfileSymbol y r * Real.cos (r * x) := by
+  unfold stripTest stripInvFT
+  have hint : Integrable fun r : ℝ =>
+      (halfTimeProfileSymbol y r : ℂ) * Complex.exp (-(I * r * x)) := by
+    refine integrable_inv_cosh_half.mono'
+      ((Complex.continuous_ofReal.comp (continuous_halfTimeProfileSymbol y)).mul
+        (by fun_prop)).aestronglyMeasurable (Eventually.of_forall fun r => ?_)
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      show -(I * (r : ℂ) * (x : ℂ)) = ((-(r * x) : ℝ) : ℂ) * I by push_cast; ring,
+      Complex.norm_exp_ofReal_mul_I, mul_one]
+    exact abs_halfTimeProfileSymbol_le y r
+  have hre := integral_re hint
+  simp only [RCLike.re_to_complex] at hre
+  simp_rw [halfTimeSecant_ofReal]
+  rw [show (1 / (2 * (Real.pi : ℂ))) = (((1 / (2 * π) : ℝ)) : ℂ) by push_cast; ring,
+    Complex.re_ofReal_mul, ← hre]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+  simp only
+  rw [show -(I * (r : ℂ) * (x : ℂ)) = ((-(r * x) : ℝ) : ℂ) * I by push_cast; ring,
+    Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re, Real.cos_neg]
+
+/-- **Light-cone splitting of the symbol transform**: the free d'Alembert pair at half time minus
+the Bessel light-cone tail, with `g₀ = sech(πx)`. -/
+theorem integral_halfTimeProfileSymbol_mul_cos (y x : ℝ) :
+    ∫ r : ℝ, halfTimeProfileSymbol y r * Real.cos (r * x) =
+      π * (sechPiProfile (x + y / 2) + sechPiProfile (x - y / 2)) -
+        (y / 2) ^ 2 / 2 * ∫ t in (-1 : ℝ)..1,
+          lightConeBesselReal (2 * (y / 2) ^ 2 * (1 - t ^ 2)) *
+            (π * (sechPiProfile (x + y / 2 * t) + sechPiProfile (x - y / 2 * t))) := by
+  have hg : Continuous fun r : ℝ => Real.cosh (r / 2) * Real.cos (r * x) := by fun_prop
+  have hgi : Integrable fun r : ℝ => sechSqHalf r * (Real.cosh (r / 2) * Real.cos (r * x)) := by
+    refine (integrable_inv_cosh_half_mul_cos x).congr (Eventually.of_forall fun r => ?_)
+    simp only
+    rw [← mul_assoc, sechSqHalf_mul_cosh_half]
+  have h := integral_cos_sqrt_mul_sechSqHalf_mul_eq (y / 2) hg hgi
+  have hpt2 : ∀ r : ℝ, Real.cos (y / 2 * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r *
+      (Real.cosh (r / 2) * Real.cos (r * x)) = halfTimeProfileSymbol y r * Real.cos (r * x) := by
+    intro r
+    unfold halfTimeProfileSymbol
+    rw [← sechSqHalf_mul_cosh_half]
+    ring
+  have hpt : ∀ a r : ℝ, Real.cos (a * r) * sechSqHalf r * (Real.cosh (r / 2) * Real.cos (r * x)) =
+      Real.cos (a * r) * (Real.cosh (r / 2))⁻¹ * Real.cos (r * x) := by
+    intro a r
+    rw [← sechSqHalf_mul_cosh_half]
+    ring
+  simp_rw [hpt2, hpt] at h
+  have hI : ∀ t : ℝ, ∫ r : ℝ, Real.cos (y / 2 * t * r) * (Real.cosh (r / 2))⁻¹ * Real.cos (r * x) =
+      π * (sechPiProfile (x + y / 2 * t) + sechPiProfile (x - y / 2 * t)) :=
+    fun t => integral_cos_mul_inv_cosh_half_mul_cos _ _
+  rw [h, integral_cos_mul_inv_cosh_half_mul_cos]
+  simp_rw [hI]
+
+/-- The light-cone transmuted profile
+`½(g₀(x+y/2) + g₀(x−y/2)) − (y²/8) ∫_{−1}^{1} B(y²(1−t²)/2) ½(g₀(x+yt/2) + g₀(x−yt/2)) dt`. -/
+def halfTimeLightConeProfile (y x : ℝ) : ℝ :=
+  (sechPiProfile (x + y / 2) + sechPiProfile (x - y / 2)) / 2 -
+    y ^ 2 / 8 * ∫ t in (-1 : ℝ)..1, lightConeBesselReal (y ^ 2 / 2 * (1 - t ^ 2)) *
+      ((sechPiProfile (x + y / 2 * t) + sechPiProfile (x - y / 2 * t)) / 2)
+
+/-- **Light-cone transmutation of the half-time test**: `g_{y/2}` is the d'Alembert average of
+`g₀ = sech(πx)` at time `y/2` minus the Bessel light-cone tail. -/
+theorem stripTest_halfTimeSecant_eq_lightCone (y x : ℝ) :
+    stripTest (halfTimeSecant y) x = halfTimeLightConeProfile y x := by
+  rw [stripTest_halfTimeSecant_eq_integral, integral_halfTimeProfileSymbol_mul_cos]
+  unfold halfTimeLightConeProfile
+  rw [show (2 : ℝ) * (y / 2) ^ 2 = y ^ 2 / 2 by ring]
+  have hpull : ∫ t in (-1 : ℝ)..1, lightConeBesselReal (y ^ 2 / 2 * (1 - t ^ 2)) *
+      (π * (sechPiProfile (x + y / 2 * t) + sechPiProfile (x - y / 2 * t))) =
+      (2 * π) * ∫ t in (-1 : ℝ)..1, lightConeBesselReal (y ^ 2 / 2 * (1 - t ^ 2)) *
+        ((sechPiProfile (x + y / 2 * t) + sechPiProfile (x - y / 2 * t)) / 2) := by
+    rw [← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_congr fun t _ => ?_
+    ring
+  rw [hpull]
+  have hπ : (π : ℝ) ≠ 0 := Real.pi_ne_zero
+  field_simp
+  ring
+
+theorem halfTimeSecant_zero : halfTimeSecant 0 = sechHalf := by
+  funext z
+  unfold halfTimeSecant
+  simp
+
+/-- **The initial profile**: `g₀ = stripTest(sech(·/2)) = sech(πx)`. -/
+theorem stripTest_sechHalf_eq (x : ℝ) : stripTest sechHalf x = sechPiProfile x := by
+  rw [← halfTimeSecant_zero, stripTest_halfTimeSecant_eq_lightCone]
+  unfold halfTimeLightConeProfile
+  have h0 : (0 : ℝ) ^ 2 / 8 = 0 := by norm_num
+  rw [h0, zero_mul, sub_zero, zero_div, add_zero, sub_zero]
+  ring
+
+theorem stripTest_sechHalf_pos (x : ℝ) : 0 < stripTest sechHalf x := by
+  rw [stripTest_sechHalf_eq]
+  exact sechPiProfile_pos x
+
+/-! ## Section 6: the two-point kernel sum is the convolution square of the half-time test -/
+
+theorem norm_halfTimeSecant_ofReal_sq (y r : ℝ) :
+    ‖halfTimeSecant y r‖ ^ 2 =
+      (1 / 2 + Real.cos (y * Real.sqrt (r ^ 2 + 2)) / 2) * sechSqHalf r := by
+  rw [halfTimeSecant_ofReal, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+  unfold halfTimeProfileSymbol
+  rw [mul_pow, Real.cos_sq, sechSqHalf_eq_cosh, Real.rpow_neg (Real.cosh_pos _).le, Real.rpow_two,
+    inv_pow, show 2 * (y / 2 * Real.sqrt (r ^ 2 + 2)) = y * Real.sqrt (r ^ 2 + 2) by ring]
+
+/-- **The convolution-square identity**: `½(K₀ + K_y) = 2 (g_{y/2} ⋆ g_{y/2})`, the half-sum of the
+prime kernels at times `0` and `y` is twice the autocorrelation of the half-time test. -/
+theorem half_kernel_sum_eq_two_mul_crossCorr (y u : ℝ) :
+    (chmdPrimeKernel 0 u + chmdPrimeKernel y u) / 2 =
+      2 * crossCorr (stripTest (halfTimeSecant y)) (stripTest (halfTimeSecant y)) u := by
+  obtain ⟨ε, C, hε, hs⟩ := (evenStrip_halfTimeSecant y).strip
+  rw [crossCorr_stripTest (by norm_num : (0 : ℝ) < 5 / 4) hε hs (evenStrip_halfTimeSecant y).sym]
+  simp_rw [norm_halfTimeSecant_ofReal_sq]
+  unfold chmdPrimeKernel
+  have h0 : ∀ r : ℝ, Real.cos (0 * Real.sqrt (r ^ 2 + 2)) = 1 := fun r => by simp
+  simp_rw [h0, one_mul]
+  have hi1 : Integrable fun r : ℝ => sechSqHalf r * Real.cos (r * u) :=
+    integrable_sechSqHalf_mul (by fun_prop) fun r => Real.abs_cos_le_one _
+  have hi2 : Integrable fun r : ℝ =>
+      Real.cos (y * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r * Real.cos (r * u) := by
+    have := integrable_sechSqHalf_mul
+      (g := fun r => Real.cos (y * Real.sqrt (r ^ 2 + 2)) * Real.cos (r * u)) (by fun_prop)
+      (fun r => by
+        rw [abs_mul]
+        simpa using mul_le_mul (Real.abs_cos_le_one _) (Real.abs_cos_le_one _) (abs_nonneg _)
+          zero_le_one)
+    refine this.congr (Eventually.of_forall fun r => ?_)
+    simp only
+    ring
+  have hpt : ∀ r : ℝ, (1 / 2 + Real.cos (y * Real.sqrt (r ^ 2 + 2)) / 2) * sechSqHalf r *
+      Real.cos (r * u) = (1 / 2) * (sechSqHalf r * Real.cos (r * u)) +
+        (1 / 2) * (Real.cos (y * Real.sqrt (r ^ 2 + 2)) * sechSqHalf r * Real.cos (r * u)) :=
+    fun r => by ring
+  simp_rw [hpt]
+  rw [integral_add (hi1.const_mul _) (hi2.const_mul _), integral_const_mul, integral_const_mul]
+  ring
 
 end RHTower.CHMDHalfTime
 

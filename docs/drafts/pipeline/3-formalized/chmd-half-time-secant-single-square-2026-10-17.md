@@ -28,3 +28,11 @@ are not compactly supported, so they lie in the closure of, not literally in, th
 
 ## Log
 - 2026-10-17 — created in 3-formalized; STATUS MUST-1573.
+
+## Update 2026-10-17 (later): transmutation and convolution square done
+- Found the sech Fourier pair in the corpus (`HTGeometry/SechComplexFourierTransform.integral_cexp_div_cosh`),
+  so the "Not done" item above is now done in the same module: `integral_inv_cosh_half_mul_cos`,
+  `stripTest_sechHalf_eq` (`g₀ = sech(πx)`), `stripTest_sechHalf_pos`, `stripTest_halfTimeSecant_eq_lightCone`
+  (half-time d'Alembert pair minus Bessel light-cone tail), `half_kernel_sum_eq_two_mul_crossCorr`
+  (`½(K₀+K_y) = 2 g_{y/2}⋆g_{y/2}`). Standard axioms; olean built; wired.
+- Still outside the literal MUST-1524 cone: `g_{y_k/2}` decays like `e^{−π|x|}` but is not compactly supported.

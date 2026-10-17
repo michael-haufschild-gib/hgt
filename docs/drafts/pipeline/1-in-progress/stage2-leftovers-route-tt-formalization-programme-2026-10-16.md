@@ -86,3 +86,13 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
 - 2026-10-17 card 4: L6 DONE (`HermitianPencilEulerFactorObstruction`: real roots of `det(B+tH)`,
   `riemannHypothesis_of_XiC_eq_det_pencil`, resolvent trace continuous off ℝ,
   `not_pencilResolventTrace_eq_eulerFactor`). Standard axioms; wired.
+- 2026-10-17 card 4: T2 DONE (`PrimeGapDirichletContinuation`, namespace `RHTower.PrimeGapDirichlet`):
+  `GapMomentBound θ` (Σ_{p_k≤X} g_k² ≤ C X^{1+θ}); `GapMomentBound.nonneg`;
+  `gapMomentBound_of_eventually_gap_le`, `gapMomentBound_one` (Bertrand), `gapMomentBound_hoheisel`
+  (θ = 71/100, corpus Hoheisel supply); Abel summation `summable_gap_sq_mul_rpow`;
+  `exists_gapDirichlet_continuation` (D = 1/(s−1) + G, G holomorphic on Re s > θ),
+  `differentiableOn_gapDirichletCont`, `tendsto_sub_one_mul_gapDirichletCont` (residue 1, θ < 1),
+  `norm_gapDirichletCont_critical_le` (θ < ½ ⟹ |D(½+it)| ≤ C(1+|t|)),
+  `gapDirichlet_continuation_hoheisel` (unconditional instance). Standard axioms; wired.
+  Recorded: Heath-Brown's admissibility of 5/18+ε is a cited literature input, not proved on the card;
+  the card's "≍ |t|" lower half has no paper proof (only ≪ is a theorem).

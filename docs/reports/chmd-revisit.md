@@ -434,7 +434,7 @@ Look at the two places in our corpus where something **genuinely beyond the line
    - And what is the unique ground state of a strictly ergodic positive Markov jump operator $L$ on $L^2(\Theta\cosh(x/2)\,dx)$ by the **Perron–Frobenius / Krein–Rutman theorem**?!
      - A symmetric Markov generator $L$ whose jump kernel is strictly positive (`archLevyDensity_pos`) is **positivity-improving** (ergodic): if $w$ is an eigenvector at the bottom of the spectrum of $L$ (which is the **top** of the spectrum of $R = (1 + L)^{-1}$!), then $|w|$ achieves the same Rayleigh quotient, forcing $w$ to be **strictly one-signed**, hence **cannot be orthogonal to $1 > 0$**!
      - **HOLD ON! Why doesn't Perron–Frobenius immediately rule out eigenvalues of $R$ above $1/2$?!**
-     - Let's check! Perron–Frobenius says that the **largest** eigenvalue of $R = (1+L)^{-1}$ (which is $\mu = 1$, with eigenvector $1 > 0$, since $L(1) = 0$) is **simple** and that **every other eigenvector $w \perp 1$ has eigenvalue $\mu < 1$** (`CHMDStationaryKernelRigidity` / `CHMDEvenSectorPointSpectrum`: $1$ is a simple eigenvalue of $R$!).
+     - Let's check! Perron–Frobenius says that the **largest** eigenvalue of $R = (1+L)^{-1}$ (which is $\mu = 1$, with eigenvector $1 > 0$, since $L(1) = 0$) is **simple** and that **every other eigenvector $w \perp 1$ has eigenvalue $\mu < 1$** (note: in the corpus, $\mu \le 1$ is `eigenvalue_le_one` in `CHMDEvenSectorPointSpectrum`; unconditional simplicity of $\mu = 1$ follows from `edge_norm_sq_rieszLift` in `CHMDArithmeticResolvent` plus `edge_zero_iff_constant` in `CHMDDoobSourceGraph`, which uses ergodicity of `archMeasure` via `constant_of_arch_zero`).
      - Perron–Frobenius gives $\mu < 1$ on $1^\perp$, whereas RH is $\mu \le 1/2$ on $1^\perp$!
      - Why is there a gap between $\mu < 1$ (Perron–Frobenius, $L \ge 0$) and $\mu \le 1/2$ (RH, $L \ge 1$ on $1^\perp$)?
        Because $v \mapsto |v|$ maps an orthogonal vector $v \perp 1$ (or an odd vector $v(-x) = -v(x)$) to a **non-negative even vector $|v| \ge 0$ that is NO LONGER orthogonal to $1$**!
@@ -455,10 +455,46 @@ Look at how much sharper that hostile audit is:
    - Continent A (`EvenSectorFullPositivity`) is the CHMD wave under the hood and only kills off-line spectrum *after* Bochner positivity is assumed.
 2. **What the whole Doob / CHMD corpus actually reduced RH to**:
    - In $\Theta$-Doob coordinates, the operator $L = L_{\text{arch}} + L_{\text{prime}}$ on $L^2(\Theta(x)\cosh(x/2)\,dx)$ is a **reversible Markov jump generator** with invariant probability-like ground state $1$ ($L(1) = 0$, eigenvalue $\lambda_0 = 0$, corresponding to the pole $s=1$).
-   - The positivity $L \ge 0$ (and simplicity of $\lambda_0 = 0$) is $\operatorname{Re}(\rho) < 1$.
+   - The positivity $L \ge 0$ gives $\mu \le 1$ (`eigenvalue_le_one`), and simplicity of $\mu = 1$ follows unconditionally from `edge_norm_sq_rieszLift` + `edge_zero_iff_constant` (via ergodicity of `archMeasure` alone, not the zero-free line; inside `CHMDEvenSectorPointSpectrum`, simplicity was bundled as a conjunct of `riemannHypothesis_iff_point_spectrum_above_half`).
    - **The Riemann Hypothesis is literally the spectral gap inequality $\lambda_1(L) \ge 1$ on $1^\perp$ (or on the odd sector $v(-x) = -v(x)$):**
      $$\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v) \ge \int_{\mathbb{R}} \Theta(x)\cosh(x/2)\,v(x)^2\,dx \qquad \forall v \perp 1 \text{ (or } v \text{ odd)}.$$
    - And the corpus has **already** proved:
      - The essential spectrum of $L$ starts at $\ge 1$ (`CHMDNoWeylAboveThreshold`: no Weyl sequence for $R$ above $1/2$);
-     - Any eigenvalue of $L$ in $(0, 1)$ is spanned by the explicit cardinal divisor packets `divisorCardinalSource a` of off-line zeros $a = \alpha + i\beta$ (`CHMDCardinalGraphGeometry`, `CHMDCardinalOperatorAction`, `CHMDAlgebraicSpectralInverse`);
-     - On odd $v$, the cross-origin jumps of $L$ give a $+4\Theta(x)\Theta(y)|v(x)||v(y)|$ bonus when $v \mapsto |v|$ (`CHMDOddCrossSignBonus`), AND the origin-crossing prime jumps factor into positive divisor-chain variances (`CHMDPrimeChainSourceFactorization`).
+     - Each off-line zero $a = \alpha + i\beta$ produces an explicit primitive cardinal frame (`exists_cardinalGraphFrame` in `CHMDCardinalGraphGeometry`) with energies $+K_+$ and $-K_-$, and finite-dimensional inertia counts (`CHMDCardinalInertia`, `CHMDAlgebraicSpectralInverse`; note: full spanning of the $(1/2, 1)$ eigenspace by cardinal packets is not proved);
+     - On odd $v$ that are one-signed on $(0, \infty)$, the cross-origin jumps of $L$ give a $+4\Theta(x)\Theta(y)|v(x)||v(y)|$ bonus when $v \mapsto |v|$ (`weilLevyForm_eq_abs_add_bonus` in `CHMDOddCrossSignBonus`; general odd $v$ satisfies the inequality `weilLevyForm_abs_le`), AND the origin-crossing prime jumps factor into positive divisor-chain variances (`CHMDPrimeChainSourceFactorization`).
+
+# Phase 3: Claude´s verdict about Phase 1 and 2
+
+Bottom line. The hostile review is right about its four holes, and its final reformulation is already in Lean. But the Summary of the Hostile Review contains three overclaims, and the one mechanism it proposes in §3 is a dead end the review itself exposes: it is Wall 13 in Doob coordinates. The report therefore leaves no next step that passes a named wall. What it does leave is one sharply stated open question, listed at the end.
+
+What the report says, and what the corpus confirms
+
+The report has two phases. Phase 1 (Pillars I–III, Paths A–C) proposes bridging the Θ-Doob sum-of-squares machine to the finite-level certificate and parity cones. Phase 2 retracts all of it with four holes, then reduces RH to a spectral-gap statement for the arithmetic Doob generator.
+
+Everything in that reduction is formalised:
+
+- RH ⟺ R ≤ ½ on the primitive hyperplane: riemannHypothesis_iff_resolventHalfBound, line 177 of CHMDSpectralRiemannCriterion.
+- RH ⟺ no odd bound state above ½: riemannHypothesis_iff_no_odd_bound_state, line 347 of CHMDOddSectorCriterion.
+- RH ⟺ cosh mass of v² ≤ arch jump + Σ prime jumps for every odd C²_c test: riemannHypothesis_iff_forall_odd_phiDoob_dirichlet_poincare, line 701 of WeilPhiDoobArchimedeanJumpAndHalfLineFolding.
+- Essential spectrum of R inside [0, ½] with ½ attained: weyl_value_le_half and half_mem_spectrum_resolvent. The proof uses the archimedean Lévy form alone, so this fact is prime-insensitive.
+- Each off-line zero gives a primitive cardinal frame with explicit energies +K₊ and −K₋: exists_cardinalGraphFrame. Bound states are counted from both sides by off-line zeros, and RH ⟺ dim P = 1.
+- Hole 3 is exact: the hypothesis of tendsto_levelCertificates_apply is literally RH.
+- Hole 1 is exact: the chain-variance identity's own docstring says no domination of the cosh mass is asserted.
+
+Three overclaims in the Summary
+
+1. "1 is a simple eigenvalue of R." Not proved unconditionally. The corpus has μ ≤ 1 via eigenvalue_le_one. Simplicity of 1 appears only as a conjunct inside riemannHypothesis_iff_point_spectrum_above_half. The cited CHMDStationaryKernelRigidity concerns the stationary theta-pullback generator and states "no uniform spectral gap".
+2. "+4ΘΘ|v||v| bonus on odd v." The identity weilLevyForm_eq_abs_add_bonus requires a one-signed test. General odd v only has the inequality weilLevyForm_abs_le.
+3. "Every eigenvalue of L in (0,1) is spanned by cardinal packets." The corpus has existence, inertia counts, and the algebraic finite-sample inverse. The Serena memory for that module says explicitly that no spanning, closed range, or infinite cardinal series is provided.
+
+What the Summary actually tells us to do next
+
+The review's §3 candidate is Markov contraction under v ↦ |v| plus Perron–Frobenius. The review then shows this yields only μ < 1 on the primitive hyperplane, because |v| leaves that hyperplane. That is exactly Wall 13 from the walls catalogue, pointwise cone versus Bochner cone, now in Doob coordinates. Hole 4 is Wall 12. So the summary passes no wall, and I recorded this in memory so it is not re-derived.
+
+The real next steps the review forces:
+
+1. Stop the window programme as an RH route. Plan Step A item 4 asks for coercivity on windows up to 2 log 2 on the one-signed odd cone. That cone is nonnegative even profiles supported in (−log 2, log 2), which walls rows 272–277 classify as the non-RH window sector. The plan's own note says crude bounds miss by two orders of magnitude.
+2. Fix the review text by striking or proving the eigenvalue-1 simplicity claim. Proving it unconditionally is a small receiver-grade Lean task needing the zero-free line, with no RH content.
+3. The one producer-shaped question left standing is the review's Survivor Candidate 1. On the odd sector the archimedean Doob form alone leaves finitely many sub-threshold modes confined to a compact window, by the confinement results and the prime-free failure recorded as CANNOT-15. The prime jump energy with the actual Λ must lift those modes to the cosh mass. Any attempt here must name the input beyond the linear explicit formula, which the walls say must be multiplicative structure, and must survive the fake-weight countermodel before anything is built.
+
+Evidence: read all 464 lines of the report, Phase 3 of the plan, memory hubs for the CHMD lane and walls catalogue, four Serena memories on cardinal packets and chain variance, docstrings and theorem lists of 17 CHMD and Doob modules, STATUS rows MUST-1529 to 1573. Corpus searches run: odd Doob Poincaré criterion, no-Weyl theorem, cardinal source energy, Beurling–Deny contraction, one-signed ground states. Greps: all riemannHypothesis_iff theorems in the CHMD and Doob files, abs-contraction theorems, Perron and spectral-gap names, eigenvalue-1 statements. Memory written to the auto-memory file and Serena rh/chmd-revisit-hostile-review-audit-2026-10-17.

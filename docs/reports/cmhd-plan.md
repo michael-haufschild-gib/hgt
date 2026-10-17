@@ -368,3 +368,10 @@ Specifically, there are **two concrete, high-impact formalization steps** direct
 - `half_two_point_sum_eq_evenWeilDensity_halfTimeSecant`: $\tfrac12(\varphi_\Lambda(0) + \varphi_\Lambda(y)) = L_\Lambda(\Psi_{y/2}\Psi_{y/2}^\#)$; `half_two_point_sum_eq_archPoleEnergy_sub_atomPairing`: $= A(g_{y/2}) - T_\Lambda(g_{y/2}\star\tilde g_{y/2})$ with $g_{y/2} = \mathrm{stripTest}\,\Psi_{y/2}$, $\widehat{g_{y/2}} = \Psi_{y/2}$ on $|\operatorname{Im} z| < 5/4$ (`paperFT_stripTest_halfTimeSecant`).
 - Polar anti-nodes `polarAntiNode k = (2k+1)π/√(7/4)`: $\Psi_{y_k/2}(\pm i/2) = 0$, $\widehat{g_{y_k/2}}(\pm i/2) = 0$, `evenPolePart` of the square vanishes, and `half_two_point_sum_polarAntiNode_eq_arch_sub_prime` gives the pure archimedean-minus-prime energy; `polarAntiNode_energy_nonneg_of_rh`; `riemannHypothesis_iff_forall_evenWeilDensity_specSq_halfTimeSecant_nonneg`.
 - Not done: the light-cone transmutation of $g_{y/2}$ from $g_0 = \operatorname{sech}(\pi x)$ (no Fourier pair for $\operatorname{sech}(r/2)$ in the corpus).
+
+### done (later, same module): Step B item 2 first half, the light-cone transmutation of `g_{y/2}` from `g₀ = sech(πx)`
+
+- Corpus had the pair after all: `integral_cexp_div_cosh` (`∫ e^{−izt}/cosh t = π/cosh(πz/2)`). From it: `∫ sech(r/2) cos(rx) dr = 2π sech(πx)`, `g₀ = stripTest sechHalf = sech(πx) > 0`.
+- `stripTest_halfTimeSecant_eq_lightCone`: $g_{y/2}(x) = \tfrac12(g_0(x+\tfrac y2)+g_0(x-\tfrac y2)) - \tfrac{y^2}{8}\int_{-1}^1 B(\tfrac{y^2}{2}(1-t^2))\,\tfrac12(g_0(x+\tfrac{yt}2)+g_0(x-\tfrac{yt}2))\,dt$ (reuses `integral_cos_sqrt_mul_sechSqHalf_mul_eq` with `g = cosh(r/2)cos(rx)`).
+- `half_kernel_sum_eq_two_mul_crossCorr`: $\tfrac12(K_0+K_y) = 2\,g_{y/2}\star g_{y/2}$.
+- Reading: the two-point packet is the Weil form of the half-time Klein–Gordon evolution of a positive profile; the Bessel tail is what can make $g_{y/2}$ change sign, and the anti-node tests are the pole-free members. Open: coercivity of $A(g_{y/2}) - T_\Lambda(g_{y/2}\star g_{y/2})$ without RH, i.e. PBAP on this one-parameter family (Wall 11).

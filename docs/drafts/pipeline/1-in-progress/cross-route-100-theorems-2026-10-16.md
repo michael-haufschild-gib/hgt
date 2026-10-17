@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 3 / 100.
+Status: ACTIVE. Count verified for this goal: 4 / 100.
 
 ## User requirements
 
@@ -61,9 +61,21 @@ novelty is not claimed: user forbids external novelty research.
    All imports wired once; index and formal lint with generated-file check
    pass. Counted once, including density and arithmetic realization.
 
+4. Exact maximal literal domain of critical prime-log Laplace synthesis.
+   Card: `../3-formalized/prime-log-maximal-laplace-domain-2026-10-17.md`.
+   Inputs: unbounded critical congruence synthesis, below-wall Hilbert–Schmidt
+   columns, source diagonal strong convergence, and Burnol depth completeness
+   with weighted shifts. The original finite-prime graph closes to exactly
+   the sources whose literal infinite-prime profile is L2, with no extra
+   time-zero boundary condition. Every positive damping of every prime-l2
+   source is admitted, and its output is Hilbert–Schmidt. Four leaves compile
+   cleanly; all 12 audited declarations use only standard axioms. Imports
+   wired once; index and formal lint with generated-file check pass. Counted
+   once, including damping, intertwining and domain/graph classifications.
+
 ## Working plan
 
-1. Contributions 1–3 complete. Recheck significance and exact scope before
+1. Contributions 1–4 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -74,16 +86,20 @@ novelty is not claimed: user forbids external novelty research.
 
 ## Uncounted next lead
 
-Primary next candidate:
-`docs/drafts/pipeline/2-fully-proven/prime-log-maximal-laplace-domain-2026-10-17.md`.
-Identify the closed critical prime-log Laplace synthesis with its maximal
-literal L2 domain, using prime damping and a weighted half-line translation
-semigroup. The intended result removes a hidden endpoint/core condition and
-admits every damped prime-l2 source. Whole-corpus leads and the attack are
-recorded; source applicability, novelty/significance and the paper proof are
-audited. Formalization is underway: weighted-shift strong continuity and
-literal identification of closed-graph outputs compile. The converse domain
-admission and final gates remain open. Candidate remains uncounted.
+Candidate 5, uncounted:
+`../2-fully-proven/completed-dirichlet-parity-differential-matroid-2026-10-17.md`.
+Paper proof establishes the exact translation-orbit classification for
+completed Dirichlet L-functions over all convergent Dirichlet series;
+unshifted families have two channels indexed by parity. Source evidence combines rational-defect
+inertness, shifted Hurwitz/gamma pole orbits and actual completed arithmetic
+sources. Relative joint independence uses base-field shift elimination;
+the stronger ambient-fixed-field criterion does not apply. Exact Lean
+formalization, verification and counting gates remain open.
+
+Other exploratory searches compared prime-only Laplace completeness and
+generic natural boundaries. Generic density consequences, repackaging the
+existing Markus theorem, or direct corollaries of contributions 1–4 must not
+be counted separately.
 
 ## Environment
 
