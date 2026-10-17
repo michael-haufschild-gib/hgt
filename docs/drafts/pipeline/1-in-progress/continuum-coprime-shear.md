@@ -21,7 +21,8 @@ The requested `update_plan` tool is unavailable; this card records the plan.
 2. Prove exact continuum energy/remainder identity before formalization.
 3. Formalize logarithmic shear and finite-cell energy bridge without unproved
    analytic inputs. Extend explicitly constructed continuous primitives to L2 velocities.
-4. Compute congestion for concrete mixed kernels and prove finite graph-domain admission.
+4. Compact-source coercivity and rigidity are proved. Construct the rough
+   modulus state, extend admission beyond compact support, and identify closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -60,13 +61,20 @@ traces or a constructed interpolant.
 - [x] Exact extended-energy transfer over a constructed diffuse/countable-line
   edge measure, including nonnegative slack and nodal control; two leaves,
   34 public theorems and 3 measure instances audited as one contribution.
-- [ ] Concrete finite graph-domain admission and full affine operator uncertainty.
+- [x] Compact-source finite resistance mass, bounded supported congestion, and
+  finite source-mass/jump/slack/nodal energies for every physical L2 velocity;
+  two leaves, 32 public theorems, all 40 public declarations audited.
+- [x] Compact-source variance coercivity and zero-energy rigidity across disconnected
+  source regions; two leaves, 21 public theorems, all 27 public declarations audited.
+- [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **3 / 100**. Formalized packages:
+Certified count: **5 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
-`../3-formalized/infinite-edge-logarithmic-path-congestion.md`.
+`../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
+`../3-formalized/compact-source-graph-admission.md`, and
+`../3-formalized/compact-source-variance-coercivity.md`.
 
 ## Current exact result and next frontier
 
@@ -116,15 +124,15 @@ checks passed without diagnostics. Imports and indexes are updated. Global lint
 reports six unrelated concurrent missing imports; exact names are in the ledger.
 This turn is **progress**. No owned process remains live.
 
-## Next candidate: compact-source mixed graph admission
+## Certified compact-source mixed graph admission
 
-Construct mixed weights from a compact continuous ψ: diffuse density
+Constructed mixed weights from a compact continuous ψ: diffuse density
 w_arch(h)ψ(u)²ψ(u+h)² and arbitrary nonnegative coefficients on lag lines
-log(n+2). Conjecture that every physical L2 velocity has finite graph and nodal
+log(n+2). Proved that every physical L2 velocity has finite graph and nodal
 energy. Compact source support bounds both endpoints, leaves finitely many
 integer lag lines, and the resistance factor cancels the diffuse 1/h singularity.
-Prove an explicit bounded, compactly supported K; then use the established local
-integrability of the rough derivative density. Audit the corpus before formalizing.
+The exact K has a finite, compactly supported majorant. Local integrability of
+the rough derivative density gives admission; source mass is also finite.
 
 Paper mechanism for this candidate: replace the singular resistance-weighted
 diffuse density, on h>0, by the continuous function
@@ -139,3 +147,32 @@ This uses a constructed finite coefficient, not an assumed congestion bound or
 summability condition on the arbitrary atom weights. The corpus search found no
 existing compact-source admission theorem; generic Sobolev/jump-domain methods
 are classical and carry no novelty claim here.
+
+Both final direct leaf checks passed without diagnostics; all 40 public
+declarations have only standard Lean axioms. Umbrella wiring, generated indexes,
+formal lint and whitespace checks passed. Formal lint's earlier concurrent
+wiring errors are absent from the current run. This turn is **progress**.
+No owned process remained live at the package-4 checkpoint.
+
+## Certified package 5: variance coercivity and nullspace
+
+For the actual compact mixture and every physical L2 primitive f (with arbitrary
+added constant), proved `0 ≤ MQ−A² ≤ sinh(2B) J`, where M=∫ψ², A=∫ψ²f,
+Q=∫ψ²f² and J is finite jump energy. Also proved `J=0` iff f is constant on
+the whole nonzero source, including disconnected regions. Exact pair/positive-lag
+variance identities justify the comparison. Compact admission gives the additive
+Dirichlet consequence. No positive-mass, connected-support, atom-summability or
+energy-admission premise is assumed.
+
+Both final leaf checks and all 27 public-declaration axiom audits passed.
+Imports and indexes are current. Global lint reports seven unrelated concurrent
+missing imports, listed in the fact ledger; neither new leaf has a lint error.
+This turn is **progress**; goal remains active at **5/100**.
+
+## Next candidate
+
+`../0-backlog/rough-sobolev-modulus-nodal-defect.md`: construct the actual L2
+velocity of |f|, prove its primitive identity and local Dirichlet-energy equality,
+then prove exact mixed-graph decomposition `J(f)=J(|f|)+nodalEnergy(f)`.
+Existing nodal algebra does not construct this rough-state domain realization.
+The zero-level-set derivative issue must be proved, not assumed. Not yet counted.

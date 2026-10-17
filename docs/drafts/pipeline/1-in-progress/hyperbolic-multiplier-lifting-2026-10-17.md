@@ -21,6 +21,14 @@
 8. Audit inherited multiplier zeros on actual smooth odd sources: construct a six-packet
    family, prove exact zero-lag/source energy and positive multiplier leakage laws, and
    extract the quantitative survivor before rejecting that inference.
+9. Use the exact leakage boundary to seek source-centered weighted control, keeping
+   the full prime-grid problem and negative odd moment explicit.
+10. Replace multiplier Gram leakage by an exact centered source cross-correlation
+    and a source Gram bound on node differences; integrate its penalty into the
+    actual plastic receiver, with no inherited zeros or unknown moment estimate.
+11. Project the difference packet off the original source. Prove its Schur residual
+    energy, sharpen the actual leakage receiver, and compare the resulting envelope
+    with every scalar centering choice. Audit zero-energy cases explicitly.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -36,11 +44,15 @@
 - [x] Run corpus search; inspect actual Pillar VI and IX theorem bodies.
 - [x] Dependency-closed paper theorem with unconditional measured-defect formulation.
 - [x] Exact Lean theorem verified and wired into the BiScale umbrella.
-- [x] Dedicated knowledge ledger and truthful contribution accounting: three substantive bridges,
-  with 13, 19, and 18 public supporting theorems respectively.
+- [x] Dedicated knowledge ledger and truthful contribution accounting: five substantive results,
+  with 13, 19, 18, 12, and 15 public supporting theorems respectively.
 - [x] Uncompensated transfer into the full secant energy, source-derived support factor retained.
 - [x] Actual signed plastic crossover receiver, including positive remainder, odd sine moment,
   and original origin coefficient; no inferred multiplier blindness.
+- [x] Smooth odd fixed-energy family with a source zero at log(2), exact positive
+  multiplier leakage law, and unconditional unboundedness relative to source energy.
+- [x] Centered source difference-Gram control replaces multiplier off-diagonal
+  data in the full secant/plastic receiver; weighted energy minimizer is exact.
 - [ ] Repository-wide lint clean: concurrent unrelated modules remain unwired (latest gate below).
 - [ ] Complete original 100-contribution objective.
 
@@ -151,8 +163,10 @@ The original target is not complete. The second result removes the cosine compan
 for the secant functional at a support-dependent scale; the third result transfers it
 into the actual plastic receiver. Multiplier leakage and the negative odd moment remain
 uncontrolled. The 100-contribution objective stays active.
-The six-packet odd source in the knowledge ledger tests inherited clique zeros and
-unbounded multiplier leakage and remains an unformalized candidate.
+The fourth verified result below formalizes the six-packet odd family: original
+energy and its log(2) zero stay fixed while multiplier leakage grows without bound.
+This closes the single-log-zero inference audit; stronger grid or weighted control
+remains necessary for the full receiver.
 
 ## Second verified result: uncompensated jump transfer
 
@@ -329,7 +343,7 @@ receiver for signed and canonically odd sources, not a new claim about those ing
 - Owned documentation whitespace check passed; final source hash and generated API entries
   rechecked. Scratch API/axiom files and captured lint output removed after recording results.
 
-## Fourth paper result under formalization: exact odd leakage family
+## Fourth verified result: exact odd leakage family
 
 Use the existing smooth even packet phi from
 `formal/GaloisForLFunctions/RHTower/EvenSectorSmoothBlindInterpolationObstruction.lean`.
@@ -364,5 +378,173 @@ sinh(t+2d)>=t+2d, the leakage is unbounded while h_fT(0) and h_fT(d) remain fixe
 Thus no bound depending only on original origin energy can control multiplier
 leakage even within smooth odd sources with this fixed source zero. A valid
 receiver must retain actual multiplier Gram data or additional position/moment data.
-All overlap, smoothness, support, mass, and unboundedness steps must be formalized;
+All overlap, smoothness, support, mass, and unboundedness steps are formalized;
 no numerical computation or unverified zero-grid inheritance is admitted.
+
+### Verification of the fourth result
+
+- Actual-source final compile exited 0 with no warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/OddMultiplierLeakageFamily.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/OddMultiplierLeakageFamily.olean`.
+- All 12 public theorem axiom audits in `/tmp/hml_leak_axioms.lean` passed with only
+  `propext`, `Classical.choice`, `Quot.sound`; the scratch file imports the emitted module.
+- Final source SHA256: `fd8f41743e0b8a24bb2a4ebd43594b172a93ffef3c3066c9a631afedaa500ef0`.
+- Main theorems: `OddMultiplierLeakage.source_sinh_autocorr_lag` and
+  `OddMultiplierLeakage.exists_odd_logZero_large_sinhCorrelation`.
+- The packet's existing smoothness, evenness, support and positive mass are reused.
+  The actual-source family, fixed energy, exact logarithmic source zero and quantitative
+  unbounded multiplier leakage constitute one result: count 4/100. No external-priority claim.
+- Narrow failed inference and its fully formalized positive survivor are recorded in
+  `docs/drafts/pipeline/5-failed/odd-single-log-zero-multiplier-inheritance-2026-10-17.md`.
+  Hyperbolic lifting and the full infinite-grid problem remain active.
+- Umbrella import and both README entries added; `scripts/formal_tools.py index`
+  exited 0. Generated API contains all 12 public theorem entries.
+- Latest `scripts/formal_tools.py lint --check-generated` exited 1: concurrent
+  `BiScaleUncertainty.CompactSourceGraphAdmission`, `CompactSourceResistanceMass`,
+  `FiniteCopyTailRigidity`, and `FiniteTranslationTrains` were unreachable from their
+  umbrella; `formal/LEAN_API.md` drifted after index refresh. Existing large-file
+  warnings remain. No owned multiplier-transfer, receiver or leakage module was flagged.
+- Owned documentation whitespace check passed. Scratch API/axiom files and captured
+  lint output removed after recording results; no owned Lean process remains.
+
+## Fifth verified result: centered source-Gram control
+
+Let F=(f(u)-f(-u))/2 for arbitrary f in C_c(R), and let alpha,lambda be arbitrary
+real parameters. Put S=sinh(alpha u)F, q_lambda=(cosh(2alpha u)-lambda)F,
+R=h_F(0), M=integral cosh(2alpha u)F(u)^2 du and
+W=integral cosh(2alpha u)^2 F(u)^2 du. These are actual compact continuous
+sources and finite integrals; no source or multiplier zero is assumed.
+
+Odd reflection u -> -u-x shows
+integral cosh(2alpha u)F(u)F(u+x)du
+ =integral cosh(2alpha(u+x))F(u)F(u+x)du.
+Average these integrals, use hyperbolic addition and Pillar VI, obtaining
+
+integral q_lambda(u)F(u+x)du
+ =2cosh(alpha x)h_S(x)+(cosh(alpha x)^2-lambda)h_F(x).
+
+For finite nodes t_i and real weights v_i let P={(i,j): i,j in s, i!=j},
+d_ij=t_j-t_i and a_ij=v_i v_j/[2cosh(alpha d_ij)]. Then the actual sine clique
+defect D=G_S-R_S sum_i v_i^2 has the exact decomposition
+
+D=E_lambda+integral q_lambda(u)[sum_P a_ij F(u+d_ij)]du,
+E_lambda=sum_P a_ij[lambda-cosh(alpha d_ij)^2]h_F(d_ij).
+
+The square integral of the packet is precisely
+G=translationGramEnergy F P a d. Thus, by the existing integral Cauchy--Schwarz
+theorem (reused, not claimed new),
+
+|D-E_lambda| <= sqrt(Q_lambda G), Q_lambda=h_(q_lambda)(0),
+D <= U_lambda := E_lambda+sqrt(Q_lambda G).
+
+This is a source-only bound on every off-diagonal multiplier Gram contribution.
+The source Gram is evaluated on differences of the original nodes; its cross
+entries are retained. On an actual source clique E_lambda=0, but the new
+difference-node Gram need not be diagonal. No such diagonal substitution is made.
+The exact centering cost is Q_lambda=W-2lambda M+lambda^2 R, hence
+R Q_lambda=(R lambda-M)^2+(R W-M^2), with R W-M^2>=0. This identifies the
+weighted variance exposed by the preceding unbounded-leakage family. For R>0
+the energy minimum occurs at lambda=M/R; the formal main bound needs no
+nonzero-energy premise and admits every lambda.
+
+At alpha=1/2 substitute U_lambda for D in the previously verified uncompensated
+clique penalty. For the source-derived weights v_i, the new lower bound is
+
+R_S[sum_i v_i cosh((t_i-y)/2)-sqrt(sum_i v_i^2)]
+ -sqrt(R_S max(U_lambda,0)).
+
+It is below the existing full multiplier-Gram bound, since D<=U_lambda and
+sqrt(R_S G_S)<=R_S sqrt(sum v_i^2)+sqrt(R_S max(D,0)). All coefficients are
+continuous in collar offset y; source correlations in the difference-node Gram
+are fixed. Integrate over the existing disjoint arithmetic collars, then apply
+P(F)=J_sech(F)+R_plastic(F)-2O(F)^2. The resulting lower bound retains the
+positive plastic remainder and negative odd moment, but uses only source Gram
+data and the actual centered weighted source energy to control leakage.
+
+Scope: removes the unknown multiplier off-diagonal Gram from the receiver, not
+the support factor in the jump envelope, weighted-moment growth, or the negative
+odd moment. Source zeros remain explicit data. Corpus searches found existing
+packet-Gram, Cauchy--Schwarz and receiver tools; the broad hybrid search had no
+exact lexical hit, and the focused search was partial with unmeasured semantic
+coverage. No external novelty claim or numerical experiment is involved.
+
+### Verification of the fifth result
+
+- Actual-source final compile exited 0 with no warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/CenteredHyperbolicGramControl.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/CenteredHyperbolicGramControl.olean`.
+- Scratch API checks and all 15 public theorem axiom audits in
+  `/tmp/hml_center_api.lean` passed; only `propext`, `Classical.choice`, `Quot.sound`.
+- Final source SHA256: `943a494e19a78335bbc2bb288adf016474e44c5ea747a3937528aa39a529f85e`.
+  The previous four source hashes also match their recorded verified versions.
+- Main theorems: `CenteredHyperbolicGram.odd_defect_abs_sub_correction_le`,
+  `centered_energy_minimizer`, `odd_secantEnergy_ge_centered`, and
+  `odd_plasticCrossover_ge_centered`. Final receiver retains the full positive
+  plastic remainder and precise negative odd moment.
+- Source hypotheses, Bessel/Cauchy--Schwarz, and generic moment minimization are not
+  separate contributions. The exact odd mixed-correlation representation, source
+  difference-Gram control, centering law and actual functional receiver count once:
+  5/100, with 77 public supporting theorem audits across the five modules.
+- Concurrent `HyperbolicMultiplierIncrementAndOddSignCoercivity.lean` appeared during
+  this work. Its actual source was read: it supplies joint cosine/sine increment and
+  signed-collar bounds retaining multiplier samples. It does not contain this centered
+  mixed-correlation identity or source-only off-diagonal replacement. Its results are
+  not included in our count, and its documentation does not establish closure of the
+  remaining full odd positivity problem. No concurrent file was changed by this audit.
+- Boundary: the energy-minimizing center need not minimize the entire envelope away
+  from a source clique, because E_lambda also depends on lambda. The pair-difference
+  Gram remains full. Support dependence, weighted variance growth, full-grid coercivity,
+  and negative odd-moment domination remain open.
+- Umbrella import and both README entries added. `scripts/formal_tools.py index`
+  exited 0; generated API includes the new receiver and minimizer declarations.
+- Latest `scripts/formal_tools.py lint --check-generated` exited 1 on eight concurrent
+  modules unreachable from the BiScale umbrella: `CappedBlockSupport`,
+  `CappedCosetSphereDuality`, `CompactSourceGraphCoercivity`, `CompactSourcePairVariance`,
+  `FullGridCappedCollarEnergy`, `HyperbolicMultiplierIncrementAndOddSignCoercivity`,
+  `KreinKantorovichMeasureTransportAndPrimePolarPairing`, and
+  `SignedKreinCollarAndPrimeDeficitTransfer`. No owned lifting module was flagged;
+  no generated-file drift was reported in this snapshot. Existing large-file warnings remain.
+- New source, owned ledger and card have no trailing whitespace. Broad shared-file
+  `git diff --check` reports an unrelated new blank line at EOF in the concurrently
+  expanded formal README; its content was preserved. Scratch API/axiom file and
+  captured lint output removed after recording the audit; no owned Lean process remains.
+
+## Sixth candidate: source-orthogonal leakage envelope
+
+For the actual difference packet P=sum a_p F(.+d_p), set R=h_F(0),
+K=<F,P>=sum a_p h_F(d_p), G=||P||^2, mu=M/R and Q=||q_mu||^2.
+The centered weighted source q_mu is orthogonal to F, including R=0 because
+the existing variance inequality forces M=0 there. Likewise K=0 when R=0.
+Thus P_perp=P-(K/R)F satisfies
+||P_perp||^2=G-K^2/R=:H>=0 and <q_mu,P_perp>=<q_mu,P>.
+Consequently the actual odd multiplier defect obeys
+
+|D-E_mu| <= sqrt(Q H), U_perp=E_mu+sqrt(Q H).
+
+This replaces the full packet Gram by its source-orthogonal residual. It is
+not inferred pair-difference orthogonality: every source Gram entry remains.
+For arbitrary c, put z=c-mu. The exact centering laws give
+E_c=E_mu+zK, Q_c=Q+Rz^2, G=H+K^2/R (R>0).
+The elementary two-dimensional identity
+(a^2+x^2)(b^2+k^2)-(ab-xk)^2=(ak+xb)^2
+with a=sqrt Q, b=sqrt H, x=z sqrt R, k=K/sqrt R proves
+U_perp<=E_c+sqrt(Q_c G). When R=0, M=K=0 gives equality.
+Hence the projected envelope improves every previously available scalar center,
+including signed source correlations. Substituting it in the uncompensated
+collar penalty should yield a stronger full secant/plastic lower bound.
+
+On a source clique, each h_F(d_p)=0, so K=0 and every E_c=0. Therefore the
+projected envelope equals the previous envelope at mu, and mu already minimizes
+the whole scalar-centered envelope. This is an exact boundary: projection onto
+F cannot supply a further clique gain. Away from a source clique the Schur
+subtraction removes a real packet cost and the envelope dominates every center.
+No strict improvement for every source, or full-grid coercivity, is claimed.
+
+Paper mechanism is dependency-closed; formalization pending. Corpus search
+`research "centered hyperbolic Schur projection difference packet" --module
+BiScaleUncertainty --any --per-module 2 --explore 0` returned 204 declarations
+in 26 modules. Hybrid search was partial (71.12s), with unfinished text/source
+retrieval and unmeasured semantic coverage. Inspected actual existing abstract
+Schur--Krein and translation-packet proofs. Their classical projection and
+Cauchy--Schwarz mechanisms are reused, not counted as separate contributions;
+the contribution is the exact multiplier-envelope comparison, source-clique
+boundary and improved actual receiver. No external novelty claim.
+Support envelope, remaining residual Gram, and negative odd moment remain.

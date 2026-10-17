@@ -192,7 +192,52 @@
       `O(N⁻¹/²)` dyadic-window polar tail decay and the Infinite-Grid Trap-5 Closure / Kinetic
       Coercivity Theorem `N μ² ≤ 4 log 2 K h_f(0)`.
 
+14. **Pillar XIV — `formal/GaloisForLFunctions/BiScaleUncertainty/SignedKreinCollarAndPrimeDeficitTransfer.lean`**
+    - `autocorr_signed_collar_add_eq`, `autocorr_signed_collar_sub_eq`,
+      `autocorr_signed_collar_add_ge_krein`, `autocorr_signed_collar_sub_ge_krein`,
+      `autocorr_signed_collar_origin_leverage_add`, `autocorr_signed_collar_origin_leverage_sub`:
+      Exact signed collar-increment decomposition `(h_f(0) - h_f(t ± y)) + h_f(t) = h_f(0) - (h_f(t ± y) - h_f(t))`
+      and single-node origin-collar leverage for arbitrary signed `h_f(t) ∈ ℝ` (resolving Trap 9).
+    - `abstract_signed_collar_gram_identity`, `abstract_signed_collar_gram_ge`,
+      `abstract_signed_clique_origin_leverage_ge`, `abstract_signed_almost_orthogonal_origin_leverage_ge`:
+      Abstract Hilbert-space completion-of-squares identity and multi-node signed collar leverage
+      for orthogonal cliques and Selberg–Bombieri almost-orthogonal families without blindness
+      assumptions.
+    - `sum_integral_signed_nyquist_collar_ge`:
+      Signed dyadic-window Nyquist sum-to-integral collar bound across `[log N, log(2N)]`.
+    - `archLevySinhWeight_log_nat_eq`, `archLevySinhWeight_log_nat_ge_two_div_sqrt`,
+      `archLevySinhWeight_log_nat_sub_two_div_sqrt_le`:
+      Exact critical-line `2 / √n` node scaling law and `O(n^{-5/2})` remainder bound for
+      `archLevySinhWeight (log n)` (`n ≥ 2`).
+
+15. **Pillar XV — `formal/GaloisForLFunctions/BiScaleUncertainty/KreinKantorovichMeasureTransportAndPrimePolarPairing.lean`**
+    - `inv_archLevySinhWeight_eq`, `exp_neg_half_mul_sinh_eq`, `exp_neg_half_mul_sinh_le`,
+      `archLevySinhWeight_ge_exp_neg_half_div`:
+      Linear origin-vanishing bound `(archLevySinhWeight y)⁻¹ = exp(-y / 2) * sinh y ≤ y * exp(y / 2)`
+      and singular hyperbolic lower bound `exp(-r₂ / 2) / y ≤ archLevySinhWeight y` on `(0, r₂]`.
+    - `krein_kantorovich_pointwise_abs_le`, `krein_kantorovich_pointwise_linear_reg_le`,
+      `collar_measure_transport_abs_diff_le_levy`:
+      Pointwise and integrated Krein–Kantorovich measure-transport inequalities coupling discrete
+      node evaluations `h_f(t)` to continuum collar integrals `∫_a^δ h_f(t + y) ρ(y) dy`.
+    - `narrow_support_logarithmic_levy_lower_bound`, `bounded_levy_width_rigidity`:
+      Logarithmic archimedean energy cost `exp(-r₂ / 2) log(r₂ / r₁) h_f(0)` of narrow support and
+      Bounded-Energy Width Rigidity `log(r₂ / r₁) ≤ exp(r₂ / 2) K` (closing Trap 8 in the
+      bounded-energy regime).
+
+16. **Pillar XVI — `formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicMultiplierIncrementAndOddSignCoercivity.lean`**
+    - `coshMultiplier_defect_add_sinh_half_sq_eq`,
+      `sinhMultiplier_defect_le_coshMultiplier_defect`,
+      `cosh_mul_source_defect_le_coshMultiplier_defect`:
+      Exact two-positive-term hyperbolic multiplier defect decomposition and two-way domination
+      bounds.
+    - `sinhMultiplier_signed_collar_origin_leverage_add`,
+      `coshMultiplier_signed_collar_origin_leverage_add`,
+      `coshMultiplier_signed_collar_ge_of_source_zero`,
+      `joint_base_sinhMultiplier_collar_ge_of_source_zero`:
+      Leakage-proof signed collar leverage for `S_α f` and `C_α f`, and zero-grid coincidence lift
+      resolving Trap 7 (`OddMultiplierLeakageFamily.lean`).
+
 ## Audit Status
 - **Umbrella Verification**: `lake env lean GaloisForLFunctions/BiScaleUncertainty.lean` passes with exit code `0` (all modules wired).
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XIII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XVI; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 

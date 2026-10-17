@@ -16,16 +16,22 @@
 6. [x] Formalize paired signed-coset sphere support, discharge product-zero orthogonality
    on the squared grid, integrate the stronger kernel for actual sources, and build
    the monotone envelope over all product-admitted cutoffs.
-7. [ ] Prove paired array capacity bounds and padding invariance; reuse exact physical
+7. [x] Prove paired array capacity bounds and padding invariance; reuse exact physical
    extension/retraction to prove Q_K monotonicity and tail stability, identify the
    coupled limit, and establish the product-cutoff N^(−1/4) bound.
-8. [ ] Develop sharp Schur-coupled growth and matching finite-limit asymptotics. The general transfer does not settle these or the full 100-contribution objective.
+8. [x] Prove exact capped-block support and compact two-radius maximization;
+   combine whole-coset spheres with low-node product constraints without dropping
+   high nodes, then transfer the resulting full-grid coefficient to actual sources.
+9. [ ] Develop sharp Schur-coupled growth and matching finite-limit asymptotics. The general transfer does not settle these or the full 100-contribution objective.
 
 Current mathematical results: P_N is monotone with an explicit tail error; product-zero
 coupling gives attained paired-sphere support and a stronger physical coefficient Q_K.
 The optimized certificate C_N=max(P_N,max_(K²≤N)Q_K) is positive, monotone, bounded,
-and valid for actual smooth grid sources. Next step: paired capacity comparisons and
-quantitative Q_K saturation, followed by the full-grid capped-support refinement below.
+and valid for actual smooth grid sources. Paired capacity now proves Q_K saturation
+and an explicit N^(−1/4) hierarchy error. Full-grid capped support now preserves
+all high nodes, dominates the independent physical coefficient, and bounds actual
+source energy. Next: its cutoff hierarchy, exact activation, unequal product pairs,
+and matching leading-law audits below.
 Previous goal turn is classified as progress: cutoff monotonicity and quantitative
 saturation passed direct Lean and all axiom audits. Current corpus query confirms
 available Bessel/signed-transport inputs; it does not certify exhaustive novelty
@@ -38,12 +44,19 @@ array-capacity, and paired-support inputs; semantic coverage remains unmeasured.
 The next package must prove its own paired capacity law before using the old tail
 argument. A prior independent-allocation rate is not a proof of coupled saturation.
 
+`PairedCollarCapacity.lean` now passes direct verification of block/radial capacity,
+unordered nonnegative error bounds, and exact padding. `PairedCollarCutoffStability.lean`
+implements the extension/retraction comparisons, monotonicity and finite limit of Q_K,
+exact largest-admitted-frame reduction, floor-root error, and uniform bound
+16·2^(1/4)/N^(1/4) for C_∞−C_N, N≥4. Both direct compilations and all 30 package
+axiom audits pass. Final direct recheck passed, exit 0, no diagnostics. The two leaves form one contribution.
+
 `PhysicalCollarCutoffMonotonicity.lean` now passes its direct leaf check, with no diagnostics.
 Its explicit extension proves monotonicity of P_N and equality with the running maximum.
 `PhysicalCollarCutoffStability.lean` implements the complementary retraction and explicit
 inverse-square-root error; direct compilation produced a current compiled output with no
 diagnostics. All 35 public theorem axiom audits and the final direct leaf recheck passed.
-Current global lint reports six missing imports in other workstreams, listed below.
+Current global lint reports two missing imports in other workstreams, listed below.
 These two leaves form one contribution package; padding lemmas are not separate contributions.
 
 Current signed-coupling package: `PairedCosetSphereDuality.lean` passes direct
@@ -306,9 +319,9 @@ This attainment is a finite-vector statement, not autocorrelation realizability.
 The positive-W support theorem and its finite-vector attainment are Lean-certified;
 they are counted together with actual source transport and the monotone hierarchy.
 
-## Full-grid coupling without splitting loss [next paper candidate]
+## Full-grid coupling without splitting loss [Lean-verified]
 
-Discarding nodes above sqrt(N) is unnecessary in the next refinement. In each signed
+The full-grid refinement retains nodes above sqrt(N). In each signed
 coset split its coefficient vector into low nodes j≤K and high nodes j>K, K²≤N.
 Let L_(σ,m), H_(σ,m) be their Euclidean norms. Existing whole-coset spheres give
 u₀²+||u_low||²+||u_high||²≤R²; product zeros add every opposite-sign low-block pair
@@ -333,15 +346,54 @@ attains the W/Z combination. Zero subvectors cause no difficulty.
 
 Crucially Z≤Σ_(σ,m)sqrt(L_(σ,m)²+H_(σ,m)²), the old whole-coset norm bound.
 Thus this construction retains high-node mass and cannot worsen the old coefficient;
-it avoids the unjustified separate low/high triangle bound. All-low specialization
-recovers the paired support now formalized. Full-grid source transport,
-measurable maximization, finite-limit rate, and sharp source realization still need
-proof. This is an uncounted candidate, not a certified theorem. Corpus search
-`/tmp/bsu-capped-block-search.log` returned the paired support and generic sphere
-ingredients, with no exact match and unmeasured semantic coverage; no exhaustive
-novelty claim follows.
+it avoids the unjustified separate low/high triangle bound. The exact cap formula,
+compact maximization and continuity, upper support, and finite-vector attainment
+are certified in `CappedBlockSupport.lean` and `CappedCosetSphereDuality.lean`.
+`FullGridCappedCollarEnergy.lean` proves measurable physical composition,
+integrability, domination of the original kernel/coefficient, and actual source
+transfer on the full interval (0,log N). For every physical partition ρ and
+K²≤N, its capped coefficient B_(N,K)(ρ) satisfies
 
-## Quantitative product-coupled saturation [next paper candidate]
+    oldCoefficient_N(ρ) ≤ B_(N,K)(ρ) ≤ J_arch(f)/h_f(0).
+
+The extended-energy version includes zero sources and infinite energy. The ratio
+version uses the actual nonzero compact C² grid-source domain. The capstone
+`fullGrid_capped_energy` chooses K=floor(sqrt N), N≥4, with no caller-supplied
+analytic interface. All three leaves compile, all 41 public theorem axiom/signature
+audits pass with standard three axioms, and the final direct source-leaf check
+passes without diagnostics. This is one package.
+
+All-low equality with the previous paired support, the activation criterion below,
+cutoff monotonicity and rate of this new coefficient, and true source realization
+remain unformalized. General nonzero Schur coupling remains open. The uniform
+low cutoff also leaves unused product-zero pairs with unequal node sizes; retaining
+those is a further refinement. Corpus searches `/tmp/bsu-capped-block-search.log`
+and `/tmp/bsu-fullgrid-cap-search.log` supplied generic support/compactness inputs;
+semantic coverage is unmeasured, so no exhaustive novelty claim follows.
+
+## Full-grid activation criterion [paper proof; Lean pending]
+
+For each signed block let U=sqrt(L²+H²), and let its low fraction be L/U
+when U>0, otherwise zero. Let α_σ be the maximum low fraction on sign σ
+(include zero for an empty family). The capped support equals the independent
+whole-block support if and only if α_false²+α_true²≤1. Otherwise it is strictly
+smaller. Thus high-node weight can absorb the product constraint: positive low
+weights alone do not force improvement.
+
+Proof: each capped block support is at most U. For U>0, equality in the
+two-coordinate Cauchy inequality forces the unique normalized direction
+(L/U,H/U); this direction is feasible exactly when t_σ≥L/U. Zero blocks impose
+no restriction. The finite sum reaches its independent upper bound exactly
+when every nonzero block reaches its own upper bound. Compact attainment of
+the outer maximum makes this equivalent to simultaneous cap feasibility.
+Such caps exist precisely when α_false²+α_true²≤1; choose t_false=α_false
+and t_true=sqrt(1−α_false²). The common-origin square root is strictly
+increasing in nonnegative angular support, so the same strictness criterion
+holds for the pointwise energy kernel. An integrated strict gain additionally
+requires strict activation on a positive-measure set. This criterion is not
+yet Lean-verified and is not counted separately.
+
+## Quantitative product-coupled saturation [Lean-verified]
 
 Write Q_K for the optimized paired physical coefficient. For nonnegative arrays,
 coordinate addition changes each sign's aggregate norm by a nonnegative amount
@@ -349,18 +401,21 @@ bounded by the added weight mass. The Euclidean norm of (W,A_+,A_-) is monotone
 on its nonnegative coordinates and 1-Lipschitz in their l1 distance. Hence the
 paired kernel has the same two capacity bounds used for P_K: it is coordinatewise
 nondecreasing and its increase is at most added mass. Zero-padding preserves both
-sign norms. The already constructed physical extension and retraction should then
+sign norms. The already constructed physical extension and retraction now
 prove, by exactly the same physical transport argument,
 
     Q_K ↑ Q_∞,   0≤Q_∞−Q_K≤∫_(log K−δ)^∞w
       ≤4·2^(1/4)/(sqrt(K)(1−2/K²)).
 
-These paired capacity comparisons still need Lean proofs; the P_K rate alone does
-not prove them. The coupled hierarchy C_N=max(P_N,max_(K²≤N)Q_K) has limit Q_∞:
+The paired capacity comparisons are independently proved in Lean; the P_K rate alone
+does not prove them. The coupled hierarchy C_N=max(P_N,max_(K²≤N)Q_K) has limit Q_∞:
 every Q_K is eventually admitted, while P_K≤Q_K and all admitted Q_K≤Q_∞. Thus for
 every admitted K, its error is bounded by the displayed tail at K, yielding an
-O(N^(−1/4)) bound on taking K=floor(sqrt N). This is a candidate quantitative
-source certificate for the product-coupled subhierarchy, not for the full Gram cone.
+O(N^(−1/4)) bound on taking K=floor(sqrt N). Lean also proves the exact identity
+C_N=max(P_N,Q_floor(sqrt N)) for N≥4, and the uniform upper error
+16·2^(1/4)/N^(1/4). Actual smooth grid-source energy is at least Q_∞ minus this
+error. This is a quantitative certificate for the product-coupled subhierarchy,
+not for the full Gram cone.
 
 The concentrated-tail proof for leading coefficient 4 also appears to extend to
 Q_K, using the squared Euclidean sign norm and the same l1 upper estimates. If
@@ -372,14 +427,16 @@ from the positive gain for some fixed physical partitions.
 
 ## Accounting
 
-Three significant packages are Lean-verified, including all axiom/signature audits:
+Five significant packages are Lean-verified, including all axiom/signature audits:
 (1) arbitrary-partition energy transfer and optimized certificates;
 (2) actual cutoff monotonicity, retraction stability, and quantitative saturation;
-(3) paired-sphere support, actual product-zero source transfer, and monotone coupled hierarchy.
-Count **3/100** mathematical contributions. Repository-wide integration remains pending
-because of six unrelated concurrent missing imports. Do not count reused shared-origin
-geometry or individual helper lemmas. The leading asymptotic, paired cutoff rate, and
-full-grid capped support remain paper-only and uncounted. This turn made concrete progress; the full objective
+(3) paired-sphere support, actual product-zero source transfer, and monotone coupled hierarchy;
+(4) paired capacity, cutoff stability, exact frame/limit identification, and fourth-root cutoff control;
+(5) exact capped support, finite-vector attainment, and full-grid physical source transfer.
+Count **5/100** mathematical contributions. Repository-wide integration remains pending
+because of two unrelated concurrent missing imports. Do not count reused shared-origin
+geometry or individual helper lemmas. Matching leading asymptotics and the exact
+activation criterion remain paper-only and uncounted. This turn made concrete progress; the full objective
 remains active and incomplete.
 
 ## Verification evidence
@@ -391,10 +448,9 @@ remains active and incomplete.
   `propext`, `Classical.choice`, and `Quot.sound`; no extra axioms or computation axioms.
   Printed principal signatures and the smooth-source subtype confirm no hidden analytic premise.
 - Own umbrella import present. Index regeneration passed; source declarations discoverable.
-- Current `scripts/formal_tools.py lint`: exit 1 on six other leaves missing umbrella
-  imports: `RHTower.NonTemperedShiftedZetaPairCountermodel`, `RHTower.WeilConeMismatchWitnesses`,
-  `RHTower.ZeroCountRemainderNotIntegrable`, `BiScaleUncertainty.InfiniteGridDistanceClassification`,
-  `BiScaleUncertainty.LogarithmicGridDistance`, `BiScaleUncertainty.OddMultiplierLeakageFamily`.
+- Current `scripts/formal_tools.py lint`: exit 1 on two other leaves missing umbrella
+  imports: `FiniteTrainUniformEnergy` and `LocalCorrelationEnergyStability`,
+  both in BiScaleUncertainty. Earlier four-import failure is obsolete.
   No own-leaf lint error.
 - Logs: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log`.
 - No full or umbrella build, numerical experiment, added axiom, heartbeat increase, or commit.
@@ -421,3 +477,26 @@ remains active and incomplete.
 - Final direct command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/ProductCoupledCollarHierarchy.lean`, exit 0, no diagnostics.
   All owned processes are terminal; temporary paired API probe removed. No numerical
   experiment, added axiom, heartbeat increase, full build, commit, or push.
+- Paired-cutoff leaves: `PairedCollarCapacity.lean`, `PairedCollarCutoffStability.lean`.
+  Both direct compilations and all 30 public theorem axiom/signature audits exited 0;
+  no diagnostics, only `propext`, `Classical.choice`, `Quot.sound`.
+- SHA-256: capacity `215adfa612eb4e9eef6d1025d51de02109b3d2b0a157828441b4068c83030863`;
+  stability `e2f4d2b569d6df1efd3e4e65444f9e025408ee34d1c9fe83973e273334eec19c`.
+- Logs: `/tmp/bsu-paired-capacity.log`, `/tmp/bsu-paired-stability.log`,
+  `/tmp/bsu-paired-cutoff-{axioms,final,index,lint}.log`;
+  scratch `/tmp/bsu_paired_cutoff_axioms.lean`. New imports and index entries verified;
+  scoped whitespace clean. Final direct command
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/PairedCollarCutoffStability.lean`
+  exited 0 without diagnostics. All owned jobs exited; temporary API probe removed.
+
+- Full-grid leaves: `CappedBlockSupport.lean`, `CappedCosetSphereDuality.lean`,
+  `FullGridCappedCollarEnergy.lean`; all direct compilations and all 41 public
+  theorem axiom/signature audits pass. Only `propext`, `Classical.choice`, `Quot.sound`.
+- SHA-256: block `3004dced418ed93f074aa177cd75cf7bd841200f6af3328538e5cd2863355406`;
+  cosets `b6e3bd890950ae1874e4c4ef87a30d383d1d4360768ffdad607e2b8505d811c5`;
+  source `6a8bcfaba9f2647cdeadc59abc68a5cf7724c4a3c58e049120c7922553503b0d`.
+- Evidence: `/tmp/bsu-capped-block.log`, `/tmp/bsu-capped-cosets.log`,
+  `/tmp/bsu-fullgrid-capped.log`, `/tmp/bsu-fullgrid-capped-{axioms,final,index,lint}.log`,
+  `/tmp/bsu_fullgrid_capped_axioms.lean`. All new imports and capstone index entries checked.
+  Final command `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FullGridCappedCollarEnergy.lean`
+  exited 0 without diagnostics. All eight earlier source hashes remain unchanged.

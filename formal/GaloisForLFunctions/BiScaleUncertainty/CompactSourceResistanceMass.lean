@@ -34,19 +34,19 @@ theorem sourcePair_endpoints (ψ : C_c(ℝ, ℝ)) (e : Edge) (he : sourcePair ψ
     abs_le.mp (abs_le_multiplierSourceRadius ψ _ h₂)⟩
 
 /-- The actual diffuse plus countable arithmetic source measure. -/
-def compactMixture (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) : EdgeMixture where
+def compactMixture (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) : EdgeMixture where
   diffuseWeight e := ENNReal.ofReal (archLevySinhWeight e.1 * sourcePair ψ e)
   lag n := Real.log ((n : ℝ)+2)
-  lineWeight n u := ENNReal.ofReal ((λ n : ℝ) * sourcePair ψ (Real.log ((n : ℝ)+2),u))
+  lineWeight n u := ENNReal.ofReal ((weights n : ℝ) * sourcePair ψ (Real.log ((n : ℝ)+2),u))
 
-theorem measurable_compactDiffuse (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) :
-    Measurable (compactMixture ψ λ).diffuseWeight := by
+theorem measurable_compactDiffuse (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) :
+    Measurable (compactMixture ψ weights).diffuseWeight := by
   dsimp [compactMixture, archLevySinhWeight]
   have := (continuous_sourcePair ψ).measurable
   fun_prop
 
-theorem measurable_compactLine (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) (n : ℕ) :
-    Measurable ((compactMixture ψ λ).lineWeight n) := by
+theorem measurable_compactLine (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) (n : ℕ) :
+    Measurable ((compactMixture ψ weights).lineWeight n) := by
   dsimp [compactMixture]
   have := (continuous_sourcePair ψ).measurable
   fun_prop
@@ -95,12 +95,14 @@ theorem resistance_arch_cancellation (h u : ℝ) (hh : 0 < h) :
   rw [archLevySinhWeight, Real.exp_add, Real.exp_add]
   field_simp [hs, hd]
   rw [Real.sinh_eq]
-  linear_combination (Real.exp u * Real.exp (h/2)) * he
+  nlinarith [he]
 
-theorem diffuse_resistance_density (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0)
+theorem diffuse_resistance_density (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0)
     (e : Edge) (he : 0 < e.1) :
-    (compactMixture ψ λ).diffuseWeight e * ENNReal.ofReal (resistance e) =
+    (compactMixture ψ weights).diffuseWeight e * ENNReal.ofReal (resistance e) =
       ENNReal.ofReal (cancelledDensity ψ e) := by
+  change ENNReal.ofReal (archLevySinhWeight e.1 * sourcePair ψ e) *
+    ENNReal.ofReal (resistance e) = _
   rw [← ENNReal.ofReal_mul (mul_nonneg (archLevySinhWeight_nonneg he.le)
     (sourcePair_nonneg ψ e))]
   congr 1
@@ -123,19 +125,21 @@ theorem large_lag_sourcePair_zero (ψ : C_c(ℝ, ℝ)) (n : ℕ)
   dsimp at h₁ h₂
   linarith [h₁.1,h₂.2]
 
-theorem compactLine_eq_zero (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) (n : ℕ)
-    (hn : atomCutoff ψ ≤ n) : (compactMixture ψ λ).lineWeight n = 0 := by
+theorem compactLine_eq_zero (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) (n : ℕ)
+    (hn : atomCutoff ψ ≤ n) : (compactMixture ψ weights).lineWeight n = 0 := by
   funext u
   simp [compactMixture, large_lag_sourcePair_zero ψ n hn u]
 
-def lineResistanceDensity (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) (n : ℕ) (u : ℝ) : ℝ :=
-  ((λ n : ℝ)*sourcePair ψ (Real.log ((n : ℝ)+2),u)) *
+def lineResistanceDensity (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) (n : ℕ) (u : ℝ) : ℝ :=
+  ((weights n : ℝ)*sourcePair ψ (Real.log ((n : ℝ)+2),u)) *
     resistance (Real.log ((n : ℝ)+2),u)
 
-theorem integrable_lineResistanceDensity (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) (n : ℕ) :
-    Integrable (lineResistanceDensity ψ λ n) := by
-  have hc : Continuous (lineResistanceDensity ψ λ n) := by
-    dsimp [lineResistanceDensity, sourcePair, resistance, lower, upper]
+theorem integrable_lineResistanceDensity (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) (n : ℕ) :
+    Integrable (lineResistanceDensity ψ weights n) := by
+  have hc : Continuous (lineResistanceDensity ψ weights n) := by
+    have hψ := ψ.continuous
+    unfold lineResistanceDensity sourcePair resistance lower upper
+    dsimp only
     fun_prop
   apply hc.integrable_of_hasCompactSupport
   apply HasCompactSupport.of_support_subset_isCompact
@@ -146,47 +150,50 @@ theorem integrable_lineResistanceDensity (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ�
     simp [Function.mem_support, lineResistanceDensity, hp] at hu
   exact (sourcePair_endpoints ψ _ hp).1
 
-theorem lineResistanceDensity_nonneg (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) (n : ℕ) (u : ℝ) :
-    0 ≤ lineResistanceDensity ψ λ n u :=
-  mul_nonneg (mul_nonneg (λ n).coe_nonneg (sourcePair_nonneg ψ _)) (resistance_nonneg _)
+theorem lineResistanceDensity_nonneg (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) (n : ℕ) (u : ℝ) :
+    0 ≤ lineResistanceDensity ψ weights n u :=
+  mul_nonneg (mul_nonneg (weights n).coe_nonneg (sourcePair_nonneg ψ _)) (resistance_nonneg _)
 
 private theorem ae_positiveLag :
     ∀ᵐ e : Edge ∂(volume.restrict (Ioi (0 : ℝ))).prod volume, 0 < e.1 := by
-  apply (ae_prod_iff_ae_ae (measurableSet_lt measurable_const measurable_fst)).mpr
+  apply (Measure.ae_prod_iff_ae_ae (measurableSet_lt measurable_const measurable_fst)).mpr
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
   exact Eventually.of_forall (fun _ => hh)
 
-theorem compactDiffuse_resistance_integral (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) :
-    (∫⁻ e, ENNReal.ofReal (resistance e) ∂diffuseMeasure (compactMixture ψ λ)) =
+theorem compactDiffuse_resistance_integral (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) :
+    (∫⁻ e, ENNReal.ofReal (resistance e) ∂diffuseMeasure (compactMixture ψ weights)) =
       ∫⁻ e, ENNReal.ofReal (cancelledDensity ψ e)
         ∂(volume.restrict (Ioi (0 : ℝ))).prod volume := by
   rw [diffuseMeasure, lintegral_withDensity_eq_lintegral_mul _
-    (measurable_compactDiffuse ψ λ) measurable_resistance.ennreal_ofReal]
+    (measurable_compactDiffuse ψ weights) measurable_resistance.ennreal_ofReal]
   apply lintegral_congr_ae
   filter_upwards [ae_positiveLag] with e he
-  exact diffuse_resistance_density ψ λ e he
+  exact diffuse_resistance_density ψ weights e he
 
-theorem compactLine_resistance_integral (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) (n : ℕ) :
-    (∫⁻ e, ENNReal.ofReal (resistance e) ∂lineMeasure (compactMixture ψ λ) n) =
-      ∫⁻ u, ENNReal.ofReal (lineResistanceDensity ψ λ n u) := by
-  rw [lineMeasure, lintegral_map measurable_resistance.ennreal_ofReal
-    (measurable_const.prodMk measurable_id), lintegral_withDensity_eq_lintegral_mul _
-      (measurable_compactLine ψ λ n)
-      (measurable_resistance.comp (measurable_const.prodMk measurable_id)).ennreal_ofReal]
+theorem compactLine_resistance_integral (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) (n : ℕ) :
+    (∫⁻ e, ENNReal.ofReal (resistance e) ∂lineMeasure (compactMixture ψ weights) n) =
+      ∫⁻ u, ENNReal.ofReal (lineResistanceDensity ψ weights n u) := by
+  have hm : Measurable (fun u : ℝ => ((compactMixture ψ weights).lag n,u)) := by fun_prop
+  have hg : Measurable (fun u : ℝ =>
+      ENNReal.ofReal (resistance ((compactMixture ψ weights).lag n,u))) :=
+    measurable_resistance.ennreal_ofReal.comp hm
+  rw [lineMeasure, lintegral_map measurable_resistance.ennreal_ofReal hm,
+    lintegral_withDensity_eq_lintegral_mul _
+      (measurable_compactLine ψ weights n) hg]
   apply lintegral_congr
   intro u
-  exact (ENNReal.ofReal_mul (mul_nonneg (λ n).coe_nonneg (sourcePair_nonneg ψ _))).symm
+  exact (ENNReal.ofReal_mul (mul_nonneg (weights n).coe_nonneg (sourcePair_nonneg ψ _))).symm
 
 /-- Finite controlling coefficient; the unweighted total edge mass need not be finite. -/
-def resistanceMass (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) : ℝ≥0∞ :=
-  ∫⁻ e, ENNReal.ofReal (resistance e) ∂edgeMeasure (compactMixture ψ λ)
+def resistanceMass (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) : ℝ≥0∞ :=
+  ∫⁻ e, ENNReal.ofReal (resistance e) ∂edgeMeasure (compactMixture ψ weights)
 
 /-- The entire countable mixture has an exact finite-sum resistance formula. -/
-theorem resistanceMass_eq_finite (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) :
-    resistanceMass ψ λ =
+theorem resistanceMass_eq_finite (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) :
+    resistanceMass ψ weights =
       (∫⁻ e, ENNReal.ofReal (cancelledDensity ψ e)
         ∂(volume.restrict (Ioi (0 : ℝ))).prod volume) +
-      ∑ n ∈ Finset.range (atomCutoff ψ), ∫⁻ u, ENNReal.ofReal (lineResistanceDensity ψ λ n u) := by
+      ∑ n ∈ Finset.range (atomCutoff ψ), ∫⁻ u, ENNReal.ofReal (lineResistanceDensity ψ weights n u) := by
   rw [resistanceMass, edgeMeasure, lintegral_add_measure, lintegral_sum_measure,
     compactDiffuse_resistance_integral]
   simp_rw [compactLine_resistance_integral]
@@ -196,8 +203,8 @@ theorem resistanceMass_eq_finite (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) :
   have hn' : atomCutoff ψ ≤ n := Nat.le_of_not_lt (by simpa using hn)
   simp [lineResistanceDensity, large_lag_sourcePair_zero ψ n hn']
 
-theorem resistanceMass_ne_top (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) :
-    resistanceMass ψ λ ≠ ∞ := by
+theorem resistanceMass_ne_top (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0) :
+    resistanceMass ψ weights ≠ ∞ := by
   rw [resistanceMass_eq_finite, ENNReal.add_ne_top]
   constructor
   · apply ne_of_lt
@@ -208,7 +215,7 @@ theorem resistanceMass_ne_top (ψ : C_c(ℝ, ℝ)) (λ : ℕ → ℝ≥0) :
   · apply ENNReal.sum_ne_top.mpr
     intro n _
     exact ne_of_lt ((hasFiniteIntegral_iff_ofReal
-      (Eventually.of_forall (lineResistanceDensity_nonneg ψ λ n))).mp
-        (integrable_lineResistanceDensity ψ λ n).hasFiniteIntegral)
+      (Eventually.of_forall (lineResistanceDensity_nonneg ψ weights n))).mp
+        (integrable_lineResistanceDensity ψ weights n).hasFiniteIntegral)
 
 end GaloisForLFunctions.BiScaleUncertainty.PathCongestion

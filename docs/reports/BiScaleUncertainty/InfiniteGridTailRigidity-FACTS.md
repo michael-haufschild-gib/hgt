@@ -3,7 +3,7 @@
 ## Scope and counting
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
-Target: 100 significant mathematical packages. Certified packages in this ledger: **3**.
+Target: 100 significant mathematical packages. Certified packages in this ledger: **6**.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
 
 ## Established inputs
@@ -120,6 +120,101 @@ Logs: `/tmp/infinite-grid-distance-{geometry,classification,axioms,index,lint}.l
 Global lint failed on four concurrent foreign modules; neither new module has an error.
 This complete classification is counted once. It does not classify arbitrary polar sources.
 
+## Certified package 4: full-span rigidity despite finite-copy interference
+
+For `G(u)=sum_{j=0}^m c_j f(u-jS)`, compact C² common seed `f`, nonzero endpoint coefficients,
+and separation `S>D+1` beyond its correlation radius, the extremal correlation packet has
+exactly one contributing pair. Near `L=mS`,
+`h_G(x)=c_0 c_m h_f(x-L)`; on `|x|<=1`, `h_G(x)=Q h_f(x)` with `Q=sum c_j²>0`.
+These identities hold regardless of interior coefficient signs, zeros, and cancellations.
+
+If `L>=2`, `h_f(0)>0`, and every logarithmic-grid sample of `G` vanishes, then `d(L)>0` and
+`E(f),E(G)>=exp(-1/2)log(1/d(L))/4>=exp(-1/2)L/4`. In particular the full span cannot be
+a grid node. The relevant scale is the total span, not adjacent separation. Common-seed
+finite-train interference therefore cannot provide bounded-energy escape at diverging span.
+This quantitative law is the positive survivor of the exact-span obstruction.
+
+The final division-free endpoint `exists_copyTrain_infinite_grid_energy_barrier` takes a
+compact C² source, derives its own support threshold, and proves
+`exp(-1/2)L h_f(0)<=4J(f)` and `exp(-1/2)L h_G(0)<=4J(G)`, including zero-mass seeds.
+Only the ceiling-node sample is needed by the stronger intermediate theorem. No analytic
+interface or regularity constant is assumed. Unrelated packet shapes remain outside scope.
+
+Certificates: `FiniteTranslationTrains.lean` (9 theorems) and
+`FiniteCopyTailRigidity.lean` (6 theorems). Both passed direct leaf checks without diagnostics;
+all 15 theorem dependency audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Both imports and all API entries are present. **Formal lint passed** on this package's final run.
+Paper: `FiniteCopyTailRigidity.md`. Card:
+`infinite-grid-finite-copy-trains-2026-10-17.md` in `3-formalized`.
+Logs: `/tmp/infinite-grid-train-{algebra,rigidity,axioms,index,lint}.log`.
+Finite aperiodic endpoint algebra is classical; count the connected full-span energy law once.
+
+## Certified package 5: complete active-lag cancellation criterion
+
+For a nonzero finite real coefficient vector and spacing `S>=2`, let
+`A_k=sum_{j-i=k} c_i c_j`. There exists a smooth compact positive-mass common seed with
+correlation radius at most `1/2` whose train has every logarithmic-grid zero if and only if
+every active positive center `kS` (`1<=k<=m`, `A_k!=0`) is off-grid. Coefficients may have
+arbitrary signs and zeros. Inactive interior lag packets cancel exactly and impose no grid
+restriction. The constructed train is smooth, compact, and has positive origin mass.
+
+The grouped exact identity is `h_G(x)=sum_{k=-m}^m A_k h_f(x-kS)`. Separation isolates the
+entire packet: `h_G(x)=A_k h_f(x-kS)` for `|x-kS|<=1`. For any positive-mass compact C²
+seed, correlation radius `D>=0`, and `S>D+1`, all-grid pinning forces, at each active center
+`kS>=2`, `d(kS)>0` and `E(f),E(G)>=exp(-1/2)log(1/d(kS))/4`. Interior near-resonance can
+therefore be more expensive than the extremal span. This strengthens the full-span law.
+
+Sufficiency is constructive: choose a positive radius below every active nearest-grid distance
+and at most `1/4`, then dilate the certified smooth bump until its correlation fits inside.
+Nonpositive lag packets miss all positive grid nodes, inactive packets cancel, and active
+packets miss the grid by the chosen radius. No seed-existence interface remains.
+The finite symbol `B(c,S,beta)=sum c_j exp(beta*jS)` multiplies the actual source exponential
+moment exactly. If `B(c,S,1/2)=0`, the same constructed train has exact polar balance.
+
+Certificates: `FiniteTrainActiveLags.lean` (7 public theorems) and
+`FiniteTrainGridClassification.lean` (5 public theorems, one private finite-radius helper).
+Both leaves passed without diagnostics. All 12 public theorem dependency audits contain
+only `propext`, `Classical.choice`, and `Quot.sound`; these audits include the private helper
+transitively. Umbrella and generated API contain both modules and all public names.
+Paper: `FiniteTrainActiveLagClassification.md`. Formalized card:
+`infinite-grid-active-lag-classification-2026-10-17.md`.
+Logs: `/tmp/infinite-grid-active-{algebra,classification,axioms,index,lint}.log`.
+Global lint failed on eight concurrent foreign unwired modules, listed in the paper; neither
+new module has a lint error. This classification and its quantitative survivor count once.
+
+## Certified package 6: uniform matching cost in the minimum active distance
+
+For nonzero coefficients and spacing `S>=2`, define
+`delta(c,S)=min({1} union {d(kS):1<=k<=m,A_k!=0})`. This finite minimum is attained,
+lies in `[0,1]`, and is positive exactly for compatible patterns. Empty active sets give one.
+Every admissible compact C² seed with correlation radius `D>=0` and `S>D+1` satisfies
+`E(seed),E(train)>=exp(-1/2)log(1/delta)/4`.
+
+There is ONE constant `C` for every packet count, coefficient vector, and spacing `S>=2`
+such that each compatible pattern has an actual smooth compact positive-mass radius-half
+seed producing a smooth compact positive-mass all-grid train with
+`exp(-1/2)log(1/delta)/4 <= E(train) <= C+log(1/delta)`.
+If the finite half-exponential symbol vanishes, that same train has exact polar balance.
+Thus the worst active grid resonance controls the growth order uniformly, without an extra
+cost scale depending on packet count or coefficient magnitudes. No optimal leading constant
+or assertion for independently shaped packets follows.
+
+Key tool: if two compact C² positive-mass sources have equal normalized correlations on
+`[0,a]`, `a>0`, their energies differ by at most `2 integral_a^infinity w`. Their singular
+integrals agree locally, and each remaining normalized integral lies in that fixed interval.
+Separated trains inherit the bound with `a=1`. A fixed smooth bump compressed to any radius
+`0<rho<=1` has `E<=C0-log rho`; choosing `rho=delta/4` completes the uniform construction.
+
+Certificates: `LocalCorrelationEnergyStability.lean` (4 theorems) and
+`FiniteTrainUniformEnergy.lean` (10 theorems). Both passed direct leaf checks without
+diagnostics; all 14 dependency audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. Both imports and all 14 generated API entries are present.
+Paper: `FiniteTrainUniformEnergy.md`; formalized card:
+`infinite-grid-uniform-train-cost-2026-10-17.md`.
+Logs: `/tmp/infinite-grid-uniform-{local,train,axioms,index,lint}.log`.
+Global lint failed only on concurrent foreign `ProjectedHyperbolicGramControl` missing
+umbrella reachability. Neither new module has a lint error. Count the connected uniform law once.
+
 ## Boundaries and next conjectures
 
 - A shrinking mesh alone gives no uniform modulus for a varying family of sources.
@@ -127,7 +222,7 @@ This complete classification is counted once. It does not classify arbitrary pol
 - The general polar class is larger than the two-copy construction.
 - Lean-certified: bounded normalized Levy energy rules out separated-copy escape
   uniformly for arbitrary changing sources once `T>D+1`.
-- Open: multiple interfering translated packets, general polar tails, optimal linear coefficient,
+- Open: tail rigidity for arbitrary source shapes, general polar tails, optimal linear coefficient,
   and whether infinite-grid polar/nonpolar infima differ.
 - External parent audit includes Krein inequalities; no claim of exhaustive literature novelty.
 - Adjacent concurrent module `AsymptoticTailCoercivityAndNyquistTrap5Closure.lean` has polar-mass
@@ -136,16 +231,21 @@ This complete classification is counted once. It does not classify arbitrary pol
 
 ## Next exact conjecture
 
-For a finite train of separated translates of one common seed, the extremal pair may detect
-the entire support span even when interior pairs interfere. For equally spaced copies with
-nonzero endpoint coefficients, the maximal difference has a unique contributing endpoint
-pair. Its nearest grid sample should force the same short seed zero, giving energy cost at
-least a constant times the full span and ruling out exact grid resonance. Local copy
-preservation would transfer the zero to the complete train. This is unproved and uncounted.
-Do not extrapolate to independently varying packet shapes: their extremal cross-correlation
-need not equal the seed origin mass.
+For arbitrary compact C² sources with every logarithmic-grid zero, conjecture the raw bound
+`exp(-1/2) T h_f(T)^2 <= 8 h_f(0) J(f)` for `T>=2`, without any packet decomposition or
+support-separation hypothesis. This would give uniform normalized tail decay of order
+`sqrt(E/T)` for bounded-energy families with changing source shapes and supports.
 
-Next corpus search: `/tmp/infinite-grid-multicopy-search.txt`. Useful source-only hits include
-`integral_finset_sum_shift_sq_eq`, `autocorr_sourceTranslate`, and the two-copy expansion.
-The adjacent `OddMultiplierLeakageFamily` has a private six-packet expansion; inspect its
-status before depending on it. Semantic coverage is unmeasured; verify exact APIs in Lean.
+Candidate mechanism: Krein's inequality compares `h_f(T)` with the zero at `ceil(exp T)`;
+the squared difference is at most `2R` times the origin increment at its exponentially short
+lag. The certified ceiling-lag energy bound controls that increment. A stronger global
+logarithmic continuity modulus and a dyadic-window L² bound decaying as `1/log N` may follow.
+These conclusions remain unproved and uncounted. Such slow unweighted decay alone would not
+control the exponentially weighted polar moment; do not claim full polar-tail tightness.
+
+Search: `/tmp/infinite-grid-general-tail-search.txt`, useful source-only hits, older-generation
+coverage snapshot, semantic coverage unmeasured. Exact APIs:
+`autocorr_krein_increment_sq_le`, `autocorr_logarithmicCeilLag_energy_bound`.
+The existing `integral_autocorr_sq_dyadic_window_le_biScaleLevyEnergy` gives `2R J` with no
+decay in `N`; the quadratic-collar theorem uses an additional regularity constant.
+`bounded_levy_width_rigidity` assumes a nonpositive interval and is a different statement.

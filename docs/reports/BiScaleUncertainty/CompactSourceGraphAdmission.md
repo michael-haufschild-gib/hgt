@@ -27,6 +27,8 @@ and its logarithmic primitive f(x)=∫₀^{exp x}q(t)dt satisfy
 For every added constant c, the nodal energy of c+f is finite and bounded by
 the same expression. No summability hypothesis on λ, regularity beyond
 continuity of ψ, or finite-energy admission premise is required.
+The weighted source mass `∫ψ(y)²|c+f(y)|²dy` is also finite, so c+f belongs
+to the constructed source-mass plus jump-energy domain.
 
 ## Proof [PROVED HERE]
 
@@ -47,6 +49,13 @@ log(n+2)>2B. Both ψ(u) and ψ(u+log(n+2)) cannot then be nonzero. Every such
 line is the zero measure. Thus the countable atomic contribution to C is
 exactly a finite sum, regardless of growth of λₙ. This proves C<∞.
 
+In particular, C has the exact nonsingular expression
+
+    ∫_{h>0}∫ [2 exp(u+h/2)/(1+exp(-h))] ψ(u)²ψ(u+h)² du dh
+      + Σ_{n<ceil(exp(2B))+1} ∫ λₙ R(log(n+2),u) ψ(u)²ψ(u+log(n+2))² du.
+
+Every displayed integral is finite by the preceding compact-support argument.
+
 The path indicator is at most one, giving K≤C. On every edge with positive
 source weight, both endpoints belong to [-B,B], hence the entire path does.
 Therefore K=0 outside [-B,B]. This proves the stated congestion bound.
@@ -59,6 +68,10 @@ Tonelli identity gives jump energy plus nonnegative slack equal to this
 finite quantity. Each summand is finite. The nodal inequality bounds nodal
 energy, including arbitrary constants, by jump energy. All conclusions
 follow for the actual constructed measure.
+
+Finally, f is continuous. Hence ψ(y)²|c+f(y)|² is continuous with compact
+support contained in the support of ψ, and its integral is finite. Adding
+this source mass to jump energy proves the asserted energy-domain admission.
 
 ## Scope and audit
 
@@ -77,4 +90,16 @@ No external novelty claim is made for generic Sobolev-to-jump-domain admission.
 The contribution here is the exact singular cancellation and finite arithmetic
 support that discharge admission for this field's constructed mixed kernel.
 
-Lean status: implementation and audit pending.
+Lean status: certified contribution 4/100. `CompactSourceResistanceMass.lean`
+contains 19 public theorems; `CompactSourceGraphAdmission.lean` contains 13.
+Both final direct `lake --old env lean` checks passed without diagnostics and
+produced their normal `.olean` outputs. All 40 public theorem/definition
+declarations passed the scratch axiom audit with only `propext`,
+`Classical.choice`, and `Quot.sound`. Principal signatures have only the source,
+finite nonnegative atom coefficients, actual L² velocity and optional constant
+as inputs. Umbrella wiring, generated indexes and formal lint passed.
+
+Main certificates: `resistanceMass_eq_finite`, `resistanceMass_ne_top`,
+`compact_congestion_le_indicator`, `compact_congestionEnergy_le`,
+`compact_derivativeEnergy_ne_top`, and `compact_formEnergy_ne_top`, all in
+`GaloisForLFunctions.BiScaleUncertainty.PathCongestion`.

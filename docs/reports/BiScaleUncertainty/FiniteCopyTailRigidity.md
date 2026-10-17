@@ -71,6 +71,23 @@ Apply the certified logarithmic increment bound to `f` and to the actual compact
 `G`, then divide by their positive origin masses. This proves the first energy inequality.
 Finally `0<d(L)<=exp(-L)` gives `-log d(L)>=L`, proving the full-span lower bound. ∎
 
+## Source-pure division-free endpoint [PROVED HERE]
+
+Positive origin mass can be dropped from the division-free conclusion. For every compact C²
+source, compactness supplies `D>=1` such that, for the trains above,
+
+\[
+e^{-1/2}Lh_f(0)\le4J_{\rm arch}(f),\qquad
+e^{-1/2}Lh_G(0)\le4J_{\rm arch}(G).
+\]
+
+In fact only the detecting sample at `n=ceil(exp L)` is needed. Its lag
+`delta=log n-L` lies in `[0,exp(-L)]`. Extremal isolation forces `h_f(delta)=0`; local
+preservation gives `h_G(delta)=0`. Apply the already certified ceiling-lag energy estimate,
+which includes `delta=0` and zero-mass sources. No division or positive-mass hypothesis is used.
+This is the final source-derived-threshold endpoint; the positive-mass statement above gives
+its normalized and nearest-distance refinements. ∎
+
 ## Positive content and limitations
 
 The exact-span obstruction exposes a uniform quantitative law: interior interference cannot
@@ -96,4 +113,22 @@ finite common-seed trains. No exhaustive literature-novelty claim is made.
 
 Current corpus search: `/tmp/infinite-grid-train-search.txt`. Existing finite-sum and shifted
 integral APIs were inspected. A private six-packet expansion in concurrent work was read as
-context; the new general theorem does not depend on that module. Lean certification is pending.
+context; the new general theorem does not depend on that module.
+
+## Lean certification
+
+`FiniteTranslationTrains.lean` certifies 9 theorems covering actual finite-source regularity,
+the correlation expansion, local preservation, and extremal isolation.
+`FiniteCopyTailRigidity.lean` certifies 6 theorems, ending with
+`exists_copyTrain_infinite_grid_energy_barrier`, whose support threshold is derived from the
+compact C² source. The normalized distance refinement is
+`copyTrain_infinite_grid_distance_energy`; the division-free detecting-sample refinement is
+`copyTrain_zero_linear_energy_cost`.
+
+Both leaves passed `lake --old env lean` without diagnostics. The separate scratch audit
+checked all 15 theorem dependencies: only `propext`, `Classical.choice`, and `Quot.sound`.
+Both modules are wired into the field umbrella; all 15 names occur in the generated API.
+`scripts/formal_tools.py lint` passed. Logs:
+`/tmp/infinite-grid-train-{algebra,rigidity,axioms,index,lint}.log`;
+scratch: `/tmp/infinite_grid_train_audit.lean`.
+This is one significant connected package, fourth of the 100-package research objective.

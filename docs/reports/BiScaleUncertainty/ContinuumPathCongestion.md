@@ -68,9 +68,12 @@ This package adapts that principle to continuum logarithmic paths, actual rough
 Sobolev primitives, mixed diffuse/countable-line measures, and an exact extended
 slack identity. No novelty claim for the classical comparison principle.
 
-Equation (1) is not yet a finite graph-domain theorem. A finite scalar bound needs
+Equation (1) alone is not a finite graph-domain theorem. A finite scalar bound needs
 control of K; scaling κ alone rules out a universal scalar independent of κ.
-The concrete arithmetic/archimedean kernel remains a later obligation.
+The compact-source arithmetic/archimedean case is discharged in
+[Compact-source graph admission](CompactSourceGraphAdmission.md), including
+finite weighted source mass. General kernels and closed-operator identification
+remain separate obligations.
 
 The corpus search found the existing diffuse-plus-countable-line edge measure
 and its s-finiteness proof; the new construction follows that geometry without

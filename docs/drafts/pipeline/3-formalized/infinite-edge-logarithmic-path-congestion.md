@@ -53,3 +53,7 @@ A bounded congestion kernel and source-mass membership are still needed for a
 finite graph-domain theorem. No unitary affine or application-specific spectral
 conclusion is claimed. Next candidate: construct compact-source mixed weights
 and exploit physical resistance to cancel the singular diffuse lag factor.
+
+The compact-source case is now certified in `compact-source-graph-admission.md`,
+including finite weighted source mass. General kernels and closed-operator
+identification remain separate obligations.

@@ -147,10 +147,10 @@
 ### KR-TRC — Trace-ideal transport
 
 - **Path:** S₁/fixed-AP source carrier → faithful Xi divisor.
-- **Obstruction:** Riemann–von Mangoldt capacity mismatch; Xi inverse S₂ but not S₁; bounded bridge false.
-- **Survivor:** det₂ and logarithmic-squared Ky Fan capacity.
+- **Obstruction:** Riemann–von Mangoldt capacity mismatch; Xi inverse S₂ but not S₁; bounded bridge false. For `S(T)=xiZeroCount(T)−routeKSmoothRVMCount(T)`, `∫_A^T |S(t)|dt ≥ cT/log T` eventually, so `S∉L¹(0,∞)`; an `L¹` counting-shift model with this exact smooth reference cannot realize `S`.
+- **Survivor:** det₂, logarithmic-squared Ky Fan capacity, and the quantitative zero-count fluctuation lower bound.
 - **Needs:** Singular, divisor-faithful comparison; RN/TG.
-- **E:** R:SourceInverseTraceIdealNoGo; R:MertensClockDefectTraceClass.
+- **E:** R:SourceInverseTraceIdealNoGo; R:MertensClockDefectTraceClass; R:ZeroCountRemainderNotIntegrable.
 
 <a id="kr-apw"></a>
 ### KR-APW — Approximate prime weights
@@ -366,6 +366,11 @@
 ## Route-class obstructions
 
 Each obstruction applies only to its stated hypotheses.
+
+- Selberg-type positivity/functional equation/growth without fixed poles or coefficient-size control — Nonselective [L]: `ζ(s−a)ζ(s+a)` (`0<|a|≤1/4`) has a reflection-symmetric completion, nonnegative Dirichlet and prime-power logarithmic coefficients, polynomial growth on the proved strip, and off-line zeros; its prime coefficients grow at least as `p^|a|`, and its poles move to `1±a`. Survivor [L]: exact shifted-pair source and temperedness failure. Open: use ζ-specific pole/coefficient data or another source-specific invariant; this model does not prove coefficient size alone is necessary. E: R:NonTemperedShiftedZetaPairCountermodel.
+- Pointwise positivity as automatic Weil/Bochner positivity — Kill [L]: a compact smooth Weil autocorrelation is negative at lag `3`; a smooth nonnegative two-hump profile is no Weil autocorrelation. For measurable nonnegative prime-blind tests with integrable shifted products, positive support has measure at most `log 2`. Survivor [L]: explicit cone mismatch and narrow intersection; transfer compatible with autocorrelation and blindness remains open. E: R:WeilConeMismatchWitnesses.
+- Bounded-cost fixed-profile distant polar copy under infinite integer-log blindness — Kill [L]: every nonzero compact base produces a negative distant logarithmic sample; forcing that sample to zero with a nonzero separated-copy coefficient costs Lévy energy at least linear in separation. Survivor [L]: scale-dependent compressed smooth two-copy sources satisfy every integer-log zero and polar balance, with normalized archimedean energy between `c log N` and `C+log N`; dyadic-window mass obeys `N μ²≤4 log 2·K h(0)` under quadratic origin-collar control. Open: full signed prime−Gamma payment; no blanket infinite-grid impossibility. E: B:InfiniteGridTailRigidity; B:LogarithmicIncrementEnergy; B:InfiniteGridPolarRecovery; B:AsymptoticTailCoercivityAndNyquistTrap5Closure.
+- Odd prime-blindness inherited by a hyperbolic multiplier — Kill [L] at one node: smooth odd sources have fixed positive mass and `h_f(log 2)=0`, while `h_{sinh(·/2)f}(log 2)` exceeds any prescribed multiple of that mass. Survivor [L]: exact positive leakage law for the translated-packet family; multiplier Gram transfer retains the leakage term. Open: full odd Weil sign with all prime and polar contributions. E: B:OddMultiplierLeakageFamily; B:HyperbolicMultiplierGramTransfer.
 
 - Expanding analytic Markov map with compact-disc inverse branches and Ruelle abscissa `≤1` as literal ζ — Kill [L]: nuclear transfer determinant satisfies `ζ_R(s)D(s)=D(s+1)` and `D(s+1)≠0` on `Re s>0`; ζ has a critical-line zero, so equality on `Re s>1` is impossible. Survivor [L]: entire Fredholm determinant and meromorphic `ζ_R=D(s+1)/D(s)` with a zero-free half-plane for this dynamical class. Needs: a different dynamical zeta architecture; transfer-operator positivity/nuclearity alone cannot realize ζ. E: R:RuelleZetaNuclearZeroFree; H:AnalyticMarkovTransferMatrix; H:GeometricDecayFredholmDeterminant.
 

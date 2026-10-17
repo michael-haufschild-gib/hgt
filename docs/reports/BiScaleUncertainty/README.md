@@ -64,25 +64,30 @@ definitions:
 | **Clique Sphere Duality Factor** | $\mathcal{D}_s(w) := \sum_{i \in s} w_i - \sqrt{\sum_{i \in s} w_i^2} \ge 0$ (for $w_i \ge 0$) | `cliqueSphereDualityFactor s w` (`CliqueSphereDualityAndExtremalTheory.lean`) |
 | **Sphere Extremal Ray** | $u_i^* := \frac{w_i}{\sqrt{\sum_{j \in s} w_j^2}}\,R$, the unique ray saturating $\sum w_i(R - u_i) \ge \mathcal{D}_s(w) R$ on $\sum u_i^2 \le R^2$ | `cliqueSphereExtremizer s w R i` (`CliqueSphereDualityAndExtremalTheory.lean`) |
 | **Scaled Frame Residual** | $\operatorname{Res}_s(e, R, x) := R x - \sum_{i \in s} \langle e_i, x\rangle e_i$ in any real inner product space $E$ | `scaledFrameResidual s e R x` (`AbstractBiScaleSystemAndSchurKreinCoupling.lean`) |
+| **Selberg–Bombieri Row-Sum Bound** | $\sum_{j \in s} |\langle e_i, e_j\rangle| \le M_{\mathrm{row}} \implies \sum_{i \in s} \langle e_i, x\rangle^2 \le M_{\mathrm{row}}\|x\|^2$ | `abstract_selberg_bombieri_bessel_le` (`MultiCosetGramPackingAndNyquistDensity.lean`) |
+| **Producer–Consumer Defect** | $\langle f, p\rangle - \sum_{i \in s} c_i\langle f, g_i\rangle = \langle f, p - \sum_{i \in s} c_i g_i\rangle$, bridging Weil consumers & FZZ-P producers | `producer_consumer_defect_eq`, `fzzp_nyman_beurling_orthogonal_duality_identity` (`ProducerConsumerDualityAndNymanBeurlingBridge.lean`) |
 
 ### 2.3 Archimedean Weights, Dual Kernels & Non-Commutative Operators
 
 | Concept / Object | Mathematical Definition | Lean 4 Declaration & Module |
 | :--- | :--- | :--- |
-| **Forward Archimedean Lévy Weight** | $w_{\mathrm{arch}}(x) := \frac{e^{x/2}}{\sinh x}$ for $x > 0$ ($0$ for $x \le 0$) | `archLevySinhWeight x` (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`) |
+| **Forward Archimedean Lévy Weight** | $w_{\mathrm{arch}}(x) := \frac{e^{x/2}}{\sinh x}$; jump integrals restrict to $x>0$ | `archLevySinhWeight x` (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`) |
 | **Dual Archimedean Lévy Weight** | $w_{\mathrm{dual}}(x) := \frac{e^{-x/2}}{\sinh x}$ for $x > 0$ ($0$ for $x \le 0$), from $s \leftrightarrow 1 - s$ | `archDualLevySinhWeight x` (`CosecantSecantDualDecomposition.lean`) |
 | **Hyperbolic Secant Weight** | $w_{\mathrm{sech}}(x) := \operatorname{sech}(x/2) = \frac{1}{\cosh(x/2)} > 0$, smooth & positive-definite on $\mathbb{R}$ | `archSechHalfWeight x` (`CosecantSecantDualDecomposition.lean`) |
 | **Bi-Scale Lévy Energies** | $\mathcal{J}_{\mathrm{arch}}(f) = \mathcal{J}_{\mathrm{sech}}(f) + \mathcal{J}_{\mathrm{dual}}(f) = \int_0^\infty (h_f(0) - h_f(x))\,w(x)\,dx$ | `biScaleLevyEnergy f`, `biScaleSecantEnergy f`, `biScaleDualLevyEnergy f` |
 | **Hyperbolic Multipliers** | $(C_\alpha f)(u) := \cosh(\alpha u) f(u)$, $(S_\alpha f)(u) := \sinh(\alpha u) f(u)$ | `coshMultiplier α f`, `sinhMultiplier α f` (`HyperbolicShiftCommutatorAndParityIntertwining.lean`) |
 | **Discrete Multiplicative & Additive Shifts** | $(M_k v)(n) := v(kn)$, $(T_a v)(n) := v(n+a)$, $(\Delta_+ v)(n) := v(n+1) - v(n)$, $(\Delta_{\times, k} v)(n) := v(kn) - v(n)$ | `mulShift k v`, `addShift a v`, `addDiff v`, `mulJump k v` (`CoprimeShearAndMultiplicativeGraphUncertainty.lean`) |
+| **Signed Collar-Increment Identity** | $(h_f(0) - h_f(t \pm y)) + h_f(t) = h_f(0) - (h_f(t \pm y) - h_f(t))$ (no blindness assumption) | `autocorr_signed_collar_add_eq`, `abstract_signed_collar_gram_identity` (`SignedKreinCollarAndPrimeDeficitTransfer.lean`) |
+| **Reciprocal Archimedean Weight** | $w_{\mathrm{arch}}(y)^{-1} = e^{-y/2}\sinh y \le y e^{y/2}$ (vanishes linearly as $y \to 0^+$) | `inv_archLevySinhWeight_eq`, `exp_neg_half_mul_sinh_le` (`KreinKantorovichMeasureTransportAndPrimePolarPairing.lean`) |
+| **Critical-Line Node Scaling** | $w_{\mathrm{arch}}(\log n) = \frac{2}{\sqrt{n}} + \frac{2}{\sqrt{n}(n^2 - 1)}$ ($n \ge 2$), matching $2\Lambda(n)/\sqrt{n}$ | `archLevySinhWeight_log_nat_eq` (`SignedKreinCollarAndPrimeDeficitTransfer.lean`) |
 
 ---
 
-## 3. The Seven Structural Traps (Obstructions & Design Laws)
+## 3. The Nine Structural Traps (Obstructions & Design Laws)
 
 Extensive formal investigations across `GaloisForLFunctions.RHTower` (`CHMD`, `HF`, `OWU`, `EWU`)
-and `GaloisForLFunctions.BiScaleUncertainty` have uncovered **seven structural traps**—four
-classical single-group traps and three deeper frontier traps that govern the design of this field.
+and `GaloisForLFunctions.BiScaleUncertainty` have uncovered **nine structural traps**—four
+classical single-group traps and five deep frontier traps that govern the design of this field.
 
 ### Part A: The Four Single-Group Traps
 
@@ -117,22 +122,26 @@ classical single-group traps and three deeper frontier traps that govern the des
      midpoint $\frac{1}{2}\log 2$ pairs $x$ with $\log 2 - x$ and restores an unconditional,
      strictly positive lower bound across all smooth tests!
 
-### Part B: The Three Deep Frontier Traps (Why Layer I Must Extend to Layers II & III)
+### Part B: The Five Deep Frontier Traps (Why Layers I–III Must Extend to Layer IV)
 
 5. **Trap 5 — The Distant-Copy Polar Decoupling Trap (`DistantCopyPolarEnforcement.lean` & `FiniteMomentEnergyInvariance.lean`):**
-   Suppose we impose only **finitely many** logarithmic grid zeros $h(\log n) = 0$ ($2 \le n \le N$)
+   Suppose we impose only **finitely many** logarithmic grid zeros $h(\log n) = 0$ ($2 \le n \le N_0$)
    on a compactly supported source $f$ (say supported in $[-D/2, D/2]$). Then replacing $f(u)$ by
    $$\operatorname{polarCopy}(f, T)(u) := f(u) - e^{-T/2} f(u - T)$$
-   for a very large translation $T \gg \max(D, \log N)$ **automatically enforces the hyperbolic polar
+   for a very large translation $T \gg \max(D, \log N_0)$ **automatically enforces the hyperbolic polar
    hyperplane constraint** $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$, **preserves all grid zeros**
-   $h(\log n) = 0$ for $2 \le n \le N$, and changes the normalized archimedean energy
+   $h(\log n) = 0$ for $2 \le n \le N_0$, and changes the normalized archimedean energy
    $\mathcal{J}_{\mathrm{arch}}(h) / h(0)$ by only $O(e^{-T}) \to 0$ as $T \to \infty$. More
    generally, any finite list of exponential source moments can be enforced at zero asymptotic cost.
-   - **Strategic Consequence:** For finite truncation $N$, the polar hyperplane constraint
-     $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$ cannot increase the infimum of
-     $\mathcal{J}_{\mathrm{arch}}(h)/h(0)$ over compactly supported functions unless the logarithmic
-     grid constraints $\Lambda$ also constrain the distant scale $T$ (where the logarithmic grid
-     spacing $\Delta x_n \asymp e^{-T}$ becomes exponentially denser than the support diameter $D$).
+   - **Infinite-Grid Resolution (`AsymptoticTailCoercivityAndNyquistTrap5Closure.lean`, Pillar XIII):**
+     When the infinite logarithmic grid $\Lambda_{\log} = \{\log n : n \ge 2\}$ is active in the
+     distant dyadic window $[\log N, \log(2N)]$ at scale $T = \log N$, the $N$ consecutive grid nodes
+     $\log(N+k)$ have Nyquist spacing $\delta_k \le 1/N = e^{-T}$. Krein compression across these $N$
+     cells forces $\int_{\log N}^{\log(2N)} h_f(x)^2\,dx \le \frac{2K}{N^2} h_f(0)$, while
+     $\int_{\log N}^{\log(2N)} \cosh(x/2)^2\,dx \le 2 N \log 2$, so any negative polar lobe mass
+     $\mu > 0$ placed at scale $T = \log N$ forces the kinetic / origin-collar constant $K$ to grow
+     at least linearly in $N = e^T$: $N \mu^2 \le 4 \log 2 \, K \, h_f(0)$
+     (`infinite_grid_distant_lobe_kinetic_coercivity`).
 6. **Trap 6 — The Commutative Bochner / Beurling Trap (`FiniteSourceEnergyScalarization.lean` & `FiniteSpectralEnvelopeRealization.lean`):**
    As long as our theorems only use inner products of **additive translations**
    $\langle U_{t_i} f, U_{t_j} f \rangle = h(t_i - t_j)$ on $L^2(\mathbb{R})$, all operators $U_t$
@@ -142,34 +151,68 @@ classical single-group traps and three deeper frontier traps that govern the des
    only see the **multiplicative semigroup** $(\mathbb{N}, \times)$ via divisibility
    $m \mid n \implies \log n - \log m = \log(n/m)$. Any Beurling generalized number system has the
    exact same divisibility chains, even when it violates the Riemann Hypothesis!
-   - **Strategic Consequence:** While commutative Bochner–Gram bounds can close finite-$N$ threshold
-     bounds in the even sector once $\mathcal{C}(\Lambda_N, w_{\mathrm{arch}}) \ge |\Omega(0)|$, a
-     complete theory must incorporate the **non-commutative affine $(ax+b)$ algebra** linking
-     multiplicative dilations ($n \mapsto pn$, linear shifts $x \mapsto x + \log p$) to the
-     **additive ring generator** ($n \mapsto n + 1$, the exponential shear $x \mapsto \log(e^x + 1)$
-     and hyperbolic multipliers $e^{\pm x/2}$).
-7. **Trap 7 — The Odd-Sector / Nodal Blind Spot (`OWU` / `HF` / `CHMD`):**
+   - **Strategic Consequence:** A complete theory must incorporate the **non-commutative affine
+     $(ax+b)$ algebra** linking multiplicative dilations ($n \mapsto pn$, linear shifts
+     $x \mapsto x + \log p$) to the **additive ring generator** ($n \mapsto n + 1$, the exponential
+     shear $x \mapsto \log(e^x + 1)$ and hyperbolic multipliers $e^{\pm x/2}$).
+7. **Trap 7 — The Odd-Sector Nodal Blind Spot & Hyperbolic Multiplier Leakage (`OddMultiplierLeakageFamily.lean`):**
    Origin-Singularity Leverage relies on $h(0) = \|f\|_2^2 > 0$ sitting directly on top of the
    $\frac{1}{\sinh x} \sim \frac{1}{x}$ singularity at $x = 0$. For an **odd** test function
-   (`OWU` / `HF`) or a **signed nodal eigenfunction** on `SourceGraph` (`CHMD`), the origin pole is
-   canceled or changes sign across the nodal boundary.
-   - **Strategic Consequence:** The field must include **Hyperbolic Parity-Intertwining Operators**
-     ($f(u) \mapsto \sinh(\alpha u) f(u)$ and $f(u) \mapsto \cosh(\alpha u) f(u)$), which map odd
-     wavefunctions into even wavefunctions with strictly positive origin energy and satisfy the
-     exact intertwining law
-     $$\operatorname{autocorr}(\cosh(\alpha \cdot) f)(x) - \operatorname{autocorr}(\sinh(\alpha \cdot) f)(x) = \cosh(\alpha x)\,\operatorname{autocorr}(f)(x),$$
-     as well as **Discrete Coprime Shear Uncertainty** on $\mathbb{N}^+$ coupling multiplicative
-     shifts $n \mapsto kn$ to additive successor differences $v(n+1) - v(n)$.
+   (`OWU` / `HF`), the hyperbolic multiplier $(S_\alpha f)(u) = \sinh(\alpha u)f(u)$ maps $f$ into
+   an even state with positive origin energy. However, as proved in `OddMultiplierLeakageFamily.lean`,
+   single-point source blindness $h_f(\log 2) = 0$ does **not** imply multiplier blindness
+   $h_{S_\alpha f}(\log 2) = 0$: an odd 6-packet train can cancel $h_f(\log 2)$ between inner and
+   outer pairs while $\sinh(\alpha u)$ weights the outer pair by $\asymp e^{2\alpha T}$, making
+   $h_{S_\alpha f}(\log 2)/h_f(0)$ arbitrarily large.
+   - **Resolution (`HyperbolicMultiplierIncrementAndOddSignCoercivity.lean`, Pillar XVI):**
+     Instead of assuming $h_{S_\alpha f}(t) = 0$, combine the exact two-positive-term decomposition
+     $$(h_{C_\alpha f}(0) - h_{C_\alpha f}(x)) + 2\sinh(\alpha x / 2)^2 h_f(0) = \cosh(\alpha x)(h_f(0) - h_f(x)) + (h_{S_\alpha f}(0) - h_{S_\alpha f}(x))$$
+     with zero-grid coincidence $h_f(t) = 0 \implies h_{C_\alpha f}(t) = h_{S_\alpha f}(t)$ and
+     signed collar leverage on $C_\alpha f$ (`coshMultiplier_signed_collar_ge_of_source_zero`),
+     which absorbs the signed value $w h_{S_\alpha f}(t)$ and bounds the collar sum below by
+     $\left(w - \frac{w^2}{2 W_0}\right)(h_f(0) + h_{S_\alpha f}(0))$.
+8. **Trap 8 — The Midpoint Compression / Narrow-Support Escape (`InfiniteGridPolarRecovery.lean` & `LogarithmicCompressionEnergy.lean`):**
+   For a fixed seed $f$, placing a distant polar copy at $T$ and requiring all-grid blindness
+   $h(\log n) = 0$ ($\forall n \ge 2$) costs linear Lévy energy $\ge \frac{e^{-1/2}}{4}T$
+   (`FiniteCopyTailRigidity.lean`). However, if one **compresses** the seed $f$ by scale
+   $L = 8(D+1)(N+1)$ (`k = sourceRescale f L`) to support radius $r_1 = \frac{1}{8(N+1)} < \frac{1}{2(N+1)}$
+   and places the polar copy at the **logarithmic midpoint** $T_N = \frac{\log N + \log(N+1)}{2}$,
+   then every grid node $\log n$ ($n \ge 2$) lies outside the support of $h$, achieving
+   $h(\log n) = 0$ ($\forall n \ge 2$) at normalized archimedean energy cost $\asymp \log N \asymp T_N$
+   (`exists_smooth_infinite_grid_polar_recovery`).
+   - **Bounded-Energy Resolution (`KreinKantorovichMeasureTransportAndPrimePolarPairing.lean`, Pillar XV):**
+     Because $w_{\mathrm{arch}}(x) \ge e^{-r_2/2}/x$ on $[r_1, r_2]$, any source with $h_f(x) \le 0$
+     on $[r_1, r_2]$ must pay Lévy energy at least $e^{-r_2/2}\log(r_2/r_1) h_f(0)$
+     (`narrow_support_logarithmic_levy_lower_bound`). Thus in the bounded-energy regime relevant to
+     `EWU`/`HF` ($\mathcal{J}_{\mathrm{arch}}(f) \le K h_f(0)$, e.g. $K = |\Omega(0)| \approx 2.752$),
+     the support radius satisfies $r_1 \ge r_2\exp(-e^{r_2/2} K)$ (`bounded_levy_width_rigidity`) and
+     **cannot** be compressed into a midpoint gap $(\log N, \log(N+1))$ once $N$ is large.
+9. **Trap 9 — The Homogeneous Blind-Subspace Trap (Why $h_f(\log n) = 0$ Cannot Supply the Signed Full-Prime Estimate):**
+   Restricting to the grid-blind subspace $h_f(\log n) = 0$ multiplies the arithmetic weights
+   $\frac{\Lambda(n)}{\sqrt{n}}$ in $\mathcal{Q}_{\mathrm{prime}}(f) = 2\sum_{n \ge 2}\frac{\Lambda(n)}{\sqrt{n}}h_f(\log n)$
+   by zero, erasing the prime distribution from the problem! Any theorem whose only arithmetic
+   hypothesis is $h_f(\log n) = 0$ cannot distinguish $\zeta(s)$ from the off-line countermodel
+   $\zeta(s-a)\zeta(s+a)$ (`NonTemperedShiftedZetaPairCountermodel.lean`), which shares the exact
+   same support $\{\log p^k\}$. Furthermore, in `EWU` and `HF`, general test functions have
+   **signed** prime correlations $h_f(\log n) \in \mathbb{R}$, and the discrete prime measure
+   $\mu_\Lambda = \sum_{n \ge 2}\frac{\Lambda(n)}{\sqrt{n}}\delta_{\log n}$ must be paired directly
+   against the continuum polar measure $\mu_{\mathrm{polar}} = 2\cosh(x/2)\,dx$.
+   - **Resolution (`SignedKreinCollarAndPrimeDeficitTransfer.lean` & `KreinKantorovichMeasureTransportAndPrimePolarPairing.lean`, Pillars XIV–XV):**
+     Drop the blindness hypothesis $h_f(t_i) = 0$ using the exact identity
+     $(h_f(0) - h_f(t_i \pm y)) + h_f(t_i) = h_f(0) - (h_f(t_i \pm y) - h_f(t_i))$, lifting all
+     Origin-Singularity Leverage and Selberg–Bombieri multi-coset bounds to the **signed
+     archimedean-plus-arithmetic functional** $\mathcal{J}_{\mathrm{arch}}(f) + \sum_{i \in s} M_i h_f(t_i)$,
+     and coupling discrete node evaluations to continuum collar integrals via **Krein–Kantorovich
+     measure transport** with the linearly vanishing reciprocal weight
+     $w_{\mathrm{arch}}(y)^{-1} = e^{-y/2}\sinh y \le y e^{y/2}$.
 
 ---
 
-## 4. Core Architecture: The Three Layers & Ten Pillars of `BiScaleUncertainty`
+## 4. Core Architecture: The Four Layers & Sixteen Pillars of `BiScaleUncertainty`
 
-To meet the standards of an independent mathematical discipline—with an abstract axiomatic
-Hilbert-space framework, intrinsic invariants, exact convex extremal duality, standalone
-harmonic-analysis / Beurling–Turán cancellation theorems, non-commutative hyperbolic operator
-calculus, and discrete-to-continuum arithmetic bridges—the library is organized into **three
-layers** spanning **ten foundational pillars**, with the foundational modules listed below:
+To meet the standards of an independent mathematical discipline—and to supply the signed arithmetic
+and operator tools required by `EWU`, `HF`, `CHMD`, and `OWU`—the library is organized into **four
+layers** spanning **sixteen foundational pillars**:
 
 ```mermaid
 flowchart TD
@@ -180,16 +223,25 @@ flowchart TD
         P4["Pillar IV: Folded-Collar Integral & Multi-Coset Transport<br/>(FoldedCollar + MultiChain + SharedOrigin + CollarTransport modules)"]
     end
 
-    subgraph Layer2["Layer II: Abstract Hilbert Systems, Convex Duality & Beurling–Turán Theory"]
+    subgraph Layer2["Layer II: Abstract Hilbert Systems, Convex Duality, Nyquist Packing & Producer–Consumer Duality"]
         P5["Pillar V: Multi-Node Clique Sphere Duality & Extremizers<br/>(CliqueSphereDualityAndExtremalTheory.lean)"]
         P8["Pillar VIII: Abstract Hilbert Systems & Schur–Krein Residual Coupling<br/>(AbstractBiScaleSystemAndSchurKreinCoupling.lean)"]
         P10["Pillar X: Periodic-Collar Clique Tiling & Beurling–Turán Cancellation<br/>(DisjointCollarCliqueDivergenceAndTuransProblem.lean)"]
+        P11["Pillar XI: Multi-Coset Gram Packing & Nyquist Compression<br/>(MultiCosetGramPackingAndNyquistDensity.lean)"]
+        P12["Pillar XII: Producer–Consumer Duality & Nyman–Beurling Bridge<br/>(ProducerConsumerDualityAndNymanBeurlingBridge.lean)"]
+        P13["Pillar XIII: Asymptotic Tail Coercivity & Infinite-Grid Trap 5 Closure<br/>(AsymptoticTailCoercivityAndNyquistTrap5Closure.lean)"]
     end
 
     subgraph Layer3["Layer III: Non-Commutative Hyperbolic, Functional-Equation Dual & Coprime Shear Calculus"]
         P6["Pillar VI: Hyperbolic Shift-Commutator & Parity Intertwining<br/>(HyperbolicShiftCommutatorAndParityIntertwining.lean)"]
         P7["Pillar VII: Discrete Coprime Shear & Multiplicative Graph Uncertainty<br/>(CoprimeShearAndMultiplicativeGraphUncertainty.lean)"]
         P9["Pillar IX: Cosecant–Secant Functional-Equation Dual Decomposition<br/>(CosecantSecantDualDecomposition.lean)"]
+    end
+
+    subgraph Layer4["Layer IV: Signed Arithmetic-Archimedean Discrepancy, Measure Transport & Leakage-Proof Coercivity"]
+        P14["Pillar XIV: Signed Krein Collar Transfer & Prime-Deficit Coercivity<br/>(SignedKreinCollarAndPrimeDeficitTransfer.lean)"]
+        P15["Pillar XV: Krein–Kantorovich Measure Transport & Width Rigidity<br/>(KreinKantorovichMeasureTransportAndPrimePolarPairing.lean)"]
+        P16["Pillar XVI: Hyperbolic Multiplier Increment & Leakage-Proof Odd Coercivity<br/>(HyperbolicMultiplierIncrementAndOddSignCoercivity.lean)"]
     end
 
     P1 --> P2
@@ -199,11 +251,20 @@ flowchart TD
     P2 --> P5
     P2 --> P8
     P5 --> P10
+    P8 --> P11
+    P10 --> P11
+    P11 --> P12
+    P11 --> P13
+    P12 --> P13
     P1 --> P6
     P3 --> P9
     P6 --> P9
     P5 --> P7
     P6 --> P7
+    P11 --> P14
+    P14 --> P15
+    P6 --> P16
+    P15 --> P16
 ```
 
 ---
@@ -329,6 +390,58 @@ positive-definite functions with arithmetic or dyadic zero progressions:
    If $h(m\log 2) = 0$ for $1 \le m \le M$, then
    $$\operatorname{biScaleLevyEnergy}(f) \;\ge\; \mathcal{C}_{\mathrm{dyadic}}(M)\,h(0), \qquad \mathcal{C}_{\mathrm{dyadic}}(M) := \int_0^{\log 2} \left(\sum_{k=0}^{M-1} w(\log 2 + k\log 2 + y) - \sqrt{\sum_{k=0}^{M-1} w(\log 2 + k\log 2 + y)^2}\right) dy \ge 0.$$
 
+#### Pillar XI: Multi-Coset Gram Packing, Selberg–Bombieri Almost-Orthogonality & Nyquist Compression (`MultiCosetGramPackingAndNyquistDensity.lean`)
+Upgrades Layer II from single-chain $O(\log N)$ cliques to **multi-coset Nyquist packing at additive
+density $e^y = N$** across the $N$ nodes $\log N < \log(N+1) < \dots < \log(2N)$ in the dyadic window
+$[\log N, \log(2N)]$:
+1. **Selberg–Bombieri Almost-Orthogonal Bessel & Collar Amplification (`abstract_selberg_bombieri_bessel_le` & `almost_orthogonal_collar_uniform_sum_ge`):**
+   If $\{t_i\}_{i \in s}$ is an $M$-node multi-coset family whose correlation row sums satisfy
+   $\sum_{j \in s} |h_f(t_i - t_j)| \le (1 + \Delta) h_f(0)$ ($\Delta \ge -1$), then
+   $$\sum_{i \in s} h_f(y - t_i)^2 \;\le\; (1 + \Delta)\,h_f(0)^2, \qquad \sum_{i \in s} \bigl(h_f(0) - h_f(y - t_i)\bigr) \;\ge\; \left(M - \sqrt{M(1 + \Delta)}\right) h_f(0),$$
+   so the effective multi-coset Gram rank scales as $M / (1 + \Delta)$.
+2. **Origin-Singularity Absorption on the Nyquist Collar (`archLevySinhWeight_ge_nat_on_nyquist_collar`):**
+   On the Nyquist collar $(0, \log(n+1) - \log n]$ ($n \ge 1$), $\sinh y \le \frac{2n+1}{2n(n+1)} < \frac{1}{n}$
+   and $e^{y/2} > 1$, so the archimedean Lévy weight satisfies
+   $$(n : \mathbb{R}) \;\le\; \operatorname{archLevySinhWeight}(y).$$
+3. **Derivative-Free Dyadic-Window Nyquist $L^2$ Compression (`integral_autocorr_sq_dyadic_window_le_levy_collar` & `integral_autocorr_sq_dyadic_window_le_biScaleLevyEnergy`):**
+   Partitioning $[\log N, \log(2N)]$ into the $N$ Nyquist cells $[\log(N+k), \log(N+k+1)]$ ($0 \le k < N$)
+   where $h_f(\log(N+k)) = 0$, the $N$-fold cell multiplicity is absorbed by
+   $\operatorname{archLevySinhWeight}(y) \ge N$, yielding the derivative-free $L^2$ bound:
+   $$\int_{\log N}^{\log(2N)} h_f(x)^2\,dx \;\le\; 2 h_f(0) \int_0^{\log(N+1) - \log N} \bigl(h_f(0) - h_f(y)\bigr)\,\operatorname{archLevySinhWeight}(y)\,dy \;\le\; 2 h_f(0)\,\operatorname{biScaleLevyEnergy}(f).$$
+
+#### Pillar XII: Producer–Consumer Duality & the FZZ-P / Nyman–Beurling Bridge (`ProducerConsumerDualityAndNymanBeurlingBridge.lean`)
+Establishes the Hilbert-space and correlation-space duality between **consumer routes**
+(`BiScaleUncertainty`, lower-bounding the energy of grid-blind states $\langle f, g_n\rangle = 0$) and
+**producer routes** (`FZZ-P` / Nyman–Beurling / Báez-Duarte, upper-bounding the $L^2$ approximation
+error $\|p - \sum_{n \in s} c_n g_n\|^2$ of the pole functional $p$):
+1. **Abstract Producer–Consumer Duality (`producer_consumer_defect_sq_le` & `consumer_polar_sq_le_producer_error`):**
+   $$\left(\langle f, p\rangle - \sum_{i \in s} c_i\langle f, g_i\rangle\right)^2 \;\le\; \|f\|^2 \left\|p - \sum_{i \in s} c_i g_i\right\|^2,$$
+   and whenever $f$ is grid-blind ($\langle f, g_i\rangle = 0$ for $i \in s$),
+   $\langle f, p\rangle^2 \le \|f\|^2 \|p - \sum_{i \in s} c_i g_i\|^2$.
+2. **Exact FZZ-P / Nyman–Beurling Orthogonal Duality Identity (`fzzp_nyman_beurling_orthogonal_duality_identity`):**
+   Over any orthogonal clique $\{e_i\}_{i \in s}$ with $\langle e_i, e_i\rangle = R$,
+   $$R\left\|p - \sum_{i \in s} c_i e_i\right\|^2 = \left(R\|p\|^2 - \sum_{i \in s} \langle e_i, p\rangle^2\right) + \sum_{i \in s} \bigl(R c_i - \langle e_i, p\rangle\bigr)^2,$$
+   so the minimum-norm producer residual is identically equal to the consumer Bessel slack.
+3. **Correlation-Space Polar–Producer Residual Bound (`correlation_producer_consumer_residual_sq_le` & `dyadic_window_producer_consumer_duality_le_levy`):**
+   Couples any polar weight $P(x)$ (such as $\cosh(x/2)$) and collar producer weight $W(x)$ on $[a, b]$ via
+   $$\left(\int_a^b h_f(x) P(x)\,dx + \int_a^b (h_f(0) - h_f(x)) W(x)\,dx - \left(\int_a^b W(x)\,dx\right) h_f(0)\right)^2 \;\le\; \left(\int_a^b h_f(x)^2\,dx\right)\left(\int_a^b (P(x) - W(x))^2\,dx\right).$$
+
+#### Pillar XIII: Asymptotic Tail Coercivity & Infinite-Grid Closure of Trap 5 (`AsymptoticTailCoercivityAndNyquistTrap5Closure.lean`)
+Defeats the finite-grid distant-copy construction (`DistantCopyPolarEnforcement.lean`, Trap 5) on
+the infinite logarithmic grid $\Lambda_{\log} = \{\log n : n \ge 2\}$:
+1. **$O(N^{-2})$ Dyadic-Window $L^2$ Correlation Decay (`integral_autocorr_sq_dyadic_window_le_of_quad_collar`):**
+   Under quadratic origin-collar regularity $h_f(0) - h_f(y) \le K y^2$ on $[0, 1/N]$ ($K \ge 0$),
+   the $N$ Nyquist-packed zeros $h_f(\log(N+k)) = 0$ ($0 \le k < N$) force
+   $$\int_{\log N}^{\log(2N)} h_f(x)^2\,dx \;\le\; \frac{2 K}{N^2}\,h_f(0).$$
+2. **$O(N)$ Hyperbolic Polar Weight Integral (`integral_cosh_half_sq_dyadic_window_le`):**
+   $$\int_{\log N}^{\log(2N)} \cosh(x/2)^2\,dx \;\le\; 2 N \log 2.$$
+3. **$O(N^{-1/2})$ Polar Tail Decay & Infinite-Grid Trap-5 Kinetic Coercivity (`integral_abs_autocorr_mul_cosh_dyadic_window_sq_le` & `infinite_grid_distant_lobe_kinetic_coercivity`):**
+   $$\left(\int_{\log N}^{\log(2N)} |h_f(x)|\,\cosh(x/2)\,dx\right)^2 \;\le\; \frac{4 \log 2}{N}\,K\,h_f(0) \;\xrightarrow{N \to \infty}\; 0,$$
+   and any state carrying negative polar lobe mass
+   $\mu \le \int_{\log N}^{\log(2N)} h_f^-(x)\cosh(x/2)\,dx$ at scale $T = \log N$ must pay kinetic
+   energy growing at least linearly in $N = e^T$:
+   $$N\,\mu^2 \;\le\; 4 \log 2 \, K \, h_f(0).$$
+
 ---
 
 ### Layer III: Non-Commutative Hyperbolic, Functional-Equation Dual & Coprime Shear Calculus (Pillars VI, VII, IX)
@@ -386,7 +499,7 @@ to the additive successor lattice:
    Every competing $L^2$ velocity has an exact energy decomposition into this trace
    energy, an explicit trace-error term, and a nonnegative interpolation defect.
    The same rough-state construction proves the nonlinear shear estimate.
-   See [proof and scope](CoprimeSobolevTrace.md); infinite graph admission remains open.
+   See `docs/reports/BiScaleUncertainty/CoprimeSobolevTrace.md`; compact-source graph admission follows below.
 6. **Infinite-Edge Path Congestion (`MixedEdgePathCongestion.lean`):**
    For a constructed mixture of diffuse edges and countably many weighted lag lines,
    let $a_e=\min(u,u+h)$, $b_e=\max(u,u+h)$, and
@@ -398,7 +511,25 @@ to the additive successor lattice:
    bound controls four times the opposite-sign nodal pairing, including an arbitrary
    added constant. S-finiteness and joint measurability are proved, with no finite
    energy premise or finite edge truncation. Concrete congestion bounds remain necessary
-   for finite graph-domain admission. See [proof and boundary](ContinuumPathCongestion.md).
+   for finite graph-domain admission. See `docs/reports/BiScaleUncertainty/ContinuumPathCongestion.md`.
+7. **Compact-Source Graph Admission (`CompactSourceGraphAdmission.lean`):**
+   For any continuous compact source ψ and arbitrary nonnegative finite weights,
+   construct diffuse density `w_arch(h)ψ(u)²ψ(u+h)²` and atom lags `log(n+2)`.
+   Resistance cancels the diffuse singularity exactly; compact support kills all
+   sufficiently large atom lags. Total resistance mass C is finite and the exact
+   congestion satisfies `K≤C 1_[-B,B]`. Every physical L2 velocity therefore has
+   finite derivative-weighted congestion, jump, slack and nodal energy. Weighted
+   source mass is finite too, including arbitrary constants. No atom summability
+   or finite-energy premise is imposed. See `docs/reports/BiScaleUncertainty/CompactSourceGraphAdmission.md`.
+8. **Compact-Source Variance Coercivity (`CompactSourceGraphCoercivity.lean`):**
+   For the same constructed graph and any actual logarithmic Sobolev state f, put
+   `M=∫ψ²`, `A=∫ψ²f`, `Q=∫ψ²f²`. Its finite graph energy J satisfies
+   `0≤MQ−A²≤sinh(2B)J`. The positive-lag pair integral is exactly `MQ−A²`;
+   no positive-mass or connected-support premise is needed. Graph energy is zero
+   exactly when f is constant across all points where ψ is nonzero, including
+   different source components. Combining this lower bound with path congestion
+   gives weighted variance control by actual additive Dirichlet energy.
+   See [proof and boundary](CompactSourceVarianceCoercivity.md).
 
 #### Pillar IX: Cosecant–Secant Functional-Equation Dual Decomposition (`CosecantSecantDualDecomposition.lean`)
 Unifies the forward archimedean Lévy weight $w_{\mathrm{arch}}(x) = \frac{e^{x/2}}{\sinh x}$ (from
@@ -418,7 +549,8 @@ crossover kernel):
    Combining the secant kernel $\operatorname{sech}(x/2)$ with Pillar VI at $\alpha = 1/2$ yields
    $$\frac{h_f(x)}{\cosh(x/2)} = \frac{h_{C_{1/2} f}(x) - h_{S_{1/2} f}(x)}{\cosh(x/2)^2} = \frac{2\bigl(h_{C_{1/2} f}(x) - h_{S_{1/2} f}(x)\bigr)}{\cosh(x) + 1}.$$
    A zero of $h_f$ gives equality of the two multiplier correlations, not their vanishing.
-   Transferring a clique bound therefore requires the actual multiplier Gram matrix.
+   Transferring a clique bound requires control of the actual multiplier Gram matrix;
+   the centered source bound below supplies one such control.
 4. **Compensated Multiplier Gram Transfer (`HyperbolicMultiplierGramTransfer.lean`):**
    Set $C=C_{1/2}f$, $S=S_{1/2}f$, $R=h_f(0)$, $R_S=h_S(0)$,
    $x_i=t_i-y$, $v_i=b_i/\cosh(x_i/2)^2$, $W=\sum_i v_i$, and
@@ -463,7 +595,88 @@ crossover kernel):
    source energy. The exact growth law and weighted packet mass are the positive survivor:
    transfer bounds need actual multiplier Gram data or further position/moment control.
    The construction imposes one logarithmic zero; the infinite-grid problem remains separate.
-   See [facts and limitations](HyperbolicMultiplierLifting-FACTS.md).
+8. **Centered Source-Gram Receiver (`CenteredHyperbolicGramControl.lean`):**
+   For the constructed odd source $F$, put $q_\lambda(u)=(\cosh(2\alpha u)-\lambda)F(u)$.
+   Odd reflection gives the exact identity
+   $$\int q_\lambda(u)F(u+x)\,du=2\cosh(\alpha x)h_{S_\alpha F}(x)+(\cosh^2(\alpha x)-\lambda)h_F(x).$$
+   For off-diagonal node pairs set $d_{ij}=t_j-t_i$ and $a_{ij}=v_iv_j/(2\cosh(\alpha d_{ij}))$.
+   The multiplier clique defect satisfies
+   $$|D-E_\lambda|\le\sqrt{h_{q_\lambda}(0)\,G_F(a,d)},\qquad
+   E_\lambda=\sum_{i\ne j}a_{ij}(\lambda-\cosh^2(\alpha d_{ij}))h_F(d_{ij}).$$
+   Thus only original source Gram data on node differences and an actual weighted source
+   energy are needed to bound multiplier leakage. The energy has an exact quadratic centering
+   law and is minimized at its source-weighted mean, including the zero-energy case.
+   At $\alpha=1/2$, the bound integrates into the full secant and odd plastic receivers,
+   retaining the positive plastic remainder, negative odd moment, and source-support factor.
+   Source clique zeros cancel $E_\lambda$; they do not diagonalize the difference-node Gram.
+
+---
+
+### Layer IV: Signed Arithmetic-Archimedean Discrepancy, Measure Transport & Leakage-Proof Coercivity (Pillars XIV–XVI)
+
+#### Pillar XIV: Signed Krein Collar Transfer & Prime-Deficit Coercivity (`SignedKreinCollarAndPrimeDeficitTransfer.lean`)
+Resolves **Trap 9 (The Homogeneous Blind-Subspace Trap)** by dropping the blindness hypothesis
+$h_f(t_i) = 0$ completely and lifting all Origin-Singularity Leverage and Selberg–Bombieri
+multi-coset Gram bounds to **arbitrary signed correlations** $h_f(t_i) \in \mathbb{R}$:
+1. **Exact Signed Collar-Increment Identities (`autocorr_signed_collar_add_eq` & `autocorr_signed_collar_sub_eq`) & Pointwise Krein Coercivity (`autocorr_signed_collar_add_ge_krein`):**
+   $$\bigl(h_f(0) - h_f(t \pm y)\bigr) + h_f(t) = h_f(0) - \bigl(h_f(t \pm y) - h_f(t)\bigr) \;\ge\; h_f(0) - \sqrt{2 h_f(0)\bigl(h_f(0) - h_f(y)\bigr)},$$
+   and for any $W_0 > 0$, $w \ge 0$ (`autocorr_signed_collar_origin_leverage_add`):
+   $$\left(w - \frac{w^2}{2 W_0}\right) h_f(0) \;\le\; W_0\bigl(h_f(0) - h_f(y)\bigr) + w\bigl(h_f(0) - h_f(t \pm y)\bigr) + w\,h_f(t).$$
+2. **Exact Abstract Hilbert-Space Multi-Node Signed Collar Completion of Squares (`abstract_signed_collar_gram_identity` & `abstract_signed_collar_gram_ge`):**
+   In any real inner product space $E$ with $\|x\|^2 = \|x_y\|^2 = R$:
+   $$W_0\bigl(R - \langle x, x_y\rangle\bigr) + \sum_{i \in s} w_i\bigl(R - \langle e_i, x_y\rangle\bigr) + \sum_{i \in s} w_i\langle e_i, x\rangle
+     = \left(\sum_{i \in s} w_i\right) R - \frac{1}{2 W_0}\sum_{i, j \in s} w_i w_j \langle e_i, e_j\rangle
+       + \frac{1}{2 W_0}\left\|\sum_{i \in s} w_i e_i - W_0(x_y - x)\right\|^2.$$
+   Specializing to orthogonal cliques (`abstract_signed_clique_origin_leverage_ge`) and
+   Selberg–Bombieri almost-orthogonal multi-coset families
+   (`abstract_signed_almost_orthogonal_origin_leverage_ge`) lifts the multi-node $\ell^1$-vs-$\ell^2$
+   gain directly to the signed functional $\sum_{i \in s} w_i \langle e_i, x\rangle$.
+3. **Exact Critical-Line $2/\sqrt{n}$ Node Scaling Law (`archLevySinhWeight_log_nat_eq`, `archLevySinhWeight_log_nat_ge_two_div_sqrt`, & `archLevySinhWeight_log_nat_sub_two_div_sqrt_le`):**
+   At every logarithmic grid node $\log n$ ($n \ge 2$),
+   $$\operatorname{archLevySinhWeight}(\log n) = \frac{2}{\sqrt{n}} + \frac{2}{\sqrt{n}(n^2 - 1)}, \qquad 0 \le \operatorname{archLevySinhWeight}(\log n) - \frac{2}{\sqrt{n}} \le \frac{8}{3\,\sqrt{n}\,n^2},$$
+   showing that the archimedean Lévy density at $\log n$ matches the critical-line exponent
+   $n^{-1/2}$ of the Weil prime weight $2\Lambda(n)/\sqrt{n}$ up to $O(n^{-5/2})$.
+
+#### Pillar XV: Krein–Kantorovich Measure Transport, Prime–Polar Pairing & Width Rigidity (`KreinKantorovichMeasureTransportAndPrimePolarPairing.lean`)
+Couples discrete node evaluations to continuum collar integrals via **Krein–Kantorovich measure
+transport** and closes **Trap 8 (The Midpoint Compression Escape)** in the bounded-energy regime:
+1. **Linear Origin-Vanishing of the Reciprocal Archimedean Weight (`inv_archLevySinhWeight_eq` & `exp_neg_half_mul_sinh_le`):**
+   $$\frac{1}{\operatorname{archLevySinhWeight}(y)} = e^{-y/2}\sinh y = \frac{1}{2}e^{y/2}(1 - e^{-2y}) \;\le\; y\,e^{y/2} \qquad (y \ge 0).$$
+   Thus the $1/y$ origin singularity of $\operatorname{archLevySinhWeight}(y)$ becomes a **linearly
+   vanishing factor $O(y)$** in the dual transport penalty!
+2. **Pointwise & Integrated Krein–Kantorovich Collar Measure-Transport Inequalities (`krein_kantorovich_pointwise_abs_le` & `collar_measure_transport_abs_diff_le_levy`):**
+   For any $f \in C^2_c(\mathbb{R})$, node $t \in \mathbb{R}$, and continuous transport density
+   $\rho \ge 0$ on $[a, \delta]$ ($0 < a \le \delta$):
+   $$\left|\left(\int_a^\delta \rho(y)\,dy\right) h_f(t) - \int_a^\delta h_f(t + y)\,\rho(y)\,dy\right|
+     \;\le\; \int_a^\delta \bigl(h_f(0) - h_f(y)\bigr)\,\operatorname{archLevySinhWeight}(y)\,dy
+       + \frac{h_f(0)}{2}\int_a^\delta \rho(y)^2 e^{-y/2}\sinh y\,dy.$$
+3. **Logarithmic Energy Cost of Narrow Support & Bounded-Energy Width Rigidity (`narrow_support_logarithmic_levy_lower_bound` & `bounded_levy_width_rigidity`):**
+   Because $\operatorname{archLevySinhWeight}(x) \ge e^{-r_2/2}/x$ on $(0, r_2]$
+   (`archLevySinhWeight_ge_exp_neg_half_div`), any source with $h_f(x) \le 0$ on $[r_1, r_2]$
+   ($0 < r_1 \le r_2$) must pay archimedean Lévy energy
+   $$\exp(-r_2 / 2)\,\log\!\left(\frac{r_2}{r_1}\right)\,h_f(0)
+     \;\le\; \int_{r_1}^{r_2} \bigl(h_f(0) - h_f(x)\bigr)\,\operatorname{archLevySinhWeight}(x)\,dx.$$
+   Consequently, if this collar energy is bounded by $K\,h_f(0)$ ($h_f(0) > 0$), then
+   $\log(r_2 / r_1) \le \exp(r_2 / 2)\,K$, so the autocorrelation support radius cannot be
+   compressed below $r_2\exp(-\exp(r_2/2)K)$ to hide inside a distant midpoint gap
+   $(\log N, \log(N+1))$.
+
+#### Pillar XVI: Hyperbolic Multiplier Increment Calculus & Leakage-Proof Odd-Sector Coercivity (`HyperbolicMultiplierIncrementAndOddSignCoercivity.lean`)
+Resolves **Trap 7 (Hyperbolic Multiplier Leakage, `OddMultiplierLeakageFamily.lean`)** by replacing
+the false hypothesis $h_{S_\alpha f}(t) = 0$ with signed collar leverage on $C_\alpha f$ and
+$S_\alpha f$:
+1. **Exact Two-Positive-Term Hyperbolic Multiplier Defect Decomposition (`coshMultiplier_defect_add_sinh_half_sq_eq`):**
+   $$\bigl(h_{C_\alpha f}(0) - h_{C_\alpha f}(x)\bigr) + 2\sinh(\alpha x / 2)^2 h_f(0)
+     = \cosh(\alpha x)\bigl(h_f(0) - h_f(x)\bigr) + \bigl(h_{S_\alpha f}(0) - h_{S_\alpha f}(x)\bigr),$$
+   yielding two-way domination bounds (`sinhMultiplier_defect_le_coshMultiplier_defect` and
+   `cosh_mul_source_defect_le_coshMultiplier_defect`).
+2. **Leakage-Proof Zero-Grid Coincidence Lift (`coshMultiplier_signed_collar_ge_of_source_zero` & `joint_base_sinhMultiplier_collar_ge_of_source_zero`):**
+   Whenever the base source is blind at $t$ ($h_f(t) = 0$), $h_{C_\alpha f}(t) = h_{S_\alpha f}(t)$,
+   so the signed multiplier correlation $w\,h_{S_\alpha f}(t)$ combines with the $C_\alpha f$ collar
+   defect to bound **both** $h_f(0)$ and the full multiplier energy $h_{S_\alpha f}(0)$:
+   $$\left(w - \frac{w^2}{2 W_0}\right)\bigl(h_f(0) + h_{S_\alpha f}(0)\bigr)
+     \;\le\; W_0\bigl(h_{C_\alpha f}(0) - h_{C_\alpha f}(y)\bigr)
+       + w\bigl(h_{C_\alpha f}(0) - h_{C_\alpha f}(t + y)\bigr) + w\,h_{S_\alpha f}(t).$$
 
 ---
 
@@ -508,5 +721,14 @@ crossover kernel):
 | 35 | `LogarithmicPathKernel.lean` | Layer III / Pillar VII | Measurable continuum paths, finite local budgets, exact nonnegative edge slack |
 | 36 | `MixedEdgePathCongestion.lean` | Layer III / Pillar VII | Infinite diffuse/countable-line jump and nodal transfer with exact congestion identity |
 | 37 | `OddMultiplierLeakageFamily.lean` | Layer III / Pillars VI–IX | Smooth odd fixed-energy logarithmic-zero family, exact hyperbolic leakage law, and failure of source-energy-only multiplier control |
-
-
+| 38 | `CompactSourceResistanceMass.lean` | Layer III / Pillar VII | Exact singular cancellation, finite arithmetic support and finite total resistance mass |
+| 39 | `CompactSourceGraphAdmission.lean` | Layer III / Pillar VII | Constructed compact-source congestion bound and unconditional weighted energy-domain admission |
+| 40 | `MultiCosetGramPackingAndNyquistDensity.lean` | Layer II / Pillar XI | Selberg–Bombieri almost-orthogonal Bessel bounds, multi-coset collar amplification, and dyadic Nyquist compression |
+| 41 | `ProducerConsumerDualityAndNymanBeurlingBridge.lean` | Layer II / Pillar XII | Abstract & correlation-space Producer–Consumer (FZZ-P / Nyman–Beurling) duality and orthogonal Bessel slack identity |
+| 42 | `AsymptoticTailCoercivityAndNyquistTrap5Closure.lean` | Layer II / Pillar XIII | $O(N^{-2})$ dyadic $L^2$ decay, $O(N^{-1/2})$ polar tail decay, and Infinite-Grid Trap-5 Kinetic Coercivity Theorem |
+| 43 | `SignedKreinCollarAndPrimeDeficitTransfer.lean` | Layer IV / Pillar XIV | Signed collar-increment identities, multi-node Hilbert signed Gram completion of squares, and $2/\sqrt{n}$ node scaling law |
+| 44 | `KreinKantorovichMeasureTransportAndPrimePolarPairing.lean` | Layer IV / Pillar XV | Linearly vanishing reciprocal archimedean weight, Krein–Kantorovich collar measure transport, and Bounded-Energy Width Rigidity (closing Trap 8) |
+| 45 | `HyperbolicMultiplierIncrementAndOddSignCoercivity.lean` | Layer IV / Pillar XVI | Two-positive-term hyperbolic multiplier defect decomposition and zero-grid coincidence signed collar lift (resolving Trap 7) |
+| 46 | `CenteredHyperbolicGramControl.lean` | Layer III / Pillars VI–IX | Exact odd source cross-correlation, centered weighted variance, source difference-Gram leakage bound, and full secant/plastic receiver |
+| 47 | `CompactSourcePairVariance.lean` | Layer III / Pillar VII | Exact finite weighted-pair variance, positive-lag transport and pointwise zero-variance rigidity |
+| 48 | `CompactSourceGraphCoercivity.lean` | Layer III / Pillar VII | Actual mixed-graph variance floor, nullspace classification and additive Dirichlet coupling |

@@ -175,7 +175,8 @@ theorem productCoupled_error_of_admitted {n k : ℕ} (hcut : (k + 2) ^ 2 ≤ n +
       limitingProductCoupledCoefficient - productCoupledCollarCoefficient n ≤
         4 * Real.exp (logarithmicCollarRadius / 2) /
           (Real.sqrt ((k + 2 : ℕ) : ℝ) * (1 - 2 / (((k + 2 : ℕ) : ℝ) ^ 2))) := by
-  have hlo := le_ciSup productCoupledCollarCoefficient_bddAbove n
+  have hlo : productCoupledCollarCoefficient n ≤ limitingProductCoupledCoefficient :=
+    le_ciSup productCoupledCollarCoefficient_bddAbove n
   have hframe := pairedOptimalCoefficient_le_productCoupled hcut
   have htail := pairedOptimalCoefficient_quantitative_saturation k
   constructor <;> linarith
@@ -219,6 +220,62 @@ theorem productCoupled_quantitative_saturation_floor {n : ℕ} (hn : 2 ≤ n) :
           (Real.sqrt (Nat.sqrt (n + 2) : ℝ) * (1 - 2 / ((Nat.sqrt (n + 2) : ℝ) ^ 2))) := by
   have h := productCoupled_error_of_admitted (productAdmittedCutoff_admitted hn)
   simpa only [productAdmittedCutoff_add_two hn] using h
+
+/-- A uniform fourth-root error bound in the actual source-grid cutoff. -/
+theorem productCoupled_quantitative_saturation {n : ℕ} (hn : 2 ≤ n) :
+    0 ≤ limitingProductCoupledCoefficient - productCoupledCollarCoefficient n ∧
+      limitingProductCoupledCoefficient - productCoupledCollarCoefficient n ≤
+        16 * Real.exp (logarithmicCollarRadius / 2) /
+          Real.sqrt (Real.sqrt ((n + 2 : ℕ) : ℝ)) := by
+  let s : ℝ := (Nat.sqrt (n + 2) : ℝ)
+  let X : ℝ := ((n + 2 : ℕ) : ℝ)
+  let S := Real.sqrt s
+  let T := Real.sqrt (Real.sqrt X)
+  let d := Real.exp (logarithmicCollarRadius / 2)
+  have hsNat : 2 ≤ Nat.sqrt (n + 2) := Nat.le_sqrt'.2 (by omega)
+  have hs : 2 ≤ s := by
+    dsimp [s]
+    exact_mod_cast hsNat
+  have hsp : 0 < s := by linarith
+  have hS : 0 < S := Real.sqrt_pos.2 hsp
+  have hT : 0 < T := by dsimp [T, X]; positivity
+  have hd : 0 < d := Real.exp_pos _
+  have hden : (1 / 2 : ℝ) ≤ 1 - 2 / s ^ 2 := by
+    have hf : 2 / s ^ 2 ≤ (1 / 2 : ℝ) :=
+      (div_le_iff₀ (sq_pos_of_pos hsp)).2 (by nlinarith)
+    linarith
+  have hdenp : 0 < 1 - 2 / s ^ 2 := by linarith
+  have hX : X < (s + 1) ^ 2 := by
+    dsimp [X, s]
+    exact_mod_cast Nat.lt_succ_sqrt' (n + 2)
+  have hroot : Real.sqrt X ≤ 2 * s := by
+    apply Real.sqrt_le_iff.mpr
+    exact ⟨by linarith, by nlinarith [sq_nonneg (s - 1)]⟩
+  have hSsq : S ^ 2 = s := Real.sq_sqrt hsp.le
+  have hTS : T ≤ 2 * S := by
+    apply Real.sqrt_le_iff.mpr
+    exact ⟨by positivity, by nlinarith⟩
+  have hfirst : 4 * d / (S * (1 - 2 / s ^ 2)) ≤ 8 * d / S := by
+    apply (div_le_div_iff₀ (mul_pos hS hdenp) hS).2
+    have hm := mul_le_mul_of_nonneg_left hden (show 0 ≤ 8 * d * S by positivity)
+    nlinarith
+  have hsecond : 8 * d / S ≤ 16 * d / T := by
+    apply (div_le_div_iff₀ hS hT).2
+    nlinarith [mul_le_mul_of_nonneg_left hTS (show 0 ≤ 8 * d by positivity)]
+  have h := productCoupled_quantitative_saturation_floor hn
+  refine ⟨h.1, h.2.trans ?_⟩
+  change 4 * d / (S * (1 - 2 / s ^ 2)) ≤ 16 * d / T
+  exact hfirst.trans hsecond
+
+/-- The limiting coupled constant gives a quantitative lower bound for actual source energy. -/
+theorem productCoupled_limit_sub_error_le_normalized_energy {n : ℕ} (hn : 2 ≤ n)
+    (f : SmoothLogarithmicGridSource n) :
+    limitingProductCoupledCoefficient -
+      16 * Real.exp (logarithmicCollarRadius / 2) / Real.sqrt (Real.sqrt ((n + 2 : ℕ) : ℝ)) ≤
+        biScaleLevyEnergy f.1.1 / RHTower.ArchimedeanAnomaly.autocorr f.1.1 0 := by
+  have htail := productCoupled_quantitative_saturation hn
+  have hsource := productCoupledCollarCoefficient_le_normalized_energy n f
+  linarith
 
 end
 end GaloisForLFunctions.BiScaleUncertainty

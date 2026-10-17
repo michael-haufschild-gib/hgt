@@ -42,7 +42,7 @@ This is uniform over changing sources and nonzero coefficients. Complete proofs 
 
 ## Certified frontier
 
-Three significant packages certified:
+Six significant packages certified:
 
 1. Canonical tail detection and the uniform linear energy barrier for separated two-copy sources,
    including the stronger local-energy inequality (22 theorems).
@@ -53,9 +53,20 @@ Three significant packages certified:
 3. Exact center classification for separated polar copies: existence precisely off-grid,
    and matching-order logarithmic cost in reciprocal nearest-grid distance (15 theorems).
    Card: `../3-formalized/infinite-grid-distance-classification-2026-10-17.md`.
+4. Finite common-seed train rigidity: the unique extremal pair forces nearest-grid energy cost
+   and a lower bound proportional to full span despite interior cancellations (15 theorems).
+   Card: `../3-formalized/infinite-grid-finite-copy-trains-2026-10-17.md`.
+5. Complete active-lag criterion for finite common-seed trains: actual smooth all-grid sources
+   exist exactly when every active positive center is off-grid; polar inheritance and energy
+   cost at every active lag are certified (12 public theorems).
+   Card: `../3-formalized/infinite-grid-active-lag-classification-2026-10-17.md`.
+6. Uniform matching-order energy law in the smallest active grid distance, with one upper
+   constant independent of packet count, coefficients, and spacing; actual smooth sources
+   and polar inheritance included (14 theorems).
+   Card: `../3-formalized/infinite-grid-uniform-train-cost-2026-10-17.md`.
 
-The 100-package objective remains active. Next: extremal-pair detection in finite common-seed
-copy trains, then multiple-copy interference and independently varying packet shapes.
+The 100-package objective remains active. Next: shape-independent tail decay from bounded
+normalized energy and the complete logarithmic grid, then general polar-tail control.
 
 ## Constraints
 

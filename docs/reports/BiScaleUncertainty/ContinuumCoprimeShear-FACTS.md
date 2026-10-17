@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **3 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **5 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -72,8 +72,8 @@ Any ax+b uncertainty claim must specify its representation and operator domains.
   invalid lift.
 - If traces vanish off multiples of d≥2, neighboring traces around a positive
   multiple n are zero. Equation (2) on both unit cells gives energy ≥2F(n)²,
-  with the exact sum of the two interpolation defects. Formal support/extension
-  construction remains pending.
+  with the exact sum of the two interpolation defects. Package 2 constructs and
+  certifies the finite coprime-supported interpolant.
 - SourceGraph in `CHMDDoobSourceGraph.lean` is a closed graph over continuous
   edge coordinates (lag,u), with endpoints u and u+lag. It is not the integer
   trace graph itself. Its measures, representative domains, and ground transform
@@ -95,8 +95,9 @@ semantic coverage was unmeasured, so absence is not established exhaustively.
 
 1. Global Sobolev-space identification and rigidity beyond the L2 primitive layer
    and finite coprime trace realization now certified by package 2.
-2. Coprime-supported interpolation and finite/infinite trace domains.
-3. SourceGraph-specific weights, actual source embedding, and nodal coupling.
+2. Infinite coprime trace domains beyond the certified finite interpolants.
+3. Direct identification with existing SourceGraph closed-graph and ground-transform
+   APIs, beyond the constructed mixed measure's energy-domain results.
 4. Closed form/Sobolev extension and precise affine operator uncertainty.
 5. Further substantive research cycles; 100-package target remains open.
 
@@ -436,23 +437,210 @@ Logs: `/tmp/continuum-path-kernel-build.log`,
   interval integrability. `sq_sub_comm` is not available here; `ring` handles
   reversed endpoint squares. Canonical `zero_le` has an implicit argument.
 
-## Next falsifiable candidate: compact-source mixed graph admission
+## Package 4 — compact-source mixed graph admission
 
-For an actual compact continuous source ψ and arbitrary nonnegative coefficients
-λ_n, construct diffuse weight w_arch(h)ψ(u)²ψ(u+h)² and lag-line weights
-λ_n ψ(u)²ψ(u+log(n+2))². Conjecture: every L2 physical velocity q has finite
-jump and nodal energies for this mixture, with an explicit bounded, compactly
-supported congestion kernel. This is not yet formalized or counted.
+**Certified 2026-10-17. One connected contribution, not 32.** For an arbitrary
+real continuous compact source ψ and arbitrary finite nonnegative coefficients
+λ_n, `compactMixture` constructs diffuse weight `w_arch(h)ψ(u)²ψ(u+h)²` on h>0
+and lag-line weights `λ_n ψ(u)²ψ(u+log(n+2))²`. Every physical L2 velocity q
+has finite congestion, jump, slack and nodal energies for this actual measure.
+Weighted source mass is finite as well, including arbitrary added constants.
 
-The proposed mechanism follows from the current kernel, not an admission premise.
-If supp ψ⊂[-B,B], only 0<h≤2B and finitely many n+2≤exp(2B) contribute.
-For the diffuse part,
+Paper: `CompactSourceGraphAdmission.md`. Formalized card:
+`docs/drafts/pipeline/3-formalized/compact-source-graph-admission.md`.
+
+### Exact mechanism
+
+Reuse `multiplierSourceRadius ψ = B>0`, derived from actual compact support.
+For h>0 the physical resistance cancels the singularity exactly:
 
     (exp(u+h)−exp u) w_arch(h)
-      = 2 exp(u+h/2)/(1+exp(−h)) ≤ 2 exp B
+      = 2 exp(u+h/2)/(1+exp(−h)).
 
-on contributing endpoints. Thus the singular lag weight is canceled by physical
-resistance before integration; a crude compact rectangle bound gives finite K.
-With K bounded on [-B,B], local integrability of H closes finite energy. A new
-corpus/novelty audit and exact Lean proof are still required. Extending this to
-noncompact source kernels remains a separate obligation. Goal active at 3/100.
+The right side, multiplied by ψ(u)²ψ(u+h)², is continuous on all R² and
+supported in `[-2B,2B]×[-B,B]`. Its integral is finite. Each line resistance
+density is continuous and compactly supported in u. Every line with
+`n≥ceil(exp(2B))+1` vanishes. No summability condition on the entire sequence
+λ is needed: compact support proves that only finitely many terms survive.
+
+`resistanceMass_eq_finite` gives an exact nonsingular diffuse integral plus
+finite atom sum for `C=∫R dκ`. `resistanceMass_ne_top` proves C<∞.
+`compact_congestion_le_indicator` proves `K≤C 1_[-B,B]`. Hence
+
+    jump energy + integrated slack
+      = ∫K(y)exp(-y)|f'(y)|²dy
+      ≤ C ∫_[-B,B] exp(y)|q(exp y)|²dy < ∞.
+
+This uses the established actual rough derivative and local integrability.
+Nodal energy of c+f is bounded by jump energy for every real c. The function
+ψ²(c+f)² is continuous with compact support, proving finite weighted source
+mass and therefore admission to the source-mass plus jump-energy domain.
+
+### Boundary and prior-art audit
+
+Finite resistance mass is sufficient; finite total edge mass is neither assumed
+nor proved. The diffuse 1/h singularity may survive before resistance weighting.
+This constructs the natural energy-domain admission for the specified squared
+source weights. It does not identify the existing SourceGraph closed-graph or
+ground-transform APIs, prove closability, a spectral gap, or a unitary affine
+representation. Noncompact source kernels remain outside this theorem.
+
+The actual `archLevySinhWeight` definition is exp(x/2)/sinh(x) on all reals;
+the measure restricts to positive lags. Both field dictionaries were corrected
+to remove their inaccurate claim that the definition is zero for all x≤0.
+
+Corpus query `compact source jump energy Sobolev congestion` completed with
+`partial=false`, no errors, and no matching prior admission theorem. Semantic
+coverage was unmeasured and the coverage snapshot lagged the index. Generic
+Sobolev-to-jump-domain admission is classical; Rutkowski's nonlocal Lévy-type
+Dirichlet-problem abstract was inspected as background, not used as a theorem.
+No external novelty claim for the generic principle. The contribution discharges
+the actual field-specific admission gap by exact cancellation and finite lag support.
+
+### Formal evidence
+
+Namespace: `GaloisForLFunctions.BiScaleUncertainty.PathCongestion`.
+
+- `CompactSourceResistanceMass.lean`: 19 public theorems and 6 definitions.
+- `CompactSourceGraphAdmission.lean`: 13 public theorems and 2 definitions.
+- Both final direct `lake --old env lean -o <normal-output> <leaf>` checks
+  passed with exit 0 and no diagnostics. No full or umbrella build was run.
+- `/tmp/compact_source_axioms.lean` audits all 40 public declarations and
+  checks actual main signatures. Every axiom set is exactly a subset of
+  `propext`, `Classical.choice`, `Quot.sound`; no missing audit or diagnostic.
+- Both imports are wired. All 32 theorem names appear in the generated API.
+  `scripts/formal_tools.py lint` passed (only existing large-file warnings),
+  as did the whitespace check. Earlier concurrent wiring errors are absent
+  from this successful current lint run.
+
+Logs: `/tmp/compact-resistance-build.log`, `/tmp/compact-admission-build.log`,
+`/tmp/compact-source-axioms.log`, `/tmp/compact-source-index.log`,
+`/tmp/compact-source-lint.log`. No owned process remains live.
+
+### Reusable proof facts
+
+- `HasCompactSupport.of_support_subset_isCompact` proves support bounds using
+  the actual endpoint geometry. Continuous compact support gives integrability
+  for `volume.prod volume`; restricted products follow by `Integrable.mono_measure`.
+- `Measure.ae_prod_iff_ae_ae` (the `Measure` namespace is required) transports
+  positive-lag membership from the restricted first coordinate.
+- `tsum_eq_sum` needs pointwise vanishing outside the finite set; the cutoff
+  follows from `Nat.le_ceil` and `Real.lt_log_iff_exp_lt`.
+- For `lintegral_map` and `lintegral_withDensity_eq_lintegral_mul`, explicit
+  lambda-typed measurability facts avoid rewrite matching failures with composed
+  functions. The latter theorem produces density times integrand, in that order.
+
+## Package 5 — compact-source variance coercivity and rigidity
+
+**Certified 2026-10-17. One connected contribution, not 21.** For every continuous
+compact source ψ, arbitrary nonnegative finite atom weights, physical L² velocity
+q and added constant c, put f(x)=c+∫₀^{exp x}q, M=∫ψ², A=∫ψ²f and Q=∫ψ²f².
+With B the constructed source radius and J its actual finite mixed jump energy,
+
+    0 ≤ M Q − A² ≤ sinh(2B) J,
+    J=0 iff f(u)=f(v) for every u,v with ψ(u)≠0 and ψ(v)≠0.
+
+This closes the variance-coercivity and continuous nullspace questions for the
+admitted compact mixed graph. Positive diffuse long jumps connect all nonzero
+source regions, even when support is disconnected. No positive-mass, nonzero-source,
+connected-support, atom-summability or finite-energy admission premise is assumed.
+Nothing is asserted about f inside source holes. The coefficient depends on B;
+optimal constants, expanding-support uniformity, closed-operator identification
+and unitary affine actions remain open.
+
+### Exact bridge and additive consequence
+
+For any continuous f, define
+
+    P(u,v)=ψ(u)²ψ(v)²(f(v)−f(u))²,    L(h,u)=P(u,u+h).
+
+All moments and both two-variable functions have constructed compact-support
+integrability proofs. Expansion, Fubini, translation and lag-evenness give
+
+    ∫P=2(MQ−A²),    ∫_{h>0}∫L(h,u)du dh=MQ−A².
+
+On contributing positive lags h≤2B, `1≤sinh(2B) exp(h/2)/sinh h`. Comparing
+densities gives the diffuse lower bound; every arithmetic term is nonnegative.
+The previous finite-admission result justifies the real-valued statement and
+also yields `MQ−A² ≤ sinh(2B) C D`, where C is actual resistance mass and D
+is source-local additive Dirichlet mass. If variance vanishes, P=0 a.e.; continuity
+and full support of product Lebesgue measure give P=0 everywhere. The nonzero
+source factors give the pointwise classification, including the zero-source case.
+
+Paper proof: `CompactSourceVarianceCoercivity.md`.
+Card: `docs/drafts/pipeline/3-formalized/compact-source-variance-coercivity.md`.
+
+### Corpus and novelty audit
+
+Focused hybrid query `continuous compact source pair variance integral positive lag
+spectral coercivity` completed without errors or partial results. All returned
+candidate-lemma and source-argument entries were inspected. Existing
+`CenteredHyperbolicGramControl.lean` proves a variance inequality for a particular
+cosh multiplier; it does not provide the general pair/lag transport or actual
+compact-graph comparison. Semantic coverage is unmeasured and the coverage
+snapshot lags the index, so no exhaustive novelty claim follows.
+
+Variance identities and positive-kernel comparisons are classical. The contribution
+is their premise-free application to the constructed singular diffuse/arithmetic
+graph and actual rough states. Barlow–Bass–Chen–Kassmann's jump-form paper is
+linked in the paper note as background only; its abstract was inspected, and
+no theorem from it is used.
+
+### Formal evidence
+
+Namespace: `GaloisForLFunctions.BiScaleUncertainty.PathCongestion`.
+
+- `CompactSourcePairVariance.lean`: 12 public theorems and 4 definitions.
+- `CompactSourceGraphCoercivity.lean`: 9 public theorems and 2 definitions.
+- Both final serial direct `lake --old env lean -o <normal-output> <leaf>` checks
+  passed with exit 0 and no diagnostics. Compiled outputs postdate their sources.
+  No full or umbrella build, heartbeat increase, or numerical experiment.
+- `/tmp/compact_variance_axioms.lean` audits all 27 public declarations and checks
+  the five main signatures. Exact declaration coverage was checked; all axiom
+  sets contain only `propext`, `Classical.choice`, `Quot.sound`, with no diagnostics.
+- Both imports are wired. Index refresh passed; all 21 public theorem names
+  occur in the generated API.
+- Repository whitespace check passed after removing trailing blank lines from
+  the touched formal field README.
+- `scripts/formal_tools.py lint` exited 1 solely for seven unrelated concurrent
+  modules unreachable from the umbrella: `CappedBlockSupport`,
+  `CappedCosetSphereDuality`, `FullGridCappedCollarEnergy`,
+  `HyperbolicMultiplierIncrementAndOddSignCoercivity`,
+  `KreinKantorovichMeasureTransportAndPrimePolarPairing`,
+  `LocalCorrelationEnergyStability`, `SignedKreinCollarAndPrimeDeficitTransfer`.
+  No lint error concerns either new leaf; large-file warnings remain global.
+
+Logs: `/tmp/compact-pair-variance-build.log`, `/tmp/compact-graph-coercivity-build.log`,
+`/tmp/compact-variance-axioms.log`, `/tmp/compact-variance-index.log`,
+`/tmp/compact-variance-lint.log`. All owned verification processes are terminal.
+Obsolete owned API-probe scratch files were removed.
+
+### Reusable proof facts
+
+- `integral_comp_abs` gives the positive-half integral with factor 2 and no
+  integrability argument; import `Mathlib.MeasureTheory.Measure.Lebesgue.Integral`.
+- `integral_add_left_eq_self` and `integral_sub_right_eq_self` take the function
+  before the shift. `Integrable.mul_prod` proves separated-product integrability.
+- `Measure.eq_of_ae_eq` upgrades a.e. equality of continuous functions under a
+  full-support measure. Explicit `f` and measure arguments can be necessary for
+  `integral_nonneg` on a product measure.
+- Explicit lambda-typed integrability/measurability facts avoid Pi.add/Pi.mul
+  rewrite mismatches. A final `rfl` resolves definitionally identical products
+  after rewriting the weighted lintegral.
+
+## Next falsifiable candidate — actual rough modulus and nodal defect
+
+Backlog card: `docs/drafts/pipeline/0-backlog/rough-sobolev-modulus-nodal-defect.md`.
+Construct the L² velocity `q_abs(t)=sign(c+primitive q t)*q(t)` and prove
+`|c|+primitive q_abs t=|c+primitive q t|`, including the derivative-zero law
+on the state's zero-level set. Prove equality of local physical Dirichlet energies
+and exact actual mixed-graph identity `J(q)=J(q_abs)+nodalEnergy(q,c)`; the
+existing nodal energy already includes factor 4. Weighted source mass is unchanged.
+
+Focused search `absolute value Sobolev primitive nodal jump decomposition`
+completed without errors or partial results. All candidate and source-argument
+entries were inspected. Existing finite/continuous nodal algebra and extended
+mixed-graph bounds do not construct the modulus in the actual rough L² primitive
+domain. Coverage warnings remain; classical chain-rule and Dirichlet-form
+ingredients carry no novelty claim. This candidate is unproved and not counted.
+This turn is **progress**. Goal remains active at **5/100**.

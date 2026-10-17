@@ -15,6 +15,11 @@ import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarCutoffStability
 import GaloisForLFunctions.BiScaleUncertainty.PairedCosetSphereDuality
 import GaloisForLFunctions.BiScaleUncertainty.SignedCosetProductCoupling
 import GaloisForLFunctions.BiScaleUncertainty.ProductCoupledCollarHierarchy
+import GaloisForLFunctions.BiScaleUncertainty.PairedCollarCapacity
+import GaloisForLFunctions.BiScaleUncertainty.PairedCollarCutoffStability
+import GaloisForLFunctions.BiScaleUncertainty.CappedBlockSupport
+import GaloisForLFunctions.BiScaleUncertainty.CappedCosetSphereDuality
+import GaloisForLFunctions.BiScaleUncertainty.FullGridCappedCollarEnergy
 import GaloisForLFunctions.BiScaleUncertainty.MultiChainToeplitzGramCoupling
 import GaloisForLFunctions.BiScaleUncertainty.TriangularGramSineBound
 import GaloisForLFunctions.BiScaleUncertainty.SynchronizedCosetSineLeverage
@@ -25,6 +30,7 @@ import GaloisForLFunctions.BiScaleUncertainty.HyperbolicMultiplierGramTransfer
 import GaloisForLFunctions.BiScaleUncertainty.HyperbolicJumpEnergyTransfer
 import GaloisForLFunctions.BiScaleUncertainty.PlasticCrossoverGramReceiver
 import GaloisForLFunctions.BiScaleUncertainty.OddMultiplierLeakageFamily
+import GaloisForLFunctions.BiScaleUncertainty.CenteredHyperbolicGramControl
 import GaloisForLFunctions.BiScaleUncertainty.DisjointCollarCliqueDivergenceAndTuransProblem
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSpectralEnvelopeRealization
 import GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization
@@ -38,6 +44,12 @@ import GaloisForLFunctions.BiScaleUncertainty.LogarithmicCompressionEnergy
 import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridPolarRecovery
 import GaloisForLFunctions.BiScaleUncertainty.LogarithmicGridDistance
 import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridDistanceClassification
+import GaloisForLFunctions.BiScaleUncertainty.FiniteTranslationTrains
+import GaloisForLFunctions.BiScaleUncertainty.FiniteCopyTailRigidity
+import GaloisForLFunctions.BiScaleUncertainty.FiniteTrainActiveLags
+import GaloisForLFunctions.BiScaleUncertainty.FiniteTrainGridClassification
+import GaloisForLFunctions.BiScaleUncertainty.LocalCorrelationEnergyStability
+import GaloisForLFunctions.BiScaleUncertainty.FiniteTrainUniformEnergy
 import GaloisForLFunctions.BiScaleUncertainty.FiniteMomentEnergyInvariance
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSourceEnergyScalarization
 import GaloisForLFunctions.BiScaleUncertainty.CliqueSphereDualityAndExtremalTheory
@@ -51,9 +63,16 @@ import GaloisForLFunctions.BiScaleUncertainty.SobolevLogarithmicTransport
 import GaloisForLFunctions.BiScaleUncertainty.CoprimeLogSobolevCoercivity
 import GaloisForLFunctions.BiScaleUncertainty.LogarithmicPathKernel
 import GaloisForLFunctions.BiScaleUncertainty.MixedEdgePathCongestion
+import GaloisForLFunctions.BiScaleUncertainty.CompactSourceResistanceMass
+import GaloisForLFunctions.BiScaleUncertainty.CompactSourceGraphAdmission
+import GaloisForLFunctions.BiScaleUncertainty.CompactSourcePairVariance
+import GaloisForLFunctions.BiScaleUncertainty.CompactSourceGraphCoercivity
 import GaloisForLFunctions.BiScaleUncertainty.MultiCosetGramPackingAndNyquistDensity
 import GaloisForLFunctions.BiScaleUncertainty.ProducerConsumerDualityAndNymanBeurlingBridge
 import GaloisForLFunctions.BiScaleUncertainty.AsymptoticTailCoercivityAndNyquistTrap5Closure
+import GaloisForLFunctions.BiScaleUncertainty.SignedKreinCollarAndPrimeDeficitTransfer
+import GaloisForLFunctions.BiScaleUncertainty.KreinKantorovichMeasureTransportAndPrimePolarPairing
+import GaloisForLFunctions.BiScaleUncertainty.HyperbolicMultiplierIncrementAndOddSignCoercivity
 
 /-!
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
@@ -61,12 +80,13 @@ import GaloisForLFunctions.BiScaleUncertainty.AsymptoticTailCoercivityAndNyquist
 Umbrella module for **Bi-Scale / Logarithmic-Grid Uncertainty Theory**, an independent mathematical
 field studying the non-local geometry, multi-node Bessel/Gram rigidity, convex sphere duality,
 producer–consumer (FZZ-P / Nyman–Beurling) duality, multi-coset Nyquist compression,
-non-commutative hyperbolic parity-intertwining calculus, discrete coprime shear uncertainty, and
+non-commutative hyperbolic parity-intertwining calculus, discrete coprime shear uncertainty,
+signed arithmetic-archimedean discrepancy, Krein–Kantorovich measure transport, and
 singular increment functionals of positive-definite translation correlation kernels `h = f ⋆ f̃`
 under simultaneous discrete logarithmic-grid pinning and hyperbolic polar moment constraints.
 
-See `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` for the motivation, the seven
-structural traps, and the three-layer / thirteen-pillar architecture of the field.
+See `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` for the motivation, the nine
+structural traps, and the four-layer / sixteen-pillar architecture of the field.
 
 ## Foundational Modules
 
@@ -159,4 +179,30 @@ structural traps, and the three-layer / thirteen-pillar architecture of the fiel
     `GaloisForLFunctions.BiScaleUncertainty.InfiniteGridDistanceClassification`:
     Exact nearest-grid distance and center classification for separated polar copies:
     nonzero sources exist precisely off-grid, with energy of order `log(1/distance)`.
+24. `GaloisForLFunctions.BiScaleUncertainty.FiniteTranslationTrains` and
+    `GaloisForLFunctions.BiScaleUncertainty.FiniteCopyTailRigidity`:
+    Exact local preservation and endpoint-pair isolation for finite common-seed trains;
+    infinite-grid pinning forces logarithmic distance cost and linear energy cost in the full span.
+25. `GaloisForLFunctions.BiScaleUncertainty.FiniteTrainActiveLags` and
+    `GaloisForLFunctions.BiScaleUncertainty.FiniteTrainGridClassification`:
+    Exact finite-train feasibility: every active positive correlation lag must be off-grid.
+    Actual smooth sources realize every compatible pattern and inherit polar balance from
+    a zero exponential symbol; each active lag forces its nearest-grid energy cost.
+26. `GaloisForLFunctions.BiScaleUncertainty.SignedKreinCollarAndPrimeDeficitTransfer`:
+    Pillar XIV (Layer IV): Signed Krein collar inequalities dropping `h_f(t) = 0`, multi-node
+    signed Origin-Singularity Leverage for orthogonal cliques and Selberg–Bombieri almost-orthogonal
+    families, and the critical-line scaling law `archLevySinhWeight (log n) = 2/√n + 2/(√n(n² - 1))`.
+27. `GaloisForLFunctions.BiScaleUncertainty.KreinKantorovichMeasureTransportAndPrimePolarPairing`:
+    Pillar XV (Layer IV): Pointwise and integrated Krein–Kantorovich measure-transport inequalities
+    with linear origin regularization `exp(-y/2) sinh y ≤ y exp(y/2)`, and Bounded-Energy Width
+    Rigidity (`narrow_support_logarithmic_levy_lower_bound` and `bounded_levy_width_rigidity`).
+28. `GaloisForLFunctions.BiScaleUncertainty.HyperbolicMultiplierIncrementAndOddSignCoercivity`:
+    Pillar XVI (Layer IV): Exact two-positive-term hyperbolic multiplier defect decompositions for
+    `coshMultiplier` and `sinhMultiplier`, and zero-grid coincidence signed collar coercivity
+    (`coshMultiplier_signed_collar_ge_of_source_zero` and `joint_base_sinhMultiplier_collar_ge_of_source_zero`).
+29. `GaloisForLFunctions.BiScaleUncertainty.LocalCorrelationEnergyStability` and
+    `GaloisForLFunctions.BiScaleUncertainty.FiniteTrainUniformEnergy`:
+    Local normalized correlations determine energy up to a fixed integrable-tail error.
+    Every compatible finite train has actual smooth all-grid realizations with matching-order
+    logarithmic cost in its minimum active grid distance, uniformly in coefficients and packet count.
 -/

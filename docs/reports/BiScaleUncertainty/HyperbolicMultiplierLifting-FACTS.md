@@ -3,10 +3,11 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Four substantive results are Lean verified: compensated multiplier Gram
+contributions. Five substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), and the exact smooth odd
-fixed-energy leakage family (12). Supporting theorem
+fixed-energy leakage family (12), and the centered source-Gram replacement with its
+full secant/plastic receiver (15). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 ## Exact laws
@@ -51,7 +52,7 @@ counts are not contribution counts. No literature-priority claim.
 - **Secant is not plastic:** the actual plastic kernel is piecewise
   `levyCoshKernel`, with a signed pairing involving `2 cosh - levyCoshKernel`.
   Kernel resemblance does not identify the two functionals.
-- **Contribution counting:** four field-specific results, not one contribution per
+- **Contribution counting:** five field-specific results, not one contribution per
   declaration. Cauchy–Schwarz and ground-state representation are classical mechanisms.
   External novelty is unestablished; exact-phrase search was inconclusive.
 
@@ -87,11 +88,9 @@ Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicMultipl
 Final direct-source compilation passed without warnings. All 13 theorem axiom audits
 returned only `propext`, `Classical.choice`, `Quot.sound`. Source SHA256:
 `12ec9a1f19c416d8d0601c1c1e133880318a69cb43d84e3a133034fd8b387444`.
-The module is imported by the BiScale umbrella and indexed. Global lint failed on
-unreachable concurrent modules `AsymptoticTailCoercivityAndNyquistTrap5Closure`,
-`MultiCosetGramPackingAndNyquistDensity`, `ProducerConsumerDualityAndNymanBeurlingBridge`,
-plus concurrent `LEAN_API.md`/`LEAN_OVERVIEW.md` drift. Do not alter others' unfinished
-modules to conceal that status. Exact commands and audit scope are on the paper card.
+The module is imported by the BiScale umbrella and indexed. Global lint depends on
+concurrent work; the latest snapshot, exact commands and audit scope are on the paper
+card. Do not alter others' unfinished modules to conceal that status.
 
 Second implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicJumpEnergyTransfer.lean`.
 Direct actual-source compilation passed without warnings. All 19 public theorem axiom
@@ -106,13 +105,15 @@ returned only `propext`, `Classical.choice`, `Quot.sound`. Source SHA256:
 `c34e886a83d099242571f9bdcb2b4e49fd3841608fad2448b9615e2ee49cd923`.
 Umbrella import and index refresh completed; current global lint status is on the master card.
 
-Remaining questions: control actual sine Gram leakage under logarithmic source zeros,
-quantify or remove support dependence, and compare the negative odd sine moment with
+Remaining questions: quantify the centered weighted source energy and source
+difference-node Gram under logarithmic source zeros, remove support dependence, and
+compare the negative odd sine moment with
 the now-separated positive secant and plastic remainder energies. The cosine companion
 is removed, and the actual signed plastic receiver is established with that moment retained.
 The fourth result excludes source-energy-only leakage estimates from odd parity and a
-single logarithmic zero. Test source-centered weighted identities or stronger zero-grid
-constraints before seeking a uniform replacement for actual Gram data.
+single logarithmic zero. The fifth supplies exact centered weighted control of the
+multiplier defect; uniform coercivity still requires stronger information about its
+source variance and full difference-node Gram.
 
 ## Actual plastic crossover: exact facts
 
@@ -167,7 +168,58 @@ Fourth implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/OddMultipl
 Final direct actual-source compilation exited 0 without warnings. Source SHA256:
 `fd8f41743e0b8a24bb2a4ebd43594b172a93ffef3c3066c9a631afedaa500ef0`.
 Theorems `source_sinh_autocorr_lag` and `exists_odd_logZero_large_sinhCorrelation`
-state the exact law and unconditional unboundedness. Audit results are on the master card.
+state the exact law and unconditional unboundedness. All 12 public theorem axiom audits
+returned only `propext`, `Classical.choice`, `Quot.sound`. Umbrella wiring and index refresh
+passed. Latest global lint status is on the master card.
+
+## Centered source-Gram control and actual receiver
+
+- For F=oddCompactSource f, arbitrary real alpha,c, and q_c(u)=(cosh(2alpha u)-c)F(u),
+  the exact odd-reflection identity is
+  integral q_c(u)F(u+x)du=2cosh(alpha x)h_(S_alpha F)(x)
+    +[cosh(alpha x)^2-c]h_F(x).
+  All sources are constructed from actual compact continuous data.
+- For ordered off-diagonal node pairs P, d_ij=t_j-t_i and
+  a_ij=v_i v_j/[2cosh(alpha d_ij)], write
+  E_c=sum_P a_ij[c-cosh(alpha d_ij)^2]h_F(d_ij),
+  Q_c=h_(q_c)(0), and G=translationGramEnergy F P a d. Then
+  D=E_c+integral q_c(u)[sum_P a_ij F(u+d_ij)]du and
+  |D-E_c|<=sqrt(Q_c G). Hence D<=U_c=E_c+sqrt(Q_c G).
+  This controls every multiplier off-diagonal contribution using original source
+  correlations and one actual weighted source energy. No support radius enters this
+  defect bound. On a source clique E_c=0; the pair-difference Gram remains full.
+- With R=h_F(0), M=integral cosh(2alpha u)F(u)^2 du and
+  W=integral cosh(2alpha u)^2 F(u)^2 du,
+  Q_c=W-2cM+c^2 R and R Q_c=(Rc-M)^2+V, V=RW-M^2>=0.
+  The exact minimizer identity is Q_(M/R)+R(c-M/R)^2=Q_c, including R=0.
+  Minimizing Q_c alone need not minimize U_c when E_c depends on c.
+- At alpha=1/2 and the existing source-derived transfer weights v_i, replace D by
+  U_c in the uncompensated penalty:
+  B_c=R_S[sum_i v_i cosh((t_i-y)/2)-sqrt(sum_i v_i^2)]
+      -sqrt(R_S max(U_c,0)). This is below the existing full-Gram bound and original
+  secant jump collar. Continuity permits integration over the disjoint arithmetic
+  collars, yielding integral B_c<=J_sech(F) and
+  integral B_c+R_plastic(F)-2[integral F(u)sinh(u/2)du]^2<=P(F).
+  Actual multiplier origin energy remains; every off-diagonal multiplier sample has
+  been replaced by explicit source data. The jump envelope still uses source support.
+- Weighted variance growth, full difference-Gram geometry, and negative odd-moment
+  domination remain substantive open quantities. Repeated nodes, signed weights,
+  zero source energy and zero-length collars require no added hypotheses.
+- The corpus's integral Cauchy--Schwarz and packet Gram identities are reused.
+  The fifth contribution is their exact parity-dependent source representation and
+  transfer into the actual receiver, counted once. No literature-priority claim.
+- Concurrent `HyperbolicMultiplierIncrementAndOddSignCoercivity.lean` gives joint
+  increment and signed-collar estimates retaining multiplier samples; its actual
+  statements do not supply this centered source replacement or establish full odd
+  positivity. It is not counted among this work's contributions.
+
+Fifth implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/CenteredHyperbolicGramControl.lean`.
+Actual-source compilation exited 0 without warnings. All 15 public theorem axiom audits
+returned only `propext`, `Classical.choice`, `Quot.sound`. Source SHA256:
+`943a494e19a78335bbc2bb288adf016474e44c5ea747a3937528aa39a529f85e`.
+Main results are `CenteredHyperbolicGram.odd_defect_abs_sub_correction_le`,
+`centered_energy_minimizer`, `odd_secantEnergy_ge_centered`, and
+`odd_plasticCrossover_ge_centered`. Current global lint status is on the master card.
 
 Serena ignores Lean paths in this project; direct symbol lookup returned that error.
 Use inspected source plus apply_patch. Keep one owned foreground Lean process at a time.

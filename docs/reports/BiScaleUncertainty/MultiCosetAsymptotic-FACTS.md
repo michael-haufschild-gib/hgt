@@ -132,16 +132,78 @@ monotonicity, source-energy control, and finite convergence, with upper bound
 and arithmetic product-admission condition. Final direct recheck passed, exit 0,
 without diagnostics.
 
-No strict improvement of C_N over P_N, rate for C_∞−C_N, or equality with the true
-source infimum is asserted. Sharpness applies only to the paired-sphere support.
-The card records a next full-grid capped-support construction that retains high
-nodes without the loss caused by separately summing low/high block norms.
+No strict improvement of C_N over P_N, sharp convergence rate, or equality with the
+true source infimum is asserted. Sharpness applies only to the paired-sphere support.
+The full-grid capped-support construction below retains high nodes without the
+loss caused by separately summing low/high block norms.
 
-Next quantitative candidate: prove paired capacity monotonicity and the same physical
-retraction tail bound for Q_K. This would identify C_∞=sup_K Q_K and give
-O(N^(−1/4)) cutoff control by admitting K=floor(sqrt N). No such rate has yet passed
-Lean. A sharper leading-law comparison would depend on whether sup Q_K>sup P_K;
-strict improvement of the limiting optimum remains unproved.
+## Quantitative product-coupled saturation
+
+Paired capacity has its own proved comparison: nonnegative coordinate addition
+increases the kernel by between zero and added mass, for every real origin weight.
+An unordered nonnegative array differs from a trial array by at most the supplied
+added capacity. Padding preserves both sign norms. Exact physical extension and
+retraction therefore prove
+
+    Q_K ↑ C_∞ = sup_K Q_K ≥ P_∞,
+    0≤C_∞−Q_K≤∫_(log K−δ)^∞w≤4·2^(1/4)/(sqrt(K)(1−2/K²)).
+
+For N≥4, let s=floor(sqrt N). The finite envelope reduces exactly to
+
+    C_N=max(P_N,Q_s),
+    0≤C_∞−C_N≤4·2^(1/4)/(sqrt(s)(1−2/s²))≤16·2^(1/4)/N^(1/4).
+
+Thus every actual nonzero compact C² N-grid source has
+J_arch(f)/h_f(0)≥C_∞−16·2^(1/4)/N^(1/4). There is no optimizer or extra analytic
+premise. The bound is for the product-coupled subhierarchy, not the full Gram cone.
+
+`PairedCollarCapacity.lean` and `PairedCollarCutoffStability.lean` pass direct Lean
+compilation without diagnostics. All 30 theorem axiom/signature audits pass using
+only `propext`, `Classical.choice`, and `Quot.sound`. Final direct recheck passed,
+exit 0, no diagnostics.
+The error exponent is an upper bound, not a proved sharp rate. Matching leading laws
+and strict improvement C_∞>P_∞ remain open.
+
+## Exact full-grid capped support
+
+For K²≤N, split each signed odd-coset weight vector into low nodes j≤K and high
+nodes j>K, with Euclidean norms L and H. Preserve each whole-coset sphere and add
+the opposite-sign low-block pair spheres supplied by literal product-grid zeros.
+Their exact finite-vector support is R sqrt(W²+Z²), where
+
+    Z = max_(0≤t≤1) Σ_m [F_(L_false,m,H_false,m)(t)
+                       +F_(L_true,m,H_true,m)(sqrt(1−t²))],
+    F_(L,H)(t) = sqrt(L²+H²)                  if L≤t sqrt(L²+H²),
+                Lt+H sqrt(1−t²)             otherwise.
+
+Lean proves the formula including zero weights, compact attainment, continuity,
+the exact finite-amplitude/vector support, and Z≤Σ_(σ,m)sqrt(L²+H²). Thus the
+physical capped coefficient B_(N,K)(ρ) satisfies, for every physical partition,
+
+    oldCoefficient_N(ρ) ≤ B_(N,K)(ρ) ≤ J_arch(f)/h_f(0).
+
+The source is the actual nonzero compact C² N-grid source. The ENNReal version
+holds for every compact continuous grid source, including zero source and infinite
+energy, and uses the full interval (0,log N). No analytic transfer or optimizer
+premise is imposed. `fullGrid_capped_energy` supplies K=floor(sqrt N) for N≥4.
+Finite support sharpness does not assert autocorrelation realization.
+
+All three leaves and final direct source-leaf check pass without diagnostics.
+All 41 public theorem axiom/signature audits use only `propext`, `Classical.choice`,
+and `Quot.sound`. This is one contribution package.
+
+Paper-only activation criterion: let α_σ=max_m L_(σ,m)/sqrt(L_(σ,m)²+H_(σ,m)²),
+with zero fraction for zero blocks. The angular support equals the independent
+whole-block support iff α_false²+α_true²≤1; otherwise improvement is strict.
+Proof: equality in each nonzero block's Cauchy bound requires its normalized weight
+direction; simultaneous feasibility is exactly the displayed condition. Compact
+attainment turns failure of feasibility into a strict support gap. Integrated
+strictness requires activation on a positive-measure set. Not yet Lean-verified.
+
+Still open for this new coefficient: cutoff monotonicity and quantitative limit,
+formal all-low reduction to paired support, unequal-size product-zero pairs, and
+general nonzero Schur residual coupling. Do not transfer the preceding C_N rate
+to B_(N,K) without proving the comparison/limit statements.
 
 ## Limits that must remain visible
 
@@ -160,19 +222,21 @@ strict improvement of the limiting optimum remains unproved.
 
 ## Research accounting
 
-Lean-verified significant packages: **3/100**: (1) general source transfer and
+Lean-verified significant packages: **5/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
-product-zero source transfer, and its optimized monotone finite-limit hierarchy.
+product-zero source transfer, and its optimized monotone finite-limit hierarchy;
+(4) paired capacity and cutoff stability, exact limit identification and frame
+selection, and quantitative fourth-root source-cutoff control; (5) exact capped
+support and finite-vector attainment, followed by full-grid physical source transfer.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Current global lint exits 1 solely on six concurrent missing umbrella imports:
-`RHTower.NonTemperedShiftedZetaPairCountermodel`, `RHTower.WeilConeMismatchWitnesses`,
-`RHTower.ZeroCountRemainderNotIntegrable`, `BiScaleUncertainty.InfiniteGridDistanceClassification`,
-`BiScaleUncertainty.LogarithmicGridDistance`, `BiScaleUncertainty.OddMultiplierLeakageFamily`.
-All six owned leaves are reachable; no own-leaf lint error is reported. Index refresh passed.
+Current global lint exits 1 solely on two concurrent missing umbrella imports:
+`FiniteTrainUniformEnergy` and `LocalCorrelationEnergyStability`, both in
+BiScaleUncertainty. Earlier four-import failure is obsolete. All eleven owned leaves are
+reachable; no own-leaf lint error is reported. Index refresh passed.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -197,7 +261,36 @@ Evidence: `/tmp/bsu-paired-geometry.log`, `/tmp/bsu-signed-coupling.log`,
 `/tmp/bsu-product-hierarchy.log`, `/tmp/bsu-product-coupling-{axioms,final,index,lint}.log`,
 `/tmp/bsu_product_coupling_axioms.lean`. All 41 public theorems are included in the audit.
 
-Reusable proof repairs: `Finset.sup'_mem` is a closure-under-sup lemma, not finite
+Paired-cutoff SHA-256 values:
+
+- Capacity: `215adfa612eb4e9eef6d1025d51de02109b3d2b0a157828441b4068c83030863`.
+- Stability: `e2f4d2b569d6df1efd3e4e65444f9e025408ee34d1c9fe83973e273334eec19c`.
+
+Evidence: `/tmp/bsu-paired-capacity.log`, `/tmp/bsu-paired-stability.log`,
+`/tmp/bsu-paired-cutoff-{axioms,final,index,lint}.log`, `/tmp/bsu_paired_cutoff_axioms.lean`.
+All 30 public theorems are included in the audit; principal signatures and cutoff
+definitions were printed and inspected.
+All owned jobs exited; the paired-cutoff API probe was removed. Successful audit
+scripts and logs remain available; no full or umbrella build was run.
+
+Full-grid SHA-256 values:
+
+- Block support: `3004dced418ed93f074aa177cd75cf7bd841200f6af3328538e5cd2863355406`.
+- Coset support: `b6e3bd890950ae1874e4c4ef87a30d383d1d4360768ffdad607e2b8505d811c5`.
+- Source transfer: `6a8bcfaba9f2647cdeadc59abc68a5cf7724c4a3c58e049120c7922553503b0d`.
+
+Evidence: `/tmp/bsu-capped-block.log`, `/tmp/bsu-capped-cosets.log`,
+`/tmp/bsu-fullgrid-capped.log`, `/tmp/bsu-fullgrid-capped-{axioms,final,index,lint}.log`,
+`/tmp/bsu_fullgrid_capped_axioms.lean`. All eight earlier hashes rechecked unchanged.
+Final direct command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FullGridCappedCollarEnergy.lean`.
+Exit 0, no diagnostics; all 41 public theorem audits pass.
+
+Reusable proof repairs: expose the explicit function composition before applying
+measurability of the compact support map to low/high array maps; leaving it implicit
+causes a default-heartbeat definitional-equality timeout. Name the array measurable
+maps and keep the compact-map proof separate. Prefer an explicit `change` and
+`simp only` over `unfold` plus `simp_rw` across actual-source subtype coercions.
+`Finset.sup'_mem` is a closure-under-sup lemma, not finite
 maximum attainment; use `Finset.exists_mem_eq_sup'`. Unfold `LogarithmicGridSource.restrict`
 when simplifying the source kernel on the right side of a restricted-grid bound.
 Expose Ioi membership as an inequality before arithmetic tactics. Import checks can
