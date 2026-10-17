@@ -1,5 +1,10 @@
 # Twenty cross-route insights: TT / LA / TH / HCF / HJ
 
+Current scope: the full twenty-insight goal was cleared. The user's subsequent
+request to finish the fourth package is complete: four contribution packages,
+113 audited declarations, and eleven Lean modules are preserved. No claim of
+twenty completed insights is made.
+
 ## Contract
 
 User task: attachment `277aa2d6-28d3-4b7c-aca7-800d9e29a1ca/pasted-text-1.txt`.
@@ -147,20 +152,30 @@ finite-offset theorem passed its final Lean audit.
 
 ## Verified contribution count
 
-1 / 20. One contribution: the exact two-prime sampled heat/source criterion
-with sharp single-grid and finite-offset obstruction. Its 37 declarations,
-source and HJ corollaries, and boundary theorems are not counted separately.
+3 / 20. Contributions:
+
+1. Exact two-prime sampled heat/source criterion with sharp single-grid and
+   finite-offset obstruction (37 declarations; corollaries not separate credit).
+2. Exact marginal-versus-mixed sampling boundary: two separate heat grids
+   fail reconstruction even for strict-parabolic four-atom packets; mixed
+   prime-log samples determine arbitrary heat-regularized summable countable
+   packets on distinct escaping frequencies (18 declarations).
+3. FE parity transport preserves the entire Weil form: the Deninger
+   orientation isometry moves the Hurwitz witness into the even sector with
+   unchanged energy, while the original witness has an exact approximation
+   distance from every even vector (24 declarations).
+
 The remaining all-rank arithmetic positivity is open; RH is not proved.
 
-## Next live conjecture
+## Contribution 2: marginal ambiguity and mixed recovery
 
 Does equality of all heat-trace values on two prime-log grids reconstruct a
 spectral packet? Individual phase pairs are injective, but the two trace
 sequences supply unpaired marginals. A rectangle switch between imaginary
 frequencies `{0,L1+L2}` and `{L1,L2}`, with `Li=2*pi/hi`, appears to preserve
 both grid traces. Audit conjugate closure and the Xi parabola, then extract
-the strongest positive recovery theorem from mixed samples. This is not yet
-a proved or counted contribution.
+the strongest positive recovery theorem from mixed samples. This conjecture
+was refuted and replaced by the mixed recovery theorem below.
 
 ### Paper proof: marginal ambiguity and finite mixed recovery
 
@@ -221,7 +236,188 @@ prime-log heat coordinates tend to zero and are jointly injective. Thus
 the theorem applies to every summable coefficient sequence, and to any
 heat-regularized packet whose regularized coefficients are summable.
 No RH, spectral reality, or sign assumption is needed. This is the positive
-survivor to formalize, stronger than the finite CRT version above.
+survivor, stronger than the finite CRT version above.
+
+### Contribution 2 audit
+
+`HeatGridMarginalAmbiguity.lean` and `HeatMixedMomentDeterminacy.lean` passed
+narrow `:olean` builds and final separate `lake env lean` audits without
+warnings. All 18 public declarations were checked with `#print axioms`:
+only `propext`, `Classical.choice`, and `Quot.sound`. Both imports are wired;
+index refresh passed. Latest repository lint exited 1 on 22 unrelated
+unreachable OddSector and HTGeometry modules; none belongs to this work.
+No external novelty claim is made. The countable scalar projection and
+mixed-moment argument provide the new positive recovery mechanism; the
+counterexample and its finite specializations remain one contribution.
+
+## Contribution 3: parity transport of the Weil obstruction
+
+The Deninger FE orientation multiplier has modulus one, reverses pure
+functional-equation parity, and should commute with critical-line reflection
+because the centered spectral real coordinate never vanishes. Therefore it
+should give an isometric equivalence of the even and odd FE Weil sectors.
+The Hurwitz orientation vector is FE-odd; multiplying by this orientation
+should produce an FE-even negative witness with exactly the same energy.
+The corpus audit and formal proof are complete below.
+
+### Dependency-closed paper proof of parity transport
+
+Write R for the exact-copy functional-equation permutation, J for the
+critical-line permutation, and z_q for the centered spectral point. The
+existing source height gap gives |Re z_q|>4. Hence Deninger's orientation
+epsilon_q is sign(Re z_q), always real with epsilon_q^2=1. Since
+z_(Rq)=-z_q and z_(Jq)=conj(z_q), epsilon_(Rq)=-epsilon_q and
+epsilon_(Jq)=epsilon_q. Thus Dv(q)=epsilon_q*v(q) defines an involutive
+linear isometry of the complete multiplicity-exact ell2 carrier and
+commutes with J. Consequently its full Weil form is invariant:
+`<J Dv,Dw>=<D Jv,Dw>=<Jv,w>`.
+
+If v(Rq)=s*v(q), then Dv(Rq)=-s*Dv(q). D therefore identifies the two
+functional-equation parity sectors isometrically, preserving every Weil
+Gram matrix and its sign, for arbitrary complex coefficients. This is
+different from J-parity, whose two sectors already have opposite signs.
+
+The canonical Hurwitz vector u has coordinate
+`-sin(2*pi*Re rho)/|rho-1/2|`. Under rho->1-rho its denominator is fixed
+and sine changes sign, so Ru=-u. Hence Du is FE-even, has norm squared E
+(the Hurwitz orientation energy), and has Weil square exactly -E. Positivity
+at this one FE-even vector is equivalent to RH by the existing E=0 criterion.
+Thus square folding does not remove the full RH obstruction: orientation
+transport relocates it with no energy loss.
+
+For every FE-even v, reindexing the absolutely convergent Hilbert pairing
+through R gives `<u,v>=-<u,v>`, hence zero. Pythagoras gives the sharp law
+`||u-v||^2=E+||v||^2`. Raw FE-even heat vectors therefore cannot approximate
+the original u unless RH holds, despite the existence of the equally strong
+even witness Du. This records the precise limitation and its positive repair.
+
+Corpus search returned complete retrieval. Existing graded orientation
+equivalence in `DeningerArithmeticRealHodgeFactorization.lean` factors odd
+Hodge transport; existing `GaussHodgeWeilFundamentalSymmetry.lean` concerns
+J-parity rather than pure FE parity. `XiWeilSpectralFoldIndexConservation`
+counts conjugation-fold source orbits and does not assert this FE-sector
+unitary equivalence. The new claim is the Hilbert parity transport and its
+canonical Hurwitz energy/approximation consequences, not those parent laws.
+
+### Contribution 3 audit
+
+`XiWeilFunctionalEquationParity.lean` and
+`XiHurwitzFunctionalEquationEvenWitness.lean` passed both narrow `:olean`
+builds and final individual `lake env lean` audits, without warnings in these
+modules. All 24 public declarations were audited with `#print axioms`:
+only `propext`, `Classical.choice`, and `Quot.sound`. Umbrella imports and
+index refresh passed. Latest repository lint exited 1 on 26 unrelated
+unreachable modules from concurrent OddSector, EvenSector, and HTGeometry
+work. No lint error concerns any of the eight modules in contributions 1–3.
+Total audited declarations: 79; contribution count remains three.
+
+## Contribution 4: uniform signed-heat construction of FE orientation
+
+This package counts as one contribution. Prior corpus search found real Hermitian
+signed-heat formulas in `RiemannGaussian/Hybrid/SignedHeatInertia.lean`, real
+finite-gap formulas in `EtaEnergyFiniteWindowHeatHilbert.lean`, and the
+first reciprocal-square Mellin bridge in `XiGaussianMellinBridge.lean`.
+The new target is the actual complex Xi spectrum and strong convergence
+on its full multiplicity-exact Hilbert carrier, without RH.
+
+### Dependency-closed paper proof
+
+For Re(z^2)>0 let g_z(t)=exp(-z^2*t^2). Complex Gaussian integration gives
+`I(z)=integral_R g_z=(pi/z^2)^(1/2)`. When Re(z)>0, the number sqrt(pi)/z
+has positive real part and square pi/z^2, so the principal square-root law
+gives I(z)=sqrt(pi)/z. When Re(z)<0, apply this to -z and use g_(-z)=g_z.
+Thus `z I(z)/sqrt(pi)=sign(Re z)` on both spectral sectors. The actual Xi
+source satisfies Re(z_q^2)>0 and |Re z_q|>4, so this is exactly Deninger's
+orientation epsilon_q.
+
+For any measurable window S define
+`a_S(z)=z/sqrt(pi) * integral_S g_z`.
+The norm integral bound and the real Gaussian integral yield
+`|a_S(z)| <= |z|/sqrt(Re(z^2))`. The already proved Xi sector inequality
+`|z_q|^2 < 2 Re(z_q^2)` gives the uniform bound |a_S(z_q)|<=2,
+independent of the window and spectral copy. For S_N=[-N,N], integrability
+and increasing exhaustion give a_N(z_q)->epsilon_q.
+
+For each v in ell2 define A_N v(q)=a_N(z_q)v(q). The uniform bound makes
+this a bounded diagonal map with norm at most two. Every coordinate of
+`A_N v-Dv` tends to zero, and its squared norm is dominated by
+`9 |v(q)|^2`. Tannery's theorem and the exact lp norm-square identity give
+`||A_N v-Dv||^2->0`, hence strong convergence on the whole carrier.
+
+The multiplier a_N is odd in z, so every A_N maps FE-odd vectors to FE-even
+vectors. In particular A_N u is an explicit even signed-heat approximation
+to the canonical even witness Du. Continuity of the Weil form gives
+`Q(A_N u)->-E`; off RH these energies are eventually strictly negative,
+while under RH u=0. This does not infer arithmetic positivity: it constructs
+the precise even witness by signed heat and retains the unsquared factor z.
+Pure square-heat multipliers alone remain FE-even and cannot implement D.
+
+### Stronger conjecture exposed by the time-window proof, now proved on paper
+
+The upper cutoff actually converges in operator norm with a uniform Gaussian
+rate. Write A=Re(z_q^2). The actual height gap and strip bound give A>=2,
+and the existing sector law gives |z_q|^2<=2A. Outside [-N,N], t^2>=N^2,
+so `exp(-A t^2)<=exp(-N^2) exp(-(A/2)t^2)`. The remainder integral is thus
+bounded by
+`exp(-N^2) |z_q|/sqrt(A/2) <= 2 exp(-N^2)`.
+Consequently
+`||A_N v-Dv|| <= 2 exp(-N^2) ||v||`
+for every Hilbert vector, uniformly over the complete spectrum. This improves
+the strong-limit argument; it uses the proved uniform height gap, not RH.
+The cutoff contains t=0 throughout, so this claim does not assert norm
+convergence for windows whose lower endpoint stays positive.
+
+## Completion scope after goal clearance
+
+The user cleared the twenty-insight goal, then requested completion of the
+unfinished work. The active scope is contribution 4: finish the signed-heat
+construction, its uniform Gaussian convergence rate, and the even Hurwitz
+witness consequences. Contributions 1–3 remain complete. This does not
+restart the twenty-insight target.
+
+Completion plan:
+1. Formalise the uniform scalar tail bound and its actual Xi specialisation.
+2. Package bounded Hilbert operators, prove operator-norm convergence, and
+   derive finite-window even witness and Weil-energy convergence theorems.
+3. Run narrow builds, final per-file checks and axiom audits; wire imports,
+   refresh the index, run lint, and record exact results.
+
+### Contribution 4 result and audit
+
+The stronger operator-norm result is formalised, together with the original
+strong convergence target and its canonical even-witness consequences:
+
+- `ComplexSignedGaussianHeat.lean` (8 declarations): exact signed complex
+  Gaussian formula, finite symmetric cutoffs, uniform bounds, and Gaussian
+  tail estimate.
+- `XiSignedHeatOrientation.lean` (11 declarations): exact actual Xi
+  orientation formula, uniform spectral gap and cutoff error, Hilbert
+  cutoff construction, and FE parity reversal.
+- `XiSignedHeatOrientationConvergence.lean` (15 declarations): bounded
+  complex-linear operators with
+  `||A_N-D|| <= 2 exp(-N^2)`, operator-norm and strong convergence, FE-even
+  signed-heat witnesses, and convergence of their Weil energies to `-E`.
+
+Off RH, all sufficiently large finite-time witnesses have strictly negative
+Weil energy. Eventual nonnegativity on this explicit sequence is equivalent
+to RH. These corollaries are counted within the heat-construction package,
+not as additional insights. The construction does not prove arithmetic
+source positivity or realise an arithmetic test-function operation.
+
+All three narrow `:olean` builds and final individual `lake env lean`
+checks passed without warnings in these modules. All 34 declarations were
+audited with `#print axioms`; each uses only `propext`, `Classical.choice`,
+and `Quot.sound`. Each module is imported exactly once by the RHTower
+umbrella. Index generation and `git diff --check` passed. Final
+`scripts/formal_tools.py lint` exited 1 with 17 unrelated import-reachability
+errors: `OddSectorImaginaryZeroMorseBound` and 16 HTGeometry modules, including
+`SymbolicTransferOperator`. None of the eleven modules in contributions 1–4
+has a lint error. Concurrent work was preserved; no unrelated imports were
+changed to suppress that result.
+
+Completed requested scope: contribution 4. Total preserved: 4 contribution
+packages, 113 audited declarations, 11 modules. The original twenty-package
+goal remains cleared.
 
 ## Workspace preservation
 

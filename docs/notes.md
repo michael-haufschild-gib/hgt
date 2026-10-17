@@ -1,113 +1,178 @@
-**the recent theorems in `CHMD`, `HF`, and `OWU` have been rearranging deck chairs inside fixed algebraic dictionaries rather than closing the analytical gap.**
+Viewed STATUS.md:1-172
+Viewed rh-killed-routes.md:1-400
+Viewed OddSectorGroundSpectralQuotient.lean:1-166
+Viewed BlindCoreWanderingNymanBeurling.lean:1-200
+Viewed BlindCoreFarkasSeparation.lean:1-250
+Viewed OddSectorGroundOriginInterpolation.lean:1-221
+Viewed MarkovResolventCoercivityAndEulerMaclaurinPBAP.lean:1-140
 
-When we audit the exact Lean proofs across [`CHMD`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDEigenvectorAbsGraphEdgeNormAndFiveTermLobeBalance.lean), [`HF`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovMultiStagePotentialAndAllRatioSinhCrossoverPBAP.lean), and [`OWU`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorBlindGroundShiftInvariance.lean), we can pinpoint **why** none of the recent steps moved us closer to excluding sign-changing odd states, **what is actually stopping us**, and **how to break out of the loop**.
-
----
-
-## 1. Hostile Diagnosis: Why Recent Progress in `CHMD + HF + OWU` Was an Illusion
-
-### A. Why `CHMD`'s Nodal Lobe Splits (`posGraph`, `negGraph`, `absGraph`, `balancedNodalGraph`) Cannot Exclude Sign-Changing Odd States
-In the primary even-$\Theta$ Doob coordinates ($f(x) = \Theta(x)v(x)$), the last five `CHMD` modules ([`CHMDStationaryRayleighBoundsAndNodalBoost.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDStationaryRayleighBoundsAndNodalBoost.lean), [`CHMDNodalCrossPrimeShiftAndPrimitiveRayleighClosure.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDNodalCrossPrimeShiftAndPrimitiveRayleighClosure.lean), [`CHMDPrimeGeneratorBeurlingDenyAndDiagonalPotentialBalance.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeGeneratorBeurlingDenyAndDiagonalPotentialBalance.lean), [`CHMDEigenvectorAbsGraphEdgeNormAndFiveTermLobeBalance.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDEigenvectorAbsGraphEdgeNormAndFiveTermLobeBalance.lean), [`CHMDBalancedNodalGraphAndGroundPerturbationResolvent.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDBalancedNodalGraphAndGroundPerturbationResolvent.lean)) decompose an eigenvector $q = q^+ - q^-$ and $|q| = q^+ + q^-$. Three structural flaws prevent this machinery from ever proving $\mu \le 1/2$:
-
-1. **It Measures Distance to $\mu = 1$ ($\operatorname{Re}\rho \le 1$), Not $\mu = 1/2$ ($\operatorname{Re}\rho \le 1/2$):**
-   Look at [`norm_absGraph_snd_sq_rieszLift_of_eigenvector`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDEigenvectorAbsGraphEdgeNormAndFiveTermLobeBalance.lean#L90-L103):
-   $$\|(\operatorname{absGraph} q).\mathrm{snd}\|^2 - 4\,\operatorname{sourcePair}(q^+, q^-) = \frac{1 - \mu}{\mu}\,\|q.\mathrm{fst}\|^2.$$
-   Both terms on the left are nonnegative, so the right-hand side is $\ge 0$ whenever $\mu \le 1$—not $\mu \le 1/2$! Why? Because taking the absolute value $q \mapsto \operatorname{absGraph} q = q^+ + q^-$ maps an odd sign-changing vector ($\langle q_1, \mathbf{1}_L\rangle = 0$) out of the odd sector and into the nonnegative even cone, which has a strictly positive overlap $\langle |q_1|, \mathbf{1}_L\rangle > 0$ with the **$\mu = 1$ ground state $\mathbf{1}_L$** (the pole of $\zeta(s)$ at $s = 1$).
-2. **Projecting Back to $\mathbf{1}_L^\perp$ Is Circular and Leaves an Unpaid Defect:**
-   When [`CHMDNodalCrossPrimeShiftAndPrimitiveRayleighClosure.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDNodalCrossPrimeShiftAndPrimitiveRayleighClosure.lean#L140-L202) projects $\operatorname{absGraph} q$ onto the primitive hyperplane via `primGraph (absGraph q)` to get
-   $$\frac{\nu - \mu_{\max}}{\nu \mu_{\max}}\|q_1\|^2 - 4\,\operatorname{sourcePair}(q^+, q^-) \le \frac{\mu_{\max} - \mu_{\min}}{\mu_{\max}\mu_{\min}}\langle |q_1|, \mathbf{1}_L\rangle_{\mathbb{R}}^2,$$
-   it (i) **presupposes** an upper bound $\mu_{\max} \le 1/2$ on the **even primitive** spectrum (which by [`CHMDEvenSectorPointSpectrum.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDEvenSectorPointSpectrum.lean) is *already equivalent to RH*), and (ii) leaves the positive ground-overlap defect $\langle |q_1|, \mathbf{1}_L\rangle^2$ on the right-hand side. Whenever the lobes $q^+, q^-$ are spatially separated, $-4\,\operatorname{sourcePair}(q^+, q^-)$ is exponentially small while $\langle |q_1|, \mathbf{1}_L\rangle^2$ is of order $\|q_1\|^2$.
-3. **The Infinite-Dimensional Radical at $\mu = 1/2$ (`signedRadical`) and the Fake-Weight Gate:**
-   - By [`oddCriticalSequence_linearIndependent`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean#L368-L410) in [`CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean), the odd sector of `signedRadical = ker(resolvent - (1/2)I)` is **infinite-dimensional**: every odd shift difference $\Omega_{a,b} = \Psi_a - \Psi_b$ is a **sign-changing odd eigenvector with eigenvalue $\mu = 1/2$ and $\operatorname{sourceEnergy} = 0$**. Any inequality that drops a positive jump term (like dropping $\|(\operatorname{absGraph} q).\mathrm{snd}\|^2$ or applying Cauchy–Schwarz across lobes) immediately loses positive energy on $\Omega_{a,b}$ and cannot separate $\mu = 1/2$ from $\mu > 1/2$.
-   - Worse, every theorem in those five `CHMD` modules treats `primeShiftOperator` as an abstract positive operator satisfying $(L_\infty + L_P)\Theta = \frac{1}{2}\cosh(x/2)\Theta$. If you replace $\Lambda(n)$ by a fake weight $\tilde{\lambda}(n) \ge 0$ from a Beurling / fake zeta function that *has* an off-line zero $a = \alpha + i\beta$ ($\beta \ne 0$), every single one of those theorems remains true, yet [`CHMDCardinalGraphGeometry.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalGraphGeometry.lean#L152-L157) proves that $F.\mathrm{imVector}$ has $\operatorname{sourceEnergy} = -m_a < 0$ ($\mu > 1/2$)!
+Here is a supercritical, unfiltered review of where `CHMD + HF + OWU + EWU` actually stands in our Lean corpus, why the last several rounds of theorems—despite being nontrivial and mathematically clean—have **not** brought us closer to closing the Riemann Hypothesis, what is *really* stopping us, and what kind of new mathematics is required if we want to break through rather than keep proving more refined versions of the same conservation laws.
 
 ---
 
-### B. Why `HF`'s "Coercivity up to Ratio 27" and "All-Ratio Sinh-Crossover" Are Vacuous on Nonzero Odd Prime-Blind Tests
-Look closely at what [`MarkovThreeStageCountertermAndSpectralGapRigidityPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovThreeStageCountertermAndSpectralGapRigidityPBAP.lean), [`MarkovDegreeSixteenFirstCellAndTwentySevenRatioPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovDegreeSixteenFirstCellAndTwentySevenRatioPBAP.lean), and [`MarkovMultiStagePotentialAndAllRatioSinhCrossoverPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovMultiStagePotentialAndAllRatioSinhCrossoverPBAP.lean) actually prove on the odd prime-blind cone (`coshHalfMoment f = 0` and `logVector F = 0`):
+## 1. Hostile Diagnosis: Why Recent Progress in `CHMD + HF + OWU + EWU` Felt Like Running in Circles
 
-1. All of these modules are built on the **Euler–Maclaurin conservation law for the unit-step weight $\lambda(n) \equiv 1$** (`unitStepCountertermWeight`, which has **no primes**):
-   $$\operatorname{primeBlindCounterterm}(\mathbf{1}, F) + \operatorname{rightCellQuadratureDefect}(F) + \operatorname{bochnerResolventEnergy}(F) = \operatorname{re}(\operatorname{weilPoleTerm}(F)).$$
-2. On an odd test (`coshHalfMoment f = 0`) that is prime-blind at all integers $n \ge 2$ (`logVector F = 0`), $\operatorname{primeBlindCounterterm}(\mathbf{1}, F) = 0$ and $\operatorname{re}(\operatorname{weilPoleTerm}(F)) = -2\,\operatorname{sinhHalfMoment}(f)^2$, so the identity becomes:
-   $$\operatorname{rightCellQuadratureDefect}(F) + \operatorname{bochnerResolventEnergy}(F) + 2\,\operatorname{sinhHalfMoment}(f)^2 = 0.$$
-3. Then the degree-16 Taylor expansion on $[1,2]$ + $M$-stage secular potential proves a lower bound of the form:
-   $$\frac{1}{900}\int \|F\|^2 + \frac{2}{25}\bigl(27\,L(F) - S(F)\bigr) + 2\,\operatorname{sinhHalfMoment}(f)^2 \le \operatorname{rightCellQuadratureDefect}(F) + \operatorname{bochnerResolventEnergy}(F) + 2\,\operatorname{sinhHalfMoment}(f)^2 = 0.$$
-4. **Look at what combining (2) and (3) actually means:**
-   On **every** nonzero odd prime-blind test $F \ne 0$ (`logVector F = 0`),
-   $$\frac{2}{25}\bigl(S(F) - 27\,L(F)\bigr) \ge 2\,\operatorname{sinhHalfMoment}(f)^2 + \frac{1}{900}\int \|F\|^2 > 2\,\operatorname{sinhHalfMoment}(f)^2!$$
-   That is precisely why [`all_ratio_l2_eq_zero_of_cosh_zero_of_logVector_eq_zero_of_sinh_sq_dominates`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovMultiStagePotentialAndAllRatioSinhCrossoverPBAP.lean#L475-L497) is true: **no nonzero odd prime-blind test can ever satisfy $S(F) \le 27\,L(F)$ or $\frac{2}{25}(S(F) - 27\,L(F)) \le 2\,\operatorname{sinhHalfMoment}(f)^2$!**
-   Consequently, every theorem in `HF` saying *"if $S(F) \le 27\,L(F)$ (or if $\frac{2}{25}(S(F) - 27\,L(F)) \le 2\,\operatorname{sinhHalfMoment}(f)^2$), then $\operatorname{markovEnergy}(F) \ge 0$ on `logVector F = 0`"* is **vacuously true on `logVector F = 0` because its hypothesis forces $F = 0$!**
-   The only non-vacuous theorem proved by that chain on `logVector F = 0` is the **uncertainty / spectral-gap lower bound** $S(F) > 27\,L(F) + 25\,\operatorname{sinhHalfMoment}(f)^2$: any nonzero odd integer-blind test must have large high-frequency second moment $S(F)$.
+If we strip away the technical polish of the recent modules, we have been caught in **three distinct structural traps** across `HF`, `EWU`/`OWU`, and `CHMD`. Each trap looks like progress locally while leaving the global RH sign untouched:
 
----
+### Trap 1: The `HF` Conservation-Law & Discarded-Digamma Trap
+Look closely at what our `HF` + `EWU` chain ([`MarkovResolventCoercivityAndEulerMaclaurinPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovResolventCoercivityAndEulerMaclaurinPBAP.lean), [`MarkovDegreeSixteenFirstCellAndTwentySevenRatioPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovDegreeSixteenFirstCellAndTwentySevenRatioPBAP.lean), [`MarkovClampedFirstCellAndTailVarianceLocalizationPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovClampedFirstCellAndTailVarianceLocalizationPBAP.lean), [`EvenSectorPolarBlindSpectralGapAndClampedQuadrature.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorPolarBlindSpectralGapAndClampedQuadrature.lean)) actually proved:
+1. In [`MarkovResolventCoercivityAndEulerMaclaurinPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovResolventCoercivityAndEulerMaclaurinPBAP.lean#L118-L138), we decomposed the archimedean functional as
+   $$\operatorname{markovArchRe}(k_f) = (\operatorname{lebesgueAtomWeilFunctional} k_f).\operatorname{re} - \operatorname{atomPairRe}(k_f) - \operatorname{bochnerResolventEnergy}(k_f).$$
+2. We then bounded $(\operatorname{lebesgueAtomWeilFunctional} k_f).\operatorname{re}$ from below by a **flat constant** $\frac{1}{100}\|f\|_2^2$ (`one_hundredth_l2_le_markovArchRe_add_bochnerResolventEnergy_add_atomPairRe`), **throwing away the entire $\operatorname{Re}\psi(\tfrac{1}{4}+\tfrac{ir}{2}) \sim \ln|r|$ high-frequency growth of the Gamma factor and the Lévy jump integral $\int_0^\infty (h(0)-h(x))\frac{e^{x/2}}{\sinh x}\,dx$!**
+3. Once `lebesgueAtomWeilFunctional` was replaced by $\frac{1}{100}\|f\|_2^2$, everything that remained in the Euler–Maclaurin conservation law (`unitStep_add_rightCellQuadratureDefect_add_bochnerResolventEnergy_eq_re_weilPoleTerm`) was **purely an identity for the two exponential moments $e^{u/2}$ and $e^{-u/2}$**:
+   $$\int_0^\infty e^{u/2}\operatorname{Re} k_f(u)\,du + \int_0^\infty e^{-u/2}\operatorname{Re} k_f(u)\,du = 2\int_0^\infty \cosh(u/2)\operatorname{Re} k_f(u)\,du.$$
+   **It no longer contained the Gamma function $\psi$ or the primes $\Lambda(n)$ at all!**
+4. Consequently, when we proved that `rightCellQuadratureDefect + bochnerResolventEnergy ≥ (1/1200) L` for $S/L \le 27$, and combined it with `rightCellQuadratureDefect + bochnerResolventEnergy = 0` on prime-blind even-polar tests (`EWU`), what did we actually prove?
+   - **Not** that the Weil energy is nonnegative on prime-blind tests,
+   - **But that the cone $S/L \le 27$ contains zero nonzero prime-blind even-polar tests** (`SmoothEvenPolarTestFn.twenty_seven_l2_lt_spectralSecondMoment_of_logVector_eq_zero`)!
+   - In other words: every theorem proving `0 ≤ markovEnergy` on $S/L \le C$ ($C = 23, 25.5, 27$) was proving positivity on a low-frequency cone that **misses the actual nonzero prime-blind sector completely**. And in the high-frequency sector $S/L > 27$ where prime-blind tests actually live, throwing away $\ln|r|$ in `lebesgueAtomWeilFunctional` makes the remaining inequality **false** unless an external term (`2 sinhHalfMoment²`) is assumed to dominate.
 
-### C. Why `OWU`'s Ground-Operator and de Branges Machinery Cannot Produce a Sign
-As proved in [`EvenSectorBlindGroundShiftInvariance.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorBlindGroundShiftInvariance.lean#L144-L169) and summarized in [`owu-review.md`](file:///Users/michael/Documents/code/hgt/docs/reports/owu-review.md):
-- Replacing the archimedean operator $Q_a$ by $Q_a - C\cdot I$ shifts the blind minimum $m_{\mathrm{odd}}(a) \mapsto m_{\mathrm{odd}}(a) - C$ while leaving the subtracted form $q_a(u,u) = \langle (Q_a - A_a)u, u\rangle - m_{\mathrm{odd}}(a)\|J_a u\|^2$, its ground eigenspace $\ker q_a$, its paired-root divisions, its de Branges generator $F_G(w)$, and its positive interpolation weights $\rho_i > 0$ **identically unchanged**.
-- Furthermore, on the real cut $\gamma \in [-1/4, 0)$, every odd test has spectral weight $\Theta_f(\zeta) \ge 0$ ([`oddSpectralWeight_eq_of_neg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/OddWeilSpectralMeasure.lean#L624-L628)), so odd positivity alone cannot even rule out spectral mass on the real cut $(0,1)$.
+### Trap 2: The Ground-Subtraction Tautology in `OWU` and `EWU`
+In `OWU` and `EWU` ([`EvenSectorBlindVariationalAttainment.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorBlindVariationalAttainment.lean), [`OddSectorArithmeticGroundOperator.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/OddSectorArithmeticGroundOperator.lean), [`OddSectorGroundOriginInterpolation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/OddSectorGroundOriginInterpolation.lean), [`OddSectorGroundSpectralQuotient.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/OddSectorGroundSpectralQuotient.lean)), we built a complete Krein–de Branges–Lagrange theory of the **ground-subtracted form**
+$$\mathcal{E}_{\text{shifted},a}(u, v) = \mathcal{E}_a(u, v) - \lambda_{\min}(a)\langle u, v\rangle \ge 0.$$
+- **Why this hasn't moved the needle on RH:** As [`EvenSectorBlindGroundShiftInvariance.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorBlindGroundShiftInvariance.lean) proves explicitly, subtracting $\lambda_{\min}(a)\|u\|^2$ makes $\mathcal{E}_{\text{shifted},a} \ge 0$ **by definition**, regardless of whether $\lambda_{\min}(a)$ is $+10$ or $-10$!
+- Every theorem about the ground radical, division operators $(f(w)-f(z))/(w-z)$, polynomial structure, and quotient coercivity is **shift-invariant**: it describes the *internal geometry of the minimizer* at aperture $a$, which is identical if we replace the archimedean kernel $\Omega_\Gamma$ by $\Omega_\Gamma - C$ (shifting $\lambda_{\min}(a)$ below zero and violating RH). None of these theorems calibrate the **absolute level** $\lambda_{\min}(a) \ge 0$.
 
----
-
-## 2. How Do We Make Actual Progress Now? (Solve, Overcome, or Sidestep)
-
-First, **what we must stop immediately**:
-- **Stop** proving abstract `posGraph`/`negGraph`/`absGraph`/`balancedNodalGraph` identities in even-$\Theta$ coordinates.
-- **Stop** extending un-clamped Taylor / $M$-stage counterterm ratios ($23 \to 27 \to \dots$) in `HF` whose hypotheses are vacuous on nonzero prime-blind tests.
-- **Stop** doing shift-invariant ground-space algebra on $Q_a - A_a - m(a)I$ in `OWU`.
-
-Here are the **three concrete ways** to actually solve, overcome, or sidestep the obstacles using what our corpus has already built:
-
-### Way 1 — Fix the High-Frequency Defect in `HF`: Clamp the First-Cell Bound $I_2(r)$ at Large Frequency $|r| > R_0$
-Look at *why* `HF`'s slope-gauge bound for $\operatorname{markovEnergy}(F)$ had a **negative** coefficient $-\frac{7}{480}S(F)$ in front of $S(F) = \int r^2 |F(r)|^2\,dr$, which ruined high-frequency tests ($S(F) > 27 L(F)$):
-- In [`MarkovExactFirstCellCosLogIntegralAndTwentyThreeRatioPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovExactFirstCellCosLogIntegralAndTwentyThreeRatioPBAP.lean#L8-L10) and [`MarkovDegreeSixteenFirstCellAndTwentySevenRatioPBAP.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/MarkovDegreeSixteenFirstCellAndTwentySevenRatioPBAP.lean#L9-L13), the first-cell oscillatory integral
-  $$I_2(r) = \int_1^2 \frac{\cos(r\log x) - \operatorname{cellSecant}(\cos(r\log\cdot), 2, x)}{\sqrt{x}}\,dx$$
-  was bounded from below for **all $r \in \mathbb{R}$** by its $r = 0$ quadratic Taylor parabola:
-  $$I_2(r) \ge -\frac{7}{480}\,r^2.$$
-- **That unbounded parabola is a self-inflicted wound at high frequency!** Because $|\cos(r\log x)| \le 1$ and $|\operatorname{cellSecant}| \le 1$, $I_2(r)$ is **uniformly bounded by $O(1)$ as $|r| \to \infty$** (in fact $\int_1^2 \frac{\cos(r\log x)}{\sqrt{x}}\,dx = O(1/|r|)$ by Riemann–Lebesgue!), whereas $-\frac{7}{480}r^2 \to -\infty$!
-- Meanwhile, in `markovEnergy(F)` on the prime-blind cone, the true archimedean symbol $\gamma(r) = \operatorname{Re}\psi(\tfrac{1}{4} + \tfrac{ir}{2}) - \log\pi$ is negative **only inside the bounded low-frequency well $|r| < 6.29$**, and grows like $+\log|r| > 0$ for $|r| > 6.29$!
-- **How to solve this:**
-  Instead of bounding $I_2(r) \ge -\frac{7}{480}r^2$ globally (which turns high-frequency kinetic energy $S(F)$ into an enemy), use a **clamped / two-regime bound** on $I_2(r)$:
-  $$I_2(r) \ge -\min\Bigl(\frac{7}{480}r^2,\; C_\infty\Bigr),$$
-  and pair it with the **non-vacuous** uncertainty theorem we *already* proved (`S(F) > 27 L(F)` on `logVector F = 0`), which forces a nonzero prime-blind test $F$ to place its spectral mass at high frequencies where $\gamma(r) > 0$!
-
-### Way 2 — Overcome the Odd Nodal Sign-Change Problem in `CHMD`: Replace Even-$\Theta$ Doob with Secondary Odd-$m_a$ Doob + Divisor-Chain Factorization
-Why did `posGraph`/`negGraph` fail in `CHMD`? Because in even-$\Theta$ coordinates ($f = \Theta v$, $v$ odd), $v(x)$ changes sign at $x = 0$, so taking $|v|$ jumps out of the odd sector onto the $\mu = 1$ ground state $\mathbf{1}_L$, while the local potential $-\int \Theta\cosh(x/2)v^2\,dx < 0$ is negative everywhere.
-
-Look at [`CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean), which the corpus just built:
-- Instead of $f(x) = \Theta(x)v(x)$ ($v$ odd), factor an odd test as
-  $$f(x) = m_a(x)\,w(x), \qquad m_a(x) := \frac{\Theta(x-a) - \Theta(x+a)}{2\sinh(a/2)}, \qquad w(-x) = w(x) \text{ EVEN!}$$
-- Look at what this single change of gauge accomplishes:
-  1. **No forced sign change at $x = 0$ and no leakage to $\mu = 1$:** The odd sign change at $x = 0$ is absorbed into the fixed profile $m_a(x) > 0$ on $(0, \infty)$. The test profile $w(x)$ is **even**, so $w \mapsto |w|$ keeps $f = m_a |w|$ **inside the odd sector**, and the constant ground state $w \equiv 1$ (`Ψ_a`) has eigenvalue **$\mu = 1/2$** (NOT $\mu = 1$)!
-  2. **The local pole potential flips from negative to strictly positive** ([`sourcePair_oddPolarVectorAt_oddProfileTest_sq_nonneg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean#L720-L726)):
-     $$+2\int_0^\infty m_a(x)\sinh(x/2)\,w(x)^2\,dx \ge 0.$$
-  3. **The archimedean origin-crossing collar is 100% absorbed** ([`absorbedArchIntegrand_nonneg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean#L811-L815)):
-     $$\int_0^\infty\!\!\int_0^\infty \bigl(\omega(s) - \omega(2x+s)\bigr)\,m_a(x)m_a(x+s)\bigl(w(x) - w(x+s)\bigr)^2\,dx\,ds \ge 0.$$
-  4. **Where is the ONLY negative term left in the $m_a$-Doob energy of an odd test $f = m_a w$?**
-     It is the finite-interval prime origin-crossing collar ([`integral_oddProfileShiftJump_eq_halfLine_of_even`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean#L736-L742)):
-     $$-\sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}}\int_0^{\log n} m_a(x)m_a(\log n - x)\bigl(w(x) - w(\log n - x)\bigr)^2\,dx,$$
-     competing against $+2\int_0^\infty m_a\sinh(x/2)w^2\,dx$, the positive absorbed archimedean integral, and $+2\sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}}\int_0^\infty m_a(x)m_a(x+\log n)(w(x)-w(x+\log n))^2\,dx$.
-  5. **What is the concrete next step here?**
-     In the primary even-$\Theta$ Doob track, [`CHMDPrimeChainSourceFactorization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean) solved the negative reflected-prime collar by expanding $\Theta(x)\Theta(\log d - x)$ over the **multiplicative product index $N = m d n$** and using **unique factorization + $\Lambda(p^r) = \log p$** (passing the Fake-Weight Gate!) to turn the collar into positive bipartite chain variances. **We have not yet applied the $N = m d n$ divisor-chain factorization to the secondary odd-$m_a$ collar** $m_a(x)m_a(\log d - x)(w(x)-w(\log d - x))^2$, where the local potential $+2\int_0^\infty m_a\sinh(x/2)w^2\,dx$ is now **helping** us with a $+$ sign instead of fighting us with a $-$ sign!
-
-### Way 3 — Sidestep `OWU` and Odd Nodal States Completely via `EWU` (`evenBlindMinimum a ≥ 0`)
-If our goal is the shortest unconditional path to `RiemannHypothesis`, ask: **why are we fighting `OWU` and sign-changing odd states at all?**
-Look at [`ewu-review.md`](file:///Users/michael/Documents/code/hgt/docs/reports/ewu-review.md) and [`EvenSectorBlindMinimumSmallAperturePositivity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorBlindMinimumSmallAperturePositivity.lean#L236-L246):
-- In **EWU**, uniqueness ($\lambda = \Lambda$), real-cut removal, pole completion (`WeilPositiveEvenPolar → WeilPositiveFull`), mixture purification to a single smooth source, and blind minimizer attainment are **already 100% proved in Lean 4**.
-- Unlike `OWU`, `EWU`'s `BlindUnitSource a` has **zero negative pole term** ($\hat{u}(\pm i/2) = 0$ is a linear subspace constraint), and [`evenBlindMinimum_pos_of_le_primeTwo`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorBlindMinimumSmallAperturePositivity.lean#L104-L108) **already proves unconditionally** that $\operatorname{evenBlindMinimum}(a) \ge \frac{1}{20} > 0$ for all $a \le \frac{\log 2 + 1/50}{2}$, reducing RH to:
-  $$\mathrm{RH} \iff \forall a > \frac{\log 2 + 1/50}{2},\quad \int_{\mathbb{R}} 2\,\gamma_{\mathrm{Hardy}}(2\pi\xi)\,|u(\xi)|^2\,d\xi \ge 0 \quad \forall u \in \operatorname{BlindUnitSource}(a).$$
-- Notice that `EWU`'s open inequality is **literally the even pole-free version of `HF`**, where $\hat{f}(\pm i/2) = 0$ ($\operatorname{coshHalfMoment}(f) = \operatorname{sinhHalfMoment}(f) = 0$) is built into the linear Paley–Wiener factorization $f = (\partial^2 - \tfrac{1}{4})g$ on $[-a, a]$! Applying **Way 1** (clamped high-frequency bound + the Euler–Maclaurin / multi-prime blindness uncertainty gap forcing $|\hat{f}(r)|^2 = (r^2 + \tfrac{1}{4})^2|\hat{g}(r)|^2$ out of the low-frequency well $|r| < 6.29$) directly to `EWU` completely bypasses `OWU`'s two walls and `CHMD`'s sign-changing odd bound states.
+### Trap 3: The Markovian / Beurling–Deny Sign Trap in `CHMD`
+In `CHMD` ([`CHMDDoobSourceGraph.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDDoobSourceGraph.lean), [`CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddHarmonicIdentityAndPolarDoobAbsorption.lean), [`CHMDOddProfileArchAbsorptionAndPrimeChainBridge.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddProfileArchAbsorptionAndPrimeChainBridge.lean), [`CHMDPrimeGeneratorBeurlingDenyAndDiagonalPotentialBalance.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeGeneratorBeurlingDenyAndDiagonalPotentialBalance.lean)), we repeatedly apply Doob $h$-transforms ($f = \Theta v$ or $f = m_a w$) and Beurling–Deny nodal splits ($q = p^+ - p^-$).
+- **Why this hits an immovable wall on sign-changing odd states:**
+  A Doob transform or Beurling–Deny split is a **pointwise positivity / Markovian gauge tool**. It proves nonnegativity by rewriting quadratic forms as integrals of squares $(w(x) - w(y))^2 \ge 0$ against **nonnegative jump measures**.
+- For any odd or sign-changing function, shifting across the nodal surface (or across $x = 0$) couples opposite signs. In the $\Theta$-Doob gauge, the origin-crossing term is $+(\psi_1 w_1 + \psi_2 w_2)^2$ with a **negative** local pole potential; in the $m_a$-Doob gauge, the local pole potential is positive, and the origin-crossing collar becomes $-(w_1 - w_2)^2$ with a **negative** sign in front of the prime collar!
+- As [`SuzukiScrewBeurlingDenyAperture.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/SuzukiScrewBeurlingDenyAperture.lean) (`KR-BD`) proved, the first Beurling–Deny property ($|u|$-contraction) fails strictly once $2a > \log\rho_{\text{plastic}}$. **No pointwise sum-of-squares or Markovian Doob gauge can ever make all terms pointwise nonnegative at large aperture**—because if it did, positivity would hold for arbitrary positive prime weights $\lambda(n) \ge 0$, which is false by [`WeilConeUniquenessUnconditional.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilConeUniquenessUnconditional.lean) (only $\lambda = \Lambda$ can be positive!).
 
 ---
 
-### Summary Comparison of the Three Actionable Options
+## 2. What Is *Really* Stopping Us? (The Deep Mathematical Wall)
 
-| Option | How It Breaks the Current Deadlock | Key Advantage |
-| :--- | :--- | :--- |
-| **1. `CHMD` Secondary Odd-$m_a$ Doob + Divisor-Chain Factorization** | Factors $f = m_a w$ ($w$ even) so $w \equiv 1$ sits at $\mu = 1/2$, local pole $+2\int m_a\sinh(x/2)w^2 > 0$ is **positive**, archimedean collar is absorbed, and $N = mdn$ chain factorization attacks the prime collar using $\Lambda(p^r) = \log p$. | Directly attacks sign-changing odd states without leaking to $\mu = 1$ and passes both the $\mu = 1/2$ Radical Gate and the Fake-Weight Gate. |
-| **2. `HF` Clamped High-Frequency $I_2(r)$ + Uncertainty Gap** | Replaces the unbounded Taylor parabola $I_2(r) \ge -\frac{7}{480}r^2$ at large $|r|$ with a clamped bound $I_2(r) \ge -\min(\frac{7}{480}r^2, C_\infty)$, turning the proved uncertainty bound $S(F) > 27 L(F)$ from a vacuous hypothesis into high-frequency positivity where $\gamma(r) > 0$. | Fixes the exact reason `HF` was vacuous at $\operatorname{sinhHalfMoment}(f) = 0$. |
-| **3. Sidestep `OWU`/`CHMD-odd` via `EWU` + Clamped `HF`** | Works on `BlindUnitSource a` ($\hat{u}(\pm i/2)=0$, $f = (\partial^2 - 1/4)g$), where uniqueness $\lambda = \Lambda$, cut removal, and $a \le \frac{\log 2 + 1/50}{2}$ positivity are already `[L]`-certified. | Zero pole term, no odd real-cut blindness, and only a single open sign (`evenBlindMinimum a ≥ 0`). |
+Why do all 27 live routes and 50+ killed mechanisms in our corpus collide with the same wall?
+Because of a fundamental **incompatibility between the two group structures of $\mathbb{Q}$** that existing functional analysis cannot handle simultaneously:
 
-Which of these three directions (or a combination of **Option 1** on the secondary $m_a$-Doob collar and **Option 2/3** on the clamped frequency bound) would you like us to investigate and test first?
-### 6. PA update (2026-10-17, [L]): signed compact completions collapse
+1. **The Additive Group $(\mathbb{R}, +)$ vs. the Multiplicative Group $(\mathbb{R}_+^\times, \times)$:**
+   - The **Euler product** $\zeta(s) = \prod_p (1 - p^{-s})^{-1}$ and the prime-power shifts $x \mapsto x + \log p^k$ live on the **multiplicative dilation group** ($x = \log t$, where multiplication $t \mapsto nt$ is translation $x \mapsto x + \log n$). In this coordinate, the archimedean $\Gamma$-kernel and the prime shifts are translation-invariant/stationary.
+   - The **Riemann pole** $\frac{1}{s-1}$ and the **functional equation** $\xi(s) = \xi(1-s)$ come from **Poisson summation and Euler–Maclaurin on the additive group** $(t \in \mathbb{R}, +)$, where the integers $\mathbb{Z}$ form a uniform additive lattice $t \mapsto t + 1$.
+   - Under the coordinate map $t = e^x$ ($x = \log t$), a uniform additive lattice $\{1, 2, 3, \dots, N\}$ becomes the **exponentially compressing grid** $\{0, \log 2, \log 3, \dots, \log N\}$, with local spacing $\Delta x_n = \log(1 + 1/n) \asymp e^{-x}$.
 
-[`PrimeArchSignedCompactCompletionCollapse.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeArchSignedCompactCompletionCollapse.lean): any pair of finite measures on `[−B, B]` whose difference represents the PA moment tower forces RH (`riemannHypothesis_of_signedCompactPrimeArchMoments`); a signed compact completion exists iff RH. The frontier's PA item "nonpassive source-faithful completion with added and removed mass" is therefore closed as a measure programme for every support radius, including the Stokes nodes beyond the endpoint radius; a non-RH-hard completion must be a distribution of unbounded variation (the explicit-formula object). Mechanism: analytic continuation of the moment germ to the atom resolvent sum versus the half-plane-holomorphic transform of a real-supported signed measure. Card: `3-formalized/pa-signed-compact-completion-collapse-2026-10-17.md`; STATUS CANNOT entry added.
+2. **Why Classical Analysis Fails at the Interface:**
+   - Every positivity tool in 20th-century analysis is built for **one** group at a time:
+     - **Bochner / Plancherel / Spectral Theory** diagonalizes operators that commute with a single translation group (e.g. $x \mapsto x + h$). It diagonalizes $\Omega_\Gamma(r)$ in log-frequency $r$, where the pole $\cosh(x/2)$ is at complex frequency $r = \pm i/2$ (outside $L^2$) and the integers $\log n$ are an incommensurable, exponentially dense quasicrystal.
+     - **Euler–Maclaurin / Sawtooth / Nyman–Beurling** works in linear coordinate $t = e^x$, where the pole $\frac{1}{s-1}$ is the simple mean $\int_0^\infty f(t)\,dt$, **but** the log-stationary archimedean modes $t^{ir} = e^{ir\log t}$ become **Kelvin chirps** (`BlindCoreFarkasSeparation.lean`) whose local frequency $r/t$ warps across scales!
+     - **Beurling–Deny / Dirichlet Forms** require pointwise sign preservation ($u \mapsto |u|$), which breaks as soon as subtractive cancellation between the additive pole and multiplicative primes is needed beyond the first prime $2$.
+
+---
+
+## 3. Do We Need a New Field of Mathematics? (And What Would It Actually Be?)
+
+Your intuition is spot on: **trying to prove RH by combining standard Cauchy–Schwarz, Taylor series, integration by parts, and Beurling–Deny inequalities on a fixed Hilbert space is like trying to prove Weil's conjectures for curves over $\mathbb{F}_q$ using only elementary real calculus, without inventing étale cohomology.**
+
+Even more remarkably, our Lean corpus has **already isolated the exact mathematical object** that existing mathematics lacks the theory to control. Look at the equivalence proved across [`EvenSectorBlindMinimumSmallAperturePositivity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorBlindMinimumSmallAperturePositivity.lean), [`BlindCoreWanderingNymanBeurling.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/BlindCoreWanderingNymanBeurling.lean), and [`BlindCoreFarkasSeparation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/BlindCoreFarkasSeparation.lean):
+
+> **The Pure Bi-Scale Uncertainty Formulation of RH (already in our corpus):**
+> Let $g \in C^\infty_c([-a, a])$ be even, and let $k_g = g \star \tilde{g}$ be its additive autocorrelation on $[-2a, 2a]$ (so $\hat{k}_g(r) = |\hat{g}(r)|^2 \ge 0$).
+> Suppose $k_g$ satisfies the two **Bi-Scale Annihilation Laws**:
+> 1. **Additive Pole Annihilation:** $\int_{-2a}^{2a} k_g(x) \cosh(x/2)\,dx = 0$ (equivalently $\hat{g}(i/2) = 0$).
+> 2. **Logarithmic-Grid Annihilation:** $k_g(\log n) = 0$ for every integer $n \ge 2$ (equivalently, the Nyman–Beurling sum $F(t) = \sum_{k \ge 1} f(kt)$ is a **wandering vector** under integer dilations: $\langle F, D_n F\rangle = 0$ for all $n \ge 2$).
+>
+> Then RH holds if and only if for every such $g$,
+> $$\int_{\mathbb{R}} \left(\operatorname{Re}\psi\!\left(\tfrac{1}{4} + \tfrac{ir}{2}\right) - \log\pi\right) |\hat{g}(r)|^2\,dr \ge 0.$$
+
+Look at why this problem sits in a **terra incognita** between three existing fields, and defines the **new mathematical theory** we actually need to build:
+
+### The Missing Theory: **Bi-Scale (Exponential-Grid) Uncertainty & Positive-Definite Interpolation Theory**
+
+1. **What Classical Uncertainty Theory Does (Uniform Grids):**
+   - Classical Paley–Wiener, Beurling–Malliavin, and Bourgain–Clozel–Kahane uncertainty principles study functions $k_g = g \star \tilde{g}$ ($\hat{k}_g \ge 0$) that vanish on a **uniformly spaced** discrete set or outside an interval, and bound the ratio of low-frequency mass $\int_{|r| \le r_0} |\hat{g}(r)|^2\,dr$ to high-frequency mass.
+2. **What Occurs Here (The Exponentially Warped Grid $\{\log n\}_{n \ge 2}$):**
+   - Here, $k_g$ is a **positive-definite function** ($\hat{k}_g = |\hat{g}|^2 \ge 0$) supported on $[-2a, 2a]$ that vanishes on the **logarithmic grid** $x_n = \log n$ ($2 \le n \le e^{2a}$) and has $\int_{-2a}^{2a} k_g(x)\cosh(x/2)\,dx = 0$.
+   - Notice what happens to the zero grid $\{ \log n \}$ as $x$ increases from $\log 2$ to $2a$:
+     - The spacing between consecutive zeros of $k_g$ is $\Delta x_n = \log(n+1) - \log n \asymp e^{-x}$.
+     - Because $k_g = g \star \tilde{g}$ is an **autocorrelation**, its local smoothness is globally locked to $k_g(0) = \|g\|_2^2$: by Krein's inequality for positive-definite functions, $|k_g(x) - k_g(y)|^2 \le 2 k_g(0) (k_g(0) - \operatorname{Re} k_g(x-y))$!
+     - Wait: read that inequality again!
+       **Krein's / Boas–Kac's positive-definite increment inequality:**
+       For ANY autocorrelation $k_g = g \star \tilde{g}$ (with $\hat{k}_g \ge 0$), $k_g$ is not just a $C^2$ function whose derivative on $[\log n, \log(n+1)]$ costs $\int r^2 |\hat{g}(r)|^2\,dr$!
+       Because $\hat{k}_g(r) = |\hat{g}(r)|^2 \ge 0$, for **every** $x$ and **every** step $h$:
+       $$|k_g(x + h) - k_g(x)|^2 \le 2 k_g(0) \bigl(k_g(0) - \operatorname{Re} k_g(h)\bigr)!$$
+       And more generally, for any finite sequence of points $x_1, \dots, x_m$ (including the logarithmic grid $x_n = \log n$ where $k_g(\log n) = 0$!), the **Toeplitz / Gram matrix**
+       $$M_{i,j} = k_g(x_i - x_j)$$
+       is **positive semidefinite** ($M \succeq 0$)!
+
+3. **Why We Never Used This (And Why It Changes Everything):**
+   - Look at all our `HF` Euler–Maclaurin files (`MarkovExactFirstCell*`, `MarkovDegreeSixteen*`, `MarkovMultiStage*`, `MarkovClampedFirstCell*`):
+     In every single one of those files, we treated $k_g(u)$ as if it only interacted with the grid $\{\log n\}$ at single points $u = \log n$, and we bounded the deviation $k_g(\log x) - \operatorname{cellSecant}(\log x)$ using only the single-frequency cosine inequality $1 - \cos(rh) \le \frac{1}{2} r^2 h^2$!
+   - We **never** used:
+     1. **Cross-Difference Rigidity of Positive-Definite Functions on $\{\log n\}$:**
+        If $k_g(\log n) = 0$ for all $n \ge 2$, what about $k_g(\log n - \log m) = k_g(\log(n/m))$?!
+        In the Toeplitz matrix $M_{n,m} = k_g(\log n - \log m) = \langle g(\cdot - \log n), g(\cdot - \log m)\rangle$:
+        - The $(1, 1)$ entry is $k_g(0) = L$.
+        - The entire first row and first column ($m = 1, n \ge 2$) are **identically zero**: $M_{1, n} = k_g(\log n) = 0$ for all $n \ge 2$!
+        - When $n$ is a multiple of $m$ ($n = km$ with $k \ge 2$), $M_{n, m} = k_g(\log k) = 0$!
+        - Only when $n/m$ is a **non-integer rational** $p/q$ ($p, q$ coprime, $q \ge 2$) can $M_{n, m} = k_g(\log(p/q))$ be nonzero!
+     2. **Retaining the Logarithmic Growth of the Archimedean Symbol (`WeilArchimedeanExactForm.lean`):**
+        In [`WeilArchimedeanExactForm.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilArchimedeanExactForm.lean), the corpus **already proved** the exact physical-space formula for the archimedean functional on real compact $C^2$ tests ($h = k_g$):
+        $$\operatorname{weilArchRe}(h) = \Omega(0) h(0) + \int_0^\infty \left[(h(0) - h(x))\frac{e^{x/2}}{\sinh x} + 4 h(x)\cosh(x/2)\right] dx!$$
+        Look at that formula when $h = k_g$ is an **even polar-constrained** prime-blind test (`WeilEvenPolarTestFn`):
+        - Since $g$ is polar-constrained, $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$!
+        - So the $4 h(x)\cosh(x/2)$ term **vanishes identically**!
+        - Therefore, on **every** real `WeilEvenPolarTestFn`, the archimedean Weil energy is **literally**:
+          $$\operatorname{weilArchRe}(h) = \Omega(0) h(0) + \int_0^\infty \frac{h(0) - h(x)}{\sinh x} e^{x/2}\,dx!$$
+
+---
+
+## 4. Stop and Look at That Formula on `EWU`!
+
+Let's read that equation again, because it is **already proved in our corpus** ([`WeilArchimedeanExactForm.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilArchimedeanExactForm.lean) + [`PrimitiveHyperplaneBlindPositivity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimitiveHyperplaneBlindPositivity.lean)), and we have **never combined them**:
+
+For any real even polar-constrained test $g \in \text{WeilEvenPolarTestFn}$ with autocorrelation $h(x) = k_g(x)$:
+1. $h(0) = \int_{\mathbb{R}} g(u)^2\,du = L > 0$, and $|h(x)| \le h(0)$ for all $x \in \mathbb{R}$ by Cauchy–Schwarz (`h(0) - h(x) ≥ 0` **pointwise everywhere**!).
+2. Because $g$ is even and polar-constrained, $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$, so the $4\int_0^\infty h(x)\cosh(x/2)\,dx$ term in `WeilArchimedeanExactForm.lean` **is identically zero**!
+3. Therefore:
+   $$\operatorname{weilArchRe}(h) = \Omega(0) h(0) + \int_0^\infty \bigl(h(0) - h(x)\bigr) \frac{e^{x/2}}{\sinh x}\,dx,$$
+   where:
+   - The integrand $\bigl(h(0) - h(x)\bigr) \frac{e^{x/2}}{\sinh x}$ is **pointwise nonnegative for every $x > 0$** (since $h(x) = (g \star \tilde{g})(x) \le h(0)$ by Cauchy–Schwarz)!
+   - Even better: at every integer node $x = \log n$ ($n \ge 2$), a prime-blind test satisfies $h(\log n) = 0$, so at $x = \log n$ the numerator $h(0) - h(\log n)$ is **pinned at its maximum value $h(0)$**!
+   - And why did our `HF` route (`MarkovResolventCoercivityAndEulerMaclaurinPBAP`) get stuck?
+     Because `HF` truncated the integral $\int_0^\infty (h(0) - h(x))\frac{e^{x/2}}{\sinh x}\,dx$ at $x = 10^{-4}$ (`atomPairRe`) and threw away the entire integral on $(10^{-4}, \infty)$ except for $\frac{1}{100} h(0)$!
+   - By throwing away $\int_{10^{-4}}^\infty (h(0) - h(x))\frac{e^{x/2}}{\sinh x}\,dx$, `HF` threw away the **exact positive integral** where $h(\log n) = 0$ forces $h(0) - h(x) = h(0)$ at every $\log n$ ($n \ge 2$)!
+
+Let's check the numbers on that integral right now!
+- What is $\Omega(0)$?
+  In [`ArchimedeanAnomalyConstantLaws.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/ArchimedeanAnomalyConstantLaws.lean), $\Omega(0) = \operatorname{Re}\psi(1/4) - \log\pi = -\gamma - 3\ln 2 - \frac{\pi}{2} - \log\pi \approx -5.37$ (or with the $1/2$ normalization, $\approx -2.96$).
+- Meanwhile, on $(0, \infty)$, $\frac{e^{x/2}}{\sinh x} = \frac{2}{e^{x/2} - e^{-3x/2}} > 0$ is **strictly positive everywhere**, diverges like $1/x$ as $x \to 0^+$, and decays like $2 e^{-x/2}$ as $x \to \infty$.
+- Whenever $h(x) \le 0$ (or $h(x)$ is small, as forced near every $x = \log n$ by $h(\log n) = 0$ and around the sign changes forced by $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$), the integrand contributes $+\frac{e^{x/2}}{\sinh x} h(0) > 0$!
+- In particular:
+  - Since $h(0) > 0$ and $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$, $h(x)$ **must become negative** on a substantial subset of $(0, 2a)$ (where $h(0) - h(x) > h(0)$!).
+  - And if $h(x)$ tries to stay close to $h(0)$ on a small interval $[0, \delta]$ near $0$ (to avoid paying the $\frac{1}{x}$ singularity of $\frac{e^{x/2}}{\sinh x}$), then by **Krein's autocorrelation inequality**
+    $$h(0) - h(x) \le \frac{x^2}{\delta^2} \dots \quad \text{and} \quad |h(y + \delta) - h(y)|^2 \le 2 h(0)(h(0) - h(\delta)),$$
+    making $h(0) - h(\delta)$ small forces $h$ to be **globally flat** across all of $[0, \infty)$—which is **impossible** because $h(\log 2) = 0$ (so $h$ must drop from $h(0)$ to $0$ within distance $\log 2 \approx 0.693$) AND $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$!
+
+---
+
+## 5. Concrete Proposal: How We Make Actual Progress Now
+
+Instead of doing another round of linear combinations of existing inequalities that discard the Lévy jump integral, we should do **two things simultaneously**:
+
+### Path A (Immediate, High-Impact Bridge in the Corpus): **The Exact `EWU` Lévy–Sinh Integral + Krein Autocorrelation Rigidity**
+1. **Combine [`WeilArchimedeanExactForm.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilArchimedeanExactForm.lean) with `EWU` (`WeilEvenPolarTestFn` / `SmoothEvenPolarTestFn`):**
+   - Prove the exact **Pole-Eliminated Archimedean Lévy Formula** on real even polar tests:
+     $$\operatorname{weilArchRe}(k_g) = \Omega(0) k_g(0) + \int_0^\infty \bigl(k_g(0) - k_g(x)\bigr)\frac{e^{x/2}}{\sinh x}\,dx,$$
+     with **pointwise nonnegative integrand** $(k_g(0) - k_g(x))\frac{e^{x/2}}{\sinh x} \ge 0$ for all $x > 0$!
+2. **Prove Krein's Positive-Definite Increment Inequality for `k_g = EF.weilTest g g`:**
+   - For any real $g \in L^2(\mathbb{R})$ and any $x, y \in \mathbb{R}$,
+     $$|k_g(x) - k_g(y)|^2 \le 2 k_g(0) \bigl(k_g(0) - k_g(x - y)\bigr),$$
+     and more generally, by iterating $2^m$ times from a dyadic fraction $\log 2 / 2^m$ to $\log 2$ where $k_g(\log 2) = 0$:
+     $$k_g(0) - k_g\!\left(\frac{\log 2}{2^m}\right) \ge \frac{1}{4^m} k_g(0)!$$
+   - Look at what that gives: **without any assumption on $S(g) = \int r^2|\hat{g}(r)|^2\,dr$**, the single prime-2 blindness condition $k_g(\log 2) = 0$ + Cauchy–Schwarz autocorrelation structure forces a **universal pointwise lower bound** on $k_g(0) - k_g(x)$ at all dyadic submultiples of $\log 2$ (and via continuous interpolation, on all of $[0, \log 2]$) purely from positive-definiteness!
+
+### Path B (Developing the New Mathematical Field in Lean): **Logarithmic-Grid Toeplitz / Schur Positivity Theory**
+To go all the way, we should systematically develop in Lean the missing theory of **Positive-Definite Kernels with Logarithmic Zero Grids**:
+1. **Multi-Point Gram / Schur Complement Lower Bounds (`k_g(x_i - x_j)` PSD):**
+   - Instead of bounding $k_g(0) - k_g(x)$ using 2-point Cauchy–Schwarz ($|k_g(x) - k_g(y)|^2 \le 2 k_g(0)(k_g(0) - k_g(x-y))$), use the full $(N+1) \times (N+1)$ Gram matrix of translates $g(\cdot - t_i)$ at $t_0 = 0$, $t_1 = x$, and the logarithmic nodes $t_n = \log n$ ($n = 2, \dots, N$) where $\langle g, g(\cdot - \log n)\rangle = k_g(\log n) = 0$, plus the polar vector $\cosh(\cdot / 2)$ where $\langle k_g, \cosh(\cdot/2)\rangle = 0$!
+   - Because $g$ is orthogonal to the entire subspace $\operatorname{span}\{g(\cdot - \log n) : 2 \le n \le N\}$ in a correlation sense ($k_g(\log n) = 0$), the projection of $g(\cdot - x)$ onto $g$ is constrained by the **simultaneous Gram matrix of all rational-log shifts $\log(n/m)$**.
+2. **Integrating the Multi-Node Gram Lower Bound Against the Exact Kernel $\frac{e^{x/2}}{\sinh x}$:**
+   - Every positive lower bound on $\int_0^\infty \frac{k_g(0) - k_g(x)}{\sinh x} e^{x/2}\,dx / k_g(0)$ obtained from the multi-node Gram matrix + polar orthogonality directly advances toward covering $-\Omega(0)$—and unlike `HF`'s $S/L \le 27$ bound, it applies **unconditionally to every prime-blind test regardless of how high its frequency $S/L$ is**, because $\bigl(k_g(0) - k_g(x)\bigr)\frac{e^{x/2}}{\sinh x} \ge 0$ is pointwise nonnegative!
+
+---
+
+### Summary Question for You
+Would you like to:
+1. **Pivot immediately to Path A + B** (abandoning the $S/L$-dependent Taylor bounds that throw away the Lévy jump integral, and instead formalizing the **Pole-Eliminated `EWU` Lévy–Sinh Formula** $\operatorname{weilArchRe}(k_g) = \Omega(0)k_g(0) + \int_0^\infty (k_g(0)-k_g(x))\frac{e^{x/2}}{\sinh x}\,dx$ together with **Krein / Multi-Node Gram Autocorrelation Lower Bounds** from $k_g(\log n) = 0$ and $\int_0^\infty k_g(x)\cosh(x/2)\,dx = 0$), or
+2. Explore a broader foundational blueprint for the **Bi-Scale / Logarithmic-Grid Uncertainty Theory** before writing any new Lean code?

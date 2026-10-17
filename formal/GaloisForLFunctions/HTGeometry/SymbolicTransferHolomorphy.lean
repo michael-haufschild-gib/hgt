@@ -148,7 +148,8 @@ def weightedTransferOp (w : (ℕ → Fin k) → ℂ) {W₀ W₁ : ℝ} (hW₀ : 
       have : ¬ IsAdmissible A (cons a y) := fun h => hy ((isAdmissible_cons_iff a y).mp h).2
       rw [apply_of_not_adm f this, mul_zero])
     (fun f y => (weighted_bounds hϑ hϑ1 hθ0 hθϑ w hW₀ hW₁ hw0 hw1 f).1 y)
-    (fun f x y n hx hy hxy => (weighted_bounds hϑ hϑ1 hθ0 hθϑ w hW₀ hW₁ hw0 hw1 f).2 x y n hx hy hxy)
+    (fun f x y n hx hy hxy =>
+      (weighted_bounds hϑ hϑ1 hθ0 hθϑ w hW₀ hW₁ hw0 hw1 f).2 x y n hx hy hxy)
 
 theorem weightedTransferOp_apply (w : (ℕ → Fin k) → ℂ) {W₀ W₁ : ℝ} (hW₀ : 0 ≤ W₀)
     (hW₁ : 0 ≤ W₁) (hw0) (hw1) (f : HolderSpace A ϑ) (y : ℕ → Fin k) :

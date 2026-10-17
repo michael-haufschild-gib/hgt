@@ -104,6 +104,28 @@ theorem coeff_eq_zero_of_pair_moments_vanish {c x y : ℕ → ℂ}
   intro j _
   rw [tsum_mul_right, hmom j (k - j), zero_mul]
 
+/-- Equality of all mixed moments is equality of the entire coefficient sequence. -/
+theorem pair_moments_determine_coefficients {c d x y : ℕ → ℂ}
+    (hinj : Function.Injective (fun i => (x i, y i)))
+    (hnz : ∀ i, x i ≠ 0 ∨ y i ≠ 0)
+    (hc : Summable (fun i => ‖c i‖)) (hd : Summable (fun i => ‖d i‖))
+    (hx : Tendsto x atTop (𝓝 0)) (hy : Tendsto y atTop (𝓝 0))
+    (hmom : ∀ m n : ℕ, ∑' i, c i * x i ^ m * y i ^ n =
+      ∑' i, d i * x i ^ m * y i ^ n) : c = d := by
+  have hsub : Summable (fun i => ‖c i - d i‖) :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun _ => norm_sub_le _ _)
+      (hc.add hd)
+  have hzero := coeff_eq_zero_of_pair_moments_vanish hinj hnz hsub hx hy (fun m n => by
+    calc
+      (∑' i, (c i - d i) * x i ^ m * y i ^ n) =
+          (∑' i, c i * x i ^ m * y i ^ n) - ∑' i, d i * x i ^ m * y i ^ n := by
+        rw [← (summable_pair_moment hc hx hy m n).tsum_sub
+          (summable_pair_moment hd hx hy m n)]
+        exact tsum_congr (fun _ => by ring)
+      _ = 0 := sub_eq_zero.mpr (hmom m n))
+  funext i
+  exact sub_eq_zero.mp (hzero i)
+
 /-- The paired prime-log heat coordinate has no spectral aliases. -/
 theorem prime_heat_coordinate_pair_injective {p q : ℕ}
     (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :

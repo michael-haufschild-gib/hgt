@@ -1,6 +1,8 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 14 / 100.
+Status: CLEARED BY USER on 2026-10-17. Verified count at clearing: 15 / 100.
+The goal was not completed. Do not resume this research loop without a new
+user instruction. Contribution 16 remains an uncounted paper candidate.
 
 ## User requirements
 
@@ -224,9 +226,27 @@ novelty is not claimed: user forbids external novelty research.
     size warnings. No own-module or generated-index failure. One structural
     result, not separate counts for its analytic and inverse helpers.
 
+15. Fixed-scale PA coefficient-index tomography of the complete dominant
+    reciprocal-square divisor, modulo exact conjugation ambiguity, with unique
+    natural-number fibre multiplicities. Card:
+    `../3-formalized/pa-bernstein-index-divisor-tomography-2026-10-17.md`.
+    The premise-free theorem states RH or the full superunit source law:
+    weak finite-measure and probability limits, measurable-window limits,
+    observed amplitude, exact atom support, coordinates and multiplicities.
+    Transfers binomial concentration, weighted pairing, Deninger copy
+    conjugation and actual theta-Gibbs mass into PA's growing-index regime.
+    Fifteen targeted leaves pass; all 76 public axiom lists are standard;
+    all 63 theorem signatures and 13 definitions audited. Source fingerprints,
+    fresh objects, 76 API entries and exactly-once umbrella wiring verified.
+    Index completed; global lint remains blocked by 22 concurrent unwired
+    modules and changing generated API/overview files, with 381 size warnings.
+    No own-module diagnostic. No RH proof, source-positivity closure, recovery
+    of subdominant coordinates, or single-zero multiplicity claim. Counted
+    once; none of its concentration, measure or normalization helpers count.
+
 ## Working plan
 
-1. Contributions 1–14 complete. Recheck significance and exact scope before
+1. Contributions 1–15 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -289,7 +309,9 @@ result is now verified as contribution 14; see its formalized card above.
 User steering on 2026-10-17: investigate what other routes and unrelated Lean
 can provide for PA. Inspect actual source obligations, distinguish transfers
 already discharged from proposed mechanisms, and do not count another RH
-equivalence or a conditional receiver. PA cross-corpus investigation is active.
+equivalence or a conditional receiver. This investigation produced contribution
+15 above; the missing PA source sign and susceptibility representation remain
+open. Continue the whole-corpus search toward 100 independent results.
 
 Other exploratory searches compared prime-only Laplace completeness and
 generic natural boundaries. Generic density consequences, repackaging the

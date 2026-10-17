@@ -141,6 +141,7 @@ theorem oddGround_iff_all_zero_coordinates (a : SuzukiPositiveAperture)
           funext w
           simpa only [hc0,sub_zero] using hfac w
         have hder := (((hasDerivAt_id (0 : ℂ)).pow 2).mul (transform_hasDerivAt a v 0)).deriv
+        change deriv (fun w : ℂ => w^2*unitaryLaplace (timeRep a v) w) 0 = _ at hder
         have hdG : deriv (unitaryLaplace (timeRep a G)) 0 = 0 := by
           rw [hfun]
           simpa using hder

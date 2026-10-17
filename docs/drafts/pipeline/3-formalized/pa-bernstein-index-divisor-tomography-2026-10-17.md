@@ -1,9 +1,10 @@
 # PA Bernstein index measures recover the dominant divisor
 
-Status: CANDIDATE 15, NOT COUNTED. Paper mechanism and attacks recorded below.
-Lean formalization and final significance audit pending. Goal remains 14/100.
+Status: FORMALIZED. Contribution 15, counted once. Verified count: 15/100
+when the user cleared the goal. All 15 leaves and the complete public
+axiom/signature audit pass; repository-wide lint limitations are recorded below.
 
-## Exact proposed result
+## Exact result
 
 Fix the actual PA endpoint radius R and its real source-defined Bernstein
 coefficients b(n,i). If an off-line Xi zero exists, let B>1 be the maximal
@@ -17,18 +18,19 @@ bound beta<B. Aggregate equal coordinates before taking any norm:
     p_u = |u|/(|u|+|1-u|),
     kappa_u = bernsteinAffineRowHalfOrderConstant(u)>0.
 
-The new target is the coefficient-index measure, at this ONE fixed radius:
+The new observable is the coefficient-index measure, at this ONE fixed radius:
 
     nu_n = sqrt(n)/(B^2)^n * sum_(i=0)^n |b(n,i)|^2 delta_(i/n),
     nu_infinity = sum_(u in U) |C_u|^2 kappa_u delta_(p_u).
 
-Prove weak convergence of the finite positive measures, equivalently the
-displayed weighted-sum limit for every continuous real test on [0,1]. Prove
-the corresponding limit for interval windows whose boundaries avoid all
-p_u. The total limiting mass is positive, so normalization gives convergence
-of the probability distributions obtained from the actual source packets.
+The finite positive measures converge weakly. More strongly, the displayed
+weighted-sum limit holds for every bounded real test continuous at the finite
+set of occupation points. Every measurable window whose frontier avoids
+these points has the corresponding mass limit. Actual source energy is
+positive in every degree, and the normalized probability measures converge
+weakly to the normalized positive divisor measure.
 
-Then prove exact reconstruction, rather than stopping at concentration:
+Exact reconstruction follows:
 
     Re u = [1+B^2(2p_u-1)]/2,
     (Im u)^2 = B^2 p_u^2 - (Re u)^2.
@@ -49,24 +51,25 @@ Consequently its observed weight determines N_u uniquely as a positive
 integer. Claim only reciprocal-square fibre multiplicity unless the further
 conversion to a single Xi zero's multiplicity is separately proved.
 
-The theorem is a conditional branch of an unconditional source-divisor law:
+The principal theorem has no premises and states RH or the complete
+source-divisor law above:
 no existence of an off-line zero is asserted, and no source positivity,
 admission, simple-zero assumption or spacing hypothesis is assumed. The
 actual source supplies the finite packet and every required separation.
 
-## Why this may meet the requested bar
+## Significance
 
 PA knows each fixed coefficient index is eventually nonnegative, while its
 possible obstruction lies at growing indices. Existing scalar purity
 asymptotics show growth but do not locate it in the coefficient packet. The
-proposed measure converts that unresolved growing-order direction into a
+proved measure converts that unresolved growing-order direction into a
 canonical finite positive observable that reconstructs dominant divisor
 coordinates and multiplicities from actual source coefficients.
 
 This is not a new RH equivalence or a claim to prove PA's missing sign. A
 mere variance bound, total-energy asymptotic or generic weak-limit helper
-would not be counted. Count only if the full actual-source reconstruction
-and independent significance survive final comparison.
+is not counted separately. The full actual-source reconstruction supplies
+one structural result after the comparison and audits below.
 
 ## Local-corpus comparison
 
@@ -153,9 +156,10 @@ no exhaustive semantic or external novelty claim.
    nonnegative weighted Dirac masses define nu_n. Continuous tests give weak
    convergence on the compact interval. Its limiting mass L is the existing
    strictly positive maximal-packet constant. Division by total mass
-   therefore gives the normalized probability limit. Early zero packets may
-   be defined separately; they do not affect the limit. For the actual PA
-   source, its nonzero zeroth moment also excludes zero total packet energy.
+   therefore gives the normalized probability limit. The actual PA source
+   has positive total packet energy in every degree: its positive zeroth
+   moment and the Bernstein partition identity imply this by Cauchy--Schwarz.
+   The probability law normalizes unscaled packet energy, including degree zero.
 
 7. **Coordinates and multiplicities.** The identities |u|=Bp and
    |1-u|=B(1-p) imply the two real equations above. Equal B,p therefore force
@@ -186,89 +190,79 @@ no exhaustive semantic or external novelty claim.
 - No numerical experiment, RH proof, external novelty, or finite-prefix
   decision procedure is claimed.
 
-## Formalization plan
+## Formal verification
 
-Verify the Mathlib probability/variance APIs in /tmp. Formalize the normalized
-binomial square concentration, weighted mixed-mode transfer, actual complete
-packet specialization, finite-measure/test law, and exact fibre recovery in
-small leaves. One owned Lean process, normal heartbeats, no umbrella build.
-Then audit every new named public declaration, exact signatures and source
-definitions, fingerprints and import wiring; run index and both lint modes.
-Final significance comparison precedes any contribution count.
+Principal declaration:
+`RHTower.primeArchEndpointBernstein_index_divisor_tomography`, in
+`formal/GaloisForLFunctions/RHTower/XiBernsteinIndexDivisorTomography.lean`.
+Its audited statement is premise-free: RH or the full superunit alternative.
 
-## Formal progress
+All 15 leaves passed targeted `lake --old env lean -j 1 -o ...` compilation.
+A single /tmp audit imported the final root and checked all 76 named public
+axiom lists, all 63 theorem/lemma signatures, and all 13 definitions. Exit 0;
+no diagnostics; every axiom list contains only `propext`, `Classical.choice`,
+`Quot.sound`. The finite packet leaf's compilation emitted nonfatal `ring`
+advice; its complete signatures and axiom lists passed the final audit.
 
-- `HTGeometry/FinitePacketSecondMomentConcentration.lean` added and compiled
-  with `lake --old env lean -j 1 -o ...`. Three public lemmas: bounded local
-  quadratic modulus, squared test-error convergence, weighted test convergence.
-  Index types may vary with degree; tests need continuity only at the centre.
-  This is a helper, not a separately countable result.
-- Mathlib Bernstein probability and variance checked in `/tmp`; both use only
-  standard axioms. The row occupation/concentration and weighted pairing
-  arguments are being developed in owned `/tmp/hgt-root-cr15-*` scratches.
-- Actual source specialization, divisor recovery, final axiom/import/lint
-  audits and significance decision remain open. Verified goal count: 14/100.
-- `RHTower/BernsteinAffineRowIndexConcentration.lean` and
-  `HTGeometry/FinitePacketWeightedPairing.lean` now pass targeted compilation
-  with their objects written. The first proves the exact binomial modulus,
-  vanishing normalized index variance and both weighted single-row limits.
-  The second proves weighted mixed-pair transport without requiring distinct
-  concentration points. Neither is counted separately.
-- `RHTower/BernsteinOccupationRigidity.lean` contains the exact coordinate
-  formulas and conjugation ambiguity; its final targeted check is pending.
-  Finite-packet assembly and bounded-test tail transfer remain in scratches.
-- The geometry leaf now passes its final targeted check. The finite-packet
-  assembly `RHTower/FiniteBernsteinPacketIndexAsymptotic.lean` also exits 0;
-  its log has nonfatal `ring` advice to inspect during final audit.
-- The exact conjugation fibre argument passed in `/tmp` and was saved as
-  `RHTower/XiBernsteinOccupationFibres.lean`; final object compilation is
-  underway. This transfers the actual multiplicity-copy equivalence from
-  `DeningerDivisorSchwarzMonodromy` through the reciprocal-square coordinate.
-  It proves complete maximal packets are conjugation invariant, aggregate
-  coefficients equal radius times coordinate times fibre cardinality, and
-  conjugate fibre cardinalities agree. No multiplicity of a single Xi zero
-  is substituted for the reciprocal-square fibre cardinality.
-- `XiBernsteinOccupationFibres` and
-  `RHTower/FiniteComplexPacketWeightedPerturbation.lean` now pass final targeted
-  compilation with empty logs. The full atomic transfer passed in `/tmp` and
-  was saved as `RHTower/AtomicBernsteinPacketIndexAsymptotic.lean` for its final
-  check. The latter uses the actual infinite complement, not a finite cutoff.
-- Remaining owned scratch drafts: `source`, `weights`, `atomic-measure`,
-  `measures`, and `normalization` under `/tmp/hgt-root-cr15-*.lean`.
-  They are drafts, not verified results. Source specialization, weak measure
-  topology, windows, normalized probabilities, observed amplitude, observed
-  multiplicities and the unconditional final alternative must all pass before
-  final significance and counting. Current count stays 14/100.
-- `AtomicBernsteinPacketIndexAsymptotic` and the actual source leaf
-  `RHTower/XiBernsteinIndexAsymptotic.lean` now pass final targeted compilation
-  with empty logs. The actual source theorem quantifies all bounded real tests
-  continuous at the finite occupation points; its gap, finiteness and
-  summability inputs are discharged from the actual Xi corpus.
-- Two more draft scratches are now present: `probability.lean` and
-  `tomography.lean`. The final target is an explicit unconditional alternative:
-  RH, or a complete finite superunit packet with observed growth amplitude,
-  weak index/probability laws, exact positive atom positions, conjugate
-  coordinate fibres and unique natural-number fibre multiplicities.
-  No source positivity or hypothetical admission is smuggled into this target.
-- `RHTower/XiBernsteinOccupationWeights.lean` now passes its final targeted
-  compilation with an empty log. This includes exact occupied-point support,
-  the two-coordinate conjugate fibre, the displayed atom-weight formula and
-  uniqueness of its natural-number fibre multiplicity.
-- The generic finite atomic measure/normalization helper passed in `/tmp` and
-  was saved as `HTGeometry/FiniteRealAtomicMeasure.lean`; final object check
-  remains pending. The measure topology, probability and final packaged
-  source-divisor alternative are still unverified drafts. Goal: 14/100.
-- `FiniteRealAtomicMeasure`, `RHTower/XiBernsteinIndexNormalization.lean` and
-  `RHTower/XiBernsteinIndexProbability.lean` now pass final targeted checks
-  with empty logs. Actual source energy is positive in every degree, the
-  normalized source profiles are probability measures, their weak limit is
-  the normalized positive divisor measure, and source-energy nth roots
-  recover B squared. Positivity uses the existing actual theta-Gibbs first
-  moment theorem, with no RH premise.
-- All 15 planned leaves are now present (76 named public declarations,
-  including 13 definitions). The index-measure window proof is undergoing
-  its corrected final check; the final root theorem and the combined axiom/
-  signature audit have not run. No count increase yet.
+All source fingerprints below match their audited files; every object exists
+and is newer than its source; every module is imported exactly once in its
+area umbrella. No forbidden declaration token occurs in these leaves, and
+all 76 declarations appear in the generated API index. No umbrella build or
+heartbeat increase was used.
+
+The index command completed and was refreshed after concurrent source changes.
+Normal lint and generated-file lint both exited 1. The final generated-file
+check reports 22 concurrent modules outside this contribution as unreachable,
+plus stale `formal/LEAN_API.md` and `formal/LEAN_OVERVIEW.md`; it also reports
+381 existing size warnings. The concurrent module set changed between checks,
+so another index regeneration is not represented as a stable global pass.
+There is no diagnostic against these 15 leaves. Foreign modules were neither
+edited nor wired to conceal the repository-wide failure.
+
+Final unreachable modules (all prefixed `GaloisForLFunctions.`):
+
+- `RHTower.OddSectorGroundCompleteDivisors`
+- `RHTower.OddSectorGroundDivisionCalculus`
+- `RHTower.OddSectorGroundDivisionEigenvectors`
+- `RHTower.OddSectorGroundDivisionOperator`
+- `RHTower.OddSectorGroundOriginInterpolation`
+- `RHTower.OddSectorGroundSpectralQuotient`
+- `HTGeometry.CoerciveCompactSpectralVanishing`
+- `HTGeometry.CompactFormNegativeCapacity`
+- `HTGeometry.CompactPositiveFormGap`
+- `HTGeometry.FiniteRankTraceDeterminant`
+- `HTGeometry.HolomorphicRieszFamily`
+- `HTGeometry.OuterSpectralContinuation`
+- `HTGeometry.QuasiCompactSpectralCircle`
+- `HTGeometry.RieszProjectionPowerCalculus`
+- `HTGeometry.SymbolicHolderSpace`
+- `HTGeometry.SymbolicLevelSpaces`
+- `HTGeometry.SymbolicRuellePollicottBounds`
+- `HTGeometry.SymbolicShiftSpace`
+- `HTGeometry.SymbolicTraceSplitting`
+- `HTGeometry.SymbolicTransferBounds`
+- `HTGeometry.SymbolicTransferHolomorphy`
+- `HTGeometry.SymbolicTransferOperator`
+
+Audited source fingerprints (SHA-256):
+
+| Module | Public declarations | SHA-256 |
+|---|---:|---|
+| `HTGeometry.FinitePacketSecondMomentConcentration` | 3 | `189a9ae3c359b092afe49f76fa8ee3c1233233d1da0c1ebb3908b2647bab46dd` |
+| `HTGeometry.FinitePacketWeightedPairing` | 2 | `9d621f6db200c56893ba8e8e407eaab00362a86ab24b935073c1cb105d798726` |
+| `HTGeometry.FiniteRealAtomicMeasure` | 6 | `5cfdf91bc9b6dbed284be90e20744e3853e0c39a7cbf524a5d8233b44ff3cd6f` |
+| `RHTower.BernsteinAffineRowIndexConcentration` | 10 | `b559b878bae685e0e55735a4834563dab155b15afb5982c2935c0fcbf6cba444` |
+| `RHTower.BernsteinOccupationRigidity` | 5 | `cee88403952fdad7b9a2eca130ef3f22eaa69d8ed9e0db9fcdbc9937dd997215` |
+| `RHTower.FiniteBernsteinPacketIndexAsymptotic` | 6 | `468b0c0247ddf88fcf54cc273811b7cbc64cbf0a1d0269c03b5f79a883fe49f5` |
+| `RHTower.FiniteComplexPacketWeightedPerturbation` | 2 | `b50601c3370ee0d3b7bfd87502a70cab044bc1d41dc033760a9d5c908a56a9a9` |
+| `RHTower.AtomicBernsteinPacketIndexAsymptotic` | 2 | `0c0fae5c75bfd481d907e0b0eff64ae6fc52d8da1b3d3046598d205b4f445ebf` |
+| `RHTower.XiBernsteinOccupationFibres` | 9 | `7934ee8f29197164bfaa762bb44cca2a0bce9fee675335a2f777add3522edc40` |
+| `RHTower.XiBernsteinOccupationWeights` | 5 | `bf6737780b2ff74e7b07a41574e0a54b08a037be4e1cc17d916417c9b4aeb3e3` |
+| `RHTower.XiBernsteinIndexAsymptotic` | 4 | `feaa2e6aa56c969073d4996fa8f8d785e46af12ae611688cf0a45c0345708f43` |
+| `RHTower.XiBernsteinIndexNormalization` | 7 | `ab316ee6fabb0b2e2af051e80a640a6b3ccfac5631696245da98d940c01c45cb` |
+| `RHTower.XiBernsteinIndexMeasures` | 7 | `1d39cb1f8d6b9062ddd691976ff10a63a45ac01d75af347c86f43ab738a8cda0` |
+| `RHTower.XiBernsteinIndexProbability` | 7 | `182bcff43561e28daf5c8840b150df0a1688f49cc1868e26f7ff93338b1e37c4` |
+| `RHTower.XiBernsteinIndexDivisorTomography` | 1 | `d428be398c6f388cae6a5dd885c2ee0488eb4396881113c400d4d2078a603ae3` |
 
 ## Significance and boundary audit
 
@@ -285,8 +279,7 @@ binomial probability/variance law and finite pairing concentration; and the
 actual theta-Gibbs positive zeroth source moment for all-degree probability
 normalization. No additional source positivity or admission is assumed.
 
-Count the whole reconstruction as ONE result only after the remaining final
-checks. The 76 public declarations, including 13 definitions, are supporting
+The whole reconstruction is counted as ONE verified result. The 76 public declarations, including 13 definitions, are supporting
 parts, not separate contributions. No count for the variance estimate, weak
 topology packaging, probability normalization, or the growth-rate bridge.
 

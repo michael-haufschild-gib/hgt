@@ -57,7 +57,8 @@ def holderSubmodule (ϑ : ℝ) : Submodule ℂ (HolderAmbient A) where
     · simp only [Prod.smul_fst, Prod.smul_snd, lp.coeFn_smul, Pi.smul_apply, smul_eq_mul, ha2 q]
       ring
 
-theorem isClosed_holderSubmodule (ϑ : ℝ) : IsClosed (holderSubmodule A ϑ : Set (HolderAmbient A)) := by
+theorem isClosed_holderSubmodule (ϑ : ℝ) :
+    IsClosed (holderSubmodule A ϑ : Set (HolderAmbient A)) := by
   have h1 : ∀ y, Continuous fun p : HolderAmbient A => (p.1 : (ℕ → Fin k) → ℂ) y := fun y =>
     (lp.evalCLM ℂ (fun _ : ℕ → Fin k => ℂ) ⊤ y).continuous.comp continuous_fst
   have h2 : ∀ q, Continuous fun p : HolderAmbient A => (p.2 : AgreeTriple A → ℂ) q := fun q =>

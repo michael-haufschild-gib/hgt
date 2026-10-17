@@ -1,6 +1,7 @@
 # PA: cross-corpus transfers and the remaining source estimate
 
-Status: ACTIVE RESEARCH. No new counted theorem. Verified goal count: 14/100.
+Status: AUDIT COMPLETE. Existing transfers below are not new contributions.
+The subsequent fixed-scale inverse theorem is contribution 15; goal: 15/100.
 User requested concrete help for PA from other routes and unrelated Lean.
 The frontier map is read-only and was used solely for routing; mathematical
 claims below come from Lean statements and proofs.
@@ -104,18 +105,17 @@ Lean checks determine applicability. The first search mostly returned
 irrelevant positive-matrix or arithmetic names; these were not promoted into
 transfers. No web or old research prose was used as mathematical evidence.
 
-## Further lead under comparison
+## New transfer proved after this audit
 
-The all-order obstruction may have a source-defined spatial measurement:
-rescale index i to i/n in the squared Bernstein packet. Probability's
-binomial variance identity, the existing sharp diagonal half-order law, and
-strict mixed-mode gaps suggest an exact weak limit supported at the dominant
-complex coordinates' occupation ratios ||u||/(||u||+||1-u||).
+The fixed-scale coefficient-index measure and exact dominant divisor recovery
+are now formalized in contribution 15:
+`../3-formalized/pa-bernstein-index-divisor-tomography-2026-10-17.md`.
+The principal theorem is
+`RHTower.primeArchEndpointBernstein_index_divisor_tomography`.
+It states RH or weak index/probability laws with exact conjugate coordinate
+fibres and reciprocal-square fibre multiplicities. All 15 leaves, 76 public
+axiom lists, 63 theorem signatures and 13 definitions passed. The contribution
+card records the global lint failures from concurrent work and all limits.
 
-The existing scale-covariant purity jets recover source moments from a
-varying-scale polynomial family, and the Abel/free-energy results recover
-the scalar maximal amplitude. Neither inspected statement gives the
-fixed-scale coefficient-index measure and its individual atomic weights.
-Before any new Lean source, finish novelty comparison and the exact
-reconstruction statement. A mere concentration estimate or another RH
-equivalence is insufficient for the 100-theorem count.
+This provides a new growing-index observable for PA. It does not prove the
+missing source sign or construct its Sonin susceptibility representation.

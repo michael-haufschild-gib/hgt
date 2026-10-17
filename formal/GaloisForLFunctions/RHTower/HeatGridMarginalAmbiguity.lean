@@ -96,14 +96,38 @@ theorem heatRectangle_strict_between_grids (A : ℝ) {a b : ℝ}
 
 /-- The ambiguity uses only frequencies strictly inside the natural right parabola. -/
 theorem heatRectangle_strict_parabolic {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
-    ∀ c ∈ ({0, a, b, a + b} : Set ℝ),
+    ∀ c ∈ ({0, a, b, a + b, -a, -b, -(a + b)} : Set ℝ),
       (((1 + (a + b) ^ 2 : ℝ) : ℂ) + (c : ℂ) * Complex.I).im ^ 2 <
         (((1 + (a + b) ^ 2 : ℝ) : ℂ) + (c : ℂ) * Complex.I).re := by
   intro c hc
   simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hc
   simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
     Complex.I_im, Complex.I_re, Complex.add_re, Complex.mul_re]
-  rcases hc with rfl | rfl | rfl | rfl <;> nlinarith [sq_nonneg (a + b), mul_pos ha hb]
+  have hab := mul_pos ha hb
+  have hsq := sq_nonneg (a + b)
+  rcases hc with rfl | rfl | rfl | rfl | rfl | rfl | rfl <;> nlinarith
+
+/-- Every pair of positive grid steps admits distinct strict-parabolic packet traces
+with identical complete marginal observations. -/
+theorem heat_two_grid_marginal_reconstruction_no_go {h k : ℝ}
+    (hh : 0 < h) (hk : 0 < k) :
+    ∃ A a b : ℝ,
+      (∀ n : ℕ,
+        heatRectangleLeft A a b (n * h) = heatRectangleRight A a b (n * h) ∧
+        heatRectangleLeft A a b (n * k) = heatRectangleRight A a b (n * k)) ∧
+      (∃ t : ℝ, 0 < t ∧ heatRectangleRight A a b t < heatRectangleLeft A a b t) ∧
+      (∀ c ∈ ({0, a, b, a + b, -a, -b, -(a + b)} : Set ℝ),
+        ((A : ℂ) + (c : ℂ) * Complex.I).im ^ 2 <
+          ((A : ℂ) + (c : ℂ) * Complex.I).re) := by
+  let a := 2 * Real.pi / h
+  let b := 2 * Real.pi / k
+  have ha : 0 < a := div_pos Real.two_pi_pos hh
+  have hb : 0 < b := div_pos Real.two_pi_pos hk
+  refine ⟨1 + (a + b) ^ 2, a, b,
+    fun n => heatRectangle_two_grid_equal _ hh hk n,
+    ⟨2 * Real.pi / (a + b), div_pos Real.two_pi_pos (add_pos ha hb),
+      heatRectangle_strict_between_grids _ ha hb⟩,
+    heatRectangle_strict_parabolic ha hb⟩
 
 end
 

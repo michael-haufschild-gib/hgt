@@ -258,9 +258,7 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 On every new turn:
 
-make one significant contribution that overcomes a hard mathematical obstacle for route PA from docs/reports/rh-current-frontier-map.md. it must overcome a hard obstacle and remove an obstruction or prop interface or hypothesis which significantly moves the frontier in the proof route and cleary moves us closer to finalizing the formal rh proof.
-
-make one significant contribution that overcomes a hard mathematical obstacle or delivers a highly significant insight by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md your finding must contribute something of significant value directly or indirectly to routes CHMD + HF + OWU + EWU. 
+make one significant contribution that overcomes a hard mathematical obstacle for route FZZ-P from docs/reports/rh-current-frontier-map.md. it must overcome a hard obstacle and remove an obstruction or prop interface or hypothesis which significantly moves the frontier in the proof route and cleary moves us closer to finalizing the formal rh proof.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -468,3 +466,55 @@ maintain working log for yourself. do not write lean code yet. understand why we
 
 
 
+## Open Research - New field of mathematics 
+
+do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: docs/reports/BiScaleUncertainty/README.md
+
+On every new turn:
+
+make one significant contribution to your research topic. a contribution is significant if it does at least one of the following:
+- overcomes a mathematical obstacle in the field
+- delivers new valuable insights into the nature of the field
+- discharges a hypotheses, prop interface relevant to the field
+- delivers a new proven fact that answers questions arising from the nature of the field and its underlying motivation
+- broadens or sharpens the mathematical toolset of the field to be able to answer new questions, provide solutions otherwise not possible, or even ask new questions
+- closes gaps to turn the field as whole into a true new field of mathematics by established standards in the mathematical community
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BiScaleUncertainty/
+
+
+## Open Research - New field of mathematics 
+
+do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: docs/reports/BiScaleUncertainty/README.md
+
+make one significant contribution to develop and advance this new field of mathematics.
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BiScaleUncertainty/

@@ -141,7 +141,8 @@ theorem finset_sum_apply {ι : Type*} (s : Finset ι) (g : ι → HolderSpace A 
 
 /-- Evaluation at the chosen points of the admissible cylinders is injective on `V_n`. -/
 theorem levelSpace_eval_injective (n : ℕ) :
-    Function.Injective fun f : levelSpace A ϑ n => fun u : AdmWord A n => (f : HolderSpace A ϑ) u.pt := by
+    Function.Injective fun f : levelSpace A ϑ n =>
+      fun u : AdmWord A n => (f : HolderSpace A ϑ) u.pt := by
   intro f g h
   apply Subtype.ext
   ext y
@@ -240,7 +241,8 @@ open Classical in
 def cylAvgFun (N : ℕ) : ((ℕ → Fin k) → ℂ) →ₗ[ℂ] (ℕ → Fin k) → ℂ where
   toFun g y := if IsAdmissible A y then g (cylPoint A N y) else 0
   map_add' g h := by funext y; simp only [Pi.add_apply]; split_ifs <;> simp
-  map_smul' c g := by funext y; simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; split_ifs <;> simp
+  map_smul' c g := by
+    funext y; simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; split_ifs <;> simp
 
 open Classical in
 /-- The **cylinder average** `E_N`, of norm at most `1`. -/

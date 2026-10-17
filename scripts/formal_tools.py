@@ -121,6 +121,15 @@ THEOREM_AREAS = {
             "SelbergClass.differentiable_dampedMultipleStandardTwist",
         ],
     },
+    "bi_scale_uncertainty": {
+        "module": "GaloisForLFunctions.BiScaleUncertainty",
+        "path": SRC / "BiScaleUncertainty",
+        "capstones": [
+            "GaloisForLFunctions.BiScaleUncertainty.autocorr_krein_increment_sq_le",
+            "GaloisForLFunctions.BiScaleUncertainty.autocorr_origin_singularity_leverage_sub",
+            "GaloisForLFunctions.BiScaleUncertainty.weilArchRe_nonneg_iff_levy_sinh_ge_abs_gammaBracket",
+        ],
+    },
     "quantum_alg": {
         "module": "GaloisForLFunctions.QuantumAlg",
         "path": SRC / "QuantumAlg",
@@ -134,6 +143,7 @@ THEOREM_AREAS = {
 }
 
 ALLOWED_ROOT_LEAN = {
+    "BiScaleUncertainty.lean",
     "Bottcher.lean",
     "Core.lean",
     "FullyProvenNewTargets.lean",

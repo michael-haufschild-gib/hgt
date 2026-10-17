@@ -89,3 +89,28 @@ fixed admissible continuation; `|r − r_m| ≤ Cθ^m`, `r_m` has the same Höld
   Next: abstract continuation theorem (`OuterSpectralContinuation`: local values
   `det(1−T|W)·exp(−Σ(zₙ−tr Tⁿ|W)/n)`, radius independence, gluing), then the symbolic estimates
   verifying its hypotheses, then the ζ corollary.
+- 2026-10-17 — compiled: `HTGeometry/OuterSpectralContinuation` (local values, radius
+  independence, `localValue = exp(−Σzₙ/n)` under decay, **gluing theorem `exists_continuation`**),
+  `HTGeometry/SymbolicRuellePollicottBounds` (growth/decay of `Z_L(σ)` and `Φₙ(σ)`),
+  `HTGeometry/SymbolicTraceSplitting` (`aⁿ−bⁿ` telescoping, outer-trace comparison, periodic sum =
+  outer trace + `O(k^m ρⁿ)`, `Σ n^a τ^{⌊n/q⌋} < ∞`), `HTGeometry/SymbolicQuasiCompactness`
+  (admissible radius, finite rank, range in `V_{m−1}`, uniform bounds).
+  Remaining: `SymbolicRuellePollicott` (local trace estimate = hypothesis `hloc`, assembly), ζ
+  corollary in RHTower, statement bridge to `ShiftSpace`/`periodicOrbitSum`.
+- 2026-10-17 — **T5-core proved in Lean** (standard axioms only):
+  `Symbolic.exists_holomorphic_reciprocal` (`HTGeometry/SymbolicRuellePollicott`): for a positive
+  Hölder potential `φ ≥ r_min > 0` on a mixing SFT with `Σ_n Z_n(σ)/n < ∞` for all `σ > 1`, there
+  are `ε > 0` and `F` holomorphic on `Re s > 1 − ε` with `F(s) = exp(−Σ_{n≥1} Z_n(s)/n)` on
+  `Re s > 1`. Supporting lemmas: `local_trace_estimate`, `local_trace_estimate_core`,
+  `defect_bound_at`, `crude_bound_at`, `defect_arith_{first,second,third}`, `local_neighbourhood`,
+  `level_perturb_le`, `resolvent_bound_of_small_perturb`.
+  Umbrella collisions resolved: corpus `isPreconnected_norm_gt` (ConvexCompactComplementConnected)
+  reused; own lemma renamed `norm_pow_sub_pow_le_of_exp_bound`.
+  **Remaining for T5 (next session):** (1) RHTower statement module: hypotheses on `ShiftSpace A`,
+  roof `r : ShiftSpace A → ℝ` with `0 < r`, Hölder `|r x − r y| ≤ Cθⁿ`, mixing, and
+  `riemannZeta s = exp(Σ periodicOrbitSum r (n+1) s/(n+1))` (with summability) on `Re s > 1`;
+  derive `φ := extendByZero r` Hölder potential (`R₀ = |r x₀| + C`, `C := max C 0`), `r_min` from
+  `exists_pos_le_of_holder`, `periodicOrbitSum_eq` bridge, real summability at `σ > 1`; conclude
+  `riemannZeta s ≠ 0` for `1 − ε < Re s`, `s ≠ 1` via `(s−1)ζ(s)·F(s) = s − 1` and the identity
+  theorem on the half-plane. (2) Optional faithfulness: Euler product over primitive orbits.
+  (3) Card-4 status update, move T5 programme card to 3-formalized.

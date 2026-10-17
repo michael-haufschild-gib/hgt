@@ -257,3 +257,9 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
   Card 9 is blocked by the session rule "no computations": its headline theorem is a certified numerical
   verification (Platt–Trudgian prefix + Turing count at height 3·10¹²); its mathematical content is already
   Lean-closed (`rhVerifiedThrough_amplify_of_fiber_ncard_le_one`). Needs a user decision.
+
+- 2026-10-17 — Card 4 T5: core continuation theorem `Symbolic.exists_holomorphic_reciprocal`
+  formalized (15 new HTGeometry modules, standard axioms; see
+  `1-in-progress/t5-ruelle-pollicott-zero-free-strip-lean-programme-2026-10-17.md`). Remaining for
+  T5: RHTower statement module (ShiftSpace hypotheses → ζ zero-free strip). Then L7, then cards
+  6, 8, 10/11, 5, 7; card 9 awaits the user's decision on computational certificates.

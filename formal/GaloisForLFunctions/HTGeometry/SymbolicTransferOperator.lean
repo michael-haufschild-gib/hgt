@@ -36,7 +36,8 @@ theorem norm_cexp_neg_mul_sub_le (s : ℂ) (a b : ℝ) :
       Real.exp (-(s.re * a)) * (‖s‖ * |a - b| * Real.exp (‖s‖ * |a - b|)) := by
   have hfac : Complex.exp (-(s * a)) - Complex.exp (-(s * b)) =
       Complex.exp (-(s * a)) * -(Complex.exp (s * ((a : ℂ) - b)) - 1) := by
-    have he : Complex.exp (-(s * a)) * Complex.exp (s * ((a : ℂ) - b)) = Complex.exp (-(s * b)) := by
+    have he : Complex.exp (-(s * a)) * Complex.exp (s * ((a : ℂ) - b)) =
+        Complex.exp (-(s * b)) := by
       rw [← Complex.exp_add]; congr 1; ring
     rw [mul_neg, mul_sub, he, mul_one]; ring
   rw [hfac, norm_mul, norm_neg, Complex.norm_exp]
@@ -165,7 +166,8 @@ theorem norm_transferFun_pow_apply_sub_le {φ : (ℕ → Fin k) → ℝ} {R₀ C
     have hΔ' : |birkhoff φ n X - birkhoff φ n Y| ≤ C / (1 - θ) := by
       refine hΔ.trans (div_le_div_of_nonneg_right ?_ h1θ.le)
       exact mul_le_of_le_one_right hC (pow_le_one₀ hθ0 hθ1.le)
-    have hsplit : Complex.exp (-(s * birkhoff φ n X)) * g X - Complex.exp (-(s * birkhoff φ n Y)) * g Y
+    have hsplit : Complex.exp (-(s * birkhoff φ n X)) * g X -
+          Complex.exp (-(s * birkhoff φ n Y)) * g Y
         = Complex.exp (-(s * birkhoff φ n X)) * (g X - g Y) +
           g Y * (Complex.exp (-(s * birkhoff φ n X)) - Complex.exp (-(s * birkhoff φ n Y))) := by
       ring

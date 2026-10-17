@@ -35,13 +35,15 @@ variable {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [CompleteSpace A]
 omit [CompleteSpace A] in
 /-- **Resolvents at two points commute.** -/
 theorem commute_resolvent_resolvent {a : A} {l m : ℂ} (hl : l ∈ resolventSet ℂ a)
-    (hm : m ∈ resolventSet ℂ a) : resolvent a l * resolvent a m = resolvent a m * resolvent a l := by
+    (hm : m ∈ resolventSet ℂ a) :
+    resolvent a l * resolvent a m = resolvent a m * resolvent a l := by
   by_cases hlm : l = m
   · rw [hlm]
   have h1 := resolvent_sub_resolvent hl hm
   have h2 := resolvent_sub_resolvent hm hl
   have hne : (m - l : ℂ) ≠ 0 := sub_ne_zero.mpr (Ne.symm hlm)
-  have h3 : (m - l) • (resolvent a l * resolvent a m) = (m - l) • (resolvent a m * resolvent a l) := by
+  have h3 : (m - l) • (resolvent a l * resolvent a m) =
+      (m - l) • (resolvent a m * resolvent a l) := by
     rw [← h1, show (m - l) = -(l - m) by ring, neg_smul, ← h2, neg_sub]
   exact smul_right_injective A hne h3
 
@@ -269,7 +271,8 @@ theorem rieszProjection_mul_of_lt (a : A) {r R : ℝ} (h0 : 0 < r) (hrR : r < R)
 theorem rieszProjection_commute_rieszProjection (a : A) {r R : ℝ} (hr0 : 0 ≤ r) (hR0 : 0 ≤ R)
     (hr : ∀ lam ∈ sphere (0 : ℂ) r, lam ∈ resolventSet ℂ a)
     (hR : ∀ mu ∈ sphere (0 : ℂ) R, mu ∈ resolventSet ℂ a) :
-    rieszProjection a 0 r * rieszProjection a 0 R = rieszProjection a 0 R * rieszProjection a 0 r := by
+    rieszProjection a 0 r * rieszProjection a 0 R =
+      rieszProjection a 0 R * rieszProjection a 0 r := by
   have hci_r : CircleIntegrable (resolvent a) 0 r := circleIntegrable_resolvent hr0 hr
   have hci_R : CircleIntegrable (resolvent a) 0 R := circleIntegrable_resolvent hR0 hR
   have hcomm : ∀ lam ∈ sphere (0 : ℂ) r,
@@ -492,7 +495,8 @@ theorem one_sub_rieszProjection_apply_mem (T : E →L[ℂ] E) {r M : ℝ} (hr : 
       rw [← pow_mul_outerInverse T hr h hn]; rfl
     rw [this, hTFS n hn]
     simp
-  have hbound : ∀ n, 1 ≤ n → ‖Q w - F n (outerInverse T r n w)‖ ≤ ‖S n‖ / r ^ n * (r * M * ‖w‖) := by
+  have hbound : ∀ n, 1 ≤ n →
+      ‖Q w - F n (outerInverse T r n w)‖ ≤ ‖S n‖ / r ^ n * (r * M * ‖w‖) := by
     intro n hn
     rw [hseq n hn]
     have hrn : 0 < r ^ n := pow_pos hr n

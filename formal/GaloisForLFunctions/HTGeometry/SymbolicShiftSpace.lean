@@ -49,7 +49,8 @@ def shiftBy (n : ℕ) (x : ℕ → Fin k) : ℕ → Fin k := fun i => x (i + n)
 
 @[simp] theorem shiftBy_zero (x : ℕ → Fin k) : shiftBy 0 x = x := rfl
 
-theorem shiftBy_shiftBy (m n : ℕ) (x : ℕ → Fin k) : shiftBy m (shiftBy n x) = shiftBy (m + n) x := by
+theorem shiftBy_shiftBy (m n : ℕ) (x : ℕ → Fin k) :
+    shiftBy m (shiftBy n x) = shiftBy (m + n) x := by
   funext i; simp [shiftBy, Nat.add_assoc]
 
 theorem shiftBy_succ_cons (n : ℕ) (a : Fin k) (x : ℕ → Fin k) :
@@ -460,7 +461,8 @@ theorem partitionSum_le_periodicSum {M : ℕ} (hmix : IsMixing A M) (hM : 1 ≤ 
     rw [hM1] at htail
     rw [← Real.exp_add]
     refine Real.exp_le_exp.mpr ?_
-    have e1 : |σ * birkhoff φ n (prepend v x) - σ * birkhoff φ n (close v)| ≤ |σ| * (C / (1 - θ)) := by
+    have e1 : |σ * birkhoff φ n (prepend v x) - σ * birkhoff φ n (close v)| ≤
+        |σ| * (C / (1 - θ)) := by
       rw [← mul_sub, abs_mul]; exact mul_le_mul_of_nonneg_left hd (abs_nonneg σ)
     have e2 : |σ * birkhoff φ (M - 1) (shiftBy n (close v))| ≤ |σ| * ((M - 1) * R₀) := by
       rw [abs_mul]; exact mul_le_mul_of_nonneg_left htail (abs_nonneg σ)

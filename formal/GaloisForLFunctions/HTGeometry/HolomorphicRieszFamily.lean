@@ -240,7 +240,8 @@ theorem differentiableAt_finiteRank_outer {P Y : ℂ → E →L[ℂ] E} {s₀ : 
     show P s₀ * P s₀ + (1 - P s₀) * (1 - P s₀) = 1
     rw [hP₀, sub_mul, one_mul, mul_sub, mul_one, hP₀, sub_self, sub_zero, add_sub_cancel]
   have hAd : DifferentiableAt ℂ A s₀ :=
-    (hPd.self_of_nhds.mul_const _).add ((differentiableAt_const _).sub hPd.self_of_nhds |>.mul_const _)
+    (hPd.self_of_nhds.mul_const _).add
+      ((differentiableAt_const _).sub hPd.self_of_nhds |>.mul_const _)
   have hAc : ContinuousAt A s₀ := hAd.continuousAt
   have hAunit : ∀ᶠ s in 𝓝 s₀, IsUnit (A s) := by
     have hev : ∀ᶠ s in 𝓝 s₀, ‖A s - 1‖ < 1 := by
@@ -291,7 +292,8 @@ theorem differentiableAt_finiteRank_outer {P Y : ℂ → E →L[ℂ] E} {s₀ : 
         _ = (A s * Ainv s) * (Y s * (A s * Q₀)) * Ainv s := by rw [hAi', one_mul]
         _ = A s * Z s * Ainv s := by simp only [Z]; noncomm_ring
   have htrace : (fun s => finiteRankTrace (Y s * (1 - P s))) =ᶠ[𝓝 s₀]
-      fun s => LinearMap.trace ℂ W₀ ((compressCLM W₀ Q₀ hQW (Z s) : W₀ →L[ℂ] W₀) : W₀ →ₗ[ℂ] W₀) := by
+      fun s => LinearMap.trace ℂ W₀
+        ((compressCLM W₀ Q₀ hQW (Z s) : W₀ →L[ℂ] W₀) : W₀ →ₗ[ℂ] W₀) := by
     filter_upwards [hloc] with s hs
     obtain ⟨hZW, u, hu⟩ := hs
     haveI : FiniteDimensional ℂ (opRange (Z s)) :=

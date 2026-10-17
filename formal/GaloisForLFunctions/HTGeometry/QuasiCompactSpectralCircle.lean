@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.RieszProjectionPowerCalculus
+import GaloisForLFunctions.HTGeometry.ConvexCompactComplementConnected
 
 /-!
 # Spectral circles of a power-decomposable operator
@@ -140,29 +141,9 @@ end FiniteRankFactor
 
 /-! ## The spectral circle -/
 
-/-- The exterior of a closed disc is preconnected: it is the image of `(r, ∞) × ℝ` under polar
-coordinates. -/
-theorem isPreconnected_norm_gt {r : ℝ} (hr : 0 ≤ r) : IsPreconnected {w : ℂ | r < ‖w‖} := by
-  have hU : {w : ℂ | r < ‖w‖} = (fun p : ℝ × ℝ => (p.1 : ℂ) * Complex.exp (p.2 * Complex.I)) ''
-      (Set.Ioi r ×ˢ Set.univ) := by
-    ext w
-    constructor
-    · intro hw
-      exact ⟨(‖w‖, Complex.arg w), ⟨hw, Set.mem_univ _⟩, Complex.norm_mul_exp_arg_mul_I w⟩
-    · rintro ⟨⟨t, θ⟩, ⟨ht, -⟩, rfl⟩
-      have ht' : r < t := ht
-      show r < ‖(t : ℂ) * Complex.exp (θ * Complex.I)‖
-      rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_pos (lt_of_le_of_lt hr ht')]
-      exact ht'
-  rw [hU]
-  refine (isPreconnected_Ioi.prod isPreconnected_univ).image _ ?_
-  exact (Continuous.mul (Complex.continuous_ofReal.comp continuous_fst)
-    (Complex.continuous_exp.comp ((Complex.continuous_ofReal.comp continuous_snd).mul
-      continuous_const))).continuousOn
-
 /-- **Between any two radii above `‖S‖^{1/N}` there is a circle in the resolvent set.** -/
-theorem exists_sphere_subset_resolventSet_of_pow_eq_add [CompleteSpace E] (T : E →L[ℂ] E) {N : ℕ} (hN : 1 ≤ N)
+theorem exists_sphere_subset_resolventSet_of_pow_eq_add [CompleteSpace E] (T : E →L[ℂ] E)
+    {N : ℕ} (hN : 1 ≤ N)
     (F S : E →L[ℂ] E) [FiniteDimensional ℂ (opRange F)] (hTFS : T ^ N = F + S)
     {a b : ℝ} (ha0 : 0 < a) (hS : ‖S‖ < a ^ N) (hab : a < b) :
     ∃ ρ ∈ Set.Ioo a b, ∀ z ∈ sphere (0 : ℂ) ρ, z ∈ resolventSet ℂ T := by

@@ -27,60 +27,93 @@ theorem inner_identity_sub_groundCompact (a : SuzukiPositiveAperture)
   unfold arithmeticShiftedForm arithmeticForm
   ring
 
+private theorem exists_metric_from_positive_compact
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (K : H →L[ℂ] H) (hK : IsCompactOperator K)
+    (hpos : ContinuousLinearMap.IsPositive (𝕜 := ℂ) (E := H) (1-K))
+    (hker : ∀ u : H, (1-K) u = 0 → u = 0) :
+    ∃ metric : CoerciveInnerProductRenorm.Datum H, ∃ C : ℝ, 0 < C ∧
+      ∀ u v : H, inner ℂ (metric.op u) v = (C : ℂ)*inner ℂ ((1-K) u) v := by
+  obtain ⟨C,hC,hcoer⟩ := exists_positive_form_scale_of_compact (H := H) K hK hpos hker
+  let metric : CoerciveInnerProductRenorm.Datum H :=
+    { op := (C : ℂ) • (1-K)
+      selfAdjoint := (show IsSelfAdjoint (C : ℂ) from by simp [isSelfAdjoint_iff]).smul
+        hpos.isSelfAdjoint
+      coercive := fun u => by
+        change ‖u‖^2 ≤ (inner ℂ ((C : ℂ) • ((1-K) u)) u).re
+        rw [inner_smul_left (𝕜 := ℂ) ((1-K) u) u (C : ℂ)]
+        simpa only [Complex.conj_ofReal,Complex.mul_re,Complex.ofReal_re,
+          Complex.ofReal_im,zero_mul,sub_zero] using hcoer u }
+  refine ⟨metric,C,hC,fun u v => ?_⟩
+  change inner ℂ ((C : ℂ) • ((1-K) u)) v = _
+  rw [inner_smul_left (𝕜 := ℂ) ((1-K) u) v (C : ℂ),Complex.conj_ofReal]
+
+private def compressedGroundCompact (a : SuzukiPositiveAperture)
+    (L : Submodule ℂ (CCMArchimedeanFormDomain a)) [CompleteSpace L] : L →L[ℂ] L :=
+  L.orthogonalProjectionOnto.comp ((arithmeticGroundCompact a).comp L.subtypeL)
+
+private theorem compressedGroundCompact_isCompact (a : SuzukiPositiveAperture)
+    (L : Submodule ℂ (CCMArchimedeanFormDomain a)) [CompleteSpace L] :
+    IsCompactOperator (compressedGroundCompact a L) :=
+  ((arithmeticGroundCompact_isCompact a).comp_clm L.subtypeL).clm_comp L.orthogonalProjectionOnto
+
+private theorem inner_compressedGroundForm (a : SuzukiPositiveAperture)
+    (L : Submodule ℂ (CCMArchimedeanFormDomain a)) [CompleteSpace L] (u v : L) :
+    inner ℂ ((1-compressedGroundCompact a L) u) v = arithmeticShiftedForm a u v := by
+  change inner ℂ (u-L.orthogonalProjectionOnto (arithmeticGroundCompact a u)) v = _
+  rw [inner_sub_left (𝕜 := ℂ) u
+    (L.orthogonalProjectionOnto (arithmeticGroundCompact a u)) v,
+    Submodule.inner_orthogonalProjectionOnto_eq_of_mem_right]
+  change inner ℂ (u : CCMArchimedeanFormDomain a) v -
+    inner ℂ (arithmeticGroundCompact a u) v = _
+  rw [← inner_sub_left (𝕜 := ℂ) (u : CCMArchimedeanFormDomain a)
+    (arithmeticGroundCompact a u) (v : CCMArchimedeanFormDomain a)]
+  exact inner_identity_sub_groundCompact a u v
+
+private theorem compressedGroundForm_positive (a : SuzukiPositiveAperture)
+    (L : Submodule ℂ (CCMArchimedeanFormDomain a)) [CompleteSpace L]
+    (hodd : ∀ u ∈ L, ccmArchimedeanFormReflection a u = -u) :
+    @ContinuousLinearMap.IsPositive ℂ L inferInstance
+      (Submodule.normedAddCommGroup L) (Submodule.innerProductSpace L)
+      ((1 : L →L[ℂ] L)-compressedGroundCompact a L) := by
+  refine ⟨?_,?_⟩
+  · intro u v
+    change inner ℂ ((1-compressedGroundCompact a L) u) v =
+      inner ℂ u ((1-compressedGroundCompact a L) v)
+    rw [inner_compressedGroundForm,
+      ← inner_conj_symm (𝕜 := ℂ) u ((1-compressedGroundCompact a L) v),
+      inner_compressedGroundForm]
+    exact arithmeticShiftedForm_conj a v u
+  · intro u
+    change 0 ≤ (inner ℂ ((1-compressedGroundCompact a L) u) u).re
+    rw [inner_compressedGroundForm]
+    exact arithmeticShiftedForm_odd_nonneg a ⟨u,hodd u u.property⟩
+
+private theorem compressedGroundForm_kernel (a : SuzukiPositiveAperture)
+    (L : Submodule ℂ (CCMArchimedeanFormDomain a)) [CompleteSpace L]
+    (hodd : ∀ u ∈ L, ccmArchimedeanFormReflection a u = -u)
+    (hzero : ∀ u : L, (u : CCMArchimedeanFormDomain a) ∈ oddArithmeticGroundSpace a → u = 0)
+    (u : L) (hu : (1-compressedGroundCompact a L) u = 0) : u = 0 := by
+  apply hzero u
+  apply (mem_oddArithmeticGroundSpace_iff a u).mpr
+  refine ⟨hodd u u.property,?_⟩
+  rw [← inner_compressedGroundForm a L u u,hu,inner_zero_left (𝕜 := ℂ) u,Complex.zero_re]
+
 /-- The actual shifted form is coercive on every complete odd subspace
 meeting its ground radical only at zero. -/
 theorem exists_oddSubspace_coercive_metric (a : SuzukiPositiveAperture)
     (L : Submodule ℂ (CCMArchimedeanFormDomain a)) [CompleteSpace L]
     (hodd : ∀ u ∈ L, ccmArchimedeanFormReflection a u = -u)
     (hzero : ∀ u : L, (u : CCMArchimedeanFormDomain a) ∈ oddArithmeticGroundSpace a → u = 0) :
-    ∃ metric : CoerciveInnerProductRenorm.Datum L, ∃ C : ℝ, 0 < C ∧
+    ∃ metric : @CoerciveInnerProductRenorm.Datum L (Submodule.normedAddCommGroup L)
+      (Submodule.innerProductSpace L) inferInstance, ∃ C : ℝ, 0 < C ∧
       ∀ u v : L, inner ℂ (metric.op u) v = (C : ℂ)*arithmeticShiftedForm a u v := by
-  let K : L →L[ℂ] L := L.orthogonalProjectionOnto.comp
-    ((arithmeticGroundCompact a).comp L.subtypeL)
-  have hK : IsCompactOperator K :=
-    ((arithmeticGroundCompact_isCompact a).comp_clm L.subtypeL).clm_comp
-      L.orthogonalProjectionOnto
-  let B : L →L[ℂ] L := 1-K
-  have hform (u v : L) : inner ℂ (B u) v =
-      arithmeticShiftedForm a u v := by
-    change inner ℂ (u-L.orthogonalProjectionOnto (arithmeticGroundCompact a u)) v = _
-    rw [inner_sub_left (𝕜 := ℂ) u
-      (L.orthogonalProjectionOnto (arithmeticGroundCompact a u)) v,
-      Submodule.inner_orthogonalProjectionOnto_eq_of_mem_right]
-    change inner ℂ (u : CCMArchimedeanFormDomain a) v -
-      inner ℂ (arithmeticGroundCompact a u) v = _
-    rw [← inner_sub_left (𝕜 := ℂ) (u : CCMArchimedeanFormDomain a)
-      (arithmeticGroundCompact a u) (v : CCMArchimedeanFormDomain a)]
-    exact inner_identity_sub_groundCompact a u v
-  have hpos : ContinuousLinearMap.IsPositive (𝕜 := ℂ) (E := L) B := by
-    refine ⟨?_,?_⟩
-    · intro u v
-      change inner ℂ (B u) v = inner ℂ u (B v)
-      rw [hform,← inner_conj_symm (𝕜 := ℂ) u (B v),hform]
-      exact arithmeticShiftedForm_conj a u v
-    · intro u
-      change 0 ≤ (inner ℂ (B u) u).re
-      rw [hform]
-      exact arithmeticShiftedForm_odd_nonneg a ⟨u,hodd u u.property⟩
-  have hker : ∀ u : L, B u = 0 → u = 0 := by
-    intro u hu
-    apply hzero u
-    apply (mem_oddArithmeticGroundSpace_iff a u).mpr
-    refine ⟨hodd u u.property,?_⟩
-    rw [← hform,hu,inner_zero_left (𝕜 := ℂ) u,Complex.zero_re]
-  obtain ⟨C,hC,hcoer⟩ := exists_positive_form_scale_of_compact K hK hpos hker
-  let metric : CoerciveInnerProductRenorm.Datum L :=
-    { op := (C : ℂ) • B
-      selfAdjoint := (show IsSelfAdjoint (C : ℂ) from by simp [isSelfAdjoint_iff]).smul
-        hpos.isSelfAdjoint
-      coercive := fun u => by
-        change ‖u‖^2 ≤ (inner ℂ ((C : ℂ) • (B u)) u).re
-        rw [inner_smul_left]
-        simpa only [Complex.conj_ofReal,Complex.mul_re,Complex.ofReal_re,
-          Complex.ofReal_im,zero_mul,sub_zero] using hcoer u }
+  obtain ⟨metric,C,hC,hmetric⟩ := @exists_metric_from_positive_compact L
+    (Submodule.normedAddCommGroup L) (Submodule.innerProductSpace L) inferInstance
+    (compressedGroundCompact a L) (compressedGroundCompact_isCompact a L)
+    (compressedGroundForm_positive a L hodd) (compressedGroundForm_kernel a L hodd hzero)
   refine ⟨metric,C,hC,fun u v => ?_⟩
-  change inner ℂ ((C : ℂ) • (B u)) v = _
-  rw [inner_smul_left (𝕜 := ℂ),Complex.conj_ofReal,hform]
+  rw [hmetric,inner_compressedGroundForm]
 
 /-- A closed invariant odd space with no quotient eigenvectors is precisely
 the actual ground radical. All analytic hypotheses on the form are discharged. -/
@@ -110,7 +143,9 @@ theorem oddGroundSpace_eq_of_division_no_quotient_eigenvectors
   obtain ⟨metric,C,_hC,hmetric⟩ := exists_oddSubspace_coercive_metric a L
     (fun u hu => hodd u hu.1) hLzero
   let D := groundDivisionCLM a hG b hb hz
-  let T₀ := ((1-N.starProjection).comp D).comp L.subtypeL
+  let R : CCMArchimedeanFormDomain a →L[ℂ] CCMArchimedeanFormDomain a :=
+    ContinuousLinearMap.id ℂ (CCMArchimedeanFormDomain a)-N.starProjection
+  let T₀ : L →L[ℂ] CCMArchimedeanFormDomain a := R.comp (D.comp L.subtypeL)
   have hTmem (u : L) : T₀ u ∈ L := by
     change D u-N.starProjection (D u) ∈ L
     exact ⟨V.sub_mem (hinv u u.property.1)
@@ -118,9 +153,11 @@ theorem oddGroundSpace_eq_of_division_no_quotient_eigenvectors
   let T : L →L[ℂ] L := T₀.codRestrict L hTmem
   have hTval (u : L) : (T u : CCMArchimedeanFormDomain a) =
       D u-N.starProjection (D u) := rfl
-  have hTcompact : IsCompactOperator T :=
-    (((groundDivisionCLM_isCompact a hG b hb hz).clm_comp (1-N.starProjection)).comp_clm
-      L.subtypeL).codRestrict hTmem hLclosed
+  have hTcompact : IsCompactOperator T := by
+    have hDc : IsCompactOperator D := groundDivisionCLM_isCompact a hG b hb hz
+    have hcomp : IsCompactOperator (D.comp L.subtypeL) := hDc.comp_clm L.subtypeL
+    have hc₀ : IsCompactOperator T₀ := hcomp.clm_comp R
+    exact hc₀.codRestrict hTmem hLclosed
   have hTsym (u v : L) : inner ℂ (metric.op (T u)) v = inner ℂ (metric.op u) (T v) := by
     rw [hmetric,hmetric]
     congr 1

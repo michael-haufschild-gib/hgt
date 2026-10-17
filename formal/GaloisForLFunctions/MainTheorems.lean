@@ -11,6 +11,7 @@ has seven owned theorem areas:
 * `GaloisForLFunctions.Bottcher`
 * `GaloisForLFunctions.HilbertMetric`
 * `GaloisForLFunctions.SelbergClass`
+* `GaloisForLFunctions.BiScaleUncertainty`
 
 and three vendored areas:
 
@@ -32,6 +33,7 @@ import GaloisForLFunctions.U0
 import GaloisForLFunctions.Bottcher
 import GaloisForLFunctions.HilbertMetric
 import GaloisForLFunctions.SelbergClass
+import GaloisForLFunctions.BiScaleUncertainty
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean

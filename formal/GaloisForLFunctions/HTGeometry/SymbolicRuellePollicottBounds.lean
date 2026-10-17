@@ -195,7 +195,7 @@ theorem exists_partitionFun_le_geometric {M : ℕ} (hmix : IsMixing A M) (hM : 1
   have hlam : 0 < lam := mul_pos (by simp only [σ']; linarith) hrmin
   set K₁ := Real.exp (|σ| * (C / (1 - θ) + (M - 1) * R₀))
   refine ⟨K₁ * B * (2 / lam), Real.exp (-(lam / 2)), by positivity, (Real.exp_pos _).le,
-    Real.exp_lt_one.mpr (by linarith), fun n hn x => ?_⟩
+    Real.exp_lt_one_iff.mpr (by linarith), fun n hn x => ?_⟩
   haveI : NeZero (n + (M - 1)) := ⟨by omega⟩
   set L := n + (M - 1) with hLdef
   have h1 := partitionFun_le_periodicSum hmix hM hφ hθ0 hθ1 σ hn x
@@ -223,6 +223,36 @@ theorem exists_partitionFun_le_geometric {M : ℕ} (hmix : IsMixing A M) (hM : 1
         gcongr
     _ = K₁ * B * (2 / lam) * Real.exp (-(lam / 2)) ^ n := by
         rw [← Real.exp_nat_mul]; ring_nf
+
+/-- **Periodic sums on the half-plane `σ > 1 − ε`**: `Z_L(σ) ≤ (B/ε) e^{L ε (2R₀ + 1)}`. -/
+theorem periodicSumR_le_exp (hφ : IsHolderPotential A φ R₀ C θ) (hR₀ : 0 ≤ R₀)
+    (hpos : ∀ y, IsAdmissible A y → 0 ≤ φ y) {ε B : ℝ} (hε : 0 < ε) (hB0 : 0 ≤ B)
+    (hB : ∀ n : ℕ, periodicSumR A φ (n + 1) (1 + ε) ≤ B * ((n : ℝ) + 1))
+    {σ : ℝ} (hσ : 1 - ε < σ) (L : ℕ) [NeZero L] :
+    periodicSumR A φ L σ ≤ (B * ε⁻¹) * Real.exp (L * (ε * (2 * R₀ + 1))) := by
+  have hBL : periodicSumR A φ L (1 + ε) ≤ B * L := periodicSumR_le_of_succ hB L
+  have hZ : periodicSumR A φ L σ ≤ Real.exp (L * (2 * ε) * R₀) * (B * L) := by
+    by_cases hσ' : σ ≤ 1 + ε
+    · refine (periodicSumR_le_of_le hφ.bound hσ').trans ?_
+      refine mul_le_mul (Real.exp_le_exp.mpr ?_) hBL (periodicSumR_nonneg _ _ _) (Real.exp_pos _).le
+      have h1 : 1 + ε - σ ≤ 2 * ε := by linarith
+      have hL0 : (0 : ℝ) ≤ L := Nat.cast_nonneg L
+      have := mul_nonneg (mul_nonneg hL0 (sub_nonneg.mpr h1)) hR₀
+      nlinarith
+    · have hdec := periodicSumR_le_decay (rmin := 0) hpos (L := L) (σ' := 1 + ε) (σ := σ)
+        (by linarith)
+      rw [mul_zero, neg_zero, Real.exp_zero, one_mul] at hdec
+      refine hdec.trans (hBL.trans ?_)
+      exact le_mul_of_one_le_left (by positivity) (Real.one_le_exp (by positivity))
+  have hLe : (L : ℝ) ≤ ε⁻¹ * Real.exp (L * ε) := by
+    have h1 := Real.add_one_le_exp (L * ε)
+    rw [inv_mul_eq_div, le_div_iff₀ hε]; nlinarith
+  calc periodicSumR A φ L σ ≤ Real.exp (L * (2 * ε) * R₀) * (B * L) := hZ
+    _ ≤ Real.exp (L * (2 * ε) * R₀) * (B * (ε⁻¹ * Real.exp (L * ε))) := by
+        gcongr
+    _ = (B * ε⁻¹) * Real.exp (L * (ε * (2 * R₀ + 1))) := by
+        rw [show (L : ℝ) * (ε * (2 * R₀ + 1)) = L * (2 * ε) * R₀ + L * ε by ring, Real.exp_add]
+        ring
 
 end Growth
 
