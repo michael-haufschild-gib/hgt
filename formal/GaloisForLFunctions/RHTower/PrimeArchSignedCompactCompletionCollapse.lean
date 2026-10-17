@@ -206,9 +206,8 @@ theorem differentiableAt_xiAtomResolventSum {z₁ : ℂ}
     exact (differentiableAt_const _).div ((differentiableAt_id.mul_const _).const_sub _) (h q)
   · have hsub : ∀ q : {q // q ∉ T}, ‖xiZeroCopyReciprocalSquare q.1‖ < ε := by
       intro q
-      have := q.2
-      rw [hT, Set.Finite.mem_toFinset] at this
-      simpa only [Set.mem_setOf_eq, not_le] using this
+      have h0 : ¬ (ε ≤ ‖xiZeroCopyReciprocalSquare q.1‖) := fun hle => q.2 ((hmemT q.1).mpr hle)
+      exact not_le.mp h0
     have hkey : ∀ (q : {q // q ∉ T}) (w : ℂ), w ∈ Metric.ball z₁ 1 →
         ‖w * xiZeroCopyReciprocalSquare q.1‖ ≤ 1 / 2 := by
       intro q w hw
@@ -417,8 +416,7 @@ theorem abs_im_div_norm_le_norm_one_sub_mul_real (z : ℂ) (hz : z ≠ 0) (x : �
     rw [sq_abs, mul_pow, Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
       Complex.normSq_apply]
     simp only [Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im, Complex.mul_re,
-      Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, zero_sub,
-      add_zero]
+      Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, zero_sub]
     nlinarith [sq_nonneg (z.re - x * (z.re * z.re + z.im * z.im))]
   exact (pow_le_pow_iff_left₀ (abs_nonneg _) (by positivity) two_ne_zero).mp hsq
 
@@ -484,8 +482,7 @@ theorem differentiableOn_markovIntegral (μ : Measure ℝ) [IsFiniteMeasure μ] 
     have h1 : HasDerivAt (fun z : ℂ => 1 - z * (x : ℂ)) (-(1 * (x : ℂ))) z :=
       ((hasDerivAt_id z).mul_const (x : ℂ)).const_sub 1
     have h2 := h1.inv (hne z hz x)
-    convert h2 using 1
-    ring
+    exact h2.congr_deriv (by ring)
   have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ)
     (F := fun z x => (1 - z * (x : ℂ))⁻¹) (F' := fun z x => (x : ℂ) / (1 - z * (x : ℂ)) ^ 2)
     (x₀ := z₀) (bound := fun _ => B / c ^ 2)

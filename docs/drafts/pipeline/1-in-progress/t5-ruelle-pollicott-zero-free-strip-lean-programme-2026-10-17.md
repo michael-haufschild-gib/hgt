@@ -80,3 +80,12 @@ fixed admissible continuation; `|r − r_m| ≤ Cθ^m`, `r_m` has the same Höld
   `HTGeometry/SymbolicHolderSpace` (Banach space `F_ϑ`, `ofLinear` operator builder).
   Next: transfer operators (n-th power formula, Lasota–Yorke, perturbation, `E_N`, level spaces,
   trace identity), main estimate, continuation, corollary.
+- 2026-10-17 — further compiled modules: `HTGeometry/SymbolicTransferOperator` (iterate formula,
+  Lasota–Yorke, `transferOp`, level potentials), `HTGeometry/SymbolicLevelSpaces` (`V_n`, its
+  basis of cylinder indicators, trace formula, `E_N`, invariance, **trace identity**
+  `tr(Lⁿ|V_n) = Σ_{σⁿp=p} e^{−sφⁿ(p)}`), `HTGeometry/SymbolicTransferBounds` (`‖Lⁿ‖`,
+  `‖Lⁿ(1−E_n)‖`, perturbation `‖L_ψ−L_φ‖ ≤ 3P(θ/ϑ)^m`, partition comparisons, closing bound),
+  `HTGeometry/SymbolicTransferHolomorphy` (weighted operators, `s ↦ L_s` entire).
+  Next: abstract continuation theorem (`OuterSpectralContinuation`: local values
+  `det(1−T|W)·exp(−Σ(zₙ−tr Tⁿ|W)/n)`, radius independence, gluing), then the symbolic estimates
+  verifying its hypotheses, then the ζ corollary.

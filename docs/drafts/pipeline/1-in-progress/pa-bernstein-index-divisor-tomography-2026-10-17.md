@@ -228,3 +228,72 @@ Final significance comparison precedes any contribution count.
   coefficients equal radius times coordinate times fibre cardinality, and
   conjugate fibre cardinalities agree. No multiplicity of a single Xi zero
   is substituted for the reciprocal-square fibre cardinality.
+- `XiBernsteinOccupationFibres` and
+  `RHTower/FiniteComplexPacketWeightedPerturbation.lean` now pass final targeted
+  compilation with empty logs. The full atomic transfer passed in `/tmp` and
+  was saved as `RHTower/AtomicBernsteinPacketIndexAsymptotic.lean` for its final
+  check. The latter uses the actual infinite complement, not a finite cutoff.
+- Remaining owned scratch drafts: `source`, `weights`, `atomic-measure`,
+  `measures`, and `normalization` under `/tmp/hgt-root-cr15-*.lean`.
+  They are drafts, not verified results. Source specialization, weak measure
+  topology, windows, normalized probabilities, observed amplitude, observed
+  multiplicities and the unconditional final alternative must all pass before
+  final significance and counting. Current count stays 14/100.
+- `AtomicBernsteinPacketIndexAsymptotic` and the actual source leaf
+  `RHTower/XiBernsteinIndexAsymptotic.lean` now pass final targeted compilation
+  with empty logs. The actual source theorem quantifies all bounded real tests
+  continuous at the finite occupation points; its gap, finiteness and
+  summability inputs are discharged from the actual Xi corpus.
+- Two more draft scratches are now present: `probability.lean` and
+  `tomography.lean`. The final target is an explicit unconditional alternative:
+  RH, or a complete finite superunit packet with observed growth amplitude,
+  weak index/probability laws, exact positive atom positions, conjugate
+  coordinate fibres and unique natural-number fibre multiplicities.
+  No source positivity or hypothetical admission is smuggled into this target.
+- `RHTower/XiBernsteinOccupationWeights.lean` now passes its final targeted
+  compilation with an empty log. This includes exact occupied-point support,
+  the two-coordinate conjugate fibre, the displayed atom-weight formula and
+  uniqueness of its natural-number fibre multiplicity.
+- The generic finite atomic measure/normalization helper passed in `/tmp` and
+  was saved as `HTGeometry/FiniteRealAtomicMeasure.lean`; final object check
+  remains pending. The measure topology, probability and final packaged
+  source-divisor alternative are still unverified drafts. Goal: 14/100.
+- `FiniteRealAtomicMeasure`, `RHTower/XiBernsteinIndexNormalization.lean` and
+  `RHTower/XiBernsteinIndexProbability.lean` now pass final targeted checks
+  with empty logs. Actual source energy is positive in every degree, the
+  normalized source profiles are probability measures, their weak limit is
+  the normalized positive divisor measure, and source-energy nth roots
+  recover B squared. Positivity uses the existing actual theta-Gibbs first
+  moment theorem, with no RH premise.
+- All 15 planned leaves are now present (76 named public declarations,
+  including 13 definitions). The index-measure window proof is undergoing
+  its corrected final check; the final root theorem and the combined axiom/
+  signature audit have not run. No count increase yet.
+
+## Significance and boundary audit
+
+The structural result is fixed-scale inverse observation of the complete
+dominant reciprocal-square divisor from the actual source's coefficient
+indices, including its multiplicities. The new information is absent from a
+scalar purity limit and from moment recovery requiring variation of the
+radius. Weighted mixed terms are an essential obstacle: coincident occupation
+points do not permit an inference from the unweighted pairing limit alone.
+
+Cross-route inputs are concrete: PA's exact atomic source and strict maximal
+packet gap; Deninger's multiplicity-exact conjugation equivalence; the proved
+binomial probability/variance law and finite pairing concentration; and the
+actual theta-Gibbs positive zeroth source moment for all-degree probability
+normalization. No additional source positivity or admission is assumed.
+
+Count the whole reconstruction as ONE result only after the remaining final
+checks. The 76 public declarations, including 13 definitions, are supporting
+parts, not separate contributions. No count for the variance estimate, weak
+topology packaging, probability normalization, or the growth-rate bridge.
+
+The conclusion identifies only the complete dominant packet in the superunit
+alternative, modulo conjugation. It does not recover subdominant off-line
+coordinates, supply a finite truncation decision procedure, identify a single
+Xi-zero multiplicity with its reciprocal-square fibre cardinality, prove the
+RH branch has a finite maximal packet, or establish PA's missing source sign
+or Sonin susceptibility representation. External novelty is unassessed; local
+comparison coverage and its partial semantic search are recorded above.

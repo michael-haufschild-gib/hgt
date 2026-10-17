@@ -18,10 +18,12 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 
 def toOldCLM (D : Datum H) : Carrier D →L[ℂ] H :=
   (toOld D).toLinearMap.mkContinuous 1 fun x => by
+    change ‖toOld D x‖ ≤ 1*‖x‖
     simpa only [one_mul] using old_norm_le D x
 
 def fromOldCLM (D : Datum H) : H →L[ℂ] Carrier D :=
   (toOld D).symm.toLinearMap.mkContinuous (‖D.op‖+1) fun x => by
+    change ‖(toOld D).symm x‖ ≤ (‖D.op‖+1)*‖x‖
     simpa only [LinearEquiv.apply_symm_apply] using norm_le D ((toOld D).symm x)
 
 theorem toOldCLM_apply (D : Datum H) (x : Carrier D) :
@@ -43,6 +45,7 @@ theorem compact_eq_zero_of_no_nonzero_eigenvectors (D : Datum H)
   have hc : IsCompactOperator S := (hT.comp_clm (toOldCLM D)).clm_comp (fromOldCLM D)
   have hs : S.IsSymmetric := by
     intro x y
+    change inner ℂ (S x) y = inner ℂ x (S y)
     rw [inner_def,inner_def,hS,hS]
     exact hsym _ _
   have hz : S = 0 := (ContinuousLinearMap.eq_zero_of_forall_hasEigenvalue_eq_zero hc hs).mp
@@ -54,10 +57,11 @@ theorem compact_eq_zero_of_no_nonzero_eigenvectors (D : Datum H)
       apply (toOld D).injective
       rw [map_zero]
       apply hno μ hn
-      have he := congrArg (toOld D) (Module.End.mem_eigenspace_iff.mp hx)
+      have hx' : S x = μ • x := Module.End.mem_eigenspace_iff.mp hx
+      have he := congrArg (toOld D) hx'
       simpa only [hS,map_smul] using he)
   ext x
   have he := hS ((toOld D).symm x)
-  simpa only [hz,ContinuousLinearMap.zero_apply,map_zero,LinearEquiv.apply_symm_apply] using he.symm
+  simpa only [hz,zero_apply,map_zero,LinearEquiv.apply_symm_apply] using he.symm
 
 end CoerciveInnerProductRenorm

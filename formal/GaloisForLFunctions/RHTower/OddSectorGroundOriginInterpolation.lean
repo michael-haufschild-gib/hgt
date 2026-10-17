@@ -17,21 +17,21 @@ namespace RHTower.OddSector
 open GaloisForLFunctions.HTGeometry.FourierLaplaceDivision
 open CCMRealRootedGround CCMGroundStructure CCMGroundQuadrature
 
-private theorem transform_hasDerivAt (a : SuzukiPositiveAperture)
+theorem transform_hasDerivAt (a : SuzukiPositiveAperture)
     (u : CCMArchimedeanFormDomain a) (z : ℂ) :
     HasDerivAt (unitaryLaplace (timeRep a u))
       (deriv (unitaryLaplace (timeRep a u)) z) z :=
   (CCMXiStrip.differentiable_unitaryLaplace a.2.le
     (integrable_timeRep a u) (supportedIn_timeRep a u) z).hasDerivAt
 
-private theorem transform_deriv_smul (a : SuzukiPositiveAperture)
+theorem transform_deriv_smul (a : SuzukiPositiveAperture)
     (c : ℂ) (u : CCMArchimedeanFormDomain a) :
     deriv (unitaryLaplace (timeRep a (c • u))) 0 =
       c * deriv (unitaryLaplace (timeRep a u)) 0 := by
   rw [funext (unitaryLaplace_timeRep_smul a u c)]
   exact ((transform_hasDerivAt a u 0).const_mul c).deriv
 
-private theorem transform_deriv_sub (a : SuzukiPositiveAperture)
+theorem transform_deriv_sub (a : SuzukiPositiveAperture)
     (u v : CCMArchimedeanFormDomain a) :
     deriv (unitaryLaplace (timeRep a (u-v))) 0 =
       deriv (unitaryLaplace (timeRep a u)) 0 -

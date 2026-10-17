@@ -70,10 +70,11 @@ theorem groundDivisionCLM_symmetric_form (a : SuzukiPositiveAperture)
   have hc : conj ((I*(b : ℂ))^2) = (I*(b : ℂ))^2 := by
     simp only [map_pow,map_mul,Complex.conj_I,Complex.conj_ofReal,neg_mul,neg_sq]
   rw [groundDivisionCLM_apply,groundDivisionCLM_apply]
+  have hz0 : I*(b : ℂ) ≠ 0 := mul_ne_zero I_ne_zero (ofReal_ne_zero.mpr hb.ne')
   have h := arithmeticShiftedForm_quadratic_transfer a
     (groundDivisionInput a G (I*(b : ℂ)) u)
     (groundDivisionInput a G (I*(b : ℂ)) v) _ _ hc
-    (groundDivision_factor a hG _ hz u) (groundDivision_factor a hG _ hz v)
+    (groundDivision_factor a hG hz0 hz u) (groundDivision_factor a hG hz0 hz v)
   rwa [input_pair_left a hG _ hu,input_pair_right a hG _ _ hv] at h
 
 theorem groundDivisionCLM_odd (a : SuzukiPositiveAperture)
@@ -125,7 +126,6 @@ theorem oddArithmeticGround_mul_sq (a : SuzukiPositiveAperture)
         (2*Real.pi*I*w*unitaryLaplace (deriv u) w) = _
       rw [unitaryLaplace_deriv]
       field_simp
-      ring
     have he := arithmeticShiftedForm_quadratic_transfer a v k G u.toCCMFormVector
       (c := 0) (map_zero conj) (fun w => by simpa using hfac w)
       (fun w => by simpa using hk w)

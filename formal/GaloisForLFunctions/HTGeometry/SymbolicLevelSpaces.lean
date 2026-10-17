@@ -51,7 +51,7 @@ theorem levelSpace_mono {m m' : ℕ} (h : m ≤ m') : levelSpace A ϑ m ≤ leve
 
 variable (A) in
 /-- Words of length `n` that begin some admissible sequence. -/
-def AdmWord (n : ℕ) : Type :=
+abbrev AdmWord (n : ℕ) : Type :=
   {u : Fin n → Fin k // ∃ z, IsAdmissible A z ∧ ∀ i : Fin n, z i = u i}
 
 instance (n : ℕ) : Fintype (AdmWord A n) := by

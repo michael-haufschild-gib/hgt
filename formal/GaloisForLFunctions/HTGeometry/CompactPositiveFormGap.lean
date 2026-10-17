@@ -47,8 +47,9 @@ theorem exists_positive_form_scale_of_compact (K : H →L[ℂ] H)
     apply hne
     apply hker
     have heq := Module.End.mem_eigenspace_iff.mp hx
-    simpa only [ContinuousLinearMap.sub_apply,ContinuousLinearMap.one_apply,
-      one_smul,heq,sub_self]
+    change K x = (1 : ℂ) • x at heq
+    change x-K x = 0
+    rw [heq,one_smul,sub_self]
   obtain ⟨d,hd⟩ := hK.antilipschitz_of_not_hasEigenvalue (one_ne_zero : (1 : ℂ) ≠ 0) hno
   let r : ℝ := (d : ℝ)+1
   have hr : 0 < r := by dsimp only [r]; positivity
@@ -56,8 +57,7 @@ theorem exists_positive_form_scale_of_compact (K : H →L[ℂ] H)
   refine ⟨C,mul_pos (sq_pos_of_pos hr) (by positivity),fun x => ?_⟩
   have hbound : ‖x‖ ≤ r*‖(1-K) x‖ := by
     have hh := hd.le_mul_dist x 0
-    simp only [dist_zero_right,map_zero,ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.smul_apply,ContinuousLinearMap.one_apply,one_smul,
+    simp only [dist_zero_right,map_zero,sub_apply,one_apply_eq_self,one_smul,
       norm_sub_rev] at hh
     have hextra := mul_nonneg (norm_nonneg (x-K x)) (by positivity : 0 ≤ (1 : ℝ))
     change ‖x‖ ≤ r*‖x-K x‖

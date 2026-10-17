@@ -18,7 +18,7 @@ namespace RHTower.OddSector
 open GaloisForLFunctions.HTGeometry.FourierLaplaceDivision
 open CCMRealRootedGround CCMGroundStructure CCMGroundQuadrature
 
-private theorem eq_of_sq_mul_transform_eq (a : SuzukiPositiveAperture)
+theorem eq_of_sq_mul_transform_eq (a : SuzukiPositiveAperture)
     (u v : CCMArchimedeanFormDomain a) (z : ℂ)
     (h : ∀ w : ℂ, (w^2-z^2)*unitaryLaplace (timeRep a u) w =
       (w^2-z^2)*unitaryLaplace (timeRep a v) w) : u = v := by
