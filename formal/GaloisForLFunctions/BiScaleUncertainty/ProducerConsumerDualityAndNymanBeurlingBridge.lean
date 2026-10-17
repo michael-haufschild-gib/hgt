@@ -42,6 +42,7 @@ establishing the formal **Producer–Consumer Duality** between:
 namespace GaloisForLFunctions.BiScaleUncertainty
 
 open MeasureTheory Set Filter
+open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm RHTower.WeilMarkovPole
 open scoped RealInnerProductSpace BigOperators
 
 noncomputable section
@@ -51,7 +52,7 @@ noncomputable section
 section AbstractDuality
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-variable {ι : Type*} [DecidableEq ι]
+variable {ι : Type*}
 
 /-- **Producer–Consumer Defect Identity:**
 For any target `p ∈ E`, generators `g : ι → E`, producer coefficients `c : ι → ℝ`, and consumer
@@ -112,29 +113,27 @@ theorem consumer_polar_sq_le_producer_error (s : Finset ι) (g : ι → E) (c : 
 /-- **Exact FZZ-P / Nyman–Beurling Orthogonal Duality Identity:**
 For any orthogonal frame `{e_i}_{i ∈ s}` with `⟪e_i, e_i⟫ = R`, target `p ∈ E`, and producer
 coefficients `c : ι → ℝ`,
-`R² ‖p - ∑ i ∈ s, c i • e i‖² = R (R ‖p‖² - ∑ i ∈ s, ⟪e_i, p⟫²) + R ∑ i ∈ s, (R c_i - ⟪e_i, p⟫)²`.
+`R ‖p - ∑ i ∈ s, c i • e i‖² = (R ‖p‖² - ∑ i ∈ s, ⟪e_i, p⟫²) + ∑ i ∈ s, (R c_i - ⟪e_i, p⟫)²`.
 Thus the minimum-norm producer error over an orthogonal clique is identically equal to the consumer
 Bessel slack `R ‖p‖² - ∑ i ∈ s, ⟪e_i, p⟫²`. -/
 theorem fzzp_nyman_beurling_orthogonal_duality_identity (s : Finset ι) (e : ι → E) (R : ℝ)
     (hdiag : ∀ i ∈ s, ⟪e i, e i⟫ = R)
     (horth : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → ⟪e i, e j⟫ = 0)
     (c : ι → ℝ) (p : E) :
-    R ^ 2 * ‖p - ∑ i ∈ s, c i • e i‖ ^ 2 =
-      R * (R * ‖p‖ ^ 2 - ∑ i ∈ s, ⟪e i, p⟫ ^ 2) +
-        R * ∑ i ∈ s, (R * c i - ⟪e i, p⟫) ^ 2 := by
+    R * ‖p - ∑ i ∈ s, c i • e i‖ ^ 2 =
+      (R * ‖p‖ ^ 2 - ∑ i ∈ s, ⟪e i, p⟫ ^ 2) +
+        ∑ i ∈ s, (R * c i - ⟪e i, p⟫) ^ 2 := by
   rw [norm_sq_sub_linearComb_eq]
   have hquad :
       (∑ i ∈ s, ∑ j ∈ s, c i * c j * ⟪e i, e j⟫) =
         R * ∑ i ∈ s, (c i) ^ 2 := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun i hi => ?_
-    rw [Finset.sum_eq_single i]
+    rw [Finset.sum_eq_single_of_mem i hi]
     · rw [hdiag i hi]
       ring
     · intro j hj hji
       rw [horth i hi j hj hji.symm, mul_zero]
-    · intro hi_not
-      exact False.elim (hi_not hi)
   rw [hquad]
   have hsum_sq :
       (∑ i ∈ s, (R * c i - ⟪e i, p⟫) ^ 2) =
@@ -210,18 +209,18 @@ theorem intervalIntegral_cauchy_schwarz_sq_le {F G : ℝ → ℝ} {a b : ℝ} (h
     exact le_of_mul_le_mul_right h2 hGG_pos
 
 /-- **Correlation-Space Polar–Producer Decomposition:**
-For any continuous compactly supported `f : ℝ → ℝ`, interval `[a, b]` (`a ≤ b`), polar weight
-`P : ℝ → ℝ`, and collar producer weight `W : ℝ → ℝ` continuous on `Icc a b`,
+For any `f ∈ C²_c(ℝ)`, interval `[a, b]` (`a ≤ b`), polar weight `P : ℝ → ℝ`, and collar producer
+weight `W : ℝ → ℝ` continuous on `Icc a b`,
 `∫ x in a..b, autocorr f x * P x + ∫ x in a..b, (autocorr f 0 - autocorr f x) * W x = (∫ x in a..b, W x) * autocorr f 0 + ∫ x in a..b, autocorr f x * (P x - W x)`. -/
 theorem correlation_polar_producer_decomposition {f : ℝ → ℝ}
-    (hfc : HasCompactSupport f) (hf : Continuous f) {a b : ℝ} (hab : a ≤ b)
+    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {a b : ℝ} (hab : a ≤ b)
     {P W : ℝ → ℝ} (hP : ContinuousOn P (Icc a b)) (hW : ContinuousOn W (Icc a b)) :
     (∫ x in a..b, autocorr f x * P x) +
         (∫ x in a..b, (autocorr f 0 - autocorr f x) * W x) =
       (∫ x in a..b, W x) * autocorr f 0 +
         ∫ x in a..b, autocorr f x * (P x - W x) := by
   have hc : ContinuousOn (autocorr f) (Icc a b) :=
-    (continuous_autocorr_of_continuous hfc hf).continuousOn
+    (continuous_autocorr hf hfc).continuousOn
   have h1 : IntervalIntegrable (fun x => autocorr f x * P x) volume a b := by
     refine ContinuousOn.intervalIntegrable ?_
     rw [Set.uIcc_of_le hab]; exact hc.mul hP
@@ -238,7 +237,6 @@ theorem correlation_polar_producer_decomposition {f : ℝ → ℝ}
     ← intervalIntegral.integral_mul_const,
     ← intervalIntegral.integral_add h3 h4]
   refine intervalIntegral.integral_congr fun x _ => ?_
-  dsimp
   ring
 
 /-- **Correlation-Space Producer–Consumer Residual Bound:**
@@ -247,13 +245,13 @@ The squared discrepancy between the combined polar-and-collar functional and the
 energy and the producer `L²` approximation error:
 `(∫ x in a..b, autocorr f x * P x + ∫ x in a..b, (autocorr f 0 - autocorr f x) * W x - (∫ x in a..b, W x) * autocorr f 0)² ≤ (∫ x in a..b, (autocorr f x)²) * (∫ x in a..b, (P x - W x)²)`. -/
 theorem correlation_producer_consumer_residual_sq_le {f : ℝ → ℝ}
-    (hfc : HasCompactSupport f) (hf : Continuous f) {a b : ℝ} (hab : a ≤ b)
+    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {a b : ℝ} (hab : a ≤ b)
     {P W : ℝ → ℝ} (hP : ContinuousOn P (Icc a b)) (hW : ContinuousOn W (Icc a b)) :
     ((∫ x in a..b, autocorr f x * P x) +
         (∫ x in a..b, (autocorr f 0 - autocorr f x) * W x) -
         (∫ x in a..b, W x) * autocorr f 0) ^ 2 ≤
       (∫ x in a..b, (autocorr f x) ^ 2) * (∫ x in a..b, (P x - W x) ^ 2) := by
-  have hdecomp := correlation_polar_producer_decomposition hfc hf hab hP hW
+  have hdecomp := correlation_polar_producer_decomposition hf hfc hab hP hW
   have hsub :
       (∫ x in a..b, autocorr f x * P x) +
           (∫ x in a..b, (autocorr f 0 - autocorr f x) * W x) -
@@ -262,7 +260,7 @@ theorem correlation_producer_consumer_residual_sq_le {f : ℝ → ℝ}
     linarith
   rw [hsub]
   exact intervalIntegral_cauchy_schwarz_sq_le hab
-    (continuous_autocorr_of_continuous hfc hf).continuousOn (hP.sub hW)
+    (continuous_autocorr hf hfc).continuousOn (hP.sub hW)
 
 /-- **Bi-Scale Dyadic-Window Producer–Consumer Duality Theorem:**
 If `f ∈ C²_c(ℝ)` vanishes at the `N` dyadic-window grid nodes `log(N + k)` (`0 ≤ k < N`, `N ≥ 1`),
@@ -286,7 +284,7 @@ theorem dyadic_window_producer_consumer_duality_le_levy {f : ℝ → ℝ}
   have hP : ContinuousOn (fun x => Real.cosh (x / 2))
       (Icc (Real.log (N : ℝ)) (Real.log ((2 * N : ℕ) : ℝ))) :=
     (Real.continuous_cosh.comp (continuous_id.div_const 2)).continuousOn
-  have hres := correlation_producer_consumer_residual_sq_le hfc hf.continuous hle hP hW
+  have hres := correlation_producer_consumer_residual_sq_le hf hfc hle hP hW
   have hnyq := integral_autocorr_sq_dyadic_window_le_biScaleLevyEnergy hf hfc hN hzeros
   have hW_err_nonneg :
       0 ≤ ∫ x in Real.log (N : ℝ)..Real.log ((2 * N : ℕ) : ℝ), (Real.cosh (x / 2) - W x) ^ 2 :=

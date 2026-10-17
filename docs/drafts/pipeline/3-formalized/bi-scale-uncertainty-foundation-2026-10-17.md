@@ -142,7 +142,57 @@
       Unconditional dyadic-clique lower bound `dyadicCliqueLevyConstant M * h(0) ≤ biScaleLevyEnergy f`
       for `C²_c(ℝ)` functions vanishing at `m log 2` (`1 ≤ m ≤ M`).
 
+11. **Pillar XI — `formal/GaloisForLFunctions/BiScaleUncertainty/MultiCosetGramPackingAndNyquistDensity.lean`**
+    - `inner_sum_self_eq_double_sum`, `norm_sq_sub_linearComb_eq`,
+      `sum_inner_sq_sq_le_norm_sq_mul_gram_quad`, `gram_quad_le_of_row_sum_bound`,
+      `abstract_selberg_bombieri_bessel_le`:
+      Selberg–Bombieri almost-orthogonal Gram row-sum Bessel inequality
+      `∑_{i ∈ s} ⟪e_i, x⟫² ≤ M_row ‖x‖²` in any real inner product space `E`.
+    - `autocorr_almost_orthogonal_bessel_sq_le`, `almost_orthogonal_collar_uniform_sum_ge`:
+      Multi-coset Selberg–Bombieri Bessel bound and collar amplification law
+      `((s.card : ℝ) - √((s.card : ℝ) * (1 + Δ))) * h_f(0) ≤ ∑_{i ∈ s} (h_f(0) - h_f(y - t_i))`.
+    - `log_succ_sub_log_pos`, `log_succ_sub_log_le_inv`, `log_succ_sub_log_antitone`,
+      `archLevySinhWeight_ge_nat_on_nyquist_collar`:
+      Nyquist step bounds `0 < log(n + 1) - log n ≤ 1 / n` and origin-singularity absorption
+      `(n : ℝ) ≤ archLevySinhWeight y` on `(0, log(n + 1) - log n]`.
+    - `intervalIntegral_dyadic_log_partition_eq`,
+      `integral_autocorr_sq_dyadic_window_le_sum_collar`,
+      `integral_autocorr_sq_dyadic_window_le_levy_collar`,
+      `integral_autocorr_sq_dyadic_window_le_biScaleLevyEnergy`:
+      Derivative-free `L²` Nyquist compression across the `N` cells in `[log N, log(2N)]` absorbed by
+      the origin singularity `archLevySinhWeight y ≥ N`.
+
+12. **Pillar XII — `formal/GaloisForLFunctions/BiScaleUncertainty/ProducerConsumerDualityAndNymanBeurlingBridge.lean`**
+    - `producer_consumer_defect_eq`, `producer_consumer_inner_eq`,
+      `producer_consumer_defect_sq_le`, `consumer_polar_sq_le_producer_error`:
+      Abstract Hilbert-space Producer–Consumer Duality coupling grid-blind consumers `⟪f, g_i⟫ = 0`
+      to producer `L²` approximation errors `‖p - ∑_{i ∈ s} c_i g_i‖²`.
+    - `fzzp_nyman_beurling_orthogonal_duality_identity`:
+      Exact FZZ-P / Nyman–Beurling orthogonal duality identity
+      `R ‖p - ∑_{i ∈ s} c_i e_i‖² = (R ‖p‖² - ∑_{i ∈ s} ⟪e_i, p⟫²) + ∑_{i ∈ s} (R c_i - ⟪e_i, p⟫)²`.
+    - `intervalIntegral_cauchy_schwarz_sq_le`,
+      `correlation_polar_producer_decomposition`,
+      `correlation_producer_consumer_residual_sq_le`,
+      `dyadic_window_producer_consumer_duality_le_levy`:
+      Correlation-space polar–producer decomposition and dyadic-window duality bound controlled by
+      the origin-collar Lévy integral.
+
+13. **Pillar XIII — `formal/GaloisForLFunctions/BiScaleUncertainty/AsymptoticTailCoercivityAndNyquistTrap5Closure.lean`**
+    - `integral_autocorr_sub_le_cube_of_quad_collar`,
+      `integral_autocorr_sq_dyadic_window_le_of_quad_collar`:
+      `O(N⁻²)` dyadic-window `L²` correlation decay `∫_{log N}^{log(2N)} h_f(x)² dx ≤ (2 K / N²) h_f(0)`
+      under quadratic origin-collar regularity `h_f(0) - h_f(y) ≤ K y²` on `[0, 1 / N]`.
+    - `cosh_half_sq_le_two_mul_nat_on_dyadic_window`,
+      `integral_cosh_half_sq_dyadic_window_le`:
+      `O(N)` hyperbolic polar weight energy bound `∫_{log N}^{log(2N)} cosh(x / 2)² dx ≤ 2 N log 2`.
+    - `integral_abs_autocorr_mul_cosh_dyadic_window_sq_le`,
+      `integral_autocorrNeg_mul_cosh_dyadic_window_sq_le`,
+      `infinite_grid_distant_lobe_kinetic_coercivity`,
+      `integral_abs_autocorr_mul_cosh_dyadic_window_sq_le_levy`:
+      `O(N⁻¹/²)` dyadic-window polar tail decay and the Infinite-Grid Trap-5 Closure / Kinetic
+      Coercivity Theorem `N μ² ≤ 4 log 2 K h_f(0)`.
+
 ## Audit Status
-- **Umbrella Verification**: `lake env lean GaloisForLFunctions/BiScaleUncertainty.lean` passes with exit code `0` (all 25 modules wired).
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–X; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Umbrella Verification**: `lake env lean GaloisForLFunctions/BiScaleUncertainty.lean` passes with exit code `0` (all modules wired).
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XIII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 

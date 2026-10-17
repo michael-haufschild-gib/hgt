@@ -52,6 +52,7 @@ window $[\log N, \log(2N)]$.
 namespace GaloisForLFunctions.BiScaleUncertainty
 
 open MeasureTheory Set Filter
+open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm RHTower.WeilMarkovPole
 open scoped RealInnerProductSpace BigOperators
 
 noncomputable section
@@ -61,7 +62,7 @@ noncomputable section
 section AbstractHilbert
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-variable {ι : Type*} [DecidableEq ι]
+variable {ι : Type*}
 
 /-- Double-sum expansion of the squared norm / self-inner-product of a linear combination
 `∑ i ∈ s, c i • e i`. -/
@@ -81,8 +82,11 @@ theorem norm_sq_sub_linearComb_eq (s : Finset ι) (e : ι → E) (c : ι → ℝ
     ‖x - ∑ i ∈ s, c i • e i‖ ^ 2 =
       ‖x‖ ^ 2 - 2 * ∑ i ∈ s, c i * ⟪e i, x⟫ +
         ∑ i ∈ s, ∑ j ∈ s, c i * c j * ⟪e i, e j⟫ := by
-  rw [norm_sub_sq_real, real_inner_self_eq_norm_mul_norm,
-    ← sq, inner_sum_self_eq_double_sum, inner_sum]
+  rw [norm_sub_sq_real, inner_sum]
+  have hvv :
+      ‖∑ i ∈ s, c i • e i‖ ^ 2 = ∑ i ∈ s, ∑ j ∈ s, c i * c j * ⟪e i, e j⟫ := by
+    rw [sq, ← real_inner_self_eq_norm_mul_norm]
+    exact inner_sum_self_eq_double_sum s e c
   have hlin : (∑ i ∈ s, ⟪x, c i • e i⟫) = ∑ i ∈ s, c i * ⟪e i, x⟫ := by
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [real_inner_smul_right, real_inner_comm]
@@ -196,188 +200,70 @@ end AbstractHilbert
 
 section AlmostOrthogonalAutocorr
 
-variable {ι : Type*} [DecidableEq ι]
+variable {ι : Type*}
 
-/-- **Multi-Coset Selberg–Bombieri Sphere Bound for Autocorrelations:**
-If `{t_i}_{i ∈ s}` is a finite node family whose correlation row sums satisfy
-`∑_{j ∈ s} |autocorr f (t_i - t_j)| ≤ (1 + Δ) * autocorr f 0` with `0 ≤ 1 + Δ`, then for every
-collar offset `y ∈ ℝ`:
-`∑_{i ∈ s} (autocorr f (y - t_i))² ≤ (1 + Δ) * (autocorr f 0)²`. -/
-theorem autocorr_almost_orthogonal_bessel_sq_le {f : ℝ → ℝ}
-    (hfc : HasCompactSupport f) (hf : Continuous f)
-    (s : Finset ι) (t : ι → ℝ) {Δ : ℝ} (hΔ : 0 ≤ 1 + Δ)
-    (hrow : ∀ i ∈ s, ∑ j ∈ s, |autocorr f (t i - t j)| ≤ (1 + Δ) * autocorr f 0) (y : ℝ) :
-    ∑ i ∈ s, (autocorr f (y - t i)) ^ 2 ≤ (1 + Δ) * (autocorr f 0) ^ 2 := by
-  set A := (1 + Δ) * autocorr f 0
-  set S := ∑ i ∈ s, (autocorr f (y - t i)) ^ 2
-  have h0_nonneg : 0 ≤ autocorr f 0 := autocorr_zero_nonneg f
-  have hA_nonneg : 0 ≤ A := mul_nonneg hΔ h0_nonneg
-  rcases eq_or_lt_of_le hA_nonneg with hA0 | hA_pos
-  · have hS0 : S = 0 := by
-      rcases mul_eq_zero.mp hA0.symm with hΔ0 | hf0
-      · rcases s.eq_empty_or_nonempty with rfl | ⟨i₀, hi₀⟩
-        · simp [S]
-        · have hrow0 : ∑ j ∈ s, |autocorr f (t i₀ - t j)| ≤ 0 := by
-            have := hrow i₀ hi₀
-            linarith
-          have hself0 : |autocorr f (t i₀ - t i₀)| ≤ 0 :=
-            le_trans (Finset.single_le_sum (fun j _ => abs_nonneg _) hi₀) hrow0
-          have hf0 : autocorr f 0 = 0 := by
-            rw [sub_self] at hself0
-            exact le_antisymm (le_trans (le_abs_self _) hself0) h0_nonneg
-          refine Finset.sum_eq_zero fun i _ => ?_
-          have habs := abs_autocorr_le_zero hfc hf (y - t i)
-          rw [hf0] at habs
-          have : autocorr f (y - t i) = 0 := abs_nonpos_iff.mp habs
-          simp [this]
-      · refine Finset.sum_eq_zero fun i _ => ?_
-        have habs := abs_autocorr_le_zero hfc hf (y - t i)
-        rw [hf0] at habs
-        have : autocorr f (y - t i) = 0 := abs_nonpos_iff.mp habs
-        simp [this]
-    rw [hS0]
-    exact mul_nonneg hΔ (sq_nonneg _)
-  · set c : ι → ℝ := fun i => autocorr f (y - t i)
-    have hgram_nonneg :
-        0 ≤ A ^ 2 * autocorr f 0 - 2 * A * S +
-          ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) := by
-      have hint :
-          0 ≤ ∫ u : ℝ, (A * f (u + y) - ∑ i ∈ s, c i * f (u + t i)) ^ 2 :=
-        integral_nonneg fun u => sq_nonneg _
-      have hexp :
-          (∫ u : ℝ, (A * f (u + y) - ∑ i ∈ s, c i * f (u + t i)) ^ 2) =
-            A ^ 2 * autocorr f 0 - 2 * A * S +
-              ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) := by
-        have h1 :
-            (fun u : ℝ => (A * f (u + y) - ∑ i ∈ s, c i * f (u + t i)) ^ 2) =
-              fun u : ℝ =>
-                A ^ 2 * (f (u + y)) ^ 2 -
-                  2 * A * (∑ i ∈ s, c i * (f (u + y) * f (u + t i))) +
-                  ∑ i ∈ s, ∑ j ∈ s, c i * c j * (f (u + t i) * f (u + t j)) := by
-          ext u
-          have hsub :
-              (A * f (u + y) - ∑ i ∈ s, c i * f (u + t i)) ^ 2 =
-                A ^ 2 * (f (u + y)) ^ 2 -
-                  2 * A * (f (u + y) * ∑ i ∈ s, c i * f (u + t i)) +
-                  (∑ i ∈ s, c i * f (u + t i)) * (∑ j ∈ s, c j * f (u + t j)) := by
-            ring
-          rw [hsub, Finset.mul_sum]
-          have hcross :
-              (∑ i ∈ s, f (u + y) * (c i * f (u + t i))) =
-                ∑ i ∈ s, c i * (f (u + y) * f (u + t i)) :=
-            Finset.sum_congr rfl fun i _ => by ring
-          have hquad :
-              (∑ i ∈ s, c i * f (u + t i)) * (∑ j ∈ s, c j * f (u + t j)) =
-                ∑ i ∈ s, ∑ j ∈ s, c i * c j * (f (u + t i) * f (u + t j)) := by
-            rw [Finset.sum_mul]
-            refine Finset.sum_congr rfl fun i _ => ?_
-            rw [Finset.mul_sum]
-            refine Finset.sum_congr rfl fun j _ => by ring
-          rw [hcross, hquad]
-        have hf_shift : ∀ a : ℝ, Continuous (fun u => f (u + a)) :=
-          fun a => hf.comp (continuous_id.add continuous_const)
-        have hfc_shift : ∀ a : ℝ, HasCompactSupport (fun u => f (u + a)) :=
-          fun a => hfc.comp_homeomorph (Homeomorph.addRight a)
-        have hint_sq : Integrable (fun u => A ^ 2 * (f (u + y)) ^ 2) := by
-          have := ((hf_shift y).mul (hf_shift y)).integrable_of_hasCompactSupport
-            ((hfc_shift y).mul_left)
-          simpa only [sq] using this.const_mul (A ^ 2)
-        have hint_cross_i : ∀ i ∈ s,
-            Integrable (fun u => c i * (f (u + y) * f (u + t i))) := fun i _ =>
-          (((hf_shift y).mul (hf_shift (t i))).integrable_of_hasCompactSupport
-            ((hfc_shift y).mul_left)).const_mul (c i)
-        have hint_cross :
-            Integrable (fun u => 2 * A * ∑ i ∈ s, c i * (f (u + y) * f (u + t i))) :=
-          (integrable_finset_sum s hint_cross_i).const_mul (2 * A)
-        have hint_quad_ij : ∀ i ∈ s, ∀ j ∈ s,
-            Integrable (fun u => c i * c j * (f (u + t i) * f (u + t j))) := fun i _ j _ =>
-          (((hf_shift (t i)).mul (hf_shift (t j))).integrable_of_hasCompactSupport
-            ((hfc_shift (t i)).mul_left)).const_mul (c i * c j)
-        have hint_quad :
-            Integrable (fun u =>
-              ∑ i ∈ s, ∑ j ∈ s, c i * c j * (f (u + t i) * f (u + t j))) :=
-          integrable_finset_sum s fun i hi => integrable_finset_sum s (hint_quad_ij i hi)
-        rw [h1, integral_add (hint_sq.sub hint_cross) hint_quad,
-          integral_sub hint_sq hint_cross, integral_const_mul, integral_const_mul,
-          integral_finset_sum s hint_cross_i,
-          integral_finset_sum s fun i hi => integrable_finset_sum s (hint_quad_ij i hi)]
-        have h0 : (∫ u : ℝ, (f (u + y)) ^ 2) = autocorr f 0 := by
-          have := MeasureTheory.integral_add_right_eq_self (fun u : ℝ => (f u) ^ 2) y
-          rw [this]
-          unfold autocorr
-          refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-          simp [sq]
-        have hci : ∀ i ∈ s,
-            (∫ u : ℝ, c i * (f (u + y) * f (u + t i))) = (c i) ^ 2 := by
-          intro i _
-          rw [integral_const_mul]
-          have htr := MeasureTheory.integral_add_right_eq_self
-            (fun u : ℝ => f (u + (y - t i)) * f u) (t i)
-          have h2 :
-              (∫ u : ℝ, f (u + y) * f (u + t i)) = autocorr f (y - t i) := by
-            rw [← htr]
-            unfold autocorr
-            refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-            dsimp
-            have : u + t i + (y - t i) = u + y := by ring
-            rw [this, mul_comm]
-          rw [h2]
-          dsimp [c]
-          ring
-        have hcij : ∀ i ∈ s, ∀ j ∈ s,
-            (∫ u : ℝ, c i * c j * (f (u + t i) * f (u + t j))) =
-              c i * c j * autocorr f (t i - t j) := by
-          intro i _ j _
-          rw [integral_const_mul]
-          congr 1
-          have htr := MeasureTheory.integral_add_right_eq_self
-            (fun u : ℝ => f (u + (t i - t j)) * f u) (t j)
-          rw [← htr]
-          unfold autocorr
-          refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-          dsimp
-          have : u + t j + (t i - t j) = u + t i := by ring
-          rw [this, mul_comm]
-        rw [h0, Finset.sum_congr rfl hci]
-        have hquad_eval :
-            (∑ i ∈ s, ∫ u : ℝ, ∑ j ∈ s, c i * c j * (f (u + t i) * f (u + t j))) =
-              ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) := by
-          refine Finset.sum_congr rfl fun i hi => ?_
-          rw [integral_finset_sum s (hint_quad_ij i hi)]
-          exact Finset.sum_congr rfl (hcij i hi)
-        rw [hquad_eval]
+/-- Full Gram expansion of the `L²` norm square of a shifted linear combination
+`P(u) = ∑ i ∈ s, c i * f (u + t i)`. -/
+theorem integral_finset_sum_shift_sq_eq {f : ℝ → ℝ}
+    (hf : Continuous f) (hfc : HasCompactSupport f)
+    (s : Finset ι) (c t : ι → ℝ) :
+    (∫ u, (∑ i ∈ s, c i * f (u + t i)) ^ 2) =
+      ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) := by
+  set P : ℝ → ℝ := fun u => ∑ i ∈ s, c i * f (u + t i)
+  have hPc : Continuous P :=
+    continuous_finsetSum s fun i _ => continuous_const.mul (hf.comp (continuous_add_const (t i)))
+  have hrew : (fun u => P u ^ 2) =
+      fun u => ∑ i ∈ s, c i * (f (u + t i) * P u) := by
+    funext u
+    simp only [P, sq]
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl fun i _ => by ring
+  have hint_term (i : ι) : Integrable fun u => c i * (f (u + t i) * P u) := by
+    refine ((continuous_const.mul ((hf.comp (continuous_add_const (t i))).mul hPc)).integrable_of_hasCompactSupport ?_)
+    exact ((hasCompactSupport_comp_add hfc (t i)).mul_right).mul_left
+  rw [hrew, integral_finsetSum s (fun i _ => hint_term i)]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [integral_const_mul, integral_shift_mul_finset_sum hf hfc s c t (t i), Finset.mul_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [show t j - t i = -(t i - t j) by ring, autocorr_neg]
+  ring
+
+/-- Symmetric Geršgorin / Selberg–Bombieri row-sum bound for autocorrelation Gram quadratic forms. -/
+theorem autocorr_gram_quad_le_of_row_sum_bound {f : ℝ → ℝ}
+    (s : Finset ι) (c t : ι → ℝ) {M_row : ℝ}
+    (hrow : ∀ i ∈ s, ∑ j ∈ s, |autocorr f (t i - t j)| ≤ M_row) :
+    ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) ≤
+      M_row * ∑ i ∈ s, (c i) ^ 2 := by
+  have hpt : ∀ i ∈ s, ∀ j ∈ s,
+      2 * (c i * c j * autocorr f (t i - t j)) ≤
+        ((c i) ^ 2 + (c j) ^ 2) * |autocorr f (t i - t j)| := by
+    intro i _ j _
+    have h1 : c i * c j * autocorr f (t i - t j) ≤
+        |c i * c j * autocorr f (t i - t j)| := le_abs_self _
+    rw [abs_mul, abs_mul] at h1
+    have h2 : 2 * (|c i| * |c j|) ≤ (c i) ^ 2 + (c j) ^ 2 := by
+      have hsq : 0 ≤ (|c i| - |c j|) ^ 2 := sq_nonneg _
+      have hci : |c i| ^ 2 = (c i) ^ 2 := sq_abs (c i)
+      have hcj : |c j| ^ 2 = (c j) ^ 2 := sq_abs (c j)
       linarith
-    have hpt : ∀ i ∈ s, ∀ j ∈ s,
-        2 * (c i * c j * autocorr f (t i - t j)) ≤
-          ((c i) ^ 2 + (c j) ^ 2) * |autocorr f (t i - t j)| := by
-      intro i _ j _
-      have h1 : c i * c j * autocorr f (t i - t j) ≤
-          |c i * c j * autocorr f (t i - t j)| := le_abs_self _
-      rw [abs_mul, abs_mul] at h1
-      have h2 : 2 * (|c i| * |c j|) ≤ (c i) ^ 2 + (c j) ^ 2 := by
-        have hsq : 0 ≤ (|c i| - |c j|) ^ 2 := sq_nonneg _
-        have hci : |c i| ^ 2 = (c i) ^ 2 := sq_abs (c i)
-        have hcj : |c j| ^ 2 = (c j) ^ 2 := sq_abs (c j)
-        linarith
-      have h3 := mul_le_mul_of_nonneg_right h2 (abs_nonneg (autocorr f (t i - t j)))
-      linarith
-    have hsum2 :
-        2 * ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) ≤
-          ∑ i ∈ s, ∑ j ∈ s, ((c i) ^ 2 + (c j) ^ 2) * |autocorr f (t i - t j)| := by
-      rw [Finset.mul_sum]
-      refine Finset.sum_le_sum fun i hi => ?_
-      rw [Finset.mul_sum]
-      exact Finset.sum_le_sum fun j hj => hpt i hi j hj
-    have hsymm :
-        (∑ i ∈ s, ∑ j ∈ s, (c j) ^ 2 * |autocorr f (t i - t j)|) =
-          ∑ i ∈ s, ∑ j ∈ s, (c i) ^ 2 * |autocorr f (t i - t j)| := by
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
-      have hev : t i - t j = -(t j - t i) := by ring
-      rw [hev, autocorr_neg]
-    have hsplit :
-        (∑ i ∈ s, ∑ j ∈ s, ((c i) ^ 2 + (c j) ^ 2) * |autocorr f (t i - t j)|) =
-          2 * ∑ i ∈ s, (c i) ^ 2 * ∑ j ∈ s, |autocorr f (t i - t j)| := by
+    have h3 := mul_le_mul_of_nonneg_right h2 (abs_nonneg (autocorr f (t i - t j)))
+    linarith
+  have hsum2 :
+      2 * ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) ≤
+        ∑ i ∈ s, ∑ j ∈ s, ((c i) ^ 2 + (c j) ^ 2) * |autocorr f (t i - t j)| := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun i hi => ?_
+    rw [Finset.mul_sum]
+    exact Finset.sum_le_sum fun j hj => hpt i hi j hj
+  have hsymm :
+      (∑ i ∈ s, ∑ j ∈ s, (c j) ^ 2 * |autocorr f (t i - t j)|) =
+        ∑ i ∈ s, ∑ j ∈ s, (c i) ^ 2 * |autocorr f (t i - t j)| := by
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
+    rw [show t i - t j = -(t j - t i) by ring, autocorr_neg]
+  have hsplit :
+      (∑ i ∈ s, ∑ j ∈ s, ((c i) ^ 2 + (c j) ^ 2) * |autocorr f (t i - t j)|) =
+        2 * ∑ i ∈ s, (c i) ^ 2 * ∑ j ∈ s, |autocorr f (t i - t j)| := by
     have h1 :
         (∑ i ∈ s, ∑ j ∈ s, ((c i) ^ 2 + (c j) ^ 2) * |autocorr f (t i - t j)|) =
           (∑ i ∈ s, ∑ j ∈ s, (c i) ^ 2 * |autocorr f (t i - t j)|) +
@@ -389,26 +275,92 @@ theorem autocorr_almost_orthogonal_bessel_sq_le {f : ℝ → ℝ}
     rw [h1, hsymm, ← two_mul]
     congr 1
     refine Finset.sum_congr rfl fun i _ => (Finset.mul_sum _ _ _).symm
-    have hrow_sum :
-        ∑ i ∈ s, (c i) ^ 2 * ∑ j ∈ s, |autocorr f (t i - t j)| ≤ A * S := by
-      dsimp [S, c, A]
-      rw [Finset.mul_sum]
-      refine Finset.sum_le_sum fun i hi => ?_
-      calc
-        (autocorr f (y - t i)) ^ 2 * ∑ j ∈ s, |autocorr f (t i - t j)| ≤
-            (autocorr f (y - t i)) ^ 2 * ((1 + Δ) * autocorr f 0) :=
-          mul_le_mul_of_nonneg_left (hrow i hi) (sq_nonneg _)
-        _ = ((1 + Δ) * autocorr f 0) * (autocorr f (y - t i)) ^ 2 := mul_comm _ _
-    have hquad_le :
-        ∑ i ∈ s, ∑ j ∈ s, c i * c j * autocorr f (t i - t j) ≤ A * S := by
+  have hrow_sum :
+      ∑ i ∈ s, (c i) ^ 2 * ∑ j ∈ s, |autocorr f (t i - t j)| ≤
+        M_row * ∑ i ∈ s, (c i) ^ 2 := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun i hi => ?_
+    calc
+      (c i) ^ 2 * ∑ j ∈ s, |autocorr f (t i - t j)| ≤ (c i) ^ 2 * M_row :=
+        mul_le_mul_of_nonneg_left (hrow i hi) (sq_nonneg _)
+      _ = M_row * (c i) ^ 2 := mul_comm _ _
+  linarith
+
+/-- **Multi-Coset Selberg–Bombieri Sphere Bound for Autocorrelations:**
+If `{t_i}_{i ∈ s}` is a finite node family whose correlation row sums satisfy
+`∑_{j ∈ s} |autocorr f (t_i - t_j)| ≤ (1 + Δ) * autocorr f 0` with `0 ≤ 1 + Δ`, then for every
+collar offset `y ∈ ℝ`:
+`∑_{i ∈ s} (autocorr f (y - t_i))² ≤ (1 + Δ) * (autocorr f 0)²`. -/
+theorem autocorr_almost_orthogonal_bessel_sq_le {f : ℝ → ℝ}
+    (hfc : HasCompactSupport f) (hf : Continuous f)
+    (s : Finset ι) (t : ι → ℝ) {Δ : ℝ} (hΔ : 0 ≤ 1 + Δ)
+    (hrow : ∀ i ∈ s, ∑ j ∈ s, |autocorr f (t i - t j)| ≤ (1 + Δ) * autocorr f 0) (y : ℝ) :
+    ∑ i ∈ s, (autocorr f (y - t i)) ^ 2 ≤ (1 + Δ) * (autocorr f 0) ^ 2 := by
+  rcases eq_or_lt_of_le (autocorr_zero_nonneg f) with h0_eq | h0_pos
+  · have hzero : (∑ i ∈ s, (autocorr f (y - t i)) ^ 2) = 0 := by
+      refine Finset.sum_eq_zero fun i _ => ?_
+      rw [autocorr_eq_zero_of_zero_eq_zero hfc hf h0_eq.symm (y - t i), sq, zero_mul]
+    rw [hzero]
+    exact mul_nonneg hΔ (sq_nonneg _)
+  · set c : ι → ℝ := fun i => autocorr f (y - t i)
+    set S : ℝ := ∑ i ∈ s, (c i) ^ 2
+    have hS_nonneg : 0 ≤ S := Finset.sum_nonneg fun i _ => sq_nonneg _
+    rcases eq_or_lt_of_le hS_nonneg with hS0 | hS_pos
+    · rw [← hS0]
+      exact mul_nonneg hΔ (sq_nonneg _)
+    · set P : ℝ → ℝ := fun u => ∑ i ∈ s, c i * f (u + t i)
+      have hPc : Continuous P :=
+        continuous_finsetSum s fun i _ => continuous_const.mul (hf.comp (continuous_add_const (t i)))
+      have hfy_c : Continuous (fun u => f (u + y)) := hf.comp (continuous_add_const y)
+      have hfy_cs : HasCompactSupport (fun u => f (u + y)) := hasCompactSupport_comp_add hfc y
+      have hi_fyP : Integrable (fun u => f (u + y) * P u) :=
+        (hfy_c.mul hPc).integrable_of_hasCompactSupport hfy_cs.mul_right
+      have hi_P2 : Integrable (fun u => P u ^ 2) := by
+        have hrew : (fun u => P u ^ 2) =
+            fun u => ∑ i ∈ s, c i * (f (u + t i) * P u) := by
+          funext u; simp only [P, sq]; rw [Finset.sum_mul]; refine Finset.sum_congr rfl fun i _ => by ring
+        rw [hrew]
+        refine integrable_finsetSum s fun i _ => ?_
+        exact ((continuous_const.mul ((hf.comp (continuous_add_const (t i))).mul hPc)).integrable_of_hasCompactSupport
+          (((hasCompactSupport_comp_add hfc (t i)).mul_right).mul_left))
+      have hnonneg : 0 ≤ ∫ u, (S * f (u + y) - autocorr f 0 * P u) ^ 2 :=
+        integral_nonneg fun u => sq_nonneg _
+      have hexp : (fun u => (S * f (u + y) - autocorr f 0 * P u) ^ 2) =
+          fun u => (S ^ 2 * f (u + y) ^ 2 - 2 * S * autocorr f 0 * (f (u + y) * P u)) +
+            (autocorr f 0) ^ 2 * P u ^ 2 := by
+        funext u; ring
+      have e1 :
+          (∫ u, ((S ^ 2 * f (u + y) ^ 2 - 2 * S * autocorr f 0 * (f (u + y) * P u)) +
+              (autocorr f 0) ^ 2 * P u ^ 2)) =
+            (∫ u, (S ^ 2 * f (u + y) ^ 2 - 2 * S * autocorr f 0 * (f (u + y) * P u))) +
+              ∫ u, (autocorr f 0) ^ 2 * P u ^ 2 :=
+        integral_add (((integrable_sq hfy_c hfy_cs).const_mul _).sub (hi_fyP.const_mul _))
+          (hi_P2.const_mul _)
+      have e2 :
+          (∫ u, (S ^ 2 * f (u + y) ^ 2 - 2 * S * autocorr f 0 * (f (u + y) * P u))) =
+            (∫ u, S ^ 2 * f (u + y) ^ 2) - ∫ u, 2 * S * autocorr f 0 * (f (u + y) * P u) :=
+        integral_sub ((integrable_sq hfy_c hfy_cs).const_mul _) (hi_fyP.const_mul _)
+      rw [hexp, e1, e2, integral_const_mul, integral_const_mul, integral_const_mul,
+        integral_add_right_eq_self (fun u => f u ^ 2) y, integral_sq_eq_autocorr_zero,
+        integral_shift_mul_finset_sum hf hfc s c t y,
+        integral_finset_sum_shift_sq_eq hf hfc s c t] at hnonneg
+      have hsum_eq : (∑ i ∈ s, c i * autocorr f (t i - y)) = S := by
+        dsimp [S]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [show t i - y = -(y - t i) by ring, autocorr_neg]
+        simp only [c, sq]
+      rw [hsum_eq] at hnonneg
+      have hquad := autocorr_gram_quad_le_of_row_sum_bound s c t hrow
+      have hquad_mul :=
+        mul_le_mul_of_nonneg_left hquad (sq_nonneg (autocorr f 0))
+      have hcomb :
+          0 ≤ autocorr f 0 * S *
+            (autocorr f 0 * ((1 + Δ) * (autocorr f 0) ^ 2 - S)) := by
+        nlinarith
+      have hpos1 : 0 < autocorr f 0 * S := mul_pos h0_pos hS_pos
+      have h1 := nonneg_of_mul_nonneg_right hcomb hpos1
+      have h2 := nonneg_of_mul_nonneg_right h1 h0_pos
       linarith
-    have hAS : S * A ≤ ((1 + Δ) * (autocorr f 0) ^ 2) * A := by
-      have : A * S ≤ A ^ 2 * autocorr f 0 := by linarith
-      calc
-        S * A = A * S := mul_comm _ _
-        _ ≤ A ^ 2 * autocorr f 0 := this
-        _ = ((1 + Δ) * (autocorr f 0) ^ 2) * A := by dsimp [A]; ring
-    exact le_of_mul_le_mul_right hAS hA_pos
 
 /-- **Almost-Orthogonal Multi-Coset Collar Amplification Law:**
 If `{t_i}_{i ∈ s}` is an `M`-node multi-coset family (`M = s.card`) whose correlation row sums
@@ -519,7 +471,7 @@ theorem archLevySinhWeight_ge_nat_on_nyquist_collar {n : ℕ} (hn : 1 ≤ n) {y 
   have hsinh_y_lt : Real.sinh y < 1 / (n : ℝ) := lt_of_le_of_lt hsinh_y_le hsinh_δ
   have hsinh_y_pos : 0 < Real.sinh y := Real.sinh_pos_iff.mpr hy_pos
   have hexp_half_gt : 1 < Real.exp (y / 2) := Real.one_lt_exp_iff.mpr (half_pos hy_pos)
-  rw [archLevySinhWeight_of_pos hy_pos]
+  unfold archLevySinhWeight
   rw [le_div_iff₀ hsinh_y_pos]
   have hmul : (n : ℝ) * Real.sinh y < 1 := by
     have := mul_lt_mul_of_pos_left hsinh_y_lt hn_pos
@@ -573,18 +525,19 @@ theorem intervalIntegral_dyadic_log_partition_eq {F : ℝ → ℝ} (hF : Continu
   exact intervalIntegral_log_grid_partition_eq hF N N
 
 /-- **Krein Nyquist-Compression Inequality on the Dyadic Window `[log N, log(2N)]`:**
-If `f ∈ C_c(ℝ)` satisfies `autocorr f (log(N + k)) = 0` for all `0 ≤ k < N` (`N ≥ 1`), then
+If `f ∈ C²_c(ℝ)` satisfies `autocorr f (log(N + k)) = 0` for all `0 ≤ k < N` (`N ≥ 1`), then
 `∫ x in log N..log(2N), (autocorr f x)² ≤ 2 * autocorr f 0 * ∑ k ∈ range N, ∫ y in 0..(log(N + k + 1) - log(N + k)), (autocorr f 0 - autocorr f y)`. -/
 theorem integral_autocorr_sq_dyadic_window_le_sum_collar {f : ℝ → ℝ}
-    (hfc : HasCompactSupport f) (hf : Continuous f) {N : ℕ} (hN : 1 ≤ N)
+    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {N : ℕ} (hN : 1 ≤ N)
     (hzeros : ∀ k ∈ Finset.range N, autocorr f (Real.log ((N + k : ℕ) : ℝ)) = 0) :
     (∫ x in Real.log (N : ℝ)..Real.log ((2 * N : ℕ) : ℝ), (autocorr f x) ^ 2) ≤
       2 * autocorr f 0 *
         ∑ k ∈ Finset.range N,
           ∫ y in (0 : ℝ)..(Real.log ((N + k + 1 : ℕ) : ℝ) - Real.log ((N + k : ℕ) : ℝ)),
             (autocorr f 0 - autocorr f y) := by
-  have hc : Continuous (autocorr f) := continuous_autocorr_of_continuous hfc hf
-  rw [intervalIntegral_dyadic_log_partition_eq (hc.pow 2) N, Finset.mul_sum]
+  have hc : Continuous (autocorr f) := continuous_autocorr hf hfc
+  have hpart := intervalIntegral_dyadic_log_partition_eq (F := fun x => (autocorr f x) ^ 2) (hc.pow 2) N
+  rw [hpart, Finset.mul_sum]
   refine Finset.sum_le_sum fun k hk => ?_
   set δ_k := Real.log ((N + k + 1 : ℕ) : ℝ) - Real.log ((N + k : ℕ) : ℝ)
   have hNk : 1 ≤ N + k := by omega
@@ -600,7 +553,7 @@ theorem integral_autocorr_sq_dyadic_window_le_sum_collar {f : ℝ → ℝ}
     (continuous_const.mul (continuous_const.sub hc)).intervalIntegrable _ _
   refine intervalIntegral.integral_mono_on hδ_pos.le hint1 hint2 fun y _ => ?_
   have hkrein :=
-    autocorr_sq_le_two_mul_sub_of_zero hfc hf (hzeros k hk)
+    autocorr_sq_le_two_mul_sub_of_zero hfc hf.continuous (hzeros k hk)
       (Real.log ((N + k : ℕ) : ℝ) + y)
   have hdiff : Real.log ((N + k : ℕ) : ℝ) + y - Real.log ((N + k : ℕ) : ℝ) = y := by ring
   rw [hdiff] at hkrein
@@ -618,7 +571,7 @@ theorem integral_autocorr_sq_dyadic_window_le_levy_collar {f : ℝ → ℝ}
       2 * autocorr f 0 *
         ∫ y in Ioc 0 (Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)),
           (autocorr f 0 - autocorr f y) * archLevySinhWeight y := by
-  have hbase := integral_autocorr_sq_dyadic_window_le_sum_collar hfc hf.continuous hN hzeros
+  have hbase := integral_autocorr_sq_dyadic_window_le_sum_collar hf hfc hN hzeros
   have hc : Continuous (autocorr f) := continuous_autocorr hf hfc
   set δ_N := Real.log ((N + 1 : ℕ) : ℝ) - Real.log (N : ℝ)
   have hδN_pos : 0 < δ_N := log_succ_sub_log_pos hN

@@ -169,7 +169,7 @@ To meet the standards of an independent mathematical discipline—with an abstra
 Hilbert-space framework, intrinsic invariants, exact convex extremal duality, standalone
 harmonic-analysis / Beurling–Turán cancellation theorems, non-commutative hyperbolic operator
 calculus, and discrete-to-continuum arithmetic bridges—the library is organized into **three
-layers** spanning **ten foundational pillars** (25 Lean 4 modules):
+layers** spanning **ten foundational pillars**, with the foundational modules listed below:
 
 ```mermaid
 flowchart TD
@@ -378,6 +378,27 @@ to the additive successor lattice:
    bounding the opposite-sign multiplicative pairing $4\bigl(v^+(kn)v^-(n) + v^-(kn)v^+(n)\bigr)$
    directly by the multiplicative jump energy $\bigl(v(kn) - v(n)\bigr)^2$ and by the additive
    Dirichlet energy $(k-1)n\sum_{j=0}^{(k-1)n-1} (v(n+j+1)-v(n+j))^2$.
+5. **Constructed Logarithmic Sobolev Traces (`CoprimeLogSobolevCoercivity.lean`):**
+   Finite traces $w(j)=a(j)$ at interior multiples of $d\ge2$, and zero elsewhere,
+   admit an explicitly constructed $L^2$ step velocity. Its primitive $F$ satisfies
+   $F(j)=w(j)$; $f(x)=F(e^x)$ is locally absolutely continuous and
+   $$\int_0^{\log(N+1)}e^{-x}|f'(x)|^2\,dx=2\sum_{j<N}|w(j)|^2.$$
+   Every competing $L^2$ velocity has an exact energy decomposition into this trace
+   energy, an explicit trace-error term, and a nonnegative interpolation defect.
+   The same rough-state construction proves the nonlinear shear estimate.
+   See [proof and scope](CoprimeSobolevTrace.md); infinite graph admission remains open.
+6. **Infinite-Edge Path Congestion (`MixedEdgePathCongestion.lean`):**
+   For a constructed mixture of diffuse edges and countably many weighted lag lines,
+   let $a_e=\min(u,u+h)$, $b_e=\max(u,u+h)$, and
+   $K(y)=\int(e^{b_e}-e^{a_e})1_{(a_e,b_e]}(y)\,d\kappa(e)$. Actual L2 physical
+   velocities give the extended-energy identity
+   $$\int K(y)e^{-y}|f'(y)|^2\,dy
+      =\int|f(u+h)-f(u)|^2\,d\kappa(e)+\int S(e)\,d\kappa(e),\qquad S\ge0.$$
+   Every individual edge budget is finite; total energies may be infinite. The same
+   bound controls four times the opposite-sign nodal pairing, including an arbitrary
+   added constant. S-finiteness and joint measurability are proved, with no finite
+   energy premise or finite edge truncation. Concrete congestion bounds remain necessary
+   for finite graph-domain admission. See [proof and boundary](ContinuumPathCongestion.md).
 
 #### Pillar IX: Cosecant–Secant Functional-Equation Dual Decomposition (`CosecantSecantDualDecomposition.lean`)
 Unifies the forward archimedean Lévy weight $w_{\mathrm{arch}}(x) = \frac{e^{x/2}}{\sinh x}$ (from
@@ -394,12 +415,59 @@ crossover kernel):
    with unconditional lower bounds `biScaleSecantEnergy_le_biScaleLevyEnergy` and
    `biScaleDualLevyEnergy_le_biScaleLevyEnergy`.
 3. **Hyperbolic Multiplier Secant Identity (`autocorr_mul_archSechHalfWeight_eq_cosh_sub_sinh`):**
-   Combining the secant kernel $\operatorname{sech}(x/2)$ with Pillar VI at $\alpha = 1/4$ yields
-   $$\frac{h_f(x)}{\cosh(x/2)} = \frac{h_{C_{1/4} f}(x) - h_{S_{1/4} f}(x)}{\cosh(x/4)^2} = \frac{2\bigl(h_{C_{1/4} f}(x) - h_{S_{1/4} f}(x)\bigr)}{\cosh(x/2) + 1}.$$
+   Combining the secant kernel $\operatorname{sech}(x/2)$ with Pillar VI at $\alpha = 1/2$ yields
+   $$\frac{h_f(x)}{\cosh(x/2)} = \frac{h_{C_{1/2} f}(x) - h_{S_{1/2} f}(x)}{\cosh(x/2)^2} = \frac{2\bigl(h_{C_{1/2} f}(x) - h_{S_{1/2} f}(x)\bigr)}{\cosh(x) + 1}.$$
+   A zero of $h_f$ gives equality of the two multiplier correlations, not their vanishing.
+   Transferring a clique bound therefore requires the actual multiplier Gram matrix.
+4. **Compensated Multiplier Gram Transfer (`HyperbolicMultiplierGramTransfer.lean`):**
+   Set $C=C_{1/2}f$, $S=S_{1/2}f$, $R=h_f(0)$, $R_S=h_S(0)$,
+   $x_i=t_i-y$, $v_i=b_i/\cosh(x_i/2)^2$, $W=\sum_i v_i$, and
+   $D=\sum_{i,j}v_iv_jh_S(t_j-t_i)-R_S\sum_i v_i^2$. Then
+   $$\sum_i\left[b_i h_f(x_i)\operatorname{sech}(x_i/2)+v_i\bigl(h_C(0)-h_C(x_i)\bigr)\right]
+   \ge RW+R_S\left(W-\sqrt{\sum_i v_i^2}\right)-\sqrt{R_S\max(D,0)}.$$
+   This holds for every real compact continuous source and arbitrary real weights; continuous
+   collar weights also admit a compact-interval integral bound. It recovers the clique coefficient
+   whenever $D\le0$, including an actual multiplier clique. This identity retains its cosine
+   companion; the next result removes that companion using the actual source support.
+5. **Uncompensated Squared-Jump Transfer (`HyperbolicJumpEnergyTransfer.lean`):**
+   Choose $B>0$ enclosing the compact source support and set
+   $K_B(x)=\sinh(B/2)\sinh((B+|x|)/2)$. The exact signed-sinh jump identity gives
+   $$\cosh(x/2)R_S-h_S(x)\le K_B(x)\bigl(R-h_f(x)\bigr).$$
+   For $v_i=b_i^2\operatorname{sech}(x_i/2)/K_B(x_i)$ and the measured defect $D$ above,
+   $$\sum_i b_i^2\bigl(R-h_f(x_i)\bigr)\operatorname{sech}(x_i/2)
+   \ge R_S\left(\sum_i v_i\cosh(x_i/2)-\sqrt{\sum_i v_i^2}\right)
+   -\sqrt{R_S\max(D,0)}.$$
+   No cosine companion or additive commutator error remains. Exact disjoint-collar tiling
+   integrates the full-Gram version into `biScaleSecantEnergy`, for every compact continuous
+   source. Support dependence and actual multiplier leakage remain; source blindness does
+   not imply multiplier blindness. The next receiver handles the distinct plastic functional.
+6. **Actual Plastic Crossover Receiver (`PlasticCrossoverGramReceiver.lean`):**
+   At the plastic threshold $c_*$, put $k(x)=\operatorname{levyCoshKernel}(c_*,x)$,
+   $V=\operatorname{levyCoshPotential}(c_*)$, $E=\int f(u)\cosh(u/2)\,du$,
+   $O=\int f(u)\sinh(u/2)\,du$, and
+   $$P(f)=VR+\iint f(u)f(v)\left[2\cosh((u-v)/2)-k(|u-v|)\right]du\,dv.$$
+   The exact decomposition is
+   $$P(f)=J_{\rm sech}(f)+R_{\rm plastic}(f)+2(E^2-O^2),\qquad R_{\rm plastic}(f)\ge0.$$
+   Here the remainder weight $2k(x)-\operatorname{sech}(x/2)$ equals
+   $4\cosh(x/2)-\operatorname{sech}(x/2)$ on the core and the dual Lévy weight
+   beyond $c_*$. Every preceding integrated Gram bound $L\le J_{\rm sech}$
+   therefore gives $L+R_{\rm plastic}+2(E^2-O^2)\le P$.
+   Constructed odd sources have $E=0$ and even sine multipliers; the term $-2O^2$
+   remains. A further theorem includes any origin coefficient, covering the full original
+   crossover expression. Positivity requires control of this moment and actual Gram leakage.
+7. **Exact Odd Multiplier Leakage (`OddMultiplierLeakageFamily.lean`):**
+   A smooth compact odd six-packet family $f_T$ has fixed energy $h_{f_T}(0)=6m>0$
+   and $h_{f_T}(d)=0$ at $d=\log 2$, while
+   $$h_{S_{1/2}f_T}(d)=2M\sinh(|T|+2d)\sinh(d/2),\qquad M=\int\cosh(u)\phi(u)^2\,du\ge m>0.$$
+   Consequently, this multiplier correlation exceeds any prescribed multiple of original
+   source energy. The exact growth law and weighted packet mass are the positive survivor:
+   transfer bounds need actual multiplier Gram data or further position/moment control.
+   The construction imposes one logarithmic zero; the infinite-grid problem remains separate.
+   See [facts and limitations](HyperbolicMultiplierLifting-FACTS.md).
 
 ---
 
-## 5. Complete Module Map (`formal/GaloisForLFunctions/BiScaleUncertainty/`)
+## 5. Foundational Module Map (`formal/GaloisForLFunctions/BiScaleUncertainty/`)
 
 | # | Module | Layer / Pillar | Primary Mathematical Role |
 | :--- | :--- | :--- | :--- |
@@ -428,5 +496,17 @@ crossover kernel):
 | 23 | `HyperbolicShiftCommutatorAndParityIntertwining.lean` | Layer III / Pillar VI | Non-commutative hyperbolic multipliers $C_\alpha, S_\alpha$, parity intertwining, and $\cosh$-increment coercivity |
 | 24 | `CoprimeShearAndMultiplicativeGraphUncertainty.lean` | Layer III / Pillar VII | Multiplicative-additive telescoping, Dirichlet energy inequality, coprime successor coercivity, nodal cross bounds |
 | 25 | `CosecantSecantDualDecomposition.lean` | Layer III / Pillar IX | Functional-equation dual kernel decomposition $w_{\mathrm{arch}} = w_{\mathrm{sech}} + w_{\mathrm{dual}}$ and secant multiplier bridge |
+| 26 | `HyperbolicMultiplierGramTransfer.lean` | Layer III / Pillars VI–IX | Compensated secant and signed-kernel transfer, explicit clique-defect penalty, and compact collar integration |
+| 27 | `HyperbolicJumpEnergyTransfer.lean` | Layer III / Pillars VI–IX | Signed-sinh jump identity, source-support envelope, uncompensated clique transfer, and full secant-energy bound |
+| 28 | `ContinuumShearDirichlet.lean` | Layer III / Pillar VII | Exact continuum trace defects, logarithmic shear, dilated cells, affine commutator control |
+| 29 | `ContinuumMultiplicativeEdgeControl.lean` | Layer III / Pillar VII | Finite weighted multiplicative and nodal edge bounds |
+| 30 | `SobolevTraceEnergy.lean` | Layer III / Pillar VII | Actual L2 primitives, absolute continuity, and exact interval trace energy |
+| 31 | `CoprimeSobolevInterpolation.lean` | Layer III / Pillar VII | Constructed finite divisor traces and attained coprime energy |
+| 32 | `SobolevLogarithmicTransport.lean` | Layer III / Pillar VII | Rough logarithmic derivative and finite weighted Dirichlet energy |
+| 33 | `CoprimeLogSobolevCoercivity.lean` | Layer III / Pillar VII | Sharp logarithmic coprime coercivity with explicit trace error and interpolation defect |
+| 34 | `PlasticCrossoverGramReceiver.lean` | Layer III / Pillars VI–IX | Exact secant/positive-remainder decomposition and multiplier Gram transfer into the actual signed plastic crossover, including odd-source moment and origin coefficient |
+| 35 | `LogarithmicPathKernel.lean` | Layer III / Pillar VII | Measurable continuum paths, finite local budgets, exact nonnegative edge slack |
+| 36 | `MixedEdgePathCongestion.lean` | Layer III / Pillar VII | Infinite diffuse/countable-line jump and nodal transfer with exact congestion identity |
+| 37 | `OddMultiplierLeakageFamily.lean` | Layer III / Pillars VI–IX | Smooth odd fixed-energy logarithmic-zero family, exact hyperbolic leakage law, and failure of source-energy-only multiplier control |
 
 

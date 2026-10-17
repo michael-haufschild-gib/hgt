@@ -9,12 +9,22 @@ import GaloisForLFunctions.BiScaleUncertainty.CollarAllocationDuality
 import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarPartition
 import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarDualPrices
 import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarDualCertificate
+import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarSourceEnergy
+import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarCutoffMonotonicity
+import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarCutoffStability
+import GaloisForLFunctions.BiScaleUncertainty.PairedCosetSphereDuality
+import GaloisForLFunctions.BiScaleUncertainty.SignedCosetProductCoupling
+import GaloisForLFunctions.BiScaleUncertainty.ProductCoupledCollarHierarchy
 import GaloisForLFunctions.BiScaleUncertainty.MultiChainToeplitzGramCoupling
 import GaloisForLFunctions.BiScaleUncertainty.TriangularGramSineBound
 import GaloisForLFunctions.BiScaleUncertainty.SynchronizedCosetSineLeverage
 import GaloisForLFunctions.BiScaleUncertainty.ProfileStableCosetLeverage
 import GaloisForLFunctions.BiScaleUncertainty.AbstractBiScaleSystemAndSchurKreinCoupling
 import GaloisForLFunctions.BiScaleUncertainty.CosecantSecantDualDecomposition
+import GaloisForLFunctions.BiScaleUncertainty.HyperbolicMultiplierGramTransfer
+import GaloisForLFunctions.BiScaleUncertainty.HyperbolicJumpEnergyTransfer
+import GaloisForLFunctions.BiScaleUncertainty.PlasticCrossoverGramReceiver
+import GaloisForLFunctions.BiScaleUncertainty.OddMultiplierLeakageFamily
 import GaloisForLFunctions.BiScaleUncertainty.DisjointCollarCliqueDivergenceAndTuransProblem
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSpectralEnvelopeRealization
 import GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization
@@ -22,23 +32,41 @@ import GaloisForLFunctions.BiScaleUncertainty.HyperbolicPolarBalanceAndLevySinhF
 import GaloisForLFunctions.BiScaleUncertainty.FoldedCollarIntegralAndObstructionResolution
 import GaloisForLFunctions.BiScaleUncertainty.SharedOriginMultiCosetLeverage
 import GaloisForLFunctions.BiScaleUncertainty.DistantCopyPolarEnforcement
+import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridTailRigidity
+import GaloisForLFunctions.BiScaleUncertainty.LogarithmicIncrementEnergy
+import GaloisForLFunctions.BiScaleUncertainty.LogarithmicCompressionEnergy
+import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridPolarRecovery
+import GaloisForLFunctions.BiScaleUncertainty.LogarithmicGridDistance
+import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridDistanceClassification
 import GaloisForLFunctions.BiScaleUncertainty.FiniteMomentEnergyInvariance
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSourceEnergyScalarization
 import GaloisForLFunctions.BiScaleUncertainty.CliqueSphereDualityAndExtremalTheory
 import GaloisForLFunctions.BiScaleUncertainty.HyperbolicShiftCommutatorAndParityIntertwining
 import GaloisForLFunctions.BiScaleUncertainty.CoprimeShearAndMultiplicativeGraphUncertainty
+import GaloisForLFunctions.BiScaleUncertainty.ContinuumShearDirichlet
+import GaloisForLFunctions.BiScaleUncertainty.ContinuumMultiplicativeEdgeControl
+import GaloisForLFunctions.BiScaleUncertainty.SobolevTraceEnergy
+import GaloisForLFunctions.BiScaleUncertainty.CoprimeSobolevInterpolation
+import GaloisForLFunctions.BiScaleUncertainty.SobolevLogarithmicTransport
+import GaloisForLFunctions.BiScaleUncertainty.CoprimeLogSobolevCoercivity
+import GaloisForLFunctions.BiScaleUncertainty.LogarithmicPathKernel
+import GaloisForLFunctions.BiScaleUncertainty.MixedEdgePathCongestion
+import GaloisForLFunctions.BiScaleUncertainty.MultiCosetGramPackingAndNyquistDensity
+import GaloisForLFunctions.BiScaleUncertainty.ProducerConsumerDualityAndNymanBeurlingBridge
+import GaloisForLFunctions.BiScaleUncertainty.AsymptoticTailCoercivityAndNyquistTrap5Closure
 
 /-!
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
 
 Umbrella module for **Bi-Scale / Logarithmic-Grid Uncertainty Theory**, an independent mathematical
 field studying the non-local geometry, multi-node Bessel/Gram rigidity, convex sphere duality,
+producer–consumer (FZZ-P / Nyman–Beurling) duality, multi-coset Nyquist compression,
 non-commutative hyperbolic parity-intertwining calculus, discrete coprime shear uncertainty, and
 singular increment functionals of positive-definite translation correlation kernels `h = f ⋆ f̃`
 under simultaneous discrete logarithmic-grid pinning and hyperbolic polar moment constraints.
 
 See `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` for the motivation, the seven
-structural traps, and the three-layer / seven-pillar architecture of the field.
+structural traps, and the three-layer / thirteen-pillar architecture of the field.
 
 ## Foundational Modules
 
@@ -94,7 +122,7 @@ structural traps, and the three-layer / seven-pillar architecture of the field.
 14. `GaloisForLFunctions.BiScaleUncertainty.CosecantSecantDualDecomposition`:
     Pillar IX: Exact functional-equation dual decomposition `e^{x/2}/sinh x = 1/cosh(x/2) + e^{-x/2}/sinh x`,
     positive secant-plus-dual splitting of `biScaleLevyEnergy`, and exact identity between the
-    secant-weighted correlation `h_f(x)/cosh(x/2)` and the `α = 1/4` hyperbolic multiplier difference.
+    secant-weighted correlation `h_f(x)/cosh(x/2)` and the `α = 1/2` hyperbolic multiplier difference.
 15. `GaloisForLFunctions.BiScaleUncertainty.DisjointCollarCliqueDivergenceAndTuransProblem`:
     Pillar X: Periodic-collar clique tiling, the Beurling–Turán Window Divergence Theorem
     `∫_0^{(M+1)δ} (h(0) - h(x)) dx ≥ δ ((M+1) - √(M+1)) h(0)`, the Square-Root Cancellation Law
@@ -106,4 +134,29 @@ structural traps, and the three-layer / seven-pillar architecture of the field.
 17. `GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization`:
     Concrete smooth envelopes with arbitrarily small normalized energy; every feasible finite
     spectral cost is an upper bound on the smooth polar logarithmic-grid source infimum.
+18. `GaloisForLFunctions.BiScaleUncertainty.MultiCosetGramPackingAndNyquistDensity`:
+    Pillar XI: Selberg–Bombieri almost-orthogonal Gram row-sum Bessel bounds, multi-coset collar
+    amplification `(M - √(M(1 + Δ))) h(0)`, dyadic-window Nyquist cell partitioning on `[log N, log(2N)]`,
+    and derivative-free `L²` Nyquist compression absorbed by `archLevySinhWeight y ≥ N`.
+19. `GaloisForLFunctions.BiScaleUncertainty.ProducerConsumerDualityAndNymanBeurlingBridge`:
+    Pillar XII: Abstract Hilbert-space producer–consumer (FZZ-P / Nyman–Beurling) duality, exact
+    orthogonal-frame identity between minimum producer `L²` error and consumer Bessel slack, and
+    correlation-space coupling between polar integrals and collar producer weights.
+20. `GaloisForLFunctions.BiScaleUncertainty.AsymptoticTailCoercivityAndNyquistTrap5Closure`:
+    Pillar XIII: `O(N⁻²)` dyadic-window `L²` correlation decay under quadratic origin regularity,
+    `O(N)` squared hyperbolic polar weight integral on `[log N, log(2N)]`, `O(N⁻¹/²)` polar tail
+    decay, and the Infinite-Grid Trap-5 Closure / Kinetic Coercivity Theorem
+    `N μ² ≤ 4 log 2 K h_f(0)`.
+21. `GaloisForLFunctions.BiScaleUncertainty.InfiniteGridTailRigidity` and
+    `GaloisForLFunctions.BiScaleUncertainty.LogarithmicIncrementEnergy`:
+    Fixed-source tail detection and a uniform linear energy cost for separated copies preserving
+    a distant logarithmic-grid zero, derived from a logarithmic translation-increment bound.
+22. `GaloisForLFunctions.BiScaleUncertainty.LogarithmicCompressionEnergy` and
+    `GaloisForLFunctions.BiScaleUncertainty.InfiniteGridPolarRecovery`:
+    Smooth compact polar sources satisfying every infinite-grid zero at arbitrarily large
+    midpoint separations, with normalized energy between `exp(-1/2) T / 4` and `C + T`.
+23. `GaloisForLFunctions.BiScaleUncertainty.LogarithmicGridDistance` and
+    `GaloisForLFunctions.BiScaleUncertainty.InfiniteGridDistanceClassification`:
+    Exact nearest-grid distance and center classification for separated polar copies:
+    nonzero sources exist precisely off-grid, with energy of order `log(1/distance)`.
 -/

@@ -1168,3 +1168,26 @@ Meaning: the germ-control target is now stated exactly: RH ⟺ no witness carrie
 off-line zeros). Structural kill recorded: every inequality derivable from the witness equation alone is
 satisfied by the zero witnesses `t^{ρ̄−1}` (they solve it), so no estimate internal to `W` can force
 linear mass; the only input is the zero set of `η` (restatement core (c)). Producer status: Wall 1.
+
+### 2026-10-17 — walls ledger formalization (Fable): paper-only parts of walls 9, 13, 14 now in Lean
+
+Report `docs/reports/walls-ledger.md` (all 15 walls, each checked against the corpus). Three items were
+paper-only; they are now modules (all wired into `RHTower.lean`, axioms `propext, Classical.choice,
+Quot.sound`, lint clean):
+- Wall 9, `RHTower/NonTemperedShiftedZetaPairCountermodel.lean` (311 lines): `F_a(s) = ζ(s−a)ζ(s+a)` has
+  nonnegative Dirichlet coefficients `Σ_{de=n} d^a e^{−a}` (`lSeries_shiftedPairCoeff`), logarithmic Euler
+  product with weights `Λ(n)(n^a+n^{−a}) ≥ 0` on prime powers (`neg_deriv_shiftedZetaPair_div`), completed
+  FE `Λ(s−a)Λ(s+a)` invariant under `s ↦ 1−s` for all `s` (`shiftedCompletedPair_one_sub`), polynomial
+  growth on a strip (`exists_norm_shiftedZetaPair_le`), off-line zeros `½ ± a + iγ` above every height
+  from Hardy (`exists_offLine_zero_shiftedZetaPair`), and failure of every Ramanujan bound with `ε < |a|`
+  (`not_ramanujan_shiftedPairCoeff`). Poles sit at `1 ± a` (recorded in the docstring).
+- Wall 13, `RHTower/WeilConeMismatchWitnesses.lean` (225 lines): Bochner ⊄ pointwise
+  (`weilTest_self_re_neg_twoSignedWeilTest`: `k_f(3) = −∫b² < 0` for `f = b − b(·−3)`), pointwise ⊄ Bochner
+  (`twoHumpProfile_ne_weilTest_self`), meeting locus = window sector (`nonneg_primeBlind_window`, wrapper of
+  `DilationFree.volume_pos_le_log_two_of_primeBlind`). The Mehler–Fock dictionary itself stays on paper.
+- Wall 14, `RHTower/ZeroCountRemainderNotIntegrable.lean` (424 lines): `S = N − M` with
+  `M = routeKSmoothRVMCount`; `∫_A^T |S| ≥ c T/log T` eventually (`exists_integral_abs_rvmRemainder_ge`)
+  and `¬ IntegrableOn S (Ioi 0)` (`not_integrableOn_rvmRemainder`). Mechanism: shift identity for monotone
+  `N`, jump set of `N` on windows `h = 1/(2 log T)`, local ceiling `m_T = 1 + 2C_w log T`, RVM lower bound,
+  `M' ≤ log T` (`abs_routeKSmoothRVMCount_sub_le`), Lebesgue-measure bookkeeping. Unboundedness of `S`
+  (finite-rank exclusion) remains paper.
