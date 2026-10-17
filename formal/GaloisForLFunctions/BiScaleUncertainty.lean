@@ -1,7 +1,17 @@
 import GaloisForLFunctions.BiScaleUncertainty.KreinIncrementAndChordCascade
 import GaloisForLFunctions.BiScaleUncertainty.MultiplicativeChainBesselAndOriginLeverage
+import GaloisForLFunctions.BiScaleUncertainty.OptimalOriginAllocation
+import GaloisForLFunctions.BiScaleUncertainty.OverlapSafeCollarMeasureTransport
+import GaloisForLFunctions.BiScaleUncertainty.LogarithmicCollarCoverage
+import GaloisForLFunctions.BiScaleUncertainty.SignedDyadicCollarPartition
+import GaloisForLFunctions.BiScaleUncertainty.IntegratedOriginCollarLeverage
+import GaloisForLFunctions.BiScaleUncertainty.MultiChainToeplitzGramCoupling
+import GaloisForLFunctions.BiScaleUncertainty.TriangularGramSineBound
+import GaloisForLFunctions.BiScaleUncertainty.SynchronizedCosetSineLeverage
 import GaloisForLFunctions.BiScaleUncertainty.HyperbolicPolarBalanceAndLevySinhFunctional
 import GaloisForLFunctions.BiScaleUncertainty.FoldedCollarIntegralAndObstructionResolution
+import GaloisForLFunctions.BiScaleUncertainty.SharedOriginMultiCosetLeverage
+import GaloisForLFunctions.BiScaleUncertainty.DistantCopyPolarEnforcement
 
 /-!
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
@@ -33,4 +43,13 @@ diagnosis, and four-pillar architecture of the field.
    Resolves the single-point non-dyadic interpolation obstruction (`4 log 2 / 5`) by folding `[a, t₁ - a]`
    around `t₁ / 2` and proving an unconditional, strictly positive lower bound on the Bi-Scale Lévy
    energy `biScaleLevyEnergy f` and on `weilArchRe` for smooth EWU tests (`RealSmoothEvenPolarTestFn`).
+5. `GaloisForLFunctions.BiScaleUncertainty.SharedOriginMultiCosetLeverage`:
+   Exact shared-origin block support bound and equality witness, rationalized cross-coset cost,
+   and simultaneous dyadic-coset leverage without counting the origin energy repeatedly.
+6. `GaloisForLFunctions.BiScaleUncertainty.DistantCopyPolarEnforcement`:
+   A concrete polar source preserving normalized correlations on any bounded interval, with
+   explicit exponentially small energy error; equality of all polar and nonpolar grid lower bounds.
+7. `GaloisForLFunctions.BiScaleUncertainty.IntegratedOriginCollarLeverage`:
+   Exact finite-interval collar transport with measurable optimal signed-coset origin shares
+   and a strictly positive finite real coefficient for compact-continuous grid sources.
 -/

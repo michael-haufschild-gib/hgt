@@ -27772,3 +27772,4 @@ import GaloisForLFunctions.RHTower.XiHurwitzFunctionalEquationEvenWitness
 import GaloisForLFunctions.RHTower.ComplexSignedGaussianHeat
 import GaloisForLFunctions.RHTower.XiSignedHeatOrientation
 import GaloisForLFunctions.RHTower.XiSignedHeatOrientationConvergence
+import GaloisForLFunctions.RHTower.FermiNymanWitnessGermRigidity

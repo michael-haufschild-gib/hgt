@@ -9,7 +9,7 @@ compact abelian group at a time:
   comparison is governed by Poisson summation and Euler–Maclaurin quadrature.
 - **Multiplicative Mellin analysis** on $(\mathbb{R}_+^\times, \times)$, which becomes additive
   Fourier analysis in logarithmic coordinates $x = \log t$, turning multiplicative dilations
-  $t \mapsto \lambda t$ into shifts $x \mapsto x + \log \lambda$.
+  $t \mapsto \lambda t$ into linear shifts $x \mapsto x + \log \lambda$.
 
 Whenever a mathematical problem is simultaneously governed by **multiplicative dilation** and
 **additive translation**, a fundamental structural conflict arises. In logarithmic scale coordinates
@@ -28,181 +28,257 @@ $x = \log t$:
    measure**
    $$\mathcal{J}_{\mathrm{arch}}(h) = \int_0^\infty \bigl(h(0) - h(x)\bigr)\,\frac{e^{x/2}}{\sinh x}\,dx, \qquad \frac{e^{x/2}}{\sinh x} = 2\sum_{k=0}^\infty e^{-(2k+1/2)x} \sim \frac{1}{x} \quad (x \to 0^+).$$
 
-### Why Classical Single-Group Methods Hit a Structural Wall
+---
 
-Extensive formal investigations in `GaloisForLFunctions.RHTower` (`CHMD`, `HF`, `OWU`, `EWU`)
-exposed three structural obstructions that arise whenever one attempts to bridge this bi-scale
-conflict using standard single-group techniques:
+## 2. The Seven Structural Traps: Why Existing Methods Fail and What the New Field Must Overcome
 
-1. **The Spectral-Moment / Derivative-Truncation Trap:**
+Extensive formal investigations across `GaloisForLFunctions.RHTower` (`CHMD`, `HF`, `OWU`, `EWU`)
+and `GaloisForLFunctions.BiScaleUncertainty` have uncovered **seven structural traps**—four
+classical single-group traps and three deeper frontier traps that govern the design of this field.
+
+### Part A: The Four Single-Group Traps
+
+1. **Trap 1 — The Spectral-Moment / Derivative-Truncation Trap:**
    On the spectral side, the archimedean symbol $\Omega(r) = \operatorname{Re}\psi(1/4 + ir/2) - \log\pi$
-   achieves its minimum $\Omega(0) = -(\gamma + \pi/2 + \log(8\pi)) \approx -4.935$ at $r = 0$ and
-   grows as $\ln|r|$. Any bound that replaces $\Omega(r)$ by $\Omega(0)$ (or by a polynomial Taylor
-   moment $S(g) = \int r^2|\hat{g}(r)|^2\,dr = -h''(0)$) **discards the physical-space Lévy
-   integral $\mathcal{J}_{\mathrm{arch}}(h)$**. Once $\mathcal{J}_{\mathrm{arch}}(h)$ is discarded,
-   the logarithmic grid constraints $h(\log n) = 0$ are rendered invisible: for an arbitrary smooth
-   function $h$, vanishing on a discrete set $\{\log n\}$ of measure zero imposes no positive lower
-   bound on an integral unless $-h''(0) = S(g)$ is bounded, leaving the high-frequency regime
-   $S(g)/L(g) \to \infty$ unclosed.
-2. **The Ground-Subtraction / Translation-Invariance Trap:**
+   achieves its minimum $\Omega(0) = -\left(\frac{\gamma}{2} + \frac{\pi}{4} + \frac{3}{2}\log 2 + \frac{1}{2}\log\pi\right) \approx -2.752$
+   at $r = 0$ and grows as $\ln|r|$. Any bound that replaces $\Omega(r)$ by $\Omega(0)$ or by a
+   polynomial Taylor moment $S(g) = \int r^2|\hat{g}(r)|^2\,dr = -h''(0)$ **discards the
+   physical-space Lévy integral $\mathcal{J}_{\mathrm{arch}}(h)$**. Once $\mathcal{J}_{\mathrm{arch}}(h)$
+   is discarded, the discrete grid constraints $h(\log n) = 0$ are rendered invisible in the
+   high-frequency regime $S(g)/L(g) \to \infty$.
+2. **Trap 2 — The Ground-Subtraction / Translation-Invariance Trap:**
    Subtracting a translation-invariant continuum mean-field cannot distinguish the discrete
    logarithmic grid $\Lambda_{\log}$ from a shifted continuum unless the exact arithmetic
    multiplicative relations among the nodes $\log n$ are coupled directly to the positive-definite
    cone.
-3. **The Beurling–Deny Sign-Changing Nodal Collar Trap:**
-   Standard Dirichlet-form / Beurling–Deny contraction (`|u|` lowers the jump energy) operates on a
+3. **Trap 3 — The Beurling–Deny Sign-Changing Nodal Collar Trap:**
+   Standard Dirichlet-form / Beurling–Deny contraction (`|u|` lowers jump energy) operates on a
    single state $u$. When applied to an odd or sign-changing state $u = u^+ - u^-$, non-local jump
    operators across the nodal boundary generate a positive cross-collar attraction
-   $\langle u^+, P u^-\rangle$ that competes against the stationary jump stiffness unless constrained
-   by multi-point Gram/Toeplitz positive-definiteness.
+   $\langle u^+, P u^-\rangle$ that competes against stationary jump stiffness unless constrained
+   by multi-point Gram/Toeplitz positive-definiteness or additive regularity.
+4. **Trap 4 — The Single-Point Non-Dyadic Interpolation Trap ($x = \frac{4}{5}\log 2$):**
+   Even when $h(\log 2) = 0$ for a smooth positive-definite autocorrelation $h$, one **cannot** bound
+   $h(0) - h(x) \ge c(x) h(0) > 0$ pointwise at every individual non-dyadic point $x \in (0, \log 2)$.
+   As proved in `EvenSectorSmoothBlindInterpolationObstruction.lean`, a smooth pulse train $g_N$ with
+   spacing $a = \frac{4}{5}\log 2$ satisfies $h_N(\log 2) = 0$ while
+   $(h_N(0) - h_N(\frac{4}{5}\log 2)) / h_N(0) = \frac{1}{N+1} \to 0$.
+   - **Resolution (`FoldedCollarIntegralAndObstructionResolution.lean`):** By the **Reflected-Collar
+     Euclidean Sphere Law** $h(x)^2 + h(\log 2 - x)^2 \le h(0)^2$, making $h(\frac{4}{5}\log 2) \to h(0)$
+     forces the reflected point $h(\frac{1}{5}\log 2) \to 0$. Folding the integral around the
+     midpoint $\frac{1}{2}\log 2$ pairs $x$ with $\log 2 - x$ and restores an unconditional,
+     strictly positive lower bound across all smooth tests!
+
+### Part B: The Three Deep Frontier Traps (Why Layer I Must Extend to Layers II & III)
+
+5. **Trap 5 — The Distant-Copy Polar Decoupling Trap (`DistantCopyPolarEnforcement.lean`):**
+   Suppose we impose only **finitely many** logarithmic grid zeros $h(\log n) = 0$ ($2 \le n \le N$)
+   on a compactly supported source $f$ (say supported in $[-D/2, D/2]$). Then replacing $f(u)$ by
+   $$\operatorname{polarCopy}(f, T)(u) := f(u) - e^{-T/2} f(u - T)$$
+   for a very large translation $T \gg \max(D, \log N)$ **automatically enforces the hyperbolic polar
+   hyperplane constraint** $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$, **preserves all grid zeros**
+   $h(\log n) = 0$ for $2 \le n \le N$, and changes the normalized archimedean energy
+   $\mathcal{J}_{\mathrm{arch}}(h) / h(0)$ by only $O(e^{-T}) \to 0$ as $T \to \infty$!
+   - **Strategic Consequence:** For finite truncation $N$, the polar hyperplane constraint
+     $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$ cannot increase the infimum of
+     $\mathcal{J}_{\mathrm{arch}}(h)/h(0)$ over compactly supported functions unless the logarithmic
+     grid constraints $\Lambda$ also constrain the distant scale $T$ (where the logarithmic grid
+     spacing $\Delta x_n \asymp e^{-T}$ becomes exponentially denser than the support diameter $D$).
+6. **Trap 6 — The Commutative Bochner / Beurling Trap:**
+   As long as our theorems only use inner products of **additive translations**
+   $\langle U_{t_i} f, U_{t_j} f \rangle = h(t_i - t_j)$ on $L^2(\mathbb{R})$, all operators $U_t$
+   **commute** ($U_t U_s = U_{t+s}$) and are simultaneously diagonalized by the Fourier transform
+   $\hat{h}(\omega) = |\hat{f}(\omega)|^2 \ge 0$. Moreover, difference-closed chains on
+   $\Lambda_N = \{\log n\}$ only see the **multiplicative semigroup** $(\mathbb{N}, \times)$ via
+   divisibility $m \mid n \implies \log n - \log m = \log(n/m)$. Any Beurling generalized number
+   system has the exact same divisibility chains, even when it violates the Riemann Hypothesis!
+   - **Strategic Consequence:** While commutative Bochner–Gram bounds can close finite-$N$ threshold
+     bounds in the even sector once $\mathcal{C}(\Lambda_N, w_{\mathrm{arch}}) \ge |\Omega(0)|$, a
+     complete theory must incorporate the **non-commutative affine $(ax+b)$ algebra** linking
+     multiplicative dilations ($n \mapsto pn$, linear shifts $x \mapsto x + \log p$) to the
+     **additive ring generator** ($n \mapsto n + 1$, the exponential shear $x \mapsto \log(e^x + 1)$
+     and hyperbolic multipliers $e^{\pm x/2}$).
+7. **Trap 7 — The Odd-Sector / Nodal Blind Spot (`OWU` / `HF` / `CHMD`):**
+   Origin-Singularity Leverage relies on $h(0) = \|f\|_2^2 > 0$ sitting directly on top of the
+   $\frac{1}{\sinh x} \sim \frac{1}{x}$ singularity at $x = 0$. For an **odd** test function
+   (`OWU` / `HF`) or a **signed nodal eigenfunction** on `SourceGraph` (`CHMD`), the origin pole is
+   canceled or changes sign across the nodal boundary.
+   - **Strategic Consequence:** The field must include **Hyperbolic Parity-Intertwining Operators**
+     ($f(u) \mapsto \sinh(\alpha u) f(u)$ and $f(u) \mapsto \cosh(\alpha u) f(u)$), which map odd
+     wavefunctions into even wavefunctions with strictly positive origin energy and satisfy the
+     exact intertwining law
+     $$\operatorname{autocorr}(\cosh(\alpha \cdot) f)(x) - \operatorname{autocorr}(\sinh(\alpha \cdot) f)(x) = \cosh(\alpha x)\,\operatorname{autocorr}(f)(x),$$
+     as well as **Discrete Coprime Shear Uncertainty** on $\mathbb{N}^+$ coupling multiplicative
+     shifts $n \mapsto kn$ to additive successor differences $v(n+1) - v(n)$.
 
 ---
 
-## 2. Foundational Premise of Bi-Scale / Logarithmic-Grid Uncertainty Theory
+## 3. Core Architecture: The Three Layers & Seven Pillars of `BiScaleUncertainty`
 
-**Bi-Scale / Logarithmic-Grid Uncertainty Theory** is developed as an independent mathematical
-discipline in its own right. Its central discovery is that **the positive-definite correlation cone**
-$$\mathcal{P}(\mathbb{R}) = \Bigl\{h(x) = \langle g, U_x g\rangle_{\mathcal{H}} \;\Big|\; (U_x)_{x \in \mathbb{R}} \text{ unitary translation group on } \mathcal{H},\; g \in \mathcal{H}\Bigr\}$$
-**possesses a rigid, derivative-free non-local geometry that couples the continuum $1/x$ singularity
-at the origin directly to discrete non-uniform zero grids $\Lambda \subset (0, \infty)$**.
-
-Whereas an arbitrary smooth function $h(x)$ with $h(\log n) = 0$ can recover to $h(0)$ immediately
-outside arbitrarily thin $\varepsilon$-neighborhoods of each node $\log n$ (making
-$\int_0^\infty (h(0) - h(x)) w(x)\,dx$ arbitrarily small if $|h''(0)|$ is large), **an
-autocorrelation $h \in \mathcal{P}(\mathbb{R})$ cannot do this — regardless of how rough $g$ is or
-how large its derivative norm $-h''(0)$ is!**
-
-Why? Because in the Hilbert space $\mathcal{H}$:
-- Every zero node $t \in \Lambda$ ($h(t) = \langle g, U_t g\rangle = 0$) makes the translated vector
-  $U_t g$ **strictly orthogonal** to the origin vector $g$.
-- More generally, any **difference-closed chain** $0 = t_0 < t_1 < t_2 < \dots < t_M$ with
-  $t_k - t_j \in \Lambda$ for all $0 \le j < k \le M$ produces an **exact mutually orthogonal frame**
-  $\{U_{t_0} g, U_{t_1} g, \dots, U_{t_M} g\}$ of vectors of norm $\sqrt{h(0)}$ in $\mathcal{H}$.
-- On the logarithmic grid $\Lambda_N = \{\log n : 2 \le n \le N\}$, difference-closed chains are
-  precisely **multiplicative divisibility chains** $1 = n_0 \mid n_1 \mid n_2 \mid \dots \mid n_M \le N$,
-  because
-  $$t_k - t_j = \log n_k - \log n_j = \log(n_k / n_j) \in \Lambda_N \iff n_j \mid n_k \text{ and } 2 \le \frac{n_k}{n_j} \le N!$$
-- Applying **Bessel's inequality** to the shifted vector $U_{\mp y} g$ for **any offset $y \in \mathbb{R}$**
-  yields the **Derivative-Free Euclidean Sphere Law**:
-  $$h(y)^2 + \sum_{k=1}^M h(t_k \pm y)^2 \le h(0)^2 \qquad (\forall y \in \mathbb{R}).$$
-
-Look at what this single law achieves without any derivative hypothesis on $g$:
-- If $h(y)$ is close to $h(0)$ for $y \in (0, \delta)$ near the origin (to avoid paying a massive
-  penalty against the singular origin weight $W_0(y) = \frac{e^{y/2}}{\sinh y} \sim \frac{1}{y}$),
-  then the Euclidean Sphere Law **forces $\sum_{k=1}^M h(t_k \pm y)^2 \le h(0)^2 - h(y)^2 \approx 0$**
-  simultaneously across the $\delta$-collars $(t_k - \delta, t_k + \delta)$ of **every node $t_k$ in
-  the chain**!
-- Conversely, if $h(t_k \pm y)$ deviates from $0$ in any collar, $h(y)$ is forced away from $h(0)$
-  near the origin, where it is multiplied by the singular leverage weight $W_0(y) \sim 1/y \to +\infty$!
-
----
-
-## 3. Core Architecture & The Four Pillars of the Field
-
-The development of `GaloisForLFunctions.BiScaleUncertainty` is organized into four foundational
-pillars:
+To meet the standards of an independent mathematical discipline—with intrinsic invariants, exact
+extremal duality, non-commutative operator calculus, and discrete-to-continuum bridges—the library
+is organized into **three layers** spanning **seven foundational pillars**:
 
 ```mermaid
 flowchart TD
-    P1["Pillar I: Krein Increment & Chord Cascade Geometry<br/>(KreinIncrementAndChordCascade.lean)"]
-    P2["Pillar II: Multiplicative-Chain Bessel & Origin-Singularity Leverage<br/>(MultiplicativeChainBesselAndOriginLeverage.lean)"]
-    P3["Pillar III: Hyperbolic Polar Balance & Lévy–Sinh Functional<br/>(HyperbolicPolarBalanceAndLevySinhFunctional.lean)"]
-    P4["Pillar IV: Multi-Coset Toeplitz–Gram & Bi-Scale Uncertainty Constants<br/>(Future Expansion)"]
+    subgraph Layer1["Layer I: Abelian Correlation, Origin Leverage & Collar Transport"]
+        P1["Pillar I: Krein Increment & Chord Cascade<br/>(KreinIncrementAndChordCascade.lean)"]
+        P2["Pillar II: Multiplicative-Chain Bessel & Origin Leverage<br/>(MultiplicativeChainBesselAndOriginLeverage.lean)"]
+        P3["Pillar III: Hyperbolic Polar Balance & Lévy–Sinh<br/>(HyperbolicPolarBalanceAndLevySinhFunctional.lean)"]
+        P4["Pillar IV: Folded-Collar Integral & Multi-Coset Transport<br/>(FoldedCollarIntegralAndObstructionResolution.lean +<br/>MultiChain / SharedOrigin / CollarTransport modules)"]
+    end
+
+    subgraph Layer2["Layer II: Convex Duality & Clique Extremal Theory"]
+        P5["Pillar V: Multi-Node Clique Sphere Duality & Extremizers<br/>(CliqueSphereDualityAndExtremalTheory.lean)"]
+    end
+
+    subgraph Layer3["Layer III: Non-Commutative Hyperbolic & Arithmetic-Shear Calculus"]
+        P6["Pillar VI: Hyperbolic Shift-Commutator & Parity Intertwining<br/>(HyperbolicShiftCommutatorAndParityIntertwining.lean)"]
+        P7["Pillar VII: Discrete Coprime Shear & Multiplicative Graph Uncertainty<br/>(CoprimeShearAndMultiplicativeGraphUncertainty.lean)"]
+    end
 
     P1 --> P2
     P1 --> P3
     P2 --> P4
     P3 --> P4
+    P2 --> P5
+    P4 --> P5
+    P1 --> P6
+    P3 --> P6
+    P5 --> P7
+    P6 --> P7
 ```
 
-### Pillar I: Krein Increment & Chord Cascade Geometry (`KreinIncrementAndChordCascade.lean`)
+---
 
+### Layer I: Abelian Correlation, Origin Leverage & Collar Transport (Pillars I–IV)
+
+#### Pillar I: Krein Increment & Chord Cascade Geometry (`KreinIncrementAndChordCascade.lean`)
 Studies the intrinsic metric geometry induced on $\mathbb{R}$ by an autocorrelation
 $h(x) = \int_{\mathbb{R}} g(u)g(u+x)\,du \in \mathcal{P}(\mathbb{R})$ via the **translation chord
-distance**
-$$d_g(x, y) := \|T_x g - T_y g\|_{L^2} = \sqrt{2\bigl(h(0) - h(x - y)\bigr)}.$$
+distance** $d_g(x, y) := \|T_x g - T_y g\|_{L^2} = \sqrt{2\bigl(h(0) - h(x - y)\bigr)}$:
+- **Cauchy–Schwarz & Pointwise Increment Nonnegativity:** $|h(x)| \le h(0)$ and
+  $0 \le h(0) - h(x) \le 2 h(0)$.
+- **Krein's Positive-Definite Increment Inequality:**
+  $\bigl(h(x) - h(y)\bigr)^2 \le 2 h(0)\bigl(h(0) - h(x - y)\bigr)$.
+- **Subadditive Chord Triangle Law & Quadratic Multiple Cascade:**
+  $\sqrt{h(0) - h(x + y)} \le \sqrt{h(0) - h(x)} + \sqrt{h(0) - h(y)}$ and
+  $h(0) - h(m x) \le m^2\bigl(h(0) - h(x)\bigr)$.
+- **Derivative-Free Harmonic & Dyadic Sub-Grid Lower Bounds:**
+  Whenever $h(x_0) \le 0$, $h(0) - h(x_0 / m) \ge \frac{1}{m^2} h(0)$ and
+  $h(0) - h(x_0 / 2^k) \ge 4^{-k} h(0)$.
 
-Key foundational theorems established in Pillar I:
-1. **Cauchy–Schwarz & Pointwise Increment Nonnegativity:**
-   $|h(x)| \le h(0)$ and $0 \le h(0) - h(x) \le 2 h(0)$ for all $x \in \mathbb{R}$, with
-   $\int_{\mathbb{R}} (g(u) - g(u+x))^2\,du = 2(h(0) - h(x))$ and
-   $\int_{\mathbb{R}} (g(u) + g(u+x))^2\,du = 2(h(0) + h(x))$.
-2. **Krein's Positive-Definite Increment Inequality:**
-   For every $x, y \in \mathbb{R}$,
-   $$\bigl(h(x) - h(y)\bigr)^2 \le 2 h(0)\bigl(h(0) - h(x - y)\bigr),$$
-   and more sharply via orthogonal decomposition along $g$:
-   $$\bigl(h(x) - h(y)\bigr)^2 + \bigl(h(0) - h(x - y)\bigr)^2 \text{-refinements}.$$
-3. **Subadditive Chord Triangle Law & Quadratic Multiple Cascade:**
-   For every $x, y \in \mathbb{R}$ and every integer $m \in \mathbb{N}$:
-   $$\sqrt{h(0) - h(x + y)} \le \sqrt{h(0) - h(x)} + \sqrt{h(0) - h(y)},$$
-   $$h(0) - h(x + y) \le 2\bigl(h(0) - h(x)\bigr) + 2\bigl(h(0) - h(y)\bigr),$$
-   $$h(0) - h(2x) \le 4\bigl(h(0) - h(x)\bigr), \qquad h(0) - h(m x) \le m^2\bigl(h(0) - h(x)\bigr).$$
-4. **Derivative-Free Harmonic & Dyadic Sub-Grid Lower Bounds:**
-   Whenever $h(x_0) \le 0$ (in particular, at any zero node $h(x_0) = 0$), every harmonic
-   subdivision $x_0 / m$ ($m \ge 1$) and dyadic subdivision $x_0 / 2^k$ ($k \ge 0$) satisfies the
-   universal derivative-free lower bound:
-   $$h(0) - h(x_0 / m) \ge \frac{1}{m^2} h(0), \qquad h(0) - h(x_0 / 2^k) \ge 4^{-k} h(0).$$
-
----
-
-### Pillar II: Multiplicative-Chain Bessel & Origin-Singularity Leverage (`MultiplicativeChainBesselAndOriginLeverage.lean`)
-
+#### Pillar II: Multiplicative-Chain Bessel & Origin-Singularity Leverage (`MultiplicativeChainBesselAndOriginLeverage.lean`)
 Develops the multi-node Hilbert-space geometry of translates on non-uniform and logarithmic grids:
+- **Multi-Node Orthogonal-Frame Bessel Inequality (`autocorr_finset_bessel_sq_le`):**
+  For any pairwise difference-orthogonal set $\{t_i\}_{i \in s}$ ($h(t_i - t_j) = 0$ for $i \ne j$),
+  $\sum_{i \in s} h(y - t_i)^2 \le h(0)^2$ for every $y \in \mathbb{R}$.
+- **Origin-Anchored & Reflected-Collar Euclidean Sphere Laws:**
+  $h(y)^2 + \sum_{k=1}^M h(t_k \pm y)^2 \le h(0)^2$ and
+  $(h(0) - h(y)) + (h(0) - h(t_1 - y)) \ge (2 - \sqrt{2})\,h(0)$.
+- **The Origin-Singularity Leverage Theorem:**
+  $$W_0 (R - u_0) + \sum_{k=1}^M w_k (R - u_k) \ge \left(W_0 + \sum_{k=1}^M w_k - \sqrt{W_0^2 + \sum_{k=1}^M w_k^2}\right) R \ge \left(\sum_{k=1}^M w_k - \frac{\sum_{k=1}^M w_k^2}{2 W_0}\right) R.$$
+- **Logarithmic Divisibility & Dyadic-Coset Orthogonality:**
+  On $\Lambda_N = \{\log n : 2 \le n \le N\}$, the dyadic-odd cosets
+  $\mathcal{C}_m = \{m \cdot 2^k : 2 \le m \cdot 2^k \le N\}$ ($m$ odd) form disjoint
+  difference-closed orthogonal chains.
 
-1. **Difference-Closed / Divisibility Chains & Mutual Orthogonality:**
-   If $t_0, t_1, \dots, t_M \in \mathbb{R}$ satisfy $h(t_k - t_j) = 0$ for all $j \ne k$, the
-   translated vectors $v_k(u) = g(u + t_k)$ are pairwise orthogonal in $L^2(\mathbb{R})$ with
-   $\|v_k\|_2^2 = h(0)$.
-   On the logarithmic grid $\Lambda_N = \{\log n : 2 \le n \le N\}$, any **divisibility chain**
-   $1 = n_0 \mid n_1 \mid n_2 \mid \dots \mid n_M \le N$ (with $n_j < n_k$ for $j < k$) has pairwise
-   differences $\log n_k - \log n_j = \log(n_k / n_j) \in \Lambda_N$.
-   In particular, the **dyadic-odd coset chains**
-   $$\mathcal{C}_m = \{m \cdot 2^k : k \ge 0,\; 2 \le m \cdot 2^k \le N\} \qquad (m \ge 1 \text{ odd})$$
-   partition the entire integer grid $\{2, \dots, N\}$ into disjoint difference-closed divisibility
-   chains!
-2. **The Derivative-Free Euclidean Sphere Law (Left & Right Collars):**
-   For any difference-closed chain $0 = t_0, t_1, \dots, t_M$ with $h(t_k - t_j) = 0$ ($0 \le j < k \le M$)
-   and **every shift $y \in \mathbb{R}$**:
-   $$h(y)^2 + \sum_{k=1}^M h(t_k + y)^2 \le h(0)^2 \quad \text{and} \quad h(y)^2 + \sum_{k=1}^M h(t_k - y)^2 \le h(0)^2.$$
-   For a single zero node $t_1 > 0$ ($h(t_1) = 0$), this specializes to the **Reflected-Collar
-   Sphere Law**
-   $$h(y)^2 + h(t_1 - y)^2 \le h(0)^2, \qquad \bigl(h(0) - h(y)\bigr) + \bigl(h(0) - h(t_1 - y)\bigr) \ge (2 - \sqrt{2})\,h(0).$$
-3. **The Origin-Singularity Leverage Theorem:**
-   For any origin weight $W_0 > 0$, any collar weights $w_1, \dots, w_M \ge 0$, and any real tuple
-   $(u_0, u_1, \dots, u_M)$ on the Euclidean sphere $u_0^2 + \sum_{k=1}^M u_k^2 \le R^2$ ($R = h(0) \ge 0$):
-   $$W_0 (R - u_0) + \sum_{k=1}^M w_k (R - u_k) \ge \left(W_0 + \sum_{k=1}^M w_k - \sqrt{W_0^2 + \sum_{k=1}^M w_k^2}\right) R \ge \left(\sum_{k=1}^M w_k - \frac{\sum_{k=1}^M w_k^2}{2 W_0}\right) R.$$
-   When $W_0 = W_0(y) \sim 1/y$ is the singular archimedean Lévy weight near $y = 0^+$, the penalty
-   $\frac{\sum w_k^2}{2 W_0(y)} = O(y)$ vanishes at the origin singularity, transferring the full
-   collar weight $\sum_{k=1}^M w_k$ into a derivative-free lower bound on the increment energy!
+#### Pillar III: Hyperbolic Polar Balance & Lévy–Sinh Functional (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`)
+Couples the hyperbolic polar hyperplane $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$ to the positive-definite
+cone and the singular Lévy–sinh energy `biScaleLevyEnergy`:
+- **Exact Pole-Eliminated Weil–Lévy Identity (`weilArchRe_eq_polar_levy_sinh_form`):**
+  $\operatorname{weilArchRe}(f) = \Omega(0)\,h(0) + \operatorname{biScaleLevyEnergy}(f)$.
+- **Hyperbolic Positive/Negative Lobe Conservation (`integral_autocorrPos_cosh_eq_autocorrNeg_cosh`):**
+  $\int_0^\infty h^+(x)\cosh(x/2)\,dx = \int_0^\infty h^-(x)\cosh(x/2)\,dx$.
+- **Polar–Lévy Kernel Deformation & Crossover Floor (`polar_levy_deformation_lower_bound`).**
+
+#### Pillar IV: Folded-Collar Integral Bounds & Multi-Coset Transport
+- `FoldedCollarIntegralAndObstructionResolution.lean`: Midpoint-folded reflected-collar integral
+  lower bound resolving the $x = \frac{4}{5}\log 2$ single-point obstruction unconditionally across
+  all smooth real EWU tests (`RealSmoothEvenPolarTestFn.weilArchRe_ge_folded_collar_of_log_two_blind`).
+- `SharedOriginMultiCosetLeverage.lean`, `MultiChainToeplitzGramCoupling.lean`,
+  `OptimalOriginAllocation.lean`: Shared-origin multi-coset sphere bounds, full Gram-energy square
+  remainder identities, and proportional origin-weight allocation.
+- `OverlapSafeCollarMeasureTransport.lean`, `LogarithmicCollarCoverage.lean`: Overlap-safe collar
+  measure transport and exact coverage of $(\frac{1}{2}\log 2, \log N)$ by half-$\log 2$ collars
+  around $\Lambda_N$.
+- `SignedDyadicCollarPartition.lean`, `IntegratedOriginCollarLeverage.lean`: Literal signed odd-coset
+  partition, measurable optimal origin shares, and the integrated finite-interval bound with a
+  strictly positive finite real coefficient for compact-continuous sources. Physical shares use
+  equal multiplicity; their global optimization remains open. Working facts and failures:
+  [transport ledger](OriginCollarTransport-FACTS.md).
+- `DistantCopyPolarEnforcement.lean`: Distant translated-copy subtraction proving Trap 5 (exponentially
+  small archimedean energy perturbation under finite-grid polar enforcement).
 
 ---
 
-### Pillar III: Hyperbolic Polar Balance & Lévy–Sinh Functional (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`)
+### Layer II: Convex Duality & Clique Extremal Theory (Pillar V)
 
-Studies how the hyperbolic polar hyperplane constraint
-$$\int_0^\infty h(x)\cosh(x/2)\,dx = 0 \qquad \left(\text{equivalently } \Bigl(\int_{\mathbb{R}} g(u)e^{u/2}\,du\Bigr)\Bigl(\int_{\mathbb{R}} g(u)e^{-u/2}\,du\Bigr) = 0\right)$$
-couples to the positive-definite cone $\mathcal{P}(\mathbb{R})$ and the singular Lévy–sinh energy
-$\mathcal{J}_{\mathrm{arch}}(h) = \int_0^\infty (h(0) - h(x))\frac{e^{x/2}}{\sinh x}\,dx$:
+#### Pillar V: Multi-Node Clique Sphere Duality & Extremizers (`CliqueSphereDualityAndExtremalTheory.lean`)
+Establishes the canonical convex duality and extremal theory for arbitrary difference-orthogonal
+cliques $s$ ($h(t_i - t_j) = 0$ for distinct $i, j \in s$):
+1. **Exact Quadratic Sphere Defect Identity (`clique_sphere_quadratic_defect_identity`):**
+   For any weights $w : \iota \to \mathbb{R}$, state vector $u : \iota \to \mathbb{R}$, radius $R$,
+   and $W_2 := \sqrt{\sum_{i \in s} w_i^2}$:
+   $$2 W_2 R \left(\sum_{i \in s} w_i (R - u_i) - \left(\sum_{i \in s} w_i - W_2\right) R\right) = W_2^2 \left(R^2 - \sum_{i \in s} u_i^2\right) + \sum_{i \in s} \left(W_2 u_i - w_i R\right)^2.$$
+   This single algebraic identity simultaneously proves:
+   - The **Multi-Node Clique Sphere Lower Bound**
+     $\sum_{i \in s} w_i (h(0) - h(y - t_i)) \ge \left(\sum_{i \in s} w_i - \sqrt{\sum_{i \in s} w_i^2}\right) h(0)$,
+   - **Exactness and Uniqueness of the Extremal Ray** $u_i^* = \frac{w_i}{W_2} R$ on the Euclidean
+     sphere $\sum_{i \in s} u_i^2 = R^2$.
+2. **Clique-Rank Amplification Law (`autocorr_clique_uniform_collar_sum_ge`):**
+   For any $M$-element difference-orthogonal clique $s$ ($M = s.\mathrm{card}$),
+   $$\sum_{i \in s} \bigl(h(0) - h(y - t_i)\bigr) \;\ge\; \bigl(M - \sqrt{M}\bigr)\,h(0) \qquad (\forall y \in \mathbb{R}),$$
+   so the average collar defect per node is at least $\left(1 - \frac{1}{\sqrt{M}}\right) h(0) \to h(0)$
+   as the clique size $M \to \infty$ (e.g. along growing dyadic chains $\{2^k\}$).
+3. **Multi-Node Collar Integral Theorem (`integral_autocorr_clique_collar_ge`):**
+   Integrates the $M$-node clique sphere bound against any family of continuous collar weights
+   $w_i(y) \ge 0$ on $[a, b]$.
 
-1. **Exact Pole-Eliminated Weil–Lévy Identity:**
-   On the polar hyperplane $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$, the exact archimedean Weil
-   functional reduces to the pure physical-space bi-scale functional
-   $$\operatorname{weilArchRe}(h) = \Omega(0)\,h(0) + \int_0^\infty \bigl(h(0) - h(x)\bigr)\frac{e^{x/2}}{\sinh x}\,dx,$$
-   so $\operatorname{weilArchRe}(h) \ge 0$ is **equivalent** to the physical-space Bi-Scale
-   Uncertainty Inequality
-   $$\int_0^\infty \bigl(h(0) - h(x)\bigr)\frac{e^{x/2}}{\sinh x}\,dx \ge |\Omega(0)|\,h(0) = \left(\gamma + \frac{\pi}{2} + \log(8\pi)\right) h(0).$$
-2. **Hyperbolic Positive/Negative Lobe Conservation:**
-   Since $h(x) = h^+(x) - h^-(x)$ ($h^\pm = \max(\pm h, 0) \ge 0$), polar neutrality
-   $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$ forces exact conservation of hyperbolic lobe mass:
-   $$\int_0^\infty h^+(x)\cosh(x/2)\,dx = \int_0^\infty h^-(x)\cosh(x/2)\,dx.$$
-   Because $h(0) > 0$ and $h$ is continuous, the positive lobe near the origin is non-empty and
-   forces a strictly positive negative-lobe mass $\int_0^\infty h^-(x)\cosh(x/2)\,dx > 0$.
-3. **Negative-Lobe Amplification & Combined Polar–Lévy Lower Bounds:**
-   On the negative lobe $\{x > 0 : h(x) < 0\}$, the Lévy increment satisfies
-   $h(0) - h(x) = h(0) + h^-(x) > h(0)$. Combining the pointwise Lévy integrand with any positive
-   multiple $\lambda \cdot 4 h(x)\cosh(x/2)$ ($\lambda > 0$) on the polar hyperplane leaves the
-   integral unchanged while modifying the effective kernel to
-   $$(h(0) - h(x))\frac{e^{x/2}}{\sinh x} + 4\lambda h(x)\cosh(x/2) = h(0)\left(\frac{e^{x/2}}{\sinh x} + 4\lambda\cosh(x/2)\right) - h(x)\left(\frac{e^{x/2}}{\sinh x} - 4\lambda\cosh(x/2)\right),$$
-   which **eliminates $h(x)$ completely** at the crossover scale where
-   $\frac{e^{x/2}}{\sinh x} = 4\lambda\cosh(x/2)$ and rewards negative lobes $h(x) < 0$ everywhere
-   beyond that scale!
+---
+
+### Layer III: Non-Commutative Hyperbolic & Arithmetic-Shear Calculus (Pillars VI & VII)
+
+#### Pillar VI: Hyperbolic Shift-Commutator & Parity Intertwining (`HyperbolicShiftCommutatorAndParityIntertwining.lean`)
+Breaks out of the Commutative Bochner Trap (Trap 6) and the Odd-Sector Blind Spot (Trap 7) by
+introducing the non-commutative calculus of **hyperbolic multipliers**
+$(C_\alpha f)(u) = \cosh(\alpha u) f(u)$ and $(S_\alpha f)(u) = \sinh(\alpha u) f(u)$ alongside
+translations $T_x$:
+1. **Hyperbolic Parity Intertwining:**
+   If $f$ is odd ($f(-u) = -f(u)$), then $S_\alpha f$ is **even** and $C_\alpha f$ is **odd**;
+   conversely, if $f$ is even, $S_\alpha f$ is odd and $C_\alpha f$ is even. Thus $S_\alpha$ lifts
+   odd prime-blind states (`OWU` / `HF`) directly into the even sector with origin energy
+   $h_{S_\alpha f}(0) = \int_{\mathbb{R}} \sinh(\alpha u)^2 f(u)^2\,du \ge 0$.
+2. **The Fundamental Hyperbolic Autocorrelation Intertwining Law (`autocorr_coshMultiplier_sub_sinhMultiplier`):**
+   Because $\cosh(\alpha u)\cosh(\alpha(u+x)) - \sinh(\alpha u)\sinh(\alpha(u+x)) = \cosh(\alpha x)$
+   is independent of $u$, every $f \in C_c(\mathbb{R})$ satisfies the exact identity:
+   $$\operatorname{autocorr}(C_\alpha f)(x) - \operatorname{autocorr}(S_\alpha f)(x) = \cosh(\alpha x)\,\operatorname{autocorr}(f)(x) \qquad (\forall x \in \mathbb{R}).$$
+3. **Zero-Grid Coincidence & Unconditional $\cosh$-Increment Coercivity (`autocorr_coshMultiplier_sub_ge_of_zero`):**
+   - At $x = 0$: $h_{C_\alpha f}(0) = h_f(0) + h_{S_\alpha f}(0)$.
+   - At any zero node $x_0$ where $h_f(x_0) = 0$: $h_{C_\alpha f}(x_0) = h_{S_\alpha f}(x_0) \le h_{S_\alpha f}(0)$.
+   - Therefore, at every zero node $x_0$ of $f$, the $\cosh$-weighted autocorrelation increment is
+     bounded below by the **full unweighted origin energy $h_f(0)$**:
+     $$h_f(x_0) = 0 \implies h_{C_\alpha f}(0) - h_{C_\alpha f}(x_0) \;\ge\; h_f(0),$$
+     and along all harmonic subdivisions $x_0 / m$ ($m \ge 1$):
+     $$h_{C_\alpha f}(0) - h_{C_\alpha f}(x_0 / m) \;\ge\; \frac{1}{m^2} h_f(0)!$$
+
+#### Pillar VII: Discrete Coprime Shear & Multiplicative Graph Uncertainty (`CoprimeShearAndMultiplicativeGraphUncertainty.lean`)
+Establishes the discrete arithmetic-archimedean foundation on $\mathbb{N}$ that overcomes the
+Beurling Obstruction (Trap 6) and couples the multiplicative prime graph (`CHMD` / `SourceGraph`)
+to the additive successor lattice:
+1. **Non-Commutative Multiplicative-Additive Telescoping (`mulShift_addShift_diff_eq_sum`):**
+   For any sequence $v : \mathbb{N} \to \mathbb{R}$ and dilation factor $k \ge 1$, the dilated
+   additive step $v(k(n+1)) - v(kn)$ telescopes across $k$ unit additive steps:
+   $$v(k(n+1)) - v(kn) = \sum_{j=0}^{k-1} \bigl(v(kn + j + 1) - v(kn + j)\bigr).$$
+2. **Bi-Scale Multiplicative-to-Additive Dirichlet Energy Inequality (`sum_mulShift_diff_sq_le_mul_sum_add_diff_sq`):**
+   Using Cauchy–Schwarz and the disjointness of the residue blocks $\{kn + j : 0 \le j < k\}$,
+   $$\sum_{n=0}^{N-1} \bigl(v(k(n+1)) - v(kn)\bigr)^2 \;\le\; k \sum_{m=0}^{kN - 1} \bigl(v(m+1) - v(m)\bigr)^2.$$
+3. **Coprime Successor Coercivity on Prime-Multiple Fibers (`add_diff_sq_eq_self_sq_of_prime_supp`):**
+   Because $\gcd(n, n+1) = 1$, no divisor $d \ge 2$ can divide both $n$ and $n+1$
+   (`not_dvd_succ_of_dvd`). Hence if $v$ is supported on multiples of $d \ge 2$, every active node
+   $d \mid n$ ($n \ge 1$) has $v(n+1) = 0$, forcing $\bigl(v(n+1) - v(n)\bigr)^2 = v(n)^2$.
+4. **Nodal Sign-Change vs. Multiplicative Jump Decomposition (`nodal_mulShift_jump_decomp`):**
+   Decomposing $v = v^+ - v^-$ into positive and negative lobes yields the exact identity
+   $$\bigl(v(kn) - v(n)\bigr)^2 = \bigl(|v(kn)| - |v(n)|\bigr)^2 + 4\bigl(v^+(kn)v^-(n) + v^-(kn)v^+(n)\bigr),$$
+   bounding the opposite-sign multiplicative pairing $4\bigl(v^+(kn)v^-(n) + v^-(kn)v^+(n)\bigr)$
+   directly by the multiplicative jump energy $\bigl(v(kn) - v(n)\bigr)^2$.

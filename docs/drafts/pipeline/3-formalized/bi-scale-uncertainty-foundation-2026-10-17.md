@@ -51,3 +51,17 @@
    - `polar_levy_deformation_identity`, `polar_levy_lobe_split_identity`,
      `polar_levy_deformation_lower_bound`:
      Polar–Lévy kernel deformation identity and crossover floor.
+
+4. **Pillar IV — `formal/GaloisForLFunctions/BiScaleUncertainty/FoldedCollarIntegralAndObstructionResolution.lean`**
+   - `autocorr_weighted_reflected_pair_ge_sphere`, `autocorr_weighted_reflected_pair_ge_min`:
+     Weighted reflected-collar sphere lower bound
+     `w₁(h(0) - h(y)) + w₂(h(0) - h(t₁ - y)) ≥ (w₁ + w₂ - √(w₁² + w₂²)) h(0) ≥ (2 - √2) min(w₁, w₂) h(0)`
+     resolving the single-point non-dyadic obstruction at `x = 4 log 2 / 5`.
+   - `intervalIntegral_fold_midpoint`, `integral_autocorr_sub_mul_ge_folded_sphere`:
+     Midpoint interval-folding identity and folded-collar integral lower bound on `[a, t₁ - a]`.
+   - `biScaleLevyEnergy_ge_folded_collar_integral`, `archFoldedCollarConstant_pos`:
+     Unconditional strictly positive lower bound `archFoldedCollarConstant a (Real.log 2) * h(0) ≤ biScaleLevyEnergy f`
+     from a single zero node `h(log 2) = 0`.
+   - `RealSmoothEvenPolarTestFn.weilArchRe_ge_folded_collar_of_log_two_blind`:
+     Direct specialization to smooth real EWU tests (`RealSmoothEvenPolarTestFn`).
+

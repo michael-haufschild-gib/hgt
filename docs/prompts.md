@@ -496,6 +496,9 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BiScaleUncertainty/
 
+Maintain a working log for yourself, not a history or diary, but a ledger of facts and failures you have found during your research and that can guide you or other agents in future research.
+
+Goal is met when you have made 100 signifcant contributions to the new field of mathematics.
 
 ## Open Research - New field of mathematics 
 
@@ -518,3 +521,22 @@ always look at the big picture, try to understand what all our research is tryin
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
 8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BiScaleUncertainty/
+
+
+
+---
+
+### Pillar IV: Open Research Directions & Roadmap
+
+1. **Multi-Chain Toeplitz–Gram Coupling Across Odd Cosets $\mathcal{C}_m$:**
+   Exploit the off-diagonal Gram correlations $\langle U_{\log m} g, U_{\log m'} g\rangle = h(\log(m/m'))$
+   between distinct odd dyadic cosets $\mathcal{C}_m$ and $\mathcal{C}_{m'}$ to sharpen the
+   partitioned Origin-Singularity Leverage bound.
+2. **Optimal Origin-to-Collar Measure Transport on $(0, \log N)$:**
+   Integrate the fiberwise Origin-Singularity Leverage inequality over $y \in (0, \frac{1}{2}\log 2)$
+   with optimal coset weights $\theta_m(y)$ matched to the archimedean Lévy density
+   $w(x) = \frac{e^{x/2}}{\sinh x}$ on the overlapping collars $(\log n - y, \log n + y)$.
+3. **Quantitative Determination of the Bi-Scale Uncertainty Constant $\mathcal{C}(\Lambda_N, w_{\mathrm{arch}}, 1/2)$:**
+   Combine the dyadic-coset Origin-Singularity Leverage bound on $(0, \log N)$ with the hyperbolic
+   polar negative-lobe bound to establish sharp, unconditional lower bounds on
+   $\frac{1}{h(0)}\int_0^\infty (h(0) - h(x))\frac{e^{x/2}}{\sinh x}\,dx$ as a function of $N$.
