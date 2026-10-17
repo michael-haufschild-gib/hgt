@@ -1,8 +1,8 @@
 # Unbounded dissipative calculus on the literal prime Burnol core
 
 - **ID:** cross-route-11-prime-dissipative-core
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE — uncounted
+- **Stage:** 3-formalized
+- **Type:** THEOREM — counted once as contribution 11
 - **Source:** whole local Lean corpus; no external novelty claim
 - **Target:** Every holomorphic function psi on Re z > 0 with Re psi >= 0
   defines a unique closed maximal dissipative generator whose graph is the
@@ -28,10 +28,11 @@ The full realization, domain classification and instance count once.
 
 - [x] Source-pure statement and dependency-closed paper proof.
 - [x] Whole-corpus search and direct-source comparison completed for the lead.
-- [ ] Targeted Lean construction and maximal-domain proof.
-- [ ] Explicit unbounded reciprocal-symbol instance with bounded prime readings.
-- [ ] Public axiom/signature audit, novelty reassessment, wiring, index and lint.
-- [ ] Count only after all required parts close.
+- [x] Targeted Lean construction and maximal-domain proof.
+- [x] Explicit unbounded reciprocal-symbol instance with bounded prime readings.
+- [x] Public axiom/signature audit, novelty reassessment, wiring and index.
+- [x] Formal lint audited: one unrelated concurrent unwired module, detailed below.
+- [x] All required mathematical parts closed; counted once, including all helpers.
 
 ## Dependency-closed paper proof [PROVED HERE]
 
@@ -139,3 +140,77 @@ every bounded holomorphic symbol as a bounded operator with equal norm.
   directions of the complete right-derivative criterion now compile cleanly.
   A direct unique-closed-dissipative-prime-realization theorem is being checked;
   reciprocal instance and the final axiom/signature/wiring gates remain.
+
+## Final formalization audit — 2026-10-17
+
+Seven targeted leaf builds exited 0 with empty logs, using `lake --old env lean
+-j 1 -o ...` sequentially. All seven objects are newer than their sources;
+each leaf is imported exactly once by its theorem-area umbrella. No full build
+or heartbeat increase was used.
+
+All 66 named public declarations were audited with `#print axioms` in `/tmp`.
+Every axiom list is exactly `propext`, `Classical.choice`, `Quot.sound`.
+Fourteen exported signatures, six definitions and the used API probes were
+checked. The symbol structure has only its function, holomorphy and nonnegative
+real-part fields. The graph definition is literally the topological closure
+of the finite-prime span. No RH, source, core, injectivity, or resolvent-admission
+premise appears in the family theorem.
+
+Primary statements, in namespace `RHTower.BurnolAccretiveSymbol`:
+
+- `existsUnique_closed_dissipative_prime_graph` gives uniqueness from the
+  literal prime actions, closedness and dissipativity.
+- `hasDerivWithinAt_iff_graph` identifies the complete right-derivative graph.
+- `differentiable_domain_eq_resolvent_range` gives its exact dense domain.
+- `graph_maximal_dissipative`, `evolution_add`, `norm_evolution_le`, and
+  `continuous_evolution` supply maximality and the C0 contraction evolution.
+
+The literal instance `RHTower.burnolReciprocalSymbol` is `z ↦ z⁻¹`.
+`burnolReciprocalSymbol_prime_bound` proves the common bound `1/log 2`;
+`burnolReciprocalSymbol_graph_unbounded` defeats every finite operator bound;
+`burnolReciprocalSymbol_no_bounded_prime_extension` rules out even a bounded
+extension of the specified prime actions. This is one instance of the family,
+not an additional contribution.
+
+The generator is formalized as a closed, single-valued submodule graph and the
+evolution as a family of bounded operators with the full semigroup and strong
+continuity laws. No separate bundled `LinearPMap` or semigroup API object is
+claimed. No physical-positivity or Bernstein-exponent classification is claimed.
+
+`scripts/formal_tools.py index` exited 0. `scripts/formal_tools.py lint
+--check-generated` exited 1 with 381 existing file-size warnings and exactly
+one unrelated error:
+
+```
+owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CHMDEigenvectorCardinalReadoutAndFourTermNodalDecomposition
+```
+
+That module was under concurrent development and was left untouched. No
+forbidden declaration, generated-file error, or missing import from this
+contribution was reported. The frontier map was not edited.
+
+Audit-output SHA-256:
+`d15cf8d400ef028292defa0fb2f2763d3e4a09f77aaa05a6a16c85a6d934b82c`.
+
+Source hashes, under `formal/GaloisForLFunctions/`:
+
+| Leaf | SHA-256 |
+| --- | --- |
+| `HTGeometry/CayleyDenseResolvent.lean` | `b6d0705e4779b43ddca2351dd25f959c40a5bc45b01274f0687eda36901f6d12` |
+| `RHTower/PrimeBurnolAccretiveSymbol.lean` | `96ca6bdd841f3b8d84b1b606b587f43f37450ead785c57d4dc19615a2a6e132e` |
+| `RHTower/PrimeBurnolAccretiveGraph.lean` | `4d9b4d36e859676a07989c3a72dca64321824371fbadfd80dcbd8cd7a4c53497` |
+| `RHTower/PrimeBurnolAccretiveEvolution.lean` | `4b6e1a21f2083c4674de5dead7f511266fb2cdffd797a173148b51ca78f4889e` |
+| `RHTower/PrimeBurnolAccretiveIntegral.lean` | `9285a651b54d09ed58927cb20dbc25bf39da24bc21f22cdb558879f87192c342` |
+| `RHTower/PrimeBurnolAccretiveGenerator.lean` | `a7485175c8ec0556aa6f952214dbdf29c80bf39bda77d7ae048fbe6e9afa0124` |
+| `RHTower/PrimeBurnolReciprocalGenerator.lean` | `3860f6bac88c782a392413aef5213852092956fbcbc86348e95c45d9843b9cca` |
+
+Novelty/significance reassessment: generic Cayley results, known particular
+unbounded Burnol examples, and scalar continuity do not count. The structural
+advance is the complete actual-prime realization for every accretive holomorphic
+symbol, including the exact maximal derivative domain without admissions.
+This enables arbitrary such unbounded evolutions in the Burnol route. No
+external priority claim is made. Verified goal count: 11/100.
+
+Cleanup complete: all 31 reviewed contribution-11 temporary files were deleted
+and their absence verified. Audit evidence above remains; source and compiled
+objects are preserved. No owned contribution-11 process remains running.

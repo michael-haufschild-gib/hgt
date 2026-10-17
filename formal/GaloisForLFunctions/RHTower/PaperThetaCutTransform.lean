@@ -112,7 +112,7 @@ private theorem norm_flatCharDensity_le_pair {w : ℂ} {B : ℝ}
         (le_add_of_nonneg_left (Real.exp_nonneg _))
   simpa only [mul_add] using mul_le_mul_of_nonneg_left he (thetaSource.normalized_pos x).le
 
-private theorem differentiable_bounded_thetaTransform {f : ℝ → ℂ} {C : ℝ}
+theorem differentiable_bounded_thetaTransform {f : ℝ → ℂ} {C : ℝ}
     (hf : AEStronglyMeasurable f) (hC : ∀ x, ‖f x‖ ≤ C) :
     Differentiable ℂ (fun w => ∫ x, flatCharDensity w x*f x) := by
   have hC0 : 0 ≤ C := (norm_nonneg (f 0)).trans (hC 0)

@@ -1031,3 +1031,51 @@ Module: RHTower/FermiNymanHaarApproximationEquivalence.lean (status recorded bel
 Meaning: the PM producer target is exactly RH (unlike the fixed log-Möbius family, whose canonical
 convergence forces critical simplicity). The mollifier transports every continuous-witness rigidity
 theorem of the lane to measurable witnesses. Producer status unchanged: Wall 1.
+
+## 2026-10-17 producer loop, round 2 (Fable)
+
+Scope fixed by the corpus: both PM sides reduce to zero-free half-planes. FZZ side: the two-parameter
+family (weight `t^{2a-1}`, damping `ε`) of the power-damped Möbius source is admitted exactly on the
+PNT line `a + ε ≥ 1`; every interior point `(a, ε)` is the zero-free half-plane `Re s > a + ε`
+(Mellin side: `η(s)/(s ζ(s+ε)) ∈ H²(Re s > a)`); at `a = 1/2` the finite approximants are mollified
+second moments with mollifier length `N = T^{1/(1-2ε)}`, beyond every Levinson range (Wall 1).
+
+| cycle | conjecture | verdict |
+|---|---|---|
+| C9 | spectral calculus of the dilation average `A_δ` on the witness class (acts diagonally on power witnesses; Livšic–Moeller spectrum of the compressed dilation semigroup) | Wall 12: an exact spectral realisation of the off-line zeros, no producer |
+| C10 | ergodic dilation average `(log M)^{-1}∫_1^M D_μ w dμ/μ` kills every spurious mode and amplifies zero witnesses by `M^{1-Re ρ}/log M` | receiver: RH ⟺ bounded ergodic averages on witnesses |
+| C11 | totality: `{φ_a}_{a≥1} ∪ {t^{-2πik/log 2}}_{k≠0}` dense in `L²(0,1]` | receiver, dual of PM-18 (`W ∩ W_spur^⊥ = 0 ⟺ RH`) |
+| C12 | an interior point of the `(a, ε)` ladder below the PNT line | each is `ZFR(a+ε)`, no intermediate rung; mollifier length exponent `1/(1-2ε) > 1` |
+| C13 | integer dilations suffice unconditionally: `cl span{φ_n : n ∈ ℕ} = cl span{φ_a : a ≥ 1}` | no unconditional proof: Dirichlet-polynomial closure in `H²(Re s>1/2)` is not the dilation closure; Báez-Duarte's integer criterion uses RH; status open, not a producer |
+| PW-B | pure-Ξ no-collision (angular source `≠ 0` at some strict-right zero copy): factors `xi(5ρ/2-1)`, `xi(ρ/2)`, `xi(3ρ/2)` | `3ρ/2` is controlled by a zero of maximal real part, `5ρ/2-1` by the same when `sup Re ρ > 2/3`, `ρ/2` by minimal height; no potential decreases along all three edges; the configuration `Z = {3/5 ± iγ}` with `1/2 + 5iγ/2` a critical zero makes every strict-right zero bad and contradicts no known zero datum. Not provable from zero data; the PW-B coefficient needs a collision-free redesign |
+| C14 | **Mellin-continuation rigidity**: self-similarity needs only an analytic continuation of the witness Mellin transform to an open right-closed region containing every pole `1-ρ`; instances: the right half-plane, and the known zero-free region `{Re z > 1/(59 log|Im z|)}` | **building** (unconditional partial producer: seam contraction of the rigidity domain to the known zero-free region) |
+
+### PM-19 (proved, Lean) — Mellin-continuation rigidity; seam contraction to the known zero-free region
+
+Module `RHTower/FermiNymanWitnessContinuationRigidity.lean` (wired into `RHTower.lean`, axioms
+`propext, Classical.choice, Quot.sound`, lint clean):
+- `IsMellinContinuation w a G Ω`: `G` analytic on an open `Ω ⊇ {Re z > a}`, closed under moving right
+  on horizontal lines, `G = W` on `Re z > a`.
+- `IsMellinFermiWitness.strip_product`: `(1-2^{-z}) W(z) Ξ(1-z) = -2^{-z} z (1-z) Φ₀(1-z)` on the strip,
+  no nonvanishing hypothesis; `IsMellinContinuation.product_identity` extends it to `Ω ∩ {Re z<1}`
+  by the identity theorem (`isPreconnected_inter`: horizontal segment to the line `Re z = (a+1)/2`).
+- `IsMellinContinuation.selfSimilar`: if `Ω` contains every pole `1-ρ` (`Ξ(ρ)=0`) then `w(t/2)=w(t)`.
+  The glued defect `continuedDefect` is entire, equals the exponent-`a` transform `U` wherever
+  `ζ(1-z) ≠ 0`, inherits its polynomial growth and integer decay, vanishes, Fourier uniqueness.
+  No majorant rate at the exponent (contrast `selfSimilar_of_removable`).
+- Instances: `selfSimilar_of_continuation_halfPlane` (`Ω = {Re z > 0}`);
+  `selfSimilar_of_continuation_zeroFreeRegion` with the explicit region
+  `{Re z > a} ∪ {Re z > 0, |Im z| < 4} ∪ {Re z > 1/(59 log max(|Im z|,2))}` (uses
+  `re_le_one_sub_of_riemannZeta_eq_zero`, width `1/(58 log|γ|)` from `|γ| ≥ 4`);
+  `selfSimilar_of_sq_continuation_zeroFreeRegion` for continuous square-integrable witnesses.
+Meaning: the rigidity domain of the Mellin continuation of an L² witness is no longer the right
+half-plane (PM-15) but the known zero-free region; any future zero-free region transports through
+`IsMellinContinuation.selfSimilar` verbatim. RH in this language: every L² witness's Mellin transform
+continues to the whole strip `0 < Re z ≤ 1/2`; the poles `1-ρ` are the only obstruction, their
+residues are the correlation jets `Φ₀(ρ)`. Producer status: the sliver `0 < Re z < 1/(59 log|Im z|)`
+is the only part of the strip currently free of hypothesis — Wall 1 unchanged.
+- PM-19 addendum: `exists_vk_selfSimilar_of_continuation` — there is a height `γ₁ ≥ e^e` such that
+  continuation to `vkContinuationRegion a γ₁ = {Re z > a} ∪ {Re z > 0, |Im z| < γ₁+1} ∪
+  {Re z > w(max(|Im z|,γ₁))/2}`, `w(T) = (log T)^{-2/3}(log log T)^{-5/3}/10⁸`, forces self-similarity
+  (`abs_re_sub_half_le_vinogradovKorobov`). The hypothesis-free sliver is now of Vinogradov–Korobov
+  shape. Module `FermiNymanWitnessContinuationRigidity.lean`, 547 lines, axioms standard, wired.

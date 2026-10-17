@@ -304,21 +304,36 @@ with `lake env lean`, and wired into `GaloisForLFunctions/RHTower.lean`.
 - **L5** (i),(ii) [L] `ArchimedeanAnomalyConstantLaws.XiC_pole_points`,
   `RHTower.WeilLinearEffectivityObstruction`.
 - **L6** [L] `RHTower.HermitianPencilEulerFactorObstruction`.
-- **L10** [L] corpus parts (`weilPositiveDegree_iff`, κ>d closure MUST-1477).
+- **L1** [L] corpus resonance identity for Im ρ > 0 + `RHTower.EisensteinHeckeResonanceAllZeros`
+  (`heckeHermitianMoment_resonantZero`, every zero off the real axis).
+- **L2** [L] corpus E* Fourier expansion (`d4BM_actualCompletedPoincare_eq_canonicalCuspLeg`) +
+  `RHTower.GaussianTwoSquaresCount` (Jacobi r₂) + `RHTower.EisensteinHeckeFactorizationAtI`
+  (`two_mul_zeta_mul_eisenstein_I`, `eisensteinLineModel_I_eq`: E*(i,s) = 2Γ_ℝ(2s)ζ(s)L(s,χ₋₄)).
+- **L10** [L] corpus parts (`weilPositiveDegree_iff`, κ>d closure MUST-1477); twin rigidity
+  `RHTower.TwinRigidityZetaPower.twin_rigidity`; unconditional corollary (every degree d ≥ 1)
+  `RHTower.TwinRigidityOffLineZero.exists_zero_offLine`; full pole-order classification
+  `RHTower.TwinRigidityPoleOrder.pole_order_rigidity` (all zeros critical ⟹ κ = d ∧ RH ∧ T = ζ^d).
+  Infrastructure: `WeilLineIntegralAnyAbscissa`, `HerglotzWeilBridgeAnyLine`,
+  `CompletionOrderOneEnvelopeAnyLine`.
 - **L12** §1 second clause [L] `RHTower.CompactTestXiDivisibilityObstruction`; §2 corpus; §3 [L]
   `RHTower.WeilArchimedeanExactForm`; §4 computational part [L] `RHTower.CoreNullTestPoleSign`.
 - **L13** corpus.
 - **L14.1** [L] `ArchimedeanAnomalyConstantLaws` (i),(ii); `RHTower.BlindMomentRegion` (iii).
 - **L14.2** [L] `RHTower.WeilNodeDilationFamily` (dilation continuity, PBAP(1)⟹PBAP(1/k), dilated
-  data, half-dilation theta datum).
+  data, half-dilation theta datum); criticality law [L] `RHTower.NullRayDilationCriticality`
+  (`twistedArc_nullRay_criticality`: for the TMP null ray G₀, a(t) = A(G₀(·/t)) has a(1) = 0,
+  a′(1) = −2S, and S ≠ 0 ⟹ a(t) < 0 on the side (t−1)S > 0), infrastructure
+  `RHTower.NullRayDilationSpectral`. The clause "pole-negative near-null tests break every t > 1" is
+  heuristic (≈ asymptotics of the c*-family given an unproved β-Herglotz bridge, rows 424(iii), 438(b)).
 - **L14.3** [L] `RHTower.WeilMarkovPoleCapacity`.
 - **L14.4** [L] `RHTower.ArchimedeanResonanceRange` (resonant range n ≤ 8πe^{γ+π/2}, resonances in
   |τ|<2π), `RHTower.KelvinChirpSeparatorBound` (rigorous ratio bound 4+2√2; the card's ≈5.83 is the
-  heuristic value).
+  heuristic value); `RHTower.BlindCoreWanderingNymanBeurling` (`blind_iff_wandering`: cores = wandering
+  Nyman–Beurling sums); `RHTower.BlindCoreFarkasSeparation` (proven direction: a strictly PD separator
+  excludes cores, `eq_zero_of_kernel_strictPD`; the converse carries the source's closure caveat and is not
+  a theorem).
 - **L14.5, L14.6** [L] `ArchimedeanAnomalyConstantLaws`.
 - Not theorems on this card (no obligation): the PBAP structural-laws addendum (heuristic), L4, L8,
   L9, L11 index law and L12 §1 first clause (stated gap), the quasi-RH ladder conjecture, core existence.
-- **Open formalization items**: T5 (Ruelle–Pollicott), T6 (nuclear Ruelle zeta), L1 (Maass–Selberg
-  resonance identity), L2 (E* Fourier expansion, Hecke factorization), L7 (Davenport–Heilbronn),
-  L10 twin-rigidity paper theorem + corollary, L14.2 criticality law (sign of S for G₀), L14.4
-  NB-wandering reformulation and Farkas dual.
+- **Open formalization items**: T5 (Ruelle–Pollicott), T6 (nuclear Ruelle zeta), L7
+  (Davenport–Heilbronn).

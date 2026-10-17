@@ -202,3 +202,31 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
   Im s > 0; `eisensteinLineModel_I_eq_zero_iff`; `re_lt_half_of_lambda_two_mul_eq_zero` one-sidedness).
   Standard axioms; wired. The "identities hold uniformly in s / no identity locates zeros" bullet is an
   interpretive meta-statement (no theorem content beyond the above).
+- 2026-10-17 card 4: L10 DONE in full. Infrastructure: `WeilLineIntegralAnyAbscissa` (Weil functional as a
+  line integral on any line Re s = c ≥ 3/2 of absolute convergence), `HerglotzWeilBridgeAnyLine`
+  (`weilPositiveFull_of_herglotz_abscissa`: Herglotz on Re s > ½ + agreement beyond any abscissa σ₂ ⟹
+  Weil positivity), `CompletionOrderOneEnvelopeAnyLine` (`orderOneEnvelope_of_finiteOrder_abscissa`).
+  `TwinRigidityZetaPower` (namespace `RHTower.TwinRigidity`): Dirichlet inverse `dinv`, `lamT` (coefficients
+  of −T′/T), `lseries_identities`, `TwinDatum`, `re_logDeriv_nonneg` (zero-pair Hadamard sum),
+  `eq_zetaPow_of_lamT`, **`twin_rigidity`** (all zeros of (s(s−1)Γ_ℝ)^d T critical ⟹ RH ∧ T = ζ^d).
+  `TwinRigidityOffLineZero`: **`exists_zero_offLine`** (unconditional corollary for every degree d ≥ 1: a
+  real FE-invariant twin ζ^d + E, E = Σ e(n)n^{−s} ≢ 0 with e(1) = 0 and Γ_ℝ^d E entire of finite order,
+  has a zero of (2ξ)^d + (s(s−1))^d Γ_ℝ^d E off Re s = ½; the card states d = 3). `TwinRigidityPoleOrder`:
+  `orderOneEnvelope_pole`, `weilPoleWeightFunctional_eq_line`, `weilPoleWeight_nonneg_of_herglotz_abscissa`,
+  `PoleTwinDatum`, **`pole_order_rigidity`** (pole order κ, degree d ≥ 1, all zeros critical ⟹ κ = d ∧ RH ∧
+  T = ζ^d: the full κ<d / κ=d / κ>d classification). Standard axioms; wired.
+- 2026-10-17 card 4: L14.2 criticality law DONE. `NullRayDilationSpectral` (namespace `RHTower.NullRayDilation`):
+  `dil` (Φ_t(z) = tΦ(tz)), `stripTest_dil` (stripTest Φ_t = stripTest Φ(·/t)), `crossCorr_stripTest_dil`,
+  `NullFamily` (Ξ-divisible strip family with jointly blind autocorrelation), `nullRay` G₀, `nullDensity` R,
+  `nullRay_eq_stripTest` (G₀ = stripTest R), `stripDecay_nullDensity`, `hasDerivAt_nullRay`,
+  `exists_abs_deriv_nullRay_le` (|G₀′(y)| ≤ K e^{−9|y|/8}). `NullRayDilationCriticality`: `dilatedEnergy`
+  a(t) = A(G₀(·/t)) (`nullRay_div_eq`), `nullRaySlope` S = Σ Λ(n)n^{−1/2} log n G₀′(log n),
+  `dilatedEnergy_eq` (a = zero side + prime side via the decay-class explicit formula),
+  `norm_dil_le_of_zero` (Cauchy + mean value: (1+|γ|)|tΦ(tγ)| ≤ |t−1|BC at zeros), `hasDerivAt_zeroPart`
+  (Z′(1) = 0), `hasDerivAt_primePart` (P′(1) = −2S), `dilatedEnergy_one`, **`hasDerivAt_dilatedEnergy`**
+  (a′(1) = −2S), **`dilatedEnergy_neg`** (S ≠ 0 ⟹ a(t) < 0 on the side (t−1)S > 0),
+  `exists_nullFamily_xiShiftedGamma` (the TMP family is a null family), `twistedArc_nullRay_criticality`.
+  Standard axioms; wired. Recorded: the clause "pole-negative near-null tests break every t > 1" is the
+  source row 438(b) approximation A(g(·/t)) ≈ |P|(1 − t e^{(t−1)L/2}) for the c*-family "given the
+  β-Herglotz bridge" (W_β-positivity ⟹ Herglotz at β ≠ 1, unproved; row 424 (iii) states it as an
+  assumption): heuristic, not a theorem.
