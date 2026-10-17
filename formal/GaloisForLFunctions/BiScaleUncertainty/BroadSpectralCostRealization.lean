@@ -32,15 +32,16 @@ theorem mul_archLevySinhWeight_le {x : ℝ} (hx : 0 < x) :
   calc
     _ ≤ x * (2 * (Real.exp (-(1 / 2 * x)) / (2 * x / (1 + 2 * x)))) :=
       mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hb zero_le_two) hx.le
-    _ = _ := by field_simp [hx.ne'] <;> ring
+    _ = _ := by field_simp [hx.ne']; ring
 
 theorem integrableOn_mul_archLevySinhWeight :
     IntegrableOn (fun x => x * archLevySinhWeight x) (Ioi 0) := by
   have he : IntegrableOn (fun x : ℝ => Real.exp (-(1 / 2 * x))) (Ioi 0) := by
     simpa only [neg_mul] using (integrableOn_exp_mul_Ioi (a := -(1 / 2 : ℝ)) (by norm_num) 0)
   have hi : IntegrableOn (fun x : ℝ => (2 * x + 1) * Real.exp (-(1 / 2 * x))) (Ioi 0) := by
-    convert (RHTower.integrableOn_mul_exp_neg_half.const_mul 2).add he using 1
-    ext x
+    refine ((RHTower.integrableOn_mul_exp_neg_half.const_mul 2).add he).congr ?_
+    filter_upwards [] with x
+    dsimp only [Pi.add_apply]
     ring
   refine hi.mono' (by unfold archLevySinhWeight; fun_prop) ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
@@ -48,7 +49,7 @@ theorem integrableOn_mul_archLevySinhWeight :
   exact mul_archLevySinhWeight_le hx
 
 theorem archWeightFirstMoment_nonneg : 0 ≤ archWeightFirstMoment :=
-  setIntegral_nonneg measurableSet_Ioi fun x hx =>
+  setIntegral_nonneg measurableSet_Ioi fun _ hx =>
     mul_nonneg hx.le (archLevySinhWeight_pos hx).le
 
 /-- Every compact `C²` source has a global linear correlation-increment bound. -/
@@ -62,8 +63,9 @@ theorem exists_autocorr_increment_linear_bound {f : ℝ → ℝ}
   have hi0 : Integrable (fun u => f u * f u) := by simpa using integrable_mul_shift hf.continuous hfc 0
   have hix := integrable_mul_shift hf.continuous hfc x
   have hi : Integrable (fun u => f u * (f u - f (u + x))) := by
-    convert hi0.sub hix using 1
-    ext u
+    refine (hi0.sub hix).congr ?_
+    filter_upwards [] with u
+    dsimp only [Pi.sub_apply]
     ring
   have hid : autocorr f 0 - autocorr f x = ∫ u, f u * (f u - f (u + x)) := by
     unfold autocorr
@@ -128,7 +130,7 @@ theorem exists_source_normalized_energy_lt {f : ℝ → ℝ} {r : WithTop ℕ∞
     have hb := hbound (δ * x)
     rw [abs_of_pos (mul_pos hδ hx)] at hb
     have hmul := mul_le_mul_of_nonneg_left hb (inv_pos.mpr hδ).le
-    have heq : δ⁻¹ * (M * (δ * x)) = M * x := by field_simp [hδ.ne'] <;> ring
+    have heq : δ⁻¹ * (M * (δ * x)) = M * x := by field_simp [hδ.ne']
     rw [heq] at hmul
     have hi : δ⁻¹ * autocorr f 0 - δ⁻¹ * autocorr f (δ * x) ≤ M * x := by
       simpa only [mul_sub] using hmul
@@ -141,7 +143,7 @@ theorem exists_source_normalized_energy_lt {f : ℝ → ℝ} {r : WithTop ℕ∞
     calc
       _ ≤ (M * archWeightFirstMoment) / (δ⁻¹ * autocorr f 0) :=
         div_le_div_of_nonneg_right hraw (by positivity)
-      _ = _ := by dsimp [K]; field_simp [hδ.ne', hR.ne'] <;> ring
+      _ = _ := by dsimp [K]; field_simp [hδ.ne', hR.ne']
   have heq : δ * (K + 1) = ε := by
     dsimp [δ]
     field_simp [ne_of_gt (show 0 < K + 1 by linarith)]

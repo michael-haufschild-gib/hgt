@@ -158,7 +158,11 @@ the bound `E≤A+Ab`, and quantitative capacity improvement. It also specializes
 the literal logarithmic-grid partition and proves measurability, bounds, and integrability.
 Final audit results are recorded in the working ledger and the proof card.
 
-The continuous theorem (3) has a complete paper proof. Its general physical-partition type,
-measurable minimum over active collars, physical pullback, and integrated gap identity still
-need Lean formalization. Neither optimizer existence nor necessity of the canonical zero-gap
-certificate is asserted. Do not count the algebraic support lemmas as separate contributions.
+The continuous theorem (3) is also formalized. `PhysicalCollarPartition.lean` defines admissible
+shares and proves their affine cost transport; `PhysicalCollarDualPrices.lean` proves measurable
+minimum active prices and exact physical pairing; `PhysicalCollarDualCertificate.lean` proves
+the integrated gap, supremum bounds, complementary allocation, aggregate-norm rigidity, and
+the exact `N=2` optimum. Direct leaf and standard-axiom audits pass; see the working ledger.
+The full block-ray classification and the source-energy bound for arbitrary physical partitions
+remain paper-only. General optimizer existence for `N>2` and necessity of the canonical zero-gap
+certificate are not asserted. Do not count support lemmas as separate contributions.

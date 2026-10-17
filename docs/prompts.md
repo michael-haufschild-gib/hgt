@@ -482,7 +482,7 @@ make one significant contribution to your research topic. a contribution is sign
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
-do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are, also to find existing building blocks for your work to not duplicate existing work.
 
 always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
 
@@ -496,9 +496,13 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BiScaleUncertainty/
 
-Maintain a working log for yourself, not a history or diary, but a ledger of facts and failures you have found during your research and that can guide you or other agents in future research.
-
 Goal is met when you have made 100 signifcant contributions to the new field of mathematics.
+
+Keep a knowledge ledger for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
+
+Your topic of research: 
+
+
 
 ## Open Research - New field of mathematics 
 
@@ -524,19 +528,29 @@ always look at the big picture, try to understand what all our research is tryin
 
 
 
----
+## 6. Canonical Open Problems & Guide for Future Research Agents
 
-### Pillar IV: Open Research Directions & Roadmap
+When extending `GaloisForLFunctions.BiScaleUncertainty`, future agents should orient their work
+around the following four canonical frontier problems while respecting the Seven Structural Traps:
 
-1. **Multi-Chain Toeplitz–Gram Coupling Across Odd Cosets $\mathcal{C}_m$:**
-   Exploit the off-diagonal Gram correlations $\langle U_{\log m} g, U_{\log m'} g\rangle = h(\log(m/m'))$
-   between distinct odd dyadic cosets $\mathcal{C}_m$ and $\mathcal{C}_{m'}$ to sharpen the
-   partitioned Origin-Singularity Leverage bound.
-2. **Optimal Origin-to-Collar Measure Transport on $(0, \log N)$:**
-   Integrate the fiberwise Origin-Singularity Leverage inequality over $y \in (0, \frac{1}{2}\log 2)$
-   with optimal coset weights $\theta_m(y)$ matched to the archimedean Lévy density
-   $w(x) = \frac{e^{x/2}}{\sinh x}$ on the overlapping collars $(\log n - y, \log n + y)$.
-3. **Quantitative Determination of the Bi-Scale Uncertainty Constant $\mathcal{C}(\Lambda_N, w_{\mathrm{arch}}, 1/2)$:**
-   Combine the dyadic-coset Origin-Singularity Leverage bound on $(0, \log N)$ with the hyperbolic
-   polar negative-lobe bound to establish sharp, unconditional lower bounds on
-   $\frac{1}{h(0)}\int_0^\infty (h(0) - h(x))\frac{e^{x/2}}{\sinh x}\,dx$ as a function of $N$.
+1. **Asymptotic & Quantitative Growth of Multi-Coset Bi-Scale Constants $\mathcal{C}(\Lambda_N, w)$:**
+   Combine the Multi-Node Clique Sphere Duality (Pillar V), the Multi-Node Schur–Krein Residual
+   Coupling between distinct collars (Pillar VIII), and the Signed Dyadic Collar Partition (Pillar IV)
+   to establish sharp, monotone lower bounds on $\mathcal{J}_{\mathrm{arch}}(f) / h_f(0)$ as a
+   function of $N$, tracking how the overlapping collars of distinct odd cosets $\mathcal{C}_m$
+   couple as $\log N \to \infty$.
+2. **Hyperbolic Multiplier Lifting of Odd Prime-Blind States (`OWU` / `HF`):**
+   Use the Fundamental Hyperbolic Autocorrelation Intertwining Law (Pillar VI) and the
+   Cosecant–Secant Dual Decomposition (Pillar IX) to transfer multi-node clique lower bounds from
+   the even multiplier $S_\alpha f$ (when $f$ is odd) back to the odd secant/plastic crossover
+   functional.
+3. **Continuum Coprime Shear & Non-Commutative $(ax+b)$ Uncertainty:**
+   Lift the discrete Multiplicative-to-Additive Dirichlet Energy Inequality and Coprime Successor
+   Coercivity (Pillar VII) to continuous logarithmic coordinates via the non-linear additive shear
+   $x \mapsto \log(e^x + 1)$ and coupling between `SourceGraph` multiplicative jumps and additive
+   Sobolev/Dirichlet regularity.
+4. **Infinite-Grid Tail Rigidity Beyond Trap 5:**
+   Because finite-$N$ polar constraints decouple via distant copies at scale $T \gg \log N$
+   (Trap 5), any proof that exploits the polar hyperplane $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$
+   beyond the pure positive-definite cone bound must couple the polar tail at scale $T$ to the
+   exponentially dense logarithmic grid nodes $\log n \in [T - D, T + D]$ where $\Delta x_n \asymp e^{-T}$.

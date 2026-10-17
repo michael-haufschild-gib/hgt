@@ -28,9 +28,57 @@ $x = \log t$:
    measure**
    $$\mathcal{J}_{\mathrm{arch}}(h) = \int_0^\infty \bigl(h(0) - h(x)\bigr)\,\frac{e^{x/2}}{\sinh x}\,dx, \qquad \frac{e^{x/2}}{\sinh x} = 2\sum_{k=0}^\infty e^{-(2k+1/2)x} \sim \frac{1}{x} \quad (x \to 0^+).$$
 
+**Bi-Scale / Logarithmic-Grid Uncertainty Theory** is the independent mathematical discipline that
+studies the geometry, convex sphere duality, multi-node Gram/Schur residuals, non-commutative
+hyperbolic multiplier calculus, and discrete coprime shear inequalities of correlation kernels and
+unitary representations simultaneously constrained by **non-uniform / logarithmic zero grids** and
+**hyperbolic / singular scale measures**.
+
 ---
 
-## 2. The Seven Structural Traps: Why Existing Methods Fail and What the New Field Must Overcome
+## 2. Canonical Language, Mathematical Objects & Formal Dictionary
+
+Every researcher or agent working in `GaloisForLFunctions.BiScaleUncertainty` should use the
+following canonical objects, terminology, and Lean 4 declarations rather than reinventing ad-hoc
+definitions:
+
+### 2.1 Correlation Kernels, Chord Geometry & Lobes
+
+| Concept / Object | Mathematical Definition | Lean 4 Declaration & Module |
+| :--- | :--- | :--- |
+| **Autocorrelation Kernel** | $h_f(x) := (f \star \tilde{f})(x) = \int_{\mathbb{R}} f(u)\,f(u+x)\,du$ | `autocorr f x` (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`) |
+| **Origin Energy (Radius)** | $R = h_f(0) = \int_{\mathbb{R}} f(u)^2\,du = \|f\|_{L^2}^2 \ge 0$ | `autocorr f 0` (`KreinIncrementAndChordCascade.lean`) |
+| **Autocorrelation Increment** | $\Delta h_f(x) := h_f(0) - h_f(x) = \frac{1}{2}\int_{\mathbb{R}} (f(u) - f(u+x))^2\,du \ge 0$ | `autocorr f 0 - autocorr f x` (`KreinIncrementAndChordCascade.lean`) |
+| **Translation Chord Distance** | $d_f(x, y) := \|T_x f - T_y f\|_{L^2} = \sqrt{2(h_f(0) - h_f(x - y))}$ | `autocorr_sqrt_sub_add_le` (`KreinIncrementAndChordCascade.lean`) |
+| **Positive & Negative Lobes** | $h_f^+(x) := \max(h_f(x), 0)$, $h_f^-(x) := \max(-h_f(x), 0)$, $h_f = h_f^+ - h_f^-$ | `autocorrPos f x`, `autocorrNeg f x` (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`) |
+| **Hyperbolic Polar Hyperplane** | $\int_0^\infty h_f(x)\cosh(x/2)\,dx = 0 \iff \int_0^\infty h_f^+\cosh\frac{x}{2} = \int_0^\infty h_f^-\cosh\frac{x}{2}$ | `integral_autocorrPos_cosh_eq_autocorrNeg_cosh` (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`) |
+
+### 2.2 Difference-Orthogonal Cliques, Collars & Convex Sphere Duality
+
+| Concept / Object | Mathematical Definition | Lean 4 Declaration & Module |
+| :--- | :--- | :--- |
+| **Zero Grid (Pinning Set)** | $\Lambda \subset (0, \infty)$ where $h_f(t) = 0$ for all $t \in \Lambda$ (e.g. $\Lambda_N = \{\log n : 2 \le n \le N\}$) | `hzeros` hypotheses across all modules |
+| **Difference-Orthogonal Clique** | Finite family $\{t_i\}_{i \in s}$ with $h_f(t_i - t_j) = 0$ for all $i \ne j$ in $s$ | `horth : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → autocorr f (t i - t j) = 0` |
+| **Dyadic-Odd Coset** | $\mathcal{C}_m := \{\log(m \cdot 2^k) : 2 \le m \cdot 2^k \le N\}$ ($m$ odd); every $\mathcal{C}_m$ is a clique in $\Lambda_N$ | `autocorr_dyadic_coset_sphere_sub_le` (`MultiplicativeChainBesselAndOriginLeverage.lean`) |
+| **Collar Evaluation Vector** | For collar offset $y \in \mathbb{R}$, the vector $u(y) = (h_f(y - t_i))_{i \in s}$ or $(h_f(t_i + y))_{i \in s}$ | `autocorr_finset_bessel_sq_le` (`MultiplicativeChainBesselAndOriginLeverage.lean`) |
+| **Clique Sphere Duality Factor** | $\mathcal{D}_s(w) := \sum_{i \in s} w_i - \sqrt{\sum_{i \in s} w_i^2} \ge 0$ (for $w_i \ge 0$) | `cliqueSphereDualityFactor s w` (`CliqueSphereDualityAndExtremalTheory.lean`) |
+| **Sphere Extremal Ray** | $u_i^* := \frac{w_i}{\sqrt{\sum_{j \in s} w_j^2}}\,R$, the unique ray saturating $\sum w_i(R - u_i) \ge \mathcal{D}_s(w) R$ on $\sum u_i^2 \le R^2$ | `cliqueSphereExtremizer s w R i` (`CliqueSphereDualityAndExtremalTheory.lean`) |
+| **Scaled Frame Residual** | $\operatorname{Res}_s(e, R, x) := R x - \sum_{i \in s} \langle e_i, x\rangle e_i$ in any real inner product space $E$ | `scaledFrameResidual s e R x` (`AbstractBiScaleSystemAndSchurKreinCoupling.lean`) |
+
+### 2.3 Archimedean Weights, Dual Kernels & Non-Commutative Operators
+
+| Concept / Object | Mathematical Definition | Lean 4 Declaration & Module |
+| :--- | :--- | :--- |
+| **Forward Archimedean Lévy Weight** | $w_{\mathrm{arch}}(x) := \frac{e^{x/2}}{\sinh x}$ for $x > 0$ ($0$ for $x \le 0$) | `archLevySinhWeight x` (`HyperbolicPolarBalanceAndLevySinhFunctional.lean`) |
+| **Dual Archimedean Lévy Weight** | $w_{\mathrm{dual}}(x) := \frac{e^{-x/2}}{\sinh x}$ for $x > 0$ ($0$ for $x \le 0$), from $s \leftrightarrow 1 - s$ | `archDualLevySinhWeight x` (`CosecantSecantDualDecomposition.lean`) |
+| **Hyperbolic Secant Weight** | $w_{\mathrm{sech}}(x) := \operatorname{sech}(x/2) = \frac{1}{\cosh(x/2)} > 0$, smooth & positive-definite on $\mathbb{R}$ | `archSechHalfWeight x` (`CosecantSecantDualDecomposition.lean`) |
+| **Bi-Scale Lévy Energies** | $\mathcal{J}_{\mathrm{arch}}(f) = \mathcal{J}_{\mathrm{sech}}(f) + \mathcal{J}_{\mathrm{dual}}(f) = \int_0^\infty (h_f(0) - h_f(x))\,w(x)\,dx$ | `biScaleLevyEnergy f`, `biScaleSecantEnergy f`, `biScaleDualLevyEnergy f` |
+| **Hyperbolic Multipliers** | $(C_\alpha f)(u) := \cosh(\alpha u) f(u)$, $(S_\alpha f)(u) := \sinh(\alpha u) f(u)$ | `coshMultiplier α f`, `sinhMultiplier α f` (`HyperbolicShiftCommutatorAndParityIntertwining.lean`) |
+| **Discrete Multiplicative & Additive Shifts** | $(M_k v)(n) := v(kn)$, $(T_a v)(n) := v(n+a)$, $(\Delta_+ v)(n) := v(n+1) - v(n)$, $(\Delta_{\times, k} v)(n) := v(kn) - v(n)$ | `mulShift k v`, `addShift a v`, `addDiff v`, `mulJump k v` (`CoprimeShearAndMultiplicativeGraphUncertainty.lean`) |
+
+---
+
+## 3. The Seven Structural Traps (Obstructions & Design Laws)
 
 Extensive formal investigations across `GaloisForLFunctions.RHTower` (`CHMD`, `HF`, `OWU`, `EWU`)
 and `GaloisForLFunctions.BiScaleUncertainty` have uncovered **seven structural traps**—four
@@ -71,27 +119,29 @@ classical single-group traps and three deeper frontier traps that govern the des
 
 ### Part B: The Three Deep Frontier Traps (Why Layer I Must Extend to Layers II & III)
 
-5. **Trap 5 — The Distant-Copy Polar Decoupling Trap (`DistantCopyPolarEnforcement.lean`):**
+5. **Trap 5 — The Distant-Copy Polar Decoupling Trap (`DistantCopyPolarEnforcement.lean` & `FiniteMomentEnergyInvariance.lean`):**
    Suppose we impose only **finitely many** logarithmic grid zeros $h(\log n) = 0$ ($2 \le n \le N$)
    on a compactly supported source $f$ (say supported in $[-D/2, D/2]$). Then replacing $f(u)$ by
    $$\operatorname{polarCopy}(f, T)(u) := f(u) - e^{-T/2} f(u - T)$$
    for a very large translation $T \gg \max(D, \log N)$ **automatically enforces the hyperbolic polar
    hyperplane constraint** $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$, **preserves all grid zeros**
    $h(\log n) = 0$ for $2 \le n \le N$, and changes the normalized archimedean energy
-   $\mathcal{J}_{\mathrm{arch}}(h) / h(0)$ by only $O(e^{-T}) \to 0$ as $T \to \infty$!
+   $\mathcal{J}_{\mathrm{arch}}(h) / h(0)$ by only $O(e^{-T}) \to 0$ as $T \to \infty$. More
+   generally, any finite list of exponential source moments can be enforced at zero asymptotic cost.
    - **Strategic Consequence:** For finite truncation $N$, the polar hyperplane constraint
      $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$ cannot increase the infimum of
      $\mathcal{J}_{\mathrm{arch}}(h)/h(0)$ over compactly supported functions unless the logarithmic
      grid constraints $\Lambda$ also constrain the distant scale $T$ (where the logarithmic grid
      spacing $\Delta x_n \asymp e^{-T}$ becomes exponentially denser than the support diameter $D$).
-6. **Trap 6 — The Commutative Bochner / Beurling Trap:**
+6. **Trap 6 — The Commutative Bochner / Beurling Trap (`FiniteSourceEnergyScalarization.lean` & `FiniteSpectralEnvelopeRealization.lean`):**
    As long as our theorems only use inner products of **additive translations**
    $\langle U_{t_i} f, U_{t_j} f \rangle = h(t_i - t_j)$ on $L^2(\mathbb{R})$, all operators $U_t$
    **commute** ($U_t U_s = U_{t+s}$) and are simultaneously diagonalized by the Fourier transform
-   $\hat{h}(\omega) = |\hat{f}(\omega)|^2 \ge 0$. Moreover, difference-closed chains on
-   $\Lambda_N = \{\log n\}$ only see the **multiplicative semigroup** $(\mathbb{N}, \times)$ via
-   divisibility $m \mid n \implies \log n - \log m = \log(n/m)$. Any Beurling generalized number
-   system has the exact same divisibility chains, even when it violates the Riemann Hypothesis!
+   $\hat{h}(\omega) = |\hat{f}(\omega)|^2 \ge 0$. Moreover, finite vector correlations can be
+   scalarized without increasing energy, and difference-closed chains on $\Lambda_N = \{\log n\}$
+   only see the **multiplicative semigroup** $(\mathbb{N}, \times)$ via divisibility
+   $m \mid n \implies \log n - \log m = \log(n/m)$. Any Beurling generalized number system has the
+   exact same divisibility chains, even when it violates the Riemann Hypothesis!
    - **Strategic Consequence:** While commutative Bochner–Gram bounds can close finite-$N$ threshold
      bounds in the even sector once $\mathcal{C}(\Lambda_N, w_{\mathrm{arch}}) \ge |\Omega(0)|$, a
      complete theory must incorporate the **non-commutative affine $(ax+b)$ algebra** linking
@@ -113,7 +163,7 @@ classical single-group traps and three deeper frontier traps that govern the des
 
 ---
 
-## 3. Core Architecture: The Three Layers & Ten Pillars of `BiScaleUncertainty`
+## 4. Core Architecture: The Three Layers & Ten Pillars of `BiScaleUncertainty`
 
 To meet the standards of an independent mathematical discipline—with an abstract axiomatic
 Hilbert-space framework, intrinsic invariants, exact convex extremal duality, standalone
@@ -200,31 +250,21 @@ cone and the singular Lévy–sinh energy `biScaleLevyEnergy`:
 - **Polar–Lévy Kernel Deformation & Crossover Floor (`polar_levy_deformation_lower_bound`).**
 
 #### Pillar IV: Folded-Collar Integral Bounds, Multi-Coset Transport & Structural Invariance
-- `FoldedCollarIntegralAndObstructionResolution.lean`: Midpoint-folded reflected-collar integral
-  lower bound resolving the $x = \frac{4}{5}\log 2$ single-point obstruction unconditionally across
-  all smooth real EWU tests (`RealSmoothEvenPolarTestFn.weilArchRe_ge_folded_collar_of_log_two_blind`).
-- `SharedOriginMultiCosetLeverage.lean`, `MultiChainToeplitzGramCoupling.lean`,
-  `OptimalOriginAllocation.lean`, `TriangularGramSineBound.lean`,
-  `SynchronizedCosetSineLeverage.lean`, `ProfileStableCosetLeverage.lean`: Shared-origin multi-coset
-  sphere bounds, full Gram-energy square remainder identities, proportional origin-weight allocation,
-  and triangular Gram / synchronized-coset sine leverage bounds.
-- `OverlapSafeCollarMeasureTransport.lean`, `LogarithmicCollarCoverage.lean`: Overlap-safe collar
-  measure transport and exact coverage of $(\frac{1}{2}\log 2, \log N)$ by half-$\log 2$ collars
-  around $\Lambda_N$.
-- `SignedDyadicCollarPartition.lean`, `IntegratedOriginCollarLeverage.lean`: Literal signed odd-coset
-  partition, measurable optimal origin shares, and the integrated finite-interval bound with a
-  strictly positive finite real coefficient for compact-continuous sources. Physical shares use
-  equal multiplicity; their global optimization remains open. Working facts and failures:
-  [transport ledger](../../../docs/reports/BiScaleUncertainty/OriginCollarTransport-FACTS.md).
-- `CollarAllocationDuality.lean`: Explicit marginal prices, exact radial/directional comparison
-  remainder, aggregate-norm rigidity, and quantitative improvement under added collar capacity.
-  The continuous physical-allocation gap theorem is paper-proven; its complete Lean integration
-  remains open.
-- `DistantCopyPolarEnforcement.lean`, `FiniteMomentEnergyInvariance.lean`,
-  `FiniteSourceEnergyScalarization.lean`, `FiniteSpectralEnvelopeRealization.lean`: Distant
-  translated-copy subtraction proving Trap 5, invariance of finite-grid constants under any finite
-  list of real exponential source moments, scalarization of finite vector correlations, and exact
-  spectral envelope realization.
+- **Folded-Collar Obstruction Resolution (`FoldedCollarIntegralAndObstructionResolution.lean`):**
+  Midpoint-folded reflected-collar integral lower bound resolving the $x = \frac{4}{5}\log 2$
+  single-point obstruction unconditionally across all smooth real EWU tests
+  (`RealSmoothEvenPolarTestFn.weilArchRe_ge_folded_collar_of_log_two_blind`).
+- **Multi-Coset Gram & Sine Leverage (`SharedOriginMultiCosetLeverage.lean`, `MultiChainToeplitzGramCoupling.lean`, `OptimalOriginAllocation.lean`, `TriangularGramSineBound.lean`, `SynchronizedCosetSineLeverage.lean`, `ProfileStableCosetLeverage.lean`):**
+  Shared-origin multi-coset sphere bounds, full Gram-energy square remainder identities,
+  proportional origin-weight allocation, and triangular Gram / synchronized-coset sine leverage bounds.
+- **Collar Coverage, Signed Partition & Duality (`OverlapSafeCollarMeasureTransport.lean`, `LogarithmicCollarCoverage.lean`, `SignedDyadicCollarPartition.lean`, `IntegratedOriginCollarLeverage.lean`, `CollarAllocationDuality.lean`):**
+  Overlap-safe collar measure transport, exact coverage of $(\frac{1}{2}\log 2, \log N)$ by
+  half-$\log 2$ collars around $\Lambda_N$, signed odd-coset partitions, measurable optimal origin
+  shares, and explicit marginal-price collar allocation duality.
+- **Polar Decoupling, Scalarization & Spectral Realization (`DistantCopyPolarEnforcement.lean`, `FiniteMomentEnergyInvariance.lean`, `FiniteSourceEnergyScalarization.lean`, `FiniteSpectralEnvelopeRealization.lean`):**
+  Distant translated-copy subtraction proving Trap 5, invariance of finite-grid constants under any
+  finite list of real exponential source moments, scalarization of finite vector correlations, and
+  exact spectral envelope realization.
 
 ---
 
@@ -356,4 +396,65 @@ crossover kernel):
 3. **Hyperbolic Multiplier Secant Identity (`autocorr_mul_archSechHalfWeight_eq_cosh_sub_sinh`):**
    Combining the secant kernel $\operatorname{sech}(x/2)$ with Pillar VI at $\alpha = 1/4$ yields
    $$\frac{h_f(x)}{\cosh(x/2)} = \frac{h_{C_{1/4} f}(x) - h_{S_{1/4} f}(x)}{\cosh(x/4)^2} = \frac{2\bigl(h_{C_{1/4} f}(x) - h_{S_{1/4} f}(x)\bigr)}{\cosh(x/2) + 1}.$$
+
+---
+
+## 5. Complete Module Map (`formal/GaloisForLFunctions/BiScaleUncertainty/`)
+
+| # | Module | Layer / Pillar | Primary Mathematical Role |
+| :--- | :--- | :--- | :--- |
+| 1 | `KreinIncrementAndChordCascade.lean` | Layer I / Pillar I | Translation chord distance, Krein increment inequality, quadratic & dyadic cascades, sub-grid lower bounds |
+| 2 | `MultiplicativeChainBesselAndOriginLeverage.lean` | Layer I / Pillar II | Multi-node Bessel inequality, origin-anchored & reflected sphere laws, Origin-Singularity Leverage, dyadic cosets |
+| 3 | `HyperbolicPolarBalanceAndLevySinhFunctional.lean` | Layer I / Pillar III | Pole-eliminated Weil–Lévy identity, hyperbolic lobe conservation $h^+ \leftrightarrow h^-$, Polar–Lévy deformation |
+| 4 | `FoldedCollarIntegralAndObstructionResolution.lean` | Layer I / Pillar IV | Midpoint-folded collar integral bound resolving the $4\log 2 / 5$ non-dyadic interpolation obstruction |
+| 5 | `SharedOriginMultiCosetLeverage.lean` | Layer I / Pillar IV | Shared-origin multi-coset sphere bound and rationalized cross-coset cost |
+| 6 | `MultiChainToeplitzGramCoupling.lean` | Layer I / Pillar IV | Full Gram-energy square remainder identity and off-diagonal cross-coset coupling |
+| 7 | `OptimalOriginAllocation.lean` | Layer I / Pillar IV | Proportional origin-weight allocation across multiple odd dyadic cosets |
+| 8 | `TriangularGramSineBound.lean` | Layer I / Pillar IV | Triangular Gram matrix bounds and sine-profile lower bounds |
+| 9 | `SynchronizedCosetSineLeverage.lean` | Layer I / Pillar IV | Synchronized odd-coset sine leverage inequalities |
+| 10 | `ProfileStableCosetLeverage.lean` | Layer I / Pillar IV | Profile-stable multi-coset leverage under correlation perturbations |
+| 11 | `OverlapSafeCollarMeasureTransport.lean` | Layer I / Pillar IV | Overlap-safe measure transport across logarithmic node collars |
+| 12 | `LogarithmicCollarCoverage.lean` | Layer I / Pillar IV | Exact coverage of $(\frac{1}{2}\log 2, \log N)$ by radius-$\frac{1}{2}\log 2$ collars around $\Lambda_N$ |
+| 13 | `SignedDyadicCollarPartition.lean` | Layer I / Pillar IV | Disjoint signed odd-coset collar partition of $(0, \log N)$ |
+| 14 | `IntegratedOriginCollarLeverage.lean` | Layer I / Pillar IV | Integrated finite-interval collar transport with measurable optimal origin shares |
+| 15 | `CollarAllocationDuality.lean` | Layer I / Pillar IV | Marginal-price convex duality, radial/directional remainder, and capacity monotonicity |
+| 16 | `DistantCopyPolarEnforcement.lean` | Layer I / Pillar IV | Distant translated-copy construction proving Trap 5 (polar decoupling at finite $N$) |
+| 17 | `FiniteMomentEnergyInvariance.lean` | Layer I / Pillar IV | Invariance of finite-grid constants under any finite list of real exponential source moments |
+| 18 | `FiniteSourceEnergyScalarization.lean` | Layer I / Pillar IV | Exact scalarization of finite vector correlations without energy increase |
+| 19 | `FiniteSpectralEnvelopeRealization.lean` | Layer I / Pillar IV | Spectral envelope realization for finite grid correlation constraints |
+| 20 | `CliqueSphereDualityAndExtremalTheory.lean` | Layer II / Pillar V | Division-free quadratic sphere defect identity, unique extremal rays, Clique-Rank Amplification Law |
+| 21 | `AbstractBiScaleSystemAndSchurKreinCoupling.lean` | Layer II / Pillar VIII | Abstract Hilbert-space orthogonal-frame residuals and Multi-Node Schur–Krein Residual Coupling |
+| 22 | `DisjointCollarCliqueDivergenceAndTuransProblem.lean` | Layer II / Pillar X | Periodic-collar tiling, Beurling–Turán Window Divergence Theorem, and Square-Root Cancellation Law |
+| 23 | `HyperbolicShiftCommutatorAndParityIntertwining.lean` | Layer III / Pillar VI | Non-commutative hyperbolic multipliers $C_\alpha, S_\alpha$, parity intertwining, and $\cosh$-increment coercivity |
+| 24 | `CoprimeShearAndMultiplicativeGraphUncertainty.lean` | Layer III / Pillar VII | Multiplicative-additive telescoping, Dirichlet energy inequality, coprime successor coercivity, nodal cross bounds |
+| 25 | `CosecantSecantDualDecomposition.lean` | Layer III / Pillar IX | Functional-equation dual kernel decomposition $w_{\mathrm{arch}} = w_{\mathrm{sech}} + w_{\mathrm{dual}}$ and secant multiplier bridge |
+
+---
+
+## 6. Canonical Open Problems & Guide for Future Research Agents
+
+When extending `GaloisForLFunctions.BiScaleUncertainty`, future agents should orient their work
+around the following four canonical frontier problems while respecting the Seven Structural Traps:
+
+1. **Asymptotic & Quantitative Growth of Multi-Coset Bi-Scale Constants $\mathcal{C}(\Lambda_N, w)$:**
+   Combine the Multi-Node Clique Sphere Duality (Pillar V), the Multi-Node Schur–Krein Residual
+   Coupling between distinct collars (Pillar VIII), and the Signed Dyadic Collar Partition (Pillar IV)
+   to establish sharp, monotone lower bounds on $\mathcal{J}_{\mathrm{arch}}(f) / h_f(0)$ as a
+   function of $N$, tracking how the overlapping collars of distinct odd cosets $\mathcal{C}_m$
+   couple as $\log N \to \infty$.
+2. **Hyperbolic Multiplier Lifting of Odd Prime-Blind States (`OWU` / `HF`):**
+   Use the Fundamental Hyperbolic Autocorrelation Intertwining Law (Pillar VI) and the
+   Cosecant–Secant Dual Decomposition (Pillar IX) to transfer multi-node clique lower bounds from
+   the even multiplier $S_\alpha f$ (when $f$ is odd) back to the odd secant/plastic crossover
+   functional.
+3. **Continuum Coprime Shear & Non-Commutative $(ax+b)$ Uncertainty:**
+   Lift the discrete Multiplicative-to-Additive Dirichlet Energy Inequality and Coprime Successor
+   Coercivity (Pillar VII) to continuous logarithmic coordinates via the non-linear additive shear
+   $x \mapsto \log(e^x + 1)$ and coupling between `SourceGraph` multiplicative jumps and additive
+   Sobolev/Dirichlet regularity.
+4. **Infinite-Grid Tail Rigidity Beyond Trap 5:**
+   Because finite-$N$ polar constraints decouple via distant copies at scale $T \gg \log N$
+   (Trap 5), any proof that exploits the polar hyperplane $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$
+   beyond the pure positive-definite cone bound must couple the polar tail at scale $T$ to the
+   exponentially dense logarithmic grid nodes $\log n \in [T - D, T + D]$ where $\Delta x_n \asymp e^{-T}$.
 

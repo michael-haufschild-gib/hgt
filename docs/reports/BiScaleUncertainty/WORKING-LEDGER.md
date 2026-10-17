@@ -7,7 +7,7 @@ Purpose: reusable facts, obstructions, and open obligations. Not a chronological
 - Target: normalized archimedean increment energy for real autocorrelations with zeros at `log n`, `2≤n≤N`, and hyperbolic polar neutrality.
 - Initial paper domain: nonzero real smooth compactly supported sources, unrestricted support radius. Separate constructions now cover even sources and the full continuous real positive-definite cone with finite energy.
 - Polar integrals on the full cone require absolute integrability. No common support bound is imposed. Infimum equality across different source classes is not claimed.
-- Full user goal: 100 significant contributions. Routine lemmas and restatements do not count.
+- Original research target: 100 significant contributions. User cleared the active goal; research is stopped, not complete. Routine lemmas and restatements do not count.
 
 ## Established facts
 
@@ -26,6 +26,9 @@ Purpose: reusable facts, obstructions, and open obligations. Not a chronological
 | Any finite list of real exponential source moments can be set to zero without changing the finite-grid energy infimum. Rates may be zero or negative. | Lean-certified `exists_source_cancel_rates_local_energy_close`, `finite_moment_log_grid_lower_bound_iff`; the uniform single-copy bound handles every real coefficient. Paper §3 also gives a common-separation polynomial construction with error `≤mK_D e^{−T/2}`. | Formal proof uses successive separations and preserves every differentiability order at least two. The common-separation polynomial estimate remains paper-only. No source-evenness or common support bound. |
 | A finite list of real compact sources has one real compact source with exactly the same summed correlation on any bounded window and no greater energy. Thus finite real vector rank does not improve the grid energy infimum. | Lean-certified `exists_scalar_list_local_energy_le`, `finite_source_log_grid_lower_bound_iff`, and `polar_finite_source_log_grid_lower_bound_iff`; paper §4. Separate supports; both signs preserve local data; their energies average to the component sum. | Real `C^r`, `r≥2`, with support enlargement. Components may cancel at grid nodes; separate component grid zeros are unnecessary. Does not realize arbitrary positive-definite kernels. |
 | The unit-mass scalar-source local correlation/energy epigraph is convex before closure. | Lean-certified `convex_localSourceEnergyEpigraph`; paper §4. Absorb convex coefficients into sources by square roots; scalarize the pair with energy domination. | Support enlargement allowed. This does not prove closedness, attainment, or strong duality. |
+| For a finite spectral probability `μ`, cosine/sine modulation of a compact source gives exact correlation `h_f m_μ` and normalized vector energy within `E(f)` of `S(μ)=Σp_j Ψ(ω_j)`, uniformly in frequencies. Here `Ψ(ω)=gammaBracket(ω)−gammaBracket(0)`. | Lean-certified `autocorr_cosineSource_add_sineSource`, `abs_spectralEnvelopeEnergy_sub_cost_le`, and `archFrequencyCost_eq_gammaBracket_sub_zero`; paper §5. | The two-sided error belongs to the vector source. Scalar sign selection only preserves an upper energy bound. |
+| Every feasible finite spectral probability admits actual smooth compact polar scalar sources with exact logarithmic-grid zeros and energy `<S(μ)+ε`, for every `ε>0`. Thus every valid smooth polar grid lower bound is at most `S(μ)`. | Lean-certified `exists_smooth_polar_grid_source_lt_spectral_cost` and `polar_grid_lower_bound_le_spectral_cost`. A concrete bump and dilation discharge the small-envelope premise. | Only the upper realization direction. Reverse Fourier-measure reduction, exact atomization, attainment, and strong duality remain open. No common support bound. |
+| Compact `C²` sources have `R−h(t)≤M|t|`; dilation `f_δ(u)=f(δu)` gives `E(f_δ)≤δ M M₁/R→0`, with `M₁=∫₀∞xw_arch(x)dx<∞`. | Lean-certified `exists_autocorr_increment_linear_bound`, `autocorr_sourceRescale`, and `exists_source_normalized_energy_lt`; explicit bound `xw_arch(x)≤(2x+1)e^{−x/2}`. | The stronger derivative-based `O(δ²)` rate is paper-only. Dilation alone does not preserve prescribed nonzero-lag zeros; modulation supplies them. |
 
 ## Failed approaches and their positive survivors
 
@@ -36,6 +39,9 @@ Purpose: reusable facts, obstructions, and open obligations. Not a chronological
 - **Claim global sharpness from a sharp finite-dimensional relaxation:** unwarranted. A tuple equality witness need not extend to a positive-definite function with all grid zeros.
 - **Require every translate coefficient to tend to zero:** unnecessary and fails for zero/negative exponential rates. Survivor: normalize by `r₀=Σc_k²`; Cauchy–Schwarz bounds each relative coefficient correlation by 1, uniformly even when coefficients grow.
 - **Require a small cross-energy error to remove finite vector rank:** unnecessarily weak. Survivor: exact sign averaging gives a separated scalar source with no energy increase, not merely convergence. Local cross-products vanish for both signs.
+- **Carry the vector's two-sided spectral error through scalar sign selection:** unjustified. Survivor: the upper bound survives and suffices for spectral-cost upper certificates; a lower comparison needs a separate Fourier argument.
+- **Leave a low-energy envelope as an existence premise:** incomplete source realization. Survivor: an actual smooth compact bump, global Lipschitz control, and the finite first weight moment construct such envelopes at every tolerance.
+- **Infer finite atomic reduction or strong duality from scalar epigraph convexity:** unsupported. Exact moment preservation, closure, and compactness require independent proofs; current corpus search did not supply them.
 
 ## Deformation identities and sign guardrails
 
@@ -45,19 +51,28 @@ Purpose: reusable facts, obstructions, and open obligations. Not a chronological
 
 ## Verification and tooling facts
 
-- Read full task brief and the field README, including its concurrently expanded seven-pillar architecture. Its newer distant-copy discussion is consistent with the verified source theorem.
-- Corpus research returned relevant one-chain/folded-pair endpoints; broad semantic search reported partial coverage and source-only candidates. Exhaustive novelty not established.
-- Serena symbol lookup rejects Lean paths as ignored; use source reads for these files.
-- `update_plan` unavailable; pipeline card tracks work. Independent reads use parallel promises.
-- No numerical experiments, added axioms, raised heartbeat limits, full builds, umbrella builds, or commits.
-- Scratch name probe resolves all currently used helper names; an over-general probe of `Real.sqrt_pos.2` failed implicit-argument inference, not theorem availability.
-- Direct `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/SharedOriginMultiCosetLeverage.olean GaloisForLFunctions/BiScaleUncertainty/SharedOriginMultiCosetLeverage.lean` passed, exit 0, no diagnostics.
-- Scratch audit of all five public result endpoints passed. Axiom sets contain only `propext`, `Classical.choice`, `Quot.sound`. No added axioms or computational proof oracle.
-- `DistantCopyPolarEnforcement.lean` passed direct `lake --old env lean -o ...` with no diagnostics. Separate scratch audit checked all 23 theorems: only `propext`, `Classical.choice`, `Quot.sound`. The explicit smooth-order specialization also passed. Source order is `WithTop ℕ∞`; smooth means the coerced inner top, with `WithTop.coe_le_coe.mpr le_top` supplying `2≤smooth`.
-- The weighted translated-correlation integrability is proved by an explicit integrable envelope; the proof does not exploit totalized nonintegrable Bochner integrals.
-- `FiniteMomentEnergyInvariance.lean` passed direct `lake --old env lean -o ...`, exit 0 without diagnostics. Separate scratch audit checked all five theorems: only `propext`, `Classical.choice`, `Quot.sound`. Explicit smooth specialization at rates `0,±1/2` passed. The initial proof attempt used unavailable `abs_add`; a name probe verified `abs_add_le`, and the corrected leaf passed.
-- `FiniteSourceEnergyScalarization.lean` passed direct `lake --old env lean -o ...`, exit 0 without diagnostics. Separate scratch audit checked all 14 public theorems: only `propext`, `Classical.choice`, `Quot.sound`. Smooth convexity and polar/vector-equivalence specializations passed. Toolchain names are `HasCompactSupport.zero` and `Prod.smul_fst`; the guessed alternatives `hasCompactSupport_zero` and `Prod.fst_smul` do not exist. All owned Lean processes exited.
-- Umbrella imports all four task modules, including `FiniteSourceEnergyScalarization`. Index regeneration passed and lists its 14 public theorems. Scoped `git diff --check` passed. The latest lint snapshot returned four concurrent umbrella-wiring errors: `AbstractBiScaleSystemAndSchurKreinCoupling`, `CollarAllocationDuality`, `CosecantSecantDualDecomposition`, and `DisjointCollarCliqueDivergenceAndTuransProblem`. No error names this task's modules. Global lint is not currently green; do not substitute the earlier passing snapshot.
+All six leaves passed direct `lake --old env lean -o ...`, exit 0 with no diagnostics. Paths are
+under `formal/GaloisForLFunctions/BiScaleUncertainty/`; all six are imported by the umbrella.
+Scratch `#print axioms` results contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+| Leaf | Audited public theorems | Specialization evidence |
+|---|---:|---|
+| `SharedOriginMultiCosetLeverage.lean` | 5 | Literal dyadic grid endpoint. |
+| `DistantCopyPolarEnforcement.lean` | 23 | Explicit smooth-order specialization passed. |
+| `FiniteMomentEnergyInvariance.lean` | 5 | Smooth sources, rates `0,±1/2`, passed. |
+| `FiniteSourceEnergyScalarization.lean` | 14 | Smooth convexity and polar/vector equivalence passed. |
+| `FiniteSpectralEnvelopeRealization.lean` | 13 | Joint spectral audit passed. |
+| `BroadSpectralCostRealization.lean` | 11 | Joint spectral audit and explicit `N=2`, `ω=π/(2log2)` specialization passed. |
+
+- Index regeneration passed and lists all 24 spectral theorems. Scoped `git diff --check` passed. Latest `scripts/formal_tools.py lint` returned one error: concurrent `PhysicalCollarDualCertificate` is unreachable from the field umbrella. It also reported 381 large-file warnings. No error names this task's six modules; global lint is not green. All owned Lean processes exited.
+- Source order is `WithTop ℕ∞`; smooth means coerced inner top, with `WithTop.coe_le_coe.mpr le_top` supplying `2≤smooth`.
+- Weighted translated correlations and spectral error integrands have explicit integrability proofs; no use of totalized nonintegrable Bochner integrals to manufacture identities.
+- Verified toolchain names: `abs_add_le`, `HasCompactSupport.zero`, `Prod.smul_fst`, and global `integrableOn_exp_mul_Ioi`. The alternatives `abs_add`, `hasCompactSupport_zero`, `Prod.fst_smul`, and `Real.integrableOn_exp_mul_Ioi` are unavailable.
+- Scratch literal `Finset.Icc 2 2` needs a natural-number type annotation: without it the log expression can infer real indices and request nonexistent `LocallyFiniteOrder ℝ`.
+- Broad corpus searches reported partial or unmeasured semantic coverage and source-only candidates. No exact finite-atom reduction was located; absence from these results is not an exhaustive novelty proof.
+- Serena ignores Lean paths; use source reads. `update_plan` is unavailable; pipeline card tracks work. Independent reads use parallel promises.
+- Missing cached dependency objects can require serial direct leaf rebuilds. A missing object does not by itself establish a source regression; no cause for the observed cache loss was established.
+- No numerical experiments, added axioms, raised heartbeat limits, full builds, umbrella builds, or commits. Scratch evidence belongs under `/tmp/biscale-quantitative-audit-20261017/`.
 
 ## Adjacent work and contribution accounting
 
@@ -68,20 +83,23 @@ Purpose: reusable facts, obstructions, and open obligations. Not a chronological
 - **Significant contribution 1, Lean-certified core:** quantitative polar enforcement preserving local normalized data and equality of finite-grid lower-bound sets for real compact sources of every order at least two, including smooth sources. Full-cone and even-source-preserving extensions remain paper-proved, not Lean-certified.
 - **Significant contribution 2, Lean-certified core:** arbitrary finite real exponential-moment constraints have no infimum cost on compact sources of every differentiability order at least two with finite-grid zeros. The coefficient-normalized error estimate handles zero/negative rates and permits exponentially growing filters. Prior `SuzukiPolarTranslateMultiplier.lean` already contains translate-symbol multiplication and a filter for `0,±1/2`; those algebraic facts are not counted as new. Exact local preservation plus uniform vanishing energy cost is the new assertion. The explicit common-separation polynomial estimate remains paper-only.
 - **Significant contribution 3, Lean-certified:** exact finite real vector rank removal with local data preservation and energy domination; equality of finite-grid lower bounds with the polar scalar class; convexity of the actual scalar local energy epigraph. Count this as one package, not one advance per theorem. The prior complex-even scalarization results above delimit its contribution.
-- **Lean-certified significant core contributions: 3.** No claim of exhaustive external novelty. Do not count supporting theorems individually or mark the 100-contribution goal complete.
+- Prior `WeilWorkPBAPJointProfiles.lean` already proves cosine/sine correlation modulation for complex smooth sources. The elementary modulation identity is not new; the added result is uniform archimedean energy control and actual smooth real polar scalar realization with exact finite-grid zeros.
+- **Significant contribution 4, Lean-certified:** every feasible finite spectral probability supplies actual smooth compact polar scalar grid sources with energy below its cost plus arbitrary positive tolerance. The envelope premise is discharged by a concrete bump and dilation. Count the two spectral leaves as one package, not separate advances per helper or rate estimate.
+- **Lean-certified significant core contributions: 4.** No claim of exhaustive external novelty. Do not count supporting theorems individually or mark the 100-contribution goal complete.
 
 ## Next obligations
 
-1. Formalize triangular taper/full-cone extension and source-evenness preservation where needed. The scalar finite-moment core is complete; do not redo it.
-2. Connect the now-available adjacent integrated collar theorem to this note's explicit reflection-allocation family, proving any required comparison rather than identifying different partitions without proof.
-3. Shared-origin bound, equality witness, rational bound, and literal dyadic specialization are certified; do not redo them.
-4. Derive stronger bounds or matching extremizers/asymptotics for actual constant. Existing certificates are not a global solution.
-5. Both overview copies now have the corrected deformation and crossover sign. Keep source claims aligned with proof scope.
+1. Prove the reverse source-to-spectral comparison and exact finite atomic moment reduction. `CHMDWindowFourierTail.lean` contains an existing Fourier energy identity; `HTGeometry/FiniteRealAtomicMeasure.lean` computes integrals of already-finite atomic measures but does not provide atomization. Verify applicability before reuse.
+2. Formalize triangular taper/full-cone extension and source-evenness preservation where needed. The scalar finite-moment core is complete; do not redo it.
+3. Connect the now-available adjacent integrated collar theorem to this note's explicit reflection-allocation family, proving any required comparison rather than identifying different partitions without proof.
+4. Shared-origin bound, equality witness, rational bound, and literal dyadic specialization are certified; do not redo them.
+5. Derive stronger bounds or matching extremizers/asymptotics for actual constant. Existing certificates are not a global solution.
+6. Both overview copies now have the corrected deformation and crossover sign. Keep source claims aligned with proof scope.
 
 ## Guardrails for future conjectures
 
 - The sequence of optimal constants is nondecreasing in `N` but uniformly bounded above: any fixed nonzero smooth source of support diameter below `log 2` has all logarithmic-grid zeros and finite energy; polar infimum invariance transfers this upper bound. Hence unbounded growth with `N` is impossible on this domain. This is an elementary consequence, not another contribution count.
 - A potential route to globally sharp constants is a Bochner-measure moment optimization with cost equal to the archimedean Fourier symbol and constraints `∫cos(r log n)dμ=0`. Strong duality, attainment, and finite-atomic reduction require proof and corpus verification before use; they are not established by the current note.
-- Finite-vector scalar-source admissibility is now Lean-certified via exact sign selection. A finite spectral mixture times a smooth compact correlation can be represented by cosine/sine-modulated real source components. The remaining spectral route needs the actual modulation identities, energy limit, and finite-moment optimization/duality; finite-vector realization alone does not prove spectral equivalence.
+- Finite-vector scalar-source admissibility, finite cosine modulation, uniform energy error, and the vanishing-envelope construction are now Lean-certified. The remaining spectral route needs the reverse measure comparison, exact atomization, and finite-moment optimization/duality; upper realization alone does not prove spectral equivalence.
 
 Proof details: [quantitative-constant.md](quantitative-constant.md). Task state: `docs/drafts/pipeline/1-in-progress/bi-scale-quantitative-constant-2026-10-17.md`.

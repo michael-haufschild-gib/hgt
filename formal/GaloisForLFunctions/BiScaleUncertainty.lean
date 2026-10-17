@@ -7,6 +7,8 @@ import GaloisForLFunctions.BiScaleUncertainty.SignedDyadicCollarPartition
 import GaloisForLFunctions.BiScaleUncertainty.IntegratedOriginCollarLeverage
 import GaloisForLFunctions.BiScaleUncertainty.CollarAllocationDuality
 import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarPartition
+import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarDualPrices
+import GaloisForLFunctions.BiScaleUncertainty.PhysicalCollarDualCertificate
 import GaloisForLFunctions.BiScaleUncertainty.MultiChainToeplitzGramCoupling
 import GaloisForLFunctions.BiScaleUncertainty.TriangularGramSineBound
 import GaloisForLFunctions.BiScaleUncertainty.SynchronizedCosetSineLeverage
@@ -15,6 +17,7 @@ import GaloisForLFunctions.BiScaleUncertainty.AbstractBiScaleSystemAndSchurKrein
 import GaloisForLFunctions.BiScaleUncertainty.CosecantSecantDualDecomposition
 import GaloisForLFunctions.BiScaleUncertainty.DisjointCollarCliqueDivergenceAndTuransProblem
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSpectralEnvelopeRealization
+import GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization
 import GaloisForLFunctions.BiScaleUncertainty.HyperbolicPolarBalanceAndLevySinhFunctional
 import GaloisForLFunctions.BiScaleUncertainty.FoldedCollarIntegralAndObstructionResolution
 import GaloisForLFunctions.BiScaleUncertainty.SharedOriginMultiCosetLeverage
@@ -97,4 +100,10 @@ structural traps, and the three-layer / seven-pillar architecture of the field.
     `∫_0^{(M+1)δ} (h(0) - h(x)) dx ≥ δ ((M+1) - √(M+1)) h(0)`, the Square-Root Cancellation Law
     `∫_0^{(M+1)δ} h(x) dx ≤ δ √(M+1) h(0)` for autocorrelations vanishing at `m δ` (`1 ≤ m ≤ M`),
     and the dyadic-clique lower bound on `biScaleLevyEnergy`.
+16. `GaloisForLFunctions.BiScaleUncertainty.FiniteSpectralEnvelopeRealization`:
+    Uniform archimedean energy error for finite cosine mixtures and actual real polar scalar
+    realization of their exact local correlation data through a compact source envelope.
+17. `GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization`:
+    Concrete smooth envelopes with arbitrarily small normalized energy; every feasible finite
+    spectral cost is an upper bound on the smooth polar logarithmic-grid source infimum.
 -/

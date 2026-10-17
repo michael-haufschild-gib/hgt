@@ -339,7 +339,7 @@ or spectral realization premises. It preserves bounded-window data and dominates
 allowing support enlargement. It does not establish scalar realization of every continuous
 positive-definite kernel, spectral strong duality, or a globally sharp numerical constant.
 
-## 5. Finite spectral envelope realization [paper-proved; Lean under audit]
+## 5. Finite spectral envelope realization [Lean-certified]
 
 Define `Ψ(ω)=∫₀∞(1−cos(ωx))w_arch(x)dx`. Existing corpus Lévy–Khintchine identities give
 `Ψ(ω)=gammaBracket(ω)−gammaBracket(0)`. For a real compact `C^r` source `f`, `r≥2`, put
@@ -376,7 +376,7 @@ There is no approximate-zero repair premise. The scalar source only has the stat
 the two-sided error estimate belongs to the vector construction before the energy-decreasing
 sign selection.
 
-**Vanishing envelope error [paper proof; Lean pending].** Fix any nonzero smooth compact bump
+**Quadratic vanishing-envelope estimate [paper proof; sharper rate not formalized].** Fix any nonzero smooth compact bump
 `φ`, and set `f_L(u)=φ(u/L)` for `L>0`. Write `R_φ=∫φ²` and `D_φ=∫(φ′)²`, both finite and
 `R_φ>0`. The fundamental theorem of calculus, Cauchy–Schwarz on the interval of length `|t|`,
 and Fubini give
@@ -402,7 +402,7 @@ This is the upper realization direction. Equality with a spectral optimization s
 the reverse Fourier-measure argument and an exact finite-atomic moment reduction; neither is
 silently inferred here. A uniform-in-frequency error bound alone does not prove strong duality.
 
-For formalization a weaker rate gives a shorter dependency chain. Compact `C²` regularity makes
+**Certified vanishing-envelope construction.** A weaker rate gives a shorter dependency chain. Compact `C²` regularity makes
 `φ` globally Lipschitz, with constant `K`. Hence
 `R_φ−h_φ(t)≤K ||φ||₁ |t|`, by writing the correlation difference as
 `∫φ(u)(φ(u)−φ(u+t))du`. For `φ_δ(u)=φ(δu)`, `δ>0`, the exact autocorrelation identity is
@@ -418,6 +418,14 @@ The first moment is finite because `xw_arch(x)≤(2x+1)e^{-x/2}` for `x>0`; this
 with positive mass verified by continuity and positivity of Lebesgue measure on open sets.
 This argument removes the envelope-energy premise and preserves smoothness; its `O(δ)` rate
 does not claim the sharper `O(δ²)` paper estimate has been formalized.
+
+`FiniteSpectralEnvelopeRealization.lean` certifies the modulation, uniform error, and local
+polar realization. `BroadSpectralCostRealization.lean` certifies the first-moment estimate,
+concrete smooth seed, dilation limit, and final endpoints
+`exists_smooth_polar_grid_source_lt_spectral_cost` and
+`polar_grid_lower_bound_le_spectral_cost`. Both leaves passed direct Lean checks. All 24 public
+theorems passed scratch axiom audits using only `propext`, `Classical.choice`, and `Quot.sound`;
+the explicit one-atom specialization `N=2`, `ω=π/(2log2)` also compiled.
 
 Prior `WeilWorkPBAPJointProfiles.lean` already proves cosine/sine correlation modulation for
 complex smooth sources. The elementary modulation identity is not counted as new. The useful

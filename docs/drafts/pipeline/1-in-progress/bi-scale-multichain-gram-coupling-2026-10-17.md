@@ -2,9 +2,10 @@
 
 - **ID:** BSU-MCG
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (Lean, contributions 1–2 verified); 100-contribution programme active
+- **Type:** THEOREM (Lean, contributions 1–2 verified; contribution 3 proof verified, global gate pending)
+- **Work status:** Inactive; user cleared the research goal. Unfinished work is preserved, not completed or retired mathematically.
 - **Scope:** Independent Bi-Scale Uncertainty; no RH objective.
-- **Goal:** 100 significant contributions, each separately proved and audited. Supporting lemmas do not count separately.
+- **Cleared goal:** 100 significant contributions, each separately proved and audited. Supporting lemmas do not count separately.
 - **Source:** User brief and `docs/reports/BiScaleUncertainty/README.md`.
 
 ## Plan and current state
@@ -14,7 +15,9 @@
 3. [x] Formalize unconditional packet identities and actual autocorrelation bound, without unproved interfaces or numerical experiments.
 4. [x] Audit leaf modules, axioms, umbrella wiring, and formal lint; contribution 1 verified. Total: 1 / 100.
 5. [x] Complete final source, axiom, and lint audits for contribution 2 (actual synchronized-coset sine leverage). Total: 2 / 100.
-6. [ ] Continue conjecture/proof/obstruction cycles until 100 significant contributions are verified.
+6. [x] Prove contribution 3, run targeted build, final direct-source check, and all-theorem axiom audit.
+7. [ ] If resumed, revalidate the remaining repository integration gate, then count contribution 3.
+8. [ ] Further conjecture/proof/obstruction cycles require a new request; the 100-contribution goal was cleared.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use parallel tool promises.
 
@@ -139,18 +142,18 @@ with rational improvement at least `R(1-ρ)S/W` over optimized independent chain
 - Source SHA-256, `TriangularGramSineBound.lean`: `4ba95b34e5069843278eb980af7f627952846eacc1c2d948c0dbf4a8e2c7c8bc`.
 - Source SHA-256, `SynchronizedCosetSineLeverage.lean`: `cc95f4f1bb9cbe18e75834237d3ad1310cd9bb46ff5cd7adf16d51f09974d658`.
 - Prototype scratch files removed. Successful axiom-audit scratch and logs retained under `/tmp/bsu-synchronized-*`.
-- Verified count: **2 / 100**. This completed contribution constitutes progress; the programme remains active.
+- Verified count: **2 / 100**, retained as the accounting baseline after the goal was cleared.
 - One owned Lean process at a time. No numerical experiments, external literature searches, new premises, or commits.
 
 ## Continuation
 
-The 100-contribution objective remains active. Contribution accounting and the exact next research decisions live in the working ledger. Do not count supporting lemmas or mark the programme complete after a small number of results.
+The user cleared the 100-contribution objective. No autonomous continuation is active. Contribution accounting and research options live in the working ledger. Supporting lemmas are not separate contributions, and the programme is not complete.
 
-## Active contribution 3: stability under unequal coefficient profiles
+## Contribution 3: profile stability (proof verified; global gate pending)
 
-Previous goal turn: **progress** (contribution 2 audited). Current source hashes match the recorded evidence. The new goal is to remove exact coefficient synchronization with a quantitative, useful mismatch penalty.
+This result removes exact coefficient synchronization with a quantitative mismatch penalty. Its source hash matches the recorded verification evidence.
 
-**Candidate theorem.** Retain the actual matrices and errors from contribution 2. Put `K=R+δ` and `G=(1-ρ)R-(1+ρ)(δ+ε)`. For arbitrary coefficient vectors `c,d`, set `r=||c||`, `s=||d||`, `u=normalize(c)`, `v=normalize(d)`, and
+**Proved theorem.** Retain the actual matrices and errors from contribution 2. Put `K=R+δ` and `G=(1-ρ)R-(1+ρ)(δ+ε)`. For arbitrary coefficient vectors `c,d`, set `r=||c||`, `s=||d||`, `u=normalize(c)`, `v=normalize(d)`, and
 
 `gain=r s [max(0, sqrt(2G)-sqrt(K)||u-v||)]²`.
 
@@ -166,7 +169,7 @@ At exact grid pinning, this improves optimized independent-chain leverage whenev
 
 `||r Au+s Bv||²=(r+s)(r||Au||²+s||Bv||²)-rs||Au-Bv||²`.
 
-Zero coefficient cases have zero gain and follow from the synthesis norm bound. This is a dependency-closed paper proof; all displayed inequalities must be formalized on actual test data before counting.
+Zero coefficient cases have zero gain and follow from the synthesis norm bound. This is a dependency-closed paper proof. The actual-data inequalities, gain criterion, and origin transfer are now formalized and axiom-audited; final repository integration remains pending.
 
 **Stronger actual-partition comparison.** Let `D=(||Ac||+||Bd||)²-||Ac+Bd||²`, the actual optimized partition loss. For normalized nonzero profiles, `p=||Au||`, `q=||Bv||` satisfy `p²,q²∈[R-δ,R+δ]`; hence `(p-q)²≤|p²-q²|≤2δ`. The exact identity
 
@@ -180,4 +183,10 @@ The corresponding origin theorem adds `(gain-2δrs)/(2W)` directly to the measur
 
 **Local frontier evidence:** deep search returned the existing nilpotent inner bounds and no relevant unequal-profile bridge; search was partial (`filter_and_judge` unfinished), source-only, semantic coverage unmeasured. Exhaustive field-source text search found only the existing synchronized theorem. No literature-wide novelty claim.
 
-**Verification checkpoint:** `formal/GaloisForLFunctions/BiScaleUncertainty/ProfileStableCosetLeverage.lean` contains 17 public theorems. Targeted `lake build --old +GaloisForLFunctions.BiScaleUncertainty.ProfileStableCosetLeverage` passed. Umbrella import added. Source SHA-256: `ccf56ddf05e783bde8dc5daebf92761066cbabf38b7b49f5d690fd15c5ca8121`. Final direct-source audit passed with empty output; all 17 theorem axiom lists contain only `propext`, `Classical.choice`, `Quot.sound`; index refresh passed. Global lint found four other new field leaves missing umbrella imports (`AbstractBiScaleSystemAndSchurKreinCoupling`, `CosecantSecantDualDecomposition`, `DisjointCollarCliqueDivergenceAndTuransProblem`, `FiniteSpectralEnvelopeRealization`). Their sources have been inspected for import wiring; a single targeted `--old` build checks those four leaves before adding the missing imports. No theorem bodies in those modules are being edited or counted. Verified count stays 2 until the final gate passes.
+**Verification state:** `formal/GaloisForLFunctions/BiScaleUncertainty/ProfileStableCosetLeverage.lean` contains 17 public theorems. Targeted build passed. Final direct `lake env lean` passed with empty output and no warnings. All 17 public axiom lists contain only `propext`, `Classical.choice`, `Quot.sound`. Own umbrella import and API entries present. Source SHA-256: `ccf56ddf05e783bde8dc5daebf92761066cbabf38b7b49f5d690fd15c5ca8121`.
+
+Global gate remains pending. Four earlier missing umbrella imports were repaired after targeted builds of those leaves passed; none of their theorem bodies was edited or counted. Current umbrella imports also include `PhysicalCollarPartition`, `PhysicalCollarDualPrices`, and `BroadSpectralCostRealization`. The previously failing steps in the last module have been replaced by its owner and inspected, but no new passing build or global lint is claimed here. The working ledger records the current gate action if research is resumed. Fully verified count remains **2 / 100 plus one Lean-proved result awaiting the repository gate**. No owned build/check or pulse-train search process remains live; failed/prototype scratch files removed.
+
+## Next conjecture: actual sharpness of the sine coefficient
+
+The working ledger records a new, uncounted pulse-train construction to audit. Spacing `log(q/2)` for odd `q≥3` avoids every positive integer-log node; finite-lag isolation should realize `C=R[M/(M+1)]S` with scalar within-chain Gram matrix. Sine coefficients would then approach the existing upper bound. Actual local smooth pulse-train overlap theorems were inspected, but they use a fixed different spacing and only one blind node. General spacing, finite-grid isolation, and the extremizing sine vector remain to be verified. Do not infer sharpness or count contribution 4 yet.

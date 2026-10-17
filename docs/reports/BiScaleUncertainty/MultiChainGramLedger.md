@@ -2,6 +2,8 @@
 
 Working state, not history. Replace superseded entries; retain failed mechanisms and their witnesses. Scope: independent Bi-Scale Uncertainty, coupling across odd dyadic cosets. Novelty checks use the local corpus; no literature-wide priority claim.
 
+**Work status:** User cleared the research goal. No autonomous continuation is active. Preserve the results and unresolved checks below; resume research only on a new request.
+
 ## Established facts
 
 ### F1. Full Gram energy gives exact origin leverage
@@ -79,12 +81,12 @@ Here `sqrt(t)=√max(0,t)`, matching Lean's total real square root. Let `A₀,A�
 
 The latter adds `(gain-2δrs)/(2W)` directly to the measured, optimally partitioned origin lower bound, retaining the exact anchor error.
 
-- **Status:** Dependency-closed paper proof complete; formal implementation undergoing final verification. Not counted yet.
+- **Status:** Paper proof, targeted Lean build, final direct-source check, and all 17 theorem axiom audits passed. Global repository lint has not been revalidated after concurrent integration repairs. This third proved result is pending the final gate and is not yet added to the fully verified count.
 - **Evidence:** `dyadic_profile_energy_bound`, `dyadicPairPartitionLoss_ge_profile`, `dyadic_profile_partition_origin_leverage` in `ProfileStableCosetLeverage.lean`. `dyadicProfileGain_pos_iff` characterizes positivity of the certificate itself.
 - **Mechanism:** Lower and upper Gram bounds give `||A₀x-A₁x||²≥2G||x||²`. Triangle inequality spends at most `sqrt(K)||u-v||` of this separation. The weighted norm identity transfers it to arbitrary amplitudes. For unit profiles, `p=||A₀u||`, `q=||A₁v||` satisfy `(p-q)²≤2δ`; the exact identity `D=rs[||A₀u-A₁v||²-(p-q)²]` gives the measured-partition correction.
 - **Use at exact pinning:** With `δ=ε=0`, `R>0`, and both coefficients nonzero, positive gain is certified for `η<sqrt(2(1-ρ))`, equivalently `Re⟨u,v⟩>ρ`. Amplitudes may differ arbitrarily. This removes exact coefficient synchronization as a structural restriction.
 - **Use with errors:** This certificate proves positive improvement of the true measured partition bound when `gain>2δrs`; `gain>0` alone is insufficient. For nonzero coefficients the certificate condition is equivalent to `sqrt(2G)>sqrt(K)η+sqrt(2δ)`.
-- **Boundary:** These are positivity criteria for the explicit lower-bound certificate, not necessary conditions for actual `D>0`. Zero certificate does not imply zero actual gain. The error-free/coherence reformulations are paper consequences; the unconditional inequalities and general certificate criterion are the intended Lean scope.
+- **Boundary:** These are positivity criteria for the explicit lower-bound certificate, not necessary conditions for actual `D>0`. Zero certificate does not imply zero actual gain. The error-free/coherence reformulations are paper consequences; the unconditional inequalities and general certificate criterion are Lean-certified.
 
 ## Failed mechanisms and boundaries
 
@@ -111,7 +113,7 @@ The latter adds `(gain-2δrs)/(2W)` directly to the measured, optimally partitio
 - `rw [sub_div]` rewrites only one matching numerator. Use `simp only [sub_div] at hcost ⊢` before linear arithmetic when both sides and the target contain differences over the shared origin weight.
 - An imported theorem's axiom audit covers private dependencies; audit every new public theorem, not only the headline bound.
 
-## Next research decisions
+## Research options if resumed
 
 1. Determine the strongest useful coefficient-profile certificate. F5 supplies a quantitative mismatch term; its triangle estimate is not claimed optimal. The absolute numerical-radius input suggests sign/phase variants, but automatic variants alone must not become separate counted contributions.
 2. Test whether actual translation autocorrelations can approach the abstract sine constant. Either construct admissible near-extremizers or prove an additional orbit rigidity gap. No sharpness claim before this audit.
@@ -130,12 +132,15 @@ approaching the existing sine upper bound. This would settle its sharpness for a
 
 **Local evidence:** `RHTower.EvenSector.SmoothBlindInterpolation.train_autocorr`, `train_autocorr_zero`, and `train_autocorr_spacing` in `EvenSectorSmoothBlindInterpolationObstruction.lean` were inspected. They already prove smooth centered pulse-train overlap counts, but only for a fixed spacing and a single blind node. Their theorem does not supply the new arbitrary-spacing/full finite-grid construction. Lexical corpus search returned all 13 matching declarations in that module; the first `pulseTrain` name query had no hits, then broadening to `train autocorr` found the actual API.
 
+The deep query `smooth compact pulse train finite forbidden shifts autocorrelation lattice separation` completed, but its AND lexical search matched no declarations. Returned suggestions do not establish the proposed realization. Coverage reports an older-generation snapshot and unmeasured semantic coverage; this is not evidence of absence from the corpus. Search output: `/tmp/bsu-shift-realization-search.log`. Its owned process has exited. No Lean implementation of this candidate has been started.
+
 ## Contribution accounting and verification
 
-Target: 100 significant contributions. Verified count: **2 / 100**. Programme remains active.
+Cleared objective: 100 significant contributions. Recorded fully verified count: **2 / 100**, plus **one Lean-proved result awaiting the global repository gate**. The objective is inactive and was not completed.
 
 1. **Verified:** Gram-resolved origin leverage and exact optimized partition loss (F1–F2).
 2. **Verified:** Robust synchronized-coset sine leverage with actual arithmetic defect formulas (F3–F4). All new operator, feature, and arithmetic helpers belong to this single contribution.
+3. **Proof verified; global gate pending:** Coefficient-profile stability and the measured partition-gain correction (F5). All 17 theorems constitute one contribution, not separate counts.
 
 Contribution 1 evidence:
 
@@ -154,5 +159,16 @@ Contribution 2 evidence:
 - `TriangularGramSineBound.lean` SHA-256: `4ba95b34e5069843278eb980af7f627952846eacc1c2d948c0dbf4a8e2c7c8bc`.
 - `SynchronizedCosetSineLeverage.lean` SHA-256: `cc95f4f1bb9cbe18e75834237d3ad1310cd9bb46ff5cd7adf16d51f09974d658`.
 - Owned prototype scratch files removed; successful axiom-audit scratch and logs retained. No commits or numerical experiments.
+
+Contribution 3 evidence and remaining integration:
+
+- `ProfileStableCosetLeverage.lean`, SHA-256 `ccf56ddf05e783bde8dc5daebf92761066cbabf38b7b49f5d690fd15c5ca8121`.
+- `lake build --old +GaloisForLFunctions.BiScaleUncertainty.ProfileStableCosetLeverage`: PASS.
+- Final `lake env lean GaloisForLFunctions/BiScaleUncertainty/ProfileStableCosetLeverage.lean`: PASS, empty output, no warnings.
+- All 17 public theorems audited: only `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx` or `Lean.ofReduceBool`. Own umbrella import and generated API entries present.
+- Index refresh passed. The last recorded lint run failed on concurrent missing imports and generated drift. Current umbrella imports include `PhysicalCollarPartition`, `PhysicalCollarDualPrices`, and `BroadSpectralCostRealization`. The latter's source now replaces the previously failing integrability/extensionality and integrand-equality steps with explicit almost-everywhere congruence proofs. These source changes were inspected, but no fresh targeted build or global lint pass is claimed here. Its theorem bodies were not edited by this workstream.
+- Earlier missing imports for `AbstractBiScaleSystemAndSchurKreinCoupling`, `CosecantSecantDualDecomposition`, `DisjointCollarCliqueDivergenceAndTuransProblem`, and `FiniteSpectralEnvelopeRealization` were added after all four targeted builds passed. These integration repairs are not research contributions.
+- **Gate action if resumed:** Revalidate current concurrent sources with targeted builds, refresh the index, and run `scripts/formal_tools.py lint --check-generated`. Imports already present do not need to be added again. Advance the verified count to 3 only after the required gate passes. Do not reprove or recount F5.
+- Logs: `/tmp/bsu-profile-build.log`, `/tmp/bsu-profile-final.log`, `/tmp/bsu-profile-axioms.log`, `/tmp/bsu-profile-lint-final.log`, `/tmp/bsu-profile-broad-wiring-build.log`. Successful axiom scratch retained; owned failed/prototype scratch files removed. No owned build/check process remains live. No commits.
 
 Full dependency-closed paper arguments and implementation state: [research card](../../drafts/pipeline/1-in-progress/bi-scale-multichain-gram-coupling-2026-10-17.md).

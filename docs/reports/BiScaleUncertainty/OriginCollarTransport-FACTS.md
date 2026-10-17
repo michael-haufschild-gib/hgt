@@ -6,7 +6,7 @@ This is a research-state ledger, not a chronological log. Update entries in plac
 
 - Independent Bi-Scale Uncertainty, finite interval `(0, log N)`, archimedean density `w(x)=exp(x/2)/sinh x`.
 - Research evidence: local Lean corpus and direct proofs. No numerical experiments or external novelty claims.
-- User goal remains 100 significant contributions. Supporting lemmas and independently rediscovered adjacent results do not count separately.
+- User cleared the research goal. No autonomous research is pending. Two substantive packages were established; the former 100-contribution target was not achieved. Supporting lemmas and adjacent rediscoveries do not count separately.
 - Main paper proof: `OriginCollarTransport.md` in this directory.
 - Physical-allocation dual certificate and exact remainder: `CollarAllocationDuality.md` in this directory.
 - Task card: `docs/drafts/pipeline/1-in-progress/optimal-origin-collar-transport-2026-10-17.md`.
@@ -26,7 +26,9 @@ This is a research-state ledger, not a chronological log. Update entries in plac
 | Singular cancellation | `K=B−A²/(sqrt(W²+A²)+W)` and `0≤K≤B`; the coefficient has a finite real integral. | `logarithmicCollarKernel_rationalized`, `logarithmicCollarKernel_bounds`, `integrableOn_logarithmicCollarKernel` verified. The sharper estimate `B−K≤A²/(2W)=O(y)` remains paper-only, using bounded collar weights and `yw(y)→1`. |
 | Strict positivity | Equal-multiplicity partition has a positive left weight at n=2 for every `0<y<δ`; hence `A,B>0`, `K>0`, and `∫K>0`. | `logarithmicCollarRealConstant_pos` verified. No uniform numerical lower bound claimed. |
 | Capacity saturation | Every physical subpartition deficient on a positive-measure set admits a strict improvement of `∫K`. Fibre improvement obeys `(1−Ab/Sb)Δmass≤ΔK≤Δmass`. | Full physical statement paper-proven. `collarAllocationKernel_monotone_bounds` and `collarAllocationKernel_strict_mono` prove the quantitative finite-fibre law in Lean. No optimizer-existence claim. |
-| Global dual certificate | `Cρ+Gρ−Cη=Hρ(η)+∫Eρ,η`, with both terms on the right nonnegative. Therefore `0≤C*−Cρ≤Gρ`, and `Gρ=0` proves global physical optimality. | Complete paper proof in `CollarAllocationDuality.md`; full continuous Lean assembly pending. Prices compare different offsets at a common physical point. |
+| Global dual certificate | `Cρ+Gρ−Cη=Hρ(η)+∫Eρ,η`, with both terms on the right nonnegative. Therefore `0≤C*−Cρ≤Gρ`, and `Gρ=0` proves global physical optimality. | `PhysicalCollarPartition.exact_dual_gap`, `optimalCoefficient_gap_bounds`, and `optimal_of_gap_zero` pass direct source and axiom audits in `PhysicalCollarDualCertificate.lean`. Prices compare different offsets at a common physical point. |
+| Complementary allocation and rigidity | `Gρ=0` iff almost every positive physical share uses a minimum-price collar. If also `Cη=Cρ`, then `Aη=Aρ` almost everywhere. | `gap_eq_zero_iff_complementary`, `aggregate_rigidity_of_gap_zero` verified. Full block-ray classification remains paper-only. |
+| First-grid optimum | At `N=2`, every admissible partition has zero gap; the optimal coefficient equals the explicit reflected-pair coefficient. | `gap_zero_first_grid`, `optimalCoefficient_first_grid` verified. No optimizer-existence claim for `N>2`. |
 | Remainder geometry | `E=r_rad+(A/S)Σr_j`, where `r_rad=W²(Ab−A)²/[S(S Sb+W²+A Ab)]` and every `r_j≥0`. Thus `E=0` forces `Ab=A`. | `collarDualRemainder_decomposition`, `collarRadialRemainder_rationalized`, `collarDualRemainder_zero_forces_blockNorm` pass direct source audit in `CollarAllocationDuality.lean`. |
 | Bounded marginal prices | Canonical prices `p=(A/S)a_j/||a_j||₂`, zero on zero blocks, are measurable and in `[0,1)`; actual-grid prices are integrable through the origin. Also `0≤E≤A+Ab`. | Exact supporting inequality, remainder bound, and actual-grid measurability/bounds/integrability pass direct source audit. |
 
@@ -53,31 +55,35 @@ This is a research-state ledger, not a chronological log. Update entries in plac
 
 ## Open dependencies and next attacks
 
-1. Formalize the complete physical dual gap identity: admissible general partitions, measurable finite minimum over active collars, affine linear-cost pullback, and integration of the already verified bounded remainder. Do not assume these as bridge hypotheses.
-2. Establish existence or construct a zero-gap optimizer over physical shares ρ. A sufficient global certificate is now proved on paper; existence and a complete characterization remain open.
+These are research boundaries for future authorized work, not an active queue.
+
+1. Extend the source-energy lower bound to arbitrary `PhysicalCollarPartition`. The general coefficient optimization is formalized, but the source-energy theorem currently uses the explicit equal-multiplicity partition.
+2. Establish existence or construct a zero-gap optimizer over physical shares ρ for `N>2`. The sufficient global certificate is formalized; general existence and a complete characterization remain open.
 3. Decide whether fractional physical splitting can strictly improve every single-node assignment; distinguish this from the already solved origin-budget split.
 4. Extend the formal domain from scalar compact-continuous autocorrelations to arbitrary continuous positive-definite real kernels if that serves the next result.
 5. Formalize uniqueness/stability of optimal θ only if it materially serves physical optimization; do not count routine algebra as new contributions.
 
 ## Verification boundary
 
-- Direct leaf audits pass for all six task modules: `OptimalOriginAllocation.lean`, `OverlapSafeCollarMeasureTransport.lean`, `LogarithmicCollarCoverage.lean`, `SignedDyadicCollarPartition.lean`, `IntegratedOriginCollarLeverage.lean`, `CollarAllocationDuality.lean`. Commands use `lake --old env lean <leaf> -o <leaf.olean>` from `formal`; exit 0, no diagnostics. All six are wired into the area umbrella. No full or umbrella build was run.
+- Direct leaf audits pass for all nine task modules: `OptimalOriginAllocation.lean`, `OverlapSafeCollarMeasureTransport.lean`, `LogarithmicCollarCoverage.lean`, `SignedDyadicCollarPartition.lean`, `IntegratedOriginCollarLeverage.lean`, `CollarAllocationDuality.lean`, `PhysicalCollarPartition.lean`, `PhysicalCollarDualPrices.lean`, `PhysicalCollarDualCertificate.lean`. Commands use `lake --old env lean <leaf> -o <leaf.olean>` from `formal`; exit 0, no diagnostics. All nine are wired into the area umbrella. No full or umbrella build was run.
 - `/tmp/bsu_integrated_final_axioms.lean` audits the signed spheres, compact-source continuity, measurable optimal shares, exact optimizer, rationalization, integrability, coefficient finiteness/positivity, and real integrated bound. Exit 0; only `propext`, `Classical.choice`, `Quot.sound`. Earlier allocation/transport/coverage capstones have the same standard-axiom audit.
 - `/tmp/bsu_collar_duality_axioms.lean` audits nine duality endpoints and inspects both quantitative-capacity theorem signatures. Exit 0; only the same three standard axioms, with no unintended implicit indices. Log: `/tmp/bsu-collar-duality-axioms.log`.
-- **Repository lint currently fails, exit 1:** two concurrent modules are unreachable from the area umbrella: `CosecantSecantDualDecomposition`, `DisjointCollarCliqueDivergenceAndTuransProblem`. The previously listed four modules are now wired. No task-module error was reported. Preserve their source ownership; do not report a green global gate until this is resolved. Full log: `/tmp/bsu-collar-duality-lint.log`.
-- `scripts/formal_tools.py index`: exit 0; generated the three formal indexes and refreshed the source database.
+- `/tmp/bsu_physical_duality_axioms.lean` audits twelve physical-duality endpoints and prints the partition fields and main theorem signatures. Completed without errors; only `propext`, `Classical.choice`, `Quot.sound`. No transport, integrability, sphere, or optimization estimate occurs in the admissibility fields. Log: `/tmp/bsu-physical-duality-axioms.log`.
+- Latest `scripts/formal_tools.py lint` reports `formal lint passed`; existing large-file warnings remain. Earlier umbrella-reachability failures are resolved. Log: `/tmp/bsu-physical-duality-lint.log`.
+- Latest `scripts/formal_tools.py index` wrote all three formal indexes and refreshed the source database. Log: `/tmp/bsu-physical-duality-index.log`. No owned Lean, lint, or index process remains live.
 
 Formal transport uses `ENNReal.ofReal` of the archimedean increment. It is unconditional for continuous kernels and includes infinite energy. For autocorrelations, increment nonnegativity identifies this with the actual nonnegative energy density. The integrated theorem imposes literal grid zeros through the source type; it does not assume a sphere bound or an integrability bridge.
 
 ## Formal domain and reusable interfaces
 
 - `PhysicalCollarPartition.lean` now passes its direct source audit. The admissible class has only share measurability, nonnegativity, collar support, and exact physical mass conservation. It has an explicit equal-multiplicity inhabitant. `integral_signed_cost_transport` proves real affine transport for every bounded measurable collar-dependent price; `integral_mass` proves independence of total physical mass. Density bounds and kernel integrability are derived, not class fields.
-- Current continuation is checking `/tmp/bsu_physical_prices.lean`; `/tmp/bsu_physical_certificate.lean` contains the prepared continuous gap assembly. These are unfinished scratch artifacts until their own final source audits pass.
+- `PhysicalCollarDualPrices.lean` passes direct source audit: actual signed offsets give measurable bounded physical prices, `integral_fibreCost` proves their exact dual-pairing transport, and `priceFloor_eq_active_inf` verifies the measurable masked minimum is exactly the minimum over active collars. The masked minimum outside `(δ,L)` need not equal the paper's zero extension; all certificate integrals restrict to `(δ,L)`.
+- `PhysicalCollarDualCertificate.lean` passes direct source audit: the exact gap, supremum bounds, complementary allocation, aggregate-norm rigidity, positive optimal coefficient, and first-grid optimum are verified. Physical weight, costs, and remainder integrability are proved explicitly; no totalized nonintegrable Bochner integral supplies the result.
 - `SignedDyadicCollarPartition.lean` passes its direct leaf audit. `sum_logarithmicSignedCosets` proves exact signed coverage of every node, using `Nat.exists_eq_two_pow_mul_odd`; no assumed chain-cover interface remains.
 - `continuous_autocorr_compact` proves continuity for every compactly supported continuous real source by convolution. The older C² continuity lemma imposed unnecessary regularity for this problem.
 - `arch_logarithmic_origin_collar_decomposition` supplies the exact physical energy decomposition. Reuse it instead of repeating affine substitutions or coverage.
 - `SharedOriginMultiCosetLeverage.lean` supplies the shared-origin support function; the integrated theorem derives its sphere hypotheses from the actual signed odd-coset partition.
-- `CollarAllocationDuality.lean` supplies explicit marginal prices and the exact nonnegative comparison remainder. It supports the continuous dual theorem but does not yet prove its general physical pullback or integrated minimum-price gap.
+- `CollarAllocationDuality.lean` supplies explicit marginal prices and the exact nonnegative comparison remainder. The three `PhysicalCollar*` modules prove the general physical pullback and integrated minimum-price gap from these ingredients.
 - Formal source parameter is `LogarithmicGridSource n`: a compactly supported continuous source with the literal zeros at log 2 through log(n+2). These are the defining admissibility conditions, not assumed sphere estimates or integrability bridges. In this API `N=n+2`.
 - The complete paper statement for arbitrary continuous real positive-definite correlations remains broader than this scalar-source Lean domain. Do not silently identify the two formal domains.
 
@@ -87,7 +93,7 @@ For any full physical partition, `∫₀^δ Bρ(y)dy = ∫δ^L w(x)dx` is indepe
 
 `∫₀^δ [sqrt(W(y)²+Aρ(y)²)−W(y)]dy`.
 
-This follows on paper from the already proved affine transport identity with increment D=1. The defect is a convex, increasing, 1-Lipschitz function of the nonnegative block norm A. This identifies a convex variational problem; existence and exact optimizer conditions still need a corpus-backed proof. Do not infer monotonicity in N or global sharpness of the particular equal-multiplicity certificate.
+`PhysicalCollarPartition.integral_mass` verifies the fixed-mass identity in Lean. On paper, the defect is a convex, increasing, 1-Lipschitz function of the nonnegative block norm A. This identifies a convex variational problem; general existence and necessary optimizer conditions still need a proof. Do not infer monotonicity in N or global sharpness of the equal-multiplicity certificate beyond the verified `N=2` case.
 
 Corpus search `research 'weak compact convex integral minimizer Lp' --json` returned no directly applicable attainment theorem (`partial=false`, no errors; semantic coverage unavailable). A weak lower-semicontinuity result for quadratic integral functionals is not by itself a proof for this nonlinear defect. Broaden the query or inspect the convex functional APIs before asserting existence.
 
@@ -97,3 +103,8 @@ The dual-certificate search used `research 'physical collar allocation convex du
 
 - Parenthesize each subtraction inside nested finite sums: `∑ m∈M, ∑ k∈s m, (b m k−a m k)`. Without parentheses, notation precedence can leave free indices and silently synthesize unintended implicit parameters. `CollarAllocationDuality.lean` disables `autoImplicit`, and the final audit inspects the quantitative theorem signatures.
 - Supply the actual finite index sets and density arrays explicitly when specializing the generic measurable-slope theorem. Unconstrained placeholders caused an elaboration timeout; explicit arguments resolved it without increasing heartbeats.
+- `integral_union` is unavailable in this toolchain; use `setIntegral_union` with disjointness, measurability, and both integrability proofs. Finite-sum APIs are `integral_finsetSum` and `integrable_finsetSum`.
+- `Finset.measurable_inf'` and `Measurable.finset_inf'` are unavailable. The physical-price module proves measurable range minima by induction with `Finset.range_add_one` and `Finset.inf'_insert`, supplying the nonempty range explicitly.
+- Full `simp` on an inequality containing `Finset.inf'` can rewrite it into an existential. Use `change` and `simpa only [maskedPrice, if_pos hx]` when comparing an active price with the floor.
+- Integral rewrites can fail on pointwise function-algebra aliases. Use `change` or `dsimp only` and explicit `(f := fun y => ...)`, `(g := fun y => ...)`; for finite-sum integrals specify `(f := fun k y => ...)`.
+- Arbitrary physical partitions can have zero block norm on some fibres. Do not reuse strict positivity of the equal-multiplicity partition or divide by `A` without an all-zero fallback.
