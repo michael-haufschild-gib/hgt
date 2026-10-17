@@ -192,13 +192,37 @@ All three leaves and final direct source-leaf check pass without diagnostics.
 All 41 public theorem axiom/signature audits use only `propext`, `Classical.choice`,
 and `Quot.sound`. This is one contribution package.
 
-Paper-only activation criterion: let α_σ=max_m L_(σ,m)/sqrt(L_(σ,m)²+H_(σ,m)²),
+## Exact activation and quantitative gain [Lean-verified]
+
+Let α_σ=max_m L_(σ,m)/sqrt(L_(σ,m)²+H_(σ,m)²),
 with zero fraction for zero blocks. The angular support equals the independent
 whole-block support iff α_false²+α_true²≤1; otherwise improvement is strict.
 Proof: equality in each nonzero block's Cauchy bound requires its normalized weight
 direction; simultaneous feasibility is exactly the displayed condition. Compact
 attainment turns failure of feasibility into a strict support gap. Integrated
-strictness requires activation on a positive-measure set. Not yet Lean-verified.
+strictness requires activation on a positive-measure set. Both
+`CappedSupportActivation.lean` and `PhysicalCappedActivation.lean` now compile
+without diagnostics; all 26 axiom/signature audits and final direct check pass.
+
+The scalar proof gives an attained disk point (x,z) with the exact identity
+
+    2U(U−F)=(Ux−L)²+(Uz−H)²,    U=sqrt(L²+H²).
+
+When tU≤L, this implies `(L−tU)²≤2U(U−F)`. Thus the cap defect is a
+quantified deviation from the uncapped extremal direction, including zero blocks.
+For actual physical weights, write S for the independent whole-block norm sum
+and Z for capped support. The exact kernel gain is
+
+    G(y)=(S²−Z²)/(sqrt(W²+S²)+sqrt(W²+Z²)),    W=w_arch(y), y>0.
+
+It equals `cappedKernel−kernel`. Its integral adds to the old coefficient to give
+the capped coefficient. The verified physical classification is equality iff
+α_false²+α_true²≤1 almost everywhere on (0,δ), with strict gain iff that
+almost-everywhere condition fails. Measurable physical shares suffice; continuous
+shares and an attained optimizer are not required. The source certificate retains
+the full gain integral for actual compact smooth grid sources, with an extended
+version including zero sources and infinite energy. No analytic transfer premise
+is supplied. This criterion does not prove a strict gap between optimized constants.
 
 ## Full-grid capped hierarchy [Lean-verified]
 
@@ -248,7 +272,7 @@ The package is not a theorem identifying the true sharp source-energy constant.
 
 ## Research accounting
 
-Lean-verified significant packages: **6/100**: (1) general source transfer and
+Lean-verified significant packages: **7/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
@@ -256,17 +280,17 @@ product-zero source transfer, and its optimized monotone finite-limit hierarchy;
 selection, and quantitative fourth-root source-cutoff control; (5) exact capped
 support and finite-vector attainment, followed by full-grid physical source transfer;
 (6) capped capacity and cutoff comparisons, the optimized monotone full-grid
-hierarchy, common finite limit, and quantitative actual-source certification.
+hierarchy, common finite limit, and quantitative actual-source certification;
+(7) exact capped activation, quadratic extremal deficit, rationalized physical
+gain, almost-everywhere equality/strictness, and actual-source gain transfer.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Current global lint exits 1 solely on five concurrent missing umbrella imports:
-`FermiNymanDyadicFoldGeometry` in RHTower, plus `DyadicMultiplierFrameBound`,
-`InfiniteGridCorrelationCompactness`, `InfiniteGridLimitEnergy`, and
-`SignedPrimePolarCoupling` in BiScaleUncertainty. Earlier missing-import lists
-are obsolete. All fifteen owned leaves are reachable; no own-leaf lint error is
-reported. Index refresh passed. Evidence: `/tmp/bsu-capped-hierarchy-lint-final.log`.
+Current global lint exits 0: `formal lint passed`. Earlier concurrent missing-import
+failures are obsolete. All seventeen owned leaves are reachable. Index refresh
+passed, with activation and actual-source capstones discoverable. Evidence:
+`/tmp/bsu-capped-activation-lint.log`, `/tmp/bsu-capped-activation-index.log`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -332,6 +356,22 @@ exhaustive novelty claim is made.
 Final command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FullGridCappedCollarHierarchy.lean`;
 exit 0, no diagnostics. All owned jobs exited; temporary capacity API scratch removed.
 All fifteen own imports and refreshed capstone index entries are verified.
+
+Activation SHA-256 values:
+
+- Finite activation: `1625673ef2d59453edef68fa71f6422b5904c90106d5d0b77e91ce1fb492bce3`.
+- Physical gain: `6495929af4fe9b23b2853cca2c355002b73e5755d3473695f040f9beef3e4d4b`.
+
+Evidence: `/tmp/bsu-capped-support-activation.log`, `/tmp/bsu-physical-capped-activation.log`,
+`/tmp/bsu-capped-activation-{axioms,final,index,lint}.log`,
+`/tmp/bsu_capped_activation_axioms.lean`. All 26 public theorem names audited
+exactly once, only `propext`, `Classical.choice`, `Quot.sound`. Printed capstone
+and gain/source definitions inspected. All fifteen earlier source hashes unchanged.
+Final command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/PhysicalCappedActivation.lean`;
+exit 0, no diagnostics. Global lint passes; all owned jobs exited and temporary
+API probe removed. Partial search `/tmp/bsu-capped-activation-search.log` reports
+213 matches in 56 modules, 82 after cap; source coverage is older, semantic
+coverage unmeasured. No exhaustive novelty claim follows.
 
 Reusable proof repairs: expose the explicit function composition before applying
 measurability of the compact support map to low/high array maps; leaving it implicit

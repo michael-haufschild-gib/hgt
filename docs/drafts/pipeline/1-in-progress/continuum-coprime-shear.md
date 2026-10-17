@@ -22,7 +22,8 @@ The requested `update_plan` tool is unavailable; this card records the plan.
 3. Formalize logarithmic shear and finite-cell energy bridge without unproved
    analytic inputs. Extend explicitly constructed continuous primitives to L2 velocities.
 4. Compact-source coercivity, rigidity and the actual rough modulus are proved.
-   Nodal mass coercivity and strict modulus contraction are proved. Construct Markov clamping,
+   Nodal mass coercivity, strict modulus contraction and actual Markov clamping are proved.
+   Construct infinite coprime trace extensions,
    extend admission beyond compact support, and identify closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
@@ -71,17 +72,20 @@ traces or a constructed interpolant.
   jump loss and path-slack gain; two leaves, 25 theorems, all 27 public declarations audited.
 - [x] Quantitative nodal mass coercivity and exact strict modulus-contraction classifier;
   two leaves, 22 theorems, all 26 public declarations audited.
+- [x] Actual rough unit clamp, exact local energy splitting, firm full-graph/form
+  contraction and equality classification; two leaves, all 39 public declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **7 / 100**. Formalized packages:
+Certified count: **8 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
 `../3-formalized/compact-source-graph-admission.md`, and
 `../3-formalized/compact-source-variance-coercivity.md`, and
 `../3-formalized/rough-sobolev-modulus-nodal-defect.md`, and
-`../3-formalized/compact-nodal-mass-coercivity.md`.
+`../3-formalized/compact-nodal-mass-coercivity.md`, and
+`../3-formalized/rough-markov-clamp-domain.md`.
 
 ## Current exact result and next frontier
 
@@ -207,10 +211,24 @@ Global lint reports five unrelated concurrent missing imports, recorded in the
 fact ledger. All owned processes are terminal. This turn is **progress**;
 certified count **7/100**, goal active.
 
+## Certified package 8: actual Markov clamp and firm graph control
+
+Constructed the actual L² velocity of T(c+primitive q), T(a)=min(max(a,0),1),
+and its residual. Proved a.e. band localization, absolute continuity, exact
+physical/logarithmic energy and congestion splitting, firm jump/source-mass
+contraction, and removed-state variance control. Graph energy is unchanged iff
+source values are constant or all lie in [0,1], including disconnected/zero sources.
+
+Both direct leaf checks, all 39 public axiom audits and ten main signatures pass.
+Imports, field maps, all 36 theorem names in generated index, global formal lint
+and whitespace checks pass. Existing large-file warnings remain. No added axiom,
+full build, numerical experiment or heartbeat increase. All owned processes terminal.
+This turn is **progress**, certified count **8/100**, goal active.
+
 ## Next candidate
 
-`../0-backlog/rough-markov-clamp-domain.md`: construct the [0,1] clamp in the
-actual L² primitive domain, identify exactly which derivative energy it removes,
-and prove admitted-form contraction. The corpus query found modulus and
-admission building blocks but no matching clamp realization; incomplete freshness
-and semantic coverage are recorded in the card. Unproved and not counted.
+`../0-backlog/infinite-coprime-trace-extension.md`: remove finite-cutoff dependence
+by constructing an ℓ²-to-L² coprime tent extension and the exact orthogonal projection
+of an arbitrary physical velocity onto its closed range. Corpus query found finite
+building blocks but no matching infinite result; coverage caveats are recorded in
+the card. Unproved and uncounted.

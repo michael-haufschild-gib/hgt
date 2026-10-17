@@ -20,11 +20,22 @@ No zero-grid, source derivative, arithmetic cancellation, or energy premise.
 - [x] Read field motivation and Pillars XIV–XV; inspect existing corpus.
 - [x] Identify missing actual arithmetic coupling and rough-source admission.
 - [x] Prove the collar average differentiable, with explicit derivative and local Lévy penalty.
-- [ ] Prove exact finite-window Chebyshev identity with all boundary terms.
-- [ ] Combine uniform Krein averaging error with actual signed prime–polar pairing.
+- [x] Prove exact finite-window Chebyshev identity with all boundary terms.
+- [x] Combine uniform Krein averaging error with actual signed prime–polar pairing.
 - [x] Write dependency-closed paper proof and precise contribution boundary.
-- [ ] Audit new leaves using `lake --old env lean`, check axioms in `/tmp`, wire umbrella.
-- [ ] Run formal lint and regenerate indexes; preserve concurrent edits.
+- [x] Audit new leaves using `lake --old env lean`, check axioms in `/tmp`, wire umbrella.
+- [x] Run formal lint and regenerate indexes; preserve concurrent edits. Lint reports one
+  unrelated unwired `RHTower.FermiNymanDyadicFoldGeometry`; own leaves have no diagnostics.
+
+## Current frontier
+
+One substantive contribution is formalized in
+`3-formalized/annular-signed-prime-polar-chebyshev-coupling-2026-10-17.md`.
+The overall target remains 100, with 99 further distinct contributions unproved.
+Next obligations: extend the actual finite-window identity to the full half-line
+using compact support, then construct the full signed translation-packet Gram
+energy to retain arithmetic–polar cancellation in the transport penalty.
+Neither task is counted as completed or assumed as a premise.
 
 ## Research discipline
 

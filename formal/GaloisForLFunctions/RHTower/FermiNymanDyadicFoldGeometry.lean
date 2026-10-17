@@ -28,6 +28,13 @@ Consequences.
   With `w` the self-similar extension of `1/u` and `f` the Haar target,
   `∫_0^1 |h − Σ_j c_j φ_{a_j}|² ≥ ½ |Σ_j c_j/a_j|²`: no approximant of the Haar target can
   outrun its harmonic coefficient sum.
+* **Fold energy bound and full shadow.**  For bounded measurable `F`, `∫_{1/2}^1 |PF|² ≤ 2 ∫_0^1 |F|²`
+  (weighted Cauchy–Schwarz across the dyadic shells), and the fold of an approximation error is
+  `P(f − Σ_j c_j φ_{a_j}) = Pf + (Σ_j c_j/a_j) u⁻¹`; hence for every bounded target
+  `½ ∫_{1/2}^1 |(Pf)(u) + (Σ_j c_j/a_j) u⁻¹|² du ≤ ∫_0^1 |f − Σ_j c_j φ_{a_j}|²`.
+* On the square-integrable witness class, RH is equivalent to each of: a.e. self-similarity, the
+  explicit uniform mass law `m_w(x) ≤ 2 m_w(1) x` (the dilation semigroup has norm at most `√2` on
+  witnesses), and vanishing top-octave logarithmic mean.
 
 In Hilbert-space terms `L²(0,1] = ker P ⊕ 𝓢` with `𝓢` the self-similar functions; the generator
 family has the one-dimensional self-similar shadow `−1/(au)`, the Haar target lies in `ker P`, and
@@ -762,6 +769,219 @@ theorem dyadicHaar_approximation_harmonic_penalty {n : ℕ} (c : Fin n → ℂ) 
   have hz : (∫ u in Ioc (1 / 2 : ℝ) 1, dyadicFold dyadicHaar u * (starRingEnd ℂ) (s₀ u)) = 0 :=
     setIntegral_eq_zero_of_forall_eq_zero fun u hu => by rw [dyadicFold_dyadicHaar hu, zero_mul]
   rw [hz, zero_add] at h
+  linarith
+
+/-! ## Three sharpened criteria for the square-integrable witness class -/
+
+/-- **RH ⟺ every square-integrable witness is a.e. dyadically self-similar.** -/
+theorem riemannHypothesis_iff_forall_l2FermiWitness_ae_selfSimilar :
+    RiemannHypothesis ↔ ∀ w : ℝ → ℂ, IsL2FermiWitness w →
+      ∀ᵐ t ∂(volume.restrict (Ioc (0 : ℝ) 1)), w (t / 2) = w t := by
+  constructor
+  · intro hRH w hw
+    exact hw.ae_selfSimilar_of_riemannHypothesis hRH
+  · intro h
+    exact riemannHypothesis_iff_forall_l2FermiWitness_linearMass.2 fun w hw =>
+      hw.ae_selfSimilar_iff_linearMass.1 (h w hw)
+
+/-- **RH ⟺ the explicit uniform mass law `m_w(x) ≤ 2 m_w(1) x` holds for every square-integrable
+witness**: the dilation semigroup `w ↦ w(·/μ)` has norm at most `√2` on the witness class. -/
+theorem riemannHypothesis_iff_forall_l2FermiWitness_mass_le_two_mul :
+    RiemannHypothesis ↔ ∀ w : ℝ → ℂ, IsL2FermiWitness w →
+      ∀ x ∈ Ioc (0 : ℝ) 1, witnessMass w x ≤ (2 * witnessMass w 1) * x := by
+  constructor
+  · intro hRH w hw x hx
+    exact witnessMass_le_of_ae_selfSimilar hw.sq (hw.ae_selfSimilar_of_riemannHypothesis hRH) hx
+  · intro h
+    exact riemannHypothesis_iff_forall_l2FermiWitness_linearMass.2 fun w hw =>
+      ⟨2 * witnessMass w 1, h w hw⟩
+
+/-- **RH ⟺ every square-integrable witness has zero top-octave logarithmic mean**: the linear
+criterion of the continuous theory holds on the full measurable witness class. -/
+theorem riemannHypothesis_iff_forall_l2FermiWitness_dyadicLogMean_eq_zero :
+    RiemannHypothesis ↔ ∀ w : ℝ → ℂ, IsL2FermiWitness w → dyadicLogMean w = 0 := by
+  constructor
+  · intro hRH w hw
+    exact (isL2FermiWitness_iff_dyadicLogMean_eq_zero_of_ae_selfSimilar hw.measurable hw.sq
+      (hw.ae_selfSimilar_of_riemannHypothesis hRH)).1 hw
+  · intro h
+    by_contra hRH
+    obtain ⟨ρ, hζ, h1, h2⟩ := exists_zetaZero_re_gt_half_of_not_riemannHypothesis hRH
+    have hwit := isFermiNymanWitness_powerWitness_of_zeta_eq_zero hζ h1 h2
+    have hL := h _ (hwit.isL2_of_measurable (measurable_powerWitness _))
+    exact dyadicLogMean_powerWitness_ne_zero (z := (starRingEnd ℂ) ρ)
+      (by rw [Complex.conj_re]; exact h2) hL
+
+/-! ## The fold energy bound and the full self-similar shadow of an approximation error -/
+
+/-- Weighted Cauchy–Schwarz for a finite dyadic sum:
+`‖Σ_{j<n} 2^{−j} x_j‖² ≤ 2 Σ_{j<n} 2^{−j} ‖x_j‖²`. -/
+theorem norm_sum_half_pow_mul_sq_le (x : ℕ → ℂ) (n : ℕ) :
+    ‖∑ j ∈ Finset.range n, (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) * x j‖ ^ 2 ≤
+      2 * ∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖ ^ 2 := by
+  have h1 : ‖∑ j ∈ Finset.range n, (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) * x j‖ ≤
+      ∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖ := by
+    refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun j _ => ?_))
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (pow_pos (by norm_num) j)]
+  have h2 : (∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖) ^ 2 ≤
+      (∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j) *
+        ∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖ ^ 2 := by
+    refine Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul _ (fun j _ => by positivity)
+      (fun j _ => by positivity) (fun j _ => le_of_eq ?_)
+    ring
+  have h3 : 0 ≤ ∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖ ^ 2 :=
+    Finset.sum_nonneg fun j _ => by positivity
+  calc ‖∑ j ∈ Finset.range n, (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) * x j‖ ^ 2
+      ≤ (∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) h1 2
+    _ ≤ (∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j) *
+          ∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖ ^ 2 := h2
+    _ ≤ 2 * ∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * ‖x j‖ ^ 2 :=
+        mul_le_mul_of_nonneg_right (sum_geometric_two_le n) h3
+
+theorem half_pow_mul_mem_Ioc {u : ℝ} (hu : u ∈ Ioc (1 / 2 : ℝ) 1) (j : ℕ) :
+    (1 / 2 : ℝ) ^ j * u ∈ Ioc (0 : ℝ) 1 := by
+  have hu0 : 0 < u := lt_trans (by norm_num) hu.1
+  refine ⟨mul_pos (pow_pos (by norm_num) j) hu0, ?_⟩
+  calc (1 / 2 : ℝ) ^ j * u ≤ 1 * 1 :=
+        mul_le_mul (pow_le_one₀ (by norm_num) (by norm_num)) hu.2 hu0.le zero_le_one
+    _ = 1 := one_mul 1
+
+/-- The fold series of a bounded function converges absolutely on the top octave. -/
+theorem summable_dyadicFold_of_bounded {f : ℝ → ℂ} {M : ℝ} (hM : ∀ t ∈ Ioc (0 : ℝ) 1, ‖f t‖ ≤ M)
+    {u : ℝ} (hu : u ∈ Ioc (1 / 2 : ℝ) 1) :
+    Summable fun j : ℕ => (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) * f ((1 / 2 : ℝ) ^ j * u) := by
+  refine Summable.of_norm_bounded (g := fun j => M * (1 / 2 : ℝ) ^ j)
+    (summable_geometric_two.mul_left M) fun j => ?_
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (pow_pos (by norm_num) j),
+    mul_comm]
+  exact mul_le_mul_of_nonneg_right (hM _ (half_pow_mul_mem_Ioc hu j)) (pow_pos (by norm_num) j).le
+
+/-- **Fold energy bound.**  For a bounded measurable `F` on `(0,1]`,
+`∫_{1/2}^1 |PF|² ≤ 2 ∫_0^1 |F|²`. -/
+theorem integral_normSq_dyadicFold_le {F : ℝ → ℂ} (hFm : Measurable F) {M : ℝ}
+    (hM : ∀ t ∈ Ioc (0 : ℝ) 1, ‖F t‖ ≤ M) :
+    (∫ u in Ioc (1 / 2 : ℝ) 1, ‖dyadicFold F u‖ ^ 2) ≤ 2 * ∫ t in Ioc (0 : ℝ) 1, ‖F t‖ ^ 2 := by
+  have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM 1 ⟨one_pos, le_rfl⟩)
+  -- the partial folds
+  set P : ℕ → ℝ → ℂ := fun n u => ∑ j ∈ Finset.range n, (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) *
+    F ((1 / 2 : ℝ) ^ j * u) with hP
+  have hFsq : IntegrableOn (fun t => ‖F t‖ ^ 2) (Ioc 0 1) := by
+    refine Measure.integrableOn_of_bounded (M := M ^ 2) measure_Ioc_lt_top.ne
+      (hFm.norm.pow_const 2).aestronglyMeasurable ?_
+    rw [ae_restrict_iff' measurableSet_Ioc]
+    refine Eventually.of_forall fun t ht => ?_
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    exact pow_le_pow_left₀ (norm_nonneg _) (hM t ht) 2
+  have hshellsum : HasSum (fun j => ∫ t in dyadicShell j, ‖F t‖ ^ 2)
+      (∫ t in Ioc (0 : ℝ) 1, ‖F t‖ ^ 2) := by
+    rw [← iUnion_dyadicShell]
+    exact hasSum_integral_iUnion measurableSet_dyadicShell pairwise_disjoint_dyadicShell
+      (by rw [iUnion_dyadicShell]; exact hFsq)
+  -- each partial fold has energy at most `2 ∫_0^1 |F|²`
+  have hpartial : ∀ n, (∫ u in Ioc (1 / 2 : ℝ) 1, ‖P n u‖ ^ 2) ≤
+      2 * ∫ t in Ioc (0 : ℝ) 1, ‖F t‖ ^ 2 := by
+    intro n
+    have hterm : ∀ j, IntegrableOn (fun u => (1 / 2 : ℝ) ^ j * ‖F ((1 / 2 : ℝ) ^ j * u)‖ ^ 2)
+        (Ioc (1 / 2 : ℝ) 1) := by
+      intro j
+      refine Measure.integrableOn_of_bounded (M := (1 / 2 : ℝ) ^ j * M ^ 2) measure_Ioc_lt_top.ne
+        (((hFm.comp (measurable_const_mul _)).norm.pow_const 2).const_mul _).aestronglyMeasurable ?_
+      rw [ae_restrict_iff' measurableSet_Ioc]
+      refine Eventually.of_forall fun u hu => ?_
+      rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      exact mul_le_mul_of_nonneg_left
+        (pow_le_pow_left₀ (norm_nonneg _) (hM _ (half_pow_mul_mem_Ioc hu j)) 2)
+        (pow_pos (by norm_num) j).le
+    have hint : IntegrableOn (fun u => 2 * ∑ j ∈ Finset.range n,
+        (1 / 2 : ℝ) ^ j * ‖F ((1 / 2 : ℝ) ^ j * u)‖ ^ 2) (Ioc (1 / 2 : ℝ) 1) :=
+      (integrable_finsetSum _ fun j _ => hterm j).const_mul 2
+    have hmono : (∫ u in Ioc (1 / 2 : ℝ) 1, ‖P n u‖ ^ 2) ≤
+        ∫ u in Ioc (1 / 2 : ℝ) 1, 2 * ∑ j ∈ Finset.range n,
+          (1 / 2 : ℝ) ^ j * ‖F ((1 / 2 : ℝ) ^ j * u)‖ ^ 2 := by
+      refine integral_mono_of_nonneg (Eventually.of_forall fun u => by positivity) hint
+        (Eventually.of_forall fun u => ?_)
+      exact norm_sum_half_pow_mul_sq_le (fun j => F ((1 / 2 : ℝ) ^ j * u)) n
+    rw [integral_const_mul, integral_finsetSum _ fun j _ => hterm j] at hmono
+    refine hmono.trans (mul_le_mul_of_nonneg_left ?_ (by norm_num))
+    have hshell : ∀ j, (∫ u in Ioc (1 / 2 : ℝ) 1, (1 / 2 : ℝ) ^ j * ‖F ((1 / 2 : ℝ) ^ j * u)‖ ^ 2) =
+        ∫ t in dyadicShell j, ‖F t‖ ^ 2 := by
+      intro j
+      rw [setIntegral_dyadicShell_eq (fun t => ‖F t‖ ^ 2) j, ← integral_smul]
+      simp only [smul_eq_mul]
+    simp_rw [hshell]
+    exact sum_le_hasSum (Finset.range n) (fun j _ => integral_nonneg fun t => by positivity) hshellsum
+  -- dominated convergence of the partial folds
+  have hlim : Tendsto (fun n => ∫ u in Ioc (1 / 2 : ℝ) 1, ‖P n u‖ ^ 2) atTop
+      (𝓝 (∫ u in Ioc (1 / 2 : ℝ) 1, ‖dyadicFold F u‖ ^ 2)) := by
+    refine tendsto_integral_of_dominated_convergence (fun _ => (2 * M) ^ 2) ?_ ?_ ?_ ?_
+    · intro n
+      exact ((Finset.measurable_sum _ fun j _ =>
+        measurable_const.mul (hFm.comp (measurable_const_mul _))).norm.pow_const 2).aestronglyMeasurable
+    · exact integrableOn_const (C := (2 * M) ^ 2) measure_Ioc_lt_top.ne
+    · intro n
+      rw [ae_restrict_iff' measurableSet_Ioc]
+      refine Eventually.of_forall fun u hu => ?_
+      rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+      calc ‖P n u‖ ≤ ∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j * M := by
+            refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
+            rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (pow_pos (by norm_num) j)]
+            exact mul_le_mul_of_nonneg_left (hM _ (half_pow_mul_mem_Ioc hu j))
+              (pow_pos (by norm_num) j).le
+        _ = (∑ j ∈ Finset.range n, (1 / 2 : ℝ) ^ j) * M := by rw [Finset.sum_mul]
+        _ ≤ 2 * M := mul_le_mul_of_nonneg_right (sum_geometric_two_le n) hM0
+    · rw [ae_restrict_iff' measurableSet_Ioc]
+      refine Eventually.of_forall fun u hu => ?_
+      have hs := (summable_dyadicFold_of_bounded hM hu).hasSum
+      exact (hs.tendsto_sum_nat.norm.pow 2)
+  exact le_of_tendsto' hlim hpartial
+
+/-- **Fold of an approximation error.**  For bounded `f`, on the top octave
+`P(f − Σ_j c_j φ_{a_j})(u) = (Pf)(u) + (Σ_j c_j/a_j) u⁻¹`. -/
+theorem dyadicFold_sub_combination {f : ℝ → ℂ} {M : ℝ} (hM : ∀ t ∈ Ioc (0 : ℝ) 1, ‖f t‖ ≤ M)
+    {n : ℕ} (c : Fin n → ℂ) (a : Fin n → ℝ) (ha : ∀ j, 1 ≤ a j) {u : ℝ}
+    (hu : u ∈ Ioc (1 / 2 : ℝ) 1) :
+    dyadicFold (fun t => f t - fermiNymanCombination c a t) u =
+      dyadicFold f u + (∑ j, c j / (a j : ℂ)) * ((u : ℂ))⁻¹ := by
+  have hu0 : (u : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (lt_trans (by norm_num) hu.1).ne'
+  have hf : HasSum (fun j : ℕ => (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) * f ((1 / 2 : ℝ) ^ j * u))
+      (dyadicFold f u) := (summable_dyadicFold_of_bounded hM hu).hasSum
+  have hcomb : HasSum (fun j : ℕ => (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) *
+      fermiNymanCombination c a ((1 / 2 : ℝ) ^ j * u))
+      (∑ i, c i * (-(((a i * u)⁻¹ : ℝ) : ℂ))) := by
+    have h := hasSum_sum (s := Finset.univ) fun i _ =>
+      (hasSum_dyadicFold_fermiNymanGen (ha i) hu).mul_left (c i)
+    refine h.congr_fun fun j => ?_
+    simp only [fermiNymanCombination, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  have h2 : HasSum (fun j : ℕ => (((1 / 2 : ℝ) ^ j : ℝ) : ℂ) *
+      (f ((1 / 2 : ℝ) ^ j * u) - fermiNymanCombination c a ((1 / 2 : ℝ) ^ j * u)))
+      (dyadicFold f u - ∑ i, c i * (-(((a i * u)⁻¹ : ℝ) : ℂ))) :=
+    (hf.sub hcomb).congr_fun fun j => by ring
+  rw [dyadicFold, h2.tsum_eq, sub_eq_add_neg, ← Finset.sum_neg_distrib, Finset.sum_mul]
+  congr 1
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have hai : (a i : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (lt_of_lt_of_le one_pos (ha i)).ne'
+  push_cast
+  field_simp
+
+/-- **Full self-similar shadow penalty.**  For a bounded measurable target `f` and every finite
+generator combination,
+`½ ∫_{1/2}^1 |(Pf)(u) + (Σ_j c_j/a_j) u⁻¹|² du ≤ ∫_0^1 |f − Σ_j c_j φ_{a_j}|²`. -/
+theorem integral_normSq_sub_combination_ge_half_fold {f : ℝ → ℂ} (hfm : Measurable f) {M : ℝ}
+    (hM : ∀ t ∈ Ioc (0 : ℝ) 1, ‖f t‖ ≤ M) {n : ℕ} (c : Fin n → ℂ) (a : Fin n → ℝ)
+    (ha : ∀ j, 1 ≤ a j) :
+    (∫ u in Ioc (1 / 2 : ℝ) 1, ‖dyadicFold f u + (∑ j, c j / (a j : ℂ)) * ((u : ℂ))⁻¹‖ ^ 2) / 2 ≤
+      ∫ t in Ioc (0 : ℝ) 1, ‖f t - fermiNymanCombination c a t‖ ^ 2 := by
+  have hbound : ∀ t ∈ Ioc (0 : ℝ) 1, ‖f t - fermiNymanCombination c a t‖ ≤ M + ∑ j, ‖c j‖ * 3 := by
+    intro t ht
+    exact (norm_sub_le _ _).trans (add_le_add (hM t ht) (norm_fermiNymanCombination_le c a t))
+  have h := integral_normSq_dyadicFold_le (F := fun t => f t - fermiNymanCombination c a t)
+    (hfm.sub (measurable_fermiNymanCombination c a)) hbound
+  beta_reduce at h
+  rw [setIntegral_congr_fun measurableSet_Ioc
+    (fun u hu => by rw [dyadicFold_sub_combination hM c a ha hu])] at h
   linarith
 
 end RHTower

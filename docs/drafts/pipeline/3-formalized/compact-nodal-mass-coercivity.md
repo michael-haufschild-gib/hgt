@@ -67,4 +67,4 @@ generated API. Global lint reports five unrelated concurrent unreachable modules
 listed in the fact ledger; neither new leaf has an error. All owned processes
 are terminal. This is one connected contribution, certified package **7/100**.
 
-Next conjecture: `../0-backlog/rough-markov-clamp-domain.md`. This turn is **progress**.
+Follow-on result: `rough-markov-clamp-domain.md`, now formalized as package 8.

@@ -562,6 +562,18 @@ to the additive successor lattice:
     retained; no positive-mass or connected-support premise is imposed.
     See `docs/reports/BiScaleUncertainty/CompactNodalMassCoercivity.md`.
 
+11. **Actual Rough Markov Clamp (`RoughSobolevClamp.lean`, `RoughClampGraphControl.lean`):**
+    The unit clamp T(a)=min(max(a,0),1) has an explicitly constructed L2 velocity
+    q_T with `T(c)+primitive q_T=T(c+primitive q)`. Its derivative is q on
+    `0<c+primitive q<1` and zero elsewhere a.e. For q_R=q−q_T, local additive
+    and weighted logarithmic energies split exactly, as do path budgets and
+    total congestion. Jump energies obey `J(q_T)+J(q_R)≤J(q)`; source mass
+    satisfies the same firm contraction. The removed state's weighted variance
+    is at most `sinh(2B)[J(q)−J(q_T)]`. Graph energy is unchanged iff the state
+    is constant across the nonzero source or every source value lies in [0,1].
+    Compact admission supplies all finiteness; no extra analytic premise.
+    See `docs/reports/BiScaleUncertainty/RoughMarkovClamp.md`.
+
 #### Pillar IX: Cosecant–Secant Functional-Equation Dual Decomposition (`CosecantSecantDualDecomposition.lean`)
 Unifies the forward archimedean Lévy weight $w_{\mathrm{arch}}(x) = \frac{e^{x/2}}{\sinh x}$ (from
 $s = 1/2 + ir$), the time-reversed functional-equation dual weight
@@ -678,6 +690,20 @@ crossover kernel):
     functional without grid assumptions. It replaces the exact collision cost by a
     chain-independent radius; it does not improve every exact Gram envelope.
     Source support and the negative odd moment remain. No optimal-constant claim.
+12. **Coherent-Packet Odd-Moment Control (`DyadicHyperbolicMomentControl.lean`):**
+    Put $O=\int F(u)\sinh(u/2)\,du$, $d=\log2$, and $C=R_S+\sqrt{2V}$.
+    A packet of $N+1$ actual sine-multiplier translates has integral $(N+1)O$
+    and support in an interval of length $2B+Nd$, with $B$ chosen from its seed support.
+    Its Gram energy gives the unconditional bound
+    $$O^2\le M_N:=\frac{(2B+Nd)\max(U_N,0)}{(N+1)^2},$$
+    where $U_N$ is the preceding frame upper bound at uniform weights, retaining all
+    source errors. Thus the actual plastic receiver becomes
+    $P(F)\ge I_K+R_{\rm plastic}(F)-2M_N$, with independent collar and moment chain lengths.
+    Full source logarithmic blindness gives $G_S(1)\le C(N+1)$ for every $N$.
+    An integer-growth argument then yields
+    $$O^2\le dC,\qquad P(F)\ge I_K+R_{\rm plastic}(F)-2dC.$$
+    This removes the separate odd moment and its support-radius factor from the penalty.
+    Weighted variance and the collar's support factor remain; positivity is not asserted.
 
 ---
 
@@ -761,7 +787,7 @@ $S_\alpha f$:
 
 ---
 
-### Layer V: Unconditional Euler–Maclaurin Quadrature, Origin-Plus-Tail Synthesis & Signed Weil Bridge (Pillars XVII–XIX)
+#### Layer V: Unconditional Euler–Maclaurin Quadrature, Origin-Plus-Tail Synthesis & All-Scale Signed Weil Bridge (Pillars XVII–XX)
 
 #### Pillar XVII: Unconditional Derivative-Free ($S(f)$-Free) Euler–Maclaurin Cell Quadrature (`EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`)
 Eliminates **Trap 1 (Spectral Second Moment $S(f)$ Divergence)** from logarithmic cell quadrature:
@@ -811,6 +837,22 @@ and `M : ℕ`, with zero hypotheses) directly on the `RHTower` explicit-formula 
    simultaneously controls both the base energy $h_g(0)$ and the odd hyperbolic multiplier energy
    $h_{S_\alpha g}(0)$:
    $$\mathcal{C}_{\mathrm{Nyq}}(M+2)\,\bigl(h_g(0) + h_{S_\alpha g}(0)\bigr) \;\le\; \operatorname{biScaleLevyEnergy}(C_\alpha g) + \sum_{k=0}^{M+1} \bigl(\log(M+2+k+1) - \log(M+2+k)\bigr)\,\frac{2}{\sqrt{M+2+k+1}}\,h_{C_\alpha g}(\log(M+2+k)).$$
+
+#### Pillar XX: The All-Scale Critical-Line $O(n^{-3/2})$ Origin-Budget Convergence Law & Unconditional Explicit-Formula Synthesis (`AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`)
+Couples **all scales simultaneously** from the first prime $\log 2$ up to any cutoff $\log(N+2)$
+across arbitrarily many dyadic shells while consuming **at most one copy** of `biScaleLevyEnergy f`:
+1. **The Canonical All-Scale Critical-Line Weight (`allScaleCriticalWeight`, `allScaleCriticalWeight_pos`, & `allScaleCriticalWeight_le_archLevySinhWeight`):**
+   $$\varpi_n := \sqrt{2}\,n\left(\frac{1}{\sqrt{n}} - \frac{1}{\sqrt{n+1}}\right) \asymp \frac{1}{\sqrt{n+1}}, \qquad 0 < \varpi_n \le \frac{2}{\sqrt{n+1}} \le \operatorname{archLevySinhWeight}(\log(n+1)).$$
+2. **Exact Telescoping $O(n^{-3/2})$ Origin-Budget Conservation Across $[2, N+2)$ (`sum_allScaleCriticalWeight_div_eq` & `sum_allScaleCriticalWeight_div_le_one`):**
+   Because the critical-line exponent is $\sigma = 1/2$, each cell's origin-collar share
+   $\varpi_n / n = \sqrt{2}(n^{-1/2} - (n+1)^{-1/2})$ is of order $n^{-3/2}$ ($3/2 > 1$) and telescopes
+   **exactly** over all $n \in \{2, \dots, N+1\}$ to:
+   $$\sum_{k=0}^{N-1} \frac{\varpi_{k+2}}{k+2} = 1 - \frac{\sqrt{2}}{\sqrt{N+2}} \le 1.$$
+3. **Unconditional All-Scale Signed Coercivity & Weil Functional Lower Bound (`global_all_scale_signed_coercivity`, `RealEvenPolarTestFn.unconditional_all_scale_signed_weil_lower_bound`, & `RealSmoothEvenPolarTestFn.unconditional_all_scale_signed_weil_lower_bound`):**
+   Setting $w_n = W_{0, n} = \varpi_n$ gives exact half-weight coercivity $\varpi_n - \frac{\varpi_n^2}{2\varpi_n} = \frac{1}{2}\varpi_n > 0$
+   at every integer node $n \ge 2$, while $(0, \log 2]$ and $[\log 2, \log(N+2)]$ partition into a
+   **single copy** of `biScaleLevyEnergy`:
+   $$\bigl(\Omega(0) + \mathcal{C}_{\mathrm{all}}(N)\bigr)\,(\operatorname{weilTest}\,g\,g\,0).\mathrm{re} \;\le\; \operatorname{weilArchRe}(\operatorname{weilTest}\,g\,g) + \sum_{k=0}^{N-1} \bigl(\log(k+3) - \log(k+2)\bigr)\,\varpi_{k+2}\,(\operatorname{weilTest}\,g\,g\,(\log(k+2))).\mathrm{re}.$$
 
 ---
 
@@ -872,10 +914,14 @@ and `M : ℕ`, with zero hypotheses) directly on the `RHTower` explicit-formula 
 | 52 | `ArithmeticMultiplierCollisionControl.lean` | Layer III / Pillars VI–IX | Exact arithmetic lag collision energy, doubled source-zero control, dyadic multiplier leakage bound and full secant/plastic receiver |
 | 53 | `CompactSourceNodalVariance.lean` | Layer III / Pillar VII | Finite source-lobe masses, exact variance loss and positive-lag nodal integral |
 | 54 | `CompactNodalMassCoercivity.lean` | Layer III / Pillar VII | Actual nodal mass lower bound and exact one-sign/strict modulus-contraction classification |
-| 55 | `DyadicMultiplierFrameBound.lean` | Layer III / Pillars VI–IX | Chain-independent dyadic multiplier frame radius from source variance, explicit source-error control and unconditional secant/plastic receiver |
 | 55 | `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean` | Layer V / Pillar XVII | Unconditional $S(f)$-free Euler–Maclaurin cell quadrature, origin-singularity Nyquist absorption, and unconditional polar quadrature on `RealEvenPolarTestFn` |
 | 56 | `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean` | Layer V / Pillar XVIII | Antitonicity of `archLevySinhWeight`, disjoint origin-plus-tail partition of `biScaleLevyEnergy`, and unconditional global dyadic Nyquist signed coercivity |
 | 57 | `SignedWeilFunctionalCoercivityAndRHBridge.lean` | Layer V / Pillar XIX | Strict positivity of `dyadicNyquistCoerciveConstant`, unconditional signed Weil functional lower bounds on `RealEvenPolarTestFn` and `RealSmoothEvenPolarTestFn`, and unconditional hyperbolic multiplier dyadic coercivity |
+| 58 | `DyadicMultiplierFrameBound.lean` | Layer III / Pillars VI–IX | Chain-independent dyadic multiplier frame radius from source variance, explicit source-error control and unconditional secant/plastic receiver |
+| 59 | `RoughSobolevClamp.lean` | Layer III / Pillar VII | Constructed unit clamp and residual velocities, derivative-band localization and exact additive energy splitting |
+| 60 | `RoughClampGraphControl.lean` | Layer III / Pillar VII | Firm full-graph/form contraction, exact congestion split, removed-state variance floor and complete equality classifier |
+| 61 | `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean` | Layer V / Pillar XX | Canonical all-scale critical-line weight $\varpi_n$, exact telescoping $O(n^{-3/2})$ origin-budget conservation, and unconditional all-scale signed Weil functional lower bounds |
+| 62 | `DyadicHyperbolicMomentControl.lean` | Layer III / Pillars VI–IX | Coherent-packet odd-moment budget, support-radius-free logarithmic-grid moment bound, and actual plastic receiver without a separate moment term |
 
 ---
 

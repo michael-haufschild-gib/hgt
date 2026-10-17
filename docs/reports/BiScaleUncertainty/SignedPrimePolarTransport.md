@@ -105,6 +105,18 @@ enters only through the original h in (2) and (3).
 
 ## Verification status
 
-Paper proof above is complete. Lean construction and final combined audit are in
-progress; no package is counted as verified until those checks pass. Classical
-Stieltjes summation is reused infrastructure, not a separate research contribution.
+Paper proof above is complete. Both Lean leaves pass direct
+`lake --old env lean <leaf> -o <leaf.olean>` checks without diagnostics. The
+constructed-source endpoints are `SignedPrimePolar.pairing_correlationAverage_eq`,
+`SignedPrimePolar.abs_pairing_sub_chebyshevWork_le`, and
+`SignedPrimePolar.abs_pairing_sub_chebyshevWork_le_levy`.
+`SignedPrimePolar.pairing_eq_literal` verifies the original atom weights and polar
+density. Six endpoint axiom audits report only propext, Classical.choice and
+Quot.sound. Printed main signatures have no extra analytic premise. Both leaves
+are wired into the area umbrella, and generated indexes are refreshed.
+
+Repository lint was run; its sole error is the unrelated concurrent module
+`RHTower.FermiNymanDyadicFoldGeometry` missing from its own umbrella. No whole-tree
+or umbrella build was run. Classical Stieltjes summation is reused infrastructure,
+not a separate research contribution. This package counts once toward the target
+of 100; the overall research goal remains active.

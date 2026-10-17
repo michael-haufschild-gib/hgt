@@ -468,7 +468,7 @@ maintain working log for yourself. do not write lean code yet. understand why we
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: docs/reports/BiScaleUncertainty/README.md
+do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 
 On every new turn:
 
@@ -506,9 +506,9 @@ Your topic of research:
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: docs/reports/BiScaleUncertainty/README.md
+do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 
-make one significant contribution to develop and advance this new field of mathematics.
+make significant contributions to develop and advance this new field of mathematics to a state where it provides all mathematical tools needed to fully destroy, shatter, and overcome wall 1 in docs/reports/walls-ledger.md
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -524,7 +524,7 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BiScaleUncertainty/
+8. Lean code relevant for the field itself goes into formal/GaloisForLFunctions/BiScaleUncertainty/
 
 
 
@@ -554,3 +554,14 @@ around the following four canonical frontier problems while respecting the Seven
    (Trap 5), any proof that exploits the polar hyperplane $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$
    beyond the pure positive-definite cone bound must couple the polar tail at scale $T$ to the
    exponentially dense logarithmic grid nodes $\log n \in [T - D, T + D]$ where $\Delta x_n \asymp e^{-T}$.
+
+
+   **Signed Prime-to-Polar Measure Transport & Chebyshev Discrepancy Coupling (relevant for RH proof routes `EWU` / `HF` / `CHMD`):**
+   Do **not** restrict to the grid-blind subspace $h_f(\log n) = 0$ (Trap 9). Instead, use Pillar XIV
+   (`SignedKreinCollarAndPrimeDeficitTransfer.lean`) and Pillar XV
+   (`KreinKantorovichMeasureTransportAndPrimePolarPairing.lean`) to couple the discrete von Mangoldt
+   measure $d\mu_\Lambda = \sum_{n \ge 2}\frac{\Lambda(n)}{\sqrt{n}}\delta_{\log n}$ directly to the
+   continuum polar measure $d\mu_{\mathrm{polar}} = 2\cosh(x/2)\,dx$, combining local
+   Krein–Kantorovich collar transport (penalized by $w_{\mathrm{arch}}(y)^{-1} = e^{-y/2}\sinh y \le y e^{y/2}$)
+   with global Stieltjes integration by parts against the Chebyshev prime-counting error
+   $\psi(e^x) - e^x$.

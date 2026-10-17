@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **7 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **8 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -788,19 +788,79 @@ Evidence: `/tmp/compact-nodal-variance-build.log`, `/tmp/compact-nodal-mass-buil
 `/tmp/compact-nodal-mass-index.log`, `/tmp/compact-nodal-mass-lint.log`.
 All owned processes are terminal. Package 7 is **progress**.
 
-## Next falsifiable candidate — actual rough Markov clamp
+## Package 8 — actual Markov clamp and firm graph control
 
-Backlog: `docs/drafts/pipeline/0-backlog/rough-markov-clamp-domain.md`.
-Construct T(G)=min(max(G,0),1) through the L² velocity
-`(modulusVelocity q c − modulusVelocity q (c−1))/2`. Conjecture exact primitive
-realization, derivative q*1_{0<G<1}, exact removed additive energy, and contraction
-of the full admitted compact-source form. Both threshold level sets need the
-proved zero-level derivative law. Graph-energy equality should hold iff f is
-sourcewise constant or all source values lie in [0,1]; audit before formalization.
+For any physical L² velocity q and constant c, set T(a)=min(max(a,0),1),
+q_T=(modulusVelocity q c−modulusVelocity q (c−1))/2 and q_R=q−q_T.
+These actual velocities realize T(c+primitive q) and its residual exactly,
+including their anchoring constants. The clamped state is locally absolutely
+continuous, with derivative q*1_{0<c+primitive q<1} a.e. Threshold derivatives
+follow from the proved zero-level law, not an admission premise.
 
-Focused query `Sobolev clamp truncation Markov primitive actual velocity graph
-contraction` completed without errors or partial stages. All 20 candidate lemmas
-and 20 source arguments were inspected; no matching constructed clamp result
-was found. Coverage snapshot is older than the current index, semantic coverage
-unmeasured and background refresh incomplete. Unproved and uncounted.
-Goal remains active at **7/100**.
+### Exact laws and rigidity
+
+- q²=q_T²+q_R² a.e.; hence local physical and weighted logarithmic derivative
+  energies split exactly for every oriented interval.
+- Every path budget splits exactly; total congestion has the same addition law
+  for the full mixed measure, even with infinite total energies.
+- J(q_T)+J(q_R)≤J(q). Weighted source mass and the entire admitted compact form
+  satisfy the same firm contraction inequality.
+- Vψ(Rf)≤sinh(2B)[J(q)−J(q_T)], where Rf=f−T(f) is the actual residual state.
+- J(q_T)=J(q) iff f is sourcewise constant OR every nonzero-source value is in
+  [0,1]. Constant states outside the band have zero jump energy and must remain
+  in this classifier. Source-mass equality is different.
+- Covers zero/disconnected sources and arbitrary nonnegative arithmetic weights;
+  no extra analytic premise. No closed SourceGraph or unitary affine claim.
+
+The construction uses T(a)=(|a|−|a−1|+1)/2 and L² linear operations. T and R are
+increasing, so their jump interaction is nonnegative. Derivative orthogonality
+therefore does NOT imply jump orthogonality: the nonlocal split is an inequality.
+Equality forces zero residual jump energy; existing compact-graph rigidity makes
+Rf constant sourcewise. Every nonzero fiber of R is a singleton, and its zero
+fiber is [0,1], giving the complete classifier. This avoids a new singular-kernel
+nullspace proof and keeps the actual constructed graph measure throughout.
+
+### Formal evidence and reusable APIs
+
+`RoughSobolevClamp.lean` (SobolevShear) has 25 public theorems, 3 definitions;
+`RoughClampGraphControl.lean` (PathCongestion) has 11 public theorems. Both final
+serial direct `lake --old env lean -o <normal-output> <leaf>` checks passed
+without diagnostics. Normal outputs postdate final sources. All 39 public
+declarations audited with exact coverage; only `propext`, `Classical.choice`,
+`Quot.sound`. Ten main signatures checked, no extra analytic admission premise.
+Imports, field maps, all 36 theorem names in generated API and whitespace checks
+pass. Global formal lint passes: earlier concurrent import failures are absent.
+Existing large-file warnings remain. No full/umbrella build, numerical experiment,
+added axiom or heartbeat increase. All owned processes terminal.
+
+`primitive_velocity_sub` and `primitive_velocity_smul` handle actual L² classes
+through `Lp.coeFn_sub/smul`. Explicit arguments avoid ambiguous ordered-group
+instances in `max_eq_left`; `dsimp only` exposes unapplied lambdas before integral
+rewrites. The graph equality converse uses `lintegral_eq_zero_iff` on the actual
+residual squared jump, then exact primitive linearity.
+
+Paper: `docs/reports/BiScaleUncertainty/RoughMarkovClamp.md`.
+Card: `docs/drafts/pipeline/3-formalized/rough-markov-clamp-domain.md`.
+Evidence: `/tmp/rough-sobolev-clamp-build.log`, `/tmp/rough-clamp-graph-build.log`,
+`/tmp/rough_clamp_axioms.lean`, `/tmp/rough-clamp-axioms.log`,
+`/tmp/rough-clamp-index.log`, `/tmp/rough-clamp-lint.log`.
+Fresh clamp search inspected all 20 candidate lemmas and 20 source arguments,
+with no execution errors/partial stages. Semantic coverage and source/compiler
+freshness incomplete. Classical contraction theory is background, not an
+external novelty claim; primary links are in the paper. Package 8 is **progress**.
+
+## Next falsifiable candidate — infinite coprime trace extension
+
+Backlog: `docs/drafts/pipeline/0-backlog/infinite-coprime-trace-extension.md`.
+Construct an actual L² tent-velocity extension of arbitrary ℓ² values at positive
+multiples of d+2, with all other integer traces zero and energy exactly 2Σv².
+Then derive the ℓ² second-difference data of any q and its exact orthogonal
+projection/energy defect onto this infinite coprime interpolation subspace.
+This removes finite-cutoff dependence from the current trace construction.
+
+Focused query `infinite square summable coprime divisor trace interpolation L2
+velocity energy isometry` completed without errors/partial stages. All 20
+candidate lemmas and 20 source arguments inspected; finite constructions and
+finite defects found, no matching infinite extension/projection result.
+Snapshot older than index, semantic coverage unmeasured, refresh incomplete.
+Unproved and uncounted. Goal remains active at **8/100**.

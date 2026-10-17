@@ -2,7 +2,7 @@
 
 ## Counting rule
 
-Target: 100 substantive, independently justified contributions. Verified packages: 0.
+Target: 100 substantive, independently justified contributions. Verified packages: 1.
 Helpers, equivalent restatements, and classical partial summation do not count separately.
 
 ## Established inputs
@@ -25,13 +25,41 @@ Helpers, equivalent restatements, and classical partial summation do not count s
 - Separate per-node applications spend origin energy repeatedly. A uniform averaging
   estimate followed by the actual total measure mass keeps that cost explicit.
 
-## Open package
+## Contribution 1: continuous-source signed Chebyshev coupling
 
 The dependency-closed paper proof is in `SignedPrimePolarTransport.md`.
-`AnnularCorrelationTransport.lean` passes direct Lean compilation without diagnostics:
-the average has an explicit continuous derivative, a uniform Krein-error bound, and
-an adjustable annular Lévy penalty. The combined actual arithmetic coupling is still
-under audit; these local helper results do not count as a separate package.
+`AnnularCorrelationTransport.lean` and `SignedPrimePolarCoupling.lean` establish one
+combined package. For every actual compact continuous source and every integer
+cutoff L=log(N+2), its original signed prime–polar pairing differs from explicit
+Chebyshev work of a constructed C¹ collar average by at most M_L K. The exact work
+retains H(0), the upper endpoint, and the negative-exponential polar shadow. K is
+bounded by η times annular Lévy energy plus R/(2ηd²) times the reciprocal-weight
+integral. No blindness, source derivative, arithmetic bound, finite full Lévy
+energy, or nonzero-source premise occurs in either main theorem.
+
+Public endpoints in namespace `SignedPrimePolar`:
+- `pairing_eq_literal`: exact requested n=2,...,N+2 atom sum and polar integral.
+- `pairing_correlationAverage_eq`: exact Chebyshev work identity.
+- `abs_pairing_sub_chebyshevWork_le`: original-source coupling with uniform Krein cost.
+- `abs_pairing_sub_chebyshevWork_le_levy`: adjustable local Lévy/reciprocal-weight bound.
+
+Both leaves pass `lake --old env lean <leaf> -o <leaf.olean>` without diagnostics.
+Six endpoint axiom audits in `/tmp/spp_final_axioms.lean` pass, with only propext,
+Classical.choice and Quot.sound; printed main signatures contain no extra premise.
+Both leaves are wired into `BiScaleUncertainty.lean`; indexes were regenerated.
+Repository lint was run and reports one unrelated concurrent wiring error:
+`RHTower.FermiNymanDyadicFoldGeometry` is unreachable from `RHTower.lean`.
+Logs: `/tmp/spp-final-axioms.log`, `/tmp/spp-index.log`, `/tmp/spp-lint.log`.
+
+Boundary: the formal result is at every finite integer cutoff, not yet a full
+half-line identity. M_L is explicit and grows with the window; no cutoff-uniform
+bound follows. Averaging, partial summation, and local Young inequalities are
+components of this single contribution, not separately counted contributions.
+
+Reusable Lean detail: the chain-rule derivative of exp(−x/2) can expose `(-id) x`.
+Reduce `Pi.neg_apply` and `id_eq` before ring normalization. For restricted-measure
+indicator integrability use `Integrable.indicator` explicitly; field notation on
+an `IntegrableOn` proof selects a different interface.
 
 ## Next cancellation question
 

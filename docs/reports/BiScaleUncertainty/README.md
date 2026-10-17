@@ -552,6 +552,18 @@ to the additive successor lattice:
     retained; no positive-mass or connected-support premise is imposed.
     See [paper proof](CompactNodalMassCoercivity.md).
 
+11. **Actual Rough Markov Clamp (`RoughSobolevClamp.lean`, `RoughClampGraphControl.lean`):**
+    The unit clamp T(a)=min(max(a,0),1) has an explicitly constructed L2 velocity
+    q_T with `T(c)+primitive q_T=T(c+primitive q)`. Its derivative is q on
+    `0<c+primitive q<1` and zero elsewhere a.e. For q_R=q−q_T, local additive
+    and weighted logarithmic energies split exactly, as do path budgets and
+    total congestion. Jump energies obey `J(q_T)+J(q_R)≤J(q)`; source mass
+    satisfies the same firm contraction. The removed state's weighted variance
+    is at most `sinh(2B)[J(q)−J(q_T)]`. Graph energy is unchanged iff the state
+    is constant across the nonzero source or every source value lies in [0,1].
+    Compact admission supplies all finiteness; no extra analytic premise.
+    See [paper proof](RoughMarkovClamp.md).
+
 #### Pillar IX: Cosecant–Secant Functional-Equation Dual Decomposition (`CosecantSecantDualDecomposition.lean`)
 Unifies the forward archimedean Lévy weight $w_{\mathrm{arch}}(x) = \frac{e^{x/2}}{\sinh x}$ (from
 $s = 1/2 + ir$), the time-reversed functional-equation dual weight
@@ -668,6 +680,20 @@ crossover kernel):
     functional without grid assumptions. It replaces the exact collision cost by a
     chain-independent radius; it does not improve every exact Gram envelope.
     Source support and the negative odd moment remain. No optimal-constant claim.
+12. **Coherent-Packet Odd-Moment Control (`DyadicHyperbolicMomentControl.lean`):**
+    Put $O=\int F(u)\sinh(u/2)\,du$, $d=\log2$, and $C=R_S+\sqrt{2V}$.
+    A packet of $N+1$ actual sine-multiplier translates has integral $(N+1)O$
+    and support in an interval of length $2B+Nd$, with $B$ chosen from its seed support.
+    Its Gram energy gives the unconditional bound
+    $$O^2\le M_N:=\frac{(2B+Nd)\max(U_N,0)}{(N+1)^2},$$
+    where $U_N$ is the preceding frame upper bound at uniform weights, retaining all
+    source errors. Thus the actual plastic receiver becomes
+    $P(F)\ge I_K+R_{\rm plastic}(F)-2M_N$, with independent collar and moment chain lengths.
+    Full source logarithmic blindness gives $G_S(1)\le C(N+1)$ for every $N$.
+    An integer-growth argument then yields
+    $$O^2\le dC,\qquad P(F)\ge I_K+R_{\rm plastic}(F)-2dC.$$
+    This removes the separate odd moment and its support-radius factor from the penalty.
+    Weighted variance and the collar's support factor remain; positivity is not asserted.
 
 ---
 
@@ -809,4 +835,7 @@ $S_\alpha f$:
 | 52 | `ArithmeticMultiplierCollisionControl.lean` | Layer III / Pillars VI–IX | Exact arithmetic lag collision energy, doubled source-zero control, dyadic multiplier leakage bound and full secant/plastic receiver |
 | 53 | `CompactSourceNodalVariance.lean` | Layer III / Pillar VII | Finite source-lobe masses, exact variance loss and positive-lag nodal integral |
 | 54 | `CompactNodalMassCoercivity.lean` | Layer III / Pillar VII | Actual nodal mass lower bound and exact one-sign/strict modulus-contraction classification |
-| 55 | `DyadicMultiplierFrameBound.lean` | Layer III / Pillars VI–IX | Chain-independent dyadic multiplier frame radius from source variance, explicit source-error control and unconditional secant/plastic receiver |
+| 58 | `DyadicMultiplierFrameBound.lean` | Layer III / Pillars VI–IX | Chain-independent dyadic multiplier frame radius from source variance, explicit source-error control and unconditional secant/plastic receiver |
+| 59 | `RoughSobolevClamp.lean` | Layer III / Pillar VII | Constructed unit clamp and residual velocities, derivative-band localization and exact additive energy splitting |
+| 60 | `RoughClampGraphControl.lean` | Layer III / Pillar VII | Firm full-graph/form contraction, exact congestion split, removed-state variance floor and complete equality classifier |
+| 62 | `DyadicHyperbolicMomentControl.lean` | Layer III / Pillars VI–IX | Coherent-packet odd-moment budget, support-radius-free logarithmic-grid moment bound, and actual plastic receiver without a separate moment term |

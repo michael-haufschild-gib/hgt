@@ -237,7 +237,63 @@
       Leakage-proof signed collar leverage for `S_α f` and `C_α f`, and zero-grid coincidence lift
       resolving Trap 7 (`OddMultiplierLeakageFamily.lean`).
 
+17. **Pillar XVII — `formal/GaloisForLFunctions/BiScaleUncertainty/EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`**
+    - `cell_quadrature_diff_eq_shifted_integral`, `pointwise_weighted_krein_cell_bound`,
+      `cell_quadrature_abs_diff_le_origin_collar`:
+      Everywhere-continuous, $S(f)$-free Euler–Maclaurin cell quadrature bounds eliminating Trap 1.
+    - `nyquist_cell_origin_integral_le_levy`, `nyquist_cell_quadrature_abs_diff_le_levy`,
+      `dyadic_window_global_quadrature_abs_diff_le_biScaleLevyEnergy`:
+      Origin-singularity absorption on Nyquist cells `[log n, log(n+1)]` and global dyadic-window
+      quadrature bounds controlled by a single copy of `biScaleLevyEnergy`.
+    - `integral_exp_half_log_cell_eq`, `integral_exp_half_sq_log_cell_eq`,
+      `nyquist_polar_cell_quadrature_abs_diff_le_levy`,
+      `RealEvenPolarTestFn.unconditional_polar_cell_quadrature_bound`:
+      Exact polar cell integrals and unconditional polar quadrature bound on `RealEvenPolarTestFn`.
+
+18. **Pillar XVIII — `formal/GaloisForLFunctions/BiScaleUncertainty/MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`**
+    - `archLevySinhWeight_eq_two_div_of_pos`, `archLevySinhWeight_antitoneOn`,
+      `two_div_sqrt_succ_le_archLevySinhWeight`, `nyquist_shifted_collar_le_levy_cell`:
+      Strict antitonicity of `archLevySinhWeight` on `(0, ∞)` and critical-line collar dominance.
+    - `origin_add_tail_levy_eq_biScaleLevyEnergy`, `nyquist_step_le_log_self`,
+      `origin_add_dyadic_window_levy_le_biScaleLevyEnergy`:
+      Disjoint origin-plus-tail partition of `biScaleLevyEnergy`.
+    - `nyquist_cell_adaptive_signed_coercivity`, `global_dyadic_nyquist_signed_coercivity`:
+      Unconditional global dyadic Nyquist signed coercivity across `[log N, log(2N)]`.
+
+19. **Pillar XIX — `formal/GaloisForLFunctions/BiScaleUncertainty/SignedWeilFunctionalCoercivityAndRHBridge.lean`**
+    - `dyadicNyquistCoerciveConstant`, `two_div_sqrt_sub_two_div_pos`,
+      `dyadicNyquistCoerciveConstant_pos`:
+      Strict positivity of the concrete dyadic Nyquist coercive constant `dyadicNyquistCoerciveConstant (M + 2)`.
+    - `RealEvenPolarTestFn.weilArchRe_eq_gamma_add_biScaleLevyEnergy`,
+      `RealEvenPolarTestFn.unconditional_dyadic_signed_weil_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_single_node_signed_weil_lower_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_dyadic_signed_weil_lower_bound`:
+      100% unconditional signed Weil functional lower bounds on `RealEvenPolarTestFn` and
+      `RealSmoothEvenPolarTestFn`.
+    - `RealEvenPolarTestFn.unconditional_coshMultiplier_dyadic_signed_coercivity`,
+      `RealEvenPolarTestFn.unconditional_sinhMultiplier_dyadic_signed_coercivity`:
+      Unconditional hyperbolic multiplier dyadic Nyquist signed coercivity.
+
+20. **Pillar XX — `formal/GaloisForLFunctions/BiScaleUncertainty/AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`**
+    - `allScaleCriticalWeight`, `allScaleCriticalWeight_pos`,
+      `allScaleCriticalWeight_le_two_div_sqrt_succ`, `allScaleCriticalWeight_le_archLevySinhWeight`:
+      Canonical all-scale critical-line weight $\varpi_n = \sqrt{2}\,n(n^{-1/2} - (n+1)^{-1/2})$ and
+      pointwise dominance by `archLevySinhWeight`.
+    - `allScaleCriticalWeight_div_eq`, `sum_allScaleCriticalWeight_div_eq`,
+      `sum_allScaleCriticalWeight_div_le_one`:
+      Exact telescoping $O(n^{-3/2})$ origin-budget conservation across `[2, N + 2)`.
+    - `nyquist_step_le_log_two`, `nyquist_cell_origin_integral_le_log_two_origin`,
+      `origin_log_two_add_all_scale_tail_le_biScaleLevyEnergy`:
+      Disjoint first-prime origin `(0, log 2]` plus all-scale tail `[log 2, log(N + 2)]` partition.
+    - `allScaleCoerciveConstant`, `allScaleCoerciveConstant_pos`, `allScaleCoerciveConstant_mono`,
+      `nyquist_cell_all_scale_signed_coercivity`, `global_all_scale_signed_coercivity`,
+      `RealEvenPolarTestFn.unconditional_all_scale_signed_weil_lower_bound`,
+      `RealSmoothEvenPolarTestFn.unconditional_all_scale_signed_weil_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_coshMultiplier_all_scale_signed_coercivity`:
+      Unconditional all-scale signed coercivity and Weil functional lower bounds across all dyadic
+      shells simultaneously.
+
 ## Audit Status
-- **Umbrella Verification**: `lake env lean GaloisForLFunctions/BiScaleUncertainty.lean` passes with exit code `0` (all modules wired).
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XVI; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Module Verification**: All 20 Pillars (`EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XX; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 

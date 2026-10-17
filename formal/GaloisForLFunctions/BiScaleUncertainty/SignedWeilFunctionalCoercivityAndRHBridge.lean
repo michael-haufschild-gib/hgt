@@ -136,7 +136,7 @@ theorem RealEvenPolarTestFn.unconditional_dyadic_signed_weil_lower_bound
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [g.autocorr_eq]
   rw [hsum_eq]
-  linarith
+  linarith only [hcoerc]
 
 /-- **Unconditional Single-Node Signed Weil Lower Bound on `RealEvenPolarTestFn`:**
 For EVERY `g : RealEvenPolarTestFn` and EVERY `n : ℕ` (testing at integer node `n + 2 ≥ 2` with
@@ -161,7 +161,7 @@ theorem RealEvenPolarTestFn.unconditional_single_node_signed_weil_lower_bound
   have hN_ge1 : (1 : ℝ) ≤ ((n + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ n + 2)
   have hinv_le1 : 1 / ((n + 2 : ℕ) : ℝ) ≤ 1 := by
     rw [div_le_iff₀ (by positivity)]
-    linarith
+    linarith only [hN_ge1]
   have horig_nn :
       0 ≤ ∫ y in Ioc 0 (Real.log ((n + 2 + 1 : ℕ) : ℝ) - Real.log ((n + 2 : ℕ) : ℝ)),
           (autocorr g.source 0 - autocorr g.source y) * archLevySinhWeight y := by
@@ -174,8 +174,8 @@ theorem RealEvenPolarTestFn.unconditional_single_node_signed_weil_lower_bound
           (∫ y in Ioc 0 (Real.log ((n + 2 + 1 : ℕ) : ℝ) - Real.log ((n + 2 : ℕ) : ℝ)),
             (autocorr g.source 0 - autocorr g.source y) * archLevySinhWeight y) ≤
         ∫ y in Ioc 0 (Real.log ((n + 2 + 1 : ℕ) : ℝ) - Real.log ((n + 2 : ℕ) : ℝ)),
-          (autocorr g.source 0 - autocorr g.source y) * archLevySinhWeight y := by
-    nlinarith
+          (autocorr g.source 0 - autocorr g.source y) * archLevySinhWeight y :=
+    mul_le_of_le_one_left horig_nn hinv_le1
   have h2N_ge :
       Real.log ((n + 2 + 0 + 1 : ℕ) : ℝ) ≤ Real.log ((2 * (n + 2) : ℕ) : ℝ) := by
     refine Real.log_le_log (by positivity) ?_
@@ -212,7 +212,7 @@ theorem RealEvenPolarTestFn.unconditional_single_node_signed_weil_lower_bound
   have hnat0 : n + 2 + 0 = n + 2 := by omega
   have hnat1 : n + 2 + 0 + 1 = n + 3 := by omega
   rw [hnat0, hnat1] at hcell hshift_le_dyadic
-  linarith
+  linarith only [hcell, horig_drop, hshift_le_dyadic, hglobal]
 
 /-- **Unconditional Dyadic-Window Signed Weil Lower Bound on `RealSmoothEvenPolarTestFn`:**
 Immediate unconditional specialization of `unconditional_dyadic_signed_weil_lower_bound` to smooth

@@ -25,7 +25,7 @@
 9. [x] Prove full-grid capped capacity and cutoff comparisons; identify the all-low
    specialization, sandwich its optimized hierarchy between the prior C_N and Q_N,
    and derive monotone convergence and the quantitative actual-source certificate.
-10. [ ] Formalize exact full-grid activation, scalar quadratic deficit, rationalized
+10. [x] Formalize exact full-grid activation, scalar quadratic deficit, rationalized
     physical gain, and the almost-everywhere equality/strictness criterion; transfer
     the gain identity to actual source energy.
 11. [ ] Develop sharp Schur-coupled growth and matching finite-limit asymptotics. The general transfer does not settle these or the full 100-contribution objective.
@@ -37,12 +37,15 @@ and valid for actual smooth grid sources. Paired capacity now proves Q_K saturat
 and an explicit N^(−1/4) hierarchy error. Full-grid capped support preserves all
 high nodes. Its optimized B_N is now Lean-verified: C_N≤B_N≤Q_N, actual monotonicity,
 the same Q_∞ limit, and the inherited N^(−1/4) upper error hold for actual sources.
-All 58 axiom/signature audits and final direct recheck pass. Next: exact activation, unequal product
-pairs, general nonzero Schur residuals, and matching leading-law audits below.
-Previous goal turn is classified as progress: cutoff monotonicity and quantitative
-saturation passed direct Lean and all axiom audits. Current corpus query confirms
-available Bessel/signed-transport inputs; it does not certify exhaustive novelty
-(`/tmp/bsu-paired-sphere-search.log`, semantic coverage unmeasured).
+The exact activation criterion and rationalized physical gain are now verified too:
+coupling is strict precisely where squared maximal low fractions sum above one;
+integrated gain is strict precisely when inactivity fails almost everywhere.
+All 26 new axiom/signature audits and final direct recheck pass. Next: unequal
+product pairs, general nonzero Schur residuals, strict optimized gaps, and matching
+leading-law audits below.
+Previous goal turn is classified as progress: full-grid capped monotonicity,
+hierarchy comparison, and quantitative actual-source saturation passed direct Lean
+and all 58 axiom audits. Current activation work extends that verified result.
 
 Latest goal turn is classified as progress: all three product-coupling leaves and
 41 axiom audits passed, adding actual source coupling and a monotone hierarchy.
@@ -63,7 +66,7 @@ Its explicit extension proves monotonicity of P_N and equality with the running 
 `PhysicalCollarCutoffStability.lean` implements the complementary retraction and explicit
 inverse-square-root error; direct compilation produced a current compiled output with no
 diagnostics. All 35 public theorem axiom audits and the final direct leaf recheck passed.
-Current global lint reports five missing imports in other workstreams, listed below.
+Current global lint passes; earlier concurrent missing-import failures are obsolete.
 These two leaves form one contribution package; padding lemmas are not separate contributions.
 
 Current signed-coupling package: `PairedCosetSphereDuality.lean` passes direct
@@ -372,7 +375,8 @@ passes without diagnostics. This is one package.
 
 All-low equality with the previous paired support, cutoff monotonicity, and an
 upper error estimate for the new coefficient are formalized in the next package.
-The activation criterion below and true source realization remain unformalized.
+The activation criterion below is Lean-verified; true source realization remains
+unformalized.
 General nonzero Schur coupling remains open. The uniform
 low cutoff also leaves unused product-zero pairs with unequal node sizes; retaining
 those is a further refinement. Corpus searches `/tmp/bsu-capped-block-search.log`
@@ -423,7 +427,7 @@ capped support, paired radial capacity, and array comparison inputs (156 matches
 in 45 modules; 68 after the module cap). Retrieval is partial, with older indexed
 coverage and unmeasured semantic coverage; this is not exhaustive novelty evidence.
 
-## Full-grid activation criterion [paper proof; Lean pending]
+## Full-grid activation criterion [Lean-verified]
 
 For each signed block let U=sqrt(L²+H²), and let its low fraction be L/U
 when U>0, otherwise zero. Let α_σ be the maximum low fraction on sign σ
@@ -442,8 +446,10 @@ Such caps exist precisely when α_false²+α_true²≤1; choose t_false=α_false
 and t_true=sqrt(1−α_false²). The common-origin square root is strictly
 increasing in nonnegative angular support, so the same strictness criterion
 holds for the pointwise energy kernel. An integrated strict gain additionally
-requires strict activation on a positive-measure set. This criterion is not
-yet Lean-verified and is not counted separately.
+requires strict activation on a positive-measure set. Both finite and physical
+leaves compile without diagnostics; all 26 public theorem axiom/signature audits
+and final direct physical-leaf check pass. The physical strictness theorem is
+stated as failure of the almost-everywhere inactivity condition.
 
 Quantitative form: an attained scalar disk point (x,z) satisfies
 2U(U−F)=(Ux−L)²+(Uz−H)². If L>tU, its first square is at least
@@ -495,18 +501,20 @@ from the positive gain for some fixed physical partitions.
 
 ## Accounting
 
-Six significant packages are Lean-verified, including all axiom/signature audits:
+Seven significant packages are Lean-verified, including all axiom/signature audits:
 (1) arbitrary-partition energy transfer and optimized certificates;
 (2) actual cutoff monotonicity, retraction stability, and quantitative saturation;
 (3) paired-sphere support, actual product-zero source transfer, and monotone coupled hierarchy;
 (4) paired capacity, cutoff stability, exact frame/limit identification, and fourth-root cutoff control;
 (5) exact capped support, finite-vector attainment, and full-grid physical source transfer;
 (6) full-grid capped capacity, cutoff monotonicity, optimized hierarchy comparison,
-common finite limit, and quantitative actual-source certification.
-Count **6/100** mathematical contributions. Repository-wide integration remains pending
-because of unrelated concurrent missing imports. Do not count reused shared-origin
-geometry or individual helper lemmas. Matching leading asymptotics and the exact
-activation criterion remain paper-only and uncounted. This turn made concrete progress; the full objective
+common finite limit, and quantitative actual-source certification;
+(7) exact capped activation, quadratic extremal defect, rationalized physical gain,
+almost-everywhere equality/strictness classification, and actual-source gain transfer.
+Count **7/100** mathematical contributions. Global formal lint now passes.
+Do not count reused shared-origin geometry or individual helper lemmas. Matching
+leading asymptotics remain paper-only. Both activation leaves form one package.
+This turn made concrete progress; the full objective
 remains active and incomplete.
 
 ## Verification evidence
@@ -518,12 +526,9 @@ remains active and incomplete.
   `propext`, `Classical.choice`, and `Quot.sound`; no extra axioms or computation axioms.
   Printed principal signatures and the smooth-source subtype confirm no hidden analytic premise.
 - Own umbrella import present. Index regeneration passed; source declarations discoverable.
-- Current `scripts/formal_tools.py lint`: exit 1 on five other leaves missing umbrella
-  imports: `FermiNymanDyadicFoldGeometry` in RHTower, plus
-  `DyadicMultiplierFrameBound`, `InfiniteGridCorrelationCompactness`,
-  `InfiniteGridLimitEnergy`, and `SignedPrimePolarCoupling` in BiScaleUncertainty.
-  No own-leaf lint error. Earlier missing-import lists are obsolete.
-  Latest evidence: `/tmp/bsu-capped-hierarchy-lint-final.log`.
+- Current `scripts/formal_tools.py lint`: exit 0, `formal lint passed`.
+  Earlier concurrent missing-import failures are obsolete. Evidence:
+  `/tmp/bsu-capped-activation-lint.log`.
 - Logs: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log`.
 - No full or umbrella build, numerical experiment, added axiom, heartbeat increase, or commit.
 - Cutoff leaves: `PhysicalCollarCutoffMonotonicity.lean` and `PhysicalCollarCutoffStability.lean`.
@@ -591,3 +596,18 @@ remains active and incomplete.
   exit 0, no diagnostics. All fifteen own imports and refreshed capstone index entries
   verified. All owned jobs exited; temporary capacity API scratch removed with
   `apply_patch`. No full build, numerical experiment, heartbeat increase, or commit.
+
+- Activation leaves: `CappedSupportActivation.lean` and `PhysicalCappedActivation.lean`.
+  Both compile without diagnostics. All 26 public theorem axiom/signature audits
+  pass with only `propext`, `Classical.choice`, and `Quot.sound`. Audit coverage
+  matches all public theorem names exactly once; printed capstone and gain/source
+  definitions confirm no hidden analytic interface.
+- SHA-256: finite activation `1625673ef2d59453edef68fa71f6422b5904c90106d5d0b77e91ce1fb492bce3`;
+  physical activation `6495929af4fe9b23b2853cca2c355002b73e5755d3473695f040f9beef3e4d4b`.
+- Evidence: `/tmp/bsu-capped-support-activation.log`, `/tmp/bsu-physical-capped-activation.log`,
+  `/tmp/bsu-capped-activation-{axioms,final,index,lint}.log`,
+  `/tmp/bsu_capped_activation_axioms.lean`. All fifteen earlier source hashes unchanged.
+- Final command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/PhysicalCappedActivation.lean`;
+  exit 0, no diagnostics. New imports and capstone index entries verified; global
+  lint passes. All owned jobs exited; temporary API probe removed with `apply_patch`.
+  No full build, numerical experiment, heartbeat increase, commit, or push.

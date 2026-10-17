@@ -24,6 +24,8 @@ import GaloisForLFunctions.BiScaleUncertainty.CappedSupportComparison
 import GaloisForLFunctions.BiScaleUncertainty.CappedCollarArrayComparison
 import GaloisForLFunctions.BiScaleUncertainty.CappedCollarCutoffComparison
 import GaloisForLFunctions.BiScaleUncertainty.FullGridCappedCollarHierarchy
+import GaloisForLFunctions.BiScaleUncertainty.CappedSupportActivation
+import GaloisForLFunctions.BiScaleUncertainty.PhysicalCappedActivation
 import GaloisForLFunctions.BiScaleUncertainty.MultiChainToeplitzGramCoupling
 import GaloisForLFunctions.BiScaleUncertainty.TriangularGramSineBound
 import GaloisForLFunctions.BiScaleUncertainty.SynchronizedCosetSineLeverage
@@ -38,6 +40,7 @@ import GaloisForLFunctions.BiScaleUncertainty.CenteredHyperbolicGramControl
 import GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGramControl
 import GaloisForLFunctions.BiScaleUncertainty.ArithmeticMultiplierCollisionControl
 import GaloisForLFunctions.BiScaleUncertainty.DyadicMultiplierFrameBound
+import GaloisForLFunctions.BiScaleUncertainty.DyadicHyperbolicMomentControl
 import GaloisForLFunctions.BiScaleUncertainty.DisjointCollarCliqueDivergenceAndTuransProblem
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSpectralEnvelopeRealization
 import GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization
@@ -81,6 +84,8 @@ import GaloisForLFunctions.BiScaleUncertainty.RoughSobolevModulus
 import GaloisForLFunctions.BiScaleUncertainty.RoughModulusGraphDecomposition
 import GaloisForLFunctions.BiScaleUncertainty.CompactSourceNodalVariance
 import GaloisForLFunctions.BiScaleUncertainty.CompactNodalMassCoercivity
+import GaloisForLFunctions.BiScaleUncertainty.RoughSobolevClamp
+import GaloisForLFunctions.BiScaleUncertainty.RoughClampGraphControl
 import GaloisForLFunctions.BiScaleUncertainty.MultiCosetGramPackingAndNyquistDensity
 import GaloisForLFunctions.BiScaleUncertainty.ProducerConsumerDualityAndNymanBeurlingBridge
 import GaloisForLFunctions.BiScaleUncertainty.AsymptoticTailCoercivityAndNyquistTrap5Closure
@@ -92,6 +97,7 @@ import GaloisForLFunctions.BiScaleUncertainty.HyperbolicMultiplierIncrementAndOd
 import GaloisForLFunctions.BiScaleUncertainty.EulerMaclaurinLevyQuadratureAndSFreeCellBounds
 import GaloisForLFunctions.BiScaleUncertainty.MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis
 import GaloisForLFunctions.BiScaleUncertainty.SignedWeilFunctionalCoercivityAndRHBridge
+import GaloisForLFunctions.BiScaleUncertainty.AllScaleCriticalLineOriginConvergenceAndSynthesis
 
 /-!
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
@@ -105,7 +111,7 @@ singular increment functionals of positive-definite translation correlation kern
 under simultaneous discrete logarithmic-grid pinning and hyperbolic polar moment constraints.
 
 See `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` for the motivation, the nine
-structural traps, and the four-layer / sixteen-pillar architecture of the field.
+structural traps, and the five-layer / twenty-pillar architecture of the field.
 
 ## Foundational Modules
 
@@ -248,4 +254,10 @@ structural traps, and the four-layer / sixteen-pillar architecture of the field.
     supremum norm. Subsequence limits retain normalization, evenness, every grid zero,
     finite Gram positivity, vanishing at infinity, and an integrable Lévy density below
     the original energy ceiling, without assuming a source representation for the limit.
+35. `GaloisForLFunctions.BiScaleUncertainty.AllScaleCriticalLineOriginConvergenceAndSynthesis`:
+    Pillar XX (Layer V): The Canonical All-Scale Critical-Line Weight `allScaleCriticalWeight`,
+    exact telescoping $O(n^{-3/2})$ origin-budget conservation across `[2, N + 2)`, disjoint
+    first-prime origin `(0, log 2]` plus all-scale tail `[log 2, log(N + 2)]` partition, and
+    unconditional all-scale signed Weil functional lower bounds on `RealEvenPolarTestFn`,
+    `RealSmoothEvenPolarTestFn`, and `coshMultiplier`.
 -/

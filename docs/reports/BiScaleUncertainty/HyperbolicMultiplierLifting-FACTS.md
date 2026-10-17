@@ -3,13 +3,14 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Seven substantive results are Lean verified: compensated multiplier Gram
+contributions. Eight substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
 full secant/plastic receiver (15), the source Schur envelope with its all-center
-comparison, exact clique boundary and full receiver (16), and arithmetic collision
-control with its doubled-zero/dyadic specialization and full receiver (24). Supporting theorem
+comparison, exact clique boundary and full receiver (16), arithmetic collision
+control with its doubled-zero/dyadic specialization and full receiver (24), and the
+uniform dyadic multiplier frame with explicit source errors and full receiver (19). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 ## Exact laws
@@ -54,7 +55,7 @@ counts are not contribution counts. No literature-priority claim.
 - **Secant is not plastic:** the actual plastic kernel is piecewise
   `levyCoshKernel`, with a signed pairing involving `2 cosh - levyCoshKernel`.
   Kernel resemblance does not identify the two functionals.
-- **Contribution counting:** seven field-specific results, not one contribution per
+- **Contribution counting:** eight field-specific results, not one contribution per
   declaration. Cauchy–Schwarz and ground-state representation are classical mechanisms.
   External novelty is unestablished; exact-phrase search was inconclusive.
 
@@ -107,11 +108,12 @@ returned only `propext`, `Classical.choice`, `Quot.sound`. Source SHA256:
 `c34e886a83d099242571f9bdcb2b4e49fd3841608fad2448b9615e2ee49cd923`.
 Umbrella import and index refresh completed; current global lint status is on the master card.
 
-Remaining questions: quantify the centered weighted source energy and source
-difference-node Gram under logarithmic source zeros, remove support dependence, and
-compare the negative odd sine moment with
-the now-separated positive secant and plastic remainder energies. The cosine companion
-is removed, and the actual signed plastic receiver is established with that moment retained.
+Remaining questions: quantitatively dominate source-variance and collar-support costs
+by the positive secant and plastic remainder energies. The coherent-packet estimate
+below replaces the independent negative odd moment by actual source data, with a
+support-radius-free moment penalty on the full logarithmic source grid. This does
+not prove positivity of the complete functional or remove the collar support factor.
+The cosine companion is removed and the actual signed plastic receiver is established.
 The fourth result excludes source-energy-only leakage estimates from odd parity and a
 single logarithmic zero. The fifth supplies exact centered weighted control of the
 multiplier defect; the sixth removes source-parallel packet cost and proves that mean
@@ -207,8 +209,8 @@ passed. Latest global lint status is on the master card.
   integral B_c+R_plastic(F)-2[integral F(u)sinh(u/2)du]^2<=P(F).
   Actual multiplier origin energy remains; every off-diagonal multiplier sample has
   been replaced by explicit source data. The jump envelope still uses source support.
-- Weighted variance growth, full difference-Gram geometry, and negative odd-moment
-  domination remain substantive open quantities. Repeated nodes, signed weights,
+- General difference-Gram geometry and weighted variance growth still require control
+  beyond the arithmetic/dyadic specializations below. Repeated nodes, signed weights,
   zero source energy and zero-length collars require no added hypotheses.
 - The corpus's integral Cauchy--Schwarz and packet Gram identities are reused.
   The fifth contribution is their exact parity-dependent source representation and
@@ -307,11 +309,10 @@ audits in total. Latest global lint status is recorded on the master card.
   different integer slots may represent the same real displacement; Z retains
   those additional correlations. The doubled-zero specialization at delta=0
   forces zero source energy whenever its range is nonempty.
-- Next open question: bound A by a node-count-independent multiple of
-  (sum v_i^2)^2 using the hyperbolic denominator on dyadic chains, to obtain a
-  multiplier frame estimate from actual weighted variance. No such uniform
-  estimate is established here. Weighted variance, support and odd-moment
-  domination remain substantive obstacles.
+- The uniform dyadic collision problem is resolved below: A<=2(sum v_i^2)^2
+  yields a multiplier frame radius from actual source variance. The coherent-packet
+  theorem then replaces the separate odd moment by a source-data budget. Quantitative
+  domination of variance and collar-support costs remains open.
 - Existing finite-train lag grouping, arithmetic clique orthogonality and
   Cauchy--Schwarz are reused. Exact multiplier collision control and the actual
   receiver count as one contribution. No literature-priority claim.
@@ -325,3 +326,78 @@ Main namespace `ArithmeticMultiplierCollisions`; results
 `odd_logGrid_defect_abs_le_variance_collision`, `odd_plasticCrossover_ge_collision`.
 Seven contributions, 117 public supporting theorem audits in total. Latest global
 lint status is on the master card.
+
+## Uniform dyadic multiplier frame and actual receiver
+
+- At alpha=1/2 and d=log2, W2=sum_(i=0)^N v_i^2, the arithmetic lag amplitudes
+  obey b_(2N-r)=b_r, b_N=0 and
+  A=2 sum_(k=1)^N b_(N+k)^2. Aperiodic Cauchy--Schwarz and
+  [2cosh(kd/2)]^2>=2^k give A<=2 W2^2 for arbitrary signed v and every N.
+- For actual odd F, R=hF0, M=int cosh(u)F^2, W=int cosh(u)^2 F^2 and
+  V=RW-M^2>=0, the doubled source-zero range hF(md)=0, 1<=m<=2N gives
+  |G_S(v)-R_S W2|<=sqrt(2V) W2. Consequently
+  G_S(v)<=(R_S+sqrt(2V))W2, with frame constant independent of chain length.
+  Full logarithmic blindness supplies the zero range. Multiplier zeros are not used.
+- For every actual compact odd source, retain Q=||q_mu||^2, E_mu and Z from
+  the arithmetic collision law. Since QR=V,
+  Q(RA+Z)<=2V W2^2+Q max(Z,0). Thus the unconditional frame upper bound is
+  G_S(v)<=U=(R_S+sqrt(2V))W2+E_mu+sqrt(Q max(Z,0)).
+- With v_i(y)=sinhJumpTransferWeights F b (i*d) y i, define
+  L(y)=R_S sum_i v_i(y)cosh((i*d-y)/2)-sqrt(R_S max(U(v(y)),0)).
+  Then L(y)<=secantJumpCollar F (range(N+1)) b (i*d) y. All coefficients
+  are continuous; for b=1, integral_(0..d) L(-y)dy<=J_sech(F), and
+  integral_(0..d) L(-y)dy+R_plastic(F)-2(int F(u)sinh(u/2)du)^2<=P(F).
+  These full receivers are unconditional on actual compact input and N.
+- Doubled source zeros cancel E_mu and Z exactly, reducing the collar penalty to
+  sqrt(R_S (R_S+sqrt(2V))W2). N=0, signed weights and zero-energy sources are covered.
+- This replaces measured collision structure by a uniform radius. It may be
+  weaker than exact collision/Schur control. The radius depends on source position
+  through V; no removal of source support, negative-moment control, universal
+  positivity, or optimal numerical constant is proved.
+- Corpus audit: 460 declarations in 71 modules, hybrid partial67.40s; text/source
+  retrieval unfinished and semantic coverage unmeasured. Existing profile-stable
+  dyadic frames retain actual operator error; this result supplies a source-variance
+  radius and full original-functional transfer. Finite Cauchy--Schwarz, reflection
+  and geometric summation are supporting mechanisms, not separate contributions.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/DyadicMultiplierFrameBound.lean`.
+Actual-source compilation passed without warnings; source SHA256
+`f40cd139089ff168e6522ece36565284fe7e62530df457e3b58256d0d9c5adec`.
+Main namespace `DyadicMultiplierFrame`; capstones `dyadic_collisionEnergy_le`,
+`odd_sinhGram_le_frame_of_double_zeros`, `odd_sinhGram_le_frameGramUpper`,
+`frameJumpBound_of_double_zeros`, and `odd_plasticCrossover_ge_frame`.
+All 19 public theorem axiom audits passed with only `propext`, `Classical.choice`,
+`Quot.sound`. Eight contributions, 136 public supporting theorem audits in total.
+The full 100-contribution goal remains active; latest global lint status is on the master card.
+
+## Coherent packet mass controls the negative odd moment
+
+- For every actual compact g, put d=log2, B=multiplierSourceRadius(g)+1 and
+  P_N(u)=sum_(i=0)^N g(u+id). Its support lies in (-B-Nd,B], its integral is
+  (N+1)int g, and its square integral is the actual uniform-weight Gram G_g(1).
+  Hence (N+1)^2 (int g)^2<=(2B+Nd)G_g(1).
+- For S=sinh(u/2)F and canonical odd F, O=int S is the exact negative-moment
+  component in P(F)=J_sech+R_plastic-2O^2. Set U_N=frameGramUpper(F,N,1)
+  and B=multiplierSourceRadius(S)+1. Then
+  O^2<=M_N=(2B+Nd)max(U_N,0)/(N+1)^2, without source-zero assumptions.
+  The full original functional satisfies I_K+R_plastic-2M_N<=P(F), where
+  I_K=integral_(0..d) frameJumpBound(F,K,1,-y)dy. N and K are independent.
+- Under full logarithmic source blindness, G_S(1)<=C(N+1) for every N,
+  C=R_S+sqrt(2V). Thus (N+1)O^2<=(2B+Nd)C. An Archimedean integer-growth
+  contradiction gives O^2<=dC, with no support-radius factor in this moment bound.
+  Consequently I_K+R_plastic-2dC<=P(F) on the full logarithmic source grid.
+- This eliminates the separate linear hyperbolic moment as an unbounded input
+  to the receiver. Its replacement still costs source energy and weighted variance;
+  the collar still uses source support. No universal positivity or optimality is claimed.
+- Existing interval Cauchy--Schwarz, support/integral translation laws and the
+  actual packet Gram identity are reused. The contribution is their source-variance
+  odd-moment bound and actual plastic receiver, counted once. Corpus searches were
+  partial57.36s (393 declarations/38 modules) and partial58.06s (442/84), with
+  text/source retrieval unfinished and semantic coverage unmeasured.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/DyadicHyperbolicMomentControl.lean`.
+Actual-source compilation passed without warnings; source SHA256
+`a963bbb08e6d77c842f11009fef217ca83f783faf79a5f911bc1128f8dc8eef5`.
+Main namespace `DyadicHyperbolicMoment`; capstones `odd_moment_sq_le_budget`,
+`odd_plasticCrossover_ge_momentBudget`, `odd_logGrid_moment_sq_le_frame`, and
+`odd_logGrid_plasticCrossover_ge_frame`.

@@ -34,6 +34,10 @@
 13. Prove a dyadic collision bound uniform in chain length, derive the even
     multiplier frame radius from source variance, and transfer the error-aware
     bound into the full odd functional.
+14. Use long actual multiplier translation packets to control their integral,
+    eliminate the independent negative odd moment, and derive a radius-free
+    moment penalty on the full source logarithmic grid. Retain finite source
+    errors in an unconditional plastic receiver.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -670,7 +674,7 @@ source variance. This requires a separate proof and corpus audit.
   capture were removed after recording results. All owned Lean, index and lint
   handles completed; no full build, numerical experiment, commit or push was run.
 
-## Eighth candidate: uniform dyadic multiplier frame bound
+## Eighth result: uniform dyadic multiplier frame bound
 
 Let d=log2, alpha=1/2, W2=sum_(i=0)^N v_i^2. For positive lag k, finite
 Cauchy--Schwarz gives |sum_i v_i v_(i+k)|<=W2. Reflection equates positive
@@ -713,5 +717,89 @@ Corpus search `research "hyperbolic collision frame bound geometric aperiodic co
 coverage unmeasured. Existing profile-stable dyadic bounds retain an actual
 within-chain operator error; they do not prove this source-variance frame radius.
 Finite Cauchy--Schwarz and geometric summation are supporting mechanisms.
-Core formalization compiled; final source and axiom audits pending.
+Final actual-source compilation and all 19 public theorem axiom audits passed without warnings.
 No literature-priority or optimal-constant claim.
+
+### Verification of the eighth result
+
+- Final direct actual-source compilation exited 0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/DyadicMultiplierFrameBound.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/DyadicMultiplierFrameBound.olean`.
+- Source SHA256:
+  `f40cd139089ff168e6522ece36565284fe7e62530df457e3b58256d0d9c5adec`.
+  All seven earlier owned module hashes still match their verified sources.
+- Main results: `DyadicMultiplierFrame.dyadic_collisionEnergy_le`,
+  `odd_sinhGram_le_frame_of_double_zeros`, `odd_logGrid_defect_abs_le_frame`,
+  `odd_sinhGram_le_frameGramUpper`, `frameJumpBound_of_double_zeros`, and
+  `odd_plasticCrossover_ge_frame`. The full receiver assumes only actual compact
+  input and chain length; grid statements are explicit local specializations.
+- Final source has 379 lines. One range-sum rewrite and one simplifier-order issue
+  required explicit rewrites; no theorem was weakened and no heartbeat limit changed.
+- Umbrella import and both README entry 11/module-map row 58 added. Index refresh
+  exited 0 and all 19 public theorems appear in generated API.
+- `scripts/formal_tools.py lint --check-generated` exited 1 on one unrelated
+  concurrent module unreachable from its umbrella:
+  `GaloisForLFunctions.BiScaleUncertainty.CappedSupportActivation`.
+  No owned lifting module was flagged and no generated drift was reported in this
+  snapshot. Existing large-file warnings remain. Do not claim a repository-wide pass.
+- All 19 public theorem axiom audits and mathlib API checks passed via
+  `lake --old env lean /tmp/hml_frame_api.lean`; only `propext`, `Classical.choice`,
+  `Quot.sound`. This completes contribution 8/100, with 136 public supporting
+  theorem audits across eight modules. The full original goal remains active.
+- Owned API/axiom scratch and lint capture were removed; absence verified.
+  All owned Lean, index and lint handles completed. Final source/docs/umbrella
+  whitespace checks passed. No full build, numerical experiment, commit or push.
+
+## Ninth result: coherent packet mass and odd-moment elimination
+
+Let d=log2, S=sinh(u/2)F(u), O=int S, C=R_S+sqrt(2V), with F the canonical
+actual odd source. For any compact source g define P_N(u)=sum_(i=0)^N g(u+id).
+Its integral is (N+1)int g and its squared L2 norm is the actual translation
+Gram. If B=multiplierSourceRadius(g)+1, its support lies in (-B-Nd,B].
+Interval Cauchy--Schwarz gives
+
+(N+1)^2 (int g)^2 <= (2B+Nd) G_g(1).
+
+For g=S use the verified unconditional frame upper U_N, with its E_mu and Z
+terms retained. Define M_N=(2B+Nd)max(U_N,0)/(N+1)^2. Then O^2<=M_N,
+so every previous frame collar integral I_K gives the unconditional theorem
+I_K+R_plastic-2M_N<=P(F). Moment chain length N and collar length K are independent.
+
+For full source logarithmic blindness, every finite multiplier Gram is at most
+C(N+1). Thus (N+1)O^2<=(2B+Nd)C. If O^2>dC, an integer N larger than
+(2BC-O^2)/(O^2-dC) contradicts this inequality. Therefore O^2<=dC and
+I_K+R_plastic-2dC<=P(F). This removes the separate linear hyperbolic moment
+and its support radius from the penalty; the collar still has its source-support
+factor and C still contains actual weighted variance. No universal positivity,
+multiplier zeros or numerical experiment is claimed. Standard compact-support
+mass/energy duality and interval Cauchy--Schwarz are supporting mechanisms.
+
+Initial corpus query "odd hyperbolic moment variance multiplier frame" with
+--module BiScaleUncertainty --any --per-module 2 --explore 0: 393 declarations
+in 38 modules, hybrid partial57.36s, text/source retrieval unfinished and semantic
+coverage unmeasured; compiled snapshot coverage was partial. Existing results
+retain the independent odd moment. Second query "translate packet mass support
+frame integral" with the same filters: 442 declarations in 84 modules,
+hybrid partial58.06s; text/source retrieval unfinished, semantic coverage
+unmeasured. Read actual finite-translation support/Gram laws and the existing
+interval Cauchy--Schwarz proof; neither states this odd-moment/frame bound.
+Paper derivation and final actual-source compilation complete; axiom audit pending.
+
+### Verification of the ninth result
+
+- Final direct actual-source compilation exited 0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/DyadicHyperbolicMomentControl.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/DyadicHyperbolicMomentControl.olean`.
+- Source SHA256:
+  `a963bbb08e6d77c842f11009fef217ca83f783faf79a5f911bc1128f8dc8eef5`.
+  Imported dyadic frame source still matches its verified hash.
+- Main results: `DyadicHyperbolicMoment.integral_sq_le_chain_gram`,
+  `odd_moment_sq_le_budget`, `odd_plasticCrossover_ge_momentBudget`,
+  `odd_logGrid_moment_sq_le_frame`, and `odd_logGrid_plasticCrossover_ge_frame`.
+  The finite moment-budget and plastic capstones are unconditional on actual compact
+  input, with independent chain lengths N and K. The logarithmic-grid specialization
+  states its source-domain condition explicitly and adds no analytic premise.
+- All proofs compiled on the first source check, which reported one unused-variable
+  warning. Making the continuity proof's shift explicit removed it. Final source has
+  187 lines; no weakened theorem, heartbeat change, full build or numerical experiment.
+- Umbrella import and both README entry 12/module-map row 62 added. Generated API
+  initially contained all 12 public theorems. A concurrent source change caused
+  generated drift during the lint snapshot; a refresh is in progress.
