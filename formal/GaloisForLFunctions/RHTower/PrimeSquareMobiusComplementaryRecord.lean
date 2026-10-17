@@ -748,7 +748,7 @@ theorem primeSquareSourceInvolution_fourierFixedVec (hp : 1 < p) :
 
 /-! ### The hyperbolic form of the two amplitudes -/
 
-theorem exp_half_log_eq_sqrt {p : ℕ} (hp : 1 < p) :
+private theorem exp_half_log_eq_sqrt {p : ℕ} (hp : 1 < p) :
     Real.exp (Real.log (p : ℝ) / 2) = Real.sqrt (p : ℝ) := by
   have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast hp
   have hpp : (0 : ℝ) < (p : ℝ) := by linarith

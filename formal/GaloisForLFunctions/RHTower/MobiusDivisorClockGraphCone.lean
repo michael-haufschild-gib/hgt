@@ -42,6 +42,9 @@ theorem compactKernelControl_criticalClockProfile (a : ℝ≥0) (b t : ℝ) (χ 
     (continuous_criticalAbelLogProfile.comp (continuous_const.sub continuous_id)) hsχ hsρ hfit]
   apply integral_congr_ae
   exact Eventually.of_forall fun s => by
+    change ρ s • cutoffKernelGraph χ (fun y => criticalAbelLogProfile (t - y)) hχ
+      (boundedVariationOn_criticalAbelLogProfile_translate t) b s =
+      ρ s • criticalClockGraph χ hχ (t - b + s)
     congr 1
     unfold cutoffKernelGraph cutoffTranslateGraph criticalClockGraph
     congr 1
@@ -81,7 +84,7 @@ theorem compactKernelControl_mem_clockCone (a : ℝ≥0) (b T : ℝ) (χ ρ : �
     intro he
     have hz : L (S f) = 0 := by
       change (L.comp S) f = 0
-      rw [he, ContinuousLinearMap.zero_apply]
+      exact congrArg (fun M : C(CriticalClockWindow a, ℝ) →L[ℝ] ℝ => M f) he
     exact (ne_of_lt hLf) hz
   obtain ⟨R, _, hR⟩ := hsρ.isBounded.exists_pos_norm_le
   obtain ⟨t, ht, hneg⟩ := exists_negative_criticalClockProfile_pairing a (L.comp S) hne
@@ -99,7 +102,7 @@ theorem criticalClockGraph_positiveCone_contains_bvTarget (χ v : ℝ → ℝ)
     (hcχ : Continuous χ) (hcv : Continuous v) (hsχ : HasCompactSupport χ)
     (hfix : ∀ x, χ x * v x = v x) (T : ℝ) :
     bvLift v hv ∈ criticalClockGraphCone χ hχ T := by
-  have hm (n : ℕ) : (∫ s : ℝ, mollifier n s • cutoffKernelGraph χ v hχ hv 0 s) ∈
+  have hm (n : ℕ) : (∫ s : ℝ, CHMDDoobGraph.mollifier n s • cutoffKernelGraph χ v hχ hv 0 s) ∈
       criticalClockGraphCone χ hχ T := by
     obtain ⟨a, b, hfit⟩ := exists_cutoff_kernel_interval hsχ (mollifier_compact n)
     let F : ℝ → ℝ := fun y => v (y - b)
@@ -109,15 +112,17 @@ theorem criticalClockGraph_positiveCone_contains_bvTarget (χ v : ℝ → ℝ)
     have hcF : Continuous F := hcv.comp (continuous_id.sub continuous_const)
     have hρ := boundedVariationOn_of_contDiff_compact
       ((mollifier_contDiff n).of_le (by norm_num)) (mollifier_compact n)
-    have he := compactKernelControl_eq_average a b χ (mollifier n) F hχ hρ hF
+    have he := compactKernelControl_eq_average a b χ (CHMDDoobGraph.mollifier n) F hχ hρ hF
       hcχ (mollifier_contDiff n).continuous hcF hsχ (mollifier_compact n) hfit
-    have hmem := compactKernelControl_mem_clockCone a b T χ (mollifier n) hχ hρ
+    have hmem := compactKernelControl_mem_clockCone a b T χ (CHMDDoobGraph.mollifier n) hχ hρ
       hcχ (mollifier_contDiff n).continuous hsχ (mollifier_compact n) (mollifier_nonneg n) hfit
       ⟨fun y => F y, hcF.comp continuous_subtype_val⟩
     rw [he] at hmem
     convert hmem using 1
     apply integral_congr_ae
     exact Eventually.of_forall fun s => by
+      change CHMDDoobGraph.mollifier n s • cutoffKernelGraph χ v hχ hv 0 s =
+        CHMDDoobGraph.mollifier n s • cutoffKernelGraph χ F hχ hF b s
       congr 1
       unfold cutoffKernelGraph cutoffTranslateGraph
       congr 1

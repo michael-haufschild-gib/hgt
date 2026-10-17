@@ -1,7 +1,7 @@
 # Exact quadratic norm orientation at the nonlinear boundary
 
 - **ID:** TT-C78-NORM-ORIENTATION
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized (2026-10-17)
 - **Type:** THEOREM (paper)
 - **Source:** Route TT; C75 complete boundary remainder, C76 exact regularization, C77 row-zero certificate; working card `../1-in-progress/tt-third-slope-nonlinear-cone.md`.
 - **Statement:** The compact quadratic norm of the complete boundary reduced slope has an exact factor h^6, with strictly negative remaining factor at zero clock throughout the admissible parameter box. The physical value is positive and its conjugate negative on a uniform clock strip.
@@ -14,7 +14,7 @@ Determine the actual norm orientation before proposing a global norm certificate
 
 - [x] 0 → 1: full source and exact quadratic branch retained.
 - [x] 1 → 2: dependency-closed paper proof below, [PROVED HERE].
-- [ ] 2 → 3: exact factorization, uniform sign, and source-norm identification audited with `lake --old env lean`; standard foundational axioms only; production dependencies and umbrella wiring complete.
+- [x] 2 → 3: exact factorization, uniform sign, and source-norm identification audited with `lake --old env lean`; standard foundational axioms only; umbrella wiring complete (2026-10-17).
 - [ ] 3 → 4: standalone publication audit.
 
 Lean formalization is pending. Cell227 currently owns the sole Lean pipeline for C77; do not start a second build. Formalize this exact survivor after C77's global/source sign priority. The no-go is NOT closed in Lean and must not be retired as if it were.
@@ -145,3 +145,45 @@ is positive: the second factor is positive at t0 for sufficiently small h and re
 - 2026-10-05 — Formalization sources prepared, all UNVERIFIED, no Lean process launched: `/tmp/TTC78BoundaryNormAlgebra.lean` (exact factorizations and source norm/trace), `/tmp/TTC78BoundaryClockZeroSign.lean` (zero face from audited row0), `/tmp/TTC78BoundaryNormReal.lean` (complete real B bridge and column continuity), `/tmp/TTC78BoundaryNormSign.lean` (real identities and uniform orientation). Audit serially in that order after cell227 releases Lean and C77 source priority. The uniform sign proof uses only the row-zero certificate, not an assumed global C77 sign. Static forbidden-token scan is empty; it is not a compiler audit. No new caches exist. Exact source sign corollaries, strict-interior obstruction, and typed exact-order conclusions still require completion/audit before this no-go closes.
 
 - 2026-10-05 — During C77 row43 audit, prepared three further UNVERIFIED modules: `/tmp/TTC78NormSource.lean` identifies the full normalized reduced source, its two-root norm/trace, continuity in e, source sign transfer, and exact pole regularizations; `/tmp/TTC78NormInterior.lean` retains all strict C78 state-space inequalities and proves the proposed e<1 obstruction by continuity and exact error factorization; `/tmp/TTC78NormOrder.lean` excludes an extra continuous clock factor and states the two exact source-pole limits. Audit the existing `/tmp/TTC78InteriorAlgebra.lean` before these three, then Source, Interior, Order. No numerical sampling, added sign premise in the existential capstone, second build, or compiler verification. All three have an empty static forbidden-token scan only. The stronger continuous-factor and pole-order statements above passed this paper dependency review; Lean audit and production integration remain mandatory before no-go closure.
+
+## Lean status (2026-10-17) — survivor fully formalized; no-go closed
+
+Three modules, all clean under `lake env lean`, `#print axioms` = `propext, Classical.choice,
+Quot.sound` on every main theorem, appended to `GaloisForLFunctions/RHTower.lean`:
+
+`RHTower/ThetaCuspRatioBoundaryNormOrientation.lean`
+- real-cast bridge: real polynomials `boundaryCompactA77`, `boundaryCompactB77` with
+  `boundaryCompactA77_ofReal`, `boundaryCompactB77_ofReal` (`(A : ℂ) = boundaryCompactA75`, no real
+  parts taken);
+- `boundaryNormA78_add_y_mul` (`A + yB = h⁶G`), `boundaryNorm78_factor` (`N = h⁶ Ĝ J`),
+  `boundaryNormJ78_eq_conjugate`, `boundaryNormA78_eq_mul_hat` (`A = h Â`), `boundaryNormTrace78_eq`;
+- clock zero: `boundaryNormA78_zero`, `boundaryNormB78_zero` (`B₀ = 268435456/2187`),
+  `boundaryRegularCore77_zero` (`G(0,s) = 155520 - (567/64) s²`, by direct evaluation of the C77 core),
+  `boundaryNormJ78_zero`, `boundaryNormAHat78_zero`, `boundaryNormTrace78_zero`, `boundaryNormHat78_zero_neg`;
+- `boundaryNorm78_uniform_strip` (one `ε`, six simultaneous strict signs on `[0,ε)×[0,S]`, via a
+  compact-face thickening lemma `exists_strip_neg_of_continuous`), `boundaryNorm78_orientation`
+  (`A<0`, physical value `>0`, conjugate value `<0`, `N<0`, trace `<0`);
+- exact orders: `boundaryNorm78_not_seventh_order`, `boundaryNormA78_not_second_order` (no continuous
+  factor `h⁷D`, resp. `h²D`);
+- `boundaryNormSlope78_source` (`h²²W.re = A`, `h²¹W.im = B`, `h²a = α`, `hb = β`, `h⁴⁴ norm W = N`,
+  `h²²(2W.re + bW.im) = 2A+βB`), `boundaryNormSlope78_norm_trace_neg`;
+- `boundaryNormSlope78_pole_identities`, `boundaryNormSlope78_pole_limits` (`h³⁸ norm W → -B₀g(s)/3`,
+  `h²¹ W.re → -B₀/3`).
+The global C77 Bernstein certificate is not needed: `g(s) > 0` on `[0,S]` follows from the exact
+formula, and `G > 0` on the strip from continuity.
+
+`RHTower/ThetaCuspRatioSourceSlopeReal.lean`
+- `sourcePolyConj_slope`: the full source slope polynomial has real coefficients;
+- `interiorHom` (`J ↦ eω` in the boundary quadratic algebra), `interiorHom_one`,
+  `boundaryEval_interiorHom` (physical evaluation at `(v,k,ez)`), `interiorHom_slope_conj` (real
+  components), `continuous_interiorHom` (continuity in `e`).
+
+`RHTower/ThetaCuspRatioBoundaryNormInterior.lean`
+- `interior_error_factor` (`E(t) = (t-t₀)(1-h²(t+t₀))`), `interiorT78_source` (`J = eZ`),
+  `interiorNorm78_one` (`e = 1` recovers `N/h⁴⁴`, `T/h²²`), `interiorSlope78_physical`;
+- **`boundaryNorm78_interior_negative`**: for every `0 < s < 361/25` there are `h > 0`, `e₀ < 1` such
+  that for `e ∈ (e₀,1)` the state `(h, r, t_e)` satisfies `StrictCoarseCone`, has `E > 0`, and has
+  negative real quadratic source norm and trace.
+
+The no-go "positive norm and trace throughout the C78 cone" is therefore closed in Lean, together
+with its positive survivor.  Card moved to `3-formalized`.

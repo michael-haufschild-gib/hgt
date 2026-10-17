@@ -1,6 +1,8 @@
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.MeasureTheory.Group.Integral
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.MeasureTheory.Measure.Haar.Unique
 import Mathlib.Analysis.Normed.Group.Bounded
 import Mathlib.Tactic
 
@@ -43,6 +45,8 @@ theorem cutoff_kernel_interval_eq_convolution (a : ℝ≥0) (b : ℝ) (χ ρ F :
     (fun y => F y * (χ x * ρ (x + b - y))) volume (x + b)]
   apply integral_congr_ae
   exact Filter.Eventually.of_forall fun s => by
+    change F (x + b - s) * (χ x * ρ (x + b - (x + b - s))) =
+      ρ s * (χ x * F (x + b - s))
     rw [show x + b - (x + b - s) = s by ring]
     ring
 

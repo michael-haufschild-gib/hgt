@@ -2,7 +2,7 @@
 
 **State:** RH open. 21 live routes; 23 candidates. No route has a source-derived RH-closing sign or bound.
 
-**Lean checkpoint:** 407bf463c272bdf618eb714ec4e551f3d5129b2c. [L] = tracked, root-imported Lean declaration (not recompiled for this ledger); [S] = source-only, unwired, or uncommitted declaration, not counted as proved; [P] = paper claim. R:X = formal/GaloisForLFunctions/RHTower/X.lean; H:X = formal/GaloisForLFunctions/HTGeometry/X.lean. E = source modules, not extra premises. Paths are proposed; only Established facts are proved.
+**Lean checkpoint:** 2155dab4bc96c13ee38c9b418c8de014a716d90f. [L] = tracked, root-imported Lean declaration (not recompiled for this ledger); [S] = source-only, unwired, or uncommitted declaration, not counted as proved; [P] = paper claim. R:X = formal/GaloisForLFunctions/RHTower/X.lean; H:X = formal/GaloisForLFunctions/HTGeometry/X.lean. E = source modules, not extra premises. Paths are proposed; only Established facts are proved.
 
 **Classification:** Live = exact RH receiver plus explicit source-producer problem. Candidate = incomplete source handoff or independent producer mechanism. Killed = scoped mechanism refuted/circular/nonselective; see [killed routes](rh-killed-routes.md). One route may have alternate receivers for one source architecture.
 
@@ -37,18 +37,18 @@
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete prime−Gamma−polar form → nonnegative constrained ground energy at every aperture → RH.
-- **Established [L]:** RH iff all-aperture negative index vanishes. Compact self-adjoint threshold pencil computes exact finite index and minimal positive repair. Odd/primitive positivity, full mixed Φ explicit formula, and exact Doob identity retain every prime cross-term; small apertures are positive. Literal Fejér box energy gives another one-sided receiver.
-- **Source-only [S]:** Any finite family of distinct nonreal Xi spectral orbits yields an equally dimensional compact polar-zero test subspace with strictly negative complete Weil form and an L²-relative gap on sufficiently large support; the support threshold is existential.
+- **Established [L]:** RH iff all-aperture negative index vanishes. Compact self-adjoint threshold pencil computes exact finite index and minimal positive repair. Odd/primitive positivity, full mixed Φ explicit formula, and exact Doob identity retain every prime cross-term; small apertures are positive. Literal Fejér box energy gives another one-sided receiver. Any finite family of distinct nonreal Xi orbits yields an equally dimensional compact polar-zero negative subspace with an L²-relative gap at sufficiently large support; threshold existential.
 - **Open:** All-aperture lower bound for the actual signed form, including joint Gamma/prime-edge/polar terms; equivalent cofinal ground-state or Fejér-box source bound.
-- **E:** R:WeilMarkovOddPositivity; R:WeilMarkovPrimitiveHyperplane; R:WeilMarkovOneBoundState; R:WeilFejerBoxEnergyRH; R:PaperRestrictedWeilGroundThreshold; [S] R:WeilCompactOrbitInertia.
+- **E:** R:WeilMarkovOddPositivity; R:WeilMarkovPrimitiveHyperplane; R:WeilMarkovOneBoundState; R:WeilFejerBoxEnergyRH; R:PaperRestrictedWeilGroundThreshold; R:WeilCompactOrbitInertia.
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
 
 - **Path:** Signed Möbius/prime scheduling → completed Abel moment A(M)/M bounded above → RH.
 - **Established [L]:** One-sided Abel receiver retains polar/lattice terms. Prescribed finite prime blocks admit a helper core with positive Boolean energy differences. A prime-exhaustive history can decrease complete clock energy at each insertion block's own cutoff, without a head-sign premise.
+- **Source-only [S]:** Compact-cutoff critical Abel clocks are continuous in the full BV prime-jump graph; positive mollifier averages reach every cutoff-fixed continuous BV target in their closed clock cone. Conditional on cone membership, actual-prime clock blocks approximate a target at every sufficiently large scale with arbitrarily small diagonal cost. Neither membership nor realization supplies a signed bound.
 - **Open:** Pay fixed seed and signed drift between successive cutoffs, including earlier action, covariance, and endpoints; obtain uniform completed-Abel bound. MC's fixed-window actual-prime synthesis does not pay this history.
-- **E:** R:CCMFUSuzukiMobiusDivisorOneSided; R:MobiusDivisorPreparedPrimeCube; R:MobiusDivisorPaidPrimeExhaustion; R:MobiusRieszSquareSourceQuadrature.
+- **E:** R:CCMFUSuzukiMobiusDivisorOneSided; R:MobiusDivisorPreparedPrimeCube; R:MobiusDivisorPaidPrimeExhaustion; R:MobiusRieszSquareSourceQuadrature; [S] R:MobiusDivisorClockGraphCone; [S] R:PrimePositiveClockRealization.
 
 <a id="rp"></a>
 ### RP — Route-P / SP-E history floor
@@ -102,19 +102,18 @@
 ### HF — Positive Hodge form on arithmetic cohomology
 
 - **Path:** Original arithmetic cohomology → positive Hodge-compatible form, or full-positive arithmetic weight → RH.
-- **Established [L]:** Full Weil positivity/PBAP are RH receivers; full-positive weights are rigidly Λ. Original Meyer quotient has global Xi-jet synthesis, faithful Hasse Hilbert admission, nondegenerate Paugam pairing, full-Jordan compact inverse with determinant Ξ, trace-class arithmetic flow/convolution and complete prime−Gamma−polar trace. One fixed Gaussian realizes every original class in the BV arithmetic graph; the original generator intertwines the literal native differential action and its compact Green inverse on the whole source image.
-- **Source-only [S]:** Finite Weil nodal profiles and mixtures have unique optimal adjacent transport; no signed PBAP producer.
-- **Open:** PBAP: source-derived nonnegative complete Weil form on unrestricted prime-blind tests, hence positive Hodge compatibility. Arithmetic cup/trace identification and Gaussian removal in native BV remain separate; spectral/source realization alone does not confine zeros.
-- **E:** R:WeilPositivityPrimeBlindDuality; R:DeningerMeyerGlobalXiSynthesis; R:DeningerMeyerGlobalHassePaugamPairing; R:DeningerMeyerFredholmXi; R:DeningerMeyerFlowLefschetz; R:PaperThetaWholeMeyerGenerator; [S] R:FiniteWeilNodalMixtureTransport.
+- **Established [L]:** Full Weil positivity/PBAP are RH receivers; full-positive weights are rigidly Λ. Original Meyer quotient has global Xi-jet synthesis, faithful Hasse Hilbert admission, nondegenerate Paugam pairing, full-Jordan compact inverse with determinant Ξ, trace-class arithmetic flow/convolution and complete prime−Gamma−polar trace. Fixed Gaussian realizes every original class in the BV graph; native generator intertwines on the whole source image. A fixed bounded top-Hasse insertion recovers the full Paugam pairing from trace-class source convolution; ordinary trace of the alternating product vanishes. Finite Weil nodal mixtures have unique optimal adjacent transport.
+- **Open:** PBAP: source-derived nonnegative complete Weil form on unrestricted prime-blind tests, hence positive Hodge compatibility. Geometric arithmetic cup/trace identification and Gaussian removal in native BV remain separate; inserted trace and nodal transport give no positivity.
+- **E:** R:WeilPositivityPrimeBlindDuality; R:DeningerMeyerGlobalXiSynthesis; R:DeningerMeyerGlobalHassePaugamPairing; R:DeningerMeyerFredholmXi; R:DeningerMeyerFlowLefschetz; R:PaperThetaWholeMeyerGenerator; R:DeningerMeyerPaugamInsertedTrace; R:FiniteWeilNodalMixtureTransport.
 
 <a id="chmd"></a>
 ### CHMD — Causal Hyperbolic–Modular Duality
 
 - **Path:** Exact Weil source → causal prime-wave or Möbius-rest one-sided bound, or theta-Doob odd-sector half-bound → RH.
-- **Established [L]:** Toeplitz/sech positivity, one-sided Λ-prime-wave bounds, absence of odd resolvent eigenstates above 1/2, and a uniform one-sided conjugated-Laplacian bound on the Λ-free Möbius-rest pairing are RH-equivalent. The integrated deficit splits into Möbius rest plus a transient head with uniformly bounded pairing. Full signed BV/Doob graph, bounded Weil operator, discrete spectrum above 1/2, and zero-sample/polar decomposition exist; none gives global positivity.
-- **Source-only [S]:** Every finite family of distinct nonreal Xi spectral orbits yields an equally dimensional compact polar-zero test subspace with strictly negative complete Weil form and an L²-relative gap on sufficiently large support. This detects zeros, not a source sign.
-- **Open:** Source-derived uniform one-sided bound on the complete Möbius-rest/discrepancy pairing, full Weil-operator positivity, or exclusion of odd bound states above 1/2.
-- **E:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDDoobSourceGraph; R:CHMDSpectralRiemannCriterion; R:CHMDOddSectorCriterion; R:CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection; [S] R:WeilCompactOrbitInertia.
+- **Established [L]:** Toeplitz/sech positivity, Λ-prime-wave and Λ-free Möbius-rest one-sided bounds, and absence of odd resolvent eigenstates above 1/2 are RH-equivalent. The integrated deficit has a uniformly bounded transient head. Exact absolutely convergent folded Möbius-wave/tail/remainder decomposition gives another RH-equivalent one-sided bound; integer-lattice replacement gives a signed `(Λ(n)−1)` prime wave with uniform bounded error and equivalent one-sided bound. Full signed BV/Doob graph, bounded Weil operator, discrete spectrum above 1/2, zero-sample/polar decomposition, and compact negative subspaces from finite nonreal Xi orbit families detect but do not exclude off-line zeros.
+- **Source-only [S]:** Compact-cutoff critical Abel clocks admit continuous full BV graph transport and positive averaging into the closed clock cone; conditional cone members have actual-prime block realizations with small diagonal cost. Cone membership is nonselective for signed positivity.
+- **Open:** Source-derived uniform one-sided bound on the complete signed Möbius pieces or `(Λ−1)` wave, full Weil-operator positivity, or exclusion of odd bound states above 1/2. Uniform lattice error and fold decomposition do not bound the signed wave.
+- **E:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDDoobSourceGraph; R:CHMDSpectralRiemannCriterion; R:CHMDOddSectorCriterion; R:CHMDDeficitPrimitiveConjugatedTransportAndMobiusDilationInjection; R:CHMDMobiusFoldedTransportOfKleinGordonPrimeWave; R:CHMDLatticePoleReplacementAndSignedPrimeWave; R:WeilCompactOrbitInertia; [S] R:MobiusDivisorClockGraphCone; [S] R:PrimePositiveClockRealization.
 
 <a id="th"></a>
 ### TH — Theta moment positivity
@@ -129,9 +128,9 @@
 
 - **Path:** Literal theta renewal/connection source → divisor-faithful winding or directed boundary-work sign → RH.
 - **Established [L]:** Global native Green/whole-BV solver, full-multiplicity Meyer packets, fixed-Gaussian realization and generator intertwining retain the source. Intrinsic one-channel projection has kernel equal to the Xi-multiplicity pencil range; exact confluent moments, all-power defects/solvers, BV repeated-resonance profiles, and complete signed arithmetic value are constructed. No source orientation follows.
-- **Source-only [S]:** Fixed Cauchy-pole quartet defect vanishes iff RH. On a specified nonlinear theta-ratio boundary strip, the reduced slope has positive physical value but negative conjugate value, norm and trace; a positive-norm shortcut fails there.
+- **Source-only [S]:** Fixed Cauchy-pole quartet defect vanishes iff RH. The theta-ratio reduced slope has positive physical value but negative conjugate value, norm and trace on a boundary strip. Its full source polynomial is real; a strict coarse-cone interior path retains negative norm and trace with positive source error. No global source-current sign follows.
 - **Open:** Mixed prime+Gamma≥pole inequality with all cusp terms, global seam/cusp gluing, and arithmetic boundary-current orientation; Gaussian removal from fixed-Gaussian realization remains separate.
-- **E:** R:PaperThetaNativeResolvent; R:PaperThetaNativeMeyerCompleteness; R:PaperThetaOriginalArithmeticRealization; R:PaperThetaWholeMeyerGenerator; R:PaperThetaConfluentNativeSolvability; R:PaperThetaConfluentNativeRegularity; R:PaperThetaConfluentNativeArithmetic; [S] R:XiReciprocalSquareFixedCauchySource; [S] R:ThetaCuspRatioBoundaryNormOrientation.
+- **E:** R:PaperThetaNativeResolvent; R:PaperThetaNativeMeyerCompleteness; R:PaperThetaOriginalArithmeticRealization; R:PaperThetaWholeMeyerGenerator; R:PaperThetaConfluentNativeSolvability; R:PaperThetaConfluentNativeRegularity; R:PaperThetaConfluentNativeArithmetic; [S] R:XiReciprocalSquareFixedCauchySource; [S] R:ThetaCuspRatioBoundaryNormOrientation; [S] R:ThetaCuspRatioSourceSlopeReal; [S] R:ThetaCuspRatioBoundaryNormInterior.
 
 <a id="wd"></a>
 ### WD — Ward orientation and horizontal collision
@@ -193,9 +192,9 @@
 ### XN — Xi Newton invariant discs
 
 - **Path:** Xi first-jet source → line-centered Newton self-map discs covering every zero → RH.
-- **Established [L]:** Disc coverage/self-map and nonnegative interior margin are RH-equivalent. Actual-Xi margin satisfies ΔQ=4(r²−|z−c|²)|ξ″(z)|²≥0 inside each disc; boundary positivity alone does not force interior positivity.
+- **Established [L]:** Disc coverage/self-map and nonnegative interior margin are RH-equivalent. Actual-Xi margin satisfies ΔQ=4(r²−|z−c|²)|ξ″(z)|²≥0 inside each disc; boundary positivity alone does not force interior positivity. Entire scalar damping `A(Ξ)` makes the Newton map globally holomorphic iff `A=0`; each fixed disc has a polynomial pole repair preserving reflection and first root jets, but not self-mapping.
 - **Open:** Arithmetic construction of line-centered discs covering every zero with Q≥0 throughout; pay interior curvature Green potential.
-- **E:** R:XiNewtonSchwarzPickCriticalLine; R:XiNewtonDiscSourceMargin; R:XiNewtonDiscCurvature.
+- **E:** R:XiNewtonSchwarzPickCriticalLine; R:XiNewtonDiscSourceMargin; R:XiNewtonDiscCurvature; R:XiNewtonScalarDamping.
 
 ## Route candidates
 
@@ -299,10 +298,9 @@
 ### MSC — Möbius−Sonin transport
 
 - **Path:** Fixed squarefree arithmetic Hilbert source preserving strict-right divisor/conormal → Sonin energy sign → RH.
-- **Established [L]:** Real-power rigging moves the divisor; polynomial and broad LP multiplier transports cannot preserve the required Ξ preimage.
-- **Source-only [S]:** A fixed density+squarefree-discrepancy Hilbert source recovers μ² coefficients, the squarefree partition and its derivative on Re s>1/2 away from s=1; its strict-right zeros have Xi multiplicities and its overlap/Fisher conormal matches the original. Literal Dirichlet columns can remain non-ℓ²; this Hilbert observation asserts no positive Sonin energy.
+- **Established [L]:** Real-power rigging moves the divisor; polynomial and broad LP multiplier transports cannot preserve the required Ξ preimage. A fixed density+squarefree-discrepancy Hilbert source recovers μ² coefficients, the squarefree partition and derivative on Re s>1/2 away from s=1; strict-right zeros retain Xi multiplicities, and fixed clock/source tangent reproduce the overlap/Fisher conormal. Literal Dirichlet columns can remain non-ℓ²; no positive Sonin energy follows.
 - **Open:** Source-faithful bridge from this squarefree Hilbert observation to a nonnegative Sonin/Weil energy or other RH-closing sign, retaining the complete signed arithmetic source; divisor/conormal preservation alone is not a sign producer.
-- **E:** R:HedenmalmGammaSewnSquarefreeFisherThresholdTrackedRigging; R:XiRealRootedPolynomialPreimage; [S] R:SquarefreeDiscrepancyHilbertTransport; [S] R:HedenmalmSquarefreeSummatoryConormalTransport.
+- **E:** R:HedenmalmGammaSewnSquarefreeFisherThresholdTrackedRigging; R:XiRealRootedPolynomialPreimage; R:SquarefreeDiscrepancyHilbertTransport; R:HedenmalmSquarefreeSummatoryConormalTransport.
 
 <a id="owu"></a>
 ### OWU — Odd Weil-weight uniqueness
@@ -373,9 +371,9 @@
 
 - **Path:** Arithmetic operator/domain or centred ferromagnetic producer → real-rooted Ξ → RH.
 - **Established [L]:** Bare operator lacks point spectrum/compact resolvent. Lee–Yang holds for finite ferromagnetic graphs; an Ising magnetization limit Ξ/Ξ(0) would imply RH. Field-density/centering constraints and LP-maximality exclude finite-order, fixed-depth and simple prime-log ports.
-- **Source-only [S]:** At a prime Γ-site pivot, nonnegative-fugacity dual-spectrum containment forces active walls into a divisibility chain with sharp logarithmic size bound. Each nondividing wall pair has a nondual two-wall frequency with nonzero coefficient polynomial; signed cancellation lies on a proper algebraic locus.
+- **Established [L]:** At a prime Γ-site pivot, nonnegative-fugacity dual-spectrum containment forces active walls into a divisibility chain with sharp logarithmic size bound. Each nondividing wall pair has a nondual two-wall frequency with nonzero coefficient polynomial; signed cancellation lies on a proper algebraic locus.
 - **Open:** Source-defined couplings with centred slow-field law converging to Riemann's measure, or a faithful arithmetic scattering denominator; interaction-driven critical edge density required.
-- **E:** R:WeightOneCliffordSpectralNoGo; R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:RiemannKernelLaguerrePolyaSymbol; [S] R:LeeYangPrimePivotSpinPartitionSpectrum.
+- **E:** R:WeightOneCliffordSpectralNoGo; R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:RiemannKernelLaguerrePolyaSymbol; R:LeeYangPrimePivotSpinPartitionSpectrum.
 
 <a id="wbf"></a>
 ### WBF — Source certificates

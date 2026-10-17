@@ -210,3 +210,41 @@ continuous full signed Weil form, including both polar moments.
   integration directly: a separating continuous linear functional would have
   a negative integral, contradicting pointwise nonnegativity. No probability
   normalization or finite-quadrature machinery is required.
+- Later formalization checkpoint: the BV primitive, uniform graph convergence,
+  literal clock admission/continuity, closed-cone integration,
+  continuous-kernel control, bounded continuous source representatives, and
+  compact BV translation families now compile with empty logs. The compact
+  interval convolution and graph-kernel identities are being checked; the
+  positive-cone theorem has been written but has not compiled. Count stays
+  2/100; no helper is a separate contribution.
+- The same paper mechanism reaches every continuous BV target fixed by chi,
+  because its cutoff translations are graph-continuous and the Banach-valued
+  mollifier approximate identity converges in graph norm. Compact C2 targets
+  are the specialization needed for the actual-prime theorem and compact-core
+  density. This strengthening belongs to the same contribution, with all
+  target-admission premises discharged in the final graph-target statement.
+- Final-statement corpus search reported `partial=false`, 73,070 inventoried
+  files, 61,402 Lean files and 1,081,737 declarations. All 20 candidate-lemma
+  and 20 source-argument hits were inspected. Relevant additional source
+  comparisons: `ArithmeticLogClockBoundedCompletionSaturation` and
+  `PrimeFirstTraceExactGraphClosureUniversalityLaw` concern arbitrary signed
+  coefficients and multivalued Hardy graph closures; `PrimeBurnolFourierJetPrimeCore`
+  concerns a different even operator graph; `CHMDCompactSupportOperatorCore`
+  proves compact operator-core density. None supplies positive late literal
+  Abel-clock synthesis in the complete CHMD form graph with the fixed
+  common-N prime weights. Compiler coverage remains mixed; this search is a
+  local source comparison, not a proof or external novelty certificate.
+- `MobiusDivisorClockGraphCone.criticalClockGraph_positiveCone_contains_bvTarget`
+  now compiles with an empty log. Its conclusion is actual membership in the
+  closed positive late-clock cone in the full SourceGraph norm; the compact
+  interval kernel identity and graph-valued mollifier limit also compile.
+  The arithmetic realization leaves, dependency audit and wiring remain.
+- Integration exposed a pre-existing duplicate public declaration,
+  `RHTower.exp_half_log_eq_sqrt`: the CHMD branch imports the real-variable
+  version from `RiemannKernelTransformInjectivity`, while prime realization
+  imports the natural-number specialization from
+  `PrimeSquareMobiusComplementaryRecord`. Exhaustive source references show
+  the latter is used only twice, within its own file. That specialization is
+  made private; its two public consumers and the combined final module are
+  included in verification. No mathematical statement is strengthened by
+  this namespace repair, and it contributes nothing to the theorem count.

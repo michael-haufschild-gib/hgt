@@ -109,13 +109,16 @@ theorem compactKernelBCF_integral_apply (a : ℝ≥0) (χ ρ : ℝ → ℝ)
     (f : C(Icc (0 : ℝ) (a : ℝ), ℝ)) (x : ℝ) :
     (∫ y : Icc (0 : ℝ) (a : ℝ), f y • cutoffKernelBCF χ ρ hχ hρ hcχ hcρ b y) x =
       ∫ y : Icc (0 : ℝ) (a : ℝ), f y * (χ x * ρ (x + b - y)) := by
-  rw [boundedContinuous_integral_apply
-    (memLp_one_iff_integrable.mp (ContinuousMap.memLp (μ := volume) (p := 1) ℝ
+  have hi : Integrable (fun y : Icc (0 : ℝ) (a : ℝ) =>
+      f y • cutoffKernelBCF χ ρ hχ hρ hcχ hcρ b y) :=
+    memLp_one_iff_integrable.mp (ContinuousMap.memLp (μ := volume) (p := 1) ℝ
       ⟨_, f.continuous.smul ((continuous_cutoffKernelBCF χ ρ hχ hρ hcχ hcρ hsχ b).comp
-        continuous_subtype_val)⟩))]
+        continuous_subtype_val)⟩)
+  rw [boundedContinuous_integral_apply hi x]
   apply integral_congr_ae
   exact Eventually.of_forall fun y => by
-    rw [BoundedContinuousFunction.smul_apply, smul_eq_mul, cutoffKernelBCF_apply]
+    change f y * cutoffKernelBCF χ ρ hχ hρ hcχ hcρ b y x = _
+    rw [cutoffKernelBCF_apply]
 
 theorem compactKernelControl_eq_average (a : ℝ≥0) (b : ℝ) (χ ρ F : ℝ → ℝ)
     (hχ : BoundedVariationOn χ univ) (hρ : BoundedVariationOn ρ univ)
@@ -125,12 +128,14 @@ theorem compactKernelControl_eq_average (a : ℝ≥0) (b : ℝ) (χ ρ F : ℝ �
     compactKernelControl a χ ρ hχ hρ hcχ hcρ hsχ b
         ⟨fun y => F y, hcF.comp continuous_subtype_val⟩ =
       ∫ s : ℝ, ρ s • cutoffKernelGraph χ F hχ hF b s := by
-  have hp : Integrable (fun s : ℝ => ρ s • cutoffKernelGraph χ F hχ hF b s) :=
-    (hcρ.smul (continuous_cutoffKernelGraph χ F hχ hF hcχ hcF hsχ b))
-      .integrable_of_hasCompactSupport hsρ.smul_right
-  have hb : Integrable (fun s : ℝ => ρ s • cutoffKernelBCF χ F hχ hF hcχ hcF b s) :=
-    (hcρ.smul (continuous_cutoffKernelBCF χ F hχ hF hcχ hcF hsχ b))
-      .integrable_of_hasCompactSupport hsρ.smul_right
+  have hp : Integrable (fun s : ℝ => ρ s • cutoffKernelGraph χ F hχ hF b s) := by
+    have hc : Continuous (fun s : ℝ => ρ s • cutoffKernelGraph χ F hχ hF b s) :=
+      hcρ.smul (continuous_cutoffKernelGraph χ F hχ hF hcχ hcF hsχ b)
+    exact hc.integrable_of_hasCompactSupport hsρ.smul_right
+  have hb : Integrable (fun s : ℝ => ρ s • cutoffKernelBCF χ F hχ hF hcχ hcF b s) := by
+    have hc : Continuous (fun s : ℝ => ρ s • cutoffKernelBCF χ F hχ hF hcχ hcF b s) :=
+      hcρ.smul (continuous_cutoffKernelBCF χ F hχ hF hcχ hcF hsχ b)
+    exact hc.integrable_of_hasCompactSupport hsρ.smul_right
   apply source_projection_injective
   change sourceMap _ = sourceMap _
   rw [compactKernelControl_source,
@@ -138,12 +143,14 @@ theorem compactKernelControl_eq_average (a : ℝ≥0) (b : ℝ) (χ ρ F : ℝ �
       rw [map_smul, map_smul, cutoffKernelGraph_source_bcf])]
   congr 1
   ext x
-  rw [compactKernelBCF_integral_apply, boundedContinuous_integral_apply hb]
+  rw [compactKernelBCF_integral_apply a χ ρ hχ hρ hcχ hcρ hsχ b _ x,
+    boundedContinuous_integral_apply hb x]
   change (∫ y : Icc (0 : ℝ) (a : ℝ), F y * (χ x * ρ (x + b - y))) = _
   rw [cutoff_kernel_interval_eq_convolution a b χ ρ F hfit x]
   apply integral_congr_ae
   exact Eventually.of_forall fun s => by
-    rw [BoundedContinuousFunction.smul_apply, smul_eq_mul, cutoffKernelBCF_apply]
+    change ρ s * (χ x * F (x + b - s)) = ρ s * cutoffKernelBCF χ F hχ hF hcχ hcF b s x
+    rw [cutoffKernelBCF_apply]
 
 theorem cutoffKernelGraph_mollifier_tendsto (χ v : ℝ → ℝ)
     (hχ : BoundedVariationOn χ univ) (hv : BoundedVariationOn v univ)
@@ -154,6 +161,6 @@ theorem cutoffKernelGraph_mollifier_tendsto (χ v : ℝ → ℝ)
     narrowBump_rOut_tendsto
     ((continuous_cutoffKernelGraph χ v hχ hv hcχ hcv hsχ 0).comp continuous_neg) 0
   simpa only [convolution_def, ContinuousLinearMap.lsmul_apply, zero_sub, neg_neg,
-    neg_zero, mollifier] using h
+    neg_zero, mollifier, Function.comp_apply] using h
 
 end RHTower.CHMDDoobGraph
