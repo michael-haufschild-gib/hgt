@@ -357,8 +357,11 @@ theorem eigenvector_norm_pow_four_le_stationaryResolvent_absGraph_mul {μ : ℝ}
       _ = ‖q.val.fst‖ ^ 4 := by ring
   have hstat := sourceEnergy_eq_stationary_sub_arch_sub_primeShift (absGraph q)
   rw [sourceEnergy_absGraph_eq, norm_thetaToVolume_absGraph_sq] at hstat
-  have hqE : sourceEnergy q = ((1 - 2 * μ) / μ) * ‖q.val.fst‖ ^ 2 :=
-    sourceEnergy_rieszLift_of_eigenvector hμ heig
+  have hqE : sourceEnergy q = ((1 - 2 * μ) / μ) * ‖q.val.fst‖ ^ 2 := by
+    have h1 := sourceEnergy_eq_inner_of_sourcePair_eq_inner
+      (sourcePair_rieszLift_eq_inner_of_eigenvector hμ heig)
+    rw [real_inner_smul_right, real_inner_self_eq_norm_sq] at h1
+    exact h1
   have hid : stationaryEnergy (thetaProduct (absGraph q).val.fst) + ‖(absGraph q).val.fst‖ ^ 2 =
       ((1 - μ) / μ) * ‖q.val.fst‖ ^ 2 +
         4 * sourcePair (posGraph q) (negGraph q) +

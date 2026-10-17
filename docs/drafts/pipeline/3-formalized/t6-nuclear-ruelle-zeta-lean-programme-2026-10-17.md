@@ -1,7 +1,7 @@
 # T6 Lean programme: nuclear Ruelle zeta functions are zero-free on Re s > 0
 
 - **ID:** t6-nuclear-ruelle-zeta-lean-programme-2026-10-17
-- **Stage:** 1-in-progress (formalization programme for card 4 item T6)
+- **Stage:** 3-formalized (formalization programme for card 4 item T6)
 - **Type:** THEOREM (Lean programme)
 - **Source:** `2-fully-proven/route TT/route-tt-structural-theorems-2026-10-14.md`, T6
 - **Statement:** For an analytic Markov system (holomorphic inverse branches φ_e mapping a closed disc
@@ -40,3 +40,6 @@
   `differentiable_fdet` (entire in λ), `fdet_eq_exp_of_small`, `fdet_one_eq_exp`).
   Next: module 5 (analytic Markov system: paths, composites, real fixed points, chain rule; transfer
   matrix with ℕ-encoding (a,i) ↦ p·i + a, path expansion of powers, trace formula) and module 6.
+- 2026-10-17 — modules 5–6 DONE: HTGeometry `AnalyticMarkovSystem`, `AnalyticMarkovTransferMatrix`;
+  RHTower `RuelleZetaNuclearZeroFree` (`ruelleZeta_continuation`, `not_riemannZeta_eq_ruelleZeta`).
+  All standard axioms, compiled with `lake env lean`, wired. Programme complete → 3-formalized.

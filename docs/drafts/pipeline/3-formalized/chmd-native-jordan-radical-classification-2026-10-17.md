@@ -1,10 +1,10 @@
-# CHMD: primitive nodal source contraction
+# CHMD: exact native Jordan radical classification
 
-Status: stopped when the user cleared the goal. Route selected for this goal turn: CHMD, previously unworked in this root goal. No qualifying CHMD result is claimed.
+Status: the dependency-closed paper proof and both Lean modules are complete. Individual compilation and the full scoped axiom audit passed; the formal index was refreshed. Global lint failed on unrelated modules listed below. The user requested completion of this existing work followed by stopping, with no new route. This result receives no qualifying RH-route credit.
 
-## Objective
+## Original research objective (unresolved)
 
-Remove a hard source-level obstruction to excluding sign-changing odd CHMD bound states above the critical resolvent threshold. A new receiver, improved bound, abstract encoding, or another conditional sign statement does not count. Qualifying progress starts at 2/44 (PM, SZ); CHMD has no credit.
+Remove a hard source-level obstruction to excluding sign-changing odd CHMD bound states above the critical resolvent threshold. A new receiver, improved bound, abstract encoding, or another conditional sign statement does not count. That obstruction remains open. The completed positive result below classifies finite native packets in the actual arithmetic radical; it does not prove positivity or exclude these bound states.
 
 ## Plan
 
@@ -28,9 +28,9 @@ Can an operation on the actual odd primitive source remove nodal sign changes wi
 - Initial local-modulus/gauge idea is already excluded in the corpus: the entire negative reflected-prime measure is mutually singular with the positive jump measure; strictly positive scalar gauges plus absolutely continuous or diagonal corrections cannot remove even the first-prime component. The existing positive survivor is exact collar compensation and its strict positive crossing energy. Do not reprove this no-go or count it as new.
 - Ordinary `absGraph` moves odd vectors into the even sector; the cost of `primGraph (absGraph p)` is already represented by exact ground-square/nodal identities and conditional Rayleigh inequalities in current source. They do not produce the missing sign.
 
-## Next conjecture to audit
+## Deferred conjecture (not pursued)
 
-The explicit normalized theta-shift differences may generate the entire odd threshold radical in the native source graph topology. This would identify the actual arithmetic radical quotient rather than introduce another sign receiver. First inspect the current Riesz–resolvent dictionary and all existing closure/spectral-synthesis results; then state exact topology and generators. No completeness claim is assumed.
+The explicit normalized theta-shift differences may generate the entire odd threshold radical in the native source graph topology. This would identify the actual arithmetic radical quotient rather than introduce another sign receiver. No completeness claim is assumed or proved. The user's stopping instruction leaves this conjecture deferred.
 
 ## No-go closure
 
@@ -63,10 +63,22 @@ The remaining concrete question is which original native Jordan layers the CHMD 
 - The original theta-shift completeness conjecture remains unresolved. Multiple-zero lower layers expose why sample vanishing cannot silently be strengthened to full-order divisibility.
 - Third corpus deep search completed with `partial=false`, no errors, and predominantly pending/stale compiler coverage. The checked definitions above, not search ranking, support the proof.
 
-## Stop state
+## Completed formal result
 
-- User cleared the goal during implementation; research stopped.
-- Draft `formal/GaloisForLFunctions/RHTower/CHMDNativeJordanSamples.lean` contains the proposed exact native-chain transform and finite-packet sample classification. It has not been compiled, audited, or wired. Treat every new theorem there as unverified.
-- `PaperThetaCutTransform.lean` changes only the visibility of the existing `differentiable_bounded_thetaTransform` helper from private to public. Its narrow Lean compilation completed successfully.
-- Initial `/tmp` API probe found universe-inference errors in unspecialized `have := @...` lines, not unknown names. The revised probe completed successfully before cancellation cleanup reached it (exit 0); no owned Lean process remains. This verifies API names only, not the draft. No CHMD radical-bridge module was created.
-- No final lint, index regeneration, axiom audit, or RH contribution credit. Qualifying progress remains 2/44 (PM, SZ).
+- `CHMDNativeJordanSamples.lean` proves the exact entire chain transform, vanishing at other Xi roots and at lower layers, nonvanishing of every terminal sample without a simple-zero assumption, and the finite-packet equivalence between Xi-sample silence and zero terminal coefficients.
+- `CHMDNativeJordanRadical.lean` identifies the literal real and imaginary BV graph Fourier readouts with the normalized native transform. Reflection/conjugation separates the two scalar components. Its main theorem, `nativeFinite_polarResidual_radical_iff_terminal_zero`, proves that both polar-corrected components belong to the full signed arithmetic radical exactly when every terminal coefficient vanishes.
+- The same module proves all mixed pairings and energies of these polar-corrected lower-layer packets vanish. `nativeFinite_lower_source_energy` retains the original archimedean energy, every prime jump, mass term, and both polar contributions before projection.
+- `PaperThetaCutTransform.lean` only exposes the already-proved `differentiable_bounded_thetaTransform` helper publicly. Both new modules are imported by `RHTower.lean`.
+- The hardest positive step, terminal nonvanishing at arbitrary exact multiplicity, is proved in Lean. No infinite-packet completion, theta-shift density, positivity, simplicity of zeros, or RH conclusion is claimed. Corpus searches preceded implementation; external novelty was not audited under the current-corpus-only constraint.
+
+## Verification
+
+- Individual `lake --old env lean` compilation passed for the exposed-helper module and both new modules. Each new module produced its local `.olean`; no full or umbrella build was run.
+- The `/tmp` axiom audit imported the completed radical module and checked all 29 new public declarations plus the exposed helper. Coverage matched all 30 declarations exactly. Every declaration uses only `propext`, `Classical.choice`, and `Quot.sound`.
+- `scripts/formal_tools.py lint` ran and exited 1 on unrelated worktree failures: unreachable `PrimeBurnolLevySymbol`, `LevyFiniteJumpMeasure`, `LevyLaplaceExponent`, `LevyLaplaceKernel`, and `LevyLaplaceTruncation` modules, plus a `sorry` in `RuelleZetaNuclearZeroFree.lean:285` (`fredholmD_eq`). No failure named either new CHMD module or the exposed helper. These independent changes were preserved.
+- `scripts/formal_tools.py index` exited 0, regenerating `LEAN_API.md`, `LEAN_GAPS.md`, `LEAN_OVERVIEW.md`, and refreshing the search index (15 changed files, 0 removed).
+- Scoped whitespace checks passed. Owned API/axiom scratch files were removed after successful checks. No owned Lean process remains.
+
+## Stop instruction
+
+The user first cleared the all-routes goal, then explicitly requested finishing this already-started work and stopping. No new route is authorized. The original RH obstruction remains unresolved and no CHMD qualifying contribution is claimed.

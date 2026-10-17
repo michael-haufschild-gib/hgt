@@ -106,15 +106,21 @@ theorem hasDerivAt_levyLaplaceKernel (z : ℂ) (h : ℝ≥0) :
   · have hh0 : ((h : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hh
     simp only [levyLaplaceKernel, levyLaplaceKernelDeriv, if_neg hh]
     have hd := (((hasDerivAt_id z).neg).mul_const ((h : ℝ) : ℂ)).cexp
-    convert ((hasDerivAt_const z (1 : ℂ)).sub hd).const_mul
-      ((((1 + (h : ℝ)) / (h : ℝ) : ℝ) : ℂ)) using 1 <;>
-      push_cast <;> field_simp [hh0] <;> ring
+    have hc : (((1 + (h : ℝ)) / (h : ℝ) : ℝ) : ℂ) *
+        (Complex.exp (-z * ((h : ℝ) : ℂ)) * ((h : ℝ) : ℂ)) =
+        ((1 + (h : ℝ) : ℝ) : ℂ) * Complex.exp (-z * ((h : ℝ) : ℂ)) := by
+      push_cast
+      field_simp
+    simpa only [id_eq, Pi.neg_apply, Pi.sub_apply, neg_one_mul, mul_neg,
+      zero_sub, neg_neg, hc] using
+      ((hasDerivAt_const z (1 : ℂ)).sub hd).const_mul
+        ((((1 + (h : ℝ)) / (h : ℝ) : ℝ) : ℂ))
 
 theorem norm_levyLaplaceKernelDeriv_le {δ : ℝ} (hδ : 0 < δ)
     {z : ℂ} (hz : δ ≤ z.re) (h : ℝ≥0) :
     ‖levyLaplaceKernelDeriv z h‖ ≤ 1 + 1 / δ := by
   by_cases hh : h = 0
-  · simp only [levyLaplaceKernelDeriv, hh, if_pos rfl, norm_zero]
+  · simp only [levyLaplaceKernelDeriv, hh, ↓reduceIte, norm_zero]
     positivity
   · have hcoeff : 0 ≤ 1 + (h : ℝ) := by positivity
     simp only [levyLaplaceKernelDeriv, if_neg hh, norm_mul, Complex.norm_real,

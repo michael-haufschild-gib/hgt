@@ -230,3 +230,30 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
   source row 438(b) approximation A(g(·/t)) ≈ |P|(1 − t e^{(t−1)L/2}) for the c*-family "given the
   β-Herglotz bridge" (W_β-positivity ⟹ Herglotz at β ≠ 1, unproved; row 424 (iii) states it as an
   assumption): heuristic, not a theorem.
+- 2026-10-17 card 4: T6 DONE (programme card `t6-nuclear-ruelle-zeta-lean-programme-2026-10-17`, now in
+  3-formalized). HTGeometry: `DiscHolomorphicFixedPoint` (Schwarz–Pick contraction, unique attracting fixed
+  point), `DiscCoefficientExpansion` (Cauchy coefficients, expansion, substitution), `WeightedCompositionTrace`
+  (residue trace formula w(p)/(1−Φ'(p))), `GeometricDecayMatrixPowers`, `GeometricDecayFredholmDeterminant`
+  (entire det(1−λM) for |M_ij| ≤ Cη^{i+j}, holomorphic in parameters, = exp(−Σ λⁿTr Mⁿ/n), continued to λ=1),
+  `AnalyticMarkovSystem` (inverse-branch data of a real-analytic orientation-preserving expanding Markov map
+  with nuclear transfer operators; words, composites, real periodic points, chain rule),
+  `AnalyticMarkovTransferMatrix` (matrix of L_s, decay, entireness, path expansion of powers,
+  `itrace_mat` trace formula). RHTower `RuelleZetaNuclearZeroFree`: **`ruelleZeta_continuation`**
+  (D(s)=det(1−L_s) entire, ζ_R(s)D(s)=D(s+1) on Re s>σ₀, D(s+1)≠0 on Re s>σ₀−1: zero-free on Re s>0 for
+  entropy 1) and **`not_riemannZeta_eq_ruelleZeta`** (ζ is not such a Ruelle zeta; uses the corpus Hardy
+  zero `exists_riemannZeta_zero_re_half`). Standard axioms; wired.
+- 2026-10-17 status and order of the remaining work (each item below is a standalone formalization project):
+  1. card 4 T5 — Ruelle–Pollicott for suspension flows over mixing SFTs with Hölder roof (transfer operators on
+     F_θ, Lasota–Yorke, quasi-compactness, flat-trace asymptotics, nonvanishing of ζ_R on Re s > 1 − ε).
+  2. card 4 L7 — Davenport–Heilbronn for Epstein zeta functions with class number > 1 (imaginary quadratic orders,
+     class group characters and their L-functions, primes in ideal classes, Kronecker, Rouché).
+  3. card 6 — the primal TMP construction (Dirichlet problem on the cusped modular strip, corner Martin kernel,
+     Green/jet identity, stream-function regularity); the TMP theorem itself is already formalized (dual route).
+  4. card 8 clause 3 — Selberg zeta function and trace formula with scattering for the cofinite noncongruence Γ_N.
+  5. cards 10/11 — Matomäki–Teräväinen Theorem 1.2 (all-interval E₃), including its Kuznetsov-level inputs.
+  6. card 5 (C) — Weil's Riemann hypothesis for curves over F_q (Riemann–Roch, Bombieri–Stepanov) and the
+     function-field explicit formula.
+  7. card 7 — needs Taubes's 3-dimensional Weinstein theorem (Seiberg–Witten theory) for the contact case.
+  Card 9 is blocked by the session rule "no computations": its headline theorem is a certified numerical
+  verification (Platt–Trudgian prefix + Turing count at height 3·10¹²); its mathematical content is already
+  Lean-closed (`rhVerifiedThrough_amplify_of_fiber_ncard_le_one`). Needs a user decision.

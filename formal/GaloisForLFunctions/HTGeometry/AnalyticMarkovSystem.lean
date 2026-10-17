@@ -39,6 +39,7 @@ structure System where
   κ : ℝ
   φ : Fin q → ℂ → ℂ
   ℓ : Fin q → ℂ → ℂ
+  p_pos : 0 < p
   R_pos : ∀ a, 0 < R a
   θ_nonneg : 0 ≤ θ
   θ_lt_one : θ < 1

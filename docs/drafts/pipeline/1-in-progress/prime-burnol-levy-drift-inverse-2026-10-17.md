@@ -162,8 +162,8 @@ No RH, zero locations, numerical experiment or fitted covariance is used.
    arbitrary initial interval, not a new imposed source norm.
 
 8. **Intrinsic normalization.** Dominated convergence gives psi(x)->kappa
-   as x decreases to zero. For x>=1, q(x,h)/x is bounded by 2 after
-   splitting h<=1 and h>1, and tends to zero for every h>0. Therefore
+   as x decreases to zero. For x>=1, q(x,h)/x is bounded by 3 using
+   the uniform bound ||q(x,h)||<=2+x, and tends to zero for every h>0. Therefore
    psi(x)/x->d. The bound Re psi>=kappa gives ||E_t||<=exp(-kappa*t),
    by the bounded-symbol realization. The positive-rate eigenfeatures
    and x down to zero give the reverse inequality. Thus drift and killing
@@ -195,3 +195,44 @@ No RH, zero locations, numerical experiment or fitted covariance is used.
 
 Use one owned Lean process, normal heartbeat limits, no umbrella build.
 Preserve foreign changes. The frontier map remains read-only.
+
+## Formal checkpoint — candidate remains uncounted
+
+Targeted single-worker builds passed for:
+
+- `HTGeometry/LevyLaplaceKernel`: uniform kernel and derivative bounds.
+- `HTGeometry/LevyLaplaceExponent`: integrability, holomorphy, accretivity.
+- `HTGeometry/LevyLaplaceTruncation`: exact split and vanishing small-jump tail.
+- `HTGeometry/LevyFiniteJumpMeasure`: actual finite cutoff measures and integral identity.
+- `RHTower/PrimeBurnolLevySymbol`: natural data, actual prime evolution, C0 and semigroup laws.
+- `RHTower/PrimeBurnolLevyEvolution`: finite-cutoff strong convergence, positivity, literal drift factorization.
+
+Their final build logs are empty. `RHTower/PrimeBurnolPureJumpInjectivity`
+also passed with an empty log: exact bounded backward-cutoff cancellation,
+strong convergence of contractive tails to identity, pure-jump injectivity,
+and reduction of the general kernel to the literal drift shift.
+`HTGeometry/BurnolWeightedShiftKernel` also passed: exact a.e. tail-zero
+criterion, explicit nonzero initial-window vector, shift injectivity iff zero
+shift. `RHTower/PrimeBurnolLevyInverseGraph` passed: exact backward prime graph
+closure, initial-window vertical fibre, fibre cosets, single-valuedness iff zero
+drift time, and dense evolution range. `RHTower/PrimeBurnolLevyMinimumInverse`
+passed: an actual closed densely defined partial linear inverse, exact graph
+intersection with the kernel orthogonal complement, Pythagorean decomposition,
+minimum norm and unique minimizer. These final build logs are empty.
+
+`RHTower/PrimeBurnolLevyPrimeAction` passed with an empty log: actual-prime
+linear independence, a well-defined finite-prime backward action, and closability
+exactly when drift time is zero. `HTGeometry/LevyLaplaceLimits` passed with
+an empty log: the jump exponent tends to zero at the origin and its ratio to
+the real rate tends to zero at infinity. `RHTower/PrimeBurnolLevyAsymptotics`
+also passed with an empty log: intrinsic killing/drift limits, exact norm
+`exp(-t*killing)`, and an obstruction to bounded recovery whenever the exponent
+diverges, including the closed minimum-norm inverse at zero drift.
+`RHTower/PrimeBurnolPrimeLevyMeasure` passed with an empty log: the literal
+control measure is finite with no zero atom; its exponent has the stated
+prime-series formula, and its actual jump measure has infinite mass.
+The concrete divergence and unbounded-inverse specialization are written;
+their final leaf remains to check.
+No umbrella wiring, generated index, final axiom audit or lint for this candidate
+yet. These helpers are parts of one candidate, not separately counted results.
+Verified ledger remains **13/100**.

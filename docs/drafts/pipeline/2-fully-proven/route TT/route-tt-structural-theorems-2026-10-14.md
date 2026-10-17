@@ -335,5 +335,11 @@ with `lake env lean`, and wired into `GaloisForLFunctions/RHTower.lean`.
 - **L14.5, L14.6** [L] `ArchimedeanAnomalyConstantLaws`.
 - Not theorems on this card (no obligation): the PBAP structural-laws addendum (heuristic), L4, L8,
   L9, L11 index law and L12 §1 first clause (stated gap), the quasi-RH ladder conjecture, core existence.
-- **Open formalization items**: T5 (Ruelle–Pollicott), T6 (nuclear Ruelle zeta), L7
-  (Davenport–Heilbronn).
+- **T6** [L] `RHTower.RuelleZetaNuclearZeroFree` (`ruelleZeta_continuation`: for the inverse-branch
+  system of a real-analytic orientation-preserving expanding Markov map with nuclear transfer operators,
+  D(s) = det(1 − L_s) is entire, ζ_R(s)D(s) = D(s+1) beyond the abscissa σ₀ and D(s+1) ≠ 0 on
+  Re s > σ₀ − 1 — zero-free on Re s > 0 at entropy 1; `not_riemannZeta_eq_ruelleZeta`), infrastructure
+  HTGeometry `DiscHolomorphicFixedPoint`, `DiscCoefficientExpansion`, `WeightedCompositionTrace`,
+  `GeometricDecayMatrixPowers`, `GeometricDecayFredholmDeterminant`, `AnalyticMarkovSystem`,
+  `AnalyticMarkovTransferMatrix`.
+- **Open formalization items**: T5 (Ruelle–Pollicott), L7 (Davenport–Heilbronn).
