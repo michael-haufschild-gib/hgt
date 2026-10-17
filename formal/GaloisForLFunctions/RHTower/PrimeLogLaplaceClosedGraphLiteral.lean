@@ -29,6 +29,16 @@ theorem continuous_primeLogCriticalLaplaceProfile_source (t : ℝ) :
   · simp only [primeLogCriticalLaplaceProfile, dif_neg ht]
     exact continuous_const
 
+theorem primeLogCriticalLaplaceProfile_tsum (a : primeLogCriticalSourceL2)
+    {t : ℝ} (ht : 0 < t) :
+    primeLogCriticalLaplaceProfile a t =
+      ∑' p : Nat.Primes, a p * primeLogCriticalLaplaceFeatureC p t := by
+  rw [primeLogCriticalLaplaceProfile_pos _ ht, lp.inner_eq_tsum]
+  apply tsum_congr
+  intro p
+  simp [primeLogCriticalEvaluationVector, RCLike.inner_apply,
+    primeLogCriticalLaplaceFeatureC, mul_comm]
+
 theorem primeLogCriticalLaplaceProfile_finite (l : Nat.Primes →₀ ℂ)
     {t : ℝ} (ht : 0 < t) :
     primeLogCriticalLaplaceProfile (HTGeometry.ConstraintMotiveRelativity.srcEmb l) t =
@@ -84,7 +94,7 @@ theorem primeLogCriticalLaplaceClosureGraph_ae
     exact hv2
   apply primeLogCriticalLaplaceProfile_of_graph_tendsto x a y
   · exact (continuous_fst.tendsto (a, y)).comp hw
-  · simpa only [happ] using (continuous_snd.tendsto (a, y)).comp hw
+  · simpa only [happ, Function.comp_def] using (continuous_snd.tendsto (a, y)).comp hw
 
 theorem primeLogCriticalLaplaceClosureGraph_memLp
     {a : primeLogCriticalSourceL2} {y : primeLogCriticalHalfLineL2}

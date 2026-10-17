@@ -43,7 +43,7 @@ There is no RH assumption or missing arithmetic cancellation premise.
 - [ ] 2 → 3: exact Lean theorem, targeted single-job builds, axioms and wiring.
 - [ ] 3 → 4: publication audit if authorized.
 
-## Source evidence and remaining audit
+## Source evidence
 
 - `PrimeLogCubicLaplaceGraphFormation.lean` defines the literal columns
   `2 t (log p)^2 / sqrt(p) * exp(-t log p)`, proves their exact cubic Gram
@@ -51,10 +51,11 @@ There is no RH assumption or missing arithmetic cancellation premise.
   source, and closability. It does not state the proposed maximal-domain law.
 - `PrimeLogCongruenceLaplaceSynthesis.lean` connects this synthesis to actual
   finite congruence deformations and the obstruction to a bounded synthesis.
-  Its complete scope still needs inspection before claiming novelty.
+  Its complete scope was inspected; bounded subcritical synthesis alone does
+  not identify the original critical closed domain.
 - `PrimeLogThetaLowerClosedGraphLanding` and its four-level extension retain
-  finite-core theta reporters. Their relation to maximal-domain admission
-  still needs inspection.
+  finite-core theta reporters. Every reference to the critical synthesis was
+  inspected; these do not supply maximal-domain admission.
 - Whole-corpus searches returned `partial=false`; all candidate-lemma and
   source-argument hits were inspected. Relevant additional mechanisms include
   `HTGeometry.HilbertSchmidtOperator`, half-line translation/causal semigroups,
@@ -63,7 +64,7 @@ There is no RH assumption or missing arithmetic cancellation premise.
   were inspected while closing contribution 3. They concern a different
   source topology and do not themselves construct this maximal Laplace domain.
 
-## Proposed paper mechanism
+## Paper mechanism
 
 1. The cubic Gram diagonal gives squared column norm `log(p)/p`. Damping by
    `p^(-epsilon)` makes the sum of squared column norms finite for every
@@ -84,11 +85,10 @@ There is no RH assumption or missing arithmetic cancellation premise.
    every closed-graph output with F_a almost everywhere, using the same L2
    subsequence mechanism already used for closability.
 
-Before formalization, verify all norm/measure normalizations, pointwise
-representatives, the Hilbert-Schmidt synthesis construction, and the strong
-half-line translation theorem against the actual source. Reassess whether
-the exact domain law unlocks a new class of source admissions rather than
-merely restating an existing abstract completion.
+The completed audit below checks norm/measure normalizations, pointwise
+representatives, Hilbert–Schmidt synthesis, strong weighted translation and
+the distinction from an abstract completion wrapper. Lean verification of
+the exact final statement remains the counting gate.
 
 ## No-go closure
 
@@ -166,6 +166,15 @@ domain, damping, intertwining and core conclusions count together once.
 
 ## Log
 
+- 2026-10-17: `PrimeLogLaplaceDamping.lean` compiles with an empty log.
+  The entire damped l2 source is admitted to the original closed graph;
+  its actual output is Hilbert–Schmidt. The final maximal-domain leaf is
+  under verification. The three finished leaves are wired.
+- 2026-10-17: paper proof and whole-corpus source/significance audit complete.
+  `BurnolWeightedShiftStrongContinuity.lean` and
+  `PrimeLogLaplaceClosedGraphLiteral.lean` compile with empty logs under
+  targeted single-job Lean. Damping and the maximal-domain converse are
+  drafted and under verification. Candidate remains uncounted.
 - 2026-10-17: two whole-corpus hybrid searches and initial exact source reads;
   no new Lean code for this candidate. Compiler metadata is mixed/stale.
 - `docs/reports/rh-current-frontier-map.md` remains read-only.

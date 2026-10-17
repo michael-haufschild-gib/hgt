@@ -80,8 +80,10 @@ Identify the closed critical prime-log Laplace synthesis with its maximal
 literal L2 domain, using prime damping and a weighted half-line translation
 semigroup. The intended result removes a hidden endpoint/core condition and
 admits every damped prime-l2 source. Whole-corpus leads and the attack are
-recorded; source applicability, novelty/significance and the complete paper
-proof remain open. No Lean code or counted result exists for this candidate.
+recorded; source applicability, novelty/significance and the paper proof are
+audited. Formalization is underway: weighted-shift strong continuity and
+literal identification of closed-graph outputs compile. The converse domain
+admission and final gates remain open. Candidate remains uncounted.
 
 ## Environment
 

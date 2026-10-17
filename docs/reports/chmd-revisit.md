@@ -1,3 +1,5 @@
+# Phase 1: naive review
+
 ## 1. Why We Got Trapped in Tunnel Vision (`MUST-1566`–`MUST-1571`)
 
 In `MUST-1529` ([CHMDPrimeWaveBoundednessCriterion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeWaveBoundednessCriterion.lean)), Landau’s oscillation theorem allowed us to collapse the **2-leg quadratic Bochner/Toeplitz positivity** of the zero wave $\Phi_0(v)$ down to a **1-leg linear supremum**:
@@ -143,3 +145,320 @@ Now ask: **Where did $-\operatorname{phiDoobCoshMass}(v^2)$ come from, and why h
 | Fight the global $\cosh(x/2)$ pole all at once on $(0,\infty)$. | For tests on $[-L/2, L/2]$, all prime jumps with $\log d > L$ are **disjoint-support diagonal** (`WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal`) and cancel the tail of $-\operatorname{phiDoobCoshMass}(v^2)$ identically, leaving only a **finite-rank window** $d \le e^L$. |
 
  we should immediately leave the 1-leg $T(y)$ wave track behind and focus directly on **bridging the $\Theta$-Doob sum-of-squares / disjoint-support diagonal machine (Continent B) with the finite-level certificate / parity-rigidity cones (Continent A)**.
+
+
+ # Phase 2: hostile review
+
+ Viewed WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean:101-260
+Viewed WeilPhiDoobArchimedeanJumpAndHalfLineFolding.lean:1-140
+Viewed WeilPhiDoobGroundStateCancellationAndShortSupportNoGo.lean:1-120
+Viewed CHMDStationaryGroundEquivalence.lean:1-100
+Viewed PrimeBlindLevelCertificateSqueeze.lean:120-172
+Viewed WeilFullConeKreinMilmanReduction.lean:1-100
+Viewed EvenSectorFullPositivity.lean:1-100
+Viewed EvenSectorTwistedArcNull.lean:1-100
+Viewed EvenSectorSechRepresentation.lean:1-100
+Viewed EvenSectorSpectralConsistency.lean:1-120
+Viewed EvenSectorCosineBochner.lean:1-100
+Viewed CHMDOddWindowCrossSign.lean:1-120
+Viewed CHMDSinglePrimeWindow.lean:1-120
+Viewed LeeYangPrimePivotSpinPartitionSpectrum.lean:1-90
+Viewed ThetaCuspRatioBoundaryNormInterior.lean:1-90
+
+Here is a ruthless, hostile review of what I just wrote, checked line-by-line against the actual proofs in our Lean corpus. **What I wrote in the previous message is still largely a superficial rearrangement of receivers and tautological book-keeping.** Here are the four fatal holes in it.
+
+---
+
+### Hole 1: The "Disjoint-Support Tail Cancellation" (Path B/C) Is a $+X - X = 0$ Shell Game
+
+In my previous message, I claimed:
+> *"For tests on $[-L/2, L/2]$, all prime jumps with $\log d > L$ are disjoint-support diagonal (`WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal`) and cancel the tail of $-\operatorname{phiDoobCoshMass}(v^2)$ identically, leaving only a finite-rank window $d \le e^L$."*
+
+**Why this is a mirage:**
+Look at what the Doob transformation in [WeilPhiDoobGroundStateCancellationAndShortSupportNoGo.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobGroundStateCancellationAndShortSupportNoGo.lean) and [WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean#L232-L260) actually does:
+1. You start with the raw Weil energy of $f = \Theta v$ (for odd $v$, where the quadratic pole term is zero):
+   $$\operatorname{markovEnergy}(\Theta v) = \operatorname{weilLevyForm}(\Theta v) - \sum_{n=2}^\infty \int_{\mathbb{R}} \operatorname{phiDoobPrimeCross}(v, n, x)\,dx.$$
+2. To make the archimedean local term $-\gamma_0 \int (\Theta v)^2$ and the prime cross-terms look like positive jump squares $(v(x)-v(x+t))^2$, you **add zero**, namely the mixed explicit formula for $(\Theta, \Theta v^2)$ ([`phiDoob_mixed_prime_pairing_eq_mixedPhiArchRe_add_phiDoobCoshMass`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean#L247)):
+   $$0 = -\operatorname{mixedPhiArchRe}(\Theta v^2) - \operatorname{phiDoobCoshMass}(v^2) + \sum_{n=2}^\infty \int_{\mathbb{R}} \operatorname{phiDoobPrimeDiagonal}(v, n, x)\,dx.$$
+3. This moves the negative sign out of $\operatorname{mixedPhiArchRe}(\Theta v^2)$ and out of the prime cross-terms, **stuffing the entire negative sign into $-\operatorname{phiDoobCoshMass}(v^2)$**.
+4. If you then say: *"On short support (or for $\log d > 2L$), $\operatorname{phiDoobPrimeJump} = \operatorname{phiDoobPrimeDiagonal}$, so let’s sum the prime diagonal to cancel $-\operatorname{phiDoobCoshMass}(v^2)$!"*, look at [`phiDoob_markovEnergy_eq_archJump_add_mixedPhiArchRe_of_support_half_log_two`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean#L253-L260):
+   $$\operatorname{markovEnergy}(\Theta v) = \operatorname{phiDoobArchJumpEnergy}(v) + \operatorname{mixedPhiArchRe}(\Theta v^2) = \operatorname{weilLevyForm}(\Theta v)!$$
+   And in [CHMDSinglePrimeWindow.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDSinglePrimeWindow.lean#L45-L54) (`markovEnergy_eq_levy_sub_tsum_cross`), a 4-line `linarith` proof shows that on any finite window, cancelling the disjoint-support prime diagonal against $-\operatorname{phiDoobCoshMass}(v^2)$ **simply subtracts the mixed explicit formula back out and returns you 100% to the raw unconjugated Weil form** $\operatorname{weilLevyForm}(f) - \sum_{\log n < L} \frac{\Lambda(n)}{\sqrt{n}}(f \star \tilde{f})(\log n)$ with $f = \Theta v$!
+   Once you do that, $\Theta(x) > 0$ is just a trivial pointwise rescaling of the test function $f(x) = \Theta(x)v(x)$. Nothing was gained.
+
+---
+
+### Hole 2: Confusing $\operatorname{phiDoobCoshMass}(v) = 0$ (Linear) with $\operatorname{phiDoobCoshMass}(v^2) > 0$ (Quadratic)
+
+In my previous message, I wrote:
+> *"In Bridge A's Even Pole-Free Cone, $\int \Theta(x)v(x)\cosh(x/2)\,dx = 0$, or in the Odd Sector, $v$ is odd, so $\int \Theta(x)v(x)\cosh(x/2)\,dx = 0$ identically!"*
+
+**Why this is a flat mathematical error:**
+- Oddness of $v$ (or $\widehat{\Theta v}(i/2) = 0$) kills the **linear** moment $\operatorname{phiDoobCoshMass}(v) = \int \Theta(x)\cosh(x/2)v(x)\,dx = 0$, which is the quadratic pole $|\widehat{f}(i/2)|^2$ of $f \star \tilde{f}$.
+- In [`doob_source_eq_chain_variances_sub_cosh`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean#L185-L193), the negative term is **not** $\operatorname{phiDoobCoshMass}(v)^2$; it is the **quadratic** mass:
+  $$-\operatorname{phiDoobCoshMass}(v^2) = -\int_{-\infty}^\infty \Theta(x)\cosh(x/2)\,v(x)^2\,dx < 0!$$
+- Because $v(x)^2 \ge 0$ is **even and non-negative** for every $v \ne 0$, $\operatorname{phiDoobCoshMass}(v^2)$ is **strictly positive** for every non-zero test $v$ — whether $v$ is odd, even, or pole-free!
+- Worse still: why does $\Theta(x)$ produce $-\frac{1}{2}\cosh(x/2)$ with a **minus** sign in the Doob energy? Because $(L_\infty + L_P)\Theta = +\frac{1}{2}\cosh(x/2)\Theta$. In Sturm–Liouville / Barta theory, to prove $L \ge 0$ via a Doob ground state $h > 0$, you need $L h \le 0$ (a superharmonic weight), which gives a $+ (Lh/h) v^2 \ge 0$ potential. Here, $\Theta$ is in the kernel of $L_\infty + L_P - \text{Pole}$, which means $(L_\infty + L_P)\Theta = +\frac{1}{2}\cosh(x/2)\Theta > 0$ is **subharmonic**! Conjugating by a subharmonic function leaves a **negative** potential $-\frac{1}{2}\cosh(x/2)v^2$ everywhere!
+
+---
+
+### Hole 3: The "Certificate Squeeze (`PrimeBlindLevelCertificateSqueeze`)" Is Vacuously True When RH Fails
+
+In my previous message, I held up [`exists_level_forall_levelCertificates_abs_sub_lt`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean#L122-L150) and [`tendsto_levelCertificates_apply`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean#L154-L160) in [PrimeBlindLevelCertificateSqueeze.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean) as if the finite-level archimedean sets "know about $\Lambda(n)$ and squeeze onto $\Lambda(n)$ unconditionally."
+
+**Look at lines 122–150 of [PrimeBlindLevelCertificateSqueeze.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean#L122-L150) with a hostile eye:**
+- The theorem proves:
+  $$\forall n,\, \forall \varepsilon > 0,\, \exists N,\, \forall L \ge N,\, \forall \mu \in \operatorname{levelCertificates}(L),\quad |\mu(n) - \Lambda(n)| < \varepsilon.$$
+- Why is that statement true unconditionally without proving RH?
+  Because by Cantor’s intersection theorem, if RH is **false**, then $\bigcap_{L} \operatorname{levelCertificates}(L) = \operatorname{weilCone} = \emptyset$, which means for some finite $N_0$, **$\operatorname{levelCertificates}(L) = \emptyset$ for all $L \ge N_0$**!
+  And when $\operatorname{levelCertificates}(L) = \emptyset$, the statement $\forall \mu \in \emptyset,\; |\mu(n) - \Lambda(n)| < \varepsilon$ is **vacuously true** (for the exact same reason that $\forall \mu \in \emptyset,\; |\mu(n) - 999999| < \varepsilon$ is vacuously true if RH is false)!
+- What about when RH is true (or if you assume $\forall L,\, \operatorname{levelCertificates}(L) \ne \emptyset$)? Then `weilCone` is non-empty, and uniqueness (`eq_vonMangoldt_of_weilPositiveFull`) forces its unique element to be $\Lambda$.
+- **Why this is a trap:** Because $\operatorname{levelCertificates}(L)$ shrinks to $\{\Lambda\}$, **there is no "approximate/smooth fake weight" that stays inside $\operatorname{levelCertificates}(L)$ for large $L$**! Any proof that $\operatorname{levelCertificates}(L) \ne \emptyset$ for all $L$ must construct weights $\mu_L$ that converge to the exact erratic von Mangoldt function $\Lambda(n)$!
+
+---
+
+### Hole 4: Continent A (`EvenSectorFullPositivity` / `EvenSectorPolarRigidity`) Is Already Built on the CHMD Wave — and Only Works *After* Positivity Is Assumed
+
+In my previous message, I contrasted the CHMD Klein–Gordon wave (`MUST-1529`) with Continent A (`EvenSectorFullPositivity`, `EvenSectorPolarRigidity`, `ParitySectorJointRigidity`).
+
+**When we open the hood of Continent A ([EvenSectorCosineBochner.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorCosineBochner.lean), [EvenSectorSpectralConsistency.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorSpectralConsistency.lean), [EvenSectorSechRepresentation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorSechRepresentation.lean), [EvenSectorTwistedArcNull.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorTwistedArcNull.lean)), look at what is inside:**
+- `EvenSectorCosineBochner.lean` defines $\rho(z) = \sqrt{z^2 + 2}$ and $\varphi_\Phi(y) = L\bigl(\cos(y\sqrt{z^2+2})\,\Phi\Phi^\#\bigr)$, and `EvenSectorSechRepresentation.lean` specializes to $\Phi(z) = \operatorname{sech}(z/2)$!
+- **That is literally the CHMD Klein–Gordon wave $\operatorname{chmdWave}(y)$!**
+- And how does Continent A prove `eq_vonMangoldt_of_weilPositiveFull` and RH from `WeilPositiveEvenPolar lam`?
+  1. It **assumes** $L_\lambda \ge 0$ on even tests;
+  2. By Bochner’s theorem (`exists_cosineShift_measure`), that assumption gives a **positive** spectral measure $\nu_S$ for the CHMD wave;
+  3. Only *because* $\nu_S \ge 0$ is already a positive measure can [`EvenSectorTwistedArcNull.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorTwistedArcNull.lean#L22-L30) (`measure_sq_le_two_eq_zero`) use the twisted-arc null identity $\sum_j w_j \int g_j\,d\nu_S = 0$ (where $\sum_j w_j g_j > 0$ on $\rho^2 \le 2$ and $g_j \ge 0$ on $\rho^2 > 2$) to conclude $\nu_S(\{\rho^2 \le 2\}) = 0$!
+- Without prior positivity of $\nu_S$, $\int_{\rho^2 > 2} g_j\,d\nu_S$ could be negative and cancel $\int_{\rho^2 \le 2} g_j\,d\nu_S > 0$!
+- And by Farkas’s lemma, passing to the dual cone (`ArchimedeanNonnegOnEvenPolarNonnegCone` or `PrimeBlindPositiveOddAt β`) does **not** produce positivity — it merely restates the existence of $\lambda = \Lambda$ in dual linear-programming form (`CANNOT-38` in convex-cone disguise).
+
+---
+
+## What Happens When We Strip Away All Four Illusions?
+
+Let’s be brutally clear about why **every** track we have looked at so far got stuck at the exact same wall:
+
+1. **The Explicit-Formula / Weil / CHMD / Farkas / Doob / Wave tracks** all start from the **additive** explicit formula for $-\frac{\zeta'}{\zeta}(s) = \sum_n \Lambda(n) n^{-s}$:
+   $$\text{Zeros}(\hat{f}) = \text{Pole}(\hat{f}) + \text{Arch}(\hat{f}) - \text{Primes}_\Lambda(f).$$
+2. Once you are inside this additive linear functional, **every manipulation** — whether Fourier transform, Klein–Gordon wave $K_y$, integration by parts, Möbius folding, Farkas duality (`PrimeBlindPositive`), or adding/subtracting the $\Theta$-mixed explicit formula (`phiDoob`) — is a **linear identity** inside the span of the explicit formula!
+3. Why can no linear identity inside the additive explicit formula prove $\text{Pole}(\hat{f}) + \text{Arch}(\hat{f}) - \text{Primes}_\Lambda(f) \ge 0$ on its own?
+   - Because in the additive explicit formula, $\text{Primes}_\Lambda(f)$ enters as a **linear pairing** against $\Lambda(n)$.
+   - As `OddSectorPoleDensityLaw.lean` proves, if you drop the prime sum (or bound it trivially by $|\text{Primes}|$), the archimedean term **fails** to be positive at the scale of the pole (`CANNOT-15`).
+   - And if you keep the prime sum, you are trying to prove that a difference of two positive quadratic forms:
+     $$\text{Arch}(f \star \tilde{f}) - \sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}}(f \star \tilde{f})(\log n) \ge 0$$
+     (or in Doob coordinates:
+     $$\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v) - \int \Theta(x)\cosh(x/2)v(x)^2\,dx \ge 0\text{)}$$
+     is non-negative!
+
+Now ask the piercing question that this hostile audit forces on us:
+
+> **In our entire Lean corpus, where is there a genuinely NON-TAUTOLOGICAL mechanism that relates a POSITIVE quadratic form of $v$ to the negative term, rather than moving terms around by $+X - X = 0$?**
+
+Let’s test the two candidates that actually survive this hostile filter:
+
+### Survivor Candidate 1: Quantitative Poincaré Coercivity of the Divisor-Chain Variance $\mathcal{E}_{\text{prime}}(v) + \mathcal{E}_{\text{arch}}(v)$ Against $\int \Theta(x)\cosh(x/2)v(x)^2\,dx$ on Odd $v$
+Wait: look closely at Hole 1 vs. [`CHMDPrimeChainSourceFactorization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean#L185-L193).
+Why was `CHMDSinglePrimeWindow` a $+X - X$ shell game? Because `CHMDSinglePrimeWindow` expanded $(v(x)-v(x+\log n))^2 = v(x)^2 + v(x+\log n)^2 - 2v(x)v(x+\log n)$ and threw the diagonal $v(x)^2 + v(x+\log n)^2$ back against $-\operatorname{phiDoobCoshMass}(v^2)$, undoing the Doob transform!
+**What if you DO NOT expand $(v(x) - v(x+\log n))^2$ back into diagonal minus cross term?**
+In [`CHMDPrimeChainSourceFactorization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean#L185-L193), for an **odd** test $v(-x) = -v(x)$, the identity is:
+$$\operatorname{markovEnergy}(\Theta v) = \underbrace{\operatorname{phiDoobArchJumpEnergy}(v)}_{\ge\, 0} + \underbrace{2\,\operatorname{sameSide}(v)}_{\ge\, 0} + \underbrace{\sum_{N=1}^\infty \int_0^{\log N} \operatorname{fiber}(N, u)\,\operatorname{chainVariance}(N, u, v(u-\log\cdot))\,du}_{>\, 0} - \int_{\mathbb{R}} \Theta(x)\cosh(x/2)\,v(x)^2\,dx.$$
+Let’s apply the hostile audit to *this* equation:
+- **Is this equation true for any fake weight $\lambda$?** **NO!** Both $\Theta(x)$ and `chainVariance` use the **actual integer lattice $N \in \mathbb{N}_+$**, the **actual divisor chains $m \mid k \mid N$**, and the **actual prime powers $\Lambda(k/m)$**!
+- **Does this equation have any sign-changing prime cross-terms left?** **NO!** Every single term in $\operatorname{phiDoobArchJumpEnergy}(v)$, $2\,\operatorname{sameSide}(v)$, and $\sum_N \int \operatorname{fiber}(N, u)\,\operatorname{chainVariance}(N, u)\,du$ is a **manifestly non-negative square**! Even the negative reflected-prime jumps across the origin have been completely absorbed into the positive `chainVariance` squares (`compensated_source_pos`)!
+- **Why is this NOT settled yet?**
+  Because to prove $\operatorname{markovEnergy}(\Theta v) \ge 0$ for odd $v$, one must prove a **genuine quantitative Poincaré / Hardy inequality**:
+  $$\operatorname{phiDoobArchJumpEnergy}(v) + 2\,\operatorname{sameSide}(v) + \sum_{N=1}^\infty \int_0^{\log N} \operatorname{fiber}(N, u)\,\operatorname{chainVariance}(N, u, v(u-\log\cdot))\,du \ge \int_{\mathbb{R}} \Theta(x)\cosh(x/2)\,v(x)^2\,dx$$
+  for all odd $v \in C^2_c(\mathbb{R})$!
+- **Hostile check on Survivor 1**: Why would such a Poincaré inequality be hard, and could it be false?
+  Under RH, this Poincaré inequality **is true** for all odd $v \in C^2_c(\mathbb{R})$ (`riemannHypothesis_iff_forall_odd_phiDoob_dirichlet_poincare`).
+  And we already know (`CHMDNoWeylAboveThreshold`, `CHMDBoundStateDimension`) that $\operatorname{phiDoobArchJumpEnergy}(v)$ **alone** dominates $\int \Theta(x)\cosh(x/2)v(x)^2\,dx$ outside a compact interval $[-R_0, R_0]$ and at all high frequencies!
+  However, on the finite-dimensional low-frequency odd subspace inside $[-R_0, R_0]$, $\operatorname{phiDoobArchJumpEnergy}(v)$ alone falls short of $\int \Theta(x)\cosh(x/2)v(x)^2\,dx$, and the **divisor-chain variance + same-side prime jump energy** has to supply the missing positive definiteness on that finite-dimensional subspace!
+
+### Survivor Candidate 2: Why Is It Hard on a Finite-Dimensional Subspace? Because of High-Energy Zeros Encoded in Smooth Tests!
+Wait — let’s apply a **second hostile check** to Survivor Candidate 1!
+In `CHMDNoWeylAboveThreshold` and `CHMDBoundStateDimension`, we proved that the operator $R = (1 + L)^{-1}$ has at most a finite-dimensional eigenspace above $1/2$.
+Wait: **how did we prove `no_threshold_weyl_sequence` in `CHMDNoWeylAboveThreshold.lean`?**
+Let’s check `CHMDNoWeylAboveThreshold.lean` and `CHMDSpectralRiemannCriterion.lean` right now! Did `CHMDNoWeylAboveThreshold.lean` prove no Weyl sequence for the **full** arithmetic operator (with all primes), or how did it bound the prime operator? Let’s view `CHMDNoWeylAboveThreshold.lean` and `CHMDPolarJumpForm.lean`!
+
+Viewed CHMDNoWeylAboveThreshold.lean:1-100
+Viewed CHMDSpectralRiemannCriterion.lean:1-100
+Viewed CHMDEvenSectorPointSpectrum.lean:1-100
+Viewed CHMDAlgebraicSpectralInverse.lean:1-100
+Viewed CHMDBoundStateInertia.lean:1-100
+Viewed CHMDQuarterZeroBound.lean:1-100
+Viewed CHMDReducedSpectralCore.lean:1-78
+Viewed CHMDBoundStateDimension.lean:1-100
+Viewed CHMDPhaseKernelSynthesis.lean:1-100
+Viewed CHMDCardinalOperatorAction.lean:1-100
+Viewed CHMDFiniteSampleGenerator.lean:1-100
+Viewed CHMDSpectralOperatorCore.lean:1-100
+Viewed CHMDMassFourierReadout.lean:1-100
+Viewed CHMDMassMixedExplicitFormula.lean:1-100
+Viewed CHMDMassMixedExplicitFormula.lean:101-125
+Viewed CHMDFiniteSampleGenerator.lean:101-160
+Viewed CHMDMassWeakGenerator.lean:1-100
+Viewed CHMDMassPolarCompletion.lean:1-100
+Viewed CHMDMassSamplingCompleteness.lean:1-120
+Viewed CHMDMassSpectralAdmission.lean:1-120
+Viewed CHMDStripFourierReadout.lean:1-100
+Viewed CHMDFullSpectralNullspace.lean:1-100
+Viewed CHMDTranslatedCardinalDetection.lean:1-102
+Viewed CHMDUniversalCardinalPairing.lean:1-100
+Viewed DeningerMeyerOriginalConvolutionInverse.lean:1-100
+Viewed CHMDCompactCardinalPairing.lean:1-120
+Viewed CHMDCardinalIncidencePairing.lean:1-120
+Viewed CHMDAlgebraicSpectralInverse.lean:100-230
+Viewed CHMDCardinalGraphGeometry.lean:1-120
+Viewed CHMDCardinalGraphGeometry.lean:121-197
+Viewed CHMDCardinalOrbitEnergy.lean:1-120
+Viewed ThetaCardinalOrbitReadout.lean:1-120
+Viewed ThetaDivisorCardinalSource.lean:1-120
+
+Here is a ruthless, hostile review of what I just wrote, checked against the actual proofs in our Lean files.
+
+**You are right to be skeptical: what I wrote in my previous message is still a superficial synthesis of receivers and $+X - X = 0$ book-keeping tricks.** When we audit each of my claims against the Lean proofs, four fatal holes appear immediately.
+
+---
+
+## 1. Four Fatal Holes in What I Just Wrote
+
+### Hole 1: The "Disjoint-Support Tail Cancellation" (Path B/C) Is a $+X - X = 0$ Shell Game
+In my previous message, I claimed:
+> *"For tests on $[-L/2, L/2]$, all prime jumps with $\log d > L$ are disjoint-support diagonal (`WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal`) and cancel the tail of $-\operatorname{phiDoobCoshMass}(v^2)$ identically, leaving only a finite-rank window $d \le e^L$."*
+
+**Why this is a mirage:**
+Look at what the Doob transformation in [WeilPhiDoobGroundStateCancellationAndShortSupportNoGo.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobGroundStateCancellationAndShortSupportNoGo.lean) and [WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean#L232-L260) actually did:
+1. You start with the raw Weil energy of $f = \Theta v$ (say for odd $v$, where the quadratic pole term is zero):
+   $$\operatorname{markovEnergy}(\Theta v) = \operatorname{weilLevyForm}(\Theta v) - \sum_{n=2}^\infty \int_{\mathbb{R}} \operatorname{phiDoobPrimeCross}(v, n, x)\,dx.$$
+2. To make the negative local term $\gamma_0 \int (\Theta v)^2$ in `weilLevyForm` and the negative prime cross-terms look like positive jump squares $(v(x)-v(x+t))^2$, you **add zero**, namely the mixed explicit formula for $(\Theta, \Theta v^2)$ ([`phiDoob_mixed_prime_pairing_eq_mixedPhiArchRe_add_phiDoobCoshMass`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean#L247)):
+   $$0 = -\operatorname{mixedPhiArchRe}(\Theta v^2) - \operatorname{phiDoobCoshMass}(v^2) + \sum_{n=2}^\infty \int_{\mathbb{R}} \operatorname{phiDoobPrimeDiagonal}(v, n, x)\,dx.$$
+3. This moves the negative sign out of $\operatorname{mixedPhiArchRe}(\Theta v^2)$ and out of the prime cross-terms, **stuffing the entire negative sign into $-\operatorname{phiDoobCoshMass}(v^2)$**.
+4. When I then said *"Use the disjoint-support prime diagonal $\sum \int \operatorname{phiDoobPrimeDiagonal}(v, n)$ to cancel $-\operatorname{phiDoobCoshMass}(v^2)$!"*, look at [`phiDoob_markovEnergy_eq_archJump_add_mixedPhiArchRe_of_support_half_log_two`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal.lean#L253-L260) and [`markovEnergy_eq_levy_sub_tsum_cross`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDSinglePrimeWindow.lean#L45-L54):
+   The prime diagonal sums to $\operatorname{mixedPhiArchRe}(\Theta v^2) + \operatorname{phiDoobCoshMass}(v^2)$, not $\operatorname{phiDoobCoshMass}(v^2)$ alone!
+   So "cancelling" $-\operatorname{phiDoobCoshMass}(v^2)$ with the prime diagonal simply **adds $+\operatorname{mixedPhiArchRe}(\Theta v^2)$ back**, which **undoes the Doob transformation completely** and returns you to the raw unconjugated Weil form:
+   $$\operatorname{markovEnergy}(\Theta v) = \operatorname{weilLevyForm}(f) - \sum_{\log n < L} \frac{\Lambda(n)}{\sqrt{n}}(f \star \tilde{f})(\log n) \qquad (f = \Theta v).$$
+   In [CHMDSinglePrimeWindow.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDSinglePrimeWindow.lean#L45-L54), that undo is literally a 4-line `linarith` proof! Once you undo the Doob subtraction, multiplying by $\Theta(x) > 0$ is just a trivial coordinate reparametrization $f = \Theta v$ of the test function space.
+
+---
+
+### Hole 2: Confusing $\operatorname{phiDoobCoshMass}(v) = 0$ (Linear) with $\operatorname{phiDoobCoshMass}(v^2) > 0$ (Quadratic)
+In my previous message, I wrote:
+> *"In Bridge A's Even Pole-Free Cone, $\int \Theta(x)v(x)\cosh(x/2)\,dx = 0$, or in the Odd Sector, $v$ is odd, so $\int \Theta(x)v(x)\cosh(x/2)\,dx = 0$ identically!"*
+
+**Why this is a flat mathematical error:**
+- Oddness of $v$ (or $\widehat{\Theta v}(i/2) = 0$) kills the **linear** moment $\operatorname{phiDoobCoshMass}(v) = \int \Theta(x)\cosh(x/2)v(x)\,dx = 0$ (the pole of $f = \Theta v$).
+- In [`doob_source_eq_chain_variances_sub_cosh`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean#L185-L193), the negative term is **not** $\operatorname{phiDoobCoshMass}(v)^2$; it is the **quadratic** $L^2$-mass:
+  $$-\operatorname{phiDoobCoshMass}(v^2) = -\int_{-\infty}^\infty \Theta(x)\cosh(x/2)\,v(x)^2\,dx < 0!$$
+- Because $v(x)^2 \ge 0$ is **even and strictly positive** on the support of $v$, $\operatorname{phiDoobCoshMass}(v^2) > 0$ for **every** non-zero test $v$, whether $v$ is odd, even, or pole-free!
+- Worse: why does $\Theta(x)$ produce $-\frac{1}{2}\cosh(x/2)v(x)^2$ with a **minus** sign in the Doob energy? Because $(L_\infty + L_P)\Theta = +\frac{1}{2}\cosh(x/2)\Theta$. In Barta / Doob ground-state theory, to prove an operator $L$ is positive via a positive weight $h > 0$, you need $L h \le 0$ (superharmonic), which leaves a positive potential $+(Lh/h)v^2 \ge 0$. Because $\Theta$ annihilates the zeros of $\zeta$ while retaining the $\zeta$-pole at $s=1$, $\Theta$ satisfies $(L_\infty + L_P)\Theta = +\frac{1}{2}\cosh(x/2)\Theta > 0$ — it is **subharmonic** for $L_\infty + L_P$, so its Doob potential has the **wrong sign** ($-1/2$ in mass units) everywhere!
+
+---
+
+### Hole 3: The "Certificate Squeeze (`PrimeBlindLevelCertificateSqueeze`)" Is Vacuously True When RH Is False
+In my previous message, I held up [`exists_level_forall_levelCertificates_abs_sub_lt`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean#L122-L150) in [PrimeBlindLevelCertificateSqueeze.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean) as if the finite-level archimedean sets "squeeze onto $\Lambda(n)$ unconditionally without assuming anything about $\zeta$."
+
+**Look at lines 122–150 of [PrimeBlindLevelCertificateSqueeze.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean#L122-L150) with a hostile eye:**
+- The theorem proves:
+  $$\forall n,\, \forall \varepsilon > 0,\, \exists N,\, \forall L \ge N,\, \forall \mu \in \operatorname{levelCertificates}(L),\quad |\mu(n) - \Lambda(n)| < \varepsilon.$$
+- Why is that statement true unconditionally without proving RH?
+  Because by Cantor’s intersection theorem, if RH is **false**, then $\bigcap_{L} \operatorname{levelCertificates}(L) = \operatorname{weilCone} = \emptyset$, which means for some finite $N_0$, **$\operatorname{levelCertificates}(L) = \emptyset$ for all $L \ge N_0$**!
+  And when $\operatorname{levelCertificates}(L) = \emptyset$, the statement $\forall \mu \in \emptyset,\; |\mu(n) - \Lambda(n)| < \varepsilon$ is **vacuously true**! (If RH were false, $\forall \mu \in \operatorname{levelCertificates}(L),\; |\mu(n) - 42| < \varepsilon$ would also be true for $L \ge N_0$!)
+- In [`tendsto_levelCertificates_apply`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/PrimeBlindLevelCertificateSqueeze.lean#L154-L160), the hypothesis `(hμ : ∀ L, μ L ∈ levelCertificates L)` **is already equivalent to RH** (`riemannHypothesis_iff_forall_levelCertificates_nonempty`)!
+- **Why this is a trap:** Because $\operatorname{levelCertificates}(L)$ shrinks to the singleton $\{\Lambda\}$, **there is no "easier smooth/fake weight" that stays inside $\operatorname{levelCertificates}(L)$ for large $L$**. Any proof that $\operatorname{levelCertificates}(L) \ne \emptyset$ for all $L$ must construct weights $\mu_L$ that converge to the exact erratic von Mangoldt function $\Lambda(n)$.
+
+---
+
+### Hole 4: Continent A (`EvenSectorFullPositivity` / `EvenSectorPolarRigidity`) Is Already the CHMD Wave — and Only Works *After* Positivity Is Assumed
+In my previous message, I contrasted the CHMD Klein–Gordon wave (`MUST-1529`) with Continent A (`EvenSectorFullPositivity`, `EvenSectorPolarRigidity`, `ParitySectorJointRigidity`).
+
+**When we open the hood of Continent A ([EvenSectorCosineBochner.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorCosineBochner.lean), [EvenSectorSechRepresentation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorSechRepresentation.lean), [EvenSectorTwistedArcNull.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorTwistedArcNull.lean)), look at what is inside:**
+- `EvenSectorCosineBochner.lean` defines $\rho(z) = \sqrt{z^2 + 2}$ and $\varphi_\Phi(y) = L\bigl(\cos(y\sqrt{z^2+2})\,\Phi\Phi^\#\bigr)$, and `EvenSectorSechRepresentation.lean` specializes to $\Phi(z) = \operatorname{sech}(z/2)$!
+- **That is literally the CHMD Klein–Gordon wave $\operatorname{chmdWave}(y)$!**
+- And how does Continent A prove `eq_vonMangoldt_of_weilPositiveFull` and RH from `WeilPositiveEvenPolar lam`?
+  1. It **assumes** $L_\lambda \ge 0$ on even tests;
+  2. By Bochner’s theorem (`exists_cosineShift_measure`), that assumption gives a **positive** spectral measure $\nu_S$ for the CHMD wave;
+  3. Only *because* $\nu_S \ge 0$ is already assumed to be a positive measure can [`EvenSectorTwistedArcNull.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/EvenSectorTwistedArcNull.lean#L22-L30) (`measure_sq_le_two_eq_zero`) use the twisted-arc null identity $\sum_j w_j \int g_j\,d\nu_S = 0$ (where $\sum_j w_j g_j > 0$ on $\rho^2 \le 2$ and $g_j \ge 0$ on $\rho^2 > 2$) to conclude $\nu_S(\{\rho^2 \le 2\}) = 0$!
+- Without prior positivity of $\nu_S$, $\int_{\rho^2 > 2} g_j\,d\nu_S$ could be negative and cancel $\int_{\rho^2 \le 2} g_j\,d\nu_S > 0$!
+- And by Farkas’s lemma, passing to the dual cone (`ArchimedeanNonnegOnEvenPolarNonnegCone` or `PrimeBlindPositiveOddAt β`) does **not** produce positivity — it merely restates the existence of $\lambda = \Lambda$ in dual linear-programming form (`CANNOT-38` in convex-cone disguise).
+
+---
+
+## 2. Why Almost Every Track in the Corpus Hits the Exact Same Wall
+
+When we step back even further and look at **why** both the 1-leg wave tracks (`MUST-1566`–`MUST-1571`), the Farkas/certificate cones (`MUST-1508`–`MUST-1528`), and the Doob window rewrites (`MUST-1561`–`MUST-1565`) all turn out to be rearrangements of the same obstacle, the reason is stark:
+
+Almost all of them operate exclusively inside the **additive explicit formula for $-\zeta'/\zeta$**:
+$$\sum_{\rho} \widehat{F}(\gamma_\rho) = \widehat{F}(i/2) + \widehat{F}(-i/2) + \frac{1}{2\pi}\int_{\mathbb{R}} \widehat{F}(r)\,\gamma(r)\,dr - \sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}}\,F(\log n).$$
+
+Look at what happens whenever you only manipulate this single equation:
+- On the right-hand side, the archimedean term and the prime term have **opposite signs** ($\text{Arch} - \text{Primes}$), or after adding the $\Theta$-mixed explicit formula, the jump terms and the pole mass have **opposite signs** ($\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v) - \int \Theta\cosh(x/2)v^2$).
+- Furthermore, in [ThetaDivisorCardinalSource.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/ThetaDivisorCardinalSource.lean), [CHMDCardinalGraphGeometry.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalGraphGeometry.lean#L152-L157), and [CHMDCardinalOperatorAction.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalOperatorAction.lean#L90-L100), the corpus proved something sobering about the Doob operator $A$ (`arithmeticGenerator`):
+  For **every** zero $a$ of $\Xi(z)$ with $\operatorname{Re}(a) > 0$, dividing $\Xi(z)$ by $(1 - z^2/a^2)^{m_a}$ in Fourier space produces an explicit smooth function `divisorCardinalSource a` bounded by $C\Theta(x)$, whose Doob lift $F.\text{reVector}, F.\text{imVector} \in \text{SourceGraph}$ lies in the maximal domain of $A$ and satisfies:
+  $$(A - 1)\bigl(u_{\text{re}}(x) + i u_{\text{im}}(x)\bigr) = m_a\,\frac{\cos(\bar{a} x)}{\cosh(x/2)}, \qquad \operatorname{sourceEnergy}(F.\text{imVector}) = -m_a\,\mathbf{1}_{a.\text{im} \ne 0}!$$
+  Read what that means:
+  - The Doob operator $A - 1$ is **literally diagonalized by the cardinal divisor packets of the actual zeros of $\Xi(z)$** ([`CHMDSpectralOperatorCore.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDSpectralOperatorCore.lean))!
+  - If an off-line zero $a = \alpha + i\beta$ ($\beta \ne 0$) existed, then $u_{\text{im}} = \Theta^{-1}\operatorname{Im}(\operatorname{divisorCardinalSource}(a))$ would be an actual smooth function in the Doob graph for which $\int \Theta(x)\cosh(x/2)u_{\text{im}}(x)^2\,dx$ **beats** $\mathcal{E}_{\text{arch}}(u_{\text{im}}) + \mathcal{E}_{\text{prime}}(u_{\text{im}})$ by exactly $m_a > 0$!
+  - Why? Because the explicit formula is an **exact identity**: the arithmetic side $\mathcal{E}_{\text{arch}} + \mathcal{E}_{\text{prime}} - \text{CoshMass}$ is **identically equal** to the zero side $\sum_\rho m_\rho \widehat{f}(\gamma_\rho)\widehat{f}(-\gamma_\rho)$!
+
+---
+
+## 3. What This Hostile Review Tells Us About the Real Solution
+
+Read that conclusion again:
+Because the explicit formula is an **identity** between the arithmetic quadratic form $\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v) - \operatorname{CoshMass}(v^2)$ and the zero quadratic form $\sum_\rho m_\rho \widehat{(\Theta v)}(\gamma_\rho)\widehat{(\Theta v)}(-\gamma_\rho)$:
+1. **No purely algebraic rearrangement of the explicit formula (Fourier, wave $K_y$, integration by parts, Möbius folding, Farkas dual cone, or Doob $+X-X$ subtraction) can ever change the signature of that quadratic form.** Every such rewrite just changes the basis of the same quadratic form.
+2. To prove that $\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v) - \operatorname{CoshMass}(v^2) \ge 0$ (or to rule out the negative-energy cardinal packet $F.\text{imVector}$ at $a = \alpha + i\beta$ with $\beta \ne 0$), **you must use a mathematical property of the primes / integers or of $\Theta(x)$ that is NOT just the linear explicit formula $\text{Zeros} = \text{Pole} + \text{Arch} - \text{Primes}$!**
+
+Look at the two places in our corpus where something **genuinely beyond the linear explicit formula** enters:
+
+1. **Direct Comparison Between the Explicit Cardinal Packet `divisorCardinalSource a` and the Positive Divisor-Chain / Cut Energy (`ThetaDivisorCardinalSource` + `CHMDPrimeChainSourceFactorization`)**:
+   - Wait: in [`ThetaDivisorCardinalSource.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/ThetaDivisorCardinalSource.lean), for a zero $a$ of $\Xi(z)$, `notchedDivisorSource a` is constructed by **iterated convolution of $\Theta(x)$ with the elementary resolvent kernel of $-d^2/dx^2 - a^2$** (`thetaListDivision`).
+   - Meanwhile, in [`CHMDPrimeChainSourceFactorization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean), the Doob energy of any test $v$ is expressed in terms of the **divisor chains $m \mid k \mid N$ of the product index $N$ of two $\Theta$-series**.
+   - And in [`CHMDCardinalOperatorAction.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalOperatorAction.lean), $(A - 1)u_{\text{im}} = -m_a \operatorname{Im}(\cos(ax)/\cosh(x/2))$ is a **pointwise differential-difference equation** relating the archimedean + prime jump operator $A - 1$ on $u_{\text{im}}$ (which is built from $\Theta$ and $a$) to the elementary function $\operatorname{Im}(\cos(ax)/\cosh(x/2))$!
+   - Why hasn't anyone tested whether a single off-line cardinal packet $u_{\text{im}}$ (or a bound state $R w = \mu w$ with $\mu > 1/2$) can actually satisfy the **pointwise/local** structure of $A$ (or the positivity of $R$ on the positive cone of $L^2(\text{mass})$)?
+   - Wait: what is the sign of the kernel of $R = (1 + L)^{-1}$?
+     Wait: in `CHMDDoobGraph`, $L = L_{\text{arch}} + L_{\text{prime}}$ is a **pure Markov jump Dirichlet form** (`sourceEnergy p + ‖p.fst‖²` is a Dirichlet form whose off-diagonal jumps are all $(v(x) - v(y))^2$ with **positive** measure!).
+     By Beurling–Deny / Markov semigroup theory (which we already saw in the diamagnetic bound `weilLevyForm_abs_le` in [`CHMDOddWindowCrossSign.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDOddWindowCrossSign.lean#L85-L120): $(|u(x)| - |u(y)|)^2 \le (u(x) - u(y))^2$!), **the full graph norm $\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v)$ decreases under $v \mapsto |v|$**!
+
+2. **WAIT A SECOND! STOP AND CHECK THAT DIAMAGNETIC / BEURLING–DENY PROPERTY!**
+   Let’s check whether $\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v)$ (the Doob jump energy BEFORE subtracting $\operatorname{CoshMass}(v^2)$, i.e. the quadratic form of the positive operator $L = A$) satisfies the **Markov / Beurling–Deny contraction property** under $v \mapsto |v|$:
+   - In [`phiDoob_markovEnergy_eq_archJump_add_primeJump_sub_coshMass`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/WeilPhiDoobArchimedeanJumpAndHalfLineFolding.lean#L37-L38):
+     $$\operatorname{markovEnergy}(\Theta v) = \underbrace{\iint \Theta(u)\Theta(u+t)\omega(t)(v(u)-v(u+t))^2\,du\,dt}_{\operatorname{phiDoobArchJumpEnergy}(v)} + \underbrace{\sum_{n=2}^\infty \frac{\Lambda(n)}{\sqrt{n}}\int \Theta(x)\Theta(x+\log n)(v(x)-v(x+\log n))^2\,dx}_{\sum_n \int \operatorname{phiDoobPrimeJump}(v, n)} - \int \Theta(x)\cosh(x/2)v(x)^2\,dx!$$
+   - Look at the first two terms:
+     - $\Theta(x) > 0$ for all $x \in \mathbb{R}$ (`riemannKernelReal_pos`);
+     - $\omega(t) > 0$ for all $t > 0$ (`archLevyDensity_pos`);
+     - $\frac{\Lambda(n)}{\sqrt{n}} \ge 0$ for all $n \ge 2$ (`vonMangoldtAtom_nonneg`);
+     - And for **every** $v : \mathbb{R} \to \mathbb{R}$, $(|v(x)| - |v(y)|)^2 \le (v(x) - v(y))^2$ (`sq_abs_sub_abs_le`), while $|v(x)|^2 = v(x)^2$!
+   - **WAIT A SECOND!**
+     If $\operatorname{phiDoobArchJumpEnergy}(|v|) \le \operatorname{phiDoobArchJumpEnergy}(v)$ AND $\int \operatorname{phiDoobPrimeJump}(|v|, n) \le \int \operatorname{phiDoobPrimeJump}(v, n)$ AND $\operatorname{phiDoobCoshMass}(|v|^2) = \operatorname{phiDoobCoshMass}(v^2)$, then:
+     $$\operatorname{markovEnergy}(\Theta |v|) \le \operatorname{markovEnergy}(\Theta v) \quad \text{FOR ALL } v!$$
+   - And what is the unique ground state of a strictly ergodic positive Markov jump operator $L$ on $L^2(\Theta\cosh(x/2)\,dx)$ by the **Perron–Frobenius / Krein–Rutman theorem**?!
+     - A symmetric Markov generator $L$ whose jump kernel is strictly positive (`archLevyDensity_pos`) is **positivity-improving** (ergodic): if $w$ is an eigenvector at the bottom of the spectrum of $L$ (which is the **top** of the spectrum of $R = (1 + L)^{-1}$!), then $|w|$ achieves the same Rayleigh quotient, forcing $w$ to be **strictly one-signed**, hence **cannot be orthogonal to $1 > 0$**!
+     - **HOLD ON! Why doesn't Perron–Frobenius immediately rule out eigenvalues of $R$ above $1/2$?!**
+     - Let's check! Perron–Frobenius says that the **largest** eigenvalue of $R = (1+L)^{-1}$ (which is $\mu = 1$, with eigenvector $1 > 0$, since $L(1) = 0$) is **simple** and that **every other eigenvector $w \perp 1$ has eigenvalue $\mu < 1$** (`CHMDStationaryKernelRigidity` / `CHMDEvenSectorPointSpectrum`: $1$ is a simple eigenvalue of $R$!).
+     - Perron–Frobenius gives $\mu < 1$ on $1^\perp$, whereas RH is $\mu \le 1/2$ on $1^\perp$!
+     - Why is there a gap between $\mu < 1$ (Perron–Frobenius, $L \ge 0$) and $\mu \le 1/2$ (RH, $L \ge 1$ on $1^\perp$)?
+       Because $v \mapsto |v|$ maps an orthogonal vector $v \perp 1$ (or an odd vector $v(-x) = -v(x)$) to a **non-negative even vector $|v| \ge 0$ that is NO LONGER orthogonal to $1$**!
+
+Look at how much sharper that hostile audit is:
+- Every single time someone sees "sums of squares $(v(x)-v(y))^2$" in the Doob energy, it is tempting to think $L \ge 0$ is enough.
+- **No!** $L \ge 0$ only says the top eigenvalue of $R = (1+L)^{-1}$ is $\mu = 1$ (which corresponds to the pole of $\zeta(s)$ at $s = 1$, i.e. $\operatorname{Re}(\rho) \le 1$).
+- RH is the statement that the **second** eigenvalue of $R$ (the spectral gap of the Markov jump process $L$ on $L^2(\Theta\cosh(x/2)\,dx)$!) is at least $\lambda_1(L) \ge 1$ (so $\mu_1(R) = \frac{1}{1+\lambda_1(L)} \le \frac{1}{2}$, which corresponds to $\operatorname{Re}(\rho) \le 1/2$)!
+
+---
+
+## Summary of the Hostile Review
+
+1. **My previous synthesis had four real holes**:
+   - The "disjoint-support prime diagonal cancels $-\operatorname{phiDoobCoshMass}(v^2)$" argument is a $+X-X=0$ tautology that simply undoes the Doob transform.
+   - Oddness / pole-freeness kills the linear moment $\operatorname{phiDoobCoshMass}(v)$, **not** the quadratic potential $\operatorname{phiDoobCoshMass}(v^2) = \|v\|_{L^2(\text{mass})}^2$.
+   - The finite-level certificate squeeze (`PrimeBlindLevelCertificateSqueeze`) is unconditional only because `levelCertificates L` becomes **empty** for large $L$ if RH fails.
+   - Continent A (`EvenSectorFullPositivity`) is the CHMD wave under the hood and only kills off-line spectrum *after* Bochner positivity is assumed.
+2. **What the whole Doob / CHMD corpus actually reduced RH to**:
+   - In $\Theta$-Doob coordinates, the operator $L = L_{\text{arch}} + L_{\text{prime}}$ on $L^2(\Theta(x)\cosh(x/2)\,dx)$ is a **reversible Markov jump generator** with invariant probability-like ground state $1$ ($L(1) = 0$, eigenvalue $\lambda_0 = 0$, corresponding to the pole $s=1$).
+   - The positivity $L \ge 0$ (and simplicity of $\lambda_0 = 0$) is $\operatorname{Re}(\rho) < 1$.
+   - **The Riemann Hypothesis is literally the spectral gap inequality $\lambda_1(L) \ge 1$ on $1^\perp$ (or on the odd sector $v(-x) = -v(x)$):**
+     $$\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}(v) \ge \int_{\mathbb{R}} \Theta(x)\cosh(x/2)\,v(x)^2\,dx \qquad \forall v \perp 1 \text{ (or } v \text{ odd)}.$$
+   - And the corpus has **already** proved:
+     - The essential spectrum of $L$ starts at $\ge 1$ (`CHMDNoWeylAboveThreshold`: no Weyl sequence for $R$ above $1/2$);
+     - Any eigenvalue of $L$ in $(0, 1)$ is spanned by the explicit cardinal divisor packets `divisorCardinalSource a` of off-line zeros $a = \alpha + i\beta$ (`CHMDCardinalGraphGeometry`, `CHMDCardinalOperatorAction`, `CHMDAlgebraicSpectralInverse`);
+     - On odd $v$, the cross-origin jumps of $L$ give a $+4\Theta(x)\Theta(y)|v(x)||v(y)|$ bonus when $v \mapsto |v|$ (`CHMDOddCrossSignBonus`), AND the origin-crossing prime jumps factor into positive divisor-chain variances (`CHMDPrimeChainSourceFactorization`).

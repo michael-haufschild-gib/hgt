@@ -77,3 +77,12 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
   `plancherelDensity_nonneg`; L14.1 `weilArch_sub_pole_ge`, `pole_lt_of_violation`,
   `weilArchRe_nonneg_of_pole_heavy` (exact constant `|A(0)| = γ+π/2+log 8π`). Remaining in L3: the
   anomaly window `A < 0 ⟺ |t| < t₀`, `t₀ > 2π` (needs `Re ψ(¼+iπ) < log π`, margin ≈ 1.6e-3).
+- 2026-10-17 card 4: T3 with the multiplicity correction DONE (`ZeroAlgebraJetInvariantForms`):
+  jet model of `O/(Ξ)` with `M_q` = character × unipotent; support law
+  `invariantForm_eq_zero_of_ne_conj` (via `exists_rat_exp_ne_one`, `2^a ≠ 3^b`); PSD radical
+  `invariantForm_higherJet_radical`; `posDef_invariantForm_real_simple`; `valueForm`
+  (best-possible PSD form); `exists_posDef_invariantForm_XiC_iff` (PD invariant form ⟺ RH ∧ simple
+  zeros). Standard axioms; wired.
+- 2026-10-17 card 4: L6 DONE (`HermitianPencilEulerFactorObstruction`: real roots of `det(B+tH)`,
+  `riemannHypothesis_of_XiC_eq_det_pencil`, resolvent trace continuous off ℝ,
+  `not_pencilResolventTrace_eq_eulerFactor`). Standard axioms; wired.

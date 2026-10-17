@@ -24,7 +24,7 @@ This turn concerns EGC only. Earlier thread attempts: XN, HF, IRK, with no quali
 
 - [x] EGC selected; frontier map read-only.
 - [ ] Significant obstacle-removing construction proved.
-- [ ] Formalized and verified.
+- [x] Exact inner-contour survivor formalized and verified.
 - [ ] User's strict contribution criterion met.
 
 ## Conjecture and dependency-closed paper proof
@@ -114,9 +114,38 @@ real-observation control, RH equivalence, or claimed RH proof is supplied.
 
 ## Formal progress
 
-`PaperEGCEnclosedPoleCancellation.lean` currently passes its focused Lean check.
+`PaperEGCEnclosedPoleCancellation.lean` passes its final focused Lean audit.
 It proves the exact enclosed-pole source identity, exact full-copy tail
 identity, one uniform cofinal cutoff, and unconditional source rectangles
 containing every requested packet and every centered prescribed shift.
-Final canonical build, public theorem axiom audit, wiring, lint, and cleanup
-remain pending. No qualifying frontier credit assigned.
+The tail is also identified literally with the tsum over every exterior
+multiplicity copy. No qualifying frontier credit assigned.
+
+## Final verification
+
+- Canonical audit, exit 0 with no warnings:
+  `lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/PaperEGCEnclosedPoleCancellation.olean GaloisForLFunctions/RHTower/PaperEGCEnclosedPoleCancellation.lean`
+- All six public theorem axiom audits passed: only `propext`,
+  `Classical.choice`, `Quot.sound`. Audit file stayed in `/tmp`.
+- Separate mathlib API scratch passed, including the uniform-convergence
+  and finite/complement summation APIs. No numerical experiments.
+- Wired into `GaloisForLFunctions/RHTower.lean` after `PaperEGCSourceLanding`.
+  No full or umbrella build, no heartbeat increases, no added axioms or debt.
+- `scripts/formal_tools.py index` passed twice. The second refresh addressed
+  metadata changed by concurrent work during the first lint.
+- Final `scripts/formal_tools.py lint --check-generated` exited 1 on unrelated
+  concurrent work: unreachable `PrimeLogLaplaceClosedGraphLiteral`,
+  `ZeroAlgebraJetInvariantForms`, `BurnolWeightedShiftStrongContinuity`;
+  `ZeroAlgebraJetInvariantForms.lean:382` has `sorry` in
+  `exists_posDef_invariantForm`; `formal/LEAN_OVERVIEW.md` changed again and
+  was reported stale. No error named the EGC module. This is not a globally
+  passing lint result.
+- Whitespace checks passed. All owned `/tmp/hgt_egc_*` scratch removed and
+  absence verified. No owned jobs remain. Canonical compiled module retained.
+- Frontier map was not edited by this attempt. Other sessions changed shared
+  files during the work; no claim that the shared worktree stayed unchanged.
+
+The original 44-route objective remains incomplete and active. Attempted in
+this thread: XN, HF, IRK, EGC. None is credited with the user's strict
+obstacle-removing RH advance. EGC's expanding real-observation outer
+covariance and its surviving off-line-sensitive source sign remain open.
