@@ -1,6 +1,5 @@
 import GaloisForLFunctions.BiScaleUncertainty.SelbergSieveTailQuadraticFormAndTruncatedDivisorGram
 import GaloisForLFunctions.BiScaleUncertainty.CoprimeResidueAntiCorrelationAndSawtoothPhase
-import GaloisForLFunctions.RHTower.EulerDeletionTruncatedDivisorPairCorrelation
 
 /-!
 # Exact Signed LCM Fractional-Part Defect, Additive-Multiplicative Successor Reciprocity, and Complete-Fibre Collapse (`SignedLcmFractionalDefectAndCompleteFibreCollapse`)
@@ -38,7 +37,7 @@ defect calculus** and proves four unconditional structural laws:
    `∑_{q ∣ L} F_{N,c}(q) = s_{N,c}(L)²` and `F_{N,c}(L) = ∑_{d ∣ L} μ(L/d) s_{N,c}(d)²`.
 
 4. **Complete-Fibre Möbius Collapse (`sievedLcmFibre_moebius_eq_moebius_of_le`,
-   `sievedLcmFibre_moebius_sub_moebius_eq_gt_divisors`):**
+   `sievedLcmFibre_moebius_eq_moebius_add_gt_divisors`):**
    For the Möbius weight `c(d) = μ(d)`, every divisor `d` in `1 < d ≤ N` has `s_{N,μ}(d) = 0`.
    Consequently, on every modulus `1 ≤ L ≤ N`, the `3^{ω(L)}` signed pair terms in `F_{N,μ}(L)`
    cancel down to a **single Möbius sign** `F_{N,μ}(L) = μ(L)`, and for `L > N` the excess over
@@ -115,8 +114,8 @@ theorem sum_lcm_dvd_indicator_eq_sievedDivisorSum_sq (N : ℕ) (c : ℕ → ℝ)
   rw [sievedDivisorSum_eq_sum_filter_Icc_of_pos N c hm, sq,
     Finset.sum_filter, Finset.sum_mul_sum, ← Finset.sum_product']
   refine Finset.sum_congr rfl fun p _ => ?_
-  rw [Nat.lcm_dvd_iff]
-  by_cases h1 : p.1 ∣ m <;> by_cases h2 : p.2 ∣ m <;> simp [h1, h2]
+  have hlcm : Nat.lcm p.1 p.2 ∣ m ↔ p.1 ∣ m ∧ p.2 ∣ m := Nat.lcm_dvd_iff
+  by_cases h1 : p.1 ∣ m <;> by_cases h2 : p.2 ∣ m <;> simp [hlcm, h1, h2]
 
 /-! ## §2. Additive-Multiplicative Successor Reciprocity Law & Lossless Prefix Mean Square -/
 
@@ -137,10 +136,8 @@ theorem signedLcmFractDefect_succ_sub_eq (N M : ℕ) (c : ℕ → ℝ) :
     Nat.lcm_pos (Finset.mem_Icc.mp hp1).1 (Finset.mem_Icc.mp hp2).1
   have hL_eq : Nat.lcm p.1 p.2 - 1 + 1 = Nat.lcm p.1 p.2 := Nat.sub_add_cancel hL
   have hstep := addDiff_fractDivSeq_succ (Nat.lcm p.1 p.2 - 1) M
-  have hfl := addDiff_floorDivSeq_eq_ite_dvd (Nat.lcm p.1 p.2 - 1) M
+  rw [hL_eq, addDiff_floorDivSeq_eq_ite_dvd] at hstep
   unfold addDiff at hstep
-  rw [hfl] at hstep
-  rw [hL_eq] at hstep
   calc c p.1 * c p.2 * fractDivSeq (Nat.lcm p.1 p.2) (M + 1) -
         c p.1 * c p.2 * fractDivSeq (Nat.lcm p.1 p.2) M
       = c p.1 * c p.2 * (fractDivSeq (Nat.lcm p.1 p.2) (M + 1) -
@@ -250,40 +247,78 @@ theorem sievedDivisorPrefixMeanSquare_eq_selberg_of_forall_dvd (N M : ℕ) (c : 
 
 /-! ## §3. Exact LCM Fibre Decomposition & Complete-Fibre Möbius Collapse -/
 
+/-- The signed LCM fibre weight `F_{N,c}(L) = ∑_{d₁, d₂ ∈ [1, N], lcm(d₁, d₂) = L} c(d₁) c(d₂)`. -/
+def sievedLcmFibre (N : ℕ) (c : ℕ → ℝ) (L : ℕ) : ℝ :=
+  ∑ p ∈ ((Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N)).filter (fun p => Nat.lcm p.1 p.2 = L),
+    c p.1 * c p.2
+
+/-- Exact fiberwise reindexing of a pair sum over `s ×ˢ s` by `lcm`. -/
+theorem sum_product_reindex_lcm {R : Type*} [AddCommMonoid R]
+    (s : Finset ℕ) (f : ℕ × ℕ → R) :
+    ∑ p ∈ s ×ˢ s, f p =
+      ∑ L ∈ (s ×ˢ s).image (fun p => Nat.lcm p.1 p.2),
+        ∑ p ∈ (s ×ˢ s).filter (fun p => Nat.lcm p.1 p.2 = L), f p := by
+  classical
+  exact (Finset.sum_fiberwise_of_maps_to
+    (s := s ×ˢ s) (t := (s ×ˢ s).image (fun p => Nat.lcm p.1 p.2))
+    (g := fun p => Nat.lcm p.1 p.2) (f := f)
+    (fun p hp => Finset.mem_image_of_mem _ hp)).symm
+
 /-- **LCM Fibre Decomposition of `signedLcmFractDefect`:**
 Grouping `(d₁, d₂) ∈ [1, N]²` by `L = lcm(d₁, d₂)` expresses `signedLcmFractDefect N M c` as a
-single sum over `L ∈ lcm([1, N]²)` of `finiteLcmPairFibre (Icc 1 N) c L * fractDivSeq L M`. -/
+single sum over `L ∈ lcm([1, N]²)` of `sievedLcmFibre N c L * fractDivSeq L M`. -/
 theorem signedLcmFractDefect_eq_sum_lcmFibres (N M : ℕ) (c : ℕ → ℝ) :
     signedLcmFractDefect N M c =
       ∑ L ∈ (Finset.Icc 1 N ×ˢ Finset.Icc 1 N).image (fun p => Nat.lcm p.1 p.2),
-        finiteLcmPairFibre (Finset.Icc 1 N) c L * fractDivSeq L M := by
-  unfold signedLcmFractDefect finiteLcmPairFibre
-  rw [sum_pair_reindex_lcm]
+        sievedLcmFibre N c L * fractDivSeq L M := by
+  unfold signedLcmFractDefect sievedLcmFibre
+  rw [sum_product_reindex_lcm]
   refine Finset.sum_congr rfl fun L _ => ?_
   rw [Finset.sum_mul]
   refine Finset.sum_congr rfl fun p hp => ?_
   have hlcm : Nat.lcm p.1 p.2 = L := (Finset.mem_filter.mp hp).2
   rw [hlcm]
 
-/-- The divisor-prefix sum `finiteDivisorFibrePrefix (Icc 1 N) c m` at any `m ≥ 1` coincides with
-`sievedDivisorSum N c m`. -/
-theorem finiteDivisorFibrePrefix_Icc_eq_sievedDivisorSum (N : ℕ) (c : ℕ → ℝ)
-    {m : ℕ} (hm : 1 ≤ m) :
-    finiteDivisorFibrePrefix (Finset.Icc 1 N) c m = sievedDivisorSum N c m := by
-  rw [finiteDivisorFibrePrefix, sievedDivisorSum_eq_sum_filter_Icc_of_pos N c hm]
+/-- **Divisor-Sum Identity for `sievedLcmFibre`:**
+For every `L ≥ 1`, summing `sievedLcmFibre N c q` over all divisors `q ∣ L` yields the exact square
+`sievedDivisorSum N c L ^ 2`. -/
+theorem divisor_sum_sievedLcmFibre (N : ℕ) (c : ℕ → ℝ) {L : ℕ} (hL : 0 < L) :
+    ∑ q ∈ L.divisors, sievedLcmFibre N c q = sievedDivisorSum N c L ^ (2 : ℕ) := by
+  classical
+  let U := ((Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N)).filter (fun p => Nat.lcm p.1 p.2 ∣ L)
+  have hmaps : ∀ p ∈ U, Nat.lcm p.1 p.2 ∈ L.divisors := fun p hp =>
+    Nat.mem_divisors.mpr ⟨(Finset.mem_filter.mp hp).2, hL.ne'⟩
+  have hfib := Finset.sum_fiberwise_of_maps_to
+    (s := U) (t := L.divisors) (g := fun p => Nat.lcm p.1 p.2)
+    (f := fun p : ℕ × ℕ => c p.1 * c p.2) hmaps
+  have hqset : ∀ q ∈ L.divisors,
+      ((Finset.Icc 1 N) ×ˢ (Finset.Icc 1 N)).filter (fun p => Nat.lcm p.1 p.2 = q) =
+        U.filter (fun p => Nat.lcm p.1 p.2 = q) := by
+    intro q hq
+    ext p
+    simp only [Finset.mem_filter, U]
+    exact ⟨fun ⟨hp, hlcm⟩ => ⟨⟨hp, by simpa [hlcm] using Nat.dvd_of_mem_divisors hq⟩, hlcm⟩,
+      fun ⟨⟨hp, _⟩, hlcm⟩ => ⟨hp, hlcm⟩⟩
+  calc ∑ q ∈ L.divisors, sievedLcmFibre N c q
+      = ∑ q ∈ L.divisors, ∑ p ∈ U.filter (fun p => Nat.lcm p.1 p.2 = q), c p.1 * c p.2 := by
+        unfold sievedLcmFibre
+        refine Finset.sum_congr rfl fun q hq => by rw [hqset q hq]
+    _ = ∑ p ∈ U, c p.1 * c p.2 := hfib
+    _ = sievedDivisorSum N c L ^ (2 : ℕ) := by
+        rw [← sum_lcm_dvd_indicator_eq_sievedDivisorSum_sq N c hL, Finset.sum_filter]
+        refine Finset.sum_congr rfl fun p _ => ?_
+        by_cases h : Nat.lcm p.1 p.2 ∣ L <;> simp [h]
 
-/-- **Möbius Inversion of the Finite LCM Fibre in Terms of `sievedDivisorSum`:**
-For every `L ≥ 1`, `finiteLcmPairFibre (Icc 1 N) c L = ∑_{d ∣ L} μ(L/d) s_{N,c}(d)²`. -/
-theorem finiteLcmPairFibre_Icc_eq_sum_divisors_sievedDivisorSum_sq (N : ℕ) (c : ℕ → ℝ)
-    {L : ℕ} (hL : 0 < L) :
-    finiteLcmPairFibre (Finset.Icc 1 N) c L =
+/-- **Möbius Inversion of `sievedLcmFibre` (`sievedLcmFibre_moebius_inversion`):**
+For every `L ≥ 1`, `sievedLcmFibre N c L = ∑_{d ∣ L} μ(L/d) s_{N,c}(d)²`. -/
+theorem sievedLcmFibre_moebius_inversion (N : ℕ) (c : ℕ → ℝ) {L : ℕ} (hL : 0 < L) :
+    sievedLcmFibre N c L =
       ∑ d ∈ L.divisors, ((μ (L / d) : ℤ) : ℝ) * sievedDivisorSum N c d ^ (2 : ℕ) := by
-  rw [← finiteLcmPairFibre_moebius_inversion (Finset.Icc 1 N) c L hL,
-    Nat.sum_divisorsAntidiagonal' (fun x y => ((μ x : ℤ) : ℝ) *
-      (finiteDivisorFibrePrefix (Finset.Icc 1 N) c y) ^ 2)]
-  refine Finset.sum_congr rfl fun d hd => ?_
-  have hd1 : 1 ≤ d := Nat.pos_of_mem_divisors hd
-  rw [finiteDivisorFibrePrefix_Icc_eq_sievedDivisorSum N c hd1]
+  have hinv := (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq
+    (f := sievedLcmFibre N c) (g := fun q => sievedDivisorSum N c q ^ (2 : ℕ))).mp
+      (fun q hq => divisor_sum_sievedLcmFibre N c hq) L hL
+  rw [← hinv, Nat.sum_divisorsAntidiagonal' (fun x y =>
+    ((μ x : ℤ) : ℝ) * sievedDivisorSum N c y ^ (2 : ℕ))]
 
 /-- For the Möbius weight `c(d) = μ(d)`, the sieved divisor sum on the bulk head `1 ≤ k ≤ N` is the
 exact unit point indicator `if k = 1 then 1 else 0`. -/
@@ -292,21 +327,23 @@ theorem sievedDivisorSum_moebius_eq_ite_one {N k : ℕ} (hk1 : 1 ≤ k) (hkN : k
   have hk_eq : k = (k - 1) + 1 := (Nat.sub_add_cancel hk1).symm
   have hN_eq : N = (k - 1) + 1 + (N - k) := by omega
   rw [hk_eq, hN_eq, sievedDivisorSum_succ_eq_full_divisorSum (k - 1) (N - k), ← hk_eq]
-  exact sum_divisors_moebius_real k
+  have h := congrArg (fun f : ArithmeticFunction ℝ => f k) (coe_moebius_mul_coe_zeta (R := ℝ))
+  simp only [coe_mul_zeta_apply, one_apply] at h
+  exact h
 
 /-- **Complete-Fibre Möbius Collapse (`1 ≤ L ≤ N`) and Boundary-Fibre Excess Formula:**
-For every `N ≥ 1` and `L ≥ 1`, the Möbius LCM fibre `finiteLcmPairFibre (Icc 1 N) μ L` equals
+For every `N ≥ 1` and `L ≥ 1`, the Möbius LCM fibre `sievedLcmFibre N μ L` equals
 `μ(L)` plus the sum over divisors `d ∣ L` strictly exceeding `N`:
-`finiteLcmPairFibre (Icc 1 N) μ L = μ(L) + ∑_{d ∣ L, N < d} μ(L/d) s_{N,μ}(d)²`. -/
-theorem finiteLcmPairFibre_Icc_moebius_eq_moebius_add_gt_divisors
+`sievedLcmFibre N μ L = μ(L) + ∑_{d ∣ L, N < d} μ(L/d) s_{N,μ}(d)²`. -/
+theorem sievedLcmFibre_moebius_eq_moebius_add_gt_divisors
     {N L : ℕ} (hN : 1 ≤ N) (hL : 0 < L) :
-    finiteLcmPairFibre (Finset.Icc 1 N) (fun d => ((μ d : ℤ) : ℝ)) L =
+    sievedLcmFibre N (fun d => ((μ d : ℤ) : ℝ)) L =
       ((μ L : ℤ) : ℝ) +
         ∑ d ∈ L.divisors.filter (fun d => N < d),
           ((μ (L / d) : ℤ) : ℝ) *
             sievedDivisorSum N (fun d => ((μ d : ℤ) : ℝ)) d ^ (2 : ℕ) := by
   classical
-  rw [finiteLcmPairFibre_Icc_eq_sum_divisors_sievedDivisorSum_sq N _ hL]
+  rw [sievedLcmFibre_moebius_inversion N _ hL]
   have hsplit := (Finset.sum_filter_add_sum_filter_not L.divisors (fun d => d ≤ N)
     (fun d => ((μ (L / d) : ℤ) : ℝ) *
       sievedDivisorSum N (fun d => ((μ d : ℤ) : ℝ)) d ^ (2 : ℕ))).symm
@@ -327,15 +364,15 @@ theorem finiteLcmPairFibre_Icc_moebius_eq_moebius_add_gt_divisors
     rw [sievedDivisorSum_moebius_eq_ite_one hdpos hdN, if_neg hd1]
     ring
 
-/-- **Complete-Fibre Collapse on `1 ≤ L ≤ N` (`finiteLcmPairFibre_Icc_moebius_eq_moebius_of_le`):**
+/-- **Complete-Fibre Collapse on `1 ≤ L ≤ N` (`sievedLcmFibre_moebius_eq_moebius_of_le`):**
 For every `1 ≤ L ≤ N`, the `3^{ω(L)}` signed pair terms `(d₁, d₂) ∈ [1, N]²` with `lcm(d₁, d₂) = L`
 cancel down to the single Möbius sign `μ(L)`. -/
-theorem finiteLcmPairFibre_Icc_moebius_eq_moebius_of_le
+theorem sievedLcmFibre_moebius_eq_moebius_of_le
     {N L : ℕ} (hL1 : 1 ≤ L) (hLN : L ≤ N) :
-    finiteLcmPairFibre (Finset.Icc 1 N) (fun d => ((μ d : ℤ) : ℝ)) L =
+    sievedLcmFibre N (fun d => ((μ d : ℤ) : ℝ)) L =
       ((μ L : ℤ) : ℝ) := by
   have hN : 1 ≤ N := hL1.trans hLN
-  rw [finiteLcmPairFibre_Icc_moebius_eq_moebius_add_gt_divisors hN hL1]
+  rw [sievedLcmFibre_moebius_eq_moebius_add_gt_divisors hN hL1]
   have hempty : (L.divisors.filter (fun d => N < d)) = ∅ := by
     rw [Finset.filter_eq_empty_iff]
     intro d hd

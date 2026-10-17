@@ -1108,3 +1108,37 @@ Twenty-five contributions,26 verified modules,387 supporting public theorem
 audits; full goal ACTIVE. Global lint reports12 unrelated unreachable modules,
 no generated-file drift and no owned lifting module issue. Exact snapshot on
 the master card; no repository-wide clean-gate or external novelty claim.
+
+## Quantitative confinement and necessary support escape
+
+Dependency-closed paper theorem; Lean audit pending in
+`formal/GaloisForLFunctions/BiScaleUncertainty/ConfinedCoherentPlasticGap.lean`.
+Let d=log2, c=screwSignThreshold, B_N=(N+1)d/2 and T_N=2B_N+c.
+Define t_N=archLevyAntideriv(T_N)>0 and
+A_N=(2N+1)sinh(B_N/2)^2>0. The tail coefficient t_N equals the plastic
+kernel integral on (T_N,infinity), with its known elementary formula.
+
+- The full coherent price C_f of F=odd(f) is nonnegative and vanishes iff
+  cellFold(F)=0 on the whole real line. This follows from the exact cell-square
+  identity, continuity and periodicity; it is stronger than vanishing moment.
+- An actual source g supported in (-B_N,B_N) has zero autocorrelation for
+  every lag x>=2B_N. Its sinh multiplier has the same support restriction and
+  origin energy at most sinh(B_N/2)^2*h_g(0).
+- For odd g the exact coherent price is
+  C_g=h_(Sg)(0)+2*sum_(k=0)^(N-1) h_(Sg)((k+1)d)<=A_N*h_g(0).
+  All omitted correlations vanish; retained correlations keep their signs.
+- The nonnegative plastic jump integrand has an explicitly evaluated tail,
+  giving J(g)>=t_N*h_g(0). Combining these bounds in the full coherent class
+  of f gives Q(g)+2O_f²>=Delta(f,N)=2*t_N*C_f/A_N.
+- Delta(f,N)>0 iff the full fold is nonzero. Thus every class member whose
+  plastic excess is below this threshold has a nonzero value at some |u|>=B_N.
+  This necessity includes nonzero coherent classes with zero signed moment.
+- For every actual input f, its proved source cutoff supplies a valid window,
+  giving the unconditional intrinsic bound at N=sourceCutoff(odd(f)).
+- The explicit outward family reaches every positive confinement threshold
+  and produces a source outside the prescribed window in the same full class.
+
+One substantive confinement/escape contribution. The constants contain no
+unestimated analytic input. Fixed-window membership is an exact geometric
+domain restriction, not an integrability or positivity premise. No sharpness
+of the gap coefficient or existence of a minimizer under confinement is claimed.

@@ -240,13 +240,17 @@ theorem confinementTail_mul_energy_le_jump (g : C_c(ℝ, ℝ)) (N : ℕ)
   have hst : Ioi T ≤ᵐ[volume] Ioi (0 : ℝ) :=
     Filter.Eventually.of_forall fun _ hx => hT.trans hx
   have hm := setIntegral_mono_set (integrableOn_plasticJumpIntegrand g) hn hst
+  have hz (x : ℝ) (hx : x ∈ Ioi T) : autocorr g x = 0 := by
+    apply window_lag_zero g N hw x
+    change T < x at hx
+    dsimp [T] at hx
+    linarith [screwSignThreshold_pos]
   have he : (∫ x in Ioi T, (autocorr g 0 - autocorr g x) * levyCoshKernel screwSignThreshold x) =
       autocorr g 0 * confinementTail N := by
     rw [setIntegral_congr_fun measurableSet_Ioi (fun x hx => show
       (autocorr g 0 - autocorr g x) * levyCoshKernel screwSignThreshold x =
         autocorr g 0 * levyCoshKernel screwSignThreshold x from by
-          rw [window_lag_zero g N hw x (by change T < x at hx; dsimp [T] at hx
-              linarith [screwSignThreshold_pos]), sub_zero]),
+          rw [hz x hx, sub_zero]),
       integral_const_mul, ← confinementTail_eq_integral]
   calc
     confinementTail N * autocorr g 0 = autocorr g 0 * confinementTail N := mul_comm _ _
