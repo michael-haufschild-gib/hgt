@@ -109,3 +109,24 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
   datum A_t at log n); `gammaBracket_two_mul` (Ω(2r) = log 2 + ½(D_{−1/4}+D_{3/4})),
   `Gammaℝ_sub_quarter_mul` (Γℝ(s−¼)Γℝ(s+¾) = Γℂ(s−¼)), `primeBlindPositiveDilated_half_iff`.
   Standard axioms; wired. Remaining in L14.2: criticality law (sign of S) for the null ray G₀.
+- 2026-10-17 card 4: L12 §1 second clause DONE (`CompactTestXiDivisibilityObstruction`:
+  `eq_zero_of_paperFT_eq_zero_of_XiC_eq_zero` — a compactly supported test whose transform vanishes
+  at every real zero of Ξ is 0; `not_exists_paperFT_eq_XiC_mul`, `not_exists_paperFT_eq_XiC_sq_mul`;
+  via corpus `exists_simpleCritical_nonzero_of_exponentialType`). L12 §3 DONE
+  (`WeilArchimedeanExactForm`: `weilArchRe_eq_exactForm`, `integral_autocorr_mul_cosh`). L5(ii) DONE
+  (`WeilLinearEffectivityObstruction`: `weightDensity_pos`, `pairing_eq`,
+  `pairing_eq_zero_of_isRepairedPrincipal`, `exists_pairing_pos_and_neg`). `WeilMarkovPoleCapacity`
+  now reuses `ArchimedeanAnomaly.integral_sub_shift_sq` (duplicate removed). All standard axioms; wired.
+- 2026-10-17 card 4: L12 §4 computational part DONE (`CoreNullTestPoleSign`, namespace
+  `RHTower.CoreNullPole`): `cosDilationCertMultiplier_one` (R_f(1) = −2(∫f log y)(∫f/y)),
+  `coreNullPole_eq` (P = 2ξ(1)²R_f(1) = −(∫f log y)(∫f/y)), sign trichotomy
+  `coreNullPole_neg_iff` / `_eq_zero_iff` / `_pos_iff` (odd/primitive/even cores). The "⟹" half of the
+  keystone equivalence (every pole-negative null test in the witness class comes from a core) rests on
+  the row-415 null-face rigidity, i.e. on L12 §1 first clause, which the card itself marks as having an
+  unproved C^k-approximation gap: not a dependency-closed theorem, recorded as such.
+- 2026-10-17 card 4: L14.4 resonance law + L3 window existence DONE (`ArchimedeanResonanceRange`,
+  namespace `RHTower.ArchimedeanResonance`): `exists_anomaly_window` (Ω<0 ⟺ |τ|<t₀, 0<t₀≤20),
+  `exists_gammaBracket_eq_neg_log_iff` (stationary phase Ω(τ) = −log n solvable ⟺ n ≤ 8πe^{γ+π/2}),
+  `neg_log_two_lt_gammaBracket_two_pi`, `abs_lt_two_pi_of_gammaBracket_eq_neg_log` (resonances lie in
+  |τ|<2π). Standard axioms; wired. Remaining in L3: t₀ > 2π (Re ψ(¼+iπ) < log π, margin ~1e-3) needs
+  a sharp complex digamma bound (Binet remainder) — next infrastructure target.

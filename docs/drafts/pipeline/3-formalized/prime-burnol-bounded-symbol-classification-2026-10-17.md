@@ -1,9 +1,9 @@
 # Prime Burnol eigenoperators: bounded analytic symbol classification
 
 - **ID:** prime-burnol-bounded-symbol-classification-2026-10-17
-- **Stage:** 2-fully-proven (paper); formalization pending
-- **Type:** THEOREM (paper)
-- **Source:** whole local Lean corpus; prospective contribution after candidate 5; uncounted
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean verified)
+- **Source:** whole local Lean corpus; verified contribution 6, counted once
 - **Statement:** bounded operators preserving every actual-prime Burnol eigenline are exactly the operators induced by bounded holomorphic symbols on the right half-plane, with equality of operator and symbol norms.
 
 ## Goal and exact natural class
@@ -94,7 +94,7 @@ All density, necessity, sufficiency, uniqueness and norm statements count once.
 
 - [x] 0 → 1: exact actual parameter class, source-pure mechanism and count boundary.
 - [x] 1 → 2: dependency-closed paper proof; conjugation, uniqueness and converse audited.
-- [ ] 2 → 3: exact Lean result; targeted single-job builds, axioms, wiring, index and lint.
+- [x] 2 → 3: exact Lean result; targeted single-job builds, axioms, wiring, index and lint.
 
 ## Failure and positive survivor discipline
 
@@ -252,3 +252,80 @@ The paper proof is dependency-closed. Formalizing the stated actual-prime
 classification remains required. The card moved to stage 2 while candidate 5's
 local verification was complete and concurrent global umbrella wiring was
 still being integrated. No part of this contribution is counted yet.
+
+## Formalization checkpoint, 2026-10-17
+
+`RHTower/PrimeLogHolomorphicUniqueness.lean` compiles with an empty final log.
+Its public theorem `PrimeBlindCarlson.eqOn_zero_of_primeLog_zeros` proves
+uniqueness for arbitrary holomorphic functions bounded on each smaller
+right half-plane. The proof uses the shifted actual primes and analytic
+continuation, with no sampling or source premise. This is a supporting lemma,
+not a separately counted contribution. Complex-rate Burnol features and
+the generic Gram-defect extension are being checked in owned scratch files.
+The complete operator classification and final audits remain open; count 5/100.
+
+
+## Final local Lean audit
+
+All eight leaves compile with empty final logs, using only targeted
+`lake --old env lean -j 1 -o ...` commands. Every olean is newer than its
+source, and each leaf is wired exactly once in its umbrella. No existing
+mathematical leaf was changed. All 50 public declarations, including helper
+definitions, passed `#print axioms` in a temporary scratch file: each depends
+exactly on `propext`, `Classical.choice`, and `Quot.sound`. Eight exported
+signature checks passed. No source-admission, RH, missing core, symbol
+existence, first-order positivity or independence premise remains hidden in
+the stated natural operator and symbol classes.
+
+Primary declarations:
+
+- `RHTower.primeBurnol_preserves_lines_iff_holomorphic`
+- `RHTower.existsUnique_burnol_operator_of_holomorphic`
+- `RHTower.primeBurnol_operator_norm_eq_sup`
+- `RHTower.primeBurnol_cubicPick_iff_firstPick`
+- `RHTower.primeBurnol_bounded_operator_iff_holomorphic`
+- `RHTower.burnolOperatorSymbol_eigen`
+- `RHTower.burnolOperatorSymbol_comp`
+
+The formal converse constructs the operator directly on the dense actual
+prime feature span, then uses prime-log uniqueness to identify its canonical
+symbol with the prescribed holomorphic function. This proves the same exact
+paper theorem while avoiding a second dense-span construction. Its physical
+normalization is the existing `primeLogCriticalLaplaceFeatureL2`, identified
+with the nonzero scalar `2 log(p)^2/sqrt(p)` times the literal raw feature.
+The norm supremum ranges over all complex frequencies with positive real
+part. The two Pick cones concern all finite packets from the entire prime
+index set; no claim of equivalence for a fixed finite node set is made.
+
+Additional source comparison: `SpectralHardyTraceFormation` already contains
+generic non-Blaschke uniqueness and an `H2`/Nevanlinna interpolation obstruction.
+These are supporting mechanisms, not claimed discoveries. They do not give
+the bounded-operator classification on the literal cubic Burnol output
+space or its infinite-prime first-order/cubic cone equivalence. All helpers,
+totality, norm, uniqueness, product and Pick conclusions count together once.
+External priority remains unaudited, as requested.
+
+Verified source SHA-256 values:
+
+| Module | SHA-256 |
+|---|---|
+| RHTower/PrimeLogHolomorphicUniqueness | a5f14c5cc2a0115a1e9998ed4770e666c44511435662a11018d8102a39fa9063 |
+| HTGeometry/BurnolComplexLaplaceFeature | 2f0adaca3ab6edd6fed20ebb64b2945693f04dba2acbad5dc1fe36e894ae8aa5 |
+| HTGeometry/FeatureGramDefect | f06fd114c9cdd496e0b53db2d88269e2e802bdc1b11940a9648b3cf560a5509f |
+| RHTower/PrimeBurnolFeatureTotality | c97cd84ee55cbc87d00ed295c70a75d1c005b4d9de2f9de0febf0b0e92138742 |
+| HTGeometry/HolomorphicHalfPlanePickKernel | ca3cb6c9192ca84c1e91027e30d89e862412e75a8e54b282c9feb7275cbdca80 |
+| RHTower/PrimeBurnolOperatorSymbol | 692e42683ffc9f1c894a13c7f07bff9bbef23852502a0ff9fbb5ee64c4a3a83d |
+| RHTower/PrimeBurnolPickCone | 37202b0a8204e29736e06bd70cb408482817470e1da9b2a5ace2c117223772b0 |
+| RHTower/PrimeBurnolSymbolClassification | 10190e9b2372bc38e260d1ba034998a58c4b2a4e9f83fa952a987e1e0388dd5c |
+
+Global index regeneration succeeded. The first final lint with generated-file
+check reported only the concurrently authored, unwired module
+`RHTower.SuzukiCanonicalPositiveShiftHankel`. No candidate-6 wiring error or
+forbidden proof debt was reported. Its source and imports remain with its
+owner. Its owner then wired the module. The final index regeneration and
+`lint --check-generated` both exited 0 at 2026-10-17 02:20 UTC, with only
+existing large-file warnings. All gates passed; counted once as contribution 6.
+Verified goal count is 6/100. The frontier map was not modified.
+
+After recording verification, removed all 36 exact owned contribution-6
+search, probe, build and audit temporary files. Candidate-7 files remain.

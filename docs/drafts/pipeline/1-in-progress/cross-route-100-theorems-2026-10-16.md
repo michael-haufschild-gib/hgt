@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 5 / 100.
+Status: ACTIVE. Count verified for this goal: 6 / 100.
 
 ## User requirements
 
@@ -87,9 +87,21 @@ novelty is not claimed: user forbids external novelty research.
    wired once; index and formal lint with generated-file check pass.
    Counted once, including parity, logarithmic and explicit specializations.
 
+6. Exact bounded holomorphic classification of actual-prime Burnol operators.
+   Card: `../3-formalized/prime-burnol-bounded-symbol-classification-2026-10-17.md`.
+   Inputs: prime reciprocal zero uniqueness, Burnol depth completeness,
+   literal cubic Laplace Gram, Hardy multipliers and dense-feature extension.
+   Preserving every actual prime feature line forces one unique bounded
+   holomorphic symbol on all complex right-half-plane features. Every such
+   symbol is realized uniquely, with exact norm and composition law. The
+   infinite-prime cubic and first-order Pick cones coincide at the same
+   bound. Eight leaves compile cleanly; all 50 public declarations use only
+   standard axioms; eight exported signatures audited. All imports wired
+   once; index and formal lint with generated-file check pass. Counted once.
+
 ## Working plan
 
-1. Contributions 1–5 complete. Recheck significance and exact scope before
+1. Contributions 1–6 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -100,12 +112,13 @@ novelty is not claimed: user forbids external novelty research.
 
 ## Uncounted next lead
 
-Independent candidate 6 has a dependency-closed paper proof, uncounted:
-`../2-fully-proven/prime-burnol-bounded-symbol-classification-2026-10-17.md`.
-It classifies all bounded operators preserving actual-prime Burnol eigenlines
-by bounded holomorphic symbols on the right half-plane, and identifies the
-infinite-prime cubic and first-order Pick contraction cones. All parts count
-together once if the exact literal theorem passes formalization and audit.
+Candidate 7, paper mechanism and dependency audit underway, uncounted:
+`positive-prime-burnol-bernstein-classification-2026-10-17.md`.
+Proposed exact classification of nonnegativity-preserving actual-prime
+eigenoperators by unique finite positive measure mixtures of weighted Burnol
+shifts, with norm equal to mass and a literal positive-packet test. The new
+physical positivity cone must be proved; symbol classification alone does
+not count again. No candidate-7 Lean source has been written.
 
 Other exploratory searches compared prime-only Laplace completeness and
 generic natural boundaries. Generic density consequences, repackaging the
