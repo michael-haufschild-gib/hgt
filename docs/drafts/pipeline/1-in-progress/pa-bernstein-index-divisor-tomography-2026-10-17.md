@@ -217,3 +217,14 @@ Final significance comparison precedes any contribution count.
 - `RHTower/BernsteinOccupationRigidity.lean` contains the exact coordinate
   formulas and conjugation ambiguity; its final targeted check is pending.
   Finite-packet assembly and bounded-test tail transfer remain in scratches.
+- The geometry leaf now passes its final targeted check. The finite-packet
+  assembly `RHTower/FiniteBernsteinPacketIndexAsymptotic.lean` also exits 0;
+  its log has nonfatal `ring` advice to inspect during final audit.
+- The exact conjugation fibre argument passed in `/tmp` and was saved as
+  `RHTower/XiBernsteinOccupationFibres.lean`; final object compilation is
+  underway. This transfers the actual multiplicity-copy equivalence from
+  `DeningerDivisorSchwarzMonodromy` through the reciprocal-square coordinate.
+  It proves complete maximal packets are conjugation invariant, aggregate
+  coefficients equal radius times coordinate times fibre cardinality, and
+  conjugate fibre cardinalities agree. No multiplicity of a single Xi zero
+  is substituted for the reciprocal-square fibre cardinality.

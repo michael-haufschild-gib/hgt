@@ -287,7 +287,7 @@ do not look for shortcuts - we are too far in the research, there are no more sh
 ## create new knowledge - cross route towards one route
 On every new turn:
 
-make one significant contribution that overcomes a hard mathematical obstacle or delivers a highly significant insight by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md your finding must contribute something of significant value directly or indirectly to routes CHMD + HF + OWU + EWU. 
+make one significant contribution that overcomes a hard mathematical obstacle or delivers a highly significant insight by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md your finding must contribute something of significant value directly or indirectly to routes TT, LA, TH, HCF, HJ. 
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 

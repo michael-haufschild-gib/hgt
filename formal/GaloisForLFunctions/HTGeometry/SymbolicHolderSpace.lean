@@ -75,11 +75,17 @@ theorem isClosed_holderSubmodule (ϑ : ℝ) : IsClosed (holderSubmodule A ϑ : S
     (isClosed_iInter fun q => isClosed_eq (h2 q) (((h1 _).sub (h1 _)).div_const _))
 
 /-- **The Hölder space** `F_ϑ` of the subshift. -/
-abbrev HolderSpace (ϑ : ℝ) : Type := ↥(holderSubmodule A ϑ)
+def HolderSpace (ϑ : ℝ) : Type := ↥(holderSubmodule A ϑ)
+
+instance (ϑ : ℝ) : NormedAddCommGroup (HolderSpace A ϑ) :=
+  inferInstanceAs (NormedAddCommGroup ↥(holderSubmodule A ϑ))
+
+instance (ϑ : ℝ) : NormedSpace ℂ (HolderSpace A ϑ) :=
+  inferInstanceAs (NormedSpace ℂ ↥(holderSubmodule A ϑ))
 
 instance (ϑ : ℝ) : CompleteSpace (HolderSpace A ϑ) := by
   haveI : IsClosed (holderSubmodule A ϑ : Set (HolderAmbient A)) := isClosed_holderSubmodule A ϑ
-  exact IsClosed.completeSpace_coe
+  exact (IsClosed.completeSpace_coe : CompleteSpace ↥(holderSubmodule A ϑ))
 
 variable {A} {ϑ : ℝ}
 
