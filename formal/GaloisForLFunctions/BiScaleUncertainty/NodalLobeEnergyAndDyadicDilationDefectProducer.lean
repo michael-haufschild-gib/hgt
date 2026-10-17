@@ -69,9 +69,10 @@ open _root_.RHTower.CHMDPolar
 open _root_.RHTower.CHMDDoobGraph
 open _root_.RHTower.CHMDClosedJump
 open _root_.RHTower.CHMDTranslation
-open _root_.RHTower.CHMDDerivTransport
+open _root_.RHTower.CHMDChebyshevTransport
 open _root_.RHTower.ThetaSourceWard
 open GaloisForLFunctions.BiScaleUncertainty.SobolevShear
+open SignedPrimePolar ChebyshevGauge
 
 /-! ## §1. Five-Term Nodal-Lobe Jump-vs.-Potential Producer Inequalities on `SourceGraph` -/
 
@@ -274,20 +275,20 @@ Packages all four unconditional producer tools constructed for the CHMD proof ro
    origin energy (`autocorr = 0` contrast at $0$) and normalized prime–polar contrast ratio
    $O(\log(n+1)/(n+1))$ bounded by `9 * Real.log (n + 1) / (n + 1)`. -/
 theorem chmd_four_tools_biScale_producer_master
-    (y : ℝ) {L : ℝ} (hL : 0 ≤ L) (n : ℕ) (hn : 4 ≤ n) (q : Velocity) :
+    (y : ℝ) {L : ℝ} (hL : 0 ≤ L) (n : ℕ) (q : Velocity) :
     ((∫ s in Ioi (0 : ℝ), kernelDeriv y s * chebyshevDiscrepancy s) =
       (∫ s in Ioc (0 : ℝ) L, kernelDeriv y s * chebyshevDiscrepancy s) +
         ∫ s in Ioi L, kernelDeriv y s * chebyshevDiscrepancy s) ∧
     ((2 : ℝ) * ‖q‖ ^ 2 - ‖unitCellAnalysis (physicalDilation 2 q)‖ ^ 2 =
       (2 : ℝ) * ‖q - cellularProjection q‖ ^ 2 +
         ∑' j, integerBlockVariance 2 (unitCellAnalysis q) j) ∧
-    (autocorr (factorialSourcePlus n).source 0 = autocorr (factorialSourceMinus n).source 0 ∧
-      factorialPrimePolarContrast n / autocorr (factorialSourcePlus n).source 0 ≤
-        9 * Real.log ((n : ℝ) + 1) / ((n : ℝ) + 1)) :=
+    (|fullPairing (factorialSourceProducer n)| / autocorr (factorialSourcePlus n) 0 ≤
+      (10 * Real.log (4 * ((n + 1 : ℕ) : ℝ) + 1) + 3 +
+          1 / (4 * ((n + 1 : ℕ) : ℝ))) /
+        (6 * ((n + 1 : ℕ) : ℝ))) :=
   ⟨integral_Ioi_kernelDeriv_mul_chebyshevDiscrepancy_split y hL,
    dyadic_physicalDilation_trace_defect q,
-   ⟨autocorr_factorialSourcePlus_zero_eq_minus n,
-    factorialPrimePolarContrast_div_origin_le hn⟩⟩
+   abs_fullPairing_factorialSourceProducer_div_autocorr_zero_le n⟩
 
 end
 

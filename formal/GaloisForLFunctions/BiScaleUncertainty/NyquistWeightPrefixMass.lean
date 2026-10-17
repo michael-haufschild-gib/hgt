@@ -25,6 +25,9 @@ theorem tendsto_nyquistWeightCellMass_critical_ratio (m : ℕ) :
   simp only [div_one] at ht
   apply ht.congr'
   filter_upwards with k
+  change (nyquistWeightCellMass ((m : ℝ) + 1) m k /
+    ((k + 1 : ℕ) : ℝ) ^ (-1 : ℝ)) /
+      (((k + 1 : ℕ) : ℝ) * nyquistWeightCellWidth k) = _
   rw [Real.rpow_neg_one]
   field_simp [(nyquistWeightCellWidth_pos k).ne']
 
@@ -35,9 +38,10 @@ theorem tendsto_nyquistWeightPrefixMass_critical_ratio (m N : ℕ) :
   have hr := (tendsto_nyquistWeightCellMass_critical_ratio m).comp
     (tendsto_add_atTop_nat N)
   have ht := tendsto_nyquist_positive_prefix_ratio
+    (a := fun k => nyquistWeightCellMass ((m : ℝ) + 1) m (N + k))
     (fun k => nyquistWeightCellWidth_pos (N + k))
     (tendsto_sum_nyquistWeightCellWidth N)
-    (by simpa only [Function.comp_def, Nat.add_comm N] using hr)
+    (by simpa only [Function.comp_def, Nat.add_comm] using hr)
   simpa only [nyquistWeightPrefixMass, sum_nyquistWeightCellWidth] using ht
 
 theorem tendsto_nyquistWeightPrefixMass_critical (m N : ℕ) :
@@ -67,6 +71,9 @@ theorem tendsto_nyquistWeightCellMass_supercritical_ratio {β : ℝ} (m : ℕ)
   have ht := ha.div (tendsto_nyquistPowerIncrement_normalized r) hr.ne'
   apply ht.congr'
   filter_upwards with k
+  change (nyquistWeightCellMass β m k / ((k + 1 : ℕ) : ℝ) ^ (r - 1)) /
+    (nyquistPowerIncrement r k / ((k + 1 : ℕ) : ℝ) ^ (r - 1)) =
+      nyquistWeightCellMass β m k / nyquistPowerIncrement r k
   have hn := (Real.rpow_pos_of_pos (by positivity : (0 : ℝ) < (k + 1 : ℕ)) (r - 1)).ne'
   field_simp [(nyquistPowerIncrement_pos hr k).ne']
 
@@ -81,8 +88,9 @@ theorem tendsto_nyquistWeightPrefixMass_supercritical {β : ℝ} (m N : ℕ)
     (tendsto_add_atTop_nat N)
   have hB := tendsto_sum_nyquistPowerIncrement hr N
   have hratio := tendsto_nyquist_positive_prefix_ratio
+    (a := fun k => nyquistWeightCellMass β m (N + k))
     (fun k => nyquistPowerIncrement_pos hr (N + k)) hB
-    (by simpa only [Function.comp_def, Nat.add_comm N] using hshift)
+    (by simpa only [Function.comp_def, Nat.add_comm] using hshift)
   have ht := hratio.mul (tendsto_sum_nyquistPowerIncrement_normalized hr N)
   simp only [mul_one] at ht
   apply ht.congr'

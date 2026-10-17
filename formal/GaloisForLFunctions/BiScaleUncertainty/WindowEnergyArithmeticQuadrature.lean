@@ -63,7 +63,7 @@ theorem hasDerivAt_cellWindowPrimitive (c t : ℝ) :
   refine h.congr_deriv ?_
   have hexp : Real.exp (-t) * Real.exp t = 1 := by
     rw [← Real.exp_add]; simp
-  linear_combination (-(c + 1 - t) * 2 + Real.exp t) * hexp
+  linear_combination (2 * (c + 1 - t) - Real.exp t) * hexp
 
 /-- **Closed-form cell energy:**
 `∫_{log n}^{log(n+1)} e^{−t}(c + 1 − t − e^t)² = F_c(log(n+1)) − F_c(log n)`. -/
@@ -72,7 +72,8 @@ theorem integral_cell_window_sq (c : ℝ) {n : ℕ} (hn : 1 ≤ n) :
         Real.exp (-t) * (c + 1 - t - Real.exp t) ^ 2) =
       cellWindowPrimitive c (Real.log ((n : ℝ) + 1)) - cellWindowPrimitive c (Real.log (n : ℝ)) :=
   intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hasDerivAt_cellWindowPrimitive c t)
-    (by fun_prop : Continuous fun t : ℝ => Real.exp (-t) * (c + 1 - t - Real.exp t) ^ 2).intervalIntegrable _ _
+    ((by fun_prop : Continuous fun t : ℝ => Real.exp (-t) * (c + 1 - t - Real.exp t) ^ 2).intervalIntegrable
+      _ _)
 
 /-- The explicit value of the cell antiderivative at `log m`. -/
 theorem cellWindowPrimitive_log (c : ℝ) {m : ℝ} (hm : 0 < m) :

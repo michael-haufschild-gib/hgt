@@ -89,7 +89,7 @@ theorem physicalBoxAverage_shift_difference (s c : ℝ) (q : Velocity) :
   rw [intervalIntegral.integral_sub hi (intervalIntegrable_physicalTranslation q 0 c)]
   rw [intervalIntegral.integral_comp_add_right (a := 0) (b := c)
     (fun u => physicalTranslation u q) (Real.exp s), zero_add,
-    ← physicalOrbitPrimitive_sub]
+    ← physicalOrbitPrimitive_sub q (Real.exp s) (c+Real.exp s)]
   change physicalOrbitPrimitive q (c+Real.exp s)-physicalOrbitPrimitive q c-
     physicalOrbitPrimitive q (Real.exp s) =
       (physicalOrbitPrimitive q (c+Real.exp s)-physicalOrbitPrimitive q (Real.exp s))-

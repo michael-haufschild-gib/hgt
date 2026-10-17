@@ -67,7 +67,6 @@ theorem optimalCoefficient_scaled_leading_error {n : ℕ} (hn : 6 ≤ n) :
       _ = _ := by
         congr 1
         field_simp [hs.ne']
-        ring
   have hr : Real.sqrt ((n + 2 : ℕ) : ℝ) * (12289 / ((n + 2 : ℕ) : ℝ)) =
       12289 / Real.sqrt ((n + 2 : ℕ) : ℝ) := by
     field_simp [hN.ne', hs.ne']
