@@ -143,7 +143,7 @@ private def nodes (L : ℕ) : Finset (ℕ ⊕ ℕ) := (Finset.range L).disjSum (
 private theorem position_injective : Function.Injective position := by
   intro i j hij
   cases i <;> cases j <;> simp only [position, Sum.elim_inl, Sum.elim_inr] at hij
-  all_goals first | congr 1; omega | omega
+  all_goals (congr 1; omega)
 
 /-- The actual finite filter is controlled by its coefficient energy, with signed correlations retained. -/
 theorem sourceFilter_energy_le (f : C_c(ℝ, ℝ)) :

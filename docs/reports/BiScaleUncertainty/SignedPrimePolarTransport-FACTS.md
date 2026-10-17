@@ -2,12 +2,14 @@
 
 ## Counting rule
 
-Target: 100 substantive, independently justified contributions. Verified packages: 7.
+Target: 100 substantive, independently justified contributions. Verified packages: 8.
 Helpers, equivalent restatements, and classical partial summation do not count separately.
 
 Field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read
 fully on 2026-10-17 and read-only by user instruction. Section 3.3 remains this
 lane's topic: actual signed prime–polar transport and Chebyshev coupling.
+Section 3.5 and Trap 10 prioritize explicit unconditional producers and prohibit
+pre-floor subtraction that replaces the continuum counterterm by a divisor sum.
 
 ## Established inputs
 
@@ -51,7 +53,7 @@ Both leaves pass `lake --old env lean <leaf> -o <leaf.olean>` without diagnostic
 Six endpoint axiom audits in `/tmp/spp_final_axioms.lean` pass, with only propext,
 Classical.choice and Quot.sound; printed main signatures contain no extra premise.
 Both leaves are wired into `BiScaleUncertainty.lean`; indexes were regenerated.
-The latest repository lint result is recorded with contribution 7 below.
+The latest repository lint result is recorded with contribution 8 below.
 Earlier package logs: `/tmp/spp-final-axioms.log`, `/tmp/spp-index.log`, `/tmp/spp-lint.log`.
 
 Boundary of contribution 1: its result is at every finite integer cutoff;
@@ -375,6 +377,75 @@ Both package searches report partial=false/errors=[]; snapshot compiler coverage
 has many pending/stale entries. Retrieved finite-partition Gram optimization is
 distinct from this actual collar-source family. No external novelty claim.
 
+## Contribution 8: explicit factorial producer for the actual signed measure
+
+Paper: `SignedPrimePolarFactorialProducer.md`. Lean leaves:
+`SignedPrimePolarHarmonicCorrection.lean`, `SignedPrimePolarFactorialLift.lean`,
+and `SignedPrimePolarFactorialProducer.lean`.
+
+For K≥1 define the concrete compact measurable test
+R_K(x)=exp(x/2) Σ_{j=1}^K 1_[0,log(K/j)](x), using real K/j. Its actual
+critical atomic sum is T(K), while its polar integral is
+K H_K−K+K log K−T(K), with H_K=Σ_{j=1}^K 1/j. Hence
+
+ν(R_K)=2T(K)−K log K−K H_K+K.
+
+This retains both polar exponential branches. The continuum cutoff is never
+floored; no discrete linear counterterm is subtracted before floor summation.
+For W_N=(R_(4N)−4R_(2N)+4R_N)/sqrt(N), the exact signed evaluation is
+
+ν(W_N)=(2 B_N−C_N)/sqrt(N),
+C_N=4N(H_(4N)−2H_(2N)+H_N),
+
+where B_N is the existing unconditional factorial bi-null producer. Pairing
+adjacent reciprocal terms proves 0≤C_N≤1. The existing bound on B_N then gives
+
+|ν(W_N)|≤(10 log(4N+1)+3)/sqrt(N), N≥1.
+
+Every literal atom sequence has finite support and is absolutely summable;
+the polar term is integrable, derived from the explicit rectangles. The public
+`factorialBiNull_producer (n : ℕ)` packages admission and the bound at N=n+1,
+with no arithmetic estimate, free producer weights, or analytic premise.
+
+The test has fixed top amplitude: W_N(0)=0 and W_N(log(4N))=2. The formal
+`factorialBiNull_ne_autocorr` proves it cannot be the autocorrelation of any
+compact continuous real source. This is a scalar producer for the actual signed
+measure, not a uniform packet estimate or a positivity theorem. It is discontinuous;
+constructing a continuous producer with exact grid preservation is the next target.
+
+Public endpoints in `SignedPrimePolar` include `factorialLift_at_log`,
+`tsum_primeTerm_factorialLift`, `fullPairing_factorialLift_eq`,
+`harmonicCorrection_bounds`, `fullPairing_factorialBiNull_eq`,
+`abs_fullPairing_factorialBiNull_le`, and `factorialBiNull_producer`.
+Construction, admission, harmonic cancellation, amplitude and bound count once.
+The existing numerical bound on B_N is reused, not counted again.
+
+All three direct final leaf checks exit 0 with empty diagnostics. Twelve scratch
+axiom reports contain only propext, Classical.choice and Quot.sound; the printed
+main signature has only its integer input. Umbrella imports are wired; index
+refresh exits 0. Evidence: `/tmp/spp8-harmonic.log`, `/tmp/spp8-lift.log`,
+`/tmp/spp8-producer.log`, `/tmp/spp8_final_axioms.lean`,
+`/tmp/spp8-final-axioms.log`, `/tmp/spp8-index.log`.
+
+Global lint exits 1 solely for eleven unrelated concurrent unwired modules:
+CoprimeShearArithmeticWeightsAndChebyshevCellIncrement,
+FiniteIntegerTrainCompactness, FiniteIntegerTrainEnergy, FiniteIntegerTrainPackets,
+FiniteIntegerTrainPeak, FiniteIntegerTrainPolar, FiniteIntegerTrainProducers,
+FoldFreeKernelGramAndFranelGcdCancellation, TernaryPacketPolarGrowth,
+TernaryPacketTrain, WitnessGermOriginMassAndJointTailHeadSynthesis.
+No task-local error (`/tmp/spp8-lint.log`). Scoped whitespace checks pass.
+
+Shared dependency objects disappeared during checking. Passing direct checks
+restored Coupling and GramTransport without source edits. A temporary field-object
+overlay kept later checks stable; all actual dependencies were present in the
+shared tree before the overlay and obsolete probes were removed. No owned process
+remains active. The audit files and search evidence are retained.
+
+Package searches `/tmp/spp8-producer-search.json` and `/tmp/spp8-lift-search.json`
+report partial=false with complete file inventory; compiler metadata remains
+mostly source-only/pending and semantic coverage unmeasured. Candidate lemmas and
+source arguments were inspected. No external novelty claim follows from retrieval.
+
 ## Failure boundaries and remaining frontier
 
 - Scalar support stabilization does not establish packet-energy stabilization:
@@ -393,14 +464,17 @@ distinct from this actual collar-source family. No external novelty claim.
   the fixed-coefficient loss, not the residual itself. Multiple-collar compensation
   remains parked in `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`.
   Trap 10 prioritizes explicit unconditional producers over further receivers.
-- Active uncounted package: the real-ratio rectangle lift of the factorial bi-null
-  stencil. Its paper proof gives an actual signed prime–polar pairing bound
-  (10 log(4N+1)+3)/sqrt(N), retaining a harmonic correction in [0,1].
-  The test has value zero at the origin and value 2 at log(4N), so it is nontrivial
-  but cannot itself be a nonzero autocorrelation. Its scalar cancellation does
-  not discharge the arbitrary-correlation packet problem. Lean verification pending.
-  See `SignedPrimePolarFactorialProducer.md` and its in-progress card.
-- Search returned finite discrete Gram precedents, not this mixed construction.
+- Contribution 8 supplies an explicit unconditional scalar producer. It does not
+  discharge the arbitrary-correlation packet problem. Next uncounted candidate:
+  `0-backlog/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
+  A common dilation average over [1,1+1/(4N)] should preserve every prime-grid
+  value while producing a compact continuous test, with exact pairing
+  [2 B_N−(1+1/(8N))C_N]/sqrt(N). Uniform nonvanishing L² size is also targeted.
+  Those smoothing and size claims remain unproved/unformalized. Initial search
+  `/tmp/spp8-next-search.json` reports partial=false/errors=[] and retrieves grid
+  interpolation precedents; inspect their exact scope before new code.
+- The prior multiple-collar search returned finite discrete Gram precedents, not
+  that mixed construction.
   Both searches report partial=false and errors=[]; semantic coverage is unmeasured,
   refresh was deferred to the running indexer, and much compiler coverage was
   pending/stale. No external novelty claim is justified by this search alone.

@@ -101,11 +101,22 @@ Twelve significant packages certified:
     continuity (35 public theorems, 8 definitions; 43 standard-axiom audits).
     Card: `../3-formalized/distant-copy-topology-classification-2026-10-17.md`.
 
-The 100-package objective remains active. Next: growing finite trains, grouped
-coefficient compactness and diffuse packet escape. This preserves the original
-tail-rigidity topic and retains general signed samples. Candidate:
-`finite-train-topology-and-diffuse-escape-2026-10-17.md` (paper complete; Lean pending).
-Mixed-energy decoupling and true polar-tail control remain separate open refinements.
+13. Exact finite-train topology for arbitrary varying counts, coefficients and
+    distinct integer sites: compactness and uniform signed tails iff the largest
+    normalized lag coefficient vanishes; escaping spacing gives energy convergence
+    uniformly in all finite data. An explicit equal-weight ternary producer has
+    exact correlation error 1/(n+2), a common energy ceiling and divergent polar
+    moment (61 theorems, 15 definitions, one structure; 77 standard-axiom audits).
+    Card: `../3-formalized/finite-train-topology-and-diffuse-escape-2026-10-17.md`.
+    Global lint remains blocked by unrelated concurrent drafts, including one
+    foreign `sorry`; the complete package certificate records the snapshot.
+
+The 100-package objective remains active with 13 certified packages. Next: formalize
+the explicit Nyquist producer's integrable all-tail residual. Its complete paper
+proof gives exact operator norm A_N<=1/sqrt(N) and locates diffuse polar escape
+in the weighted cell-average term. Card:
+`../2-fully-proven/nyquist-polar-integrable-residual-2026-10-17.md` (uncounted).
+Mixed-energy decoupling and global polar closedness remain separate open refinements.
 
 ## Constraints
 

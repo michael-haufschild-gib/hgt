@@ -1,10 +1,10 @@
 # Hyperbolic multiplier lifting: verified facts
 
-Independent BiScaleUncertainty program. No RH work, no hgtl7 skill, no numerical experiments. User requires 100 significant contributions, one per turn; supporting lemmas/classical inequalities are not separate contributions. Count: **16/100**, goal ACTIVE. Read brief every new turn: `/Users/michael/.codex/attachments/88558842-9142-47a9-bda1-a9d243d1a408/pasted-text-1.txt` and complete field `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (READ-ONLY; user instruction).
+Independent BiScaleUncertainty program. No RH work, no hgtl7 skill, no numerical experiments. User requires 100 significant contributions, one per turn; supporting lemmas/classical inequalities are not separate contributions. Count: **18/100**, goal ACTIVE. Read brief every new turn: `/Users/michael/.codex/attachments/88558842-9142-47a9-bda1-a9d243d1a408/pasted-text-1.txt` and complete field `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (READ-ONLY; user instruction).
 
 Authoritative facts: `docs/reports/BiScaleUncertainty/HyperbolicMultiplierLifting-FACTS.md`. Paper proofs, plan, commands and latest global lint status: `docs/drafts/pipeline/1-in-progress/hyperbolic-multiplier-lifting-2026-10-17.md` (now >500 lines; use ranges). Preserve other agents' concurrent edits. No commits/push/full builds.
 
-Sixteen verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
+Eighteen verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
 1. HyperbolicMultiplierGramTransfer.lean — compensated secant/signed-kernel transfer with measured sine Gram defect; 13 public theorem audits. SHA256 12ec9a1f19c416d8d0601c1c1e133880318a69cb43d84e3a133034fd8b387444.
 2. HyperbolicJumpEnergyTransfer.lean — signed-sinh squared-jump law, actual source-support envelope, uncompensated collar and full secant receiver; 19 audits. SHA256 56fb077bbe28fbae0d143d8a62f68db8bbcc87c5c3c941c2e0b43feea856e2b4.
 3. PlasticCrossoverGramReceiver.lean — exact positive-remainder decomposition and actual signed plastic receiver, odd/source-origin forms; 18 audits. SHA256 c34e886a83d099242571f9bdcb2b4e49fd3841608fad2448b9615e2ee49cd923.
@@ -27,8 +27,10 @@ Sixteen verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
 15. CoherentSourceProjection.lean — explicit normalized coherent source-cancelling producer, signed inverse-length energy error, improved odd moment and full plastic price; 10 public theorem audits. SHA256 77cc97109b5001a42f7cf41d50d5a1649a2c3bf9a08c37addfc85c1b5124bd06.
 
 16. LocalCoherentFilter.lean — exact finite hyperbolic producer, signed difference/sum-lag Gram formula, exact coherent endpoint and unconditional odd moment/plastic transfer; 14 public theorem audits. SHA256 1e71a25424aebd61b98307a70d8ba62c28b2e085c7b51e3d360fd4ce2946988c.
+17. LocalFilterLatticeGain.lean — actual finite-filter coefficient energy at most13/9, quantitative dominance over projected lattice price2, explicit unconditional plastic gain; 11 public theorem audits. SHA256 da97d0679dfcd8f390e0279cc0ae1704e9ac94045e700123ce277c123ab05a57.
+18. HyperbolicVarianceRigidity.lean — exact centered-energy/variance degeneracies, strictly positive finite-filter gain on every nonzero source, strict plastic improvement iff input is not even; 13 public theorem audits. SHA256 2d3baccc6ece6eefd2e74eea3fca2862453c0a4b119eab0e5ddf5483cff44b9c.
 
-All sixteen actual-source compilations passed without warnings. All 248 public theorem axiom audits use only propext, Classical.choice, Quot.sound. Each is wired into BiScale umbrella. Sixth module has 408 lines, namespace `GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGram`. Actual source and emitted olean audited; no source edits after successful compile. Fifth hash revalidated during sixth turn. Global lint is independent and can fail on concurrent modules/generated drift; exact latest snapshot is on master card. Never claim repository-wide clean gate without evidence.
+All eighteen actual-source compilations passed without warnings. All 272 public theorem axiom audits use only propext, Classical.choice, Quot.sound. Each is wired into BiScale umbrella. Sixth module has 408 lines, namespace `GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGram`. Actual source and emitted olean audited; no source edits after successful compile. Fifth hash revalidated during sixth turn. Global lint is independent and can fail on concurrent modules/generated drift; exact latest snapshot is on master card. Never claim repository-wide clean gate without evidence.
 
 Exact established mathematics:
 - Correct scale alpha=1/2. C=C_(1/2)f, S=S_(1/2)f, R=hf0, RS=hS0. hC-hS=cosh(x/2)hf and RC=R+RS. Source zero means hC=hS, not multiplier zero. A source clique diagonalizes GC-GS, not GS. Deltaf sech=R(sech-sech^2)+(DeltaC-DeltaS)sech^2, so dropping cosine companion after lower DeltaS bound has wrong sign.
@@ -205,3 +207,75 @@ Sixteenth result: exact finite coherent filter, 463 lines, seven public definiti
 - Lean: unfold covarianceMass to expose its private sourceSample body, then normalize integer casts; direct change across cast addition fails. Finset.mem_range.not.mp yields not-lt, use omega for Nat<=. Prove range inclusion explicitly; Finset.range_subset is more general than range-to-range monotonicity. Avoid ring_nf under autocorr arguments in endpoint; nlinarith only [] normalizes outer polynomial without mismatched inner kernel arguments.
 - Owned /tmp/hml_local_api.lean and /tmp/hml_local_lint.txt removed, absence verified. All owned source/API/search/index/lint handles terminal. Final whitespace checks passed, source/README hashes unchanged. No numerical experiments, heartbeat hacks, full builds, commits or pushes.
 - Frontier: compare/optimize finite signed filter energies, classify exact coherent endpoint and Schur slack, realize projection gains, all-control optimization and comparison with positive original energies. Count16/100,248 supporting public theorem audits; goal ACTIVE.
+
+
+## Latest verified contribution17: quantitative finite-filter lattice gain
+
+Previous turn PROGRESS; goal ACTIVE at17/100. No subagents. Brief and read-only README policy unchanged; README SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933 unchanged. Do not reread unchanged files; read updated README fully if hash changes. Original hyperbolic multiplier / odd plastic topic retained, no RH pivot.
+
+Source: formal/GaloisForLFunctions/BiScaleUncertainty/LocalFilterLatticeGain.lean; namespace GaloisForLFunctions.BiScaleUncertainty.LocalFilterLatticeGain. 260 lines,3 public definitions,11 public theorems. SHA256 da97d0679dfcd8f390e0279cc0ae1704e9ac94045e700123ce277c123ab05a57.
+
+Let d=log2,R=h_f0,Gamma=correlationMass f,Q=||centeredSource f(1/2)mu||²,kappa=covarianceMass f. Actual finite filter A_L from source16 has coefficient energy rho_L=2 sum_{k<L}(1/(2cosh((k+1)d/2)))². Finite signed integer Gram Schur bound proves ||A_L||²<=Gamma*rho_L. Exact first square2/9 and geometric tail prove rho_L<=13/9 (not asserted optimal). Since filterCovariance=kappa, H=filterEnergy=||A_L||²-kappa²/R and D=projectedEnergy=2Gamma-kappa²/R obey D-H>=5Gamma/9. Hence localBudget<=projectedBudget for all actual f, including R0. This closes the comparison left open in source16.
+
+Public definitions:
+- coefficientEnergy L = rho_L.
+- gainDenominator f = sqrt(QD)+sqrt(QH).
+- latticeGain f = ((5/9)Q Gamma)/gainDenominator f, totalized division.
+
+Public theorems:
+coefficientEnergy_le; sourceFilter_energy_le (Gamma*rho_L); sourceFilter_energy_le_thirteen_ninths; filterEnergy_gap; filterEnergy_le_projectedEnergy; localBudget_le_projectedBudget; budget_gap_product; budget_gap_product_ge; latticeGain_nonneg; latticeGain_le_budget_gap; odd_plasticCrossover_ge_latticeGain.
+Exact root identity: (C_proj-C_local)(sqrt(QD)+sqrt(QH))=Q(D-H)>=(5/9)QGamma. Thus gain g>=0 and g<=C_proj-C_local, handling denominator0 separately. Full canonical odd capstone: I_opt(F,N)+R_plastic(F)-2d*C_proj(F)+2d*g(F)<=P(F), all f,N without analytic premises. Gain is finite coefficient improvement, not extra source-line projection gain on exact source cliques. No universal strict gain, attainment, optimality or plastic positivity claimed. Classical Schur/geometric lemmas supporting only; one contribution.
+
+Verification:
+- Final actual-source audit86662 exited0 without warnings:
+  lake --old env lean GaloisForLFunctions/BiScaleUncertainty/LocalFilterLatticeGain.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/LocalFilterLatticeGain.olean
+- API/all11axiom audit84964 exited0 without warnings. Only propext,Classical.choice,Quot.sound. Source/audit public lists match exactly. Total259 public theorem audits.
+- Initial proof compiled78468; two tactic-style warning cleanups in position_injective. Final form all_goals (congr 1; omega). No heartbeat/recursion hacks.
+- Umbrella wired; index82972 exit0,all14 public declarations indexed. Source16 hash unchanged. Final source/README hashes and whitespace checks pass.
+- Lint80475 exit1 on11 unrelated unreachable modules: CoprimeShearArithmeticWeightsAndChebyshevCellIncrement,FiniteIntegerTrainCompactness,FiniteIntegerTrainEnergy,FiniteIntegerTrainPackets,FiniteIntegerTrainPeak,FiniteIntegerTrainPolar,FiniteIntegerTrainProducers,FoldFreeKernelGramAndFranelGcdCancellation,TernaryPacketPolarGrowth,TernaryPacketTrain,WitnessGermOriginMassAndJointTailHeadSynthesis. No owned lifting module/generated drift flagged. Existing large-file warnings remain; no global clean gate claim.
+- Corpus query finite signed filter coefficient lattice Schur --any --module BiScaleUncertainty --per-module2 --explore0 returned relevant source12/16/13 machinery; partial text/source retrieval, older coverage snapshot and unmeasured semantic coverage. Exact13/9 local-source rg found no predecessor. No literature novelty claim.
+- /tmp/hml_lattice_api.lean and /tmp/hml_lattice_lint.txt deleted; absence verified. All own source/API/search/index/lint sessions terminal. No numerical experiment/full build/commit/push.
+- Master card plan through22, section17 paper and audits complete. Ledger updated to Seventeen. Keep full100 goal ACTIVE.
+
+Next substantial directions: classify strict gain and Schur slack (does nonzero continuous compact source force Q>0?), optimize actual signed filters, compare odd moment prices with positive original energies. Do not count incremental rational constant improvements or generic inequalities as standalone contributions. Search corpus first; do not claim sourceVariance positive/nonzero equality without proof. Existing source-clique no-extra-projection-gain obstruction still applies.
+
+
+## Latest verified contribution18: hyperbolic rigidity and exact strict-gain domain
+
+Previous turn PROGRESS;18/100 complete, full100 goal ACTIVE. No agents, no RH, no hgtl7, no numerical experiments. Session init: use Serena list_memories with topic biscale (unfiltered output is huge), read task memory; reread user brief each new turn. README is still READ-ONLY and unchanged at SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933. Read fully only if hash changes; it was fully read before and unchanged.
+
+New source: formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicVarianceRigidity.lean. Namespace GaloisForLFunctions.BiScaleUncertainty.HyperbolicVarianceRigidity.232 lines,13 public theorems,no public definitions. SHA256 2d3baccc6ece6eefd2e74eea3fca2862453c0a4b119eab0e5ddf5483cff44b9c. Source17 unchanged at da97d0679dfcd8f390e0279cc0ae1704e9ac94045e700123ce277c123ab05a57.
+
+Exact unconditional classifications, for all actual f:C_c(R,R),alpha,c:
+- source_energy_eq_zero_iff: autocorr f0=0 iff f=0.
+- centeredSource_eq_zero_iff: centeredSource f alpha c=0 iff f=0 or (alpha=0 and c=1).
+- centered_energy_eq_zero_iff: identical classification for autocorr(centeredSource)0.
+- sourceVariance_eq_zero_iff: V(f,alpha)=0 iff f=0 or alpha=0.
+- sourceVariance_pos_iff: V>0 iff f!=0 and alpha!=0.
+Proof: continuous zero-energy functions are zero everywhere via integral_eq_zero_iff_of_nonneg_ae and Measure.eq_of_ae_eq. A nonzero centered-source annihilation at nonzero alpha confines f to {u,-u}: cosh_le_cosh converts equality to equal absolute arguments; cancel |2alpha| and use abs_eq_abs. volume.ae_ne u and volume.ae_ne(-u) imply f=0 a.e., continuity contradicts nonzero f. Zero scale handled exactly; existing Q_mu*R=V yields variance classification.
+
+Strict finite producer:
+- origin_energy_le_correlationMass: R<=Gamma by summable absolute lattice samples and the zero term.
+- latticeGain_pos_iff: g(f)>0 iff f!=0.
+- latticeGain_eq_zero_iff: g(f)=0 iff f=0.
+- localBudget_lt_projectedBudget_iff: C_local<C_proj iff f!=0.
+For f!=0, R>0, Gamma>=R>0, Q>0 at1/2, D>=H+5Gamma/9>0. Thus denominator sqrt(QD)+sqrt(QH)>0 and g=(5QGamma/9)/denominator>0. No unproved positivity premise. No uniform positive gap claimed.
+
+Odd input/capstone:
+- odd_source_eq_zero_iff_even: oddCompactSource f=0 iff Function.Even (f:R->R).
+- odd_latticeGain_pos_iff_not_even; odd_latticeGain_eq_zero_iff_even.
+- odd_plastic_strict_gain_certificate f N:
+  let F=oddCompactSource f; let B=I_opt(F,N)+R_plastic(F)-2log2*C_proj(F).
+  (B<B+2log2*g(F) iff not Function.Even f) AND B+2log2*g(F)<=P(F).
+  Entire statement unconditional on input and collar cutoff. It classifies strict improvement, not universal P positivity or norm-price attainment. All13 supporting theorem audits constitute one contribution.
+
+Verification:
+- Final actual source67544 exit0,no warnings:
+  lake --old env lean GaloisForLFunctions/BiScaleUncertainty/HyperbolicVarianceRigidity.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/HyperbolicVarianceRigidity.olean
+- API/all13axiom audit39493 exit0,no warnings. Only propext,Classical.choice,Quot.sound. Source/audit name lists identical. Total272 public supporting theorem audits. Source unchanged afterward.
+- Initial source90886 needed only unfolding correlationMass alongside sourceSample in simpa for origin inclusion. Final solved. Initial API71342 error was an under-specified @Real.sqrt_pos.mpr probe; use @Real.sqrt_pos. All names checked in final scratch.
+- Umbrella wired; index85585 exit0,13 public declarations indexed. Lint9584 flagged7 unrelated unreachable modules plus concurrent generated drift. One bounded refresh85390 exit0 (3 changed); final lint91190 exit1 still7 unrelated unreachable modules: AntitoneDyadicStencil,CellPrefixHilbert,DivisorCellConstraints,DivisorEnergyCompletion,DivisorGradientClosure,FullDivisorEnergyEscape,HighFrequencyLaplaceEnergyMeanValue. Concurrent drift remains in formal/LEAN_API.md and formal/LEAN_OVERVIEW.md. Existing large-file warnings. No owned lifting module flagged; do not claim repository-wide clean gate or chase concurrent drift indefinitely.
+- Source18,source17,README hashes verified; final whitespace and scratch absence checks pass. /tmp/hml_rigidity_api.lean and /tmp/hml_rigidity_lint.txt deleted. All own Lean/search/index/lint handles terminal; no source edits after final audit.
+- Corpus hybrid query hyperbolic source variance zero strict positive centered energy --any --module BiScaleUncertainty --per-module2 --explore0 returned current identities plus PathCongestion.weightedVariance_eq_zero_iff in CompactSourcePairVariance. This classifies general observable constancy but not hyperbolic level rigidity or strict gain. Inspected its continuous-a.e.-equality mechanism; did not import its broader independent topic. Partial search, unfinished text/source retrieval, older coverage and unmeasured semantic coverage. No external novelty claim.
+
+Master card plan through23, section18 proof/audits complete. Facts ledger Eighteen. Main strictness question is CLOSED; do not re-count or re-prove it as a new contribution. Next significant directions: quantify Schur slack / norm-price attainment for actual finite producers, optimize source-supported producer energy, compare moment prices against positive original energies. Source-clique no-extra-projection-gain law remains unchanged. Generic inequalities or incremental constant refinements are not standalone contributions.

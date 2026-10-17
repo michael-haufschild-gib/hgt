@@ -26,13 +26,16 @@ def consecutivePacketTrain {m : ℕ} (c : Fin (m + 1) → ℝ) (hc : ∃ i, c i 
   site_injective := by
     intro i j hij
     apply Fin.ext
+    change (i.val : ℤ) = (j.val : ℤ) at hij
     exact_mod_cast hij
   coefficient_nonzero := hc
 
 theorem source_consecutivePacketTrain {m : ℕ} (c : Fin (m + 1) → ℝ) (hc : ∃ i, c i ≠ 0)
     (f : ℝ → ℝ) (S : ℝ) : (consecutivePacketTrain c hc).source f S = copyTrain f c S := by
   funext u
-  simp only [IntegerPacketTrain.source, consecutivePacketTrain, copyTrain, Int.cast_natCast]
+  change finiteTranslateSource f Finset.univ c (fun i : Fin (m + 1) => ((i.val : ℤ) : ℝ) * S) u =
+    finiteTranslateSource f Finset.univ c (fun i : Fin (m + 1) => (i.val : ℝ) * S) u
+  simp only [Int.cast_natCast]
 
 theorem lagCoefficient_consecutivePacketTrain {m : ℕ} (c : Fin (m + 1) → ℝ) (hc : ∃ i, c i ≠ 0)
     (k : ℤ) : (consecutivePacketTrain c hc).lagCoefficient k = copyTrainLagCoefficient c k := rfl
@@ -66,7 +69,7 @@ theorem exists_smooth_diffuse_train_polar_escape :
       0 < normalizedPolarMoment f.source ∧
       (∀ n, autocorr (g n).source 0 = ((n : ℝ) + 2) * autocorr f.source 0) ∧
       (∀ n, dist (g n).complexCorrelation f.complexCorrelation = 1 / ((n : ℝ) + 2)) ∧
-      (∀ n, (((n : ℝ) + 2) / 4) * normalizedPolarMoment f.source ≤ normalizedPolarMoment (g n).source) ∧
+      (∀ n : ℕ, (((n : ℝ) + 2) / 4) * normalizedPolarMoment f.source ≤ normalizedPolarMoment (g n).source) ∧
       Tendsto (fun n => normalizedPolarMoment (g n).source) atTop atTop ∧
       TendstoUniformly (fun n => (g n).correlation) f.correlation atTop ∧
       Tendsto (fun n => normalizedArchEnergy (g n).source) atTop (𝓝 (normalizedArchEnergy f.source)) ∧

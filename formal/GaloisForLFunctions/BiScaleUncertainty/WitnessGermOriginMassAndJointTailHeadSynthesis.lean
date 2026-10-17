@@ -580,7 +580,8 @@ theorem logMobiusFermiErrorEnergy_succ_succ_le_tail_add_centered_chebyshev (N : 
           (8 * (Chebyshev.psi (1 / (2 * t)) - 1 / (2 * t)) ^ 2 +
             2 * (Chebyshev.psi (1 / t) - 1 / t) ^ 2) := by
   rw [logMobiusFermiErrorEnergy_succ_succ_eq N]
-  refine add_le_add_left (mul_le_mul_of_nonneg_left ?_ (by positivity)) _
+  have hlog : (0 : ℝ) ≤ 1 / Real.log ((N + 2 : ℕ) : ℝ) ^ 2 := by positivity
+  refine add_le_add le_rfl (mul_le_mul_of_nonneg_left ?_ hlog)
   set S : Set ℝ := Ioc (1 / (((N + 2 : ℕ) : ℝ) + 1)) 1
   have hcut : (0 : ℝ) < 1 / (((N + 2 : ℕ) : ℝ) + 1) := by positivity
   have hmeas_psi : Measurable Chebyshev.psi := by
@@ -626,9 +627,9 @@ theorem logMobiusFermiErrorEnergy_succ_succ_le_tail_add_centered_chebyshev (N : 
         nlinarith [ (by positivity : (0 : ℝ) ≤ 1 / (2 * t)) ]
       rw [Real.norm_of_nonneg (by positivity)]
       linarith
-  refine integral_mono_of_nonneg (Eventually.of_forall fun _ => sq_nonneg _) hInt ?_
-  rw [ae_restrict_iff' measurableSet_Ioc]
-  refine Eventually.of_forall fun t _ => ?_
+  refine integral_mono_of_nonneg (Eventually.of_forall fun _ => sq_nonneg _) hInt
+    (Eventually.of_forall fun t => ?_)
+  dsimp only
   have h := dyadic_chebyshev_head_sq_le_centered_sq (1 / t)
   rwa [show (1 / t) / 2 = 1 / (2 * t) by ring] at h
 

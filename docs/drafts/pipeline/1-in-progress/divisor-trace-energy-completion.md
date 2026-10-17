@@ -1,7 +1,7 @@
 # Energy completion of arbitrary divisor traces
 
 - **ID:** divisor-trace-energy-completion
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Statement:** Identify the physical closure of arbitrary-family integer-hat
   extensions through exact component conservation laws, and construct the
@@ -28,8 +28,31 @@ full family D=ℕ, the expected closure is the unit-cell span from index1 onward
 This would turn the nonclosed-range obstruction into a constructive continuum
 domain, and prepare a domain-level comparison with the multiplicative graph.
 No full SourceGraph identification, unweighted logarithmic H1 or affine-unitary
-claim is yet justified. Recheck corpus and primary Hilbert/graph theory before
-paper proof. Unproved and uncounted; no Lean file is assigned to this candidate.
+claim is justified. Dependency-closed paper proof is now in
+`docs/reports/BiScaleUncertainty/DivisorTraceEnergyCompletion.md`, written before
+the five Lean leaves. Formal verification remains pending; not yet counted.
+
+Formal scope: CellPrefixHilbert, DivisorCellConstraints, DivisorGradientClosure,
+DivisorEnergyCompletion, FullDivisorEnergyEscape. The last leaf constructs
+finite linear ramps with exact squared physical error 1/(n+1), addressing the
+producer requirement while retaining the continuum coprime-shear topic.
+
+Verification gates:
+- [x] Dependency-closed paper proof and prior corpus/primary-source audit.
+- [x] CellPrefixHilbert, DivisorCellConstraints, DivisorGradientClosure: direct
+  leaf checks pass with empty logs and normal compiled outputs.
+- [ ] Physical completion/recovery and explicit full-family ramp leaf checks.
+- [ ] Exact all-declaration axiom audit, principal signatures, umbrella/index/lint.
+- [ ] Certify once as package15, update facts and memory, retain next conjecture.
+
+Plan: identify the closure by zero cumulative sums at inactive nodes; prove
+equivalence to finite-component conservation; construct the complete physical
+cell domain and its cumulative traces; classify exact ℓ² recovery and produce
+missing preimages in the unbounded-run case; audit every new leaf and declaration.
+Key proof candidate: orthogonal residuals are constant along active edges.
+Combined with zero cumulative traces, finite components force that residual to
+vanish; an infinite constant tail vanishes by ℓ² decay. This can avoid assuming
+an abstract spectral or domain-identification interface.
 
 Initial lexical corpus query: `integerHat closed span range completion`,
 BiScaleUncertainty filter with `--any`; all20 declarations and5 exploration

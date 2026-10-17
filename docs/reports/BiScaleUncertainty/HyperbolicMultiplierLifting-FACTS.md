@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Sixteen substantive results are Lean verified: compensated multiplier Gram
+contributions. Eighteen substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -20,7 +20,9 @@ coherent cancellation with its exact boundary law and sharper full plastic recei
 unbounded realized cancellation at fixed source energy with its full plastic transfer (13), and
 the explicit coherent source-cancelling producer with its unconditional energy error and
 sharper odd moment/plastic bound (10), and the exact finite coherent filter with
-its signed Gram formula and unconditional moment/plastic transfer (14). Supporting theorem
+its signed Gram formula and unconditional moment/plastic transfer (14), and the quantitative
+finite-filter lattice comparison with explicit unconditional plastic gain (11), and hyperbolic
+variance rigidity with the exact strict-gain domain and full plastic certificate (13). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -710,8 +712,8 @@ Full goal remains ACTIVE at15/100.
   I_opt(F,N)+R_plastic(F)-2d*C_local(F)<=P(F), for every collar cutoff N.
 - Main capstones construct their source cutoff and producer. No unknown
   analytic bound, source-zero condition or nonzero-energy premise remains.
-  The support bound enters through the finite filter window; no cutoff-independent
-  price, superiority to every earlier budget, norm-price attainment or universal
+  The exact signed energy retains the finite support window; its uniform lattice
+  comparison is established below. No norm-price attainment or universal
   plastic positivity is asserted. One contribution; generic finite counting and
   affine-limit arguments are supporting machinery, not new contribution counts.
 
@@ -720,10 +722,76 @@ Final actual-source audit passed without warnings; 463 lines, seven public
 definitions and fourteen public theorems. SHA256
 `1e71a25424aebd61b98307a70d8ba62c28b2e085c7b51e3d360fd4ce2946988c`.
 All fourteen public axiom audits use only `propext`, `Classical.choice`, `Quot.sound`.
-Sixteen contributions, 248 public supporting theorem audits. Umbrella wired;
-all21 public declarations indexed. Canonical README and previous source15 unchanged.
-Latest lint snapshot: 18 unrelated modules unreachable from the BiScale umbrella;
-no owned lifting module or generated-file drift flagged. Exact list on master card.
-Remaining frontier: compare/optimize finite signed filter energies, classify the
-exact coherent endpoint and its Schur slack, realize projection gains, and compare
-moment prices with positive original energies. Full goal remains ACTIVE at16/100.
+Umbrella wired; all21 public declarations indexed. Canonical README and previous
+source15 unchanged. The next result supplies the missing comparison with the
+earlier projected lattice budget.
+
+## Quantitative dominance of the finite filter
+
+- For the actual finite filter A_L and Gamma=sum_Z|h_f(kd)|, d=log2,
+  ||A_L||²<=Gamma*rho_L, where rho_L=2sum_{k=1}^L[2cosh(kd/2)]^{-2}.
+  Distinct positive/negative lattice positions give an absolute row bound by
+  Gamma while preserving the actual signed Gram energy on the left.
+- The exact first coefficient square is 2/9. Bounding subsequent squares by
+  2^{-k} gives rho_L<=13/9, uniformly in L, including L=0. This constant is
+  sufficient for the comparison; no optimality is asserted.
+- Let H=||A_L||²-kappa²/R and D=2Gamma-kappa²/R. Then
+  D-H>=5Gamma/9>=0. The same exact source projection cancels from the gap;
+  the new improvement comes from the finite producer's coefficient energy.
+  This remains valid at R=0 with totalized division.
+- Consequently C_local<=C_proj. With Q=||q||², the exact identity
+  (C_proj-C_local)(sqrt(QD)+sqrt(QH))=Q(D-H)
+  gives the explicit nonnegative gain
+  g=(5QGamma/9)/(sqrt(QD)+sqrt(QH))<=C_proj-C_local. If the denominator
+  vanishes, g=0 and the comparison still holds.
+- For every canonical odd F and every collar cutoff N,
+  I_opt(F,N)+R_plastic(F)-2d*C_proj(F)+2d*g(F)<=P(F).
+  The producer, its coefficient bound, and the zero-energy branch are all
+  discharged. Signed source data remain unrestricted. The exact strictness
+  domain is classified below; no optimal coefficient, budget attainment or
+  plastic positivity is asserted.
+  This does not contradict the no-extra-projection-gain law on exact cliques.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/LocalFilterLatticeGain.lean`.
+Final actual-source compile and all11 public theorem axiom audits passed without
+warnings. Axioms: only `propext`, `Classical.choice`, `Quot.sound`. Source has260
+lines, three public definitions and eleven public theorems; SHA256
+`da97d0679dfcd8f390e0279cc0ae1704e9ac94045e700123ce277c123ab05a57`.
+Umbrella wired, all14 public declarations indexed. README and source16 unchanged.
+The following rigidity result resolves the strictness domain left open by the
+quantitative comparison. Schur slack and producer optimization remain distinct questions.
+
+## Hyperbolic variance rigidity and exact strictness domain
+
+- For actual compact continuous f, autocorr(f,0)=0 iff f=0. Continuity
+  upgrades almost-everywhere zero energy to pointwise zero source.
+- For every real scale alpha and scalar center c,
+  centeredSource(f,alpha,c)=0 iff f=0 or (alpha=0 and c=1).
+  The same classification holds for its origin energy. At nonzero scale,
+  a hyperbolic level set consists of at most two points. A continuous source
+  supported there is zero, so no nonzero source is a multiplier eigenvector.
+- V(f,alpha)=0 iff f=0 or alpha=0, and V>0 iff both f and alpha are nonzero.
+  This discharges strict positivity at scale1/2 from actual source data.
+- Gamma>=R. For nonzero f, Q>0, Gamma>0 and D>=H+5Gamma/9>0.
+  Therefore the constructed finite-filter gain g is positive iff f!=0 and
+  zero iff f=0. Likewise C_local<C_proj iff f!=0. These are exact
+  degeneracy classifications, not uniform positive lower gaps.
+- F=oddCompactSource f is zero iff f is even. Hence g(F)>0 exactly when
+  f is not even. For every f,N, the explicit improved lower bound
+  B+2(log2)g(F)<=P(F) is strictly larger than B iff f is not even.
+  The full plastic certificate requires no positivity or source-zero premise.
+  No universal plastic positivity or norm-price attainment follows.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicVarianceRigidity.lean`.
+Final actual-source compile and all13 public theorem axiom audits passed without
+warnings. Only `propext`, `Classical.choice`, `Quot.sound`. Source has232 lines,
+13 public theorems, no public definitions; SHA256
+`2d3baccc6ece6eefd2e74eea3fca2862453c0a4b119eab0e5ddf5483cff44b9c`.
+Umbrella wired; all13 public declarations indexed. README and source17 unchanged.
+Eighteen contributions, 272 public supporting theorem audits; full goal ACTIVE.
+Generic zero-integral facts support this single rigidity/strict-gain contribution.
+Latest global lint: seven unrelated unreachable modules and concurrent generated
+drift in LEAN_API/LEAN_OVERVIEW after one bounded refresh; no owned lifting module
+flagged. Exact snapshot on master card; no global clean-gate claim.
+Remaining frontier: quantify Schur slack, decide norm-price attainment, optimize
+actual finite producers, and compare moment prices with positive original energies.

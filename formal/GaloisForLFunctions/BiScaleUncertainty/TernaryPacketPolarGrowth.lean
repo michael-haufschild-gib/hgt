@@ -31,17 +31,27 @@ theorem ternaryPacketTrain_symbol_product_ge_exp (n : ℕ) (S : ℝ) :
       (ternaryPacketTrain n).expSymbol S (-(1 / 2)) := by
   let i : Fin ((n + 1) + 1) := ⟨0, by omega⟩
   let j : Fin ((n + 1) + 1) := ⟨1, by omega⟩
+  have hi : (ternaryPacketTrain n).site i = (1 : ℤ) := by
+    change (3 : ℤ) ^ 0 = 1
+    norm_num
+  have hj : (ternaryPacketTrain n).site j = (3 : ℤ) := by
+    change (3 : ℤ) ^ 1 = 3
+    norm_num
   have hp : Real.exp (3 * S / 2) ≤ (ternaryPacketTrain n).expSymbol S (1 / 2) := by
     calc
       _ = Real.exp ((1 / 2) * (((ternaryPacketTrain n).site j : ℝ) * S)) := by
         congr 1
-        norm_num [ternaryPacketTrain, j] <;> ring
+        rw [hj]
+        norm_num
+        ring
       _ ≤ _ := ternaryPacketTrain_expSymbol_ge n S (1 / 2) j
   have hm : Real.exp (-S / 2) ≤ (ternaryPacketTrain n).expSymbol S (-(1 / 2)) := by
     calc
       _ = Real.exp (-(1 / 2) * (((ternaryPacketTrain n).site i : ℝ) * S)) := by
         congr 1
-        norm_num [ternaryPacketTrain, i] <;> ring
+        rw [hi]
+        norm_num
+        ring
       _ ≤ _ := ternaryPacketTrain_expSymbol_ge n S (-(1 / 2)) i
   calc
     _ = Real.exp (3 * S / 2) * Real.exp (-S / 2) := by

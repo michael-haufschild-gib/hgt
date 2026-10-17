@@ -537,8 +537,70 @@
       Unconditional prime-free archimedean full Weil functional lower bounds across all explicit-formula
       test spaces.
 
+31. **Pillar XXXI — `formal/GaloisForLFunctions/BiScaleUncertainty/UnconditionalLaplaceEnergyAndRoughCollarWeilProducer.lean`**
+    - `chebyshevPsi_one_eq_zero`, `sum_dyadic_chebyshevPsi_diff_eq`,
+      `dyadicCumulativeChebyshevProducer`,
+      `chebyshevPsi_two_pow_le_dyadicCumulativeChebyshevProducer`,
+      `sum_range_two_pow_nat_cast`, `dyadicCumulativeChebyshevProducer_le`,
+      `chebyshevPsi_two_pow_le_linear_add_log`:
+      All-scale telescoping dyadic Chebyshev factorial producer
+      $\operatorname{dyadicCumulativeChebyshevProducer}(K) = \sum_{k=0}^{K-1} (T(2^{k+1}) - 2T(2^k))$
+      and unconditional Stirling-only dyadic Chebyshev upper bound
+      $\psi(2^K) \le (2\log 2)(2^K - 1) + K(2\log(2^K + 1) + 1)$.
+    - `laplaceEnergyProducerBound`, `laplaceEnergy_le_laplaceEnergyProducerBound`,
+      `normalizedLogError_cutoff_sq_le_laplaceEnergy`,
+      `packetEnergy_le_laplaceEnergy_gauge`:
+      Unconditional prime-free archimedean producer bound on `laplaceEnergy N` and direct Laplace
+      Gram energy control of `packetEnergy f N`.
+    - `primeWeight_le_vonMangoldt`, `sum_primeWeight_le_chebyshev_psi`,
+      `integral_polarDensity_cutoff_eq`, `massProducerBound`,
+      `mass_le_massProducerBound`, `mass_sq_le_massProducerBound_sq`:
+      Unconditional prime-free archimedean producer bound on `SignedPrimePolar.mass N`.
+    - `archimedeanCollarPacketProducerBound`, `archimedeanCorrelationGaugeProducerBound`,
+      `archimedeanCollarTrialProducerBound`,
+      `packetEnergy_le_archimedeanCorrelationGaugeProducerBound`,
+      `packetEnergy_le_archimedeanCollarTrialProducerBound`,
+      `two_mul_abs_pairing_le_archimedeanCorrelationGaugeProducerBound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_correlationCollarProducer_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_correlationCollarProducer_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_correlationCollarProducer_lower_bound`,
+      `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_correlationCollarProducer_lower_bound`,
+      `RealHyperplaneGenerator.unconditional_weilFullFunctional_vonMangoldt_correlationCollarProducer_lower_bound`:
+      Derivative-free, correlation-only, 100% prime-free archimedean packet, pairing, and full Weil
+      functional bounds across all explicit-formula test spaces.
+
+32. **Pillar XXXII — `formal/GaloisForLFunctions/BiScaleUncertainty/UnconditionalCoprimeFactorialLiftAndSpectralLaplaceProducer.lean`**
+    - `coprimeHarmonicCorrection`, `coprimeHarmonicCorrection_eq_pairs`,
+      `coprimeHarmonicCorrection_bounds`:
+      Unconditional $[0, 3]$ bound on the coprime $(2, 3)$ harmonic second difference
+      $6N(H_{6N} - H_{3N} - H_{2N} + H_N)$.
+    - `factorialCoprimeTwoThree`, `factorialCoprimeTwoThree_zero`,
+      `factorialCoprimeTwoThree_top`, `factorialCoprimeTwoThree_ne_autocorr`,
+      `factorialCoprimeTwoThree_admissible`,
+      `fullPairing_factorialCoprimeTwoThree_eq`,
+      `abs_fullPairing_factorialCoprimeTwoThree_le`,
+      `factorialCoprimeTwoThree_producer`:
+      Explicit coprime $(2, 3)$ real-ratio factorial-lift producer for `fullPairing` with exact
+      evaluation $(2\,\operatorname{coprimeTwoThreeChebyshevProducer}(N) - \operatorname{coprimeHarmonicCorrection}(N))/\sqrt{N}$
+      and unconditional $O(\log N / \sqrt{N})$ bound $\le (24\log(6N+1) + 7)/\sqrt{N}$.
+    - `norm_fourierPairing_le_massProducerBound`,
+      `spectral_fourierPairing_integral_le_laplaceEnergyProducerBound`,
+      `packetEnergy_le_spectral_fourierPairing`,
+      `packetEnergy_le_gauge_sq_mul_laplaceEnergyProducerBound`,
+      `collar_packetEnergy_le_budget_mul_laplaceEnergy`,
+      `collar_packetEnergy_le_budget_mul_laplaceEnergyProducerBound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_bound`,
+      `RealWeilTestFn.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_lower_bound`,
+      `RealEvenPolarTestFn.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_lower_bound`,
+      `RealOddTestFn.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_lower_bound`,
+      `RealHyperplaneGenerator.unconditional_weilFullFunctional_vonMangoldt_laplaceProducer_lower_bound`:
+      Unconditional prime-free critical-line spectral Laplace producer bounds and boundary-free
+      multiplicative full Weil functional lower bounds across all explicit-formula test spaces.
+
 ## Audit Status
-- **Module Verification**: All 30 Pillars (`UnconditionalChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXX; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Module Verification**: All 32 Pillars (`UnconditionalCoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `UnconditionalLaplaceEnergyAndRoughCollarWeilProducer.lean`, `UnconditionalChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XXXII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+
+
 
 

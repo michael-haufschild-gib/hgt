@@ -66,6 +66,15 @@
 22. Compare that actual finite filter with the previous lattice producer. Bound
     its coefficient square sum by 13/9, retain the same source projection, and
     transfer the resulting quantitative improvement to the full plastic bound.
+23. Classify vanishing hyperbolic centered energy and variance on actual compact
+    continuous sources. Use that rigidity to identify exactly when the finite
+    filter's quantitative gain is strict, and transfer the classification to
+    the odd plastic functional without an unproved positivity premise.
+24. Prove the finite filter escapes the original source support. Construct the
+    residual after both source and centered-source projections, identify its
+    strictly positive energy, and recover the exact Cauchy--Schwarz slack in
+    the full plastic functional. Close the nonzero-saturation route with this
+    positive survivor rather than a bare nonattainment statement.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -1463,7 +1472,8 @@ plastic lower bound strengthens to
 I_opt+R_plastic-2d C_proj+2d g <= P(F), unconditionally for F=oddCompactSource f.
 This gain comes from the explicit filter's coefficient norm, not additional
 source-line projection gain on an exact zero clique. General signed source
-data remain primary. Lean verification pending; contribution count stays16.
+data remain primary. Lean verification completed below; one substantive
+contribution, with classical Schur and geometric estimates as supporting lemmas.
 
 Corpus audit: direct hybrid query `finite signed filter coefficient lattice Schur`
 with `--any --module BiScaleUncertainty --per-module 2 --explore 0` returned the
@@ -1473,3 +1483,165 @@ candidate status and older coverage snapshot, semantic coverage unmeasured).
 Applicable local declarations were inspected directly. Exhaustive `rg` over the
 BiScale source directory found no previous 13/9 comparison. This establishes
 local nonduplication only, not external literature novelty.
+
+### Verification of the seventeenth result
+
+- Initial actual-source compile78468 passed all proofs; two tactic-style warnings
+  were removed in two small edits to the private position injectivity proof.
+  Final actual-source audit86662 exited0 without warnings, using
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/LocalFilterLatticeGain.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/LocalFilterLatticeGain.olean`.
+  Final SHA256
+  da97d0679dfcd8f390e0279cc0ae1704e9ac94045e700123ce277c123ab05a57.
+- New module has260 lines, three public definitions, eleven public theorems.
+  No source16 edit; its hash remains
+  1e71a25424aebd61b98307a70d8ba62c28b2e085c7b51e3d360fd4ce2946988c.
+  `lake --old env lean /tmp/hml_lattice_api.lean`, audit84964, exited0 without
+  warnings against the final source artifact. All11 public theorem audits use
+  only `propext`, `Classical.choice`, `Quot.sound`; source/audit lists match
+  exactly. New mathlib names also checked there. One owned Lean process at a
+  time throughout. Contribution17/100, 259 public supporting theorem audits.
+- Umbrella import wired. Index82972 exited0; all14 public declarations indexed.
+  Read-only README SHA256 remains
+  dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933.
+- Lint80475 exited1 on11 unrelated unreachable BiScale modules:
+  `CoprimeShearArithmeticWeightsAndChebyshevCellIncrement`,
+  `FiniteIntegerTrainCompactness`, `FiniteIntegerTrainEnergy`,
+  `FiniteIntegerTrainPackets`, `FiniteIntegerTrainPeak`, `FiniteIntegerTrainPolar`,
+  `FiniteIntegerTrainProducers`, `FoldFreeKernelGramAndFranelGcdCancellation`,
+  `TernaryPacketPolarGrowth`, `TernaryPacketTrain`,
+  `WitnessGermOriginMassAndJointTailHeadSynthesis`.
+  No owned lifting module or generated-file drift flagged. Existing large-file
+  warnings remain. Other agents' sources preserved; no global clean-gate claim.
+- Final source and read-only README hashes rechecked unchanged; no source edits
+  after the successful final audit. Whitespace checks passed. All owned
+  source/API/search/index/lint handles terminal. No numerical experiment, full
+  build, commit or push. Full100-contribution goal remains ACTIVE.
+- Owned `/tmp/hml_lattice_api.lean` and `/tmp/hml_lattice_lint.txt` removed;
+  absence verified. Contribution17/100 complete.
+
+## Eighteenth result: hyperbolic variance rigidity and strict producer gain
+
+Paper proof, before formalization. For every actual compact continuous f,
+autocorr(f,0)=0 iff f=0: the integral of f² vanishes iff f²=0 almost
+everywhere, and continuity upgrades that equality to every point.
+
+For q=(cosh(2 alpha u)-c)f, the exact classification is
+q=0 iff f=0 or (alpha=0 and c=1). If f is nonzero, choose u with f(u)!=0.
+When alpha=0, q(u)=0 forces c=1. When alpha!=0, every v with f(v)!=0
+satisfies cosh(2 alpha v)=cosh(2 alpha u). Cosh is strictly increasing in
+absolute argument, so |v|=|u| and v is u or -u. These two points are Lebesgue
+null. Thus f=0 almost everywhere, and continuity contradicts the chosen u.
+The converse is immediate. Combining with the preceding energy criterion
+classifies centered energy for every scale and every scalar center.
+
+The existing identity Q_mu*R=V then gives V(f,alpha)=0 iff f=0 or alpha=0.
+For the reverse zero-scale direction, cosh(0)=1 makes coshMass=R and
+coshSquareMass=R, hence V=R²-R²=0. No positivity premise is assumed.
+In particular at alpha=1/2, every nonzero f has Q_mu>0 and R>0.
+
+The finite lattice row sum Gamma includes |h_f(0)|=R, so Gamma>=R.
+For nonzero f, Gamma>0. Source17 gives D-H>=5Gamma/9 while H>=0,
+hence D>0. Therefore sqrt(QD)+sqrt(QH)>0 and its gain
+g=(5QGamma/9)/(sqrt(QD)+sqrt(QH)) is strictly positive. For f=0, Q=0
+and g=0. Thus g>0 iff f!=0, and g=0 iff f=0. The budget comparison is
+strict on exactly the same domain; at zero both root terms vanish.
+
+Finally F=oddCompactSource f is zero iff f(-u)=f(u) for every u.
+Consequently the explicit increment 2(log2)g(F) is positive exactly when
+the input has a nonzero odd component. For every f,N, if B denotes the old
+projected plastic lower bound, (B<B+2(log2)g(F) iff f is not even), and
+B+2(log2)g(F)<=P(F). This is an unconditional strict-improvement certificate,
+not an assertion of universal plastic positivity or of a uniform positive gap.
+One contribution: the exact degeneracy/strictness classification for the actual
+hyperbolic producer. Generic continuous zero-energy facts are supporting only.
+
+Corpus audit: hybrid query `hyperbolic source variance zero strict positive centered energy`
+with `--any --module BiScaleUncertainty --per-module 2 --explore 0` returned
+centered energy/variance identities and the separate compact weighted-variance
+classification. That latter theorem concerns constancy of a general continuous
+observable on source support; it does not settle hyperbolic level-set rigidity
+or strict finite-filter gain. Its continuous-a.e.-equality proof mechanism was
+inspected. Search was partial (text/source retrieval unfinished, older coverage
+snapshot, semantic coverage unmeasured). Exact source searches found no existing
+hyperbolic variance/gain classification. No external novelty claim. Lean verification
+completed below: contribution18/100, with supporting lemmas counted only within it.
+
+### Verification of the eighteenth result
+
+- Module `HyperbolicVarianceRigidity.lean`:232 lines,13 public theorems,
+  no public definitions. SHA256
+  2d3baccc6ece6eefd2e74eea3fca2862453c0a4b119eab0e5ddf5483cff44b9c.
+- Initial source90886 exposed one required expansion of `correlationMass` in
+  the zero-lag inclusion proof. Corrected explicitly; final actual-source
+  audit67544 exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/HyperbolicVarianceRigidity.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/HyperbolicVarianceRigidity.olean`.
+  No heartbeat or recursion changes. No source edit after this final audit.
+- `lake --old env lean /tmp/hml_rigidity_api.lean`, session39493, exited0 without
+  warnings. All13 public theorem axiom audits use only `propext`,
+  `Classical.choice`, `Quot.sound`; total272 supporting public theorem audits.
+  source/audit name lists match exactly. Initial API probe71342 recognized the
+  new names; corrected an under-specified `Real.sqrt_pos.mpr` probe to
+  `@Real.sqrt_pos` for the final API audit.
+- Umbrella wired; index85585 exited0 and all13 public declarations were indexed.
+  Lint9584 exited1 on7 unrelated unreachable modules plus concurrent generated
+  drift in LEAN_API/LEAN_OVERVIEW. One bounded index refresh and lint follow-up
+  capture the final snapshot; refresh85390 exited0 (3 changed), all13 owned
+  declarations remain indexed. Follow-up lint91190 exited1 on7 unrelated
+  unreachable modules: `AntitoneDyadicStencil`, `CellPrefixHilbert`,
+  `DivisorCellConstraints`, `DivisorEnergyCompletion`, `DivisorGradientClosure`,
+  `FullDivisorEnergyEscape`, `HighFrequencyLaplaceEnergyMeanValue`; concurrent
+  generated drift remains in LEAN_API/LEAN_OVERVIEW. No owned lifting module
+  flagged. Stop the bounded refresh here; unrelated sources remain untouched.
+  Existing large-file warnings remain; no global clean-gate claim.
+- Source18/17 and read-only README hashes verified unchanged; no source edit
+  after final actual-source audit. All owned Lean, search, index and lint handles
+  terminal. Only one owned Lean process ran at a time. No numerical experiment,
+  full build, commit or push. Full100-contribution goal remains ACTIVE.
+- Owned `/tmp/hml_rigidity_api.lean` and `/tmp/hml_rigidity_lint.txt` removed;
+  absence and final whitespace checks verified. Contribution18/100 complete.
+
+## Nineteenth result: finite-filter escape and strict Schur residual
+
+Dependency-closed paper proof before Lean implementation. Write d=log2, L=sourceCutoff f.
+For f!=0, support(f) is nonempty and bounded above; let M=sup support(f).
+Choose u in support(f) with M-d<u. Also L>=1 by the actual positive source
+radius and its cutoff gap. At v=u+Ld, f(v)=0. In the symmetric finite filter
+A_L(v), every translate except f(v-Ld)=f(u) is evaluated above M: any smaller
+negative lag leaves at least one extra d, and every positive lag is farther
+right. Thus A_L(v)=f(u)/(2cosh(Ld/2))!=0. This support escape holds for every
+nonzero actual source, without a sign or connected-support assumption.
+
+Let q=(cosh(u)-mu)f, Q=||q||², beta=<q,A_L>, and
+r=A_L-(kappa/R)f. Existing source orthogonality gives <q,r>=beta and
+||r||²=H. Construct the actual compact residual e=r-(beta/Q)q. Its energy is
+E=H-beta²/Q and it is orthogonal to both f and q. The zero-Q branch is the
+zero-source branch by contribution18, so all formulas are totalized and
+unconditional. At the escaping point v, f(v)=q(v)=0, hence e(v)=A_L(v)!=0.
+Therefore E>0 iff f!=0. The exact identity Q E=QH-beta² implies strict
+Cauchy--Schwarz beta²<QH for every nonzero f.
+
+In particular |beta|<sqrt(QH), so the denominator sqrt(QH)+beta is positive
+for every nonzero source. Define the actual residual correction
+g_res=Q E/(sqrt(QH)+beta), with value0 at the zero source. Rationalization
+gives g_res=sqrt(QH)-beta unconditionally, and g_res>0 iff f!=0.
+The local norm budget therefore has unavoidable strict slack above its exact
+signed pairing slope: C_local-g_res=R_S+sigma+beta. The already-proved
+coherent pairing endpoint yields, for every canonical odd F and collar N,
+I_opt+R_plastic-2d*C_local+2d*g_res<=P(F), with strict increment exactly when
+the original input is not even. This is an actual residual-energy producer,
+not an unproved positivity receiver. No uniform positive gap, optimal global
+plastic bound or universal plastic positivity is claimed.
+
+No-go under audit: nonzero compact sources cannot saturate the finite-filter
+Cauchy--Schwarz price. Strongest positive survivor is support escape plus the
+constructed, strictly positive residual energy and its exact recovered plastic
+correction. Final failed-route card will record the exact Lean certificate.
+
+Corpus: two direct hybrid queries for finite hyperbolic filter Cauchy Schwarz
+slack/source projection residual and compact source translate extreme support
+finite cancellation. Both partial (unfinished text/source retrieval, older
+coverage snapshot, semantic coverage unmeasured). Relevant finite filter,
+source-orthogonality, variance-rigidity and translated-support declarations
+inspected; no existing escape/nonattainment theorem found. This is local
+nonduplication evidence, not an external novelty claim. Count remains18 until
+the exact positive survivor and capstone are verified.

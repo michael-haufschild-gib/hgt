@@ -74,5 +74,5 @@ are reused inputs, not additional counted contributions.
 
 Growing finite trains may have vanishing normalized active coefficients through
 mass diffusion over many comparable packets. Candidate and corpus evidence:
-`../1-in-progress/finite-train-topology-and-diffuse-escape-2026-10-17.md`.
+`finite-train-topology-and-diffuse-escape-2026-10-17.md` (now certified as package 13).
 The sqrt(n)-weighted polar-copy sample defect is already in package 1.

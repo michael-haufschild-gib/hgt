@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
 - **Scope:** Infinite-Grid Tail Rigidity Beyond Trap 5; general signed correlations.
-- **Status:** Dependency-closed paper proof complete; Lean audit pending; uncounted.
+- **Status:** Dependency-closed paper proof complete; Lean formalization in progress; uncounted.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistPolarIntegrableResidual.md`
 - **Guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
 
@@ -78,4 +78,13 @@ cell-average producer and this stable residual. The diffuse train paper forces
 the producer term to diverge under compact correlations and convergent energies;
 the new uniformly bounded correction cannot explain that escape. All details,
 including absolute summation and endpoint conventions, are proved in the paper.
-No new Lean source has been written for this package yet.
+## Formal execution plan
+
+1. Revalidate prior corpus and actual producer bounds; check the required mathlib APIs.
+2. Prove the radical telescoping majorant and cell residual mass bounds.
+3. Construct the actual integrable tail kernel and positive bounded residual operator,
+   with exact norm and explicit vanishing tail bound.
+4. Prove the compact-source polar decomposition and apply it to the diffuse producer.
+5. Check every new leaf, all public axiom dependencies, imports/API entries and lint;
+   then update the ledger. Count the entire connected result once. `update_plan`
+   is unavailable; this card carries the plan. The field README remains read-only.

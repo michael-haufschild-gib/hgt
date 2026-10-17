@@ -1,8 +1,8 @@
 # Continuous factorial producer with exact prime-grid values
 
 - **ID:** signed-prime-polar-grid-preserving-smoothing
-- **Stage:** 0-backlog
-- **Type:** CANDIDATE
+- **Stage:** 1-in-progress
+- **Type:** PAPER-PROVED / LEAN IN PROGRESS
 - **Scope:** Next uncounted signed prime–polar producer package.
 - **Statement:** Construct a concrete compact continuous test with exactly the
   factorial bi-null producer's prime-grid values and an unconditional
@@ -54,7 +54,7 @@ unverified until the endpoint and floor-count details are audited.
 ## Gates and boundary
 
 - [x] Initial corpus search, including candidates and source arguments.
-- [ ] Audit all endpoint, continuity, support and Fubini details on paper.
+- [x] Audit endpoint, continuity, support and integration details on paper.
 - [ ] Construct the actual C_c test and prove exact grid preservation in Lean.
 - [ ] Prove the exact pairing and explicit bound, with no arithmetic assumption.
 - [ ] Certify uniform upper and positive lower L² bounds for this concrete family.
@@ -65,6 +65,13 @@ The test still has zero origin value and nonzero top value, so it is not an
 autocorrelation. No arbitrary-correlation packet estimate or positivity claim follows.
 Count only the complete continuous producer and exact arithmetic preservation
 package; averaging and interpolation helpers do not count separately.
+
+Dependency-closed paper proof:
+`docs/reports/BiScaleUncertainty/SignedPrimePolarContinuousFactorialProducer.md`.
+Lean uses the explicit ramp directly: exact endpoint values replace an a.e.
+parameter argument; piecewise FTC replaces two-variable Fubini; a finite antitone
+alternating-sum bound replaces floor-case enumeration. The squared L² upper
+bound can in fact be 16; the planned public bound 20 remains valid.
 
 Search `/tmp/spp8-next-search.json`: partial=false/errors=[]; complete file inventory,
 source-only/pending compiler metadata and unmeasured semantic coverage. Retrieved

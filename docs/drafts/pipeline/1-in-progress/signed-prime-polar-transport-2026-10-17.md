@@ -16,9 +16,10 @@ The coherent collar Schur constraint now gives joint lower control of packet
 energy. A source-only upper bound now retains the explicit roughness remainder.
 The exact gauge energy and its support budget now eliminate the constructed
 gauge norm. Signed scalar compensation is now optimized exactly, including
-degenerate cases. Trap 10 now redirects the next package to an explicit producer:
-lift the factorial bi-null stencil to the actual signed prime–polar measure,
-using real-ratio continuum cutoffs and an unconditional harmonic correction bound.
+degenerate cases. Trap 10 has now led to an explicit producer: the factorial
+bi-null stencil is lifted to the actual signed prime–polar measure, with real-ratio
+continuum cutoffs and an unconditional harmonic correction bound. Next: a compact
+continuous producer preserving every prime-grid value and nonvanishing L² size.
 Multiple-collar receivers are parked; width selection and residual control remain open.
 
 Authoritative field direction: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
@@ -52,12 +53,15 @@ producers with unconditional bounds before extending receiver machinery.
   and the resulting correlation-based packet and global transport bounds.
 - [x] Optimize signed scalar collar compensation, classify all minimizers, and
   prove exact gain and strict-improvement criteria with global transport.
-- [ ] Derive a useful coherent multiple-collar certificate, retaining all cross terms.
+- [x] Construct and certify an explicit factorial producer for the actual signed
+  measure, including domain admission, harmonic correction and unconditional rate.
+- [ ] Construct a continuous producer preserving the prime grid and nonvanishing L² size.
+- [ ] Derive a useful coherent multiple-collar certificate, retaining all cross terms (parked).
 - [ ] Quantify width selection and the remaining smoothing error.
 
 ## Current frontier
 
-Seven substantive contributions are formalized:
+Eight substantive contributions are formalized:
 - `3-formalized/annular-signed-prime-polar-chebyshev-coupling-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-packet-gram-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-halfline-2026-10-17.md`.
@@ -65,8 +69,9 @@ Seven substantive contributions are formalized:
 - `3-formalized/signed-prime-polar-rough-gauge-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-gauge-correlation-2026-10-17.md`.
 - `3-formalized/signed-prime-polar-optimal-collar-2026-10-17.md`.
+- `3-formalized/signed-prime-polar-factorial-producer-2026-10-17.md`.
 
-The overall target remains 100, with 93 further distinct contributions unproved.
+The overall target remains 100, with 92 further distinct contributions unproved.
 Packet construction, exact Gram representation, mass comparison, and transport
 corollaries form one contribution. Likewise the coherent collar construction,
 Schur constraint, and energy certificate are one contribution, not separate counts.
@@ -76,11 +81,19 @@ Initial search `/tmp/spp7-next-search.json` reports partial=false/errors=[];
 it also retrieves current source-only declarations, not proof certification.
 Target a full coherent mixture transport certificate, not a polarization identity alone.
 
-Active uncounted candidate: `1-in-progress/signed-prime-polar-factorial-producer-2026-10-17.md`.
-Concrete test R_K(x)=exp(x/2) sum_{j=1}^K 1_[0,log(K/j)](x), with real K/j.
-The normalized bi-null combination should have literal fullPairing bounded by
-(10 log(4N+1)+3)/sqrt(N), using the existing factorial bound and a paired-reciprocal
-harmonic correction. No assumed Chebyshev estimate or adjustable producer weights.
+Contribution 8 constructs R_K(x)=exp(x/2) sum_{j=1}^K 1_[0,log(K/j)](x), with
+real K/j. Its normalized bi-null combination has literal fullPairing bounded by
+(10 log(4N+1)+3)/sqrt(N), with no assumed Chebyshev estimate or adjustable weights.
+The test is discontinuous and cannot be an autocorrelation: its origin is zero,
+but its value at log(4N) is 2. The complete producer package counts once.
+
+Next uncounted candidate:
+`0-backlog/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
+Average a small common dilation to obtain a concrete C_c test while preserving
+all prime-grid values. Target the exact harmonic correction after averaging and
+uniform positive lower/upper L² bounds. The construction is sketched, not yet
+proved or formalized. Search `/tmp/spp8-next-search.json` has partial=false/errors=[];
+source-only retrieval is not proof certification.
 
 Secondary uncounted candidate: reduce B(d) to the triangular correlation integral
 2d⁻²∫₀ᵈ(d-t)h(t)dt, then derive width response and reconstruction from d²B(d).

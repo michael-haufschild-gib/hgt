@@ -3,7 +3,7 @@
 ## Scope and counting
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
-Target: 100 significant mathematical packages. Certified packages in this ledger: **12**.
+Target: 100 significant mathematical packages. Certified packages in this ledger: **13**.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
 
 Field guide: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only.
@@ -423,6 +423,45 @@ Formalized card: `distant-copy-topology-classification-2026-10-17.md`.
 Logs: `/tmp/distant-copy-*-leaf.log` and `/tmp/distant-copy-topology-{axioms,index,lint}.log`.
 Count the connected classification once, not its reused copy algebra or each endpoint.
 
+## Certified package 13: finite-train topology and diffuse polar escape
+
+For any actual compact positive-mass C² seed, nonzero finite real coefficients
+and distinct integer sites, let Q=sum_i c_i² and A_k=sum_(t_j-t_i=k)c_i c_j.
+With separation S>2D, the exact global normalized correlation error is
+L=max({0} union {|A_k|/Q : nonzero realized lags}). This covers changing counts,
+sparse sites and cancellations. Agreement on |x|<=S/2 gives
+
+    |E(G)-E(f)|<=2 integral_(S/2,infinity) w_arch.
+
+Thus S_n>=2D+2 tending to infinity yields energy convergence under one explicit
+ceiling, regardless of counts and coefficients. Global uniform correlation
+convergence, compact correlation closure and uniform signed logarithmic trace
+decay are each equivalent to L_n->0. The actual polar multiplier is exactly
+B_n(1/2)B_n(-1/2)/Q_n; when P(f)!=0, polar continuity is exactly convergence of
+that multiplier to one. Consecutive sites recover the earlier copyTrain APIs.
+
+The explicit equal-weight sites 3^i have unique nonzero ordered differences:
+Q=n+2, every nonzero grouped coefficient is one, L=1/(n+2), and each coefficient
+has mass fraction 1/(n+2). The first two sites give a symbol product >=exp(S).
+The premise-free smooth-source endpoint uses spacing S_n=8+n and a positive-polar
+seed to realize exact correlation distance 1/(n+2), convergent energies, compact
+correlation closure and uniform signed trace tails, while
+P(G_n)>=((n+2)/4)P(f)->infinity. No exact full-grid blindness is asserted.
+
+This is diffuse polar escape by many equal packets. Its positive survivors are
+the exact grouped-peak topology classification, count-independent energy estimate
+and exact polar symbol. The producer and all bounds are unconditional; no assumed
+Chebyshev receiver or pre-floor counterterm subtraction enters the result.
+
+Eight direct leaves pass cleanly. All 77 public declarations (61 theorems,
+15 definitions, one structure) have only standard axioms; all 77 API entries and
+eight imports are verified. Global lint failed on foreign unwired modules
+`CellPrefixHilbert`, `DivisorCellConstraints`, `HighFrequencyLaplaceEnergyMeanValue`,
+`UnconditionalLaplaceEnergyAndRoughCollarWeilProducer`, plus a foreign `sorry` in
+`HighFrequencyLaplaceEnergyMeanValue.lean:292`. This package has no lint error;
+repository-wide green is not claimed. Paper: `FiniteTrainTopologyAndDiffuseEscape.md`.
+Certificate: `docs/drafts/pipeline/3-formalized/finite-train-topology-and-diffuse-escape-2026-10-17.md`.
+
 ## Boundaries and next conjectures
 
 - A shrinking mesh alone gives no uniform modulus for a varying family of sources.
@@ -437,20 +476,22 @@ Count the connected classification once, not its reused copy algebra or each end
   bounds with a quadratic-collar constant `K`; its derivative-free inequality retains an `N`
   factor. Do not conflate those estimates with the present uniform logarithmic Levy modulus.
 
-## Next exact conjecture
+## Next paper result: an integrable Nyquist polar residual
 
-For separated finite trains with arbitrary varying packet counts, conjecture the
-exact correlation error is max_(k>0)|A_k|/Q, where A_k are grouped signed lag
-coefficients and Q is coefficient mass. Escaping spacing should imply energy
-convergence uniformly in count and coefficients; compactness should be equivalent
-to vanishing of that maximum. Equal coefficients at indices 1,3,9,... may realize
-diffuse escape: distinct differences give normalized active coefficients 1/q,
-despite no dominant source packet. Audit the polar symbol product and an actual
-diverging-polar-moment witness. Candidate, proof mechanism and corpus evidence:
-`docs/drafts/pipeline/1-in-progress/finite-train-topology-and-diffuse-escape-2026-10-17.md`.
-The complete paper proof is now recorded in `FiniteTrainTopologyAndDiffuseEscape.md`;
-Lean certification remains pending and this package is uncounted. Critical sqrt(n)-weighted
-polar-copy sample defects already belong to package 1; do not count restatements.
+The existing explicit constants C_n=nyquistPolarConstant(n) have cell error
+0<=cosh-C_n<=1/(4sqrt(n)). Multiplication by cell length gives residual mass
+alpha_n<=1/(4n sqrt(n))<=1/sqrt(n)-1/sqrt(n+1). Hence the actual all-tail residual
+operator R_N on bounded continuous functions is positive and bounded, with exact
+norm A_N=sum_(n>=N)alpha_n<=1/sqrt(N). Its kernel is integrable and its action is
+Lipschitz in the global norm. Actual compact-source polar integrals split exactly
+into Q(H)=sum C_n integral_cell H and this stable residual. Package 13 forces
+Q(H_n)->infinity while correlations and energies converge. The weighted
+cell-average term carries the escape; the residual is uniformly controlled.
+
+Dependency-closed paper proof: `NyquistPolarIntegrableResidual.md`.
+Card: `docs/drafts/pipeline/2-fully-proven/nyquist-polar-integrable-residual-2026-10-17.md`.
+Lean formalization has not started, and this result is uncounted. Existing cell
+L2/dyadic producer bounds and package 1's weighted sample defects are not new.
 
 Separate origin refinement: for fixed finite-energy f, R(q_n)->0 and bounded J(q_n)
 should imply J(f+q_n)-J(f)-J(q_n)->0 without support separation. A split mixed-increment

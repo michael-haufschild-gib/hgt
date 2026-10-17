@@ -71,7 +71,8 @@ def normalizedGram (m : ℕ) (a b : ℕ → ℝ) : ℝ :=
 
 theorem signedShift_inl (k : ℕ) :
     signedShift (Sum.inl k) = ((-((k : ℤ) + 1) : ℤ) : ℝ) * step := by
-  simp [signedShift, Real.log_pow, step, neg_mul]
+  simp [signedShift, Real.log_pow, step]
+  ring
 
 theorem signedShift_inr (k : ℕ) :
     signedShift (Sum.inr k) = (((k : ℤ) + 1 : ℤ) : ℝ) * step := by
@@ -86,18 +87,16 @@ theorem signedNode_cutoff (m : ℕ) (p : ℕ ⊕ ℕ) (hp : p ∈ signedNodes m)
     constructor
     · calc
         2 = 2 ^ 1 := by norm_num
-        _ ≤ 2 ^ (k + 1) := by gcongr; omega
-    · gcongr
-      omega
+        _ ≤ 2 ^ (k + 1) := Nat.pow_le_pow_right (by norm_num) (by omega)
+    · exact Nat.pow_le_pow_right (by norm_num) (by omega)
   | inr k =>
     have hk : k < m := by simpa [signedNodes] using hp
     change 2 ≤ 2 ^ (k + 1) ∧ 2 ^ (k + 1) ≤ 2 ^ m
     constructor
     · calc
         2 = 2 ^ 1 := by norm_num
-        _ ≤ 2 ^ (k + 1) := by gcongr; omega
-    · gcongr
-      omega
+        _ ≤ 2 ^ (k + 1) := Nat.pow_le_pow_right (by norm_num) (by omega)
+    · exact Nat.pow_le_pow_right (by norm_num) (by omega)
 
 theorem gramPacket_eq_anchoredPacket (m : ℕ) (a b : ℕ → ℝ) :
     AnchoredGram.packet source (signedNodes m) (signedWeight a b) signedShift 1 =
@@ -162,6 +161,8 @@ theorem triangle_logarithmic_cutoff_law (m : ℕ) :
 theorem triangle_error_antitone :
     Antitone (fun m => normalizedGram m (triangle m) (triangle m)) := by
   intro m n h
+  change normalizedGram n (triangle n) (triangle n) ≤
+    normalizedGram m (triangle m) (triangle m)
   rw [triangle_normalizedGram, triangle_normalizedGram]
   have hn : (m : ℝ) ≤ n := by exact_mod_cast h
   gcongr

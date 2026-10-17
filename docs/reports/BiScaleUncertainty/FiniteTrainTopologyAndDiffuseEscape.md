@@ -142,5 +142,16 @@ The surviving invariant is the largest grouped normalized lag coefficient.
 The polar symbol detects exponentially amplified interactions that this unweighted
 invariant and the decaying energy tail cannot control.
 
-Dependency-closed paper proof complete. Lean formalization and exhaustive audit
-pending; no additional package is counted yet.
+Certified as connected package 13 of 100. All eight direct Lean leaves pass
+without diagnostics; all 77 public declarations (61 theorems, 15 definitions,
+one structure) have only the standard `propext`, `Classical.choice`, `Quot.sound`
+dependencies. All eight imports and 77 exact API entries are verified.
+
+The global formal lint snapshot remains blocked by four unrelated unwired
+modules and a foreign `sorry` in `HighFrequencyLaplaceEnergyMeanValue.lean:292`.
+No error concerns this package; repository-wide green is not claimed. Full
+certificate: `docs/drafts/pipeline/3-formalized/finite-train-topology-and-diffuse-escape-2026-10-17.md`.
+
+The next paper result, `NyquistPolarIntegrableResidual.md`, constructs a stable
+all-tail Nyquist residual with an explicit 1/sqrt(N) error bound. It is uncounted
+and awaits Lean formalization.

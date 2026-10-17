@@ -409,11 +409,11 @@ concrete price/gap/remainder definitions inspected. This is package 10.
 
 Next uncounted question: determine nonvanishing of actual nonzero compact-source
 translation packets with positive anchor and nonnegative node weights, and whether
-it permits a converse from optimality to zero canonical gap. No nonvanishing or
-converse claim is currently proved. Search `/tmp/bsu-signed-dual-next-search.log`
+it permits a converse from optimality to zero canonical gap. No general-source
+nonvanishing or converse claim is currently proved. Search `/tmp/bsu-signed-dual-next-search.log`
 finds packet norm/finite-translate infrastructure, but is partial and source-only.
 
-Uncounted conditioning boundary, paper-proved and being formalized: for d=log(2),
+Sharp actual-source conditioning law, Lean-verified package 11: for d=log(2),
 instantiate a smooth `ContDiffBump` centered at zero with radii d/8 and d/4, and
 fix the actual smooth source f=g−T_dg. Orthogonality of integer-d translates of g
 gives R_f=2R_g and h_f(d)=−R_g. The average Q_m of the first m+1 symmetric
@@ -424,15 +424,29 @@ at ±kd to be 1−k/(m+1); these explicit positive coefficients attain Q_m.
 The normalized anchored minimum is exactly log(2)/(log(N)+log(2)) at N=2^m,
 and tends to zero for this one fixed smooth source. It is not a minimum-eigenvalue
 claim. These weights are not asserted to be physical collar partitions, and no
-polar admission or sharp S_N asymptotic follows. The source leaf has passed an
-initial Lean check; final dependency, minimizer and capstone audits remain pending.
+polar admission or sharp S_N asymptotic follows. The source has full lattice
+correlation h_f(zd)=R_g(2·1_(z=0)−1_(z=1)−1_(z=−1)). All four leaves and the final
+direct leaf check pass without diagnostics; all 55 public theorem axiom audits
+pass exactly once using only `propext`, `Classical.choice`, and `Quot.sound`.
+The exact minimum, attained positive weights, and unique equality classification
+are the positive survivor of the obstruction to cutoff-uniform coercivity.
+Consequently, a physical response argument cannot infer cutoff-uniform positive
+anchored Gram energy from fixed-source smoothness and positive weights alone.
 Search `/tmp/bsu-signed-dual-conditioning-search.log` completed with 219
 declarations in 40 modules; source-only candidates, older coverage snapshot,
 semantic coverage unmeasured. No exhaustive novelty claim.
 
+Next constructive candidate, uncounted: select the least active collar attaining
+the actual finite price minimum at each point. Finite measurable comparisons
+should produce an actual physical partition with zero cross-slack. Package 10
+would then give response gain = canonical gap − curvature remainder. This is not
+yet an ascent or convergence theorem. Discovery
+`/tmp/bsu-dyadic-next-physical-producer-search.log` returned useful price/partition
+ingredients, but source-only older coverage with semantic completeness unmeasured.
+
 Trap 10 constrains the next step: prioritize an explicit source/weight producer
 with unconditional error, rather than another interface with an unresolved bound.
-The explicit smooth difference producer is the current candidate on this topic. Existing
+The explicit smooth difference producer now supplies that result on this topic. Existing
 `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean` states the Nyquist-cell
 squared L² error ≤1/(16n²), the centered first-stencil bound
 |T(2N)−2T(N)−2N log(2)|≤2log(2N+1)+1, and the second-stencil bound
@@ -460,7 +474,7 @@ import audit failed because its `.olean` is absent. No fresh Lean audit claimed;
 
 ## Research accounting
 
-Lean-verified significant packages: **10/100**: (1) general source transfer and
+Lean-verified significant packages: **11/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
@@ -476,21 +490,22 @@ monotone hierarchy, plus the unconditional full measured signed-Gram receiver;
 (9) measured signed-Gram capacity, actual physical cutoff monotonicity/retraction,
 optimized finite limit, explicit inverse-square-root error, and actual-source receiver;
 (10) full measured-Gram dual support, exact physical dual gap and complementarity,
-finite-allocation error and quantitative limiting actual-source trial certificates.
+finite-allocation error and quantitative limiting actual-source trial certificates;
+(11) an explicit fixed smooth dyadic source and packet producer, sharp anchored
+full-Gram minimum, unique positive triangular coefficients, exact squared-distance
+remainder, and logarithmic cutoff degeneration.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Latest global lint reports twelve unrelated modules unreachable from the umbrella:
-`CausalExponentialResponseAndLaplaceEnergy`, `DistantCopyCompactness`,
-`DistantCopyCorrelationTopology`, `DistantCopyEnergyTopology`,
-`DistantCopyPolarTopology`, `DistantCopySharpness`, `FiniteGridRunLength`,
-`FoldFreeKernelGramAndFranelGcdCancellation`, `RealizedCoherentCancellation`,
-`SignedPrimePolarOptimalCollar`, `SignedPrimePolarScaledCollar`,
-`SuccessorSequenceHilbert`. Those concurrent files were not modified. All
-twenty-nine owned leaves are wired; new capstones are indexed. Evidence:
-`/tmp/bsu-signed-dual-lint-final.log`, `/tmp/bsu-signed-dual-index.log`,
-and `/tmp/bsu-signed-dual-discovery.log`.
+Latest global lint reports eleven unrelated modules unreachable from the umbrella:
+`CoprimeShearArithmeticWeightsAndChebyshevCellIncrement`, `FiniteIntegerTrainCompactness`,
+`FiniteIntegerTrainEnergy`, `FiniteIntegerTrainPackets`, `FiniteIntegerTrainPeak`,
+`FiniteIntegerTrainPolar`, `FiniteIntegerTrainProducers`,
+`FoldFreeKernelGramAndFranelGcdCancellation`, `TernaryPacketPolarGrowth`,
+`TernaryPacketTrain`, `WitnessGermOriginMassAndJointTailHeadSynthesis`.
+Those concurrent files were not modified. All thirty-three owned leaves are wired.
+Evidence: `/tmp/bsu-dyadic-lint-final.log` and `/tmp/bsu-dyadic-integrity.json`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -662,3 +677,36 @@ real complex scalars to real scalar actions too early. To combine common
 denominators use `← mul_div_assoc` and `← Finset.sum_div`. Give the full target
 type for products proved nonnegative before `nlinarith`, avoiding unresolved
 numeric metavariables. Use explicit integrands for integral subtraction/addition.
+
+Explicit dyadic producer package SHA-256 values:
+
+- Smooth source: `46205aa0c5a389ec04fedafa6f8d2e4e6c5ee5b1e9d7e73169b0fa1056b7704a`.
+- Producer: `24c9734e4a331075063fe8116e929ef05156554baf3a710dd98adda855f11fe0`.
+- Coefficient uniqueness: `e10da9d59fc6c1a32f3f5993e13a869cab781ae3d7854685c5343723b942f00d`.
+- Full Gram cutoff: `11fd46aeb8bc791b3883de96a0a3cf4754f47d2bde872df0da8e80af9a614960`.
+
+All four leaves compile without diagnostics. All 55 public theorem axiom audits
+pass exactly once in `/tmp/bsu_dyadic_gram_axioms.lean`, using only `propext`,
+`Classical.choice`, and `Quot.sound`. Printed signatures and concrete smooth
+source, anchored packet, producer, triangular weight, and full-Gram definitions
+confirm there is no supplied analytic interface.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/DyadicGramConditioning.lean`;
+exit 0, empty log. Evidence `/tmp/bsu-dyadic-final.exit`,
+`/tmp/bsu-dyadic-{source,producer,triangle,gram,axioms,final,index}.log`, and
+`/tmp/bsu-dyadic-{manifest,integrity,audit-coverage}.json`.
+All 33 owned imports occur once; all 29 earlier source hashes are unchanged.
+Index refresh and three requested capstone discoveries pass
+(`/tmp/bsu-dyadic-discovery.json`). Global lint's eleven foreign umbrella failures
+are listed above. Read-only README hash remains
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Temporary API probe removed; all owned jobs terminal. No full/umbrella build,
+numerical experiment, heartbeat increase, commit or push.
+
+Reusable Lean repairs: bind the two signed terms with an explicit `Finset.sum`
+lambda when notation otherwise loses the second term's index. Force inversion
+in ℝ before coercing the scalar to ℂ. Normalize natural zero casts in integer
+indices before rewriting atom pairings. Use an explicit real-valued `change`
+for `RCLike.re` of coerced real inner products. Expose beta-redexes before
+rewriting antitone function values; use the verified `Nat.pow_le_pow_right`
+for natural cutoff bounds.

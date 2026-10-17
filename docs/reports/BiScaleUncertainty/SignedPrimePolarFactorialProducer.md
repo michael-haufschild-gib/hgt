@@ -50,7 +50,8 @@ The dilation stencil cancels K log K and K exactly. Thus
 B_N=T(4N)−4T(2N)+4T(N),
 C_N=4N(H_(4N)−2H_(2N)+H_N)∈[0,1].
 
-The existing unconditional factorial producer theorem gives
+The existing `abs_chebyshevBiNullProducer_le` theorem in
+`ExplicitNyquistPolarAndChebyshevFactorialProducer.lean` gives
 |B_N|≤5 log(4N+1)+1. The triangle inequality now yields
 
 |ν(W_N)|≤[10 log(4N+1)+3]/sqrt(N).
@@ -73,5 +74,20 @@ The arithmetic floor appears only from counting actual prime atoms inside the
 real-ratio rectangles. The stencil is applied to the already-summed factorial T,
 without subtracting a discrete linear counterterm before floor summation.
 
-Lean certification pending. The result is one package, including construction,
-domain admission, exact evaluation and bound; helpers are not separate counts.
+The result is one package, including construction, domain admission, exact
+evaluation, amplitude, autocorrelation boundary and bound; helpers are not separate counts.
+
+## Lean certificate
+
+The three leaves `SignedPrimePolarHarmonicCorrection.lean`,
+`SignedPrimePolarFactorialLift.lean`, and `SignedPrimePolarFactorialProducer.lean`
+pass direct `lake --old env lean <leaf> -o <olean>` checks with empty diagnostics.
+The public endpoint is `SignedPrimePolar.factorialBiNull_producer (n : ℕ)`;
+it includes literal atomic absolute convergence, polar integrability, and the
+quantitative bound at N=n+1. The exact identity is
+`SignedPrimePolar.fullPairing_factorialBiNull_eq`.
+
+Twelve endpoint/dependency axiom audits use only propext, Classical.choice and
+Quot.sound. All three imports are wired; index refresh passes. Global formal lint
+reports eleven unrelated concurrent unwired modules and no error in this package;
+the complete list and verification evidence are in `SignedPrimePolarTransport-FACTS.md`.

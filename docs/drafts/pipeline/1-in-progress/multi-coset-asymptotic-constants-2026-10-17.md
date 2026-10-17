@@ -39,17 +39,20 @@
     retraction stability, optimized finite limit, and unconditional source receiver.
 14. [x] Prove the full measured-Gram physical dual gap, zero-gap complementarity,
     finite-allocation error and quantitative limiting actual-source trial certificate.
-15. [ ] Construct an explicit compact-source dyadic packet producer and prove its
+15. [x] Construct an explicit compact-source dyadic packet producer and prove its
     sharp anchored minimum and cutoff error; audit finite strict positivity only
     where it supports the concrete construction.
-16. [ ] Develop general signed multi-column Schur-coupled growth and matching
+16. [ ] Construct a measurable least-price physical response, prove exact linear
+    optimality and actual gain, then build an accepted-response cutoff ladder.
+17. [ ] Develop general signed multi-column Schur-coupled growth and matching
     finite-limit asymptotics. These and the full 100-contribution objective remain open.
 
-Next concrete candidate, uncounted: construct the explicit smooth bump-difference source
-and triangular dyadic weights below, with exact anchored Gram minimum and its
-cutoff dependence. This prioritizes a producer with unconditional quantitative
-error, in accordance with the user's Trap 10 guidance. The source-dependent limit
-is not identified with H∞.
+Package 11 verifies the explicit smooth bump-difference source and triangular
+dyadic weights below, with exact anchored Gram minimum, unique active coefficients,
+and logarithmic cutoff law. This is a producer with unconditional quantitative
+error, in accordance with the user's Trap 10 guidance. Next uncounted candidate:
+construct a measurable least-price physical response and audit its exact gain.
+The source-dependent limit is not identified with H∞.
 
 Updated field context: read all 260 lines of the relocated read-only README after
 the user's Trap 10 message; SHA-256
@@ -87,10 +90,12 @@ The new signed-profile hierarchy S_N(f) is monotone and satisfies
 0≤S_∞/R−S_N/R≤8·2^(1/4)/(sqrt(N)(1−2/N²)); its limit bounds actual extended
 source energy. Full measured-Gram trial prices now give an exact dual-gap identity,
 zero-gap complementarity and finite-allocation plus cutoff error for every trial
-partition. All three package-10 leaves compile cleanly; all 49 public theorem
-audits and the final direct leaf check pass. Progress: 10/100. Latest global lint
-reports twelve unrelated concurrent umbrella failures.
-Next: actual Gram conditioning, exact nonzero-lag support, and sharp asymptotics.
+partition. Package 11 adds a fixed smooth actual-source producer with sharp
+anchored Gram minimum R/(m+1), unique positive triangular weights, and exact
+squared-distance remainder at signed dyadic cutoff 2^m. All four leaves, all 55
+public theorem axiom audits, and the final direct leaf check pass. Progress: 11/100.
+Latest global lint reports eleven unrelated concurrent umbrella failures.
+Next: constructive physical price responses, nonzero-lag support, and sharp asymptotics.
 
 Current signed-capacity search `/tmp/bsu-signed-capacity-search.log` finds 586
 declarations in 83 modules. It supplies actual translation-packet norm identities
@@ -247,19 +252,21 @@ one fixed actual source admits positive anchored packets with exact minimum
 Gram energy R_f/(m+1), at dyadic cutoff N=2^m (m≥1). Their norms approach zero,
 although no finite packet vanishes. With anchor W, scaling gives W²R_f/(m+1).
 
-This is a candidate sharp classification and actual-source realization, not
-merely a negative obstruction. It does not assert these coefficients are physical
+The smooth refinement below now verifies this sharp classification and actual-source
+realization. It does not assert these coefficients are physical
 collar partitions: they need not obey physical weight or mass constraints. It
 therefore does not contradict the proved S_N tail law or prove its sharpness.
-Before formalization, audit the existing finite-translate and coherent-cancellation
-source constructions for reusable exact identities and duplication.
+Existing finite-translate and coherent-cancellation source constructions were
+audited for reusable exact identities and duplication.
 Search `/tmp/bsu-signed-dual-conditioning-search.log`: 219 declarations in 40
 modules; search completed, but source-only candidates, older coverage snapshot,
 and semantic coverage unmeasured. Hits expose actual packet identities and
 Dirichlet/coercivity infrastructure, not this exact anchored minimum among the
 reported results. An exhaustive source-pattern search found related triangular
 Gram and continuous Dirichlet forms; no exhaustive mathematical novelty claim.
-Lean status: formalization in progress. Contribution count remains 10/100.
+Lean status: the following smooth refinement is verified as package 11. The
+tent formulation and general anchor-W scaling above are paper consequences;
+the formal capstone uses the explicit smooth source and origin coefficient 1.
 
 Implementation refinement: instantiate a literal smooth `ContDiffBump` centered
 at zero with inner radius log(2)/8 and outer radius log(2)/4, instead of the tent.
@@ -275,19 +282,18 @@ proves a sharp lower bound, attained error, and equality at the packet level.
 Coefficient rigidity can be recovered by pairing against partial sums of the
 orthogonal e_j. Plan: [x] concrete smooth source and orthogonal atoms;
 [x] telescoping producer and exact error/minimum; [x] coefficient rigidity;
-[ ] full measured-Gram cutoff degeneration; [ ] direct/axiom/lint audits and ledger.
-No package counted yet.
+[x] full measured-Gram cutoff degeneration; [x] direct/axiom/lint audits and ledger.
+The four leaves count once, as package 11.
 
 Current implementation leaves: `DyadicDifferenceSource.lean`,
 `DyadicAnchoredProducer.lean`, `DyadicTriangularOptimality.lean`, and
-`DyadicGramConditioning.lean`, all wired into the umbrella. The source leaf passes
-its dependency compile without diagnostics after narrowing its import to the
-actual translation-feature module. The producer leaf now also passes cleanly,
-including the exact error identity, strict finite positivity and packet equality
-criterion. Triangular attainment and coefficient uniqueness now also pass without
-diagnostics. The full measured-Gram cutoff capstone is under verification;
-no completion or extra contribution is claimed. All 29 previous
-owned source hashes are unchanged (`/tmp/bsu-dyadic-prior-hashes.json`).
+`DyadicGramConditioning.lean`, all wired into the umbrella. All four dependency
+checks pass without diagnostics. All 55 public theorem axiom audits pass exactly
+once, using only `propext`, `Classical.choice`, and `Quot.sound`. Printed capstone
+signatures and concrete source/packet/producer definitions were inspected. The
+final direct leaf check passes with an empty log. All 29 previous owned source
+hashes are unchanged and all 33 owned imports occur once
+(`/tmp/bsu-dyadic-integrity.json`).
 Current corpus search `/tmp/bsu-dyadic-producer-search.log`: 387 declarations in
 98 modules, partial/source-only/older snapshot with semantic coverage unmeasured.
 Finite translation infrastructure was audited; reported tent results concern
@@ -316,6 +322,72 @@ nonnegative curvature remainder. This is not yet a monotone ascent or convergenc
 claim. Deep discovery `/tmp/bsu-dyadic-next-physical-producer-search.log` completed
 with zero lexical hits but useful actual price/partition/transport candidates;
 source-only, older snapshot, semantic coverage unmeasured. No novelty claim.
+
+### Constructive minimum-price response and cutoff ladder (package 12 candidate)
+
+Previous goal turn made verified progress: package 11 completed. Current count
+remains 11/100 until this complete construction and its audits pass.
+
+Fix an actual compact continuous source f and physical partition ρ at cutoff n.
+Let p_k(x)=ρ.gramPhysicalPrice f k x, q(x)=ρ.gramPriceFloor f x, and Ω be the
+physical interval. Define E_k to be the active collar points with k≤n and p_k=q.
+All E_k are measurable, because actual prices and their finite floor are measurable.
+The finite active minimum is attained at every x∈Ω. Define
+F_k=E_k\(union_(j<k) E_j). These measurable cells are pairwise disjoint and cover
+Ω; the least minimizing natural index proves coverage, with no chosen optimizer
+or analytic premise. Existing `collarPhysicalShare_partition` applies to this
+actual cover. Its multiplicity is exactly one, so the resulting response η has
+shares 1_(F_k): precisely one selected collar per physical point.
+
+Each positive response share uses p_k=q. Consequently ρ.gramSlack η f=0,
+and η attains the pointwise and integrated minimum of the incumbent's physical
+linear cost over all admissible partitions. Every other partition has excess
+cost equal to its nonnegative cross-slack; equality is exactly almost-everywhere
+allocation only to minimum-price active collars. Thus the canonical Gram gap is
+the attained greatest feasible linearized gain, not merely an abstract bound.
+The existing exact dual identity gives
+C(η)−C(ρ)=Gap(ρ)−integral Remainder(ρ,η).
+The remainder is actual, nonnegative and integrable; no coercivity lower bound
+or asserted full-response improvement is used.
+
+Define the accepted step as η when C(η)≥C(ρ), otherwise ρ. It is an actual
+physical partition, with coefficient max(C(ρ),C(η)) and exact gain
+max(0,Gap(ρ)−integral Remainder(ρ,η)). This step is explicit in source, prices and
+integrals; it does not invoke an unknown optimal partition.
+Writing G=Gap(ρ), D=integral Remainder(ρ,η), and C⁺ for the accepted coefficient,
+the exact remaining old dual budget is C(ρ)+G−C⁺=min(G,D): if G≤D the step
+retains ρ and the deficit is G; if D≤G it accepts η and the deficit is D.
+Since C⁺≤S_n≤C(ρ)+G, this proves the unconditional post-response bound
+0≤S_n−C⁺≤min(G,D), and adding cutoff tail gives
+0≤S∞−C⁺≤min(G,D)+2R·tail_n. This strengthens the produced certificate without
+assuming that either the gap or curvature remainder tends to zero.
+Starting with equalMultiplicity at cutoff 0, extend the previous physical
+partition to cutoff n+1 and apply this step. Existing actual extension monotonicity
+then makes the produced full-Gram coefficients monotone in cutoff. They remain
+bounded by S_n(f) and hence converge to a finite produced limit ≤S∞(f).
+At every cutoff, the computed partition's gap plus the proved cutoff tail bounds
+the distance to S∞. Smooth-source normalization supplies actual J_arch lower
+bounds. This does not yet prove produced limit=S∞, vanishing gaps, strict ascent,
+or sharp error to the unrestricted source infimum.
+
+Implementation plan: [x] `SignedGramMinimumResponse.lean` (measurable pure
+selection and admissible response); [ ] `SignedGramResponseOptimality.lean`
+(attained linear minimum, equality classification and exact actual gain);
+[ ] `SignedGramResponseLadder.lean` (accepted update, monotone cutoff producer,
+finite limit and source certificate); [ ] direct leaf/axiom/lint/index/integrity audits.
+Keep prior 33 owned leaves unchanged, wire new leaves, preserve read-only README.
+All three leaves are written and wired. Selection now passes its dependency check
+without diagnostics; optimality and ladder checks remain pending. The prepared
+audit covers all 43 public theorems. No package counted yet. Selection excludes
+inactive collars before comparing ties, so an inactive masked-price tie cannot
+receive physical mass.
+
+Current deep discovery `/tmp/bsu-minimum-response-search.log` completed in 55.55s:
+zero lexical hits, useful actual price, partition and arbitrary-measurable-cover
+share identities. Source arguments and proposed ingredients inspected. Source-only
+older coverage; semantic completeness unmeasured. Exhaustive field-source search
+found no minimum-price response implementation. This is not an exhaustive
+mathematical novelty claim.
 
 `PairedCollarCapacity.lean` now passes direct verification of block/radial capacity,
 unordered nonnegative error bounds, and exact padding. `PairedCollarCutoffStability.lean`
@@ -897,7 +969,7 @@ monotone hierarchy, plus the unconditional full measured signed-Gram receiver;
 retraction, optimized finite limit, inverse-square-root error, and actual-source receiver;
 (10) full measured-Gram dual support, exact physical dual gap and complementarity,
 finite-allocation error and quantitative limiting actual-source trial certificates.
-Count **10/100** completed mathematical contributions. The three new leaves form one package.
+At the package-10 audit, the cumulative count was **10/100**. Its three leaves form one package.
 Latest global lint reports twelve unrelated unwired modules from concurrent work.
 Do not count reused shared-origin geometry or individual helper lemmas. Matching
 leading asymptotics remain paper-only. Both activation leaves form one package.
@@ -1060,7 +1132,7 @@ remains active and incomplete.
   `/tmp/bsu_signed_gram_dual_axioms.lean`, and
   `/tmp/bsu-signed-dual-{manifest,integrity,audit-coverage}.json`.
 - All 29 owned imports occur once, all 26 earlier hashes unchanged. Index refresh
-  and discovery pass. Latest global lint reports twelve foreign unwired modules:
+  and discovery pass. At the package-10 audit, global lint reported twelve foreign unwired modules:
   `CausalExponentialResponseAndLaplaceEnergy`, `DistantCopyCompactness`,
   `DistantCopyCorrelationTopology`, `DistantCopyEnergyTopology`,
   `DistantCopyPolarTopology`, `DistantCopySharpness`, `FiniteGridRunLength`,
@@ -1071,3 +1143,29 @@ remains active and incomplete.
   external Trap 10 revision was read fully and remains read-only, as recorded above. Temporary
   API probe removed; all owned Lean and search jobs exited. No full/umbrella build,
   numerical experiment, heartbeat increase, commit or push.
+
+- Explicit dyadic producer package: `DyadicDifferenceSource.lean` (14 public
+  theorems), `DyadicAnchoredProducer.lean` (19), `DyadicTriangularOptimality.lean`
+  (6), and `DyadicGramConditioning.lean` (16). All four dependency checks pass
+  without diagnostics. All 55 public theorem axiom audits pass exactly once,
+  only `propext`, `Classical.choice`, and `Quot.sound`. Actual source, full-Gram
+  signatures, and explicit seed/packet/producer/coefficient definitions inspected.
+- SHA-256: source `46205aa0c5a389ec04fedafa6f8d2e4e6c5ee5b1e9d7e73169b0fa1056b7704a`;
+  producer `24c9734e4a331075063fe8116e929ef05156554baf3a710dd98adda855f11fe0`;
+  uniqueness `e10da9d59fc6c1a32f3f5993e13a869cab781ae3d7854685c5343723b942f00d`;
+  Gram cutoff `11fd46aeb8bc791b3883de96a0a3cf4754f47d2bde872df0da8e80af9a614960`.
+- Final direct command:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/DyadicGramConditioning.lean`;
+  exit 0, empty log. Durable exit `/tmp/bsu-dyadic-final.exit`; evidence
+  `/tmp/bsu-dyadic-{source,producer,triangle,gram,axioms,final}.log`,
+  `/tmp/bsu_dyadic_gram_axioms.lean`, and
+  `/tmp/bsu-dyadic-{manifest,integrity,audit-coverage}.json`.
+- Index refresh and all three requested capstone discoveries pass; evidence
+  `/tmp/bsu-dyadic-index.log` and `/tmp/bsu-dyadic-discovery.json`.
+  All 33 owned imports occur once, all 29 previous source hashes unchanged.
+  Read-only README remains byte-identical at the current 260-line hash above.
+  Scoped whitespace passes. Global lint exits 1 only for eleven foreign unwired
+  modules listed in the facts ledger and `/tmp/bsu-dyadic-lint-final.log`.
+  No foreign source was modified. Temporary API probe removed; all owned jobs
+  terminal. No full/umbrella build, numerical experiment, heartbeat increase,
+  commit or push. This is one significant contribution: **11/100**, goal active.

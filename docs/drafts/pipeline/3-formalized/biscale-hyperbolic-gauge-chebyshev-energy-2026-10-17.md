@@ -14,6 +14,8 @@
 
 - **Statement (module 5, `SpectralLaplaceEnergyCriticalLine.lean`):** With `s(ξ) = ½ + 2πiξ` and `ν̂_N(ξ) = ∫ e^{−2πiξt} dν_N(t)` (complex pairing `pairingC`), `𝓕 K = 1/s(ξ)`, `𝓕 R_N (ξ) = ν̂_N(ξ)/s(ξ)`, and by Plancherel `laplaceEnergy N = ∫ ‖ν̂_N(ξ)‖²/(¼ + 4π²ξ²) dξ`; dictionary `ν̂_N(ξ) = Σ_{n≤N+2} Λ(n) n^{−s(ξ)} − (e^{(1−s)L} − 1)/(1−s) − (1 − e^{−sL})/s`; `‖ν̂_N‖ ≤ mass N`; `∫_0^L Ẽ² ≤ 2∫‖ν̂_N‖²/(¼+4π²ξ²) + 2`. Generic tools: `integral_pairingC_of_dominated`, `norm_pairingC_le_mass_mul`, `fourierTransform_eq_integral_exp`.
 
+- **Statement (module 6, `HighFrequencyLaplaceEnergyMeanValue.lean`):** With `S_N(ξ) = ‖ν̂_N(ξ)‖²/(¼+4π²ξ²)`, `D₁ = Σ_{n≤N+2} Λ(n)²/n`, `D₂ = Σ Λ(n)²`: the atomic part of `ν̂_N` is the corpus Dirichlet polynomial `dirPoly (N+2) a (−2πξ)`; Montgomery–Vaughan gives `∫_{−u}^{u} ‖A_N‖² ≤ 2uD₁ + 208D₂`; integration by parts against `1/u²` gives, for all `0 < ξ₀ ≤ ξ₁`, `∫_{ξ₀}^{ξ₁} (S_N(ξ)+S_N(−ξ)) ≤ 2D₁/(π²ξ₀) + 52D₂/(π³ξ₀²) + 4(e^{L/2}+3)²/(3(2π)⁴ξ₀³)`, the same for the whole tail `|ξ| ≥ ξ₀`, and `laplaceEnergy N ≤ ∫_{|ξ|≤ξ₀} S_N + (that remainder)`. Diagonals: `D₂ ≤ L·ψ(N+2)`, `D₁ ≤ L·Σ Λ(n)/n`. Hence (with the classical `ψ(x) ≪ x`) the Laplace energy outside the band `|ξ| ≤ √(N+2)` is unconditionally `O(L)`: Wall 1 lives entirely in the band `|ξ| ≤ √x`.
+
 ## Goal
 Give the field an exact quadratic (energy) form of the Chebyshev discrepancy, complementing the linear Stieltjes coupling of Pillar XV. The operator `f ↦ f' − f/2 = e^{u/2}(e^{−u/2}f)'` is the derivative in the critical-line gauge; the signed packet energy is, up to bounded source constants, the energy of `Ẽ` against the positive-definite gauge kernel `autocorr(f' − f/2)`. Uniform stabilization of the packet energy over all `C¹` compact sources is therefore equivalent to at most linear growth of `∫_1^X (ψ(x)−x)²/x² dx` in `log X` (the mean-square form of Wall 1). The field now owns Wall 1 as a statement about its own native energy.
 
@@ -63,16 +65,26 @@ Module 5 (`SpectralLaplaceEnergyCriticalLine.lean`, same namespace):
 - `laplaceEnergy_eq_integral_fourierPairing_sq` (Plancherel via `HTGeometry.integral_norm_sq_fourier`), `chebyshev_mean_square_le_spectral`.
 - `natCast_cpow_eq_exp_mul_log`, `primeWeight_mul_frequencyCharacter_log`, `integral_polarDensity_mul_frequencyCharacter`, `fourierPairing_eq_dirichlet`.
 
+Module 6 (`HighFrequencyLaplaceEnergyMeanValue.lean`, same namespace):
+- `atomicFourier`, `polarFourier`, `atomicCoefficient`, `atomicFourier_eq_dirPoly`, `continuous_fourierPairing`, `spectralDensity`, `laplaceEnergy_eq_integral_spectralDensity`, `spectralDensity_le_mass_sq_div`, `integrable_spectralDensity`.
+- `norm_polarFourier_le`, `norm_polarFourier_sq_le`, `norm_one_sub_criticalPoint`.
+- `atomicDiagonal`, `atomicSecondMoment`, `twoSidedAtomicMean`, `twoSidedAtomicMean_le` (Montgomery–Vaughan via `RHTower.Sieve.dirichlet_meanValue_sharp`), `hasDerivAt_twoSidedAtomicMean`.
+- `integral_twoSided_atomic_div_sq_le` (integration by parts against `1/u²`), `spectralDensity_add_neg_le`, `integral_spectralDensity_window_le`, `integrableOn_spectralDensity_add_neg_Ioi`, `integral_spectralDensity_tail_le`.
+- `laplaceEnergy_eq_band_add_tail`, `laplaceEnergy_le_band_add_remainder`.
+- `norm_atomicCoefficient_sq`, `atomicSecondMoment_eq`, `atomicSecondMoment_le`, `atomicDiagonal_eq`, `atomicDiagonal_le`.
+
 ## What this changes in the open core
 - Pillar XV's linear Chebyshev work is now matched by a quadratic law: the packet energy (the field's cancellation-sensitive Gram energy) is the Chebyshev mean square smoothed by the gauge derivative. The "finite-window, no stabilization" caveat of Pillar XV.5 is resolved into an exact criterion: stabilization ⟺ `∫_0^L Ẽ² = O(L)` ⟺ mean-square RH.
 - All compression/Bessel/Krein tools act on the right-hand side `autocorr(f' − f/2)`; the arithmetic lives entirely in `Ẽ`.
 - Module 3 lifts `Ẽ` itself into the field's object class: `Ẽ + transient = K ⋆ ν_N` is the causal exponential response of the signed prime–polar measure, and `∫_0^L Ẽ²` is (up to constants) the Gram energy of `ν_N` against the positive-definite Laplace kernel `e^{−|x|/2}`. Wall 1 is now the statement `laplaceEnergy N = O(log N)`: a Gram energy of the field's own signed measure against the pole kernel.
 - Module 4 closes the loop between the two energy classes: every compact-source Gram energy is `⟨autocorr(f'−f/2), autocorr R_N⟩`, and `autocorr R_N (0) = laplaceEnergy N` dominates. The field's whole arithmetic content is the single response `R_N`; sources only choose the positive-definite filter `autocorr g`. One-line transfer `packetEnergy ≤ ‖f'−f/2‖₁² laplaceEnergy` replaces the three-term bound of module 1.
 - Module 5 gives the frequency side of the bi-scale energy: Wall 1 ⟺ `∫ ‖Σ_{n≤x} Λ(n) n^{−s} − x^{1−s}/(1−s) − (1 − x^{−s})/s‖² dξ/|s|² = O(log x)` on `s = ½ + 2πiξ`. The weight `1/|s|²` is the Fourier transform of the Laplace kernel; the pole terms are the transform of the polar density. The corpus Montgomery–Vaughan mean value theorem (`RHTower.Sieve.dirichlet_meanValue_sharp`) now applies to the atomic part of `ν̂_N`.
+- Module 6 is the first unconditional partial bound produced by the field for its own Wall-1 energy: the high-frequency tail `|ξ| ≥ ξ₀` of the Laplace energy is `≤ 2D₁/(π²ξ₀) + 52D₂/(π³ξ₀²) + O(e^L/ξ₀³)`; at `ξ₀ = √(N+2)` this is `O(L)` (given `ψ(x) ≪ x`). The whole difficulty of Wall 1 is the band energy `∫_{|ξ|≤√x} S_N`, i.e. the pole-subtracted truncated `−ζ'/ζ` on the critical line at ordinates `≤ 2π√x`: the frequency side of the bi-scale uncertainty `(position √x) × (frequency √x)`.
 - Wall 1 is now fully discrete inside the field: packet-energy stabilization ⟺ `Σ_{n<M} (ψ(n) − n)²/(n(n+1)) = O(log M)`. Each Nyquist cell contributes `(ψ(n) − m_n)²/(n(n+1))` plus a universal floor `c_n ≈ 1/(12n²)`; the centre `m_n = n + ½ − 1/(6n) + …` is the exact exponential-gauge mean of the cell.
 
 ## Next conjectures (queued)
-- High-frequency law (module 6): by Montgomery–Vaughan, `∫_{T}^{2T} ‖ν̂_N‖² ≲ T Σ Λ(n)²/n + 104 Σ (n+1)Λ(n)²/n + polar`, hence the Laplace energy at frequencies `|2πξ| ≥ T₀` is `O(L²/T₀ + xL/T₀²)`: unconditionally `O(L)` beyond `T₀ ≍ √(xL)`. Wall 1 lives entirely at `|ξ| ≲ √x`.
+- Band theorem (module 7): combine `laplaceEnergy_le_band_add_remainder` at `ξ₀ = √(N+2)` with a corpus Chebyshev bound `ψ(x) ≤ Cx` and Mertens `Σ_{n≤x} Λ(n)/n ≤ log x + C` to get `laplaceEnergy N ≤ ∫_{|ξ|≤√(N+2)} S_N + C₁ L + C₂` with explicit constants; hence Wall 1 ⟺ band energy `O(L)`.
+- Band structure: inside the band, Montgomery–Vaughan still controls `∫_{|ξ|≤√x} ‖A_N‖² ≈ 2√x D₁ ≈ √x L²`, so the band bound `O(L)` requires cancellation `A_N ≈ P_N` of relative size `x^{−1/4}L^{−1/2}` on average: the explicit formula `A_N − P_N = −Σ_ρ x^{ρ−s}/(ρ−s) + …` in the field's language.
 - Dyadic Markov chain of the response: semigroup law `R_N(t) = e^{−(t−a)/2} R_N(a) + (K ⋆ ν_N|_{(a,t]})(t)`; block-edge chain `x_{k+1} = x_k/√2 + r_k`; window energy `∫_{block k} R_N² = ½x_k² + 2 b_k x_k + c_k`; `laplaceEnergy ≍ Σ_k x_k² + Σ_k c_k`, `Σ x_k² ≍ Σ r_k²`.
 - Jump-energy law: `lim_{y→0} (laplaceEnergy N − autocorr R_N (y))/|y| = ½ Σ_{n≤N+2} Λ(n)²/n`.
 - Arithmetic expansion of `laplaceEnergy N` (atoms/polar/cross): `Σ Λ(n)(2ψ(n)−Λ(n))/n − 2(1+L−e^{−L})ψ(N+2) + 2Σ Λ(n) log n (1 − 1/n) + polar self-energy`.
@@ -83,6 +95,7 @@ Module 5 (`SpectralLaplaceEnergyCriticalLine.lean`, same namespace):
 ## Log
 - 2026-10-17 — module 1 built, wired, axioms standard; moved directly to 3-formalized.
 - 2026-10-17 — module 2 (Nyquist-cell quadrature, window law, classical comparison) built, wired, axioms standard.
+- 2026-10-17 — module 6 (atomic part = corpus Dirichlet polynomial, Montgomery–Vaughan two-sided mean square, integration by parts against 1/u², high-frequency window/tail law, band-plus-remainder decomposition, diagonal sums ≤ L·ψ and L·ΣΛ/n) built, wired, axioms standard.
 - 2026-10-17 — module 5 (complex pairing, critical point, 𝓕K = 1/s, 𝓕R_N = ν̂_N/s, Plancherel form of the Laplace energy, Dirichlet dictionary) built, wired.
 - 2026-10-17 — module 4 (causal reconstruction, packet = response ⋆ gauge derivative, Gram/autocorrelation forms, Young bound by the Laplace energy, Green identity) built, wired.
 - 2026-10-17 — module 3 (causal response, Laplace kernel = autocorr K, `∫R_N² = laplaceEnergy`, window/tail split, two-sided comparison with `∫Ẽ²`, pairing/line-integral interchange) built, wired, axioms standard.
