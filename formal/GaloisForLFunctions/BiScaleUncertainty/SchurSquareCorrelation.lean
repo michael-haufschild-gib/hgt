@@ -122,8 +122,10 @@ private theorem measurable_weight : Measurable archLevySinhWeight :=
 theorem levyEnergy_add_quarticDefect (f : C_c(ℝ, ℝ)) :
     levyEnergy f + quarticDefect f = ENNReal.ofReal (2 * autocorr f 0) *
       ∫⁻ x in Ioi (0 : ℝ), ENNReal.ofReal ((autocorr f 0 - autocorr f x) * archLevySinhWeight x) := by
-  have hm := ((measurable_const.sub (continuous_profile f).measurable).mul
-    measurable_weight).ennreal_ofReal
+  have hm : Measurable (fun x => ENNReal.ofReal
+      ((profile f 0 - profile f x) * archLevySinhWeight x)) :=
+    ((measurable_const.sub (continuous_profile f).measurable).mul
+      measurable_weight).ennreal_ofReal
   rw [levyEnergy, quarticDefect, ← lintegral_add_left hm]
   calc
     _ = ∫⁻ x in Ioi (0 : ℝ), ENNReal.ofReal (2 * autocorr f 0) *

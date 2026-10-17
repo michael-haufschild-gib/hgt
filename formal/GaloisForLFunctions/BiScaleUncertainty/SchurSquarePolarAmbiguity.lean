@@ -57,8 +57,10 @@ theorem exists_smooth_same_square_distinct_polar :
     have hc : copyMixingCoefficient (-a) = -copyMixingCoefficient a := by
       simp only [copyMixingCoefficient, neg_sq, neg_div]
     change normalizedPolarMoment (source f (-a)) = _ at he
-    rw [hc] at he
-    nlinarith only [he, hfactor]
+    have hfac : 1 - 2 * (-copyMixingCoefficient a) * Real.cosh (gap f / 2) = 2 := by
+      nlinarith only [hfactor]
+    rw [hc, hfac] at he
+    exact he
   refine ⟨source f a, source f (-a), contDiff_subtractCopy hb _ _,
     contDiff_subtractCopy hb _ _, ?_, ?_, ?_, hminus, ?_⟩
   · rw [source_mass]
