@@ -1053,3 +1053,43 @@ source/audit name-list matches. Twenty-four contributions,366 supporting public
 theorem audits; full goal ACTIVE. Final global lint after one bounded refresh
 reports22 unrelated unreachable modules and concurrent LEAN_API drift; no owned
 lifting module flagged. Exact snapshot on master card; no global clean-gate claim.
+
+## Sharp plastic infimum at fixed full coherent data
+
+Dependency-closed paper theorem; Lean verification pending in
+`formal/GaloisForLFunctions/BiScaleUncertainty/OutwardCoherentEscape.lean` and
+`formal/GaloisForLFunctions/BiScaleUncertainty/CoherentFiberPlasticInfimum.lean`.
+Write d=log2, F=odd(f), R=representative(f), S(u)=sinh(u/2)R(u),
+P=cellFold(F), and O=integral F(u)sinh(u/2)du.
+
+- Set L_n=(n+4)d, r_n(u)=S(u-L_n)/sinh(u/2), E_n=odd(r_n).
+  The numerator vanishes near0, so r_n and E_n are actual compact continuous
+  sources. E_n is odd and supported in (n+1)d<|u|<(n+7)d.
+- Integer translation preserves the full fold of r_n; odd projection averages
+  it with its reflection. Since P is even, cellFold(E_n)=P on the whole real
+  line. The signed moment and exact coherent price are preserved exactly.
+- Put H=integral S². Since sinh(u/2)>=u/2 on the positive support,
+  h_(r_n)(0)<=4H/((n+1)d)². The raw source and its reflection have disjoint
+  support, hence h_(E_n)(0)=h_(r_n)(0)/2<=2H/((n+1)d)².
+- For every actual compact source g, its plastic jump energy satisfies
+  0<=J(g)<=2M*h_g(0), where M=integral_(0,infinity) levyCoshKernel=V/2
+  and V is the known plastic origin potential. Therefore the explicit
+  coefficient C_f=8MH/d²=4VH/d² gives
+  0<=Q(E_n)+2O²<=C_f/(n+1)², with no free analytic premise.
+- In the actual coherent class {g: odd(g)=g, cellFold(g)=P}, every source
+  satisfies Q(g)=2J(g)-2O². The explicit family reaches every positive
+  error tolerance above -2O², making that value the exact greatest lower bound.
+- The infimum is attained iff P=0. Equality forces J(g)=0 and hence g=0;
+  conversely the zero source attains the floor in the zero-fold class.
+  Thus positive curvature on every nonzero kernel line does not imply a
+  global minimizer in a nonzero coherent class.
+- A coherent class contains a source with negative plastic value iff O!=0.
+  For nonzero O the explicit family eventually has negative value; for O=0
+  all values equal 2J(g)>=0.
+
+This is one producer and sharp variational classification contribution.
+No fixed source-energy normalization, prime-grid blindness, additional
+smoothness or arbitrary-odd-source positivity is claimed. The minimizer
+no-go has an explicit positive survivor, recorded in
+`docs/drafts/pipeline/5-failed/global-coherent-fiber-plastic-minimizer-2026-10-17.md`;
+its closure awaits the exact Lean and axiom audits.

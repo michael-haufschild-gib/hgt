@@ -38,11 +38,13 @@ theorem primitive_physicalBoxAverage (s : ℝ) (q : Velocity) (t : ℝ) :
   rw [physicalBoxAverage_apply, ← physicalPrimitiveFunctional_apply, map_smul,
     physicalPrimitiveFunctional_apply, primitive_integral_physicalTranslation]
   simp only [primitive_physicalTranslation, smul_eq_mul]
-  rw [intervalIntegral.integral_sub
-    (((continuous_physicalPrimitive q).comp
-      (continuous_const.add continuous_id)).intervalIntegrable 0 (Real.exp s))
+  have hi : IntervalIntegrable (fun u => primitive q (t+u)) volume 0 (Real.exp s) :=
+    ((continuous_physicalPrimitive q).comp
+      (continuous_const.add continuous_id)).intervalIntegrable 0 (Real.exp s)
+  rw [intervalIntegral.integral_sub hi
     ((continuous_physicalPrimitive q).intervalIntegrable 0 (Real.exp s))]
-  rw [intervalIntegral.integral_comp_add_left, add_zero, ← physicalSecondPrimitive_sub]
+  rw [intervalIntegral.integral_comp_add_left (a := 0) (b := Real.exp s)
+    (primitive q) t, add_zero, ← physicalSecondPrimitive_sub]
   rfl
 
 def physicalBoxProfile (s : ℝ) (q : Velocity) (t : ℝ) : ℝ :=

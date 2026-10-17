@@ -91,7 +91,7 @@ theorem tendsto_nyquistResidualTailMass_sharp :
       atTop (𝓝 (1 / 4 : ℝ)) := by
   have he (N : ℕ) : ((N + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) = nyquistResidualTailScale N := by
     rw [Real.rpow_neg (by positivity), ← Real.sqrt_eq_rpow]
-    rfl
+    simp only [nyquistResidualTailScale, one_div]
   simpa only [nyquistWeightTailMass_half_zero, he] using tendsto_nyquistWeightTailMass_half_zero
 
 theorem tendsto_nyquistWeightPrefixMass_one_zero (N : ℕ) :

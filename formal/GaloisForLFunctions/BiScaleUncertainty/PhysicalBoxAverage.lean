@@ -40,7 +40,9 @@ def physicalBoxAverage (s : ℝ) : Velocity →L[ℝ] Velocity :=
         simp only [physicalBoxAverageValue, physicalOrbitPrimitive, map_smul,
           intervalIntegral.integral_smul, smul_comm (Real.exp s)⁻¹ a]
         rfl }
-    1 (fun q => by simpa only [one_mul] using physicalBoxAverageValue_norm_le s q)
+    1 (fun q => by
+      change ‖physicalBoxAverageValue s q‖ ≤ 1*‖q‖
+      simpa only [one_mul] using physicalBoxAverageValue_norm_le s q)
 
 theorem physicalBoxAverage_apply (s : ℝ) (q : Velocity) :
     physicalBoxAverage s q = (Real.exp s)⁻¹ • ∫ u in 0..Real.exp s, physicalTranslation u q := rfl
@@ -72,7 +74,8 @@ theorem physicalTranslation_boxAverage (s c : ℝ) (q : Velocity) :
   rw [physicalBoxAverage_apply, map_smul,
     ← (physicalTranslation c).intervalIntegral_comp_comm]
   simp only [physicalTranslation_comp]
-  rw [intervalIntegral.integral_comp_add_left, add_zero, physicalOrbitPrimitive_sub]
+  rw [intervalIntegral.integral_comp_add_left (a := 0) (b := Real.exp s)
+    (fun u => physicalTranslation u q) c, add_zero, physicalOrbitPrimitive_sub]
 
 theorem physicalBoxAverage_shift_difference (s c : ℝ) (q : Velocity) :
     physicalTranslation c (physicalBoxAverage s q)-physicalBoxAverage s q =
@@ -80,14 +83,17 @@ theorem physicalBoxAverage_shift_difference (s c : ℝ) (q : Velocity) :
         (physicalTranslation (u+Real.exp s) q-physicalTranslation u q) := by
   rw [physicalTranslation_boxAverage, physicalBoxAverage_apply, ← smul_sub]
   congr 1
-  rw [intervalIntegral.integral_sub
-    (((continuous_physicalTranslation q).comp
-      (continuous_id.add continuous_const)).intervalIntegrable 0 c)
-    (intervalIntegrable_physicalTranslation q 0 c)]
-  rw [intervalIntegral.integral_comp_add_right, zero_add]
-  rw [← physicalOrbitPrimitive_sub, ← physicalOrbitPrimitive_sub,
-    ← physicalOrbitPrimitive_sub, physicalOrbitPrimitive_zero]
-  rw [add_comm c (Real.exp s)]
+  have hi : IntervalIntegrable (fun u => physicalTranslation (u+Real.exp s) q) volume 0 c :=
+    ((continuous_physicalTranslation q).comp
+      (continuous_id.add continuous_const)).intervalIntegrable 0 c
+  rw [intervalIntegral.integral_sub hi (intervalIntegrable_physicalTranslation q 0 c)]
+  rw [intervalIntegral.integral_comp_add_right (a := 0) (b := c)
+    (fun u => physicalTranslation u q) (Real.exp s), zero_add,
+    ← physicalOrbitPrimitive_sub]
+  change physicalOrbitPrimitive q (c+Real.exp s)-physicalOrbitPrimitive q c-
+    physicalOrbitPrimitive q (Real.exp s) =
+      (physicalOrbitPrimitive q (c+Real.exp s)-physicalOrbitPrimitive q (Real.exp s))-
+        physicalOrbitPrimitive q c
   abel
 
 def physicalBoxDerivative (s : ℝ) : Velocity →L[ℝ] Velocity :=

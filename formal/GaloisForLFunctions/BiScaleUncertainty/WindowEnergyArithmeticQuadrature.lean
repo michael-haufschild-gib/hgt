@@ -38,25 +38,32 @@ theorem hasDerivAt_cellWindowPrimitive (c t : ℝ) :
     have h0 : HasDerivAt (fun t : ℝ => -Real.exp (-t)) (-(Real.exp (-t) * -1)) t :=
       ((hasDerivAt_neg t).exp).neg
     exact h0.congr_deriv (by ring)
+  have ha : HasDerivAt (fun t : ℝ => c + 1 - t) (-1) t := (hasDerivAt_id t).const_sub (c + 1)
   have h2 : HasDerivAt (fun t : ℝ => (c + 1 - t) ^ 2 - 2 * (c + 1 - t) + 2)
-      (2 * (c + 1 - t) * (-1) - 2 * (-1)) t := by
-    have ha : HasDerivAt (fun t : ℝ => c + 1 - t) (-1) t := by
-      simpa using (hasDerivAt_id t).const_sub (c + 1)
-    have hb := (ha.pow 2).sub (ha.const_mul 2)
-    have hc := hb.add_const 2
-    convert hc using 1
-    simp
+      (-2 * (c + 1 - t) + 2) t := by
+    have := ((ha.pow 2).sub (ha.const_mul 2)).add_const 2
+    refine this.congr_deriv ?_
+    norm_num <;> ring
   have h3 : HasDerivAt (fun t : ℝ => -2 * (c + 1) * t + t ^ 2 + Real.exp t)
       (-2 * (c + 1) + 2 * t + Real.exp t) t := by
-    have ha := ((hasDerivAt_id t).const_mul (-2 * (c + 1))).add (hasDerivAt_pow 2 t)
-    have hb := ha.add (Real.hasDerivAt_exp t)
-    convert hb using 1
-    · funext x; simp; ring
-    · simp; ring
-  have h := (h1.mul h2).add h3
-  refine HasDerivAt.congr_deriv (h.congr_of_eventuallyEq ?_) ?_
-  · exact Filter.Eventually.of_forall fun x => by unfold cellWindowPrimitive; ring
-  · ring
+    have := (((hasDerivAt_id t).const_mul (-2 * (c + 1))).add (hasDerivAt_pow 2 t)).add
+      (Real.hasDerivAt_exp t)
+    refine this.congr_deriv ?_
+    norm_num <;> ring
+  have h : HasDerivAt (fun t : ℝ => -Real.exp (-t) * ((c + 1 - t) ^ 2 - 2 * (c + 1 - t) + 2) +
+      (-2 * (c + 1) * t + t ^ 2 + Real.exp t))
+      (Real.exp (-t) * ((c + 1 - t) ^ 2 - 2 * (c + 1 - t) + 2) +
+        -Real.exp (-t) * (-2 * (c + 1 - t) + 2) + (-2 * (c + 1) + 2 * t + Real.exp t)) t :=
+    (h1.mul h2).add h3
+  have hfun : cellWindowPrimitive c = fun t : ℝ =>
+      -Real.exp (-t) * ((c + 1 - t) ^ 2 - 2 * (c + 1 - t) + 2) +
+        (-2 * (c + 1) * t + t ^ 2 + Real.exp t) := by
+    funext t; unfold cellWindowPrimitive; ring
+  rw [hfun]
+  refine h.congr_deriv ?_
+  have hexp : Real.exp (-t) * Real.exp t = 1 := by
+    rw [← Real.exp_add]; simp
+  linear_combination (-(c + 1 - t) * 2 + Real.exp t) * hexp
 
 /-- **Closed-form cell energy:**
 `∫_{log n}^{log(n+1)} e^{−t}(c + 1 − t − e^t)² = F_c(log(n+1)) − F_c(log n)`. -/

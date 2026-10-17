@@ -25,7 +25,7 @@ theorem factorialSource_jump_energy_lower (n : ℕ) :
       6*Real.exp (-(1/2 : ℝ))*Real.sqrt (n+1 : ℕ)*Real.log ((n+1 : ℕ) : ℝ) := by
     calc
       _ = (6*Real.exp (-(1/2 : ℝ))*(Real.sqrt (n+1 : ℕ))^2*Real.log ((n+1 : ℕ) : ℝ))/Real.sqrt (n+1 : ℕ) := by rw [hs]
-      _ = _ := by field_simp [hr.ne'] <;> ring
+      _ = _ := by field_simp [hr.ne']
   rw [hcancel] at hscaled
   have hsum := factorialSource_jump_energy_sum n
   have hdiff := factorialSource_jump_energy_difference n
@@ -44,6 +44,7 @@ theorem factorialSourceJumpError_scaled_le (n : ℕ) :
   have hlogQ : Real.log (factorialJumpScale (n+1)) = Real.log (1000000 : ℝ)+5*Real.log ((n+1 : ℕ) : ℝ) := by
     unfold factorialJumpScale
     rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow]
+    norm_num
   have hlogN := Real.log_le_sub_one_of_pos hnp
   have hL := Real.log_le_sub_one_of_pos (show 0 < 4*((n+1 : ℕ) : ℝ)+1 by positivity)
   have hc : 0 ≤ Real.log (1000000 : ℝ) := Real.log_nonneg (by norm_num)
@@ -76,7 +77,7 @@ private theorem factorialSource_normalized_lower (n : ℕ) {E e : ℝ}
   have hconst := factorialSourceJumpError_scaled_le n
   have hAeq : A/(46*Real.sqrt (n+1 : ℕ)) = (3/23 : ℝ)*Real.exp (-(1/2 : ℝ))*Real.log ((n+1 : ℕ) : ℝ) := by
     dsimp [A]
-    field_simp [hr.ne'] <;> ring
+    field_simp [hr.ne']; ring
   rw [hAeq] at hAd
   unfold factorialSourceNormalizedJumpLower
   dsimp only [B] at hBd hEd

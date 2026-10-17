@@ -632,7 +632,7 @@ Current implementation plan (uncounted; verified count remains 13/100):
 [x] construct an exact measurable right-node partition and concentrated extension/retraction;
 [x] prove uniform square-root fibre mass bounds and abstract radial perturbation bounds;
 [x] specialize radial comparisons to both actual cutoff constructions;
-[ ] integrate the concentrated penalties and identify the leading tail term;
+[x] integrate the concentrated penalties and identify the leading tail term;
 [ ] direct leaf checks, all-theorem axiom audit, wiring, index and ledger evidence.
 Reuse the existing `logarithmicCeilLag_bounds` mesh theorem; its source and compiled
 artifact were inspected. Preserve the old 43 owned leaves and read-only README.
@@ -652,11 +652,11 @@ on the repair interval it bounds the increment by 6144. Integrating gives errors
 coefficient 4 and simplify the proof by avoiding fractional-power integration.
 All pending array bounds must be instantiated by the actual extension/retraction;
 generic perturbation lemmas alone do not complete this contribution.
-Seven leaves now compile without diagnostics: `RightNodeCollarPartition`,
+Nine leaves now compile without diagnostics: `RightNodeCollarPartition`,
 `CollarRadialPenalty`, `CollarMeshBounds`, `ConcentratedCollarExtension`, and
 `ConcentratedCollarRetraction`, together with `LogarithmicArrayRadialComparison`
-and `ConcentratedCollarPenalty`. Endpoint-tail analysis, integrated cutoff comparison
-and the optimized asymptotic capstone remain in verification.
+and `ConcentratedCollarPenalty`, `CollarEndpointTailMass`, and
+`SharpCollarCutoffComparison`. The optimized asymptotic capstone remains in verification.
 Checkpoint: `/tmp/bsu-sharp-tail-checkpoint.json`; count remains 13/100.
 
 The preceding one-sided rate can be sharpened on paper to
