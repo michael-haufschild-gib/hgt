@@ -61,3 +61,6 @@ All12 public theorem axiom audits9459 exited0 without warnings, using only
 `propext`, `Classical.choice`, `Quot.sound`. User requires leaf audits rather
 than full builds; no umbrella build was run. Local corpus audit found no
 actual attainment predecessor; no external priority claim.
+Umbrella wired; all14 public declarations indexed. Global lint independently
+reports unrelated modules and concurrent generated drift; exact snapshot on
+the master card. No repository-wide clean-gate claim.

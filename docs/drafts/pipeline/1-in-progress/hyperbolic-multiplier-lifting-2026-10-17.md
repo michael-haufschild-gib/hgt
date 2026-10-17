@@ -1822,9 +1822,25 @@ capstone now verified in Lean: contribution21/100.
   were indexed. Lint92309 exited1 on12 unrelated unreachable modules, plus
   concurrent LEAN_API/LEAN_OVERVIEW drift. No owned lifting module flagged.
   Bounded refresh44693 exited0 (6 changed), all14 declarations remain indexed.
-  Follow-up lint pending; no global clean-gate claim.
+  Final lint7555 exited1 on16 unrelated unreachable modules:
+  `ClampedExponentialBranchMoments`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer`,
+  `ExponentialTentMoments`, `ExponentialTentSourceEnergy`, `IntegerBlockAggregation`,
+  `PacketEnergyPlancherel`, `PhysicalCollarMixture`, `PhysicalDilation`,
+  `PhysicalPriceResponse`, `QuantitativeGramProducer`, `RegularizedGramDescent`,
+  `RegularizedGramGeometry`, `RegularizedGramIteration`, `RegularizedPhysicalGram`,
+  `SignedPrimePolarRampCore`, `SignedPrimePolarSourceParameters`.
+  Concurrent LEAN_API/LEAN_OVERVIEW drift and existing large-file warnings
+  remain. No owned lifting module flagged. Stop the bounded refresh here;
+  unrelated sources untouched, no global clean-gate claim.
 - Failed-route card records both sharpness obstruction and actual positive
   attainment survivor:
   `docs/drafts/pipeline/5-failed/sublog-coherent-moment-coefficient-2026-10-17.md`.
   Exact source construction, positive survivor and full capstone have passed
   final source compilation and all12 public theorem axiom audits.
+- Source21/source20 and read-only README hashes unchanged. No source edit
+  after final actual-source audit. All owned Lean, search, index and lint
+  handles terminal; one owned Lean process at a time. No numerical experiment,
+  full build, commit or push. Contribution21/100 complete; full goal ACTIVE.
+- Owned `/tmp/hml_attainment_api.lean` and `/tmp/hml_attainment_lint.txt`
+  removed; absence, all14 indexed declarations, unchanged source21/source20/
+  README hashes and final whitespace checks verified, including new files.

@@ -70,7 +70,9 @@ theorem regularizedGramCoefficient_error (ρ : PhysicalCollarPartition n) (f : C
     0 ≤ ρ.signedGramCoefficient f - ρ.regularizedGramCoefficient f ε ∧
     ρ.signedGramCoefficient f - ρ.regularizedGramCoefficient f ε ≤
       ε * logarithmicCollarRadius * autocorr f 0 := by
-  have hi := (ρ.integrableOn_signedGramKernel f).sub (ρ.integrableOn_regularizedGramKernel f hε)
+  have hi : IntegrableOn (fun y => ρ.signedGramKernel f y - ρ.regularizedGramKernel f ε y)
+      (Ioo 0 logarithmicCollarRadius) :=
+    (ρ.integrableOn_signedGramKernel f).sub (ρ.integrableOn_regularizedGramKernel f hε)
   have hc : IntegrableOn (fun _ : ℝ => ε * autocorr f 0) (Ioo 0 logarithmicCollarRadius) :=
     integrableOn_const (by rw [Real.volume_Ioo]; exact ENNReal.ofReal_ne_top)
   have hn := integral_nonneg

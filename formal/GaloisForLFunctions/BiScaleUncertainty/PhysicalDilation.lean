@@ -49,7 +49,7 @@ theorem norm_sq_dilatedVelocity (a : ℝ) (q : Velocity) :
     _ = a^2 * ∫ t, (q (a*t))^2 := by
       simp only [mul_pow, integral_const_mul]
     _ = _ := by
-      rw [Measure.integral_comp_mul_left, smul_eq_mul, abs_inv]
+      rw [Measure.integral_comp_mul_left (fun t => (q t)^2) a, smul_eq_mul, abs_inv]
       by_cases ha : a = 0
       · simp [ha]
       · have hab : |a| ≠ 0 := abs_ne_zero.mpr ha

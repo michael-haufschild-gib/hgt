@@ -9,28 +9,28 @@
   prime-grid values and has an unconditional signed-pairing bound. Include actual
   source-energy costs and nonvanishing test size in the same package.
 
-## Candidate mechanism, not yet audited
+## Paper-proved mechanism, Lean endpoint pending
 
 The continuous factorial test closes scalar continuity but is not an
 autocorrelation: its origin is zero and its top value is two. A further
 receiver or a formal polarization identity alone would not be a new contribution.
 The missing step is an actual source construction with quantified cost.
 
-For N≥1 let W_N be the verified discontinuous factorial bi-null test. Set
-A=1+1/(4N), δ=log(A)/3 and
-k(t)=exp(3t/2) 1_[0,δ](t)/(exp(δ)−1).
-Consider the causal triple convolution H_N=W_N*k*k*k. A change of variables
-λ_i=exp(t_i) suggests that H_N is the average of the common-dilation tests
-W_N^λ with λ=λ₁λ₂λ₃≤A. Thus exact grid preservation should survive, and the
-polar correction should involve the explicit mean dilation
-[(1+exp(δ))/2]^3. Both assertions require a full endpoint and Fubini audit.
+For N≥1 set A=1+1/(4N), δ=log(A)/3, ε=exp(δ)−1. Construct the continuous
+factorial ramp stencil R_N directly and set
+ρ_N(t)=exp(t) max(0,min(t,2δ−t))/ε².
+The explicit compact continuous sources are F_N(u)=R_N(−u) and
+G_N(u)=exp(u/2)ρ_N(u). Their mixed correlation H_N preserves W_N(log n)
+for every n≥1. The polar correction has coefficient [(1+exp(δ))/2]³.
+Finite-rectangle Fubini and integer separation prove these statements on paper;
+no rough triple-convolution regularity is assumed.
 
-Potential actual sources are F_N(u)=(W_N*k)(−u) and G_N(u)=(k*k)(u).
-Their mixed correlation should be H_N. Their supports lie on opposite half-lines,
-so the autocorrelations of F_N+G_N and F_N−G_N should have equal origin energies;
-their difference on the positive half-line should be 2H_N. Check the correlation
-orientation and factor two explicitly. Derive continuity from genuine convolution
-integrability, not from a claimed regularity of the discontinuous ingredients.
+The sources F_N±G_N have equal origin energies in [6N,46N]. Their
+autocorrelation difference divided by two is H_N(x)+H_N(−x), with squared
+L² norm in [2,32] and the same positive-half-line signed pairing as H_N.
+The bound is [10log(4N+1)+3+1/(4N)]/sqrt(N).
+All arithmetic cancellation acts directly on T(N), in accordance with Trap 10
+of the read-only `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
 
 The shrinking collar can make source norms grow. Quantify this cost explicitly;
 do not infer uniform packet control or positivity from scalar cancellation. Count
@@ -58,8 +58,8 @@ The dependency-closed proof is now in
 It constructs the initial ramp and exponential tent directly, avoiding rough
 triple-convolution associativity. The actual autocorrelation contrast has exact
 prime-grid values, an unconditional pairing bound and squared L² size in [2,32].
-Both actual sources have equal origin energy in [6N,46N]. All Lean verification
-remains pending; no part of the package is counted yet.
+Both actual sources have equal origin energy in [6N,46N]. The complete Lean
+endpoint remains pending; no part of the package is counted yet.
 
 ## Implementation checkpoint
 

@@ -914,4 +914,6 @@ Umbrella wired; all14 public declarations indexed. README and source20 unchanged
 Twenty-one contributions, 306 supporting public theorem audits; full goal ACTIVE.
 The sub-log2 universal-coefficient route is closed with this positive survivor in
 `docs/drafts/pipeline/5-failed/sublog-coherent-moment-coefficient-2026-10-17.md`.
-Final global lint after one bounded refresh is pending; exact snapshot on master card.
+Final global lint after one bounded refresh reports16 unrelated unreachable
+modules and concurrent drift in LEAN_API/LEAN_OVERVIEW; no owned lifting module
+flagged. Exact snapshot on master card. No global clean-gate claim.

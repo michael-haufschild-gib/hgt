@@ -2,7 +2,7 @@
 
 ## Scope and status
 
-Dependency-closed paper proof, awaiting its final paper and corpus audit. No new
+Dependency-closed paper proof, with the paper and corpus audit complete. No new
 Lean has been written for this package, and no contribution is counted yet.
 This continues infinite-grid tail rigidity for general signed correlations.
 The field guide `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` is read-only.
@@ -180,8 +180,8 @@ moments, without replacing them by absolute values or asserting a node formula.
 
 ## 6. One actual smooth source family certifies all thresholds
 
-Choose one nonnegative smooth compact bump f, with f(0)=1. Such a source is
-the actual ContDiffBump used in the proof of
+Choose the nonnegative smooth compact bump f centered at zero with inner radius
+1/2 and outer radius 1, so f(0)=1. This is the actual ContDiffBump used in the proof of
 `exists_smooth_source_positive_polar_moment` in `DistantCopyPolarTopology`.
 Let R=integral f^2>0 and H(x)=integral f(u)f(u+x) du/R. Then H is smooth,
 compactly supported, 0<=H<=1, and H(0)=1. Continuity supplies r>0 such that
@@ -196,26 +196,29 @@ Each f_j is an actual nonnegative smooth compact source. The family is chosen
 once, independently of beta, m and N. Its correlations satisfy 0<=H_j<=1,
 converge pointwise to one, and are at least 1/2 on [0,r lambda_j].
 
-Its normalized Levy energies tend to zero. To prove this, differentiating the
-fixed compact convolution under its integral gives the finite bound
+Its normalized Levy energies have an unconditional quantitative bound. The
+existing `exists_autocorr_increment_linear_bound` in `BroadSpectralCostRealization`
+derives M_0>=0 with R-autocorr(f)(x)<=M_0|x| for every x. Its proof derives a
+finite Lipschitz constant for this fixed compact smooth f and integrates the
+translation difference against |f|. Thus M=M_0/R is a derived finite constant,
+and 0<=1-H(t)<=M|t|. Consequently, for every j and x>0,
 
-    |H'(x)| <= M=(integral |f|) sup|f'|/R
+    0 <= 1-H_j(x) <= Mx/lambda_j.
 
-for all x. Differentiation is justified by the fixed compact support of f in
-the integration variable and the bounded continuous derivative f'. Hence
-0<=1-H(t)<=M|t|, and for lambda_j>=1,
+The actual first moment J_1=integral_(0,infinity) x w_arch(x) dx is finite and
+nonnegative. The same module proves this using the explicit bound
 
-    0 <= 1-H_j(x) <= Mx,  0<x<=1;
-    0 <= 1-H_j(x) <= 1,   x>1.
+    x w_arch(x) <= (2x+1) exp(-x/2), x>0.
 
-The existing Levy weight satisfies x w_arch(x)<=3 on (0,1] and is integrable
-on (1,infinity). These facts are proved in `LogarithmicCompressionEnergy`
-using `mul_archLevySinhWeight_le` and `integrableOn_archLevySinhWeight_Ioi`.
-Thus the normalized energy integrands have one integrable majorant, namely
-3M on (0,1] and w_arch on (1,infinity). They tend pointwise to zero.
-Dominated convergence proves E(f_j)->0 and the explicit common ceiling
-K=3M+integral_(1,infinity) w_arch. All regularity, mass, integrability and
-energy properties have been derived from the one concrete source.
+Multiplication by the positive Levy weight and integration now give
+
+    0 <= E(f_j) <= M J_1/lambda_j = K/(j+1),  K=M J_1>=0.
+
+In particular the energies tend to zero under one common ceiling K. This is
+the scaling calculation already present in the proof of
+`exists_source_normalized_energy_lt`, now retained for the entire explicit
+family. All regularity, mass, integrability and energy properties are derived
+from the one concrete source; no varying-source regularity bound is assumed.
 
 Now fix any beta>0, m>=0 and N>=1. Below the threshold, domination by the
 integrable residual kernel gives

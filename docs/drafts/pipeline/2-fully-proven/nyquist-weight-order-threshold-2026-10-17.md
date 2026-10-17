@@ -1,15 +1,16 @@
 # Nyquist weight order and the threshold for an integrable residual
 
 - **ID:** nyquist-weight-order-threshold-2026-10-17
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
 - **Scope:** Infinite-Grid Tail Rigidity Beyond Trap 5; explicit weight producers.
 - **Source:** The integrable polar residual package and the field guide
   `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
 - **Statement:** For beta>0 and Taylor degree m>=0, the logarithmic-cell
   Taylor producer for cosh(beta x) has an integrable residual exactly when
   beta<m+1.
-- **Status:** Paper audit in progress; no new Lean or contribution count.
+- **Status:** Dependency-closed paper proof complete; Lean pending, uncounted.
+- **Paper:** `docs/reports/BiScaleUncertainty/NyquistWeightOrderThreshold.md`.
 
 ## Goal
 
@@ -37,8 +38,11 @@ have exact norm A_N with
 
 At and above the threshold, the positive kernel should have infinite mass and
 unbounded action on compactly supported continuous inputs of supremum norm one.
-The beta=0 case has zero residual. Actual source witnesses, if available, would
-strengthen the obstruction; they must be constructed, not assumed.
+The beta=0 case has zero residual. One actual nonnegative smooth source family,
+chosen independently of beta,m,N, has normalized correlations H_j(x)=H(x/(j+1))
+and energies bounded by K/(j+1). Its residuals tend to A_N below the threshold
+and to infinity at or above it. Thus the norm is sharp even under any positive
+energy ceiling on actual smooth compact sources.
 
 ## Approach and prior-corpus gate
 
@@ -64,8 +68,8 @@ source is not a resolution of that remaining uniform-control problem.
 
 ## Gates
 
-- [ ] Current corpus inspected; exact novelty boundary established.
-- [ ] Dependency-closed paper proof and sharp positive-survivor audit.
+- [x] Current corpus inspected; exact novelty boundary established.
+- [x] Dependency-closed paper proof and sharp positive-survivor audit.
 - [ ] Actual positive kernel, bounded operator and threshold formalized in Lean.
 - [ ] All direct leaves, axioms, API entries, imports and formal lint checked.
 - [ ] Count once only if the complete classification adds a substantive tool.
@@ -82,8 +86,33 @@ source is not a resolution of that remaining uniform-control problem.
 The original 100-package objective remains active with 14 certified packages.
 This card carries task tracking because `update_plan` is unavailable.
 
+## Paper and input audit
+
+The complete proof checks every exponent endpoint, the positive Taylor remainder,
+an explicit all-cell majorant, sharp cell/tail/prefix constants, exact kernel
+integrability and operator norm, compact-input decomposition, minimal integer
+order, and actual smooth source sharpness with a common quantitative energy
+ceiling. The source family has pointwise limit one and lacks uniform signed
+grid tails; no stronger topology counterexample is claimed.
+
+Fresh `/tmp/nyquist-weight-taylor-inputs.json` completed without errors or
+unfinished stages. All 20 candidates and 20 source arguments were inspected;
+inventory was complete, coverage was one generation behind, semantic coverage
+unmeasured and compiler evidence source-only. Actual mathlib Taylor remainder
+and power-series tests were read directly. `BroadSpectralCostRealization` was
+read through its scaling argument: its first-moment and increment estimates
+give the stronger explicit energy bound K/(j+1), replacing a merely qualitative
+convergence argument. The fixed nonnegative bump construction in
+`DistantCopyPolarTopology` was checked directly. Existing calculus, power-series
+tests and broad-source scaling are reused inputs, not counted as new results.
+
+The strongest positive survivor is the full producer-order hierarchy and its
+sharp norm on actual smooth correlations under arbitrarily small positive
+energy ceilings. Formalize this complete result; do not count just its negative
+integrability threshold or an easier isolated helper.
+
 ## No-go closure
 
 If the proposed threshold or asymptotic fails, extract the exact corrected
 classification or replacement producer. Do not retire the route with a negation
-alone. This candidate is presently unproved, not falsified.
+alone. The complete paper result is proved; its Lean certificate remains open.
