@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Fifteen substantive results are Lean verified: compensated multiplier Gram
+contributions. Sixteen substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -19,7 +19,8 @@ source-lattice multiplier frame, odd-moment penalty and full plastic receiver (1
 coherent cancellation with its exact boundary law and sharper full plastic receiver (13), and
 unbounded realized cancellation at fixed source energy with its full plastic transfer (13), and
 the explicit coherent source-cancelling producer with its unconditional energy error and
-sharper odd moment/plastic bound (10). Supporting theorem
+sharper odd moment/plastic bound (10), and the exact finite coherent filter with
+its signed Gram formula and unconditional moment/plastic transfer (14). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -681,3 +682,48 @@ Remaining frontier: replace absolute correlation mass in the coherent difference
 cost by the actual signed filter energy; realize and classify projection gains;
 optimize all signed controls and compare moment costs with positive original energies.
 Full goal remains ACTIVE at15/100.
+
+## Exact finite coherent filter and signed Gram energy
+
+- Choose the intrinsic integer L=sourceCutoff(f) with L*d>2*multiplierSourceRadius(f),
+  d=log2. At the omitted positive lags, the two source factors cannot both be
+  nonzero. Original, sine-multiplied and centered cross-correlations therefore
+  vanish there. This uses support separation, not an inference from a cancelled
+  original-source correlation to a multiplier zero.
+- The concrete compact filter is
+  A_L(u)=sum_(k=1)^L [f(u+kd)+f(u-kd)]/(2cosh(kd/2)).
+  Its exact original-source energy is
+  G_L=sum_(k,l=1)^L [h_f((l-k)d)+h_f((l+k)d)]/[2cosh(kd/2)cosh(ld/2)].
+  Both signed difference and reflected-sum correlations survive; no absolute
+  correlation mass appears in this finite energy.
+- K=<f,A_L> equals the previous covarianceMass kappa exactly. The actual compact
+  r=A_L-(K/R)f has energy H=G_L-kappa²/R>=0 and is orthogonal to f, including
+  R=0. In that case integral Cauchy--Schwarz forces K=0. With Q=||q||² and
+  q=(cosh(u)-mu)f, <q,A_L>=<q,r><=sqrt(QH).
+- For canonical odd F, the filter reproduces the complete coherent slope:
+  sigma+<q,A_L>=2sum_(k=1)^L h_S(kd). For every K>=0, at N=L+K,
+  G_S(N)=(N+1)[R_S+sigma+<q,A_L>]-B,
+  B=2sum_(k=1)^L k*h_S(kd). This is exact; the omitted centered pairing is zero.
+- Consequently O²<=d[R_S+sigma+<q,A_L>] before applying any norm bound.
+  The finite Schur price C_local=R_S+sigma+sqrt(QH) is nonnegative on canonical
+  odd sources and gives O²<=d*C_local. The full functional obeys
+  I_opt(F,N)+R_plastic(F)-2d*C_local(F)<=P(F), for every collar cutoff N.
+- Main capstones construct their source cutoff and producer. No unknown
+  analytic bound, source-zero condition or nonzero-energy premise remains.
+  The support bound enters through the finite filter window; no cutoff-independent
+  price, superiority to every earlier budget, norm-price attainment or universal
+  plastic positivity is asserted. One contribution; generic finite counting and
+  affine-limit arguments are supporting machinery, not new contribution counts.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/LocalCoherentFilter.lean`.
+Final actual-source audit passed without warnings; 463 lines, seven public
+definitions and fourteen public theorems. SHA256
+`1e71a25424aebd61b98307a70d8ba62c28b2e085c7b51e3d360fd4ce2946988c`.
+All fourteen public axiom audits use only `propext`, `Classical.choice`, `Quot.sound`.
+Sixteen contributions, 248 public supporting theorem audits. Umbrella wired;
+all21 public declarations indexed. Canonical README and previous source15 unchanged.
+Latest lint snapshot: 18 unrelated modules unreachable from the BiScale umbrella;
+no owned lifting module or generated-file drift flagged. Exact list on master card.
+Remaining frontier: compare/optimize finite signed filter energies, classify the
+exact coherent endpoint and its Schur slack, realize projection gains, and compare
+moment prices with positive original energies. Full goal remains ACTIVE at16/100.

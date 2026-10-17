@@ -72,6 +72,7 @@ theorem factorialBiNull_top {N : ℕ} (hN : 1 ≤ N) :
   rw [hs]
   have hsn : Real.sqrt (N : ℝ) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hn)
   field_simp
+  norm_num
 
 /-- This producer does not masquerade as an autocorrelation receiver. -/
 theorem factorialBiNull_ne_autocorr (n : ℕ) (f : C_c(ℝ, ℝ)) :

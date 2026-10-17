@@ -2,7 +2,7 @@
 
 Independent BiScaleUncertainty research. User goal:100 significant theorem packages; **7/100 verified**, goal ACTIVE,93 outstanding. No RH work, hgtl7 skill, numerical experiments, grid blindness, inflated helper counts, commits, or umbrella builds. Main endpoints use actual C_c sources and numerical inputs without extra analytic hypotheses. One foreground Lean process per agent.
 
-Authoritative README: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, all242lines read. **READ-ONLY by explicit user instruction.** Section3.3 directs this lane; trap9 preserves actual prime weights and arbitrary signed correlations. Do not edit old/new README.
+Authoritative README: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read fully, then complete update adding Section3.5 and Trap10 read. **READ-ONLY by explicit user instruction.** Section3.3 directs this lane; Trap9 preserves actual prime weights and arbitrary signed correlations. Trap10 now prioritizes explicit unconditional producers: no further receiver-only reformulations and no pre-floor linear counterterm subtraction. Do not edit old/new README.
 Canonical ledger: `docs/reports/BiScaleUncertainty/SignedPrimePolarTransport-FACTS.md`.
 Parent card: `docs/drafts/pipeline/1-in-progress/signed-prime-polar-transport-2026-10-17.md`.
 Read attachment each new turn: `/Users/michael/.codex/attachments/e9ef520a-4498-4562-99e8-1c42812df597/pasted-text-1.txt`.
@@ -25,7 +25,7 @@ Read attachment each new turn: `/Users/michael/.codex/attachments/e9ef520a-4498-
 
 ## Verification
 
-All seven packages have direct leaf passes and standard axiom audits. Latest leaves exit0 with empty logs `/tmp/spp7-scaled-build.log`, `/tmp/spp7-optimal-build.log`. Scratch `/tmp/spp7_final_axioms.lean` exits0; twelve endpoints only propext,Classical.choice,Quot.sound; printed main signatures contain no extra premises (`/tmp/spp7-final-axioms.log`). Imports wired, index exits0 (`/tmp/spp7-index.log`), scoped whitespace passes. Global lint exits1 solely for six unrelated concurrent unwired modules: CausalExponentialResponseAndLaplaceEnergy, ExplicitNyquistPolarAndChebyshevFactorialProducer, FiniteGridRunLength, FoldFreeKernelGramAndFranelGcdCancellation, RealizedCoherentCancellation, SuccessorSequenceHilbert. Evidence `/tmp/spp7-lint.log`; no task-local errors. Do not edit other lanes. No owned Lean/search/lint/index process remains running. Obsolete spp7_api probe/log removed; final audit/evidence retained.
+All seven packages have direct leaf passes and standard axiom audits. Latest leaves exit0 with empty logs `/tmp/spp7-scaled-build.log`, `/tmp/spp7-optimal-build.log`. Scratch `/tmp/spp7_final_axioms.lean` exits0; twelve endpoints only propext,Classical.choice,Quot.sound; printed main signatures contain no extra premises (`/tmp/spp7-final-axioms.log`). Imports wired, index exits0 (`/tmp/spp7-index.log`), scoped whitespace passes. Global lint exits1 solely for six unrelated concurrent unwired modules: CausalExponentialResponseAndLaplaceEnergy, ExplicitNyquistPolarAndChebyshevFactorialProducer, FiniteGridRunLength, FoldFreeKernelGramAndFranelGcdCancellation, RealizedCoherentCancellation, SuccessorSequenceHilbert. Evidence `/tmp/spp7-lint.log`; no task-local errors. Do not edit other lanes. At completion of package7, no owned process remained running. Package8 is now in progress; consult its card and current tool handles before launching Lean. Obsolete spp7_api probe/log removed; final audit/evidence retained.
 
 ## Boundaries and next target
 
@@ -33,7 +33,11 @@ Scalar support stabilization does NOT imply Q_N stabilization: distant translate
 
 Package7 optimizes only the scalar trial family at fixed smoothing and eta. It removes coefficient-one loss, not the residual. No joint width optimization. At eta1 capped bound no worse than mass and contribution6; other eta compare with their own trial family. Smoothness alone does not imply strict gain.
 
-Next uncounted card: `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`. Candidate exact mixed gauge Gram G_ij=S_ij+B_ij/4 from integral(g_i g_j)'=0; S_ij four endpoint autocorrelations, B_ij double collar Gram. Seek full coherent mixture source/transport certificate and comparison with scalar trials, not merely polarization. Singular coefficient directions must be discharged by actual source geometry; no assumed invertibility. No code for this target yet.
+Active uncounted package8: `1-in-progress/signed-prime-polar-factorial-producer-2026-10-17.md`. Explicit real-ratio rectangle lift of factorial bi-null producer, actual full signed pairing, harmonic correction in [0,1], unconditional (10 log(4N+1)+3)/sqrt(N) bound. Three Lean leaves written; final producer check and axiom audit pending. Card records verification state and temporary artifact overlay required because shared .olean files have disappeared during checks.
+
+Next producer candidate: `0-backlog/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`. Average a tiny common dilation lambda∈[1,1+1/(4N)] to obtain a concrete C_c test while preserving every prime-grid value. Expected exact pairing [2B_N-(1+1/(8N))C_N]/sqrt(N), with nonvanishing and bounded L2 norm to audit. This is unproved/unformalized and uncounted. Keep the package8 discontinuous test distinct from an autocorrelation: its origin is 0 but top value is 2.
+
+Multiple-collar compensation is parked: `0-backlog/signed-prime-polar-multiple-collars-2026-10-17.md`. Preserve cross-correlations if revisited, but follow Trap10 producer priority first.
 Secondary uncounted width candidate: B(d)=2d^-2 integral_0^d(d-t)h(t)dt, reconstruct from d²B(d). A classical rearrangement alone does NOT count; pursue only if it closes a distinct width/transport question.
 
 ## Search evidence

@@ -63,6 +63,9 @@
     hyperbolic filter reproducing the entire coherent centered pairing. Prove
     its exact boundary law, retain its signed Schur energy, and transfer the
     resulting unconditional moment price to the full plastic functional.
+22. Compare that actual finite filter with the previous lattice producer. Bound
+    its coefficient square sum by 13/9, retain the same source projection, and
+    transfer the resulting quantitative improvement to the full plastic bound.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -1368,7 +1371,9 @@ semantic coverage unmeasured and partial compiler freshness. Existing centered
 cross identity, coherent packet support/integral law and projected source Gram
 were inspected. SignedGramCapacity supplies norm-triangle machinery, but actual
 support shows a tail approximation is unnecessary for this pairing. No external
-priority claim. Paper proof complete; formal verification pending.
+priority claim. Paper proof and exact formal verification complete. A focused cached
+lexical query "hyperbolic filter" returned no indexed declaration; available broad
+hits were inspected and reused. This is not an exhaustive literature novelty claim.
 
 The finite Gram has the explicit original-source formula
 ||A_L||²=sum_(k,l=1)^L [h_f((l-k)d)+h_f((l+k)d)] /
@@ -1379,3 +1384,92 @@ Cauchy--Schwarz is O²<=d[R_S+sigma+<q,A_L>]; the local Schur budget follows.
 Source orthogonality of r is also unconditional: if R=0, integral
 Cauchy--Schwarz forces K=0. These strengthen the same finite-producer result,
 not additional contribution counts.
+
+### Verification of the sixteenth result
+
+- Final actual-source audit, session17931, exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/LocalCoherentFilter.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/LocalCoherentFilter.olean`.
+- Source SHA256 `1e71a25424aebd61b98307a70d8ba62c28b2e085c7b51e3d360fd4ce2946988c`;
+  463 lines, seven public definitions and fourteen public theorems. No source
+  edit after the successful actual-source audit. Source15 hash unchanged.
+- `lake --old env lean /tmp/hml_local_api.lean`, session77220, exited0 without
+  warnings. All14 public theorem axiom audits use only `propext`, `Classical.choice`,
+  `Quot.sound`; source/audit lists match exactly. New finite-sum/Nat.find API names
+  were checked there too. Contribution **16/100**, 248 public supporting theorem
+  audits; full goal ACTIVE.
+- Umbrella import added. Index35755 exited0; all21 public declarations indexed.
+  Read-only README unchanged, SHA256
+  dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933.
+- Initial compilation encountered a missing prior artifact during another active
+  targeted build. Live process91355 was verified, then its completed artifact was
+  observed before retrying the new source. No duplicate dependency build launched;
+  source1/2 hashes unchanged. All own Lean processes ran one at a time.
+- Lean details: unfold covarianceMass, expose its sourceSample body, then normalize
+  integer casts. `Finset.mem_range.not.mp` supplies not-lt, so use omega to obtain
+  the required Nat inequality. Prove range inclusion explicitly instead of using
+  the more general `Finset.range_subset` with the wrong expected type. Avoid
+  `ring_nf` under autocorrelation arguments in the affine endpoint; outer polynomial
+  arithmetic suffices. No capstone weakened or heartbeat/recursion limit changed.
+- `scripts/formal_tools.py lint --check-generated`, session20458, exited1 on18
+  unrelated unreachable BiScale modules:
+  `CoprimeShearArithmeticWeightsAndChebyshevCellIncrement`, `DivisorGridClosedRange`,
+  `DivisorGridRunGeometry`, `DivisorGridSinePackets`, `DivisorGridTraceData`,
+  `DivisorGridTraceStability`, `FiniteIntegerTrainCompactness`,
+  `FiniteIntegerTrainEnergy`, `FiniteIntegerTrainPackets`, `FiniteIntegerTrainPeak`,
+  `FiniteIntegerTrainPolar`, `FiniteIntegerTrainProducers`,
+  `FoldFreeKernelGramAndFranelGcdCancellation`, `SignedPrimePolarFactorialLift`,
+  `SignedPrimePolarFactorialProducer`, `SignedPrimePolarHarmonicCorrection`,
+  `TernaryPacketPolarGrowth`, `TernaryPacketTrain`. No owned lifting module or
+  generated-file drift was flagged. Existing large-file warnings remain; no
+  repository-wide clean gate is claimed. Other agents' sources preserved.
+- Owned `/tmp/hml_local_api.lean` and `/tmp/hml_local_lint.txt` removed;
+  absence verified. All owned source/API/search/index/lint handles terminal.
+  Final whitespace checks passed; source and read-only README hashes unchanged.
+  No numerical experiment, full build, commit or push. Contribution16/100 complete;
+  full goal remains ACTIVE.
+
+## Seventeenth result: quantitative finite-filter lattice gain (paper proof)
+
+Let d=log 2, R=h_f(0), Gamma=sum_Z |h_f(kd)|, kappa=<f,A_L>,
+q=(cosh(u)-mu)f, Q=||q||². The previous projected energy is
+D=2 Gamma-kappa²/R; the actual finite-filter energy is
+H=||A_L||²-kappa²/R. All division is totalized, so the zero-source case is
+included. The preceding contribution already proves H>=0 and its moment and
+plastic transfers for the canonical odd source.
+
+Write A_L=sum_{k<L} a_k[tau_{k+1}f+tau_{-(k+1)}f], where
+a_k=1/(2 cosh((k+1)d/2)). Distinct signed integer positions give the finite
+Gram bound ||A_L||² <= Gamma rho_L, rho_L=2 sum_{k<L}a_k².
+Indeed each absolute Gram row is a subset of the summable lattice row Gamma;
+2|w_i w_j|<=w_i²+w_j² and symmetry prove the quadratic bound. This is
+classical supporting machinery, not a separate contribution.
+
+From exp(t)<=2 cosh(t), a_k²<=2^{-(k+1)}. The exact first term is
+a_0²=2/9: cosh(2t)=cosh(t)²+sinh(t)², cosh(t)²-sinh(t)²=1,
+and cosh(log 2)=5/4 give (2 cosh(d/2))²=9/2. Thus rho_0=0,
+while for L>=1 the geometric tail gives
+rho_L <= 2(2/9+sum_{k=1}^{L-1}2^{-(k+1)}) <= 13/9.
+No optimality of 13/9 is asserted. Therefore
+H <= (13/9)Gamma-kappa²/R and D-H >= (5/9)Gamma.
+In particular the actual finite-filter budget C_local=R_S+sigma+sqrt(QH)
+is no larger than C_proj=R_S+sigma+sqrt(QD).
+
+Their exact root-gap product is
+(C_proj-C_local)(sqrt(QD)+sqrt(QH))=Q(D-H)>=(5/9)Q Gamma.
+Let g=((5/9)Q Gamma)/(sqrt(QD)+sqrt(QH)). If the denominator is positive,
+division yields g<=C_proj-C_local; if it vanishes, g=0 and the established
+budget ordering gives the same statement. Consequently the existing full
+plastic lower bound strengthens to
+I_opt+R_plastic-2d C_proj+2d g <= P(F), unconditionally for F=oddCompactSource f.
+This gain comes from the explicit filter's coefficient norm, not additional
+source-line projection gain on an exact zero clique. General signed source
+data remain primary. Lean verification pending; contribution count stays16.
+
+Corpus audit: direct hybrid query `finite signed filter coefficient lattice Schur`
+with `--any --module BiScaleUncertainty --per-module 2 --explore 0` returned the
+existing finite filter, source-lattice row/quadratic bound, and signed/projection
+receivers. Search was partial (text/source retrieval unfinished; source-only
+candidate status and older coverage snapshot, semantic coverage unmeasured).
+Applicable local declarations were inspected directly. Exhaustive `rg` over the
+BiScale source directory found no previous 13/9 comparison. This establishes
+local nonduplication only, not external literature novelty.

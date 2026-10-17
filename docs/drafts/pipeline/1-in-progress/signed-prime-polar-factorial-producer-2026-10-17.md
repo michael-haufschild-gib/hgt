@@ -44,13 +44,12 @@ This is a local corpus distinction, not an external novelty claim.
 ## Verification state (temporary; replace after certification)
 
 - Harmonic leaf: direct final check passes with empty `/tmp/spp8-harmonic.log`.
-- Lift: complete proof checked; an unused simp argument was removed. Final recheck
-  was interrupted by disappearing shared dependency artifacts, not a proof error.
+- Lift: direct final check now passes with empty `/tmp/spp8-lift.log`.
 - Producer: first check found a cast rewrite and an integral elaboration mismatch;
   both are fixed. Final recheck and `/tmp/spp8_final_axioms.lean` remain pending.
 - `SignedPrimePolarCoupling.olean` was restored by a passing direct check.
-  GramTransport also passes its direct restore check. Final lift recheck is running
-  as exec session 52502.
+  GramTransport also passes its direct restore check. Producer recheck is running
+  (use the latest tool session handle); no other owned Lean process is active.
 - Relevant field artifacts are preserved in `/tmp/spp8-lean-overlay` (about 96 MiB).
   Prefix checks with `LEAN_PATH=/tmp/spp8-lean-overlay`; `lake --old env lean`
   retains normal package paths and uses this overlay for missing local objects.

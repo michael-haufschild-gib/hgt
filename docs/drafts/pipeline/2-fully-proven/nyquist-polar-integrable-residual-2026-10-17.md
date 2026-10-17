@@ -8,7 +8,7 @@
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistPolarIntegrableResidual.md`
 - **Guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (read-only).
 
-## Proposed positive survivor
+## Positive survivor
 
 For cell I_n=[log n,log(n+1)], n>=1, reuse the existing explicit producer
 C_n=nyquistPolarConstant(n). For bounded continuous real H, define
@@ -17,32 +17,31 @@ C_n=nyquistPolarConstant(n). For bounded continuous real H, define
 
 These actual residuals are absolutely summable, with an explicit
 uniform tail bound |sum_(n>=N) r_n(H)|<=||H||_infinity/sqrt(N), N>=1.
-The residual should therefore define a bounded linear functional, Lipschitz in
+The residual defines a bounded linear functional, Lipschitz in
 the global correlation norm, with a vanishing operator norm on distant tails.
 
-For compactly supported H, derive the exact actual polar integral decomposition
+For compactly supported H, the exact actual polar integral decomposition is
 
     integral_(0,infinity) H(x)cosh(x/2) dx
       = sum_(n>=1) C_n integral_I_n H(x) dx + sum_(n>=1) r_n(H).
 
-The first series is finite for each such H. This would locate every discontinuity
+The first series is finite for each such H. This locates every discontinuity
 of the polar functional in the explicitly produced cell-average term, while the
 weight-approximation residual is uniformly controlled independently of support,
 energy or source count. Apply the decomposition to actual normalized correlations
 and to the diffuse producer after its certificate is complete.
 
-## Candidate proof mechanism to audit
+## Paper proof mechanism
 
-Existing pointwise producer error and cell length bounds suggest
+Existing pointwise producer error and cell length bounds give
 
     |r_n(H)| <= ||H||_infinity/(4 n sqrt(n)).
 
-An elementary radical comparison should bound 1/(4 n sqrt(n)) by
+An elementary radical comparison bounds 1/(4 n sqrt(n)) by
 1/sqrt(n)-1/sqrt(n+1) for n>=1. Finite telescoping and the vanishing reciprocal
-square root then give the full summable tail. Audit endpoint conventions, interval
-orientation, operator linearity, the infinite sum and exact compact-support
-decomposition before claiming a theorem. Do not replace actual integrals by an
-assumed analytic interface.
+square root then give the full summable tail. The paper checks endpoint conventions,
+interval orientation, operator linearity, the infinite sum and exact compact-support
+decomposition. Lean must formalize these actual integrals, not an assumed interface.
 
 ## Corpus boundary and Trap 10
 

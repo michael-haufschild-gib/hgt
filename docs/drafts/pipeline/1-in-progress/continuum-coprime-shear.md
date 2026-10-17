@@ -27,7 +27,8 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    projection interactions, sharp angles and exact alternating rates are proved.
    Joint two-grid trace extension, sharp stability and the closed sum are proved.
    Finite divisor families now have sharp longest-run constants and actual sine attainers.
-   Extend to arbitrary divisor families, admission beyond compact support, and closed-graph APIs.
+   Arbitrary divisor families now have an exact run-gap/closed-range classifier.
+   Extend to energy-complete trace domains, admission beyond compact support, and closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -87,10 +88,12 @@ traces or a constructed interpolant.
   closed algebraic sum and minimum-energy defect; four leaves, 49 declarations audited.
 - [x] Finite divisor-family interpolation, sharp longest-run factors, explicit
   sine attainers, closed range and exact mismatch; eight leaves, 124 declarations audited.
+- [x] Arbitrary divisor-family closed-range/coercivity/run-gap classification,
+  sharp bounded factors and normalized near-null producers; five leaves, 76 declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **13 / 100**. Formalized packages:
+Certified count: **14 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -103,7 +106,8 @@ Certified count: **13 / 100**. Formalized packages:
 `../3-formalized/coprime-projection-arithmetic-commutator.md`, and
 `../3-formalized/coprime-projection-angle-gap.md`, and
 `../3-formalized/two-grid-coprime-trace-extension.md`, and
-`../3-formalized/finite-grid-run-length-coercivity.md`.
+`../3-formalized/finite-grid-run-length-coercivity.md`, and
+`../3-formalized/infinite-divisor-run-gap-classification.md`.
 
 ## Current exact result and next frontier
 
@@ -316,10 +320,22 @@ generated drift; index refreshed afterward. Exact details are in the ledger.
 README was fully read and kept read-only; Trap 10 is applied through actual
 producers and proved errors. This turn is progress; goal remains active at 13/100.
 
+## Certified package 14: arbitrary-family gap and closed range
+
+For every family d:ℕ, D:Set ℕ, actual extension has closed range iff it is uniformly
+coercive iff active runs are uniformly bounded. In the bounded regime, the exact
+factors 2±2cos(π/(r+1)) are attained. Otherwise actual unit sine packets have
+energy tending to zero; the exact unit-energy infimum 0 is unattained. Injectivity
+and all integer/log traces hold in both regimes. The full family gives a concrete
+nonclosed range. Main classifiers take only d,D, with no analytic admission premise.
+
+Five direct leaf checks and all 76 public axiom audits pass;19 signatures inspected,
+30 mathlib API probes passed, five imports and 75 catalog entries verified.
+Global lint has 15 unrelated missing imports plus generated drift; index refreshed
+and own coverage rechecked. This turn is progress; goal active at 14/100.
+
 ## Next candidate
 
-`../0-backlog/infinite-divisor-run-gap-classification.md`: for arbitrary divisor
-families, bounded active runs should characterize positive coercivity and
-closed range. Unbounded runs should produce normalized finite sine packets
-with energy tending to zero. Unproved and uncounted; corpus limitations and
-the required positive classification are recorded on the card.
+`../0-backlog/divisor-trace-energy-completion.md`: identify the physical range
+closure through finite-component conservation laws and construct completed trace
+data when ℓ² recovery is unstable. Unproved and uncounted; corpus caveats are on the card.

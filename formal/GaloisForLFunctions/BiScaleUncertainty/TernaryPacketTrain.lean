@@ -79,7 +79,9 @@ def ternaryPacketTrain (n : ℕ) : IntegerPacketTrain where
   coefficient_nonzero := ⟨0, one_ne_zero⟩
 
 theorem ternaryPacketTrain_mass (n : ℕ) : (ternaryPacketTrain n).mass = (n : ℝ) + 2 := by
-  simp [IntegerPacketTrain.mass, copyTrainMass, ternaryPacketTrain]
+  change (∑ _i : Fin ((n + 1) + 1), (1 : ℝ) ^ 2) = (n : ℝ) + 2
+  simp only [one_pow, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+    nsmul_eq_mul, mul_one, Nat.cast_add, Nat.cast_one]
   ring
 
 theorem ternaryPacketTrain_difference_unique (n : ℕ)
@@ -108,7 +110,8 @@ theorem ternaryPacketTrain_lagCoefficient (n : ℕ) {r : ℤ}
   rw [Finset.sum_eq_single i]
   · rw [Finset.sum_eq_single j]
     · rw [if_pos hij]
-      norm_num [d, ternaryPacketTrain]
+      change (1 : ℝ) * 1 = 1
+      norm_num
     · intro l _ hlj
       have hn : d.site l - d.site i ≠ r := by
         intro he

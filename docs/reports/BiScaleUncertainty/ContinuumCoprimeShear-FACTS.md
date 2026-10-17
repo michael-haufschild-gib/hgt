@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **13 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **14 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -1244,15 +1244,103 @@ short declaration name, module and source location, not fully qualified names.
 Guard potentially long metadata jobs; /tmp/check_finite_grid_catalog.py is the
 small verified single-pass checker. Public instances are not catalog rows.
 
-## Next unproved candidate — arbitrary divisor-family gap classification
+## Certified package 14 — arbitrary-family run-gap classification
 
-`docs/drafts/pipeline/0-backlog/infinite-divisor-run-gap-classification.md`.
-Conjectured equivalence: bounded active runs, a positive uniform interpolation
-constant, and closed range. In the unbounded case construct actual unit sine
-packets with energies tending to zero; retain the exact positive classification
-as the obstruction's survivor. No new Lean or paper proof yet.
-All20 candidates and all5 source arguments from the focused next-query inspected;
-hits include this finite-family package but no arbitrary-family classifier.
-Partial=true, interrupted text/source retrieval, coverage generation1445834
-pending, semantic unmeasured, source-only compiler metadata, refresh incomplete.
-Reaudit corpus and primary closed-range theory before proof. Uncounted.
+For d:ℕ and arbitrary D:Set ℕ, put A(k) iff some e∈{d}∪D has e+2 dividing
+k+1. The actual mask-fixed ℓ² space H_A is closed and complete. Its physical
+extension E_A(v)=S(v−Rv) realizes every integer/log trace and the exact adjacent
+energy, unconditional mismatch and all-integer-trace minimum-energy defect.
+All these hold independently of a run bound. E_A is always injective.
+
+Exact unconditional classification:
+
+    closed physical range ↔ positive uniform energy coefficient
+                          ↔ uniformly bounded consecutive active runs.
+
+For bounded runs, least exclusion length r≥1 is the attained longest run,
+without any periodicity assumption. The actual masked successor is contractive
+and nilpotent at r. Sharp factors 2±2cos(π/(r+1)) are attained by finite sine
+and alternating packets. If runs are unbounded, least-start sine packets of
+length n+1, normalized by their actual ℓ² norm, have norm1 and exact energy
+2−2cos(π/(n+2))→0. The unit-data energy infimum is exactly the lower sine
+factor in the bounded case and zero otherwise. It is attained iff runs are
+bounded. Zero energy is never attained on unit data, by actual trace injectivity.
+D=Set.univ supplies a concrete nonclosed-range example with every k≥1 active.
+
+The reverse closed-range implication uses the certified Banach open mapping
+theorem: closed range plus unconditional injectivity supplies an antilipschitz
+constant, contradicted by the unit near-null packets. No bounded inverse,
+summability, analytic admission or spectral gap is assumed in the final
+classifiers. This is the fully proved positive survivor of the no-gap obstruction.
+Classical parent sine/closed-range results are not claimed externally novel.
+
+Five leaves, 666 lines, 76 public declarations:
+
+| Module | Lines | Public declarations |
+|---|---:|---:|
+| DivisorGridTraceData |140|23|
+| DivisorGridRunGeometry |87|13|
+| DivisorGridTraceStability |172|14|
+| DivisorGridSinePackets |145|16|
+| DivisorGridClosedRange |122|10|
+
+Total: 56 theorems, 18 definitions, one abbreviation and one instance; counted
+as one mathematical contribution. All five serial direct leaf checks passed
+with empty logs and current normal outputs. Exact all-76 axiom audit passed:
+only propext/Classical.choice/Quot.sound. Nineteen principal signatures and
+30 mathlib API probes passed and were inspected. Five unique imports and all
+75 catalog-supported entries match source locations; named instance separately
+audited. Scoped whitespace passes. README fully read and never edited.
+
+Final global lint exits1 only for 15 unrelated unreachable modules:
+CoprimeShearArithmeticWeightsAndChebyshevCellIncrement,
+FiniteIntegerTrainCompactness, FiniteIntegerTrainEnergy, FiniteIntegerTrainPackets,
+FiniteIntegerTrainPeak, FiniteIntegerTrainPolar, FiniteIntegerTrainProducers,
+FoldFreeKernelGramAndFranelGcdCancellation, SignedPrimePolarFactorialLift,
+SignedPrimePolarFactorialProducer, SignedPrimePolarHarmonicCorrection,
+SpectralLaplaceEnergyCriticalLine, TernaryPacketPolarGrowth, TernaryPacketTrain,
+WitnessGermOriginMassAndJointTailHeadSynthesis; also LEAN_API/LEAN_OVERVIEW drift.
+No own or proof-debt error. Index refreshed afterward; scoped coverage reverified.
+No full/umbrella build, numerical experiment, heartbeat increase or added axiom.
+
+Paper: `docs/reports/BiScaleUncertainty/InfiniteDivisorRunGap.md`.
+Stage3: `docs/drafts/pipeline/3-formalized/infinite-divisor-run-gap-classification.md`.
+Evidence: /tmp/divisor-grid-{data,geometry,stability,packets,closed}-build.log,
+/tmp/divisor_grid_axioms.lean, /tmp/divisor-grid-axioms.log,
+/tmp/divisor-grid-audit-names.json, /tmp/divisor-grid-api-entries.txt,
+/tmp/divisor-grid-index-final.log, /tmp/divisor-grid-lint-final.log.
+All owned Lean/search/index/lint jobs terminal at certification. Count14/100;
+goal remains active. This turn is progress.
+
+Corpus audit: first hybrid query yielded no candidates; partial=true with
+interrupted text/source retrieval and pending coverage generation1445895.
+Focused lexical fallback returned20 declaration hits and5 exploration hits,
+all inspected. General closed-range interfaces and integer extension occur,
+without an arbitrary-family run classifier. Lexical output supplies no semantic
+coverage or compiler certification. No absence/novelty conclusion follows.
+Primary mathlib Banach operator documentation and Izmestiev's discrete Wirtinger
+paper were opened and checked; source links are in the paper proof.
+
+Lean facts: `Filter.tendsto_add_atTop_iff_nat` needs its namespace outside an
+`open Filter` scope; shift the scalar sine-gap limit to positive packet lengths.
+`ge_of_tendsto'` converts pointwise lower bounds on packet energies to a bound
+on the zero limit. Use the complete-space closed-range/antilipschitz theorem
+after proving trace injectivity, and square its norm inequality. Subtype norms
+can be exposed with `change` before applying interval-packet identities.
+Normalize by the actual packet norm; finite sine recurrence gives exact energy
+without separately evaluating the sine-square sum. Capture lint stderr as well
+as stdout. Stream the API catalog once, matching short names/module/source line.
+
+## Next unproved candidate — physical energy completion
+
+`docs/drafts/pipeline/0-backlog/divisor-trace-energy-completion.md`.
+Conjecture: inside the unit-cell synthesis range, closure(range E_A) consists
+exactly of coefficients with zero sum on each finite active-edge component.
+The orthogonal complement is componentwise constant; infinite-component ℓ²
+constants vanish. Construct energy-complete cumulative trace data and actual
+completion elements with no ℓ² preimage when runs are unbounded. Keep the
+ambient noncellular physical orthogonal complement explicit. Unproved/uncounted.
+All20 lexical declarations and5 exploration hits inspected; single-grid span
+and integer-hat APIs are relevant. New draft run-gap declarations already
+indexed at search time are not independent certification. No semantic coverage
+or compiler freshness was supplied. Reaudit primary sources before proof.

@@ -1,7 +1,7 @@
 # Arbitrary divisor families: exact run-gap classification
 
-Status: dependency-closed paper proof; Lean certification pending. One proposed
-connected contribution, currently uncounted.
+Status: **[PROVED HERE]**, Lean-certified as one connected contribution,
+**14/100**. The paper proof preceded formalization.
 
 ## Actual objects and statement
 
@@ -94,6 +94,52 @@ producer, with sharp bounded constants and explicit unbounded-case witnesses.
 
 The original hybrid corpus query returned no candidates and reported interrupted
 text/source retrieval, pending coverage generation1445895. A focused lexical
-query and exhaustive scoped text search supplement it. No absence/novelty claim
-follows from partial corpus coverage. README remains read-only. No RH work,
+query and exhaustive scoped text search supplement it. All20 lexical declaration
+hits and5 exploration hits were inspected: general closed-range interfaces and
+the existing integer extension occur, with no arbitrary-family run classifier.
+The lexical response does not report semantic coverage or compiler freshness.
+No absence/novelty claim follows from these searches. README remains read-only. No RH work,
 unweighted logarithmic H1 identification or full affine unitary claim is made.
+
+## Formal theorem map
+
+Namespace `GaloisForLFunctions.BiScaleUncertainty.SobolevShear`.
+
+- `DivisorGridTraceData`: actual set-indexed divisor mask, complete data space,
+  all integer/log traces, adjacent energy, unconditional competitor mismatch,
+  exact minimum-energy defect and unconditional injectivity.
+- `DivisorGridRunGeometry`: least exclusion length, attained longest run,
+  explicit least run starts and the full-family unbounded-run example.
+- `DivisorGridTraceStability`: actual contractive masked successor, nilpotence,
+  sharp sine-factor inequalities, ambient masked-input producer and closed range
+  in the bounded-run case.
+- `DivisorGridSinePackets`: masked finite sine/alternating packets, attained sharp
+  factors, unit normalization, exact near-null energies and convergence to zero.
+- `DivisorGridClosedRange`: unconditional equivalence between closed range,
+  positive uniform coercivity and bounded runs; exact energy greatest lower bound,
+  attainment classifier and concrete nonclosed full-family range.
+
+The bounded- and unbounded-run hypotheses on intermediate lemmas express the
+two mathematical cases. The final classification and greatest-lower-bound
+theorems take only d,D; they assume no missing analytic or spectral result.
+
+## Verification
+
+All five serial direct `lake --old env lean -o <normal-output> <leaf>` checks
+passed with empty logs. The 666 lines contain 76 public declarations: 56 theorems,
+18 definitions, one abbreviation and one instance. Exact axiom coverage passed
+for all 76; only `propext`, `Classical.choice`, `Quot.sound` occur. Nineteen
+principal signatures and 30 mathlib API probes passed and were inspected.
+
+Five imports are wired. All75 catalog-supported entries match exact source
+locations; the named instance is separately audited. Final global
+`lint --check-generated` exits 1 because 15 unrelated concurrently added modules
+are unreachable and LEAN_API/LEAN_OVERVIEW drifted. No own or proof-debt error
+was reported. The index was refreshed afterward and scoped coverage reverified.
+No full/umbrella build, numerical experiment, added axiom or heartbeat increase.
+
+Evidence: `/tmp/divisor-grid-{data,geometry,stability,packets,closed}-build.log`,
+`/tmp/divisor_grid_axioms.lean`, `/tmp/divisor-grid-axioms.log`,
+`/tmp/divisor-grid-audit-names.json`, `/tmp/divisor-grid-api-entries.txt`,
+`/tmp/divisor-grid-index-final.log`, `/tmp/divisor-grid-lint-final.log`.
+The exact foreign lint errors are retained in the facts ledger.

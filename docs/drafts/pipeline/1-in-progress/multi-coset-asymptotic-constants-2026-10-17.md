@@ -274,8 +274,9 @@ Consequently its exact excess over R_f/(m+1) is ||P−Q_m||². This simultaneous
 proves a sharp lower bound, attained error, and equality at the packet level.
 Coefficient rigidity can be recovered by pairing against partial sums of the
 orthogonal e_j. Plan: [x] concrete smooth source and orthogonal atoms;
-[ ] telescoping producer and exact error/minimum; [ ] coefficient rigidity and
-cutoff degeneration; [ ] direct/axiom/lint audits and ledger. No package counted yet.
+[x] telescoping producer and exact error/minimum; [x] coefficient rigidity;
+[ ] full measured-Gram cutoff degeneration; [ ] direct/axiom/lint audits and ledger.
+No package counted yet.
 
 Current implementation leaves: `DyadicDifferenceSource.lean`,
 `DyadicAnchoredProducer.lean`, `DyadicTriangularOptimality.lean`, and
@@ -283,8 +284,9 @@ Current implementation leaves: `DyadicDifferenceSource.lean`,
 its dependency compile without diagnostics after narrowing its import to the
 actual translation-feature module. The producer leaf now also passes cleanly,
 including the exact error identity, strict finite positivity and packet equality
-criterion. Triangular coefficient rigidity and the Gram cutoff capstone are under
-verification; no completion or extra contribution is claimed. All 29 previous
+criterion. Triangular attainment and coefficient uniqueness now also pass without
+diagnostics. The full measured-Gram cutoff capstone is under verification;
+no completion or extra contribution is claimed. All 29 previous
 owned source hashes are unchanged (`/tmp/bsu-dyadic-prior-hashes.json`).
 Current corpus search `/tmp/bsu-dyadic-producer-search.log`: 387 declarations in
 98 modules, partial/source-only/older snapshot with semantic coverage unmeasured.

@@ -110,10 +110,10 @@ theorem exists_smooth_diffuse_train_polar_escape :
     hp, fun n => (ternaryPacketTrain n).contDiff_source hp (diffuseTrainSpacing n), hP,
     ?_, ?_, hbound, hgrowth, ?_, ?_, hc, ?_⟩
   · intro n
-    change autocorr ((ternaryPacketTrain n).source f (diffuseTrainSpacing n)) 0 = _
+    change autocorr ((ternaryPacketTrain n).source f (diffuseTrainSpacing n)) 0 =
+      ((n : ℝ) + 2) * autocorr f 0
     rw [(ternaryPacketTrain n).autocorr_source_zero (f := (f : ℝ → ℝ)) f.continuous
       f.hasCompactSupport hD hs (hsep n), ternaryPacketTrain_mass]
-    rfl
   · intro n
     exact (levyIntegerTrain_dist_seed (ternaryPacketTrain n) f hf2 hR hD hs
       (diffuseTrainSpacing_separated n)).trans (ternaryPacketTrain_peak n)

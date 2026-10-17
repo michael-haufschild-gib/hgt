@@ -185,15 +185,17 @@ private theorem packet_leftTest (m k : ℕ) (a b : ℕ → ℝ) (hk : k < m) :
     inner ℂ (anchoredPacket m a b) (leftTest k) =
       (autocorr seed 0 * (1 - a k) : ℝ) := by
   have h0 : inner ℂ (edge 0) (leftTest k) = (autocorr seed 0 : ℂ) := by
-    have he : edge 0 = atom (-(0 : ℤ)) - atom ((0 : ℤ) + 1) := by simp [edge_eq]
-    rw [he, inner_sub_left, atom_leftTest_left k 0, atom_leftTest_right k 0]
-    simp
+    rw [edge_eq, inner_sub_left, zero_add]
+    have hl := atom_leftTest_left k 0
+    have hr := atom_leftTest_right k 0
+    norm_num only [Nat.cast_zero, neg_zero, zero_add, Nat.zero_le, if_true] at hl hr
+    rw [hl, hr, sub_zero]
   rw [anchoredPacket, inner_add_left, h0, sum_inner]
   simp_rw [inner_add_left, inner_smul_left,
     edge_leftTest_left, edge_leftTest_right]
   simp only [Complex.conj_ofReal, mul_zero, add_zero]
   rw [Finset.sum_eq_single k]
-  · simp only [if_pos rfl]
+  · simp only
     push_cast
     ring
   · intro j _ hj
@@ -205,15 +207,17 @@ private theorem packet_rightTest (m k : ℕ) (a b : ℕ → ℝ) (hk : k < m) :
     inner ℂ (anchoredPacket m a b) (rightTest k) =
       (autocorr seed 0 * (b k - 1) : ℝ) := by
   have h0 : inner ℂ (edge 0) (rightTest k) = -(autocorr seed 0 : ℂ) := by
-    have he : edge 0 = atom (-(0 : ℤ)) - atom ((0 : ℤ) + 1) := by simp [edge_eq]
-    rw [he, inner_sub_left, atom_rightTest_left k 0, atom_rightTest_right k 0]
-    simp
+    rw [edge_eq, inner_sub_left, zero_add]
+    have hl := atom_rightTest_left k 0
+    have hr := atom_rightTest_right k 0
+    norm_num only [Nat.cast_zero, neg_zero, zero_add, Nat.zero_le, if_true] at hl hr
+    rw [hl, hr, zero_sub]
   rw [anchoredPacket, inner_add_left, h0, sum_inner]
   simp_rw [inner_add_left, inner_smul_left,
     edge_rightTest_left, edge_rightTest_right]
   simp only [Complex.conj_ofReal, mul_zero, zero_add]
   rw [Finset.sum_eq_single k]
-  · simp only [if_pos rfl]
+  · simp only
     push_cast
     ring
   · intro j _ hj
