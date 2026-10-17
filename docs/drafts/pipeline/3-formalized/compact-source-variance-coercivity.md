@@ -65,4 +65,4 @@ Paper proof is complete in `docs/reports/BiScaleUncertainty/CompactSourceVarianc
 
 One connected contribution: **5/100**. No optimal coefficient, source-independent
 bound, closed-operator identification or unitary affine action is claimed.
-Next candidate: `../0-backlog/rough-sobolev-modulus-nodal-defect.md`.
+Its rough modulus successor is now certified in `rough-sobolev-modulus-nodal-defect.md`.

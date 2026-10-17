@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **5 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **7 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -628,19 +628,179 @@ Obsolete owned API-probe scratch files were removed.
   rewrite mismatches. A final `rfl` resolves definitionally identical products
   after rewriting the weighted lintegral.
 
-## Next falsifiable candidate — actual rough modulus and nodal defect
+## Package 6 — actual rough modulus and exact nodal slack transfer
 
-Backlog card: `docs/drafts/pipeline/0-backlog/rough-sobolev-modulus-nodal-defect.md`.
-Construct the L² velocity `q_abs(t)=sign(c+primitive q t)*q(t)` and prove
-`|c|+primitive q_abs t=|c+primitive q t|`, including the derivative-zero law
-on the state's zero-level set. Prove equality of local physical Dirichlet energies
-and exact actual mixed-graph identity `J(q)=J(q_abs)+nodalEnergy(q,c)`; the
-existing nodal energy already includes factor 4. Weighted source mass is unchanged.
+**Certified 2026-10-17. One connected contribution, not 25.** For arbitrary
+physical L² q and c∈ℝ, let G(t)=c+primitive q t. The actual L² velocity
+`m=modulusVelocity q c` satisfies
 
-Focused search `absolute value Sobolev primitive nodal jump decomposition`
-completed without errors or partial results. All candidate and source-argument
-entries were inspected. Existing finite/continuous nodal algebra and extended
-mixed-graph bounds do not construct the modulus in the actual rough L² primitive
-domain. Coverage warnings remain; classical chain-rule and Dirichlet-form
-ingredients carry no novelty claim. This candidate is unproved and not counted.
-This turn is **progress**. Goal remains active at **5/100**.
+    m(t)=sign(G(t))q(t) almost everywhere,
+    |c|+primitive m t=|G(t)| for every t,
+    energy m a b=energy q a b for every a,b.
+
+The derivative-zero law on {G=0} is proved, not assumed. In logarithmic
+coordinates, the state (m,|c|) is exactly the modulus of (q,c); all local
+weighted logarithmic Dirichlet energies are unchanged.
+
+For any constructed mixed edge measure D, with no finite-total-energy premise,
+
+    jumpEnergy D q=jumpEnergy D m+nodalEnergy D q c,
+    slackEnergy D m=slackEnergy D q+nodalEnergy D q c,
+    congestionEnergy D m=congestionEnergy D q.
+
+Every individual path budget is unchanged. Thus nodal jump loss is transferred
+exactly into slack inside the actual rough-state domain. Compact-source admission
+makes every energy finite; the ordinary real jump-energy difference equals
+nodal energy, and `sourceMass ψ m |c|=sourceMass ψ q c`. The whole source-mass
+plus jump form consequently has the same exact nodal defect.
+
+Paper: `RoughSobolevModulus.md`.
+Card: `docs/drafts/pipeline/3-formalized/rough-sobolev-modulus-nodal-defect.md`.
+This discharges nonlinear modulus-domain realization and sharpens the nodal
+upper bound to an exact decomposition. It does not identify the full closed
+operator domain or a unitary affine action, and it does not claim a new general
+Sobolev chain rule or Beurling–Deny principle.
+
+### Proof mechanism and reusable facts
+
+Absolute value contracts endpoint distances, so the actual G has locally
+absolutely continuous modulus. A countable [-n,n] cover gives differentiability
+of |G| a.e. At a zero of G where both derivatives exist, |G| and |G|+G attain
+minimum zero. Fermat's theorem forces both derivatives to vanish, hence q=0.
+Away from zero, the ordinary chain rule applies. Therefore `(|G|')²=q²` a.e.
+Measurability and norm domination construct its L² class. The fundamental
+theorem of absolute continuity gives its exact primitive for all t, including
+negative endpoints. This avoids imposing a derivative or zero-level premise.
+
+The existing discrete nodal identity is reused on an encoded pair of actual
+continuum endpoints. All terms are measurable and nonnegative, so their entire
+mixed-measure integrals add, even at infinity. Edgewise budget equality and
+finite individual jumps justify the slack cancellation before integration;
+subtracting potentially infinite total energies would not prove the result.
+
+- `absolutelyContinuousOnInterval_iff` plus
+  `abs_abs_sub_abs_le_abs_sub` proves modulus absolute continuity directly.
+- `AbsolutelyContinuousOnInterval.ae_differentiableAt` and `ae_all_iff` give the
+  global a.e. derivative statement from the countable interval cover.
+- `IsLocalMin.hasDerivAt_eq_zero` and `IsLocalMin.deriv_eq_zero` implement the
+  zero-level argument. `HasDerivAt.const_add` keeps the original velocity.
+- `stronglyMeasurable_deriv`, `MemLp.of_le` and `MemLp.coeFn_toLp` construct and
+  identify the actual modulus velocity.
+- `ENNReal.add_right_inj` cancels a finite left summand; `C_c` notation
+  requires `open scoped CompactlySupported`.
+
+### Corpus and source audit
+
+Deep query `absolutely continuous modulus derivative zero level set primitive
+Sobolev sign` returned applicable mathlib a.e. differentiability and derivative
+integrability APIs. All 20 candidate lemmas, 20 source arguments and the proposed
+ingredient group were inspected. Results were partial: the final sign-change
+query was unfinished. No execution errors; semantic coverage unavailable and
+coverage snapshot older than the index. The generated ingredient claim
+"Derivative zero implies absolute continuity" was rejected: it is false
+without additional hypotheses, as the Cantor-function obstruction illustrates.
+The proof establishes absolute continuity first. No suggested private or
+unrelated result was imported. The paper links primary Sobolev lecture notes
+for background; all needed modulus and zero-level facts are proved here.
+
+### Formal evidence
+
+- `RoughSobolevModulus.lean`, namespace `SobolevShear`: 14 public theorems and
+  2 definitions; `RoughModulusGraphDecomposition.lean`, namespace
+  `PathCongestion`: 11 public theorems.
+- Both final serial direct `lake --old env lean -o <normal-output> <leaf>`
+  checks exited 0 without diagnostics. Output timestamps postdate final sources.
+  No umbrella/full build, heartbeat increase or numerical experiment.
+- `/tmp/rough_modulus_axioms.lean` audited every public declaration and printed
+  seven main signatures. All 27 have only `propext`, `Classical.choice`,
+  `Quot.sound`; exact name coverage was verified, with no missing audit or diagnostic.
+- Both imports are wired. Final index refresh passed and all 25 theorem names
+  are present in the generated API. Repository whitespace check passed.
+- Global lint exited 1 solely for four unrelated concurrent modules lacking
+  umbrella reachability: `RHTower.FermiNymanDyadicFoldGeometry`,
+  `BiScaleUncertainty.CappedCollarArrayComparison`,
+  `BiScaleUncertainty.CappedSupportComparison`, and
+  `BiScaleUncertainty.InfiniteGridUniformTail`. Neither new leaf has a lint error.
+  Existing global large-file warnings remain.
+
+Logs: `/tmp/rough-sobolev-modulus-build.log`, `/tmp/rough-modulus-graph-build.log`,
+`/tmp/rough-modulus-axioms.log`, `/tmp/rough-modulus-index.log`,
+`/tmp/rough-modulus-lint.log`. All owned processes are terminal.
+
+## Package 7 — nodal mass coercivity and strict modulus contraction
+
+For every compact continuous source ψ, physical L² velocity q, constant c and
+arbitrary nonnegative arithmetic weights, set f=c+logPrimitive q,
+P=∫ψ²max(f,0), N=∫ψ²max(−f,0), and C=sinh(2 multiplierSourceRadius ψ).
+The exact finite laws are
+
+    Vψ(f)−Vψ(|f|)=4PN ≤ C * nodalEnergy = C [J(q)−J(modulusVelocity q c)].
+
+Zero nodal energy, and equivalently equality under modulus, holds iff f≥0
+throughout {ψ≠0} or f≤0 throughout {ψ≠0}. Strict contraction holds iff both
+signs occur at nonzero source points. No connected-support, positive-mass,
+atom-summability or finite-energy admission premise appears. Equality here
+allows nonconstant one-sign states; zero jump energy requires constancy.
+
+### Proof mechanism and boundaries
+
+- Positive/negative weighted source masses are integrals of nonnegative
+  continuous compactly supported functions. Zero integral is equivalent to
+  vanishing everywhere by continuity and full support of Lebesgue measure.
+- The exact first moments are P−N and P+N; second moments agree under modulus.
+  Their variance difference is 4PN. The positive-lag nodal integrand is the
+  integrable difference of the two pair-gap functions, so its integral is 4PN.
+- On contributing positive source pairs, h≤2B and 1≤C*w_arch(h). Compare the
+  nonnegative nodal integrand directly and retain all nonnegative arithmetic
+  lines. Subtracting independent variance coercivity inequalities is invalid.
+- The reverse zero-loss implication kills both diffuse and every arithmetic
+  density pointwise. Finite compact-source energies justify cancellation in
+  the actual rough-modulus decomposition.
+- One-sign is a global source condition, including disconnected components.
+  No optimality claim is made for C. No closed SourceGraph/operator identity
+  or external novelty is claimed. Parent jump-form theory is classical; the
+  paper records the primary source and exact evidence boundary.
+
+### Formal evidence
+
+`CompactSourceNodalVariance.lean` has 13 public theorems and 4 definitions;
+`CompactNodalMassCoercivity.lean` has 9 public theorems. Both final serial direct
+`lake --old env lean -o <normal-output> <leaf>` checks exited 0 without diagnostics.
+Output timestamps postdate final source edits. All 26 public declarations were
+audited with exact name coverage; only `propext`, `Classical.choice`, `Quot.sound`.
+Seven main signatures were inspected and contain no extra analytic premises.
+No full/umbrella build, numerical experiment, heartbeat increase or added axiom.
+Both imports, both field maps and all 22 theorem names in the generated API are
+present. Index refresh and whitespace check passed.
+
+Final global lint exited 1 for five unrelated concurrent missing imports:
+`RHTower.FermiNymanDyadicFoldGeometry`,
+`BiScaleUncertainty.DyadicMultiplierFrameBound`,
+`BiScaleUncertainty.InfiniteGridCorrelationCompactness`,
+`BiScaleUncertainty.InfiniteGridLimitEnergy`, and
+`BiScaleUncertainty.SignedPrimePolarCoupling`. Neither new leaf has a lint error;
+existing global large-file warnings remain. These unrelated modules were untouched.
+
+Paper: `docs/reports/BiScaleUncertainty/CompactNodalMassCoercivity.md`.
+Card: `docs/drafts/pipeline/3-formalized/compact-nodal-mass-coercivity.md`.
+Evidence: `/tmp/compact-nodal-variance-build.log`, `/tmp/compact-nodal-mass-build.log`,
+`/tmp/compact_nodal_mass_axioms.lean`, `/tmp/compact-nodal-mass-axioms.log`,
+`/tmp/compact-nodal-mass-index.log`, `/tmp/compact-nodal-mass-lint.log`.
+All owned processes are terminal. Package 7 is **progress**.
+
+## Next falsifiable candidate — actual rough Markov clamp
+
+Backlog: `docs/drafts/pipeline/0-backlog/rough-markov-clamp-domain.md`.
+Construct T(G)=min(max(G,0),1) through the L² velocity
+`(modulusVelocity q c − modulusVelocity q (c−1))/2`. Conjecture exact primitive
+realization, derivative q*1_{0<G<1}, exact removed additive energy, and contraction
+of the full admitted compact-source form. Both threshold level sets need the
+proved zero-level derivative law. Graph-energy equality should hold iff f is
+sourcewise constant or all source values lie in [0,1]; audit before formalization.
+
+Focused query `Sobolev clamp truncation Markov primitive actual velocity graph
+contraction` completed without errors or partial stages. All 20 candidate lemmas
+and 20 source arguments were inspected; no matching constructed clamp result
+was found. Coverage snapshot is older than the current index, semantic coverage
+unmeasured and background refresh incomplete. Unproved and uncounted.
+Goal remains active at **7/100**.

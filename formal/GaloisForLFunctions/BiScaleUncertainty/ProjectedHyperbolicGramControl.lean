@@ -36,7 +36,11 @@ private def compactPacket (f : C_c(ℝ, ℝ)) (s : Finset ι) (w t : ι → ℝ)
     have hs := HasCompactSupport.finset_sum (s := s)
       (f := fun i u => w i * f (u + t i))
       (fun i _ => (hasCompactSupport_comp_add f.hasCompactSupport (t i)).mul_left)
-    simpa only [Finset.sum_apply] using hs⟩
+    have he : (∑ i ∈ s, fun u => w i * f (u + t i)) =
+        (fun u => ∑ i ∈ s, w i * f (u + t i)) := by
+      funext u
+      simp only [Finset.sum_apply]
+    rwa [he] at hs⟩
 
 private def subtractSource (p f : C_c(ℝ, ℝ)) (c : ℝ) : C_c(ℝ, ℝ) :=
   ⟨⟨fun u => p u - c * f u, p.continuous.sub (continuous_const.mul f.continuous)⟩,
@@ -112,12 +116,6 @@ theorem packetCovariance_sq_le (f : C_c(ℝ, ℝ)) (s : Finset ι) (w t : ι →
   have h := pairing_sq_le f (compactPacket f s w t)
   rwa [pairing_source_packet, packet_energy] at h
 
-private theorem covariance_zero (f : C_c(ℝ, ℝ)) (s : Finset ι) (w t : ι → ℝ)
-    (hR : autocorr f 0 = 0) : packetCovariance f s w t = 0 := by
-  have h := packetCovariance_sq_le f s w t
-  rw [hR] at h
-  nlinarith [sq_nonneg (packetCovariance f s w t)]
-
 private theorem projected_packet_energy (f : C_c(ℝ, ℝ)) (s : Finset ι) (w t : ι → ℝ) :
     autocorr (subtractSource (compactPacket f s w t) f
       (packetCovariance f s w t / autocorr f 0)) 0 = packetSchurEnergy f s w t := by
@@ -140,9 +138,13 @@ theorem packetSchurEnergy_le_gram (f : C_c(ℝ, ℝ)) (s : Finset ι) (w t : ι 
 
 private theorem pairing_centered_source (f : C_c(ℝ, ℝ)) (α c : ℝ) :
     pairing (centeredSource f α c) f = coshMass f α - c * autocorr f 0 := by
+  have hs : HasCompactSupport (fun u => f u ^ 2) := by
+    have h : HasCompactSupport (fun u => f u * f u) := f.hasCompactSupport.mul_right
+    simpa only [sq] using h
+  have hc : Continuous (fun u => Real.cosh (2 * α * u) * f u ^ 2) :=
+    (Real.continuous_cosh.comp (continuous_const.mul continuous_id)).mul (f.continuous.pow 2)
   have hm : Integrable (fun u => Real.cosh (2 * α * u) * f u ^ 2) :=
-    (by fun_prop : Continuous (fun u => Real.cosh (2 * α * u) * f u ^ 2)).integrable_of_hasCompactSupport
-      (f.hasCompactSupport.mul_right.mul_left)
+    hc.integrable_of_hasCompactSupport hs.mul_left
   have hf := integrable_sq (g := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport
   have he : (fun u => centeredSource f α c u * f u) =
       fun u => Real.cosh (2 * α * u) * f u ^ 2 - c * (f u ^ 2) := by
@@ -270,6 +272,28 @@ theorem projectedDefectUpper_le_every_center (f : C_c(ℝ, ℝ)) (α c : ℝ)
   unfold projectedDefectUpper sourceDefectUpper packetSchurEnergy
   rw [sourceCorrection_shift f α c (sourceMean f α)]
   linarith
+
+/-- On an exact source clique, scalar centering is already optimal at the mean:
+the source projection gives no further gain and every source correction vanishes. -/
+theorem sourceClique_centering_boundary (f : C_c(ℝ, ℝ)) (α : ℝ)
+    (s : Finset ι) (w t : ι → ℝ)
+    (hzero : ∀ p ∈ s.offDiag, autocorr f (differenceNode t p) = 0) :
+    (∀ c, sourceCorrection f α c s w t = 0) ∧
+      projectedDefectUpper f α s w t = sourceDefectUpper f α (sourceMean f α) s w t ∧
+        ∀ c, sourceDefectUpper f α (sourceMean f α) s w t ≤ sourceDefectUpper f α c s w t := by
+  have hk : packetCovariance f s.offDiag (differenceWeight α w t) (differenceNode t) = 0 := by
+    unfold packetCovariance
+    exact Finset.sum_eq_zero fun p hp => by rw [hzero p hp, mul_zero]
+  have he (c : ℝ) : sourceCorrection f α c s w t = 0 := by
+    unfold sourceCorrection
+    exact Finset.sum_eq_zero fun p hp => by rw [hzero p hp, mul_zero]
+  have hu : projectedDefectUpper f α s w t = sourceDefectUpper f α (sourceMean f α) s w t := by
+    unfold projectedDefectUpper sourceDefectUpper packetSchurEnergy
+    rw [hk]
+    norm_num
+  refine ⟨he, hu, fun c => ?_⟩
+  rw [← hu]
+  exact projectedDefectUpper_le_every_center f α c s w t
 
 /-- Uncompensated jump lower bound with the projected leakage penalty. -/
 def projectedJumpBound (f : C_c(ℝ, ℝ))

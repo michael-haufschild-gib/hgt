@@ -42,7 +42,7 @@ This is uniform over changing sources and nonzero coefficients. Complete proofs 
 
 ## Certified frontier
 
-Six significant packages certified:
+Eight significant packages certified:
 
 1. Canonical tail detection and the uniform linear energy barrier for separated two-copy sources,
    including the stronger local-energy inequality (22 theorems).
@@ -64,9 +64,18 @@ Six significant packages certified:
    constant independent of packet count, coefficients, and spacing; actual smooth sources
    and polar inheritance included (14 theorems).
    Card: `../3-formalized/infinite-grid-uniform-train-cost-2026-10-17.md`.
+7. Shape-independent logarithmic continuity and two-sided infinite-grid tail decay, with
+   uniform bounded-energy family quantifiers and window energy decaying as `1/log N`
+   (10 public theorems).
+   Card: `../3-formalized/infinite-grid-uniform-tail-2026-10-17.md`.
+8. Compact closure of bounded-energy normalized all-grid correlations in the global supremum
+   norm; uniform subsequence limits retain every finite Gram inequality, grid zero, and
+   the energy ceiling, with actual integrability of the limiting singular density
+   (17 public theorems).
+   Card: `../3-formalized/infinite-grid-correlation-compactness-2026-10-17.md`.
 
-The 100-package objective remains active. Next: shape-independent tail decay from bounded
-normalized energy and the complete logarithmic grid, then general polar-tail control.
+The 100-package objective remains active. Next: classify possible energy loss at the singular
+origin under uniform correlation convergence, then continue source realization and polar-tail control.
 
 ## Constraints
 

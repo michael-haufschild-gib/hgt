@@ -3,11 +3,13 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Five substantive results are Lean verified: compensated multiplier Gram
+contributions. Seven substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
-energy (19), the actual signed plastic crossover receiver (18), and the exact smooth odd
-fixed-energy leakage family (12), and the centered source-Gram replacement with its
-full secant/plastic receiver (15). Supporting theorem
+energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
+fixed-energy leakage family (12), the centered source-Gram replacement with its
+full secant/plastic receiver (15), the source Schur envelope with its all-center
+comparison, exact clique boundary and full receiver (16), and arithmetic collision
+control with its doubled-zero/dyadic specialization and full receiver (24). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 ## Exact laws
@@ -52,7 +54,7 @@ counts are not contribution counts. No literature-priority claim.
 - **Secant is not plastic:** the actual plastic kernel is piecewise
   `levyCoshKernel`, with a signed pairing involving `2 cosh - levyCoshKernel`.
   Kernel resemblance does not identify the two functionals.
-- **Contribution counting:** five field-specific results, not one contribution per
+- **Contribution counting:** seven field-specific results, not one contribution per
   declaration. Cauchy–Schwarz and ground-state representation are classical mechanisms.
   External novelty is unestablished; exact-phrase search was inconclusive.
 
@@ -112,8 +114,11 @@ the now-separated positive secant and plastic remainder energies. The cosine com
 is removed, and the actual signed plastic receiver is established with that moment retained.
 The fourth result excludes source-energy-only leakage estimates from odd parity and a
 single logarithmic zero. The fifth supplies exact centered weighted control of the
-multiplier defect; uniform coercivity still requires stronger information about its
-source variance and full difference-node Gram.
+multiplier defect; the sixth removes source-parallel packet cost and proves that mean
+centering already minimizes the entire envelope on source cliques. Uniform coercivity
+still requires stronger information about source variance. The seventh result now
+reduces the arithmetic difference-node Gram exactly to weighted collision energy
+under a doubled source-zero range, supplied by full logarithmic blindness on dyadic chains.
 
 ## Actual plastic crossover: exact facts
 
@@ -223,3 +228,100 @@ Main results are `CenteredHyperbolicGram.odd_defect_abs_sub_correction_le`,
 
 Serena ignores Lean paths in this project; direct symbol lookup returned that error.
 Use inspected source plus apply_patch. Keep one owned foreground Lean process at a time.
+
+## Source Schur envelope and exact clique-centering boundary
+
+- With the same difference packet P=sum a_p F(.+d_p), put R=h_F(0),
+  K=<F,P>=sum a_p h_F(d_p), G=||P||^2, mu=M/R, and Q=||q_mu||^2.
+  The actual centered source is orthogonal to F. If R=0, the existing variance
+  and packet Cauchy--Schwarz inequalities force M=K=0, so every formula below
+  remains valid with ordinary real division and no nonzero-energy premise.
+- The actual compact packet P_perp=P-(K/R)F has energy H=G-K^2/R>=0.
+  Its pairing with q_mu equals that of P. Therefore
+  |D-E_mu|<=sqrt(Q H), and D<=U_perp=E_mu+sqrt(Q H).
+  This uses actual source correlations and weighted source energy; every repeated
+  difference and cross correlation remains in G.
+- For every real center c, E_c=E_mu+(c-mu)K and Q_c=Q+R(c-mu)^2.
+  The scalar square identity (a^2+x^2)(b^2+k^2)-(ab-xk)^2=(ak+xb)^2 proves
+  U_perp<=E_c+sqrt(Q_c G). Thus the new envelope is at least as strong as
+  every earlier scalar-centered envelope, including signed correlations.
+  This is a comparison theorem, not a claim that its infimum is always attained.
+- At alpha=1/2, using U_perp in the uncompensated penalty gives a continuous
+  lower bound dominating every centeredJumpBound. Integrating the existing
+  disjoint arithmetic collars gives a bound for J_sech and for
+  P(F), retaining R_plastic(F)-2O(F)^2 and the source-support jump factor.
+- **Exact boundary:** source clique zeros force K=E_c=0 for every c.
+  Hence U_perp=U_mu, and U_mu<=U_c for every c: scalar mean centering already
+  minimizes the whole envelope on a clique. Projection onto F cannot improve it
+  further. Do not infer that the remaining difference-node Gram is diagonal.
+  Failed extra-clique-gain inference and positive survivor are closed in
+  `docs/drafts/pipeline/5-failed/source-line-projection-extra-clique-gain-2026-10-17.md`.
+- The residual weighted variance, support factor and negative odd moment remain.
+  The arithmetic difference-node Gram is now controlled by the seventh result
+  below; arbitrary node geometry remains outside that doubled-range specialization.
+- Classical projection and Cauchy--Schwarz are supporting mechanisms. The exact
+  multiplier-envelope comparison, clique boundary and actual functional receiver
+  form one contribution. No literature-priority claim.
+
+Sixth implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/ProjectedHyperbolicGramControl.lean`.
+Actual-source compilation exited 0 without warnings. All 16 public theorem axiom
+audits returned only `propext`, `Classical.choice`, `Quot.sound`. Source SHA256:
+`27a0251e688b257952cca194ea612814c5c73f5b9e1e3a01349932f9411b0384`.
+Main namespace `ProjectedHyperbolicGram`; capstones `projectedDefectUpper_le_every_center`,
+`sourceClique_centering_boundary`, `odd_secantEnergy_ge_projected`, and
+`odd_plasticCrossover_ge_projected`. Six contributions, 93 public supporting theorem
+audits in total. Latest global lint status is recorded on the master card.
+
+## Arithmetic collision law and doubled source-zero range
+
+- For N+1 nodes t_i=i delta, real weights v_i, and slots r=0,...,2N, set
+  d_r=(r-N)delta and
+  b_r=sum_(i!=j, N+j-i=r) v_i v_j/[2cosh(alpha d_r)]. The actual source
+  difference packet equals sum_r b_r F(.+d_r). Its central amplitude b_N=0.
+  Equal integer differences are combined before squaring, for signed weights too.
+- For 1<=k<=N,
+  b_(N+k)=[sum_(i=0)^(N-k) v_i v_(i+k)]/[2cosh(alpha k delta)].
+  Uniform v_i=1 gives (N+1-k)/[2cosh(alpha k delta)]. Thus multiplicity is
+  coherent; the collision cost is not the sum of individual pair squares.
+- Define A=sum_r b_r^2 and
+  Z=sum_(r!=s) b_r b_s h_F((s-r)delta). Exactly G=R A+Z. The source
+  covariance and correction also coalesce into K=sum b_r h_F(d_r) and
+  E_c=sum b_r[c-cosh(alpha d_r)^2]h_F(d_r). No zero is assumed.
+  R A+Z-K^2/R is nonnegative, being the actual source Schur energy.
+- If the original source has h_F(m delta)=0 for 1<=m<=2N, the existing
+  arithmetic-clique theorem proves Z=0; the same source zeros give K=E_c=0.
+  The exact identity Q_mu R=V, V=RW-M^2, then gives |D|<=sqrt(V A).
+  This discharges the difference-Gram orthogonality from explicit source zeros;
+  it never assumes inherited multiplier zeros. The theorem proves sufficiency
+  of this doubled range, not that it is minimal under every weight pattern.
+- For the canonical odd source F, h_F(log n)=0 for all n>=2 supplies the
+  required dyadic zeros by n=2^m. This is a local source-grid specialization;
+  no implication from arbitrary input data to source blindness is asserted.
+- The unconditional collision envelope is
+  E_mu+sqrt(Q_mu[R A+Z-K^2/R]). It equals the established projected envelope.
+  At alpha=1/2 it transfers into the full original secant/plastic receiver for
+  actual compact sources, with all cross-lag errors, positive plastic remainder,
+  support factor and negative odd moment retained. Under doubled zeros the
+  collar leakage penalty is exactly sqrt(R_S sqrt(V A)).
+- All unconditional identities include delta=0, N=0 and R=0. When delta=0,
+  different integer slots may represent the same real displacement; Z retains
+  those additional correlations. The doubled-zero specialization at delta=0
+  forces zero source energy whenever its range is nonempty.
+- Next open question: bound A by a node-count-independent multiple of
+  (sum v_i^2)^2 using the hyperbolic denominator on dyadic chains, to obtain a
+  multiplier frame estimate from actual weighted variance. No such uniform
+  estimate is established here. Weighted variance, support and odd-moment
+  domination remain substantive obstacles.
+- Existing finite-train lag grouping, arithmetic clique orthogonality and
+  Cauchy--Schwarz are reused. Exact multiplier collision control and the actual
+  receiver count as one contribution. No literature-priority claim.
+
+Seventh implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/ArithmeticMultiplierCollisionControl.lean`.
+Actual-source compilation exited 0 without warnings. All 24 public theorem axiom
+audits returned only `propext`, `Classical.choice`, `Quot.sound`. Source SHA256:
+`ea5f7325683aa67f27d59ecaf8319b851f675324abc2a95cab2c3c87f46abaf8`.
+Main namespace `ArithmeticMultiplierCollisions`; results
+`differenceGram_eq_collision_add_error`, `odd_defect_abs_le_variance_collision`,
+`odd_logGrid_defect_abs_le_variance_collision`, `odd_plasticCrossover_ge_collision`.
+Seven contributions, 117 public supporting theorem audits in total. Latest global
+lint status is on the master card.

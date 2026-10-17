@@ -529,7 +529,28 @@ to the additive successor lattice:
    exactly when f is constant across all points where ψ is nonzero, including
    different source components. Combining this lower bound with path congestion
    gives weighted variance control by actual additive Dirichlet energy.
-   See [proof and boundary](CompactSourceVarianceCoercivity.md).
+   See `docs/reports/BiScaleUncertainty/CompactSourceVarianceCoercivity.md`.
+
+9. **Actual Rough Modulus and Nodal Slack (`RoughSobolevModulus.lean`, `RoughModulusGraphDecomposition.lean`):**
+   Every physical L2 velocity q and constant c have a constructed modulus velocity m
+   satisfying `|c|+primitive m t=|c+primitive q t|` at every t. The zero-level
+   derivative law is proved, and all local physical and weighted logarithmic
+   Dirichlet energies are unchanged. For the full mixed graph,
+   `J(q)=J(m)+N(q,c)` and `slackEnergy(m)=slackEnergy(q)+N(q,c)`.
+   These addition identities allow infinite total energy; compact sources give
+   finite ordinary energy differences and unchanged source mass. Nodal jump loss
+   is transferred exactly into path slack, inside the actual rough-state domain.
+   See [proof and boundary](RoughSobolevModulus.md).
+
+10. **Nodal Mass Coercivity and Strict Modulus Contraction (`CompactNodalMassCoercivity.lean`):**
+    For positive/negative weighted source masses `P=∫ψ²f⁺`, `N=∫ψ²f⁻`,
+    the exact variance defect is `Vψ(f)−Vψ(|f|)=4PN`, and the actual graph obeys
+    `4PN≤sinh(2B)[J(q)−J(modulus q c)]`. Modulus strictly lowers graph energy
+    exactly when both signs occur where ψ is nonzero. Equality allows any
+    one-sign state, unlike zero graph energy, which requires constancy.
+    All source components and arbitrary nonnegative arithmetic weights are
+    retained; no positive-mass or connected-support premise is imposed.
+    See [paper proof](CompactNodalMassCoercivity.md).
 
 #### Pillar IX: Cosecant–Secant Functional-Equation Dual Decomposition (`CosecantSecantDualDecomposition.lean`)
 Unifies the forward archimedean Lévy weight $w_{\mathrm{arch}}(x) = \frac{e^{x/2}}{\sinh x}$ (from
@@ -609,6 +630,44 @@ crossover kernel):
    At $\alpha=1/2$, the bound integrates into the full secant and odd plastic receivers,
    retaining the positive plastic remainder, negative odd moment, and source-support factor.
    Source clique zeros cancel $E_\lambda$; they do not diagonalize the difference-node Gram.
+9. **Source-Orthogonal Leakage Envelope (`ProjectedHyperbolicGramControl.lean`):**
+   Write $P=\sum a_{ij}F(\cdot+d_{ij})$, $K=\langle F,P\rangle$, $G=\|P\|^2$,
+   $\mu=(\int\cosh(2\alpha u)F(u)^2du)/R$, and $Q=\|q_\mu\|^2$.
+   The exact orthogonality $\langle q_\mu,F\rangle=0$ sharpens the defect bound to
+   $$|D-E_\mu|\le\sqrt{Q(G-K^2/R)}.$$
+   Its upper envelope is at most $E_\lambda+\sqrt{\|q_\lambda\|^2G}$ for every
+   scalar center $\lambda$, including signed source correlations and zero-energy sources.
+   The resulting lower bound dominates every earlier centered collar bound and integrates
+   into the full secant/plastic receiver. On an exact source clique, $K=E_\lambda=0$:
+   projection gives no gain beyond mean centering, which already minimizes this entire
+   family of envelopes. Further clique progress must control the remaining weighted
+   variance or difference-node Gram; support dependence and the negative odd moment remain.
+10. **Arithmetic Multiplier Collision Law (`ArithmeticMultiplierCollisionControl.lean`):**
+    For nodes $i\delta$, $0\le i\le N$, combine pair weights at each integer lag:
+    $$b_r=\sum_{i\ne j,\,N+j-i=r}\frac{v_iv_j}{2\cosh(\alpha(r-N)\delta)},\qquad
+    A=\sum_{r=0}^{2N}b_r^2.$$
+    The full source difference-Gram is exactly $G=RA+Z$, where $Z$ contains only
+    original-source correlations at distinct integer lags. Source zeros at
+    $m\delta$, $1\le m\le2N$, give $Z=0$ and, for the odd source,
+    $$|D|\le\sqrt{(RW-M^2)A}.$$
+    Full logarithmic blindness supplies these zeros on every finite dyadic chain.
+    Equal-lag multiplicities remain: for uniform node weights,
+    $b_{N+k}=(N+1-k)/(2\cosh(\alpha k\delta))$ for $1\le k\le N$.
+    Without source zeros, the exact collision/cross-lag/Schur expression transfers
+    into the full secant/plastic receiver. Weighted variance, source-support
+    dependence and the negative odd moment remain; multiplier zeros are never assumed.
+11. **Uniform Dyadic Multiplier Frame (`DyadicMultiplierFrameBound.lean`):**
+    At $\alpha=1/2$, $\delta=\log2$, put $W_2=\sum_{i=0}^N v_i^2$ and
+    $V=RW-M^2$. Reflection and aperiodic Cauchy--Schwarz give
+    $$A=2\sum_{k=1}^N b_{N+k}^2\le2W_2^2,$$
+    uniformly in chain length and arbitrary signed weights. Doubled source zeros imply
+    $$|D|\le\sqrt{2V}\,W_2,\qquad G_S(v)\le(R_S+\sqrt{2V})W_2.$$
+    For arbitrary actual odd sources, the bound retains
+    $E_\mu+\sqrt{Q\max(Z,0)}$, where $Q=\|q_\mu\|^2$ and $QR=V$.
+    This source-error-aware frame bound transfers into the full secant/plastic
+    functional without grid assumptions. It replaces the exact collision cost by a
+    chain-independent radius; it does not improve every exact Gram envelope.
+    Source support and the negative odd moment remain. No optimal-constant claim.
 
 ---
 
@@ -660,6 +719,18 @@ transport** and closes **Trap 8 (The Midpoint Compression Escape)** in the bound
    $\log(r_2 / r_1) \le \exp(r_2 / 2)\,K$, so the autocorrelation support radius cannot be
    compressed below $r_2\exp(-\exp(r_2/2)K)$ to hide inside a distant midpoint gap
    $(\log N, \log(N+1))$.
+
+4. **Continuous-Source Signed Chebyshev Coupling (`AnnularCorrelationTransport.lean`, `SignedPrimePolarCoupling.lean`):**
+   For every compact continuous source, the annular average
+   $H(t)=d^{-1}\int_a^{a+d}h_f(t+y)dy$, with $a,d>0$, has continuous derivative
+   $V(t)=(h_f(t+a+d)-h_f(t+a))/d$. At every $L=\log(N+2)$, its actual signed
+   prime–polar pairing is exactly
+   $$H(0)+e^{-L/2}H(L)E(L)-\int_0^L e^{-x/2}(V(x)-H(x)/2)E(x)dx-\int_0^L e^{-x/2}H(x)dx,$$
+   where $E(x)=\psi(e^x)-e^x$. The original pairing differs by at most total
+   prime-plus-polar mass times the finite local Krein averaging cost, itself bounded
+   by an adjustable annular Lévy term and the reciprocal-weight penalty. No grid
+   zeros, source derivatives, or energy premise are imposed. The mass factor remains;
+   this is not a cutoff-uniform bound. See `SignedPrimePolarTransport.md`.
 
 #### Pillar XVI: Hyperbolic Multiplier Increment Calculus & Leakage-Proof Odd-Sector Coercivity (`HyperbolicMultiplierIncrementAndOddSignCoercivity.lean`)
 Resolves **Trap 7 (Hyperbolic Multiplier Leakage, `OddMultiplierLeakageFamily.lean`)** by replacing
@@ -732,3 +803,10 @@ $S_\alpha f$:
 | 46 | `CenteredHyperbolicGramControl.lean` | Layer III / Pillars VI–IX | Exact odd source cross-correlation, centered weighted variance, source difference-Gram leakage bound, and full secant/plastic receiver |
 | 47 | `CompactSourcePairVariance.lean` | Layer III / Pillar VII | Exact finite weighted-pair variance, positive-lag transport and pointwise zero-variance rigidity |
 | 48 | `CompactSourceGraphCoercivity.lean` | Layer III / Pillar VII | Actual mixed-graph variance floor, nullspace classification and additive Dirichlet coupling |
+| 49 | `ProjectedHyperbolicGramControl.lean` | Layer III / Pillars VI–IX | Source Schur leakage envelope, domination of every scalar center, exact clique-centering boundary, and full secant/plastic receiver |
+| 50 | `RoughSobolevModulus.lean` | Layer III / Pillar VII | Constructed L2 modulus velocity, zero-level derivative law and exact local Dirichlet conservation |
+| 51 | `RoughModulusGraphDecomposition.lean` | Layer III / Pillar VII | Exact full mixed-graph nodal loss, transfer into path slack, finite compact-source form contraction |
+| 52 | `ArithmeticMultiplierCollisionControl.lean` | Layer III / Pillars VI–IX | Exact arithmetic lag collision energy, doubled source-zero control, dyadic multiplier leakage bound and full secant/plastic receiver |
+| 53 | `CompactSourceNodalVariance.lean` | Layer III / Pillar VII | Finite source-lobe masses, exact variance loss and positive-lag nodal integral |
+| 54 | `CompactNodalMassCoercivity.lean` | Layer III / Pillar VII | Actual nodal mass lower bound and exact one-sign/strict modulus-contraction classification |
+| 55 | `DyadicMultiplierFrameBound.lean` | Layer III / Pillars VI–IX | Chain-independent dyadic multiplier frame radius from source variance, explicit source-error control and unconditional secant/plastic receiver |

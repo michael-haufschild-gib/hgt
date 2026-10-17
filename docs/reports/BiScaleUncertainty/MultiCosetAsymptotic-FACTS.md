@@ -200,10 +200,36 @@ direction; simultaneous feasibility is exactly the displayed condition. Compact
 attainment turns failure of feasibility into a strict support gap. Integrated
 strictness requires activation on a positive-measure set. Not yet Lean-verified.
 
-Still open for this new coefficient: cutoff monotonicity and quantitative limit,
-formal all-low reduction to paired support, unequal-size product-zero pairs, and
-general nonzero Schur residual coupling. Do not transfer the preceding C_N rate
-to B_(N,K) without proving the comparison/limit statements.
+## Full-grid capped hierarchy [Lean-verified]
+
+Write B_(N,K)=sup_ρ B_(N,K)(ρ). The new comparison package proves
+
+    P_N ≤ B_(N,K),   Q_K ≤ B_(N,K) ≤ Q_N,   B_(N,N)=Q_N,
+
+and B_(N,K)≤B_(M,L) whenever N≤M, K≤N, K≤L≤M. The proof uses exact
+zero-padding, actual physical partition extension, and two local support laws:
+adding nonnegative weights increases the kernel by at most added coordinate mass;
+moving a fixed whole-block norm from high to low nodes tightens the capped support.
+
+Set B_N=B_(N,floor√N) for N≥4 and B_N=P_N for N=2,3. Then
+
+    C_N ≤ B_N ≤ Q_N ≤ Q_∞,    0 < B_N ↑ Q_∞,
+    0 ≤ Q_∞−B_N ≤ 16 exp(δ/2)/N^(1/4),   N≥4,
+    B_N ≤ J_arch(f)/h_f(0).
+
+The last inequality applies to actual nonzero compact C² N-grid sources. An
+extended-energy version covers compact continuous sources, zero sources, and
+infinite energy on the full physical interval (0,log N). There is no analytic
+interface or optimizer premise. A sharper floor-square-root upper error is also
+formalized. All four leaves compile without diagnostics; all 58 public theorem
+axiom/signature audits pass with only `propext`, `Classical.choice`, and `Quot.sound`.
+The final direct leaf recheck passed, exit 0, no diagnostics.
+
+Full-grid retention in this uniform-low model changes the finite certificate
+without changing Q_∞. Neither strict finite improvement over C_N nor sharpness
+of the fourth-root error is proved. Unequal-size product-zero pairs, general
+nonzero Schur residual coupling, and actual autocorrelation realization remain open.
+The package is not a theorem identifying the true sharp source-energy constant.
 
 ## Limits that must remain visible
 
@@ -222,21 +248,25 @@ to B_(N,K) without proving the comparison/limit statements.
 
 ## Research accounting
 
-Lean-verified significant packages: **5/100**: (1) general source transfer and
+Lean-verified significant packages: **6/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
 (4) paired capacity and cutoff stability, exact limit identification and frame
 selection, and quantitative fourth-root source-cutoff control; (5) exact capped
-support and finite-vector attainment, followed by full-grid physical source transfer.
+support and finite-vector attainment, followed by full-grid physical source transfer;
+(6) capped capacity and cutoff comparisons, the optimized monotone full-grid
+hierarchy, common finite limit, and quantitative actual-source certification.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Current global lint exits 1 solely on two concurrent missing umbrella imports:
-`FiniteTrainUniformEnergy` and `LocalCorrelationEnergyStability`, both in
-BiScaleUncertainty. Earlier four-import failure is obsolete. All eleven owned leaves are
-reachable; no own-leaf lint error is reported. Index refresh passed.
+Current global lint exits 1 solely on five concurrent missing umbrella imports:
+`FermiNymanDyadicFoldGeometry` in RHTower, plus `DyadicMultiplierFrameBound`,
+`InfiniteGridCorrelationCompactness`, `InfiniteGridLimitEnergy`, and
+`SignedPrimePolarCoupling` in BiScaleUncertainty. Earlier missing-import lists
+are obsolete. All fifteen owned leaves are reachable; no own-leaf lint error is
+reported. Index refresh passed. Evidence: `/tmp/bsu-capped-hierarchy-lint-final.log`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -285,6 +315,24 @@ Evidence: `/tmp/bsu-capped-block.log`, `/tmp/bsu-capped-cosets.log`,
 Final direct command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FullGridCappedCollarEnergy.lean`.
 Exit 0, no diagnostics; all 41 public theorem audits pass.
 
+Full-grid hierarchy SHA-256 values:
+
+- Support comparison: `4f6f50c1f75d890d7f06a891dcca531c103eb15c01bbe2cf5cc13b276c1ccca3`.
+- Array comparison: `9656cd0ce211de779e6dbfefd70a35950e7d761b65c93e6418b1be80a200fd43`.
+- Cutoff comparison: `d597b18ce4c9910cccfb22975c72ad6646ff8113781471dbb0795fcd460ec4ec`.
+- Optimized hierarchy: `72320630cda08587f8830f795984fb6c44ab1c98904049f64ec7817f789a8ffa`.
+
+Evidence: `/tmp/bsu-capped-support-comparison.log`,
+`/tmp/bsu-capped-array-comparison.log`, `/tmp/bsu-capped-cutoff-comparison.log`,
+`/tmp/bsu-capped-hierarchy.log`, `/tmp/bsu-capped-hierarchy-{axioms,final,index,lint-final}.log`,
+and `/tmp/bsu_capped_hierarchy_axioms.lean`. All 58 public theorems pass the audit,
+each included exactly once; the final direct recheck passed. All eleven earlier source hashes are
+unchanged. Corpus search `/tmp/bsu-capped-capacity-search.log` was partial; no
+exhaustive novelty claim is made.
+Final command: `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FullGridCappedCollarHierarchy.lean`;
+exit 0, no diagnostics. All owned jobs exited; temporary capacity API scratch removed.
+All fifteen own imports and refreshed capstone index entries are verified.
+
 Reusable proof repairs: expose the explicit function composition before applying
 measurability of the compact support map to low/high array maps; leaving it implicit
 causes a default-heartbeat definitional-equality timeout. Name the array measurable
@@ -296,3 +344,6 @@ when simplifying the source kernel on the right side of a restricted-grid bound.
 Expose Ioi membership as an inequality before arithmetic tactics. Import checks can
 spend minutes in `lean_mark_persistent` under shared memory pressure; inspect the live
 owned process and keep polling its handle instead of restarting after an observation timeout.
+For a supremum-range goal left in `(fun ρ => ...) ρ` form, use an explicit `change`
+before rewriting the all-low coefficient identity. Natural-number nonlinear
+contradictions may need explicit `Nat.zero_le k` and `Nat.zero_le (k ^ 2)` inputs.

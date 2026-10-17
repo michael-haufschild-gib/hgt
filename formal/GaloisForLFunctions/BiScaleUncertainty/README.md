@@ -212,7 +212,7 @@ classical single-group traps and five deep frontier traps that govern the design
 
 To meet the standards of an independent mathematical discipline—and to supply the signed arithmetic
 and operator tools required by `EWU`, `HF`, `CHMD`, and `OWU`—the library is organized into **four
-layers** spanning **sixteen foundational pillars**:
+layers** spanning **nineteen foundational pillars**:
 
 ```mermaid
 flowchart TD
@@ -244,6 +244,12 @@ flowchart TD
         P16["Pillar XVI: Hyperbolic Multiplier Increment & Leakage-Proof Odd Coercivity<br/>(HyperbolicMultiplierIncrementAndOddSignCoercivity.lean)"]
     end
 
+    subgraph Layer5["Layer V: Unconditional Euler–Maclaurin Quadrature, Origin-Plus-Tail Synthesis & Signed Weil Bridge"]
+        P17["Pillar XVII: Unconditional S(f)-Free Euler–Maclaurin Cell Quadrature<br/>(EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean)"]
+        P18["Pillar XVIII: Unconditional Origin-Plus-Tail Disjoint-Collar Synthesis<br/>(MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean)"]
+        P19["Pillar XIX: Unconditional Signed Weil Functional Coercivity & RH Bridge<br/>(SignedWeilFunctionalCoercivityAndRHBridge.lean)"]
+    end
+
     P1 --> P2
     P1 --> P3
     P2 --> P4
@@ -265,6 +271,10 @@ flowchart TD
     P14 --> P15
     P6 --> P16
     P15 --> P16
+    P15 --> P17
+    P17 --> P18
+    P16 --> P19
+    P18 --> P19
 ```
 
 ---
@@ -531,6 +541,27 @@ to the additive successor lattice:
    gives weighted variance control by actual additive Dirichlet energy.
    See `docs/reports/BiScaleUncertainty/CompactSourceVarianceCoercivity.md`.
 
+9. **Actual Rough Modulus and Nodal Slack (`RoughSobolevModulus.lean`, `RoughModulusGraphDecomposition.lean`):**
+   Every physical L2 velocity q and constant c have a constructed modulus velocity m
+   satisfying `|c|+primitive m t=|c+primitive q t|` at every t. The zero-level
+   derivative law is proved, and all local physical and weighted logarithmic
+   Dirichlet energies are unchanged. For the full mixed graph,
+   `J(q)=J(m)+N(q,c)` and `slackEnergy(m)=slackEnergy(q)+N(q,c)`.
+   These addition identities allow infinite total energy; compact sources give
+   finite ordinary energy differences and unchanged source mass. Nodal jump loss
+   is transferred exactly into path slack, inside the actual rough-state domain.
+   See `docs/reports/BiScaleUncertainty/RoughSobolevModulus.md`.
+
+10. **Nodal Mass Coercivity and Strict Modulus Contraction (`CompactNodalMassCoercivity.lean`):**
+    For positive/negative weighted source masses `P=∫ψ²f⁺`, `N=∫ψ²f⁻`,
+    the exact variance defect is `Vψ(f)−Vψ(|f|)=4PN`, and the actual graph obeys
+    `4PN≤sinh(2B)[J(q)−J(modulus q c)]`. Modulus strictly lowers graph energy
+    exactly when both signs occur where ψ is nonzero. Equality allows any
+    one-sign state, unlike zero graph energy, which requires constancy.
+    All source components and arbitrary nonnegative arithmetic weights are
+    retained; no positive-mass or connected-support premise is imposed.
+    See `docs/reports/BiScaleUncertainty/CompactNodalMassCoercivity.md`.
+
 #### Pillar IX: Cosecant–Secant Functional-Equation Dual Decomposition (`CosecantSecantDualDecomposition.lean`)
 Unifies the forward archimedean Lévy weight $w_{\mathrm{arch}}(x) = \frac{e^{x/2}}{\sinh x}$ (from
 $s = 1/2 + ir$), the time-reversed functional-equation dual weight
@@ -609,6 +640,44 @@ crossover kernel):
    At $\alpha=1/2$, the bound integrates into the full secant and odd plastic receivers,
    retaining the positive plastic remainder, negative odd moment, and source-support factor.
    Source clique zeros cancel $E_\lambda$; they do not diagonalize the difference-node Gram.
+9. **Source-Orthogonal Leakage Envelope (`ProjectedHyperbolicGramControl.lean`):**
+   Write $P=\sum a_{ij}F(\cdot+d_{ij})$, $K=\langle F,P\rangle$, $G=\|P\|^2$,
+   $\mu=(\int\cosh(2\alpha u)F(u)^2du)/R$, and $Q=\|q_\mu\|^2$.
+   The exact orthogonality $\langle q_\mu,F\rangle=0$ sharpens the defect bound to
+   $$|D-E_\mu|\le\sqrt{Q(G-K^2/R)}.$$
+   Its upper envelope is at most $E_\lambda+\sqrt{\|q_\lambda\|^2G}$ for every
+   scalar center $\lambda$, including signed source correlations and zero-energy sources.
+   The resulting lower bound dominates every earlier centered collar bound and integrates
+   into the full secant/plastic receiver. On an exact source clique, $K=E_\lambda=0$:
+   projection gives no gain beyond mean centering, which already minimizes this entire
+   family of envelopes. Further clique progress must control the remaining weighted
+   variance or difference-node Gram; support dependence and the negative odd moment remain.
+10. **Arithmetic Multiplier Collision Law (`ArithmeticMultiplierCollisionControl.lean`):**
+    For nodes $i\delta$, $0\le i\le N$, combine pair weights at each integer lag:
+    $$b_r=\sum_{i\ne j,\,N+j-i=r}\frac{v_iv_j}{2\cosh(\alpha(r-N)\delta)},\qquad
+    A=\sum_{r=0}^{2N}b_r^2.$$
+    The full source difference-Gram is exactly $G=RA+Z$, where $Z$ contains only
+    original-source correlations at distinct integer lags. Source zeros at
+    $m\delta$, $1\le m\le2N$, give $Z=0$ and, for the odd source,
+    $$|D|\le\sqrt{(RW-M^2)A}.$$
+    Full logarithmic blindness supplies these zeros on every finite dyadic chain.
+    Equal-lag multiplicities remain: for uniform node weights,
+    $b_{N+k}=(N+1-k)/(2\cosh(\alpha k\delta))$ for $1\le k\le N$.
+    Without source zeros, the exact collision/cross-lag/Schur expression transfers
+    into the full secant/plastic receiver. Weighted variance, source-support
+    dependence and the negative odd moment remain; multiplier zeros are never assumed.
+11. **Uniform Dyadic Multiplier Frame (`DyadicMultiplierFrameBound.lean`):**
+    At $\alpha=1/2$, $\delta=\log2$, put $W_2=\sum_{i=0}^N v_i^2$ and
+    $V=RW-M^2$. Reflection and aperiodic Cauchy--Schwarz give
+    $$A=2\sum_{k=1}^N b_{N+k}^2\le2W_2^2,$$
+    uniformly in chain length and arbitrary signed weights. Doubled source zeros imply
+    $$|D|\le\sqrt{2V}\,W_2,\qquad G_S(v)\le(R_S+\sqrt{2V})W_2.$$
+    For arbitrary actual odd sources, the bound retains
+    $E_\mu+\sqrt{Q\max(Z,0)}$, where $Q=\|q_\mu\|^2$ and $QR=V$.
+    This source-error-aware frame bound transfers into the full secant/plastic
+    functional without grid assumptions. It replaces the exact collision cost by a
+    chain-independent radius; it does not improve every exact Gram envelope.
+    Source support and the negative odd moment remain. No optimal-constant claim.
 
 ---
 
@@ -661,6 +730,18 @@ transport** and closes **Trap 8 (The Midpoint Compression Escape)** in the bound
    compressed below $r_2\exp(-\exp(r_2/2)K)$ to hide inside a distant midpoint gap
    $(\log N, \log(N+1))$.
 
+4. **Continuous-Source Signed Chebyshev Coupling (`AnnularCorrelationTransport.lean`, `SignedPrimePolarCoupling.lean`):**
+   For every compact continuous source, the annular average
+   $H(t)=d^{-1}\int_a^{a+d}h_f(t+y)dy$, with $a,d>0$, has continuous derivative
+   $V(t)=(h_f(t+a+d)-h_f(t+a))/d$. At every $L=\log(N+2)$, its actual signed
+   prime–polar pairing is exactly
+   $$H(0)+e^{-L/2}H(L)E(L)-\int_0^L e^{-x/2}(V(x)-H(x)/2)E(x)dx-\int_0^L e^{-x/2}H(x)dx,$$
+   where $E(x)=\psi(e^x)-e^x$. The original pairing differs by at most total
+   prime-plus-polar mass times the finite local Krein averaging cost, itself bounded
+   by an adjustable annular Lévy term and the reciprocal-weight penalty. No grid
+   zeros, source derivatives, or energy premise are imposed. The mass factor remains;
+   this is not a cutoff-uniform bound.
+
 #### Pillar XVI: Hyperbolic Multiplier Increment Calculus & Leakage-Proof Odd-Sector Coercivity (`HyperbolicMultiplierIncrementAndOddSignCoercivity.lean`)
 Resolves **Trap 7 (Hyperbolic Multiplier Leakage, `OddMultiplierLeakageFamily.lean`)** by replacing
 the false hypothesis $h_{S_\alpha f}(t) = 0$ with signed collar leverage on $C_\alpha f$ and
@@ -677,6 +758,59 @@ $S_\alpha f$:
    $$\left(w - \frac{w^2}{2 W_0}\right)\bigl(h_f(0) + h_{S_\alpha f}(0)\bigr)
      \;\le\; W_0\bigl(h_{C_\alpha f}(0) - h_{C_\alpha f}(y)\bigr)
        + w\bigl(h_{C_\alpha f}(0) - h_{C_\alpha f}(t + y)\bigr) + w\,h_{S_\alpha f}(t).$$
+
+---
+
+### Layer V: Unconditional Euler–Maclaurin Quadrature, Origin-Plus-Tail Synthesis & Signed Weil Bridge (Pillars XVII–XIX)
+
+#### Pillar XVII: Unconditional Derivative-Free ($S(f)$-Free) Euler–Maclaurin Cell Quadrature (`EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`)
+Eliminates **Trap 1 (Spectral Second Moment $S(f)$ Divergence)** from logarithmic cell quadrature:
+1. **Everywhere-Continuous $S(f)$-Free Cell Quadrature Bound (`cell_quadrature_abs_diff_le_origin_collar`):**
+   Using Krein's increment inequality and Young's inequality with a constant cell weight $W_0 > 0$,
+   all integrands on $[0, \delta]$ are continuous down to $y = 0$:
+   $$\left|\left(\int_t^{t+\delta} \rho(x)\,dx\right) h_f(t) - \int_t^{t+\delta} \rho(x)\,h_f(x)\,dx\right|
+     \;\le\; W_0 \int_0^\delta \bigl(h_f(0) - h_f(y)\bigr)\,dy + \frac{h_f(0)}{2 W_0}\int_t^{t+\delta} \rho(x)^2\,dx.$$
+2. **Origin-Singularity Absorption on Nyquist Cells (`nyquist_cell_origin_integral_le_levy` & `nyquist_cell_quadrature_abs_diff_le_levy`):**
+   On the $n$-th Nyquist cell $[\log n, \log(n+1)]$ ($n \ge 1$), $\operatorname{archLevySinhWeight}(y) \ge n$
+   on $(0, \log(n+1) - \log n]$, absorbing the factor of $n$ into the origin Lévy integral.
+3. **Exact Polar Cell Calculus & Unconditional `RealEvenPolarTestFn` Polar Quadrature (`integral_exp_half_log_cell_eq`, `integral_exp_half_sq_log_cell_eq`, & `RealEvenPolarTestFn.unconditional_polar_cell_quadrature_bound`):**
+   For $\rho(x) = e^{x/2}$, $\int_{\log n}^{\log(n+1)} e^{x/2}\,dx = 2(\sqrt{n+1} - \sqrt{n})$ and
+   $\int_{\log n}^{\log(n+1)} (e^{x/2})^2\,dx = 1$, giving for **every** $g \in \operatorname{RealEvenPolarTestFn}$
+   and **every** $n \in \mathbb{N}$ (with zero hypotheses):
+   $$\left|2\bigl(\sqrt{n+2} - \sqrt{n+1}\bigr)\,(\operatorname{weilTest}\,g\,g\,(\log(n+1))).\mathrm{re} - \int_{\log(n+1)}^{\log(n+2)} e^{x/2}\,(\operatorname{weilTest}\,g\,g\,x).\mathrm{re}\,dx\right|$$
+   $$\le\; \operatorname{weilArchRe}(\operatorname{weilTest}\,g\,g) + \left(|\Omega(0)| + \frac{1}{2(n+1)}\right)(\operatorname{weilTest}\,g\,g\,0).\mathrm{re}.$$
+
+#### Pillar XVIII: Unconditional Multi-Node Origin-Budget Allocation & Global Disjoint-Collar Synthesis (`MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`)
+Solves the **Multi-Shell Origin Budget Problem** and proves unconditional global Nyquist signed coercivity:
+1. **Strict Antitonicity of `archLevySinhWeight` on `(0, ∞)` (`archLevySinhWeight_eq_two_div_of_pos` & `archLevySinhWeight_antitoneOn`):**
+   $$\operatorname{archLevySinhWeight}(x) = \frac{2}{e^{x/2} - e^{-3x/2}}, \qquad 0 < x \le y \implies \operatorname{archLevySinhWeight}(y) \le \operatorname{archLevySinhWeight}(x).$$
+2. **Exact Origin-Plus-Tail Disjointness (`origin_add_tail_levy_eq_biScaleLevyEnergy` & `origin_add_dyadic_window_levy_le_biScaleLevyEnergy`):**
+   For every $N \ge 2$, $\delta_N = \log(N+1) - \log N \le \log 2 \le \log N$, so the origin collar
+   $(0, \delta_N] \subseteq (0, \log N]$ and the dyadic Nyquist window $[\log N, \log(2N)] \subseteq [\log N, \infty)$
+   are disjoint subsets of $(0, \infty)$ whose Lévy integrals sum to **at most one copy of
+   `biScaleLevyEnergy f`**.
+3. **Unconditional Global Dyadic Nyquist Signed Coercivity (`global_dyadic_nyquist_signed_coercivity`):**
+   Testing cell $n = N + k$ ($0 \le k < N$, $N \ge 2$) with the concrete critical-line weight
+   $w_n = 2/\sqrt{n+1}$ and adaptive origin weight $W_{0, n} = n / N$ gives
+   $w_n - \frac{w_n^2}{2 W_{0, n}} \ge \frac{2}{\sqrt{n+1}} - \frac{2}{n+1} > 0$, yielding for
+   every $f \in C^2_c(\mathbb{R})$ and $N \ge 2$:
+   $$\left(\sum_{k=0}^{N-1} \bigl(\log(N+k+1) - \log(N+k)\bigr)\left(\frac{2}{\sqrt{N+k+1}} - \frac{2}{N+k+1}\right)\right) h_f(0)$$
+   $$\le\; \operatorname{biScaleLevyEnergy}(f) + \sum_{k=0}^{N-1} \bigl(\log(N+k+1) - \log(N+k)\bigr)\,\frac{2}{\sqrt{N+k+1}}\,h_f(\log(N+k)).$$
+
+#### Pillar XIX: Unconditional Signed Weil Functional Coercivity & the RH Explicit-Formula Bridge (`SignedWeilFunctionalCoercivityAndRHBridge.lean`)
+Synthesizes Layers I–V into **100% unconditional theorems** (taking only `g : RealEvenPolarTestFn`
+and `M : ℕ`, with zero hypotheses) directly on the `RHTower` explicit-formula test spaces:
+1. **`dyadicNyquistCoerciveConstant_pos`**:
+   For every $M \in \mathbb{N}$, $\mathcal{C}_{\mathrm{Nyq}}(M + 2) > 0$.
+2. **`RealEvenPolarTestFn.unconditional_dyadic_signed_weil_lower_bound` & `RealSmoothEvenPolarTestFn.unconditional_dyadic_signed_weil_lower_bound`**:
+   For EVERY $g$ and EVERY $M \in \mathbb{N}$ (with zero hypotheses):
+   $$\bigl(\Omega(0) + \mathcal{C}_{\mathrm{Nyq}}(M+2)\bigr)\,(\operatorname{weilTest}\,g\,g\,0).\mathrm{re}$$
+   $$\le\; \operatorname{weilArchRe}(\operatorname{weilTest}\,g\,g) + \sum_{k=0}^{M+1} \bigl(\log(M+2+k+1) - \log(M+2+k)\bigr)\,\frac{2}{\sqrt{M+2+k+1}}\,(\operatorname{weilTest}\,g\,g\,(\log(M+2+k))).\mathrm{re}.$$
+3. **`RealEvenPolarTestFn.unconditional_coshMultiplier_dyadic_signed_coercivity` & `RealEvenPolarTestFn.unconditional_sinhMultiplier_dyadic_signed_coercivity`**:
+   For EVERY $g \in \operatorname{RealEvenPolarTestFn}$, $\alpha \in \mathbb{R}$, and $M \in \mathbb{N}$,
+   simultaneously controls both the base energy $h_g(0)$ and the odd hyperbolic multiplier energy
+   $h_{S_\alpha g}(0)$:
+   $$\mathcal{C}_{\mathrm{Nyq}}(M+2)\,\bigl(h_g(0) + h_{S_\alpha g}(0)\bigr) \;\le\; \operatorname{biScaleLevyEnergy}(C_\alpha g) + \sum_{k=0}^{M+1} \bigl(\log(M+2+k+1) - \log(M+2+k)\bigr)\,\frac{2}{\sqrt{M+2+k+1}}\,h_{C_\alpha g}(\log(M+2+k)).$$
 
 ---
 
@@ -732,6 +866,16 @@ $S_\alpha f$:
 | 46 | `CenteredHyperbolicGramControl.lean` | Layer III / Pillars VI–IX | Exact odd source cross-correlation, centered weighted variance, source difference-Gram leakage bound, and full secant/plastic receiver |
 | 47 | `CompactSourcePairVariance.lean` | Layer III / Pillar VII | Exact finite weighted-pair variance, positive-lag transport and pointwise zero-variance rigidity |
 | 48 | `CompactSourceGraphCoercivity.lean` | Layer III / Pillar VII | Actual mixed-graph variance floor, nullspace classification and additive Dirichlet coupling |
+| 49 | `ProjectedHyperbolicGramControl.lean` | Layer III / Pillars VI–IX | Source Schur leakage envelope, domination of every scalar center, exact clique-centering boundary, and full secant/plastic receiver |
+| 50 | `RoughSobolevModulus.lean` | Layer III / Pillar VII | Constructed L2 modulus velocity, zero-level derivative law and exact local Dirichlet conservation |
+| 51 | `RoughModulusGraphDecomposition.lean` | Layer III / Pillar VII | Exact full mixed-graph nodal loss, transfer into path slack, finite compact-source form contraction |
+| 52 | `ArithmeticMultiplierCollisionControl.lean` | Layer III / Pillars VI–IX | Exact arithmetic lag collision energy, doubled source-zero control, dyadic multiplier leakage bound and full secant/plastic receiver |
+| 53 | `CompactSourceNodalVariance.lean` | Layer III / Pillar VII | Finite source-lobe masses, exact variance loss and positive-lag nodal integral |
+| 54 | `CompactNodalMassCoercivity.lean` | Layer III / Pillar VII | Actual nodal mass lower bound and exact one-sign/strict modulus-contraction classification |
+| 55 | `DyadicMultiplierFrameBound.lean` | Layer III / Pillars VI–IX | Chain-independent dyadic multiplier frame radius from source variance, explicit source-error control and unconditional secant/plastic receiver |
+| 55 | `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean` | Layer V / Pillar XVII | Unconditional $S(f)$-free Euler–Maclaurin cell quadrature, origin-singularity Nyquist absorption, and unconditional polar quadrature on `RealEvenPolarTestFn` |
+| 56 | `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean` | Layer V / Pillar XVIII | Antitonicity of `archLevySinhWeight`, disjoint origin-plus-tail partition of `biScaleLevyEnergy`, and unconditional global dyadic Nyquist signed coercivity |
+| 57 | `SignedWeilFunctionalCoercivityAndRHBridge.lean` | Layer V / Pillar XIX | Strict positivity of `dyadicNyquistCoerciveConstant`, unconditional signed Weil functional lower bounds on `RealEvenPolarTestFn` and `RealSmoothEvenPolarTestFn`, and unconditional hyperbolic multiplier dyadic coercivity |
 
 ---
 

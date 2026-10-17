@@ -29,6 +29,11 @@
 11. Project the difference packet off the original source. Prove its Schur residual
     energy, sharpen the actual leakage receiver, and compare the resulting envelope
     with every scalar centering choice. Audit zero-energy cases explicitly.
+12. Coalesce arithmetic pair differences into actual lag packets. Establish the
+    exact collision energy, doubled source-zero range, and defect-aware full receiver.
+13. Prove a dyadic collision bound uniform in chain length, derive the even
+    multiplier frame radius from source variance, and transfer the error-aware
+    bound into the full odd functional.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -44,8 +49,8 @@
 - [x] Run corpus search; inspect actual Pillar VI and IX theorem bodies.
 - [x] Dependency-closed paper theorem with unconditional measured-defect formulation.
 - [x] Exact Lean theorem verified and wired into the BiScale umbrella.
-- [x] Dedicated knowledge ledger and truthful contribution accounting: five substantive results,
-  with 13, 19, 18, 12, and 15 public supporting theorems respectively.
+- [x] Dedicated knowledge ledger and truthful contribution accounting: seven substantive results,
+  with 13, 19, 18, 12, 15, 16, and 24 public supporting theorems respectively.
 - [x] Uncompensated transfer into the full secant energy, source-derived support factor retained.
 - [x] Actual signed plastic crossover receiver, including positive remainder, odd sine moment,
   and original origin coefficient; no inferred multiplier blindness.
@@ -53,6 +58,10 @@
   multiplier leakage law, and unconditional unboundedness relative to source energy.
 - [x] Centered source difference-Gram control replaces multiplier off-diagonal
   data in the full secant/plastic receiver; weighted energy minimizer is exact.
+- [x] Source Schur projection dominates every scalar-centered envelope, transfers
+  into the full receiver, and proves exact mean-centering optimality on source cliques.
+- [x] Arithmetic source difference packets coalesce into exact weighted collision
+  energy; doubled source zeros control multiplier leakage without inherited zeros.
 - [ ] Repository-wide lint clean: concurrent unrelated modules remain unwired (latest gate below).
 - [ ] Complete original 100-contribution objective.
 
@@ -507,7 +516,7 @@ coverage. No external novelty claim or numerical experiment is involved.
   expanded formal README; its content was preserved. Scratch API/axiom file and
   captured lint output removed after recording the audit; no owned Lean process remains.
 
-## Sixth candidate: source-orthogonal leakage envelope
+## Sixth verified result: source-orthogonal leakage envelope
 
 For the actual difference packet P=sum a_p F(.+d_p), set R=h_F(0),
 K=<F,P>=sum a_p h_F(d_p), G=||P||^2, mu=M/R and Q=||q_mu||^2.
@@ -529,7 +538,7 @@ with a=sqrt Q, b=sqrt H, x=z sqrt R, k=K/sqrt R proves
 U_perp<=E_c+sqrt(Q_c G). When R=0, M=K=0 gives equality.
 Hence the projected envelope improves every previously available scalar center,
 including signed source correlations. Substituting it in the uncompensated
-collar penalty should yield a stronger full secant/plastic lower bound.
+collar penalty yields a stronger full secant/plastic lower bound.
 
 On a source clique, each h_F(d_p)=0, so K=0 and every E_c=0. Therefore the
 projected envelope equals the previous envelope at mu, and mu already minimizes
@@ -538,7 +547,7 @@ F cannot supply a further clique gain. Away from a source clique the Schur
 subtraction removes a real packet cost and the envelope dominates every center.
 No strict improvement for every source, or full-grid coercivity, is claimed.
 
-Paper mechanism is dependency-closed; formalization pending. Corpus search
+Paper proof and exact formalization are dependency-closed. Corpus search
 `research "centered hyperbolic Schur projection difference packet" --module
 BiScaleUncertainty --any --per-module 2 --explore 0` returned 204 declarations
 in 26 modules. Hybrid search was partial (71.12s), with unfinished text/source
@@ -548,3 +557,161 @@ Cauchy--Schwarz mechanisms are reused, not counted as separate contributions;
 the contribution is the exact multiplier-envelope comparison, source-clique
 boundary and improved actual receiver. No external novelty claim.
 Support envelope, remaining residual Gram, and negative odd moment remain.
+
+### Verification of the sixth result
+
+- Actual-source final compile exited 0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/ProjectedHyperbolicGramControl.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/ProjectedHyperbolicGramControl.olean`.
+- All 16 public theorem axiom audits and mathlib API checks in
+  `/tmp/hml_project_api.lean` passed; only `propext`, `Classical.choice`, `Quot.sound`.
+- Verified source SHA256:
+  `27a0251e688b257952cca194ea612814c5c73f5b9e1e3a01349932f9411b0384`.
+  The imported fifth module still matches its recorded source hash.
+- Main results: `ProjectedHyperbolicGram.projectedDefectUpper_le_every_center`,
+  `sourceClique_centering_boundary`, `odd_secantEnergy_ge_projected`, and
+  `odd_plasticCrossover_ge_projected`. Main receiver has no analytic hypotheses;
+  the local clique boundary explicitly states the ordinary source-zero condition.
+- Finite-sum coercion and squared-source support proofs were made explicit after
+  initial elaboration errors. No heartbeat limit was raised and no statement weakened.
+- Umbrella import and both README entries added. Index refresh exited 0 and the
+  generated API contains every new public theorem. This is contribution 6/100,
+  with 93 public supporting theorem axiom audits across the six modules.
+- Latest `scripts/formal_tools.py lint --check-generated` exited 1 after a second
+  successful index refresh. Four concurrent unrelated modules were unreachable:
+  BiScale `CappedSupportComparison`, `RoughModulusGraphDecomposition`,
+  `RoughSobolevModulus`, and RHTower `FermiNymanDyadicFoldGeometry`. Generated
+  `LEAN_API.md`, `LEAN_GAPS.md`, and `LEAN_OVERVIEW.md` drifted again as concurrent
+  modules changed. Existing large-file warnings remain. No owned lifting module
+  was flagged; no unrelated source was changed to clear the global gate.
+- Source, ledger, master card and umbrella whitespace checks passed. A broad
+  shared README check reports an unrelated trailing blank line in the report copy;
+  concurrent content was preserved. API/axiom scratch and captured lint output
+  were removed. No owned Lean, index or lint process remains.
+- The exact source-clique boundary and strongest positive survivor are recorded in
+  `docs/drafts/pipeline/5-failed/source-line-projection-extra-clique-gain-2026-10-17.md`.
+  Mean centering is now exhausted for extra exact-clique gain; the remaining
+  difference-node Gram and weighted variance need substantive new control.
+  Full original goal remains active at 6/100.
+
+## Seventh verified result: arithmetic lag collision energy
+
+Take nodes t_i=i delta, 0<=i<=N, and real weights v_i. For each slot r=0,...,2N,
+let d_r=(r-N)delta and
+
+b_r = sum_(i,j distinct, N+j-i=r) v_i v_j / [2cosh(alpha d_r)].
+
+The original difference packet is exactly sum_r b_r F(.+d_r), and b_N=0.
+Its Gram energy is therefore
+
+G=R A+Z, A=sum_r b_r^2,
+Z=sum_(r!=s) b_r b_s h_F((s-r)delta).
+
+Equal integer index differences must be combined before squaring: replacing A by the sum
+of squares of individual pair coefficients discards their cross terms.
+At a positive lag k, b_(N+k) equals
+[sum_(i=0)^(N-k) v_i v_(i+k)]/[2cosh(alpha k delta)].
+No source assumption is needed for these identities. With source zeros at
+m delta for 1<=m<=2N, the existing arithmetic-clique theorem gives Z=0.
+The theorem uses the doubled range; it does not infer those zeros from the
+original clique range through N delta. For the odd source, E_mu=0 and K=<F,P>=0 under the larger
+zero range, hence |D|<=sqrt(V A), V=RW-M^2. This identifies an explicit
+weighted additive-collision cost for multiplier leakage.
+
+For arbitrary actual compact sources retain E_mu, K and Z. Substitute the
+exact expression R A+Z-K^2/R into the source Schur receiver and integrate over
+the existing disjoint collars. The resulting full secant/plastic theorem must
+remain unconditional; zero-range statements are local specializations, not
+assumed analytic inputs to the final construction. At delta=0, different integer
+slots can represent the same real displacement; the full cross-lag error retains
+those additional coincidences. If N>0, the doubled-range assumption then forces
+zero source energy. No nonzero-step or positive-energy assumption is added to the
+unconditional receiver. Support and negative odd moment remain.
+
+Corpus search `research "difference packet repeated lag arithmetic Gram hyperbolic"
+--module BiScaleUncertainty --any --per-module 2 --explore 0` found 348 declarations
+in 38 modules; hybrid partial58.45s, text/source retrieval unfinished, semantic
+coverage unmeasured. Read actual finite-train lag grouping, arithmetic clique,
+and packet Gram proofs. Their grouping/orthogonality mechanisms are reused;
+the multiplier collision law and actual receiver form this single contribution.
+
+Possible next question, not an established result: use the aperiodic weight
+correlations and hyperbolic denominator to bound A uniformly by a multiple of
+(sum v_i^2)^2 on dyadic chains, producing a multiplier frame bound from actual
+source variance. This requires a separate proof and corpus audit.
+
+### Verification of the seventh result
+
+- Final direct actual-source compilation exited 0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/ArithmeticMultiplierCollisionControl.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/ArithmeticMultiplierCollisionControl.olean`.
+- All 24 public theorem axiom audits and mathlib API checks passed in
+  `/tmp/hml_collision_api.lean`; only `propext`, `Classical.choice`, `Quot.sound`.
+- Source SHA256:
+  `ea5f7325683aa67f27d59ecaf8319b851f675324abc2a95cab2c3c87f46abaf8`.
+  Imported projected module still matches its prior verified source hash.
+- Main theorems: `ArithmeticMultiplierCollisions.differenceGram_eq_collision_add_error`,
+  `odd_defect_abs_le_variance_collision`, `odd_logGrid_defect_abs_le_variance_collision`,
+  `collisionDefectUpper_of_double_zeros`, and `odd_plasticCrossover_ge_collision`.
+  The full receiver is unconditional on actual compact input; grid specializations
+  explicitly state their source-domain conditions. No multiplier-zero hypothesis is added.
+- One finite-bijection proof and two integral rewrites needed explicit elaboration.
+  Final source has 377 lines, no warnings, no heartbeat changes or weakened statements.
+- Umbrella import and both README entries added. Index refresh exited 0; generated
+  API contains all new declarations. Contribution count 7/100, supporting theorem
+  axiom audits 117 in total. Full original goal remains active.
+- `scripts/formal_tools.py lint --check-generated` exited 1 on nine concurrent
+  unrelated modules unreachable from their umbrella: RHTower
+  `FermiNymanDyadicFoldGeometry`; BiScale `AnnularCorrelationTransport`,
+  `CappedCollarArrayComparison`, `CappedCollarCutoffComparison`,
+  `CappedSupportComparison`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds`,
+  `FullGridCappedCollarHierarchy`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis`,
+  and `SignedWeilFunctionalCoercivityAndRHBridge`. No owned lifting module was flagged;
+  no generated drift was reported in this snapshot. Existing large-file warnings remain.
+- Source/docs/umbrella whitespace checks passed. Owned API/axiom scratch and lint
+  capture were removed after recording results. All owned Lean, index and lint
+  handles completed; no full build, numerical experiment, commit or push was run.
+
+## Eighth candidate: uniform dyadic multiplier frame bound
+
+Let d=log2, alpha=1/2, W2=sum_(i=0)^N v_i^2. For positive lag k, finite
+Cauchy--Schwarz gives |sum_i v_i v_(i+k)|<=W2. Reflection equates positive
+and negative lag amplitudes, while the central amplitude is zero. Since
+[2cosh(k d/2)]^2>=exp(k d)=2^k, the exact collision formula gives
+
+A=2 sum_(k=1)^N b_(N+k)^2 <=2 W2^2 sum_(k=1)^N 2^(-k)<=2 W2^2.
+
+Thus doubled source zeros imply |D|<=sqrt(2V) W2 and
+G_S<= [R_S+sqrt(2V)] W2, uniformly in N and signed weights. This is an actual
+multiplier frame bound supplied by original source variance, not inherited zeros.
+
+For arbitrary actual odd F retain the previous E_mu and cross-lag error Z.
+Writing Q=||q_mu||^2 and Q R=V, the exact centered source bound gives
+D<=E_mu+sqrt(2V)W2+sqrt(Q max(Z,0)). Hence
+G_S<=[R_S+sqrt(2V)]W2+E_mu+sqrt(Q max(Z,0))=:U.
+The original jump collar is bounded below by
+R_S sum_i v_i cosh((i d-y)/2)-sqrt(R_S max(U,0)).
+Continuity and existing disjoint-collar tiling transfer this bound into
+full J_sech and P(F), with the positive remainder and negative odd moment retained.
+No source-zero or unknown analytic input is assumed by that final receiver.
+
+For completeness, Q(RA+Z)=VA+QZ<=2V W2^2+Q max(Z,0). Both terms on the
+right are nonnegative. Squaring sqrt(2V)W2+sqrt(Q max(Z,0)) adds a nonnegative
+cross term and proves the claimed root estimate. The signed E_mu is retained;
+max(U,0) preserves a real continuous receiver for every compact input. Actual
+odd sources satisfy G_S<=U, so this envelope bounds their actual Gram energy.
+All coefficient functions are finite sums of continuous transfer weights;
+sqrt and max preserve continuity. Integrating the pointwise comparison against
+the existing full-Gram collar theorem proves the unconditional secant receiver.
+The exact plastic decomposition then gives the displayed plastic receiver.
+On doubled source zeros, both E_mu and Z vanish and the frame receiver reduces
+exactly to penalty sqrt(R_S (R_S+sqrt(2V)) W2). Zero-energy sources and N=0
+need no exceptional definition. This uniform bound can be weaker than exact
+collision/Schur control; no pointwise domination of that earlier receiver is claimed.
+
+Corpus search `research "hyperbolic collision frame bound geometric aperiodic correlation"
+--module BiScaleUncertainty --any --per-module 2 --explore 0`: 460 declarations,
+71 modules, hybrid partial67.40s; text/source retrieval unfinished and semantic
+coverage unmeasured. Existing profile-stable dyadic bounds retain an actual
+within-chain operator error; they do not prove this source-variance frame radius.
+Finite Cauchy--Schwarz and geometric summation are supporting mechanisms.
+Core formalization compiled; final source and axiom audits pending.
+No literature-priority or optimal-constant claim.

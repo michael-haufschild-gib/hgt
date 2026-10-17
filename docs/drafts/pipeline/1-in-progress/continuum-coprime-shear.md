@@ -21,8 +21,9 @@ The requested `update_plan` tool is unavailable; this card records the plan.
 2. Prove exact continuum energy/remainder identity before formalization.
 3. Formalize logarithmic shear and finite-cell energy bridge without unproved
    analytic inputs. Extend explicitly constructed continuous primitives to L2 velocities.
-4. Compact-source coercivity and rigidity are proved. Construct the rough
-   modulus state, extend admission beyond compact support, and identify closed-graph APIs.
+4. Compact-source coercivity, rigidity and the actual rough modulus are proved.
+   Nodal mass coercivity and strict modulus contraction are proved. Construct Markov clamping,
+   extend admission beyond compact support, and identify closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -66,15 +67,21 @@ traces or a constructed interpolant.
   two leaves, 32 public theorems, all 40 public declarations audited.
 - [x] Compact-source variance coercivity and zero-energy rigidity across disconnected
   source regions; two leaves, 21 public theorems, all 27 public declarations audited.
+- [x] Actual rough modulus realization with unchanged additive energy, exact nodal
+  jump loss and path-slack gain; two leaves, 25 theorems, all 27 public declarations audited.
+- [x] Quantitative nodal mass coercivity and exact strict modulus-contraction classifier;
+  two leaves, 22 theorems, all 26 public declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **5 / 100**. Formalized packages:
+Certified count: **7 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
 `../3-formalized/compact-source-graph-admission.md`, and
-`../3-formalized/compact-source-variance-coercivity.md`.
+`../3-formalized/compact-source-variance-coercivity.md`, and
+`../3-formalized/rough-sobolev-modulus-nodal-defect.md`, and
+`../3-formalized/compact-nodal-mass-coercivity.md`.
 
 ## Current exact result and next frontier
 
@@ -167,12 +174,43 @@ energy-admission premise is assumed.
 Both final leaf checks and all 27 public-declaration axiom audits passed.
 Imports and indexes are current. Global lint reports seven unrelated concurrent
 missing imports, listed in the fact ledger; neither new leaf has a lint error.
-This turn is **progress**; goal remains active at **5/100**.
+Package 5 was **progress**.
+
+## Certified package 6: actual rough modulus and exact nodal slack
+
+Constructed the L2 velocity of |c+primitive q|, proving its zero-level derivative
+law, sign formula and pointwise primitive identity. Every local physical and
+weighted logarithmic Dirichlet energy is unchanged. The full constructed mixed
+measure satisfies `J(q)=J(modulus q c)+N(q,c)` and
+`slackEnergy(modulus q c)=slackEnergy(q)+N(q,c)`, even when total energies are
+infinite. Every individual path budget and total congestion are unchanged.
+Compact sources give finite real energy differences and preserve source mass.
+
+Both final serial direct leaf checks passed without diagnostics. All 27 public
+declarations use only standard Lean axioms; seven main signatures were inspected.
+Imports, all 25 theorem names in generated API, and whitespace check passed.
+Global lint reports four unrelated concurrent missing imports, listed in the
+fact ledger; no error concerns either new leaf. All owned processes are terminal.
+This turn is **progress**; goal remains active at **6/100**.
+
+## Certified package 7: nodal mass and strict modulus contraction
+
+Proved `Vψ(f)−Vψ(|f|)=4PN≤sinh(2B)[J(q)−J(modulus q c)]` for actual rough
+states and the full compact mixture. Modulus strictly lowers graph energy iff
+both signs occur where ψ is nonzero. Equality needs only one sign, whereas
+zero jump energy needs constancy. No extra analytic admission premise.
+
+Both direct leaf checks passed without diagnostics; all 26 public declarations
+have only standard axioms and seven main signatures were checked. Imports,
+field maps, all 22 theorem names in the generated API and whitespace check pass.
+Global lint reports five unrelated concurrent missing imports, recorded in the
+fact ledger. All owned processes are terminal. This turn is **progress**;
+certified count **7/100**, goal active.
 
 ## Next candidate
 
-`../0-backlog/rough-sobolev-modulus-nodal-defect.md`: construct the actual L2
-velocity of |f|, prove its primitive identity and local Dirichlet-energy equality,
-then prove exact mixed-graph decomposition `J(f)=J(|f|)+nodalEnergy(f)`.
-Existing nodal algebra does not construct this rough-state domain realization.
-The zero-level-set derivative issue must be proved, not assumed. Not yet counted.
+`../0-backlog/rough-markov-clamp-domain.md`: construct the [0,1] clamp in the
+actual L² primitive domain, identify exactly which derivative energy it removes,
+and prove admitted-form contraction. The corpus query found modulus and
+admission building blocks but no matching clamp realization; incomplete freshness
+and semantic coverage are recorded in the card. Unproved and not counted.

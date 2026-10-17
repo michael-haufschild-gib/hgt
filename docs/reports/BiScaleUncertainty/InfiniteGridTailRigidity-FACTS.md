@@ -3,7 +3,7 @@
 ## Scope and counting
 
 Dedicated ledger for infinite-grid tail rigidity beyond Trap 5. Independent field research.
-Target: 100 significant mathematical packages. Certified packages in this ledger: **6**.
+Target: 100 significant mathematical packages. Certified packages in this ledger: **8**.
 Existing finite-grid results, standard parent inequalities, and helper lemmas do not count anew.
 
 ## Established inputs
@@ -215,6 +215,70 @@ Logs: `/tmp/infinite-grid-uniform-{local,train,axioms,index,lint}.log`.
 Global lint failed only on concurrent foreign `ProjectedHyperbolicGramControl` missing
 umbrella reachability. Neither new module has a lint error. Count the connected uniform law once.
 
+## Certified package 7: arbitrary-shape uniform continuity and tail decay
+
+For any compact C² real source, write R=h(0), J=Levy energy, and c=exp(-1/2).
+For 0<|x-y|<=1,
+`c(-log|x-y|)(h(x)-h(y))² <= 8 R J`.
+For every T>=0, without any grid assumption,
+`c T(h(T)-h(log ceil(exp T)))² <= 8 R J`.
+Krein's increment inequality transports the certified origin-energy modulus to arbitrary
+locations. The ceiling-lag estimate gives the sampling-error law, including zero lag.
+
+If every logarithmic-grid sample n>=2 vanishes, then for EVERY real T,
+`c |T| h(T)² <= 8 R J`. For R>0 this becomes
+`c |T| (h(T)/R)² <= 8 E`. Thus the arbitrary-source normalized tail decays as sqrt(E/|T|).
+No common seed, support radius, derivative bound, separation, or sign interval is required.
+
+Both uniform quantifiers are formalized. For K>=0 and epsilon>0, ALL positive-mass
+compact C² sources with E<=K share continuity radius
+`delta=exp(-(1+8K/(c epsilon²)))`. Those also satisfying the full grid share tail radius
+`A=1+8K/(c epsilon²)`. These control all pairs of locations and both tail directions.
+For 0<A<=B, `c A integral_A^B h² <= 8(B-A)R J`; hence the logarithmic dyadic window
+integral is at most `8 exp(1/2) log 2 R J/log N`, for N>=2.
+
+Certificate: `InfiniteGridUniformTail.lean`, ten public theorems plus one private normalization
+helper. Leaf passed without diagnostics; all ten endpoint dependency audits contain only
+`propext`, `Classical.choice`, `Quot.sound`. Import and every generated API entry verified.
+Paper: `InfiniteGridUniformTail.md`; formalized card:
+`infinite-grid-uniform-tail-2026-10-17.md`. Logs:
+`/tmp/infinite-grid-uniform-tail-{leaf,axioms,index,lint}.log`.
+Global lint failed only on four concurrent foreign modules missing umbrella reachability:
+`RHTower.FermiNymanDyadicFoldGeometry`, `BiScaleUncertainty.CappedCollarArrayComparison`,
+`BiScaleUncertainty.CappedCollarCutoffComparison`, `BiScaleUncertainty.CappedSupportComparison`.
+No owned lint error. Count this connected package once, not per endpoint.
+
+## Certified package 8: compact correlation relaxation with preserved energy ceiling
+
+For K>=0, `InfiniteGridEnergySource K` is the actual compact C² source class with positive
+mass, normalized energy at most K, and all logarithmic-grid zeros. Its normalized
+correlations have compact closure in the GLOBAL supremum norm (proved via isometric
+complexification and the existing general uniform-tail compactness theorem).
+Every source sequence has a strictly increasing subsequence with a globally uniform
+real limit H. The capstone `exists_infiniteGrid_finite_energy_limit` retains:
+continuity, H(0)=1, evenness, |H|<=1, every logarithmic-grid zero, vanishing at both
+infinities, and every finite real Gram inequality sum_i,j c_i c_j H(t_i-t_j)>=0.
+
+Define `correlationLevyEnergy H` as the extended integral of `ofReal((1-H(x))*w(x))`
+over x>0. It agrees exactly with the actual source normalized energy. Fatou gives
+lower semicontinuity under measurable pointwise convergence. Thus every such source
+limit has extended energy <=K; its ordinary density `(1-H)w` is nonnegative,
+measurable, genuinely integrable, and has real integral <=K.
+This is an energy inequality, not equality. No compact-source or L²-source realization
+of the limit, convexity of the source closure, or closedness of polar moments is assumed.
+
+Certificates: `InfiniteGridCorrelationCompactness.lean` (9 public theorems) and
+`InfiniteGridLimitEnergy.lean` (8 public theorems, one private normalization identity).
+Both leaves passed without diagnostics; all seventeen dependency audits contain only
+`propext`, `Classical.choice`, `Quot.sound`. Both imports and every API entry verified.
+Paper: `InfiniteGridCorrelationCompactness.md`; formalized card:
+`infinite-grid-correlation-compactness-2026-10-17.md`.
+Logs: `/tmp/infinite-grid-{compactness,limit-energy}-leaf.log` and
+`/tmp/infinite-grid-compactness-{axioms,index,lint}.log`.
+Global lint failed only on concurrent foreign unwired `RHTower.FermiNymanDyadicFoldGeometry`,
+`BiScaleUncertainty.DyadicMultiplierFrameBound`, `BiScaleUncertainty.SignedPrimePolarCoupling`.
+Neither owned leaf has a lint error. This connected compactness/energy result counts once.
+
 ## Boundaries and next conjectures
 
 - A shrinking mesh alone gives no uniform modulus for a varying family of sources.
@@ -222,8 +286,8 @@ umbrella reachability. Neither new module has a lint error. Count the connected 
 - The general polar class is larger than the two-copy construction.
 - Lean-certified: bounded normalized Levy energy rules out separated-copy escape
   uniformly for arbitrary changing sources once `T>D+1`.
-- Open: tail rigidity for arbitrary source shapes, general polar tails, optimal linear coefficient,
-  and whether infinite-grid polar/nonpolar infima differ.
+- Arbitrary-shape unweighted uniform tail decay is now certified. Open: general polar tails,
+  optimal decay rates and energy coefficients, and whether infinite-grid polar/nonpolar infima differ.
 - External parent audit includes Krein inequalities; no claim of exhaustive literature novelty.
 - Adjacent concurrent module `AsymptoticTailCoercivityAndNyquistTrap5Closure.lean` has polar-mass
   bounds with a quadratic-collar constant `K`; its derivative-free inequality retains an `N`
@@ -231,21 +295,24 @@ umbrella reachability. Neither new module has a lint error. Count the connected 
 
 ## Next exact conjecture
 
-For arbitrary compact C² sources with every logarithmic-grid zero, conjecture the raw bound
-`exp(-1/2) T h_f(T)^2 <= 8 h_f(0) J(f)` for `T>=2`, without any packet decomposition or
-support-separation hypothesis. This would give uniform normalized tail decay of order
-`sqrt(E/T)` for bounded-energy families with changing source shapes and supports.
+Determine whether uniform convergence can lose a strictly positive amount of source
+energy, and classify the exact obstruction. Candidate theorem: for uniformly convergent
+normalized all-grid correlations H_n->H with bounded energy, E_n->J(H) iff the origin
+integrals `integral_(0,a] (1-H_n)w` tend to zero uniformly in n as a decreases to zero.
+Away from zero, uniform convergence should control the energy difference by
+`||H_n-H||_infinity integral_a^infinity w`; no energy defect can remain away from the origin.
 
-Candidate mechanism: Krein's inequality compares `h_f(T)` with the zero at `ceil(exp T)`;
-the squared difference is at most `2R` times the origin increment at its exponentially short
-lag. The certified ceiling-lag energy bound controls that increment. A stronger global
-logarithmic continuity modulus and a dyadic-window L² bound decaying as `1/log N` may follow.
-These conclusions remain unproved and uncounted. Such slow unweighted decay alone would not
-control the exponentially weighted polar moment; do not claim full polar-tail tightness.
+Potential actual-source counterexample: combine a fixed smooth seed and a vanishing-mass
+compressed bump with disjoint source supports inside one interval shorter than log 2.
+The complete grid is then automatic. Compression at scale L with mass about 1/log L
+could retain nonzero energy while its normalized correlation vanishes uniformly. This
+requires proving the sharp fixed-seed asymptotic E(compressed)=log L+O(1), controlling
+cross terms, and constructing all source parameters. No strict-loss example is claimed yet.
+The criterion and counterexample are unproved and uncounted; audit both before implementation.
 
-Search: `/tmp/infinite-grid-general-tail-search.txt`, useful source-only hits, older-generation
-coverage snapshot, semantic coverage unmeasured. Exact APIs:
-`autocorr_krein_increment_sq_le`, `autocorr_logarithmicCeilLag_energy_bound`.
-The existing `integral_autocorr_sq_dyadic_window_le_biScaleLevyEnergy` gives `2R J` with no
-decay in `N`; the quadratic-collar theorem uses an additional regularity constant.
-`bounded_levy_width_rigidity` assumes a nonpositive interval and is a different statement.
+Search `/tmp/infinite-grid-energy-defect-search.txt` was partial with no useful hits;
+broadened lexical search `/tmp/infinite-grid-energy-defect-lexical.txt` found the existing
+coefficient-one compression upper bound and local correlation energy stability.
+The recent `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean` was also inspected:
+its global error retains `R/(2 eta) integral rho²`; the polar-cell cost is `R/(2 eta n)`.
+These are not a uniform global polar-tail closedness result. Continue that question separately.

@@ -20,6 +20,10 @@ import GaloisForLFunctions.BiScaleUncertainty.PairedCollarCutoffStability
 import GaloisForLFunctions.BiScaleUncertainty.CappedBlockSupport
 import GaloisForLFunctions.BiScaleUncertainty.CappedCosetSphereDuality
 import GaloisForLFunctions.BiScaleUncertainty.FullGridCappedCollarEnergy
+import GaloisForLFunctions.BiScaleUncertainty.CappedSupportComparison
+import GaloisForLFunctions.BiScaleUncertainty.CappedCollarArrayComparison
+import GaloisForLFunctions.BiScaleUncertainty.CappedCollarCutoffComparison
+import GaloisForLFunctions.BiScaleUncertainty.FullGridCappedCollarHierarchy
 import GaloisForLFunctions.BiScaleUncertainty.MultiChainToeplitzGramCoupling
 import GaloisForLFunctions.BiScaleUncertainty.TriangularGramSineBound
 import GaloisForLFunctions.BiScaleUncertainty.SynchronizedCosetSineLeverage
@@ -31,6 +35,9 @@ import GaloisForLFunctions.BiScaleUncertainty.HyperbolicJumpEnergyTransfer
 import GaloisForLFunctions.BiScaleUncertainty.PlasticCrossoverGramReceiver
 import GaloisForLFunctions.BiScaleUncertainty.OddMultiplierLeakageFamily
 import GaloisForLFunctions.BiScaleUncertainty.CenteredHyperbolicGramControl
+import GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGramControl
+import GaloisForLFunctions.BiScaleUncertainty.ArithmeticMultiplierCollisionControl
+import GaloisForLFunctions.BiScaleUncertainty.DyadicMultiplierFrameBound
 import GaloisForLFunctions.BiScaleUncertainty.DisjointCollarCliqueDivergenceAndTuransProblem
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSpectralEnvelopeRealization
 import GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization
@@ -50,6 +57,9 @@ import GaloisForLFunctions.BiScaleUncertainty.FiniteTrainActiveLags
 import GaloisForLFunctions.BiScaleUncertainty.FiniteTrainGridClassification
 import GaloisForLFunctions.BiScaleUncertainty.LocalCorrelationEnergyStability
 import GaloisForLFunctions.BiScaleUncertainty.FiniteTrainUniformEnergy
+import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridUniformTail
+import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridCorrelationCompactness
+import GaloisForLFunctions.BiScaleUncertainty.InfiniteGridLimitEnergy
 import GaloisForLFunctions.BiScaleUncertainty.FiniteMomentEnergyInvariance
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSourceEnergyScalarization
 import GaloisForLFunctions.BiScaleUncertainty.CliqueSphereDualityAndExtremalTheory
@@ -67,12 +77,21 @@ import GaloisForLFunctions.BiScaleUncertainty.CompactSourceResistanceMass
 import GaloisForLFunctions.BiScaleUncertainty.CompactSourceGraphAdmission
 import GaloisForLFunctions.BiScaleUncertainty.CompactSourcePairVariance
 import GaloisForLFunctions.BiScaleUncertainty.CompactSourceGraphCoercivity
+import GaloisForLFunctions.BiScaleUncertainty.RoughSobolevModulus
+import GaloisForLFunctions.BiScaleUncertainty.RoughModulusGraphDecomposition
+import GaloisForLFunctions.BiScaleUncertainty.CompactSourceNodalVariance
+import GaloisForLFunctions.BiScaleUncertainty.CompactNodalMassCoercivity
 import GaloisForLFunctions.BiScaleUncertainty.MultiCosetGramPackingAndNyquistDensity
 import GaloisForLFunctions.BiScaleUncertainty.ProducerConsumerDualityAndNymanBeurlingBridge
 import GaloisForLFunctions.BiScaleUncertainty.AsymptoticTailCoercivityAndNyquistTrap5Closure
 import GaloisForLFunctions.BiScaleUncertainty.SignedKreinCollarAndPrimeDeficitTransfer
 import GaloisForLFunctions.BiScaleUncertainty.KreinKantorovichMeasureTransportAndPrimePolarPairing
+import GaloisForLFunctions.BiScaleUncertainty.AnnularCorrelationTransport
+import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarCoupling
 import GaloisForLFunctions.BiScaleUncertainty.HyperbolicMultiplierIncrementAndOddSignCoercivity
+import GaloisForLFunctions.BiScaleUncertainty.EulerMaclaurinLevyQuadratureAndSFreeCellBounds
+import GaloisForLFunctions.BiScaleUncertainty.MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis
+import GaloisForLFunctions.BiScaleUncertainty.SignedWeilFunctionalCoercivityAndRHBridge
 
 /-!
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
@@ -205,4 +224,28 @@ structural traps, and the four-layer / sixteen-pillar architecture of the field.
     Local normalized correlations determine energy up to a fixed integrable-tail error.
     Every compatible finite train has actual smooth all-grid realizations with matching-order
     logarithmic cost in its minimum active grid distance, uniformly in coefficients and packet count.
+30. `GaloisForLFunctions.BiScaleUncertainty.InfiniteGridUniformTail`:
+    Bounded normalized Lévy energy gives a common logarithmic continuity modulus for arbitrary
+    sources. The full logarithmic grid gives uniform two-sided tail decay and logarithmically
+    decaying window integrals, without a copy decomposition or a derivative bound.
+31. `GaloisForLFunctions.BiScaleUncertainty.EulerMaclaurinLevyQuadratureAndSFreeCellBounds`:
+    Pillar XVII (Layer V): Everywhere-continuous $S(f)$-free Euler–Maclaurin cell quadrature bounds,
+    origin-singularity absorption on logarithmic Nyquist cells `[log n, log(n+1)]`, global dyadic-window
+    quadrature bounds controlled by a single copy of `biScaleLevyEnergy`, and unconditional polar
+    quadrature bounds on `RealEvenPolarTestFn`.
+32. `GaloisForLFunctions.BiScaleUncertainty.MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis`:
+    Pillar XVIII (Layer V): Strict antitonicity of `archLevySinhWeight` on `(0, ∞)`, disjoint
+    origin-plus-tail partition `Ioc 0 Δ₀ ∪ Ioi Δ₀ = Ioi 0` of `biScaleLevyEnergy`, and unconditional
+    global dyadic Nyquist signed coercivity across `[log N, log(2N)]`.
+33. `GaloisForLFunctions.BiScaleUncertainty.SignedWeilFunctionalCoercivityAndRHBridge`:
+    Pillar XIX (Layer V): Strict positivity of `dyadicNyquistCoerciveConstant (M + 2)`, unconditional
+    single-node and dyadic-window signed Weil functional lower bounds on `RealEvenPolarTestFn` and
+    `RealSmoothEvenPolarTestFn`, and unconditional hyperbolic multiplier (`coshMultiplier` /
+    `sinhMultiplier`) dyadic Nyquist signed coercivity.
+34. `GaloisForLFunctions.BiScaleUncertainty.InfiniteGridCorrelationCompactness` and
+    `GaloisForLFunctions.BiScaleUncertainty.InfiniteGridLimitEnergy`:
+    Compact closure of bounded-energy normalized infinite-grid correlations in the global
+    supremum norm. Subsequence limits retain normalization, evenness, every grid zero,
+    finite Gram positivity, vanishing at infinity, and an integrable Lévy density below
+    the original energy ceiling, without assuming a source representation for the limit.
 -/
