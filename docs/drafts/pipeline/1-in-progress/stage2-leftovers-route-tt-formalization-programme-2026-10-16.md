@@ -69,3 +69,11 @@ Not proven theorems on the card (no formalization obligation, recorded as such):
 "structural laws for the PBAP lane" addendum (marked heuristic); L4, L8, L9 (named heuristic
 obstructions); L11 index law and L12 §1 first clause (paper with an explicitly stated unproved
 C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence (open) in L14.4.
+- 2026-10-17 card 4 progress: T4 DONE (`TranslationAveragedDensityDepthBlindness`:
+  `integral_translationAveraged_depth_blind`, both shift directions). `ArchimedeanAnomalyConstantLaws`:
+  L5(i) `XiC_pole_points`; L14.5 `gammaBracket_zero_eq`, `exp_abs_gammaBracket_zero`; L14.6
+  `gammaBracket_zero_le`/`gammaBracket_mono`; L3 `weilArchRe_eq_autocorrelation_form`,
+  `exp_half_div_sinh_eq`, `hasSum_archLevyDensity`, `completelyMonotone_archLevyDensity`,
+  `plancherelDensity_nonneg`; L14.1 `weilArch_sub_pole_ge`, `pole_lt_of_violation`,
+  `weilArchRe_nonneg_of_pole_heavy` (exact constant `|A(0)| = γ+π/2+log 8π`). Remaining in L3: the
+  anomaly window `A < 0 ⟺ |t| < t₀`, `t₀ > 2π` (needs `Re ψ(¼+iπ) < log π`, margin ≈ 1.6e-3).

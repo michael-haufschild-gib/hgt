@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 2 / 100.
+Status: ACTIVE. Count verified for this goal: 3 / 100.
 
 ## User requirements
 
@@ -34,7 +34,7 @@ novelty is not claimed: user forbids external novelty research.
    corpus, and exact terminal divisor-fibre geometry. Paper proof complete;
    three Lean leaves compile cleanly; all eight public declarations have
    only standard axioms; all three imports are wired. Counted once.
-   Global lint remains red on unrelated concurrent unwired modules and
+   At that audit, global lint was red on unrelated concurrent unwired modules and
    generated-file drift; the card records the exact failing modules.
 
 2. Unrestricted compact polar realization of finite nonreal Xi orbit inertia.
@@ -45,12 +45,25 @@ novelty is not claimed: user forbids external novelty research.
    C2 polar-zero test space with a common support interval and strict
    L2-relative negative margin, without separation or visibility premises.
    Five leaves compile cleanly; all seven public declarations use only
-   standard axioms; all five imports are wired. Counted once. Latest global
-   lint flags six unrelated unwired modules, listed in the card.
+   standard axioms; all five imports are wired. Counted once. Its global lint
+   audit flagged six unrelated unwired modules, listed in the card.
+
+3. Positive actual-prime clock synthesis in the complete arithmetic source
+   graph. Card: `../3-formalized/positive-clock-graph-synthesis-2026-10-17.md`.
+   Inputs: literal Abel-profile BV primitive, compact-clock separation,
+   full CHMD graph/core and positive Bochner regularization, and actual-prime
+   Banach synthesis. Every graph target admits a canonical cutoff fixed
+   before the common N, then distinct actual primes at every sufficiently
+   large N with literal weights, arbitrary graph accuracy, and arbitrarily
+   small squared graph diagonal cost. No source-admission or approximation
+   premise remains. Sixteen new leaves and one necessary import-collision
+   repair compile cleanly; all 19 audited declarations use standard axioms.
+   All imports wired once; index and formal lint with generated-file check
+   pass. Counted once, including density and arithmetic realization.
 
 ## Working plan
 
-1. Contributions 1 and 2 complete. Recheck significance and exact scope before
+1. Contributions 1–3 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -62,17 +75,13 @@ novelty is not claimed: user forbids external novelty research.
 ## Uncounted next lead
 
 Primary next candidate:
-`docs/drafts/pipeline/2-fully-proven/positive-clock-graph-synthesis-2026-10-17.md`.
-A complete paper argument now uses BV admission and positive smoothing to
-upgrade late positive clock density to the complete CHMD graph. It avoids the
-earlier distribution-dual/H1 detour. The actual integrable velocity supplies
-global variation of the literal Abel profile. Uniform convergence with a
-common variation bound then controls the full graph norm, retaining every
-prime jump. Positive regularization preserves the closed clock cone; removing
-regularization reaches compact graph targets. Existing Banach-valued prime
-capacity supplies distinct-prime realization only after this topology gap is
-closed. Formalization is in progress and remains uncounted. Supporting bounds
-and the prime-realization corollary will count together as one contribution.
+`docs/drafts/pipeline/2-fully-proven/prime-log-maximal-laplace-domain-2026-10-17.md`.
+Identify the closed critical prime-log Laplace synthesis with its maximal
+literal L2 domain, using prime damping and a weighted half-line translation
+semigroup. The intended result removes a hidden endpoint/core condition and
+admits every damped prime-l2 source. Whole-corpus leads and the attack are
+recorded; source applicability, novelty/significance and the complete paper
+proof remain open. No Lean code or counted result exists for this candidate.
 
 ## Environment
 

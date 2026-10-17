@@ -1,8 +1,8 @@
 # Positive actual-prime clock synthesis in the arithmetic jump graph
 
 - **ID:** positive-clock-graph-synthesis-2026-10-17
-- **Stage:** 2-fully-proven — formalization in progress
-- **Type:** THEOREM — paper proof recorded; Lean work pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** whole local Lean corpus; continuation of the 100-theorem goal
 - **Statement:** Upgrade positive clock control from uniform approximation to
   approximation in the original complete CHMD jump graph, then realize it by
@@ -10,17 +10,17 @@
 
 ## Goal
 
-Resolve actual source-domain admission and energy convergence for prime-clock
-control. Uniform approximation alone supplies neither. This remains uncounted
-until the exact source theorem and actual-prime realization pass Lean and
-dependency audits. The BV estimate below is supporting work, not a separately
-counted contribution.
+Actual source-domain admission and energy convergence for prime-clock control
+are proved. Uniform approximation alone supplied neither. The exact source
+theorem and actual-prime realization pass Lean and dependency audits. Counted
+once as contribution 3 of the 100-theorem goal; supporting bounds, generic
+transfer lemmas and corollaries are not separate contributions.
 
 ## Gates
 
 - [x] 0 → 1: source-pure candidate, explicit obstruction, attack mechanism.
 - [x] 1 → 2: complete paper proof below; local source comparison completed.
-- [ ] 2 → 3: exact Lean theorem, targeted builds, axioms and wiring.
+- [x] 2 → 3: exact Lean theorem, targeted builds, axioms and wiring.
 - [ ] 3 → 4: standalone publication and external novelty audit if authorized.
 
 ## Source evidence
@@ -248,3 +248,68 @@ continuous full signed Weil form, including both polar moments.
   made private; its two public consumers and the combined final module are
   included in verification. No mathematical statement is strengthened by
   this namespace repair, and it contributes nothing to the theorem count.
+
+## Final theorem and verification
+
+Primary declaration:
+`RHTower.exists_cutoff_eventually_criticalPrimeGraphClock_realization`, in
+`formal/GaloisForLFunctions/RHTower/MobiusDivisorPrimeGraphClockRealization.lean`.
+For every q in the original real SourceGraph, T in R, and epsilon > 0, there
+exists a canonical compact cutoff index k, fixed before N, such that for all
+sufficiently large N there is one finite set S of distinct actual primes with
+
+- p > sqrt(N) and log(N/p) > T for every p in S;
+- graph norm of `sum_(p in S) (sqrt(N)/p) q_(log(N/p)) - q` less than epsilon;
+- sum of squared graph norms of these same atoms less than epsilon.
+
+Here each q_t is the literal cutoff complete Abel profile, with cutoff k.
+The statement has no graph-admission, positive-approximation, RH, zero-location,
+or arithmetic-cancellation premise. The cutoff may depend on q and epsilon;
+for a fixed compact target and a fixed cutoff fixing it, the stronger compact
+realization theorem retains that same cutoff for all positive tolerances.
+
+The substantive density theorem is
+`RHTower.criticalClockGraph_positiveCone_contains_bvTarget`: every continuous
+BV target v with chi*v=v belongs to the closed positive cone of clocks t>T
+in the full original graph norm. Full-prime and archimedean jumps are retained.
+The continuous complete signed Weil form, including both polar observations,
+is therefore controlled by this approximation. No exact polar-zero claim for
+the individual finite prime approximants is made.
+
+All 16 new leaves and the one repaired dependency passed standalone
+`lake --old env lean -j 1 -o ...` checks with empty final logs. Each compiled
+artifact was newer than its exact source. A separate `/tmp` audit printed
+axioms of 17 supporting/primary declarations and both public consumers of the
+private helper repair: all 19 use only `propext`, `Classical.choice`, and
+`Quot.sound`. The two main signatures were printed and checked explicitly.
+No full build, heartbeat increase, numerical experiment, or new axiom was used.
+
+All 16 new imports occur exactly once in the appropriate HTGeometry/RHTower
+umbrellas. `scripts/formal_tools.py index` exited 0 and refreshed only the
+formal API/gaps/overview and search index. `scripts/formal_tools.py lint
+--check-generated` exited 0: `formal lint passed`; its remaining warnings
+concern existing large files. The frontier map was not modified. After
+recording and rechecking all 17 source hashes, all 29 owned temporary build,
+search, name-check and audit files for this contribution were removed.
+
+Final source SHA-256 values, paths relative to `formal/GaloisForLFunctions/`:
+
+```text
+HTGeometry/BoundedVariationUniformJump.lean 1a1151a2b2d9076a755159b124572acebd13e4d06cfe3abe6c903d1858992ff9
+HTGeometry/BoundedVariationNormAlgebra.lean e252394b278c6bde036b017e3f66a91d8ee0a53ca02671378a267a985095cf5c
+HTGeometry/BoundedVariationPrimitive.lean ffaaa36538c9b073b4bd48b04233740c5257f31a35633d98393e196111ffa045
+HTGeometry/ClosedConeBochnerIntegral.lean 695c497ec711ebfa634b6244ba65a495aff7c9901b5412913470a4179cc4c44d
+HTGeometry/ContinuousKernelBochnerControl.lean 427774cb7f0dabbbbdf75edab3c8f3caa934503086c232330a63913aa55eadd0
+HTGeometry/CompactIntervalConvolution.lean 5a4f8cb1a3c4f4a3badfc54dc8ff79adf4587599a332b03ea3aae47027ce2e03
+RHTower/CHMDBVUniformGraph.lean 3e3d90d8a98b38a35d64950641e43ccaa06e13d2d0067cd1690a9d28ad4a2060
+RHTower/CHMDBVUniformConvergence.lean 90d4476abc0b417bee2043da2186c54c971673f50a3aa6ef98fe1ecb80ed349e
+RHTower/CHMDBoundedContinuousSource.lean 64b5b2f73a7f137253b0a6f2411cd10247d5d8709805bff6e75d4db2d1619463
+RHTower/CHMDCompactBVTranslations.lean 19b77e5f823d4708e780ce66737e4f6831485f260c65b1de7eea33ca08fc9b19
+RHTower/CHMDCompactBVKernel.lean c3209527e4eedcfa57619a5b86d036317d9aec8896aa48bc2cba7826403bfd8e
+RHTower/MobiusDivisorCriticalBVProfile.lean f65714a2df837f3cdf31545e44530b6d5c46347b30e7d4d2293c666c19529621
+RHTower/MobiusDivisorClockGraphSource.lean 9444988dac2e18b592406c0f14b4b6e88303deae1e21cb603ed7d069d02c1acc
+RHTower/MobiusDivisorClockGraphCone.lean f69d01dd66ae5928472c10c48a757bd2b7729e31cdf45fd90ffcc1f26ae16630
+RHTower/PrimePositiveClockRealization.lean b747011e01ff22c6bf016a119a71335e28de89bf96fb209303d059f0012c66c8
+RHTower/MobiusDivisorPrimeGraphClockRealization.lean 2c6e74c482fecde319bb68cd5bc0ad8dedd8f351a61f2c7bea3e27d88e0d9521
+RHTower/PrimeSquareMobiusComplementaryRecord.lean e42e32be2ba7b8123065a79e0b093774f6a4149c7b91c63a990f1f6815c85be5
+```

@@ -267,6 +267,24 @@ theorem sourceEnergy_eq_levy_abs_add_bonus_add_primes (v : ℝ → ℝ) (hv : Co
   funext n
   exact neg_integral_phiDoobPrimeCross_eq_bonus_of_window v hv.continuous hvc hodd hpos hsupp hL n
 
+/-- **The two-leg sign law on the one-signed odd cone, for every support.** The arithmetic Doob
+energy is the Lévy form of the even profile `Θ|v|`, plus the archimedean cross-sign bonus, plus the
+series of prime bonuses minus prime same-side terms:
+`E(v) = Λ_∞(Θ|v|) + 4·bonus(Θ|v|) + Σ_n (B_n(Θ|v|) − C_n(Θ|v|))`.
+The primes enter the opposite-side convolution with the archimedean sign and the same-side
+autocorrelation with the archimedean sign reversed. -/
+theorem sourceEnergy_eq_levy_abs_add_bonus_add_tsum_split (v : ℝ → ℝ) (hv : ContDiff ℝ 2 v)
+    (hvc : HasCompactSupport v) (hodd : ∀ x, v (-x) = -v x) (hpos : ∀ x, 0 ≤ x → 0 ≤ v x) :
+    sourceEnergy (compactLift v hv hvc) =
+      weilLevyForm (phiDoobTest fun y => |v y|) + 4 * crossSignBonus (phiDoobTest fun y => |v y|) +
+        ∑' n : ℕ, (oppositeSideBonus (phiDoobTest fun y => |v y|) n -
+          sameSideCross (phiDoobTest fun y => |v y|) n) := by
+  rw [sourceEnergy_compactLift_eq_levy_sub_tsum_cross v hv hvc,
+    levy_phiDoob_eq_abs_add_bonus v hv hvc hodd hpos, sub_eq_add_neg, ← tsum_neg]
+  congr 2
+  funext n
+  exact neg_integral_phiDoobPrimeCross_eq v hv.continuous hvc hodd hpos n
+
 /-- The three correction terms are nonnegative, so the energy dominates the Lévy form of `Θ|v|`
 by the explicit nonnegative amount `4·bonus + B₂ + B₃`. -/
 theorem levy_abs_add_corrections_le_sourceEnergy (v : ℝ → ℝ) (hv : ContDiff ℝ 2 v)
