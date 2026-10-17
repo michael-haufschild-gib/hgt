@@ -29,7 +29,6 @@ theorem primeLogCriticalLaplaceFeature_damping_shift
   rw [show -(Real.log (p : ℝ) * (t + h)) =
       Real.log (p : ℝ) * (-(h : ℝ)) + -(Real.log (p : ℝ) * t) by ring, Real.exp_add]
   field_simp [hth, ne_of_gt (Real.sqrt_pos.2 hp)]
-  <;> ring
 
 theorem primeLogCriticalLaplaceProfile_damping
     (h : ℝ≥0) (a : primeLogCriticalSourceL2) {t : ℝ} (ht : 0 < t) :
