@@ -87,6 +87,7 @@ polar neutrality. Smoothness and compact support are preserved by the explicit c
 - **Positive survivor:** literal tensor Gram realization, exact nonnegative quartic energy decomposition, complete copy-family ambiguity classification, and one-anchor signed reconstruction.
 - **New insight:** blindness survives the nonlinear cone transfer, but orientation does not; retaining one oriented scalar suffices for the separated two-copy family.
 - **Boundary:** arbitrary sources may have many independent correlation components. This does not prove any blind-source lower bound or close Wall 13.
+- **Representation boundary:** the square has a literal source on the product plane with diagonal translations. No scalar one-dimensional factorization or decomposition into individually blind fibres is asserted.
 - **Paper status:** proofs above use only compact integrability, existing copy identities, and polynomial identities.
 - **Lean status:** pending.
 

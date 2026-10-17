@@ -814,6 +814,61 @@
       $((k+1)y \le 1)$ and radial-penalty decomposition, and master synthesis of all four CHMD
       producer tools.
 
+41. **Pillar XLI — `formal/GaloisForLFunctions/BiScaleUncertainty/PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer.lean`**
+    - `abs_sourcePair_le_norm_mul`, `abs_sourceEnergy_le_norm_sq`,
+      `abs_sourceEnergy_sub_le`, `abs_inner_clm_fst_sub_le`,
+      `stationaryEnergy_nonneg_and_le_norm_sq`:
+      Sharp Cauchy–Schwarz and quadratic continuity bounds for `sourcePair`, `sourceEnergy`,
+      bounded operator forms `⟪T p.val.fst, p.val.fst⟫_ℝ`, and `stationaryEnergy` on `SourceGraph`.
+    - `sourceEnergy_sum_eq_diag_add_offDiag`, `inner_clm_sum_fst_eq_diag_add_offDiag`,
+      `stationaryEnergy_sum_eq_diag_add_offDiag`,
+      `offDiagSourcePairSum_eq_stationary_sub_arch_sub_primeShift`,
+      `offDiagSourcePairSum_eq_stationary_add_primeGenerator_add_groundPotential_sub_id`,
+      `abs_sourceEnergy_sum_sub_offDiag_le`, `abs_inner_clm_sum_fst_sub_offDiag_le`:
+      Exact finite-packet diagonal/off-diagonal decompositions and diagonal-vanishing bounds showing
+      that `∑ p ∈ S, ‖f p‖ ^ 2 < ε` forces all diagonal potential (`groundPotentialOperator`),
+      prime-shift (`primeShiftOperator`), and stationary (`stationaryEnergy`) sums to be $O(\varepsilon)$.
+    - `exists_cutoff_eventually_offDiag_primeClock_realization`,
+      `primeClock_log_lag_identity`, `canonicalPrimeGraphClockAtom_fst_mul_ae`,
+      `exists_cutoff_eventually_offDiag_primeClock_neg_of_eigenvector_gt_half`,
+      `sourceEnergy_nonneg_of_offDiag_primeClock_nonneg`,
+      `eigenvalue_le_one_half_of_offDiag_primeClock_nonneg`:
+      Off-diagonal prime-clock realization of any `q : SourceGraph` by distinct primes $p > \sqrt{N}$
+      with $\sum_{p \in S} \|\mathrm{atom}_{k,N,p}\|_{\mathrm{SourceGraph}}^2 < \varepsilon$,
+      scale-$N$ cancellation $\big(\log(N/p) - x\big) - \big(\log(N/p') - x\big) = \log(p'/p)$
+      in distinct-prime pairs, and reduction of `ResolventHalfBound` (`μ ≤ 1/2`) to asymptotic
+      nonnegativity of the off-diagonal prime-clock quadratic form.
+
+42. **Pillar XLII — `formal/GaloisForLFunctions/BiScaleUncertainty/BalancedNodalStationaryAndPrimeShiftDecompositionProducer.lean`**
+    - `norm_thetaToVolume_balancedNodalGraph_sq`,
+      `inner_archDiagonalOperator_balancedNodalGraph_self`,
+      `inner_primeDiagonalOperator_balancedNodalGraph_self`,
+      `inner_groundPotentialOperator_balancedNodalGraph_self`,
+      `balancedNodalGraph_eq_half_norm_sq_smul_absGraph_of_odd`:
+      Disjoint-support fourth-power lobe additivity of `thetaToVolume`, `archDiagonalOperator`,
+      `primeDiagonalOperator`, and `groundPotentialOperator` on `balancedNodalGraph p`, and odd-sector
+      coincidence `balancedNodalGraph p = ((1/2) * ‖p.val.fst‖ ^ 2) • absGraph p`.
+    - `balancedNodalGraph_fst_ae_nonneg`,
+      `inner_primeShiftOperator_balancedNodalGraph_self_eq`,
+      `inner_primeShiftOperator_balancedNodalGraph_self_nonneg`,
+      `inner_primeGenerator_balancedNodalGraph_self_eq`,
+      `stationaryEnergy_balancedNodalGraph_eq`:
+      Almost-everywhere nonnegativity of `(balancedNodalGraph p).val.fst`, exact three-term
+      nonnegative expansion of `primeShiftOperator` on `balancedNodalGraph p`, and weighted
+      Beurling–Deny cross-jump inequalities for `primeGenerator` and `stationaryEnergy`.
+    - `balancedNodalGraph_three_term_nonneg_snd_sq_of_eigenvector`,
+      `stationary_and_primeShift_mul_pow_four_le_balancedNodalGraph_fst_sq_of_eigenvector`,
+      `balancedNodalGraph_five_term_jump_eq_diagonals_of_eigenvector`,
+      `balancedNodalGraph_five_term_jump_le_potential_bound_of_eigenvector`,
+      `norm_balancedNodalGraph_fst_pow_four_le_stationaryResolvent_mul_of_eigenvector`,
+      `stationary_balancedNodalGraph_nodal_cross_le_of_rayleigh_le`,
+      `exists_cutoff_eventually_offDiag_primeClock_primGraph_balancedNodalGraph_of_eigenvector`:
+      Three-term edge-norm and five-term nonnegative balanced-nodal jump-vs.-diagonal potential
+      balance for `resolvent` eigenvectors, zero-mode-free `stationaryResolvent` Cauchy–Schwarz
+      and Rayleigh nodal bounds on `balancedNodalGraph q`, and off-diagonal prime-clock synthesis
+      of the doubly-orthogonal balanced nodal vector `primGraph (balancedNodalGraph q)`.
+
 ## Audit Status
-- **Module Verification**: All 40 Pillars (`NodalLobeEnergyAndDyadicDilationDefectProducer.lean`, `OddProfileCollarDominanceAndUnimodalPrimeWindowProducer.lean`, `FactorialSourceWeilContrastAndDivisorResponseProducer.lean`, `DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`, `FoldFreeLogMobiusAndPlancherelCausalProducer.lean`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`, `SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XL; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Module Verification**: All 42 Pillars (`BalancedNodalStationaryAndPrimeShiftDecompositionProducer.lean`, `PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer.lean`, `NodalLobeEnergyAndDyadicDilationDefectProducer.lean`, `OddProfileCollarDominanceAndUnimodalPrimeWindowProducer.lean`, `FactorialSourceWeilContrastAndDivisorResponseProducer.lean`, `DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`, `FoldFreeLogMobiusAndPlancherelCausalProducer.lean`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`, `SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XLII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+

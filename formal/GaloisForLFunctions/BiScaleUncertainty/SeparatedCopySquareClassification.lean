@@ -41,7 +41,7 @@ def source (f : C_c(ℝ, ℝ)) (a : ℝ) : C_c(ℝ, ℝ) :=
 
 theorem source_mass (f : C_c(ℝ, ℝ)) (a : ℝ) :
     autocorr (source f a) 0 = (1 + a ^ 2) * autocorr f 0 :=
-  autocorr_subtractCopy_zero f.continuous f.hasCompactSupport
+  autocorr_subtractCopy_zero (f := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport
     (fun _ hx => outside f hx) (radius_lt_gap f) a
 
 theorem source_center (f : C_c(ℝ, ℝ)) (a : ℝ) :
@@ -49,7 +49,7 @@ theorem source_center (f : C_c(ℝ, ℝ)) (a : ℝ) :
   have ht := radius_lt_gap f
   have hD := radius_pos f
   change autocorr (subtractCopy f a (gap f)) (gap f) = _
-  rw [autocorr_subtractCopy f.continuous f.hasCompactSupport,
+  rw [autocorr_subtractCopy (f := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport,
     outside f (ht.trans_le (le_abs_self _)), sub_self,
     outside f (lt_of_lt_of_le (by linarith : radius f < gap f + gap f) (le_abs_self _))]
   ring
@@ -83,7 +83,7 @@ theorem source_square (f : C_c(ℝ, ℝ)) (a x : ℝ) :
     autocorr (source f a) x ^ 2 = (1 + a ^ 2) ^ 2 * autocorr f x ^ 2 +
       a ^ 2 * (autocorr f (x - gap f) ^ 2 + autocorr f (x + gap f) ^ 2) := by
   change autocorr (subtractCopy f a (gap f)) x ^ 2 = _
-  rw [autocorr_subtractCopy f.continuous f.hasCompactSupport]
+  rw [autocorr_subtractCopy (f := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport]
   obtain ⟨hl, hr, hs⟩ := packet_products f x
   calc
     _ = (1+a^2)^2*autocorr f x^2 +
@@ -115,7 +115,7 @@ theorem correlation_formula (f : C_c(ℝ, ℝ)) (a x : ℝ) :
   · simp only [correlation_zero_mass f a x hR, normalizedSourceCorrelation, hR,
       div_zero, add_zero, mul_zero, sub_zero]
   · have hp := lt_of_le_of_ne (autocorr_zero_nonneg f) (Ne.symm hR)
-    have he := normalizedSourceCorrelation_subtractCopy_sub f.continuous
+    have he := normalizedSourceCorrelation_subtractCopy_sub (f := (f : ℝ → ℝ)) f.continuous
       f.hasCompactSupport hp (fun _ hx => outside f hx) (radius_lt_gap f) a x
     change correlation f a x - normalizedSourceCorrelation f x = _ at he
     linarith only [he]
@@ -132,7 +132,6 @@ theorem correlation_square (f : C_c(ℝ, ℝ)) (a x : ℝ) :
     rw [div_pow, source_square, source_mass]
     have hd : 1 + a ^ 2 ≠ (0 : ℝ) := by positivity
     field_simp [hR, hd]
-    <;> ring
 
 /-- One signed sample repairs all the orientation lost by squaring in this family. -/
 theorem correlation_reconstruction (f : C_c(ℝ, ℝ)) (a x : ℝ) :
@@ -140,9 +139,9 @@ theorem correlation_reconstruction (f : C_c(ℝ, ℝ)) (a x : ℝ) :
       (normalizedSourceCorrelation f (x - gap f) + normalizedSourceCorrelation f (x + gap f)) := by
   by_cases hR : autocorr f 0 = 0
   · simp only [correlation_zero_mass f a x hR, correlation_zero_mass f a (gap f) hR,
-      normalizedSourceCorrelation, hR, div_zero, mul_zero, zero_mul, add_zero]
+      normalizedSourceCorrelation, hR, div_zero, mul_zero, add_zero]
   · have hp := lt_of_le_of_ne (autocorr_zero_nonneg f) (Ne.symm hR)
-    have hc := normalizedSourceCorrelation_subtractCopy_center f.continuous f.hasCompactSupport
+    have hc := normalizedSourceCorrelation_subtractCopy_center (f := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport
       hp (radius_pos f) (fun _ hx => outside f hx) (radius_lt_gap f) a
     change correlation f a (gap f) = -copyMixingCoefficient a at hc
     rw [correlation_formula, hc]
@@ -157,7 +156,7 @@ theorem square_profiles_eq_iff (f : C_c(ℝ, ℝ)) (a b : ℝ) :
       true_or, implies_true]
   · have hp := lt_of_le_of_ne (autocorr_zero_nonneg f) (Ne.symm hR)
     have hc (c : ℝ) : correlation f c (gap f) = -copyMixingCoefficient c :=
-      normalizedSourceCorrelation_subtractCopy_center f.continuous f.hasCompactSupport
+      normalizedSourceCorrelation_subtractCopy_center (f := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport
         hp (radius_pos f) (fun _ hx => outside f hx) (radius_lt_gap f) c
     constructor
     · intro h
@@ -176,7 +175,7 @@ theorem profiles_eq_iff (f : C_c(ℝ, ℝ)) (a b : ℝ) :
       true_or, implies_true]
   · have hp := lt_of_le_of_ne (autocorr_zero_nonneg f) (Ne.symm hR)
     have hc (c : ℝ) : correlation f c (gap f) = -copyMixingCoefficient c :=
-      normalizedSourceCorrelation_subtractCopy_center f.continuous f.hasCompactSupport
+      normalizedSourceCorrelation_subtractCopy_center (f := (f : ℝ → ℝ)) f.continuous f.hasCompactSupport
         hp (radius_pos f) (fun _ hx => outside f hx) (radius_lt_gap f) c
     constructor
     · intro h

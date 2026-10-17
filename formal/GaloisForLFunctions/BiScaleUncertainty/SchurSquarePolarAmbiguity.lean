@@ -39,7 +39,8 @@ theorem exists_smooth_same_square_distinct_polar :
   let a := Real.exp (-gap f / 2)
   have hRs : 0 < autocorr (f : ℝ → ℝ) 0 := hR
   have hPs : 0 < normalizedPolarMoment (f : ℝ → ℝ) := hP
-  have hf : ContDiff ℝ 2 (f : ℝ → ℝ) := hb.of_le (by norm_num)
+  have hf : ContDiff ℝ 2 (f : ℝ → ℝ) :=
+    hb.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))
   have hminus : normalizedPolarMoment (source f a) = 0 :=
     normalizedPolarMoment_polarCopy hf f.hasCompactSupport (gap f)
   have hfactor : 2 * copyMixingCoefficient a * Real.cosh (gap f / 2) = 1 := by

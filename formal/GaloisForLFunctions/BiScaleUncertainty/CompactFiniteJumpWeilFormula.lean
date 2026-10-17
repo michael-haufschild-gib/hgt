@@ -26,6 +26,7 @@ private theorem compact_jump_lintegral_eq (f : C_c(ℝ, ℝ)) :
       ((autocorr f 0-autocorr f x)*archLevySinhWeight x) := by
   apply setLIntegral_congr_fun measurableSet_Ioi
   intro x hx
+  dsimp only
   have he : (∫ u : ℝ, ‖(f u : ℂ)-(f (u+x) : ℂ)‖^2) =
       ∫ u, (f u-f (u+x))^2 := by
     congr 1 with u
@@ -44,7 +45,7 @@ theorem integrable_archSymbol_of_compact_finite_jump (f : C_c(ℝ, ℝ))
   let F : ℝ → ℂ := fun u => (f u : ℂ)
   have hFc : Continuous F := Complex.continuous_ofReal.comp f.continuous
   have hFcs : HasCompactSupport F := f.hasCompactSupport.comp_left Complex.ofReal_zero
-  have hF1 := hFc.integrable_of_hasCompactSupport hFcs
+  have hF1 : Integrable F := hFc.integrable_of_hasCompactSupport hFcs
   have hF2 : MemLp F 2 := hFc.memLp_of_hasCompactSupport hFcs
   have hfourier := GaloisForLFunctions.RHTower.continuous_fourier_of_integrable hF1
   have hpos (ξ : ℝ) : 0 ≤
@@ -79,7 +80,7 @@ private theorem compact_spectral_arch_eq (f : C_c(ℝ, ℝ))
   let F : ℝ → ℂ := fun u => (f u : ℂ)
   have hFc : Continuous F := Complex.continuous_ofReal.comp f.continuous
   have hFcs : HasCompactSupport F := f.hasCompactSupport.comp_left Complex.ofReal_zero
-  have hF1 := hFc.integrable_of_hasCompactSupport hFcs
+  have hF1 : Integrable F := hFc.integrable_of_hasCompactSupport hFcs
   have hF2 : MemLp F 2 := hFc.memLp_of_hasCompactSupport hFcs
   have hk := EF.paperFT_weilTest hFc hFc hFcs hFcs
   have hreal (r : ℝ) :
@@ -98,7 +99,7 @@ private theorem compact_spectral_arch_eq (f : C_c(ℝ, ℝ))
   have hnorm : (∫ u : ℝ, ‖F u‖^2) = autocorr f 0 := by
     unfold autocorr
     congr 1 with u
-    simp [F, Complex.norm_real, sq_abs, pow_two]
+    simp [F, Complex.norm_real, pow_two]
   have hnonneg : ∀ᵐ x ∂volume.restrict (Ioi (0 : ℝ)),
       0 ≤ (autocorr f 0-autocorr f x)*archLevySinhWeight x := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
@@ -125,7 +126,7 @@ private theorem compact_polar_transform_eq (f : C_c(ℝ, ℝ)) :
     (hc.mul (by fun_prop)).integrable_of_hasCompactSupport hcs.mul_right
   have him : Integrable (fun x => h x*Real.exp (-x/2)) :=
     (hc.mul (by fun_prop)).integrable_of_hasCompactSupport hcs.mul_right
-  have heven : (fun x => h |x|*Real.cosh (|x|/2)) = fun x => h x*Real.cosh (x/2) := by
+  have heven : (fun x => h |x| * Real.cosh (|x|/2)) = fun x => h x*Real.cosh (x/2) := by
     funext x
     rcases le_total 0 x with hx | hx
     · rw [abs_of_nonneg hx]

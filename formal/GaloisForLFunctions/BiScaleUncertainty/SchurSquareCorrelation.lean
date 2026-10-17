@@ -132,9 +132,10 @@ theorem levyEnergy_add_quarticDefect (f : C_c(ℝ, ℝ)) :
         ENNReal.ofReal ((autocorr f 0 - autocorr f x) * archLevySinhWeight x) := by
       apply setLIntegral_congr_fun measurableSet_Ioi
       intro x hx
+      dsimp only
       rw [← ENNReal.ofReal_add
         (mul_nonneg (increment_nonneg f x) (archLevySinhWeight_pos hx).le)
-        (mul_nonneg (sq_nonneg _) (archLevySinhWeight_pos hx).le),
+        (mul_nonneg (sq_nonneg (autocorr f 0 - autocorr f x)) (archLevySinhWeight_pos hx).le),
         ← add_mul, increment_decomposition, mul_assoc,
         ENNReal.ofReal_mul (mul_nonneg (by positivity) (autocorr_zero_nonneg f))]
     _ = _ := lintegral_const_mul _

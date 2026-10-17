@@ -89,7 +89,7 @@ theorem norm_thetaToVolume_balancedNodalGraph_sq (p : SourceGraph) :
     real_inner_smul_left, real_inner_smul_right,
     real_inner_smul_left, real_inner_smul_right,
     real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq,
-    real_inner_comm (thetaToVolume (negGraph p).val.fst) (thetaToVolume (posGraph p).val.fst),
+    real_inner_comm (thetaToVolume (posGraph p).val.fst) (thetaToVolume (negGraph p).val.fst),
     inner_thetaToVolume_posGraph_negGraph]
   ring
 
@@ -118,8 +118,7 @@ theorem inner_primeDiagonalOperator_balancedNodalGraph_self (p : SourceGraph) :
     real_inner_smul_left, real_inner_smul_right,
     real_inner_smul_left, real_inner_smul_right,
     primeDiagonalOperator_symmetric (negGraph p).val.fst (posGraph p).val.fst,
-    real_inner_comm (posGraph p).val.fst (primeDiagonalOperator (negGraph p).val.fst),
-    ← primeDiagonalOperator_symmetric (posGraph p).val.fst (negGraph p).val.fst,
+    real_inner_comm (primeDiagonalOperator (posGraph p).val.fst) (negGraph p).val.fst,
     inner_primeDiagonalOperator_posGraph_negGraph]
   ring
 
@@ -137,8 +136,7 @@ theorem inner_groundPotentialOperator_balancedNodalGraph_self (p : SourceGraph) 
     real_inner_smul_left, real_inner_smul_right,
     real_inner_smul_left, real_inner_smul_right,
     groundPotentialOperator_symmetric (negGraph p).val.fst (posGraph p).val.fst,
-    real_inner_comm (posGraph p).val.fst (groundPotentialOperator (negGraph p).val.fst),
-    ← groundPotentialOperator_symmetric (posGraph p).val.fst (negGraph p).val.fst,
+    real_inner_comm (groundPotentialOperator (posGraph p).val.fst) (negGraph p).val.fst,
     inner_groundPotentialOperator_posGraph_negGraph]
   ring
 
@@ -204,8 +202,7 @@ theorem inner_primeShiftOperator_balancedNodalGraph_self_eq (p : SourceGraph) :
     real_inner_smul_left, real_inner_smul_right,
     real_inner_smul_left, real_inner_smul_right,
     primeShiftOperator_symmetric (negGraph p).val.fst (posGraph p).val.fst,
-    real_inner_comm (posGraph p).val.fst (primeShiftOperator (negGraph p).val.fst),
-    ← primeShiftOperator_symmetric (posGraph p).val.fst (negGraph p).val.fst]
+    real_inner_comm (primeShiftOperator (posGraph p).val.fst) (negGraph p).val.fst]
   ring
 
 /-- Nonnegativity of `⟪primeShiftOperator (balancedNodalGraph p).val.fst, (balancedNodalGraph p).val.fst⟫_ℝ`
@@ -250,12 +247,16 @@ theorem inner_primeGenerator_balancedNodalGraph_self_eq (p : SourceGraph) :
           ⟪primeGenerator (negGraph p).val.fst, (negGraph p).val.fst⟫_ℝ -
         2 * (‖(posGraph p).val.fst‖ ^ 2 * ‖(negGraph p).val.fst‖ ^ 2) *
           ⟪primeShiftOperator (posGraph p).val.fst, (negGraph p).val.fst⟫_ℝ := by
-    rw [inner_primeGenerator_eq_primeDiagonal_sub_primeShift,
-      inner_primeDiagonalOperator_balancedNodalGraph_self,
-      inner_primeShiftOperator_balancedNodalGraph_self_eq,
-      inner_primeGenerator_eq_primeDiagonal_sub_primeShift (posGraph p).val.fst,
-      inner_primeGenerator_eq_primeDiagonal_sub_primeShift (negGraph p).val.fst]
-    ring
+    have hd := inner_primeDiagonalOperator_balancedNodalGraph_self p
+    have hs := inner_primeShiftOperator_balancedNodalGraph_self_eq p
+    have hbal := inner_primeGenerator_eq_primeDiagonal_sub_primeShift
+      (balancedNodalGraph p).val.fst (balancedNodalGraph p).val.fst
+    have hp := inner_primeGenerator_eq_primeDiagonal_sub_primeShift
+      (posGraph p).val.fst (posGraph p).val.fst
+    have hn := inner_primeGenerator_eq_primeDiagonal_sub_primeShift
+      (negGraph p).val.fst (negGraph p).val.fst
+    linear_combination hbal + hd - hs - ‖(negGraph p).val.fst‖ ^ 4 * hp -
+      ‖(posGraph p).val.fst‖ ^ 4 * hn
   have hnn := inner_primeGenerator_self_nonneg (balancedNodalGraph p).val.fst
   exact ⟨h1, by linarith⟩
 
@@ -275,39 +276,31 @@ theorem stationaryEnergy_balancedNodalGraph_eq (p : SourceGraph) :
         ⟪(fullGroundEquiv (posGraph p)).val.snd, (fullGroundEquiv (negGraph p)).val.snd⟫_ℝ ≤
       ‖(negGraph p).val.fst‖ ^ 4 * stationaryEnergy (thetaProduct (posGraph p).val.fst) +
         ‖(posGraph p).val.fst‖ ^ 4 * stationaryEnergy (thetaProduct (negGraph p).val.fst) := by
-  have hbal : (fullGroundEquiv (balancedNodalGraph p)).val.fst =
-      (balancedNodalGraph p).val.fst := fullGroundEquiv_source (balancedNodalGraph p)
-  have hpos : (fullGroundEquiv (posGraph p)).val.fst = (posGraph p).val.fst :=
-    fullGroundEquiv_source (posGraph p)
-  have hneg : (fullGroundEquiv (negGraph p)).val.fst = (negGraph p).val.fst :=
-    fullGroundEquiv_source (negGraph p)
-  have hsnd : (fullGroundEquiv (balancedNodalGraph p)).val.snd =
-      ‖(negGraph p).val.fst‖ ^ 2 • (fullGroundEquiv (posGraph p)).val.snd +
-        ‖(posGraph p).val.fst‖ ^ 2 • (fullGroundEquiv (negGraph p)).val.snd := by
+  have hmap : fullGroundEquiv (balancedNodalGraph p) =
+      ‖(negGraph p).val.fst‖ ^ 2 • fullGroundEquiv (posGraph p) +
+        ‖(posGraph p).val.fst‖ ^ 2 • fullGroundEquiv (negGraph p) := by
     unfold balancedNodalGraph
     rw [map_add, map_smul, map_smul]
-    rfl
+  have hnorm_eq : ‖fullGroundEquiv (balancedNodalGraph p)‖ ^ 2 =
+      ‖(negGraph p).val.fst‖ ^ 4 * ‖fullGroundEquiv (posGraph p)‖ ^ 2 +
+        ‖(posGraph p).val.fst‖ ^ 4 * ‖fullGroundEquiv (negGraph p)‖ ^ 2 +
+        2 * (‖(posGraph p).val.fst‖ ^ 2 * ‖(negGraph p).val.fst‖ ^ 2) *
+          ⟪(fullGroundEquiv (posGraph p)).val.snd, (fullGroundEquiv (negGraph p)).val.snd⟫_ℝ := by
+    rw [hmap, norm_add_sq_real, norm_smul, norm_smul,
+      Real.norm_of_nonneg (sq_nonneg _), Real.norm_of_nonneg (sq_nonneg _),
+      Submodule.coe_inner, Submodule.coe_smul_of_tower, Submodule.coe_smul_of_tower,
+      real_inner_smul_left, real_inner_smul_right, ← Submodule.coe_inner,
+      inner_fullGroundEquiv_posGraph_negGraph_eq_snd]
+    ring
+  rw [norm_fullGroundEquiv_sq, norm_fullGroundEquiv_sq, norm_fullGroundEquiv_sq,
+    norm_balancedNodalGraph_fst_sq, ← norm_posGraph_fst_sq_add_negGraph_fst_sq p] at hnorm_eq
   have h1 : stationaryEnergy (thetaProduct (balancedNodalGraph p).val.fst) =
       ‖(negGraph p).val.fst‖ ^ 4 * stationaryEnergy (thetaProduct (posGraph p).val.fst) +
         ‖(posGraph p).val.fst‖ ^ 4 * stationaryEnergy (thetaProduct (negGraph p).val.fst) +
         2 * (‖(posGraph p).val.fst‖ ^ 2 * ‖(negGraph p).val.fst‖ ^ 2) *
           ⟪(fullGroundEquiv (posGraph p)).val.snd, (fullGroundEquiv (negGraph p)).val.snd⟫_ℝ := by
-    rw [← hbal, ← stationaryGround_edge_energy,
-      ← hpos, ← stationaryGround_edge_energy,
-      ← hneg, ← stationaryGround_edge_energy,
-      ← real_inner_self_eq_norm_sq, hsnd,
-      inner_add_left, inner_add_right, inner_add_right,
-      real_inner_smul_left, real_inner_smul_right,
-      real_inner_smul_left, real_inner_smul_right,
-      real_inner_smul_left, real_inner_smul_right,
-      real_inner_smul_left, real_inner_smul_right,
-      real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq,
-      real_inner_comm (fullGroundEquiv (negGraph p)).val.snd
-        (fullGroundEquiv (posGraph p)).val.snd]
-    ring
-  have hnn : 0 ≤ stationaryEnergy (thetaProduct (balancedNodalGraph p).val.fst) := by
-    rw [← hbal, ← stationaryGround_edge_energy]
-    exact sq_nonneg _
+    linarith
+  have hnn := (stationaryEnergy_nonneg_and_le_norm_sq (balancedNodalGraph p)).1
   exact ⟨h1, by linarith⟩
 
 /-! ## Section 3: Three-Term Edge Norm and Five-Term Nonnegative Balanced-Nodal Balance for Eigenvectors -/
@@ -350,7 +343,7 @@ and
 `‖q.val.fst‖ ^ 4 * ⟪primeShiftOperator (posGraph q).val.fst, (negGraph q).val.fst⟫_ℝ ≤ ((1 - μ) / μ) * ‖(balancedNodalGraph q).val.fst‖ ^ 2`. -/
 theorem stationary_and_primeShift_mul_pow_four_le_balancedNodalGraph_fst_sq_of_eigenvector
     {μ : ℝ} (hμ : μ ≠ 0) {w : MassSpace} (heig : resolvent w = μ • w) :
-    let q := rieszLift w
+    let q := rieszLift w;
     -‖q.val.fst‖ ^ 4 *
         ⟪(fullGroundEquiv (posGraph q)).val.snd, (fullGroundEquiv (negGraph q)).val.snd⟫_ℝ ≤
       ((1 - μ) / μ) * ‖(balancedNodalGraph q).val.fst‖ ^ 2 ∧
@@ -514,7 +507,7 @@ a finite set `S` of distinct primes `p > √N` with `log(N / p) > T₀` such tha
    `∑ p ∈ S, ‖canonicalPrimeGraphClockAtom k N p‖ ^ 2 < ε`,
 3. the off-diagonal (`p ≠ p'`) distinct-prime clock sum approximates the exact doubly-orthogonal
    balanced nodal energy:
-   `|offDiagSourcePairSum S (canonicalPrimeGraphClockAtom k N) - (((1 - 2 * μ) / μ) * ‖u_bal.val.fst‖ ^ 2 + ‖q.val.fst‖ ^ 4 * (sourcePair (posGraph q) (negGraph q) + ((1 - μ) / (2 * μ)) * ⟪(absGraph q).val.fst, oneL⟫_ℝ ^ 2))| < ε`. -/
+   `|offDiagSourcePairSum S (canonicalPrimeGraphClockAtom k N) - (((1 - 2 * μ) / μ) * ‖u_bal.val.fst‖ ^ 2 + ‖q.val.fst‖ ^ 4 * (sourcePair (posGraph q) (negGraph q) + ((1 - μ) / (2 * μ)) * ⟪(absGraph q).val.fst, oneL⟫_ℝ ^ 2))| ≤ ε + ε ^ 2 + 2 * ε * ‖u_bal‖`. -/
 theorem exists_cutoff_eventually_offDiag_primeClock_primGraph_balancedNodalGraph_of_eigenvector
     {μ : ℝ} (hμ : μ ≠ 0) {w : MassSpace} (hprim : ⟪w, oneL⟫_ℝ = 0)
     (heig : resolvent w = μ • w) (T₀ : ℝ) {ε : ℝ} (hε : 0 < ε) :
@@ -522,21 +515,27 @@ theorem exists_cutoff_eventually_offDiag_primeClock_primGraph_balancedNodalGraph
     let u_bal := primGraph (balancedNodalGraph q)
     ∃ k : ℕ, ∀ᶠ N : ℕ in atTop,
       ∃ S : Finset ℕ,
-        (∀ p ∈ S, Nat.Prime p ∧ N < p ^ 2 ∧ T₀ < Real.log ((N : ℝ) / p)) ∧
+        (∀ p ∈ S, Nat.Prime p ∧ Real.sqrt (N : ℝ) < (p : ℝ) ∧ T₀ < Real.log ((N : ℝ) / p)) ∧
         ‖(∑ p ∈ S, canonicalPrimeGraphClockAtom k N p) - u_bal‖ < ε ∧
         (∑ p ∈ S, ‖canonicalPrimeGraphClockAtom k N p‖ ^ 2) < ε ∧
         |offDiagSourcePairSum S (canonicalPrimeGraphClockAtom k N) -
           (((1 - 2 * μ) / μ) * ‖u_bal.val.fst‖ ^ 2 +
             ‖q.val.fst‖ ^ 4 *
               (sourcePair (posGraph q) (negGraph q) +
-                ((1 - μ) / (2 * μ)) * ⟪(absGraph q).val.fst, oneL⟫_ℝ ^ 2))| < ε := by
+                ((1 - μ) / (2 * μ)) * ⟪(absGraph q).val.fst, oneL⟫_ℝ ^ 2))| ≤
+          ε + ε ^ 2 + 2 * ε * ‖u_bal‖ := by
   intro q u_bal
-  have hE := (primGraph_balancedNodalGraph_orthogonal_and_energy_of_primitive_eigenvector
-    hμ hprim heig).2.2.2
+  have hE : sourceEnergy u_bal =
+      ((1 - 2 * μ) / μ) * ‖u_bal.val.fst‖ ^ 2 +
+        ‖q.val.fst‖ ^ 4 *
+          (sourcePair (posGraph q) (negGraph q) +
+            ((1 - μ) / (2 * μ)) * ⟪(absGraph q).val.fst, oneL⟫_ℝ ^ 2) :=
+    (primGraph_balancedNodalGraph_orthogonal_and_energy_of_primitive_eigenvector
+      hμ hprim heig).2.2.2
   obtain ⟨k, hk⟩ := exists_cutoff_eventually_offDiag_primeClock_realization
     u_bal (ContinuousLinearMap.id ℝ MassSpace) T₀ hε
   refine ⟨k, hk.mono fun N hN => ?_⟩
-  rcases hN with ⟨S, hS, happrox, hdiag, _, _, _, hoffE, _⟩
+  rcases hN with ⟨S, hS, happrox, hdiag, hoffE, _⟩
   rw [hE] at hoffE
   exact ⟨S, hS, happrox, hdiag, hoffE⟩
 

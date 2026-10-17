@@ -1,7 +1,7 @@
 # Factorial complete-form coercivity
 
 - **ID:** factorial-complete-form-coercivity-2026-10-18
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** CANDIDATE
 - **Scope:** BiScaleUncertainty; WL/RW. Original goal remains unconditional RH in Lean.
 - **Statement:** For each of the two actual balanced factorial sources, the complete real-space expression `gammaBracket 0 * h(0) + biScaleLevyEnergy - 2 * fullPairing h`, divided by `h(0)`, tends to positive infinity.
@@ -36,7 +36,7 @@ Write `Q=gammaBracket(0)*R+J-2*fullPairing(h)`. Division by `R>0` yields
 `Q/R >= gammaBracket(0)+(3/23)*exp(-1/2)*log(N)-(41+2*log(1000000))/6-448`.
 The coefficient of `log(N)` is strictly positive. Thus each normalized expression tends to positive infinity, and both are eventually strictly positive.
 
-This proves the real-space statement using existing exact-source bounds, subject to verifying their current Lean dependencies. Identification with the spectral `weilFullFunctional` on the Lipschitz sources is a separate proof obligation. Existing `RealWeilTestFn` identities require `ContDiff 2` and cannot be used without a regularity/closure argument.
+This proves the real-space statement using existing exact-source bounds. Their current Lean dependencies and the resulting theorem have now passed direct checks. Identification with the spectral `weilFullFunctional` on the Lipschitz sources requires the separate finite-jump argument below: the existing `RealWeilTestFn` identities require `ContDiff 2`.
 
 ## Paper argument for spectral identification
 
@@ -44,16 +44,19 @@ For any compact continuous real source `f`, its complexification belongs to both
 
 The existing spectral splitting identity then gives the Gamma term `gammaBracket(0)*h(0)+J`. The transform of a compact continuous autocorrelation is the squared source transform on the real line. At the two imaginary pole frequencies, direct exponential integration gives the whole-line integral of `2*h(x)*cosh(x/2)`; evenness makes this twice the positive-half-line polar pairing. Each prime atom is exactly twice `primeTerm h n`, and compact support makes the prime sequence finitely supported. Assembly proves the literal spectral Weil identity with the original von Mangoldt weights and both poles. Applying the already proved jump-domain certificate to the factorial sources removes the final domain premise.
 
-No smoothing limit, derivative estimate, changed arithmetic source, or omitted boundary term is used. This completes the paper dependencies for the spectral endpoint; Lean verification remains required.
+No smoothing limit, derivative estimate, changed arithmetic source, or omitted boundary term is used. The spectral endpoint and its eighteen public supporting theorems have passed direct Lean checks and the axiom audit.
 
 ## Status
 
 - Paper argument for real-space endpoint complete.
 - Seven source-local dependencies passed direct `lake --old env lean` checks. Logs `/tmp/bsu-coercivity-SignedPrimePolar*.log`; the atomic-packet check returned exit 0 directly. Two dependency logs contain redundant-tactic warnings (packet envelope and local energy); concurrent source edits are preserved.
-- Draft modules: `CompactFiniteJumpWeilFormula.lean`, `FactorialCompleteFormCoercivity.lean`, `FactorialWeilCoercivity.lean`. API probes and direct checks are running sequentially in tool session `44485`; revalidate this handle before starting another build. Previous session `14767` exited on a scratch-only noncomputability annotation error; the scratch file was corrected before this replacement was started.
-- Spectral regularity bridge has a complete paper argument and a Lean draft, not yet checked.
+- All three new leaf modules passed direct checks: `FactorialCompleteFormCoercivity.lean` in session `18634`, and `CompactFiniteJumpWeilFormula.lean` / `FactorialWeilCoercivity.lean` in session `30245`. Both API probes also passed. All new modules are wired into the BiScaleUncertainty umbrella.
+- Final spectral-bridge check and the axiom audit passed in session `58046`. Every one of the eighteen public theorems uses only `propext`, `Classical.choice`, and `Quot.sound`. Evidence: `/tmp/bsu-factorial-weil-axioms.log`; source hashes and exact audit coverage: `/tmp/bsu-factorial-weil-verification.json`. No own Lean process remains running.
+- `scripts/formal_tools.py index` succeeded and regenerated the three formal index documents. `scripts/formal_tools.py lint --check-generated` exited 1 with exactly four unrelated missing-umbrella-import errors: `BalancedNodalStationaryAndPrimeShiftDecompositionProducer`, `SchurSquareCorrelation`, `SchurSquarePolarAmbiguity`, and `SeparatedCopySquareClassification`. Concurrent drafts were not changed or wired without verification. No forbidden-declaration errors were reported. Logs: `/tmp/bsu-factorial-weil-index.log`, `/tmp/bsu-factorial-weil-lint.log`. No umbrella build was run.
 - All-source RW sign and WL one-sided deficit bound remain open.
 
 ## Next conjecture to attack after verification
 
 Determine the complete Weil sign on the pure factorial-ramp direction and the full two-dimensional span with its narrow tent partner. The sum of the two balanced sources cancels the tent, so positivity of the two displayed vectors does not prove positivity of their span. The present logarithmic lower bound comes from the narrow tent; it cannot be assigned to the pure ramp without a new proof. A search for a factorial-ramp/Riemann-kernel identification found no directly applicable theorem; no such identification is assumed.
+
+Follow-up corpus query `factorial ramp Mellin zeta` completed without errors or partial results, but supplied no direct ramp transform theorem; compiler coverage remained mostly pending/stale. Exact source search in the area's Weil/Mellin/Fourier-named modules found no ramp-transform occurrence. These searches do not establish absence from the whole corpus. The finite clamped-sum definition of `smoothFactorialLift` suggests deriving its transform first; no limiting zeta identity or sign is currently proved here.
