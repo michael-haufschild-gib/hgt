@@ -29,14 +29,17 @@ def rotGammaRealFun (z : ℂ) : ℂ := Complex.Gammaℝ (2 * (-Complex.I * z))
 theorem doubled_rot_re_pos {z : ℂ} (hz : z ∈ upperTail 0) :
     0 < (2 * (-Complex.I * z)).re := by
   have hz' : 0 < z.im := hz
-  simp only [Complex.mul_re, Complex.ofNat_re, Complex.ofNat_im,
-    Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im]
+  have hre : (2 * (-Complex.I * z)).re = 2 * z.im := by
+    norm_num [Complex.mul_re]
+  rw [hre]
   linarith
 
 theorem analyticOnNhd_rotGammaRealFun : AnalyticOnNhd ℂ rotGammaRealFun (upperTail 0) := by
   intro z hz
-  exact (Gammaℝ_analyticAt (Complex.Gammaℝ_ne_zero_of_re_pos (doubled_rot_re_pos hz))).comp
-    (analyticAt_const.mul (analyticAt_const.mul analyticAt_id))
+  have hlin : AnalyticAt ℂ (fun w : ℂ => 2 * (-Complex.I * w)) z :=
+    analyticAt_const.mul (analyticAt_const.mul analyticAt_id)
+  exact AnalyticAt.comp (g := Complex.Gammaℝ) (f := fun w : ℂ => 2 * (-Complex.I * w))
+    (Gammaℝ_analyticAt (Complex.Gammaℝ_ne_zero_of_re_pos (doubled_rot_re_pos hz))) hlin
 
 def rotGammaRealAnalytic : upperEndAnalyticSubring :=
   ⟨Germ.coeRingHom upperEndFilter rotGammaRealFun,
@@ -57,6 +60,7 @@ theorem rotGammaRealAnalytic_mul_inv : rotGammaRealAnalytic * rotGammaRealInvAna
     (Germ.coeRingHom upperEndFilter (fun z => (rotGammaRealFun z)⁻¹)) = 1
   rw [← map_mul]
   apply Germ.coe_eq.mpr
+  change ∀ᶠ z in upperEndFilter, rotGammaRealFun z * (rotGammaRealFun z)⁻¹ = 1
   rw [upperEndFilter_basis.eventually_iff]
   refine ⟨0, trivial, fun z hz => ?_⟩
   exact mul_inv_cancel₀ (Complex.Gammaℝ_ne_zero_of_re_pos (doubled_rot_re_pos hz))
@@ -73,7 +77,7 @@ theorem deriv_rotGammaRealFun {z : ℂ} (hz : z ∈ upperTail 0) :
     deriv rotGammaRealFun z =
       (-Complex.I * rotDigammaFun z + Complex.I * (Real.log Real.pi : ℂ)) * rotGammaRealFun z := by
   have hinner : HasDerivAt (fun w : ℂ => 2 * (-Complex.I * w)) (2 * (-Complex.I)) z := by
-    simpa only [mul_one] using ((hasDerivAt_id z).const_mul (-Complex.I)).const_mul 2
+    simpa only [mul_one, id_eq] using! ((hasDerivAt_id z).const_mul (-Complex.I)).const_mul 2
   have h := (hasDerivAt_Gammaℝ_of_re_pos (doubled_rot_re_pos hz)).comp z hinner
   have hd : deriv rotGammaRealFun z =
       (Complex.Gammaℝ (2 * (-Complex.I * z)) *
@@ -100,8 +104,10 @@ theorem upperEndAnalyticDeriv_rotGammaRealAnalytic :
       ((upperEndPolyToAnalytic (Polynomial.C (Complex.I * (Real.log Real.pi : ℂ))) :
         upperEndAnalyticSubring) : Germ upperEndFilter ℂ)) *
           (Germ.coeRingHom upperEndFilter rotGammaRealFun)
-  rw [upperEndGermDeriv_coe, hc, hc, ← map_mul, ← map_add, ← map_mul]
+  rw [hc, hc, ← map_mul, ← map_add, ← map_mul]
   apply Germ.coe_eq.mpr
+  change ∀ᶠ z in upperEndFilter, deriv rotGammaRealFun z =
+    (-Complex.I * rotDigammaFun z + Complex.I * (Real.log Real.pi : ℂ)) * rotGammaRealFun z
   rw [upperEndFilter_basis.eventually_iff]
   exact ⟨0, trivial, fun _ hz => deriv_rotGammaRealFun hz⟩
 
@@ -134,13 +140,13 @@ theorem shiftedRotGammaRealAnalytic_coe (lam : ℂ) :
     (shiftedRotGammaRealAnalytic lam : Germ upperEndFilter ℂ) =
       Germ.coeRingHom upperEndFilter (fun z => Complex.Gammaℝ (2 * (-Complex.I * z + lam))) := by
   change upperEndTranslateGerm (Complex.I * lam) (Germ.coeRingHom upperEndFilter rotGammaRealFun) = _
-  rw [upperEndTranslateGerm_coe]
   apply Germ.coe_eq.mpr
   apply Filter.Eventually.of_forall
   intro z
-  dsimp only [rotGammaRealFun]
-  congr 2
-  simp [mul_add, mul_assoc]
+  change Complex.Gammaℝ (2 * (-Complex.I * (z + Complex.I * lam))) =
+    Complex.Gammaℝ (2 * (-Complex.I * z + lam))
+  have hI : -Complex.I * Complex.I = (1 : ℂ) := by norm_num
+  rw [mul_add, ← mul_assoc (-Complex.I) Complex.I lam, hI, one_mul]
 
 theorem deriv_shiftedRotGammaRealMero (lam : ℂ) :
     (shiftedRotGammaRealMero lam)′ =

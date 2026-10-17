@@ -61,7 +61,7 @@ theorem completedDirichlet_logDeriv_differentialIndependent_iff
     funext i
     exact completedDirichletUpperMero_logDeriv_affine (chi i) (b i)
   rw [hfun]
-  exact (differentialIndependent_affineBase_iff x a c ha).trans
+  exact (GaloisForLFunctions.HTGeometry.differentialIndependent_affineBase_iff x a c ha).trans
     (differentialIndependent_shiftedRotDigamma_over_dirZetaBase_iff _)
 
 /-- **Exact relative orbit classification for completed arithmetic functions.** The family of

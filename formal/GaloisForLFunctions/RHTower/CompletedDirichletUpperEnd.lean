@@ -26,7 +26,7 @@ local instance completedDirichletUpperComplex : Algebra ℂ upperEndMeroField :=
   upperEndComplexToMero.toAlgebra
 local instance completedDirichletUpperInteger : Algebra ℤ upperEndMeroField := Ring.toIntAlgebra _
 
-variable {q : ℕ} [NeZero q]
+variable {q : ℕ}
 
 def dirichletArchParity (chi : DirichletCharacter ℂ q) : ℕ := if chi.Even then 0 else 1
 
@@ -48,7 +48,7 @@ def completedDirichletUpperAnalytic (chi : DirichletCharacter ℂ q) (b : ℂ) :
   shiftedRotGammaRealAnalytic (dirichletCompletionShift chi b) * translatedDoubleDirichletAnalytic chi b
 
 /-- This is the actual completed function, with no source-admission premise. -/
-theorem completedDirichletUpperAnalytic_coe (chi : DirichletCharacter ℂ q) (b : ℂ) :
+theorem completedDirichletUpperAnalytic_coe [NeZero q] (chi : DirichletCharacter ℂ q) (b : ℂ) :
     (completedDirichletUpperAnalytic chi b : Germ upperEndFilter ℂ) =
       Germ.coeRingHom upperEndFilter
         (fun z => DirichletCharacter.completedLFunction chi (2 * (-Complex.I * z) + b)) := by
@@ -56,14 +56,19 @@ theorem completedDirichletUpperAnalytic_coe (chi : DirichletCharacter ℂ q) (b 
     (translatedDoubleDirichletAnalytic chi b : Germ upperEndFilter ℂ) = _
   rw [shiftedRotGammaRealAnalytic_coe, translatedDoubleDirichletAnalytic_coe, ← map_mul]
   apply Germ.coe_eq.mpr
+  change ∀ᶠ z in upperEndFilter,
+    Complex.Gammaℝ (2 * (-Complex.I * z + dirichletCompletionShift chi b)) *
+      DirichletCharacter.LFunction chi (2 * (-Complex.I * z) + b) =
+        DirichletCharacter.completedLFunction chi (2 * (-Complex.I * z) + b)
   rw [upperEndFilter_basis.eventually_iff]
   refine ⟨1 + |b.re|, trivial, fun z hz => ?_⟩
   have hs : 1 < (2 * (-Complex.I * z) + b).re := by
     have hz' : 1 + |b.re| < z.im := hz
     have hb := neg_abs_le b.re
-    simp only [Complex.add_re, Complex.mul_re, Complex.ofNat_re, Complex.ofNat_im,
-      Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im]
-    linarith
+    have hre : (2 * (-Complex.I * z) + b).re = 2 * z.im + b.re := by
+      norm_num [Complex.mul_re]
+    rw [hre]
+    linarith [abs_nonneg b.re]
   have hs0 : 2 * (-Complex.I * z) + b ≠ 0 := by
     intro h
     rw [h] at hs
@@ -71,6 +76,7 @@ theorem completedDirichletUpperAnalytic_coe (chi : DirichletCharacter ℂ q) (b 
   have hg : Complex.Gammaℝ (2 * (-Complex.I * z) + b + (dirichletArchParity chi : ℂ)) ≠ 0 := by
     apply Complex.Gammaℝ_ne_zero_of_re_pos
     simp only [Complex.add_re, Complex.natCast_re]
+    simp only [Complex.add_re] at hs
     have ha : (0 : ℝ) ≤ (dirichletArchParity chi : ℝ) := Nat.cast_nonneg _
     linarith
   change Complex.Gammaℝ (2 * (-Complex.I * z + dirichletCompletionShift chi b)) *
@@ -80,7 +86,7 @@ theorem completedDirichletUpperAnalytic_coe (chi : DirichletCharacter ℂ q) (b 
       rw [dirichletCompletionShift]; ring]
   rw [DirichletCharacter.LFunction_eq_completed_div_gammaFactor chi _ (Or.inl hs0),
     gammaFactor_eq_dirichletArchParity]
-  field_simp
+  rw [mul_comm, div_mul_cancel₀ _ hg]
 
 /-- The actual translated completion in the upper-end meromorphic field. -/
 def completedDirichletUpperMero (chi : DirichletCharacter ℂ q) (b : ℂ) : upperEndMeroField :=
@@ -103,10 +109,11 @@ theorem completedDirichletUpperMero_logDeriv (chi : DirichletCharacter ℂ q) (b
         shiftedRotDigammaMero (dirichletCompletionShift chi b) +
       algebraMap ℂ upperEndMeroField (Complex.I * (Real.log Real.pi : ℂ)) +
       (translatedDoubleDirichletMero chi b)′ / translatedDoubleDirichletMero chi b := by
-  rw [completedDirichletUpperMero, Derivation.leibniz, smul_eq_mul, smul_eq_mul,
+  rw [completedDirichletUpperMero,
+    Derivation.leibniz, smul_eq_mul, smul_eq_mul,
     deriv_shiftedRotGammaRealMero]
   field_simp [shiftedRotGammaRealMero_ne_zero, translatedDoubleDirichletMero_ne_zero]
-  <;> ring
+  ring
 
 /-- The explicitly arithmetic part of the logarithmic coordinate. -/
 def completedDirichletLogCorrection (chi : DirichletCharacter ℂ q) (b : ℂ) : dirZetaBase :=
@@ -120,8 +127,7 @@ theorem completedDirichletUpperMero_logDeriv_affine (chi : DirichletCharacter �
         shiftedRotDigammaMero (dirichletCompletionShift chi b) +
       algebraMap dirZetaBase upperEndMeroField (completedDirichletLogCorrection chi b) := by
   rw [completedDirichletUpperMero_logDeriv]
-  change _ = _ + (_ + _)
-  ring
+  exact add_assoc _ _ _
 
 end
 

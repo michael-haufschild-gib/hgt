@@ -498,3 +498,81 @@ The real next steps the review forces:
 3. The one producer-shaped question left standing is the review's Survivor Candidate 1. On the odd sector the archimedean Doob form alone leaves finitely many sub-threshold modes confined to a compact window, by the confinement results and the prime-free failure recorded as CANNOT-15. The prime jump energy with the actual Λ must lift those modes to the cosh mass. Any attempt here must name the input beyond the linear explicit formula, which the walls say must be multiplicative structure, and must survive the fake-weight countermodel before anything is built.
 
 Evidence: read all 464 lines of the report, Phase 3 of the plan, memory hubs for the CHMD lane and walls catalogue, four Serena memories on cardinal packets and chain variance, docstrings and theorem lists of 17 CHMD and Doob modules, STATUS rows MUST-1529 to 1573. Corpus searches run: odd Doob Poincaré criterion, no-Weyl theorem, cardinal source energy, Beurling–Deny contraction, one-signed ground states. Greps: all riemannHypothesis_iff theorems in the CHMD and Doob files, abs-contraction theorems, Perron and spectral-gap names, eigenvalue-1 statements. Memory written to the auto-memory file and Serena rh/chmd-revisit-hostile-review-audit-2026-10-17.
+
+
+# Phase 4: Argon´s verdict about Claude´s result
+
+
+### 1. Step 1 & Step 2 Executed (`chmd-revisit.md` + Lean Formalization)
+
+1. **Window programme stopped as an RH route**:
+   - Step A item 4 of [cmhd-plan.md](file:///Users/michael/Documents/code/hgt/docs/reports/cmhd-plan.md) (coercivity on windows $\le 2\log 2$ for the one-signed odd cone) is restricted to non-negative even profiles on $(-\log 2, \log 2)$, which is the non-RH window sector (`rh-core-walls-catalogue.md` rows 272–277, Walls 12/13). We do not pursue it further.
+
+2. **Three overclaims fixed in [chmd-revisit.md](file:///Users/michael/Documents/code/hgt/docs/reports/chmd-revisit.md#L436-L465) + unconditional simplicity of eigenvalue $1$ of $R$ proved in Lean**:
+   - The three overclaims in `§3` and `Summary of the Hostile Review` of [chmd-revisit.md](file:///Users/michael/Documents/code/hgt/docs/reports/chmd-revisit.md#L436-L465) have been corrected in place.
+   - Better yet: **unconditional simplicity of the ground eigenvalue $1$ of $R$ does not even require the zero-free line $\operatorname{Re}(\rho) < 1$**. By [`edge_norm_sq_rieszLift`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDArithmeticResolvent.lean#L186-L190),
+     $$\|(\operatorname{rieszLift} w).\text{snd}\|^2 = \langle w, Rw\rangle_\mu - \|Rw\|_\mu^2,$$
+     so $Rw = w$ forces $(\operatorname{rieszLift} w).\text{snd} = 0$. By [`edge_zero_iff_constant`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDDoobSourceGraph.lean#L367-L383) (which uses ergodicity of `archMeasure` alone via [`constant_of_arch_zero`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDDoobSourceGraph.lean#L326-L364)), $\operatorname{rieszLift} w = \operatorname{constantLift} c$, giving $w = (2\langle w, 1\rangle_\mu)\cdot 1$ unconditionally.
+   - We added and compiled both unconditional theorems in [CHMDEvenSectorPointSpectrum.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDEvenSectorPointSpectrum.lean#L396-L438) (along with its downstream dependents `CHMDBoundStateInertia`, `CHMDQuarterZeroBound`, and `CHMDCompactTestSynthesis`):
+     - [`eq_smul_oneL_of_resolvent_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDEvenSectorPointSpectrum.lean#L408-L425): `resolvent w = w → w = (2 * ⟪w, oneL⟫_ℝ) • oneL`
+     - [`eigenvalue_lt_one_of_primitive`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDEvenSectorPointSpectrum.lean#L429-L436): `w ≠ 0 → ⟪w, oneL⟫_ℝ = 0 → resolvent w = μ • w → μ < 1`
+
+---
+
+### 2. Anatomy of Survivor Candidate 1 Against `STATUS.md` and the Named Walls
+
+Survivor Candidate 1 asks: on the odd sector ($v(-x) = -v(x)$, where the pole inner product $\langle v, 1\rangle_\mu = 0$ vanishes automatically), why does the combined Dirichlet energy $\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}^{(\Lambda)}(v)$ dominate $\operatorname{CoshMass}(v^2) = \int_{\mathbb{R}} \Theta(x)\cosh(x/2)v(x)^2\,dx$ on the finitely many sub-threshold modes left inside a compact phase-space box $\{|x| \le R,\; |r| \le T\}$?
+
+Checking the Lean proofs of [`CHMDFarFieldEnergy.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDFarFieldEnergy.lean), [`CHMDWindowLocalization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDWindowLocalization.lean), [`CHMDNoWeylAboveThreshold.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDNoWeylAboveThreshold.lean), and rows `CANNOT-15` and `MUST-1517`–`MUST-1573` of [STATUS.md](file:///Users/michael/Documents/code/hgt/docs/reports/STATUS.md#L5165-L5294) exposes three critical facts about this question:
+
+#### Fact A: How the Confinement Proof Actually Divides Labor Between $\mathcal{E}_{\text{prime}}$ and $\mathcal{E}_{\text{arch}}$
+In the proof of [`weyl_value_le_half`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDNoWeylAboveThreshold.lean#L276-L315) (`MUST-1545`–`MUST-1548`), the two jump forms play **opposite** roles in phase space:
+1. **Spatial confinement ($|x| > R$) comes purely from $\mathcal{E}_{\text{prime}}$, NOT $\mathcal{E}_{\text{arch}}$**:
+   - At large $|x|$, the archimedean jump rate is $O(\Theta(x)) \ll \Theta(x)\cosh(x/2)$ (`CANNOT-15`: without primes, $\mathcal{E}_{\text{arch}}$ has no spatial confinement at all).
+   - Instead, [`CHMDFarFieldEnergy.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDFarFieldEnergy.lean#L198-L246) (`far_field_energy_lower`) drops $\mathcal{E}_{\text{arch}}(v) \ge 0$ completely and uses [`theta_harmonic_identity`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDThetaHarmonicIdentity.lean) ($\sum_{n \ge 2} \frac{\Lambda(n)}{\sqrt{n}}\Theta(x+\log n) = \Theta(x)\cosh(x/2) + S_{\text{arch}}(x)$) on prime jumps connecting $|x| > R$ to $|x+\log n| \le R$:
+     $$\mathcal{E}_{\text{prime}}(v) \ge (1 - \varepsilon)\int_{\mathbb{R}} v(x)^2\,d\mu(x) - C_\varepsilon \int_{-R}^R v(x)^2\,d\mu(x).$$
+2. **Frequency confinement ($|r| > T$ on $[-R, R]$) comes purely from $\mathcal{E}_{\text{arch}}$, NOT $\mathcal{E}_{\text{prime}}$**:
+   - On the compact window $[-R, R]$, [`CHMDWindowLocalization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDWindowLocalization.lean) (`MUST-1547`) drops $\mathcal{E}_{\text{prime}}(v) \ge 0$ completely and uses $\Theta(x) \ge c_R > 0$ on $[-R, R]$ to bound the cutoff function $\chi_R v$ by the flat logarithmic Sobolev form $\frac{1}{2\pi}\int |\widehat{(\chi_R v)}(r)|^2(\gamma(r)-\gamma(0))\,dr$, which is $\gg C_\varepsilon \|\chi_R v\|_2^2$ on frequencies $|r| > T$.
+3. **Why `CHMDFarFieldEnergy.lean` created the negative window penalty $-C_\varepsilon \int_{-R}^R v^2\,d\mu$ in the first place**:
+   - Look at [`window_jump_lower`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDFarFieldEnergy.lean#L83-L94): for a jump between $x$ and $y = x+\log n$ with window indicators $\alpha = \mathbf{1}_{|x|\le R}$ and $\beta = \mathbf{1}_{|y|\le R}$, it applied the coarse Young inequality
+     $$(a - b)^2 \ge \beta a^2 + \alpha b^2 - \delta^{-1}(\alpha a^2 + \beta b^2) - \delta(a^2 + b^2).$$
+   - That inequality did two destructive things on the window $[-R, R]$:
+     - For **cusp-to-window jumps** ($|x| > R, |y| \le R$), it extracted $(1-\delta)v(x)^2$ at the cusp endpoint by charging $-\delta^{-1} v(y)^2$ to the window endpoint $y \in [-R, R]$;
+     - For **window-to-window jumps** ($|x| \le R, |y| \le R$, so $\alpha = \beta = 1$), it threw away the positive jump $(v(x)-v(y))^2 \ge 0$ and replaced it by $(1 - \delta^{-1} - \delta)(v(x)^2 + v(y)^2) < 0$!
+
+---
+
+#### Fact B: Two Hard Gates That Kill Naive Bounds on the Sub-Threshold Window Modes
+
+Before building any new Lean machinery for Survivor Candidate 1, any proposed mechanism must pass two gates already established in `STATUS.md`:
+
+1. **Gate 1 — The Critical-Band Zero-Slack Gate (`MUST-1549`–`MUST-1551`, Wall 11)**:
+   - By [`CHMDThetaCriticalModes.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDThetaCriticalModes.lean) and [`CHMDCriticalBandReduction.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCriticalBandReduction.lean), the operator $L - 1$ ($\mathcal{E}_{\text{arch}} + \mathcal{E}_{\text{prime}} - \operatorname{CoshMass}$) has an **unconditional infinite-dimensional radical** `signedRadical` (spanned by `CHMDThetaTranslate.critical a ha` for $|a| < \frac{\log 2}{2}$ in the even primitive sector, and at every critical-line zero $\gamma_0 \in \mathbb{R}$ by the generalized odd eigenmode $\sin(\gamma_0 x)/\cosh(x/2)$).
+   - On every mode in this critical band,
+     $$\mathcal{E}_{\text{arch}}(v) + \mathcal{E}_{\text{prime}}^{(\Lambda)}(v) - \operatorname{CoshMass}(v^2) = 0 \quad \text{with ZERO slack!}$$
+   - **Immediate consequence**:
+     - You **cannot** drop a single prime power $p^k$ (`Wall 11: PrimeBlindNodeCriticality`): on any critical mode where $(v(x) - v(x+k\log p)) \not\equiv 0$, reducing $\Lambda(p^k)$ by $\varepsilon > 0$ while keeping $\operatorname{CoshMass}(v^2)$ fixed makes the quadratic form strictly negative.
+     - You **cannot** decouple the cusp $|x| > R$ from the window $|x| \le R$ using a global Young parameter $\delta > 0$: any global giveaway $-\delta\operatorname{CoshMass}(v^2)$ immediately pushes critical-band modes below zero.
+     - Therefore, any coercivity argument must either work directly on the **quotient space** `SourceGraph ⧸ signedRadical` ([`reducedSource`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCriticalBandReduction.lean#L96-L130) in `CHMDCriticalBandReduction.lean`) or keep all prime jumps intact without Young-inequality leakage.
+
+2. **Gate 2 — The Fake-Weight / Multiplicativity Gate (`MUST-1552`–`MUST-1555`, `MUST-1563`)**:
+   - Suppose we replace $\Lambda(n)$ by a fake weight $\tilde{\lambda}(n) \ge 0$ having the same pole density $\sum_{n \le x} \tilde{\lambda}(n) \sim x$ (so the same $\Theta$-cusp harmonic asymptotics at $|x| \to \infty$, hence the same essential spectrum $[0, 1/2]$) but coming from a Beurling / fake zeta function with an off-line zero $a = \alpha + i\beta$ ($\beta \ne 0$).
+   - Then every step that uses only $\tilde{\lambda}(n) \ge 0$ and the linear explicit formula $\sum_{n} \frac{\tilde{\lambda}(n)}{\sqrt{n}}\Theta(x+\log n) = \Theta(x)\cosh(x/2) + \tilde{S}_{\text{arch}}(x)$ holds verbatim for $\tilde{\lambda}$, **yet $R_{\tilde{\lambda}}$ DOES have an odd bound state above $1/2$**!
+   - Where are the **only two places** in the entire CHMD/Doob corpus where the multiplicative structure of the actual integers $\mathbb{N}_+$ and genuine $\Lambda$ enters beyond the linear explicit formula?
+     1. **Zero-Silent Polar Positivity on the Odd Sector ([`CHMDFullSpectralPairing.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDFullSpectralPairing.lean#L98-L109))**:
+        For any vector $p \in \operatorname{fullSpectralNullspace}$ (built from translations of the modular Jacobi theta source $\Theta(x) = \sum_{m=1}^\infty \psi(m e^{2x})$, which annihilates all zeros of $\Xi(z)$ simultaneously because $\Xi$ is the Mellin transform of $\Theta$), [`full_nullspace_energy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDFullSpectralPairing.lean#L98-L109) proves:
+        $$\operatorname{sourceEnergy}(p) = -2\,\operatorname{polarCosine}(p)^2 + 2\,\operatorname{polarSine}(p)^2.$$
+        On the **odd** sector, $\operatorname{polarCosine}(p) = \langle p, 1\rangle_\mu = 0$, so **every zero-silent odd vector has $\operatorname{sourceEnergy}(p) = +2\,\operatorname{polarSine}(p)^2 \ge 0$** (strictly $+1/2$ on [`oddPolarVector`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPolarPlane.lean#L47-L88))!
+        By contrast, an off-line zero $a = \alpha + i\beta$ ($\beta \ne 0$) creates a vector [`imVector`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalGraphGeometry.lean#L140-L157) by *dividing out* $(1 - z^2/a^2)^{m_a}$ from $\Xi(z)$, which lands outside `fullSpectralNullspace` with $\operatorname{sourceEnergy}(F.\text{imVector}) = -m_a < 0$.
+     2. **Prime-Power Chain Variance on Product Indices $N = m d n$ ([`CHMDPrimeChainVariance.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainVariance.lean), [`CHMDPrimeChainSourceFactorization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean))**:
+        When expanding $\Theta(x)\Theta(x+\log d) = \sum_{m, n \ge 1} \psi(m e^{2x})\psi(n e^{2x})$ by the **multiplicative product index $N = m d n$**, [`mangoldt_edge_eq_chain_sum`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainVariance.lean) uses **unique prime factorization** (`Nat.ordProj_mul_ordCompl_eq_self`) and **constant weight on prime powers** ($\Lambda(p^r) = \log p$ for all $r \ge 1$, $\Lambda(d) = 0$ if $d$ is composite) to rewrite the prime crossing form at each integer $N$ as a sum of complete bipartite variances `chainVariance N u a ≥ 0` over prime-power chains $\{b p^j : 0 \le j \le \nu_p(N)\}$. This identity fails for any fake weight $\tilde{\lambda}$ that is non-constant across powers $p^r$ or supported on composites.
+
+---
+
+### Bottom Line: The Exact Open Question for Survivor Candidate 1
+
+Every receiver wrapper is complete. Any genuine progress on Survivor Candidate 1 must answer one concrete mathematical question before writing more Lean code:
+
+> **Open Producer Question**: Can the multiplicative divisor-chain variance decomposition ([`doob_source_eq_chain_variances_sub_cosh`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean#L185-L193)) or the differential-difference equation of an off-line cardinal packet ([`arithmeticGenerator_apply_cardinal`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalOperatorAction.lean#L90-L100): $(A - 1)(u_{\text{re}} + i u_{\text{im}}) = m_a \cos(\bar{a}x)/\cosh(x/2)$) be coupled to the archimedean jump form $\mathcal{E}_{\text{arch}}$ so as to rule out $F.\text{imVector}$ (or bound the finite-dimensional sub-threshold odd window modes after quotienting out `signedRadical`), in a way that **explicitly uses $\Lambda(p^r) = \log p$ / unique factorization of $N = mdn$** and therefore fails for a fake weight $\tilde{\lambda}$?
+
+Would you like to test on paper/Python whether the off-line cardinal packet $u_{\text{im}}$ of [`ThetaDivisorCardinalSource.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/ThetaDivisorCardinalSource.lean) violates a concrete constraint when plugged into the multiplicative divisor-chain decomposition of $A$, or explore a different angle?

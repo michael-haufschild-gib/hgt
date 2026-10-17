@@ -34,8 +34,10 @@ theorem rotGammaRealAnalytic_shift :
       upperEndAnalyticSubring) : Germ upperEndFilter ℂ) =
       Germ.coeRingHom upperEndFilter (fun _ : ℂ => (Real.pi : ℂ)⁻¹) := by
     exact Germ.coe_eq.mpr (Filter.Eventually.of_forall fun z => by simp)
-  rw [upperEndTranslateGerm_coe, hc, ← map_mul, ← map_mul]
+  rw [hc, ← map_mul, ← map_mul]
   apply Germ.coe_eq.mpr
+  change ∀ᶠ z in upperEndFilter, rotGammaRealFun (z + Complex.I) =
+    (dirCoordFun z * (Real.pi : ℂ)⁻¹) * rotGammaRealFun z
   rw [upperEndFilter_basis.eventually_iff]
   refine ⟨0, trivial, fun z hz => ?_⟩
   have hs0 : 2 * (-Complex.I * z) ≠ 0 := by
@@ -44,8 +46,7 @@ theorem rotGammaRealAnalytic_shift :
     rw [h] at hp
     norm_num at hp
   have harg : 2 * (-Complex.I * (z + Complex.I)) = 2 * (-Complex.I * z) + 2 := by
-    simp [mul_add, mul_assoc]
-    <;> ring
+    simp [mul_add]
   change Complex.Gammaℝ (2 * (-Complex.I * (z + Complex.I))) =
     ((-Complex.I * z) * (Real.pi : ℂ)⁻¹) * Complex.Gammaℝ (2 * (-Complex.I * z))
   rw [harg, Complex.Gammaℝ_add_two hs0]
@@ -132,7 +133,6 @@ theorem completedDirichletUpperMero_div_mem_of_same_orbit
       (translatedDoubleDirichletMero chi₁ b₁ / translatedDoubleDirichletMero chi₂ b₂) := by
     rw [completedDirichletUpperMero, completedDirichletUpperMero]
     field_simp [shiftedRotGammaRealMero_ne_zero, translatedDoubleDirichletMero_ne_zero]
-    <;> ring
   rw [heq]
   exact mul_mem hg (div_mem (translatedDoubleDirichletMero_mem chi₁ b₁)
     (translatedDoubleDirichletMero_mem chi₂ b₂))

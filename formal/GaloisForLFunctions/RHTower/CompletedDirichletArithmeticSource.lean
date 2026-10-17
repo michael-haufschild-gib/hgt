@@ -25,7 +25,7 @@ local instance completedDirichletArithmeticDifferential : Differential upperEndM
 local instance completedDirichletArithmeticComplex : Algebra ℂ upperEndMeroField :=
   upperEndComplexToMero.toAlgebra
 
-variable {q : ℕ} [NeZero q]
+variable {q : ℕ}
 
 /-- The character coefficients with the unused coefficient at zero set to zero. -/
 def dirichletCharacterArithmeticSource (chi : DirichletCharacter ℂ q) : ArithmeticFunction ℂ :=
@@ -75,7 +75,7 @@ def translatedDoubleDirichletAnalytic (chi : DirichletCharacter ℂ q) (b : ℂ)
     upperEndAnalyticSubring :=
   finiteAbscissaLSeriesUpperEndAnalyticElement (translatedDoubleDirichletSource chi b)
 
-theorem translatedDoubleDirichletAnalytic_coe (chi : DirichletCharacter ℂ q) (b : ℂ) :
+theorem translatedDoubleDirichletAnalytic_coe [NeZero q] (chi : DirichletCharacter ℂ q) (b : ℂ) :
     (translatedDoubleDirichletAnalytic chi b : Germ upperEndFilter ℂ) =
       Germ.coeRingHom upperEndFilter
         (fun z => DirichletCharacter.LFunction chi (2 * (-Complex.I * z) + b)) := by
@@ -83,6 +83,9 @@ theorem translatedDoubleDirichletAnalytic_coe (chi : DirichletCharacter ℂ q) (
     (fun z => LSeries (fun n => (translatedDoubleDirichletSource chi b).1 n)
       (-Complex.I * z))) = _
   apply Germ.coe_eq.mpr
+  change ∀ᶠ z in upperEndFilter,
+    LSeries (fun n => (translatedDoubleDirichletSource chi b).1 n) (-Complex.I * z) =
+      DirichletCharacter.LFunction chi (2 * (-Complex.I * z) + b)
   rw [upperEndFilter_basis.eventually_iff]
   refine ⟨1 + |b.re|, trivial, fun z hz => ?_⟩
   rw [LSeries_translatedDoubleDirichletSource]
@@ -90,9 +93,10 @@ theorem translatedDoubleDirichletAnalytic_coe (chi : DirichletCharacter ℂ q) (
   apply DirichletCharacter.LFunction_eq_LSeries
   have hz' : 1 + |b.re| < z.im := hz
   have hb := neg_abs_le b.re
-  simp only [Complex.add_re, Complex.mul_re, Complex.ofNat_re, Complex.ofNat_im,
-    Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im] at *
-  linarith
+  have hre : (2 * (-Complex.I * z) + b).re = 2 * z.im + b.re := by
+    norm_num [Complex.mul_re]
+  rw [hre]
+  linarith [abs_nonneg b.re]
 
 def translatedDoubleDirichletMero (chi : DirichletCharacter ℂ q) (b : ℂ) : upperEndMeroField :=
   finiteAbscissaLSeriesToUpperEndMero (translatedDoubleDirichletSource chi b)
@@ -104,8 +108,10 @@ theorem translatedDoubleDirichletMero_ne_zero (chi : DirichletCharacter ℂ q) (
     finiteAbscissaLSeriesToUpperEndMero_injective
       (h.trans (map_zero finiteAbscissaLSeriesToUpperEndMero).symm)
   have h1 := congrArg (fun f : finiteAbscissaArithmeticSubalgebra => f.1 1) hs
-  simpa only [translatedDoubleDirichletSource_one,
-    ZeroMemClass.coe_zero, ArithmeticFunction.zero_apply] using h1
+  have h10 : (1 : ℂ) = 0 := by
+    simpa only [translatedDoubleDirichletSource_one,
+      ZeroMemClass.coe_zero, ArithmeticFunction.zero_apply] using h1
+  exact one_ne_zero h10
 
 theorem translatedDoubleDirichletMero_mem (chi : DirichletCharacter ℂ q) (b : ℂ) :
     translatedDoubleDirichletMero chi b ∈ dirZetaBase :=

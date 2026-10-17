@@ -6,17 +6,21 @@ import GaloisForLFunctions.RHTower.CHMDOddPrimeCrossSignBonusAndWindowPositivity
 On the one-signed odd cone the prime `n` enters the Doob energy through the difference
 `B_n(g) − C_n(g)` of the opposite-side convolution `2 (Λ(n)/√n) ∫_0^{log n} g(s) g(log n − s) ds`
 and the same-side autocorrelation `4 (Λ(n)/√n) ∫_0^∞ g(s) g(s + log n) ds` of the profile
-`g = Θ|v|`.  For a profile that is nonincreasing on `[0, a]` and vanishes beyond `a`, the
-convolution dominates twice the autocorrelation at every lag `u ≥ 2a/3`:
+`g = Θ|v|`.  For a profile that vanishes beyond `a` and is nonincreasing on `[c, a]` (a unimodal
+profile with mode at or before `c`; an odd test vanishes at the origin, so `c > 0` is the
+natural case), the convolution dominates twice the autocorrelation at every lag
+`u ≥ max(2a/3, (a + c)/2)`:
 
 `∫_0^u g(s) g(u − s) ds ≥ 2 ∫_0^∞ g(s) g(s + u) ds`.
 
-Hence every prime power with `log n ≥ 2a/3` helps, and only the primes below `e^{2a/3}` can
-hurt.  The constant `2/3` is sharp: for the indicator profile of `[0, a]` the difference equals
-`3u − 2a`.  Consequences: on a support of half-width `a ≤ (3/2) log 2`, every prime term is
-nonnegative and the energy dominates the Lévy form plus the cross-sign bonus, extending the
-unconditional window from `2 log 2` to `3 log 2` on the monotone sub-cone; in general the energy
-dominates the Lévy form, the bonus, and the finitely many prime terms below the threshold.
+Hence every prime power with `log n` beyond that threshold helps, and only the primes below it can
+hurt.  The constant `2/3` is sharp: for the indicator profile of `[0, a]` (`c = 0`) the difference
+equals `3u − 2a`.  Consequences: on a support of half-width `a ≤ (3/2) log 2` with mode
+`c ≤ 2 log 2 − a`, every prime term is nonnegative and the energy dominates the Lévy form plus the
+cross-sign bonus, extending the unconditional window from `2 log 2` to `3 log 2` on the unimodal
+sub-cone; in general the energy dominates the Lévy form, the bonus, and the finitely many prime
+terms below the threshold.  Models of the hypotheses: `v(x) = sign(x) p(|x|)/Θ(x)` with `p`
+any `C²` profile vanishing to second order at `0`, nonincreasing on `[c, a]` and zero beyond `a`.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -27,11 +31,12 @@ open CHMDDoobGraph
 
 /-! ## The convolution–autocorrelation comparison for monotone profiles -/
 
-/-- **Convolution dominates twice the autocorrelation beyond two thirds of the support.** -/
+/-- **Convolution dominates twice the autocorrelation beyond two thirds of the support and beyond
+the midpoint of the mode and the edge.** -/
 theorem two_mul_integral_autocorr_le_integral_conv {g : ℝ → ℝ} (hg : Continuous g)
-    (hgc : HasCompactSupport g) (hg0 : ∀ s, 0 ≤ g s) {a : ℝ} (ha : 0 < a)
-    (hga : ∀ s, a ≤ s → g s = 0) (hmono : AntitoneOn g (Icc 0 a)) {u : ℝ}
-    (hu : 2 * a / 3 ≤ u) :
+    (hgc : HasCompactSupport g) (hg0 : ∀ s, 0 ≤ g s) {a c : ℝ} (ha : 0 < a)
+    (hga : ∀ s, a ≤ s → g s = 0) (hmono : AntitoneOn g (Icc c a)) {u : ℝ}
+    (hu : 2 * a / 3 ≤ u) (huc : (a + c) / 2 ≤ u) :
     2 * ∫ s in Ioi (0 : ℝ), g s * g (s + u) ≤ ∫ s in (0 : ℝ)..u, g s * g (u - s) := by
   have hu0 : 0 ≤ u := by linarith
   have hF : Continuous fun s => g s * g (u - s) := by fun_prop
@@ -89,15 +94,15 @@ theorem two_mul_integral_autocorr_le_integral_conv {g : ℝ → ℝ} (hg : Conti
 
 /-! ## The prime-sign law -/
 
-/-- **Every prime power beyond two thirds of the support helps**: `C_n(g) ≤ B_n(g)` whenever
-`log n ≥ 2a/3` for a profile nonincreasing on `[0, a]` and vanishing beyond `a`. -/
+/-- **Every prime power beyond the threshold helps**: `C_n(g) ≤ B_n(g)` whenever
+`log n ≥ max(2a/3, (a + c)/2)` for a profile nonincreasing on `[c, a]` and vanishing beyond `a`. -/
 theorem sameSideCross_le_oppositeSideBonus_of_antitoneOn {g : ℝ → ℝ} (hg : Continuous g)
-    (hgc : HasCompactSupport g) (hg0 : ∀ s, 0 ≤ g s) {a : ℝ} (ha : 0 < a)
-    (hga : ∀ s, a ≤ s → g s = 0) (hmono : AntitoneOn g (Icc 0 a)) {n : ℕ}
-    (hn : 2 * a / 3 ≤ Real.log n) :
+    (hgc : HasCompactSupport g) (hg0 : ∀ s, 0 ≤ g s) {a c : ℝ} (ha : 0 < a)
+    (hga : ∀ s, a ≤ s → g s = 0) (hmono : AntitoneOn g (Icc c a)) {n : ℕ}
+    (hn : 2 * a / 3 ≤ Real.log n) (hnc : (a + c) / 2 ≤ Real.log n) :
     sameSideCross g n ≤ oppositeSideBonus g n := by
   unfold sameSideCross oppositeSideBonus
-  have h := two_mul_integral_autocorr_le_integral_conv hg hgc hg0 ha hga hmono hn
+  have h := two_mul_integral_autocorr_le_integral_conv hg hgc hg0 ha hga hmono hn hnc
   have hw := vonMangoldtAtom_nonneg n
   have := mul_le_mul_of_nonneg_left h hw
   linarith
@@ -110,17 +115,17 @@ theorem phiDoobTest_abs_vanish {v : ℝ → ℝ} {L : ℝ}
   show riemannKernelReal s * |v s| = 0
   rw [hsupp s (fun h => by linarith [h.2]), abs_zero, mul_zero]
 
-/-- **The monotone prime-sign law on the one-signed odd cone**: for a one-signed odd test of support
-`(−L/2, L/2)` whose Doob profile `Θ|v|` is nonincreasing on `[0, L/2]`, every prime power with
-`log n ≥ L/3` contributes nonnegatively, so the energy dominates the Lévy form, the cross-sign
-bonus and the finitely many prime terms below `e^{L/3}`:
-`E(v) ≥ Λ_∞(Θ|v|) + 4·bonus(Θ|v|) + Σ_{n < N} (B_n − C_n)` for every `N` with `L/3 ≤ log N`. -/
+/-- **The unimodal prime-sign law on the one-signed odd cone**: for a one-signed odd test of support
+`(−L/2, L/2)` whose Doob profile `Θ|v|` is nonincreasing on `[c, L/2]`, every prime power with
+`log n ≥ max(L/3, (L/2 + c)/2)` contributes nonnegatively, so the energy dominates the Lévy form,
+the cross-sign bonus and the finitely many prime terms below the threshold:
+`E(v) ≥ Λ_∞(Θ|v|) + 4·bonus(Θ|v|) + Σ_{n < N} (B_n − C_n)` for every `N` beyond the threshold. -/
 theorem levy_abs_add_bonus_add_sum_le_sourceEnergy_of_antitoneOn (v : ℝ → ℝ)
     (hv : ContDiff ℝ 2 v) (hvc : HasCompactSupport v) (hodd : ∀ x, v (-x) = -v x)
-    (hpos : ∀ x, 0 ≤ x → 0 ≤ v x) {L : ℝ} (hL : 0 < L)
+    (hpos : ∀ x, 0 ≤ x → 0 ≤ v x) {L c : ℝ} (hL : 0 < L)
     (hsupp : ∀ x ∉ Ioo (-(L / 2)) (L / 2), v x = 0)
-    (hmono : AntitoneOn (phiDoobTest fun y => |v y|) (Icc 0 (L / 2))) {N : ℕ}
-    (hN : L / 3 ≤ Real.log N) :
+    (hmono : AntitoneOn (phiDoobTest fun y => |v y|) (Icc c (L / 2))) {N : ℕ}
+    (hN : L / 3 ≤ Real.log N) (hNc : (L / 2 + c) / 2 ≤ Real.log N) :
     weilLevyForm (phiDoobTest fun y => |v y|) + 4 * crossSignBonus (phiDoobTest fun y => |v y|) +
         ∑ n ∈ Finset.range N, (oppositeSideBonus (phiDoobTest fun y => |v y|) n -
           sameSideCross (phiDoobTest fun y => |v y|) n) ≤
@@ -148,22 +153,23 @@ theorem levy_abs_add_bonus_add_sum_le_sourceEnergy_of_antitoneOn (v : ℝ → �
   have hlog : Real.log N ≤ Real.log n :=
     Real.log_le_log (by exact_mod_cast hNpos) (by exact_mod_cast hnN)
   refine sub_nonneg.mpr (sameSideCross_le_oppositeSideBonus_of_antitoneOn hgc hgcs hg0
-    (by linarith : 0 < L / 2) (fun s hs => phiDoobTest_abs_vanish hsupp hs) hmono ?_)
-  linarith
+    (by linarith : 0 < L / 2) (fun s hs => phiDoobTest_abs_vanish hsupp hs) hmono ?_ ?_)
+  · linarith
+  · linarith
 
-/-- **The monotone window `3 log 2`**: for a one-signed odd test of support `(−L/2, L/2)` with
-`L ≤ 3 log 2` whose Doob profile is nonincreasing on `[0, L/2]`, every prime term is nonnegative
-and the energy dominates the Lévy form plus the cross-sign bonus. -/
+/-- **The unimodal window `3 log 2`**: for a one-signed odd test of support `(−L/2, L/2)` with
+`L ≤ 3 log 2` whose Doob profile is nonincreasing on `[c, L/2]` with `c ≤ 2 log 2 − L/2`, every
+prime term is nonnegative and the energy dominates the Lévy form plus the cross-sign bonus. -/
 theorem levy_abs_add_bonus_le_sourceEnergy_of_antitoneOn_three_log_two (v : ℝ → ℝ)
     (hv : ContDiff ℝ 2 v) (hvc : HasCompactSupport v) (hodd : ∀ x, v (-x) = -v x)
-    (hpos : ∀ x, 0 ≤ x → 0 ≤ v x) {L : ℝ} (hL : 0 < L)
+    (hpos : ∀ x, 0 ≤ x → 0 ≤ v x) {L c : ℝ} (hL : 0 < L)
     (hsupp : ∀ x ∉ Ioo (-(L / 2)) (L / 2), v x = 0)
-    (hmono : AntitoneOn (phiDoobTest fun y => |v y|) (Icc 0 (L / 2)))
-    (hL2 : L ≤ 3 * Real.log 2) :
+    (hmono : AntitoneOn (phiDoobTest fun y => |v y|) (Icc c (L / 2)))
+    (hL2 : L ≤ 3 * Real.log 2) (hc : (L / 2 + c) / 2 ≤ Real.log 2) :
     weilLevyForm (phiDoobTest fun y => |v y|) + 4 * crossSignBonus (phiDoobTest fun y => |v y|) ≤
       sourceEnergy (compactLift v hv hvc) := by
   have h := levy_abs_add_bonus_add_sum_le_sourceEnergy_of_antitoneOn v hv hvc hodd hpos hL hsupp
-    hmono (N := 2) (by push_cast; linarith)
+    hmono (N := 2) (by push_cast; linarith) (by push_cast; linarith)
   have h2 : ∑ n ∈ Finset.range 2, (oppositeSideBonus (phiDoobTest fun y => |v y|) n -
       sameSideCross (phiDoobTest fun y => |v y|) n) = 0 := by
     rw [Finset.sum_range_succ, Finset.sum_range_one]
@@ -223,5 +229,141 @@ theorem conv_sub_two_mul_autocorr_indicator {a u : ℝ} (hu0 : 0 ≤ u) (hua : u
         (Icc 0 a).indicator (fun _ => (1 : ℝ)) (s + u) = 3 * u - 2 * a := by
   rw [integral_conv_indicator hu0 hua, integral_autocorr_indicator hu0 hua]
   ring
+
+
+/-! ## Sharpness of the mode threshold: the two-step profile -/
+
+/-- The two-step profile: `M` on `[0, 1)`, `1` on `[1, 2]`, zero elsewhere (mode `c = 1`, support
+`a = 2`, so the two thresholds are `2a/3 = 4/3` and `(a + c)/2 = 3/2`). -/
+noncomputable def twoStepProfile (M : ℝ) (s : ℝ) : ℝ :=
+  M * (Ico (0 : ℝ) 1).indicator (fun _ => (1 : ℝ)) s + (Icc (1 : ℝ) 2).indicator (fun _ => (1 : ℝ)) s
+
+theorem twoStepProfile_of_mem_Ico {M s : ℝ} (h : s ∈ Ico (0 : ℝ) 1) : twoStepProfile M s = M := by
+  unfold twoStepProfile
+  rw [indicator_of_mem h, indicator_of_notMem (fun h' : s ∈ Icc (1 : ℝ) 2 => by
+    linarith [h.2, h'.1])]
+  ring
+
+theorem twoStepProfile_of_mem_Icc {M s : ℝ} (h : s ∈ Icc (1 : ℝ) 2) : twoStepProfile M s = 1 := by
+  unfold twoStepProfile
+  rw [indicator_of_mem h, indicator_of_notMem (fun h' : s ∈ Ico (0 : ℝ) 1 => by
+    linarith [h.1, h'.2])]
+  ring
+
+theorem twoStepProfile_of_two_lt {M s : ℝ} (h : 2 < s) : twoStepProfile M s = 0 := by
+  unfold twoStepProfile
+  rw [indicator_of_notMem (fun h' : s ∈ Icc (1 : ℝ) 2 => by linarith [h'.2]),
+    indicator_of_notMem (fun h' : s ∈ Ico (0 : ℝ) 1 => by linarith [h'.2])]
+  ring
+
+theorem measurable_twoStepProfile (M : ℝ) : Measurable (twoStepProfile M) := by
+  unfold twoStepProfile
+  exact (measurable_const.mul (measurable_const.indicator measurableSet_Ico)).add
+    (measurable_const.indicator measurableSet_Icc)
+
+theorem abs_twoStepProfile_le (M s : ℝ) : |twoStepProfile M s| ≤ |M| + 1 := by
+  unfold twoStepProfile
+  have h1 : |(Ico (0 : ℝ) 1).indicator (fun _ => (1 : ℝ)) s| ≤ 1 := by
+    by_cases h : s ∈ Ico (0 : ℝ) 1 <;> simp [h]
+  have h2 : |(Icc (1 : ℝ) 2).indicator (fun _ => (1 : ℝ)) s| ≤ 1 := by
+    by_cases h : s ∈ Icc (1 : ℝ) 2 <;> simp [h]
+  refine (abs_add_le _ _).trans (add_le_add ?_ h2)
+  rw [abs_mul]
+  exact mul_le_of_le_one_right (abs_nonneg _) h1
+
+theorem intervalIntegrable_twoStepProfile_mul (M : ℝ) {φ : ℝ → ℝ} (hφ : Measurable φ)
+    (c d : ℝ) :
+    IntervalIntegrable (fun s => twoStepProfile M s * twoStepProfile M (φ s)) volume c d := by
+  rw [intervalIntegrable_iff]
+  refine Measure.integrableOn_of_bounded (M := (|M| + 1) ^ 2) measure_Ioc_lt_top.ne
+    ((measurable_twoStepProfile M).mul
+      ((measurable_twoStepProfile M).comp hφ)).aestronglyMeasurable (ae_of_all _ fun s => ?_)
+  rw [Real.norm_eq_abs, abs_mul, sq]
+  exact mul_le_mul (abs_twoStepProfile_le _ _) (abs_twoStepProfile_le _ _) (abs_nonneg _)
+    (by positivity)
+
+/-- The convolution of the two-step profile at a lag `u ∈ (1, 3/2)`. -/
+theorem integral_conv_twoStepProfile {M u : ℝ} (hu1 : 1 < u) (hu2 : u < 3 / 2) :
+    ∫ s in (0 : ℝ)..u, twoStepProfile M s * twoStepProfile M (u - s) =
+      2 * M * (u - 1) + M ^ 2 * (2 - u) := by
+  have hI : ∀ c d : ℝ, IntervalIntegrable
+      (fun s => twoStepProfile M s * twoStepProfile M (u - s)) volume c d :=
+    fun c d => intervalIntegrable_twoStepProfile_mul M (φ := fun s => u - s) (by fun_prop) c d
+  rw [← intervalIntegral.integral_add_adjacent_intervals (hI 0 (u - 1)) (hI (u - 1) u),
+    ← intervalIntegral.integral_add_adjacent_intervals (hI (u - 1) 1) (hI 1 u)]
+  have h1 : ∫ s in (0 : ℝ)..(u - 1), twoStepProfile M s * twoStepProfile M (u - s) =
+      (u - 1) * M := by
+    have hpt : EqOn (fun s => twoStepProfile M s * twoStepProfile M (u - s)) (fun _ => M)
+        (uIcc 0 (u - 1)) := by
+      intro s hs
+      rw [uIcc_of_le (by linarith)] at hs
+      simp only
+      rw [twoStepProfile_of_mem_Ico ⟨hs.1, by linarith [hs.2]⟩,
+        twoStepProfile_of_mem_Icc ⟨by linarith [hs.2], by linarith [hs.1]⟩, mul_one]
+    rw [intervalIntegral.integral_congr hpt, intervalIntegral.integral_const, smul_eq_mul, sub_zero]
+  have h2 : ∫ s in (u - 1)..1, twoStepProfile M s * twoStepProfile M (u - s) =
+      (2 - u) * M ^ 2 := by
+    have hpt : ∀ᵐ x ∂(volume : Measure ℝ), x ∈ uIoc (u - 1) 1 →
+        twoStepProfile M x * twoStepProfile M (u - x) = M ^ 2 := by
+      filter_upwards [Measure.ae_ne volume (1 : ℝ)] with x hx1 hx
+      rw [uIoc_of_le (by linarith)] at hx
+      have hx1' : x < 1 := lt_of_le_of_ne hx.2 hx1
+      rw [twoStepProfile_of_mem_Ico ⟨by linarith [hx.1], hx1'⟩,
+        twoStepProfile_of_mem_Ico ⟨by linarith, by linarith [hx.1]⟩, sq]
+    rw [intervalIntegral.integral_congr_ae hpt, intervalIntegral.integral_const, smul_eq_mul,
+      show (1 : ℝ) - (u - 1) = 2 - u by ring]
+  have h3 : ∫ s in (1 : ℝ)..u, twoStepProfile M s * twoStepProfile M (u - s) = (u - 1) * M := by
+    have hpt : EqOn (fun s => twoStepProfile M s * twoStepProfile M (u - s)) (fun _ => M)
+        (uIcc 1 u) := by
+      intro s hs
+      rw [uIcc_of_le hu1.le] at hs
+      simp only
+      rw [twoStepProfile_of_mem_Icc ⟨hs.1, by linarith [hs.2]⟩,
+        twoStepProfile_of_mem_Ico ⟨by linarith [hs.2], by linarith [hs.1]⟩, one_mul]
+    rw [intervalIntegral.integral_congr hpt, intervalIntegral.integral_const, smul_eq_mul]
+  rw [h1, h2, h3]
+  ring
+
+/-- The autocorrelation of the two-step profile at a lag `u ∈ (1, 3/2)`. -/
+theorem integral_autocorr_twoStepProfile {M u : ℝ} (hu1 : 1 < u) (hu2 : u < 3 / 2) :
+    ∫ s in Ioi (0 : ℝ), twoStepProfile M s * twoStepProfile M (s + u) = M * (2 - u) := by
+  have h : ∀ s ∈ Ioi (0 : ℝ), twoStepProfile M s * twoStepProfile M (s + u) =
+      M * (Ioc 0 (2 - u)).indicator (fun _ => (1 : ℝ)) s := by
+    intro s hs
+    have hs0 : 0 < s := hs
+    by_cases hsb : s ≤ 2 - u
+    · rw [twoStepProfile_of_mem_Ico ⟨hs0.le, by linarith⟩,
+        twoStepProfile_of_mem_Icc ⟨by linarith, by linarith⟩,
+        indicator_of_mem (show s ∈ Ioc 0 (2 - u) from ⟨hs0, hsb⟩)]
+    · rw [not_le] at hsb
+      rw [twoStepProfile_of_two_lt (s := s + u) (by linarith), mul_zero,
+        indicator_of_notMem (fun h : s ∈ Ioc 0 (2 - u) => by linarith [h.2]), mul_zero]
+  rw [setIntegral_congr_fun measurableSet_Ioi h, integral_const_mul,
+    setIntegral_indicator measurableSet_Ioc]
+  have hinter : Ioi (0 : ℝ) ∩ Ioc 0 (2 - u) = Ioc 0 (2 - u) := by
+    ext s
+    simp only [mem_inter_iff, mem_Ioi, mem_Ioc]
+    tauto
+  rw [hinter, setIntegral_const, Real.volume_real_Ioc, smul_eq_mul, mul_one, sub_zero,
+    max_eq_left (by linarith)]
+
+/-- **Sharpness of the mode threshold**: for the two-step profile (`a = 2`, `c = 1`) and a lag
+`u ∈ (1, 3/2)`, the convolution minus twice the autocorrelation equals
+`−M (6 − 4u − M (2 − u))`. -/
+theorem conv_sub_two_mul_autocorr_twoStepProfile {M u : ℝ} (hu1 : 1 < u) (hu2 : u < 3 / 2) :
+    (∫ s in (0 : ℝ)..u, twoStepProfile M s * twoStepProfile M (u - s)) -
+      2 * ∫ s in Ioi (0 : ℝ), twoStepProfile M s * twoStepProfile M (s + u) =
+      -(M * (6 - 4 * u - M * (2 - u))) := by
+  rw [integral_conv_twoStepProfile hu1 hu2, integral_autocorr_twoStepProfile hu1 hu2]
+  ring
+
+/-- For small positive `M` the comparison fails at every lag in `(4/3, 3/2)`: the threshold
+`(a + c)/2` cannot be lowered to `2a/3` for profiles that are only monotone beyond the mode. -/
+theorem conv_sub_two_mul_autocorr_twoStepProfile_neg {M u : ℝ} (hu1 : 1 < u) (hu2 : u < 3 / 2)
+    (hM0 : 0 < M) (hM : M * (2 - u) < 6 - 4 * u) :
+    (∫ s in (0 : ℝ)..u, twoStepProfile M s * twoStepProfile M (u - s)) -
+      2 * ∫ s in Ioi (0 : ℝ), twoStepProfile M s * twoStepProfile M (s + u) < 0 := by
+  rw [conv_sub_two_mul_autocorr_twoStepProfile hu1 hu2]
+  exact neg_neg_of_pos (mul_pos hM0 (by linarith))
 
 end RHTower.CHMDPolar

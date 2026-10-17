@@ -96,3 +96,16 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
   `gapDirichlet_continuation_hoheisel` (unconditional instance). Standard axioms; wired.
   Recorded: Heath-Brown's admissibility of 5/18+ε is a cited literature input, not proved on the card;
   the card's "≍ |t|" lower half has no paper proof (only ≪ is a theorem).
+- 2026-10-17 card 4: L14.3 DONE (`WeilMarkovPoleCapacity`, namespace `RHTower.WeilMarkovPole`):
+  `weil_eq_markovForm_add_pole` (W = M_N + ½⟨c,g⟩² − ½⟨s,g⟩², M_N = V_N‖g‖² + Lévy jumps + prime
+  jumps), `markovForm_abs_le` (Markov/normal contraction), `pole_le_pole_abs` (pole anti-Markov),
+  `weil_nonneg_iff_sinhCapacity`, `riemannHypothesis_iff_sinhCapacity` (RH ⟺ sinh-capacity bound at
+  every level), `forall_sq_dotProduct_le_iff` (Gram form: bound ⟺ ⟨s,Q⁻¹s⟩ ≤ 2). Standard axioms; wired.
+- 2026-10-17 card 4: L14.2 core DONE (`WeilNodeDilationFamily`, namespace `RHTower.NodeDilation`):
+  `PrimeBlindPositiveDilated t`; dilation formula `weilArchRe_comp_div`, continuity
+  `tendsto_weilArchRe_comp_div`; `riemannHypothesis_of_tendsto` / `riemannHypothesis_iff_exists_tendsto`
+  (dilation continuity theorem); `primeBlindPositiveDilated_one_div_of_one/_of_riemannHypothesis`
+  (PBAP(1) ⟹ PBAP(1/k)); `primeBlindPositiveDilated_iff` (PBAP(t) = blind positivity of the dilated
+  datum A_t at log n); `gammaBracket_two_mul` (Ω(2r) = log 2 + ½(D_{−1/4}+D_{3/4})),
+  `Gammaℝ_sub_quarter_mul` (Γℝ(s−¼)Γℝ(s+¾) = Γℂ(s−¼)), `primeBlindPositiveDilated_half_iff`.
+  Standard axioms; wired. Remaining in L14.2: criticality law (sign of S) for the null ray G₀.

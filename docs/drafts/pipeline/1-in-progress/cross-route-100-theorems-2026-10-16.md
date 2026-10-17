@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 4 / 100.
+Status: ACTIVE. Count verified for this goal: 5 / 100.
 
 ## User requirements
 
@@ -73,9 +73,23 @@ novelty is not claimed: user forbids external novelty research.
    wired once; index and formal lint with generated-file check pass. Counted
    once, including damping, intertwining and domain/graph classifications.
 
+5. Exact relative translation-orbit classification of completed Dirichlet
+   families. Card:
+   `../3-formalized/completed-dirichlet-parity-differential-matroid-2026-10-17.md`.
+   Inputs: rational-defect inertness over all convergent Dirichlet series,
+   base-field shift elimination, joint gamma pole orbits, and actual completed
+   arithmetic sources. For arbitrary actual characters and translations,
+   completed profiles are differentially independent exactly when their
+   gamma labels occupy distinct integer-translation orbits. Same-orbit
+   quotients lie in the base field; every character supplies arbitrarily
+   large explicit independent palettes. Twelve leaves compile cleanly;
+   all 17 axiom audits and six unconditional signature checks pass. Imports
+   wired once; index and formal lint with generated-file check pass.
+   Counted once, including parity, logarithmic and explicit specializations.
+
 ## Working plan
 
-1. Contributions 1–4 complete. Recheck significance and exact scope before
+1. Contributions 1–5 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -86,15 +100,12 @@ novelty is not claimed: user forbids external novelty research.
 
 ## Uncounted next lead
 
-Candidate 5, uncounted:
-`../2-fully-proven/completed-dirichlet-parity-differential-matroid-2026-10-17.md`.
-Paper proof establishes the exact translation-orbit classification for
-completed Dirichlet L-functions over all convergent Dirichlet series;
-unshifted families have two channels indexed by parity. Source evidence combines rational-defect
-inertness, shifted Hurwitz/gamma pole orbits and actual completed arithmetic
-sources. Relative joint independence uses base-field shift elimination;
-the stronger ambient-fixed-field criterion does not apply. Exact Lean
-formalization, verification and counting gates remain open.
+Independent candidate 6 has a dependency-closed paper proof, uncounted:
+`../2-fully-proven/prime-burnol-bounded-symbol-classification-2026-10-17.md`.
+It classifies all bounded operators preserving actual-prime Burnol eigenlines
+by bounded holomorphic symbols on the right half-plane, and identifies the
+infinite-prime cubic and first-order Pick contraction cones. All parts count
+together once if the exact literal theorem passes formalization and audit.
 
 Other exploratory searches compared prime-only Laplace completeness and
 generic natural boundaries. Generic density consequences, repackaging the
