@@ -226,7 +226,9 @@ theorem frameSourceError_eq_zero_of_double_zeros (f : C_c(ℝ, ℝ)) (N : ℕ) (
     simp only [zero_add] at hh
     change _ * autocorr f ((p.2 : ℝ) * Real.log 2 - (p.1 : ℝ) * Real.log 2) = 0
     rw [hh, mul_zero]
-  simp [frameSourceError, he, crossLagError_eq_zero_of_double_zeros f N (1 / 2) (Real.log 2) w hz]
+  unfold frameSourceError
+  rw [he, crossLagError_eq_zero_of_double_zeros f N (1 / 2) (Real.log 2) w hz]
+  norm_num
 
 theorem frameGramUpper_of_double_zeros (f : C_c(ℝ, ℝ)) (N : ℕ) (w : ℕ → ℝ)
     (hz : ∀ m : ℕ, 1 ≤ m → m ≤ 2 * N → autocorr f ((m : ℝ) * Real.log 2) = 0) :

@@ -27777,3 +27777,4 @@ import GaloisForLFunctions.RHTower.FermiNymanWitnessGermLaws
 import GaloisForLFunctions.RHTower.NonTemperedShiftedZetaPairCountermodel
 import GaloisForLFunctions.RHTower.WeilConeMismatchWitnesses
 import GaloisForLFunctions.RHTower.ZeroCountRemainderNotIntegrable
+import GaloisForLFunctions.RHTower.FermiNymanDyadicFoldGeometry
