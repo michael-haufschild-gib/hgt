@@ -55,8 +55,8 @@ unverified until the endpoint and floor-count details are audited.
 
 - [x] Initial corpus search, including candidates and source arguments.
 - [x] Audit endpoint, continuity, support and integration details on paper.
-- [ ] Construct the actual C_c test and prove exact grid preservation in Lean.
-- [ ] Prove the exact pairing and explicit bound, with no arithmetic assumption.
+- [x] Construct the actual C_c test and prove exact grid preservation in Lean.
+- [x] Prove the exact pairing and explicit bound, with no arithmetic assumption.
 - [ ] Certify uniform upper and positive lower L² bounds for this concrete family.
 - [ ] Direct leaf checks, scratch axioms, umbrella, lint and index.
 
@@ -78,3 +78,20 @@ source-only/pending compiler metadata and unmeasured semantic coverage. Retrieve
 smooth logarithmic-grid sources, finite-grid extensions, and the current unverified
 factorial producer source; no retrieved theorem supplies this common-dilation
 construction and exact harmonic correction. Inspect those precedents before code.
+
+## Implementation checkpoint
+
+The grid-source precedents were inspected: both impose autocorrelation zeros,
+so neither supplies the required exact nonzero grid values. The additional deep
+alternating-sum search (`/tmp/spp9-alternating-search.json`) timed out in reranking;
+the available candidates concern infinite-series convergence or unrelated finite
+operators. Their source arguments do not close this finite stencil estimate.
+
+`AntitoneDyadicStencil.lean` passed its initial direct leaf check; its imports were
+then narrowed and need a final recheck. It is a helper, not a separate count.
+`ClampedExponentialRamp.lean` and `SignedPrimePolarContinuousFactorialLift.lean`
+pass final direct leaf checks with empty output. The complete producer, domain,
+grid identity, exact pairing, bound and autocorrelation exclusion pass in
+`/tmp/spp9_producer.lean`; the corresponding final leaf check is running.
+The energy proof remains in `/tmp/spp9_energy.lean` for its first check.
+The package remains uncounted until that proof and all final gates pass.

@@ -466,11 +466,14 @@ source arguments were inspected. No external novelty claim follows from retrieva
   Trap 10 prioritizes explicit unconditional producers over further receivers.
 - Contribution 8 supplies an explicit unconditional scalar producer. It does not
   discharge the arbitrary-correlation packet problem. Next uncounted candidate:
-  `0-backlog/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
+  `1-in-progress/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
   A common dilation average over [1,1+1/(4N)] should preserve every prime-grid
   value while producing a compact continuous test, with exact pairing
   [2 B_N−(1+1/(8N))C_N]/sqrt(N). Uniform nonvanishing L² size is also targeted.
-  Those smoothing and size claims remain unproved/unformalized. Initial search
+  A dependency-closed paper proof now exists in
+  `SignedPrimePolarContinuousFactorialProducer.md`; Lean verification is in progress.
+  The finite antitone stencil and exact single-ramp integral pass direct leaf checks;
+  the full continuous-producer package remains uncounted. Initial search
   `/tmp/spp8-next-search.json` reports partial=false/errors=[] and retrieves grid
   interpolation precedents; inspect their exact scope before new code.
 - The prior multiple-collar search returned finite discrete Gram precedents, not

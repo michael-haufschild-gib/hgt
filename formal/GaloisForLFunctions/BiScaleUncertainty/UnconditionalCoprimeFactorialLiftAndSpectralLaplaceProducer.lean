@@ -197,6 +197,7 @@ theorem factorialCoprimeTwoThree_top {N : ℕ} (hN : 1 ≤ N) :
   rw [hs]
   have hsn : Real.sqrt (N : ℝ) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hn)
   field_simp
+  norm_num
 
 /-- `factorialCoprimeTwoThree (n + 1)` is a genuine producer, not an autocorrelation receiver. -/
 theorem factorialCoprimeTwoThree_ne_autocorr (n : ℕ) (f : C_c(ℝ, ℝ)) :

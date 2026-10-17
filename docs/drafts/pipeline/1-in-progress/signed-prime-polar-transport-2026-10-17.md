@@ -88,11 +88,11 @@ The test is discontinuous and cannot be an autocorrelation: its origin is zero,
 but its value at log(4N) is 2. The complete producer package counts once.
 
 Next uncounted candidate:
-`0-backlog/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
+`1-in-progress/signed-prime-polar-grid-preserving-smoothing-2026-10-17.md`.
 Average a small common dilation to obtain a concrete C_c test while preserving
 all prime-grid values. Target the exact harmonic correction after averaging and
-uniform positive lower/upper L² bounds. The construction is sketched, not yet
-proved or formalized. Search `/tmp/spp8-next-search.json` has partial=false/errors=[];
+uniform positive lower/upper L² bounds. The dependency-closed paper proof is now
+written; full Lean verification is in progress. Search `/tmp/spp8-next-search.json` has partial=false/errors=[];
 source-only retrieval is not proof certification.
 
 Secondary uncounted candidate: reduce B(d) to the triangular correlation integral

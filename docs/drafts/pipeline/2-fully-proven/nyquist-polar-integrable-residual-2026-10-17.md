@@ -88,3 +88,17 @@ including absolute summation and endpoint conventions, are proved in the paper.
 5. Check every new leaf, all public axiom dependencies, imports/API entries and lint;
    then update the ledger. Count the entire connected result once. `update_plan`
    is unavailable; this card carries the plan. The field README remains read-only.
+
+The refreshed deep search `/tmp/nyquist-residual-deep.json` completed with
+`partial=false`, complete inventory and no unfinished stage or search error.
+All 20 candidate lemmas and 20 source arguments were inspected; their compiler
+status is source-only. The proposed ingredient set repeats the existing cell L2
+bounds; it supplies no all-tail operator theorem. The six-hit current lexical
+check is `/tmp/nyquist-residual-current-lexical.txt`. Actual input bounds were
+read directly, and new mathlib APIs are being verified in a scratch Lean file.
+
+Implementation uses zero-based cell k=[log(k+1),log(k+2)] and tail N starting
+at log(N+1), so its unconditional rate is 1/sqrt(N+1). This is exactly the
+paper's positive-integer indexing. The kernel is the pointwise sum of the
+disjoint cell indicators times their explicit residual densities; its local
+form and integrability will be proved before constructing the operator.

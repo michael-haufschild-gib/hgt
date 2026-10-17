@@ -436,13 +436,44 @@ Search `/tmp/bsu-signed-dual-conditioning-search.log` completed with 219
 declarations in 40 modules; source-only candidates, older coverage snapshot,
 semantic coverage unmeasured. No exhaustive novelty claim.
 
-Next constructive candidate, uncounted: select the least active collar attaining
-the actual finite price minimum at each point. Finite measurable comparisons
-should produce an actual physical partition with zero cross-slack. Package 10
-would then give response gain = canonical gap − curvature remainder. This is not
-yet an ascent or convergence theorem. Discovery
-`/tmp/bsu-dyadic-next-physical-producer-search.log` returned useful price/partition
-ingredients, but source-only older coverage with semantic completeness unmeasured.
+Constructive physical response and cutoff ladder, Lean-verified package 12.
+For actual source f and incumbent partition ρ, let E_k contain the active points
+at which p_k equals the finite minimum price, with k≤n. The cells
+F_k=E_k\(union_(j<k) E_j) are measurable, disjoint, and cover the physical interval.
+Their characteristic functions define an actual admissible response η, with
+exactly one selected collar per physical point. Inactive collars are excluded
+before tie-breaking; a masked inactive price tied with the minimum receives no mass.
+
+The response attains the pointwise and integrated minimum of ρ's physical linear
+cost. Every minimizing partition allocates only to minimum-price active collars
+almost everywhere, and every such partition minimizes the cost. Thus ρ's canonical
+gap G is the attained greatest feasible linearized gain over actual partitions.
+The actual coefficient gain is C(η)−C(ρ)=G−D, where D is the nonnegative integrated
+full-Gram norm remainder. All signed and cross-coset Gram entries are retained.
+
+Accept η when C(η)≥C(ρ), otherwise retain ρ. The accepted coefficient C⁺ satisfies
+C⁺−C(ρ)=max(0,G−D) and C(ρ)+G−C⁺=min(G,D). Consequently
+0≤S_n(f)−C⁺≤min(G,D), and
+0≤S∞(f)−C⁺≤min(G,D)+2h_f(0)·collarCutoffTailMass(n).
+This is an unconditional bound for a constructed response, not a supplied error budget.
+
+Starting with equalMultiplicity at cutoff 0, repeatedly apply actual physical
+extension and accepted response. The produced A_n(f)=gramResponseCoefficient f n is monotone, lies below
+S_n(f), and tends to a finite produced limit L(f)≤S∞(f). At actual cutoff N=n+2,
+the normalized error to S∞ is at most the produced partition's gap/h_f(0) plus
+8·2^(1/4)/(sqrt(N)(1−2/N²)); the successor also has the sharper min(G,D) certificate
+from its explicit extension. Compact C² sources satisfy A_n/h_f(0)≤L/h_f(0)≤J_arch/h_f(0).
+The extended-energy lower bound holds for every actual compact continuous source.
+No strict ascent, vanishing gaps, or equality L=S∞ is asserted.
+
+All three leaves and the final direct check pass without diagnostics. All 43
+public theorem axiom audits pass exactly once with the standard three axioms.
+Next uncounted direction: quantify damped responses, using a proved fixed-cutoff
+Gram residual or an explicitly controlled norm regularization. Source-dependent
+coercivity must not be replaced by a cutoff-uniform assumption. Generic finite
+translate independence and its curvature consequences remain unproved here.
+Search `/tmp/bsu-minimum-response-search.log` returned useful source-only price,
+partition and cover arguments; older coverage, semantic completeness unmeasured.
 
 Trap 10 constrains the next step: prioritize an explicit source/weight producer
 with unconditional error, rather than another interface with an unresolved bound.
@@ -462,7 +493,8 @@ import audit failed because its `.olean` is absent. No fresh Lean audit claimed;
 - P_N optimizes the independent signed-coset sphere relaxation. It is not identified
   with the sharp constant over actual autocorrelations.
 - Opposite-sign product-zero coupling is now connected to physical source transport.
-  General nonzero Schur residuals and all full-grid cross-coset constraints remain open.
+  Sharp optimization with general nonzero Schur residuals and full cross-coset
+  constraints remains open.
 - Fixed narrow smooth sources imply the true finite-grid constants are bounded above
   uniformly in N. Unbounded growth is impossible on this unrestricted-support domain.
 - A finite maximum over earlier cutoffs certifies monotonicity immediately. It does
@@ -471,10 +503,12 @@ import audit failed because its `.olean` is absent. No fresh Lean audit claimed;
   autocorrelation extremizer. Optimizer attainment is not needed for the bounds.
 - Tail control of this allocation optimum does not automatically control the error
   to the true source infimum, or the error of a stronger Schur-coupled hierarchy.
+- The constructed response ladder has a finite limit below S∞. Equality of those
+  limits and a rate forcing its allocation gap to zero remain open.
 
 ## Research accounting
 
-Lean-verified significant packages: **11/100**: (1) general source transfer and
+Lean-verified significant packages: **12/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
@@ -493,19 +527,20 @@ optimized finite limit, explicit inverse-square-root error, and actual-source re
 finite-allocation error and quantitative limiting actual-source trial certificates;
 (11) an explicit fixed smooth dyadic source and packet producer, sharp anchored
 full-Gram minimum, unique positive triangular coefficients, exact squared-distance
-remainder, and logarithmic cutoff degeneration.
+remainder, and logarithmic cutoff degeneration;
+(12) an actual measurable pure minimum-price response, attained linear optimum
+and complete equality classification, exact accepted-response error, and a
+monotone physical cutoff producer with finite limit and actual-source certificates.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Latest global lint reports eleven unrelated modules unreachable from the umbrella:
-`CoprimeShearArithmeticWeightsAndChebyshevCellIncrement`, `FiniteIntegerTrainCompactness`,
-`FiniteIntegerTrainEnergy`, `FiniteIntegerTrainPackets`, `FiniteIntegerTrainPeak`,
-`FiniteIntegerTrainPolar`, `FiniteIntegerTrainProducers`,
-`FoldFreeKernelGramAndFranelGcdCancellation`, `TernaryPacketPolarGrowth`,
-`TernaryPacketTrain`, `WitnessGermOriginMassAndJointTailHeadSynthesis`.
-Those concurrent files were not modified. All thirty-three owned leaves are wired.
-Evidence: `/tmp/bsu-dyadic-lint-final.log` and `/tmp/bsu-dyadic-integrity.json`.
+Latest global lint reports six unrelated modules unreachable from the umbrella:
+`AntitoneDyadicStencil`, `BandLimitedLaplaceEnergy`, `ClampedExponentialRamp`,
+`FiniteFilterSchurResidual`, `NyquistResidualMass`,
+`SignedPrimePolarContinuousFactorialLift`. Those concurrent files were not modified.
+All thirty-six owned leaves are wired. Evidence:
+`/tmp/bsu-minimum-response-lint-final.log` and `/tmp/bsu-minimum-response-integrity.json`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and

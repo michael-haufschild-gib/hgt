@@ -1,10 +1,10 @@
 # Hyperbolic multiplier lifting: verified facts
 
-Independent BiScaleUncertainty program. No RH work, no hgtl7 skill, no numerical experiments. User requires 100 significant contributions, one per turn; supporting lemmas/classical inequalities are not separate contributions. Count: **18/100**, goal ACTIVE. Read brief every new turn: `/Users/michael/.codex/attachments/88558842-9142-47a9-bda1-a9d243d1a408/pasted-text-1.txt` and complete field `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (READ-ONLY; user instruction).
+Independent BiScaleUncertainty program. No RH work, no hgtl7 skill, no numerical experiments. User requires 100 significant contributions, one per turn; supporting lemmas/classical inequalities are not separate contributions. Count: **19/100**, goal ACTIVE. Read brief every new turn: `/Users/michael/.codex/attachments/88558842-9142-47a9-bda1-a9d243d1a408/pasted-text-1.txt` and complete field `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` (READ-ONLY; user instruction).
 
 Authoritative facts: `docs/reports/BiScaleUncertainty/HyperbolicMultiplierLifting-FACTS.md`. Paper proofs, plan, commands and latest global lint status: `docs/drafts/pipeline/1-in-progress/hyperbolic-multiplier-lifting-2026-10-17.md` (now >500 lines; use ranges). Preserve other agents' concurrent edits. No commits/push/full builds.
 
-Eighteen verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
+Nineteen verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
 1. HyperbolicMultiplierGramTransfer.lean — compensated secant/signed-kernel transfer with measured sine Gram defect; 13 public theorem audits. SHA256 12ec9a1f19c416d8d0601c1c1e133880318a69cb43d84e3a133034fd8b387444.
 2. HyperbolicJumpEnergyTransfer.lean — signed-sinh squared-jump law, actual source-support envelope, uncompensated collar and full secant receiver; 19 audits. SHA256 56fb077bbe28fbae0d143d8a62f68db8bbcc87c5c3c941c2e0b43feea856e2b4.
 3. PlasticCrossoverGramReceiver.lean — exact positive-remainder decomposition and actual signed plastic receiver, odd/source-origin forms; 18 audits. SHA256 c34e886a83d099242571f9bdcb2b4e49fd3841608fad2448b9615e2ee49cd923.
@@ -29,8 +29,9 @@ Eighteen verified modules in `formal/GaloisForLFunctions/BiScaleUncertainty/`:
 16. LocalCoherentFilter.lean — exact finite hyperbolic producer, signed difference/sum-lag Gram formula, exact coherent endpoint and unconditional odd moment/plastic transfer; 14 public theorem audits. SHA256 1e71a25424aebd61b98307a70d8ba62c28b2e085c7b51e3d360fd4ce2946988c.
 17. LocalFilterLatticeGain.lean — actual finite-filter coefficient energy at most13/9, quantitative dominance over projected lattice price2, explicit unconditional plastic gain; 11 public theorem audits. SHA256 da97d0679dfcd8f390e0279cc0ae1704e9ac94045e700123ce277c123ab05a57.
 18. HyperbolicVarianceRigidity.lean — exact centered-energy/variance degeneracies, strictly positive finite-filter gain on every nonzero source, strict plastic improvement iff input is not even; 13 public theorem audits. SHA256 2d3baccc6ece6eefd2e74eea3fca2862453c0a4b119eab0e5ddf5483cff44b9c.
+19. FiniteFilterSchurResidual.lean — actual filter support escape, strictly positive double-projection residual, exact Schur defect and recovered plastic correction; 13 public theorem audits. SHA256 6f119308bd255012affd90d0eeaac906b40a35147aec5298f5cc23a7cac90119.
 
-All eighteen actual-source compilations passed without warnings. All 272 public theorem axiom audits use only propext, Classical.choice, Quot.sound. Each is wired into BiScale umbrella. Sixth module has 408 lines, namespace `GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGram`. Actual source and emitted olean audited; no source edits after successful compile. Fifth hash revalidated during sixth turn. Global lint is independent and can fail on concurrent modules/generated drift; exact latest snapshot is on master card. Never claim repository-wide clean gate without evidence.
+All nineteen actual-source compilations passed without warnings. All 285 public theorem axiom audits use only propext, Classical.choice, Quot.sound. Each is wired into BiScale umbrella. Sixth module has 408 lines, namespace `GaloisForLFunctions.BiScaleUncertainty.ProjectedHyperbolicGram`. Actual source and emitted olean audited; no source edits after successful compile. Fifth hash revalidated during sixth turn. Global lint is independent and can fail on concurrent modules/generated drift; exact latest snapshot is on master card. Never claim repository-wide clean gate without evidence.
 
 Exact established mathematics:
 - Correct scale alpha=1/2. C=C_(1/2)f, S=S_(1/2)f, R=hf0, RS=hS0. hC-hS=cosh(x/2)hf and RC=R+RS. Source zero means hC=hS, not multiplier zero. A source clique diagonalizes GC-GS, not GS. Deltaf sech=R(sech-sech^2)+(DeltaC-DeltaS)sech^2, so dropping cosine companion after lower DeltaS bound has wrong sign.
@@ -279,3 +280,52 @@ Verification:
 - Corpus hybrid query hyperbolic source variance zero strict positive centered energy --any --module BiScaleUncertainty --per-module2 --explore0 returned current identities plus PathCongestion.weightedVariance_eq_zero_iff in CompactSourcePairVariance. This classifies general observable constancy but not hyperbolic level rigidity or strict gain. Inspected its continuous-a.e.-equality mechanism; did not import its broader independent topic. Partial search, unfinished text/source retrieval, older coverage and unmeasured semantic coverage. No external novelty claim.
 
 Master card plan through23, section18 proof/audits complete. Facts ledger Eighteen. Main strictness question is CLOSED; do not re-count or re-prove it as a new contribution. Next significant directions: quantify Schur slack / norm-price attainment for actual finite producers, optimize source-supported producer energy, compare moment prices against positive original energies. Source-clique no-extra-projection-gain law remains unchanged. Generic inequalities or incremental constant refinements are not standalone contributions.
+
+
+## Latest verified contribution19: finite-filter escape and strict Schur residual
+
+Previous turn PROGRESS.19/100 complete, full100 goal ACTIVE. Original hyperbolic multiplier/odd plastic topic, no RH/hgtl7/numerical experiments/agents. Read brief every turn; canonical README still READ-ONLY and unchanged at SHA256 dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933. Serena list_memories(topic:biscale) avoids huge unrelated output.
+
+New source formal/GaloisForLFunctions/BiScaleUncertainty/FiniteFilterSchurResidual.lean, namespace GaloisForLFunctions.BiScaleUncertainty.FiniteFilterSchurResidual.345 lines,4 public definitions,13 public theorems. SHA256 6f119308bd255012affd90d0eeaac906b40a35147aec5298f5cc23a7cac90119. Source18 unchanged at2d3baccc6ece6eefd2e74eea3fca2862453c0a4b119eab0e5ddf5483cff44b9c.
+
+Exact actual-producer facts:
+- sourceFilter_escape_iff f: (exists v,f(v)=0 and A_f(v)!=0) iff f!=0.
+  Proof M=sSup support f, support nonempty/bounded via actual source radius; choose u with M-log2<u in support. L=sourceCutoff>=1. At v=u+Llog2, only outermost negative translate survives, A(v)=f(u)/(2cosh(Llog2/2))!=0. All other arguments exceed M. No sign or connected-support assumption.
+- q=(cosh(u)-mu)f,Q=||q||²,beta=centeredFilterPairing f=<q,A>.
+  r=orthogonalFilter f=A-(kappa/R)f, H=filterEnergy f=||r||², <q,r>=beta.
+- schurResidual f=e=r-(beta/Q)q is actual C_c source.
+  schurResidualEnergy f=E=||e||².
+  schurResidual_source_pairing and schurResidual_centered_pairing prove orthogonality to f and q, unconditionally.
+  schurResidual_energy: E=H-beta²/Q.
+  schur_defect_identity: Q E=QH-beta², with zero Q branch discharged by actual source energy rigidity.
+- schurResidualEnergy_eq_zero_iff f: E=0 iff f=0; schurResidualEnergy_pos_iff: E>0 iff f!=0.
+  At escaping v both f(v) and q(v) vanish, so e(v)=A(v)!=0; continuity/source-energy rigidity supplies positive norm.
+- strict_schur_iff: beta²<QH iff f!=0. Finite-filter Cauchy--Schwarz norm price cannot be saturated by nonzero compact sources.
+- schurResidualGain f = Q E/(sqrt(QH)+beta).
+  schurResidualGain_eq: g_res=sqrt(QH)-beta, including zero source.
+  For f!=0 strict |beta|<sqrt(QH) proves denominator positive; no division premise assumed.
+  schurResidualGain_pos_iff: g_res>0 iff f!=0; schurResidualGain_nonneg all f.
+- localBudget_sub_residualGain: C_local-g_res=R_S+sigma+beta.
+- odd_plastic_residual_gain_certificate f N:
+  let F=oddCompactSource f, B=I_opt(F,N)+R_plastic(F)-2log2*C_local(F).
+  (B<B+2log2*g_res(F) iff not Function.Even f) AND B+2log2*g_res(F)<=P(F).
+  Uses established source16 exact pairing receiver. Do NOT claim a new endpoint beyond that receiver; new contribution is support escape, strict nonattainment, actual positive residual invariant, exact recovered norm slack. No uniform positive gap, global optimality or universal plastic positivity.
+
+No-go closure:
+docs/drafts/pipeline/5-failed/finite-filter-schur-saturation-2026-10-17.md.
+Retires only NONZERO SATURATION of finite-filter Schur norm price; finite-filter method survives. Exact positive survivor E and g_res fully paper-proved and Lean-audited. No bare negative retirement. Existing source-clique no-extra-source-projection-gain law remains unchanged.
+
+Verification:
+- Initial API35686 exit0. Initial source62660 found only support nonemptiness/coercion/helper-tactic issues.
+- Final actual source6502 exit0,no warnings:
+  lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FiniteFilterSchurResidual.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/FiniteFilterSchurResidual.olean
+- Final API/all13axioms15226 exit0,no warnings. Only propext,Classical.choice,Quot.sound; source/audit lists match. Total285 public supporting theorem audits. No source edits afterward.
+- Pitfalls: change support.Nonempty to exists u,f u!=0 before by_contra!, otherwise h is support=empty. Annotate (r-c•q : C_c(R,R)) inside autocorr: without type annotation elaboration chooses subtraction of function coercions and rewrite misses bundled source. field_simp can close the defect identity entirely; remove following ring.
+- Umbrella wired; index97542 exit0 (6 changed),17 public declarations indexed. Lint73706 exit1 on6 unrelated unreachable modules and generated drift. Bounded refresh35729 exit0 (0 changed),17 own declarations remained indexed. Final lint30979 exit1 on8 unrelated unreachable modules: AntitoneDyadicStencil,ClampedExponentialRamp,NyquistResidualKernel,NyquistResidualMass,NyquistResidualPartition,SelbergSieveTailQuadraticFormAndTruncatedDivisorGram,SignedPrimePolarContinuousFactorialLift,SignedPrimePolarContinuousFactorialProducer. Concurrent formal/LEAN_API.md and formal/LEAN_OVERVIEW.md drift remains, plus existing large-file warnings. No owned lifting module flagged; no repository-wide clean gate; no endless drift chasing.
+- Source19,source18,README hashes verified unchanged. Whitespace passed; /tmp/hml_schur_api.lean and /tmp/hml_schur_lint.txt deleted,absence verified. All own Lean/search/index/lint handles terminal; one owned Lean process at a time. No numerical experiment, full build, commit or push.
+- Two direct corpus queries: finite hyperbolic filter Cauchy Schwarz slack source projection residual; compact source translate extreme support finite cancellation. Both partial, unfinished text/source retrieval, older coverage, semantic coverage unmeasured. Relevant exact filter/orthogonality/rigidity source inspected; no local escape/nonattainment predecessor found. No external priority claim.
+
+Master card plan through24, section19 proof/audits complete; facts ledger Nineteen. Full goal ACTIVE.
+Closed questions: source hyperbolic variance rigidity, strict projected-vs-local gain, and nonzero saturation of the local finite-filter Cauchy--Schwarz norm price.
+Remaining substantial frontier: optimize actual source-supported producers, quantify useful residual lower bounds, classify attainment of the EXACT coherent pairing endpoint (different from the now-retired local norm-price saturation), compare signed moment prices with positive original energies.
+Possible next direction, UNPROVED: identify exact coherent slope sum_k h_S(k log2) as cell L2 norm of a periodized actual S, then classify/realize constant-fold saturation. Search corpus first. Do not count generic identities, incremental constants or renamed closed results as new contributions.

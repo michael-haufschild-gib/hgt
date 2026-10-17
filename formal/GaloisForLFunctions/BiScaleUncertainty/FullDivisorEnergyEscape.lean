@@ -59,7 +59,7 @@ theorem fullDivisorRampRaw_zero (n : ℕ) : fullDivisorRampRaw n 0 = 0 := by
 
 theorem fullDivisorRampRaw_succ (n k : ℕ) :
     fullDivisorRampRaw n (k+1) = if k < n+1 then 1-(k : ℝ)/((n : ℝ)+1) else 0 := by
-  simpa only [Nat.add_comm 1 k] using
+  simpa only [fullDivisorRampRaw, Nat.add_comm 1 k] using
     intervalTraceData_at 1 (n+1) k (fun j => 1-(j : ℝ)/((n : ℝ)+1))
 
 def fullDivisorRamp (d n : ℕ) : DivisorGridData d Set.univ :=
@@ -100,12 +100,12 @@ theorem fullDivisorRamp_gradient (n : ℕ) :
             · rw [if_pos hjn]
               push_cast
               field_simp [hn]
-              <;> ring
+              ring
             · rw [if_neg hjn]
               have he : j = n := by omega
               subst j
               field_simp [hn]
-              <;> ring
+              ring
           · simp only [if_neg hj, if_neg (by omega : ¬ j+1 < n+1)]
             ring
 

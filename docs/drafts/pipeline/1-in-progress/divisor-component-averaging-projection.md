@@ -1,7 +1,7 @@
 # Explicit component averaging in physical energy
 
 - **ID:** divisor-component-averaging-projection
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Statement:** Construct the physical best-approximation producer for arbitrary
   divisor families by unit-cell averaging followed by finite-component centering.
@@ -31,9 +31,17 @@ Initial hybrid search: `cell projection component average minimum energy
 completed trace`, BiScaleUncertainty filter, --any, 60-second budget. All20
 candidate statements and all20 source-argument statements inspected. Existing
 finite-cell energy decomposition, single-grid projection, and old minimum-
-energy theorems are relevant. The current unverified completion drafts also
-appear and are not independent certification. No explicit arbitrary-component
+energy theorems are relevant. Completion drafts were already indexed before
+verification; those hits were not independent certification. No explicit arbitrary-component
 physical projector was returned. partial=true; text/source retrieval interrupted;
 coverage generation1446251 pending; refresh incomplete/background_indexer_running.
 No compiler certification or absence/novelty conclusion follows from these hits.
 Evidence: /tmp/divisor-completion-next-search.json.
+
+Plan: construct canonical component endpoints, identify orthogonal residuals
+as explicit finite means (zero on infinite tails), group their actual ℓ²
+energy by finite components, then synthesize from physical cell averages.
+Prove exact best-approximation and error formulas for arbitrary physical L²
+input, with first cell and negative half-line accounted for. Write paper proof
+before Lean; audit direct leaves, all public axioms, imports, index and lint.
+The update_plan tool is unavailable; this card records the plan.

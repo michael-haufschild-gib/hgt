@@ -1643,5 +1643,41 @@ finite cancellation. Both partial (unfinished text/source retrieval, older
 coverage snapshot, semantic coverage unmeasured). Relevant finite filter,
 source-orthogonality, variance-rigidity and translated-support declarations
 inspected; no existing escape/nonattainment theorem found. This is local
-nonduplication evidence, not an external novelty claim. Count remains18 until
-the exact positive survivor and capstone are verified.
+nonduplication evidence, not an external novelty claim. Exact positive survivor
+and capstone are now verified: contribution19/100, one substantive result.
+
+### Verification of the nineteenth result
+
+- Final actual-source audit6502 exited0 without warnings:
+  `lake --old env lean GaloisForLFunctions/BiScaleUncertainty/FiniteFilterSchurResidual.lean -o .lake/build/lib/lean/GaloisForLFunctions/BiScaleUncertainty/FiniteFilterSchurResidual.olean`.
+  Source SHA2566f119308bd255012affd90d0eeaac906b40a35147aec5298f5cc23a7cac90119;
+  345 lines, four public definitions, thirteen public theorems. No source edits
+  after this final audit.
+- Initial source62660 required exposing support nonemptiness as an existential,
+  annotating the compact-source subtraction inside autocorr, and removing a
+  ring tactic after field_simp had closed its goal. No mathematical premise or
+  conclusion changed; no heartbeat or recursion changes.
+- Initial API35686 exited0. Final `lake --old env lean /tmp/hml_schur_api.lean`,
+  session15226, exited0 without warnings. All13 public theorem axiom audits
+  use only `propext`, `Classical.choice`, `Quot.sound`; source/audit name lists
+  match exactly. One owned Lean process at a time. Total285 public theorem audits.
+- Umbrella wired. Failed-route card created at
+  `docs/drafts/pipeline/5-failed/finite-filter-schur-saturation-2026-10-17.md`,
+  with the exact positive survivor and capstone; final Lean audit status complete.
+- Index97542 exited0 (6 changed); all17 public declarations indexed. Lint73706
+  exited1 on6 unrelated unreachable modules plus concurrent drift in
+  LEAN_API/LEAN_OVERVIEW. Bounded refresh35729 exited0 (0 changed), all17 owned
+  declarations remained indexed. Final lint30979 exited1 on8 unrelated
+  unreachable modules: `AntitoneDyadicStencil`, `ClampedExponentialRamp`,
+  `NyquistResidualKernel`, `NyquistResidualMass`, `NyquistResidualPartition`,
+  `SelbergSieveTailQuadraticFormAndTruncatedDivisorGram`,
+  `SignedPrimePolarContinuousFactorialLift`, `SignedPrimePolarContinuousFactorialProducer`.
+  Concurrent drift remains in LEAN_API/LEAN_OVERVIEW, plus existing large-file
+  warnings. No owned lifting module flagged. No further drift chasing; unrelated
+  sources untouched, no repository-wide clean-gate claim.
+- Source19/18 and read-only README hashes unchanged. No source edits after
+  final actual-source audit. All owned source/API/search/index/lint processes
+  terminal; one owned Lean process at a time throughout. No numerical experiment,
+  full build, commit or push. Contribution19/100 complete; full goal ACTIVE.
+- Owned `/tmp/hml_schur_api.lean` and `/tmp/hml_schur_lint.txt` removed;
+  absence and final whitespace checks verified.

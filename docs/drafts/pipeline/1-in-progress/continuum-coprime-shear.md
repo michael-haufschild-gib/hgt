@@ -28,7 +28,8 @@ The requested `update_plan` tool is unavailable; this card records the plan.
    Joint two-grid trace extension, sharp stability and the closed sum are proved.
    Finite divisor families now have sharp longest-run constants and actual sine attainers.
    Arbitrary divisor families now have an exact run-gap/closed-range classifier.
-   Extend to energy-complete trace domains, admission beyond compact support, and closed-graph APIs.
+   Their physical energy completion, conservation laws and escaping trace producers are proved.
+   Extend to explicit component projections, admission beyond compact support, and closed-graph APIs.
 5. Audit each leaf directly, axioms, umbrella wiring, lint, and indexes.
 6. Continue conjecture/proof/failure cycles toward 100 substantive packages.
 
@@ -90,10 +91,12 @@ traces or a constructed interpolant.
   sine attainers, closed range and exact mismatch; eight leaves, 124 declarations audited.
 - [x] Arbitrary divisor-family closed-range/coercivity/run-gap classification,
   sharp bounded factors and normalized near-null producers; five leaves, 76 declarations audited.
+- [x] Physical energy completion, finite-component conservation, exact trace recovery,
+  and explicit ramp producers with error1/N; five leaves,73 declarations audited.
 - [ ] Closed-form identification and full affine operator uncertainty.
 - [ ] 100 significant contributions.
 
-Certified count: **14 / 100**. Formalized packages:
+Certified count: **15 / 100**. Formalized packages:
 `../3-formalized/continuum-trace-affine-edge-control.md` and
 `../3-formalized/coprime-logarithmic-sobolev-traces.md`, and
 `../3-formalized/infinite-edge-logarithmic-path-congestion.md`, and
@@ -107,7 +110,8 @@ Certified count: **14 / 100**. Formalized packages:
 `../3-formalized/coprime-projection-angle-gap.md`, and
 `../3-formalized/two-grid-coprime-trace-extension.md`, and
 `../3-formalized/finite-grid-run-length-coercivity.md`, and
-`../3-formalized/infinite-divisor-run-gap-classification.md`.
+`../3-formalized/infinite-divisor-run-gap-classification.md`, and
+`../3-formalized/divisor-trace-energy-completion.md`.
 
 ## Current exact result and next frontier
 
@@ -334,8 +338,26 @@ Five direct leaf checks and all 76 public axiom audits pass;19 signatures inspec
 Global lint has 15 unrelated missing imports plus generated drift; index refreshed
 and own coverage rechecked. This turn is progress; goal active at 14/100.
 
+## Certified package 15: physical energy completion
+
+The exact physical closure is the isometric synthesis of ℓ² cell currents
+with zero cumulative trace at inactive nodes, equivalently zero sum on every
+finite active component. Orthogonal currents are constant along active edges
+and zero on infinite active tails. Completed traces recover old data exactly
+when square-summable; universal recovery is equivalent to bounded active runs.
+For the full family, unitCell1 has no old preimage, while explicit finite ramps
+approximate it with exact squared error1/(n+1). This is one connected contribution.
+
+All five direct leaf checks and all73 public-declaration axiom checks pass;
+only standard axioms.13 principal signatures and52 API probes inspected.
+Five imports and72 catalog entries verified. Global lint exits1 solely for
+six unrelated unreachable modules, listed in the card and ledger; no own or
+generated-index error. Paper preceded Lean; README remains read-only.
+Current certified count15/100; goal remains active.
+
 ## Next candidate
 
-`../0-backlog/divisor-trace-energy-completion.md`: identify the physical range
-closure through finite-component conservation laws and construct completed trace
-data when ℓ² recovery is unstable. Unproved and uncounted; corpus caveats are on the card.
+`../0-backlog/divisor-component-averaging-projection.md`: construct explicit
+component-mean subtraction for arbitrary physical L² input and an exact
+noncellular/component-mean error decomposition. Unproved and uncounted;
+corpus caveats are on the card. No Lean assigned.

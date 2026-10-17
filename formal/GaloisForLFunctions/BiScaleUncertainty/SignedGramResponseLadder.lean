@@ -45,7 +45,7 @@ theorem gramResponseStep_exact_gain (ρ : PhysicalCollarPartition n) (f : C_c(�
   rw [ρ.gramResponseStep_coefficient f, ← max_sub_sub_right, sub_self,
     ρ.gramMinimumResponse_exact_gain f]
 
-/-- The accepted response spends exactly the smaller of the two dual error budgets. -/
+/-- The remaining old dual deficit is exactly the smaller of the two error budgets. -/
 theorem gramResponseStep_dual_deficit (ρ : PhysicalCollarPartition n) (f : C_c(ℝ, ℝ)) :
     ρ.signedGramCoefficient f + ρ.gramGap f - (ρ.gramResponseStep f).signedGramCoefficient f =
       min (ρ.gramGap f) (∫ y in Ioo 0 logarithmicCollarRadius,

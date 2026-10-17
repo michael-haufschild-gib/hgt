@@ -42,17 +42,18 @@
 15. [x] Construct an explicit compact-source dyadic packet producer and prove its
     sharp anchored minimum and cutoff error; audit finite strict positivity only
     where it supports the concrete construction.
-16. [ ] Construct a measurable least-price physical response, prove exact linear
+16. [x] Construct a measurable least-price physical response, prove exact linear
     optimality and actual gain, then build an accepted-response cutoff ladder.
 17. [ ] Develop general signed multi-column Schur-coupled growth and matching
     finite-limit asymptotics. These and the full 100-contribution objective remain open.
 
-Package 11 verifies the explicit smooth bump-difference source and triangular
-dyadic weights below, with exact anchored Gram minimum, unique active coefficients,
-and logarithmic cutoff law. This is a producer with unconditional quantitative
-error, in accordance with the user's Trap 10 guidance. Next uncounted candidate:
-construct a measurable least-price physical response and audit its exact gain.
-The source-dependent limit is not identified with H∞.
+Package 12 constructs an actual measurable minimum-price physical response,
+classifies all linear-cost minimizers, and proves its exact gain. An accepted
+response after each physical cutoff extension produces monotone source-energy
+coefficients, with remaining error bounded by min(gap, curvature remainder) plus
+the cutoff tail. This continues the explicit-producer direction required by Trap 10.
+Next: quantitative damped responses and a justified curvature bound. The produced
+limit is not identified with S∞, nor the source-dependent optimum with H∞.
 
 Updated field context: read all 260 lines of the relocated read-only README after
 the user's Trap 10 message; SHA-256
@@ -92,10 +93,13 @@ source energy. Full measured-Gram trial prices now give an exact dual-gap identi
 zero-gap complementarity and finite-allocation plus cutoff error for every trial
 partition. Package 11 adds a fixed smooth actual-source producer with sharp
 anchored Gram minimum R/(m+1), unique positive triangular weights, and exact
-squared-distance remainder at signed dyadic cutoff 2^m. All four leaves, all 55
-public theorem axiom audits, and the final direct leaf check pass. Progress: 11/100.
-Latest global lint reports eleven unrelated concurrent umbrella failures.
-Next: constructive physical price responses, nonzero-lag support, and sharp asymptotics.
+squared-distance remainder at signed dyadic cutoff 2^m. Package 12 realizes a pure
+measurable minimum-price response and an accepted-response cutoff ladder. The
+ladder's coefficients are monotone with finite produced limit; their certified
+post-response error is min(gap, curvature remainder) plus cutoff tail. All three
+new leaves, all 43 public theorem axiom audits, and the final direct leaf check pass.
+Progress: 12/100. Latest global lint reports six unrelated concurrent umbrella failures.
+Next: quantitative damped responses, nonzero-lag support, and sharp asymptotics.
 
 Current signed-capacity search `/tmp/bsu-signed-capacity-search.log` finds 586
 declarations in 83 modules. It supplies actual translation-packet norm identities
@@ -313,20 +317,18 @@ nonnegative coefficients and this one fixed smooth source. This is an anchored
 minimum, not a claimed minimum eigenvalue or condition-number formula. No polar
 admission, physical collar allocation, or sharp asymptotic for S_N is inferred.
 
-Next constructive direction, still uncounted: a measurable least-price response
-partition for the actual prices from package 10. Choose the least active index
-attaining the finite price minimum at each physical point. Finite comparisons
-should prove measurability and partition support, with zero cross-slack exactly.
-The exact dual-gap formula would then isolate the actual response gain from its
-nonnegative curvature remainder. This is not yet a monotone ascent or convergence
-claim. Deep discovery `/tmp/bsu-dyadic-next-physical-producer-search.log` completed
+The constructive direction is now realized in package 12: a measurable least-price
+response partition for the actual prices from package 10, with zero cross-slack
+and exact gain after curvature loss. Acceptance and extension produce a monotone
+cutoff ladder. Strict ascent and equality of produced and optimized limits remain
+open. Deep discovery `/tmp/bsu-dyadic-next-physical-producer-search.log` completed
 with zero lexical hits but useful actual price/partition/transport candidates;
 source-only, older snapshot, semantic coverage unmeasured. No novelty claim.
 
-### Constructive minimum-price response and cutoff ladder (package 12 candidate)
+### Constructive minimum-price response and cutoff ladder (package 12, verified)
 
-Previous goal turn made verified progress: package 11 completed. Current count
-remains 11/100 until this complete construction and its audits pass.
+Previous goal turn completed package 11. This complete construction is package 12;
+its 43 public theorems form one significant contribution, not 43 contributions.
 
 Fix an actual compact continuous source f and physical partition ρ at cutoff n.
 Let p_k(x)=ρ.gramPhysicalPrice f k x, q(x)=ρ.gramPriceFloor f x, and Ω be the
@@ -371,14 +373,15 @@ bounds. This does not yet prove produced limit=S∞, vanishing gaps, strict asce
 or sharp error to the unrestricted source infimum.
 
 Implementation plan: [x] `SignedGramMinimumResponse.lean` (measurable pure
-selection and admissible response); [ ] `SignedGramResponseOptimality.lean`
+selection and admissible response); [x] `SignedGramResponseOptimality.lean`
 (attained linear minimum, equality classification and exact actual gain);
-[ ] `SignedGramResponseLadder.lean` (accepted update, monotone cutoff producer,
+[x] `SignedGramResponseLadder.lean` (accepted update, monotone cutoff producer,
 finite limit and source certificate); [ ] direct leaf/axiom/lint/index/integrity audits.
 Keep prior 33 owned leaves unchanged, wire new leaves, preserve read-only README.
-All three leaves are written and wired. Selection now passes its dependency check
-without diagnostics; optimality and ladder checks remain pending. The prepared
-audit covers all 43 public theorems. No package counted yet. Selection excludes
+All three leaves are written and wired, and all three dependency checks pass
+without diagnostics. All 43 public theorem axiom audits pass exactly once, only
+`propext`, `Classical.choice`, and `Quot.sound`. Concrete definitions and capstone
+signatures inspected; final direct check passes with an empty log. Selection excludes
 inactive collars before comparing ties, so an inactive masked-price tie cannot
 receive physical mass.
 
@@ -388,6 +391,31 @@ share identities. Source arguments and proposed ingredients inspected. Source-on
 older coverage; semantic completeness unmeasured. Exhaustive field-source search
 found no minimum-price response implementation. This is not an exhaustive
 mathematical novelty claim.
+
+Next uncounted direction: a damped minimum-price response with a proved curvature
+bound at each fixed source and cutoff. The packet nodes in `signedGramShift` do
+not depend on the physical fibre variable; only their weights and origin anchor
+do. A positive actual finite Gram residual could therefore control every fibre
+at a fixed cutoff. Package 11 excludes an unjustified cutoff-uniform constant.
+Distinct translates of a nonzero compact continuous source should be independent:
+take the smallest shift with nonzero coefficient, then a source point sufficiently
+near the supremum of its support that all larger translates vanish. Continuity
+passes an L² equality to pointwise equality. The required next contribution is
+the actual fixed-cutoff Gram lower bound and curvature consequence, not merely
+the generic independence lemma. No positive lower bound, damping theorem,
+strict ascent, gap convergence, or optimality of the produced ladder is claimed yet.
+Deep search `/tmp/bsu-minimum-response-next-coercivity-search.log` completed in
+91.43s with only source-only older candidates and unmeasured semantic coverage.
+Both lexical pages `/tmp/bsu-minimum-response-next-independence{,-page2}.json`
+were inspected: 31 hits in 14 modules. Field-wide text search found no
+`LinearIndependent`/`PosDef` implementation; existing hits include actual
+translation Gram energy and division-free residual waves. No exhaustive novelty claim.
+Fresh concurrent source `FiniteFilterSchurResidual.lean` was also inspected:
+its support-supremum argument proves escape for a particular finite hyperbolic
+filter and strict positivity after two specified projections. It does not state
+arbitrary finite-translate independence or the full signed-node anchored lower
+bound. Reuse that support argument where applicable; do not count the other
+agent's filter result. Its source was read, not independently Lean-audited here.
 
 `PairedCollarCapacity.lean` now passes direct verification of block/radial capacity,
 unordered nonnegative error bounds, and exact padding. `PairedCollarCutoffStability.lean`

@@ -1,4 +1,8 @@
-import Mathlib.NumberTheory.Harmonic.Bounds
+import Mathlib.Algebra.BigOperators.Intervals
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.LinearCombination
 
 /-! A uniform dyadic cancellation bound for bounded antitone sequences. -/
 

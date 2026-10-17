@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Eighteen substantive results are Lean verified: compensated multiplier Gram
+contributions. Nineteen substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -22,7 +22,8 @@ the explicit coherent source-cancelling producer with its unconditional energy e
 sharper odd moment/plastic bound (10), and the exact finite coherent filter with
 its signed Gram formula and unconditional moment/plastic transfer (14), and the quantitative
 finite-filter lattice comparison with explicit unconditional plastic gain (11), and hyperbolic
-variance rigidity with the exact strict-gain domain and full plastic certificate (13). Supporting theorem
+variance rigidity with the exact strict-gain domain and full plastic certificate (13), and finite-filter
+support escape with a strictly positive Schur residual and exact plastic correction (13). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -788,10 +789,47 @@ warnings. Only `propext`, `Classical.choice`, `Quot.sound`. Source has232 lines,
 13 public theorems, no public definitions; SHA256
 `2d3baccc6ece6eefd2e74eea3fca2862453c0a4b119eab0e5ddf5483cff44b9c`.
 Umbrella wired; all13 public declarations indexed. README and source17 unchanged.
-Eighteen contributions, 272 public supporting theorem audits; full goal ACTIVE.
 Generic zero-integral facts support this single rigidity/strict-gain contribution.
-Latest global lint: seven unrelated unreachable modules and concurrent generated
-drift in LEAN_API/LEAN_OVERVIEW after one bounded refresh; no owned lifting module
-flagged. Exact snapshot on master card; no global clean-gate claim.
-Remaining frontier: quantify Schur slack, decide norm-price attainment, optimize
-actual finite producers, and compare moment prices with positive original energies.
+The following result settles finite-filter norm-price attainment and identifies
+its exact Schur slack. Other producer optimizations remain distinct questions.
+
+## Finite-filter escape and unavoidable Schur slack
+
+- The actual finite hyperbolic filter A_f is nonzero somewhere outside
+  support(f) iff f!=0. If M=sup support(f), choose u in support(f) with
+  M-log2<u and set v=u+L log2. Only the outermost translate survives at v;
+  A_f(v)=f(u)/(2cosh(L log2/2))!=0 while f(v)=0. Arbitrary signs and
+  disconnected support are allowed.
+- With q=(cosh(u)-mu)f, Q=||q||², beta=<q,A_f>, and
+  r=A_f-(kappa/R)f, the actual compact residual e=r-(beta/Q)q is orthogonal
+  to both f and q. Its measured energy satisfies
+  E=||e||²=H-beta²/Q and Q E=QH-beta², including zero energy.
+- The escaping value survives both projections: e(v)=A_f(v). Thus E=0
+  iff f=0, and E>0 iff f!=0. Consequently beta²<QH iff f!=0.
+  Nonzero compact sources cannot saturate this finite-filter Cauchy--Schwarz price.
+- For nonzero f, |beta|<sqrt(QH); the rationalized denominator is strictly
+  positive. The totalized correction
+  g_res=Q E/(sqrt(QH)+beta)=sqrt(QH)-beta
+  is nonnegative, positive iff f!=0, and gives
+  C_local-g_res=R_S+sigma+beta. The original signed pairing is retained.
+- The existing exact coherent pairing endpoint therefore yields
+  I_opt+R_plastic-2(log2)C_local+2(log2)g_res<=P(F), for every canonical
+  odd F and collar cutoff. The recovered increment is strict iff the original
+  input is not even. This identifies the norm slack through an actual positive
+  residual; it does not claim a new endpoint beyond the established pairing
+  receiver, global optimality, a uniform positive gap, or plastic positivity.
+
+Implementation: `formal/GaloisForLFunctions/BiScaleUncertainty/FiniteFilterSchurResidual.lean`.
+Final actual-source compilation and all13 public theorem axiom audits passed
+without warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has345
+lines, four public definitions and thirteen public theorems; SHA256
+`6f119308bd255012affd90d0eeaac906b40a35147aec5298f5cc23a7cac90119`.
+Umbrella wired; all17 public declarations indexed. README and source18 unchanged.
+Nineteen contributions, 285 supporting public theorem audits; full goal ACTIVE.
+The nonattainment route and its fully formalized positive survivor are recorded in
+`docs/drafts/pipeline/5-failed/finite-filter-schur-saturation-2026-10-17.md`.
+Final global lint after one bounded refresh reports eight unrelated unreachable
+modules and concurrent drift in LEAN_API/LEAN_OVERVIEW; no owned lifting module
+flagged. Exact snapshot on master card. No global clean gate claimed.
+Remaining frontier: optimize actual source-supported producers, quantify useful
+residual lower bounds, and compare exact signed moment prices with positive source energies.

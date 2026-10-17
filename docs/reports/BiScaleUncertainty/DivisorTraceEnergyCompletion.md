@@ -1,7 +1,8 @@
 # Physical energy completion of arbitrary divisor traces
 
-Status: dependency-closed paper proof, written before formalization. Proposed
-single contribution; not counted until the complete Lean audit passes.
+Status: formalized as contribution15/100. The dependency-closed paper proof
+preceded formalization. Five direct leaf checks and the exact all-73-declaration
+axiom audit pass; only propext, Classical.choice and Quot.sound occur.
 
 ## Explicit complete domain
 
@@ -123,3 +124,23 @@ appeared. Search partial=true, text/source retrieval interrupted, generation
 1446063 pending, background refresh incomplete; compiler metadata source-only.
 This does not establish absence or external novelty. README remains read-only.
 No RH work, full affine-unitary action or unweighted logarithmic H1 claim.
+
+## Formal certificate
+
+Leaves: CellPrefixHilbert, DivisorCellConstraints, DivisorGradientClosure,
+DivisorEnergyCompletion, FullDivisorEnergyEscape. Total699 lines, 73 public
+declarations: 59 theorems, 12 definitions, one abbreviation and one instance.
+All five serial `lake --old env lean -o <normal-output> <leaf>` checks pass
+without diagnostics; compiled outputs are current. The scratch audit
+`/tmp/trace_completion_axioms.lean` covers every public declaration,13 principal
+signatures and52 mathlib API probes. Five unique umbrella imports and all72
+catalog-supported entries match current source locations; the instance is
+separately axiom-audited. No full/umbrella build or heartbeat increase.
+
+Global `lint --check-generated` exits1 solely for six unrelated unreachable
+modules: AntitoneDyadicStencil, BandLimitedLaplaceEnergy, ClampedExponentialRamp,
+FiniteFilterSchurResidual, NyquistResidualMass, SignedPrimePolarContinuousFactorialLift.
+No own, proof-debt or generated-index error. Existing large-file warnings remain.
+Logs: `/tmp/{cell-prefix-hilbert,divisor-cell-constraints,divisor-gradient-closure,
+divisor-energy-completion,full-divisor-energy-escape}-build.log`,
+`/tmp/trace-completion-{axioms,index-final,lint-final}.log`.

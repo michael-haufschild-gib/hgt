@@ -3,7 +3,7 @@
 ## Scope and certified contribution count
 
 Target: 100 substantive mathematical packages in continuum coprime shear and
-multiplicative/additive regularity. Certified packages: **14 / 100**. Supporting algebra,
+multiplicative/additive regularity. Certified packages: **15 / 100**. Supporting algebra,
 coordinate changes, and restatements do not separately increment this count.
 
 **Package 1 — continuum trace, affine commutator, and finite nodal-edge control.**
@@ -1331,16 +1331,97 @@ Normalize by the actual packet norm; finite sine recurrence gives exact energy
 without separately evaluating the sine-square sum. Capture lint stderr as well
 as stdout. Stream the API catalog once, matching short names/module/source line.
 
-## Next unproved candidate — physical energy completion
+## Certified package 15 — physical energy completion
 
-`docs/drafts/pipeline/0-backlog/divisor-trace-energy-completion.md`.
-Conjecture: inside the unit-cell synthesis range, closure(range E_A) consists
-exactly of coefficients with zero sum on each finite active-edge component.
-The orthogonal complement is componentwise constant; infinite-component ℓ²
-constants vanish. Construct energy-complete cumulative trace data and actual
-completion elements with no ℓ² preimage when runs are unbounded. Keep the
-ambient noncellular physical orthogonal complement explicit. Unproved/uncounted.
-All20 lexical declarations and5 exploration hits inspected; single-grid span
-and integer-hat APIs are relevant. New draft run-gap declarations already
-indexed at search time are not independent certification. No semantic coverage
-or compiler freshness was supplied. Reaudit primary sources before proof.
+For arbitrary d:ℕ,D:Setℕ, let A(k) be the divisor-union active node predicate,
+p_n(w)=Σ_(j<n)w_j and C_A={w∈ℓ²:p_(k+1)(w)=0 whenever ¬A(k)}. This is a
+closed complete Hilbert domain. Unit-cell synthesis S gives an actual isometric
+physical extension with primitive at n equal to p_n(w), logarithmic trace at
+log(k+1) equal to p_(k+1)(w), and energy Σw_k².
+
+Exact unconditional identification:
+
+    closure(range E_A) = S(C_A).
+
+This equality is in the full physical L² space and explicitly retains cellular
+membership. C_A is exactly the zero-sum space on every finite active-edge
+component [a,b). Its orthogonal complement in ℓ² consists exactly of currents
+constant along each active edge; these are constant on finite components and
+zero on infinite active tails. The proof uses least missing edges, finite
+prefix conservation and ℓ² tail decay, followed by Hilbert orthogonal
+decomposition. No spectral gap or closed-range premise is assumed.
+
+The completed trace v_k=p_(k+1)(w) has discrete gradient w. It need not belong
+to ℓ². Exact recovery: S(w) has an old ℓ² divisor-trace preimage iff v∈ℓ²;
+the preimage is unique by the existing trace injectivity theorem. Every
+completed datum is recoverable iff active runs are uniformly bounded. With
+unbounded runs, an actual completed datum outside the old range exists.
+General-family existence is not claimed to give a quantitative coordinate
+formula. Projection onto the proved closed C_A constructs admitted data from
+every ambient current, with exact physical-energy plus projection-error
+Pythagoras and an unconditional contraction bound.
+
+Explicit full-family producer: D=ℕ gives C_A={w:w_0=0}. The unit current δ_1
+synthesizes unitCell1, has energy1, and has cumulative trace0 at index0 and1
+at every later index; hence no old ℓ² preimage. For N=n+1, finite old trace
+data v_N(1+j)=1−j/N, 0≤j<N, satisfy
+
+    G(v_N)=δ_1−(1/N)Σ_(j<N)δ_(j+2),
+    ‖E(v_N)−unitCell1‖²=1/N →0.
+
+A compensating return current spread over N cells costs only1/N energy.
+Finite-component conservation survives completion because finite sums are
+bounded; total-current conservation on an infinite component can disappear.
+This is a concrete producer with exact error, consistent with Trap10 while
+remaining within continuum coprime shear. No RH, full SourceGraph, affine
+unitary or unweighted logarithmic H1 identification is claimed.
+
+Five leaves / lines / public declarations:
+CellPrefixHilbert107/17, DivisorCellConstraints195/16,
+DivisorGradientClosure110/8, DivisorEnergyCompletion152/19,
+FullDivisorEnergyEscape135/13. Total699 lines and73 public declarations:
+59 theorems,12 definitions, one abbreviation and one instance. Counted once.
+All five serial direct leaf checks pass with empty logs and current normal
+compiled outputs. Exact all-73 axiom audit passes with only propext,
+Classical.choice,Quot.sound;13 principal signatures inspected and52 mathlib
+API probes checked. Five unique imports and all72 catalog-supported entries
+match source locations; instance separately audited. Scoped whitespace passes.
+README fully read,260 lines, never edited. No full build or heartbeat increase.
+
+Global lint --check-generated exits1 only for six unrelated unreachable
+modules: AntitoneDyadicStencil, BandLimitedLaplaceEnergy, ClampedExponentialRamp,
+FiniteFilterSchurResidual, NyquistResidualMass, SignedPrimePolarContinuousFactorialLift.
+No own, proof-debt or generated-index error; existing large-file warnings.
+Paper: `DivisorTraceEnergyCompletion.md`, written before Lean.
+Card: `docs/drafts/pipeline/3-formalized/divisor-trace-energy-completion.md`.
+Evidence: /tmp/trace_completion_axioms.lean, /tmp/trace-completion-axioms.log,
+/tmp/trace-completion-audit-names.json, /tmp/trace-completion-api-entries.txt,
+/tmp/trace-completion-index-final.log, /tmp/trace-completion-lint-final.log.
+All owned jobs terminal. Certified15/100; overall goal remains active.
+
+Corpus search: all20 candidates and20 source-argument statements inspected.
+partial=true, text/source retrieval interrupted, generation1446063 pending,
+refresh incomplete/background_indexer_running, compiler metadata source-only.
+No matching completion classifier appeared; this is not an absence or novelty
+proof. MIT18.102 orthogonal-decomposition/range-kernel theory and mathlib
+projection documentation checked as classical parents; paper contains links.
+
+Lean facts: simplify inner-prefix cell terms before rewriting arbitrary
+inner-prefix expressions as primitives. Expose continuous-linear-map and
+submodule/set coercions with `change` or `rfl`; simplification need not unfold
+them. Give omega the interval endpoint inequality explicitly. Inner products
+of real lp singles simplify to scalar multiplication with the relevant one
+on the left. Full-family ramp data need their definition explicitly unfolded
+when using intervalTraceData_at. No heartbeat changes were needed.
+
+## Next unproved candidate — explicit component averaging
+
+`docs/drafts/pipeline/0-backlog/divisor-component-averaging-projection.md`.
+Seek the nearest completed physical state by averaging q on each unit cell,
+subtracting each finite-component mean, and retaining infinite-tail coefficients.
+Prove exact error as noncellular residual plus finite-component mean energy.
+Unproved/uncounted; no Lean assigned. All20 candidates and20 source arguments
+from the initial search inspected; old cell decompositions and single-grid
+projection are relevant. Completion drafts were indexed before verification,
+not independent evidence. Search partial, interrupted text/source retrieval,
+generation1446251 pending, refresh incomplete. Reaudit before paper proof.
