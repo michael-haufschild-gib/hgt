@@ -135,8 +135,9 @@ theorem exists_nonpolar_support_of_poleWeightArchRe_ne {β : ℝ} {c : EvenWeilT
   push Not at hall
   apply hne
   refine Finsupp.sum_congr fun f hf => ?_
-  have hp : WeilEvenPolarTestFn := ⟨f.1, f.2, hall f hf⟩
-  rw [poleWeightArchRe_evenPolar_eq_weilArchRe β hp]
+  have harch : poleWeightArchRe β f.1 = weilArchRe (EF.weilTest f.1.1 f.1.1) :=
+    poleWeightArchRe_evenPolar_eq_weilArchRe β ⟨f.1, f.2, hall f hf⟩
+  rw [harch]
 
 end RHTower.EvenSector
 

@@ -73,20 +73,123 @@ inspection, umbrella wiring, and formal lint. Preserve concurrent work.
     involve `log(m/n)`; the constraints only specify `log n` for integers.
     No conclusion about nonintegral rational ratios is available from
     the defining constraints alone.
+11. **Avenue A — Paley–Wiener factor `(r^2 + 1/4)^2` as an all-aperture sign
+    producer.** Audited and formalized in
+    `GaloisForLFunctions.RHTower.EvenSectorBlindMinimumSmallAperturePositivity`.
+    - **Positive survivor (`[L]`):** Up to and slightly past the first prime
+      `2` (`a.1 ≤ (Real.log 2 + 1 / 50) / 2`), the blind minimum is
+      unconditionally strictly positive with a uniform floor:
+      `one_twentieth_le_evenBlindMinimum_of_le_primeTwo` proves
+      `1 / 20 ≤ evenBlindMinimum a` (and `0 < evenBlindMinimum a`). Moreover,
+      `evenBlindMinimum_antitone` proves `a.1 ≤ b.1 → evenBlindMinimum b ≤ evenBlindMinimum a`,
+      and `riemannHypothesis_iff_evenBlindMinimum_nonneg_beyond_primeTwo`
+      reduces `RiemannHypothesis` to `0 ≤ evenBlindMinimum a` for apertures
+      `a.1 > (Real.log 2 + 1 / 50) / 2`.
+    - **Why Avenue A fails asymptotically (`a → ∞`):** On `BlindUnitSource a`,
+      the unit normalization is `‖f‖_{L^2}^2 = (2π)^{-1} ∫ (r^2 + 1/4)^2 |ĝ(r)|^2 dr = 1`,
+      so the factor `(r^2 + 1/4)^2 > 0` appears in both numerator and
+      denominator of the Rayleigh quotient. At small aperture `a`, the
+      Dirichlet ground eigenvalue `(π/(2a))^2 + 1/4` of `-∂^2 + 1/4` forces
+      frequency support above the negative well `{|r| < 6.2898}` of `γ(r)`.
+      As `a → ∞`, `(π/(2a))^2 + 1/4 → 1/4`, allowing normalized smooth even
+      polar profiles `f = (∂^2 - 1/4)g` to concentrate inside the negative
+      well unless prevented by a genuine multi-prime + polar positivity law.
+12. **Avenue B — Transporting the OWU Farkas-shifted ground operator and
+    paired root-division apparatus to EWU.** Refuted as a sign producer by
+    exact shift-gauge invariance, formalized in
+    `GaloisForLFunctions.RHTower.EvenSectorBlindGroundShiftInvariance`.
+    - **Exact obstruction (`[L]`):** Under any constant shift `C ∈ ℝ` of the
+      archimedean symbol (`shiftedSourceQuadratic a C u = Q_a(u) - C ‖J_a u‖^2`),
+      every `u : BlindUnitSource a` has `‖J_a u‖ = 1`, so the objective on
+      `BlindUnitSource a` shifts by the constant `-C`
+      (`shiftedSourceQuadratic_blindUnit`). Thus the set of blind minimizers
+      is identically unchanged (`isMin_shiftedSourceQuadratic_iff`), while the
+      blind minimum shifts to `evenBlindMinimum a - C` (which is strictly
+      negative whenever `C > evenBlindMinimum a`,
+      `shifted_evenBlindMinimum_neg_of_gt`). When forming the nonnegative
+      residual form by subtracting `(evenBlindMinimum a - C) ‖J_a u‖^2`, the
+      constant `C` cancels identically across the entire form domain
+      `CCMArchimedeanFormDomain a`
+      (`shiftedSourceQuadratic_sub_shiftedEvenBlindMinimum_eq`,
+      `shiftedRestrictedWeilForm_sub_shiftedEvenBlindMinimum_eq`,
+      `oddSector_shifted_arithmeticForm_sub_shiftedBlindMinimum_eq`,
+      `shifted_multiplier_inequality_iff`). Hence the Farkas multipliers,
+      shifted nonnegative operator, ground eigenspace, paired-division
+      closure, and de Branges polynomial generator are completely blind to
+      `C` and cannot distinguish `evenBlindMinimum a ≥ 0` from
+      `evenBlindMinimum a < 0`.
+13. **Avenue C — Multi-prime joint cosine periodization of `γ(r)` on arbitrary
+    nonnegative spectral densities `G(r) ≥ 0`.** Unconditionally refuted in
+    `GaloisForLFunctions.RHTower.EvenSectorMultiPrimePeriodizationNoGo`.
+    - **Exact refutation (`[L]`):** On even polar tests (`f̂(i/2) = 0`), the
+      `β`-weighted archimedean functional equals the `β = 0` pure archimedean
+      functional (`poleWeightArchRe_evenPolar_eq_weilArchRe`). However, on
+      general even tests (`G(r) = |f̂(r)|^2 ≥ 0` without `f̂(i/2) = 0`),
+      `not_weilPositiveEvenAt_of_lt_one` and `not_weilPositiveEvenAt_zero`
+      prove `∀ lam : ℕ → ℝ, ¬ WeilPositiveEvenAt 0 lam`, and
+      `exists_even_blind_mixture_zeroPole_neg` exhibits a finite nonnegative
+      even mixture that is simultaneously blind at **every** integer `n ≥ 2`
+      (all primes and composite prime products) and has strictly negative pure
+      archimedean energy `c.sum (fun f t => t * poleWeightArchRe 0 f.1) < 0`.
+    - **Positive structural survivor (`[L]`):**
+      `exists_nonpolar_support_of_poleWeightArchRe_ne` proves that any even
+      mixture on which the `β`-weighted archimedean energy differs from the
+      `β = 1` archimedean energy must contain an active component with
+      `paperFT f.1.1 (I / 2) ≠ 0`. Thus the off-axis complex zero `f̂(±i/2) = 0`
+      is strictly indispensable.
+
+## No-go closure for the Avenue A/B/C sign-producer programme
+
+- **Exact killing theorems/mechanisms:**
+  1. Avenue A: `‖J_a u‖ = 1` normalizes `(r^2 + 1/4)^2 |ĝ(r)|^2` in both
+     numerator and denominator; as `a → ∞`, the Dirichlet spectral gap of
+     `-∂^2 + 1/4` on `[-a, a]` shrinks to `1/4`, inside the negative well of `γ(r)`.
+  2. Avenue B: `shiftedSourceQuadratic_sub_shiftedEvenBlindMinimum_eq` and
+     `shiftedRestrictedWeilForm_sub_shiftedEvenBlindMinimum_eq` prove exact
+     shift-gauge invariance of the subtracted ground form and its kernel under
+     `γ ↦ γ - C/2`.
+  3. Avenue C: `not_weilPositiveEvenAt_zero` and
+     `exists_even_blind_mixture_zeroPole_neg` prove that even full all-integer
+     blindness (`n ≥ 2`) leaves the `β = 0` pure archimedean form strictly
+     negative on even tests without `f̂(i/2) = 0`.
+- **Strongest positive survivors:**
+  1. `one_twentieth_le_evenBlindMinimum_of_le_primeTwo`,
+     `evenBlindMinimum_antitone`, and
+     `riemannHypothesis_iff_evenBlindMinimum_nonneg_beyond_primeTwo` in
+     `GaloisForLFunctions.RHTower.EvenSectorBlindMinimumSmallAperturePositivity`.
+  2. `shiftedSourceQuadratic_sub_shiftedEvenBlindMinimum_eq`,
+     `shiftedRestrictedWeilForm_sub_shiftedEvenBlindMinimum_eq`, and
+     `oddSector_shifted_arithmeticForm_sub_shiftedBlindMinimum_eq` in
+     `GaloisForLFunctions.RHTower.EvenSectorBlindGroundShiftInvariance`.
+  3. `poleWeightArchRe_evenPolar_eq_weilArchRe`,
+     `not_weilPositiveEvenAt_of_lt_one`,
+     `exists_even_blind_mixture_zeroPole_neg`, and
+     `exists_nonpolar_support_of_poleWeightArchRe_ne` in
+     `GaloisForLFunctions.RHTower.EvenSectorMultiPrimePeriodizationNoGo`.
 
 ## Current structural question
 
 Can the full integer-log orthogonality and the actual polar zero jointly
-exclude a low-frequency negative Gamma contribution? Separately, neither
-prime-power phase uniformity nor the polar constraint supplies the sign.
-Need an actual coupled identity or admissible variational descent. A new
-equivalence, shifted positive Gamma symbol, bound, or assumed spectral
-measure will not close this question.
+exclude a low-frequency negative Gamma contribution for `a.1 > (Real.log 2 + 1 / 50) / 2`?
+Avenues A, B, and C from `docs/reports/ewu-review.md` are now formally closed:
+Avenue A closes small apertures `a.1 ≤ (Real.log 2 + 1 / 50) / 2` unconditionally
+(`1 / 20 ≤ evenBlindMinimum a`) and proves global antitonicity of `evenBlindMinimum`,
+while Avenues B and C are unconditionally obstructed as sign producers by
+shift-gauge invariance and the `β = 0` all-integer blind counterexample.
 
 ## Verification and progress
 
-No new sign theorem or Lean code. The searches and mechanism checks above
-have not determined the minimum's sign. No leaf build, axiom audit, or
-umbrella change is claimed for this attempt. The previously audited
-attainment theorem remains an attainment theorem only. Do not label this
-card solved until the unconditional sign statement is proved and audited.
+Three new leaf modules have been built with `lake --old build`, audited with
+`lake env lean` and `#print axioms` (depend only on `propext`,
+`Classical.choice`, `Quot.sound`), and wired into
+`formal/GaloisForLFunctions/RHTower.lean`:
+- `GaloisForLFunctions.RHTower.EvenSectorBlindMinimumSmallAperturePositivity`
+- `GaloisForLFunctions.RHTower.EvenSectorMultiPrimePeriodizationNoGo`
+- `GaloisForLFunctions.RHTower.EvenSectorBlindGroundShiftInvariance`
+
+The large-aperture sign statement (`0 ≤ evenBlindMinimum a` for
+`a.1 > (Real.log 2 + 1 / 50) / 2`) remains open and is formally equivalent to
+`RiemannHypothesis` (`riemannHypothesis_iff_evenBlindMinimum_nonneg_beyond_primeTwo`).
+Do not label this card solved until the unconditional large-aperture sign
+statement is proved and audited.
+

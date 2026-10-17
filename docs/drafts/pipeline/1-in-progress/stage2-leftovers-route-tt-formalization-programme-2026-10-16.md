@@ -130,3 +130,75 @@ C^k-approximation gap); the conjectured quasi-RH ladder in L14.2; core existence
   `neg_log_two_lt_gammaBracket_two_pi`, `abs_lt_two_pi_of_gammaBracket_eq_neg_log` (resonances lie in
   |τ|<2π). Standard axioms; wired. Remaining in L3: t₀ > 2π (Re ψ(¼+iπ) < log π, margin ~1e-3) needs
   a sharp complex digamma bound (Binet remainder) — next infrastructure target.
+- 2026-10-17 card 4: L14.4 bounded separators DONE in rigorous form (`KelvinChirpSeparatorBound`,
+  namespace `RHTower.KelvinSeparator`): `exp_le_of_posDefOn` / `exp_le_of_abs_le` — a continuous
+  1-periodic F ≢ 0 with H(v) = e^{v/2}F(e^v)+e^{−v/2}F(e^{−v}) positive definite on [−L,L] forces
+  e^L ≤ 4+2√2 ≈ 6.83. The card's "≈ 5.83 = (1+√2)²" assumes the maximum of |F| is reached exactly at
+  v = L (heuristic); the rigorous constant is 1+(1+√2)² = 4+2√2. Standard axioms; wired.
+  Remaining L14.4: (a) NB-wandering reformulation (Mellin–Plancherel for F = Σ f(k·)), (b) Farkas
+  dual (one direction exact per source), "dimension count threshold 2" = heuristic (not a theorem).
+- 2026-10-17 card 4: L3 anomaly window DONE. New infrastructure `DigammaBinetFourthOrder`
+  (`norm_digamma_sub_stirling_le`: |ψ(w) − log w + 1/(2w) + 1/(12w²)| ≤ 1/(120 (Re w)⁴) on Re w > 0,
+  via Gauss + Frullani + Binet kernel bounds 0 ≤ ρ(t) ≤ t³/720 from hyperbolic inequalities).
+  `AnomalyWindowTwoPi`: `gammaBracket_two_pi_neg` (Re ψ(¼+iπ) < log π), `gammaBracket_two_pi_add_pos`,
+  `anomaly_window_two_pi` (Ω<0 ⟺ |τ|<t₀ with 2π < t₀ ≤ 2π + 1/50). Certified Lean bounds only
+  (no external computation). Standard axioms; wired. L3 now complete (decomposition, kernel, PD
+  positivity, window, Selberg Plancherel density).
+- 2026-10-17 card 4: T1 DONE in full Weil-cone form (`TrivialWeightBoostedWeilCone`, namespace
+  `RHTower.TrivialWeightCone`; infrastructure `LineShiftHalfPlaneHolomorphic`: two-line residue
+  identity and critical-line shift for half-plane holomorphic multipliers). `ZetaGrowthExponent μ`
+  (|ζ(σ+it)| ≤ K(1+|t|)^μ on σ ≥ ½, |t| ≥ 1), `.nonneg`; parametric producer
+  `exists_herglotz_trivialWeights_boosted_of_growth`; `weilCone_of_boostedProducer`;
+  `trivialWeights_boostedWeilCone` (∀ admissible μ, ∀ θ > μ, ∃ C > 0: 0 ≤ Re W_{λ≡1}(f⋆f̃) +
+  (1/2π)∫|f̂|²C(1+|r|)^θ for every C²_c f with convergent density pairing) and the unconditional
+  `trivialWeights_boostedWeilCone_of_quarter_lt` (θ > ¼). Standard axioms; wired.
+- 2026-10-17 card 4: L14.1 (iii) DONE (`BlindMomentRegion`): `momentRegion` K = {(P/N, A_∞/N)} over
+  nonnegative blind combinations; `convex_momentRegion`; `momentRegion_subset` (A_∞/N ≥ Ω(0), via
+  Ω ≥ Ω(0) and Plancherel); `primeBlindPositive_iff_momentRegion` / `riemannHypothesis_iff_momentRegion`
+  (PBAP ⟺ RH ⟺ K above q = −p); `closure_momentRegion_of_riemannHypothesis`; null edge approached
+  from both pole signs under RH (`exists_mem_momentRegion_pole_neg/pos_of_riemannHypothesis`). The
+  "(P₀,−P₀) = image of G₀" clause lives in the decay class (G₀ is not compactly supported); the
+  supporting-line reformulation is the above with the null point on the line. Standard axioms; wired.
+- 2026-10-17 card 5: (A) and (B) DONE (`WeilConePoleDualityAnatomy`, namespace
+  `RHTower.PoleDualityAnatomy`): `ArchDatum`, `weilFunctional`, `InWeilCone`;
+  `modularDatum_zero_mem_cone` (weight 2m ≥ 14, via ψ(7) > log 2π from the Binet bound),
+  `dirichletDatum_odd_zero_mem_cone` (q ≥ 10), `dirichletDatum_even_zero_mem_cone` (q ≥ 216, using the
+  corpus γ < 0.577216), `eq_zero_of_cone_pinned`; `zetaDatum`/`weilFunctional_zetaDatum` (agrees with the
+  corpus functional), `weilFunctional_mulDatum`, `vonMangoldt_mem_cone_mulDatum` (RH ⟹ Λ ∈ cone(ζL′)),
+  `not_riemannHypothesis_of_pinned` and the odd-Dirichlet instance. Standard axioms; wired.
+  (C) needs the explicit formula for curves over F_q and Weil's RH for curves (positivity of
+  W_{C′,Λ_{C′}}): not in the corpus or mathlib — infrastructure project still to be built.
+- 2026-10-17 card 4: L14.4 (a) NB-wandering reformulation DONE (`BlindCoreWanderingNymanBeurling`,
+  namespace `RHTower.BlindCoreWandering`): `nbSum` F = Σ_{k≥1} f(k·), `abs_nbSum_le` (|F| ≤ ½∫|f'| by
+  first-order Euler–Maclaurin), `mellin_nbSum_of_one_lt` / `mellin_nbSum_eq` (𝓜F = ζ𝓜f on Re s > 0,
+  Im s ≠ 0, identity theorem), `integral_norm_mellin_half_sq` (Mellin–Plancherel on Re s = ½ for bounded
+  G vanishing beyond β), `integral_mul_dilate_eq` (polarized), `integral_nbSum_mul_nbSum_dilate`
+  (∫F(x)F(nx)dx = Σ d(m)Ψ_f(mn)), `eq_zero_of_tsum_divisorCard_eq_zero` (divisor-transform injectivity via
+  Σ_{m≥2}m⁻² < 1), `blind_iff_wandering`. Standard axioms; wired.
+- 2026-10-17 card 4: L14.4 (b) Farkas separation DONE in its proven direction (`BlindCoreFarkasSeparation`,
+  namespace `RHTower.BlindCoreFarkas`): `kelvinChirp`, `kelvinChirp_zero` (= pole kernel 2cosh(v/2)),
+  `logAutocorr` b_f(v) = e^{v/2}A_f(e^v), `autocorr_logPull` (b_f = autocorrelation of √α e^{u/2}f(αe^u),
+  supported in [0, L]), `integral_kelvinChirp_mul_logAutocorr` (⟨b_f, φ_n⟩ = Ψ_f(n)), `IsBlindCore`,
+  `coreAnnihilator` (closed for pointwise convergence on C([−L,L]) ⊇ weak-* closure),
+  `closure_span_le_coreAnnihilator`, `kernelFunctional_sum_mem_span`, `StrictPD`,
+  `eq_zero_of_mem_closure_span_of_strictPD`, `eq_zero_of_kernel_strictPD`. Standard axioms; wired.
+  The converse (no cores ⟹ a strictly PD separator exists) is NOT a proven theorem: the source row 447
+  records it as "exact one direction; Farkas closure caveat for the other" (a sum of autocorrelations in
+  the annihilator is only an L² core by Boas–Kac, and algebraic separation from a non-closed cone need not
+  be strict). Not an obligation of the card; recorded on the card.
+- 2026-10-17 card 4: L1 DONE. Corpus had the resonance identity for Im ρ > 0
+  (`heckeHermitianMoment_resonant`, `heckeHermitianMoment_resonant_re`, Maass–Selberg norm
+  `integral_norm_sq_resonantState`); new `EisensteinHeckeResonanceAllZeros` adds the conjugate half and the
+  card's every-zero statement: `heckeHermitianMoment_conj`, `heckeHermitianMoment_resonantZero`
+  (⟨T_pΛ^Y E_u, Λ^Y E_u⟩ = (p^u + p^ū)‖Λ(ρ−1)‖²Y^{1−Re ρ}/(1−Re ρ) for every zero ρ off the real axis,
+  u = ρ/2 − ½, Y ≥ p), `heckeHermitianMoment_resonantZero_re` (real). Standard axioms; wired.
+- 2026-10-17 card 4: L2 DONE. Corpus: Fourier expansion of the completed Eisenstein series
+  (`d4BM_actualCompletedPoincare_eq_canonicalCuspLeg`, Re s > 1; the canonical cusp model defines E* for
+  all s) and the ζ-free tail entire in s (`differentiableAt_cuspTailPart`, every u₀). New:
+  `GaussianTwoSquaresCount` (`card_normSet`: Jacobi r₂(n) = 4Σ_{d|n}χ₄(d), via the prime recursion
+  F(pm) = (1+χ₄p)F(m) − χ₄(p)F(m/p) in ℤ[i]) and `EisensteinHeckeFactorizationAtI` (`latticeSum_eq`
+  Σ(m²+n²)^{-s} = 4ζL(χ₋₄); `latticeSum_eq_zeta_mul_primitive`; `two_mul_zeta_mul_eisenstein_I`
+  2ζ(2s)E(i,s) = 4ζ(s)L(s,χ₋₄); `eisensteinLineModel_I_eq` E*(i,s) = 2Γ_ℝ(2s)ζ(s)L(s,χ₋₄) on Re s > 0,
+  Im s > 0; `eisensteinLineModel_I_eq_zero_iff`; `re_lt_half_of_lambda_two_mul_eq_zero` one-sidedness).
+  Standard axioms; wired. The "identities hold uniformly in s / no identity locates zeros" bullet is an
+  interpretive meta-statement (no theorem content beyond the above).

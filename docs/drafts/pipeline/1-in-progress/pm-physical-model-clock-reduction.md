@@ -984,3 +984,50 @@ remains open. Next: the canonical L¹ derivative and its distinct L² boundary.
   file staleness findings; no owned/proof-debt finding, no global pass.
   Combined mass/Euler/budget draft1157 is checking. Uniform transfer
   norm and endpoint natural-cutoff energy remain unproved; RH unproved.
+
+## 2026-10-17 producer loop (Fable), session goal: overcome a hard obstacle on PM without a bound/receiver
+Corpus audit first (all FermiNyman*/PM*/FZZ*/ThetaCuspHawkingBM* docstrings): the physical layers reduce to the
+alternating Nyman–Beurling system; PM is unconditionally exactly the NB ladder of zero-free half-planes
+(witness exponent a ⟺ ζ≠0 on 1−a<Re s<1; approximation weight t^{2a−1} ⟺ ζ≠0 on Re s>a by the floor;
+L^p ⟺ Re s>1/p). Unconditional rung = PNT (exponent 0, weight t dt, L¹ power-damped) — all in the corpus.
+Conjectures tested and killed (walls named):
+- C1 arithmetic Dirichlet-series operators on the witness class: ‖T_n‖=√n, evaluations land at Re s≤0; no arithmetic
+  enters W through bounded operators (Walls 12/14).
+- C2 joint dyadic+triadic witness class W_2∩W_3: spurious-free, equals classical NB class (Beurling–Lax); pure receiver.
+- C3 heavier Mellin weights to let the mollifier regime dominate: for dt/|t|^{1+δ} point evaluation at off-line
+  zeros stays bounded (RH-equivalent, Möbius-sum regime dominates); at δ=0 every Dirichlet polynomial has infinite
+  functional (Montgomery–Vaughan growth). Wall 1.
+- C4 PM-2 non-attained regime: aliasing natural boundary, sparse approximate dyadic combs are generic (PM-8). No input.
+- C5 functional-equation duality for the correlation transform Φ₀^w: vanishing at left-strip zeros is the trivial
+  Fubini identity; s↦1−s is t↦1/t which leaves (0,1]; no internal reality structure (Wall 15).
+- C6 FE-covariant regularization: the dyadic factor is not FE-covariant; an FE-covariant Dirichlet regularizer
+  would have to be almost periodic and decaying — impossible; the sawtooth (NB) is FE-covariant but spurious-free.
+- C7 rigidity at exponent a>0 from Vinogradov–Korobov: ladder is an equivalence with a fixed-width zero-free strip;
+  only log-refinements of the majorant class are available (excluded as estimates).
+- C8 sign certificate for q(w)=−½∫h|w|² on W: pointwise cone vs model-space cone (Wall 13), certificate = spectral
+  measure (Wall 12).
+Verdict: no producer below a zero-free half-plane exists on PM; the single remaining obstacle is Wall 1 (= RH).
+Positive survivor built this session (Lean): the Haar criterion is an exact equivalence, RH ⟺ dyadic Haar
+approximable, via a new dilation-average mollifier turning every L² witness into a continuous witness
+(so every rigidity theorem for continuous witnesses extends to measurable L² witnesses unconditionally),
+h ⟂ every self-similar function, and Hilbert duality closure(span φ_a) = (L² witnesses)^⊥.
+Module: RHTower/FermiNymanHaarApproximationEquivalence.lean (status recorded below when built).
+
+## PM-18 (proved, Lean) — the Haar criterion is exactly RH; dilation-average mollifier
+`RHTower/FermiNymanHaarApproximationEquivalence.lean` (896 lines; build green, axioms
+`propext, Classical.choice, Quot.sound`; umbrella-wired; lint clean for this module).
+- `riemannHypothesis_iff_dyadicHaar_approximable`: RH ⟺ ∀ε>0 ∃ finite `Σ c_j φ_{a_j}` (a_j ≥ 1) with
+  `∫_0^1 |h − Σ c_j φ_{a_j}|² < ε`. New direction ⟹ (`dyadicHaar_approximable_of_riemannHypothesis`).
+- `IsL2FermiWitness` (measurable, square-integrable, orthogonal to all `φ_a`; no continuity).
+  `IsL2FermiWitness.dilationAverage_isFermiNymanWitness`: `w_δ = δ⁻¹∫_1^{1+δ} w(·/μ)dμ` is a continuous
+  witness for every δ>0 (unconditional). Pieces: general dilation invariance `IsFermiNymanWitness.dilate`
+  (all μ ≥ 1), Fubini pairing `integral_mul_conj_dilationAverage`, inversion substitution
+  `integral_Icc_comp_div_eq_primitive` (`w_δ(t) = δ⁻¹ t ∫_{t/(1+δ)}^t w(u)u⁻²du`), continuity, and a
+  lintegral Cauchy–Schwarz energy bound.
+- `integral_dyadicHaar_mul_conj_of_selfSimilar`: `h ⟂` every integrable self-similar function.
+- `integral_dyadicHaar_mul_conj_eq_zero_of_riemannHypothesis`: under RH `h ⟂` every L² witness
+  (dominated convergence in the dilation parameter, `tendsto_integral_dyadicHaar_mul_conj_comp_div`).
+- `dyadicHaarLp_mem_closure_fermiGenSpan`: Hilbert duality `closure span{φ_a} = (L² witnesses)^⊥`.
+Meaning: the PM producer target is exactly RH (unlike the fixed log-Möbius family, whose canonical
+convergence forces critical simplicity). The mollifier transports every continuous-witness rigidity
+theorem of the lane to measurable witnesses. Producer status unchanged: Wall 1.

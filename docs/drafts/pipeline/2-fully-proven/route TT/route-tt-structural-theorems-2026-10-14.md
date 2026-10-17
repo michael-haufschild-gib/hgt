@@ -284,3 +284,41 @@ Paper unless marked; ζ-free statements are labelled as such.
    - RH says Cap plus the pole covers the anomaly on every blind test.
 6. **Pitt/Beckner** (row 450). In log coordinates Beckner's sharp log-uncertainty is exactly Ω ≥ Ω(0): the anomaly is Beckner's constant. The arithmetic half of Weil positivity is the same Pitt monotonicity for the multiplier ζ, which is RH.
 - 2026-10-15 (opus loop row 1217): the L10 pole-order case **κ > d is CLOSED [L]** by MUST-1477, `RHTower.forall_re_weilDegreePoleFunctional_nonneg_iff`: W_{d,κ}(lam) ≥ 0 on every autocorrelation ⟺ κ = d ∧ RH ∧ lam = dΛ, for any real weights. It follows from W_{d,κ} = d·W_{κ/d}(lam/d) and `eq_one_of_weilPositiveAt` (MUST-1463). No odd blind family is needed.
+
+## Lean status (formalization programme, 2026-10-17)
+All modules below are unconditional (axioms propext, Classical.choice, Quot.sound only), compiled
+with `lake env lean`, and wired into `GaloisForLFunctions/RHTower.lean`.
+- **T1** [L] `RHTower.TrivialWeightBoostedWeilCone`: `ZetaGrowthExponent μ` (|ζ(σ+it)| ≤ K(1+|t|)^μ on
+  σ ≥ ½, |t| ≥ 1; `.nonneg`), parametric producer `exists_herglotz_trivialWeights_boosted_of_growth`,
+  `trivialWeights_boostedWeilCone` (∀ θ > μ ∃ C: 0 ≤ Re W_{λ≡1}(f⋆f̃) + (1/2π)∫|f̂|²C(1+|r|)^θ),
+  unconditional convexity rung `trivialWeights_boostedWeilCone_of_quarter_lt` (θ > ¼). Infrastructure
+  `RHTower.LineShiftHalfPlaneHolomorphic`.
+- **T2** [L] `RHTower.PrimeGapDirichletContinuation`: `exists_gapDirichlet_continuation`,
+  `tendsto_sub_one_mul_gapDirichletCont`, `norm_gapDirichletCont_critical_le`, unconditional instance
+  at θ₂ = 71/100 (`gapDirichlet_continuation_hoheisel`). Heath-Brown's 5/18 is a cited input.
+- **T3** [L] `RHTower.ZeroAlgebraJetInvariantForms` (with the multiplicity correction).
+- **T4** [L] `RHTower.TranslationAveragedDensityDepthBlindness`.
+- **T7** [L] corpus MUST-1442.
+- **L3** [L] `ArchimedeanAnomalyConstantLaws`, `DigammaBinetFourthOrder`, `AnomalyWindowTwoPi`
+  (`anomaly_window_two_pi`: Ω<0 ⟺ |τ|<t₀ with 2π < t₀ ≤ 2π+1/50).
+- **L5** (i),(ii) [L] `ArchimedeanAnomalyConstantLaws.XiC_pole_points`,
+  `RHTower.WeilLinearEffectivityObstruction`.
+- **L6** [L] `RHTower.HermitianPencilEulerFactorObstruction`.
+- **L10** [L] corpus parts (`weilPositiveDegree_iff`, κ>d closure MUST-1477).
+- **L12** §1 second clause [L] `RHTower.CompactTestXiDivisibilityObstruction`; §2 corpus; §3 [L]
+  `RHTower.WeilArchimedeanExactForm`; §4 computational part [L] `RHTower.CoreNullTestPoleSign`.
+- **L13** corpus.
+- **L14.1** [L] `ArchimedeanAnomalyConstantLaws` (i),(ii); `RHTower.BlindMomentRegion` (iii).
+- **L14.2** [L] `RHTower.WeilNodeDilationFamily` (dilation continuity, PBAP(1)⟹PBAP(1/k), dilated
+  data, half-dilation theta datum).
+- **L14.3** [L] `RHTower.WeilMarkovPoleCapacity`.
+- **L14.4** [L] `RHTower.ArchimedeanResonanceRange` (resonant range n ≤ 8πe^{γ+π/2}, resonances in
+  |τ|<2π), `RHTower.KelvinChirpSeparatorBound` (rigorous ratio bound 4+2√2; the card's ≈5.83 is the
+  heuristic value).
+- **L14.5, L14.6** [L] `ArchimedeanAnomalyConstantLaws`.
+- Not theorems on this card (no obligation): the PBAP structural-laws addendum (heuristic), L4, L8,
+  L9, L11 index law and L12 §1 first clause (stated gap), the quasi-RH ladder conjecture, core existence.
+- **Open formalization items**: T5 (Ruelle–Pollicott), T6 (nuclear Ruelle zeta), L1 (Maass–Selberg
+  resonance identity), L2 (E* Fourier expansion, Hecke factorization), L7 (Davenport–Heilbronn),
+  L10 twin-rigidity paper theorem + corollary, L14.2 criticality law (sign of S for G₀), L14.4
+  NB-wandering reformulation and Farkas dual.

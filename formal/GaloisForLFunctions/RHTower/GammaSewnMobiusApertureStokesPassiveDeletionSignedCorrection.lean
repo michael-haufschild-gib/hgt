@@ -14,9 +14,10 @@ extracts the strongest source-native correction visible before any all-degree co
   It is precisely deletion/reweighting: `nu + delta = mu_raw`, equivalently `nu <= mu_raw`;
 * either exact passive formulation already implies RH through the compact Markov capstone.
 
-Thus signed correction survives unconditionally only at the two-jet level.  At all degrees it
-collapses to the still-missing passive deletion producer; treating exact completion as an input is
-the same circular endpoint as the original compact Markov representation.
+Thus signed correction survives unconditionally at the two-jet level. At all degrees the two
+interfaces coincide. `GammaSewnMobiusApertureStokesCriticalPoleCapacity` subsequently proves both
+impossible: every exact positive completion must increase infinitely many singleton masses, so
+pure deletion cannot complete the source.
 -/
 
 open Complex Filter Function MeasureTheory Set TopologicalSpace

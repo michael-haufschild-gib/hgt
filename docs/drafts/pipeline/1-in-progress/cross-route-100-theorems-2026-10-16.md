@@ -1,6 +1,6 @@
 # Goal ledger: 100 significant new cross-route theorems
 
-Status: ACTIVE. Count verified for this goal: 6 / 100.
+Status: ACTIVE. Count verified for this goal: 10 / 100.
 
 ## User requirements
 
@@ -99,9 +99,70 @@ novelty is not claimed: user forbids external novelty research.
    standard axioms; eight exported signatures audited. All imports wired
    once; index and formal lint with generated-file check pass. Counted once.
 
+7. Exact physical nonnegativity classification of actual-prime Burnol operators.
+   Card: `../3-formalized/positive-prime-burnol-bernstein-classification-2026-10-17.md`.
+   Inputs: full prime-symbol classification, literal positive L2 cone,
+   finite-difference Bernstein representation and weighted-shift semigroup.
+   The positive subalgebra is exactly the unique finite positive shift-measure
+   mixtures, with norm equal to mass and composition equal to convolution.
+   Explicit positive packets form a complete test; failed differences expose
+   a negative output interval. Four leaves compile cleanly; 38 public axiom
+   lists and six primary signatures pass; all imports wired once. Counted once.
+
+8. Exact attained conditioning frontier of actual Xi Jordan chains.
+   Card: `../3-formalized/schur-transverse-energy-metric-infimum-2026-10-17.md`.
+   Inputs: root-free Schur energy, operator/HS conditioning, finite AM--GM,
+   positive metric frames and literal arithmetic derivative jets. For every
+   actual Xi support point of multiplicity m, Taylor-frame budget q^(m-1)
+   gives least defect 2*m*(Re rho-1/2)^2+(m-1)/q^2. Explicit positive frames
+   attain every budget; nontrivial chains approach but never attain their
+   spectral floor without unbounded conditioning. Exact factorial/reversal
+   transport fixes the native norm. Six leaves compile cleanly; 55 new and
+   three existing source axioms use only standard axioms; eleven signatures
+   audited. All imports wired once. The full variational law, minimizing
+   solution class, degeneration boundary and native realization count once.
+
+   Joint integration audit for 7 and 8 at 03:40 UTC: generated index passes;
+   global lint has only unrelated concurrent RHTower.WeilConePoleDualityAnatomy
+   unwired, plus existing size warnings. No generated drift or forbidden
+   declarations. The cards preserve the failure; global lint is not claimed
+   green. As for 1 and 2, unrelated wiring does not invalidate their closed
+   Lean proofs or their contribution count.
+
+9. Complete finite-jump classification of bounded actual-prime Burnol generators.
+   Card: `../3-formalized/prime-burnol-finite-jump-generators-2026-10-17.md`.
+   Inputs: actual-prime holomorphic rigidity, physical-cone Bernstein theory,
+   infinitesimal alternating differences and operator Poisson calculus.
+   Positive contraction evolution is equivalent to a unique finite positive
+   jump measure with no zero atom and nonnegative killing rate:
+   A f = integral (K_h f-f) dnu - kappa*f. Every datum is realized, with exact
+   norm exp(-kappa*t), a convergent Poisson series and explicit native K_1-I
+   instance. Positivity at all times plus contractivity at time one suffices.
+   Six leaves compile cleanly; all 44 public axiom lists contain exactly the
+   three standard axioms; ten signatures and both defining structures/predicates
+   audited. All imports wired once; generated index passes. Global lint's sole
+   error is unrelated concurrent RHTower.BlindCoreFarkasSeparation unwired;
+   no generated drift or forbidden declarations. This complete dynamical
+   classification and its realization count once. Unbounded generators are
+   not included.
+
+10. Faithful compact-polar realization of the complete Xi Weil space. Card:
+    `3-formalized/compact-polar-weil-krein-completion-2026-10-17.md`.
+    Literal complex compact C2 tests with both polar moments zero inject into
+    the multiplicity-exact Xi l2 space; their closure is exactly the folded
+    Cauchy Hilbert subspace. The literal Weil pairing is the reflected Hilbert
+    pairing and has zero left and right radical on these compact tests.
+    Absolute l2 truncation, finite-observation correction and translated theta
+    cardinals remove the source-density obstacle without RH or simple-zero
+    assumptions. Seven clean leaf builds, all 45 public axiom lists standard,
+    nine primary signatures and four definitions audited, seven imports wired
+    once. Index and lint with generated-file check pass (381 existing size
+    warnings). Exact closure identifies the completion; no separate Lean
+    Completion-isometry object is claimed. Counted once, including all helpers.
+
 ## Working plan
 
-1. Contributions 1–6 complete. Recheck significance and exact scope before
+1. Contributions 1–10 complete. Recheck significance and exact scope before
    counting every subsequent result; routine bridges do not qualify.
 2. Revisit the entire Lean corpus between contributions, including HTGeometry
    and other theorem areas where mechanisms apply. Avoid a single-route loop.
@@ -110,15 +171,34 @@ novelty is not claimed: user forbids external novelty research.
    until 100 qualifying results are verified. Do not mark the goal complete
    on partial progress, successful helper proofs, or an arbitrary milestone.
 
-## Uncounted next lead
+## Next research cycle
 
-Candidate 7, paper mechanism and dependency audit underway, uncounted:
-`positive-prime-burnol-bernstein-classification-2026-10-17.md`.
-Proposed exact classification of nonnegativity-preserving actual-prime
-eigenoperators by unique finite positive measure mixtures of weighted Burnol
-shifts, with norm equal to mass and a literal positive-packet test. The new
-physical positivity cone must be proved; symbol classification alone does
-not count again. No candidate-7 Lean source has been written.
+Return to the whole corpus for the next structural contribution. The broad
+arbitrary-matrix infimum lead was not included in contribution 8; only its
+precisely stated full-chain classifier and actual Xi realization were counted.
+The affine-scale Gamma matroid lead was rejected uncounted: generic Laurent
+monomial matroids and complete differential jet-pivot presentations already
+cover the easy mechanism. Contribution 9 covers bounded finite-jump generators;
+its helpers and immediate static corollaries do not create further counts.
+The next cycle should test mechanisms from other route families before
+returning to the Burnol operator class.
+
+Contribution 10 is complete. Compact-radical triviality alone was rejected
+as routine; only the full faithful dense realization was counted. The next
+survey compared QEC Bockstein/Smith/Koszul mechanisms and continuous positive
+evolutions. No result 11 is counted. Extending contribution 9 to all strongly
+continuous positive contraction semigroups would require a full Bernstein
+exponent classification and realization, including unbounded generators;
+isolated scalar-semigroup bridges or bounded corollaries would not qualify.
+
+Candidate 11 now targets the exact closed, maximal dissipative graph and
+strongly continuous contraction evolution of every accretive holomorphic
+Burnol symbol, with literal finite-prime graph core and no domain-admission
+premise. The reciprocal symbol must give an actual unbounded example despite
+bounded prime eigenvalues. Paper proof and corpus comparison are recorded in
+`prime-burnol-unbounded-dissipative-calculus-2026-10-17.md`. Generic Cayley
+injectivity and maximality compile; symbol realization is being checked.
+No positivity or full Bernstein-exponent classification is claimed. Count 10.
 
 Other exploratory searches compared prime-only Laplace completeness and
 generic natural boundaries. Generic density consequences, repackaging the
