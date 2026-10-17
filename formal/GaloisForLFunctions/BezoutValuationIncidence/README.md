@@ -63,11 +63,13 @@ across trans-horizon octaves $R = \lfloor (k - 1)/N \rfloor$).
 | **Bézout Successor Pair Sets (`bezoutSuccessorPairSet`, `centeredBezoutSuccessorPairSet`)** | Pairs $(d_1, d_2) \in [1, N]^2$ (resp. $[2, N]^2$) with $d_1 \mid k$ and $d_2 \mid (k + 1)$; every such pair is automatically coprime ($\gcd(d_1, d_2) = 1$) and maps injectively to $n = d_1 d_2 \mid k(k + 1)$. |
 | **$R$-Octave Dual Möbius Operator (`dualMoebiusOctaveSum`)** | $\mathcal{M}_R(k) = -\sum_{m \in [1, R], m \mid k} \mu(k / m)$; equals $s_{N,\mu}(k)$ identically on the $R$-th trans-horizon octave $R N < k \le (R + 1)N$, compressing length-$N$ divisor sums to length-$R$ quotient sums. |
 | **Truncated Logarithmic Möbius Sieve (`truncLogMoebiusSum`)** | $\Lambda_N(k) = -\sum_{d \in [1, N], d \mid k} \mu(d)\log d$; equals $\Lambda(k)$ for $1 \le k \le N$ and $\Lambda(k) + \mu(k)\log k$ on the first trans-horizon octave $N < k \le 2N$. |
-| **Bézout Successor Incidence Count (`bezoutIncidenceCount`)** | $\mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) = \#\{k \in [1, M] : d_1 \mid k \wedge d_2 \mid (k + 1)\}$; counts Chinese Remainder idempotent hits modulo $d_1 d_2$ across $[1, M]$, remaining non-zero up to $d_1 d_2 \le M(M + 1)$ ($\theta = 2$). |
+| **Bézout Successor Incidence Count (`bezoutIncidenceCount`)** | $\mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) = \#\{k \in [1, M] : d_1 \mid k \wedge d_2 \mid (k + 1)\}$; counts Chinese Remainder idempotent hits modulo $d_1 d_2$ across $[1, M]$, satisfying $\mathcal{I}_{\mathrm{Bez}}(M + d_1 d_2; d_1, d_2) = \mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) + 1$ for $\gcd(d_1, d_2) = 1$ and remaining non-zero up to $d_1 d_2 \le M(M + 1)$ ($\theta = 2$). |
+| **Bézout Unitary Coprime Form (`bezoutCoprimeQuadraticForm`)** | $\mathcal{Q}_{\mathrm{Bez}}(N, c) = \sum_{\substack{d_1, d_2 \in [1, N] \\ \gcd(d_1, d_2) = 1}} \frac{c(d_1)c(d_2)}{d_1 d_2} = \sum_{e=1}^N \mu(e)\,Y_{N,c}(e)^2$; the asymptotic density of $\sum_{k=1}^M s_{N,c}(k)s_{N,c}(k+1)$, simultaneously diagonalized in Selberg's coordinates $Y_{N,c}(e) = \sum_{d \le N, e \mid d} c(d)/d$ with eigenvalue $\mu(e)$ in place of $\varphi(e)$. |
+| **Bézout Sawtooth Defect & Remainder (`bezoutSawtoothDefect`, `bezoutSawtoothRemainderForm`)** | $\delta_{\mathrm{Bez}}(M; d_1, d_2) = \mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) - \mathbf{1}_{\gcd(d_1, d_2)=1}\frac{M}{d_1 d_2} \in [-1, 1]$ and $\mathcal{R}_{\mathrm{Bez}}(M, N, c) = \sum_{d_1, d_2 \le N} c(d_1)c(d_2)\,\delta_{\mathrm{Bez}}(M; d_1, d_2)$. |
 
 ---
 
-## 3. How the Theory Works: The Five Core Mechanisms
+## 3. How the Theory Works: The Six Core Mechanisms
 
 ### 3.1 Mixed-Difference Calculus on the Prime Valuation Complex vs. 1D Prime Fibers (Wall 11)
 On the prime valuation lattice $\mathbb{N}_0^{(\mathcal{P})}$ ($n = \prod_p p^{v_p(n)}$), Dirichlet
@@ -144,15 +146,47 @@ to $1 \le m \le R$, compressing a length-$N$ divisor sum into the $R$-term opera
    The unit additive difference energy $\sum_{k=1}^M (s_{N,c}(k + 1) - s_{N,c}(k))^2$ couples the
    Same-Node Selberg/LCM second moment $\sum_{k=1}^M s_{N,c}(k)^2$ directly to the Successor-Node
    Bézout quadratic form $\sum_{k=1}^M s_{N,c}(k)s_{N,c}(k + 1)$.
-2. **CRT One-Per-Period Law & Super-Horizon Reach up to $\theta = 2$
-   (`bezoutIncidenceCount_le_div_add_one`, `bezoutIncidenceCount_self_succ_pos`):**
+2. **CRT Bijection, One-Per-Period Recurrence & Super-Horizon Reach up to $\theta = 2$
+   (`image_bezoutResidueMap_Icc_eq`, `card_bezoutIntervalSet_period_eq_one`, `bezoutIncidenceCount_eq_div_add_rem`, `bezoutIncidence_super_horizon_reach`):**
    In a Same-Node Sieve ($L = \operatorname{lcm}(d_1, d_2) \mid k$), any modulus $L > M$ has
    $\lfloor M / L \rfloor = 0$ hits in $k \in [1, M]$, rendering the sieve completely blind beyond
-   $\theta = 1$. In the Bézout Successor Sieve ($d_1 \mid k \wedge d_2 \mid (k + 1)$), coprime pairs
-   $(d_1, d_2) \in [1, N]^2$ test $d_1 d_2 \mid k(k + 1)$, which attains non-zero hits inside
-   $k \in [1, M]$ for moduli $L = d_1 d_2$ all the way up to **$M(M + 1) > M^2$ ($\theta = 2$)**
-   while obeying the Chinese Remainder Theorem bound
-   $\lfloor M / (d_1 d_2) \rfloor \le \mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) \le \lfloor M / (d_1 d_2) \rfloor + 1$.
+   $\theta = 1$. In the Bézout Successor Sieve ($d_1 \mid k \wedge d_2 \mid (k + 1)$), the residue
+   map $k \mapsto (k \bmod d_1, (k + 1) \bmod d_2)$ is a bijection on every contiguous period
+   $[A + 1, A + d_1 d_2]$ (`image_bezoutResidueMap_Icc_eq`), so every period of length $d_1 d_2$
+   contains **exactly one** solution (`card_bezoutIntervalSet_period_eq_one`), giving
+   $$\mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) = \left\lfloor \frac{M}{d_1 d_2} \right\rfloor + \mathcal{I}_{\mathrm{Bez}}\bigl(M \bmod (d_1 d_2);\ d_1, d_2\bigr), \qquad \mathcal{I}_{\mathrm{Bez}}\bigl(M \bmod (d_1 d_2);\ d_1, d_2\bigr) \in \{0, 1\},$$
+   while attaining non-zero hits inside $k \in [1, M]$ for moduli $d_1 d_2 = d(d + 1)$ all the way up
+   to **$M(M + 1) > M^2$ ($\theta = 2$)** (`bezoutIncidence_super_horizon_reach`).
+
+### 3.6 Simultaneous Selberg–Möbius Diagonalization, Wall 11 Spectral Separation, & the Universal $1/2$-Decorrelation Law on $\ker P$
+Expanding $\mathbf{1}_{\gcd(d_1, d_2) = 1} = \sum_{e \mid \gcd(d_1, d_2)} \mu(e)$ proves that the
+Bézout unitary coprime quadratic form $\mathcal{Q}_{\mathrm{Bez}}(N, c)$ is **simultaneously
+diagonalized** in the exact same Selberg coordinates $Y_{N,c}(e) = \sum_{d \le N, e \mid d} c(d)/d$
+as $\mathcal{Q}_{\mathrm{Sel}}(N, c) = \sum_{e=1}^N \varphi(e)\,Y_{N,c}(e)^2$, with diagonal
+eigenvalue $\mu(e)$ in place of Euler's totient $\varphi(e)$
+(`bezoutCoprimeQuadraticForm_eq_moebius_diagonal`):
+$$\mathcal{Q}_{\mathrm{Bez}}(N, c) = \sum_{e=1}^N \mu(e)\,Y_{N,c}(e)^2.$$
+This simultaneous diagonalization exposes three structural phenomena:
+1. **Universal Pole Cancellation (`selbergSubBezoutQuadraticForm_eq_Icc_two`) & Prime Weight Recovery (`totient_sub_moebiusReal_prime`):**
+   Because $\varphi(1) = \mu(1) = 1$, the $e = 1$ harmonic-pole mode $Y_{N,c}(1)^2$ cancels out of
+   $\mathcal{Q}_{\mathrm{Sel}}(N, c) - \mathcal{Q}_{\mathrm{Bez}}(N, c) = \sum_{e=2}^N (\varphi(e) - \mu(e)) Y_{N,c}(e)^2$
+   for **every** weight $c$ (even off $\ker P$!), and at every prime $p$, the totient $-1$ defect in
+   $\varphi(p) = p - 1$ is repaired by $-\mu(p) = +1$: $\varphi(p) - \mu(p) = p$.
+2. **Breaking Euler's Totient Degeneracy at Wall 11 (`wall11_totient_degeneracy_broken_by_bezout`):**
+   In the classical Selberg sieve, Euler's totient is degenerate at Wall 11:
+   $\varphi(4) = \varphi(6) = 2$. Subtracting the Bézout eigenvalue $\mu(e)$ breaks this degeneracy:
+   $$\varphi(4) - \mu(4) = 2 - 0 = 2 \;\ne\; 1 = 2 - 1 = \varphi(6) - \mu(6).$$
+3. **The Universal $1/2$-Decorrelation & Coercivity Law on $\ker P$ (`two_mul_moebiusReal_le_totient`,
+   `two_mul_bezoutCoprimeQuadraticForm_le_selberg_of_harmonic_eq_zero`,
+   `selberg_and_mean_square_le_dirichlet_energy_of_harmonic_eq_zero`):**
+   For every integer $e \ge 2$, $\varphi(e) \ge 2\mu(e)$ (with **unique sharp equality at the Wall 11
+   node $e = 6 = 2 \cdot 3$**, where $\varphi(6) = 2 = 2\mu(6)$!). Consequently, on $\ker P$
+   ($Y_{N,c}(1) = 0$), the Bézout successor form is universally bounded by **one-half** of the
+   Selberg form:
+   $$2\,\mathcal{Q}_{\mathrm{Bez}}(N, c) \le \mathcal{Q}_{\mathrm{Sel}}(N, c) \le 2\bigl(\mathcal{Q}_{\mathrm{Sel}}(N, c) - \mathcal{Q}_{\mathrm{Bez}}(N, c)\bigr),$$
+   and at every finite horizon $M \ge 1$, both $M\,\mathcal{Q}_{\mathrm{Sel}}(N, c)$ and
+   $\sum_{k=1}^M s_{N,c}(k)^2$ are coerced by the additive Dirichlet energy plus the signed sawtooth
+   defects (`selberg_and_mean_square_le_dirichlet_energy_of_harmonic_eq_zero`).
 
 ---
 
@@ -165,11 +199,12 @@ to $1 \le m \le R$, compressing a length-$N$ divisor sum into the $R$-term opera
    Beurling system and reduces to $0 = 0$ when inverted on $[N + 1, M]$.
    - *Rule:* Always couple Same-Node squares $s_{N,c}(k)^2$ to Successor-Node Bézout products
      $s_{N,c}(k)s_{N,c}(k + 1)$ or additive differences $\nabla_+ s_{N,c}(k)$ across $k \mapsto k + 1$.
-2. **Trap 2 — The 1D Logarithmic-Line Sampling Trap (Wall 11):**
-   Treating $\{\log n\}$ as points on the 1D real line $\mathbb{R}_u$ loses the prime valuation
-   complex $\mathbb{N}_0^{(\mathcal{P})}$ and cannot see that $\log 6 = \log 2 + \log 3$ lies in the
-   kernel of the 2D mixed difference $\Delta_{2, 3}^\times \log = 0$ while $\log 4 = 2\log 2$ carries
-   non-zero 1D gradient $\Delta_2^\times \log(2) = \log 2$.
+2. **Trap 2 — The 1D Logarithmic-Line Sampling & Totient Degeneracy Trap (Wall 11):**
+   Treating $\{\log n\}$ as points on $\mathbb{R}_u$ or relying on the Same-Node Selberg weight
+   $\varphi(e)$ alone is blind to Wall 11 ($\varphi(4) = \varphi(6) = 2$), whereas the mixed
+   multiplicative difference $\Delta_{2, 3}^\times \log = 0$ vs. $\Delta_2^\times \log(2) = \log 2$
+   and the Bézout–Dirichlet eigenvalue $\varphi(4) - \mu(4) = 2 \ne 1 = \varphi(6) - \mu(6)$
+   strictly separate $4 = 2^2$ from $6 = 2 \cdot 3$.
 3. **Trap 3 — The Pure Monoid / Beurling Semigroup Trap (Wall 9):**
    Any identity proved solely from Dirichlet convolution, Euler products, or same-node divisibility
    $d \mid k$ holds in Beurling generalized number systems with off-line zeros.
@@ -199,7 +234,7 @@ Use the repository search tool to locate declarations and proof patterns:
 ```bash
 scripts/formal_tools.py research "bezoutSuccessorPairSet pronicSeq"
 scripts/formal_tools.py research "sieveSeq_moebiusReal_second_octave"
-scripts/formal_tools.py research "bezoutIncidenceCount"
+scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
 ```
 
 ### Architecture of `GaloisForLFunctions.BezoutValuationIncidence`
@@ -215,5 +250,16 @@ scripts/formal_tools.py research "bezoutIncidenceCount"
   von Mangoldt first-octave splitting.
 - [`BezoutSuccessorQuadraticFormAndDirichletEnergySplit.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/BezoutSuccessorQuadraticFormAndDirichletEnergySplit.lean) —
   **Pillar III:** Discrete Dirichlet energy polarization coupling Same-Node squares to Successor-Node
-  Bézout correlations, Chinese Remainder one-per-period bounds on `bezoutIncidenceCount`, and
-  super-horizon reach beyond $\theta = 1$ up to $d(d + 1) \le M(M + 1)$ ($\theta = 2$).
+  Bézout correlations, CRT separation law, super-horizon uniqueness $\mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) \le 1$
+  ($M \le d_1 d_2$), super-horizon reach up to $d(d + 1) \le M(M + 1)$ ($\theta = 2$), and the
+  Master Four-Requirement Synthesis (`bezout_valuation_incidence_four_requirement_synthesis`).
+- [`BezoutSelbergDiagonalCoercivityAndHalfDecorrelation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/BezoutSelbergDiagonalCoercivityAndHalfDecorrelation.lean) —
+  **Pillar IV:** Simultaneous Selberg–Möbius diagonalization $\mathcal{Q}_{\mathrm{Bez}}(N, c) = \sum_{e=1}^N \mu(e) Y_{N,c}(e)^2$,
+  universal $e = 1$ pole cancellation, prime weight recovery $\varphi(p) - \mu(p) = p$, Wall 11
+  spectral separation $\varphi(4) - \mu(4) = 2 \ne 1 = \varphi(6) - \mu(6)$, and the universal
+  $1/2$-decorrelation & coercivity law on $\ker P$ (sharp at $e = 6 = 2 \cdot 3$).
+- [`ChineseRemainderBezoutPeriodicityAndSawtoothDefect.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ChineseRemainderBezoutPeriodicityAndSawtoothDefect.lean) —
+  **Pillar V:** Exact Chinese Remainder bijection on contiguous periods $[A + 1, A + d_1 d_2]$,
+  one-per-period recurrence and Euclidean division formula for `bezoutIncidenceCount`, universal
+  unit-interval bound on `bezoutSawtoothDefect`, and the Master Finite-Prefix Dirichlet Energy
+  Decomposition & $\ker P$ Coercivity Law.

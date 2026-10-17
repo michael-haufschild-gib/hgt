@@ -498,7 +498,7 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BezoutValuationIncidence
 
-Goal is met when you have made 100 signifcant contributions to the new field of mathematics.
+Goal is met when you have made 250 signifcant contributions to the new field of mathematics.
 
 Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 

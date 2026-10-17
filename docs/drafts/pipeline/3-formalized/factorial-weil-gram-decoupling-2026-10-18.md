@@ -1,6 +1,6 @@
 # Factorial ramp–tent full Weil Gram decoupling
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Route:** RW; exact arithmetic sources connected to WL factorial stencils.
 - **Goal:** Remove the mixed-term sign/domain obligation for every linear combination of the actual factorial ramp and tent. Ultimate goal remains unconditional RH in Lean.
 - **Prior result:** `../3-formalized/factorial-complete-form-coercivity-2026-10-18.md`.
@@ -14,7 +14,7 @@
 
 ## Corpus evidence
 
-Whole-corpus queries `factorial ramp full Weil sign` (deep) and `compact Weil annihilator zeta Mellin null source` completed without partial results or errors. Semantic completeness was not measured; compiler metadata is not a substitute for direct checks. No directly applicable pure-ramp sign theorem was retrieved. The compact annihilator rigidity result requires separate hypotheses and does not identify this ramp with a null source. No zeta-kernel identification is assumed.
+Whole-corpus queries `factorial ramp full Weil sign` (deep) and `compact Weil annihilator zeta Mellin null source` completed without partial results or errors. Semantic completeness was not measured; compiler metadata is not a substitute for direct checks. No directly applicable pure-ramp sign theorem was retrieved. The proposed ingredient set links an unrelated `sign4` to a generic ramp without a proved connection; it is marked `not_verified` and was not used. The compact annihilator rigidity result requires separate hypotheses and does not identify this ramp with a null source. No zeta-kernel identification is assumed.
 
 Applicable current source theorems: `factorialSource_mixed_forward`, `factorialSource_mixed_reverse`, `factorialSource_disjoint`, `factorialSource_combination_jump_integrable`, `factorialSourceRight_autocorr_tail`, `factorialSourceRight_jump_energy_lower`, `abs_integral_sourceFactorialCausal_archWeight_le`, `abs_fullPairing_sourceFactorialCausal_le`, and the new compact finite-jump spectral Weil identity.
 
@@ -48,10 +48,17 @@ so D/N tends to +infinity and eventually D>=N>0. Complete the square, retaining 
 
 The error E_n²/(2N) tends to zero. This bound is uniform in both real coefficients and assumes no positivity of A. The exact minimum in d is c²(A-M²/(4D)), attained at d=-cM/(2D).
 
-All inequalities above follow from the displayed source bounds and elementary real algebra; Lean verification remains pending. This does not prove positivity of A, positivity of the span, or RH. The exact remaining condition for this span is the sign of A-M²/(4D); the unconditional bound isolates a sufficient ramp margin of order log²(N)/N². Positivity of A alone, without a margin, is not enough.
+All inequalities above follow from the displayed source bounds and elementary real algebra. The exact quadratic identity, mixed decay, tent coercivity, uniform lower bound, actual minimizer, and vanishing energy gap are now Lean-verified. This does not prove positivity of A, positivity of the span, or RH. The exact remaining condition for this span is the sign of A-M²/(4D); the unconditional bound isolates a sufficient ramp margin of order log²(N)/N². Positivity of A alone, without a margin, is not enough.
 
 ## Status
 
-Paper proof complete. Draft modules: `FactorialWeilGram.lean`, `FactorialWeilMixedDecay.lean`, `FactorialTentWeilCoercivity.lean`, `FactorialWeilGramDecoupling.lean`. The final uniform lower bound uses the simpler explicit error bound `(36 log N + 26 log 5 + 14 + 2 log 1000000)/sqrt N`; its square divided by `2N` tends to zero. API probe passed after correcting two root-namespace names. `FactorialWeilGram.lean` passed its direct check in session `41982`; its final log is `/tmp/bsu-FactorialWeilGram.log`. Mixed-decay draft errors concerned a numeral cast, topology notation scope, and the squeeze-lemma argument name; the latter was resolved against the actual mathlib source. Remaining three sequential leaf checks run in tool session `15301`; revalidate before launching another Lean process. These three remain unverified until their direct checks pass. Axiom audit for all seventeen public endpoints is prepared in `/tmp/biscale_weil_gram_axioms.lean`, not yet run.
+- Paper proof and all four direct leaf checks passed: `FactorialWeilGram.lean` (session `41982`), `FactorialWeilMixedDecay.lean` (`15301`), `FactorialTentWeilCoercivity.lean` (`55073`), `FactorialWeilGramDecoupling.lean` (`96033`). Final logs: `/tmp/bsu-<Module>.log`.
+- The verified uniform lower bound uses `(36 log N + 26 log 5 + 14 + 2 log 1000000)/sqrt N`; its square divided by `2N` tends to zero. Optimal correction, actual minimum, and vanishing energy gap are verified without a ramp sign premise.
+- All four modules are wired into the area umbrella. Axiom audit of all seventeen public theorems passed in session `43674`: only `propext`, `Classical.choice`, and `Quot.sound`. Log: `/tmp/bsu-weil-gram-axioms.log`. Current source hashes and exact public-theorem audit coverage are recorded in `/tmp/bsu-weil-gram-verification.json`.
+- Index regeneration succeeded. `scripts/formal_tools.py lint --check-generated` exited 1 with three unrelated missing-umbrella-import errors (`ClosedCorrelationCycleRecovery`, `SeparatedCopyCycleCharge`, `SeparatedCopyCyclePolarAmbiguity`) and an unrelated package-root placement error for `BezoutValuationIncidence.lean`. No forbidden-declaration errors were reported. Logs: `/tmp/bsu-weil-gram-index.log`, `/tmp/bsu-weil-gram-lint.log`. Other threads' drafts were preserved. No full or umbrella build was run. All own process handles are terminal; obsolete API probe and failed-draft log were removed.
 
 Prior turn classified as progress: three verified coercivity modules and eighteen audited public theorems. No external novelty claim or numerical experiment.
+
+## Next conjecture
+
+Prove eventually `factorialWeilGramError n <= factorialSpanWeil n 1 0`. The verified uniform lower bound would then give positivity on the entire concrete ramp–tent span. This sufficient margin is OPEN; the weaker exact target is nonnegativity of `factorialWeilMinRamp n`. Neither target proves all-source RW positivity or RH by itself. Investigate the actual finite clamped-sum ramp diagonal and its arithmetic cancellation; do not reuse the tent's logarithmic growth for the ramp or assume a zeta-kernel identification.

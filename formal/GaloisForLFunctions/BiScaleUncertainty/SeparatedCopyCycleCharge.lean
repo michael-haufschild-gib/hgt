@@ -83,9 +83,9 @@ private theorem packet_distance (f : C_c(ℝ, ℝ)) (m : ℕ) (a x : ℝ)
     (hn : autocorr (source f m a) x ≠ 0) :
     |x - (packetIndex f m x : ℝ) * gap f m| ≤ radius f := by
   by_cases hx : |x| ≤ radius f
-  · simpa [packetIndex, hx] using hx
+  · simp [packetIndex, hx]
   · by_cases hy : |x - gap f m| ≤ radius f
-    · simpa [packetIndex, hx, hy] using hy
+    · simp [packetIndex, hx, hy]
     · have hz : |x + gap f m| ≤ radius f := by
         by_contra hz
         apply hn

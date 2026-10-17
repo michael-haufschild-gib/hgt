@@ -17,6 +17,7 @@ private theorem tent_nonneg (n : ℕ) (u : ℝ) : 0 ≤ factorialSourceRight n u
 theorem factorialSourceRight_primeTerm_zero (n : ℕ) :
     primeTerm (autocorr (factorialSourceRight n)) = 0 := by
   funext j
+  change primeTerm (autocorr (factorialSourceRight n)) j = (0 : ℝ)
   unfold primeTerm
   by_cases hj : 2 ≤ j
   · rw [if_pos hj, factorialSourceRight_autocorr_tail n, mul_zero]

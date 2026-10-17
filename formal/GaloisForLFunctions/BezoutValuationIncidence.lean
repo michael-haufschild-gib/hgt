@@ -1,6 +1,8 @@
 import GaloisForLFunctions.BezoutValuationIncidence.PronicBezoutSplitAndPrimePowerIndecomposability
 import GaloisForLFunctions.BezoutValuationIncidence.QuotientDualOctaveReciprocityAndValuationSwitching
 import GaloisForLFunctions.BezoutValuationIncidence.BezoutSuccessorQuadraticFormAndDirichletEnergySplit
+import GaloisForLFunctions.BezoutValuationIncidence.BezoutSelbergDiagonalCoercivityAndHalfDecorrelation
+import GaloisForLFunctions.BezoutValuationIncidence.ChineseRemainderBezoutPeriodicityAndSawtoothDefect
 
 /-!
 # Bézout–Valuation Incidence Mechanics (`GaloisForLFunctions.BezoutValuationIncidence`)
@@ -52,4 +54,32 @@ for the complete field guide, core objects, five core mechanisms, and six struct
      $\mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) \le 1$ ($M \le d_1 d_2$), and super-horizon reach up
      to $\theta = 2$ (`bezoutIncidence_super_horizon_reach`).
    - Master Four-Requirement Synthesis (`bezout_valuation_incidence_four_requirement_synthesis`).
+
+4. **Pillar IV (`BezoutSelbergDiagonalCoercivityAndHalfDecorrelation`):**
+   - Simultaneous Selberg–Möbius diagonalization (`bezoutCoprimeQuadraticForm_eq_moebius_diagonal`):
+     $\mathcal{Q}_{\mathrm{Bez}}(N, c) = \sum_{e=1}^N \mu(e)\,Y_{N,c}(e)^2$ in the exact same
+     Selberg coordinates $Y_{N,c}(e) = \sum_{d \le N, e \mid d} c(d)/d$ as
+     $\mathcal{Q}_{\mathrm{Sel}}(N, c) = \sum_{e=1}^N \varphi(e)\,Y_{N,c}(e)^2$.
+   - Universal cancellation of the $e = 1$ harmonic pole mode ($\varphi(1) - \mu(1) = 0$) even off
+     $\ker P$ (`selbergSubBezoutQuadraticForm_eq_Icc_two`), exact prime weight recovery
+     $\varphi(p) - \mu(p) = p$ (`totient_sub_moebiusReal_prime`), and Wall 11 spectral separation
+     breaking Euler's totient degeneracy $\varphi(4) = \varphi(6) = 2$ via
+     $\varphi(4) - \mu(4) = 2 \ne 1 = \varphi(6) - \mu(6)$ (`wall11_totient_degeneracy_broken_by_bezout`).
+   - Universal $1/2$-spectral gap $2\mu(e) \le \varphi(e)$ for all $e \ge 2$ with unique sharp
+     equality at $e = 6 = 2 \cdot 3$ (`two_mul_moebiusReal_le_totient`), yielding the **Universal
+     $1/2$-Decorrelation & Coercivity Law on $\ker P$**
+     (`two_mul_bezoutCoprimeQuadraticForm_le_selberg_of_harmonic_eq_zero`):
+     $2\mathcal{Q}_{\mathrm{Bez}}(N, c) \le \mathcal{Q}_{\mathrm{Sel}}(N, c) \le 2(\mathcal{Q}_{\mathrm{Sel}}(N, c) - \mathcal{Q}_{\mathrm{Bez}}(N, c))$.
+
+5. **Pillar V (`ChineseRemainderBezoutPeriodicityAndSawtoothDefect`):**
+   - Exact Chinese Remainder bijection on every contiguous period $[A + 1, A + d_1 d_2]$
+     (`image_bezoutResidueMap_Icc_eq`, `card_bezoutIntervalSet_period_eq_one`), one-period step
+     recurrence $\mathcal{I}_{\mathrm{Bez}}(M + d_1 d_2; d_1, d_2) = \mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) + 1$,
+     and Euclidean division formula (`bezoutIncidenceCount_eq_div_add_rem`).
+   - Universal unit-interval bound $|\delta_{\mathrm{Bez}}(M; d_1, d_2)| \le 1$ on the Bézout
+     sawtooth defect (`abs_bezoutSawtoothDefect_le_one`) and exact finite-prefix Bézout–Selberg
+     decomposition (`sum_sieveSeq_mul_succ_eq_main_add_sawtooth`).
+   - **Master Finite-Prefix Dirichlet Energy Decomposition & $\ker P$ Coercivity Law**
+     (`sum_addDiff_sieveSeq_sq_eq_main_sub_defect`,
+     `selberg_and_mean_square_le_dirichlet_energy_of_harmonic_eq_zero`).
 -/

@@ -118,25 +118,31 @@ integrability, or desired-conclusion certificate occurs in their statements.
 
 These checks certify the stated package, not Wall 13 or the full research goal.
 
-## Next conjecture from the obstruction (unproved)
+## Successor conjecture, now formalized
 
-**C3: fixed-order closed correlation cycles cannot recover the missing orientation.**
-For every m, choose a copy gap T>mD as well as T>2D. Conjecture: the plus/minus
+**C3: fixed-order closed correlation cycles cannot recover the missing orientation. PROVED IN LEAN.**
+For every m, choose a copy gap T>mD as well as T>2D. The plus/minus
 copy sources have identical products along every closed lag cycle of length at
-most m, despite their different polar moments. Candidate mechanism: each nonzero
+most m, despite their different polar moments. Mechanism: each nonzero
 lag belongs to one of the three disjoint packets centered at 0,+T,-T. Write each
 lag as c_i T+e_i with c_i in {-1,0,1} and |e_i|<=D. Closure and T>mD force
-sum c_i=0, so the number of signed outer-packet factors is even. This would imply
+sum c_i=0, so the number of signed outer-packet factors is even. This implies
 agreement of all Gram determinants of size at most m, by permutation cycles.
 
-The prospective positive theorem is an exact separation/order bound for when
-closed-cycle data can detect sign; the already identified signed anchor avoids
-that order cost. The converse/sharp threshold, boundary cases, full determinant
-statement and any extension to arbitrary sources remain unaudited and unformalized.
-Do not count C3 as proved. Corpus search `/tmp/bsu-wall13-cycle-search.json`
+The positive theorem is a quantitative packet-charge bound and an exact parity
+classification for all lag products; the signed anchor avoids that order cost.
+The sharp converse threshold remains unproved. The successor also gives complete
+closed-product recovery for arbitrary compact continuous sources.
+The original discovery search was `/tmp/bsu-wall13-cycle-search.json`; it
 completed; all 20 candidate and 20 source statements inspected. No matching cycle
 classification returned. The results include this session's uncompiled draft,
 which is not independent evidence. Semantic coverage remains unmeasured.
+
+The successor [finite-order obstruction and complete recovery](wall13-closed-cycle-order-obstruction.md)
+now proves the bounded-order cycle and determinant claim with smooth concrete
+polar-distinct witnesses. It also proves that all closed products together
+recover signed correlation and polar moment. The exact minimal detection order
+remains conjectural. Do not infer full recovery from Gram determinants alone.
 
 ## Gates
 
@@ -150,3 +156,4 @@ which is not independent evidence. Semantic coverage remains unmeasured.
 
 - 2026-10-18 — New active wall-specific task. Prior paused/cleared contribution-count programs are not revived. Full goal remains walls 2–15; this package is not completion.
 - 2026-10-18 — Three leaves formalized, wired and audited; square-only polar recovery retired with its exact positive survivor. Wall 13 remains open. C3 is the next unproved conjecture.
+- 2026-10-18 — C3 subsequently formalized in the successor package, together with the stronger full closed-product recovery theorem. Exact minimal detection order is the next conjecture.

@@ -868,7 +868,44 @@
       and Rayleigh nodal bounds on `balancedNodalGraph q`, and off-diagonal prime-clock synthesis
       of the doubly-orthogonal balanced nodal vector `primGraph (balancedNodalGraph q)`.
 
-## Audit Status
-- **Module Verification**: All 42 Pillars (`BalancedNodalStationaryAndPrimeShiftDecompositionProducer.lean`, `PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer.lean`, `NodalLobeEnergyAndDyadicDilationDefectProducer.lean`, `OddProfileCollarDominanceAndUnimodalPrimeWindowProducer.lean`, `FactorialSourceWeilContrastAndDivisorResponseProducer.lean`, `DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`, `FoldFreeLogMobiusAndPlancherelCausalProducer.lean`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`, `SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
-- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XLII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+43. **Pillar XLIII — `formal/GaloisForLFunctions/BiScaleUncertainty/CoshDecayGroundPotentialAndThetaVolumeCollarProducer.lean`**
+    - `abs_integral_thetaSecondDifference_kernel_le`,
+      `abs_thetaGroundPotential_le_div_cosh`,
+      `neg_div_cosh_le_thetaGroundPotential_and_lt_one`,
+      `one_sub_thetaGroundPotential_bounds_div_cosh`,
+      `primeDiagonalPotential_le_one_add_div_cosh`,
+      `abs_primeKernelSum_add_arch_sub_cosh_le`:
+      Exponentially decaying $\cosh(x/2)$ pointwise bounds `|thetaGroundPotential x| ≤ thetaGroundPotentialBound / Real.cosh (x / 2)`,
+      two-sided bounds on `1 - thetaGroundPotential x`, and `|primeKernelSum x + archGroundConstant * riemannKernelReal x - Real.cosh (x / 2)| ≤ thetaGroundPotentialBound`.
+    - `inner_groundPotentialOperator_self_eq_volume`,
+      `riemannKernelReal_le_of_abs_le`,
+      `inv_cosh_le_inv_cosh_add_theta_div_cosh`,
+      `nearInd_le_cosh_div_theta_mul_arch`,
+      `norm_nearMul_sq_le_thetaToVolume_sq`,
+      `nearMass_le_thetaToVolume_sq`:
+      Exact $\cosh(x/2)$-cancelled volume integral of `groundPotentialOperator`, explicit collar minimum
+      `riemannKernelReal R ≤ riemannKernelReal x` on `|x| ≤ R`, and domination of compact collar mass
+      `nearMass R p` by `(Real.cosh (R / 2) / riemannKernelReal R) * ‖thetaToVolume p.val.fst‖ ^ 2`.
+    - `abs_inner_groundPotentialOperator_self_le_collar_split`,
+      `norm_sq_sub_groundPotential_le_collar_split`,
+      `inner_primeDiagonalOperator_self_le_collar_split`,
+      `exists_thetaToVolume_energy_bound`,
+      `exists_archDiagonal_energy_bound`,
+      `exists_thetaToVolume_lower_of_resolvent`:
+      Explicit collar-split dominance of `‖u‖ ^ 2 - ⟪groundPotentialOperator u, u⟫_ℝ` by
+      `(1 + thetaGroundPotentialBound / Real.cosh (R / 2)) * ‖u‖ ^ 2 + (thetaGroundPotentialBound / riemannKernelReal R) * ‖thetaToVolume u‖ ^ 2`,
+      and confinement of negative `sourceEnergy` / `resolvent` eigenvalues $\mu > 1/2$ by `‖thetaToVolume p.val.fst‖ ^ 2` and `⟪archDiagonalOperator p.val.fst, p.val.fst⟫_ℝ`.
+    - `balancedNodalGraph_five_term_jump_le_collar_split_of_eigenvector`,
+      `posGraph_five_term_jump_le_collar_split_of_eigenvector`,
+      `negGraph_five_term_jump_le_collar_split_of_eigenvector`,
+      `eigenvalue_le_one_half_of_four_term_balancedNodal_ge_groundPotential`,
+      `eigenvalue_le_one_half_of_four_term_balancedNodal_ge_collar_split`,
+      `eigenvalue_le_one_half_of_four_term_posGraph_ge_groundPotential`,
+      `eigenvalue_le_one_half_of_four_term_negGraph_ge_groundPotential`,
+      `eigenvalue_le_one_half_of_frequently_offDiag_primeClock_ge_neg`:
+      Collar-split upper bounds on the five-term jump sums of `balancedNodalGraph q`, `posGraph q`, and `negGraph q`,
+      and exact eigenvalue exclusion laws (`μ ≤ 1/2`) from four-term nodal jump excess or `liminf` off-diagonal prime-clock nonnegativity.
 
+## Audit Status
+- **Module Verification**: All 43 Pillars (`CoshDecayGroundPotentialAndThetaVolumeCollarProducer.lean`, `BalancedNodalStationaryAndPrimeShiftDecompositionProducer.lean`, `PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer.lean`, `NodalLobeEnergyAndDyadicDilationDefectProducer.lean`, `OddProfileCollarDominanceAndUnimodalPrimeWindowProducer.lean`, `FactorialSourceWeilContrastAndDivisorResponseProducer.lean`, `DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`, `FoldFreeLogMobiusAndPlancherelCausalProducer.lean`, `DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer.lean`, `SawtoothPhaseCancellationAndBandSpectralProducer.lean`, `ChebyshevHeadAndShearCellProducer.lean`, `CoprimeFactorialLiftAndSpectralLaplaceProducer.lean`, `LaplaceEnergyAndRoughCollarWeilProducer.lean`, `ChebyshevCellAndArchimedeanWeilProducer.lean`, `ExplicitNyquistPolarAndChebyshevFactorialProducer.lean`, `HyperbolicGaugeMeanSquareChebyshevWeilSynthesis.lean`, `AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis.lean`, `IntegratedMultiNodeDyadicCosetWeilCoercivity.lean`, `OddSectorAndPrimitiveHyperplaneBiScaleSynthesis.lean`, `MultiNodeSignedCliqueWeilCoercivity.lean`, `WeilFullFunctionalAndPrimitiveHyperplaneBridge.lean`, `ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis.lean`, `VonMangoldtWeilExplicitFormulaAndChebyshevBridge.lean`, `AllScaleCriticalLineOriginConvergenceAndSynthesis.lean`, `SignedWeilFunctionalCoercivityAndRHBridge.lean`, `MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis.lean`, `EulerMaclaurinLevyQuadratureAndSFreeCellBounds.lean`, and Pillars I–XVI) compile to `.olean` with exit code `0` and zero warnings.
+- **Axiom Audit**: `#print axioms` verified on all key theorems across Pillars I–XLIII; every declaration depends only on `[propext, Classical.choice, Quot.sound]`, with zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.

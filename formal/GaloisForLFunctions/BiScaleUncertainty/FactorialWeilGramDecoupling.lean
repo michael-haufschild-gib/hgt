@@ -33,7 +33,7 @@ theorem factorialSpanWeil_eventual_lower :
   have hs := sq_nonneg (((n+1 : ℕ) : ℝ)*d+c*factorialWeilMixed n)
   have he := mul_nonneg (sq_nonneg c) (sub_nonneg.mpr (mixed_sq_le n))
   have hd := mul_nonneg (mul_nonneg hn.le (sub_nonneg.mpr hD)) (sq_nonneg d)
-  rw [factorialSpanWeil_gram]
+  rw [factorialSpanWeil_gram n c d]
   unfold factorialWeilGramError
   apply (mul_le_mul_iff_right₀ (show (0 : ℝ) < 2*((n+1 : ℕ) : ℝ) by positivity)).1
   field_simp [hn.ne']
@@ -50,7 +50,8 @@ theorem factorialSpanWeil_eventual_complete_square :
     lt_of_lt_of_le (by positivity : (0 : ℝ) < ((n+1 : ℕ) : ℝ)) hn
   intro c d
   unfold factorialWeilMinRamp
-  rw [factorialSpanWeil_gram n c d, factorialSpanWeil_gram n 1]
+  rw [factorialSpanWeil_gram n c d,
+    factorialSpanWeil_gram n 1 (-(factorialWeilMixed n)/(2*factorialSpanWeil n 0 1))]
   field_simp [hD.ne']
   ring
 
