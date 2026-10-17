@@ -99,8 +99,8 @@ Every actual smooth nonzero grid source at cutoff N therefore satisfies
 
     J_arch(f)/h_f(0) ≥ P_∞−4/sqrt(N)−12289/N.
 
-All ten leaves and all 79 theorem axiom audits pass. Final direct audit is pending;
-the verified-package count remains 13 until that audit and integrity checks finish.
+All ten leaves, all 79 theorem axiom audits, and the final direct audit pass without
+diagnostics. This construction counts once as package 14.
 The retained finer-constant paper argument on the card is not independently
 Lean-certified; the formal threshold and constants are those displayed here.
 Deep discovery was partial (97.55s), and all 11 lexical hits in five modules were
@@ -576,7 +576,7 @@ and `/tmp/bsu-regularized-lexical{,-page2,-page3}.log`.
 
 ## Research accounting
 
-Lean-verified significant packages: **13/100**: (1) general source transfer and
+Lean-verified significant packages: **14/100**: (1) general source transfer and
 optimized certificates; (2) actual cutoff monotonicity, retraction stability, and
 explicit quantitative saturation; (3) attained paired-sphere support, actual signed
 product-zero source transfer, and its optimized monotone finite-limit hierarchy;
@@ -601,22 +601,22 @@ and complete equality classification, exact accepted-response error, and a
 monotone physical cutoff producer with finite limit and actual-source certificates;
 (13) unconditional regularized signed-packet curvature, realized physical minimum
 responses and finite iteration, followed by a monotone producer reaching S∞ with
-explicit allocation and cutoff errors for actual sources.
+explicit allocation and cutoff errors for actual sources;
+(14) actual concentrated cutoff extension and retraction, matching physical-tail
+comparison, exact leading allocation constant four with explicit O(1/N) error,
+and the resulting actual grid-source certificate.
 Count each package once, not its leaves or helper lemmas.
 Previously certified shared-origin and dual-allocation results are dependencies.
 The full research objective remains active.
 
-Latest global lint reports 15 unrelated modules unreachable from the umbrella:
-`CenteredRamanujanVarianceAndAbelCofactorCancellation`,
-`FoldFreeLogMobiusAndPlancherelCausalProducer`, `IntegerBlockAggregation`,
-`IntegerBlockCoisometry`, `IntegerBlockVariance`, `IntegerDilationTraceDefect`,
-`MultiOctaveStepBrickPartitionAndWitnessDyadicPositivity`, `NyquistWeightCells`,
-`NyquistWeightJets`, `NyquistWeightTaylorRemainder`, `PhysicalDilation`,
-`RoutePMVarianceToWitnessSynthesisAndCriticalStripBridge`,
-`SignedPrimePolarCausalMoments`, `SignedPrimePolarSourceEnergy`,
-`SignedPrimePolarSourceFactorization`. Those concurrent files were not modified.
-All 43 owned leaves are wired. Evidence: `/tmp/bsu-regularized-lint.log` and
-`/tmp/bsu-regularized-integrity.json`.
+Latest global lint reports 12 unrelated modules unreachable from the umbrella:
+`NyquistWeightCalibrations`, `NyquistWeightPrefixMass`, `NyquistWeightProducer`,
+`NyquistWideResidualEscape`, `NyquistWideResidualLimit`, `PhysicalBoxAffineRegularity`,
+`PhysicalBoxAverage`, `PhysicalBoxGraphControl`, `PhysicalBoxProfile`,
+`PhysicalBoxVariance`, `PhysicalTranslationContinuity`, and
+`WindowEnergyArithmeticQuadrature`. Those concurrent files were not modified.
+All 53 owned leaves are wired. Evidence: `/tmp/bsu-sharp-tail-lint.log` and
+`/tmp/bsu-sharp-tail-integrity.json`.
 
 Final source SHA-256: `423ca0e7d1957c5898bac5ff228e6989d255c98e2fe24ec621775f76d3574792`.
 Evidence: `/tmp/bsu-physical-source-{final,axioms,index,lint}.log` and
@@ -895,8 +895,68 @@ with selected `Nat.cast_add`, `Nat.cast_one`, `Nat.cast_succ`, and `add_assoc`
 lemmas before recurrence inequalities. Annotate old/fresh dependent partitions
 in recursive ladder branches; normalize final scalar order using `ring`.
 
-Next sharp-tail candidate remains paper-only and uncounted. Its right-node tail
+At the package-13 audit, the next sharp-tail candidate was still paper-only.
+Package 14 below closes its formalization. Its right-node tail
 extension must assign the endpoint x=log N to old node N and truncate each new
 cell by the open log M window. This repairs the exact partition law while leaving
 old fibres unchanged for y>0. The candidate leading law concerns independent
 P_N only, not the full signed-Gram optimum or unrestricted source infimum.
+
+## Sharp leading tail verification (package 14)
+
+Ten leaves, respectively 7, 11, 11, 7, 11, 8, 2, 11, 6 and 5 public theorems:
+
+- `RightNodeCollarPartition`: `2ef65f8ca21433139874a1868f9c6e8844b9b54c4f457755331478bd52c7755e`.
+- `CollarRadialPenalty`: `86e653c91eba37ecd30bb05ef095d3ceb5b28b45cd52b670f2869a0902ea9cff`.
+- `CollarMeshBounds`: `4c10614e6aed7f4ed8317f3b77a33df417617ef1ea6ebc703f8d8d7d713bf1e4`.
+- `ConcentratedCollarExtension`: `682ebcb4cd195af5904532559d7a36b2003f429fcc3944c45d5d059fa7236b98`.
+- `ConcentratedCollarRetraction`: `6f8fbf9e9eed5355f370295d7940428c2e2dbfc3be372a3bb4978dba8a281601`.
+- `LogarithmicArrayRadialComparison`: `ef77a033b9b06bb8415850a44301f98c622c85ee03bcdd06402850d466ee6c38`.
+- `ConcentratedCollarPenalty`: `64b40713473a99f38b425cb1f7ea8b9a281b688003a2a0be82201ff0f062d074`.
+- `CollarEndpointTailMass`: `16497c3494a18caa9bea3d138ddb7ef61624e7777e8cc9dcda312215898110f7`.
+- `SharpCollarCutoffComparison`: `a77cff7e890162f37c6e0d17a0ef4aa583399406e9a9d13016a521c8968ff1da`.
+- `SharpCollarAsymptotics`: `10e62be5a9f9bc0ab4d26910bb20cf353666ef9f9fa458c035b53cfebc4408a2`.
+
+All ten dependency compiles pass with empty logs. All 79 public theorems were
+axiom-audited exactly once; only `propext`, `Classical.choice`, and `Quot.sound`.
+Ten capstone signatures and seven concrete definitions were printed and inspected.
+Audit: `/tmp/bsu_sharp_tail_axioms.lean`, `/tmp/bsu-sharp-tail-axioms.log`, and
+`/tmp/bsu-sharp-tail-audit-coverage.json`.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SharpCollarAsymptotics.lean`;
+exit 0, empty log, no `-o`. Evidence `/tmp/bsu-sharp-tail-final.{log,exit}`.
+Dependency logs: `/tmp/bsu-sharp-tail-{right-node,radial,mesh,extension,retraction,array,penalty,endpoint,comparison,asymptotics}.log`.
+
+Index refresh exits 0. The three requested exact capstones are discoverable:
+`optimalCoefficient_sharp_leading_error`, `optimalCoefficient_sharp_saturation_limit`,
+and `sharpCollar_source_lower_bound`. All five declarations returned in the
+restricted module search were inspected. Evidence:
+`/tmp/bsu-sharp-tail-index.log`, discovery JSON and discovery-coverage JSON.
+All 53 owned imports occur exactly once, all 43 prior source hashes are unchanged,
+and the ten current hashes match the manifest. Scoped whitespace passes.
+Read-only README remains byte-identical at
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Global lint exits 1 for twelve foreign unwired modules, listed in the facts ledger
+and `/tmp/bsu-sharp-tail-lint.log`; no own failure or foreign edit.
+Integrity: `/tmp/bsu-sharp-tail-{manifest,integrity}.json`.
+Temporary API probe and three obsolete drafts removed; successful audit scratch
+and logs retained. All owned jobs terminal. No full/umbrella build, numerical
+experiment, heartbeat increase, commit or push. One significant contribution:
+**14/100**, full objective active.
+
+Reusable proof details: abstract exponential-denominator algebra to real variables
+before clearing denominators. Supply constant-integrability arguments through
+`exact` so automatic finiteness arguments elaborate. Expose pointwise function
+differences with `change` before rewriting integrals. Expand composed limits
+before simplifying square roots. Avoid redundant tactics after `field_simp`.
+
+Next paper candidate, uncounted: a fixed interval near offset zero forces node-2
+share one on both signs for every cutoff N≥3. Let e=log3−log2−δ>0,
+a=e/3, b=2e/3 and W0=2/(1−exp(−2a)). On [a,b], the whole-sign norms
+A,B are at least one and W≤W0, so the paired kernel gain should be at least
+1/(W0+2). Integration would give a uniform gap g=(b−a)/(W0+2)>0 and hence
+Q∞≥P∞+g. Exact node exclusion, weight bounds, integration and supremum transfer
+still need Lean proofs. Combined with an analogous paired leading-tail law, this
+would select the delayed coupled hierarchy's N^(−1/4) branch. Neither claim is
+counted or certified yet. The complete paper argument and scope limits are on
+the owned card.

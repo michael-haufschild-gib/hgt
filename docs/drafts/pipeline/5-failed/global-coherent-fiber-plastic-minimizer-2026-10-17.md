@@ -1,8 +1,8 @@
 # Global plastic minimizers in nonzero coherent classes
 
 - **ID:** global-coherent-fiber-plastic-minimizer
-- **Stage:** 5-failed, closure audit pending
-- **Type:** FALSIFIED (paper); exact positive survivor awaiting Lean audit
+- **Stage:** 5-failed
+- **Type:** FALSIFIED (Lean); exact positive survivor and full capstone formalized
 - **Source:** ../1-in-progress/hyperbolic-multiplier-lifting-2026-10-17.md
 - **Statement tested:** Every actual odd full-fold coherent class has a source
   minimizing the original plastic functional.
@@ -47,10 +47,23 @@ continuity, or positivity on arbitrary odd sources is imposed or asserted.
 
 - [x] Well-posed source-pure minimization question.
 - [x] Dependency-closed paper obstruction and positive survivor.
-- [ ] Exact source construction and full variational capstone Lean audit.
-- [ ] All public theorem axiom audits and integration checks.
+- [x] Exact source construction and full variational capstone Lean audit.
+- [x] All public theorem axiom audits and integration checks.
 
-Implementation modules, currently awaiting audit:
+Verified implementation modules:
 `formal/GaloisForLFunctions/BiScaleUncertainty/OutwardCoherentEscape.lean` and
 `formal/GaloisForLFunctions/BiScaleUncertainty/CoherentFiberPlasticInfimum.lean`.
-No external novelty or repository-wide clean-gate claim.
+Key declarations: `escapingSource`, `cellFold_escapingSource`,
+`escapingSource_energy_bound`, `escapingSource_plastic_error`,
+`plastic_coherentFiber_isGLB`, `plastic_coherentFiber_attainment_iff`,
+`plastic_coherentFiber_negative_iff`.
+
+Actual-source audits36665 and16044 exited0 without warnings; all21 public
+theorem axiom audits65275 exited0 with only `propext`, `Classical.choice`,
+`Quot.sound`. Module hashes respectively:
+`264c02f63ac11eac9ae0931ce8d1f7d5f6434d92eb3fc05927a1e3682dac93ac` and
+`686fc6dc698969f4b1345e4b67554030002ece865296e367f0ee6007c6baefc3`.
+Umbrella wired; all26 public declarations indexed with exact name-set match.
+Global lint reports12 unrelated unreachable modules and no generated-file drift;
+no owned lifting module issue. Exact snapshot on master card. No numerical
+experiment, external novelty or repository-wide clean-gate claim.

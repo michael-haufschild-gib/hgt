@@ -44,30 +44,31 @@ theorem compact_jumpEnergy_le_norm_sq (ψ : C_c(ℝ, ℝ)) (weights : ℕ → �
   calc
     _ ≤ congestionEnergy (compactMixture ψ weights) q := by
       rw [congestionEnergy_eq_jump_add_slack]
-      exact le_add_of_nonneg_right (zero_le _)
+      exact le_add_of_nonneg_right zero_le
     _ ≤ resistanceMass ψ weights * sourceDirichletMass ψ q := compact_congestionEnergy_le ψ weights q
-    _ ≤ _ := mul_le_mul_left' (sourceDirichletMass_le_norm_sq ψ q) _
+    _ ≤ _ := mul_le_mul_right (sourceDirichletMass_le_norm_sq ψ q) _
 
 theorem compact_boxAverage_affine_jump_le (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0)
     (a b s : ℝ) (q : Velocity) :
     jumpEnergy (compactMixture ψ weights) (physicalAffineCommutator a b (physicalBoxAverage s q)) ≤
       resistanceMass ψ weights * ENNReal.ofReal
-        (4*|a|*(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2) := by
+        (4*|a| *(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2) := by
   exact (compact_jumpEnergy_le_norm_sq ψ weights _).trans
-    (mul_le_mul_left' (ENNReal.ofReal_le_ofReal (physicalBoxAverage_affine_energy_le a b s q)) _)
+    (mul_le_mul_right (ENNReal.ofReal_le_ofReal (physicalBoxAverage_affine_energy_le a b s q)) _)
 
 theorem compact_boxAverage_affine_bound_ne_top (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0)
     (a b s : ℝ) (q : Velocity) :
     resistanceMass ψ weights * ENNReal.ofReal
-      (4*|a|*(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2) ≠ ⊤ :=
+      (4*|a| *(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2) ≠ ⊤ :=
   ENNReal.mul_ne_top (resistanceMass_ne_top ψ weights) ENNReal.ofReal_ne_top
 
 theorem compact_boxAverage_approximation_tendsto (ψ : C_c(ℝ, ℝ)) (weights : ℕ → ℝ≥0)
     (q : Velocity) :
     Tendsto (fun s : ℝ => jumpEnergy (compactMixture ψ weights) (physicalBoxAverage s q-q))
       atBot (𝓝 0) := by
+  have hc : Tendsto (fun _ : ℝ => q) atBot (𝓝 q) := tendsto_const_nhds
   have he : Tendsto (fun s : ℝ => ‖physicalBoxAverage s q-q‖^2) atBot (𝓝 0) := by
-    simpa using ((physicalBoxAverage_tendsto q).sub tendsto_const_nhds).norm.pow 2
+    simpa using ((physicalBoxAverage_tendsto q).sub hc).norm.pow 2
   have hr : Tendsto (fun s : ℝ => (resistanceMass ψ weights).toReal *
       ‖physicalBoxAverage s q-q‖^2) atBot (𝓝 0) := by
     simpa only [mul_zero] using he.const_mul (resistanceMass ψ weights).toReal
@@ -79,6 +80,6 @@ theorem compact_boxAverage_approximation_tendsto (ψ : C_c(ℝ, ℝ)) (weights :
   have ht : Tendsto (fun s : ℝ => ENNReal.ofReal ((resistanceMass ψ weights).toReal *
       ‖physicalBoxAverage s q-q‖^2)) atBot (𝓝 0) := by
     simpa only [ENNReal.ofReal_zero] using ENNReal.tendsto_ofReal hr
-  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ht (fun _ => zero_le _) hb
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ht (fun _ => zero_le) hb
 
 end GaloisForLFunctions.BiScaleUncertainty.PathCongestion

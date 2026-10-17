@@ -23,6 +23,7 @@ theorem integral_physicalTranslation_sub_sq (q r : Velocity) (h : ℝ) :
     _ = ∫ u in 0..h, (‖q‖^2+‖r‖^2)-2*⟪r, physicalTranslation u q⟫ := by
       apply intervalIntegral.integral_congr
       intro u _
+      dsimp only
       rw [norm_sub_sq_real, physicalTranslation_norm, real_inner_comm]
       ring
     _ = _ := by
@@ -48,6 +49,7 @@ theorem integral_physicalTranslation_pair_sq (q : Velocity) (h : ℝ) :
       _ = ∫ v in 0..h, ‖physicalTranslation v q-physicalTranslation u q‖^2 := by
         apply intervalIntegral.integral_congr
         intro v _
+        dsimp only
         rw [norm_sub_rev]
       _ = _ := by
         rw [integral_physicalTranslation_sub_sq, physicalTranslation_norm, real_inner_comm]

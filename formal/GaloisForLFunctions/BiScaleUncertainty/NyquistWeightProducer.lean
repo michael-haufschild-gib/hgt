@@ -40,7 +40,7 @@ theorem integral_nyquistWeightTaylor_mul (β : ℝ) (m k : ℕ) (H : ℝ →ᵇ 
     apply Finset.sum_congr rfl
     intro j _
     ring
-  rw [he, integral_finset_sum]
+  rw [he, integral_finsetSum]
   · simp only [integral_const_mul]
     rfl
   · intro j _
@@ -145,7 +145,7 @@ theorem hasSum_nyquistWeightProducedCell {β : ℝ} (hβ : 0 ≤ β) (m N : ℕ)
     hi.integrableOn
   rw [iUnion_nyquistResidualCell] at hs
   have hh := hs.sub (hasSum_nyquistWeightCellError_compact hβ m N H hH)
-  simpa only [integral_nyquistWeight_cell_decomposition, add_sub_cancel_right,
+  simpa only [integral_nyquistWeight_cell_decomposition β m, add_sub_cancel_right,
     nyquistWeightPolarTail] using hh
 
 theorem nyquistWeightPolarTail_decomposition {β : ℝ} (hβ : 0 ≤ β) (m N : ℕ)
@@ -163,6 +163,13 @@ theorem nyquistWeightProducer_error_le {β : ℝ} (hβ : 0 < β) (m N : ℕ)
   rw [nyquistWeightPolarTail_decomposition hβ.le m N H hH, add_sub_cancel_left]
   exact (integral_mul_nyquistWeightKernel_le hβ.le m N hlt H).trans
     (mul_le_mul_of_nonneg_right (nyquistWeightTailMass_le hβ m N hlt) (norm_nonneg H))
+
+theorem nyquistWeightOperator_abs_sub_le {β : ℝ} (hβ : 0 ≤ β) (m N : ℕ)
+    (hlt : β < (m : ℝ) + 1) (H G : ℝ →ᵇ ℝ) :
+    |nyquistWeightOperator hβ m N hlt H - nyquistWeightOperator hβ m N hlt G| ≤
+      nyquistWeightTailMass β m N * ‖H - G‖ := by
+  rw [← map_sub]
+  exact integral_mul_nyquistWeightKernel_le hβ m N hlt (H - G)
 
 theorem nyquistWeightPolar_convergence_iff_producer {β : ℝ} (hβ : 0 ≤ β) (m N : ℕ)
     (hlt : β < (m : ℝ) + 1) {H : ℝ →ᵇ ℝ} {F : ℕ → ℝ →ᵇ ℝ}

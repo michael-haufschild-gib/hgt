@@ -106,8 +106,12 @@ Package 13 now proves unconditional regularized curvature, an explicit finite
 allocation schedule, and a new monotone producer reaching S∞. Its normalized
 allocation error is at most (δ+1)/(n+1), plus the existing cutoff tail to S∞.
 All seven new leaves, all 77 public theorem axiom audits, and final direct check pass.
-Progress: 13/100. Latest lint reports 15 unrelated concurrent umbrella failures.
-Next: nonzero-lag support and sharp asymptotics; full goal remains active.
+Package 14 proves the sharp independent allocation tail:
+|P∞−P_N−4/sqrt(N)|≤12289/N for N≥8, hence sqrt(N)(P∞−P_N)→4.
+Actual concentrated extension and retraction supply both error bounds. All ten
+leaves, all 79 theorem axiom audits, and final direct check pass.
+Progress: 14/100. Latest lint reports 12 unrelated concurrent umbrella failures.
+Next: uniform paired coupling gap and paired leading tail; full goal remains active.
 
 Current signed-capacity search `/tmp/bsu-signed-capacity-search.log` finds 586
 declarations in 83 modules. It supplies actual translation-packet norm identities
@@ -626,19 +630,17 @@ Integrating yields 4exp(−a/2)/(1−exp(−2a)). Substitution a=log N−δ give
 bound since exp(2δ)=2 and exp(δ/2)=2^(1/4). Monotonicity and the common finite mass
 bound give P_∞; taking M→∞ in the comparison proves its rate.
 
-## Candidate sharp leading saturation law [paper argument; formal audit pending]
+## Sharp leading saturation law [Lean verified, package 14]
 
-Current implementation plan (uncounted; verified count remains 13/100):
+Completed implementation plan (one contribution; verified count 14/100):
 [x] construct an exact measurable right-node partition and concentrated extension/retraction;
 [x] prove uniform square-root fibre mass bounds and abstract radial perturbation bounds;
 [x] specialize radial comparisons to both actual cutoff constructions;
 [x] integrate the concentrated penalties and identify the leading tail term;
-[ ] direct leaf checks, all-theorem axiom audit, wiring, index and ledger evidence.
+[x] direct leaf checks, all-theorem axiom audit, wiring, index and ledger evidence.
 Reuse the existing `logarithmicCeilLag_bounds` mesh theorem; its source and compiled
 artifact were inspected. Preserve the old 43 owned leaves and read-only README.
-The preceding turn made verified progress; no live owned process remains from it.
-
-Concrete formalization refinement (paper-proved, not yet counted): use the existing
+Verified concrete construction: use the existing
 ceil mesh `0≤log(ceil(exp x))−x≤exp(−x)` and a right-node partition above log 4,
 with equalMultiplicity below. For N≥8, tail filling is supported on y≤1/N;
 old-window repair is supported on y≤exp(δ)/N≤2/N. Thus the old 4/N repair width
@@ -650,24 +652,29 @@ On the tail-extension interval this bounds the penalty increment by 8192;
 on the repair interval it bounds the increment by 6144. Integrating gives errors
 8192/N and 12288/N respectively. These coarser constants preserve leading
 coefficient 4 and simplify the proof by avoiding fractional-power integration.
-All pending array bounds must be instantiated by the actual extension/retraction;
-generic perturbation lemmas alone do not complete this contribution.
-Nine leaves now compile without diagnostics: `RightNodeCollarPartition`,
+All array bounds are instantiated by the actual extension/retraction; generic
+perturbation lemmas alone would not complete this contribution.
+Ten leaves compile without diagnostics: `RightNodeCollarPartition`,
 `CollarRadialPenalty`, `CollarMeshBounds`, `ConcentratedCollarExtension`, and
 `ConcentratedCollarRetraction`, together with `LogarithmicArrayRadialComparison`
 and `ConcentratedCollarPenalty`, `CollarEndpointTailMass`, and
-`SharpCollarCutoffComparison`. The optimized asymptotic capstone remains in verification.
-Checkpoint: `/tmp/bsu-sharp-tail-checkpoint.json`; count remains 13/100.
+`SharpCollarCutoffComparison`, and `SharpCollarAsymptotics`. All 79 public theorem
+axiom audits pass with standard axioms only; final direct leaf check exits 0 with
+an empty log. Exact evidence and hashes appear below.
+Checkpoint: `/tmp/bsu-sharp-tail-checkpoint.json`; count 14/100.
 
-The preceding one-sided rate can be sharpened on paper to
+The preceding one-sided rate is now sharpened to
 
     P_∞−P_N = 4/sqrt(N) + O(1/N),   N→∞.
 
 This is a claim about P_N, the independent signed-coset allocation optimum only.
-It is NOT asserted for the full Schur-coupled or actual-source constant. It is not
-counted as a completed contribution before the construction and bounds are formalized.
+The full Schur-coupled and unrestricted source constants require separate proofs.
+The verified remainder is 12289/N for N≥8;
+the leading constant four is exact. Every smooth nonzero grid source therefore has
+normalized energy at least P∞−4/sqrt(N)−12289/N.
 
-Here is a full quantitative argument to audit. Set d=2^(1/4), c=4d, a=4c,
+The following retained finer-constant paper argument uses a different threshold
+and constants; those refinements are not separately Lean-certified. Set d=2^(1/4), c=4d, a=4c,
 b=2c, g=2sqrt(2)c. For all 0<y<δ and integer j≥2,
 
     w(log j±y) ≤ c/sqrt(j),       1/w(y) ≤ d y.
@@ -739,7 +746,8 @@ Finally
 
 by subtracting 2exp(−x/2) from w and integrating the remainder bound
 2exp(−5x/2)/(1−N^(−2)) for x≥log N. This proves the stated leading law
-at paper level, subject to formal verification of these explicit constructions.
+at paper level. The formal theorem above uses the verified rational constants
+8192, 12288, 12289 and threshold N≥8 instead.
 
 The key mechanism is concentration of added/repair collars into an O(1/N)
 origin-offset interval. Physical tail mass is order N^(−1/2), but its extra
@@ -750,8 +758,17 @@ independent-sphere allocation hierarchy has a tail-driven leading coefficient.
 
 ### Forced first-node coupling gap (new paper candidate; uncounted)
 
-The current sharp-tail package remains the active formalization. A subsequent
-route can potentially remove the unresolved strict-limit-gap branch. The source
+Active package-15 plan; verified count remains 14/100:
+[x] prove exact forced node-2 shares on a fixed positive offset interval;
+[ ] lower-bound both whole-sign norms and the paired kernel gain uniformly;
+[ ] integrate, optimize, and pass to strict separation of the limiting constants;
+[ ] derive eventual selection of the paired branch and actual-source improvement;
+[ ] direct leaf checks, all-theorem axiom audits, wiring, index, lint and ledger.
+Preserve all 53 earlier owned source files and the read-only README. The preceding
+goal turn made verified progress (package 14); no owned Lean process survives it.
+
+The sharp independent tail is now verified. The next paper candidate can
+potentially remove the unresolved strict-limit-gap branch. The source
 formula `pairedKernel_sub_kernel` uses whole-sign block norms A,B and equals
 2AB divided by sqrt(W²+(A+B)²)+sqrt(W²+A²+B²). It is not a sum of separately
 paired coset deficits. This exact source formula was inspected.
@@ -781,8 +798,8 @@ forced-collar search and field text search are recorded under /tmp/bsu-sharp-tai
 - Arbitrary physical overlap allocation must conserve density. Origin weight cannot be spent once per odd coset.
 - Schur residuals are not yet included in C*_n. Its sharp convex allocation certificate is not a proof of global correlation sharpness.
 - Compatible partition extension and retraction formalize monotonicity and the explicit
-  inverse-square-root upper bound. The leading coefficient 4 still requires formal audit
-  of the concentrated collar construction.
+  inverse-square-root upper bound. The concentrated collar construction now proves
+  exact leading coefficient 4 with explicit inverse-cutoff remainder.
 - Stronger Schur-coupled certificates require control of actual cross-coset Gram entries.
 
 ### Signed Gram constraint activation: next coupling audit
@@ -1025,7 +1042,7 @@ not for the full Gram cone.
 
 The concentrated-tail proof for leading coefficient 4 also appears to extend to
 Q_K, using the squared Euclidean sign norm and the same l1 upper estimates. If
-both leading laws are proved, the eventual rate of C_N depends on whether
+the paired law is also proved, the eventual rate of C_N depends on whether
 Q_∞>P_∞: a strict gap makes the paired branch dominate with scale N^(−1/4);
 equality makes the independent branch dominate with scale N^(−1/2). Strict
 improvement of the limiting optimum is presently unproved. Do not infer it merely
@@ -1168,7 +1185,8 @@ finite-allocation error and quantitative limiting actual-source trial certificat
 At the package-10 audit, the cumulative count was **10/100**. Its three leaves form one package.
 At the package-10 audit, global lint reported twelve unrelated unwired modules.
 Do not count reused shared-origin geometry or individual helper lemmas. Matching
-leading asymptotics remain paper-only. Both activation leaves form one package.
+paired leading asymptotics remain paper-only; the independent law is now package 14.
+Both activation leaves form one package.
 This turn made concrete progress; the full objective
 remains active and incomplete.
 
@@ -1442,3 +1460,62 @@ extension must assign the endpoint x=log N to old node N and truncate each new
 cell by the open log M window. This repairs the exact partition law while leaving
 old fibres unchanged for y>0. The candidate leading law concerns independent
 P_N only, not the full signed-Gram optimum or unrestricted source infimum.
+
+## Sharp leading tail verification (package 14)
+
+Ten leaves, respectively 7, 11, 11, 7, 11, 8, 2, 11, 6 and 5 public theorems:
+
+- `RightNodeCollarPartition`: `2ef65f8ca21433139874a1868f9c6e8844b9b54c4f457755331478bd52c7755e`.
+- `CollarRadialPenalty`: `86e653c91eba37ecd30bb05ef095d3ceb5b28b45cd52b670f2869a0902ea9cff`.
+- `CollarMeshBounds`: `4c10614e6aed7f4ed8317f3b77a33df417617ef1ea6ebc703f8d8d7d713bf1e4`.
+- `ConcentratedCollarExtension`: `682ebcb4cd195af5904532559d7a36b2003f429fcc3944c45d5d059fa7236b98`.
+- `ConcentratedCollarRetraction`: `6f8fbf9e9eed5355f370295d7940428c2e2dbfc3be372a3bb4978dba8a281601`.
+- `LogarithmicArrayRadialComparison`: `ef77a033b9b06bb8415850a44301f98c622c85ee03bcdd06402850d466ee6c38`.
+- `ConcentratedCollarPenalty`: `64b40713473a99f38b425cb1f7ea8b9a281b688003a2a0be82201ff0f062d074`.
+- `CollarEndpointTailMass`: `16497c3494a18caa9bea3d138ddb7ef61624e7777e8cc9dcda312215898110f7`.
+- `SharpCollarCutoffComparison`: `a77cff7e890162f37c6e0d17a0ef4aa583399406e9a9d13016a521c8968ff1da`.
+- `SharpCollarAsymptotics`: `10e62be5a9f9bc0ab4d26910bb20cf353666ef9f9fa458c035b53cfebc4408a2`.
+
+All ten dependency compiles pass with empty logs. All 79 public theorems were
+axiom-audited exactly once; only `propext`, `Classical.choice`, and `Quot.sound`.
+Ten capstone signatures and seven concrete definitions were printed and inspected.
+Audit: `/tmp/bsu_sharp_tail_axioms.lean`, `/tmp/bsu-sharp-tail-axioms.log`, and
+`/tmp/bsu-sharp-tail-audit-coverage.json`.
+Final direct command:
+`lake --old env lean GaloisForLFunctions/BiScaleUncertainty/SharpCollarAsymptotics.lean`;
+exit 0, empty log, no `-o`. Evidence `/tmp/bsu-sharp-tail-final.{log,exit}`.
+Dependency logs: `/tmp/bsu-sharp-tail-{right-node,radial,mesh,extension,retraction,array,penalty,endpoint,comparison,asymptotics}.log`.
+
+Index refresh exits 0. The three requested exact capstones are discoverable:
+`optimalCoefficient_sharp_leading_error`, `optimalCoefficient_sharp_saturation_limit`,
+and `sharpCollar_source_lower_bound`. All five declarations returned in the
+restricted module search were inspected. Evidence:
+`/tmp/bsu-sharp-tail-index.log`, discovery JSON and discovery-coverage JSON.
+All 53 owned imports occur exactly once, all 43 prior source hashes are unchanged,
+and the ten current hashes match the manifest. Scoped whitespace passes.
+Read-only README remains byte-identical at
+`dda7a67adbca527a21596c6fb672c28afb5feda594fe3b552a781325df7c3933`.
+Global lint exits 1 for twelve foreign unwired modules, listed in the facts ledger
+and `/tmp/bsu-sharp-tail-lint.log`; no own failure or foreign edit.
+Integrity: `/tmp/bsu-sharp-tail-{manifest,integrity}.json`.
+Temporary API probe and three obsolete drafts removed; successful audit scratch
+and logs retained. All owned jobs terminal. No full/umbrella build, numerical
+experiment, heartbeat increase, commit or push. One significant contribution:
+**14/100**, full objective active.
+
+Reusable proof details: abstract exponential-denominator algebra to real variables
+before clearing denominators. Supply constant-integrability arguments through
+`exact` so automatic finiteness arguments elaborate. Expose pointwise function
+differences with `change` before rewriting integrals. Expand composed limits
+before simplifying square roots. Avoid redundant tactics after `field_simp`.
+
+Next paper candidate, uncounted: a fixed interval near offset zero forces node-2
+share one on both signs for every cutoff N≥3. Let e=log3−log2−δ>0,
+a=e/3, b=2e/3 and W0=2/(1−exp(−2a)). On [a,b], the whole-sign norms
+A,B are at least one and W≤W0, so the paired kernel gain should be at least
+1/(W0+2). Integration would give a uniform gap g=(b−a)/(W0+2)>0 and hence
+Q∞≥P∞+g. Exact node exclusion, weight bounds, integration and supremum transfer
+still need Lean proofs. Combined with an analogous paired leading-tail law, this
+would select the delayed coupled hierarchy's N^(−1/4) branch. Neither claim is
+counted or certified yet. The complete paper argument and scope limits are on
+the owned card.

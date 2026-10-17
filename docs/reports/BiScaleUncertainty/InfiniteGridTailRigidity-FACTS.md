@@ -529,8 +529,13 @@ checked exact norm and explicit bound. The actual common smooth source family
 has checked energy decay, pointwise correlation limit one, and a growing
 positive plateau. Sharp critical logarithmic and supercritical power prefix
 asymptotics are now checked, including their exact coefficients for every
-fixed starting cell. Producer decomposition and source-sharpness endpoints
-remain unfinished; package count stays 14.
+fixed starting cell. Actual-source subcritical sharpness is checked: the same
+tail mass is the exact best constant under every positive energy ceiling.
+The exact compact-input producer decomposition, absolute subcritical cell
+summation, and uniform-convergence equivalence are checked. The common source
+family's residual diverges at/above threshold despite energy tending to zero;
+the corresponding no-finite-bound statement is checked. Calibrations and the
+complete package audit remain unfinished; package count stays 14.
 Card: `docs/drafts/pipeline/2-fully-proven/nyquist-weight-order-threshold-2026-10-17.md`.
 Current deep search inspected all 20 candidates and 20 source arguments;
 the suggested decaying-weight argument does not prove this growing-weight

@@ -1,36 +1,52 @@
-# Compact physical producers and graph approximation
+# Compact logarithmic states from compensated physical producers
 
 - **ID:** compact-physical-box-producers
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Source:** continuum-coprime-shear; physical-box-average-affine-regularity
-- **Statement:** Construct actual compact continuous regular velocities from every physical L² input, with explicit truncation/smoothing errors and compact-source graph convergence.
+- **Statement:** Construct compact logarithmic primitive states from arbitrary physical velocities using interval truncation, explicit zero-integral compensation and box smoothing, with quantitative errors and compact-source graph convergence.
 
 ## Goal
 
 The physical box producer has an actual continuous representative and L²
-derivative, but its output need not have compact support. The field's source
-calculus acts on C_c(ℝ,ℝ). Seek a concrete bridge from arbitrary physical
-velocities into that source class, retaining quantitative affine control.
+derivative, but its output need not have compact support. A further obstacle
+is coordinate-specific: even a compact physical velocity can have nonzero
+total integral, leaving a constant tail in F_q(exp x). Compact physical
+velocity alone therefore does not supply a compact logarithmic state.
 
-For R=exp(r), h=exp(s), let P_Rq be the actual L² interval restriction to
-[-R,R], and propose Q_(r,s)q=M_s(P_Rq). Construct its compact continuous
-representative, with support contained in [-R-h,R], and actual derivative
-h⁻¹(τ_hP_Rq−P_Rq). Seek contraction and the explicit error bound
+For n∈ℕ put r=n+1, α=exp(−r), β=exp(r), L=exp(2r), h=exp(−2r).
+Let P₊q denote actual restriction to the positive half-line. Propose
 
-    ‖Q_(r,s)q−q‖ ≤ ‖P_Rq−q‖ + ‖M_s q−q‖.
+    m_n=∫_α^β q,
+    v_n=1_[α,β]q−(m_n/L)1_[β,β+L],
+    w_n=M_(−2r)v_n,
+    f_n(x)=F_(w_n)(exp x).
 
-Investigate a diagonal r=n, s=−n giving convergence in physical norm and
-each compact-source jump energy. Transfer the existing gap-to-width affine
-bound to this actual compact producer. The contribution must close a field
-source/energy approximation gap, not merely rename classical cutoff density.
+The explicit compensator should have L² norm at most exp(−r/2)‖q‖ and
+cancel the total integral. Since α−h>0, smoothing should leave w_n supported
+in [α−h,β+L], with zero integral. This should construct f_n as an actual
+compact C¹ logarithmic state, with the correct weighted Dirichlet velocity.
+
+Target quantitative approximation:
+
+    ‖w_n−P₊q‖ ≤ ‖1_(0,α)q‖ + ‖1_(β,∞)q‖
+                 +exp(−r/2)‖q‖+‖M_(−2r)(P₊q)−P₊q‖.
+
+Every term should tend to zero. Negative-half-line velocity is invisible to
+the logarithmic primitive; prove that exact nullspace statement when
+transferring convergence to jumpEnergy(w_n−q) for every compact source.
+Transfer the explicit affine producer bound using
+‖v_n‖≤(1+exp(−r/2))‖q‖. The target closes a field source/energy approximation
+gap, not merely a renamed cutoff-density theorem. No claim of approximating
+the negative physical component by positive-supported velocities.
 
 ## Gates
 
 - [x] Initial corpus audit and exact source-text search.
 - [ ] Reaudit applicable source declarations and primary parent theories.
-- [ ] Complete paper proof of actual interval restriction, support,
-  continuous representative, derivative, all limits and graph coupling.
+- [ ] Complete paper proof of actual restrictions, compensator, preservation
+  of zero integral under smoothing, compact logarithmic support, derivative,
+  all limits and graph coupling.
 - [ ] Formalize only the audited theorem; serial leaf checks, all-public
   axiom audit, principal/API checks, umbrella/index/lint review.
 
@@ -45,6 +61,21 @@ are not independent certification. No proof ideas or ingredient sets returned.
 partial=true; deadline/reranking unfinished, generation1447717 pending,
 refresh incomplete/background indexer. Evidence:
 /tmp/physical-box-next-search.json. No absence or external novelty claim.
+
+Second query: `compact logarithmic primitive zero total integral compensating
+tail physical velocity`. All20 candidate and20 source-argument statements
+inspected, including negativePhysicalVelocity, its exact norm/orthogonality,
+actual logarithmic primitives and weighted derivatives. No proof ideas or
+ingredient sets. partial=true, deadline/semantic coverage incomplete;
+inventory73830 complete, coverage snapshot1447809/current1447810 older than
+the live generation, retrieval generation1447801; compiler mostly pending
+or source-only, refresh incomplete. Result path:
+/tmp/compact-log-primitive-next-search.json. No absence conclusion.
+
+Useful proof mechanism to audit: the exact primitive formula for M_s may
+prove vanishing tails directly. Since h<α, the second primitive at h is zero;
+the zero-integral compensator makes the original primitive zero above β+L.
+This could avoid a separate global Fubini argument for compact support.
 
 Unproved and uncounted; no Lean assigned. The physical box package must
 finish certification first. Remain on continuum coprime shear. Do not infer

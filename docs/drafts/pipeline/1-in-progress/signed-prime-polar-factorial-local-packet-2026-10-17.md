@@ -1,7 +1,7 @@
 # Localized signed packet energy of the factorial sources
 
 - **ID:** signed-prime-polar-factorial-local-packet
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CANDIDATE / UNCOUNTED
 - **Source:** Signed prime–polar transport; actual factorial-source family.
 - **Statement:** Obtain an explicit numeric-index-only bound for the actual
@@ -22,7 +22,7 @@ domains, cutoff stabilization, and consequences for actual pairings remain open.
 
 ## Gates
 
-- [ ] 0 → 1: audit precedents; fix the exact window and numeric cutoff.
+- [x] 0 → 1: audit precedents; fix the exact window and numeric cutoff.
 - [ ] 1 → 2: dependency-closed paper proof, including real-ratio factorial and
   partial polar-moment bounds; no Chebyshev-error hypothesis.
 - [ ] 2 → 3: exact actual-source Lean endpoint, direct leaf checks, scratch axiom
@@ -34,8 +34,8 @@ domains, cutoff stabilization, and consequences for actual pairings remain open.
 Let N=n+1, δ=sourceFactorialWidth N, ε=sourceFactorialCollar N,
 L=log(4N+1), and r=sqrt(N). Reflect P_N and M_N. Their broad factor then lies
 on [0,L], their narrow factor on [−2δ,0]. Prove preservation of correlations
-under this reflection and localize to I=[−2δ,L]. An explicit cutoff such as
-10N should suffice for stabilization on I; this is a proposed bound to prove.
+under this reflection and localize to J=[−3δ,L]. The extra collar accommodates
+source chords of length at most δ. Use arithmetic cutoff 10N.
 
 The reflected narrow factor should have no prime translate on I, since
 log(2)>2δ. Its remaining polar translate is supported in the small left collar.
@@ -43,7 +43,10 @@ For the broad factor, express the prime packet at physical position u through
 the real-ratio factorial stencil at scale N exp(−u). The clamp admits an average
 of sharp cutoffs over [1,1+ε]. Divisor summation should then produce an average
 of T(floor(4av))−4T(floor(2av))+4T(floor(av)), where v=N exp(−u).
-Control that stencil directly by elementary factorial estimates.
+Control that stencil directly by elementary factorial estimates. A simpler
+finite-sum alternative avoids layer-cake integration: sandwich each clamped
+prime sum between T(floor(v)) and T(floor((1+ε)v)). In this window εv≤5/4
+even at the largest dilation, so smoothing adds at most two logarithmic terms.
 
 Compute or bound the corresponding partial polar moments with the same
 normalization. A useful proposed envelope is
@@ -76,6 +79,28 @@ support precedents, but no complete local actual-source energy endpoint.
 It also retrieved neighboring factorial/coprime and causal producer modules;
 audit their relevant real-ratio identities before starting a paper proof.
 No absence theorem or external novelty claim follows from these searches.
+
+The third search `/tmp/spp12-real-scale-search.json` reports partial=false,
+errors=[], inventory 73830/73830, predominantly pending/stale/source-only
+compiler metadata. Candidate lemmas and source arguments were inspected.
+The neighboring coprime and Plancherel–Laplace producers give scalar bounds
+or generic gauge budgets, not the proposed actual-source local norm bound.
+
+## Current proof plan
+
+- [ ] Real-scale factorial stencil: integer floor carries cost at most seven
+  logarithmic terms, giving |T(floor(4v))−4T(floor(2v))+4T(floor(v))|
+  ≤12log(4v+1)+1 for v≥0.
+- [ ] Actual clamped prime packet: discharge both finite caps and bound the
+  extra smoothing carries; no pre-floor subtraction.
+- [ ] Partial polar moments: use the two existing full moments and the
+  pointwise ramp envelope to bound the actual truncated polar packet.
+- [ ] Integrate the exponential–quadratic envelope over J, then balance
+  broad and reflected narrow sources. Target constant 300000 sqrt(N).
+- [ ] Prove cutoff stabilization and localized actual-pairing consequences;
+  perform direct leaf and axiom audits, index, lint, ledger and cleanup.
+
+No package-12 endpoint is yet proved. Helper lemmas alone do not count.
 
 ## No-go closure
 

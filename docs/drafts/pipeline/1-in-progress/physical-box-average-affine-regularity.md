@@ -102,8 +102,14 @@ No absence or external novelty claim. update_plan unavailable; this card
 records the plan. No subagents authorized or used.
 
 All six planned leaves are written. PhysicalTranslationContinuity,
-PhysicalBoxAverage and PhysicalBoxProfile pass serial direct checks without
-diagnostics. PhysicalBoxVariance is checking in owned session88134; no
-second owned Lean process. AffineRegularity, GraphControl, all-public audit
-and integration gates are pending. Correct MemLp congruence API is MemLp.ae_eq;
-final combined audit includes it. No certified increment.
+PhysicalBoxAverage, PhysicalBoxProfile, PhysicalBoxVariance and
+PhysicalBoxAffineRegularity pass serial direct checks without diagnostics.
+PhysicalBoxGraphControl is checking in owned session94354; no second owned
+Lean process. All-public audit and integration gates are pending. Correct MemLp congruence API is
+MemLp.ae_eq; final combined audit includes it. No certified increment.
+
+Next uncounted conjecture is recorded in
+../0-backlog/compact-physical-box-producers.md: actual compact logarithmic
+states require a zero-integral compensator, not just compact velocity.
+Two corpus queries inspected all20 candidates and20 source statements each;
+the candidate card records partial coverage and exact proposed bounds.

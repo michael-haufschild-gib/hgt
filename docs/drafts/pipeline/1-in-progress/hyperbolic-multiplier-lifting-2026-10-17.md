@@ -104,6 +104,11 @@
     to determine the sharp infimum on every actual odd coherent class and
     classify attainment. Close any nonattainment obstruction with the explicit
     minimizing producer, exact infimum and equality domain.
+31. Audit the converse to outward escape: derive a quantitative plastic gap
+    from actual support confinement and nonzero full coherent data. Discharge
+    the multiplier-energy and positive tail costs explicitly, then determine
+    whether every minimizing family in a nonzero coherent class must leave
+    each fixed source window. Paper and corpus audit before new Lean.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable in this session. This card carries the plan; independent reads use `Promise.allSettled`.
 
@@ -2199,13 +2204,13 @@ a source with Q<0 iff its signed hyperbolic moment is nonzero. If the moment
 vanishes, Q=2J>=0 on the whole class; otherwise the explicit approximating
 family eventually lies below0.
 
-One contribution, implemented as source construction plus variational
-capstone modules if needed: exact coherent-data escape, quantitative energy
+One contribution, implemented in source-construction and variational
+capstone modules: exact coherent-data escape, quantitative energy
 decay, sharp full-functional infimum and complete attainment boundary.
 The positive survivor of nonattainment is the explicit minimizing family and
 sharp value, not the bare obstruction. No prime-grid blindness, source-energy
 normalization, smoothness beyond continuity, or positivity of the full
-functional on arbitrary odd sources is claimed. Paper proof closed; Lean pending.
+functional on arbitrary odd sources is claimed. Paper proof and exact Lean capstone closed.
 
 Corpus audit: direct hybrid query `coherent fold fixed moment outward translated
 source vanishing energy plastic infimum nonattainment`, --any with BiScale filter,
@@ -2215,3 +2220,90 @@ and exact plastic kernel integrability. Exhaustive source searches found no
 fixed-full-fold escape or coherent-class plastic infimum theorem. Unfinished
 text/source stages, older coverage snapshot and unmeasured semantic coverage
 preclude a completeness claim. No external novelty claim.
+
+Verification and integration for contribution25:
+- `OutwardCoherentEscape.lean`:277 lines,2 public definitions,9 public
+  theorems. Actual source audit36665 exited0 without warnings. SHA256
+  `264c02f63ac11eac9ae0931ce8d1f7d5f6434d92eb3fc05927a1e3682dac93ac`.
+- `CoherentFiberPlasticInfimum.lean`:227 lines,3 public definitions,12
+  public theorems. Actual source audit16044 exited0 without warnings. SHA256
+  `686fc6dc698969f4b1345e4b67554030002ece865296e367f0ee6007c6baefc3`.
+- Both final source commands used `lake --old env lean <source> -o <olean>`
+  from `formal`, with one owned Lean process at a time. Earlier failures were
+  cast/reindexing, integral-lambda and denominator/coercion elaboration issues;
+  statements and constants stayed unchanged. No source edits after final audits.
+- Toolchain API probe62871 exited0. Final scratch API/all21 public theorem
+  axiom audit65275 exited0 without warnings; only `propext`, `Classical.choice`,
+  `Quot.sound`. Source/audit theorem-name sets match exactly.
+- Both modules wired into BiScale umbrella. Index41744 exited0, writing
+  LEAN_API, LEAN_GAPS and LEAN_OVERVIEW; search DB0 changed/0 removed.
+  All26 public declarations match the indexed API exactly.
+- Lint52085 (`scripts/formal_tools.py lint --check-generated`) exited1 on12
+  unrelated unreachable modules: `NyquistWeightCalibrations`,
+  `NyquistWeightPrefixMass`, `NyquistWeightProducer`, `NyquistWideResidualEscape`,
+  `NyquistWideResidualLimit`, `PhysicalBoxAffineRegularity`, `PhysicalBoxAverage`,
+  `PhysicalBoxGraphControl`, `PhysicalBoxProfile`, `PhysicalBoxVariance`,
+  `PhysicalTranslationContinuity`, `WindowEnergyArithmeticQuadrature`.
+  Existing large-file warnings remain. No generated-file drift and no owned
+  lifting module issue. No bounded refresh needed; unrelated sources untouched.
+  No repository-wide clean-gate claim.
+- Source24 and read-only README hashes remain unchanged. No full build,
+  heartbeat/recursion changes, numerical experiment, subagent, commit or push.
+  The global-minimizer no-go is closed with the exact positive survivor in
+  `docs/drafts/pipeline/5-failed/global-coherent-fiber-plastic-minimizer-2026-10-17.md`.
+  Contribution25/100 complete:26 verified modules,387 public theorem audits.
+  Full goal remains ACTIVE.
+- All owned search, Lean, index and lint handles terminal. Owned scratch
+  `/tmp/hml_escape_api.lean` and `/tmp/hml_escape_lint.txt` removed via
+  apply_patch; absence verified. Final source and read-only README hashes
+  unchanged. Scoped diff and new-file whitespace checks passed.
+
+## Twenty-sixth result under construction: quantitative confinement gap
+
+Dependency-closed paper proof before Lean. Let d=log2, c=screwSignThreshold,
+B_N=(N+1)d/2, T_N=2B_N+c, A_N=(2N+1)sinh(B_N/2)^2, and
+t_N=archLevyAntideriv(T_N). All three B_N,A_N,t_N are strictly positive;
+t_N is exactly the plastic kernel mass on (T_N,infinity), with its known
+elementary logarithm/arctangent formula. Let C_f be the exact coherent price
+of F=odd(f), and O_f its signed hyperbolic moment.
+
+For any actual compact source g supported in the open window (-B_N,B_N),
+h_g(x)=0 at every x>=2B_N: two nonzero factors in its correlation would
+require x<2B_N. The same holds for its sinh multiplier. On the support,
+|sinh(u/2)|<=sinh(B_N/2), so h_(Sg)(0)<=sinh(B_N/2)^2*h_g(0).
+For odd g the exact finite-filter identity reads
+C_g=h_(Sg)(0)+2*sum_(k=0)^(N-1) h_(Sg)((k+1)d).
+Indeed all omitted lags are at least (N+1)d=2B_N; equality at the boundary
+is harmless because the support window is open. Each signed correlation
+is at most its origin energy, giving C_g<=A_N*h_g(0).
+
+The jump integrand is nonnegative everywhere on x>0. Its tail x>T_N has
+zero autocorrelation, hence J(g)>=t_N*h_g(0). In the full coherent class
+of f, C_g=C_f and Q(g)+2O_f²=2J(g). Combining the two inequalities gives
+Q(g)+2O_f²>=Delta(f,N):=2*t_N*C_f/A_N.
+No unknown analytic bound, tail integrability or positivity premise remains.
+
+The exact cell-square identity proves C_f>=0 and C_f=0 iff the full fold
+of F is zero: vanishing integral of its continuous square forces zero on
+the closed cell, and periodicity extends this to all real x. Therefore
+Delta(f,N)>0 iff that full fold is nonzero. Any actual coherent-class
+member with plastic excess below Delta(f,N) must have a nonzero value at
+some |u|>=B_N. This gives a quantitative necessity of support escape for
+all near-minimizers, including classes with zero signed moment but nonzero
+full fold. The earlier explicit outward family reaches every such threshold.
+
+The main intrinsic bound is unconditional for every actual input: choose
+N=sourceCutoff(F), whose proved gap 2*radius(F)<N*d places F strictly in
+the window B_N. Fixed-window class statements use only exact source support
+and coherent-class membership as their geometric domain, not an unproved
+analytic admission hypothesis. One contribution: explicit confinement gap
+and necessary escape, with finite-correlation/tail estimates supporting it.
+No global minimizer under confinement or best gap constant is claimed.
+
+Corpus query `fixed support plastic jump coercivity coherent fold lower bound
+tail mass`, --any, BiScale filter, returned partial70.45s. Relevant hits were
+the prior exact full-fiber infimum and a different compact-source graph
+variance bound. Source searches found no coherent-class confinement-gap
+theorem. Used exact finite-filter pairing, cell-square identity and elementary
+plastic tail primitive. Unfinished text/source retrieval, older coverage
+snapshot and unmeasured semantic coverage preclude completeness/priority claims.

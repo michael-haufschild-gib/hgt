@@ -3,7 +3,7 @@
 Research scope: independent BiScale Uncertainty. Original target remains transfer to
 the odd secant/plastic functional and the supplied 100-contribution research program.
 Supporting lemmas, documentation repairs, and classical inequalities are not separate
-contributions. Twenty-four substantive results are Lean verified: compensated multiplier Gram
+contributions. Twenty-five substantive results are Lean verified: compensated multiplier Gram
 transfer (13 public theorems), uncompensated squared-jump transfer into global secant
 energy (19), the actual signed plastic crossover receiver (18), the exact smooth odd
 fixed-energy leakage family (12), the centered source-Gram replacement with its
@@ -28,7 +28,8 @@ folded-source variance with its exact coherent equality domain and full plastic 
 actual nonzero-mean coherent attainment with the optimal universal coefficient and full plastic transfer (12), and
 the canonical fixed-annulus retraction preserving full odd coherent data and pricing the original plastic functional (14), and
 the actual coherent kernel splitting, nonzero zero-fold family and unconditional plastic nonnegativity (25), and
-exact source-realized plastic line minimization with coherent-data preservation and full gain transfer (21). Supporting theorem
+exact source-realized plastic line minimization with coherent-data preservation and full gain transfer (21), and
+explicit outward sources with fixed full coherent data, inverse-square plastic error, sharp fiber infimum and complete attainment/sign classification (21 across two modules). Supporting theorem
 counts are not contribution counts. No literature-priority claim.
 
 Canonical overview: `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only
@@ -1039,10 +1040,10 @@ Q=plasticCrossover, q=Q(H), and b=(Q(F+H)-Q(F)-Q(H))/2.
 
 This is one actual-source minimization and gain-transfer contribution.
 Generic quadratic algebra and completion of the square are supporting tools.
-No minimizer over the whole coherent fiber, convergence of repeated corrections,
-source-energy orthogonality, preservation of source-grid zeros, or universal
-plastic positivity is claimed. The theorem minimizes the original plastic
-functional along the chosen line, not only a surrogate lower bound.
+The line theorem supplies no convergence of repeated corrections, source-energy
+orthogonality, preservation of source-grid zeros, or universal plastic positivity.
+It minimizes the original plastic functional along the chosen line. Whole-fiber
+infima and attainment are settled below.
 
 Direct source compilation and all21 public theorem axiom audits passed without
 warnings; only `propext`, `Classical.choice`, `Quot.sound`. Source has354 lines,
@@ -1056,7 +1057,7 @@ lifting module flagged. Exact snapshot on master card; no global clean-gate clai
 
 ## Sharp plastic infimum at fixed full coherent data
 
-Dependency-closed paper theorem; Lean verification pending in
+Lean-verified modules
 `formal/GaloisForLFunctions/BiScaleUncertainty/OutwardCoherentEscape.lean` and
 `formal/GaloisForLFunctions/BiScaleUncertainty/CoherentFiberPlasticInfimum.lean`.
 Write d=log2, F=odd(f), R=representative(f), S(u)=sinh(u/2)R(u),
@@ -1092,4 +1093,18 @@ No fixed source-energy normalization, prime-grid blindness, additional
 smoothness or arbitrary-odd-source positivity is claimed. The minimizer
 no-go has an explicit positive survivor, recorded in
 `docs/drafts/pipeline/5-failed/global-coherent-fiber-plastic-minimizer-2026-10-17.md`;
-its closure awaits the exact Lean and axiom audits.
+its obstruction and positive survivor are both formally closed.
+
+Direct source checks passed without warnings: `OutwardCoherentEscape.lean`
+(277 lines, two definitions, nine public theorems; SHA256
+`264c02f63ac11eac9ae0931ce8d1f7d5f6434d92eb3fc05927a1e3682dac93ac`)
+and `CoherentFiberPlasticInfimum.lean` (227 lines, three definitions, twelve
+public theorems; SHA256
+`686fc6dc698969f4b1345e4b67554030002ece865296e367f0ee6007c6baefc3`).
+All21 public theorem axiom audits passed with only `propext`, `Classical.choice`,
+`Quot.sound`; exact source/audit name-set match. Both modules are wired into
+the umbrella; all26 public declarations match the indexed API exactly.
+Twenty-five contributions,26 verified modules,387 supporting public theorem
+audits; full goal ACTIVE. Global lint reports12 unrelated unreachable modules,
+no generated-file drift and no owned lifting module issue. Exact snapshot on
+the master card; no repository-wide clean-gate or external novelty claim.

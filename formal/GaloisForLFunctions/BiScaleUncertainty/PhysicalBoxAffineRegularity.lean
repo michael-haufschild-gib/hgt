@@ -25,7 +25,10 @@ theorem hasDerivAt_translation_physicalBoxAverage (s c : ℝ) (q : Velocity) :
   rw [he]
   have h := (((hasDerivAt_physicalOrbitPrimitive q (c+Real.exp s)).comp_add_const
     c (Real.exp s)).sub (hasDerivAt_physicalOrbitPrimitive q c)).const_smul (Real.exp s)⁻¹
-  simpa only [Pi.smul_apply, Pi.sub_apply, physicalBoxDerivative_apply,
+  change HasDerivAt (fun u => (Real.exp s)⁻¹ •
+    (physicalOrbitPrimitive q (u+Real.exp s)-physicalOrbitPrimitive q u))
+    ((Real.exp s)⁻¹ • (physicalTranslation (c+Real.exp s) q-physicalTranslation c q)) c at h
+  simpa only [physicalBoxDerivative_apply,
     map_smul, map_sub, physicalTranslation_comp] using h
 
 theorem physicalBoxAverage_shift_norm_le_two (s c : ℝ) (q : Velocity) :
@@ -59,9 +62,9 @@ theorem physicalBoxAverage_shift_norm_le (s c : ℝ) (q : Velocity) :
 
 theorem physicalBoxAverage_affine_energy_le (a b s : ℝ) (q : Velocity) :
     ‖physicalAffineCommutator a b (physicalBoxAverage s q)‖^2 ≤
-      4*|a|*(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2 := by
+      4*|a| *(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2 := by
   have h := physicalBoxAverage_shift_norm_le s (b*(a-1)) q
-  have hm : 0 ≤ min 1 (|b*(a-1)|/Real.exp s) := min_nonneg (by norm_num) (by positivity)
+  have hm : 0 ≤ min 1 (|b*(a-1)|/Real.exp s) := le_min (by norm_num) (by positivity)
   have hn : 0 ≤ 2*min 1 (|b*(a-1)|/Real.exp s)*‖q‖ := by positivity
   have hs : ‖physicalTranslation (b*(a-1)) (physicalBoxAverage s q)-physicalBoxAverage s q‖^2 ≤
       (2*min 1 (|b*(a-1)|/Real.exp s)*‖q‖)^2 := by
@@ -69,28 +72,28 @@ theorem physicalBoxAverage_affine_energy_le (a b s : ℝ) (q : Velocity) :
       norm_nonneg (physicalTranslation (b*(a-1)) (physicalBoxAverage s q)-physicalBoxAverage s q)]
   rw [physicalAffineCommutator_energy]
   calc
-    _ ≤ |a|*(2*min 1 (|b*(a-1)|/Real.exp s)*‖q‖)^2 :=
+    _ ≤ |a| *(2*min 1 (|b*(a-1)|/Real.exp s)*‖q‖)^2 :=
       mul_le_mul_of_nonneg_left hs (abs_nonneg a)
     _ = _ := by ring
 
 theorem physicalBoxAverage_affine_norm_le (a b s : ℝ) (q : Velocity) :
     ‖physicalAffineCommutator a b (physicalBoxAverage s q)‖ ≤
-      2*Real.sqrt |a|*min 1 (|b*(a-1)|/Real.exp s)*‖q‖ := by
+      2*Real.sqrt |a| *min 1 (|b*(a-1)|/Real.exp s)*‖q‖ := by
   have he := physicalBoxAverage_affine_energy_le a b s q
-  have hm : 0 ≤ min 1 (|b*(a-1)|/Real.exp s) := min_nonneg (by norm_num) (by positivity)
-  have hn : 0 ≤ 2*Real.sqrt |a|*min 1 (|b*(a-1)|/Real.exp s)*‖q‖ := by positivity
-  have hs : (2*Real.sqrt |a|*min 1 (|b*(a-1)|/Real.exp s)*‖q‖)^2 =
-      4*|a|*(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2 := by
+  have hm : 0 ≤ min 1 (|b*(a-1)|/Real.exp s) := le_min (by norm_num) (by positivity)
+  have hn : 0 ≤ 2*Real.sqrt |a| *min 1 (|b*(a-1)|/Real.exp s)*‖q‖ := by positivity
+  have hs : (2*Real.sqrt |a| *min 1 (|b*(a-1)|/Real.exp s)*‖q‖)^2 =
+      4*|a| *(min 1 (|b*(a-1)|/Real.exp s))^2*‖q‖^2 := by
     simp only [mul_pow, Real.sq_sqrt (abs_nonneg a)]
     ring
   nlinarith only [he, hs, hn, norm_nonneg (physicalAffineCommutator a b (physicalBoxAverage s q))]
 
 theorem norm_affineCommutator_comp_boxAverage_le (a b s : ℝ) :
     ‖(physicalAffineCommutator a b).comp (physicalBoxAverage s)‖ ≤
-      2*Real.sqrt |a|*min 1 (|b*(a-1)|/Real.exp s) := by
+      2*Real.sqrt |a| *min 1 (|b*(a-1)|/Real.exp s) := by
   apply ContinuousLinearMap.opNorm_le_bound
   · apply mul_nonneg (by positivity)
-    exact min_nonneg (by norm_num) (by positivity)
+    exact le_min (by norm_num) (by positivity)
   · intro q
     exact physicalBoxAverage_affine_norm_le a b s q
 
@@ -98,12 +101,15 @@ theorem physicalBoxAverage_tendsto (q : Velocity) :
     Tendsto (fun s : ℝ => physicalBoxAverage s q) atBot (𝓝 q) := by
   have h := ((hasDerivAt_physicalOrbitPrimitive q 0).tendsto_slope_zero_right).comp
     Real.tendsto_exp_atBot_nhdsGT
-  simpa only [zero_add, physicalOrbitPrimitive_zero, sub_zero, physicalTranslation_zero,
-    physicalOrbitPrimitive, ← physicalBoxAverage_apply] using h
+  change Tendsto (fun s : ℝ => (Real.exp s)⁻¹ •
+    (physicalOrbitPrimitive q (0+Real.exp s)-physicalOrbitPrimitive q 0))
+    atBot (𝓝 (physicalTranslation 0 q)) at h
+  simp only [zero_add, physicalOrbitPrimitive_zero, sub_zero, physicalTranslation_zero] at h
+  simpa only [physicalOrbitPrimitive, ← physicalBoxAverage_apply] using h
 
 theorem physicalBoxAverage_energy_loss_tendsto (q : Velocity) :
     Tendsto (fun s : ℝ => ‖q‖^2-‖physicalBoxAverage s q‖^2) atBot (𝓝 0) := by
-  simpa only [sub_self] using
-    tendsto_const_nhds.sub ((physicalBoxAverage_tendsto q).norm.pow 2)
+  have hc : Tendsto (fun _ : ℝ => ‖q‖^2) atBot (𝓝 (‖q‖^2)) := tendsto_const_nhds
+  simpa only [sub_self] using hc.sub ((physicalBoxAverage_tendsto q).norm.pow 2)
 
 end GaloisForLFunctions.BiScaleUncertainty.SobolevShear

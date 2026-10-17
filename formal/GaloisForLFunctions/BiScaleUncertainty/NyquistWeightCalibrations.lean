@@ -69,8 +69,9 @@ theorem nyquistWeightKernel_half_zero (N : ℕ) :
 
 theorem nyquistWeightProducedCell_half_zero (H : ℝ →ᵇ ℝ) (k : ℕ) :
     nyquistWeightProducedCell (1 / 2) 0 H k = nyquistPolarCellAverage H k := by
-  simp [nyquistWeightProducedCell, nyquistWeightJet_zero, nyquistWeight_half,
-    nyquistWeightCellMoment, nyquistPolarCellAverage, nyquistPolarConstant, nyquistResidualNode]
+  simp [nyquistWeightProducedCell, nyquistWeightJet_zero, nyquistWeight,
+    nyquistWeightCellMoment, nyquistPolarCellAverage, nyquistPolarConstant, nyquistResidualNode,
+    div_eq_mul_inv, mul_comm]
 
 theorem nyquistWeightProducer_half_zero (N : ℕ) (H : ℝ →ᵇ ℝ) :
     nyquistWeightProducer (1 / 2) 0 N H = nyquistPolarProducer N H := by
@@ -97,7 +98,8 @@ theorem tendsto_nyquistResidualTailMass_sharp :
 theorem tendsto_nyquistWeightPrefixMass_one_zero (N : ℕ) :
     Tendsto (fun M => nyquistWeightPrefixMass 1 0 N M / nyquistResidualNode M)
       atTop (𝓝 (1 / 4 : ℝ)) := by
-  simpa [nyquistWeightCellConstant] using tendsto_nyquistWeightPrefixMass_critical 0 N
+  convert tendsto_nyquistWeightPrefixMass_critical 0 N using 1 <;>
+    norm_num [nyquistWeightCellConstant]
 
 theorem tendsto_nyquistWeightTailMass_one_one :
     Tendsto (fun N => nyquistWeightTailMass 1 1 N / ((N + 1 : ℕ) : ℝ) ^ (-1 : ℝ))

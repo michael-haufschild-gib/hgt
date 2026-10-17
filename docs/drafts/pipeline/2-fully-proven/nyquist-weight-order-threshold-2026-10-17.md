@@ -83,58 +83,41 @@ source is not a resolution of that remaining uniform-control problem.
 4. Formalize the complete connected theorem in direct Lean leaves, one process at a time.
 5. Audit all declarations, axioms, API entries, imports and lint; update the ledger only then.
 
-Thirteen direct leaves pass and are wired: `NyquistWeightJets`,
+All seventeen direct leaves pass and are wired: `NyquistWeightJets`,
 `NyquistWeightTaylorRemainder`, `NyquistWeightCells`,
 `NyquistWeightCellAsymptotic`, `NyquistPowerTails`,
 `NyquistPositiveTailComparison`, `NyquistWeightKernel`,
-`NyquistWeightTailMass`, `NyquistWeightOperator`, and
-`NyquistWideSourceEnergy`, `NyquistPositivePrefixComparison`, `NyquistPrefixScales`,
-and `NyquistWeightPrefixMass`.
-All final logs are clean except two informational
+`NyquistWeightTailMass`, `NyquistWeightOperator`,
+`NyquistWideSourceEnergy`, `NyquistPositivePrefixComparison`,
+`NyquistPrefixScales`, `NyquistWeightPrefixMass`, `NyquistWeightProducer`,
+`NyquistWideResidualLimit`, `NyquistWideResidualEscape`, and
+`NyquistWeightCalibrations`. All final logs are clean except two informational
 `ring` suggestions in `NyquistWeightCellAsymptotic` (no errors or warnings).
 
-These certificates cover the explicit Taylor jets and positive remainder,
-all-cell power bound, sharp cell asymptotic, exact integrability threshold,
-explicit and sharp subcritical tail mass, locally integrable actual kernel,
-positive bounded integral operator with exact norm, and literal infinite
-positive mass at/above threshold. The common actual smooth source family has
-pointwise correlation limit one, a quantitative growing plateau, and energy
-bound K/(j+1). Its sharpness endpoints remain to be composed.
+The direct checks cover the entire paper theorem: explicit jets and positive
+remainders; all-cell bounds; exact integrability threshold and minimum degree;
+sharp cell, tail and critical/supercritical prefix constants; exact bounded
+operator norm; signed compact-input producer decomposition at every beta>=0;
+absolute subcritical cell summation and uniform-convergence equivalence; one
+actual smooth source family certifying both norm sharpness and divergence
+under every positive energy ceiling; and all three calibrations. The
+beta=1/2, degree-zero calibration identifies the original `nyquistPolarConstant`
+producer, kernel and mass, and sharpens its tail asymptotic to 1/(4 sqrt N).
 
-Remaining proof organization:
-- Critical/supercritical prefixes: transfer ratios through positive divergent
-  prefixes, using telescoping logarithmic/power increments. The relevant
-  derivative and slope APIs pass their names probe. The prefix-transfer leaf
-  passes with a clean log. `NyquistPrefixScales` also passes its final direct
-  check with a clean log. It proves the
-  explicit power-increment limit, exact telescoping sums, and both normalized
-  reference-prefix limits. `NyquistWeightPrefixMass` also passes its final
-  direct check with a clean log: critical and supercritical sharp prefix
-  constants are verified for every fixed starting cell.
-- Exact signed cell moments and compact-input producer decomposition, absolute
-  cell summation, and the uniform-convergence equivalence.
-- Actual-source norm sharpness and supercritical divergence under every
-  positive energy ceiling, using the checked common source family.
-- Minimum integer degree, the three calibrations, and the complete package's
-  direct-leaf, axiom, API, import, index, and lint audits.
+The formal indexing uses zero-based cells k with n=k+1, so tail N begins at
+log(N+1), and a prefix of M cells has normalizations log(M+1) and (M+1)^r.
+These are the paper's limits under the corresponding fixed shifts of indices.
 
-Additional drafts awaiting direct checks: `NyquistWeightProducer` (signed cell
-moments, compact-input exact identity, absolute residual summation and
-convergence equivalence), `NyquistWideResidualLimit` (actual-source subcritical
-limit and exact best constant under every positive energy ceiling), and
-`NyquistWideResidualEscape` (eventual finite-prefix lower bounds and actual-source
-divergence at/above threshold), and `NyquistWeightCalibrations` (minimum degree,
-arbitrary actual signed source error, equality with the original polar producer,
-and all three calibration constants). The producer API probe's unused nonexistent
-`HasSum.congr` and `Real.rpow_neg_one_half` were removed; the latter is replaced
-by `Real.rpow_neg` and `Real.sqrt_eq_rpow`. The complete corrected producer names
-probe now exits 0; every remaining signature was inspected.
+The complete audit inventory has 186 public declarations: 159 theorems and
+27 definitions. Scratch axiom audit is running. Exhaustive source hashes,
+API entries, umbrella imports, index refresh and formal lint remain to be
+checked before promotion and counting. Audit scripts are
+`/tmp/nyquist_weight_certificate.py` and `/tmp/nyquist_weight_verify.py`.
 
 Trap 10 alignment: these are explicit unconditional Nyquist-cell producers.
-The beta=1/2, degree-zero calibration must identify the existing
-`nyquistPolarConstant` producer. No receiver-only Chebyshev premise or
-pre-floor subtraction enters this tail-rigidity package. The factorial-stencil
-route is a separate topic and does not replace the assigned research topic.
+No receiver-only Chebyshev premise or pre-floor subtraction enters this
+package. The factorial-stencil route remains a separate research topic.
+The field guide remains read-only and its hash matches the fully read version.
 
 The original 100-package objective remains active with 14 certified packages.
 This card carries task tracking because `update_plan` is unavailable.
