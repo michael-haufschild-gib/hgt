@@ -48,6 +48,128 @@ This does not supply a bound for the present Gram kernel: a valid conversion,
 coherent main terms, and control of the conversion error remain necessary.
 No external theorem is imported as an unproved Lean premise.
 
+## Corpus reconciliation after user correction
+
+The user identified that existing work was being missed. New conjecture code was
+paused for corpus reconciliation; C9 now uses the verified existing carrier.
+Earlier broad deep queries often
+returned partial coverage and irrelevant matches; those searches did not justify
+treating the jump-sector structure as unexplored. Exact-symbol lexical queries
+now cover all 19 centered-Gram hits, all 38 primitive-Gram hits (both pages),
+all 17 dilation-profile hits, and all 5 lag-sector hits without per-module caps.
+
+Existing source obligations to reuse:
+
+- `PMRamanujanNearbyPrimeResonance.lean`: exact prime-insertion Hilbert law,
+  retained continuous dilation profile, and unbounded nearby-prime covariance.
+- `TwoPrimeDilationProfileIdentityAndPrimeStarShearCancellation.lean`:
+  exact four-term profile identity and shear-balanced prime-star cancellation.
+- `AllDepthHilbertDilationCubeAndHyperCubeGramFactorization.lean`:
+  the entire actual-weight cube, including cross-depth terms, already becomes
+  a dilation-profile quadratic form. A prime-only packet is not this whole cube.
+- `ReciprocalJumpKernelAndDilationLagSectors.lean` and
+  `DilationProfileIntegerJumpCoupling.lean`: exact finite jump/lag decomposition
+  of the actual profile, with an explicit finite-horizon approximation error.
+- `DilationSuccessorFiberReciprocity.lean`: the jump equation turns amplitudes
+  into literal additive correlation; complete successor fibers have mass
+  `r μ(r)` for invertible scales. No extra character average is needed here.
+- **Previously omitted:** `DilationSuccessorSectorHarmonicClassification.lean`
+  already parametrizes the full successor sector, classifies the Fourier
+  resonance selector (`μ(r)` when both scales are coprime to `r`, otherwise zero),
+  and subtracts its exact harmonic term with a uniform explicit remainder and
+  the necessary horizon correction. Its adjacent-scale capstone has data only.
+
+Consequently C6 must start beyond the already solved lag-one sector. It must
+preserve the arithmetic mean and horizon correction, then control summation
+across the remaining lag sectors and prime pairs. C8's local residue-cell
+variance is a different identity; it is not a replacement for that existing
+arithmetic classification. All seven relevant existing capstones passed
+`lake --old env lean -j 1 /tmp/bvi-existing-frontier-audit.lean`; each axiom
+closure contains only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Further exact reuse found during reconciliation:
+
+- `InteriorJumpOrbitCenteringAndCompensatedBounds.lean` already computes the
+  gcd-selected conditional mean of the endpoint-deleted sawtooth and proves
+  its compensated Abel bounds. More strongly,
+  `BirthDelayedInteriorJumpCenteringAndUniformPairBounds.lean` starts that
+  subtraction at the modulus's birth and proves the pair bound
+  `1/d + 2/gcd(d,e)`, uniformly in both finite horizons. Its final theorem
+  connects this to the actual arithmetic prefix, retaining the initial-value,
+  density, and delayed-mean corrections. The remaining signed modulus sum
+  is not controlled by taking absolute values of these pair bounds.
+- `HTGeometry/FiniteHilbertDispersion.lean` already proves finite weighted
+  variance and conditional negative type; `InfiniteHilbertDispersion.lean`
+  supplies the summable extension. C7's generic Hilbert/Cauchy algebra is
+  infrastructure, not a missing research tool. Its scratch is not promoted.
+- `RHTower/KuznetsovKloostermanSmallModulus.lean` already proves
+  `exists_bilinear_kloosterman_small_le`, with explicit Poisson remainder,
+  for the actual quadratic Kloosterman form with phase
+  `exp(2*pi*i*2*theta*sqrt(m*n)/c)`, `1<=abs(theta)<=2`.
+  `KuznetsovKloostermanPhaseEnvelope.lean` proves
+  `exists_kloostermanPhaseForm_le_rpow`: for `c<=N` its bound is
+  `C_delta sqrt(c) N^(1/2+delta) sum abs(alpha)^2`. These are stronger than
+  the fixed-modulus operator baseline; their special phase and parameter
+  range must be proved applicable, not dropped.
+- `RHTower/KuznetsovLargeSieveTheorem.lean` already proves
+  `large_sieve_gamma0`, the spectral bound with
+  `card(gamma0Deck L Q)*(K^2+N^(1+epsilon)/Q)` and `Q | L+1`.
+  A full spectral sieve is therefore available in the corpus. No conversion
+  of the present pronic Gram to its spectral left side has yet been proved.
+- `Sieve/KloostermanCoprimeCrossPhaseFrequency.lean` gives an exact CRT
+  equivalence from cross-unit pairs to product-modulus units, preserving
+  their character ratio, and compresses the reciprocal-chord sum without
+  multiplicity loss. `KloostermanProductFrequencyGcdBound.lean` already
+  sharpens the chord sum to `gcd(q,r)*q*r*(1+log(q*r))` for unequal moduli.
+  `KloostermanCoprimeProductPeriodCompletion.lean` already removes the full
+  coprime-period cross block and retains its exact residue-discrepancy
+  boundary. All 43 cross-phase/coprime lexical hits were inspected across
+  three pages. These absolute bounds do not supply a signed saving.
+- `MobiusSquareResidueFourier.lean` already gives the exact least-residue
+  Fourier coefficient and reciprocal-chord norm. Its later estimates apply
+  to the quadratic path `n^2 mod q`; applying that path estimate to `n mod q`
+  or to the present weighted Gram would require a separate identity.
+- `BiScaleUncertainty/VasyuninReciprocityAndExactTailGramProducer.lean`
+  already supplies exact reciprocal-cell head/tail identities. Its inspected
+  Gram theorems express the tail as global minus head; they do not evaluate
+  the global Gram in cotangent sums or supply cross-prime cancellation.
+- The current all-depth module also retains the base von Mangoldt term in
+  the centered primitive and proves alternating-depth Euler-factor
+  cancellation. Neither depth-shell cancellation nor the cube reduction
+  should be reintroduced as a new conjecture.
+- The concurrently added `NaturalCutoffMultiDepthCofactorAndConditionalTailBridge.lean`
+  already extends the conditional-tail decomposition to the entire natural-cutoff
+  packet, identifies the complete cube with the existing completed aperture,
+  and collapses centering across a prime-cofactor head to its single prime term.
+  These source-inspected results are not new obligations for this card; their
+  author's original-source audit was still running when inspected.
+
+Second reuse audit (seven declarations, including the two analytic estimates,
+spectral sieve, birth-delayed bounds, and depth-shell identities):
+`/tmp/bvi-corpus-reuse-audit.lean` passed with exit 0. All seven axiom closures
+contain only `propext`, `Classical.choice`, and `Quot.sound`. The relevant compiled
+artifacts were present and newer than their sources at launch. This is an
+import/applicability and axiom check, not a fresh build of those foreign files.
+
+Search records are `/tmp/bvi-dispersion-search-*.json`. The focused bilinear
+Kloosterman search had 74,182 inventoried files but `partial=true`, with
+unfinished query expansion/reranking and mostly pending compiler metadata.
+Exact source inspection, rather than a no-hit or ranking result, establishes
+the distinctions above. Unrelated coboundary prime-depth countertransport
+and generic negative-covariance hits do not identify the present carrier.
+
+The further deep query `Ramanujan dilation residue gap profile budget` returned
+20 candidate lemmas, 20 source arguments, two proposed proof transfers, one
+ingredient group, and ten source passages; all returned items were inspected.
+It recovered the existing residue coefficient transform, exact lag identities,
+and C5. The suggested entire-function gap ingredient concerns a different
+carrier and was rejected. Complete-period covariance diagonalization likewise
+does not transfer to a pronic weight without an identity. Coverage: 74,185 files
+inventoried, `partial=true` because reranking timed out, background refresh
+incomplete, semantic coverage unmeasured, and returned signatures source-only.
+Raw record: `/tmp/bvi-profile-gap-reuse-search.json`. No absence or novelty claim
+is inferred from this search.
+
 ## Conjecture log
 
 ### C1 — energy centering removes the common prime prefix
@@ -140,7 +262,7 @@ actual conditional residual rather than a renamed original energy.
 
 ### C5 — nearby-modulus transport gives a gap-sized energy cost
 
-**Paper derivation; formalization and overlap audit pending.** This is an
+**PROVED HERE; original-source Lean audit passed.** This is an
 upper bound for a concrete cancelling packet, not a bound for arbitrary
 unmodified prime blocks. Let integers `1≤p<q≤2p`, `h=q-p`, `K=⌊p/h⌋`,
 and `r_p(n)=n mod p`. For `1≤k≤K`, split the block
@@ -167,6 +289,20 @@ entries to transport between positive and negative coefficient packets.
 It does not establish that the requested coefficient families possess
 enough cheap transport, nor the full beyond-Nyquist estimate.
 
+**Sharpening during formalization.** The finite correction telescopes exactly:
+
+`Σ_{0≤n<(K+1)p} (r_p(n)-r_(p+h)(n))²/[n(n+1)]`
+`= h harmonic(K) - (h²/p) K²/(K+1)` whenever `Kh≤p`.
+
+Indeed the block formula equals
+`h/k - (h²/p)(1 - 1/[k(k+1)])`; summing the reciprocal difference gives
+`K - 1 + 1/(K+1) = K²/(K+1)`. Thus the full energy lies between
+`h harmonic(K)-h` and `h harmonic(K)+q²/[p(K+1)]` for `K=⌊p/h⌋`.
+When `h≤p`, the upper bound becomes `h harmonic(K)+4h`.
+The matching lower bound identifies the logarithmic gap cost as intrinsic.
+This sharper identity, both bounds, and the centered prime-distance conversion
+are now formalized in `PronicResidueGapEnergyAndPrimePairDistance.lean`.
+
 The deep overlap search returned partial results (reranking deadline),
 including sawtooth dilation primitives and nearby-resonance infrastructure,
 but no matching gap-energy estimate. This is not proof of novelty.
@@ -189,6 +325,97 @@ remaining arithmetic collision term before asserting any bilinear saving.
 This is where a modular-inverse estimate might enter without discarding a
 second correlated phase. Search the current jump-coupling modules before
 opening this conjecture's formalization.
+
+### C7 — an unconditional transport bound for the literal bilinear form
+
+**Dependency-closed baseline corollary; promotion deferred after corpus audit.**
+For a finite prime support `S`
+and an arbitrary real matrix `c`, define its net charge
+`δ_c(p)=Σ_{q∈S}(c(p,q)-c(q,p))`. Its total charge is zero, and its prime
+packet is exactly `Σ_{p,q∈S} c(p,q)(f_p-f_q)`, where `f_p` is the actual
+energy-centered primitive. Let `D(p,q)` be C5's symmetric gap budget, and set
+
+`M(c)=Σ_{p,q∈S}|c(p,q)|`, `C(c)=Σ_{p,q∈S}|c(p,q)|D(p,q)`.
+
+Finite weighted Cauchy gives pointwise
+`F_c(n)² ≤ M(c) Σ|c(p,q)|(f_p(n)-f_q(n))²`.
+Absolute summability and C5 give `B(δ_c,δ_c)≤M(c)C(c)`.
+Applying weighted Cauchy to finite pronic prefixes and passing to their
+proved limits gives
+
+`B(δ_c,δ_d)² ≤ M(c)C(c) M(d)C(d)`.
+
+All inputs are finite supports and real coefficients; no cancellation or
+equidistribution hypothesis is supplied. The arithmetic improvement comes
+from C5's explicit gap cost. The final Cauchy step itself is classical.
+The bound does not assert orthogonality of different transport edges: it
+retains their worst-case coherent interaction. Removing that loss is still
+C6's open collision problem, not a completed beyond-Nyquist estimate.
+
+### C8 — quotient-cell wavelets expose the harmonic cost
+
+**Paper derivation; corpus overlap audit and Lean pending.** In C5's block
+`I_k=[kp,(k+1)p)`, before overlap (`kh≤p`), let `Δ=r_p-r_(p+h)`.
+The pronic mass is `1/[pk(k+1)]`. The exact first moment is
+`Σ_{n∈I_k}w_n Δ(n)=-h/[pk(k+1)]`, so the conditional mean is exactly `-h`.
+Subtracting that mean gives the particularly simple variance
+
+`Σ_{n∈I_k}w_n(Δ(n)+h)² = h/k - h²/p`.
+
+The first moment follows by splitting at `k(p+h)`: it equals
+`kh(1/(kp)-1/((k+1)p))-(p+h)(1/(kp)-1/(k(p+h)))`.
+The variance follows from C5's exact block energy plus the first moment
+and block mass. Different blocks of one pair have disjoint support, so
+their mean-zero residuals are exactly orthogonal. Across different prime
+pairs, the remaining task is their actual interval overlap geometry.
+
+For all horizons, the exact identity
+`Δ(n)=h floor(n/(p+h))-p #{k≥1:kp≤n<k(p+h)}`
+also identifies the intervals, but its two terms grow linearly. Their
+individual infinite pronic energies diverge. Any decomposition using it
+must retain compensation before taking infinite sums.
+
+### C9 — attach the gap tool to the existing dilation-profile carrier
+
+**Paper consequence of existing corpus identities and C5; Lean scratch in progress.**
+The search correction exposes a useful bridge that C7 did not provide.
+For `r>1`, write `S=r.divisorsAntidiagonal`, `mu_x=mu(x.2)`, and
+`X_p(n)=p*Re(pmRamanujanPrimitive r (n/p))`. Existing
+`pmRamanujanPrimitive_eq_floor` and `sum_(d|r) mu(d)=0` imply exactly
+
+`X_p(n) = -sum_(x in S) mu_x * (n mod (p*x.1))`.
+
+Indeed `p*x.1*floor(n/(p*x.1)) = n-(n mod (p*x.1))`;
+the linear `n` term cancels in the finite divisor sum. No asymptotic or
+infinite rearrangement is involved. Finite Cauchy, followed by C5 for
+each pair of moduli `p*x.1,q*x.1`, therefore gives
+
+`sum_n (X_p(n)-X_q(n))^2/[n(n+1)] <= C_r*D(p,q)`,
+`C_r = card(S)*sum_(x in S) mu_x^2*x.1`,
+
+where `D` is `residueGapPronicBudget`. Its homogeneity is immediate from
+the exact formula: `D(dp,dq)=d*D(p,q)` for positive integer `d`, since
+both the smaller modulus and its gap scale by `d`, so their quotient
+`K=floor(min(p,q)/abs(p-q))` is unchanged. The diagonal case is zero.
+All sums of energies converge by boundedness and the pronic tail theorem.
+
+Existing `pm_tsum_floor_dilation` and
+`pmRamanujanDilationProfile_eq_integerDilationGram` identify the left side
+with the original profile, giving
+
+`(p+q)*G(r,r)-2*sqrt(p*q)*Phi_r(p/q) <= C_r*D(p,q)`.
+
+Equivalently, the nonnegative profile defect obeys
+
+`2*sqrt(p*q)*(G(r,r)-Phi_r(p/q))
+ <= C_r*D(p,q)-(sqrt(p)-sqrt(q))^2*G(r,r)`.
+
+This gives an explicit modulus for the exact kernel in the existing cube,
+rather than only the unrelated prime-only net-charge packet. The bound is
+still a pairwise continuity estimate. It does not provide cancellation of
+the cube's signed coefficient sum. Search found the existing continuity,
+floor expansion, exact integer-scale identity, and profile identification;
+no novelty inference is drawn from the partial search for this combination.
 
 ## Formalized contribution
 
@@ -241,10 +468,32 @@ requested dispersion estimate.
 
 ## Next mathematical obligation
 
-Formalize C5's exact two-cell identity and gap-energy upper bound, then
-determine whether the conditionally centered tail or structured coefficient
-packets admit a genuine internal bilinear saving. Keep the full beyond-Nyquist
-target open. Inverse reciprocity must retain its numerator and both phases.
+Start from the existing all-depth/profile and finite jump-sector identities.
+Identify an exact conversion of their signed cross-pair remainder into an
+existing analytic estimate, with its phase, coherent modes, and cutoff error
+retained. C7 is a classical baseline specialization; C8 is a local identity,
+not a substitute for this conversion. Any further local gap estimate must
+connect to the existing dilation-profile carrier before claiming progress
+on the full cube. The beyond-Nyquist target remains open. Inverse reciprocity
+must retain its numerator and both phases.
+
+### C5 source verification
+
+- Leaf: `formal/GaloisForLFunctions/BezoutValuationIncidence/PronicResidueGapEnergyAndPrimePairDistance.lean`.
+- Original-source check passed without warnings:
+  `lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/BezoutValuationIncidence/PronicResidueGapEnergyAndPrimePairDistance.olean GaloisForLFunctions/BezoutValuationIncidence/PronicResidueGapEnergyAndPrimePairDistance.lean`.
+- Source SHA-256: `9dac453a5c826dec6b26e177767de69062899659acffed88855de1355fe73a6b`.
+- 399 lines, 13 public declarations. Imported by the BVI umbrella.
+- Axiom audit of all 13 public declarations passed in `/tmp`; only
+  `[propext, Classical.choice, Quot.sound]` occur. The output is retained in
+  `/tmp/bvi-transport-proof.log` (its unrelated transport scratch has one
+  finite-product simplification error and is not yet a verified module).
+- `scripts/formal_tools.py lint --check-generated` was rerun after corpus
+  reconciliation. It reports nine foreign errors: seven unwired `CHMD*`
+  modules, unwired `BirthDelayedInteriorJumpCenteringAndUniformPairBounds`,
+  and package-root `TransHorizonIncidenceMechanics.lean`; no finding names
+  either owned leaf. Existing large-file warnings remain. No global pass
+  is claimed. Log: `/tmp/bvi-dispersion-lint-after-search.log`.
 
 ## Log
 

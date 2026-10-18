@@ -1,8 +1,8 @@
 # Uniform physical coercivity of the factorial correction tails
 
 - **ID:** APT-ROOT-WINDOW
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean certificate required)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Foundational programme](../../../reports/arithmetic-positivity-theory/research-foundational.md), APT-06–07.
 - **Audit verdict:** BRIDGE. Classical separated-frequency mean-square estimates and a dominant Fourier harmonic give this consequence of the exact source collar. No literature novelty is claimed.
 
@@ -147,4 +147,22 @@ The parent estimates are classical: [Montgomery–Vaughan, *Hilbert's inequality
 
 The complete signed energy remains a separate problem. Equations (1)–(3) give neither a logarithmically weighted spectral lower bound nor a bound for the prime and polar terms relative to that lower bound. Positivity of this family's full Weil Gram matrices, density in the required form topology, and the universal RW criterion are not consequences claimed here.
 
-**Formal certificates:** the four-branch frequency spacing (`four_branch_harmonic_freq_gap_ge` in [FactorialCollarIrrationalityAndSpacing.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCollarIrrationalityAndSpacing.lean)), harmonic-layer Montgomery–Vaughan penalty (`harmonic_layer_mv_penalty_eq`), first-harmonic dominance (`window_first_harmonic_coercivity_sq_ge`), weighted window transport (`weighted_phase_window_transport`), and physical Riesz-sequence coefficient bounds (`factorialTail_riesz_coefficient_bounds`) are certified in [FactorialTailWindowRieszCoercivity.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailWindowRieszCoercivity.lean).
+## Lean certificate
+
+All statements below are unconditional and depend only on `propext`, `Classical.choice`, `Quot.sound` (`#print axioms`). Indexing: `B_b(v) = ∑_{n ∈ S} b_n Φ_{n+1}(v)` (`factorialPhaseCombination S b`), i.e. `N = n + 1`.
+
+- Bernoulli expansion (8) and the harmonic layers: [FactorialPhaseHarmonicLayers.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialPhaseHarmonicLayers.lean) — `periodicClampedKernel_hasSum_cos`, `dyadicCenteredBernoulliFilter_hasSum`, `factorialPhaseProfile_hasSum`, `factorialPhaseCombination_hasSum` (`∑_k w_k H_k = -(π²/2) B_b`), `tsum_abs_dyadicHarmonicWeight_tail_le` (6), `tsum_abs_dyadicHarmonicWeight_le` (`7/4`).
+- Four-branch exponential-sum form and Montgomery–Vaughan bounds (5), with dilation `r ≥ 1`: `factorialHarmonicLayer_eq_expSum`, `factorialDilatedBranch_sep`, `factorialHarmonicLayer_interval_bounds`.
+- [FactorialPhaseWindowAndPhysicalRieszBounds.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialPhaseWindowAndPhysicalRieszBounds.lean):
+  - (1) `factorialPhaseCombination_window_lower`: `∫_a^{a+L} ‖B_b‖² ≥ (L/(16π⁴)) ∑‖b_n‖²` for every real `a`.
+  - (7), dilated: `factorialPhaseCombination_dilated_window_upper` (with interval integrability).
+  - (2): `factorialPhaseCombination_weighted_lower`, `factorialPhaseCombination_weighted_upper` (dilated, `r ≥ 1`), `integrableOn_weighted_factorialPhaseCombination`.
+  - substitution `v = e^{-x}`: `integral_norm_sq_sum_factorialMuntzCorrectedTail`.
+  - (3): `factorialTail_physical_riesz_bounds` (integrability and both Riesz bounds).
+  - generic mechanism: `norm_tsum_weighted_sq_le`, `integral_norm_tsum_weighted_sq_le`, `norm_add_sq_ge_dominance`, `integral_norm_sq_ge_of_first_harmonic`, `integral_norm_sq_le_of_harmonics`.
+- Scalar inputs (earlier): `four_branch_harmonic_freq_gap_ge`, `harmonic_layer_mv_penalty_eq`, `weighted_phase_window_transport`, `factorialTail_riesz_coefficient_bounds`, `factorialCollarShift_bounds` (4).
+
+The dominance step uses `θ = 4/5` in `‖x+y‖² ≥ (1-θ)‖x‖² - (1/θ-1)‖y‖²`, which gives the margin `39/1024 ≥ 16/1024`; it is the squared form of the Minkowski step in the proof above.
+
+## Log
+- 2026-10-18 — moved 2-fully-proven → 3-formalized after the unconditional Lean certificate above.

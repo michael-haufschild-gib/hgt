@@ -6,7 +6,7 @@ do not pivot on unanswered mathematical problems. your job is precisely to solve
 
 do not just optimize numbers and estimates - solve the true hard obstacles that block your route from turning into a proof of the riemann hypothesis. 
 
-your route is HF
+use the search tool for our lean corpus. you are missing existing work
 
 are you actually working on removing roadblocks and mathematical obstacles to close route CHMD for the final RH proof, or are you taking shortcuts just to create lean files that build? this here does not look like you are actually solving the problems but are just busy creating lean code that does nothing to our research problem
 
@@ -531,9 +531,22 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new fields of mathematics. read fully line by line and understand the motivation and context of the fields including traps to avoid: formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
  
-the problem: BezoutValuationIncidence´s its finite signs and readouts still lack a cofinal arithmetic estimate independent of the existing MC/PM receivers
+your task: 
 
-your task: develop and formalize the cofinal arithmetic estimate independent of the existing MC/PM receivers
+take on problem 4 from docs/reports/walls/bezout-wall1-programme.md and build the missing tool.
+
+4. A Coercive Contraction Inequality on $M_T^{\text{int}}(\varepsilon)$ (Instead of Summation-by-Parts Identities)
+- **What we have now:**
+  In physical space, we decomposed
+  $$E_T(\varepsilon) = D_T^{\text{act}}(\varepsilon) + 2 P_T^{\text{pred}}(\varepsilon) + 2 M_T^{\text{int}}(\varepsilon).$$
+  When we tried to bound $2 M_T^{\text{int}}(\varepsilon)$ in Module 67 using discrete summation by parts along $n$, we recovered $+1 \cdot E_T(\varepsilon) - \operatorname{Grad}_T(\varepsilon) - 2\,\operatorname{Local}_T(\varepsilon)$, so $E_T(\varepsilon)$ cancelled with coefficient $1 - 1 = 0$.
+- **Why this failed:**
+  Discrete summation by parts along $n$ is just the product rule $\Delta(I(n)^2) = 2 I(n)\Delta I(n) + (\Delta I(n))^2$ run in reverse; it is an **exact algebraic identity**, so it can never produce a coefficient $\alpha < 1$ in front of $E_T(\varepsilon)$.
+- **The missing tool:**
+  To bound $E_T(\varepsilon)$ from $E_T = D_T^{\text{act}} + 2 P_T^{\text{pred}} + 2 M_T^{\text{int}}$, we need an inequality of the form
+  $$2 M_T^{\text{int}}(\varepsilon) + 2\,\operatorname{pmInteriorLogCounterterm}(\varepsilon)\,H_T^{\text{comp}} \le (1 - \delta)\,E_T(\varepsilon) + C(\varepsilon) \qquad (\delta > 0)$$
+  (or $\delta = 1$, i.e. an direct $O_\varepsilon(1)$ upper bound on the renormalized martingale). Because $M_T^{\text{int}}(\varepsilon) = \sum_{n=1}^{T-1} I_\varepsilon(n)\,\Delta I_\varepsilon(n)\,(H_T - H_n)$ couples the **cumulative interior prefix $I_\varepsilon(n)$** (which depends on $\{n/d\}$ for all $d \ge 3$) with the **next-step interior increment $\Delta I_\varepsilon(n)$** (which is supported only on divisors $d \mid n$ and $d \mid (n+1)$, $d \ge 3$), proving that inequality requires showing that **conditioned on $d \mid (n+1)$, the fractional parts $\{n/d'\}$ for $d' \nmid n(n+1)$ are nearly orthogonal to the jump weight $w_\varepsilon(d)$** with an error summable over $n$. Right now we have no equidistribution/orthogonality theorem for $\{n/d'\}$ along the thin arithmetic progressions $n \equiv -1 \pmod d$ beyond the trivial $1/d'$ main term.
+
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -588,6 +601,11 @@ Note: It is possible that some routes or walls even if hard obstacles are solved
 ## arithmetic positivity theory
 Work through the research program and develop the new arithmetic positivity theory: docs/reports/arithmetic-positivity-theory/research-foundational.md
 
+solve this problem in our CHMD proof route: 
+
+"All-Scale Control of the Folded Möbius Wave (`CHMDMobiusFoldedTransportOfKleinGordonPrimeWave`):
+*The exact gap:* Bounding the folded Möbius wave uniformly as rapidity $y \to \infty$ requires controlling sums of $\mu(n)$ folded against the Klein–Gordon kernel across all scales, where finite-band ($M < B N$) sieve estimates are useless unless coupled to a scale-invariant cancellation mechanism."
+
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
 do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
@@ -602,8 +620,7 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Lean code belonging to this new field goes into formal/GaloisForLFunctions/arithmetic-positivity-theory with its own umbrella.
-9. Add meaningful, helpful comments to lean files without being overly verbose.
+8. Add meaningful, helpful comments to lean files without being overly verbose.
     
 Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 

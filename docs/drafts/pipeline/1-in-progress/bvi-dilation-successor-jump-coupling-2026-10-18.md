@@ -174,3 +174,254 @@ Both right sides are units, so `p,q` are units modulo `r`. Consequently,
 if either scale is noninvertible, every inner complete character sum vanishes.
 If both are invertible, C3 applies. This proves the proposed complete-period
 classification on paper. Formal scratch code has been drafted but not run.
+
+### C4–C5 formal checkpoint
+
+The generic exact period-block sector identity and harmonic remainder bound
+now pass the scratch check. The remaining C5 failures were explicit
+natural-to-`ZMod` coercions; those are corrected in the original source
+`DilationSuccessorSectorHarmonicClassification.lean`, currently checking.
+This module contains the exact successor parametrization, all-period mass
+classification, its finite-sector remainder bound, and a capstone for
+`p=n+2`, `q=n+3`, `a=n+2`, `b=n+1`, `r=m+2` with no hypotheses.
+It is not wired into the umbrella until that original-source check passes.
+
+### C6: canonical renormalized successor constant (paper proof)
+
+The finite bound suggests a stronger positive survivor than boundedness.
+For `1≤d≤L`, set
+
+```
+E_d(K) = progressionHarmonicSum(L,d,K+1) - harmonic(K)/L.
+C_d = inf_(K≥0) E_d(K).
+```
+
+The successive decrement is exactly
+
+```
+E_d(K)-E_d(K+1)
+  = 1/[L(K+1)] - 1/[L(K+1)+d]
+  ∈ [0, (1/L)(1/(K+1)-1/(K+2))].
+```
+
+Hence `E_d` decreases, `E_d(K)-1/[L(K+1)]` increases, and the existing
+finite bounds give a common finite limit `C_d`. In particular,
+
+```
+0 ≤ E_d(K)-C_d ≤ 1/[L(K+1)].
+```
+
+An order-only proof of the last bound: the increasing lower sequence at
+index `K` lies below every upper-sequence term, using monotonicity on either
+side of `K`; it therefore lies below the infimum. Thus no infinite exchange
+of unbounded lag sums is required.
+
+For the actual successor sector, let `Gamma=successorSectorMean(r,p,q)`,
+`L=pqr`, `d_t=p(a+qt)`, and `A_t=c_r(a+qt)c_r(b+pt)`. Define
+
+```
+C_successor = sum_(t<r) A_t C_(d_t) - Gamma/(pq).
+```
+
+The already-proved finite block identity gives, at `H=L(K+1)`,
+
+```
+|S_1(H) - Gamma/(pq) harmonic(K) - C_successor|
+  ≤ (sum_(t<r) |A_t|)/H + |Gamma|/[pq(H+1)].
+```
+
+The cutoff contribution follows from the exact identity
+`Gamma/(pq) - (K+1)r Gamma/(H+1) = Gamma/[pq(H+1)]`.
+This is a dependency-closed paper argument for a canonical renormalized
+limit, including an explicit rate. Formal proof and exact convergence/no-go
+classification remain pending; no route is retired.
+
+C6 corpus search `research 'periodic reciprocal harmonic remainder
+convergence' --mode deep --budget-seconds 120` completed with no partial
+stages, inventory 74,175 files. Semantic coverage was not measured;
+candidates were source-only. Returned ingredients mostly matched unrelated
+periodic or harmonic bounds. The existing arithmetic-progression finite
+bound plus Mathlib monotone convergence is the direct applicable mechanism.
+A narrower lexical harmonic-limit search is also recorded in session scratch.
+
+### User steering: corpus audit before further extension
+
+User flagged missed existing work and explicitly requested the Lean corpus
+search tool. New proof development is paused while the corpus is searched
+with narrower queries and matching source statements/proofs are audited.
+The C6 draft exists only at `/tmp/bvi-dilation-renormalized-draft.lean` and
+has not been run. Do not promote it before checking whether existing
+reciprocal-progression, periodic-source, or digamma results subsume it.
+Existing C4–C5 original-source verification remains running; no replacement
+Lean process has been started. Prior broad deep queries and unavailable
+semantic-coverage measurements were insufficient evidence of novelty.
+
+C4–C5 original-source verification completed: exit 0, no diagnostics, all 17 public declarations. Added umbrella import; public axiom audit is next. The C6 standalone convergence draft is superseded by existing `HTGeometry/DigammaGaussSeries.lean`: its absolute-convergence theorem and exact finite Gauss identity already supply the analytic mechanism. Do not run or promote the infimum-based draft. Audit and reuse these results, including `DigammaAsymptotic.digamma_shift_diff_bound`, before constructing the sector-specific bridge.
+
+
+### Corpus correction audit: exact reuse map (2026-10-18)
+
+User correction: use the Lean corpus search; existing work was being missed.
+Ran documented `research` searches for `digamma progression`, `reciprocal periodic`
+(deep), `Ramanujan successor`, `dilation jump`, `Ramanujan covariance`,
+`digamma shift`, `Ramanujan correlation`, `digamma harmonic` (both pages),
+`periodic harmonic`, `dilation profile` scoped to BVI, and the exact Abel helper.
+Search JSON retained under `/tmp/bvi-corpus-audit-*.json` during this session.
+The hybrid/deep results reported semantic-retrieval deadlines, stale compiler
+coverage, and incomplete refresh while the background indexer was running.
+These results are discovery aids, not evidence of novelty or verified applicability.
+Lexical hits were followed to original source statements and proofs.
+
+Exact existing dependencies:
+- `RHTower.sum_gaussDigammaSeriesTerm_eq_digamma_shift`
+  (`HTGeometry/DigammaGaussSeries.lean:170`) gives the finite identity.
+- `GaloisForLFunctions.HTGeometry.norm_digamma_shift_sub_le`
+  (`HTGeometry/GammaDigammaShiftAnchor.lean:56`) gives the stronger bound
+  `norm (psi(z+N)-psi(1+N)) <= norm(z-1)/N` for `0 <= re z`, `1 <= N`.
+  This removes even the threshold and factor two of the previously noticed
+  `RHTower.digamma_shift_diff_bound`.
+- `RHTower.hasSum_digamma_sub`
+  (`RHTower/DigammaDifferenceSeries.lean:51`) already supplies convergence of
+  reciprocal differences; `hasSum_residueClass_recip` specializes to pronic
+  progression weights (`RHTower/ResidueClassRecipSeries.lean:33`).
+- `abs_sum_range_mul_antitone_le`
+  (`OscillatoryPronicTailSummationByPartsAndSecondOrderVonMangoldtError.lean:75`)
+  is the generic Abel bound. Existing `InteriorJumpOrbitCenteringAndCompensatedBounds`
+  applies it to centered sawtooth jump orbits. Do not re-prove this machinery.
+
+Related existing arithmetic, not a literal replacement for the affine successor
+sector identity:
+- `BiScaleUncertainty.periodCovariance_eq_ramanujanLagWeight_diagonal` concerns
+  divisor-sieve covariance over `N!`; its lag-one eigenvalue is already Mobius.
+- `RHTower.pmRamanujanResidueCoeff_periodCovariance` concerns covariance of
+  primitive residues, with gcd-square weights and a density correction.
+- `Sieve.kloostermanCompleteColumnCorrelation_eq_cglRamanujan` concerns
+  Kloosterman column correlation, not products of two affine Ramanujan sequences.
+The new fiber statements should be described as explicit coordinate bridges,
+not discovery of the classical Ramanujan correlation or generic centering law.
+
+Revised C6 paper target (corpus corollary, not new convergence theory): set
+`L=p*q*r`, `N=K+1`, `d_t=p*(a+q*t)`, `alpha_t=d_t/L`,
+`C_d=-(re psi(d/L)+EulerGamma)/L`, and
+`C_successor=sum_{t<r} A_t*C_{d_t}-Gamma/(p*q)`.
+Use the natural centering `harmonic N` (not `harmonic K`). The existing finite
+Gauss identity gives
+`P(L,d,N)-harmonic N/L-C_d = re(psi(d/L+N)-psi(N+1))/L`.
+Thus the exact sector remainder is the finite weighted sum of these digamma
+shifts plus `Gamma/(p*q*(L*N+1))`. The existing anchor bounds it by
+`sum_{t<r} abs(A_t)*norm(alpha_t-1)/(L*N)
+ + abs(Gamma)/(p*q*(L*N+1))`.
+A least-positive seed gives `0<alpha_t<=1`, hence the simpler numerator
+`sum abs(A_t)` is also available. This proves the intended explicit constant
+and decay without the superseded standalone infimum/monotone convergence draft.
+
+Verification update: the C4-C5 axiom audit terminated exit 0. All 17 public declarations use only `propext`, `Classical.choice`, and `Quot.sound`. Together with C1-C3, all 50 public declarations in the four completed modules are now individually axiom-audited. Log: `logs/bvi-dilation-successor-classification-axioms.txt`. The scratch also verified the four previously selected Gauss/asymptotic theorem names against the current toolchain. The newly selected stronger anchor remains to be checked in Lean.
+
+
+Further exact prior-art check: `TrueTranslationPredictionAndExactCompression.lean:57`
+already gives the bilinear complete-period Ramanujan diagonal for literal integer
+translation; `RamanujanLagCoefficientAndTotientQuotient.lean` supplies the lag
+coefficient and normalized Mobius/totient quotient. These confirm that the
+underlying additive spectral law is existing work. The new interface concerns
+its affine successor fiber inside the original dilation profile, with the actual
+reciprocal jump kernel and finite cutoff retained.
+
+C6 implementation is currently scratch-only. The first Lean check found cast
+and real-part normalization issues in the short Gauss coordinate conversion;
+no issue with the selected corpus theorem statements. The stronger anchor name
+resolved. A corrected check includes the sector-specific finite-part identity,
+explicit rate, and convergence corollary. Do not claim C6 verified until terminal
+source and axiom checks complete.
+
+
+### C7 candidate: oriented successor mass as adjacent scales coalesce
+
+This is the next sector-specific candidate, pending a complete paper audit and
+formalization. Keep C6 verification separate.
+
+Corpus-first audit: deep `research 'successor dilation limit' --module
+BezoutValuationIncidence --budget-seconds 300 --per-module 0 --json` completed
+with `partial=false`; candidate/source hits include the existing dilation cube,
+our finite-horizon bridge, successor prediction, and birth-delayed sawtooth
+centering. Lexical `coalesc` scoped to BVI returned no hits. This does not prove
+novelty. `pmRamanujanDilationProfile continuous` found the already formalized
+`continuousOn_pmRamanujanDilationProfile` and `pmRamanujanDilationProfile_one`
+in `RHTower/PMRamanujanNearbyPrimeResonance.lean`. `Ramanujan norm bound` found
+`Sieve.norm_cglRamanujanAdditiveSum_le_totient` in
+`RHTower/Sieve/StadlmannReciprocalPhaseApplications.lean:206`.
+These supply the analytic continuity and coefficient majorant; reuse them.
+
+At the single complete-block horizon H=r*p*q, let S=S_1(H).
+For p=q+1 (q>=1), the least seed is (a,b)=(1,1), and the exact finite formula is
+`p*S = sum_{t<r} A_t/(1+q*t) - p*sum_{t<r} A_t/(H+1)`.
+The t=0 term is mu(r)^2. If `abs(A_t)<=phi(r)^2`, all remaining terms are
+O_r(1/q), and the boundary is O_r(1/q); a coarse bound is
+`abs(p*S-mu(r)^2) <= r*phi(r)^2/q`.
+For q=p+1 (p>=2), the least seed is (a,b)=(p,p-1). Every denominator
+`a+q*t` is at least p, giving
+`abs(p*S) <= (r+1)*phi(r)^2/p`.
+Thus the proposed oriented limits of the actual normalized sector are
+`sqrt(p*q)*S_1(r*p*q) -> mu(r)^2` from p=q+1, but `->0` from q=p+1.
+The full profile has the same continuous limit Phi_r(1) from both sides, by
+existing continuity. The signed complement must carry the corresponding
+compensating limits. This would expose orientation-sensitive additive mass
+inside a continuous dilation profile; it is not a claim that a single sector
+controls the full Gram energy, nor permission to rearrange infinite lag sums.
+No C7 Lean theorem has been written or claimed verified yet.
+
+
+C6 source verification: `DilationSuccessorDigammaRenormalization.lean` now passes
+`lake --old env lean -j 1 -o ... -i ... <original source>` with exit 0 and no
+diagnostics, after removing one unused tactic. It has 10 public declarations:
+the progression finite part and its exact/rate bridges; the sector constant and
+tail mass; exact centered-sector identity; quantitative remainder; convergence;
+and two no-hypothesis consecutive-scale capstones. Wired into the BVI umbrella.
+The README now documents all five completed source modules and explicitly
+credits the existing finite Gauss identity and sharp shift anchor.
+Log: `logs/bvi-dilation-successor-digamma-original.txt` (empty, clean).
+The separate `/tmp/bvi-dilation-digamma-axioms.lean` audits all 10 public
+symbols and both imported analytic theorems; its run is still pending at this
+checkpoint. `scripts/formal_tools.py index` completed exit 0, regenerating the
+three formal index documents and reporting 0 changed/removed search entries
+(the background indexer had already ingested the source).
+
+
+Global lint result: exit 1, with two structural errors outside this work's
+source set: `NaturalCutoffMultiDepthCofactorAndConditionalTailBridge` is not
+reachable from the BVI umbrella; `TransHorizonIncidenceMechanics.lean` is treated
+as a research leaf at package root. Full log:
+`logs/bvi-dilation-successor-lint.txt`. Do not claim the global lint gate passed.
+The current umbrella diff also contains concurrent imports for
+`BirthDelayedInteriorJumpCenteringAndUniformPairBounds` and
+`PronicResidueGapEnergyAndPrimePairDistance`; these were preserved.
+Our only additions to that diff are the C4-C5 classification and C6 digamma
+module imports. Axiom audit of C6 is now running separately.
+
+
+Additional C7 prior-art audit: corpus query `prime pair distance` found
+`PronicResidueGapEnergyAndPrimePairDistance.lean`. Read its quotient-cell setup
+and all public results. It already provides an exact pre-overlap harmonic
+residue-gap prefix, two-sided gap budgets, the identity between actual
+energy-centered prime-mode distance and residue energy minus squared log-mean
+difference, and a symmetric prime-pair gap bound. Reuse this for nearby-prime
+transport; do not re-prove these estimates. Its variable-modulus residue
+energy differs from C7's fixed-modulus, oriented finite successor sector.
+C7 remains a candidate; the new corpus theorem names must be checked in Lean
+before any use, as with the already verified C6 dependencies.
+
+
+C6 verification closed: the separate axiom audit terminated exit 0. All 10
+public C6 declarations, and the two reused Gauss/shift-anchor theorems, have
+exactly the standard axiom set `propext`, `Classical.choice`, `Quot.sound`.
+Log: `logs/bvi-dilation-successor-digamma-axioms.txt`.
+Across C1-C6, all 60 public declarations in the five source modules now have
+original-source compilation and individual axiom audits. No full/umbrella
+build was run. The superseded infimum-convergence draft and merged scratch
+fragments were removed; canonical sources and audit logs remain.
+C7 is still the next candidate, not a verified result. Its prior-work audit
+must include the existing profile continuity, CGL totient bound, and the
+recent pronic residue-gap/prime-pair distance module recorded above.
+The research goal remains active.
+
+Final lint retry followed concurrent repair of the NaturalCutoff umbrella import. It still exits 1 with: error: research leaf module at package root: TransHorizonIncidenceMechanics.lean; move it into an owned theorem area
+Log: `logs/bvi-dilation-successor-lint-final.txt`. This remains outside the edited source set. No owned Lean/check/search process remains running at this checkpoint.

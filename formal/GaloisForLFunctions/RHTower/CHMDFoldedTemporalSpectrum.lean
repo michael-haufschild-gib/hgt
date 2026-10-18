@@ -19,7 +19,13 @@ noncomputable section
 
 theorem measurable_chmdPrimeKernel_time (s : ℝ) :
     Measurable (fun y => chmdPrimeKernel y s) := by
-  exact (RHTower.CHMDQuarticMoment.continuous_chmdPrimeKernel s).measurable
+  unfold chmdPrimeKernel
+  have hm : Measurable (fun p : ℝ × ℝ =>
+      Real.cos (p.1 * Real.sqrt (p.2 ^ 2 + 2)) * sechSqHalf p.2 * Real.cos (p.2 * s)) :=
+    (((by fun_prop : Continuous (fun p : ℝ × ℝ =>
+      Real.cos (p.1 * Real.sqrt (p.2 ^ 2 + 2)))).mul
+        (continuous_sechSqHalf.comp continuous_snd)).mul (by fun_prop)).measurable
+  exact measurable_const.mul hm.stronglyMeasurable.integral_prod_right'.measurable
 
 theorem measurable_kernelDeriv_time (s : ℝ) :
     Measurable (fun y => kernelDeriv y s) :=
@@ -64,6 +70,8 @@ theorem conjugatedLaplacian_temporalCoefficient_zero (s : ℝ) {lam : ℝ} (hlam
             chmdPrimeKernel (T * t) s * Real.cos (lam * (T * t)) / 4) := by ring
     simp_rw [hp]
     have hsub := (hi2 T).sub (hi1 T)
+    change IntegrableOn (fun t => kernelDeriv2 (T * t) s * Real.cos (lam * (T * t)) -
+      kernelDeriv (T * t) s * Real.cos (lam * (T * t))) (Ioc (0 : ℝ) 1) at hsub
     rw [integral_const_mul, integral_add hsub ((hi0 T).div_const 4),
       integral_sub (hi2 T) (hi1 T), integral_div]
   have h := (((kernelDeriv2_temporalCoefficient_zero s hlam).sub
@@ -78,8 +86,10 @@ theorem poleShadow_temporalCoefficient_zero {lam : ℝ} (hlam : 0 < lam) :
       chmdPrimeKernel p.1 p.2 * Real.exp (-(p.2 / 2))) :=
     measurable_chmdPrimeKernel_joint.mul (by fun_prop)
   have hi : IntegrableOn (fun s : ℝ => (4 / π) * Real.exp (-(s / 2))) (Ioi (0 : ℝ)) := by
-    simpa only [div_eq_mul_inv, one_mul, neg_mul, mul_neg, mul_comm] using
+    have h : IntegrableOn (fun s : ℝ => (4 / π) * Real.exp (-(1 / 2) * s)) (Ioi (0 : ℝ)) :=
       (exp_neg_integrableOn_Ioi 0 (by norm_num : (0 : ℝ) < 1 / 2)).const_mul (4 / π)
+    refine h.congr_fun (fun s _ => ?_) measurableSet_Ioi
+    simp only [show -(1 / 2 : ℝ) * s = -(s / 2) by ring]
   have hb : ∀ y s, |chmdPrimeKernel y s * Real.exp (-(s / 2))| ≤
       (4 / π) * Real.exp (-(s / 2)) := by
     intro y s
@@ -112,9 +122,13 @@ theorem remainderFold_temporalCoefficient_zero (v : ℝ) {lam : ℝ} (hlam : 0 <
   have hi : Integrable b := by
     dsimp only [b]
     rw [integrable_indicator_iff measurableSet_Ioi]
-    simpa only [div_eq_mul_inv, one_mul, neg_mul, mul_neg, mul_comm] using
+    have h : IntegrableOn (fun u : ℝ =>
+        (7 / 2) * laplacianBound * Real.exp (-(v / 2)) * Real.exp (-(1 / 2) * u))
+          (Ioi (0 : ℝ)) :=
       (exp_neg_integrableOn_Ioi 0 (by norm_num : (0 : ℝ) < 1 / 2)).const_mul
         ((7 / 2) * laplacianBound * Real.exp (-(v / 2)))
+    refine h.congr_fun (fun u _ => ?_) measurableSet_Ioi
+    simp only [show -(1 / 2 : ℝ) * u = -(u / 2) by ring]
   have hb : ∀ y u, |F y u| ≤ b u := by
     intro y u
     by_cases hu : u ∈ Ioi (0 : ℝ)

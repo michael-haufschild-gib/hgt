@@ -26,7 +26,7 @@ theorem chmdPrimeKernel_hasTemporalCoefficient (s : ℝ) {lam : ℝ} (hlam : 0 <
 theorem conjugatedKernel_hasTemporalCoefficient (s : ℝ) {lam : ℝ} (hlam : 0 < lam) :
     HasTemporalCoefficient (fun y => conjugatedKernel y s) lam 0 := by
   have h := (chmdPrimeKernel_hasTemporalCoefficient s hlam).const_mul (Real.exp (-(s / 2)))
-  simpa only [mul_zero] using h
+  simpa only [conjugatedKernel, mul_zero] using h
 
 theorem poleShadow_hasTemporalCoefficient {lam : ℝ} (hlam : 0 < lam) :
     HasTemporalCoefficient poleShadow lam 0 := by
@@ -67,14 +67,16 @@ theorem poleDensityHead_hasTemporalCoefficient (v : ℝ) {lam : ℝ} (hlam : 0 <
       have h := (chmdPrimeKernel_hasTemporalCoefficient s hlam).const_mul (Real.exp (s / 2))
       have h' := h.congr (fun y => mul_comm _ _)
       simpa only [mul_zero] using h'.limit)
+  change HasTemporalCoefficient
+    (fun y => ∫ s in Ioc (0 : ℝ) v, chmdPrimeKernel y s * Real.exp (s / 2)) lam 0
   simpa only [integral_zero] using h
 
 theorem integral_poleDensity_tail_eq (y : ℝ) {v : ℝ} (hv : 0 ≤ v) :
     (∫ s in Ioi v, chmdPrimeKernel y s * Real.exp (s / 2)) =
       chmdPoleWave y - poleShadow y - poleDensityHead v y := by
-  have hi := (integrable_chmdPrimeKernel_mul_exp_half y).integrableOn
+  have hi := integrable_chmdPrimeKernel_mul_exp_half y
   have hsplit := intervalIntegral.integral_interval_add_Ioi
-    (a := (0 : ℝ)) (b := v) hi hi
+    (a := (0 : ℝ)) (b := v) hi.integrableOn hi.integrableOn
   rw [intervalIntegral.integral_of_le hv] at hsplit
   have hp := chmdPoleWave_eq_integral_Ioi_add_poleShadow y
   change (∫ s in Ioi v, chmdPrimeKernel y s * Real.exp (s / 2)) =
@@ -92,7 +94,7 @@ theorem chmdPoleWave_hasTemporalCoefficient {lam : ℝ} (hlam : 0 < lam) :
       (if Real.sqrt (7 / 4 : ℝ) = lam then (1 / 2 : ℝ) else 0) :=
     ⟨by fun_prop, ⟨1, fun y => Real.abs_cos_le_one _⟩,
       temporalCosineAverage_cos_tendsto hp hlam⟩
-  have h' := (h.const_mul (2 / Real.cos (1 / 4 : ℝ) ^ 2)).congr
+  have h' := (h.const_mul (2 / Real.cos (1 / 4 : ℝ) ^ 2)).congr (g := chmdPoleWave)
     (fun y => by rw [chmdPoleWave_eq, mul_comm (Real.sqrt (7 / 4 : ℝ)) y])
   convert h' using 1
   split_ifs <;> ring
@@ -107,18 +109,20 @@ theorem mobiusFold_hasTemporalCoefficient {v lam : ℝ} (hv : 0 ≤ v) (hlam : 0
     (poleShadow_hasTemporalCoefficient hlam)).sub (poleDensityHead_hasTemporalCoefficient v hlam)
   have h := ((conjugatedKernel_hasTemporalCoefficient v hlam).const_mul mobiusWaveConstant).add
     ((htail.const_mul (Real.exp (-v))).const_mul (Real.eulerMascheroniConstant + 1))
-  have h' := (h.add (remainderFold_hasTemporalCoefficient v hlam)).congr (fun y => by
+  have h' := (h.add (remainderFold_hasTemporalCoefficient v hlam)).congr
+    (g := fun y => mobiusFold y v) (fun y => by
     rw [mobiusFold_eq y hv, integral_poleDensity_tail_eq y hv])
   convert h' using 1
   split_ifs <;> ring
 
-theorem finite_mobiusFold_hasTemporalCoefficient_zero (s : Finset ℝ) (a : ℝ → ℝ)
-    (hs : ∀ v ∈ s, 0 ≤ v) {lam : ℝ} (hlam : 0 < lam)
+theorem finite_mobiusFold_hasTemporalCoefficient_zero {ι : Type*}
+    (s : Finset ι) (a v : ι → ℝ)
+    (hs : ∀ i ∈ s, 0 ≤ v i) {lam : ℝ} (hlam : 0 < lam)
     (hne : Real.sqrt (7 / 4 : ℝ) ≠ lam) :
-    HasTemporalCoefficient (fun y => ∑ v ∈ s, a v * mobiusFold y v) lam 0 := by
+    HasTemporalCoefficient (fun y => ∑ i ∈ s, a i * mobiusFold y (v i)) lam 0 := by
   have h := HasTemporalCoefficient.finset_sum s (c := fun _ => (0 : ℝ))
-    (fun v hv => by
-      have h := (mobiusFold_hasTemporalCoefficient (hs v hv) hlam).const_mul (a v)
+    (fun i hi => by
+      have h := (mobiusFold_hasTemporalCoefficient (hs i hi) hlam).const_mul (a i)
       simpa only [if_neg hne, mul_zero] using h)
   simpa only [Finset.sum_const_zero] using h
 

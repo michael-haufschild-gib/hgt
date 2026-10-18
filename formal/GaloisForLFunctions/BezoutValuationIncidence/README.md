@@ -368,3 +368,34 @@ All 74 modules live in `formal/GaloisForLFunctions/BezoutValuationIncidence/` an
 74. [`RoutePMCofactorSieveBridgeAndUnifiedEnergyEquivalence.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/RoutePMCofactorSieveBridgeAndUnifiedEnergyEquivalence.lean)
 75. [`CrossDepthEulerOperatorFactorizationAndPrimePairGramIdentity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/CrossDepthEulerOperatorFactorizationAndPrimePairGramIdentity.lean)
 76. [`AllDepthHilbertDilationCubeAndHyperCubeGramFactorization.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/AllDepthHilbertDilationCubeAndHyperCubeGramFactorization.lean)
+
+
+## 10. Integer dilation jump sectors
+
+The dilation profile now retains the actual additive gap `p*a-q*b` at a common
+finite physical horizon. The successor sector is classified and has an explicit
+finite part:
+
+- [ReciprocalJumpKernelAndDilationLagSectors.lean](ReciprocalJumpKernelAndDilationLagSectors.lean): exact finite jump kernel and lag partition, including the boundary correction and gcd obstruction.
+- [DilationProfileIntegerJumpCoupling.lean](DilationProfileIntegerJumpCoupling.lean): bridge to the original Hilbert-space profile at all positive integer scales, with an explicit cutoff error.
+- [DilationSuccessorFiberReciprocity.lean](DilationSuccessorFiberReciprocity.lean): transport of the classical Ramanujan correlation to affine successor fibers.
+- [DilationSuccessorSectorHarmonicClassification.lean](DilationSuccessorSectorHarmonicClassification.lean): complete positive-solution parametrization and exact period mean `r*Gamma`, where `Gamma=mu(r)` when both scales are coprime to `r`, and zero otherwise.
+- [DilationSuccessorDigammaRenormalization.lean](DilationSuccessorDigammaRenormalization.lean): explicit finite part, inverse-horizon error, and convergence of the centered complete sector.
+
+For `r>=1`, positive scales, and a seed `p*a=q*b+1` with `1<=a<=q` and `b>=1`,
+put `L=p*q*r`, `d_t=p*(a+q*t)`,
+`A_t=Re(c_r(a+q*t))*Re(c_r(b+p*t))`, and `H=L*N`, with `N>=1`.
+With the modulus and seed fixed, the last module gives the following limit as `N` grows:
+
+```text
+S_1(H) - Gamma*harmonic(N)/(p*q) -> C,
+C = -sum_{t<r} A_t*(Re(digamma(d_t/L))+EulerGamma)/L - Gamma/(p*q),
+|S_1(H)-Gamma*harmonic(N)/(p*q)-C|
+  <= sum_{t<r} |A_t|*|d_t/L-1|/H + |Gamma|/(p*q*(H+1)).
+```
+
+This is a bridge from the existing [finite Gauss-series identity](../HTGeometry/DigammaGaussSeries.lean)
+and [digamma shift bound](../HTGeometry/GammaDigammaShiftAnchor.lean).
+The term `-Gamma/(p*q)` comes from the finite-horizon boundary correction.
+All lag sums in the profile coupling remain finite; the sector limit does not
+justify rearranging an infinite sum over lags.

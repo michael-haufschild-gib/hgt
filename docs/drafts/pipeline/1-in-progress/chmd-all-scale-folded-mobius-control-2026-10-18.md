@@ -15,11 +15,11 @@ Prove `∃ C : ℝ, ∀ y : ℝ, 0 ≤ y → F(y) ≤ C` (or its lower-bound cou
 
 ## Plan and gates
 
-1. [in progress] Audit exact source, kernel, prior conjectures, and all-scale receivers using the local research search and actual Lean declarations.
-2. [pending] State competing precise cancellation conjectures; attack their quantifiers, source fidelity, and prior-corpus overlap.
-3. [pending] Complete a dependency-closed paper proof of each surviving mathematical claim before formalization.
-4. [pending] Formalize unconditional results, wire leaves into their area umbrella, audit each leaf using `lake env lean`, inspect axioms, run formal lint.
-5. [pending] Reassess whether the actual target is proved; continue conjecturing if it remains open.
+1. [done for current candidates] Audit exact source, kernel, prior conjectures, and all-scale receivers using the local research search and actual Lean declarations.
+2. [in progress] State competing precise cancellation conjectures; attack their quantifiers, source fidelity, and prior-corpus overlap.
+3. [done for finite-fold spectral classification] Complete a dependency-closed paper proof before formalization; the all-scale arithmetic bound remains open.
+4. [done for spectral classification and separation] Seven leaves compile; both final leaves pass direct `lake --old env lean` checks; five theorem axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Umbrella wiring and generated indexes updated. Global lint retains two unrelated tree errors, recorded on the failed-route card.
+5. [in progress] Reassess whether the actual target is proved; continue conjecturing if it remains open. The requested all-scale bound remains unproved.
 
 ## Constraints
 
@@ -37,6 +37,18 @@ For each fixed rapidity, the folded series converges absolutely with shift decay
 ## Proof status
 
 **OPEN CORE:** independent all-scale arithmetic cancellation. No proof claimed.
+
+## Corrected corpus baseline
+
+Local research search and direct source inspection recover stronger existing producers than the first pass recorded:
+
+- `MobiusDivisorPaidPrimeExhaustion`: unconditional exhaustive insertion with every prefix paid at its own proportional clock.
+- `MobiusDivisorExhaustiveClockCheckpoints`: nested exhaustive cores, universal full logarithmic energy bound at geometric checkpoints, and fourth-root cutoff collars.
+- `MobiusDivisorTerminalClockOrder`: complete terminal insertion orders bounded by the larger actual endpoint; the completed source square remains explicit.
+- `MobiusDivisorGrowingDepthCurrentPayment`: unconditional logarithmic-size omitted-prime payment over the initial core.
+- `MobiusDivisorWeightedCutoffDiagonal`: exact signed correlation and self-square in cutoff evolution.
+
+Do not rebuild these producers or infer an all-scale bound from their incompatible cutoff/core quantifiers. The unresolved scheduling obligation is signed drift and earlier completed action across changing cutoffs. Generic summable-spectrum Bohr extraction is also already available in `HTGeometry/ExponentialSeriesFiberwise` and `SummableSpectrumScrewBohrCoefficients`; the finite-fold work below only applies that spectral distinction to this specific transport.
 
 ## Conjecture: uniform truncation versus atomic completion
 
@@ -58,6 +70,14 @@ The complete fold has the exact source identity
 `F(y) = K_y(0) - poleShadow(y) - chmdArchWave(y)/(2π) + chmdWave(y)`.
 The first three terms have zero temporal cosine coefficients. Under RH the last is the absolutely summable cosine series over actual zero frequencies, with strictly positive weights. At any actual zero frequency its coefficient is half the total matching weight, hence positive. Its frequency is at least `sqrt(2)`, distinct from the pole frequency.
 
-If the complete fold has no uniform bound, no uniformly bounded finite fold can uniformly approximate it. If it is bounded, RH follows and the preceding positive coefficient separates it from every finite fold combination by a fixed positive sup-norm distance. This proves the proposed obstruction, provided the stated source identifications and analytic exchanges are checked in Lean.
+If the complete fold has no uniform bound, no uniformly bounded finite fold can uniformly approximate it. If it is bounded, RH follows and the preceding positive coefficient separates it from every finite fold combination by a fixed positive sup-norm distance. The source identifications and analytic exchanges are now checked in Lean.
 
-**Current verdict:** SURVIVES PRELIMINARY ATTACK; paper mechanism fixed, Lean verification pending. This does not refute uniform boundedness of partial sums or of the completed wave. A valid all-scale argument may allow spectral atoms to emerge in a nonuniform limit.
+**Current verdict:** UNIFORM APPROXIMATION SHORTCUT RETIRED; exact positive-frequency atom classification and unconditional uniform separation formalized. See [failed-route card](../5-failed/chmd-uniform-fold-approximation-2026-10-18.md) for the exact theorem, positive survivor, paper proof, prior-work audit, and verification limits. This does not refute uniform boundedness of partial sums or of the completed wave. A valid all-scale argument may allow spectral atoms to emerge in a nonuniform limit.
+
+## Next arithmetic candidate: bounded supported Möbius rows
+
+The existing `selbergMobiusCoeff N m` is supported on `1 ≤ m ≤ N`, has absolute value at most one, and tends to `μ(m)` at every fixed index. Test the precise claim
+
+`∃ C : ℝ, ∀ N ≥ 2, ∀ y ≥ 0, |Σ_{m=1}^N selbergMobiusCoeff N m * mobiusFold y (log m)| ≤ C`.
+
+Fixed-rapidity absolute summability makes pointwise passage to the complete fold available. The missing work is the bound itself. Uniform approximation is neither needed nor compatible with the proposed atom classification. Existing Selberg total-energy estimates retain a growing diagonal/remainder; bounded coefficients alone do not pay them. Do not formalize the easy pointwise-limit receiver as an arithmetic advance. First attack the actual signed spectral density or source pairing of these already-defined rows, with pole and all-scale tail retained.

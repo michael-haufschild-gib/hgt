@@ -64,10 +64,10 @@ theorem of_integral {α : Type*} [MeasurableSpace α] {μ : Measure α} [SFinite
     (hlim : ∀ᵐ x ∂μ, Tendsto (temporalCosineAverage (fun y => F y x) lam) atTop
       (𝓝 (L x))) :
     HasTemporalCoefficient (fun y => ∫ x, F y x ∂μ) lam (∫ x, L x ∂μ) := by
-  refine ⟨hF.stronglyMeasurable.integral_prod_right.measurable, ?_,
+  refine ⟨hF.stronglyMeasurable.integral_prod_right'.measurable, ?_,
     temporalCosineAverage_integral_tendsto hF hb hbound hlim⟩
   refine ⟨∫ x, b x ∂μ, fun y => ?_⟩
-  simpa only [Real.norm_eq_abs] using norm_integral_le_of_norm_le hb
+  simpa only [Real.norm_eq_abs] using norm_integral_le_of_norm_le (f := F y) hb
     (Eventually.of_forall fun x => by simpa only [Real.norm_eq_abs] using hbound y x)
 
 theorem finset_sum {ι : Type*} (s : Finset ι) {f : ι → ℝ → ℝ} {c : ι → ℝ} {lam : ℝ}
@@ -87,6 +87,49 @@ theorem finset_sum {ι : Type*} (s : Finset ι) {f : ι → ℝ → ℝ} {c : ι
     simpa only [Finset.sum_insert ha] using hsum
 
 end HasTemporalCoefficient
+
+/-- An absolutely summable positive cosine series retains every frequency mass. -/
+theorem hasTemporalCoefficient_tsum_cos {ι : Type*} [MeasurableSpace ι]
+    [MeasurableSingletonClass ι] [Countable ι] (a w : ι → ℝ)
+    (ha : ∀ i, 0 ≤ a i) (hs : Summable a) (hw : ∀ i, 0 < w i)
+    {lam : ℝ} (hlam : 0 < lam) :
+    HasTemporalCoefficient (fun y => ∑' i, a i * Real.cos (w i * y)) lam
+      (∑' i, if w i = lam then a i / 2 else 0) := by
+  classical
+  have hi : Integrable a Measure.count := integrable_count_iff.mpr
+    (by simpa only [Real.norm_eq_abs, abs_of_nonneg (ha _)] using hs)
+  have hm : Measurable (fun p : ℝ × ι => a p.2 * Real.cos (w p.2 * p.1)) :=
+    ((measurable_of_countable a).comp measurable_snd).mul
+      (Real.continuous_cos.measurable.comp
+        (((measurable_of_countable w).comp measurable_snd).mul measurable_fst))
+  have hb (y : ℝ) (i : ι) : |a i * Real.cos (w i * y)| ≤ a i := by
+    rw [abs_mul, abs_of_nonneg (ha i)]
+    exact mul_le_of_le_one_right (ha i) (Real.abs_cos_le_one _)
+  have h := HasTemporalCoefficient.of_integral
+    (F := fun y i => a i * Real.cos (w i * y)) hm hi hb (lam := lam)
+    (L := fun i => if w i = lam then a i / 2 else 0)
+    (Eventually.of_forall fun i => by
+      have h := (temporalCosineAverage_cos_tendsto (hw i) hlam).const_mul (a i)
+      have heq : a i * (if w i = lam then (1 / 2 : ℝ) else 0) =
+          (if w i = lam then a i / 2 else 0) := by split_ifs <;> ring
+      simpa only [← temporalCosineAverage_const_mul, heq] using h)
+  have hif (y : ℝ) : Integrable (fun i => a i * Real.cos (w i * y)) Measure.count :=
+    hi.mono' (measurable_of_countable _).aestronglyMeasurable
+      (Eventually.of_forall fun i => by simpa only [Real.norm_eq_abs] using hb y i)
+  have hiL : Integrable (fun i => if w i = lam then a i / 2 else 0) Measure.count := by
+    refine hi.mono' (measurable_of_countable _).aestronglyMeasurable (Eventually.of_forall fun i => ?_)
+    rw [Real.norm_eq_abs]
+    split_ifs
+    · rw [abs_of_nonneg (div_nonneg (ha i) (by norm_num))]
+      linarith [ha i]
+    · simpa only [abs_zero] using ha i
+  have heq (y : ℝ) : (∫ i, a i * Real.cos (w i * y) ∂Measure.count) =
+      ∑' i, a i * Real.cos (w i * y) := by
+    simpa only [count_real_singleton, one_smul] using integral_countable (hif y)
+  have hL : (∫ i, (if w i = lam then a i / 2 else 0) ∂Measure.count) =
+      ∑' i, if w i = lam then a i / 2 else 0 := by
+    simpa only [count_real_singleton, one_smul] using integral_countable hiL
+  simpa only [heq, hL] using h
 
 end
 

@@ -427,4 +427,175 @@ theorem all_depth_dilationProfile_cube_diag_sum_eq (ε : ℝ)
     (d : ℝ) ^ (-1 - 2 * ε) * pmRamanujanPrimitiveGram r r * hmu +
       moebiusReal d ^ 2 * pmRamanujanPrimitiveGram r r * hrpow
 
+/-! ## §4. Depth-Stratified Alternating Shell Decomposition & Energy-Centered Operator Factorization -/
+
+/-- For any squarefree integer `d`, its real Möbius weight `moebiusReal d` is determined purely by
+its multiplicative depth `cardDistinctFactors d = ω(d)`:
+`moebiusReal d = (-1) ^ cardDistinctFactors d`. -/
+theorem moebiusReal_eq_neg_one_pow_cardDistinctFactors {d : ℕ} (hd : Squarefree d) :
+    moebiusReal d = (-1 : ℝ) ^ cardDistinctFactors d := by
+  have hω : cardDistinctFactors d = cardFactors d :=
+    (cardDistinctFactors_eq_cardFactors_iff_squarefree hd.ne_zero).mpr hd
+  dsimp [moebiusReal]
+  rw [hω, ArithmeticFunction.moebius_apply_of_squarefree hd]
+  push_cast
+  rfl
+
+/-- For any divisor `d ∣ P` of a squarefree integer `P`, the multiplicative depth satisfies
+`cardDistinctFactors d ≤ cardDistinctFactors P`. -/
+theorem cardDistinctFactors_le_of_dvd_squarefree {P d : ℕ} (hP : Squarefree P)
+    (hd : d ∈ P.divisors) :
+    cardDistinctFactors d ≤ cardDistinctFactors P := by
+  have hd_dvd : d ∣ P := Nat.dvd_of_mem_divisors hd
+  have hd_sq : Squarefree d := hP.squarefree_of_dvd hd_dvd
+  rw [(cardDistinctFactors_eq_cardFactors_iff_squarefree hd_sq.ne_zero).mpr hd_sq,
+    (cardDistinctFactors_eq_cardFactors_iff_squarefree hP.ne_zero).mpr hP]
+  rcases hd_dvd with ⟨q, rfl⟩
+  have hq0 : q ≠ 0 := right_ne_zero_of_mul hP.ne_zero
+  rw [ArithmeticFunction.cardFactors_mul hd_sq.ne_zero hq0]
+  exact Nat.le_add_right _ _
+
+/-- **Depth-Stratified Alternating Shell Decomposition (`sum_divisors_moebiusReal_eq_alternating_depth_shells`)**:
+For any squarefree integer `P` and any function `F : ℕ → ℝ`, the Möbius-weighted sum over
+`P.divisors` stratifies by exact multiplicative depth `k = ω(d) = cardDistinctFactors d` into an
+alternating sum over `0 ≤ k ≤ ω(P)` where every divisor in the depth-`k` shell carries the uniform
+sign `(-1)^k`:
+$$
+\sum_{d \in P.\text{divisors}} \mu(d)\,F(d) =
+  \sum_{k=0}^{\omega(P)} (-1)^k \sum_{\substack{d \in P.\text{divisors} \\ \omega(d) = k}} F(d).
+$$ -/
+theorem sum_divisors_moebiusReal_eq_alternating_depth_shells {P : ℕ} (hP : Squarefree P)
+    (F : ℕ → ℝ) :
+    (∑ d ∈ P.divisors, moebiusReal d * F d) =
+      ∑ k ∈ Finset.range (cardDistinctFactors P + 1),
+        (-1 : ℝ) ^ k *
+          ∑ d ∈ P.divisors.filter (fun d => cardDistinctFactors d = k), F d := by
+  have hmaps :
+      ∀ d ∈ P.divisors, cardDistinctFactors d ∈ Finset.range (cardDistinctFactors P + 1) := by
+    intro d hd
+    rw [Finset.mem_range, Nat.lt_succ_iff]
+    exact cardDistinctFactors_le_of_dvd_squarefree hP hd
+  rw [← Finset.sum_fiberwise_of_maps_to hmaps]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [Finset.mem_filter] at hd
+  have hdsq : Squarefree d := hP.squarefree_of_dvd (Nat.dvd_of_mem_divisors hd.1)
+  rw [moebiusReal_eq_neg_one_pow_cardDistinctFactors hdsq, hd.2]
+
+/-- **All-Depth Alternating Shell Singularity Cancellation (`all_depth_alternating_shell_singularity_cancellation`)**:
+When summed coherently across all multiplicative depths `0 ≤ k ≤ ω(P)` simultaneously, the
+alternating depth-shell Dirichlet polynomial cancels the Euler cube singularity factor
+`pmEulerCubeFactor ε P = ∏_{p ∣ P} p^{1+ε}/(p^{1+ε}-1)` to `1`:
+$$
+\operatorname{pmEulerCubeFactor}(\varepsilon, P)
+  \sum_{k=0}^{\omega(P)} (-1)^k
+    \sum_{\substack{d \in P.\text{divisors} \\ \omega(d) = k}} d^{-1-\varepsilon} = 1.
+$$ -/
+theorem all_depth_alternating_shell_singularity_cancellation {ε : ℝ} (hε : 0 < ε)
+    {P : ℕ} (hP : Squarefree P) :
+    pmEulerCubeFactor ε P *
+      (∑ k ∈ Finset.range (cardDistinctFactors P + 1),
+        (-1 : ℝ) ^ k *
+          ∑ d ∈ P.divisors.filter (fun d => cardDistinctFactors d = k),
+            (d : ℝ) ^ (-1 - ε)) = 1 := by
+  rw [← sum_divisors_moebiusReal_eq_alternating_depth_shells hP]
+  exact pmEulerCubeFactor_mul_dirichlet_moebius_sum_eq_one hε hP
+
+/-- **Cross-Depth (`ω(r) = k ↔ ω(pr) = k + 1`) Energy-Centered Operator Factorization**:
+Pairing a base modulus `r > 1` with its prime multiple `p * r` (`p ∤ r`) directly on the
+energy-centered primitive `pmRamanujanEnergyCenteredPrimitive` annihilates the depth-`(k+1)`
+von Mangoldt term (`Λ(pr) = 0`) and factors the oscillatory part into the Euler-shifted difference
+operator at base modulus `r`:
+$$
+Y_\varepsilon(r)\,S_r^{\text{ec}}(N) + Y_\varepsilon(pr)\,S_{pr}^{\text{ec}}(N) =
+  Y_\varepsilon(r)\,\Lambda(r) +
+  \frac{p^{1+\varepsilon}}{p^{1+\varepsilon} - 1}\,Y_\varepsilon(r)\,
+    \Bigl(\operatorname{Re} S_r(N) - p^{-\varepsilon}\,\operatorname{Re} S_r(\lfloor N / p \rfloor)\Bigr).
+$$ -/
+theorem cross_depth_pmRamanujanEnergyCenteredPrimitive_prime_pair_eq {ε : ℝ} (hε : 0 < ε)
+    {p r : ℕ} (hp : p.Prime) (hr : 1 < r) (hpr : ¬ p ∣ r) (N : ℕ) :
+    pmRealRamanujanWeight ε r * pmRamanujanEnergyCenteredPrimitive r N +
+      pmRealRamanujanWeight ε (p * r) * pmRamanujanEnergyCenteredPrimitive (p * r) N =
+    pmRealRamanujanWeight ε r * vonMangoldt r +
+      ((p : ℝ) ^ (1 + ε) / ((p : ℝ) ^ (1 + ε) - 1)) * pmRealRamanujanWeight ε r *
+        ((pmRamanujanPrimitive r N).re -
+          (p : ℝ) ^ (-ε) * (pmRamanujanPrimitive r (N / p)).re) := by
+  have hΛ : vonMangoldt (p * r) = 0 :=
+    vonMangoldt_mul_eq_zero_of_coprime (hp.coprime_iff_not_dvd.mpr hpr) hp.one_lt hr
+  have hprim := cross_depth_pmRamanujanPrimitive_prime_pair_eq hε hp hpr N
+  unfold pmRamanujanEnergyCenteredPrimitive
+  rw [hΛ, add_zero]
+  linarith
+
+/-- **All-Depth Coherent Energy-Centered Operator Factorization (`all_depth_coherent_pmRamanujanEnergyCenteredPrimitive_eq`)**:
+For any `ε > 0`, any squarefree `P`, and any base modulus `r > 1` coprime to `P`, summing the
+energy-centered operator `pmRamanujanEnergyCenteredPrimitive (m * r) N` across all `2^{ω(P)}`
+divisors `m ∣ P` annihilates `Λ(m * r)` at every positive depth `ω(m) ≥ 1` (`m > 1`), isolating the
+single base von Mangoldt term `Y_ε(r) Λ(r)` at `m = 1` and factoring the oscillatory sum across all
+multiplicative depths `0 ≤ k ≤ ω(P)` into the alternating depth-shell Dirichlet difference operator:
+$$
+\begin{aligned}
+\sum_{m \in P.\text{divisors}} Y_\varepsilon(mr)\,S_{mr}^{\text{ec}}(N)
+&= Y_\varepsilon(r)\,\Lambda(r) +
+  \operatorname{pmEulerCubeFactor}(\varepsilon, P)\,Y_\varepsilon(r) \\
+&\quad \times \sum_{k=0}^{\omega(P)} (-1)^k
+  \sum_{\substack{d \in P.\text{divisors} \\ \omega(d) = k}}
+    d^{-\varepsilon}\,\operatorname{Re} S_r\bigl(\lfloor N / d \rfloor\bigr).
+\end{aligned}
+$$ -/
+theorem all_depth_coherent_pmRamanujanEnergyCenteredPrimitive_eq {ε : ℝ} (hε : 0 < ε)
+    {P r : ℕ} (hP : Squarefree P) (hr : 1 < r) (hPr : Nat.Coprime P r) (N : ℕ) :
+    (∑ m ∈ P.divisors,
+        pmRealRamanujanWeight ε (m * r) * pmRamanujanEnergyCenteredPrimitive (m * r) N) =
+      pmRealRamanujanWeight ε r * vonMangoldt r +
+        pmEulerCubeFactor ε P * pmRealRamanujanWeight ε r *
+          ∑ k ∈ Finset.range (cardDistinctFactors P + 1),
+            (-1 : ℝ) ^ k *
+              ∑ d ∈ P.divisors.filter (fun d => cardDistinctFactors d = k),
+                (d : ℝ) ^ (-ε) * (pmRamanujanPrimitive r (N / d)).re := by
+  have hec_split :
+      (∑ m ∈ P.divisors,
+          pmRealRamanujanWeight ε (m * r) * pmRamanujanEnergyCenteredPrimitive (m * r) N) =
+        (∑ m ∈ P.divisors,
+          pmRealRamanujanWeight ε (m * r) * (pmRamanujanPrimitive (m * r) N).re) +
+        (∑ m ∈ P.divisors,
+          pmRealRamanujanWeight ε (m * r) * vonMangoldt (m * r)) := by
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    unfold pmRamanujanEnergyCenteredPrimitive
+    ring
+  have hΛ_sum :
+      (∑ m ∈ P.divisors, pmRealRamanujanWeight ε (m * r) * vonMangoldt (m * r)) =
+        pmRealRamanujanWeight ε r * vonMangoldt r := by
+    have h1 : 1 ∈ P.divisors := Nat.one_mem_divisors.mpr hP.ne_zero
+    rw [← Finset.add_sum_erase _ _ h1, one_mul]
+    suffices hzero :
+        ∑ m ∈ P.divisors.erase 1, pmRealRamanujanWeight ε (m * r) * vonMangoldt (m * r) = 0 by
+      rw [hzero, add_zero]
+    refine Finset.sum_eq_zero fun m hm => ?_
+    rw [Finset.mem_erase] at hm
+    have hm_pos : 0 < m := Nat.pos_of_mem_divisors hm.2
+    have hm_gt : 1 < m := Nat.lt_of_le_of_ne hm_pos (Ne.symm hm.1)
+    have hcop_mr : Nat.Coprime m r := hPr.coprime_dvd_left (Nat.dvd_of_mem_divisors hm.2)
+    rw [vonMangoldt_mul_eq_zero_of_coprime hcop_mr hm_gt hr, mul_zero]
+  have hprim := all_depth_coherent_pmRamanujanPrimitive_eq hε hP hPr N
+  have hshell :=
+    sum_divisors_moebiusReal_eq_alternating_depth_shells hP
+      (fun d => (d : ℝ) ^ (-ε) * (pmRamanujanPrimitive r (N / d)).re)
+  have hprim' :
+      (∑ m ∈ P.divisors,
+          pmRealRamanujanWeight ε (m * r) * (pmRamanujanPrimitive (m * r) N).re) =
+        pmEulerCubeFactor ε P * pmRealRamanujanWeight ε r *
+          ∑ k ∈ Finset.range (cardDistinctFactors P + 1),
+            (-1 : ℝ) ^ k *
+              ∑ d ∈ P.divisors.filter (fun d => cardDistinctFactors d = k),
+                (d : ℝ) ^ (-ε) * (pmRamanujanPrimitive r (N / d)).re := by
+    rw [hprim, ← hshell]
+    congr 1
+    refine Finset.sum_congr rfl fun d _ => ?_
+    ring
+  linarith
+
 end GaloisForLFunctions.BezoutValuationIncidence
+
