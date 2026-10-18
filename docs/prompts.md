@@ -256,11 +256,13 @@ Act like a scientist. Always ask what a scientist would do in your situation.
 
 ##  create new knowledge - one new fact
 
-read fully and understand: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
-
+read fully and understand especially the traps: 
+1. formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+2. formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+   
 On every new turn:
 
-make one significant contribution to our BiScaleUncertainty framework and one or more proof routes from docs/reports/rh-current-frontier-map.md. it must overcome a hard obstacle and remove an obstruction or prop interface or hypothesis which significantly moves the frontier in the proof route and cleary moves us closer to finalizing the formal rh proof. be biased towards producers, but not exclusively.
+make one significant contribution to our BiScaleUncertainty and/or BezoutValuationIncidence framework and one or more proof routes from docs/reports/rh-current-frontier-map.md. it must overcome a hard obstacle and remove an obstruction or prop interface or hypothesis which significantly moves the frontier in the RH proof route and cleary moves us closer to finalizing the formal rh proof. be biased towards producers, but not exclusively.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -279,7 +281,7 @@ always look at the big picture, try to understand what all our research is tryin
 
 do not use websearch, do not check for novelty, do not read old markdown files. read our lean corpus, use the whole lean corpus for leads and ideas, use the search tool for our lean corpus and go from what the lean corpus tells you. 
 
-docs/reports/rh-current-frontier-map.md and formal/GaloisForLFunctions/BiScaleUncertainty/README.md are read only for you
+docs/reports/rh-current-frontier-map.md and formal/GaloisForLFunctions/BiScaleUncertainty/README.md and formal/GaloisForLFunctions/BezoutValuationIncidence/README.md are read only for you
 
 goal is met when RH is proven unconditionally in lean.
 
@@ -477,7 +479,7 @@ On every new turn:
 make one significant contribution to your research topic. a contribution is significant if it does at least one of the following:
 - overcomes a mathematical obstacle in the field
 - delivers new valuable insights into the nature of the field
-- develops a mathematical tool that helps to overcome a significant mathematical obstacle in our hard "walls" docs/reports/walls-ledger.md
+- develops a mathematical tool that helps to overcome a significant mathematical obstacle in other parts of our lean corpus
 - delivers a new proven fact that answers questions arising from the nature of the field and its underlying motivation
 - broadens or sharpens the mathematical toolset of the field to be able to answer new questions, provide solutions otherwise not possible, or even ask new questions
 - closes gaps to turn the field as whole into a true new field of mathematics by established standards in the mathematical community
@@ -512,12 +514,14 @@ Your topic of research:
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
-
+do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing two new fields of mathematics. read fully line by line and understand the motivation and context of the fields including traps to avoid: 
+1. formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+2. formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+ 
 on every turn:
 
 pick one wall except wall 1 from docs/reports/walls-ledger.md
-then make significant contributions to develop and advance the BiScaleUncertainty field of mathematics that it can provide the mathematical tools needed to fully destroy, shatter, and overcome the wall you have picked 
+then make significant contributions to develop and advance the BiScaleUncertainty and/or BezoutValuationIncidence field of mathematics that it/they can provide the mathematical tools needed to fully destroy, shatter, and overcome the wall you have picked 
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -537,9 +541,9 @@ always look at the big picture, try to understand what all our research is tryin
 
 use the search tool for our lean corpus, not just rg or grep.
 
-formal/GaloisForLFunctions/BiScaleUncertainty/README.md and the wall-ledger are read-only for you.
+formal/GaloisForLFunctions/BiScaleUncertainty/README.md and formal/GaloisForLFunctions/BezoutValuationIncidence/README.md and the wall-ledger are read-only for you.
 
-the goal is met when all walls 2 to 15 are demolished and no longer a mathematical obstacle.
+the goal is met when all walls are demolished and no longer a mathematical obstacle.
 
 
 ## 6. Canonical Open Problems & Guide for Future Research Agents
@@ -579,3 +583,30 @@ around the following four canonical frontier problems while respecting the Seven
    Krein–Kantorovich collar transport (penalized by $w_{\mathrm{arch}}(y)^{-1} = e^{-y/2}\sinh y \le y e^{y/2}$)
    with global Stieltjes integration by parts against the Chebyshev prime-counting error
    $\psi(e^x) - e^x$.
+
+
+## Open obstacles
+
+Our project is about finding and formalizing in lean an unconditional, premise-free proof of the Riemann Hypothesis.
+
+Documents:
+1. A list of all our active research routes and proof candidates: docs/reports/rh-current-frontier-map.md
+2. A list of all "walls", the hard problems we have failed to overcome: docs/reports/walls-ledger.md
+
+We made some new progress by developing new mathematical frameworks / fields:
+1. formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+2. formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+
+Problem: We still have not overcome any of the walls and found a solution for the final RH proof.
+
+Your task:
+1. Carefully review the documents.
+2. Use the search tool for our lean corpus to investigate details, and things our documents may have missed, and get a clear idea of the hard obstacles that block us from removing a wall or close a RH proof route. Understand why we failed so far to overcome these obstacles.
+3. Create a report in docs/reports/hard-obstacles-1810.md and for every wall and every proof route or candidate list the hard obstacles that we need to overcome to remove all blockers to reach the final RH proof.
+
+Split between: Obstacles that are solvable and "just work" and obstacles for which neither our lean corpus nor mathematics as a whole has a solution yet.
+
+After that create a new document docs/reports/hard-obstacles-summary-1810.md that groups in two sections:
+1. Obstacles we can solve and are just work.
+2. Obstacles that require new mathematics nobody has yet and describe what this new mathematic must deliver.
+3. Try to sum together the new mathematics into a description of a new field of mathematics that combines all the requirements for the single obstacles and explain what this field of mathematics need to deliver and be like that it would provide all mathematical tools to overcome the so far unsolvable obstacles.

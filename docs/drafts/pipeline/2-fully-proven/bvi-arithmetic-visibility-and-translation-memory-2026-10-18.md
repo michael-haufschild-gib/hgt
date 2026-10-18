@@ -38,7 +38,7 @@ shift before committing. No externally averaged family or asymptotic assertion.
 
 1. [x] Inspect every returned search section and relevant current sources.
 2. [x] Close a dependency-complete paper result and novelty/significance audit.
-3. [ ] Probe installed APIs; formalize the exact unconditional result.
+3. [x] Probe installed APIs; formalize the exact unconditional result.
 4. [ ] Original-source checks, every public axiom closure, wiring, complete index
    audit, lint, artifact installation, ledger/memory, cleanup; only then count011.
 
@@ -138,6 +138,9 @@ Define `K_h c` by the existing finite multiples inverse of `lambda(q,h)Y_c(q)`.
 All helpers' positivity/divisibility premises follow from active index
 membership or are discharged by the explicit zero cases. Finite schedules,
 signals and lags are unrestricted. No asymptotic or numerical input.
+Recovery reconstructs source coefficients from compressed observations; the
+shifted signal can still have nonzero optimal prediction error. No noise or
+uniform conditioning estimate is part of the claim.
 
 ## Significance decision
 
@@ -171,3 +174,12 @@ contract above parity, and its remaining section compares reserve and phase
 loss. It does not identify powers with true shifts or classify their recovery
 times. Preserve that work and keep the present contribution centered on actual
 translation, valuation visibility and observation schedules.
+
+The combined development check now passes with empty diagnostics. All four
+original named sources then passed separate `lake --old env lean --root=... -o
+... <original-source.lean>` checks with empty diagnostics, one owned Lean process
+at a time. Every public declaration, including definitions, passed its `/tmp`
+`#print axioms` audit:38 reports, exactly `propext`, `Classical.choice`, `Quot.sound`.
+Additional installed-API probes passed in the same terminal exit0 audit. The
+four verified artifacts were installed atomically; umbrella imports added.
+Index/lint audit and cleanup remain before counting completion.

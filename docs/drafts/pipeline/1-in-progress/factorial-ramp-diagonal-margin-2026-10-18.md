@@ -151,4 +151,14 @@ The [actual tail primitive card](../3-formalized/factorial-muntz-tail-primitive-
 
 and absolutely integrable weighted primitive mass at most `C/N^3`, where `C=32*(360*exp(1))^2*pi` is independent of `n,k`. The proof uses the exact dyadic lattice remainder, a bounded Bernoulli primitive, and integration by parts retaining the endpoint at zero. Together with the [exact phase-cell source mass](../3-formalized/factorial-muntz-tail-phase-mass-2026-10-18.md), it gives primitive mass at most `(512*C/N^2)` times physical squared mass, eventually in smoothing index for each fixed `n`. Four leaves and all 29 public declarations passed direct Lean/API/axiom checks with only standard axioms.
 
-This discharges actual low-frequency suppression and relative primitive smallness. The existing compact-source logarithmic mass-ratio theorem still needs a justified domain bridge to these noncompact tails; the original ramp's mixed terms and sufficient diagonal margin above remain unproved. The parent stays in progress, and all-source RW/RH remain open.
+This discharges actual low-frequency suppression and relative primitive smallness. The noncompact domain bridge and logarithmic tail growth are now supplied by the formalized child below. The original ramp's mixed terms and sufficient diagonal margin above remain unproved. The parent stays in progress, and all-source RW/RH remain open.
+
+## Verified actual tail logarithmic Weil growth
+
+The [actual tail archimedean-growth card](../3-formalized/factorial-muntz-tail-archimedean-growth-2026-10-18.md) proves noncompact Parseval and gamma-weighted integrability, then integrates the scalar quarter estimate at `b=log(N)/2`. For actual smoothed correction tails and `N=n+1`, it gives
+
+`Re(W(U_(n,k),U_(n,k))) >= (log(N)/2-D)*integral U_(n,k)^2`
+
+eventually in `k` for each `n`, with explicit fixed `D`. Consequently every fixed multiple of tail mass is eventually dominated, and `Re(W(U,U)) >= log(N)/(2048*N) > 0` eventually in `n` and then `k`. Three leaves and all 17 public declarations (14 theorems, three definitions) passed direct Lean/API/axiom checks with only standard axioms. Imports and generated index are complete; the child records unrelated concurrent umbrella-reachability failures from the global lint run.
+
+The smoothing threshold may depend on `n`. Tail positivity alone supplies no mixed-term estimate for the indefinite Weil form, so the original coupled ramp margin remains open. The user cleared the RH goal and requested completion of started work only; this handoff does not authorize automatic continuation of the parent research task.

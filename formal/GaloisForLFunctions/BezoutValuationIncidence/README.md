@@ -383,6 +383,16 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
   sub-horizon closed forms `activeCenteredSawtoothSum N c_ε (n + 1) n = -(1 / 2) * (τ_ε(n + 1) - τ_{1+ε}(n + 1))`
   and `inactiveCenteredSawtoothSum N c_ε (n + 1) (n + 1) - inactiveCenteredSawtoothSum N c_ε (n + 1) n = τ_{1+ε}(n + 1) - selbergMultiplesCoord N c_ε 1`,
   and Euler totient ratio evaluations at exponent `1` (`pmPowerDampedDivisorCoeff_one_four_and_six`).
+- [`ActiveDeletedMartingaleAndShiftedEulerConvergence.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ActiveDeletedMartingaleAndShiftedEulerConvergence.lean) —
+  **Pillar XIX (Active-Deleted Martingale & Shifted-Exponent Euler Convergence):** Active-martingale
+  diagonal reduction `active_diagonal_reduction`, the Active-Deleted Martingale Identity
+  `weightedCenteredSawtoothSum_succ_sq_sub_sq_eq_shifted_diagonal_add_inactive_martingale` and its
+  Pronic Abel summation form `sum_weightedCenteredSawtoothSum_sq_div_pronicSeq_add_terminal_eq_active_deleted`,
+  shifted-exponent totient dominance `pmPowerDampedDivisorCoeff_le_add_one` and divisor-sum
+  representation `pmPowerDampedDivisorCoeff_mul_add_one`, one-`$p$-th` suppression of the
+  shifted-exponent local Euler factor gap `pmShiftedExponentFactor_gap_eq_div_p`
+  (`((p : ℝ)^{-ε})² (p - 1) / p³`), and uniform $O(1/p^2)$ convergence of
+  `pmShiftedExponentPrimeDeficit` (`tendsto_tsum_pmShiftedExponentPrimeDeficit`).
 - [`RenormalizedMobiusDefectAndFirstOctaveCancellation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/RenormalizedMobiusDefectAndFirstOctaveCancellation.lean) —
   **Pillar XIX:** Universal renormalized prefix defect `sieveRenormalizedPrefixDefect N M c = sieveCombinedPrefixDefect N M c - M * sieveSuccessorReserve N c`,
   its exact source-space evaluation `sieveRenormalizedPrefixDefect_eq_succ_sub_sq`, Dirichlet
