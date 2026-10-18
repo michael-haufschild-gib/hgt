@@ -81,3 +81,23 @@ The existing `selbergMobiusCoeff N m` is supported on `1 ≤ m ≤ N`, has absol
 `∃ C : ℝ, ∀ N ≥ 2, ∀ y ≥ 0, |Σ_{m=1}^N selbergMobiusCoeff N m * mobiusFold y (log m)| ≤ C`.
 
 Fixed-rapidity absolute summability makes pointwise passage to the complete fold available. The missing work is the bound itself. Uniform approximation is neither needed nor compatible with the proposed atom classification. Existing Selberg total-energy estimates retain a growing diagonal/remainder; bounded coefficients alone do not pay them. Do not formalize the easy pointwise-limit receiver as an arithmetic advance. First attack the actual signed spectral density or source pairing of these already-defined rows, with pole and all-scale tail retained.
+
+## Existing one-sided source target recovered across routes
+
+The corpus already contains a sharper sufficient signed comparison than an absolute bound on the neutral quadratic work. `ChebyshevDeficitPrimitiveOneSidedRH.lean` proves RH from either envelope `±D(T) ≤ B(1+T) exp(T/2)` for every `T ≥ 0`. The TG audit in `tg-native-covariance-transfer-2026-10-15.md` already checked its application to the short work and the neutral decomposition in Lean. This is recovered existing work, not a new receiver to formalize.
+
+For the literal neutral coefficient vector, retain the exact `D(T) = L(T) - Q(T)`. The sufficient arithmetic comparison is
+
+`∃ B : ℝ, ∀ T ≥ 0, Q(T) ≥ L(T) - B(1+T) exp(T/2)`
+
+(or `Q(T) ≤ L(T) + B(1+T) exp(T/2)`). It includes every unequal-label term and retains the actual linear work. Its existing quadratic-polynomial envelope cannot be silently replaced by a linear envelope. The comparison remains unproved.
+
+The same prior audit records why coefficient-tail redesign and an assumed variational minimum do not pay this comparison. The head-extension action is stationary, but its complete Hessian is signed. Paid linear and diagonal channels do not control the complete quadratic form. Preserve those prior failures when attacking this specific source estimate.
+
+## Applicability attack: terminal cancellation versus all-scale transfer
+
+Candidate mechanism: use the exact child-cofactor cancellations from the Euler-deletion route to control the complete wave. The corpus already proves terminal composite-level vanishing and a high-clock leakage bound `N²/(clock(l)+1)` for arbitrary coefficients of absolute value at most one. Neither fact alone estimates the earlier simultaneous signed tails.
+
+A stronger indexing check is required before using any terminal child theorem: `historyLayer_predictableDrift_eq_reverse_tail` sums only over `l < i < N`. At `N=l+1`, this is empty, so the entire terminal drift layer vanishes at every level, including prime levels. Paper proof: apply the existing reverse-tail identity and use the empty index condition. A scratch Lean applicability audit is running; this is a consequence of existing work, not a new arithmetic cancellation theorem.
+
+The nonempty target must retain `N > l+1`. For the separate geometric-checkpoint attempt, clock energy only samples cofactors disjoint from the processed core. The existing terminal classification `mobiusDivisorFiniteClockEnergy_terminal` leaves the current head square and omitted-prime singleton squares. Old processed cofactors are absent, so those coordinates cannot directly recover earlier completed cutoffs.

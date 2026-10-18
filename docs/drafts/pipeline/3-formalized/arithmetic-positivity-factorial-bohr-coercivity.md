@@ -1,8 +1,8 @@
 # Bohr coercivity of the actual factorial correction phases
 
 - **ID:** APT-ROOT-BOHR
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean certificate required)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Foundational programme](../../../reports/arithmetic-positivity-theory/research-foundational.md), APT-06–07.
 - **Audit verdict:** BRIDGE. The proof combines the corpus's exact factorial phase with classical Bernoulli Fourier series and elementary Hilbert-space estimates. Novelty is not established.
 
@@ -155,4 +155,19 @@ Bohr averaging assigns persistent weight to arbitrarily distant phase intervals;
 
 The [finite-window coercivity proof](arithmetic-positivity-factorial-window-coercivity.md) supplies a separate paper theorem for this transport to physical square mass. The collar bounds separate the four signed first-harmonic frequency families uniformly; Montgomery–Vaughan estimates and the dominant first harmonic then give a fixed-window lower bound and a weighted physical Riesz estimate. That argument needs more than irrationality, and it still gives no signed Weil-energy estimate. Transport to logarithmic energy and control of prime and polar terms remain separate obligations. Related Gram-matrix analysis is established in [Alouges–Darses–Hillion](https://arxiv.org/abs/2006.02953) and [Werner Ehm, *On certain Gram matrices and their associated series*](https://arxiv.org/abs/2405.06349).
 
-The exact theorem (3), its source dictionary, and linear independence are certified in [FactorialCollarIrrationalityAndSpacing.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCollarIrrationalityAndSpacing.lean), [GeneralDivisorBernoulliFilterClassification.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/GeneralDivisorBernoulliFilterClassification.lean), and [DyadicBernoulliFilterAndBohrCoercivity.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/DyadicBernoulliFilterAndBohrCoercivity.lean) under the arithmetic positivity umbrella.
+## Lean certificate
+
+All statements are unconditional and depend only on `propext`, `Classical.choice`, `Quot.sound`. Indexing: `B_b = ∑_{n ∈ S} b_n Φ_{n+1}` (`factorialPhaseCombination S b`).
+
+- Source dictionary (1)–(2): `factorialPhaseProfile_eq_tailRemainder`, `factorialMuntzCorrectedTail_eq_factorialPhaseProfile` ([GeneralDivisorBernoulliFilterClassification.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/GeneralDivisorBernoulliFilterClassification.lean)).
+- Arithmetic separation (4)–(7): `four_mul_factorialShiftedFreq_cube`, `irrational_factorialShiftedFreq`, `mul_factorialShiftedFreq_eq_iff`, `factorialCollarShift_bounds`, `mul_factorialShiftedFreq_sub_dilation_ge` ([FactorialCollarIrrationalityAndSpacing.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCollarIrrationalityAndSpacing.lean)).
+- Harmonic filter (8)–(9): `dyadicCenteredBernoulliFilter_hasSum`, `factorialPhaseCombination_hasSum`, `tsum_abs_dyadicHarmonicWeight_tail_le` ([FactorialPhaseHarmonicLayers.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialPhaseHarmonicLayers.lean)).
+- [FactorialPhaseBohrCoercivityAndTailIndependence.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialPhaseBohrCoercivityAndTailIndependence.lean):
+  - existence of the Bohr mean: `exists_tendsto_bohrMeanSq_factorialPhaseCombination`, via the corpus almost-periodic API (`isBohrAlmostPeriodic_of_periodic`, `isBohrAlmostPeriodic_sum`, `isBohrAlmostPeriodic_norm`, `isBohrAlmostPeriodic_mul`, `exists_tendsto_windowAverage`) applied to the continuous periodic filters `v ↦ P(cv)`;
+  - (3): `factorialPhaseCombination_bohr_coercivity` — the limit exists and is `≥ (1/(8π⁴)) ∑ ‖b_n‖²`;
+  - linear independence: `linearIndependent_factorialMuntzCorrectedTail` (`LinearIndependent ℂ` of the literal tails).
+
+**Proof route in Lean.** The Lean proof of (3) does not separate the shifted and integer families. On each window `[0, L]`, every harmonic layer `H_k` is a four-branch exponential sum with gap `k/15`, so Montgomery–Vaughan gives `(L ∓ K)∑‖b_n‖²` for the layer energies. First-harmonic dominance with `θ = 3/4` then gives `(π⁴/4)∫_0^L ‖B_b‖² ≥ (L/16 - 7K/16)∑‖b_n‖²` (`factorialPhaseCombination_initial_window_lower`). Dividing by `L` yields the Bohr-mean bound `∑‖b_n‖²/(4π⁴)`, which is stronger than (3). The argument uses the collar bounds (6) but not irrationality. The orthogonal-separation argument above stays a valid paper proof; its separate ingredients (irrationality, vanishing mixed exponential means `tendsto_bohr_mean_shifted_unshifted_zero`) are also in Lean.
+
+## Log
+- 2026-10-18 — moved 2-fully-proven → 3-formalized after the unconditional Lean certificate above.

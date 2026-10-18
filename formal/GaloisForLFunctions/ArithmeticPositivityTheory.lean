@@ -25,6 +25,7 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothi
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampFullWeilSmoothingLimit
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseHarmonicLayers
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseWindowAndPhysicalRieszBounds
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseBohrCoercivityAndTailIndependence
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,

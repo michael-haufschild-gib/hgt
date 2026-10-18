@@ -425,3 +425,74 @@ The research goal remains active.
 
 Final lint retry followed concurrent repair of the NaturalCutoff umbrella import. It still exits 1 with: error: research leaf module at package root: TransHorizonIncidenceMechanics.lean; move it into an owned theorem area
 Log: `logs/bvi-dilation-successor-lint-final.txt`. This remains outside the edited source set. No owned Lean/check/search process remains running at this checkpoint.
+
+
+### C7 strengthened: least-successor resonance at arbitrary high scales
+
+Previous goal turn: PROGRESS. C6 changed authoritative source state and completed
+original-source and axiom checks; it did not close the endless research goal.
+Current attachment and worktree rechecked. The adjacent-scale candidate alone
+is too narrow for the requested arbitrary large prime pairs. Retain it as a
+corollary; prioritize the following all-scale statement.
+
+Current corpus audit: lexical `successor seed` returned four existing C4-C5
+interfaces; exact `norm_cglRamanujanAdditiveSum_le_totient` returned the existing
+Sieve bound. Deep query describing isolation of the least positive Bezout
+solution in the dilation sector returned all 20 candidate lemmas and all 20
+source arguments; these were inspected. It reported `partial=true`, unfinished
+reranking. Relevant dependencies are the already verified exact period-block
+sector identity, gcd exclusion, finite profile coupling, and the CGL totient
+bound. No novelty conclusion is inferred from missing hits. Latest related
+memories also caution against replacing actual signed rows or natural cutoff
+order by a generic covariance bound. C7 preserves the entire signed complement.
+
+Dependency-closed paper argument:
+1. Let r>=1 and p,q>1 be coprime. Existing seed existence gives unique least
+   positive (a,b), with 1<=a<=q, b>=1, pa=qb+1. Existing parametrization gives
+   every positive solution (a+qt,b+pt). Set M=phi(r)^2,
+   A_t=c_r(a+qt)c_r(b+pt), H=rpq.
+2. Existing complete-period sector identity at one block gives
+   `p*S_1(H)=sum_{t<r} A_t/(a+qt)-p*sum_{t<r} A_t/(H+1)`.
+   Existing CGL bound gives abs(A_t)<=M.
+3. Isolate t=0. For t>=1, a+qt>=q; the r-1 remaining terms cost at most
+   `(r-1)*M/q`. The full boundary costs at most
+   `p*r*M/(rpq+1)<=M/q`. Therefore
+   `abs(p*S_1(rpq)-c_r(a)c_r(b)/a)<=r*phi(r)^2/q`.
+4. Choose the existing unique bounded seed intrinsically; set its resonance
+   to zero when p,q are not coprime. Existing gcd exclusion makes S_1 zero
+   in that case too. Thus the same bound is unconditional for all p,q>1.
+   The no-hypothesis capstone uses p=n+2,q=m+2,r=k+2, so it includes all
+   sufficiently large prime pairs, rather than assuming a prime-gap theorem.
+5. Multiply by sqrt(q)/sqrt(p). The actual profile normalization satisfies
+   `abs(sqrt(p)*sqrt(q)*S_1(rpq) - sqrt(q)/sqrt(p)*resonance)
+    <= r*phi(r)^2/(sqrt(p)*sqrt(q))`.
+6. Combine with the existing finite-lag profile error, keeping every other lag
+   signed and at the same physical horizon H=rpq. Replacing only the successor
+   term by this intrinsic least-seed resonance adds the above error to
+   `sqrt(p)*sqrt(q)*B_r^2/(H+1)`. This is the intended direct arithmetic
+   refinement of the original dilation profile, with explicit high-scale error.
+
+Plan: verify existing bound/API names and prove seed-isolation estimate;
+package intrinsic seed and actual normalized profile capstone; audit original
+source/all public axioms, wire umbrella, refresh index and run lint. Do not
+claim signed coercivity or a bound for an entire unmodified prime packet.
+
+
+C7 implementation checkpoint: initial scratch compiled the existing totient
+bound bridge and the exact scaled one-block identity. The only failure in the
+seed-isolation estimate was using the three-point `abs_sub_le` lemma with two
+arguments; replaced by the already verified `abs_add_le` applied to a negative.
+Current scratch `/tmp/bvi-c7-least-seed-draft.lean` additionally contains intrinsic
+seed selection (using existing CRT existence), the noncoprime-zero branch,
+actual sqrt-normalized estimate, full-profile signed-complement coupling, and
+an unconditional uniform capstone at p=k+n+2,q=k+m+2,r=R+2.
+The uniform error is `(B_r^2/r+r*phi(r)^2)/(k+2)`.
+This is still scratch, not claimed verified. Current owned Lean process:
+exec session 56039, `lake --old env lean -j 1 /tmp/bvi-c7-least-seed-draft.lean`,
+log `/tmp/bvi-c7-least-seed-draft.log`. Await terminal before any other Lean run.
+Merged snippets remain `/tmp/bvi-c7-intrinsic-snippet.lean` and
+`/tmp/bvi-c7-uniform-snippet.lean`. The successful prototype APIs include the
+CGL totient bound and Finset erase/card identities. On promotion, narrow the
+scratch import from DilationSuccessorDigammaRenormalization to
+DilationSuccessorSectorHarmonicClassification: C7 uses the finite sector
+formula, not C6's digamma analysis. Verify that narrowed original source.

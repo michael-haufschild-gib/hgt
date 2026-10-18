@@ -249,7 +249,7 @@ For **every** finite set $S : \operatorname{Finset} \mathbb{N}$ of prime powers 
 large $S$ is), the sum of `vonMangoldtAtom d * supportTruncatedCollarArchRatio R δ L d` over $S$ is
 bounded above by the fixed constant `supportArchBudget R δ L`. -/
 theorem sum_supportTruncatedCollarArchRatio_le_supportArchBudget
-    {R δ L : ℝ} (hδ : 0 < δ) (hL : 0 < L) (S : Finset ℕ) :
+    (R : ℝ) {δ L : ℝ} (hδ : 0 < δ) (hL : 0 < L) (S : Finset ℕ) :
     (∑ d ∈ S, vonMangoldtAtom d * supportTruncatedCollarArchRatio R δ L d) ≤
       supportArchBudget R δ L := by
   unfold supportArchBudget
@@ -261,7 +261,7 @@ theorem sum_supportTruncatedCollarArchRatio_le_supportArchBudget
     rw [Finset.mem_filter, not_and] at hnot
     have hdN : N ≤ d := not_lt.mp (hnot hdS)
     have hfloor_lt : ⌊Real.exp (2 * R)⌋₊ < d := Nat.lt_of_succ_le hdN
-    have hexp_le : Real.exp (2 * R) ≤ (d : ℝ) := (Nat.floor_lt (Real.exp_pos _).le).mp hfloor_lt
+    have hexp_le : Real.exp (2 * R) ≤ (d : ℝ) := ((Nat.floor_lt (Real.exp_pos _).le).mp hfloor_lt).le
     have hlog_ge : 2 * R ≤ Real.log (d : ℝ) := by
       rw [← Real.log_exp (2 * R)]
       exact Real.log_le_log (Real.exp_pos _) hexp_le
@@ -327,8 +327,10 @@ theorem vonMangoldt_fullLine_add_supportTruncated_ge_two_tail
   split_ifs with hlt
   · have hd_low : 3 * Real.log d / 2 + δ + L ≤ a := by linarith
     have h := sum_vonMangoldt_fullLine_add_global_absorbedArchSlice_ge_two_tail_unweighted
-      hδ hL hδL {d} (fun k hk => by rw [Finset.mem_singleton.mp hk]; exact hd_low) hw hwc heven
-    simpa [mul_assoc] using h
+      (a := a) hδ hL hδL {d} (fun k hk => by rw [Finset.mem_singleton.mp hk]; exact hd_low)
+      hw hwc heven
+    simp only [Finset.sum_singleton] at h
+    linarith
   · have hge : 2 * R ≤ Real.log d := not_lt.mp hlt
     have ha_pos : 0 < a := by linarith
     have hmid := integral_oddProfileShiftJump_ge_two_tail_of_support_radius
@@ -366,7 +368,7 @@ theorem sum_vonMangoldt_oddProfileCollarDiffSq_le_two_Ioi_add_supportArchBudget
     have h := vonMangoldt_oddProfileCollarDiffSq_le_two_Ioi_add_supportTruncated
       hR hδ hL hδL haR (hS d hd) hw hwc hsupp
     linarith
-  have hbudget := sum_supportTruncatedCollarArchRatio_le_supportArchBudget hδ hL S
+  have hbudget := sum_supportTruncatedCollarArchRatio_le_supportArchBudget R hδ hL S
   have hint_nonneg : 0 ≤ ∫ y in Ioo (0 : ℝ) a, absorbedArchSlice a w δ a y :=
     setIntegral_nonneg measurableSet_Ioo fun y hy => absorbedArchSlice_nonneg ha_pos hδ hy.1 w
   exact hstep1.trans (add_le_add le_rfl (mul_le_mul_of_nonneg_right hbudget hint_nonneg))
@@ -478,7 +480,7 @@ theorem sum_vonMangoldt_fullLine_add_continuum_absorbedArch_ge_two_tail
     have h := vonMangoldt_fullLine_add_supportTruncated_ge_two_tail
       hR hδ hL hδL haR (hS d hd) hw hwc heven hsupp
     linarith
-  have hbudget := sum_supportTruncatedCollarArchRatio_le_supportArchBudget hδ hL S
+  have hbudget := sum_supportTruncatedCollarArchRatio_le_supportArchBudget R hδ hL S
   have hint_nonneg : 0 ≤ ∫ y in Ioo (0 : ℝ) a, absorbedArchSlice a w δ a y :=
     setIntegral_nonneg measurableSet_Ioo fun y hy => absorbedArchSlice_nonneg ha_pos hδ hy.1 w
   have hstep2 :

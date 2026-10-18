@@ -143,6 +143,11 @@ Further exact reuse found during reconciliation:
   and collapses centering across a prime-cofactor head to its single prime term.
   These source-inspected results are not new obligations for this card; their
   author's original-source audit was still running when inspected.
+- `RoutePMCofactorSieveBridgeAndUnifiedEnergyEquivalence.lean` already identifies
+  the literal cofactor weight with the Ramanujan residue inverse and the pronic
+  Gram with the physical discrepancy energy. Its synthesis theorem packages
+  these exact identifications; its admission criteria take a uniform energy
+  budget as a premise. Those criteria do not provide the missing budget.
 
 Second reuse audit (seven declarations, including the two analytic estimates,
 spectral sieve, birth-delayed bounds, and depth-shell identities):
@@ -167,7 +172,7 @@ carrier and was rejected. Complete-period covariance diagonalization likewise
 does not transfer to a pronic weight without an identity. Coverage: 74,185 files
 inventoried, `partial=true` because reranking timed out, background refresh
 incomplete, semantic coverage unmeasured, and returned signatures source-only.
-Raw record: `/tmp/bvi-profile-gap-reuse-search.json`. No absence or novelty claim
+Raw record: `bvi-profile-gap-reuse-search.json` in the C9 scratch archive below. No absence or novelty claim
 is inferred from this search.
 
 ## Conjecture log
@@ -375,9 +380,37 @@ also identifies the intervals, but its two terms grow linearly. Their
 individual infinite pronic energies diverge. Any decomposition using it
 must retain compensation before taking infinite sums.
 
+### First-birth-band check — reuse the existing reciprocal jump kernel
+
+This is a specialization of existing exact jump calculus, not another proposed
+new module. For positive integer `T`, prime support `p < T <= 2*p`, and `n<T`, each prime has
+at most one multiple before `n`. Thus, with
+`M=sum a_p`, `L=sum a_p log p`, and `J(n)=sum_(p<=n) p*a_p`,
+
+`sum_p a_p F_p^ec(n) = L - n*M + J(n)`.
+
+Proof: substitute `F_p^ec(n)=log p-n+p*floor(n/p)` and use
+`floor(n/p)=1_(p<=n)` on this band. Even when `M=L=0`, its exact prefix energy is
+
+`sum_(n<T) J(n)^2/[n(n+1)]
+ = sum_(p,q) a_p*a_q*p*q*(1/max(p,q)-1/T)`.
+
+Expand the finite square and telescope the pronic weight on
+`max(p,q) <= n < T`. This is precisely the kernel already formalized in
+`ReciprocalJumpKernelAndDilationLagSectors`, with the original horizon boundary
+retained. A transfer to an oscillatory estimate must retain or control this
+cumulative-jump contribution; removing the two common head moments alone does
+not delete it. No new general dispersion estimate follows from this identity.
+
+The deep first-multiple query (`bvi-prime-birth-band-search.json` in the C9 archive) was partial
+with 74,188 inventoried files. Its useful source passages recovered the existing
+cofactor-floor identity and natural-cutoff bridge. The proposed clock-fiber prime
+window bound averages a different beta-integral carrier; the cubic prime-packet
+obstructions concern another form. Neither was treated as a bound for this Gram.
+
 ### C9 — attach the gap tool to the existing dilation-profile carrier
 
-**Paper consequence of existing corpus identities and C5; Lean scratch in progress.**
+**Formalized consequence of existing corpus identities and C5; all audits passed.**
 The search correction exposes a useful bridge that C7 did not provide.
 For `r>1`, write `S=r.divisorsAntidiagonal`, `mu_x=mu(x.2)`, and
 `X_p(n)=p*Re(pmRamanujanPrimitive r (n/p))`. Existing
@@ -416,6 +449,63 @@ still a pairwise continuity estimate. It does not provide cancellation of
 the cube's signed coefficient sum. Search found the existing continuity,
 floor expansion, exact integer-scale identity, and profile identification;
 no novelty inference is drawn from the partial search for this combination.
+
+The scratch and original-source proofs passed without warnings. The leaf is
+`formal/GaloisForLFunctions/BezoutValuationIncidence/RamanujanDilationProfileResidueGapBudget.lean`
+(257 lines; six public declarations). Its full public-axiom audit passed; every
+closure contains exactly `propext`, `Classical.choice`, and `Quot.sound`.
+The API exposes the exact residue expansion, exact `HasSum`
+distance identity, budget homogeneity, and both gap bounds; no analytic premise
+is an input. The original raw profile and its radial mismatch remain explicit.
+
+### C10 — ordered compensated gaps: a collective bound before overlap
+
+**New paper candidate; corpus audit and Lean verification pending.**
+For `p>0`, `h>=0`, `k>=1`, and `k*h<=p`, let `q=p+h` and define
+`W_(p,h,k)(n)` to be zero outside `[kp,(k+1)p)`, and inside this cell to be
+`(n mod p)-(n mod q)+h`. The two exact values are
+
+`W = kh-p` on `[kp,kq)`, and `W = (k+1)h` on `[kq,(k+1)p)`.
+
+C8's telescoping calculation gives zero pronic mean and squared norm
+`h/k-h^2/p`. Every partial pronic sum of `W` is nonpositive: its negative
+interval precedes its positive interval, and the full sum is zero.
+
+For ordered disjoint modulus gaps `[p,p+h]` and `[r,r+l]` with `p+h<=r`,
+the negative part of the first cell ends before the second cell starts.
+Their overlap is an initial segment of the second cell, and the first
+function is the nonnegative constant `(k+1)h` there. Thus their covariance
+is nonpositive. For any finite ordered disjoint family and nonnegative
+coefficients, the energy of the weighted sum is at most the sum of diagonal
+energies. Split arbitrary real coefficients into their positive and negative
+parts and use `(u-v)^2<=2u^2+2v^2`: the bound becomes
+
+`||sum_i a_i W_(p_i,h_i,k)||^2_pronic
+ <= 2 sum_i a_i^2*(h_i/k-h_i^2/p_i)`.
+
+This removes the number-of-gaps factor from the Cauchy baseline. It uses
+actual residue differences and the original pronic weight.
+
+**Several quotient levels.** Suppose the whole family lies in `[P,P+H]`,
+with `P>0`, and `K*H<=P`. The union of level-`k` supports lies in
+`[kP,(k+1)(P+H))`. For `1<=k<=K-2`, this is disjoint from every level
+`k+2` or later, since `(k+1)H<=P`. Same-parity level sums are orthogonal.
+One more two-term square bound therefore gives
+
+`||sum_(k=1..K) sum_i a_i W_(p_i,h_i,k)||^2_pronic
+ <= 4 sum_i a_i^2*(h_i*harmonic(K)-K*h_i^2/p_i)`.
+
+On the common prefix `n<(K+1)P`, each actual difference equals the sum of
+its cell functions minus `h_i*1_(p_i<=n)`. The correction's total energy is
+at most `(H/P)*sum_i a_i^2*h_i`, by weighted finite Cauchy and the pronic
+tail mass `1/P`. Consequently this candidate would control the literal
+paired-residue packet on that prefix without a number-of-pairs loss.
+The later horizon still contains collisions between different quotient
+levels; it must not be discarded or replaced by a full-period average.
+
+Next conjecture after this candidate: estimate that later signed remainder
+using the existing finite lag/reciprocity representation. This is the part
+where the current argument has no cancellation proof.
 
 ## Formalized contribution
 
@@ -494,6 +584,29 @@ must retain its numerator and both phases.
   and package-root `TransHorizonIncidenceMechanics.lean`; no finding names
   either owned leaf. Existing large-file warnings remain. No global pass
   is claimed. Log: `/tmp/bvi-dispersion-lint-after-search.log`.
+
+### C9 source verification and durable evidence
+
+- Original-source check exited 0 without warnings:
+  `lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/BezoutValuationIncidence/RamanujanDilationProfileResidueGapBudget.olean GaloisForLFunctions/BezoutValuationIncidence/RamanujanDilationProfileResidueGapBudget.lean`.
+- Source SHA-256:
+  `cc33a090269d6063e25e5edf197cfc362cbd0e26eb11e1452a7c33e522f78262`.
+- All six public declarations passed the separate `/tmp` API and axiom audit
+  (`lake --old env lean -j 1`); only the three standard axioms occur.
+- The leaf is wired into the BVI umbrella. No umbrella or full build ran.
+- Index generation exited 0. The subsequent `lint --check-generated` exited 1
+  with two foreign errors: unwired
+  `arithmetic-positivity-theory.FactorialPhaseBohrCoercivityAndTailIndependence`
+  and package-root `TransHorizonIncidenceMechanics.lean`. Existing large-file
+  warnings remain; none names an owned dispersion leaf. No global pass is claimed.
+- Durable audit files share prefix `logs/bvi-dilation-profile-gap-2026-10-18-`:
+  `manifest.json`, `source.txt`, `axioms.txt`, `index.txt`, `lint.txt`,
+  `public-names.txt`, and `axiom-audit.lean.txt`.
+- `logs/bvi-dilation-profile-gap-2026-10-18-search-and-scratch.tar.gz` preserves
+  the exact source, searches, API probes, and proof scratch. Sixteen owned `/tmp`
+  files were archived and removed after the final Lean process exited.
+- No README changes or commits were made by this task. The full signed
+  dispersion target remains open.
 
 ## Log
 

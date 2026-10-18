@@ -55,13 +55,19 @@ The programme's problem 4 uses the actual source weight and increment.
 README remains unchanged by this task. Full contraction remains open:
 the unsigned modulus sum is not uniformly bounded at small damping.
 
-After the user's corpus-search correction, the next route uses existing
-signed all-depth Hilbert/Gram identities, the exact integer-jump and
-additive-lag bridge, and existing truncated-Gram error bounds. The dyadic
-cutoff-error candidate below must be checked against this machinery before
-writing another leaf. The signed finite-lag coercivity and its base-modulus
-uniformity remain the actual gaps. A better single-pair constant or another
-scalar Euler factorization does not close them.
+After the user's corpus-search correction, existing signed all-depth
+Hilbert/Gram identities, integer-jump and additive-lag bridges, truncated
+Gram estimates, and the corrected natural-cutoff tail bridge were checked.
+Those identities do not bound the remaining physical tail variance.
+The current candidate is tracked in
+`bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`:
+upgrade the existing o(log T) interior-versus-energy residual to O(1),
+reusing the corpus's bounded-field adjacent-correlation proof with two
+different divisor cutoffs. Its paper estimate has positive power saving
+for every positive damping. Lean formalization is pending. This would
+isolate the actual energy bound still needed for strict contraction;
+it does not complete the parent goal. Earlier dyadic and pairwise routes
+remain recorded below with their exact gaps.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable. This card tracks the plan; independent reads use `Promise.allSettled`. Serena returned no Lean symbols in the active Python project, so Lean source inspection uses corpus search and `rg`.
 

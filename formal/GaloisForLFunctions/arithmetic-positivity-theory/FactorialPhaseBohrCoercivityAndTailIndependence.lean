@@ -54,7 +54,8 @@ theorem dyadicBernoulliFilter_periodic : Function.Periodic dyadicBernoulliFilter
 
 /-- Every dilated dyadic filter `v ↦ P(c v)`, `c > 0`, is Bohr almost periodic. -/
 theorem isBohrAlmostPeriodic_dyadicBernoulliFilter_mul {c : ℝ} (hc : 0 < c) :
-    _root_.HTGeometry.IsBohrAlmostPeriodic fun v : ℝ => ((dyadicBernoulliFilter (c * v) : ℝ) : ℂ) := by
+    _root_.HTGeometry.IsBohrAlmostPeriodic
+      fun v : ℝ => ((dyadicBernoulliFilter (c * v) : ℝ) : ℂ) := by
   refine isBohrAlmostPeriodic_of_periodic (p := 1 / c) (by positivity) fun v => ?_
   rw [show c * (v + 1 / c) = c * v + 1 by field_simp, dyadicBernoulliFilter_periodic]
 

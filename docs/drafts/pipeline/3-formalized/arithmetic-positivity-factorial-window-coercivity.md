@@ -158,7 +158,7 @@ All statements below are unconditional and depend only on `propext`, `Classical.
   - (7), dilated: `factorialPhaseCombination_dilated_window_upper` (with interval integrability).
   - (2): `factorialPhaseCombination_weighted_lower`, `factorialPhaseCombination_weighted_upper` (dilated, `r ≥ 1`), `integrableOn_weighted_factorialPhaseCombination`.
   - substitution `v = e^{-x}`: `integral_norm_sq_sum_factorialMuntzCorrectedTail`.
-  - (3): `factorialTail_physical_riesz_bounds` (integrability and both Riesz bounds).
+  - (3): `factorialTail_physical_riesz_bounds` (integrability and both Riesz bounds); the normalized Riesz-sequence form `144A∑|c_n|² ≤ ∫|∑c_n√(n+1)T_n|² ≤ 225B∑|c_n|²` is `factorialTail_normalized_riesz_bounds` in [FactorialPhaseBohrCoercivityAndTailIndependence.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialPhaseBohrCoercivityAndTailIndependence.lean).
   - generic mechanism: `norm_tsum_weighted_sq_le`, `integral_norm_tsum_weighted_sq_le`, `norm_add_sq_ge_dominance`, `integral_norm_sq_ge_of_first_harmonic`, `integral_norm_sq_le_of_harmonics`.
 - Scalar inputs (earlier): `four_branch_harmonic_freq_gap_ge`, `harmonic_layer_mv_penalty_eq`, `weighted_phase_window_transport`, `factorialTail_riesz_coefficient_bounds`, `factorialCollarShift_bounds` (4).
 
