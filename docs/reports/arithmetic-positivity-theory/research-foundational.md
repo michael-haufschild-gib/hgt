@@ -150,22 +150,22 @@ The first three inputs suggest the immediate bound
 C_H=\frac{e^2}{4}\sum_\rho\frac{m_\rho}{|\rho|^2}<\infty.
 \]
 
-**Status: derived consequence awaiting verification and packaging.** Check constants, multiplicity convention, and the precise evaluation map; do not count it as a newly compiled theorem.
+The [corrected-source certificate](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCorrectedSampling.lean) proves summability and this uniform \(1/N\) scale on the literal zeta carrier. Its explicit constant uses a larger genus-one majorant instead of the displayed sharp reciprocal-square constant.
 
 The required local target is:
 
-> **[PAPER THEOREM; FORMAL CERTIFICATE REQUIRED]** There are constants \(C_U>0\) and \(N_0\ge2\) such that, for every \(n\) with \(N=n+1\ge N_0\), every smoothing index \(k\) satisfies
+> **[CERTIFIED STRONGER UPPER BOUND]** There are constants \(C_U>0\) and \(N_0\ge2\) such that, for every \(n\) with \(N=n+1\ge N_0\), every smoothing index \(k\) satisfies
 > \[
 > \mathcal Z(U_{n,k})\le C_U\frac{\log N}{N}.
 > \]
 
-The [dependency-closed paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) proves the stronger bound \(\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C(1+\log N)/N\) for every \(n,k\), where \(T_n=G_n-r_n\) is the literal raw tail. Constants are independent of both indices; no smoothing threshold is needed for this upper bound. The lower signed-energy bound retains its existing eventual smoothing quantifiers.
+The [dependency-closed paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) and [actual-source Lean certificate](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) prove the stronger bound \(\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C(1+\log N)/N\) for every \(n,k\), where \(T_n=G_n-r_n\) is the literal raw tail. Both zero sums are proved convergent. Constants are independent of both indices; no smoothing threshold is needed for this upper bound. The lower signed-energy bound retains its existing eventual smoothing quantifiers.
 
-The paper proof also establishes sharpness in that eventual regime: signed tail energy and absolute square sampling both have order \(\log N/N\). An \(O(1/N)\) spectral budget is false for this family. The result is classified as a **bridge**, not an established novel general theory. Its complete Lean certificate remains required.
+The paper proof also establishes sharpness in that eventual regime: signed tail energy and absolute square sampling both have order \(\log N/N\). An \(O(1/N)\) spectral budget is false for this family. The result is classified as a **bridge**, not an established novel general theory. The upper sampling theorem is certified; the assembled sharpness and relative-margin statements require their own certificates.
 
-### Proof mechanism to formalize for the sampling budget
+### Certified proof mechanism for the sampling budget
 
-The paper argument uses classical complex analysis and logarithmic regularity. Its arithmetic input is the exact phase representation of the actual tail; the formalization must preserve that identity and every scale quantifier.
+The argument uses classical complex analysis and logarithmic regularity. Its arithmetic input is the exact phase representation of the actual tail. The certificate preserves that identity and every scale quantifier through the following four steps.
 
 1. **Sampling from unconditional zero counts.** Establish a sampling estimate of the form
    \[
@@ -173,10 +173,10 @@ The paper argument uses classical complex analysis and logarithmic regularity. I
    \int_{-\delta}^{1+\delta}\int_{\mathbb R}
    \log(2+|t|)|F_f(\sigma+it)|^2\,dt\,d\sigma
    \]
-   for readouts holomorphic on a neighborhood of the larger strip and with the required finite integral. The paper proof uses the mean-value inequality for \(|F_f|^2\), fixed-radius discs, and the unconditional \(O(\log(2+|t|))\) count of zeros in unit-height strips. Reuse `exists_xiUnitHeightPacket_global_log_bound`, which already covers bounded and negative heights, and the multiplicity-preserving dictionary in `WeilDeletionZeroSide.lean`; formalize the disk-overlap bound. Existing public disk estimates assume an entire function, while `hasSum_circleAverage_normSq_diskCoeffOn` already supplies the local circle input needed to localize them.
+   for readouts holomorphic on a neighborhood of the larger strip and with the required finite integral. The actual-tail certificate uses the mean-value inequality for \(|F_f|^2\), fixed-radius discs, and the unconditional \(O(\log(2+|t|))\) count of zeros in unit-height strips. [FactorialTailDiskSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailDiskSampling.lean) localizes the circle estimate to the actual half-plane. [ZeroDiskOverlap.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/ZeroDiskOverlap.lean) uses `exists_xiUnitHeightPacket_global_log_bound` at every real height; the final sampling module applies the multiplicity-preserving dictionary in `WeilDeletionZeroSide.lean`.
 2. **Weighted source norms.** For \(\sigma\in[-1/4,5/4]\), the paper proof writes the weighted raw tail as \(a_ne^{(1+\sigma)x}R_n(Ne^{-x})\mathbf1_{x\le0}\), with \(a_n\le15/\sqrt N\), \(|R_n|\le25/32\), and Lipschitz constant at most \(14\). These give squared mass \(O(1/N)\) and translation energy \(D_{n,\sigma}(h)\le C\min\{N^{-1},h\}\) for \(0<h\le1\), including the endpoint jump.
-3. **Pay only a logarithm for zero density.** Integrate that minimum against \(dh/h\), splitting at \(h=1/N\). The [verified Fourier module](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean) uses the existing Gamma–Lévy identity and global logarithmic weight comparison to prove \(O((1+\log N)/N)\) Fourier energy uniformly over the enlarged strip. Complete the Mellin–Fourier coordinate identification needed by the zero-sampling argument. The paper also gives an elementary cosine-integral proof of the same analytic transport.
-4. **Pass through smoothing without losing uniformity.** Prove a uniform convolution or multiplier estimate on the same strip, or first bound the raw spectral sampling sum and then use the existing critical-strip mollifier bound. The chosen route must retain constants independent of \(k\).
+3. **Pay only a logarithm for zero density.** Integrate that minimum against \(dh/h\), splitting at \(h=1/N\). The [verified Fourier module](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean) uses the existing Gamma–Lévy identity and global logarithmic weight comparison to prove \(O((1+\log N)/N)\) Fourier energy uniformly over the enlarged strip. The [readout module](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailReadout.lean) certifies the Mellin–Fourier coordinate identification. The paper also gives an elementary cosine-integral proof of the same analytic transport.
+4. **Pass through smoothing without losing uniformity.** [FactorialTailSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) bounds the raw sum, then applies the exact convolution readout and critical-strip mollifier bound. This proves smoothed summability and the combined budget with constants independent of \(k\).
 
 The zero-count input is classical. For a primary quantitative reference, see [Hasanalizade, Shen, Wong, *Counting zeros of the Riemann zeta function*](https://arxiv.org/abs/2107.06506). The unit-height \(O(\log T)\) bound follows from a counting formula with \(O(\log T)\) error; check the theorem's range and the finite-height remainder before importing it.
 
@@ -271,6 +271,8 @@ For a positive invertible block \(A\), the residual after eliminating it is \(C-
 
 The existing [exact finite Schur theorem](../../../formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilExactFiniteSchur.lean) and [arithmetic Schur laws](../../../formal/GaloisForLFunctions/RHTower/ArithmeticSchurRenormalizationLaw.lean) provide starting machinery. The latter programme's missing connection to the actual xi/Weil object must remain visible; positivity in a different arithmetic system does not automatically transfer.
 
+The factorial family also supplies a concrete arithmetic comparison geometry. The [Bohr coercivity paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-bohr-coercivity.md) gives a uniform coefficient lower bound for its exact remainder phases, using irrational shifted clocks and the first harmonic of the dyadic Bernoulli filter. The stronger [finite-window paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-window-coercivity.md) uses the exact collar bounds and Montgomery–Vaughan estimates to prove that \((\sqrt{n+1}\,T_n)\) is a Riesz sequence in physical \(L^2\), uniformly over finite coefficient families. Formalize these exact source statements. The next mathematical obligation is logarithmic energy and the complete signed form: physical norm equivalence does not bound the prime/polar loss or prove density in the required form topology.
+
 > **[OPEN CORE: GLOBAL ARITHMETIC SIGN]** Find an independently justified arithmetic mechanism controlling the complete residual or capacity cost for every admitted test and support aperture.
 
 Meeting that requirement at full RW strength would solve RH. Likewise, proving the full fixed-side critical bound in WL would solve RH. Neither is currently supplied by this programme. Avoid renaming either endpoint as a “positivity axiom” and treating the remaining implications as a solution.
@@ -309,8 +311,8 @@ Before marking a mathematical task complete:
 ## Immediate next actions
 
 1. Use the [factorial sampling card](../../drafts/pipeline/1-in-progress/arithmetic-positivity-factorial-tail-sampling.md) and [paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) as the exact local statement and dependency ledger.
-2. Derive and verify the \(C_H/N\) corrected-source budget from existing readout and summability results.
-3. Connect the verified logarithmic Fourier budget to the Mellin readout and formalize local holomorphic zero sampling. The paper proof discharges these mathematical steps; their remaining Lean certificates are separate obligations.
+2. Use [FactorialCorrectedSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCorrectedSampling.lean), which proves absolute square summability and the uniform \(C_H/N\) corrected-source budget on the literal zeta carrier.
+3. Use the verified [complete sampling bound](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean), retaining its literal zero carrier and all-index uniformity, to certify the sharp lower scale and relative sign margin.
 4. Finish APT-05, including the full ramp limit, before claiming the two-dimensional positivity application. Then test which source-level mechanisms survive beyond the factorial family.
 
 Corpus indexes guide discovery; stale or pending compiler entries do not certify a theorem. Repeat focused searches when undertaking a new statement and verify the actual dependencies directly. Source links and proof cards provide the durable record; temporary search outputs do not establish novelty or correctness.

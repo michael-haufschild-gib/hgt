@@ -1,9 +1,9 @@
 # Compact logarithmic states from compensated physical producers
 
 - **ID:** compact-physical-box-producers
-- **Stage:** 2-fully-proven
-- **Type:** PROVEN_ON_PAPER
-- **Status:** Paper proof complete; restriction foundation formally certified. Further formalization is inactive after the user cleared the research goal.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Status:** Formalized in `formal/GaloisForLFunctions/BiScaleUncertainty/CompensatedPhysicalLogarithmicProducer.lean` (`norm_sq_compensatedVelocity`, `integral_compensatedVelocity_eq_zero`, `smoothedLogarithmicState_dirichlet_energy`) and wired into `BiScaleUncertainty.lean`.
 - **Source:** continuum-coprime-shear; physical-box-average-affine-regularity
 - **Statement:** Construct compact logarithmic primitive states from arbitrary physical velocities using interval truncation, explicit zero-integral compensation and box smoothing, with quantitative errors and compact-source form convergence.
 

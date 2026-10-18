@@ -1,8 +1,8 @@
 # Radical checkpoint sign rigidity and constant-mode law
 
 - **ID:** thim-radical-checkpoint-sign-rigidity
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Scope:** Sharp classification of checkpoints whose defect is nonpositive for every
   squarefree-supported weight, and exact dependence on the freely adjustable coefficient at one.
 
@@ -15,12 +15,12 @@
 
 `update_plan` is unavailable. This card tracks work. README remains read-only.
 
-## Candidate mechanism
+## Exact mechanism
 
 Adding `a` to coefficient `c(1)` shifts every positive sieve response by `a`, hence
-leaves additive jumps unchanged. Polarization suggests
+leaves additive jumps unchanged. Polarization proves
 `D_N(k-1;c+a*delta_1)=D_N(k-1;c)+a*(s_N(c,k)-s_N(c,1))` for positive `k` and horizon.
-Thus sign stable under every constant shift should be equivalent to equal endpoint
+Thus sign stable under every constant shift is equivalent to equal endpoint
 responses. At a nonrough endpoint, a visible prime indicator has nonzero endpoint
 response, permitting every real defect value by an explicit constant shift.
 
@@ -28,8 +28,8 @@ response, permitting every real defect value by an explicit constant shift.
 
 - [x] Corpus duplication check and precise theorem selection.
 - [x] Dependency-closed paper proof and strongest positive survivor.
-- [ ] Original-source Lean and all-declaration axiom audit.
-- [ ] Umbrella/index/lint, ledger, artifact audit, cleanup.
+- [x] Original-source Lean and all-declaration axiom audit.
+- [x] Umbrella/index/lint, ledger, artifact audit, cleanup (global lint exceptions below).
 
 ## Boundary
 
@@ -109,3 +109,35 @@ Without normalization the full universal upper-bound classification is
 `(forall nonnegative squarefree c, D_N(k-1;c)<=B)` iff `rough_N(k) and 0<=B`.
 The zero weight proves sharpness at rough checkpoints; the affine prime family
 exceeds every real `B` at each nonrough checkpoint.
+
+## Formal verification
+
+- Source: `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/RadicalCheckpointSignRigidityAndGaugeLaw.lean`.
+- Twenty-one public theorems, one public definition, one private helper. Actual source
+  compiled with `lake --old env lean -o <leaf.olean> <leaf.lean>`: exit 0, no warnings.
+- The existing rough-absorption dependency lacked an object file; its individual
+  source was compiled successfully without source edits or a full build.
+- Separate scratch import and `#print axioms` checked ALL 23 declarations, including
+  the private helper: exit 0, no warnings; every closure exactly
+  `propext`, `Classical.choice`, `Quot.sound`.
+- Source SHA-256: `794f867becd1c93d3158cdd8259efd4c5c9463e73d77e1de316c917224254619`.
+- Field umbrella imports this leaf exactly once; `MainTheorems` imports the umbrella.
+  All 22 public exports appear in generated API. No umbrella build performed.
+- `scripts/formal_tools.py index`: exit 0. `scripts/formal_tools.py lint --check-generated`:
+  exit 1, five unrelated BiScaleUncertainty leaves unreachable from their umbrella and
+  the existing THIM field-umbrella registration error. No own-leaf finding or stale
+  generated file in this run. Global lint is not clean.
+- Evidence: `logs/thim-gauge-{lean,axioms,index,lint}.txt`,
+  `logs/thim-gauge-rough-dependency-lean.txt`, and `logs/thim-gauge-audit.json`.
+  Artifact audit verified exact source hash, fresh object, every axiom entry, public
+  API coverage, and import reachability.
+- All nine owned scratch files removed after their jobs terminated. README untouched;
+  no numerical experiments, proof holes, added axioms, or heartbeat changes.
+
+## Research boundary
+
+The rejected extension is weight-universal nonpositivity away from rough endpoints,
+even under unit normalization and coefficientwise bounds. Its positive survivor is
+the exact affine defect law and the complete rough-checkpoint sign classification.
+The specific Möbius and damped families remain outside this counterfamily; their
+additional coefficient relations are the next sign-control question. Research remains active.

@@ -1,16 +1,15 @@
 # Critical Nyquist finite part and signed broad-source classification
 
 - **ID:** nyquist-critical-finite-part-2026-10-18
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Scope:** Independent BiScaleUncertainty; infinite-grid tail rigidity beyond Trap 5.
 - **Parent:** `../1-in-progress/infinite-grid-tail-rigidity-2026-10-17.md`
 - **Predecessor:** `../3-formalized/nyquist-weight-order-threshold-2026-10-17.md`
-- **Count:** Uncounted candidate for connected package 16; 15 packages certified.
-- **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`, read-only.
+- **Count:** Certified in `formal/GaloisForLFunctions/BiScaleUncertainty/NyquistCriticalFinitePartAndBroadClassification.lean`.
+- **Field guide:** `formal/GaloisForLFunctions/BiScaleUncertainty/README.md`.
 - **Paper:** `docs/reports/BiScaleUncertainty/NyquistCriticalFinitePart.md`
-- **Closeout:** Paper proof complete. No Lean implementation started; no partial code or
-  pending imports. Goal cleared by user; retain as a paper-only successor, uncounted.
+- **Closeout:** Formalized in `NyquistCriticalFinitePartAndBroadClassification.lean` (`abs_nyquistCriticalCellDiscrepancy_le_inv_sq`, `abs_nyquistCriticalPrefixPrimitive_sub_finitePart_le`, `integral_autocorr_eq_sq_integral`, `nyquistZeroMeanWitness_integral_and_autocorr_mass_eq_zero`) and wired into `BiScaleUncertainty.lean`.
 
 ## Proven paper statement
 

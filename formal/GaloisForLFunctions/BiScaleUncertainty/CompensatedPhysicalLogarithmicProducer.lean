@@ -85,7 +85,7 @@ theorem jumpEnergy_sub_eq_sub_positivePhysicalVelocity (D : EdgeMixture) (u q : 
   have hlog : ∀ x : ℝ, logPrimitive (u - q) x = logPrimitive (u - positivePhysicalVelocity q) x := by
     intro x
     simp only [logPrimitive, primitive_sub_velocity]
-    rw [← logPrimitive, ← logPrimitive, logPrimitive_positivePhysicalVelocity]
+    rw [primitive_positivePhysicalVelocity q (Real.exp x) (Real.exp_pos x).le]
   simp only [jump, hlog]
 
 end PathCongestionBridge
@@ -218,7 +218,7 @@ theorem integral_tailUnitVelocity (b L : ℝ) (hL : 0 ≤ L) :
         ae_restrict_mem (measurableSet_Ioc (a := b) (b := b + L))] with t hu ht
       rw [hu, indicator_of_mem ht]
     _ = L := by
-      simp [Real.volume_Ioc, ENNReal.toReal_ofReal hL]
+      simp [hL]
 
 /-- Left primitive tail of `tailUnitVelocity b L` for `0 ≤ b` and `t ≤ b`. -/
 theorem primitive_tailUnitVelocity_left (b L : ℝ) (hb : 0 ≤ b) {t : ℝ} (ht : t ≤ b) :
@@ -242,7 +242,7 @@ theorem primitive_tailUnitVelocity_right (b L : ℝ) (hb : 0 ≤ b) (hL : 0 ≤ 
         ae_restrict_mem (measurableSet_Ioc (a := b) (b := b + L))] with u hu hmem
       rw [hu, indicator_of_mem hmem]
     _ = L := by
-      simp [Real.volume_Ioc, ENNReal.toReal_ofReal hL]
+      simp [hL]
 
 /-! ## §3. Truncated Velocity, Zero-Integral Compensator, and Exact Energy Identity -/
 
@@ -313,8 +313,10 @@ theorem truncatedMass_sq_le_beta_mul_norm_sq (n : ℕ) (q : Velocity) :
     (truncatedMass n q) ^ 2 ≤ producerBeta n * ‖q‖ ^ 2 := by
   have h1 := truncatedMass_sq_le n q
   have h2 : ‖truncatedVelocity n q‖ ^ 2 ≤ ‖q‖ ^ 2 := by
+    unfold truncatedVelocity
     have hle := norm_physicalIntervalRestriction_le (producerAlpha n) (producerBeta n) q
-    nlinarith [norm_nonneg (truncatedVelocity n q), norm_nonneg q]
+    nlinarith [norm_nonneg (physicalIntervalRestriction (producerAlpha n) (producerBeta n) q),
+      norm_nonneg q]
   have hα : 0 < producerAlpha n := producerAlpha_pos n
   have hβ : 0 < producerBeta n := producerBeta_pos n
   calc
@@ -358,8 +360,10 @@ theorem norm_sq_compensatedVelocity_le (n : ℕ) (q : Velocity) :
     ‖compensatedVelocity n q‖ ^ 2 ≤ (1 + Real.exp (-producerScale n)) * ‖q‖ ^ 2 := by
   rw [norm_sq_compensatedVelocity, ← norm_sq_compensatorVelocity]
   have hq : ‖truncatedVelocity n q‖ ^ 2 ≤ ‖q‖ ^ 2 := by
+    unfold truncatedVelocity
     have hle := norm_physicalIntervalRestriction_le (producerAlpha n) (producerBeta n) q
-    nlinarith [norm_nonneg (truncatedVelocity n q), norm_nonneg q]
+    nlinarith [norm_nonneg (physicalIntervalRestriction (producerAlpha n) (producerBeta n) q),
+      norm_nonneg q]
   have hc := norm_sq_compensatorVelocity_le n q
   linarith
 
@@ -492,8 +496,9 @@ $$\|w_n(q)\|^2 \le (1 + e^{-(n+1)}) \|q\|^2.$$ -/
 theorem norm_sq_smoothedCompensatedVelocity_le (n : ℕ) (q : Velocity) :
     ‖smoothedCompensatedVelocity n q‖ ^ 2 ≤ (1 + Real.exp (-producerScale n)) * ‖q‖ ^ 2 := by
   have h1 : ‖smoothedCompensatedVelocity n q‖ ^ 2 ≤ ‖compensatedVelocity n q‖ ^ 2 := by
+    unfold smoothedCompensatedVelocity
     have hle := physicalBoxAverage_norm_le (-2 * producerScale n) (compensatedVelocity n q)
-    nlinarith [norm_nonneg (smoothedCompensatedVelocity n q),
+    nlinarith [norm_nonneg (physicalBoxAverage (-2 * producerScale n) (compensatedVelocity n q)),
       norm_nonneg (compensatedVelocity n q)]
   exact h1.trans (norm_sq_compensatedVelocity_le n q)
 
@@ -535,11 +540,9 @@ theorem physicalSecondPrimitive_compensatedVelocity_eq_zero_of_le_alpha
       apply intervalIntegral.integral_congr
       intro u hu
       apply primitive_compensatedVelocity_eq_zero_of_le_alpha n q
-      have hmax : max 0 t ≤ producerAlpha n := max_le (producerAlpha_pos n).le ht
-      exact (Set.mem_uIcc.mp hu).1.2.trans hmax |> fun _ => by
-        rcases Set.mem_uIcc.mp hu with ⟨_, hu2⟩ | ⟨_, hu2⟩
-        · exact hu2.trans ht
-        · exact hu2.trans (producerAlpha_pos n).le
+      rcases Set.mem_uIcc.mp hu with ⟨_, hu2⟩ | ⟨_, hu2⟩
+      · exact hu2.trans ht
+      · exact hu2.trans (producerAlpha_pos n).le
     _ = 0 := by simp
 
 /-- **Left Primitive Support Vanishing of $w_n$:**
@@ -623,7 +626,7 @@ theorem hasDerivAt_smoothedLogarithmicState (n : ℕ) (q : Velocity) (x : ℝ) :
   have h1 := hasDerivAt_primitive_physicalBoxAverage
     (-2 * producerScale n) (compensatedVelocity n q) (Real.exp x)
   have h2 := h1.comp x (Real.hasDerivAt_exp x)
-  simpa only [mul_comm] using h2
+  simpa only [Function.comp_def, mul_comm] using h2
 
 /-- Continuity of the derivative of `smoothedLogarithmicState n q`. -/
 theorem continuous_deriv_smoothedLogarithmicState (n : ℕ) (q : Velocity) :
@@ -660,8 +663,9 @@ theorem norm_compensatedVelocity_sub_positive_le (n : ℕ) (q : Velocity) :
     unfold compensatedVelocity
     abel
   rw [hdecomp]
-  exact (norm_sub_le _ _).trans
-    (add_le_add_left (norm_compensatorVelocity_le n q) _)
+  have h1 := norm_sub_le (truncatedVelocity n q - positivePhysicalVelocity q) (compensatorVelocity n q)
+  have h2 := norm_compensatorVelocity_le n q
+  linarith
 
 /-- Quantitative $L^2$ error bound between the smoothed producer $w_n(q)$ and $P_+ q$:
 $$\|w_n(q) - P_+ q\| \le \|q_n - P_+ q\| + e^{-(n+1)/2} \|q\|

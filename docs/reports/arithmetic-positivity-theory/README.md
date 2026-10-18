@@ -141,7 +141,7 @@ Relevant starting points:
 
 **Exact arithmetic compression.** Use identities to expose structure before estimating. For example, \(\sum_{d\mid k}\Lambda(d)=\log k\) can collapse a finite weighted prime rectangle to a logarithmic sum when its support conditions hold. The result removes a distribution-of-primes question from that particular calculation; it does not remove the remaining sign question.
 
-**Independent control of mixed terms.** Decompose the actual source into tractable pieces, preserve every correction, and bound interactions using a separately positive comparison form. The factorial pilot supplies paper proofs of the required correction-tail sampling budget and the resulting complete ramp–tent margin. Its mechanism combines the exact arithmetic phase with logarithmic translation energy; the complete Lean certificates remain obligations.
+**Independent control of mixed terms.** Decompose the actual source into tractable pieces, preserve every correction, and bound interactions using a separately positive comparison form. The factorial pilot supplies a Lean certificate for the correction-tail sampling budget and a paper proof of the resulting complete ramp–tent margin. Its mechanism combines the exact arithmetic phase with logarithmic translation energy; the full ramp application still requires its assembled Lean certificate.
 
 **Exact elimination with controlled residuals.** In a positive invertible block, Schur elimination replaces the remaining energy by \(C-B^*A^{-1}B\). Arithmetic must bound the coupling cost, not merely the two diagonal blocks. Singular blocks and unbounded forms require their own hypotheses. Repeated elimination needs control of accumulated losses and limits.
 
@@ -173,9 +173,27 @@ For the actual raw factorial correction tail \(T_n\) and its normalized smoothin
 \mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C\frac{1+\log N}{N}
 \]
 
-for every \(n,k\). **This is a paper theorem awaiting its complete Lean certificate.** The exact phase is bounded and Lipschitz; its weighted squared translation increments satisfy \(D(h)\le C\min\{N^{-1},h\}\). Integration against \(dh/h\), followed by Fourier and holomorphic sampling arguments, supplies the logarithmic budget. Existing tail positivity shows that the logarithm is necessary in the eventual smoothing regime.
+for every \(n,k\). **This upper bound and convergence of both literal zero sums are certified in Lean** by `exists_factorialTail_raw_and_smoothed_zeroSquare_bound`. The exact phase is bounded and Lipschitz; its weighted squared translation increments satisfy \(D(h)\le C\min\{N^{-1},h\}\). Integration against \(dh/h\), followed by Fourier and holomorphic sampling arguments, supplies the logarithmic budget. Existing tail positivity shows that the logarithm is necessary in the eventual smoothing regime.
 
-The foundational Lean modules establish the [literal phase identity and bounds](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailPhase.lean), [uniform weighted square mass](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailWeightedMass.lean), [two-regime translation estimate](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailTranslation.lean), [logarithmic translation budget](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailLogTranslation.lean), [complete positive Gamma jump budget](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailLevyEnergy.lean), and [logarithmic Fourier budget](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean). The remaining sampling certificate must connect this verified spectral integral to the actual zero divisor.
+The following ingredients have Lean certificates:
+
+| Ingredient | Source |
+|---|---|
+| Literal arithmetic phase identity and bounds | [FactorialTailPhase.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailPhase.lean) |
+| Uniform weighted square mass \(96/N\) | [FactorialTailWeightedMass.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailWeightedMass.lean) |
+| Two translation regimes, including the endpoint jump | [FactorialTailTranslation.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailTranslation.lean) |
+| Logarithmic translation budget | [FactorialTailLogTranslation.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailLogTranslation.lean) |
+| Complete positive Gamma jump budget | [FactorialTailLevyEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailLevyEnergy.lean) |
+| Logarithmic Fourier budget | [FactorialTailFourierEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean) |
+| Literal Mellin readout, half-plane holomorphy, and exact Fourier normalization | [FactorialTailReadout.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailReadout.lean) |
+| Corrected-source square summability and \(C_H/N\) budget | [FactorialCorrectedSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCorrectedSampling.lean) |
+| Disk mean-square estimate using the actual half-plane of holomorphy | [FactorialTailDiskSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailDiskSampling.lean) |
+| Global logarithmic disk overlap, with every multiplicity copy | [ZeroDiskOverlap.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/ZeroDiskOverlap.lean) |
+| Vertical energy with exact Fourier Jacobian | [FactorialTailVerticalEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailVerticalEnergy.lean) |
+| Integrable enlarged-strip energy and uniform bound | [FactorialTailStripEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailStripEnergy.lean) |
+| Complete raw and smoothed sampling theorem on the literal zeta carrier | [FactorialTailSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) |
+
+The sampling certificate retains the actual zero divisor and multiplicities. Its public conclusion has no RH, positivity, or unproved analytic premise.
 
 The [complete ramp–tent paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-ramp-gram-margin.md) makes the smaller corrected-source budget explicit and proves, eventually in \(n\),
 \[
@@ -183,7 +201,9 @@ The [complete ramp–tent paper proof](../../drafts/pipeline/2-fully-proven/arit
 \ge\frac{\log N}{8192N}c^2+\frac N2d^2
 \qquad(c,d\in\mathbb R).
 \]
-The next deliverable is the complete Lean certificate, including zero sampling and the full compact-ramp smoothing limit, as specified in the [foundational programme](research-foundational.md#first-pilot-the-actual-factorial-correction-tail). The mechanism is classified as a **bridge**, with no claim of literature novelty. This family result does not establish cross-scale or all-source RW positivity. The [knowledge ledger](knowledge-ledger-primary.md) records its precise boundaries and rejected shortcuts.
+The remaining ramp deliverables are the full compact-ramp smoothing limit and assembled Gram margin, as specified in the [foundational programme](research-foundational.md#first-pilot-the-actual-factorial-correction-tail). The mechanism is classified as a **bridge**, with no claim of literature novelty. This family result does not establish cross-scale or all-source RW positivity.
+
+For whole coefficient families, the [finite-window coercivity paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-window-coercivity.md) proves that the normalized actual tails form a Riesz sequence in physical \(L^2\). Exact collar separation and a dominant first harmonic prevent cancellation of the physical norm. This paper theorem still requires a Lean certificate; it does not control the complete signed form. The [knowledge ledger](knowledge-ledger-primary.md) records these boundaries and rejected shortcuts.
 
 ## What success would look like
 

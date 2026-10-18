@@ -38,7 +38,7 @@ The range restriction is part of the quantified conclusion, not an unproved anal
 2. Direct mixed-pairing control using the corrected-source readout \(c_n/\rho\), if absolute square sampling is unnecessarily expensive.
 3. The exact resummed compact-ramp expression, if neither sampling estimate supplies the required margin.
 
-The [paper sampling theorem](../2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) proves the stronger raw-plus-smoothed budget \(C(1+\log N)/N\) for all \(n,k\), with sharp logarithmic scale in the eventual lower-bound regime. The [full ramp-limit paper proof](../2-fully-proven/arithmetic-positivity-factorial-ramp-smoothing-limit.md) controls every physical energy term under removal of smoothing. The [complete ramp–tent margin paper proof](../2-fully-proven/arithmetic-positivity-factorial-ramp-gram-margin.md) identifies the zero-side pairing with the compact physical form and derives the uniform coefficient margin. **[FORMAL CERTIFICATES REQUIRED]** Certify all three arguments on the actual sources. Pointwise boundedness and fixed-zero convergence alone do not justify these passages.
+The [paper sampling theorem](../2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) proves the stronger raw-plus-smoothed budget \(C(1+\log N)/N\) for all \(n,k\), with sharp logarithmic scale in the eventual lower-bound regime. [FactorialTailSampling.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) certifies the upper bound and summability of both literal zero sums. Its dependency chain passes targeted builds, actual-file audits, and axiom inspection with only Lean's standard logical axioms. The [full ramp-limit paper proof](../2-fully-proven/arithmetic-positivity-factorial-ramp-smoothing-limit.md) controls every physical energy term under removal of smoothing. The [complete ramp–tent margin paper proof](../2-fully-proven/arithmetic-positivity-factorial-ramp-gram-margin.md) identifies the zero-side pairing with the compact physical form and derives the uniform coefficient margin. **[FORMAL CERTIFICATES REQUIRED]** Certify the sharp relative margin and both full ramp arguments. Pointwise boundedness and fixed-zero convergence alone do not justify these passages.
 
 ## Falsification and positive survivor
 
@@ -53,8 +53,10 @@ The [paper sampling theorem](../2-fully-proven/arithmetic-positivity-factorial-l
 - [x] Exact normalization and premise audit on the actual source.
 - [x] Internal and primary-literature audit of the precise sampling and regularity mechanism; verdict BRIDGE, no novelty claim.
 - [x] Dependency-closed paper proof of the unconditional quantitative estimate and its sharp logarithmic scale.
-- [ ] Lean formalization under `formal/GaloisForLFunctions/arithmetic-positivity-theory/`, with its own umbrella.
-- [ ] Targeted foreground audit, axiom inspection, and formal lint; no full umbrella build.
+- [x] Upper sampling theorem under `formal/GaloisForLFunctions/arithmetic-positivity-theory/`, wired into its umbrella.
+- [x] Targeted foreground builds, actual-file audits, and axiom inspection for the upper sampling certificate; no full umbrella build.
+- [ ] Formal lint after integrating the completed source modules.
+- [ ] Assembled sharp lower sampling scale and relative sign margin.
 - [ ] Full compact-ramp energy limit and exact ramp–tent Gram margin before claiming the family application.
 
 The full arithmetic positivity programme remains larger than this card. A completed family estimate does not prove all-aperture RW positivity or RH.

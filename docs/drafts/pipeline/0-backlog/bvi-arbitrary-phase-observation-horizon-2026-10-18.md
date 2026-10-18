@@ -23,10 +23,15 @@ no upper bound at arbitrary phases. The conjecture is neither proved nor falsifi
   `2N-4` consecutive zeros around the constructed common return, with nonzero
   adjacent values and nonzero variance. This is fully formalized in
   `ReturnWindowTwoMomentKernelsAndSharpZeroBlocks.lean`.
+- In `TranslatedWindowStrideAnnihilationAndLcmReturnObservability.lean`:
+  - `sievePrefixDiscrepancy_arbitrary_phase_lcm_window_zero_iff` proves full observability on every `sieveLcmPeriod N`-translated return window `[k * L_N - (N-2), k * L_N + (N-1)]` of length `2N - 3`.
+  - `exists_two_multiples_in_window_of_le_sub_two` proves that for any starting phase `M₀` and any `1 ≤ d ≤ N - 2`, the window `[M₀ + 1, M₀ + 2N - 3]` contains at least two multiples of `d`, so stride-`d` second differences stay inside the window.
+  - `central_single_hit_neighbors_in_window` and `common_multiple_unique_in_window_of_lcm_ge` prove that if `N - 1` or `N` has a single multiple at the window midpoint `M₀ + N - 1`, its coprime neighbor hits `M₀ + N - 2` or `M₀ + N` inside the window, and they share at most one common multiple in the window.
+  - `sievePrefixDiscrepancy_arbitrary_phase_three_zero_iff` and `sievePrefixDiscrepancy_arbitrary_phase_four_zero_iff` prove unconditional arbitrary-phase `2N - 3` observability for all `M₀ ∈ ℕ` at `N = 3` and `N = 4`.
 - First differences turn a translated zero block into shifted divisor-hit equations.
-  No current argument proves those equations have full rank at every phase.
+  For general `N ≥ 5` and off-return phases `M₀ ≢ 0 (mod L_N)`, full rank of the translated `[M₀ + 1, M₀ + 2N - 3]` system remains open.
 - Generic periodicity, complete-period covariance and the origin's triangular
-  inverse do not close this gap. The translation closure may have a much larger
+  inverse do not close the general `N ≥ 5` off-return gap. The translation closure may have a much larger
   dimension than the original coefficient space; do not conflate them.
 
 ## Counting boundary

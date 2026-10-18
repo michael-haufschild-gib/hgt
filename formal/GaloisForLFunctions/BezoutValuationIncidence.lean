@@ -56,16 +56,18 @@ import GaloisForLFunctions.BezoutValuationIncidence.WittSelbergReceiverCoordinat
 import GaloisForLFunctions.BezoutValuationIncidence.NonMarkovianLagOperatorAlgebraAndPrimePowerRevival
 import GaloisForLFunctions.BezoutValuationIncidence.ThreeStepBezoutInteriorSawtoothAndSecondOrderSmoothing
 import GaloisForLFunctions.BezoutValuationIncidence.ShortHorizonPronicDiscrepancyAndVonMangoldtDuality
+import GaloisForLFunctions.BezoutValuationIncidence.TupleAdmissibilityCollisionEnergyAndHardyLittlewoodCoercivity
+import GaloisForLFunctions.BezoutValuationIncidence.TranslatedWindowStrideAnnihilationAndLcmReturnObservability
 
 /-!
-# Bézout–Valuation Incidence Mechanics (`GaloisForLFunctions.BezoutValuationIncidence`)
+# Bézout–Valuation Incidence (`GaloisForLFunctions.BezoutValuationIncidence`)
 
-Umbrella module for **Bézout–Valuation Incidence Mechanics**, studying the coupling of the
-infinite-dimensional prime valuation lattice $\mathbb{N}_0^{(\mathcal{P})}$ to the 1-dimensional
-additive successor line $(\mathbb{N}, T_+ : k \mapsto k + 1)$ via pronic Bézout successor splitting,
-quotient-dual octave reciprocity, simultaneous Selberg–Möbius diagonalization, Chinese Remainder
-sawtooth periodicity, and Fermi–Nyman cellular jump reciprocity.
+Umbrella module for **Bézout–Valuation Incidence (BVI)**, a 60-module formal library studying the
+finite-horizon inverse observability, integer-lattice Smith normal form geometry, return-window
+reflection kernels, multi-functional spectral convexity, $k$-tuple Hardy–Littlewood admissibility
+coercivity, and non-periodic pronic/sawtooth renormalization of truncated divisor-sum discrepancies.
 
-See `formal/GaloisForLFunctions/BezoutValuationIncidence/README.md` for the conceptual overview,
-core mathematical objects, fundamental mechanisms, and structural traps of the field.
+See `formal/GaloisForLFunctions/BezoutValuationIncidence/README.md` for the theorem-by-theorem
+novelty ledger, terminology translation table, central mathematical problems, worked comparisons
+with classical methods, quantitative conditioning estimates, and open problem frontier.
 -/

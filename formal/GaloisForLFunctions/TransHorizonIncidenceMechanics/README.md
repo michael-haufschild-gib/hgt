@@ -1,230 +1,264 @@
 # Trans-Horizon Arithmetic–Archimedean Incidence Mechanics (`GaloisForLFunctions.TransHorizonIncidenceMechanics`)
 
-## 1. Motivation: Why Both Prior Fields Stalled at Dual Horizon Boundaries
+## 1. Scope and Purpose
 
-Our project previously established two foundational mathematical frameworks in Lean 4:
-1. **Bi-Scale Mellin–Dirichlet Uncertainty Mechanics (`GaloisForLFunctions.BiScaleUncertainty`)** — analyzing continuous and discrete archimedean/Mellin observables, symmetric logarithmic dilation, and exact spectral decompositions on the completed prime-power graph `SourceGraph`.
-2. **Bézout–Valuation Incidence Mechanics (`GaloisForLFunctions.BezoutValuationIncidence`)** — coupling the infinite-dimensional prime valuation lattice $\mathbb{N}_0^{(\mathcal{P})}$ to the $1$-dimensional additive successor line $(\mathbb{N}, T_+ : k \mapsto k + 1)$ via pronic Bézout successor splits $k(k+1)$, valuation visibility clocks $\tau_{\mathrm{vis}}(q) = q / \operatorname{rad}(q)$, and renormalized prefix defects $\widetilde{\mathcal{D}}_N(M; c)$.
+`GaloisForLFunctions.TransHorizonIncidenceMechanics` is a formalized Lean 4 library studying the interaction between **finite-horizon multiplicativedivisor observations** and **additive unit-step translation** ($T_+ : k \mapsto k + 1$). Its primary objects are the truncated divisor sums
+$$s_{N,c}(k) = \sum_{\substack{d \mid k \\ d \le N}} c(d) \qquad (N \in \mathbb{N},\; c : \mathbb{N} \to \mathbb{R}),$$
+their canonical multiplicative observation states
+$$\sigma_N(k) = \operatorname{lcm}\{d \le N : d \mid k\} = \gcd(k, L_N) \quad (L_N = \operatorname{lcm}(1, \dots, N)), \qquad \operatorname{rad}_N(k) = \gcd(k, N\#) \quad \Bigl(N\# = \prod_{p \le N} p\Bigr),$$
+their short-window and prefix correlation defects over $[M_0 + 1, M_0 + M]$, and their restriction to $p$-adic valuation chains in `RHTower.CHMDPrimeChain`.
 
-Despite solving over forty local structural obstructions, **both fields stalled just short of closing the global RH proof routes** (Routes FZZP, PM, C-HMD, the Nyman–Beurling / Báez-Duarte $L^2$ projection route, and the Quotient-Space Spectral route) because each framework operated exclusively on **one side of a horizon boundary**:
-
-1. **The Sub-Horizon Ceiling ($M + 1 \le N$) in `BezoutValuationIncidence`:**
-   - For $M + 1 \le N$, the active divisor set $\{d \mid k : d \le N\}$ at every $1 \le k \le M$ equals the full divisor set $d \mid k$, so the finite sieve output collapses to pure Dirichlet convolution:
-     $$\operatorname{sieveSeq}_N(c, k) = (c * \mathbf{1})(k) \quad (1 \le k \le M \le N).$$
-   - Consequently, sub-horizon defect and radical-invariance identities only constrained the regime $k \le N$ where no divisor $d \mid k$ had yet crossed the truncation horizon $N$.
-   - The true Nyman–Beurling, Báez-Duarte, FZZP, and PM limits fix the sieve horizon $N$ first and send the observation window $M \to \infty$ ($M \gg N$), or couple $M$ and $N$ across arbitrarily many trans-horizon bands $k \in (B N, (B+1)N]$.
-
-2. **The Missing Bridge Between Discrete Valuation Clocks and Continuous Prime Chains (`RHTower` / `BiScaleUncertainty`):**
-   - In `BezoutValuationIncidence`, prime-power structure is governed by the discrete **valuation visibility clock** $\tau_{\mathrm{vis}}(q) = q / \operatorname{rad}(q)$ (`lagVisibilityClock`), which determines the exact translational lag $L = \tau_{\mathrm{vis}}(q)$ at which the Ramanujan sum $c_q(L)$ switches on.
-   - In `RHTower.CHMDPrimeChain`, the continuous spectral/Hilbert-space energy `sourceEnergy` decomposes along disjoint **prime-indexed $p$-adic valuation chains** $m = p^k u$ ($p \nmid u$, $u = \operatorname{ordCompl}_p(m)$), weighted by the von Mangoldt function $\Lambda(d)$ and controlled by the continuous $1\text{D}$ Poincaré variance `chainVariance`.
-   - Prior to this field, there was **no formal bridge** connecting the discrete quotient $d / \tau_{\mathrm{vis}}(d)$ to $\Lambda(d)$, prime powers, $p$-adic clock wavelets, and `chainVariance`.
-
-3. **The Uncoupled Quotient Spectral Gap on `SourceGraph ⧸ signedRadical`:**
-   - On `SourceGraph`, every $p$-adic prime chain carries a $1$-dimensional radical-constant kernel spanned by `signedRadical` (`oneL` on the archimedean side, where `resolvent = 1`).
-   - Passing to the orthogonal quotient `signedRadicalᗮ` removes all prime-chain constants (`reducedSource`), strictly lowers every odd eigenvector eigenvalue below $1$, and restricts any hypothetical off-critical-line zero to an odd eigenvector with eigenvalue $\lambda \in (1/2, 1)$.
-
-**Trans-Horizon Arithmetic–Archimedean Incidence Mechanics (`GaloisForLFunctions.TransHorizonIncidenceMechanics`)** is the independent mathematical discipline built to unify these regimes across the horizon $M \ge N$ and across the discrete-to-archimedean divide.
+All twenty-three modules in this directory are **100% unconditional, premise-free, axiom-free, and computation-free**.
 
 ---
 
-### 2. Evaluation as an Independent Field of Mathematics (Fields Medalist & Broader Mathematical Community Standards)
+## 2. Exact Classical Baseline Ledger
 
-By the standards of the broader mathematical community, a framework qualifies as an **independent field of mathematics** (rather than a technical lemma collection inside an existing area) if and only if it possesses its own canonical objects, fundamental dualities, non-trivial coercivity/uncertainty inequalities, structural obstruction classifications, and cross-domain operator transfer theorems. `TransHorizonIncidenceMechanics` establishes all seven:
+Every central object and theorem in `TransHorizonIncidenceMechanics` is situated relative to three classical baselines:
+- **[TH10]** L. Tóth and P. Haukkanen, *On the discrete Fourier transform of $r$-even functions*, [arXiv:1009.5281](https://arxiv.org/abs/1009.5281) (together with E. Cohen 1955 and P. J. McCarthy 1986 on $(r)$-even arithmetic functions $f(k) = f(\gcd(k, r))$ and their Ramanujan expansions).
+- **[Sel]** Selberg sieve quadratic-form diagonalization in coordinates $Y_q = \sum_{q \mid d \le N} c(d)/d$ (see e.g. Z. Rudnick, [Selberg Sieve Notes](https://www.math.tau.ac.il/~rudnick/courses/sieves2015/selbergsieveintro.pdf)).
+- **[CMS16]** G. Coppola, M. Ram Murty, and B. Saha, *Finite Ramanujan expansions and shifted convolution sums of arithmetical functions*, [arXiv:1612.03136](https://arxiv.org/abs/1612.03136).
 
-1. **Intrinsic Canonical Objects, State-Space Monoids, & Sharp Obstruction Theory (Pillars II, X, XIII):**
-   The field defines its own primary algebraic state spaces: the **Trans-Horizon Rough Monoid** (`IsTransHorizonRough N r`), the **Canonical Finite Multiplicative Observation State** (`horizonObservationState N k = ((Icc 1 N).filter (· ∣ k)).lcm id`), and the **Finite-Trace Residue Phase** (`horizonObservationPhase N k = k % horizonObservationModulus N`). Pillar XIII proves the **Sharp Horizon Boundary Theorem (`horizonObservationState_successor_congr_iff`, `horizonObservationState_successor_update_exists_iff`)**: multiplicative observation states are congruent under the additive successor $k \mapsto k + 1$ **if and only if $N \le 2$**, and refines state space by a single bounded residue phase (`horizonObservationPhase_eq_iff_finite_trace`) that restores exact successor dynamics and determines all bounded-shift additive/Dirichlet observables (`sieveRenormalizedPrefixDefect_eq_of_horizonObservationPhase_eq`).
-2. **A Fundamental Involution / Duality Theorem (Pillar VI):**
-   Just as Fourier analysis rests on Pontryagin duality and algebraic geometry rests on Spec/ring duality, `TransHorizonIncidenceMechanics` rests on **Complementary Quotient Duality** (`sum_divisors_filter_gt_eq_complementaryQuotientTail` and `sieveSeq_eq_sum_divisors_sub_complementaryQuotientTail`): above the horizon $k > N$, every uncaptured high divisor $d \mid k$ ($d > N$) is dual via $d \leftrightarrow q = k / d$ to a low quotient divisor $q \mid k$ ($q < k / N$). This immediately yields the **Universal $B$-Rough Octave Extension Theorem** (`sieveSeq_rough_band_eq_sum_divisors_sub_self`): for any $B$-rough integer $k$, the first-octave law $\operatorname{sieveSeq}_N(c, k) = (c * \mathbf{1})(k) - c(k)$ holds all the way up to $k \le (B + 1)N$.
-3. **Non-Trivial Trans-Horizon Spike Cancellation & Quantitative Arithmetic Uncertainty Principle (Pillar XIV):**
-   Rather than merely avoiding composite trans-horizon spikes by evaluating at rough checkpoints $M = r - 1$, Pillar XIV proves that **the last Dirichlet step $(s_{N,c}(M+1) - s_{N,c}(M))^2$ cancels the composite boundary spike $+s_{N,c}(M+1)^2$ 100% identically** (`two_mul_sieveRenormalizedPrefixDefect_eq_neg_init_dirichlet_add_coprime_pair`):
-   $$2\widetilde{\mathcal{D}}_N(M; c) = -\sum_{k=1}^{M-1}\bigl(s_{N,c}(k+1) - s_{N,c}(k)\bigr)^2 + 2 s_{N,c}(M) s_{N,c}(M+1) - s_{N,c}(M)^2 - s_{N,c}(1)^2.$$
-   Consequently, whenever $s_{N,c}(M) s_{N,c}(M+1) \le 0$—in particular whenever the predecessor $s_{N,c}(M) = 0$ lies in the trans-horizon Möbius zero cone—**the composite spike at $M + 1$ is 100% absorbed into its own last step**, forcing $\widetilde{\mathcal{D}}_N(M; c) \le 0$ regardless of how large $|s_{N,c}(M+1)|$ is (`sieveRenormalizedPrefixDefect_nonpos_of_mul_succ_nonpos`, `sieveRenormalizedPrefixDefect_nonpos_of_eq_zero`). Averaging two consecutive checkpoints (`sieveRenormalizedPrefixDefect_pred_add_self_eq`) cancels **both** $s_{N,c}(M)^2$ and $s_{N,c}(M+1)^2$ simultaneously, and the **Trans-Horizon Arithmetic Uncertainty Principle** (`sq_sub_le_length_mul_sum_range_addDiff_sq`, `sieve_uncertainty_lower_bound_of_eq_zero`, `sieve_uncertainty_lower_bound_of_rough_anchor`) proves that any trans-horizon spike at distance $L$ from a zero or rough anchor forces cumulative Dirichlet oscillation energy at least $\frac{1}{L} s_{N,c}(a+L)^2$.
-4. **All-Horizon Radical & Power Invariance Across Scales (Pillars IX & XI):**
-   Because every squarefree divisor $s \mid d \cdot k$ (when $d \mid k$) already divides $k$ (`dvd_of_dvd_mul_of_dvd_of_squarefree`), both $\operatorname{sieveSeq}_N(c, \cdot)$ and $\operatorname{activeCenteredSawtoothSum}_N(c, \cdot)$ for *any* squarefree-supported weight $c$ (including $\mu$ and $c_\varepsilon$) satisfy
-   $$\operatorname{sieveSeq}_N(c, d \cdot k) = \operatorname{sieveSeq}_N(c, k) \quad (d \mid k), \qquad \operatorname{sieveSeq}_N(c, k^m) = \operatorname{sieveSeq}_N(c, k) \quad (m \ge 1)$$
-   **unconditionally at every horizon $N$ and across all trans-horizon scales $k \gg N$**, yielding non-positive damped defects $\widetilde{\mathcal{D}}_N(k^m - 1; c_\varepsilon) \le 0$ at arbitrarily large power checkpoints (`sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_pow_nonpos`).
-5. **An Intrinsic Multi-Scale Tensor Wavelet & Dipole Calculus (Pillars VIII & IX-b):**
-   Pillars VIII and IX-b (`CompositeClockWaveletTensorAndPhaseRecovery`) establish that consecutive $p$-adic valuation-clock lags $L = p^a$ and $L = p^{a-1}$ ($a \ge 1$) act on prime powers as an **exact two-level wavelet filter** (`clockWaveletMultiplier`) and an **exact zero-sum Ramanujan dipole** (`clockWaveletRamanujan`), and tensor multiplicatively across coprime factors $q = p^b u$ (`clockWaveletMultiplier_prime_pow_mul_of_coprime`, `clockWaveletRamanujan_prime_pow_mul_of_coprime`) when probed at transverse visibility clock lags $L_u = \tau_{\mathrm{vis}}(u)$.
-6. **Exact Discrete-to-Archimedean Prime-Chain Spectral Cutoff & Renormalization (Pillar XV):**
-   Pillar XV directly evaluates the continuous/bipartite prime-chain variance operator `RHTower.CHMDPrimeChain.varianceEnergy` on the discrete truncated sieve profile `m ↦ sieveSeq H c m` across all scales $N, m \gg H$:
-   - **All-Horizon Prime-Chain Renormalization (`sieveSeq_prime_mul_sub_eq_sieveSeq_div`):** $\operatorname{sieveSeq}_H(c, p \cdot b) - \operatorname{sieveSeq}_H(c, b) = \operatorname{sieveSeq}_{H/p}(c(p \cdot), b)$ for every prime $p$ and $b$ coprime to $p$.
-   - **Exact Spectral Low-Pass Cutoff Above the Horizon (`bipartiteEnergy_chain_sieveSeq_eq_zero_of_prime_gt`, `varianceEnergy_chain_sieveSeq_eq_zero_of_prime_gt`):** For every prime $p > H$, `H / p = 0`, so `sieveSeq H c` is constant along every $p$-adic chain and its `CHMDPrimeChain` variance vanishes identically across all scales $N \gg H$.
-   - **Sub-Horizon Excited-Shell Collapse (`sieveSeq_eq_of_same_chain_of_dvd_of_squarefree_support`, `sieveSeq_sub_ordCompl_eq_sieveSeq_div_of_dvd_of_squarefree_support`):** For $p \le H$ and squarefree-supported $c$, all excited levels $p^r b$ ($r \ge 1$) collapse to a single value, killing all higher excited-to-excited jumps and reducing every ground-to-excited jump $b \leftrightarrow p^r b$ to the renormalized $(H/p)$-sieve at $b$.
-7. **Quotient-Space Spectral Gap & Odd-Chain Poincaré Equivalence of RH (Pillar IV):**
-   Pillar IV bridges the prime-chain variance decomposition directly to the odd-sector spectral window $\lambda \in (1/2, 1)$ on the radical-orthogonal quotient `SourceGraph ⧸ signedRadical`.
+### 2.1 Object-Level Dictionary
 
----
-
-## 3. Core Mathematical Objects & Language
-
-All foundational definitions and theorems live in the namespace `GaloisForLFunctions.TransHorizonIncidenceMechanics`:
-
-| Mathematical Concept | Lean Symbol / Definition | Foundational Module |
+| Lean Symbol / Terminology | Exact Classical Equivalent | Reference |
 | :--- | :--- | :--- |
-| **Valuation Visibility Clock** $\tau_{\mathrm{vis}}(q) = q / \operatorname{rad}(q)$ | `lagVisibilityClock q` | [ValuationClockChainBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ValuationClockChainBridge.lean) |
-| **Clock Reconstruction of $\Lambda(d)$** $\Lambda(d) = \log(d / \tau_{\mathrm{vis}}(d))$ if prime, else $0$ | `vonMangoldt_eq_log_div_lagVisibilityClock` | [ValuationClockChainBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ValuationClockChainBridge.lean) |
-| **$N$-Rough Trans-Horizon Monoid** ($\forall d \mid r, d \le N \Rightarrow d = 1$) | `IsTransHorizonRough N r` | [TransHorizonRoughAbsorptionAndReset.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonRoughAbsorptionAndReset.lean) |
-| **Rough Checkpoint Defect Reset** $2\widetilde{\mathcal{D}}_N(r - 1; c) = -\sum_{k=1}^{r-1}(\Delta s_{N,c}(k))^2 \le 0$ | `sieveRenormalizedPrefixDefect_eq_neg_half_dirichlet_of_isTransHorizonRough` | [TransHorizonRoughAbsorptionAndReset.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonRoughAbsorptionAndReset.lean) |
-| **Buchstab Horizon Filtration Step** $\operatorname{sieveSeq}_{N_2}(c, k) - \operatorname{sieveSeq}_{N_1}(c, k)$ | `sieveSeq_horizon_band_sub` | [BuchstabHorizonFiltrationAndSawtoothEvolution.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/BuchstabHorizonFiltrationAndSawtoothEvolution.lean) |
-| **Odd-Sector Spectral Window** $\lambda \in (1/2, 1)$ on `SourceGraph ⧸ signedRadical` | `not_riemannHypothesis_iff_exists_odd_eigenvector_mem_Ioo_half_one` | [QuotientSpectralGapAndOddChainCoercivity.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/QuotientSpectralGapAndOddChainCoercivity.lean) |
-| **Global Active-Deleted Martingale Telescope** $W_{N,c}(M)^2 - W_{N,c}(1)^2$ | `weightedCenteredSawtoothSum_sq_sub_one_eq_active_deleted_add_inactive` | [TransHorizonMartingaleTelescopeAndPrimeCheckpoints.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonMartingaleTelescopeAndPrimeCheckpoints.lean) |
-| **Complementary Quotient Tail Operator** $\sum_{q \mid k,\, N < k / q} c(k / q)$ | `complementaryQuotientTail N c k` | [ComplementaryQuotientAndSecondOctaveLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ComplementaryQuotientAndSecondOctaveLaw.lean) |
-| **Universal $B$-Rough Octave Extension** ($k \in [N+1, (B+1)N]$) | `sieveSeq_rough_band_eq_sum_divisors_sub_self` | [ComplementaryQuotientAndSecondOctaveLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ComplementaryQuotientAndSecondOctaveLaw.lean) |
-| **Rough-Neighbor Pronic Bézout Localization** $s_{N,c}((r-1)r) = s_{N,c}(r-1)$, $s_{N,c}(r(r+1)) = s_{N,c}(r+1)$ | `sieveSeq_pronicSeq_pred_of_rough`, `sieveSeq_pronicSeq_of_rough` | [InterCheckpointSawtoothExcursionAndPronicSandwich.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/InterCheckpointSawtoothExcursionAndPronicSandwich.lean) |
-| **Normalized $p$-Adic Clock Wavelet** $\rho_q(p^a) - \rho_q(p^{a-1})$ | `clockWaveletMultiplier p a q` | [ClockScheduleSynthesisAndPrimePowerPhaseRecovery.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ClockScheduleSynthesisAndPrimePowerPhaseRecovery.lean) |
-| **Composite Clock Wavelet Tensor Law** | `clockWaveletMultiplier_prime_pow_mul_of_coprime` | [CompositeClockWaveletTensorAndPhaseRecovery.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/CompositeClockWaveletTensorAndPhaseRecovery.lean) |
-| **All-Horizon Radical & Power Invariance** $s_{N,c}(d \cdot k) = s_{N,c}(k)$ ($d \mid k$), $s_{N,c}(k^m) = s_{N,c}(k)$ | `sieveSeq_mul_of_dvd_of_squarefree_support`, `sieveSeq_pow_of_squarefree_support` | [TransHorizonGramMatrixAndRadicalProjection.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonGramMatrixAndRadicalProjection.lean) |
-| **All-Power Damped Checkpoint Non-Positivity** $\widetilde{\mathcal{D}}_N(k^m - 1; c_\varepsilon) \le 0$ ($k \in [2, 2N]$) | `sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_pow_nonpos` | [AllHorizonRadicalSawtoothAndDefectReduction.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/AllHorizonRadicalSawtoothAndDefectReduction.lean) |
-| **Canonical Finite Observation State** $\operatorname{lcm}\{d \in [1, N] : d \mid k\}$ | `horizonObservationState N k` | [FiniteMultiplicativeObservationState.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/FiniteMultiplicativeObservationState.lean) |
-| **Sharp $N \le 2$ Successor Obstruction & Finite-Trace Phase** | `horizonObservationState_successor_congr_iff`, `horizonObservationPhase` | [SuccessorStateObstructionAndPhaseRefinement.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SuccessorStateObstructionAndPhaseRefinement.lean) |
-| **Exact Boundary-Spike Cancellation & Predecessor-Zero Absorption** | `two_mul_sieveRenormalizedPrefixDefect_eq_neg_init_dirichlet_add_coprime_pair`, `sieveRenormalizedPrefixDefect_nonpos_of_eq_zero` | [ArithmeticUncertaintyAndSpikeCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ArithmeticUncertaintyAndSpikeCancellation.lean) |
-| **Trans-Horizon Arithmetic Uncertainty Principle** | `sq_sub_le_length_mul_sum_range_addDiff_sq`, `sieve_uncertainty_lower_bound_of_eq_zero` | [ArithmeticUncertaintyAndSpikeCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ArithmeticUncertaintyAndSpikeCancellation.lean) |
-| **All-Horizon Prime-Chain Renormalization & `CHMDPrimeChain` Spectral Cutoff** | `sieveSeq_prime_mul_sub_eq_sieveSeq_div`, `varianceEnergy_chain_sieveSeq_eq_zero_of_prime_gt` | [PrimeChainSieveBridgeAndSpectralCutoff.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/PrimeChainSieveBridgeAndSpectralCutoff.lean) |
+| `sieveSeq N c k` | Truncated divisor sum $s_{N,c}(k) = \sum_{d \mid k,\, d \le N} c(d)$ | Selberg sieve; Báez-Duarte / Nyman–Beurling |
+| `IsTransHorizonRough N r` | $N$-rough integer ($P^-(r) > N$, i.e., $\gcd(r, L_N) = 1$) | Classical sieve theory (Buchstab, Tenenbaum) |
+| `horizonObservationModulus N` | $L_N = \operatorname{lcm}(1, \dots, N)$ | Elementary number theory |
+| `horizonObservationState N k` | $\operatorname{lcm}\{d \le N : d \mid k\} = \gcd(k, L_N)$; functions factoring through $\gcd(k, L_N)$ are **$L_N$-even functions** | Cohen (1955); [TH10, arXiv:1009.5281](https://arxiv.org/abs/1009.5281) |
+| `horizonRadicalState N k` | $\gcd(k, N\#)$ where $N\# = \prod_{p \le N} p$; **$N\#$-even functions** | [TH10, arXiv:1009.5281](https://arxiv.org/abs/1009.5281) |
+| `lagVisibilityClock q` | $\tau_{\mathrm{vis}}(q) = q / \operatorname{rad}(q)$, the threshold lag $L = p^{a-1}$ at which the Ramanujan sum $c_{p^a}(L)$ becomes nonzero | Ramanujan (1918); [TH10] |
+| `clockWaveletMultiplier p a q` | Normalized difference $\frac{1}{\varphi(q)}(c_q(p^a) - c_q(p^{a-1}))$ of Ramanujan sums | [TH10]; [CMS16, arXiv:1612.03136](https://arxiv.org/abs/1612.03136) |
+| `complementaryQuotientTail N c k` | Dirichlet hyperbola complementary divisor sum $\sum_{q \mid k,\, k/q > N} c(k/q)$ | Dirichlet hyperbola method |
+| `selbergMultiplesCoord N c q` | Selberg coordinate $Y_q = \sum_{q \mid d \le N} c(d)/d$ | [Sel] |
+
+### 2.2 Theorem-by-Theorem Baseline Classification
+
+Each major theorem across the 23 modules is labeled honestly using four categories:
+- **`Known`**: Direct formalization of a standard result in the literature.
+- **`Corollary`**: Immediate algebraic consequence of combining standard identities (such as Dirichlet polarization, Ramanujan orthogonality, or Buchstab's identity).
+- **`New formulation`**: Equivalence or structural repackaging that connects discrete sieve quantities to project-specific representations (`BezoutValuationIncidence` remainders or `CHMDPrimeChain` operators).
+- **`Candidate new theorem`**: Sharp classification, optimal observability threshold, or short-window structural theorem not present in [TH10], [Sel], or [CMS16].
+
+| Module | Representative Lean Theorem(s) | Closest Classical Result & Equivalent Formulation | Additional Content & Proof Mechanism | Label |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. `ValuationClockChainBridge`** | `vonMangoldt_eq_log_div_lagVisibilityClock`, `sieveLagMultiplier_prime_power_eq_zero_of_lt_clock` | Prime-power support of $\Lambda(n)$ and vanishing of Ramanujan sum $c_{p^a}(L) = 0$ for $p^{a-1} \nmid L$ ([TH10]). | Expresses $\Lambda(d) = \log(d / \tau_{\mathrm{vis}}(d))$ on prime powers and identifies the 2-point `chainVariance` with discrete cut energy. Proof via `Nat.Prime.dvd_of_dvd_pow` and prime-factorization invariants. | `New formulation` |
+| **2. `TransHorizonRoughAbsorptionAndReset`** | `sieveSeq_mul_of_isTransHorizonRough`, `sieveRenormalizedPrefixDefect_eq_neg_half_dirichlet_of_isTransHorizonRough` |Multiplicativity $s_{N,c}(r k) = s_{N,c}(k)$ for $\gcd(r, L_N) = 1$ ([TH10]); prefix telescoping of $\sum_{k=1}^{r-1}(s(k+1)-s(k))s(k)$. | Shows that $N$-rough checkpoints $M+1 = r$ force $s_{N,c}(r) = c(1) = s_{N,c}(1)$, canceling the endpoint boundary term in Dirichlet polarization so $2\widetilde{\mathcal{D}}_N(r-1; c) = -E_{N,c}(r-1) \le 0$. | `Corollary` |
+| **3. `BuchstabHorizonFiltrationAndSawtoothEvolution`** | `sieveSeq_horizon_band_sub`, `sieveSeq_first_octave_eq_sum_divisors_sub_self` | Buchstab horizon decomposition $s_{N_2,c}(k) - s_{N_1,c}(k) = \sum_{d \mid k,\, N_1 < d \le N_2} c(d)$ and $(c*\mathbf{1})(k) - c(k)$ for $N < k \le 2N$. | Tracks sawtooth discrepancies across horizon bands $N_1 \le N_2$ and closes the tail at $N_2 = M$. Proof by `Finset.filter` splitting on `Nat.divisors`. | `Known` |
+| **4. `QuotientSpectralGapAndOddChainCoercivity`** | `not_riemannHypothesis_iff_exists_odd_eigenvector_mem_Ioo_half_one`, `riemannHypothesis_iff_odd_primeChain_poincare` | Spectral reformulation of `RiemannHypothesis` on `SourceGraph` within the `RHTower` architecture. | Restricts the eigenvalue obstruction to $(1/2, 1)$ on the odd sector orthogonal to `signedRadical`. Proof via self-adjoint resolvent symmetry and `CHMDPrimeChain` decomposition. | `New formulation` |
+| **5. `TransHorizonMartingaleTelescopeAndPrimeCheckpoints`** | `weightedCenteredSawtoothSum_sq_sub_one_eq_active_deleted_add_inactive` | Abelian/martingale summation by parts $\sum_{k=1}^{M-1} (\Delta W_k)^2 + 2\sum W_k \Delta W_k = W_M^2 - W_1^2$. | Splits the sawtooth increment at prime checkpoints $p > N$ into active and inactive divisor channels. Proof by induction and algebraic telescoping. | `Corollary` |
+| **6. `ComplementaryQuotientAndSecondOctaveLaw`** | `sieveSeq_eq_sum_divisors_sub_complementaryQuotientTail`, `sieveSeq_second_octave_eq_sum_divisors_sub` | Dirichlet hyperbola divisor involution $d \leftrightarrow k/d$: $\sum_{d \mid k,\, d > N} c(d) = \sum_{q \mid k,\, q < k/N} c(k/q)$. | Explicit closed forms for $s_{N,c}(k)$ in the second ($k \le 3N$) and third ($k \le 4N$) bands, plus $B$-rough extension to $k \le (B+1)N$. Proof via `Finset.sum_nbij' (k / ·)`. | `Corollary` |
+| **7. `SecondAndThirdBandRenormalizedDefectCalculus`** | `sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_le_three_mul_nonpos` | Pointwise divisor bounds for $s_{N,c_\varepsilon}(k)$ when $k/N < 4$ has at most one non-unit divisor $q \in \{2, 3\}$. | Proves $|s_{N,c_\varepsilon}(M+1)| \le 1 = |s_{N,c_\varepsilon}(1)|$ and hence $\widetilde{\mathcal{D}}_N(M; c_\varepsilon) \le 0$ unconditionally across $M+1 \le 3N$ (all parities) and $M+1 \le 4N$ ($\neg(6 \mid M+1)$). Proof via `Real.rpow` monotonicity on $(k/p)^{-\varepsilon} - k^{-\varepsilon}$. | `Candidate new theorem` |
+| **8. `InterCheckpointSawtoothExcursionAndPronicSandwich`** | `two_mul_sieveRenormalizedPrefixDefect_sub_rough_checkpoint`, `sieveSeq_pronicSeq_of_rough` | Additivity of $s_{N,c}$ across coprime factors $r(r+1)$ when $\gcd(r, L_N) = 1$ ([TH10]). | Shows $s_{N,c}(r(r+1)) = s_{N,c}(r+1)$ and $s_{N,c}((r-1)r) = s_{N,c}(r-1)$ for $N$-rough $r$, and bounds inter-checkpoint defect excursions by intermediate Dirichlet energy. | `Corollary` |
+| **9. `ClockScheduleSynthesisAndPrimePowerPhaseRecovery`** | `clockWaveletRamanujan_prime_pow_self`, `clockWaveletRamanujan_prime_pow_dipole_cancel` | Explicit formula for Ramanujan sums $c_{p^b}(p^a)$ at prime-power arguments (Ramanujan 1918; [TH10, Prop. 2]). | Forms the two-lag difference $\rho_q(p^a) - \rho_q(p^{a-1})$ and records that $\sum_{b \ge 1} (c_{p^b}(p^a) - c_{p^b}(p^{a-1})) = 0$. Proof by case analysis on $b < a$, $b = a$, $b = a+1$, $b > a+1$. | `Corollary` |
+| **10. `CompositeClockWaveletTensorAndPhaseRecovery`** | `sieveLagMultiplier_mul_of_coprime`, `clockWaveletMultiplier_prime_pow_mul_of_coprime` | Multiplicativity of $q \mapsto c_q(L)$ and $\varphi(q)$ across coprime moduli $\gcd(q_1, q_2) = 1$ ([TH10]; [CMS16]). | Factorizes composite lag multipliers and prime-power wavelet multipliers as products across coprime components. | `Known` |
+| **11. `TransHorizonGramMatrixAndRadicalProjection`** | `sieveSeq_mul_of_dvd_of_squarefree_support`, `sieveSeq_pow_of_squarefree_support` | A squarefree-supported divisor sum depends only on the radical $\operatorname{rad}_N(k) = \gcd(k, N\#)$ ([TH10]). | Proves $s_{N,c}(d k) = s_{N,c}(k)$ for $d \mid k$ and $s_{N,c}(k^m) = s_{N,c}(k)$ ($m \ge 1$) at all horizons $N$, plus the two-band $L^2$ expansion. Proof via `Squarefree.dvd_of_dvd_mul_self`. | `Known` |
+| **12. `AllHorizonRadicalSawtoothAndDefectReduction`** | `activeCenteredSawtoothSum_pow_of_squarefree_support`, `sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_pow_nonpos` | Radical invariance applied to $d \mapsto c(d)/d$ and power checkpoints $M = k^m - 1$. | Combines `sieveSeq_pow_of_squarefree_support` with the first-octave bound $|s_{N,c_\varepsilon}(k)| \le 1$ ($k \le 2N$) to obtain $\widetilde{\mathcal{D}}_N(k^m - 1; c_\varepsilon) \le 0$ for all $m \ge 1$. | `Corollary` |
+| **13. `HorizonRadicalStateAndDefectNormalForm`** | `horizonRadicalState_eq_iff_all_squarefree_sieveSeq`, `sieveRenormalizedPrefixDefect_le_canonical_state` | Point-separation of $N\#$-even functions on divisors of $N\#$ ([TH10]). | Proves $\operatorname{rad}_N(k) = \operatorname{rad}_N(\ell) \iff \forall \text{ squarefree } c,\, s_{N,c}(k) = s_{N,c}(\ell)$ using indicator weights $\mathbf{1}_{d = p}$, and bounds $\widetilde{\mathcal{D}}_N(M; c) \le \widetilde{\mathcal{D}}_N(\operatorname{rad}_N(M+1)-1; c)$ when $\operatorname{rad}_N(M+1) \le M+1$. | `Corollary` |
+| **14. `RadicalCheckpointSignRigidityAndGaugeLaw`** | `sieveRenormalizedPrefixDefect_unitShiftWeight`, `rough_iff_forall_squarefree_sieveRenormalizedPrefixDefect_nonpos` | No direct counterpart in [TH10]/[CMS16]; characterizes universal non-positivity of prefix correlation defects under $c(1) \mapsto c(1) + a$. | Proves that shifting $c(1) \mapsto c(1) + a$ leaves all sawtooth remainders and step differences invariant while shifting $2\widetilde{\mathcal{D}}_N(M; c)$ linearly by $2a(s(M+1)-s(1))$, whence $\widetilde{\mathcal{D}}_N(M; c) \le 0$ for all squarefree $c$ **iff** $M+1$ is $N$-rough. | `Candidate new theorem` |
+| **15. `FiniteMultiplicativeObservationState`** | `horizonObservationState_eq_iff_all_sieveSeq`, `horizonObservationState_idempotent` | Characterization of $L_N$-even functions: $f$ is a linear combination of $\mathbf{1}_{d \mid k}$ ($d \le N$) iff $f(k)$ depends only on $\gcd(k, L_N)$ ([TH10, §2]). | Formalizes $\sigma_N(k) = \operatorname{lcm}\{d \le N : d \mid k\} = \gcd(k, L_N)$, its idempotence, and point separation by indicator weights. | `Known` |
+| **16. `SuccessorStateObstructionAndPhaseRefinement`** | `horizonObservationState_successor_congr_iff`, `horizonObservationPhase_eq_iff_finite_trace` | Periodicity of $L_N$-even functions modulo $L_N$ ([TH10]). | Proves the sharp boundary that $+1$ descends to $\sigma_N(k)$ **iff** $N \le 2$ (using counterexample $k=1, \ell=5$ at $N \ge 3$), and shows $N$ consecutive observations determine $k \bmod L_N$. | `Candidate new theorem` |
+| **17. `ArithmeticUncertaintyAndSpikeCancellation`** | `two_mul_sieveRenormalizedPrefixDefect_eq_neg_init_dirichlet_add_coprime_pair`, `sieve_uncertainty_lower_bound_of_eq_zero` | Discrete summation by parts / Last-step separation and discrete Cauchy–Schwarz $(\sum_{t=0}^{L-1} \Delta f_t)^2 \le L \sum_{t=0}^{L-1} (\Delta f_t)^2$. | Separates the last step $(s(M+1)-s(M))^2$ from $E_{N,c}(M)$ to cancel $s(M+1)^2$, giving $\widetilde{\mathcal{D}}_N(M; c) \le 0$ whenever $s_{N,c}(M)s_{N,c}(M+1) \le \frac{1}{2}(s_{N,c}(M)^2 + s_{N,c}(1)^2)$ (in particular when $s_{N,c}(M) = 0$). | `Corollary` |
+| **18. `MultiPointDefectAveragingAndPeriodConservation`** | `sieveRenormalizedPrefixDefect_add_modulus`, `horizonPeriodDefectWindow_succ_sub_eq` | Translation invariance of complete-period sums of $L_N$-periodic functions ([TH10]; [CMS16]). | Shows $2\widetilde{\mathcal{D}}_N(M + m L_N; c) = 2\widetilde{\mathcal{D}}_N(M; c) - m E^{\mathrm{per}}_{N,c}$. | `Corollary` |
+| **19. `PrimeChainSieveBridgeAndSpectralCutoff`** | `varianceEnergy_chain_sieveSeq_eq_zero_of_prime_gt`, `varianceEnergy_chain_sieveSeq_eq_ite`, `varianceEnergy_chain_sieveSeq_eq_of_mem_sievePrimeTail` | Multiplicative prime extraction $s_{H,c}(p b) - s_{H,c}(b) = s_{H/p, c(p\cdot)}(b)$ for $p \nmid b$ and squarefree-supported $c$. | Transfers prime extraction to the Hilbert-space energy `CHMDPrimeChain.varianceEnergy`, proving exact vanishing for $p > H$, collapse of all excited shells $r \ge 1$ to a single rank-1 ground-state jump for $p \le H$, and closed-form quantization for $H/2 < p \le H$. | `Candidate new theorem` |
+| **20. `SlidingPeriodPoincareCoercivityAndHarmonicDecomposition`** | `sliding_period_dirichletEnergy_sub_variance_eq_excess`, `sliding_period_variance_le_dirichletEnergy` | Complete-period Parseval/Ramanujan orthogonality for $L_N$-even functions ([TH10, Thm. 3]; [Sel]; [CMS16, Thm. 1]): $\frac{1}{L}\operatorname{Var} = \sum_{q=2}^N \varphi(q) Y_q^2$, $\frac{1}{L} E_{\mathrm{Dir}} = 2\sum_{q=2}^N (\varphi(q)-\mu(q))Y_q^2$. | Removes the `finiteHarmonicSum N c = 0` hypothesis from earlier `BezoutValuationIncidence` files and observes that $\varphi(q) \ge 2\mu(q)$ ($q \ge 2$) yields $\operatorname{Var} \le E_{\mathrm{Dir}}$ over a full period $L_N$. | `Corollary` |
+| **21. `BuchstabFermiCovarianceAndQuotientChainBridge`** | `sieveL2PrefixEnergy_prime_horizon_sub_eq`, `sieveL2PrefixEnergy_moebiusReal_prime_horizon_sub_of_lt_sq` | Buchstab step $s_{p,c}(k) = s_{p-1,c}(k) + c(p)\mathbf{1}_{p \mid k}$ combined with $s_{p-1,c}(p j) = s_{p-1,c}(j)$ and Möbius inversion $\sum_{j=1}^Q (1*\mu)(j) = 1$ for $Q < p$. | Evaluates the finite-window $L^2$ energy step $\mathcal{E}_p(M; \mu) - \mathcal{E}_{p-1}(M; \mu) = \lfloor M/p \rfloor - 2$ for $p \le M < p^2$. | `Corollary` |
+| **22. `TotientObservabilityThresholdAndValuationFiberCollision`** | `prime_pow_trace_injective_iff_totient_le`, `gcd_prime_pow_collision_below_totient`, `horizonObservationPhase_eq_iff_totient_trace`, `horizonRadicalPhase_eq_iff_prime_totient_trace` | **Not in [TH10], [Sel], or [CMS16].** Resolves the finite-window inverse observability problem for $L_N$-even and $N\#$-even gcd traces under $+1$. | Proves that $W$ consecutive observations $t \mapsto \gcd(k+t, p^a)$ uniquely determine $k \bmod p^a$ **iff** $W \ge \varphi(p^a) = p^a - \tau_{\mathrm{vis}}(p^a)$ (with explicit collision $k=1, \ell=1+p^{a-1}$ at $W = \varphi(p^a)-1$), and establishes the global thresholds $\Phi_{\max}(N) = \max_{p^a \le N} \varphi(p^a) < N$ and $\Phi_{\mathrm{rad}}(N) = \max_{p \le N} (p-1)$. | `Candidate new theorem` |
+| **23. `ShortWindowCorrelationDefectAndIsoStateClassification`** | `forall_weight_shortWindowRenormalizedDefect_nonpos_iff_state_eq`, `forall_squarefree_shortWindowRenormalizedDefect_nonpos_iff_radicalState_eq`, `shortWindowRenormalizedDefect_moebiusReal_nonpos_of_right_zero_cone` | **Not in [TH10], [Sel], or [CMS16].** Replaces complete-period Ramanujan averaging with exact short-window ($M \ll L_N$) correlation-defect classification for arbitrary starting phase $M_0$. | Proves that $\widetilde{\mathcal{D}}_N(M_0, M; c) \le 0$ holds for all weights $c$ (resp. all squarefree $c$) **iff** the window endpoints lie in the same observation fiber $\sigma_N(M_0+M+1) = \sigma_N(M_0+1)$ (resp. $\operatorname{rad}_N(M_0+M+1) = \operatorname{rad}_N(M_0+1)$), and proves starting-phase-free contraction whenever $s_{N,\mu}(M_0+M+1) = 0$. | `Candidate new theorem` |
 
 ---
 
-## 4. The Fifteen Foundational Pillars in Lean 4
+## 3. The Central Mathematical Problem
 
-All fifteen foundational pillars are **100% unconditional, premise-free, axiom-free, and computation-free**:
+### 3.1 Problem Statement
+Given a truncation horizon $N \ge 1$, an observer is allowed to measure only **horizon-$N$ multiplicative divisor data** — equivalently, the $L_N$-even observation state $\sigma_N(k) = \gcd(k, L_N)$ or the family of truncated divisor sums $s_{N,c}(k) = \sum_{d \mid k,\, d \le N} c(d)$ — along a short additive window $[M_0 + 1, M_0 + M]$ of length $M \ll L_N = \operatorname{lcm}(1, \dots, N) = e^{\psi(N)}$. Two coupled problems govern the interaction between this multiplicative projection and the additive shift $T_+ : k \mapsto k + 1$:
 
-1. **[ValuationClockChainBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ValuationClockChainBridge.lean)** (*Pillar I: Valuation-Clock to Prime-Chain Bridge*)
-   - `lagVisibilityClock_mul_rad`, `div_lagVisibilityClock_eq_rad`
-   - `prime_div_lagVisibilityClock_iff_isPrimePow`
-   - `vonMangoldt_eq_log_div_lagVisibilityClock`
-   - `not_prime_div_lagVisibilityClock_pronicSeq`
-   - `sieveLagMultiplier_prime_power_eq_zero_of_lt_clock`, `sieveLagMultiplier_prime_power_at_clock`, `ramanujanLagCoefficient_prime_power_at_clock`
-   - `div_lagVisibilityClock_of_same_chain`, `divisor_cut_eq_clock_chainVariance`
+1. **The Additive Phase Observability Problem:** Since $\sigma_N(k)$ does not determine $\sigma_N(k+1)$ for $N \ge 3$, what is the **minimum window length** $W^*(N)$ of consecutive multiplicative state observations $\sigma_N(k), \sigma_N(k+1), \dots, \sigma_N(k+W-1)$ needed to uniquely reconstruct the additive phase $k \bmod L_N$ (or $k \bmod N\#$ for squarefree weights) and thus predict all subsequent additive evolutions?
+2. **The Sub-Period Short-Window Correlation Problem:** In the difficult trans-horizon regime $N \le M \ll L_N$ with arbitrary starting phase $M_0$, when does the short-window unit-shift correlation $\sum_{k=M_0+1}^{M_0+M} s_{N,c}(k) s_{N,c}(k+1)$ remain strictly dominated by the short-window energy $\sum_{k=M_0+1}^{M_0+M} s_{N,c}(k)^2$, i.e., when is the short-window renormalized defect
+   $$\widetilde{\mathcal{D}}_N(M_0, M; c) := \sum_{k=M_0+1}^{M_0+M} s_{N,c}(k) s_{N,c}(k+1) - \sum_{k=M_0+1}^{M_0+M} s_{N,c}(k)^2$$
+   non-positive or controlled without complete-period error blowup?
 
-2. **[TransHorizonRoughAbsorptionAndReset.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonRoughAbsorptionAndReset.lean)** (*Pillar II: Trans-Horizon Rough Absorption & Checkpoint Reset*)
-   - `IsTransHorizonRough`, `isTransHorizonRough_one`, `isTransHorizonRough_of_prime_gt`, `IsTransHorizonRough.coprime_of_le`, `IsTransHorizonRough.mul`, `IsTransHorizonRough.pow`
-   - `sieveSeq_mul_of_isTransHorizonRough`, `sieveSeq_of_isTransHorizonRough`, `sieveSeq_prime_of_gt`
-   - `activeCenteredSawtoothSum_mul_of_isTransHorizonRough`, `activeCenteredSawtoothSum_eq_zero_of_isTransHorizonRough`
-   - `sieveSeq_moebiusReal_mul_eq_zero_of_isTransHorizonRough`, `sieveSeq_pmPowerDampedRealWeight_mul_eq_of_isTransHorizonRough`
-   - `sieveRenormalizedPrefixDefect_eq_neg_half_dirichlet_of_isTransHorizonRough`
-   - `sieveRenormalizedPrefixDefect_nonpos_of_isTransHorizonRough`, `sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_mul_nonpos_of_isTransHorizonRough`, `exists_gt_sieveRenormalizedPrefixDefect_nonpos`
-
-3. **[BuchstabHorizonFiltrationAndSawtoothEvolution.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/BuchstabHorizonFiltrationAndSawtoothEvolution.lean)** (*Pillar III: Buchstab Horizon Filtration & Sawtooth Evolution*)
-   - `sieveSeq_horizon_band_sub`, `sieveSeq_succ_horizon_sub`
-   - `sievedFractSum_horizon_band_sub`, `sievedFractSum_succ_horizon_sub`
-   - `sievePrefixDiscrepancy_horizon_band_sub`, `sievePrefixDiscrepancy_succ_horizon_sub`
-   - `sieveSeq_eq_sum_divisors_of_le`, `sieveSeq_transHorizon_tail_decomp`, `sievePrefixDiscrepancy_transHorizon_tail_decomp`
-   - `sieveSeq_first_octave_eq_sum_divisors_sub_self`, `sieveSeq_pmPowerDampedRealWeight_first_octave_eq`
-
-4. **[QuotientSpectralGapAndOddChainCoercivity.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/QuotientSpectralGapAndOddChainCoercivity.lean)** (*Pillar IV: Quotient Spectral Gap & Odd-Chain Coercivity*)
-   - `inner_oneL_eq_zero_of_odd`, `odd_reducedSource_primitive`
-   - `odd_eigenvector_eigenvalue_lt_one`, `not_riemannHypothesis_iff_exists_odd_eigenvector_mem_Ioo_half_one`
-   - `riemannHypothesis_iff_odd_reducedSource_energy_nonneg`, `riemannHypothesis_of_primitive_radicalOrthogonal_energy_nonneg`
-   - `sourceEnergy_nonneg_of_fullSpectralNullspace_of_polarCosine_eq_zero`
-   - `primeJump_tsum_eq_sameSide_add_chainIntegral`, `riemannHypothesis_iff_odd_primeChain_poincare`
-
-5. **[TransHorizonMartingaleTelescopeAndPrimeCheckpoints.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonMartingaleTelescopeAndPrimeCheckpoints.lean)** (*Pillar V: Trans-Horizon Martingale Variance Telescope & Prime Checkpoints*)
-   - `sum_Icc_one_telescope`
-   - `weightedCenteredSawtoothSum_sq_sub_one_eq_active_deleted_add_inactive`
-   - `active_deleted_add_inactive_martingale_ge_neg_initial_sq`
-   - `filter_dvd_prime_of_gt`, `sieveSeq_and_harmonic_prime_of_gt`
-   - `activeCenteredSawtoothSum_prime_of_gt_eq_zero`, `inactiveCenteredSawtoothSum_prime_of_gt_eq_weighted`
-   - `weightedCenteredSawtoothSum_prime_sub_pred_of_gt`, `weightedCenteredSawtoothSum_prime_sq_sub_pred_sq_of_gt`
-
-6. **[ComplementaryQuotientAndSecondOctaveLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ComplementaryQuotientAndSecondOctaveLaw.lean)** (*Pillar VI: Complementary Quotient Reciprocity, Multi-Band Buchstab Calculus, & Rough Octave Extension*)
-   - `complementaryQuotientTail`, `sum_divisors_filter_gt_eq_complementaryQuotientTail`, `sieveSeq_eq_sum_divisors_sub_complementaryQuotientTail`
-   - `complementary_quotient_le_of_le_mul`, `complementaryQuotientTail_eq_sum_Icc_of_le_mul`
-   - `divisors_filter_gt_eq_singleton_of_rough`, `sieveSeq_rough_band_eq_sum_divisors_sub_self`
-   - `sieveSeq_odd_le_three_mul_eq_sum_divisors_sub_self`, `sieveSeq_coprime_six_le_four_mul_eq_sum_divisors_sub_self`
-   - `sieveSeq_second_octave_eq_sum_divisors_sub`, `sieveSeq_pmPowerDampedRealWeight_second_octave_eq`, `sieveSeq_third_band_eq_sum_divisors_sub`
-
-7. **[InterCheckpointSawtoothExcursionAndPronicSandwich.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/InterCheckpointSawtoothExcursionAndPronicSandwich.lean)** (*Pillar VII: Inter-Checkpoint Dirichlet Excursions & Rough-Neighbor Pronic Bézout Localization*)
-   - `two_mul_sieveRenormalizedPrefixDefect_sub_rough_checkpoint`
-   - `sieveRenormalizedPrefixDefect_le_rough_checkpoint_of_sq_le`
-   - `sieveRenormalizedPrefixDefect_rough_sub_pred`
-   - `sieveSeq_pronicSeq_pred_of_rough`, `sieveSeq_pronicSeq_of_rough`
-   - `sieveSeq_pronicSeq_neighbor_sum_of_rough`, `sieveSeq_pronicSeq_neighbor_diff_of_rough`
-
-8. **[ClockScheduleSynthesisAndPrimePowerPhaseRecovery.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ClockScheduleSynthesisAndPrimePowerPhaseRecovery.lean)** (*Pillar VIII: $p$-Adic Valuation-Clock Filter Law, Exact Dipole Wavelets, & Prime-Power Phase Recovery*)
-   - `sieveLagMultiplier_prime_pow_of_le`, `ramanujanLagCoefficient_prime_pow_of_le`
-   - `sieveLagMultiplier_prime_pow_succ`, `ramanujanLagCoefficient_prime_pow_succ`
-   - `sieveLagMultiplier_prime_pow_of_gt`, `ramanujanLagCoefficient_prime_pow_of_gt`
-   - `clockWaveletMultiplier`, `clockWaveletMultiplier_prime_pow_of_lt`, `clockWaveletMultiplier_prime_pow_self`, `clockWaveletMultiplier_prime_pow_succ`, `clockWaveletMultiplier_prime_pow_of_gt`
-   - `clockWaveletRamanujan`, `clockWaveletRamanujan_prime_pow_of_lt`, `clockWaveletRamanujan_prime_pow_self`, `clockWaveletRamanujan_prime_pow_succ`, `clockWaveletRamanujan_prime_pow_of_gt`, `clockWaveletRamanujan_prime_pow_dipole_cancel`
-
-9. **[CompositeClockWaveletTensorAndPhaseRecovery.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/CompositeClockWaveletTensorAndPhaseRecovery.lean)** (*Pillar IX: Composite Valuation-Clock Wavelet Tensor Products & Multi-Prime Phase Recovery*)
-   - `sieveLagMultiplier_mul_of_coprime`, `sieveLagMultiplier_mul_lag_of_coprime`, `sieveLagMultiplier_mul_split`
-   - `ramanujanLagCoefficient_mul_of_coprime`, `ramanujanLagCoefficient_mul_lag_of_coprime`, `ramanujanLagCoefficient_mul_split`
-   - `clockWaveletMultiplier_prime_pow_mul_of_coprime`, `clockWaveletRamanujan_prime_pow_mul_of_coprime`
-
-10. **[TransHorizonGramMatrixAndRadicalProjection.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonGramMatrixAndRadicalProjection.lean)** (*Pillar X: Buchstab $L^2$ Gram Band Decomposition & Universal Trans-Horizon Radical Invariance*)
-    - `dvd_of_dvd_mul_self_of_squarefree`, `dvd_of_dvd_mul_of_dvd_of_squarefree`
-    - `sieveSeq_mul_of_dvd_of_squarefree_support`, `sieveSeq_mul_right_of_dvd_of_squarefree_support`
-    - `sieveSeq_sq_of_squarefree_support`, `sieveSeq_pow_of_squarefree_support`, `sieveSeq_prime_pow_mul_eq_prime_mul_of_squarefree_support`
-    - `sieveSeq_moebiusReal_mul_of_dvd`, `sieveSeq_moebiusReal_pow`, `sieveSeq_pmPowerDampedRealWeight_mul_of_dvd`, `sieveSeq_pmPowerDampedRealWeight_pow`
-    - `sieveBandSeq`, `sieveL2PrefixEnergy`, `sieveL2PrefixEnergy_horizon_band_sub`, `sieveL2PrefixEnergy_ge_add_band_of_cov_nonneg`
-
-11. **[AllHorizonRadicalSawtoothAndDefectReduction.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/AllHorizonRadicalSawtoothAndDefectReduction.lean)** (*Pillar XI: All-Horizon Radical Sawtooth Invariance & Power-Checkpoint Defect Dissipation*)
-    - `squarefree_support_harmonic`
-    - `activeCenteredSawtoothSum_mul_of_dvd_of_squarefree_support`, `activeCenteredSawtoothSum_pow_of_squarefree_support`
-    - `sieveSeq_pmPowerDampedRealWeight_pow_sq_le_one`
-    - `sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_pow_nonpos`, `sieveRenormalizedPrefixDefect_moebiusReal_pow_nonpos`
-    - `sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_pow_le_rough_checkpoint`
-
-12. **[FiniteMultiplicativeObservationState.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/FiniteMultiplicativeObservationState.lean)** (*Pillar XII: Canonical Finite Multiplicative Observation State & Quotient Monoid*)
-    - `horizonObservationModulus`, `horizonObservationState`
-    - `dvd_horizonObservationState_iff`, `sieveSeq_horizonObservationState`
-    - `horizonObservationState_eq_iff_all_sieveSeq`, `horizonObservationState_idempotent`
-    - `horizonObservationState_mul`, `horizonObservationState_add_modulus`
-    - `horizonObservationState_eq_iff_all_multiplicative_contexts`, `exists_gt_all_multiplicative_sieveSeq_eq`
-
-13. **[SuccessorStateObstructionAndPhaseRefinement.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SuccessorStateObstructionAndPhaseRefinement.lean)** (*Pillar XIII: Sharp $N \le 2$ Successor State Obstruction & Finite-Trace Residue Phase Refinement*)
-    - `horizonObservationState_successor_congr_iff`, `horizonObservationState_successor_update_exists_iff`
-    - `horizonObservationPhase`, `horizonObservationPhase_lt_modulus`, `horizonObservationState_of_horizonObservationPhase`
-    - `horizonObservationPhase_add`, `horizonObservationPhase_succ_eq_of_eq`, `horizonObservationPhase_mul`
-    - `horizonObservationPhase_eq_iff_finite_trace`
-    - `sieveRenormalizedPrefixDefect_eq_of_horizonObservationPhase_eq`
-
-14. **[ArithmeticUncertaintyAndSpikeCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ArithmeticUncertaintyAndSpikeCancellation.lean)** (*Pillar XIV: Exact Boundary-Spike Cancellation, Predecessor-Zero Absorption, & Trans-Horizon Arithmetic Uncertainty Principle*)
-    - `two_mul_sieveRenormalizedPrefixDefect_eq_neg_init_dirichlet_add_coprime_pair`
-    - `sieveRenormalizedPrefixDefect_nonpos_of_mul_succ_nonpos`, `sieveRenormalizedPrefixDefect_nonpos_of_eq_zero`, `sieveRenormalizedPrefixDefect_nonpos_of_mul_succ_le_half_sq`
-    - `sieveRenormalizedPrefixDefect_moebiusReal_nonpos_of_eq_zero`, `sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_nonpos_of_eq_zero`
-    - `sieveRenormalizedPrefixDefect_pred_add_self_eq`, `sieveRenormalizedPrefixDefect_pred_add_self_nonpos_of_mul_le_one_sq`
-    - `path_poincare_step_identity`, `sq_sub_le_length_mul_sum_range_addDiff_sq`, `sieve_uncertainty_lower_bound_of_eq_zero`, `sieve_uncertainty_lower_bound_of_rough_anchor`
-
-15. **[PrimeChainSieveBridgeAndSpectralCutoff.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/PrimeChainSieveBridgeAndSpectralCutoff.lean)** (*Pillar XV: All-Horizon Prime-Chain Renormalization, Excited-Shell Collapse, & `CHMDPrimeChain` Spectral Cutoff*)
-    - `filter_dvd_prime_mul_not_dvd_eq`, `sum_filter_dvd_prime_mul_dvd_eq_sieveSeq_div`, `sieveSeq_prime_mul_sub_eq_sieveSeq_div`
-    - `sieveSeq_eq_ordCompl_of_prime_gt`, `sieveSeq_eq_of_same_chain_of_prime_gt`
-    - `bipartiteEnergy_chain_sieveSeq_eq_zero_of_prime_gt`, `varianceEnergy_chain_sieveSeq_eq_zero_of_prime_gt`
-    - `sieveSeq_prime_pow_succ_mul_eq`, `sieveSeq_eq_prime_mul_ordCompl_of_dvd_of_squarefree_support`
-    - `sieveSeq_eq_of_same_chain_of_dvd_of_squarefree_support`, `sieveSeq_sub_ordCompl_eq_sieveSeq_div_of_dvd_of_squarefree_support`
+### 3.2 What Classical Theories Leave Unresolved and Why It Matters Independently of RH
+- **Limitation of $L_N$-even harmonic analysis ([TH10]) and Selberg forms ([Sel]):** Classical Ramanujan orthogonality operates on the finite abelian group $\mathbb{Z}/L_N\mathbb{Z}$. It yields exact identities only after averaging over a **complete period** $L_N = e^{\psi(N)}$. For $N = 100$, $L_N \approx 10^{43}$; complete-period averaging says nothing about polynomial windows $M = N^\alpha$ or short consecutive traces of length $W < N$.
+- **Limitation of finite Ramanujan shifted-convolution expansions ([CMS16]):** Expanding $s_{N,c}(k) = \sum_{q \le N} Y_q c_q(k)$ and summing $s_{N,c}(k)s_{N,c}(k+1)$ over a short window $[M_0+1, M_0+M]$ produces a complete-period main term plus an incomplete-period remainder bounded only by $O\bigl((\sum_{d \le N} |c(d)|)^2\bigr)$ (independent of $M$, positive, and growing as $O(N^2)$ for bounded weights). It cannot detect when a short window of length $M = O(1)$ or $M = O(N)$ has **exact negative correlation defect**.
+- **Intrinsic mathematical significance (independent of RH):**
+  1. The observability problem determines the exact information-theoretic capacity of truncated gcd sensors $k \mapsto \gcd(k, L_N)$ to reconstruct residue classes under $+1$.
+  2. The short-window correlation problem governs local $L^2$ variation and oscillation of Selberg sieve weights, truncated Möbius convolutions $s_{N,\mu}(k) = \sum_{d \mid k,\, d \le N} \mu(d)$, and Báez-Duarte / Nyman–Beurling indicators across polynomial scales $M \ll e^{\psi(N)}$.
 
 ---
 
-## 5. Structural Traps & Dead Ends to Avoid
+## 4. The Organizing Principle: Valuation-Clock Fiber Geometry of $\bar{\sigma}_N$
 
-When contributing new theorems to `TransHorizonIncidenceMechanics`, **never fall into these proven dead ends**:
+A single structural correspondence explains the $N \le 2$ successor obstruction, the exact totient observability threshold $\Phi_{\max}(N) < N$, and the short-window iso-state classification simultaneously.
 
-1. **Trap 1 — Staying Inside the Sub-Horizon Regime ($M + 1 \le N$):**
-   Do not prove further identities gated on $M + 1 \le N$ or $k \le N$. Every new theorem in this field must operate in the trans-horizon regime $M \ge N$ (via $N$-rough absorption, complementary quotient bands $k \in (B N, (B+1)N]$, all-horizon squarefree divisor collapse, or prime-chain horizon renormalization $H \mapsto H / p$).
-2. **Trap 2 — Unprojected `SourceGraph` Spectral Bounds:**
-   Never attempt a uniform spectral gap $< 1/2$ on the unprojected space `SourceGraph`: every prime chain $p$ carries a $1$-dimensional radical-constant kernel (`signedRadical`) on which `resolvent = 1`. Always work on the radical-orthogonal quotient `signedRadicalᗮ` (`reducedSource f`) and/or the odd sector `flipL f = -f`.
-3. **Trap 3 — Unconditioned Pointwise Sign Claims at Arbitrary Composite Trans-Horizon Points:**
-   At composite $M + 1 > 2N$ with small prime factors, $|s_{N,c}(M + 1)|$ can exceed $|s_{N,c}(1)|$. Instead of making false pointwise claims, use Pillar XIV's `two_mul_sieveRenormalizedPrefixDefect_eq_neg_init_dirichlet_add_coprime_pair` (which cancels $+s_{N,c}(M+1)^2$ identically against the $k=M$ Dirichlet step), `sieveRenormalizedPrefixDefect_nonpos_of_eq_zero` (predecessor-zero spike absorption), or `sieveRenormalizedPrefixDefect_pred_add_self_eq` (two-point consecutive defect averaging).
-4. **Trap 4 — Assuming Multiplicative Observation States Close Under $k \mapsto k + 1$ for $N \ge 3$:**
-   Pillar XIII (`horizonObservationState_successor_congr_iff`) proved that `horizonObservationState N k` is successor-congruent if and only if $N \le 2$. For $N \ge 3$, always pass to the refined residue phase `horizonObservationPhase N k = k % L_N` or use valuation-clock dipole wavelets.
-5. **Trap 5 — Ignoring Complementary Quotient Multiplicity in Higher Bands:**
-   Above $3N$, an integer $k \in (B N, (B+1)N]$ can have multiple small divisors $q \in [1, B]$. Always use Pillar VI's `complementaryQuotientTail_eq_sum_Icc_of_le_mul` rather than guessing ad-hoc formulas.
-6. **Trap 6 — Toy Finite Computations or Empirical Checks:**
-   Do not add finite `norm_num` / `decide` numerical checks on specific small integers ($N = 6, 10, 30$). Every theorem must be universally quantified and structural.
-7. **Trap 7 — Conditional or Premise-Gated Theorems:**
-   Never add unproved analytic or arithmetic hypotheses (`hRH`, `hLindelof`, `hBaezDuarte`, `sorry`, `axiom`) to theorem signatures. Every theorem must be 100% unconditional.
+### 4.1 The Multiplicative State Fibration
+Consider the surjective projection from the additive phase group $\mathbb{Z}/L_N\mathbb{Z}$ to the poset of $L_N$-divisors $\mathcal{D}_N = \{g \in \mathbb{N} : g \mid L_N\}$:
+$$\bar{\sigma}_N : \mathbb{Z}/L_N\mathbb{Z} \twoheadrightarrow \mathcal{D}_N, \qquad k \bmod L_N \longmapsto \sigma_N(k) = \gcd(k, L_N).$$
+- **Fiber structure:** For each divisor state $g \mid L_N$, the fiber $\bar{\sigma}_N^{-1}(g) = \{k \bmod L_N : \gcd(k, L_N) = g\}$ has cardinality $\varphi(L_N / g)$.
+- **Valuation-clock shift invariance on fibers:** Locally at each prime power $p^a \le N$, the $p$-adic state map $k \bmod p^a \mapsto \gcd(k, p^a) \in \{1, p, \dots, p^a\}$ is invariant under translation by the **valuation visibility clock** $\tau_{\mathrm{vis}}(p^a) = p^{a-1}$ on every non-maximal fiber $\{k : v_p(k) < a\}$, **except** at the single maximal fiber $\{0 \bmod p^a\}$ where $p^{a-1} \mid k$ splits into $p^a \mid k$ vs. $p^a \nmid k$.
+
+### 4.2 Three Phenomena Predicted Before Proof by the Fiber Principle
+
+1. **Prediction 1 — Single-Step Automaton Failure at $N \ge 3$ (`SuccessorStateObstructionAndPhaseRefinement`):**
+   The additive shift $T_+ : k \mapsto k + 1$ descends to a well-defined map on $\mathcal{D}_N$ if and only if every fiber $\bar{\sigma}_N^{-1}(g)$ is a singleton, i.e., $\varphi(L_N / g) = 1$ for all $g \mid L_N \iff L_N \mid 2 \iff N \le 2$. At $N = 3$ ($L_3 = 6$), the rough fiber $\bar{\sigma}_3^{-1}(1) = \{1, 5\}$ has size $\varphi(6) = 2$, and $+1$ maps $1 \mapsto 2$ (state $2$) vs. $5 \mapsto 6$ (state $6$).
+
+2. **Prediction 2 — Exact Totient Observability Threshold $W^*(p^a) = \varphi(p^a) = p^a - \tau_{\mathrm{vis}}(p^a)$ (`TotientObservabilityThresholdAndValuationFiberCollision`):**
+   How many consecutive steps $t \in \{0, \dots, W - 1\}$ can two distinct residues $k \not\equiv \ell \pmod{p^a}$ stay in identical $p$-adic fibers $\gcd(k + t, p^a) = \gcd(\ell + t, p^a)$?
+   - To preserve $\gcd(\cdot, p^{a-1})$ at every step $t$, their difference $\ell - k$ must be a nonzero multiple of the valuation visibility clock $\tau_{\mathrm{vis}}(p^a) = p^{a-1}$.
+   - Once $p^{a-1} \mid (\ell - k)$ with $p^a \nmid (\ell - k)$, $\gcd(k + t, p^a)$ and $\gcd(\ell + t, p^a)$ agree at step $t$ **unless** one of $k + t$ or $\ell + t$ lands on the maximal fiber $0 \bmod p^a$.
+   - Because consecutive multiples of $p^{a-1}$ are spaced by $\tau_{\mathrm{vis}}(p^a) = p^{a-1}$ while multiples of $p^a$ are spaced by $p^a$, shifting $k = 1$ by $\tau_{\mathrm{vis}}(p^a) = p^{a-1}$ to $\ell = 1 + p^{a-1}$ pushes the first $p^a$-multiple in the $\ell$-trajectory to $t = p^a - p^{a-1} - 1 = \varphi(p^a) - 1$.
+   - Therefore, the fiber principle predicts **before proof** that $W = \varphi(p^a) - 1$ admits the exact valuation-clock collision $(k, \ell) = (1, 1 + p^{a-1})$, whereas $W \ge \varphi(p^a) = p^a - \tau_{\mathrm{vis}}(p^a)$ forces at least one of the two trajectories to hit $0 \bmod p^a$ and separate the traces. By the Chinese Remainder Theorem, the global observability threshold is $\Phi_{\max}(N) = \max_{p^a \le N} \varphi(p^a) < N$ (and $\Phi_{\mathrm{rad}}(N) = \max_{p \le N} (p - 1)$ on the squarefree quotient $\bar{\sigma}_N^{\mathrm{rad}}$).
+
+3. **Prediction 3 — Short-Window Iso-State Return Replaces Full-Period Return (`ShortWindowCorrelationDefectAndIsoStateClassification`):**
+   Over any window $[M_0 + 1, M_0 + M]$, Dirichlet polarization gives
+   $$2\widetilde{\mathcal{D}}_N(M_0, M; c) = -E_{N,c}(M_0, M) + s_{N,c}(M_0 + M + 1)^2 - s_{N,c}(M_0 + 1)^2.$$
+   Classical periodic analysis waits for a **phase return** $M_0 + M + 1 \equiv M_0 + 1 \pmod{L_N}$ ($M \in L_N \mathbb{Z}$, scale $e^{\psi(N)}$) to cancel the boundary term. The fiber principle shows that the boundary term depends only on the **observation fiber** $\bar{\sigma}_N$: it vanishes for all $c$ (giving exact dissipation $2\widetilde{\mathcal{D}}_N = -E_{N,c} \le 0$) if and only if $M_0 + M + 1$ and $M_0 + 1$ lie in the **same fiber of $\bar{\sigma}_N$** ($\sigma_N(M_0 + M + 1) = \sigma_N(M_0 + 1)$). Since the rough fiber $\bar{\sigma}_N^{-1}(1)$ has density $\varphi(L_N)/L_N = \prod_{p \le N}(1 - 1/p)$ and non-rough fibers repeat whenever $\gcd(k, L_N)$ repeats, **fiber returns occur at scale $O(\log N)$ to $O(N)$ instead of $e^{\psi(N)}$**.
 
 ---
 
-## 6. Research & Lean Engineering Rules
+## 5. Substantial Theorems Beyond the Classical Baseline
+
+### 5.1 Theorem A: Sharp Totient Observability Threshold & Valuation-Clock Fiber Collision (`TotientObservabilityThresholdAndValuationFiberCollision.lean`)
+
+1. **Exact Local Observability Classification (`prime_pow_trace_injective_iff_totient_le`):**
+   For every prime $p$, exponent $a \ge 1$, and window length $W \in \mathbb{N}$:
+   $$\Bigl(\forall k, \ell \in \mathbb{N},\; \bigl(\forall t < W,\; \gcd(k + t, p^a) = \gcd(\ell + t, p^a)\bigr) \implies k \equiv \ell \pmod{p^a}\Bigr) \iff W \ge \varphi(p^a).$$
+2. **Explicit Valuation-Clock Fiber Collision Below $\varphi(p^a)$ (`gcd_prime_pow_collision_below_totient`):**
+   For $k = 1$ and $\ell = 1 + \tau_{\mathrm{vis}}(p^a) = 1 + p^{a-1}$, $k \not\equiv \ell \pmod{p^a}$, yet for every $0 \le t < \varphi(p^a) - 1$:
+   $$\gcd(1 + t, p^a) = \gcd(1 + p^{a-1} + t, p^a).$$
+3. **Strictly Sub-$N$ Global Horizon Observability (`horizonObservationPhase_eq_iff_totient_trace`, `horizonTotientThreshold_lt_self`):**
+   Define $\Phi_{\max}(N) := \max_{d \in [1, N],\, \operatorname{IsPrimePow}(d)} \varphi(d)$ (`horizonTotientThreshold N`). Then $\Phi_{\max}(N) < N$ for every $N \ge 1$, and for all $k, \ell \in \mathbb{N}$:
+   $$k \equiv \ell \pmod{L_N} \iff \forall t < \Phi_{\max}(N),\; \sigma_N(k + t) = \sigma_N(\ell + t).$$
+4. **Squarefree / Primorial Observability Threshold (`horizonRadicalPhase_eq_iff_prime_totient_trace`, `radical_prime_collision_below_totient`):**
+   Define $\Phi_{\mathrm{rad}}(N) := \max_{p \in [1, N],\, p \text{ prime}} (p - 1)$ (`horizonPrimeTotientThreshold N`). Then for all $k, \ell \in \mathbb{N}$:
+   $$k \equiv \ell \pmod{N\#} \iff \forall t < \Phi_{\mathrm{rad}}(N),\; \operatorname{rad}_N(k + t) = \operatorname{rad}_N(\ell + t),$$
+   and for every prime $p \le N$, $W = p - 2$ fails on $k = 1, \ell = 2$.
+
+### 5.2 Theorem B: Short-Window Correlation Defect & Iso-State Endpoint Classification (`ShortWindowCorrelationDefectAndIsoStateClassification.lean`)
+
+For any horizon $N$, starting phase $M_0 \in \mathbb{N}$, and short window length $M \in \mathbb{N}$, define:
+$$\widetilde{\mathcal{D}}_N(M_0, M; c) := \widetilde{\mathcal{D}}_N(M_0 + M; c) - \widetilde{\mathcal{D}}_N(M_0; c) = \sum_{k=M_0+1}^{M_0+M} s_{N,c}(k) s_{N,c}(k+1) - \sum_{k=M_0+1}^{M_0+M} s_{N,c}(k)^2.$$
+
+1. **Short-Window Classical Remainder Decomposition (`shortWindowRenormalizedDefect_eq_classical_remainders_sub_reserve`):**
+   $$\widetilde{\mathcal{D}}_N(M_0, M; c) = \bigl(\mathcal{R}^{\mathrm{lcm}}_N(M_0 + M; c) - \mathcal{R}^{\mathrm{lcm}}_N(M_0; c)\bigr) + \bigl(\mathcal{R}^{\mathrm{Bez}}_N(M_0 + M; c) - \mathcal{R}^{\mathrm{Bez}}_N(M_0; c)\bigr) - M \cdot \mathcal{I}_N(c).$$
+2. **All-Weight Short-Window Iso-State Classification (`forall_weight_shortWindowRenormalizedDefect_nonpos_iff_state_eq`):**
+   $$\bigl(\forall c : \mathbb{N} \to \mathbb{R},\; \widetilde{\mathcal{D}}_N(M_0, M; c) \le 0\bigr) \iff \sigma_N(M_0 + M + 1) = \sigma_N(M_0 + 1).$$
+   Moreover, whenever $\sigma_N(M_0 + M + 1) = \sigma_N(M_0 + 1)$, $2\widetilde{\mathcal{D}}_N(M_0, M; c) = -E_{N,c}(M_0, M) \le 0$ for every weight $c$.
+3. **Squarefree-Weight Short-Window Iso-State Classification (`forall_squarefree_shortWindowRenormalizedDefect_nonpos_iff_radicalState_eq`):**
+   $$\bigl(\forall c : \mathbb{N} \to \mathbb{R},\; (\forall d, \neg\operatorname{Squarefree} d \to c(d) = 0) \to \widetilde{\mathcal{D}}_N(M_0, M; c) \le 0\bigr) \iff \operatorname{rad}_N(M_0 + M + 1) = \operatorname{rad}_N(M_0 + 1).$$
+4. **Starting-Phase-Free Right-Zero-Cone Contraction (`shortWindowRenormalizedDefect_moebiusReal_nonpos_of_right_zero_cone`):**
+   Whenever the right endpoint $M_0 + M + 1$ lies in the trans-horizon Möbius zero cone $s_{N,\mu}(M_0 + M + 1) = 0$ (for example, $M_0 + M + 1 = p q$ with distinct primes $p, q \le N$ and $p q > N$), for **every** starting phase $M_0 \in \mathbb{N}$:
+   $$\widetilde{\mathcal{D}}_N(M_0, M; \mu) \le -\frac{1}{2} E_{N,\mu}(M_0, M) - \frac{1}{2} s_{N,\mu}(M_0 + 1)^2 \le 0.$$
+
+---
+
+## 6. Difficult Parameter Regimes, Reusability, and Matched-Assumption Comparison
+
+### 6.1 Difficult Parameter Regimes ($M \ll L_N$, Joint $(N, M)$ Growth, and Starting-Phase Dependence)
+
+The table below summarizes how the short-window theorems in `ShortWindowCorrelationDefectAndIsoStateClassification.lean`, `SecondAndThirdBandRenormalizedDefectCalculus.lean`, and `BuchstabFermiCovarianceAndQuotientChainBridge.lean` depend on the window length $M \ll L_N$, the starting phase $M_0$, and the coefficient class $c$:
+
+| Parameter Regime | Coefficient Class $c$ | Starting-Phase $M_0$ Requirement | Exact Conclusion / Error Bound | Lean Theorem |
+| :--- | :--- | :--- | :--- | :--- |
+| **Arbitrary $M \ge 1$ ($M \ll L_N$), iso-state endpoints** | All weights $c : \mathbb{N} \to \mathbb{R}$ | $\sigma_N(M_0 + M + 1) = \sigma_N(M_0 + 1)$ | Exact equality $2\widetilde{\mathcal{D}}_N(M_0, M; c) = -E_{N,c}(M_0, M) \le 0$ (zero remainder error) | `shortWindowRenormalizedDefect_eq_neg_half_dirichlet_of_state_eq` |
+| **Arbitrary $M \ge 1$, iso-radical endpoints** (e.g. $[k, dk-1]$ for $d \mid k$, $[k, k^m-1]$) | All squarefree-supported $c$ | $\operatorname{rad}_N(M_0 + M + 1) = \operatorname{rad}_N(M_0 + 1)$ | Exact equality $2\widetilde{\mathcal{D}}_N(M_0, M; c) = -E_{N,c}(M_0, M) \le 0$ | `shortWindowRenormalizedDefect_mul_dvd_eq_neg_half_dirichlet`, `shortWindowRenormalizedDefect_pow_eq_neg_half_dirichlet` |
+| **Arbitrary $M \ge 1$, right endpoint in zero cone** $s_{N,\mu}(M_0+M+1)=0$ | `moebiusRealWeight` ($\mu$) | **None** (uniform in $M_0 \in \mathbb{N}$) | $2\widetilde{\mathcal{D}}_N(M_0, M; \mu) = -E_{N,\mu}(M_0, M) - s_{N,\mu}(M_0+1)^2 \le 0$ | `shortWindowRenormalizedDefect_moebiusReal_nonpos_of_right_zero_cone` |
+| **Multi-band short windows $M_0 + M + 1 \le 3N$** | Power-damped $c_\varepsilon$ ($\varepsilon > 0$) and $\mu$ | $M_0 + 1$ is $N$-rough ($\gcd(M_0+1, L_N)=1$) | $\widetilde{\mathcal{D}}_N(M_0, M; c_\varepsilon) \le -\frac{1}{2} E_{N,c_\varepsilon}(M_0, M) \le 0$ | `shortWindowRenormalizedDefect_pmPowerDampedRealWeight_rough_start_le_three_mul_nonpos` |
+| **General unconstrained endpoints** ($M_0, M \in \mathbb{N}$) | All weights $c : \mathbb{N} \to \mathbb{R}$ | **None** (uniform in $M_0, M \in \mathbb{N}$) | $\widetilde{\mathcal{D}}_N(M_0, M; c) \le \frac{1}{2}\bigl(\sum_{d=1}^N |c(d)|\bigr)^2 - \frac{1}{2} E_{N,c}(M_0, M)$ | `shortWindowRenormalizedDefect_le_half_sum_abs_sq` |
+| **Prime-horizon $L^2$ step in quadratic window** $p \le M < p^2$ | `moebiusRealWeight` ($\mu$) | Prefix $[1, M]$ ($M_0 = 0$) | $\mathcal{E}_p(M; \mu) - \mathcal{E}_{p-1}(M; \mu) = \lfloor M/p \rfloor - 2$ | `sieveL2PrefixEnergy_moebiusReal_prime_horizon_sub_of_lt_sq` |
+
+### 6.2 Reusability Across Materially Different Problems and Natural Families
+The Valuation-Clock Fiber Principle and unit-shift gauge calculus are reused across:
+1. **Two distinct mathematical problems:**
+   - *Inverse additive phase recovery from gcd traces* (`TotientObservabilityThresholdAndValuationFiberCollision`), and
+   - *Sub-period shifted correlation defects* (`ShortWindowCorrelationDefectAndIsoStateClassification`).
+2. **Four distinct arithmetic weight families:**
+   - General weights $c : \mathbb{N} \to \mathbb{R}$ (governed by $\sigma_N(k) = \gcd(k, L_N)$ and threshold $\Phi_{\max}(N)$),
+   - Squarefree-supported weights (governed by $\operatorname{rad}_N(k) = \gcd(k, N\#)$ and threshold $\Phi_{\mathrm{rad}}(N)$),
+   - Unconditional Möbius weight $\mu$ (governed by its trans-horizon zero cone $s_{N,\mu}(k) = 0$),
+   - Continuous power-damped weights $c_\varepsilon(d) = \mu(d) d^{-\varepsilon}$ ($\varepsilon > 0$) across trans-horizon bands $k \le 4N$.
+3. **Hilbert-space prime chains (`PrimeChainSieveBridgeAndSpectralCutoff`):**
+   - The same radical fiber collapse $s_{H,c}(p^r b) = s_{H,c}(p b)$ ($r \ge 1, p \nmid b$) annihilates the excited-shell scatter of `CHMDPrimeChain.varianceEnergy` on every $p$-adic prime chain.
+
+### 6.3 Sharp Boundaries, Counterexamples, and Positive Salvage
+Every impossibility boundary in the library is paired with an explicit counterexample and a positive recovery theorem:
+1. **Single-step successor boundary ($N \le 2$ vs. $N \ge 3$):**
+   - *Counterexample:* At $N \ge 3$, $k = 1$ and $\ell = 5$ satisfy $\sigma_N(1) = \sigma_N(5) = 1$, but $2 \mid 6 = \ell + 1$ while $2 \nmid 2 = k + 1$, so $\sigma_N(2) \ne \sigma_N(6)$ (`horizonObservationState_successor_congr_iff`).
+   - *Positive salvage:* Passing from $W = 1$ observation to $W = \Phi_{\max}(N) < N$ consecutive observations uniquely recovers $k \bmod L_N$ (`horizonObservationPhase_eq_iff_totient_trace`).
+2. **Sub-totient observability boundary ($W < \varphi(p^a)$ vs. $W \ge \varphi(p^a)$):**
+   - *Counterexample:* At $W = \varphi(p^a) - 1$, $k = 1$ and $\ell = 1 + p^{a-1}$ are incongruent modulo $p^a$ yet produce identical $\gcd(\cdot, p^a)$ traces on $0 \le t < \varphi(p^a) - 1$ (`gcd_prime_pow_collision_below_totient`).
+   - *Positive salvage:* At $W = \varphi(p^a)$, trace injectivity modulo $p^a$ holds unconditionally (`modEq_prime_pow_of_gcd_eq_below_totient`, `prime_pow_trace_injective_iff_totient_le`).
+3. **Non-iso-state short-window boundary ($\sigma_N(M_0+M+1) \ne \sigma_N(M_0+1)$):**
+   - *Counterexample:* Whenever $\sigma_N(M_0+M+1) \ne \sigma_N(M_0+1)$, there exists a weight $c_0$ with $s_{N,c_0}(M_0+M+1) \ne s_{N,c_0}(M_0+1)$, and shifting $c_0(1) \mapsto c_0(1) + a$ is a surjective affine function of $a \in \mathbb{R}$, producing weights with $\widetilde{\mathcal{D}}_N(M_0, M; c) > 0$ (`shortWindowRenormalizedDefect_all_unitShifts_nonpos_iff`).
+   - *Positive salvage:* Restricting to iso-state windows ($\sigma_N(M_0+M+1) = \sigma_N(M_0+1)$) or right-zero-cone windows ($s_{N,c}(M_0+M+1) = 0$) restores exact non-positivity $\widetilde{\mathcal{D}}_N(M_0, M; c) \le -\frac{1}{2} E_{N,c}(M_0, M) \le 0$.
+
+### 6.4 Matched-Assumption Comparison Against Strongest Classical Methods
+
+We compare `TransHorizonIncidenceMechanics` directly against the strongest classical methods on the **same function class** $s_{N,c}(k) = \sum_{d \mid k,\, d \le N} c(d)$ and the **same short window** $[M_0 + 1, M_0 + M]$ ($M \ll L_N$):
+
+| Problem & Matched Setup | Strongest Classical Method ([TH10], [Sel], [CMS16]) | `TransHorizonIncidenceMechanics` Method | Concrete Advantage Under Matched Assumptions |
+| :--- | :--- | :--- | :--- |
+| **Short-window correlation minus variance** $\widetilde{\mathcal{D}}_N(M_0, M; c)$ on $[M_0+1, M_0+M]$ ($M \ll L_N$) | Finite Ramanujan expansion $s_{N,c}(k) = \sum_{q \le N} Y_q c_q(k)$ ([CMS16, Thm. 1]) or pointwise $\ell^1$ remainder bound: splits into complete-period drift $-M \cdot \mathcal{I}_N(c)$ plus incomplete-period remainder bounded by $O\bigl((\sum_{d \le N} |c(d)|)^2\bigr)$ (or $\frac{1}{2}(\sum_{d \le N} |c(d)|)^2$ via polarization). | Iso-state / right-zero-cone Dirichlet polarization (`ShortWindowCorrelationDefectAndIsoStateClassification`): evaluates the exact endpoint state difference $s_{N,c}(\sigma_N(M_0+M+1))^2 - s_{N,c}(\sigma_N(M_0+1))^2$. | On every iso-state window ($\sigma_N(M_0+M+1) = \sigma_N(M_0+1)$), iso-radical window (for squarefree $c$), or right-zero-cone window ($s_{N,\mu}(M_0+M+1)=0$), the classical positive error $\frac{1}{2}(\sum_{d \le N} |c(d)|)^2$ (which is $\ge \frac{1}{2}\pi(N)^2$ for $c = \mu$) is **replaced by $0$**, proving strict non-positivity $\widetilde{\mathcal{D}}_N(M_0, M; c) \le -\frac{1}{2}E_{N,c}(M_0, M) \le 0$ for arbitrarily short $M \ll L_N$. |
+| **Additive phase recovery** $k \bmod L_N$ from consecutive gcd observations $\sigma_N(k+t)$ ($0 \le t < W$) | Direct divisor detection at $t = d - (k \bmod d) < d$ requires $W = N$ steps (`horizonObservationPhase_eq_iff_finite_trace`). | Valuation-clock totient threshold (`TotientObservabilityThresholdAndValuationFiberCollision`): uses local injectivity at $W = \varphi(p^a) = p^a - p^{a-1}$. | Strictly reduces the observation window from $N$ to $\Phi_{\max}(N) = \max_{p^a \le N} \varphi(p^a) < N$ for general weights and to $\Phi_{\mathrm{rad}}(N) = \max_{p \le N} (p-1)$ for squarefree weights, and proves local optimality on every prime power. |
+
+---
+
+## 7. Coherent Open Research Agenda
+
+The theory generates four tightly coupled open problems. None of these are solved by complete-period averaging, and solving any one directly unlocks or sharpens the others:
+
+1. **Open Problem 1 — Exact Global CRT Observability Threshold $W_{\mathrm{glob}}^*(N)$ vs. $\Phi_{\max}(N)$:**
+   - *Formulation:* Theorem A (` prime_pow_trace_injective_iff_totient_le`) proves that $W = \varphi(p^a)$ is the exact local threshold for a single prime power $p^a \le N$, so the global horizon-$N$ threshold $W_{\mathrm{glob}}^*(N)$ for reconstructing $k \bmod L_N$ from $t \mapsto \sigma_N(k+t)$ satisfies $W_{\mathrm{glob}}^*(N) \le \Phi_{\max}(N) = \max_{p^a \le N} \varphi(p^a) < N$. Does $W_{\mathrm{glob}}^*(N) = \Phi_{\max}(N)$ hold for all $N$, or can cross-prime divisibility constraints in $\sigma_N(k+t) = \gcd(k+t, L_N)$ rule out the local collision pair $k \equiv 1 \pmod{p^a}, \ell \equiv 1 + p^{a-1} \pmod{p^a}$ earlier by forcing different auxiliary prime factors $q \le N$?
+   - *Connection to Problem 2:* Any cross-prime obstruction that lowers $W_{\mathrm{glob}}^*(N)$ below $\Phi_{\max}(N)$ simultaneously bounds the maximum length of consecutive non-rough intervals and constrains the spacing of iso-state returns in Problem 2.
+
+2. **Open Problem 2 — Maximum-Gap Distribution of the Trans-Horizon Möbius Zero Cone $\mathcal{Z}_N(\mu)$ and Iso-State Checkpoints:**
+   - *Formulation:* By Theorem B (`shortWindowRenormalizedDefect_moebiusReal_nonpos_of_right_zero_cone` and `two_mul_sieveRenormalizedPrefixDefect_sub_rough_checkpoint`), the prefix defect $\widetilde{\mathcal{D}}_N(M; \mu)$ is non-positive at every $M$ whose successor $M + 1$ lies in the zero cone $\mathcal{Z}_N(\mu) = \{k \ge 1 : s_{N,\mu}(k) = 0\}$ or in the $N$-rough set $\mathcal{R}_N = \{r : \operatorname{rad}_N(r) = 1\}$, and inter-checkpoint excursions are bounded by the gap between consecutive checkpoints. Establish explicit unconditional upper bounds on the maximum gap between consecutive elements of $\mathcal{Z}_N(\mu) \cup \mathcal{R}_N$ inside $(3N, L_N]$.
+   - *Connection to Problem 3:* Bounding the gap between zero-cone checkpoints reduces arbitrary prefixes $M \in (B N, (B+1)N]$ to short excursions from the nearest checkpoint in $\mathcal{Z}_N(\mu) \cup \mathcal{R}_N$.
+
+3. **Open Problem 3 — Multi-Band Complementary Quotient Cancellation for $B \ge 4$:**
+   - *Formulation:* Pillar VII (`SecondAndThirdBandRenormalizedDefectCalculus`) proves $|s_{N,c_\varepsilon}(k)| \le 1$ across the first three bands $k \le 4N$ ($\neg(6 \mid k)$) using the complementary quotient sum $\sum_{q \mid k,\, q \le B} c_\varepsilon(k/q)$. For $B \ge 4$ and composite $k \in (B N, (B+1)N]$ with multiple small divisors $q \le B$, use Möbius sign alternation among the quotients $k/q$ to characterize the exact subset of $(B N, (B+1)N]$ where $|s_{N,c_\varepsilon}(k)| \le 1$ or $s_{N,\mu}(k) = 0$.
+   - *Connection to Problem 2 & Problem 4:* Directly supplies the density of $\mathcal{Z}_N(\mu)$ in higher bands ($B \ge 4$) required by Problem 2 and bounds the finite-horizon truncation error needed in Problem 4.
+
+4. **Open Problem 4 — Sub-Period Transfer from Discrete Prime-Chain Cutoff to `SourceGraph ⧸ signedRadical`:**
+   - *Formulation:* Pillar XIX (`PrimeChainSieveBridgeAndSpectralCutoff`) proves that on every $p$-adic prime chain, $s_{H,c}$ has zero `CHMDPrimeChain.varianceEnergy` for $p > H$ and rank-1 ground-state variance for $p \le H$, while Pillar IV (`QuotientSpectralGapAndOddChainCoercivity`) equates `RiemannHypothesis` to non-negativity of `reducedSource` energy on the odd sector of `SourceGraph ⧸ signedRadical`. Construct an explicit finite-horizon approximation map from $s_{H,c_\varepsilon}$ on short windows $M = H^\alpha$ (controlled by Problems 2 and 3) into the odd sector of `SourceGraph ⧸ signedRadical` with quantifiable $H \to \infty$ truncation remainder.
+
+---
+
+## 8. Summary of the Twenty-Three Formalized Modules
+
+1. **[ValuationClockChainBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ValuationClockChainBridge.lean)**: Valuation-clock to prime-chain bridge ($\Lambda(d) = \log(d / \tau_{\mathrm{vis}}(d))$, pronic composite clock quotients, and `chainVariance`).
+2. **[TransHorizonRoughAbsorptionAndReset.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonRoughAbsorptionAndReset.lean)**: Multiplicative monoid of $N$-rough integers (`IsTransHorizonRough N r`), sieve/sawtooth absorption, and defect non-positivity at $N$-rough checkpoints.
+3. **[BuchstabHorizonFiltrationAndSawtoothEvolution.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/BuchstabHorizonFiltrationAndSawtoothEvolution.lean)**: Buchstab horizon band evolution ($N_1 \le N_2$), tail closure at $N_2 = M$, and the first-octave identity.
+4. **[QuotientSpectralGapAndOddChainCoercivity.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/QuotientSpectralGapAndOddChainCoercivity.lean)**: Odd-sector spectral window $\lambda \in (1/2, 1)$ on `SourceGraph ⧸ signedRadical` and prime-chain Poincaré equivalence of `RiemannHypothesis`.
+5. **[TransHorizonMartingaleTelescopeAndPrimeCheckpoints.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonMartingaleTelescopeAndPrimeCheckpoints.lean)**: Active-deleted martingale variance telescope, variance floor, and prime checkpoint identities.
+6. **[ComplementaryQuotientAndSecondOctaveLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ComplementaryQuotientAndSecondOctaveLaw.lean)**: Complementary quotient tail operator (`complementaryQuotientTail`), Dirichlet hyperbola divisor pairing ($d \leftrightarrow k/d$), $B$-rough extension to $(B+1)N$, and second/third band closed forms.
+7. **[SecondAndThirdBandRenormalizedDefectCalculus.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SecondAndThirdBandRenormalizedDefectCalculus.lean)**: Endpoint envelope control via prime-quotient contraction across the second band $M + 1 \le 3N$ (parity-free) and third band $M + 1 \le 4N$ (`¬ 2 ∣ M + 1 ∨ ¬ 3 ∣ M + 1`).
+8. **[InterCheckpointSawtoothExcursionAndPronicSandwich.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/InterCheckpointSawtoothExcursionAndPronicSandwich.lean)**: Inter-checkpoint Dirichlet excursion identity, boundary-bounded monotonicity, and rough-neighbor pronic localization (`pronicSeq (r - 1)` and `pronicSeq r`).
+9. **[ClockScheduleSynthesisAndPrimePowerPhaseRecovery.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ClockScheduleSynthesisAndPrimePowerPhaseRecovery.lean)**: Prime-power evaluations of Ramanujan sums at divisor lags, two-level differences (`clockWaveletMultiplier`), and dipole cancellation (`clockWaveletRamanujan`).
+10. **[CompositeClockWaveletTensorAndPhaseRecovery.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/CompositeClockWaveletTensorAndPhaseRecovery.lean)**: Multiplicative tensor factorization of Ramanujan lag differences across coprime moduli.
+11. **[TransHorizonGramMatrixAndRadicalProjection.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonGramMatrixAndRadicalProjection.lean)**: All-horizon squarefree divisor collapse (`sieveSeq N c (d * k) = sieveSeq N c k` for $d \mid k$ and `sieveSeq N c (k ^ m) = sieveSeq N c k`) and horizon-band $L^2$ Gram expansion.
+12. **[AllHorizonRadicalSawtoothAndDefectReduction.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/AllHorizonRadicalSawtoothAndDefectReduction.lean)**: Radical sawtooth invariance under divisor-multiplication and arbitrary powers at every horizon, plus damped first-octave power-checkpoint defect non-positivity.
+13. **[HorizonRadicalStateAndDefectNormalForm.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/HorizonRadicalStateAndDefectNormalForm.lean)**: Primorial-even squarefree observation state (`horizonRadicalState N k = Nat.gcd k (primorial N)`), squarefree observation classification, and defect normal form.
+14. **[RadicalCheckpointSignRigidityAndGaugeLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/RadicalCheckpointSignRigidityAndGaugeLaw.lean)**: Unit-coefficient shift (`sieveUnitShiftWeight`), active sawtooth invariance, and converse classification proving that $N$-rough endpoints (`horizonRadicalState N (M + 1) = 1`) are the unique weight-universal non-positive prefix checkpoints.
+15. **[FiniteMultiplicativeObservationState.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/FiniteMultiplicativeObservationState.lean)**: $L_N$-even observation state (`horizonObservationState N k = ((Icc 1 N).filter (· ∣ k)).lcm id = gcd(k, L_N)`), universal weight indistinguishability classification, and multiplicative quotient monoid descent.
+16. **[SuccessorStateObstructionAndPhaseRefinement.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SuccessorStateObstructionAndPhaseRefinement.lean)**: Exact horizon boundary classification ($N \le 2$) for successor congruence of $L_N$-even states and residue phase refinement (`horizonObservationPhase`).
+17. **[ArithmeticUncertaintyAndSpikeCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ArithmeticUncertaintyAndSpikeCancellation.lean)**: Endpoint-spike cancellation via consecutive correlation ($2\widetilde{\mathcal{D}}_N(M; c) = -E_{N,c}(M-1) + 2 s_{N,c}(M) s_{N,c}(M+1) - s_{N,c}(M)^2 - s_{N,c}(1)^2$), predecessor-zero absorption, two-point averaging, and finite-path Cauchy–Schwarz lower bounds.
+18. **[MultiPointDefectAveragingAndPeriodConservation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/MultiPointDefectAveragingAndPeriodConservation.lean)**: Phase-independent period Dirichlet energy (`horizonPeriodDirichletEnergy`), linear defect drift along phase subsequences, and full-period moving-average conservation (`horizonPeriodDefectWindow`).
+19. **[PrimeChainSieveBridgeAndSpectralCutoff.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/PrimeChainSieveBridgeAndSpectralCutoff.lean)**: Prime-chain horizon step ($s_{H,c}(p b) - s_{H,c}(b) = s_{H/p, c(p\cdot)}(b)$), cutoff of `CHMDPrimeChain.varianceEnergy` for $p > H$, excited-shell collapse (`scatter chainRight = 0`), rank-1 ground-state reduction for $p \le H$, and terminal-band evaluation on `sievePrimeTail H`.
+20. **[SlidingPeriodPoincareCoercivityAndHarmonicDecomposition.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SlidingPeriodPoincareCoercivityAndHarmonicDecomposition.lean)**: Complete-period Selberg/Ramanujan variance and Dirichlet-energy identities in coordinates $Y_q = \sum_{q \mid d \le N} c(d)/d$ without `ker P` restriction (with excess $\sum_{e=2}^N (\varphi(e) - 2\mu(e)) Y_{N,c}(e)^2 \ge 0$), sliding-period translation invariance, and the complete-period unit-constant inequality $\operatorname{Variance} \le \operatorname{DirichletEnergy}$.
+21. **[BuchstabFermiCovarianceAndQuotientChainBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/BuchstabFermiCovarianceAndQuotientChainBridge.lean)**: Single-horizon $L^2$ step identity, non-squarefree horizon invariance, prime-horizon quotient reduction via $N$-roughness, and quadratic-window ($p \le M < p^2$) evaluation $\mathcal{E}_p(M; \mu) - \mathcal{E}_{p-1}(M; \mu) = \lfloor M / p \rfloor - 2$.
+22. **[TotientObservabilityThresholdAndValuationFiberCollision.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TotientObservabilityThresholdAndValuationFiberCollision.lean)**: Sharp prime-power totient observability threshold ($W \ge \varphi(p^a) = p^a - \tau_{\mathrm{vis}}(p^a)$), valuation-clock fiber collision counterexamples ($k = 1, \ell = 1 + p^{a-1}$) below $\varphi(p^a)$, and strictly sub-$N$ global phase recovery thresholds $\Phi_{\max}(N) = \max_{p^a \le N} \varphi(p^a) < N$ and $\Phi_{\mathrm{rad}}(N) = \max_{p \le N} (p - 1)$.
+23. **[ShortWindowCorrelationDefectAndIsoStateClassification.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ShortWindowCorrelationDefectAndIsoStateClassification.lean)**: Short-window renormalized correlation defect $\widetilde{\mathcal{D}}_N(M_0, M; c)$ for arbitrary starting phase $M_0$ and window length $M \ll L_N$, sharp iso-state endpoint classification (`forall_weight_shortWindowRenormalizedDefect_nonpos_iff_state_eq` and `forall_squarefree_shortWindowRenormalizedDefect_nonpos_iff_radicalState_eq`), starting-phase-free right-zero-cone contraction for $\mu$, and matched-assumption domination over classical $\ell^1$ remainder bounds.
+
+---
+
+## 9. Research & Lean Engineering Rules
 
 1. **100% Unconditional & Premise-Free:** No axioms, no `sorry`, no unproved hypotheses or premises in theorem statements.
-2. **No Computations:** All proofs must be conceptual, algebraic, or analytic over general parameters ($N, M, q, r, p, \varepsilon$).
-3. **Single Foreground Build Discipline:** Always build in the foreground, one build process per agent at a time. Run `lake env lean GaloisForLFunctions/TransHorizonIncidenceMechanics/<Module>.lean` (from `/Users/michael/Documents/code/hgt/formal`) to audit your module.
-4. **Self-Contained Leaf Imports:** To avoid cross-agent `.olean` rebuild contention, import the already-compiled `BezoutValuationIncidence` / `RHTower` leaf modules directly in new leaf modules.
+2. **Honest Baseline Accounting:** Every new module or theorem must state its exact classical baseline ([TH10], [Sel], [CMS16]), equivalent classical formulation, and classification label (`Known`, `Corollary`, `New formulation`, or `Candidate new theorem`).
+3. **No Computations:** All proofs must be conceptual, algebraic, or analytic over general parameters ($N, M_0, M, q, r, p, \varepsilon$).
+4. **Single Foreground Build Discipline:** Always build in the foreground, one build process per agent at a time. Run `lake --old env lean GaloisForLFunctions/TransHorizonIncidenceMechanics/<Module>.lean` (from `/Users/michael/Documents/code/hgt/formal`) to audit your module.
 5. **Umbrella Wiring Without Full Rebuilds:** Wire finished, individually audited leaf modules into `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics.lean`, and do **not** run full umbrella builds.
-6. **No Heartbeat Hacks:** Optimize Lean proofs using clean algebraic rewrites (`ring`, `linarith`, `Finset.sum` lemmas) rather than raising `maxHeartbeats`.
+6. **No Heartbeat Hacks:** Optimize Lean proofs using clean algebraic rewrites rather than raising `maxHeartbeats`.
 7. **Clean Workspace:** Remove any temporary `/tmp` scratch files before concluding a session.
-
-
-

@@ -152,7 +152,100 @@ functional.
 
 ---
 
-## 4. The Ten Structural Traps (Obstructions & Design Laws)
+## 4. The Five Fundamental Theorems of Bi-Scale Uncertainty Analysis
+
+The foundational laws of the discipline are synthesized in
+[`FundamentalTheoremsOfBiScaleUncertainty.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/FundamentalTheoremsOfBiScaleUncertainty.lean)
+and proved unconditionally across six dedicated structural modules:
+
+1. **First Fundamental Theorem — Universal Ramanujan Multi-Lag Spectral Diagonalization & Bi-Scale Rigidity**
+   ([`UniversalRamanujanCovarianceAndBiScaleRigidity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/UniversalRamanujanCovarianceAndBiScaleRigidity.lean),
+   `first_fundamental_theorem_ramanujan_and_biscale_rigidity`):
+   - For every truncation $N \in \mathbb{N}$, divisor-weight sequence $c : \mathbb{N} \to \mathbb{R}$,
+     and additive shift lag $h \in \mathbb{N}$, the complete-period centered covariance on
+     $\{1, \dots, N!\}$ is simultaneously diagonalized in Selberg divisor coordinates
+     `selbergMultiplesCoord N c e` with eigenvalues equal to Ramanujan's trigonometrical sums
+     $$c_e(h) = \operatorname{ramanujanLagWeight}(h, e) = \sum_{d \mid \gcd(e, h)} d\,\mu(e/d),$$
+     characterized uniquely by the Dirichlet-ring inversion law $\sum_{e \mid g} c_e(h) = g \mathbf{1}_{g \mid h}$ (`ramanujanLagWeight_divisor_sum`, `ramanujanLagWeight_unique`).
+   - Unifies $h = 0$ ($c_e(0) = \varphi(e)$), $h = 1$ ($c_e(1) = \mu(e)$), $h = 2$
+     ($c_e(2) = \operatorname{lagTwoEigenvalue}(e)$), and prime lags $h = p$.
+   - At unit lag $h = 1$, every mode $e \ge 2$ satisfies $\varphi(e) - \mu(e) \ge 1$
+     (`totient_sub_moebius_ge_one`), yielding the universal shift-difference floor
+     $\mathcal{E}_{\mathrm{add}}(N, c, 1) \ge 2 \sum_{e=2}^N (\operatorname{selbergMultiplesCoord}(N, c, e))^2$
+     with vanishing iff all nonconstant Selberg coordinates vanish (`periodShiftDifferenceEnergy_one_eq_zero_iff`).
+   - **Bi-Scale Joint Additive–Multiplicative Rigidity:** Simultaneous additive $q$-periodicity and
+     multiplicative $q$-dilation invariance holds iff $f$ is constant (`periodic_and_scale_invariant_iff_const`),
+     and the finite-window joint energy `biScaleJointEnergy K N f` vanishes iff $f$ is constant on
+     $[1, N]$ (`biScaleJointEnergy_eq_zero_iff_const`).
+
+2. **Second Fundamental Theorem — Hyperbolic Lorentz Boost ($\mathrm{SO}^+(1,1)$) Representation & Minkowski Light-Cone Rigidity**
+   ([`HyperbolicLorentzBoostAndMinkowskiLightCone.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicLorentzBoostAndMinkowskiLightCone.lean),
+   `second_fundamental_theorem_lorentz_boost_and_light_cone`):
+   - The hyperbolic multipliers $(C_\alpha f)(u) = \cosh(\alpha u)f(u)$ and
+     $(S_\alpha f)(u) = \sinh(\alpha u)f(u)$ form a faithful representation of the 1+1 Lorentz boost
+     group $\mathrm{SO}^+(1,1)$ satisfying the hyperbolic Weyl commutation relations with translation $T_x$.
+   - **Scale-Invariant Hyperbolic Casimir Invariant:**
+     $$\mathcal{C}_\alpha(f, x) := \frac{h_{C_\alpha f}(x) - h_{S_\alpha f}(x)}{\cosh(\alpha x)} = h_f(x)$$
+     is strictly independent of the boost rapidity $\alpha \in \mathbb{R}$ (`hyperbolicCasimirInvariant_rapidity_invariant`).
+   - **Minkowski Light-Cone Identity & Null-Cone Zero-Grid Equivalence (`↔`):**
+     $$h_{C_\alpha f}(x)^2 - h_{S_\alpha f}(x)^2 = \cosh(\alpha x)\,h_f(x)\,\bigl(h_{C_\alpha f}(x) + h_{S_\alpha f}(x)\bigr),$$
+     with $h_f(x) = 0 \iff h_{C_\alpha f}(x) = h_{S_\alpha f}(x)$ (`autocorr_eq_zero_iff_coshMultiplier_eq_sinhMultiplier`)
+     and $h_{C_\alpha f}(0)^2 - h_{S_\alpha f}(0)^2 \ge h_f(0)^2$ (`minkowski_lightCone_origin_ge_sq`).
+   - **Exact $L^2$ Hilbert-Space Defect Identities:** The Peter–Paul chord inequality and Krein's
+     doubling/increment inequalities are upgraded to exact $L^2$ square-integral defect identities
+     (`autocorr_chord_peter_paul_defect_eq_integral`, `autocorr_krein_doubling_defect_eq_integral`,
+     `autocorr_krein_increment_defect_eq_integral`).
+
+3. **Third Fundamental Theorem — Origin Allocation Uniqueness (`↔`), Coupled Sphere Gain & Odd-Dyadic Incommensurability**
+   ([`OriginAllocationUniquenessAndCoupledSphereGain.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/OriginAllocationUniquenessAndCoupledSphereGain.lean),
+   `third_fundamental_theorem_origin_allocation_and_coupled_gain`):
+   - **Unique Optimal Origin Allocation (`↔`):** By the exact Lagrange identity
+     $(W^2 + A^2)(a^2 + q^2) - (Wa + Aq)^2 = (Aa - Wq)^2$, an origin allocation $\sum_{i \in s} a_i = W > 0$
+     against collar loads $q_i \ge 0$ ($\sum_{i \in s} q_i = A > 0$) attains the sphere lower bound
+     $\sqrt{W^2 + A^2}$ **if and only if** $A a_i = W q_i$ for all $i \in s$
+     (`origin_allocation_cost_eq_lower_iff`, `origin_allocation_unique_minimizer_iff`).
+   - **Universal Dominance of Joint Hilbert Coupling:** Combining Hilbert packets $p_i \in E$ prior
+     to applying the origin-collar sphere penalty yields the nonnegative gain
+     `coupledSphereGain W s p ≥ 0` over every partitioned allocation (`coupled_sphere_penalty_le_any_allocation`),
+     with `coupledSphereGain W s p = 0 ↔ ∀ i, j ∈ s, ‖p j‖ • p i = ‖p i‖ • p j` (`coupledSphereGain_eq_zero_iff`).
+   - **Diophantine Odd-Dyadic Incommensurability:** $(2q + 3)^k \ne n \cdot 2^k$ for all $q, n \in \mathbb{N}$
+     and $k \ge 1$ (`odd_pow_ne_mul_two_pow`), so every nonzero multiple of $\log((2q+3)/2)$ is
+     strictly disjoint from the integer logarithmic grid $\{\log n : n \in \mathbb{N}\}$
+     (`odd_dyadic_log_progression_ne_log_nat`).
+
+4. **Fourth Fundamental Theorem — Symmetric Polar Enforcement (`↔`) & Compensated Physical Logarithmic Producers**
+   ([`EvenSourceSymmetricPolarEnforcement.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/EvenSourceSymmetricPolarEnforcement.lean) and
+   [`CompensatedPhysicalLogarithmicProducer.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/CompensatedPhysicalLogarithmicProducer.lean),
+   `fourth_fundamental_theorem_symmetric_polar_and_compensated_producer`):
+   - **Even-Source Polar Infimum Equivalence (`↔`):** The symmetric 3-copy operator
+     $g_T(u) = f(u) - \frac{1}{2\cosh(T/2)}(f(u - T) + f(u + T))$ preserves source parity
+     (`evenPolarCopy_even_of_even`), kills both $\pm 1/2$ exponential moments simultaneously,
+     preserves all local correlation ratios on $[-A, A]$ when $T > 2D + A$, and perturbs
+     `normalizedArchEnergy` by $O(e^{-T})$, proving that any lower bound $C$ holds on even
+     polar-neutral logarithmic-grid $C^r$ ($r \ge 2$) sources **if and only if** it holds on all
+     even logarithmic-grid $C^r$ sources (`even_polar_log_grid_lower_bound_iff`).
+   - **Compensated Physical Logarithmic Producers:** For every physical velocity $q \in L^2(\mathbb{R})$,
+     the compensated velocity $v_n(q) = q_n - c_n(q)$ satisfies the exact orthogonal energy identity
+     $\|v_n(q)\|^2 = \|q_n\|^2 + m_n(q)^2 / L_n \le (1 + e^{-(n+1)})\|q\|^2$ and $\int_{\mathbb{R}} v_n(q) = 0$,
+     yielding compactly supported $C^1$ logarithmic states $g_n(q)(x) = F_{w_n(q)}(e^x)$ with exact
+     weighted Dirichlet energy (`smoothedLogarithmicState_dirichlet_energy`).
+
+5. **Fifth Fundamental Theorem — Critical Nyquist Finite Part $\mathcal{B}_m$ & Rescaled-Source Phase Transition**
+   ([`NyquistCriticalFinitePartAndBroadClassification.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/NyquistCriticalFinitePartAndBroadClassification.lean),
+   `fifth_fundamental_theorem_nyquist_critical_finite_part_and_classification`):
+   - At the critical Nyquist Taylor exponent $\beta = m + 1$, subtracting the continuous mean
+     counterterm $c_m \delta_k$ ($c_m = (m+1)^{m+1}/(2(m+2)!)$) from the cell mass $\alpha_k$ yields
+     an absolutely summable cell discrepancy $|d_k(m)| \le D_m (k+1)^{-2}$ (`abs_nyquistCriticalCellDiscrepancy_le_inv_sq`),
+     defining the **Critical Nyquist Finite Part** $\mathcal{B}_m = \sum_{k=0}^\infty d_k(m)$ with
+     nodal convergence rate $|F_m(\log(N+1)) - \mathcal{B}_m| \le 2 D_m / (N + 1)$
+     (`abs_nyquistCriticalPrefixPrimitive_sub_finitePart_le`).
+   - By the autocorrelation total mass identity $\int_{\mathbb{R}} \operatorname{autocorr}(f, x)\,dx = (\int f)^2$
+     (`integral_autocorr_eq_sq_integral`), rescaled broad sources undergo a sharp renormalization
+     phase transition between positive-mean divergence and zero-mean cancellation (`nyquistZeroMeanWitness`).
+
+---
+
+## 5. The Ten Structural Traps (Obstructions & Design Laws)
 
 Every researcher working in `BiScaleUncertainty` must know the following ten traps—each formally
 proved as an obstruction or countermodel in the repository—and the exact mechanism that resolves it:
@@ -183,7 +276,8 @@ proved as an obstruction or countermodel in the repository—and the exact mecha
      bound.
 5. **Trap 5 — The Finite-Grid Distant-Copy Polar Decoupling Trap:**
    If only finitely many zeros $h_f(\log n) = 0$ ($2 \le n \le N_0$) are active, replacing $f(u)$ by
-   $\operatorname{polarCopy}(f, T)(u) = f(u) - e^{-T/2}f(u - T)$ for $T \gg \log N_0$ enforces the
+   $\operatorname{polarCopy}(f, T)(u) = f(u) - e^{-T/2}f(u - T)$ (or in the even sector by the
+   symmetric 3-copy operator `evenPolarCopy f T`) for $T \gg \log N_0$ enforces the
    polar constraint $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$ while changing
    $\mathcal{J}_{\mathrm{arch}}(f)/h_f(0)$ by only $O(e^{-T}) \to 0$.
    - *Resolution:* Keep the **infinite** logarithmic grid active: at scale $T = \log N$, the $N$
@@ -194,13 +288,13 @@ proved as an obstruction or countermodel in the repository—and the exact mecha
    only see multiplicative divisibility $m \mid n \implies \log n - \log m = \log(n/m)$, which is
    shared by Beurling generalized number systems that violate RH.
    - *Resolution:* Couple multiplicative shifts to the additive successor $n \mapsto n + 1$ (coprime
-     shear) and non-commutative hyperbolic multipliers $C_\alpha, S_\alpha$.
+     shear and universal Ramanujan multi-lag covariance) and non-commutative hyperbolic multipliers $C_\alpha, S_\alpha$.
 7. **Trap 7 — The Odd-Sector Hyperbolic Multiplier Leakage Trap:**
    Source blindness $h_f(\log 2) = 0$ for an odd function $f$ does **not** imply multiplier
    blindness $h_{S_\alpha f}(\log 2) = 0$: an odd 6-packet train can cancel $h_f(\log 2)$ while
    $\sinh(\alpha u)$ amplifies the outer pair by $e^{2\alpha T}$.
-   - *Resolution:* Never assume $h_{S_\alpha f}(t) = 0$; use zero-grid coincidence
-     $h_f(t) = 0 \implies h_{C_\alpha f}(t) = h_{S_\alpha f}(t)$ together with signed collar
+   - *Resolution:* Never assume $h_{S_\alpha f}(t) = 0$; use the Minkowski light-cone null-locus law
+     $h_f(t) = 0 \iff h_{C_\alpha f}(t) = h_{S_\alpha f}(t)$ together with signed collar
      leverage on $C_\alpha f$ or centered source-Gram variance bounds.
 8. **Trap 8 — The Midpoint-Compression / Narrow-Support Escape:**
    Rescaling a seed $f$ to support radius $r_1 \asymp 1/N$ and placing its polar copy at the
@@ -227,20 +321,22 @@ proved as an obstruction or countermodel in the repository—and the exact mecha
     $O(\sqrt{N})$ divisor noise.
     - *Resolution:* Construct **explicit producers** with unconditional error bounds: instantiate the
       Nyquist-cell polar producer $\operatorname{nyquistPolarConstant}(n) = \cosh((\log n)/2)$
-      ($O(1/n^2)$ cell $L^2$ error) and apply pole-cancelling dilation stencils directly to $T(N)$
-      ($T(2N) - 2T(N)$ and $T(4N) - 4T(2N) + 4T(N)$) to achieve unconditional $O(\log N)$ bounds.
+      ($O(1/n^2)$ cell $L^2$ error), the compensated physical box producer `smoothedLogarithmicState n q`,
+      and the critical Nyquist finite part $\mathcal{B}_m$, and apply pole-cancelling dilation stencils
+      directly to $T(N)$ ($T(2N) - 2T(N)$ and $T(4N) - 4T(2N) + 4T(N)$) to achieve unconditional
+      $O(\log N)$ bounds.
 
 ---
 
-## 5. How to Navigate & Extend the Codebase
+## 6. How to Navigate & Extend the Codebase
 
 Do **not** read every file sequentially—use the repository search tool to find exact declarations,
 lemmas, and proof patterns:
 ```bash
 scripts/formal_tools.py research "allScaleVonMangoldtWeight"
-scripts/formal_tools.py research "chebyshevBiNullProducer nyquistPolarConstant"
-scripts/formal_tools.py research "chebyshevWork packetEnergy"
-scripts/formal_tools.py research "coshMultiplier signed collar"
+scripts/formal_tools.py research "ramanujanLagWeight periodCovariance"
+scripts/formal_tools.py research "hyperbolicCasimirInvariant minkowski_lightCone"
+scripts/formal_tools.py research "nyquistCriticalFinitePart compensatedVelocity"
 ```
 
 ### Engineering & Mathematical Discipline for Future Agents

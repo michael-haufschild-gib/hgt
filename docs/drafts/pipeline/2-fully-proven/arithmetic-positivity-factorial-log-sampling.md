@@ -2,7 +2,7 @@
 
 - **ID:** APT-ROOT-LOG-SAMPLING
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Type:** THEOREM (paper; upper sampling bound certified in Lean)
 - **Source:** [Factorial sampling task](../1-in-progress/arithmetic-positivity-factorial-tail-sampling.md).
 - **Audit verdict:** BRIDGE. The proof combines exact corpus arithmetic with classical translation-energy, Fourier, and holomorphic sampling arguments. Novelty beyond this particular application is not established.
 
@@ -16,12 +16,12 @@ F_f(s)=\int_{\mathbb R}e^{(s-1/2)x}f(x)\,dx,
 \]
 where the sum is over distinct nontrivial zeros of the actual zeta function and \(m_\rho\) is their multiplicity.
 
-**[PROVED HERE, paper]** There is an absolute constant \(C>0\) such that, for every \(n,k\in\mathbb N\),
+**[PROVED ON PAPER AND IN LEAN]** There is an absolute constant \(C>0\) such that, for every \(n,k\in\mathbb N\),
 \[
 \mathcal Z(T_n)+\mathcal Z(U_{n,k})
 \le C\frac{1+\log N}{N}.
 \]
-In particular, the foundational programme's \(C_U\log N/N\) target holds for \(N\ge2\), uniformly in every smoothing index. No RH or positivity premise is used. The complete theorem is not yet certified in Lean.
+In particular, the foundational programme's \(C_U\log N/N\) target holds for \(N\ge2\), uniformly in every smoothing index. No RH or positivity premise is used. [FactorialTailSampling.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) certifies the all-index bound and summability of both literal zero sums. The sharpness and relative-margin consequences below remain separate formal obligations.
 
 ## Exact arithmetic inputs
 
