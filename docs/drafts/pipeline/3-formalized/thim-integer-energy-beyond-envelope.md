@@ -1,8 +1,8 @@
 # Integer jump energy beyond the unit-envelope boundary
 
 - **ID:** thim-integer-energy-beyond-envelope
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean)
 - **Scope:** Explicit all-horizon Möbius defect control at endpoint magnitude two,
   including the unit-envelope counterfamily and the entire fifth integer band.
 
@@ -11,7 +11,7 @@
 1. [x] Reread objective, all README lines, current memories and relevant source; search corpus.
 2. [x] Dependency-closed paper proof of integer energy and fifth-band consequence.
 3. [x] Formalize path tool, arithmetic transfer, full band and radical/power consequences.
-4. [ ] Actual-source Lean/axiom audit, wiring/index/lint, ledger/memory and scratch cleanup.
+4. [x] Actual-source Lean/axiom audit, wiring/index/lint, ledger/memory and scratch cleanup.
 
 `update_plan` unavailable; this card tracks work. README is read-only.
 
@@ -66,4 +66,27 @@ Focused corpus query `integer jump energy endpoint amplitude two fifth band six 
 returned partial=false, 74105 inventoried files, zero pending, generation1454404;
 compiler coverage mixed. All 20 candidates and 20 source arguments inspected.
 The complete scratch proof compiles without warnings: 22 public theorems and
-two private helpers. Actual-source and closure audits are pending.
+two private helpers. Actual-source and closure audits passed.
+
+## Verification
+
+- Source: `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/IntegerJumpEnergyAndBeyondEnvelopeDefect.lean`.
+- SHA256: `c76159f2aca8104f11afe6ea8dbde3e124bf4b135e5438ebfb49a9d32c4d706e`.
+- Complete scratch proof and final actual-source `lake --old env lean` exited 0
+  without warnings. All 22 public theorems and two private helpers have exactly
+  `{propext, Classical.choice, Quot.sound}`. No added axioms or proof gaps.
+- `logs/thim-integer-energy-audit.json` checks all 24 declared closures plus four compiler-generated
+  helpers, all 22 baseline
+  docstrings/API entries, source/dependency hashes and fresh artifacts, unique
+  umbrella import, MainTheorems reachability, whitespace and prohibited declarations.
+- Evidence: `logs/thim-integer-energy-{lean,axioms,index,lint}.txt`.
+  Final plain `lint` exits 1 with 2 external integration findings;
+  exact errors are retained in the audit JSON. No new-leaf or prohibited-declaration
+  finding. Global lint is not claimed clean.
+- Generated-file checks remained stale under concurrent repository edits; indexes
+  refreshed, then plain lint run. No globally clean freshness gate is claimed.
+  The initial private-name audit syntax failed; environment-derived identifiers
+  fixed it, and the complete public/private audit passed. First logs retained.
+- Every owned job terminal; nine scratch files removed. README not edited.
+  No full/umbrella build, numerical experiment, heartbeat override, commit, or push.
+  Continuing research goal remains active.

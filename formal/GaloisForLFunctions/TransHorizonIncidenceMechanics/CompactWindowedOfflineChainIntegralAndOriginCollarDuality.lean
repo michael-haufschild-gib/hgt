@@ -121,6 +121,11 @@ theorem windowedOfflineWaves_complete_chain_hasSum {w : ℝ → ℝ}
 
 /-! ## §2. Universal Non-Negative Window Phase Dominance -/
 
+/-- Discrete phase profile $\theta_{\gamma,u}(k) = \gamma \log k - \gamma u$ induced by a
+continuous off-line wave at logarithmic cut $u$. -/
+def continuousPhaseProfile (γ u : ℝ) (k : ℕ) : ℝ :=
+  γ * Real.log k - γ * u
+
 /-- Polar-channel representation of the windowed cosine wave at shift $u - \log m$:
 `windowedOfflineCosWave w β γ (u - log m) = windowedOfflineRadialWave w β (u - log m) * cos (continuousPhaseProfile γ u m)`. -/
 theorem windowedOfflineCosWave_sub_log_eq (w : ℝ → ℝ) (β γ u : ℝ) (m : ℕ) :
@@ -129,7 +134,11 @@ theorem windowedOfflineCosWave_sub_log_eq (w : ℝ → ℝ) (β γ u : ℝ) (m :
         (continuousPhaseProfile γ u) m := by
   unfold windowedOfflineCosWave continuousOfflineCosWave polarCosChannel
     windowedOfflineRadialWave continuousPhaseProfile
-  rw [Real.cos_neg]
+  have hcos : Real.cos (γ * (u - Real.log m)) = Real.cos (γ * Real.log m - γ * u) := by
+    rw [← Real.cos_neg]
+    congr 1
+    ring
+  rw [hcos]
   ring
 
 /-- Polar-channel representation of the windowed sine wave at shift $u - \log m$:
@@ -140,8 +149,16 @@ theorem windowedOfflineSinWave_sub_log_eq (w : ℝ → ℝ) (β γ u : ℝ) (m :
         (continuousPhaseProfile γ u) m := by
   unfold windowedOfflineSinWave continuousOfflineSinWave polarSinChannel
     windowedOfflineRadialWave continuousPhaseProfile
-  rw [Real.sin_neg]
-  ring
+  have hsin : -Real.sin (γ * (u - Real.log m)) = Real.sin (γ * Real.log m - γ * u) := by
+    rw [← Real.sin_neg]
+    congr 1
+    ring
+  calc
+    w (u - Real.log m) * (-Real.exp (-β * (u - Real.log m)) * Real.sin (γ * (u - Real.log m)))
+        = w (u - Real.log m) * Real.exp (-β * (u - Real.log m)) *
+            (-Real.sin (γ * (u - Real.log m))) := by ring
+    _ = w (u - Real.log m) * Real.exp (-β * (u - Real.log m)) *
+            Real.sin (γ * Real.log m - γ * u) := by rw [hsin]
 
 /-- **Pointwise Windowed Two-Channel Jump Decomposition (`windowed_offline_two_channel_jump_eq`):**
 For any window $w : \mathbb{R} \to \mathbb{R}$, parameters $\beta, \gamma, u \in \mathbb{R}$, and
@@ -377,40 +394,40 @@ theorem windowed_density_ground_cut_ge_sum_primeFactors {w : ℝ → ℝ} (N : �
     Real.exp (-2 * β * u) * fiber N u *
         (∑ p ∈ N.primeFactors, Real.log p * (Real.exp (β * Real.log p) - 1) ^ (2 : ℕ)) ≤
       density N (windowedOfflineRadialWave w β) u := by
-  rcases N.eq_zero_or_pos with rfl | hN_pos
-  · simp [density, chainVariance]
+  rcases lt_or_ge N 2 with hN2 | hN2
+  · interval_cases N <;> simp [density, chainVariance]
   · unfold density chainVariance
-    have hfib : 0 ≤ fiber N u := by
-      by_cases huN : u ≤ Real.log N
-      · exact (fiber_pos_on_central hN_pos hu0.le huN).le
-      · push Not at huN
-        have hN1 : N = 1 := by
-          have hlog : Real.log (N : ℝ) < Real.log 2 := huN.trans hu2
-          have hlt2 : (N : ℝ) < 2 :=
-            (Real.log_lt_log_iff (by exact_mod_cast hN_pos) (by norm_num)).mp hlog
-          have hlt2_nat : N < 2 := by exact_mod_cast hlt2
-          omega
-        subst hN1
-        simp [fiber, cuspTerm]
-    rw [mul_assoc, Finset.mul_sum]
-    refine mul_le_mul_of_nonneg_left ?_ hfib
-    refine Finset.sum_le_sum fun p hpN => ?_
-    obtain ⟨hp_prime, _, hN0⟩ := Nat.mem_primeFactors.mp hpN
-    have hlog : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp_prime.one_lt.le)
-    have h1N : 1 ∈ N.divisors := Nat.one_mem_divisors.mpr hN0
-    have hstep := windowed_varianceEnergy_ground_cut_ge_prime_step
-      hpN hu0 hu2 hw1 (hwp p hpN) β
-    have hle_b :
-        varianceEnergy (chainLeft N p 1 u) (chainRight N p 1 u)
-            (fun m : ℕ => windowedOfflineRadialWave w β (u - Real.log m)) ≤
-          ∑ b ∈ N.divisors,
-            varianceEnergy (chainLeft N p b u) (chainRight N p b u)
-              (fun m : ℕ => windowedOfflineRadialWave w β (u - Real.log m)) :=
-      Finset.single_le_sum
-        (f := fun b : ℕ => varianceEnergy (chainLeft N p b u) (chainRight N p b u)
-          (fun m : ℕ => windowedOfflineRadialWave w β (u - Real.log m)))
-        (fun b _ => varianceEnergy_nonneg _ _ _) h1N
-    have hmul := mul_le_mul_of_nonneg_left (hstep.trans hle_b) hlog
+    have hN_pos : 0 < N := by omega
+    have huN : u ≤ Real.log (N : ℝ) :=
+      hu2.le.trans (Real.log_le_log (by norm_num) (by exact_mod_cast hN2))
+    have hfib : 0 ≤ fiber N u := (fiber_pos_on_central hN_pos hu0.le huN).le
+    have hsum :
+        Real.exp (-2 * β * u) *
+            (∑ p ∈ N.primeFactors, Real.log p * (Real.exp (β * Real.log p) - 1) ^ (2 : ℕ)) ≤
+          ∑ p ∈ N.primeFactors, Real.log p *
+            ∑ b ∈ N.divisors,
+              varianceEnergy (chainLeft N p b u) (chainRight N p b u)
+                (fun m : ℕ => windowedOfflineRadialWave w β (u - Real.log m)) := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_le_sum fun p hpN => ?_
+      obtain ⟨hp_prime, _, hN0⟩ := Nat.mem_primeFactors.mp hpN
+      have hlog : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp_prime.one_lt.le)
+      have h1N : 1 ∈ N.divisors := Nat.one_mem_divisors.mpr hN0
+      have hstep := windowed_varianceEnergy_ground_cut_ge_prime_step
+        hpN hu0 hu2 hw1 (hwp p hpN) β
+      have hle_b :
+          varianceEnergy (chainLeft N p 1 u) (chainRight N p 1 u)
+              (fun m : ℕ => windowedOfflineRadialWave w β (u - Real.log m)) ≤
+            ∑ b ∈ N.divisors,
+              varianceEnergy (chainLeft N p b u) (chainRight N p b u)
+                (fun m : ℕ => windowedOfflineRadialWave w β (u - Real.log m)) :=
+        Finset.single_le_sum
+          (f := fun b : ℕ => varianceEnergy (chainLeft N p b u) (chainRight N p b u)
+            (fun m : ℕ => windowedOfflineRadialWave w β (u - Real.log m)))
+          (fun b _ => varianceEnergy_nonneg _ _ _) h1N
+      have hmul := mul_le_mul_of_nonneg_left (hstep.trans hle_b) hlog
+      linarith
+    have hfib_mul := mul_le_mul_of_nonneg_left hsum hfib
     linarith
 
 /-- **Quadratic $\beta^2 (\log p)^3$ Coercivity for Symmetrized Windowed Two-Channel Density
@@ -491,33 +508,31 @@ theorem windowed_two_channel_density_symmetrized_ground_cut_ge_quadratic
       _ ≤ Real.exp (-2 * β * u) *
             (density (N : ℕ) (windowedOfflineCosWave w (-β) γ) u +
               density (N : ℕ) (windowedOfflineSinWave w (-β) γ) u) := hm
-  have hfib_nonneg : 0 ≤ fiber (N : ℕ) u := by
-    by_cases huN : u ≤ Real.log (N : ℕ)
-    · exact (fiber_pos_on_central N.pos hu0.le huN).le
-    · push Not at huN
-      have hN1 : (N : ℕ) = 1 := by
-        have hlog : Real.log (N : ℝ) < Real.log 2 := huN.trans hu2
-        have hlt2 : (N : ℝ) < 2 :=
-          (Real.log_lt_log_iff (by exact_mod_cast N.pos) (by norm_num)).mp hlog
-        have hlt2_nat : (N : ℕ) < 2 := by exact_mod_cast hlt2
-        have hpos : 0 < (N : ℕ) := N.pos
-        omega
-      rw [hN1]
-      simp [fiber, cuspTerm]
-  have hquad :
-      β ^ (2 : ℕ) * (∑ p ∈ (N : ℕ).primeFactors, Real.log p ^ (3 : ℕ)) ≤
-        (∑ p ∈ (N : ℕ).primeFactors, Real.log p * (Real.exp (β * Real.log p) - 1) ^ (2 : ℕ)) +
-          (∑ p ∈ (N : ℕ).primeFactors, Real.log p * (Real.exp (-β * Real.log p) - 1) ^ (2 : ℕ)) := by
-    rw [← Finset.sum_add_distrib, Finset.mul_sum]
-    refine Finset.sum_le_sum fun p hp => ?_
-    have hp_prime : p.Prime := Nat.prime_of_mem_primeFactors hp
-    have hlog : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp_prime.one_lt.le)
-    have hexp := exp_sub_one_sq_add_exp_neg_sub_one_sq_ge_sq (β * Real.log p)
-    rw [← neg_mul] at hexp
-    have hmul := mul_le_mul_of_nonneg_left hexp hlog
-    nlinarith
-  have hfib_quad := mul_le_mul_of_nonneg_left hquad hfib_nonneg
-  linarith
+  rcases lt_or_ge (N : ℕ) 2 with hN2 | hN2
+  · have hN1 : (N : ℕ) = 1 := by
+      have hpos : 0 < (N : ℕ) := N.pos
+      omega
+    rw [hN1] at h1 h2 ⊢
+    simp only [Nat.primeFactors_one, Finset.sum_empty, mul_zero] at h1 h2 ⊢
+    linarith
+  · have huN : u ≤ Real.log (N : ℝ) :=
+      hu2.le.trans (Real.log_le_log (by norm_num) (by exact_mod_cast hN2))
+    have hfib_nonneg : 0 ≤ fiber (N : ℕ) u :=
+      (fiber_pos_on_central N.pos hu0.le huN).le
+    have hquad :
+        β ^ (2 : ℕ) * (∑ p ∈ (N : ℕ).primeFactors, Real.log p ^ (3 : ℕ)) ≤
+          (∑ p ∈ (N : ℕ).primeFactors, Real.log p * (Real.exp (β * Real.log p) - 1) ^ (2 : ℕ)) +
+            (∑ p ∈ (N : ℕ).primeFactors, Real.log p * (Real.exp (-β * Real.log p) - 1) ^ (2 : ℕ)) := by
+      rw [← Finset.sum_add_distrib, Finset.mul_sum]
+      refine Finset.sum_le_sum fun p hp => ?_
+      have hp_prime : p.Prime := Nat.prime_of_mem_primeFactors hp
+      have hlog : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp_prime.one_lt.le)
+      have hexp := exp_sub_one_sq_add_exp_neg_sub_one_sq_ge_sq (β * Real.log p)
+      rw [← neg_mul] at hexp
+      have hmul := mul_le_mul_of_nonneg_left hexp hlog
+      nlinarith
+    have hfib_quad := mul_le_mul_of_nonneg_left hquad hfib_nonneg
+    linarith
 
 end
 

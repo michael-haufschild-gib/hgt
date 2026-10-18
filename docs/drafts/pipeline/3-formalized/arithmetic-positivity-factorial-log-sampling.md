@@ -1,8 +1,8 @@
 # Logarithmic sampling budget for the actual factorial correction tail
 
 - **ID:** APT-ROOT-LOG-SAMPLING
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; upper sampling bound certified in Lean)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean certified)
 - **Source:** [Factorial sampling task](../1-in-progress/arithmetic-positivity-factorial-tail-sampling.md).
 - **Audit verdict:** BRIDGE. The proof combines exact corpus arithmetic with classical translation-energy, Fourier, and holomorphic sampling arguments. Novelty beyond this particular application is not established.
 
@@ -21,7 +21,7 @@ where the sum is over distinct nontrivial zeros of the actual zeta function and 
 \mathcal Z(T_n)+\mathcal Z(U_{n,k})
 \le C\frac{1+\log N}{N}.
 \]
-In particular, the foundational programme's \(C_U\log N/N\) target holds for \(N\ge2\), uniformly in every smoothing index. No RH or positivity premise is used. [FactorialTailSampling.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) certifies the all-index bound and summability of both literal zero sums. The sharpness and relative-margin consequences below remain separate formal obligations.
+In particular, the foundational programme's \(C_U\log N/N\) target holds for \(N\ge2\), uniformly in every smoothing index. No RH or positivity premise is used. [FactorialTailSampling.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) certifies the all-index bound and summability of both literal zero sums (`exists_factorialTail_raw_and_smoothed_zeroSquare_bound`), and [FactorialTailRelativeMargin.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailRelativeMargin.lean) certifies the sharpness lower bound (`factorialSmoothedTail_zeroSquare_log_lower`) and relative positive margin (`exists_factorialSmoothedTail_relative_positive_margin`).
 
 ## Exact arithmetic inputs
 
@@ -247,4 +247,4 @@ Thus an \(O(1/N)\) sampling budget, with constants uniform in the stated eventua
 - Translation energies with logarithmic Fourier weights belong to established logarithmic regularity theory; see [Chen–Hauer–Weth](https://arxiv.org/abs/2312.15689). Equations (6)–(7) provide the specific elementary comparison needed here, without importing their extension theorem.
 - The broader approximation/Gram difficulty already occurs in [Alouges–Darses–Hillion](https://arxiv.org/abs/2006.02953). This local budget neither resolves their global coefficient problem nor proves the universal Weil criterion.
 
-The paper proof uses classical Plancherel, Tonelli, the holomorphic mean-value inequality, and the explicitly identified corpus theorems. The upper sampling estimate and its source dependencies have Lean certificates; the sharpness and relative-margin consequences require their assembled certificate. The subsequent full compact-ramp limit remains a separate task; it is not a premise of this sampling theorem and is not claimed proved here.
+The paper proof uses classical Plancherel, Tonelli, the holomorphic mean-value inequality, and the explicitly identified corpus theorems. The upper sampling estimate, its source dependencies, and its sharpness and relative-margin consequences have Lean certificates (`FactorialTailSampling.lean` and `FactorialTailRelativeMargin.lean`). The subsequent full compact-ramp limit remains a separate task; it is not a premise of this sampling theorem and is not claimed proved here.

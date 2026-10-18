@@ -165,47 +165,23 @@ These mechanisms are candidates for a shared theory only if their hypotheses exp
 
 See [STATUS.md](../STATUS.md), [compact orbit inertia](../../../formal/GaloisForLFunctions/RHTower/WeilCompactOrbitInertia.lean), [polar/Gram scale separation](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialPolarGramScaleSeparation.lean), and the [finite-filter saturation obstruction](../../drafts/pipeline/5-failed/finite-filter-schur-saturation-2026-10-17.md).
 
-## First concrete milestone
+## Main research topics
 
-For the actual raw factorial correction tail \(T_n\) and its normalized smoothing \(U_{n,k}\), with \(N=n+1\), the [sampling paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) establishes:
+1. **Zero-divisor sampling vs. signed diagonal growth (local source calibration).**
+   Relating the positive zero-divisor comparison form $\mathcal Z(f) = \sum_\rho m_\rho |F_f(\rho)|^2$ to literal physical translation regularity $D(h) = \int |f(x+h)-f(x)|^2\,dx$ and half-plane disk sampling. For the factorial correction tail $T_n$ and its smoothing $U_{n,k}$ ($N = n+1$), both the upper sampling budget $\mathcal Z(T_n) + \mathcal Z(U_{n,k}) \le C(1+\log N)/N$ and the eventual positive Weil diagonal $\operatorname{Re}\mathcal W(U_{n,k}, U_{n,k}) \ge \log N / (2048 N)$ hold at the logarithmic scale, showing that physical $L^2$ mass $O(1/N)$ underestimates zero-divisor sampling by an essential factor of $\log N$.
 
-\[
-\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C\frac{1+\log N}{N}
-\]
+2. **Compact source transfer, smoothing continuity, and finite-block Schur margins.**
+   Transferring positive tail margins across exact source decompositions $r_{n,k} = H_{n,k} - U_{n,k}$ by exploiting the scale separation between the rank-one pole-corrected source budget $\mathcal Z(H_{n,k}) \le C_H/N$ and the logarithmic tail diagonal, removing the mollifier $k \to \infty$ across the singular archimedean jump integral via translation-square contraction, and closing the two-dimensional ramp–tent Schur margin $Q_n(c,d) \ge \frac{\log N}{8192 N}c^2 + \frac{N}{2}d^2$.
 
-for every \(n,k\). **This upper bound and convergence of both literal zero sums are certified in Lean** by `exists_factorialTail_raw_and_smoothed_zeroSquare_bound`. The exact phase is bounded and Lipschitz; its weighted squared translation increments satisfy \(D(h)\le C\min\{N^{-1},h\}\). Integration against \(dh/h\), followed by Fourier and holomorphic sampling arguments, supplies the logarithmic budget. Existing tail positivity shows that the logarithm is necessary in the eventual smoothing regime.
+3. **Divisor-stencil Bernoulli filters, collar irrationality, and multi-scale Riesz coercivity.**
+   Classifying finite divisor-dilation stencils on the periodic Bernoulli kernel that cancel polynomial collar drifts while keeping the fundamental $k=1$ harmonic dominant over the $k \ge 2$ tail, characterizing the cubic Diophantine resonances of the shifted frequencies $\lambda_N = N(1+\varepsilon_N)$, and proving uniform Bohr and finite-window physical $L^2(\mathbb R)$ Riesz-sequence bounds across arbitrary finite coefficient families.
 
-The following ingredients have Lean certificates:
+4. **High-scale signed span coercivity and the critical envelope boundary $\beta \downarrow 1/2$.**
+   Combining nonstationary Mellin low-frequency exclusion on $|\xi| \le 1/2$ with prime-dilation Schur bounds to establish $\operatorname{Re}\mathcal W(f_b,f_b) \ge (c\log M - C)\sum_{N \ge M}|b_N|^2$ for subcritical envelopes $\beta > 1/2$, and investigating how exact multiplicative incidence $\sum_{d \mid n}\Lambda(d) = \log n$ and oscillatory prime-dilation cancellation behave at the critical boundary $\beta = 1/2$ where absolute prime summation $\sum \Lambda(r)/r^{\beta+1/2}$ diverges.
 
-| Ingredient | Source |
-|---|---|
-| Literal arithmetic phase identity and bounds | [FactorialTailPhase.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailPhase.lean) |
-| Uniform weighted square mass \(96/N\) | [FactorialTailWeightedMass.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailWeightedMass.lean) |
-| Two translation regimes, including the endpoint jump | [FactorialTailTranslation.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailTranslation.lean) |
-| Logarithmic translation budget | [FactorialTailLogTranslation.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailLogTranslation.lean) |
-| Complete positive Gamma jump budget | [FactorialTailLevyEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailLevyEnergy.lean) |
-| Logarithmic Fourier budget | [FactorialTailFourierEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean) |
-| Literal Mellin readout, half-plane holomorphy, and exact Fourier normalization | [FactorialTailReadout.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailReadout.lean) |
-| Corrected-source square summability and \(C_H/N\) budget | [FactorialCorrectedSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCorrectedSampling.lean) |
-| Disk mean-square estimate using the actual half-plane of holomorphy | [FactorialTailDiskSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailDiskSampling.lean) |
-| Global logarithmic disk overlap, with every multiplicity copy | [ZeroDiskOverlap.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/ZeroDiskOverlap.lean) |
-| Vertical energy with exact Fourier Jacobian | [FactorialTailVerticalEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailVerticalEnergy.lean) |
-| Integrable enlarged-strip energy and uniform bound | [FactorialTailStripEnergy.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailStripEnergy.lean) |
-| Complete raw and smoothed sampling theorem on the literal zeta carrier | [FactorialTailSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) |
+5. **All-aperture extension, pole-free nullspace geometry, and odd-mode sinh capacity.**
+   Extending positivity from restricted high-scale or single-scale families toward larger subspaces by exploiting the codimension-one pole-free nullspace $\Lambda_{\text{pole}}(S,a) = 0$ (where compact-ramp combinations and negated tail combinations share identical zero-side readouts) and controlling the odd-mode hyperbolic capacity ratio $\operatorname{sinhPairing}(g)^2 / (2\mathcal M_N(g))$ as the support aperture grows.
 
-The sampling certificate retains the actual zero divisor and multiplicities. Its public conclusion has no RH, positivity, or unproved analytic premise.
-
-The [complete ramp–tent paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-ramp-gram-margin.md) makes the smaller corrected-source budget explicit and proves, eventually in \(n\),
-\[
-\texttt{factorialSpanWeil}(n,c,d)
-\ge\frac{\log N}{8192N}c^2+\frac N2d^2
-\qquad(c,d\in\mathbb R).
-\]
-The remaining ramp deliverables are the full compact-ramp smoothing limit and assembled Gram margin, as specified in the [foundational programme](research-foundational.md#first-pilot-the-actual-factorial-correction-tail). The mechanism is classified as a **bridge**, with no claim of literature novelty. This family result does not establish cross-scale or all-source RW positivity.
-
-For whole coefficient families, the [finite-window coercivity paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-window-coercivity.md) proves that the normalized actual tails form a Riesz sequence in physical \(L^2\). Exact collar separation and a dominant first harmonic prevent cancellation of the physical norm. This paper theorem still requires a Lean certificate; it does not control the complete signed form. The [knowledge ledger](knowledge-ledger-primary.md) records these boundaries and rejected shortcuts.
-
-The [signed span paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-span-coercivity.md) adds the missing energy estimates for this restricted family. For normalized phase coefficients supported on \(N\ge M\), it proves \(\Re\mathcal W(f_b,f_b)\ge(c\log M-C)\sum_N|b_N|^2\). Low-frequency exclusion forces logarithmic Gamma energy; uniform dilation bounds keep the entire prime and polar costs bounded on coefficient space. This assembled theorem still requires a Lean certificate. Its restricted positive span is not asserted dense, so the global RW endpoint remains open.
 
 ## What success would look like
 

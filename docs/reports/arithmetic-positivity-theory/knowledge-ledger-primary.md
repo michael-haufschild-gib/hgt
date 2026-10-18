@@ -21,7 +21,7 @@ This ledger records mathematical facts, failed mechanisms, and precise unresolve
 
 ## Logarithmic energy mechanism
 
-The [sampling paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) establishes the following source-specific statements. The source, translation, Fourier, and upper sampling bounds have Lean certificates; the assembled lower scale and relative margin remain separate formal obligations.
+The [sampling proof](../../drafts/pipeline/3-formalized/arithmetic-positivity-factorial-log-sampling.md) establishes the following source-specific statements, with all upper sampling, lower logarithmic scale, and relative-margin bounds certified in Lean (`FactorialTailSampling.lean` and `FactorialTailRelativeMargin.lean`).
 
 - The actual tail is \(a_ne^{3x/2}R_n(Ne^{-x})\mathbf1_{x\le0}\), with \(a_n\le15/\sqrt N\), \(|R_n|\le25/32\), and Lipschitz constant at most \(14\) on nonnegative arguments.
 - For every Mellin weight \(\sigma\in[-1/4,5/4]\), its weighted translation square energy satisfies \(D_{n,\sigma}(h)\le C\min\{N^{-1},h\}\) for \(0<h\le1\). This retains the endpoint jump.

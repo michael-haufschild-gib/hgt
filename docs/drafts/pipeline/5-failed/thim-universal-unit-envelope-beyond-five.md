@@ -64,3 +64,53 @@ with the exact four-step envelope and its radical/power energy certificates as
 the positive survivor. See
 `docs/drafts/pipeline/3-formalized/thim-exact-additive-five-boundary.md`
 and `logs/thim-additive-audit.json` for the new verification package.
+
+## Energy survivor beyond the envelope
+
+`IntegerJumpEnergyAndBeyondEnvelopeDefect.lean` now proves that every response-two
+counterexample above, including every positive power, has nonpositive Möbius
+prefix defect. The mechanism is integer jump energy: for N≥2,M≥1,
+`E≥1+|s_N(M+1)|`, hence `2D≤s_N(M+1)²−|s_N(M+1)|−2`.
+Every endpoint of magnitude at most two is therefore admissible. The damped
+response has magnitude at most two for `2≤k<6(N+1)`; at ε=0 this yields
+Möbius defect nonpositivity throughout that range and its radical/power extensions.
+Thus the negative unit-envelope result exposes a stronger energy certificate.
+
+This positive survivor has a dependency-closed paper proof and complete Lean
+formalization: 22 public theorems and two private helpers, all with the standard
+three-axiom closure. See
+`docs/drafts/pipeline/3-formalized/thim-integer-energy-beyond-envelope.md`
+and `logs/thim-integer-energy-audit.json`. Full positive-damping defect control beyond the unit envelope remains open;
+the integer-energy proof cannot be transferred unchanged to real-valued damped jumps.
+
+## Strict-positive damping obstruction and robust negative-defect survivor
+
+`StrictMobiusMarginAndUniformDampingStability.lean` removes the ε=0 loophole:
+uniformly over every ε>0, the unit-envelope ratio is still admissible exactly
+when C≤5, and the real additive buffer exactly when b<5. This does not decide
+the optimum for a fixed positive ε.
+
+For each prime-family horizon N=6p−1 there is an actual positive interval of
+damping exponents on which the first failure k=30p still has response >1,
+while every positive power has defect <−1/2. More generally, for each N≥2,
+one interval around zero certifies strict negative defects for all nonempty
+prefixes with R_N(M+1)<6(N+1). The proof uses a strict integer-energy margin,
+finite continuity, radical reduction, and rough-prime comparison.
+
+This stronger positive survivor has a dependency-closed paper proof and full
+Lean formalization. See `docs/drafts/pipeline/3-formalized/thim-strict-margin-damping-stability.md`
+and `logs/thim-stability-audit.json`. The damping radius may depend on N;
+its explicit positive-damping size is now certified below.
+
+## Explicit positive-damping survivor
+
+For N≥2, δ_N=1/(96N(N+1)log N)>0 works on the closed interval 0≤ε≤δ_N.
+Every nonempty prefix with R_N(M+1)<6(N+1) has defect≤−1/2. For prime
+p>5,N=6p−1,k=30p, all positive powers retain response≥3/2 and defect≤−1/2;
+k remains the first unit-envelope failure. This quantifies both obstruction
+and strongest negative-defect survivor. No radius uniform in p is claimed.
+
+Paper proof is dependency-closed and Lean formalization complete:
+`QuantitativeDampingRadiusAndDefectPerturbation.lean` (16 theorems, one definition).
+See `docs/drafts/pipeline/3-formalized/thim-explicit-damping-radius.md` and
+`logs/thim-quantitative-audit.json`. Full all-ε≥0 defect control remains open.

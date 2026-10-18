@@ -39,5 +39,6 @@ These facts delimit the foundations. Mixed-valuation recovery and quantitative o
 
 - [x] `ClassicalFoundationBoundaries.lean` passes its direct artifact-producing `lake --old env lean -j 1` audit with exit 0 and no diagnostics.
 - [x] All six public theorems have no mathematical premise binders. Clean `/tmp` axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Leaf wired without compiling the umbrella.
-- [ ] Corpus index and formal lint checked for the completed component batch.
-- [ ] Boundary allocation cases and full item-2 accounting completed.
+- [x] Corpus index refreshed. Formal lint checked: no owned wiring or proof-placeholder errors; the global gate fails on concurrent package-root `TransHorizonIncidenceMechanics.lean` placement, outside this component's scope.
+- [x] [All boundary allocation cases](biscale-allocation-boundaries-1810.md) are formalized and pass the final named-source audit. `pair_support_eq_iff` requires zero determinant and nonnegative dot product; `allocation_eq_iff` separates the zero-total case, where every vector must vanish. These cover the actual nonnegative block sizes by substituting their absolute values.
+- [x] Item-2 mathematical accounting complete: residual projection/Cauchy–Schwarz, allocation norm geometry, hyperbolic addition/defect and additive-only joint zero-set rigidity are explicit. Mixed quintic recovery and raw noisy recovery have conclusions beyond these identities, without an originality claim.

@@ -158,9 +158,26 @@ estimate. An upper bound for the accumulated energy/interior remains open.
 - Latest lint errors concern only concurrent BiScale PrimeRawMomentContrasts
   reachability and root TransHorizon umbrella placement. All three owned
   leaves have no reported lint error. Full global gate is not claimed clean.
-- Active corpus search: session 59301, query `sieveL2PrefixEnergy asymptotic
-  density`, output `/tmp/bvi-cofinal-quadratic-profile-research.json`.
-  Wait for terminal status before parsing the JSON.
+- Quadratic-profile and multiplicative-density searches completed and
+  were inspected (first partial, second complete). Next conjecture C8 is
+  tracked in `bvi-cofinal-quadratic-quotient-profile-2026-10-18.md`.
+- C8 is complete: two new leaves, both original-source audited and wired,
+  all 33 public declarations audited with only standard Lean axioms. Profile
+  source check 57054 and axiom check 23187 passed. Index passed; global lint
+  has four unrelated findings, archived in the C8 manifest. Completed C8
+  scratch files were removed after archive. C8's card is under `3-formalized`.
+  The odd-moment conjecture is now active under `1-in-progress`. Scratch
+  33012 passed its all-moduli mean-zero and odd-dilation-product foundation.
+  Owned Lean session 6385 checks original source
+  `CoprimeMobiusCancellationAndOddDilationMeans.lean`; log
+  `/tmp/bvi-coprime-mobius-canonical.log`. Re-poll before another Lean command.
+  The overall conjecture loop remains active.
+- Session 46734 exited with three local elaboration errors, now corrected.
+  Session 93140 exited before elaboration because it was launched from the
+  repository root; all subsequent Lean commands run from `formal/`.
+- The BVI README acquired concurrent foreign edits during this task.
+  This task never wrote it. Preserve those edits; do not claim the global
+  README diff is empty.
 - Completed C1-C7 scratch proofs and API probes were removed after audit;
   historical paths below are no longer live continuation inputs.
 - Leaf wired into BVI umbrella; `scripts/formal_tools.py index` passed.

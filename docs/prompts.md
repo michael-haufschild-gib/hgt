@@ -27,8 +27,10 @@ On every turn state what the proof route is you are working on. State what the h
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
 - docs/drafts/pipeline/2-fully-proven/apt
 
+some work is done. see remaining work: docs/drafts/pipeline/2-fully-proven/apt/status.md
+
 the lean code for these goes into formal/GaloisForLFunctions/arithmetic-positivity-theory/
-  
+
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
 Lean rules:

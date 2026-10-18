@@ -9,6 +9,9 @@ import GaloisForLFunctions.TransHorizonIncidenceMechanics.TwoPrimeDeletionAndFul
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.FourthBandEnvelopeAndSharpFiveHorizonBoundary
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.ExactAdditiveEnvelopeAndFirstFailure
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.IntegerJumpEnergyAndBeyondEnvelopeDefect
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.StrictMobiusMarginAndUniformDampingStability
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.QuantitativeDampingRadiusAndDefectPerturbation
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.DivisorIncidencePerturbationAndLogarithmicDamping
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.InterCheckpointSawtoothExcursionAndPronicSandwich
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.ClockScheduleSynthesisAndPrimePowerPhaseRecovery
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.CompositeClockWaveletTensorAndPhaseRecovery
@@ -36,6 +39,10 @@ import GaloisForLFunctions.TransHorizonIncidenceMechanics.ThirdBandCompositeStep
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.MultiShellPrimePowerHyperbolicSumAndGroundCutCoercivity
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.AllCutPrimeChainCoercivityAndContinuousDensityBridge
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.OddEigenvectorNodalModulusBalanceAndFourthBandStepLaw
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.CompactWindowedOfflineChainIntegralAndOriginCollarDuality
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.CenteredSquareCompletionAndMultiBandResidueCancellation
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.OddPolarCollarParallelogramAndPrimeClockBridge
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.OddEigenvectorHalfMassLobeAndStrictPrimeShiftClosure
 
 /-!
 # Trans-Horizon Arithmetic–Archimedean Incidence Mechanics (`GaloisForLFunctions.TransHorizonIncidenceMechanics`)
@@ -48,8 +55,12 @@ defects and iso-state endpoint classifications, downward Buchstab $L^2$ telescop
 squarefree horizon steps across multiple octaves, and sawtooth fractional-part couplings, off-line
 hyperbolic prime-chain variance excesses, multi-shell prime-power steps, ground-cut and all-cut
 prime-chain coercivity bounds, continuous CHMD crossing-density pullbacks, odd-eigenvector
-nodal-modulus balance identities, and Ramanujan/Selberg quadratic-form identities bridging
-`BezoutValuationIncidence` with `RHTower` and `BiScaleUncertainty`.
+nodal-modulus balance identities, compactly supported windowed off-line `chainIntegral` bounds,
+centered square-completion and parity-pair $L^2$ slope reductions, odd–even bipartite prime-chain
+parallelogram laws and smooth complex-hyperbolic collar excesses, cross-free `absGraph` vs.
+`4 · posGraph` lobe energy identities and strict prime-shift cross-dominance exclusions, and
+Ramanujan/Selberg quadratic-form identities bridging `BezoutValuationIncidence` with `RHTower` and
+`BiScaleUncertainty`.
 
 ## The Modules
 
@@ -85,6 +96,10 @@ nodal-modulus balance identities, and Ramanujan/Selberg quadratic-form identitie
 30. `MultiShellPrimePowerHyperbolicSumAndGroundCutCoercivity`: Multi-shell prime-power radial jump factorization $(r_\beta(b) - r_\beta(p^r \cdot b))^2 = r_\beta(b)^2 (e^{\beta r \log p} - 1)^2$ and universal ground-cut ($u \in (0, \log 2)$) multi-prime lower bound $\sum_{p \in N.\text{primeFactors}} \log p \cdot (e^{\beta \log p} - 1)^2 \le \operatorname{chainVariance}(N, u, r_\beta)$ across all prime factors simultaneously (`chainVariance_offlineRadialEnvelope_ge_sum_primeFactors_of_ground_cut`, `globalOfflineChainVariance_symmetrized_sub_critical_ge_sum_primeFactors`).
 31. `AllCutPrimeChainCoercivityAndContinuousDensityBridge`: Symmetrized hyperbolic convexity floor $(e^x - 1)^2 + (e^{-x} - 1)^2 \ge x^2$, quadratic $\frac{1}{2}\beta^2 \sum_{p \in N.\text{primeFactors}} (\log p)^3$ ground-cut lower bound (`globalOfflineChainVariance_symmetrized_sub_critical_ge_quadratic_cubic_log`), simultaneous multi-shell and all-cut straddling $p$-coprime base summation (`varianceEnergy_offlineRadialEnvelope_ge_sum_shells`, `chainVariance_offlineRadialEnvelope_ge_sum_straddling_bases`), and exact continuous logarithmic pullback to `CHMDPrimeChainSource.chainDensity` and `density` (`continuousOfflineTwoChannelDensity_symmetrized_sub_critical_eq`, `continuousOfflineTwoChannelDensity_symmetrized_sub_critical_ge_quadratic`).
 32. `OddEigenvectorNodalModulusBalanceAndFourthBandStepLaw`: Automatic nodal-modulus mass-balancing and simultaneous orthogonality for odd graph vectors (`odd_balancedNodalGraph_eq_smul_absGraph`, `odd_absGraph_simultaneous_orthogonality`), exact eigenvector bilateral cross-jump identity $\operatorname{sourceEnergy}(\operatorname{absGraph} q) - 4\operatorname{sourcePair}(\operatorname{posGraph} q, \operatorname{negGraph} q) = \frac{1 - 2\mu}{\mu}\|q.\text{fst}\|^2$ and $\mu = 1/2$ exclusion criteria (`eigenvector_sourceEnergy_absGraph_sub_four_sourcePair_eq`, `riemannHypothesis_iff_forall_odd_eigenvector_absGraph_energy_ge_four_sourcePair`, `riemannHypothesis_of_odd_eigenvector_oneL_defect_le_neg_four_sourcePair`), centered $(B - 2)$ Buchstab step identity, and the four-band linear $L^2$ upper bound $\mathcal{E}_N(M; \mu) \le 1 + 4(M - N)$ across $4 \le N \le M < 5(N + 1)$ (`sieveL2PrefixEnergy_moebiusReal_four_band_le`).
+33. `CompactWindowedOfflineChainIntegralAndOriginCollarDuality`: Complete prime-chain summation for compactly supported windowed off-line wave packets (`windowedOfflineWaves_complete_chain_hasSum`), non-negative window phase-dominance on `chainDensity`, `density`, and integrated `chainIntegral` (`windowed_chainDensity_two_channel_ge_radial`, `windowed_density_two_channel_ge_radial`, `windowed_chainIntegral_two_channel_ge_radial`), and localized ground-cut ($u \in (0, \log 2)$) quadratic $\beta^2 (\log p)^3$ lower bounds requiring $w = 1$ only on $[-\log N, \log 2]$ (`windowed_two_channel_density_symmetrized_ground_cut_ge_quadratic`).
+34. `CenteredSquareCompletionAndMultiBandResidueCancellation`: Exact $(B - 2)$-scaled square completion $(B - 2)(\mathcal{E}_n(M; \mu) - \mathcal{E}_{n+1}(M; \mu)) = (\mu(n + 1) S_2)^2 - ((B - 2)\mu(n + 1)^2 + \mu(n + 1) S_2)^2$ (`mul_sub_two_sieveL2PrefixEnergy_moebiusReal_sub_succ_eq_sq_sub_sq`), ground-term-free high-band ($B \ge 3$) step upper bound $\mathcal{E}_n - \mathcal{E}_{n+1} \le S_2^2 / (B - 2)$ (`sieveL2PrefixEnergy_moebiusReal_sub_succ_le_div_sub_two_sq`), half-band cancellation criterion $|S_2| \le (B - 2)/2 \implies \mathcal{E}_n \le \mathcal{E}_{n+1}$ (`sieveL2PrefixEnergy_moebiusReal_sub_succ_nonpos_of_abs_sum_le_half`), and consecutive two-step parity-pair slope reductions in the second and third bands (`sieveL2PrefixEnergy_moebiusReal_sub_add_two_second_band_le_two`, `sieveL2PrefixEnergy_moebiusReal_sub_add_two_third_band_le_four`).
+35. `OddPolarCollarParallelogramAndPrimeClockBridge`: Origin-straddling odd–even bipartite prime-chain parallelogram and difference identities (`bipartiteEnergy_odd_add_evenFold_eq`, `bipartiteEnergy_odd_sub_evenFold_eq`), half-line positive odd domination on `varianceEnergy`, `chainDensity`, `density`, and `chainIntegral` (`chainIntegral_odd_ge_evenFold_of_nonneg_Ici`, `chainIntegral_oddPolarWeight_ge_evenFold`), smooth even complex-hyperbolic off-line pair $(\cosh(\beta x)\cos(\gamma x), \sinh(\beta x)\sin(\gamma x))$ with exact $\gamma$-cancellation in `oddProfileCollarMixed` and `primeCrossingWithOddCollar` (`oddProfileCollarMixed_two_channel_sub_critical_eq`, `primeCrossingWithOddCollar_two_channel_sub_critical_eq`), and universal off-diagonal stationary positivity floor (`packetOffDiagStationarySum_ge_neg_diag`, `packetOffDiagSourcePairSum_ge_neg_diag_sub_arch_sub_primeShift`).
+36. `OddEigenvectorHalfMassLobeAndStrictPrimeShiftClosure`: Equal-lobe `oneL` projection and cross-lobe rank-1 reformulation of the primitive `oneL`-defect ($2\langle (\operatorname{absGraph} p).\text{fst}, \text{oneL}\rangle^2 = 8\langle (\operatorname{posGraph} p).\text{fst}, \text{oneL}\rangle \langle (\operatorname{negGraph} p).\text{fst}, \text{oneL}\rangle$, `oneL_defect_absGraph_eq_eight_posGraph_negGraph`), exact cross-free `absGraph` vs. `4 · posGraph` energy law ($\operatorname{sourceEnergy}(\operatorname{absGraph} q) - 4\operatorname{sourceEnergy}(\operatorname{posGraph} q) = \frac{2\mu - 1}{\mu}\|q.\text{fst}\|^2$, `odd_eigenvector_sourceEnergy_absGraph_sub_four_posGraph_eq`), half-mass three-term non-negative lobe balance (`odd_eigenvector_three_term_lobe_balance`), strict prime-shift cross-dominance exclusion ($\mu < 1/2$, `odd_eigenvector_eigenvalue_lt_half_of_cross_lobe_oneL_le_primeShift`), and unconditional cross-free `RiemannHypothesis` equivalence (`riemannHypothesis_iff_forall_odd_eigenvector_absGraph_le_four_posGraph`).
 
 See `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md` for the classical
 baseline ledger, central mathematical problem, organizing principle, matched-assumption comparison,

@@ -2,7 +2,7 @@
 
 - **ID:** biscale-prime-raw-contrasts-1810
 - **Stage:** 2-fully-proven
-- **Type:** BRIDGE; exact symbolic construction, not yet formalized
+- **Type:** BRIDGE; fixed protocol, noise bounds, decoder and dimension lower bound formalized; adaptive count pending
 - **Parent:** [field programme](../1-in-progress/biscale-field-development-1810.md), items 5–6
 
 ## Concrete protocol
@@ -59,6 +59,12 @@ If two raw observation arrays differ by at most `η` in supremum norm, each cont
 
 The stronger mass/coordinate-weighted estimates transfer by the same substitution. This compares exact source vectors whose observations are close; an estimator can use any admissible vector fitting noisy data and the triangle inequality for its observation residual.
 
+There is also a bound in the indexed raw Euclidean norm. Put `D_raw=Σ_(p,q,v) |M_a(p,q,v)−M_b(p,q,v)|²`, counting the stated observation slots, including repetitions. Cauchy–Schwarz on the 64 signs gives a squared contrast error at most `64` times its raw error sum. Since every normalizer is at least `81`, `6561 E≤64 D_raw`, where `E` is the squared Frobenius error of the normalized readout matrix. Hence one common orientation simultaneously satisfies
+
+`6561 T²≤32768 D_raw`, `6561 MT≤2048 D_raw`, `6561 MW≤512 D_raw`,
+
+with `T,M,W` as in the stability component. This is an actual-source comparison and does not assume known nonzero support.
+
 Any fixed collection of `m` raw moments that recovers all vectors up to common sign must have `m≥M`. On the positive orthant the common-sign quotient is trivial, and the observation map is continuous. If `m<M`, composing an injective such map with the standard inclusion `ℝ^m→ℝ^M` contradicts invariance of domain: its image would have to be open while lying in a proper linear subspace. This lower bound covers fixed protocols. No lower bound for unrestricted adaptive decision rules is claimed.
 
 ## Audit and gates
@@ -66,9 +72,15 @@ Any fixed collection of `m` raw moments that recovers all vectors up to common s
 - Existing exact source ingredients: `sieveSeq_primeFamilyWeight`, `period_average_crt`, and the common-sign sixth recovery theorem. The new work is the specific raw contrast and its amplification bound.
 - Corpus query `prime selective shift finite difference sixth raw moment recovery` returned the full Fourier readouts and small-family moment identities, without this raw protocol among returned statements. Snapshot coverage does not establish global absence.
 - Standard CRT, finite differences and rank-one reconstruction are prior mechanisms. [Bendory–Edidin–Kreymer](https://arxiv.org/abs/2103.01551) studies linear measurements of higher spectra; its count does not itself certify this literal-lag protocol. No originality claim is made for the construction.
-- [x] `PrimeRawMomentContrasts.lean` passes its direct artifact-producing source audit without diagnostics: finite observation cube, exact multilinearity, raw error-sum bound, even CRT lags and isolation of an arbitrary prime coefficient are formalized. Leaf wired; final axiom audit pending.
-- [ ] Formal exact pair/diagonal contrasts, raw count and reconstruction.
-- [ ] Formal noise bound and fixed-protocol lower bound.
+- [x] `PrimeRawMomentContrasts.lean` passes its direct artifact-producing source audit without diagnostics: finite observation cube, exact multilinearity, raw error-sum bound, even CRT lags and isolation of an arbitrary prime coefficient are formalized. Leaf wired. All seven public theorem axiom closures contain only `propext`, `Classical.choice`, and `Quot.sound`; the audit exits 0.
+- [x] `PrimeRawMomentRecovery.lean` passes its artifact-producing named-source audit without diagnostics. Exact pair/diagonal contrasts, `64M²` indexed raw count, exact common-sign recovery and all three raw-noise stability bounds are formalized. Leaf wired without an umbrella build.
+- [x] All fourteen recovery/noise theorem axiom closures contain only `propext`, `Classical.choice`, and `Quot.sound`; the audit exits 0.
+- [x] Index and lint checked for the two finished raw-observation leaves; no owned wiring or placeholder errors. Global lint still reports concurrent BezoutValuationIncidence wiring and TransHorizonIncidenceMechanics placement errors.
+- [x] `PrimeMeasurementComplexity.lean` passes its artifact-producing named-source audit without diagnostics and is wired. `decodeRaw_actual` constructs the coefficient vector from the actual raw array by selecting the least nonzero diagonal and inverting cubed products. `underdetermined_collision` gives two distinct positive coefficient vectors with identical data whenever a fixed protocol has fewer than `M` literal measurements. The literal test class includes all translated degrees and the existing affine observations, by exact identities.
+- [x] All seven measurement/decoder theorem axiom closures contain only the three standard axioms; the audit exits 0.
+- [ ] Formal adaptive protocol and count.
 - [ ] Direct source and axiom audits, umbrella wiring, index and lint.
+
+Lower-bound dependency found by the corpus's lexical search: `GaloisForLFunctions.invariance_of_domain_open_map` is stored in `HTGeometry/InvarianceOfDomain.lean`. Its source theorem has no Brouwer premise, and its compiled axiom closure contains only the three standard axioms. The file's introductory conditional wording does not determine the theorem's actual dependency closure.
 
 This card does not close item 6 until its Lean gates and the stated-family scope are discharged.

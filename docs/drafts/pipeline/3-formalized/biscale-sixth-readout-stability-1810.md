@@ -46,7 +46,8 @@ Summing gives `T≤16D` and `W≤4D`. Combine with the two Gram inequalities to 
 - Corpus query `sixth readout stability Gram cube Holder exponent` returned exact sixth identities and other Gram estimates, without this estimate among the returned statements. Coverage was a snapshot, semantic completeness unmeasured, background refresh incomplete.
 - [x] `SixthReadoutStability.lean`: direct artifact-producing `lake --old env lean -j 1` audit, exit 0 without diagnostics. Actual prime-family normalization and all three polynomial bounds are formalized.
 - [x] All five public theorems have no mathematical premise binders; a clean `/tmp` audit prints only `propext`, `Classical.choice`, and `Quot.sound`. Leaf wired without compiling the umbrella.
-- [ ] Actual-sieve sharpness packaging, corpus index and formal lint for the component batch.
+- [x] Corpus index refreshed. Formal lint checked: no owned wiring or proof-placeholder errors; the global gate fails on concurrent package-root `TransHorizonIncidenceMechanics.lean` placement, outside this component's scope.
+- [ ] Actual-sieve sharpness packaging.
 - [ ] Extend the stability analysis to the mixed-valuation ambiguity classification.
 
 This component does not close checklist item 5.

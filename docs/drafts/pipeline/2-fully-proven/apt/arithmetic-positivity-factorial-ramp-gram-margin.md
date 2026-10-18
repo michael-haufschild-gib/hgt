@@ -72,7 +72,7 @@ All sums used here are nonnegative and dominated by the displayed convergent ser
 
 ## The mixed term is lower order
 
-The [sampling paper theorem](arithmetic-positivity-factorial-log-sampling.md) gives \(C_U>0\), independent of \(n,k\), with
+The [sampling theorem](../3-formalized/arithmetic-positivity-factorial-log-sampling.md) gives \(C_U>0\), independent of \(n,k\), with
 \[
 \mathcal Z(U_{n,k})\le C_U\frac{1+L}{N}.
 \tag{6}

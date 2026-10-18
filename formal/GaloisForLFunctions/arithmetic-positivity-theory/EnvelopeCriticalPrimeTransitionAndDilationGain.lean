@@ -203,16 +203,18 @@ theorem sum_Icc_one_inv_cube_le_three_halves (M : ℕ) :
         omega
       rw [hsplit, Finset.sum_insert (by simp), Finset.sum_insert (by simp)]
       have hle : (∑ j ∈ Finset.Icc 3 M, 1 / (j : ℝ) ^ 3) ≤
-          ∑ j ∈ Finset.Icc 3 M, 1 / (j : ℝ) ^ 2 := by
+          (1 / 3 : ℝ) * ∑ j ∈ Finset.Icc 3 M, 1 / (j : ℝ) ^ 2 := by
+        rw [Finset.mul_sum]
         refine Finset.sum_le_sum fun j hj => ?_
-        have hj1 : (1 : ℝ) ≤ (j : ℝ) := by
-          exact_mod_cast (show 1 ≤ j by linarith [(Finset.mem_Icc.mp hj).1])
+        have hj3 : (3 : ℝ) ≤ (j : ℝ) := by
+          exact_mod_cast (Finset.mem_Icc.mp hj).1
         have hj_pos : (0 : ℝ) < (j : ℝ) := by linarith
-        have hj_pow : (j : ℝ) ^ 2 ≤ (j : ℝ) ^ 3 := by
+        have hj_pow : 3 * (j : ℝ) ^ 2 ≤ (j : ℝ) ^ 3 := by
           calc
-            (j : ℝ) ^ 2 = (j : ℝ) ^ 2 * 1 := by ring
-            _ ≤ (j : ℝ) ^ 2 * (j : ℝ) := mul_le_mul_of_nonneg_left hj1 (sq_nonneg _)
+            3 * (j : ℝ) ^ 2 ≤ (j : ℝ) * (j : ℝ) ^ 2 :=
+              mul_le_mul_of_nonneg_right hj3 (sq_nonneg _)
             _ = (j : ℝ) ^ 3 := by ring
+        rw [one_div_mul_one_div]
         exact one_div_le_one_div_of_le (by positivity) hj_pow
       have htel := sum_Icc_three_inv_sq_le M hM2
       have hM_inv : 0 ≤ 1 / (M : ℝ) := by positivity

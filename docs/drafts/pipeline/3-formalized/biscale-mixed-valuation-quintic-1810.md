@@ -38,6 +38,6 @@ If two signals additionally have the same higher-coordinate square, then equalit
 - [x] Named-source Lean audit: `lake --old env lean -j 1 GaloisForLFunctions/BiScaleUncertainty/MixedValuationQuintic.lean`, exit 0, no diagnostics; artifact-producing source audit also exit 0.
 - [x] All four public theorems have no mathematical premise binders. `#print axioms` in `/tmp/biscale-component-api-audit.lean` reports only `propext`, `Classical.choice`, and `Quot.sound`; no added axiom or proof placeholder.
 - [x] Leaf wired into `GaloisForLFunctions.BiScaleUncertainty` without compiling the umbrella.
-- [ ] Corpus index and formal lint checked for the completed component batch.
+- [x] Corpus index refreshed. Formal lint checked: no owned wiring or proof-placeholder errors; the global gate fails on concurrent package-root `TransHorizonIncidenceMechanics.lean` placement, outside this component's scope.
 
 No publication task is part of this card.

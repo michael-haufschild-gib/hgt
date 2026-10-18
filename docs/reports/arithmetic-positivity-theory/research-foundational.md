@@ -159,7 +159,7 @@ The required local target is:
 > \mathcal Z(U_{n,k})\le C_U\frac{\log N}{N}.
 > \]
 
-The [dependency-closed paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) and [actual-source Lean certificate](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) prove the stronger bound \(\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C(1+\log N)/N\) for every \(n,k\), where \(T_n=G_n-r_n\) is the literal raw tail. Both zero sums are proved convergent. Constants are independent of both indices; no smoothing threshold is needed for this upper bound. The lower signed-energy bound retains its existing eventual smoothing quantifiers.
+The [dependency-closed paper proof](../../drafts/pipeline/3-formalized/arithmetic-positivity-factorial-log-sampling.md) and [actual-source Lean certificate](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean) prove the stronger bound \(\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C(1+\log N)/N\) for every \(n,k\), where \(T_n=G_n-r_n\) is the literal raw tail. Both zero sums are proved convergent. Constants are independent of both indices; no smoothing threshold is needed for this upper bound. The lower signed-energy bound retains its existing eventual smoothing quantifiers.
 
 The paper proof also establishes sharpness in that eventual regime: signed tail energy and absolute square sampling both have order \(\log N/N\). An \(O(1/N)\) spectral budget is false for this family. The result is classified as a **bridge**, not an established novel general theory. The upper sampling theorem is certified; the assembled sharpness and relative-margin statements require their own certificates.
 
@@ -310,7 +310,7 @@ Before marking a mathematical task complete:
 
 ## Immediate next actions
 
-1. Use the [factorial sampling card](../../drafts/pipeline/1-in-progress/arithmetic-positivity-factorial-tail-sampling.md) and [paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) as the exact local statement and dependency ledger.
+1. Use the [factorial sampling card](../../drafts/pipeline/1-in-progress/arithmetic-positivity-factorial-tail-sampling.md) and [paper proof](../../drafts/pipeline/3-formalized/arithmetic-positivity-factorial-log-sampling.md) as the exact local statement and dependency ledger.
 2. Use [FactorialCorrectedSampling.lean](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCorrectedSampling.lean), which proves absolute square summability and the uniform \(C_H/N\) corrected-source budget on the literal zeta carrier.
 3. Use the verified [complete sampling bound](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSampling.lean), retaining its literal zero carrier and all-index uniformity, to certify the sharp lower scale and relative sign margin.
 4. Finish APT-05, including the full ramp limit, before claiming the two-dimensional positivity application. Then test which source-level mechanisms survive beyond the factorial family.

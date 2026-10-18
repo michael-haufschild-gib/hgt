@@ -81,11 +81,10 @@ theorem mul_sub_two_sieveL2PrefixEnergy_moebiusReal_sub_succ_eq_sq_sub_sq {n M :
   change sieveL2PrefixEnergy (n + 1) M moebiusReal - sieveL2PrefixEnergy n M moebiusReal =
     (((M / (n + 1) : ℕ) : ℝ) - 2) * moebiusReal (n + 1) ^ (2 : ℕ) +
       2 * moebiusReal (n + 1) * higherQuotientSieveSum n M at hstep
-  have hpow4 : moebiusReal (n + 1) ^ (4 : ℕ) = moebiusReal (n + 1) ^ (2 : ℕ) := by
-    rcases moebiusReal_eq_or (n + 1) with h | h | h <;> { rw [h]; norm_num }
-  linear_combination
-    -((((M / (n + 1) : ℕ) : ℝ) - 2) * hstep) -
-      (((M / (n + 1) : ℕ) : ℝ) - 2) ^ (2 : ℕ) * hpow4
+  rcases moebiusReal_eq_or (n + 1) with h | h | h <;> {
+    rw [h] at hstep ⊢
+    linear_combination -((((M / (n + 1) : ℕ) : ℝ) - 2) * hstep)
+  }
 
 /-- **Ground-Term-Free Upper Bound on $(B - 2)(\mathcal{E}_n - \mathcal{E}_{n+1})$
 (`mul_sub_two_sieveL2PrefixEnergy_moebiusReal_sub_succ_le_sq`):**
@@ -140,7 +139,8 @@ theorem sieveL2PrefixEnergy_moebiusReal_sub_succ_nonpos_of_abs_sum_le_half {n M 
     (hn : 1 ≤ n) (hM : 2 * (n + 1) ≤ M)
     (hcancel : |higherQuotientSieveSum n M| ≤ (((M / (n + 1) : ℕ) : ℝ) - 2) / 2) :
     sieveL2PrefixEnergy n M moebiusReal ≤ sieveL2PrefixEnergy (n + 1) M moebiusReal := by
-  have hstep := sieveL2PrefixEnergy_moebiusReal_succ_sub_eq_centered hn (by omega)
+  have hlo : n + 1 ≤ M := by omega
+  have hstep := sieveL2PrefixEnergy_moebiusReal_succ_sub_eq_centered hn hlo
   change sieveL2PrefixEnergy (n + 1) M moebiusReal - sieveL2PrefixEnergy n M moebiusReal =
     (((M / (n + 1) : ℕ) : ℝ) - 2) * moebiusReal (n + 1) ^ (2 : ℕ) +
       2 * moebiusReal (n + 1) * higherQuotientSieveSum n M at hstep

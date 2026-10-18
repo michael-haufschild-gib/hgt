@@ -36,7 +36,7 @@ theorem abs_phase_deriv_ge_half_freq {ω t v : ℝ} {M N : ℕ}
   have hMN_R : (M : ℝ) ≤ (N : ℝ) := by exact_mod_cast hMN
   have hpi : 0 < Real.pi := Real.pi_pos
   have htv : |t / v| ≤ |t| := by
-    rw [abs_div, abs_of_pos (by linarith)]
+    rw [abs_div, abs_of_pos (show 0 < v by linarith)]
     exact div_le_self (abs_nonneg t) hv
   have ht_omega : |t / v| ≤ |ω| / 2 := by
     calc
@@ -81,6 +81,7 @@ theorem nonstationary_mellin_majorant_le_five_div_abs {ω t : ℝ}
         gcongr
         norm_num
       _ = 1 / |ω| := one_mul _
+  have h21 : 2 / |ω| + 2 / |ω| + 1 / |ω| = 5 / |ω| := by ring
   linarith
 
 /-- The low-frequency Mellin exclusion constant `D = 15 / π^3`. -/
@@ -211,7 +212,6 @@ theorem low_band_plancherel_energy_le_half_arch {A D S : ℝ} {M : ℕ}
         (2 * D ^ 2 * S / (M : ℝ)) =
         (2 * lowFreqRelativeCutoff A D * D ^ 2 / Real.pi) * S := by
       field_simp [hM_pos.ne', hpi.ne']
-      ring
     _ ≤ (2 * (A * Real.pi / (4 * D ^ 2)) * D ^ 2 / Real.pi) * S := by
       refine mul_le_mul_of_nonneg_right ?_ hS
       exact div_le_div_of_nonneg_right
@@ -231,7 +231,7 @@ Then for every `M ≥ 2`, with `c = A / 2`:
 `(c * log M - B * (G + log 2) - c * log (1 / η)) * S ≤ E_arch`. -/
 theorem high_scale_archimedean_log_coercivity {A B G η S E_low E_high E_arch : ℝ} {M : ℕ}
     (hA : 0 < A) (hG : 0 ≤ G) (hη : 0 < η) (hS : 0 ≤ S) (hM : 2 ≤ M)
-    (hE_low0 : 0 ≤ E_low) (hE_high0 : 0 ≤ E_high)
+    (hE_high0 : 0 ≤ E_high)
     (h_tot_lo : A * S ≤ E_low + E_high)
     (h_tot_hi : E_low + E_high ≤ B * S)
     (h_low_hi : E_low ≤ (A / 2) * S)
@@ -249,10 +249,6 @@ theorem high_scale_archimedean_log_coercivity {A B G η S E_low E_high E_arch : 
     have hlog_eq : Real.log (η * (M : ℝ)) = Real.log (M : ℝ) - Real.log (1 / η) := by
       rw [Real.log_mul hη.ne' hM_pos.ne', one_div, Real.log_inv]
       ring
-    have h1 : (Real.log (η * (M : ℝ)) - (G + Real.log 2)) * E_low +
-        (Real.log (η * (M : ℝ)) - (G + Real.log 2)) * E_high ≤
-        -(G + Real.log 2) * E_low + (Real.log (η * (M : ℝ)) - G) * E_high := by
-      nlinarith
     have h2 : Real.log (η * (M : ℝ)) * ((A / 2) * S) - (G + Real.log 2) * (B * S) ≤
         -(G + Real.log 2) * E_low + (Real.log (η * (M : ℝ)) - G) * E_high := by
       have h_pos_part : Real.log (η * (M : ℝ)) * ((A / 2) * S) ≤
@@ -319,7 +315,7 @@ theorem high_scale_span_lower_bound_pos_iff {A C S : ℝ} {M : ℕ}
     show C < A / 2 * Real.log (M : ℝ) ↔ 2 * C / A < Real.log (M : ℝ) by
       rw [div_lt_iff₀ hA]
       constructor <;> intro h <;> linarith,
-    Real.exp_lt_iff_lt_log hM_pos]
+    Real.lt_log_iff_exp_lt hM_pos]
 
 end
 
