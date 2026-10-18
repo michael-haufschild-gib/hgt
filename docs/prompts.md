@@ -25,8 +25,9 @@ On every turn state what the proof route is you are working on. State what the h
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/leftovers
-- docs/drafts/pipeline/2-fully-proven/route TT
+- docs/drafts/pipeline/2-fully-proven/apt
+
+the lean code for these goes into formal/GaloisForLFunctions/arithmetic-positivity-theory/
   
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -48,7 +49,7 @@ Non-negotiable working mode rules:
 6. The only reason to stop working on a card if a proof is mathematically impossible. Open research is not mathematically impossible.
 7. Missing mathematical knowledge: create it with the hgtl7 or hgt-fields-medalist skill workflow and heavy conjecturing loop workflow: conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  conjecture -> proof or fail and pivot ->  ...
 
-LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK. 
+LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK. USE THE SEARCH TOOL FOR THE LEAN CORPUS, NOT JUST RG OR GREP.
 
 GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF THE PIPELINE. NO SHORTCUTS OR FAKING IT!
 
@@ -289,7 +290,7 @@ goal is met when RH is proven unconditionally in lean.
 
 On every new turn:
 
-make one significant contribution that overcomes a hard mathematical obstacle or delivers a highly significant insight by combining multiple frontier theorems from multiple routes from docs/reports/rh-current-frontier-map.md your finding must contribute something of significant value directly or indirectly to routes TT, LA, TH, HCF, HJ. 
+make one significant contribution that overcomes a hard mathematical obstacle in route CTF from docs/reports/rh-current-frontier-map. the contribution must clearly and significantly bring us closer to closing the full route for the RH proof.
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -524,14 +525,11 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing two new fields of mathematics. read fully line by line and understand the motivation and context of the fields including traps to avoid: 
-1. formal/GaloisForLFunctions/BiScaleUncertainty/README.md
-2. formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new fields of mathematics. read fully line by line and understand the motivation and context of the fields including traps to avoid: formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
  
-on every turn:
+the problem: BezoutValuationIncidence´s its finite signs and readouts still lack a cofinal arithmetic estimate independent of the existing MC/PM receivers
 
-pick one wall except wall 1 from docs/reports/walls-ledger.md
-then make significant contributions to develop and advance the BiScaleUncertainty and/or BezoutValuationIncidence field of mathematics that it/they can provide the mathematical tools needed to fully destroy, shatter, and overcome the wall you have picked 
+your task: develop and formalize the cofinal arithmetic estimate independent of the existing MC/PM receivers
 
 your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
@@ -547,11 +545,10 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Lean code relevant for the field itself goes into formal/GaloisForLFunctions/TransHorizonIncidenceMechanics otherwise use RHTower or HTGeometry as usual
 
 use the search tool for our lean corpus, not just rg or grep.
 
-formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md are read-only for you.
+formal/GaloisForLFunctions/BezoutValuationIncidence/README.md is read-only for you.
 
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
 
@@ -604,7 +601,7 @@ always look at the big picture, try to understand what all our research is tryin
 8. Lean code belonging to this new field goes into formal/GaloisForLFunctions/arithmetic-positivity-theory with its own umbrella.
 9. Add meaningful, helpful comments to lean files without being overly verbose.
     
-Keep a knowledge ledger in docs/reports/arithmetic-positivity-theory for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
+Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 
 Do not clutter documents with history or diary entries or status updates. 
 
@@ -623,3 +620,6 @@ Goal is met when the research program is fully completed and the new theory is d
 7. Optimize lean code. No raising heartbeat hacks.
 
 the goal is met exactly when you assume the role of a fields medalist asked to look at TransHorizonIncidenceMechanics and answer whether it truly is a new field of mathematics and the answer is a clear yes.
+
+
+

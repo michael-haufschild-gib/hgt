@@ -25,10 +25,11 @@ Uncertainty Theory** into a single self-contained reference interface for the fi
    Their autocorrelations preserve the **Hyperbolic Casimir Invariant**
    $h_{\cosh(\beta \cdot) f}(x) - h_{\sinh(\beta \cdot) f}(x) = \cosh(\beta x) h_f(x)$ and satisfy
    the **Minkowski Light-Cone Identity**
-   $h_{\cosh(\beta \cdot) f}(x)^2 - h_{\sinh(\beta \cdot) f}(x)^2 = \cosh(\beta x)^2 h_f(x)^2$,
-   lying strictly inside the future light cone except precisely on the correlation zero locus,
-   accompanied by exact $L^2$ Hilbert-space defect identities for the Peter–Paul chord and Krein
-   doubling/increment inequalities.
+   $h_{\cosh(\beta \cdot) f}(x)^2 - h_{\sinh(\beta \cdot) f}(x)^2
+     = \cosh(\beta x) h_f(x) (h_{\cosh(\beta \cdot) f}(x) + h_{\sinh(\beta \cdot) f}(x))$.
+   Its zero set is the union of the correlation zero locus and the zero locus of the sum of
+   the two boosted correlations. Exact $L^2$ Hilbert-space defect identities also hold for
+   the Peter–Paul chord and Krein doubling/increment inequalities.
 3. **Third Fundamental Theorem — Convex Origin-Collar Sphere Duality, Unique Optimal Allocation &
    Odd-Dyadic Incommensurability:**
    Any finite family of collar packets with norms $b_i \ge 0$ sharing total origin weight $W \ge 0$

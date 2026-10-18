@@ -6,6 +6,9 @@ import GaloisForLFunctions.TransHorizonIncidenceMechanics.TransHorizonMartingale
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.ComplementaryQuotientAndSecondOctaveLaw
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.SecondAndThirdBandRenormalizedDefectCalculus
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.TwoPrimeDeletionAndFullThirdBandEnvelope
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.FourthBandEnvelopeAndSharpFiveHorizonBoundary
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.ExactAdditiveEnvelopeAndFirstFailure
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.IntegerJumpEnergyAndBeyondEnvelopeDefect
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.InterCheckpointSawtoothExcursionAndPronicSandwich
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.ClockScheduleSynthesisAndPrimePowerPhaseRecovery
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.CompositeClockWaveletTensorAndPhaseRecovery
@@ -29,6 +32,10 @@ import GaloisForLFunctions.TransHorizonIncidenceMechanics.DownwardBuchstabL2Tele
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.OffLineHyperbolicPrimeChainExcessAndCardinalRecurrence
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.CompositeSquarefreeStepAndMultiOctaveL2Energy
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.GlobalPrimeChainHyperbolicCoercivityAndClockStepBound
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.ThirdBandCompositeStepAndLinearL2EnergyBounds
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.MultiShellPrimePowerHyperbolicSumAndGroundCutCoercivity
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.AllCutPrimeChainCoercivityAndContinuousDensityBridge
+import GaloisForLFunctions.TransHorizonIncidenceMechanics.OddEigenvectorNodalModulusBalanceAndFourthBandStepLaw
 
 /-!
 # Trans-Horizon Arithmetic–Archimedean Incidence Mechanics (`GaloisForLFunctions.TransHorizonIncidenceMechanics`)
@@ -38,9 +45,11 @@ theory of truncated divisor sums $s_{N,c}(k) = \sum_{d \mid k,\, d \le N} c(d)$,
 primorial-even arithmetic observation states ($\gcd(k, L_N)$ and $\gcd(k, N\#)$), totient
 observability thresholds and valuation-clock fiber collisions, short-window shifted correlation
 defects and iso-state endpoint classifications, downward Buchstab $L^2$ telescopes, composite
-squarefree horizon steps, and sawtooth fractional-part couplings, off-line hyperbolic prime-chain
-variance excesses and valuation-clock step lower bounds, and Ramanujan/Selberg quadratic-form
-identities bridging `BezoutValuationIncidence` with `RHTower` and `BiScaleUncertainty`.
+squarefree horizon steps across multiple octaves, and sawtooth fractional-part couplings, off-line
+hyperbolic prime-chain variance excesses, multi-shell prime-power steps, ground-cut and all-cut
+prime-chain coercivity bounds, continuous CHMD crossing-density pullbacks, odd-eigenvector
+nodal-modulus balance identities, and Ramanujan/Selberg quadratic-form identities bridging
+`BezoutValuationIncidence` with `RHTower` and `BiScaleUncertainty`.
 
 ## The Modules
 
@@ -72,6 +81,10 @@ identities bridging `BezoutValuationIncidence` with `RHTower` and `BiScaleUncert
 26. `OffLineHyperbolicPrimeChainExcessAndCardinalRecurrence`: Polar-phase edge factorization on $p$-adic prime chains, exact functional-equation pair $(+\beta, -\beta)$ hyperbolic excess over the critical-line ($\beta = 0$) `varianceEnergy` (`varianceEnergy_symmetrized_offline_sub_critical_eq`), strict positivity on every non-empty prime-chain cut for $\beta \ne 0$ (`strict_pos_symmetrized_offline_excess_of_mem_cut`), and second-order prime-chain recurrence (`offlineChainWaveCos_step_recurrence`).
 27. `CompositeSquarefreeStepAndMultiOctaveL2Energy`: Universal first-band step $\mathcal{E}_{n+1}(M; \mu) - \mathcal{E}_n(M; \mu) = -\mu(n + 1)^2$ and second-band $2$-adic parity dichotomy ($-2\mu(n + 1)^2$ for $2 \mid n + 1$ via radical divisor absorption, $0$ for $\neg(2 \mid n + 1)$ via second-octave valuation switching) without primality hypotheses, closed-form two-band $L^2$ energy evaluation ($M < 3(N + 1)$), and general composite-step dilated energy subadditivity (`sieveL2PrefixEnergy_le_succ_add_dilated`).
 28. `GlobalPrimeChainHyperbolicCoercivityAndClockStepBound`: Global von Mangoldt-weighted `chainVariance` lift of the functional-equation $(+\beta, -\beta)$ hyperbolic excess over the critical line (`globalOfflineChainVariance_symmetrized_sub_critical_eq`) and explicit quantitative valuation-clock step lower bound $\log p \cdot r_\beta(b)^2 (e^{\beta \log p} - 1)^2 > 0$ (`chainVariance_offlineRadialEnvelope_ge_clock_step`, `globalOfflineChainVariance_symmetrized_sub_critical_ge_clock_step`).
+29. `ThirdBandCompositeStepAndLinearL2EnergyBounds`: Complete third-band ($3(n + 1) \le M < 4(n + 1)$) $(2, 3)$-adic step classification without primality ($-3\mu(n + 1)^2$ for $2 \mid n + 1$, $-\mu(n + 1)^2$ for $\neg(2 \mid n + 1) \land 3 \mid n + 1$, $+\mu(n + 1)^2$ for $\neg(2 \mid n + 1) \land \neg(3 \mid n + 1)$), exact three-band closed-form evaluation of $\mathcal{E}_N(M; \mu)$ ($M < 4(N + 1)$), and explicit linear upper bounds $\mathcal{E}_N(M; \mu) \le 1 + B(M - N)$ across $B \in \{1, 2, 3\}$.
+30. `MultiShellPrimePowerHyperbolicSumAndGroundCutCoercivity`: Multi-shell prime-power radial jump factorization $(r_\beta(b) - r_\beta(p^r \cdot b))^2 = r_\beta(b)^2 (e^{\beta r \log p} - 1)^2$ and universal ground-cut ($u \in (0, \log 2)$) multi-prime lower bound $\sum_{p \in N.\text{primeFactors}} \log p \cdot (e^{\beta \log p} - 1)^2 \le \operatorname{chainVariance}(N, u, r_\beta)$ across all prime factors simultaneously (`chainVariance_offlineRadialEnvelope_ge_sum_primeFactors_of_ground_cut`, `globalOfflineChainVariance_symmetrized_sub_critical_ge_sum_primeFactors`).
+31. `AllCutPrimeChainCoercivityAndContinuousDensityBridge`: Symmetrized hyperbolic convexity floor $(e^x - 1)^2 + (e^{-x} - 1)^2 \ge x^2$, quadratic $\frac{1}{2}\beta^2 \sum_{p \in N.\text{primeFactors}} (\log p)^3$ ground-cut lower bound (`globalOfflineChainVariance_symmetrized_sub_critical_ge_quadratic_cubic_log`), simultaneous multi-shell and all-cut straddling $p$-coprime base summation (`varianceEnergy_offlineRadialEnvelope_ge_sum_shells`, `chainVariance_offlineRadialEnvelope_ge_sum_straddling_bases`), and exact continuous logarithmic pullback to `CHMDPrimeChainSource.chainDensity` and `density` (`continuousOfflineTwoChannelDensity_symmetrized_sub_critical_eq`, `continuousOfflineTwoChannelDensity_symmetrized_sub_critical_ge_quadratic`).
+32. `OddEigenvectorNodalModulusBalanceAndFourthBandStepLaw`: Automatic nodal-modulus mass-balancing and simultaneous orthogonality for odd graph vectors (`odd_balancedNodalGraph_eq_smul_absGraph`, `odd_absGraph_simultaneous_orthogonality`), exact eigenvector bilateral cross-jump identity $\operatorname{sourceEnergy}(\operatorname{absGraph} q) - 4\operatorname{sourcePair}(\operatorname{posGraph} q, \operatorname{negGraph} q) = \frac{1 - 2\mu}{\mu}\|q.\text{fst}\|^2$ and $\mu = 1/2$ exclusion criteria (`eigenvector_sourceEnergy_absGraph_sub_four_sourcePair_eq`, `riemannHypothesis_iff_forall_odd_eigenvector_absGraph_energy_ge_four_sourcePair`, `riemannHypothesis_of_odd_eigenvector_oneL_defect_le_neg_four_sourcePair`), centered $(B - 2)$ Buchstab step identity, and the four-band linear $L^2$ upper bound $\mathcal{E}_N(M; \mu) \le 1 + 4(M - N)$ across $4 \le N \le M < 5(N + 1)$ (`sieveL2PrefixEnergy_moebiusReal_four_band_le`).
 
 See `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md` for the classical
 baseline ledger, central mathematical problem, organizing principle, matched-assumption comparison,

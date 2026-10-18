@@ -12,5 +12,20 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailStripEn
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCorrectedSampling
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailSampling
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailRelativeMargin
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCollarIrrationalityAndSpacing
+import GaloisForLFunctions.«arithmetic-positivity-theory».SourceRelativeSchurMarginAndPerturbationCalculus
+import GaloisForLFunctions.«arithmetic-positivity-theory».RankOnePoleReadoutAndZeroNullspace
+import GaloisForLFunctions.«arithmetic-positivity-theory».GeneralDivisorBernoulliFilterClassification
+import GaloisForLFunctions.«arithmetic-positivity-theory».DyadicBernoulliFilterAndBohrCoercivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailWindowRieszCoercivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».EnvelopeCriticalPrimeTransitionAndDilationGain
+import GaloisForLFunctions.«arithmetic-positivity-theory».NonstationaryMellinLowFrequencyExclusion
+import GaloisForLFunctions.«arithmetic-positivity-theory».MarkovPoleHyperbolicCapacityAndApertureThresholds
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothingAndGramMargin
 
-/-! Arithmetic source estimates for the sign and stability of spectral energies. -/
+/-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
+arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,
+Riesz window coercivity, source-relative Krein perturbation calculus, rank-one pole
+readout nullspaces, envelope-critical prime dilation transitions, nonstationary Mellin
+low-frequency exclusion, and hyperbolic pole parity decoupling for the sign and
+stability of explicit-formula spectral energies. -/

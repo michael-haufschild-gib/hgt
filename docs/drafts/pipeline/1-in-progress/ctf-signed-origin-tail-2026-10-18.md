@@ -1,6 +1,9 @@
 # CTF: signed origin-tail cancellation
 
-Status: in progress. Goal remains one significant unconditional contribution that removes a hard obstacle on the CTF route to RH.
+Status: started Lean modules completed, checked, and wired. The user cleared
+the research goal and requested this bounded completion. The requested
+significant CTF advance has not been achieved. The final checkpoint below
+governs verification status.
 
 ## Task contract
 
@@ -9,7 +12,7 @@ Status: in progress. Goal remains one significant unconditional contribution tha
 - Complete a dependency-closed mathematical proof before formalization. No new axioms, unproved analytic inputs, computational certificates, or heartbeat increases.
 - Audit finished leaf modules with `lake --old env lean`; import new leaves into their umbrella without building the umbrella. Run formal lint.
 
-## Plan
+## Original research plan (historical)
 
 1. Establish exact current CTF frontier from Lean source and corpus searches.
 2. Conjecture, attack, and revise a source-side cancellation mechanism. Record failures and positive survivors without presenting a receiver as a producer.
@@ -23,19 +26,22 @@ Status: in progress. Goal remains one significant unconditional contribution tha
 - `ChronologicalGrowingSignedProjection`: their remaining logarithmic boundary window retains signed Mertens and harmonic channels.
 - `SignedLcmFractionalDefectAndCompleteFibreCollapse`: exact finite mean square is Selberg diagonal minus signed LCM defect; complete Möbius fibres collapse. Cofinal signed control is not supplied.
 
-## Current search
+## Initial search record
 
 Initial `research "CTF" --exclude-module Mathlib --json` finished: no partial result; compiler metadata mostly pending/stale, so hits are leads rather than validation.
 
-Deep whole-corpus mechanism query running; result destination `/tmp/hgt_ctf_source_search.json`.
+The initial deep whole-corpus mechanism query finished. Its results informed
+the source audits below; its temporary output was removed after inspection.
 
 ## Completion gate
 
-Not achieved. No new theorem proved or claimed. Convergence of a bounded source, or a substantial independently proved removal of a necessary obstruction, must be demonstrated rather than assumed.
+Not achieved. The auxiliary finite Selberg theorems below are proved;
+convergence of a bounded chronological source, or removal of its signed
+origin-window obstruction, remains open.
 
 ## 2026-10-18: coefficient-mass coercivity — paper proof
 
-Status: dependency-closed paper proof; Lean verification pending. This is an
+Status: dependency-closed paper proof, subsequently verified in Lean. This is an
 auxiliary rigidity result, not yet the requested significant CTF advance.
 
 Write `w(n)=μ(n)^2/φ(n)`, `F(n)=n/φ(n)`, and
@@ -98,34 +104,33 @@ This is a dependency-closed strengthening of the same paper proof.
 
 A sharper positive survivor has emerged. Put
 `P(e)=Σ_{d|e} d |μ(e/d)|` and `A_N=Σ_{e≤N}P(e)²/φ(e)`.
-The exact best constant in `(Σ|c_d|)²≤A_N Q_N(c)` should be `A_N`:
+The exact best constant in `(Σ|c_d|)²≤A_N Q_N(c)` is `A_N`:
 finite inversion gives the upper bound, and the Liouville-aligned coordinates
 `Y_e=λ(e)P(e)/φ(e)` attain it. Indeed
 `μ(m)λ(dm)=λ(d)μ(m)²`, so each inverse row has a common sign and
 both triangle inequality and weighted Cauchy are equalities. The resulting
 row has total absolute mass `A_N` and Selberg energy `A_N`.
-This sharp-norm statement is proved on paper by those identities; corpus
-applicability and Lean verification remain pending. No claim about its
+This sharp-norm statement is proved on paper by those identities and verified
+in `ChronologicalSelbergSharpMass.lean`. No claim about its
 sufficiency for the main CTF goal is made.
 
-### Formalization checkpoint
+### Completed finite-mass formalization
 
-- `Sieve/TotientCubicMean.lean`: full cubic mean proof passed Lean. One harmless
-  tactic-style warning was subsequently removed; final audit still pending.
+- `Sieve/TotientCubicMean.lean`: full cubic mean proof passed its final Lean
+  audit without diagnostics.
 - `ChronologicalSelbergCoefficientMass.lean`: uniform mass estimate, all-cutoff
   Möbius-prefix bound, and explicit `growingMomentSource` energy obstruction
-  implemented; validation in progress.
+  passed Lean without diagnostics.
 - `ChronologicalSelbergSharpMass.lean`: exact norm constant and explicit
-  Liouville extremizer implemented; validation pending.
+  Liouville extremizer passed Lean without diagnostics.
 - Leaves registered in `RHTower.lean`; no umbrella/full build run.
 - No significance/completion claim: actual chronological origin-window
   estimate remains open. The sharp finite coercivity theorem is a positive
   survivor of the incompatible half-prefix/vanishing-Selberg hybrid.
 
-`ChronologicalSelbergCoefficientMass.lean` now passes Lean without diagnostics,
-including `not_tendsto_growingMomentSource_selberg_zero`. The exact sharp-norm
-leaf is the current single active Lean check. Final direct leaf audits,
-axiom inspection, and authoritative lint remain pending.
+`ChronologicalSelbergCoefficientMass.lean` includes the verified
+`not_tendsto_growingMomentSource_selberg_zero`. Axiom and lint results are
+recorded in the dated audit below.
 
 `ChronologicalSelbergSharpMass.lean` now passes Lean without diagnostics.
 `selberg_mass_inequality_iff` classifies every admissible universal constant;
@@ -203,10 +208,10 @@ Proposed proof mechanism, with no numerical experiments:
    `(h/B)²Q_N(b)≤C(1+log M+H)/[H²(1+log M)^4]≤C'/H` for `H≥1`.
    Positive quadratic-form Cauchy gives `Q_N(c)≤2Q_N(a)+2(h/B)²Q_N(b)≤K'/H`.
 
-Audit still needed: write the uniform harmonic-sampling proof in full, inspect
+The next audit identified here was to write the uniform harmonic-sampling proof in full, inspect
 and instantiate the exact bivariate convolution for two independent cutoffs,
-and check all endpoint/floor constants. No new producer theorem has yet been
-claimed or added to Lean. The existing tuned-minimum-log files concern a
+and check all endpoint/floor constants. Those auxiliary steps are now verified
+below; the full corrected producer remains unimplemented. The existing tuned-minimum-log files concern a
 *different* included detector kernel and are not a proof of step 3.
 
 ## Verified audit, 2026-10-18
@@ -232,11 +237,13 @@ Those areas were already under unrelated work at session start; they were not
 modified by this task. The lint output also contained existing large-file
 warnings. No prohibited-declaration error was reported for the new leaves.
 
-Goal remains ACTIVE and NOT ACHIEVED. The verified finite norm classification
+At this earlier checkpoint the research goal was active and not achieved.
+The verified finite norm classification
 and half-prefix obstruction are useful positive/negative research results, but
 no actual chronological origin-window decay estimate has been established.
-Continue with the logarithmic-taper producer mechanism above; do not declare
-completion merely because the finite theorem family is formalized.
+The next research step then selected was the logarithmic-taper mechanism
+above. Formalization of the finite theorem family does not establish the
+requested chronological contribution.
 
 Cleanup: completed search-result JSON files and all owned `/tmp/hgt_ctf_*`
 name/axiom scratch files were removed after their relevant results were recorded.
@@ -268,4 +275,154 @@ harmonic mass at most `2+log(Y/X)`, by the existing harmonic-interval bound
 and `floor(X)≥X/2` when `X≥1`; if `X<1`, use the harmonic prefix bound.
 The elementary inequality `(u+v+w)²≤3(u²+v²+w²)` now proves the required
 uniform two-cutoff sampling bound. This closes the paper sampling gap;
-formalization and the independent-cutoff convolution identity remain next.
+formalization and the independent-cutoff convolution identity are verified below.
+
+`Sieve/LogarithmicHarmonicSampling.lean` now passes its direct Lean check with
+no diagnostics. Its window constant is actually `1+log(Y/X)`. The Möbius
+specialization in `Sieve/CoprimeLogMoebiusHarmonicDifference.lean` also passed
+its final direct check without diagnostics.
+
+The bivariate step can be proved without four separate mixed-cutoff formulas.
+For an arbitrary finite weight `w`, set
+`F_w(q)=Σ_{u≤N/q} μ(u) w(qu)/u`. Apply the corpus's bivariate hyperbola swap
+first to `original = correction * principal`, then to
+`principal = diagonal_reciprocal * (μ/n ⊗ μ/n)`. The diagonal collapse gives
+the exact finite identity
+`Σ_{m,n≤N} original(m,n) w(m)w(n)
+ = Σ_{a,b≤N} correction(a,b)
+     Σ_{d≤min(N/a,N/b)} F_w(ad) F_w(bd)/d`.
+For the existing taper `w=taper M N`, finite filtering gives exactly
+`F_w(q)=(T(N/q)-T(M/q))/(log N-log M)`.
+Apply the two-cutoff harmonic estimate to real cutoffs `M/a,N/a` and `M/b,N/b`;
+`2|uv|≤u²+v²` bounds every principal term uniformly by
+`C(1+H)/H²`. The finite absolute correction mass is at most its existing
+convergent absolute series. Hence the taper's Selberg form is at most `K/H`
+for `H≥1`. This is the dependency-closed paper proof of the moving-cutoff
+energy estimate; its exact finite identity and Lean implementation passed
+their direct checks. It does not estimate the chronological signed remainder.
+
+### Simpler squareful correction (supersedes steps 5–7 above)
+
+Use only the outer half-annulus: `b_N(d)=1` if `N/2<d≤N` and `4|d`, else zero.
+For `N≥16`, its harmonic charge is at least `1/16`: the interval contains
+`floor(N/4)-floor(N/8)≥N/16` multiples of four, and each reciprocal is at
+least `1/N`. When `H≥16`, the exact prefix lies below this annulus and `N≥16`.
+The former follows from `log(N/M)≤1` if `N≤2M`; the latter follows from
+`log N≤N-1`. These are elementary inequalities, not numerical experiments.
+
+For every positive `e`, reindex the multiples coordinate by `d=ek` and use
+the proved harmonic-window bound. The annulus ratio is at most three after
+integer flooring, so `0≤Y_e(b_N)≤3/e`. Hence
+`Q_N(b_N)≤9(1+log N)`. This avoids the previous moving-annulus charge formula.
+
+With the uniform rate constant `A`, the taper charge obeys
+`|h|≤2A/[H(1+log M)²]`. Put `alpha=h/charge(b_N)` and `c=a-alpha*b_N`.
+For `H≥16+32A`, `|alpha|≤1`, so the unit box survives because all altered
+slots have original Möbius coefficient zero. The prefix survives and charge
+is exactly zero. Writing `L=1+log M≥1`,
+`alpha² Q(b_N)≤9216 A²(L+H)/(H² L⁴)≤18432 A²/H`.
+Thus `Q(c)≤(2K+36864A²)/H`. All scalar estimates and floor endpoints are now
+specified; the correction itself is not yet formalized.
+
+The squareful-charge corpus search returned no matching construction. It was
+non-partial but used an older coverage snapshot while indexing continued.
+Its candidate/source results were inspected; unrelated correction theorems
+and our just-added weighted identity are not substitutes for this proof.
+
+### Physical-norm audit: locate the repair near the prefix
+
+The outer-`N` mask is a valid Selberg construction but is a poor choice for the
+original chronological norm: its regularized Bose energy scales like `N`, so
+a charge of order `1/H` can incur a large physical cost. Do not silently use
+small Selberg cost as evidence of small chronological cost.
+
+Keep the same proved-on-paper mask estimates, but instantiate the mask at
+`L=2*max(M,16)` instead of `N`. Its support lies strictly beyond the retained
+prefix and is below `N` once `H≥16`. Its harmonic charge is still at least
+`1/16`; all changed coefficients are still squareful. Finite support makes
+`Q_N(mask_L)=Q_L(mask_L)`. Since `L≤32M`,
+`Q_N(mask_L)≤9(1+log L)≤288(1+log M)`.
+The same correction coefficient satisfies
+`|alpha|≤32A/[H(1+log M)²]`, giving the improved correction cost
+`alpha² Q_N(mask_L)≤294912 A²/[H²(1+log M)³]`.
+Thus charge repair is lower order in Selberg energy and its chronological
+scale depends on the prefix, not on the outer cutoff. Use this location in
+the final producer. A quantitative chronological norm bound for this repair
+must still be sourced/proved; it is not claimed here as formalized.
+
+Corpus search for the physical repair found exact scaling in
+`ChronologicalPositiveAbelTransfer.lean:135`
+(`chronologicalL2Norm_dilate_eq`) and
+`ChronologicalMobiusSubsetSums.lean:288`
+(`chronologicalL2Norm_bose_dilate`). Both give the Bose norm divided by
+`sqrt(d)`. The finite triangle inequality and the existing reciprocal-square-
+root sum bound therefore give mask norm at most `2*sqrt(L)` times the mother
+Bose norm. The inner repair's physical norm is consequently at most
+`64*A*sqrt(L)/[H(1+log M)²]` times that fixed norm. This tends to zero under,
+for example, `M≤H` and `H→∞`. This estimate is a paper consequence of the
+retrieved identities; it is not yet a formal theorem for the new mask.
+
+The same search found `chronologicalZeroChargeRepair_norm_bound` in
+`ChronologicalHarmonicCharge.lean:230`; that existing repair changes the first
+coefficient, so it does not preserve an exact growing Möbius prefix. Do not
+substitute it for the squareful construction. Search was non-partial, with
+background indexing and unavailable semantic coverage reported.
+
+## Current formalization checkpoint
+
+Direct leaf checks passed for:
+- `Sieve/LogarithmicHarmonicSampling.lean` (band, envelope, window bounds).
+- `Sieve/CoprimeLogMoebiusHarmonicDifference.lean` (uniform rate and two-cutoff energy).
+- `Sieve/SelbergWeightedConvolutionModel.lean` (exact arbitrary-weight identity).
+- `ChronologicalSelbergTaperEnergy.lean`, including
+  `exists_selberg_arithmeticCoeff_le_inv_log_span`. Its final source was
+  rechecked after removing a tactic-style warning; no diagnostics remained.
+- `ChronologicalSquarefulChargeCorrection.lean`: all mask charge/energy
+  estimates and cutoff-extension invariance passed without diagnostics after
+  making the natural-to-real cardinality cast explicit.
+These five leaves are wired into `RHTower.lean`; all eight leaves from this
+research work occur exactly once in the umbrella. No umbrella build was run.
+
+The new squareful mask has charge at least `1/16` for `N≥16`, multiples
+coordinates between `0` and `3/e` for `N≥2` and positive `e`, and Selberg
+energy at most `9(1+log N)` for `N≥2`. Extending the ambient cutoff beyond any coefficient
+row's support preserves its Selberg form exactly.
+Do not yet claim the full corrected unit-row producer: its final combination,
+asymptotic feasibility classification, and physical-norm transfer are pending.
+The main CTF origin-window gap remains open. The user cleared the research
+goal and requested completion of already-started work; no further research
+or corrected-producer implementation is part of this cleanup.
+
+### Final verification and cleanup, 2026-10-18
+
+The four main results from harmonic sampling through taper energy passed an
+import-only axiom audit. A separate import-only audit checked all eleven
+public theorems in `ChronologicalSquarefulChargeCorrection.lean`. Every
+reported axiom list was exactly `[propext, Classical.choice, Quot.sound]`.
+All five new leaves passed direct `lake --old env lean` checks without final
+diagnostics; the earlier three finite-mass leaves retain their successful
+direct checks and axiom audit recorded above. No full or umbrella build ran.
+
+The final `scripts/formal_tools.py lint` run exited 1 with five errors outside
+this work, superseding the earlier four-error snapshot:
+
+- Unreachable from `GaloisForLFunctions.BiScaleUncertainty`:
+  `GaloisForLFunctions.BiScaleUncertainty.SixthReadoutStability`.
+- Unreachable from `GaloisForLFunctions.BezoutValuationIncidence`:
+  `GaloisForLFunctions.BezoutValuationIncidence.ArbitraryDepthBezoutShellsAndRoutePMSecondLayerProfile`.
+- Unreachable from the same umbrella:
+  `GaloisForLFunctions.BezoutValuationIncidence.CompensatedHarmonicPredecessorPeakDriftAndDiagonalBudget`.
+- Unreachable from the same umbrella:
+  `GaloisForLFunctions.BezoutValuationIncidence.PronicPotentialSelfCancellationAndInteriorGradientConservation`.
+- Research leaf at package root: `TransHorizonIncidenceMechanics.lean`.
+
+These files and their umbrella wiring were not changed by this task. The
+remaining lint output consisted of large-file warnings. No lint error names
+any of the eight completed CTF leaves. Explicit source checks found no
+`sorry`, `admit`, `axiom`, `opaque`, `unsafe`, or heartbeat override in them.
+
+Scoped `git diff --check` passed. All seven temporary files from this final
+work period (three Lean audits, three research JSON outputs, one lint log)
+were removed and their absence verified. All owned Lean/lint processes have
+exited. The completed leaves, final oleans, this record, and the cross-session
+memory remain; no unfinished Lean stub or unwired leaf from this work remains.

@@ -93,14 +93,14 @@ theorem divisorBernoulliConstantMode_eq_zero_iff (D : Finset ℕ) (α : ℕ → 
   exact div_eq_zero_iff.trans (or_iff_left (by norm_num))
 
 /-- **Universal Collar Constant-Mode Cancellation.** In any dilation-collar difference
-`P_{D, α}(λ v) - P_{D, α}(μ v)`, the constant mode `(∑_{d ∈ D} α(d)) / 12` cancels
+`P_{D, α}(lam v) - P_{D, α}(mu v)`, the constant mode `(∑_{d ∈ D} α(d)) / 12` cancels
 identically without requiring `∑_{d ∈ D} α(d) = 0`. -/
-theorem divisorBernoulliFilter_collar_diff_eq_centered (D : Finset ℕ) (α : ℕ → ℝ) (λ μ v : ℝ) :
-    divisorBernoulliFilter D α (λ * v) - divisorBernoulliFilter D α (μ * v) =
-      divisorCenteredBernoulliFilter D α (λ * v) -
-        divisorCenteredBernoulliFilter D α (μ * v) := by
-  rw [divisorBernoulliFilter_eq_centered_add_const D α (λ * v),
-    divisorBernoulliFilter_eq_centered_add_const D α (μ * v)]
+theorem divisorBernoulliFilter_collar_diff_eq_centered (D : Finset ℕ) (α : ℕ → ℝ) (lam mu v : ℝ) :
+    divisorBernoulliFilter D α (lam * v) - divisorBernoulliFilter D α (mu * v) =
+      divisorCenteredBernoulliFilter D α (lam * v) -
+        divisorCenteredBernoulliFilter D α (mu * v) := by
+  rw [divisorBernoulliFilter_eq_centered_add_const D α (lam * v),
+    divisorBernoulliFilter_eq_centered_add_const D α (mu * v)]
   ring
 
 /-- Normalized harmonic multiplier `M_{D, α}(k) = ∑_{d ∈ D, d ∣ k} α(d) d^2` of a divisor
@@ -122,8 +122,7 @@ theorem divisorHarmonicMultiplier_dyadic_eq (α : ℕ → ℝ) (k : ℕ) :
   · rw [Finset.sum_insert (by simp [h24]), Finset.sum_singleton]
     push_cast
     ring
-  · rw [Finset.sum_singleton]
-    push_cast
+  · simp
     ring
   · rw [Finset.sum_singleton]
     push_cast
@@ -169,11 +168,11 @@ theorem two_scale_dyadic_obstruction (α : ℕ → ℝ)
   have hnot : (1 : ℕ) ∉ ({2} : Finset ℕ) := by decide
   have hd1 : ¬ (2 ∣ 1) := by decide
   have hd2 : 2 ∣ 2 := by decide
-  rw [Finset.filter_insert, if_pos (one_dvd 1), Finset.filter_singleton, if_neg hd1,
-    Finset.sum_singleton] at h1
+  rw [Finset.filter_insert, if_pos (one_dvd 1), Finset.filter_singleton, if_neg hd1] at h1
+  simp at h1
   rw [Finset.filter_insert, if_pos (one_dvd 2), Finset.filter_singleton, if_pos hd2,
     Finset.sum_insert (by simp [hnot]), Finset.sum_singleton] at h2
-  push_cast at h1 h2
+  push_cast at h2
   refine ⟨by linarith, by linarith, by linarith⟩
 
 /-- Canonical dyadic stencil weights `α(1) = 4`, `α(2) = -2`, `α(4) = 1/4`. -/
@@ -219,7 +218,7 @@ theorem factorialPhaseProfile_eq_tailRemainder (n : ℕ) {v : ℝ} (hv : 0 ≤ v
   have hε : 0 ≤ sourceFactorialCollar (n + 1) :=
     (sourceFactorialCollar_pos (N := n + 1) (by omega)).le
   have hN : 0 ≤ ((n + 1 : ℕ) : ℝ) := by positivity
-  have hλ : 0 ≤ factorialShiftedFreq (n + 1) := by
+  have hlam : 0 ≤ factorialShiftedFreq (n + 1) := by
     unfold factorialShiftedFreq
     positivity
   unfold factorialPhaseProfile dyadicBernoulliFilter factorialMuntzTailRemainder
@@ -240,11 +239,10 @@ theorem factorialMuntzCorrectedTail_eq_factorialPhaseProfile (n : ℕ) (x : ℝ)
         (fun y => factorialTailAmplitude n * Real.exp (3 * y / 2) *
           factorialPhaseProfile (n + 1) (Real.exp (-y))) x := by
   rw [factorialMuntzCorrectedTail_eq_phase n x]
-  by_cases hx : x ≤ 0
-  · rw [indicator_of_mem hx, indicator_of_mem hx,
-      factorialPhaseProfile_eq_tailRemainder n (Real.exp_pos (-x)).le]
-    rfl
-  · rw [indicator_of_notMem hx, indicator_of_notMem hx]
+  congr 1
+  funext y
+  rw [factorialPhaseProfile_eq_tailRemainder n (Real.exp_pos (-y)).le]
+  rfl
 
 /-- The 4-periodic dyadic harmonic filter multiplier `χ(k)`:
 `1` for odd `k`, `-1` for `k ≡ 2 (mod 4)`, and `0` for `4 ∣ k`. -/
@@ -254,17 +252,17 @@ def dyadicHarmonicChi (k : ℕ) : ℝ :=
 @[simp]
 theorem dyadicHarmonicChi_one : dyadicHarmonicChi 1 = 1 := by
   unfold dyadicHarmonicChi
-  decide
+  norm_num
 
 @[simp]
 theorem dyadicHarmonicChi_two : dyadicHarmonicChi 2 = -1 := by
   unfold dyadicHarmonicChi
-  decide
+  norm_num
 
 @[simp]
 theorem dyadicHarmonicChi_three : dyadicHarmonicChi 3 = 1 := by
   unfold dyadicHarmonicChi
-  decide
+  norm_num
 
 theorem dyadicHarmonicChi_four_mul (m : ℕ) : dyadicHarmonicChi (4 * m) = 0 := by
   unfold dyadicHarmonicChi
@@ -282,11 +280,10 @@ theorem divisorHarmonicMultiplier_canonicalDyadic_eq (k : ℕ) :
       4 * dyadicHarmonicChi k := by
   rw [divisorHarmonicMultiplier_dyadic_eq]
   unfold canonicalDyadicStencil dyadicHarmonicChi
-  have h1 : (1 : ℕ) = 1 := rfl
   have h21 : (2 : ℕ) ≠ 1 := by decide
   have h41 : (4 : ℕ) ≠ 1 := by decide
   have h42 : (4 : ℕ) ≠ 2 := by decide
-  simp only [h1, h21, h41, h42, if_true, if_false]
+  simp only [h21, h41, h42, if_true, if_false]
   by_cases hodd : k % 2 = 1
   · have hnot2 : ¬ (2 ∣ k) := by omega
     have hnot4 : ¬ (4 ∣ k) := by omega
@@ -306,7 +303,6 @@ theorem sum_Icc_three_inv_sq_le (M : ℕ) (hM : 2 ≤ M) :
   induction M, hM using Nat.le_induction with
   | base =>
     simp
-    norm_num
   | succ m hm ih =>
     rw [Finset.sum_Icc_succ_top (by omega : 3 ≤ m + 1)]
     have hm_pos : (0 : ℝ) < (m : ℝ) := by exact_mod_cast (show 0 < m by omega)

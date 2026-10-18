@@ -1,0 +1,27 @@
+# Exact additive envelope and first failure
+
+Ninth connected contribution, fully audited; open-ended research goal remains active. Resolves the additive 5N+4 conjecture recorded in `mem:trans-horizon/fourth-band-sharp-five-boundary`.
+
+Source: `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ExactAdditiveEnvelopeAndFirstFailure.lean` (411 lines).
+SHA256 `670e7dc055eccd500f09a491a0d6ab5ebeb382130d13b7754a503139d214ceb3`.
+
+Facts:
+- Integer hyperbola cutoff: k<(B+1)(N+1) implies every omitted complementary quotient q<=B, since its paired divisor is >=N+1. Full band identity extends to BN<k<(B+1)(N+1).
+- Prime and two-prime deletion contractions now hold for every positive residual u. Exact missing u=1 cases: single-prime deleted response0; two-prime response1.
+- For c_e(d)=mu(d)d^(-e), e>=0, every2<=k<5(N+1) has |s_N(c_e,k)|<=1; equivalently k<=5N+4. N=0 included by empty sum. Fourth-band square-factor4 compresses by radical invariance; other cases use positive-residual deletion.
+- For real b, universal unit envelope on integer2<=k<=5N+b iff b<5; for natural b iff b<=4. Both literal mu and uniform whole e>=0 family. Necessity uses e=0, not fixed-positive-e optimality.
+- For prime p>5, N=6p-1, k=30p=5(N+1): every2<=j<k is certified and s_N(mu,k)=2. Thus cofinally many horizons realize the earliest possible unit-envelope failure.
+- Every endpoint with R_N(k)<5(N+1), and every positive power of a base in the sharpened interval, is certified. Any damped response of magnitude>1 forces R_N(k)>=5(N+1).
+- Prefixes and rough-start short windows with certified right radical satisfy2D<=-E<=0, including N=0 and M=0. Literal mu corollaries. No positive-defect claim above the envelope boundary.
+
+Principal APIs: `complementary_quotient_le_of_lt_succ_mul`, `complementaryQuotientTail_eq_sum_Icc_of_lt_succ_mul`, `sieveSeq_integer_band_eq_sum_divisors_sub_quotients`, `abs_sieveSeq_pmPowerDampedRealWeight_le_one_of_lt_five_succ`, `forall_moebiusReal_unit_envelope_iff_additive_lt_five`, `forall_pmPowerDamped_unit_envelope_iff_additive_lt_five`, `forall_moebiusReal_unit_envelope_iff_nat_buffer_le_four`, `forall_pmPowerDamped_unit_envelope_iff_nat_buffer_le_four`, `moebiusReal_counterfamily_first_unit_envelope_failure`, `exists_ge_first_unit_envelope_failure_at_five_succ`, `five_succ_le_radical_of_pmPowerDamped_response_gt_one`. All28 APIs indexed in formal/LEAN_API.md.
+
+Verification: full scratch proof exit0 and actual-source `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/TransHorizonIncidenceMechanics/ExactAdditiveEnvelopeAndFirstFailure.olean GaloisForLFunctions/TransHorizonIncidenceMechanics/ExactAdditiveEnvelopeAndFirstFailure.lean` exit0 without warnings. All28public theorems+3private helpers=31closures EXACTLY {propext,Classical.choice,Quot.sound}. `logs/thim-additive-audit.json` passed all31closures,28baseline/APIentries,source/dependencyhashes,freshartifacts,uniqueumbrellaimport,MainTheoremsreachability,whitespace/prohibiteddeclarations. Direct dependency FourthBandEnvelopeAndSharpFiveHorizonBoundary hash a2f410080f37a6a7ed41ceab6f42a20f532041dc23ce1f661137142393a3fec0 unchanged.
+
+Logs `logs/thim-additive-{lean,axioms,index,lint}.txt`. Final `scripts/formal_tools.py lint --check-generated` exit1 with7unrelatedintegrationfindings:1RHTower,1BiScaleUncertainty,4BezoutValuationIncidence leaves,existingTHIMrootregistration. ExacterrorsinauditJSON. No new-leaf/prohibited/stale-generated finding. Firstindex/lintlogs retained with-firstsuffix; one refresh cleared concurrent staleindexes. Everyownedjobterminal,9scratchfilesremoved. No full/umbrellabuild,numericalexperiments,heartbeat changes,READMEedits,commits,pushes.
+
+Maincard `docs/drafts/pipeline/3-formalized/thim-exact-additive-five-boundary.md`; prior ratiofive and failedroute cards updated. Ledger `logs/thim-radical-sawtooth-knowledge.md`. Failedroute universalunit-envelopebeyondfive now includes inadmissibility of additiveb>=5 and exactfour-step envelope as fullyformalizedpositive survivor. Classification Newformulation, no externalnoveltyclaim. Classicalcomparator Helfgott–Thompson Prop3.2 https://link.springer.com/article/10.1007/s40993-022-00408-8; TH10 andCMS16.
+
+Next question (UNVERIFIED): for N>=2,M>=1, exploit integer z^2>=|z| and initialresponse1->0 to prove E>=1+|s_N(mu,M+1)|, potentially certifying endpoint magnitude<=2 and extendingfifthband defectsigns. Primarycorpusquery partialfalse74095files,pending0,generation1454270; ranked20candidates+20sourcearguments inspected, no matchinginteger-energygate. Broadenbeforeimplementation.
+
+Concurrent frontier: new `formal/GaloisForLFunctions/BezoutValuationIncidence/CofinalMobiusGradientCoercivityAndRenormalizedDefect.lean` contains `odd_squarefree_count_le_moebius_gradient_energy` (finitecountbudget), `eventually_moebius_gradient_energy_ge_linear`, `eventually_moebiusRenormalizedDefect_polynomial_cofinal_bound` (eventualnegativebound on2N<=M<=N^(r+2)). Source inspected, NOT compiled/axiom-audited by this package; appearedunwiredinlint. Targetedcorpussearch partialfalse74099files,pending0,generation1454316foundthese. Check currentauditbeforeusing. Nextlocalintegergate should give explicitall-horizoncontrol, not duplicate eventualpolynomialtheorem. No globalall-horizondefectsignclaim; perioddriftanothertrack.

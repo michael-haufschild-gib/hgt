@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.HarmonicDyadicBlock
+import GaloisForLFunctions.RHTower.Sieve.HarmonicLogBound
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeHarmonic
 
 /-!+# Harmonic sampling on logarithmic bands
@@ -141,13 +142,13 @@ theorem sum_one_div_log_window_le {s : Finset ℕ} {X Y : ℝ}
   · simpa using (by linarith : (0 : ℝ) ≤ 1 + Real.log (Y / X))
   have hY1 : 1 ≤ Y := (by exact_mod_cast (hs d hd).1 : (1 : ℝ) ≤ d).trans
     (hs d hd).2.2
-  have hfloorY1 : 1 ≤ ⌊Y⌋₊ := (Nat.le_floor_iff hY.le).mpr hY1
+  have hfloorY1 : 1 ≤ ⌊Y⌋₊ := (Nat.le_floor_iff hY.le).mpr (by simpa using hY1)
   have hfloorY0 : (0 : ℝ) < ⌊Y⌋₊ := by exact_mod_cast hfloorY1
   have hlogY : Real.log ⌊Y⌋₊ ≤ Real.log Y :=
     Real.log_le_log hfloorY0 (Nat.floor_le hY.le)
   rw [Real.log_div hY.ne' hX.ne']
   by_cases hX1 : 1 ≤ X
-  · have hfloorX1 : 1 ≤ ⌊X⌋₊ := (Nat.le_floor_iff hX.le).mpr hX1
+  · have hfloorX1 : 1 ≤ ⌊X⌋₊ := (Nat.le_floor_iff hX.le).mpr (by simpa using hX1)
     have hfloorX0 : (0 : ℝ) < ⌊X⌋₊ := by exact_mod_cast hfloorX1
     have hfloorXY : ⌊X⌋₊ ≤ ⌊Y⌋₊ := Nat.floor_mono hXY
     have hsub : s ⊆ Finset.Icc (⌊X⌋₊ + 1) ⌊Y⌋₊ := by
@@ -179,7 +180,7 @@ theorem sum_one_div_log_window_le {s : Finset ℕ} {X Y : ℝ}
       (fun k _ _ => by positivity : ∀ k ∈ Finset.Icc 1 ⌊Y⌋₊,
         k ∉ s → (0 : ℝ) ≤ 1 / k)).trans (sum_Icc_one_div_le_one_add_log ⌊Y⌋₊)
     have hlogX : Real.log X ≤ 0 := by
-      have h := Real.log_le_log hX (le_of_not_ge hX1).le
+      have h := Real.log_le_log hX (le_of_not_ge hX1)
       simpa using h
     linarith
 

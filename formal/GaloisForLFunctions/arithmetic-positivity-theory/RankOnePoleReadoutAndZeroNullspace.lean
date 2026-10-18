@@ -256,10 +256,10 @@ theorem sum_factorialMuntzBoundaryCorrected_paperFT_eq_zero_iff (S : Finset ℕ)
         (gammaOf ρ)) = 0 ↔
       factorialPoleFunctional S a = 0 := by
   rw [sum_factorialMuntzBoundaryCorrected_paperFT_gamma_eq]
-  have hρ := zetaZeroConfig.strip (ρ : ℂ) ρ.2
+  have hz : IsNontrivialZero (ρ : ℂ) := ρ.2
   have hρ_ne : (ρ : ℂ) ≠ 0 := by
     intro h0
-    have hre := hρ.1
+    have hre := hz.2.1
     rw [h0, Complex.zero_re] at hre
     linarith
   exact div_eq_zero_iff.trans (or_iff_left hρ_ne)
