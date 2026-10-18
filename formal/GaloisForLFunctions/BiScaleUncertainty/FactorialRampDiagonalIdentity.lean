@@ -13,6 +13,11 @@ open _root_.RHTower RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm
 noncomputable section
 set_option autoImplicit false
 
+theorem integrable_factorialRamp_mul_logField (n : ℕ) :
+    Integrable (fun u => factorialRampSource n u*factorialRampLogField n u) :=
+  ((factorialRampSource n).continuous.mul (continuous_factorialRampLogField n)).integrable_of_hasCompactSupport
+    (factorialRampSource n).hasCompactSupport.mul_right
+
 theorem factorialRampSource_autocorr_tail (n : ℕ) {x : ℝ}
     (hx : Real.log (4*((n+1 : ℕ) : ℝ)+1) ≤ x) :
     autocorr (factorialRampSource n) x = 0 := by
@@ -108,7 +113,8 @@ theorem factorialSpanWeil_ramp_eq_log (n : ℕ) :
       biScaleLevyEnergy (factorialRampSource n)-
       2*(∫ u, factorialRampSource n u*factorialRampLogField n u)-
       2*(((1+sourceFactorialCollar (n+1)/2)*harmonicCorrection (n+1)*
-        chebyshevBiNullProducer (n+1))/(n+1 : ℕ)) := by
+        (Real.log ((4*(n+1)).choose (2*(n+1)) : ℝ)-
+          2*Real.log ((2*(n+1)).choose (n+1) : ℝ)))/(n+1 : ℕ)) := by
   have hf : autocorr (factorialSourceLeft n) = autocorr (factorialRampSource n) :=
     funext (factorialSourceLeft_autocorr_eq_ramp n)
   have hJ : biScaleLevyEnergy (factorialSourceLeft n) = biScaleLevyEnergy (factorialRampSource n) := by
@@ -116,7 +122,8 @@ theorem factorialSpanWeil_ramp_eq_log (n : ℕ) :
     rw [hf]
   rw [factorialSpanWeil_eq_complete]
   simp only [one_smul, zero_smul, add_zero]
-  rw [hf, hJ, fullPairing_autocorr_factorialRamp_eq_log]
+  rw [hf, hJ, fullPairing_autocorr_factorialRamp_eq_log,
+    chebyshevBiNullProducer_eq_log_binomial]
   ring
 
 end

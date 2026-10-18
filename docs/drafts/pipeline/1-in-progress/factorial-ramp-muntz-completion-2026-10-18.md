@@ -74,6 +74,21 @@ small L2 tail mass does not control the singular archimedean energy.
 Paper status: proved as above. Lean status: pending. In particular no claim
 of a proved compact-source Weil sign or RH is made.
 
+### Exact compact-source readout
+
+For Re(s)=sigma>0, the logarithmic readout of F is
+integral exp((s-1/2)x)F(x) dx = Mellin(A)(s)/sqrt(N), by t=exp(x).
+It is an admitted integral: F vanishes above log L and its weighted absolute
+value is at most 10 exp(sigma x)/sqrt(N) below log L.
+The compact ramp readout is admitted by continuity and compact support.
+The tail readout is consequently admitted as their difference. At any
+right-half-plane zeta zero rho, the full readout vanishes, so the actual
+compact-ramp readout equals minus the omitted-tail readout. Moreover,
+its absolute value is at most
+10/sqrt(N) integral_(-infinity,0) exp(Re(rho)x) dx
+=10/(sqrt(N) Re(rho)). This also supplies a quantitative source-specific
+zero-readout producer, without assuming RH or dropping the omitted tail.
+
 ## Constraints
 
 Corpus only; no web or novelty claim; no numerical experiments. README files and

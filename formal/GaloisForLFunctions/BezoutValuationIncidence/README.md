@@ -188,6 +188,26 @@ This simultaneous diagonalization exposes three structural phenomena:
    $\sum_{k=1}^M s_{N,c}(k)^2$ are coerced by the additive Dirichlet energy plus the signed sawtooth
    defects (`selberg_and_mean_square_le_dirichlet_energy_of_harmonic_eq_zero`).
 
+### 3.7 Fermi–Nyman Cellular Jump Reciprocity & First-Octave Pronic Tail Bridge
+On each reciprocal cell $I_n = (\frac{1}{n+1}, \frac{1}{n}]$ (of Lebesgue measure
+$\frac{1}{n(n+1)} = \frac{1}{\operatorname{pronicSeq}(n)}$), the cellular Fermi–Nyman response
+$\operatorname{fermiCellResponse}(N, c, n) = \sum_{d=1}^N c(d)\operatorname{fermiCellMatrix}(d, n)$
+decomposes into dyadic prefix sums of `sieveSeq N c` (`fermiCellResponse_eq_two_prefix_half_sub_prefix`):
+$$\operatorname{fermiCellResponse}(N, c, n) = 2 \sum_{k=1}^{\lfloor n/2 \rfloor} s_{N,c}(k) - \sum_{k=1}^n s_{N,c}(k).$$
+Its inter-cell jump across $t = \frac{1}{n+1}$ is
+$2\,\mathbf{1}_{2 \mid (n+1)}\,s_{N,c}\!\bigl(\frac{n+1}{2}\bigr) - s_{N,c}(n+1)$
+(`fermiCellResponse_succ_sub_eq`), where no two consecutive boundaries can both activate $2 \mid m$
+(`not_two_dvd_self_and_succ`). Across the entire first trans-horizon tail octave $N + 1 \le n \le 2N$,
+$\lfloor n / 2 \rfloor \le N$ freezes the half-scale prefix sum of $s_{N,\mu}$ at $1$, so:
+- $\operatorname{fermiCellResponse}(N, \mu, n) = 1 + \sum_{k=N+1}^n \mu(k)$
+  (`fermiCellResponse_moebiusReal_first_octave`),
+- every inter-cell jump is purely $\mu(m) = -s_{N,\mu}(m)$ (`fermiCellResponse_moebiusReal_jump_first_octave`),
+- consecutive jump products equal the Bézout successor correlation $s_{N,\mu}(m)s_{N,\mu}(m+1) = \mu(m)\mu(m+1)$
+  (`fermiCellResponse_moebiusReal_jump_mul_succ_first_octave`), and
+- on $I_n$, `dilatedMobiusFermiCombinator 1 N` has cell $L^2$ energy
+  $(1 + \sum_{k=N+1}^n \mu(k))^2 / \operatorname{pronicSeq}(n)$
+  (`setIntegral_cell_normSq_dilatedMobiusFermiCombinator_one_first_octave`).
+
 ---
 
 ## 4. The Six Structural Traps (Obstructions & Design Laws)
@@ -263,3 +283,7 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
   one-per-period recurrence and Euclidean division formula for `bezoutIncidenceCount`, universal
   unit-interval bound on `bezoutSawtoothDefect`, and the Master Finite-Prefix Dirichlet Energy
   Decomposition & $\ker P$ Coercivity Law.
+- [`FermiCellJumpReciprocityAndPronicTailBridge.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/FermiCellJumpReciprocityAndPronicTailBridge.lean) —
+  **Pillar VI:** Dyadic prefix decomposition and inter-cell jump law for `fermiCellResponse`,
+  pronic successor parity orthogonalization of consecutive jumps, exact first-octave evaluation of
+  `dilatedMobiusFermiCombinator 1 N`, and pronic-weighted cell $L^2$ tail energy.

@@ -1,14 +1,14 @@
 # Wall 13: sharp Gram-determinant detection order
 
 - **ID:** BSU-W13-SHARP-GRAM
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE — paper argument awaiting dependency audit and Lean
 - **Scope:** BiScaleUncertainty; no RH work.
 - **Statement:** for the literal unit-correlation bump and opposite copies at gap T>2, a nonzero amplitude is first distinguished by a Gram determinant of size floor(T)+1.
 
 ## Frontier evidence
 
-The preceding sharp closed-product conjecture is recorded in `../1-in-progress/wall13-minimal-cycle-order.md`; its draft Lean package is not yet certified. The completed finite-order obstruction supplies Gram equality from equality of every closed product through the same order. It does not establish a sharp converse for determinants: different cycle terms could cancel.
+The [sharp closed-product theorem](../3-formalized/wall13-minimal-cycle-order.md) is now Lean-verified, with all 41 public declarations audited. The completed finite-order obstruction supplies Gram equality from equality of every closed product through the same order. It does not establish a sharp converse for determinants: different cycle terms could cancel.
 
 Corpus search `/tmp/bsu-wall13-gram-threshold-frontier.json` inspected all 20 candidate and 20 source statements. It found related Gram and separated-correlation results, but no applicable exact determinant threshold. Returned ingredient sets do not prove the needed cancellation statement. Search completed without errors; semantic coverage unmeasured, compiler statuses source-only, background refresh incomplete. No exhaustive absence or novelty claim.
 
@@ -27,6 +27,8 @@ Expand the determinant over permutations. Terms using the distinguished edge zer
 
 which is nonzero when a!=0. This argument must be audited for q=3 as well as larger q; q=2 is outside the parameter domain.
 
+An equivalent algebraic proof may be simpler to formalize. Start from the open-chain tridiagonal matrix A with corner entries zero, then add z at both endpoint corners. Multilinearity in the two endpoint rows gives det(A(z))=det(A)+z(B+C)+z^2 D. Symmetry gives B=C. Expanding the first replaced row shows B=(-1)^(q-1) times the determinant of the minor with rows 1,...,q-1 and columns 0,...,q-2. That minor is upper triangular with every diagonal entry c, hence B=(-1)^(q-1)c^(q-1). Subtracting the values at -z and z cancels both the constant and quadratic terms. Installed `Matrix.det_of_upperTriangular` is a candidate for this final minor step; it has not yet been probed in Lean for this construction.
+
 For smaller sizes, every determinant summand is a closed correlation product and the strict packet-charge bound forces equality. For larger sizes, append mutually separated sample points at multiples of 2T+3. Their cross-correlations vanish, leaving a diagonal block with positive diagonal R. The determinant difference is multiplied by a positive power of R.
 
 ## Exact target and limits
@@ -38,6 +40,15 @@ Instantiate a=exp(-T/2) only after the exact general theorem, obtaining the pola
 
 ## Next checks
 
-1. Finish and audit the concrete seed and sharp closed-product theorem.
+1. Reuse the verified concrete seed and sharp closed-product theorem.
 2. Audit the cycle-permutation argument or derive the same determinant difference by row multilinearity and a triangular cofactor.
 3. Formalize the exact determinant identity, construct the sample configurations, and verify every public declaration.
+
+## Active implementation plan
+
+1. Prove the concrete cycle-matrix determinant difference using two-row multilinearity, symmetric cofactors and the triangular endpoint minor.
+2. Realize the cycle matrix as the actual correlation Gram matrix at the first detecting order. Prove every off-cycle entry vanishes and every required factor is nonzero.
+3. Extend any detecting configuration by a separated point; prove its determinant gains the common positive mass factor. Combine with the strict closed-product lower bound to classify all orders, including zero amplitude.
+4. Instantiate the polar pair, run serial leaf checks, audit every public declaration, wire finished modules, refresh the index and inspect lint.
+
+The preceding goal turn made verified progress. All three parent source hashes still match their checked manifest. The Bézout field README has concurrent additions by another writer; those additions were read, and the file remains read-only for this task. No owned Lean job is carried over. `update_plan` is unavailable; this card persists the plan.

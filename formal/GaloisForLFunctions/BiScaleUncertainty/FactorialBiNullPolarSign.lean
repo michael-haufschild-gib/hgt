@@ -90,6 +90,8 @@ theorem abs_integral_polar_autocorr_factorialRamp_le (n : ℕ) :
       2*(5*Real.log (4*(n+1 : ℕ)+1)+1)/(n+1 : ℕ) := by
   rw [integral_polar_autocorr_eq_moments, abs_mul]
   obtain ⟨hp, hm⟩ := factorialRamp_full_moments n
+  rw [← factorialRamp_integral_eq_interval n (fun u => Real.exp (u/2))] at hp
+  rw [← factorialRamp_integral_eq_interval n (fun u => Real.exp (-(u/2)))] at hm
   calc
     _ ≤ (2/Real.sqrt (n+1 : ℕ))*
         ((5*Real.log (4*(n+1 : ℕ)+1)+1)/Real.sqrt (n+1 : ℕ)) :=

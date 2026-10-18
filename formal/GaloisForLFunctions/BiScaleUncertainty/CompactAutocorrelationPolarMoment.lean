@@ -49,7 +49,7 @@ theorem integral_polar_autocorr_eq_moments (f : C_c(ℝ, ℝ)) :
       ring
     rw [he, integral_div, integral_add hip him, hp, hm]
     ring
-  have heven : (fun x => autocorr f |x|*Real.cosh (|x|/2)) =
+  have heven : (fun x => autocorr f |x| * Real.cosh (|x| / 2)) =
       fun x => autocorr f x*Real.cosh (x/2) := by
     funext x
     rcases le_total 0 x with hx | hx

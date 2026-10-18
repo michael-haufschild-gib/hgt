@@ -83,3 +83,13 @@ Let G_N be the explicit (1,-4,4) combination of log-weighted factorial lifts, di
           - 2(1+epsilon/2) harmonicCorrection(N) chebyshevBiNullProducer(N)/N.
 
 The remaining task is a lower bound for this explicit archimedean/logarithmic expression stronger than the mixed Gram loss. The new identities do not prove that bound.
+
+## Lean verification in this turn
+
+- `ClampedPrimeLogResummation.lean`: direct single-thread leaf compilation passed. All six public endpoints proved, including the actual collar/cutoff discharge.
+- `CompactAutocorrelationPolarMoment.lean`: direct single-thread leaf compilation passed. General compact-continuous pole factorisation proved.
+- `FactorialBiNullPolarSign.lean`: direct single-thread leaf compilation passed. All five public endpoints proved, including the binomial identity, producer sign, exact pole and quantitative bound.
+- `FactorialRampDiagonalIdentity.lean`: direct leaf verification running.
+- Final axioms audit, umbrella wiring, index and lint remain pending. Do not treat the diagonal lower bound or RH as established.
+
+The supplementary deep search `Euler Maclaurin finite zeta sum remainder critical strip` completed without reported execution errors (`/tmp/bsu-ramp-euler-maclaurin-search.json`). Semantic coverage is unmeasured. It returned real Euler–Maclaurin and Hurwitz continuation ingredients, not a verified uniform spectral estimate for this ramp. Fixed-frequency transform asymptotics alone cannot justify passing a Weil zero sum to a limit; high frequencies and the shrinking collar require separate control.

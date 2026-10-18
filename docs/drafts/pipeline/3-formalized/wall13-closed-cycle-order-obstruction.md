@@ -92,11 +92,11 @@ The package exports 17 theorems and ten concrete definitions. The witness theore
 - **Global lint failed, exit 1:** exactly two errors: `GaloisForLFunctions.BiScaleUncertainty.CoshDecayGroundPotentialAndThetaVolumeCollarProducer` unreachable from its umbrella, and `BezoutValuationIncidence.lean` a research leaf at the package root. Both are concurrent work outside these three leaves. The remaining 381 messages are large-file warnings. Log `/tmp/bsu-wall13-cycle-lint.log`.
 - Read-only field README and walls ledger retain their starting hashes. Scoped whitespace checks passed. Obsolete API probes removed after verification; final axiom scratch retained.
 
-Wall 13 remains open: no blind-source coercive lower bound or compatible positivity transfer follows. Full goal remains walls 2–15.
+Wall 13 remains open: no blind-source coercive lower bound or compatible positivity transfer follows. The renewed broader goal covers all walls and remains open.
 
-## Next conjecture
+## Proved successor and next conjecture
 
-[Exact minimal cycle-detection order](../0-backlog/wall13-minimal-cycle-order.md): for an explicitly constructed smooth seed with correlation positive exactly on (-1,1), the least distinguishing closed-product order at copy gap T>2 should be floor(T)+1. Strict support endpoints, concrete seed construction and determinant cancellations remain unaudited. No proof is claimed.
+[Exact minimal cycle-detection order](wall13-minimal-cycle-order.md) is now proved and Lean-audited: for the explicitly constructed smooth seed with correlation positive exactly on (-1,1), detection at order n occurs exactly when a!=0 and T<n. The least order is floor(T)+1, including strict endpoint exclusion. The concrete polar-distinct instance is also proved. Determinant cancellation remains a separate [sharp Gram-order conjecture](../1-in-progress/wall13-sharp-gram-order.md).
 
 ## Gates
 
