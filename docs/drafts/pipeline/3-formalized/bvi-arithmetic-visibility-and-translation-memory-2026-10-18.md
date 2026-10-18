@@ -1,13 +1,14 @@
 # Arithmetic visibility and memory of true integer translation
 
 - **ID:** bvi-arithmetic-visibility-memory
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper proof; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean verified)
 - **Source:** Optimal one-step prediction, exact CRT lag counts, Ramanujan/divisor
   Fourier infrastructure, and the field's prime-valuation distinction.
-- **Statement:** Determine when later integer shifts reveal information erased by
-  the best one-step divisor-sieve predictor, and classify the observations needed
-  to recover the original arithmetic signal.
+- **Statement:** True-shift compression reveals mode q exactly at multiples of
+  q/rad(q). This gives the complete finite observation-schedule classification,
+  sharp consecutive recovery horizon, and exact distinction from permanent
+  erasure under positive iterates of one-step prediction.
 
 ## Significance gate
 
@@ -39,7 +40,7 @@ shift before committing. No externally averaged family or asymptotic assertion.
 1. [x] Inspect every returned search section and relevant current sources.
 2. [x] Close a dependency-complete paper result and novelty/significance audit.
 3. [x] Probe installed APIs; formalize the exact unconditional result.
-4. [ ] Original-source checks, every public axiom closure, wiring, complete index
+4. [x] Original-source checks, every public axiom closure, wiring, complete index
    audit, lint, artifact installation, ledger/memory, cleanup; only then count011.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable. This card is the
@@ -50,10 +51,10 @@ heartbeat changes, commits, pushes or subagents.
 
 ## No-go closure
 
-If compressed succession fails to model true multi-step translation, extract
-and prove the strongest positive survivor: exact invisible/visible modes,
-recovery criterion, minimal observation schedule, or arithmetic memory invariant.
-Record paper and Lean status before closing the obstruction.
+Positive iterates of one-step prediction permanently erase nonsquarefree modes.
+True shifts reveal every active mode at multiples of its exact valuation clock.
+The positive survivor is the full visibility schedule and sharp recovery
+classification below. Both the obstruction and this survivor are formalized.
 
 ## Corpus audit
 
@@ -144,29 +145,28 @@ uniform conditioning estimate is part of the claim.
 
 ## Significance decision
 
-Count the complete result as one contribution only after formal audit. Its new
+The complete result is one connected contribution. Its new
 content is the valuation-dependent erasure/reappearance schedule, exact
 observation equivalence with explicit invisible witnesses, and sharp recovery
 horizon for the actual integer-translation compression. Generic diagonalization,
 Ramanujan quotient evaluation and finite inverse are supporting infrastructure.
 Do not count the separate identities or horizon corollaries independently.
-No full semigroup classification is asserted. Paper proof closed; Lean pending.
+No full semigroup classification is asserted. Paper proof and Lean proof closed.
 
-## Lean work in progress
+## Verification
 
 User cleared the 250-contribution goal, then explicitly requested finishing the
 work already started. Finish this contribution and its audits/cleanup, then stop.
 Do not open another research topic or recreate the goal.
 
-Four draft leaves, all under the field directory:
+Four verified leaves, all under the field directory:
 `RamanujanLagCoefficientAndTotientQuotient`,
 `ValuationVisibilityClockAndRamanujanSupport`,
 `TrueTranslationPredictionAndExactCompression`, and
 `ArithmeticLagSchedulesAndSharpRecoveryHorizon`.
-Installed API probe passed with terminal exit0. First original-source check
-found elaboration/cast details in the Ramanujan foundation; repaired, sequential
-recheck running. No theorem counted yet. Isolated environment `/tmp/bvi11-formal`
-uses cloned `/tmp/bvi11-olean-cache`; no shared full build or heartbeat override.
+Installed API probes passed with terminal exit0. Isolated environment
+`/tmp/bvi11-formal` used cloned `/tmp/bvi11-olean-cache`; no shared full build
+or heartbeat override.
 
 Concurrent `IteratedSuccessorPredictionAndReservePhaseLossSplit` appeared during
 this work. Its iteration section was read: powers of the one-step predictor
@@ -182,4 +182,33 @@ at a time. Every public declaration, including definitions, passed its `/tmp`
 `#print axioms` audit:38 reports, exactly `propext`, `Classical.choice`, `Quot.sound`.
 Additional installed-API probes passed in the same terminal exit0 audit. The
 four verified artifacts were installed atomically; umbrella imports added.
-Index/lint audit and cleanup remain before counting completion.
+All43 named declarations match the lexical index, all38 public declarations
+match generated API and cache entries, and source bodies match successful
+original-source check hashes. Every installed artifact matches its verified
+hash. All four imports are unique. The initial audit had39 field leaves, all
+wired; final inventory has40 with one concurrent foreign leaf still unwired.
+
+| Leaf | Lines | Named declarations | Public declarations |
+|---|---:|---:|---:|
+| RamanujanLagCoefficientAndTotientQuotient | 124 | 7 | 5 |
+| ValuationVisibilityClockAndRamanujanSupport | 128 | 9 | 8 |
+| TrueTranslationPredictionAndExactCompression | 222 | 13 | 11 |
+| ArithmeticLagSchedulesAndSharpRecoveryHorizon | 217 | 14 | 14 |
+
+`scripts/formal_tools.py index` completed successfully. Authoritative
+`scripts/formal_tools.py lint` initially exited0. After a concurrent foreign
+leaf appeared, the final gate exited1 solely for the missing umbrella reachability
+of `ShiftedExponentAsymptoticDensityAndActiveMartingaleRate`. No owned finding or
+proof debt. All381 warnings concern other large files; every diagnostic was
+processed. No final repository-wide pass is claimed; concurrent work is preserved.
+README remained read-only for this task; concurrent work grew it from363 to429
+lines and was preserved.
+
+Raw axiom closure: `logs/bvi-root-2026-10-18-lag-visibility-axioms.txt`.
+Full source/artifact hashes, commands, index audit and lint result:
+`logs/bvi-root-2026-10-18-lag-visibility-audit.json`.
+Guarded cleanup removed all33 owned temporary paths, including scratch bytecode.
+All owned jobs are terminal. Source, installed-artifact and axiom-log hashes
+were verified before and after cleanup. Ledger and both progress/detail memories
+updated:11 verified connected contributions in this run. Contribution011 is
+complete; the user-cleared goal is not resumed and no further topic is opened.

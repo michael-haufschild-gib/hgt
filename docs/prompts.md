@@ -602,7 +602,7 @@ Problem: We still have not overcome any of the walls and found a solution for th
 Your task:
 1. Carefully review the documents.
 2. Use the search tool for our lean corpus to investigate details, and things our documents may have missed, and get a clear idea of the hard obstacles that block us from removing a wall or close a RH proof route. Understand why we failed so far to overcome these obstacles.
-3. Create a report in docs/reports/hard-obstacles-1810.md and for every wall and every proof route or candidate list the hard obstacles that we need to overcome to remove all blockers to reach the final RH proof.
+3. Create a report in docs/reports/hard-obstacles-1810.md and for every wall and every proof route or candidate list the hard obstacles that we need to overcome to remove all blockers to reach the final RH proof and why we failed so far to overcome the obstacles or our lean corpus or mathematics have failed to find a solution. What makes the obstacle hard?
 
 Split between: Obstacles that are solvable and "just work" and obstacles for which neither our lean corpus nor mathematics as a whole has a solution yet.
 
@@ -610,3 +610,31 @@ After that create a new document docs/reports/hard-obstacles-summary-1810.md tha
 1. Obstacles we can solve and are just work.
 2. Obstacles that require new mathematics nobody has yet and describe what this new mathematic must deliver.
 3. Try to sum together the new mathematics into a description of a new field of mathematics that combines all the requirements for the single obstacles and explain what this field of mathematics need to deliver and be like that it would provide all mathematical tools to overcome the so far unsolvable obstacles.
+
+Note: It is possible that some routes or walls even if hard obstacles are solved will result in a dead end and cannot deliver the RH proof no matter what.
+
+## arithmetic positivity theory
+Work through the research program and develop the new arithmetic positivity theory: docs/reports/arithmetic-positivity-theory/research-foundational.md
+
+your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Lean code belonging to this new field goes into formal/GaloisForLFunctions/arithmetic-positivity-theory with its own umbrella.
+9. Add meaningful, helpful comments to lean files without being overly verbose.
+    
+Keep a knowledge ledger in docs/reports/arithmetic-positivity-theory for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
+
+Do not clutter documents with history or diary entries or status updates. 
+
+Goal is met when the research program is fully completed and the new theory is developed and formalized in lean.

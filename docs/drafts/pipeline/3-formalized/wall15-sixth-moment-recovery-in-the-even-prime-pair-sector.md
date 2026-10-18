@@ -74,7 +74,7 @@ Initial repository lint exited 1 with six unrelated unreachable-module errors. A
 
 All owned processes are terminal. Three obsolete prototype Lean files were moved without overwrite into `/tmp/bsu-sixth-phase-archive-20261018/`; final audit source, logs, manifests and the verified dependency workspace remain. Related card links were updated for the stage move. Both field READMEs and the wall ledger remained unchanged. Cross-session memory: `biscale/wall15-sharp-sixth-moment-recovery`.
 
-The [failed through-five recovery route](../5-failed/wall15-recovery-from-affine-and-through-five-moments.md) records the exact obstruction and this strongest positive survivor. The [finite odd-prime-family follow-up](../0-backlog/wall15-sixth-order-recovery-for-finite-odd-prime-mode-families.md) remains conjectural, including its three-mode scalar-observation counterexample.
+The [failed through-five recovery route](../5-failed/wall15-recovery-from-affine-and-through-five-moments.md) records the exact obstruction and this strongest positive survivor. The [finite odd-prime-family follow-up](wall15-sixth-order-recovery-for-finite-odd-prime-mode-families.md) is now formalized: full sixth lag data recover arbitrary finite odd-prime families up to one common sign, with exact lower-order blindness and a certified three-mode scalar collision. Its [zero-lag scalar no-go](../5-failed/wall15-recovery-from-affine-and-one-zero-lag-sixth-moment.md) records the obstruction and strongest positive survivor.
 
 ## Possible further extension (not a separate result)
 

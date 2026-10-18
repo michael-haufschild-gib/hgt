@@ -393,6 +393,54 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
   shifted-exponent local Euler factor gap `pmShiftedExponentFactor_gap_eq_div_p`
   (`((p : ℝ)^{-ε})² (p - 1) / p³`), and uniform $O(1/p^2)$ convergence of
   `pmShiftedExponentPrimeDeficit` (`tendsto_tsum_pmShiftedExponentPrimeDeficit`).
+- [`ShiftedExponentAsymptoticDensityAndActiveMartingaleRate.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ShiftedExponentAsymptoticDensityAndActiveMartingaleRate.lean) —
+  **Pillar XX (Shifted-Exponent Asymptotic Density & Active Martingale Equipartition):** Infinite
+  Euler product `pmShiftedExponentSecondDensity_hasProd` and Cesàro mean convergence
+  `tendsto_pmPowerDampedDivisorCoeff_mul_add_one_mean` for $\tau_\varepsilon(n)\,\tau_{1+\varepsilon}(n)$,
+  universal density sandwich `pmPowerDampedSecondDensity ε ≤ pmShiftedExponentSecondDensity ε ≤ (pmPowerDampedDivisorDensity ε).re`,
+  unit small-damping limit `tendsto_pmShiftedExponentDensityRatio` and unit small-damping rate
+  `tendsto_pmShiftedExponentSecondDensity_div_parameter` ($\lim_{\varepsilon \to 0^+} \operatorname{pmShiftedExponentSecondDensity}\,\varepsilon / \varepsilon = 1$),
+  and the exact $+1/2$ small-damping rate and variance equipartition of
+  `pmActiveSawtoothMartingaleDensity` (`tendsto_pmActiveSawtoothMartingaleDensity_div_parameter`,
+  `tendsto_pmActiveSawtoothMartingaleDensity_sub_divisorVariance_div_parameter`).
+- [`HorizonFreeActiveDeletedEnergyAndShiftedCovariance.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/HorizonFreeActiveDeletedEnergyAndShiftedCovariance.lean) —
+  **Pillar XXI (Horizon-Free Active-Deleted Energy & Shifted-Exponent Covariance):** Horizon-free
+  active pre-jump component `pmActiveSawtoothComponent`, inactive residual prefix
+  `pmInactiveResidualPrefix`, and active-deleted diagonal coefficient `pmActiveDeletedDiagonalCoeff`;
+  exact horizon-free discrete energy decomposition
+  `pmPowerDampedDivisorDiscreteEnergy_eq_activeDeletedDiagonal_add_two_mul_inactive`; strict
+  positivity `pmShiftedExponentCovariance_pos` and harmonic asymptotics
+  `tendsto_pmActiveDeletedCovarianceDiagonal_div_log` of `pmShiftedExponentCovariance`; asymptotic
+  drift `tendsto_pmInactivePredictableMartingaleSum_div_log` of the inactive predictable martingale;
+  and the Route PM cancellation criterion `riemannHypothesis_of_pmInactivePredictableMartingale_cancellation`.
+- [`ShiftedExponentSmallDampingCovarianceRateAndActiveDrift.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ShiftedExponentSmallDampingCovarianceRateAndActiveDrift.lean) —
+  **Pillar XXII (Unconditional Active Martingale Drift & Small-Damping Covariance Rate):**
+  Unconditional logarithmic drift `tendsto_pmActivePredictableMartingaleSum_div_log` of
+  `pmActivePredictableMartingaleSum ε N / log N` for **all** $\varepsilon > 0$ (without `MemLp`),
+  two-adic Euler bound `pmPowerDampedDivisorDensity_one_re_le_three_quarters`
+  ($0 < (\operatorname{pmPowerDampedDivisorDensity}\,1).\text{re} \le 3/4$), and exact small-damping
+  rates `tendsto_pmShiftedExponentCovariance_div_parameter`
+  ($\lim_{\varepsilon \to 0^+} \operatorname{pmShiftedExponentCovariance}\,\varepsilon / \varepsilon = 1 - (\operatorname{pmPowerDampedDivisorDensity}\,1).\text{re} \ge 1/4$),
+  `tendsto_pmActivePredictableMartingaleDrift_div_parameter`, and
+  `tendsto_neg_half_pmShiftedExponentCovariance_div_parameter`.
+- [`BezoutPronicInteriorSawtoothAndPredecessorPeakSplit.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/BezoutPronicInteriorSawtoothAndPredecessorPeakSplit.lean) —
+  **Pillar XXIII (Bézout Interior Sawtooth Partition & Predecessor-Peak Telescoping):** Bézout
+  divisor disjointness `eq_one_of_dvd_and_dvd_succ`, exact three-way partition
+  `weightedCenteredSawtoothSum_eq_bezout_active_pair_add_interior` into predecessor post-jump peak +
+  successor pre-jump trough + `bezoutInteriorSawtoothSum`, forward-difference representation
+  `bezout_active_pair_eq_neg_half_addDiff` and telescoping sum `sum_Icc_bezout_active_pair_eq_terminal`,
+  and complete centering-drift cancellation with pronic reduction when pairing pre-jump and
+  post-jump active martingale terms (`pmActiveSawtoothComponent_pre_add_post_martingale_eq`).
+- [`BezoutPronicTotientInteriorMartingaleSynthesis.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/BezoutPronicTotientInteriorMartingaleSynthesis.lean) —
+  **Pillar XXIV (Bézout Pronic–Totient–Interior Martingale Synthesis):** Exact diagonal-free
+  Bézout pronic–totient–interior square-increment identity
+  `pmPowerDampedCenteredDivisorPrefix_sq_succ_sub_sq_eq_pronic_add_shiftedAddDiff_add_interior`
+  ($A_\varepsilon(n + 1)^2 - A_\varepsilon(n)^2 = \widetilde{\tau}_\varepsilon(n)\,\widetilde{\tau}_\varepsilon(n + 1) + \widetilde{\tau}_\varepsilon(n + 1)\,\operatorname{addDiff}(\tau_{1+\varepsilon})\,n + 2\,\widetilde{\tau}_\varepsilon(n + 1)\,\operatorname{pmBezoutInteriorPrefix}\,\varepsilon\,n$),
+  two-step symmetric midpoint duality `pmBezoutInteriorPrefix_add_half_shiftedAddDiff_eq_two_step_midpoint`,
+  sub-horizon affine equivalence `pmBezoutInteriorPrefix_sub_bezoutInteriorSawtoothSum_eq_affine`,
+  and global Bézout interior martingale decomposition
+  `pmPowerDampedDivisorDiscreteEnergy_eq_activeDeleted_add_predecessorPeak_add_bezoutInterior`
+  with RH cancellation criterion `riemannHypothesis_of_pmBezoutInteriorMartingale_cancellation`.
 - [`RenormalizedMobiusDefectAndFirstOctaveCancellation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/RenormalizedMobiusDefectAndFirstOctaveCancellation.lean) —
   **Pillar XIX:** Universal renormalized prefix defect `sieveRenormalizedPrefixDefect N M c = sieveCombinedPrefixDefect N M c - M * sieveSuccessorReserve N c`,
   its exact source-space evaluation `sieveRenormalizedPrefixDefect_eq_succ_sub_sq`, Dirichlet
@@ -425,5 +473,27 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
   and exact splitting of the $\{3, 6\}$ phase-loss degeneracy via `sieveSuccessorReserveAboveParity`
   (`successorPhaseLoss_reserveAboveParity_bounds`, `successorPhaseLoss_eq_half_reserveAboveParity_iff`,
   `successorPhaseLoss_eq_three_halves_reserveAboveParity_iff`).
-
-
+- [`PostStepInactivePrefixAndSixDivisibilityPronicDefect.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/PostStepInactivePrefixAndSixDivisibilityPronicDefect.lean) —
+  **Pillar XXV (Post-Step Inactive Prefix Smoothing, Divisor-Ordering Antitonicity & Universal `6`-Adic Bézout Ceilings):**
+  Post-step inactive residual prefix `pmPostStepInactivePrefix`, intra-step shifted-exponent drift
+  `pmPostStepInactivePrefix_sub_pmInactiveResidualPrefix` and square increment
+  `pmPostStepInactivePrefix_sq_sub_pmInactiveResidualPrefix_sq`, two-point Bézout smoothing
+  `addDiff_pmPostStepInactivePrefix` ($\frac{1}{2}(\widetilde{\tau}_\varepsilon(n) + \widetilde{\tau}_\varepsilon(n+1)) + \frac{1}{2}\operatorname{addDiff}(\tau_{1+\varepsilon})\,n$),
+  universal divisor-ordering antitonicity `pmPowerDampedDivisorCoeff_le_of_dvd` and
+  submultiplicativity `pmPowerDampedDivisorCoeff_mul_le`, and two-step / universal three-step
+  `6`-adic Bézout product ceilings `pmPowerDampedDivisorCoeff_pronicSeq_le_six_of_three_dvd` and
+  `pmPowerDampedDivisorCoeff_three_step_mul_le_six` ($\le (1 - 2^{-\varepsilon})(1 - 3^{-\varepsilon})$).
+- [`PostStepInactiveEnergyAndPronicGradientConservation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/PostStepInactiveEnergyAndPronicGradientConservation.lean) —
+  **Pillar XXVI (General Linear Pronic Abel Summation, Post-Step Inactive Energy Equivalence & Exact Pronic–Gradient Conservation):**
+  General linear Pronic Abel summation `sum_div_pronicSeq_add_terminal_eq_abel` and
+  `sum_div_pronicSeq_eq_compensated_abel`, exact pronic reciprocal telescoping
+  `sum_one_div_pronicSeq_eq` ($\sum_{n=1}^T 1/\operatorname{pronicSeq}\,n = 1 - 1/(T+1) \le 1$) and
+  uniform $1/4$ bound `sum_pmActiveSawtoothComponent_sq_div_pronicSeq_bounds`, post-step inactive
+  discrete energy `pmPostStepInactiveDiscreteEnergy` with two-sided equivalence to
+  `pmPowerDampedDivisorDiscreteEnergy` and RH criterion
+  `riemannHypothesis_of_pmPostStepInactive_cofinal_discrete_budget`, and exact pointwise and finite
+  pronic–diagonal–gradient conservation laws
+  `addDiff_pmPowerDampedDivisorCoeff_sq_add_two_mul_pronicSeq`,
+  `two_point_bezout_average_sq_add_quarter_addDiff_sq`, `sum_Icc_pronicSeq_add_addDiff_sq_eq`, and
+  boundary-free finite inequalities `sum_Icc_pronicSeq_add_addDiff_sq_le_two_mul_sum_sq` and
+  `sum_Icc_pronicSeq_and_addDiff_sq_le_sum_sq`.

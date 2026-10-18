@@ -1,0 +1,310 @@
+# Foundational research programme
+
+**Status:** research specification, 2026-10-18. No new theorem is claimed proved by this document.
+
+Read [README.md](README.md) for motivation, notation, established foundations, and the distinction between local progress and RH-equivalent endpoints. This programme starts with an explicit source estimate, then asks which parts of its mechanism can be generalized.
+
+## Research question and standard of evidence
+
+Which independently verifiable features of an exact arithmetic source control the sign, mixed couplings, and stability of its complete spectral energy?
+
+An answer must connect hypotheses on the source to an energy estimate. An abstract theorem assuming the desired positive metric, invariant cone, or critical cancellation does not supply that connection. Negative results also count when they identify a sharp boundary or a useful replacement hypothesis.
+
+Use these status labels throughout the work:
+
+| Label | Meaning |
+|---|---|
+| Existing corpus result | A declaration or recorded proof already exists. Recheck its precise hypotheses and current build before depending on it. |
+| Classical input | A theorem from established mathematics, with an exact source and applicability check. |
+| Derived consequence awaiting verification | An apparent consequence of existing results whose full argument and formal compatibility still need checking. |
+| Proposed estimate / `[OPEN CORE]` | The mathematical work to be done. It may be true, false, already known, or weaker than the eventual application needs. |
+| RH-equivalent endpoint | A final universal premise already known to imply and follow from RH in the route ledger. It cannot serve as an independent foundational assumption. |
+
+The first success criterion is a complete local result below RH. The long-term success criterion is a mechanism that scales to independently verified global hypotheses. Do not conflate them.
+
+## Ordered work packages
+
+The identifiers below are proposed task identifiers, not Lean declaration names. Open a dedicated pipeline card when beginning each substantial mathematical task.
+
+| Task | Dependencies | Deliverable and completion gate |
+|---|---|---|
+| APT-01: audit the starting point | None | A premise ledger for WL, RW, and the factorial pilot; every assumption classified and linked to an exact source. |
+| APT-02: fix the source–energy dictionary | APT-01 | Exact domains, normalizations, reflection, multiplicities, and physical/spectral compatibility; reuse existing comparison machinery. |
+| APT-03: calibrate mechanisms against controls | APT-01; refine with APT-02 | Known positive examples and obstructed examples, with an explicit list of retained and broken hypotheses. |
+| APT-04: prove or refute the local sampling budget | APT-02; APT-03 guides falsification | A quantitative estimate for the actual factorial correction tail, or a sharp reason it fails and a replacement estimate. |
+| APT-05: close the compact ramp application | Successful APT-04 or a substitute mixed estimate | Full energy convergence, eventual ramp margin, and the exact two-dimensional Gram conclusion. |
+| APT-06: extract a source-level stability theorem | APT-03 and completed local results | A reusable theorem with independently checkable arithmetic hypotheses and nontrivial examples. |
+| APT-07: address all directions and all scales | APT-06 plus new arithmetic input | A justified extension mechanism; identify the remaining RH-hard premise explicitly. |
+| APT-08: evaluate a geometric realization | APT-01–03; independent longer-term track | A genuinely constructed arithmetic object or a useful partial construction, with positivity and spectral correspondence separately audited. |
+
+Start APT-01 and APT-02 before creating new abstractions. APT-03 can develop alongside them. The first attempted new estimate should be APT-04. APT-07 and APT-08 are research directions, not scheduled promises of a solution.
+
+## APT-01: audit premises and reuse prior work
+
+Produce a small dependency table for each intended theorem:
+
+1. What is the literal source, including gamma factors, poles, endpoint corrections, and support conditions?
+2. Which identity transfers the physical expression to the spectral form?
+3. Which quantitative estimate is still missing, with every quantifier written out?
+4. Which inputs are unconditional, conditional, classical but unformalized, or merely proposed?
+5. Does the conclusion improve a family-level result, or does it already quantify over the full RH criterion?
+
+Audit these existing assets first:
+
+- [WL receiver](../../../formal/GaloisForLFunctions/RHTower/ChebyshevDeficitPrimitiveOneSidedRH.lean) and [RW capacity identity](../../../formal/GaloisForLFunctions/RHTower/WeilMarkovPoleCapacity.lean).
+- [Hilbert comparison](../../../formal/GaloisForLFunctions/RHTower/XiWeilLineConjHilbert.lean) and [spectral square summability](../../../formal/GaloisForLFunctions/RHTower/XiCompactSpectralSampling.lean).
+- [Current factorial ramp card](../../drafts/pipeline/1-in-progress/factorial-ramp-diagonal-margin-2026-10-18.md) and [completed tail-growth card](../../drafts/pipeline/3-formalized/factorial-muntz-tail-archimedean-growth-2026-10-18.md).
+- [Arithmetic Schur programme](../../drafts/pipeline/1-in-progress/arithmetic-schur-renormalization-law.md) and [geometric purity programme](../../drafts/pipeline/1-in-progress/deninger-closed-generator-hodge-weil-purity-universality-law.md).
+
+**Completion gate:** no research task is described as “prove positivity” without a specific source, domain, quantitative target, and dependency boundary. Existing conditional receivers are not counted as new arithmetic progress.
+
+## APT-02: fix the dictionary before adding abstractions
+
+Use the normalization
+
+\[
+F_f(s)=\int_{\mathbb R}f(x)e^{(s-1/2)x}\,dx,
+\qquad
+\mathcal Z(f)=\sum_\rho m_\rho|F_f(\rho)|^2,
+\]
+
+and, on the proved domain,
+
+\[
+\mathcal W(f,g)
+=\sum_\rho m_\rho F_f(\rho)\overline{F_g(1-\overline\rho)}.
+\]
+
+The zero sum counts multiplicities once: either sum distinct zeros with weights \(m_\rho\), or sum zero copies with no extra weight. Do not mix conventions. Use the known critical strip, not an assumed critical-line support.
+
+Identify the evaluation map into \(\ell^2\), the reflection involution, and the existing theorem `norm_xiWeilPolarization_le`. Record exactly how each physical source is admitted and how its readout matches that theorem. The resulting comparison is
+
+\[
+|\mathcal W(f,g)|\le\sqrt{\mathcal Z(f)\mathcal Z(g)}.
+\]
+
+This inequality is already available. The work is compatibility and quantitative source control. In particular, \(\mathcal Z\) depends on the actual zero divisor; it is not automatically a practical arithmetic certificate. Bounds for it must come from independently established source estimates and unconditional information about the zeros.
+
+Also record the finite arithmetic identity underlying the pilot. If \(w(k)=0\) for \(k>K\) and \(M\ge K\), then
+
+\[
+\sum_{m=1}^{M}\Lambda(m)\sum_{j=1}^{K}w(jm)
+=\sum_{k=1}^{K}\log k\,w(k).
+\]
+
+It follows from \(\sum_{d\mid k}\Lambda(d)=\log k\), with the finite support conditions doing essential work. Reuse [ClampedPrimeLogResummation.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/ClampedPrimeLogResummation.lean); audit the particular weight and normalization instead of proving a duplicate identity.
+
+**Completion gate:** each equality is valid on the actual source class, including noncompact tails, and no omitted limit or boundary term is being called a convention.
+
+## APT-03: calibrate against positive and obstructed examples
+
+Before trusting a proposed structural principle, require it to distinguish examples whose behavior is already understood.
+
+| Control | What it checks |
+|---|---|
+| A finite-dimensional positive block with explicit coupling | The Schur condition and proposed stability constants reproduce the exact sign threshold. This is an algebraic check, not evidence for arithmetic novelty. |
+| Existing restricted Weil positivity and the factorial corrected family | The mechanism reproduces an established positive case without importing a stronger hypothesis. |
+| A symmetry-preserving off-line zero model | Functional-equation symmetry alone is not misidentified as arithmetic positivity. State which Euler, pole, growth, and completion properties the model does or does not have. |
+| The actual factorial polar and Gram terms | A genuine negative contribution cannot be absorbed into an error of smaller order. |
+| Controlled changes to coefficients or archimedean data | The mechanism notices changes that alter the complete energy, rather than using only a common abstract operator description. |
+
+Use the [off-line functional-equation models](../../../formal/GaloisForLFunctions/RHTower/EntireFunctionalEquationOffLine.lean), [compact orbit inertia](../../../formal/GaloisForLFunctions/RHTower/WeilCompactOrbitInertia.lean), and [polar/Gram obstruction](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialPolarGramScaleSeparation.lean) as existing controls. Do not claim they disprove positivity for a stronger arithmetic class whose hypotheses they do not satisfy.
+
+Numerical work may locate a bad scale, a negative residual, or an incorrect asymptotic. A finite positive scan proves neither a uniform estimate nor a universal sign assertion. To refute a proposed bound rigorously, supply an analytic counterexample or certified error control where computation is essential.
+
+**Completion gate:** every candidate mechanism comes with at least one serious attempted falsification and an explanation of what arithmetic feature makes its positive examples different.
+
+## First pilot: the actual factorial correction tail
+
+### APT-04: isolate the new estimate
+
+Use the sources already defined by the factorial programme. Write \(N=n+1\), let \(r_n\) be its compact ramp, let \(G_n\) be its canonical boundary-corrected source, and let \(\eta_k\) be its normalized mollifier. Set
+
+\[
+H_{n,k}=\eta_k*G_n,
+\qquad
+U_{n,k}=\eta_k*(G_n-r_n),
+\qquad
+r_{n,k}=H_{n,k}-U_{n,k}=\eta_k*r_n.
+\]
+
+These are descriptive mathematical names for existing sources, not declarations that new Lean definitions already exist. Reconcile any reflection or indexing convention with the source files before using the identities. Reflection preserves the relevant ramp autocorrelation and diagonal, but mixed identities must still be checked in a consistent convention.
+
+Existing inputs and their exact roles:
+
+| Input | Status and use |
+|---|---|
+| \(F_{G_n}(\rho)=c_n/\rho\), where \(c_n=1/(2\sqrt N)\) | Existing corrected-source readout at nontrivial zeros; makes the corrected part small. |
+| \(F_{H_{n,k}}(\rho)=F_{\eta_k}(\rho)c_n/\rho\) and \(\lvert F_{\eta_k}(\rho)\rvert\le e\) | Existing smoothing/readout facts, uniform in the smoothing parameter and zero height. |
+| \(\sum_\rho m_\rho/\lvert\rho\rvert^2<\infty\) | Existing zero-side summability input; no RH assumption. |
+| \(\operatorname{Re}\mathcal W(U_{n,k},U_{n,k})\ge c\log N/N\) | Existing eventual tail growth: sufficiently large \(n\), then sufficiently large \(k\), with a positive absolute constant. |
+| Exact ramp diagonal and Gram decomposition | Existing identities; the remaining ramp margin is not yet supplied by them. |
+
+Inspect [FactorialMuntzWeilSmoothing.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialMuntzWeilSmoothing.lean), [FactorialMuntzZeroReadout.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialMuntzZeroReadout.lean), [FactorialMuntzZeroSideLimit.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialMuntzZeroSideLimit.lean), and [FactorialMuntzTailWeilGrowth.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialMuntzTailWeilGrowth.lean).
+
+The first three inputs suggest the immediate bound
+
+\[
+\mathcal Z(H_{n,k})\le\frac{C_H}{N},
+\qquad
+C_H=\frac{e^2}{4}\sum_\rho\frac{m_\rho}{|\rho|^2}<\infty.
+\]
+
+**Status: derived consequence awaiting verification and packaging.** Check constants, multiplicity convention, and the precise evaluation map; do not count it as a newly compiled theorem.
+
+The proposed new target is:
+
+> **[OPEN CORE: LOCAL SAMPLING BUDGET]** Establish constants \(C_U>0\) and \(N_0\ge2\) such that, for every \(n\) with \(N=n+1\ge N_0\), there exists \(k_0(n)\) for which every \(k\ge k_0(n)\) satisfies
+> \[
+> \mathcal Z(U_{n,k})\le C_U\frac{\log N}{N}.
+> \]
+
+The constants are independent of \(n\) and \(k\). The smoothing threshold may depend on \(n\), matching the existing eventual tail bound. A bound uniform in every \(k\) would be stronger and useful, but is not required for the first application. A bound with an uncontrolled factor growing with \(k\) does not meet the target.
+
+This is a proposed estimate for a particular family, not a known consequence of RH equivalence and not a claim of a new theorem. Its truth, optimal scale, and literature status require investigation.
+
+### Candidate proof mechanism for the sampling budget
+
+First test whether standard complex analysis and fractional regularity already suffice. The potential new content is the sharp bound for the actual arithmetic tail.
+
+1. **Sampling from unconditional zero counts.** Establish a sampling estimate of the form
+   \[
+   \mathcal Z(f)\le C_\delta
+   \int_{-\delta}^{1+\delta}\int_{\mathbb R}
+   \log(2+|t|)|F_f(\sigma+it)|^2\,dt\,d\sigma
+   \]
+   for readouts holomorphic on a neighborhood of the larger strip and with the required finite integral. A candidate proof uses the mean-value inequality for \(|F_f|^2\), fixed-radius discs, and the unconditional \(O(\log(2+|t|))\) count of zeros in unit-height strips. Prove the overlap bound with multiplicities and handle bounded heights separately. This displayed sampling inequality is a proposed lemma, not a theorem established here.
+2. **Weighted source norms.** For the actual raw tail \(G_n-r_n\), control the profiles \(e^{(\sigma-1/2)x}(G_n-r_n)(x)\) uniformly over a fixed larger strip. Aim for squared \(L^2\) norm \(O(1/N)\) and a squared \(H^\alpha\) bound growing at most polynomially in \(N\), for some fixed \(0<\alpha<1/2\). Establish endpoint and tail behavior explicitly. These estimates are open subproblems, not properties inferred from the names of the sources.
+3. **Pay only a logarithm for zero density.** A frequency split, or logarithmic interpolation, can turn those two norm bounds into an \(O(\log N/N)\) logarithmically weighted Fourier integral. Write out the split and its constants. Mellin–Fourier normalization and uniformity in \(\sigma\) must be checked.
+4. **Pass through smoothing without losing uniformity.** Prove a uniform convolution or multiplier estimate on the same strip, or first bound the raw spectral sampling sum and then use the existing critical-strip mollifier bound. The chosen route must retain constants independent of \(k\).
+
+The zero-count input is classical. For a primary quantitative reference, see [Hasanalizade, Shen, Wong, *Counting zeros of the Riemann zeta function*](https://arxiv.org/abs/2107.06506). The unit-height \(O(\log T)\) bound follows from a counting formula with \(O(\log T)\) error; check the theorem's range and the finite-height remainder before importing it.
+
+Two pitfalls deserve an early check. Endpoint jumps can invalidate an \(H^1\) estimate uniform under removal of smoothing; fractional regularity must be proved at an admissible exponent instead. Also, the existing low-frequency primitive estimate in [FactorialMuntzTailReadoutDecay.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialMuntzTailReadoutDecay.lean) grows with height. It cannot by itself bound the entire zero sum.
+
+**Falsifiers and fallback.** If \(\mathcal Z(U_{n,k})\) is larger than the proposed budget, determine its actual scale before discarding the method. A budget \(o(\log^2N/N)\), with suitable smoothing control, would still make the mixed term lower order than \(\log N/N\). If no such budget holds, try a direct bound on \(\mathcal W(H_{n,k},U_{n,k})\); the positive comparison norm may overestimate the relevant coupling. Failure of this sufficient estimate is not a negative Weil-energy theorem.
+
+**Completion gate:** a dependency-closed paper proof or rigorous obstruction for the quantitative target, with all scale and smoothing quantifiers explicit. Search the literature before claiming novelty; established sampling or Sobolev theory may already supply much of the argument.
+
+### APT-05: close the compact ramp application
+
+Assume the local budget has been proved and the existing inputs have been reconciled on a common domain. For fixed sufficiently large \(n\), take \(k\) beyond both eventual thresholds. Sesquilinearity and Hermitian symmetry give
+
+\[
+\operatorname{Re}\mathcal W(r_{n,k},r_{n,k})
+=\operatorname{Re}\mathcal W(H_{n,k},H_{n,k})
++\operatorname{Re}\mathcal W(U_{n,k},U_{n,k})
+-2\operatorname{Re}\mathcal W(H_{n,k},U_{n,k}).
+\]
+
+The independent comparison inequality then yields
+
+\[
+\operatorname{Re}\mathcal W(r_{n,k},r_{n,k})
+\ge
+\frac{c\log N-2\sqrt{C_HC_U\log N}-C_H}{N}.
+\]
+
+This algebraic consequence is conditional on the unproved budget and the stated compatibility checks. It uses only \(\operatorname{Re}\mathcal W(H,H)\ge-\mathcal Z(H)\), so a separate positivity theorem for \(H\) is unnecessary for this deduction. The positive \(\log N\) term eventually dominates the square-root and constant terms.
+
+The application still requires two further proofs:
+
+1. **Removal of smoothing.** For each fixed \(n\), prove convergence of the full Weil energy from \(r_{n,k}\) to the original compact ramp. Control the prime, archimedean, polar, and boundary terms, or use an already justified form topology. Pointwise convergence or physical \(L^2\) convergence alone is not a sufficient argument. Do not substitute the existing corrected-source limit for this ramp limit without checking its hypotheses.
+2. **The complete Gram margin.** In the existing ramp–tent span, write
+   \[
+   Q(c,d)=A_nc^2+M_ncd+D_nd^2,
+   \qquad
+   A_n-\frac{M_n^2}{4D_n}
+   \]
+   for its Schur margin. The recorded scales are \(D_n\ge N\) eventually and \(M_n=O(\log N/\sqrt N)\), hence the correction is \(O(\log^2N/N^2)\). Transfer the ramp lower bound of order \(\log N/N\) to this exact margin using [FactorialWeilGramDecoupling.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialWeilGramDecoupling.lean).
+
+**Completion gate:** the actual compact ramp–tent family is covered with its full form and precise eventual range. This is a family-level positivity theorem. It proves neither density of that family nor the universal RW criterion.
+
+An independent fallback is to work directly with the resummed expression in [FactorialRampDiagonalIdentity.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialRampDiagonalIdentity.lean). That route asks for an explicit archimedean/logarithmic/polar inequality after exact prime resummation. It does not require inventing a new prime-distribution estimate for this family. Preserve the polar term: [FactorialPolarGramScaleSeparation.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialPolarGramScaleSeparation.lean) rules out paying its leading loss from the smaller Gram correction.
+
+## APT-06: extract a source-level stability theorem
+
+Only generalize after a mechanism has succeeded on an actual source. Determine which hypotheses did the work:
+
+- Exact divisor or dilation relations responsible for cancellation.
+- Weighted regularity and boundary corrections responsible for sampling control.
+- Arithmetic or geometric constraints responsible for a positive diagonal.
+- A quantitative comparison between the positive margin and the mixed coupling cost.
+
+Try a finite collection of genuinely different sources satisfying those hypotheses. Moment cancellation alone should not be declared sufficient for positivity. Nor should a family of dilation stencils be declared total before a separate density theorem has been proved in the relevant form topology.
+
+For stability, start with a precisely specified perturbation \(q=q_0+e\). Two useful conditional criteria are:
+
+\[
+q_0(f)\ge0,\quad |e(f)|\le\varepsilon q_0(f),\quad 0\le\varepsilon<1,
+\]
+
+or, on a specified space,
+
+\[
+q_0(f)\ge\delta\|f\|_*^2,\quad
+|e(f)|\le\varepsilon\|f\|_*^2,\quad \varepsilon<\delta.
+\]
+
+Both give positivity by elementary algebra. The research content lies in deriving the relative bound or the gap and perturbation constants from actual arithmetic data. Do not present these abstract implications as the new theory. The first criterion also requires the perturbation to vanish on any null directions of \(q_0\).
+
+Seek a sharp stability radius, sign threshold, negative-index classification, or exact residual decomposition. Useful results may identify a class where positivity fails rather than force an unjustified universal positive conclusion.
+
+**Completion gate:** a theorem with source-level hypotheses, at least one application beyond the original pilot, and a serious boundary example explaining why its assumptions matter.
+
+## APT-07: confront all directions and all scales
+
+The global challenge is not solved by repeating finite positivity checks. A valid extension mechanism needs:
+
+1. An approximation or filtration reaching every admitted test, with density in a topology that controls the complete form.
+2. Exact relations between successive energies, including mixed blocks and all completion terms.
+3. Bounds on the cumulative cost of elimination or extension, with the correct dependence on aperture and arithmetic scale.
+4. A proved limit argument transferring the sign to the full domain.
+
+For a positive invertible block \(A\), the residual after eliminating it is \(C-B^*A^{-1}B\). Positive diagonal blocks alone do not imply a positive residual. If a block is singular, inverse and range conditions must be replaced by a justified singular-block statement. Unbounded operator analogies do not waive closed-form domain requirements.
+
+The existing [exact finite Schur theorem](../../../formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilExactFiniteSchur.lean) and [arithmetic Schur laws](../../../formal/GaloisForLFunctions/RHTower/ArithmeticSchurRenormalizationLaw.lean) provide starting machinery. The latter programme's missing connection to the actual xi/Weil object must remain visible; positivity in a different arithmetic system does not automatically transfer.
+
+> **[OPEN CORE: GLOBAL ARITHMETIC SIGN]** Find an independently justified arithmetic mechanism controlling the complete residual or capacity cost for every admitted test and support aperture.
+
+Meeting that requirement at full RW strength would solve RH. Likewise, proving the full fixed-side critical bound in WL would solve RH. Neither is currently supplied by this programme. Avoid renaming either endpoint as a “positivity axiom” and treating the remaining implications as a solution.
+
+If a weaker extension theorem is all that can be proved, state its aperture range, source class, or loss explicitly. A fixed exponential loss in WL, or a bounded family of apertures in RW, is a different conclusion. A global uniform positive spectral gap is not an additional goal unless an application independently requires it.
+
+## APT-08: evaluate a geometric realization
+
+Keep this as a longer-term alternative unless a concrete construction becomes available. The required ingredients are substantial:
+
+- Arithmetic objects whose construction does not assume zero location.
+- A faithful correspondence with the relevant completed zeta divisor, including multiplicities, poles, and the correct local factors.
+- An independently positive pairing on the relevant quotient or cohomological degree.
+- A generator and compatibility law forcing the critical real part; for example, a rigorously defined relation making the shifted generator skew-adjoint in the positive pairing.
+- Correct domains, boundary terms, and treatment of any continuous spectrum.
+
+The finite-field model is [Deligne's weight theorem](https://www.numdam.org/item/PMIHES_1974__43__273_0.pdf). [Deninger's Hilbert–Polya and height-pairing programme](https://arxiv.org/abs/1001.1621) is a direct ancestor in the number-field setting. Our [existing geometric purity card](../../drafts/pipeline/1-in-progress/deninger-closed-generator-hodge-weil-purity-universality-law.md) already separates conditional purity implications from the missing arithmetic construction.
+
+**Completion gate:** a genuinely constructed object or a partial construction with a nontrivial unconditional consequence. A conditional theorem whose positive-pairing premise already carries RH does not complete this task.
+
+## Research workflow and acceptance criteria
+
+For each task, keep one pipeline card with the exact statement, dependencies, proof attempt, falsifiers, literature audit, and current open core. Follow the repository stages from backlog through paper proof, Lean formalization, and publication preparation. This document is a programme, not a substitute for those proof records.
+
+Before marking a mathematical task complete:
+
+1. **Arithmetic fidelity:** retain the literal source, completion terms, multiplicities, and domains.
+2. **Noncircularity:** classify every positivity, contraction, cancellation, and spectral assumption; identify any RH-equivalent one.
+3. **Quantitative adequacy:** state all scale quantifiers and constants; verify that the estimate is strong enough for the claimed application.
+4. **Closure:** justify every limit, density step, and passage from a finite family to a larger space.
+5. **Falsification:** test the claimed mechanism against the controls in APT-03 and record failures honestly.
+6. **Novelty:** separate established tools, new applications, new estimates, and speculative generalizations using primary sources and corpus searches.
+7. **Formal verification:** after a dependency-closed paper proof, verify exact names in this toolchain, inspect theorem dependencies, compile the affected Lean work, and run `scripts/formal_tools.py lint` as required by repository instructions. These documentation files themselves introduce no Lean declarations.
+8. **Positive salvage:** if a route fails, extract and audit its strongest useful survivor before retirement. Record `NO POSITIVE SALVAGE FOUND` only after a serious second pass finds none.
+
+## Immediate next actions
+
+1. Create an APT-04 pipeline card after completing the APT-01/02 premise and normalization audit; state the local sampling budget with its smoothing quantifiers.
+2. Derive and verify the \(C_H/N\) corrected-source budget from existing readout and summability results.
+3. Prove the generic sampling lemma or locate an applicable established version, then analyze the actual raw tail's weighted \(L^2\) and fractional regularity. These are separate analytic and arithmetic obligations.
+4. Attempt the local budget. If it succeeds, finish APT-05 including the full ramp limit. If it fails, compute the true budget or isolate a sharper direct mixed estimate before changing the theory's scope.
+
+The 2026-10-18 preparation searched the corpus for arithmetic Schur stability and independent norms for mixed Weil pairings, then inspected the relevant source declarations and cards. The searches returned useful existing machinery but did not establish novelty or provide a fresh build of the corpus; compiler-index coverage included pending and stale entries. Future agents should repeat focused searches when undertaking a theorem and verify dependencies directly. The source links in this directory, rather than temporary search outputs, are the durable starting record.

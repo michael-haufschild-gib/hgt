@@ -13,6 +13,7 @@ has seven owned theorem areas:
 * `GaloisForLFunctions.SelbergClass`
 * `GaloisForLFunctions.BiScaleUncertainty`
 * `GaloisForLFunctions.BezoutValuationIncidence`
+* `GaloisForLFunctions.TransHorizonIncidenceMechanics`
 
 and three vendored areas:
 
@@ -36,6 +37,7 @@ import GaloisForLFunctions.HilbertMetric
 import GaloisForLFunctions.SelbergClass
 import GaloisForLFunctions.BiScaleUncertainty
 import GaloisForLFunctions.BezoutValuationIncidence
+import GaloisForLFunctions.TransHorizonIncidenceMechanics
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean

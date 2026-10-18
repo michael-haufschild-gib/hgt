@@ -2089,6 +2089,7 @@ import GaloisForLFunctions.HTGeometry.BohrAPWitnesses
 import GaloisForLFunctions.HTGeometry.BohrAlmostPeriodic
 import GaloisForLFunctions.HTGeometry.BohrApproximation
 import GaloisForLFunctions.HTGeometry.BohrBochnerEquivalence
+import GaloisForLFunctions.HTGeometry.AlmostPeriodicReturnDensity
 import GaloisForLFunctions.HTGeometry.BohrBochnerFejerApprox
 import GaloisForLFunctions.HTGeometry.BohrCauchySchwarz
 import GaloisForLFunctions.HTGeometry.BohrCoefficientBound

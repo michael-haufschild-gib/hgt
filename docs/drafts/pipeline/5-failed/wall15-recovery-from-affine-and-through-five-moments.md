@@ -25,4 +25,4 @@ This is a dependency-closed paper proof and an actual-sieve Lean certificate, no
 
 ## Scope and next question
 
-Wall 15 remains open. No arbitrary divisor-support reconstruction, quantitative stability, or external novelty claim follows. The [finite odd-prime-family follow-up](../0-backlog/wall15-sixth-order-recovery-for-finite-odd-prime-mode-families.md) asks whether full sixth-order lag data recover any finite coefficient family and tests why a single zero-lag scalar may fail in dimension three. That follow-up is conjectural and is not counted as completed.
+Wall 15 remains open. No arbitrary divisor-support reconstruction, quantitative stability, or external novelty claim follows. The [finite odd-prime-family follow-up](../3-formalized/wall15-sixth-order-recovery-for-finite-odd-prime-mode-families.md) is now formalized: full sixth-order lag data recover every finite odd-prime coefficient family up to common sign, while one zero-lag sixth scalar can still fail in dimension three. The exact [scalar-observation no-go and positive survivor](wall15-recovery-from-affine-and-one-zero-lag-sixth-moment.md) are both certified.
