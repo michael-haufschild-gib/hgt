@@ -1,7 +1,0 @@
-Final leaf audit (exit 0, no diagnostics):
-lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/WeilWorkQuantizationPhaseCoupling.olean GaloisForLFunctions/RHTower/WeilWorkQuantizationPhaseCoupling.lean
-
-Scratch axiom audit (exit 0):
-'RHTower.WeilSpectral.tendsto_quantization_far_reflected' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilSpectral.tendsto_quantization_phase_resonance' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilSpectral.quantization_phase_resonance_constant' depends on axioms: [propext, Classical.choice, Quot.sound]

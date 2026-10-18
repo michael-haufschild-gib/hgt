@@ -1,5 +1,0 @@
-Command: lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseThetaTrace:olean
-Exit: 0
-✔ [14714/14714] Built GaloisForLFunctions.RHTower.WeilWorkSettledPhaseThetaTrace (88s)
-Build completed successfully (14714 jobs).
-No diagnostics in the new leaf. Dependency warnings were replayed. Only leaf and required dependencies targeted; no umbrella build.

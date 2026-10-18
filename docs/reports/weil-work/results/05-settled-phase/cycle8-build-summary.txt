@@ -1,4 +1,0 @@
-Command: lake --old build +GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCanonicalDisorder:olean
-Exit code: 0
-✔ [15669/15669] Built GaloisForLFunctions.RHTower.WeilWorkSettledPhaseCanonicalDisorder (101s)
-Build completed successfully (15669 jobs).

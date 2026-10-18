@@ -15,10 +15,9 @@ Use the actual source dictionary and constants \(A,B,K,L\) from the [physical co
 \]
 and, for finite complex coefficients \(b_N\),
 \[
-f_b(x)=e^{3x/2}B_b(e^{-x})\mathbf1_{x\le0},\qquad
-B_b(v)=\sum_Nb_N\Phi_N(v)
-=e^{-3x/2}\sum_N\frac{b_N}{a_{N-1}}T_{N-1}(x)
-\quad(v=e^{-x},\ x\le0).
+B_b(v)=\sum_Nb_N\Phi_N(v),\qquad
+f_b(x)=\sum_N\frac{b_N}{a_{N-1}}T_{N-1}(x)
+=e^{3x/2}B_b(e^{-x})\mathbf1_{x\le0}.
 \]
 In particular, \(f_b\) is a finite combination of the literal raw correction tails, with no source replacement.
 
@@ -175,3 +174,5 @@ The mechanism controls complete finite coefficient families: arithmetic collar s
 The parent interval estimate is classical [Montgomery–Vaughan](https://personal.science.psu.edu/rcv4/personal/Publications/s2-8-1-73.pdf). Related restricted Weil forms and their low spectral directions are studied by [Connes–Consani, *Spectral triples and zeta-cycles*](https://content.ems.press/assets/public/full-texts/serials/lem/69/1/11033001/online/10.4171-lem-1049.pdf). These references support the ancestry, not a novelty claim for this particular family.
 
 The theorem remains a paper result. Its physical Riesz input, low-band estimate, complete prime/polar coefficient budgets, and all four limiting arguments require Lean certificates. It supplies no density theorem, no all-aperture sign theorem, and no unconditional RH proof. Those are separate mathematical obligations.
+
+The proof uses the source's offset band and harmonic filter, but not the exact cubic equation for its collar. Its prime estimate also benefits from the fast envelope \(e^{3x/2}\). This identifies where the present mechanism stops explaining critical arithmetic cancellation. If that envelope is deformed to \(e^{\beta x}\), the same correlation argument costs a prime majorant proportional to \(\sum_{r\ge2}\Lambda(r)/r^{\beta+1/2}\). It is finite for \(\beta>1/2\), whereas at \(\beta=1/2\) this majorant diverges. This is a limitation of the absolute comparison, not a negative-energy theorem at the boundary. A critical theory must control the actual dilation correlations and boundary readouts there; the positive theorem above does not supply that control.

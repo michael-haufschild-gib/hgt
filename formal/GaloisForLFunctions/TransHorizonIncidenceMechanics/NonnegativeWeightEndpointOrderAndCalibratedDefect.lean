@@ -16,7 +16,7 @@ nonnegative visible coefficients vanish; negative harmonic scalar is infeasible.
 Classical baseline: finite divisor incidence transforms and r-even functions as in
 Toth--Haukkanen, https://arxiv.org/abs/1009.5281, with shifted-correlation quantities
 as in Coppola--Murty--Saha, https://arxiv.org/abs/1612.03136. The equivalent classical
-statement is copositivity of `sum s(k)*(s(k+1)-s(k))` on a nonnegative divisor-weight
+statement is nonpositivity of `sum s(k)*(s(k+1)-s(k))` on a nonnegative divisor-weight
 cone, characterized by inclusion of the endpoint divisor sets. The proof combines
 elementary positive incidence order, discrete Dirichlet polarization, and a calibrated
 two-coefficient perturbation. Labels below distinguish Known, Corollary, and New
@@ -149,6 +149,7 @@ theorem shortWindowDirichletEnergy_nonneg (N M₀ M : ℕ) (c : ℕ → ℝ) :
     0 ≤ shortWindowDirichletEnergy N M₀ M c :=
   Finset.sum_nonneg fun _ _ => sq_nonneg _
 
+/-- [Corollary] A nonincreasing nonnegative endpoint response yields quantitative dissipation. -/
 theorem shortWindowRenormalizedDefect_le_neg_half_energy_of_response_le
     (N M₀ M : ℕ) {c : ℕ → ℝ} (hc : ∀ d : ℕ, 0 ≤ c d)
     (h : sieveSeq N c (M₀ + M + 1) ≤ sieveSeq N c (M₀ + 1)) :
@@ -157,6 +158,7 @@ theorem shortWindowRenormalizedDefect_le_neg_half_energy_of_response_le
   have hid := two_mul_shortWindowRenormalizedDefect_eq N M₀ M c
   linarith only [hs, hid]
 
+/-- [Corollary] Reverse state order controls defect by minus half the additive energy. -/
 theorem shortWindowRenormalizedDefect_le_neg_half_energy_of_state_dvd
     (N M₀ M : ℕ) {c : ℕ → ℝ} (hc : ∀ d : ℕ, 0 ≤ c d)
     (h : horizonObservationState N (M₀ + M + 1) ∣ horizonObservationState N (M₀ + 1)) :
@@ -164,6 +166,7 @@ theorem shortWindowRenormalizedDefect_le_neg_half_energy_of_state_dvd
   shortWindowRenormalizedDefect_le_neg_half_energy_of_response_le N M₀ M hc
     ((horizonObservationState_dvd_iff_all_nonneg_sieveSeq_le N _ _).mp h c hc)
 
+/-- [Corollary] Reverse radical order suffices on the nonnegative squarefree cone. -/
 theorem shortWindowRenormalizedDefect_le_neg_half_energy_of_radical_dvd
     (N M₀ M : ℕ) {c : ℕ → ℝ} (hsf : ∀ d : ℕ, ¬ Squarefree d → c d = 0)
     (hc : ∀ d : ℕ, 0 ≤ c d)
@@ -234,6 +237,7 @@ theorem exists_calibrated_two_atom_positive_shortWindowDefect (N M₀ M : ℕ)
     have hcancel' := congrArg (fun x : ℝ => t * x) hcancel
     nlinarith only [hpositive, hcancel']
 
+/-- [New formulation] Every failed state order has a bounded witness with prescribed positive calibration. -/
 theorem exists_bounded_calibrated_positive_shortWindowDefect_of_state_not_dvd
     (N M₀ M : ℕ) {H : ℝ} (hH : 0 < H)
     (h : ¬ horizonObservationState N (M₀ + M + 1) ∣ horizonObservationState N (M₀ + 1)) :
@@ -244,6 +248,7 @@ theorem exists_bounded_calibrated_positive_shortWindowDefect_of_state_not_dvd
     exists_calibrated_two_atom_positive_shortWindowDefect N M₀ M hH hq hqr hql
   exact ⟨c, hbox, hcal, hpos⟩
 
+/-- [New formulation] Every failed radical order has a calibrated bounded squarefree witness. -/
 theorem exists_bounded_calibrated_squarefree_positive_shortWindowDefect_of_radical_not_dvd
     (N M₀ M : ℕ) {H : ℝ} (hH : 0 < H)
     (h : ¬ horizonRadicalState N (M₀ + M + 1) ∣ horizonRadicalState N (M₀ + 1)) :
@@ -262,6 +267,7 @@ theorem exists_bounded_calibrated_squarefree_positive_shortWindowDefect_of_radic
   · rintro rfl
     exact hd hp.squarefree
 
+/-- [New formulation] Fixing a positive harmonic scalar and coefficient box preserves the exact state-order criterion. -/
 theorem forall_bounded_calibrated_shortWindowDefect_nonpos_iff_state_dvd
     (N M₀ M : ℕ) {H : ℝ} (hH : 0 < H) :
     (∀ c : ℕ → ℝ, (∀ d : ℕ, 0 ≤ c d ∧ c d ≤ H) → finiteHarmonicSum N c = H →
@@ -279,6 +285,7 @@ theorem forall_bounded_calibrated_shortWindowDefect_nonpos_iff_state_dvd
     have he := shortWindowDirichletEnergy_nonneg N M₀ M c
     linarith
 
+/-- [New formulation] The calibrated bounded squarefree cone detects exactly reverse radical order. -/
 theorem forall_bounded_calibrated_squarefree_shortWindowDefect_nonpos_iff_radical_dvd
     (N M₀ M : ℕ) {H : ℝ} (hH : 0 < H) :
     (∀ c : ℕ → ℝ, (∀ d : ℕ, ¬ Squarefree d → c d = 0) →
@@ -373,6 +380,7 @@ theorem forall_nonneg_harmonic_shortWindowDefect_nonpos_iff (N M₀ M : ℕ) (H 
     · rw [shortWindowDefect_eq_zero_of_nonneg_harmonic_nonpos N M₀ M hc (by simpa [hcal] using hH)]
     · exact (forall_nonneg_shortWindowDefect_nonpos_iff_state_dvd N M₀ M).mpr hstate c hc
 
+/-- [New formulation] Complete squarefree harmonic-slice classification uses the radical-state order. -/
 theorem forall_nonneg_squarefree_harmonic_shortWindowDefect_nonpos_iff
     (N M₀ M : ℕ) (H : ℝ) :
     (∀ c : ℕ → ℝ, (∀ d : ℕ, ¬ Squarefree d → c d = 0) →

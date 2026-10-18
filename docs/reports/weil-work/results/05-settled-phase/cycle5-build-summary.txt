@@ -1,2 +1,0 @@
-✔ [14713/14713] Built GaloisForLFunctions.RHTower.WeilWorkSettledPhaseMellinTrace (142s)
-Build completed successfully (14713 jobs).

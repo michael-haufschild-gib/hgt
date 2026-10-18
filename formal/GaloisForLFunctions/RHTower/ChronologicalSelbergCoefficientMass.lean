@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.TotientCubicMean
 import GaloisForLFunctions.RHTower.NicolasTotientLandau
 import GaloisForLFunctions.RHTower.SquarefreeLowerDensity
+import GaloisForLFunctions.RHTower.ChronologicalGrowingMomentSource
 import GaloisForLFunctions.BezoutValuationIncidence.ExactFinitePrefixDiscrepancyDualityAndReturnTimes
 
 /-!
@@ -74,9 +75,9 @@ theorem sum_abs_coeff_le_sigma_selbergCoords (N : ℕ) (c : ℕ → ℝ) :
         rw [abs_mul]
         have hμ : |(moebius m : ℝ)| ≤ 1 := by
           rcases moebius_eq_or m with h | h | h <;> simp [h]
-        exact mul_le_mul_of_nonneg_left
-          (by simpa using mul_le_mul_of_nonneg_right hμ
-            (abs_nonneg (selbergMultiplesCoord N c (d * m)))) (Nat.cast_nonneg d)
+        have hscale := mul_le_mul_of_nonneg_right hμ
+          (abs_nonneg (selbergMultiplesCoord N c (d * m)))
+        simpa only [one_mul] using mul_le_mul_of_nonneg_left hscale (Nat.cast_nonneg d)
   calc
     _ ≤ ∑ d ∈ Icc 1 N, ∑ m ∈ Icc 1 (N / d),
         (d : ℝ) * |selbergMultiplesCoord N c (d * m)| := Finset.sum_le_sum hterm
@@ -184,6 +185,23 @@ theorem half_moebius_prefix_selberg_floor {N : ℕ} (hN : 2 ≤ N)
     (by norm_num : (0 : ℝ) ≤ 1 / 12) hmass
   norm_num at h ⊢
   linarith
+
+/-- The existing growing-moment source has a uniform positive Selberg-energy floor. -/
+theorem eventually_growingMomentSource_selberg_floor :
+    ∀ᶠ N : ℕ in Filter.atTop, (1 : ℝ) / 2359296 ≤
+      selbergTotientDiagonalForm N (growingMomentSource N) := by
+  filter_upwards [growingMomentSource_spec.2.2, Filter.eventually_ge_atTop 2] with N hhead hN
+  exact half_moebius_prefix_selberg_floor hN (growingMomentSource N)
+    fun d hd => hhead.1 d (Finset.mem_Icc.mp hd).1 (Finset.mem_Icc.mp hd).2
+
+/-- Vanishing Selberg energy cannot supply the missing estimate for this source. -/
+theorem not_tendsto_growingMomentSource_selberg_zero :
+    ¬ Filter.Tendsto (fun N : ℕ => selbergTotientDiagonalForm N (growingMomentSource N))
+      Filter.atTop (nhds 0) := by
+  intro h
+  have hfloor : (1 : ℝ) / 2359296 ≤ 0 :=
+    ge_of_tendsto h eventually_growingMomentSource_selberg_floor
+  norm_num at hfloor
 
 end
 

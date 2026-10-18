@@ -53,6 +53,16 @@ The [finite-window paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-
 
 The [signed span paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-span-coercivity.md) controls the whole high-scale span. Writing \(f_b=e^{3x/2}\sum b_N\Phi_N(e^{-x})\mathbf1_{x\le0}\), it proves \(\Re\mathcal W(f_b,f_b)\ge(c\log M-C)\sum|b_N|^2\) for coefficients supported on \(N\ge M\). Dilation-uniform Bessel bounds give \(|C_b(\log r)|\le B r^{-3/2}\sum|b|^2\), hence a convergent full prime budget. Unit-interval bounds control both polar branches. Nonstationary Mellin phase bounds remove a fixed relative low-frequency band, forcing logarithmic Gamma energy. Raw square sampling and separate Gamma, prime, and polar majorants justify the complete smoothing limit. This is a paper theorem requiring Lean certification, classified BRIDGE. Density and all-source extension remain unresolved.
 
+The signed-span mechanism uses collar separation, not its exact cubic arithmetic. Its fast envelope is also decisive: for \(e^{\beta x}\), the same absolute prime comparison costs \(\sum\Lambda(r)/r^{\beta+1/2}\), finite for \(\beta>1/2\) and divergent at \(\beta=1/2\). Failure of this majorant does not prove critical negativity. The next arithmetic question is whether exact dilation incidence can replace absolute summation at that boundary, with admitted polar readouts and constants uniform as \(\beta\downarrow1/2\). This is a research question, not a proved extension.
+
+There is a concrete classical comparison to investigate at that boundary. For every finite coefficient family on positive integers and every \(\varepsilon>0\), weighted Young's inequality and \(\sum_{d\mid n}\Lambda(d)=\log n\) give the paper inequality
+\[
+2\sum_{d\ge2,m\ge1}\frac{\Lambda(d)}d|b_{dm}b_m|
+\le\varepsilon\sum_n\log n\,|b_n|^2
++\varepsilon^{-1}\left(\sum_{d\ge2}\frac{\Lambda(d)}{d^2}\right)\sum_m|b_m|^2.
+\]
+Indeed, apply \(2|uv|/d\le\varepsilon|u|^2+\varepsilon^{-1}|v|^2/d^2\) termwise, reindex the first sum by \(n=dm\), and factor the second nonnegative sum. The reciprocal-square constant converges. This is a derived incidence estimate, with no novelty claim or Lean certificate here. The actual critical tail correlations are not yet identified with this discrete form plus a controlled remainder; nor has the needed coefficient-weighted logarithmic Gamma lower bound been proved. Those are substantive obligations, not notation changes.
+
 The [complete ramp–tent margin paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-ramp-gram-margin.md) derives \(\mathcal Z(H_{n,k})\le C_H/N\) from the literal readout \(1/(2\sqrt N\rho)\). Mixed costs are therefore \(O(\sqrt{\log N}/N)\), below the positive tail diagonal. The compact mixed explicit formula identifies the smoothed ramp's zero-side and physical energies. The full-form smoothing limit and existing Gram estimate then give \(Q_n(c,d)\ge c^2\log N/(8192N)+Nd^2/2\) eventually. This is a paper result awaiting the assembled Lean certificate.
 
 Complete the Lean certificates of the sharp relative margin, full-form smoothing, compact-ramp application, and restricted cross-scale span theorem. The global all-test/all-aperture sign mechanism remains unresolved; the restricted high-scale span now has a paper proof.

@@ -157,7 +157,8 @@ theorem sum_totientRatio_cube_le (N : ℕ) :
     dsimp [massTotientRatio]
     field_simp
   have h2 (X : ℕ) : ∑ n ∈ Icc 1 X, massTotientRatio n^2 ≤ 64 * (X : ℝ) := by
-    convert ratio_mean_step 1 (by norm_num : (0 : ℝ) ≤ 4) h1 hw1 X using 1 <;> norm_num
+    convert ratio_mean_step 1 (by norm_num : (0 : ℝ) ≤ 4) h1 hw1 X using 1
+    norm_num
   have hw2 (X : ℕ) :
       ∑ n ∈ Icc 1 X, sqfreeTotientInv n * massTotientRatio n^2 / (n : ℝ) ≤ 256 := by
     convert sum_sqfreeTotientInv_mul_div_totient_sq_le X using 1

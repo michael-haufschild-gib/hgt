@@ -67,7 +67,7 @@ theorem pmAdjacentDivisorDensity_ratio_hasProd {ε η : ℝ}
     apply ne_of_gt
     exact sub_pos.mpr ((div_lt_one (by linarith)).mpr (by linarith))
   field_simp
-  <;> ring
+  ring
 
 /-- The equal-exponent adjacent density vanishes faster than the damping parameter. -/
 theorem tendsto_pmAdjacentDivisorDensity_self_div_parameter :
@@ -143,15 +143,17 @@ theorem pmAdjacentArtinConstant_pos_le :
       (show Summable (fun p => Real.log (1 - d p)) by
         simpa only [sub_eq_add_neg] using hlog).hasSum
   refine ⟨he ▸ Real.exp_pos _, ?_⟩
+  let p2 : Nat.Primes := ⟨2, Nat.prime_two⟩
+  let p3 : Nat.Primes := ⟨3, Nat.prime_three⟩
   have hb := (pm_unit_product_bounds hp (fun p => (hf p).le)
     (fun p => sub_le_self _ (hd p).1)
-    {⟨2, Nat.prime_two⟩, ⟨3, Nat.prime_three⟩}).2
-  have h23 : (⟨2, Nat.prime_two⟩ : Nat.Primes) ≠ ⟨3, Nat.prime_three⟩ := by
+    {p2, p3}).2
+  have h23 : p2 ≠ p3 := by
     intro h
     have := congrArg (fun p : Nat.Primes => (p : ℕ)) h
-    norm_num at this
-  rw [prod_insert (by simpa using h23), prod_singleton] at hb
-  norm_num [d] at hb
+    norm_num [p2, p3] at this
+  rw [Finset.prod_pair h23] at hb
+  norm_num [d, p2, p3] at hb
   exact hb
 
 private theorem pmAdjacentShiftedPrimeDeficit_limit (p : Nat.Primes) :
@@ -196,7 +198,7 @@ theorem tendsto_pmAdjacentDivisorDensity_shifted_div_parameter :
       (𝓝[>] 0) (𝓝 pmAdjacentArtinConstant) := by
     change Tendsto _ _ (𝓝 (∏' p : Nat.Primes, (1 - 1 / ((p : ℝ) * ((p : ℝ) - 1)))))
     have h := hprod.congr' (show ∀ᶠ ε : ℝ in 𝓝[>] 0,
-        (∏' p : Nat.Primes, 1 + -pmAdjacentShiftedPrimeDeficit ε p) =
+        (∏' p : Nat.Primes, (1 + -pmAdjacentShiftedPrimeDeficit ε p)) =
           pmAdjacentDivisorDensity ε (1 + ε) / (pmPowerDampedDivisorDensity ε).re from by
       filter_upwards [self_mem_nhdsWithin] with ε hε
       simpa only [sub_eq_add_neg] using (pmAdjacentShifted_ratio_hasProd hε).tprod_eq)

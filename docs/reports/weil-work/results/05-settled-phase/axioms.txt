@@ -1,9 +1,0 @@
-'RHTower.WeilWorkSettledPhase.packet_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilWorkSettledPhase.packet_phase_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilWorkSettledPhase.integral_packet_phase' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilWorkSettledPhase.integral_finite_packets' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilWorkSettledPhase.half_packet_exact_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilWorkSettledPhase.half_packet_count_discrepancy' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilWorkSettledPhase.unbounded_phase_cost_with_bounded_count_discrepancy' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

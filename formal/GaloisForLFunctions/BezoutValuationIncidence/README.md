@@ -279,9 +279,9 @@ A mathematical research area is defined as much by the open problems it generate
 
 ---
 
-## 9. Module Index (60 Formalized Lean 4 Modules)
+## 9. Module Index (63 Formalized Lean 4 Modules)
 
-All 60 modules live in `formal/GaloisForLFunctions/BezoutValuationIncidence/` and are wired into [`formal/GaloisForLFunctions/BezoutValuationIncidence.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence.lean):
+All 63 modules live in `formal/GaloisForLFunctions/BezoutValuationIncidence/` and are wired into [`formal/GaloisForLFunctions/BezoutValuationIncidence.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence.lean):
 
 ### A. Finite-Horizon Observability, Prefix Lattices, and Translated Windows
 1. [`ExactFinitePrefixDiscrepancyDualityAndReturnTimes.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ExactFinitePrefixDiscrepancyDualityAndReturnTimes.lean)
@@ -350,3 +350,6 @@ All 60 modules live in `formal/GaloisForLFunctions/BezoutValuationIncidence/` an
 58. [`UniversalSawtoothInteriorMartingaleAndPostStepCalculus.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/UniversalSawtoothInteriorMartingaleAndPostStepCalculus.lean)
 59. [`ThreeStepBezoutInteriorSawtoothAndSecondOrderSmoothing.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ThreeStepBezoutInteriorSawtoothAndSecondOrderSmoothing.lean)
 60. [`ShortHorizonPronicDiscrepancyAndVonMangoldtDuality.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ShortHorizonPronicDiscrepancyAndVonMangoldtDuality.lean)
+61. [`MultiLagBezoutLayerHierarchyAndFourStepInteriorCalculus.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/MultiLagBezoutLayerHierarchyAndFourStepInteriorCalculus.lean)
+62. [`InteriorMartingaleQuadraticGradientAndRenormalizedDriftBudget.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/InteriorMartingaleQuadraticGradientAndRenormalizedDriftBudget.lean)
+63. [`TruncatedPronicGramMatrixAndFiniteHorizonVonMangoldtApproximation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/TruncatedPronicGramMatrixAndFiniteHorizonVonMangoldtApproximation.lean)

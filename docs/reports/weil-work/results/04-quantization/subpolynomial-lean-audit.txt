@@ -1,9 +1,0 @@
-'RHTower.WeilSpectral.quantization_norm_Gamma_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilSpectral.exists_quantizationProdF_interior_subpolynomial' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'RHTower.WeilSpectral.quantizationProdF_horizontal_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilSpectral.exists_quantizationProdF_subpolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RHTower.WeilSpectral.exists_quantizationTraceF_subpolynomial' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

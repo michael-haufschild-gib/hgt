@@ -143,6 +143,7 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.ArithmeticPositivityTheory.factorialTailLogFourier_integral_le",
             "GaloisForLFunctions.ArithmeticPositivityTheory.factorialCorrected_zeroSquare_le",
             "GaloisForLFunctions.ArithmeticPositivityTheory.exists_factorialTail_raw_and_smoothed_zeroSquare_bound",
+            "GaloisForLFunctions.ArithmeticPositivityTheory.exists_factorialSmoothedTail_relative_positive_margin",
         ],
     },
     "bezout_valuation_incidence": {

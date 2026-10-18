@@ -36,8 +36,8 @@ private theorem pm_cesaro_shift {f : ℕ → ℝ} {C L : ℝ}
     (hf : ∀ n, |f n| ≤ C)
     (hmean : Tendsto (fun N : ℕ => (∑ n ∈ Icc 1 N, f n) / (N : ℝ)) atTop (𝓝 L)) :
     Tendsto (fun N : ℕ => (∑ n ∈ Icc 1 N, f (n + 1)) / (N : ℝ)) atTop (𝓝 L) := by
-  have hzero := pm_bounded_div_nat_zero (f := fun N => f (N + 1) - f 1)
-    (fun N => (abs_sub _ _).trans (add_le_add_right (hf (N + 1)) _))
+  have hzero := pm_bounded_div_nat_zero (C := 2 * C) (f := fun N => f (N + 1) - f 1)
+    (fun N => by linarith [abs_sub (f (N + 1)) (f 1), hf (N + 1), hf 1])
   simpa only [add_zero] using (hmean.add hzero).congr (fun N => by
     rw [← add_div, ← pm_sum_shift_sub f N]
     ring)
@@ -66,7 +66,7 @@ private theorem pm_compensated_log_of_mean {f : ℕ → ℝ} {C L : ℝ}
     unfold pronicSeq
     push_cast
     field_simp
-    <;> ring
+    ring
   have hpr (N : ℕ) : |∑ n ∈ Icc 1 N, f n / (pronicSeq n : ℝ)| ≤ C := by
     calc
       _ ≤ ∑ n ∈ Icc 1 N, |f n / (pronicSeq n : ℝ)| := abs_sum_le_sum_abs _ _
@@ -74,9 +74,13 @@ private theorem pm_compensated_log_of_mean {f : ℕ → ℝ} {C L : ℝ}
         rw [mul_sum]
         apply sum_le_sum
         intro n _
-        rw [abs_div, abs_of_nonneg (Nat.cast_nonneg _), mul_one_div]
+        rw [abs_div,
+          abs_of_nonneg (Nat.cast_nonneg (pronicSeq n) : (0 : ℝ) ≤ (pronicSeq n : ℝ)),
+          mul_one_div]
         exact div_le_div_of_nonneg_right (hf n) (Nat.cast_nonneg _)
-      _ ≤ C := by nlinarith [sum_one_div_pronicSeq_le_one N]
+      _ ≤ C := by
+        simpa only [mul_one] using
+          mul_le_mul_of_nonneg_left (sum_one_div_pronicSeq_le_one N) hC
   have hsum (N : ℕ) : |∑ n ∈ Icc 1 N, f n| ≤ (N : ℝ) * C := by
     calc
       _ ≤ ∑ n ∈ Icc 1 N, |f n| := abs_sum_le_sum_abs _ _
@@ -84,7 +88,7 @@ private theorem pm_compensated_log_of_mean {f : ℕ → ℝ} {C L : ℝ}
       _ = _ := by simp
   have hgap (N : ℕ) : |H N - P N| ≤ 2 * C := by
     rw [hid]
-    apply (abs_add _ _).trans
+    apply (abs_add_le _ _).trans
     have hcomp : |(∑ n ∈ Icc 1 N, f n) / ((N : ℝ) + 1)| ≤ C := by
       rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < (N : ℝ) + 1)]
       apply (div_le_iff₀ (by positivity)).mpr
@@ -100,7 +104,7 @@ private theorem pm_compensated_log_of_mean {f : ℕ → ℝ} {C L : ℝ}
     exact div_le_div_of_nonneg_right (hgap N) hlog0.le
   have hmain : Tendsto (fun N : ℕ => P N / Real.log N) atTop (𝓝 L) := by
     simpa only [sub_zero] using ((pm_tendsto_harmonic_average_of_mean hmean).sub he).congr
-      (fun N => by dsimp only [H]; ring)
+      (fun N => by dsimp only [H, Pi.sub_apply]; ring)
   apply hmain.congr'
   filter_upwards [eventually_ge_atTop 1] with N hN
   have hs : Icc 1 N = insert N (Icc 1 (N - 1)) := by
@@ -147,9 +151,17 @@ private theorem pmActivePairSummand_bound {ε : ℝ} (hε : 0 < ε) (n : ℕ) :
     exact abs_le.mpr ⟨by linarith, by linarith⟩
   unfold pmActivePairSummand pmPowerDampedCenteredDivisorCoeff addDiff
   rw [abs_mul]
-  exact (mul_le_mul_of_nonneg_right ((abs_sub _ _).trans
-    (add_le_add_right hu _)) (abs_nonneg _)).trans
-      (by nlinarith [abs_nonneg (pmPowerDampedDivisorDensity ε).re])
+  have hx : |pmPowerDampedDivisorCoeff ε (n + 1) - (pmPowerDampedDivisorDensity ε).re| ≤
+      1 + |(pmPowerDampedDivisorDensity ε).re| := by
+    linarith [abs_sub (pmPowerDampedDivisorCoeff ε (n + 1))
+      (pmPowerDampedDivisorDensity ε).re]
+  calc
+    _ ≤ (1 + |(pmPowerDampedDivisorDensity ε).re|) *
+        |pmActiveSawtoothComponent ε (n + 1) - pmActiveSawtoothComponent ε n| :=
+      mul_le_mul_of_nonneg_right hx (abs_nonneg _)
+    _ ≤ (1 + |(pmPowerDampedDivisorDensity ε).re|) * 1 :=
+      mul_le_mul_of_nonneg_left hS (by positivity)
+    _ = _ := mul_one _
 
 private theorem pmActivePairSummand_mean {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ => (∑ n ∈ Icc 1 N, pmActivePairSummand ε n) / (N : ℝ))
@@ -193,23 +205,15 @@ private theorem pmActivePairSummand_mean {ε : ℝ} (hε : 0 < ε) :
     (tendsto_pm_adjacent_divisor_mean hε (by linarith : 0 < 1 + ε))).add
     (tendsto_pm_adjacent_divisor_mean hε hε)).div_const (2 : ℝ)).sub
       (hS.const_mul (pmPowerDampedDivisorDensity ε).re)
-  have ht : Tendsto (fun N : ℕ =>
-      (((∑ n ∈ Icc 1 N, pmPowerDampedDivisorCoeff ε (n + 1) *
-          pmPowerDampedDivisorCoeff (1 + ε) (n + 1)) / (N : ℝ) -
-        (∑ n ∈ Icc 1 N, pmPowerDampedDivisorCoeff ε (n + 1) ^ 2) / (N : ℝ) -
-        (∑ n ∈ Icc 1 N, pmPowerDampedDivisorCoeff ε (n + 1) *
-          pmPowerDampedDivisorCoeff (1 + ε) n) / (N : ℝ) +
-        (∑ n ∈ Icc 1 N, pmPowerDampedDivisorCoeff ε (n + 1) *
-          pmPowerDampedDivisorCoeff ε n) / (N : ℝ)) / 2 -
-        (pmPowerDampedDivisorDensity ε).re *
-          ((∑ n ∈ Icc 1 N,
-            (pmActiveSawtoothComponent ε (n + 1) - pmActiveSawtoothComponent ε n)) / (N : ℝ)))
-      atTop (𝓝 (pmActivePairLogDrift ε)) := by
-    simpa only [Pi.sub_apply, Pi.add_apply, mul_zero, sub_zero, pmActivePairLogDrift] using h
-  apply ht.congr
-  intro N
-  simp_rw [pmActivePairSummand_eq, sum_sub_distrib, sum_add_distrib, ← sum_div, ← mul_sum]
-  ring
+  have ht : Tendsto (fun N : ℕ => (∑ n ∈ Icc 1 N, pmActivePairSummand ε n) / (N : ℝ))
+      atTop (𝓝 ((pmShiftedExponentSecondDensity ε - pmPowerDampedSecondDensity ε -
+        pmAdjacentDivisorDensity ε (1 + ε) + pmAdjacentDivisorDensity ε ε) / 2 -
+        (pmPowerDampedDivisorDensity ε).re * 0)) := by
+    apply h.congr
+    intro N
+    simp only [pmActivePairSummand_eq, sum_sub_distrib, sum_add_distrib, ← sum_div, ← mul_sum]
+    ring
+  simpa only [mul_zero, sub_zero, pmActivePairLogDrift] using ht
 
 /-- The complete active-plus-predecessor sum has an unconditional logarithmic rate. -/
 theorem tendsto_pmActivePair_div_log {ε : ℝ} (hε : 0 < ε) :
@@ -230,7 +234,15 @@ theorem tendsto_pmActivePairLogDrift_div_parameter :
     tendsto_pmPowerDampedSecondDensity_div_parameter).sub
       tendsto_pmAdjacentDivisorDensity_shifted_div_parameter).add
         tendsto_pmAdjacentDivisorDensity_self_div_parameter).div_const (2 : ℝ)
-  convert h.congr (fun ε => by dsimp only [pmActivePairLogDrift]; ring) using 1 <;> ring
+  have ht : Tendsto (fun ε : ℝ => pmActivePairLogDrift ε / ε) (𝓝[>] 0)
+      (𝓝 ((1 - 1 / 2 - pmAdjacentArtinConstant + 0) / 2)) := by
+    apply h.congr
+    intro ε
+    dsimp only [pmActivePairLogDrift, Pi.add_apply, Pi.sub_apply]
+    ring
+  have he : (1 - 1 / 2 - pmAdjacentArtinConstant + 0) / 2 =
+      1 / 4 - pmAdjacentArtinConstant / 2 := by ring
+  simpa only [he] using ht
 
 /-- Two local prime factors already give a strict positive lower bound for the drift slope. -/
 theorem pmActivePairLogDrift_slope_pos :
@@ -254,7 +266,7 @@ theorem eventually_tendsto_pmActivePair_atTop :
         pmActivePredictableMartingaleSum ε N + pmPredecessorPeakMartingaleSum ε N)
         atTop atTop := by
   filter_upwards [self_mem_nhdsWithin, eventually_pmActivePairLogDrift_gt] with ε hε hκ
-  have hκ0 : 0 < pmActivePairLogDrift ε := by linarith
+  have hκ0 : 0 < pmActivePairLogDrift ε := lt_trans (div_pos hε (by norm_num)) hκ
   have hlog : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   apply ((tendsto_pmActivePair_div_log hε).pos_mul_atTop hκ0 hlog).congr'
@@ -336,7 +348,15 @@ theorem tendsto_pmInteriorLogCounterterm_div_parameter :
       (𝓝 ((1 - pmAdjacentArtinConstant) / 2)) := by
   have h := (tendsto_pmPowerDampedDivisorVariance_div_parameter.div_const (2 : ℝ)).add
     tendsto_pmActivePairLogDrift_div_parameter
-  convert h.congr (fun ε => by dsimp only [pmInteriorLogCounterterm]; ring) using 1 <;> ring
+  have ht : Tendsto (fun ε : ℝ => pmInteriorLogCounterterm ε / ε) (𝓝[>] 0)
+      (𝓝 (1 / 2 / 2 + (1 / 4 - pmAdjacentArtinConstant / 2))) := by
+    apply h.congr
+    intro ε
+    dsimp only [pmInteriorLogCounterterm, Pi.add_apply]
+    ring
+  have he : 1 / 2 / 2 + (1 / 4 - pmAdjacentArtinConstant / 2) =
+      (1 - pmAdjacentArtinConstant) / 2 := by ring
+  simpa only [he] using ht
 
 /-- The arithmetic interior budget strictly exceeds the diagonal-only coefficient `1/4`. -/
 theorem pmInteriorLogCounterterm_slope_bounds :

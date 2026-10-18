@@ -58,11 +58,14 @@ import GaloisForLFunctions.BezoutValuationIncidence.ThreeStepBezoutInteriorSawto
 import GaloisForLFunctions.BezoutValuationIncidence.ShortHorizonPronicDiscrepancyAndVonMangoldtDuality
 import GaloisForLFunctions.BezoutValuationIncidence.TupleAdmissibilityCollisionEnergyAndHardyLittlewoodCoercivity
 import GaloisForLFunctions.BezoutValuationIncidence.TranslatedWindowStrideAnnihilationAndLcmReturnObservability
+import GaloisForLFunctions.BezoutValuationIncidence.MultiLagBezoutLayerHierarchyAndFourStepInteriorCalculus
+import GaloisForLFunctions.BezoutValuationIncidence.InteriorMartingaleQuadraticGradientAndRenormalizedDriftBudget
+import GaloisForLFunctions.BezoutValuationIncidence.TruncatedPronicGramMatrixAndFiniteHorizonVonMangoldtApproximation
 
 /-!
 # Bézout–Valuation Incidence (`GaloisForLFunctions.BezoutValuationIncidence`)
 
-Umbrella module for **Bézout–Valuation Incidence (BVI)**, a 60-module formal library studying the
+Umbrella module for **Bézout–Valuation Incidence (BVI)**, a 63-module formal library studying the
 finite-horizon inverse observability, integer-lattice Smith normal form geometry, return-window
 reflection kernels, multi-functional spectral convexity, $k$-tuple Hardy–Littlewood admissibility
 coercivity, and non-periodic pronic/sawtooth renormalization of truncated divisor-sum discrepancies.
