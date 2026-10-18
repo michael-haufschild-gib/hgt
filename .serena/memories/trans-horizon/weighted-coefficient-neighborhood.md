@@ -1,0 +1,11 @@
+# Weighted coefficient neighborhood — paused
+
+User explicitly stopped axiom checks and requested docs updated, then pause. Do not restart checks or research without renewed user direction. Goal cleared; get_goal returned null.
+
+Completed leaf: formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/WeightedCoefficientNeighborhoodAndRadicalDefectStability.lean, 284 lines, 18 theorems and 3 definitions, SHA256 6978501936dcce20b9b287e33b9cbc3a6d1243ec35467cc7c60deaea401866f3. Actual-source lake --old env lean audit passed exit0 without warnings; wired in THIM umbrella; index regenerated, 21 public API entries verified. Axiom audit was terminated by explicit user request, exit143. NO axiom-closure claim. All owned jobs terminal; eight temporary files removed.
+
+For W(N,K;c,b)=sum |c(d)-b(d)|floor(K/d), a reference response bound B gives |D_c-D_b|≤4(B+W)W. At N≥2,K=6(N+1), squarefree c has D≤-1+4(2+W)W on all nonempty prefixes with radical endpoint<K. W≤1/20 implies D≤-59/100, including all positive powers of finite certified bases. Normalizing any squarefree-projected direction by20(1+its incidence distance from0) yields an automatic weight in the strict ball. At p>5 prime,N=6p-1, positive powers of30p have response>39/20 and defect<-59/100 for every normalized direction. No first-failure claim for arbitrary perturbations; all-exponent damping remains open.
+
+Docs updated: docs/drafts/pipeline/3-formalized/thim-weighted-coefficient-neighborhood.md; logs/thim-radical-sawtooth-knowledge.md; docs/drafts/pipeline/5-failed/thim-universal-unit-envelope-beyond-five.md. Evidence logs/thim-neighborhood-audit.json and thim-neighborhood-{lean,index,lint}.txt. Global lint has2 outside findings: unreachable BiScaleUncertainty.PrimeReadoutSharpness and package-root THIM umbrella layout. No new-leaf or prohibited declaration finding. README unchanged; no commits/push/full build/numerical experiment.
+
+Next conjecture recorded, not implemented: separate unit gauge; c1=1,W≤1/20,|a|≤1/40 should give D(unitShift c a)≤-411/800 on certified radical fibers. Pause applies; do not take this up automatically. Prior completed dependency: mem:trans-horizon/incidence-weighted-logarithmic-damping.

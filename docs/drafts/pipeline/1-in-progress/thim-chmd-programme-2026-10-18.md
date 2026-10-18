@@ -27,4 +27,5 @@ Systematic unconditional Lean 4 formalization of the mathematical steps in `docs
 
 ## Log
 - 2026-10-18 — created in 1-in-progress
-- 2026-10-18 — Built and wired Modules 31 (`AllCutPrimeChainCoercivityAndContinuousDensityBridge.lean`), 32 (`OddEigenvectorNodalModulusBalanceAndFourthBandStepLaw.lean`), 33 (`CompactWindowedOfflineChainIntegralAndOriginCollarDuality.lean`), 34 (`CenteredSquareCompletionAndMultiBandResidueCancellation.lean`), 35 (`OddPolarCollarParallelogramAndPrimeClockBridge.lean`), and 36 (`OddEigenvectorHalfMassLobeAndStrictPrimeShiftClosure.lean`).
+- 2026-10-18 — Built and wired Modules 31 (`AllCutPrimeChainCoercivityAndContinuousDensityBridge.lean`), 32 (`OddEigenvectorNodalModulusBalanceAndFourthBandStepLaw.lean`), 33 (`CompactWindowedOfflineChainIntegralAndOriginCollarDuality.lean`), 34 (`CenteredSquareCompletionAndMultiBandResidueCancellation.lean`), 35 (`OddPolarCollarParallelogramAndPrimeClockBridge.lean`), 36 (`OddEigenvectorHalfMassLobeAndStrictPrimeShiftClosure.lean`), and 37 (`OddProfileCollarToContinuumArchimedeanBridge.lean` — Obstacle B Schur-complement collar-to-continuum 1D-to-2D bridge in the low-prime window $\frac{3}{2}\log d \le a$).
+

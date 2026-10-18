@@ -47,6 +47,24 @@ There is a conditioning/order tradeoff. If `n≥BL²` and `n≥1`, then at `y=x/
 
 This replaces exponential collar conditioning by a larger sufficient order of size `BL²`. It requires a derivative-energy bound; the existing singular Lévy-energy bound must not be substituted without an additional proved implication.
 
+## Singular-energy controls already available in the corpus
+
+The derivative bound is optional. Put `c=exp(−1/2)` and let `E` bound the normalized singular energy of both sources. The existing `autocorr_increment_mul_log_le` and `normalized_autocorr_difference_sq_mul_log_le` give, for `0<|t|≤1`,
+
+`1−h(t)≤4E/(c(−log|t|))`,
+
+`|h(x)−h(y)|²≤8E/(c(−log|x−y|))` when `0<|x−y|≤1`.
+
+Thus `ρ_E=exp(−1−8E/c)` gives a common collar with `κ=1/2`, and `ω_E(η)=sqrt(8E/(c(−log η)))` is an available modulus for `0<η<1`. Equality of locations is handled separately. These are consequences of already proved energy estimates, not new source regularity assumptions and not derivative estimates. The existing `exists_uniform_autocorr_continuity_radius` already formalizes a uniform radius; reuse it or its stronger quantitative input.
+
+For the additional class satisfying every logarithmic-grid zero, the existing normalized tail inequality gives `|h(x)|²≤8E/(c|x|)`. Consequently common compact support is unnecessary for **approximate** finite recovery: take an effective radius `L≥32E/(cε²)` so that both tails have size at most `ε/2`, choose `n≥L/ρ_E`, and choose a mesh with `ω_E(η)≤ε/4`. The same finite-cycle estimate gives the global bound
+
+`‖h−g‖∞ ≤ max(ε, 2^n(δ_C+nδ₂)+ε/2)`.
+
+For example `η=exp(−1−128E/(cε²))` suffices. Choose `L≥1` to avoid a zero-radius mesh, and `n≥1`. The resulting finite count and noise threshold are explicit in `E,ε`, even for an unbounded family of source support radii. This does not assert uniform exact finite-order completeness.
+
+Source ingredients inspected: `InfiniteGridUniformTail.lean` contains the global normalized modulus, uniform radius, and grid-induced tail. The additional mathematical work is their coupling to the finite closed-cycle reconstruction protocol. The corpus query `normalized energy logarithmic increment positive collar modulus cycle recovery` returned collar-energy results but did not surface these exact uniform-tail statements; direct source inspection located them. Its snapshot reported `partial=false` with semantic completeness unmeasured. Do not infer absence from those ranked results.
+
 ## Scope, obstruction and gates
 
 - The existing smooth distant-copy family has exact first distinguishing order `floor(T)+1` and support radius of size `T+1`. Its normalized origin correlation agrees with the normalized seed on a fixed neighborhood when `T>2`; consequently the order cannot be bounded independently of `L/ρ`. Formalize this controlled-class embedding and its constants.
@@ -56,7 +74,7 @@ This replaces exponential collar conditioning by a larger sufficient order of si
 - [ ] Lean finite-cycle and sampling identities, including zero-radius and endpoint cases.
 - [ ] Actual smooth-source derivative bounds, explicit normalization and nonempty controlled classes; no assumed convergence or assumed recovery.
 - [ ] Existing distant-copy obstruction transported into the controlled class with quantified parameters.
-- [ ] Determine whether the incidence/energy hypotheses developed elsewhere supply these controls, or give an actual-source obstruction.
+- [ ] Formalize the singular-energy collar and the grid/energy finite-accuracy theorem above by reusing the existing modulus and tail estimates; inspect the exact corpus query before claiming any extension absent.
 - [ ] Named-source/axiom audits, umbrella wiring, index and lint.
 
 This component does not close item 9.

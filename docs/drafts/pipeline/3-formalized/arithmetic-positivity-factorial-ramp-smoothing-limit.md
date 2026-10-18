@@ -1,8 +1,8 @@
 # Full Weil-energy continuity for the factorial ramp
 
 - **ID:** APT-ROOT-RAMP-LIMIT
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Foundational programme, APT-05](../../../reports/arithmetic-positivity-theory/research-foundational.md#apt-05-close-the-compact-ramp-application).
 - **Audit verdict:** BRIDGE. Compact approximation and domination by translation energy are classical. No literature-novelty claim is made.
 
@@ -15,7 +15,7 @@ Let \(r_n=\texttt{sourceFactorialRamp}\,(n+1)\), let
 Q(f)=\operatorname{Re}\,\texttt{weilFullFunctional}(\Lambda)
        (\texttt{EF.weilTest}(f,f)).
 \]
-**[PROVED HERE, paper; Lean certificate required]** For every \(n\),
+**[PROVED HERE; Lean-certified]** For every \(n\),
 \[
 \lim_{k\to\infty}Q(r_{n,k})=Q(r_n)
 =\texttt{factorialSpanWeil}\ n\ 1\ 0.
@@ -96,8 +96,22 @@ Each term has just been controlled, proving the first equality in (1). The refle
 
 ## Application boundary
 
-The [complete ramp–tent margin proof](arithmetic-positivity-factorial-ramp-gram-margin.md) combines this limit with the tail sampling theorem and corrected-source square budget. It explicitly applies `zeta_W_eq_weilFullFunctional_mixed` to identify the zero-side and complete physical energies of the smooth compact ramp before taking the limit. The full assembled Lean certificate remains required.
+The [complete ramp–tent margin proof](arithmetic-positivity-factorial-ramp-gram-margin.md) combines this limit with the tail sampling theorem and corrected-source square budget. It explicitly applies `zeta_W_eq_weilFullFunctional_mixed` to identify the zero-side and complete physical energies of the smooth compact ramp before taking the limit. That assembled certificate is now also in Lean (see below).
 
 The support bound depends on \(n\): the theorem fixes \(n\) before taking \(k\to\infty\). This matches the application’s eventual smoothing quantifiers. A limit uniform in the growing support aperture would require an additional estimate.
 
 The positive stability mechanism exposed here is specific: normalized nonnegative convolution contracts the positive translation-energy majorant. The complete Weil form itself contains signed prime and polar terms; their continuity is proved separately through common compact support. No monotonicity of the complete Weil form is claimed.
+
+## Lean certificate
+
+[FactorialRampFullWeilSmoothingLimit.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialRampFullWeilSmoothingLimit.lean), wired into `GaloisForLFunctions.ArithmeticPositivityTheory`, proves (1) unconditionally:
+
+- `factorialMuntzSmoothedRamp_weilFullFunctional_tendsto n`: `Re weilFullFunctional Λ (EF.weilTest r_{n,k} r_{n,k}) → Re weilFullFunctional Λ (EF.weilTest r_n r_n)` as `k → ∞`.
+- `factorialRamp_weilFullFunctional_eq n`: `Q(r_n) = factorialSpanWeil n 1 0`.
+- `factorialMuntzSmoothedRamp_weilFullFunctional_tendsto_span n`: the combined statement (1).
+- The general mechanism, for every `f : C_c(ℝ, ℝ)` with finite Lévy jump energy: `re_weilFullFunctional_smooth_tendsto`, built from `autocorr_smooth_tendsto` (pointwise correlation convergence, dominated on a common window), `autocorr_smooth_sub_le` (the contraction (3) in correlation form), `biScaleLevyEnergy_smooth_tendsto` (dominated convergence for the jump term), and `fullPairing_autocorr_smooth_tendsto` (finite prime set and compact polar window).
+
+Axiom audit (`#print axioms`, scratch file): every listed theorem depends only on `propext`, `Classical.choice`, `Quot.sound`. Module compiled with `lake --old env lean -j 1`.
+
+## Log
+- 2026-10-18 — moved 2-fully-proven → 3-formalized after the unconditional Lean certificate above.

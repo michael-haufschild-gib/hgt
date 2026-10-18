@@ -1,5 +1,27 @@
 # Cofinal arithmetic control of the renormalized BVI defect
 
+**Authoritative final checkpoint — paused, 2026-10-18.** User requested
+completion of started Lean work, wiring, and docs, then a pause. All eight
+owned leaves are complete and wired; all 99 public declarations passed
+axiom audits using only standard Lean axioms. Original-source checks passed
+without diagnostics. Source hashes were rechecked together. No owned Lean
+or search process remains running; completed temporary files were removed.
+
+Latest completed results: every fixed odd source moment is o(N), and both
+literal source signs occur linearly often on every fixed integer horizon
+ratio at least two. C9 and C10 cards are under `3-formalized`; exact proofs,
+scope boundaries, and evidence are recorded there. Final index passed.
+Global lint retains two unrelated findings: concurrent
+`CrossDepthEulerOperatorFactorizationAndPrimePairGramIdentity` reachability
+and existing root `TransHorizonIncidenceMechanics.lean` placement. No owned
+finding; global lint is not claimed clean. Final evidence:
+`logs/bvi-odd-moments-2026-10-18-*` and
+`logs/bvi-sign-frequency-2026-10-18-*`, alongside earlier phase archives.
+
+No further conjecture implementation will start without a resume request.
+The stronger sign-class symmetry/distribution questions remain deferred.
+This checkpoint supersedes historical live-process notes below.
+
 - **ID:** BVI-COFINAL-ARITHMETIC-2026-10-18
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / source audit
@@ -166,12 +188,21 @@ estimate. An upper bound for the accumulated energy/interior remains open.
   source check 57054 and axiom check 23187 passed. Index passed; global lint
   has four unrelated findings, archived in the C8 manifest. Completed C8
   scratch files were removed after archive. C8's card is under `3-formalized`.
-  The odd-moment conjecture is now active under `1-in-progress`. Scratch
+  The odd-moment result is now under `3-formalized`. Scratch
   33012 passed its all-moduli mean-zero and odd-dilation-product foundation.
-  Owned Lean session 6385 checks original source
-  `CoprimeMobiusCancellationAndOddDilationMeans.lean`; log
-  `/tmp/bvi-coprime-mobius-canonical.log`. Re-poll before another Lean command.
-  The overall conjecture loop remains active.
+  Original-source session 6385 passed for
+  `CoprimeMobiusCancellationAndOddDilationMeans.lean` with empty diagnostics.
+  Scratch 68201 passed all odd source moments and audited all 19 foundation
+  declarations with standard axioms. C9 is now complete: canonical source
+  check emitted fresh olean/ilean with empty diagnostics; axiom audit 81081
+  passed all 15 source-leaf declarations. Both leaves are wired; index 97441
+  passed. Lint 41902 reports only the existing root TransHorizon placement
+  error, with no owned finding. Evidence: `logs/bvi-odd-moments-2026-10-18-*`.
+  C10 is complete. Scratch 17558 passed; serial final checks 42402 passed
+  original source and all six public axiom checks, exit 0. The leaf is wired;
+  index 80412 passed. Lint 32437 has the two unrelated findings in the final
+  checkpoint above. C10 card is under `3-formalized`; temporary files were
+  removed after archive. Research is paused at the user's request.
 - Session 46734 exited with three local elaboration errors, now corrected.
   Session 93140 exited before elaboration because it was launched from the
   repository root; all subsequent Lean commands run from `formal/`.

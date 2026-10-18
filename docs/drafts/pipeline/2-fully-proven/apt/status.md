@@ -1,10 +1,21 @@
- **Remaining in `2-fully-proven/apt` (partial Lean certificates recorded, one literal integral/limit bridge left in each):**
-   - [arithmetic-positivity-factorial-ramp-smoothing-limit.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/a2-fully-proven/apt/rithmetic-positivity-factorial-ramp-smoothing-limit.md) (`APT-ROOT-RAMP-LIMIT`) & [arithmetic-positivity-factorial-ramp-gram-margin.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/2-fully-proven/apt/arithmetic-positivity-factorial-ramp-gram-margin.md) (`APT-ROOT-RAMP-MARGIN`):
-     - The literal smoothed-ramp zero-side bounds (`factorialMuntzSmoothedRamp_weil_log_lower`, `exists_factorialMuntzSmoothedRamp_weil_norm_upper`, `exists_factorialMuntzSmoothedRamp_relative_positive_margin`), translation-increment $L^2$ contraction (`factorialRamp_smooth_difference_L2_le`), and the Gram/Schur transfer (`factorialRampTent_gram_margin_of_tendsto`) are proved in [FactorialRampSmoothingAndGramMargin.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialRampSmoothingAndGramMargin.lean).
-     - *What remains before moving to `3-formalized`:* discharging the `hlim : Tendsto ... (𝓝 (factorialSpanWeil n 1 0))` hypothesis via dominated convergence on `archLevySinhWeight` and compact prime/polar continuity.
-   - [arithmetic-positivity-factorial-bohr-coercivity.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/2-fully-proven/apt/arithmetic-positivity-factorial-bohr-coercivity.md) (`APT-ROOT-BOHR`) & [arithmetic-positivity-factorial-window-coercivity.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/2-fully-proven/apt/arithmetic-positivity-factorial-window-coercivity.md) (`APT-ROOT-WINDOW`):
-     - Collar irrationality, cubic resonance classification, four-branch spacing $k/15$, dyadic filter classification, Bohr exponential mean vanishing, first-harmonic dominance, and Riesz coefficient equivalence are proved in [FactorialCollarIrrationalityAndSpacing.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCollarIrrationalityAndSpacing.lean), [GeneralDivisorBernoulliFilterClassification.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/GeneralDivisorBernoulliFilterClassification.lean), [DyadicBernoulliFilterAndBohrCoercivity.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/DyadicBernoulliFilterAndBohrCoercivity.lean), and [FactorialTailWindowRieszCoercivity.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailWindowRieszCoercivity.lean).
-     - *What remains before moving to `3-formalized`:* the pointwise Fourier cosine series identity for `clampedLatticeRemainder` and the $v = e^{-x}$ change-of-variables integral on $\int_{\mathbb{R}} |\sum c_n T_n|^2$.
-   - [arithmetic-positivity-factorial-span-coercivity.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/2-fully-proven/apt/arithmetic-positivity-factorial-span-coercivity.md) (`APT-ROOT-SPAN-COERCIVITY`):
-     - The envelope-critical prime majorant transition (`summable_envelopeLogMajorant_iff`), polar readout bounds, nonstationary Mellin majorant $\le 5/|\omega|$, low-band Plancherel bound, and high-scale archimedean-to-Weil assembly (`high_scale_span_weil_coercivity_bound`) are proved in [EnvelopeCriticalPrimeTransitionAndDilationGain.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/EnvelopeCriticalPrimeTransitionAndDilationGain.lean) and [NonstationaryMellinLowFrequencyExclusion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/arithmetic-positivity-theory/NonstationaryMellinLowFrequencyExclusion.lean).
-     - *What remains before moving to `3-formalized`:* discharging the integration-by-parts identity on the literal Mellin integral of $\Phi_N$ and the 4-channel smoothing passage $f_{b,k} \to f_b$.
+# APT stage-2 → stage-3 formalization status
+
+## Done (moved to `3-formalized/`)
+- `APT-ROOT-RAMP-LIMIT` — [card](../../3-formalized/arithmetic-positivity-factorial-ramp-smoothing-limit.md); Lean: `FactorialRampFullWeilSmoothingLimit.lean` (`factorialMuntzSmoothedRamp_weilFullFunctional_tendsto_span`, `re_weilFullFunctional_smooth_tendsto`).
+- `APT-ROOT-RAMP-MARGIN` — [card](../../3-formalized/arithmetic-positivity-factorial-ramp-gram-margin.md); Lean: `factorialSpanWeil_rampTent_margin`, `factorialSpanWeil_ramp_log_bounds`, `factorialMuntzSmoothedRamp_re_W_tendsto`.
+
+## Remaining in `2-fully-proven/apt`
+The earlier modules for these three cards prove only scalar arithmetic (constants, collar spacing,
+filter coefficients). The literal analytic statements are still open in Lean:
+
+- `APT-ROOT-WINDOW` (window coercivity): Bernoulli cosine expansion of `Φ_N`
+  (from `RHTower.hasCosDivSq`-type `hasSum_cos_div_sq`), harmonic layers `H_k` as Montgomery–Vaughan
+  exponential sums (`interval_integral_normSq_expSum_ge/le`, gap `k/15`), first-harmonic dominance
+  `|x+y|² ≥ (1-θ)|x|² + (1-1/θ)|y|²` with θ = 4/5, weighted transport to `∫_1^∞ v^{-4}`, and the
+  change of variables `v = e^{-x}` giving (3).
+- `APT-ROOT-BOHR` (Bohr coercivity): Bohr square mean existence via Tannery over the double harmonic
+  series, vanishing mixed mean (irrationality), periodic mean of the integer family, `L²(0,1)`
+  orthogonality, θ = 3/4 dominance, linear independence of the tails.
+- `APT-ROOT-SPAN-COERCIVITY`: needs WINDOW, dilated window bounds (4), literal Mellin
+  nonstationary bound, Plancherel, Gamma quarter inequality, prime/polar budgets, and the
+  four-channel smoothing passage for the complex tail combinations.

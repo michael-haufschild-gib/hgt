@@ -1,8 +1,8 @@
 # Actual lag measurements from prime-selective differences
 
 - **ID:** biscale-prime-raw-contrasts-1810
-- **Stage:** 2-fully-proven
-- **Type:** BRIDGE; fixed protocol, noise bounds, decoder and dimension lower bound formalized; adaptive count pending
+- **Stage:** 3-formalized
+- **Type:** BRIDGE; fixed and adaptive protocols, decoders, noise bounds and fixed-protocol dimension lower bound formalized
 - **Parent:** [field programme](../1-in-progress/biscale-field-development-1810.md), items 5–6
 
 ## Concrete protocol
@@ -78,9 +78,9 @@ Any fixed collection of `m` raw moments that recovers all vectors up to common s
 - [x] Index and lint checked for the two finished raw-observation leaves; no owned wiring or placeholder errors. Global lint still reports concurrent BezoutValuationIncidence wiring and TransHorizonIncidenceMechanics placement errors.
 - [x] `PrimeMeasurementComplexity.lean` passes its artifact-producing named-source audit without diagnostics and is wired. `decodeRaw_actual` constructs the coefficient vector from the actual raw array by selecting the least nonzero diagonal and inverting cubed products. `underdetermined_collision` gives two distinct positive coefficient vectors with identical data whenever a fixed protocol has fewer than `M` literal measurements. The literal test class includes all translated degrees and the existing affine observations, by exact identities.
 - [x] All seven measurement/decoder theorem axiom closures contain only the three standard axioms; the audit exits 0.
-- [ ] Formal adaptive protocol and count.
-- [ ] Direct source and axiom audits, umbrella wiring, index and lint.
+- [x] `PrimeAdaptiveMomentRecovery.lean` passes its final artifact-producing named-source audit without diagnostics and is wired. It proves the exact pair count, the `128M−64` raw bound (natural subtraction includes `M=0`), and exact common-sign ambiguity. `decode_selected_eq` proves that filling every unobserved raw slot with zero leaves the explicit decoder output unchanged; `decode_selected_actual` recovers the actual vector using only those collected observations.
+- [x] All five adaptive theorem axiom closures contain only `propext`, `Classical.choice`, and `Quot.sound`; the audit exits 0. Index refreshed; final lint reports no owned wiring or placeholder error. Global lint still fails on a concurrent BezoutValuationIncidence wiring error and package-root TransHorizonIncidenceMechanics placement.
 
 Lower-bound dependency found by the corpus's lexical search: `GaloisForLFunctions.invariance_of_domain_open_map` is stored in `HTGeometry/InvarianceOfDomain.lean`. Its source theorem has no Brouwer premise, and its compiled axiom closure contains only the three standard axioms. The file's introductory conditional wording does not determine the theorem's actual dependency closure.
 
-This card does not close item 6 until its Lean gates and the stated-family scope are discharged.
+The chosen family for checklist item 6 is the complete finite odd-prime sector, including unknown zero support. Here `M` counts allowed modes, not a presumed known nonzero support. Its fixed-protocol necessity/sufficiency gap is explicitly `M` versus `64M²`, with proved noise amplification; its exact adaptive sufficiency is linear. This completes item 6's “quantitatively controlled gap” requirement for that stated family. No claim of an optimal constant, unrestricted adaptive lower bound, or a measurement theorem for all mixed supports is made.

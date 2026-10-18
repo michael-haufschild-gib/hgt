@@ -1,9 +1,9 @@
 # Incidence-weighted perturbation and logarithmic damping radius
 
 - **ID:** thim-incidence-weighted-damping
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper), Lean pending
-- **Statement:** For N≥2, the radius 1/(96(N+1)(log N)²) certifies D≤−1/2 on every nonempty prefix whose radical endpoint is below 6(N+1).
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and Lean verified)
+- **Statement:** For N≥2, throughout 0≤ε≤1/(96(N+1)(log N)²), the damped coefficient μ(d)d^(−ε) certifies D≤−1/2 on every nonempty prefix whose radical endpoint is below 6(N+1).
 
 ## Goal
 
@@ -15,8 +15,8 @@ powers. Full all-ε≥0 defect control remains open.
 
 - [x] Current-source inspection and broad corpus search.
 - [x] Dependency-closed paper proof below.
-- [ ] Scratch proof and actual-source Lean audit.
-- [ ] Every declaration's axiom closure, wiring, index/lint, ledger, cleanup.
+- [x] Scratch proof and actual-source Lean audit.
+- [x] Every declaration's axiom closure, wiring, index/lint, ledger, cleanup.
 
 ## Paper proof [PROVED HERE]
 
@@ -62,9 +62,9 @@ Existing weighted floor identities and harmonic bounds support the proof;
 no matching incidence-weighted defect perturbation theorem in returned hits.
 Compiler coverage mixed. Local source supplies exact reciprocity in
 BezoutValuationIncidence/FermiCellJumpReciprocityAndPronicTailBridge.lean and
-Mathlib.NumberTheory.Harmonic.Bounds; their applicability remains to be verified
-in the scratch proof. The core scratch proof now verifies both directly and
-establishes the general incidence-weighted defect bound without warnings.
+Mathlib.NumberTheory.Harmonic.Bounds. Full scratch and actual-source proofs
+verify both directly, including the general incidence-weighted defect bound,
+without warnings.
 
 Mathlib-filtered harmonic query returned partial=false,74141 files,pending0,
 generation1454970. All20 candidates and20 source arguments inspected. Harmonic
@@ -77,3 +77,51 @@ a certificate D_N(k−1;c)≤C for every2≤k<6(N+1) transfers to every nonempty
 prefix whose endpoint radical is below6(N+1). The rough state uses a Bertrand
 prime and the other states use their minimal radical representative. This
 transfer does not depend on damping or the sign of C.
+
+## Verification
+
+- Source: `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/DivisorIncidencePerturbationAndLogarithmicDamping.lean` (340 lines).
+- SHA256: `d1f497e8a2da771becdca4b43c18fe731dea85ab38e8fd8afd3a5327cedf90a5`.
+- Full scratch and actual-source `lake --old env lean` exited 0 without warnings.
+  All 19 public theorems, one definition and one private helper have exactly
+  {propext, Classical.choice, Quot.sound} as axiom closure. Audited
+  2 additional compiler-generated helpers;
+  all 23 closures use only standard Lean axioms.
+- `logs/thim-incidence-audit.json` checks every closure, 20 public baseline
+  docstrings, all 20 public API entries with source positions, source/dependency hashes,
+  fresh artifacts, unique umbrella import, MainTheorems reachability,
+  whitespace and prohibited declarations. The API generator omits private
+  declarations; the private helper and its generated proofs are axiom-audited.
+- Evidence: `logs/thim-incidence-{lean,axioms,index,lint}.txt`.
+  Index exited 0. `lint --check-generated` exited 1 with
+  2 external findings, recorded exactly in audit JSON.
+  No new-leaf or prohibited-declaration finding. Shared index freshness may
+  change during concurrent edits; no globally clean gate is claimed.
+- All owned jobs terminal; nine owned temporary files removed and verified absent.
+  README not edited. No full/umbrella builds, numerical experiments, added axioms,
+  heartbeat changes, commits or pushes. Continuing research goal remains active.
+
+## Next conjecture — weighted coefficient neighborhood (unproved)
+
+For N≥2 put K=6(N+1) and
+W_N(c)=Σ_{d≤N}|c(d)−μ(d)| floor(K/d).
+Conjecture: every squarefree-supported c with W_N(c)≤1/20 has
+D_N(M;c)≤−1/2 for every M≥1 with R_N(M+1)<6(N+1).
+
+Proposed mechanism, not yet Lean-verified: the aggregate incidence budget
+controls every response error up to K by W. Hence the Möbius magnitude-two
+envelope gives |s_c|≤2+W. The new perturbation theorem should give
+|D_c−D_μ|≤4(2+W)W≤41/100<1/2. Combine the strict Möbius margin with the
+new finite-certificate transfer law. A stronger candidate uses the exact
+quadratic condition 4(2+W)W≤1/2 instead of the convenient radius 1/20.
+The unit coefficient is charged with weight K, so the gauge obstruction is
+not bypassed. Audit all endpoints, constants, support and hypotheses before
+claiming this result; full all-ε≥0 damping control is a separate open problem.
+
+Preliminary field-filtered query `squarefree coefficient perturbation weighted
+divisor incidence neighborhood negative prefix defect`: partial=false,
+74142 files,pending0,generation1455029. All20 candidate and20 source-argument
+statements inspected. Hits include rough-sign rigidity, gauge obstructions,
+radical/power transport and coefficient recovery, but no matching quantitative
+weighted-neighborhood certificate in returned hits. Broaden before new code;
+mixed source/compiler coverage is not universal formal verification.

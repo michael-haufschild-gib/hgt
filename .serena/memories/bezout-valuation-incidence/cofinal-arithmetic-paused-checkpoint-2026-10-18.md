@@ -1,0 +1,17 @@
+AUTHORITATIVE FINAL CHECKPOINT: PAUSED at the user's explicit request after finishing all started Lean work, wiring, docs, and cleanup. User cleared the persistent goal, then requested: 'finish the lean work you started, wire, update docs, then pause'. Do not resume conjecture implementation unless asked. No owned Lean/search process remains running. All completed temporary inputs and logs removed after archival. No README edits by this task, no full builds, no numerical experiments, no commits/pushes, no receiver assumptions, and no RH research.
+
+Eight completed BVI leaves under formal/GaloisForLFunctions/BezoutValuationIncidence, all wired exactly once into the BVI umbrella, source hashes checked together, all original sources checked with lake --old env lean -j 1 from formal/, clean diagnostics. All 99 public declarations audited, only standard axioms propext, Classical.choice, Quot.sound:
+1 CofinalMobiusGradientCoercivityAndRenormalizedDefect (13 public): endpoint identity, squarefree gradient coercivity, polynomial-horizon negative renormalized defect.
+2 CofinalLinearWindowMobiusEnergyAndDefectBounds (5): bounded amplitude, two-sided linear-order gradient energy and defect.
+3 UniformCofinalMobiusPrefixDiscrepancy (8): unrestricted joint-cofinal sublinear signed source prefix and discrepancy.
+4 CoprimeSquarefreeDensityAndMobiusDilationMeans (17): coprime squarefree density and multiplicative pair means.
+5 CofinalMobiusQuadraticQuotientProfile (16): Q_N((B+1)N)/N -> explicit F(B), with F(B)>=6/pi^2 for B>=1.
+6 CoprimeMobiusCancellationAndOddDilationMeans (19): every finite-modulus coprime Mobius mean vanishes, including 0/repeated-prime moduli; all odd dilation-product means vanish without coprimality premises.
+7 CofinalMobiusOddMomentsAndQuotientProducts (15): every fixed odd source moment is o(N) for each fixed integer horizon ratio; exact finite quotient-tuple reindexing.
+8 CofinalMobiusPositiveNegativeSourceFrequency (6): with C=B+1 and M=(C+1)N, both positive and negative source-value counts are eventually >= F(C)N/(4C^2) >= (6/pi^2)N/(4C^2). No sign-density limit/equality or growing-ratio uniformity claimed. SHA-256 3fe9891b3ed675fddbced02fb04e82fae7dd259fe53b02a734bbe2a606151013. Final serial source/axiom audit 42402 exit 0; index 80412 exit 0.
+
+Latest lint 32437 exit 1 reports ONLY two unrelated issues: concurrent CrossDepthEulerOperatorFactorizationAndPrimePairGramIdentity not yet reachable from BVI umbrella, and pre-existing root TransHorizonIncidenceMechanics.lean placement. No owned leaf finding. Do not claim global lint clean or modify concurrent work to conceal this.
+
+Final evidence: logs/bvi-odd-moments-2026-10-18-* and logs/bvi-sign-frequency-2026-10-18-*; earlier phases in logs/bvi-cofinal-*, bvi-linear-cofinal-*, bvi-uniform-cofinal-*, bvi-quadratic-profile-*. Stage-3 result cards include bvi-cofinal-odd-moments-and-sign-symmetry-2026-10-18.md and bvi-cofinal-positive-negative-source-frequency-2026-10-18.md. Overall card docs/drafts/pipeline/1-in-progress/bvi-cofinal-arithmetic-defect-estimate-2026-10-18.md begins with the authoritative PAUSED checkpoint and supersedes historical live notes.
+
+Deferred only, no Lean work started: odd-moment + finite integer support interpolation to show opposite sign-class count differences are o(N); full distribution requires further even-moment/direct-count convergence. Metadata for preparatory searches archived; no novelty or applicability claim. This final checkpoint supersedes prior active-session memory notes.

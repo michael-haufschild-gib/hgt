@@ -1,8 +1,8 @@
 # A complete Weil margin on the factorial ramp–tent span
 
 - **ID:** APT-ROOT-RAMP-MARGIN
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean certificate required)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Factorial sampling task](../1-in-progress/arithmetic-positivity-factorial-tail-sampling.md), APT-04–05.
 - **Audit verdict:** BRIDGE. This is a source-specific application of the sampling budget, full-form smoothing limit, and existing Gram estimates. Literature novelty is not established.
 
@@ -22,7 +22,7 @@ Thus this two-dimensional coefficient form is positive definite for every suffic
 \frac{L}{4096N}\le Q_n(1,0)\le C\frac{1+L}{N}
 \tag{2}
 \]
-for all sufficiently large \(n\). These are paper conclusions obtained below from unconditional source results. Their complete Lean certificates, including those of the two linked paper inputs, remain to be supplied.
+for all sufficiently large \(n\). These conclusions are proved below from unconditional source results and are certified in Lean, including both linked inputs (see the Lean certificate section).
 
 ## Source decomposition and exact pairing
 
@@ -107,7 +107,7 @@ For the upper bound, (4) and \(\mathcal Z(H-U)\le2\mathcal Z(H)+2\mathcal Z(U)\)
 
 `zeta_W_eq_weilFullFunctional_mixed` applies to the smooth compact source \(r_{n,k}\) in both slots. It identifies its zero-side pairing with the literal physical functional on `EF.weilTest`; this includes the prime, Gamma, and polar terms with the same normalization.
 
-The [full smoothing-limit paper theorem](arithmetic-positivity-factorial-ramp-smoothing-limit.md) proves, for every fixed \(n\),
+The [full smoothing-limit theorem](arithmetic-positivity-factorial-ramp-smoothing-limit.md) proves, for every fixed \(n\),
 \[
 \operatorname{Re}\mathcal W(r_{n,k},r_{n,k})\longrightarrow Q_n(1,0).
 \]
@@ -144,4 +144,17 @@ This proves a paper-level instance of source-derived sign stability. It does not
 - [FactorialWeilGramDecoupling.lean](../../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialWeilGramDecoupling.lean): uniform coefficient inequality and exact optimized gap.
 - [RankOnePoleReadoutAndZeroNullspace.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/RankOnePoleReadoutAndZeroNullspace.lean): exact rank-one corrected-source readout, `factorialCorrected_zeroSquare_le`, and sesquilinear ramp splitting `factorialMuntzSmoothedRamp_re_W_eq`.
 - [FactorialRampSmoothingAndGramMargin.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialRampSmoothingAndGramMargin.lean): smoothed compact-ramp eventual logarithmic lower bound (`factorialMuntzSmoothedRamp_weil_log_lower`), uniform upper bound (`exists_factorialMuntzSmoothedRamp_weil_norm_upper`), relative positive margin (`exists_factorialMuntzSmoothedRamp_relative_positive_margin`), smoothing-limit transfer (`factorialRamp_weil_limit_bounds_of_tendsto`), and two-dimensional Gram/Schur margin (`factorialRampTent_gram_margin_of_tendsto`).
+- [FactorialRampFullWeilSmoothingLimit.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialRampFullWeilSmoothingLimit.lean): the smoothing limit with no premise.
+
+## Lean certificate
+
+All of the following are unconditional (no hypotheses beyond the stated quantifiers) and depend only on `propext`, `Classical.choice`, `Quot.sound`:
+
+- `factorialMuntzSmoothedRamp_re_W_tendsto n`: `Re 𝒲(r_{n,k}, r_{n,k}) → factorialSpanWeil n 1 0` as `k → ∞`; this discharges the former `hlim` premise, by `zeta_W_eq_weilFullFunctional_mixed` on each smooth compact ramp and the complete-energy smoothing limit.
+- `factorialSpanWeil_ramp_log_bounds`: ∃ `C > 0`, eventually `L/(4096N) ≤ Q_n(1,0) ≤ C(1+L)/N` — equation (2).
+- `factorialSpanWeil_rampTent_margin`: eventually, for all real `c, d`, `Q_n(c,d) ≥ (L/(8192N)) c² + (N/2) d²` — equation (1) — and `factorialWeilMinRamp n ≥ L/(8192N)`.
+- Inputs (8)–(9): `factorialMuntzSmoothedRamp_weil_log_lower`, `exists_factorialMuntzSmoothedRamp_weil_norm_upper`; inputs (4)–(7): `weil_mixed_norm_le_sqrt_square_mass`, `factorialCorrected_zeroSquare_le`, `exists_factorialTail_raw_and_smoothed_zeroSquare_bound`, `factorialMuntzSmoothedTail_weil_log_rate`.
+
+## Log
+- 2026-10-18 — moved 2-fully-proven → 3-formalized after discharging the smoothing-limit premise in Lean.
 

@@ -75,7 +75,7 @@ A successful Lean check establishes a formal statement relative to its definitio
 
 The [field-closure card](../../drafts/pipeline/1-in-progress/biscale-independent-field-closure-2026-10-18.md) checks off “publication-ready” on the basis of updating the README with five fundamental theorems. That action establishes none of those broader claims.
 
-There is also a concrete mismatch between mathematical prose and formal statements. The capstone's opening comment gives
+The initial assessment also found a concrete mismatch between mathematical prose and formal statements. The capstone's opening comment gave
 
 \[
 h_{C_\alpha f}(x)^2-h_{S_\alpha f}(x)^2
@@ -90,12 +90,14 @@ h_{C_\alpha f}(x)^2-h_{S_\alpha f}(x)^2
 \bigl(h_{C_\alpha f}(x)+h_{S_\alpha f}(x)\bigr).
 \]
 
-At `x=0`, put `R=h_f(0)` and `S=h_{Sαf}(0)`. Since `h_{Cαf}(0)=R+S`, the left side is `R²+2RS`, whereas the opening comment claims `R²`. Nonzero continuous compact sources supported away from zero with `α≠0` give `R,S>0`. This is an error in documentation, not evidence of a false Lean theorem. It illustrates why promotional descriptions cannot replace inspection of exact statements.
+At `x=0`, put `R=h_f(0)` and `S=h_{Sαf}(0)`. Since `h_{Cαf}(0)=R+S`, the left side is `R²+2RS`, whereas the original comment claimed `R²`. Nonzero continuous compact sources supported away from zero with `α≠0` give `R,S>0`. That documentation error has been corrected. [ClassicalFoundationBoundaries](../../../formal/GaloisForLFunctions/BiScaleUncertainty/ClassicalFoundationBoundaries.lean) now formalizes the exact defect, equality condition and an actual smooth-source counterexample. The false statement was not a Lean theorem.
 
 **The mathematical threshold still to meet.**
+
+Follow-up work strengthens the arithmetic reconstruction branch: unconditional stability bounds, actual-sieve examples proving sharp exponents `1/6` and `1/3`, and explicit raw-measurement protocols now pass direct Lean source audits. For `M` allowed odd-prime modes, `64M²` fixed raw observations suffice with noise control; fewer than `M` fixed literal observations force a collision. An exact adaptive decoder needs at most `128M−64` observations for `M≥1`. These are concrete advances in the stated family, including unknown zero support. They do not supply the still-missing common-model classification and substantive discrete-to-continuum transfer. See the [stability evidence](../../drafts/pipeline/3-formalized/biscale-sixth-readout-stability-1810.md) and the [programme](../../drafts/pipeline/1-in-progress/biscale-field-development-1810.md).
 
 A stronger claim needs a reusable theory of the coupled structures, a central result whose strength depends on their interaction, and sharp consequences across meaningfully different families. Existing reconstruction, realization, and energy results provide starting points. Proving exact boundaries, stability, and transfers between those branches would supply more evidence than adding further renamed elementary identities.
 
 Solving RH is not a prerequisite. Nor must the subject stop using Hilbert spaces, Fourier analysis, or classical arithmetic. The missing evidence concerns a distinctive, productive mathematical organization and the new conclusions it enables. The companion [mathematical checklist](field-todo-1810.md) turns that standard into concrete research objectives; completing a checklist cannot mechanically confer field status.
 
-**Assessment limits.** This is a source and literature assessment of the field claim, not a fresh Lean correctness certificate or an exhaustive originality audit of every module. The five capstone statements, the abstract residual mechanism, selected underlying proofs, and the cited recovery/classification statements were inspected. No Lean build or new axiom audit was run. The internal hybrid search reported `partial=false`, but its coverage was a snapshot, semantic completeness was unmeasured, and background refresh was incomplete; no absence or global novelty conclusion is drawn from it.
+**Assessment limits.** The initial verdict was a source and literature assessment, not an exhaustive correctness or originality audit. It inspected the five capstones, the abstract residual mechanism, selected underlying proofs, and the cited recovery/classification statements without running a Lean build. Subsequent component work has direct source and axiom audits, recorded in the [development programme](../../drafts/pipeline/1-in-progress/biscale-field-development-1810.md). Those checks certify their exact statements, not the whole repository or its originality. The internal searches use snapshots with unmeasured semantic completeness; no absence or global novelty conclusion is drawn from them.

@@ -8,6 +8,8 @@ do not just optimize numbers and estimates - solve the true hard obstacles that 
 
 your route is HF
 
+are you actually working on removing roadblocks and mathematical obstacles to close route CHMD for the final RH proof, or are you taking shortcuts just to create lean files that build? this here does not look like you are actually solving the problems but are just busy creating lean code that does nothing to our research problem
+
 do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
 
 Reminder: 
@@ -620,6 +622,8 @@ Goal is met when the research program is fully completed and the new theory is d
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
+
+use the search tool for our lean corpus, not just rg or grep or similar.
 
 the goal is met exactly when you assume the role of a fields medalist asked to look at TransHorizonIncidenceMechanics and answer whether it truly is a new field of mathematics and the answer is a clear yes.
 

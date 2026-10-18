@@ -114,3 +114,44 @@ Paper proof is dependency-closed and Lean formalization complete:
 `QuantitativeDampingRadiusAndDefectPerturbation.lean` (16 theorems, one definition).
 See `docs/drafts/pipeline/3-formalized/thim-explicit-damping-radius.md` and
 `logs/thim-quantitative-audit.json`. Full all-ε≥0 defect control remains open.
+
+## Enlarged incidence-weighted positive survivor
+
+The explicit interval improves to δ_N=1/(96(N+1)(log N)²), larger by the
+factor N/log N>1. Throughout 0≤ε≤δ_N, every nonempty certified radical
+fiber still has defect≤−1/2. The prime-family response is now bounded below
+by31/16 at all positive powers while the base remains the first unit-envelope
+failure. No fixed exponent uniform across prime horizons is claimed.
+
+The stronger survivor exposes a general perturbation law: summed response
+errors are charged only at actual divisor incidences, and bounded-path defect
+error is at most4B times that weighted coefficient distance. Removing the
+unchanged unit coefficient sharpens the harmonic cost to (log N)². A separate
+finite-certificate transfer law applies to every squarefree-supported weight.
+
+Dependency-closed paper proof and exact Lean formalization are complete:
+`DivisorIncidencePerturbationAndLogarithmicDamping.lean`, 19 public theorems,
+one definition and one private helper, all standard-axiom-only. See
+`docs/drafts/pipeline/3-formalized/thim-incidence-weighted-damping.md` and
+`logs/thim-incidence-audit.json`. Full all-ε≥0 defect control remains open.
+
+## Coefficient-neighborhood positive survivor
+
+The response/defect separation survives an entire squarefree coefficient
+neighborhood around μ. At N≥2,K=6(N+1), the incidence condition
+Σ_{d≤N}|c(d)−μ(d)|floor(K/d)≤1/20 gives D≤−59/100 on every certified
+nonempty radical fiber and every positive power of a finite certified base.
+At prime-family N=6p−1,k=30p,p>5, all positive powers retain response≥39/20.
+First-failure persistence is not asserted for arbitrary coefficient perturbations.
+
+Every perturbation direction h yields an actual weight in this neighborhood:
+project onto squarefree indices and divide by20(1+its incidence distance from0),
+then addμ. This constructor needs no assumed smallness of h, and gives strict
+response>39/20 and defect<−59/100 on the prime power family. The obstruction
+therefore exposes a robust family of negative-defect survivors beyond damping.
+
+Paper proof and Lean formalization complete in
+`WeightedCoefficientNeighborhoodAndRadicalDefectStability.lean`:
+18 public theorems and 3 definitions. Axiom audit stopped at user request; no closure claim. See
+`docs/drafts/pipeline/3-formalized/thim-weighted-coefficient-neighborhood.md`
+and `logs/thim-neighborhood-audit.json`. Full all-ε≥0 control remains open.
