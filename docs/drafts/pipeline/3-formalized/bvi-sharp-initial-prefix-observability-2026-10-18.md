@@ -184,8 +184,8 @@ and the following verification gates:
   all 34 owned `/tmp/bvi5-*` paths, verifying source and installed artifact hashes
   before and after deletion. Whitespace check passed. No numerical experiments.
 
-The next uncounted candidate is
-`docs/drafts/pipeline/0-backlog/bvi-integral-prefix-lattice-and-prime-rank-defect-2026-10-18.md`.
-Its integral equivalence, prime-rank defects, and proposed canonical Smith factors
-still require their own paper, novelty, and Lean audits. General Smith and cokernel
-results already in the corpus are dependencies, not new contributions.
+The integral continuation is completed as contribution 006 in
+`docs/drafts/pipeline/3-formalized/bvi-integral-prefix-lattice-and-prime-rank-defect-2026-10-18.md`.
+Its integral equivalence, cokernel classification, and prime-power profile are
+verified. The proposed canonical Smith display remains an uncounted refinement;
+general Smith and cokernel results in the corpus are reused dependencies.

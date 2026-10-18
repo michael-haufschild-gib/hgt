@@ -1,4 +1,4 @@
-import GaloisForLFunctions.BiScaleUncertainty.CoshDecayGroundPotentialAndThetaVolumeCollarProducer
+import GaloisForLFunctions.RHTower.CHMDResolventNodalCrossPositivityAndBalancedRayleighExcess
 
 /-!
 # Beurling–Deny Markov Positivity of `stationaryResolvent`, Modulus Domination, and the Nodal Defect Graph
@@ -134,11 +134,28 @@ theorem inner_primeShiftOperator_nonneg_of_ae_nonneg {u v : MassSpace}
     nonsingular_allPrime_left.ae hv, nonsingular_allPrime_right.ae hv] with e hul hur hvl hvr
   exact add_nonneg (mul_nonneg hul hvr) (mul_nonneg hvl hur)
 
+private theorem archDiagonalOperator_ae' (u : MassSpace) :
+    archDiagonalOperator u =ᵐ[massMeasure]
+      fun x => (archGroundConstant * riemannKernelReal x / Real.cosh (x / 2)) * u x := by
+  have heq : archDiagonalOperator u =
+      u - groundPotentialOperator u - primeDiagonalOperator u := by
+    have h := congrArg (fun T : MassSpace →L[ℝ] MassSpace => T u) sub_groundPotentialOperator_eq
+    change u - groundPotentialOperator u = primeDiagonalOperator u + archDiagonalOperator u at h
+    exact eq_sub_of_add_eq' h.symm
+  rw [heq]
+  filter_upwards [Lp.coeFn_sub (u - groundPotentialOperator u) (primeDiagonalOperator u),
+    Lp.coeFn_sub u (groundPotentialOperator u),
+    groundPotentialOperator_ae u, primeDiagonalOperator_ae u] with x hx1 hx2 hg hp
+  simp only [Pi.sub_apply] at hx1 hx2
+  rw [hx1, hx2, hg, hp, thetaGroundPotential_eq_harmonic x]
+  unfold primeDiagonalPotential
+  ring
+
 /-- Almost-everywhere nonnegativity of `archDiagonalOperator u` for a.e. nonnegative `u : MassSpace`. -/
 theorem archDiagonalOperator_ae_nonneg_of_ae_nonneg {u : MassSpace}
     (hu : 0 ≤ᵐ[massMeasure] (u : ℝ → ℝ)) :
     0 ≤ᵐ[massMeasure] (archDiagonalOperator u : ℝ → ℝ) := by
-  filter_upwards [archDiagonalOperator_ae u, hu] with x harch hux
+  filter_upwards [archDiagonalOperator_ae' u, hu] with x harch hux
   rw [harch]
   have hpos : 0 ≤ archGroundConstant * riemannKernelReal x / Real.cosh (x / 2) :=
     div_nonneg (mul_nonneg archGroundConstant_pos.le (riemannKernelReal_pos x).le)

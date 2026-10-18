@@ -298,3 +298,44 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
   necessary and sufficient joint moment realizability (`exists_sieve_weight_with_moments_iff`), and
   complete classification of all universal quadratic inequalities in sieve variance and successor
   covariance (`universal_successor_quadratic_inequality_iff`).
+- [`SixModeStabilityAndSharpQuarterDecorrelation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/SixModeStabilityAndSharpQuarterDecorrelation.lean) —
+  Quantitative $e = 6$ mode stability and the sharp $1/4$-decorrelation bound once $Y_{N,c}(6) = 0$.
+- [`ExactFinitePrefixDiscrepancyDualityAndReturnTimes.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ExactFinitePrefixDiscrepancyDualityAndReturnTimes.lean) —
+  Exact finite-prefix discrepancy duality (`sieveWindowEnergy_eq_divisorDiscrepancy`) and simultaneous
+  return times at $M = \operatorname{lcm}(1, \dots, N)$.
+- [`SharpInitialPrefixObservabilityAndExactGramDeterminants.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/SharpInitialPrefixObservabilityAndExactGramDeterminants.lean) —
+  Triangular observability of initial prefixes $M = N$ and exact Gram determinants.
+- [`IntegralPrefixLatticeAndPrimePowerObstructions.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/IntegralPrefixLatticeAndPrimePowerObstructions.lean) —
+  Unimodular equivalence of the initial prefix lattice and prime-power lower bounds.
+- [`ReturnWindowTwoMomentKernelsAndSharpZeroBlocks.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ReturnWindowTwoMomentKernelsAndSharpZeroBlocks.lean) —
+  Return-window two-moment kernels and sharp zero blocks.
+- [`PrimeTailCalibrationAndMobiusDefect.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/PrimeTailCalibrationAndMobiusDefect.lean) —
+  Sharp prime-tail calibration on $(N/2, N]$ and exact evaluation of the literal Möbius combined
+  prefix defect `moebiusCombinedPrefixDefect`.
+- [`DilatedCellScalingAndSecondOctaveFermiJumpBridge.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/DilatedCellScalingAndSecondOctaveFermiJumpBridge.lean) —
+  **Pillar IX:** Dilated cell-matrix scaling `fermiCellMatrix (k * d) n = fermiCellMatrix d (n / k)`,
+  universal cell evaluation of `dilatedMobiusFermiCombinator k N`, two-octave threshold + discrepancy
+  decomposition of `dyadicResolventCellThreshold k N`, the Four-Way $2$-Adic Jump Table in the second
+  trans-horizon octave ($v_2(m) = 0, 1, 2, \ge 3$), and the unified two-octave cumulative formula
+  `fermiCellResponse_moebiusReal_first_and_second_octave`.
+- [`PowerDampedPronicMultiplicativityAndRoutePMBridge.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/PowerDampedPronicMultiplicativityAndRoutePMBridge.lean) —
+  **Pillar X:** Identification of `pmPowerDampedDivisorCoeff ε` with `sieveSeq N (pmPowerDampedRealWeight ε)`,
+  scale-invariant unit response `sieveSeq N (pmPowerDampedRealWeight ε) p = 1` on first-octave primes,
+  cellular evaluation of `pmPowerDampedFermiSource ε`, the Pronic Bézout Multiplicativity Law
+  `pmPowerDampedDivisorCoeff ε k * pmPowerDampedDivisorCoeff ε (k + 1) = pmPowerDampedDivisorCoeff ε (pronicSeq k)`,
+  Wall 11 separation between $4 = 2^2$ and $6 = 2 \cdot 3$, and Pronic Abel Summation for
+  `pmPowerDampedDivisorDiscreteEnergy ε T` (`riemannHypothesis_of_pmPowerDamped_pronic_abel_budget`).
+- [`EndpointHaarCellDecompositionAndWitnessPronicTransfer.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/EndpointHaarCellDecompositionAndWitnessPronicTransfer.lean) —
+  **Pillar XI:** Cellular evaluation and pronic cell energy of `pmPowerDampedEndpointHaarPrefix` and
+  `pmPowerDampedRepairedHaarPrefix`, global pointwise recursion
+  `dyadicResolventCellThreshold k N t = dilatedMobiusFermiCombinator k N t + 2 * dyadicResolventCellThreshold (2 * k) N t`,
+  global decomposition `singleCellFermiCombinator 1 N t = dilatedMobiusFermiCombinator 1 N t + dyadicResolventCellThreshold 2 N t`,
+  and exact first-tail-cell Möbius evaluation `singleCellFermiCombinator 1 (2 * M) t = -μ(2M + 1)` on
+  $I_{2M+1} = (1 / (2M + 2), 1 / (2M + 1)]$.
+- [`SawtoothBezoutSuccessorGradientAndRouteFZZPBridge.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/SawtoothBezoutSuccessorGradientAndRouteFZZPBridge.lean) —
+  **Pillar XII:** Exact additive successor step law `centeredDiscreteSawtooth d (k + 1) - centeredDiscreteSawtooth d k = 1 / d - 1_{d ∣ (k + 1)}`,
+  the BVI sieve gradient law `weightedCenteredSawtoothSum N c (k + 1) - weightedCenteredSawtoothSum N c k = sieveSeq N c (k + 1) - selbergMultiplesCoord N c 1`,
+  exact Dirichlet energy identity on $\ker P$, Bézout successor phase-locking and two-step sign-flip
+  orthogonality (`centeredDiscreteSawtooth_bezoutSuccessorPair_extremal`), identification and pronic
+  Abel variance decomposition of `pmPowerDampedRamanujanCenteredSawtoothPrefix`, and the master
+  Route PM + Route FZZ-P + Route PW-B synthesis (`bezoutValuationIncidence_routePM_and_routeFZZP_master_synthesis`).

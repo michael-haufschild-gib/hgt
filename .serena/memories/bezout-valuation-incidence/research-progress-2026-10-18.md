@@ -1,33 +1,22 @@
-# Bézout–Valuation Incidence Mechanics — current progress
+# Root research progress
 
-Authoritative verified total: **5 / 250** significant connected contributions. Goal remains active. Previous goal turn is **progress**: contribution 005 completed, formally verified, registered, and cleaned up. Do not mark the 250-contribution goal complete at this milestone.
+Verified count: **9 / 250**. Goal ACTIVE. Latest goal turn: PROGRESS, contribution009 completed. Objective file must be reread before each goal turn: `/Users/michael/.codex/attachments/7ebfb601-33c7-4a8f-af50-496fa3dde762/pasted-text-1.txt`. Read entire field README each new turn; README is read-only. Mission: develop unconditional mathematics linking prime valuations with integer succession. Local Lean corpus only; no hgtl7, RH focus, external papers/web, or numerical experiments.
 
-Objective file: `/Users/michael/.codex/attachments/7ebfb601-33c7-4a8f-af50-496fa3dde762/pasted-text-1.txt`. Read it before continuing the goal. User constraints: one significant connected contribution per goal turn; no hgtl7; no RH focus; no numerical computations or experiments; corpus search mandatory before new topics/new Lean; no external-paper search under the source policy; unconditional main statements for all natural levels and real weights; no commits/push. Field README is read-only. All relevant Lean belongs under formal/GaloisForLFunctions/BezoutValuationIncidence/. Maintain pipeline cards and the crisp own ledger.
+Authoritative crisp-fact ledger: `logs/bvi-root-2026-10-18-knowledge.md`. One significant connected contribution per goal turn. Do not count generic inequalities, renamed inverses, or direct corollaries separately.
 
-## Completed contributions
+Verified connected packages:
+1. Successor spectral rigidity and parity stability.
+2. Exact successor moment region and universal inequalities.
+3. Divisor-six stability and sharp quarter-decorrelation.
+4. Exact finite-prefix discrepancy duality and return times.
+5. Sharp initial-prefix observability and exact Gram determinants.
+6. Integral prefix lattice and prime-power obstructions (canonical Smith chain is an uncounted refinement).
+7. Common-return two-moment kernels and sharp zero blocks. Arbitrary-phase matching upper bound remains OPEN on backlog card; if closed, belongs to007, not a second count.
+8. Gcd orbit projection and exact translation periods: normalized gcd pushforward, exact spectral mask, actual orbit average, least period, composition, Pythagoras and unique best approximation.
+9. Exact primitive-energy frontier: for N≥6, minimum 12E=max(5V+2C,6V+4C,6V+12C), exact equality supports {2,3},{3,4},{4,6}, all admissible boundary realizations, complete universal three-form inequality cone, and prime escape from uniform upper cost. Do not separately count the existing discrete Gram, Franel diagonal, or coordinate inverse reused here. Full primal realizability above this lower frontier is not proved.
 
-1. SuccessorEnergyRigidityAndParityStability: exact variance/covariance decomposition, sharp bounds, kernel/parity rigidity and stability. 11 public theorems; one count.
-2. ExactSuccessorMomentRegionAndUniversalInequalities: exact attainable moment cone and all universal centered linear inequalities. 8 public theorems; one count. Existing finite inverse is prior work.
-3. SixModeStabilityAndSharpQuarterDecorrelation: stable six-mode extraction, exact defect kernel, sharp residual quarter bound and sharp constants. 19 public theorems; one count.
-4. ExactFinitePrefixDiscrepancyDualityAndReturnTimes: exact finite-prefix Ramanujan coordinates; sharp L²≤V*A; canonical extremizer; exact universal constant and common-divisibility return-time classification. 12 public theorems; one count. See `mem:bezout-valuation-incidence/exact-prefix-duality-2026-10-18`.
-5. SharpInitialPrefixObservabilityAndExactGramDeterminants: exact initial-prefix kernel, arbitrary-data reconstruction, sharp N−1 horizon, actual observation/Ramanujan/Gram matrix determinants, positive definite Gram geometry. 21 public theorems, 8 definitions, 11 private helpers; 40 declarations. See `mem:bezout-valuation-incidence/sharp-prefix-observability-2026-10-18`.
+Latest sources: `DiscretePrimitiveEnergyAndJordanComparison.lean` and `SharpPrimitiveEnergySuccessorFrontier.lean` under field directory. Card: `docs/drafts/pipeline/3-formalized/bvi-discrete-green-energy-and-jordan-spectrum-2026-10-18.md`. Detailed memory: `bezout-valuation-incidence/primitive-energy-frontier-2026-10-18`.
 
-All five are at pipeline stage 3. The ledger is `logs/bvi-root-2026-10-18-knowledge.md`; it records exact files, proofs, limitations, and audits. Latest card: `docs/drafts/pipeline/3-formalized/bvi-sharp-initial-prefix-observability-2026-10-18.md`.
+009 audit: both exact original-source Lean checks clean; all22 public declarations (17theorems,5defs) have exactly standard three axioms; all34 named declarations indexed, all22 public cache/API records matched. Both modules wired once; all21 field leaves wired at audit. Artifacts atomically installed. All22 /tmp/bvi9-* paths removed, all owned jobs terminal, README/source/artifact/axiom-log hashes preserved. Final lint exit1 only six unrelated umbrella omissions (RHTower GammaThetaFullSupportCreation, GammaThetaFullSupportSource, GammaThetaSupportWeightBounds; BiScaleUncertainty FactorialMuntzTailMass, FactorialMuntzTailPhaseCells, SquarefreeGaussianCompletion);381 unrelated large-file warnings, no owned or proof-debt finding.
 
-## Latest verification
-
-Contribution 005 named original-source check passed without warnings. All 21 public theorem axiom closures are exactly propext, Classical.choice, Quot.sound. All 40 declaration names/kinds/lines/modules/paths matched the index; all 11 field modules are wired. Artifact hash/freshness checks passed. Guarded cleanup removed all 34 owned /tmp/bvi5-* paths; no owned process remains.
-
-Global lint exited 1 only on five unrelated umbrella omissions: RHTower.SuzukiCriticalBetaKernel; BiScaleUncertainty.ClampedRampLatticeSum, FactorialMuntzBoundaryPole, FactorialMuntzBoundaryRepair, StationaryResolventMarkovPositivityAndNodalDefectProducer. No field or proof-debt findings. This is not a repository-wide passing gate; leave other agents' files/processes alone.
-
-## Next frontier — uncounted
-
-`docs/drafts/pipeline/0-backlog/bvi-integral-prefix-lattice-and-prime-rank-defect-2026-10-18.md`: prove actual integer Ramanujan prefix matrix integrally equivalent to diag(1,…,n), then audit exact cokernel and prime-rank consequences and the proposed canonical Smith chain. The card contains searches, explicit candidate factors, and existing generic dependencies. Complete paper, novelty, and toolchain audits before new Lean. None of these future statements is counted.
-
-Do not count reused complete-period covariance, the M=1 Cauchy bound, finite Möbius inversion, endpoint correction, or generic Smith/cokernel theory. Exact determinants give rank and volume; they do not imply uniform conditioning, signed cancellation, or square-root bounds.
-
-## Operational lessons
-
-Use one owned foreground Lean process at a time. Do not start dev server, full builds, or umbrella builds. Use /tmp API/proof/axiom scratch checks; never add #print axioms to the tree. Final source check uses lake --old env lean -j 1. A concurrent external build can delete shared inherited .oleans. Appending LEAN_PATH fallback fails because Lean picks the first package root. When necessary, APFS-clone compiled imports, fill missing dependencies from actual build, use a temporary Lake root with package/vendor/source symlinks, and check the original source with --root=/Users/michael/Documents/code/hgt/formal. Verify/atomically install the new artifact, then remove only owned temporary paths after all owned processes terminate. The last snapshot included 9,355 inherited project modules; each import-heavy check took roughly 9–11 minutes under shared build pressure.
-
-update_plan and multi_tool_use.parallel were unavailable. Durable plans live on cards; independent reads use Promise.allSettled. No subagents were spawned. Do not infer authorization to spawn them.
+Next turn: reread objective and full README, initialize relevant memories/docs, state mission, research through documented CLI before new topic/Lean. Write durable pipeline card before hard work. Use update_plan if available (unavailable009). No subagents unless explicitly authorized. Main theorems unconditional over displayed parameters; helper hypotheses must be discharged. Installed mathlib APIs must be probed in /tmp. One owned foreground Lean process at a time; require terminal exit_code before launching another. No full or umbrella build. Print axioms only in /tmp, audit all public closures, wire finished leaves, regenerate exhaustive indexes, lint, record foreign findings, install verified artifacts atomically, clean owned temporary paths. No commits/push. Preserve concurrent foreign changes. Serena symbol tools reject field paths as ignored; use patch fallback without changing ignores. Long Python jobs use scripts/run_guarded.py with finite timeout. Goal remains active until250 verified contributions.

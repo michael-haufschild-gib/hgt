@@ -1,9 +1,10 @@
 # Canonical boundary repair of the actual factorial Müntz completion
 
-- **Stage:** dependency-closed paper proof; Lean verification in progress.
+- **Stage:** 3-formalized; all three new leaves and the complete axiom audit passed.
 - **Date:** 2026-10-18.
 - **Route:** BiScaleUncertainty WL/RW.
 - **Parent:** [actual factorial ramp diagonal margin](../1-in-progress/factorial-ramp-diagonal-margin-2026-10-18.md).
+- **Closed shortcut:** [uncorrected null completion](../5-failed/factorial-muntz-boundary-pole-2026-10-18.md).
 - **Positive survivor:** exact negative-end coefficient, uniqueness of the exponential correction restoring polar integrability, and its exact nonzero zeta-zero readout.
 - **Scope:** the literal existing factorial Müntz seed and completion. No substitute source, assumed Weil lower bound, external novelty claim, or numerical experiment.
 
@@ -90,11 +91,15 @@ For `Re(s)>0`, the existing completion readout is integrable and equals `mellin(
 
 ## Lean and verification status
 
-The implementation comprises `ClampedRampLatticeSum.lean`, `FactorialMuntzBoundaryPole.lean`, and `FactorialMuntzBoundaryRepair.lean` in `formal/GaloisForLFunctions/BiScaleUncertainty/`. All three leaves passed, together with both necessary tail/readout dependency checks. All three new modules are wired into the area umbrella. The implementation contains 18 public theorems and five public definitions. The full 24-declaration axiom audit is running; it enumerates every new public declaration and the repaired existing theorem, not a sample.
+The implementation comprises `ClampedRampLatticeSum.lean`, `FactorialMuntzBoundaryPole.lean`, and `FactorialMuntzBoundaryRepair.lean` in `formal/GaloisForLFunctions/BiScaleUncertainty/`. All three leaves passed direct `lake --old env lean -j 1` checks, together with both necessary tail/readout dependency checks. All three new modules are wired into the area umbrella exactly once. The implementation contains 18 public theorems and five public definitions. All 24 axiom audits passed: every new public declaration plus the repaired existing theorem. Only `propext`, `Classical.choice`, and `Quot.sound` occur.
 
-The first repair check found an unavailable bundled ramp name and several elaboration mismatches. The revised proof uses the existing underlying ramp and its continuity/compact-support properties directly. It explicitly types the real indicator before casting to complex values, exposes pointwise function subtraction, uses the constant-integrability equivalence as a term, and fixes the integrable-indicator and real-projection applications. A mathlib-only probe of the analytic fixes passed, followed by the full repair leaf. No mathematical statement changed. Only tactic-style warnings remain in the passed new-leaf logs.
+The proof uses the literal ramp and its continuity/compact-support properties directly, with explicitly real indicators before complex coercion. Four scratch API/analytic probes passed. Only tactic-style warnings remain in the passed new-leaf logs.
 
-Existing Müntz seed/completion/tail sources remain unchanged; the tail dependency passed. The readout dependency check exposed one rewrite failure in `factorialRamp_zeta_readout`: its integrability facts used the expanded exponential while the goal used the private `readoutKernel` definition. Two explicit type annotations align those facts with the goal; no statement or other proof changed. The narrow dependency repair passed and is included in the final axiom audit, giving 24 audited declarations: 23 new declarations plus this repaired existing theorem. Required dependency objects are pinned in an owned temporary cache to avoid the concurrent global rebuild. The manifest records fallback provenance and older transitive objects; this is not a fresh whole-tree build.
+Existing Müntz seed/completion/tail sources are unchanged. Two explicit type annotations in `factorialRamp_zeta_readout` align its integrability facts with the private `readoutKernel` used by the integral rewrite. An exact before/after comparison confirms that no statement or other proof changed. This necessary dependency repair passed its direct check and axiom audit.
+
+`scripts/formal_tools.py index` passed. `lint --check-generated` returned 1 for two unrelated umbrella registrations: `BiScaleUncertainty.StationaryResolventMarkovPositivityAndNodalDefectProducer` and `BezoutValuationIncidence.PrimeTailCalibrationAndMobiusDefect`. None of its errors concerns this work. The 381 large-file warnings are recorded in the full log.
+
+`/tmp/bsu-muntz-boundary-verification.json` records source hashes, fresh owned object timestamps, every audited declaration, exact dependency-fix scope, import counts, and gate outcomes. The audit log is `/tmp/bsu-muntz-boundary-axioms.log`; gate logs are `/tmp/bsu-muntz-index.log` and `/tmp/bsu-muntz-lint.log`. Dependency checks used 8,670 pinned existing objects, including six fallback objects and 133 pre-existing objects older than their source timestamps. No dependency source changed during verification. This is not a fresh whole-tree build. The owned cache was removed; saved setup maps refer to that removed cache and must not be reused as live checks.
 
 ## Remaining boundary
 

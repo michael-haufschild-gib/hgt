@@ -1,0 +1,15 @@
+# JAS square-shell finite power window — certified component
+
+RH remains OPEN. Do not mark the active RH goal complete for this component.
+
+Capstone: `RHTower.riemannHypothesis_iff_squareShellRiesz_finitePowerWindow` in `formal/GaloisForLFunctions/RHTower/JointAncestrySquareShellFinitePowerCriterion.lean` proves RH iff for every ε>0, infinitely many naturals m have ‖jasShellRieszSum (m²) k‖≤m^(εk) for every natural k with m<k≤m+m/log(m+1). `exists_eventually_large_squareShellRiesz_of_not_riemannHypothesis` gives a violating power on every sufficiently large square shell under ¬RH.
+
+Mechanism: actual square-shell half-mass ≤m; matched damping ‖jasShellDampedSum(m²,s)‖≤m‖1/(s(1-s))‖ on 0<Re s<1; ℓ¹ weight mass bounds loud rank n by mW/L. Existing unconditional endpoint source height gap supplies Re(w)≥‖w‖/2 for all Xi copies. Weighted Turán with Z=2L and M=m gives finite head; quiet infinite tail ≤W L^k directly. The growing rank cost 2 e n [6(n+1)(m+2n+2)]^n is absorbed uniformly for L=m^δ, δ>0, and n≤m/log(m+1). No maximal zero, ZAL/quasi-RH, or independent tail hypothesis.
+
+Files: HTGeometry/WeightedPowerWindowCompression.lean; HTGeometry/WeightedPowerWindowAsymptotics.lean; BiScaleUncertainty/PrimeShellMellinMassBudget.lean; RHTower/JointAncestrySquareShellFinitePowerCriterion.lean. All four canonical lake --old env lean checks exit 0 with empty logs; all four wired. All 17 public declarations audited with only [propext, Classical.choice, Quot.sound]; five principal theorem types inspected. No full builds, heartbeat changes, commit/push.
+
+Card: docs/drafts/pipeline/3-formalized/jas-square-shell-finite-power-window-2026-10-18.md. Audit manifest: /tmp/hgt-jas-window-audit-manifest.json; axiom script/log /tmp/hgt-jas-window-axioms.{lean,log}. Source/olean/ilean fingerprints retained. Index exit0; diff-check exit0. Global lint exit1 only for other untracked unwired leaves BiScaleUncertainty/EulerPoissonChiralDriftAndPrimeShiftRigidity and BezoutValuationIncidence/GcdOrbitProjectionAndExactTranslationPeriods, plus existing large-file warnings. None of this component is reported. Do not edit/wire those other workers' leaves based on this record.
+
+Limits: actual arithmetic subpower upper bound remains OPEN. This is quantitative source-criterion compression, not an RH proof or positivity producer. External novelty audit excluded by user instruction, no literature novelty claim. Exact-mechanism deep corpus follow-up was partial (90-second Qdrant timeout; 73980/73980 inventory); all 20 candidate lemmas and 20 source arguments inspected. Cached lexical weightedPowerSum returned the three pre-existing weighted Turán theorems, all inspected; adjacent positive exponential-sum bounds require their own positivity premise.
+
+Rotation: user insists on breadth across 27 live routes and 18 candidates. Own recent sequence RW → TH → MSC → RB → SZ → BVI → HCF audit → JAS. Rotate to another family/candidate before further JAS extensions; prefer a genuine arithmetic producer. HCF audit remains on hold with no new theorem, not retired. See mem:research/route-rotation-bvi-2026-10-18.

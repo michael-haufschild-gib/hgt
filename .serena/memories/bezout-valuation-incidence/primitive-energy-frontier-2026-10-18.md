@@ -1,0 +1,17 @@
+# Exact primitive-energy frontier (contribution 009)
+
+Verified one connected contribution; root ledger count 9 / 250. Sources in `formal/GaloisForLFunctions/BezoutValuationIncidence/`: `DiscretePrimitiveEnergyAndJordanComparison.lean` (291 lines) and `SharpPrimitiveEnergySuccessorFrontier.lean` (435 lines). Card: `docs/drafts/pipeline/3-formalized/bvi-discrete-green-energy-and-jordan-spectrum-2026-10-18.md`. Ledger: `logs/bvi-root-2026-10-18-knowledge.md`.
+
+Let Y be Selberg multiples coordinates, H=Y1, V=sieveVariance, C=sieveSuccessorCovariance=B-H². U=weightedCenteredSawtoothSum is factorial-periodic, zero-mean, and the unique zero-mean additive primitive of S-H. Define actual integer-cycle energy E=sievePrimitiveEnergy. The bridge is 12E=Q_Franel-H²=Σ[q≥2]J₂(q)Yq². Full discrete covariance was ALREADY in RHTower/EulerDeletionMobiusPeriodCovariance; continuous Franel/Jordan and finite inverse also existed. These are reused, not independent contributions.
+
+New arithmetic facets: J₂≥5φ+2μ (equality exactly q=2,3), J₂≥6φ+4μ (q=3,4), J₂≥6φ+12μ (q=4,6). Proof uses multiplicative gcdPowKernel 2, J₂(n)≥nφ(n), totient≤2 classification/evenness, and exhaustive symbolic cases 2–9.
+
+Every level satisfies 12E≥max(5V+2C,6V+4C,6V+12C), with complete equality supports. At every N≥6, every prescribed mean H and admissible pair V≥0,-V≤C,2C≤V attains this minimum. Explicit inverse profile uses coordinates 1,2,3,4,6. Public capstone `exists_sievePrimitiveEnergy_minimizer_iff`.
+
+Complete dual classification `universal_primitive_energy_inequality_iff`: ∀N c, αV+βC+γE≥0 iff γ≥0,4α−4β+γ≥0,6α−3β+2γ≥0,2α+γ≥0,2α+β+2γ≥0. Pure prime modes give H0,V=p−1,C=−1,E=(p²−1)/12, proving no level-uniform E≤KV. Positive survivor is exact lower frontier/extremizers/realization/dual cone. No assertion of arbitrary energies above frontier (covariance endpoints have rigidity), no prefix cancellation claim.
+
+Both exact original-source `lake --old env lean -j 1 --root=... -o <isolated cache> <source>` checks passed without diagnostics. All 22 public closures (17 theorems,5 defs) audited in /tmp: exactly propext,Classical.choice,Quot.sound. Raw audit `logs/bvi-root-2026-10-18-primitive-energy-axioms.txt`. All 34 named declarations match lexical index; 22 public match cache/API. Both leaves wired once; all 21 field leaves wired at audit. Artifacts atomically installed, hashes on card. README hash preserved. All 22 owned /tmp/bvi9-* paths removed, all jobs terminal.
+
+Final lint exit1 only six foreign umbrella omissions: RHTower GammaThetaFullSupportCreation,GammaThetaFullSupportSource,GammaThetaSupportWeightBounds; BiScaleUncertainty FactorialMuntzTailMass,FactorialMuntzTailPhaseCells,SquarefreeGaussianCompletion. All 381 warnings are unrelated large files. No owned/proof-debt finding. Counts are a snapshot; rerun gates next contribution.
+
+Operational lesson: require terminal exit_code before starting the next owned Lean process. One overlapping launch was caught, stopped by owned PID (exit143); final checks were clean and sequential. No full/umbrella builds, heartbeat hacks, external research, numerical experiments, commits or README edits. Do not count this package's generic diagonal consequences separately.

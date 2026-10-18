@@ -1,25 +1,25 @@
-# Actual factorial Müntz completion: boundary pole and repair
+# Naïve factorial Müntz null completion: polar obstruction
 
-- **Stage:** 1-in-progress.
+- **Stage:** 5-failed: only the naïve null-completion shortcut is retired; its positive survivor is formalized.
 - **Mission:** unconditional RH in Lean through the actual WL/RW source framework.
-- **Parent:** [actual ramp diagonal margin](factorial-ramp-diagonal-margin-2026-10-18.md).
+- **Parent:** [actual ramp diagonal margin](../1-in-progress/factorial-ramp-diagonal-margin-2026-10-18.md).
 - **Previous turn:** progress: exact actual polar-loss coefficient `1/4` and Gram-error separation were formalized in four leaves; all 27 public declarations passed standard-axiom audits. The coupled diagonal margin remains open.
-- **Scope:** audit the actual completion's polar endpoint; prove its exact boundary behavior and, if obstructed, construct and prove the canonical nontrivial repair. Existing Müntz completion/tail sources remain read-only. The readout dependency required a narrow proof-only repair after its direct check failed; the exact exception is recorded below.
+- **Scope:** exact polar obstruction for the literal completion and its unique exponential repair. Existing Müntz seed/completion/tail sources are unchanged. The readout dependency required a narrow proof-only repair, recorded below. WL/RW and the parent diagonal-margin problem are not retired.
 
-## Plan
+## Completed work
 
 1. Read actual source definitions and search the whole corpus for summation, boundary and full-Weil mechanisms.
 2. Prove an exact clamped-ramp summation formula with a bounded fractional-part remainder; derive the actual completion's boundary coefficient.
-3. Test polar integrability. If the null-completion shortcut fails, prove the positive survivor: an explicit repaired source with genuine weighted integrability and an exact residual readout.
+3. Classify polar integrability and prove the positive survivor: an explicit repaired source with genuine weighted integrability and an exact residual readout.
 4. Formalize dependency-closed paper statements, audit every public declaration, wire finished leaves, run index/lint and remove owned temporary caches.
 
-## Current evidence and conjectures
+## Verified obstruction and positive survivor
 
 The current source proves `factorialMuntzCompletion n x = exp(x/2) * factorialMuntzSum n (exp x) / sqrt(N)`, `N=n+1`. The completion agrees exactly with the ramp for `x>=0`; its negative tail has squared mass at most `100/N`. Its Mellin readout vanishes at every zeta zero with positive real part. These statements alone do not establish a full-Weil null-source identity.
 
 The concrete seed is the `(1,-4,4)` combination of positive clamped ramps at scales `4N,2N,N`. Its integral is zero, but its value immediately to the right of zero is one.
 
-Candidate finite summation mechanism: for `R(y)=sum_{k>=1} max(y-k,0)` and `y>=0`, put `r=y-floor(y)`. Then
+Exact finite summation mechanism: for `R(y)=sum_{k>=1} max(y-k,0)` and `y>=0`, put `r=y-floor(y)`. Then
 
 `R(y)=(y^2-y)/2 + r*(1-r)/2`, with `0<=r*(1-r)/2<=1/8`.
 
@@ -27,13 +27,13 @@ For `a,epsilon,t>0`, the infinite clamped-ramp sum is
 
 `S(a,epsilon,t)=t/(a*epsilon) * [R(a*(1+epsilon)/t)-R(a/t)]`.
 
-Consequently its deviation from `a*(1+epsilon/2)/t-1/2` is at most `t/(8*a*epsilon)`. The actual dyadic combination cancels the entire `1/t` term and retains the constant `-1/2`; the resulting proposed bound is
+Consequently its deviation from `a*(1+epsilon/2)/t-1/2` is at most `t/(8*a*epsilon)`. The actual dyadic combination cancels the entire `1/t` term and retains the constant `-1/2`; the proved bound is
 
 `|factorialMuntzSum n t + 1/2| <= 25*t/(32*N*sourceFactorialCollar N)`.
 
-This would imply `exp(-x/2)*factorialMuntzCompletion n x -> -1/(2*sqrt(N))` as `x->-infinity`, so the uncorrected negative pole moment cannot be absolutely integrable. The candidate correction is `1_{x<=0}*exp(x/2)/(2*sqrt(N))`. The proposed error bound makes the corrected negative weighted tail integrable, with an explicit exponential envelope.
+Therefore `exp(-x/2)*factorialMuntzCompletion n x -> -1/(2*sqrt(N))` as `x->-infinity`, and the uncorrected negative pole moment is not integrable. The unique correction within the exponential coefficient family is `1_{x<=0}*exp(x/2)/(2*sqrt(N))`. The proved error bound makes the corrected negative weighted tail integrable, with an explicit exponential envelope. Both weighted moments exist for this correction, and its readout at every right-half-plane zeta zero is exactly the nonzero value `1/(2*sqrt(N)*rho)`.
 
-The dependency-closed paper proof follows. Lean verification remains pending. No full-Weil sign or RH claim follows from this boundary audit.
+The dependency-closed paper proof below is formalized in Lean. All 24 audited declarations use only `propext`, `Classical.choice`, and `Quot.sound`. No full-Weil sign or RH claim follows from this boundary audit.
 
 ## Dependency-closed paper proof
 
@@ -73,17 +73,17 @@ For every complex `s` with `Re(s)>0`, both the existing completion readout and c
 
 Therefore the exact corrected readout is the existing completion Mellin readout plus `c/s`. At every right-half-plane zeta zero `rho`, it equals `c/rho`. The unique coefficient admitting the negative polar moment is `c_N>0`, so its residual `c_N/rho` is nonzero. This is the positive survivor: a unique explicit polar correction, genuine weighted integrability, and an exact universal residual readout. Full-Weil regularity and the coupled diagonal estimate remain separate open obligations.
 
-## Lean implementation scope
+## Lean verification and no-go closure
 
-Planned new leaves: `ClampedRampLatticeSum.lean`, `FactorialMuntzBoundaryPole.lean`, and `FactorialMuntzBoundaryRepair.lean` under `formal/GaloisForLFunctions/BiScaleUncertainty/`. Existing completion/tail/readout and unrelated research files remain unchanged. The area umbrella and this task's pipeline cards may be updated after verification.
+The [positive-survivor card](../3-formalized/factorial-muntz-boundary-repair-2026-10-18.md) contains the exact theorem family and a self-contained paper proof. Its three leaves, `ClampedRampLatticeSum.lean`, `FactorialMuntzBoundaryPole.lean`, and `FactorialMuntzBoundaryRepair.lean`, passed direct checks with `lake --old env lean -j 1` and are wired into the area umbrella. They contain 18 new public theorems and five definitions. The complete axiom audit passed for all 23 new declarations plus the repaired existing theorem, using only the three standard axioms above.
 
-All three new leaves are written. `ClampedRampLatticeSum.lean` and `FactorialMuntzBoundaryPole.lean` passed their direct checks. The boundary log has only one tactic-style warning. Three scratch API probes passed. A normal-cache boundary check was blocked by a missing transitive object being rebuilt by another session. An owned snapshot at `/tmp/bsu-muntz-boundary-cache` pins existing dependencies; its manifest records six fallback objects and pre-existing objects older than their source timestamps. The generated axiom audit covers all 23 new public declarations (18 theorems, five definitions) plus the existing dependency theorem repaired below; repair and audit passes remain pending. Logs and setup maps use the `/tmp/bsu-muntz-` and `/tmp/bsu-FactorialMuntz` prefixes. Other sessions' builds remain untouched; the sole existing-source edit is the necessary two-annotation readout repair below.
+The necessary tail dependency passed unchanged. The readout dependency passed after two type annotations in `factorialRamp_zeta_readout` aligned its integrability facts with the private kernel used by `integral_sub`. An exact before/after comparison confirms no statement or other proof changed. Four scratch API/analytic probes passed. The new-leaf logs retain only tactic-style warnings.
 
-The [positive-survivor card](../2-fully-proven/factorial-muntz-boundary-repair-2026-10-18.md) now carries a self-contained paper proof and explicit verification status. It stays at paper-proven stage until the repair and complete axiom audit pass.
+`scripts/formal_tools.py index` passed. `lint --check-generated` returned 1 because two unrelated modules are unreachable from their umbrellas: `BiScaleUncertainty.StationaryResolventMarkovPositivityAndNodalDefectProducer` and `BezoutValuationIncidence.PrimeTailCalibrationAndMobiusDefect`. No error concerns these changes. The log also contains 381 large-file warnings. No unrelated module was edited to silence this gate.
 
-The unchanged tail dependency passed with no diagnostics. The readout dependency failed at `factorialRamp_zeta_readout` because `integral_sub` received integrability facts with an expanded kernel while the goal used the private kernel definition. Its source hash was unchanged since the precheck, and no other Lean process was checking that file. Two type annotations on those facts fix the mismatch; the before/after diff contains no statement or other proof change. `/tmp/bsu-check-muntz-readout-repair.zsh` rechecks this dependency and then the new repair leaf. The final audit now includes this repaired existing theorem, for 24 declarations total (23 new plus one repaired).
+Verification record: `/tmp/bsu-muntz-boundary-verification.json`; audit log: `/tmp/bsu-muntz-boundary-axioms.log`; gate logs: `/tmp/bsu-muntz-index.log` and `/tmp/bsu-muntz-lint.log`. Checks used a pinned snapshot of 8,670 existing dependency objects, including six fallback objects and 133 pre-existing objects older than their source timestamps. No dependency source changed during verification. This is not a fresh whole-tree build. All owned source hashes and object freshness checks passed; all three import counts equal one. The owned snapshot was removed after verification. Its saved setup maps are archival and must not be reused without rebuilding the cache.
 
-The second clamp check exposed an explicit natural-order conversion (`k<m` to `k+1<=m`), now discharged by `omega` before casting. `FactorialMuntzBoundaryRepair.lean` is also written, with the exact coefficient classification and rational readout. Its extra API probes are prepared in `/tmp/bsu-muntz-repair-api.lean` but not yet run. The normal-cache object for the existing `FactorialMuntzReadout.lean` dependency is absent; necessary dependency checks will be sequential and will not edit the concurrent source files.
+The negative conclusion is closed together with its nontrivial positive survivor: exact boundary coefficient, unique polar-integrable exponential correction, and exact nonzero rational zero readout. Full-Weil admissibility, passage back to the compact ramp, the coupled diagonal margin, and RH remain open.
 
 ## Corpus status
 
