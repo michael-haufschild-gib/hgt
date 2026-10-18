@@ -141,7 +141,7 @@ Relevant starting points:
 
 **Exact arithmetic compression.** Use identities to expose structure before estimating. For example, \(\sum_{d\mid k}\Lambda(d)=\log k\) can collapse a finite weighted prime rectangle to a logarithmic sum when its support conditions hold. The result removes a distribution-of-primes question from that particular calculation; it does not remove the remaining sign question.
 
-**Independent control of mixed terms.** Decompose the actual source into tractable pieces, preserve every correction, and bound interactions using a separately positive comparison form. The first pilot asks for a quantitative sampling budget for an actual correction tail. The comparison inequality above already exists; the new content would be the source estimate.
+**Independent control of mixed terms.** Decompose the actual source into tractable pieces, preserve every correction, and bound interactions using a separately positive comparison form. The factorial pilot supplies a paper proof of the required correction-tail sampling budget. Its mechanism combines the exact arithmetic phase with logarithmic translation energy; the complete Lean certificate and compact-ramp application remain obligations.
 
 **Exact elimination with controlled residuals.** In a positive invertible block, Schur elimination replaces the remaining energy by \(C-B^*A^{-1}B\). Arithmetic must bound the coupling cost, not merely the two diagonal blocks. Singular blocks and unbounded forms require their own hypotheses. Repeated elimination needs control of accumulated losses and limits.
 
@@ -167,15 +167,17 @@ See [STATUS.md](../STATUS.md), [compact orbit inertia](../../../formal/GaloisFor
 
 ## First concrete milestone
 
-The [foundational programme](research-foundational.md#first-pilot-the-actual-factorial-correction-tail) proposes a local sampling estimate for the actual factorial correction tail \(U_{n,k}\), with \(N=n+1\):
+For the actual raw factorial correction tail \(T_n\) and its normalized smoothing \(U_{n,k}\), with \(N=n+1\), the [sampling paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) establishes:
 
 \[
-\mathcal Z(U_{n,k})\le C_U\frac{\log N}{N}
+\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C\frac{1+\log N}{N}
 \]
 
-in a precisely quantified eventual smoothing regime. **This estimate is an open proposal, not a proved statement.** Combined with existing tail positivity and a smaller corrected-source budget, it would control the mixed term at a lower order than the positive tail diagonal. A separate continuity argument would then transfer the result to the compact ramp.
+for every \(n,k\). **This is a paper theorem awaiting its complete Lean certificate.** The exact phase is bounded and Lipschitz; its weighted squared translation increments satisfy \(D(h)\le C\min\{N^{-1},h\}\). Integration against \(dh/h\), followed by Fourier and holomorphic sampling arguments, supplies the logarithmic budget. Existing tail positivity shows that the logarithm is necessary in the eventual smoothing regime.
 
-The intended first deliverable is a dependency-closed theorem for this explicit family, or a sharp obstruction with a useful replacement statement. Neither outcome establishes all-source RW positivity. Generalization to all directions and all scales remains a separate, much harder task.
+The foundational Lean modules establish the [literal phase identity and bounds](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailPhase.lean), [uniform weighted square mass](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailWeightedMass.lean), [two-regime translation estimate](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailTranslation.lean), and [logarithmic translation budget](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailLogTranslation.lean). These source estimates are ingredients of the sampling theorem, not its complete formalization.
+
+The next deliverable is the formal certificate and the full compact-ramp energy limit specified in the [foundational programme](research-foundational.md#first-pilot-the-actual-factorial-correction-tail). The smaller corrected-source budget would then make the mixed term lower order than the positive tail diagonal. The analytic mechanism is classified as a **bridge**, with no claim of literature novelty. This family result does not establish all-source RW positivity. The [knowledge ledger](knowledge-ledger-primary.md) records its precise boundaries and rejected shortcuts.
 
 ## What success would look like
 

@@ -472,7 +472,7 @@ maintain working log for yourself. do not write lean code yet. understand why we
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. do not focus on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field and traps to consider: formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+do not use the hgtl7 skill. do not focus on the RH. this is open research into developing a new field of mathematics. read fully line by line and understand the motivation and context of that field and traps to consider: formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
 
 On every new turn:
 
@@ -498,13 +498,13 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/BezoutValuationIncidence
+8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/TransHorizonIncidenceMechanics
 
 Goal is met when you have made 250 signifcant contributions to the new field of mathematics.
 
 Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 
-formal/GaloisForLFunctions/BezoutValuationIncidence/README.md is read-only for you
+formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md is read-only for you
 
 use the search tool for our lean corpus, not just rg or grep.
 
@@ -537,11 +537,11 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Lean code relevant for the field itself goes into formal/GaloisForLFunctions/BiScaleUncertainty/ otherwise use RHTower or HTGeometry as usual
+8. Lean code relevant for the field itself goes into formal/GaloisForLFunctions/TransHorizonIncidenceMechanics otherwise use RHTower or HTGeometry as usual
 
 use the search tool for our lean corpus, not just rg or grep.
 
-formal/GaloisForLFunctions/BiScaleUncertainty/README.md and formal/GaloisForLFunctions/BezoutValuationIncidence/README.md and the wall-ledger are read-only for you.
+formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md are read-only for you.
 
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
 

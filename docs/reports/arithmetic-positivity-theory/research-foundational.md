@@ -152,20 +152,20 @@ C_H=\frac{e^2}{4}\sum_\rho\frac{m_\rho}{|\rho|^2}<\infty.
 
 **Status: derived consequence awaiting verification and packaging.** Check constants, multiplicity convention, and the precise evaluation map; do not count it as a newly compiled theorem.
 
-The proposed new target is:
+The required local target is:
 
-> **[OPEN CORE: LOCAL SAMPLING BUDGET]** Establish constants \(C_U>0\) and \(N_0\ge2\) such that, for every \(n\) with \(N=n+1\ge N_0\), there exists \(k_0(n)\) for which every \(k\ge k_0(n)\) satisfies
+> **[PAPER THEOREM; FORMAL CERTIFICATE REQUIRED]** There are constants \(C_U>0\) and \(N_0\ge2\) such that, for every \(n\) with \(N=n+1\ge N_0\), every smoothing index \(k\) satisfies
 > \[
 > \mathcal Z(U_{n,k})\le C_U\frac{\log N}{N}.
 > \]
 
-The constants are independent of \(n\) and \(k\). The smoothing threshold may depend on \(n\), matching the existing eventual tail bound. A bound uniform in every \(k\) would be stronger and useful, but is not required for the first application. A bound with an uncontrolled factor growing with \(k\) does not meet the target.
+The [dependency-closed paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) proves the stronger bound \(\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C(1+\log N)/N\) for every \(n,k\), where \(T_n=G_n-r_n\) is the literal raw tail. Constants are independent of both indices; no smoothing threshold is needed for this upper bound. The lower signed-energy bound retains its existing eventual smoothing quantifiers.
 
-This is a proposed estimate for a particular family, not a known consequence of RH equivalence and not a claim of a new theorem. Its truth, optimal scale, and literature status require investigation.
+The paper proof also establishes sharpness in that eventual regime: signed tail energy and absolute square sampling both have order \(\log N/N\). An \(O(1/N)\) spectral budget is false for this family. The result is classified as a **bridge**, not an established novel general theory. Its complete Lean certificate remains required.
 
-### Candidate proof mechanism for the sampling budget
+### Proof mechanism to formalize for the sampling budget
 
-First test whether standard complex analysis and fractional regularity already suffice. The potential new content is the sharp bound for the actual arithmetic tail.
+The paper argument uses classical complex analysis and logarithmic regularity. Its arithmetic input is the exact phase representation of the actual tail; the formalization must preserve that identity and every scale quantifier.
 
 1. **Sampling from unconditional zero counts.** Establish a sampling estimate of the form
    \[
@@ -173,16 +173,16 @@ First test whether standard complex analysis and fractional regularity already s
    \int_{-\delta}^{1+\delta}\int_{\mathbb R}
    \log(2+|t|)|F_f(\sigma+it)|^2\,dt\,d\sigma
    \]
-   for readouts holomorphic on a neighborhood of the larger strip and with the required finite integral. A candidate proof uses the mean-value inequality for \(|F_f|^2\), fixed-radius discs, and the unconditional \(O(\log(2+|t|))\) count of zeros in unit-height strips. Prove the overlap bound with multiplicities and handle bounded heights separately. This displayed sampling inequality is a proposed lemma, not a theorem established here.
-2. **Weighted source norms.** For the actual raw tail \(G_n-r_n\), control the profiles \(e^{(\sigma-1/2)x}(G_n-r_n)(x)\) uniformly over a fixed larger strip. Aim for squared \(L^2\) norm \(O(1/N)\) and a squared \(H^\alpha\) bound growing at most polynomially in \(N\), for some fixed \(0<\alpha<1/2\). Establish endpoint and tail behavior explicitly. These estimates are open subproblems, not properties inferred from the names of the sources.
-3. **Pay only a logarithm for zero density.** A frequency split, or logarithmic interpolation, can turn those two norm bounds into an \(O(\log N/N)\) logarithmically weighted Fourier integral. Write out the split and its constants. Mellin–Fourier normalization and uniformity in \(\sigma\) must be checked.
+   for readouts holomorphic on a neighborhood of the larger strip and with the required finite integral. The paper proof uses the mean-value inequality for \(|F_f|^2\), fixed-radius discs, and the unconditional \(O(\log(2+|t|))\) count of zeros in unit-height strips. Formalize the overlap bound with multiplicities and handle bounded heights separately. Existing public disk estimates assume an entire function, so their hypotheses must be localized before applying them to this half-plane readout.
+2. **Weighted source norms.** For \(\sigma\in[-1/4,5/4]\), the paper proof writes the weighted raw tail as \(a_ne^{(1+\sigma)x}R_n(Ne^{-x})\mathbf1_{x\le0}\), with \(a_n\le15/\sqrt N\), \(|R_n|\le25/32\), and Lipschitz constant at most \(14\). These give squared mass \(O(1/N)\) and translation energy \(D_{n,\sigma}(h)\le C\min\{N^{-1},h\}\) for \(0<h\le1\), including the endpoint jump.
+3. **Pay only a logarithm for zero density.** Integrate that minimum against \(dh/h\), splitting at \(h=1/N\). Plancherel and an elementary cosine integral comparison convert the resulting \(O((1+\log N)/N)\) bound into logarithmic Fourier energy. Formalize the integral exchanges, Mellin–Fourier normalization, and uniformity over the enlarged strip.
 4. **Pass through smoothing without losing uniformity.** Prove a uniform convolution or multiplier estimate on the same strip, or first bound the raw spectral sampling sum and then use the existing critical-strip mollifier bound. The chosen route must retain constants independent of \(k\).
 
 The zero-count input is classical. For a primary quantitative reference, see [Hasanalizade, Shen, Wong, *Counting zeros of the Riemann zeta function*](https://arxiv.org/abs/2107.06506). The unit-height \(O(\log T)\) bound follows from a counting formula with \(O(\log T)\) error; check the theorem's range and the finite-height remainder before importing it.
 
 Two pitfalls deserve an early check. Endpoint jumps can invalidate an \(H^1\) estimate uniform under removal of smoothing; fractional regularity must be proved at an admissible exponent instead. Also, the existing low-frequency primitive estimate in [FactorialMuntzTailReadoutDecay.lean](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialMuntzTailReadoutDecay.lean) grows with height. It cannot by itself bound the entire zero sum.
 
-**Falsifiers and fallback.** If \(\mathcal Z(U_{n,k})\) is larger than the proposed budget, determine its actual scale before discarding the method. A budget \(o(\log^2N/N)\), with suitable smoothing control, would still make the mixed term lower order than \(\log N/N\). If no such budget holds, try a direct bound on \(\mathcal W(H_{n,k},U_{n,k})\); the positive comparison norm may overestimate the relevant coupling. Failure of this sufficient estimate is not a negative Weil-energy theorem.
+**Sharp boundary and fallback.** The sharp logarithmic sampling scale rules out replacing the spectral budget by physical squared mass alone. For other families, a suitably uniform \(o(\log^2N/N)\) budget would still make this mixed comparison lower order than \(\log N/N\). If the independent comparison norm is too expensive, investigate the signed mixed pairing itself. Failure of a sufficient comparison estimate is not a negative Weil-energy theorem.
 
 **Completion gate:** a dependency-closed paper proof or rigorous obstruction for the quantitative target, with all scale and smoothing quantifiers explicit. Search the literature before claiming novelty; established sampling or Sobolev theory may already supply much of the argument.
 
@@ -205,11 +205,11 @@ The independent comparison inequality then yields
 \frac{c\log N-2\sqrt{C_HC_U\log N}-C_H}{N}.
 \]
 
-This algebraic consequence is conditional on the unproved budget and the stated compatibility checks. It uses only \(\operatorname{Re}\mathcal W(H,H)\ge-\mathcal Z(H)\), so a separate positivity theorem for \(H\) is unnecessary for this deduction. The positive \(\log N\) term eventually dominates the square-root and constant terms.
+The paper sampling theorem supplies the required upper budget; the common-domain and limit checks below still need proof. The algebra uses only \(\operatorname{Re}\mathcal W(H,H)\ge-\mathcal Z(H)\), so a separate positivity theorem for \(H\) is unnecessary for this deduction. The positive \(\log N\) term eventually dominates the square-root and constant terms.
 
 The application still requires two further proofs:
 
-1. **Removal of smoothing.** For each fixed \(n\), prove convergence of the full Weil energy from \(r_{n,k}\) to the original compact ramp. Control the prime, archimedean, polar, and boundary terms, or use an already justified form topology. Pointwise convergence or physical \(L^2\) convergence alone is not a sufficient argument. Do not substitute the existing corrected-source limit for this ramp limit without checking its hypotheses.
+1. **Removal of smoothing.** The [full ramp-limit paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-ramp-smoothing-limit.md) proves convergence of the complete physical Weil energy for each fixed \(n\). Normalized nonnegative convolution contracts every translation square, providing an integrable majorant for the singular archimedean jump term. Common compact support controls the finite prime sum and polar integral. Formalize this exact limit and reconcile the zero-side energy in the mixed estimate with its physical-side value. Physical \(L^2\) convergence alone is insufficient, and the corrected-source limit is a different theorem.
 2. **The complete Gram margin.** In the existing ramp–tent span, write
    \[
    Q(c,d)=A_nc^2+M_ncd+D_nd^2,
@@ -302,9 +302,9 @@ Before marking a mathematical task complete:
 
 ## Immediate next actions
 
-1. Create an APT-04 pipeline card after completing the APT-01/02 premise and normalization audit; state the local sampling budget with its smoothing quantifiers.
+1. Use the [factorial sampling card](../../drafts/pipeline/1-in-progress/arithmetic-positivity-factorial-tail-sampling.md) and [paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) as the exact local statement and dependency ledger.
 2. Derive and verify the \(C_H/N\) corrected-source budget from existing readout and summability results.
-3. Prove the generic sampling lemma or locate an applicable established version, then analyze the actual raw tail's weighted \(L^2\) and fractional regularity. These are separate analytic and arithmetic obligations.
-4. Attempt the local budget. If it succeeds, finish APT-05 including the full ramp limit. If it fails, compute the true budget or isolate a sharper direct mixed estimate before changing the theory's scope.
+3. Transfer the verified weighted translation budget to logarithmic Fourier energy, then formalize local holomorphic zero sampling. The paper proof discharges these mathematical steps; their remaining Lean certificates are separate obligations.
+4. Finish APT-05, including the full ramp limit, before claiming the two-dimensional positivity application. Then test which source-level mechanisms survive beyond the factorial family.
 
-The 2026-10-18 preparation searched the corpus for arithmetic Schur stability and independent norms for mixed Weil pairings, then inspected the relevant source declarations and cards. The searches returned useful existing machinery but did not establish novelty or provide a fresh build of the corpus; compiler-index coverage included pending and stale entries. Future agents should repeat focused searches when undertaking a theorem and verify dependencies directly. The source links in this directory, rather than temporary search outputs, are the durable starting record.
+Corpus indexes guide discovery; stale or pending compiler entries do not certify a theorem. Repeat focused searches when undertaking a new statement and verify the actual dependencies directly. Source links and proof cards provide the durable record; temporary search outputs do not establish novelty or correctness.

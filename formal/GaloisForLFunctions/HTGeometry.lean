@@ -17973,3 +17973,4 @@ import GaloisForLFunctions.HTGeometry.SymbolicRuellePollicottBounds
 import GaloisForLFunctions.HTGeometry.SymbolicTraceSplitting
 import GaloisForLFunctions.HTGeometry.SymbolicQuasiCompactness
 import GaloisForLFunctions.HTGeometry.SymbolicRuellePollicott
+import GaloisForLFunctions.HTGeometry.ClosedConvexHilbertAttainment

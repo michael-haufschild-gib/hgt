@@ -80,7 +80,79 @@ If w in Eμ is orthogonal to every projected packet, it is orthogonal to every o
 
 - `CHMDQuotientWeilForm.lean`: direct leaf audit exited 0, no diagnostics. Full Weil pullback, polar radical classification, polar restriction nondegeneracy, and obstruction to positive full-quotient coercivity.
 - `CHMDQuotientSpectralCoordinates.lean`: direct leaf audit exited 0, no diagnostics. Actual zero-plus-pole readings separate quotient points; actual orbit projectors descend with idempotence, closed range and signed splitting.
+- `CHMDProjectedCardinalSpanning.lean`: scratch and final direct leaf checks exited 0 without diagnostics. Contains eigenspace spanning, finite packet selection and exact full-band closed spanning. Wired into the umbrella exactly once. Global finite dimensionality is deliberately not claimed.
+
+## Even-polar operator: dependency-closed paper proof (BRIDGE)
+
+Use the existing `CCMEvenSector.evenPolarSubmodule a` in the complete archimedean form domain, with both literal pole coordinates zero. It is closed, being the intersection of the closed polar kernel and the fixed-point subspace of continuous reflection. Its physical Hilbert carrier is the closure of its image under the actual aperture embedding J. Restrict and corestrict J to these spaces. This embedding is injective, dense and compact. Compress the actual bounded Weil remainder B by the physical inclusion and its adjoint; the compressed remainder is bounded self-adjoint and gives exactly the original restricted Weil form on every pair of even-polar form vectors.
+
+Apply the existing explicit bounded-perturbation Friedrichs construction: with c equal to the compressed remainder norm plus one, the operator is the graph inverse of `J(1+J*BJ+cJ*J)^(-1)J*`, minus c. This is self-adjoint with compact resolvent. The existing even-polar variational ground satisfies the constrained shifted-form radical identity, hence belongs to this operator's actual domain and is an eigenvector at the existing `evenGroundEnergy a`. This proves an actual compressed eigen-equation; it does not assert an unforced eigen-equation for the unrestricted operator.
+
+## Quotient parity and all-domain coercivity transport: paper proof (BRIDGE)
+
+Graph reflection is an involutive linear isometry preserving the signed form. It preserves its radical and the radical's Hilbert orthogonal complement, hence induces an involutive linear isometry on the actual quotient, with the canonical representative commuting with reflection. The fixed and negative-fixed subspaces are closed Hilbert subspaces. The cosine moment is even and the sine moment odd, so the full Weil correction is respectively `+2C²` and `-2S²`; the two parity sectors are signed-orthogonal. For any source domain S, including finite-window, even-polar and odd source domains, a quotient-norm bound on its literal quotient image is equivalent to the original form bound with `norm (reducedSource p)`, by surjectivity onto that image. This universal image theorem covers domains not preserved by changing representatives; do not claim aperture support is radical-saturated.
+
+## Physical collar attainment: proof mechanism under development
+
+The existing `PhysicalCollarPartition n` is an infinite-dimensional measurable allocation space, including on a finite grid. Its coefficient is nevertheless amenable to weak compactness. Encode the finitely many shares in L2 on the bounded physical collar union. Nonnegative shares, support conditions and partition of unity define a nonempty closed convex bounded set. The integrated mass term is independent of allocation by exact signed transport. The remaining deficit is the integral of `sqrt(W(y)^2+B(rho,y)^2)-W(y)`, where B is a finite sum of Euclidean block norms of weighted transported shares. This is convex in rho and nonnegative. Its Lipschitz bound in the block variables, followed by the bounded physical weight and finite-measure Cauchy-Schwarz, gives norm continuity in L2 despite the origin singularity of W. Thus it is weakly lower semicontinuous and attains a minimum on the weakly compact feasible set. Measurable representatives can be repaired on a null set using the existing equal-multiplicity partition, recovering all pointwise structure fields.
+
+The argument uses finiteness of the grid, a bounded collar union separated from the physical origin, and finite block incidence; it uses no factorial arithmetic. The concrete L2 encoding, closure/convexity, continuity estimate and representative repair remain to be formalized and must be discharged before claiming attainment.
+
+Implementation refinement: `PhysicalCollarDualCertificate.integral_remainder` and its nonnegativity already give exact supporting affine upper bounds for the coefficient. The physical price vector has coordinates `archLevySinhWeight(x)*physicalPrice(rho,k,x)` and lies in the finite-product L2 carrier because each price is in [0,1] and the physical interval stays above the positive collar radius. Its inner product with an allocation equals the existing physical cost. Thus every coefficient superlevel is the feasible set intersected with all affine-price halfspaces; equality is recovered by choosing the partition itself as price source. This supplies closed convex superlevels directly and replaces the more cumbersome nonlinear continuity argument. The actual fibre constraints and a measurable null-set repair are being formalized; final attainment must instantiate the generic Hilbert direct method and then identify the existing `optimalCoefficient`.
+
+## Finite BVI isometric coordinates: paper proof (BRIDGE)
+
+For each N, take raw real coefficients on the actual active interval `[1,N]`. Map c to the Euclidean vector with q coordinate `sqrt(phi(q)) * selbergMultiplesCoord N c q`. The exact full-period bilinear formula identifies its Euclidean inner product with the literal mean of the product of the two divisor-sieve responses over the factorial period. The truncated multiples transform is injective. Its explicit inverse divides each Euclidean coordinate by `sqrt(phi(q))` and applies the existing `pmRamanujanResidueCoeff`; the already-proved finite Ramanujan inversion supplies both inverse laws. Thus the native mean-square form defines an actual Hilbert norm, and this coordinate map is a linear isometric equivalence, not just an equality of RH predicates.
+
+The existing literal translation predictor transports under this isometry to the diagonal multiplier `sieveLagMultiplier q h`. It is a compression of true periodic translation, not a unitary translation in general. An SC Frobenius/Verschiebung identification must preserve this distinction and cannot be inferred just from similar divisor notation.
 
 ## Log
 
+### PCS/CTF carrier obstruction and positive survivor (paper proof, BRIDGE)
+
+For every integer p>1 the native PCS isometry V_p is not onto: every vector in its range has coordinate 1 equal to zero, whereas the basis vector e_1 has coordinate 1 equal to one. Its adjoint kills e_1 and therefore is not injective. The actual chronological half-line dilation is a unitary: conjugate translation by log(p) with the existing half-density exponential isometry; its inverse is translation by -log(p). Consequently no linear isometric equivalence of the full native carriers can intertwine V_p with that dilation, and no injective map can intertwine V_p* with the invertible dilation. This obstruction is independent of RH.
+
+The positive survivor is the exact native physical/logarithmic/Mellin isometric chain, including the inverse dilation and the modulation multiplier. The PCS defect projection E_p=1-V_p V_p* already supplies the source-side complementary sector. The new bridge will certify the carrier obstruction and expose the actual physical isometry; it must not manufacture a PCS/CTF equivalence by discarding the defect sector.
+
+- Native Selberg Hilbert-coordinate and quotient parity/coercivity scratch modules passed Lean. Integrated leaves awaiting final path audits.
+
+### Identification of the cardinal band with the existing spectral sector
+
+The open-band closed eigenvector span equals `boundStateSpace ⊓ primitiveSector`. Inclusion into the existing closed bound-state space is immediate; every eigenvector with eigenvalue below one is orthogonal to the ground. For the reverse inclusion project the existing bound-state space onto the primitive hyperplane. This projection kills the eigenspace at one, which the existing unconditional ground-rigidity theorem identifies with `span oneL`, and fixes every other bound-state eigenvector. Every nonzero primitive eigenvector has eigenvalue strictly below one. Continuity extends the projection statement to the closed span; it fixes every primitive vector. Combining this identity with projected-cardinal synthesis identifies the literal existing closed spectral sector, with no off-line-zero finiteness premise.
+
+### Native Witt/Selberg finite receiver diagram (paper proof, BRIDGE)
+
+Use the literal big-Witt ghost component ring homomorphisms over the reals. At cutoff N, finite Ramanujan inversion sends the actual first N ghost values to a unique native sieve coefficient vector. Its weighted Selberg isometry has coordinate `sqrt(phi(q))*ghost_q(w)`, so its norm is the actual sieve period mean and the weighted ghost square sum. The native Frobenius-two ring endomorphism satisfies `ghost_q(F_2 w)=ghost_(2q)(w)`; the receiving cutoff N therefore reads cutoff 2N of the original source, not an endomorphism of an insufficient N-cutoff. Literal Verschiebung is power-series expansion `f(T) -> f(T^m)`. The existing logarithmic-ghost expansion identity gives `ghost_q(V_m w)=m*ghost_(q/m)(w)` when m divides q, and zero otherwise. The same receiver construction transports these laws to exact Selberg-coordinate formulas. Compressed lag prediction multiplies each retained ghost by the existing `sieveLagMultiplier`. No claim identifies Frobenius, Verschiebung or prediction with unitary translation of the full SC source.
+
+External audit: the operation laws are standard big-Witt theory; see [Hazewinkel, *Witt vectors. Part 1*, §13](https://arxiv.org/pdf/0804.3888). The contribution here is the explicit native Selberg receiver diagram, not a new Witt identity.
+
+### Adjacent receiver audit
+
+All eight requested adjacent routes were checked against their named source modules and the current frontier ledger. None supplies an unconditional missing positivity or orientation input merely through a change of coordinates.
+
+| Route | Concrete receiver evidence | Boundary for this task |
+| --- | --- | --- |
+| JAS | `JointAncestryLevelOneCapstones.riemannHypothesis_iff_jasDressedPSD_one` and cosine/Euler variants | Exact sign criteria; no unconditional source PSD producer or Hilbert isometry follows. |
+| RN | `PaperThetaUnregularizedExtensionObstruction.no_continuous_unregularized_native_realization`, `no_continuous_extension_of_nativeFiniteSynthesis` | Native unregularized completion is obstructed. An isometric completion cannot bypass the established topology obstruction. |
+| APF | `PaperPrimeFredholmReconstruction.paperUnitTrace_grade_formula`, `paperXi_eq_zero_iff_unitTrace`, all-prime physical-span reconstruction | Literal reconstruction is available; transverse orientation remains a separate input. |
+| CDC | `ConstitutiveDaggerConfluence.actualRepairProofErasureConsistent_iff_re_eq_half`, `admitsRadiallyCalibratedDaggerConfluence_iff_re_eq_half` | Calibrated confluence selects the wall. Existence of the selecting source potential is not supplied by coordinate transport. |
+| EGC | `PaperEGCCompleteCorrection.tendstoUniformly_paperEGCCompleteCorrection`, `paperEGCCompleteCorrection_centered_re_neg` | Complete correction and its sign are retained; this is not a positive Hilbert receiver. |
+| MSC | `SquarefreeDiscrepancyHilbertTransport.memLp_hilbertSourceFunction`, `inner_hilbertSource_evaluation`, `hilbertCountReadout_source`, `fixedArithmeticClockPair` | Actual source admission and count/clock readouts exist. Admission alone provides no missing zero-orientation inequality. |
+| PTR | `PhotonicLosslessProductPortRH.ptrPairSlab_entry`, `riemannHypothesis_iff_XiC_limit_losslessProductPort` | Finite lossless slabs and an exact approximation criterion exist. The RH-direction construction uses zero data; a source-independent prime producer is still needed. |
+| SEC | `XiPrimeSeamAdjacentEssentialNormNoGo.essentialNorm_primeSeamCoboundary_exact`, `tendsto_primeRay_adjacent_essentialNorm_zero` | Essential norm measures the seam exactly, but asymptotic smallness across large primes is nonselective. |
+
 - 2026-10-18 — Created full-scope card after source and literature audit; selected the actual quotient as the first dependency shared by the requested constructions.
+
+### Continued proof and validation progress
+
+The even-polar operator now passes the combined scratch audit, including its actual domain/eigenstate theorem. Freezing the inherited Hilbert instances resolved the elaboration cost without a heartbeat increase. The original cardinal-band identification, PCS/CTF obstruction, Witt/Selberg diagram, real Hilbert direct method, and exact physical-partition/L2 correspondence also pass their scratch checks. Final-path audits are running sequentially; final success and axiom/lint checks still need recording.
+
+The original logarithmic collar attainment proof is implemented. The only remaining errors in its latest scratch run were final theorem elaboration, subsequently corrected but not yet rechecked. The proof uses the actual bounded physical prices as L2 vectors. The exact dual remainder yields supporting affine upper bounds, exact at each partition. Hence negative-coefficient sublevels are intersections of closed convex halfspaces. The direct method gives a feasible minimizer; the explicit representative repair recovers an original pointwise measurable partition with the same coefficient. This is BRIDGE, not a new compactness theorem.
+
+For arbitrary selected finite prime-power grids, retain a finite containing integer window and mask the physical densities by the selected indices. Use only the union of selected collars as the selected physical support. The objective is the actual masked finite-block kernel, not the full-window coefficient. Impose the additional closed convex constraint that unselected shares vanish on this union; an equal-multiplicity selected allocation there, joined with the original allocation outside, proves nonemptiness. The same dual slopes and exact affine collar substitutions give continuous affine supports for the masked objective. This proves attainment on the selected grid without inventing coverage of gaps or replacing its coefficient by the containing-window coefficient. This extension remains to be formalized.
+
+### Quartic receiver boundary and positive survivor (paper proof, BRIDGE)
+
+The native GTA local charge is Q(a,b)=100 b²(6a²+23b²). A linear map T with squared Hilbert norm Q is impossible: evaluation at (0,1) and (0,2) conflicts with quadratic versus quartic scaling. The exact positive survivor is the nonlinear degree-two feature (10√6 ab,10√23 b²), whose squared Euclidean norm is Q and whose zero set is exactly b=0. Finite charge sums are sums of these feature norms. This rules out only the charge-preserving linear Hilbert claim; it does not rule out unrelated carrier isometries or exact signed trace coordinate maps. Scratch formalization is written, validation pending.
+
+The actual common smooth core also has an explicit SZ/RW/CHMD coordinate: inverse-Doob test lift followed by signed-radical quotient. Existing exact zeta-Weil and screw identities identify its full quotient Weil energy with both the RW closed form and Suzuki's screw form. Completion isometries in differing norms are not inferred from this core identity.

@@ -26,6 +26,9 @@ def signedQuotientMk : SourceGraph →L[ℝ] SignedQuotient := signedRadical.mkQ
 def signedQuotientEquiv : SignedQuotient ≃ₗᵢ[ℝ] signedRadicalᗮ :=
   signedRadical.quotientEquivOrthogonal
 
+instance signedQuotient_complete : CompleteSpace SignedQuotient :=
+  signedQuotientEquiv.toIsometryEquiv.completeSpace
+
 def signedQuotientRepresentative : SignedQuotient →L[ℝ] SourceGraph :=
   signedRadicalᗮ.subtypeL.comp
     signedQuotientEquiv.toContinuousLinearEquiv.toContinuousLinearMap

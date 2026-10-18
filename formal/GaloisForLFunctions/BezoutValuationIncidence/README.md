@@ -66,10 +66,17 @@ across trans-horizon octaves $R = \lfloor (k - 1)/N \rfloor$).
 | **Bézout Successor Incidence Count (`bezoutIncidenceCount`)** | $\mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) = \#\{k \in [1, M] : d_1 \mid k \wedge d_2 \mid (k + 1)\}$; counts Chinese Remainder idempotent hits modulo $d_1 d_2$ across $[1, M]$, satisfying $\mathcal{I}_{\mathrm{Bez}}(M + d_1 d_2; d_1, d_2) = \mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) + 1$ for $\gcd(d_1, d_2) = 1$ and remaining non-zero up to $d_1 d_2 \le M(M + 1)$ ($\theta = 2$). |
 | **Bézout Unitary Coprime Form (`bezoutCoprimeQuadraticForm`)** | $\mathcal{Q}_{\mathrm{Bez}}(N, c) = \sum_{\substack{d_1, d_2 \in [1, N] \\ \gcd(d_1, d_2) = 1}} \frac{c(d_1)c(d_2)}{d_1 d_2} = \sum_{e=1}^N \mu(e)\,Y_{N,c}(e)^2$; the asymptotic density of $\sum_{k=1}^M s_{N,c}(k)s_{N,c}(k+1)$, simultaneously diagonalized in Selberg's coordinates $Y_{N,c}(e) = \sum_{d \le N, e \mid d} c(d)/d$ with eigenvalue $\mu(e)$ in place of $\varphi(e)$. |
 | **Bézout Sawtooth Defect & Remainder (`bezoutSawtoothDefect`, `bezoutSawtoothRemainderForm`)** | $\delta_{\mathrm{Bez}}(M; d_1, d_2) = \mathcal{I}_{\mathrm{Bez}}(M; d_1, d_2) - \mathbf{1}_{\gcd(d_1, d_2)=1}\frac{M}{d_1 d_2} \in [-1, 1]$ and $\mathcal{R}_{\mathrm{Bez}}(M, N, c) = \sum_{d_1, d_2 \le N} c(d_1)c(d_2)\,\delta_{\mathrm{Bez}}(M; d_1, d_2)$. |
+| **GCD–LCM Modular Valuation Functions (`IsGcdLcmModular`)** | Functions $F : \mathbb{N} \to \mathbb{R}$ satisfying $F(1) = 1$ and $F(j)\,F(k) = F(\operatorname{lcm}(j, k))\,F(\gcd(j, k))$; automatically coprime-multiplicative, pronic-multiplicative ($F(k)F(k+1) = F(k(k+1))$), and obeying exact pronic–diagonal–gradient conservation $(\nabla_+ F(k))^2 + 2 F(\operatorname{pronicSeq}(k)) = F(k)^2 + F(k+1)^2$. |
+| **Radical Prime-Factor Product (`radicalPrimeProd`)** | $\tau_w(n) = \prod_{p \in n.\mathrm{primeFactors}} (1 - w(p))$ for an arbitrary prime-valuation weight $w : \mathbb{N} \to \mathbb{R}$; satisfies `IsGcdLcmModular`, radical/power invariance $\tau_w(n^k) = \tau_w(n)$, divisor absorption $\tau_w(d m) = \tau_w(m)$ ($d \mid m$), divisor-ordering antitonicity ($d \mid m \implies \tau_w(m) \le \tau_w(d)$ for $w \in [0, 1]$), submultiplicativity $\tau_w(a)\tau_w(b) \le \tau_w(ab)$, and specializes to `pmPowerDampedDivisorCoeff ε` at $w(p) = p^{-\varepsilon}$. |
+| **Three-Way Sawtooth Partition (`weightedCenteredSawtoothSum`, `activeCenteredSawtoothSum`, `inactiveCenteredSawtoothSum`, `bezoutInteriorSawtoothSum`)** | Decomposition $W_{N,c}(n) = A_{N,c}(n, n) + A_{N,c}(n+1, n) + I^{\mathrm{Bez}}_{N,c}(n)$ into the post-jump active peak ($d \mid n$), the pre-jump active trough ($d \mid (n+1)$), and the doubly-inactive Bézout interior sum ($d \nmid n \wedge d \nmid (n+1)$); the active pair equals $-\frac{1}{2}\nabla_+(s_{N,c} - s_{N, c/d})(n)$ and telescopes identically over finite intervals. |
+| **Five Canonical Spectral Quadratic Forms (`sieveVariance`, `sieveSuccessorCovariance`, `sieveSuccessorReserve`, `successorPhaseLoss`, `sievePrimitiveEnergy`)** | Simultaneously diagonalized in the Selberg multiples basis $Y_{N,c}(q) = \sum_{d \le N, q \mid d} c(d)/d$ with modal weights $\varphi(q)$, $\mu(q)$, $\varphi(q) - \mu(q)$, $\varphi(q) - \mu(q)^2/\varphi(q)$, and $\frac{1}{12} J_2(q) = \frac{1}{12}\psi(q)\varphi(q)$. |
+| **Second Jordan Totient & Dedekind Psi Ratio (`jordanTotient2`, `dedekindPsiReal`)** | $J_2(n) = \sum_{d \mid n} \mu(n/d) d^2$ and $\psi(n) = J_2(n)/\varphi(n)$ with $\psi(p^{k+1}) = p^k(p+1)$, $\psi(p) = p + 1 = \varphi(p) - 2\mu(p)$, $J_2(p) = (\varphi(p) - \mu(p))^2 - 1$, and sharp prime-attained lower bound $(q + 1)\varphi(q) \le J_2(q)$ for all $q \ge 2$. |
+| **Gcd-Orbit Projection & Coprimality Predictor (`sieveGcdProjection`, `sieveSuccessorPredictor`)** | $\Gamma_h c$ orthogonally projects all five spectral quadratic forms onto resonant modes $q \mid h$ (bounding primitive energy by $\frac{1}{16} h^2 \operatorname{sieveVariance}$ independent of $N$), while `sieveSuccessorPredictor` achieves the unique minimum one-step prediction error `successorPhaseLoss`. |
+| **Renormalized Prefix Defect (`sieveRenormalizedPrefixDefect`)** | $\mathcal{D}^{\mathrm{ren}}_{N,M}(c) = \mathcal{D}_{N,M}(c) - M \cdot \operatorname{sieveSuccessorReserve}(N, c) = \sum_{k=1}^M s_{N,c}(k)\bigl(s_{N,c}(k+1) - s_{N,c}(k)\bigr)$; eliminates the linear reserve drift and is non-positive on sub-horizon prefixes $M + 1 \le N$ for all radical weights. |
 
 ---
 
-## 3. How the Theory Works: The Six Core Mechanisms
+## 3. How the Theory Works: Core Mechanisms
 
 ### 3.1 Mixed-Difference Calculus on the Prime Valuation Complex vs. 1D Prime Fibers (Wall 11)
 On the prime valuation lattice $\mathbb{N}_0^{(\mathcal{P})}$ ($n = \prod_p p^{v_p(n)}$), Dirichlet
@@ -208,9 +215,121 @@ $\lfloor n / 2 \rfloor \le N$ freezes the half-scale prefix sum of $s_{N,\mu}$ a
   $(1 + \sum_{k=N+1}^n \mu(k))^2 / \operatorname{pronicSeq}(n)$
   (`setIntegral_cell_normSq_dilatedMobiusFermiCombinator_one_first_octave`).
 
+Uniform strict-half-power bounds for these response increments are exactly RH:
+`mobiusFirstOctavePowerSaving_iff_riemannHypothesis` quantifies every `δ > 0` and one
+constant independent of `N,n` on `1 ≤ N < n ≤ 2N`. The proof passes through the proved
+Mertens–Littlewood equivalence; no classical-converse hypothesis remains. Establishing
+the increment bound from arithmetic is still open. The raw combined prefix defect has
+a different normalization and retains its proved sublinear-bound obstruction.
+
+### 3.8 Autonomous GCD–LCM Valuation-Lattice Algebra, Radical Prime-Factor Products & Exact Three-Step Primorial Bézout Hierarchy
+Every arithmetic function $F : \mathbb{N} \to \mathbb{R}$ satisfying `IsGcdLcmModular F`
+($F(1) = 1$ and $F(j)\,F(k) = F(\operatorname{lcm}(j, k))\,F(\gcd(j, k))$) obeys an autonomous
+valuation-successor calculus (`GeneralRadicalMultiplicativeAndGcdLcmValuationAlgebra`):
+- **Coprime & Pronic Multiplicativity (`IsGcdLcmModular.mul_succ_eq_pronicSeq`):**
+  $F(k)\,F(k + 1) = F(\operatorname{pronicSeq}\,k)$ and $F(d k)\,F(d k + 1) = F(d k (d k + 1))$.
+- **Exact Pronic–Diagonal–Gradient Conservation (`IsGcdLcmModular.addDiff_sq_add_two_mul_pronicSeq`, `IsGcdLcmModular.sum_Icc_pronicSeq_add_addDiff_sq_eq`):**
+  Pointwise, $(\nabla_+ F(k))^2 + 2 F(\operatorname{pronicSeq}\,k) = F(k)^2 + F(k + 1)^2$, so over
+  every interval $[1, M]$, $\sum_{k=1}^M F(\operatorname{pronicSeq}\,k) + \frac{1}{2}\sum_{k=1}^M (\nabla_+ F(k))^2 = \sum_{m=1}^M F(m)^2 + \frac{1}{2}(F(M+1)^2 - F(1)^2)$.
+- **General Radical Prime-Factor Products (`radicalPrimeProd`):**
+  For any prime weight $w : \mathbb{N} \to \mathbb{R}$, $\tau_w(n) = \prod_{p \in n.\mathrm{primeFactors}} (1 - w(p))$
+  satisfies `isGcdLcmModular_radicalPrimeProd`, radical/power invariance (`radicalPrimeProd_pow`),
+  divisor absorption (`radicalPrimeProd_mul_of_dvd`), divisor-ordering antitonicity
+  (`radicalPrimeProd_le_of_dvd`), and universal submultiplicativity (`radicalPrimeProd_mul_le`).
+- **Exact Three-Step Primorial Bézout Factorization & Even-Start Cubic Ceiling (`ThreeStepPrimorialBezoutAndEvenCubicCeiling`):**
+  Because $\gcd(k, k + 2) = \gcd(k, 2) \in \{1, 2\}$ (`gcd_self_add_two_eq_gcd_two`) and
+  $\gcd(k(k + 2), k + 1) = 1$ (`coprime_mul_add_two_succ`), every three-step product satisfies the
+  **exact 3-step Bézout factorization law** (`radicalPrimeProd_three_step_mul_eq`):
+  $$\tau_w(k)\,\tau_w(k + 1)\,\tau_w(k + 2) = \bigl(\text{if } 2 \mid k \text{ then } 1 - w(2) \text{ else } 1\bigr)\,\tau_w\bigl(k(k + 1)(k + 2)\bigr).$$
+  Consequently, on odd-start triples ($2 \nmid k$), $\tau_w(k)\tau_w(k+1)\tau_w(k+2) = \tau_w(k(k+1)(k+2)) \le (1 - w(2))(1 - w(3))$
+  (attained at $k = 1$), whereas on even-start triples ($2 \mid k$, where $24 \mid k(k+1)(k+2)$,
+  `twenty_four_dvd_mul_succ_mul_add_two_of_two_dvd`), the product obeys the **sharp cubic ceiling**
+  $(1 - w(2))^2(1 - w(3))$ (`radicalPrimeProd_three_step_mul_le_cubic_of_two_dvd`, attained at $k = 2$).
+
+### 3.9 Sawtooth Midpoint Annihilation, Active-Divisor Square Invariance, & Shifted-Exponent Totient Suppression (`ε ↦ 1 + ε`)
+Across each additive step $n \mapsto n + 1$, partitioning `weightedCenteredSawtoothSum N c k` into
+`activeCenteredSawtoothSum N c (n + 1) k` ($d \mid (n + 1)$) and `inactiveCenteredSawtoothSum N c (n + 1) k`
+($d \nmid (n + 1)$) reveals (`SawtoothMidpointAnnihilationAndActiveDivisorSquareInvariance`,
+`ActiveSawtoothClosedFormAndShiftedExponentTotientBridge`, `ActiveDeletedMartingaleAndShiftedEulerConvergence`):
+- **Active Sign Flip & Square Cancellation (`activeCenteredSawtoothSum_succ_eq_neg`, `activeCenteredSawtoothSum_succ_sq_eq_sq`):**
+  Every dividing modulus flips from $+(d-1)/(2d)$ at $n$ to $-(d-1)/(2d)$ at $n + 1$, so its square
+  cancels 100% identically in $W_{N,c}(n + 1)^2 - W_{N,c}(n)^2$.
+- **Exact Sieve Closed Form & Active-Deleted Martingale Identity (`active_diagonal_reduction`):**
+  Because $A_{N,c}(n + 1, n) = -\frac{1}{2}(s_{N,c}(n + 1) - s_{N, c/d}(n + 1))$, absorbing
+  $2 \Delta W_{N,c}(n)\,A_{N,c}(n + 1, n)$ into the diagonal square $(\Delta W_{N,c}(n))^2$ replaces
+  $(s_{N,c}(n + 1) - Y(1))^2$ by the **active-deleted product**
+  $(s_{N,c}(n + 1) - Y(1))(s_{N, c/d}(n + 1) - Y(1))$. For Route PM ($c_\varepsilon(d) = \mu(d)d^{-\varepsilon}$),
+  dividing by $d$ shifts the damping exponent from $\varepsilon$ to $1 + \varepsilon$, suppressing
+  the local prime Euler factor gap by an extra factor of $1/p$ (`pmShiftedExponentFactor_gap_eq_div_p`).
+
+### 3.10 Universal Bézout Interior Sawtooth Martingale Identity, Two-Point Post-Step Smoothing & Boundary-Free Active-Pair Dissipation
+Because $\gcd(n, n + 1) = 1$, the inactive set $\{d \le N : d \nmid (n + 1)\}$ at step $n$ contains
+the **predecessor post-jump active divisors** $\{d \le N : d \mid n, d \ge 2\}$ at their positive
+peak $A_{N,c}(n, n) = +\frac{1}{2}(s_{N,c}(n) - s_{N, c/d}(n))$. Extracting both $A_{N,c}(n + 1, n)$
+and $A_{N,c}(n, n)$ leaves the **doubly-inactive Bézout interior sawtooth sum**
+`bezoutInteriorSawtoothSum N c n` (`BezoutPronicInteriorSawtoothAndPredecessorPeakSplit`,
+`UniversalSawtoothInteriorMartingaleAndPostStepCalculus`):
+- **Universal Bézout Interior Martingale Identity (`weightedCenteredSawtoothSum_succ_sq_sub_sq_eq_bezout_interior`):**
+  For **every** cutoff $N : \mathbb{N}$, weight $c : \mathbb{N} \to \mathbb{R}$, and step $n : \mathbb{N}$,
+  the diagonal square is eliminated 100% identically in favor of the **Bézout successor covariance**
+  plus the harmonic-divided forward difference:
+  $$W_{N,c}(n + 1)^2 - W_{N,c}(n)^2 =
+    \bigl(s_{N,c}(n) - Y_{N,c}(1)\bigr)\bigl(s_{N,c}(n + 1) - Y_{N,c}(1)\bigr) +
+    \bigl(s_{N,c}(n + 1) - Y_{N,c}(1)\bigr)\,\nabla_+ s_{N, c/d}(n) +
+    2\bigl(s_{N,c}(n + 1) - Y_{N,c}(1)\bigr)\,\operatorname{bezoutInteriorSawtoothSum}\,N\,c\,n.$$
+- **Universal Two-Point Bézout Smoothing (`addDiff_inactiveCenteredSawtoothSum_at_self`):**
+  The forward difference of the post-step inactive sawtooth sum $n \mapsto I_{N,c}(n, n)$ replaces
+  the raw impulse $s_{N,c}(n + 1) - Y(1)$ by the **two-point Bézout average**
+  $\frac{1}{2}\bigl((s_{N,c}(n) - Y(1)) + (s_{N,c}(n + 1) - Y(1))\bigr) + \frac{1}{2}\nabla_+ s_{N, c/d}(n)$.
+- **Universal Boundary-Free Active-Pair Dissipation (`sum_bezout_active_pair_martingale_compensated_eq`):**
+  Because $A_{N,c}(1, 1) = 0$ for every weight $c$, the self-interaction of the Bézout active pair
+  in the compensated Pronic Abel sum has zero boundary term at $n = 1$ and is purely non-positively
+  dissipative (`sum_bezout_active_pair_martingale_compensated_le`).
+
+### 3.11 Optimal Successor Prediction, Irreducible $3/4$ Phase-Loss Floor, & Gcd-Orbit Projection
+On the complete factorial period $N!$, the optimal linear divisor-sieve predictor of $s_{N,c}(k + 1)$
+from divisor indicators at $k$ is the explicit **coprimality predictor** `sieveSuccessorPredictor N c`
+with Selberg coordinates $Y_{N, b_*}(q) = \frac{\mu(q)}{\varphi(q)} Y_{N,c}(q)$
+(`OptimalSuccessorPredictionAndExactPhaseLoss`, `SharpSuccessorPhaseLossAndClosureClassification`,
+`IteratedSuccessorPredictionAndReservePhaseLossSplit`):
+- **Exact Pythagorean Error Decomposition (`successorPredictionError_pythagoras`):**
+  Every candidate weight $b$ has squared prediction error
+  $\operatorname{successorPhaseLoss}(N, c) + \mathcal{Q}_{\mathrm{Sel}}(N, b - b_*)$, where
+  $$\operatorname{successorPhaseLoss}(N, c) = \sum_{q=3}^N \left(\varphi(q) - \frac{\mu(q)^2}{\varphi(q)}\right) Y_{N,c}(q)^2.$$
+- **Sharp Universal $[3/4, 1]$ Phase-Loss Sandwich (`successorPhaseLoss_bounds`):**
+  At every sieve level $N$, $\frac{3}{4}\operatorname{sieveVarianceAboveParity}(N, c) \le \operatorname{successorPhaseLoss}(N, c) \le \operatorname{sieveVarianceAboveParity}(N, c)$,
+  with lower equality iff $Y_{N,c}$ is supported on $\{3, 6\}$ (`successorPhaseLoss_lower_eq_iff`)
+  and zero phase loss iff $c(d) = 0$ for all $d \in [3, N]$ (`sieve_successor_representable_iff`).
+  Iterating the optimal predictor contracts variance above parity by $4^{-m}$
+  (`sieveVarianceAboveParity_iterated_successorPredictor_le`).
+
+### 3.12 The Five-Form Spectral Triad, Dedekind's Psi Ratio $\psi(n) = J_2(n)/\varphi(n)$, & Renormalized Prefix Defect Duality
+The discrete mean square of `weightedCenteredSawtoothSum N c` over its factorial period is governed
+by the second Jordan totient $J_2(q) = \psi(q)\varphi(q)$ (`DiscretePrimitiveEnergyAndJordanComparison`,
+`JordanUpperBoundAndGcdOrbitPrimitiveEnergy`, `DedekindPsiJordanTotientAndFiveFormSpectralSynthesis`):
+- **Prime Algebraic Bridge & Sharp $(q + 1)\varphi(q) \le J_2(q)$ Bound (`jordanTotient2_prime_eq_totient_moebius`, `add_one_mul_totient_le_jordanTotient2`):**
+  At every prime $p$, $\psi(p) = p + 1 = \varphi(p) - 2\mu(p)$ and
+  $J_2(p) = \varphi(p)(\varphi(p) - 2\mu(p)) = (\varphi(p) - \mu(p))^2 - 1$. For all $q \ge 2$,
+  $(q + 1)\varphi(q) \le J_2(q) \le \frac{3}{4} q^2 \varphi(q)$ (sharp at every prime $p$ on the left
+  and at $q = 2$ on the right), yielding the parity-split energy chain
+  (`three_mul_sieveVariance_add_above_parity_le_twelve_mul_sievePrimitiveEnergy`):
+  $$3\,\operatorname{sieveVariance}(N, c) + \operatorname{successorPhaseLoss}(N, c) \le
+    3\,\operatorname{sieveVariance}(N, c) + \operatorname{sieveVarianceAboveParity}(N, c) \le
+    12\,\operatorname{sievePrimitiveEnergy}(N, c) \le
+    \frac{3}{4} N^2\,\operatorname{sieveVariance}(N, c).$$
+- **Simultaneous Gcd-Orbit Projection of All Five Quadratic Forms (`bezoutValuationIncidence_master_five_form_synthesis`):**
+  For every stride $h \ge 1$, `sieveGcdProjection N h c` simultaneously restricts the Selberg
+  diagonals of all five canonical forms to resonant divisors $q \mid h$ and satisfies
+  $16\,\operatorname{sievePrimitiveEnergy}(N, \Gamma_h c) \le h^2 \operatorname{sieveVariance}(N, c)$
+  completely independent of $N$ (`sixteen_mul_sievePrimitiveEnergy_gcdProjection_le_stride_sq`).
+- **Renormalized Prefix Defect Non-Positivity (`sieveRenormalizedPrefixDefect_pmPowerDampedRealWeight_nonpos`):**
+  Subtracting the linear drift $M \cdot \operatorname{sieveSuccessorReserve}(N, c)$ from the combined
+  prefix defect yields $\mathcal{D}^{\mathrm{ren}}_{N,M}(c) = \sum_{k=1}^M s_{N,c}(k)\nabla_+ s_{N,c}(k)$,
+  which is unconditionally $\le 0$ for all sub-horizon prefixes $M + 1 \le N$ and all $\varepsilon \ge 0$.
+
 ---
 
-## 4. The Six Structural Traps (Obstructions & Design Laws)
+## 4. The Ten Structural Traps (Obstructions & Design Laws)
 
 1. **Trap 1 — The Same-Node Dirichlet-Convolution / Floor-Sum Tautology Trap ($\mathbf{1} * \mu * f = f$):**
    Expanding $\sum_{k=1}^M s_{N,c}(k)^2 = \sum_{L=1}^M F_{N,c}(L)\lfloor M / L \rfloor$ via
@@ -223,8 +342,8 @@ $\lfloor n / 2 \rfloor \le N$ freezes the half-scale prefix sum of $s_{N,\mu}$ a
    Treating $\{\log n\}$ as points on $\mathbb{R}_u$ or relying on the Same-Node Selberg weight
    $\varphi(e)$ alone is blind to Wall 11 ($\varphi(4) = \varphi(6) = 2$), whereas the mixed
    multiplicative difference $\Delta_{2, 3}^\times \log = 0$ vs. $\Delta_2^\times \log(2) = \log 2$
-   and the Bézout–Dirichlet eigenvalue $\varphi(4) - \mu(4) = 2 \ne 1 = \varphi(6) - \mu(6)$
-   strictly separate $4 = 2^2$ from $6 = 2 \cdot 3$.
+   and all four non-Selberg BVI modal weights ($\mu$, $\varphi - \mu$, $\varphi - \mu^2/\varphi$,
+   and $J_2$) strictly separate $4 = 2^2$ from $6 = 2 \cdot 3$ (`wall11_five_modal_weights_separation`).
 3. **Trap 3 — The Pure Monoid / Beurling Semigroup Trap (Wall 9):**
    Any identity proved solely from Dirichlet convolution, Euler products, or same-node divisibility
    $d \mid k$ holds in Beurling generalized number systems with off-line zeros.
@@ -245,6 +364,34 @@ $\lfloor n / 2 \rfloor \le N$ freezes the half-scale prefix sum of $s_{N,\mu}$ a
    Bounding trans-horizon LCM fibres $|F_{N,\mu}(L)|$ by $\tau_3(L)$ ignores both the exact
    sub-horizon collapse $F_{N,\mu}(L) = \mu(L)$ ($L \le N$) and the first-octave parity collapse
    $F_{N,\mu}(L) = \mu(L) + \mu(L)^2 \in \{0, 2\}$ ($N < L \le 2N$).
+7. **Trap 7 — The Diagonal-Square / Harmonic-Divergence Martingale Trap:**
+   In the naive square-increment identity $W_{N,c}(n + 1)^2 - W_{N,c}(n)^2 = (\Delta W_{N,c}(n))^2 + 2\Delta W_{N,c}(n)W_{N,c}(n)$,
+   treating the diagonal square $(\Delta W_{N,c}(n))^2 = (s_{N,c}(n + 1) - Y(1))^2$ and the
+   predictable martingale term separately creates a $1/(2\varepsilon)$ prime-sum divergence as
+   $\varepsilon \to 0^+$ that must be cancelled against an equal and opposite divergence in the
+   active sawtooth component.
+   - *Rule:* Always absorb the active pre-jump component $A_{N,c}(n + 1, n)$ (Pillar XIX) or the full
+     Bézout active pair $A_{N,c}(n, n) + A_{N,c}(n + 1, n)$ (Pillars XXIV & XXXI) into the diagonal
+     square first, eliminating the diagonal square identically.
+8. **Trap 8 — The Single-Step Active Boundary / Centering-Drift Trap:**
+   Extracting only the pre-jump active divisor sum $d \mid (n + 1)$ leaves behind the predecessor
+   post-jump peak $d \mid n$ inside the inactive sum, together with a linear dependence on the
+   centering density $Y_{N,c}(1)$.
+   - *Rule:* Pair the pre-jump trough at $n + 1$ with the post-jump peak at $n$ via
+     `weightedCenteredSawtoothSum_eq_bezout_active_pair_add_interior`, which cancels centering drift
+     and has zero boundary term at $n = 1$ (`activeCenteredSawtoothSum_one`).
+9. **Trap 9 — The One-Step Linear Successor Closure Trap ($3/4$ Irreducible Phase-Loss Barrier):**
+   Attempting to approximate $s_{N,c}(k + 1)$ by a single linear divisor sieve $s_{N,b}(k)$ at lag $1$
+   loses at least $3/4$ of all Selberg variance above parity (`successorPhaseLoss_bounds`), and can
+   only achieve zero error when $c$ vanishes above $d = 2$ (`sieve_successor_representable_iff`).
+   - *Rule:* Use multi-lag schedules covering all active divisors (`ArithmeticLagSchedulesAndSharpRecoveryHorizon`)
+     or two-point post-step Bézout smoothing (`addDiff_inactiveCenteredSawtoothSum_at_self`).
+10. **Trap 10 — The Unrenormalized Prefix Defect / Sub-Horizon Linear Drift Trap:**
+    The raw combined prefix defect $\mathcal{D}_{N,M}(c) = \mathcal{R}_{\mathrm{Sel}}(M, N, c) - \mathcal{R}_{\mathrm{Bez}}(M, N, c)$
+    grows linearly like $M \cdot \operatorname{sieveSuccessorReserve}(N, c)$ across sub-horizon
+    prefixes $M \le N$ (`PrimeTailCalibrationAndMobiusDefect`).
+    - *Rule:* Always work with the renormalized prefix defect $\mathcal{D}^{\mathrm{ren}}_{N,M}(c) = \mathcal{D}_{N,M}(c) - M \cdot \operatorname{sieveSuccessorReserve}(N, c)$
+      (`RenormalizedMobiusDefectAndFirstOctaveCancellation`, `PowerDampedRenormalizedDefectAndPronicCeiling`).
 
 ---
 
@@ -312,6 +459,9 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
 - [`PrimeTailCalibrationAndMobiusDefect.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/PrimeTailCalibrationAndMobiusDefect.lean) —
   Sharp prime-tail calibration on $(N/2, N]$ and exact evaluation of the literal Möbius combined
   prefix defect `moebiusCombinedPrefixDefect`.
+- [PowerSavingIncrementCriterion.lean](PowerSavingIncrementCriterion.lean) —
+  Uniform first-octave Möbius increment bounds at every strict half-power exponent are
+  equivalent to the Mertens bounds and RH, with no extra classical-converse parameter.
 - [`DilatedCellScalingAndSecondOctaveFermiJumpBridge.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/DilatedCellScalingAndSecondOctaveFermiJumpBridge.lean) —
   **Pillar IX:** Dilated cell-matrix scaling `fermiCellMatrix (k * d) n = fermiCellMatrix d (n / k)`,
   universal cell evaluation of `dilatedMobiusFermiCombinator k N`, two-octave threshold + discrepancy
@@ -497,3 +647,71 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
   `two_point_bezout_average_sq_add_quarter_addDiff_sq`, `sum_Icc_pronicSeq_add_addDiff_sq_eq`, and
   boundary-free finite inequalities `sum_Icc_pronicSeq_add_addDiff_sq_le_two_mul_sum_sq` and
   `sum_Icc_pronicSeq_and_addDiff_sq_le_sum_sq`.
+- [`ActivePairMartingaleDissipationAndShiftedTotientReduction.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ActivePairMartingaleDissipationAndShiftedTotientReduction.lean) —
+  **Pillar XXVII (Active-Pair Martingale Dissipation, Shifted-Totient Reduction & Compensated Pronic–Gradient Diagonal Identity):**
+  General compensated Abel dissipation identity `sum_neg_succ_mul_addDiff_compensated_eq` and
+  upper bound `sum_neg_succ_mul_addDiff_compensated_le`, purely dissipative sawtooth
+  self-interaction and shifted-totient reduction of the active-pair martingale sum
+  `pmActive_add_pmPredecessorPeak_eq_dissipation_add_shiftedTotient` and
+  `pmActive_add_pmPredecessorPeak_le_shiftedTotient`, pronic shift identity
+  `sum_Icc_pred_compensated_add_sum_pronicSeq_eq`, and exact compensated pronic–gradient
+  decomposition `pmPowerDampedDivisorCovarianceDiagonal_eq_pronic_add_gradient`.
+- [`SummationByPartsActivePairAndUncenteredShiftedReduction.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/SummationByPartsActivePairAndUncenteredShiftedReduction.lean) —
+  **Pillar XXVIII (Compensated Summation by Parts, the Sharp `1 / 8` Active-Sawtooth Envelope & Complete Centering Elimination):**
+  General compensated Abel summation-by-parts identity `sum_succ_mul_addDiff_compensated_eq_pronic_sub`,
+  uncentered shifted-totient bound `pmActive_add_pmPredecessorPeak_le_uncentered_shiftedTotient`,
+  sharp $1/8$ quadratic envelope `pmPowerDampedDivisorCoeff_mul_pmActiveSawtoothComponent_bounds`
+  and `sum_centered_mul_pmActiveSawtoothComponent_div_pronicSeq_le_eighth`, and complete
+  centering-free summation-by-parts decomposition `pmActive_add_pmPredecessorPeak_eq_sbp_uncentered`
+  with $1/8$ + uncentered shifted-difference bound
+  `pmActive_add_pmPredecessorPeak_le_eighth_add_half_shifted_diff`.
+- [`GeneralRadicalMultiplicativeAndGcdLcmValuationAlgebra.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/GeneralRadicalMultiplicativeAndGcdLcmValuationAlgebra.lean) —
+  **Pillar XXIX (Autonomous GCD–LCM Modular Valuation Algebra & General Radical Prime-Factor Products):**
+  Abstract predicate `IsGcdLcmModular F` ($F(1) = 1$ and $F(j)F(k) = F(\operatorname{lcm}(j, k))F(\gcd(j, k))$)
+  with coprime, pronic, and scaled Bézout multiplicativity (`IsGcdLcmModular.mul_succ_eq_pronicSeq`,
+  `IsGcdLcmModular.scaled_bezout_succ`) and exact pronic–diagonal–gradient conservation
+  (`IsGcdLcmModular.addDiff_sq_add_two_mul_pronicSeq`, `IsGcdLcmModular.sum_Icc_pronicSeq_add_addDiff_sq_eq`);
+  general radical prime-factor product `radicalPrimeProd w` satisfying `isGcdLcmModular_radicalPrimeProd`,
+  radical/power invariance `radicalPrimeProd_pow`, divisor absorption `radicalPrimeProd_mul_of_dvd`,
+  divisor-ordering antitonicity `radicalPrimeProd_le_of_dvd`, submultiplicativity `radicalPrimeProd_mul_le`,
+  universal 2-step and 3-step primorial ceilings (`radicalPrimeProd_pronicSeq_le`,
+  `radicalPrimeProd_three_step_mul_le`), and specialization `pmPowerDampedDivisorCoeff_eq_radicalPrimeProd`.
+- [`ThreeStepPrimorialBezoutAndEvenCubicCeiling.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ThreeStepPrimorialBezoutAndEvenCubicCeiling.lean) —
+  **Pillar XXX (Higher-Order Primorial Bézout Hierarchy, Exact Three-Step Factorization & the Sharp Cubic Ceiling on Even-Start Triples):**
+  Two-step Bézout GCD law `gcd_self_add_two_eq_gcd_two` ($\gcd(k, k + 2) = \gcd(k, 2)$), coprimality
+  `coprime_mul_add_two_succ` ($\gcd(k(k + 2), k + 1) = 1$), exact $8$- and $24$-divisibility of
+  even-start triples (`eight_dvd_mul_add_two_of_two_dvd`, `twenty_four_dvd_mul_succ_mul_add_two_of_two_dvd`),
+  exact 3-step Bézout factorization law `radicalPrimeProd_three_step_mul_eq` and
+  `pmPowerDampedDivisorCoeff_three_step_mul_eq`
+  ($\tau_w(k)\tau_w(k+1)\tau_w(k+2) = (\text{if } 2 \mid k \text{ then } 1 - w(2) \text{ else } 1)\,\tau_w(k(k+1)(k+2))$),
+  and the sharp cubic ceiling `(1 - w 2)^2 * (1 - w 3)` on even-start triples
+  (`radicalPrimeProd_three_step_mul_le_cubic_of_two_dvd`, `pmPowerDampedDivisorCoeff_three_step_mul_le_cubic_of_two_dvd`)
+  with exact attainment at $k = 1$ and $k = 2$.
+- [`UniversalSawtoothInteriorMartingaleAndPostStepCalculus.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/UniversalSawtoothInteriorMartingaleAndPostStepCalculus.lean) —
+  **Pillar XXXI (Universal Sawtooth Interior Martingale Identity, Two-Point Post-Step Smoothing & Boundary-Free Active-Pair Dissipation):**
+  All-horizon, arbitrary-weight Bézout interior square-increment martingale identity
+  `weightedCenteredSawtoothSum_succ_sq_sub_sq_eq_bezout_interior`, finite-horizon telescoping
+  identity `sum_Icc_weightedCenteredSawtoothSum_sq_sub_eq_bezout_interior`, Pronic Abel summation
+  identity `sum_weightedCenteredSawtoothSum_sq_div_pronicSeq_add_terminal_eq_bezout_interior`,
+  universal two-step symmetric midpoint duality `bezoutInteriorSawtoothSum_add_half_shiftedAddDiff_eq_two_step_midpoint`,
+  universal intra-step inactive square change `inactiveCenteredSawtoothSum_succ_sq_sub_sq`,
+  two-point post-step Bézout smoothing `addDiff_inactiveCenteredSawtoothSum_at_self`, and
+  boundary-free compensated active-pair dissipation `sum_bezout_active_pair_martingale_compensated_eq`
+  and `sum_bezout_active_pair_martingale_compensated_le`.
+- [`DedekindPsiJordanTotientAndFiveFormSpectralSynthesis.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/DedekindPsiJordanTotientAndFiveFormSpectralSynthesis.lean) —
+  **Pillar XXXII (Dedekind's Psi Ratio, Sharp Prime Lower Bounds on `J₂`, Wall 11 Five-Weight Separation & Master Five-Form Spectral Synthesis):**
+  Dedekind psi ratio `dedekindPsiReal n = jordanTotient2 n / φ(n)` with exact factorization
+  `jordanTotient2_eq_dedekindPsiReal_mul_totient`, coprime multiplicativity `dedekindPsiReal_mul_of_coprime`,
+  prime-power evaluation `dedekindPsiReal_prime_pow_succ`, and prime Selberg–Bézout identities
+  `dedekindPsiReal_prime_eq_totient_sub_two_moebius` ($\psi(p) = \varphi(p) - 2\mu(p)$) and
+  `jordanTotient2_prime_eq_totient_moebius` ($J_2(p) = (\varphi(p) - \mu(p))^2 - 1$); Wall 11
+  five-weight separation `wall11_five_modal_weights_separation`; sharp prime-attained lower bound
+  `add_one_mul_totient_le_jordanTotient2` ($(q + 1)\varphi(q) \le J_2(q)$ for $q \ge 2$) and
+  parity-split primitive energy inequalities `three_mul_sieveVariance_add_above_parity_le_twelve_mul_sievePrimitiveEnergy`
+  and `three_mul_sieveVariance_add_phaseLoss_le_twelve_mul_sievePrimitiveEnergy`; gcd-orbit
+  projection of `successorPhaseLoss` (`successorPhaseLoss_gcdProjection_and_pythagoras`); and the
+  master five-form spectral synthesis `bezoutValuationIncidence_master_five_form_synthesis`.
+- [`SelbergHilbertCoordinateEquivalence.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/SelbergHilbertCoordinateEquivalence.lean) —
+  Invertibility of the truncated Selberg multiples transform (`selbergMultiplesCoord`), recovery of
+  raw sieve weights via Möbius inversion (`sieveWeightOfMultiplesCoord`), and exact Hilbert-space
+  coordinate equivalence of the five canonical diagonal quadratic forms.

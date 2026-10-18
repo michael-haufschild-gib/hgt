@@ -89,7 +89,7 @@ theorem exists_density_with_conditionedTail_transfer (a : ℕ → ℂ)
   refine ⟨κ, hκ, hhead, fun htail => ?_⟩
   filter_upwards [hhead, htail, eventually_ge_atTop 0] with T hH hL hT
   have hsplit := measure_headReturn_le_zetaReturn_add_conditionedTailLoss a s K ε ε T
-  have hsum := hH.trans (hsplit.trans (add_le_add_left hL _))
+  have hsum := hH.trans (hsplit.trans (add_le_add le_rfl hL))
   have hnonneg : 0 ≤ κ / 2 * T := by positivity
   have hdouble : ENNReal.ofReal (κ * T) =
       ENNReal.ofReal (κ / 2 * T) + ENNReal.ofReal (κ / 2 * T) := by

@@ -72,7 +72,10 @@ MARKER_RE = re.compile(r"\b(TODO|FIXME|OPEN|NEXT|Remaining|remaining|blocked|mis
 # `private import`) alongside the plain one, so the import graph of a
 # module-system area is traversable.
 IMPORT_RE = re.compile(r"^\s*(?:(?:public|private|meta)\s+)*import\s+(.+?)\s*$")
-MODULE_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*$")
+MODULE_NAME_RE = re.compile(
+    r"^(?:[A-Za-z_][A-Za-z0-9_']*|«[^«».\s]+»)"
+    r"(?:\.(?:[A-Za-z_][A-Za-z0-9_']*|«[^«».\s]+»))*$"
+)
 
 THEOREM_AREAS = {
     "rh_tower": {
@@ -130,6 +133,15 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.BiScaleUncertainty.weilArchRe_nonneg_iff_levy_sinh_ge_abs_gammaBracket",
         ],
     },
+    "arithmetic_positivity_theory": {
+        "module": "GaloisForLFunctions.ArithmeticPositivityTheory",
+        "path": SRC / "arithmetic-positivity-theory",
+        "capstones": [
+            "GaloisForLFunctions.ArithmeticPositivityTheory.factorialWeightedTail_sq_integral_le",
+            "GaloisForLFunctions.ArithmeticPositivityTheory.factorialTailTranslationEnergy_le_min",
+            "GaloisForLFunctions.ArithmeticPositivityTheory.factorialTailLogTranslationEnergy_le",
+        ],
+    },
     "bezout_valuation_incidence": {
         "module": "GaloisForLFunctions.BezoutValuationIncidence",
         "path": SRC / "BezoutValuationIncidence",
@@ -153,6 +165,7 @@ THEOREM_AREAS = {
 }
 
 ALLOWED_ROOT_LEAN = {
+    "ArithmeticPositivityTheory.lean",
     "BezoutValuationIncidence.lean",
     "BiScaleUncertainty.lean",
     "Bottcher.lean",
@@ -317,7 +330,7 @@ def extract_facts(path: Path) -> FileFacts:
         match = IMPORT_RE.match(line)
         if match:
             imports.extend(
-                token
+                token.replace("«", "").replace("»", "")
                 for token in match.group(1).split()
                 if MODULE_NAME_RE.fullmatch(token)
             )
@@ -331,7 +344,7 @@ def extract_facts(path: Path) -> FileFacts:
 
 
 CACHE_PATH = FORMAL / ".formal_tools_cache.json"
-CACHE_VERSION = 1
+CACHE_VERSION = 2
 
 _facts: dict[Path, FileFacts] = {}
 _cache: dict[str, list] | None = None

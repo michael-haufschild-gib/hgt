@@ -48,6 +48,38 @@ class OwnedModuleReachabilityTests(unittest.TestCase):
                 {"rh_tower": ["GaloisForLFunctions.RHTower.Orphan"]},
             )
 
+    def test_tracks_imports_through_quoted_directory_components(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            formal = Path(tmp) / "formal"
+            source = formal / "GaloisForLFunctions"
+            area = source / "arithmetic-positivity-theory"
+            area.mkdir(parents=True)
+            (source / "ArithmeticPositivityTheory.lean").write_text(
+                "import GaloisForLFunctions.«arithmetic-positivity-theory».Direct\n",
+                encoding="utf-8",
+            )
+            (area / "Direct.lean").write_text(
+                "public import GaloisForLFunctions.«arithmetic-positivity-theory».Nested\n",
+                encoding="utf-8",
+            )
+            (area / "Nested.lean").write_text("def nested := 1\n", encoding="utf-8")
+            (area / "Orphan.lean").write_text("def orphan := 1\n", encoding="utf-8")
+            areas = {
+                "arithmetic_positivity_theory": {
+                    "module": "GaloisForLFunctions.ArithmeticPositivityTheory",
+                    "path": area,
+                }
+            }
+
+            self.assertEqual(
+                formal_tools.unreachable_owned_modules(areas, formal=formal, src=source),
+                {
+                    "arithmetic_positivity_theory": [
+                        "GaloisForLFunctions.arithmetic-positivity-theory.Orphan"
+                    ]
+                },
+            )
+
 
 class IndexRowExtractionTests(unittest.TestCase):
     """The search index has to see declaration forms the API catalog regex skips."""
