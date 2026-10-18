@@ -91,7 +91,7 @@ Use actual divisor weights and literal finite averages. No numerical experiments
 
 1. [complete] Refreshed bounded corpus frontier and audited the full paper proof, including all quartic lag vectors and zero coefficients.
 2. [complete] Exact actual-sieve identities, all lower-order blindness, sixth polynomial and global-sign classification formalized. Both final named original-source checks passed cleanly; one owned foreground Lean process at a time.
-3. [in progress] All signatures, bodies and axioms audited; owned wiring, discovery, protected hashes and scratch cleanup verified. Final shared repository gate failure recorded above. Finish memory and final record verification.
+3. [complete] All signatures, bodies and axioms audited; owned wiring, discovery, protected hashes, memory and scratch cleanup verified. Final shared repository gate failure recorded above; no claim that the repository gate passed.
 
 `update_plan` is unavailable. This card is the durable tracker. Owned scope: this card and stage moves, new BiScale leaves, their umbrella imports, generated index, direct predecessor links, next-conjecture/no-go cards if needed, and task memory. Both field READMEs, the wall ledger and other workers' records remain read-only.
 

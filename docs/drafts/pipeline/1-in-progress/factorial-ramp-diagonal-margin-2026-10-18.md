@@ -51,6 +51,8 @@ The [actual infinite zero-side limit](../3-formalized/factorial-muntz-zero-side-
 
 The [uniform tail prime/polar budget](../3-formalized/factorial-muntz-tail-prime-polar-budget-2026-10-18.md) now controls the literal smoothed correction tail `U_(n,k)=mollifier_k*(G_n-r_n)`. Its global rate `3/2` survives smoothing with value constant `12*exp(3/2)/sqrt(n+1)`, independent of `k`, and its actual decay-class membership is proved. Autocorrelation decay at rate `5/4` gives an absolutely convergent ordinary prime sum, identified with the Abel pairing, bounded by a fixed `B/(n+1)`. Both polar branches contribute at most `144*exp(1)^2/(n+1)` in absolute value. Thus `|Re W(U,U)-Arch(U)| <= (B+144*exp(1)^2)/(n+1)`, and the prime-plus-pole absolute cost is uniformly negligible at scale `log(n+2)/(n+1)`, even for a smoothing schedule depending on `n`. Two leaves, 17 theorems and all 22 public declarations passed direct/axiom checks. The new work removes these tail-diagonal non-archimedean budgets; the archimedean lower bound, mixed-term control and original compact-ramp coupled margin remain open.
 
+The [exact tail phase-cell mass](../3-formalized/factorial-muntz-tail-phase-mass-2026-10-18.md) supplies the missing quantitative mass lower bound. The actual collar obeys `(n+1)*epsilon<=1/12`. On each phase interval `j<= (n+1)/exp(x) <= j+1/16`, the three lattice sums are exactly `4j,2j,j`, so the repaired tail equals `exp(x/2)/(2*sqrt(n+1))`. Summing `n+1` disjoint cells proves `integral_[-log(2),0] T_n^2 >= 1/(256*(n+1))`. Actual normalized smoothings converge in squared mass; for each `n`, sufficiently fine smoothing retains `1/(512*(n+1))`. The prior prime/pole error is consequently bounded by one constant times actual source mass, independent of `n`. Two leaves, 17 theorems and all 18 public declarations passed direct/API/axiom checks. Frequency or weighted-primitive suppression is still needed for logarithmic archimedean growth, followed by mixed-term control for the original ramp. The child card records a concrete cubic-primitive conjecture; it is not yet a theorem.
+
 ## Exact physical-space cancellation: paper proof
 
 For any weight w on positive integers that vanishes above K, and M>=K,
@@ -140,3 +142,13 @@ The deep query `co-Poisson Muntz transform zeta Mellin null source truncation We
 These are source-level leads, not newly Lean-audited dependencies. None supplies the missing quantitative lower bound for the actual ramp diagonal. An `L²` limit, a pointwise Mellin limit, or raw-source annihilation alone does not discharge that bound.
 
 The supplementary deep search `Euler Maclaurin finite zeta sum remainder critical strip` completed without reported execution errors (`/tmp/bsu-ramp-euler-maclaurin-search.json`). Semantic coverage is unmeasured. It returned real Euler–Maclaurin and Hurwitz continuation ingredients, not a verified uniform spectral estimate for this ramp. Fixed-frequency transform asymptotics alone cannot justify passing a Weil zero sum to a limit; high frequencies and the shrinking collar require separate control.
+
+## Verified correction-tail primitive energy
+
+The [actual tail primitive card](../3-formalized/factorial-muntz-tail-primitive-suppression-2026-10-18.md) now proves, for every actual normalized smoothing `U_(n,k)` of the canonical correction tail and `N=n+1`,
+
+`norm(paperFT U_(n,k) tau) <= 360*exp(1)*(1+|tau|)/(N*sqrt(N))`,
+
+and absolutely integrable weighted primitive mass at most `C/N^3`, where `C=32*(360*exp(1))^2*pi` is independent of `n,k`. The proof uses the exact dyadic lattice remainder, a bounded Bernoulli primitive, and integration by parts retaining the endpoint at zero. Together with the [exact phase-cell source mass](../3-formalized/factorial-muntz-tail-phase-mass-2026-10-18.md), it gives primitive mass at most `(512*C/N^2)` times physical squared mass, eventually in smoothing index for each fixed `n`. Four leaves and all 29 public declarations passed direct Lean/API/axiom checks with only standard axioms.
+
+This discharges actual low-frequency suppression and relative primitive smallness. The existing compact-source logarithmic mass-ratio theorem still needs a justified domain bridge to these noncompact tails; the original ramp's mixed terms and sufficient diagonal margin above remain unproved. The parent stays in progress, and all-source RW/RH remain open.

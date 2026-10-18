@@ -1,10 +1,10 @@
 # RFHM: simultaneous prime-support and actual-theta completion
 
 - **ID:** RFHM-THETA-COMPLETION-2026-10-18
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper); Lean pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Current RFHM candidate; native `JointAncestryGammaThetaBooleanClosedCreation` and `GammaSewnSynchronizedLcmContraction`.
-- **Statement:** For every positive aperture and every complex formation parameter, the literal Gamma-weighted Boolean support packets at actual theta grade equal to support cardinality have square-summable norms over all finite prime supports.
+- **Statement:** For every positive aperture, complex formation parameter, independent prime phase assignment, and fixed additional theta grade, the literal Gamma-weighted packets admit a nonzero all-support Hilbert source, exact forward creation covariance, and norm-convergent finite-prime cutoffs.
 
 ## Goal and limits
 
@@ -12,9 +12,22 @@ Construct a simultaneous, coefficient-faithful all-prime/all-compound source in 
 
 ## Plan
 
-1. Audit native coefficients and prior completion results; attack the proposed estimate.
-2. Prove a dependency-closed paper theorem for squarefree incidence and Gaussian moment growth, then specialize to the actual Gamma–theta source.
-3. Formalize surviving claims, wire finished leaves, run individual canonical Lean audits, axioms checks, and formal lint. No umbrella builds.
+1. Complete: audit native coefficients and prior completion results; attack the proposed estimate.
+2. Complete: dependency-closed paper proof for squarefree incidence and Gaussian moment growth, specialized to the actual Gamma–theta source.
+3. Complete for this change: four canonical individual Lean audits, umbrella wiring, 29 theorem axiom audits, 38 API probes, source hashes, and diff checks. Repository-wide lint ran and reports the unrelated unwired module recorded below. No umbrella builds.
+
+## Formal result and validation
+
+- Framework: `formal/GaloisForLFunctions/BiScaleUncertainty/SquarefreeGaussianCompletion.lean`.
+- Arithmetic producer: `formal/GaloisForLFunctions/RHTower/GammaThetaSupportWeightBounds.lean`.
+- Native completed source: `formal/GaloisForLFunctions/RHTower/GammaThetaFullSupportSource.lean`.
+- Creation and exhaustion: `formal/GaloisForLFunctions/RHTower/GammaThetaFullSupportCreation.lean`.
+- Main declarations: `memLp_jasGammaThetaFullSourceFun`, `jasGammaThetaFullSource_section`, `jasGammaThetaFullSource_ne_zero`, `summable_jasGammaThetaFullSupport_energy`, `jasGammaThetaFullSource_creation_covariance`, and `tendsto_jasGammaThetaFullSource_primeCutoffs`, all in `RHTower`.
+- Each leaf passed `lake --old env lean <leaf> -j1 -o <olean> -i <ilean>` with no errors or warnings. Finished modules are wired into their respective umbrellas.
+- `/tmp/hgt-rfhm-axioms.lean` passed: all 29 public theorems use only `[propext, Classical.choice, Quot.sound]`; all 38 API probes passed.
+- `scripts/formal_tools.py lint` exited 1 solely because `GaloisForLFunctions.BezoutValuationIncidence.RenormalizedMobiusDefectAndFirstOctaveCancellation` is unreachable from its umbrella. This untracked module is outside this change and was not modified. Existing large-file warnings also remain. No new leaf is reported by lint.
+- Audit evidence: `/tmp/hgt-rfhm-audit-manifest.json`, `/tmp/hgt-rfhm-source-sha256.txt`, and `/tmp/hgt-rfhm-{core,weights,source,creation,axioms,lint}.log`. Final source hashes checked against all four verified leaves.
+- RH remains open. Next turn should rotate to a different family, rather than continuing PA/JAS/RFHM by default.
 
 ## Conjecture and attack
 
@@ -33,6 +46,7 @@ Attack points: the Boolean vacuum is exceptional in the synchronized geometric f
 - 2026-10-18 — Rotated after verified PA work to RFHM candidate. The proposed unrelated integer-successor carrier was rejected: no native-source covariance or Xi landing. Existing Boolean closed creation and Gamma–theta closed creation were found and will be reused.
 - 2026-10-18 — Deep corpus searches completed for covariance and synchronized compound kernels. Source inventory complete; compiler applicability mostly source-only and semantic coverage unavailable. No numerical experiments, web search, or external novelty audit.
 - 2026-10-18 — Canonical individual Lean audits passed for `BiScaleUncertainty/SquarefreeGaussianCompletion.lean` (three general completion theorems) and `RHTower/GammaThetaSupportWeightBounds.lean` (six unconditional arithmetic bounds). Both wired into umbrellas. Actual source completion and native creation covariance remain under formal verification.
+- 2026-10-18 — `RHTower/GammaThetaFullSupportSource.lean` passed its canonical individual audit and is wired. This verifies actual product-space admission, independent prime phases, every fixed additional theta grade, exact support-coordinate recovery, nonvanishing, and simultaneous support-energy summability. Creator/cutoff leaf remains under verification.
 
 ## Dependency-closed paper proof [PROVED HERE]
 
@@ -68,3 +82,10 @@ The proof uses only existing unconditional source formulas, the p-series, finite
 Independent prime phases are retained as well: replace `z^|P|` by `product_(p in P) [z exp(i tau_p)]`, for any real phase assignment `tau`. Its modulus remains `|z|^|P|`, so the same proof applies verbatim. The forward law has scalar `z exp(i tau_p)` at prime `p`. This strengthened statement is included in formalization; no phase averaging occurs.
 
 The admission theorem also discharges cofinal norm exhaustion. Multiply the completed source by the indicator that every prime in its support is at most `N`. These multipliers are measurable contractions and converge pointwise to one because every support is finite. Dominated convergence in `L2` proves norm convergence of the literal finite-prime cutoffs to the completed source. The exact coordinate formula identifies what each cutoff retains; no convergence hypothesis is added.
+
+## Significance and boundary audit
+
+- **Removed burden:** simultaneous Hilbert admission across the entire finite-prime-support lattice, with support cardinality advancing the actual unbounded theta ladder. Prior native files gave individual grades, finite compound retention, and closed prime creators. The new source needs no assumed global coefficient budget or cutoff-convergence premise.
+- **Mechanism:** a finite-head/small-tail estimate makes the squarefree generating product have arbitrarily small exponential type in the Gaussian moment variable. The literal double-exponential theta cusp absorbs it. A total-square-mass estimate alone would leave an artificial bounded formation disk.
+- **Coefficient fidelity:** no prime phase averaging, no replacement of synchronized Gamma coefficients, and no normalization of theta grades. The empty support remains the nonzero theta vacuum.
+- **Boundary:** all positive apertures admit this source, including off-wall parameters. The forward occupied-support equation is not the impossible unital prime-coordinate intertwiner ruled out in the corpus. Prime-Poisson identification and Xi reflection remain open; RH is not proved.
