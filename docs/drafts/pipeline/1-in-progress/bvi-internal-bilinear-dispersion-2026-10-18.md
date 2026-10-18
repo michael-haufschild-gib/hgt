@@ -460,7 +460,7 @@ is an input. The original raw profile and its radial mismatch remain explicit.
 
 ### C10 — ordered compensated gaps: a collective bound before overlap
 
-**New paper candidate; corpus audit and Lean verification pending.**
+**Paper proof, original-source Lean check, and complete public axiom audit passed.**
 For `p>0`, `h>=0`, `k>=1`, and `k*h<=p`, let `q=p+h` and define
 `W_(p,h,k)(n)` to be zero outside `[kp,(k+1)p)`, and inside this cell to be
 `(n mod p)-(n mod q)+h`. The two exact values are
@@ -506,6 +506,286 @@ levels; it must not be discarded or replaced by a full-period average.
 Next conjecture after this candidate: estimate that later signed remainder
 using the existing finite lag/reciprocity representation. This is the part
 where the current argument has no cancellation proof.
+
+The checked data-only constructor is
+`p_i = K * H + offset + 1 + sum_(j<i) h_j`, with `H=sum_(j<m) h_j`.
+The literal prefix theorem has the explicit right side
+
+`8 sum_i a_i^2*(h_i*harmonic(K)-K*h_i^2/p_i)
+ + 2*(H/P)*sum_i a_i^2*h_i`, where `P=p_0`.
+
+Leaf: `OrderedPronicGapCellsAndCollectivePrefixEnergy.lean` (871 lines,
+two definitions and five public theorems), wired into the BVI umbrella.
+The actual-source command `lake --old env lean -j 1` exited 0 without
+warnings. No full or umbrella build ran.
+All seven public declarations have exactly the standard three axiom dependencies
+and all seven are present in the corpus index. Source SHA-256:
+`4f1138da8f4df6349692aacb38070060f73e4269ac003d7b91a27dc6242a43d4`.
+Index generation exited 0; `lint --check-generated` exited 1 only for the
+foreign package-root `TransHorizonIncidenceMechanics.lean` placement error.
+No owned finding occurred. Durable audit files share prefix
+`logs/bvi-ordered-gap-2026-10-18-`; their manifest records commands and results.
+Seventeen owned scratch/search files were archived and removed after all
+associated processes exited. README was not edited by this task.
+
+Corpus audit: the compensated-cell and nonpositive-covariance deep queries
+returned existing pairwise gap bounds and generic Hilbert bounds. The final
+ordered-gap query inspected all 20 candidate statements, 20 source arguments,
+one proposed ingredient set, and five source passages. It was partial because
+semantic retrieval exceeded its Qdrant deadline; inventory coverage was
+74,195 files and semantic coverage was unmeasured. The proposed transfer via
+`naturalCutoffHeadEnergy_le_prefixEnergy_add_mean_sq` supplies no joint-gap
+estimate. No absence or novelty conclusion follows from these search results.
+
+### C11 — transfer the collective prefix estimate to the existing profile carrier
+
+**Formalized; original-source and all-public API/axiom audits passed.**
+Use the exact C9 identity, without changing its coefficients or cutoff:
+`X_p(n)=p*Re(A_r(n/p))=-sum_(x in S) mu(x.2)*(n mod(p*x.1))`,
+where `S=r.divisorsAntidiagonal` and `r>1`. Define
+`F(n)=sum_i a_i*(X_(p_i)(n)-X_(p_i+h_i)(n))` on the C10 chain.
+At cofactor `d=x.1>0`, the scaled chain has gaps `d*h_i`, base `d*P`,
+and offset `d*offset+d-1`. Its available prefix extends to `(K+1)*d*P`,
+so restriction to the original physical prefix `(K+1)*P` only decreases
+its nonnegative energy. Dropping the negative diagonal correction in C10
+therefore bounds this cofactor packet by
+
+`d * (8*harmonic(K)+2*H/P) * sum_i a_i^2*h_i`.
+
+Finite Cauchy over the exact divisor antidiagonal then gives
+
+`sum_(n<(K+1)P) F(n)^2/[n(n+1)]
+ <= C_r * (8*harmonic(K)+2*H/P) * sum_i a_i^2*h_i`,
+
+with precisely the existing `C_r=ramanujanDilationResidueBudget r`.
+This retains the signed sum over gaps before taking energy; only the finite
+base-cofactor expansion pays Cauchy. The common physical horizon stays fixed.
+The late signed tail remains a separate, unresolved obligation.
+
+The existing `pm_tsum_floor_dilation` and
+`hasSum_pmRamanujanPrimitive_reciprocal` also show that every `X_p` has
+the same full pronic mean `-vonMangoldt(r)`. Each difference `X_p-X_q`,
+and hence this entire signed packet, already has mean zero. No additional
+global centering correction is needed for this carrier. A bilinear prefix
+estimate follows by finite weighted Cauchy after the collective bound.
+
+The scratch check exited 0 without warnings for the five public declarations
+in `RamanujanOrderedGapCollectivePrefixEnergy.lean` (322 lines): scaled
+residue-prefix transfer, packet definition, zero-mean `HasSum`, collective
+quadratic prefix bound, and squared bilinear prefix bound. The source is wired
+into the umbrella. Its original-source audit and all-five-public API/axiom
+audit both exited 0 without warnings; every axiom closure contains only
+`propext`, `Classical.choice`, and `Quot.sound`. Source SHA-256:
+`3b073a61ccfa30597681a1db67795b6b1f7aa27c23338f039e2d0c82a1497c80`.
+The C11 search completed without a partial flag, inspected all
+20 candidate statements and 20 source arguments, and recovered the existing
+profile, lag-sector, and second-order pronic-tail identities. Semantic coverage
+remained unmeasured; the suggested pairwise ingredient set does not prove the
+collective estimate.
+
+New corpus reconciliation: the complete 175-line
+`ClockWaveletTensorBuchstabL2TelescopeAndShortWindowBridge.lean` was checked.
+Its three capstones concern valuation-shell wavelets, the unweighted
+`sieveL2PrefixEnergy`, and short-window successor-defect sign classification.
+These are useful existing results, but no identification with the current
+pronic dilation energy is supplied. The deep query found its source passages;
+its proposed tensor/photonic ingredient set had incompatible carriers and was
+rejected. That query was partial (semantic retrieval deadline), with 74,196
+inventoried files and unmeasured semantic coverage.
+
+Durable verification and search evidence share prefix
+`logs/bvi-dilation-collective-2026-10-18-`: source, axiom, index and lint logs;
+public names; audit source; manifest; and `search-and-scratch.tar.gz`.
+The final index exited 0. The final lint exited 1 with three foreign findings:
+unwired `BarbanVehovMollifierKloostermanGcdAndLogEnergyWallOneBridge`, unwired
+`BeurlingGibbsCotangentTransportAndSchurCollarWallOneBridge`, and package-root
+`TransHorizonIncidenceMechanics.lean`. No finding names this task's leaves;
+no global pass is claimed. All archived C11 scratch files were hash-verified
+before removal after their processes exited. The earlier C1–C8 temporary
+paths in this card are historical execution paths; their 66 owned files are
+preserved by basename in `logs/bvi-dispersion-history-2026-10-18.tar.gz` and
+its manifest. No README edits or commits were made.
+
+### C12 — all-level cell centering as a candidate tail reduction
+
+**Formalized; original-source and all-public API/axiom audits passed.**
+The pre-overlap cell formula stops when `k*h>p`. Retain the exact pronic
+conditional mean on *every* cell `[kp,(k+1)p)` instead. Write `q=p+h`,
+`ell=floor(k*p/q)+1`, and `s=ell*q`, for `p,k>0` and `h>=0`.
+There is at most one `q`-jump inside this cell because `q>=p`.
+
+If `s>=(k+1)p`, the residue difference is constant `-(kp mod q)` and lies
+in `[-h,0]`. If `s<(k+1)p`, its two values differ by `q`, its conditional
+pronic mean is
+
+`m = -(k+1-ell)*(s-kp)/ell`,
+
+and the energy after subtracting that mean is exactly
+
+`(s-kp)*((k+1)p-s)/(ell^2*p)`.
+
+The cell mass is `1/(k*(k+1)*p)`. These formulas follow by multiplying the
+two interval masses `1/(kp)-1/s` and `1/s-1/((k+1)p)` and dividing by their
+sum. Put `j=k-ell>=0`; then `s-kp=ell*h-j*p` lies in `(0,p)`, and
+`(j+1)*(ell*h-j*p)<=ell*h` follows from `ell*h<=(j+1)p`.
+Thus the conditional mean always lies in `[-h,0]`, including after overlap.
+
+For any family `p_i=P+offset_i`, the sum of these conditional-mean
+parts therefore has full pronic energy at most
+`(H/P)*sum_i a_i^2*h_i`, by weighted Cauchy and the mass after `P`.
+The remaining problem is the collective frame bound for the locally
+mean-zero cells across different modulus/quotient pairs. Their mixed-level
+overlaps contain the actual Diophantine collision geometry. This candidate
+isolates that obligation; its exact cell formulas alone do not solve it.
+
+The all-level-cell corpus query inspected 20 candidates, 20 source arguments,
+one proposed proof transfer, one ingredient set, and ten source passages. It
+was partial at reranking (74,196 inventoried files; semantic coverage unknown).
+The proposed transfer only reused C10's `k*h<=p` cell theorem, so it does not
+establish this all-level statement. Existing orbit centering is on a different
+progression and retains its own initial-value correction. The resulting
+433-line leaf `AllLevelPronicResidueGapCentering.lean` has six public
+declarations: the literal conditional mean, its all-level bounds and exact
+formula, centered moments, the collective mean-part budget, and the
+raw-to-centered packet reduction. Its original-source audit exited 0 without
+warnings using `lake --old env lean -j 1`; the leaf is umbrella-wired. The
+separate all-public API/axiom audit also exited 0 without warnings. All six
+closures contain exactly `propext`, `Classical.choice`, and `Quot.sound`.
+All six public names were found by exact lexical corpus search. Index
+generation exited 0; lint exited 1 only for the foreign package-root
+`TransHorizonIncidenceMechanics.lean`. Durable logs, manifest, audit source,
+and hash-verified scratch/search archive share prefix
+`logs/bvi-all-level-cell-2026-10-18-`. Owned temporary files were removed
+after every C12 process exited. No full build, README edit or commit occurred.
+
+A further deep search for all-level mixed-cell frame control completed with
+`partial=false`: 20 candidates and 20 source arguments inspected, one proposed
+ingredient set, ten source passages, 74,203 inventoried files. Semantic
+coverage was unmeasured, its coverage snapshot was one generation older,
+and refresh reported a running background indexer. Its proposed ingredient
+set only combines a pairwise absolute residue bound with the existing
+prime-pair distance identity; it supplies no signed-family estimate.
+`exists_pmActiveDeletedCovarianceDiagonal_compensated_bound` is an existing
+uniform compensated adjacent-covariance result on a different carrier; it
+is retained as prior work, not re-proved here. A broader interval-frame
+search then completed with `partial=false`, 20 candidate statements, 20
+source-argument statements, two proposed transfers and one ingredient set.
+These were inspected. Its orthonormal Bessel transfer requires the missing
+orthogonality; the oscillator transfer concerns the Bessel special function;
+the suggested weighted-Bessel ingredients require unproved row/column bounds.
+None proves this arithmetic frame estimate. Semantic coverage was unmeasured
+and the index snapshot one generation older (74,205 inventoried files).
+
+Two additional search hits were source-checked. The 211-line
+`PMPowerDampedMobiusLogConvolution.lean` gives an exact logarithmically
+weighted energy balance with dilation, lower-prefix, and forcing covariances;
+it supplies no sign or uniform bound for their combined contribution.
+`MobiusSignedSchurTransferPaper.lintegral_norm_sq_signedChannelGap_le` bounds
+a different normalized logarithmic tail channel at exponent `1+2*omega>1`
+using an absolute probability tail. No identification with the physical
+pronic dilation packet is present in the checked statement and proof.
+
+The subsequently added 448-line
+`BarbanVehovMollifierKloostermanGcdAndLogEnergyWallOneBridge.lean` was read
+fully while its owner was still integrating it. Its exact statements package
+complete-period variance bounds for a different logarithmically tapered
+Barban–Vehov weight; exact Fermi head/tail identities; distinct-modulus
+Kloosterman terminal-block and shared-GCD bounds; and
+`0 <= logarithmic covariance combination <= log(N)*original energy`.
+The last sandwich adds a sign statement to the earlier logarithmic balance,
+but its upper bound still contains the unknown energy and gives no strict
+contraction. The distinct-modulus Kloosterman bound extends complete-period
+cancellation beyond the coprime case and keeps the terminal block. It still
+needs an exact carrier/weight conversion before application to this packet.
+These are existing ingredients, not new contributions of this task. No
+foreign module or umbrella wiring was changed on their behalf.
+
+The complete 311-line
+`BeurlingGibbsCotangentTransportAndSchurCollarWallOneBridge.lean` was also
+read. Its cotangent transport is for logarithmic phases; its Schur collar
+uses a different odd profile. Its integer-jump/profile coupling is an
+existing ingredient already reused here. None of these checked statements
+identifies the mixed-cell Gram with a modular-inverse exponential sum.
+
+### C13 — shared-birth cells expose a coherent arithmetic block
+
+**Formalized: exact tail, shared-start covariance, positivity classification,
+and coherent positive family. The larger family minimum-kernel statement
+below remains a paper corollary.**
+The same-level nonpositive covariance in C10 cannot be extended unchanged
+across quotient levels. A stronger positive survivor is an exact
+shared-start covariance classification, rather than only a counterexample.
+
+Take positive integers `g,l`, set `k=l+d` with `d>=0`, `p=g*l`, `r=g*k`,
+and `a=k*p=l*r`. Let `W` be the C12 locally centered unit-gap residue cell
+on `[a,a+p)` and `V` the corresponding cell on `[a,a+r)`. Define
+`ell=floor(a/(p+1))+1` and `D=ell*(p+1)-a`, so `1<=D<=p+1`.
+The next jump of `W` is at `a+D`. Because `l<=r`, the mean of the larger
+cell is `-1`, and its only jump is at `a+l`, of size `r+1`.
+
+If `D>=p`, `W=0`. Otherwise its pronic tail mass at `a+l` is
+
+- `(p-D)*l/(ell*p*(a+l))` when `l<=D`;
+- `D*(p-l)/(ell*p*(a+l))` when `D<=l`.
+
+The full mean of `W` is zero. Pairing with the larger cell therefore
+multiplies that tail by `r+1`. Since `a+l=l*(r+1)` and `p=g*l`, the exact
+cross energy is
+
+`max(0, min(p-D, (g-1)*D)) / (ell*p)`.
+
+Thus every such shared-start pairing is nonnegative. It vanishes for
+`g=1` (the product start `a=p*r`), including the first common start of
+coprime moduli. For `g>1` it is positive exactly when the smaller cell has
+an interior jump (`D<p`). This separates a common-factor resonance from
+the coprime product-start channel; it does not control other overlaps.
+
+In the pre-overlap case `k<=p`, `D=k`, `ell=k`, and the covariance is
+`1/k-1/p`, exactly the smaller cell's variance. A family of unit-gap cells
+with the same start and all levels before overlap consequently has the
+kernel `min(v_i,v_j)`, where `v_i=1/k_i-1/p_i`. Its positive correlations
+must be retained as a coherent block, not bounded by a fictitious
+orthogonality rule. This minimum-kernel algebra is an existing reciprocal
+Green-kernel pattern; the proposed contribution is its exact arithmetic
+cell realization and resonance/zero classification. Corpus reuse and
+formal verification remain pending.
+
+The newly inspected existing
+`RHTower/EulerDeletionPrimitiveInterference.lean` (all 128 lines) already
+proves exact nonnegative residue kernels and strict positive overlap for
+physical integer-dilation generators. Its ten lexical hits were inspected.
+That result warns against transferring coefficient-space cancellation to
+the physical primitive, but its raw generators are different from these
+locally centered cells. It does not supply this covariance formula.
+
+The broad shared-birth query completed but mostly matched algebraic residue
+quotients; its proposed ingredient set mixed incompatible carriers and was
+rejected. A second BVI-restricted query completed with `partial=false`,
+20 candidate and 20 source-argument statements inspected, no proof transfer,
+and one proposed ingredient set. It recovered C10/C12 and the existing
+logarithmic balance, adjacent-divisor identities and valuation-clock filters.
+Its proposed CRT-remainder plus cell-mean combination does not prove the
+shared-start covariance. Coverage: 74,207 inventoried files, unmeasured
+semantic coverage, refresh deferred to the running background indexer.
+
+The 565-line leaf `SharedBirthPronicCellCovariance.lean` has eight public
+declarations: the arbitrary-cut cell-tail formula, product-start
+orthogonality, shared-start covariance definition and exact formula,
+nonnegativity, product-start zero specialization, exact positivity
+classification, and unconditional coherent family. The original-source
+check and all-eight-public API/axiom audit exited 0 without warnings.
+Every closure contains exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Source SHA-256:
+`90d95301184764fda8da224141956a5b16b946b5b617c922a58ae36a97731805`.
+
+The leaf is umbrella-wired, and all eight names were found by exact lexical
+corpus search. Index generation exited 0. Lint exited 1 only for the foreign
+package-root `TransHorizonIncidenceMechanics.lean`; no global pass is claimed.
+Durable logs, manifest, API/axiom source and hash-verified search/scratch
+archive share prefix `logs/bvi-shared-birth-2026-10-18-`. Known temporary
+files were removed after all corresponding processes exited. No full build,
+README edit or commit occurred. The later arithmetic cross-cell sum remains
+unbounded by these local identities.
 
 ## Formalized contribution
 

@@ -44,12 +44,43 @@ Paper proof, exact scope and source hash are on
 `../3-formalized/bvi-birth-delayed-interior-centering-2026-10-18.md`;
 raw audit evidence is under `logs/bvi-birth-delayed-2026-10-18-*`.
 
-Final index refresh passed. Final lint still reports seven unrelated CHMD
+At the second leaf's checkpoint, index refresh passed and lint reported seven unrelated CHMD
 reachability errors, root-module placement, and two generated files made
 stale by concurrent changes; no finding names the owned leaf. The exact
 ten errors and all certificates are in the manifest. Forty-eight owned
 proof/search temporary files were archived and removed. Source and axiom
 processes are terminal; subsequent corpus searches are tracked separately.
+
+The third positive result is now formalized and wired:
+`UniformActiveDeletedCompensatedRemainder.lean` proves a uniform O(1)
+active-deleted diagonal remainder for every positive damping, with all
+arithmetic moment conditions discharged. Original source passed (21412);
+all five public axiom closures and thirty mathlib name probes passed
+(18267). Index refresh passed. At that checkpoint lint had one unrelated root
+placement error and existing warnings, with no owned-leaf finding.
+Thirty completed scratch files were archived and removed. Exact proof
+and certificate:
+`../3-formalized/bvi-uniform-active-deleted-compensated-remainder-2026-10-18.md`.
+
+The fourth positive result is formalized and wired:
+`AsymmetricAdjacentDivisorTruncation.lean`. Existing bounded fields,
+divisor averages, sharp CRT defects, and the adjacent limit yield the
+quantitative bound `2*U_eta(D)+4*D*U_epsilon(A)+A*D/N`, with
+`U_epsilon(A)<=K_epsilon*A^(-epsilon/2)`. Original source passed (68346);
+all three public axiom closures and twenty mathlib probes passed (82766).
+Index refresh passed. Lint found three unrelated errors and no owned-leaf
+finding. Thirty-two completed scratch files were archived and removed.
+Exact proof and certificate:
+`../3-formalized/bvi-asymmetric-adjacent-divisor-truncation-2026-10-18.md`.
+
+The fifth positive result is formalized and wired:
+`UniformAdjacentDivisorCompensatedRemainder.lean` proves a positive
+power rate for every adjacent mean at positive damping and a uniform
+bound using the exact compensated kernel. Original source (96521), both
+public axiom closures, thirteen mathlib probes (4141), and index refresh
+passed. Lint found two unrelated errors and no owned-leaf finding.
+Twelve completed scratch files were archived and removed. Certificate:
+`../3-formalized/bvi-uniform-adjacent-compensated-remainder-2026-10-18.md`.
 
 The programme's problem 4 uses the actual source weight and increment.
 README remains unchanged by this task. Full contraction remains open:
@@ -60,14 +91,25 @@ Hilbert/Gram identities, integer-jump and additive-lag bridges, truncated
 Gram estimates, and the corrected natural-cutoff tail bridge were checked.
 Those identities do not bound the remaining physical tail variance.
 The current candidate is tracked in
-`bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`:
+`../2-fully-proven/bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`:
 upgrade the existing o(log T) interior-versus-energy residual to O(1),
 reusing the corpus's bounded-field adjacent-correlation proof with two
 different divisor cutoffs. Its paper estimate has positive power saving
-for every positive damping. Lean formalization is pending. This would
+for every positive damping. The diagonal specialization and quantitative
+two-cutoff estimate are formalized. The explicit power-rate selection and
+compensated adjacent harmonic bound remain in progress. This would
 isolate the actual energy bound still needed for strict contraction;
 it does not complete the parent goal. Earlier dyadic and pairwise routes
 remain recorded below with their exact gaps.
+
+Fresh corpus searches also located collective finite-prefix control already
+proved in `OrderedPronicGapCellsAndCollectivePrefixEnergy.lean` and
+`RamanujanOrderedGapCollectivePrefixEnergy.lean`. These remove the
+number-of-gaps loss for ordered signed packets, retain the actual physical
+prefix under cofactor dilation, and prove zero global pronic mean for the
+Ramanujan packet. Their later signed tail remains unresolved. Use these
+stronger inputs for the next contraction conjecture; do not duplicate the
+collective finite-prefix estimates or promote them to full-horizon bounds.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable. This card tracks the plan; independent reads use `Promise.allSettled`. Serena returned no Lean symbols in the active Python project, so Lean source inspection uses corpus search and `rg`.
 

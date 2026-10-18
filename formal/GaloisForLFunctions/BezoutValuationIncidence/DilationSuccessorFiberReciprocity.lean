@@ -116,13 +116,10 @@ theorem ramanujan_complete_progression_correlation (Q : CGLPositiveModulus)
     ramanujan_complete_affine_correlation Q (ZMod.unitOfCoprime m hm) b h
 
 
-/-- The literal natural Ramanujan coefficient at successor lag is the Möbius function. -/
+/-- Successor specialization, reusing the existing natural-coefficient theorem. -/
 theorem ramanujanNaturalCoefficient_one (r : ℕ) :
-    d4BMRamanujanNaturalCoefficient 1 r = (ArithmeticFunction.moebius r : ℂ) := by
-  rcases Nat.eq_zero_or_pos r with rfl | hr
-  · simp [d4BMRamanujanNaturalCoefficient]
-  · rw [d4BMRamanujanNaturalCoefficient_eq_gcd_mobiusDivisorSum hr]
-    simp
+    d4BMRamanujanNaturalCoefficient 1 r = (ArithmeticFunction.moebius r : ℂ) :=
+  pm_ramanujan_at_one r
 
 /-- Every full residue block on the jump-solution step pq has the exact successor mean μ(r). -/
 theorem ramanujan_complete_successor_progression (Q : CGLPositiveModulus)

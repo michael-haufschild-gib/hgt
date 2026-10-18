@@ -18,7 +18,7 @@ Prove `∃ C : ℝ, ∀ y : ℝ, 0 ≤ y → F(y) ≤ C` (or its lower-bound cou
 1. [done for current candidates] Audit exact source, kernel, prior conjectures, and all-scale receivers using the local research search and actual Lean declarations.
 2. [in progress] State competing precise cancellation conjectures; attack their quantifiers, source fidelity, and prior-corpus overlap.
 3. [done for finite-fold spectral classification] Complete a dependency-closed paper proof before formalization; the all-scale arithmetic bound remains open.
-4. [done for spectral classification and separation] Seven leaves compile; both final leaves pass direct `lake --old env lean` checks; five theorem axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Umbrella wiring and generated indexes updated. Global lint retains two unrelated tree errors, recorded on the failed-route card.
+4. [done for spectral classification and separation] Seven leaves compile; both final leaves pass direct `lake --old env lean` checks; five theorem axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Umbrella wiring and generated indexes updated. The failed-route card records that audit; the additional quantitative-tail audit is recorded below.
 5. [in progress] Reassess whether the actual target is proved; continue conjecturing if it remains open. The requested all-scale bound remains unproved.
 
 ## Constraints
@@ -98,6 +98,93 @@ The same prior audit records why coefficient-tail redesign and an assumed variat
 
 Candidate mechanism: use the exact child-cofactor cancellations from the Euler-deletion route to control the complete wave. The corpus already proves terminal composite-level vanishing and a high-clock leakage bound `N²/(clock(l)+1)` for arbitrary coefficients of absolute value at most one. Neither fact alone estimates the earlier simultaneous signed tails.
 
-A stronger indexing check is required before using any terminal child theorem: `historyLayer_predictableDrift_eq_reverse_tail` sums only over `l < i < N`. At `N=l+1`, this is empty, so the entire terminal drift layer vanishes at every level, including prime levels. Paper proof: apply the existing reverse-tail identity and use the empty index condition. A scratch Lean applicability audit is running; this is a consequence of existing work, not a new arithmetic cancellation theorem.
+A stronger indexing check is required before using any terminal child theorem: `historyLayer_predictableDrift_eq_reverse_tail` sums only over `l < i < N`. At `N=l+1`, this is empty, so the entire terminal drift layer vanishes at every level, including prime levels. Paper proof: apply the existing reverse-tail identity and use the empty index condition. A scratch `lake --old env lean` applicability audit passed; its axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`. This is a consequence of existing work, not a new arithmetic cancellation theorem.
 
 The nonempty target must retain `N > l+1`. For the separate geometric-checkpoint attempt, clock energy only samples cofactors disjoint from the processed core. The existing terminal classification `mobiusDivisorFiniteClockEnergy_terminal` leaves the current head square and omitted-prime singleton squares. Old processed cofactors are absent, so those coordinates cannot directly recover earlier completed cutoffs.
+
+The Euler-deletion corpus already localizes the complete drift to `logClockSourceProjection`, with a bounded martingale and error at most `110/(N+1)` in squared norm. It also gives a cofinal polylogarithmic receiver at the two-logarithm clock. These preserve one complete signed paired-source quotient; they do not bound it. Importing only terminal vanishing or high-clock leakage would discard that exact surviving field.
+
+## Next source question: spatial wave energy
+
+Investigate the actual translated field `H(y,v) = exp(v/2) Σ_m μ(m) mobiusFold y (v + log m)` on `v ≥ 0`. The conjugated kernel suggests `H_yy = H_vv - 2H`. If the needed derivatives and integrals are admitted, its half-line energy has boundary work `-H_y(y,0) H_v(y,0)`. No passive boundary condition or uniform energy estimate has been established. The CHMD energy search recovered the existing local origin maximum, Doob energy localization, nodal identities, and spectral receivers; none of these statements supplies that boundary-work estimate. A uniform energy argument also needs scrutiny against the completed wave's temporal atoms.
+
+## Source multiplier candidate, with prior-work and arithmetic gates
+
+Write `α = γ+1`, `β = log(2π)/2`, `R = ccmPrimeDeficitDilationRemainder`, and
+
+`B(q) = α - β + α/(q-1) + q² ∫₀∞ R(u) exp(-qu) du`, for `Re q > 0`, `q ≠ 1`.
+
+For finite real coefficients supported on positive integers, put `A_a(q)=Σ a_m m^(-q)` and `h_a=Σ a_m/m`. The candidate exact combined spectral formula is
+
+`Σ a_m Φ_y(v+log m) = α exp(-v) h_a P(y)`
+
+`  + exp(-v/2)/π ∫ℝ cos(y sqrt(r²+2)) sech²(r/2) Re(exp(irv) B(1/2-ir) A_a(1/2-ir)) dr`.
+
+Here `P(y)=2 cos(y sqrt(7/4))/cos²(1/4)`. This is a paper derivation, not a Lean-verified new theorem. It retains the pole, constant, and remainder before taking an absolute value. Its derivation uses the existing fold decomposition: split the pole-density tail as its full integral minus the interval `(-∞,v]`; Fourier integration of that latter interval gives `exp((1/2+ir)v)/(1/2+ir)`. The remainder contributes `q²∫R exp(-qu)`. The bound `|R|≤7/2`, exponential decay of `sech²`, and polynomial size of `q²` admit the two Fourier exchanges for each finite row.
+
+The causal-ramp identity in `CCMPrimeDeficitResidualPairing` gives, on `Re q>1`, the paper identity `B(q)=ζ'(q)+q ζ(q)/(q-1)` by termwise Laplace integration. Any use of this identity on the critical line still requires analytic continuation to be established; it is not assumed here. Related existing work is `LSeries_selbergWeightedVonMangoldt`, which identifies the completion's `-M_w ζ'` Dirichlet series, and the finite Weil-symbol representation. The precise CHMD formula above has not been kernel checked.
+
+For `a_m = selbergMobiusCoeff N m`, the explicit pole coefficient is already paid by existing arithmetic. Source proof: use `selbergMobiusCoeff_eq`, factor out `1/log N`, and apply `Sieve.abs_sum_moebius_log_div_le`. Thus
+
+`|h_a| ≤ (5+|γ|)/log N` for `N≥2`.
+
+This is an applicability consequence of existing work. A scratch `lake --old env lean` audit passed; the derived coefficient theorem uses only `propext`, `Classical.choice`, and `Quot.sound`. No new repository wrapper is needed.
+
+One stronger candidate is a uniform bound on `∫ max(-d_N(r),0) dr`, where
+
+`d_N(r) = sech²(r/2) Re(B(1/2-ir) A_N(1/2-ir))/π`.
+
+Why this would suffice: the formula at `y=0`, fixed-rapidity absolute convergence, and the paid pole coefficient bound the signed mass `∫d_N` uniformly. The identity `∫|d_N| = ∫d_N + 2∫max(-d_N,0)` would then give a uniform cosine-transform bound and allow the already admitted pointwise Selberg-row limit. **The negative-mass estimate is unproved.** Do not replace it by pointwise nonnegativity: finite Selberg completions already fail full-cone Weil positivity, with exact rough-integer law `Λ_w(n)=w(1) log n` as the known positive survivor. That exclusion concerns its stated Weil completion, not every folded-wave density.
+
+## Weaker cutoff target and quantitative light-cone tail
+
+The existing `chmdWave_growth_law` and `chmdPrimeWave_growth_law` receive every exponential rate `0 ≤ a < 1/2`. Bounds for all positive rates force every frequency displacement to vanish. Hence a subpower-in-cutoff bound on suitable finite rows can suffice; a cutoff-independent spectral total variation is stronger than needed.
+
+The taper must preserve its head for a quantitative transfer. A linear Selberg row changes every head coefficient by `log m / log N`; fixed-rapidity convergence alone gives no useful moving-cutoff rate. The existing `ChronologicalSelbergTaperEnergy` already expresses the plateau taper as a difference of logarithmic cutoffs. At outer cutoff `N²`, the row `2*selbergMobiusCoeff (N²) - selbergMobiusCoeff N` equals `μ` through `N`, has coefficient magnitude at most one, and vanishes above `N²`. This is existing taper structure, not a new arithmetic producer.
+
+**Dependency-closed paper proof of the analytic tail estimate:** let `P(y)=(1+|y|)(1+y²) exp(π|y|)`. The existing odd Bessel integral gives `|J₁(x)| ≤ |x|/2`: dominate its integrand by `|x| sin² θ` and use `∫₀^(π/2) sin² θ dθ = π/4`. With `besselJ_one_eq` and the value at zero this proves `|lightConeBesselReal(w)| ≤ 1` for `w≥0`. For a spatial kernel bounded by `C(1+|s|) exp(-π|s|)`, the existing `shift_decay_le` bounds either shift inside the light cone by `C(1+|y|) exp(π|y|) exp(-(π-1)|s|)`. Its pair-minus-Bessel-tail therefore has modulus at most `2 C P(y) exp(-(π-1)|s|)`. Apply this to `dAlembertReal`, `dAlembertDeriv`, and `dAlembertDeriv2`, whose spatial bounds are already proved. Their conjugated combination is bounded by `D P(y) exp(-(π-1/2)s)` for `s≥0`, with `D` independent of `y,s`. The existing source bound and the integral calculation in `exists_abs_mobiusFold_le` then give
+
+`∃ C≥0, ∀ y, ∀ v≥0, |mobiusFold y v| ≤ C P(y) exp(-(π-1/2)v)`.
+
+This proof uses the actual source and has no arithmetic cancellation premise. The strengthened rapidity dependence and the complete absolute series-tail estimate are now formalized in `CHMDLightConeFoldTailBound.lean`. The earlier decay proof selects a constant containing `exp(y²/2)`; its quantifiers alone do not establish the displayed estimate. The existing `CHMDLightConeBesselZeroAndIntegrationByParts` already removes that Gaussian cost for the cumulative prime channel, and `BesselJOneRecurrence` already proves the amplitude estimate for its separate integral definition of `J₁`. The new proof identifies the two Bessel definitions and reuses that estimate.
+
+The exact `Sieve.tsum_tail_rpow_neg_le` estimate was already in the corpus. Reusing it proves `∃ C≥0, ∀ y, ∀ N≥1, Σ' j |Φ_y(log(j+N+1))| ≤ C P(y) N^(-(π-3/2))`. The following transfer remains a paper argument: the absolute tail bounds a plateau-row error; for `y≥0`, choose `N=ceil(2 exp(3y))`. Then `2 exp(3y)≤N≤3 exp(3y)`, and the error is bounded by a constant times `(1+y)(1+y²) exp((9/2-2π)y)`, which is bounded since `π>3`. Thus the weaker arithmetic conjecture is
+
+`∀ ε>0, ∃ Cε, ∀ N≥2, ∀ y≥0, |Σ selbergMobiusCoeff N m * mobiusFold y (log m)| ≤ Cε N^ε`.
+
+For the plateau row, this gives `2|S_(N²)(y)|+|S_N(y)|≤3 Cε N^(2ε)`, hence a constant times `exp(6εy)` at that cutoff. The existing source identity differs from `chmdWave` only by uniformly bounded terms. Since `ε` is arbitrary, the existing growth law would force every frequency displacement to vanish. The combined-density negative-mass bound with the same subpower allowance is sufficient for the finite-row conjecture. **Both arithmetic estimates remain open.** The analytic tail estimate and the moving-cutoff transfer are not proofs of either estimate.
+
+The new leaf passes a direct `lake --old env lean` source audit and a separate scratch import/axiom audit. All five public theorem closures use only `propext`, `Classical.choice`, and `Quot.sound`. Its umbrella import appears once; indexes are refreshed and lexical corpus search locates the tail theorem. Global lint reports three unrelated errors in concurrent BVI wiring and package-root placement. Exact statements, commands, and limits: [quantitative-tail card](../3-formalized/chmd-quantitative-fold-tail-2026-10-18.md). The requested uniform all-scale bound remains open.
+
+The current CHMD frontier also includes the support-radius collar bridge: `log d+R≤a`, `a≥3R+δ+L`, a support-dependent `supportArchBudget`, and explicit continuum integrability conditions. It does not provide a constant fitting the fixed archimedean coefficient of the complete source form. Preserve these conditions in any cross-route transfer.
+
+
+## Corpus correction: coherent depths and actual cutoff order (1810e)
+
+The following are existing results, not missing lemmas to recreate:
+
+- `AllDepthHilbertDilationCubeAndHyperCubeGramFactorization.lean`: exact signed Hilbert-vector and Gram factorization over every divisor of a squarefree prime cube; the diagonal is already evaluated. `CrossDepthEulerOperatorFactorizationAndPrimePairGramIdentity.lean` already cancels the Euler prefactor's undilated mode and proves prime-shift covariance summability for each fixed base modulus. Eight exact APIs/axiom closures passed `lake --old env lean /tmp/chmd-corpus-reuse-1810e.lean`; only standard axioms.
+- `PMRamanujanCompleteAperture.lean:233,257`: for every fixed `0 < ε < 1/2`, canonical completed prime-aperture Fermi-source norms tend to infinity, although their logarithmic coefficient-square mass is uniformly bounded. `PMPowerDampedMobiusPrimeThreshold.lean:32` supplies the complementary absolute bound for `ε > 1/2`. A universal full-prime-cube energy bound is already ruled out; no new obstruction leaf is needed.
+- `NaturalCutoffMultiDepthCofactorAndConditionalTailBridge.lean:386,418`: exact natural-denominator variance decomposition into head energy, forced conditional-mean energy, and centered tail variance. Its uncentered residual includes `-(H+1) * pmPowerDampedRamanujanEnergyMean ε Q`. Keep this term. The fixed-base summability theorem supplies neither a base-uniform constant nor this final conditional-tail estimate.
+- `MobiusDivisorFiniteClockCountingCancellation.lean:117` and `MobiusDivisorTerminalClockOrder.lean:143` retain the actual cofactor support. Once square-root primes are processed, clock energy is exactly the head square plus omitted-prime singleton squares. A terminal checkpoint does not contain arbitrary earlier-cutoff source samples.
+
+Deep retrieval produced both complete and partial runs; all returned candidate/source-argument lists were inspected. Exact lexical searches and dependency links located results missed by the broad queries. Search suggestions are not proofs, and absence from ranked hits is not evidence of a missing theorem. Frontier map remains read-only.
+
+## Weaker moving-window arithmetic candidate (1810e; OPEN)
+
+Retain the previously defined natural Selberg row
+`S_N(y) = ∑_{m≤N} selbergMobiusCoeff N m * mobiusFold y (log m)`.
+It is sufficient to prove
+
+`∀ ε > 0, ∃ Cε ≥ 0, ∀ N ≥ 2, ∀ 0 ≤ y ≤ (log N)/3, |S_N(y)| ≤ Cε * N^ε`.
+
+This weakens the earlier all-rapidity row conjecture. Paper transfer: set
+`N = ceil(2 * exp(3*y))`, so `N ≤ 3*exp(3*y)` and the same `y` lies in the admitted windows for both `N` and `N²`. The existing plateau row `2*selbergMobiusCoeff (N²)-selbergMobiusCoeff N` equals the actual Möbius row through `N` and has absolute coefficient at most one. Its wave is at most `3*Cε*N^(2*ε)`. The verified fold-tail theorem bounds the difference from the complete wave by a constant times
+`(1+y)*(1+y²)*exp((9/2-2*pi)*y)`, hence uniformly. Therefore the complete wave has growth `Oε(exp(6*ε*y))`; the existing growth-law receivers apply for every positive exponent. No new receiver formalization is warranted while the signed moving-window estimate is unpaid.
+
+A cutoff-independent full prime-cube norm ceiling is refuted by the existing divergence theorem. That qualitative divergence alone does not exclude a subpower cube bound. Any proposed cube transfer must track its growth rate, the actual observation window, and the signed pairing. The new window estimate itself has no proof or Lean producer yet; the all-scale goal stays OPEN.
+
+
+Corpus-audit evidence: `logs/chmd-corpus-reuse-1810e-verification.json` records 15 searches (4 partial), 14 independently checked API/axiom closures, five fresh imported source artifacts, and the raw search/check archive. Both scratch Lean audits exited 0. No Lean source changed during this correction; the previous fold-tail source hash is unchanged.
+
+Possible rate follow-up, not proved or prioritized over the arithmetic window target: for `0<ε<1/2` and `0≤a<1/2-ε`, conjecture that canonical prime-aperture norms exceed every `C*N^a` infinitely often. Qualitative divergence alone does not prove this. A proposed argument uses dyadic differences of their Mellin transforms: exact stabilization above `1/(N+1)` plus an assumed `O(N^a)` norm bound gives locally summable increments on `Re s>1/2+a`. The existing vanishing real Mellin interval would force the analytic limit to vanish, contradicting its nonzero value at `s=1`. The local-uniform limit and value at one still require a full applicability/novelty audit. The existing first-prime-band identity in `PMPowerDampedMobiusPrimeSlab.lean:106` is another input to inspect before building any new rate theorem.

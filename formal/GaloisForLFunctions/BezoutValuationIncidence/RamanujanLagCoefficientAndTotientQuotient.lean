@@ -53,6 +53,14 @@ private theorem lagCoefficient_gcd_sum (q h : ℕ) (hq : q ≠ 0) :
   intro d _
   split_ifs <;> ring
 
+/-- Public gcd-divisor interface, including the zero modulus, for coefficient bridges. -/
+theorem ramanujanLagCoefficient_eq_gcd_divisor_sum (q h : ℕ) :
+    ramanujanLagCoefficient q h =
+      ∑ d ∈ (Nat.gcd q h).divisors, (d : ℝ) * moebiusReal (q / d) := by
+  rcases Nat.eq_zero_or_pos q with rfl | hq
+  · simp [ramanujanLagCoefficient, moebiusReal]
+  · exact lagCoefficient_gcd_sum q h hq.ne'
+
 private theorem lag_moebius_product (t e : ℕ) :
     moebiusReal (t * e) = if e.Coprime t then moebiusReal t * moebiusReal e else 0 := by
   by_cases hc : e.Coprime t

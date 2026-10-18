@@ -339,13 +339,292 @@ theorem sum_Icc_two_abs_dyadicHarmonicChi_div_sq_le (M : ℕ) :
     have hM_inv : 0 ≤ 1 / (M : ℝ) := by positivity
     linarith
 
-/-- Strict first-harmonic dominance: for every `M ≥ 2`,
+/-- Explicit first-harmonic dominance: for every `M ≥ 2`,
 `dyadicHarmonicChi 1 - ∑_{k = 2}^M |dyadicHarmonicChi k| / k^2 ≥ 1 / 4`. -/
 theorem dyadicHarmonicChi_first_harmonic_margin (M : ℕ) :
     1 / 4 ≤ dyadicHarmonicChi 1 -
       ∑ k ∈ Finset.Icc 2 M, |dyadicHarmonicChi k| / (k : ℝ) ^ 2 := by
   rw [dyadicHarmonicChi_one]
   linarith [sum_Icc_two_abs_dyadicHarmonicChi_div_sq_le M]
+
+/-! ### General Divisor-Stencil Linear/Quadratic Drift and `q`-Adic 3-Scale Classifications -/
+
+/-- Linear drift functional `L_{D, α} = ∑_{d ∈ D} d α(d)` governing the linear `u`-term of
+`∑_{d ∈ D} α(d) (d u)(1 - d u) / 2` on the fundamental domain. -/
+def divisorLinearDrift (D : Finset ℕ) (α : ℕ → ℝ) : ℝ :=
+  ∑ d ∈ D, (d : ℝ) * α d
+
+/-- Quadratic drift functional `Q_{D, α} = ∑_{d ∈ D} d^2 α(d)` governing the quadratic `u^2`-term
+of `∑_{d ∈ D} α(d) (d u)(1 - d u) / 2` and the common-multiple harmonic multiplier. -/
+def divisorQuadraticDrift (D : Finset ℕ) (α : ℕ → ℝ) : ℝ :=
+  ∑ d ∈ D, (d : ℝ) ^ 2 * α d
+
+/-- Exact polynomial decomposition of the un-periodized clamped stencil combination:
+`∑_{d ∈ D} α(d) ((d u)(1 - d u) / 2) = (L_{D, α} / 2) u - (Q_{D, α} / 2) u^2`. -/
+theorem divisor_clamped_polynomial_expansion (D : Finset ℕ) (α : ℕ → ℝ) (u : ℝ) :
+    (∑ d ∈ D, α d * (((d : ℝ) * u) * (1 - (d : ℝ) * u) / 2)) =
+      (divisorLinearDrift D α / 2) * u - (divisorQuadraticDrift D α / 2) * u ^ 2 := by
+  unfold divisorLinearDrift divisorQuadraticDrift
+  rw [Finset.sum_div, Finset.sum_mul, Finset.sum_div, Finset.sum_mul, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun d _ => ?_
+  ring
+
+/-- **Arbitrary-Divisor Drift Cancellation `iff`.** For any divisor set `D` and stencil `α`,
+the un-periodized stencil polynomial vanishes for all `u ∈ ℝ` if and only if both the linear
+drift `L_{D, α}` and the quadratic drift `Q_{D, α}` vanish. -/
+theorem divisor_clamped_polynomial_eq_zero_iff (D : Finset ℕ) (α : ℕ → ℝ) :
+    (∀ u : ℝ, (∑ d ∈ D, α d * (((d : ℝ) * u) * (1 - (d : ℝ) * u) / 2)) = 0) ↔
+      (divisorLinearDrift D α = 0 ∧ divisorQuadraticDrift D α = 0) := by
+  constructor
+  · intro h
+    have h1 := h 1
+    have h2 := h 2
+    rw [divisor_clamped_polynomial_expansion] at h1 h2
+    constructor <;> linarith
+  · rintro ⟨hL, hQ⟩ u
+    rw [divisor_clamped_polynomial_expansion, hL, hQ]
+    ring
+
+/-- Whenever every divisor `d ∈ D` divides `K`, the harmonic multiplier `M_{D, α}(K)` equals
+the quadratic drift functional `Q_{D, α}`. -/
+theorem divisorHarmonicMultiplier_eq_quadraticDrift_of_forall_dvd
+    (D : Finset ℕ) (α : ℕ → ℝ) (K : ℕ) (hK : ∀ d ∈ D, d ∣ K) :
+    divisorHarmonicMultiplier D α K = divisorQuadraticDrift D α := by
+  unfold divisorHarmonicMultiplier divisorQuadraticDrift
+  rw [Finset.filter_true_of_mem hK]
+  refine Finset.sum_congr rfl fun d _ => ?_
+  ring
+
+/-- Explicit expansion of linear drift, quadratic drift, and fundamental harmonic multiplier
+on a two-element divisor set `{1, d}` with `d ≥ 2`. -/
+theorem two_divisor_drifts_eq {d : ℕ} (hd : 2 ≤ d) (α : ℕ → ℝ) :
+    divisorHarmonicMultiplier ({1, d} : Finset ℕ) α 1 = α 1 ∧
+      divisorLinearDrift ({1, d} : Finset ℕ) α = α 1 + (d : ℝ) * α d ∧
+      divisorQuadraticDrift ({1, d} : Finset ℕ) α = α 1 + (d : ℝ) ^ 2 * α d := by
+  have h1d : (1 : ℕ) ∉ ({d} : Finset ℕ) := by
+    simp only [Finset.mem_singleton]
+    omega
+  have hndvd : ¬ (d ∣ 1) := by
+    intro h
+    have := Nat.le_of_dvd (by decide) h
+    omega
+  refine ⟨?_, ?_, ?_⟩
+  · unfold divisorHarmonicMultiplier
+    rw [Finset.filter_insert, if_pos (one_dvd 1), Finset.filter_singleton, if_neg hndvd]
+    simp
+  · unfold divisorLinearDrift
+    rw [Finset.sum_insert h1d, Finset.sum_singleton]
+    push_cast
+    ring
+  · unfold divisorQuadraticDrift
+    rw [Finset.sum_insert h1d, Finset.sum_singleton]
+    push_cast
+    ring
+
+/-- **General Two-Divisor Drift-Cancellation Impossibility (`iff`).** For any `d ≥ 2`, a
+two-divisor stencil on `{1, d}` cancels both linear and quadratic drift if and only if
+it is identically zero (`α 1 = 0 ∧ α d = 0`). -/
+theorem two_divisor_drift_cancellation_iff_zero {d : ℕ} (hd : 2 ≤ d) (α : ℕ → ℝ) :
+    (divisorLinearDrift ({1, d} : Finset ℕ) α = 0 ∧
+      divisorQuadraticDrift ({1, d} : Finset ℕ) α = 0) ↔
+      (α 1 = 0 ∧ α d = 0) := by
+  rcases two_divisor_drifts_eq hd α with ⟨_, hL, hQ⟩
+  rw [hL, hQ]
+  have hd_gt : (1 : ℝ) < (d : ℝ) := by exact_mod_cast (show 1 < d by omega)
+  constructor
+  · rintro ⟨h1, h2⟩
+    have hsub : (d : ℝ) * ((d : ℝ) - 1) * α d = 0 := by
+      calc
+        (d : ℝ) * ((d : ℝ) - 1) * α d =
+            (α 1 + (d : ℝ) ^ 2 * α d) - (α 1 + (d : ℝ) * α d) := by ring
+        _ = 0 := by linarith
+    have hd_ne : (d : ℝ) * ((d : ℝ) - 1) ≠ 0 :=
+      mul_ne_zero (by linarith) (by linarith)
+    have hαd : α d = 0 := (mul_eq_zero.mp hsub).resolve_left hd_ne
+    refine ⟨by nlinarith, hαd⟩
+  · rintro ⟨h1, h2⟩
+    rw [h1, h2]
+    norm_num
+
+/-- No two-divisor stencil on `{1, d}` (`d ≥ 2`) can simultaneously normalize the first
+harmonic (`M(1) = c` with `c ≠ 0`) and cancel both linear and quadratic drift. -/
+theorem not_two_divisor_normalized_and_drift_free {d : ℕ} (hd : 2 ≤ d) {c : ℝ} (hc : c ≠ 0)
+    (α : ℕ → ℝ) :
+    ¬ (divisorHarmonicMultiplier ({1, d} : Finset ℕ) α 1 = c ∧
+        divisorLinearDrift ({1, d} : Finset ℕ) α = 0 ∧
+        divisorQuadraticDrift ({1, d} : Finset ℕ) α = 0) := by
+  rintro ⟨hM1, hL, hQ⟩
+  rcases (two_divisor_drift_cancellation_iff_zero hd α).mp ⟨hL, hQ⟩ with ⟨hα1, _⟩
+  rcases two_divisor_drifts_eq hd α with ⟨hM1_eq, _, _⟩
+  rw [hM1_eq, hα1] at hM1
+  exact hc hM1.symm
+
+/-- Explicit expansion of harmonic multipliers and linear/quadratic drifts on a 3-scale
+`q`-adic divisor set `{1, q, q^2}` for any `q ≥ 2`. -/
+theorem qAdic_three_scale_expansions {q : ℕ} (hq : 2 ≤ q) (α : ℕ → ℝ) :
+    divisorHarmonicMultiplier ({1, q, q ^ 2} : Finset ℕ) α 1 = α 1 ∧
+      divisorHarmonicMultiplier ({1, q, q ^ 2} : Finset ℕ) α q =
+        α 1 + (q : ℝ) ^ 2 * α q ∧
+      divisorHarmonicMultiplier ({1, q, q ^ 2} : Finset ℕ) α (q ^ 2) =
+        α 1 + (q : ℝ) ^ 2 * α q + (q : ℝ) ^ 4 * α (q ^ 2) ∧
+      divisorLinearDrift ({1, q, q ^ 2} : Finset ℕ) α =
+        α 1 + (q : ℝ) * α q + (q : ℝ) ^ 2 * α (q ^ 2) ∧
+      divisorQuadraticDrift ({1, q, q ^ 2} : Finset ℕ) α =
+        α 1 + (q : ℝ) ^ 2 * α q + (q : ℝ) ^ 4 * α (q ^ 2) := by
+  have hq_lt_sq : q < q ^ 2 := by
+    calc
+      q < 2 * q := by omega
+      _ ≤ q * q := Nat.mul_le_mul_right q hq
+      _ = q ^ 2 := (sq q).symm
+  have h1_mem : (1 : ℕ) ∉ ({q, q ^ 2} : Finset ℕ) := by
+    simp only [Finset.mem_insert, Finset.mem_singleton]
+    omega
+  have hq_mem : q ∉ ({q ^ 2} : Finset ℕ) := by
+    simp only [Finset.mem_singleton]
+    omega
+  have hq_ndvd_1 : ¬ (q ∣ 1) := by
+    intro h
+    have := Nat.le_of_dvd (by decide) h
+    omega
+  have hq2_ndvd_1 : ¬ (q ^ 2 ∣ 1) := by
+    intro h
+    have := Nat.le_of_dvd (by decide) h
+    omega
+  have hq2_ndvd_q : ¬ (q ^ 2 ∣ q) := by
+    intro h
+    have := Nat.le_of_dvd (by omega) h
+    omega
+  have hq_dvd_q2 : q ∣ q ^ 2 := ⟨q, by ring⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · unfold divisorHarmonicMultiplier
+    rw [Finset.filter_insert, if_pos (one_dvd 1), Finset.filter_insert, if_neg hq_ndvd_1,
+      Finset.filter_singleton, if_neg hq2_ndvd_1]
+    simp
+  · unfold divisorHarmonicMultiplier
+    rw [Finset.filter_insert, if_pos (one_dvd q), Finset.filter_insert, if_pos (dvd_refl q),
+      Finset.filter_singleton, if_neg hq2_ndvd_q,
+      Finset.sum_insert (by simp; omega)]
+    simp
+    ring
+  · unfold divisorHarmonicMultiplier
+    rw [Finset.filter_insert, if_pos (one_dvd (q ^ 2)), Finset.filter_insert, if_pos hq_dvd_q2,
+      Finset.filter_singleton, if_pos (dvd_refl (q ^ 2)),
+      Finset.sum_insert h1_mem, Finset.sum_insert hq_mem, Finset.sum_singleton]
+    push_cast
+    ring
+  · unfold divisorLinearDrift
+    rw [Finset.sum_insert h1_mem, Finset.sum_insert hq_mem, Finset.sum_singleton]
+    push_cast
+    ring
+  · unfold divisorQuadraticDrift
+    rw [Finset.sum_insert h1_mem, Finset.sum_insert hq_mem, Finset.sum_singleton]
+    push_cast
+    ring
+
+/-- **General `q`-Adic 3-Scale Sign-Flip and Extinction Classification (`iff`).**
+For any `q ≥ 2` and any fundamental normalization `c ∈ ℝ`, a stencil `α` on `{1, q, q^2}`
+satisfies `M(1) = c`, `M(q) = -c`, and `M(q^2) = 0` if and only if
+`α 1 = c`, `α q = -(2 / q^2) c`, and `α (q^2) = (1 / q^4) c`.
+Moreover, this stencil has exact linear ramp residual `L_{{1, q, q^2}, α} = c (1 - 1 / q)^2`,
+which equals `1` at the canonical dyadic parameter `(q, c) = (2, 4)`. -/
+theorem qAdic_three_scale_sign_flip_stencil_iff {q : ℕ} (hq : 2 ≤ q) (c : ℝ) (α : ℕ → ℝ) :
+    (divisorHarmonicMultiplier ({1, q, q ^ 2} : Finset ℕ) α 1 = c ∧
+      divisorHarmonicMultiplier ({1, q, q ^ 2} : Finset ℕ) α q = -c ∧
+      divisorHarmonicMultiplier ({1, q, q ^ 2} : Finset ℕ) α (q ^ 2) = 0) ↔
+      (α 1 = c ∧
+        α q = -(2 / (q : ℝ) ^ 2) * c ∧
+        α (q ^ 2) = (1 / (q : ℝ) ^ 4) * c) := by
+  rcases qAdic_three_scale_expansions hq α with ⟨hM1, hMq, hMq2, _, _⟩
+  rw [hM1, hMq, hMq2]
+  have hq_pos : (0 : ℝ) < (q : ℝ) := by exact_mod_cast (show 0 < q by omega)
+  have hq2_ne : (q : ℝ) ^ 2 ≠ 0 := pow_ne_zero 2 hq_pos.ne'
+  have hq4_ne : (q : ℝ) ^ 4 ≠ 0 := pow_ne_zero 4 hq_pos.ne'
+  constructor
+  · rintro ⟨h1, h2, h3⟩
+    have hαq : α q = -(2 / (q : ℝ) ^ 2) * c := by
+      apply mul_left_cancel₀ hq2_ne
+      calc
+        (q : ℝ) ^ 2 * α q = -2 * c := by linarith
+        _ = (q : ℝ) ^ 2 * (-(2 / (q : ℝ) ^ 2) * c) := by
+          field_simp [hq2_ne]
+    have hαq2 : α (q ^ 2) = (1 / (q : ℝ) ^ 4) * c := by
+      apply mul_left_cancel₀ hq4_ne
+      calc
+        (q : ℝ) ^ 4 * α (q ^ 2) = c := by linarith
+        _ = (q : ℝ) ^ 4 * ((1 / (q : ℝ) ^ 4) * c) := by
+          field_simp [hq4_ne]
+    exact ⟨h1, hαq, hαq2⟩
+  · rintro ⟨h1, h2, h3⟩
+    refine ⟨h1, ?_, ?_⟩
+    · rw [h1, h2]
+      field_simp [hq2_ne]
+      ring
+    · rw [h1, h2, h3]
+      field_simp [hq2_ne, hq4_ne]
+      ring
+
+/-- Exact linear ramp residual `L_{{1, q, q^2}, α} = c (1 - 1 / q)^2` of the `q`-adic 3-scale
+sign-flip stencil (`1` at `(q, c) = (2, 4)`, matching the `1/2` secular Müntz ramp). -/
+theorem qAdic_sign_flip_stencil_linearDrift {q : ℕ} (hq : 2 ≤ q) (c : ℝ) (α : ℕ → ℝ)
+    (h1 : α 1 = c) (h2 : α q = -(2 / (q : ℝ) ^ 2) * c)
+    (h3 : α (q ^ 2) = (1 / (q : ℝ) ^ 4) * c) :
+    divisorLinearDrift ({1, q, q ^ 2} : Finset ℕ) α = c * (1 - 1 / (q : ℝ)) ^ 2 := by
+  rcases qAdic_three_scale_expansions hq α with ⟨_, _, _, hL, _⟩
+  have hq_ne : (q : ℝ) ≠ 0 := by exact_mod_cast (show q ≠ 0 by omega)
+  rw [hL, h1, h2, h3]
+  field_simp [hq_ne]
+  ring
+
+/-- **General `q`-Adic 3-Scale Drift-Free Stencil Classification (`iff`).**
+For any `q ≥ 2` and any normalization `c ∈ ℝ`, a stencil `α` on `{1, q, q^2}` satisfies
+fundamental normalization `M(1) = c`, linear drift cancellation `L_{{1, q, q^2}, α} = 0`,
+and quadratic drift / `q^2`-harmonic cancellation `Q_{{1, q, q^2}, α} = 0` if and only if
+`α 1 = c`, `α q = -((q + 1) / q^2) c`, and `α (q^2) = (1 / q^3) c`. -/
+theorem qAdic_three_scale_drift_free_stencil_iff {q : ℕ} (hq : 2 ≤ q) (c : ℝ) (α : ℕ → ℝ) :
+    (divisorHarmonicMultiplier ({1, q, q ^ 2} : Finset ℕ) α 1 = c ∧
+      divisorLinearDrift ({1, q, q ^ 2} : Finset ℕ) α = 0 ∧
+      divisorQuadraticDrift ({1, q, q ^ 2} : Finset ℕ) α = 0) ↔
+      (α 1 = c ∧
+        α q = -(((q : ℝ) + 1) / (q : ℝ) ^ 2) * c ∧
+        α (q ^ 2) = (1 / (q : ℝ) ^ 3) * c) := by
+  rcases qAdic_three_scale_expansions hq α with ⟨hM1, _, _, hL, hQ⟩
+  rw [hM1, hL, hQ]
+  have hq_gt : (1 : ℝ) < (q : ℝ) := by exact_mod_cast (show 1 < q by omega)
+  have hq_ne : (q : ℝ) ≠ 0 := by linarith
+  have hqm1_ne : (q : ℝ) - 1 ≠ 0 := by linarith
+  have hden1 : ((q : ℝ) - 1) * (q : ℝ) ^ 2 ≠ 0 := mul_ne_zero hqm1_ne (pow_ne_zero 2 hq_ne)
+  have hden2 : ((q : ℝ) - 1) * (q : ℝ) ^ 3 ≠ 0 := mul_ne_zero hqm1_ne (pow_ne_zero 3 hq_ne)
+  constructor
+  · rintro ⟨h1, h2, h3⟩
+    have hαq : α q = -(((q : ℝ) + 1) / (q : ℝ) ^ 2) * c := by
+      apply mul_left_cancel₀ hden1
+      have hcomb :
+          ((q : ℝ) - 1) * (q : ℝ) ^ 2 * α q =
+            (q : ℝ) ^ 2 * (α 1 + (q : ℝ) * α q + (q : ℝ) ^ 2 * α (q ^ 2)) -
+              (α 1 + (q : ℝ) ^ 2 * α q + (q : ℝ) ^ 4 * α (q ^ 2)) -
+              ((q : ℝ) ^ 2 - 1) * α 1 := by ring
+      rw [hcomb, h2, h3, h1]
+      field_simp [hq_ne]
+      ring
+    have hαq2 : α (q ^ 2) = (1 / (q : ℝ) ^ 3) * c := by
+      apply mul_left_cancel₀ hden2
+      have hcomb :
+          ((q : ℝ) - 1) * (q : ℝ) ^ 3 * α (q ^ 2) =
+            (α 1 + (q : ℝ) ^ 2 * α q + (q : ℝ) ^ 4 * α (q ^ 2)) -
+              (q : ℝ) * (α 1 + (q : ℝ) * α q + (q : ℝ) ^ 2 * α (q ^ 2)) +
+              ((q : ℝ) - 1) * α 1 := by ring
+      rw [hcomb, h2, h3, h1]
+      field_simp [hq_ne]
+      ring
+    exact ⟨h1, hαq, hαq2⟩
+  · rintro ⟨h1, h2, h3⟩
+    refine ⟨h1, ?_, ?_⟩
+    · rw [h1, h2, h3]
+      field_simp [hq_ne]
+      ring
+    · rw [h1, h2, h3]
+      field_simp [hq_ne]
+      ring
 
 end
 

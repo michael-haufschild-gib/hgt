@@ -496,3 +496,485 @@ CGL totient bound and Finset erase/card identities. On promotion, narrow the
 scratch import from DilationSuccessorDigammaRenormalization to
 DilationSuccessorSectorHarmonicClassification: C7 uses the finite sector
 formula, not C6's digamma analysis. Verify that narrowed original source.
+
+C7 scratch session 56039 terminated exit 1 with three redundant `ring` calls
+after `field_simp` had closed the goals, and one reversed use of
+`mul_div_assoc`. These were repaired. Replacement owned session 99103 is
+checking the same scratch and log; await its terminal result.
+
+### C8 candidate: transport the existing valuation clock to actual jump sectors
+
+Corpus searches `Ramanujan visibility`, `Ramanujan radical`, and
+`d4BMRamanujanNaturalCoefficient` located the existing exact support theorem
+`ramanujanLagCoefficient_ne_zero_iff` in
+`ValuationVisibilityClockAndRamanujanSupport.lean`, and the natural-coefficient
+gcd-divisor formula. The deep clock/gap query and hybrid coefficient-bridge
+query both completed without partial results; all 20 candidate lemmas and all
+20 source arguments in each were inspected. Coverage inventories are complete,
+but compiler freshness is mixed and the background indexer is running. Thus
+source inspection and Lean checks remain necessary. Broad-query misses are
+not evidence of novelty. A targeted joint-clock query is still running.
+
+The hybrid search also exposed the older exact `pm_ramanujan_at_one` theorem
+in `PMPowerDampedMobiusRamanujanWeights.lean`; the C3 public wrapper should reuse
+that theorem instead of repeating its divisor calculation, once the API is
+verified. The existing real lag-coefficient gcd-sum proof is private; expose a
+small public interface if needed rather than duplicate its arithmetic proof.
+
+Paper argument for the next bridge, not yet formalized:
+1. Identify `Re(d4BMRamanujanNaturalCoefficient a r)` with the existing real
+   `ramanujanLagCoefficient r a` using their proved divisor formulas.
+2. Existing visibility gives nonzero coefficient iff `r!=0` and `v|a`, where
+   `v=lagVisibilityClock r=r/rad(r)`. For nonzero pair amplitude, `v|a` and `v|b`.
+3. Put `g=gcd(p,q)`. Since `g|p,q`, divisibility multiplies: `v*g|p*a` and
+   `v*g|q*b`, hence `v*g|h=p*a-q*b`. This is a product clock, stronger than
+   separately imposing `v|h` and `g|h`.
+4. Every forbidden lag sector is exactly zero at every finite horizon. The
+   original profile may therefore be coupled to just the finite set of lags
+   divisible by `v*g`, with the existing cutoff error unchanged.
+5. At `h=1`, any nonsquarefree positive modulus has `v!=1` and therefore the
+   whole successor sector vanishes, not merely its period mean. The positive
+   survivor is the clock-selected family of higher lags. No claim that an
+   allowed sector is nonzero: signed cancellation can still occur.
+
+First close C7 original-source verification. Then verify/reuse the coefficient
+bridge APIs and prove C8's exact finite selection and actual-profile capstone.
+
+C7 scratch session 99103 terminated exit 0 with empty log. Promoted its 11 public
+declarations to `DilationSuccessorLeastSeedResonance.lean`, narrowing imports to
+the finite harmonic-classification module and the existing CGL bound. The
+original-source check is now running; log
+`logs/bvi-dilation-successor-least-seed-original.txt`. No claim of completion
+until that check and its axiom audit terminate.
+
+The targeted C8 query completed (`partial=false`); inspected all 17 lexical
+declarations, 20 candidates, and 20 source arguments. It additionally identified
+the existing zero-below-clock corollaries in
+`NonMarkovianLagOperatorAlgebraAndPrimePowerRevival.lean`. Those are compressed
+translation coefficients, not the new physical dilation sectors. The useful
+positive refinement of C8 is exact pointwise support: a pair coefficient is
+nonzero iff `r!=0` and `lagVisibilityClock r | gcd(a,b)`. On a successor fiber,
+existing coprimality makes this equivalent to `Squarefree r`. This is a
+pointwise statement; squarefree modes can still have zero signed sector sums.
+
+C7 verification closed: original source and separate `/tmp` axiom audit both
+terminated exit 0. All 11 new public declarations, the reused CGL totient bound,
+and the older `pm_ramanujan_at_one` have only `propext`, `Classical.choice`,
+`Quot.sound`. Logs: `logs/bvi-dilation-successor-least-seed-original.txt` and
+`logs/bvi-dilation-successor-least-seed-axioms.txt`. Module wired; README records
+the exact least-seed term, uniform bound, and signed-complement limitation.
+The older coefficient API was also verified by a `have := @...` probe. The C3
+wrapper now delegates to it; its original source still needs rechecking.
+
+C8 scratch is `/tmp/bvi-c8-jump-clock-draft.lean`: 11 prospective public results
+cover the real-coefficient bridge, exact pair support, squarefree successor
+boundary, product-clock exclusion, finite filtration, and actual-profile
+capstone. It awaits Lean checking. The existing private gcd-divisor proof has
+a new public all-modulus wrapper `ramanujanLagCoefficient_eq_gcd_divisor_sum`;
+its original-source check is running as owned session 84368, log
+`logs/bvi-dilation-clock-lag-interface-original.txt`. No second owned Lean job
+may start until that session terminates.
+
+C9 exploration only: a deep radical/dilation query completed without partial
+results; all 20 candidates and 20 source arguments inspected. It returned
+existing primitive residue formulas and prime-power coefficient cancellation,
+but no direct radical reduction of the actual profile. A `totient radical`
+lexical query returned nine mainly unrelated declarations. Possible next
+candidate: `c_r(v*n)=v*c_rad(r)(n)` and its primitive/profile transport, with
+`v=r/rad(r)`. This has not received a complete paper or prior-art audit; no
+new C9 code or novelty claim. Finish the C8 checks first.
+
+C8 first scratch check (session 60890) terminated exit 0 with empty log. The
+public gcd-divisor wrapper's original-source check (84368) also exited 0.
+Promoted the 11 clock results to `DilationJumpValuationClock.lean`; original
+source is running as session 40120, log `logs/bvi-dilation-jump-clock-original.txt`.
+The module is wired and documented. Next: await 40120, recheck the simplified
+C3 original source, then run `/tmp/bvi-c8-jump-clock-axioms.lean` to audit all
+11 new declarations, the new public divisor interface, the changed C3 wrapper,
+and both reused valuation-support results. No concurrent owned Lean process.
+
+Additional C9 search evidence: targeted profile query returned and inspected
+all 10 candidates and 10 source arguments in `DilationProfileIntegerJumpCoupling`.
+Its existing `pmRamanujanDilationProfile_eq_integerDilationGram` already gives
+the exact normalized pronic series. If the coefficient scaling is proved,
+the existing `sum_ramanujanDilationJump` transports it to
+`A_r(N)=v*A_rad(r)(N/v)`, and the profile formulas at scales `(v*p,v*q)` would
+give `Phi_r(p/q)=v*Phi_rad(r)(p/q)` by ordinary scalar algebra. No new analytic
+convergence theorem should be needed. The lexical `totient primeFactors`
+query found `RHTower.prod_one_sub_inv_primeFactors_eq_totient_div`; inspecting
+that source exposed `Nat.totient_mul_prod_primeFactors`, the likely smaller
+dependency for the required totient scaling. These APIs still need fresh
+scratch verification before C9 implementation, and the coefficient/radical
+identification still needs a complete audit.
+
+C8 original source (40120) terminated exit 0 with empty log. C3's simplified
+original source is now checking as session 88184, log
+`logs/bvi-dilation-successor-fiber-reuse-original.txt`; axiom audit follows it.
+Index refresh (47556) exited 0. The quoted exact lexical query for the two new
+capstones returned exactly two declarations in their canonical new modules:
+`/tmp/bvi-c7-c8-discoverability.json`. Global lint (96659) exited 1 with only
+`research leaf module at package root: TransHorizonIncidenceMechanics.lean;
+move it into an owned theorem area`; full output is
+`logs/bvi-dilation-successor-clock-lint.txt`. No global lint pass is claimed.
+
+### C9 paper candidate refined: radical reduction of the actual rational profile
+
+This is a proposed connection of classical coefficient identities to the
+existing physical profile, not a novelty claim for Ramanujan sums. For R>1,
+put s=rad(R), v=R/s, and c_R(a)=Re(d4BMRamanujanNaturalCoefficient a R).
+1. The distinct-prime product has exactly R's prime factors, is squarefree,
+   and divides R. Thus R=v*s, v>0, s>1. Prime membership follows by Euclid's
+   product lemma in both directions; squarefreeness follows from distinctness.
+2. The existing totient prime-factor product identity at R and s gives
+   phi(R)=v*phi(s). Also gcd(R,v*n)=v*gcd(s,n), so the quotient in the existing
+   Mobius/totient formula is unchanged. Consequently c_R(v*n)=v*c_s(n).
+   C8's support theorem gives zero at every remaining index.
+3. Equivalently, c_R(n)=v*ramanujanDilationJump s v n for every n. Sum with
+   the existing `sum_ramanujanDilationJump` to obtain A_R(N)=v*A_s(N/v).
+4. Substitute into the existing exact integer-dilation Gram formula. Natural
+   floor division composes, giving G_R(p,q)=v^2*G_s(v*p,v*q). The ratio of
+   the enlarged scales is still p/q and their square-root normalization gains
+   a factor v. Therefore Phi_R(p/q)=v*Phi_s(p/q) for all positive p,q.
+5. The requested no-hypothesis capstone can use R=r+2,p=n+1,q=m+1, deriving
+   v>0,s>1 internally. The rational-scale result already covers all prime pairs;
+   no new continuity or convergence argument is needed for this scope.
+
+Before implementing C9, audit existing radical/coefficient interfaces more
+precisely and verify each selected API in Lean. C9 remains unformalized.
+
+Potential next finite-horizon refinement, requiring its own corpus audit:
+at H=v*(T+1)-1, coefficient support and the reciprocal kernel suggest
+`S_(R,v*k)(H)=v*S_(s,k)(T)`. For arbitrary H and T=floor(H/v), retain the exact
+boundary defect
+`v*(1/(T+1)-v/(H+1))*sum_(gap k at T) c_s(a)*c_s(b)`.
+The aligned-horizon formula makes this defect zero. This candidate keeps the
+physical cutoff correction explicitly; it is not a proved Lean result.
+
+Final-check checkpoint: C3 original session 88184 terminated exit 0 with empty
+log. All four changed/new Lean source files now have successful original-source
+checks. The only owned Lean process is axiom-audit session 63671:
+`lake --old env lean -j 1 /tmp/bvi-c8-jump-clock-axioms.lean`, log
+`logs/bvi-dilation-jump-clock-axioms.txt`. Await terminal before any new Lean
+process. Five superseded/merged C7-C8 scratch drafts and snippets were removed;
+canonical sources, search evidence, audit scripts and logs remain.
+
+C8 verification closed: axiom session 63671 terminated exit 0. All 11 new
+clock declarations, the exported gcd-divisor identity, the changed C3 wrapper,
+and both reused visibility theorems have exactly `propext`, `Classical.choice`,
+`Quot.sound`. Log: `logs/bvi-dilation-jump-clock-axioms.txt`.
+Across C1-C8, the seven pipeline modules contain 82 public declarations with
+original-source checks and individual axiom audits; the one newly exported
+interface in the pre-existing lag-coefficient module is separately checked
+and audited too. No full/umbrella build, heartbeat increase, numerical
+experiment, commit, or push was performed. Scoped whitespace check passed.
+
+The final C9 search materially improved the next dependency plan. Exact lexical
+lookup of the known Mathlib name returned no hit; switching to a mechanism-based
+deep search recovered `Nat.totient_mul_prod_primeFactors`,
+`Nat.totient_eq_mul_prod_factors`, and, more directly,
+`Nat.totient_eq_div_primeFactors_mul` in
+`formal/.lake/packages/mathlib/Mathlib/Data/Nat/Totient.lean:306`:
+`phi(n)=(n/prod_(p|n) p)*prod_(p|n)(p-1)`.
+All 20 candidates, 20 source arguments, and the proposed two-step ingredient
+set were inspected. Search session 31192 terminated exit 0; JSON is
+`/tmp/bvi-c9-totient-product-hybrid-research.json`. It reports `partial=true`,
+two unfinished expansion queries, and reranking deadline expiry; available
+exact hits are useful, not a complete novelty audit. The ingredient set is
+explicitly unverified. Verify these names in a scratch file before C9 use.
+
+Current checkpoint: C7 and C8 complete; C9 remains the recorded paper candidate
+and next corpus/API audit. No owned Lean, search, index, or lint process remains
+running. Global lint's unrelated root-module placement error remains recorded
+above. The unbounded research goal remains active.
+
+### C9 active implementation and current-state audit
+
+Previous goal turn: PROGRESS (C7/C8 original sources, axiom audits and corpus
+discoverability completed). Attachment reread; no RH work or hgtl7. Current
+README was concurrently rewritten to a 134-line thematic guide; read the new
+version fully and preserve that structure. The separate active-deleted
+remainder memory concerns problem 4, not this task. Architecture/testing docs
+remain absent. No plan tool is available; this card tracks the steps.
+
+Fresh deep query `/tmp/bvi-c9-radical-bridge-audit.json` completed with
+`partial=false`; all 20 candidates, 20 source arguments and the proposed
+ingredient set were inspected. It locates the existing clock support, prime
+power clock values, composite wavelet tensor, and original profile identities.
+It does not verify the radical-profile bridge. Compiler/semantic coverage
+warnings remain; absence of a hit is not a novelty claim.
+
+The first core scratch `/tmp/bvi-c9-radical-core-draft.lean` (69531) exited 0.
+It verifies the selected totient/divisibility APIs and proves private radical
+positivity, prime-factor equality, radical-times-clock identity, clock
+positivity, radical>1 for r>1, and phi(r)=clock(r)*phi(rad(r)). These reuse the
+existing `primeRadical` definition and `Nat.totient_eq_div_primeFactors_mul`.
+One implicit unused-binder warning was fixed. Added four prospective public
+coefficient/primitive transport results to that scratch; current owned Lean
+session 84931 is checking it, log `/tmp/bvi-c9-radical-core-draft.log`.
+Await terminal before another Lean job. No C9 canonical module exists yet.
+
+Plan: finish exact coefficient/primitive transport; derive the original
+rational-profile reduction from the existing integer-dilation Gram identity;
+package an unconditional shifted-natural capstone; audit original source and
+all public axioms, wire it, refresh index/lint. The subsequent finite-horizon
+clock-rescaling candidate must retain its recorded boundary defect.
+
+README correction from corpus evidence: its new non-Markovian warning wrongly
+used lag 2 for arbitrary prime-square revival and claimed squarefree support
+restores composition. `sieveLagMultiplier_prime_pow_revival_at_clock` puts
+revival at the actual clock p^a; `nonMarkovianLagDefect_first_octave_table`
+already gives nonzero composition defects for squarefree modes 3 and 6. Both
+names passed the scratch probe. Corrected both README mentions, preserving
+the concurrent thematic rewrite. No numerical experiment was used.
+
+C9 coefficient/primitive scratch session 84931 terminated exit 0. Added the
+integer Gram transport, rational-profile reduction and data-only capstone.
+The first extended run 99937 was cancelled by its owned Lean PID 41733 and
+confirmed terminal exit 143 after spotting a recursive simplification risk;
+the primitive rewrite is now specialized to the original modulus. Current
+extended check is session 18144. No competing owned Lean check was started.
+
+### C10 candidate: physical clock sector and its cutoff defect
+
+Write s=rad(r), v=clock(r)>0, T=floor(H/v), and let M_s(k,T) be the finite
+signed coefficient mass over the same multiplier pairs as S_s(k,T). The
+candidate exact law is
+
+`S_r(v*k,H) = v*S_s(k,T) + v*(1/(T+1)-v/(H+1))*M_s(k,T)`.
+
+Paper derivation: C8 kills all pairs outside v-multiples; C9 changes their
+coefficients to v times the s-coefficients. Reindex (a,b)=(v*a',v*b'); the
+physical gap becomes v*(p*a'-q*b') and the multiplier horizon becomes H/v.
+The exact reciprocal kernel is `1/(v*max(p*a',q*b'))-1/(H+1)`.
+Multiplying by v^2 and subtracting v times the kernel at T leaves precisely
+the displayed boundary coefficient, independent of the pair. All sums are
+finite at one physical cutoff. At H=v*(T+1)-1 this defect vanishes.
+
+This is the positive continuation of C8's nonsquarefree successor obstruction:
+the original lag-1 sector vanishes, but the squarefree successor sector can
+survive at original lag v. No positivity of its signed sum is asserted.
+After formalising the transport, combine with the existing least-seed theorem
+at s; keep the full signed complement and the physical cutoff error.
+
+Prior-work audit underway: deep query is `/tmp/bvi-c10-clock-sector-prior-research.json`
+(session 81037). Exact lexical search `/tmp/bvi-c10-dvd-reindex-research.json`
+completed and returns the existing generic `sum_Icc_filter_dvd_reindex` in
+`RHTower/EulerDeletionQuasiShuffleConvergence.lean:95`; its full signature and
+proof were read. Reuse it instead of reproving a divisor reindexing bijection.
+The broad lexical radical/cutoff query returned 20 ranked and 5 exploration
+hits, all inspected; it mainly recovers existing radical products and clock
+interfaces, not the finite sector identity.
+
+Concurrent frontier update: newly present
+`RamanujanOrderedGapCollectivePrefixEnergy.lean` already transfers ordered
+gap-chain prefix energy to the actual Ramanujan carrier and gives a bilinear
+prefix bound with signed packet retained. Its header and both public bound
+statements were read. This is separate from clock rescaling; do not rederive
+that prefix estimate or claim it controls the later signed tail. The current
+source explicitly leaves that tail unresolved. No edits to that author's files.
+
+C9 original-source audit completed: session 46401 exited 0 with no diagnostics.
+Canonical `RamanujanRadicalDilationReduction.lean` has seven public theorems,
+ending in `dilation_profile_radical_reduction` with data parameters only.
+The exact result is `Phi_r(p/q)=clock(r)*Phi_rad(r)(p/q)` for every positive
+rational scale; all arithmetic helpers reuse the existing radical and totient
+interfaces. Umbrella wired; thematic README entry added without replacing its
+concurrent rewrite. Log: `logs/bvi-radical-dilation-reduction-original.txt`.
+The preceding extended scratch 18144 had no proof errors; its only error was
+the universe-unspecified API probe `have := @tsum_mul_left`. That probe is
+corrected to `@tsum_mul_left Nat Real` in the next scratch, not in canonical source.
+
+C10 deep search 81037 completed exit 0 with `partial=false`, but declarations
+were mostly irrelevant and source arguments were more useful. All 20 candidates,
+20 source arguments and the proposed ingredient set were inspected. It returns
+our existing pair/sector/cutoff interfaces and the newer signed gap packet
+residue expansion. Coverage is source-complete but compiler metadata largely
+pending/stale, snapshot older than current generation, semantic coverage not
+measured. No novelty conclusion follows from the search's missing sector bridge.
+
+Current owned Lean session: 9516, checking `/tmp/bvi-c10-clock-sector-draft.lean`.
+It prints axioms for all seven completed C9 public declarations, verifies the
+new arithmetic APIs, and checks C10 weighted-sum reindexing, scaled kernel,
+signed boundary formula, aligned-cutoff transport and data-only successor
+capstone. Log: `/tmp/bvi-c10-clock-sector-draft.log`. No C10 canonical file yet.
+Await its terminal handle before another Lean run.
+
+The aligned-horizon lexical API query had zero hits. Direct installed core
+source exposes `Nat.add_mul_div_left` in `Init/Data/Nat/Div/Basic.lean:323`;
+its exact signature is used in the scratch probe. A rephrased deep query
+`/tmp/bvi-c10-quotient-mechanism-research.json` is running to audit the quotient
+mechanism rather than assuming index coverage of that exact name.
+
+### C11 paper continuation: genuine clock-successor resonance in the profile
+
+The concurrent `BeurlingGibbsCotangentTransportAndSchurCollarWallOneBridge`
+was searched directly (`/tmp/bvi-c11-concurrent-radical-bridge-audit.json`,
+two hits, both inspected). Its Tool 2 theorem packages the already established
+C2/C7 interfaces, including `dilation_profile_least_successor_seed_uniform`;
+the radical-fibre statement concerns a different prefix-defect observable.
+Read the Tool 2 proof, which directly invokes C2/C7. No duplicate wrapper needed.
+
+For r>1, p,q>1, s=rad(r), v=clock(r), set T=p*q*s and H=v*(T+1)-1.
+After C10, the original physical clock sector obeys
+
+`|sqrt(p*q)*S_r(v,H)-v*sqrt(q/p)*leastSeedResonance_s(p,q)|`
+` <= v*s*phi(s)^2/sqrt(p*q)`.
+
+This follows by multiplying the existing
+`abs_normalized_successor_sector_sub_leastSeed_le` at the positive modulus s
+by v and using the aligned transport, not by a new harmonic argument. Combining
+with the original profile cutoff theorem gives the same error plus
+`sqrt(p*q)*B_r^2/(H+1)` after retaining the full signed complement
+`sum_h S_r(h,H)-S_r(v,H)`.
+
+The seed at the radical is nonzero exactly when p,q are coprime: the existing
+least-seed specification supplies the gap-1 pair and positive denominator;
+`successor_pair_re_ne_zero_iff_squarefree` and `squarefree_primeRadical` supply
+its nonzero numerator. Noncoprime scales use the existing zero-seed branch.
+This is an exact positive survivor of the nonsquarefree lag-1 obstruction,
+not a claim that the complete profile or remaining signed sectors are positive.
+Formalise after C10 is checked; do not infer a global cancellation bound.
+
+C9 axiom audit is closed: session 9516 printed all seven public closures,
+each exactly `propext`, `Classical.choice`, `Quot.sound`. The full run exited 1
+only because C10's aligned-cutoff proof left `1-1=(T+1)*0` after `field_simp`.
+That final normalization was repaired with `ring`. Preserved C9 audit output
+in `logs/bvi-radical-dilation-reduction-axioms.txt` and replay commands in
+`/tmp/bvi-c9-radical-axioms.lean`; the complete failed scratch log is retained.
+All new API probes, including `tsum_mul_left Nat Real`, elaborated successfully.
+
+C10 canonical original-source check 98982 terminated exit 0, no diagnostics.
+`DilationClockSectorBoundaryAndSuccessorTransport.lean` has seven public
+theorems and one definition. It proves the exact boundary formula and the
+data-only physical clock-successor transport. Umbrella and thematic README
+wired. Log: `logs/bvi-clock-sector-transport-original.txt`.
+
+The rephrased quotient search 37897 completed `partial=false`; all 20
+candidates, 20 source arguments and the proposed ingredient set were inspected.
+Useful related source: `Nat.add_div_of_dvd_left`; most returns were unrelated.
+The installed core's verified `Nat.add_mul_div_left` is the direct mechanism
+actually used. Compiler/semantic coverage caveats remain unchanged.
+
+Next scratch `/tmp/bvi-c11-clock-seed-draft.lean` is now checking C11 and printing
+the eight C10 public axiom closures in one owned Lean process. It contains four
+prospective public theorems: exact radical-seed nonvanishing iff scale coprimality,
+the scaled normalized clock-sector bound, the actual profile with its full signed
+complement retained, and a data-only combined capstone. No C11 canonical module
+exists yet. Read its terminal output before another Lean process.
+
+Current C11 Lean session is 69379; log `/tmp/bvi-c11-clock-seed-draft.log`.
+
+### Next frontier audit: nonzero seed versus nearby-prime sector size
+
+C11's nonzero radical seed must not be mistaken for a uniform lower bound.
+The next corpus audit is `/tmp/bvi-c12-nearby-clock-sector-prior-research.json`:
+nearby prime profiles, fixed successor lag, least Bézout seed, and retained
+signed complement. Its outcome must be inspected before selecting C12.
+
+Source-derived geometric question: if p*a=q*b+1 and q>p, then a>b and
+`(q-p)*a=q*(a-b)-1 >= q-1`. If p>q and p-q>1, then b>a and
+`(p-q)*a=q*(b-a)+1 >= q+1`. Thus near-equal scales with gap greater than one
+force the least seed denominator large. The difference-one case is essential:
+for p=q+1, (a,b)=(1,1) is a genuine fixed seed, so no universal nearby-integer
+vanishing claim is valid. Large distinct odd primes avoid this exception.
+
+Combined with the already proved coefficient bound and C11's normalized sector
+estimate, this suggests a quantitative smallness bound for the isolated clock
+sector at nearby large primes. The existing continuous profile has a positive
+value at ratio one, so the positive survivor to audit is an explicit transfer
+of the profile to its retained signed complement. No global cancellation or
+prime-spacing assumption is to be inserted. A nonvanishing statement alone
+does not close this question; check the actual corpus and domain before Lean.
+
+C11 scratch 69379 terminated exit 0. All four new seed/profile proofs passed,
+as did all eight C10 public axiom prints; every closure is exactly `propext`,
+`Classical.choice`, `Quot.sound`. C10 audit log is
+`logs/bvi-clock-sector-transport-axioms.txt`; minimal replay file is
+`/tmp/bvi-c10-clock-sector-axioms.lean`.
+
+C11 promoted to `DilationClockSuccessorSeedCoupling.lean` (four public theorems,
+139 lines). Its original-source audit is the sole owned Lean session 56350,
+log `logs/bvi-clock-successor-seed-original.txt`. C12 prior-work search is
+session 90555, still pending. No C12 Lean code exists.
+
+Removed merged C9/C10 scratch drafts and the uninformative owned-process sample;
+kept original sources, audit replay files, complete check logs and research JSON.
+Scoped whitespace check passed after removing one extra README EOF blank line;
+concurrent new thematic entries were preserved.
+
+C12 corpus audit 90555 completed exit 0, `partial=false`. All 20 candidate
+and 20 source-argument statements were inspected. Most candidates and the
+suggested prime-density ingredient set are irrelevant to the geometric bound;
+do not introduce a prime-counting argument from those suggestions. Relevant
+existing work is `PMRamanujanNearbyPrimeResonance`: its actual profile is
+continuous on positive scales, equals the positive diagonal Gram at 1, and
+the prime-insertion Gram has an explicit profile error. Read both relevant
+source argument proofs, including the use of existing
+`exists_prime_pair_ratio_lt`; do not reprove prime realization or continuity.
+Coverage inventory is complete, semantic coverage unmeasured, compiler metadata
+mostly pending/stale, and background refresh incomplete.
+
+The focused lexical follow-up `/tmp/bvi-c12-seed-lexical-research.json` returns
+14 hits, all inspected. Besides C7/C11 it includes the already formalized
+`consecutive_scale_successor_harmonic_coupling`, consistent with the essential
+adjacent-integer exception. It does not supply the proposed near-equal prime
+seed-size estimate. This is not a corpus-wide novelty claim.
+
+Dependency-closed paper target for C12: let d=abs(p-q), with p,q>1 and either
+p<q or q+1<p. For the intrinsic seed (zero when the scales are noncoprime),
+`abs(leastSeedResonance_s(p,q)) <= phi(s)^2*d/(q-1)`.
+In the coprime branch the geometric inequalities recorded above give
+`q-1 <= d*a`; the existing amplitude bound gives
+`abs(seed)*a <= phi(s)^2`. Multiply the first inequality by abs(seed), then
+use the second and divide by q-1>0. In the noncoprime branch the seed is zero.
+Combining this bound with C11 yields an explicit relative-gap plus inverse-scale
+bound for the original clock sector and an approximation of the actual profile
+by its retained signed complement. For near-equal large primes, the known
+positive profile limit prevents this complement from disappearing. This is
+the positive survivor to formalize; no route is retired on the negative
+single-sector observation alone. No C12 Lean code has been written.
+
+C11 original-source audit 56350 terminated exit 0 with no diagnostics. Module
+is wired once into the umbrella, with a narrow thematic README entry. Its four
+public axiom prints are the sole owned Lean session 23283, replay file
+`/tmp/bvi-c11-clock-seed-axioms.lean`, output
+`logs/bvi-clock-successor-seed-axioms.txt`.
+
+Index refresh 45826 terminated exit 0; generated API/gaps/overview refreshed,
+cached lexical DB reported 0 changed/removed after background ingestion.
+Index log: `logs/bvi-clock-radical-seed-index.txt`. Final guarded lint is
+session 55115, log `logs/bvi-clock-radical-seed-lint.txt`. Whitespace and direct
+forbidden-declaration scans of all three new sources passed; each import appears
+once. Exact quoted-capstone discoverability search 21543 completed exit 0;
+JSON: `/tmp/bvi-c9-c11-discoverability.json`.
+
+Discoverability search returned exactly the three new capstones, with canonical
+paths/lines: radical reduction 171, clock-successor transport 222, and combined
+clock-seed profile coupling 117. All three hits inspected.
+Final lint 55115 terminated exit 1, with 381 large-file warnings and exactly the
+same unrelated error recorded at C8:
+`error: research leaf module at package root: TransHorizonIncidenceMechanics.lean; move it into an owned theorem area`.
+No active forbidden-declaration error is reported. The global lint gate has
+not passed; no edit to that unowned root module. C11 axiom session 23283 remains
+the sole owned process; all search/index/lint jobs are terminal.
+
+C11 axiom session 23283 terminated exit 0. All four public declarations have
+exactly `propext`, `Classical.choice`, `Quot.sound`; log
+`logs/bvi-clock-successor-seed-axioms.txt`. Removed the merged C11 scratch,
+retaining its complete successful log and minimal `/tmp` axiom replay file.
+
+Checkpoint outcome: PROGRESS. C9-C11 add 19 public declarations across three
+canonical modules, each original-source checked, individually axiom-audited,
+wired, and corpus-searchable. C1-C11 now comprise 101 public declarations in
+ten pipeline modules, plus the separately checked existing-module gcd-divisor
+interface exported at C8. No owned Lean, search, index, lint, or profiling
+process remains. No full build, numerical experiment, heartbeat increase,
+commit or push. The global lint placement error remains explicit above.
+
+The unbounded research goal stays active. Next: formalise the C12 seed-size
+inequality from the checked paper argument and the positive signed-complement
+survivor, reusing the existing actual-profile continuity and prime-pair
+realisation. Preserve the consecutive-integer exception. No uniform lower
+bound follows from C11 nonvanishing, and no complete signed-complement estimate
+has been proved. The current pipeline card, canonical sources, logs, and own
+Serena memory are the continuation state.

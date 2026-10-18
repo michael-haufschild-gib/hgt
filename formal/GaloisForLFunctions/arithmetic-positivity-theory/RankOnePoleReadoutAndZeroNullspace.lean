@@ -282,6 +282,212 @@ theorem sum_factorialMuntzSmoothedRamp_paperFT_eq_neg_tail_of_pole_zero
     rw [factorialMuntzSmoothedRamp_paperFT_eq_sub n k (s := (ρ : ℂ)) (by linarith [hρ.1]), mul_sub]
   rw [hsplit, sum_factorialMuntzSmoothed_paperFT_gamma_eq, hzero, zero_div, mul_zero, zero_sub]
 
+/-- Finite complex linear combination of smoothed boundary-corrected sources
+`H_{S, a, k}(x) = ∑_{n ∈ S} a_n H_{n,k}(x)`. -/
+def factorialSmoothedCombo (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (x : ℝ) : ℂ :=
+  ∑ n ∈ S, a n * (factorialMuntzSmoothed n k x : ℂ)
+
+/-- Finite complex linear combination of smoothed compact factorial ramps
+`R_{S, a, k}(x) = ∑_{n ∈ S} a_n r_{n,k}(x)`. -/
+def factorialSmoothedRampCombo (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (x : ℝ) : ℂ :=
+  ∑ n ∈ S, a n * (factorialMuntzSmoothedRamp n k x : ℂ)
+
+/-- Finite complex linear combination of smoothed factorial correction tails
+`U_{S, a, k}(x) = ∑_{n ∈ S} a_n U_{n,k}(x)`. -/
+def factorialSmoothedTailCombo (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (x : ℝ) : ℂ :=
+  ∑ n ∈ S, a n * (factorialMuntzSmoothedTail n k x : ℂ)
+
+private theorem paperFT_finset_sum_gamma (S : Finset ℕ) (a : ℕ → ℂ) (g : ℕ → ℝ → ℝ) (s : ℂ)
+    (hi : ∀ n ∈ S, Integrable (fun x : ℝ => Complex.exp ((s - 1 / 2) * (x : ℂ)) * (g n x : ℂ))) :
+    paperFT (fun x => ∑ n ∈ S, a n * (g n x : ℂ)) (gammaOf s) =
+      ∑ n ∈ S, a n * paperFT (fun x => (g n x : ℂ)) (gammaOf s) := by
+  have h1 : paperFT (fun x => ∑ n ∈ S, a n * (g n x : ℂ)) (gammaOf s) =
+      ∫ x : ℝ, ∑ n ∈ S, a n * (Complex.exp ((s - 1 / 2) * (x : ℂ)) * (g n x : ℂ)) := by
+    simp only [paperFT, gammaOf, mul_div_cancel₀ _ Complex.I_ne_zero]
+    congr 1
+    funext x
+    rw [Finset.sum_mul]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    ring
+  rw [h1, integral_finsetSum S (fun n hn => (hi n hn).const_mul (a n))]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [integral_const_mul, paperFT_gamma_eq_mellin]
+
+/-- Exact zero-readout factorization for the physical linear-combination function
+`factorialSmoothedCombo S a k`. -/
+theorem paperFT_factorialSmoothedCombo_gamma (S : Finset ℕ) (a : ℕ → ℂ)
+    (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    paperFT (factorialSmoothedCombo S a k) (gammaOf ρ) =
+      factorialMuntzKernelReadout k (ρ : ℂ) *
+        (factorialPoleFunctional S a / (ρ : ℂ)) := by
+  have hρ := zetaZeroConfig.strip (ρ : ℂ) ρ.2
+  unfold factorialSmoothedCombo
+  rw [paperFT_finset_sum_gamma S a (fun n => factorialMuntzSmoothed n k) (ρ : ℂ)
+    (fun n _ => (factorialMuntzSmoothed_readout n k (ρ : ℂ) (by linarith [hρ.1])).1),
+    sum_factorialMuntzSmoothed_paperFT_gamma_eq]
+
+/-- Exact linearity of `paperFT` at `gammaOf s` for `factorialSmoothedRampCombo`. -/
+theorem paperFT_factorialSmoothedRampCombo_gamma (S : Finset ℕ) (a : ℕ → ℂ)
+    (k : ℕ) (s : ℂ) :
+    paperFT (factorialSmoothedRampCombo S a k) (gammaOf s) =
+      ∑ n ∈ S, a n * paperFT (fun x => (factorialMuntzSmoothedRamp n k x : ℂ)) (gammaOf s) := by
+  unfold factorialSmoothedRampCombo
+  exact paperFT_finset_sum_gamma S a (fun n => factorialMuntzSmoothedRamp n k) s
+    (fun n _ => (factorialMuntzSmoothedRamp_readout n k s).1)
+
+/-- Exact linearity of `paperFT` at `gammaOf s` (`Re s > -1`) for `factorialSmoothedTailCombo`. -/
+theorem paperFT_factorialSmoothedTailCombo_gamma (S : Finset ℕ) (a : ℕ → ℂ)
+    (k : ℕ) {s : ℂ} (hs : -1 < s.re) :
+    paperFT (factorialSmoothedTailCombo S a k) (gammaOf s) =
+      ∑ n ∈ S, a n * paperFT (fun x => (factorialMuntzSmoothedTail n k x : ℂ)) (gammaOf s) := by
+  unfold factorialSmoothedTailCombo
+  exact paperFT_finset_sum_gamma S a (fun n => factorialMuntzSmoothedTail n k) s
+    (fun n _ => (factorialMuntzSmoothedTail_readout n k s hs).1)
+
+/-- On the pole-free hyperplane `factorialPoleFunctional S a = 0`, the linear-combination
+function `factorialSmoothedCombo S a k` has vanishing readout at every nontrivial zero `ρ`. -/
+theorem paperFT_factorialSmoothedCombo_eq_zero_of_pole_zero
+    (S : Finset ℕ) (a : ℕ → ℂ) (hzero : factorialPoleFunctional S a = 0)
+    (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    paperFT (factorialSmoothedCombo S a k) (gammaOf ρ) = 0 := by
+  rw [paperFT_factorialSmoothedCombo_gamma, hzero, zero_div, mul_zero]
+
+/-- **Zero-Square Sampling Mass Collapse on the Pole-Free Hyperplane.**
+Whenever `factorialPoleFunctional S a = 0`, the corrected-source combination
+`factorialSmoothedCombo S a k` has identically zero multiplicity-weighted sampling mass
+`Z(H_{S, a, k}) = 0` at every smoothing index `k`. -/
+theorem zetaZeroSquareMass_factorialSmoothedCombo_eq_zero_of_pole_zero
+    (S : Finset ℕ) (a : ℕ → ℂ) (hzero : factorialPoleFunctional S a = 0) (k : ℕ) :
+    zetaZeroSquareMass (factorialSmoothedCombo S a k) = 0 := by
+  unfold zetaZeroSquareMass
+  have h0 : (fun ρ : zetaZeroConfig.carrier =>
+      zetaZeroSquareSummand (factorialSmoothedCombo S a k) ρ) = fun _ => 0 := by
+    funext ρ
+    unfold zetaZeroSquareSummand
+    rw [paperFT_factorialSmoothedCombo_eq_zero_of_pole_zero S a hzero k ρ,
+      norm_zero, sq, mul_zero, mul_zero]
+  rw [h0, tsum_zero]
+
+/-- **Weil Pairing Collapse on the Pole-Free Hyperplane.**
+Whenever `factorialPoleFunctional S a = 0`, the corrected-source combination
+`factorialSmoothedCombo S a k` has identically zero Weil pairing against any test `g`
+in both slots. -/
+theorem weil_factorialSmoothedCombo_eq_zero_of_pole_zero
+    (S : Finset ℕ) (a : ℕ → ℂ) (hzero : factorialPoleFunctional S a = 0)
+    (k : ℕ) (g : ℝ → ℂ) :
+    zetaZeroConfig.W (factorialSmoothedCombo S a k) g = 0 ∧
+      zetaZeroConfig.W g (factorialSmoothedCombo S a k) = 0 := by
+  constructor
+  · unfold ZeroConfig.W
+    have h0 : (fun ρ : zetaZeroConfig.carrier =>
+        zetaZeroConfig.Wsummand (factorialSmoothedCombo S a k) g ρ) = fun _ => 0 := by
+      funext ρ
+      unfold ZeroConfig.Wsummand
+      rw [paperFT_factorialSmoothedCombo_eq_zero_of_pole_zero S a hzero k ρ,
+        mul_zero, zero_mul]
+    rw [h0, tsum_zero]
+  · unfold ZeroConfig.W
+    have h0 : (fun ρ : zetaZeroConfig.carrier =>
+        zetaZeroConfig.Wsummand g (factorialSmoothedCombo S a k) ρ) = fun _ => 0 := by
+      funext ρ
+      let σ : zetaZeroConfig.carrier := zetaZeroReflectPerm ρ
+      have hγ : (starRingEnd ℂ) (gammaOf (ρ : ℂ)) = gammaOf (σ : ℂ) :=
+        (Tail.gammaOf_reflect (ρ : ℂ)).symm
+      unfold ZeroConfig.Wsummand
+      rw [hγ, paperFT_factorialSmoothedCombo_eq_zero_of_pole_zero S a hzero k σ,
+        map_zero, mul_zero]
+    rw [h0, tsum_zero]
+
+/-- On the pole-free hyperplane `factorialPoleFunctional S a = 0`, the physical linear-combination
+functions `factorialSmoothedRampCombo S a k` and `factorialSmoothedTailCombo S a k` have
+opposite readouts at every nontrivial zero `ρ`. -/
+theorem paperFT_factorialSmoothedRampCombo_eq_neg_tailCombo_of_pole_zero
+    (S : Finset ℕ) (a : ℕ → ℂ) (hzero : factorialPoleFunctional S a = 0)
+    (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    paperFT (factorialSmoothedRampCombo S a k) (gammaOf ρ) =
+      -paperFT (factorialSmoothedTailCombo S a k) (gammaOf ρ) := by
+  have hρ := zetaZeroConfig.strip (ρ : ℂ) ρ.2
+  rw [paperFT_factorialSmoothedRampCombo_gamma,
+    paperFT_factorialSmoothedTailCombo_gamma S a k (by linarith [hρ.1]),
+    sum_factorialMuntzSmoothedRamp_paperFT_eq_neg_tail_of_pole_zero S a hzero k ρ]
+
+/-- **Full Zero-Square Mass and Weil Energy Equivalence on the Pole-Free Hyperplane.**
+Whenever `factorialPoleFunctional S a = 0`, the smoothed compact-ramp linear combination
+`R_{S, a, k}` and the smoothed tail linear combination `U_{S, a, k}` have identically equal
+zero-square sampling mass `Z(R_{S, a, k}) = Z(U_{S, a, k})` and identically equal complete
+zero-side Weil energy `W(R_{S, a, k}, R_{S, a, k}) = W(U_{S, a, k}, U_{S, a, k})` at every
+smoothing index `k`, with zero `O(1/N)` pole-correction loss. -/
+theorem zeroSquareMass_and_weil_rampCombo_eq_tailCombo_of_pole_zero
+    (S : Finset ℕ) (a : ℕ → ℂ) (hzero : factorialPoleFunctional S a = 0) (k : ℕ) :
+    zetaZeroSquareMass (factorialSmoothedRampCombo S a k) =
+      zetaZeroSquareMass (factorialSmoothedTailCombo S a k) ∧
+    zetaZeroConfig.W (factorialSmoothedRampCombo S a k) (factorialSmoothedRampCombo S a k) =
+      zetaZeroConfig.W (factorialSmoothedTailCombo S a k) (factorialSmoothedTailCombo S a k) := by
+  refine ⟨?_, ?_⟩
+  · unfold zetaZeroSquareMass
+    congr 1
+    funext ρ
+    unfold zetaZeroSquareSummand
+    rw [paperFT_factorialSmoothedRampCombo_eq_neg_tailCombo_of_pole_zero S a hzero k ρ, norm_neg]
+  · unfold ZeroConfig.W
+    congr 1
+    funext ρ
+    let σ : zetaZeroConfig.carrier := zetaZeroReflectPerm ρ
+    have hγ : (starRingEnd ℂ) (gammaOf (ρ : ℂ)) = gammaOf (σ : ℂ) :=
+      (Tail.gammaOf_reflect (ρ : ℂ)).symm
+    unfold ZeroConfig.Wsummand
+    rw [hγ,
+      paperFT_factorialSmoothedRampCombo_eq_neg_tailCombo_of_pole_zero S a hzero k ρ,
+      paperFT_factorialSmoothedRampCombo_eq_neg_tailCombo_of_pole_zero S a hzero k σ,
+      map_neg]
+    ring
+
+/-- Canonical two-scale pole-free coefficient family on `{n₁, n₂}` (`n₁ ≠ n₂`):
+`a(n₁) = c_{n₂}`, `a(n₂) = -c_{n₁}`, and `0` elsewhere, where
+`c_n = factorialMuntzBoundaryCoefficient n = 1 / (2 √(n + 1))`. -/
+def twoScalePoleFreeCoeffs (n₁ n₂ : ℕ) (n : ℕ) : ℂ :=
+  if n = n₁ then (factorialMuntzBoundaryCoefficient n₂ : ℂ)
+  else if n = n₂ then -(factorialMuntzBoundaryCoefficient n₁ : ℂ)
+  else 0
+
+theorem twoScalePoleFreeCoeffs_ne_zero (n₁ n₂ : ℕ) :
+    twoScalePoleFreeCoeffs n₁ n₂ n₁ ≠ 0 := by
+  unfold twoScalePoleFreeCoeffs
+  rw [if_pos rfl]
+  exact_mod_cast (factorialMuntzBoundaryCoefficient_pos n₂).ne'
+
+/-- For any two distinct scales `n₁ ≠ n₂`, `twoScalePoleFreeCoeffs n₁ n₂` lies in the
+kernel of `factorialPoleFunctional {n₁, n₂}`. -/
+theorem factorialPoleFunctional_twoScalePoleFreeCoeffs_eq_zero
+    {n₁ n₂ : ℕ} (hne : n₁ ≠ n₂) :
+    factorialPoleFunctional ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂) = 0 := by
+  unfold factorialPoleFunctional twoScalePoleFreeCoeffs
+  have hnot : n₁ ∉ ({n₂} : Finset ℕ) := by simp [hne]
+  rw [Finset.sum_insert hnot, Finset.sum_singleton]
+  simp only [↓reduceIte, hne.symm]
+  ring
+
+/-- **Canonical Two-Scale Pole-Free Ramp–Tail Coercivity Transfer.**
+For any two distinct arithmetic scales `n₁ ≠ n₂` and any smoothing index `k`, the canonical
+two-scale pole-free combination of smoothed compact ramps has identically the same zero-square
+sampling mass and complete zero-side Weil energy as the corresponding two-scale combination
+of smoothed tails. -/
+theorem two_scale_pole_free_pair_zeroSquare_and_weil_eq
+    {n₁ n₂ : ℕ} (hne : n₁ ≠ n₂) (k : ℕ) :
+    zetaZeroSquareMass
+      (factorialSmoothedRampCombo ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂) k) =
+    zetaZeroSquareMass
+      (factorialSmoothedTailCombo ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂) k) ∧
+    zetaZeroConfig.W
+      (factorialSmoothedRampCombo ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂) k)
+      (factorialSmoothedRampCombo ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂) k) =
+    zetaZeroConfig.W
+      (factorialSmoothedTailCombo ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂) k)
+      (factorialSmoothedTailCombo ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂) k) :=
+  zeroSquareMass_and_weil_rampCombo_eq_tailCombo_of_pole_zero
+    ({n₁, n₂} : Finset ℕ) (twoScalePoleFreeCoeffs n₁ n₂)
+    (factorialPoleFunctional_twoScalePoleFreeCoeffs_eq_zero hne) k
+
 end
 
 end GaloisForLFunctions.ArithmeticPositivityTheory

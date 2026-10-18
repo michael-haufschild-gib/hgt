@@ -19,21 +19,24 @@ problems and strengthening the BVI flagship theorems (independent of Wall 1):
      $$\mathcal{V}_{H_3}(N, c) := 3\,\operatorname{Cov}_0(N, c) + 4\,\operatorname{Cov}_1(N, c)
        + 2\,\operatorname{Cov}_2(N, c).$$
    - By the five-facet two-lag cone (`TwoLagSieve.MomentCone`) of `BiScaleUncertainty`, every
-     divisor mode $e \ge 2$ has non-negative 3-tuple eigenvalue
-     $$\Lambda_{H_3}(e) := 3\,\varphi(e) + 4\,\mu(e) + 2\,\lambda_2(e)
-       = \bigl(2\varphi(e) + 3\mu(e) + \lambda_2(e)\bigr) + \bigl(\varphi(e) + \mu(e) + \lambda_2(e)\bigr) \ge 0,$$
+     divisor mode $e \ge 2$ has 3-tuple eigenvalue
+     $$\Lambda_{H_3}(e) := 3\,\varphi(e) + 4\,\mu(e) + 2\,\lambda_2(e)$$
+     satisfying the exact facet identities
+     $$\Lambda_{H_3}(e) = \bigl(2\varphi(e) + 3\mu(e) + \lambda_2(e)\bigr) + \bigl(\varphi(e) + \mu(e) + \lambda_2(e)\bigr) \ge 0,$$
+     $$4\,\varphi(e) - \Lambda_{H_3}(e) = \varphi(e) - 4\mu(e) - 2\lambda_2(e) \ge 0,$$
      which vanishes at $e = 3$ ($\Lambda_{H_3}(3) = 0$, matching `tuplePrimeStructureFactor H_3 3 = 0`
-     since $(0, 1, 2)$ covers all residue classes mod $3$) and attains $6\,\varphi(e)$ at $e = 6$
-     ($\Lambda_{H_3}(6) = 12 = 6\,\varphi(6)$).
+     since $(0, 1, 2)$ covers all residue classes mod $3$) and attains $4\,\varphi(e)$ on the
+     composite modes $e \in \{6, 12\}$ ($\Lambda_{H_3}(6) = 8 = 4\,\varphi(6)$ and
+     $\Lambda_{H_3}(12) = 16 = 4\,\varphi(12)$).
    - Consequently, every finite sieve weight $c : \mathbb{N} \to \mathbb{R}$ satisfies the sharp
      universal two-sided envelope
-     $$0 \le \mathcal{V}_{H_3}(N, c) \le 6\,\operatorname{Var}(N, c),$$
+     $$0 \le \mathcal{V}_{H_3}(N, c) \le 4\,\operatorname{Var}(N, c),$$
      and at every cutoff $N + 12 \ge 12$, the five extreme modes $\{2, 3, 4, 6, 12\}$ (`fiveModeWeight`)
      exhaust the entire joint two-lag moment cone while simultaneously realizing the closed-form
      primitive energy
      $$12\,\mathcal{E}_{\mathrm{prim}}(N + 12) = 3 a^2 + 8 b^2 + 12 c^2 + 24 d^2 + 96 e^2$$
      and centered 3-tuple variance
-     $$\mathcal{V}_{H_3}(N + 12) = a^2 + 2 c^2 + 12 d^2 + 16 e^2.$$
+     $$\mathcal{V}_{H_3}(N + 12) = a^2 + 2 c^2 + 8 d^2 + 16 e^2.$$
 
 2. **Higher-Moment Signed Selberg Coordinate Recovery vs. Quadratic Sign Ambiguity:**
    - Whereas BVI's 2-point lag schedules recover only the unsigned squares $Y_{N,c}(q)^2$,
@@ -99,24 +102,22 @@ def threeTupleModeEigenvalue (e : ℕ) : ℝ :=
   3 * (Nat.totient e : ℝ) + 4 * (μ e : ℝ) + 2 * lagTwoEigenvalue e
 
 /-- Exact algebraic decomposition of the 3-tuple mode eigenvalue into the first two facets of
-`MomentCone` and into its upper-bound complement relative to $6\,\varphi(e)$. -/
+`MomentCone` and into the fourth facet relative to $4\,\varphi(e)$. -/
 theorem threeTupleModeEigenvalue_cone_identities (e : ℕ) :
     threeTupleModeEigenvalue e =
       (2 * (Nat.totient e : ℝ) + 3 * (μ e : ℝ) + lagTwoEigenvalue e) +
         ((Nat.totient e : ℝ) + (μ e : ℝ) + lagTwoEigenvalue e) ∧
-    6 * (Nat.totient e : ℝ) - threeTupleModeEigenvalue e =
-      ((Nat.totient e : ℝ) - 4 * (μ e : ℝ) - 2 * lagTwoEigenvalue e) +
-        2 * (Nat.totient e : ℝ) := by
+    4 * (Nat.totient e : ℝ) - threeTupleModeEigenvalue e =
+      (Nat.totient e : ℝ) - 4 * (μ e : ℝ) - 2 * lagTwoEigenvalue e := by
   unfold threeTupleModeEigenvalue
   constructor <;> ring
 
-/-- Every divisor mode $e \ge 2$ satisfies the two-sided spectral enclosure
-$$0 \le \Lambda_{H_3}(e) \le 6\,\varphi(e).$$ -/
+/-- Every divisor mode $e \ge 2$ satisfies the sharp two-sided spectral enclosure
+$$0 \le \Lambda_{H_3}(e) \le 4\,\varphi(e).$$ -/
 theorem threeTupleModeEigenvalue_bounds {e : ℕ} (he : 2 ≤ e) :
     0 ≤ threeTupleModeEigenvalue e ∧
-      threeTupleModeEigenvalue e ≤ 6 * (Nat.totient e : ℝ) := by
+      threeTupleModeEigenvalue e ≤ 4 * (Nat.totient e : ℝ) := by
   obtain ⟨h1, h2, _, h4, _⟩ := arithmetic_momentCone he
-  have hphi : (0 : ℝ) ≤ (Nat.totient e : ℝ) := Nat.cast_nonneg _
   obtain ⟨hid1, hid2⟩ := threeTupleModeEigenvalue_cone_identities e
   constructor <;> linarith
 
@@ -125,13 +126,13 @@ $e \in \{2, 3, 4, 6, 12\}$:
 - $\Lambda_{H_3}(2) = 1 = S_2(H_3)$,
 - $\Lambda_{H_3}(3) = 0 = S_3(H_3)$ (complete modular cancellation at $p = 3$),
 - $\Lambda_{H_3}(4) = 2$,
-- $\Lambda_{H_3}(6) = 12 = 6\,\varphi(6)$ (attaining the upper bound $6\,\varphi(e)$),
-- $\Lambda_{H_3}(12) = 16$. -/
+- $\Lambda_{H_3}(6) = 8 = 4\,\varphi(6)$ (attaining the upper bound $4\,\varphi(e)$),
+- $\Lambda_{H_3}(12) = 16 = 4\,\varphi(12)$ (also attaining the upper bound $4\,\varphi(e)$). -/
 theorem threeTupleModeEigenvalue_five_modes :
     threeTupleModeEigenvalue 2 = 1 ∧
     threeTupleModeEigenvalue 3 = 0 ∧
     threeTupleModeEigenvalue 4 = 2 ∧
-    threeTupleModeEigenvalue 6 = 12 ∧
+    threeTupleModeEigenvalue 6 = 8 ∧
     threeTupleModeEigenvalue 12 = 16 := by
   have hm2 : μ 2 = -1 := ArithmeticFunction.moebius_apply_prime Nat.prime_two
   have hm3 : μ 3 = -1 := ArithmeticFunction.moebius_apply_prime Nat.prime_three
@@ -175,14 +176,13 @@ theorem threeTupleCenteredVariance_eq_diagonal (N : ℕ) (c : ℕ → ℝ) :
 
 /-- **Sharp Two-Sided Spectral Enclosure for the Centered 3-Tuple Variance:**
 For every horizon $N$ and every real sieve weight $c : \mathbb{N} \to \mathbb{R}$,
-$$0 \le \mathcal{V}_{H_3}(N, c) \le 6\,\operatorname{Var}(N, c).$$ -/
+$$0 \le \mathcal{V}_{H_3}(N, c) \le 4\,\operatorname{Var}(N, c).$$ -/
 theorem threeTupleCenteredVariance_bounds (N : ℕ) (c : ℕ → ℝ) :
     0 ≤ threeTupleCenteredVariance N c ∧
-      threeTupleCenteredVariance N c ≤ 6 * sieveVariance N c := by
+      threeTupleCenteredVariance N c ≤ 4 * sieveVariance N c := by
   have hcone := period_momentCone N c
   rw [periodCovariance_zero] at hcone
   obtain ⟨h1, h2, _, h4, _⟩ := hcone
-  have hvar : 0 ≤ sieveVariance N c := sieveVariance_nonneg N c
   unfold threeTupleCenteredVariance
   rw [periodCovariance_zero]
   constructor <;> linarith
@@ -194,7 +194,7 @@ modes $\{1, 2, 3, 4, 6, 12\}$ simultaneously realizes:
 - lag-0 variance $\operatorname{Cov}_0 = a^2 + 2 b^2 + 2 c^2 + 2 d^2 + 4 e^2$,
 - lag-1 covariance $\operatorname{Cov}_1 = -a^2 - b^2 + d^2$,
 - lag-2 covariance $\operatorname{Cov}_2 = a^2 - b^2 - 2 c^2 - d^2 + 2 e^2$,
-- centered 3-tuple variance $\mathcal{V}_{H_3} = a^2 + 2 c^2 + 12 d^2 + 16 e^2$ (with mode $3$
+- centered 3-tuple variance $\mathcal{V}_{H_3} = a^2 + 2 c^2 + 8 d^2 + 16 e^2$ (with mode $3$
   completely annihilated), and
 - primitive energy $12\,\mathcal{E}_{\mathrm{prim}} = 3 a^2 + 8 b^2 + 12 c^2 + 24 d^2 + 96 e^2$. -/
 theorem fiveModeWeight_full_spectral_synthesis (N : ℕ) (H a b c d e : ℝ) :
@@ -206,12 +206,12 @@ theorem fiveModeWeight_full_spectral_synthesis (N : ℕ) (H a b c d e : ℝ) :
     periodCovariance (N + 12) (fiveModeWeight N H a b c d e) 2 =
       a ^ 2 - b ^ 2 - 2 * c ^ 2 - d ^ 2 + 2 * e ^ 2 ∧
     threeTupleCenteredVariance (N + 12) (fiveModeWeight N H a b c d e) =
-      a ^ 2 + 2 * c ^ 2 + 12 * d ^ 2 + 16 * e ^ 2 ∧
+      a ^ 2 + 2 * c ^ 2 + 8 * d ^ 2 + 16 * e ^ 2 ∧
     12 * sievePrimitiveEnergy (N + 12) (fiveModeWeight N H a b c d e) =
       3 * a ^ 2 + 8 * b ^ 2 + 12 * c ^ 2 + 24 * d ^ 2 + 96 * e ^ 2 := by
   obtain ⟨hH, h0, h1, h2⟩ := fiveModeWeight_moments N H a b c d e
   have h3tup : threeTupleCenteredVariance (N + 12) (fiveModeWeight N H a b c d e) =
-      a ^ 2 + 2 * c ^ 2 + 12 * d ^ 2 + 16 * e ^ 2 := by
+      a ^ 2 + 2 * c ^ 2 + 8 * d ^ 2 + 16 * e ^ 2 := by
     unfold threeTupleCenteredVariance
     rw [h0, h1, h2]
     ring
@@ -235,21 +235,6 @@ theorem fiveModeWeight_full_spectral_synthesis (N : ℕ) (H a b c d e : ℝ) :
   rw [hI, Finset.sum_insert (by simp)] at hfull
   have hp1 : fiveModeProfile H a b c d e 1 = H := by simp [fiveModeProfile]
   rw [hp1] at hfull
-  have hj2 : jordanTotient2 2 = 3 :=
-    (jordanTotient2_sharp_successor_facets 0).1.2.mpr (Or.inl rfl)
-  have hj3 : jordanTotient2 3 = 8 :=
-    (jordanTotient2_sharp_successor_facets 1).1.2.mpr (Or.inr rfl)
-  have hj4 : jordanTotient2 4 = 12 :=
-    (jordanTotient2_sharp_successor_facets 2).2.1.2.mpr (Or.inr rfl)
-  have hj6 : jordanTotient2 6 = 24 :=
-    (jordanTotient2_sharp_successor_facets 4).2.2.2.mpr (Or.inr rfl)
-  have hj12 : jordanTotient2 12 = 96 := by
-    have hcop : Nat.Coprime 4 3 := by decide
-    have hmul : jordanTotient2 (4 * 3) = jordanTotient2 4 * jordanTotient2 3 := by
-      simp_rw [jordanTotient2_eq_gcdPowKernel]
-      exact (isMultiplicative_gcdPowKernel 2).map_mul_of_coprime hcop
-    norm_num [hj4, hj3] at hmul
-    exact hmul
   have ht3 : Nat.totient 3 = 2 := Nat.totient_prime Nat.prime_three
   have ht4 := wall11_totient_degeneracy_broken_by_bezout.1
   have ht6 := wall11_totient_degeneracy_broken_by_bezout.2.1
@@ -263,7 +248,18 @@ theorem fiveModeWeight_full_spectral_synthesis (N : ℕ) (H a b c d e : ℝ) :
   rw [ht6] at hg6
   have hm4 : moebiusReal 4 = 0 := by norm_num at hg4; linarith
   have hm6 : moebiusReal 6 = 1 := by norm_num at hg6; linarith
+  have hj2 := (jordanTotient2_sharp_successor_facets 0).1.2.mpr (Or.inl rfl)
+  have hj3 := (jordanTotient2_sharp_successor_facets 1).1.2.mpr (Or.inr rfl)
+  have hj4 := (jordanTotient2_sharp_successor_facets 2).2.1.2.mpr (Or.inr rfl)
+  have hj6 := (jordanTotient2_sharp_successor_facets 4).2.2.2.mpr (Or.inr rfl)
   norm_num [ht3, ht4, ht6, hm2, hm3, hm4, hm6] at hj2 hj3 hj4 hj6
+  have hj12 : jordanTotient2 12 = 96 := by
+    have hcop : Nat.Coprime 4 3 := by decide
+    have hmul : jordanTotient2 (4 * 3) = jordanTotient2 4 * jordanTotient2 3 := by
+      simp_rw [jordanTotient2_eq_gcdPowKernel]
+      exact (isMultiplicative_gcdPowKernel 2).map_mul_of_coprime hcop
+    norm_num [hj4, hj3] at hmul
+    exact hmul
   rw [hj2, hj3, hj4, hj6, hj12] at hfull
   linarith
 
@@ -332,7 +328,7 @@ theorem bvi_subhorizon_totient_observability_and_sharp_collision {N : ℕ} (hN :
       (∀ t < horizonTotientThreshold N, ∀ c : ℕ → ℝ,
         sieveSeq N c (k + t) = sieveSeq N c (l + t)) ↔
       (∀ t : ℕ, ∀ c : ℕ → ℝ, sieveSeq N c (k + t) = sieveSeq N c (l + t))) ∧
-    (∀ {p a : ℕ} (hp : p.Prime) (ha : 1 ≤ a) (W : ℕ),
+    (∀ {p a : ℕ}, p.Prime → 1 ≤ a → ∀ (W : ℕ),
       (∀ k l : ℕ,
         (∀ t < W, Nat.gcd (k + t) (p ^ a) = Nat.gcd (l + t) (p ^ a)) →
         Nat.ModEq (p ^ a) k l) ↔
@@ -354,8 +350,8 @@ For squarefree-supported weights at cutoff $N$:
    placed strictly above any prescribed observation scale $B$. -/
 theorem bvi_active_power_sampling_sharp_conditioning (N : ℕ) (H : ℝ)
     {m d : ℕ} (hm : 1 ≤ m) (hd : 2 ≤ d) (hdN : d ≤ N) (hs : Squarefree d) :
-    (∀ {c b : ℕ → ℝ} (hc : ∀ j : ℕ, ¬ Squarefree j → c j = 0)
-        (hb : ∀ j : ℕ, ¬ Squarefree j → b j = 0) (E : ℝ),
+    (∀ {c b : ℕ → ℝ}, (∀ j : ℕ, ¬ Squarefree j → c j = 0) →
+        (∀ j : ℕ, ¬ Squarefree j → b j = 0) → ∀ (E : ℝ),
       (∀ j ∈ Finset.Icc 2 N, Squarefree j →
         |activeCenteredSawtoothSum N c (j ^ m) (j ^ m) -
           activeCenteredSawtoothSum N b (j ^ m) (j ^ m)| ≤ E) →

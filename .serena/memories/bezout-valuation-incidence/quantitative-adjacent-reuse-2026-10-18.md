@@ -1,0 +1,11 @@
+# Quantitative adjacent-correlation continuation
+
+Parent task remains Problem 4 strict interior contraction, OPEN. User explicitly requires corpus research, no RH work, no hgtl7, no numerical computations, read-only BVI README.
+
+Correction to prior memory `mem:bezout-valuation-incidence/uniform-active-deleted-remainder-2026-10-18`: no new count-discrepancy proof or private RHTower API exposure is needed. Existing `ChineseRemainderBezoutPeriodicityAndSawtoothDefect.abs_bezoutSawtoothDefect_le_one` gives sharp discrepancy <= 1 for all positive pairs, including incompatible pairs. Existing `RHTower.pm_divisor_average_eq_tsum` suffices for mean L1 truncation tails. The weaker count draft was never run; archived at logs/bvi-adjacent-superseded-count-draft-2026-10-18.tar.gz and removed. No RHTower source changes.
+
+Eight reused APIs audited in /tmp/bvi-adjacent-existing-api-2026-10-18.lean; log contains all eight standard axioms only and no errors. The session handle was consumed before compaction; no owned process remains. Existing finite correlation identity is same-cutoff/same-coefficient quadratic. Unequal-cutoff bilinear extension and quantitative mean tail still being developed, not yet claimed.
+
+Latest corpus queries: finite-head deep, bilinear-prefix deep (complete, all 20 candidates and 20 source arguments each inspected), sharp-count lexical (10/10), coefficient bound lexical (28/28 across two pages). Existing abs_pmPowerDampedRealWeight_le_one is in TransHorizonIncidenceMechanics/IntegerJumpEnergyAndBeyondEnvelopeDefect; do not duplicate as novel. Unit truncated field envelopes elsewhere only cover specified horizon bands, not arbitrary observation n with cutoff D << n.
+
+Completed new leaf UniformActiveDeletedCompensatedRemainder is formally verified, source/artifacts/index/axioms archived in logs/bvi-uniform-active-deleted-2026-10-18-manifest.json. Full O(1) residual has dependency-closed paper proof in stage2 card; formalization incomplete. Strict contraction is not proved by O(1) residual. New scratch/API work and a deep mean-L1-tail corpus query are active; inspect /tmp/bvi-* logs/processes before starting replacements.
