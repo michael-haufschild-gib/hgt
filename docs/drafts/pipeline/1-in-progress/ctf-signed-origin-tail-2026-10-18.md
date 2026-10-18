@@ -86,3 +86,24 @@ moment searches completed. Source/divisor deep searches reported partial
 coverage; optimizer, compactness, prefix-mass, and totient searches completed
 without partial status. Retrieved declarations remain source-only leads until
 checked against this Lean toolchain. No external search or novelty audit used.
+
+### Stronger finite consequences and a sharp-norm conjecture
+
+The corpus already proves `#{squarefree n≤M}≥M/4` for every cutoff in
+`RHTower/SquarefreeLowerDensity.lean`. Thus the preceding mass estimate gives,
+without any large-cutoff assumption,
+`M²≤262144 N² Q_N(c)` whenever `c_d=μ(d)` for `d≤M≤N`.
+For a half-prefix and `N≥2`, it gives `Q_N(c)≥1/2359296`.
+This is a dependency-closed strengthening of the same paper proof.
+
+A sharper positive survivor has emerged. Put
+`P(e)=Σ_{d|e} d |μ(e/d)|` and `A_N=Σ_{e≤N}P(e)²/φ(e)`.
+The exact best constant in `(Σ|c_d|)²≤A_N Q_N(c)` should be `A_N`:
+finite inversion gives the upper bound, and the Liouville-aligned coordinates
+`Y_e=λ(e)P(e)/φ(e)` attain it. Indeed
+`μ(m)λ(dm)=λ(d)μ(m)²`, so each inverse row has a common sign and
+both triangle inequality and weighted Cauchy are equalities. The resulting
+row has total absolute mass `A_N` and Selberg energy `A_N`.
+This sharp-norm statement is proved on paper by those identities; corpus
+applicability and Lean verification remain pending. No claim about its
+sufficiency for the main CTF goal is made.

@@ -18,7 +18,7 @@ private theorem pm_unit_product_bounds {ι : Type*} {f : ι → ℝ} {L : ℝ}
     (hprod : HasProd f L) (hf0 : ∀ i, 0 ≤ f i) (hf1 : ∀ i, f i ≤ 1) (S : Finset ι) :
     0 ≤ L ∧ L ≤ ∏ i ∈ S, f i := by
   constructor
-  · exact le_of_tendsto hprod (Filter.Eventually.of_forall fun T =>
+  · exact le_of_tendsto_of_tendsto tendsto_const_nhds hprod (Filter.Eventually.of_forall fun T =>
       Finset.prod_nonneg fun i _ => hf0 i)
   · apply le_of_tendsto hprod
     filter_upwards [eventually_ge_atTop S] with T hT
@@ -54,6 +54,7 @@ theorem pmAdjacentDivisorDensity_ratio_hasProd {ε η : ℝ}
   change Tendsto _ atTop _
   apply (hnum.div hden (pmPowerDampedDivisorDensity_re_ne_zero hε)).congr
   intro S
+  dsimp only [Pi.div_apply]
   rw [← Finset.prod_div_distrib]
   apply prod_congr rfl
   intro p _
@@ -72,12 +73,14 @@ theorem pmAdjacentDivisorDensity_ratio_hasProd {ε η : ℝ}
 theorem tendsto_pmAdjacentDivisorDensity_self_div_parameter :
     Tendsto (fun ε : ℝ => pmAdjacentDivisorDensity ε ε / ε) (𝓝[>] 0) (𝓝 0) := by
   have hp : Tendsto (fun ε : ℝ => (2 : ℝ) ^ (-ε)) (𝓝[>] 0) (𝓝 1) := by
-    simpa using (((Real.continuous_const_rpow (by norm_num : (2 : ℝ) ≠ 0)).comp
+    simpa only [Function.comp_def, neg_zero, Real.rpow_zero] using
+      (((Real.continuous_const_rpow (by norm_num : (2 : ℝ) ≠ 0)).comp
       continuous_neg).tendsto 0).mono_left nhdsWithin_le_nhds
   have hu : Tendsto (fun ε : ℝ => 1 - (2 : ℝ) ^ (-ε) / (2 - (2 : ℝ) ^ (-ε)))
       (𝓝[>] 0) (𝓝 0) := by
-    simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub
+    convert (tendsto_const_nhds (x := (1 : ℝ))).sub
       (hp.div ((tendsto_const_nhds (x := (2 : ℝ))).sub hp) (by norm_num))
+      using 1 <;> norm_num
   have hr : Tendsto (fun ε : ℝ =>
       pmAdjacentDivisorDensity ε ε / (pmPowerDampedDivisorDensity ε).re)
       (𝓝[>] 0) (𝓝 0) := by
@@ -143,6 +146,11 @@ theorem pmAdjacentArtinConstant_pos_le :
   have hb := (pm_unit_product_bounds hp (fun p => (hf p).le)
     (fun p => sub_le_self _ (hd p).1)
     {⟨2, Nat.prime_two⟩, ⟨3, Nat.prime_three⟩}).2
+  have h23 : (⟨2, Nat.prime_two⟩ : Nat.Primes) ≠ ⟨3, Nat.prime_three⟩ := by
+    intro h
+    have := congrArg (fun p : Nat.Primes => (p : ℕ)) h
+    norm_num at this
+  rw [prod_insert (by simpa using h23), prod_singleton] at hb
   norm_num [d] at hb
   exact hb
 
@@ -152,7 +160,8 @@ private theorem pmAdjacentShiftedPrimeDeficit_limit (p : Nat.Primes) :
   have hp1 : (1 : ℝ) < p := by exact_mod_cast p.property.one_lt
   have hp0 : (p : ℝ) ≠ 0 := by linarith
   have hq : Tendsto (fun ε : ℝ => (p : ℝ) ^ (-ε)) (𝓝[>] 0) (𝓝 1) := by
-    simpa using (((Real.continuous_const_rpow hp0).comp continuous_neg).tendsto 0).mono_left
+    simpa only [Function.comp_def, neg_zero, Real.rpow_zero] using
+      (((Real.continuous_const_rpow hp0).comp continuous_neg).tendsto 0).mono_left
       nhdsWithin_le_nhds
   exact hq.div ((tendsto_const_nhds (x := (p : ℝ))).mul
     ((tendsto_const_nhds (x := (p : ℝ))).sub hq))
@@ -166,6 +175,7 @@ private theorem pmAdjacentShifted_ratio_hasProd {ε : ℝ} (hε : 0 < ε) :
   have hp0 : (0 : ℝ) < p := by exact_mod_cast p.property.pos
   rw [show -(1 + ε) = -ε + (-1) by ring, Real.rpow_add hp0, Real.rpow_neg_one]
   dsimp only [pmAdjacentShiftedPrimeDeficit]
+  rw [div_mul_eq_div_div]
   ring
 
 /-- The mixed adjacent density has the arithmetic Euler constant as its exact linear rate. -/
@@ -184,7 +194,7 @@ theorem tendsto_pmAdjacentDivisorDensity_shifted_div_parameter :
   have hr : Tendsto (fun ε : ℝ =>
       pmAdjacentDivisorDensity ε (1 + ε) / (pmPowerDampedDivisorDensity ε).re)
       (𝓝[>] 0) (𝓝 pmAdjacentArtinConstant) := by
-    change Tendsto _ _ (𝓝 (∏' p : Nat.Primes, 1 - 1 / ((p : ℝ) * ((p : ℝ) - 1))))
+    change Tendsto _ _ (𝓝 (∏' p : Nat.Primes, (1 - 1 / ((p : ℝ) * ((p : ℝ) - 1)))))
     have h := hprod.congr' (show ∀ᶠ ε : ℝ in 𝓝[>] 0,
         (∏' p : Nat.Primes, 1 + -pmAdjacentShiftedPrimeDeficit ε p) =
           pmAdjacentDivisorDensity ε (1 + ε) / (pmPowerDampedDivisorDensity ε).re from by

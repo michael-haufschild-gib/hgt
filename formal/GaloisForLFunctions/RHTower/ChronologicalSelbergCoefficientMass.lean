@@ -1,7 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.TotientCubicMean
 import GaloisForLFunctions.RHTower.NicolasTotientLandau
-import GaloisForLFunctions.RHTower.Sieve.SquarefreeGlobalCount
-import GaloisForLFunctions.RHTower.Sieve.SquarefreeDensityBound
+import GaloisForLFunctions.RHTower.SquarefreeLowerDensity
 import GaloisForLFunctions.BezoutValuationIncidence.ExactFinitePrefixDiscrepancyDualityAndReturnTimes
 
 /-!
@@ -138,27 +137,18 @@ theorem coefficient_density_sq_le_selberg {N : ℕ} (hN : 0 < N)
   rw [mul_pow] at hs
   exact (mul_le_mul_iff_of_pos_right (sq_pos_of_pos hN0)).mp (by nlinarith [hs])
 
-/-- An explicit positive density of nonzero Möbius coefficients beyond a fixed threshold. -/
-theorem quarter_le_moebius_coefficient_mass {M : ℕ} (hM : 1024 ≤ M) :
+/-- An explicit positive density of nonzero Möbius coefficients at every cutoff. -/
+theorem quarter_le_moebius_coefficient_mass (M : ℕ) :
     (M : ℝ) / 4 ≤ ∑ d ∈ Icc 1 M, |(moebius d : ℝ)| := by
-  have hMR : (1024 : ℝ) ≤ M := by exact_mod_cast hM
-  have hroot : (32 : ℝ) ≤ Real.sqrt M :=
-    (Real.le_sqrt (by norm_num) (Nat.cast_nonneg M)).mpr (by norm_num; exact hMR)
-  have hroot0 := Real.sqrt_nonneg (M : ℝ)
-  have hroot_sq := Real.sq_sqrt (Nat.cast_nonneg M)
-  have hroot_mul := mul_le_mul_of_nonneg_right hroot hroot0
-  have hcount := (abs_le.mp (Sieve.abs_sum_moebius_sq_Icc_sub_le M)).1
-  have hdensity := mul_le_mul_of_nonneg_left Sieve.squarefreeDensity_ge (Nat.cast_nonneg M)
-  have hsum : (∑ d ∈ Icc 1 M, (moebius d : ℝ)^2) =
-      ∑ d ∈ Icc 1 M, |(moebius d : ℝ)| := by
-    apply Finset.sum_congr rfl
-    intro d hd
-    rcases moebius_eq_or d with h | h | h <;> simp [h]
-  rw [hsum] at hcount
-  nlinarith
+  classical
+  have habs (d : ℕ) : |(moebius d : ℝ)| = if Squarefree d then 1 else 0 := by
+    by_cases hd : Squarefree d
+    · simp [hd, moebius_apply_of_squarefree hd]
+    · simp [hd, moebius_eq_zero_of_not_squarefree hd]
+  simpa only [habs, Finset.sum_boole] using quarter_le_card_squarefree M
 
 /-- Retaining an exact Möbius prefix has a quantitative Selberg-energy cost. -/
-theorem moebius_prefix_mass_sq_le_selberg {M N : ℕ} (hM : 1024 ≤ M) (hMN : M ≤ N)
+theorem moebius_prefix_mass_sq_le_selberg {M N : ℕ} (hMN : M ≤ N)
     (c : ℕ → ℝ) (hhead : ∀ d ∈ Icc 1 M, c d = (moebius d : ℝ)) :
     (M : ℝ)^2 ≤ 262144 * (N : ℝ)^2 * selbergTotientDiagonalForm N c := by
   have hsub : (Icc 1 M : Finset ℕ) ⊆ Icc 1 N := by
@@ -167,7 +157,7 @@ theorem moebius_prefix_mass_sq_le_selberg {M N : ℕ} (hM : 1024 ≤ M) (hMN : M
       (Finset.mem_Icc.mp hd).2.trans hMN⟩
   have hmass : (M : ℝ) / 4 ≤ ∑ d ∈ Icc 1 N, |c d| := by
     calc
-      _ ≤ ∑ d ∈ Icc 1 M, |(moebius d : ℝ)| := quarter_le_moebius_coefficient_mass hM
+      _ ≤ ∑ d ∈ Icc 1 M, |(moebius d : ℝ)| := quarter_le_moebius_coefficient_mass M
       _ = ∑ d ∈ Icc 1 M, |c d| := Finset.sum_congr rfl fun d hd => by rw [hhead d hd]
       _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg hsub fun d _ _ => abs_nonneg (c d)
   have hs := (pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ (M : ℝ) / 4) hmass 2).trans
@@ -175,10 +165,9 @@ theorem moebius_prefix_mass_sq_le_selberg {M N : ℕ} (hM : 1024 ≤ M) (hMN : M
   nlinarith [hs]
 
 /-- The half-prefix source family cannot simultaneously have vanishing Selberg diagonal. -/
-theorem half_moebius_prefix_selberg_floor {N : ℕ} (hN : 3072 ≤ N)
+theorem half_moebius_prefix_selberg_floor {N : ℕ} (hN : 2 ≤ N)
     (c : ℕ → ℝ) (hhead : ∀ d ∈ Icc 1 (N / 2), c d = (moebius d : ℝ)) :
     (1 : ℝ) / 2359296 ≤ selbergTotientDiagonalForm N c := by
-  have hM : 1024 ≤ N / 2 := by omega
   have hthird : N ≤ 3 * (N / 2) := by omega
   have hmass : (1 / 12 : ℝ) * (N : ℝ) ≤ ∑ d ∈ Icc 1 N, |c d| := by
     have hMR : (N : ℝ) ≤ 3 * ((N / 2 : ℕ) : ℝ) := by exact_mod_cast hthird
@@ -188,7 +177,7 @@ theorem half_moebius_prefix_selberg_floor {N : ℕ} (hN : 3072 ≤ N)
         (Finset.mem_Icc.mp hd).2.trans (Nat.div_le_self N 2)⟩
     calc
       _ ≤ ((N / 2 : ℕ) : ℝ) / 4 := by linarith
-      _ ≤ ∑ d ∈ Icc 1 (N / 2), |(moebius d : ℝ)| := quarter_le_moebius_coefficient_mass hM
+      _ ≤ ∑ d ∈ Icc 1 (N / 2), |(moebius d : ℝ)| := quarter_le_moebius_coefficient_mass (N / 2)
       _ = ∑ d ∈ Icc 1 (N / 2), |c d| := Finset.sum_congr rfl fun d hd => by rw [hhead d hd]
       _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg hsub fun d _ _ => abs_nonneg (c d)
   have h := coefficient_density_sq_le_selberg (by omega : 0 < N) c

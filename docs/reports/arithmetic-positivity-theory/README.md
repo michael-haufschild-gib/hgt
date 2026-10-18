@@ -205,6 +205,8 @@ The remaining ramp deliverables are the full compact-ramp smoothing limit and as
 
 For whole coefficient families, the [finite-window coercivity paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-window-coercivity.md) proves that the normalized actual tails form a Riesz sequence in physical \(L^2\). Exact collar separation and a dominant first harmonic prevent cancellation of the physical norm. This paper theorem still requires a Lean certificate; it does not control the complete signed form. The [knowledge ledger](knowledge-ledger-primary.md) records these boundaries and rejected shortcuts.
 
+The [signed span paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-span-coercivity.md) adds the missing energy estimates for this restricted family. For normalized phase coefficients supported on \(N\ge M\), it proves \(\Re\mathcal W(f_b,f_b)\ge(c\log M-C)\sum_N|b_N|^2\). Low-frequency exclusion forces logarithmic Gamma energy; uniform dilation bounds keep the entire prime and polar costs bounded on coefficient space. This assembled theorem still requires a Lean certificate. Its restricted positive span is not asserted dense, so the global RW endpoint remains open.
+
 ## What success would look like
 
 1. A precise dictionary connecting literal arithmetic data, physical tests, and spectral energies without losing poles, multiplicities, or domains.

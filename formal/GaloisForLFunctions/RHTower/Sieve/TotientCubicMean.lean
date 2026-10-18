@@ -154,7 +154,8 @@ theorem sum_totientRatio_cube_le (N : ℕ) :
     apply Finset.sum_congr rfl
     intro n hn
     have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (show 0 < n from (Finset.mem_Icc.mp hn).1).ne'
-    simp [massTotientRatio, hn0, mul_div_assoc, div_right_comm, div_eq_mul_inv]
+    dsimp [massTotientRatio]
+    field_simp
   have h2 (X : ℕ) : ∑ n ∈ Icc 1 X, massTotientRatio n^2 ≤ 64 * (X : ℝ) := by
     convert ratio_mean_step 1 (by norm_num : (0 : ℝ) ≤ 4) h1 hw1 X using 1 <;> norm_num
   have hw2 (X : ℕ) :
