@@ -44,6 +44,7 @@ private theorem tendsto_coeff_of_bounded_degree {p : ℕ → ℝ[X]} {q : ℝ[X]
   have hinj : Set.InjOn nodes (Finset.univ : Finset (Fin (d + 1))) := by
     intro a ha b hb hab
     apply Fin.ext
+    change (a.val : ℝ) = (b.val : ℝ) at hab
     exact_mod_cast hab
   have hrepr (f : ℝ[X]) (hf : f.natDegree ≤ d) :
       Lagrange.interpolate Finset.univ nodes (fun i => f.eval (nodes i)) = f := by

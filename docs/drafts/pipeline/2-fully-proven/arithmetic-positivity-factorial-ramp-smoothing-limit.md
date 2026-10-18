@@ -95,7 +95,7 @@ Each term has just been controlled, proving the first equality in (1). The refle
 
 ## Application boundary
 
-The [tail sampling theorem](arithmetic-positivity-factorial-log-sampling.md) and the corrected-source square budget control the signed mixed term on the smoothed source. To conclude positivity of the actual ramp–tent span, still reconcile that zero-side form with the complete physical energy above, formalize both results, and apply the exact Gram margin. The present limit does not assert that reconciliation by notation alone.
+The [complete ramp–tent margin proof](arithmetic-positivity-factorial-ramp-gram-margin.md) combines this limit with the tail sampling theorem and corrected-source square budget. It explicitly applies `zeta_W_eq_weilFullFunctional_mixed` to identify the zero-side and complete physical energies of the smooth compact ramp before taking the limit. The full assembled Lean certificate remains required.
 
 The support bound depends on \(n\): the theorem fixes \(n\) before taking \(k\to\infty\). This matches the application’s eventual smoothing quantifiers. A limit uniform in the growing support aperture would require an additional estimate.
 

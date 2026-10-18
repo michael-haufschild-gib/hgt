@@ -302,6 +302,251 @@ theorem sieveSeq_sub_ordCompl_eq_sieveSeq_div_of_dvd_of_squarefree_support (H : 
     hp.coprime_iff_not_dvd.mpr (Nat.not_dvd_ordCompl hp hm)
   exact sieveSeq_prime_mul_sub_eq_sieveSeq_div H hp hcop c
 
+/-! ## §4. Exact Sub-Horizon Rank-1 Ground-State Factorization of `bipartiteEnergy` and `varianceEnergy` -/
+
+/-- Every node `m ∈ chainLeft N p b u` and `k ∈ chainRight N p b u` satisfies `0 < m`, `0 < k`,
+`m < k`, `ordCompl[p] m = b`, `ordCompl[p] k = b`, and (when `p` is prime) `p ∣ k`. -/
+theorem dvd_of_mem_chainRight_of_mem_chainLeft {N p b m k : ℕ} {u : ℝ} (hp : p.Prime)
+    (hm : m ∈ chainLeft N p b u) (hk : k ∈ chainRight N p b u) :
+    0 < m ∧ 0 < k ∧ m < k ∧ ordCompl[p] m = b ∧ ordCompl[p] k = b ∧ p ∣ k := by
+  unfold chainLeft at hm
+  unfold chainRight at hk
+  simp only [Finset.mem_filter] at hm hk
+  obtain ⟨hm_div, hm_ord, hm_log⟩ := hm
+  obtain ⟨hk_div, hk_ord, hk_log⟩ := hk
+  have hm_pos : 0 < m := Nat.pos_of_mem_divisors hm_div
+  have hk_pos : 0 < k := Nat.pos_of_mem_divisors hk_div
+  have hmk : m < k := by
+    by_contra hle
+    have hlog : Real.log (k : ℝ) ≤ Real.log (m : ℝ) :=
+      Real.log_le_log (by exact_mod_cast hk_pos) (by exact_mod_cast Nat.le_of_not_gt hle)
+    linarith
+  obtain ⟨r, hr_pos, hkr⟩ :=
+    exists_pow_mul_of_same_chain hp hm_pos hmk (hm_ord.trans hk_ord.symm)
+  have hpk : p ∣ k := by
+    rw [hkr]
+    exact dvd_mul_of_dvd_right (dvd_pow_self p hr_pos.ne') m
+  exact ⟨hm_pos, hk_pos, hmk, hm_ord, hk_ord, hpk⟩
+
+/-- Every node `m ∈ chainLeft N p b u` different from the chain base `b` (`m ≠ b`) is divisible
+by `p`. -/
+theorem dvd_of_mem_chainLeft_of_ne_base {N p b m : ℕ} {u : ℝ} (_hp : p.Prime)
+    (hm : m ∈ chainLeft N p b u) (hne : m ≠ b) :
+    0 < m ∧ ordCompl[p] m = b ∧ p ∣ m := by
+  unfold chainLeft at hm
+  simp only [Finset.mem_filter] at hm
+  obtain ⟨hm_div, hm_ord, _⟩ := hm
+  have hm_pos : 0 < m := Nat.pos_of_mem_divisors hm_div
+  have hdecomp := Nat.ordProj_mul_ordCompl_eq_self m p
+  have hfac_ne : m.factorization p ≠ 0 := by
+    intro h0
+    have hmb : m = b := by
+      rw [← hm_ord, h0, pow_zero, Nat.div_one]
+    exact hne hmb
+  refine ⟨hm_pos, hm_ord, ?_⟩
+  rw [← hdecomp]
+  exact dvd_mul_of_dvd_left (dvd_pow_self p hfac_ne) (ordCompl[p] m)
+
+/-- Whenever `chainLeft N p b u` is nonempty, `sieveSeq H c` is identically equal to
+`sieveSeq H c (p * b)` on `chainRight N p b u` for any squarefree-supported weight `c`. -/
+theorem sieveSeq_eq_prime_mul_base_on_chainRight (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) {N p b m k : ℕ} {u : ℝ} (hp : p.Prime)
+    (hm : m ∈ chainLeft N p b u) (hk : k ∈ chainRight N p b u) :
+    sieveSeq H c k = sieveSeq H c (p * b) := by
+  obtain ⟨_, hk_pos, _, _, hk_ord, hpk⟩ := dvd_of_mem_chainRight_of_mem_chainLeft hp hm hk
+  rw [sieveSeq_eq_prime_mul_ordCompl_of_dvd_of_squarefree_support H hc hp hk_pos.ne' hpk, hk_ord]
+
+/-- **Exact Vanishing of Right-Chain Internal Scatter (`scatter_chainRight_sieveSeq_eq_zero_of_mem_chainLeft`):**
+Whenever `chainLeft N p b u` contains at least one element `m`, `sieveSeq H c` is constant across
+`chainRight N p b u`, so `scatter (chainRight N p b u) (sieveSeq H c) = 0`. -/
+theorem scatter_chainRight_sieveSeq_eq_zero_of_mem_chainLeft (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) {N p b m : ℕ} {u : ℝ} (hp : p.Prime)
+    (hm : m ∈ chainLeft N p b u) :
+    scatter (chainRight N p b u) (sieveSeq H c) = 0 := by
+  by_cases hR : (chainRight N p b u) = ∅
+  · simp [hR, scatter]
+  · have hmean : mean (chainRight N p b u) (sieveSeq H c) = sieveSeq H c (p * b) := by
+      unfold mean
+      have hsum : (∑ k ∈ chainRight N p b u, sieveSeq H c k) =
+          (chainRight N p b u).card * sieveSeq H c (p * b) := by
+        rw [Finset.sum_congr rfl (fun k hk =>
+          sieveSeq_eq_prime_mul_base_on_chainRight H hc hp hm hk),
+          Finset.sum_const, nsmul_eq_mul]
+      have hcard_ne : ((chainRight N p b u).card : ℝ) ≠ 0 := by
+        exact_mod_cast Finset.card_ne_zero.mpr (Finset.nonempty_iff_ne_empty.mpr hR)
+      rw [hsum, mul_div_cancel_left₀ _ hcard_ne]
+    unfold scatter
+    refine Finset.sum_eq_zero fun k hk => ?_
+    rw [sieveSeq_eq_prime_mul_base_on_chainRight H hc hp hm hk, hmean, sub_self, sq, mul_zero]
+
+/-- When the chain base `b` does not lie in `chainLeft N p b u`, every node `m ∈ chainLeft N p b u`
+is an excited node (`p ∣ m`), so all jumps to `chainRight N p b u` vanish and
+`bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) = 0`. -/
+theorem bipartiteEnergy_chain_sieveSeq_of_not_mem_chainLeft (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) {N p b : ℕ} {u : ℝ} (hp : p.Prime)
+    (hb : b ∉ chainLeft N p b u) :
+    bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) = 0 := by
+  unfold bipartiteEnergy
+  refine Finset.sum_eq_zero fun m hm => Finset.sum_eq_zero fun k hk => ?_
+  have hne : m ≠ b := fun h => hb (h ▸ hm)
+  obtain ⟨hm_pos, hm_ord, hpm⟩ := dvd_of_mem_chainLeft_of_ne_base hp hm hne
+  obtain ⟨_, hk_pos, _, _, hk_ord, hpk⟩ := dvd_of_mem_chainRight_of_mem_chainLeft hp hm hk
+  rw [sieveSeq_eq_of_same_chain_of_dvd_of_squarefree_support H hc hp hm_pos.ne' hk_pos.ne' hpm hpk
+    (hm_ord.trans hk_ord.symm), sub_self, sq, mul_zero]
+
+/-- When the chain base `b` lies in `chainLeft N p b u`, all excited nodes `m ∈ chainLeft \ {b}`
+contribute `0` to `bipartiteEnergy`, while the ground node `m = b` contributes
+`sieveSeq (H / p) (fun d => c (p * d)) b ^ 2` for each `k ∈ chainRight N p b u`. -/
+theorem bipartiteEnergy_chain_sieveSeq_of_mem_chainLeft (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) {N p b : ℕ} {u : ℝ} (hp : p.Prime)
+    (hb : b ∈ chainLeft N p b u) :
+    bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+      ((chainRight N p b u).card : ℝ) *
+        sieveSeq (H / p) (fun d => c (p * d)) b ^ (2 : ℕ) := by
+  unfold bipartiteEnergy
+  rw [Finset.sum_eq_single b]
+  · have hconst : ∀ k ∈ chainRight N p b u,
+        (sieveSeq H c b - sieveSeq H c k) ^ (2 : ℕ) =
+          sieveSeq (H / p) (fun d => c (p * d)) b ^ (2 : ℕ) := by
+      intro k hk
+      obtain ⟨_, hk_pos, _, _, hk_ord, hpk⟩ := dvd_of_mem_chainRight_of_mem_chainLeft hp hb hk
+      have hjump :=
+        sieveSeq_sub_ordCompl_eq_sieveSeq_div_of_dvd_of_squarefree_support H hc hp hk_pos.ne' hpk
+      rw [hk_ord] at hjump
+      have hneg : sieveSeq H c b - sieveSeq H c k =
+          -sieveSeq (H / p) (fun d => c (p * d)) b := by linarith
+      rw [hneg, neg_sq]
+    rw [Finset.sum_congr rfl hconst, Finset.sum_const, nsmul_eq_mul]
+  · intro m hm hne
+    refine Finset.sum_eq_zero fun k hk => ?_
+    obtain ⟨hm_pos, hm_ord, hpm⟩ := dvd_of_mem_chainLeft_of_ne_base hp hm hne
+    obtain ⟨_, hk_pos, _, _, hk_ord, hpk⟩ := dvd_of_mem_chainRight_of_mem_chainLeft hp hm hk
+    rw [sieveSeq_eq_of_same_chain_of_dvd_of_squarefree_support H hc hp hm_pos.ne' hk_pos.ne'
+      hpm hpk (hm_ord.trans hk_ord.symm), sub_self, sq, mul_zero]
+  · intro hnot
+    exact (hnot hb).elim
+
+/-- **Universal Sub-Horizon Rank-1 Ground-State Factorization of `bipartiteEnergy`
+(`bipartiteEnergy_chain_sieveSeq_eq_ite`):**
+For every horizon `H : ℕ`, squarefree-supported weight `c : ℕ → ℝ`, prime `p`, product index `N : ℕ`,
+chain base `b : ℕ`, and logarithmic cut `u : ℝ`:
+`bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+  if b ∈ chainLeft N p b u then (chainRight N p b u).card * sieveSeq (H / p) (fun d => c (p * d)) b ^ 2 else 0`. -/
+theorem bipartiteEnergy_chain_sieveSeq_eq_ite (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) (N : ℕ) {p : ℕ} (hp : p.Prime)
+    (b : ℕ) (u : ℝ) :
+    bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+      if b ∈ chainLeft N p b u then
+        ((chainRight N p b u).card : ℝ) *
+          sieveSeq (H / p) (fun d => c (p * d)) b ^ (2 : ℕ)
+      else 0 := by
+  split_ifs with hb
+  · exact bipartiteEnergy_chain_sieveSeq_of_mem_chainLeft H hc hp hb
+  · exact bipartiteEnergy_chain_sieveSeq_of_not_mem_chainLeft H hc hp hb
+
+/-- **Universal Sub-Horizon Rank-1 Ground-State Factorization of `varianceEnergy`
+(`varianceEnergy_chain_sieveSeq_eq_ite`):**
+For every horizon `H : ℕ`, squarefree-supported weight `c : ℕ → ℝ`, prime `p`, product index `N : ℕ`,
+chain base `b : ℕ`, and logarithmic cut `u : ℝ`:
+`varianceEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+  if b ∈ chainLeft N p b u then (chainRight N p b u).card * sieveSeq (H / p) (fun d => c (p * d)) b ^ 2 else 0`. -/
+theorem varianceEnergy_chain_sieveSeq_eq_ite (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) (N : ℕ) {p : ℕ} (hp : p.Prime)
+    (b : ℕ) (u : ℝ) :
+    varianceEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+      if b ∈ chainLeft N p b u then
+        ((chainRight N p b u).card : ℝ) *
+          sieveSeq (H / p) (fun d => c (p * d)) b ^ (2 : ℕ)
+      else 0 := by
+  rw [← bipartiteEnergy_eq_variance]
+  exact bipartiteEnergy_chain_sieveSeq_eq_ite H hc N hp b u
+
+/-! ## §5. Multiplicative Renormalization Fixed-Point Law & Terminal-Octave Quantization -/
+
+/-- Whenever a weight `c : ℕ → ℝ` factors as `c (p * d) = c p * c d` on all divisors `d ∣ b`,
+the dilated-weight sieve `sieveSeq K (fun d => c (p * d)) b` equals `c p * sieveSeq K c b`. -/
+theorem sieveSeq_div_mul_weight_eq_mul_sieveSeq (K p b : ℕ) (c : ℕ → ℝ)
+    (hfac : ∀ d : ℕ, d ∣ b → c (p * d) = c p * c d) :
+    sieveSeq K (fun d => c (p * d)) b = c p * sieveSeq K c b := by
+  unfold sieveSeq
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  exact hfac d (Finset.mem_filter.mp hd).2
+
+/-- **Multiplicative Renormalization Fixed-Point Law for `varianceEnergy`
+(`varianceEnergy_chain_sieveSeq_eq_mul_sq_of_factor_on_divisors`):**
+Whenever `c` is squarefree-supported and `c (p * d) = c p * c d` for all `d ∣ b` (which holds
+for all multiplicative weights when `b ∈ chainLeft N p b u`, since `p ∤ b`), the prime-chain
+variance at horizon `H` equals `|R| * c(p)^2 * (sieveSeq (H / p) c b)^2` if `b ∈ L` and `0` otherwise. -/
+theorem varianceEnergy_chain_sieveSeq_eq_mul_sq_of_factor_on_divisors (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) (N : ℕ) {p : ℕ} (hp : p.Prime)
+    (b : ℕ) (u : ℝ) (hfac : ∀ d : ℕ, d ∣ b → c (p * d) = c p * c d) :
+    varianceEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+      if b ∈ chainLeft N p b u then
+        ((chainRight N p b u).card : ℝ) * c p ^ (2 : ℕ) *
+          sieveSeq (H / p) c b ^ (2 : ℕ)
+      else 0 := by
+  rw [varianceEnergy_chain_sieveSeq_eq_ite H hc N hp b u,
+    sieveSeq_div_mul_weight_eq_mul_sieveSeq (H / p) p b c hfac]
+  split_ifs <;> ring
+
+/-- For any integer `H` and prime `p` in the terminal band `p ≤ H < 2 * p`, integer division gives
+`H / p = 1`, so `sieveSeq (H / p) (fun d => c (p * d)) b = c p` for **every** `b : ℕ` (with no
+multiplicativity assumption on `c`!). -/
+theorem sieveSeq_div_eq_apply_prime_of_le_of_lt_two_mul {H p : ℕ} (hp : p.Prime)
+    (hle : p ≤ H) (hlt : H < 2 * p) (c : ℕ → ℝ) (b : ℕ) :
+    sieveSeq (H / p) (fun d => c (p * d)) b = c p := by
+  have hp_pos : 0 < p := hp.pos
+  have hdiv : H / p = 1 := by
+    apply le_antisymm
+    · exact Nat.le_of_lt_succ ((Nat.div_lt_iff_lt_mul hp_pos).mpr (by omega))
+    · exact (Nat.le_div_iff_mul_le hp_pos).mpr (by omega)
+  rw [hdiv]
+  unfold sieveSeq
+  have hset : (Finset.Icc 1 1).filter (fun d => d ∣ b) = {1} := by
+    ext d
+    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_singleton]
+    constructor
+    · rintro ⟨⟨hd1, hd1'⟩, _⟩
+      omega
+    · rintro rfl
+      exact ⟨⟨le_rfl, le_rfl⟩, one_dvd b⟩
+  rw [hset, Finset.sum_singleton, mul_one]
+
+/-- **Universal Terminal-Octave Prime-Chain Step Law (`sieveSeq_prime_mul_sub_eq_of_mem_sievePrimeTail`):**
+For every terminal prime `p ∈ sievePrimeTail H` (`H / 2 < p ≤ H`), every weight `c : ℕ → ℝ`, and
+every `b : ℕ` coprime to `p`, stepping from `b` to `p * b` changes `sieveSeq H c` by `c p`
+universally across all trans-horizon scales `b ≫ H`:
+`sieveSeq H c (p * b) - sieveSeq H c b = c p`. -/
+theorem sieveSeq_prime_mul_sub_eq_of_mem_sievePrimeTail {H p b : ℕ}
+    (hp_tail : p ∈ sievePrimeTail H) (hcop : Nat.Coprime p b) (c : ℕ → ℝ) :
+    sieveSeq H c (p * b) - sieveSeq H c b = c p := by
+  unfold sievePrimeTail at hp_tail
+  simp only [Finset.mem_filter, Finset.mem_Icc] at hp_tail
+  obtain ⟨⟨_, hpH⟩, hp, hlt⟩ := hp_tail
+  rw [sieveSeq_prime_mul_sub_eq_sieveSeq_div H hp hcop c,
+    sieveSeq_div_eq_apply_prime_of_le_of_lt_two_mul hp hpH hlt c b]
+
+/-- **Universal Terminal-Octave Quantization of `varianceEnergy`
+(`varianceEnergy_chain_sieveSeq_eq_of_mem_sievePrimeTail`):**
+For every horizon `H : ℕ`, squarefree-supported weight `c : ℕ → ℝ`, terminal prime
+`p ∈ sievePrimeTail H` (`H / 2 < p ≤ H`), product index `N : ℕ`, chain base `b : ℕ`, and cut `u : ℝ`,
+the `CHMDPrimeChain` variance energy is universally quantized to `|chainRight N p b u| * c(p)^2`:
+`varianceEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+  if b ∈ chainLeft N p b u then (chainRight N p b u).card * c p ^ 2 else 0`. -/
+theorem varianceEnergy_chain_sieveSeq_eq_of_mem_sievePrimeTail (H : ℕ) {c : ℕ → ℝ}
+    (hc : ∀ s : ℕ, ¬ Squarefree s → c s = 0) (N : ℕ) {p : ℕ}
+    (hp_tail : p ∈ sievePrimeTail H) (b : ℕ) (u : ℝ) :
+    varianceEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) =
+      if b ∈ chainLeft N p b u then
+        ((chainRight N p b u).card : ℝ) * c p ^ (2 : ℕ)
+      else 0 := by
+  unfold sievePrimeTail at hp_tail
+  simp only [Finset.mem_filter, Finset.mem_Icc] at hp_tail
+  obtain ⟨⟨_, hpH⟩, hp, hlt⟩ := hp_tail
+  rw [varianceEnergy_chain_sieveSeq_eq_ite H hc N hp b u,
+    sieveSeq_div_eq_apply_prime_of_le_of_lt_two_mul hp hpH hlt c b]
+
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics

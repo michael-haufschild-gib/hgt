@@ -173,9 +173,9 @@ The paper argument uses classical complex analysis and logarithmic regularity. I
    \int_{-\delta}^{1+\delta}\int_{\mathbb R}
    \log(2+|t|)|F_f(\sigma+it)|^2\,dt\,d\sigma
    \]
-   for readouts holomorphic on a neighborhood of the larger strip and with the required finite integral. The paper proof uses the mean-value inequality for \(|F_f|^2\), fixed-radius discs, and the unconditional \(O(\log(2+|t|))\) count of zeros in unit-height strips. Formalize the overlap bound with multiplicities and handle bounded heights separately. Existing public disk estimates assume an entire function, so their hypotheses must be localized before applying them to this half-plane readout.
+   for readouts holomorphic on a neighborhood of the larger strip and with the required finite integral. The paper proof uses the mean-value inequality for \(|F_f|^2\), fixed-radius discs, and the unconditional \(O(\log(2+|t|))\) count of zeros in unit-height strips. Reuse `exists_xiUnitHeightPacket_global_log_bound`, which already covers bounded and negative heights, and the multiplicity-preserving dictionary in `WeilDeletionZeroSide.lean`; formalize the disk-overlap bound. Existing public disk estimates assume an entire function, while `hasSum_circleAverage_normSq_diskCoeffOn` already supplies the local circle input needed to localize them.
 2. **Weighted source norms.** For \(\sigma\in[-1/4,5/4]\), the paper proof writes the weighted raw tail as \(a_ne^{(1+\sigma)x}R_n(Ne^{-x})\mathbf1_{x\le0}\), with \(a_n\le15/\sqrt N\), \(|R_n|\le25/32\), and Lipschitz constant at most \(14\). These give squared mass \(O(1/N)\) and translation energy \(D_{n,\sigma}(h)\le C\min\{N^{-1},h\}\) for \(0<h\le1\), including the endpoint jump.
-3. **Pay only a logarithm for zero density.** Integrate that minimum against \(dh/h\), splitting at \(h=1/N\). Plancherel and an elementary cosine integral comparison convert the resulting \(O((1+\log N)/N)\) bound into logarithmic Fourier energy. Formalize the integral exchanges, Mellin–Fourier normalization, and uniformity over the enlarged strip.
+3. **Pay only a logarithm for zero density.** Integrate that minimum against \(dh/h\), splitting at \(h=1/N\). The [verified Fourier module](../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean) uses the existing Gamma–Lévy identity and global logarithmic weight comparison to prove \(O((1+\log N)/N)\) Fourier energy uniformly over the enlarged strip. Complete the Mellin–Fourier coordinate identification needed by the zero-sampling argument. The paper also gives an elementary cosine-integral proof of the same analytic transport.
 4. **Pass through smoothing without losing uniformity.** Prove a uniform convolution or multiplier estimate on the same strip, or first bound the raw spectral sampling sum and then use the existing critical-strip mollifier bound. The chosen route must retain constants independent of \(k\).
 
 The zero-count input is classical. For a primary quantitative reference, see [Hasanalizade, Shen, Wong, *Counting zeros of the Riemann zeta function*](https://arxiv.org/abs/2107.06506). The unit-height \(O(\log T)\) bound follows from a counting formula with \(O(\log T)\) error; check the theorem's range and the finite-height remainder before importing it.
@@ -188,7 +188,13 @@ Two pitfalls deserve an early check. Endpoint jumps can invalidate an \(H^1\) es
 
 ### APT-05: close the compact ramp application
 
-Assume the local budget has been proved and the existing inputs have been reconciled on a common domain. For fixed sufficiently large \(n\), take \(k\) beyond both eventual thresholds. Sesquilinearity and Hermitian symmetry give
+The [complete ramp–tent paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-ramp-gram-margin.md) reconciles the common domain and proves, eventually in \(n\),
+\[
+\texttt{factorialSpanWeil}(n,c,d)\ge
+\frac{\log N}{8192N}c^2+\frac N2d^2
+\quad\text{for every }c,d\in\mathbb R.
+\]
+This paper theorem still requires its complete Lean certificate. Its mechanism is as follows. For fixed sufficiently large \(n\), take \(k\) beyond the tail lower-bound threshold. Sesquilinearity and Hermitian symmetry give
 
 \[
 \operatorname{Re}\mathcal W(r_{n,k},r_{n,k})
@@ -205,11 +211,11 @@ The independent comparison inequality then yields
 \frac{c\log N-2\sqrt{C_HC_U\log N}-C_H}{N}.
 \]
 
-The paper sampling theorem supplies the required upper budget; the common-domain and limit checks below still need proof. The algebra uses only \(\operatorname{Re}\mathcal W(H,H)\ge-\mathcal Z(H)\), so a separate positivity theorem for \(H\) is unnecessary for this deduction. The positive \(\log N\) term eventually dominates the square-root and constant terms.
+The paper sampling theorem supplies the upper budget. The corrected-source readout \(1/(2\sqrt N\rho)\), the kernel bound, and the summable genus-one zero majorant supply \(C_H/N\). The algebra uses only \(\operatorname{Re}\mathcal W(H,H)\ge-\mathcal Z(H)\), so a separate positivity theorem for \(H\) is unnecessary. The positive \(\log N\) term eventually dominates the square-root and constant terms.
 
-The application still requires two further proofs:
+The remaining formal certificate must include both passages:
 
-1. **Removal of smoothing.** The [full ramp-limit paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-ramp-smoothing-limit.md) proves convergence of the complete physical Weil energy for each fixed \(n\). Normalized nonnegative convolution contracts every translation square, providing an integrable majorant for the singular archimedean jump term. Common compact support controls the finite prime sum and polar integral. Formalize this exact limit and reconcile the zero-side energy in the mixed estimate with its physical-side value. Physical \(L^2\) convergence alone is insufficient, and the corrected-source limit is a different theorem.
+1. **Removal of smoothing.** The [full ramp-limit paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-ramp-smoothing-limit.md) proves convergence of the complete physical Weil energy for each fixed \(n\). Normalized nonnegative convolution contracts every translation square, providing an integrable majorant for the singular archimedean jump term. Common compact support controls the finite prime sum and polar integral. The compact mixed explicit formula `zeta_W_eq_weilFullFunctional_mixed` supplies the exact zero-side/physical-side identification. Formalize this limit and its application; physical \(L^2\) convergence alone is insufficient, and the corrected-source limit is a different theorem.
 2. **The complete Gram margin.** In the existing ramp–tent span, write
    \[
    Q(c,d)=A_nc^2+M_ncd+D_nd^2,
@@ -304,7 +310,7 @@ Before marking a mathematical task complete:
 
 1. Use the [factorial sampling card](../../drafts/pipeline/1-in-progress/arithmetic-positivity-factorial-tail-sampling.md) and [paper proof](../../drafts/pipeline/2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) as the exact local statement and dependency ledger.
 2. Derive and verify the \(C_H/N\) corrected-source budget from existing readout and summability results.
-3. Transfer the verified weighted translation budget to logarithmic Fourier energy, then formalize local holomorphic zero sampling. The paper proof discharges these mathematical steps; their remaining Lean certificates are separate obligations.
+3. Connect the verified logarithmic Fourier budget to the Mellin readout and formalize local holomorphic zero sampling. The paper proof discharges these mathematical steps; their remaining Lean certificates are separate obligations.
 4. Finish APT-05, including the full ramp limit, before claiming the two-dimensional positivity application. Then test which source-level mechanisms survive beyond the factorial family.
 
 Corpus indexes guide discovery; stale or pending compiler entries do not certify a theorem. Repeat focused searches when undertaking a new statement and verify the actual dependencies directly. Source links and proof cards provide the durable record; temporary search outputs do not establish novelty or correctness.

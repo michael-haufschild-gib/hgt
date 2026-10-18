@@ -348,7 +348,6 @@ theorem autocorr_chord_peter_paul_defect_eq_integral {f : ℝ → ℝ}
     simpa [B, show x - (x + y) = -y by ring, autocorr_neg] using this
   rw [hsum, integral_sub_shift_sq hfc hf (x + y), hAint, hBint]
   field_simp [ht]
-  ring
 
 /-- **Exact $L^2$ Second-Difference Identity for the Krein Doubling Law:**
 For any continuous compactly supported `f : ℝ → ℝ` and shift `x ∈ ℝ`,

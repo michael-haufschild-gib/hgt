@@ -156,3 +156,15 @@ For arbitrary selected finite prime-power grids, retain a finite containing inte
 The native GTA local charge is Q(a,b)=100 b²(6a²+23b²). A linear map T with squared Hilbert norm Q is impossible: evaluation at (0,1) and (0,2) conflicts with quadratic versus quartic scaling. The exact positive survivor is the nonlinear degree-two feature (10√6 ab,10√23 b²), whose squared Euclidean norm is Q and whose zero set is exactly b=0. Finite charge sums are sums of these feature norms. This rules out only the charge-preserving linear Hilbert claim; it does not rule out unrelated carrier isometries or exact signed trace coordinate maps. Scratch formalization is written, validation pending.
 
 The actual common smooth core also has an explicit SZ/RW/CHMD coordinate: inverse-Doob test lift followed by signed-radical quotient. Existing exact zeta-Weil and screw identities identify its full quotient Weil energy with both the RW closed form and Suzuki's screw form. Completion isometries in differing norms are not inferred from this core identity.
+
+Final-path checks exited 0 for `CHMDQuotientParityAndCoercivity`, `CHMDCardinalBoundBandIdentification`, `PCSChronologicalDilationCarrierObstruction`, `CCMRestrictedWeilEvenPolarGroundOperator`, `ClosedConvexHilbertAttainment`, and `WittSelbergReceiverCoordinates`, each with its own `.olean`. The owned sequential audit command exited 0. No full or umbrella build was started.
+
+The selected-grid extension is written in scratch: actual masked finite-block kernel, bounded marginal prices `1 - dualSlope`, exact physical cost transport, affine supports and attainment. A separate closed convex selected-allocation constraint, explicit equal-multiplicity baseline on the true union, and pointwise exceptional-set repair give the exact selected partition identity including gaps. These new selected-grid proofs are not yet Lean-verified.
+
+### PA/WL coordinate identity (paper proof, BRIDGE)
+
+For `Re s > 1/2`, let `p_q = rho_q - 1/2`, `w_q = 1/(rho_q(1-rho_q))`, `G(s)=sum w_q/(s-p_q)`, and `C=sum w_q`. The actual Xi spectral coordinate is `-i p_q`. Reflection pairs each pole with `-p_q`, preserving its weight. Partial fractions give the absolutely summable pair identity
+
+`2s/(s²-p_q²) = (1/4-s²) [w_q/(s-p_q)+w_q/(s+p_q)] + 2s w_q`.
+
+The native paired relative-resolvent formula therefore yields `xiRelativeResolventTrace(-is) = i[(1/4-s²)G(s)+sC]`. The existing prime--archimedean source identity transfers this equality to the actual continued source trace; `Re(1/2+s)>1` discharges zeta nonvanishing unconditionally. This is an explicit analytic receiver transform, not a claim that positivity or finite GTA spectral approximation follows from a Hilbert isometry. Scratch formalization written; validation pending.

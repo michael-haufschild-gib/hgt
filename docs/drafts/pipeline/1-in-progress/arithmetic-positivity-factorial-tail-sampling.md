@@ -2,7 +2,7 @@
 
 - **ID:** APT-ROOT-TAIL
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM (paper; formalization incomplete)
 - **Source:** [Foundational programme](../../../reports/arithmetic-positivity-theory/research-foundational.md), APT-01–05.
 - **Statement:** For the actual factorial correction tail, the absolute zero-sampling square mass is at most a constant times \(\log(n+1)/(n+1)\), uniformly under sufficiently fine normalized smoothing.
 
@@ -38,7 +38,7 @@ The range restriction is part of the quantified conclusion, not an unproved anal
 2. Direct mixed-pairing control using the corrected-source readout \(c_n/\rho\), if absolute square sampling is unnecessarily expensive.
 3. The exact resummed compact-ramp expression, if neither sampling estimate supplies the required margin.
 
-The [paper sampling theorem](../2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) proves the stronger raw-plus-smoothed budget \(C(1+\log N)/N\) for all \(n,k\), with sharp logarithmic scale in the eventual lower-bound regime. The [full ramp-limit paper proof](../2-fully-proven/arithmetic-positivity-factorial-ramp-smoothing-limit.md) controls every physical energy term under removal of smoothing. **[FORMAL CERTIFICATES REQUIRED]** Certify both arguments on the actual sources. **[OPEN CORE: APPLICATION]** Reconcile the zero-side mixed comparison with the complete physical energy and apply the exact Gram margin. Pointwise boundedness and fixed-zero convergence alone do not justify these passages.
+The [paper sampling theorem](../2-fully-proven/arithmetic-positivity-factorial-log-sampling.md) proves the stronger raw-plus-smoothed budget \(C(1+\log N)/N\) for all \(n,k\), with sharp logarithmic scale in the eventual lower-bound regime. The [full ramp-limit paper proof](../2-fully-proven/arithmetic-positivity-factorial-ramp-smoothing-limit.md) controls every physical energy term under removal of smoothing. The [complete ramp–tent margin paper proof](../2-fully-proven/arithmetic-positivity-factorial-ramp-gram-margin.md) identifies the zero-side pairing with the compact physical form and derives the uniform coefficient margin. **[FORMAL CERTIFICATES REQUIRED]** Certify all three arguments on the actual sources. Pointwise boundedness and fixed-zero convergence alone do not justify these passages.
 
 ## Falsification and positive survivor
 

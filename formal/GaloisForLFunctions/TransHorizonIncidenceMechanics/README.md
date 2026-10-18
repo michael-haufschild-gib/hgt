@@ -226,58 +226,5 @@ When contributing new theorems to `TransHorizonIncidenceMechanics`, **never fall
 6. **No Heartbeat Hacks:** Optimize Lean proofs using clean algebraic rewrites (`ring`, `linarith`, `Finset.sum` lemmas) rather than raising `maxHeartbeats`.
 7. **Clean Workspace:** Remove any temporary `/tmp` scratch files before concluding a session.
 
----
 
-## 7. Open Research Program: 4 Parallel Tracks for 4 AI Research Agents
-
-With all 15 foundational pillars established and audited in Lean, **four specialized AI Research Agents** can now build out the next layer of `TransHorizonIncidenceMechanics` in parallel while the **Research Lead** works on the global architectural synthesis applying the field to the RH frontier routes.
-
----
-
-### Agent 1: Second- and Third-Band Renormalized Prefix Defect & $2$-Adic / $3$-Adic Switching Calculus
-- **Target Module:** `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SecondAndThirdBandRenormalizedDefectCalculus.lean`
-- **Builds On:** Pillar VI ([ComplementaryQuotientAndSecondOctaveLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ComplementaryQuotientAndSecondOctaveLaw.lean)), Pillar VII ([InterCheckpointSawtoothExcursionAndPronicSandwich.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/InterCheckpointSawtoothExcursionAndPronicSandwich.lean)), and Pillar XIV ([ArithmeticUncertaintyAndSpikeCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ArithmeticUncertaintyAndSpikeCancellation.lean)).
-- **Mathematical Problem:**
-  Pillar VI proved the exact second-band ($2N + 1 \le k \le 3N$) and third-band ($3N + 1 \le k \le 4N$) closed forms for $\operatorname{sieveSeq}_N(c, k)$ and showed that for all odd $k \le 3N$ and all $6$-coprime $k \le 4N$, $\operatorname{sieveSeq}_N(c, k) = (c * \mathbf{1})(k) - c(k)$. Meanwhile, Pillar XIV proved that $\widetilde{\mathcal{D}}_N(M; c) \le 0$ whenever $s_{N,c}(M) = 0$ (even if $M+1$ is an arbitrary composite spike!).
-- **Concrete Deliverables in Lean 4:**
-  1. Prove that for every **even** checkpoint $M = 2m \in [N, 3N - 1]$ (so $M + 1 = 2m + 1 \le 3N$ is **odd**), $\operatorname{sieveSeq}_N(\mu, 2m + 1) = -\mu(2m + 1) \in \{-1, 0, 1\}$, so $\widetilde{\mathcal{D}}_N(2m; \mu) \le 0$ for all $2m \in [1, 3N - 1]$.
-  2. Combine with Pillar XIV's predecessor-zero absorption (`sieveRenormalizedPrefixDefect_moebiusReal_nonpos_of_eq_zero`) at odd $M = 2m + 1 \in [N+1, 3N]$ where $\mu(2m+1) = 0$ (i.e., non-squarefree odd $M \le 3N$): since $s_{N,\mu}(M) = -\mu(M) = 0$, the composite spike at even $M + 1 = 2m + 2$ is **automatically absorbed**, forcing $\widetilde{\mathcal{D}}_N(2m+1; \mu) \le 0$!
-  3. Extend to the third band $M \in [1, 4N - 1]$ via $6$-coprime checkpoints and predecessor-zero absorption.
-
----
-
-### Agent 2: Cross-Band Buchstab–Fermi Covariance & Prime-Horizon Renormalization Loop
-- **Target Module:** `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/BuchstabFermiCovarianceAndQuotientChainBridge.lean`
-- **Builds On:** Pillar X ([TransHorizonGramMatrixAndRadicalProjection.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/TransHorizonGramMatrixAndRadicalProjection.lean)) and Pillar XV ([PrimeChainSieveBridgeAndSpectralCutoff.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/PrimeChainSieveBridgeAndSpectralCutoff.lean)).
-- **Mathematical Problem:**
-  Pillar X decomposed the $L^2$ prefix energy across horizon bands $N_1 \le N_2$ into the band self-energy plus twice the cross-band inner product. For a single horizon step $N \mapsto N + 1$, $\Delta_{N, N+1}s_c(k) = c(N + 1)\,\mathbf{1}_{N + 1 \mid k}$. Summing over $k \in [1, M]$ restricts $k$ to multiples $k = j(N + 1)$ for $1 \le j \le M / (N + 1)$.
-- **Concrete Deliverables in Lean 4:**
-  1. Prove the **Exact Single-Horizon Step $L^2$ Energy Formula**: for every $N, M : \mathbb{N}$ and weight $c : \mathbb{N} \to \mathbb{R}$,
-     $$\mathcal{E}_{N+1}(M; c) - \mathcal{E}_N(M; c) = c(N + 1)^2 \left\lfloor \frac{M}{N + 1} \right\rfloor + 2 c(N + 1) \sum_{j = 1}^{\lfloor M / (N + 1) \rfloor} \operatorname{sieveSeq}_N\bigl(c, j(N + 1)\bigr).$$
-  2. When $N + 1 = p$ is prime, use Pillar XV's all-horizon prime-chain renormalization identity and Pillar II's $N$-roughness of $p > N$ to prove that for squarefree-supported $c$, $\operatorname{sieveSeq}_N(c, j p) = \operatorname{sieveSeq}_N(c, j)$ for **every** $j \ge 1$!
-  3. Prove the resulting **Universal Prime-Horizon Step Identity** across all trans-horizon scales $M \ge 1$:
-     $$\mathcal{E}_p(M; c) - \mathcal{E}_{p-1}(M; c) = c(p)^2 \left\lfloor \frac{M}{p} \right\rfloor + 2 c(p) \sum_{j = 1}^{\lfloor M / p \rfloor} \operatorname{sieveSeq}_{p-1}(c, j).$$
-
----
-
-### Agent 3: Sub-Horizon `CHMDPrimeChain` Bipartite Energy Closed Form via Excited-Shell Collapse
-- **Target Module:** `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SubHorizonPrimeChainBipartiteClosedForm.lean`
-- **Builds On:** Pillar XV ([PrimeChainSieveBridgeAndSpectralCutoff.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/PrimeChainSieveBridgeAndSpectralCutoff.lean)) and Pillar IV ([QuotientSpectralGapAndOddChainCoercivity.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/QuotientSpectralGapAndOddChainCoercivity.lean)).
-- **Mathematical Problem:**
-  Pillar XV proved that for $p > H$, `bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c) = 0`, and that for $p \le H$ and squarefree-supported $c$, all excited levels $m = p^r b$ ($r \ge 1$) on the $p$-adic chain collapse to a single value `sieveSeq H c (p * b)`, so the jump between any two excited nodes vanishes (`sieveSeq_eq_of_same_chain_of_dvd_of_squarefree_support`) and the jump between the ground node $b$ and any excited node $p^r b$ equals $\operatorname{sieveSeq}_{H/p}(c(p\cdot), b)$.
-- **Concrete Deliverables in Lean 4:**
-  1. Prove that when $b \in \operatorname{chainLeft}(N, p, b, u)$ (i.e. $\log b \le u$), every non-zero term in `bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c)` has left endpoint equal to the ground node $m = b$ and right endpoint $k = p^r b \in \operatorname{chainRight}(N, p, b, u)$, because any two nodes $m \in L \setminus \{b\}$ and $k \in R$ are both divisible by $p$ and therefore have zero jump!
-  2. Prove the exact closed-form factorization of `bipartiteEnergy (chainLeft N p b u) (chainRight N p b u) (sieveSeq H c)` as:
-     $$\operatorname{bipartiteEnergy}\bigl(L, R, \operatorname{sieveSeq}_H(c)\bigr) = \bigl(\operatorname{sieveSeq}_{H/p}(c(p\cdot), b)\bigr)^2 \cdot \frac{1}{b} \sum_{k \in R} \frac{1}{k}.$$
-
----
-
-### Agent 4: Multi-Point Window Defect Averaging & Periodic Modulus Conservation
-- **Target Module:** `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/MultiPointDefectAveragingAndPeriodConservation.lean`
-- **Builds On:** Pillar XIII ([SuccessorStateObstructionAndPhaseRefinement.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SuccessorStateObstructionAndPhaseRefinement.lean)) and Pillar XIV ([ArithmeticUncertaintyAndSpikeCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ArithmeticUncertaintyAndSpikeCancellation.lean)).
-- **Mathematical Problem:**
-  Pillar XIII proved that `sieveSeq N c` is periodic with period $L_N = \operatorname{horizonObservationModulus}(N) = \operatorname{lcm}(1, \dots, N)$, and Pillar XIV proved the two-point consecutive defect sum identity `sieveRenormalizedPrefixDefect_pred_add_self_eq` and the path Poincaré inequality.
-- **Concrete Deliverables in Lean 4:**
-  1. Prove the **Period Shift Law for `sieveRenormalizedPrefixDefect`**: shifting the observation endpoint $M \mapsto M + L_N$ changes $2\widetilde{\mathcal{D}}_N(M; c)$ by exactly minus the full-period Dirichlet oscillation energy $-\sum_{k=M+1}^{M+L_N} (s_{N,c}(k+1) - s_{N,c}(k))^2 \le 0$!
-  2. Deduce **Monotonicity Across Period Multiples**: for every $M \ge 1$ and $q \ge 0$, $\widetilde{\mathcal{D}}_N(M + q L_N; c) \le \widetilde{\mathcal{D}}_N(M; c)$, and if `sieveSeq N c` is non-constant over a period, $\widetilde{\mathcal{D}}_N(M + q L_N; c) \to -\infty$ linearly in $q$!
 

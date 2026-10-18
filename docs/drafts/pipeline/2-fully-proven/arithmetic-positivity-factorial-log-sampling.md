@@ -187,7 +187,7 @@ The unconditional local zero-count theorem gives an absolute \(C_2\) with
 \le C_2\log(2+|t|)\qquad(t\in\mathbb R).
 \tag{9}
 \]
-The corpus's `exists_card_near_xi_zeros_le` supplies the large positive-height estimate with multiplicities; conjugation supplies negative heights, and finiteness of zeros in a bounded strip supplies the remaining compact height interval. Enlarging a constant gives (9). The critical-strip inclusion is unconditional.
+The corpus's `exists_xiUnitHeightPacket_global_log_bound` supplies \(C(1+\log(2+|t|))\) at every real height, with multiplicity copies. Its proof uses `exists_card_near_xi_zeros_le` at large positive heights, reflection for negative heights, and finiteness on the remaining compact interval. `WeilDeletion.toSupport`, injectivity, and `zeroMult_eq_xiSupportMultiplicity` identify the literal zeta multiplicities with those copies. Since \(\log(2+|t|)\ge\log2>0\), enlarging the constant by \(1+1/\log2\) gives (9). The critical-strip inclusion is unconditional.
 
 The envelope for \(T_n\) makes \(F_{T_n}\) holomorphic on \(\operatorname{Re}s>-1\): on each compact substrip, all derivatives of the exponential kernel are dominated by an integrable polynomial times a decaying exponential. Use discs of radius \(r=1/4\) about the nontrivial zeros. They lie in \(-1/4<\operatorname{Re}s<5/4\). The subharmonic mean-value inequality gives
 \[

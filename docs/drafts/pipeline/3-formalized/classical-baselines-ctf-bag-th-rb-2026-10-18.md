@@ -1,10 +1,27 @@
 # Classical baseline theorems in CTF, BAG, TH, and RB
 
 - **ID:** classical-baselines-ctf-bag-th-rb-2026-10-18
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE (formalization of classical theorems)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (formalization of classical theorems)
 - **Source:** user attachment `94c10467-3b24-4880-934a-2f85291fdcbe/pasted-text-1.txt`, items 9–11.
 - **Statement:** Unconditional classical approximation, recurrence, mean-square, Jensen–Hermite, and extremal divisor-sum theorems, with their exact RH gaps preserved.
+
+## Final result and audit
+
+All four baseline areas are formalized. All 25 new Lean leaves compiled directly with `lake --old env lean`; the final direct Carlson and Xi checks also passed. Twenty delivery and analytic entry points were audited with `#print axioms` in `/tmp`: only `propext`, `Classical.choice`, and `Quot.sound` occur. No proof holes or added axioms. All 25 leaves are imported exactly once in their area umbrellas. An exhaustive check of all 210 public declaration names found no collisions after the internal Dirichlet-band helper was made private.
+
+Delivered entry points:
+
+- CTF/PM: `baezDuarte_classical_baseline` and `SelbergMobiusApproximation.lean` establish the multiplicity-weighted logarithmic Burnol bound, raw Möbius nonconvergence, and the supported Selberg row with its actual carriers.
+- BAG: `exists_pos_density_edPolyReturnSet`, `carlson_zeta_tail_meanSquare`, `carlson_zeta_meanSquare`, and `carlson_zeta_L2_approximation` establish finite self-return and actual-zeta L² approximation for `1/2 < σ < 1`. `BagchiConditionedTailGap.lean` states the remaining conditioned, centered-tail obligation exactly.
+- TH: `tendsto_xiJensenHermitePolynomial_coeff` proves the actual fixed-degree Xi Jensen–Hermite limit. All theta concentration estimates and the literal Xi coefficient identity are proved, rather than assumed.
+- RB: `eventually_robin_iff_eventually_colossallyAbundant` and `riemannHypothesis_iff_eventually_robin_colossallyAbundant` prove the reduction for actual colossally abundant integers. This is the eventual formulation; no numerical cutoff of 5040 is asserted.
+
+The attachment's stronger raw-error constant-liminf claim is not supplied by the cited classical theorems. Following the user's “do all; decide yourself” instruction, the formalization uses the correct logarithmic Burnol normalization and separately proves raw nonconvergence. Selberg error convergence and Bagchi's conditioned-tail gap are not claimed.
+
+Indexes were regenerated. **Global `lint --check-generated` did not pass:** its final six findings concern four unwired `BiScaleUncertainty` leaves, the unregistered `TransHorizonIncidenceMechanics.lean` root umbrella, and a concurrently stale `formal/LEAN_OVERVIEW.md`. No error names this task's files and no proof-debt error was reported. These unrelated shared-worktree files were preserved. The four unwired leaves were `EvenSourceSymmetricPolarEnforcement`, `HyperbolicLorentzBoostAndMinkowskiLightCone`, `OriginAllocationUniquenessAndCoupledSphereGain`, and `UniversalRamanujanCovarianceAndBiScaleRigidity`.
+
+No full or umbrella build, numerical experiment, heartbeat increase, commit, or push was performed. The route ledger was not edited after the user's restriction. Temporary proof/API/audit/search files were removed at completion. Session checkpoints below preserve the proof derivation and intermediate diagnostics; their pending statuses are superseded by this final audit.
 
 ## Scope and acceptance obligations
 
@@ -18,12 +35,12 @@
 ## Plan
 
 - [x] Read task, project instructions, relevant route evidence and memories.
-- [ ] Audit exact classical statements and current dependency coverage.
+- [x] Audit exact classical statements and current dependency coverage.
 - [x] Complete CTF/PM statements and Selberg row (classical logarithmic normalization).
 - [x] Complete BAG finite recurrence and actual-zeta mean-square baseline on the Bagchi strip.
-- [ ] Complete TH Xi-specific Hermite asymptotics.
+- [x] Complete TH Xi-specific Hermite asymptotics.
 - [x] Complete RB eventual colossally abundant reduction.
-- [ ] Kernel, axiom, wiring, lint, and cleanup audit against every obligation above.
+- [x] Kernel, axiom, wiring, lint, and cleanup audit against every obligation above (global lint limitations recorded above).
 
 ## Evidence and statement audit
 
@@ -74,21 +91,21 @@ Found `Sieve.dirichlet_meanValue_sharp`, with error `104 Σ n |a_n|²`; no logar
 
 `IntervalMeanSquareTransfer.lean`, `ZetaDirichletBandMeanSquare.lean`, and `CarlsonZetaMeanSquare.lean` compiled, exit 0. The latter proves the actual zeta tail mean on dyadic windows and on `[0,T]`, for every fixed finite head and `1/2 < σ < 1`, with limit `Σ_{n>M} n^(-2σ)`. Dominated convergence proves this coefficient tail tends to zero and gives the iterated unconditioned L² approximation theorem. All new Carlson dependency leaves are wired into `RHTower.lean`. Final direct leaf and axiom audits remain.
 
-## TH concentration proof plan
+## TH concentration proof mechanism
 
 Deep search `theta cusp moments large exponent concentration Gaussian Hermite asymptotics` returned partial coverage, generation 1452351 pending. No actual Jensen–Hermite limit was found. Source inspection found the exact leading-channel score and its all-degree Ward identity in `PrimeArchThetaGaussianApertureScoreConcentration.lean`.
 
-Proposed alternative to an all-order saddle expansion (paper derivation below; not yet formalized):
+The completed proof uses all-order centered-moment concentration and an exact finite Laguerre recurrence:
 
 - Let `w(x)=exp(9x/2-π exp(2x))`, `S(x)=π x exp(2x)-9x/4`, and choose `s_n>0` with `S(s_n)=n+1/2`. Existing source proves this saddle exists uniquely. Under density proportional to `x^(2n)w(x)`, set `Δ=x²-s_n²`.
 - Polynomial Ward identity: `E[(S-r)P(x²)] = E[x² P'(x²)]`, `r=n+1/2`. It follows by linearity from the existing monomial score identity. For `P(y)=(y-s²)^(2p-1)`, the right side is `(2p-1)E[x²Δ^(2p-2)]`.
-- For `s≥1`, elementary exponential inequalities give global coercivity `r Δ² ≤ 2s² Δ(S-r)`. On `|x-s|≤1`, `s≥2`, the stronger coefficient is `exp(-2)r/(3s)`. The global bound follows separately from `S(x)/x` increasing for `x≤s` and `S(x)/x²` increasing for `x≥s≥1`.
+- For `s≥1`, elementary exponential inequalities give global coercivity `r Δ² ≤ 2s² Δ(S-r)`. On `|x-s|≤1`, `s≥2`, the proved local inequality is `r Δ² ≤ 8 exp(2) s Δ(S-r)`. The global bound follows separately from `S(x)/x` increasing for `x≤s` and `S(x)/x²` increasing for `x≥s≥1`.
 - Global coercivity and `|Δ|≤s²/2+Δ²/(2s²)` give, for fixed `p` and sufficiently large `r`, `E[Δ^(2p)] ≤ C_p s^(4p)/r^p`. Constants can be defined recursively.
-- A cutoff-free local inequality adds `K Δ^(2p+2)/s²` to the Ward integrand, with `K=exp(-2)r/(3s)`. Outside the local window, `|Δ|≥s`; inside it, local coercivity applies. The global bounds then give `r^p E[Δ^(2p)]/s^(4p) ≤ C'_p/s + C''_p/(rs) + C_{p+1}s²/r → 0`. Saddle escape and `s²/r→0` follow directly from the explicit score.
-- Existing pointwise comparison bounds the full positive theta source above and below by fixed multiples of `w`. Thus the same normalized centered-moment limits hold for the actual Xi moment density.
+- A cutoff-free inequality is `r s² Δ^(2p+2) ≤ 8 exp(2) s³ Δ^(2p+1)(S-r) + r Δ^(2p+4)`. Outside the local window, `|Δ|≥s`; inside it, local coercivity applies. With `R_p=r^p E[Δ^(2p)]/s^(4p)`, Ward and Young give `R_(p+1) ≤ 12 exp(2)(2p+1)R_p/s + 4 exp(2)(2p+1)R_(p+1)/(rs) + (s²/r)R_(p+2)`. The global bounds, saddle escape, and `s²/r→0` force every `R_(p+1)→0`.
+- A pointwise upper bound on the full positive theta source and a lower bound on its normalizing mass transfer these same normalized centered-moment limits to the actual Xi moment density.
 - Exact coefficient identity: `γ(n+j)/γ(n) = E[x^(2j)]/[4^j (n+1/2)_j]`. Use `r_n=n+1/2`, `A_n=s_n²/(4r_n)`, `δ_n=1/sqrt(r_n)`. This gives the probabilists' Hermite normalization. The deterministic factorial-ratio Jensen polynomial is a normalized Laguerre polynomial, with recurrence `(1+dδ²)Q_(d+1)=(X+2dδ)Q_d-dQ_(d-1)`. Its limit is `He_(d+1)=X He_d-d He_(d-1)`. Centered-moment limits make integration against `x²/s_n²` preserve this Hermite limit.
 
-Every inequality, integral interchange, finite-degree recurrence, and actual-Xi coefficient identification above still needs its Lean proof. No claim of completed TH asymptotics is warranted yet.
+Every inequality, integral interchange, finite-degree recurrence, and actual-Xi coefficient identification above is proved in the delivered TH leaves. The checkpoint paragraphs below record their intermediate verification stages.
 
 TH progress: `ThetaJensenPolynomialWard.lean`, `ThetaJensenSaddleCoercivity.lean`, and `ThetaJensenCenteredMomentBounds.lean` compiled, exit 0. They establish the polynomial and centered Ward identities, saddle escape, `s_n²/r_n→0`, global and local score coercivity, and the all-order global centered-moment bound. `ThetaJensenCenteredMomentLimit.lean` has been written and is in its error-fix/verification cycle. `XiThetaPolynomialExpectation.lean` and `XiThetaConcentration.lean` are written but not yet verified. No TH modules are wired yet.
 
@@ -97,3 +114,13 @@ Deep search `Laguerre three term Hermite limit normalized rising factorial` comp
 `ThetaJensenCenteredMomentLimit.lean` compiled, exit 0: every positive normalized even centered moment tends to zero. `XiThetaPolynomialExpectation.lean` is in verification; its first compile exposed two rewrite issues and a missing direct import, now corrected. `LaguerreJensenRecurrence.lean`, `LaguerreHermiteNormalization.lean`, `XiThetaHermiteMixedLimit.lean`, and `XiJensenHermiteIdentity.lean` are written but not yet verified. These encode the exact finite Laguerre recurrence, its regular Hermite normalization, the simultaneous mixed-moment induction, and the literal existing Xi Jensen polynomial identity. Coefficientwise convergence and the final audit remain.
 
 `XiThetaPolynomialExpectation.lean` and `XiThetaConcentration.lean` now compiled, exit 0. Every fixed positive fluctuation moment of the actual Xi source tends to zero, with no assumed analytic estimates. `XiJensenHermiteLimit.lean` is written, including the coefficientwise limit via finite interpolation, but its algebraic dependencies are still being verified. The main three-term coefficient calculation in `LaguerreJensenRecurrence.lean` passed; base-polynomial simplifications are being corrected. No completed TH asymptotics claim yet.
+
+`LaguerreJensenRecurrence.lean`, `LaguerreHermiteNormalization.lean`, and `XiThetaHermiteMixedLimit.lean` compiled, exit 0, and are wired. The exact Xi identity is in its final verification cycle; the final coefficientwise limit has not yet been checked. Final verification reuses the recorded successful direct `lake --old env lean -o … <file>` checks for unchanged leaves, refreshes any edited leaves, and audits the delivery theorems and their axioms. No full or umbrella build is used.
+
+`XiJensenHermiteIdentity.lean` and `XiJensenHermiteLimit.lean` compiled, exit 0. The actual affine-normalized Xi Jensen polynomials converge pointwise and coefficientwise to `hermiteReal d` for every fixed degree. All analytic estimates, the literal coefficient identity, and finite interpolation are proved without an RH or asymptotic hypothesis. All TH leaves are wired. Final axiom, freshness, generated-index, lint, and cleanup audits are running.
+
+Latest user restriction: do not edit the route ledger. No further edits to `docs/reports/rh-current-frontier-map.md`; index generation is confined to the documented formal indexes and search database.
+
+Final audit checkpoint: all 25 new leaves have exactly one import in their respective area umbrellas. Index generation completed. Global `lint --check-generated` returned 10 errors outside this task: four unreachable BiScaleUncertainty leaves, three unreachable BezoutValuationIncidence leaves, an unregistered `TransHorizonIncidenceMechanics.lean` root umbrella, and two generated indexes made stale by concurrent source changes. No proof-debt or task-file error was reported. Preserve unrelated work; reassess index freshness after the remaining direct Lean/axiom audits.
+
+The combined BAG axiom audit exposed one name collision with `RHTower.edPoly_Icc_eq_dirPoly` in `HighBlockDirectMeanSquare.lean`. The new band's internal helper is now private and named `edPoly_Icc_vertical_eq_dirPoly`; all its call sites were updated. Exhaustive declaration-name search covered all 210 remaining public declarations and found no other collision. The band, dependent Carlson leaf, and remaining axiom audits are being rerun. CTF axiom checks already showed only `propext`, `Classical.choice`, and `Quot.sound`.

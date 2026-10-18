@@ -138,7 +138,8 @@ theorem thetaJensenNormalizedCenteredMoment_local_bound (n p : ℕ) (hs : 2 ≤ 
     try simp only [
       show 2 * (p + 1) = 2 * p + 2 by omega, show 2 * (p + 2) = 2 * p + 4 by omega,
       show 4 * (p + 1) = 4 * p + 4 by omega, show 4 * (p + 2) = 4 * p + 8 by omega]
-    try simp only [pow_add, pow_succ]
+    try simp only [pow_add]
+    try simp only [pow_succ]
     try field_simp
     all_goals ring
 

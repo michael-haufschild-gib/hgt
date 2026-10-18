@@ -44,7 +44,6 @@ theorem xiJensenCoeff_scaled_moment (n j : ℕ) :
   rw [xiJensenCoeff_add, xiJensenScale, laguerreJensenRatio, xiThetaExpectation_X_pow]
   simp only [div_pow, mul_pow]
   field_simp
-  ring
 
 def xiJensenHermitePolynomial (n d : ℕ) : ℝ[X] :=
   C ((xiJensenCoeff n * xiJensenDelta n ^ d)⁻¹) *
@@ -55,11 +54,10 @@ theorem xiThetaExpectation_laguerre (n d : ℕ) (a : ℝ) :
     xiThetaExpectation n ((laguerreJensen ((n : ℝ) + 1 / 2) d).comp (C a * X)) =
       ∑ j ∈ range (d + 1), (d.choose j : ℝ) * laguerreJensenRatio ((n : ℝ) + 1 / 2) j *
         a ^ j * xiThetaExpectation n (X ^ j) := by
-  simp only [laguerreJensen, sum_comp, monomial_comp, map_sum]
+  simp only [laguerreJensen, Polynomial.sum_comp, monomial_comp, map_sum]
   apply Finset.sum_congr rfl
   intro j hj
   rw [mul_pow, ← map_pow, mul_assoc, xiThetaExpectation_C_mul, xiThetaExpectation_C_mul]
-  ring
 
 theorem eval_jensenPoly_xi_eq_laguerre_expectation (n d : ℕ) (x : ℝ) :
     (jensenPoly xiJensenCoeff d n).eval ((xiJensenDelta n * x - 1) / xiJensenScale n) =

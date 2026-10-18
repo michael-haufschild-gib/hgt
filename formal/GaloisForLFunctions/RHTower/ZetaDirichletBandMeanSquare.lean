@@ -25,7 +25,7 @@ def zetaBandDiagonal (M N : ℕ) (σ : ℝ) : ℝ :=
 def zetaCoefficientTailMass (M : ℕ) (σ : ℝ) : ℝ :=
   ∑' n : ℕ, if n ≤ M then 0 else (n : ℝ) ^ (-2 * σ)
 
-theorem edPoly_Icc_eq_dirPoly (a : ℕ → ℂ) (N : ℕ) (σ t : ℝ) :
+private theorem edPoly_Icc_vertical_eq_dirPoly (a : ℕ → ℂ) (N : ℕ) (σ t : ℝ) :
     edPoly a (Finset.Icc 1 N) ((σ : ℂ) + (t : ℂ) * I) =
       Sieve.dirPoly N (fun n => a (n + 1) * ((((n : ℝ) + 1) ^ (-σ) : ℝ) : ℂ)) (-t) := by
   classical
@@ -42,7 +42,7 @@ theorem edPoly_Icc_eq_dirPoly (a : ℕ → ℂ) (N : ℕ) (σ t : ℝ) :
 theorem zetaDirichletBand_eq_dirPoly (M N : ℕ) (σ t : ℝ) :
     zetaDirichletBand M N σ t = Sieve.dirPoly N
       (fun n => if (n : ℕ) + 1 ≤ M then 0 else ((((n : ℝ) + 1) ^ (-σ) : ℝ) : ℂ)) (-t) := by
-  rw [zetaDirichletBand, edPoly_Icc_eq_dirPoly]
+  rw [zetaDirichletBand, edPoly_Icc_vertical_eq_dirPoly]
   congr 1
   funext n
   split_ifs <;> simp

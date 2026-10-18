@@ -1,17 +1,17 @@
 # Second- and third-band renormalized defect calculus
 
 - **ID:** thim-second-third-band-defect-calculus
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** Complementary quotient laws and damped divisor envelopes control renormalized prefix defects through the second and third horizon bands.
 
 ## Requirements and plan
 - [x] Read the current field README completely and search current corpus; preserve README.
-- [ ] Prove trans-horizon Möbius identity and three-valued response at odd checkpoints through 3N, and nonpositivity on the entire requested interval including its sub-horizon part.
-- [ ] Prove damped nonpositivity, removing the prime-or-envelope restriction by reusing the newly available mass bound.
-- [ ] Prove the corrected third-band identity above N, and nonpositivity throughout the full 6-coprime range through 4N.
-- [ ] Develop exact prime deletion/switching calculus where it broadens these ranges.
-- [ ] Compile original sources using `lake --old env lean`, audit all declarations' axioms, wire umbrella, refresh index, run formal lint, remove scratch files, save knowledge and evidence.
+- [x] Prove trans-horizon Möbius identity and three-valued response at odd checkpoints through 3N, and nonpositivity on the entire requested interval including its sub-horizon part.
+- [x] Prove damped nonpositivity, removing the prime-or-envelope restriction by reusing the newly available mass bound.
+- [x] Prove the corrected third-band identity above N, and nonpositivity throughout the full 6-coprime range through 4N.
+- [x] Develop exact prime deletion/switching calculus where it broadens these ranges.
+- [x] Compile original sources using `lake --old env lean`, audit all declarations' axioms, wire umbrella, refresh index, run formal lint, remove scratch files, save knowledge and evidence.
 
 ## Structural correction and positive survivor
 The requested assertion s_N(mu,k)=-mu(k) on all 2<=k<=4N with k coprime to 6 is false below the horizon: for 2<=k<=N the full divisor sum is zero, whereas -mu(k) need not vanish. The correct identity is piecewise, zero below the horizon and -mu(k) above it. This preserves the full claimed nonpositivity range because both branches have absolute value at most one. Record a general squarefree witness family, not a numerical counterexample.
@@ -21,7 +21,7 @@ The requested assertion s_N(mu,k)=-mu(k) on all 2<=k<=4N with k coprime to 6 is 
 - `two_mul_sieveRenormalizedPrefixDefect_eq_neg_dirichlet_add_boundary` is the all-horizon polarization identity underlying Pillar VII.
 - `AllHorizonRadicalSawtoothAndDefectReduction.pmPowerDampedDivisorCoeff_add_abs_weight_le_one` is a concurrent source theorem located by corpus search. Reuse after its dependency is compiled; do not duplicate its proof.
 - For epsilon>=0, |tau_epsilon(k)-c_epsilon(k)|<=tau_epsilon(k)+|c_epsilon(k)|<=1. Below the horizon, tau lies in [0,1]. Thus rough band tail collapse gives the desired envelope, then polarization gives D<=-energy/2<=0.
-- Candidate strengthening: for prime p and k=p*u, tau(k)-c(k)-c(u) is tau(u)-c(u) when p|u, and (1-p^(-epsilon))(tau(u)-c(u)) otherwise. This should bound every second-band checkpoint and third-band checkpoints with at most one of 2,3 dividing k.
+- Proved strengthening: for prime p and k=p*u, tau(k)-c(k)-c(u) is tau(u)-c(u) when p|u, and (1-p^(-epsilon))(tau(u)-c(u)) otherwise. This bounds every second-band checkpoint and third-band checkpoints with at most one of 2,3 dividing k.
 
 ## Constraints and evidence
 No RH focus, hgtl7, numerical experiments, added axioms, conjectural premises, heartbeat changes, full builds, or unrelated edits. Prime/domain conditions specify the problem, not unproved hypotheses. Serena symbol tools reject ignored Lean paths (verified earlier this session), so direct source reads and patch edits are used. `update_plan` is unavailable; this card persists the plan. Existing live work in `AllHorizonRadicalSawtoothAndDefectReduction` belongs to another agent and remains read-only.
@@ -38,4 +38,12 @@ For M>=1, polarization says 2D_N(M)=-E_N(M)+s_N(M+1)^2-s_N(1)^2. All ranges abov
 ## No-go closure for the unsplit third-band identity
 - **Obstruction:** For every prime p>3 and N>=p, p is coprime to six, s_N(mu,p)=0, and -mu(p)=1. Thus the original all-range response identity fails as a family, not just at one numerical example.
 - **Positive survivor:** Exact piecewise response is zero below the horizon and -mu(k) above it; the full requested defect nonpositivity range survives. Prime-deletion contraction further extends nonpositivity to every checkpoint through 3N and to all endpoints missing either two or three through 4N.
-- **Lean declarations:** `sieveSeq_moebiusReal_coprime_six_subhorizon_counterfamily`, both `*_through_*` response theorems, and `sieveRenormalizedPrefixDefect_*_three_mul_nonpos` / `*_four_mul_nonpos` in the target. Final compiler and axiom audit pending.
+- **Lean declarations:** `sieveSeq_moebiusReal_coprime_six_subhorizon_counterfamily`, both `*_through_*` response theorems, and `sieveRenormalizedPrefixDefect_*_three_mul_nonpos` / `*_four_mul_nonpos` in the target. Paper proof and original-source Lean compilation are complete; all axiom closures are audited.
+
+## Verification boundary
+- Original leaf compiled using `lake --old env lean` with exit 0 and no diagnostics; emitted `.olean` and `.ilean` hashes match the audited source record.
+- All 26 public theorems and 2 private helpers passed scratch-file `#print axioms`; dependencies are exactly `propext`, `Classical.choice`, and `Quot.sound`. No added axioms or placeholders.
+- All 26 public theorems appear exactly once in `LEAN_API.md`; both private helpers appear in corpus search. The field umbrella imports the leaf exactly once and remains reachable from `MainTheorems`.
+- Global `scripts/formal_tools.py lint --check-generated` exits 1: eight unrelated unreachable leaves, existing field-umbrella registration, and `LEAN_OVERVIEW.md` staleness amid concurrent changes. No target-leaf or prohibited-declaration error. This is not a global-clean claim.
+- Evidence: `logs/thim-band-audit.json`, `logs/thim-band-lean-audit.txt`, `logs/thim-band-axioms.txt`, `logs/thim-band-lint-final.txt`; knowledge ledger: `logs/thim-band-defect-knowledge.md`.
+- Exact scratch files removed after terminal audits. README remains read-only; no full build, heartbeat change, commit, or push. External novelty and publication readiness are not claimed.

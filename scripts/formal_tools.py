@@ -140,6 +140,8 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.ArithmeticPositivityTheory.factorialWeightedTail_sq_integral_le",
             "GaloisForLFunctions.ArithmeticPositivityTheory.factorialTailTranslationEnergy_le_min",
             "GaloisForLFunctions.ArithmeticPositivityTheory.factorialTailLogTranslationEnergy_le",
+            "GaloisForLFunctions.ArithmeticPositivityTheory.factorialTailLogFourier_integral_le",
+            "GaloisForLFunctions.ArithmeticPositivityTheory.factorialCorrected_zeroSquare_le",
         ],
     },
     "bezout_valuation_incidence": {

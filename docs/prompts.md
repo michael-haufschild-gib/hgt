@@ -500,7 +500,6 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Lean code relevant for the field  goes into formal/GaloisForLFunctions/TransHorizonIncidenceMechanics
 
-Goal is met when you have made 250 signifcant contributions to the new field of mathematics.
 
 Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 
@@ -510,7 +509,18 @@ use the search tool for our lean corpus, not just rg or grep.
 
 Your topic of research: 
 
+Multi-Point Window Defect Averaging & Periodic Modulus Conservation
+- **Target Module:** `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/MultiPointDefectAveragingAndPeriodConservation.lean`
+- **Builds On:** Pillar XIII ([SuccessorStateObstructionAndPhaseRefinement.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/SuccessorStateObstructionAndPhaseRefinement.lean)) and Pillar XIV ([ArithmeticUncertaintyAndSpikeCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ArithmeticUncertaintyAndSpikeCancellation.lean)).
+- **Mathematical Problem:**
+  Pillar XIII proved that `sieveSeq N c` is periodic with period $L_N = \operatorname{horizonObservationModulus}(N) = \operatorname{lcm}(1, \dots, N)$, and Pillar XIV proved the two-point consecutive defect sum identity `sieveRenormalizedPrefixDefect_pred_add_self_eq` and the path Poincaré inequality.
+- **Concrete Deliverables in Lean 4:**
+  1. Prove the **Period Shift Law for `sieveRenormalizedPrefixDefect`**: shifting the observation endpoint $M \mapsto M + L_N$ changes $2\widetilde{\mathcal{D}}_N(M; c)$ by exactly minus the full-period Dirichlet oscillation energy $-\sum_{k=M+1}^{M+L_N} (s_{N,c}(k+1) - s_{N,c}(k))^2 \le 0$!
+  2. Deduce **Monotonicity Across Period Multiples**: for every $M \ge 1$ and $q \ge 0$, $\widetilde{\mathcal{D}}_N(M + q L_N; c) \le \widetilde{\mathcal{D}}_N(M; c)$, and if `sieveSeq N c` is non-constant over a period, $\widetilde{\mathcal{D}}_N(M + q L_N; c) \to -\infty$ linearly in $q$!
 
+
+
+Goal is met when you have made 100 signifcant contributions to the new field of mathematics.
 
 ## Open Research - New field of mathematics 
 
@@ -544,45 +554,6 @@ use the search tool for our lean corpus, not just rg or grep.
 formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md are read-only for you.
 
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
-
-
-## 6. Canonical Open Problems & Guide for Future Research Agents
-
-When extending `GaloisForLFunctions.BiScaleUncertainty`, future agents should orient their work
-around the following four canonical frontier problems while respecting the Seven Structural Traps:
-
-1. **Asymptotic & Quantitative Growth of Multi-Coset Bi-Scale Constants $\mathcal{C}(\Lambda_N, w)$:**
-   Combine the Multi-Node Clique Sphere Duality (Pillar V), the Multi-Node Schur–Krein Residual
-   Coupling between distinct collars (Pillar VIII), and the Signed Dyadic Collar Partition (Pillar IV)
-   to establish sharp, monotone lower bounds on $\mathcal{J}_{\mathrm{arch}}(f) / h_f(0)$ as a
-   function of $N$, tracking how the overlapping collars of distinct odd cosets $\mathcal{C}_m$
-   couple as $\log N \to \infty$.
-2. **Hyperbolic Multiplier Lifting of Odd Prime-Blind States (`OWU` / `HF`):**
-   Use the Fundamental Hyperbolic Autocorrelation Intertwining Law (Pillar VI) and the
-   Cosecant–Secant Dual Decomposition (Pillar IX) to transfer multi-node clique lower bounds from
-   the even multiplier $S_\alpha f$ (when $f$ is odd) back to the odd secant/plastic crossover
-   functional.
-3. **Continuum Coprime Shear & Non-Commutative $(ax+b)$ Uncertainty:**
-   Lift the discrete Multiplicative-to-Additive Dirichlet Energy Inequality and Coprime Successor
-   Coercivity (Pillar VII) to continuous logarithmic coordinates via the non-linear additive shear
-   $x \mapsto \log(e^x + 1)$ and coupling between `SourceGraph` multiplicative jumps and additive
-   Sobolev/Dirichlet regularity.
-4. **Infinite-Grid Tail Rigidity Beyond Trap 5:**
-   Because finite-$N$ polar constraints decouple via distant copies at scale $T \gg \log N$
-   (Trap 5), any proof that exploits the polar hyperplane $\int_0^\infty h(x)\cosh(x/2)\,dx = 0$
-   beyond the pure positive-definite cone bound must couple the polar tail at scale $T$ to the
-   exponentially dense logarithmic grid nodes $\log n \in [T - D, T + D]$ where $\Delta x_n \asymp e^{-T}$.
-
-
-   **Signed Prime-to-Polar Measure Transport & Chebyshev Discrepancy Coupling (relevant for RH proof routes `EWU` / `HF` / `CHMD`):**
-   Do **not** restrict to the grid-blind subspace $h_f(\log n) = 0$ (Trap 9). Instead, use Pillar XIV
-   (`SignedKreinCollarAndPrimeDeficitTransfer.lean`) and Pillar XV
-   (`KreinKantorovichMeasureTransportAndPrimePolarPairing.lean`) to couple the discrete von Mangoldt
-   measure $d\mu_\Lambda = \sum_{n \ge 2}\frac{\Lambda(n)}{\sqrt{n}}\delta_{\log n}$ directly to the
-   continuum polar measure $d\mu_{\mathrm{polar}} = 2\cosh(x/2)\,dx$, combining local
-   Krein–Kantorovich collar transport (penalized by $w_{\mathrm{arch}}(y)^{-1} = e^{-y/2}\sinh y \le y e^{y/2}$)
-   with global Stieltjes integration by parts against the Chebyshev prime-counting error
-   $\psi(e^x) - e^x$.
 
 
 ## Open obstacles
@@ -638,3 +609,17 @@ Keep a knowledge ledger in docs/reports/arithmetic-positivity-theory for your ow
 Do not clutter documents with history or diary entries or status updates. 
 
 Goal is met when the research program is fully completed and the new theory is developed and formalized in lean.
+
+
+[/goal](slashCommand;goal) close all the gaps 
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+
+the goal is met exactly when you assume the role of a fields medalist asked to look at TransHorizonIncidenceMechanics and answer whether it truly is a new field of mathematics and the answer is a clear yes.
