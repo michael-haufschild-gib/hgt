@@ -382,10 +382,9 @@ weight `v^{-(2 β + 1)}` integrates to `1` on `(1, ∞)`. -/
 theorem integral_Ioi_one_weighted_amplitude_deriv {β : ℝ} (hβ : 0 < β) :
     (∫ v in Ioi (1 : ℝ), (2 * β + 1) * v ^ (-(2 * β + 2))) = 1 := by
   rw [MeasureTheory.integral_const_mul, integral_Ioi_rpow_of_lt (by linarith) zero_lt_one,
-    Real.one_rpow]
-  have hne : -(2 * β + 2) + 1 ≠ 0 := by linarith
+    Real.one_rpow, show -(2 * β + 2) + 1 = -(2 * β + 1) by ring]
+  have hne : 2 * β + 1 ≠ 0 := by linarith
   field_simp [hne]
-  ring
 
 /-- **Weighted `[1, ∞)` Oscillatory Prime-Dilation Integration-by-Parts Bound.**
 For any `β > 0` (including the critical exponent `β = 1/2`), any non-zero base frequency `ω ≠ 0`,

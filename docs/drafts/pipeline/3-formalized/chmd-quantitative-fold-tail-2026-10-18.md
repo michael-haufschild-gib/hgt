@@ -32,8 +32,10 @@ The local research audit recovered the existing growth law, plateau taper, Besse
 - Direct source audit passed: `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CHMDLightConeFoldTailBound.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/CHMDLightConeFoldTailBound.ilean GaloisForLFunctions/RHTower/CHMDLightConeFoldTailBound.lean`.
 - A separate `/tmp` import audit passed. All five public theorem closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
 - Umbrella import occurs once. `scripts/formal_tools.py index` passed; exact lexical search finds the absolute-tail theorem.
-- `scripts/formal_tools.py lint` returned 1 for unrelated missing BVI imports `BarbanVehovMollifierKloostermanGcdAndLogEnergyWallOneBridge` and `BeurlingGibbsCotangentTransportAndSchurCollarWallOneBridge`, and root-level `TransHorizonIncidenceMechanics.lean`. No finding names this leaf. No global lint pass is claimed.
+- The original `scripts/formal_tools.py lint` returned 1 for unrelated missing BVI imports `BarbanVehovMollifierKloostermanGcdAndLogEnergyWallOneBridge` and `BeurlingGibbsCotangentTransportAndSchurCollarWallOneBridge`, and root-level `TransHorizonIncidenceMechanics.lean`. No finding names this leaf. No global lint pass is claimed.
 - Source check, axiom output, index output, lint output, and source hash are retained under `logs/chmd-lightcone-tail-1810d-*`.
+- At the requested pause, this source still matches its audited SHA-256, its compiled artifact is newer, and its umbrella import occurs once. Generated indexes were refreshed again. `logs/chmd-closeout-1810f-verification.json` records the final closeout checks for all eight completed leaves.
+- Final `lint --check-generated` reports only the unrelated package-root `TransHorizonIncidenceMechanics.lean`; no stale generated file or owned-leaf finding remains.
 
 ## Remaining arithmetic gap
 

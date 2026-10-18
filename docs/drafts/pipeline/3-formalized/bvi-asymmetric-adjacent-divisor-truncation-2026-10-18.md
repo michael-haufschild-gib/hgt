@@ -3,7 +3,7 @@
 - **ID:** BVI-ASYMMETRIC-ADJACENT-TRUNCATION-2026-10-18
 - **Stage:** 3-formalized
 - **Type:** THEOREM / dependency-closed paper proof and Lean audit
-- **Parent:** `../2-fully-proven/bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`
+- **Parent:** `bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`
 - **Full objective:** Problem 4 strict interior contraction remains open.
 
 ## Exact statements
@@ -96,9 +96,12 @@ adjacent mean. That rate and its exact compensated-kernel consequence
 are now formalized in `UniformAdjacentDivisorCompensatedRemainder.lean`,
 with certificate on
 `bvi-uniform-adjacent-compensated-remainder-2026-10-18.md`.
-The predecessor-peak assembly and full O(1) interior-energy residual
-remain in progress. No uniform actual energy bound or strict contraction
-is claimed.
+The predecessor-peak assembly and full O(1) interior-energy residual are
+formalized in `UniformRenormalizedInteriorEnergyRemainder.lean`, with
+certificate on
+`bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`.
+No uniform actual energy bound or strict contraction is claimed.
+Further research is paused at user request.
 
 Newer corpus work also supplies collective ordered-gap bounds at finite
 prefixes in `OrderedPronicGapCellsAndCollectivePrefixEnergy.lean`.

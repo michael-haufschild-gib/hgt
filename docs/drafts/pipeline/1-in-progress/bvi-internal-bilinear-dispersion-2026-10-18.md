@@ -2,9 +2,55 @@
 
 - **ID:** bvi-internal-bilinear-dispersion-2026-10-18
 - **Stage:** 1-in-progress
+- **Session status:** PAUSED at the user's request, 2026-10-18; active goal cleared.
 - **Type:** CANDIDATE
 - **Source:** `docs/reports/walls/bezout-wall1-programme.md`, problem 3.
 - **Goal:** Develop an unconditional internal estimate for the actual energy-centered pronic Ramanujan bilinear form, with all coherent terms explicitly accounted for. No RH task or claim.
+
+## Pause checkpoint — 2026-10-18
+
+Started Lean work is complete through C13. All seven leaves below are wired
+exactly once in `formal/GaloisForLFunctions/BezoutValuationIncidence.lean`.
+Their source hashes still match their passing original-source
+`lake --old env lean -j 1` audits. All 69 public declarations passed the
+API/axiom audits; their closures use only `propext`, `Classical.choice`, and
+`Quot.sound`. No further Lean module or proof scratch was started after C13.
+
+All leaves are under `formal/GaloisForLFunctions/BezoutValuationIncidence/`:
+
+| Leaf | Completed result | Public declarations |
+|---|---|---:|
+| `PrimePacketConditionalTailAndCoherentPrefix.lean` | Exact conditional-tail split and coherent lower bounds | 24 |
+| `PronicResidueGapEnergyAndPrimePairDistance.lean` | Sharp pairwise residue-gap energy | 13 |
+| `RamanujanDilationProfileResidueGapBudget.lean` | Pairwise transfer to the actual dilation profile | 6 |
+| `OrderedPronicGapCellsAndCollectivePrefixEnergy.lean` | Collective signed estimate before overlap | 7 |
+| `RamanujanOrderedGapCollectivePrefixEnergy.lean` | Collective prefix estimate on the actual Ramanujan carrier | 5 |
+| `AllLevelPronicResidueGapCentering.lean` | Exact all-level centering and collective mean-part budget | 6 |
+| `SharedBirthPronicCellCovariance.lean` | Exact shared-start covariance and positivity classification | 8 |
+
+The full signed tail and beyond-Nyquist dispersion estimate remain open.
+C13's larger family minimum-kernel statement remains a paper corollary;
+no Lean proof of that corollary was started. The older C7 transport scratch
+was retired as a redundant baseline and archived, not left as an active
+unfinished module. No C14 claim is made.
+
+Final `scripts/formal_tools.py lint` exited 1 solely for the existing foreign
+package-root `TransHorizonIncidenceMechanics.lean`; no owned leaf is named.
+The exact lint output and source/wiring verification are retained in
+`logs/bvi-dispersion-pause-2026-10-18-{lint.txt,verification.json,manifest.json}`.
+Twenty owned temporary files were archived, SHA-verified, then removed in
+`logs/bvi-dispersion-pause-2026-10-18-searches.tar.gz`.
+All owned Lean, lint, and search handles are terminal. No README edit,
+full/umbrella build, or commit occurred.
+
+The last three deep searches (Mellin/Sobolev transfer, exact cotangent Gram,
+periodic reflection) ended with partial results from runtime deadlines;
+their candidate statements were not reviewed before this pause. Their raw
+outputs and coverage metadata are preserved in the archive. Existing
+`HTGeometry.digamma_reflection` and successor-sector digamma identities
+were located and source-checked; no new cotangent transfer is claimed.
+Resume only on a new user instruction, beginning with these saved corpus
+results rather than assuming an absent theorem.
 
 ## Scope and constraints
 
@@ -21,7 +67,8 @@ patches as fallback. `update_plan` is unavailable; this card tracks the plan.
 3. Formalize dependency-closed positive results in a new BVI leaf, wire only its
    umbrella import, and check the original source with `lake env lean`.
 4. Audit axiom closure, lint, index freshness, cleanup, and the remaining analytic
-   obligation. Continue the next conjecture; do not equate a reduction with dispersion.
+   obligation. Resume the next conjecture only when requested; do not equate
+   a reduction with dispersion.
 
 ## Corpus evidence
 
@@ -174,6 +221,41 @@ inventoried, `partial=true` because reranking timed out, background refresh
 incomplete, semantic coverage unmeasured, and returned signatures source-only.
 Raw record: `bvi-profile-gap-reuse-search.json` in the C9 scratch archive below. No absence or novelty claim
 is inferred from this search.
+
+### Further Type I/II reuse audit
+
+Corpus search also recovered an existing, quantitative Type I/II pipeline in
+`RHTower/Sieve`. This is generic analytic reuse, not an RH investigation.
+The checked definition in `NearDiagonalPhaseCurvature.lean` is
+`F_r(u) = T/(2*pi) * log(1+r/u)`, so `ndExp T r m d` is exactly
+`exp(i*T*log(1+r/(m*d)))`. `maskedNdExp` retains the literal product cutoff
+`A <= m*d < B`; its correlation is an intersection of divisor-fibre intervals.
+`MaskedSymmetry` permits either Cauchy orientation without changing that mask.
+
+`CorrelationGapBound` bounds the actual off-diagonal masked correlation by
+`2500*sqrt(T*r*h/(M0^2*36*pi*P)) +
+22*sqrt(36*pi*M1^2/(T*r*h))*sqrt(Q^3)`, with positive variables,
+`m1 != m2`, `M0 <= m1,m2 <= M1`, `4*r/mi <= P`, and its stated curvature
+condition. `TypeIIHybridGapBound` removes that curvature condition on
+`Q <= 2*P`, with envelope
+`5000*sqrt(T*r*h/(M0^2*36*pi*P)) + 75*pi*Q^2*M1^2/(16*T*r*h) + 1`.
+`GapSumSingleSqrt` and `GapSumDyadic` already sum the gap envelopes and supply
+both orientations. These estimates must not be reintroduced as missing
+analytic results. `ReciprocalPhaseStability` also proves explicit comparisons
+of the phase and its first two derivatives with `X/u`, `X=T*r/(2*pi)`.
+
+The remaining transfer question is an exact, cost-controlled representation
+of the literal pronic Gram in this phase, retaining its physical cutoff and
+coherent terms. The checked phase definition and estimates alone do not give
+that representation. The exact lexical query for `ndExp`/`ndPhaseExp`
+returned 37 declarations; both pages were inspected. Exact searches also
+checked all five `nearDiagonalPhase`, four `maskedNdExp`, four `gapSumBound`,
+and five `gapCorrBound` hits. A conjunctive lexical query for the profile and
+Mellin returned no hits; this is not an absence claim. Current query records
+are retained by basename in
+`logs/bvi-dispersion-pause-2026-10-18-searches.tar.gz`, including
+`bvi-*-existing-search*.json`, `bvi-near-diagonal-phase-search.json`, and
+`bvi-profile-mellin-lexical-search.json`.
 
 ## Conjecture log
 
@@ -747,8 +829,9 @@ kernel `min(v_i,v_j)`, where `v_i=1/k_i-1/p_i`. Its positive correlations
 must be retained as a coherent block, not bounded by a fictitious
 orthogonality rule. This minimum-kernel algebra is an existing reciprocal
 Green-kernel pattern; the proposed contribution is its exact arithmetic
-cell realization and resonance/zero classification. Corpus reuse and
-formal verification remain pending.
+cell realization and resonance/zero classification. The pairwise formulas
+and classification are now formally checked below; the larger family
+minimum-kernel statement remains a paper corollary.
 
 The newly inspected existing
 `RHTower/EulerDeletionPrimitiveInterference.lean` (all 128 lines) already
@@ -856,8 +939,9 @@ must retain its numerator and both phases.
 - 399 lines, 13 public declarations. Imported by the BVI umbrella.
 - Axiom audit of all 13 public declarations passed in `/tmp`; only
   `[propext, Classical.choice, Quot.sound]` occur. The output is retained in
-  `/tmp/bvi-transport-proof.log` (its unrelated transport scratch has one
-  finite-product simplification error and is not yet a verified module).
+  the historical archive as `bvi-transport-proof.log` (its unrelated transport
+  scratch was retired with one finite-product simplification error; it is
+  not a verified module or an active proof obligation).
 - `scripts/formal_tools.py lint --check-generated` was rerun after corpus
   reconciliation. It reports nine foreign errors: seven unwired `CHMD*`
   modules, unwired `BirthDelayedInteriorJumpCenteringAndUniformPairBounds`,

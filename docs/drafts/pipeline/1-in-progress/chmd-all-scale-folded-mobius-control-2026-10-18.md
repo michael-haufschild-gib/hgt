@@ -2,6 +2,7 @@
 
 - **ID:** CHMD-FOLD-ALL-SCALE-1810
 - **Stage:** 1-in-progress
+- **Execution:** PAUSED at user request after closing the started Lean work (2026-10-18).
 - **Type:** CONJECTURE
 - **Statement:** Derive an unconditional, rapidity-uniform one-sided bound on the complete folded Möbius transport from the actual arithmetic source.
 
@@ -16,10 +17,10 @@ Prove `∃ C : ℝ, ∀ y : ℝ, 0 ≤ y → F(y) ≤ C` (or its lower-bound cou
 ## Plan and gates
 
 1. [done for current candidates] Audit exact source, kernel, prior conjectures, and all-scale receivers using the local research search and actual Lean declarations.
-2. [in progress] State competing precise cancellation conjectures; attack their quantifiers, source fidelity, and prior-corpus overlap.
+2. [paused] Cancellation candidates and their unresolved proof obligations are recorded below; no further research is authorized by the closeout request.
 3. [done for finite-fold spectral classification] Complete a dependency-closed paper proof before formalization; the all-scale arithmetic bound remains open.
 4. [done for spectral classification and separation] Seven leaves compile; both final leaves pass direct `lake --old env lean` checks; five theorem axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Umbrella wiring and generated indexes updated. The failed-route card records that audit; the additional quantitative-tail audit is recorded below.
-5. [in progress] Reassess whether the actual target is proved; continue conjecturing if it remains open. The requested all-scale bound remains unproved.
+5. [paused; open] The requested all-scale arithmetic bound remains unproved. Resume only on a new user instruction.
 
 ## Constraints
 
@@ -188,3 +189,31 @@ A cutoff-independent full prime-cube norm ceiling is refuted by the existing div
 Corpus-audit evidence: `logs/chmd-corpus-reuse-1810e-verification.json` records 15 searches (4 partial), 14 independently checked API/axiom closures, five fresh imported source artifacts, and the raw search/check archive. Both scratch Lean audits exited 0. No Lean source changed during this correction; the previous fold-tail source hash is unchanged.
 
 Possible rate follow-up, not proved or prioritized over the arithmetic window target: for `0<ε<1/2` and `0≤a<1/2-ε`, conjecture that canonical prime-aperture norms exceed every `C*N^a` infinitely often. Qualitative divergence alone does not prove this. A proposed argument uses dyadic differences of their Mellin transforms: exact stabilization above `1/(N+1)` plus an assumed `O(N^a)` norm bound gives locally summable increments on `Re s>1/2+a`. The existing vanishing real Mellin interval would force the analytic limit to vanish, contradicting its nonzero value at `s=1`. The local-uniform limit and value at one still require a full applicability/novelty audit. The existing first-prime-band identity in `PMPowerDampedMobiusPrimeSlab.lean:106` is another input to inspect before building any new rate theorem.
+
+
+## Selberg dual pairing audit (1810f; candidate, not established)
+
+Corpus search recovered existing finite Selberg Hilbert isometry and inverse coordinates (`SelbergHilbertCoordinateEquivalence.lean`), the attained sharp absolute-mass constant (`ChronologicalSelbergSharpMass.lean`), and exact prefix discrepancy duality (`ExactFinitePrefixDiscrepancyDualityAndReturnTimes.lean`). `Sieve/SquarefreeTotientLogMean.lean` already proves `tendsto_sum_sqfreeTotientInv_div_log_one`, the reciprocal-totient base mean. Source inspection establishes these as existing work; no new Lean applicability audit was run in this final search pass.
+
+For a finite test row `w`, finite multiples inversion gives the proposed dual coordinate
+`V_w(e)=sum_{d|e} d*mu(e/d)*w(d)` and dual energy `D_N(w)=sum_{e<=N} V_w(e)^2/phi(e)`.
+The small Selberg energy of a logarithmic taper would bound its signed pairing by
+`sqrt(Q_N * D_N(w))`. This is useful only after paying the actual dual energy; the finite Hilbert isometry already exists in `SelbergHilbertCoordinateEquivalence.lean`, and the exact sharp absolute-mass inverse norm already exists in `ChronologicalSelbergSharpMass.lean`.
+
+Candidate residue identity, requiring novelty and proof audit: for fixed finite support,
+`D_N(w)/log N -> sum_a a * (sum_k mu(k)*w(a*k))^2`.
+The candidate limiting matrix is
+`H(d,e)=sum_{a|gcd(d,e)} a*mu(d/a)*mu(e/a)`.
+At one prime its proposed nonzero entries are `H(p^k,p^k)=p^(k-1)*(p+1)` for `k>=1`, `H(1,1)=1`, and `H(p^(k+1),p^k)=-p^k`; valuation gaps above one give zero. This comes from comparing the finite inverse-totient Möbius Gram's Euler factors, not a verified asymptotic theorem yet.
+
+If applicable to the folded kernel after justified limiting exchanges, the right side contains complete Möbius folds at every dilation. It would expose the cost hidden by the Cauchy step, not provide cancellation. No uniform-in-rapidity bound for this dual energy is assumed, and no new Lean wrapper is planned without a substantive arithmetic result.
+
+## Pause checkpoint (1810f)
+
+The eight started Lean leaves are complete: the seven temporal-spectrum/separation leaves recorded on the [failed shortcut card](../5-failed/chmd-uniform-fold-approximation-2026-10-18.md), plus the [quantitative fold-tail leaf](../3-formalized/chmd-quantitative-fold-tail-2026-10-18.md). Each has exactly one `RHTower` umbrella import and an existing compiled artifact newer than its source. Their earlier targeted builds, direct source checks, and public-theorem axiom audits remain the verification evidence; no Lean source changed during this closeout.
+
+`logs/chmd-closeout-1810f-verification.json` records all eight source hashes, wiring, artifacts, final lint, and cleanup. Ten final search responses (three partial) are retained in `logs/chmd-duality-search-1810f.tar.gz`; every archive member was hash-checked. The final reciprocal-totient response lists were inspected without starting another proof audit. Search coverage and proposed ingredient sets do not establish the unproved residue candidate.
+
+Final verification: `scripts/formal_tools.py index` exited 0 and refreshed generated API, gap, and overview docs. The subsequent `scripts/formal_tools.py lint --check-generated` exited 1 solely for the unrelated package-root research leaf `TransHorizonIncidenceMechanics.lean`. It reported no stale generated file or finding in the eight owned leaves. All eight source hashes remained unchanged; all eight modules have generated API entries. No global lint pass is claimed.
+
+No owned Lean implementation remains unfinished. The moving-window arithmetic bound, possible prime-aperture rate sharpening, and dual-residue identity remain explicitly unproved. The all-scale card stays in `1-in-progress` because its mathematical target is open; execution is paused.

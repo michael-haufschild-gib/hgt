@@ -2,7 +2,7 @@
 
 - **ID:** BVI-UNIFORM-ACTIVE-DELETED-2026-10-18
 - **Stage:** 3-formalized
-- **Parent:** `../2-fully-proven/bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`
+- **Parent:** `bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`
 - **Full goal:** `../1-in-progress/bvi-interior-martingale-coercive-contraction-2026-10-18.md`
 
 ## Statement

@@ -38,6 +38,12 @@ private theorem gap_pronic_interval {a b : ℕ} (ha : 0 < a) (hab : a ≤ b) :
     field_simp
     ring
 
+/-- The exact pronic mass of a positive integer interval. -/
+theorem sum_Ico_reciprocal_pronic {a b : ℕ} (ha : 0 < a) (hab : a ≤ b) :
+    (∑ n ∈ Ico a b, 1 / ((n : ℝ) * ((n : ℝ) + 1))) =
+      1 / (a : ℝ) - 1 / b :=
+  gap_pronic_interval ha hab
+
 private theorem gap_cast_mod {p n k : ℕ}
     (hl : k * p ≤ n) (hu : n < (k + 1) * p) :
     (n % p : ℕ) = n - k * p := by

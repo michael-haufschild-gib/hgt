@@ -2,6 +2,7 @@
 
 - **ID:** BVI-INTERIOR-CONTRACTION-2026-10-18
 - **Stage:** 1-in-progress
+- **Session:** Paused at user request after completing started Lean work, wiring, and documentation.
 - **Type:** CONJECTURE / source audit
 - **Statement:** For every positive damping parameter, prove a strict contraction of the compensated interior martingale against the actual pronic energy, with a horizon-independent remainder.
 
@@ -82,6 +83,18 @@ passed. Lint found two unrelated errors and no owned-leaf finding.
 Twelve completed scratch files were archived and removed. Certificate:
 `../3-formalized/bvi-uniform-adjacent-compensated-remainder-2026-10-18.md`.
 
+The sixth positive result is formalized and wired:
+`UniformRenormalizedInteriorEnergyRemainder.lean` proves the uniform
+O(1) residual `|2*M_int+2*c_int*H_comp-E|<=C` for every positive damping,
+plus the exact equivalence of strict contraction and bounded actual
+energy. Neither side of that equivalence is asserted. Original source
+(50797), all four public axiom closures and three mathlib probes (36525),
+and index refresh (21581) passed. Indexed retrieval found all four public
+theorems. Lint retained one unrelated root-module placement error and
+381 existing warnings; no owned-leaf finding. Twelve completed scratch
+files were archived, hash-verified, and removed. Certificate:
+`../3-formalized/bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`.
+
 The programme's problem 4 uses the actual source weight and increment.
 README remains unchanged by this task. Full contraction remains open:
 the unsigned modulus sum is not uniformly bounded at small damping.
@@ -90,17 +103,14 @@ After the user's corpus-search correction, existing signed all-depth
 Hilbert/Gram identities, integer-jump and additive-lag bridges, truncated
 Gram estimates, and the corrected natural-cutoff tail bridge were checked.
 Those identities do not bound the remaining physical tail variance.
-The current candidate is tracked in
-`../2-fully-proven/bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`:
-upgrade the existing o(log T) interior-versus-energy residual to O(1),
-reusing the corpus's bounded-field adjacent-correlation proof with two
-different divisor cutoffs. Its paper estimate has positive power saving
-for every positive damping. The diagonal specialization and quantitative
-two-cutoff estimate are formalized. The explicit power-rate selection and
-compensated adjacent harmonic bound remain in progress. This would
-isolate the actual energy bound still needed for strict contraction;
-it does not complete the parent goal. Earlier dyadic and pairwise routes
-remain recorded below with their exact gaps.
+The completed residual theorem upgrades the existing o(log T)
+interior-versus-energy residual to O(1), reusing the corpus's bounded-field
+adjacent-correlation proof with two different divisor cutoffs. The
+diagonal specialization, quantitative two-cutoff estimate, positive
+power-rate selection, compensated adjacent bound, and final assembly are
+all formalized. This isolates the uniform actual energy bound still
+needed for strict contraction; it does not complete the parent goal.
+Earlier dyadic and pairwise routes remain recorded below with exact gaps.
 
 Fresh corpus searches also located collective finite-prefix control already
 proved in `OrderedPronicGapCellsAndCollectivePrefixEnergy.lean` and
@@ -110,6 +120,17 @@ prefix under cofactor dilation, and prove zero global pronic mean for the
 Ramanujan packet. Their later signed tail remains unresolved. Use these
 stronger inputs for the next contraction conjecture; do not duplicate the
 collective finite-prefix estimates or promote them to full-horizon bounds.
+
+The later corpus check also found
+`AllLevelPronicResidueGapCentering.lean`: all-level local mean removal,
+exact centered variance, and a full-horizon bound on the mean packet are
+already proved. The unresolved term is the collective covariance of
+centered cells across levels; do not duplicate the all-level mean bounds.
+The Euler insertion covariance candidate is recorded in
+`bvi-euler-cube-insertion-covariance-2026-10-18.md`. Its proposed obstruction
+and positive classification remain under paper audit, with no Lean work
+started for that candidate. Both research directions are paused at user
+request. No further proof process is active for this task.
 
 `update_plan` and `multi_tool_use.parallel` are unavailable. This card tracks the plan; independent reads use `Promise.allSettled`. Serena returned no Lean symbols in the active Python project, so Lean source inspection uses corpus search and `rg`.
 

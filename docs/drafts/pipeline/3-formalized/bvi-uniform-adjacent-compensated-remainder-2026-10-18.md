@@ -3,7 +3,7 @@
 - **ID:** BVI-UNIFORM-ADJACENT-COMPENSATED-2026-10-18
 - **Stage:** 3-formalized
 - **Type:** THEOREM / dependency-closed paper proof and Lean audit
-- **Parent:** `../2-fully-proven/bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`
+- **Parent:** `bvi-uniform-renormalized-interior-energy-remainder-2026-10-18.md`
 - **Full objective:** Problem 4 strict interior contraction remains open.
 
 ## Exact statements

@@ -1,9 +1,10 @@
 # Uniform remainder between compensated interior martingale and half energy
 
 - **ID:** BVI-UNIFORM-INTERIOR-REMAINDER-2026-10-18
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** THEOREM / dependency-closed paper proof
+- **Stage:** 3-formalized
+- **Type:** THEOREM / dependency-closed paper proof and checked Lean 4
 - **Parent:** `../1-in-progress/bvi-interior-martingale-coercive-contraction-2026-10-18.md`
+- **Session:** Completed started Lean work; further research paused at user request.
 
 ## Exact statement and relation to the full goal
 
@@ -60,7 +61,7 @@ The latest broad mean-tail search had partial semantic coverage and
 mostly unrelated hits. A narrowed lexical search for
 `"sievedDivisorSum" tail` returned seven hits, all inspected, including
 the positive-index bridge and exact truncated LCM Gram. None of those
-seven statements supplies the mean L1 tail estimate. The current scratch
+seven statements supplies the mean L1 tail estimate. The completed
 formalization therefore derives that estimate directly from the existing
 divisor-average identity. This is a bounded search finding, not a claim
 that no such theorem exists anywhere in the corpus.
@@ -125,7 +126,7 @@ Then delta>0, and the bound is at most
 `(2*K_h+8*K_e+4)*N^(-delta)`. This weaker but explicit positive exponent
 is enough for the same Abel argument and O(1) remainder. Both choices
 are dependency-closed paper arguments; the half-exponent version is the
-current Lean implementation plan.
+implemented Lean argument.
 
 Choose A=ceil(N^(1/2)), D=ceil(N^alpha),
 alpha=e/(4*(1+e)). Then 0<alpha<1/4 and alpha<=e/4. Using
@@ -137,7 +138,7 @@ Thus `|sum_{n<=N} (F_e(n+1)*F_h(n)-Q_inf)| <= K*N^(1-delta)`.
 Abel summation bounds the centered harmonic sum by
 `K*(1+sum_{n>=1} n^(-1-delta))`. The corpus already contains
 `HTGeometry.abel_bound_of_partialSum_le`; its exact indexing and public
-API must be checked before reuse.
+API were checked before reuse in the adjacent compensated-bound leaf.
 
 For the active-deleted diagonal, the corpus already supplies the exact
 single-divisor expansion of F_e*F_(1+e) and
@@ -155,8 +156,8 @@ The predecessor coefficient is the exact combination
 Its density is precisely the existing predecessor drift formula.
 Combining both uniform remainders with the existing canonical energy
 identity proves the O(1) residual. The quantitative truncation estimate,
-actual-coefficient specializations, and final assembly now pass Lean in
-scratch; the final original-source and axiom audits remain in progress.
+actual-coefficient specializations, and final assembly are formalized.
+Original-source and public axiom audits passed for every leaf.
 No analytic premise is assumed.
 
 ## Earlier candidate, superseded by corpus reuse
@@ -198,16 +199,17 @@ The second-moment route above remains an alternative paper argument. It
 is not needed after locating the existing bounded-field proof. The full
 strict contraction remains the parent objective after this step.
 
-## Verification plan
+## Verification
 
 - [x] Inspect rich corpus candidate lemmas and source arguments, freshness,
   and exact applicability.
 - [x] Close the paper proof or record the exact failure and survivor.
 - [x] Formalize only the missing result, preserving existing definitions.
-- [ ] Check original leaf, every public axiom closure, umbrella wiring,
-  generated index and lint; clean owned scratch.
-- [ ] Return to the remaining strict-contraction problem; do not mark the
-  parent complete on this auxiliary result.
+- [x] Check original leaf, every public axiom closure, umbrella wiring,
+  generated index and lint; clean owned scratch. Lint retains one unrelated
+  root-module placement error, documented below; no owned-leaf finding.
+- [ ] Remaining strict contraction is open. Further research is paused at
+  user request; this auxiliary result does not complete the parent.
 
 ## Lean checkpoint
 
@@ -221,7 +223,7 @@ only `propext`, `Classical.choice`, and `Quot.sound`. Log:
 The completed scratch input is archived in the matching search archive.
 
 The diagonal paper proof is now recorded in
-`../3-formalized/bvi-uniform-active-deleted-compensated-remainder-2026-10-18.md`.
+`bvi-uniform-active-deleted-compensated-remainder-2026-10-18.md`.
 New repository leaf `UniformActiveDeletedCompensatedRemainder.lean` has
 250 lines and five public theorems, with one umbrella import. Scratch
 checks found one implicit-argument mismatch and two shadowed addition
@@ -269,14 +271,14 @@ Original source (68346), all three public axiom closures, and twenty
 mathlib name probes (82766) passed. The leaf is wired once and indexed;
 lint has three unrelated errors and no finding in this leaf. Thirty-two
 completed scratch files were archived and removed. Exact proof/certificate:
-`../3-formalized/bvi-asymmetric-adjacent-divisor-truncation-2026-10-18.md`.
+`bvi-asymmetric-adjacent-divisor-truncation-2026-10-18.md`.
 
 The combined positive power-rate and exact compensated-kernel scratch
 passed (85594, exit 0). Its promoted leaf is
 `UniformAdjacentDivisorCompensatedRemainder.lean`. Original source (96521)
 and public axiom/API audit (4141) passed; all twelve completed scratch
 files were archived and removed. Certificate:
-`../3-formalized/bvi-uniform-adjacent-compensated-remainder-2026-10-18.md`.
+`bvi-uniform-adjacent-compensated-remainder-2026-10-18.md`.
 
 A further live corpus search found the exact existing conversion
 `sum_Icc_pred_compensated_add_sum_pronicSeq_eq` in
@@ -284,12 +286,40 @@ A further live corpus search found the exact existing conversion
 The new assembly reuses that identity, not a new kernel-shift proof.
 For 0<=F<=1, the pronic correction and terminal mean each lie in [0,1].
 Thus conversion of the single-field harmonic remainder costs at most 2.
-The full assembly draft uses this, the two adjacent compensated bounds,
+The completed assembly uses this, the two adjacent compensated bounds,
 the exact predecessor-drift formula, and the canonical energy budget.
 It also states the quantitative equivalence between strict contraction
 and bounded actual energy. This equivalence does not prove either side.
-The full O(1) residual and the exact equivalence now pass scratch Lean
+The full O(1) residual and the exact equivalence passed scratch Lean
 (84274, exit 0, no diagnostics). Promoted leaf
 `UniformRenormalizedInteriorEnergyRemainder.lean` has 182 lines and four
-public theorems. Original-source audit (50797) is running; axiom audit
-is prepared. Strict contraction itself remains open.
+public theorems:
+
+- `exists_pmPowerDampedDivisor_compensated_bound`
+- `exists_pmPredecessorPeak_compensated_bound`
+- `exists_pmBezoutInterior_compensated_energy_bound`
+- `pmInterior_strict_contraction_iff_bounded_energy`
+
+Original-source audit (50797) exited 0 with no diagnostics and emitted
+fresh `.olean` and `.ilean` artifacts. Public axiom/API audit (36525)
+exited 0: all four closures use only `propext`, `Classical.choice`, and
+`Quot.sound`; all three mathlib name probes passed. The umbrella imports
+the leaf exactly once. Index refresh (21581) passed and indexed retrieval
+(63549) returned all four public theorems.
+
+Formal lint (89068) exited 1 with 381 existing warnings and one unrelated
+error: `research leaf module at package root: TransHorizonIncidenceMechanics.lean; move it into an owned theorem area`.
+No finding names this leaf. This is not a global lint pass.
+
+Source SHA256:
+`5f1909c7d34a04bde6f6aff6e8bb92f354dc98818fe42516e54947e31848d49d`.
+Certificate: `logs/bvi-uniform-interior-remainder-2026-10-18-manifest.json`.
+Raw source, axiom, index, indexed-API and lint logs share that prefix.
+Four proof scratch files and eight completed corpus-search results were
+archived, hash-verified, and removed from `/tmp`; archives are
+`logs/bvi-uniform-interior-remainder-2026-10-18-proof-scratch.tar.gz` and
+`logs/bvi-uniform-interior-remainder-2026-10-18-search.tar.gz`.
+
+Strict contraction and the equivalent uniform actual energy bound remain
+open. Started Lean work, wiring, and documentation are complete. Further
+research is paused at the user's explicit request.

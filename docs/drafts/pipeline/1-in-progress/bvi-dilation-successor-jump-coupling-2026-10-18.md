@@ -2,6 +2,7 @@
 
 - **ID:** bvi-dilation-successor-jump-coupling-2026-10-18
 - **Stage:** 1-in-progress
+- **Session status:** Paused by user on 2026-10-18 after finishing started Lean work, wiring, and documentation. No active goal; resume only on request. C14 remains a paper candidate.
 - **Type:** CANDIDATE
 - **Source:** docs/reports/walls/bezout-wall1-programme.md, problem 2
 - **Statement:** Recover additive integer jump incidence and Diophantine spacing inside the existing high-scale Ramanujan dilation profile.
@@ -978,3 +979,234 @@ realisation. Preserve the consecutive-integer exception. No uniform lower
 bound follows from C11 nonvanishing, and no complete signed-complement estimate
 has been proved. The current pipeline card, canonical sources, logs, and own
 Serena memory are the continuation state.
+
+### C12 continuation: seed size and the retained signed complement
+
+Mission: connect actual additive Bézout jump geometry to the high-scale dilation
+profile, retaining the signed contributions at one physical horizon.
+The previous checkpoint remains PROGRESS; the research goal stays active.
+
+Fresh deep search `least successor seed relative scale gap` completed and all
+20 candidate statements and 20 source-argument statements were inspected.
+It returns the existing least-seed specification and clock-sector estimate,
+which are the dependencies of the new argument, rather than a replacement for
+it. Search JSON: `/tmp/bvi-c12-seed-gap-fresh-research.json`.
+`partial=false`, but semantic coverage was not measured, the coverage snapshot
+was older than the active generation, and source/compiler freshness is mixed.
+No absence-based novelty claim follows from these results.
+
+The new corpus frontier includes collective prefix bounds and all-level local
+centering, already recorded in their owning memories. A targeted lexical
+search also returned 13 declarations from `SharedBirthPronicCellCovariance`.
+The source of `sharedBirthUnitGapCovariance_coherent` was checked: an explicit
+data-only family has positive mixed-level covariance equal to the smaller
+cell's diagonal variance. Thus local centering does not justify a global
+nonpositivity claim. This is separate from the present least-seed argument.
+
+The C12 scratch `/tmp/bvi-c12-seed-size-draft.lean` proves the paper inequality
+`q-1 <= |p-q|*a` for `pa=qb+1`, excluding the reverse consecutive exception,
+then combines it with the existing totient-square amplitude bound. Its owned
+Lean processes are lake PID 56660 / Lean PID 56784. The launch-tool session ID
+was lost in output truncation; do not launch another Lean until these owned
+processes terminate. The log is `/tmp/bvi-c12-seed-size-draft.log`.
+
+Both original scratch PIDs are now absent; its log has no diagnostics. Its lost
+exit status is not treated as a final audit. The extended scratch is the sole
+owned Lean session 53267, recorded also in tool store `bvi_c12_active_lean`;
+log `/tmp/bvi-c12-relative-gap-draft.log`. It adds the literal normalized clock
+sector, the finite signed complement, and quantitative bounds for the original
+profile. No second owned Lean process is running.
+
+Exact corpus searches located the existing positive diagonal Gram, continuity
+of the actual profile, and `exists_prime_pair_ratio_lt`. Source of the latter
+was checked: for every positive real window and every real threshold it gives
+distinct ordered primes above that threshold. These will be reused for the
+positive complement survivor. A broader deep search returned all 20 candidate
+and all 20 source-argument statements, but was partial (prime-density query and
+semantic retrieval unfinished); its unrelated suggestions are not dependencies.
+Evidence: `/tmp/bvi-c12-prime-realization-research.json`,
+`/tmp/bvi-c12-positive-profile-prime-research.json`, and
+`/tmp/bvi-c12-nearby-profile-api-research.json` (all 19 lexical hits inspected).
+
+Paper bridge to the positive survivor: for `2 <= p < q <= 2p`, the normalized
+sector budget is at most
+`2*v*phi(s)^2*(q-p)/p + v*s*phi(s)^2/p`. The same-horizon profile cutoff costs
+at most `PrimitiveBound(r)^2/p`, because `p*q <= H+1` and
+`sqrt(p)*sqrt(q) <= q`. Thus nearby prime pairs at sufficiently large scales
+make both the clock sector and the profile/complement difference arbitrarily
+small. Continuity at ratio one then transfers the positive diagonal Gram to
+the retained signed complement. This does not bound that complement uniformly
+over arbitrary prime pairs or control an infinite rearrangement of lag sums.
+
+C12 extended scratch session 53267 terminated exit 0 with no diagnostics,
+including its explicit API probes. Promoted its checked proof content to
+`DilationClockRelativeGapAndSignedComplement.lean` (four concrete definitions,
+four public theorems; no probe in the canonical source). Original-source audit
+14842 is the sole owned Lean process, output
+`logs/bvi-clock-relative-gap-original.txt`; it writes only that module's olean
+and ilean. The prime-survival refinement is drafted separately at
+`/tmp/bvi-c13-clock-prime-survival-draft.lean` and has not yet been checked.
+No final success claim for C12 or C13 precedes their original-source audits.
+
+C12 original-source audit 14842 terminated exit 0 with no diagnostics. Wired
+the finished module into the umbrella once, without building that umbrella,
+and added one narrow README entry. Its axiom audit will run after the C13
+check, in the single owned Lean slot. C13 remains an unchecked refinement.
+
+C13 first scratch 19993 terminated exit 1 on three local script issues:
+`positivity` on a nonzero lower endpoint, a tactic after a closed goal, and the
+wrong named argument for `Nat.cast_nonneg`. Corrected these without changing
+the statements or mathematical argument. Recheck 71569 terminated exit 0 with
+no diagnostics, including every explicit API probe. Promoted the two public
+theorems to `DilationClockComplementPrimeSurvival.lean`. Original-source audit
+94705 is now the sole owned Lean process, output
+`logs/bvi-clock-prime-complement-original.txt`.
+
+### C14 candidate: actual primitive energy from period-boundary jump cells
+
+Prior-work audit: the broad cusp/jump deep search and the narrower actual
+primitive lower-bound deep search both completed with `partial=false`; every
+20 candidate and 20 source-argument statement from each was inspected. Both
+report older coverage snapshots and unmeasured semantic coverage. Their
+proposed ingredient sets only reproduce existing jump-kernel identities and
+do not prove a sharp actual-primitive lower bound. This is not an absence-based
+novelty claim. Evidence: `/tmp/bvi-c14-profile-cusp-prior-research.json` and
+`/tmp/bvi-c14-actual-primitive-lower-research.json`.
+
+Crucial existing work: all 25 lexical hits (including page 2) from
+`PronicResidueGapEnergyAndPrimePairDistance` were inspected. The source already
+proves the exact pre-overlap residue prefix and the lower bound
+`h*harmonic(floor(p/h))-h <= residueGapPronicEnergy(p,p+h)`, alongside the
+upper bound. The actual-profile module supplies an upper bound through its
+Möbius-weighted residue expansion and an exact `HasSum` for the scaled
+primitive distance. That upper-bound argument cannot be reversed because
+the Möbius summands can cancel. The eleven primitive-period API hits were
+also inspected; source confirms existing `pmRamanujanPrimitive_periodic`,
+`pmRamanujanPrimitive_period_sum`, and `pmRamanujanPrimitive_succ`.
+
+Paper candidate (not yet Lean checked): let `r>1`, `q=p+h`, and `k=r*t>0`
+with `k*h<=p`. On the integer interval `[k*p,k*q)`, the two quotients are
+exactly `k` and `k-1`. At this period boundary, `A_r(k)=0` and
+`A_r(k-1)=-phi(r)`, so the actual scaled primitive difference is exactly
+`q*phi(r)`. Its pronic square mass on that interval is
+`h*q*phi(r)^2/(p*k)`. These intervals are pairwise disjoint for
+`1<=t<=K=floor(p/(r*h))`. Selecting them from the nonnegative actual distance
+series should give
+
+`h*q*phi(r)^2/(p*r) * harmonic(K)`
+`  <= (p+q)*G(r,r) - 2*sqrt(p)*sqrt(q)*Phi_r(p/q)`.
+
+This is a proposed lower bound on the actual carrier, using periodic reset
+jumps rather than a lower bound on separate residue summands. First verify
+the coefficient-at-multiples interface and the exact quotient-cell identity;
+then audit disjointness and transfer through the existing distance `HasSum`.
+No differentiability or cusp asymptotic is claimed at this stage. The broader
+collective signed-prime-packet estimate remains open.
+
+C13 original-source audit 94705 terminated exit 0 without diagnostics. Both
+C12 and C13 are wired once into the umbrella with narrow README entries.
+Combined axiom audit 94054 is the sole owned Lean process; replay
+`/tmp/bvi-c12-c13-axioms.lean` prints every one of their ten public declarations.
+Log: `logs/bvi-clock-relative-gap-prime-complement-axioms.txt`.
+
+Final guarded lint 2479 terminated exit 1: 381 large-file warnings and two
+unowned errors, with no active forbidden-declaration error:
+`owned module unreachable from theorem-area umbrella GaloisForLFunctions.ArithmeticPositivityTheory: GaloisForLFunctions.arithmetic-positivity-theory.FactorialTailCombinationSmoothingChannels`;
+`research leaf module at package root: TransHorizonIncidenceMechanics.lean; move it into an owned theorem area`.
+Log: `logs/bvi-clock-relative-gap-prime-complement-lint.txt`. The global lint
+gate has not passed. No edit to either unrelated module or umbrella.
+Guarded index refresh is session 98690, output
+`logs/bvi-clock-relative-gap-prime-complement-index.txt`.
+
+C14 supplementary audit: exhaustive source-text discovery located 14 files
+using the literal profile. All 16 profile-bearing declaration statements in
+the four older cross-depth/cofactor/two-prime/hypercube interfaces were read;
+they supply exact spectral identities and prime-scale asymptotics, without
+replacing the proposed period-boundary lower bound. The exact quotient-cell
+argument and reciprocal-weight telescoping proof in the existing residue-gap
+module were also read for reuse. A fresh coefficient/totient deep query's
+20 candidates and 20 source arguments were inspected. In particular, existing
+`ramanujanLagCoefficient_of_dvd` and
+`ramanujanNaturalCoefficient_re_eq_lagCoefficient` avoid a new character-sum
+proof of the coefficient at a multiple of the modulus. No use is made of its
+unrelated proposed ingredient set.
+
+C12-C13 axiom audit 94054 terminated exit 0. All ten public declarations have
+exactly `propext`, `Classical.choice`, and `Quot.sound`; no additional axiom.
+Index refresh 98690 also terminated exit 0, regenerating API/gaps/overview;
+the cached lexical DB reports zero changed/removed after background ingestion.
+Exact quoted-capstone search completed exit 0 and returned both new canonical
+capstones plus nine related declarations; all eleven hits were inspected.
+Evidence: `/tmp/bvi-c12-c13-discoverability.json`.
+Direct checks found no forbidden token, trailing whitespace, or tab in either
+new source, and each module is imported exactly once. Removed both merged
+draft Lean files, retaining their check logs and the minimal axiom replay.
+
+Checkpoint outcome: PROGRESS. C12-C13 add ten public declarations in two
+canonical modules: 187 lines and 221 lines. C1-C13 now contain 111 public
+declarations across twelve modules, plus the separately checked existing
+gcd-divisor interface exported at C8. Each new module passed its original-source
+audit and every public declaration passed its individual axiom audit. Global
+lint remains failed on the two unrelated errors above. No owned Lean, search,
+index, or lint process remains; no full build, numerical experiment, heartbeat
+increase, commit, or push was made.
+
+The unbounded goal remains active. C14's candidate lower bound, paper argument,
+prior-work audit, and exact reuse interfaces are recorded above. No C14 Lean
+file has been started. The next step is to formalise its period-boundary cell
+identity, then the disjoint-cell harmonic lower bound for the actual profile.
+
+C14 continuation: reread the full objective; previous turn classified PROGRESS.
+Fresh exact corpus query returned all four required reuse APIs, with their
+canonical source paths; all hits inspected. Docs/architecture.md and
+docs/testing.md remain absent. Current worktree has concurrent changes outside
+this task; preserve them. Read the expanded-corpus memory and retain its warnings
+about source-only retrieval and the actual physical horizon.
+
+The existing exact positive-Ico pronic mass proof was private. Added only the
+public wrapper `sum_Ico_reciprocal_pronic` in its owning residue-gap module,
+delegating to the unchanged private proof. This avoids copying its telescoping
+argument into C14. Original-source audit is the sole owned Lean process;
+log `logs/bvi-period-jump-interval-interface-original.txt`. No C14 canonical
+module exists yet.
+
+### Finished work and user-requested pause (2026-10-18)
+
+User cleared the active goal and requested: finish started Lean work, wire,
+update docs, then pause. This supersedes the earlier active-goal checkpoint.
+C12 and C13 are complete with the original-source and ten-declaration axiom
+audits recorded above. Both remain imported exactly once. C14 remains the
+paper candidate above; no C14 module or period-cell proof was started.
+
+Finished the one started existing-module interface:
+`sum_Ico_reciprocal_pronic` exports the exact positive-Ico pronic mass using
+the unchanged private proof in `PronicResidueGapEnergyAndPrimePairDistance`.
+Original-source audit terminated exit 0 with no diagnostics. The separate
+scratch axiom audit also terminated exit 0 and reports exactly `propext`,
+`Classical.choice`, and `Quot.sound`:
+
+- Source log: `logs/bvi-period-jump-interval-interface-original.txt`.
+- Axiom log: `logs/bvi-period-jump-interval-interface-axioms.txt`.
+- Replay: `/tmp/bvi-period-jump-interval-interface-axioms.lean`.
+
+Its owning module is already imported exactly once by the field umbrella.
+README documents the exported identity alongside the completed C12/C13
+modules. Scoped `git diff --check` passed. Final index refresh exited 0 and
+regenerated `formal/LEAN_API.md`, `formal/LEAN_GAPS.md`, and
+`formal/LEAN_OVERVIEW.md`; log `logs/bvi-dilation-pause-closeout-index.txt`.
+Exact cached corpus search returns the new public theorem at its canonical
+source and line 42; its sole hit was inspected. Evidence:
+`/tmp/bvi-pause-closeout-interval-discovery.json`. The earlier narrow
+reciprocal-interval search also completed; all 17 returned existing
+jump-kernel hits were inspected. Search retrieval is not a compiler audit.
+
+Final authoritative lint exited 1 with 381 size warnings and one unrelated
+error, recorded in `logs/bvi-dilation-pause-closeout-lint.txt`:
+`research leaf module at package root: TransHorizonIncidenceMechanics.lean; move it into an owned theorem area`.
+The earlier unreachable ArithmeticPositivityTheory-module error is absent
+from this run. No active forbidden-declaration error. Global lint has not
+passed; unrelated files were not modified by this task.
+
+All owned Lean, lint, index, and search processes have terminated. No full
+build, numerical experiment, heartbeat increase, commit, or push was made.
+Paused at user request; resume research only on a new request.

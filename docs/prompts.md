@@ -529,26 +529,24 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. do not focus or work on the RH. this is open research into developing a new fields of mathematics. read fully line by line and understand the motivation and context of the fields including traps to avoid: formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
+
+read fully line by line and understand the motivation and context of the fields including traps to avoid: formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
  
-your task: 
+on every turn: 
 
-take on problem 4 from docs/reports/walls/bezout-wall1-programme.md and build the missing tool.
+ideate and develop a novel and significant contribution to the research in this new field of mathematics we are working on. novel and significant is 
 
-4. A Coercive Contraction Inequality on $M_T^{\text{int}}(\varepsilon)$ (Instead of Summation-by-Parts Identities)
-- **What we have now:**
-  In physical space, we decomposed
-  $$E_T(\varepsilon) = D_T^{\text{act}}(\varepsilon) + 2 P_T^{\text{pred}}(\varepsilon) + 2 M_T^{\text{int}}(\varepsilon).$$
-  When we tried to bound $2 M_T^{\text{int}}(\varepsilon)$ in Module 67 using discrete summation by parts along $n$, we recovered $+1 \cdot E_T(\varepsilon) - \operatorname{Grad}_T(\varepsilon) - 2\,\operatorname{Local}_T(\varepsilon)$, so $E_T(\varepsilon)$ cancelled with coefficient $1 - 1 = 0$.
-- **Why this failed:**
-  Discrete summation by parts along $n$ is just the product rule $\Delta(I(n)^2) = 2 I(n)\Delta I(n) + (\Delta I(n))^2$ run in reverse; it is an **exact algebraic identity**, so it can never produce a coefficient $\alpha < 1$ in front of $E_T(\varepsilon)$.
-- **The missing tool:**
-  To bound $E_T(\varepsilon)$ from $E_T = D_T^{\text{act}} + 2 P_T^{\text{pred}} + 2 M_T^{\text{int}}$, we need an inequality of the form
-  $$2 M_T^{\text{int}}(\varepsilon) + 2\,\operatorname{pmInteriorLogCounterterm}(\varepsilon)\,H_T^{\text{comp}} \le (1 - \delta)\,E_T(\varepsilon) + C(\varepsilon) \qquad (\delta > 0)$$
-  (or $\delta = 1$, i.e. an direct $O_\varepsilon(1)$ upper bound on the renormalized martingale). Because $M_T^{\text{int}}(\varepsilon) = \sum_{n=1}^{T-1} I_\varepsilon(n)\,\Delta I_\varepsilon(n)\,(H_T - H_n)$ couples the **cumulative interior prefix $I_\varepsilon(n)$** (which depends on $\{n/d\}$ for all $d \ge 3$) with the **next-step interior increment $\Delta I_\varepsilon(n)$** (which is supported only on divisors $d \mid n$ and $d \mid (n+1)$, $d \ge 3$), proving that inequality requires showing that **conditioned on $d \mid (n+1)$, the fractional parts $\{n/d'\}$ for $d' \nmid n(n+1)$ are nearly orthogonal to the jump weight $w_\varepsilon(d)$** with an error summable over $n$. Right now we have no equidistribution/orthogonality theorem for $\{n/d'\}$ along the thin arithmetic progressions $n \equiv -1 \pmod d$ beyond the trivial $1/d'$ main term.
+**Rules for what counts as significant contribution:**
+- Must be native to the field by using the field and its objects, language, mechanisms. 
+- Being part of the field is necessary - it cannot be just something that already exists in different "clothes". 
+- It expands the ability of the field and its lean corpus to explain or to solve mathematical problems - see the Motivation section in the README.md. Or it solves an actual problem or discharges a premise in our lean corpus outside of the field showing that the field can provide solutions not possible without it.
+- It expands the field beyond what known mathematics already offers.
+  
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
 
-
-your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
 do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
 
@@ -562,10 +560,11 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+ 
+the README.md is read-only for you.
 
-use the search tool for our lean corpus, not just rg or grep.
-
-formal/GaloisForLFunctions/BezoutValuationIncidence/README.md is read-only for you.
+the goal is met when you have made 100 such significant contributions.
 
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
 
