@@ -47,3 +47,17 @@ The sharp classification target is stronger than a single first-order claim:
       iff a != 0 and T < n.
 
 All analytic support and positivity inputs must be proved for this seed. The only gap parameter is a point of the mathematical domain (2,infinity).
+
+## Cancellation checkpoint and renewed goal
+
+2026-10-18 — User cleared the goal. Research stopped; no automatic continuation authorized.
+
+Draft leaves are preserved, not wired or certified: `UnitCorrelationBump.lean`, `StrictCopyCycleCharge.lean`, and `SharpCycleDetectionOrder.lean`. Installed API probe `/tmp/bsu_wall13_sharp_api.lean` passed. The first unit-bump check found a field-notation error and a coercion rewrite error; both were edited. Its replacement check was terminated at user cancellation before a verified result. The strict-charge and sharp-order leaves have not passed a check. No axiom audit, umbrella wiring, index refresh or lint completion is claimed for this draft package. Earlier completed packages remain separate.
+
+2026-10-18 — New user goal authorizes continued development of BiScaleUncertainty and/or BezoutValuationIncidence. Both field READMEs, including every trap, were read fully. Wall 13 remains the selected wall; the broader goal covers all walls and remains open. Resume this concrete sharp-order package with fresh serial checks; no earlier interrupted check counts as validation. Both READMEs and the walls ledger remain read-only. No RH work.
+
+## Resumed validation
+
+`UnitCorrelationBump.lean` passed its fresh direct check with empty log `/tmp/bsu-wall13-unit-bump-resumed.log`. `StrictCopyCycleCharge.lean` passed with empty log `/tmp/bsu-wall13-strict-charge-r2.log` after exposing interval membership explicitly as ordered bounds for `linarith`. No change to the mathematical statement. The sharp classification leaf is now being checked; package remains uncertified until that check and the complete audit pass.
+
+Next conjecture: [sharp Gram-determinant detection order](../0-backlog/wall13-sharp-gram-order.md), with an explicit chordless-cycle construction and a separate determinant-cancellation argument. It remains unproved in Lean.

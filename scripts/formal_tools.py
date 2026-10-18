@@ -130,6 +130,16 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.BiScaleUncertainty.weilArchRe_nonneg_iff_levy_sinh_ge_abs_gammaBracket",
         ],
     },
+    "bezout_valuation_incidence": {
+        "module": "GaloisForLFunctions.BezoutValuationIncidence",
+        "path": SRC / "BezoutValuationIncidence",
+        "capstones": [
+            "GaloisForLFunctions.BezoutValuationIncidence.bezout_valuation_incidence_four_requirement_synthesis",
+            "GaloisForLFunctions.BezoutValuationIncidence.bezoutCoprimeQuadraticForm_eq_moebius_diagonal",
+            "GaloisForLFunctions.BezoutValuationIncidence.two_mul_bezoutCoprimeQuadraticForm_le_selberg_of_harmonic_eq_zero",
+            "GaloisForLFunctions.BezoutValuationIncidence.selberg_and_mean_square_le_dirichlet_energy_of_harmonic_eq_zero",
+        ],
+    },
     "quantum_alg": {
         "module": "GaloisForLFunctions.QuantumAlg",
         "path": SRC / "QuantumAlg",
@@ -143,6 +153,7 @@ THEOREM_AREAS = {
 }
 
 ALLOWED_ROOT_LEAN = {
+    "BezoutValuationIncidence.lean",
     "BiScaleUncertainty.lean",
     "Bottcher.lean",
     "Core.lean",

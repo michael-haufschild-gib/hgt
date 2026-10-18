@@ -71,8 +71,8 @@ private theorem correlation_pos_inside (x : ℝ) (hx : |x| < 1) :
     (seed_pos_iff _).mpr (by simpa only [neg_div, abs_neg] using hs)
   have hr : 0 < seed (-x / 2 + x) :=
     (seed_pos_iff _).mpr (by rwa [show -x / 2 + x = x / 2 by ring])
-  exact (seed.continuous.mul (seed.continuous.comp (continuous_add_const x))).
-    integral_pos_of_hasCompactSupport_nonneg_nonzero seed.hasCompactSupport.mul_right
+  have hc := seed.continuous.mul (seed.continuous.comp (continuous_add_const x))
+  exact hc.integral_pos_of_hasCompactSupport_nonneg_nonzero seed.hasCompactSupport.mul_right
       (fun u => mul_nonneg (seed_nonneg u) (seed_nonneg (u + x))) (x := -x / 2)
       (mul_pos hl hr).ne'
 
@@ -106,6 +106,7 @@ theorem seed_polar_pos : 0 < normalizedPolarMoment seed := by
     apply (seed.continuous.mul (by fun_prop)).integral_pos_of_hasCompactSupport_nonneg_nonzero
       seed.hasCompactSupport.mul_right
       (fun u => mul_nonneg (seed_nonneg u) (Real.exp_pos _).le) (x := 0)
+    change seed 0 * Real.exp (s * 0) ≠ 0
     rw [seed_at_zero]
     norm_num
   have hp := hm (1 / 2)

@@ -30,7 +30,7 @@ theorem source_mass (T : Ioi (2 : ℝ)) (a : ℝ) :
     autocorr (source T a) 0 = (1 + a ^ 2) * autocorr seed 0 :=
   autocorr_subtractCopy_zero (f := (seed : ℝ → ℝ)) seed.continuous seed.hasCompactSupport
     (D := 1) (fun x hx => (seed_correlation_eq_zero_iff x).mpr hx.le)
-    (by linarith only [T.property]) a
+    (by linarith only [show (2 : ℝ) < T from T.property]) a
 
 theorem source_mass_pos (T : Ioi (2 : ℝ)) (a : ℝ) : 0 < autocorr (source T a) 0 := by
   rw [source_mass]
@@ -45,10 +45,12 @@ theorem source_central (T : Ioi (2 : ℝ)) (a : ℝ) (x : Ioo (-1 : ℝ) 1) :
     autocorr (source T a) x = (1 + a ^ 2) * autocorr seed x := by
   have hl : autocorr seed ((x : ℝ) - T) = 0 :=
     (seed_correlation_eq_zero_iff _).mpr
-      ((by linarith only [T.property, x.property.2] : 1 ≤ -((x : ℝ) - T)).trans (neg_le_abs _))
+      ((by linarith only [show (2 : ℝ) < T from T.property, x.property.2] :
+        1 ≤ -((x : ℝ) - T)).trans (neg_le_abs _))
   have hr : autocorr seed ((x : ℝ) + T) = 0 :=
     (seed_correlation_eq_zero_iff _).mpr
-      ((by linarith only [T.property, x.property.1] : 1 ≤ (x : ℝ) + T).trans (le_abs_self _))
+      ((by linarith only [show (2 : ℝ) < T from T.property, x.property.1] :
+        1 ≤ (x : ℝ) + T).trans (le_abs_self _))
   rw [source_correlation, hl, hr]
   ring
 
@@ -170,7 +172,7 @@ theorem closed_product_same_or_order (T : Ioi (2 : ℝ)) (a : ℝ)
     simp [rawProduct, hz]
   have hb := ((packet_product_error T a l.1).resolve_left hl).resolve_left hp
   rw [l.2, zero_sub, abs_neg] at hb
-  have hT0 : 0 ≤ (T : ℝ) := by linarith only [T.property]
+  have hT0 : 0 ≤ (T : ℝ) := by linarith only [show (2 : ℝ) < T from T.property]
   have hi : packetCharge T l.1 ≤ -1 ∨ 1 ≤ packetCharge T l.1 := by omega
   have ht : (T : ℝ) ≤ |(packetCharge T l.1 : ℝ) * T| := by
     rcases hi with hi | hi
