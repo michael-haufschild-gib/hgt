@@ -27,8 +27,10 @@ theorem factorialRampSource_autocorr_tail (n : ℕ) {x : ℝ}
     change _ = (0 : ℝ)
     rcases le_total u 0 with hu | hu
     · rw [factorialRampSource_zero_of_nonpos n hu, zero_mul]
-    · rw [factorialRampSource_tail n (by linarith), mul_zero]
-  rw [hz, integral_zero]
+    · rw [factorialRampSource_tail n (u := u+x) (by linarith), mul_zero]
+  rw [hz]
+  change (∫ u : ℝ, (0 : ℝ)) = 0
+  exact integral_zero ℝ ℝ
 
 /-- The whole quadratic prime sum, not merely an individual translated field. -/
 theorem sum_primeWeight_autocorr_factorialRamp_eq_log (n : ℕ) {K : ℕ}
@@ -56,10 +58,11 @@ theorem sum_primeWeight_autocorr_factorialRamp_eq_log (n : ℕ) {K : ℕ}
   rw [← he]
   apply integral_congr_ae
   exact Eventually.of_forall fun u => by
+    change factorialRampSource n u*atomicSource (factorialRampSource n) K u =
+      factorialRampSource n u*factorialRampLogField n u
     rcases le_total 0 u with hu | hu
     · rw [atomicSource_factorialRamp_eq_log n hu hK]
-    · change factorialRampSource n u*_ = _
-      rw [factorialRampSource_zero_of_nonpos n hu, zero_mul, zero_mul]
+    · rw [factorialRampSource_zero_of_nonpos n hu, zero_mul, zero_mul]
 
 /-- Exact elimination of the literal infinite prime sequence for this autocorrelation. -/
 theorem tsum_primeTerm_autocorr_factorialRamp_eq_log (n : ℕ) :

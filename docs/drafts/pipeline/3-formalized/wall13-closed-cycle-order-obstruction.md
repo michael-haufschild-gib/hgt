@@ -94,9 +94,9 @@ The package exports 17 theorems and ten concrete definitions. The witness theore
 
 Wall 13 remains open: no blind-source coercive lower bound or compatible positivity transfer follows. The renewed broader goal covers all walls and remains open.
 
-## Proved successor and next conjecture
+## Proved successors
 
-[Exact minimal cycle-detection order](wall13-minimal-cycle-order.md) is now proved and Lean-audited: for the explicitly constructed smooth seed with correlation positive exactly on (-1,1), detection at order n occurs exactly when a!=0 and T<n. The least order is floor(T)+1, including strict endpoint exclusion. The concrete polar-distinct instance is also proved. Determinant cancellation remains a separate [sharp Gram-order conjecture](../1-in-progress/wall13-sharp-gram-order.md).
+[Exact minimal cycle-detection order](wall13-minimal-cycle-order.md) is now proved and Lean-audited: for the explicitly constructed smooth seed with correlation positive exactly on (-1,1), detection at order n occurs exactly when a!=0 and T<n. The least order is floor(T)+1, including strict endpoint exclusion. The concrete polar-distinct instance is also proved. The matching [sharp Gram-order theorem](wall13-sharp-gram-order.md) is now fully Lean-verified, including its actual-source realization and all larger orders. All 26 public declarations passed the complete signature/axiom audit.
 
 ## Gates
 

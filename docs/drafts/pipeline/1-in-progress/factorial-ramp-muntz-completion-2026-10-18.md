@@ -89,9 +89,101 @@ its absolute value is at most
 =10/(sqrt(N) Re(rho)). This also supplies a quantitative source-specific
 zero-readout producer, without assuming RH or dropping the omitted tail.
 
+## Implementation checkpoint
+
+- `FactorialMuntzSeed.lean`: direct canonical leaf audit passed, empty log
+  `/tmp/hgt-muntz-seed-final.log`; `.olean` and `.ilean` produced.
+- `FactorialMuntzCompletion.lean`: scratch and canonical output audits passed;
+  `/tmp/hgt-muntz-completion-check.log` and `/tmp/hgt-muntz-completion-final.log`
+  are empty. `.olean` and `.ilean` produced. Exec session 28772 is terminal.
+- `FactorialMuntzTail.lean` was copied into the tree. Its original scratch
+  check found one `IntegrableOn.integrable_indicator` elaboration mismatch;
+  the call is now explicit. Later checks failed at import loading because a
+  concurrent worker is rebuilding shared dependencies. Sessions 74474, 70094,
+  and 38181 are terminal; no owned Lean process is running at this checkpoint.
+  The last missing shared object was `WeilPositivitySummablePerturbationRigidity`;
+  the other worker owns its live build. Recheck availability before retrying.
+- `/tmp/hgt_FactorialMuntzReadout.lean` is a complete proof attempt, including
+  reflected-source readout decay, but has not yet been checked. The same
+  `IntegrableOn` elaboration issue was fixed before its first check.
+- The readout attempt has now also been copied to `FactorialMuntzReadout.lean`.
+  All four module imports are wired into `BiScaleUncertainty.lean`; Tail and
+  Readout are still unverified, so umbrella wiring is not a proof claim.
+  A later Tail retry (session 20786, terminal) again stopped at import loading,
+  now `WeilPositivityFiniteLevelExistence`. Do not repeatedly retry while the
+  external dependency rebuild continues. The latest inventory found several
+  other missing dependency objects. No proof diagnostic was obtained.
+- `scripts/formal_tools.py index` passed in session 21333; log
+  `/tmp/hgt-muntz-index.log`. Lint session 22098 exited 1 with ten unreachable
+  BiScale modules, four belonging to this contribution before the imports above
+  were added and six belonging to concurrent contributions. No forbidden
+  declaration was reported. Rerun lint after final changes; do not claim its
+  global gate passed. Axiom audit of all 28 public theorems is prepared at
+  `/tmp/hgt_muntz_axioms.lean`, with source hashes and pending statuses in
+  `/tmp/hgt-muntz-audit-manifest.json`; it has not run.
+- Still required: finish Tail and Readout direct checks, audit axioms from
+  `/tmp`, refresh the index after final changes, rerun
+  formal lint, record remaining diagonal-sign obstruction, and clean scratch.
+
+Concurrent changes to other ramp, cycle, BVI, README, and route-ledger files
+are not owned by this contribution. Preserve them.
+
+## Route rotation checkpoint
+
+User explicitly requested rotation across all 27 live routes and 18 candidates.
+All 45 open obligations in the read-only frontier map were reviewed on 2026-10-18.
+RW is now audit-only. While its shared dependencies were unavailable, work
+rotated to TH and proved the actual enriched clock-current sign on the inner
+large-action region. Direct leaf and axiom audits passed; see
+`../3-formalized/theta-inner-large-action-current-2026-10-18.md`.
+The next research cycle must reassess a different route family or candidate;
+do not automatically extend the ramp chain or tune the TH threshold. BVI has
+concurrent workers; avoid their write scopes. All unfinished RW direct and
+axiom checks above remain required once shared dependencies are available.
+
+Latest RW dependency inventory found eight unavailable shared objects plus
+the unbuilt Tail leaf; the external rebuild remained active. No owned Lean
+process remains active after the TH axiom audit. Final index passed and final
+lint reported five unrelated concurrent umbrella-coverage errors; logs are
+`/tmp/hgt-rotation-final-index.log` and `/tmp/hgt-rotation-final-lint.log`.
+
 ## Constraints
 
 Corpus only; no web or novelty claim; no numerical experiments. README files and
 RH frontier map remain read-only. No full/umbrella build, added axioms, proof
 debt, heartbeat increase, commit or push. Existing concurrent ramp-diagonal and
 cycle work is outside this card's write scope.
+
+## MSC rotation checkpoint — 2026-10-18
+
+The next substantive cycle moved to MSC and completed an unconditional unweighted
+squarefree critical Hilbert source (card in `3-formalized`). RW stayed audit-only.
+A fresh full import inventory still found five missing shared dependency objects:
+`ThetaCuspHawkingBMJointSourcePrincipalContinuation`, `WeilArchReLevyPoleForm`,
+`WeilFullConeWindowPinning`, `WeilWorkPBAPGramPackets`, and
+`XiGaussianHeatZeroFreeHalfPlane` (all in `GaloisForLFunctions.RHTower`).
+External build PID 37778 remained live. No duplicate build or futile leaf retry
+was started. Tail, Readout, and their 28-declaration axiom audit remain pending;
+Seed and Completion retain their earlier verified status. Latest inventory:
+`/tmp/hgt-muntz-missing-latest.txt`. No owned Lean process remains running.
+
+### RB rotation checkpoint (2026-10-18)
+
+RW received no new extension during the RB cycle. The Tail/Readout audit remains pending: a fresh transitive-import inventory still finds five missing shared objects, in addition to the not-yet-built Tail object. No replacement build of another worker's dependency chain was started. Missing shared objects:
+
+- `GaloisForLFunctions.RHTower.SelbergNativeConstantMode`
+- `GaloisForLFunctions.RHTower.SmoothAFEZetaDisplacedReflectedCombinedMeanSquare`
+- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspPositiveRows`
+- `GaloisForLFunctions.RHTower.WeilPaperPacketRepair`
+- `GaloisForLFunctions.RHTower.XiGaussianHeatHankelLargeTimeDetection`
+
+Inventory: `/tmp/hgt-muntz-missing-rb-checkpoint.txt`. Recheck shared object availability before retrying the owed canonical audit; do not extend RW while rotating the other routes.
+
+### SZ-cycle audit checkpoint — 2026-10-18
+
+Fresh import inventory still prevents the pending RW audit. Tail's closure lacks four shared
+artifacts: `SelbergThetaHorizontalTransform`, `Sieve.DifferentiatedBarbanVehovLcmExpansion`,
+`Sieve.PerronKernelCellSum`, and `XiGaussianHeatSharpWitnessComparison`. Tail and Readout's own
+artifacts also remain pending. Inventory: `/tmp/hgt-sz-pending-imports.txt`; import graph:
+`/tmp/hgt-sz-final-imports.txt`. No duplicate dependency build or RW Lean retry was launched.
+The substantive cycle advanced SZ instead. Retain RW as audit cleanup, not the next research topic.

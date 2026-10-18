@@ -1,5 +1,6 @@
 import Mathlib.LinearAlgebra.Matrix.Adjugate
 import Mathlib.LinearAlgebra.Matrix.Block
+import Mathlib.Data.Real.Basic
 
 /-!
 # Orientation detected by an endpoint edge
@@ -34,6 +35,11 @@ theorem path_symm (k : ℕ) (d c : ℝ) : (path k d c).IsSymm := by
   ext i j
   simp only [Matrix.transpose_apply, path, eq_comm, or_comm]
 
+theorem cycle_symm (k : ℕ) (d c z : ℝ) : (cycle k d c z).IsSymm := by
+  change (cycle k d c z).transpose = cycle k d c z
+  ext i j
+  simp only [Matrix.transpose_apply, cycle, (path_symm k d c).apply i j, and_comm, or_comm]
+
 /-- The closing edge is exactly a perturbation of the two endpoint rows. -/
 theorem cycle_eq_updates (k : ℕ) (d c z : ℝ) :
     cycle k d c z =
@@ -43,9 +49,22 @@ theorem cycle_eq_updates (k : ℕ) (d c z : ℝ) :
   ext i j
   have hk0 : k + 2 ≠ 0 := by omega
   have hk1 : k + 2 ≠ 1 := by omega
-  by_cases hi0 : i.val = 0 <;> by_cases hil : i.val = k + 2 <;>
-    by_cases hj0 : j.val = 0 <;> by_cases hjl : j.val = k + 2 <;>
-    simp_all [cycle, path, Matrix.updateRow_apply, Pi.single_apply, Fin.ext_iff]
+  have hlast (r : Fin (k + 3)) : r.val = k + 2 ↔ r = Fin.last (k + 2) := by
+    constructor
+    · intro h
+      exact Fin.ext_iff.mpr h
+    · intro h
+      exact congrArg Fin.val h
+  have hzero (r : Fin (k + 3)) : r.val = 0 ↔ r = 0 := by
+    constructor
+    · intro h
+      exact Fin.ext_iff.mpr h
+    · intro h
+      exact congrArg Fin.val h
+  have hne := zero_ne_last k
+  by_cases hi0 : i = 0 <;> by_cases hil : i = Fin.last (k + 2) <;>
+    by_cases hj0 : j = 0 <;> by_cases hjl : j = Fin.last (k + 2) <;>
+    simp_all [cycle, path, Matrix.updateRow_apply]
 
 private theorem two_rows_expansion {ι : Type*} [Fintype ι] [DecidableEq ι]
     (A : Matrix ι ι ℝ) (i j : ι) (hij : i ≠ j) (u v : ι → ℝ) (z : ℝ) :
@@ -73,12 +92,12 @@ private theorem endpointMinor_upper (k : ℕ) (d c : ℝ) :
   change (j : ℕ) < (i : ℕ) at hij
   have h0 : i.val + 1 ≠ j.val := by omega
   have h1 : ¬ (i.val + 1 + 1 = j.val ∨ j.val + 1 = i.val + 1) := by omega
-  simp [endpointMinor, path, Matrix.submatrix_apply, h0, h1]
+  simp only [endpointMinor, Matrix.submatrix_apply, path, Fin.val_succ, Fin.val_castSucc,
+    h0, h1, if_false]
 
 private theorem endpointMinor_diag (k : ℕ) (d c : ℝ) (i : Fin (k + 2)) :
     endpointMinor k d c i i = c := by
-  have h0 : i.val + 1 ≠ i.val := by omega
-  simp [endpointMinor, path, Matrix.submatrix_apply, h0]
+  simp [endpointMinor, path, Matrix.submatrix_apply]
 
 private theorem endpointMinor_det (k : ℕ) (d c : ℝ) :
     (endpointMinor k d c).det = c ^ (k + 2) := by
@@ -104,9 +123,15 @@ theorem endpoint_cofactor (k : ℕ) (d c : ℝ) :
 theorem det_neg_sub_det (k : ℕ) (d c z : ℝ) :
     (cycle k d c (-z)).det - (cycle k d c z).det =
       -4 * z * (-1 : ℝ) ^ (k + 2) * c ^ (k + 2) := by
-  have hx (x : ℝ) := two_rows_expansion (path k d c) 0 (Fin.last (k + 2))
-    (zero_ne_last k) (Pi.single (Fin.last (k + 2)) 1) (Pi.single 0 1) x
-  rw [← cycle_eq_updates] at hx
+  have hx (x : ℝ) : (cycle k d c x).det =
+      (path k d c).det + x *
+        (((path k d c).updateRow 0 (Pi.single (Fin.last (k + 2)) 1)).det +
+          ((path k d c).updateRow (Fin.last (k + 2)) (Pi.single 0 1)).det) +
+        x ^ 2 * (((path k d c).updateRow 0 (Pi.single (Fin.last (k + 2)) 1)).updateRow
+          (Fin.last (k + 2)) (Pi.single 0 1)).det := by
+    rw [cycle_eq_updates]
+    exact two_rows_expansion (path k d c) 0 (Fin.last (k + 2))
+      (zero_ne_last k) (Pi.single (Fin.last (k + 2)) 1) (Pi.single 0 1) x
   have hc : ((path k d c).updateRow (Fin.last (k + 2)) (Pi.single 0 1)).det =
       ((path k d c).updateRow 0 (Pi.single (Fin.last (k + 2)) 1)).det := by
     rw [← Matrix.adjugate_apply, ← Matrix.adjugate_apply]

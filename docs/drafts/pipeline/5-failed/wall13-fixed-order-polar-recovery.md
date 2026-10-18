@@ -55,7 +55,16 @@ no stability estimate, and does not prove that Gram determinants alone recover
 the full correlation. Original sources need not be unique.
 
 No blind-source coercivity or cone-transfer theorem is obtained. Wall 13 remains
-open. The next target is a sharp minimal cycle order for a concrete smooth seed.
+open. The [sharp minimal cycle order](../3-formalized/wall13-minimal-cycle-order.md)
+is now proved for a literal smooth seed: detection at order n is equivalent to
+a!=0 and T<n, with first order floor(T)+1. All 41 declarations in that successor
+package passed direct checks and the complete axiom audit. The matching
+[Gram-determinant threshold](../3-formalized/wall13-sharp-gram-order.md) is now
+fully Lean-verified for the same concrete family, including the exact determinant
+difference, detection at every larger order, and the polar-neutral/positive pair.
+All 26 public declarations passed signature and axiom inspection; only the three
+standard Lean axioms occur. This sharp boundary strengthens the positive survivor
+without reviving fixed-order recovery or closing Wall 13.
 
 ## Verification
 

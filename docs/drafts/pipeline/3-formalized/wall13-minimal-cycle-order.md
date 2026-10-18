@@ -52,6 +52,6 @@ All files are under `formal/GaloisForLFunctions/BiScaleUncertainty/` and importe
 
 ## Mathematical boundary and next conjecture
 
-The result gives a sharp relationship between spatial separation and the order of signed correlation information. It proves neither a sharp Gram-determinant threshold nor full-Gram recovery for arbitrary sources, stable recovery, a coercive energy bound, or a compatible transfer between pointwise and Bochner cones. **Wall 13 remains open; the broader all-walls goal remains active.**
+The result gives a sharp relationship between spatial separation and the order of signed correlation information. The closed-product theorem alone does not address Gram determinants; the completed successor below supplies their sharp threshold for this family. Full-Gram recovery for arbitrary sources, stable recovery, a coercive energy bound, and a compatible transfer between pointwise and Bochner cones remain outside these results. **Wall 13 remains open; the broader all-walls goal remains active.**
 
-Next: [sharp Gram-determinant detection order](../1-in-progress/wall13-sharp-gram-order.md). The proposed equally spaced sample configuration gives a chordless cycle; the determinant difference should reduce to two oriented cycles, equivalently to a triangular cofactor after expanding the endpoint rows. This successor is a conjecture awaiting Lean verification.
+Completed successor: [sharp Gram-determinant detection order](wall13-sharp-gram-order.md). The equally spaced chordless cycle, exact determinant identity, actual-source realization, all-orders classification and polar instance are Lean-verified. All 26 public declarations passed signature and axiom inspection; the Gram and closed-product thresholds coincide for this concrete family.

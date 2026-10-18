@@ -287,3 +287,14 @@ scripts/formal_tools.py research "bezoutCoprimeQuadraticForm"
   **Pillar VI:** Dyadic prefix decomposition and inter-cell jump law for `fermiCellResponse`,
   pronic successor parity orthogonalization of consecutive jumps, exact first-octave evaluation of
   `dilatedMobiusFermiCombinator 1 N`, and pronic-weighted cell $L^2$ tail energy.
+- [`SuccessorEnergyRigidityAndParityStability.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/SuccessorEnergyRigidityAndParityStability.lean) —
+  **Pillar VII:** Descending inversion of the truncated multiples transform (`selbergMultiplesCoord_tail_zero_iff`),
+  kernel rigidity of the successor Dirichlet energy (`selberg_eq_bezout_iff_weight_tail_zero`),
+  universal two-sided successor covariance and variance bounds (`successor_covariance_bounds`,
+  `successor_energy_variance_bounds`), and quantitative parity-mode stability
+  (`successor_anticorrelation_iff_weight_tail_zero`, `variance_above_parity_le_anticorrelation_defect`).
+- [`ExactSuccessorMomentRegionAndUniversalInequalities.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/ExactSuccessorMomentRegionAndUniversalInequalities.lean) —
+  **Pillar VIII:** Exact three-mode Ramanujan realization on divisors $\{1, 2, 6\}$ (`successorThreeModeWeight_moments`),
+  necessary and sufficient joint moment realizability (`exists_sieve_weight_with_moments_iff`), and
+  complete classification of all universal quadratic inequalities in sieve variance and successor
+  covariance (`universal_successor_quadratic_inequality_iff`).

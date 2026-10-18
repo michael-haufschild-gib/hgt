@@ -39,7 +39,7 @@ An infinite floor-profile/null-source route is only an exploratory conjecture. P
 
 ## Status
 
-Previous turn classified as progress: four leaf modules and all seventeen public endpoints verified, giving quantitative Gram decoupling. Whole-corpus searches for the ramp diagonal, null-kernel truncation and dyadic Fermi/Hurwitz identities terminated successfully and were audited against current source. They give no applicable identification with the theta kernel. Coverage is partial in the semantic sense; compiler coverage is not a substitute for checking individual endpoints. No numerical experiment, web search or external novelty claim.
+The exact logarithmic prime-field and signed-pole decomposition and the prior quantitative Gram decoupling remain verified; see the [exact-identity child card](../3-formalized/factorial-ramp-prime-log-diagonal-2026-10-18.md). The [polar-scale child card](../3-formalized/factorial-polar-loss-asymptotic-2026-10-18.md) now records the exact normalized polar-loss limit `1/4` and the vanishing Gram-error-to-polar-loss ratio. Only the proposed absorption shortcut is retired. The coupled lower bound for the actual optimized ramp diagonal remains open, so this parent stays in progress. Corpus searches have not supplied an applicable theta-kernel identification or a quantitative Weil truncation bound; their partial-search limitations are recorded below. No numerical experiment, web search or external novelty claim.
 
 ## Exact physical-space cancellation: paper proof
 
@@ -84,12 +84,49 @@ Let G_N be the explicit (1,-4,4) combination of log-weighted factorial lifts, di
 
 The remaining task is a lower bound for this explicit archimedean/logarithmic expression stronger than the mixed Gram loss. The new identities do not prove that bound.
 
-## Lean verification in this turn
+Concretely, a sufficient target is
+
+    gammaBracket(0) autocorr(f_N,0) + biScaleLevyEnergy(f_N)
+      - 2 integral f_N G_N
+      >= 2(1+epsilon/2) harmonicCorrection(N) C_N/N + E_N^2/(2N).
+
+Here C_N is the explicit nonnegative binomial logarithm above. The coarse pole envelope is O(log N/N), whereas the verified Gram-loss envelope is O(log² N/N²). The sharp result below proves that the actual polar loss exceeds that Gram-error scale.
+
+## Exact polar scale and the remaining coupled estimate
+
+For `N=n+1` and the actual half-line polar integral `P_n`, four further verified leaf modules prove
+
+`N*|P_n|/log(N+1) -> 1/4`,
+
+`N*(2*P_n)/log(N+1) -> -1/2`,
+
+and `factorialWeilGramError n/|P_n| -> 0`. In particular, eventually `factorialWeilGramError n < |P_n|`; the reverse eventual bound is false. The [failed-shortcut card](../5-failed/factorial-polar-loss-gram-obstruction-2026-10-18.md) contains the complete paper proof and the exact positive survivor. All 27 public declarations passed their axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Write the verified exact diagonal as `A_n = B_n - 2*|P_n|`, where `B_n` is its archimedean contribution minus its resummed prime contribution. The remaining sufficient margin is
+
+`B_n >= 2*|P_n| + factorialWeilGramError n`.
+
+This estimate must retain the polar term at scale `log(N+1)/N`. No such bound for `B_n`, no sign of the full ramp diagonal, and no unconditional RH theorem have been proved. Even positivity on this two-dimensional source span alone would not establish all-source RW.
+
+## Exact-diagonal Lean verification
 
 - `ClampedPrimeLogResummation.lean`: direct single-thread leaf compilation passed. All six public endpoints proved, including the actual collar/cutoff discharge.
 - `CompactAutocorrelationPolarMoment.lean`: direct single-thread leaf compilation passed. General compact-continuous pole factorisation proved.
 - `FactorialBiNullPolarSign.lean`: direct single-thread leaf compilation passed. All five public endpoints proved, including the binomial identity, producer sign, exact pole and quantitative bound.
-- `FactorialRampDiagonalIdentity.lean`: direct leaf verification running.
-- Final axioms audit, umbrella wiring, index and lint remain pending. Do not treat the diagonal lower bound or RH as established.
+- `FactorialRampDiagonalIdentity.lean`: passed direct leaf compilation after correcting support-argument and zero-integral proof shapes.
+- All nineteen public theorems passed the `/tmp/biscale_ramp_diagonal_axioms.lean` audit, using only `propext`, `Classical.choice`, and `Quot.sound`. All four leaf logs are empty; the sequential final-leaf/audit command exited 0. Evidence and source hashes: `/tmp/bsu-ramp-diagonal-verification.json`; axiom output: `/tmp/bsu-ramp-diagonal-axioms.log`.
+- All four modules are wired into the area umbrella. `scripts/formal_tools.py index` passed. Global `lint --check-generated` exited 1 on four unrelated missing umbrella imports: `EndpointCycleDeterminant`, `SharpCycleGramRealization`, `SharpGramDetectionOrder`, and `StationaryResolventMarkovPositivityAndNodalDefectProducer`. Full output: `/tmp/bsu-ramp-diagonal-lint.log`. No error names the four modules from this card.
+
+Import-cache recovery: two unchanged dependencies (`DivisorSliceFixedPart.lean` and `WeilPositivityFiniteLevelExistence.lean`) passed direct compilation. During a separate build's cache replacements, the final leaf and audit selected 8,737 preserved dependency objects using Lean's `ModuleSetup.importArts` map through `--setup`; the source header imports and options were retained. The temporary copy-on-write dependency cache was removed after both checks passed. No dependency source was changed; this work launched no umbrella build and used one own Lean process at a time.
+
+## Co-Poisson boundary-estimate search
+
+The deep query `co-Poisson Muntz transform zeta Mellin null source truncation Weil diagonal boundary energy` returned partial results in `/tmp/bsu-ramp-copoisson-boundary-search.json`: source retrieval interrupted, decomposition worker disconnected, semantic coverage unmeasured, background index refresh incomplete. The available hits were inspected; this is not an exhaustive negative search.
+
+- `BurnolCoPoissonIndicatorSeed.lean`, `memLp_two_burnolCoPoissonRightSum_coPoissonIndicatorSeed`, proves an actual co-Poisson indicator source is in `L²`. Its displayed proof uses a decay profile, not a Weil-form truncation estimate.
+- `BurnolCoPoissonRawZeroAnnihilator.lean`, `burnolExtendedSoninEvaluationVector_mem_rawSource_orthogonal`, proves zero-evaluator annihilation of the closed **raw** source span. Its hypotheses include a right-strip zeta zero; it does not establish annihilation of the cosine-closed enlargement. No identification with this factorial ramp has been proved.
+- `DeningerArithmeticPositiveCalderonKoszul.lean`, `deningerContinuousEnergy_zero_on_boundaryClosure`, requires continuity of the chosen energy and its vanishing on algebraic boundaries. It supplies neither obligation for the present Weil form.
+
+These are source-level leads, not newly Lean-audited dependencies. None supplies the missing quantitative lower bound for the actual ramp diagonal. An `L²` limit, a pointwise Mellin limit, or raw-source annihilation alone does not discharge that bound.
 
 The supplementary deep search `Euler Maclaurin finite zeta sum remainder critical strip` completed without reported execution errors (`/tmp/bsu-ramp-euler-maclaurin-search.json`). Semantic coverage is unmeasured. It returned real Euler–Maclaurin and Hurwitz continuation ingredients, not a verified uniform spectral estimate for this ramp. Fixed-frequency transform asymptotics alone cannot justify passing a Weil zero sum to a limit; high frequencies and the shrinking collar require separate control.

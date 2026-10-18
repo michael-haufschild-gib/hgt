@@ -1,8 +1,8 @@
 # Exact attainable successor covariance cone
 
 - **ID:** bvi-exact-successor-covariance-cone-2026-10-18
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** At every sieve level at least six, prescribed moments `(H,S,B)` are realizable exactly when `2H² ≤ S+B` and `2B ≤ S+H²`.
 
 ## Mathematical purpose
@@ -60,9 +60,12 @@ field contribution.
 - [x] Renew corpus audit for inverse-transform infrastructure.
 - [x] Dependency-closed symbolic paper proof, including arbitrary mean and the dual cone.
 - [x] Unconditional Lean realization equivalence and endpoint witnesses.
-- [ ] Named-module verification, axiom audit, wiring, lint.
+- [x] Named-module verification without warnings; all eight theorem axioms audited.
+- [x] Wiring and declaration index checked; formal lint run.
+- [ ] Repository-wide lint passes: five unrelated BiScaleUncertainty import omissions remain.
 
-Not counted toward the 250-contribution goal.
+Counted as **contribution 002**, one connected moment-region and dual-classification result.
+The eight supporting theorems and the reused inverse are not separate contributions.
 
 ## Lean implementation
 
@@ -80,9 +83,26 @@ The existing multiples-inversion theorem is reused, not counted as a contributio
 
 The named-module command `lake --old env lean -j 1 -o <module.olean> <module.lean>`
 passed without warnings. All eight field modules are currently wired; all ten new declarations
-appear in the regenerated API. Axiom audit remains pending before contribution registration.
+appear in the regenerated API. A separate `/tmp` audit imported the resulting module and
+printed axioms for every new theorem: only `propext`, `Classical.choice`, and `Quot.sound`.
+No added axiom or computation-oracle axiom occurs. The compiled artifact is newer than its
+source. `git diff --check` passed. No full or umbrella build was run.
 
 The global lint command was run. It reports no proof-debt or owned-module errors, but exits one
 for five unrelated BiScaleUncertainty umbrella omissions: `ClampedPrimeLogResummation`,
 `CompactAutocorrelationPolarMoment`, `FactorialBiNullPolarSign`, `FactorialMuntzSeed`,
 and `FactorialRampDiagonalIdentity`.
+
+## Consequence and research boundary
+
+A stronger unrestricted half-decorrelation constant is impossible: the pure six-mode attains
+the endpoint exactly. The parity mode likewise attains the lower endpoint. The positive
+survivor is the complete realizability theorem and the exact dual cone, which identify all
+universal linear combinations of the two moment forms that can be nonnegative.
+
+This classification concerns the mean and the two quadratic main terms. It does not estimate
+signed finite-prefix sawtooth defects or establish square-root cancellation. Any stronger
+result must retain additional information, for example an arithmetic constraint on the weights
+or exclusion of an extremal coordinate.
+
+Novelty assessment is relative to the inspected local corpus, not a literature-priority claim.

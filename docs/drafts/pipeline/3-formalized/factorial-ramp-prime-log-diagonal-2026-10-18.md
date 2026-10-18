@@ -1,6 +1,6 @@
 # Exact factorial ramp diagonal: logarithmic prime field and signed pole
 
-- **Stage:** 2-fully-proven; Lean verification in progress.
+- **Stage:** 3-formalized; four leaf checks and all nineteen public axiom audits passed.
 - **Route:** RW, actual factorial sources from WL.
 - **Parent:** `../1-in-progress/factorial-ramp-diagonal-margin-2026-10-18.md`.
 - **Claim:** Evaluate the complete prime quadratic pairing of the actual ramp, prove the pole nonpositive, and express the literal Weil diagonal without von Mangoldt weights.
@@ -47,8 +47,10 @@ Reflection preserves autocorrelation. Substitute the prime and polar identities 
 - `formal/GaloisForLFunctions/BiScaleUncertainty/ClampedPrimeLogResummation.lean`: passed direct `lake --old env lean -j 1` compilation.
 - `formal/GaloisForLFunctions/BiScaleUncertainty/CompactAutocorrelationPolarMoment.lean`: passed direct compilation.
 - `formal/GaloisForLFunctions/BiScaleUncertainty/FactorialBiNullPolarSign.lean`: passed direct compilation.
-- `formal/GaloisForLFunctions/BiScaleUncertainty/FactorialRampDiagonalIdentity.lean`: direct verification running.
-- Nineteen public endpoints prepared for `/tmp/biscale_ramp_diagonal_axioms.lean`; final audit, umbrella wiring, index and lint pending.
+- `formal/GaloisForLFunctions/BiScaleUncertainty/FactorialRampDiagonalIdentity.lean`: passed direct `lake --old env lean -j 1` compilation. A temporary `--setup` artifact map selected existing dependency objects while another build replaced the normal cache; the source header imports and options were retained.
+- All nineteen public theorems passed `/tmp/biscale_ramp_diagonal_axioms.lean`, using only `propext`, `Classical.choice`, and `Quot.sound`. Audit log: `/tmp/bsu-ramp-diagonal-axioms.log`. Source hashes and complete theorem coverage: `/tmp/bsu-ramp-diagonal-verification.json`. The temporary dependency cache was removed after verification.
+- All four modules are wired into `formal/GaloisForLFunctions/BiScaleUncertainty.lean`. `scripts/formal_tools.py index` passed; no umbrella build was run.
+- `scripts/formal_tools.py lint --check-generated` exited 1 with four unrelated unreachable-module errors: `EndpointCycleDeterminant`, `SharpCycleGramRealization`, `SharpGramDetectionOrder`, and `StationaryResolventMarkovPositivityAndNodalDefectProducer`. No error names these four new modules. Full log: `/tmp/bsu-ramp-diagonal-lint.log`.
 
 ## Remaining obstacle
 
