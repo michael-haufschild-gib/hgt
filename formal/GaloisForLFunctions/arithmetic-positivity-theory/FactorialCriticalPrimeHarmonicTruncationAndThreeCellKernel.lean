@@ -82,23 +82,27 @@ theorem sum_le_tsum_factorialCriticalPrimeHarmonicTerm
       ∑' m : ℕ, factorialCriticalPrimeHarmonicTerm S b m := by
   have hsum := summable_factorialCriticalPrimeHarmonicTerm S b
   rw [← Finset.add_sum_erase F (factorialCriticalPrimeHarmonicTerm S b) h2,
-    tsum_eq_add_tsum_ite hsum 2]
-  have hite_sum : Summable (fun m : ℕ =>
-      if m = 2 then 0 else factorialCriticalPrimeHarmonicTerm S b m) :=
-    hsum.ite_eq_zero 2
+    hsum.tsum_eq_add_tsum_ite 2]
   have hite_nonneg : ∀ m : ℕ,
       0 ≤ (if m = 2 then 0 else factorialCriticalPrimeHarmonicTerm S b m) := by
     intro m
     split_ifs with hm
     · exact le_rfl
     · exact factorialCriticalPrimeHarmonicTerm_nonneg_of_ne_two S b hm
+  have hite_sum : Summable (fun m : ℕ =>
+      if m = 2 then 0 else factorialCriticalPrimeHarmonicTerm S b m) :=
+    Summable.of_nonneg_of_le hite_nonneg
+      (fun m => by
+        split_ifs
+        · exact abs_nonneg _
+        · exact le_abs_self _)
+      (summable_factorialCriticalTranslatedPrimeHarmonicDiagonal S b)
   have hsub : ∑ m ∈ F.erase 2, factorialCriticalPrimeHarmonicTerm S b m =
       ∑ m ∈ F.erase 2, (if m = 2 then 0 else factorialCriticalPrimeHarmonicTerm S b m) := by
     refine Finset.sum_congr rfl fun m hm => ?_
     rw [if_neg (Finset.mem_erase.mp hm).1]
   rw [hsub]
-  exact add_le_add_left
-    (hite_sum.sum_le_tsum (F.erase 2) (fun m _ => hite_nonneg m)) _
+  linarith [hite_sum.sum_le_tsum (F.erase 2) (fun m _ => hite_nonneg m)]
 
 /-- **Finite-Truncation Lower Bound for `factorialCriticalTranslatedPrimeLimit`:**
 Every finite harmonic set `F` containing `2` gives an unconditional lower bound for
@@ -154,8 +158,8 @@ theorem factorialCriticalTranslatedPrimeLimit_ge_two_three_five
       (Real.log 3 / 27) * factorialCriticalPatternHarmonicMass S b 3 +
         (Real.log 5 / 125) * factorialCriticalPatternHarmonicMass S b 5 -
         (Real.log 2 / 8) * factorialCriticalPatternHarmonicMass S b 2 := by
-    simp only [Finset.mem_insert, Finset.mem_singleton, OfNat.ofNat_ne_ofNat, or_self,
-      not_false_eq_true, Finset.sum_insert, Finset.sum_singleton, h2, h3, h5]
+    rw [Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_singleton,
+      h2, h3, h5]
     ring
   rw [hsum] at h
   exact h

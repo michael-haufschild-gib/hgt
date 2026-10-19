@@ -263,6 +263,28 @@ direct energy is the sinh potential, with coefficient exactly `1`
 across the fold point `t/2`; the same-side variation `(u(x) − u(x+t))²` is a variation at distance
 `t`.
 
+**Cross-term form and far-apart bumps.** Expanding the reflected difference square and using the
+collar Fubini identity, `D = 2∫u² m_a C_a − 2X` with the cross term
+`X(ω_a,u) = ∫ dm(t) ∫_0^t m_a(x) m_a(t−x) u(x) u(t−x) dx`, so
+(`markovEnergy_phiDoob_shiftedGroundState_eq_cross`)
+
+    markovEnergy(Θ(ω_a u)) = 2S + 2X − 2∫_{x>0} u² m_a (C_a − 2 sinh(a/2) sinh(x/2)).
+
+For an even `g ∈ C²_c` supported in `[−1/4, 1/4]` the two-bump profile
+`u = g(·−a)/m_a + g(−·−a)/m_a(−·)` (`twoBumpProfile`) has `m_a u = g(·−a)` on the half line, so
+`Θ(ω_a u) = g(x−a) − g(−x−a)` is the odd test made of two opposite copies of `g` at `±a`; its cross
+term is the autocorrelation `ρ_g(t − 2a)`, and the prime part of `X` is the corpus's smoothed
+log-window sum `Σ Λ(n) n^{−1/2} ρ_g(log n − 2a)`. On the window `|x−a| ≤ 1/4` the collar excess is
+bounded by a universal constant (`shiftedCollarMass_sub_le_windowCollarConstant`: archimedean
+collar `≤ 1`, signed prime sum by the harmonic identity, discarded negative parts
+`≤ primeKernelSum(x−a)`) and `u² m_a = g²/m_a ≤ sup g²/(Φ(1/4) − Φ(7/4))`. The prime number theorem
+in log windows (`exists_abs_windowSum_vonMangoldt_sub_le`) evaluates the cross term as
+`2μ² cosh a + O(1 + e^{a} e^{−√(2a)/1920000})` with `μ = ∫ g(u) e^{u/2} du`. Hence
+(`exists_shift_markovEnergy_twoBumpProfile_pos`): **if `μ ≠ 0`, the Markov energy of
+`g(x−a) − g(−x−a)` is positive for all large `a`**, being at least `μ² e^{a} − K`. The pole of `ζ`
+carries the positivity through the exponential moment `μ`; the profiles with `μ = 0` are exactly
+those for which the leading order vanishes and the sign is decided by the zero sum.
+
 **Fold domination for monotone profiles.** If `u` is even, nonnegative and nonincreasing on
 `[0, ∞)`, then on `0 < x < t/2` the three points satisfy `x ≤ t − x ≤ x + t`, so
 `0 ≤ u(x) − u(t−x) ≤ u(x) − u(x+t) ≤ u(x)`, and by the symmetry of the collar
@@ -403,4 +425,7 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
 | `ShiftedGroundStateOddProfileCoordinates` | `markovEnergy (c • f) = c² markovEnergy f` for real `c`; `m_a = 2 sinh(a/2) oddProfile a`; the two-sided representation and the variation criterion for `oddProfileTest a w` |
 | `OddProfileOriginFailure` | short-shift Lipschitz bound and long-shift bound of the folded shift integrand; the majorant `t^{−1/2} 1_{t≤1} + e^{−t/2} 1_{t>1}`; archimedean part `≤ K√x`; summability of the prime series for dominated profiles; prime part `≤ prime-2 term + Φ(x)ω(x) primeKernelSum x`; `primeKernelSum ≤ cosh(x/2) + 2|c|Φ(0) + 2∫gammaSourceBound`; the general origin failure |
 | `SignedCombinationOriginFailure` | `Φ(y−a) ≤ (Φ(0)/Φ(b)) Φ(y−b)` for `0 ≤ a ≤ b`, `y ≥ 0`; origin failure of `ω_a` and of signed combinations `c₁ω_a + c₂ω_b` nonnegative on the half line via the general theorem |
+| `ShiftedGroundStateCrossTermRepresentation` | `crossShift`, `crossEnergy`; `D = 2∫u² m_a C_a − 2X`; cross-term form of the Markov energy and its lower bound `≥ 2X − 2∫u² m_a (C_a − 2 sinh(a/2) sinh(x/2))` |
+| `TwoBumpProfile` | `twoBumpProfile`; evenness, `C²`, compact support; `m_a u = g(·−a)` on the half line; cross term `= autoCorr g (t − 2a)`; prime cross energy `= windowSum Λ (2a)` |
+| `FarApartBumpsPositivity` | `∫Φ ≤ 1/2`; archimedean collar `≤ 1` and the collar excess `≤ windowCollarConstant` on `|x−a| ≤ 1/4`; `windowKernelFloor`; remainder bound; archimedean cross term `≤ (3/2) sup|ρ_g|`; `exists_shift_markovEnergy_twoBumpProfile_pos` |
 | `ShiftedGroundStateInfinityFailure` | uniform bound of `∫_0^∞ symArchTerm`; the signed prime shift sum `P(x+a) − P(x−a)`; `C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K` for `x ≥ a` (`two_mul_source_sub_le_shiftedCollarMass`); folded defect `≤ −2Θ(x)(sinh(a/2) sinh(x/2) − K)`; strict folded subsolution on `[X, ∞)` (`exists_infinity_window_foldedGenerator_lt_potential`) |

@@ -268,3 +268,23 @@ remainder-dominates-defect inequality.
   density vanishes for `t ≤ max(2x, a − x)`, hence all primes with `log n ≤ 2a/3` (prime `2` for
   `a ≥ (3/2) log 2`) drop out of `W_a`; support-localised weight criterion; odd-profile transfer.
   Left untouched per the shared-repo discipline.
+- 2026-10-20 — User-directed next steps (both): **(A) shift-averaged inequality**: integrate the
+  variation inequality over `a > 0`; kernels `∫_0^∞ m_a(x)m_a(y)da = G(x−y) − G(x+y)`, `G = Θ∗Θ`;
+  source averages to `2 sinh²(x/2)u²` (`∫Θ cosh(s/2) = 1/2`); target theorem: RH ⟹
+  `∫dm(t)∫_0^t [G(2x−t) − G(t)](u(x)−u(t−x))² ≤ 2∫dm(t)∫_{x>0}[G(t) − G(2x+t)](u(x)−u(x+t))² +
+  2∫_{x>0}u² sinh²(x/2)`. **(B) large-shift positivity for non-mean-zero profiles**: exact rewrite
+  `markovEnergy = 2S + 2·Cross − 2∫u² m_a (C_a − 2 sinh(a/2) sinh(x/2))` with
+  `Cross = ∫dm(t)∫_0^t m_a(x)m_a(t−x)u(x)u(t−x)`; for `u = φ(·−a) + φ(−·−a)`, `C_a − 2ss = O(1)` on
+  the window and `Cross ≈ e^{a}(∫Θe^{s/2}φ)²` by a smooth-window PNT; conclude positivity for all
+  large `a` when `∫Θ(s)e^{s/2}φ(s)ds ≠ 0`.
+- 2026-10-20 — **(B) large-shift positivity for non-mean-zero profiles, in Lean**
+  (`ShiftedGroundStateCrossTermRepresentation`, `TwoBumpProfile`, `FarApartBumpsPositivity`;
+  twenty-four modules). Cross-term form `markovEnergy = 2S + 2X − 2∫u² m_a(C_a − 2ss)`; two-bump
+  profile `u = g(·−a)/m_a + g(−·−a)/m_a(−·)` with `Φ(ω_a u) = g(x−a) − g(−x−a)`; `X` = arch term +
+  `windowSum Λ (2a)` (corpus `LogWindowPrimeNumberTheorem`); collar excess on the window
+  `≤ 1 + 4|c|Φ(0) + 6∫gammaSourceBound + leftPrimeShift(1/4) + cosh(1/8)`; `m_a ≥ Φ(1/4) − Φ(7/4)`;
+  conclusion `exists_shift_markovEnergy_twoBumpProfile_pos`: for even `g ∈ C²_c`, supp `⊂ [−1/4,1/4]`,
+  `μ = ∫g e^{u/2} ≠ 0`, the Markov energy is `≥ μ²e^{a} − K > 0` for all large `a`. The restriction
+  to even `g` and support radius `1/4` comes from the corpus window theorem (autocorrelation
+  windows); a general-window PNT via Abel summation would remove both. (A) shift-averaged inequality:
+  next.

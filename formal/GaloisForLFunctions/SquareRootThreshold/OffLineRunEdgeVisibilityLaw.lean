@@ -665,4 +665,392 @@ theorem exists_edgeTest {a : ℝ} (ha : 0 < a) :
   · rw [hpm, hP₁, hP₂]; ring
   · rw [hmm, hP₁, hP₂]; ring
 
+
+/-! ### Edge visibility -/
+
+/-- The edge integrand `k(u) · 2(cosh δu − 1) · w(2πu/L)`. -/
+def edgeIntegrand (L δ : ℝ) (K : ℝ → ℂ) (u : ℝ) : ℂ :=
+  K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) * edgeKernel (2 * π / L * u)
+
+/-- Riemann–Lebesgue in the normalisation of `paperFT`: `h_G(cN) → 0`. -/
+theorem tendsto_paperFT_mul_nat (G : ℝ → ℂ) {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun N : ℕ => paperFT G ((c * N : ℝ) : ℂ)) atTop (𝓝 0) := by
+  have hneg : -(c / (2 * π)) < 0 := neg_neg_of_pos (by positivity)
+  have h1 : Tendsto (fun N : ℕ => (N : ℝ) * -(c / (2 * π))) atTop atBot :=
+    tendsto_natCast_atTop_atTop.atTop_mul_const_of_neg hneg
+  have h2 := (Real.zero_at_infty_fourier G).comp (h1.mono_right atBot_le_cocompact)
+  refine Tendsto.congr (fun N => ?_) h2
+  simp only [Function.comp_apply]
+  rw [EF.paperFT_ofReal_eq_fourier]
+  field_simp
+
+/-- `cosh(δu) − 1 ≤ δ|u| sinh(2δa)` for `|u| ≤ 2a`. -/
+theorem cosh_mul_sub_one_le {δ a u : ℝ} (hδ : 0 < δ) (hu : |u| ≤ 2 * a) :
+    Real.cosh (δ * u) - 1 ≤ δ * |u| * Real.sinh (2 * δ * a) := by
+  have h1 := cosh_sub_one_le_mul_sinh (by positivity : 0 ≤ δ * |u|)
+  have hc : Real.cosh (δ * u) = Real.cosh (δ * |u|) := by
+    rw [← Real.cosh_abs (δ * u), abs_mul, abs_of_pos hδ]
+  rw [hc]
+  calc Real.cosh (δ * |u|) - 1 ≤ δ * |u| * Real.sinh (δ * |u|) := h1
+    _ ≤ δ * |u| * Real.sinh (2 * δ * a) := by
+      gcongr
+      exact Real.sinh_le_sinh.mpr (by nlinarith)
+
+/-- The run factor `k(u) · 2(cosh δu − 1)` vanishes at `u = 0` and for `|u| > 2a`. -/
+theorem run_factor_support {δ a : ℝ} {K : ℝ → ℂ} (hK0 : ∀ u, ¬ |u| ≤ 2 * a → K u = 0) {u : ℝ}
+    (h : K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) ≠ 0) : u ≠ 0 ∧ |u| ≤ 2 * a :=
+  ⟨fun h0 => h (by simp [h0]), by_contra fun hu => h (by simp [hK0 u hu])⟩
+
+theorem norm_run_factor_le {δ a B : ℝ} (hδ : 0 < δ) (ha : 0 ≤ a) {K : ℝ → ℂ}
+    (hK0 : ∀ u, ¬ |u| ≤ 2 * a → K u = 0) (hKn : ∀ u, ‖K u‖ ≤ 2 * B) (u : ℝ) :
+    ‖K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ ≤
+      2 * B * (2 * δ * |u| * Real.sinh (2 * δ * a)) := by
+  have hB : 0 ≤ 2 * B := (norm_nonneg _).trans (hKn 0)
+  have hs : 0 ≤ Real.sinh (2 * δ * a) := Real.sinh_nonneg_iff.mpr (by positivity)
+  by_cases h : K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) = 0
+  · rw [h, norm_zero]; positivity
+  obtain ⟨-, hu⟩ := run_factor_support hK0 h
+  have hc0 : 0 ≤ Real.cosh (δ * u) - 1 := by linarith [Real.one_le_cosh (δ * u)]
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  have := cosh_mul_sub_one_le (a := a) hδ hu
+  calc ‖K u‖ * (2 * (Real.cosh (δ * u) - 1)) ≤ 2 * B * (2 * (Real.cosh (δ * u) - 1)) := by
+        gcongr; exact hKn u
+    _ ≤ 2 * B * (2 * δ * |u| * Real.sinh (2 * δ * a)) :=
+        mul_le_mul_of_nonneg_left (by linarith) hB
+
+theorem norm_run_factor_le_cosh {δ a B : ℝ} (hδ : 0 < δ) (ha : 0 ≤ a) {K : ℝ → ℂ}
+    (hK0 : ∀ u, ¬ |u| ≤ 2 * a → K u = 0) (hKn : ∀ u, ‖K u‖ ≤ 2 * B) (u : ℝ) :
+    ‖K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ ≤
+      2 * B * (2 * (Real.cosh (2 * δ * a) - 1)) := by
+  have hB : 0 ≤ 2 * B := (norm_nonneg _).trans (hKn 0)
+  have h2 : 0 ≤ Real.cosh (2 * δ * a) - 1 := by linarith [Real.one_le_cosh (2 * δ * a)]
+  by_cases h : K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) = 0
+  · rw [h, norm_zero]; positivity
+  obtain ⟨-, hu⟩ := run_factor_support hK0 h
+  have hc0 : 0 ≤ Real.cosh (δ * u) - 1 := by linarith [Real.one_le_cosh (δ * u)]
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  have hcc : Real.cosh (δ * u) ≤ Real.cosh (2 * δ * a) := by
+    rw [Real.cosh_le_cosh, abs_mul, abs_of_pos hδ, abs_of_nonneg (by positivity : 0 ≤ 2 * δ * a)]
+    nlinarith
+  calc ‖K u‖ * (2 * (Real.cosh (δ * u) - 1)) ≤ 2 * B * (2 * (Real.cosh (δ * u) - 1)) := by
+        gcongr; exact hKn u
+    _ ≤ 2 * B * (2 * (Real.cosh (2 * δ * a) - 1)) :=
+        mul_le_mul_of_nonneg_left (by linarith) hB
+
+/-- `|e^{2πiu/L} − 1| ≥ 4|u|/L` for `|u| ≤ L/2`. -/
+theorem four_mul_abs_div_le_norm_cexp_sub_one {L u : ℝ} (hL : 0 < L) (hu : |u| ≤ L / 2) :
+    4 * |u| / L ≤ ‖cexp (I * ((2 * π / L * u : ℝ) : ℂ)) - 1‖ := by
+  have hθ : |2 * π / L * u| ≤ π := by
+    rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * π / L)]
+    calc 2 * π / L * |u| ≤ 2 * π / L * (L / 2) := by gcongr
+      _ = π := by field_simp
+  have h := two_div_pi_mul_abs_le_norm_cexp_sub_one hθ
+  have : 2 / π * |2 * π / L * u| = 4 * |u| / L := by
+    rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * π / L)]; field_simp; ring
+  rwa [this] at h
+
+/-- `|w(2πu/L)| ≤ L/(4|u|)` for `0 < |u| ≤ L/2`. -/
+theorem norm_edgeKernel_le {L u : ℝ} (hL : 0 < L) (hu0 : u ≠ 0) (hu : |u| ≤ L / 2) :
+    ‖edgeKernel (2 * π / L * u)‖ ≤ L / (4 * |u|) := by
+  have hu' : 0 < |u| := abs_pos.mpr hu0
+  have h := four_mul_abs_div_le_norm_cexp_sub_one hL hu
+  rw [edgeKernel, norm_div, mul_comm I, Complex.norm_exp_ofReal_mul_I, norm_sub_rev,
+    ← mul_comm I]
+  rw [div_le_div_iff₀ (lt_of_lt_of_le (by positivity) h) (by positivity)]
+  calc 1 * (4 * |u|) = L * (4 * |u| / L) := by field_simp
+    _ ≤ L * ‖cexp (I * ((2 * π / L * u : ℝ) : ℂ)) - 1‖ := by gcongr
+
+/-- The edge integrand is integrable. -/
+theorem integrable_edgeIntegrand {L δ a B : ℝ} (hL : 0 < L) (hδ : 0 < δ) (ha : 0 ≤ a)
+    (haL : 4 * a ≤ L) {K : ℝ → ℂ} (hKc : Continuous K) (hK0 : ∀ u, ¬ |u| ≤ 2 * a → K u = 0)
+    (hKn : ∀ u, ‖K u‖ ≤ 2 * B) : Integrable (edgeIntegrand L δ K) := by
+  have hB : 0 ≤ B := by have := (norm_nonneg _).trans (hKn 0); linarith
+  have hs : 0 ≤ Real.sinh (2 * δ * a) := Real.sinh_nonneg_iff.mpr (by positivity)
+  have hn : ∀ u, ‖edgeIntegrand L δ K u‖ ≤ B * L * δ * Real.sinh (2 * δ * a) := by
+    intro u
+    by_cases h : K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) = 0
+    · rw [edgeIntegrand, h, zero_mul, norm_zero]; positivity
+    obtain ⟨hu0, hu⟩ := run_factor_support hK0 h
+    have hu' : 0 < |u| := abs_pos.mpr hu0
+    rw [edgeIntegrand, norm_mul]
+    calc ‖K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ * ‖edgeKernel (2 * π / L * u)‖
+        ≤ 2 * B * (2 * δ * |u| * Real.sinh (2 * δ * a)) * (L / (4 * |u|)) :=
+          mul_le_mul (norm_run_factor_le hδ ha hK0 hKn u)
+            (norm_edgeKernel_le hL hu0 (by linarith)) (norm_nonneg _) (by positivity)
+      _ = B * L * δ * Real.sinh (2 * δ * a) := by field_simp; ring
+  have hm : AEStronglyMeasurable (edgeIntegrand L δ K) := by
+    have hw : Measurable fun u : ℝ => edgeKernel (2 * π / L * u) := by
+      unfold edgeKernel
+      exact (Continuous.measurable (by fun_prop)).div (Continuous.measurable (by fun_prop))
+    have hE : Continuous fun u => K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) := by fun_prop
+    exact (hE.measurable.mul hw).aestronglyMeasurable
+  have hon : IntegrableOn (edgeIntegrand L δ K) (Icc (-(2 * a)) (2 * a)) :=
+    Measure.integrableOn_of_bounded (by simp) hm (Eventually.of_forall hn)
+  refine (integrableOn_iff_integrable_of_support_subset ?_).mp hon
+  intro u hu
+  have h : K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) ≠ 0 := fun h0 =>
+    hu (by rw [edgeIntegrand, h0, zero_mul])
+  exact abs_le.mp (run_factor_support hK0 h).2
+
+/-- **The two edges.** The run integral splits into the edge integral minus its Fourier
+transform at `2πN/L`, the far edge. -/
+theorem integral_run_eq_edge {L δ a B : ℝ} (hL : 0 < L) (hδ : 0 < δ) (ha : 0 ≤ a)
+    (haL : 4 * a ≤ L)
+    {K : ℝ → ℂ} (hKc : Continuous K) (hK0 : ∀ u, ¬ |u| ≤ 2 * a → K u = 0)
+    (hKn : ∀ u, ‖K u‖ ≤ 2 * B) (N : ℕ) :
+    ∫ u, K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) *
+        ∑ k ∈ runSet 1 N, cexp (I * (((k : ℝ) * (2 * π / L) : ℝ) : ℂ) * u) =
+      (∫ u, edgeIntegrand L δ K u) - paperFT (edgeIntegrand L δ K) ((2 * π / L * N : ℝ) : ℂ) := by
+  have hGi := integrable_edgeIntegrand hL hδ ha haL hKc hK0 hKn
+  have hsplit : ∀ u, K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) *
+      ∑ k ∈ runSet 1 N, cexp (I * (((k : ℝ) * (2 * π / L) : ℝ) : ℂ) * u) =
+      edgeIntegrand L δ K u - edgeIntegrand L δ K u * cexp (I * ((2 * π / L * N : ℝ) : ℂ) * u) := by
+    intro u
+    by_cases h : K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) = 0
+    · rw [edgeIntegrand, h]; ring
+    obtain ⟨hu0, hu⟩ := run_factor_support hK0 h
+    have hz1 : cexp (I * ((2 * π / L * u : ℝ) : ℂ)) ≠ 1 := by
+      intro h1
+      have := four_mul_abs_div_le_norm_cexp_sub_one hL (u := u) (by linarith)
+      rw [h1, sub_self, norm_zero] at this
+      have : 0 < 4 * |u| / L := by have := abs_pos.mpr hu0; positivity
+      linarith
+    rw [sum_runSet_one_eq hz1 N, edgeIntegrand]
+    have hpow : cexp (I * ((2 * π / L * u : ℝ) : ℂ)) ^ N =
+        cexp (I * ((2 * π / L * N : ℝ) : ℂ) * u) := by
+      rw [← Complex.exp_nat_mul]
+      congr 1
+      push_cast
+      ring
+    rw [hpow]
+    ring
+  rw [paperFT_def, ← integral_sub hGi]
+  · exact integral_congr_ae (Eventually.of_forall hsplit)
+  · refine hGi.mul_of_top_left ?_
+    exact memLp_top_of_bound (by fun_prop) 1 (Eventually.of_forall fun u => by
+      rw [mul_assoc, ← Complex.ofReal_mul, mul_comm I, Complex.norm_exp_ofReal_mul_I])
+
+/-- Pointwise bound on the real part of the edge integrand: the near edge contributes at most
+`-(cosh δa − 1) L/(π²a) · (c₊ + c₋)`, the rest at most half the run factor. -/
+theorem re_edgeIntegrand_le {L δ a : ℝ} (hL : 0 < L) (hδ : 0 < δ) (ha : 0 < a)
+    (haL : 8 * a ≤ L) {K : ℝ → ℂ} {cp cm : ℝ → ℝ} (hIm : ∀ u, (K u).im = cp u - cm u)
+    (hcp0 : ∀ u, 0 ≤ cp u) (hcm0 : ∀ u, 0 ≤ cm u) (hcps : ∀ u, cp u ≠ 0 → a < u ∧ u < 2 * a)
+    (hcms : ∀ u, cm u ≠ 0 → -(2 * a) < u ∧ u < -a) (u : ℝ) :
+    (edgeIntegrand L δ K u).re ≤ ‖K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ / 2 -
+      (Real.cosh (δ * a) - 1) * L / (π ^ 2 * a) * (cp u + cm u) := by
+  have hπ := Real.pi_pos
+  obtain ⟨E, hE⟩ : ∃ E : ℂ, E = K u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) := ⟨_, rfl⟩
+  obtain ⟨w, hw⟩ : ∃ w : ℂ, w = edgeKernel (2 * π / L * u) := ⟨_, rfl⟩
+  have hG : edgeIntegrand L δ K u = E * w := by rw [hE, hw]; rfl
+  rw [hG, ← hE, Complex.mul_re]
+  have hEim : E.im = (cp u - cm u) * (2 * (Real.cosh (δ * u) - 1)) := by
+    rw [hE, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add, hIm u]
+  have hreb : E.re * w.re ≤ ‖E‖ / 2 := by
+    have h1 : |w.re| ≤ 1 / 2 := hw ▸ abs_edgeKernel_re_le (2 * π / L * u)
+    have h2 := Complex.abs_re_le_norm E
+    calc E.re * w.re ≤ |E.re * w.re| := le_abs_self _
+      _ = |E.re| * |w.re| := abs_mul _ _
+      _ ≤ ‖E‖ * (1 / 2) := by gcongr
+      _ = ‖E‖ / 2 := by ring
+  have hc1 : 0 ≤ Real.cosh (δ * a) - 1 := by linarith [Real.one_le_cosh (δ * a)]
+  have hLa : 0 < L / (2 * π ^ 2 * a) := by positivity
+  have hc₀ : (Real.cosh (δ * a) - 1) * L / (π ^ 2 * a) =
+      2 * (Real.cosh (δ * a) - 1) * (L / (2 * π ^ 2 * a)) := by field_simp
+  rw [hc₀, hEim]
+  by_cases hp : cp u = 0
+  · by_cases hn : cm u = 0
+    · rw [hp, hn]
+      simp only [sub_self, zero_mul, add_zero, mul_zero, sub_zero]
+      exact hreb
+    obtain ⟨hu1, hu2⟩ := hcms u hn
+    have hu0 : 0 < -u := by linarith
+    have hθ0 : 2 * π / L * u < 0 := mul_neg_of_pos_of_neg (by positivity) (by linarith)
+    have hθ1 : -(π / 2) ≤ 2 * π / L * u := by
+      have : 2 * π / L * (-u) ≤ π / 2 := by
+        rw [div_mul_eq_mul_div, div_le_div_iff₀ hL (by norm_num)]; nlinarith
+      linarith
+    have hwi : L / (2 * π ^ 2 * a) ≤ -w.im := by
+      have h := edgeKernel_im_le_two_div_pi_mul hθ0 hθ1
+      have he : 2 / (π * (2 * π / L * u)) = -(L / (π ^ 2 * (-u))) := by field_simp
+      rw [he, ← hw] at h
+      have : L / (2 * π ^ 2 * a) ≤ L / (π ^ 2 * (-u)) :=
+        div_le_div_of_nonneg_left hL.le (by positivity) (by nlinarith)
+      linarith
+    have hcc : Real.cosh (δ * a) ≤ Real.cosh (δ * u) := by
+      rw [Real.cosh_le_cosh, abs_of_pos (mul_pos hδ ha), abs_mul, abs_of_pos hδ,
+        abs_of_neg (by linarith)]
+      nlinarith
+    have hkey : 2 * (Real.cosh (δ * a) - 1) * (L / (2 * π ^ 2 * a)) * cm u ≤
+        cm u * (2 * (Real.cosh (δ * u) - 1)) * -w.im := by
+      calc 2 * (Real.cosh (δ * a) - 1) * (L / (2 * π ^ 2 * a)) * cm u
+          = cm u * (2 * (Real.cosh (δ * a) - 1)) * (L / (2 * π ^ 2 * a)) := by ring
+        _ ≤ cm u * (2 * (Real.cosh (δ * u) - 1)) * -w.im :=
+            mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) (hcm0 u)) hwi hLa.le
+              (mul_nonneg (hcm0 u) (by linarith))
+    rw [hp]
+    nlinarith
+  obtain ⟨hu1, hu2⟩ := hcps u hp
+  have hm : cm u = 0 := by
+    by_contra hm; have := (hcms u hm).2; linarith
+  have hu0 : 0 < u := by linarith
+  have hθ0 : 0 < 2 * π / L * u := mul_pos (by positivity) hu0
+  have hθ1 : 2 * π / L * u ≤ π / 2 := by
+    rw [div_mul_eq_mul_div, div_le_div_iff₀ hL (by norm_num)]; nlinarith
+  have hwi : L / (2 * π ^ 2 * a) ≤ w.im := by
+    have h := two_div_pi_mul_le_edgeKernel_im hθ0 hθ1
+    have he : 2 / (π * (2 * π / L * u)) = L / (π ^ 2 * u) := by field_simp
+    rw [he, ← hw] at h
+    exact le_trans (div_le_div_of_nonneg_left hL.le (by positivity) (by nlinarith)) h
+  have hcc : Real.cosh (δ * a) ≤ Real.cosh (δ * u) := by
+    rw [Real.cosh_le_cosh, abs_of_pos (mul_pos hδ ha), abs_of_pos (mul_pos hδ hu0)]
+    nlinarith
+  have hkey : 2 * (Real.cosh (δ * a) - 1) * (L / (2 * π ^ 2 * a)) * cp u ≤
+      cp u * (2 * (Real.cosh (δ * u) - 1)) * w.im := by
+    calc 2 * (Real.cosh (δ * a) - 1) * (L / (2 * π ^ 2 * a)) * cp u
+        = cp u * (2 * (Real.cosh (δ * a) - 1)) * (L / (2 * π ^ 2 * a)) := by ring
+      _ ≤ cp u * (2 * (Real.cosh (δ * u) - 1)) * w.im :=
+          mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) (hcp0 u)) hwi hLa.le
+            (mul_nonneg (hcp0 u) (by linarith))
+  rw [hm]
+  nlinarith
+
+/-- **The edge estimate.** For a test with the properties of `exists_edgeTest`, `8a ≤ L` and the
+run `1, …, N`:
+`Re W ≤ 4LB + 8aB(cosh 2δa − 1) − 2(cosh δa − 1)LP²/(π²a) + |h_G(2πN/L)|`.
+The negative term is the near edge, read through `Im w(θ) ≥ 2/(πθ)`; the last term is the far
+edge. -/
+theorem re_W_runConfig_le_edge {L δ a : ℝ} (hL : 0 < L) (hδ : 0 < δ) (hδ' : δ ≤ 1 / 2)
+    (ha : 0 < a) (haL : 8 * a ≤ L) {g : ℝ → ℂ} {P B : ℝ} {cp cm : ℝ → ℝ}
+    (hg : ContDiff ℝ 2 g) (hgs : tsupport g ⊆ Icc (-a) a) (hgB : ∫ t, ‖g t‖ ^ 2 = 2 * B)
+    (hIm : ∀ u, (EF.weilTest g g u).im = cp u - cm u) (hcp0 : ∀ u, 0 ≤ cp u)
+    (hcm0 : ∀ u, 0 ≤ cm u) (hcps : ∀ u, cp u ≠ 0 → a < u ∧ u < 2 * a)
+    (hcms : ∀ u, cm u ≠ 0 → -(2 * a) < u ∧ u < -a) (hcpi : Integrable cp)
+    (hcmi : Integrable cm) (hcpm : ∫ u, cp u = P ^ 2) (hcmm : ∫ u, cm u = P ^ 2) (N : ℕ) :
+    ((runConfig hL hδ hδ' (runSet 1 N)).W g g).re ≤
+      4 * L * B + 8 * a * B * (Real.cosh (2 * δ * a) - 1) -
+        2 * (Real.cosh (δ * a) - 1) * L * P ^ 2 / (π ^ 2 * a) +
+        ‖paperFT (edgeIntegrand L δ (EF.weilTest g g)) ((2 * π / L * N : ℝ) : ℂ)‖ := by
+  have hgs' : tsupport g ⊆ Icc (-(L / 2)) (L / 2) :=
+    hgs.trans (Icc_subset_Icc (by linarith) (by linarith))
+  have hgc := hasCompactSupport_of_tsupport_subset_Icc hgs
+  have hKc : Continuous (EF.weilTest g g) :=
+    (EF.weilTest_contDiff hg hg.continuous hgc).continuous
+  have hKs : tsupport (EF.weilTest g g) ⊆ Icc (-(2 * a)) (2 * a) :=
+    EF.tsupport_weilTest_subset (L := 2 * a) (by rwa [show 2 * a / 2 = a by ring])
+      (by rwa [show 2 * a / 2 = a by ring])
+  have hK0 : ∀ u, ¬ |u| ≤ 2 * a → EF.weilTest g g u = 0 := fun u hu =>
+    image_eq_zero_of_notMem_tsupport (fun h => hu (abs_le.mpr (hKs h)))
+  have hKn : ∀ u, ‖EF.weilTest g g u‖ ≤ 2 * B := fun u =>
+    hgB ▸ norm_weilTest_self_le hg.continuous hgc u
+  have hGi := integrable_edgeIntegrand hL hδ ha.le (by linarith) hKc hK0 hKn
+  rw [W_runConfig_eq_integral hL hδ hδ' _ hg hgs',
+    integral_run_eq_edge hL hδ ha.le (by linarith) hKc hK0 hKn N, integral_mul_conj_self_eq, hgB]
+  have hreG : (∫ u, edgeIntegrand L δ (EF.weilTest g g) u).re =
+      ∫ u, (edgeIntegrand L δ (EF.weilTest g g) u).re := (integral_re hGi).symm
+  rw [Complex.add_re, Complex.sub_re, hreG]
+  have hEc : Continuous fun u => EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) := by
+    fun_prop
+  have hEs : HasCompactSupport fun u => EF.weilTest g g u *
+      ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ) := by
+    refine HasCompactSupport.intro (isCompact_Icc (a := -(2 * a)) (b := 2 * a)) fun u hu => ?_
+    by_contra h
+    exact hu (abs_le.mp (run_factor_support hK0 h).2)
+  have hEi : Integrable fun u => ‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ :=
+    (hEc.integrable_of_hasCompactSupport (μ := volume) hEs).norm
+  set c₀ : ℝ := (Real.cosh (δ * a) - 1) * L / (π ^ 2 * a) with hc₀
+  have hint2 : Integrable fun u =>
+      ‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ / 2 - c₀ * (cp u + cm u) :=
+    (hEi.div_const 2).sub ((hcpi.add hcmi).const_mul c₀)
+  have hmono : ∫ u, (edgeIntegrand L δ (EF.weilTest g g) u).re ≤ ∫ u,
+      (‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ / 2 - c₀ * (cp u + cm u)) :=
+    integral_mono hGi.re hint2
+      (fun u => re_edgeIntegrand_le hL hδ ha haL hIm hcp0 hcm0 hcps hcms u)
+  have hsplit : ∫ u, (‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ / 2 -
+      c₀ * (cp u + cm u)) = (∫ u, ‖EF.weilTest g g u *
+        ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖) / 2 - c₀ * (P ^ 2 + P ^ 2) := by
+    have hA : Integrable fun u =>
+        ‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ / 2 := hEi.div_const 2
+    have hB : Integrable fun u => c₀ * (cp u + cm u) := (hcpi.add hcmi).const_mul c₀
+    rw [integral_sub hA hB, integral_div, integral_const_mul, integral_add hcpi hcmi, hcpm, hcmm]
+  rw [hsplit] at hmono
+  have hEint : ∫ u, ‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ ≤
+      2 * B * (2 * (Real.cosh (2 * δ * a) - 1)) * (4 * a) := by
+    have hz' : ∀ u, u ∉ Icc (-(2 * a)) (2 * a) →
+        ‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖ = 0 := by
+      intro u hu
+      by_contra h
+      exact hu (abs_le.mp (run_factor_support hK0 (fun h0 => h (by rw [h0, norm_zero]))).2)
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hz']
+    have := norm_setIntegral_le_of_norm_le_const (μ := volume) (s := Icc (-(2 * a)) (2 * a))
+      (f := fun u => ‖EF.weilTest g g u * ((2 * (Real.cosh (δ * u) - 1) : ℝ) : ℂ)‖)
+      (C := 2 * B * (2 * (Real.cosh (2 * δ * a) - 1))) (by simp)
+      (fun u _ => by rw [norm_norm]; exact norm_run_factor_le_cosh hδ ha.le hK0 hKn u)
+    rw [Measure.real, Real.volume_Icc, ENNReal.toReal_ofReal (by linarith),
+      show 2 * a - -(2 * a) = 4 * a by ring] at this
+    exact (le_abs_self _).trans (by rwa [Real.norm_eq_abs] at this)
+  have hfar := Complex.abs_re_le_norm
+    (paperFT (edgeIntegrand L δ (EF.weilTest g g)) ((2 * π / L * N : ℝ) : ℂ))
+  have hre2 : ((2 : ℂ) * L * ((2 * B : ℝ) : ℂ)).re = 4 * L * B := by
+    rw [show ((2 : ℂ) * L * ((2 * B : ℝ) : ℂ)) = ((4 * L * B : ℝ) : ℂ) by push_cast; ring,
+      Complex.ofReal_re]
+  have hc2 : c₀ * (P ^ 2 + P ^ 2) = 2 * (Real.cosh (δ * a) - 1) * L * P ^ 2 / (π ^ 2 * a) := by
+    rw [hc₀]; field_simp; ring
+  rw [hre2]
+  have := neg_abs_le (paperFT (edgeIntegrand L δ (EF.weilTest g g)) ((2 * π / L * N : ℝ) : ℂ)).re
+  linarith
+
+/-- **Edge visibility law.** If `cosh(δa) > 1 + 8π²`, one smooth test supported in `[-a, a]`
+makes the Weil form negative for every run `1, …, N` in every background of density
+`L ≥ L₀`, once `N ≥ N₀(L)`. The threshold depends only on `δa`: off-line runs of any depth `δ`
+are visible at aperture `O(1/δ)`, independently of the height scale `L`. -/
+theorem exists_re_W_runConfig_neg {δ a : ℝ} (hδ : 0 < δ) (hδ' : δ ≤ 1 / 2) (ha : 0 < a)
+    (hcosh : 1 + 8 * π ^ 2 < Real.cosh (δ * a)) :
+    ∃ f : ℝ → ℂ, ContDiff ℝ 2 f ∧ tsupport f ⊆ Icc (-a) a ∧ ∃ L₀ : ℝ, 0 < L₀ ∧
+      ∀ (L : ℝ) (hL : 0 < L), L₀ ≤ L → ∃ N₀ : ℕ, ∀ N : ℕ, N₀ ≤ N →
+        ((runConfig hL hδ hδ' (runSet 1 N)).W f f).re < 0 := by
+  obtain ⟨g, P, B, cp, cm, hg, hgs, hgB, hB0, hBP, hPa, hIm, hcp0, hcm0, hcps, hcms, hcpi,
+    hcmi, hcpm, hcmm⟩ := exists_edgeTest ha
+  have hπ2 : 0 < π ^ 2 := by positivity
+  set κ : ℝ := (Real.cosh (δ * a) - 1) / (2 * π ^ 2) - 4 with hκ
+  have hκ0 : 0 < κ := by
+    rw [hκ, sub_pos, lt_div_iff₀ (by positivity)]
+    nlinarith
+  set C₁ : ℝ := 8 * a * (Real.cosh (2 * δ * a) - 1) with hC₁
+  have hC₁0 : 0 ≤ C₁ := by
+    have : 0 ≤ Real.cosh (2 * δ * a) - 1 := by linarith [Real.one_le_cosh (2 * δ * a)]
+    positivity
+  refine ⟨g, hg, hgs, max (8 * a) (2 * C₁ / κ), lt_max_of_lt_left (by positivity),
+    fun L hL hL₀ => ?_⟩
+  have h8 : 8 * a ≤ L := le_trans (le_max_left _ _) hL₀
+  have hCL : 2 * C₁ ≤ κ * L := by
+    have := le_trans (le_max_right _ _) hL₀
+    rw [div_le_iff₀ hκ0] at this
+    linarith
+  have hP : 0 < P := by linarith
+  have hε : 0 < κ * L * P / 2 := by positivity
+  obtain ⟨N₀, hN₀⟩ := (Metric.tendsto_atTop.mp (tendsto_paperFT_mul_nat
+    (edgeIntegrand L δ (EF.weilTest g g)) (c := 2 * π / L) (by positivity))) _ hε
+  refine ⟨N₀, fun N hN => ?_⟩
+  have hfar := hN₀ N hN
+  rw [dist_zero_right] at hfar
+  have hest := re_W_runConfig_le_edge hL hδ hδ' ha h8 hg hgs hgB hIm hcp0 hcm0 hcps hcms hcpi
+    hcmi hcpm hcmm N
+  have h1 : 4 * L * B ≤ 4 * L * P := by nlinarith
+  have h2 : 8 * a * B * (Real.cosh (2 * δ * a) - 1) ≤ C₁ * P := by
+    rw [hC₁]
+    have : 0 ≤ Real.cosh (2 * δ * a) - 1 := by linarith [Real.one_le_cosh (2 * δ * a)]
+    have : 0 ≤ 8 * a * (Real.cosh (2 * δ * a) - 1) := by positivity
+    nlinarith
+  have h3 : (κ + 4) * L * P ≤ 2 * (Real.cosh (δ * a) - 1) * L * P ^ 2 / (π ^ 2 * a) := by
+    rw [hκ, sub_add_cancel, le_div_iff₀ (by positivity)]
+    have hc : 0 ≤ Real.cosh (δ * a) - 1 := by linarith [Real.one_le_cosh (δ * a)]
+    have : (Real.cosh (δ * a) - 1) / (2 * π ^ 2) * L * P * (π ^ 2 * a) =
+        (Real.cosh (δ * a) - 1) * L * P * a / 2 := by field_simp
+    rw [this]
+    have hPP : P * a ≤ 4 * P ^ 2 := by nlinarith
+    have : 0 ≤ (Real.cosh (δ * a) - 1) * L := by positivity
+    nlinarith
+  have h4 : C₁ * P ≤ κ * L * P / 2 := by nlinarith
+  nlinarith
+
 end GaloisForLFunctions.SquareRootThreshold

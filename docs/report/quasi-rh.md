@@ -21,7 +21,7 @@ The strongest findings are:
 
 Two substantial unconditional results must be accounted for: the existing Suzuki normalization implies `P_2(N) = o(N)`, and the full Wold kernel has vanishing normalized covariance throughout `0 ≤ t < 1/2`. Neither supplies the stronger estimate required for a narrower strip. Sections 2.4 and 4.2 identify the exact losses.
 
-**Developed routes:** Section 8 uses the accepted baseline to bound the large-quotient part of the actual Möbius–divisor source. The remaining one-sided estimate is confined to `q ≤ N^(1/9)` for `5/6`, or `q ≤ N^(1/3)` for `3/4`. After reaching `5/6`, the latter cutoff improves to `N^(1/4)`. A separate binary-correlation route already has character-twisted receivers. A mean-square alternative avoids demanding pointwise Suzuki residual bounds. The reductions below have paper arguments; their decisive arithmetic estimates remain open.
+**Developed routes:** Section 8 uses the accepted baseline to bound the large-quotient part of the actual Möbius–divisor source. The remaining one-sided estimate is confined to `q ≤ N^(1/9)` for `5/6`, or `q ≤ N^(1/3)` for `3/4`. After reaching `5/6`, the latter cutoff improves to `N^(1/4)`. A separate binary-correlation route already has character-twisted receivers. A mean-square alternative avoids demanding pointwise Suzuki residual bounds. The quotient-tail reductions now have unconditional Lean proofs at the actual zero abscissa; their decisive head estimates remain open.
 
 This is a bounded source audit, not a proof that no differently formulated theorem exists anywhere in the million-declaration search index. The conclusion is supported by the inspected theorem statements, their premises, searches for premise providers, and the current [RH frontier ledger](../reports/rh-current-frontier-map.md) and [status document](../reports/STATUS.md).
 
@@ -384,9 +384,13 @@ A related concrete consequence is [Weil positivity on large-prime Euler vectors]
 
 Similarly, the power-gap bootstrap theorems perform genuine transport and supremum arguments, but still take a better sampled arithmetic estimate as input. Their internal contraction does not imply that every known zero width contracts automatically.
 
+The [JAS budget law](../../formal/GaloisForLFunctions/RHTower/JointAncestryBudgetZeroFreeLaw.lean#L258) makes another route quantitative. At dressing level 1, positivity on every dyadic prime set \(P\subset(y,2y]\) with \(\sum_{p\in P}p^{-1/2}\leq y^\lambda\) gives the boundary \(1-\lambda\). Thus \(\lambda=1/6\) gives 5/6 and \(\lambda=1/4\) gives 3/4; a family of exponents approaching those values from below suffices as well. The [existing producer](../../formal/GaloisForLFunctions/RHTower/JointAncestryBudgetZeroFreeLaw.lean#L51) applied to the baseline supplies only \(\lambda<1/8\).
+
+The newer [endpoint budget producer](../../formal/GaloisForLFunctions/RHTower/JointAncestryEndpointBudgetProducer.lean#L326) supplies a budget proportional to \((\log y)^{3/2}/(\log\log y)^4\). This is meaningful progress on its own scale, but is smaller than every fixed positive power of y. It neither reaches the required power budgets nor improves what the accepted baseline supplies here. The cutoff and prime-budget quantifiers cannot be dropped.
+
 The most useful next question is therefore specific: **can the accepted fixed gap help prove an independent estimate for a residual, signed covariance, or one-sided source at a strictly better exponent?** The audited corpus supplies places to insert such an estimate, but not a completed argument producing it.
 
-## 6. Dirichlet L-functions require a separate scope of work
+## 6. Dirichlet L-functions: existing source and remaining estimate
 
 The Suzuki and Wold criteria above concern the particular ζ/Xi arithmetic source. Their theorem parameters do not range over Dirichlet characters. A ζ improvement alone does not establish the same improvement for every Dirichlet L-function. However, the corpus already contains another route with the required character parameters; it is unnecessary to build its analytic infrastructure from scratch.
 
@@ -404,7 +408,7 @@ Specifically, [TwistedMobiusMellin.lean:22](../../formal/GaloisForLFunctions/RHT
 A_\chi(x)=\sum_{n\geq1}\mu(n)\chi(n)e^{-nx}.
 \]
 
-The [Mellin identity at line 90](../../formal/GaloisForLFunctions/RHTower/TwistedMobiusMellin.lean#L90) identifies its transform with `Γ(s)/L(s,χ)` on `Re(s)>1`. The [decay receiver](../../formal/GaloisForLFunctions/RHTower/TwistedMobiusZeroObstruction.lean#L24) proves that `A_χ(x)=O(x^(−b))` as `x↓0` excludes every L-zero with real part greater than `b≥0`, for each nonprincipal character. This receiver does not require primitivity. The corresponding ζ obstruction, including pole regularization, is [MobiusDecayZeroObstruction.lean:35](../../formal/GaloisForLFunctions/RHTower/MobiusDecayZeroObstruction.lean#L35).
+The [Mellin identity at line 90](../../formal/GaloisForLFunctions/RHTower/TwistedMobiusMellin.lean#L90) identifies its transform with `Γ(s)/L(s,χ)` on `Re(s)>1`. The [decay receiver](../../formal/GaloisForLFunctions/RHTower/TwistedMobiusZeroObstruction.lean#L24) proves that `A_χ(x)=O(x^(−b))` as `x↓0` excludes every L-zero with real part greater than `b≥0`, for each nonprincipal character. This receiver does not require primitivity. The corresponding ζ obstruction, including pole regularization, is [MobiusDecayZeroObstruction.lean:37](../../formal/GaloisForLFunctions/RHTower/MobiusDecayZeroObstruction.lean#L37).
 
 The [mixed-convolution transfer](../../formal/GaloisForLFunctions/RHTower/TwistedMobiusMellin.lean#L234) supplies this decay from a one-sided coefficient estimate. Section 8.5 develops the order-one specialization and its even-index weakening. **The missing task on this route is a correlation estimate for every requested character, not a missing Mellin identification.** A Suzuki-based family extension would still require its own twisted-source work.
 
@@ -442,7 +446,7 @@ S(N)=\sum_{k=1}^{N-1}(\sqrt{k+1}-\sqrt k)(\psi(k)-k).
 
 This is [CCMFUSuzukiSelbergOutgoingAbelWeld.lean:32](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiSelbergOutgoingAbelWeld.lean#L32). Its exact completion gives \(G_N=S(N)/N+O(1)\): the lattice defect divided by N is \(O(N^{-1/2})\), and the polar and archimedean corrections are uniformly bounded. Those bounds are retained explicitly in the [existing transfer proof](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L255).
 
-Moreover \(A_N^2\asymp N\), \(C_N\asymp N\), and \(E_N\asymp |G_N|^2\), with positive constants independent of N. The lower core bound follows from \(A_N^2\leq C_N\) and the [linear lower bound on \(A_N^2\)](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreAlignedGammaCompletion.lean#L235); the upper bounds were established in Section 2. Thus, for each fixed \(m\geq1\),
+Moreover \(A_N^2\asymp N\), \(C_N\asymp N\), and \(E_N\asymp |G_N|^2\), with positive constants independent of N. The lower core bound follows from \(A_N^2\leq C_N\) and the [linear lower bound on \(A_N^2\)](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreAlignedGammaCompletion.lean#L238); the upper bounds were established in Section 2. Thus, for each fixed \(m\geq1\),
 
 \[
 P_m(N)\asymp \frac{|G_N|^{2m}}{N^{m-1}}.
@@ -454,12 +458,12 @@ In the following table, an exponent means a bound with an arbitrarily small posi
 
 | Quantity | Accepted 7/8 baseline | Target 5/6 | Target 3/4 |
 |---|---:|---:|---:|
-| \(|S(N)|\) | 11/8 | 4/3 | 5/4 |
-| \(|G_N|\) | 3/8 | 1/3 | 1/4 |
-| \(|G_N/A_N|\) | −1/8 | −1/6 | −1/4 |
+| \(\lvert S(N)\rvert\) | 11/8 | 4/3 | 5/4 |
+| \(\lvert G_N\rvert\) | 3/8 | 1/3 | 1/4 |
+| \(\lvert G_N/A_N\rvert\) | −1/8 | −1/6 | −1/4 |
 | \(P_2(N)\) | 1/2 | 1/3 | 0 |
 | \(P_3(N)\) | 1/4 | 0 | −1/2 |
-| \(\sum_{2\leq N\leq X}|G_N|^2\) | 7/4 | 5/3 | 3/2 |
+| \(\sum_{2\leq N\leq X}\lvert G_N\rvert^2\) | 7/4 | 5/3 | 3/2 |
 
 The baseline column follows from the existing generalized von Koch theorem and summing the square-root weights. The pointwise target columns are sufficient through the existing continuation machinery. Section 8.4 proves the sufficiency of the weaker mean-square condition in the last row.
 
@@ -487,7 +491,7 @@ K_N(q)=\sum_{1\leq d,\ qd<N}\mu(d)
 
 See [CCMFUSuzukiMobiusDivisorDilationChannels.lean:638](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L638). Both the complete blocks and the clipped terminal block are present.
 
-**Paper lemma: baseline-dependent tail estimate.** Suppose, for a fixed \(1/2<\beta<1\),
+**Paper lemma: baseline-dependent tail estimate.** Suppose, for a fixed \(1/2<\beta<1\) and \(C_\beta\geq0\),
 \[
 |M(D)|=\left|\sum_{d\leq D}\mu(d)\right|\leq C_\beta D^\beta
 \quad(D\geq1).
@@ -517,6 +521,13 @@ Every d in this sum is at most \(N/q\); the first bound follows. Multiply by \(2
 This proves (8.2), including the moving boundary; an empty tail is zero.
 
 The needed Mertens premise is available from the accepted zero-free half-plane: [MobiusMertensAbscissaLittlewood.lean:58](../../formal/GaloisForLFunctions/RHTower/MobiusMertensAbscissaLittlewood.lean#L58) gives \(M(D)=O_\delta(D^{b_0+\delta})\) under zero-freeness right of \(b_0\). Absorb the harmless \(D+1\) into the constant.
+
+**Lean theorem.** With Θ denoting the actual `zetaZeroAbscissa`, [CCMFUSuzukiMobiusQuotientTail.lean](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusQuotientTail.lean#L126) proves the uniform remainder bound
+\[
+|T(N)-H(N,Q)|\leq C_\varepsilon N^{\Theta+\varepsilon+1/2}
+Q^{1/2-\Theta-\varepsilon}
+\]
+for every ε>0, all N, and Q≥1, with no assumed zero-free strip. The [clipped-kernel bound](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusClippedKernelBound.lean#L116) includes the moving endpoint. The [power-cutoff theorem](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusQuotientPowerCutoff.lean#L16) gives exponent `Θ+1/2−θ(Θ−1/2)+ε` at `Q=ceil(N^θ)`. Its one-ninth, one-third, and one-quarter specializations are unconditional statements about Θ; the numerical substitutions below use the accepted baseline.
 
 More generally, from a current boundary \(1/2<b_0<1\), choose a desired \(1/2<b_1<b_0\) and
 \[
@@ -563,7 +574,7 @@ If 5/6 is first established, use \(H_{5/6,3/4}\) instead. This reduces the remai
 
 **Arithmetic work still required.** Prove joint cancellation between the complete and terminal portions of \(K_N(q)\), and across the retained q range. Their [exact complete/terminal split](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L471) is available. Independent absolute estimates discard the needed information. Relative to the baseline, the first target needs a power saving \(N^{1/24}\) in the Abel action; the second needs \(N^{1/8}\). These are explicit research obligations, not established estimates.
 
-**Verdict:** the tail reduction is a proved paper bridge from existing inputs. (R5) and (R3) remain open. Under the accepted baseline they suffice for the desired conclusions, so they must not be advertised as an independent proof of those conclusions.
+**Verdict:** the tail reduction is a proved paper bridge from existing inputs. (R5) and (R3) are the open core. Under the accepted baseline they suffice for the desired conclusions, so they must not be advertised as an independent proof of those conclusions.
 
 ### 8.4 Mean-square route: no pointwise residual bound needed
 
@@ -647,9 +658,9 @@ If \(\mathcal C_\chi(2m)\leq B(m+1)^\nu\), substitute \(r=e^{-x}\), \(0<x\leq1/2
 \]
 Thus the literal Laplace source in Section 6 is \(O(x^{-(\nu+1)/2})\). Its Mellin identity and zero obstruction exclude zeros to the right of \((\nu+1)/2\). Apply this at \(\nu=2/3+\varepsilon\) or \(1/2+\varepsilon\), then let ε decrease to zero. Principal characters follow from the ζ result and their finite Euler factors, whose extra zeros lie on \(\Re s=0\).
 
-The even-index estimate-to-decay theorem is already [EvenIndexHermitianOrderLowerEdge.lean:140](../../formal/GaloisForLFunctions/RHTower/EvenIndexHermitianOrderLowerEdge.lean#L140). The ζ pole obstruction is already formalized, as is the nonprincipal-character obstruction. The mathematical gap is the displayed correlation bound. No new spectral identification is required.
+The even-index estimate-to-decay theorem is already [EvenIndexHermitianOrderLowerEdge.lean:141](../../formal/GaloisForLFunctions/RHTower/EvenIndexHermitianOrderLowerEdge.lean#L141). The ζ pole obstruction is already formalized, as is the nonprincipal-character obstruction. The mathematical gap is the displayed correlation bound. No new spectral identification is required.
 
-**Attempted shortcut and its failure.** The corpus's [raw order inequality](../../formal/GaloisForLFunctions/RHTower/RawMobiusHermitianExcursionLaw.lean#L106) gives \(2\Theta-1\leq\Psi_1\leq1\), where Θ is the zero abscissa and \(\Psi_1\) the positive-excursion order of the raw correlation. Substituting \(\Theta\leq7/8\) does not prove \(\Psi_1\leq3/4\): that would reverse an inequality. The trivial correlation estimate remains \(O(m)\), insufficient for either target. A result for adjacent or fixed-shift Möbius correlations also needs a proved transfer to these reflected pairs \(a+b=2m\), uniform in m.
+**Attempted shortcut and its failure.** The corpus's [raw order inequality](../../formal/GaloisForLFunctions/RHTower/RawMobiusHermitianExcursionLaw.lean#L104) gives \(2\Theta-1\leq\Psi_1\leq1\), where Θ is the zero abscissa and \(\Psi_1\) the positive-excursion order of the raw correlation. Substituting \(\Theta\leq7/8\) does not prove \(\Psi_1\leq3/4\): that would reverse an inequality. The trivial correlation estimate remains \(O(m)\), insufficient for either target. A result for adjacent or fixed-shift Möbius correlations also needs a proved transfer to these reflected pairs \(a+b=2m\), uniform in m.
 
 **Verdict:** existing family-aware continuation route, with a concrete one-sided binary-correlation problem. Both target estimates remain open.
 
@@ -658,7 +669,7 @@ The even-index estimate-to-decay theorem is already [EvenIndexHermitianOrderLowe
 The improvements remain open. Checked items refer to supporting source results or the explicitly identified paper reductions, not new zero-free bounds.
 
 - [x] Identify exact arithmetic source, its completion, and the target exponents in Section 8.1.
-- [x] Derive the baseline-dependent quotient-tail estimate (8.2) on paper.
+- [x] Prove the quotient-tail estimate and power-cutoff specializations in Lean at the actual zero abscissa.
 - [x] Reduce 5/6 to the head through \(N^{1/9}\), and 3/4 to the head through \(N^{1/3}\), with a \(N^{1/4}\) second-stage cutoff after 5/6.
 - [x] Give a paper proof that cumulative energy \(X^{5/3+\varepsilon}\) or \(X^{3/2+\varepsilon}\) suffices.
 - [x] Identify the existing even-index and character-twisted receivers.
@@ -666,11 +677,11 @@ The improvements remain open. Checked items refer to supporting source results o
 - [ ] Derive the 5/6 strip with all ε and cutoff quantifiers discharged.
 - [ ] Prove (R3), or its alternative, and derive the 3/4 strip.
 - [ ] Prove the character-twisted estimates across the claimed Dirichlet family; a ζ-only result does not complete that scope.
-- [ ] Once an arithmetic proof closes, formalize its exact statement and deduction if implementation is requested. No Lean builds are part of this report-development pass.
+- [ ] Complete unconditional Lean proofs of the remaining arithmetic estimates and numerical strip consequences.
 
 Other useful inputs remain available below. Priority reflects proximity to an existing theorem, not a prediction that the missing estimate is easy.
 
-### Priority 1: quantitative Suzuki residual
+#### Supporting Suzuki work
 
 - [x] Identify and formalize the available normalized decay: `E_N^2 / C_N = o(N)`, with exact energy/amplitude identities and no zero-width premise. See Section 2.4.
 - [ ] Improve that rate for the **literal** residual, keeping the gamma completion and source signs intact.
@@ -681,7 +692,7 @@ Other useful inputs remain available below. Priority reflects proximity to an ex
 
 **Completion criterion:** a proof of the improved arithmetic estimate that does not assume the target strip or RH, followed by the numerical strip consequence. An implication whose only new premise is that estimate is not completion.
 
-### Priority 2: one-sided prime-lag or sampled Abel estimate
+#### Alternative one-sided prime-lag estimate
 
 - [ ] Choose the more accessible sign and target exponent `a = 1/3`, or any explicit `a < 3/8`.
 - [ ] Prove the bound on all sufficiently large primes, or choose the existing Abel sampling theorem and prove its exact coverage condition.
@@ -689,7 +700,7 @@ Other useful inputs remain available below. Priority reflects proximity to an ex
 
 **Completion criterion:** a source estimate satisfying `hM` or `hA` with the desired exponent and all required quantifiers, not a statement holding only on average or on an inadequately controlled exceptional set.
 
-### Priority 3: extend Wold signed covariance control
+#### Alternative Wold signed covariance estimate
 
 - [x] Account for the existing full-kernel and moving-mask results: they prove normalized means vanish, not the raw bound needed here.
 - [ ] Seek an upper bound uniform in cutoff `N` for `Cov_t(N)` beyond `t = 1/8`.
@@ -698,12 +709,12 @@ Other useful inputs remain available below. Priority reflects proximity to an ex
 
 **Completion criterion:** the stated covariance bound for the actual Wold residual, at the required radii, with no stronger zero hypothesis hidden in its derivation.
 
-### Priority 4: weighted Möbius moment and family extension
+#### Alternative weighted Möbius moment
 
 - [ ] If new Möbius cancellation estimates arise, test whether they imply `WeightedMertensMoment a` for some `a > 1/8`; `a = 1/6` is a useful target.
-- [ ] Keep a Dirichlet extension as an explicit separate deliverable. First identify the twisted analogue of the successful ζ source and then prove its estimate across the desired character family.
+- [ ] For the character family, prioritize the already identified twisted binary source in Section 8.5. If a different ζ route succeeds first, prove its character-dependent extension separately.
 
-### Additional opportunity: improve the weighted exceptional Gram contribution
+### 8.7 Upstream Gram improvement: useful, but insufficient by itself
 
 The apparent slack in the upstream central budget does not move its low-source floor. [LowGramScale.lean:37](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/LowGramScale.lean#L37) traces `3/16` to the square root of a Gram bound. At scales `X=Z^x`, `Y=Z^y`, its leading exponent is `(5x+y)/12`. The [principal normalization](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/PrincipalSignalComparison.lean#L411) has shift `c=x/3−5/6+L/6`, where L is total prime-slot length.
 
@@ -716,38 +727,60 @@ B(L)=\frac{11}{12}-\frac L4+\frac12\max\left(0,\frac{6L-1}{5}\right)
 
 with equality only at `L=1/6`. The exact witness and sharp minimum are formalized in [QuasiRHDetectorScaleBudget.lean:44](../../formal/GaloisForLFunctions/RHTower/QuasiRHDetectorScaleBudget.lean#L44) and [line 92](../../formal/GaloisForLFunctions/RHTower/QuasiRHDetectorScaleBudget.lean#L92). **This is an obstruction to the stated exponent-budget retuning, not a lower bound on actual arithmetic energy or a proof that the upstream strategy cannot improve.** Its paper proof and scope are recorded in the [route card](../drafts/pipeline/5-failed/quasi-rh-detector-scale-retuning.md).
 
-The actual arithmetic target is now more precise. [GramClassification.lean:24](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramClassification.lean#L24) identifies exceptional frequencies by valuations divisible by six away from a fixed modulus. Their count supplies the power `P^(1/6)`, where `P=Y²/Q`. [GramIdealMass.lean:85](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramIdealMass.lean#L85) bounds the weighted sum after discarding coefficient signs. The actual coefficients are the Möbius weights in [GramSourceDivisors.lean:24](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramSourceDivisors.lean#L24), and the exceptional contribution is retained explicitly by [GramTruncation.lean:17](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramTruncation.lean#L17).
+The actual arithmetic target is now more precise. [GramClassification.lean:24](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramClassification.lean#L24) identifies exceptional frequencies by valuations divisible by six away from a fixed modulus. Their count supplies the power `P^(1/6)`, where `P=Y²/Q`. [GramIdealMass.lean:85](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramIdealMass.lean#L85) bounds the weighted sum after discarding coefficient signs. The actual coefficients are the Möbius weights in [GramSourceDivisors.lean:24](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramSourceDivisors.lean#L24), and the exceptional contribution is retained explicitly by [GramTruncation.lean:17](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramTruncation.lean#L17). These weights implement the coprimality restriction in [GramCanonicalSource.lean](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/GramCanonicalSource.lean); their signs alone do not imply a power saving or eliminate sixth-power frequencies.
 
 - [x] Locate the estimate producing `3/16` and distinguish it from the slack high-row budgets.
 - [x] Prove the scale-redistribution invariant and reflected-budget obstruction, including their positive sharp-boundary statement.
 - [ ] Estimate the actual Möbius-weighted exceptional contribution before taking absolute values, or identify and remove a controlled secondary term while preserving the principal signal.
-- [ ] Test an explicit Gram power `1/6−u`, `u>0`. At the original scales, its nominal boundary is exactly `7/8−u/16`; this is an exponent identity, not a proved improved Gram estimate.
+- [x] Classify the joint Gram improvements needed for five sixths, retaining the unit and nonexceptional terms and allowing both scales to change.
+- [ ] Prove such a joint bound for the actual source. An exceptional-only saving cannot reach five sixths within the retained profile.
 - [ ] Once a stronger arithmetic estimate exists, propagate the same explicit boundary through conductor geometry, moments, transport errors, source correction, and continuation. Distinguish zero-boundary constants from auxiliary slot ratios.
 
 **Completion criterion:** a stronger estimate for the actual source and all remaining estimates needed by the assembled nonvanishing argument at one explicit improved boundary, for the claimed character family. The parameter audit alone does not meet this criterion.
 
+There is a further restriction relevant to the requested endpoints. The [actual Gram estimate](../../tmp/hgt-openai-math/quasirh-source/OAI/NumberTheory/DirichletL/Detector/LowGramApplied.lean#L24) contains `1 + P^(1/6) + P²/Y`. Replacing only the exceptional exponent by `ν` leaves the unit term. At the original compensated scales, `Y/X = Z^(1/8)`, so the low-source exponent from this estimate is at least `17/96 + max(0,ν)/16`. After the principal normalization, its best possible boundary is therefore
+
+\[
+b(\nu)=\frac{83}{96}+\frac{\max(0,\nu)}{16}.
+\]
+
+It reproduces `7/8` at `ν=1/6` and stalls at `83/96` once `ν≤0`. Since `5/6=80/96` and `3/4=72/96`, even eliminating the exceptional contribution completely does not reach either milestone through this unchanged estimate. Formally substituting `u=2/3` or `u=2` into the isolated exponent identity would discard the dominating unit term. Those substitutions are not valid improvement arguments. This is a limitation of the retained upper bound and scales, not an arithmetic lower bound on the actual source.
+
+**Joint scale classification, proved in Lean.** Write `X=Z^x`, `Y=Z^(1−L−x)`, and propose the profile `1+P^ν+P^κ/Y`. With
+
+\[
+e=\max\{0,\nu(1-L-2x),(\kappa-1)(1-L)-(2\kappa-1)x\},
+\qquad
+B=\frac56+\frac{x-L}{6}+\frac e2+
+\frac12\max\left(0,\frac{6L-1}{5}\right),
+\]
+
+[QuasiRHDetectorGramTradeoff.lean](../../formal/GaloisForLFunctions/RHTower/QuasiRHDetectorGramTradeoff.lean) proves:
+
+| Retained estimates | Exact consequence |
+|---|---|
+| Unchanged nonexceptional power `κ=2`, arbitrary exceptional power | `B≥23/27>5/6`. Deleting the exceptional term attains this bound at `L=1/6`, `x=5/18`, `y=5/9`. |
+| Both powers variable, `ν≥0` | Some `x≥0,L∈ℝ` gives `B≤5/6` **iff** `ν≤1/15` and `κ+4ν≤4/3`. |
+| Only the unit term, current reflected allowance, `x≥0` | Minimum `29/36>3/4`, attained at the relaxed boundary `x=0,L=1/6`. |
+
+An explicit five-sixths witness has `ν=1/30`, `κ=6/5`, `x=5/48`, `y=35/48`, and `L=1/6`; both low scales have positive exponents. Thus the requested first milestone has a precise joint arithmetic-estimate target. The feasibility theorem classifies this displayed budget, with arbitrarily small exponent losses suppressed. It does not provide the stronger Gram estimate or certify the remaining conductor, high-row, and transport constraints at the new scales.
+
+The three-quarters route requires a further change to the reflected allowance, principal normalization, or unit contribution. Improving the two nonunit powers alone cannot suffice within this model. The native routes in Sections 8.2–8.5 specify separate arithmetic targets for that endpoint.
+
 **Stop or redirect a proposed argument** if it only reproduces the baseline exponent, substitutes an RH-dependent provider, discards the signed interaction being estimated, or proves a result for a different source without an identification theorem. Preserve any nontrivial estimate or classification obtained along the way; failure to reach a narrower strip does not erase that mathematical result.
 
-## 9. Search record and limits of verification
+## 9. Evidence and verification
 
-The investigation used the documented local corpus tool directly. Searches included:
+The sources are the native Lean corpus, the RH frontier ledger, and the cached upstream Lean tree. Local research search covered theorem statements, proof bodies, dependencies, and research notes; exact `rg` searches and source reads checked candidate applicability. Reproducible entry points include:
 
 ```bash
 scripts/formal_tools.py research '"zero-free" "half-plane"' --mode lexical --no-refresh --per-module 0 --limit 160 --explore 0 --json
-scripts/formal_tools.py research '"Dirichlet" "zero-free"' --mode lexical --no-refresh --per-module 0 --limit 80 --explore 0 --json
-scripts/formal_tools.py research 'prime lag one sided growth exponent zero free strip' --mode deep --budget-seconds 120 --no-refresh --json
-scripts/formal_tools.py research 'Mertens power saving zero free Dirichlet Hecke cubic sextic large sieve' --mode deep --budget-seconds 120 --no-refresh --json
-scripts/formal_tools.py research 'Suzuki finite contact residual bounded zero width' --mode lexical --any --module SuzukiTransitionCore --no-refresh --per-module 0 --limit 60 --explore 0 --json
-scripts/formal_tools.py research 'tendsto' --mode lexical --module SuzukiCanonicalSignedCompensationSaturation --no-refresh --per-module 0 --limit 30 --explore 0 --json
-scripts/formal_tools.py research 'XiZeroHalfPlaneBound' --mode lexical --no-refresh --per-module 0 --limit 160 --explore 0 --json
+scripts/formal_tools.py research 'mobiusClippedAbelKernel Mertens variation tail quotient' --mode deep --budget-seconds 180 --no-refresh --json
+scripts/formal_tools.py research 'one sided upper bound reflected Mobius binary correlation sum mu n mu N minus n power saving' --mode deep --budget-seconds 120 --no-refresh --json
 ```
 
-The broad lexical searches returned 139 declarations across 86 modules for the half-plane query and 24 declarations across 17 modules for the Dirichlet query. Relevant source declarations and their surrounding proofs were read directly. Exact `rg` searches traced occurrences of residual hypotheses, moment providers, prime-lag bounds, and zero-width interfaces. Additional candidates included the power-gap bootstraps, JAS quasi-RH criterion, prime-window energies, Borel-terminal Wold bounds, and the spectral large sieve.
+Search suggestions are leads, not proof compositions. In particular, shifted truncated-divisor correlations, fixed-core prime-release limits, and Selberg-sieve bounds with an unproved residual-variance premise do not supply the actual estimates required here. Ranked results and incomplete compiler coverage cannot establish the absence of every possible theorem elsewhere in the corpus.
 
-The additional `XiZeroHalfPlaneBound` query returned 100 declarations. The targeted normalization query returned the actual Suzuki amplitude and energy limits used in Section 2.4. The full Wold kernel, normalized means, JAS consequences, and cached upstream theorem/parameter files were inspected directly. The cached upstream tree is distinguished throughout from the project’s native `GaloisForLFunctions` modules.
+**Formal verification:** the three quotient-tail modules linked in Section 8.2 pass focused `lake --old env lean` checks without warnings and are wired into `RHTower`. Their theorems retain the actual zero abscissa. The mean-square argument in Section 8.4 remains a paper deduction. The decisive head and character-twisted correlation estimates remain open; neither improved strip is proved. Existing Suzuki normalization and detector-budget leaves are supporting results with the scopes stated above.
 
-The initial deep results were partial because of search/reranking time limits. One reported coverage snapshot inventoried 62,619 Lean files and 1,100,250 declarations, with extensive pending or stale compiler coverage. A later 300-second deep query for signed Wold covariance completed without a partial flag, but its proposed composition still assumed a zero-half-plane bound and mixed distinct arithmetic sources; it did not supply the missing estimate. Candidate and ingredient suggestions were treated as discovery leads, not certified proof compositions. The whole corpus was not read declaration by declaration, and absence from a ranked result was not treated as a nonexistence theorem.
-
-**Verification level:** the corpus comparison and upstream analysis are source inspections. The two new supporting leaves, `SuzukiQuadraticContactUnconditionalDecay` and `QuasiRHDetectorScaleBudget`, passed individual `lake --old env lean` checks and separate `/tmp` axiom audits, with only `propext`, `Classical.choice`, and `Quot.sound`. Both are wired into `RHTower`; no full or umbrella build was run. Neither leaf proves a narrower zero strip. The assumed soundness of the upstream result is not reassessed.
-
-The actionable conclusion is that the corpus already provides several precise ways to turn a new estimate into a better strip. **What is missing is the improved arithmetic estimate itself, not another name or formulation for the desired zero bound.**
+The upstream theorem's soundness is assumed. External novelty of these reductions is unclaimed; no web research is used.

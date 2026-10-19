@@ -26,7 +26,7 @@ Discharge the actual arithmetic estimates in report Section 8. A conditional zer
 | Prime lag / Abel | One-sided prime-lag exponent `< 3/8`, or the precise sampled-Abel counterpart | `[OPEN CORE]` |
 | Wold | Uniform upper bound on literal directed covariance for every `0 < t < 1/6` | `[OPEN CORE]` |
 | Möbius | `WeightedMertensMoment a` at some `a > 1/8` without RH | `[OPEN CORE]` |
-| Dirichlet | Twisted source identification and the improved estimate for every character | `[OPEN CORE]` |
+| Dirichlet | Improved reflected binary-correlation estimate for every character; twisted source and receiver already exist | `[OPEN CORE]` |
 
 ## Literal Suzuki normalization
 
@@ -59,6 +59,47 @@ Formal status: `SuzukiQuadraticContactUnconditionalDecay.lean` proves all-N norm
 1. Strengthen the completed scalar cancellation directly. `SuzukiTransitionCoreAbelSourceMultiGateWeld` identifies G_N with an explicit signed Selberg square-root Abel action plus polar-lattice and archimedean corrections. Seek a bound of order `N^a`, `a < 3/8`, for that literal action.
 2. Use Ward cancellation geometry only after establishing a quantitative comparison with the aligned scalar. `SuzukiCompletedWardCancellativeBand` restricts negative Cauchy-Gram cross terms to comparable lags, but does not itself estimate the scalar or its full covariance.
 3. Examine the Wold signed covariance at a radius above 1/8 for an independent arithmetic saving. Compactness or diagonal summability alone does not bound the growing flat probes.
+
+## Developed routes to 5/6 and 3/4
+
+Implementation target: unconditional Lean proofs for the arithmetic estimates and both strip consequences. Neither target strip is proved. Full mathematical statements are in report Sections 8.1–8.5; external web research is excluded.
+
+### Baseline-dependent quotient-tail reduction — paper proof
+
+Let \(F(q)=\texttt{primeFreeDivisorDefect}\ q\), \(T(N)=\texttt{mobiusDivisorSquareRootAbelMoment}\ N\), and \(K_N(q)=\texttt{mobiusClippedAbelKernel}\ N\ q\).
+The corpus identifies \(T(N)=\sum_{q<N}F(q)K_N(q)\), proves \(|F(q)|\leq24\sqrt q\), and gives the boundary-free Mertens-gradient identity for K.
+
+If \(|M(D)|\leq C_\beta D^\beta\), \(1/2<\beta<1\), the clipped weight is unimodal with maximum at most \(\sqrt N/q\). Discrete Abel summation therefore gives
+\[
+|K_N(q)|\leq2C_\beta N^{\beta+1/2}q^{-\beta-1}.
+\]
+Multiplying by \(24\sqrt q\) and integrating the decreasing power tail proves
+\[
+\left|\sum_{Q<q<N}F(q)K_N(q)\right|
+\leq48C_\beta(\beta-1/2)^{-1}N^{\beta+1/2}Q^{1/2-\beta}.
+\]
+The accepted boundary \(b_0\) gives Mertens exponents \(b_0+\delta\) through the existing Littlewood theorem. For target \(b_1\), choose \(Q=\lceil N^{(b_0-b_1)/(b_0-1/2)}\rceil\); the tail has the required \(N^{b_1+1/2+\varepsilon}\) rate. Thus the unsolved head is through \(N^{1/9}\) for 7/8→5/6, \(N^{1/3}\) for 7/8→3/4, and \(N^{1/4}\) for 5/6→3/4. Either one-sided head bound suffices through the existing Abel receiver. Absolute estimates of that head recover only the baseline.
+
+Formal support: `CCMFUSuzukiMobiusClippedKernelBound`, `CCMFUSuzukiMobiusQuotientTail`, and `CCMFUSuzukiMobiusQuotientPowerCutoff` prove the tent variation bound, the exact signed head/tail split, and a uniform tail estimate at the actual abscissa Θ. Their one-ninth, one-third, and one-quarter head errors have exponents `(8Θ+5)/9+ε`, `2(Θ+1)/3+ε`, and `3Θ/4+5/8+ε`. These statements assume no zero-free strip. All three leaves pass focused Lean checks without warnings and are imported by `RHTower`. All 15 exported theorems use only `propext`, `Classical.choice`, and `Quot.sound` in scratch-file axiom audits.
+
+Verdict: BRIDGE. The head estimates remain the open arithmetic core. The numerical substitutions use the accepted baseline; it has not been added as an axiom or imported into these leaves. External novelty is unclaimed.
+
+### Mean-square alternative — paper proof
+
+An upper bound \(\sum_{N\leq X}|G_N|^2=O_\varepsilon(X^{2b+\varepsilon})\) suffices for boundary b. Since \(G_N=S(N)/N+O(1)\), the twice-Abel Dirichlet continuation has dyadic absolute blocks bounded by \(X^{b-\Re s+\varepsilon/2}\). Locally uniform convergence for \(\Re s>b\) continues \(-\zeta'/\zeta-\zeta\), excluding a ζ-zero pole there. Targets are \(X^{5/3+\varepsilon}\) and \(X^{3/2+\varepsilon}\). Existing formation-energy increments equal \((N+1)/(N+2)|G_{N+1}|^2\), identifying the exact cumulative observable. The new upper bounds remain open.
+
+### Character-twisted binary correlation — existing receiver
+
+The twisted Möbius–Laplace source and Mellin zero obstruction already exist; do not list them as missing infrastructure. For \(c_\chi(n)=\mu(n)\chi(n)\), let \(\mathcal C_\chi(m)=\sum_{a+b=m}c_\chi(a)\overline{c_\chi(b)}\).
+Even-total upper bounds \(O_{\chi,\varepsilon}(m^{2/3+\varepsilon})\) give 5/6; \(O_{\chi,\varepsilon}(m^{1/2+\varepsilon})\) give 3/4. The identity
+\(2\sum_m\mathcal C_\chi(2m)r^{2m}=|A_\chi(r)|^2+|A_\chi(-r)|^2\)
+and existing even-index theorem supply decay. Arithmetic correlation bounds remain open. Shifted truncated-divisor and fixed-core prime-release estimates are not providers for this source.
+
+### Correction to the upstream Gram opportunity
+
+At fixed original scales, improving only \(P^{1/6}\) to \(P^\nu\) leaves the unit Gram term. The nominal boundary is \(83/96+\max(0,\nu)/16\), so this change alone cannot reach 5/6 or 3/4. The earlier isolated identity \(7/8-u/16\) applies only while the replaced term dominates, \(0\leq u\leq1/6\). This is an upper-bound-method limitation, not an arithmetic lower bound.
+
+The sharp joint classification is formalized in `QuasiRHDetectorGramTradeoff.lean`: retaining `P²/Y` but deleting the exceptional contribution gives minimum `23/27` after retuning both scales. A profile `1+P^ν+P^κ/Y`, with `ν≥0`, reaches the five-sixths budget for some `x≥0,L` exactly when `ν≤1/15` and `κ+4ν≤4/3`. The explicit point `(ν,κ,x,y,L)=(1/30,6/5,5/48,35/48,1/6)` has positive low scales. The retained unit contribution and reflected allowance alone have relaxed minimum `29/36>3/4`. These are constraints and feasible points of the displayed budget; the stronger source estimates and remaining detector assembly are still open. All 14 exported theorems pass focused foreground and standard-axiom audits; the module is wired into `RHTower`.
 
 ## Upstream detector exponent obstruction
 
@@ -113,7 +154,7 @@ Its exact piecewise decomposition is
 
 Hence `B(L)≥7/8`, with equality exactly at `L=1/6`. This is a dependency-closed algebraic proof of an exponent-budget minimum, not a zero-free theorem.
 
-**Replacement target [OPEN CORE]:** improve the actual low Gram bound or the actual reflected source estimate on the zero-retained-length face. At the published scales, replacing Gram power `1/6` by `1/6−u` would lower the nominal boundary by `u/16`; all high/transport estimates must still be checked at that boundary. The constant optimization route alone has not supplied this new arithmetic estimate.
+**Replacement target [OPEN CORE]:** prove a joint Gram estimate in the feasible five-sixths region above, or improve the actual reflected source estimate on the zero-retained-length face. Three quarters additionally requires changing the unit term, principal normalization, or reflected allowance. All high/transport estimates must still be checked at the resulting boundary. Constant optimization alone has not supplied the new arithmetic estimates.
 
 Formal status: the exact witness, scale invariant, boundary decomposition, sharp minimum, and Gram-power sensitivity are proved in `QuasiRHDetectorScaleBudget.lean`, with a warning-free foreground leaf check and six standard-axiom audits. This narrow retuning route is closed in [its failed-route card](../5-failed/quasi-rh-detector-scale-retuning.md). The overall task remains in progress.
 
@@ -122,6 +163,8 @@ Formal status: the exact witness, scale invariant, boundary decomposition, sharp
 `Detector/GramClassification.lean` defines exceptional frequencies by divisibility of ideal valuations by six outside the fixed modulus. `LowGramExceptional.lean` counts them with exponent `1/6`. `GramSourceDivisors.lean:24` identifies the actual coefficient as the ideal Möbius value on the divisor pool. `GramTruncation.lean:17` preserves that coefficient in `sourceCanonicalSum`, and its splitting theorem isolates the exceptional contribution exactly.
 
 `GramIdealMass.lean:85` then permits arbitrary coefficients of norm at most one and applies `normalized_double_sum_bound`; this loses the actual Möbius signs. The concrete open estimate is for `sourceCanonicalSum` with `exceptionalFrequencies` and `sourceMobiusWeight`, before that norm bound. It is not an estimate for an arbitrary bounded coefficient array. A source-specific cancellation estimate or controlled secondary-term subtraction must preserve the principal residue and all family quantifiers.
+
+`GramCanonicalSource.originalCommonBlock` identifies those Möbius weights as the inversion of a coprimality restriction. Their presence does not by itself prove a saving. Even a complete exceptional-term saving must be accompanied by a nonexceptional improvement to reach five sixths through this profile.
 
 ## Research constraints
 
