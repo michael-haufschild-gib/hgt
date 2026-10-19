@@ -59,6 +59,8 @@ This is open. The prime-mask calculation concerns rational primes. Transport to 
 
 The physical energy also constrains the cutoff: `LowActualEnergies.lowRayAmplitude_actual_energy` uses `lowGaussMajorant`, which is nonnegative and equals one on the selected numerator rows. A cancellation obtained by freely replacing this cutoff with a signed Schwartz function does not establish the required energy domination. Any Mellin-moment annihilation must respect that constraint or replace the majorization argument.
 
+Varying the auxiliary calibration character does not automatically create a new source. The cached `CalibrationCancellation.calibration_coefficient_cancel` and `SourceCoefficient.sourceHighCoefficient_eq_bare` identify the normalized supported coefficient with a calibration-independent bare coefficient. Any proposed gain from mixed calibration phases must survive that exact cancellation. This leaves changes to actual weights, support and excluded primes as separate constructions.
+
 ## Nonexceptional conjecture: keep the bilinear block intact
 
 Normalize a `canonicalLatticeBlock` by its existing fixed-modulus, common-ideal and Schwartz factors. If q is the norm of its arithmetic modulus and N its residual lattice scale, seek
@@ -72,6 +74,8 @@ Propagating this particular bound through the frequency and ideal sums changes t
 The existing `HyperKloostermanFactoredModuliBilinear.norm_sq_factored_moduli_le` supplies a reusable proof pattern: retain one arithmetic sum inside Cauchy–Schwarz, split diagonal/off-diagonal pairs, complete the latter modulo the product modulus, and estimate complete correlations. It applies to `Kl₃` over rational moduli `p s²`; it is **not** already a bound for this sextic Eisenstein block. `large_sieve_gamma0_cubic` is a spectral sieve with a cubic height weight, not a cubic-character large sieve.
 
 At common ideal `C=1`, `globalExtension` is an empty product. The remaining arithmetic factor is a character in each lattice variable, up to a fixed ray-class factor. For separated test weights, a bound of the proposed strength would require a scalar character-sum saving of the shape `N^(1/2)q^(1/6+ε)`. Thus generic orthogonality is not sufficient: the target has conductor-aspect Weyl strength. The retrieved Jacobi/Gauss identities evaluate complete two-character sums; they do not supply this short-sum bound or the necessary higher correlations. The coupled shell profile must also be separated with controlled norms before using any scalar estimate.
+
+The [additive-shift route](quasi-rh-shift-correlation.md) now proves the exact fourth-correlation polynomial, power-degenerate tuple count, cross-ratio reduction and complete-parameter mean-square bound in Lean. Its interval fourth-moment conjecture through shift length `q^(1/3)` isolates a possible source of the required conductor exponent. The complete-parameter bound does not prove that short-window conjecture.
 
 ## Three-quarters requirement
 

@@ -78,11 +78,29 @@ Multiplying by \(24\sqrt q\) and integrating the decreasing power tail proves
 \left|\sum_{Q<q<N}F(q)K_N(q)\right|
 \leq48C_\beta(\beta-1/2)^{-1}N^{\beta+1/2}Q^{1/2-\beta}.
 \]
-The accepted boundary \(b_0\) gives Mertens exponents \(b_0+\delta\) through the existing Littlewood theorem. For target \(b_1\), choose \(Q=\lceil N^{(b_0-b_1)/(b_0-1/2)}\rceil\); the tail has the required \(N^{b_1+1/2+\varepsilon}\) rate. Thus the unsolved head is through \(N^{1/9}\) for 7/8→5/6, \(N^{1/3}\) for 7/8→3/4, and \(N^{1/4}\) for 5/6→3/4. Either one-sided head bound suffices through the existing Abel receiver. Absolute estimates of that head recover only the baseline.
+The accepted boundary \(b_0\) gives Mertens exponents \(b_0+\delta\) through the existing Littlewood theorem. For a one-step target \(b_1\), choosing \(Q=\lceil N^{(b_0-b_1)/(b_0-1/2)}\rceil\) gives the required tail rate. This permits \(N^{1/9}\) for 7/8→5/6, \(N^{1/3}\) for 7/8→3/4, and \(N^{1/4}\) for 5/6→3/4. These are sufficient one-step cutoffs, not necessary thresholds. Absolute estimates of the head recover only the baseline.
 
 Formal support: `CCMFUSuzukiMobiusClippedKernelBound`, `CCMFUSuzukiMobiusQuotientTail`, and `CCMFUSuzukiMobiusQuotientPowerCutoff` prove the tent variation bound, the exact signed head/tail split, and a uniform tail estimate at the actual abscissa Θ. Their one-ninth, one-third, and one-quarter head errors have exponents `(8Θ+5)/9+ε`, `2(Θ+1)/3+ε`, and `3Θ/4+5/8+ε`. These statements assume no zero-free strip. All three leaves pass focused Lean checks without warnings and are imported by `RHTower`. All 15 exported theorems use only `propext`, `Classical.choice`, and `Quot.sound` in scratch-file axiom audits.
 
 Verdict: BRIDGE. The head estimates remain the open arithmetic core. The numerical substitutions use the accepted baseline; it has not been added as an axiom or imported into these leaves. External novelty is unclaimed.
+
+### Self-contracting short heads and their physical boundary
+
+`RHTower.zetaZeroAbscissa_le_of_mobiusDivisorQuotientPowerHead_le_rpow` in `QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean` proves the stronger cutoff result: for any fixed θ>0, a one-sided `H(N,ceil(N^θ))/N ≤ C+CN^c` bound gives `Θ≤1/2+max(0,c)`. There is a separate lower one-sided theorem. The tail contracts the unknown width itself: if `a=Θ−1/2>max(0,c)`, choose `δ=min(θ,1)a/2`; the induced bound `a≤max(max(0,c),(1−θ)a+δ)` contradicts strict inequality. Thus the arithmetic targets are `Hθ(N)=O_ε(N^(4/3+ε))` or its lower counterpart for 5/6, and exponent `5/4+ε` for 3/4, at any fixed positive θ. No new numeric strip follows without these estimates.
+
+The exact truncated-source identity must retain its upper boundary. Let `R_M(n)=mobiusDilationRieszTail M n`, `L=min(Q,M−1)`, and `ΔF(n)=log n−τ(n)+2γ`. Since `K_M(n)=R_M(n)−R_M(n+1)`, finite Abel summation gives
+
+`H(M,Q)=Σ_{n=1}^L ΔF(n)R_M(n)−F(L)R_M(L+1)`.
+
+The boundary vanishes for the full physical range, but not for a short head. This is a closed paper proof using `sum_primeFreeDivisorIncrement` and the existing kernel-gradient identity. Shortening θ still leaves the q=1 kernel with Möbius length M. Its exact dyadic recurrence is `K_(2M)(1)=R_(2M)(1)−sqrt(2)R_M(1)`, from the existing dilation law. Dividing by powers of sqrt(2) and telescoping gives
+
+`R_(2^j M)(1)/(sqrt(2))^j = R_M(1)+Σ_{i<j}K_(2^(i+1) M)(1)/(sqrt(2))^(i+1)`.
+
+These identities expose the retained signed source; they do not supply a numerical improvement. The boundary can itself be paid at the intrinsic abscissa. Put β=Θ+ε>1/2. The existing kernel estimate and the decreasing-power integral bound give
+
+`|R_M(Q+1)| ≤ C M^(β+1/2) Σ_{q>Q}q^(-β−1) ≤ (C/β)M^(β+1/2)Q^(-β)`.
+
+Multiplying by `|F(Q)|≤24 sqrt(Q)` gives `O_ε(M^(Θ+1/2+ε)Q^(1/2−Θ−ε))`. If Q exceeds the physical range, the clipped boundary is zero. Consequently the increment head `I(M,Q)=Σ_{n≤min(Q,M−1)}ΔF(n)R_M(n)` approximates the full Abel action with the same intrinsic exponent as H. This is a dependency-closed paper proof; the new arithmetic obligation is cancellation in I, and the boundary need not separately be bounded at a conjectured numerical exponent.
 
 ### Mean-square alternative — paper proof
 
@@ -167,6 +185,8 @@ Formal status: the exact witness, scale invariant, boundary decomposition, sharp
 `GramCanonicalSource.originalCommonBlock` identifies those Möbius weights as the inversion of a coprimality restriction. Their presence does not by itself prove a saving. Even a complete exceptional-term saving must be accompanied by a nonexceptional improvement to reach five sixths through this profile.
 
 The [prime-mask and cube-root block candidate](quasi-rh-prime-mask-centering.md) develops one concrete construction. Its two Lean leaves prove an optimal mean-preserving prime packet, a uniform finite-prefix square bound, bounded principal bias, and weighted insertion bounds including every Dirichlet character. The arithmetic detector realization, cube-root block estimate, and reflected-source improvement remain open; the card states their separate tests and exponent requirements.
+
+The [additive-shift correlation route](quasi-rh-shift-correlation.md) supplies exact sextic power degeneracies, their `2B²−B` count, cross-ratio normalization, a complete-field mean-square estimate and the literal fourth-moment expansion in Lean. Its new arithmetic conjecture is an interval fourth-moment bound through `B=p^(1/3)`; that range would give conductor factor `p^(1/6)` in the stated amplification calculation. The interval estimate, amplification with errors, and Eisenstein transport remain open. A subfield example rules out extending that conjecture to arbitrary sets over square fields on cardinality alone. Calibration phase variation also has an exact source restriction: `SourceCoefficient.sourceHighCoefficient_eq_bare` removes it from the normalized supported coefficient.
 
 ## Research constraints
 

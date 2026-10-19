@@ -305,3 +305,18 @@ remainder-dominates-defect inequality.
   natural attack is the cut-off `log n ≤ 2R` of the prime sum forced by the support of
   `(u(x) − u(t−x))²`, which leaves a finite prime sum plus the archimedean term against explicit
   kernels.
+- 2026-10-20 — **Plateau positivity (unconditional), in Lean** (`ShiftedGroundStatePlateauPositivity`;
+  twenty-nine modules). `∫_{x>0} m_a sinh(x/2) = sinh(a/2)/2` exactly (so the source of ω_a against
+  u ≡ 1 is the pole term `2 sinh²(a/2)`; the Mellin transform of `m_a` is `−2 sinh(a(s−1/2)) ξ(s)`,
+  zero at every zero of ξ). For even `u ∈ C²_c`, `0 ≤ u ≤ 1`, `u = 1` on `[−L, L]`:
+  `D ≤ Φ(0)Ce^{16a}(∫arch·t + Σn^{−2})e^{−8L}` (far factor `m_a(M) ≤ Ce^{16a}e^{−16M}`, `16M ≥ 4t+8L`),
+  source `≥ sinh(a/2)/2 − Ce^{16a}e^{−8L}`, `S ≥ 0`; hence
+  `exists_plateau_markovEnergy_phiDoob_shiftedGroundState_ge`: ∀ a > 0 ∃ L₀, ∀ L ≥ L₀, Markov energy
+  `≥ sinh²(a/2)`. Positivity landscape of the ground-state family: wide plateaus (all a) and far
+  narrow bumps with nonzero `e^{s/2}`-moment are positive; zeros enter only through profiles that
+  cancel the pole term. Heuristic recorded in README §4 (labelled analysis): the all-shift average
+  is `Ξ²`-weighted in frequency (Plancherel, `Φ̂ = Ξ`), the weight vanishes at on-line ordinates and
+  off-line pairs contribute `(π/2)Ξ(γ)²∫u² ≥ 0` at leading order, so the shift-averaged inequality
+  is expected to be unconditionally true and is not an RH detector; finite-window shift averages
+  (width below the zero gap) are the right objects. Audit: umbrella foreground, axioms standard,
+  lint clean.

@@ -359,6 +359,33 @@ pointwise family), and it is the natural first target for an unconditional proof
 diagonal `x ≈ t/2` the kernel `G(2x − t) − G(t) ≈ G(0)` is large but `(u(x) − u(t−x))²` vanishes
 once `t > 2R`, so the prime sum is cut off at `log n ≤ 2R` up to the superexponential tail.
 
+**Plateau positivity: the shifted ground state is the zero-free direction.** The half-line sinh
+moment of the shift difference is exact,
+
+    ∫_{x>0} m_a(x) sinh(x/2) dx = sinh(a/2)/2        (`integral_Ioi_shiftDifference_mul_sinh_half`),
+
+because `∫ Φ(x − a) sinh(x/2) dx = sinh(a/2)/2`, `∫ Φ(x + a) sinh(x/2) dx = −sinh(a/2)/2` and the
+integrand is even. So the source of `ω_a` against the constant profile is `2 sinh²(a/2)`; this is
+the pole term of the explicit formula for the odd test `m_a`, whose Mellin transform
+`∫ m_a(x) e^{(s−1/2)x} dx = −2 sinh(a(s − 1/2)) ξ(s)` vanishes at every zero of `ξ`, on or off the
+line. For a profile `u` with `0 ≤ u ≤ 1` and `u = 1` on `[−L, L]` the reflected difference jump
+vanishes unless one of `x, t − x` exceeds `L`, and then the far factor obeys
+`m_a(M) ≤ C e^{16a} e^{−16M}` with `16M ≥ 4t + 8L`, so
+
+    D(ω_a, u) ≤ Φ(0) C e^{16a} (∫ archLevyDensity(t) t dt + Σ n^{−2}) e^{−8L},
+    ∫_{x>0} u² m_a sinh(x/2) ≥ sinh(a/2)/2 − C e^{16a} e^{−8L}
+
+(`reflectedDifferenceEnergy_plateau_le`, `integral_sq_mul_shiftDifference_mul_sinh_ge`, with
+`Φ(x) ≤ C e^{−16|x|}`). Since `S ≥ 0`, for every `a > 0` there is `L₀(a)` such that every even
+`u ∈ C²_c` with `0 ≤ u ≤ 1` and `u = 1` on `[−L, L]`, `L ≥ L₀`, satisfies
+
+    markovEnergy(Θ(ω_a u)) ≥ sinh²(a/2) > 0      (`exists_plateau_markovEnergy_phiDoob_shiftedGroundState_ge`),
+
+unconditionally and for every shift. Together with the far-apart two-bump theorem this locates the
+positivity of the ground-state family: wide plateaus (every `a`) and far narrow bumps with
+`∫ Θ e^{s/2} g ≠ 0` are positive directions; the Markov form sees the zeros only through profiles
+that cancel the pole term, that is through `u` with vanishing `e^{±x/2}`-moments against `m_a`.
+
 ### 3.6 The finite model (Perron–Frobenius)
 
 For a finite symmetric nonnegative kernel `K` and any potential `ρ`, the form `E_K − Σ ρ v²` is
@@ -387,6 +414,19 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
 ---
 
 ## 4. Traps and sharp boundaries
+
+- **Averaging over all shifts loses the zeros (analysis, not formalised).** By Plancherel in `a`,
+  `∫_0^∞ markovEnergy(Θ(ω_a u)) da = (1/4π) ∫ Ξ(ξ)² markovEnergy(sin(ξ·) u) dξ`, since the Fourier
+  transform of `Φ` is Riemann's `Ξ`. The weight `Ξ(ξ)²` vanishes exactly at the ordinates of the
+  zeros on the line, and for a zero `ρ = 1/2 + δ + iγ` the `Ξ²`-weighted contribution of the pair
+  `ρ, 1 − ρ̄` to the modulated tests `sin(ξx) u(x)` is, to leading order in the width of `û`,
+  `(π/2) Ξ(γ)² ∫ u²` for every `δ`, hence nonnegative. The shift-averaged variation inequality is
+  therefore expected to hold unconditionally and carries no information about off-line zeros; the
+  zeros are visible only in finite-window averages over `a` of width below the zero gap, or in the
+  single-shift inequality itself. Test profiles `u = cos(γx) χ(x − X)` with `χ` wide and `X` large
+  make the leading terms of `D̄` and of the source cancel to order `e^{X}` exactly when `Ξ(γ) = 0`,
+  leaving `2 ∫ dm(t) G(t)(1 − cos γt) ≳ (G(0)/2) log γ` against `1/8`: the averaged inequality
+  holds there with room, for the same reason.
 
 | Trap | Why it fails, and the correct statement |
 |---|---|
@@ -488,3 +528,4 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
 | `ShiftAveragedShifts` | `averagedKernel`, `averagedReflectedShift`, `averagedSameSideShift`; product integrability in `(a,x)` through the exact `a`-integrals; the shift averages of one reflected and one same-side shift; linear and decay bounds; measurability in `t` |
 | `ShiftAveragedEnergies` | `integrable_tsum_of_nonneg`; `Φ ≤ C e^{−8|x|}`; `Σ Λ(n)n^{−1/2}(1 + log n) Φ((log n − c)/2) < ∞`; Fubini of the `a`-integral with the archimedean integral and the prime sum for both energies; `averagedReflectedEnergy`, `averagedSameSideEnergy`; the shift averages of `D_a`, `S_a` and of the source |
 | `ShiftAveragedVariationInequality` | `K(x,t−x) = G(2x−t) − G(t)`, `K(x,x+t) = G(t) − G(2x+t)`; `∫_0^∞ markovEnergy(Θ(ω_a u)) da = 2S̄ − D̄ + 2∫u² sinh²(x/2)`; RH ⟹ the shift-averaged variation inequality, also in autocorrelation form |
+| `ShiftedGroundStatePlateauPositivity` | `∫ m_a sinh(x/2) = sinh(a/2)`, half-line value `sinh(a/2)/2`; `Φ ≤ C e^{−16|x|}`; tail `∫_{x>L} m_a sinh(x/2) ≤ C e^{16a} e^{−8L}`; the source of a plateau profile `≥ sinh(a/2)/2 − C e^{16a} e^{−8L}`; pointwise and integrated bounds `D ≤ K_a e^{−8L}`; `markovEnergy(Θ(ω_a u)) ≥ sinh²(a/2)` for every `a > 0` on every wide enough plateau (unconditional) |

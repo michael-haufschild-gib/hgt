@@ -85,3 +85,21 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
   has `TV = 2δ`, recovering C1's blindness. New insight: blindness depends only on the total depth
   variation (edges included) and the maximal depth — not on length, position or profile shape.
   Standard axioms.
+- **C7 · Height averages are blind to small-variation clusters and Toeplitz-positive profiles** —
+  `WindowedBlindnessForClustersAndProfiles`. `temperedConfig_clusterConfig`,
+  `temperedConfig_profileConfig`; `re_windowedW_clusterConfig_nonneg`: every windowed form at
+  resolution `r` (`4r ≤ L`, `r·TV(d)·sinh(2δr) ≤ 1`) of every cluster is nonnegative for tests of
+  every aperture; `re_windowedW_profileConfig_nonneg` (Toeplitz PSD of size `⌈2rP/L⌉`) and
+  `re_windowedW_profileConfig_nonneg_of_smooth`. Extends the averaging no-go from lattices to all
+  small-TV clusters and smooth/Toeplitz-positive profiles: an edge visible at `O(1/δ)` to single
+  tests is invisible to every height average at resolution `r ≲ 1/δ`. Standard axioms.
+- **C8 · Band-limited depth modulations hide up to half the Nyquist aperture** —
+  `BandLimitedDepthProfileHidingLaw`. `cosProfile δ P r = δ(1 + cos(2πr/P))/2`.
+  `sum_cosProfile_pow_mul_root_eq_zero`: the discrete Fourier coefficient at `m` of `d^{2n}`
+  vanishes for `2n < m ≤ P/2` (`d_r = (δ/4)(1+ζ^r)(1+ζ^{-r})`). `cosh_sub_taylor_le`: Taylor
+  remainder of cosh. `norm_depthSymbol_cosProfile_le`: `|D(m)| ≤ 2P (eℓδ)^m e^{mℓδ}`, `ℓ = L/P`.
+  `cosProfile_weil_nonneg`: if `e(L/P)δ e^{(L/P)δ} ≤ 1/3` (period ≳ 8δL) the modulation is
+  invisible at every aperture `a ≤ L/4`. New insight: the square-root threshold is not a privilege
+  of uniform lattices — slow band-limited depth modulations hide within a factor 2 of it, far
+  beyond the generic smoothness bound (C5); what is seen early is roughness (edges, few derivatives).
+  Standard axioms.

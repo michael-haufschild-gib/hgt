@@ -249,8 +249,44 @@ theorem fourShiftCharacterSum_energy_le (χ : MulChar K ℂ) (hχ : χ ≠ 1) (a
       sum_congr rfl (fun c hc => hp c (mem_filter.mp hc).2)
     _ ≤ ∑ c : K, ‖threePointCharacterSum χ (e c)‖ ^ 2 :=
       sum_le_sum_of_subset_of_nonneg (filter_subset _ _) (fun c _ _ => sq_nonneg _)
-    _ = ∑ t : K, ‖threePointCharacterSum χ t‖ ^ 2 := e.sum_comp _
+    _ = ∑ t : K, ‖threePointCharacterSum χ t‖ ^ 2 :=
+      e.sum_comp (fun t => ‖threePointCharacterSum χ t‖ ^ 2)
     _ ≤ _ := threePointCharacterSum_energy_le χ hχ
+
+/-- Literal fourth moment of an additive-shift packet. -/
+def shiftFourthMoment (χ : MulChar K ℂ) (S : Finset K) : ℝ :=
+  ∑ x : K, ‖∑ a ∈ S, χ (x - a)‖ ^ 4
+
+/-- The fourth moment is the signed sum of complete four-shift correlations. -/
+theorem shiftFourthMoment_expand (χ : MulChar K ℂ) (S : Finset K) :
+    (shiftFourthMoment χ S : ℂ) =
+      ∑ a ∈ S, ∑ b ∈ S, ∑ c ∈ S, ∑ d ∈ S, fourShiftCharacterSum χ a b c d := by
+  have hn (z : ℂ) : star (z * z) * (z * z) = ((‖z‖ ^ 4 : ℝ) : ℂ) := by
+    rw [star_mul]
+    calc
+      _ = (z * star z) ^ 2 := by ring
+      _ = _ := by rw [mul_star_norm_sq]; push_cast; ring
+  have hp (x : K) : ((‖∑ a ∈ S, χ (x - a)‖ ^ 4 : ℝ) : ℂ) =
+      ∑ a ∈ S, ∑ b ∈ S, ∑ c ∈ S, ∑ d ∈ S,
+        χ ((x - a) * (x - b) / ((x - c) * (x - d))) := by
+    rw [← hn]
+    simp only [star_mul, star_sum, sum_mul, mul_sum, character_div, map_mul]
+    refine sum_congr rfl (fun a _ => sum_congr rfl (fun b _ =>
+      sum_congr rfl (fun c _ => sum_congr rfl (fun d _ => ?_))))
+    ring
+  rw [shiftFourthMoment, Complex.ofReal_sum]
+  simp_rw [hp]
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro a _
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro b _
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro c _
+  rw [sum_comm]
+  rfl
 
 end Finite
 

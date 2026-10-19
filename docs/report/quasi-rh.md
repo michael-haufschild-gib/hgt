@@ -12,7 +12,8 @@ The strongest findings are:
 
 | Finding | What is already in the corpus | What remains missing |
 |---|---|---|
-| Suzuki finite-contact classification | An explicit family of conditional strip bounds; order three gives `5/6`, order two gives `3/4` | Boundedness of the corresponding residual for the actual completed arithmetic source |
+| Suzuki finite-contact classification | Polynomial-growth receivers and an exact exponent law; order three gives `5/6`, order two gives `3/4` | Subpower growth of the corresponding literal residual; boundedness also suffices |
+| Quotient-head self-contraction | Either one-sided power bound at any fixed cutoff `ceil(N^θ)`, θ>0, gives the matching strip without a baseline premise | Head exponents `4/3+ε` for `5/6`, or `5/4+ε` for `3/4`, for every ε>0 |
 | One-sided prime-lag criteria | Either an upper or a lower prime-lag power bound gives the matching zero strip | A power exponent strictly below `3/8` on all sufficiently large primes |
 | Chebyshev and prime-window criteria | Exact transfer between a zero-width bound and the matching arithmetic error spectrum | A strictly better arithmetic exponent; converting the baseline through an equivalence does not improve it |
 | Wold signed covariance | An exact characterization of each subcritical zero width | Upper bounds on the signed covariance beyond the baseline radius `1/8` |
@@ -21,7 +22,7 @@ The strongest findings are:
 
 Two substantial unconditional results must be accounted for: the existing Suzuki normalization implies `P_2(N) = o(N)`, and the full Wold kernel has vanishing normalized covariance throughout `0 ≤ t < 1/2`. Neither supplies the stronger estimate required for a narrower strip. Sections 2.4 and 4.2 identify the exact losses.
 
-**Developed routes:** Section 8 uses the accepted baseline to bound the large-quotient part of the actual Möbius–divisor source. The remaining one-sided estimate is confined to `q ≤ N^(1/9)` for `5/6`, or `q ≤ N^(1/3)` for `3/4`. After reaching `5/6`, the latter cutoff improves to `N^(1/4)`. A separate binary-correlation route already has character-twisted receivers. A mean-square alternative avoids demanding pointwise Suzuki residual bounds. The quotient-tail reductions now have unconditional Lean proofs at the actual zero abscissa; their decisive head estimates remain open.
+**Developed routes:** Section 8 reduces both targets to one-sided estimates on the actual Möbius–divisor head through `q ≤ ceil(N^θ)` for any fixed θ>0. Self-contraction removes the former cutoff restriction and does not assume the accepted baseline. The decisive head estimates remain open. A separate binary-correlation route already has character-twisted receivers, and a mean-square alternative avoids demanding pointwise Suzuki residual bounds. The full polynomial-growth receiver for finite-contact residuals is also formalized.
 
 This is a bounded source audit, not a proof that no differently formulated theorem exists anywhere in the million-declaration search index. The conclusion is supported by the inspected theorem statements, their premises, searches for premise providers, and the current [RH frontier ledger](../reports/rh-current-frontier-map.md) and [status document](../reports/STATUS.md).
 
@@ -469,7 +470,14 @@ The baseline column follows from the existing generalized von Koch theorem and s
 
 **Endpoint correction:** bounded \(P_3\) is sufficient for 5/6, but it is stronger than necessary. Bounds \(P_3(N)=O_\varepsilon(N^\varepsilon)\) for every ε also suffice. Likewise 3/4 needs only subpower \(P_2\), not necessarily bounded \(P_2\). Apply the continuation theorem at every slightly larger amplitude exponent and then take the infimum; no uniform constant at the endpoint is required. A single fixed positive ε gives a slightly worse boundary and does not reach the stated endpoint.
 
-### 8.2 Use the baseline to remove the large-quotient tail
+The [formal polynomial-growth receiver](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L605) covers every \(m\geq1\) and real r:
+\[
+P_m(N)=O(N^r)\quad\Longrightarrow\quad
+\Theta\leq\frac12+\max\!\left(0,\frac{m-1+r}{2m}\right).
+\]
+Its [converse upper bound](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L711) has exponent \(2m(\Theta-\tfrac12)-(m-1)+\varepsilon\). The [exact exponent law](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L806) shows that changing m alone supplies no arithmetic improvement. The missing work is the rate estimate for the literal residual.
+
+### 8.2 Tail control and the self-contracting cutoff
 
 This reduction supplies something the baseline can already pay for. Define
 
@@ -529,7 +537,7 @@ Q^{1/2-\Theta-\varepsilon}
 \]
 for every ε>0, all N, and Q≥1, with no assumed zero-free strip. The [clipped-kernel bound](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusClippedKernelBound.lean#L116) includes the moving endpoint. The [power-cutoff theorem](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusQuotientPowerCutoff.lean#L16) gives exponent `Θ+1/2−θ(Θ−1/2)+ε` at `Q=ceil(N^θ)`. Its one-ninth, one-third, and one-quarter specializations are unconditional statements about Θ; the numerical substitutions below use the accepted baseline.
 
-More generally, from a current boundary \(1/2<b_0<1\), choose a desired \(1/2<b_1<b_0\) and
+For a one-step use of a current boundary \(1/2<b_0<1\), choose a desired \(1/2<b_1<b_0\) and
 \[
 \theta=\frac{b_0-b_1}{b_0-1/2},\qquad Q_N=\lceil N^\theta\rceil.
 \]
@@ -544,37 +552,73 @@ Indeed the exponent is
 \(b_0+1/2-\theta(b_0-1/2)+\delta(1-\theta)
 =b_1+1/2+\delta(1-\theta)\); choose δ small enough for the requested ε.
 
-| Current boundary \(b_0\) | Desired boundary \(b_1\) | Quotients still requiring a new estimate | Tail already controlled |
+| Current boundary \(b_0\) | Desired boundary \(b_1\) | Sufficient one-step head cutoff | Tail already controlled |
 |---|---|---|---|
 | 7/8 | 5/6 | \(q\leq\lceil N^{1/9}\rceil\) | \(O_\varepsilon(N^{4/3+\varepsilon})\) |
 | 7/8 | 3/4 | \(q\leq\lceil N^{1/3}\rceil\) | \(O_\varepsilon(N^{5/4+\varepsilon})\) |
 | 5/6 | 3/4 | \(q\leq\lceil N^{1/4}\rceil\) | \(O_\varepsilon(N^{5/4+\varepsilon})\) |
 
-This is a reduction under the accepted baseline. It is not a new estimate for the remaining head. Taking absolute values in that head with the same Mertens bound only recovers \(O_\varepsilon(N^{11/8+\varepsilon})\). Even its small fixed q terms can carry that cost. Further improvement must use cancellation in the actual head, not repeat the tail estimate.
+These cutoffs are sufficient choices for the one-step argument, not necessary thresholds. Taking absolute values in the head with the same Mertens bound only recovers \(O_\varepsilon(N^{11/8+\varepsilon})\). Even its small fixed q terms can carry that cost.
+
+**Any fixed positive power cutoff suffices with self-contraction.** Put
+\[
+H_\theta(N)=H(N,\lceil N^\theta\rceil),\qquad \theta>0.
+\]
+The [upper one-sided theorem](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L325) and [lower counterpart](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L383) prove
+\[
+\frac{H_\theta(N)}N\leq C+CN^c
+\quad\Longrightarrow\quad
+\Theta\leq\tfrac12+\max(0,c),
+\]
+for \(C\geq0\) and all integers \(N\geq2\), with the same conclusion from \(-(C+CN^c)\leq H_\theta(N)/N\). No baseline strip is assumed. To see why, set \(a=\Theta-\tfrac12\). The tail bound and one-sided Abel receiver give \(a\leq\max(c,(1-\theta)a+\delta)\) when \(c\geq0\). If \(a>c\), choose \(\delta=\min(\theta,1)a/2>0\); both entries of that maximum are strictly smaller than a, a contradiction. This argument is formalized in the cited theorems.
+
+Shortening the quotient range does not shorten every Möbius sum: the q=1 kernel still contains dilations \(d<N\). The theorem removes a cutoff restriction; it does not supply cancellation in the retained source. It concerns fixed \(\theta>0\), not \(\theta=0\) or a cutoff varying subpolynomially with N.
+
+**The increment head has the same controlled remainder.** Write \(R_N(n)=\operatorname{mobiusDilationRieszTail}(N,n)\), \(L=\min(Q,N-1)\), and
+\[
+I(N,Q)=\sum_{n=1}^{L}(\log n-\tau(n)+2\gamma)R_N(n).
+\]
+The [exact truncated Abel identity](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadBoundary.lean#L20) is
+\[
+H(N,Q)=I(N,Q)-F(L)R_N(L+1).
+\]
+The boundary cannot be discarded by the full-range identity. It is nevertheless controlled: summing the kernel envelope gives
+\[
+|R_N(Q+1)|\ll_\varepsilon N^{\Theta+1/2+\varepsilon}Q^{-\Theta-\varepsilon}.
+\]
+Together with \(|F(Q)|\leq24\sqrt Q\), this bounds the boundary at the same rate as the quotient tail. The [formal increment-head estimate](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadBoundary.lean#L141) consequently proves
+\[
+|T(N)-I(N,Q)|\ll_\varepsilon
+N^{\Theta+1/2+\varepsilon}Q^{1/2-\Theta-\varepsilon}
+\qquad(Q\geq1).
+\]
+The same self-contraction argument therefore applies to one-sided estimates for \(I(N,\lceil N^\theta\rceil)\). This offers an explicit source involving the divisor increment; it does not supply its cancellation estimate. The [dyadic reconstruction identity](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadBoundary.lean#L53) also shows that the first quotient channel reconstructs the full signed Riesz tail along powers of two. A short cutoff alone therefore supplies no smallness estimate for that channel.
 
 ### 8.3 Two concrete proof obligations
 
+Choose any fixed \(\theta>0\), as small as useful for the arithmetic argument. The same choice can serve both targets.
+
 **Route to 5/6.** Prove, for every \(\varepsilon>0\), a constant \(B_\varepsilon\geq0\) such that, for all sufficiently large N,
 \[
-H_{7/8,5/6}(N)\leq B_\varepsilon N^{4/3+\varepsilon}.
+H_\theta(N)\leq B_\varepsilon N^{4/3+\varepsilon}.
 \tag{R5}
 \]
 An analogous lower bound suffices instead. The estimate must retain the signed sum over the actual \(F(q)\), Möbius coefficients, and clipped weights in (8.1).
 
-The deduction from (R5) is complete: (8.3) gives the same one-sided bound for \(T(N)\); divide by N; absorb finitely many exceptions; apply the [one-sided Abel receiver](../../formal/GaloisForLFunctions/RHTower/MobiusDivisorOneSidedPowerGapBootstrap.lean#L508) with all integers as sampling set, gap constant zero, and exponent \(c=1/3+\varepsilon\). Every zero satisfies \(|\Re\rho-1/2|\leq1/3+\varepsilon\). Let ε decrease to zero. The [lower receiver](../../formal/GaloisForLFunctions/RHTower/MobiusDivisorLowerStripPowerGapBootstrap.lean#L779) gives the same conclusion from the lower version.
+The deduction from (R5) is complete: divide by N, absorb finitely many exceptions, and apply the self-contracting theorem at \(c=1/3+\varepsilon\). It gives \(\Theta\leq5/6+\varepsilon\); let ε decrease to zero and use the functional equation for the reflected edge. The resulting strip is \([1/6,5/6]\). The lower one-sided theorem gives the same conclusion from the lower version.
 
 **Route to 3/4.** Replace (R5) with
 \[
-H_{7/8,3/4}(N)\leq B_\varepsilon N^{5/4+\varepsilon}
+H_\theta(N)\leq B_\varepsilon N^{5/4+\varepsilon}
 \tag{R3}
 \]
 for every ε and all sufficiently large N, or its lower counterpart. The identical deduction uses \(c=1/4+\varepsilon\) and yields \([1/4,3/4]\).
 
-If 5/6 is first established, use \(H_{5/6,3/4}\) instead. This reduces the remaining quotient range from \(N^{1/3}\) to \(N^{1/4}\). Reaching the first milestone therefore makes a precise part of the second problem smaller; it does not prove (R3).
+The one-step choices in Section 8.2 remain available, including \(N^{1/4}\) after establishing 5/6. Self-contraction permits arbitrarily smaller fixed positive powers already, so those choices do not constrain the revised arithmetic target.
 
 **Arithmetic work still required.** Prove joint cancellation between the complete and terminal portions of \(K_N(q)\), and across the retained q range. Their [exact complete/terminal split](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L471) is available. Independent absolute estimates discard the needed information. Relative to the baseline, the first target needs a power saving \(N^{1/24}\) in the Abel action; the second needs \(N^{1/8}\). These are explicit research obligations, not established estimates.
 
-**Verdict:** the tail reduction is a proved paper bridge from existing inputs. (R5) and (R3) are the open core. Under the accepted baseline they suffice for the desired conclusions, so they must not be advertised as an independent proof of those conclusions.
+**Verdict:** the tail estimates and self-contracting receivers are formalized. (R5) and (R3) remain the open arithmetic core. Their deduction needs no accepted baseline, but neither estimate has been proved.
 
 ### 8.4 Mean-square route: no pointwise residual bound needed
 
@@ -619,6 +663,8 @@ The [formation-energy identity](../../formal/GaloisForLFunctions/RHTower/SuzukiC
 \mathcal F(N+1)-\mathcal F(N)=\frac{N+1}{N+2}|G_{N+1}|^2.
 \]
 Consequently (MS) can equivalently be sought as an upper bound of order \(X^{2b+\varepsilon}\) for this already defined cumulative energy. Its monotonicity does not supply that upper bound.
+
+The new [formation-energy exponent law](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L1044) concerns individual increments. Its separate [cumulative receiver](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L1010) gives only \(\Theta\leq1/2+r/2\) from \(\mathcal F(X)=O(X^r)\). The mean-square argument above gives the sharper \(\Theta\leq r/2\) for \(r>1\), but that analytic specialization still needs formalization. The existing cumulative theorem therefore does not close (MS).
 
 For a direct arithmetic attack, expand
 \[
@@ -670,7 +716,8 @@ The improvements remain open. Checked items refer to supporting source results o
 
 - [x] Identify exact arithmetic source, its completion, and the target exponents in Section 8.1.
 - [x] Prove the quotient-tail estimate and power-cutoff specializations in Lean at the actual zero abscissa.
-- [x] Reduce 5/6 to the head through \(N^{1/9}\), and 3/4 to the head through \(N^{1/3}\), with a \(N^{1/4}\) second-stage cutoff after 5/6.
+- [x] Retain and bound the truncated Abel boundary; prove the same remainder estimate for the literal increment head in Lean.
+- [x] Reduce both targets to one-sided bounds on the head through \(N^\theta\) for any fixed \(\theta>0\), using the formal self-contracting receiver. The former numerical cutoffs remain valid one-step choices.
 - [x] Give a paper proof that cumulative energy \(X^{5/3+\varepsilon}\) or \(X^{3/2+\varepsilon}\) suffices.
 - [x] Identify the existing even-index and character-twisted receivers.
 - [ ] Prove (R5), or the corresponding mean-square or binary-correlation estimate, for the literal arithmetic source.
@@ -687,7 +734,7 @@ Other useful inputs remain available below. Priority reflects proximity to an ex
 - [ ] Improve that rate for the **literal** residual, keeping the gamma completion and source signs intact.
 - [ ] Aim first for `O(N^r)` with an explicit `r < 1/2`. `r = 1/3` is a concrete route to `5/6`; boundedness reaches the existing `3/4` theorem.
 - [ ] If using the factor-two Ward restriction, first prove its quantitative comparison with the aligned completed Abel scalar, then bound the aggregate contribution. A sign theorem for another cross form is insufficient.
-- [ ] If such an estimate is proved on paper, formalize the power-growth extension through the existing general interpolation and resolvent-to-width interfaces.
+- [x] Formalize the power-growth receiver and exact finite-contact exponent law; the required improved arithmetic rate remains open.
 - [ ] Alternatively, prove the existing order-three boundedness hypothesis directly and use the already stated finite-contact theorem.
 
 **Completion criterion:** a proof of the improved arithmetic estimate that does not assume the target strip or RH, followed by the numerical strip consequence. An implication whose only new premise is that estimate is not completion.
@@ -767,6 +814,17 @@ An explicit five-sixths witness has `ν=1/30`, `κ=6/5`, `x=5/48`, `y=35/48`, an
 
 The three-quarters route requires a further change to the reflected allowance, principal normalization, or unit contribution. Improving the two nonunit powers alone cannot suffice within this model. The native routes in Sections 8.2–8.5 specify separate arithmetic targets for that endpoint.
 
+**A specific arithmetic conjecture.** The [shift-correlation route](../drafts/pipeline/1-in-progress/quasi-rh-shift-correlation.md) proposes
+\[
+\mathcal M_4(\chi,S):=\sum_{x\in\mathbb F_p}
+\left|\sum_{h\in S}\chi(x-h)\right|^4
+\ll_\varepsilon p^{1+\varepsilon}|S|^2
+\quad (|S|\leq p^{1/3})
+\]
+for residue intervals S and order-six characters. The card derives the candidate conductor factor \(p^{1/6}\) under this estimate and the required amplification bounds. Matching-pair degeneracies, their exact \(2|S|^2-|S|\) count, cross-ratio normalization, and the fourth-moment expansion are formalized; the signed off-diagonal estimate and its transport to the detector are not.
+
+Window geometry is essential. [QuasiRHSubfieldMoment.lean](../../formal/GaloisForLFunctions/RHTower/QuasiRHSubfieldMoment.lean#L142) constructs fields of size \(q=5^{12n+6}\), characters of exact order six, and sets of size \(B=5^{4n+2}\), with \(B^3=q\) and \(\mathcal M_4\geq4\cdot5^{2n}qB^2\). Thus the cardinality-only extension to arbitrary square-field sets is false. The surviving [affine-line projection identity](../../formal/GaloisForLFunctions/RHTower/QuasiRHSubfieldProjection.lean#L121) identifies the line-occupancy contribution exactly. A narrower pilot conjecture uses balanced boxes \(S=I+\omega J\subset\mathbb F_{p^2}\), \(p\equiv5\bmod6\), comparable side lengths, and \(|S|\leq q^{1/3}\); it asks for the same \(q^{1+\varepsilon}|S|^2\) bound. These boxes avoid the exhibited concentration on a single subfield line, but their fourth-moment estimate remains open.
+
 **Stop or redirect a proposed argument** if it only reproduces the baseline exponent, substitutes an RH-dependent provider, discards the signed interaction being estimated, or proves a result for a different source without an identification theorem. Preserve any nontrivial estimate or classification obtained along the way; failure to reach a narrower strip does not erase that mathematical result.
 
 ## 9. Evidence and verification
@@ -781,6 +839,6 @@ scripts/formal_tools.py research 'one sided upper bound reflected Mobius binary 
 
 Search suggestions are leads, not proof compositions. In particular, shifted truncated-divisor correlations, fixed-core prime-release limits, and Selberg-sieve bounds with an unproved residual-variance premise do not supply the actual estimates required here. Ranked results and incomplete compiler coverage cannot establish the absence of every possible theorem elsewhere in the corpus.
 
-**Formal verification:** the three quotient-tail modules linked in Section 8.2 pass focused `lake --old env lean` checks without warnings and are wired into `RHTower`. Their theorems retain the actual zero abscissa. The mean-square argument in Section 8.4 remains a paper deduction. The decisive head and character-twisted correlation estimates remain open; neither improved strip is proved. Existing Suzuki normalization and detector-budget leaves are supporting results with the scopes stated above.
+**Formal verification:** the three quotient-tail modules and `QuasiRHQuotientHeadBoundary` linked in Section 8.2 pass focused `lake --old env lean` checks without warnings and are wired into `RHTower`. Their theorems retain the actual zero abscissa. The mean-square argument in Section 8.4 remains a paper deduction. The decisive head and character-twisted correlation estimates remain open; neither improved strip is proved. Existing Suzuki normalization and detector-budget leaves are supporting results with the scopes stated above.
 
 The upstream theorem's soundness is assumed. External novelty of these reductions is unclaimed; no web research is used.
