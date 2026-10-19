@@ -307,6 +307,58 @@ Both sides of the criterion vanish at `x = 0`; the comparison of slopes there is
 `∫_{t > t_a} dm(t) |m_a'(t)| ≤ sinh(a/2)/2` with `t_a` the peak of `m_a`, since
 `(m_a(t−x) − m_a(x+t))⁺ ≈ 2x (−m_a'(t))⁺`.
 
+**The shift-averaged variation inequality.** The variation inequality holds for every `a > 0`
+under RH and is quadratic in `m_a`, so it can be integrated over the shift. With the autocorrelation
+`G = Φ ∗ Φ` of Riemann's kernel (`riemannAutocorr`), even, `0 ≤ G(z) ≤ Φ(|z|/2)`,
+
+    ∫_0^∞ m_a(x) m_a(y) da = G(x − y) − G(x + y) =: K(x, y)            (`averagedKernel`),
+    ∫_0^∞ 4 sinh(a/2) m_a(x) sinh(x/2) da = 2 sinh²(x/2),
+
+the first because each of the four products `Φ(x ∓ a)Φ(y ∓ a)` integrates over `a ∈ ℝ` to
+`G(x − y)` or `G(x + y)` and the integrand is even in `a`; the second because
+`∫ Φ(s) cosh(s/2) ds = 1/2` and `∫ Φ(s) sinh(s/2) ds = 0` give `∫ sinh(a/2) Φ(x − a) da = sinh(x/2)/2`
+(`integral_Ioi_shiftDifference_mul_shiftDifference`, `integral_Ioi_sinh_mul_shiftDifference`).
+`K(x,y) ≥ 0` for `x, y ≥ 0` and `K ≤ Φ(0)`. For each shift `t` the averaged variations are
+
+    D̄(t) = ∫_0^t K(x, t−x) (u(x) − u(t−x))² dx,      S̄(t) = ∫_{x>0} K(x, x+t) (u(x) − u(x+t))² dx
+
+(`averagedReflectedShift`, `averagedSameSideShift`); all integrands are nonnegative, so the exchange
+of `∫ da` with `∫ dx` needs no majorant beyond the exact `a`-integrals. For `u` bounded by `M`,
+supported in `[−R, R]`, Lipschitz with constant `L` on `[−R−1, R+1]`:
+
+    0 ≤ D̄(t) ≤ 4M²Φ(0) t,     D̄(t) ≤ 4M² t Φ((t − 2R)/2)   (t ≥ 2R),
+    0 ≤ S̄(t) ≤ Φ(0)(L² + 4M²) R t,     S̄(t) ≤ 4M² R Φ(t/2),
+
+because on the support of `(u(x) − u(t−x))²` one has `x ≤ R` or `t − x ≤ R`, hence
+`|t − 2x| ≥ t − 2R` and `K(x,t−x) ≤ G(2x − t) ≤ Φ(|2x−t|/2)`. The linear bounds make the archimedean
+parts integrable against `archLevyDensity(t) dt` (the density is `O(1/t)` at `0`), and the decay
+bounds make the prime parts summable, since `Φ(s) ≤ C e^{−8|s|}` gives
+`Σ Λ(n) n^{−1/2} (1 + log n) Φ((log n − c)/2) < ∞` (`summable_atom_mul_one_add_log_mul_kernel_half`).
+A nonnegative series of integrable functions with summable integrals is integrable
+(`integrable_tsum_of_nonneg`), so `a ↦ D_a(u)`, `a ↦ S_a(u)` and the source are integrable on
+`(0, ∞)` and
+
+    ∫_0^∞ D_a(u) da = D̄(u) := ∫ dm(t) D̄(t),     ∫_0^∞ S_a(u) da = S̄(u) := ∫ dm(t) S̄(t),
+    ∫_0^∞ 4 sinh(a/2) ∫_{x>0} u² m_a sinh(x/2) da = 2 ∫_{x>0} u(x)² sinh²(x/2) dx
+
+(`integral_Ioi_reflectedDifferenceEnergy_shiftedGroundState`,
+`integral_Ioi_sameSideEnergy_shiftedGroundState`, `integral_Ioi_source_shiftedGroundState`).
+Integrating the two-sided representation (`integral_Ioi_markovEnergy_phiDoob_shiftedGroundState`),
+
+    ∫_0^∞ markovEnergy(Θ(ω_a u)) da = 2 S̄(u) − D̄(u) + 2 ∫_{x>0} u(x)² sinh²(x/2) dx,
+
+and under RH the left side is nonnegative, which is the **shift-averaged variation inequality**
+(`averagedReflectedEnergy_le_of_riemannHypothesis`,
+`averaged_variation_inequality_autocorr_of_riemannHypothesis`):
+
+    ∫ dm(t) ∫_0^t [G(2x−t) − G(t)] (u(x) − u(t−x))² dx
+      ≤ 2 ∫ dm(t) ∫_{x>0} [G(t) − G(2x+t)] (u(x) − u(x+t))² dx + 2 ∫_{x>0} u(x)² sinh²(x/2) dx.
+
+The inequality is shift-free and has explicit kernels; it is weaker than RH (an average of the
+pointwise family), and it is the natural first target for an unconditional proof: on the far
+diagonal `x ≈ t/2` the kernel `G(2x − t) − G(t) ≈ G(0)` is large but `(u(x) − u(t−x))²` vanishes
+once `t > 2R`, so the prime sum is cut off at `log n ≤ 2R` up to the superexponential tail.
+
 ### 3.6 The finite model (Perron–Frobenius)
 
 For a finite symmetric nonnegative kernel `K` and any potential `ρ`, the form `E_K − Σ ρ v²` is
@@ -371,6 +423,9 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
    bounds (`oddProfileCollarDiffSq_le_two_direct_add_two_across`,
    `integral_oddProfileCollarDiffSq_le_direct_add_absorbedArchSlice`) are partial results on
    exactly this inequality, on the low-prime window `3t/2 ≤ a`.
+   The shift-averaged form (3.5) is the weakest member of the family: it replaces `m_a(x)m_a(y)` by
+   `G(x−y) − G(x+y)` and the source by `2 sinh²(x/2) u²`; an unconditional proof of it would be the
+   first positivity statement of the programme that is not a consequence of the window structure.
 3. **Signed superpositions at infinity.** Finite combinations `Σ c_j ω_{a_j}` with mixed signs that
    stay positive on `(0,∞)` fail at the origin (3.5); at infinity the folded defect is linear, so the
    question is the sign of `Σ c_j (sinh(a_j/2) sinh(x/2) − C_{a_j}(x))` for large `x`, where each
@@ -429,3 +484,7 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
 | `TwoBumpProfile` | `twoBumpProfile`; evenness, `C²`, compact support; `m_a u = g(·−a)` on the half line; cross term `= autoCorr g (t − 2a)`; prime cross energy `= windowSum Λ (2a)` |
 | `FarApartBumpsPositivity` | `∫Φ ≤ 1/2`; archimedean collar `≤ 1` and the collar excess `≤ windowCollarConstant` on `|x−a| ≤ 1/4`; `windowKernelFloor`; remainder bound; archimedean cross term `≤ (3/2) sup|ρ_g|`; `exists_shift_markovEnergy_twoBumpProfile_pos` |
 | `ShiftedGroundStateInfinityFailure` | uniform bound of `∫_0^∞ symArchTerm`; the signed prime shift sum `P(x+a) − P(x−a)`; `C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K` for `x ≥ a` (`two_mul_source_sub_le_shiftedCollarMass`); folded defect `≤ −2Θ(x)(sinh(a/2) sinh(x/2) − K)`; strict folded subsolution on `[X, ∞)` (`exists_infinity_window_foldedGenerator_lt_potential`) |
+| `ShiftAveragedKernel` | `∫ f(c − a) da = ∫ f`; half-line integral of an even function; `G` even, `0 ≤ G ≤ Φ(|z|/2)`; the four shift integrals of translated kernel products; `∫_0^∞ m_a(x) m_a(y) da = G(x−y) − G(x+y)`; `∫ Φ sinh(s/2) = 0`; `∫ sinh(a/2) Φ(x ∓ a) da = ± sinh(x/2)/2`; `∫_0^∞ 4 sinh(a/2) m_a(x) sinh(x/2) da = 2 sinh²(x/2)` |
+| `ShiftAveragedShifts` | `averagedKernel`, `averagedReflectedShift`, `averagedSameSideShift`; product integrability in `(a,x)` through the exact `a`-integrals; the shift averages of one reflected and one same-side shift; linear and decay bounds; measurability in `t` |
+| `ShiftAveragedEnergies` | `integrable_tsum_of_nonneg`; `Φ ≤ C e^{−8|x|}`; `Σ Λ(n)n^{−1/2}(1 + log n) Φ((log n − c)/2) < ∞`; Fubini of the `a`-integral with the archimedean integral and the prime sum for both energies; `averagedReflectedEnergy`, `averagedSameSideEnergy`; the shift averages of `D_a`, `S_a` and of the source |
+| `ShiftAveragedVariationInequality` | `K(x,t−x) = G(2x−t) − G(t)`, `K(x,x+t) = G(t) − G(2x+t)`; `∫_0^∞ markovEnergy(Θ(ω_a u)) da = 2S̄ − D̄ + 2∫u² sinh²(x/2)`; RH ⟹ the shift-averaged variation inequality, also in autocorrelation form |

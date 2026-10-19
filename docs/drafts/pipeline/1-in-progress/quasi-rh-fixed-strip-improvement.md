@@ -166,6 +166,8 @@ Formal status: the exact witness, scale invariant, boundary decomposition, sharp
 
 `GramCanonicalSource.originalCommonBlock` identifies those Möbius weights as the inversion of a coprimality restriction. Their presence does not by itself prove a saving. Even a complete exceptional-term saving must be accompanied by a nonexceptional improvement to reach five sixths through this profile.
 
+The [prime-mask and cube-root block candidate](quasi-rh-prime-mask-centering.md) develops one concrete construction. Its two Lean leaves prove an optimal mean-preserving prime packet, a uniform finite-prefix square bound, bounded principal bias, and weighted insertion bounds including every Dirichlet character. The arithmetic detector realization, cube-root block estimate, and reflected-source improvement remain open; the card states their separate tests and exponent requirements.
+
 ## Research constraints
 
 Use local corpus searches; no external searches under the user's standing instruction. Consequently no external novelty certification is claimed. No numerical experiments. New capstones must not take the desired estimate, RH, or an improved strip as a premise. Finish paper proofs before formalizing. Use sequential foreground leaf checks with `lake --old env lean`; no full or umbrella builds. Preserve other agents' files.

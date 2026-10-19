@@ -288,3 +288,20 @@ remainder-dominates-defect inequality.
   to even `g` and support radius `1/4` comes from the corpus window theorem (autocorrelation
   windows); a general-window PNT via Abel summation would remove both. (A) shift-averaged inequality:
   next.
+- 2026-10-20 — **(A) shift-averaged variation inequality, in Lean** (`ShiftAveragedKernel`,
+  `ShiftAveragedShifts`, `ShiftAveragedEnergies`, `ShiftAveragedVariationInequality`; twenty-eight
+  modules). Kernels: `∫_0^∞ m_a(x)m_a(y)da = G(x−y) − G(x+y)` with `G = riemannAutocorr`, and
+  `∫_0^∞ 4 sinh(a/2) m_a(x) sinh(x/2) da = 2 sinh²(x/2)` (uses `∫Φ sinh(s/2) = 0` and the corpus
+  `∫Φ cosh(s/2) = 1/2`). Fubini in `(a,x)` via `integrable_prod_iff'` with the exact nonnegative
+  `a`-integrals (no majorants); Fubini in `(a,t)` against `archLevyDensity` with the linear bounds
+  `D̄(t) ≤ 4M²Φ(0)t`, `S̄(t) ≤ Φ(0)(L²+4M²)Rt`; prime sums via `Φ ≤ Ce^{−8|x|}` ⟹
+  `ΣΛ(n)n^{−1/2}(1+log n)Φ((log n−c)/2) < ∞` and a new general lemma `integrable_tsum_of_nonneg`
+  (nonnegative series of integrable functions with summable integrals is integrable; via
+  `lintegral_tsum`). Results: `∫_0^∞ markovEnergy(Θ(ω_a u)) da = 2S̄(u) − D̄(u) + 2∫u² sinh²(x/2)`
+  unconditionally (`integral_Ioi_markovEnergy_phiDoob_shiftedGroundState`) and RH ⟹
+  `D̄(u) ≤ 2S̄(u) + 2∫_{x>0}u² sinh²(x/2)` (`averagedReflectedEnergy_le_of_riemannHypothesis`,
+  autocorrelation form `averaged_variation_inequality_autocorr_of_riemannHypothesis`). Axioms:
+  standard. Open: an unconditional proof of the averaged inequality (README §5, problem 2); the
+  natural attack is the cut-off `log n ≤ 2R` of the prime sum forced by the support of
+  `(u(x) − u(t−x))²`, which leaves a finite prime sum plus the archimedean term against explicit
+  kernels.

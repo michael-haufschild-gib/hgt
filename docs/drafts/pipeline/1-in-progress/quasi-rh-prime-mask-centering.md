@@ -41,13 +41,23 @@ For the second inequality, distinct primes contribute `pq/lcm(p,q)=1`, while eac
 
 `Σ_{1≤n≤N} (F_S(n)−1)² ≤ N/A + 2B(1+B) ≤ N/A + 4`.
 
-The last step uses `A≥K`, since every prime is at least two. The estimate holds for every natural N and every nonempty finite prime set, uniformly when the prime set moves with N. It requires no complete CRT period. This closes the rational-mask finite-prefix estimate on paper; it does not yet identify the detector's weighted Eisenstein remainder with this mask.
+The last step uses `A≥K`, since every prime is at least two. The estimate holds for every natural N and every nonempty finite prime set, uniformly when the prime set moves with N. It requires no complete CRT period. `QuasiRHCalibratedPrimeMaskWindow.lean` proves both the explicit `2B(1+B)` bound and its constant-four corollary. It does not identify the detector's weighted Eisenstein remainder with this mask.
+
+The same exact first moment also preserves the finite principal sum: `0≤Σ_{1≤n≤N}F_S(n)−N≤1+B≤2`. Indeed, this difference is `(NK−ΣW)/A`, and `p⌊N/p⌋≤N` supplies its lower bound. For any complex weights `a(n)`, Cauchy–Schwarz gives
+
+`|Σ_{1≤n≤N} a(n)(F_S(n)−1)|² ≤ (N/A+4) Σ_{1≤n≤N}|a(n)|²`.
+
+In particular, for every Dirichlet character, the squared error is at most `N(N/A+4)`. This bounds the change under mask insertion uniformly in the character; it does not bound the unmasked character sum.
 
 ## Detector conjecture: arithmetic realization
 
 Choose auxiliary prime ideals in one dyadic range, with the fixed calibration removed and coefficients proportional to their norms. Conjecture: the resulting linear combination of detector rows admits an exact principal-plus-centered decomposition whose exceptional **remainder** is governed by the prime-mask variance, while its principal residue stays nonzero. The construction must be made at the source level; multiplying an arbitrary existing row by a nearly constant mask does not reduce that row's variance.
 
 This is open. The prime-mask calculation concerns rational primes. Transport to Eisenstein prime ideals, the detector's weighted physical window, the actual character weights, and the principal Mellin residue are separate proof obligations. New auxiliary primes also consume conductor/slot budget. No saving is counted until these costs are included.
+
+**First falsification test.** Determine whether the exceptional contribution is a centered fluctuation or a common mean term. At mean one, the complete-period square mean of any prime-mask combination is `1+V(c)≥1+1/A`; calibration reduces the variance but preserves the unit mean-square contribution. If the `P^(1/6)` term multiplies that common mean rather than `V(c)`, this construction cannot reduce its exponent. Removing that term would require a source-level subtraction with a separately checked principal residue.
+
+The physical energy also constrains the cutoff: `LowActualEnergies.lowRayAmplitude_actual_energy` uses `lowGaussMajorant`, which is nonnegative and equals one on the selected numerator rows. A cancellation obtained by freely replacing this cutoff with a signed Schwartz function does not establish the required energy domination. Any Mellin-moment annihilation must respect that constraint or replace the majorization argument.
 
 ## Nonexceptional conjecture: keep the bilinear block intact
 
@@ -61,6 +71,8 @@ Propagating this particular bound through the frequency and ideal sums changes t
 
 The existing `HyperKloostermanFactoredModuliBilinear.norm_sq_factored_moduli_le` supplies a reusable proof pattern: retain one arithmetic sum inside Cauchy–Schwarz, split diagonal/off-diagonal pairs, complete the latter modulo the product modulus, and estimate complete correlations. It applies to `Kl₃` over rational moduli `p s²`; it is **not** already a bound for this sextic Eisenstein block. `large_sieve_gamma0_cubic` is a spectral sieve with a cubic height weight, not a cubic-character large sieve.
 
+At common ideal `C=1`, `globalExtension` is an empty product. The remaining arithmetic factor is a character in each lattice variable, up to a fixed ray-class factor. For separated test weights, a bound of the proposed strength would require a scalar character-sum saving of the shape `N^(1/2)q^(1/6+ε)`. Thus generic orthogonality is not sufficient: the target has conductor-aspect Weyl strength. The retrieved Jacobi/Gauss identities evaluate complete two-character sums; they do not supply this short-sum bound or the necessary higher correlations. The coupled shell profile must also be separated with controlled norms before using any scalar estimate.
+
 ## Three-quarters requirement
 
 Even both conjectures above do not overcome the retained reflected allowance. With a unit-sized exceptional term and `P^(4/3)/Y`, the nominal budget without reflected loss reaches three quarters at `(x,y,L)=(1/12,1/3,7/12)`. The present reflected allowance there is `1/2` in energy, adding `1/4` after the square root. A three-quarters construction must remove that cost on the actual reflected source or supply a different source normalization. The conjectural prime-mask centering must therefore be tested on the zero-retained-length reflected face, not only on the low Gram term.
@@ -70,7 +82,7 @@ Even both conjectures above do not overcome the retained reflected allowance. Wi
 - [x] Derive the calibrated finite-prime optimizer and its stability identity on paper.
 - [x] Formalize the exact optimization and literal radial square-density conclusion.
 - [x] Prove the rational-mask finite-prefix estimate on paper, uniformly in the moving prime set.
-- [ ] Formalize that finite-prefix estimate.
+- [x] Formalize that finite-prefix estimate.
 - [ ] Identify an admissible physical detector with these calibrated coefficients and a nonzero principal residue.
 - [ ] Transfer the finite-prefix estimate to the detector's weighted Eisenstein remainder.
 - [ ] Expand the actual nonexceptional block's complete off-diagonal correlation; check whether the factored-modulus proof pattern applies.

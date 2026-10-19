@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.QuasiRHCalibratedPrimeMasks
 import GaloisForLFunctions.RHTower.Sieve.DivisorSumMeanSquareSmooth
+import Mathlib.NumberTheory.DirichletCharacter.Bounds
 
 /-!
 # Uniform finite-prefix bounds for calibrated prime masks
@@ -7,6 +8,8 @@ import GaloisForLFunctions.RHTower.Sieve.DivisorSumMeanSquareSmooth
 Counting multiples bounds the quadratic divisibility term from above and the
 linear term from below. This gives a square error at most `N/A + 4`, where
 `A = ∑ (p - 1)`, uniformly over the finite prime set and prefix length.
+The principal prefix sum differs from `N` by at most two. The same square
+bound controls insertion of the mask against arbitrary complex weights.
 -/
 
 open Finset
@@ -189,5 +192,78 @@ theorem calibratedPrimeMask_centered_square_prefix_le_four (S : Finset ℕ)
   have hsq := mul_le_mul hB1 hB1 hB (by norm_num : (0 : ℝ) ≤ 1)
   have h := calibratedPrimeMask_centered_square_prefix_le S hS hne N
   nlinarith
+
+/-- The calibrated mask preserves the principal prefix sum with absolute error at most two. -/
+theorem calibratedPrimeMask_prefix_bias (S : Finset ℕ)
+    (hS : ∀ p ∈ S, p.Prime) (hne : S.Nonempty) (N : ℕ) :
+    0 ≤ (∑ n ∈ Finset.Icc 1 N, calibratedPrimeMask S n) - N ∧
+      (∑ n ∈ Finset.Icc 1 N, calibratedPrimeMask S n) - N ≤ 2 := by
+  have hA := primeMaskCapacity_pos S hS hne
+  have hfirst := sum_primeDivisorWeight_ge S hS N
+  have hupper : (∑ n ∈ Finset.Icc 1 N, primeDivisorWeight S n) ≤
+      (N : ℝ) * S.card := by
+    rw [sum_primeDivisorWeight S hS N]
+    calc
+      _ ≤ ∑ p ∈ S, (N : ℝ) := by
+        apply Finset.sum_le_sum
+        intro p hp
+        have hp0 : (p : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (hS p hp).ne_zero
+        have h := mul_le_mul_of_nonneg_left (Nat.cast_div_le (m := N) (n := p)
+          (α := ℝ)) (show 0 ≤ (p : ℝ) by positivity)
+        simpa only [mul_div_cancel₀ _ hp0] using h
+      _ = _ := by simp [mul_comm]
+  have he : (∑ n ∈ Finset.Icc 1 N, calibratedPrimeMask S n) - N =
+      ((N : ℝ) * S.card - ∑ n ∈ Finset.Icc 1 N, primeDivisorWeight S n) /
+        primeMaskCapacity S := by
+    calc
+      _ = ∑ n ∈ Finset.Icc 1 N, (calibratedPrimeMask S n - 1) := by
+        simp [Finset.sum_sub_distrib]
+      _ = _ := by
+        simp_rw [calibratedPrimeMask_sub_one_eq S hS hne]
+        rw [← Finset.sum_div, Finset.sum_sub_distrib]
+        simp
+  have hcard : (S.card : ℝ) ≤ primeMaskCapacity S := by
+    have h := primeMaskCapacity_ge_card_mul S 2 (fun p hp => by
+      exact_mod_cast (hS p hp).two_le)
+    norm_num at h
+    exact h
+  rw [he]
+  refine ⟨div_nonneg (sub_nonneg.mpr hupper) hA.le, ?_⟩
+  apply (div_le_iff₀ hA).mpr
+  linarith
+
+/-- Squared error under insertion of the mask, with the original complex weights retained. -/
+theorem calibratedPrimeMask_weighted_prefix_error_sq (S : Finset ℕ)
+    (hS : ∀ p ∈ S, p.Prime) (hne : S.Nonempty) (N : ℕ) (a : ℕ → ℂ) :
+    ‖∑ n ∈ Finset.Icc 1 N, a n * ((calibratedPrimeMask S n - 1 : ℝ) : ℂ)‖ ^ 2 ≤
+      (∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2) * ((N : ℝ) / primeMaskCapacity S + 4) := by
+  have ht : ‖∑ n ∈ Finset.Icc 1 N, a n * ((calibratedPrimeMask S n - 1 : ℝ) : ℂ)‖ ≤
+      ∑ n ∈ Finset.Icc 1 N, ‖a n‖ * |calibratedPrimeMask S n - 1| := by
+    simpa only [norm_mul, Complex.norm_real, Real.norm_eq_abs] using
+      norm_sum_le (Finset.Icc 1 N)
+        (fun n => a n * ((calibratedPrimeMask S n - 1 : ℝ) : ℂ))
+  have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.Icc 1 N)
+    (fun n => ‖a n‖) (fun n => |calibratedPrimeMask S n - 1|)
+  simp only [sq_abs] at hcs
+  exact ((pow_le_pow_left₀ (norm_nonneg _) ht 2).trans hcs).trans
+    (mul_le_mul_of_nonneg_left (calibratedPrimeMask_centered_square_prefix_le_four S hS hne N)
+      (Finset.sum_nonneg fun _ _ => sq_nonneg _))
+
+/-- Uniform mask-insertion error for every Dirichlet character and every modulus. -/
+theorem calibratedPrimeMask_character_prefix_error_sq (S : Finset ℕ)
+    (hS : ∀ p ∈ S, p.Prime) (hne : S.Nonempty) (N q : ℕ)
+    (χ : DirichletCharacter ℂ q) :
+    ‖∑ n ∈ Finset.Icc 1 N, χ n * ((calibratedPrimeMask S n - 1 : ℝ) : ℂ)‖ ^ 2 ≤
+      (N : ℝ) * ((N : ℝ) / primeMaskCapacity S + 4) := by
+  have hA := primeMaskCapacity_pos S hS hne
+  have hsum : (∑ n ∈ Finset.Icc 1 N, ‖χ n‖ ^ 2) ≤ (N : ℝ) := by
+    calc
+      _ ≤ ∑ _n ∈ Finset.Icc 1 N, (1 : ℝ) := by
+        apply Finset.sum_le_sum
+        intro n _
+        simpa using pow_le_pow_left₀ (norm_nonneg (χ n)) (χ.norm_le_one n) 2
+      _ = _ := by simp
+  exact (calibratedPrimeMask_weighted_prefix_error_sq S hS hne N (fun n => χ n)).trans
+    (mul_le_mul_of_nonneg_right hsum (by positivity))
 
 end RHTower.WeilSingularArithmetic

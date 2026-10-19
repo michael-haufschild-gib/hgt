@@ -64,3 +64,24 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
   constant depth reaches the ceiling for every period. New insight: the square-root threshold
   `L/2` is the maximal hiding aperture over the whole periodic class at density `L/2π`; the
   lattice law is the extremal case, and extremality is Toeplitz positivity. Standard axioms.
+- **C5 · Smooth depth modulations hide up to a logarithmic aperture** —
+  `SmoothDepthProfileHidingLaw`. Periodic summation by parts (`one_sub_mul_sum_pow`,
+  `norm_sum_pow_le`), the mean-value bound for second differences of `cosh(v·d)`
+  (`abs_second_diff_cosh_le`) and `|1 − e^{2πim/P}| ≥ 4m/P` give
+  `norm_depthSymbol_le_of_smooth`: `|D(m)| ≤ P³(2vκ₂ sinh vδ + 4v²κ₁² cosh vδ)/(16m²)`, `v = mL/P`.
+  `profileConfig_weil_nonneg_of_smooth`: invisible at `a ≤ L/4` when
+  `PLκ₂ sinh(2δa)(1+log n)/8 + nL²κ₁² cosh(2δa)/4 ≤ 1`, `n = ⌈2aP/L⌉`. For a smooth profile of
+  amplitude `δ` and period `P` (`κ₁ ≍ δ/P`, `κ₂ ≍ δ/P²`) this is `e^{2δa} ≲ P/(δL log P)`: the
+  modulation hides up to `≈ (1/2δ) log(P/(δL))`. New insight: the visibility aperture of a depth
+  profile is set by its smoothness scale — edges `O(1/δ)` (C1), smooth modulations of length `Λ`
+  logarithmic in `Λ/δ`, uniform depth the ceiling `L/2` (C4). Standard axioms.
+- **C6 · Total-variation blindness of off-line clusters** — `ClusterTotalVariationBlindness`.
+  `clusterConfig`: finitely many lattice ordinates pushed off-line to variable depths `d_k`.
+  `W_clusterConfig_eq_integral`: `W = 2L‖f‖² + ∫ k(u) Σ_k 2(cosh(d_k u) − 1) e^{2πiku/L} du`.
+  Summation by parts along the lattice (`one_sub_mul_tsum_zpow`) and `|cosh x − cosh y| ≤
+  sinh M |x − y|` give `norm_cluster_sum_le`: `|Σ| ≤ (L/2) TV(d) sinh(δ|u|)`.
+  `re_W_clusterConfig_ge`/`_nonneg`: `Re W ≥ 2L(1 − a·TV(d)·sinh(2δa))‖f‖²`, so any cluster with
+  `a·TV(d)·sinh(2δa) ≤ 1` is invisible (`4a ≤ L`). `depthVariation_runSet_const`: a constant run
+  has `TV = 2δ`, recovering C1's blindness. New insight: blindness depends only on the total depth
+  variation (edges included) and the maximal depth — not on length, position or profile shape.
+  Standard axioms.
