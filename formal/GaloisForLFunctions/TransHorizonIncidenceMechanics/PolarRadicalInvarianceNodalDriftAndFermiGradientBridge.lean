@@ -160,11 +160,8 @@ theorem odd_sourceEnergy_eq_weilForm_add_two_sourcePair_oddPolarVectorAt_sq
   exact primitive_sourceEnergy_eq_weilForm_add_two_sourcePair_oddPolarVectorAt_sq ha0 ha
     (inner_oneL_eq_zero_of_odd hodd_fst)
 
-/-- **Cross-Shift & Pole-Moment Closure of the Unit-Coefficient (`θ ≤ 1`) `sinh` Absorption Law:**
-Under the hypotheses of `convex_doob_chain_sinh_absorption_le_one`, for any other nonzero admissible
-reference shift `b`, the residual polar pairing `θ * sourcePair (oddPolarVectorAt a ha) p` can be
-evaluated at `oddPolarVectorAt b hb` or replaced directly by the shift-independent pole moment
-`θ * ⟪p.val.fst, tanhL⟫_ℝ`. -/
+/-- Cross-shift and pole-moment forms of the conditional sinh absorption bound.
+The same assumed coefficient `θ` is retained; the identity does not prove `θ ≤ 1`. -/
 theorem convex_doob_chain_sinh_absorption_cross_shift_and_tanhL
     {a b R M θ : ℝ} (ha0 : 0 < a) (hb0 : b ≠ 0)
     (ha : 1 < 2 * Real.exp (-2 * |a|)) (hb : 1 < 2 * Real.exp (-2 * |b|))

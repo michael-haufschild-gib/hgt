@@ -213,7 +213,8 @@ theorem markovEnergy_phiDoob_eq_groundRemainder_add_potential {ω u : ℝ → �
       rw [integral_const_mul]
       ring
     rw [h1, integral_tsum_of_summable_integral_norm
-      (fun n => (integrableOn_groundPotentialDensity hωc huco huc (Real.log n) _).const_mul _)
+      (F := fun n : ℕ => fun x => vonMangoldtAtom n * groundPotentialDensity ω u (Real.log n) x)
+      (fun n : ℕ => (integrableOn_groundPotentialDensity hωc huco huc (Real.log n) _).const_mul _)
       hadm.prime_potential]
     congr 1
     refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
@@ -250,6 +251,10 @@ theorem markovEnergy_phiDoob_eq_groundRemainder_add_potential {ω u : ℝ → �
     exact (hcont.integrable_of_hasCompactSupport hsupp).integrableOn
   rw [harch, hprime, hcosh]
   unfold groundRemainder foldedGenerator
+  have hint_ap : IntegrableOn (fun x =>
+      u x ^ 2 * ω x * (∫ t in Ioi (0 : ℝ), archLevyDensity t * foldedShiftGenerator ω t x) +
+        u x ^ 2 * ω x * ∑' n : ℕ, vonMangoldtAtom n * foldedShiftGenerator ω (Real.log n) x)
+      (Ioi 0) := hint_arch.add hadm.prime_generator
   have hsplit : (∫ x in Ioi (0 : ℝ), u x ^ 2 * ω x *
       ((∫ t in Ioi (0 : ℝ), archLevyDensity t * foldedShiftGenerator ω t x) +
         (∑' n : ℕ, vonMangoldtAtom n * foldedShiftGenerator ω (Real.log n) x) -
@@ -259,11 +264,16 @@ theorem markovEnergy_phiDoob_eq_groundRemainder_add_potential {ω u : ℝ → �
       (∫ x in Ioi (0 : ℝ), u x ^ 2 * ω x *
         ∑' n : ℕ, vonMangoldtAtom n * foldedShiftGenerator ω (Real.log n) x) -
       ∫ x in Ioi (0 : ℝ), u x ^ 2 * ω x * (riemannKernelReal x * Real.cosh (x / 2) * ω x) := by
-    rw [← integral_add hint_arch hadm.prime_generator,
-      ← integral_sub (hint_arch.add hadm.prime_generator) hint_cosh]
-    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-    simp only [Pi.add_apply, Pi.sub_apply]
-    ring
+    have h1 : (∫ x in Ioi (0 : ℝ), u x ^ 2 * ω x *
+        ((∫ t in Ioi (0 : ℝ), archLevyDensity t * foldedShiftGenerator ω t x) +
+          (∑' n : ℕ, vonMangoldtAtom n * foldedShiftGenerator ω (Real.log n) x) -
+          riemannKernelReal x * Real.cosh (x / 2) * ω x)) =
+        ∫ x in Ioi (0 : ℝ),
+          ((u x ^ 2 * ω x * (∫ t in Ioi (0 : ℝ), archLevyDensity t * foldedShiftGenerator ω t x) +
+            u x ^ 2 * ω x * ∑' n : ℕ, vonMangoldtAtom n * foldedShiftGenerator ω (Real.log n) x) -
+            u x ^ 2 * ω x * (riemannKernelReal x * Real.cosh (x / 2) * ω x)) :=
+      setIntegral_congr_fun measurableSet_Ioi fun x _ => by ring
+    rw [h1, integral_sub hint_ap hint_cosh, integral_add hint_arch hadm.prime_generator]
   rw [hsplit]
   ring
 

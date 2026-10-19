@@ -656,13 +656,9 @@ theorem phiDoobCoshMass_oddPolarWeight_le_sinh_potential
     exact mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left hdom (oddProfile_pos ha hx0).le) (sq_nonneg _)
 
-/-- **Master Convex Gauge Interpolation & Unit-Coefficient (`θ ≤ 1`) Absorption Law:**
-Whenever `coshSinhPolarRatio a M R ≤ θ` (with `θ ≤ 1`), the `+2 θ ∫_{x > 0} m_a(x) sinh(x / 2) w(x)² dx`
-potential in `convex_doob_chain_sinh_interpolation` completely absorbs `phiDoobCoshMass`, while the
-non-negative `Θ`-Doob divisor-chain variances `∑' q : ChainIndex, chainIntegral (oddPolarWeight a w) q`
-absorb all prime collars (including all low primes `log d < 2R`), so `markovEnergy (oddProfileTest a w)`
-plus `θ * sourcePair (oddPolarVectorAt a ha) p` dominates the sum of archimedean jumps, same-side
-prime jumps, and divisor-chain variances with **net coefficient `θ ≤ 1` uniformly in `R`**. -/
+/-- Conditional absorption of cosh mass by the sinh potential, retaining all jump terms.
+The premise supplies the coefficient `θ`; neither `θ ≤ 1` nor its feasibility as `R` grows
+is proved here. -/
 theorem convex_doob_chain_sinh_absorption_le_one
     {a R M θ : ℝ} (ha0 : 0 < a) (ha : 1 < 2 * Real.exp (-2 * |a|))
     (hM0 : 0 ≤ M) (hM : ∀ u ∈ Icc (a - R) (a + R), ‖deriv riemannKernelReal u‖ ≤ M)

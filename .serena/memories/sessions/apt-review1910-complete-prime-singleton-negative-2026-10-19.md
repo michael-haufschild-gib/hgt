@@ -1,0 +1,9 @@
+# APT review §3 checkpoint
+
+A1 is proved without a new mathematical premise: the complete native critical prime harmonic sum is at most `-log(2)/390`, so `factorialCriticalPrimeLimit ≤ -(4/(390*pi^4))*log(2) < 0`. Every singleton pattern `{j}` with coefficient one is an explicit finite negative vector for `factorialCriticalTranslatedPrimeLimit`. This prime channel is subtracted in the full Weil form; no negative full Weil form or RH claim follows.
+
+Authoritative leaf: `formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialCriticalPrimeSingletonNegative.lean`. Supports: `FactorialCriticalHarmonicTaylorBounds`, `FactorialCriticalHarmonicOscillationBounds`, `FactorialCriticalHarmonicFiniteBounds`. All four are umbrella-imported and directly checked with `lake --old env lean -j 1`; all 26 public declarations have only propext, Classical.choice, Quot.sound in the actual-import axiom audit. Complete finite charges retain composite subtractions. The proven infinite harmonic cutoff is J_m≤6/5 for m≥20; the older 11/10 premise was replaced, not assumed.
+
+A2 and A3 remain OPEN. Current card: `docs/drafts/pipeline/1-in-progress/apt-review1910-complete-form-estimates.md`; crisp ledger: `logs/apt-review1910-knowledge.md`. Critical source is exp(x/2)*phase(exp(-x)) on x≤0. It corresponds to weighted-tail abscissa -1/2, outside existing sampling strip [-1/4,5/4]. A2 needs complete prime, Gamma, polar cutoff and smoothing costs. One polar endpoint must be constructed with bounded-primitive cancellation. A3 must retain diagonal and reflection-defect budgets; decay of finite off-line readouts alone does not prove blindness.
+
+Global lint at this checkpoint reports eight foreign umbrella-reachability errors (five BiScaleUncertainty, two BezoutValuationIncidence, one SquareRootThreshold), none in A1. Preserve concurrent work. No novelty certification or project-wide green claim.

@@ -137,10 +137,19 @@ with `C_a` the reflected collar mass. So `ω_a` is a `𝓛_N`-supersolution at `
 `C_a(x) ≤ sinh(a/2) sinh(x/2)`. The prime part of `C_a(x)` is a smoothed count of prime powers in a
 window of bounded logarithmic width above `e^x`; by the prime number theorem it is asymptotic to
 `e^{x/2} ∫_0^∞ e^{s/2}(Θ(s−a) − Θ(s+a)) ds`, while the source is asymptotic to `sinh(a/2) e^{x/2}/2`.
-Their ratio lies strictly above `1` for every `a > 0` (it tends to `1 + 4∫_0^∞ Θ sinh(u/2)` as `a → 0`
-and to `2` as `a → ∞`). **The shifted ground states fail to be folded supersolutions at large `x`, by a
-margin that is a pure constant of Riemann's kernel.** This is the exact content of the corpus's
-"factor two between `μ = 1/2` and `μ = 1`" and of THIM's residual `θ · sourcePair`.
+Write `κ(a) = ∫_0^∞ e^{s/2}(Θ(s−a) − Θ(s+a)) ds`, `I(a) = ∫_a^∞ e^{u/2}Θ`, `J(a) = ∫_a^∞ e^{−u/2}Θ`, so that
+`κ(a) = e^{a/2}(1/2 − J(a)) − e^{−a/2} I(a)` (using `∫_ℝ e^{u/2}Θ = 1/2`). The asymptotic ratio of
+collar to source is `R(a) = 2κ(a)/sinh(a/2)`, and
+
+    2κ(a) − sinh(a/2) = ½[ e^{a/2}(1 − 4J(a)) − e^{−a/2}(4I(a) − 1) ] > 0   for every a > 0,
+
+because `J(a) ≤ J(0) = 1/4 − σ` and `I(a) ≤ I(0) = 1/4 + σ` with `σ = ∫_0^∞ Θ(u) sinh(u/2) du > 0`, so
+`e^{a}(1 − 4J(a)) ≥ 4σ e^{a} > 4σ ≥ 4I(a) − 1`. The ratio tends to `1 + 8Θ(0) + 4σ` as `a → 0`
+(about eight) and to `2` as `a → ∞`. **Every shifted ground state fails to be a folded supersolution
+on a neighbourhood of infinity, by a factor that is a pure constant of Riemann's kernel.** This is
+the exact content of the corpus's "factor two between `μ = 1/2` and `μ = 1`" and of THIM's residual
+`θ · sourcePair`. The Lean modules prove the exact identities; the asymptotic statement uses the
+prime number theorem through a smooth window and is a paper theorem on the card.
 
 ### 3.5 The finite model (Perron–Frobenius)
 
@@ -180,11 +189,17 @@ is precisely why the hard direction is open there.
 3. **M3 (Lean, exact part):** the source equation of `ω_a` and the folded defect identity with the
    reflected collar mass `C_a`. **(Paper, then Lean):** the asymptotic failure `C_a(x) > sinh(a/2)
    sinh(x/2)` for large `x`, from the prime number theorem with a smooth window; the limiting ratio
-   `2∫_0^∞ e^{s/2}(Θ(s−a) − Θ(s+a)) ds / sinh(a/2) ∈ (1 + 4∫_0^∞ Θ sinh(u/2) du, 2)`.
-4. **M4 (paper):** forced asymptotics of any odd `𝓛_N`-supersolution at infinity. The source of a
-   superposition `ω = ∫ c(a) ω_a da` is `2 sinh(x/2) Θ(x) ∫ c(a) sinh(a/2) da` and its collar is linear
-   in `c`; the supersolution condition at large `x` is a linear inequality in `c`. Decide whether any
-   positive superposition satisfies it (an extremal problem in `c`), or prove that none does.
+   `R(a) = 2κ(a)/sinh(a/2)` exceeds `1` for every `a > 0` (Section 3.4), so no shifted ground state is
+   a folded supersolution near infinity. Lean status: exact identities done
+   (`ShiftedGroundStateSourceEquation`, `ShiftedGroundStateReflectedCollarDefect`); the window
+   prime number theorem transport is open.
+4. **M4 (paper, partly settled):** on the cone of odd functions positive on `(0,∞)`, both the
+   two-sided generator and the reflected collar are linear, so the folded defect of a positive
+   superposition `ω = Σ c_j ω_{a_j}` (`c_j ≥ 0`) is `Σ c_j · (folded defect of ω_{a_j})`. With M3 every
+   summand is eventually negative: **no positive finite superposition of shifted ground states is a
+   folded supersolution near infinity.** Open: signed superpositions that stay positive on `(0,∞)`,
+   and supersolutions outside the span of the shifted ground states (the forced asymptotics of any
+   odd folded supersolution at infinity).
 5. **M5:** the hard direction for the folded operator: does `markovEnergy(Θ v) ≥ 0` on odd tests force a
    positive `𝓛_N`-supersolution? The finite template says yes for Z-type forms; the arithmetic form is
    not Z-type. Either prove a replacement (a Harnack inequality for `𝓛_N` propagating positivity
@@ -210,3 +225,16 @@ kernel; the arithmetic content enters only through the equation of motion of `Θ
   hypothesis.
 - Namespace: `GaloisForLFunctions.ArithmeticCriticalityTheory`; corpus objects are used through
   `open RHTower` and the `RHTower.CHMDPolar` namespace.
+
+## 7. Module map
+
+| Module | Content |
+|---|---|
+| `GroundStateRepresentationAlgebra` | pointwise identities; finite jump form, generator, finite ground-state representation; easy Allegretto–Piepenbrink |
+| `FiniteJumpFormAllegrettoPiepenbrink` | Schrödinger matrix; Rayleigh form; hard direction via minimiser and absolute value; neighbour-closed zero set; connectivity ⟹ strict positivity; the finite equivalence |
+| `DoobJumpFoldedGroundStateRepresentation` | `foldedShiftGenerator`, `twoSidedShiftGenerator`, ground jumps; comparison of the two generators; folded ground-state representation of one Doob shift jump |
+| `OddSupersolutionCriterion` | `foldedGenerator`, `groundRemainder`, `FoldedAdmissible`; folded ground-state representation of `markovEnergy (Θ v)`; `riemannHypothesis_of_foldedSupersolution` |
+| `ShiftedGroundStateSourceEquation` | `shiftedGroundState`, `twoSidedGenerator`; exact source equation `𝓛_D ω_a − Θ cosh ω_a = 2 sinh(a/2) sinh(x/2) Θ` |
+| `ShiftedGroundStateReflectedCollarDefect` | `shiftedCollarMass`; integrability and summability of the collar; `𝓛_N ω_a = 𝓛_D ω_a − 2Θ C_a`; folded defect and the supersolution criterion for `ω_a` |
+| `EvenSectorPoleCalibration` | constants are strict subsolutions of both generators; pole mass `1/2`; degenerate shift `a = 0` |
+| `ShiftedGroundStateSuperposition` | linearity of the folded generator on the span of shifted ground states; folded defect of a combination; a nonnegative nonzero combination is a folded supersolution at `x` only if a constituent is |

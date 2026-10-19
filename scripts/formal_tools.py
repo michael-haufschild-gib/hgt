@@ -165,12 +165,27 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.TransHorizonIncidenceMechanics.fermiBoundaryJump_exact_recovery_iff",
         ],
     },
+    "arithmetic_criticality_theory": {
+        "module": "GaloisForLFunctions.ArithmeticCriticalityTheory",
+        "path": SRC / "ArithmeticCriticalityTheory",
+        "capstones": [
+            "GaloisForLFunctions.ArithmeticCriticalityTheory.riemannHypothesis_of_foldedSupersolution",
+            "GaloisForLFunctions.ArithmeticCriticalityTheory.nonneg_iff_exists_pos_supersolution",
+            "GaloisForLFunctions.ArithmeticCriticalityTheory.twoSidedGenerator_shiftedGroundState_sub_potential",
+            "GaloisForLFunctions.ArithmeticCriticalityTheory.foldedGenerator_shiftedGroundState_sub_potential",
+        ],
+    },
     "square_root_threshold": {
         "module": "GaloisForLFunctions.SquareRootThreshold",
         "path": SRC / "SquareRootThreshold",
         "capstones": [
             "GaloisForLFunctions.SquareRootThreshold.isolatedPairConfig_weil_nonneg_iff",
             "GaloisForLFunctions.SquareRootThreshold.isolatedPairConfig_weil_nonneg_nyquist_iff",
+            "GaloisForLFunctions.SquareRootThreshold.re_windowedW_nonneg_of_aperture_nonneg",
+            "GaloisForLFunctions.SquareRootThreshold.exists_offLine_lattice_windowed_nonneg",
+            "GaloisForLFunctions.SquareRootThreshold.windowedW_eq_integral_heightShift",
+            "GaloisForLFunctions.SquareRootThreshold.zetaZeroConfig_re_W_nonneg_of_small_aperture",
+            "GaloisForLFunctions.SquareRootThreshold.re_integral_heightShift_zetaZeroConfig_nonneg",
         ],
     },
     "quantum_alg": {
@@ -186,6 +201,7 @@ THEOREM_AREAS = {
 }
 
 ALLOWED_ROOT_LEAN = {
+    "ArithmeticCriticalityTheory.lean",
     "ArithmeticPositivityTheory.lean",
     "BezoutValuationIncidence.lean",
     "BiScaleUncertainty.lean",

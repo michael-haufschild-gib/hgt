@@ -44,3 +44,57 @@ of an implication whose other direction (M5) is the open research question.
 
 ## Log
 - 2026-10-19 — created in 1-in-progress from docs/reports/review-1910/fable.md §4; README written; module 1 drafted.
+
+## Paper results (19 October 2026)
+
+**P1 (M3, asymptotic failure of the shifted ground states).** Fix `a > 0`. Write
+`m̃_a(s) = Θ(s−a) − Θ(s+a)` (positive for `s > 0`) and `C_a(x) = A_a(x) + P_a(x)` with
+`A_a(x) = ∫_0^∞ ω(x+s) m̃_a(s) ds` and `P_a(x) = Σ_{log n > x} Λ(n) n^{−1/2} m̃_a(log n − x)`
+(this is `shiftedCollarMass a x` in Lean). Claim: `C_a(x) > sinh(a/2) sinh(x/2)` for all large `x`.
+Proof. (i) `A_a(x) ≤ ω(x) ∫_0^∞ m̃_a = O(e^{−x/2})` since `ω` is decreasing on `(0,∞)`.
+(ii) Stieltjes form `P_a(x) = ∫_{e^x}^∞ y^{−1/2} m̃_a(log y − x) dψ(y)`. Replace `dψ(y)` by `dy`:
+`∫ y^{−1/2} m̃_a(log y − x) dy = e^{x/2} κ(a)` with `κ(a) = ∫_0^∞ e^{s/2} m̃_a(s) ds` (substitute
+`y = e^{x+s}`). The remainder is `−∫_{e^x}^∞ (ψ(y) − y) d[y^{−1/2} m̃_a(log y − x)]` (boundary terms
+vanish since `m̃_a(0) = 0` and `Θ` decays super-exponentially); with `|ψ(y) − y| ≤ ε(y) y`, `ε → 0`
+(prime number theorem), it is bounded by `sup_{y ≥ e^x} ε(y) · e^{x/2} ∫_0^∞ e^{s/2}(|m̃_a| + |m̃_a'|)(s) ds
+= o(e^{x/2})`. So `C_a(x) = e^{x/2}(κ(a) + o(1))` while `sinh(a/2) sinh(x/2) = e^{x/2}(sinh(a/2)/2 + o(1))`.
+(iii) `2κ(a) > sinh(a/2)`: with `I(a) = ∫_a^∞ e^{u/2}Θ`, `J(a) = ∫_a^∞ e^{−u/2}Θ`,
+`κ(a) = e^{a/2}(1/2 − J(a)) − e^{−a/2} I(a)` (because `∫_ℝ e^{u/2}Θ = 1/2`, Lean
+`integral_riemannKernelReal_exp_half`), hence
+`2κ(a) − sinh(a/2) = ½[e^{a/2}(1 − 4J(a)) − e^{−a/2}(4I(a) − 1)]`. Since `I(0) + J(0) = 1/2` and
+`I(0) − J(0) = 2σ`, `σ = ∫_0^∞ Θ sinh(u/2) > 0`, we have `J(a) ≤ 1/4 − σ`, `I(a) ≤ 1/4 + σ`, so
+`e^{a}(1 − 4J(a)) ≥ 4σ e^{a} > 4σ ≥ 4I(a) − 1` for `a > 0`. The limiting ratio
+`R(a) = 2κ(a)/sinh(a/2)` tends to `1 + 8Θ(0) + 4σ` as `a → 0` (from `κ(a) = a(2Θ(0) + I(0)) + O(a²)`)
+and to `2` as `a → ∞`. ∎ (Paper; Lean: identities done, window PNT transport open.)
+
+**P2 (M4, positive superpositions).** On the cone of odd `ω` with `ω > 0` on `(0,∞)`, the reflected
+collar `2Φ(x)Φ(t−x) ω(t−x)⁺` equals `2Φ(x)Φ(t−x) ω(t−x) 1_{t>x}` and is linear in `ω`; the two-sided
+generator is linear. Hence for `c_j ≥ 0` the folded defect of `Σ c_j ω_{a_j}` is
+`2Φ(x) Σ c_j [sinh(a_j/2) sinh(x/2) − C_{a_j}(x)]`, eventually negative by P1. No positive finite
+superposition of shifted ground states is a folded supersolution near infinity. Signed superpositions
+and supersolutions outside this span remain open (M4 continued, M5).
+
+**Selectivity gate.** The identities (ground-state representations, generator comparison) hold for
+any even positive kernel. The arithmetic enters only through `theta_harmonic_identity`, which encodes
+the explicit formula for `ζ`; for `ζ(s−a)ζ(s+a)` the potential has two poles and the source equation
+changes. The P1 failure uses the prime number theorem only.
+
+## Log (continued)
+- 2026-10-19 — Lean modules compiled and wired: `GroundStateRepresentationAlgebra`,
+  `FiniteJumpFormAllegrettoPiepenbrink`, `DoobJumpFoldedGroundStateRepresentation`,
+  `OddSupersolutionCriterion` (sufficiency theorem `riemannHypothesis_of_foldedSupersolution`).
+  `ShiftedGroundStateSourceEquation`, `ShiftedGroundStateReflectedCollarDefect`,
+  `EvenSectorPoleCalibration` written; compile in progress. Paper results P1, P2 recorded.
+- 2026-10-19 — All seven modules compile (`lake --old env lean -j 1`, one at a time), umbrella
+  `GaloisForLFunctions/ArithmeticCriticalityTheory.lean` audited with `lake env lean`, wired into
+  `MainTheorems.lean` and registered as theorem area `arithmetic_criticality_theory` in
+  `scripts/formal_tools.py`. `#print axioms` on the ten main theorems: `propext`, `Classical.choice`,
+  `Quot.sound` only. Gate 2 → 3 for M1, M2 and the exact part of M3 is met; M3 asymptotic (P1) and
+  M4/M5 remain paper or open.
+- 2026-10-19 — `ShiftedGroundStateSuperposition` added and wired: the folded defect is linear on the
+  span of the shifted ground states, and a nonnegative nonzero combination of two of them is a folded
+  supersolution at `x` only if one constituent is (`exists_constituent_supersolution_of_combination`).
+  Together with paper result P1 this is P2 in Lean form for two constituents (general finite sums are
+  the same induction). Eight modules total; umbrella audited; lint gate passes for this area; index
+  regenerated. Remaining open: P1 in Lean (window prime number theorem transport), signed
+  superpositions, discharging `FoldedAdmissible` for explicit `ω`, M5.

@@ -36,6 +36,9 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPri
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeContinuousKernel
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeKernelMass
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalHarmonicTaylorBounds
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalHarmonicOscillationBounds
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalHarmonicFiniteBounds
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeSingletonNegative
 import GaloisForLFunctions.«arithmetic-positivity-theory».NonstationaryMellinLowFrequencyExclusion
 import GaloisForLFunctions.«arithmetic-positivity-theory».MarkovPoleHyperbolicCapacityAndApertureThresholds
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothingAndGramMargin

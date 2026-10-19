@@ -1,5 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.PrimeAnchorMixedRecovery
 import GaloisForLFunctions.BiScaleUncertainty.PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer
+import GaloisForLFunctions.BezoutValuationIncidence.SixModeStabilityAndSharpQuarterDecorrelation
 
 /-!
 # Mixed-observation error in the complete arithmetic graph
@@ -158,7 +159,8 @@ theorem barbanVehov_anchor_neg {N p : ℕ} (hp : p ∈ sievePrimeTail N)
   rw [barbanVehov_anchor hp X hX]
   have hp0 : (0 : ℝ) < p := by exact_mod_cast (mem_filter.mp hp).2.1.pos
   have hl : 0 < Real.log ((X : ℝ) / p) :=
-    Real.log_pos ((lt_div_iff₀ hp0).mpr (by exact_mod_cast hX))
+    Real.log_pos ((lt_div_iff₀ hp0).mpr (by
+      simpa only [one_mul] using (Nat.cast_lt.mpr hX : (p : ℝ) < X)))
   exact div_neg_of_neg_of_pos (neg_neg_of_pos hl) hp0
 
 /-- BV cutoffs below the terminal prime are excluded by the proved taper-zero boundary. -/

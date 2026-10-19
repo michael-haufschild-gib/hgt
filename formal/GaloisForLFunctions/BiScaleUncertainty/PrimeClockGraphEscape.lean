@@ -30,8 +30,13 @@ theorem escapeTolerance_le (n : ℕ) : escapeTolerance n ≤ 1 / 16 := by
   nlinarith [Nat.cast_nonneg (α := ℝ) n]
 
 theorem escapeTolerance_zero : Tendsto escapeTolerance atTop (𝓝 0) := by
-  have h := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).div_const 16
-  simpa only [escapeTolerance, div_div, mul_comm, zero_div] using h
+  have h : Tendsto (fun n : ℕ => (1 / ((n : ℝ) + 1)) / 16) atTop (𝓝 0) := by
+    simpa only [zero_div] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).div_const 16
+  convert h using 1
+  funext n
+  simp only [escapeTolerance, div_div]
+  ring
 
 /-- The scalar bounds include every prime edge of the original graph. -/
 theorem exists_deep_prime_escape :
@@ -79,7 +84,7 @@ theorem exists_deep_prime_escape :
       calc
         _ = ‖((u n - P n) + (P n - P m)) + (P m - u m)‖ := by congr 1; abel
         _ ≤ ‖u n - P n‖ + ‖P n - P m‖ + ‖P m - u m‖ :=
-          (norm_add_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+          (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
         _ = _ := by rw [norm_sub_rev (u n) (P n)]
     have hn := herr n
     have hm := herr m

@@ -58,7 +58,7 @@ theorem odd_apply_zero {ω : ℝ → ℝ} (hodd : ∀ x, ω (-x) = -ω x) : ω 0
 
 /-- The two generators differ by the reflected collar `2Φ(x)Φ(t−x) ω(t−x)⁺`. -/
 theorem twoSidedShiftGenerator_eq_folded_add_collar {ω : ℝ → ℝ} (hodd : ∀ x, ω (-x) = -ω x)
-    (hpos : ∀ x, 0 < x → 0 < ω x) {t x : ℝ} (hx : 0 < x) :
+    (hpos : ∀ x, 0 < x → 0 < ω x) (t x : ℝ) :
     twoSidedShiftGenerator ω t x =
       foldedShiftGenerator ω t x +
         2 * riemannKernelReal x * riemannKernelReal (t - x) * max (ω (t - x)) 0 := by
@@ -139,17 +139,22 @@ theorem integral_phiDoobArchShiftJump_groundState {ω u : ℝ → ℝ} (hω : Co
     ring
   rw [integral_phiDoobArchShiftJump_eq_halfLine_of_odd hv hvc hvodd ht]
   -- the pieces
-  set Φ := riemannKernelReal with hΦ_def
-  set a : ℝ → ℝ := fun x => Φ x * Φ (x + t) * (ω x - ω (x + t)) * ω x * u x ^ 2 with ha_def
-  set b : ℝ → ℝ := fun y => Φ (y - t) * Φ y * (ω (y - t) - ω y) * ω y * u y ^ 2 with hb_def
-  set c : ℝ → ℝ := fun x => Φ x * Φ (t - x) * (ω x - ω (t - x)) * ω x * u x ^ 2 with hc_def
-  set d : ℝ → ℝ := fun x => Φ x * Φ (x - t) * (ω x - ω |x - t|) * ω x * u x ^ 2 with hd_def
-  have hΦc : Continuous Φ := continuous_riemannKernelReal
+  set a : ℝ → ℝ := fun x =>
+    riemannKernelReal x * riemannKernelReal (x + t) * (ω x - ω (x + t)) * ω x * u x ^ 2 with ha_def
+  set b : ℝ → ℝ := fun y =>
+    riemannKernelReal (y - t) * riemannKernelReal y * (ω (y - t) - ω y) * ω y * u y ^ 2 with hb_def
+  set c : ℝ → ℝ := fun x =>
+    riemannKernelReal x * riemannKernelReal (t - x) * (ω x - ω (t - x)) * ω x * u x ^ 2 with hc_def
+  set d : ℝ → ℝ := fun x =>
+    riemannKernelReal x * riemannKernelReal (x - t) * (ω x - ω |x - t|) * ω x * u x ^ 2 with hd_def
+  have hΦc : Continuous riemannKernelReal := continuous_riemannKernelReal
   -- integrability of the pieces
   have hint_same : IntegrableOn (sameSideGroundJump ω u t) (Ioi 0) := by
-    have : sameSideGroundJump ω u t =
-        fun x => (Φ x * Φ (x + t) * ω x * ω (x + t)) * (u x - u (x + t)) ^ 2 := by
-      funext x; simp only [sameSideGroundJump]
+    have : sameSideGroundJump ω u t = fun x =>
+        (riemannKernelReal x * riemannKernelReal (x + t) * ω x * ω (x + t)) *
+          (u x - u (x + t)) ^ 2 := by
+      funext x
+      simp only [sameSideGroundJump]
     rw [this]
     exact integrableOn_continuous_mul_sq
       (((hΦc.mul (hΦc.comp (continuous_id.add continuous_const))).mul hω).mul
@@ -160,10 +165,11 @@ theorem integral_phiDoobArchShiftJump_groundState {ω u : ℝ → ℝ} (hω : Co
       (((hΦc.mul (hΦc.comp (continuous_id.add continuous_const))).mul
         (hω.sub (hω.comp (continuous_id.add continuous_const)))).mul hω) hu huc _
   have hint_bshift : IntegrableOn (fun x => b (x + t)) (Ioi 0) := by
-    have : (fun x => b (x + t)) =
-        fun x => (Φ (x + t - t) * Φ (x + t) * (ω (x + t - t) - ω (x + t)) * ω (x + t)) *
-          u (x + t) ^ 2 := by
-      funext x; simp only [hb_def]
+    have : (fun x => b (x + t)) = fun x =>
+        (riemannKernelReal (x + t - t) * riemannKernelReal (x + t) *
+          (ω (x + t - t) - ω (x + t)) * ω (x + t)) * u (x + t) ^ 2 := by
+      funext x
+      simp only [hb_def]
     rw [this]
     exact integrableOn_continuous_mul_sq
       (((hΦc.comp ((continuous_id.add continuous_const).sub continuous_const)).mul
@@ -194,14 +200,19 @@ theorem integral_phiDoobArchShiftJump_groundState {ω u : ℝ → ℝ} (hω : Co
         ((hu.add (hu.comp (continuous_const.sub continuous_id))).pow 2))
     exact (hcont.integrableOn_Icc).mono_set Ioo_subset_Icc_self
   -- same-side expansion
+  have hint_sa : IntegrableOn (fun x => sameSideGroundJump ω u t x + a x) (Ioi 0) :=
+    hint_same.add hint_a
+  have hint_bn : IntegrableOn (fun x => -b (x + t)) (Ioi 0) := hint_bshift.neg
   have hsame : (∫ x in Ioi (0 : ℝ), phiDoobArchShiftJump v t x) =
       (∫ x in Ioi (0 : ℝ), sameSideGroundJump ω u t x) +
         (∫ x in Ioi (0 : ℝ), a x) + ∫ x in Ioi (0 : ℝ), -b (x + t) := by
-    rw [← integral_add hint_same hint_a, ← integral_add (hint_same.add hint_a) hint_bshift.neg]
-    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-    simp only [phiDoobArchShiftJump, hv_def, sameSideGroundJump, ha_def, hb_def, Pi.add_apply,
-      Pi.neg_apply, hΦ_def, add_sub_cancel_right]
-    ring
+    have h1 : (∫ x in Ioi (0 : ℝ), phiDoobArchShiftJump v t x) =
+        ∫ x in Ioi (0 : ℝ), (sameSideGroundJump ω u t x + a x + -b (x + t)) := by
+      refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+      simp only [phiDoobArchShiftJump, hv_def, sameSideGroundJump, ha_def, hb_def,
+        add_sub_cancel_right]
+      ring
+    rw [h1, integral_add hint_sa hint_bn, integral_add hint_same hint_a]
   -- the shifted piece
   have hshift : (∫ x in Ioi (0 : ℝ), -b (x + t)) = -∫ y in Ioi t, b y := by
     rw [integral_neg]
@@ -223,14 +234,19 @@ theorem integral_phiDoobArchShiftJump_groundState {ω u : ℝ → ℝ} (hω : Co
     have hcr : IntegrableOn (fun x => c (t - x)) (Ioo 0 t) := by
       have : Continuous fun x => c (t - x) := hc_cont.comp (continuous_const.sub continuous_id)
       exact (this.integrableOn_Icc).mono_set Ioo_subset_Icc_self
+    have hint_rc : IntegrableOn (fun x => reflectedGroundJump ω u t x + c x) (Ioo 0 t) :=
+      hint_refl.add hint_c
     have hsplit : (∫ x in Ioo (0 : ℝ) t,
         riemannKernelReal x * riemannKernelReal (t - x) * (v x + v (t - x)) ^ 2) =
         (∫ x in Ioo (0 : ℝ) t, reflectedGroundJump ω u t x) +
           (∫ x in Ioo (0 : ℝ) t, c x) + ∫ x in Ioo (0 : ℝ) t, c (t - x) := by
-      rw [← integral_add hint_refl hint_c, ← integral_add (hint_refl.add hint_c) hcr]
-      refine setIntegral_congr_fun measurableSet_Ioo fun x _ => ?_
-      simp only [hv_def, reflectedGroundJump, hc_def, Pi.add_apply, hΦ_def, sub_sub_cancel]
-      ring
+      have h1 : (∫ x in Ioo (0 : ℝ) t,
+          riemannKernelReal x * riemannKernelReal (t - x) * (v x + v (t - x)) ^ 2) =
+          ∫ x in Ioo (0 : ℝ) t, (reflectedGroundJump ω u t x + c x + c (t - x)) := by
+        refine setIntegral_congr_fun measurableSet_Ioo fun x _ => ?_
+        simp only [hv_def, reflectedGroundJump, hc_def, sub_sub_cancel]
+        ring
+      rw [h1, integral_add hint_rc hcr, integral_add hint_refl hint_c]
     rw [hsplit, setIntegral_Ioo_reflect_self c t]
     ring
   -- the potential: split `Ioi 0 = Ioo 0 t ∪ Ioi t`
@@ -238,10 +254,12 @@ theorem integral_phiDoobArchShiftJump_groundState {ω u : ℝ → ℝ} (hω : Co
       (∫ x in Ioi (0 : ℝ), a x) + ((∫ x in Ioo (0 : ℝ) t, c x) - ∫ y in Ioi t, b y) := by
     have had : (∫ x in Ioi (0 : ℝ), u x ^ 2 * ω x * foldedShiftGenerator ω t x) =
         (∫ x in Ioi (0 : ℝ), a x) + ∫ x in Ioi (0 : ℝ), d x := by
-      rw [← integral_add hint_a hint_d]
-      refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-      simp only [foldedShiftGenerator, ha_def, hd_def, Pi.add_apply, hΦ_def]
-      ring
+      have h1 : (∫ x in Ioi (0 : ℝ), u x ^ 2 * ω x * foldedShiftGenerator ω t x) =
+          ∫ x in Ioi (0 : ℝ), (a x + d x) := by
+        refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+        simp only [foldedShiftGenerator, ha_def, hd_def]
+        ring
+      rw [h1, integral_add hint_a hint_d]
     have hd_split : (∫ x in Ioi (0 : ℝ), d x) =
         (∫ x in Ioo (0 : ℝ) t, d x) + ∫ x in Ioi t, d x := by
       rw [← Ioc_union_Ioi_eq_Ioi ht,
@@ -250,7 +268,7 @@ theorem integral_phiDoobArchShiftJump_groundState {ω u : ℝ → ℝ} (hω : Co
         integral_Ioc_eq_integral_Ioo]
     have hdc : (∫ x in Ioo (0 : ℝ) t, d x) = ∫ x in Ioo (0 : ℝ) t, c x := by
       refine setIntegral_congr_fun measurableSet_Ioo fun x hx => ?_
-      simp only [hd_def, hc_def, hΦ_def]
+      simp only [hd_def, hc_def]
       have habs : |x - t| = t - x := by
         rw [abs_of_neg (by linarith [hx.2])]
         ring
@@ -258,7 +276,7 @@ theorem integral_phiDoobArchShiftJump_groundState {ω u : ℝ → ℝ} (hω : Co
     have hdb : (∫ x in Ioi t, d x) = -∫ y in Ioi t, b y := by
       rw [← integral_neg]
       refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
-      simp only [hd_def, hb_def, hΦ_def, Pi.neg_apply]
+      simp only [hd_def, hb_def]
       rw [abs_of_pos (by linarith [mem_Ioi.mp hx])]
       ring
     rw [had, hd_split, hdc, hdb]

@@ -50,7 +50,10 @@ module. Do not redefine them.
 | Lattices | doubled on-line lattice / off-line lattice pair of spacing `2π/L` | `RHTower.onLineLatticeConfig`, `RHTower.offLineLatticeConfig` |
 | Tilt identity | a vertical shift `−iδ` of the transform is the tilt `e^{δu}` of the test | `RHTower.paperFT_sub_I_mul` |
 | Window slice | `g_s(u) = f(u + s) η(u)`: the part of `f` seen through the window `η` at offset `s` | `SquareRootThreshold.windowSlice` |
-| Windowed Weil form | the Weil form of the product kernel `k_f · k_η`; equals the average of `W(M_t f, M_t f)` over heights with weight `|h_η(t)|²/2π` | `SquareRootThreshold.windowedW` |
+| Windowed Weil form | the Weil form of the product kernel `k_f · k_η`; equals `∫ |h_η(−2πξ)|² W(S_ξ f, S_ξ f) dξ` | `SquareRootThreshold.windowedW` |
+| Height shift | `S_ξ f(u) = e^{2πiξu} f(u)`, so `h_{S_ξ f}(z) = h_f(z + 2πξ)` | `SquareRootThreshold.heightShift` |
+| Tempered configuration | `Σ_ρ m_ρ/(1 + |γ_ρ|²) < ∞`; true for lattices, isolated-pair configurations and `ζ` | `SquareRootThreshold.TemperedConfig` |
+| Pair energy | `S(a) = ∫_{-a}^{a} sinh²(δu) du = sinh(2δa)/(2δ) − a` | `SquareRootThreshold.pairEnergy` |
 
 **Words.**
 
@@ -75,9 +78,13 @@ module. Do not redefine them.
 4. **Slice factorization.** `k_f · k_η = ∫ k_{g_s} ds` with `g_s = f(· + s) η`. Every slice is
    supported in the support of the window `η`, whatever the aperture of `f`. Hence a windowed Weil
    form at any aperture is an integral of Weil forms at the window's aperture.
-5. **Height averaging.** Fourier inversion identifies the windowed form with the height average
-   `∫ |h_η(t)|²/(2π) · W(M_t f, M_t f) dt`, where `M_t` is the modulation that shifts heights by
-   `t`.
+5. **Height averaging.** Fourier inversion of the window kernel, `k_η(v) = ∫ |h_η(−2πξ)|² e^{2πiξv} dξ`,
+   identifies the windowed form with the height average `∫ |h_η(−2πξ)|² W(S_ξ f, S_ξ f) dξ`. Here
+   `S_ξ f = e^{2πiξ·} f`, so that `h_{S_ξ f}(z) = h_f(z + 2πξ)`. The zero-side exchange uses the
+   Peetre bound `1 + |x| ≤ (1 + |x + y|)(1 + |y|)`.
+6. **The pole is a pair.** The pole terms `h_k(i/2) + h_k(−i/2)` of the explicit formula have
+   exactly the shape of an off-line pair at depth `½` and height `0`. Hence the rank-two estimate
+   (mechanism 3) bounds their cost at aperture `a` by `2(sinh a − a)‖f‖²`.
 
 ---
 
@@ -97,29 +104,52 @@ module. Do not redefine them.
 
 ## 5. Research topics and status
 
-### Within reach
+### Within reach (all proved, unconditional)
 
 * **SRT-1 · Visibility law** —
   [`IsolatedOffLinePairVisibilityLaw`](IsolatedOffLinePairVisibilityLaw.lean). Exact threshold for
   one off-line pair of depth `δ` and ordinate `γ₀` in a doubled on-line lattice of spacing `2π/L`.
-  * For `0 < a ≤ L/2`, the configuration is invisible at aperture `a` **iff**
-    `sinh(2δa)/δ ≤ 2L + 2a`.
-  * **Consequence:** the pair is visible below the Nyquist aperture iff `sinh(δL) > 3δL`, that is
-    `δL > x₀ ≈ 2.49`. Deep zeros (`δL ≫ 1`) are visible at aperture `≈ (1/2δ) log(4δL)`.
-    Shallow zeros (`δ ≲ 2.5/L`) stay invisible up to `L/2`, which is the square-root threshold.
+  * `isolatedPairConfig_weil_nonneg_iff`: for `0 < a ≤ L/2`, the configuration is invisible at
+    aperture `a` **iff** `sinh(2δa)/δ ≤ 2L + 2a`. The witness is `F = sinh(δ·)` on `[-a, a]`.
+  * `isolatedPairConfig_weil_nonneg_nyquist_iff`: the pair is visible below the Nyquist aperture iff
+    `sinh(δL) > 3δL`, that is `δL > x₀ ≈ 2.84`, where `sinh x₀ = 3x₀`.
+  * Deep zeros (`δL ≫ 1`) are visible at aperture `≈ (1/2δ) log(4δL)`
+    (`isolatedPairConfig_weil_nonneg_of_le_log`, `exists_re_W_isolatedPairConfig_neg_of_log_le`).
+  * Shallow zeros (`δ ≲ 2.8/L`) stay invisible up to `L/2`: this is the square-root threshold.
   * **Contrast:** the off-line lattice pair has threshold `L/2` at every depth
     (`RHTower.offLineLattice_weil_positive_iff`).
+  * The one-sided general statement is `RHTower.IsolatedDeepZeroWeilDetection`: a positive
+    configuration has an off-line companion near every isolated deep zero.
 * **SRT-2 · Insensitivity of averaged information** —
-  [`WindowedWeilFormSliceTransfer`](WindowedWeilFormSliceTransfer.lean).
-  * **Transfer law:** for every tempered configuration, positivity at aperture `r` implies
-    nonnegativity of every windowed Weil form whose window is supported in `[-r, r]`, at every
-    aperture of the test.
-  * **No-go:** off-line lattice pairs of every depth have nonnegative windowed forms at resolution
-    `L/2`. Window-averaged positivity therefore cannot imply RH.
+  [`WindowedWeilFormSliceTransfer`](WindowedWeilFormSliceTransfer.lean),
+  [`WindowedPositivityNoGoForOffLineConfigurations`](WindowedPositivityNoGoForOffLineConfigurations.lean).
+  * **Slice transfer law** (`windowedW_eq_integral_W`). For every tempered configuration
+    (`Σ m_ρ/(1+|γ_ρ|²) < ∞`), the windowed form equals `∫ W(g_s, g_s) ds`, where
+    `g_s = f(· + s) η`.
+  * **Positivity transfer** (`re_windowedW_nonneg_of_aperture_nonneg`). Positivity at aperture `r`
+    implies nonnegativity of every windowed Weil form whose window is supported in `[-r, r]`,
+    at every aperture of the test.
+  * **Depth-blindness** (`windowedW_offLineLattice_eq_onLine`). For windows in `[-L/2, L/2]`, the
+    off-line lattice pair and the doubled on-line lattice have the same windowed form,
+    `2L‖f‖²‖η‖²`.
+  * **No-go** (`exists_offLine_lattice_windowed_nonneg`, `exists_isolatedPair_windowed_nonneg`).
+    At every resolution, some configurations with off-line zeros of any prescribed depth have
+    nonnegative windowed forms. This holds for dense configurations, and for a single pair in a
+    dense enough background. Window-averaged positivity therefore cannot imply RH.
 * **SRT-3 · Positivity in height windows** —
-  [`HeightWindowAverageRepresentation`](HeightWindowAverageRepresentation.lean). Identifies windowed
-  forms with height averages of localized Weil forms. Applies the transfer law to every
-  configuration with a proved small-aperture positivity.
+  [`HeightWindowAverageRepresentation`](HeightWindowAverageRepresentation.lean),
+  [`ZetaSmallApertureHeightWindowPositivity`](ZetaSmallApertureHeightWindowPositivity.lean).
+  * **Representation** (`windowedW_eq_integral_heightShift`). For tempered configurations,
+    `windowedW Z f η = ∫ |h_η(−2πξ)|² W(S_ξ f, S_ξ f) dξ`, where `S_ξ f = e^{2πiξ·} f`.
+  * **Small-aperture positivity of `ζ`** (`zetaZeroConfig_re_W_ge_of_small_support`,
+    `zetaZeroConfig_re_W_nonneg_of_small_aperture`). This is a Yoshida-type theorem with a crude
+    constant: `Re W_ζ(f, f) ≥ 0` for every `C²` test supported in `[−e^{−50}, e^{−50}]`.
+  * **Height-window positivity of `ζ`** (`re_integral_heightShift_zetaZeroConfig_nonneg`). For
+    windows in `[−e^{−50}, e^{−50}]` and tests of **every** aperture,
+    `Re ∫ |h_η(−2πξ)|² W_ζ(S_ξ f, S_ξ f) dξ ≥ 0`.
+  * **Calibration** (`integral_heightShift_offLineLattice_eq`). The off-line lattice pair of
+    spacing `πe^{50}` has the same height averages, `4r‖f‖²‖η‖²` with `r = e^{−50}`, at every
+    depth. The ζ theorem is true and carries no information on the real parts of the zeros.
 
 ### Research frontier
 

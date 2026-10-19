@@ -31,7 +31,7 @@ private theorem no_superlinear_scalar (A α : ℝ) (hA : 0 ≤ A) (hα : 1 < α)
   have ht : ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < t := self_mem_nhdsWithin
   have hs : ∀ᶠ t : ℝ in 𝓝[>] 0, t < R :=
     nhdsWithin_le_nhds (eventually_lt_nhds hR)
-  have hp := (Real.tendsto_rpow_neg_nhdsGT_zero (by linarith : 1-α < 0)).eventually
+  have hp := (tendsto_rpow_neg_nhdsGT_zero (by linarith : 1-α < 0)).eventually
     (eventually_gt_atTop (C*A^α))
   obtain ⟨t, ht, hs, hp⟩ := (ht.and (hs.and hp)).exists
   have hb := h t ht hs.le

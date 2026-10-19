@@ -1,21 +1,21 @@
 # Prime anchors, complete graph error, and prime-clock tightness
 
 - **ID:** BSU-REVIEW-1910
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** BRIDGE
 - **Source:** ../../../reports/review-1910/astra.md, §4 (U1–U3)
 - **Statement:** Determine prime-anchored recovery for actual Möbius tapers, transfer its error to the complete source graph, and distinguish tight prime-clock families from escaping ones.
 
-## Scope and gates
+## Scope and verification
 
 - [x] Read review and audit source-stratum restriction.
-- [ ] U1: exact mixed-observation fibres, inverse exponent, explicit anchor and horizon losses; specialize to Möbius and Barban–Vehov coefficients, including taper zeros.
-- [ ] U2: complete mass-plus-edge and signed-energy error estimates for the actual finite clock synthesis, with every coefficient and normalization cost retained.
-- [ ] U3: construct an actual-prime escaping sequence with bounded complete graph norm and vanishing diagonal cost; prove an arithmetic-parameter restriction that restores compactness.
-- [ ] Complete dependency-closed paper proofs before respective Lean implementations.
-- [ ] Check each leaf with `lake --old env lean`; wire imports without umbrella builds; audit axioms and formal lint.
+- [x] U1: exact mixed-observation fibres, inverse exponent, explicit anchor and horizon losses; specialize to Möbius and Barban–Vehov coefficients, including taper zeros.
+- [x] U2: complete mass-plus-edge and signed-energy error estimates for the actual finite clock synthesis, with every coefficient and normalization cost retained.
+- [x] U3: construct an actual-prime escaping sequence with bounded complete graph norm and vanishing diagonal cost; prove an arithmetic-parameter restriction that restores compactness.
+- [x] Complete dependency-closed paper proofs before respective Lean implementations.
+- [x] Check each leaf with `lake --old env lean`; wire imports without umbrella builds; audit axioms; run formal lint and record repository-wide blockers.
 
-## Internal frontier and candidate attack
+## Internal frontier and proof mechanism
 
 `SieveArithmeticSourceAnchors` proves the terminal-prime coordinate is
 `-w(p)/p` and the BV anchor survives iff `p<X`. Highest-dyadic recovery
@@ -38,21 +38,48 @@ An arbitrary unspecified bounded synthesis operator would not discharge U2.
 every full graph vector by actual positive prime-clock sums with arbitrarily
 small diagonal norm cost. `CHMDEscape.exists_primitive_escape` supplies a
 bounded, mass-orthogonal sequence with complete energy tending to zero.
-Their quantitative combination should give actual-prime noncompactness.
-Positive survivor: a fixed cutoff, compact log-center interval, and bounded
-total clock amplitude place all packets in a compact convex hull in the
-complete graph norm. This controls singular prime edges, not only source mass.
+Their quantitative combination gives actual-prime noncompactness.
+Positive survivor: a fixed cutoff and bounded total clock amplitude place all
+packets in a compact convex hull in the complete graph norm. The full clock
+curve vanishes at both ends, so no center restriction is needed. This controls
+singular prime edges as well as source mass.
 
-**Preliminary verdict:** BRIDGE. These are source-specific quantitative
+**Internal verdict:** BRIDGE. These are source-specific quantitative
 connections between established tools, not a new cancellation estimate or
 an external novelty claim. User's persistent corpus-only restriction excludes
 an external literature audit. No numerical experiments.
 
-## Open proof obligations
+## Formal verification
 
-- `[OPEN CORE U1]` Quantitative mixed-row inverse with variable anchor.
-- `[OPEN CORE U2]` Explicit finite Möbius-inversion graph synthesis cost.
-- `[OPEN CORE U3]` Actual-prime escape and compact center/amplitude survivor.
+Every leaf below passed its original-source `lake --old env lean` export check
+with zero diagnostics. All seven are imported exactly once by the area umbrella.
+The final scratch audit checked all 77 public declarations and printed every
+axiom dependency: the union is exactly `propext`, `Classical.choice`, and
+`Quot.sound`. Source fingerprints remained unchanged through that audit; every
+compiled artifact was newer than its source. No full or umbrella build was run.
+
+**Repository lint:** `scripts/formal_tools.py lint --check-generated` was run
+after index regeneration. Generated files are current. The global gate remains
+blocked by three concurrent leaves outside this card; it reports no violation
+in these seven leaves:
+
+- `BiScaleUncertainty.PrimeBlockLevelSetAndRamareHalaszEnergy`
+- `BezoutValuationIncidence.KloostermanTerminalBlockAndGlobalFrequencyCollision`
+- `BezoutValuationIncidence.LinearBandVaughanTypeIIBilinearEstimate`
+
+Each blocker is an absent theorem-area umbrella import. Their source and
+integration work belong to other active tasks. The full lint output is retained
+in `/tmp/bsu-review1910-lint-final.log`.
+
+| Leaf | Formalized result |
+|---|---|
+| `PrimeAnchorMixedRecovery` | Exact mixed-row fibres, arithmetic phase, taper zeros, attained anchor loss. |
+| `PrimeAnchorMixedSharpness` | Polarization and exclusion of every inverse exponent above one. |
+| `PrimeAnchorCompleteGraphError` | Literal finite synthesis, full graph and signed-energy error bounds; Möbius/BV specializations. |
+| `PrimeClockGraphCompactness` | Exact atom normalization and bounded-center convex compactness. |
+| `PrimeClockGraphTailTightness` | Full graph decay, compactness for all centers, and vanishing deep bounded-amplitude packets. |
+| `PrimeClockGraphEscape` | Actual-prime packets with vanishing diagonal cost and energy, yet no Cauchy subsequence. |
+| `PrimeAnchorHorizonBounds` | Explicit harmonic horizon costs and arithmetic reference-norm bounds. |
 
 ## Paper proof: mixed prime row (U1)
 
@@ -88,7 +115,7 @@ inverse exponent above 1. For BV the anchor amplitude is
 `log(X/p)/p` for `p<X`, and zero otherwise. Its loss diverges as that
 amplitude shrinks; a prime in the terminal interval is insufficient.
 
-**U1 proof status:** dependency-closed paper proof; Lean implementation pending.
+**U1 proof status:** dependency-closed paper proof; recovery, sharpness, and horizon estimates formalized.
 
 ## Paper proof: full finite clock energy (U2)
 
@@ -125,7 +152,7 @@ This is a linear observation-error estimate on bounded-error sets: if
 `Lη‖F(b)‖→0`. In particular, recovering coefficients with an unpriced
 shrinking prime anchor cannot be substituted for this estimate.
 
-**U2 proof status:** dependency-closed paper proof; Lean implementation pending.
+**U2 proof status:** dependency-closed paper proof; complete graph estimates and arithmetic specializations formalized.
 
 ## Paper proof: escape and compactness survivor (U3)
 
@@ -152,7 +179,7 @@ tail bound. The escape construction demonstrates why restrictions beyond
 diagonal smallness are necessary; it does not claim this sufficient
 restriction is necessary for every family.
 
-**U3 proof status:** dependency-closed paper proof; Lean implementation pending.
+**U3 proof status:** dependency-closed paper proof; escape and compactness survivor formalized.
 
 ## Stronger positive survivor: center bounds are unnecessary
 
@@ -173,7 +200,7 @@ condition gives convergence to zero in full graph norm. Hence nonzero deep
 synthesis at a fixed cutoff forces amplitude growth. The obstruction is
 not the mere increase of the prime indices.
 
-**Verdict:** SURVIVES PRELIMINARY INTERNAL ATTACK. Complete paper proof uses
+**Verdict:** PROVED AND FORMALIZED. The proof uses
 the literal source tail and existing BV admission, rather than a generic
 finite-profile assumption. External priority remains unaudited.
 
@@ -182,3 +209,40 @@ finite-profile assumption. External priority remains unaudited.
 One owned foreground Lean process at a time; no full builds, numerical
 experiments, new axioms, proof holes, or heartbeat increases. Preserve other
 agents' work. Keep discoveries/failures in `logs/biscale-review1910-facts.md`.
+
+## Paper proof: explicit horizon loss
+
+For fixed cutoff `k`, compactness of `{0}∪Q_k(ℝ)` supplies one finite
+`B_k>0` with `‖Q_k(t)‖≤B_k` for all real centers. Write
+`H_N=Σ_{d=1}^N 1/d`. The literal atom identity gives
+
+`‖F(c)‖≤B_k√N Σ_{d=1}^N |c(d)|/d`.
+
+Since `|μ(m)|≤1`, the inversion budget at unit error satisfies
+
+`K(1)≤B_k√N Σ_{d=1}^N⌊N/d⌋≤B_k N√N H_N`.
+
+Thus on a fixed anchor slice of magnitude `a`, mixed-row error at most `η`
+gives full graph error at most `B_k N√N H_N η/a`. For the literal Möbius
+row the reference norm is at most `B_k√N H_N`; for BV it is at most
+`B_k√N H_N log X` when `X≥1`. Substitution in the full quadratic
+continuity bound specifies both the linear and quadratic error terms.
+These are fixed-cutoff growing-horizon estimates; varying `k` retains the
+original exact graph-weight budget. They do not assume a cancellation saving.
+
+## No-go closure and scope
+
+- **Rejected claim:** bounded complete prime-clock graph norm and vanishing
+  diagonal cost imply relative compactness. The constructed actual-prime
+  packets remain pairwise more than one apart while signed energies tend to zero.
+- **Positive survivor:** at each fixed cutoff, bounded literal total amplitude
+  gives relative compactness for all centers. Cofinal centers then force graph
+  convergence to zero. Nonzero deep synthesis cannot keep amplitude bounded.
+- **Arithmetic distinction:** diagonal cost is a sum of squared atom norms;
+  total amplitude is `Σ√N/p`. Their behavior is not interchangeable.
+- **Remaining RH obligation:** these results neither sign the complete odd form
+  nor supply a cofinal small-damping Möbius cancellation estimate. The graph
+  synthesis is the explicitly defined finite divisor-clock family; no unproved
+  identification with a completed RH receiver is used.
+- **Novelty:** source-specific bridges and an internally checked tightness
+  boundary; external literature priority is not certified under corpus-only scope.

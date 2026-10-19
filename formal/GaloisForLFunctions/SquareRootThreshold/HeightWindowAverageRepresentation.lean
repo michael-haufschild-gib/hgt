@@ -130,8 +130,7 @@ theorem integrable_pairTransform {η : ℝ → ℂ} (hη : ContDiff ℝ 2 η) (h
   linarith
 
 /-- The real inequality behind the zero-side summability. -/
-theorem decay_product_le {x y ξ N : ℝ} (hξ : |ξ| ≤ |y|) (hN0 : 0 ≤ N)
-    (hN : 1 + N ≤ 5 / 4 * (1 + |x|) ^ 2) :
+theorem decay_product_le {x y ξ N : ℝ} (hξ : |ξ| ≤ |y|) (hN : 1 + N ≤ 5 / 4 * (1 + |x|) ^ 2) :
     (1 + N) * (1 + ξ ^ 2) ≤ 5 / 4 * ((1 + |y|) ^ 2) ^ 2 * ((1 + |x + y|) ^ 2) ^ 2 := by
   have hp : 1 ≤ 1 + |y| := by linarith [abs_nonneg y]
   have hq : 1 ≤ 1 + |x + y| := by linarith [abs_nonneg (x + y)]
@@ -251,7 +250,7 @@ theorem windowedW_eq_integral_heightShift (Z : ZeroConfig) (hZ : TemperedConfig 
         (x := conj (gammaOf (ρ : ℂ) + 2 * π * ξ)) (by simpa using him)
       have hre : (conj (gammaOf (ρ : ℂ) + 2 * π * ξ)).re = x + y := by simp [hx, hy]
       rwa [hre] at h
-    have hkey := decay_product_le (abs_le_abs_two_pi_mul ξ) hN0 hN
+    have hkey := decay_product_le (abs_le_abs_two_pi_mul ξ) hN
     rw [← hy] at hkey
     have hm : (0 : ℝ) ≤ Z.mult ρ := Nat.cast_nonneg _
     have hp : 0 < (1 + |y|) ^ 2 := by positivity
@@ -263,15 +262,16 @@ theorem windowedW_eq_integral_heightShift (Z : ZeroConfig) (hZ : TemperedConfig 
     simp only [hF]
     rw [EF.paperFT_weilTest hf.continuous hf.continuous hfc hfc, norm_mul, norm_mul, norm_mul,
       Complex.norm_conj, Complex.norm_natCast]
+    have hDξ : ‖pairTransform η ξ‖ ≤ D ^ 2 / ((1 + |y|) ^ 2) ^ 2 := hD ξ
     set P := (1 + |y|) ^ 2 with hP
     set Q := (1 + |x + y|) ^ 2 with hQ
     set N₁ := 1 + N with hN₁
     set X₁ := 1 + ξ ^ 2 with hX₁
+    clear_value P Q N₁ X₁
     calc ‖pairTransform η ξ‖ * ((Z.mult ρ : ℝ) * (‖paperFT f (gammaOf (ρ : ℂ) + 2 * π * ξ)‖ *
           ‖paperFT f (conj (gammaOf (ρ : ℂ) + 2 * π * ξ))‖))
         ≤ D ^ 2 / P ^ 2 * ((Z.mult ρ : ℝ) * (E / Q * (E / Q))) := by
           gcongr
-          exact hD ξ
       _ = D ^ 2 * E ^ 2 * (Z.mult ρ : ℝ) * (1 / (P ^ 2 * Q ^ 2)) := by ring
       _ ≤ D ^ 2 * E ^ 2 * (Z.mult ρ : ℝ) * (5 / 4 / (N₁ * X₁)) := by gcongr
       _ = K * ((Z.mult ρ : ℝ) / N₁) * X₁⁻¹ := by rw [hK]; ring

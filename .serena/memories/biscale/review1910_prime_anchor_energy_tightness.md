@@ -1,0 +1,13 @@
+# BiScale U1–U3: prime anchors, full graph error, tightness (2026-10-19)
+
+Formalized card: docs/drafts/pipeline/3-formalized/biscale-prime-anchor-energy-tightness-2026-10-19.md. Factual ledger: logs/biscale-review1910-facts.md.
+
+Seven leaves under formal/GaloisForLFunctions/BiScaleUncertainty/: PrimeAnchorMixedRecovery, PrimeAnchorMixedSharpness, PrimeAnchorCompleteGraphError, PrimeAnchorHorizonBounds, PrimeClockGraphCompactness, PrimeClockGraphTailTightness, PrimeClockGraphEscape. All wired exactly once. Namespaces are GaloisForLFunctions.BiScaleUncertainty.PrimeAnchor and .PrimeClock, not the module filenames.
+
+U1 uses the mixed quadratic row M_p(c)(q)=Y_c(p)Y_c(q), including q=p and every active q. This is richer than diagonal Selberg data. Live fibres are exactly simultaneous global signs; negative arithmetic phase selects one. At a terminal prime, Möbius taper anchor is -w(p)/p; BV is live iff p<X. A zero anchor annihilates the entire mixed row. Unit-coefficient perturbation preserves squarefree support and attains loss p/|w(p)|. The local inverse exponent is one; every exponent >1 fails.
+
+U2 defines literal finite synthesis F(c)=sum_{d<=N} c(d) A_d in the complete SourceGraph. For coordinate error majorant r, K(r)=sum_d d*||A_d||*sum_{m<=N/d}|mu(m)|r(dm) bounds graph error. Complete signed-energy error <=K^2+2K||F(reference)||. Atom norm retains sqrt(N)/d and the full graph clock. At fixed cutoff, a single B>0 gives K(1)<=B*N*sqrt(N)*H_N; Möbius and BV reference norms are bounded by B*sqrt(N)*H_N and B*sqrt(N)*H_N*log(X), respectively. Anchor loss, horizon loss, cutoff dependence and reference norm must all be paid in any joint limit.
+
+U3: actual-prime packets exist with primes>sqrt(N), centers beyond n, complete graph norm<=3, diagonal cost<1/(16(n+1)), signed energy->0, and pairwise graph distance>1. No Cauchy subsequence. Positive survivor: at fixed cutoff the full clock curve vanishes at both real ends; bounded literal total amplitude sum sqrt(N)/p gives relative compactness with no center restriction. Cofinal centers plus bounded amplitude force graph zero. Diagonal cost is not an amplitude bound.
+
+All seven original-source Lean checks passed without diagnostics. Final audit checked all 77 public declarations; axiom union exactly propext, Classical.choice, Quot.sound. Global lint at closure had three unrelated concurrent unwired leaves, recorded on the card; no violation in these seven leaves. Do not claim a completed RH receiver identification or cofinal small-damping Mobius cancellation. Internal verdict BRIDGE; external novelty not audited under corpus-only scope.

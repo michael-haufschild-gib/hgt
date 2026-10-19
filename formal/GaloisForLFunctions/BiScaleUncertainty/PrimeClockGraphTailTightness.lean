@@ -42,7 +42,9 @@ theorem curve_zero_atTop (k : ℕ) : Tendsto (curve k) atTop (𝓝 0) := by
   obtain ⟨R, hR⟩ := hcompact.bddAbove
   apply Metric.tendstoUniformly_iff.mpr
   intro ε hε
-  obtain ⟨A, hA⟩ := eventually_atTop.mp (logProfile_zero_atTop.norm.eventually_lt_const hε)
+  have hnorm : Tendsto (fun t => ‖criticalAbelLogProfile t‖) atTop (𝓝 0) := by
+    simpa only [norm_zero] using logProfile_zero_atTop.norm
+  obtain ⟨A, hA⟩ := eventually_atTop.mp (hnorm.eventually_lt_const hε)
   filter_upwards [eventually_ge_atTop (A + R)] with t ht
   intro x
   have hb : |criticalClockCutoff (cutoff k) t x| < ε := by
@@ -144,7 +146,9 @@ theorem deep_packets_zero (k : ℕ) (C : ℝ) (hC : 0 ≤ C)
   apply Metric.tendsto_nhds.mpr
   intro ε hε
   have hδ : 0 < ε / (C + 1) := div_pos hε (by linarith)
-  obtain ⟨R, hR⟩ := eventually_atTop.mp ((curve_zero_atTop k).norm.eventually_lt_const hδ)
+  have hnorm : Tendsto (fun t => ‖curve k t‖) atTop (𝓝 0) := by
+    simpa only [norm_zero] using (curve_zero_atTop k).norm
+  obtain ⟨R, hR⟩ := eventually_atTop.mp (hnorm.eventually_lt_const hδ)
   have hnat : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
   filter_upwards [hnat.eventually (eventually_ge_atTop R)] with n hn
   have hp := packet_norm_le k (N n) (S n) (ε / (C + 1))

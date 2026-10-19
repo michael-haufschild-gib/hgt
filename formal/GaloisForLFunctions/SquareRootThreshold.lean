@@ -1,6 +1,8 @@
 import GaloisForLFunctions.SquareRootThreshold.IsolatedOffLinePairVisibilityLaw
 import GaloisForLFunctions.SquareRootThreshold.WindowedWeilFormSliceTransfer
 import GaloisForLFunctions.SquareRootThreshold.WindowedPositivityNoGoForOffLineConfigurations
+import GaloisForLFunctions.SquareRootThreshold.HeightWindowAverageRepresentation
+import GaloisForLFunctions.SquareRootThreshold.ZetaSmallApertureHeightWindowPositivity
 
 /-!
 # Square-Root Threshold

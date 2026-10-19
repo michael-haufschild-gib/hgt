@@ -15,6 +15,7 @@ has the following owned theorem areas:
 * `GaloisForLFunctions.ArithmeticPositivityTheory`
 * `GaloisForLFunctions.BezoutValuationIncidence`
 * `GaloisForLFunctions.TransHorizonIncidenceMechanics`
+* `GaloisForLFunctions.ArithmeticCriticalityTheory`
 
 and three vendored areas:
 
@@ -40,6 +41,7 @@ import GaloisForLFunctions.BiScaleUncertainty
 import GaloisForLFunctions.ArithmeticPositivityTheory
 import GaloisForLFunctions.BezoutValuationIncidence
 import GaloisForLFunctions.TransHorizonIncidenceMechanics
+import GaloisForLFunctions.ArithmeticCriticalityTheory
 import GaloisForLFunctions.SquareRootThreshold
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus

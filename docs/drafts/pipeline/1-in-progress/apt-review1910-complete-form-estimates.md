@@ -8,7 +8,7 @@
 
 ## Requirements
 
-- [ ] **A1:** Determine the sign of the complete limiting critical prime quadratic form; obtain explicit coefficient bounds or an actual finite negative witness. Distinguish this prime channel from the prime–Gamma–polar Weil form.
+- [x] **A1:** An explicit unit singleton is negative for the complete limiting critical prime form, with margin `4log2/(390π⁴)`. This concerns the prime channel; the prime–Gamma–polar Weil sign remains separate.
 - [ ] **A2:** Prove a quantitative approximation theorem for the chosen family controlling prime, Gamma, and polar errors jointly. State support, aperture, coefficient, and scale dependence; fixed-pattern convergence alone is insufficient.
 - [ ] **A3:** Prove detection or a scoped failure of detection on explicit off-line configurations. Retain the diagonal budget and reflection defect. A model theorem is not a statement about all arithmetic axioms of zeta.
 - [ ] Audit implications, strongest positive survivors, existing-corpus priority, and scientific significance.
@@ -26,8 +26,12 @@ question under the broader A1–A3 scope.
 For the singleton pattern, the old analytic candidate isolates the negative charge
 at harmonic two and bounds every positive harmonic plus the infinite tail. Its
 finite rational bookkeeping was checked, but its harmonic estimates were not.
-**[OPEN CORE A1]** Prove those estimates for the native harmonic defect, or replace
-them with a sharper dependency-closed comparison. No sign premise may be imported.
+The combined Lean proof now establishes a negative singleton with an explicit
+margin, without a sign premise. **[A1 COMPLETE]** The installed
+`FactorialCriticalPrimeSingletonNegative.lean` retains every harmonic and passes
+its actual-file check with an empty log. All twenty-six public A1 results have
+only `propext`, `Classical.choice`, and `Quot.sound` in their axiom reports.
+Global lint has unrelated umbrella-reachability errors, detailed below.
 
 **[OPEN CORE A2]** Control the complete receiving form in a joint growing regime;
 the existing critical physical affine error does not control the prime form by itself.
@@ -78,7 +82,9 @@ complete sign theorem or a novelty claim.
 exact head identity, both global Taylor inequalities, and all four displayed
 small-harmonic bounds. The actual file passed `lake --old env lean -j 1 -o ...
 -i ... <actual-file>` and is umbrella-imported. Two redundant-tactic warnings
-remain to remove before the final audit. Axiom and lint audits remain pending.
+were removed; the final actual-file recheck passed with an empty log
+(`/tmp/apt_review1910_taylor_actual.log`). The axiom audit passed; global lint is
+non-green only for the foreign modules listed below.
 
 ## Oscillatory tail replacement
 
@@ -104,3 +110,124 @@ Since `1/300−61/86640>1/390`, the proposed complete singleton budget still
 has room for `Σ A(m)J_m/m⁴≤−log2/390`. This is exact rational bookkeeping,
 conditional only at the planning level on the analytic estimates still being
 formalized; it is not a Lean endpoint or an imported theorem premise.
+
+The oscillatory recurrences, inverse-frequency error, and phase-sensitive bound
+pass Lean in scratch. `FactorialCriticalHarmonicOscillationBounds.lean` installs
+these proofs together with the `6/5` cutoff at twenty and `7/6` cutoff at nineteen;
+its actual-file Lean check passed. For the latter cutoff, `θ≥19/2` and
+`θ sin θ+2(1−cos θ)≤θ+4≤θ²/6`. These are native defect bounds, not a sign decision.
+
+For the remaining finite phases, the same inequality gives `J₉,J₁₀,J₁₁≤1`
+and `J₇,J₁₃,J₁₄,J₁₅,J₁₇,J₁₈≤7/6`. Reduce their angles modulo `2π`, use
+`1≤√3≤7/4`, and bound the resulting quadratic with `π>3` (`π>157/50` for
+harmonic fifteen). No phase averaging or independent selection of masses occurs.
+`FactorialCriticalHarmonicFiniteBounds.lean` passes its actual-file Lean check
+and is umbrella-imported. The logarithmic remainder follows from the antitone integral test and
+`∫₁₉∞log(x)/x³ dx=(log19+1/2)/722`. Exact integer-power comparisons give
+`log3/log2≤8/5`, `log5/log2≤7/3`, `log7/log2≤17/6`,
+`log11/log2≤7/2`, `log13/log2≤15/4`, `log17/log2≤25/6`, and
+`log19/log2≤13/3`. Together with `log2≥2/3`, these yield the unweighted remainder
+`Σ_(m≥20)log(m)/m³≤(61/8664)log2`.
+
+The complete proposed certificate keeps composite charges exactly:
+`A₆=3log3−2log2`, `A₉=12log3`, `A₁₀=5log5−2log2`,
+`A₁₄=7log7−2log2`, `A₁₅=3log3+5log5`, `A₁₈=12log3−2log2`.
+The terms at `0,1,4,8,12,16` vanish. Summing every term below twenty with
+the proved harmonic bounds gives at most `(-61/7220−1/390)log2`;
+the entire remaining tail is at most `(61/7220)log2`. Thus the paper argument
+gives the unconditional negative singleton witness
+`P∞≤−(4/(390π⁴))log2<0`. Scratch and installed-leaf Lean checks passed.
+Evidence: `/tmp/apt_review1910_singleton_actual.log` (empty, exit zero).
+All twenty-six A1 axiom reports are standard. The full Weil form subtracts the prime channel,
+so this does not assert negativity of the prime–Gamma–polar form or prove RH.
+
+## A2 endpoint and next paper obligations
+
+The native critical source is `u(x)=1_(x≤0) exp(x/2) F(exp(-x))`. Its phase has
+`|F|≤B`, slope bound `D`, and a bounded primitive `G`, `|G|≤C`, where the
+existing source estimates give `B=2Σ|b_n|`, `D=14Σ(n+1)|b_n|`, and
+`C=12Σ|b_n|/(n+1)`. The critical weight corresponds to weighted-tail abscissa
+`-1/2`, outside the existing Gamma theorem's strip `[-1/4,5/4]`.
+
+For integer cutoff `K≥3`, truncate to `[-log K,0]`. Integration by parts predicts
+the following complete prime error, with `L=log K`:
+
+`|P(u)−P(u_K)|≤(C/K)[2B(1+2L)+D(1+L)²]`.
+
+Indeed, for `r≤K` the omitted correlation begins at `v=K/r`, and its bound is
+`(C/r)[2B(r/K)²+D(r/K)]`; include the full `Λ(r)/r` weight before summing.
+For `r>K`, keep the entire correlation and the existing inverse-square prime
+majorant. These estimates remain paper obligations, not imported premises.
+
+The difficult polar endpoint is the improper integral `∫₁∞F(v)/v dv`.
+Its proposed definition is `−G(1)+∫₁∞G(v)/v² dv`; integration by parts should
+give cutoff error `≤2C/K`. Do not use the ordinary Lebesgue integral of `F(v)/v`
+without proving absolute integrability. The other polar feature has absolute
+tail bound `B/K`.
+
+For Gamma, set `M≥1` with `D≤MB`; the actual family can take
+`M=7(1+max S)`. The pending critical translation proof uses
+`Cτ=12+2exp(2)` and aims at
+`||u(·+h)−u||₂²≤Cτ B² min(1,Mh)` for `h≥0`.
+For `0<Mh≤1`, split at `x=log(Mh)`: the bounded phase contributes
+`8B²Mh`, the squared Lipschitz estimate contributes `2B²Mh`, the boundary
+interval contributes `B²h`, and amplitude variation contributes at most
+`2exp(2)B²h²`. For `Mh≥1`, use the mass bound `4B²`.
+The existing one-power phase estimate loses integrability at this weight.
+
+The known Gamma kernel satisfies `w(h)≤1/h` on `(0,1]` and has finite tail
+mass `W=∫₁∞w`. Thus the positive physical Gamma graph energy should be at most
+`CΓ B²(1+log M)`, where `CΓ=1+Cτ+4W`. The omitted physical tail is a translate
+of a source with amplitude `B/√K` and clock scale `MK`; its Gamma graph cost is
+at most `CΓ B²(1+log K+log M)/K`.
+
+Keep quadratic cross terms via the pointwise inequality
+`|a²−b²|≤η b²+(1+η⁻¹)(a−b)²`. Choosing `η=K⁻¹/²` gives a cutoff error of
+order `B²(1+log K+log M)/√K`, rather than mistaking the tail's squared energy
+for the quadratic error. These Gamma statements remain to formalize and connect
+to the exact complete Weil normalization.
+
+For smoothing radius `ε≤1/M`, contraction of translation increments suggests
+Gamma error energy `O(B²Mε(1+log(1/ε)))`. A uniform autocorrelation error
+`O(B²√(Mε))` then controls **all** prime terms in aperture `log K+2ε`, with cost
+`O(B²K(1+log K)√(Mε))`; the compact polar term is controlled at the same scale.
+The explicit regime `K≈M²`, `ε≈1/(MK⁴)` would allow growing support and slow
+coefficient growth. Constants, source admission, the full signed assembly, and
+off-line detection remain obligations. No A2 or A3 conclusion follows yet.
+
+The full twenty-candidate/twenty-source screen of the cached query
+`critical factorial Gamma polar full Weil translated tail approximation` found
+the existing weighted-tail strip estimates and compact smoothing limits, not
+the missing critical joint estimate. Coverage: inventory complete, compiler
+snapshots largely pending/stale; no absence or novelty claim. Evidence:
+`/tmp/apt_review1910_full_critical_search.json`.
+
+## Audit checkpoint
+
+The four A1 leaves are umbrella-imported and pass direct actual-file Lean checks.
+The twenty-six-public-declaration axiom audit passed; evidence:
+`/tmp/apt_review1910_axioms.log`. `scripts/formal_tools.py lint`
+returned one because eight concurrent modules are unreachable from their own
+umbrellas: five BiScaleUncertainty, two BezoutValuationIncidence, one
+SquareRootThreshold. No A1 module is named among the errors. These foreign files
+are preserved; there is no global-green claim. Evidence:
+`/tmp/apt_review1910_lint.log`. Scoped `git diff --check` passed.
+
+## A3 reuse and remaining diagonal obligation
+
+The direct critical-source/detection query returned no useful mechanism beyond
+the source definition. A rephrased, fully screened twenty-candidate/twenty-source
+query recovered `factorialMuntzCorrectedTail_readout_eq_primitive` and
+`factorialMuntzCorrectedTail_readout_decay` in
+`BiScaleUncertainty/FactorialMuntzTailReadoutDecay.lean`. Their actual statements
+and proofs were read. The hypothesis `-1<Re(s)` accommodates the shift `s↦s−1`
+when the critical readout has `Re(s)>0`; reuse these theorems before rebuilding
+complex integration by parts. Evidence:
+`/tmp/apt_review1910_critical_readout_search.json` (inventory complete; compiler
+coverage mostly pending/stale; no novelty inference).
+
+Bounded primitive estimates can make every readout on a fixed finite off-line
+configuration tend to zero under high arithmetic translation. Such decay alone
+does **not** prove failure of detection: the full diagonal background and
+reflection defect must be compared in the same normalization. That comparison
+remains open.
