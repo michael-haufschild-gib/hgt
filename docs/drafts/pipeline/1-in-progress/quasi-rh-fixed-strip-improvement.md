@@ -102,6 +102,8 @@ These identities expose the retained signed source; they do not supply a numeric
 
 Multiplying by `|F(Q)|≤24 sqrt(Q)` gives `O_ε(M^(Θ+1/2+ε)Q^(1/2−Θ−ε))`. If Q exceeds the physical range, the clipped boundary is zero. Consequently the increment head `I(M,Q)=Σ_{n≤min(Q,M−1)}ΔF(n)R_M(n)` approximates the full Abel action with the same intrinsic exponent as H. This is a dependency-closed paper proof; the new arithmetic obligation is cancellation in I, and the boundary need not separately be bounded at a conjectured numerical exponent.
 
+`QuasiRHQuotientHeadBoundary.lean` formalizes the truncated identity, first-channel dyadic difference, dyadic reconstruction, uniform Riesz-tail bound, boundary bound, and increment-head remainder. All six exported theorems pass a warning-free focused leaf check and scratch axiom audits using only `propext`, `Classical.choice`, and `Quot.sound`. The module is wired into `RHTower`. These are unconditional identities and estimates at the actual Θ; neither numerical strip is inferred without the missing arithmetic cancellation.
+
 ### Mean-square alternative — paper proof
 
 An upper bound \(\sum_{N\leq X}|G_N|^2=O_\varepsilon(X^{2b+\varepsilon})\) suffices for boundary b. Since \(G_N=S(N)/N+O(1)\), the twice-Abel Dirichlet continuation has dyadic absolute blocks bounded by \(X^{b-\Re s+\varepsilon/2}\). Locally uniform convergence for \(\Re s>b\) continues \(-\zeta'/\zeta-\zeta\), excluding a ζ-zero pole there. Targets are \(X^{5/3+\varepsilon}\) and \(X^{3/2+\varepsilon}\). Existing formation-energy increments equal \((N+1)/(N+2)|G_{N+1}|^2\), identifying the exact cumulative observable. The new upper bounds remain open.

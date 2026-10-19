@@ -21,7 +21,7 @@ the range `L/4 < a ≤ L/2` the jittered lattice is invisible **iff**
 `cosh(δL/2) · |sin(εL/2)| ≤ 1`.
 
 With relative jitter `η = εL/2π`, a lattice of depth `δ` is seen below the square-root threshold as
-soon as `cosh(δL/2) sin(πη) > 1`, i.e. once `η ≳ e^{−δL/2}` (`exists_jitter_visible`). The
+soon as `cosh(δL/2) sin(πη) > 1`, i.e. once `η ≳ e^{−δL/2}` (`jitterConfig_visible`). The
 invisibility of dense off-line configurations up to `L/2` is a crystalline phenomenon: it needs
 the ordinates to form an arithmetic progression to relative precision `e^{−δL/2}`. At height `T`
 (`L ≈ log T`) this is `T^{−δ/2}`.
@@ -476,8 +476,7 @@ theorem patternSymbol_jitter_one (L δ ε : ℝ) (hL : 0 < L) :
     ‖patternSymbol (L / 2) (jitterOffset L ε) (fun _ => δ) 1‖ =
       4 * Real.cosh (δ * (L / 2)) * |Real.sin (ε * (L / 2))| := by
   rw [patternSymbol, Fin.sum_univ_two]
-  simp only [jitterOffset, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    Int.cast_one, one_mul]
+  simp only [jitterOffset, Matrix.cons_val_zero, Matrix.cons_val_one, Int.cast_one, one_mul]
   have he : cexp (I * ((2 * π / L - ε : ℝ) : ℂ) * ((L / 2 : ℝ) : ℂ)) =
       -cexp (-(I * (ε : ℂ) * ((L / 2 : ℝ) : ℂ))) := by
     have hLc : (L : ℂ) ≠ 0 := by exact_mod_cast hL.ne'
@@ -518,7 +517,7 @@ theorem jitterConfig_weil_nonneg_iff {L δ ε : ℝ} (hL : 0 < L) (hδ : 0 < δ)
     · rw [div_le_iff₀ hℓ]; push_cast; linarith
   rw [hn, toeplitzForm_two_nonneg_iff]
   · have h0 : patternSymbol (L / 2) (jitterOffset L ε) (fun _ => δ) 0 = 4 := by
-      simp [patternSymbol, Fin.sum_univ_two]; norm_num
+      simp [patternSymbol]; norm_num
     rw [h0, patternSymbol_jitter_one L δ ε hL, Complex.re_ofNat]
     constructor <;> intro h <;> linarith
   · rw [patternSymbol, patternSymbol, map_sum]
