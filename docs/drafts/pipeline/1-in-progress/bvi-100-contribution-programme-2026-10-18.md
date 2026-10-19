@@ -31,7 +31,8 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
    read. `docs/architecture.md` and `docs/testing.md` absent. Existing dirty work
    inventoried and preserved.
 2. Conjecture and prove a substantive new result, testing against existing work.
-   **Active:** actual dilation distance from period-reset jump cells.
+   **Active:** exact signed gap-chain prefix Gram, global conditional-tail
+   coercivity, and finite coefficient recovery from the first visible depth.
 3. Formalize exact surviving theorem; audit original source, axioms, imports,
    indexing and lint; assess significance without inflating count.
 4. Continue conjecture / proof or obstruction / positive-survivor loop until 100
@@ -41,7 +42,7 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
 
 | Candidate | Card | Status | Accepted count |
 |---|---|---|---:|
-| Actual primitive period-reset harmonic lower bound | `bvi-period-reset-profile-coercivity-2026-10-18.md` | Paper development and fresh corpus audit | 0 |
+| Exact actual-primitive gap-chain Gram, coercivity and recovery | `bvi-period-reset-profile-coercivity-2026-10-18.md` | All fifteen public declarations pass canonical Lean/axiom audits, including global coercivity and first-clock readout; leaves wired/indexed; global lint has one unrelated THIM reachability error; significance not established, no credit | 0 |
 
 ## Log
 

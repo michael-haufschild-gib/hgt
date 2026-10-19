@@ -365,6 +365,305 @@ theorem factorialRampTent_gram_margin_of_tendsto (A M D B : ℕ → ℝ)
     unfold binaryGramMinRamp
     linarith
 
+/-! ## Multi-Scale Rank-1 Corrected-Source Factorization & Uniform Eventual Positivity -/
+
+/-- Exact evaluation of the canonical boundary coefficient at scale `n = 0`: `c(0) = 1 / 2`. -/
+theorem factorialMuntzBoundaryCoefficient_zero :
+    factorialMuntzBoundaryCoefficient 0 = 1 / 2 := by
+  unfold factorialMuntzBoundaryCoefficient
+  norm_num
+
+/-- **Multi-Scale Rank-1 Zero Readout Proportional to `H_{0,k}`:**
+At every nontrivial zeta zero `ρ`, the Mellin–Fourier readout of any finite combination
+`H_{S,a,k} = ∑_{n ∈ S} a_n H_{n,k}` is exactly `2 Λ_pole(S, a)` times the readout of the
+base-scale corrected source `H_{0,k}`. -/
+theorem paperFT_factorialSmoothedCombo_eq_two_mul_pole_mul_zero
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    paperFT (factorialSmoothedCombo S a k) (gammaOf ρ) =
+      2 * factorialPoleFunctional S a *
+        paperFT (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) (gammaOf ρ) := by
+  rw [paperFT_factorialSmoothedCombo_gamma, factorialMuntzSmoothed_paperFT_gamma,
+    factorialMuntzBoundaryCoefficient_zero]
+  push_cast
+  ring
+
+/-- **Pointwise Multi-Scale Zero-Square Summand Factorization:**
+For every nontrivial zero `ρ`, the square-sampling summand of `H_{S,a,k}` is
+`4 ‖Λ_pole(S, a)‖^2` times the square-sampling summand of `H_{0,k}`. -/
+theorem zetaZeroSquareSummand_factorialSmoothedCombo
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    zetaZeroSquareSummand (factorialSmoothedCombo S a k) ρ =
+      4 * ‖factorialPoleFunctional S a‖ ^ 2 *
+        zetaZeroSquareSummand (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) ρ := by
+  unfold zetaZeroSquareSummand
+  rw [paperFT_factorialSmoothedCombo_eq_two_mul_pole_mul_zero, norm_mul, norm_mul,
+    Complex.norm_ofNat]
+  ring
+
+/-- **Absolute Zero-Square Summability of Arbitrary Multi-Scale Corrected Combinations:**
+Every finite combination `H_{S,a,k}` has an absolutely summable zero-square series. -/
+theorem factorialSmoothedCombo_zeroSquare_summable
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) :
+    Summable (zetaZeroSquareSummand (factorialSmoothedCombo S a k)) := by
+  have h := (factorialCorrected_zeroSquare_summable 0 k).mul_left
+    (4 * ‖factorialPoleFunctional S a‖ ^ 2)
+  refine h.congr fun ρ => ?_
+  exact (zetaZeroSquareSummand_factorialSmoothedCombo S a k ρ).symm
+
+/-- **Exact Multi-Scale Rank-1 Zero-Square Mass Identity:**
+The total zero-square sampling mass of `H_{S,a,k}` factors identically as
+`4 ‖Λ_pole(S, a)‖^2` times the base-scale mass `Z(H_{0,k})`. -/
+theorem zetaZeroSquareMass_factorialSmoothedCombo_eq
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) :
+    zetaZeroSquareMass (factorialSmoothedCombo S a k) =
+      4 * ‖factorialPoleFunctional S a‖ ^ 2 *
+        zetaZeroSquareMass (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) := by
+  unfold zetaZeroSquareMass
+  simp_rw [zetaZeroSquareSummand_factorialSmoothedCombo]
+  exact tsum_mul_left
+
+/-- **Rank-1 Multi-Scale Zero-Square Mass Bound (No `|S|` Cauchy–Schwarz Penalty):**
+For every finite scale set `S`, coefficient vector `a`, and smoothing index `k`,
+`Z(H_{S,a,k}) ≤ 4 C_H ‖Λ_pole(S, a)‖^2`. -/
+theorem zetaZeroSquareMass_factorialSmoothedCombo_le
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) :
+    zetaZeroSquareMass (factorialSmoothedCombo S a k) ≤
+      4 * factorialCorrectedSamplingConstant * ‖factorialPoleFunctional S a‖ ^ 2 := by
+  rw [zetaZeroSquareMass_factorialSmoothedCombo_eq]
+  have h0 := factorialCorrected_zeroSquare_le 0 k
+  simp only [Nat.zero_add, Nat.cast_one, div_one] at h0
+  calc
+    4 * ‖factorialPoleFunctional S a‖ ^ 2 *
+        zetaZeroSquareMass (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) ≤
+      4 * ‖factorialPoleFunctional S a‖ ^ 2 * factorialCorrectedSamplingConstant :=
+        mul_le_mul_of_nonneg_left h0 (by positivity)
+    _ = 4 * factorialCorrectedSamplingConstant * ‖factorialPoleFunctional S a‖ ^ 2 := by ring
+
+/-- **Pointwise Multi-Scale Weil Zero-Side Summand Factorization:**
+For every nontrivial zero `ρ`, the bilinear Weil zero-side summand of `H_{S,a,k}` equals
+`4 ‖Λ_pole(S, a)‖^2` times the Weil zero-side summand of `H_{0,k}`. -/
+theorem weil_Wsummand_factorialSmoothedCombo_eq
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    zetaZeroConfig.Wsummand (factorialSmoothedCombo S a k) (factorialSmoothedCombo S a k) ρ =
+      ((4 * ‖factorialPoleFunctional S a‖ ^ 2 : ℝ) : ℂ) *
+        zetaZeroConfig.Wsummand
+          (fun x => (factorialMuntzSmoothed 0 k x : ℂ))
+          (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) ρ := by
+  let σ : zetaZeroConfig.carrier := ⟨reflect ρ, zetaZeroConfig.reflect_mem _ ρ.2⟩
+  have hγ : (starRingEnd ℂ) (gammaOf (ρ : ℂ)) = gammaOf (σ : ℂ) :=
+    (Tail.gammaOf_reflect _).symm
+  unfold ZeroConfig.Wsummand
+  rw [hγ,
+    paperFT_factorialSmoothedCombo_eq_two_mul_pole_mul_zero S a k ρ,
+    paperFT_factorialSmoothedCombo_eq_two_mul_pole_mul_zero S a k σ,
+    map_mul, map_mul, map_ofNat]
+  have hnorm : factorialPoleFunctional S a * (starRingEnd ℂ) (factorialPoleFunctional S a) =
+      ((‖factorialPoleFunctional S a‖ ^ 2 : ℝ) : ℂ) := by
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  calc
+    (zetaZeroConfig.mult ρ : ℂ) *
+        (2 * factorialPoleFunctional S a *
+          paperFT (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) (gammaOf ρ)) *
+        (2 * (starRingEnd ℂ) (factorialPoleFunctional S a) *
+          (starRingEnd ℂ)
+            (paperFT (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) (gammaOf σ))) =
+      4 * (factorialPoleFunctional S a * (starRingEnd ℂ) (factorialPoleFunctional S a)) *
+        ((zetaZeroConfig.mult ρ : ℂ) *
+          paperFT (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) (gammaOf ρ) *
+          (starRingEnd ℂ)
+            (paperFT (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) (gammaOf σ))) := by ring
+    _ = ((4 * ‖factorialPoleFunctional S a‖ ^ 2 : ℝ) : ℂ) *
+        ((zetaZeroConfig.mult ρ : ℂ) *
+          paperFT (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) (gammaOf ρ) *
+          (starRingEnd ℂ)
+            (paperFT (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) (gammaOf σ))) := by
+      rw [hnorm]
+      push_cast
+      ring
+
+/-- **Exact Multi-Scale Rank-1 Weil Zero-Side Factorization:**
+For every finite scale set `S`, complex coefficient vector `a`, and smoothing index `k`,
+`W(H_{S,a,k}, H_{S,a,k}) = 4 ‖Λ_pole(S, a)‖^2 W(H_{0,k}, H_{0,k})`. -/
+theorem weil_factorialSmoothedCombo_eq
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) :
+    zetaZeroConfig.W (factorialSmoothedCombo S a k) (factorialSmoothedCombo S a k) =
+      ((4 * ‖factorialPoleFunctional S a‖ ^ 2 : ℝ) : ℂ) *
+        zetaZeroConfig.W
+          (fun x => (factorialMuntzSmoothed 0 k x : ℂ))
+          (fun x => (factorialMuntzSmoothed 0 k x : ℂ)) := by
+  unfold ZeroConfig.W
+  simp_rw [weil_Wsummand_factorialSmoothedCombo_eq]
+  exact tsum_mul_left
+
+/-- **Real-Part Multi-Scale Rank-1 Weil Factorization:** -/
+theorem re_weil_factorialSmoothedCombo_eq
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) :
+    (zetaZeroConfig.W (factorialSmoothedCombo S a k) (factorialSmoothedCombo S a k)).re =
+      4 * ‖factorialPoleFunctional S a‖ ^ 2 *
+        (zetaZeroConfig.W
+          (fun x => (factorialMuntzSmoothed 0 k x : ℂ))
+          (fun x => (factorialMuntzSmoothed 0 k x : ℂ))).re := by
+  rw [weil_factorialSmoothedCombo_eq, Complex.mul_re, Complex.ofReal_re,
+    Complex.ofReal_im, zero_mul, sub_zero]
+
+/-- **Uniform Eventual Multi-Scale Corrected-Source Weil Positivity (Single Threshold `k₀`):**
+There is a single smoothing threshold in `k` (independent of both the finite scale set `S`
+and the complex coefficient vector `a`) above which every multi-scale corrected-source
+combination `H_{S,a,k}` has nonnegative Weil zero-side energy, with strict positivity if and
+only if it lies outside the pole-free hyperplane `Λ_pole(S, a) = 0`. -/
+theorem eventually_re_weil_factorialSmoothedCombo_nonneg_and_pos_iff :
+    ∀ᶠ k : ℕ in atTop, ∀ (S : Finset ℕ) (a : ℕ → ℂ),
+      0 ≤ (zetaZeroConfig.W (factorialSmoothedCombo S a k) (factorialSmoothedCombo S a k)).re ∧
+      (0 < (zetaZeroConfig.W (factorialSmoothedCombo S a k) (factorialSmoothedCombo S a k)).re ↔
+        factorialPoleFunctional S a ≠ 0) := by
+  filter_upwards [factorialMuntzSmoothed_weil_difference_eventually_pos 0] with k hk S a
+  have h0_pos : 0 < (zetaZeroConfig.W
+      (fun x => (factorialMuntzSmoothed 0 k x : ℂ))
+      (fun x => (factorialMuntzSmoothed 0 k x : ℂ))).re := by
+    have hid := factorialMuntzSmoothed_weil_identity 0 k
+    linarith
+  rw [re_weil_factorialSmoothedCombo_eq]
+  refine ⟨mul_nonneg (by positivity) h0_pos.le, ?_⟩
+  rw [mul_pos_iff_of_pos_right h0_pos]
+  constructor
+  · intro hp hzero
+    simp [hzero] at hp
+  · intro hne
+    have hnorm : 0 < ‖factorialPoleFunctional S a‖ := norm_pos_iff.mpr hne
+    positivity
+
+/-- At every nontrivial zero `ρ`, the readout of `R_{S,a,k}` is the difference between the
+readout of `H_{S,a,k}` and the readout of `U_{S,a,k}`. -/
+theorem paperFT_factorialSmoothedRampCombo_gamma_eq_sub
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    paperFT (factorialSmoothedRampCombo S a k) (gammaOf ρ) =
+      paperFT (factorialSmoothedCombo S a k) (gammaOf ρ) -
+        paperFT (factorialSmoothedTailCombo S a k) (gammaOf ρ) := by
+  have hρ := zetaZeroConfig.strip (ρ : ℂ) ρ.2
+  rw [paperFT_factorialSmoothedRampCombo_gamma,
+    paperFT_factorialSmoothedTailCombo_gamma S a k (s := (ρ : ℂ)) (by linarith [hρ.1]),
+    paperFT_factorialSmoothedCombo_gamma,
+    ← sum_factorialMuntzSmoothed_paperFT_gamma_eq, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [factorialMuntzSmoothedRamp_paperFT_eq_sub n k (s := (ρ : ℂ)) (by linarith [hρ.1]), mul_sub]
+
+/-- Pointwise sesquilinear expansion of the Weil summand of `R_{S,a,k}` at every nontrivial zero `ρ`. -/
+theorem factorialSmoothedRampCombo_Wsummand_eq
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ) (ρ : zetaZeroConfig.carrier) :
+    zetaZeroConfig.Wsummand
+      (factorialSmoothedRampCombo S a k) (factorialSmoothedRampCombo S a k) ρ =
+    zetaZeroConfig.Wsummand
+      (factorialSmoothedCombo S a k) (factorialSmoothedCombo S a k) ρ +
+    zetaZeroConfig.Wsummand
+      (factorialSmoothedTailCombo S a k) (factorialSmoothedTailCombo S a k) ρ -
+    zetaZeroConfig.Wsummand
+      (factorialSmoothedCombo S a k) (factorialSmoothedTailCombo S a k) ρ -
+    zetaZeroConfig.Wsummand
+      (factorialSmoothedTailCombo S a k) (factorialSmoothedCombo S a k) ρ := by
+  let σ : zetaZeroConfig.carrier := ⟨reflect ρ, zetaZeroConfig.reflect_mem _ ρ.2⟩
+  have hγ : (starRingEnd ℂ) (gammaOf (ρ : ℂ)) = gammaOf (σ : ℂ) :=
+    (Tail.gammaOf_reflect _).symm
+  unfold ZeroConfig.Wsummand
+  rw [hγ,
+    paperFT_factorialSmoothedRampCombo_gamma_eq_sub S a k ρ,
+    paperFT_factorialSmoothedRampCombo_gamma_eq_sub S a k σ,
+    map_sub]
+  ring
+
+/-- Exact zero-side sesquilinear expansion of `Re W(R_{S,a,k}, R_{S,a,k})`. -/
+theorem factorialSmoothedRampCombo_re_W_eq
+    (S : Finset ℕ) (a : ℕ → ℂ) (k : ℕ)
+    (hU : Summable (zetaZeroSquareSummand (factorialSmoothedTailCombo S a k))) :
+    (zetaZeroConfig.W (factorialSmoothedRampCombo S a k)
+      (factorialSmoothedRampCombo S a k)).re =
+    (zetaZeroConfig.W (factorialSmoothedCombo S a k)
+      (factorialSmoothedCombo S a k)).re +
+    (zetaZeroConfig.W (factorialSmoothedTailCombo S a k)
+      (factorialSmoothedTailCombo S a k)).re -
+    (zetaZeroConfig.W (factorialSmoothedCombo S a k)
+      (factorialSmoothedTailCombo S a k)).re -
+    (zetaZeroConfig.W (factorialSmoothedTailCombo S a k)
+      (factorialSmoothedCombo S a k)).re := by
+  set H := factorialSmoothedCombo S a k
+  set U := factorialSmoothedTailCombo S a k
+  have hH := factorialSmoothedCombo_zeroSquare_summable S a k
+  have hHH := summable_Wsummand H H hH hH
+  have hUU := summable_Wsummand U U hU hU
+  have hHU := summable_Wsummand H U hH hU
+  have hUH := summable_Wsummand U H hU hH
+  have hW : zetaZeroConfig.W (factorialSmoothedRampCombo S a k)
+      (factorialSmoothedRampCombo S a k) =
+      zetaZeroConfig.W H H + zetaZeroConfig.W U U -
+        zetaZeroConfig.W H U - zetaZeroConfig.W U H := by
+    unfold ZeroConfig.W
+    simp_rw [factorialSmoothedRampCombo_Wsummand_eq S a k]
+    rw [((hHH.add hUU).sub hHU).tsum_sub hUH, (hHH.add hUU).tsum_sub hHU, hHH.tsum_add hUU]
+  rw [hW]
+  simp only [Complex.sub_re, Complex.add_re]
+
+/-- **Multi-Scale Smoothed Compact-Ramp vs. Tail Weil Lower Bound (Uniform in `(S, a)`):**
+Once `k` is above the single base-scale smoothing threshold, the diagonal corrected-source
+term `Re W(H_{S,a,k}, H_{S,a,k})` is nonnegative for every `(S, a)`, so the smoothed
+compact-ramp combination `R_{S,a,k} = H_{S,a,k} - U_{S,a,k}` satisfies
+`Re W(R_{S,a,k}, R_{S,a,k}) ≥ Re W(U_{S,a,k}, U_{S,a,k}) - 4 ‖Λ_pole(S, a)‖ √(C_H Z(U_{S,a,k}))`
+with zero `|S|` Cauchy–Schwarz overhead and exact equality on the pole-free hyperplane. -/
+theorem eventually_re_weil_factorialSmoothedRampCombo_ge_tailCombo_sub_rankOne :
+    ∀ᶠ k : ℕ in atTop, ∀ (S : Finset ℕ) (a : ℕ → ℂ),
+      Summable (zetaZeroSquareSummand (factorialSmoothedTailCombo S a k)) →
+      (zetaZeroConfig.W (factorialSmoothedTailCombo S a k)
+        (factorialSmoothedTailCombo S a k)).re -
+      4 * ‖factorialPoleFunctional S a‖ *
+        Real.sqrt (factorialCorrectedSamplingConstant *
+          zetaZeroSquareMass (factorialSmoothedTailCombo S a k)) ≤
+      (zetaZeroConfig.W (factorialSmoothedRampCombo S a k)
+        (factorialSmoothedRampCombo S a k)).re := by
+  filter_upwards [eventually_re_weil_factorialSmoothedCombo_nonneg_and_pos_iff] with k hk S a hU
+  set H := factorialSmoothedCombo S a k
+  set U := factorialSmoothedTailCombo S a k
+  set R := factorialSmoothedRampCombo S a k
+  have hH : Summable (zetaZeroSquareSummand H) :=
+    factorialSmoothedCombo_zeroSquare_summable S a k
+  have hdecomp := factorialSmoothedRampCombo_re_W_eq S a k hU
+  have hHH_nonneg : 0 ≤ (zetaZeroConfig.W H H).re := (hk S a).1
+  have hZU_nonneg : 0 ≤ zetaZeroSquareMass U :=
+    tsum_nonneg fun ρ => mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
+  have hZH_le : zetaZeroSquareMass H ≤
+      4 * factorialCorrectedSamplingConstant * ‖factorialPoleFunctional S a‖ ^ 2 :=
+    zetaZeroSquareMass_factorialSmoothedCombo_le S a k
+  have hprod_sqrt :
+      Real.sqrt (zetaZeroSquareMass H * zetaZeroSquareMass U) ≤
+        2 * ‖factorialPoleFunctional S a‖ *
+          Real.sqrt (factorialCorrectedSamplingConstant * zetaZeroSquareMass U) := by
+    have h1 : zetaZeroSquareMass H * zetaZeroSquareMass U ≤
+        (2 * ‖factorialPoleFunctional S a‖) ^ 2 *
+          (factorialCorrectedSamplingConstant * zetaZeroSquareMass U) := by
+      calc
+        zetaZeroSquareMass H * zetaZeroSquareMass U ≤
+            (4 * factorialCorrectedSamplingConstant * ‖factorialPoleFunctional S a‖ ^ 2) *
+              zetaZeroSquareMass U :=
+          mul_le_mul_of_nonneg_right hZH_le hZU_nonneg
+        _ = (2 * ‖factorialPoleFunctional S a‖) ^ 2 *
+            (factorialCorrectedSamplingConstant * zetaZeroSquareMass U) := by ring
+    calc
+      Real.sqrt (zetaZeroSquareMass H * zetaZeroSquareMass U) ≤
+          Real.sqrt ((2 * ‖factorialPoleFunctional S a‖) ^ 2 *
+            (factorialCorrectedSamplingConstant * zetaZeroSquareMass U)) :=
+        Real.sqrt_le_sqrt h1
+      _ = 2 * ‖factorialPoleFunctional S a‖ *
+          Real.sqrt (factorialCorrectedSamplingConstant * zetaZeroSquareMass U) := by
+        rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)]
+  have hHU : (zetaZeroConfig.W H U).re ≤
+      2 * ‖factorialPoleFunctional S a‖ *
+        Real.sqrt (factorialCorrectedSamplingConstant * zetaZeroSquareMass U) :=
+    ((Complex.re_le_norm _).trans (weil_mixed_norm_le_sqrt_square_mass H U hH hU)).trans hprod_sqrt
+  have hUH : (zetaZeroConfig.W U H).re ≤
+      2 * ‖factorialPoleFunctional S a‖ *
+        Real.sqrt (factorialCorrectedSamplingConstant * zetaZeroSquareMass U) := by
+    have h1 := (Complex.re_le_norm _).trans (weil_mixed_norm_le_sqrt_square_mass U H hU hH)
+    rw [mul_comm (zetaZeroSquareMass U) (zetaZeroSquareMass H)] at h1
+    exact h1.trans hprod_sqrt
+  linarith
+
 end
 
 end GaloisForLFunctions.ArithmeticPositivityTheory

@@ -13,12 +13,14 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCorrectedSa
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailSampling
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailRelativeMargin
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCollarIrrationalityAndSpacing
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialAffineClockResonance
 import GaloisForLFunctions.«arithmetic-positivity-theory».SourceRelativeSchurMarginAndPerturbationCalculus
 import GaloisForLFunctions.«arithmetic-positivity-theory».RankOnePoleReadoutAndZeroNullspace
 import GaloisForLFunctions.«arithmetic-positivity-theory».GeneralDivisorBernoulliFilterClassification
 import GaloisForLFunctions.«arithmetic-positivity-theory».DyadicBernoulliFilterAndBohrCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailWindowRieszCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».EnvelopeCriticalPrimeTransitionAndDilationGain
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeAdmission
 import GaloisForLFunctions.«arithmetic-positivity-theory».NonstationaryMellinLowFrequencyExclusion
 import GaloisForLFunctions.«arithmetic-positivity-theory».MarkovPoleHyperbolicCapacityAndApertureThresholds
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothingAndGramMargin
@@ -29,6 +31,9 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseBohrCo
 import GaloisForLFunctions.«arithmetic-positivity-theory».RpowMellinNonstationaryPhaseBound
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialSpanTestMellinLowFrequency
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailCombinationSmoothingChannels
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialSpanTestPolarPrimeGammaBudgets
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailCombinationExplicitFormula
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailSpanWeilCoercivity
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,

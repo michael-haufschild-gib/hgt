@@ -1,8 +1,8 @@
 # Full signed coercivity on the high-scale factorial tail span
 
 - **ID:** APT-ROOT-SPAN-COERCIVITY
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean certificate required)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Exact span-sign task](../1-in-progress/arithmetic-positivity-factorial-span-sign.md).
 - **Audit verdict:** BRIDGE. This is a source-specific coercivity consequence of separated-frequency estimates, nonstationary phase, and the complete explicit formula. No literature novelty is established.
 
@@ -176,3 +176,36 @@ The parent interval estimate is classical [Montgomery–Vaughan](https://persona
 The physical Riesz input (`FactorialTailWindowRieszCoercivity.lean`), the envelope-critical prime majorant and polar readout budgets (`EnvelopeCriticalPrimeTransitionAndDilationGain.lean`), the nonstationary Mellin low-band estimate (`nonstationary_mellin_majorant_le_five_div_abs` and `low_band_plancherel_energy_le_half_arch`), and the high-scale archimedean-to-Weil coercivity assembly (`high_scale_archimedean_log_coercivity` and `high_scale_span_weil_coercivity_bound` in [NonstationaryMellinLowFrequencyExclusion.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/NonstationaryMellinLowFrequencyExclusion.lean)) are certified in Lean. The theorem supplies no density theorem, no all-aperture sign theorem, and no unconditional RH proof. Those are separate mathematical obligations.
 
 The proof uses the source's offset band and harmonic filter, but not the exact cubic equation for its collar. Its prime estimate also benefits from the fast envelope \(e^{3x/2}\). This identifies where the present mechanism stops explaining critical arithmetic cancellation. If that envelope is deformed to \(e^{\beta x}\), the same correlation argument costs a prime majorant proportional to \(\sum_{r\ge2}\Lambda(r)/r^{\beta+1/2}\). It is finite for \(\beta>1/2\), whereas at \(\beta=1/2\) this majorant diverges. This is a limitation of the absolute comparison, not a negative-energy theorem at the boundary. A critical theory must control the actual dilation correlations and boundary readouts there; the positive theorem above does not supply that control.
+
+## Lean certificate
+
+All statements are unconditional and depend only on `propext`, `Classical.choice`, `Quot.sound`. Indexing: Lean writes `n = N - 1`, so the family is `f_b = ∑_{n ∈ S} (b_n / a_n) T_n` with `M ≤ n + 1`, and `B_b = ∑_{n ∈ S} b_n Φ_{n+1}` (`factorialPhaseCombination S b`). Constants: `A = factorialWeightedPhaseLower`, `B = factorialWeightedPhaseUpper`, `J = factorialUnitIntervalUpper`, `D = factorialLowFreqConstant`, `η = lowFreqRelativeCutoff A D`, `G = factorialSpanGammaOffset = max 0 ExposingRayPrimitive.coercivityConst`, and `∑_{r ≥ 2} Λ(r)/r² = canonicalPrimeMajorantConstant`.
+
+- (1)–(2): `factorialTailSpan_re_W_coercivity` gives `c = A/2`, `C = factorialSpanWeilOffset = factorialSpanCoercivityOffset A B G J D`, absolute summability of the Weil summands, and the bound. `factorialSpanWeilOffset_nonneg` proves `C ≥ 0`. The real-coefficient case is `factorialTailCombination_re_W_coercivity`. Both are in [FactorialTailSpanWeilCoercivity.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailSpanWeilCoercivity.lean).
+- (3)–(4): `integral_norm_sq_sum_factorialMuntzCorrectedTail`, `factorialPhaseCombination_weighted_lower`, `factorialPhaseCombination_weighted_upper` (`r ≥ 1`) and `factorialPhaseCombination_dilated_window_upper` (gap constant `K/r ≤ K`), in [FactorialPhaseWindowAndPhysicalRieszBounds.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialPhaseWindowAndPhysicalRieszBounds.lean).
+- (5): `norm_integral_Ioi_one_rpow_mul_cexp_phase_le` and its cosine form `norm_integral_Ioi_one_rpow_mul_cos_mul_cexp_le`, in [RpowMellinNonstationaryPhaseBound.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/RpowMellinNonstationaryPhaseBound.lean).
+- Single-phase bound `D/N` and (6): `paperFT_factorialSpanTest` (Mellin readout), `norm_integral_factorialHarmonicLayer_mellinKernel_le`, `norm_paperFT_factorialSpanTest_le`, `norm_sq_paperFT_factorialSpanTest_le`, in [FactorialSpanTestMellinLowFrequency.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialSpanTestMellinLowFrequency.lean).
+- (7): `factorialTailCombination_lowBand_energy_le` (scalar step `low_band_plancherel_energy_le_half_arch`).
+- (8): `gammaBracket_quarter_lower`, `gammaBracket_ge_neg_offset`, `gammaBracket_ge_log_of_le_abs`, in [FactorialSpanTestPolarPrimeGammaBudgets.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialSpanTestPolarPrimeGammaBudgets.lean).
+- (9): `factorialTailCombination_archGammaEnergy_lower`, through `archGammaEnergy_split_lower` and `high_scale_archimedean_log_coercivity`. Absolute convergence of the raw Gamma integral is `integrable_norm_sq_paperFT_factorialTailCombination_mul_gammaBracket`. It rests on the raw-tail logarithmic Fourier bound (`integrable_norm_sq_paperFT_tail_mul_log`, from `factorialTailLogFourier_integrable`), the finite-sum square inequality, and `EvenSector.abs_gammaBracket_le_log`.
+- (10): `abs_crossCorr_factorialTailCombination_le_weighted` (`|C_b(y)| ≤ BS e^{-3|y|/2}`), `norm_atomTerm_factorialTailCombination_le`, `summable_norm_atomTerm_factorialTailCombination` and `abs_atomPairing_factorialTailCombination_le`. The Mellin-form correlation and prime series are `factorialSpanCorrelation`, `norm_factorialSpanCorrelation_le` and `abs_tsum_factorialSpanPrimeAtom_le`.
+- (11): `paperFT_factorialSpanTest_I_div_two` and `paperFT_factorialSpanTest_neg_I_div_two` identify `F_b(±i/2)` with `P₀ = factorialSpanPolarZero` and `P₁ = factorialSpanPolarOne`. The bounds are `norm_factorialSpanPolarZero_le` (`2√(JS)`), `norm_factorialSpanPolarOne_le` (`(3/2)√(JS)`), `abs_factorialSpanPolarTerm_le` and `factorialSpanTest_polar_budget` (`6JS`).
+- Smoothing and limits, in [FactorialTailCombinationSmoothingChannels.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailCombinationSmoothingChannels.lean):
+  - smooth decay tests: `factorialTailCombinationSmoothed_expDecayTest`;
+  - smoothed explicit formula: `archPoleEnergy_factorialTailCombinationSmoothed`;
+  - zero side: `tendsto_W_factorialTailCombinationSmoothed`, with `factorialTailCombination_zeroSquare_summable` and `factorialMuntzKernelReadout_tendsto`;
+  - polar side: `tendsto_paperFT_factorialTailCombinationSmoothed` at `s = 0, 1`;
+  - prime side: `tendsto_crossCorr_factorialTailCombinationSmoothed` and `tendsto_atomPairing_factorialTailCombinationSmoothed`.
+- Gamma side and the exact identity, in [FactorialTailCombinationExplicitFormula.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailCombinationExplicitFormula.lean): `tendsto_archGammaEnergy_factorialTailCombinationSmoothed` and the raw real identity `archPoleEnergy_factorialTailCombination`.
+- Reality and Hermitian symmetry: `zetaZeroConfig_W_ofReal_conj` (conjugation reindexing via `zetaZeroConjPerm`) and `zetaZeroConfig_W_swap` (reflection reindexing).
+- Complex splitting: `zetaZeroConfig_W_ofReal_add_I_mul` (`W(u+iv,u+iv) = W(u,u) + W(v,v)`).
+- Complex exact identity: `factorialTailSpan_exact_weil_identity`, with the Hermitian correlation `hermitianCrossCorr`, the complex prime series `complexAtomPairing` (real, by `complexAtomPairing_factorialTailCombination`) and the integrable complex Gamma density.
+
+**Proof route in Lean.** Two steps differ from the paper text. Each uses an equally valid majorant.
+- **Gamma channel:** the mollifier readout is bounded by its strip bound `‖κ_k‖ ≤ e` (`factorialMuntzKernelReadout_bound`), not by `1`.
+- **Prime channel:** dominated convergence uses the majorant `factorialTailCombinationCorrConstant · e^{-5|y|/4}`. It depends on the family but not on `k`.
+
+The complex theorem (1) follows from the real one by splitting `b_n / a_n` into real and imaginary parts, since `∑‖b_n‖² = ∑‖Re(b_n/a_n) a_n‖² + ∑‖Im(b_n/a_n) a_n‖²`.
+
+## Log
+- 2026-10-18 — moved 2-fully-proven → 3-formalized after the unconditional Lean certificate above.

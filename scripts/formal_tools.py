@@ -156,6 +156,15 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.BezoutValuationIncidence.selberg_and_mean_square_le_dirichlet_energy_of_harmonic_eq_zero",
         ],
     },
+    "trans_horizon_incidence_mechanics": {
+        "module": "GaloisForLFunctions.TransHorizonIncidenceMechanics",
+        "path": SRC / "TransHorizonIncidenceMechanics",
+        "capstones": [
+            "GaloisForLFunctions.TransHorizonIncidenceMechanics.sieveSeq_mul_of_dvd_of_squarefree_support",
+            "GaloisForLFunctions.TransHorizonIncidenceMechanics.horizonObservationState_eq_iff_all_sieveSeq",
+            "GaloisForLFunctions.TransHorizonIncidenceMechanics.fermiBoundaryJump_exact_recovery_iff",
+        ],
+    },
     "quantum_alg": {
         "module": "GaloisForLFunctions.QuantumAlg",
         "path": SRC / "QuantumAlg",
@@ -185,6 +194,7 @@ ALLOWED_ROOT_LEAN = {
     "QuantumAlg.lean",
     "RHTower.lean",
     "SelbergClass.lean",
+    "TransHorizonIncidenceMechanics.lean",
     "U0.lean",
 }
 

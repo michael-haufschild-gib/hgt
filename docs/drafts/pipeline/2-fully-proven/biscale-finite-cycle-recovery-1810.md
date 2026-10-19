@@ -74,7 +74,9 @@ Source ingredients inspected: `InfiniteGridUniformTail.lean` contains the global
 - [ ] Lean finite-cycle and sampling identities, including zero-radius and endpoint cases.
 - [ ] Actual smooth-source derivative bounds, explicit normalization and nonempty controlled classes; no assumed convergence or assumed recovery.
 - [ ] Existing distant-copy obstruction transported into the controlled class with quantified parameters.
-- [ ] Formalize the singular-energy collar and the grid/energy finite-accuracy theorem above by reusing the existing modulus and tail estimates; inspect the exact corpus query before claiming any extension absent.
+- [x] Formalize the singular-energy collar and the grid/energy finite-accuracy theorem above by reusing the existing modulus and tail estimates; inspect the exact corpus query before claiming any extension absent.
 - [ ] Named-source/axiom audits, umbrella wiring, index and lint.
 
 This component does not close item 9.
+
+2026-10-18 checkpoint: `EnergyControlledClosedCycleRecovery.lean` now proves the energy-derived κ=1/2 reconstruction protocol, with explicit mesh size/order and signed trace error retained. `EnergyCycle.global_recovery` and `fixed_integer_grid_recovery` passed a direct named-source Lean check with no warnings and are wired into the field umbrella. The modulus-based collar is exp(-(1+32 max(K,0)/exp(-1/2))); no derivative bound is assumed. The arbitrary-κ statement and the other unchecked gates above remain separate. This formalizes existing paper work and is not counted as a new contribution in the 100-contribution programme; its associated exact-order obstruction is tracked in `../3-formalized/biscale-energy-controlled-cycle-observability-2026-10-18.md`.
