@@ -7,6 +7,8 @@ import GaloisForLFunctions.SquareRootThreshold.ZetaSingleHeightPositivityAboveAr
 import GaloisForLFunctions.SquareRootThreshold.WindowedMeanValueDiagonalLaw
 import GaloisForLFunctions.SquareRootThreshold.ZetaLocalizedFormWindowedVarianceLaw
 import GaloisForLFunctions.SquareRootThreshold.DepthGapVisibilityLaw
+import GaloisForLFunctions.SquareRootThreshold.WindowedOffDiagonalBeyondThreshold
+import GaloisForLFunctions.SquareRootThreshold.PrimeTailCouplingCriterion
 
 /-!
 # Square-Root Threshold

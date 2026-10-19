@@ -62,8 +62,7 @@ theorem integral_Ioo_collar_eq_integral_Ioi_max {a : ℝ} (ha : 0 ≤ a) (u : �
     ring
 
 /-- Decay of the positive part of `m_a(y − x)` in `y`, uniformly for `0 < x ≤ R`. -/
-theorem max_shiftDifference_le_decay {a R x y : ℝ} (ha : 0 < a) (hR : 0 ≤ R) (hx : 0 < x)
-    (hxR : x ≤ R) (hy : 0 ≤ y) :
+theorem max_shiftDifference_le_decay {a R x y : ℝ} (ha : 0 < a) (hxR : x ≤ R) (hy : 0 ≤ y) :
     max (shiftDifference a (y - x)) 0 ≤
       riemannKernelReal 0 / riemannKernelReal (R + a) * riemannKernelReal (y - R - a) := by
   have hΘ0 := riemannKernelReal_pos 0
@@ -152,8 +151,8 @@ theorem integrable_archLevy_collar_prod {a : ℝ} (ha : 0 < a) {u : ℝ → ℝ}
           ≤ riemannKernelReal 0 * (max Lm (riemannKernelReal 0) * z.1) :=
             mul_le_mul hmx hmax (le_max_right _ _) hΘ0
         _ = C * z.1 := by rw [hC]; ring
-    rw [Real.norm_eq_abs, abs_mul, abs_of_pos hL, abs_mul, abs_of_nonneg (sq_nonneg _),
-      abs_of_nonneg (mul_nonneg hmx0 (le_max_right _ _))]
+    rw [Real.norm_eq_abs, abs_mul, abs_of_pos hL, abs_mul, abs_of_nonneg (sq_nonneg (u z.2)),
+      abs_of_nonneg (mul_nonneg hmx0 (le_max_right (shiftDifference a (z.1 - z.2)) 0))]
     calc archLevyDensity z.1 *
           (shiftDifference a z.2 * max (shiftDifference a (z.1 - z.2)) 0 * u z.2 ^ 2)
         ≤ archLevyDensity z.1 * (C * z.1 * u z.2 ^ 2) :=
@@ -195,7 +194,9 @@ theorem integrableOn_sq_mul_shiftDifference_mul_archCollar {a : ℝ} (ha : 0 < a
   have h := (integrable_archLevy_collar_prod ha hu huc).integral_prod_right
   refine h.congr (Eventually.of_forall fun x => ?_)
   show (∫ t in Ioi (0 : ℝ), archLevyDensity t *
-      (shiftDifference a x * max (shiftDifference a (t - x)) 0 * u x ^ 2)) = _
+      (shiftDifference a x * max (shiftDifference a (t - x)) 0 * u x ^ 2)) =
+    u x ^ 2 * shiftDifference a x *
+      ∫ t in Ioi (0 : ℝ), archLevyDensity t * max (shiftDifference a (t - x)) 0
   rw [← integral_const_mul]
   refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
   ring
@@ -227,7 +228,8 @@ theorem summable_integral_norm_atom_collar {a : ℝ} (ha : 0 < a) {u : ℝ → �
     exact div_nonneg hΘ0 (riemannKernelReal_pos _).le
   have hbig : Summable fun n : ℕ => (riemannKernelReal 0 * D * Mu ^ 2 * R) *
       (vonMangoldtAtom n * riemannKernelReal (Real.log n - R - a)) := by
-    refine ((summable_atom_riemannKernelReal_log_sub (R + a)).mul_left _).congr fun n => ?_
+    refine ((summable_atom_riemannKernelReal_log_sub (R + a)).mul_left
+      (riemannKernelReal 0 * D * Mu ^ 2 * R)).congr fun n => ?_
     rw [sub_sub]
   refine Summable.of_nonneg_of_le (fun n => integral_nonneg fun x => norm_nonneg _)
     (fun n => ?_) hbig
@@ -239,10 +241,10 @@ theorem summable_integral_norm_atom_collar {a : ℝ} (ha : 0 < a) {u : ℝ → �
         Mu ^ 2) * (if x ≤ R then 1 else 0) := by
     intro x hx
     split_ifs with hxR
-    · rw [mul_one, abs_mul, abs_of_nonneg hΛ, abs_mul, abs_mul, abs_of_nonneg (sq_nonneg _),
-        abs_of_nonneg (le_max_right _ _)]
+    · rw [mul_one, abs_mul, abs_of_nonneg hΛ, abs_mul, abs_mul, abs_of_nonneg (sq_nonneg (u x)),
+        abs_of_nonneg (le_max_right (shiftDifference a (Real.log n - x)) 0)]
       have h1 := abs_shiftDifference_le a x
-      have h2 := max_shiftDifference_le_decay ha hR0 hx hxR (Real.log_natCast_nonneg n)
+      have h2 := max_shiftDifference_le_decay ha hxR (Real.log_natCast_nonneg n)
       rw [← hD] at h2
       have hu2 : u x ^ 2 ≤ Mu ^ 2 := by
         rw [← sq_abs]
@@ -298,7 +300,7 @@ theorem integrableOn_sq_mul_shiftDifference_mul_primeCollar {a : ℝ} (ha : 0 < 
   obtain ⟨D, hD⟩ : ∃ D : ℝ, D = riemannKernelReal 0 / riemannKernelReal (R + a) := ⟨_, rfl⟩
   have hB : Summable fun n : ℕ =>
       D * (vonMangoldtAtom n * riemannKernelReal (Real.log n - R - a)) := by
-    refine ((summable_atom_riemannKernelReal_log_sub (R + a)).mul_left _).congr fun n => ?_
+    refine ((summable_atom_riemannKernelReal_log_sub (R + a)).mul_left D).congr fun n => ?_
     rw [sub_sub]
   obtain ⟨B, hBdef⟩ : ∃ B : ℝ,
       B = ∑' n : ℕ, D * (vonMangoldtAtom n * riemannKernelReal (Real.log n - R - a)) := ⟨_, rfl⟩
@@ -309,7 +311,7 @@ theorem integrableOn_sq_mul_shiftDifference_mul_primeCollar {a : ℝ} (ha : 0 < 
     intro x hx hxR
     have hterm : ∀ n : ℕ, vonMangoldtAtom n * max (shiftDifference a (Real.log n - x)) 0 ≤
         D * (vonMangoldtAtom n * riemannKernelReal (Real.log n - R - a)) := fun n => by
-      have h := max_shiftDifference_le_decay ha hR0 hx hxR (Real.log_natCast_nonneg n)
+      have h := max_shiftDifference_le_decay ha hxR (Real.log_natCast_nonneg n)
       rw [← hD] at h
       calc vonMangoldtAtom n * max (shiftDifference a (Real.log n - x)) 0
           ≤ vonMangoldtAtom n * (D * riemannKernelReal (Real.log n - R - a)) :=
@@ -327,7 +329,7 @@ theorem integrableOn_sq_mul_shiftDifference_mul_primeCollar {a : ℝ} (ha : 0 < 
       rw [← sq_abs]
       exact pow_le_pow_left₀ (abs_nonneg _) (hMu x) 2
     have hMu0 : 0 ≤ Mu := le_trans (abs_nonneg _) (hMu 0)
-    rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg _), abs_of_nonneg hmx0, abs_of_nonneg htsum0]
+    rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg (u x)), abs_of_nonneg hmx0, abs_of_nonneg htsum0]
     exact mul_le_mul (mul_le_mul hu2 hmx hmx0 (sq_nonneg _)) htsum htsum0 (by positivity)
   have hg0 : IntegrableOn (fun _ : ℝ => Mu ^ 2 * riemannKernelReal 0 * B) (Ioc (0 : ℝ) R) :=
     integrableOn_const measure_Ioc_lt_top.ne
@@ -395,7 +397,9 @@ theorem integrableOn_archLevy_mul_collarIntegral {a : ℝ} (ha : 0 < a) {u : ℝ
   have h := (integrable_archLevy_collar_prod ha hu huc).integral_prod_left
   refine h.congr (ae_restrict_of_forall_mem measurableSet_Ioi fun t _ => ?_)
   show (∫ x in Ioi (0 : ℝ), archLevyDensity t *
-      (shiftDifference a x * max (shiftDifference a (t - x)) 0 * u x ^ 2)) = _
+      (shiftDifference a x * max (shiftDifference a (t - x)) 0 * u x ^ 2)) =
+    archLevyDensity t *
+      ∫ x in Ioo (0 : ℝ) t, shiftDifference a x * shiftDifference a (t - x) * u x ^ 2
   rw [integral_Ioo_collar_eq_integral_Ioi_max ha.le, integral_const_mul]
 
 /-- Summability in the prime of the prime collar integrals. -/
