@@ -56,6 +56,9 @@ corpus's "secondary odd profile" `m_a = Θ(·−a) − Θ(·+a)` is a test; its 
 | Potential | `ρ(x) = Θ(x) cosh(x/2)` | `phiDoobCoshMass (v²)` is `∫ ρ v²` |
 | Same-side ground jump | `Θ(x)Θ(x+t) ω(x)ω(x+t) (u(x) − u(x+t))²` on `x > 0` | `sameSideGroundJump` |
 | Reflected ground jump | `Θ(x)Θ(t−x) ω(x)ω(t−x) (u(x) + u(t−x))²` on `0 < x < t` | `reflectedGroundJump` |
+| Reflected difference jump | `Θ(x)Θ(t−x) ω(x)ω(t−x) (u(x) − u(t−x))²` on `0 < x < t` | `reflectedDifferenceJump` |
+| Same-side energy | `S(ω,u) = ∫ dm(t) ∫_{x>0} sameSideGroundJump` | `sameSideEnergy` |
+| Reflected sum / difference energies | `P(ω,u) = ∫ dm(t) ∫_0^t reflectedGroundJump`, `D(ω,u) = ∫ dm(t) ∫_0^t reflectedDifferenceJump` | `reflectedSumEnergy`, `reflectedDifferenceEnergy` |
 | Ground remainder of one shift | `rem(t) = 2∫_{x>0} sameSide + ∫_{0<x<t} reflected` | `groundRemainderShift` |
 | Ground remainder | `R_N(ω,u) = ∫ dm(t) rem(t)` | `groundRemainder` |
 | Folded (Neumann) shift generator | `Θ(x)[Θ(x+t)(ω(x) − ω(x+t)) + Θ(x−t)(ω(x) − ω(|x−t|))]` | `foldedShiftGenerator` |
@@ -216,9 +219,35 @@ Hence (`markovEnergy_phiDoob_shiftedGroundState_nonneg_iff_of_contDiff`) Markov 
 both sides explicit: the left side is the weighted collar excess (eventually at least
 `sinh(a/2) sinh(x/2) − K` by 3.4), the right side the sum of the same-side squares `(u(x) − u(x+t))²`
 and the reflected squares `(u(x) + u(t−x))²`. Positivity, if RH holds, is carried by the remainder,
-never by the generator; a supersolution-based proof must be a subsolution-plus-remainder proof. The
-two-sided representation (GSR-D) trades the negative potential for the negative reflected remainder
-`−Θ(x)Θ(t−x)ω(x)ω(t−x)(u(x) − u(t−x))²`.
+never by the generator; a supersolution-based proof must be a subsolution-plus-remainder proof.
+
+**The two-sided representation and the variation inequality.** Since
+`reflectedGroundJump + reflectedDifferenceJump = 2Θ(x)Θ(t−x)ω(x)ω(t−x)(u(x)² + u(t−x)²)` and the collar
+is symmetric under `x ↦ t − x`, in test coordinates
+`∫_0^t reflected sum + ∫_0^t reflected difference = 4∫_0^t m_a(x) m_a(t−x) u(x)² dx`, and integrating
+against `dm` (collar Fubini, `integral_dm_collar_eq_integral_sq_mul_collarMass`)
+
+    P(ω_a,u) + D(ω_a,u) = 4 ∫_{x>0} u² m_a C_a.
+
+The folded representation `R_N = 2S + P` therefore becomes the two-sided one
+(`markovEnergy_phiDoob_shiftedGroundState_eq_twoSided`): for every `a > 0` and even `u ∈ C²_c`,
+
+    markovEnergy(Θ(ω_a u)) = 2 S(ω_a,u) − D(ω_a,u) + 4 sinh(a/2) ∫_{x>0} u(x)² m_a(x) sinh(x/2) dx,
+
+whose source term is the two-sided source `2 sinh(a/2) sinh(x/2) Θ` of `ω_a` and whose only indefinite
+term is `−D`. Markov positivity on `Θ(ω_a u)` is the **variation inequality**
+(`markovEnergy_phiDoob_shiftedGroundState_nonneg_iff_variation`)
+
+    D(ω_a,u) ≤ 2 S(ω_a,u) + 4 sinh(a/2) ∫_{x>0} u² m_a sinh(x/2),
+
+and RH implies it for every `a > 0` and even `u ∈ C²_c` (`reflectedDifferenceEnergy_le_of_riemannHypothesis`).
+In the corpus's `oddProfile` coordinates (`m_a = 2 sinh(a/2) · oddProfile a`) the same identity reads
+`markovEnergy(oddProfileTest a w) = 2·direct − collar + oddSinhPotential a w` with `direct`, `collar`
+the `dm`-integrals of `oddProfileShiftJump` on the half line and of `oddProfileCollarDiffSq` on
+`(0,t)`: the entire budget by which the collar may exceed twice the direct energy is the sinh
+potential, with coefficient exactly `1`. The reflected variation `(u(x) − u(t−x))²` is a variation
+across the fold point `t/2`; the same-side variation `(u(x) − u(x+t))²` is a variation at distance
+`t`.
 
 ### 3.6 The finite model (Perron–Frobenius)
 
@@ -272,10 +301,14 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
    obstruction otherwise? Both sides are explicit; the left side grows like `e^{x/2}` on the support of
    `u`, the right side is a quadratic form in `u` with kernel `Θ(x)Θ(x±t) m_a(x) m_a(x±t)`. This is
    THIM's absorption problem in closed form.
-2. **The two-sided twin.** In GSR-D, `ω_a` is an exact strict supersolution with source
-   `2 sinh(a/2) sinh(x/2) Θ`, and the remainder is indefinite only through the reflected square
-   `−Θ(x)Θ(t−x) m_a(x) m_a(t−x)(u(x) − u(t−x))²/Θ(x)Θ(t−x)`. Compare the two representations on the
-   same `u`.
+2. **The variation inequality** `D(ω_a,u) ≤ 2 S(ω_a,u) + 4 sinh(a/2) ∫ u² m_a sinh(x/2)` (3.5): for
+   which classes of even `u` is it provable? For `u` with `u(t − x) = u(x)` on `(0,t)` the collar term
+   vanishes; for `u` nonincreasing on `(0,∞)` one has `|u(x) − u(t−x)| ≤ |u(x) − u(x+t)|` on
+   `(0, t/2)`, so `D` is bounded by a same-side integral with the weight `m_a(t−x)` in place of
+   `m_a(x+t)`, and the comparison reduces to the ratio `m_a(t−x)/m_a(t+x)` against the sinh budget.
+   THIM's collar-to-direct bounds (`oddProfileCollarDiffSq_le_two_direct_add_two_across`,
+   `integral_oddProfileCollarDiffSq_le_direct_add_absorbedArchSlice`) are partial results on
+   exactly this inequality, on the low-prime window `3t/2 ≤ a`.
 3. **Signed superpositions.** Finite combinations `Σ c_j ω_{a_j}` with mixed signs that stay positive
    on `(0,∞)`: the folded defect is linear, so the question is the sign of
    `Σ c_j (sinh(a_j/2) sinh(x/2) − C_{a_j}(x))`; nonnegative combinations inherit failure at both ends.
@@ -321,4 +354,7 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
 | `ShiftedGroundStatePotentialBounds` | `|K_a(t,x)| ≤ K t` and `|K_a(t,x)| ≤ K Θ(t − R − a)` on `0 < x ≤ R`; linear and decay bounds of the same-side and reflected ground jumps |
 | `ShiftedGroundStateRemainderBounds` | integrals dominated by indicators of bounded intervals; `|rem_a(t)| ≤ C t` and `|rem_a(t)| ≤ 16Θ(0)M_u²R Θ(t − R − a)`; joint continuity of the jumps and measurability of `t ↦ rem_a(t)` |
 | `ShiftedGroundStateAdmissibility` | `foldedAdmissible_shiftedGroundState` for every `a > 0`, `u ∈ C¹_c`; the remainder-dominates-defect identity and its nonnegativity criterion for every even `u ∈ C²_c` (`markovEnergy_phiDoob_shiftedGroundState_eq_of_contDiff`) |
+| `ShiftedGroundStateCombinationFailure` | nonnegative nonzero combinations of two shifted ground states are strict folded subsolutions near `0` and on a half line `[X, ∞)` |
+| `ShiftedGroundStateCollarFubini` | the collar integral as a half-line integral of the positive part; `m_a(y−x)⁺ ≤ (Φ(0)/Φ(R+a)) Φ(y−R−a)`; product integrability of the archimedean collar; collar Fubini `∫ dm(t) ∫_0^t m_a(x)m_a(t−x)u(x)² = ∫_{x>0} u² m_a C_a`; integrability and summability of the collar marginals |
+| `ShiftedGroundStateTwoSidedRepresentation` | `reflectedDifferenceJump`; `sameSideEnergy`, `reflectedSumEnergy`, `reflectedDifferenceEnergy`; `R_N = 2S + P`; `P + D = 4∫u² m_a C_a`; two-sided representation `markovEnergy = 2S − D + 4 sinh(a/2)∫u² m_a sinh(x/2)`; the variation inequality criterion and its proof from RH |
 | `ShiftedGroundStateInfinityFailure` | uniform bound of `∫_0^∞ symArchTerm`; the signed prime shift sum `P(x+a) − P(x−a)`; `C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K` for `x ≥ a` (`two_mul_source_sub_le_shiftedCollarMass`); folded defect `≤ −2Θ(x)(sinh(a/2) sinh(x/2) − K)`; strict folded subsolution on `[X, ∞)` (`exists_infinity_window_foldedGenerator_lt_potential`) |

@@ -191,6 +191,11 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.SquareRootThreshold.integral_windowed_sq_deviation_eq",
             "GaloisForLFunctions.SquareRootThreshold.lintegral_bad_heights_le_of_height",
             "GaloisForLFunctions.SquareRootThreshold.zeta_weil_positive_forces_deep_companion",
+            "GaloisForLFunctions.SquareRootThreshold.integral_windowed_sq_deviation_le",
+            "GaloisForLFunctions.SquareRootThreshold.integral_pairTransform_mul_integral_windowed_eq",
+            "GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_primePolynomial_le_archPart",
+            "GaloisForLFunctions.SquareRootThreshold.exists_archPart_zero_lt_primePolynomial",
+            "GaloisForLFunctions.SquareRootThreshold.primePolynomial_le_archPart_iff_poleCompression",
         ],
     },
     "quantum_alg": {

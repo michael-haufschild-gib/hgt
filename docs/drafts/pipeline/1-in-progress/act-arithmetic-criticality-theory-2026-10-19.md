@@ -205,3 +205,20 @@ remainder-dominates-defect inequality.
   single-profile windows). This is P2 in Lean at both ends for two constituents; finite sums are the
   same induction. README rewritten as mathematics only (user: the README is not a diary); status and
   logs live here.
+- 2026-10-19 (night, 4) — **Two-sided representation in Lean** (`ShiftedGroundStateCollarFubini`,
+  `ShiftedGroundStateTwoSidedRepresentation`; seventeen modules). Collar Fubini:
+  `∫dm(t)∫_0^t m_a(x)m_a(t−x)u(x)² = ∫_{x>0} u² m_a C_a` (product integrability from
+  `m_a(x)m_a(t−x)⁺ ≤ Φ(0)max(L,Φ(0)) t` and `∫ω(t)t < ∞`; prime side from the decay
+  `m_a(y−x)⁺ ≤ (Φ(0)/Φ(R+a))Φ(y−R−a)`). With `reflectedGroundJump + reflectedDifferenceJump =
+  2ΦΦωω(u(x)² + u(t−x)²)` and the reflection of the collar, `P + D = 4∫u² m_a C_a`, hence for every
+  `a > 0` and even `u ∈ C²_c`: `markovEnergy(Φ(ω_a u)) = 2S − D + 4 sinh(a/2)∫_{x>0} u² m_a sinh(x/2)`
+  (`markovEnergy_phiDoob_shiftedGroundState_eq_twoSided`), Markov positivity ⟺ the variation
+  inequality `D ≤ 2S + 4 sinh(a/2)∫u² m_a sinh(x/2)`
+  (`markovEnergy_phiDoob_shiftedGroundState_nonneg_iff_variation`), and RH ⟹ it
+  (`reflectedDifferenceEnergy_le_of_riemannHypothesis`). Corpus audit before building: CHMD/THIM own
+  the pointwise pieces in `oddProfile` coordinates (`oddProfileCollarDiffSq`, `oddProfileShiftJump`,
+  `oddProfileCollarMixed`, `oddSinhPotential`, THIM Obstacle B bounds on `3t/2 ≤ a`) but not the
+  exact global identity; in their coordinates it reads
+  `markovEnergy(oddProfileTest a w) = 2·direct − collar + oddSinhPotential a w` (coefficient exactly
+  `1` on the sinh potential, no support radius). The bridge in corpus coordinates needs a scaling
+  lemma for `markovEnergy` (none found by grep) and is left to THIM.
