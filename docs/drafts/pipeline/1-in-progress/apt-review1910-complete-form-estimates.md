@@ -215,6 +215,41 @@ are preserved; there is no global-green claim. Evidence:
 
 ## A3 reuse and remaining diagonal obligation
 
+The direct critical-tail route still needs its full Gamma cutoff bound and a
+uniform lattice diagonal. An alternative within the existing arithmetic source
+construction is the finite translated span of `factorialSourceRight n` (the
+exponential tent), followed by the corpus mollifier. This is an explicit family
+extension; it does not assert a full-form comparison for the critical tails.
+
+For compact real sources `f,g`, put `D=∫|f−g|`. The exact translated cross-term
+identity gives
+`|R_f(t)−R_g(t)|≤(M_f+M_g)D` and
+`|(R_f(0)−R_f(t))−(R_g(0)−R_g(t))|≤(K_f+K_g)D|t|`,
+where `M` and `K` bound values and Lipschitz constants. Thus the Gamma error is
+at most `D[|gammaBracket 0|(M_f+M_g)+J(K_f+K_g)]`, with the corpus's finite
+universal moment `J=∫₀∞t exp(t/2)/sinh(t) dt`. If both sources vanish outside
+`[-A,A]`, choose `N=ceil(exp(2A+1))`; the complete prime–polar error is at most
+`mass(N)(M_f+M_g)D`. The actual Weil energy includes twice that pairing.
+No prime or polar term is discarded.
+
+For `f=Σ b_i factorialSourceRight(n_i)(·−t_i)`, native bounds give
+`M=30Σ(n_i+1)|b_i|`, `K=2000Σ(n_i+1)²|b_i|`, and finite aperture
+`R=1+Σ|t_i|`. Mollification has radius `r_k=1/[4(k+1)]`, preserves `M,K`,
+and has `D≤2(R+1)Kr_k`. The resulting full-form error is
+`4(R+1)Kr_k[M(|gammaBracket 0|+2mass(N))+JK]`,
+with `A=R+1` and the preceding explicit `N`. This proves a joint growing
+regime once the displayed bound tends to zero; formalization remains open.
+
+For detection, use `f(x)=β(x+L/2)−β(x−L/2)`, with `β` a smoothed native
+tent. Every on-line lattice readout at `2πk/L` vanishes exactly. At the
+specified pair `1/2±δ+2πi/L`, the finite-difference multipliers have opposite
+real signs. If the tent collar plus smoothing radius is at most `L/(8π)`,
+its two tilted readouts lie in a common sector of half-angle at most `1/4`;
+their mixed real product is strictly positive. The remaining pair therefore
+has negative Weil value. Its square diagonal and reflection defect must be
+recorded explicitly: the on-line budget is zero, and the finite pair's defect
+exceeds its diagonal. This is a paper strategy, not yet an audited theorem.
+
 The direct critical-source/detection query returned no useful mechanism beyond
 the source definition. A rephrased, fully screened twenty-candidate/twenty-source
 query recovered `factorialMuntzCorrectedTail_readout_eq_primitive` and
