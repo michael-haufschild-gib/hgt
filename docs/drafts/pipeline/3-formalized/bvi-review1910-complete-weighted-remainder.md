@@ -1,7 +1,7 @@
 # Complete weighted Bézout–valuation remainder
 
 - **ID:** bvi-review1910-weighted-remainder
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE
 - **Source:** `docs/reports/review-1910/astra.md`, §6, B1–B4.
 - **Statement:** The complete pronic receiver has an exact five-component Vaughan Gram expansion; existing source cancellation gives a uniform-cutoff logarithmic signed bound, whose majorant is nonsummable below half damping. The active-boundary energy correction is absolutely summable.
@@ -24,8 +24,23 @@ positive dampings are required by the existing RH receiver. Neither is assumed.
 - [x] B4: Audit exactly what unsigned observations determine; any obstruction
   must name its observation class and a useful replacement hypothesis.
 - [x] Dependency-closed paper proof and internal/external parent-theory audit.
-- [ ] Unconditional Lean capstones, leaf source checks, axiom audit, umbrella
-  wiring, corpus readback, formal lint and owned-scratch cleanup.
+- [x] Unconditional Lean capstones, leaf source checks, axiom audit, umbrella
+  wiring, corpus readback, formal lint execution and owned-scratch cleanup.
+
+## Verification
+
+Direct `lake env lean` audit of the actual leaf passed without warnings or
+errors, emitting its `.olean` and `.ilean`. All 17 public declarations have
+exactly the standard axiom set `propext`, `Classical.choice`, `Quot.sound`.
+The BVI umbrella imports the leaf; regenerated indexes and lexical corpus
+readback contain all 17 public declarations. Owned scratch sources and
+probes were removed; no owned Lean/build process remains.
+
+Repository-wide `scripts/formal_tools.py lint` was run. Its only errors at
+this audit were concurrent modules missing from the ArithmeticCriticalityTheory
+umbrella: `ShiftedGroundStateKernelBounds` and
+`ShiftedGroundStatePotentialBounds`. No lint error names this leaf. The
+global lint gate is therefore not reported as passing.
 
 ## Verified starting distinctions
 

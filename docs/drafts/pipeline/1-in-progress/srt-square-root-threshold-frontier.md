@@ -30,13 +30,24 @@ zero-free region of a given depth, or (c) RH-strength.
   for a fixed profile, single-height positivity holds for `X ≲ (log T/68)²`. This range matches
   the visibility range of depth-`½` zeros (`X ≈ 4L²`).
 
+- SRT-4a `integral_pairTransform_mul_normSq_expSum`, `integral_normSq_mul_normSq_dirichletSum`
+  (module `WindowedMeanValueDiagonalLaw`): exact windowed mean value, diagonal for `2rX ≤ 1`.
+- SRT-4b `zetaZeroConfig_W_heightShift_eq_sub`, `integral_windowed_sq_deviation_eq`,
+  `exists_primeVariance_le`, `lintegral_bad_heights_le_of_height` (module
+  `ZetaLocalizedFormWindowedVarianceLaw`): exact variance law for `ζ` below the threshold. The
+  proportion of negative heights is `O((log X/log T)²)`.
+
+- SRT-5b′ `re_W_modulatedTest_le_of_depthGap`, `zeta_weil_positive_forces_deep_companion`
+  (module `DepthGapVisibilityLaw`): a zero is visible once `2(δ − δ')a ≳ log(A₀ log γ₀)`, where
+  `δ'` bounds the depth of its neighbours. Weil positivity forces deep companions.
+
 ## Open targets (in order)
-1. **SRT-4a exact windowed mean value.** For a window `η` on `[-r, r]`:
+1. *(proved, see above)* **SRT-4a exact windowed mean value.** For a window `η` on `[-r, r]`:
    `∫ |h_η(−2πξ)|² |Σ c_j e^{2πiξλ_j}|² dξ = Σ_{j,k} c_j c̄_k k_η(λ_j − λ_k)`.
    It is exactly diagonal when the `λ_j` are `2r`-separated. Prime frequencies `log n`, `n ≤ X`,
    are `1/X`-separated, so the diagonal regime is `X ≤ 1/(2r)`: prime length at most half the
    window length. This is the square-root threshold as an identity.
-2. **SRT-4b variance of localized forms of `ζ`.** Write `W_ζ(S_ξ f) = A_f(ξ) − Π_f(ξ)`, with the
+2. *(proved, see above)* **SRT-4b variance of localized forms of `ζ`.** Write `W_ζ(S_ξ f) = A_f(ξ) − Π_f(ξ)`, with the
    archimedean-plus-pole part `A_f` and the prime polynomial `Π_f`. Then the windowed variance
    equals `‖η‖² Σ_n 2Λ(n)²/n |k_f(log n)|²` exactly below the threshold. Chebyshev then bounds
    the windowed proportion of heights with `W_ζ(S_ξ f) < 0` by `O((log X/log T)²)`.
@@ -45,7 +56,8 @@ zero-free region of a given depth, or (c) RH-strength.
    localized explicit formulas at aperture `L = λ log(T/2π)` with `λ ≤ 1` (`Params.Valid.lam_le_one`).
    Its proportion `H(λ) = 2 − 1/λ − λ/3` would grow up to `λ = √3`. The obstruction is exactly
    the prime-side traces beyond `X = T`, that is, the off-diagonal of item 1.
-4. **SRT-5b converse visibility for `ζ`.** A zero `½ + δ + iγ₀` that is deepest in its window
+4. *(corpus-owned in isolated form: `RHTower.re_W_modulatedTest_le_of_isolated`,
+   `RHTower.zeta_weil_positive_forces_offLine_companion`)* **SRT-5b converse visibility for `ζ`.** A zero `½ + δ + iγ₀` that is deepest in its window
    should make some localized form at height `γ₀` negative once `sinh(2δa)/δ ≳ (1 + a) log γ₀`.
    *Difficulty:* a Gallagher/Plancherel–Pólya bound for the zero side with the local count
    `A₀ log(|t| + 3)` is needed. Off-line competitors contribute `2(c² − s²)` with even part `s` and
@@ -54,3 +66,11 @@ zero-free region of a given depth, or (c) RH-strength.
 ## Log
 - 2026-10-19 — created; SRT-1 to SRT-3 and SRT-5a proved and wired into
   `GaloisForLFunctions.SquareRootThreshold`.
+- 2026-10-19 — SRT-4a and SRT-4b proved (standard axioms only). Next: SRT-5b (converse visibility
+  for `ζ`), then SRT-4c.
+- 2026-10-19 — SRT-5b found in the corpus (isolated form). Isolation cannot be dropped: an
+  off-line neighbour of depth `δ'` inflates its odd-part contribution by `cosh²(δ'a)`, the same
+  order as the pair term when `δ' ≈ δ`. Open: SRT-5b′ (depth-gap law), SRT-4c (`X > T`, the
+  Zeta23 `λ = 1` wall), SRT-5c (prime–tail coupling inequality).
+- 2026-10-19 — SRT-5b′ depth-gap law proved (standard axioms). Remaining open: SRT-4c
+  (`X > T`, Zeta23 `λ = 1` wall) and SRT-5c (prime–tail coupling inequality).

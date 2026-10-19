@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SquareRootThreshold.WindowedMeanValueDiagonalLaw
 import GaloisForLFunctions.SquareRootThreshold.ZetaSingleHeightPositivityAboveArchimedeanHorizon
+import GaloisForLFunctions.RHTower.ChebyshevSquareWeight
 
 /-!
 # The windowed variance of the localized Weil forms of `ζ` below the square-root threshold
@@ -355,5 +356,75 @@ theorem lintegral_bad_heights_le_of_height {a r Ξ : ℝ} (ha : 0 ≤ a) {f η :
   have hmul := mul_le_mul_of_nonneg_right (sub_le_sub_right (sub_le_sub_right hlog 10)
     (2 * pairEnergy (1 / 2) a)) hN0
   linarith
+
+/-! ### The size of the diagonal energy -/
+
+/-- `|k_f(v)| ≤ ‖f‖²`. -/
+theorem norm_weilTest_self_le {f : ℝ → ℂ} (hf : Continuous f) (hfc : HasCompactSupport f)
+    (v : ℝ) : ‖EF.weilTest f f v‖ ≤ ∫ t, ‖f t‖ ^ 2 := by
+  have h1 : Integrable fun t => ‖f t‖ ^ 2 :=
+    (hf.norm.pow 2).integrable_of_hasCompactSupport (HasCompactSupport.intro hfc
+      fun t ht => by simp [image_eq_zero_of_notMem_tsupport ht])
+  have h2 : Integrable fun t => ‖f (t - v)‖ ^ 2 := h1.comp_sub_right v
+  rw [weilTest_apply]
+  refine (norm_integral_le_integral_norm _).trans ?_
+  calc ∫ t, ‖f t * conj (f (t - v))‖
+      ≤ ∫ t, (‖f t‖ ^ 2 + ‖f (t - v)‖ ^ 2) / 2 :=
+        integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
+          ((h1.add h2).div_const 2) (Eventually.of_forall fun t => by
+            simp only [norm_mul, Complex.norm_conj]
+            nlinarith [two_mul_le_add_sq ‖f t‖ ‖f (t - v)‖])
+    _ = ((∫ t, ‖f t‖ ^ 2) + ∫ t, ‖f t‖ ^ 2) / 2 := by
+        rw [integral_div, integral_add h1 h2,
+          integral_sub_right_eq_self (fun t => ‖f t‖ ^ 2) v]
+    _ = ∫ t, ‖f t‖ ^ 2 := by ring
+
+/-- `V_f ≤ 2‖f‖⁴ Σ_{2 ≤ n ≤ N} Λ(n)²/n`. -/
+theorem primeVariance_le {f : ℝ → ℂ} (hf : Continuous f) (hfc : HasCompactSupport f) (N : ℕ) :
+    primeVariance f N ≤ 2 * (∫ t, ‖f t‖ ^ 2) ^ 2 *
+      ∑ n ∈ Finset.Icc 2 N, (ArithmeticFunction.vonMangoldt n) ^ 2 / n := by
+  rw [primeVariance, Finset.mul_sum]
+  refine Finset.sum_le_sum fun n _ => ?_
+  have hb : ∀ v, ‖EF.weilTest f f v‖ ^ 2 ≤ (∫ t, ‖f t‖ ^ 2) ^ 2 := fun v =>
+    pow_le_pow_left₀ (norm_nonneg _) (norm_weilTest_self_le hf hfc v) 2
+  have hw : 0 ≤ (ArithmeticFunction.vonMangoldt n) ^ 2 / (n : ℝ) := by positivity
+  have := add_le_add (hb (Real.log n)) (hb (-Real.log n))
+  calc (ArithmeticFunction.vonMangoldt n) ^ 2 / n *
+        (‖EF.weilTest f f (Real.log n)‖ ^ 2 + ‖EF.weilTest f f (-Real.log n)‖ ^ 2)
+      ≤ (ArithmeticFunction.vonMangoldt n) ^ 2 / n *
+        ((∫ t, ‖f t‖ ^ 2) ^ 2 + (∫ t, ‖f t‖ ^ 2) ^ 2) := mul_le_mul_of_nonneg_left this hw
+    _ = 2 * (∫ t, ‖f t‖ ^ 2) ^ 2 * ((ArithmeticFunction.vonMangoldt n) ^ 2 / n) := by ring
+
+/-- **The diagonal energy is `O(‖f‖⁴ (log X)²)`.** There is an absolute constant `C ≥ 0` with
+`V_f ≤ 2‖f‖⁴ · 2a(2a + C)` for every profile supported in `[-a, a]`, `a ≥ 0`. -/
+theorem exists_primeVariance_le :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (a : ℝ), 0 ≤ a → ∀ f : ℝ → ℂ, Continuous f → HasCompactSupport f →
+      primeVariance f ⌊Real.exp (2 * a)⌋₊ ≤
+        2 * (∫ t, ‖f t‖ ^ 2) ^ 2 * (2 * a * (2 * a + C)) := by
+  obtain ⟨C₀, hC₀⟩ := exists_sum_vonMangoldt_sq_div_le
+  refine ⟨max C₀ 0, le_max_right _ _, fun a ha f hf hfc => ?_⟩
+  set N := ⌊Real.exp (2 * a)⌋₊ with hNdef
+  have hX1 : 1 ≤ Real.exp (2 * a) := Real.one_le_exp (by linarith)
+  have hN1 : 1 ≤ N := Nat.le_floor (by exact_mod_cast hX1)
+  have hlogN : Real.log N ≤ 2 * a := by
+    rw [← Real.log_exp (2 * a)]
+    exact Real.log_le_log (by exact_mod_cast hN1) (Nat.floor_le (Real.exp_pos _).le)
+  have hlogN0 : 0 ≤ Real.log N := Real.log_nonneg (by exact_mod_cast hN1)
+  have hsub : ∑ n ∈ Finset.Icc 2 N, (ArithmeticFunction.vonMangoldt n) ^ 2 / (n : ℝ) ≤
+      ∑ n ∈ Finset.Icc 1 N, (ArithmeticFunction.vonMangoldt n) ^ 2 / (n : ℝ) :=
+    Finset.sum_le_sum_of_subset_of_nonneg (Finset.Icc_subset_Icc (by norm_num) le_rfl)
+      fun _ _ _ => by positivity
+  have hsum : ∑ n ∈ Finset.Icc 2 N, (ArithmeticFunction.vonMangoldt n) ^ 2 / (n : ℝ) ≤
+      2 * a * (2 * a + max C₀ 0) := by
+    refine hsub.trans ((hC₀ N hN1).trans ?_)
+    have h1 : Real.log N + C₀ ≤ 2 * a + max C₀ 0 := by
+      linarith [le_max_left C₀ 0]
+    have h2 : 0 ≤ 2 * a + max C₀ 0 := by positivity
+    calc Real.log N * (Real.log N + C₀) ≤ Real.log N * (2 * a + max C₀ 0) :=
+          mul_le_mul_of_nonneg_left h1 hlogN0
+      _ ≤ 2 * a * (2 * a + max C₀ 0) := mul_le_mul_of_nonneg_right hlogN h2
+  refine (primeVariance_le hf hfc N).trans ?_
+  have hN2 : 0 ≤ 2 * (∫ t, ‖f t‖ ^ 2) ^ 2 := by positivity
+  exact mul_le_mul_of_nonneg_left hsum hN2
 
 end GaloisForLFunctions.SquareRootThreshold

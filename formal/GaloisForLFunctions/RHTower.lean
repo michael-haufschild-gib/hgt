@@ -2989,6 +2989,7 @@ import GaloisForLFunctions.RHTower.DAColumnDivisor
 import GaloisForLFunctions.RHTower.DampedCausalCompression
 import GaloisForLFunctions.RHTower.DampedCausalTypeLimit
 import GaloisForLFunctions.RHTower.DampedComplementaryPacketConnection
+import GaloisForLFunctions.RHTower.DampedDistanceStability
 import GaloisForLFunctions.RHTower.DampedFilteredCausalType
 import GaloisForLFunctions.RHTower.DampedJetPositivity
 import GaloisForLFunctions.RHTower.DampedPacketComparison
@@ -8708,6 +8709,7 @@ import GaloisForLFunctions.RHTower.PrimeMellinJetResolvedChannelNoGo
 import GaloisForLFunctions.RHTower.PrimeMobiusLoschmidtCofinalPurity
 import GaloisForLFunctions.RHTower.PrimeMobiusLoschmidtPurity
 import GaloisForLFunctions.RHTower.PrimeMobiusPhaseFidelity
+import GaloisForLFunctions.RHTower.PrimePhaseDistanceStability
 import GaloisForLFunctions.RHTower.PrimePolarContinuation
 import GaloisForLFunctions.RHTower.PrimePolarDirichletBackbone
 import GaloisForLFunctions.RHTower.PrimePolarHLHolomorphic
@@ -10379,6 +10381,7 @@ import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowBridge
 import GaloisForLFunctions.RHTower.Sieve.DiscreteWindowGallagher
 import GaloisForLFunctions.RHTower.Sieve.DistanceAbscissaBridge
 import GaloisForLFunctions.RHTower.Sieve.DistanceDiscTriangle
+import GaloisForLFunctions.RHTower.Sieve.DistanceLocalChanges
 import GaloisForLFunctions.RHTower.Sieve.DistancePointwise
 import GaloisForLFunctions.RHTower.Sieve.DistanceTriangle
 import GaloisForLFunctions.RHTower.Sieve.DistinctReciprocalSum

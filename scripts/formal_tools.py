@@ -186,6 +186,11 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.SquareRootThreshold.windowedW_eq_integral_heightShift",
             "GaloisForLFunctions.SquareRootThreshold.zetaZeroConfig_re_W_nonneg_of_small_aperture",
             "GaloisForLFunctions.SquareRootThreshold.re_integral_heightShift_zetaZeroConfig_nonneg",
+            "GaloisForLFunctions.SquareRootThreshold.exists_zetaZeroConfig_re_W_heightShift_nonneg",
+            "GaloisForLFunctions.SquareRootThreshold.integral_normSq_mul_normSq_dirichletSum",
+            "GaloisForLFunctions.SquareRootThreshold.integral_windowed_sq_deviation_eq",
+            "GaloisForLFunctions.SquareRootThreshold.lintegral_bad_heights_le_of_height",
+            "GaloisForLFunctions.SquareRootThreshold.zeta_weil_positive_forces_deep_companion",
         ],
     },
     "quantum_alg": {

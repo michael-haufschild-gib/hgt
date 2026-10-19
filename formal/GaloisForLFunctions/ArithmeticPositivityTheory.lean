@@ -47,6 +47,8 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothi
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampFullWeilSmoothingLimit
 import GaloisForLFunctions.«arithmetic-positivity-theory».CompactFullWeilQuantitativeSmoothing
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTranslatedTentApproximation
+import GaloisForLFunctions.«arithmetic-positivity-theory».PeriodDifferenceOffLineDetection
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentOffLineDetection
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseHarmonicLayers
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseWindowAndPhysicalRieszBounds
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseBohrCoercivityAndTailIndependence

@@ -6,6 +6,7 @@ import GaloisForLFunctions.SquareRootThreshold.ZetaSmallApertureHeightWindowPosi
 import GaloisForLFunctions.SquareRootThreshold.ZetaSingleHeightPositivityAboveArchimedeanHorizon
 import GaloisForLFunctions.SquareRootThreshold.WindowedMeanValueDiagonalLaw
 import GaloisForLFunctions.SquareRootThreshold.ZetaLocalizedFormWindowedVarianceLaw
+import GaloisForLFunctions.SquareRootThreshold.DepthGapVisibilityLaw
 
 /-!
 # Square-Root Threshold

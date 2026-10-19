@@ -104,6 +104,17 @@ module. Do not redefine them.
 
 ## 5. Research topics and status
 
+**Current map** (height `T`, prime length `X = e^{2a}`, height-window length `ℓ ≈ 1/r`):
+
+| Regime | Status for `ζ` | Calibration |
+|---|---|---|
+| windows `ℓ ≳ e^{50}`, every `X` | averages nonnegative **[Lean]** (SRT-3) | off-line lattices pass too: no information on zeros |
+| single heights, `X ≲ (log T/68)²` | nonnegative **[Lean]** (SRT-5a) | visibility range of depth-`½` zeros |
+| windows `ℓ ≥ 2X`, `X ≤ T` | variance exactly diagonal; negative heights `O((log X/log T)²)` **[Lean]** (SRT-4) | mean value theorem as an identity |
+| single heights, `X ≲ (log T)^{1/δ}` | expected to match a zero-free region of depth `δ`; one direction is proved: visibility under a depth gap **[Lean]** (SRT-5b′) | quasi-RH half-planes; no gap means lattice invisibility |
+| `X > T` | off-diagonal shifted sums; Zeta23 stops at `λ = 1` | parity for `Λ` |
+
+
 ### Within reach (all proved, unconditional)
 
 * **SRT-1 · Visibility law** —
@@ -153,19 +164,74 @@ module. Do not redefine them.
 
 ### Research frontier
 
+Proved frontier pieces are marked **[Lean]**; everything else is open.
+
 * **SRT-4 · Off-diagonal structure.**
-  * The terms `n ≠ m` with `|log(n/m)| ≲ 1/T` are shifted sums. With `Λ` as source they are
-    prime-pair correlations, limited by parity. With mollified `ζ` they are divisor shifted
-    convolutions, which spectral and Kloosterman methods handle.
-  * *Target:* reproduce a mollifier range `θ > ½` in the language of localized Weil forms, then
-    measure how far it reaches toward single heights.
+  * **[Lean] Exact windowed mean value** —
+    [`WindowedMeanValueDiagonalLaw`](WindowedMeanValueDiagonalLaw.lean).
+    For a window on `[-r, r]` and `Q(ξ) = Σ c_j e^{2πiξν_j}`:
+    `∫ |h_η(−2πξ)|²|Q|² = Σ_{j,k} c_j c̄_k k_η(ν_j − ν_k)` (`integral_pairTransform_mul_normSq_expSum`).
+    The identity is exactly diagonal for `2r`-separated frequencies. For Dirichlet polynomials
+    of length `X`, this holds whenever `2rX ≤ 1`, that is, for windows longer than about twice
+    the prime length (`integral_normSq_mul_normSq_dirichletSum`). This is the square-root
+    threshold as an identity.
+  * **[Lean] Variance law for `ζ`** —
+    [`ZetaLocalizedFormWindowedVarianceLaw`](ZetaLocalizedFormWindowedVarianceLaw.lean).
+    * `W_ζ(S_ξ f) = A_f(ξ) − Π_f(ξ)`, the archimedean part minus the prime polynomial
+      (`zetaZeroConfig_W_heightShift_eq_sub`).
+    * Below the threshold, the windowed mean square of `W_ζ − A_f` is exactly
+      `‖η‖² V_f`, with `V_f = Σ Λ(n)²/n (|k_f(log n)|² + |k_f(−log n)|²)`
+      (`integral_windowed_sq_deviation_eq`).
+    * `V_f ≤ 2‖f‖⁴ · 2a(2a + C)` (`exists_primeVariance_le`).
+    * Chebyshev (`lintegral_bad_heights_le_of_height`): at heights `|ξ| ≥ Ξ`, the window
+      proportion of heights with `Re W_ζ(S_ξ f) < 0` is at most `V_f/A₀²`, with
+      `A₀ ≈ ‖f‖² log Ξ`. So it is `O((log X/log T)²)`: most heights are positive below the
+      square-root threshold.
+  * **Calibration with Zeta23.** The vendored Zeta23 proof that more than two thirds of the
+    zeros lie on the line is a localized-explicit-formula argument at aperture
+    `L = λ log(T/2π)`, i.e. `X = (T/2π)^λ`, with `λ ≤ 1` (`Zeta23.Params.Valid.lam_le_one`).
+    Its proportion `H(λ) = 2 − 1/λ − λ/3` keeps growing up to `λ = √3`. Only the prime-side
+    traces stop it at `λ = 1`: beyond `X = T` they meet the off-diagonal above.
+  * *Target (SRT-4c):* control the pairs `n ≠ m` with `|log(m/n)| < 2r`. With `Λ` as source these
+    are prime-pair correlations, limited by parity. With mollified sources they are divisor
+    shifted convolutions, which spectral and Kloosterman methods handle. A trace bound at some
+    `λ > 1` would raise Zeta23's `2/3`.
 * **SRT-5 · Single heights.**
+  * **[Lean] Positivity above the archimedean horizon** —
+    [`ZetaSingleHeightPositivityAboveArchimedeanHorizon`](ZetaSingleHeightPositivityAboveArchimedeanHorizon.lean).
+    * `Re W_ζ(S_ξ f) ≥ (log(1 + π|ξ|/4) − 10 − 68√X − 2S(a))‖f‖² − B_f²/(8(1 + π|ξ|))`
+      (`zetaZeroConfig_re_W_heightShift_ge`).
+    * Every fixed profile is positive at all large heights
+      (`exists_zetaZeroConfig_re_W_heightShift_nonneg`).
+    * The unconditional single-height range is `X ≲ (log T/68)²`. This is the visibility range
+      `X ≈ 4L²` of depth-`½` zeros, up to constants. Single-height positivity for
+      `X ≲ (log T)^{1/δ}` is the localized form of a zero-free region of depth `δ`.
   * Kronecker–Bohr: short prime polynomials take every phase pattern at suitable heights. So the
     finite-prime part of a localized form reaches its trivial negative bound somewhere.
-  * Positivity at every height must therefore come from the coupling, through the functional
+    Positivity at every height must therefore come from the coupling, through the functional
     equation, between finitely many primes and the infinite tail.
-  * *Target:* state the minimal global inequality expressing that coupling. Compare it with
-    Bagchi's recurrence criterion (route BAG).
+  * **[corpus] Converse visibility for `ζ`, isolated form.**
+    `RHTower.re_W_modulatedTest_le_of_isolated` and `RHTower.zeta_weil_positive_forces_offLine_companion`
+    (`RHTower/IsolatedDeepZeroWeilDetection`). A zero `½ + δ + iγ₀` whose neighbours within
+    ordinate distance `R` lie on the line makes a localized form at height `γ₀` negative once
+    `2P² > 384 A₀ log(|γ₀| + 3) N²(1 + e^a/(1 + R))`, where `P = ∫ s sinh(δ·)` grows like
+    `e^{2δa}`. The isolation hypothesis cannot be dropped. Write `c` for the odd part and `s` for
+    the even part of the tilted test. Each zero contributes `c² − s²`, and an off-line neighbour of
+    depth `δ'` inflates its `c²` by `cosh²(δ'a)`. Near depth `δ` that is the same order `e^{2δa}`
+    as the pair term itself. This is the zero-side form of the lattice no-go.
+  * **[Lean] The depth-gap visibility law** —
+    [`DepthGapVisibilityLaw`](DepthGapVisibilityLaw.lean). Suppose the neighbours of `ρ₀` within
+    distance `R` have depth `≤ δ'`. Then
+    `Re W ≤ −2m P² + 384 A₀ log(|γ₀| + 3) N² (e^{2δ'a} + e^a/(1 + R))`
+    (`re_W_modulatedTest_le_of_depthGap`). So `ρ₀` is visible once
+    `2(δ − δ')a ≳ log(A₀ log γ₀) + O(log a)`.
+    * `δ' = 0` is the isolated law.
+    * `δ' = δ` is the lattice no-go.
+    * For `ζ` (`zeta_weil_positive_forces_deep_companion`): Weil positivity at aperture `a` forces
+      every deep zero to have a companion within `R` of depth `> δ'`, whenever the size condition
+      holds. Off-line zeros can coexist with positivity only in clusters of comparable depth.
+  * *Target (SRT-5c):* state the minimal global inequality for the prime–tail coupling and
+    compare it with Bagchi's recurrence criterion (route BAG).
 
 ---
 
