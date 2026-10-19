@@ -300,11 +300,11 @@ theorem tendsto_cosh_div_cosh {u v : ℝ} (hu : 0 ≤ u) (huv : u < v) :
       rw [show (u - v) * x = u * x - v * x by ring, Real.exp_sub]; field_simp
     _ ≤ 2 * Real.exp ((u - v) * x) * Real.cosh (v * x) := by gcongr
 
-/-- **Rigidity of bounded modes.** If the modes `Σ_r 2cosh(d_r mℓ) z_r^m`, `1 ≤ m < P`, stay
-bounded by `2P` along unboundedly many scales `ℓ`, then all depths are equal and the points
-`z_r ≠ 0` have one common `P`-th power. -/
-theorem uniform_crystal_of_frequently_bounded_modes {P : ℕ} (d : Fin P → ℝ) (hd0 : ∀ r, 0 < d r)
-    (z : Fin P → ℂ) (hz : ∀ r, z r ≠ 0)
+/-- **Rigidity of bounded modes.** Let the depths be nonnegative, one of them positive. If the
+modes `Σ_r 2cosh(d_r mℓ) z_r^m`, `1 ≤ m < P`, stay bounded by `2P` along unboundedly many scales
+`ℓ`, then all depths are equal and the points `z_r ≠ 0` have one common `P`-th power. -/
+theorem uniform_crystal_of_frequently_bounded_modes {P : ℕ} (d : Fin P → ℝ) (hd0 : ∀ r, 0 ≤ d r)
+    (hpos : ∃ r, 0 < d r) (z : Fin P → ℂ) (hz : ∀ r, z r ≠ 0)
     (h : ∃ᶠ ℓ in atTop, ∀ m : ℕ, 1 ≤ m → m < P →
       ‖∑ r, ((2 * Real.cosh (d r * (m * ℓ)) : ℝ) : ℂ) * z r ^ m‖ ≤ 2 * P) :
     (∀ r r', d r = d r') ∧ ∀ r r', z r ^ P = z r' ^ P := by
@@ -318,7 +318,9 @@ theorem uniform_crystal_of_frequently_bounded_modes {P : ℕ} (d : Fin P → ℝ
   have key : ∀ m : ℕ, 1 ≤ m → m < P → ∑ r ∈ S, z r ^ m = 0 := by
     intro m hm1 hmP
     have hm : (0 : ℝ) < m := by exact_mod_cast hm1
-    have hdpos : 0 < dmax := lt_of_lt_of_le (hd0 ⟨0, hP⟩) (hle _)
+    have hdpos : 0 < dmax := by
+      obtain ⟨r₁, hr₁⟩ := hpos
+      exact lt_of_lt_of_le hr₁ (hle r₁)
     set G : ℝ → ℂ := fun ℓ => ∑ r, ((Real.cosh (d r * (m * ℓ)) /
       Real.cosh (dmax * (m * ℓ)) : ℝ) : ℂ) * z r ^ m with hG
     have hmℓ : Tendsto (fun ℓ : ℝ => (m : ℝ) * ℓ) atTop atTop := tendsto_id.const_mul_atTop hm
@@ -333,7 +335,7 @@ theorem uniform_crystal_of_frequently_bounded_modes {P : ℕ} (d : Fin P → ℝ
         rw [this]; exact tendsto_const_nhds
       · rw [if_neg hr, show (0 : ℂ) = ((0 : ℝ) : ℂ) * z r ^ m by simp]
         refine (Complex.continuous_ofReal.tendsto _ |>.comp
-          ((tendsto_cosh_div_cosh (hd0 r).le (lt_of_le_of_ne (hle r) hr)).comp hmℓ)).mul_const _
+          ((tendsto_cosh_div_cosh (hd0 r) (lt_of_le_of_ne (hle r) hr)).comp hmℓ)).mul_const _
     have hBlim : Tendsto (fun ℓ : ℝ => (P : ℝ) / Real.cosh (dmax * (m * ℓ))) atTop (𝓝 0) := by
       have := ((tendsto_cosh_div_cosh le_rfl hdpos).comp hmℓ).const_mul (P : ℝ)
       simpa [Function.comp_def, div_eq_mul_inv] using this
@@ -447,8 +449,10 @@ theorem uniform_crystal_of_hiding {P : ℕ} (θ d : Fin P → ℝ) (hd0 : ∀ r,
     rw [← patternSymbol_scaledOffset hℓ]
     exact norm_patternSymbol_le_of_hiding hℓ _ d hd0 hd1 (scaledOffset_injective hℓ hθ) ha hhide
       hm1 hmP
-  obtain ⟨hd, hz⟩ := uniform_crystal_of_frequently_bounded_modes d hd0 _
-    (phasePoint_ne_zero θ) hfreq
+  rcases Nat.eq_zero_or_pos P with rfl | hP
+  · exact ⟨fun r => r.elim0, fun r => r.elim0⟩
+  obtain ⟨hd, hz⟩ := uniform_crystal_of_frequently_bounded_modes d (fun r => (hd0 r).le)
+    ⟨⟨0, hP⟩, hd0 _⟩ _ (phasePoint_ne_zero θ) hfreq
   exact ⟨hd, fun r r' => exists_int_of_phasePoint_pow_eq θ (hz r r')⟩
 
 /-- **Visibility below the threshold.** Every periodic off-line pattern other than a uniform

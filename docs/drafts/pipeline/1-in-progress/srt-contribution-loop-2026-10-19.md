@@ -148,3 +148,17 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
 - **Sharpness** `onLineShadow_crystal_unpinned` (crystal vs half-step rotation agree for `⌈2a/ℓ⌉ ≤ r`), `exists_onLineShadow_crystal_distinguished` (told apart for `⌈2a/ℓ⌉ > r`).
 - Meaning: position, like depth, is invisible below the Nyquist aperture and visible above — configuration-side counterpart of the corpus Landau-height Krein pinning for ζ (`RHTower.LandauHeightKreinPinning`).
 - Axioms: [propext, Classical.choice, Quot.sound]. Wired after WeilGroundStateLawOnLagLattices.
+
+### C15 — Relaxed Hodge exponent of off-line lattices (`RelaxedHodgeExponentOfOffLineLattices.lean`)
+- Corpus interfaces `RHTower.RelaxedHodgeIndexAtLevel Z θ a` (`Re W ≥ −e^{θa}∫|f|²` on polar tests) and `RHTower.WeilFloorAtLevel Z a η` evaluated exactly for `offLineLatticeConfig`.
+- **Exact floors** `offLineLattice_weilFloor_iff`, `offLineLattice_relaxedHodge_iff` (`a > L/2`): floor `η` holds iff `η ≥ L(√(S₊S₋) − n)`; relaxed index iff `e^{θa} ≥ L(√(S₊S₋) − n)`.
+- **Exponent = 2δ** `offLineLattice_relaxedHodge_eventually_of_lt` (`θ > 2δ`: holds at all large levels, even for unconstrained tests), `offLineLattice_not_relaxedHodge_eventually_of_lt` (`θ < 2δ`: violated at all large levels by polar tests, any constant `C`).
+- Meaning: the depth-exponent threshold of `RHTower.exists_relaxed_violation` is sharp without losses; the lattice also attains the exponent `2η` of `RHTower.re_W_ge_of_depth_offLineDensity` (remark, up to polynomial factor).
+- Axioms: [propext, Classical.choice, Quot.sound]. Wired after OnLineNyquistPinning.
+
+### C16 — Dilution: sparse off-line lattices in a dense on-line background (`DilutedOffLineLatticeHidingLaw.lean`)
+- `dilutedLatticeConfig`: doubled on-line lattice `{½ + 2πik/L}` ∪ off-line lattice `{½ ± δ + 2πij/ℓ}`. Lag formula below the background Nyquist (`W_dilutedLatticeConfig`, tests in `[−L/2, L/2]`): symbol `2cosh(δmℓ) + (2L/ℓ)[m=0]` (background = pure diagonal mass; uses SRT `hasSum_Wsummand_onLineLattice` and new `hasSum_Wsummand_offLineLattice`).
+- **Dilution law** `dilutedLattice_weil_nonneg_iff`, `dilutedLattice_hodgeIndex_iff` (`0 < a ≤ L/2`): invisible ⟺ Hodge index ⟺ `ℓ(√(S₊S₋) − n) ≤ 2L`, `n = ⌈2a/ℓ⌉`.
+- **Hiding aperture logarithmic in density ratio** `dilutedLattice_weil_nonneg_of_le` (invisible if `(2a+ℓ)e^{2δa} ≤ 2L`), `dilutedLattice_not_hodgeIndex_of_lt` (Hodge-visible if `ℓe^{δ(2a−ℓ)} > 2L + 2a + ℓ`): hiding aperture `(1/2δ)log(L/ℓ)` + lower order. Interpolates isolated-pair law (`log(δL)/2δ`) and lattice law (`L/2`); fixed off-line density in ζ-density background hides only to `≍ (1/2δ)log log T`.
+- C13 refactor: `toeplitz_floor_of_hodge_floor`, `weil_floor_of_toeplitz_floor` now need the lag formula only on aperture-`a` tests (C13, C15 oleans rebuilt).
+- Axioms: [propext, Classical.choice, Quot.sound]. Wired after RelaxedHodgeExponentOfOffLineLattices.

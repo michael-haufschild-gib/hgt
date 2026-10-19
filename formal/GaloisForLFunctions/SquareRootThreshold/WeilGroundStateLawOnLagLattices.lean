@@ -106,11 +106,11 @@ theorem integral_norm_sq_bumpTest {ℓ w : ℝ} (hℓ : 0 < ℓ) (hwℓ : 2 * w 
   exact_mod_cast h
 
 /-- The Toeplitz floor from the Hodge floor: polar-free lag-point bumps realize every Toeplitz
-Rayleigh quotient. -/
+Rayleigh quotient. The lag formula is needed only on tests of aperture `a`. -/
 theorem toeplitz_floor_of_hodge_floor (Z : ZeroConfig) {ℓ : ℝ} (hℓ : 0 < ℓ) (D : ℤ → ℂ)
-    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f →
+    {a : ℝ} (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
       Z.W f f = ((ℓ : ℝ) : ℂ) * ∑' m : ℤ, EF.weilTest f f (m * ℓ) * D m)
-    {a : ℝ} (ha : 0 < a) (μ : ℝ)
+    (ha : 0 < a) (μ : ℝ)
     (h : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a → paperFT f (I / 2) = 0 →
       paperFT f (-(I / 2)) = 0 → ℓ * μ * ∫ t, ‖f t‖ ^ 2 ≤ (Z.W f f).re)
     (c : Fin ⌈2 * a / ℓ⌉₊ → ℂ) :
@@ -137,19 +137,19 @@ theorem toeplitz_floor_of_hodge_floor (Z : ZeroConfig) {ℓ : ℝ} (hℓ : 0 < �
   have hpol : ∀ z : ℂ, paperFT β z = 0 → paperFT (bumpTest β ℓ c) z = 0 := fun z hz => by
     rw [paperFT_bumpTest hβ2.continuous hβcs, hz, mul_zero]
   have h1 := h _ hf hfs (hpol _ hβp) (hpol _ hβm)
-  rw [hW _ hf (hasCompactSupport_of_tsupport_subset_Icc hfs),
-    lagSum_bumpTest_eq_toeplitz hℓ hwℓ hβ2.continuous hβcs hβs, ← mul_assoc,
+  rw [hW _ hf hfs, lagSum_bumpTest_eq_toeplitz hℓ hwℓ hβ2.continuous hβcs hβs, ← mul_assoc,
     show ((ℓ : ℝ) : ℂ) * ((∫ x, ‖β x‖ ^ 2 : ℝ) : ℂ) = ((ℓ * ∫ x, ‖β x‖ ^ 2 : ℝ) : ℂ) by
       push_cast; ring, Complex.re_ofReal_mul,
     integral_norm_sq_bumpTest hℓ hwℓ hβ2.continuous hβcs hβs c] at h1
   have hpos : 0 < ℓ * ∫ x, ‖β x‖ ^ 2 := mul_pos hℓ hB
   nlinarith
 
-/-- The Weil floor from the Toeplitz floor: periodization of the shifted symbol. -/
+/-- The Weil floor from the Toeplitz floor: periodization of the shifted symbol. The lag formula
+is needed only on tests of aperture `a`. -/
 theorem weil_floor_of_toeplitz_floor (Z : ZeroConfig) {ℓ : ℝ} (hℓ : 0 < ℓ) (D : ℤ → ℂ)
-    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f →
+    {a : ℝ} (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
       Z.W f f = ((ℓ : ℝ) : ℂ) * ∑' m : ℤ, EF.weilTest f f (m * ℓ) * D m)
-    {a : ℝ} (μ : ℝ)
+    (μ : ℝ)
     (hT : ∀ c : Fin ⌈2 * a / ℓ⌉₊ → ℂ, μ * ∑ j, ‖c j‖ ^ 2 ≤ (toeplitzForm D ⌈2 * a / ℓ⌉₊ c).re)
     {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-a) a) :
     ℓ * μ * ∫ t, ‖f t‖ ^ 2 ≤ (Z.W f f).re := by
@@ -159,7 +159,7 @@ theorem weil_floor_of_toeplitz_floor (Z : ZeroConfig) {ℓ : ℝ} (hℓ : 0 < �
     rw [toeplitzForm_shiftSymbol, Complex.sub_re, Complex.ofReal_re]
     linarith [hT c]
   have h := re_lagSum_nonneg_of_toeplitz hℓ (shiftSymbol D μ) hT' hf hfs
-  rw [lagSum_shiftSymbol hℓ hfc D μ, mul_sub, ← hW f hf hfc, Complex.sub_re,
+  rw [lagSum_shiftSymbol hℓ hfc D μ, mul_sub, ← hW f hf hfs, Complex.sub_re,
     show ((ℓ : ℝ) : ℂ) * ((μ : ℂ) * ((∫ t, ‖f t‖ ^ 2 : ℝ) : ℂ)) =
       ((ℓ * μ * ∫ t, ‖f t‖ ^ 2 : ℝ) : ℂ) by push_cast; ring, Complex.ofReal_re] at h
   linarith
@@ -174,8 +174,11 @@ theorem weil_floor_iff_toeplitz_floor (Z : ZeroConfig) {ℓ : ℝ} (hℓ : 0 < �
     (∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
         ℓ * μ * ∫ t, ‖f t‖ ^ 2 ≤ (Z.W f f).re) ↔
       ∀ c : Fin ⌈2 * a / ℓ⌉₊ → ℂ, μ * ∑ j, ‖c j‖ ^ 2 ≤ (toeplitzForm D ⌈2 * a / ℓ⌉₊ c).re :=
-  ⟨fun h => toeplitz_floor_of_hodge_floor Z hℓ D hW ha μ fun f hf hfs _ _ => h f hf hfs,
-    fun hT _ hf hfs => weil_floor_of_toeplitz_floor Z hℓ D hW μ hT hf hfs⟩
+  have hW' : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
+      Z.W f f = ((ℓ : ℝ) : ℂ) * ∑' m : ℤ, EF.weilTest f f (m * ℓ) * D m := fun f hf hfs =>
+    hW f hf (hasCompactSupport_of_tsupport_subset_Icc hfs)
+  ⟨fun h => toeplitz_floor_of_hodge_floor Z hℓ D hW' ha μ fun f hf hfs _ _ => h f hf hfs,
+    fun hT _ hf hfs => weil_floor_of_toeplitz_floor Z hℓ D hW' μ hT hf hfs⟩
 
 /-- **Ground-state law for the Hodge class.** The polar constraint does not raise the floor. -/
 theorem hodge_floor_iff_toeplitz_floor (Z : ZeroConfig) {ℓ : ℝ} (hℓ : 0 < ℓ) (D : ℤ → ℂ)
@@ -185,8 +188,11 @@ theorem hodge_floor_iff_toeplitz_floor (Z : ZeroConfig) {ℓ : ℝ} (hℓ : 0 < 
     (∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a → paperFT f (I / 2) = 0 →
         paperFT f (-(I / 2)) = 0 → ℓ * μ * ∫ t, ‖f t‖ ^ 2 ≤ (Z.W f f).re) ↔
       ∀ c : Fin ⌈2 * a / ℓ⌉₊ → ℂ, μ * ∑ j, ‖c j‖ ^ 2 ≤ (toeplitzForm D ⌈2 * a / ℓ⌉₊ c).re :=
-  ⟨toeplitz_floor_of_hodge_floor Z hℓ D hW ha μ,
-    fun hT _ hf hfs _ _ => weil_floor_of_toeplitz_floor Z hℓ D hW μ hT hf hfs⟩
+  have hW' : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
+      Z.W f f = ((ℓ : ℝ) : ℂ) * ∑' m : ℤ, EF.weilTest f f (m * ℓ) * D m := fun f hf hfs =>
+    hW f hf (hasCompactSupport_of_tsupport_subset_Icc hfs)
+  ⟨toeplitz_floor_of_hodge_floor Z hℓ D hW' ha μ,
+    fun hT _ hf hfs _ _ => weil_floor_of_toeplitz_floor Z hℓ D hW' μ hT hf hfs⟩
 
 /-! ### Rank-two sections -/
 
@@ -385,7 +391,8 @@ theorem offLineLattice_weil_floor {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ) (hδ'
     L * latticeFloor L δ ⌈2 * a / L⌉₊ * ∫ t, ‖f t‖ ^ 2 ≤
       ((offLineLatticeConfig hL hδ hδ').W f f).re :=
   weil_floor_of_toeplitz_floor _ hL (latticeSymbol L δ)
-    (fun _ hf hfc => W_offLineLatticeConfig_lag hL hδ hδ' hf hfc) _
+    (fun _ hf hfs => W_offLineLatticeConfig_lag hL hδ hδ' hf
+      (hasCompactSupport_of_tsupport_subset_Icc hfs)) _
     (fun c => latticeSymbol_toeplitz_floor L δ c) hf hfs
 
 /-- **The lattice ground energy is sharp in the Hodge class.** For `a > L/2` and every
