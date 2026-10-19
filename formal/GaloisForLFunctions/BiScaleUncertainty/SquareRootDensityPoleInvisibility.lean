@@ -528,7 +528,7 @@ theorem le_abs_sub_of_far_point {G : Finset ℝ} {X T w y : ℝ} (hw : 0 ≤ w) 
 /-- The final cost estimate: a pole of size `≥ 2κ(e^{X/2}-1)/L²` and an archimedean part
 `≤ Cb(1 + log L)/L` give transport cost at most `ε` once
 `(4|p|Cb/(εκ) + 4) L(1 + log L) ≤ e^{X/2}`. -/
-theorem transport_cost_le {p ε κ Cb X L P A : ℝ} (hε : 0 < ε) (hκ : 0 < κ) (hCb : 0 ≤ Cb)
+theorem transport_cost_le {p ε κ Cb X L P A : ℝ} (hε : 0 < ε) (hκ : 0 < κ)
     (hL : 1 ≤ L) (hX : 2 ≤ X)
     (hden : (4 * |p| * Cb / (ε * κ) + 4) * L * (1 + Real.log L) ≤ Real.exp (X / 2))
     (hP : 2 * κ * (Real.exp (X / 2) - 1) * (L⁻¹) ^ 2 ≤ |P|) (hP0 : P ≠ 0)
@@ -604,9 +604,10 @@ theorem exists_blindOn_poleMass_eq_abs_archOnly_le_of_density {𝒩 : Set ℕ}
     intro h0
     rw [h0, abs_zero] at hPabs
     have : 1 < Real.exp (X / 2) := Real.one_lt_exp_iff.mpr (by linarith)
-    have : 0 < 2 * carrierPoleConstant * (Real.exp (X / 2) - 1) * (((k : ℝ) + 1)⁻¹) ^ 2 := by
-      have : 0 < Real.exp (X / 2) - 1 := by linarith
-      positivity
+    have hpos : 0 < Real.exp (X / 2) - 1 := by linarith
+    have : 0 < 2 * carrierPoleConstant * (Real.exp (X / 2) - 1) * (((k : ℝ) + 1)⁻¹) ^ 2 :=
+      mul_pos (mul_pos (mul_pos two_pos carrierPoleConstant_pos) hpos)
+        (pow_pos (inv_pos.mpr (one_add_nat_pos k)) 2)
     linarith
   have hsign : 0 < p / P := by
     rcases lt_or_gt_of_ne hp with hneg | hpos
@@ -622,9 +623,12 @@ theorem exists_blindOn_poleMass_eq_abs_archOnly_le_of_density {𝒩 : Set ℕ}
     have hfar' := le_abs_sub_of_far_point (y := Real.log (j : ℕ)) hw hTlo hThi hfar
       (fun hlo hhi => Finset.mem_image.mpr ⟨j, hcov j hj j.2 hlo hhi, rfl⟩)
     have hlt : 1 / (5 * ((k : ℝ) + 1)) < 1 / (2 * ((k : ℝ) + 1)) := by
-      apply one_div_lt_one_div_of_lt (by positivity); linarith
-    rw [hg, logValue_compressedCarrier_eq_zero k σ (by linarith) j.2 (lt_of_lt_of_le hlt hfar'),
-      mul_zero]
+      have h0 := one_add_nat_pos k
+      exact one_div_lt_one_div_of_lt (mul_pos two_pos h0) (by linarith only [h0])
+    have hz : logValue g.1 (j : ℕ) = 0 :=
+      logValue_compressedCarrier_eq_zero k σ (le_trans (by norm_num) hT2) j.2
+        (lt_of_lt_of_le hlt hfar')
+    rw [hz, mul_zero]
   · rw [nodePoleMass_single, ← hPdef, div_mul_cancel₀ _ hP0]
   · rw [nodeArchOnly_single, abs_mul, abs_of_pos hsign, ← hPdef]
     have hL1 : (1 : ℝ) ≤ (k : ℝ) + 1 := by linarith
@@ -644,7 +648,7 @@ theorem exists_blindOn_poleMass_eq_abs_archOnly_le_of_density {𝒩 : Set ℕ}
         _ = (4 * |p| * compressedArchConstant / (ε * carrierPoleConstant) + 4) *
             (((k : ℝ) + 1) * (1 + Real.log ((k : ℝ) + 1))) := by ring
         _ ≤ _ := this.trans (by rw [← mul_assoc]; exact hden)
-    have := transport_cost_le hε hκ hCb hL1 (by linarith) hden' hPabs hP0 hA
+    have := transport_cost_le hε hκ hL1 (by linarith) hden' hPabs hP0 hA
     rw [← abs_div, abs_of_pos hsign] at this
     exact this
 

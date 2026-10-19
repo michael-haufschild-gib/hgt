@@ -54,7 +54,9 @@ theorem exists_linear_le_exp {ε M : ℝ} (hε : 0 < ε) (hM : 0 < M) (K : ℝ) 
       pow_le_pow_left₀ (by positivity) h1 2
     rwa [← Real.exp_nat_mul, show ((2 : ℕ) : ℝ) * (ε * a / 2) = ε * a by push_cast; ring] at h2
   have hK : K ≤ |K| := le_abs_self K
-  have : (2 + |K|) * a ≤ M * (ε * a / 2) ^ 2 := by nlinarith
+  have hKa : |K| ≤ |K| * a := le_mul_of_one_le_right (abs_nonneg K) ha1
+  have h3 : (2 + |K|) * a ≤ M * (ε * a / 2) ^ 2 := by nlinarith
+  have h4 : M * (ε * a / 2) ^ 2 ≤ M * Real.exp (ε * a) := mul_le_mul_of_nonneg_left hexp hM.le
   nlinarith
 
 /-- `e^{-εa}` is eventually below any `κ > 0`. -/
@@ -63,12 +65,14 @@ theorem exists_exp_neg_le {ε κ : ℝ} (hε : 0 < ε) (hκ : 0 < κ) :
   refine ⟨1 / (ε * κ), fun a ha => ?_⟩
   have hεκ : 0 < ε * κ := mul_pos hε hκ
   have ha0 : 0 < a := lt_of_lt_of_le (by positivity) ha
-  rw [div_le_iff₀ hεκ] at ha
+  have ha' : 1 ≤ a * (ε * κ) := (div_le_iff₀ hεκ).mp ha
   have h1 : 1 + ε * a ≤ Real.exp (ε * a) := by linarith [Real.add_one_le_exp (ε * a)]
-  rw [Real.exp_neg, inv_le_comm₀ (Real.exp_pos _) hκ]
-  calc κ⁻¹ ≤ ε * a := by
-        rw [inv_le_iff_one_le_mul₀ hκ]; nlinarith
-    _ ≤ Real.exp (ε * a) := by linarith
+  have h2 : κ⁻¹ ≤ Real.exp (ε * a) := by
+    calc κ⁻¹ ≤ ε * a := by
+          rw [inv_le_iff_one_le_mul₀ hκ]; nlinarith
+      _ ≤ Real.exp (ε * a) := by linarith
+  calc Real.exp (-(ε * a)) = (Real.exp (ε * a))⁻¹ := Real.exp_neg _
+    _ ≤ κ := by rw [inv_le_comm₀ (Real.exp_pos _) hκ]; exact h2
 
 /-! ### Exact floors -/
 
