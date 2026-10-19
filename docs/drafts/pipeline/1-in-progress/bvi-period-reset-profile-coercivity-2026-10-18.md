@@ -514,15 +514,18 @@ incremental search refresh reported one changed file and no removals. Search
 readback finds the new Gram, coercivity, mean and corrected-readout names.
 `git diff --check` on the owned tracked changes exited 0.
 
-Formal lint exited 1. Its sole error was:
+The initial formal lint run exited 1. Its sole error was:
 
 ```
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.TransHorizonIncidenceMechanics: GaloisForLFunctions.TransHorizonIncidenceMechanics.FermiSelectedCoefficientSharpInverse
 ```
 
 That concurrently-created THIM leaf is outside this work's write scope.
-No BVI error or forbidden proof declaration was reported. Global lint has
-**not** passed; do not erase that distinction or edit another agent's files.
+No BVI error or forbidden proof declaration was reported in that run.
+After the concurrent umbrella acquired the missing import, the justified rerun
+of plain `scripts/formal_tools.py lint` exited 0 and ended with
+`formal lint passed` (`/tmp/bvi100-formal-lint-final.log`). This supersedes the
+initial repository-gate failure; the size warnings are still present.
 The mathematical verification of both BVI leaves is complete. Significance
 remains insufficient for contribution credit. The next research question is
 whether the exact physical-gap formula exposes an additional arithmetic

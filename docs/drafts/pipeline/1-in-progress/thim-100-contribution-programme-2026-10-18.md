@@ -73,12 +73,34 @@ Four named leaves and 24 public declarations prove the exact mixed-fault clock
 and ambiguity below it. The final significance audit recovered relevant 2020
 ultrametric resolving-set classifications. Retain the native formal sharpening
 as infrastructure; count increment zero. All named source/olean checks passed;
-final imported-axiom audit and generated index/lint are pending.
+the final imported audit of all 24 public declarations has only standard Lean
+axioms. Import wiring, index regeneration, and generated-file lint passed.
 
 Next direction is still in prior-work audit. Weighted Fermi/dyadic searches found
 existing weighted Hardy and Fermi–Nyman theory. No new theorem or contribution
 is claimed from those hits. Arbitrary nonadaptive GCD scheduling also overlaps
 known ultrametric metric-basis structure and is not independently counted.
+
+Current paper theorem: [dyadic-antichain prime capacity](../2-fully-proven/thim-dyadic-antichain-prime-capacity.md).
+Uniform native physical Fermi observability on supports with at most one index
+per odd part is equivalent to convergence of the reciprocal sum of allowed odd
+primes. The paper proof gives an explicit bound and positive counterexamples
+when the sum diverges. Existing Franel GCD kernels and prime-cube factorizations
+are prior ingredients. Lean verification and final significance audit remain;
+no count increment yet.
+
+The native homogeneous/pronic comparison, classical exponent/prime-box/GCD
+Gram helpers, exact odd-divisor packet Gram/frame bounds, native antichain
+coordinates with scalar impulse bounds, and Boolean parity Gram identities pass
+source/olean checks and final imported standard-axiom audits (seven leaves,
+forty-one public declarations). All seven are wired and indexed. The first six
+passed global generated lint; the latest run reports one concurrent unreachable
+BezoutValuationIncidence module, with no THIM finding. The earlier concurrent
+BiScale import errors are resolved. The full classification
+is still unformalized. Fresh deep corpus audits
+recovered existing unrestricted Fermi no-go results and GCD factorization APIs;
+current self-hits are excluded. Compiler and semantic search coverage remain
+incomplete, so search absence is not treated as novelty evidence.
 
 ## Earlier checkpoints (superseded)
 

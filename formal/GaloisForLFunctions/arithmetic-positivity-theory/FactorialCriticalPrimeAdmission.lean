@@ -472,6 +472,15 @@ theorem integrable_criticalFactorialSource_product (S : Finset ℕ) (b : ℕ →
       criticalFactorialSource S b (x - Real.log ((k + 1 : ℕ) : ℝ))) :=
   critical_source_product_integrable S b (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le k))
 
+/-- Exact physical/logarithmic correlation bridge for the complete critical source. -/
+theorem criticalFactorialSource_correlation_eq (S : Finset ℕ) (b : ℕ → ℝ)
+    {r : ℝ} (hr : 1 ≤ r) :
+    (∫ x : ℝ, criticalFactorialSource S b x * criticalFactorialSource S b (x - Real.log r)) =
+      (Real.sqrt r)⁻¹ * (∫ v in Ioi (1 : ℝ), v ^ (-2 : ℝ) *
+        (factorialPhaseCombination S (fun n => (b n : ℂ)) v).re *
+        (factorialPhaseCombination S (fun n => (b n : ℂ)) (r * v)).re) := by
+  simpa only [realPhase_eq_re] using critical_source_correlation_eq S b hr
+
 
 end
 end GaloisForLFunctions.ArithmeticPositivityTheory

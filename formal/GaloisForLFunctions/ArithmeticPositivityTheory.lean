@@ -14,6 +14,9 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailSamplin
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailRelativeMargin
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCollarIrrationalityAndSpacing
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialAffineClockResonance
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialAffineFrequencyIntervals
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalAffineComparison
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalCorrelationLimit
 import GaloisForLFunctions.«arithmetic-positivity-theory».SourceRelativeSchurMarginAndPerturbationCalculus
 import GaloisForLFunctions.«arithmetic-positivity-theory».RankOnePoleReadoutAndZeroNullspace
 import GaloisForLFunctions.«arithmetic-positivity-theory».GeneralDivisorBernoulliFilterClassification
@@ -21,6 +24,16 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».DyadicBernoulliFilte
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailWindowRieszCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».EnvelopeCriticalPrimeTransitionAndDilationGain
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeAdmission
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeLimit
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeHarmonicDiagonal
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeCumulativeCharge
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPatternHarmonicMass
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalTranslatedHarmonicLimit
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalTranslatedCorrelationLimit
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalTranslatedPrimeLimit
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalTranslatedPrimeHarmonicDiagonal
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeKernelDensity
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeContinuousKernel
 import GaloisForLFunctions.«arithmetic-positivity-theory».NonstationaryMellinLowFrequencyExclusion
 import GaloisForLFunctions.«arithmetic-positivity-theory».MarkovPoleHyperbolicCapacityAndApertureThresholds
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothingAndGramMargin

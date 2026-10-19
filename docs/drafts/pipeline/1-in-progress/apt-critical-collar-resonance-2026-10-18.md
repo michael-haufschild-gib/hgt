@@ -22,7 +22,8 @@ README is read-only. No numerical experiments, added axioms, full builds, or hea
 4. [x] Test the stronger proposed uniform nonstationary gain on actual source harmonics; retain a positive classification if it fails.
 5. [x] Formalize dependency-closed results, wire umbrella, pass actual-leaf/axiom audits, and run repository lint (concurrent ownership failures recorded below).
 6. [x] Prove fixed-source critical prime admission using existing exact primitives; pass source, axiom, build and lint audits.
-7. [ ] Pursue whole-span critical control and the affine comparison model; count only contributions meeting the original significance standard.
+7. [x] Prove and audit the whole-span critical affine comparison; record the external global-lint failures separately.
+8. [ ] Audit and prove the complete critical correlation/prime limit; count only contributions meeting the original significance standard.
 
 ### Critical admission: expanded reuse audit and paper proof
 
@@ -154,7 +155,8 @@ then Fatou (pointwise absolute convergence follows from `Σk⁻²<∞`), proves
 The verified bound `e_N≤1/(140N)` gives the stronger weighted endpoint
 `≤ (Z²/(35π²)) Σ |b_N|²/N`, hence the previously proposed `C/M` estimate.
 This paper proof has no support-cardinality loss and no uniform cross-harmonic spacing
-assumption. The all-harmonic result remains to be checked in Lean.
+assumption. The complete all-harmonic scratch proof has now passed Lean; actual-leaf
+build and audit status is tracked below.
 
 This also changes the sharpness proof: finite collections of distinct harmonics of one source
 have disjoint frequency intervals once `N` is large. Their Gram matrix is then exactly diagonal.
@@ -178,6 +180,41 @@ differences*, https://arxiv.org/abs/math/0103160, studies exponential families w
 frequencies. Its abstract establishes relevant prior context, not the exact native factorial
 endpoint or its absence. Accepted contribution count remains 0/100.
 
+### Whole-span comparison: leaf validation complete, 2026-10-19
+
+The complete scratch file `/tmp/apt_affine_shell.lean` exited 0. All six endpoint
+axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.
+The proof reuses `OneSubCosKernelIntegral`, `ComplexIntegralGram`, and
+`integral_norm_tsum_weighted_sq_le`. It uses the finite measure `1_(v>1)v⁻²dv`
+and normalized harmonic layers divided by `sqrt(k)`, so the original coefficient
+series has summable weights `|χ(k)|/k^(3/2)`. This certifies all harmonics and
+arbitrary finite complex coefficient families.
+
+Installed the declarations in `FactorialAffineFrequencyIntervals.lean` and
+`FactorialCriticalAffineComparison.lean`, and wired both APT umbrella imports.
+The latter also includes the explicit high-scale corollary using `S.filter (m≤·)`;
+the targeted build checked both leaves, including that corollary. The universal constant
+is `C=4Z²/π²`. The final bound is `C/140 * Σ‖b_n‖²/(n+1)`, with actual
+integrability proved separately. No new premise, unproved public hypothesis,
+axiom, heartbeat increase, or numerical experiment was introduced.
+
+Targeted build: `lake --old build '+GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalAffineComparison'`;
+exit 0, log `/tmp/apt_affine_comparison_build.log`. Both required actual-file audits exited 0
+with empty diagnostic logs: `/tmp/apt_affine_intervals_actual.log` and
+`/tmp/apt_affine_comparison_actual.log`. The interval audit was repeated once because its first
+tool exit status was lost across compaction; the repeat has an explicit status file.
+An axiom audit importing the installed leaf also exited 0; all seven public theorems,
+including the high-scale corollary, use only `propext`, `Classical.choice`, and `Quot.sound`
+(`/tmp/apt_affine_comparison_axioms.log`). Index refresh completed,
+and all ten public declarations are present. The final refresh also exited 0
+(`/tmp/apt_affine_comparison_index_final.log`). Global lint remains red as concurrent work
+changes the corpus: the latest run reports three BiScaleUncertainty and three
+TransHorizonIncidenceMechanics modules not yet umbrella-reachable, plus generated API/overview
+drift. `/tmp/apt_affine_comparison_lint_final.log` is authoritative for these external failures.
+Completed-proof scratch files and fragments were removed; search JSON and validation logs remain.
+Accepted count remains 0/100: this supplies a native comparison tool,
+but the original novelty/significance gate is stricter than a new correct endpoint.
+
 ### Structural consequences to audit after the comparison
 
 The affine model is exactly 12-periodic. Its shifted Fourier frequencies are
@@ -195,6 +232,53 @@ still required. The critical physical weight periodizes to a nonconstant positiv
 weight, so period orthogonality must not be substituted for weighted orthogonality.
 Likewise, an L²-small comparison error alone does not transfer an unbounded prime
 quadratic form. Neither observation proves Weil positivity or earns contribution credit.
+
+### Further reuse checks and a coherent-scale candidate
+
+The corpus already contains `factorialPhaseCombination_window_lower` and
+`factorialPhaseCombination_dilated_window_upper`, as well as physical Riesz bounds for the
+literal correction tails. Their source statements were checked. A new critical-weight Riesz
+wrapper would not be a significant contribution. The complete prime/divisor reindexing in
+`RHTower/WeilPhiDoobDivisorEnergy.lean` was also checked: it concerns the theta-ground-state
+Doob form with a bounded continuous quotient, not an automatic admission theorem for the
+untruncated critical factorial source. Its signed theta fibers are not pointwise nonnegative.
+The deep logarithmic-diagonal/square query was partial (unfinished follow-ups and reranking),
+with old-generation coverage and unavailable semantic metadata. Its available candidates do
+not justify claiming that the desired affine prime graph is absent.
+
+**Candidate, not yet a certified endpoint.** Fix a finite family of positive integers
+`q_i ≡ 1 (mod 12)` and let `L→∞` through `L≡1 (mod 12)`, with
+`N_i(L)=(q_i L-1)/12`. The verified comparison replaces each actual phase by
+`P₀(q_i Lv/12)-P₀(q_i Lv/12-v/12)` with an error tending to zero in the critical
+physical norm. Thus the candidate limiting Gram form is
+
+`∫_1^∞ v⁻² ∫_0^1 |Σ_i b_i [P₀(q_i x)-P₀(q_i x-v/12)]|² dx dv`.
+
+This retains a slow phase as well as a fast arithmetic carrier. Averaging only over a full
+period of the affine model would lose the slow phase and gives the wrong physical limit.
+For a fixed dilation `r`, the corresponding correlation candidate replaces the second
+bracket by `P₀(r q_j x)-P₀(r q_j x-rv/12)`; the surviving Fourier relations are exactly
+`k q_i = r l q_j`. Absolute harmonic convergence permits a finite-harmonic proof followed
+by a uniform tail limit; the finite-harmonic step uses oscillatory-integral decay.
+
+The existing fixed-source prime bound has `P=O(L⁻¹)` and derivative bound `O(L)`
+on this fixed finite pattern. Consequently its product is bounded uniformly in `L`, giving
+a summable majorant `C Λ(r)/r²` for the integrated prime atoms. This suggests passage to the
+**complete** prime series after the fixed-dilation limit, not just a finite prime truncation.
+The precise constants, exact index parametrization, all limiting passages, source-space
+conditions, and novelty/significance audits remain open. No new contribution is credited.
+
+The singleton case and the full prime-series interchange are now formalized and tracked in
+`apt-critical-single-source-prime-limit-2026-10-19.md`. The actual full-profile correlation
+and complete logarithmic prime-series limits, strict dyadic sign law, targeted builds,
+three actual-file audits, and eleven endpoint axiom audits passed. The global lint gate
+still has two unrelated TransHorizon umbrella-reachability errors. No significant-result
+credit is assigned before a native consequence and priority audit justify it.
+All 41 `factorial Riesz` hits,
+31 module-filtered `factorial limit` hits, 47 `periodic averaging` hits, and 86
+`Riemann Lebesgue` hits were paginated and screened. The exact reusable cosine decay theorem
+is `RHTower.tendsto_integral_mul_cos_atTop` in `HTGeometry/SoninCosineRiemannLebesgue.lean`;
+its actual hypothesis is `Integrable g`, despite its narrower prose description.
 
 ### Critical admission validation, 2026-10-18
 

@@ -31,8 +31,11 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
    read. `docs/architecture.md` and `docs/testing.md` absent. Existing dirty work
    inventoried and preserved.
 2. Conjecture and prove a substantive new result, testing against existing work.
-   **Active:** exact signed gap-chain prefix Gram, global conditional-tail
-   coercivity, and finite coefficient recovery from the first visible depth.
+   **Active:** audit joint source magnitudes across fixed shifts in
+   `bvi-joint-magnitude-law-2026-10-19.md`; the one-point real-horizon law is
+   formalized but uncounted. The exact gap-chain
+   package is verified but uncounted. The mixed-valuation moment direction
+   overlaps existing and concurrent work.
 3. Formalize exact surviving theorem; audit original source, axioms, imports,
    indexing and lint; assess significance without inflating count.
 4. Continue conjecture / proof or obstruction / positive-survivor loop until 100
@@ -42,10 +45,19 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
 
 | Candidate | Card | Status | Accepted count |
 |---|---|---|---:|
-| Exact actual-primitive gap-chain Gram, coercivity and recovery | `bvi-period-reset-profile-coercivity-2026-10-18.md` | All fifteen public declarations pass canonical Lean/axiom audits, including global coercivity and first-clock readout; leaves wired/indexed; global lint has one unrelated THIM reachability error; significance not established, no credit | 0 |
+| Exact actual-primitive gap-chain Gram, coercivity and recovery | `bvi-period-reset-profile-coercivity-2026-10-18.md` | All fifteen public declarations pass canonical Lean/axiom audits; wired/indexed; subsequent plain formal lint passes after concurrent wiring repair; significance not established, no credit | 0 |
+| Mixed-valuation moment recovery and noise stability | `bvi-mixed-valuation-moment-stability-audit-2026-10-18.md` | Prior-work audit found existing exact recovery, fixed-block stability, raw protocols and sharpness; global physical-translation stability is already an active concurrent candidate; no duplicate implementation | 0 |
+| Complete cofinal source-value law and optimal envelope | `bvi-cofinal-full-source-law-2026-10-19.md` | Exact alphabet, clock support, all moments, symmetric integer-ratio value law, exact positive support and adjacent real-horizon moment/value transport pass original-source Lean/axiom audits, wired and indexed; latest lint fails only on two concurrent THIM wiring gaps; classical quadratic, cutoff-average and oscillation baselines recorded, significance not established | 0 |
+| Joint magnitude laws across fixed shifts | `bvi-joint-magnitude-law-2026-10-19.md` | Fixed-band density law, native real-horizon joint probability law and arbitrary-observable/gradient consumer pass original-source and all-public axiom checks, wired and indexed; two-prime coercivity sharpening, exact Euler/support formula and novelty audit open; latest lint has three concurrent BiScale/THIM wiring gaps | 0 |
 
 ## Log
 
 - 2026-10-18 — New goal initialized. Historical pause memories concern earlier
   goals and do not cancel this explicit new request. No completed result is
   claimed for this goal.
+- 2026-10-19 — Refreshed the current worktree and corpus after the user's search
+  reminder. New `SieveValuationPhaseRecovery`, `SieveCanonicalTranslation` and
+  `SieveAffineTranslationAnchoring` close the previously recorded exact
+  mixed-support gap. The concurrent physical-translation stability card credits
+  our threshold proposal and is pursuing a stronger fifth/sixth-only bound.
+  Neither existing work nor shared ideas count as a new accepted contribution.

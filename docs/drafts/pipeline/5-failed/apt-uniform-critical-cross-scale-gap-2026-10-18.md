@@ -54,6 +54,14 @@ on literal factorial source frequencies, even at a fixed prime dilation.
 
 ## Next question
 
+The positive survivor now also gives a full affine comparison: for every finite complex
+coefficient family, the critical physical error from replacing `λ_N` by `N+1/12` is at most
+`C Σ_N |b_N|²/N`, with universal `C`, and no support-cardinality loss. The exact per-harmonic
+energy is diagonal because the native frequency intervals are disjoint. Both new leaves
+`FactorialAffineFrequencyIntervals.lean` and `FactorialCriticalAffineComparison.lean` passed
+targeted build, actual-file and axiom audits. Full proof and current external lint failures
+are recorded in the source card. This is additional positive salvage, not a novelty credit.
+
 Retain both integer and affine incidence channels, including the dyadic mixed
 alias exception, in a complete critical prime estimate. A coefficient-dependent
 prime convergence theorem may be accessible through existing bounded-primitive

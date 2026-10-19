@@ -13,8 +13,13 @@
 **Current decision: FORMALIZED, UNCOUNTED. Qualified programme count stays 1/100.**
 Four leaves and 24 public declarations establish the exact consecutive-window
 recovery law for literal horizon states. All named source/olean checks passed;
-final imported-axiom audit, generated index, and lint are the remaining integration
-gates. Earlier checkpoints below are historical.
+the final imported audit of all 24 public declarations reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Import wiring, generated index, and
+`scripts/formal_tools.py lint --check-generated` passed. Earlier checkpoints
+below are historical.
+
+Final cleanup removed all 43 explicitly owned, terminal clock scratch, log, and
+search artifacts from `/tmp`. No owned Lean process remains running.
 
 The native closed formula was not found in the retrieved corpus. Nevertheless,
 its local mechanism is a short extension of the existing totient collision and
