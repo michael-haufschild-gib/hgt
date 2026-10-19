@@ -16,9 +16,9 @@
 ## Research plan
 
 - [x] Read review, program interfaces and relevant prior research.
-- [ ] Audit external parent theories and exact internal statements.
-- [ ] State and attack exact conjectures; distinguish new obstruction from standard localization machinery.
-- [ ] Complete dependency-closed paper proofs for surviving claims.
+- [x] Audit external parent theories and exact internal statements.
+- [x] State and attack exact conjectures; distinguish new obstruction from standard localization machinery.
+- [x] Complete dependency-closed paper proofs for surviving claims.
 - [ ] Formalize exact statements without unproved analytic premises or added axioms.
 - [ ] Audit each leaf with `lake --old env lean`, audit axioms from `/tmp`, wire umbrella, regenerate index, run lint.
 - [ ] Check T1–T4 against current evidence; keep unfinished requirements explicit.
@@ -100,7 +100,9 @@ E(m_aw)+\theta P_a(w)+D_+(w)
 
 The correction is minimal among continuous nonnegative multiplication densities: if `h≥0` and `C_a(w)≤θP_a(w)+∫h w²` for every even smooth compact profile, localize a paired bump near any positive `x`; negativity of `h-d` there contradicts the inequality. Hence `h≥d_+` (for even `h`; otherwise its even part is the observable density). Conversely `h≥d_+` gives the inequality by pointwise integration. This classification identifies the exact cost a replacement nonlocal coercivity argument must pay.
 
-**[OPEN CORE]:** Formalize the obstruction, confinement law and minimal local repair. Full uncompensated odd positivity remains outside the proved result.
+**Formal status:** The obstruction, confinement law and minimal local repair passed the combined
+scratch audit `/tmp/thim-review1910-all-v4.lean`. Named-source and axiom audits remain.
+Full uncompensated odd positivity remains outside the proved result.
 
 ## Canonical growing-horizon family: paper proof [PROVED HERE]
 
@@ -191,6 +193,36 @@ critical sequence; this family is not merely the zero test. The contribution is
 the complete finite-horizon error and exact moment-preserving cutoff prescription.
 No density claim for the full primitive sector follows.
 
+### Paying the moving mass errors by finite source moments [PROVED HERE]
+
+Set `M_a=∫(x-a)²[Θ(x-a)/Θ(x)]² Θ(x)cosh(x/2)dx`. This is finite throughout
+the same strict shift range. Indeed the corpus mass envelope is a constant times
+`exp(5|x|−c_a exp(2|x|))`, with `c_a=π(2exp(−2|a|)−1)>0`.
+The elementary bound `|x-a|²≤(1+|a|)²exp(2|x|)` reduces the moment to the
+already-proved cusp integrability statement with exponent `7`.
+
+Because `χ_n(0)=1`, its scaled Lipschitz bound gives
+`U_{a,n}≤C² M_a/(n+1)²`. Thus define the finite, source-explicit constant
+
+\[
+L_a=4(2\sinh(a/2))^{-2}C^2(D_2+M_a+M_{-a}).
+\]
+
+Then `H_{a,n}≤L_a/(n+1)²`, and the primitive family satisfies the fully paid bound
+
+\[
+|E(g_{a,b,n})|\le\frac{2(L_a+L_b)}{(n+1)^2}.
+\]
+
+**Attack/novelty audit:** This is elementary weighted cutoff control specialized to
+the actual admitted theta translations. No presumed mass decay, spectral gap,
+prime cancellation, or coefficient feasibility enters. The bound retains every
+moving endpoint and every arithmetic edge; it does not prove a sign at finite `n`.
+
 ## Verification constraints
+
+Corpus discovery was partial for several deep queries (pending coverage and deadline-limited
+reranking). Both candidate lemmas and source arguments were inspected, then exact CHMD source
+and lexical searches supplied the dependencies. No missing hit is treated as a novelty proof.
 
 No numerical experiments, full builds, umbrella builds, heartbeat increases, commits or changes to other agents' work. One owned foreground Lean process at a time. Standard domain/range conditions are stated explicitly; no desired analytic bound is assumed. `update_plan` is unavailable in this session, so this card tracks the plan. Serena supports only Python here; Lean symbol calls fail, requiring source reads and patches.

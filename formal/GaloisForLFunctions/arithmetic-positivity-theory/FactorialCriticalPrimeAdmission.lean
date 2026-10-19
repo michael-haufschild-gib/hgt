@@ -1,4 +1,4 @@
-import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseBohrCoercivityAndTailIndependence
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPhasePrimitive
 import GaloisForLFunctions.«arithmetic-positivity-theory».EnvelopeCriticalPrimeTransitionAndDilationGain
 /-! Critical prime admission for exact factorial tails.
 
@@ -220,9 +220,8 @@ private theorem phase_slope_bound (n : ℕ) (v : ℝ) :
 private def realPhase (S : Finset ℕ) (b : ℕ → ℝ) (v : ℝ) : ℝ :=
   ∑ n ∈ S, b n * factorialPhaseProfile (n + 1) v
 
-private def phasePrimitive (S : Finset ℕ) (b : ℕ → ℝ) (v : ℝ) : ℝ :=
-  ∑ n ∈ S, b n * (factorialMuntzTailLatticePrimitive n (((n + 1 : ℕ) : ℝ) * v) /
-    ((n + 1 : ℕ) : ℝ))
+private def phasePrimitive (S : Finset ℕ) (b : ℕ → ℝ) : ℝ → ℝ :=
+  criticalFactorialPhasePrimitive S b
 
 private theorem realPhase_eq_re (S : Finset ℕ) (b : ℕ → ℝ) (v : ℝ) :
     realPhase S b v = (factorialPhaseCombination S (fun n => (b n : ℂ)) v).re := by
@@ -256,30 +255,12 @@ private theorem realPhase_slope_bound (S : Finset ℕ) (b : ℕ → ℝ) (v : �
     _ = _ := by rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intros; ring
 
 private theorem phasePrimitive_bound (S : Finset ℕ) (b : ℕ → ℝ) (v : ℝ) :
-    |phasePrimitive S b v| ≤ 12 * ∑ n ∈ S, |b n| / ((n + 1 : ℕ) : ℝ) := by
-  dsimp [phasePrimitive]
-  calc
-    _ ≤ ∑ n ∈ S, |b n * (factorialMuntzTailLatticePrimitive n (((n + 1 : ℕ) : ℝ) * v) /
-        ((n + 1 : ℕ) : ℝ))| := Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ n ∈ S, |b n| * (12 / ((n + 1 : ℕ) : ℝ)) := Finset.sum_le_sum fun n _ => by
-      rw [abs_mul, abs_div, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ((n + 1 : ℕ) : ℝ))]
-      exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right
-        (factorialMuntzTailLatticePrimitive_abs_le _ _) (by positivity)) (abs_nonneg _)
-    _ = _ := by rw [Finset.mul_sum]; apply Finset.sum_congr rfl; intros; ring
+    |phasePrimitive S b v| ≤ 12 * ∑ n ∈ S, |b n| / ((n + 1 : ℕ) : ℝ) :=
+  criticalFactorialPhasePrimitive_bound S b v
 
 private theorem phasePrimitive_deriv (S : Finset ℕ) (b : ℕ → ℝ) {v : ℝ} (hv : 0 < v) :
     HasDerivAt (phasePrimitive S b) (realPhase S b v) v := by
-  apply HasDerivAt.fun_sum
-  intro n _
-  have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
-  have hd := ((factorialMuntzTailLatticePrimitive_hasDerivAt n (y := ((n + 1 : ℕ) : ℝ) * v)
-    (by positivity)).comp v ((hasDerivAt_id v).const_mul ((n + 1 : ℕ) : ℝ))).div_const ((n + 1 : ℕ) : ℝ)
-  have hd' : HasDerivAt (fun u => factorialMuntzTailLatticePrimitive n (((n + 1 : ℕ) : ℝ) * u) /
-      ((n + 1 : ℕ) : ℝ)) (factorialPhaseProfile (n + 1) v) v := by
-    convert hd using 1 <;> try rfl
-    rw [factorialPhaseProfile_eq_tailRemainder n hv.le]
-    field_simp
-  exact hd'.const_mul (b n)
+  simpa only [realPhase_eq_re] using criticalFactorialPhasePrimitive_hasDerivAt S b hv
 
 /-- The scale moments retained by critical prime admission. -/
 def criticalFactorialPrimeConstant (S : Finset ℕ) (b : ℕ → ℝ) : ℝ :=

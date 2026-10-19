@@ -98,3 +98,55 @@ changes. The P1 failure uses the prime number theorem only.
   the same induction). Eight modules total; umbrella audited; lint gate passes for this area; index
   regenerated. Remaining open: P1 in Lean (window prime number theorem transport), signed
   superpositions, discharging `FoldedAdmissible` for explicit `ω`, M5.
+
+## No-go closure of the folded sufficiency route (19 October 2026, evening)
+
+**Exact killing mechanism.** Write `g = Θω` (test coordinate, odd, `g ≥ 0` on `(0,∞)`). Using
+`theta_harmonic_identity` to replace the prime rate, the folded defect at `x > 0` is exactly
+
+    𝓛_N ω − Θ cosh(x/2) ω = Θ(x) · [ 𝒜g(x) − 2c g(x) − Σ_n Λ(n) n^{−1/2} ( g(x + log n) + g(|x − log n|) ) ],
+
+with `c = (γ + log π)/2` and the regularised archimedean term
+`𝒜g(x) = ∫_0^∞ [2ν(u) g(x) − ω(u)(g(x+u) + g(|x−u|))] du` (the diagonal densities `ν` cancel against
+the Lévy density; only differences converge). Consequences:
+
+- **At the origin:** `g(0) = 0`, so `𝒜g(0+) = −2∫_0^∞ ω(u) g(u) du < 0` while the prime sum tends to
+  `2 Σ_n Λ(n) n^{−1/2} g(log n) > 0`. Hence the folded defect is strictly negative on a right
+  neighbourhood of `0` for **every** odd continuous profile with `g ≥ 0`, `g ≢ 0` on `(0,∞)`. For
+  `ω = ω_a` this is proved in Lean with the single prime `2`
+  (`ShiftedGroundStateOriginFailure`): `C_a(x) ≥ Λ(2) 2^{−1/2} (Θ(log 2 − x − a) − Θ(log 2 − x + a))`,
+  which stays positive as `x → 0` while the source `sinh(a/2) sinh(x/2) → 0`.
+- **At infinity:** the reflected prime term `Σ_{log n > x} Λ(n) n^{−1/2} g(log n − x)` is, by the
+  prime number theorem in a window (corpus: `ChebyshevShortWindowLowerBound`,
+  `ChebyshevMultiplicativeWindowZeroSum`, `LogWindowPrimeNumberTheorem`), asymptotic to
+  `e^{x/2} ∫_0^∞ e^{r/2} g(r) dr`; the term below `x` is asymptotic to `e^{x/2}∫_0^x e^{−r/2} g`; both are
+  positive, while `𝒜g(x) − 2c g(x) = O(g(x) + ‖g''‖_{[x−1,x+1]} + e^{−x/2})`. For every admissible `g`
+  (bounded with bounded second derivative, `∫_0^∞ e^{r/2} g < ∞`, which is what finiteness of the
+  generator requires) the folded defect is asymptotically `−e^{x/2} Θ(x) · 2∫_0^∞ cosh(r/2) g(r) dr`,
+  strictly negative. For `g = Θ(·−a) − Θ(·+a)` this is P1.
+
+**Verdict.** The hypothesis of `riemannHypothesis_of_foldedSupersolution` is never satisfied: there is
+no folded supersolution, near `0` for any profile and near `∞` for any admissible profile. The folded
+Allegretto–Piepenbrink hard direction fails for the odd arithmetic form, and the reason is concrete:
+the reflected prime mass returns with weight `e^{x/2} e^{±r/2}` while the potential sees `g` only at
+`x`. This is the exact meaning of "the odd form is not of Z-type".
+
+**Strongest positive survivor.** The folded ground-state representation itself:
+`markovEnergy (Θ (ω u)) = R_N(ω,u) − 2∫_{x>0} u² ω |defect_ω|` wherever the defect is negative, so RH is
+equivalent (for each fixed admissible `ω`, over all even `u`) to the **remainder-dominates-defect
+inequality** `R_N(ω,u) ≥ 2∫_{x>0} u(x)² ω(x) |defect_ω(x)| dx`, in which both sides are explicit. For
+`ω = ω_a` the right side is `4∫ u² ω_a Θ(x)(C_a(x) − sinh(a/2) sinh(x/2))` (Lean:
+`markovEnergy_phiDoob_shiftedGroundState_eq`), and the left side is the sum of the same-side squares
+`(u(x) − u(x+t))²` and the reflected squares `(u(x) + u(t−x))²`. This is THIM's absorption problem in
+closed form; the two-sided representation (GSR-D, with `ω_a` an exact strict supersolution) trades the
+negative potential for a negative reflected remainder `−Θ(x)Θ(t−x)ω(x)ω(t−x)(u(x) − u(t−x))²`.
+
+**New insight.** Positivity, if RH holds, is carried entirely by the remainder, never by the
+potential; a supersolution-based proof must therefore be a *subsolution-plus-remainder* proof. The
+quantity that decides is the comparison of two explicit nonnegative functionals of `u`, not the sign
+of a generator defect.
+
+**Status.** Origin failure for `ω_a`: Lean. Infinity failure: paper (P1 and the general asymptotic),
+Lean open (window PNT transport). M5 answered negatively for the folded operator; M4's remaining
+question (signed superpositions) is moot for the folded route. Programme continues on the
+remainder-dominates-defect inequality.

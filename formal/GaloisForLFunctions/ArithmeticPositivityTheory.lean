@@ -23,7 +23,9 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».GeneralDivisorBernou
 import GaloisForLFunctions.«arithmetic-positivity-theory».DyadicBernoulliFilterAndBohrCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailWindowRieszCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».EnvelopeCriticalPrimeTransitionAndDilationGain
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPhasePrimitive
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeAdmission
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPolarCutoff
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeLimit
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeHarmonicDiagonal
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeCumulativeCharge
