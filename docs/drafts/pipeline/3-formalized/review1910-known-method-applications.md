@@ -1,10 +1,10 @@
 # Known-method applications of the RH source calculus
 
 - **ID:** review1910-known-method-applications
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper); Lean implementation and application audit incomplete
+- **Stage:** 3-formalized
+- **Type:** THEOREM; 31 unconditional Lean theorems verified; application audit complete
 - **Source:** `docs/reports/review-1910/hard-obstacles-summary-1910.md`, section 1
-- **Statement:** Finite observation inversion admits an unconditional complete-graph error budget, including the exact loss when the arithmetic anchor vanishes.
+- **Statement:** Unconditional finite observation inversion with complete graph/energy budgets, literal Möbius/BV recovery, and simultaneous Hausdorff positivity for any finite set of orders.
 
 ## Scope and completion requirements
 
@@ -15,10 +15,10 @@ new results. No numerical experiments or finite numerical certificates are used.
 | Category | Required output | State |
 |---|---|---|
 | Exact identities and receiver implications | Check the listed route applications against actual declarations; preserve source, normalization, domain and the exact remaining premise. | All 47 route/candidate interfaces inspected; facts recorded in the owned knowledge ledger. |
-| Specified finite problems with rigorous error | Exact symbolic finite reconstruction, a two-sided complete-energy enclosure, and simultaneous positivity for a finite set of Hausdorff orders. | Paper proofs below; Lean checks pending. |
-| Reconstruction and graph-error specialization | Price anchor loss and finite inversion for actual Möbius and Barban–Vehov rows, with all arithmetic side conditions proved. | Incomplete |
-| Source instantiation | Construct the decoded finite arithmetic source in the original complete graph; check the other named source-admission applications. | Incomplete |
-| Obstruction and repair formulas | Include zero-anchor loss explicitly; check the named existing corrections and the scope of their positive conclusions. | Incomplete |
+| Specified finite problems with rigorous error | Exact symbolic finite reconstruction, a two-sided complete-energy enclosure, and simultaneous positivity for a finite set of Hausdorff orders. | Proved in the finite decoder and finite-order positivity modules. |
+| Reconstruction and graph-error specialization | Price anchor loss and finite inversion for actual Möbius and Barban–Vehov rows, with all arithmetic side conditions proved. | Arithmetic decoding module supplies exact inverse losses and fixed-cutoff reference budgets. |
+| Source instantiation | Construct the decoded finite arithmetic source in the original complete graph; check the other named source-admission applications. | Literal Möbius/BV graph recovery proved; other general admission interfaces inspected. |
+| Obstruction and repair formulas | Include zero-anchor loss explicitly; check the named existing corrections and the scope of their positive conclusions. | Exact zero-anchor loss and BV observation-loss boundary proved; existing repair interfaces audited. |
 
 All named applications from section 1 are covered: WL, RW, PA, CHMD, PM,
 BVI, JAS, PBM, RB, LA, TH, HCF, XN, CTF, APF, IRK, BiScale, FU, RFHM, SZ,
@@ -107,23 +107,43 @@ This is a symbolic finite-order certificate. `R(S)` is supplied by the
 existing existence theorem; no effective numerical value or bound uniform
 over all orders is asserted.
 
-## Intended Lean ownership
+## Lean modules and ownership
 
-- New leaves under `formal/GaloisForLFunctions/RHTower/` for finite decoder and
-  arithmetic specializations; no existing research leaf is replaced.
-- Add only necessary imports to `formal/GaloisForLFunctions/RHTower.lean`.
+- `formal/GaloisForLFunctions/RHTower/FinitePrimeAnchorDecoder.lean`: 11 theorems.
+- `formal/GaloisForLFunctions/RHTower/PrimeAnchorArithmeticDecoding.lean`: 15 theorems.
+- `formal/GaloisForLFunctions/RHTower/PrimeArchFiniteOrderHausdorffPositivity.lean`: 5 theorems.
+- All three are imported once by `formal/GaloisForLFunctions/RHTower.lean`.
 - Facts and failures: `logs/known-method-applications-1910-facts.md`.
 
 ## Verification requirements
 
-- [ ] Symbolic proof, no new assumptions or axioms; all public conclusions audited.
-- [ ] All five categories and all listed route applications accounted for.
-- [ ] Source side conditions discharged for actual arithmetic specializations.
-- [ ] Each new leaf checked with `lake env lean <file>`.
-- [ ] Only needed dependency builds, using `--old`; one owned foreground build at a time.
-- [ ] Public-declaration axiom audit from `/tmp`, no proof holes or computational axioms.
-- [ ] Umbrella wiring and formal lint checked without a full or umbrella build.
-- [ ] Owned scratch/build artifacts cleaned; concurrent work preserved.
+- [x] Symbolic proofs; no new assumptions or axioms; all public conclusions audited.
+- [x] All five categories and all 47 route/candidate applications accounted for; 57 declaration references checked against their actual source files.
+- [x] Source side conditions discharged for actual arithmetic specializations.
+- [x] Each new leaf passed its final `lake env lean <file>` audit without diagnostics.
+- [x] Dependency targets restored with `--old`; no full or umbrella build. Final leaf audits run sequentially.
+- [x] All 41 public declarations audited from `/tmp`: only `propext`, `Classical.choice`, `Quot.sound`.
+- [x] Umbrella wiring and generated indexes checked. Formal lint executed without a build; three unrelated missing imports prevent the global gate from passing.
+- [x] Owned scratch artifacts removed; interrupted dependency outputs restored; concurrent work preserved.
+
+Final source audits, run sequentially from `formal/`, all returned exit code 0:
+
+```sh
+lake env lean GaloisForLFunctions/RHTower/FinitePrimeAnchorDecoder.lean
+lake env lean GaloisForLFunctions/RHTower/PrimeAnchorArithmeticDecoding.lean
+lake env lean GaloisForLFunctions/RHTower/PrimeArchFiniteOrderHausdorffPositivity.lean
+```
+
+The remaining global lint errors concern these concurrent modules, outside
+this card's write scope:
+
+- `BezoutValuationIncidence.DifferentiatedBarbanVehovKernelsAndSmoothPrimeSigmaRate`
+- `TransHorizonIncidenceMechanics.MatomakiTeravainenPaperScaleSieveAndRankinEulerTail`
+- `SquareRootThreshold.WindowedOffDiagonalBeyondThreshold`
+
+All three new modules in this card are reachable from their umbrella. No
+generated-index error remains in that lint result. Existing repository size
+warnings are separate from these errors.
 
 No RH-closing cancellation, positivity, cofinal compactness or source-to-divisor
 identification is asserted by the finite decoder theorem.

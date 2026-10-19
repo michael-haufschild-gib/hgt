@@ -106,26 +106,26 @@ theorem differentiated_barbanVehov_kernel_moments_and_omitted_selberg_min_forms
               Real.log (((Nat.lcm q r / r : ℕ) : ℝ))) *
               harmonicLogWindowMoment 1 (L / Nat.lcm q r) (U / Nat.lcm q r) +
           harmonicLogWindowMoment 2 (L / Nat.lcm q r) (U / Nat.lcm q r))) ∧
-    (barbanVehovOmittedLongBasePolynomialMain M =
+    ((barbanVehovOmittedLongBasePolynomialMain M =
       ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         let A := Real.log ((M : ℝ) / (p.1 : ℝ))
         let B := Real.log ((M : ℝ) / (p.2 : ℝ))
-        selbergOriginalCoeff p.1 p.2 * (A * B * min A B) ∧
-    barbanVehovOmittedLongCrossPolynomialMain ell M =
+        selbergOriginalCoeff p.1 p.2 * (A * B * min A B)) ∧
+    (barbanVehovOmittedLongCrossPolynomialMain ell M =
       ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         let A := Real.log ((M : ℝ) / (p.1 : ℝ))
         let B := Real.log ((M : ℝ) / (p.2 : ℝ))
         let u := min A B
         (-1 : ℝ) * selbergOriginalCoeff p.1 p.2 * (A * B) *
-          (u * (ell + B) - u ^ (2 : ℕ) / 2) ∧
-    barbanVehovOmittedLongDerivativePolynomialMain ell M =
+          (u * (ell + B) - u ^ (2 : ℕ) / 2)) ∧
+    (barbanVehovOmittedLongDerivativePolynomialMain ell M =
       ∑ p ∈ (Finset.Icc 1 M) ×ˢ (Finset.Icc 1 M),
         let A := Real.log ((M : ℝ) / (p.1 : ℝ))
         let B := Real.log ((M : ℝ) / (p.2 : ℝ))
         let u := min A B
         selbergOriginalCoeff p.1 p.2 * (A * B) *
           (u * (ell + A) * (ell + B) -
-            u ^ (2 : ℕ) / 2 * (2 * ell + A + B) + u ^ (3 : ℕ) / 3)) := by
+            u ^ (2 : ℕ) / 2 * (2 * ell + A + B) + u ^ (3 : ℕ) / 3))) := by
   refine ⟨⟨barbanVehovLongHarmonicKernel_eq_moment hq hr,
     barbanVehovLongFirstLogKernel_eq_moments hq hr,
     barbanVehovLongSecondLogKernel_eq_moments hq hr⟩, ?_, ?_, ?_⟩
@@ -160,12 +160,12 @@ theorem moebius_shifted_log_nat_ratio_and_mollified_product_energy
           Real.log ((N : ℝ) / ((q * k : ℕ) : ℝ)) ^ (2 : ℕ)) *
             (if t ≤ Real.log ((N : ℝ) / ((q * k : ℕ) : ℝ)) then (1 : ℝ) else 0)) =
         moebiusShiftedLogSqKernelReal t (((N : ℝ) / (q : ℝ)) * Real.exp (-t))) ∧
-    (GaloisForLFunctions.HTGeometry.mollifiedTwistedDiagonal a b u v s qSet 0 =
-        mollifiedProductEnergy a b u v s qSet ∧
-      GaloisForLFunctions.HTGeometry.mollifiedTwistedDiagonalIcc a a u u L M 0 =
+    ((mollifiedTwistedDiagonal a b u v s qSet 0 =
+        mollifiedProductEnergy a b u v s qSet) ∧
+      (mollifiedTwistedDiagonalIcc a a u u L M 0 =
         ∑ r ∈ ((Finset.Icc 1 L) ×ˢ (Finset.Icc 1 M)).image (fun p => p.1 * p.2),
           ((Complex.normSq
-            (mollifiedProductCoeff a u (Finset.Icc 1 L) (Finset.Icc 1 M) r) : ℝ) : ℂ)) :=
+            (mollifiedProductCoeff a u (Finset.Icc 1 L) (Finset.Icc 1 M) r) : ℝ) : ℂ))) :=
   ⟨⟨sum_moebius_log_threshold_nat_ratio_eq_shifted N q hN hq t ht,
     sum_moebius_log_sq_threshold_nat_ratio_eq_shifted N q hN hq t ht⟩,
    ⟨mollifiedTwistedDiagonal_zero_eq_productEnergy a b u v s qSet,
