@@ -335,7 +335,8 @@ def inventory(root: Path) -> tuple[list[dict], list[dict]]:
             errors.append(dict(path=str(package_dir), error=str(exc)))
     items = []
     seen: set[str] = set()
-    ignored = {".lake", ".git", "node_modules", "__pycache__", ".venv"}
+    # `tmp` holds scratch proofs and temporary data at any depth; it is never corpus.
+    ignored = {".lake", ".git", "node_modules", "__pycache__", ".venv", "tmp"}
     catalogs = {"LEAN_API.md", "LEAN_OVERVIEW.md", "LEAN_GAPS.md"}
     for base, package in roots:
         if not base.exists():

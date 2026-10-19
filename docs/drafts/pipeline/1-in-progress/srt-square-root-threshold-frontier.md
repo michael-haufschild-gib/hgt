@@ -46,7 +46,9 @@ zero-free region of a given depth, or (c) RH-strength.
   * `integral_normSq_mul_normSq_expSum_le`, `card_close_log_le`, `integral_windowed_sq_deviation_le`
     — the windowed mean value bound `1 + X(e^{2r} − e^{−2r})` at every length;
   * `le_integral_normSq_mul_normSq_expSum_of_nonneg` — sharpness for aligned phases;
-  * `integral_pairTransform_mul_integral_windowed_eq` — height averages give prime-pair correlations.
+  * `integral_pairTransform_mul_integral_windowed_eq` — height averages give prime-pair correlations;
+  * `integral_pairTransform_mul_integral_windowed_centred_eq` — centred at height `T`, the pair
+    phase is `(m/n)^{2πiT}`. This is the phase that upper-bound sieves cannot see.
 - SRT-5c (module `PrimeTailCouplingCriterion`):
   * `riemannHypothesis_iff_primePolynomial_le_archPart` — the coupled criterion;
   * `exists_archPart_zero_lt_primePolynomial`, `re_primePolynomial_zero_neg` — the coupling is

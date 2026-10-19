@@ -444,4 +444,36 @@ theorem integral_pairTransform_mul_integral_windowed_eq {η ω : ℝ → ℂ} (h
     _ = c j * conj (c k) * EF.weilTest η η (ν j - ν k) * EF.weilTest ω ω (ν j - ν k) := by
         rw [hω']
 
+/-- **Height averages centred at height `T`.** Averaging the windowed mean square over centres
+`T + ξ₀`, with weight `|h_ω(−2πξ₀)|²`, weights each pair by `k_η k_ω(ν_j − ν_k) e^{2πiT(ν_j − ν_k)}`.
+For prime frequencies the phase is `(m/n)^{2πiT}`. It changes sign as the pair moves, which is
+why bounds that see only the sizes of the pair correlations, such as upper-bound sieves, cannot
+use it. -/
+theorem integral_pairTransform_mul_integral_windowed_centred_eq {η ω : ℝ → ℂ}
+    (hη : ContDiff ℝ 2 η) (hηc : HasCompactSupport η) (hω : ContDiff ℝ 2 ω)
+    (hωc : HasCompactSupport ω) {ι : Type*} (s : Finset ι) (c : ι → ℂ) (ν : ι → ℝ) (T : ℝ) :
+    ∫ ξ₀ : ℝ, pairTransform ω ξ₀ *
+        ∫ ξ : ℝ, pairTransform η ξ *
+          (expSum s c ν (ξ + (ξ₀ + T)) * conj (expSum s c ν (ξ + (ξ₀ + T)))) =
+      ∑ j ∈ s, ∑ k ∈ s, c j * conj (c k) * EF.weilTest η η (ν j - ν k) *
+        EF.weilTest ω ω (ν j - ν k) * cexp (2 * π * I * T * ((ν j - ν k : ℝ) : ℂ)) := by
+  have hshift : ∀ x : ℝ, expSum s c ν (x + T) =
+      expSum s (fun j => c j * cexp (2 * π * I * T * ν j)) ν x := fun x => expSum_add s c ν x T
+  have hfun : ∀ ξ₀ ξ : ℝ, expSum s c ν (ξ + (ξ₀ + T)) =
+      expSum s (fun j => c j * cexp (2 * π * I * T * ν j)) ν (ξ + ξ₀) := by
+    intro ξ₀ ξ
+    rw [← hshift, add_assoc]
+  simp_rw [hfun]
+  rw [integral_pairTransform_mul_integral_windowed_eq hη hηc hω hωc]
+  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
+  have he : cexp (2 * π * I * T * ν j) * conj (cexp (2 * π * I * T * ν k)) =
+      cexp (2 * π * I * T * ((ν j - ν k : ℝ) : ℂ)) := by
+    rw [← Complex.exp_conj, ← Complex.exp_add]
+    congr 1
+    simp only [map_mul, Complex.conj_ofReal, Complex.conj_I, map_ofNat]
+    push_cast
+    ring
+  rw [map_mul, ← he]
+  ring
+
 end GaloisForLFunctions.SquareRootThreshold

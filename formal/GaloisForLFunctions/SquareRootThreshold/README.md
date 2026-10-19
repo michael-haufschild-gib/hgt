@@ -159,6 +159,9 @@ Modules [`WindowedMeanValueDiagonalLaw`](WindowedMeanValueDiagonalLaw.lean),
 * `integral_pairTransform_mul_integral_windowed_eq`: averaging over centres with a second window
   `ω` weights each pair by `k_η k_ω(ν_j − ν_k)`. The averaged excess is a correlation of prime
   pairs at multiplicative distance `< 2 min(r, ρ)`.
+* `integral_pairTransform_mul_integral_windowed_centred_eq`: centred at height `T`, each pair
+  carries in addition the phase `e^{2πiT(ν_j − ν_k)}`, which for prime pairs is
+  `(m/n)^{2πiT}` (mechanism 8).
 
 ### The prime–tail coupling
 

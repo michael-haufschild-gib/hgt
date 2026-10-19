@@ -222,3 +222,49 @@ remainder-dominates-defect inequality.
   `markovEnergy(oddProfileTest a w) = 2·direct − collar + oddSinhPotential a w` (coefficient exactly
   `1` on the sinh potential, no support radius). The bridge in corpus coordinates needs a scaling
   lemma for `markovEnergy` (none found by grep) and is left to THIM.
+- 2026-10-19 (night, 5) — **Monotone fold domination** (`ShiftedGroundStateMonotoneFoldDomination`,
+  eighteen modules). For `u` even, nonnegative, nonincreasing on `[0,∞)`: on `0 < x < t/2`,
+  `0 ≤ u(x) − u(t−x) ≤ u(x) − u(x+t) ≤ u(x)`, so with the collar symmetry
+  `D(t) ≤ 2S(t) + 2E_a(t)`, `E_a(t) = ∫_0^{t/2} m_a(x)(m_a(t−x) − m_a(x+t))⁺u(x)²`
+  (`integral_reflectedDifference_le_two_sameSide_add_two_foldExcess`); fold-excess Fubini
+  `∫dm E_a = ∫_{x>0} u² m_a W_a` with `W_a(x) = ∫_{t>2x} dm(t)(m_a(t−x) − m_a(x+t))⁺`; hence
+  `markovEnergy(Φ(ω_a u)) ≥ 4 sinh(a/2)∫u² m_a sinh(x/2) − 2∫u² m_a W_a`
+  (`markovEnergy_phiDoob_shiftedGroundState_ge_of_antitone`) and the weight criterion
+  `W_a(x) ≤ 2 sinh(a/2) sinh(x/2) ∀x>0 ⟹ Markov positivity on all such u`
+  (`markovEnergy_phiDoob_shiftedGroundState_nonneg_of_antitone_of_weight_le`). `foldExcessDensity`
+  vanishes for `x + t ≤ a` (`m_a` increasing on `[0,a]`). Paper analysis of the criterion (not
+  formalised): both sides vanish at `x = 0`; slopes compare as
+  `J_a := ∫_{t>t_a} dm |m_a'| ≤ sinh(a/2)/2`; for large `a`, under the prime number theorem
+  `J_a ≈ e^{a/2}∫_0^∞ e^{s/2}|Θ'| = e^{a/2}(Θ(0) + 1/8 + σ/2)` versus `e^{a/2}/4`, so the pointwise
+  criterion fails at the origin unless `Θ(0) + σ/2 ≤ 1/8` (it does not: the `n = 1` term of `Θ(0)`
+  is `(4π² − 6π)e^{−π} > 1/8`); the deficit sits exactly at the origin, where the monotone bound is
+  tight, and would have to be paid by the dropped same-side terms `x > t/2`. So the monotone cone
+  does not close by a pointwise weight; the exact statement is the lower bound above.
+- 2026-10-20 — **Bridge to THIM coordinates** (`ShiftedGroundStateOddProfileCoordinates`, nineteen
+  modules): `markovEnergy ((c:ℂ) • f) = c² markovEnergy f` (scaling of `EF.weilTest`,
+  `weilFullFunctional_smul`, `weilPoleTerm`), `m_a = 2 sinh(a/2) oddProfile a`,
+  `oddProfileTest a w = Φ(ω_a w)/(2 sinh(a/2))`, hence
+  `markovEnergy(oddProfileTest a w) = (2S − D)/(4 sinh²(a/2)) + 2∫_{x>0} oddProfile a · sinh(x/2) · w²`
+  (`markovEnergy_oddProfileTest_eq_twoSided`) and Markov positivity on `oddProfileTest a w` ⟺
+  `D ≤ 2S + 8 sinh²(a/2)∫ oddProfile sinh w²` (`markovEnergy_oddProfileTest_nonneg_iff_variation`).
+  The right side's integral is THIM's `oddSinhPotential a w` by `oddSinhPotential_eq_halfLine`; THIM's
+  Obstacle B (collar ≤ direct + absorbed arch on `3t/2 ≤ a`) is a partial case of this exact identity.
+- 2026-10-20 — **General origin failure in Lean** (`OddProfileOriginFailure`,
+  `SignedCombinationOriginFailure`; twenty-one modules). For every odd continuous `ω ≥ 0` on
+  `[0,∞)` with `ω(log 2) > 0`, Lipschitz on `[−1,1]` and `Φω ≤ CΦ(·−b)` on the half line, the folded
+  defect is negative on a right neighbourhood of `0`
+  (`exists_origin_window_foldedGenerator_lt_potential_of_profile`). Mechanism: prime-`2` term
+  `→ −2Λ₂Φ(0)Φ(log 2)ω(log 2)`; archimedean part `≤ 3Φ(0)²L√x ∫(t^{−1/2}1_{t≤1} + e^{−t/2}1_{t>1})`
+  (Lipschitz for `t ≤ x`, drop `−Φ(x±t)ω(·) ≤ 0` for `t > x`); other primes
+  `≤ Φ(x)ω(x)·primeKernelSum x ≤ Φ(0)Lx(cosh(x/2) + 2|c|Φ(0) + 2∫gammaSourceBound)`; potential
+  `≥ 0`; non-integrable/non-summable cases handled by the Bochner convention or excluded by the
+  domination hypothesis. Instances: `ω_a` (`shiftedGroundState_origin_failure_of_profile`) and every
+  signed combination `c₁ω_a + c₂ω_b` nonnegative on `(0,∞)`, positive at `log 2`
+  (`exists_origin_window_signedCombination_foldedGenerator_lt_potential`), using
+  `Φ(y−a) ≤ (Φ(0)/Φ(b))Φ(y−b)`. M4 (signed superpositions) and M5 (every profile) are now closed at
+  the origin in Lean; the infinity side for signed combinations remains open.
+- 2026-10-20 — Parallel agent: `ShiftedGroundStateFoldExcessThresholdAndOddProfileDomination.lean`
+  (not mine, not yet wired; lint reports it unreachable until its author wires it): fold-excess
+  density vanishes for `t ≤ max(2x, a − x)`, hence all primes with `log n ≤ 2a/3` (prime `2` for
+  `a ≥ (3/2) log 2`) drop out of `W_a`; support-localised weight criterion; odd-profile transfer.
+  Left untouched per the shared-repo discipline.

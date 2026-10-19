@@ -59,6 +59,7 @@ corpus's "secondary odd profile" `m_a = Θ(·−a) − Θ(·+a)` is a test; its 
 | Reflected difference jump | `Θ(x)Θ(t−x) ω(x)ω(t−x) (u(x) − u(t−x))²` on `0 < x < t` | `reflectedDifferenceJump` |
 | Same-side energy | `S(ω,u) = ∫ dm(t) ∫_{x>0} sameSideGroundJump` | `sameSideEnergy` |
 | Reflected sum / difference energies | `P(ω,u) = ∫ dm(t) ∫_0^t reflectedGroundJump`, `D(ω,u) = ∫ dm(t) ∫_0^t reflectedDifferenceJump` | `reflectedSumEnergy`, `reflectedDifferenceEnergy` |
+| Fold excess density and weight | `(m_a(t−x) − m_a(x+t))⁺ 1_{2x<t}`; `W_a(x) = ∫ dm(t) (m_a(t−x) − m_a(x+t))⁺ 1_{2x<t}` | `foldExcessDensity`, `foldExcessWeight` |
 | Ground remainder of one shift | `rem(t) = 2∫_{x>0} sameSide + ∫_{0<x<t} reflected` | `groundRemainderShift` |
 | Ground remainder | `R_N(ω,u) = ∫ dm(t) rem(t)` | `groundRemainder` |
 | Folded (Neumann) shift generator | `Θ(x)[Θ(x+t)(ω(x) − ω(x+t)) + Θ(x−t)(ω(x) − ω(|x−t|))]` | `foldedShiftGenerator` |
@@ -190,10 +191,17 @@ In test coordinates `g = Θω` (odd, `g ≥ 0` on `(0,∞)`) the folded defect a
 
 `𝒜g(x) = ∫_0^∞ [2ν(u) g(x) − ω(u)(g(x+u) + g(|x−u|))] du`, `ν(u) = e^{−2u}/(1 − e^{−2u})`.
 
-- **Origin.** `g(0) = 0`, so `𝒜g(0+) = −2∫_0^∞ ω(u) g(u) du < 0` while the prime sum tends to
-  `2 Σ_n Λ(n) n^{−1/2} g(log n) > 0`: the folded defect is strictly negative on a right neighbourhood
-  of `0` for every odd continuous profile with `g ≥ 0`, `g ≢ 0`. For `ω_a` the prime `2` alone suffices
-  (`exists_origin_window_foldedGenerator_lt_potential`).
+- **Origin** (`exists_origin_window_foldedGenerator_lt_potential_of_profile`). For every `ω`
+  odd, continuous, nonnegative on `[0,∞)` with `ω(log 2) > 0`, Lipschitz on `[−1, 1]`, and with
+  `Φ ω ≤ C Φ(· − b)` on the half line, the folded defect is strictly negative on a right
+  neighbourhood of `0`. The prime `2` term tends to `−2Λ(2)2^{−1/2}Φ(0)Φ(log 2)ω(log 2) < 0`; the
+  archimedean integral is at most `K√x` (Lipschitz bound for shifts `t ≤ x`, the nonpositive terms
+  `−Φ(x±t)ω(·)` dropped for `t > x`, Lévy density `≤ 3/(2t)` and `≤ (3/2)e^{−t/2}`); the remaining
+  prime terms are at most `Φ(x)ω(x) · primeKernelSum x`, bounded by the harmonic identity; the
+  potential is nonnegative. Every signed combination `c₁ω_a + c₂ω_b` that is nonnegative on the
+  half line and positive at `log 2` satisfies the hypotheses
+  (`exists_origin_window_signedCombination_foldedGenerator_lt_potential`), as does `ω_a` itself
+  (`shiftedGroundState_origin_failure_of_profile`, recovering the prime-`2` proof).
 - **Infinity.** For `ω_a`, the collar lower bound of 3.4. For a general admissible profile (bounded,
   bounded second derivative, `∫_0^∞ e^{r/2} g < ∞`) the reflected prime mass is asymptotic to
   `e^{x/2}∫_0^∞ e^{r/2} g` and the folded defect to `−e^{x/2} Θ(x) · 2∫_0^∞ cosh(r/2) g(r) dr`
@@ -241,13 +249,41 @@ term is `−D`. Markov positivity on `Θ(ω_a u)` is the **variation inequality*
     D(ω_a,u) ≤ 2 S(ω_a,u) + 4 sinh(a/2) ∫_{x>0} u² m_a sinh(x/2),
 
 and RH implies it for every `a > 0` and even `u ∈ C²_c` (`reflectedDifferenceEnergy_le_of_riemannHypothesis`).
-In the corpus's `oddProfile` coordinates (`m_a = 2 sinh(a/2) · oddProfile a`) the same identity reads
-`markovEnergy(oddProfileTest a w) = 2·direct − collar + oddSinhPotential a w` with `direct`, `collar`
-the `dm`-integrals of `oddProfileShiftJump` on the half line and of `oddProfileCollarDiffSq` on
-`(0,t)`: the entire budget by which the collar may exceed twice the direct energy is the sinh
-potential, with coefficient exactly `1`. The reflected variation `(u(x) − u(t−x))²` is a variation
+In the corpus's `oddProfile` coordinates (`m_a = 2 sinh(a/2) · oddProfile a`,
+`oddProfileTest a w = Φ(ω_a w)/(2 sinh(a/2))`), since the Markov energy is quadratic
+(`markovEnergy_real_smul`), the same identity reads (`markovEnergy_oddProfileTest_eq_twoSided`)
+
+    markovEnergy(oddProfileTest a w) = (2S − D)/(4 sinh(a/2)²) + 2 ∫_{x>0} oddProfile a · sinh(x/2) · w²,
+
+the last term being the half-line form of THIM's `oddSinhPotential a w`; `S/(4 sinh²)` and
+`D/(4 sinh²)` are the `dm`-integrals of `oddProfileShiftJump` on the half line and of
+`oddProfileCollarDiffSq` on `(0,t)`. The entire budget by which the collar may exceed twice the
+direct energy is the sinh potential, with coefficient exactly `1`
+(`markovEnergy_oddProfileTest_nonneg_iff_variation`). The reflected variation `(u(x) − u(t−x))²` is a variation
 across the fold point `t/2`; the same-side variation `(u(x) − u(x+t))²` is a variation at distance
 `t`.
+
+**Fold domination for monotone profiles.** If `u` is even, nonnegative and nonincreasing on
+`[0, ∞)`, then on `0 < x < t/2` the three points satisfy `x ≤ t − x ≤ x + t`, so
+`0 ≤ u(x) − u(t−x) ≤ u(x) − u(x+t) ≤ u(x)`, and by the symmetry of the collar
+
+    D(t) = 2∫_0^{t/2} m_a(x) m_a(t−x) (u(x) − u(t−x))² ≤ 2 S(t) + 2 E_a(t),
+    E_a(t) = ∫_0^{t/2} m_a(x) (m_a(t−x) − m_a(x+t))⁺ u(x)² dx
+
+(`integral_reflectedDifference_le_two_sameSide_add_two_foldExcess`). Integrating against `dm` and
+exchanging the integrations (`integral_dm_foldExcessShift_eq_integral_sq_mul_foldExcessWeight`),
+
+    markovEnergy(Θ(ω_a u)) ≥ 4 sinh(a/2) ∫_{x>0} u² m_a sinh(x/2) − 2 ∫_{x>0} u(x)² m_a(x) W_a(x) dx
+
+(`markovEnergy_phiDoob_shiftedGroundState_ge_of_antitone`). Hence the **weight criterion**: if
+`W_a(x) ≤ 2 sinh(a/2) sinh(x/2)` for all `x > 0`, the Markov energy is nonnegative on `Θ(ω_a u)` for
+every even `u ∈ C²_c` nonnegative and nonincreasing on the half line
+(`markovEnergy_phiDoob_shiftedGroundState_nonneg_of_antitone_of_weight_le`). The weight is a function
+of Riemann's kernel alone; it vanishes on the window `x + t ≤ a` because `m_a` is increasing on
+`[0, a]` (`foldExcessDensity_eq_zero_of_add_le`), so only shifts beyond the peak of `m_a` contribute.
+Both sides of the criterion vanish at `x = 0`; the comparison of slopes there is
+`∫_{t > t_a} dm(t) |m_a'(t)| ≤ sinh(a/2)/2` with `t_a` the peak of `m_a`, since
+`(m_a(t−x) − m_a(x+t))⁺ ≈ 2x (−m_a'(t))⁺`.
 
 ### 3.6 The finite model (Perron–Frobenius)
 
@@ -303,15 +339,21 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
    THIM's absorption problem in closed form.
 2. **The variation inequality** `D(ω_a,u) ≤ 2 S(ω_a,u) + 4 sinh(a/2) ∫ u² m_a sinh(x/2)` (3.5): for
    which classes of even `u` is it provable? For `u` with `u(t − x) = u(x)` on `(0,t)` the collar term
-   vanishes; for `u` nonincreasing on `(0,∞)` one has `|u(x) − u(t−x)| ≤ |u(x) − u(x+t)|` on
-   `(0, t/2)`, so `D` is bounded by a same-side integral with the weight `m_a(t−x)` in place of
-   `m_a(x+t)`, and the comparison reduces to the ratio `m_a(t−x)/m_a(t+x)` against the sinh budget.
-   THIM's collar-to-direct bounds (`oddProfileCollarDiffSq_le_two_direct_add_two_across`,
+   vanishes. For `u` nonnegative and nonincreasing on `[0,∞)` it follows from the weight criterion
+   `W_a(x) ≤ 2 sinh(a/2) sinh(x/2)`; whether that criterion holds is a question about Riemann's
+   kernel alone. The decisive region is the origin, where both sides vanish to first order and the
+   slope condition reads `∫_{t > t_a} dm(t) |m_a'(t)| ≤ sinh(a/2)/2`; for large `a` the left side is
+   asymptotically `e^{a/2} ∫_0^∞ e^{s/2} |Θ'(s)| ds = e^{a/2}(Θ(0) + 1/8 + σ/2)` against
+   `e^{a/2}/4`, so the pointwise criterion fails for large `a` unless `Θ(0) + σ/2 ≤ 1/8`, and the
+   dropped same-side terms away from the origin would have to compensate. THIM's collar-to-direct
+   bounds (`oddProfileCollarDiffSq_le_two_direct_add_two_across`,
    `integral_oddProfileCollarDiffSq_le_direct_add_absorbedArchSlice`) are partial results on
    exactly this inequality, on the low-prime window `3t/2 ≤ a`.
-3. **Signed superpositions.** Finite combinations `Σ c_j ω_{a_j}` with mixed signs that stay positive
-   on `(0,∞)`: the folded defect is linear, so the question is the sign of
-   `Σ c_j (sinh(a_j/2) sinh(x/2) − C_{a_j}(x))`; nonnegative combinations inherit failure at both ends.
+3. **Signed superpositions at infinity.** Finite combinations `Σ c_j ω_{a_j}` with mixed signs that
+   stay positive on `(0,∞)` fail at the origin (3.5); at infinity the folded defect is linear, so the
+   question is the sign of `Σ c_j (sinh(a_j/2) sinh(x/2) − C_{a_j}(x))` for large `x`, where each
+   `C_{a_j}(x) ≥ 2 sinh(a_j/2) sinh(x/2) − K_j` but the signed sum is not controlled by the lower
+   bounds alone.
 4. **Profiles outside the span.** The forced asymptotics at infinity of any odd profile `g` with
    finite folded generator (analysis in 3.5, not formalised), and the corresponding Lean statement.
 5. **Critical Hardy weights.** If the odd form is nonnegative (RH), is it critical or subcritical?
@@ -357,4 +399,8 @@ integral; measurability of the prime generator is an almost-everywhere limit of 
 | `ShiftedGroundStateCombinationFailure` | nonnegative nonzero combinations of two shifted ground states are strict folded subsolutions near `0` and on a half line `[X, ∞)` |
 | `ShiftedGroundStateCollarFubini` | the collar integral as a half-line integral of the positive part; `m_a(y−x)⁺ ≤ (Φ(0)/Φ(R+a)) Φ(y−R−a)`; product integrability of the archimedean collar; collar Fubini `∫ dm(t) ∫_0^t m_a(x)m_a(t−x)u(x)² = ∫_{x>0} u² m_a C_a`; integrability and summability of the collar marginals |
 | `ShiftedGroundStateTwoSidedRepresentation` | `reflectedDifferenceJump`; `sameSideEnergy`, `reflectedSumEnergy`, `reflectedDifferenceEnergy`; `R_N = 2S + P`; `P + D = 4∫u² m_a C_a`; two-sided representation `markovEnergy = 2S − D + 4 sinh(a/2)∫u² m_a sinh(x/2)`; the variation inequality criterion and its proof from RH |
+| `ShiftedGroundStateMonotoneFoldDomination` | `foldExcessDensity`, `foldExcessJump`, `foldExcessShift`, `foldExcessWeight`; monotone fold domination of one shift; fold-excess Fubini; `D ≤ 2S + 2∫u² m_a W_a` for nonincreasing nonnegative `u`; the lower bound of the Markov energy and the weight criterion; vanishing of the density on `x + t ≤ a` |
+| `ShiftedGroundStateOddProfileCoordinates` | `markovEnergy (c • f) = c² markovEnergy f` for real `c`; `m_a = 2 sinh(a/2) oddProfile a`; the two-sided representation and the variation criterion for `oddProfileTest a w` |
+| `OddProfileOriginFailure` | short-shift Lipschitz bound and long-shift bound of the folded shift integrand; the majorant `t^{−1/2} 1_{t≤1} + e^{−t/2} 1_{t>1}`; archimedean part `≤ K√x`; summability of the prime series for dominated profiles; prime part `≤ prime-2 term + Φ(x)ω(x) primeKernelSum x`; `primeKernelSum ≤ cosh(x/2) + 2|c|Φ(0) + 2∫gammaSourceBound`; the general origin failure |
+| `SignedCombinationOriginFailure` | `Φ(y−a) ≤ (Φ(0)/Φ(b)) Φ(y−b)` for `0 ≤ a ≤ b`, `y ≥ 0`; origin failure of `ω_a` and of signed combinations `c₁ω_a + c₂ω_b` nonnegative on the half line via the general theorem |
 | `ShiftedGroundStateInfinityFailure` | uniform bound of `∫_0^∞ symArchTerm`; the signed prime shift sum `P(x+a) − P(x−a)`; `C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K` for `x ≥ a` (`two_mul_source_sub_le_shiftedCollarMass`); folded defect `≤ −2Θ(x)(sinh(a/2) sinh(x/2) − K)`; strict folded subsolution on `[X, ∞)` (`exists_infinity_window_foldedGenerator_lt_potential`) |

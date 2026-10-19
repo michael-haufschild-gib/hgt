@@ -97,6 +97,20 @@ class ExtractionTests(unittest.TestCase):
             start += 1
 
 
+    def test_inventory_never_includes_tmp_directories(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            kept = ['formal/GaloisForLFunctions/RHTower/Kept.lean', 'docs/notes/kept.md']
+            dropped = ['formal/tmp/Scratch.lean', 'formal/tmp/l30/Deep.lean',
+                       'formal/GaloisForLFunctions/tmp/Nested.lean', 'docs/drafts/card/tmp/notes.md',
+                       'formal/.lake/packages/mathlib/tmp/X.lean']
+            for path in kept + dropped:
+                f = root/path; f.parent.mkdir(parents=True, exist_ok=True); f.write_text('theorem t : True := trivial')
+            items, errors = inventory(root)
+            self.assertFalse(errors)
+            self.assertEqual({i['path'] for i in items}, set(kept))
+
+
 class CorpusTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -121,6 +135,17 @@ class CorpusTests(unittest.TestCase):
         self.assertEqual(stats['coverage']['outcomes'], {'indexed': 3})
         self.assertEqual(stats['coverage']['declarations'], 2)
         self.assertEqual(len(self.db.search('conditional', views=('prose',))), 1)
+
+    def test_refresh_purges_files_once_they_sit_under_tmp(self):
+        self.write('formal/GaloisForLFunctions/A.lean', 'theorem keptdecl : True := trivial')
+        self.write('formal/scratch/B.lean', 'theorem droppeddecl : True := trivial')
+        self.db.refresh(self.root)
+        self.assertTrue(self.db.search('droppeddecl'))
+        (self.root/'formal/scratch').rename(self.root/'formal/tmp')
+        stats = self.db.refresh(self.root)
+        self.assertEqual(stats['removed'], 1)
+        self.assertFalse(self.db.search('droppeddecl'))
+        self.assertTrue(self.db.search('keptdecl'))
 
     def test_full_proof_is_searchable_and_statements_keep_hypotheses(self):
         self.write('formal/A.lean', 'namespace A\ntheorem rare (n : Nat) (h : n > 0) : n = n := by\n  -- amplification mechanism\n  rfl\nend A\n')
