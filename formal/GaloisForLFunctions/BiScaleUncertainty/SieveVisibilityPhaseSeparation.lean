@@ -37,8 +37,10 @@ theorem top_phase_relation (N : ℕ) (hN : 2 ≤ N) (q : ℕ) (hq : q ∈ Icc 1 
           TopAnchor.topOrder N*(N.factorial/TopAnchor.topOrder N) := by rw [hH]; ring
       _ = N.factorial := Nat.mul_div_cancel' hdH
       _ = q*(N.factorial/q) := (Nat.mul_div_cancel' hdq).symm
-      _ = 2^(q.factorization 2)*(u*(N.factorial/q)) := by rw [hq']; ring
-  refine ⟨p, u, ⟨j, by dsimp [u]; omega⟩, ?_⟩
+      _ = (2^(q.factorization 2)*u)*(N.factorial/q) :=
+        congrArg (fun a => a*(N.factorial/q)) hq'
+      _ = 2^(q.factorization 2)*(u*(N.factorial/q)) := Nat.mul_assoc _ _ _
+  refine ⟨p, u, ⟨j, by dsimp [u]⟩, ?_⟩
   intro h
   exact translationPhase_relation N _ q h p u he
 
@@ -70,13 +72,13 @@ theorem spike_separation_of_relation (N : ℕ) (hN : 2 ≤ N) (b : ℕ → ℝ) 
     (spikeWeights N b q (-t)) h D herr ((N.factorial/q : ℕ) : ZMod N.factorial)
   rw [frequency_order hq, coordinate_spikeWeights N b q (-t) hq,
     coordinate_spikeWeights N b q t hq] at hweak
-  simp only [spikeProfile, if_pos rfl, Complex.ofReal_neg] at hweak
+  simp only [spikeProfile, if_true, Complex.ofReal_neg] at hweak
   change ‖-(t : ℂ)-w*(t : ℂ)‖ ≤ D at hweak
   rw [show -(t : ℂ)-w*(t : ℂ) = -(t : ℂ)*(1+w) by ring,
     norm_mul, norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ht] at hweak
   have hzsmall : t*‖1-z‖ ≤ D := by
     have hh := mul_le_mul_of_nonneg_right ht1 (norm_nonneg (1-z))
-    exact (by simpa only [one_mul] using hh).trans hz
+    exact (show t*‖1-z‖ ≤ ‖1-z‖ by simpa only [one_mul] using hh).trans hz
   have hp := phase_incompatibility z w p u
     (translationPhase_norm N _ h).le (translationPhase_norm N q h).le hu hphase
   calc
@@ -101,8 +103,8 @@ theorem radial_separation (N : ℕ) (b : ℕ → ℝ) (q : ℕ) (hq : q ∈ Icc 
   have hl := (norm_sub_norm_le (((1+t)*A : ℝ) : ℂ) (z*(A : ℂ))).trans he
   have hz : ‖z‖ = 1 := translationPhase_norm N q h
   simp only [norm_mul, hz, one_mul, Complex.norm_real, Real.norm_eq_abs,
-    abs_mul, abs_of_nonneg (by linarith : 0 ≤ 1+t)] at hl
-  have htA : 2*t ≤ |A|*t := mul_le_mul_of_nonneg_right hA ht
+    abs_of_nonneg (by linarith : 0 ≤ 1+t)] at hl
+  have htA : 2*t ≤ |A| * t := mul_le_mul_of_nonneg_right hA ht
   nlinarith only [hl, htA]
 
 end GaloisForLFunctions.BiScaleUncertainty.SieveMoments.LinearVisibility

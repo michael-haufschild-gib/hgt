@@ -3,6 +3,7 @@
 - **ID:** bvi-100-contribution-programme-2026-10-18
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
+- **Status:** Paused at user's request after finishing started Lean work, wiring, documentation and scratch cleanup. Goal cleared; resume research only on a new user request.
 - **Source:** User attachment `1779f711-01d4-4e0f-a4c6-c5d914630176/pasted-text-1.txt`.
 - **Statement:** Develop and audit 100 new significant, native BVI contributions.
 
@@ -31,15 +32,15 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
    read. `docs/architecture.md` and `docs/testing.md` absent. Existing dirty work
    inventoried and preserved.
 2. Conjecture and prove a substantive new result, testing against existing work.
-   **Active:** audit joint source magnitudes across fixed shifts in
+   **Paused after wrap-up:** joint source magnitudes across fixed shifts in
    `bvi-joint-magnitude-law-2026-10-19.md`; the one-point real-horizon law is
    formalized but uncounted. The exact gap-chain
    package is verified but uncounted. The mixed-valuation moment direction
    overlaps existing and concurrent work.
 3. Formalize exact surviving theorem; audit original source, axioms, imports,
    indexing and lint; assess significance without inflating count.
-4. Continue conjecture / proof or obstruction / positive-survivor loop until 100
-   accepted contributions. Preserve failed routes and precise open obligations.
+4. Pause at the user's request. Preserve failed routes and precise open
+   obligations; do not resume the conjecture loop without a new request.
 
 ## Candidate ledger
 
@@ -48,7 +49,7 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
 | Exact actual-primitive gap-chain Gram, coercivity and recovery | `bvi-period-reset-profile-coercivity-2026-10-18.md` | All fifteen public declarations pass canonical Lean/axiom audits; wired/indexed; subsequent plain formal lint passes after concurrent wiring repair; significance not established, no credit | 0 |
 | Mixed-valuation moment recovery and noise stability | `bvi-mixed-valuation-moment-stability-audit-2026-10-18.md` | Prior-work audit found existing exact recovery, fixed-block stability, raw protocols and sharpness; global physical-translation stability is already an active concurrent candidate; no duplicate implementation | 0 |
 | Complete cofinal source-value law and optimal envelope | `bvi-cofinal-full-source-law-2026-10-19.md` | Exact alphabet, clock support, all moments, symmetric integer-ratio value law, exact positive support and adjacent real-horizon moment/value transport pass original-source Lean/axiom audits, wired and indexed; latest lint fails only on two concurrent THIM wiring gaps; classical quadratic, cutoff-average and oscillation baselines recorded, significance not established | 0 |
-| Joint magnitude laws across fixed shifts | `bvi-joint-magnitude-law-2026-10-19.md` | Fixed-band density law, native real-horizon joint probability law and arbitrary-observable/gradient consumer pass original-source and all-public axiom checks, wired and indexed; two-prime coercivity sharpening, exact Euler/support formula and novelty audit open; latest lint has three concurrent BiScale/THIM wiring gaps | 0 |
+| Joint magnitude laws across fixed shifts | `bvi-joint-magnitude-law-2026-10-19.md` | Fixed-band density law, native real-horizon joint law, observable/gradient consumer and two-prime count/density bounds pass original-source and all-public axiom checks, wired and indexed; stronger finite gradient inequality remains paper-only, Euler/support formula and novelty audit open; final lint has six unrelated BiScale wiring gaps; paused | 0 |
 
 ## Log
 
@@ -61,3 +62,9 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
   mixed-support gap. The concurrent physical-translation stability card credits
   our threshold proposal and is pursuing a stronger fifth/sixth-only bound.
   Neither existing work nor shared ideas count as a new accepted contribution.
+- 2026-10-19 — User cleared the goal, then requested completion of started Lean
+  work, wiring, documentation and cleanup before pausing. The two-prime leaf is
+  source/axiom verified, wired and indexed. No stronger gradient Lean draft was
+  started. Accepted count remains 0/100; research remains paused until requested.
+  Owned scratch Lean files and temporary dependency snapshots were removed;
+  verification logs and corpus-query records were retained.

@@ -2,6 +2,7 @@
 
 - **ID:** thim-100-contribution-programme-2026-10-18
 - **Stage:** 1-in-progress
+- **Execution:** Paused at user request, 2026-10-19; started Lean drafts closed.
 - **Type:** CONJECTURE
 - **Source:** user attachment `41e474e4-e160-40de-8479-f8489a2029d5/pasted-text-1.txt`;
   `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md` (read-only)
@@ -81,26 +82,38 @@ existing weighted Hardy and Fermi–Nyman theory. No new theorem or contribution
 is claimed from those hits. Arbitrary nonadaptive GCD scheduling also overlaps
 known ultrametric metric-basis structure and is not independently counted.
 
-Current paper theorem: [dyadic-antichain prime capacity](../2-fully-proven/thim-dyadic-antichain-prime-capacity.md).
+Formalized theorem: [dyadic-antichain prime capacity](../3-formalized/thim-dyadic-antichain-prime-capacity.md).
 Uniform native physical Fermi observability on supports with at most one index
 per odd part is equivalent to convergence of the reciprocal sum of allowed odd
 primes. The paper proof gives an explicit bound and positive counterexamples
 when the sum diverges. Existing Franel GCD kernels and prime-cube factorizations
-are prior ingredients. Lean verification and final significance audit remain;
-no count increment yet.
+are prior ingredients. As of 2026-10-19 the full equivalence is the Lean theorem
+`fermiDyadicAntichain_primeCapacity_classification` (and the hypothesis-free
+`fermiDyadicAntichain_oddPrimeCapacity_classification`), with every numbered
+paper statement formalized; standard axioms only. The final significance audit
+remains; no count increment yet.
 
-The native homogeneous/pronic comparison, classical exponent/prime-box/GCD
-Gram helpers, exact odd-divisor packet Gram/frame bounds, native antichain
-coordinates with scalar impulse bounds, and Boolean parity Gram identities pass
-source/olean checks and final imported standard-axiom audits (seven leaves,
-forty-one public declarations). All seven are wired and indexed. The first six
-passed global generated lint; the latest run reports one concurrent unreachable
-BezoutValuationIncidence module, with no THIM finding. The earlier concurrent
-BiScale import errors are resolved. The full classification
-is still unformalized. Fresh deep corpus audits
+The homogeneous/pronic comparison, prime/GCD Gram helpers, odd-divisor packet
+bounds, antichain coordinates, Boolean-cube packet transport, disjoint capacity
+banks, tensor parity Gram formulas, and parameterized forward physical bounds
+pass source/olean checks and final imported standard-axiom audits: thirteen
+leaves, seventy-three public declarations. All are wired and indexed. Final
+global lint reports four unrelated BiScaleUncertainty umbrella omissions and no
+THIM error; exact names are recorded on the current paper card. In particular,
+finite reciprocal-prime subsums bounded by `M` give the
+native physical constant `8 exp(6M)` for the parameterized packets.
+The arbitrary-support representation and divergent-capacity native
+counterexamples were completed on 2026-10-19 in six further leaves (seventy-one
+public declarations), closing the classification in Lean. Fresh deep corpus audits
 recovered existing unrestricted Fermi no-go results and GCD factorization APIs;
 current self-hits are excluded. Compiler and semantic search coverage remain
 incomplete, so search absence is not treated as novelty evidence.
+
+Paused after the user cleared the long-running goal and requested closure of
+started Lean work. No new target was opened. A later continuation would need the
+arbitrary-support representation, literal normalized positive-bank construction
+and native trajectory estimates, the assembled equivalence, and the final
+significance audit. Qualified count remains **1/100**.
 
 ## Earlier checkpoints (superseded)
 

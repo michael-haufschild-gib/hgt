@@ -1,5 +1,46 @@
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
 
+## Current arithmetic applicability (19 October 2026)
+
+The local visibility classification in
+[`SieveLocalVisibilityClassification.lean`](SieveLocalVisibilityClassification.lean)
+assumes a nonzero highest-dyadic coordinate. It is a valid theorem on that
+stratum. It does not cover squarefree-supported arithmetic rows when $N\ge4$:
+their coordinate at $2^{\lfloor\log_2N\rfloor}$ is zero.
+[`SieveArithmeticSourceAnchors.lean`](SieveArithmeticSourceAnchors.lean) proves
+this fact for every squarefree-supported row, hence every Möbius taper.
+
+For a prime $p\in(N/2,N]$, the existing single-multiple identity gives
+$Y_{N,c}(p)=c(p)/p$. For $c(d)=\mu(d)w(d)$ this is $-w(p)/p$, nonzero exactly
+when $w(p)\ne0$. For the Barban–Vehov cutoff $X$, it is nonzero exactly when
+$p<X$; the endpoint $p=X$ and primes beyond $X$ fail. The same module proves
+these conditions. A local stability classification with this prime anchor is
+still research: the highest-dyadic phase argument cannot be transferred by
+changing the anchor's name.
+
+The factors $(N!)^6$ in the local classification's sharpness witnesses are
+upper bounds for particular counterexample moments. They are not its local
+recovery constant. `normalized_local_cubic` uses
+$2+2\sum_{q=1}^N\varphi(q)$ when the reference anchor has magnitude at least $2$.
+That constant still depends on $N$, and the observation model still uses
+full-period moments. Neither fact supplies polynomial-horizon recovery.
+
+For prime graph clocks, the mass and edge correlation readouts in
+[`PrimeGraphClockCorrelationKernels.lean`](PrimeGraphClockCorrelationKernels.lean)
+retain cutoff $k$, center $t=\log(N/q)$, and lag $\ell=\log(q/p)$, with prefactor
+$N/(pq)$. The literal mass and edge measures are retained. No translation
+invariance, lag-only formula, or sign of the complete edge-minus-mass form is
+asserted. The next tasks are arithmetic estimates for these kernels and
+source-compatible observation bounds, rather than another density or
+polarization identity.
+
+The full source graph contains negative constant directions:
+`constantLift_energy` in
+[`CHMDDoobSourceGraph.lean`](../RHTower/CHMDDoobSourceGraph.lean) gives energy
+$-c^2/2$. A positivity target must therefore specify the receiver's odd or
+otherwise constrained source family; positivity on the entire source graph
+is false.
+
 ## 1. What This Field Is & Why It Exists
 
 Classical harmonic analysis is built around the representation theory of a **single** locally
@@ -155,11 +196,11 @@ functional.
 ## 4. The Five Fundamental Theorems of Bi-Scale Uncertainty Analysis
 
 The foundational laws of the discipline are synthesized in
-[`FundamentalTheoremsOfBiScaleUncertainty.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/FundamentalTheoremsOfBiScaleUncertainty.lean)
+[`FundamentalTheoremsOfBiScaleUncertainty.lean`](FundamentalTheoremsOfBiScaleUncertainty.lean)
 and proved unconditionally across six dedicated structural modules:
 
 1. **First Fundamental Theorem — Universal Ramanujan Multi-Lag Spectral Diagonalization & Bi-Scale Rigidity**
-   ([`UniversalRamanujanCovarianceAndBiScaleRigidity.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/UniversalRamanujanCovarianceAndBiScaleRigidity.lean),
+   ([`UniversalRamanujanCovarianceAndBiScaleRigidity.lean`](UniversalRamanujanCovarianceAndBiScaleRigidity.lean),
    `first_fundamental_theorem_ramanujan_and_biscale_rigidity`):
    - For every truncation $N \in \mathbb{N}$, divisor-weight sequence $c : \mathbb{N} \to \mathbb{R}$,
      and additive shift lag $h \in \mathbb{N}$, the complete-period centered covariance on
@@ -179,7 +220,7 @@ and proved unconditionally across six dedicated structural modules:
      $[1, N]$ (`biScaleJointEnergy_eq_zero_iff_const`).
 
 2. **Second Fundamental Theorem — Hyperbolic Lorentz Boost ($\mathrm{SO}^+(1,1)$) Representation & Minkowski Light-Cone Rigidity**
-   ([`HyperbolicLorentzBoostAndMinkowskiLightCone.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/HyperbolicLorentzBoostAndMinkowskiLightCone.lean),
+   ([`HyperbolicLorentzBoostAndMinkowskiLightCone.lean`](HyperbolicLorentzBoostAndMinkowskiLightCone.lean),
    `second_fundamental_theorem_lorentz_boost_and_light_cone`):
    - The hyperbolic multipliers $(C_\alpha f)(u) = \cosh(\alpha u)f(u)$ and
      $(S_\alpha f)(u) = \sinh(\alpha u)f(u)$ form a faithful representation of the 1+1 Lorentz boost
@@ -197,7 +238,7 @@ and proved unconditionally across six dedicated structural modules:
      `autocorr_krein_increment_defect_eq_integral`).
 
 3. **Third Fundamental Theorem — Origin Allocation Uniqueness (`↔`), Coupled Sphere Gain & Odd-Dyadic Incommensurability**
-   ([`OriginAllocationUniquenessAndCoupledSphereGain.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/OriginAllocationUniquenessAndCoupledSphereGain.lean),
+   ([`OriginAllocationUniquenessAndCoupledSphereGain.lean`](OriginAllocationUniquenessAndCoupledSphereGain.lean),
    `third_fundamental_theorem_origin_allocation_and_coupled_gain`):
    - **Unique Optimal Origin Allocation (`↔`):** By the exact Lagrange identity
      $(W^2 + A^2)(a^2 + q^2) - (Wa + Aq)^2 = (Aa - Wq)^2$, an origin allocation $\sum_{i \in s} a_i = W > 0$
@@ -214,8 +255,8 @@ and proved unconditionally across six dedicated structural modules:
      (`odd_dyadic_log_progression_ne_log_nat`).
 
 4. **Fourth Fundamental Theorem — Symmetric Polar Enforcement (`↔`) & Compensated Physical Logarithmic Producers**
-   ([`EvenSourceSymmetricPolarEnforcement.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/EvenSourceSymmetricPolarEnforcement.lean) and
-   [`CompensatedPhysicalLogarithmicProducer.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/CompensatedPhysicalLogarithmicProducer.lean),
+   ([`EvenSourceSymmetricPolarEnforcement.lean`](EvenSourceSymmetricPolarEnforcement.lean) and
+   [`CompensatedPhysicalLogarithmicProducer.lean`](CompensatedPhysicalLogarithmicProducer.lean),
    `fourth_fundamental_theorem_symmetric_polar_and_compensated_producer`):
    - **Even-Source Polar Infimum Equivalence (`↔`):** The symmetric 3-copy operator
      $g_T(u) = f(u) - \frac{1}{2\cosh(T/2)}(f(u - T) + f(u + T))$ preserves source parity
@@ -231,7 +272,7 @@ and proved unconditionally across six dedicated structural modules:
      weighted Dirichlet energy (`smoothedLogarithmicState_dirichlet_energy`).
 
 5. **Fifth Fundamental Theorem — Critical Nyquist Finite Part $\mathcal{B}_m$ & Rescaled-Source Phase Transition**
-   ([`NyquistCriticalFinitePartAndBroadClassification.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/NyquistCriticalFinitePartAndBroadClassification.lean),
+   ([`NyquistCriticalFinitePartAndBroadClassification.lean`](NyquistCriticalFinitePartAndBroadClassification.lean),
    `fifth_fundamental_theorem_nyquist_critical_finite_part_and_classification`):
    - At the critical Nyquist Taylor exponent $\beta = m + 1$, subtracting the continuous mean
      counterterm $c_m \delta_k$ ($c_m = (m+1)^{m+1}/(2(m+2)!)$) from the cell mass $\alpha_k$ yields
@@ -350,7 +391,7 @@ scripts/formal_tools.py research "nyquistCriticalFinitePart compensatedVelocity"
    `linarith only [h1, h2, ...]`, and invoke namespace theorems explicitly as
    `RealEvenPolarTestFn.foo g` rather than dot-projection `g.foo`.
 3. **Umbrella & Lint Gate:** Wire new modules into
-   [`formal/GaloisForLFunctions/BiScaleUncertainty.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty.lean),
+   [`formal/GaloisForLFunctions/BiScaleUncertainty.lean`](../BiScaleUncertainty.lean),
    verify `#print axioms` via a `/tmp` scratch file (only `[propext, Classical.choice, Quot.sound]`
    allowed), and keep zero `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
 

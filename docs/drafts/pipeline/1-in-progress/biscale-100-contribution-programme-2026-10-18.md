@@ -5,12 +5,13 @@
 - **Type:** research programme
 - **Source:** user attachment `348d2c8d-c66f-465c-9a58-411a7c617aa4/pasted-text-1.txt`
 - **Goal:** 100 novel, significant, native mathematical contributions, each with an unconditional proof on actual objects and a Lean certificate.
+- **Status:** Paused at the user's request on 2026-10-19. The user cleared the active goal; the already started visibility package is finished, verified, wired and documented. No further candidate is started.
 
 ## Counting and scope
 
 The target is 100 contributions, not 100 declarations or modules. Existing results, classical reformulations, supporting lemmas, conditional receivers, and unverified novelty claims do not count. A candidate counts only after its mathematical advance, corpus/literature comparison, paper proof, actual-object Lean theorem, named-source check, axiom audit, umbrella wiring, and lint evidence are recorded. Mathematical domain conditions are distinguished from unproved analytic premises; no missing conclusion may be assumed or hidden in a structure.
 
-**Accepted contributions in this programme: 7 / 100.** No existing work is retrospectively counted.
+**Accepted contributions in this programme: 8 / 100.** No existing work is retrospectively counted.
 
 The field README is read-only. No `hgtl7`, numerical experiments, heartbeat increases, full builds, umbrella builds, commits, or pushes. Preserve unrelated concurrent changes. One owned foreground Lean process at a time. `update_plan` is unavailable in this session; this file is the durable task tracker.
 
@@ -21,7 +22,7 @@ The field README is read-only. No `hgtl7`, numerical experiments, heartbeat incr
 3. [x] Develop the signed-grid / finite-cycle recovery candidate and its exact-order boundary in [the research card](../3-formalized/biscale-energy-controlled-cycle-observability-2026-10-18.md).
 4. [x] Prove the positive theorem on paper, formalize it without missing inputs, and audit source, axioms, wiring and lint.
 5. [x] Audit significance and novelty separately from proof correctness. Count only if all requirements hold.
-6. [ ] Continue conjecture → proof or obstruction → strongest positive survivor; repeat until 100 accepted contributions.
+6. [ ] Paused. Further conjecture → proof or obstruction → strongest positive survivor work requires a new instruction.
 
 2026-10-18 checkpoint: package 1 proves that one fixed singular-energy ceiling and simultaneous full integer-log zeros permit distinct actual smooth correlations with identical closed products through every prescribed finite order. The positive survivors give explicit finite noisy reconstruction and O(n^(-1/2)) ambiguity diameter on each fixed signed-grid fibre. Four named-source checks and the final imported standard-axiom audit passed; all leaves are wired. Index regenerated. Final lint reports one unrelated BVI umbrella error, recorded on the package card; no package-local error. The support lemmas, classical mechanisms and formalization of prior finite-cycle paper work are not separately counted. Field README unchanged.
 
@@ -35,11 +36,13 @@ The field README is read-only. No `hgtl7`, numerical experiments, heartbeat incr
 6. [Sharp cubic stability from the highest admitted dyadic mode](../3-formalized/biscale-highest-mode-cubic-stability-2026-10-19.md). For every N≥2, retaining magnitude at least one at `2^floor(log₂N)` improves the whole-profile physical bound to `2*(∑φ(q))*ε^(1/3)`, while all lower coordinates may vanish or be unbounded. The exponent is optimal in every neighborhood of parity at N=3, using actual signals and all natural translations. The entire stratum theorem and sharpness form one contribution.
 7. [Complete arithmetic cutoff transitions near parity](../3-formalized/biscale-parity-neighborhood-phase-transitions-2026-10-19.md). Near every nonzero parity source, the optimal pairwise raw fifth/sixth inverse exponent in the physical translation metric is 1 at N=2, 1/3 at N=3–11, 1/5 at N=12–19, and 1/6 at N≥20. Neighborhoods admit every real coordinate perturbation and support change. All nine source checks, the full 93-declaration audit, wiring, index and lint pass. The complete classification counts once.
 
+8. [First-order arithmetic visibility and prime-power local regularity](../3-formalized/biscale-prime-power-local-regularity-2026-10-19.md). On the highest-mode stratum, the sharp pairwise physical inverse exponent is 1 exactly when every missing order is linearly visible, and 1/3 otherwise. For the explicit prime-power source, visibility is equivalent to at most five distinct prime factors. Actual sources with the same maximal least period and dyadic depth have sharp exponents 1 and 1/3. Nine leaves, all 67 public statements, the reused helper, the complete 78-report standard-axiom audit, wiring, index and lint pass. This complete classification and family comparison count once.
+
 ## Frontier evidence
 
 Initial source searches: `/tmp/bsu-100-frontier-search.json`, `/tmp/bsu-100-energy-cycle-search.json`. Both report `partial=false`, semantic completeness unmeasured, and background refresh incomplete. Their ranked inventories were inspected; they are not evidence of exhaustive absence. Existing `SignedGridTraceCompactness` proves compactness iff signed-grid tails are uniform. Existing `ClosedCorrelationCycleRecovery` proves exact recovery from the full hierarchy. At that checkpoint the existing finite-cycle paper card left the explicit Lean coupling to singular energy open; package 1 now formalizes its energy-derived κ=1/2 case.
 
-The initial audit alone certifies no contribution. The accepted packages have separate paper, corpus/literature and Lean audits. **93 contributions remain.**
+The initial audit alone certifies no contribution. The accepted packages have separate paper, corpus/literature and Lean audits. **92 contributions remain; the programme is paused.**
 
 ## Next frontier search
 
@@ -81,6 +84,8 @@ While candidate 7's original-source checks run, next-frontier searches `/tmp/bsu
 
 Package 7's final gates pass. All nine original named-source/export checks exit zero without diagnostics. All 93 public statements and 12 owned definition bodies were inspected; the final imported audit has all 97 requested axiom reports, including four native definitions, with only `propext`, `Classical.choice`, `Quot.sound`. Each leaf is wired once. Index and shared formal lint pass; lint has 381 existing size warnings and no errors. The 25 verified extracted scratch files were removed and the README hash is unchanged. Evidence and significance assessment are on the card. Count is **7/100**; the goal remains active.
 
-The next unaccepted route starts from [support-weighted arithmetic phase degree](biscale-support-weighted-phase-exponent-2026-10-19.md). Its selected subproblem is [first-order arithmetic visibility and prime-power local regularity](biscale-prime-power-local-regularity-2026-10-19.md): a proposed sharp 1 versus 1/3 local classification on the highest-mode stratum, with a prime-factor-width criterion despite maximal least period. The paper argument and prior comparisons are recorded; scratch Lean proofs are in progress. No new package is accepted.
+The [support-weighted arithmetic phase degree](biscale-support-weighted-phase-exponent-2026-10-19.md) remains a broader open route. Its selected [first-order arithmetic visibility and prime-power local regularity subproblem](../3-formalized/biscale-prime-power-local-regularity-2026-10-19.md) is now completed as package 8: sharp local exponents 1 versus 1/3 on the highest-mode stratum, with an exact prime-factor-width criterion despite maximal least period. The broader classification receives no separate credit and is paused.
 
 Whole-corpus `/tmp/bsu-100-next-local-monomial-search.json` is non-partial with 74,356 inventoried files; all 40 candidate/source statements and prose/passage inventories were inspected. Semantic completeness remains unmeasured and compiler refresh incomplete. Results are largely unrelated; the generated orbit-degree linearity chain does not establish any inverse estimate and is rejected. Focused resonance, visibility, period, product and arithmetic searches are recorded on the selected card, including a malformed-model partial search and direct-source follow-up. Prior prime-family weighted stability, BVI exact periods, generic monomial inversion and all reused helpers receive no new credit.
+
+Final paused checkpoint: package 8's nine original-source checks and the promoted helper's source check pass without diagnostics. All 67 public statements, the helper and 18 definition bodies were inspected; all 78 axiom reports contain only `propext`, `Classical.choice`, `Quot.sound`. Every new leaf is wired once; index and formal lint pass with 381 existing size warnings and no errors. Seventeen verified scratch proofs/API files were removed. README hash is unchanged; no owned Lean process remains. Evidence, scoped novelty decision and limitations are on the formalized card. Count is **8/100**. The user's finish-and-pause request is complete; do not resume automatically.

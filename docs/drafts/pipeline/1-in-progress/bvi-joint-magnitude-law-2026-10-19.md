@@ -2,23 +2,24 @@
 
 - **ID:** bvi-joint-magnitude-law-2026-10-19
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (Lean); explicit coercivity sharpening open; uncounted
+- **Type:** THEOREM (Lean); stronger gradient bound paper-only; uncounted
+- **Status:** Paused at user's request after completing the started two-prime leaf, wiring, documentation and scratch cleanup. No further conjecture or gradient implementation started.
 - **Source:** Verified one-point cofinal source law; existing quotient-product and gradient-coercivity results; corpus search for shifted squarefree producers.
 - **Statement:** At every fixed finite horizon ratio, the vector of absolute Möbius source values at any finite list of fixed shifts has an explicit limiting law, with raw masses affine between adjacent integer ratios.
 
 ## Goal
 
 For `s_N(n)=sieveSeq N moebiusReal n`, the one-point law does not determine
-`(abs(s_N(n+h_i)))_i`. The proposed joint law would resolve magnitude patterns
-and supply arithmetic lower bounds for the actual shift-gradient energy.
+`(abs(s_N(n+h_i)))_i`. The formalized joint law resolves magnitude patterns
+and supplies arithmetic lower bounds for the actual shift-gradient energy.
 No signed two-point Möbius cancellation is assumed or claimed. This is a
 single candidate, not one contribution per shift, moment, or corollary.
 
 Native consumer: the reverse triangle inequality gives
 `(|s_N(n+1)|-|s_N(n)|)^2 ≤ (s_N(n+1)-s_N(n))^2`.
-The joint magnitude law would give the exact limiting mean on the left.
-This can strengthen the existing odd-squarefree zero-edge coercivity without
-requiring the signed successor-correlation limit.
+The joint magnitude law gives the exact limiting mean on the left.
+The proposed explicit improvement over the existing odd-squarefree zero-edge
+constant remains paper-only; it requires no signed successor-correlation limit.
 
 ## Gates
 
@@ -308,8 +309,12 @@ squarefree pairs, and D=6/pi^2. Every such pair avoids the two forbidden classes
 `(1-2/4)*(1-2/9)=7/18`. Its squared magnitude-difference mean is
 `2*(D-C) >= 2*D-7/9`. This exceeds `2*D/3` because `D>7/12`, which follows
 from the standard bound pi<22/7. This is an analytic argument, not a finite
-enumeration certificate. Formalization should reuse the existing congruence
-count estimates and prove the two-prime inclusion-exclusion identity.
+enumeration certificate. `MobiusFirstBandTwoPrimeBound.lean` now proves the
+finite interval bound `7*L/18+8` and the density cap `C<=7/18`, reusing the
+existing congruence-count estimates and symbolic inclusion-exclusion. Its
+original-source check passed, and the leaf is wired and indexed. All three
+public declarations depend only on `propext`, `Classical.choice`, and
+`Quot.sound`. The gradient comparison itself remains paper-only.
 
 At horizon 2N, the literal source's first trans-horizon band is -mu; the
 remaining initial band has only a bounded exceptional contribution. Thus the
@@ -335,6 +340,24 @@ This argument handles N=1 via the empty edge interval. The resulting density
 floor uses the existing one-point dyadic squarefree mean, without requiring
 an Euler-product identification of C. The native finite inequality remains
 to be formalized and checked for duplicate corpus work.
+
+A sharper finite target emerged from the existing exact first-octave prefix
+identities: the constant eighteen can be reduced to sixteen. For N>=2, let
+S be the signed Möbius successor sum over N<n<2N. The already-proved
+renormalized-defect polarization and prefix formulas give
+`E_N(2N-1)=1+2*W_N-mu(2N)^2-2*S`. Since `mu(2N)^2<=1` and S is at most
+the squarefree-pair count on the same interval, the target improves to
+`E_N(2N+M)>=2*W_N-(7/9)*N-16` for every M>=0. For N<2 the right side is
+nonpositive using W_N<=N, so the statement extends to all natural cutoffs.
+This stronger finite theorem has a closed paper argument relative to the
+existing prefix identities and checked two-prime count, but no Lean proof yet.
+It replaces the weaker constant-eighteen target for implementation.
+
+At the requested pause, this finite gradient theorem has no Lean draft. The
+completed observable-gradient limit and two-prime count/density bounds are
+the formalized results; the stronger energy and renormalized-defect constants,
+exact Euler/support formula, and novelty assessment remain open. No result
+has been accepted toward the 100-contribution target.
 
 ## Proposed sharpening: exact Euler formula and positive support
 
@@ -427,3 +450,8 @@ squarefree-pair-local-upper}-research.json` and
 - 2026-10-19 — Observable/gradient scratch check passed without diagnostics. The canonical leaf `CofinalMobiusMagnitudeObservablesAndGradient.lean` is written but its original-source audit encountered missing transitive dependency objects. A targeted `lake --old build` of its imported joint-law leaf is restoring the dependency closure before the audit is repeated. No canonical pass is claimed yet.
 - 2026-10-19 — `CofinalMobiusMagnitudeObservablesAndGradient.lean` (141 lines) passes the original-source check without diagnostics. All five public declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`; the leaf is wired, and all seven index names/docstrings (five public, two private) were reviewed. It transfers the joint law to every fixed real observable, proves the squared magnitude-gradient limit, and supplies an eventual lower bound for literal signed-source gradient energy. During concurrent dependency rebuilds, source checks used `lake env lean --setup ...` with hardlinked compiled inputs; the source and compiler options were unchanged. The previously removed periodic-approximation object was restored by another clean original-source check. Latest plain lint reports only three other-owner wiring gaps: `BiScaleUncertainty.SieveLinearVisibility`, `BiScaleUncertainty.SievePrimePowerVisibility`, and `TransHorizonIncidenceMechanics.FermiBooleanPrimeCube` (381 size warnings). Logs: `/tmp/bvi100-joint-magnitude-observables-{canonical,axioms,lint}.*`; index readback: `/tmp/bvi100-joint-magnitude-observables-index-readback.json`. The two-prime coercivity sharpening is a separate unverified `/tmp/bvi100-two-prime-pair-bound.lean` draft. Accepted count remains 0/100.
 - 2026-10-19 — The two-prime interval estimate now passes its scratch check without diagnostics: every interval of length L contains at most `7L/18+8` consecutive squarefree pairs. This uses existing congruence-count error bounds and a symbolic indicator expansion, with no residue-table enumeration. The same scratch file is now extended by native first-band count and density capstones, which are undergoing verification. Completed observable/audit scratch Lean files were removed.
+- 2026-10-19 — The hybrid query `squarefree gradient energy coercivity` returned mostly unrelated geometric gradients; all 20 candidate and 20 source statements were reviewed. Narrowing to lexical `moebius gradient` returns exactly 20 names/docstrings, all reviewed. The existing BVI linear-window theorem uses the previous coercivity floor, while the THIM second-octave theorem controls a sum of Fermi curvature and BVI gradient energy, not the gradient alone; relevant theorem signatures were checked. Existing first-octave prefix identities expose the sharper constant-sixteen finite target above. Records: `/tmp/bvi100-two-prime-native-gradient-research.json` and `/tmp/bvi100-moebius-gradient-lexical.json`. No absence or novelty claim is inferred.
+- 2026-10-19 — `MobiusFirstBandTwoPrimeBound.lean` (177 lines, three public theorems) passes original-source `lake env lean` and all-public axiom audits. It identifies occupied first-band magnitudes with squarefree integers, bounds their adjacent-pair count by `7*L/18+8` on every interval, and bounds the established adjacent occupied density by `7/18`. It is wired into the BVI umbrella; all three names/docstrings were reviewed in the actual lexical index. The original-source check used unchanged compiler options and hardlinked dependency inputs during another owner's cache rebuild. Logs: `/tmp/bvi100-two-prime-{canonical,axioms,lint}.*`; index: `/tmp/bvi100-two-prime-index-readback.json`. Accepted count remains 0/100.
+- 2026-10-19 — Final queued corpus query `moebius squarefree gradient first octave prefix energy` completed with `partial=false`, semantic coverage unmeasured, and background refresh running. All 20 candidate and 20 source statements were reviewed. It recovered existing first-octave energy formulas, odd-squarefree coercivity, linear-window bounds and the Fermi-plus-gradient bridge; no absence or novelty claim follows. Record: `/tmp/bvi100-first-octave-gradient-research.json`.
+- 2026-10-19 — User cleared the goal and requested completion of started Lean work, wiring and docs, then pause. No finite-gradient Lean draft was started. Final plain lint exits 1 only for six concurrent `BiScaleUncertainty` umbrella gaps: `SieveLinearVisibility`, `SieveLocalVisibilityClassification`, `SievePrimePowerVisibility`, `SieveVisibilityPerturbations`, `SieveVisibilityPhaseSeparation`, and `SieveVisibilityRadialEstimates` (381 size warnings). These unrelated files remain untouched. Research is paused with the stronger gradient inequality, Euler/support identification and significance audit explicitly open.
+- 2026-10-19 — Cleanup completed: both remaining scratch Lean files, all owned temporary compiler setup maps, the snapshot helper and the hardlinked dependency snapshot were removed. Audit processes have exited; logs and research-query records are retained. No owned Lean process remains running.

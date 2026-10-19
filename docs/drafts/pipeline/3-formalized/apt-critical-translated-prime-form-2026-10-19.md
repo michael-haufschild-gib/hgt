@@ -397,3 +397,9 @@ The sign and coercivity of the total quadratic form remain open. They are tracke
 `../1-in-progress/apt-critical-prime-kernel-signature-2026-10-19.md`, including the
 sharp cumulative-charge boundary, exact unit-cell reduction, and required real even
 kernel. No positivity claim or Weil consequence is inferred from the harmonic signs.
+
+The successor card now also records the continuous real representative and exact
+weight identity `∫_(0,∞)γ(u)Q_b(u)du=(π²/12)Σ b_j²`, obtained using the existing
+sinc-square Fourier identity. Both supporting leaves compile directly and are wired into
+`ArithmeticPositivityTheory.lean`. Their final audit and the user-requested pause
+are tracked on that card; the sign classification remains open.

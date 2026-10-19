@@ -86,7 +86,7 @@ theorem norm_inv_one_sub_sub_le {r₁ r₂ ρ : ℝ} {v : ℂ} (hv : ‖v‖ = 1
   nlinarith [abs_nonneg (r₁ - r₂)]
 
 /-- Jordan's inequality for the argument of a point of the right half-plane. -/
-theorem abs_arg_le_of_re_pos {z : ℂ} (hz : 0 < z.re) :
+theorem abs_arg_le_pi_div_two_mul_im_div_re {z : ℂ} (hz : 0 < z.re) :
     |z.arg| ≤ Real.pi / 2 * (|z.im| / z.re) := by
   have hne : z ≠ 0 := fun h => by rw [h, Complex.zero_re] at hz; exact lt_irrefl 0 hz
   have hnorm : 0 < ‖z‖ := norm_pos_iff.mpr hne
@@ -266,7 +266,8 @@ theorem abs_arg_jasHoloLocal_le {s : ℂ} (hs : |s.re - 1 / 2| ≤ 1 / 4) (p : N
                                     positivity
   calc |(jasHoloLocal (jasHoloA s p) (jasHoloB s p) w).arg|
       ≤ Real.pi / 2 * (|(jasHoloLocal (jasHoloA s p) (jasHoloB s p) w).im| /
-          (jasHoloLocal (jasHoloA s p) (jasHoloB s p) w).re) := abs_arg_le_of_re_pos hrepos
+          (jasHoloLocal (jasHoloA s p) (jasHoloB s p) w).re) :=
+        abs_arg_le_pi_div_two_mul_im_div_re hrepos
     _ ≤ Real.pi / 2 * ((8 * |s.re - 1 / 2| / (1 - ρ) ^ 2) / (2 / (1 + ρ) - 1)) := by
         gcongr
         · exact jasBandDenom_pos

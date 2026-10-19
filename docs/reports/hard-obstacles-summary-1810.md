@@ -1,217 +1,227 @@
-# Summary of Hard Obstacles & Blueprint for the Missing Mathematics (18 Oct 2026)
+# Hard obstacles: corrected mathematical status
 
-Companion to [hard-obstacles-1810.md](file:///Users/michael/Documents/code/hgt/docs/reports/hard-obstacles-1810.md). This document consolidates every obstacle across all **15 Walls** ([walls-ledger.md](file:///Users/michael/Documents/code/hgt/docs/reports/walls-ledger.md)), **27 Live Routes**, and **18 Route Candidates** ([rh-current-frontier-map.md](file:///Users/michael/Documents/code/hgt/docs/reports/rh-current-frontier-map.md)) into:
-1. **Section 1:** Obstacles we can solve now that are "just work" (formalization, engineering, and known classical mathematics).
-2. **Section 2:** Obstacles that require new mathematics nobody has yet, and the exact mathematical deliverables required for each.
-3. **Section 3:** Synthesis of those deliverables into a single unified **new field of mathematics**—explaining what both [BiScaleUncertainty](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BiScaleUncertainty/README.md) and [BezoutValuationIncidence](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/README.md) achieved, why each stopped at a dual horizon boundary, what the unified field must look like to overcome all remaining non-dead-end obstacles, and which routes remain permanent dead ends regardless.
+Originally 18 October 2026; corrected 19 October 2026 after comparison with the [current route ledger](rh-current-frontier-map.md), four program READMEs, and relevant Lean declarations. Detailed research recommendations: [19 October review](review-1910/astra.md).
 
----
+**RH remains open. None of the 27 live routes or 18 candidates has a source-derived closing estimate.** Substantial structural progress has occurred since the original summary. In particular, BVI is no longer restricted to sub-horizon nonpositivity, and THIM already connects valuation clocks to prime-chain energies.
 
-## Section 1: Obstacles We Can Solve and Are "Just Work"
+The six families below organize missing estimates and proposed approaches. They are **not six proved irreducible problems**, and their simultaneous solution is not necessary for RH. Some targets are RH-equivalent; others are stronger, optional, or not yet connected to an RH receiver. No literature audit can establish that an entire proposed discipline has never been developed.
 
-These obstacles do **not** require new mathematical discoveries. They consist of Lean 4 formalization plumbing, removing redundant classical premise wrappers, unifying isomorphic coordinate systems, or proving finite-horizon/structural theorems whose mathematical proofs are completely known. *(Important: Completing all items in Section 1 will clean and unify the Lean codebase, eliminate external premise wrappers, and land candidate routes, but **none of Section 1 by itself proves RH**.)*
+## 1. Corrections that change the research agenda
 
-### 1.1 Eliminating Remaining Classical Converse Wrappers & Syncing Ledger State
-1. **Wire `PowerSavingIncrementCriterion.lean` directly to the unconditional Mellin–Landau bridge (`MC`, `BVI`, Wall 1):**
-   - Currently, [PowerSavingIncrementCriterion.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/PowerSavingIncrementCriterion.lean) and [PrimeTailCalibrationAndMobiusDefect.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence/PrimeTailCalibrationAndMobiusDefect.lean) take a hypothesis parameter representing the classical Littlewood converse (`M(x) = O(x^{1/2+ε}) → RH`). Our `RHTower` corpus already has unconditional Mellin–Landau bridges (`riemannHypothesis_of_mertens_bound`, `riemannHypothesis_of_cesaro_mobius_bound`). Connecting them removes the wrapper parameter completely.
-2. **Prove the missing `RH → dyadic_band_energy_bound` direction (Wall 1):**
-   - The corpus has the sufficiency bridge `dyadic_band_energy_bound → RH` (`riemannHypothesis_of_dyadic_log_moment_bound`), while the converse (Cramér's conditional $L^2$ prime-error bound) is standard explicit-formula analysis and "just work" to formalize.
-3. **Formalize the unconditional Balazard–Saias–Yor Poisson–Jensen identity (Wall 2, `FEL`):**
-   - Formalizing $\int_{\mathbb{R}} \frac{\log|\zeta(1/2+it)|}{1/4+t^2}\,dt = 2\pi \sum_{\operatorname{Re}\rho > 1/2} \log|\rho/(1-\rho)|$ in Lean uses standard Hardy-space Blaschke–Poisson integration.
-4. **Update `rh-current-frontier-map.md` to match `BezoutValuationIncidence.lean` (`BVI`, `MC`, `CTF`, `PM`):**
-   - [BezoutValuationIncidence.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/BezoutValuationIncidence.lean#L27-L37) already compiles and imports `ShiftedExponentAsymptoticDensityAndActiveMartingaleRate` (still marked `[S]` in `rh-current-frontier-map.md`) plus 9 newer `[L]` modules (`DiscretePrimitiveEnergyAndJordanComparison`, `SharpPrimitiveEnergySuccessorFrontier`, `CoprimalitySuccessorPredictorAndSquarefreeInformation`, `OptimalSuccessorPredictionAndExactPhaseLoss`, `SharpSuccessorPhaseLossAndClosureClassification`, `RamanujanLagCoefficientAndTotientQuotient`, `ValuationVisibilityClockAndRamanujanSupport`, `TrueTranslationPredictionAndExactCompression`, `ArithmeticLagSchedulesAndSharpRecoveryHorizon`).
+### 1.1 The Nyman–Beurling tail measure was inverted incorrectly
 
-### 1.2 Spectral & Operator Plumbing in `CHMD`, `EWU`, `OWU`, `HF`, and `RW`
-5. **Prove spanning / closed range for the finite-dimensional bound-state eigenspace in `CHMD` (`CHMD`, `LA`, `TG`):**
-   - In [CHMDCardinalGraphGeometry.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalGraphGeometry.lean) and [CHMDBoundStateInertia.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDBoundStateInertia.lean), we already proved that every off-line zero produces a primitive cardinal frame with negative energy and bounded inertia from both sides. Proving that the finite-dimensional $(1/2, 1)$ eigenspace of $R = (1+L)^{-1}$ is *spanned* by these cardinal packets is a self-contained finite-dimensional Fredholm / Paley–Wiener residue task.
-6. **Quotient all downstream `CHMD`, `RW`, `EWU`, and `OWU` forms by `signedRadical` (`CHMDCriticalBandReduction.lean`):**
-   - Because the critical band has zero slack (Wall 11), every downstream coercivity statement should be phrased directly on the quotient Hilbert space `SourceGraph ⧸ signedRadical`.
-7. **General-grid collar optimizer attainment & concrete even-polar de Branges ground operator (`EWU`, `HF`, `BiScaleUncertainty`):**
-   - Extending collar optimizer attainment from factorial grids to arbitrary finite prime-power grids and instantiating the concrete finite-window de Branges ground operator are standard finite-dimensional convex/Hilbert optimization tasks in Lean.
-8. **Unify isomorphic receiver coordinate systems (`SZ`, `PA`, `GTA`, `JAS`, `RN`, `APF`, `CDC`, `EGC`, `MSC`, `PCS`, `PTR`, `SC`, `SEC`):**
-   - Proving the explicit isometric equivalences in Lean between:
-     - `SZ` (Suzuki screw kernel) $\leftrightarrow$ `RW` (Restricted Weil) $\leftrightarrow$ `CHMD` (Doob jump form);
-     - `PA` (Herglotz passivity) $\leftrightarrow$ `GTA` (Schur–Pick kernel) $\leftrightarrow$ `WL` (Weil positivity);
-     - `SC` (Witt-vector Frobenius/Verschiebung $F_n, V_n$) $\leftrightarrow$ `BVI` (`selbergMultiplesCoord` / `sieveLagMultiplier`);
-     - `PCS` (singular co-shift cyclicity) $\leftrightarrow$ `CTF` (Báez–Duarte density).
+For the fractional-part functions used in the original formula, the standard space is
+\[
+H=L^2((0,\infty),dx),\qquad \rho_k(x)=\{1/(kx)\},\qquad \chi=\mathbf1_{(0,1]}.
+\]
+RH is equivalent to \(\chi\) belonging to the closed span of the \(\rho_k\), with integer \(k\ge1\). This is the [Báez–Duarte criterion](https://arxiv.org/abs/math/0202141).
 
-### 1.3 Classical Baseline Theorems in `CTF`, `BAG`, `TH`, and `RB`
-9. **Formalize Burnol's lower bound and the Selberg-mollified weight ansatz in `CTF` (`CTF`, `PM (FZZ-P)`):**
-   - Proving in Lean that undamped $c_k = \mu(k)$ fails to converge to $0$ in Báez–Duarte norm ($\liminf \ge \sum 1/|\rho|^2 > 0$) and setting up the damped Selberg weights $c_{N,k} = \mu(k)\frac{\log(N/k)}{\log N}$.
-10. **Formalize Kronecker–Weyl finite Dirichlet polynomial self-return and Carlson's $L^2$ mean-value theorem (`BAG`):**
-    - Both hold unconditionally and isolate the exact conditioned-tail gap in Bagchi's criterion.
-11. **Formalize fixed-degree $d$, large-shift $n \to \infty$ Jensen polynomial Hermite asymptotics (`TH`) and the colossally abundant reduction (`RB`):**
-    - Known unconditional theorems (Griffin–Ono–Rolen–Zagier for `TH`; Robin/Nicolas reduction to colossally abundant numbers for `RB`).
+For a finite coefficient row \(a_{N,k}\), the correctly transformed origin tail is
+\[
+\int_0^{1/N}\left|\sum_{k\le N}a_{N,k}\{1/(kx)\}\right|^2dx
+=
+\int_N^\infty\left|\sum_{k\le N}a_{N,k}\{u/k\}\right|^2\frac{du}{u^2}.
+\]
+The former expression with **both** \(\{1/(kx)\}\) and \(dx/x^2\) instead becomes \(\int_N^\infty|\sum a_{N,k}\{u/k\}|^2du\). Its integrand is periodic. Unless that periodic function is zero almost everywhere, this integral diverges. Also, \(\mathbf1_{(0,1]}\notin L^2(dx/x^2)\). Thus that stated target was invalid, not a difficult open estimate.
 
----
+**Correct weak-closure principle.** Let \(q_N\in\operatorname{span}\{\rho_1,\ldots,\rho_N\}\). If \(\sup_N\|q_N\|_H<\infty\) and \(q_N\to\chi\) locally in \(L^2([a,b])\) for every \(0<a<b<\infty\), then \(q_N\rightharpoonup\chi\). The closed linear span is weakly closed, so RH follows. Proof: test first against functions supported on such compact intervals, then use their density and the uniform norm bound. This gives strong approximants in the span; it does **not** imply strong convergence of the original rows. A tail bound alone requires separately proved local convergence and control of the rest of the norm.
 
-## Section 2: Obstacles That Require New Mathematics Nobody Has Yet (and What It Must Deliver)
+### 1.2 Selberg damping does not preserve exact divisor cancellation
 
-When all "just work" formalization tasks and all isomorphic coordinate changes are stripped away, the entire obstruction to proving RH across all 15 Walls and 45 routes/candidates reduces to **six irreducible mathematical problems** for which **humanity currently has no theorem**.
+For \(N>1\), put \(c_{N,d}=\mu(d)\log(N/d)/\log N\). At every integer \(2\le k\le N\),
+\[
+\sum_{d\mid k}c_{N,d}
+=-\frac{1}{\log N}\sum_{d\mid k}\mu(d)\log d
+=\frac{\Lambda(k)}{\log N},
+\]
+not zero. At \(k=1\), the sum is one. Exact cancellation for undamped Möbius coefficients cannot be assigned to the tapered row. The ledger already distinguishes Barban–Vehov's prime-power head from literal Möbius cancellation. See [SelbergMobiusApproximation.lean](../../formal/GaloisForLFunctions/RHTower/SelbergMobiusApproximation.lean) and [BarbanVehovLogarithmicDiagonalAndKerPCauchyPinch.lean](../../formal/GaloisForLFunctions/BiScaleUncertainty/BarbanVehovLogarithmicDiagonalAndKerPCauchyPinch.lean).
 
-Below is each uncharted obstacle, why existing mathematics and our Lean modules (`BiScaleUncertainty` and `BezoutValuationIncidence`) failed to solve it, and **what the new mathematics must deliver**.
+### 1.3 The stated Euler-product asymptotic had the wrong order
 
----
+As written in the original summary,
+\[
+\frac{\zeta(1+\varepsilon)\zeta(1+2\varepsilon)}{\zeta(2+2\varepsilon)}
+\sim \frac{1}{2\zeta(2)\varepsilon^2}\quad(\varepsilon\downarrow0),
+\]
+not \(1/(2\varepsilon)\). This follows from the residue-one pole of \(\zeta\) at one. The exact drift being estimated must be taken from its actual definition; different Euler factors cannot be substituted for one another.
 
-### Uncharted Obstacle 1: Trans-Horizon Sawtooth Martingale Cancellation (Blocks `MC`, `CTF`, `PM (FZZ-P)`, `BVI`, `RP`, `SEC`, and Wall 1)
-- **Why Mathematics and `BezoutValuationIncidence` Failed So Far:**
-  - `BezoutValuationIncidence` proved that on the periodic factorial cycle $N!$, the Selberg LCM + Bézout coprime quadratic forms diagonalize in Ramanujan/Selberg coordinates (`RamanujanRestorationAndBezoutDiagonal.lean`), that active divisor squares cancel 100% against active martingale jumps (`ActiveDeletedMartingaleAndShiftedEulerConvergence.lean`), and that the renormalized defect is strictly non-positive $\le 0$ in the **sub-horizon regime $M+1 \le N$** (`PowerDampedRenormalizedDefectAndPronicCeiling.lean`).
-  - However, sub-horizon non-positivity ($M+1 \le N$) is a consequence of complete sieve cancellation $g_N(k) = \sum_{d\mid k, d\le N}\mu(d) = 0$ for $2 \le k \le N$.
-  - To prove RH via `MC` ($M(x) = O(x^{1/2+\varepsilon})$) or `CTF` (Báez–Duarte distance $d_N \to 0$), one must bound the **trans-horizon regime $M \gg N$** (specifically $N < M \le N^2$ and $M \to \infty$), where integers $k \in (N, M]$ have prime factors $p > N$ so $g_N(k) \ne 0$.
-  - Worse, `SharpSuccessorPhaseLossAndClosureClassification.lean` proved that 1-step successor prediction loses $\ge 3/4$ of variance above parity, and `ArithmeticLagSchedulesAndSharpRecoveryHorizon.lean` proved that true $h$-lag translation only sees prime-power mode $q$ when its visibility clock $q/\operatorname{rad}(q)$ divides $h$.
-- **What the New Mathematics Must Deliver:**
-  1. **A Trans-Horizon Buchstab–Martingale Coupling Theorem:** An explicit inequality bounding the **inactive centered sawtooth martingale drift**
-     $$\mathcal{D}_{\mathrm{inact}}(N, M) = \sum_{k=N+1}^M \Delta(\text{inactive sawtooth variance})_k$$
-     for Selberg-damped Möbius weights $c_{N,d} = \mu(d)\frac{\log(N/d)}{\log N}$ (or shifted-exponent weights $d^{-\varepsilon}$) across the trans-horizon octave $N < M \le N^2$, showing that $\mathcal{D}_{\mathrm{inact}}(N, M)$ is absorbed by the positive active shifted-Euler drift $\frac{\zeta(1+\varepsilon)\zeta(1+2\varepsilon)}{\zeta(2+2\varepsilon)} \sim \frac{1}{2\varepsilon}$ uniformly as $\varepsilon \downarrow 0$ (or $N \to \infty$).
-  2. **Uniform $L^2((0, 1/N), dx/x^2)$ Tail Boundedness in `CTF`:** In Hilbert-space terms, the new mathematics does not even need to compute the exact decay rate of the Báez–Duarte norm: by weak compactness in $L^2((0,\infty), dx/x^2)$, it suffices to deliver a **uniform upper bound $\sup_{N \ge 2} \int_0^{1/N} \bigl(\sum_{k=1}^N c_{N,k}\{1/(kx)\}\bigr)^2 \frac{dx}{x^2} \le C < \infty$** for any weight sequence $c_{N,k}$ whose finite prefix sums converge pointwise to $1$ on $(0, 1]$!
+More consequentially, the current PM/BVI receiver does **not** demand one bound uniform in damping. It demands bounds uniform in the horizon at arbitrarily small fixed positive dampings; those bounds may depend on damping. See §3.1.
 
----
+### 1.4 Spectral threshold control is not compactness
 
-### Uncharted Obstacle 2: The Odd-Sector / Primitive Spectral Gap $\lambda_1(L) \ge 1$ on the Quotient Space (Blocks `CHMD`, `OWU`, `EWU`, `RW`, `WL`, `SZ`, `PA`, `GTA`, `HF`, `JAS`, `RN`, and Walls 6, 9, 11, 12, 13, 14)
-- **Why Mathematics, `CHMD`, and `BiScaleUncertainty` Failed So Far:**
-  - In $\Theta$-Doob coordinates (`CHMD`), the arithmetic operator $L = L_{\mathrm{arch}} + L_{\mathrm{prime}}$ on $L^2(\Theta(x)\cosh(x/2)\,dx)$ is a reversible Markov jump generator with simple ground state $1$ ($L(1) = 0$, eigenvalue $\mu = 1$ of $R = (1+L)^{-1}$, corresponding to the pole at $s=1$) and essential spectrum in $[0, 1/2]$ (`weyl_value_le_half`).
-  - RH is equivalent to the **spectral gap $\lambda_1(L) \ge 1$** ($\mu \le 1/2$) on $1^\perp$, or equivalently on the **odd sector** $v(-x) = -v(x)$:
-    $$\mathcal{E}_{\mathrm{arch}}(v) + \mathcal{E}_{\mathrm{prime}}^{(\Lambda)}(v) \ge \int_{\mathbb{R}} \Theta(x)\cosh(x/2)\,v(x)^2\,dx \qquad \forall v \text{ odd}.$$
-  - Standard Markov / Beurling–Deny theory ($v \mapsto |v|$) fails because $|v|$ is even and leaves $1^\perp$, giving only $\lambda_1(L) > 0$ ($\mu < 1$, Perron–Frobenius) instead of $\lambda_1(L) \ge 1$ ($\mu \le 1/2$, Wall 13).
-  - Meanwhile, on the compact phase-space window $\{|x| \le R, |r| \le T\}$, `L - 1` has an infinite-dimensional zero-energy radical `signedRadical` (Wall 11: zero slack), and any argument that only uses the linear explicit formula fails for fake weights $\tilde{\lambda} \ge 0$ (`Zeta23Countermodel`, Wall 9).
-- **What the New Mathematics Must Deliver:**
-  1. **A Multiplicative Divisor-Chain Poincaré Inequality on `OddSector ⧸ signedRadical`:** A theorem proving that for the genuine von Mangoldt weight $\Lambda(p^r) = \log p$ (where the prime jump energy factors by unique factorization $N = mdn$ into complete bipartite prime-power chain variances `chainVariance N u a ≥ 0` via [CHMDPrimeChainSourceFactorization.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDPrimeChainSourceFactorization.lean)), the combined form $\mathcal{E}_{\mathrm{arch}}(v) + \sum_{N=1}^\infty \text{chainVariance}(N, v)$ dominates $\int \Theta(x)\cosh(x/2)v(x)^2\,dx$ on the finitely many sub-threshold odd window modes modulo `signedRadical`.
-  2. **Equivalently, a Pointwise / Local Contradiction for an Off-Line Cardinal Packet (`imVector`):** In [CHMDCardinalOperatorAction.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/CHMDCardinalOperatorAction.lean), a putative off-line zero $a = \alpha + i\beta$ ($\beta \ne 0$) generates an explicit smooth function $u = u_{\mathrm{re}} + i u_{\mathrm{im}}$ built from $\Theta$ by dividing out $(1 - z^2/a^2)^{m_a}$ (`ThetaDivisorCardinalSource.lean`) that satisfies the differential-difference equation
-     $$(A - 1)(u_{\mathrm{re}}(x) + i u_{\mathrm{im}}(x)) = m_a \frac{\cos(\bar{a}x)}{\cosh(x/2)}$$
-     with negative energy $\operatorname{sourceEnergy}(u_{\mathrm{im}}) = -m_a < 0$. The new mathematics must show that **no non-zero solution $u_{\mathrm{im}}$ constructed by dividing $\Theta$ by an off-real factor $(1-z^2/a^2)$ can simultaneously satisfy the multiplicative prime-power chain factorization of $A$**!
+[CHMDNoWeylAboveThreshold.lean](../../formal/GaloisForLFunctions/RHTower/CHMDNoWeylAboveThreshold.lean), `weyl_value_le_half`, excludes weakly null unit approximate eigenvectors above \(1/2\). It does not assert that the arithmetic resolvent is compact. The infinite-dimensional threshold radical in [CHMDCriticalBandReduction.lean](../../formal/GaloisForLFunctions/RHTower/CHMDCriticalBandReduction.lean), identified with the \(1/2\)-eigenspace by the resolvent dictionary, is incompatible with compactness of that full resolvent.
 
----
+Likewise, finite multiplicity of each eigenvalue above \(1/2\) does not imply that the entire band \((1/2,1)\) has finite dimension: eigenvalues could accumulate at \(1/2\). A trace argument must establish the relevant projection's trace class property or work on spectral subbands separated from the threshold. The ledger's finite total dimension formula has an explicit finite-off-line-zero hypothesis.
 
-### Uncharted Obstacle 3: Single-Autocorrelation Prime-Blind Synthesis Without Polar or Origin Escape (Blocks `BiScaleUncertainty`, `EWU`, `WL`, `RW`, `FU`, `MSC`, and Walls 8, 11, 12, 13)
-- **Why Mathematics and `BiScaleUncertainty` Failed So Far:**
-  - `BiScaleUncertainty` proved that prime-blind profiles constructed via Müntz ramps or causal tents with $F(0)=0, F(T)\ne 0$ cannot be single Bochner autocorrelations $f \star \tilde{f}$ (`FactorialBiNullObstruction`), that their $2\times 2$ Gram coupling is $o(1/(n+1))$ against a $\frac{\log(n+2)}{4(n+1)}$ polar loss (`FactorialPolarGramScaleSeparation`), that canonical polar-repaired tails have positive Weil energy $\ge \frac{\log(n+1)}{2048(n+1)} > 0$ **unconditionally** (`FactorialMuntzTailWeilGrowth`, hence RH-nonselective), and that infinite-grid limits can lose positive Lévy energy into the origin (`InfiniteGridStrictEnergyLoss`).
-- **What the New Mathematics Must Deliver:**
-  - If one works in the primal prime-blind cone rather than `CHMD` Doob coordinates, the new mathematics must construct **genuine single autocorrelations $F_n = f_n \star \tilde{f}_n$** (not differences $R_{1,n} - R_{2,n}$) that:
-    1. Vanish (or have exponentially small residue) on all prime powers $k\log p \le 2a_n$ without vanishing at $0$;
-    2. Are **tuned to a putative off-line zero frequency $\gamma_0 = \alpha_0 + i\beta_0$** so that the zero-side readout dominates the archimedean logarithmic growth $\frac{1}{2}\log(n+1)\|f_n\|_2^2$ (overcoming the RH-nonselectivity proved in `FactorialMuntzTailWeilGrowth.lean`); and
-    3. Satisfy uniform origin-collar tightness so no Lévy energy is lost at $t = 0$ (`InfiniteGridStrictEnergyLoss`).
+### 1.5 A signed quotient does not inherit every source norm
 
----
+The signed form descends through `signedRadical`. The original source mass does not: [CHMDQuotientParityAndCoercivity.lean](../../formal/GaloisForLFunctions/RHTower/CHMDQuotientParityAndCoercivity.lean), `not_sourceMass_descends`, proves this obstruction. Use the actual source domain or the canonical quotient representative and specified graph norm. Writing an unspecified Poincaré inequality on `OddSector / signedRadical` does not settle these choices.
 
-### Uncharted Obstacle 4: Non-Stationary / Pole-Neutral Additive-to-Multiplicative Phase Transport (Blocks `LI`, `RB`, `PBM`, `DR`, `TG`, and Walls 1, 3, 10)
-- **Why Mathematics Failed So Far:**
-  - Additive exponential sums $\sum \mu(m)e(x/m)$ have Vinogradov–Korobov savings because the phase $x/m$ has non-vanishing higher derivatives, whereas multiplicative Dirichlet polynomials $\sum \mu(m)m^{-1/2-i\gamma}$ have logarithmic phase $\gamma \log m$ whose derivatives decay like $\gamma / m^k$.
-  - Transporting between them via Mellin or Laguerre kernels (`LI`) hits a stationary-phase saddle at $k\log p \asymp 4n$ that crosses the $s=1$ pole (Wall 10), and isolating a single off-line zero $\rho_0$ from the $O(\log \gamma_0)$ local zero cluster via Turán power sums loses $\gamma_0^{-c\log\log \gamma_0}$, which is exponentially worse than Vinogradov–Korobov savings (Wall 3).
-- **What the New Mathematics Must Deliver:**
-  - Either:
-    1. **A Cluster-Coherent Resonator (Overcoming Wall 3):** A multi-frequency kernel that amplifies an off-line zero $\beta_0 + i\gamma_0$ ($\beta_0 > 1/2$) *without* cancelling against the $O(\log \gamma_0)$ critical-line zeros in the $1/\log \gamma_0$ neighborhood (using the fact that an off-line zero breaks the critical-line involution $\gamma \leftrightarrow \bar{\gamma}$, whereas on-line zeros preserve it); or
-    2. **Direct Discrete Incidence Transport (Overcoming Wall 10):** Performing the cancellation inside $\mathbb{N}$ via multi-lag Bézout/Ramanujan visibility schedules (`BVI`) *before* taking a Mellin transform, so the continuous stationary-phase pole crossing never occurs.
+### 1.6 Arithmetic detection is not arithmetic exclusion
 
----
+Valuation clocks detect Ramanujan modes; finite translated moments recover coefficients; inserted off-line waves have positive radial chain excess. None of those facts contradicts the existence of an actual off-line zero. A contradiction needs an independently proved upper bound or sign for the **same complete source energy**.
 
-### Uncharted Obstacle 5: Conditioned Kronecker-to-Tail Independence in Vertical Shifts (Blocks `BAG` and Wall 7)
-- **Why Mathematics Failed So Far:**
-  - In Bagchi's self-return criterion (`BAG`), finite Dirichlet polynomials $\zeta_N(s+i\tau)$ return to $\zeta_N(s)$ on the Kronecker set $\mathcal{K}_{P,\delta} = \{\tau \in [0, T] : |p^{-i\tau} - 1| < \delta \;\forall p \le P\}$, which has tiny relative measure $\asymp \delta^{\pi(P)}$.
-  - Unconditioned $L^2$ bounds on $\int_0^T |\zeta(s+i\tau) - \zeta_N(s+i\tau)|^2\,d\tau$ are useless when divided by the tiny measure $\delta^{\pi(P)}$ unless $N \gg \exp(\delta^{-\pi(P)})$, where the approximate functional equation fails.
-- **What the New Mathematics Must Deliver:**
-  - A **Conditioned Montgomery–Vaughan Mean-Value Theorem** proving that for $\sigma \in (1/2, 1)$, the conditional expectation of the high-frequency tail $\mathbb{E}_{\tau \in \mathcal{K}_{P,\delta}}\bigl[|\zeta(\sigma+it+i\tau) - \zeta_N(\sigma+it+i\tau)|^2\bigr]$ over the small-prime Kronecker return set $\mathcal{K}_{P,\delta}$ is bounded by $o_{N,P\to\infty}(1)$ with $N$ growing only polynomially in $P$ (decoupling low-prime phases from high-prime Dirichlet tails across the critical strip).
+The precise clock reconstruction is
+\[
+\Lambda(d)=
+\begin{cases}
+\log(d/D(d)),&d/D(d)\text{ is prime},\\
+0,&\text{otherwise},
+\end{cases}
+\qquad D(d)=d/\operatorname{rad}(d),\quad d\ge1.
+\]
+It is not \(\log(d/D(d))\) for arbitrary composites: \(d=6\) already disproves that formula. The conditional statement is proved in [ValuationClockChainBridge.lean](../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/ValuationClockChainBridge.lean). The visibility condition concerns a compressed Ramanujan multiplier; it is not a rule saying an individual integer's valuation changes exactly at those lags.
 
----
+### 1.7 A sharp recovery theorem can miss the arithmetic source stratum
 
-### Uncharted Obstacle 6: Reverse-Jensen / Deflated Lee–Yang / Boundary-Phase Rigidity (Blocks `TH`, `TT`, `WD`, `XN`, `FEL`, `HJ`, `W1C`, and Walls 2, 4, 15)
-- **Why Mathematics Failed So Far:**
-  - Concavity of $\log|\zeta|$ points the wrong way for Jensen's inequality (Wall 2); differential multipliers $P(D)\Xi$ and forward heat flow shrink strip width from the wrong side (Wall 4); standard ferromagnetic Lee–Yang theorems fail because the $s=1$ pole creates an antiferromagnetic mode (Wall 6/13); and Hurwitz $\zeta(s, a)$ has Davenport–Heilbronn off-line zeros for $a \notin \{1/2, 1\}$.
-- **What the New Mathematics Must Deliver:**
-  - A **Pole-Deflated / Antiferromagnetic Lee–Yang Theorem** (or reverse-Jensen inequality for Euler-product Dirichlet series) proving that when a rank-1 negative polar mode (`CoshMass` / $s=1$ pole) is projected out on $1^\perp$, the remaining partition function $\Xi(z)$ has exclusively real roots **if and only if** its coefficients satisfy the exact multiplicative divisor-chain relation $\Lambda(p^r) = \log p$.
+The highest-dyadic local classification in [SieveLocalVisibilityClassification.lean](../../formal/GaloisForLFunctions/BiScaleUncertainty/SieveLocalVisibilityClassification.lean) assumes
+\(Y_{N,c}(2^{\lfloor\log_2N\rfloor})\ne0\).
+For any coefficient row supported on squarefree integers, \(Y_{N,c}(q)=0\) whenever \(q\) is not squarefree: every multiple contributing to the defining sum has zero coefficient. Consequently the required anchor is zero for every \(N\ge4\). This includes literal Möbius coefficients and their multiplicative tapers. These implications are now formalized in [SieveArithmeticSourceAnchors.lean](../../formal/GaloisForLFunctions/BiScaleUncertainty/SieveArithmeticSourceAnchors.lean). That module also proves that a terminal-prime anchor for a Möbius taper survives exactly when the taper is nonzero; for Barban–Vehov cutoff \(X\), the condition is \(p<X\).
 
----
+This does not invalidate that classification. It means its highest-dyadic hypothesis excludes these actual sources. The next application needs an appropriate lower-support classification and quantitative constants, not an invocation of the existing theorem without its anchor premise.
 
-## Section 3: Synthesis — Blueprint for the Unified New Field of Mathematics
+## 2. What has already been achieved
 
-When we look across Section 2, a remarkable structural unification emerges. We already built **two halves** of a new mathematical edifice in Lean:
-- **Half 1: `BiScaleUncertainty` (458 modules)** — a continuous/archimedean theory of bi-scale Krein collars, folded dyadic/non-dyadic interpolation, $O(n^{-3/2})$ origin-budget telescoping, and factorial Müntz-ramp repairs. **Why it stalled:** It treated the prime-power grid $\{k\log p\}$ as an *external exclusion set* for 1D test functions, hitting `FactorialBiNullObstruction` (differences of autocorrelations), `FactorialPolarGramScaleSeparation` (pole dominates Gram coupling by $\log n$), and `FactorialMuntzTailWeilGrowth` (repaired tails are dominated by high-frequency archimedean energy and are RH-nonselective).
-- **Half 2: `BezoutValuationIncidence` (40 modules)** — a discrete/arithmetic theory combining multiplicative Selberg LCM divisibility with additive Bézout successor coprimality $\gcd(k, k+1)=1$, Ramanujan lag diagonalization, valuation visibility clocks $q/\operatorname{rad}(q)$, and active/inactive sawtooth martingales. **Why it stalled:** Its exact non-positivity theorem (`PowerDampedRenormalizedDefectAndPronicCeiling.lean`) holds only **sub-horizon ($M+1 \le N$)** inside the periodic factorial model $N!$, whereas RH lives in the **trans-horizon regime ($N < M \le N^2$)** where 1-step successor prediction loses $3/4$ of variance (`SharpSuccessorPhaseLossAndClosureClassification.lean`) and inactive sawtooth drift escapes.
+The former Section 1 was marked “all done” while retaining obsolete future-tense tasks and some overstrong identification claims. The ledger is the current inventory. Its `[L]` label means committed, umbrella-imported source at its recorded checkpoint, **not a fresh rebuild**.
 
-Meanwhile, **`CHMD` (`Causal Hyperbolic–Modular Duality`)** reduced the entire analytic side of RH to a single operator inequality on a concrete Hilbert space: proving that the reversible Markov jump generator $L = L_{\mathrm{arch}} + L_{\mathrm{prime}}$ on $L^2(\Theta(x)\cosh(x/2)\,dx)$ has **spectral gap $\lambda_1(L) \ge 1$ on the odd sector modulo `signedRadical`** (`riemannHypothesis_iff_forall_odd_phiDoob_dirichlet_poincare`), where the prime jump energy already factors via unique factorization $N = mdn$ and $\Lambda(p^r) = \log p$ into positive prime-power chain variances (`CHMDPrimeChainSourceFactorization.lean`).
+| Area | Current established result | What remains |
+|---|---|---|
+| Classical receivers | Mertens/Littlewood connections, RH-to-Cramér mean square, Báez–Duarte equivalences and classical baselines are recorded. | An unconditional arithmetic estimate satisfying a receiver. |
+| BVI/THIM trans-horizon control | Exact octave laws, rough checkpoints, finite-band strict defect margins, cofinal sublinear discrepancy, and negative renormalized defects on fixed polynomial windows. | Complete coefficient-weighted energy, including means, endpoints, mixed covariance and growing cutoffs. |
+| BVI source laws | Fixed linear-horizon moments, source alphabets, signed one-point frequencies and shifted magnitude laws. | Signed joint estimates at the required moving scales. |
+| Arithmetic/analytic bridges | Clock-to-prime-chain identities, exact Fermi/pronic transfers, and common-core signed-form identifications. | Uniform bounds in the receiving norm; common-core identities need not identify completed Hilbert spaces. |
+| CHMD | Exact signed quotient, parity decomposition, cardinal spanning/band identification and odd-sector RH criterion. | Actual-source sign excluding sign-changing odd eigenstates above \(1/2\). |
+| APT | High-scale restricted-span positivity; critical-envelope prime-channel admission and limiting kernel representations. | Complete-form sign on a sufficiently rich family and control of changing coefficient patterns. |
+| BiScale | Sharp finite moment/phase recovery, quantitative stability and explicit infinite-grid/cycle obstructions. | Energy control with horizon-dependent losses paid, plus a source-specific sign. |
 
-### Name and Core Identity of the Missing Field
-We can synthesize all requirements of Section 2 into a single new mathematical discipline:
+BVI's source is not dormant beyond \(N\): for \(N<k\le2N\),
+\[
+s_{N,\mu}(k)=-\mu(k),\qquad
+s_{N,\mu}(k)s_{N,\mu}(k+1)=\mu(k)\mu(k+1)\quad(k+1\le2N).
+\]
+These identities are already proved in [QuotientDualOctaveReciprocityAndValuationSwitching.lean](../../formal/GaloisForLFunctions/BezoutValuationIncidence/QuotientDualOctaveReciprocityAndValuationSwitching.lean). Trans-horizon effects involve omitted **divisors**, including composites, not just primes larger than the cutoff. The least full period divides \(\operatorname{lcm}(1,\ldots,N)\); \(N!\) is a convenient common period, not the same number.
 
-> **Trans-Horizon Arithmetic–Archimedean Incidence Mechanics (or Multiplicative Valuation-Clock Spectral Theory)**
+## 3. Six families of open work, with their logical status
 
-This field studies **coupled Markov/Dirichlet jump operators and martingale filtrations on the joint space of continuous archimedean scale $x \in \mathbb{R}$ and discrete multiplicative-additive integer lattices $\mathbb{N}_+$**, governed simultaneously by:
-1. **Modular $\Theta$-Poincaré Duality** (controlling the pole $s=1$ and the essential spectrum $[0, 1/2]$ via `CHMD`);
-2. **Prime-Power Chain Factorization** ($N = m p^r n$ with constant weight $\Lambda(p^r) = \log p$, defeating the $\zeta(s-a)\zeta(s+a)$ countermodel of Wall 9); and
-3. **Multi-Lag Bézout–Ramanujan Visibility Clocks** ($q/\operatorname{rad}(q) \mid h$ under additive shifts $k \mapsto k+h$, defeating the Beurling countermodel of Wall 1 and separating prime powers $p^{a+1}$ from squarefree composites of Wall 11).
+### 3.1 Complete signed trans-horizon energy
 
----
+**Main receivers:** MC, CTF and PM/FZZ-P. BVI and THIM supply arithmetic interfaces. Connections to other routes require their own stated bridges.
 
-### The Five Foundational Pillars This New Field Must Possess
+A precise existing sufficient target is
+\[
+\forall\delta>0\;\exists\varepsilon\in(0,\delta)\;\exists B_\varepsilon<\infty\;
+\forall T\ge1:\quad
+\mathcal I_\varepsilon(T)
+:=\sum_{n=1}^{T}\frac{I_\varepsilon(n)^2}{n(n+1)}\le B_\varepsilon,
+\]
+where \(I_\varepsilon(n)\) is the literal `pmBezoutInteriorPrefix ε n`. This is exactly the premise of `riemannHypothesis_of_pmBezoutInteriorPronicEnergy_bounded` in [PronicPotentialSelfCancellationAndInteriorGradientConservation.lean](../../formal/GaloisForLFunctions/BezoutValuationIncidence/PronicPotentialSelfCancellationAndInteriorGradientConservation.lean).
 
-To overcome Uncharted Obstacles 1–6 simultaneously (and avoid every proven dead end), this new field of mathematics must be built on five concrete pillars:
+**Quantifiers matter:** \(B_\varepsilon\) may diverge as \(\varepsilon\downarrow0\). What is missing is its finiteness uniformly in \(T\) for an arbitrarily small sequence of positive \(\varepsilon\). A theorem asserting an \(O_\varepsilon(1)\) difference between two uncontrolled quantities does not supply this bound.
 
-```mermaid
-flowchart TD
-    subgraph P1["Pillar 1: State Space & Quotient Geometry"]
-        Q["Quotient Hilbert Graph: OddSector / signedRadical\nin L²(Θ(x)cosh(x/2)dx) × L²((0,∞), dx/x²)"]
-    end
+**Known baseline:** the actual PM source is already in \(L^2\) for every
+\(\varepsilon\ge1/2\), including equality, by
+[PMPowerDampedMobiusEndpoint.lean](../../formal/GaloisForLFunctions/RHTower/PMPowerDampedMobiusEndpoint.lean).
+Its horizon-uniform discrete budget, together with
+\(\mathcal I_\varepsilon(T)\le2E_\varepsilon(T)+1/2\), gives the now-exposed
+`exists_pmBezoutInteriorPronicEnergy_budget_of_half_le` in the receiver module.
+The open range is \(0<\varepsilon<1/2\), ultimately cofinal at zero. A uniform
+bound in natural Ramanujan cutoff \(Q\) is a separate sufficient approximation
+condition; it does not follow merely from this source-energy endpoint.
 
-    subgraph P2["Pillar 2: Non-Linear Multiplicative Input (Defeating Wall 9 & Wall 1)"]
-        MC1["Prime-Power Bipartite Chain Variance\n(N = m·p^r·n, Λ(p^r) = log p)"]
-        MC2["Multi-Lag Bézout–Ramanujan Visibility Schedule\n(Clock D(q) = q/rad(q) | h)"]
-    end
+**Use the actual weights:** the PM Selberg coordinate is
+\(Y_\varepsilon(q)=\operatorname{Re}\sum_{m\ge1}\mu(qm)(qm)^{-1-\varepsilon}\),
+not \(\mu(q)q^{-\varepsilon}\). For prime \(p\), \(p\nmid r\), and
+\(\varepsilon>0\), it satisfies
+\(Y_\varepsilon(pr)=-Y_\varepsilon(r)/(p^{1+\varepsilon}-1)\).
+See [RoutePMCofactorSieveBridgeAndUnifiedEnergyEquivalence.lean](../../formal/GaloisForLFunctions/BezoutValuationIncidence/RoutePMCofactorSieveBridgeAndUnifiedEnergyEquivalence.lean)
+and [CrossDepthEulerOperatorFactorizationAndPrimePairGramIdentity.lean](../../formal/GaloisForLFunctions/BezoutValuationIncidence/CrossDepthEulerOperatorFactorizationAndPrimePairGramIdentity.lean).
+Restricted prime-head identities do not give a scalar recursion for the complete variance.
 
-    subgraph P3["Pillar 3: Trans-Horizon Buchstab–Sawtooth Coupling"]
-        THM["Couples Active Shifted-Euler Drift (+1/2 rate)\nto Inactive Sawtooth Tail across N < M ≤ N²"]
-    end
+Alternative CTF target: construct admissible rows satisfying the corrected weak-closure principle in §1.1, or prove vanishing Nyman error directly. Do not conflate those different sufficient criteria.
 
-    subgraph P4["Pillar 4: Sign-Preserving Odd Poincaré / Cardinal Contradiction"]
-        ODD["Replaces Beurling–Deny v ↦ |v| (Wall 13)\nwith Odd-Sector Chain-Variance Coercivity λ₁(L) ≥ 1\n& Cardinal Packet (A-1)u = m_a cos(āx)/cosh(x/2) Exclusion"]
-    end
+**Research mechanism, not established theorem:** retain signed cross-depth coupling before taking absolute values; isolate and estimate the complete log-renormalized remainder. Positive active-pair drift, shared-birth covariance, conditional-head means and signed clock complements cannot be discarded. Uncentered active-pair budgets are already known to diverge in the relevant small-damping regime.
 
-    subgraph P5["Pillar 5: Weak-Compactness / Sub-Unit Gate Closure"]
-        FIN["Uniform L² Tail Bound in CTF (d_N → 0)\nOR Trace/Norm < 1 on CHMD (1/2, 1) Bound-State Space"]
-    end
+The first-octave identity above explains a second boundary: a complete signed successor law would confront fixed-shift Möbius correlations of Chowla type. Magnitude-pattern laws do not supply it. Such a full law is not known to be necessary for the one-sided complete-energy bound; it may be an unnecessarily strong research target.
 
-    P1 --> P2
-    P2 --> P3
-    P2 --> P4
-    P3 --> P5
-    P4 --> P5
-```
+This is not a claim that every binary correlation problem remains unsolved in current literature. The September 2026 preprint [Ordinary two-point correlations of multiplicative functions](https://github.com/openai/math/blob/main/preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026/final.pdf) claims qualitative ordinary Möbius cancellation for fixed affine forms. Its statements were inspected, but its proof was not independently verified in this review. They do not assert the growing-coefficient uniformity or quantitative Möbius rate required for the present complete-energy application.
 
-#### Pillar 1: Quotient State-Space Geometry (Defeating Wall 11 & Wall 12)
-- **Why existing tools failed:** On the full function space, `L - 1` has an infinite-dimensional null radical (`signedRadical`) spanned by critical-band translates and critical-line zero modes where $\mathcal{E}_{\mathrm{arch}} + \mathcal{E}_{\mathrm{prime}} - \operatorname{CoshMass} = 0$ with **zero slack**. Any coarse inequality (like the Young inequality in `CHMDFarFieldEnergy.lean`) leaks energy from the cusp $|x| > R$ into the window $|x| \le R$ and goes negative on `signedRadical`.
-- **What the new field must be like:** Its primary objects are **equivalence classes $[v] \in \mathcal{H}_{\mathrm{odd}} \big/ \operatorname{signedRadical}$** equipped with a **non-leaky multiscale decomposition** (replacing scalar Young inequalities $(a-b)^2 \ge (1-\delta)a^2 - \delta^{-1}b^2$ with exact martingale/Haar orthogonal projections across prime-power scales).
+### 3.2 Complete odd-sector arithmetic positivity
 
-#### Pillar 2: Dual Arithmetic Invariants Beyond the Linear Explicit Formula (Defeating Wall 1, Wall 5, & Wall 9)
-- **Why existing tools failed:** Any manipulation of the linear explicit formula $\sum_\rho \widehat{F}(\gamma_\rho) = \text{Pole} + \text{Arch} - \text{Primes}$ preserves the quadratic signature and holds verbatim for fake weights $\tilde{\lambda}$ (`Zeta23Countermodel`) and Beurling primes.
-- **What the new field must be like:** Every operator identity in the field must functorially intertwine two algebraic structures that exist **only** for the genuine integers $\mathbb{Z}$ and genuine $\Lambda$:
-  1. **Multiplicative Valuation Constantness ($\Lambda(p^r) = \log p$):** Used in `CHMDPrimeChainVariance.lean` to factor the product of two $\Theta$-series at index $N = m d n$ along maximal $p$-adic valuation chains $\{b p^j : 0 \le j \le v_p(N)\}$.
-  2. **Additive Successor Visibility Clocks ($D(q) = q/\operatorname{rad}(q)$):** Discovered in `ValuationVisibilityClockAndRamanujanSupport.lean`, where under true integer translation $k \mapsto k+h$, mode $q$ has Ramanujan multiplier $\frac{\mu(q/\gcd(q,h))}{\varphi(q/\gcd(q,h))}$, which is non-zero **if and only if** the valuation clock $D(q) = \prod_p p^{\max(v_p(q)-1, 0)}$ divides $h$.
-  - Notice how these two invariants complement each other: **chain variance groups divisors by $v_p(N)$ along multiplicative chains, while the valuation visibility clock $D(q)$ indexes the exact additive translation lag $h = p^{v_p(q)-1}$ at which each prime-power link in that chain becomes visible!** Currently in our Lean corpus, `CHMDPrimeChainVariance` (in `RHTower`) and `ValuationVisibilityClock` (in `BezoutValuationIncidence`) never talk to each other. The new field must fuse them into a single **Valuation-Clock Chain Operator**.
+**Main receivers:** CHMD, RW, OWU and related Weil/screw/passivity formulations.
 
-#### Pillar 3: Trans-Horizon Buchstab–Martingale Renormalization (Defeating Wall 1 & Wall 10)
-- **Why existing tools failed:** `BezoutValuationIncidence` worked modulo $N!$ (complete period), which is exact for sub-horizon prefixes $M \le N$ but blind to the trans-horizon regime $N < M \le N^2$ because 1-step compression loses $3/4$ of variance (`SharpSuccessorPhaseLossAndClosureClassification.lean`).
-- **What the new field must deliver:** Instead of embedding $\{1, \dots, M\}$ into the giant periodic ring $\mathbb{Z}/N!\mathbb{Z}$ and stopping at $M = N$, the new field must formulate a **continuous-time / multi-scale Buchstab filtration** as the sieve horizon $N$ varies continuously from $M^{1/2}$ to $M$:
-  - As a prime $p$ crosses the horizon $N$, the transition from the **inactive sawtooth martingale** ($p > N$) to the **active divisor martingale** ($p \le N$, where squares cancel 100% by `ActiveDeletedMartingaleAndShiftedEulerConvergence.lean`) is governed by a discrete stochastic/martingale differential equation indexed by $\log p$.
-  - The field must prove a **Trans-Horizon Energy Conservation Law** showing that the variance injected by newly active primes $p \in (N, M]$ is bounded by the positive active shifted-Euler drift $\tau_\varepsilon\tau_{1+\varepsilon}$, yielding the uniform $L^2((0, 1/N), dx/x^2)$ tail bound needed by `CTF` and `MC`.
+The precise source-domain criterion is
+\[
+\mathcal E_{\rm arch}(v)+\sum_{n\ge0}\int_{\mathbb R}\phi\mathrm{DoobPrimeJump}(v,n,x)\,dx
+\ge \phi\mathrm{DoobCoshMass}(v^2)
+\]
+for every odd compactly supported \(C^2\) real test \(v\). See [WeilPhiDoobArchimedeanJumpAndHalfLineFolding.lean](../../formal/GaloisForLFunctions/RHTower/WeilPhiDoobArchimedeanJumpAndHalfLineFolding.lean), `riemannHypothesis_iff_forall_odd_phiDoob_dirichlet_poincare`. This criterion is **RH-equivalent**, not a smaller solved spectral task.
 
-#### Pillar 4: Sign-Preserving Odd-Sector Coercivity & Cardinal Packet Exclusion (Defeating Wall 13 & Wall 15)
-- **Why existing tools failed:** Beurling–Deny contraction $v \mapsto |v|$ maps odd functions out of $1^\perp$ into the positive cone, losing the factor of $2$ between Perron–Frobenius ($\mu < 1$, pole $s=1$) and RH ($\mu \le 1/2$, spectral gap $\lambda_1(L) \ge 1$).
-- **What the new field must deliver:** A **Non-Commutative / Odd-Sector Intertwining Operator $Q$** (analogous to Darboux / Witten supersymmetric partner factorization $L - 1 = Q^* Q$ on $\mathcal{H}_{\mathrm{odd}} \big/ \operatorname{signedRadical}$) that does **not** take $|v|$, but instead uses:
-  1. The $+4\Theta(x)\Theta(y)|v(x)||v(y)|$ origin-crossing bonus on odd regimes (`CHMDOddCrossSignBonus.lean`);
-  2. The zero-silent odd polar positivity $\operatorname{sourceEnergy}(p) = +2\operatorname{polarSine}(p)^2 > 0$ (`CHMDFullSpectralPairing.lean`); and
-  3. The differential-difference equation $(A-1)u = m_a \cos(\bar{a}x)/\cosh(x/2)$ (`CHMDCardinalOperatorAction.lean`) to prove that any hypothetical off-line cardinal packet $u_{\mathrm{im}}$ ($\beta = \operatorname{Im}(a) \ne 0$) violates the bipartite prime-power chain variance identity at finite valuation clocks $D(q) = p^{r-1}$.
+The prime-chain factorization is valuable but gives positivity of one contribution. The complete comparison still includes the ground/polar potential, reflected-prime terms and nodal coupling. Modulus contraction changes the parity constraint; quotienting a radical removes degeneracy, not negative directions.
 
-#### Pillar 5: Weak-Compactness or Topological Sub-Unit Closure (Defeating Wall 3 & Wall 14)
-- **Why existing tools failed:** Pointwise zero isolation fails by Turán clustering (Wall 3), and unweighted trace perturbations fail by the Size Law (Wall 14).
-- **What the new field must deliver:** Once Pillars 1–4 are in place, the final closure does **not** require pointwise zero isolation:
-  - **On the Analytic/Spectral side (`CHMD` + `TG`):** Since $R = (1+L)^{-1}$ is already proved compact with essential spectrum in $[0, 1/2]$ (`weyl_value_le_half`) and each off-line zero contributes integer multiplicity $\ge 1$ to the $(1/2, 1)$ eigenspace (`CHMDBoundStateInertia.lean`), proving that the operator norm of $R$ on $\mathcal{H}_{\mathrm{odd}} \big/ \operatorname{signedRadical}$ is $\le 1/2$ (or that the trace of the spectral projection $P_{(1/2, 1)}$ is $< 1$) immediately forces $P_{(1/2, 1)} = 0$ and proves RH!
-  - **On the Arithmetic/Hilbert side (`CTF` + `BVI`):** Since damped Selberg-Möbius combinations $\sum_{k=1}^N c_{N,k}\rho(\cdot/k)$ already cancel $\mathbf{1}_{(0,1]}$ on $(1/N, 1]$, proving a **mere uniform $L^2$ norm bound $\sup_N \|\sum_{k=1}^N c_{N,k}\rho(\cdot/k)\|_{L^2((0,1/N), dx/x^2)} < \infty$** implies weak convergence to $\mathbf{1}_{(0,1]}$ in $L^2((0,\infty), dx/x^2)$, which by Mazur's lemma / Banach–Saks forces strong $L^2$ distance $d_N \to 0$ and proves RH!
+**Research targets:** an independently quantified bound on the remaining low-prime diagonal potential after exact collar cancellation; or an actual-source nodal estimate that pays the primitive ground-projection defect. Every support radius and rapidity dependence must be retained. The `coshSinhPolarRatio ≤ θ ≤ 1` absorption condition and its residual source pairing are not automatically satisfied.
 
----
+A source-defined factorization \(L-1=Q^*Q\) would suffice on the correctly specified domain. Defining \(Q\) as a square root after assuming positivity is circular. Finite off-line chain excess alone supplies no contradiction.
 
-### Final Warning: What Must Be Abandoned Even Under the New Field
-Even with this new mathematical field, the following approaches are **provably dead ends** and should never be pursued again:
-1. **Do not** attempt to build prime-blind single autocorrelations from factorial Müntz ramps or causal-tent differences (`FactorialBiNullObstruction`, `FactorialPolarGramScaleSeparation`).
-2. **Do not** rely on canonical polar-repaired factorial tails (`FactorialMuntzTailWeilGrowth`: they are dominated by $\frac{1}{2}\log n$ archimedean energy and are positive whether RH is true or false).
-3. **Do not** use shift-gauge ground-state subtractions $A - m(a)J$ on prime-blind domains (`EvenSectorBlindGroundShiftInvariance`).
-4. **Do not** look for stronger universal linear inequalities in Selberg variance $V$, Bézout covariance $C$, and primitive energy $E$ valid for *arbitrary* sieve weights $c$ (`SharpPrimitiveEnergySuccessorFrontier`: modes $\{1,2,3,4,6\}$ exhaust the universal cone). Any trans-horizon bound must use the specific multiplicative structure of $c = \mu$ (or damped $\mu$).
-5. **Do not** iterate 1-step coprimality successor prediction as a proxy for $h$-step translation (`SharpSuccessorPhaseLossAndClosureClassification`: loses $\ge 3/4$ of variance per step).
-6. **Do not** use Beurling–Deny contraction $v \mapsto |v|$ or the small-window $\le 2\log 2$ one-signed cone to bound the `CHMD` resolvent (`chmd-revisit.md` Phase 3 & 4: leaves $1^\perp$ and lands in the non-RH window sector).
+### 3.3 Source families that retain both sign information and limit control
+
+**Relevant programs:** APT and BiScale; relevant receivers include RW, EWU and OWU.
+
+Factorial families already have strong unconditional positivity and approximation results. Positivity on those restricted families is compatible with either truth value of RH. A new family must either reach a dense admissible test class in a topology controlling the complete Weil form, or carry a proved separating property for hypothetical negative directions.
+
+Single-autocorrelation prime-blind synthesis is **one optional strategy**, not a missing theorem every RH proof needs. A difference of autocorrelations cannot be used as a single positive-definite autocorrelation. Conversely, the known no-go results concern specified families; they do not forbid every possible prime-blind construction.
+
+**Research targets:** complete critical-envelope form estimates, quantitative approximation errors for growing patterns, and a compactness or profile decomposition that accounts for origin concentration, distant polar mass and increasing oscillation. Scalar pointwise convergence, finite moment recovery and bounded unweighted \(L^2\) mass are insufficient by themselves.
+
+### 3.4 Scale-sensitive signed correlation and transport
+
+**Relevant receivers:** MC and prime-deficit/prime-history routes; other transfers must be checked individually.
+
+The obstacle is preserving cancellation under the actual weights, truncations, transformations and scale growth. An additive phase estimate cannot be transported to a logarithmic phase without paying the transformation kernel, any stationary points and residues. Some existing isolation methods lose too much under zero clustering; that is a limitation of those methods, not a universal impossibility theorem about all linear arguments.
+
+**Research targets:** a quantitative signed bilinear estimate for an already defined source remainder, or a cluster-level comparison retaining all cross terms. Valuation-clock recovery can identify finite arithmetic data but does not itself perform the required cancellation or bypass an analytic saddle.
+
+An existing concrete receiver is the one-sided subpower bound for the strict off-diagonal additive Möbius triangle in [MobiusAdditiveTriangleChowlaFrontier.lean](../../formal/GaloisForLFunctions/RHTower/MobiusAdditiveTriangleChowlaFrontier.lean). It must be proved from arithmetic, not reintroduced as a renamed independence assumption.
+
+### 3.5 Conditioned recurrence and tails
+
+**Main receiver:** BAG.
+
+Finite Kronecker return and unconditional mean-square control do not automatically give a small **centered** tail on the same return heights, uniformly on the required right-strip disc. The centering, head approximation, cutoff and order of limits are part of the problem.
+
+If a conditioning event has density \(\kappa\), an unconditional mean-square estimate \(A_N\) yields only the generic conditional bound \(A_N/\kappa\). The previous claimed necessity \(N\gg\exp(\delta^{-\pi(P)})\) was unsupported. Even the schematic bound \(A_N\asymp N^{1-2\sigma}\) would instead lead to \(N^{2\sigma-1}\kappa\to\infty\). For \(\kappa\asymp\delta^{\pi(P)}\), this is a different scale. It is not a proof that such an estimate is available for the actual centered tail.
+
+**Research target:** a conditional tail estimate with all parameters stated, sufficient for the existing common-height recurrence receiver. Polynomial cutoff in \(P\) is an additional proposed ambition, not an established necessary condition or a theorem supplied by BVI observability.
+
+### 3.6 All-degree positivity, phase orientation and geometric realization
+
+**Relevant routes:** TH, TT, HCF, WD, XN and several geometric/candidate routes, each with its own receiver.
+
+Fixed-degree positivity at sufficiently large shift is not positivity at all degrees with a common admissible parameter. Forward heat flow, functional-equation symmetry and finite positive matrices do not provide the missing global orientation.
+
+A pole-deflated Lee–Yang theorem is **speculative**. The former assertion that real-rootedness holds “if and only if” coefficients satisfy \(\Lambda(p^r)=\log p\) had no specified class of partition functions or hypotheses and is not a valid theorem statement. Ordinary arithmetic multiplicativity does not by itself establish a positive Hilbert realization or the required complete-form sign.
+
+**Research targets:** source-defined all-degree bounds on the actual moment matrices, or a concrete arithmetic interaction/domain construction with a proved limit to the actual completed function. Distinguish finding an independent producer from building another equivalent determinant or operator model.
+
+## 4. What kind of new mathematics is actually needed?
+
+**The shared deficit is a source-specific signed estimate that survives the required scale limits.** Existing work supplies identities, finite classifications, conditional transfers and useful counterexamples. It does not yet supply that estimate.
+
+THIM already implements much of the original proposal to connect continuous and discrete structures. Starting another umbrella under “valuation-clock spectral theory” would repeat its remit. The productive division is:
+
+| Program | Next mathematical responsibility |
+|---|---|
+| Arithmetic Positivity Theory | Bound the complete critical form, including cross terms and polar terms, for explicitly specified growing source families. |
+| BiScale Uncertainty | Quantify the observation/approximation loss in the norm required by that form; classify and account for escaping profiles. |
+| Bézout–Valuation Incidence | Extract and estimate the literal signed remainder on changing cutoffs; separate magnitude information from sign information. |
+| Trans-Horizon Incidence Mechanics | Prove the transfer estimate with all cutoff, damping, boundary and coefficient costs paid; retain the exact receiver quantifiers. |
+
+These responsibilities suggest research directions, not a proof that one unified theory will solve all six families. A new program warrants its own identity only after it produces a distinct, falsifiable theorem beyond these remits and survives comparison with established harmonic analysis, sieve/correlation methods and arithmetic spectral approaches.
+
+## 5. Constraints that survive this correction
+
+1. Never replace the complete signed energy by a positive component or an unsigned majorant without a quantitative error bound.
+2. Never infer a cofinal estimate from fixed horizon ratios, fixed coefficient patterns, finite observation sets or fixed damping identities alone.
+3. Never infer absence of negative directions from self-adjointness, nondegeneracy, injectivity, finite-dimensional recovery or a spectral threshold statement.
+4. Keep countermodel hypotheses exact. Shifted zeta products change poles/completion data; Beurling systems share much multiplicative algebra. These refute specified implication attempts, not every argument using an explicit formula or an Euler product.
+5. Scope no-go results to their proved mechanism and retain their positive survivors. Universal finite cones, sharp conditioning laws and exact decomposition identities remain useful even when a proposed RH shortcut fails.
+6. Record the first unproved arithmetic inequality explicitly. A bridge, a reformulation and a new source estimate are different achievements.

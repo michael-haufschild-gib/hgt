@@ -57,8 +57,8 @@ As a small diagnostic case, a base supported at order three at cutoff three appe
 - [ ] Formalize unconditional actual-object conclusions and audit all dependencies.
 - [ ] Named-source checks, exact-once umbrellas, index/lint, cleanup, separate significance decision.
 
-No new Lean code or accepted contribution for this route.
+The general classification remains unproved and uncounted. Its highest-mode specialization below is formalized and counted once as package 8; it does not settle this broader route. Work is paused at the user's request.
 
 ## Selected next subproblem
 
-The [first-order visibility and prime-power regularity candidate](biscale-prime-power-local-regularity-2026-10-19.md) narrows the first implementation target to bases with the highest admitted dyadic mode active. The existing cubic upper bound suggests an exact Lipschitz/cubic dichotomy, with a prime-power-supported family whose local exponent changes when admitted orders require six distinct prime factors. Its paper proof and specific corpus/literature audit must close before new Lean work. The general support-weighted classification remains open and receives no separate credit from this selection.
+The [first-order visibility and prime-power regularity package](../3-formalized/biscale-prime-power-local-regularity-2026-10-19.md) completes the specialization to bases with the highest admitted dyadic mode active. It proves the sharp Lipschitz/cubic dichotomy and an exact prime-factor-width criterion for the actual prime-power family, including same-period/same-depth sources with different sharp exponents. All nine source checks, full statement/axiom audit, wiring, index and lint pass. The general support-weighted classification remains open and receives no separate credit. No next subproblem is started; work is paused.

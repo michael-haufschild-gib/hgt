@@ -123,7 +123,7 @@ theorem coordinate_unit_ball_bound (N : ℕ) (b c : ℕ → ℝ)
         |selbergMultiplesCoord N b q| := by
       simpa only [sub_zero] using abs_sub_le (selbergMultiplesCoord N c q)
         (selbergMultiplesCoord N b q) 0
-    _ ≤ 1+|selbergMultiplesCoord N b q| := add_le_add_right hclose _
+    _ ≤ 1+|selbergMultiplesCoord N b q| := add_le_add hclose (le_refl _)
     _ ≤ _ := by
       have := single_le_sum (s := Icc 1 N)
         (f := fun u => |selbergMultiplesCoord N b u|) (fun _ _ => abs_nonneg _) hq

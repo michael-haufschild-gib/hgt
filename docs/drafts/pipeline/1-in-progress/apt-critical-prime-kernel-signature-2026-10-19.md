@@ -3,6 +3,7 @@
 - **ID:** APT-CRITICAL-PRIME-KERNEL-SIGNATURE
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / OPEN CLASSIFICATION
+- **Work status:** PAUSED at the user's request (2026-10-19). The two started continuous-kernel and exact-mass leaves are complete and wired. The sign and coercivity problem remains open; the persistent goal was cleared.
 - **Source:** ../3-formalized/apt-critical-translated-prime-form-2026-10-19.md
 - **Statement:** Determine the sign and coercivity of the complete limiting critical prime form on actual finite real factorial patterns.
 
@@ -37,6 +38,8 @@ No argument may treat the masses `J_m(b)` as independently selectable variables.
 - [x] Search prior corpus work before beginning this topic.
 - [x] Prove and formalize the sharp cumulative-charge boundary below.
 - [x] Establish the exact common-density and unit-cell representations.
+- [x] Formalize the continuous real representative, including endpoint matching.
+- [x] Formalize the exact full half-line pattern mass using the existing sinc-square Fourier identity.
 - [ ] Decide the sign of the real even kernel; supply actual finite-pattern consequences.
 - [ ] Audit any obstruction's strongest positive survivor, then formalize that exact statement.
 - [ ] Complete targeted, actual-file, axiom, index, lint, novelty, and significance audits.
@@ -121,12 +124,12 @@ Do not assume `K(0)=K(1)`; the cumulative charge has jumps at integers.
 The symmetrized expression does satisfy `R(0)=R(1)` and is even on the unit circle.
 The sign of `H_N` alone does not determine the sign of `R`.
 
-The now-formalized `factorialCriticalPrimeRealKernel` is the symmetrization of the
-existing **L1 representative**, not yet the continuous branch `R` described above.
-Its values at integers may differ from the branch's symmetric limiting value.
-An isolated negative endpoint value of that L1 representative is not a negative
-quadratic-form witness. Prove a continuous representative or a negative set of
-positive measure before invoking finite-pattern approximation.
+`factorialCriticalPrimeRealKernel` symmetrizes the existing **L1 representative**;
+its values at integers may differ from the continuous branch's limiting value.
+`FactorialCriticalPrimeContinuousKernel.lean` now supplies that continuous branch,
+matching endpoints, agreement on the open cell, and the exact translated-form
+integral identity. Both definitions remain distinct. An isolated negative endpoint
+value of the original L1 representative is not a quadratic-form witness.
 
 The unresolved endpoint is an unconditional classification of this explicit `R`.
 A positive lower bound would give coefficient `ℓ²` coercivity by exact Fourier
@@ -435,11 +438,15 @@ plan, with its intermediate estimates not yet formalized.
    unconditional target `R_cont(t)≤-log2/2000` throughout the unit cell,
    hence a uniform negative bound for every nonzero finite real pattern.
 
-Every inequality, normalization, finite charge value, and infinite-tail exchange
-above remains subject to paper and Lean checks. No negative witness, coercivity
-theorem, no-go retirement, or significance credit is claimed from this plan.
+The eight prepared arithmetic checks now pass in Lean: the positive rational
+budget, curvature rational budget, twelve-charge coefficient budget, quadratic
+distance inequality, and four Taylor-bound rational comparisons. These verify
+only the stated arithmetic implications. The analytic harmonic estimates, finite
+charge-to-budget reductions, curvature bound, and infinite-tail exchange remain
+open. No negative witness, coercivity theorem, no-go retirement, or significance
+credit follows from these checks.
 
-### Continuous-leaf audit in progress
+### Continuous-leaf dependency recovery
 
 The index refresh completed with exit zero; all eight public declarations were
 individually found in `formal/LEAN_API.md`. The authoritative lint run returned one
@@ -447,8 +454,17 @@ with 381 large-file warnings and a single unrelated BVI reachability error for
 `CofinalMobiusMagnitudeObservablesAndGradient`. No APT error or stale-generated-file
 error appeared. Preserve that concurrently developed BVI module. Evidence:
 `/tmp/apt_critical_prime_continuous_kernel_{index,lint}.log` and status files.
-The targeted build is still rebuilding changed dependency artifacts; actual-file
-and actual-import axiom checks must follow its completion.
+The targeted build was stopped after rebuilding changed dependency artifacts for
+about 48 minutes. Retrying with `lake --old build` still selected actively edited
+foreign dependencies; that owned process group was also stopped and its exit
+verified before continuing. Neither interrupted build is recorded as a pass.
+The first direct check exposed missing transitive artifacts. A targeted
+`lake --old build` of the six identified BiScale/RHTower dependencies completed
+successfully; no foreign source was edited. Evidence:
+`/tmp/apt_finish_missing_dependencies.log` and status `0`.
+Direct actual-file `lake --old env lean -o ...` compilation now passes with an
+empty log for both the continuous and mass leaves. The final actual-import axiom
+and generated-catalog checks are recorded below.
 
 Further reuse checks: the full 20-candidate/20-source/one-ingredient screen of
 `/tmp/apt-critical-kernel-symmetric-oscillation-api.json` did not supply the needed
@@ -498,3 +514,133 @@ includes the singleton identity `J_m({j},b)=b_j² factorialCriticalHarmonicDefec
 the sign proof should sharpen this existing scalar object. It must not introduce
 an equivalent replacement definition. Evidence:
 `/tmp/apt-critical-kernel-scalar-defect-api.json`.
+
+External ingredient audit: NIST DLMF already records the positive-real Laplace
+representations of the auxiliary sine/cosine-integral functions in
+[6.7.13](https://dlmf.nist.gov/6.7.E13) and
+[6.7.14](https://dlmf.nist.gov/6.7.E14). The proposed scalar-tail representation is
+a specialization and elementary recombination of that classical machinery;
+the representation itself is not a novelty claim. The native arithmetic kernel's
+uniform sign, if proved, still needs its own novelty and significance audit.
+
+The logarithmic-tail deep search was screened completely (20 candidates, 20 source
+arguments, one ingredient set): `/tmp/apt-critical-kernel-log-cubic-tail-api.json`.
+It recovered public `RHTower.integrableOn_log_sub_div_cube` and
+`RHTower.integral_Ioi_log_div_cube` in `XiRadialJensenMassCentralCurvature.lean`:
+the latter integrates `log(x/a)/x³` to `1/(4a²)`. Together with the inverse-cube
+integral this supplies the proposed `log(x)/x³` tail value by linearity.
+`HTGeometry/LogLinearTailIntegral.lean` was read in full; its antitone integral-test
+framework supplies the sum comparison and the exact inverse-square logarithmic
+integral used in the odd-charge bound. The suggested generic convergence chain
+does not supply the quantitative tail constant. The apparent
+`Sieve.DivisorSquareTail.logCubeKernel` hit was source-checked and means
+`(1+log x)³/x²`, a different integrand.
+
+The final pending sine/Laplace search finished with partial results: all twenty
+candidate statements and twenty source-argument statements were screened in
+`/tmp/apt-critical-kernel-sine-laplace-prior.json`. It recovered
+`connes_sinDiv_eq_laplace` and `laplace_sineKernel` as possible later ingredients;
+their applicability to the proposed scalar-tail identity is not checked. The
+search reports a runtime deadline, malformed local-model JSON during judging,
+pending coverage, and an incomplete background refresh. These results cannot
+support an absence or novelty claim. No further sign-proof work is started before
+the requested pause.
+
+## Final closure before pause
+
+The two completed leaves are imported by
+`formal/GaloisForLFunctions/ArithmeticPositivityTheory.lean`:
+
+| Leaf | Public declarations | Verified endpoint |
+| --- | ---: | --- |
+| `FactorialCriticalPrimeContinuousKernel.lean` | 8 | Continuous reflected cell kernel, matching endpoints, agreement with the L1 representative on the open cell, and the exact full translated-form integral |
+| `FactorialCriticalPrimeKernelMass.lean` | 4 | Singleton/scalar identity, scaled sinc-square weight identity, integrability, and `∫_(0,∞)γQ_b=(π²/12)Σ b_j²` |
+
+Both actual files passed `lake --old env lean -o ...` with empty logs and status
+zero. A separate actual-import audit covered all twelve public declarations and
+found only `propext`, `Classical.choice`, and `Quot.sound`. The source declaration
+sets match that audit exactly. Evidence:
+
+- `/tmp/apt_critical_prime_continuous_kernel_actual.{log,status}`
+- `/tmp/apt_critical_prime_kernel_mass_actual.{log,status}`
+- `/tmp/apt_critical_prime_kernel_closure_axioms.{log,status}`
+- `/tmp/apt_critical_prime_kernel_closure.{log,status}` — mass scratch, API probes,
+  and the eight arithmetic certificates below; status zero and empty log.
+
+`scripts/formal_tools.py index` passed and refreshed `LEAN_API.md`, `LEAN_GAPS.md`,
+and `LEAN_OVERVIEW.md`. Each of the twelve declarations was individually confirmed
+exactly once under its actual module in `LEAN_API.md`. Source whitespace and
+forbidden-declaration/heartbeat checks passed. No full or umbrella build was run.
+
+The final authoritative `scripts/formal_tools.py lint --check-generated` returned
+one: 381 existing large-file warnings and six unrelated reachability errors:
+
+- `BiScaleUncertainty.SieveLocalVisibilityClassification`
+- `BiScaleUncertainty.SievePrimePowerLocalRegularity`
+- `BiScaleUncertainty.SieveVisibilityPhaseSeparation`
+- `BiScaleUncertainty.SieveVisibilityRadialEstimates`
+- `TransHorizonIncidenceMechanics.FermiBoundedPrimeCapacityObservability`
+- `TransHorizonIncidenceMechanics.FermiFinitePrimeAntichainBound`
+
+No APT or stale-generated-file error appears. Those foreign modules were preserved;
+the global lint gate is not green. Evidence:
+`/tmp/apt_critical_prime_kernel_closure_{index,lint}.{log,status}`.
+
+The results remain supporting normalizations and representations, with no separate
+significant novelty established. Accepted significant-result count remains
+**0/100**. The next mathematical obligation, if work is explicitly resumed, is an
+unconditional sign/coercivity proof for the actual arithmetic kernel, including
+the proposed analytic estimates and a fresh novelty/significance audit. No route
+is retired and no sign or RH consequence is claimed.
+
+### Checked arithmetic certificates
+
+These exact examples were checked together in the closure scratch. They do not
+prove the analytic premises or their connection to the native harmonic masses.
+Their statements and proofs are retained here before scratch-source cleanup.
+
+```lean
+/-- Exact rational bookkeeping for the proposed singleton certificate;
+this does not prove its analytic premises. -/
+example : (32 / 405 : ℝ) + 28 / 1125 + 49 / 19440 + 17 / 1764 + 32 / 10935 +
+    29 / 30000 + 7 / 2662 + 105 / 52728 + 749 / 1382976 + 1729 / 4556250 +
+    175 / 176868 + 301 / 1574640 + 91 / 123462 + 671 / 86640 ≤ 5 / 36 - 1 / 300 := by
+  norm_num
+
+example : (22 / 7 : ℝ)^4 / 15552 + ((22 / 7 : ℝ)^2 + 22 / 7 + 1) / 1152 < 1 / 50 := by
+  norm_num
+
+example : ((-(5 / 4 : ℝ) - 7 / 108 - 3 / 500) +
+    (2 / 3 + 7 / 72 + 16 / 243) * (8 / 5) +
+    (67 / 200) * (7 / 3) + (6 / 49) * (17 / 6) + (2 / 121) * (7 / 2)) * (3 / 4) ≤ 1 := by
+  norm_num
+
+example {x y : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 4)
+    (hy0 : 0 ≤ y) (hy1 : y ≤ 1 / 4) : |x - y| ≤ x + y - 8 * x * y := by
+  apply abs_le.mpr
+  constructor
+  · nlinarith [mul_nonneg hx0 (show 0 ≤ 1 / 4 - y by linarith)]
+  · nlinarith [mul_nonneg hy0 (show 0 ≤ 1 / 4 - x by linarith)]
+
+/-- Taylor-bound arithmetic for the second harmonic, using 3.14 < π < 22/7. -/
+example : (10 / 9 : ℝ) ≤ 1 / 2 + (157 / 50 : ℝ)^2 / 18 +
+    (157 / 50 : ℝ)^4 / 1458 - (22 / 7 : ℝ)^6 / 437400 := by
+  norm_num
+
+example : 1 + (22 / 7 : ℝ)^4 / 288 - (157 / 50 : ℝ)^6 / 38400 +
+    (22 / 7 : ℝ)^8 / 9031680 ≤ 4 / 3 := by
+  norm_num
+
+example : 1 + (7 / 8 : ℝ) - 5 * (157 / 50 : ℝ)^2 / 18 +
+    625 * (22 / 7 : ℝ)^4 / 23328 - 15625 * (157 / 50 : ℝ)^6 / 27993600 +
+    390625 * (22 / 7 : ℝ)^8 / 59256852480 ≤ 4 / 3 := by
+  norm_num
+
+example : 2 - (157 / 50 : ℝ)^2 / 2 + (22 / 7 : ℝ)^4 / 18 -
+    (157 / 50 : ℝ)^6 / 600 + (22 / 7 : ℝ)^8 / 35280 ≤ 7 / 6 := by
+  norm_num
+```
+
+The six completed closure scratch sources were removed after verification.
+Validation logs and corpus-search JSON are retained. Work is paused; no further
+conjecture or implementation work is authorized by this checkpoint.

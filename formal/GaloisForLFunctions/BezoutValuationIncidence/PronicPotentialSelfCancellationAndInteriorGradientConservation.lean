@@ -387,6 +387,17 @@ theorem pmBezoutInteriorPronicEnergy_le_two_mul_discreteEnergy_add_half
   change _ ≤ 2 * pmPowerDampedDivisorDiscreteEnergy ε T + 2 * pmActivePairPronicEnergy ε T at hle
   linarith [(pmActivePairPronicEnergy_bounds hε T).2]
 
+/-- The unconditional PM source bound at damping `ε ≥ 1/2` also bounds the
+pure-interior energy, uniformly in the observation horizon. This transports
+the existing endpoint theorem; it does not give a bound below `1/2`. -/
+theorem exists_pmBezoutInteriorPronicEnergy_budget_of_half_le {ε : ℝ}
+    (hε : (1 / 2 : ℝ) ≤ ε) :
+    ∃ B : ℝ, ∀ T : ℕ, pmBezoutInteriorPronicEnergy ε T ≤ B := by
+  obtain ⟨B, hB⟩ := RHTower.exists_pmPowerDampedDivisorDiscreteEnergy_budget_of_half_le hε
+  refine ⟨2 * B + 1 / 2, fun T => ?_⟩
+  exact (pmBezoutInteriorPronicEnergy_le_two_mul_discreteEnergy_add_half
+    (by linarith) T).trans (by linarith [hB T])
+
 /-- **Pure-Interior Pronic Energy Criterion for the Riemann Hypothesis
 (`riemannHypothesis_of_pmBezoutInteriorPronicEnergy_bounded`):**
 If for every `δ > 0` there exist `ε ∈ (0, δ)` and a uniform bound `B : ℝ` such that for all `T ≥ 1`,

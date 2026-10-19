@@ -109,7 +109,8 @@ theorem invisible_raw_error (N : ℕ) (b : ℕ → ℝ) (q : ℕ) (hq : q ∈ Ic
   have hM : 0 ≤ coordinateBudget N b :=
     (by norm_num : (0 : ℝ) ≤ 1).trans (coordinateBudget_one_le N b)
   have hm6 : m ≤ 6 := by rcases hm with rfl | rfl <;> omega
-  have hP : 1 ≤ (N.factorial : ℝ) := by exact_mod_cast Nat.one_le_factorial N
+  have hP : 1 ≤ (N.factorial : ℝ) := by
+    exact_mod_cast (show 1 ≤ N.factorial from Nat.factorial_pos N)
   calc
     _ ≤ (N.factorial : ℝ)^m*(2*(coordinateBudget N b)^6*t^3) :=
       raw_error_of_resonant_products N _ _ m _ (by positivity)

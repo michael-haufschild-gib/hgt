@@ -6,7 +6,7 @@ do not pivot on unanswered mathematical problems. your job is precisely to solve
 
 do not just optimize numbers and estimates - solve the true hard obstacles that block your route from turning into a proof of the riemann hypothesis. 
 
-use the search tool for our lean corpus. you are missing existing work
+use the search tool for our lean corpus. make sure you are note missing existing work.
 
 are you actually working on removing roadblocks and mathematical obstacles to close route CHMD for the final RH proof, or are you taking shortcuts just to create lean files that build? this here does not look like you are actually solving the problems but are just busy creating lean code that does nothing to our research problem
 
@@ -531,7 +531,7 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
-read fully line by line and understand the motivation and context of the fields including traps to avoid: formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
+read fully line by line and understand the motivation and context of the fields including traps to avoid: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
  
 on every turn: 
 
@@ -645,3 +645,24 @@ the goal is met exactly when you assume the role of a fields medalist asked to l
 
 
 
+
+
+## research review
+take a fresh look at the our whole research program.
+
+status quo:
+- our route ledger: docs/reports/rh-current-frontier-map.md
+- analysis of hard mathematical obstales: docs/reports/hard-obstacles-summary-1810.md 
+
+we have then started several research programs to develop new theories and the mathematical tools that will allow us to overcome these obstacles:
+- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
+- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+- formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
+- formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+
+problem: despite all this work, we have not come close to overcome any of the hard obstacles and close a proof route.
+
+questions:
+1. what mathematimatical tools are we or mathematics as a whole missing?
+2. what to research next in each of the four research programs
+3. do we need another research program to develop new mathematics that nobody has developed yet? if so, what would it be about and what would it try to answer and do?

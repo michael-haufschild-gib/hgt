@@ -54,7 +54,8 @@ theorem radial_raw_error (N : ℕ) (b : ℕ → ℝ) (t : ℝ) (ht : 0 ≤ t) (h
     · intro i _; exact hbase _
     · intro i _; exact hscaled _
     · intro i _; exact radial_coordinate_error N b t ht _
-  have hP : 1 ≤ (N.factorial : ℝ) := by exact_mod_cast Nat.one_le_factorial N
+  have hP : 1 ≤ (N.factorial : ℝ) := by
+    exact_mod_cast (show 1 ≤ N.factorial from Nat.factorial_pos N)
   calc
     _ ≤ (N.factorial : ℝ)^m*(6*(2*M)^6*(M*t)) :=
       raw_error_of_resonant_products N b (fun d => (1+t)*b d) m _ (by positivity)

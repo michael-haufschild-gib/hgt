@@ -76,6 +76,28 @@ Every object in APT carries its exact normalization, domain of holomorphy/integr
 
 ## 5. Main Research Topics
 
+**Current frontier (19 October 2026).** These topics include established tools
+and open extensions. Subcritical tail-span coercivity is already available in
+[`FactorialTailSpanWeilCoercivity.lean`](FactorialTailSpanWeilCoercivity.lean).
+At the critical envelope, the whole-span affine comparison
+[`FactorialCriticalAffineComparison.lean`](FactorialCriticalAffineComparison.lean)
+is also proved; a generic Gram-matrix obstruction must not be used to erase that
+source-specific result. The translated prime limit, harmonic diagonalization
+and continuous kernel are established in
+[`FactorialCriticalTranslatedPrimeHarmonicDiagonal.lean`](FactorialCriticalTranslatedPrimeHarmonicDiagonal.lean)
+and [`FactorialCriticalPrimeContinuousKernel.lean`](FactorialCriticalPrimeContinuousKernel.lean).
+The exact half-line kernel-weight mass for a finite pattern is now
+$(\pi^2/12)\sum_j b_j^2$ in
+[`FactorialCriticalPrimeKernelMass.lean`](FactorialCriticalPrimeKernelMass.lean).
+
+What remains is a sign estimate for the relevant critical prime form, assembly
+with the archimedean and polar terms of the **complete** Weil form, and a
+finite-scale error bound strong enough for the intended growing patterns.
+The negative $m=2$ harmonic and positive higher harmonics identify a concrete
+comparison to investigate; they do not determine the sum's sign. A fixed-pattern
+limit does not justify inserting a growing pattern. No new sign theorem is
+claimed by these README corrections.
+
 1. **Zero-Divisor Sampling vs. Signed Diagonal Growth (Local Source Calibration):**
    Establishing sharp two-sided logarithmic budgets $\mathcal{Z}(U_{n,k}) \asymp \frac{\log N}{N}$ and $\operatorname{Re}\mathcal{W}(U_{n,k}, U_{n,k}) \gtrsim \frac{\log N}{N}$ from literal phase Lipschitz regularity and endpoint jump control, proving that physical $L^2$ mass $O(1/N)$ underestimates zero-divisor sampling by an essential factor of $\log N$.
 
@@ -86,7 +108,7 @@ Every object in APT carries its exact normalization, domain of holomorphy/integr
    Classifying finite divisor-dilation stencils that cancel polynomial collar drifts while preserving first-harmonic dominance, characterizing the cubic Diophantine resonances of the shifted frequencies $\lambda_N = N(1+\varepsilon_N)$, and proving uniform Bohr and finite-window physical $L^2(\mathbb{R})$ Riesz sequence bounds across arbitrary finite coefficient families.
 
 4. **High-Scale Signed Span Coercivity and the Critical Envelope Boundary $\beta \downarrow 1/2$:**
-   Combining nonstationary Mellin low-frequency exclusion on $|\xi| \le 1/2$ with prime-dilation Schur bounds to establish $\operatorname{Re}\mathcal{W}(f_b, f_b) \ge (c\log M - C)\sum_{N \ge M} |b_N|^2$ for subcritical envelopes $\beta > 1/2$, and investigating how exact multiplicative incidence $\sum_{d \mid n} \Lambda(d) = \log n$ and oscillatory prime-dilation cancellation behave at the critical boundary $\beta = 1/2$ where absolute prime summation $\sum \Lambda(k)/k^{\beta+1/2}$ diverges.
+   Use the established subcritical coercivity bound as a baseline. At $\beta=1/2$, estimate the complete signed form on a specified pole-free family, with the finite-scale error and all growing support parameters controlled. Absolute prime summation $\sum\Lambda(k)/k^{\beta+1/2}$ diverges at this boundary; the existing critical affine and prime-kernel formulas specify where cancellation must be retained.
 
 5. **All-Aperture Extension, Pole-Free Nullspace Geometry, and Odd-Mode Sinh Capacity:**
    Extending positivity from restricted high-scale or single-scale families toward larger subspaces by exploiting the codimension-one pole-free nullspace $\Lambda_{\text{pole}}(S, a) = 0$ (where compact-ramp combinations and negated tail combinations share identical zero-side readouts) and controlling the odd-mode hyperbolic capacity ratio $\operatorname{sinhPairing}(g)^2 / (2\mathcal{M}_N(g))$ as the support aperture grows.

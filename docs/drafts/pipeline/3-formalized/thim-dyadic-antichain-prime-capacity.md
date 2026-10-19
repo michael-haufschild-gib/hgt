@@ -1,8 +1,9 @@
 # Dyadic-antichain Fermi observability and odd-prime capacity
 
 - **ID:** thim-dyadic-antichain-prime-capacity
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean and significance audits pending
+- **Stage:** 3-formalized
+- **Execution:** Full classification formalized unconditionally, 2026-10-19.
+- **Type:** THEOREM (Lean); significance audit pending
 - **Source:** Native selected Fermi boundary trace, physical reciprocal-pronic
   energy, dyadic valuation transport, and odd divisor Gram correlations.
 - **Statement:** Uniform physical Fermi observability on dyadic-antichain
@@ -11,12 +12,14 @@
 
 ## Goal and counting
 
-Qualified programme count remains **1/100**. No result on this card is counted.
-The dependency-closed paper proof appears below. The five-public-declaration
-native energy-comparison leaf passes its source/olean and final imported axiom
-checks. The classification remains unformalized. Classical GCD
-matrix positivity, prime-cube diagonalization, and Euler products are prior
-ingredients, not proposed contributions.
+Qualified programme count remains **1/100**. No result on this card is counted
+before the significance audit. The dependency-closed paper proof appears below;
+Theorem A and every numbered paper statement (1)–(10) are now Lean theorems
+without hypotheses beyond the theorem's own setting (see "Lean certificate").
+Nineteen leaves carry the proof: the thirteen earlier supporting leaves
+(seventy-three public declarations) and six new leaves (seventy-one public
+declarations). Classical GCD matrix positivity, prime-cube diagonalization, and
+Euler products are prior ingredients, not proposed contributions.
 
 Let `P(c)` be the native full sieve reciprocal-pronic energy and `Q(c)` the
 native Fermi jump energy on odd boundaries and boundaries divisible by four.
@@ -363,14 +366,60 @@ when capacity diverges. A bare antichain counterexample does not close the
 route. If the stronger classification fails, record the actual obstruction
 and audit the strongest remaining positive statement before retirement.
 
+## Lean certificate
+
+All modules are in `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/`
+and wired into the THIM umbrella. Every listed declaration has an imported
+`#print axioms` audit with only `propext`, `Classical.choice`, `Quot.sound`.
+
+**Setting.** `fermiDyadicAntichainAdmissible A N c` (in
+`FermiDyadicAntichainSupportRepresentation`): two distinct active indices in
+`[1,N]` never share their odd part `n / 2^(v_2 n)`, and every prime factor of an
+active odd part lies in `A`. `P = sieveTotalPronicEnergy N c`,
+`Q = fermiSelectedTotalPronicEnergy N c` are the native energies.
+
+**Theorem A.** `fermiDyadicAntichain_primeCapacity_classification Pi hPi`
+(`FermiDyadicAntichainPrimeCapacityClassification`) is a `List.TFAE` of:
+uniform `P ≤ C Q` on all admissible signed packets; the same on nonnegative
+packets; `Summable (fun p : Pi => 1/p)`; bounded finite reciprocal subsums.
+The only hypothesis `hPi` says `Pi` consists of odd primes, the theorem's setting.
+`fermiDyadicAntichain_oddPrimeCapacity_classification A` is the same
+classification for an arbitrary `A : Set ℕ` with no hypothesis at all; the
+capacity is that of the odd primes of `A`
+(`fermiDyadicAntichainAdmissible_iff_oddPrimes`). The summability/bounded
+subsum equivalence is `summable_reciprocal_iff_bounded_finite_subsums`.
+
+**Paper statements.**
+
+| Paper item | Lean declaration(s) | Module |
+|-|-|-|
+| (1) `P_h/2 ≤ P ≤ P_h`, `Q_h/2 ≤ Q ≤ Q_h`, plain sums | `sieveTotalPronicEnergy_plainSum_bounds`, `fermiSelectedTotalPronicEnergy_plainSum_bounds`; ray form `sieveHomogeneousEnergy_pronic_bounds`, `fermiSelectedHomogeneousEnergy_pronic_bounds` | `FermiHomogeneousPlainSumsAndImpulseMasses`, `FermiHomogeneousEnergyAndPronicComparison` |
+| (2) odd-divisor Gram `Z gcd^2/(de)` | `fermiOddDivisorProfile_gram`, `fermiOddDivisorPacket_energy` | `FermiOddDivisorGramAndFrameBounds` |
+| (3) ray identities for `P_h`, `Q_h` | `tsum_pos_eq_tsum_two_pow_mul_odd`, `sieveHomogeneousEnergy_eq_tsum`, `fermiSelectedHomogeneousEnergy_eq_tsum`; antichain form `fermiDyadicAntichain_homogeneousEnergy`, `fermiDyadicAntichain_selectedHomogeneousEnergy` | `FermiHomogeneousPlainSumsAndImpulseMasses`, `FermiFinitePrimeAntichainBound` |
+| (4) finite-prime Gram bounds | `primeExponentGramEnergy_bounds`, `primeBoxGramMatrix_quadratic_bounds`, `gcdSquareRatio_quadratic_bounds`, `fermiOddDivisorPacket_frame_bounds` | `FermiPrimeExponentGramBounds`, `FermiPrimeBoxGramBounds`, `FermiGcdGramPrimeProductBounds`, `FermiOddDivisorGramAndFrameBounds` |
+| (5) scalar impulse masses `4/3`; `13/12`, `1/3`, `4/3` | `fermiDyadicImpulse_square_hasSum`, `fermiDyadicImpulse_selected_mass` | `FermiDyadicAntichainCoordinates`, `FermiHomogeneousPlainSumsAndImpulseMasses` |
+| arbitrary antichain support representation | `exists_fermiDyadicAntichain_representation`, `fermiDyadicAntichainCoefficient_admissible`, energy congruences `*_congr_Icc` | `FermiDyadicAntichainSupportRepresentation` |
+| (6) `P_h ≤ 4B^2 Q_h`, `P ≤ 8B^2 Q` | `fermiDyadicAntichainAdmissible_finitePrime_homogeneous_bound`, `fermiDyadicAntichainAdmissible_finitePrime_physical_bound` | `FermiDyadicAntichainSupportRepresentation` |
+| `C = 8 exp(6S)` for all signed packets | `fermiDyadicAntichainAdmissible_boundedCapacity_physical_bound` | `FermiDyadicAntichainSupportRepresentation` |
+| (7) disjoint banks, `0 < θ_i < 1/(4L)` | `exists_fermiSmallParityRatioBanks`, `fermiPrimeBankParityRatio_capacity_bound` | `FermiPrimeCapacityBanks` |
+| combined squarefree cube on disjoint banks | `fermiBankCubeIndex_*`, `fermiBankCubePacket_energy` | `FermiMultiBankPrimeCube` |
+| (8) `E_i`, `ρ_i = (1-θ_i)/(1+θ_i)`, `1-1/(2L) < ρ_i < 1` | `fermiBankParityClassMass`, `fermiBankParityCorrelation_eq`, `fermiBankParityCorrelation_bounds` | `FermiBankPacketNormalizedGram` |
+| (9) `‖w_j‖^2 = 1`, `⟨w_j,w_k⟩ = ρ_j ρ_k`, entries in `[1-1/L,1]`; `C_j` disjoint, nonempty | `fermiOneHotBank_native_gram`, `fermiOneHotBankPacket_gram`, `fermiBankNormalizedGram_bounds`, `fermiOneHotBankPacket_disjoint`, `fermiOneHotBankPacket_nonempty` | `FermiBankPacketNormalizedGram` |
+| (10) literal packet: nonnegative, admissible; `P_h ≥ L-1`, `0 < Q_h ≤ (L-1)/(2L)+1/3`; `P ≥ (L-1)/2`, `0 < Q < 5/6` | `fermiBankAntichainCoefficient_admissible`, `fermiBankAntichain_homogeneous_bounds`, `fermiBankAntichain_physical_bounds`, `exists_fermiDyadicAntichain_divergentCapacity_packet` | `FermiDivergentCapacityAntichainPackets` |
+| divergent capacity forbids any uniform constant | `fermiDyadicAntichain_bounded_capacity_of_nonneg_bound` | `FermiDyadicAntichainPrimeCapacityClassification` |
+
+Two horizon choices differ from the paper prose without changing any claim: the
+literal packet uses the horizon `∑_d 2^(j d) d`, which contains every active
+index, and the paper's horizon `2^L ∏ p` plays no role in the energies.
+
 ## Gates
 
 - [x] Native question and source-pure mechanism isolated; corpus searches run.
 - [ ] Finish relevant corpus and external prior-work comparison.
 - [x] Dependency-closed paper proof of Theorem A, including the positive classification.
 - [ ] Audit significance independently of proof success.
-- [ ] Formalize exact surviving theorem, verify named leaves and all axioms.
-- [ ] Wire imports; regenerate index; pass formal lint; clean owned scratch.
+- [x] Formalize exact surviving theorem, verify named leaves and all axioms.
+- [x] Wire imports; regenerate index; pass formal lint; clean owned scratch.
 
 ## Log
 
@@ -430,16 +479,22 @@ and audit the strongest remaining positive statement before retirement.
   engine error; compiler metadata and semantic coverage have the same limitations
   recorded above. Existing arithmetic and matrix results remain prior work.
 
-### Current formal boundary
+### Formal boundary before the 2026-10-19 completion (historical)
 
 Verified supporting leaves are `FermiHomogeneousEnergyAndPronicComparison`,
 `FermiPrimeExponentGramBounds`, `FermiPrimeBoxGramBounds`,
 `FermiGcdGramPrimeProductBounds`, `FermiOddDivisorGramAndFrameBounds`, and
-`FermiDyadicAntichainCoordinates`, together with `FermiBooleanParityGram`.
-The full support-to-parameter representation, finite-prime
-uniform physical bound, and disjoint positive prime-bank construction still
-require formalization. Neither direction of the full native equivalence is
-claimed as a Lean theorem yet.
+`FermiDyadicAntichainCoordinates`, `FermiBooleanParityGram`, and
+`FermiBooleanPrimeCube`, `FermiBooleanPrimeCubePackets`,
+`FermiPrimeCapacityBanks`, `FermiBankParityTensorGram`,
+`FermiFinitePrimeAntichainBound`, and `FermiBoundedPrimeCapacityObservability`.
+For the parameterized native antichain packets, the forward physical bounds
+`P <= 8 B^2 Q` and `P <= 8 exp(6M) Q` are now Lean theorems, with
+`B = product_(p in Pset) (p+1)/(p-1)` and reciprocal-prime subsums bounded by `M`.
+The representation of every arbitrary antichain support, realization and
+normalization of the positive bank packets, their native trajectory bounds,
+and the assembled converse still require formalization. The full native
+equivalence is not claimed as a Lean theorem.
 
 The arithmetic bridge reuses Mathlib's `Nat.factorization_gcd`, finite-support
 factorization products, and `Nat.eq_of_factorization_eq`. Their actual use is
@@ -448,12 +503,20 @@ wrappers were inspected, including their unit/positivity restrictions. The fifth
 leaf proves the exact odd-divisor Gram identity and both finite-packet frame
 bounds. The sixth proves literal antichain coordinates and the scalar impulse
 energy bound. The Boolean parity leaf proves exact algebraic bank Gram formulas.
-All forty-one public declarations have imported standard-axiom audits; all seven
-leaves are wired and indexed. The first six passed global generated lint. The
-latest run reports one concurrent unreachable BezoutValuationIncidence module,
-with no THIM finding.
+The arithmetic cube leaf maps Boolean choices injectively to odd prime products
+and identifies their native profile Gram with one global odd-mass factor.
+The cube-packet leaf transports arbitrary Boolean coefficients into a literal
+finite odd-integer support and reuses the native packet energy theorem.
+The capacity-bank leaf proves the reciprocal parity-ratio bound and extracts
+disjoint nonempty banks. The tensor leaf proves zero-one packet support,
+disjointness for distinct odd-bank choices, and exact product Gram formulas.
+All seventy-three public declarations have imported standard-axiom audits; all
+thirteen leaves are wired and indexed. Final global generated lint reports four
+unrelated BiScaleUncertainty umbrella omissions and no THIM finding; exact names
+are recorded below. Work is paused at the user's request. The remaining full
+classification work is explicitly open, and the qualified count remains 1/100.
 
-The next native bridge parameterizes an antichain by a finite set `S` of odd
+The verified native bridge parameterizes an antichain by a finite set `S` of odd
 integers, one depth `j(d)` per `d`, and normalized amplitudes `a(d)`. Its literal
 coefficient at `2^j(d) d` is `2^j(d) d a(d)`. For any horizon containing those
 indices, divisibility gives
@@ -577,3 +640,123 @@ scratch/log files after certification; retained active corpus-search evidence.
   yet run. The finite-prime native theorem has been separated from the existing
   Euler-correction wrapper to keep their dependencies distinct; the native-only
   scratch is now checking. The full capacity scratch remains retained.
+- 2026-10-19 — `FermiBooleanPrimeCube` now passes its named source/olean check
+  and all eight final imported axiom checks (standard axioms only); wiring and
+  index pass. Global lint reports only the concurrent BiScaleUncertainty leaves
+  `SieveLinearVisibility`, `SievePrimePowerVisibility`, and
+  `SieveVisibilityPerturbations`. No foreign source was edited. The native-only
+  forward scratch next encountered the temporarily missing
+  `RHTower/WeilPaperRealificationEnergy.olean`; the foreign build remains active.
+- 2026-10-19 — Deep corpus search for the product lower bound found the exact
+  public `RHTower.one_add_sum_le_prod_one_add` in
+  `PrimeBarycentricCoefficientDivergence.lean:225`; its source proof was checked.
+  All 20 candidate and 20 source-argument statements were triaged. The complete
+  source inventory contained 74,370 files, but semantic coverage was unmeasured
+  and compiler metadata incomplete. This existing classical inequality will be
+  reused, not reproved or counted.
+- 2026-10-19 — Two further deep searches audited disjoint reciprocal-prime banks
+  and finite cube-packet transport. All 20+20 statements and returned source/prose
+  heads were triaged in each. Both were partial (malformed model JSON and a
+  reranking deadline respectively); neither supports an absence claim. The
+  existing `SupportReindex.exists_fin_reindex_of_finset` uses the same Mathlib
+  finite-equivalence transport but is specialized to `Fin M`. The cube packet
+  bridge reuses the existing native finite-packet energy theorem directly.
+  A broader nonsummable-family search is running for the disjoint-bank step.
+- 2026-10-19 — The broader nonsummable-family query completed without runtime
+  errors: all 20 candidate and 20 source statements plus returned heads were
+  triaged. Existing `PrimeMellinJetEulerSubsetLiftNoGo` reuses Mathlib's
+  `summable_of_sum_le` for finite-subsum boundedness. The retrieved Route E
+  static-antiscale dichotomy card was read in full and its defining and main
+  Lean statements checked. It concerns `sum_p omega(p)/p * |1+p^(it)|^2`,
+  static diagonal weights, and simultaneous phase recurrence. It does not
+  establish the native off-diagonal dyadic-antichain physical energy criterion.
+  This is a scope distinction, not an exhaustive novelty certificate.
+- 2026-10-19 — `FermiBooleanPrimeCubePackets` passes full scratch Lean, named
+  source/olean compilation, and all six final imported standard-axiom checks.
+  It uses `Equiv.sum_comp` and the existing native finite-packet energy theorem;
+  no summability/Gram proof was duplicated. Wired; index refresh is running.
+  The disjoint-bank/capacity scratch is now checking the existing corpus
+  product lower bound, reciprocal parity-ratio bound, and finite bank extraction.
+- 2026-10-19 — Ninth-leaf index passes. Global lint finds only the concurrent
+  modules `SieveLinearVisibility`, `SievePrimePowerVisibility`,
+  `SieveVisibilityPerturbations`, `SieveVisibilityPhaseSeparation`,
+  `SieveVisibilityRadialEstimates`, and `MobiusFirstBandTwoPrimeBound`.
+  The bank-capacity scratch passes after correcting the existing finite-union
+  API call and a universe annotation. Its final quantitative nonempty-bank
+  wrapper is now checking; no tenth leaf has been promoted.
+- 2026-10-19 — Deep bank-tensor search completed (74,375 inventoried files,
+  semantic coverage unmeasured, compiler refresh incomplete). All 20+20 returned
+  statements and prose/source heads were triaged. Existing Wold thermofield
+  pure-tensor inner products and independent-replica ANOVA productization were
+  checked; both are classical tensor ingredients on different carriers. The
+  recent BiScale parity-neighborhood card concerns cutoff-dependent fifth/sixth
+  moment inverse exponents, a different operator and question. Targeted reading
+  of the large Route E squarefree-Gibbs card found its exact signed Lambert Gram
+  law and the same local ratio `(p-1)/(p+1)` at fixed index; its reciprocal marker
+  blocks concern physical interval multiplicities. None of these ingredients
+  receives contribution credit. The bank tensor proof uses the already-verified
+  Mathlib dependent product-sum identity and the current parity Gram formula.
+- 2026-10-19 — User cleared the long-running goal and requested completion of
+  started Lean work, wiring/documentation, then pause. No new research target or
+  extension is being started. `FermiPrimeCapacityBanks` and
+  `FermiBankParityTensorGram` now pass named compilation and all twelve final
+  imported standard-axiom checks; both are wired and index passes. The tensor
+  proof's unused typeclass warnings and documentation placement were corrected.
+  The foreign dependency build stopped, but all five previously missing native
+  dependency objects appeared before the targeted restoration runner reached
+  them. The runner skipped every object and changed no dependency source or
+  object. A full import walk now finds zero missing project objects. The
+  existing six-declaration finite-prime/capacity scratch is checking again.
+- 2026-10-19 — All six forward-bound statements pass the full scratch check.
+  They were split into `FermiFinitePrimeAntichainBound` (four public theorems)
+  and `FermiBoundedPrimeCapacityObservability` (two public theorems). Final named
+  source/olean checks pass without diagnostics after removing duplicate and
+  dangling documentation comments introduced during extraction. All six final
+  imported axiom checks pass with only `propext`, `Classical.choice`, and
+  `Quot.sound`. Both modules are wired. No proof hypothesis, heartbeat limit,
+  or foreign source was changed. Final index/lint and pause documentation remain.
+- 2026-10-19 — Closure requested by the user is complete: all started Lean
+  drafts have final named source/olean checks, all public imported axiom checks,
+  umbrella wiring, and index refresh. The final six forward-bound declarations
+  use only `propext`, `Classical.choice`, and `Quot.sound`, as do the earlier
+  supporting declarations. Final global lint exits 1 solely for these unrelated
+  BiScaleUncertainty modules missing umbrella reachability:
+  `SieveLocalVisibilityClassification`, `SievePrimePowerLocalRegularity`,
+  `SieveVisibilityPhaseSeparation`, and `SieveVisibilityRadialEstimates`.
+  No THIM lint error remains. No foreign source, README, heartbeat setting,
+  commit, or push was changed or performed. The full classification remains at
+  paper stage; this supporting package receives no contribution increment.
+- 2026-10-19 — Removed 43 exact owned terminal scratch/audit files after closure
+  (in addition to the 19 earlier parity/cube files). Retained corpus-search JSON
+  evidence. All owned verification jobs are terminal. Programme and memory
+  record the user-requested pause and the exact remaining proof boundary.
+- 2026-10-19 — Full classification formalized. Six new leaves, wired after
+  `FermiBoundedPrimeCapacityObservability`:
+  `FermiDyadicAntichainSupportRepresentation` (arbitrary admissible support →
+  literal parameterized antichain; congruence of both native energies on the
+  horizon window; `4B^2`, `8B^2`, `8 exp(6M)` for every admissible signed packet),
+  `FermiMultiBankPrimeCube` (index of disjoint-bank Boolean choices; exponent law,
+  injectivity, oddness, GCD kernel = product of bank kernels, native packet energy),
+  `FermiBankPacketNormalizedGram` (eqs. (8)–(9) including the literal native
+  Gram), `FermiDivergentCapacityAntichainPackets` (eq. (10) for the literal
+  nonnegative antichain packet), `FermiDyadicAntichainPrimeCapacityClassification`
+  (Theorem A as TFAE, plus the hypothesis-free arbitrary-set version), and
+  `FermiHomogeneousPlainSumsAndImpulseMasses` (eq. (3) with the plain-sum
+  definitions, eq. (1) for those sums, eq. (5) exact scalar masses). Corpus
+  searches before writing: lexical `sieveSeq congr coefficients agree Icc
+  horizon` (recovered `sieveSeq_eq_of_weight_eq_on_Icc` in
+  `ActiveSawtoothPowerSamplingAndCalibratedRecovery`, outside this import chain;
+  its three-line argument is inlined in the energy congruences), `two_pow_mul_odd
+  equiv bijective` (only the private `oddRayIndex_bijective` exists, so a public
+  reindexing lemma was added), `ordCompl odd part ... representation`, and a
+  hybrid convex-Gram query; no reusable statement for the representation,
+  multi-bank cube, or convex Gram bound was found. Mathlib's `ordCompl` API,
+  `Nat.factorization_prod`, `Finset.prod_biUnion`, `summable_of_sum_le`, and the
+  existing THIM/BVI energy, bank, cube, and tensor leaves are reused. Each new
+  module passes a named `lake --old env lean -j 1 -o` source/olean check without
+  diagnostics; the imported audit of all seventy-one new public declarations
+  reports only `propext`, `Classical.choice`, `Quot.sound`. Index regeneration
+  and `scripts/formal_tools.py lint --check-generated` pass (only unrelated
+  large-file warnings). No heartbeat option, axiom, `sorry`, or hypothesis was
+  added; no umbrella or full build was run. Significance and external novelty
+  remain open; qualified count unchanged.
