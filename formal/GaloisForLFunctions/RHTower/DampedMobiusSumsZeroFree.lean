@@ -27,7 +27,8 @@ namespace RHTower
 namespace DampedMobius
 
 /-- A function of the form `n ↦ ∏_{p ∣ n} φ(p, v_p(n))` is multiplicative. -/
-theorem isMultiplicative_of_prod (φ : ℕ → ℕ → ℝ) (A : ArithmeticFunction ℝ)
+theorem isMultiplicative_of_prod {R : Type*} [CommMonoidWithZero R]
+    (φ : ℕ → ℕ → R) (A : ArithmeticFunction R)
     (hA : ∀ n, n ≠ 0 → A n = ∏ p ∈ n.primeFactors, φ p (n.factorization p)) :
     A.IsMultiplicative := by
   refine ⟨by rw [hA 1 one_ne_zero]; simp, fun {m n} hmn => ?_⟩
@@ -54,7 +55,8 @@ theorem isMultiplicative_of_prod (φ : ℕ → ℕ → ℝ) (A : ArithmeticFunct
     simp [hpm]
 
 /-- On prime powers, a product-form function is its local factor. -/
-theorem prod_prime_pow (φ : ℕ → ℕ → ℝ) {p k : ℕ} (hp : p.Prime) (hk : k ≠ 0) :
+theorem prod_prime_pow {R : Type*} [CommMonoid R]
+    (φ : ℕ → ℕ → R) {p k : ℕ} (hp : p.Prime) (hk : k ≠ 0) :
     ∏ q ∈ (p ^ k).primeFactors, φ q ((p ^ k).factorization q) = φ p k := by
   rw [Nat.primeFactors_prime_pow hk hp, Finset.prod_singleton, hp.factorization_pow,
     Finsupp.single_eq_same]

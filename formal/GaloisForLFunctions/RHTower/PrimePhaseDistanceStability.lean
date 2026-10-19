@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.CCMCoherentSquareExclusion
 import GaloisForLFunctions.RHTower.Sieve.DistanceLocalChanges
 import GaloisForLFunctions.RHTower.LiouvillePrimeBandAlgebra
 
@@ -91,6 +92,42 @@ theorem LiouvillePrimeBand.tendsto_mulDistSq_character_iff (S : Finset ℕ)
       S β z w (t k) (N k))).2
     linarith
   exact ⟨transfer z w, transfer w z⟩
+
+/-- Every finite prime modification of Liouville remains distant from the constant reference. -/
+theorem tendsto_mulDistSq_liouville_patch_zero (S : Finset ℕ) (b : ℕ → ℂ) :
+    Tendsto (fun N => mulDistSq (phaseChar (finiteValuePatch S (fun _ => -1) b)) 0
+      (Nat.primesLE N)) atTop atTop := by
+  have hdiv := GaloisForLFunctions.RHTower.tendsto_primeReciprocalSum_atTop.comp
+    (tendsto_add_atTop_nat 1)
+  have hbase (N : ℕ) :
+      mulDistSq (fun _ => (-1 : ℂ)) 0 (Nat.primesLE N) =
+        2 * GaloisForLFunctions.RHTower.primeReciprocalSum (N + 1) := by
+    norm_num [mulDistSq_eq_pair, mulDistSqPair, charFn, Nat.primesLE_eq_filter_range,
+      GaloisForLFunctions.RHTower.primeReciprocalSum, mul_sum, div_eq_mul_inv]
+  refine tendsto_atTop.2 fun B => ?_
+  filter_upwards [hdiv.eventually_ge_atTop
+    ((B + ∑ p ∈ S, ‖(-1 : ℂ) - b p‖ / (p : ℝ)) / 2)] with N hN
+  rw [mulDistSq_phaseChar]
+  have hlocal := mulDistSq_sub_local_cost_le (fun _ => (-1 : ℂ)) b 0
+    (Nat.primesLE N) S
+  rw [hbase] at hlocal
+  dsimp only [Function.comp_apply] at hN
+  linarith
+
+/-- The corpus's complete prime-band family has unconditional zero-frequency divergence. -/
+theorem LiouvillePrimeBand.tendsto_mulDistSq_character_zero (S : Finset ℕ)
+    (β : ℕ → ℂ) (z : ℂ) :
+    Tendsto (fun N => mulDistSq (LiouvillePrimeBand.character S β z) 0
+      (Nat.primesLE N)) atTop atTop := by
+  have hchar : LiouvillePrimeBand.character S β z =
+      phaseChar (finiteValuePatch (insert 2 S) (fun _ => -1)
+        (fun p => if p ∈ S then z * β p else Complex.I)) := by
+    apply congrArg phaseChar
+    funext p
+    by_cases hp : p ∈ S <;> by_cases hp2 : p = 2 <;>
+      simp [finiteValuePatch, LiouvilleTwistedDensity.primePhase, hp, hp2]
+  rw [hchar]
+  exact tendsto_mulDistSq_liouville_patch_zero _ _
 
 end
 end RHTower

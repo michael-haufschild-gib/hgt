@@ -39,8 +39,9 @@ theorem moebiusZetaDefect_eq_long_divisors (X n : ℕ) :
     Sieve.moebiusZetaDefect (X + 1) n =
       ((∑ d ∈ n.divisors.filter (fun d => X + 1 < d), (moebius d : ℤ)) : ℝ) := by
   rw [← Int.cast_sum, sum_long_moebius_divisors_eq]
-  simp only [Sieve.moebiusZetaDefect, ArithmeticFunction.sub_apply,
-    ArithmeticFunction.one_apply, ArithmeticFunction.coe_mul_zeta_apply,
+  change (1 : ArithmeticFunction ℝ) n -
+    (Sieve.truncatedMoebius (X + 1) * (ζ : ArithmeticFunction ℝ)) n = _
+  simp only [ArithmeticFunction.one_apply, ArithmeticFunction.coe_mul_zeta_apply,
     Sieve.truncatedMoebius_apply, zeroDetectionMobiusCoefficient, Finset.sum_filter]
   push_cast
   rfl

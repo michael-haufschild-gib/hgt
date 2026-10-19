@@ -60,6 +60,7 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailCombina
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailSpanWeilCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».InghamHuxleyHeightBoxZeroMajorant
 import GaloisForLFunctions.«arithmetic-positivity-theory».SelbergExponentialNearLineAndThreeRegimeZeroDensity
+import GaloisForLFunctions.«arithmetic-positivity-theory».BakerPrimeLogTranscendenceAndCollarSpectrumDisjointness
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,

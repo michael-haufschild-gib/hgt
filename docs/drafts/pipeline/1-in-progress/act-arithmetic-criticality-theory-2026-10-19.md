@@ -34,7 +34,15 @@ of an implication whose other direction (M5) is the open research question.
 - `FiniteJumpFormAllegrettoPiepenbrink.lean` — Schrödinger matrix, Rayleigh form, hard direction, connectivity.
 - `DoobJumpFoldedGroundStateRepresentation.lean` — folded shift GSR for the Doob forms.
 - `OddSupersolutionCriterion.lean` — total GSR and the sufficiency theorem.
-- `ShiftedGroundStateFoldedDefect.lean` — source equation and reflected collar defect of `ω_a`.
+- `ShiftedGroundStateSourceEquation.lean`, `ShiftedGroundStateReflectedCollarDefect.lean` — source
+  equation and reflected collar defect of `ω_a`.
+- `EvenSectorPoleCalibration.lean`, `ShiftedGroundStateSuperposition.lean`,
+  `ShiftedGroundStateOriginFailure.lean` — even-sector calibration, linearity on the span, origin failure.
+- `ShiftedGroundStateKernelBounds.lean`, `ShiftedGroundStatePotentialBounds.lean`,
+  `ShiftedGroundStateRemainderBounds.lean`, `ShiftedGroundStateAdmissibility.lean` — the admissibility
+  of `(ω_a, u)` for all `u ∈ C¹_c` and the unconditional remainder-dominates-defect identity.
+- `ShiftedGroundStateInfinityFailure.lean` — P1 in Lean: `C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K` for
+  `x ≥ a` and the strict folded subsolution window `[X, ∞)`.
 
 ## No-go closure (mandatory when falsified)
 - **Exact killing theorem/mechanism:** (open)
@@ -146,8 +154,10 @@ potential; a supersolution-based proof must therefore be a *subsolution-plus-rem
 quantity that decides is the comparison of two explicit nonnegative functionals of `u`, not the sign
 of a generator defect.
 
-**Status.** Origin failure for `ω_a`: Lean. Infinity failure: paper (P1 and the general asymptotic),
-Lean open (window PNT transport). M5 answered negatively for the folded operator; M4's remaining
+**Status.** Origin failure for `ω_a`: Lean. Infinity failure for `ω_a`: Lean
+(`ShiftedGroundStateInfinityFailure`, no prime number theorem: the theta harmonic identity gives
+`C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K` for `x ≥ a`); the general asymptotic for arbitrary admissible
+profiles remains paper. M5 answered negatively for the folded operator; M4's remaining
 question (signed superpositions) is moot for the folded route. Programme continues on the
 remainder-dominates-defect inequality.
 - 2026-10-19 (late) — `ShiftedGroundStateOriginFailure` added and wired (nine modules): Lean proof that
@@ -156,3 +166,42 @@ remainder-dominates-defect inequality.
   remainder-dominates-defect identity `markovEnergy_phiDoob_shiftedGroundState_eq` and its
   nonnegativity criterion. The folded sufficiency route is closed as a no-go (section above); the
   programme's live object is the remainder-dominates-defect inequality and its two-sided twin.
+- 2026-10-19 (night) — `FoldedAdmissible (ω_a) u` discharged in Lean for every `a > 0` and every
+  `u ∈ C¹_c(ℝ)` (`foldedAdmissible_shiftedGroundState`, four new modules, thirteen in total, umbrella
+  audited, axioms `propext`/`Classical.choice`/`Quot.sound` only, lint passes, index regenerated).
+  Mechanism: in test coordinates the potential density is `u(x)² K_a(t,x)` with
+  `|K_a(t,x)| ≤ K t` (Lipschitz bounds of `Φ` and of the shift difference on `[−R−1, R+1]`) and
+  `|K_a(t,x)| ≤ K Φ(t − R − a)` (antitonicity of `Φ`), for `0 < x ≤ R`; the ground remainder obeys
+  `|rem_a(t)| ≤ C t` and `|rem_a(t)| ≤ 16Φ(0)M_u²R Φ(t − R − a)` because the reflected jump on the
+  collar lives on two intervals of length `≤ R`. Integrability against the Lévy density uses
+  `∫_0^∞ ω(t) t dt < ∞`; summability against the von Mangoldt atoms uses
+  `Σ Λ(n) n^{−1/2} Φ(log n − c) < ∞` (corpus `summable_primeShift_left`); measurability of
+  `t ↦ rem_a(t)` by Fubini-type strong measurability of parametric integrals, and of the prime
+  generator by a.e. limits of partial sums. Consequence: the remainder-dominates-defect identity and
+  its nonnegativity criterion hold for every even `u ∈ C²_c` with no side hypothesis
+  (`markovEnergy_phiDoob_shiftedGroundState_eq_of_contDiff`,
+  `markovEnergy_phiDoob_shiftedGroundState_nonneg_iff_of_contDiff`). Remaining Lean gap of the no-go
+  closure: P1 (infinity failure) via the window prime number theorem.
+- 2026-10-19 (night, 2) — **P1 in Lean, without the prime number theorem.**
+  `ShiftedGroundStateInfinityFailure` (fourteen modules, umbrella audited): for `x ≥ a ≥ 0`,
+  `shiftedCollarMass a x ≥ 2 sinh(a/2) sinh(x/2) − K` with the universal constant
+  `K = 2|c|Φ(0) + 4∫_0^∞ gammaSourceBound + Σ Λ(n)n^{−1/2}Φ(log n)`
+  (`two_mul_source_sub_le_shiftedCollarMass`), hence the folded defect of `ω_a` is at most
+  `−2Φ(x)(sinh(a/2) sinh(x/2) − K)` (`foldedDefect_shiftedGroundState_le`) and `ω_a` is a strict
+  folded subsolution on a half line `[X, ∞)` (`exists_infinity_window_foldedGenerator_lt_potential`).
+  Mechanism: `m_a(log n − x) = Φ(x+a−log n) − Φ(x−a−log n)`, so the signed prime shift sum is
+  `P(x+a) − P(x−a)` with `P(y) = Σ Λ(n)n^{−1/2}Φ(y − log n) = primeKernelSum y − Q(y)`; the corpus's
+  `theta_harmonic_identity` gives `primeKernelSum y = cosh(y/2) − 2cΦ(y) + ∫_0^∞ symArchTerm y`, the
+  cosh difference is exactly `2 sinh(a/2) sinh(x/2)`, `Q(y) ∈ [0, Q(0)]` for `y ≥ 0`, and
+  `|∫ symArchTerm y| ≤ 2∫ gammaSourceBound` uniformly in `y` (corpus `abs_gammaSourceTerm_le_bound`).
+  The collar mass keeps only the positive parts, so it dominates the signed sum. This supersedes the
+  window-PNT plan: the earlier paper estimate `2κ(a)/sinh(a/2) > 1` is replaced by the exact lower
+  bound with ratio `≥ 2 − o(1)`, consistent with `κ(a) > sinh(a/2)` from the closed form
+  `κ(a) = e^{a/2}(1/2 − G(a)) − e^{−a/2}F(a)`. Axioms: `propext`, `Classical.choice`, `Quot.sound`.
+  M3 is now fully in Lean; M5's negative answer for `ω_a` is in Lean at both ends.
+- 2026-10-19 (night, 3) — `ShiftedGroundStateCombinationFailure` (fifteen modules): a nonnegative
+  nonzero combination `c₁ω_a + c₂ω_b` is a strict folded subsolution on a right neighbourhood of `0`
+  and on a half line `[X, ∞)` (from `exists_constituent_supersolution_of_combination` and the two
+  single-profile windows). This is P2 in Lean at both ends for two constituents; finite sums are the
+  same induction. README rewritten as mathematics only (user: the README is not a diary); status and
+  logs live here.

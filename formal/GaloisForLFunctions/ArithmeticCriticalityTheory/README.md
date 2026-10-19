@@ -3,8 +3,10 @@
 Positive solutions, ground-state representations and criticality of the arithmetic jump operator
 whose nonnegativity on odd tests is the Riemann Hypothesis.
 
-Origin: [docs/reports/review-1910/fable.md](../../../docs/reports/review-1910/fable.md), Section 4.
-Pipeline card: `docs/drafts/pipeline/1-in-progress/act-arithmetic-criticality-theory-2026-10-19.md`.
+Pointers: proposal in [docs/reports/review-1910/fable.md](../../../docs/reports/review-1910/fable.md)
+Section 4; progress log and status on the pipeline card
+`docs/drafts/pipeline/1-in-progress/act-arithmetic-criticality-theory-2026-10-19.md`. This file states
+the mathematics only.
 
 ---
 
@@ -25,42 +27,49 @@ Equivalently, with `markovEnergy (Θ v) = E_arch(v) + E_prime(v) − ∫ Θ cosh
 (`phiDoob_markovEnergy_eq_archJump_add_primeJump_sub_coshMass`), RH is the statement that the
 Schrödinger-type form "jump energy minus potential" is nonnegative on odd tests.
 
-Every previous programme attacked this (and its cousins) by bounding sums: identities, finite
-classifications, nonselective positivity on restricted families. None produced a sign. In the theory
-of Dirichlet forms the sign question has a different shape: a form `E − ρ` is nonnegative if and only
-if a **positive supersolution** `ω` of `Lω ≥ ρ ω` exists (Allegretto–Piepenbrink), and the proof is an
-exact identity, the **ground-state representation**. Arithmetic Criticality Theory develops this
-mechanism for the arithmetic jump operator. It replaces a bounding problem by an existence problem for
-one positive function.
+Bounding the two sides separately produces identities, finite classifications and nonselective
+positivity on restricted families, never a sign. In the theory of Dirichlet forms the sign question has
+a different shape: a form `E − ρ` is nonnegative if and only if a **positive supersolution** `ω` of
+`Lω ≥ ρ ω` exists (Allegretto–Piepenbrink), and the proof is an exact identity, the **ground-state
+representation**. Arithmetic Criticality Theory develops this mechanism for the arithmetic jump
+operator: a bounding problem becomes an existence problem for one positive function, and the exact
+identity shows where positivity must come from when no such function exists.
 
 **What is new.** Criticality theory exists for local Schrödinger operators and for jump processes
 with translation-invariant kernels. It does not exist for a kernel whose jump lengths are the
 logarithms of prime powers, whose rates are `Λ(n) n^{−1/2}`, and whose potential is the pole of the
-zeta function. The corpus searches (`research "Allegretto Piepenbrink ..."`, `"ground state
-representation ..."`) return nothing relevant.
+zeta function.
 
 ---
 
 ## 2. Objects and language
 
 All functions below are in **Doob coordinates**: a test is `f = Θ · v`, and `v` is the object. The
-corpus's "secondary odd profile" `m_a` is a test; its Doob coordinate is `f_a = m_a / Θ`
-(`oddPolarFunction a`). Never mix the two coordinates.
+corpus's "secondary odd profile" `m_a = Θ(·−a) − Θ(·+a)` is a test; its Doob coordinate is
+`ω_a = m_a / Θ`. Never mix the two coordinates.
 
 | Object | Definition | Lean |
 |---|---|---|
-| Riemann kernel | `Θ(u) = Σ_{n≥1} e^{u/2}(4π²n⁴e^{4u} − 6πn²e^{2u}) e^{−πn²e^{2u}}`, even, `Θ > 0` | `riemannKernelReal` |
+| Riemann kernel | `Θ(u) = Σ_{n≥1} e^{u/2}(4π²n⁴e^{4u} − 6πn²e^{2u}) e^{−πn²e^{2u}}`, even, `Θ > 0`, strictly decreasing on `[0,∞)` | `riemannKernelReal` |
 | Jump measure | `dm(t) = ω(t) dt + Σ_n Λ(n) n^{−1/2} δ_{log n}` on `t > 0` | `archLevyDensity`, `vonMangoldtAtom` |
 | Single-shift jump | `J_v(t) = ∫_ℝ Θ(x)Θ(x+t)(v(x) − v(x+t))² dx` | `phiDoobArchShiftJump` (integrated) |
 | Potential | `ρ(x) = Θ(x) cosh(x/2)` | `phiDoobCoshMass (v²)` is `∫ ρ v²` |
 | Same-side ground jump | `Θ(x)Θ(x+t) ω(x)ω(x+t) (u(x) − u(x+t))²` on `x > 0` | `sameSideGroundJump` |
 | Reflected ground jump | `Θ(x)Θ(t−x) ω(x)ω(t−x) (u(x) + u(t−x))²` on `0 < x < t` | `reflectedGroundJump` |
+| Ground remainder of one shift | `rem(t) = 2∫_{x>0} sameSide + ∫_{0<x<t} reflected` | `groundRemainderShift` |
+| Ground remainder | `R_N(ω,u) = ∫ dm(t) rem(t)` | `groundRemainder` |
 | Folded (Neumann) shift generator | `Θ(x)[Θ(x+t)(ω(x) − ω(x+t)) + Θ(x−t)(ω(x) − ω(|x−t|))]` | `foldedShiftGenerator` |
 | Two-sided (Dirichlet) shift generator | `Θ(x)[Θ(x+t)(ω(x) − ω(x+t)) + Θ(x−t)(ω(x) − ω(x−t))]` | `twoSidedShiftGenerator` |
 | Folded generator | `(𝓛_N ω)(x) = ∫ dm(t) foldedShiftGenerator ω t x` | `foldedGenerator` |
 | Two-sided generator | `(𝓛_D ω)(x) = ∫ dm(t) twoSidedShiftGenerator ω t x` | `twoSidedGenerator` |
-| Shifted ground state | `ω_a(x) = (Θ(x−a) − Θ(x+a)) / Θ(x)`, odd, `> 0` on `(0,∞)` for `a > 0` | `shiftedGroundState` |
-| Reflected collar mass | `C_a(x) = ∫_0^∞ ω(x+s)(Θ(s−a) − Θ(s+a)) ds + Σ_{log n > x} Λ(n)n^{−1/2}(Θ(log n − x − a) − Θ(log n − x + a))` | `reflectedCollarMass` |
+| Potential density | `u(x)² ω(x) foldedShiftGenerator ω t x` | `groundPotentialDensity` |
+| Admissibility | integrability and summability of remainder and potential in `t` and `x` | `FoldedAdmissible` |
+| Shift difference (test coordinate) | `m_a(y) = Θ(y−a) − Θ(y+a)`, odd, `> 0` on `(0,∞)` for `a > 0` | `shiftDifference` |
+| Shifted ground state | `ω_a(x) = m_a(x) / Θ(x)`, odd, `> 0` on `(0,∞)` for `a > 0` | `shiftedGroundState` |
+| Potential kernel of `ω_a` | `K_a(t,x)` with `groundPotentialDensity ω_a u t x = u(x)² K_a(t,x)` | `shiftedPotentialKernel` |
+| Reflected collar mass | `C_a(x) = ∫_{t>0} ω(t) m_a(t−x)⁺ dt + Σ_n Λ(n)n^{−1/2} m_a(log n − x)⁺` | `shiftedCollarMass` |
+| Signed prime shift sum | `Σ_n Λ(n)n^{−1/2} m_a(log n − x)` | `signedPrimeShift` |
+| Collar excess constant | `K = 2|c|Θ(0) + 4∫_0^∞ gammaSourceBound + Σ_n Λ(n)n^{−1/2}Θ(log n)`, `c = (γ + log π)/2` | `collarExcessConstant` |
 | Finite jump energy | `E_K(v) = ½ Σ_{i,j} K_{ij} (v_i − v_j)²` | `jumpEnergy` |
 | Finite generator | `(L_K ω)_i = Σ_j K_{ij}(ω_i − ω_j)` | `generator` |
 | Schrödinger matrix | `A = diag(Σ_k K_{ik} − ρ_i) − K`, so `vᵀAv = E_K(v) − Σ ρ_i v_i²` | `schroedingerMatrix` |
@@ -95,12 +104,14 @@ exactly,
 
     J_v(t) = 2∫_{x>0} sameSideGroundJump + ∫_{0<x<t} reflectedGroundJump + 2∫_{x>0} u(x)² ω(x) foldedShiftGenerator ω t x dx.
 
-Integrating against `dm(t)` and subtracting the potential:
+Integrating against `dm(t)` and subtracting the potential
+(`markovEnergy_phiDoob_eq_groundRemainder_add_potential`, under `FoldedAdmissible ω u`):
 
     markovEnergy(Θ v) = R_N(ω, u) + 2 ∫_{x>0} u(x)² ω(x) [ (𝓛_N ω)(x) − Θ(x) cosh(x/2) ω(x) ] dx,     R_N ≥ 0.
 
-**Consequence (sufficiency).** If `ω` is odd, positive on `(0,∞)`, and `𝓛_N ω ≥ Θ cosh(x/2) ω` on
-`(0,∞)`, then `markovEnergy(Θ v) ≥ 0` for every odd test factoring through `ω`, hence RH.
+**Sufficiency** (`riemannHypothesis_of_foldedSupersolution`). If `ω` is odd, positive on `(0,∞)`, and
+`𝓛_N ω ≥ Θ cosh(x/2) ω` on `(0,∞)`, then `markovEnergy(Θ v) ≥ 0` for every odd test factoring through
+`ω`, hence RH. Section 3.5 shows the hypothesis is never satisfied; the identity itself survives.
 
 **Reading of `𝓛_N`.** On `(0,∞)`, `foldedShiftGenerator ω t x` is the two-sided generator applied to the
 **even reflection** `|ω|`. So the condition is: the even function `|ω|` is a supersolution away from
@@ -115,52 +126,124 @@ The two-sided generator is the larger one, by exactly the mass that returns from
 The Dirichlet sum identity gives a second exact representation (GSR-D) with `𝓛_D` in the potential,
 but its remainder contains `−Θ(x)Θ(t−x)ω(x)ω(t−x)(u(x) − u(t−x))²` and is indefinite. Only GSR-N has a
 nonnegative remainder. A `𝓛_D`-supersolution therefore proves nothing by itself; a `𝓛_N`-supersolution
-proves RH.
+would prove RH.
 
 ### 3.4 The equation of motion and the shifted ground states
 
-The corpus proves the pointwise harmonic identity of `Θ` (`theta_harmonic_identity`): the symmetric
-prime shift sum of `Θ` equals `cosh(x/2)` up to the archimedean correction. In Doob coordinates this
-says `𝓛_D 1 = 0` with the constant `1` a **subsolution** (`0 < ρ`): the even sector is supercritical,
-and its negative direction is the pole (`markovEnergy(Θ) = −1/2`, from `∫ Θ cosh(x/2) = 1/2`).
+The corpus proves the pointwise harmonic identity of `Θ` (`theta_harmonic_identity`):
 
-Subtracting the identity at `x − a` and `x + a` (`oddProfile_harmonic_identity`) gives the exact
-source equation of the shifted ground state `ω_a`:
+    Σ_n Λ(n)n^{−1/2} (Θ(y + log n) + Θ(y − log n)) = cosh(y/2) − 2c Θ(y) + ∫_0^∞ symArchTerm(y,u) du,
+
+`c = (γ + log π)/2`, with `|∫_0^∞ symArchTerm(y,u) du| ≤ 2∫_0^∞ gammaSourceBound` uniformly in `y`
+(`abs_integral_symArchTerm_le`). In Doob coordinates this says `𝓛_D 1 = 0` with the constant `1` a
+**subsolution** (`0 < ρ`): the even sector is supercritical, and its negative direction is the pole
+(`markovEnergy(Θ) = −1/2`, from `∫ Θ cosh(x/2) = 1/2`; `EvenSectorPoleCalibration`).
+
+Subtracting the identity at `x − a` and `x + a` gives the exact source equation of the shifted ground
+state (`twoSidedGenerator_shiftedGroundState_sub_potential`):
 
     (𝓛_D ω_a)(x) − Θ(x) cosh(x/2) ω_a(x) = 2 sinh(a/2) sinh(x/2) Θ(x)      for all x,
 
-positive on `(0,∞)`: every `ω_a` (`a > 0`) is a strict `𝓛_D`-supersolution on the half line. By 3.3,
+positive on `(0,∞)`: every `ω_a` (`a > 0`) is a strict `𝓛_D`-supersolution on the half line. By 3.3
+(`foldedGenerator_shiftedGroundState_sub_potential`),
 
     (𝓛_N ω_a)(x) − Θ(x) cosh(x/2) ω_a(x) = 2 Θ(x) [ sinh(a/2) sinh(x/2) − C_a(x) ],
 
-with `C_a` the reflected collar mass. So `ω_a` is a `𝓛_N`-supersolution at `x` exactly when
-`C_a(x) ≤ sinh(a/2) sinh(x/2)`. The prime part of `C_a(x)` is a smoothed count of prime powers in a
-window of bounded logarithmic width above `e^x`; by the prime number theorem it is asymptotic to
-`e^{x/2} ∫_0^∞ e^{s/2}(Θ(s−a) − Θ(s+a)) ds`, while the source is asymptotic to `sinh(a/2) e^{x/2}/2`.
-Write `κ(a) = ∫_0^∞ e^{s/2}(Θ(s−a) − Θ(s+a)) ds`, `I(a) = ∫_a^∞ e^{u/2}Θ`, `J(a) = ∫_a^∞ e^{−u/2}Θ`, so that
-`κ(a) = e^{a/2}(1/2 − J(a)) − e^{−a/2} I(a)` (using `∫_ℝ e^{u/2}Θ = 1/2`). The asymptotic ratio of
-collar to source is `R(a) = 2κ(a)/sinh(a/2)`, and
+so `ω_a` is a `𝓛_N`-supersolution at `x` exactly when `C_a(x) ≤ sinh(a/2) sinh(x/2)`
+(`foldedSupersolution_shiftedGroundState_iff`). The folded defect is linear on the span of the shifted
+ground states, and a nonnegative nonzero combination is a folded supersolution at `x` only if one
+constituent is (`ShiftedGroundStateSuperposition`).
 
-    2κ(a) − sinh(a/2) = ½[ e^{a/2}(1 − 4J(a)) − e^{−a/2}(4I(a) − 1) ] > 0   for every a > 0,
+**Collar lower bound.** Since `m_a(log n − x) = Θ(x+a−log n) − Θ(x−a−log n)`, the signed prime shift
+sum equals `P(x+a) − P(x−a)` with `P(y) = Σ Λ(n)n^{−1/2}Θ(y − log n)`, and the harmonic identity gives
+`P(y) = cosh(y/2) − 2cΘ(y) + ∫_0^∞ symArchTerm(y,·) − Q(y)` with `Q(y) = Σ Λ(n)n^{−1/2}Θ(y + log n)`,
+`0 ≤ Q(y) ≤ Q(0)` for `y ≥ 0`. The cosh difference is exactly `2 sinh(a/2) sinh(x/2)`, and the collar
+mass keeps only the positive parts of the same terms, so (`two_mul_source_sub_le_shiftedCollarMass`)
 
-because `J(a) ≤ J(0) = 1/4 − σ` and `I(a) ≤ I(0) = 1/4 + σ` with `σ = ∫_0^∞ Θ(u) sinh(u/2) du > 0`, so
-`e^{a}(1 − 4J(a)) ≥ 4σ e^{a} > 4σ ≥ 4I(a) − 1`. The ratio tends to `1 + 8Θ(0) + 4σ` as `a → 0`
-(about eight) and to `2` as `a → ∞`. **Every shifted ground state fails to be a folded supersolution
-on a neighbourhood of infinity, by a factor that is a pure constant of Riemann's kernel.** This is
-the exact content of the corpus's "factor two between `μ = 1/2` and `μ = 1`" and of THIM's residual
-`θ · sourcePair`. The Lean modules prove the exact identities; the asymptotic statement uses the
-prime number theorem through a smooth window and is a paper theorem on the card.
+    C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K      for all x ≥ a ≥ 0,
 
-### 3.5 The finite model (Perron–Frobenius)
+with `K = collarExcessConstant`. No prime number theorem enters. Consequently the folded defect of `ω_a`
+is at most `−2Θ(x)(sinh(a/2) sinh(x/2) − K)` for `x ≥ a` (`foldedDefect_shiftedGroundState_le`), and
+`ω_a` is a strict folded subsolution on a half line `[X, ∞)`
+(`exists_infinity_window_foldedGenerator_lt_potential`). The collar returns at least **twice** the
+source: the prime mass below `e^x` that the folding discards is exactly the mass the two-sided source
+equation accounts for.
+
+**Sharp asymptotics (analysis, not formalised).** The prime part of `C_a(x)` is a smoothed count of
+prime powers in a window of bounded logarithmic width above `e^x`; by the prime number theorem it is
+asymptotic to `e^{x/2} κ(a)`, `κ(a) = ∫_0^∞ e^{s/2} m_a(s) ds`, while the source is asymptotic to
+`sinh(a/2) e^{x/2}/2`. With `I(a) = ∫_a^∞ e^{u/2}Θ`, `J(a) = ∫_a^∞ e^{−u/2}Θ` and `∫_ℝ e^{u/2}Θ = 1/2`,
+`κ(a) = e^{a/2}(1/2 − J(a)) − e^{−a/2} I(a)`, and the collar-to-source ratio `R(a) = 2κ(a)/sinh(a/2)`
+satisfies `R(a) > 2` for every `a > 0` (`e^a J(a) + I(a) < 1/2`, strictly decreasing from the value
+`1/2` at `a = 0` because `Θ` is strictly decreasing), `R(a) → 1 + 8Θ(0) + 4σ` as `a → 0` with
+`σ = ∫_0^∞ Θ(u) sinh(u/2) du`, and `R(a) → 2` as `a → ∞`. This is the exact content of the corpus's
+"factor two between `μ = 1/2` and `μ = 1`" and of THIM's residual `θ · sourcePair`.
+
+### 3.5 No folded supersolution exists; the remainder-dominates-defect identity
+
+In test coordinates `g = Θω` (odd, `g ≥ 0` on `(0,∞)`) the folded defect at `x > 0` is
+
+    Θ(x) · [ 𝒜g(x) − 2c g(x) − Σ_n Λ(n) n^{−1/2} ( g(x + log n) + g(|x − log n|) ) ],
+
+`𝒜g(x) = ∫_0^∞ [2ν(u) g(x) − ω(u)(g(x+u) + g(|x−u|))] du`, `ν(u) = e^{−2u}/(1 − e^{−2u})`.
+
+- **Origin.** `g(0) = 0`, so `𝒜g(0+) = −2∫_0^∞ ω(u) g(u) du < 0` while the prime sum tends to
+  `2 Σ_n Λ(n) n^{−1/2} g(log n) > 0`: the folded defect is strictly negative on a right neighbourhood
+  of `0` for every odd continuous profile with `g ≥ 0`, `g ≢ 0`. For `ω_a` the prime `2` alone suffices
+  (`exists_origin_window_foldedGenerator_lt_potential`).
+- **Infinity.** For `ω_a`, the collar lower bound of 3.4. For a general admissible profile (bounded,
+  bounded second derivative, `∫_0^∞ e^{r/2} g < ∞`) the reflected prime mass is asymptotic to
+  `e^{x/2}∫_0^∞ e^{r/2} g` and the folded defect to `−e^{x/2} Θ(x) · 2∫_0^∞ cosh(r/2) g(r) dr`
+  (analysis, not formalised).
+
+So the hypothesis of `riemannHypothesis_of_foldedSupersolution` is never met: the hard direction of
+Allegretto–Piepenbrink fails for the odd arithmetic form, and the reason is concrete. The reflected
+prime mass returns with weight `e^{x/2} e^{±r/2}` while the potential sees `g` only at `x`. This is
+the exact meaning of "the odd form is not of Z-type".
+
+**What survives.** For `ω = ω_a` the folded ground-state representation is an exact identity with no
+side hypothesis: `(ω_a, u)` is folded-admissible for every `a > 0` and every `u ∈ C¹_c`
+(`foldedAdmissible_shiftedGroundState`), and for every even `u ∈ C²_c`
+(`markovEnergy_phiDoob_shiftedGroundState_eq_of_contDiff`)
+
+    markovEnergy(Θ(ω_a u)) = R_N(ω_a, u) − 4 ∫_{x>0} u(x)² ω_a(x) Θ(x) ( C_a(x) − sinh(a/2) sinh(x/2) ) dx.
+
+Hence (`markovEnergy_phiDoob_shiftedGroundState_nonneg_iff_of_contDiff`) Markov positivity on
+`Θ(ω_a u)` is the **remainder-dominates-defect inequality**
+
+    4 ∫_{x>0} u² ω_a Θ ( C_a − sinh(a/2) sinh(x/2) ) ≤ R_N(ω_a, u),
+
+both sides explicit: the left side is the weighted collar excess (eventually at least
+`sinh(a/2) sinh(x/2) − K` by 3.4), the right side the sum of the same-side squares `(u(x) − u(x+t))²`
+and the reflected squares `(u(x) + u(t−x))²`. Positivity, if RH holds, is carried by the remainder,
+never by the generator; a supersolution-based proof must be a subsolution-plus-remainder proof. The
+two-sided representation (GSR-D) trades the negative potential for the negative reflected remainder
+`−Θ(x)Θ(t−x)ω(x)ω(t−x)(u(x) − u(t−x))²`.
+
+### 3.6 The finite model (Perron–Frobenius)
 
 For a finite symmetric nonnegative kernel `K` and any potential `ρ`, the form `E_K − Σ ρ v²` is
 nonnegative if and only if a nonnegative nonzero `ω` with `L_K ω ≥ ρ ω` exists; under connectivity,
-`ω > 0`. Both directions are unconditional theorems of the programme
-(`FiniteJumpFormAllegrettoPiepenbrink`). The hard direction uses the minimiser of the Rayleigh quotient
-on the unit sphere and the fact that replacing a vector by its absolute value does not increase the
-form. This is the template that the arithmetic problem must be measured against: the arithmetic form on
-the odd sector is **not** of Z-type (the reflected collar enters the operator with a plus sign), which
-is precisely why the hard direction is open there.
+`ω > 0` (`FiniteJumpFormAllegrettoPiepenbrink`, both directions). The hard direction uses the minimiser
+of the Rayleigh quotient on the unit sphere and the fact that replacing a vector by its absolute value
+does not increase the form. This is the template the arithmetic problem is measured against: the
+arithmetic form on the odd sector is **not** of Z-type (the reflected collar enters the operator with a
+plus sign), which is exactly why the hard direction fails there (3.5).
+
+### 3.7 Admissibility of the shifted ground states (how the integrability is discharged)
+
+In test coordinates the potential density of `ω_a` is `u(x)² K_a(t,x)` with
+`K_a(t,x) = m_a(x)[ω_a(x)(Θ(x+t) + Θ(|x−t|)) − m_a(x+t) − m_a(|x−t|)]`. For `u` supported in `[−R, R]`,
+`R ≥ 1`, and `0 < x ≤ R`:
+
+    |K_a(t,x)| ≤ K₁ t   (Lipschitz constants of Θ and m_a on [−R−1, R+1]),      |K_a(t,x)| ≤ K₂ Θ(t − R − a),
+
+and the one-shift remainder satisfies `|rem_a(t)| ≤ C t` and `|rem_a(t)| ≤ 16 Θ(0) M_u² R Θ(t − R − a)`,
+because the reflected jump on the collar `0 < x < t` lives on `x ≤ R` or `x ≥ t − R`, two intervals of
+length at most `R`. Integration against the Lévy density uses `∫_0^∞ ω(t) t dt < ∞`
+(`ω(t) t ≤ 6 e^{(1−t)/4}`); summation against the atoms uses `Σ Λ(n) n^{−1/2} Θ(log n − c) < ∞`
+(`summable_primeShift_left`). Measurability of `t ↦ rem_a(t)` is strong measurability of a parametric
+integral; measurability of the prime generator is an almost-everywhere limit of partial sums.
 
 ---
 
@@ -170,62 +253,46 @@ is precisely why the hard direction is open there.
 |---|---|
 | Looking for an even positive supersolution on all of `ℝ` | It cannot exist: it would give `markovEnergy(Θ v) ≥ 0` for even `v`, but `markovEnergy(Θ) = −1/2`. The supersolution must vanish at `0` (odd, or even with a kink), and the identity must be applied only to odd tests. |
 | Using `𝓛_D` (two-sided generator) as the supersolution operator | The GSR with `𝓛_D` has an indefinite remainder. Only `𝓛_N` (folded, Neumann) gives a nonnegative remainder. |
-| Reading `ω_a > 0` with positive `𝓛_D`-source as a proof of RH | It is a `𝓛_D`-supersolution, not a `𝓛_N`-supersolution; the reflected collar `C_a(x)` exceeds the source asymptotically. |
+| Reading `ω_a > 0` with positive `𝓛_D`-source as a proof of RH | It is a `𝓛_D`-supersolution, not a `𝓛_N`-supersolution; the reflected collar `C_a(x)` exceeds the source for all large `x` and near `0`. |
+| Looking for any folded supersolution | None exists (3.5). The live object is the remainder-dominates-defect inequality, not a sign of a generator defect. |
+| Estimating a one-sided prime sum through a window prime number theorem | First evaluate the signed sum through `theta_harmonic_identity` and use positivity of the discarded part; the exact identity gives a uniform lower bound with constant `2` where the asymptotic analysis gives `R(a)`. |
 | Defining the generator through a "total jump rate" | `∫ dm(t)(Θ(x+t) + Θ(x−t))` diverges (the archimedean density has a `1/t` singularity, the prime sum has `Σ Λ(n)n^{−1/2} = ∞`). Only differences `ω(x) − ω(x+t)` converge. Never split a generator into rate minus average. |
-| Confusing test and Doob coordinates | `m_a` is a test; `f_a = m_a/Θ` is the Doob coordinate. Potentials, generators and supersolutions live in Doob coordinates. |
+| Confusing test and Doob coordinates | `m_a` is a test; `ω_a = m_a/Θ` is the Doob coordinate. Potentials, generators and supersolutions live in Doob coordinates; bounds are easiest in test coordinates (`shiftedPotentialKernel`). |
 | Requiring `v/ω` to be `C²` | The ground-state identities need no derivatives. The RH criterion needs `v ∈ C²_c`; the quotient `u = v/ω` only needs to be continuous and bounded on `(0, R]`, which holds when `ω` vanishes at most linearly at `0`. |
 | Applying Perron–Frobenius to the odd sector directly | The odd-sector operator has positive off-diagonal entries from reflected jumps. Z-type arguments apply to the even sector (supercritical, pole) and to the folded operator `𝓛_N` acting on `|ω|`, not to the odd form as a whole. |
 | `1 < 2 exp(−2|a|)` in THIM's gauge | The corpus's odd polar vectors require `a < (log 2)/2`, and the absorption ratio `2M cosh(R/2)/(Θ(R) sinh(a/2))` grows like `exp(πe^{2R})`. Supersolution statements here are stated pointwise in `x` and carry no aperture window. |
+| `rw [mem_Iic]`, `rw [mem_Ioo]` inside an `if` | The motive is not type correct (decidability instance); use `simp only [Set.indicator_apply, mem_Iic]`. `integral_add`/`integral_sub` rewrites need lambda-typed integrability facts, not `Pi.add` forms. |
 
 ---
 
-## 5. Research topics and milestones
+## 5. Open problems
 
-1. **M1 (Lean, done when this README was written):** pointwise identities; finite GSR; finite
-   Allegretto–Piepenbrink in both directions; the folded GSR for the actual Doob forms; the sufficiency
-   theorem `folded supersolution ⟹ RH`.
-2. **M2 (Lean):** even-sector calibration: `𝓛_D 1 = 0`, `markovEnergy(Θ) = −1/2`, the even sector is
-   supercritical with the pole as negative direction.
-3. **M3 (Lean, exact part):** the source equation of `ω_a` and the folded defect identity with the
-   reflected collar mass `C_a`. **(Paper, then Lean):** the asymptotic failure `C_a(x) > sinh(a/2)
-   sinh(x/2)` for large `x`, from the prime number theorem with a smooth window; the limiting ratio
-   `R(a) = 2κ(a)/sinh(a/2)` exceeds `1` for every `a > 0` (Section 3.4), so no shifted ground state is
-   a folded supersolution near infinity. Lean status: exact identities done
-   (`ShiftedGroundStateSourceEquation`, `ShiftedGroundStateReflectedCollarDefect`); the window
-   prime number theorem transport is open.
-4. **M4 (paper, partly settled):** on the cone of odd functions positive on `(0,∞)`, both the
-   two-sided generator and the reflected collar are linear, so the folded defect of a positive
-   superposition `ω = Σ c_j ω_{a_j}` (`c_j ≥ 0`) is `Σ c_j · (folded defect of ω_{a_j})`. With M3 every
-   summand is eventually negative: **no positive finite superposition of shifted ground states is a
-   folded supersolution near infinity.** Open: signed superpositions that stay positive on `(0,∞)`,
-   and supersolutions outside the span of the shifted ground states (the forced asymptotics of any
-   odd folded supersolution at infinity).
-5. **M5 (answered negatively for the folded operator, 19 October 2026):** no folded supersolution
-   exists. In test coordinates `g = Θω` the folded defect is exactly
-   `Θ(x)[𝒜g(x) − 2c g(x) − Σ_n Λ(n)n^{−1/2}(g(x+log n) + g(|x−log n|))]`; at the origin `g(0) = 0` makes
-   it `−2Θ(0)[∫ω g + Σ Λ(n)n^{−1/2} g(log n)] < 0` for every odd profile, and at infinity the reflected
-   prime mass `e^{x/2}∫_0^∞ e^{r/2} g` dominates for every admissible profile. For `ω_a` the origin
-   failure is in Lean (`ShiftedGroundStateOriginFailure`, using the prime `2` alone). So the hypothesis
-   of `riemannHypothesis_of_foldedSupersolution` is never met, and the hard direction of
-   Allegretto–Piepenbrink fails for the odd arithmetic form. **Positive survivor:** the folded
-   ground-state representation with `ω = ω_a` is an exact *remainder-dominates-defect* identity
-   (`markovEnergy_phiDoob_shiftedGroundState_eq`): Markov positivity is
-   `4∫_{x>0} u² ω_a Φ (C_a − sinh(a/2) sinh(x/2)) ≤ groundRemainder(ω_a, u)`, both sides explicit and
-   nonnegative in the relevant region. Positivity, if RH holds, is carried by the remainder, never by
-   the generator; the programme continues on this inequality (THIM's absorption problem in closed
-   form) and on its two-sided twin, where `ω_a` is an exact strict supersolution and the remainder
-   carries the negative reflected square `−Φ(x)Φ(t−x)ω(x)ω(t−x)(u(x) − u(t−x))²`.
-
-Selectivity gate for every result: state what it says for `ζ(s−a)ζ(s+a)` (two poles; the potential
-changes) and for a Beurling system. The identities of Sections 3.1–3.3 hold for any even positive
-kernel; the arithmetic content enters only through the equation of motion of `Θ` (Section 3.4).
+1. **The remainder-dominates-defect inequality** for `ω_a` (3.5): for which even `u ∈ C²_c` does
+   `4∫ u² ω_a Θ (C_a − sinh(a/2) sinh(x/2)) ≤ R_N(ω_a, u)` hold unconditionally, and what is the exact
+   obstruction otherwise? Both sides are explicit; the left side grows like `e^{x/2}` on the support of
+   `u`, the right side is a quadratic form in `u` with kernel `Θ(x)Θ(x±t) m_a(x) m_a(x±t)`. This is
+   THIM's absorption problem in closed form.
+2. **The two-sided twin.** In GSR-D, `ω_a` is an exact strict supersolution with source
+   `2 sinh(a/2) sinh(x/2) Θ`, and the remainder is indefinite only through the reflected square
+   `−Θ(x)Θ(t−x) m_a(x) m_a(t−x)(u(x) − u(t−x))²/Θ(x)Θ(t−x)`. Compare the two representations on the
+   same `u`.
+3. **Signed superpositions.** Finite combinations `Σ c_j ω_{a_j}` with mixed signs that stay positive
+   on `(0,∞)`: the folded defect is linear, so the question is the sign of
+   `Σ c_j (sinh(a_j/2) sinh(x/2) − C_{a_j}(x))`; nonnegative combinations inherit failure at both ends.
+4. **Profiles outside the span.** The forced asymptotics at infinity of any odd profile `g` with
+   finite folded generator (analysis in 3.5, not formalised), and the corresponding Lean statement.
+5. **Critical Hardy weights.** If the odd form is nonnegative (RH), is it critical or subcritical?
+   Candidate weights come from the remainder `R_N` itself.
+6. **Selectivity.** For every statement, what it says for `ζ(s−a)ζ(s+a)` (two poles; the potential
+   changes) and for a Beurling system. The identities of 3.1–3.3 hold for any even positive kernel;
+   the arithmetic enters only through the equation of motion of `Θ` (3.4).
 
 ---
 
 ## 6. Navigation and discipline
 
 - Search first: `scripts/formal_tools.py research "foldedShiftGenerator"`,
-  `research "shiftedGroundState reflectedCollarMass"`, `research "theta_harmonic_identity"`.
+  `research "shiftedGroundState shiftedCollarMass"`, `research "theta_harmonic_identity"`.
 - Umbrella: [`GaloisForLFunctions/ArithmeticCriticalityTheory.lean`](../ArithmeticCriticalityTheory.lean).
   Wire new modules by appending an import line.
 - Build one module at a time:
@@ -234,7 +301,8 @@ kernel; the arithmetic content enters only through the equation of motion of `Θ
   explicitly as structure fields and discharged for concrete `ω`; an RH-strength premise is never a
   hypothesis.
 - Namespace: `GaloisForLFunctions.ArithmeticCriticalityTheory`; corpus objects are used through
-  `open RHTower` and the `RHTower.CHMDPolar` namespace.
+  `open RHTower`, `RHTower.CHMDPolar` and `RHTower.ThetaSourceWard`.
+- Status, logs and dates belong on the pipeline card, not here.
 
 ## 7. Module map
 
@@ -244,8 +312,13 @@ kernel; the arithmetic content enters only through the equation of motion of `Θ
 | `FiniteJumpFormAllegrettoPiepenbrink` | Schrödinger matrix; Rayleigh form; hard direction via minimiser and absolute value; neighbour-closed zero set; connectivity ⟹ strict positivity; the finite equivalence |
 | `DoobJumpFoldedGroundStateRepresentation` | `foldedShiftGenerator`, `twoSidedShiftGenerator`, ground jumps; comparison of the two generators; folded ground-state representation of one Doob shift jump |
 | `OddSupersolutionCriterion` | `foldedGenerator`, `groundRemainder`, `FoldedAdmissible`; folded ground-state representation of `markovEnergy (Θ v)`; `riemannHypothesis_of_foldedSupersolution` |
-| `ShiftedGroundStateSourceEquation` | `shiftedGroundState`, `twoSidedGenerator`; exact source equation `𝓛_D ω_a − Θ cosh ω_a = 2 sinh(a/2) sinh(x/2) Θ` |
+| `ShiftedGroundStateSourceEquation` | `shiftDifference`, `shiftedGroundState`, `twoSidedGenerator`; exact source equation `𝓛_D ω_a − Θ cosh ω_a = 2 sinh(a/2) sinh(x/2) Θ` |
 | `ShiftedGroundStateReflectedCollarDefect` | `shiftedCollarMass`; integrability and summability of the collar; `𝓛_N ω_a = 𝓛_D ω_a − 2Θ C_a`; folded defect and the supersolution criterion for `ω_a` |
 | `EvenSectorPoleCalibration` | constants are strict subsolutions of both generators; pole mass `1/2`; degenerate shift `a = 0` |
-| `ShiftedGroundStateOriginFailure` | prime-`2` lower bound for the collar; `ω_a` is a strict folded subsolution near the origin; remainder-dominates-defect identity and its nonnegativity criterion |
 | `ShiftedGroundStateSuperposition` | linearity of the folded generator on the span of shifted ground states; folded defect of a combination; a nonnegative nonzero combination is a folded supersolution at `x` only if a constituent is |
+| `ShiftedGroundStateOriginFailure` | prime-`2` lower bound for the collar; `ω_a` is a strict folded subsolution near the origin; remainder-dominates-defect identity and its nonnegativity criterion under `FoldedAdmissible` |
+| `ShiftedGroundStateKernelBounds` | test-coordinate forms of the ground jumps and of the potential density of `ω_a` (`shiftedPotentialKernel`); kernel and shift-difference bounds; Lévy density bounds `ω(t) ≤ 3/(2t)`, `ω(t) ≤ (3/2)e^{−t/2}`, `∫_0^∞ ω(t) t dt < ∞`; Lipschitz and support-radius helpers |
+| `ShiftedGroundStatePotentialBounds` | `|K_a(t,x)| ≤ K t` and `|K_a(t,x)| ≤ K Θ(t − R − a)` on `0 < x ≤ R`; linear and decay bounds of the same-side and reflected ground jumps |
+| `ShiftedGroundStateRemainderBounds` | integrals dominated by indicators of bounded intervals; `|rem_a(t)| ≤ C t` and `|rem_a(t)| ≤ 16Θ(0)M_u²R Θ(t − R − a)`; joint continuity of the jumps and measurability of `t ↦ rem_a(t)` |
+| `ShiftedGroundStateAdmissibility` | `foldedAdmissible_shiftedGroundState` for every `a > 0`, `u ∈ C¹_c`; the remainder-dominates-defect identity and its nonnegativity criterion for every even `u ∈ C²_c` (`markovEnergy_phiDoob_shiftedGroundState_eq_of_contDiff`) |
+| `ShiftedGroundStateInfinityFailure` | uniform bound of `∫_0^∞ symArchTerm`; the signed prime shift sum `P(x+a) − P(x−a)`; `C_a(x) ≥ 2 sinh(a/2) sinh(x/2) − K` for `x ≥ a` (`two_mul_source_sub_le_shiftedCollarMass`); folded defect `≤ −2Θ(x)(sinh(a/2) sinh(x/2) − K)`; strict folded subsolution on `[X, ∞)` (`exists_infinity_window_foldedGenerator_lt_potential`) |
