@@ -545,6 +545,7 @@ import GaloisForLFunctions.BiScaleUncertainty.PrimeClockGraphTailTightness
 import GaloisForLFunctions.BiScaleUncertainty.PrimeClockGraphEscape
 import GaloisForLFunctions.BiScaleUncertainty.PrimeAnchorHorizonBounds
 import GaloisForLFunctions.BiScaleUncertainty.PrimeBlockLevelSetAndRamareHalaszEnergy
+import GaloisForLFunctions.BiScaleUncertainty.RamareGeometricLadderAndSharpHalaszError
 
 /-!
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)

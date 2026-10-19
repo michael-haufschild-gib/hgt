@@ -200,11 +200,21 @@ is precisely why the hard direction is open there.
    folded supersolution near infinity.** Open: signed superpositions that stay positive on `(0,∞)`,
    and supersolutions outside the span of the shifted ground states (the forced asymptotics of any
    odd folded supersolution at infinity).
-5. **M5:** the hard direction for the folded operator: does `markovEnergy(Θ v) ≥ 0` on odd tests force a
-   positive `𝓛_N`-supersolution? The finite template says yes for Z-type forms; the arithmetic form is
-   not Z-type. Either prove a replacement (a Harnack inequality for `𝓛_N` propagating positivity
-   through the prime-2 jump), or exhibit the obstruction. If every supersolution must encode zero data,
-   record `NO POSITIVE SALVAGE FOUND` beyond M1–M4 and close.
+5. **M5 (answered negatively for the folded operator, 19 October 2026):** no folded supersolution
+   exists. In test coordinates `g = Θω` the folded defect is exactly
+   `Θ(x)[𝒜g(x) − 2c g(x) − Σ_n Λ(n)n^{−1/2}(g(x+log n) + g(|x−log n|))]`; at the origin `g(0) = 0` makes
+   it `−2Θ(0)[∫ω g + Σ Λ(n)n^{−1/2} g(log n)] < 0` for every odd profile, and at infinity the reflected
+   prime mass `e^{x/2}∫_0^∞ e^{r/2} g` dominates for every admissible profile. For `ω_a` the origin
+   failure is in Lean (`ShiftedGroundStateOriginFailure`, using the prime `2` alone). So the hypothesis
+   of `riemannHypothesis_of_foldedSupersolution` is never met, and the hard direction of
+   Allegretto–Piepenbrink fails for the odd arithmetic form. **Positive survivor:** the folded
+   ground-state representation with `ω = ω_a` is an exact *remainder-dominates-defect* identity
+   (`markovEnergy_phiDoob_shiftedGroundState_eq`): Markov positivity is
+   `4∫_{x>0} u² ω_a Φ (C_a − sinh(a/2) sinh(x/2)) ≤ groundRemainder(ω_a, u)`, both sides explicit and
+   nonnegative in the relevant region. Positivity, if RH holds, is carried by the remainder, never by
+   the generator; the programme continues on this inequality (THIM's absorption problem in closed
+   form) and on its two-sided twin, where `ω_a` is an exact strict supersolution and the remainder
+   carries the negative reflected square `−Φ(x)Φ(t−x)ω(x)ω(t−x)(u(x) − u(t−x))²`.
 
 Selectivity gate for every result: state what it says for `ζ(s−a)ζ(s+a)` (two poles; the potential
 changes) and for a Beurling system. The identities of Sections 3.1–3.3 hold for any even positive
@@ -237,4 +247,5 @@ kernel; the arithmetic content enters only through the equation of motion of `Θ
 | `ShiftedGroundStateSourceEquation` | `shiftedGroundState`, `twoSidedGenerator`; exact source equation `𝓛_D ω_a − Θ cosh ω_a = 2 sinh(a/2) sinh(x/2) Θ` |
 | `ShiftedGroundStateReflectedCollarDefect` | `shiftedCollarMass`; integrability and summability of the collar; `𝓛_N ω_a = 𝓛_D ω_a − 2Θ C_a`; folded defect and the supersolution criterion for `ω_a` |
 | `EvenSectorPoleCalibration` | constants are strict subsolutions of both generators; pole mass `1/2`; degenerate shift `a = 0` |
+| `ShiftedGroundStateOriginFailure` | prime-`2` lower bound for the collar; `ω_a` is a strict folded subsolution near the origin; remainder-dominates-defect identity and its nonnegativity criterion |
 | `ShiftedGroundStateSuperposition` | linearity of the folded generator on the span of shifted ground states; folded defect of a combination; a nonnegative nonzero combination is a folded supersolution at `x` only if a constituent is |

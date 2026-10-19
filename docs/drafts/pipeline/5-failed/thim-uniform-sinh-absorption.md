@@ -44,11 +44,13 @@ error from first order to second order in graph distance. It proves neither a
 finite-horizon sign nor density in the full primitive sector.
 
 **Paper status:** dependency-closed proofs, parameter costs and parent-theory audit
-are in [the research card](../1-in-progress/thim-review1910-complete-absorption.md).
+are in [the research card](../3-formalized/thim-review1910-complete-absorption.md).
 
-**Lean status:** the absorption/confinement/minimality package passed its combined
-scratch audit. Named-source audits for both survivor modules, axiom checks and lint
-are pending. Modules:
+**Lean status:** both survivor modules passed named-source audits. All 84 public
+declarations passed the axiom audit, using only the standard Lean axioms
+`propext`, `Classical.choice` and `Quot.sound`. Repository lint was run; its remaining
+errors concern concurrent BVI wiring and generated indexes, with no THIM error reported.
+Modules:
 
 - `GaloisForLFunctions.TransHorizonIncidenceMechanics.OddPolarAbsorptionBoundaryAndCompensatedHorizon`
 - `GaloisForLFunctions.TransHorizonIncidenceMechanics.CanonicalOddPrimitiveHorizonBounds`

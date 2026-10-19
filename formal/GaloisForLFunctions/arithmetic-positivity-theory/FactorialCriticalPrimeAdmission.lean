@@ -260,7 +260,7 @@ private theorem phasePrimitive_bound (S : Finset ℕ) (b : ℕ → ℝ) (v : ℝ
 
 private theorem phasePrimitive_deriv (S : Finset ℕ) (b : ℕ → ℝ) {v : ℝ} (hv : 0 < v) :
     HasDerivAt (phasePrimitive S b) (realPhase S b v) v := by
-  simpa only [realPhase_eq_re] using criticalFactorialPhasePrimitive_hasDerivAt S b hv
+  simpa only [phasePrimitive, realPhase_eq_re] using criticalFactorialPhasePrimitive_hasDerivAt S b hv
 
 /-- The scale moments retained by critical prime admission. -/
 def criticalFactorialPrimeConstant (S : Finset ℕ) (b : ℕ → ℝ) : ℝ :=

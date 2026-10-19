@@ -1,10 +1,10 @@
-# THIM: complete absorption and compensated horizon estimates
+# THIM: absorption obstruction and complete primitive cutoff bounds
 
 - **ID:** thim-review1910-complete-absorption
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM PACKAGE WITH NO-GO
 - **Source:** docs/reports/review-1910/astra.md, §5 (T1–T4)
-- **Statement:** Determine the feasible region of literal cosh/sinh absorption and the exact compensated replacement, on a source class preserved through finite-horizon localization.
+- **Statement:** Universal cosh/sinh absorption fails on compact even profiles. Its exact local mass repair is classified. Shared theta cutoffs produce an explicit nonzero primitive family with complete original energy bounded by a finite source constant times `(n+1)⁻²`.
 
 ## Scope and completion requirements
 
@@ -19,11 +19,11 @@
 - [x] Audit external parent theories and exact internal statements.
 - [x] State and attack exact conjectures; distinguish new obstruction from standard localization machinery.
 - [x] Complete dependency-closed paper proofs for surviving claims.
-- [ ] Formalize exact statements without unproved analytic premises or added axioms.
-- [ ] Audit each leaf with `lake --old env lean`, audit axioms from `/tmp`, wire umbrella, regenerate index, run lint.
-- [ ] Check T1–T4 against current evidence; keep unfinished requirements explicit.
+- [x] Formalize exact statements without unproved analytic premises or added axioms.
+- [x] Audit each leaf with `lake --old env lean`, audit axioms from `/tmp`, wire umbrella, regenerate index, run lint; record concurrent-checkout failures separately.
+- [x] Check T1–T4 against current evidence; keep unfinished requirements explicit.
 
-## Candidate mechanism
+## Literal mass-to-potential ratio
 
 For `m_a(x) = oddProfile a x`, the literal quotient is
 
@@ -31,11 +31,11 @@ For `m_a(x) = oddProfile a x`, the literal quotient is
 q_a(x)=\frac{m_a(x)\cosh(x/2)}{\Theta(x)\sinh(x/2)},\qquad x>0.
 \]
 
-The mass-to-potential ratio for a nonzero even compact profile is the weighted average of `q_a`. The endpoint derivative bound is only a sufficient majorant. Candidate: localization forces the optimal universal integrated constant to retain the large-radius growth of `q_a`; hence an integrated estimate alone cannot repair unit absorption. The survivor must retain the exact excess potential alongside the positive compensated crossing energy.
+The mass-to-potential ratio for a nonzero even compact profile is the weighted average of `q_a`. The endpoint derivative bound is only a sufficient majorant. Localization forces the optimal universal integrated constant to retain the large-radius growth of `q_a`; hence an integrated estimate alone cannot repair unit absorption. The survivor retains the exact excess potential alongside the positive compensated crossing energy.
 
-## Exact conjecture and preliminary attack
+## Uniform lower bound and scope
 
-Write `b = log(2)/2`. For `0 < a ≤ b` and `x ≥ log(2)`, conjecture
+Write `b = log(2)/2`. For `0 < a ≤ b` and `x ≥ log(2)`, the proved bound is
 
 \[
 q_a(x)\ge \pi\exp(2x-5\log(2)/4)>1.
@@ -43,7 +43,7 @@ q_a(x)\ge \pi\exp(2x-5\log(2)/4)>1.
 
 Consequently no legitimate derivative bound can make `coshSinhPolarRatio a M R ≤ 1` once `R ≥ log(2)`, even if `a` and `M` vary with `R`. Every nonzero even smooth test supported in `|x| ≥ L ≥ log(2)` has mass-to-sinh-potential ratio at least the same exponential bound at `L`. Integration does not repair the obstruction on this source class.
 
-**Verdict: SURVIVES PRELIMINARY ATTACK.** The kernel slope estimate is prior corpus work; localization and multiplication-operator norm principles are classical. The proposed contribution is their explicit uniform consequence for the literal THIM absorption problem, not a new ground-state theory. No scientific-priority claim is established by missing search hits.
+**Verdict: PROVED AND FORMALIZED.** The kernel slope estimate is prior corpus work; localization and multiplication-operator norm principles are classical. The contribution is their explicit uniform consequence for the literal THIM absorption problem. No new ground-state theory or scientific-priority claim is established by missing search hits.
 
 ## Paper proof: quantitative obstruction [PROVED HERE]
 
@@ -100,8 +100,8 @@ E(m_aw)+\theta P_a(w)+D_+(w)
 
 The correction is minimal among continuous nonnegative multiplication densities: if `h≥0` and `C_a(w)≤θP_a(w)+∫h w²` for every even smooth compact profile, localize a paired bump near any positive `x`; negativity of `h-d` there contradicts the inequality. Hence `h≥d_+` (for even `h`; otherwise its even part is the observable density). Conversely `h≥d_+` gives the inequality by pointwise integration. This classification identifies the exact cost a replacement nonlocal coercivity argument must pay.
 
-**Formal status:** The obstruction, confinement law and minimal local repair passed the combined
-scratch audit `/tmp/thim-review1910-all-v4.lean`. Named-source and axiom audits remain.
+**Formal status:** Named-source audits passed for both new leaves. Every one of their 84 public
+declarations passed the axiom audit, using only `propext`, `Classical.choice` and `Quot.sound`.
 Full uncompensated odd positivity remains outside the proved result.
 
 ## Canonical growing-horizon family: paper proof [PROVED HERE]
@@ -219,10 +219,29 @@ the actual admitted theta translations. No presumed mass decay, spectral gap,
 prime cancellation, or coefficient feasibility enters. The bound retains every
 moving endpoint and every arithmetic edge; it does not prove a sign at finite `n`.
 
-## Verification constraints
+## T1–T4 outcome and remaining scope
+
+| Task | Established result | Boundary of the result |
+|---|---|---|
+| T1 | Actual C² compact theta sources; parity, ordinary mean, both polar moments, inner agreement, outer support and strong graph limits are proved for the constructions used. | Arbitrary localization can break the primitive moments. The primitive construction uses the same cutoff before shifting. No restricted Fermi inverse is exported to a larger class. |
+| T2 | `canonicalCriticalCutoff_inverse_square_bound` controls the complete original energy of an explicit admitted primitive sequence, with every shifted mass and full-edge error paid by finite moments. | Constants depend on the fixed shifts. This is not a Nyman approximation or a density theorem for all primitive sources. |
+| T3 | `no_unit_coshSinhPolarRatio` and `oddPolar_integrated_absorption_counterexample` rule out both derivative-based unit absorption and every fixed universal integrated coefficient. | Restricted families can still satisfy different bounds. |
+| T4 | Exact compensated chain identity, least local mass correction, confinement law, and the complete primitive horizon bound retain the reflected collars and cosh subtraction. | General compensated coercivity and odd/primitive positivity remain open. The inverse-square estimate does not establish a finite-horizon sign. |
+
+The eventual nonzero theorem uses the previously proved infinite odd critical sequence.
+`canonicalCriticalCutoff_source_class` and `canonicalCriticalCutoff_inverse_square_bound`
+have only natural-number indices as inputs: all shift-admission and polar-moment
+obligations are discharged by the actual producer.
+
+## Verification
 
 Corpus discovery was partial for several deep queries (pending coverage and deadline-limited
 reranking). Both candidate lemmas and source arguments were inspected, then exact CHMD source
 and lexical searches supplied the dependencies. No missing hit is treated as a novelty proof.
+
+- Named `lake --old env lean -j 1` audits passed without warnings for both new leaves and both corrected source-comment leaves.
+- Both new leaves are imported by the THIM umbrella, already imported by `MainTheorems`. No full or umbrella build was run.
+- A `/tmp`-only `#print axioms` audit checked all 84 public declarations against their complete expected name set. Only `propext`, `Classical.choice` and `Quot.sound` occur; no additional axiom or `sorryAx` occurs.
+- Generated indexes were refreshed twice. Repository-wide `scripts/formal_tools.py lint --check-generated` was run twice. The first run found concurrent BiScale/SRT imports, subsequently fixed by their owners. The second found the newly added, unwired `BezoutValuationIncidence.LinearBandPowerEnvelopeAndChiralKloostermanCollision` and concurrently stale `formal/LEAN_API.md` / `formal/LEAN_OVERVIEW.md`. No THIM lint error was reported. The global gate is not claimed green.
 
 No numerical experiments, full builds, umbrella builds, heartbeat increases, commits or changes to other agents' work. One owned foreground Lean process at a time. Standard domain/range conditions are stated explicitly; no desired analytic bound is assumed. `update_plan` is unavailable in this session, so this card tracks the plan. Serena supports only Python here; Lean symbol calls fail, requiring source reads and patches.

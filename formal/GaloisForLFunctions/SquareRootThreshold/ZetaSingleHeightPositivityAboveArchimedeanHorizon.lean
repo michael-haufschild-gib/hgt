@@ -84,33 +84,45 @@ theorem inv_one_add_abs_pow_four_le {y σ : ℝ} (hσ : |y| / 2 < |σ|) :
   rw [sq ((1 + |σ|) ^ 2)]
   exact mul_le_mul h1 h2 (by positivity) (by positivity)
 
-/-- **Lower bound at height `2πξ`.** For a `C²` profile supported in `[-a, a]`,
-`Re W_ζ(S_ξ f, S_ξ f) ≥ (log(1 + π|ξ|/4) − E(e^{2a}) − 2S(a))‖f‖² − B_f²/(8(1 + π|ξ|))`. -/
-theorem zetaZeroConfig_re_W_heightShift_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℂ}
-    (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-a) a) (ξ : ℝ) :
-    (Real.log (1 + π * |ξ| / 4) - horizonExponent (Real.exp (2 * a)) -
-        2 * pairEnergy (1 / 2) a) * (∫ t, ‖f t‖ ^ 2) -
+/-- The transform of the Weil kernel of a height-shifted profile is the shifted spectral
+density: `h_k(τ) = |h_f(τ + 2πξ)|²` for `k = S_ξ f ⋆ (S_ξ f)~`. -/
+theorem paperFT_weilTest_heightShift_ofReal {f : ℝ → ℂ} (hf : Continuous f)
+    (hfc : HasCompactSupport f) (ξ τ : ℝ) :
+    paperFT (EF.weilTest (heightShift ξ f) (heightShift ξ f)) τ =
+      ((‖paperFT f ((τ + 2 * π * ξ : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ) := by
+  have hgc : HasCompactSupport (heightShift ξ f) := hfc.mul_left
+  have hg : Continuous (heightShift ξ f) := (by fun_prop : Continuous fun u : ℝ =>
+    cexp (2 * π * I * ξ * u)).mul hf
+  rw [paperFT_weilTest_self_ofReal hg hgc τ, paperFT_heightShift]
+  push_cast
+  rfl
+
+/-- **The symbol estimate at height `2πξ`.** Let `w` be a symbol with
+`w(τ) ≥ (log(1 + |τ|/4) − E)/2π`, and let `|h_f(· + 2πξ)|² w` be integrable. Then the pole terms of
+`S_ξ f` plus `∫ |h_f(τ + 2πξ)|² w(τ) dτ` are at least
+`(log(1 + π|ξ|/4) − E − 2S(a))‖f‖² − B_f²/(8(1 + π|ξ|))`. -/
+theorem re_pole_add_integral_symbol_heightShift_ge {a E : ℝ} (ha : 0 ≤ a) {f : ℝ → ℂ}
+    (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-a) a) (ξ : ℝ) {w : ℝ → ℝ}
+    (hw : ∀ τ, (Real.log (1 + |τ| / 4) - E) / (2 * π) ≤ w τ)
+    (hwi : Integrable fun τ : ℝ => ‖paperFT f ((τ + 2 * π * ξ : ℝ) : ℂ)‖ ^ 2 * w τ) :
+    (Real.log (1 + π * |ξ| / 4) - E - 2 * pairEnergy (1 / 2) a) * (∫ t, ‖f t‖ ^ 2) -
       (4 * ((∫ u, ‖f u‖) + ∫ u, ‖deriv (deriv f) u‖)) ^ 2 / (8 * (1 + π * |ξ|)) ≤
-      (zetaZeroConfig.W (heightShift ξ f) (heightShift ξ f)).re := by
+      (paperFT (EF.weilTest (heightShift ξ f) (heightShift ξ f)) (I / 2) +
+        paperFT (EF.weilTest (heightShift ξ f) (heightShift ξ f)) (-I / 2)).re +
+      ∫ τ : ℝ, ‖paperFT f ((τ + 2 * π * ξ : ℝ) : ℂ)‖ ^ 2 * w τ := by
   set g := heightShift ξ f with hgdef
   have hg : ContDiff ℝ 2 g := heightShift_contDiff hf ξ
   have hgs : tsupport g ⊆ Icc (-a) a := (tsupport_heightShift_subset ξ f).trans hfs
-  have hgc := hasCompactSupport_of_tsupport_subset_Icc hgs
   have hfc := hasCompactSupport_of_tsupport_subset_Icc hfs
-  have hkd : ContDiff ℝ 2 (EF.weilTest g g) := EF.weilTest_contDiff hg hg.continuous hgc
-  have hkc : HasCompactSupport (EF.weilTest g g) := EF.weilTest_hasCompactSupport hgc hgc
   have hkdf : ContDiff ℝ 2 (EF.weilTest f f) := EF.weilTest_contDiff hf hf.continuous hfc
   have hkcf : HasCompactSupport (EF.weilTest f f) := EF.weilTest_hasCompactSupport hfc hfc
   set y : ℝ := 2 * π * ξ with hy
-  set X : ℝ := Real.exp (2 * a) with hX
-  set E := horizonExponent X with hE
   set N := ∫ t, ‖f t‖ ^ 2 with hN
   set B := 4 * ((∫ u, ‖f u‖) + ∫ u, ‖deriv (deriv f) u‖) with hB
   set F : ℝ → ℝ := fun σ => ‖paperFT f σ‖ ^ 2 with hFdef
   set ℓ := Real.log (1 + |y| / 8) with hℓ
   have hℓ0 : 0 ≤ ℓ := Real.log_nonneg (by linarith [abs_nonneg y])
   have hπ : 0 < 2 * π := by positivity
-  -- norms and transforms of the shifted profile
   have hnorm_g : ∀ u, ‖g u‖ = ‖f u‖ := fun u => by
     simp only [hgdef, heightShift, norm_mul]
     rw [show (2 * π * I * ξ * u : ℂ) = ((2 * π * ξ * u : ℝ) : ℂ) * I by push_cast; ring,
@@ -118,46 +130,24 @@ theorem zetaZeroConfig_re_W_heightShift_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ →
   have hNg : ∫ t, ‖g t‖ ^ 2 = N := by
     rw [hN]
     exact integral_congr_ae (Eventually.of_forall fun t => by simp only [hnorm_g])
-  have hval : ∀ τ : ℝ, paperFT (EF.weilTest g g) τ = ((F (τ + y) : ℝ) : ℂ) := by
-    intro τ
-    rw [paperFT_weilTest_self_ofReal hg.continuous hgc τ, hgdef, paperFT_heightShift, hFdef, hy]
-    push_cast
-    rfl
-  -- integrability
   have hFi : Integrable F := by
     refine (EF.integrable_paperFT_ofReal
       (EF.integrable_fourier_of_contDiff_two hkdf hkcf)).re.congr (Eventually.of_forall fun σ => ?_)
     simp only [paperFT_weilTest_self_ofReal hf.continuous hfc σ, RCLike.re_to_complex,
       Complex.ofReal_re, hFdef]
   have hFyi : Integrable fun τ : ℝ => F (τ + y) := hFi.comp_add_right y
-  have hsym : Integrable fun τ : ℝ => F (τ + y) * (mu τ + PX X τ) := by
-    refine (integrable_paperFT_mul_mu_add_PX hkd hkc (2 * a)).re.congr
-      (Eventually.of_forall fun τ => ?_)
-    simp only [hval, ← Complex.ofReal_mul, RCLike.re_to_complex, Complex.ofReal_re, hX]
   set Cu : ℝ := B ^ 2 / (1 + |y| / 2) ^ 2 with hCu
   have hui : Integrable fun τ : ℝ => Cu * (1 + (τ + y) ^ 2)⁻¹ :=
     (integrable_inv_one_add_sq.const_mul Cu).comp_add_right y
-  -- the formula
-  have hW := zetaZeroConfig_W_eq_pole_add_integral hg hgs
-  have hμre : (∫ τ : ℝ, paperFT (EF.weilTest g g) τ * ((mu τ + PX X τ : ℝ) : ℂ)).re =
-      ∫ τ : ℝ, F (τ + y) * (mu τ + PX X τ) := by
-    have h : (fun τ : ℝ => paperFT (EF.weilTest g g) τ * ((mu τ + PX X τ : ℝ) : ℂ)) =
-        fun τ : ℝ => ((F (τ + y) * (mu τ + PX X τ) : ℝ) : ℂ) := by
-      funext τ
-      rw [hval, Complex.ofReal_mul]
-    rw [h, integral_complex_ofReal, Complex.ofReal_re]
-  -- the pointwise lower bound
   set c₁ := (ℓ - E) / (2 * π) with hc₁
   set c₂ := ℓ / (2 * π) with hc₂
   have hc₂0 : 0 ≤ c₂ := by positivity
   have hsf : ∀ u, f u ≠ 0 → |u| ≤ a := fun u hu => by
     by_contra h
     exact hu (eq_zero_of_not_mem_Icc hfs fun hm => h (abs_le.mpr ⟨hm.1, hm.2⟩))
-  have hptw : ∀ τ : ℝ, c₁ * F (τ + y) - c₂ * (Cu * (1 + (τ + y) ^ 2)⁻¹) ≤
-      F (τ + y) * (mu τ + PX X τ) := by
+  have hptw : ∀ τ : ℝ, c₁ * F (τ + y) - c₂ * (Cu * (1 + (τ + y) ^ 2)⁻¹) ≤ F (τ + y) * w τ := by
     intro τ
-    have hmu := mu_add_PX_ge (Real.exp_pos (2 * a)).le τ
-    rw [← hE] at hmu
+    have hmu := hw τ
     have hF0 : 0 ≤ F (τ + y) := sq_nonneg _
     have hu0 : 0 ≤ Cu * (1 + (τ + y) ^ 2)⁻¹ := by positivity
     by_cases hσ : |τ + y| ≤ |y| / 2
@@ -167,15 +157,15 @@ theorem zetaZeroConfig_re_W_heightShift_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ →
         linarith
       have hlog : ℓ ≤ Real.log (1 + |τ| / 4) :=
         Real.log_le_log (by linarith [abs_nonneg y]) (by linarith)
-      have hμ : c₁ ≤ mu τ + PX X τ := by
+      have hμ : c₁ ≤ w τ := by
         refine le_trans ?_ hmu
         rw [hc₁]
         exact div_le_div_of_nonneg_right (by linarith) hπ.le
-      have e1 : F (τ + y) * c₁ ≤ F (τ + y) * (mu τ + PX X τ) := mul_le_mul_of_nonneg_left hμ hF0
+      have e1 : F (τ + y) * c₁ ≤ F (τ + y) * w τ := mul_le_mul_of_nonneg_left hμ hF0
       nlinarith
     · rw [not_le] at hσ
       have hlog0 : 0 ≤ Real.log (1 + |τ| / 4) := Real.log_nonneg (by linarith [abs_nonneg τ])
-      have hμ : c₁ - c₂ ≤ mu τ + PX X τ := by
+      have hμ : c₁ - c₂ ≤ w τ := by
         refine le_trans ?_ hmu
         rw [hc₁, hc₂, ← sub_div]
         exact div_le_div_of_nonneg_right (by linarith) hπ.le
@@ -192,14 +182,13 @@ theorem zetaZeroConfig_re_W_heightShift_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ →
           _ ≤ B ^ 2 * (1 / (1 + |y| / 2) ^ 2 * (1 + (τ + y) ^ 2)⁻¹) :=
             mul_le_mul_of_nonneg_left (inv_one_add_abs_pow_four_le hσ) (sq_nonneg B)
           _ = B ^ 2 / (1 + |y| / 2) ^ 2 * (1 + (τ + y) ^ 2)⁻¹ := by ring
-      have e1 : F (τ + y) * (c₁ - c₂) ≤ F (τ + y) * (mu τ + PX X τ) :=
-        mul_le_mul_of_nonneg_left hμ hF0
+      have e1 : F (τ + y) * (c₁ - c₂) ≤ F (τ + y) * w τ := mul_le_mul_of_nonneg_left hμ hF0
       have e2 : c₂ * F (τ + y) ≤ c₂ * (Cu * (1 + (τ + y) ^ 2)⁻¹) :=
         mul_le_mul_of_nonneg_left hdec hc₂0
       nlinarith
   have hlow : Integrable fun τ : ℝ => c₁ * F (τ + y) - c₂ * (Cu * (1 + (τ + y) ^ 2)⁻¹) :=
     (hFyi.const_mul c₁).sub (hui.const_mul c₂)
-  have hmono := integral_mono hlow hsym hptw
+  have hmono := integral_mono hlow hwi hptw
   have hFint : ∫ τ : ℝ, F (τ + y) = 2 * π * N := by
     rw [integral_add_right_eq_self (fun σ => F σ) y, hFdef]
     exact integral_norm_sq_paperFT_eq hf hfs
@@ -208,10 +197,8 @@ theorem zetaZeroConfig_re_W_heightShift_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ →
       integral_univ_inv_one_add_sq]
   rw [integral_sub (hFyi.const_mul c₁) (hui.const_mul c₂), integral_const_mul,
     integral_const_mul, hFint, huint] at hmono
-  -- the pole terms
   have hpole := neg_le_re_pole_terms ha hg.continuous hgs
   rw [hNg] at hpole
-  -- the tail term
   have hyabs : |y| = 2 * π * |ξ| := by
     rw [hy, abs_mul, abs_of_pos hπ]
   have hℓy : ℓ ≤ |y| / 8 := by
@@ -234,11 +221,46 @@ theorem zetaZeroConfig_re_W_heightShift_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ →
   have hlogeq : Real.log (1 + π * |ξ| / 4) = ℓ := by
     rw [hℓ, hyabs]
     ring_nf
-  rw [hW, Complex.add_re, hμre, hlogeq]
+  rw [hlogeq]
   have hc₁N : c₁ * (2 * π * N) = (ℓ - E) * N := by
     rw [hc₁]
     field_simp
   linarith
+
+/-- **Lower bound at height `2πξ`.** For a `C²` profile supported in `[-a, a]`,
+`Re W_ζ(S_ξ f, S_ξ f) ≥ (log(1 + π|ξ|/4) − E(e^{2a}) − 2S(a))‖f‖² − B_f²/(8(1 + π|ξ|))`. -/
+theorem zetaZeroConfig_re_W_heightShift_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℂ}
+    (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-a) a) (ξ : ℝ) :
+    (Real.log (1 + π * |ξ| / 4) - horizonExponent (Real.exp (2 * a)) -
+        2 * pairEnergy (1 / 2) a) * (∫ t, ‖f t‖ ^ 2) -
+      (4 * ((∫ u, ‖f u‖) + ∫ u, ‖deriv (deriv f) u‖)) ^ 2 / (8 * (1 + π * |ξ|)) ≤
+      (zetaZeroConfig.W (heightShift ξ f) (heightShift ξ f)).re := by
+  have hg : ContDiff ℝ 2 (heightShift ξ f) := heightShift_contDiff hf ξ
+  have hgs : tsupport (heightShift ξ f) ⊆ Icc (-a) a :=
+    (tsupport_heightShift_subset ξ f).trans hfs
+  have hgc := hasCompactSupport_of_tsupport_subset_Icc hgs
+  have hfc := hasCompactSupport_of_tsupport_subset_Icc hfs
+  have hkd := EF.weilTest_contDiff hg hg.continuous hgc
+  have hkc := EF.weilTest_hasCompactSupport hgc hgc
+  have hval := paperFT_weilTest_heightShift_ofReal hf.continuous hfc ξ
+  have hsym : Integrable fun τ : ℝ => ‖paperFT f ((τ + 2 * π * ξ : ℝ) : ℂ)‖ ^ 2 *
+      (mu τ + PX (Real.exp (2 * a)) τ) := by
+    refine (integrable_paperFT_mul_mu_add_PX hkd hkc (2 * a)).re.congr
+      (Eventually.of_forall fun τ => ?_)
+    simp only [hval, ← Complex.ofReal_mul, RCLike.re_to_complex, Complex.ofReal_re]
+  have h := re_pole_add_integral_symbol_heightShift_ge ha hf hfs ξ
+    (fun τ => mu_add_PX_ge (Real.exp_pos (2 * a)).le τ) hsym
+  have hμre : (∫ τ : ℝ, paperFT (EF.weilTest (heightShift ξ f) (heightShift ξ f)) τ *
+      ((mu τ + PX (Real.exp (2 * a)) τ : ℝ) : ℂ)).re =
+      ∫ τ : ℝ, ‖paperFT f ((τ + 2 * π * ξ : ℝ) : ℂ)‖ ^ 2 * (mu τ + PX (Real.exp (2 * a)) τ) := by
+    have hfun : (fun τ : ℝ => paperFT (EF.weilTest (heightShift ξ f) (heightShift ξ f)) τ *
+        ((mu τ + PX (Real.exp (2 * a)) τ : ℝ) : ℂ)) = fun τ : ℝ =>
+        ((‖paperFT f ((τ + 2 * π * ξ : ℝ) : ℂ)‖ ^ 2 * (mu τ + PX (Real.exp (2 * a)) τ) : ℝ) : ℂ) := by
+      funext τ
+      rw [hval, Complex.ofReal_mul]
+    rw [hfun, integral_complex_ofReal, Complex.ofReal_re]
+  rw [zetaZeroConfig_W_eq_pole_add_integral hg hgs, Complex.add_re, hμre]
+  exact h
 
 /-- **Positivity at large heights.** Every `C²` profile of compact support has nonnegative
 localized Weil forms `W_ζ(S_ξ f, S_ξ f)` at all sufficiently large heights. -/

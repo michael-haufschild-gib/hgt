@@ -150,3 +150,9 @@ of a generator defect.
 Lean open (window PNT transport). M5 answered negatively for the folded operator; M4's remaining
 question (signed superpositions) is moot for the folded route. Programme continues on the
 remainder-dominates-defect inequality.
+- 2026-10-19 (late) — `ShiftedGroundStateOriginFailure` added and wired (nine modules): Lean proof that
+  every shifted ground state is a strict folded subsolution on a right neighbourhood of `0`
+  (`exists_origin_window_foldedGenerator_lt_potential`, prime `2` only), the
+  remainder-dominates-defect identity `markovEnergy_phiDoob_shiftedGroundState_eq` and its
+  nonnegativity criterion. The folded sufficiency route is closed as a no-go (section above); the
+  programme's live object is the remainder-dominates-defect inequality and its two-sided twin.

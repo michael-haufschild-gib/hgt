@@ -45,6 +45,8 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».NonstationaryMellinL
 import GaloisForLFunctions.«arithmetic-positivity-theory».MarkovPoleHyperbolicCapacityAndApertureThresholds
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothingAndGramMargin
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampFullWeilSmoothingLimit
+import GaloisForLFunctions.«arithmetic-positivity-theory».CompactFullWeilQuantitativeSmoothing
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTranslatedTentApproximation
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseHarmonicLayers
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseWindowAndPhysicalRieszBounds
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialPhaseBohrCoercivityAndTailIndependence
@@ -55,6 +57,7 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialSpanTestPol
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailCombinationExplicitFormula
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailSpanWeilCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».InghamHuxleyHeightBoxZeroMajorant
+import GaloisForLFunctions.«arithmetic-positivity-theory».SelbergExponentialNearLineAndThreeRegimeZeroDensity
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,
