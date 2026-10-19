@@ -104,9 +104,21 @@ Multiplying by `|F(Q)|≤24 sqrt(Q)` gives `O_ε(M^(Θ+1/2+ε)Q^(1/2−Θ−ε))
 
 `QuasiRHQuotientHeadBoundary.lean` formalizes the truncated identity, first-channel dyadic difference, dyadic reconstruction, uniform Riesz-tail bound, boundary bound, and increment-head remainder. All six exported theorems pass a warning-free focused leaf check and scratch axiom audits using only `propext`, `Classical.choice`, and `Quot.sound`. The module is wired into `RHTower`. These are unconditional identities and estimates at the actual Θ; neither numerical strip is inferred without the missing arithmetic cancellation.
 
-### Mean-square alternative — paper proof
+### Sharp cumulative-energy law
 
-An upper bound \(\sum_{N\leq X}|G_N|^2=O_\varepsilon(X^{2b+\varepsilon})\) suffices for boundary b. Since \(G_N=S(N)/N+O(1)\), the twice-Abel Dirichlet continuation has dyadic absolute blocks bounded by \(X^{b-\Re s+\varepsilon/2}\). Locally uniform convergence for \(\Re s>b\) continues \(-\zeta'/\zeta-\zeta\), excluding a ζ-zero pole there. Targets are \(X^{5/3+\varepsilon}\) and \(X^{3/2+\varepsilon}\). Existing formation-energy increments equal \((N+1)/(N+2)|G_{N+1}|^2\), identifying the exact cumulative observable. The new upper bounds remain open.
+`QuasiRHMeanSquareAbscissa.lean` proves that a cumulative square bound of exponent \(r\geq1\) for the literal normalized Abel source forces \(\Theta\leq r/2\). Finite averaging supplies small samples in every \(N^\theta\) window; the existing power-gap theorem applies, then \(\theta\uparrow1\) recovers the sharp exponent. The unconditional converse identifies the exact infimum as \(2\Theta\). Bounded completion corrections and the positive formation increments transfer both statements to `suzukiCompletedFormationEnergy`.
+
+Targets remain \(X^{5/3+\varepsilon}\) and \(X^{3/2+\varepsilon}\), for every positive epsilon. At dilation cutoff \(\lfloor M^b\rfloor\), the head has cumulative square cost at most \((9/25)X^{2b}\). The normalized dilation diagonal costs at most \(9X/25\). The remaining arithmetic estimate is the one-sided upper bound for the ordered off-diagonal sum \(V_b(X)\) defined in report §8.4. Its Möbius signs and moving support remain intact. Neither target upper bound is proved by these identities and exponent laws.
+
+### Exact power-mesh mean-square law
+
+The exact power-mesh extension is formalized in `QuasiRHPowerMeshMeanSquareAbscissa.lean`: cumulative energy of `T(j^m)/j^m` has infimum exponent `1+2m(Θ−1/2)`. Backward windows of length `j^θ` become physical power gaps of exponent `1−(1−θ)/m`. On `M=j^6,D=j^5` and `M=j^4,D=j^3`, the exact quotient range is `q<j`. Paid head and diagonal reduce the two strips to one-sided averaged covariance exponents `5+ε` and `3+ε`, respectively. These bounds remain open; the classification and reductions pass a warning-free focused leaf check.
+
+### Sharp positive-envelope obstruction
+
+`QuasiRHHighDilationPositiveEnvelope.lean` proves, for the literal retained coefficients at M=j^m and D=j^(m−1), that the tail diagonal has order M² and its absolute mass has order M√M. The constants and eventual threshold are uniform in m≥1. Consequently the cumulative squared absolute-mass envelope has sharp order J^(m+1), and no eventual O(J^m) bound exists. Optimizing positive probability weights attains exactly this envelope; it does not improve its exponent.
+
+This retires direct positive normalization of the original dilation channels: its m=6 and m=4 costs are J^7 and J^5, versus the signed targets J^(5+ε) and J^(3+ε). It does not bound the signed tail from below or retire cancellation-preserving grouping. The [failed-route card](../5-failed/quasi-rh-high-dilation-positive-envelope.md) records the formal positive survivor. All ten public theorems pass focused source and standard-axiom checks.
 
 ### Character-twisted binary correlation — existing receiver
 

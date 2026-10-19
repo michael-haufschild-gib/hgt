@@ -18,11 +18,12 @@ The strongest findings are:
 | Chebyshev and prime-window criteria | Exact transfer between a zero-width bound and the matching arithmetic error spectrum | A strictly better arithmetic exponent; converting the baseline through an equivalence does not improve it |
 | Wold signed covariance | An exact characterization of each subcritical zero width | Upper bounds on the signed covariance beyond the baseline radius `1/8` |
 | Weighted Möbius moments | A weighted square-integrability condition excludes zeros to the right of `1 − a` | Such a moment at some `a > 1/8`, without assuming RH |
+| Cumulative and power-mesh energies | Sharp exponent laws; explicit head and diagonal bounds; exact covariance criteria | Signed covariance estimates `W_6(J)=Oε(J^(5+ε))` or `W_4(J)=Oε(J^(3+ε))` on the exact meshes |
 | Dirichlet L-functions | Character-twisted Möbius–Laplace source, Mellin identity, and zero-exclusion theorem | A one-sided bound on the actual twisted binary correlations, with exponent `2/3` for `5/6`, or `1/2` for `3/4` |
 
 Two substantial unconditional results must be accounted for: the existing Suzuki normalization implies `P_2(N) = o(N)`, and the full Wold kernel has vanishing normalized covariance throughout `0 ≤ t < 1/2`. Neither supplies the stronger estimate required for a narrower strip. Sections 2.4 and 4.2 identify the exact losses.
 
-**Developed routes:** Section 8 reduces both targets to one-sided estimates on the actual Möbius–divisor head through `q ≤ ceil(N^θ)` for any fixed θ>0. Self-contraction removes the former cutoff restriction and does not assume the accepted baseline. The decisive head estimates remain open. A separate binary-correlation route already has character-twisted receivers, and a mean-square alternative avoids demanding pointwise Suzuki residual bounds. The full polynomial-growth receiver for finite-contact residuals is also formalized.
+**Developed routes:** Section 8 reduces both targets to one-sided estimates on the actual Möbius–divisor head through `q ≤ ceil(N^θ)` for any fixed θ>0. Self-contraction removes the former cutoff restriction and does not assume the accepted baseline. The sharp cumulative-energy law gives `Θ ≤ r/2`. On every power mesh `N=j^m`, the sharp receiver is `Θ ≤ 1/2+(r−1)/(2m)`. The high-dilation route pays the head and the entire diagonal. Its remaining signed covariance targets are `X^(5/3+ε)` and `X^(3/2+ε)` on all integer scales, or `J^(5+ε)` and `J^(3+ε)` on the exact sixth- and fourth-power meshes. Those arithmetic estimates remain open. The character-twisted binary-correlation receivers and finite-contact polynomial-growth law are also available.
 
 This is a bounded source audit, not a proof that no differently formulated theorem exists anywhere in the million-declaration search index. The conclusion is supported by the inspected theorem statements, their premises, searches for premise providers, and the current [RH frontier ledger](../reports/rh-current-frontier-map.md) and [status document](../reports/STATUS.md).
 
@@ -620,60 +621,223 @@ The one-step choices in Section 8.2 remain available, including \(N^{1/4}\) afte
 
 **Verdict:** the tail estimates and self-contracting receivers are formalized. (R5) and (R3) remain the open arithmetic core. Their deduction needs no accepted baseline, but neither estimate has been proved.
 
-### 8.4 Mean-square route: no pointwise residual bound needed
+### 8.4 Mean-square route: sharp exponent law and paid dilation diagonal
 
-There is a second way to use Suzuki's literal source. For \(1/2<b<1\), it suffices to prove
+Put \(u(N)=T(N)/N\), with T the literal Möbius–divisor Abel moment, and
 \[
-\forall\varepsilon>0,\qquad
-\sum_{2\leq N\leq X}|G_N|^2=O_\varepsilon(X^{2b+\varepsilon}).
-\tag{MS}
+\mathcal A(X)=\sum_{N=2}^{X}u(N)^2.
 \]
-Thus the targets are \(X^{5/3+\varepsilon}\) for 5/6 and \(X^{3/2+\varepsilon}\) for 3/4. This permits exceptional large individual amplitudes that a pointwise residual bound would exclude.
-
-**Paper proof of sufficiency.** Since \(G_N=S(N)/N+O(1)\) and \(2b>1\), (MS) gives the same cumulative bound for \(|S(N)/N|^2\). Let
+The [sharp mean-square module](../../formal/GaloisForLFunctions/RHTower/QuasiRHMeanSquareAbscissa.lean)
+proves, unconditionally,
 \[
-J_s(n)=(\sqrt n+\sqrt{n+1})(n^{-s}-(n+1)^{-s}).
-\]
-The corpus proves
-\[
-|J_s(n)-J_s(n+1)|\ll_K n^{-\sigma_K-3/2}
-\]
-uniformly for s in each compact set K in the positive half-plane, where
-\(\sigma_K=\min_{s\in K}\Re s\); see [SquareRootAbelDirichletKernel.lean:91](../../formal/GaloisForLFunctions/RHTower/SquareRootAbelDirichletKernel.lean#L91).
-Two finite Abel summations, followed by a limit on \(\Re s>1\), give
-\[
--\frac{\zeta'(s)}{\zeta(s)}-\zeta(s)
-=\sum_{n\geq1}S(n+1)(J_s(n)-J_s(n+1)).
+\mathcal A(X)\leq C X^r\ (r\geq1)
+\quad\Longrightarrow\quad \Theta\leq r/2,
+\qquad
+2\Theta=\inf\{r\geq1:\exists C\geq0,\ \forall X\geq2,\ \mathcal A(X)\leq CX^r\}.
 \tag{8.4}
 \]
-The boundary terms vanish there because the unconditional linear Chebyshev bound gives \(S(n)=O(n^{3/2})\).
+The same sharp receiver and exact infimum law hold for the already defined completed
+formation energy \(\mathcal F(X)\). These are laws for the actual abscissa; they supply
+no new numerical upper bound for it. The infimum need not be attained.
 
-For \(X\leq n<2X\), Cauchy–Schwarz bounds the absolute block sum on the right by
+**Why the full exponent is recovered.** Fix \(0<\theta<1\). The window
+\([N-\lfloor N^\theta\rfloor,N]\) eventually lies in \([N/2,N]\) and has at least
+\(N^\theta\) points. A bound \(\mathcal A(N)\leq CN^r\) therefore supplies a point k
+in every such window with
 \[
-\left(\sum_{X\leq n<2X}\frac{|S(n+1)|^2}{(n+1)^2}\right)^{1/2}
-\left(\sum_{X\leq n<2X}(n+1)^2|J_s(n)-J_s(n+1)|^2\right)^{1/2}
-\ll_{K,\varepsilon}X^{b-\sigma_K+\varepsilon/2}.
+|u(k)|\ll_{C,r,\theta} k^{(r-\theta)/2}.
 \]
-If K lies in \(\Re s>b\), choose \(\varepsilon<2(\sigma_K-b)\). Summing dyadic blocks proves locally uniform absolute convergence, hence holomorphy on that half-plane. Meromorphic continuation of (8.4) now excludes a ζ zero there: at any zero other than the pole at 1, \(-\zeta'/\zeta\) has a nonzero-residue pole, which subtraction of the analytic function ζ cannot cancel. This treats all zero multiplicities. Reflection gives the left boundary.
+The existing one-sided power-gap bootstrap applies to this good-sample set and gives
+\(\Theta\leq1/2+(r-\theta)/2\). Letting \(\theta\uparrow1\) gives \(\Theta\leq r/2\).
+Conversely, the unconditional bound
+\(u(N)=O_\varepsilon(N^{\Theta-1/2+\varepsilon})\) gives the cumulative upper exponent
+\(2\Theta+\varepsilon\). This proves the exact infimum formula without adding another
+analytic-continuation argument.
 
-The kernel and locally uniform series machinery already exist in [SquareRootAbelDirichletContinuation.lean](../../formal/GaloisForLFunctions/RHTower/SquareRootAbelDirichletContinuation.lean); the new mean-square specialization above is a paper argument, not a claimed existing Lean declaration.
-
-The [formation-energy identity](../../formal/GaloisForLFunctions/RHTower/SuzukiCompletedFormationEnergy.lean#L58) gives
+For the completed source \(G_N\), the code proves \(|u(N)-G_N|\leq D\), with a constant D
+independent of N, and retains the exact production identity
 \[
-\mathcal F(N+1)-\mathcal F(N)=\frac{N+1}{N+2}|G_{N+1}|^2.
+\mathcal F(N+1)-\mathcal F(N)=\frac{N+1}{N+2}G_{N+1}^2.
 \]
-Consequently (MS) can equivalently be sought as an upper bound of order \(X^{2b+\varepsilon}\) for this already defined cumulative energy. Its monotonicity does not supply that upper bound.
-
-The new [formation-energy exponent law](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L1044) concerns individual increments. Its separate [cumulative receiver](../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean#L1010) gives only \(\Theta\leq1/2+r/2\) from \(\mathcal F(X)=O(X^r)\). The mean-square argument above gives the sharper \(\Theta\leq r/2\) for \(r>1\), but that analytic specialization still needs formalization. The existing cumulative theorem therefore does not close (MS).
-
-For a direct arithmetic attack, expand
+In particular,
 \[
-\sum_{N=2}^{X}\frac{S(N)^2}{N^2}
-=\sum_{1\leq k,\ell<X}w_kw_\ell(\psi(k)-k)(\psi(\ell)-\ell)
-\sum_{N=\max(k,\ell)+1}^{X}N^{-2},
-\quad w_k=\sqrt{k+1}-\sqrt k.
+\sum_{N=2}^{X}G_N^2\leq G_2^2+2(\mathcal F(X)-\mathcal F(2)),
+\qquad
+\mathcal A(X)\leq4\mathcal F(X)+2G_2^2+4|\mathcal F(2)|+2D^2X.
 \]
-This exact quadratic form specifies the cross terms that an averaged estimate must control. A bound on its diagonal alone is insufficient.
+These comparisons transfer the sharp exponent with the initial values and bounded
+completion corrections included. For every \(b\geq1/2\), the endpoint criterion is
+\[
+\Theta\leq b
+\quad\Longleftrightarrow\quad
+\forall\varepsilon>0,\ \exists C_\varepsilon\geq0,\ \forall X\geq2,
+\quad\mathcal F(X)\leq C_\varepsilon X^{2b+\varepsilon}.
+\tag{MS}
+\]
+Thus the target powers are \(5/3+\varepsilon\) for 5/6 and \(3/2+\varepsilon\) for 3/4.
+Every positive epsilon is required. Exceptional large individual amplitudes are allowed;
+monotonicity of formation energy alone supplies no upper estimate.
+
+**The dilation head and diagonal are already paid for.** Write
+\(a_{M,d}=\operatorname{mobiusDivisorDilationChannel}(M,d)\),
+\(D_\varphi(M)=\lfloor M^\varphi\rfloor\), and
+\(I_{M,\varphi}=\{d:D_\varphi(M)<d<M\}\).
+The [dilation/hyperbola module](../../formal/GaloisForLFunctions/RHTower/QuasiRHDilationTailHyperbolaAndOutgoingPotentialAbscissaLaw.lean)
+proves \(|a_{M,d}|\leq(3/5)\sqrt M\) and the exact head/tail decomposition.
+For \(\varphi\geq1/2\), the cumulative normalized head square is at most
+\((9/25)X^{2\varphi}\).
+
+Keep the signed, ordered off-diagonal sum
+\[
+V_\varphi(X)=\sum_{M=2}^{X}\frac1{M^2}
+\sum_{d\in I_{M,\varphi}}\sum_{e\in I_{M,\varphi}\setminus\{d\}}a_{M,d}a_{M,e},
+\]
+and let \(\mathcal T_\varphi(X)\) be the cumulative square of the normalized high-dilation
+tail. The literal diagonal satisfies
+\[
+0\leq\mathcal T_\varphi(X)-V_\varphi(X)
+=\sum_{M=2}^{X}\frac1{M^2}\sum_{d\in I_{M,\varphi}}a_{M,d}^2
+\leq\frac9{25}X.
+\]
+No orthogonality or independence is asserted: all cross terms remain in V. In particular,
+\(V_\varphi(X)\geq-9X/25\), and
+\[
+\mathcal A(X)\leq2\mathcal T_\varphi(X)+\frac{18}{25}X^{2\varphi},
+\qquad
+\mathcal T_\varphi(X)\leq2\mathcal A(X)+\frac{18}{25}X^{2\varphi}.
+\]
+The [covariance module](../../formal/GaloisForLFunctions/RHTower/QuasiRHDilationCovarianceAbscissa.lean)
+combines these inequalities with the sharp mean-square law. For \(b\geq\varphi\geq1/2\),
+\[
+\Theta\leq b
+\quad\Longleftrightarrow\quad
+\forall\varepsilon>0,\ \exists C_\varepsilon\geq0,\ \forall X\geq2,
+\quad V_\varphi(X)\leq C_\varepsilon X^{2b+\varepsilon}.
+\tag{DC}
+\]
+At \(\varphi=1/2\), the infimum of upper growth exponents \(r\geq1\) of V is exactly
+\(2\Theta\). At the target cutoffs, the concrete remaining obligations are:
+
+| Strip | Dilation cutoff | Active quotient range in the transposed tail | One-sided covariance target |
+|---|---|---|---|
+| \([1/6,5/6]\) | \(\lfloor M^{5/6}\rfloor\) | \(q\leq M^{1/6}\) | \(V_{5/6}(X)\leq C_\varepsilon X^{5/3+\varepsilon}\) |
+| \([1/4,3/4]\) | \(\lfloor M^{3/4}\rfloor\) | \(q\leq M^{1/4}\) | \(V_{3/4}(X)\leq C_\varepsilon X^{3/2+\varepsilon}\) |
+
+The exact quotient support is \(1\leq q\leq\lfloor(M-1)/(D_\varphi(M)+1)\rfloor\).
+The complete-rectangle factorization supplies a weighted Möbius square-root sum; its
+cancellation still needs proof. The head ceiling, diagonal ceiling, and finite hyperbola
+identity do not prove (DC). The open arithmetic work is a signed upper estimate for
+these distinct-dilation interactions, with every epsilon and moving cutoff controlled.
+
+**Exact power meshes and averaged covariance targets.** The
+[power-mesh module](../../formal/GaloisForLFunctions/RHTower/QuasiRHPowerMeshSquareSampleAndObserverJetAbscissaLaw.lean)
+removes the rounding terms altogether. At \(M=j^m\), \(D=j^{m-1}\), with \(m\geq2\),
+\[
+\left\lfloor\frac{j^m-1}{j^{m-1}+1}\right\rfloor=j-1.
+\]
+Thus the exact normalized tail is
+\[
+t_m(j)=j^{-m}\sum_{q=1}^{j-1}F(q)
+ \operatorname{mobiusHighDilationClippedAbelKernel}(j^m,j^{m-1},q).
+\]
+Here \(F(q)=\operatorname{primeFreeDivisorDefect}(q)\); all original signs and clipping
+boundaries remain in the kernel.
+
+For every integer \(m\geq1\), put
+\(\mathcal A_m(J)=\sum_{j=2}^{J}u(j^m)^2\). The sharp mesh law is
+\[
+\mathcal A_m(J)\leq CJ^r\ (r\geq1)
+\quad\Longrightarrow\quad
+\Theta\leq\frac12+\frac{r-1}{2m},
+\qquad
+\inf\{r\geq1:\mathcal A_m(J)=O(J^r)\}
+=1+2m(\Theta-1/2).
+\tag{PM}
+\]
+The [mesh mean-square module](../../formal/GaloisForLFunctions/RHTower/QuasiRHPowerMeshMeanSquareAbscissa.lean)
+uses finite-window averaging in the index j. A selected k satisfies
+\(j-k\leq j^\theta\) and \(|u(k^m)|\ll k^{(r-\theta)/2}\).
+For \(j=\lfloor N^{1/m}\rfloor\), the polynomial difference bound gives
+\[
+N-k^m\leq m2^m N^{1-(1-\theta)/m}.
+\]
+The physical power-gap saving stays positive for every \(\theta<1\). Applying the
+existing arithmetic bootstrap and letting \(\theta\uparrow1\) proves the receiver
+in (PM). The intrinsic bound at \(\Theta\) gives its converse. Taking m=1 recovers
+the full-integer mean-square law.
+
+Let \(W_m(J)\) be the ordered covariance above, sampled at these exact M and D:
+\[
+W_m(J)=\sum_{j=2}^{J}\frac1{j^{2m}}
+ \sum_{j^{m-1}<d<j^m}\ \sum_{\substack{j^{m-1}<e<j^m\\ e\ne d}}
+ a_{j^m,d}a_{j^m,e}.
+\]
+For even \(m\geq2\), the head bound is \((3/5)j^{m/2-1}\), and
+\[
+0\leq\sum_{j=2}^{J}t_m(j)^2-W_m(J)\leq\frac9{25}J,
+\qquad
+\mathcal A_m(J)\leq2W_m(J)+\frac{36}{25}J^{m-1},
+\qquad
+W_m(J)\leq2\mathcal A_m(J)+\frac{18}{25}J^{m-1}.
+\]
+Consequently each row below is an exact equivalence, with every \(\varepsilon>0\)
+and every integer \(J\geq2\):
+
+| Zero strip | Exact mesh and dilation cutoff | Remaining one-sided averaged estimate |
+|---|---|---|
+| \([1/6,5/6]\) | \(M=j^6,\ D=j^5,\ 1\leq q<j\) | \(W_6(J)\leq C_\varepsilon J^{5+\varepsilon}\) |
+| \([1/4,3/4]\) | \(M=j^4,\ D=j^3,\ 1\leq q<j\) | \(W_4(J)\leq C_\varepsilon J^{3+\varepsilon}\) |
+
+These permit exceptional large individual samples. They demand an average estimate
+for the literal signed covariance, not a pointwise bound at every j. Using the accepted
+7/8 baseline as a mathematical premise gives mesh-energy exponents \(11/2+\varepsilon\)
+and \(4+\varepsilon\), respectively. The desired average savings are therefore a
+half-power and a full power in J. Neither saving is supplied by the diagonal bound.
+
+**Sharp cost of positive normalization after the cutoff.** The
+[high-dilation positive-envelope module](../../formal/GaloisForLFunctions/RHTower/QuasiRHHighDilationPositiveEnvelope.lean)
+proves an unconditional lower bound for the actual retained coefficients. Write
+\(U(M,D)=\sum_{D<d<M}|a_{M,d}|\) and \(Q(M,D)=\sum_{D<d<M}a_{M,d}^2\).
+On every power mesh \(M=j^m,D=j^{m-1}\), uniformly for integers \(m\geq1\) and
+sufficiently large j,
+\[
+Q(M,D)\asymp M^2,\qquad U(M,D)\asymp M\sqrt M.
+\]
+The proof starts from the existing positive full-diagonal lower bound. Deleting D
+channels costs at most DM; here \(D/M=1/j\). The channel ceiling then transfers the
+remaining diagonal mass to an absolute-mass lower bound. Consequently, for each fixed m,
+\[
+\mathcal P_m(J):=\sum_{j=2}^{J}
+ \left(\frac{U(j^m,j^{m-1})}{j^m}\right)^2
+\asymp_m J^{m+1}.
+\tag{PE}
+\]
+Both bounds in (PE) are formalized, as is the impossibility of an eventual upper bound
+\(\mathcal P_m(J)\leq CJ^m\).
+
+For every nonnegative probability weight w on the retained channels, positive on each
+nonzero coefficient, Cauchy–Schwarz costs
+\[
+U(M,D)^2\leq\sum_{D<d<M}\frac{a_{M,d}^2}{w_d}.
+\]
+Zero coefficients can be omitted. The weights \(w_d=|a_{M,d}|/U(M,D)\) attain equality
+whenever U is positive. Thus optimizing positive weights on the unprocessed channels
+still costs \(J^7\) on the sixth-power mesh and \(J^5\) on the fourth-power mesh.
+Each misses its signed target by two powers in J. Small quotient support \(q<j\)
+does not reduce the absolute mass to that of j independent channels. The missing
+improvement must come from proved signed cancellation or a comparison preserving it;
+these positive-envelope bounds impose no corresponding lower bound on the signed tail.
+
+Available short-interval mechanisms still require additional estimates:
+[Gallagher's window inequality](../../formal/GaloisForLFunctions/RHTower/Sieve/GallagherSplitIntegral.lean)
+takes frequency mean-square and supremum bounds as inputs, while the
+[signed Selberg interval identity](../../formal/GaloisForLFunctions/BiScaleUncertainty/SignedLcmFractionalDefectAndCompleteFibreCollapse.lean)
+retains an uncontrolled signed fractional-part defect. Applying either mechanism here
+requires an exact comparison with the clipped kernel and a bound for the remaining
+frequency energy or defect. Neither retrieved statement supplies the two table entries.
+
+These new mean-square statements concern ζ and ξ; the Dirichlet-character extension
+remains a separate obligation in Section 8.5.
 
 ### 8.5 Binary Möbius correlation route, including Dirichlet characters
 
@@ -718,9 +882,12 @@ The improvements remain open. Checked items refer to supporting source results o
 - [x] Prove the quotient-tail estimate and power-cutoff specializations in Lean at the actual zero abscissa.
 - [x] Retain and bound the truncated Abel boundary; prove the same remainder estimate for the literal increment head in Lean.
 - [x] Reduce both targets to one-sided bounds on the head through \(N^\theta\) for any fixed \(\theta>0\), using the formal self-contracting receiver. The former numerical cutoffs remain valid one-step choices.
-- [x] Give a paper proof that cumulative energy \(X^{5/3+\varepsilon}\) or \(X^{3/2+\varepsilon}\) suffices.
+- [x] Formalize the sharp cumulative-energy receiver \(\Theta\leq r/2\), its exact exponent law, and the completed formation-energy endpoint criterion.
+- [x] Pay the dilation head and the full normalized diagonal; formalize the exact signed covariance criteria for both strips.
+- [x] Preserve power gaps under integer powers; formalize the sharp mesh mean-square law and both averaged covariance criteria with exact quotient support `q<j`.
+- [x] Determine the sharp positive-normalization cost on the actual retained channels: exponent `m+1`, even after optimizing weights, versus the signed target `m−1+ε`.
 - [x] Identify the existing even-index and character-twisted receivers.
-- [ ] Prove (R5), or the corresponding mean-square or binary-correlation estimate, for the literal arithmetic source.
+- [ ] Prove (R5), the signed dilation covariance estimate (DC), or the corresponding mean-square or binary-correlation estimate, for the literal arithmetic source.
 - [ ] Derive the 5/6 strip with all ε and cutoff quantifiers discharged.
 - [ ] Prove (R3), or its alternative, and derive the 3/4 strip.
 - [ ] Prove the character-twisted estimates across the claimed Dirichlet family; a ζ-only result does not complete that scope.
@@ -839,6 +1006,8 @@ scripts/formal_tools.py research 'one sided upper bound reflected Mobius binary 
 
 Search suggestions are leads, not proof compositions. In particular, shifted truncated-divisor correlations, fixed-core prime-release limits, and Selberg-sieve bounds with an unproved residual-variance premise do not supply the actual estimates required here. Ranked results and incomplete compiler coverage cannot establish the absence of every possible theorem elsewhere in the corpus.
 
-**Formal verification:** the three quotient-tail modules and `QuasiRHQuotientHeadBoundary` linked in Section 8.2 pass focused `lake --old env lean` checks without warnings and are wired into `RHTower`. Their theorems retain the actual zero abscissa. The mean-square argument in Section 8.4 remains a paper deduction. The decisive head and character-twisted correlation estimates remain open; neither improved strip is proved. Existing Suzuki normalization and detector-budget leaves are supporting results with the scopes stated above.
+**Formal verification:** the three quotient-tail modules and `QuasiRHQuotientHeadBoundary` linked in Section 8.2 pass focused `lake --old env lean` checks without warnings and are wired into `RHTower`. Section 8.4 has checked Lean proofs in `QuasiRHMeanSquareAbscissa`, `QuasiRHDilationCovarianceAbscissa`, `QuasiRHPowerMeshMeanSquareAbscissa`, and `QuasiRHHighDilationPositiveEnvelope`, also wired into `RHTower`. Their 43 public theorem audits use only `propext`, `Classical.choice`, and `Quot.sound`. The statements retain the actual zero abscissa and literal arithmetic sources. The decisive head, dilation covariance, and character-twisted correlation estimates remain open; neither improved strip is proved. Existing Suzuki normalization and detector-budget leaves are supporting results with the scopes stated above.
+
+The recorded global formal lint run flags one unrelated module absent from its theorem-area umbrella: `SquareRootThreshold.WeilGroundStateLawOnLagLattices`. It reports no error in these quasi-RH leaves. No full or umbrella build was run.
 
 The upstream theorem's soundness is assumed. External novelty of these reductions is unclaimed; no web research is used.

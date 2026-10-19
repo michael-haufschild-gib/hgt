@@ -110,3 +110,41 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
 - **Jitter law** `jitterConfig_weil_nonneg_iff`: lattice of depth `δ`, ordinates `2πk/L + (−1)^k ε`; for `L/4 < a ≤ L/2` invisible iff `cosh(δL/2)|sin(εL/2)| ≤ 1`.
 - **Crystalline fragility** `jitterConfig_visible`: relative jitter `η` with `cosh(δL/2) sin(πη) > 1` ⇒ visible at the Nyquist aperture `L/2`. Hiding a dense off-line configuration up to the square-root threshold requires arithmetic-progression ordinates to relative precision `e^{−δL/2}` (≈ `T^{−δ/2}` at height `T`).
 - Axioms: [propext, Classical.choice, Quot.sound]. Olean built single-threaded; wired after BandLimitedDepthProfileHidingLaw.
+
+### C10 — Crystal rigidity at the square-root threshold (`CrystalRigidityAtTheSquareRootThreshold.lean`)
+- Fixed-shape periodic off-line pattern: `P` pairs per period, depths `d_r ∈ (0,½]`, relative ordinates `θ_r` distinct mod 1; at scale `ℓ` ordinates `(2π/ℓ)(θ_r + j)`, Nyquist aperture `Pℓ/2`.
+- **Spectral crystallinity** `norm_powerSum_le_of_hiding`: uniform depth `δ`, hiding at `a > (P−1)ℓ/2` ⇒ `|Σ_r e^{2πiθ_r m}| ≤ P/cosh(δmℓ)` for `1 ≤ m < P`.
+- **Crystal rigidity** `uniform_crystal_of_hiding`: hiding above `(P−1)ℓ/2` at unboundedly many scales ⇒ all depths equal and `P(θ_r − θ_r') ∈ ℤ`. Mechanism: deepest pairs dominate every mode as `ℓ → ∞`; Newton's identities (`aeval_esymm_eq_zero_of_powerSums`, `not_forall_powerSum_eq_zero`, `pow_card_eq_of_powerSums`) force the deepest group to be all `P` points and a coset of the `1/P` lattice.
+- **Visibility below threshold** `exists_visible_of_not_uniform_crystal`: any other shape is visible for all large `ℓ` at every `a > (P−1)ℓ/2` (strictly below `Pℓ/2`). **Partner** `uniform_crystal_hides`: the uniform crystal hides up to `Pℓ/2` at every scale (rotation lemma `powerSum_eq_zero_of_pow_eq`).
+- Corpus link: same `2×2`-minor mechanism as `RHTower.norm_le_of_pair_form` (WeilLagCompressedToeplitzPositivity); here applied to zero-configuration lag symbols rather than the compressed ζ lag.
+- Axioms: [propext, Classical.choice, Quot.sound]. Wired after CrystallineFragilityOfOffLineLattices.
+
+### C11 — Hodge index on lag-lattice configurations (`HodgeIndexOnLagLatticeConfigurations.lean`)
+- **Polar blindness** `hodgeIndex_iff_toeplitz_of_lagFormula`, `hodgeIndex_iff_weil_nonneg_of_lagFormula`: for any configuration with lag formula `W = ℓ Σ_m k(mℓ) D(m)`, `RHTower.HodgeIndexAtLevel Z a` ⟺ Toeplitz PSD of size `⌈2a/ℓ⌉` ⟺ full Weil positivity at aperture `a`. Witness: translates of the corpus polar-free bump `RHTower.scaledBumpPolarFree w 0` (`exists_polarFree_bump`; general complex-bump lag identity `lagSum_bumpTest_eq_toeplitz`).
+- **Corpus sharpening** `offLineLattice_hodgeIndex_iff`: `HodgeIndexAtLevel (offLineLatticeConfig) a ⟺ a ≤ L/2` — exact form of the masking half of `RHTower.offLineLattice_masks_at_linear_level`.
+- **Hodge Nyquist ceiling** `profileConfig_not_hodgeIndex_of_nyquist_lt`; **Hodge crystal rigidity** `hodgeIndex_frequently_iff_uniform_crystal` (iff); `exists_hodge_violation_of_not_uniform_crystal`; **Hodge jitter law** `jitterConfig_hodgeIndex_iff`.
+- Meaning: the linear-level masking witness of `RHTower.not_forall_hodge_exclusion_sublinear_level` is crystalline; among fixed-shape periodic off-line patterns only the uniform crystal masks to the square-root threshold.
+- Axioms: [propext, Classical.choice, Quot.sound]. Wired after CrystalRigidityAtTheSquareRootThreshold.
+
+### C12 — On-line shadows: invisibility is mimicry (`OnLineShadowIndistinguishability.lean`)
+- **Indistinguishability principle** `weil_nonneg_iff_onLineShadow_of_lagFormula`: a configuration with lag formula `W = ℓ Σ_m k(mℓ) D(m)`, Hermitian symbol, `D(0) = d₀ > 0`, is invisible at aperture `a` ⟺ there is a weighted on-line periodic configuration (`onLineShadow ℓ c w`, weights `w ≥ 0` at `c_k + 2πℤ/ℓ`) with `Σ w = d₀` zeros per period, `2⌈2a/ℓ⌉ − 1` ordinates per period, and `W(f,f) = Sh(f)` on every aperture-`a` test.
+- Mechanism: Toeplitz PSD section → corpus Carathéodory–Fejér factorization `HTGeometry.exists_atomic_caratheodoryFejer_psd_factorization` (via `circleToeplitzGram_posSemidef`, `exists_atomic_lagSymbol`) → each atom `e^{iφ}` is the on-line translate `φ/ℓ + 2πℤ/ℓ` by Poisson (`lagSum_translate_eq_onLine`); kernel vanishes at lags `≥ 2a` (`weilTest_eq_zero_of_two_mul_le`).
+- Corollaries: Hodge version `hodgeIndex_iff_onLineShadow_of_lagFormula`; profiles `profileConfig_weil_nonneg_iff_onLineShadow`; patterns `patternConfig_weil_nonneg_iff_onLineShadow`; `offLineLattice_onLineShadow` (one ordinate of weight 2 for `a ≤ L/2`).
+- First use of the HTGeometry Carathéodory–Fejér development inside SRT.
+- Axioms: [propext, Classical.choice, Quot.sound]. Wired after HodgeIndexOnLagLatticeConfigurations.
+- README restructured (user request): foundational why/what/how, mechanisms grouped zero side / windows / prime side (incl. other agent's Kronecker, reality/mean-zero, minimum-aperture mechanisms), traps, open problems, principles.
+
+### C13 — Weil ground state of lag-lattice configurations (`WeilGroundStateLawOnLagLattices.lean`)
+- **Ground-state law** `weil_floor_iff_toeplitz_floor`, `hodge_floor_iff_toeplitz_floor`: for any `μ`, `Re W(f,f) ≥ ℓμ∫|f|²` on all aperture-`a` tests ⟺ same on the Hodge class ⟺ `Re T_D(c) ≥ μ‖c‖²` on the Toeplitz section of size `⌈2a/ℓ⌉`. Weil ground energy = `ℓ·λ_min`; the polar constraint does not raise it. Mechanism: shift symbol by `μ` at lag 0 (`shiftSymbol`, `lagSum_shiftSymbol`, field lemma `weilTest_self_zero`), lag-point bump mass `integral_norm_sq_bumpTest`.
+- **Rank-two floor** `rankTwo_floor`, `rankTwo_floor_attained`: `2Re(A B̄) ≥ (⟨x,y⟩ − ‖x‖‖y‖)‖c‖²`, attained at `c = ‖y‖x − ‖x‖y` (Cauchy–Schwarz + polarization).
+- **Off-line lattice ground energy** `offLineLattice_weil_floor`, `offLineLattice_hodge_floor_sharp`: exactly `L(n − √(S₊S₋))` (`latticeFloor`), `S_± = Σ_{j<n} e^{±2δjL}`, sharp within the Hodge class for `a > L/2`.
+- **Depth-exponent growth** `latticeFloor_aperture_bounds`: `−(2a+L)e^{2δa} ≤ L·latticeFloor ≤ 2a + L − L e^{δ(2a−L)}`: ground energy decays like `−e^{2δa}` with exponent exactly the depth — exact model of the corpus floor-growth law `RHTower.XiRestrictedWeilFloorGrowthUniversalityLaw` (aperture exponent ≥ transverse depth off RH).
+- Axioms: [propext, Classical.choice, Quot.sound]. Wired after OnLineShadowIndistinguishability.
+
+### C14 — Nyquist pinning of on-line configurations (`OnLineNyquistPinning.lean`)
+- **Moments** `onLineShadow_eq_lagSum`, `shadowMoment_eq_of_onLineShadow_eq`: `Sh(f) = ℓ Σ_m k(mℓ) M(m)`, `M(m) = Σ_k w_k e^{ic_k mℓ}`; agreement of two shadows on aperture-`a` tests ⟺ agreement of moments on `|m| < ⌈2a/ℓ⌉` (universal lag-point test `exists_bumpTest_universal`; vanishing Hermitian Toeplitz forms `eq_zero_of_toeplitzForm_eq_zero`).
+- **Atomic pinning** `atomic_pinning`: `r` distinct unit nodes + any nonnegative atomic measure with equal moments for `|m| ≤ r` ⇒ same nodes, same weights. Mechanism: atomic Toeplitz form `= Σ w_i |P_c(z_i)|²` (`toeplitzForm_atomic`), vanishing polynomial `Π(z − z_k)` and Lagrange polynomials.
+- **Nyquist pinning** `onLineShadow_pinning`: two weighted on-line periodic configurations, the first with `r` ordinates per period, agreeing on all tests of an aperture with `r < ⌈2a/ℓ⌉` ⇒ same ordinates and weights, and agreement at every aperture.
+- **Sharpness** `onLineShadow_crystal_unpinned` (crystal vs half-step rotation agree for `⌈2a/ℓ⌉ ≤ r`), `exists_onLineShadow_crystal_distinguished` (told apart for `⌈2a/ℓ⌉ > r`).
+- Meaning: position, like depth, is invisible below the Nyquist aperture and visible above — configuration-side counterpart of the corpus Landau-height Krein pinning for ζ (`RHTower.LandauHeightKreinPinning`).
+- Axioms: [propext, Classical.choice, Quot.sound]. Wired after WeilGroundStateLawOnLagLattices.

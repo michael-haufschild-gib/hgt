@@ -320,3 +320,27 @@ remainder-dominates-defect inequality.
   is expected to be unconditionally true and is not an RH detector; finite-window shift averages
   (width below the zero gap) are the right objects. Audit: umbrella foreground, axioms standard,
   lint clean.
+- 2026-10-20 — **Pole-free variation inequality, unconditional limit form, in Lean**
+  (`SmoothPlateauFamily`, `ShiftedGroundStateEnergyComparison`,
+  `ShiftedGroundStatePoleFreeVariationInequality`; thirty-two modules). User rule restated: no RH
+  hypotheses in Lean theorems. Accordingly the two RH-conditional theorems of
+  `ShiftAveragedVariationInequality` were replaced by unconditional equivalences
+  (`averagedReflectedEnergy_le_iff_integral_markovEnergy_nonneg`,
+  `averaged_variation_inequality_autocorr_iff`: averaged inequality ⟺ `∫_0^∞ Q(Θ(ω_a u)) da ≥ 0`).
+  New mathematics: source = pole term `8(∫u dμ_a)²` + variance `V_a(u) = 4 sinh(a/2)∫(u − ū)²dμ_a`;
+  mean-corrected tests `m_a(u − ū u_L)` with the uniformly Lipschitz smooth plateau
+  `u_L = τ(L+1−x)τ(L+1+x)`; transfer principle `S(w) ≤ αS(u) + βS(v)` for pointwise
+  `(Δw)² ≤ α(Δu)² + β(Δv)²` (same for `D`); Young with `ε = e^{−4L}`; plateau energies
+  `S(u_L), D(u_L) ≤ K e^{−8L}` (same-side needs the Lipschitz `Λ²t²` against the `1/t` Lévy
+  singularity); result `|Q(m_a(u − ū u_L)) − (2S − D + V_a)| ≤ K e^{−4L}`
+  (`abs_markovEnergy_meanCorrectedProfile_sub_le`), `tendsto_markovEnergy_meanCorrectedProfile`,
+  and `reflectedDifferenceEnergy_le_poleFree_iff`: `D ≤ 2S + V_a ⟺` the mean-corrected energies are
+  eventually `≥ −η` for every `η > 0`. The pole-free inequality is invariant under `u ↦ u + c` and is
+  the sharp form of the programme's inequality (RH content lives on mean-zero profiles); the plateau
+  theorem is its degenerate case. Lean note: in the long proof every `linarith` had to be
+  `linarith only [...]` (the context with integrals made plain linarith/nlinarith exceed the default
+  heartbeats; no heartbeat raising). Audit: umbrella foreground, axioms standard, lint clean.
+- 2026-10-20 — README rewritten as a foundational introduction (why / what / how / traps /
+  frontier / working conventions), per user instruction: no module map, no per-result paragraphs,
+  no status; Lean names only as sparse entry points. All mathematics of the former version is
+  retained in §3 (mechanisms 3.1–3.11) and §4 (traps).

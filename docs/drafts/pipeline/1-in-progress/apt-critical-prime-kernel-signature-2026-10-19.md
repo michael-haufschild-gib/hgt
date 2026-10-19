@@ -644,3 +644,14 @@ example : 2 - (157 / 50 : ℝ)^2 / 2 + (22 / 7 : ℝ)^4 / 18 -
 The six completed closure scratch sources were removed after verification.
 Validation logs and corpus-search JSON are retained. Work is paused; no further
 conjecture or implementation work is authorized by this checkpoint.
+
+## Log
+
+- 2026-10-19 — At the user's explicit request, `formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md`
+  was rewritten as a foundational introduction (why / what with glossary / how with thirteen
+  mechanisms / traps and Lean conventions / frontier / working conventions), in the style of the
+  Arithmetic Criticality Theory README. This supersedes the "README stays read-only" rule recorded
+  above and on the sibling APT cards. The README carries mathematics only: no module index, dates,
+  or progress. Lean sources were not touched; the umbrella docstring still describes the field by
+  its original nine-item list. The docs-level programme files under
+  `docs/reports/arithmetic-positivity-theory/` were not changed.

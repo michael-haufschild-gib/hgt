@@ -68,3 +68,13 @@ umbrella builds; no heartbeat increases; clean owned temporary files.
   started. Accepted count remains 0/100; research remains paused until requested.
   Owned scratch Lean files and temporary dependency snapshots were removed;
   verification logs and corpus-query records were retained.
+- 2026-10-19 — At the user's request (superseding the earlier read-only
+  constraint on the field README), `BezoutValuationIncidence/README.md` was
+  rewritten as a foundational introduction: why (finite-horizon regime, the
+  three arithmetic inputs, the square-root barrier), what (coordinates,
+  horizons, sawtooth and interior, quadratic forms, incidence and valuation
+  objects, pronic Gram and dilation profile, power-damped source, glossary),
+  how (twelve mechanisms), traps, frontier (receiver, four tools, open
+  boundaries), working conventions. No module map, dates or status inside the
+  README. Lean sources untouched; the umbrella docstring still advertises
+  "thematic entry points", which the README no longer has.

@@ -253,3 +253,11 @@ is qualified once as C1 above. Current count is 1/100.
 
 - 2026-10-18 — Programme initialized from explicit renewed user goal. Earlier
   completed programmes and concurrent work are prior art and are not counted here.
+- 2026-10-19 — At the user's explicit request, `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md`
+  was rewritten as a foundational introduction (why / what with glossary / how with fourteen
+  mechanisms / traps and Lean conventions / frontier / working conventions), in the style of the
+  Arithmetic Criticality Theory README. This supersedes the "README read-only" rule recorded above.
+  The README carries mathematics only: no module index, dates, or progress. Lean sources were not
+  touched; the umbrella docstring still speaks of "6 Irreducible Uncharted Obstacles" and
+  "5 Foundational Pillars" and still points at the obstacles summary report. The programme
+  documents under `docs/reports/` were not changed.
