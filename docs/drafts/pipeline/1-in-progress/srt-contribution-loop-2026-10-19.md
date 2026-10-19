@@ -103,3 +103,10 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
   of uniform lattices — slow band-limited depth modulations hide within a factor 2 of it, far
   beyond the generic smoothness bound (C5); what is seen early is roughness (edges, few derivatives).
   Standard axioms.
+
+### C9 — Crystalline fragility of off-line lattices (`CrystallineFragilityOfOffLineLattices.lean`)
+- **Abstract Toeplitz law** `weil_nonneg_iff_toeplitz_of_lagFormula`: any `ZeroConfig` with lag formula `W(f,f) = ℓ Σ_m k(mℓ) D(m)` is Weil-nonnegative at aperture `a` iff the Toeplitz form of `D` of size `⌈2a/ℓ⌉` is PSD. Decouples the Toeplitz law (C2) from lattice profiles.
+- **Periodic off-line patterns** `patternConfig`, `W_patternConfig`: `P` off-line pairs per period `2π/ℓ` at arbitrary ordinate offsets `c_r`; symbol `D(m) = Σ_r 2cosh(d_r mℓ) e^{i c_r mℓ}`.
+- **Jitter law** `jitterConfig_weil_nonneg_iff`: lattice of depth `δ`, ordinates `2πk/L + (−1)^k ε`; for `L/4 < a ≤ L/2` invisible iff `cosh(δL/2)|sin(εL/2)| ≤ 1`.
+- **Crystalline fragility** `jitterConfig_visible`: relative jitter `η` with `cosh(δL/2) sin(πη) > 1` ⇒ visible at the Nyquist aperture `L/2`. Hiding a dense off-line configuration up to the square-root threshold requires arithmetic-progression ordinates to relative precision `e^{−δL/2}` (≈ `T^{−δ/2}` at height `T`).
+- Axioms: [propext, Classical.choice, Quot.sound]. Olean built single-threaded; wired after BandLimitedDepthProfileHidingLaw.
