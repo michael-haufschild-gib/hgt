@@ -165,6 +165,14 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.TransHorizonIncidenceMechanics.fermiBoundaryJump_exact_recovery_iff",
         ],
     },
+    "square_root_threshold": {
+        "module": "GaloisForLFunctions.SquareRootThreshold",
+        "path": SRC / "SquareRootThreshold",
+        "capstones": [
+            "GaloisForLFunctions.SquareRootThreshold.isolatedPairConfig_weil_nonneg_iff",
+            "GaloisForLFunctions.SquareRootThreshold.isolatedPairConfig_weil_nonneg_nyquist_iff",
+        ],
+    },
     "quantum_alg": {
         "module": "GaloisForLFunctions.QuantumAlg",
         "path": SRC / "QuantumAlg",
@@ -194,6 +202,7 @@ ALLOWED_ROOT_LEAN = {
     "QuantumAlg.lean",
     "RHTower.lean",
     "SelbergClass.lean",
+    "SquareRootThreshold.lean",
     "TransHorizonIncidenceMechanics.lean",
     "U0.lean",
 }

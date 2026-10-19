@@ -35,6 +35,7 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalTra
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeKernelDensity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeContinuousKernel
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeKernelMass
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalHarmonicTaylorBounds
 import GaloisForLFunctions.«arithmetic-positivity-theory».NonstationaryMellinLowFrequencyExclusion
 import GaloisForLFunctions.«arithmetic-positivity-theory».MarkovPoleHyperbolicCapacityAndApertureThresholds
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampSmoothingAndGramMargin
@@ -48,6 +49,7 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailCombina
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialSpanTestPolarPrimeGammaBudgets
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailCombinationExplicitFormula
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailSpanWeilCoercivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».InghamHuxleyHeightBoxZeroMajorant
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,

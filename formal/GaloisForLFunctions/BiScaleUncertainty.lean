@@ -536,6 +536,7 @@ import GaloisForLFunctions.BiScaleUncertainty.OriginAllocationUniquenessAndCoupl
 import GaloisForLFunctions.BiScaleUncertainty.CompensatedPhysicalLogarithmicProducer
 import GaloisForLFunctions.BiScaleUncertainty.NyquistCriticalFinitePartAndBroadClassification
 import GaloisForLFunctions.BiScaleUncertainty.FundamentalTheoremsOfBiScaleUncertainty
+import GaloisForLFunctions.BiScaleUncertainty.CriticalBandLargeValuesAndHalaszSpectralBounds
 
 /-!
 # Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
