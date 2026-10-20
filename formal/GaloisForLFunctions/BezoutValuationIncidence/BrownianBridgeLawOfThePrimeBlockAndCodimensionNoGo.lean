@@ -41,7 +41,7 @@ set_option autoImplicit false
 
 /-- Cumulative jump sum `C(n) = Σ_{p ∈ S, p ≤ n} a_p p` of a prime packet. -/
 def primePacketJumpSum (S : Finset Nat.Primes) (a : Nat.Primes → ℝ) (n : ℕ) : ℝ :=
-  ∑ p ∈ S.filter (fun p => (p : ℕ) ≤ n), a p * (p : ℕ)
+  ∑ p ∈ S.filter (fun p : Nat.Primes => (p : ℕ) ≤ n), a p * (p : ℕ)
 
 /-- Before the second jump of every mode, a prime packet is `L - n A + C(n)`. -/
 theorem primePacketValue_eq_of_lt_two_mul (S : Finset Nat.Primes) (a : Nat.Primes → ℝ) {n : ℕ}
@@ -79,12 +79,12 @@ theorem sum_range_primePacketJumpSum_sq_div (S : Finset Nat.Primes) (a : Nat.Pri
         (((min (p : ℕ) (q : ℕ) : ℕ) : ℝ) - ((p : ℕ) : ℝ) * (q : ℕ) / U) := by
   have hterm (n : ℕ) : primePacketJumpSum S a n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) =
       ∑ p ∈ S, ∑ q ∈ S, if max (p : ℕ) (q : ℕ) ≤ n then
-        a p * (p : ℕ) * (a q * (q : ℕ)) / ((n : ℝ) * ((n : ℝ) + 1)) else 0 := by
+        a p * (p : ℕ) * (a q * (q : ℕ)) / ((n : ℝ) * ((n : ℝ) + 1)) else (0 : ℝ) := by
     rw [primePacketJumpSum, sum_filter, sq, sum_mul_sum, sum_div]
     refine sum_congr rfl fun p _ => ?_
     rw [sum_div]
     refine sum_congr rfl fun q _ => ?_
-    by_cases hp : (p : ℕ) ≤ n <;> by_cases hq : (q : ℕ) ≤ n <;> simp [hp, hq, max_le_iff]
+    by_cases hp : (p : ℕ) ≤ n <;> by_cases hq : (q : ℕ) ≤ n <;> simp [hp, hq]
   simp_rw [hterm]
   rw [sum_comm]
   refine sum_congr rfl fun p hpS => ?_
@@ -93,17 +93,16 @@ theorem sum_range_primePacketJumpSum_sq_div (S : Finset Nat.Primes) (a : Nat.Pri
   have hp0 : 0 < (p : ℕ) := p.property.pos
   have hq0 : 0 < (q : ℕ) := q.property.pos
   have hmax : max (p : ℕ) (q : ℕ) < U := max_lt (hS p hpS) (hS q hqS)
-  rw [← sum_filter, show (range U).filter (fun n => max (p : ℕ) (q : ℕ) ≤ n) =
-      Ico (max (p : ℕ) (q : ℕ)) U by ext n; simp [and_comm], ← mul_sum,
-    show ∀ n ∈ Ico (max (p : ℕ) (q : ℕ)) U, a p * (p : ℕ) * (a q * (q : ℕ)) /
-        ((n : ℝ) * ((n : ℝ) + 1)) = a p * (p : ℕ) * (a q * (q : ℕ)) *
-          (1 / ((n : ℝ) * ((n : ℝ) + 1))) from fun n _ => by ring]
-  rw [← mul_sum, sum_Ico_pronic_mass (lt_max_of_lt_left hp0) hmax.le,
-    cast_min_eq_mul_div_max _ _ hp0 hq0]
-  have hm : (0 : ℝ) < (max (p : ℕ) (q : ℕ) : ℕ) := by exact_mod_cast lt_max_of_lt_left hp0
+  set m := max (p : ℕ) (q : ℕ)
+  rw [← sum_filter, show (range U).filter (fun n => m ≤ n) = Ico m U by
+      ext n; simp [and_comm],
+    show ∑ n ∈ Ico m U, a p * (p : ℕ) * (a q * (q : ℕ)) / ((n : ℝ) * ((n : ℝ) + 1)) =
+      a p * (p : ℕ) * (a q * (q : ℕ)) * ∑ n ∈ Ico m U, 1 / ((n : ℝ) * ((n : ℝ) + 1)) by
+      rw [mul_sum]; exact sum_congr rfl fun n _ => by ring,
+    sum_Ico_pronic_mass (lt_max_of_lt_left hp0) hmax.le, cast_min_eq_mul_div_max _ _ hp0 hq0]
+  have hm : (0 : ℝ) < (m : ℕ) := by exact_mod_cast lt_max_of_lt_left hp0
   have hU : (0 : ℝ) < U := by exact_mod_cast lt_of_le_of_lt (Nat.zero_le _) hmax
   field_simp
-  ring
 
 /-- Packets with zero mass and log moment on `S ⊆ (P, 2P]`: the pronic energy of the window
 `n < 2P + 2` is the Brownian-bridge form. -/
@@ -127,9 +126,9 @@ theorem brownianBridge_le_primePacketBilinear (S : Finset Nat.Primes) (a : Nat.P
         (((min (p : ℕ) (q : ℕ) : ℕ) : ℝ) - ((p : ℕ) : ℝ) * (q : ℕ) / ((2 * P + 2 : ℕ) : ℝ)) ≤
       primePacketBilinear S S a a := by
   rw [← primePacket_window_eq_brownianBridge S a hS hA hL]
-  refine sum_le_hasSum _ (fun n _ => ?_) ?_
-  · exact div_nonneg (sq_nonneg _) (by positivity)
-  · simpa only [sq] using hasSum_primePacketBilinear S S a a
+  simp_rw [sq]
+  exact sum_le_hasSum _ (fun n _ => div_nonneg (mul_self_nonneg _) (by positivity))
+    (hasSum_primePacketBilinear S S a a)
 
 /-! ## §3. Cumulative energy at the prime points -/
 
@@ -156,30 +155,38 @@ theorem sum_primePacketJumpSum_sq_le_primePacketBilinear (S : Finset Nat.Primes)
   have hpR : ((p : ℕ) : ℝ) ≤ 2 * P := by exact_mod_cast hpP.2
   have hden : ((p : ℕ) : ℝ) * ((p : ℕ) + 1) ≤ (2 * P : ℝ) * (2 * P + 1) := by
     apply mul_le_mul hpR (by linarith) (by positivity) (by positivity)
-  simp only [zero_sub, mul_zero, sub_zero, zero_add]
+  simp only [mul_zero, sub_zero, zero_add]
   rw [← sq]
   exact div_le_div_of_nonneg_left (sq_nonneg _) (by positivity) hden
 
 /-! ## §4. Block-constant jumps -/
 
+theorem sum_range_cast_add_one (k : ℕ) :
+    ∑ v ∈ range k, ((v : ℝ) + 1) = (k : ℝ) * (k + 1) / 2 := by
+  induction k with
+  | zero => simp
+  | succ k ih => rw [Finset.sum_range_succ, ih]; push_cast; ring
+
+theorem sum_range_cast_add_one_sq (k : ℕ) :
+    ∑ v ∈ range k, ((v : ℝ) + 1) ^ 2 = (k : ℝ) * (k + 1) * (2 * k + 1) / 6 := by
+  induction k with
+  | zero => simp
+  | succ k ih => rw [Finset.sum_range_succ, ih]; push_cast; ring
+
 /-- `Σ_{v<k} (x + (v+1)c)² ≥ c² k (k² - 1)/12`: a linear ramp has variance `k(k²-1)/12`. -/
 theorem sum_range_ramp_sq_ge (k : ℕ) (x c : ℝ) :
     c ^ 2 * ((k : ℝ) * ((k : ℝ) ^ 2 - 1) / 12) ≤
       ∑ v ∈ range k, (x + ((v : ℝ) + 1) * c) ^ 2 := by
-  have h1 : ∑ v ∈ range k, ((v : ℝ) + 1) = (k : ℝ) * (k + 1) / 2 := by
-    induction k with
-    | zero => simp
-    | succ k ih => rw [sum_range_succ, ih]; push_cast; ring
-  have h2 : ∑ v ∈ range k, ((v : ℝ) + 1) ^ 2 = (k : ℝ) * (k + 1) * (2 * k + 1) / 6 := by
-    induction k with
-    | zero => simp
-    | succ k ih => rw [sum_range_succ, ih]; push_cast; ring
+  have h1 := sum_range_cast_add_one k
+  have h2 := sum_range_cast_add_one_sq k
+  have hpt : ∀ v : ℕ, (x + ((v : ℝ) + 1) * c) ^ 2 =
+      x ^ 2 + 2 * x * c * ((v : ℝ) + 1) + c ^ 2 * ((v : ℝ) + 1) ^ 2 := fun v => by ring
   have hexp : ∑ v ∈ range k, (x + ((v : ℝ) + 1) * c) ^ 2 =
       k * x ^ 2 + 2 * x * c * ∑ v ∈ range k, ((v : ℝ) + 1) +
         c ^ 2 * ∑ v ∈ range k, ((v : ℝ) + 1) ^ 2 := by
-    simp only [add_sq, sum_add_distrib, sum_const, card_range, nsmul_eq_mul, mul_sum]
-    refine congrArg₂ _ (congrArg₂ _ rfl (sum_congr rfl fun _ _ => by ring))
-      (sum_congr rfl fun _ _ => by ring)
+    simp_rw [hpt]
+    rw [sum_add_distrib, sum_add_distrib, sum_const, card_range, nsmul_eq_mul, ← mul_sum,
+      ← mul_sum]
   rw [hexp, h1, h2]
   nlinarith [mul_nonneg (Nat.cast_nonneg k : (0 : ℝ) ≤ k) (sq_nonneg (x + c * (k + 1) / 2))]
 
@@ -191,24 +198,29 @@ theorem sum_range_blockPartialSum_sq_ge (B k : ℕ) (c : ℕ → ℝ) :
   induction B with
   | zero => simp
   | succ B ih =>
-    rw [sum_range_succ, mul_add, Nat.succ_mul, sum_range_add]
+    rw [Finset.sum_range_succ, mul_add, Nat.succ_mul, Finset.sum_range_add]
     refine add_le_add ih ?_
     have hblock : ∀ v ∈ range k, (∑ s ∈ range (B * k + v + 1), c (s / k)) =
         (∑ s ∈ range (B * k), c (s / k)) + ((v : ℝ) + 1) * c B := by
       intro v hv
       have hvk := mem_range.mp hv
-      rw [add_assoc, sum_range_add]
+      rw [add_assoc, Finset.sum_range_add]
       congr 1
-      rw [show ((v : ℝ) + 1) = ((v + 1 : ℕ) : ℝ) by push_cast; ring, ← nsmul_eq_mul,
-        ← card_range (v + 1), ← sum_const]
-      refine sum_congr rfl fun s hs => ?_
-      have hsk : s < k := by have := mem_range.mp hs; omega
-      rw [show B * k + s = s + B * k by ring, Nat.add_mul_div_right _ _ (by omega),
-        Nat.div_eq_of_lt hsk, zero_add]
+      rw [sum_congr rfl fun s hs => show c ((B * k + s) / k) = c B by
+          have hsk : s < k := by have := mem_range.mp hs; omega
+          rw [show B * k + s = s + B * k by ring, Nat.add_mul_div_right _ _ (by omega),
+            Nat.div_eq_of_lt hsk, zero_add],
+        sum_const, card_range, nsmul_eq_mul]
+      push_cast
+      ring
     rw [sum_congr rfl fun v hv => by rw [hblock v hv]]
     linarith [sum_range_ramp_sq_ge k (∑ s ∈ range (B * k), c (s / k)) (c B)]
 
 /-! ## §5. The codimension no-go -/
+
+/-- Primes ordered as natural numbers. -/
+local instance primeBlockLinearOrder : LinearOrder Nat.Primes :=
+  LinearOrder.lift' (fun p : Nat.Primes => (p : ℕ)) Subtype.val_injective
 
 /-- The jump variable of the block construction: constant `c i` on the `i`-th block of `k`
 consecutive indices, zero past `B k`. -/
@@ -237,8 +249,9 @@ def blockPacketLinear (S : Finset Nat.Primes) (B k : ℕ) :
 
 theorem sum_eq_sum_orderEmbOfFin (S : Finset Nat.Primes) (F : Nat.Primes → ℝ) :
     ∑ p ∈ S, F p = ∑ t : Fin S.card, F (S.orderEmbOfFin rfl t) := by
-  conv_lhs => rw [← image_orderEmbOfFin_univ S rfl]
-  rw [sum_image fun x _ y _ h => (S.orderEmbOfFin rfl).injective h]
+  conv_lhs => rw [← map_orderEmbOfFin_univ S rfl]
+  rw [sum_map]
+  rfl
 
 theorem blockPacket_orderEmbOfFin (S : Finset Nat.Primes) (B k : ℕ) (c : Fin B → ℝ)
     (t : Fin S.card) :
@@ -261,24 +274,27 @@ theorem primePacketJumpSum_blockPacket (S : Finset Nat.Primes) (B k : ℕ) (c : 
       (if ((S.orderEmbOfFin rfl s : Nat.Primes) : ℕ) ≤ (S.orderEmbOfFin rfl t : Nat.Primes) then
         blockPacket S B k c (S.orderEmbOfFin rfl s) *
           ((S.orderEmbOfFin rfl s : Nat.Primes) : ℕ) else 0) =
-        if (s : ℕ) ∈ range ((t : ℕ) + 1) then blockJump B k c s else 0 := by
+        if (s : ℕ) ≤ (t : ℕ) then blockJump B k c s else 0 := by
     intro s
     have hle : ((S.orderEmbOfFin rfl s : Nat.Primes) : ℕ) ≤ (S.orderEmbOfFin rfl t : Nat.Primes)
-        ↔ s ≤ t := by
-      rw [← Subtype.coe_le_coe (a := S.orderEmbOfFin rfl s), (S.orderEmbOfFin rfl).le_iff_le]
+        ↔ (s : ℕ) ≤ t := by
+      rw [← Fin.le_def]
+      exact (S.orderEmbOfFin rfl).le_iff_le
     have hp : (0 : ℝ) < ((S.orderEmbOfFin rfl s : Nat.Primes) : ℕ) := by
       exact_mod_cast (S.orderEmbOfFin rfl s).property.pos
-    rw [blockPacket_orderEmbOfFin, mem_range, Nat.lt_succ_iff, ← Fin.le_def]
-    by_cases hst : s ≤ t
-    · have hs : (s : ℕ) < B * k := lt_of_le_of_lt (Fin.le_def.mp hst) ht
+    rw [blockPacket_orderEmbOfFin]
+    by_cases hst : (s : ℕ) ≤ t
+    · have hs : (s : ℕ) < B * k := lt_of_le_of_lt hst ht
       rw [if_pos (hle.mpr hst), if_pos hs, if_pos hst]
       field_simp
     · rw [if_neg (fun h => hst (hle.mp h)), if_neg hst]
-  rw [sum_congr rfl fun s _ => hterm s, ← sum_filter, Fin.sum_univ_eq_sum_range
-    (fun s => if s ∈ range ((t : ℕ) + 1) then blockJump B k c s else 0), ← sum_filter]
+  rw [sum_congr rfl fun s _ => hterm s,
+    Fin.sum_univ_eq_sum_range (fun s => if s ≤ (t : ℕ) then blockJump B k c s else 0),
+    ← sum_filter]
   congr 1
   ext s
   simp only [mem_filter, mem_range]
+  have := t.isLt
   omega
 
 /-- **Codimension no-go for Type-II bounds on a prime block.** Let `S ⊆ (P, 2P]` contain at
@@ -351,7 +367,7 @@ theorem exists_constrained_primePacket_brownian_energy (S : Finset Nat.Primes) {
       induction B with
       | zero => simp
       | succ B ih =>
-        rw [Nat.succ_mul, sum_range_add, ih, sum_range_succ, mul_add]
+        rw [Nat.succ_mul, Finset.sum_range_add, ih, Finset.sum_range_succ, mul_add]
         congr 1
         rw [sum_congr rfl fun v hv => by
           rw [show B * k + v = v + B * k by ring, Nat.add_mul_div_right _ _ hk,

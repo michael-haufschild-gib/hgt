@@ -814,10 +814,15 @@ theorem abs_criticalTruncatedPrimeEnergy_le_of_lowWindow_lacunary {V : ℝ} (hV 
         _ ≤ 50 * K * |b n| * (w i * s i) := hrhs
   set A_low := ∑ n ∈ S_low, |b n|
   set B_high := ∑ i ∈ I, w i * s i
+  have hbi1 (n : ℕ) : truncatedBlockCoupling V {n} S_high b =
+      ∑ i ∈ I, truncatedBlockCoupling V {n} (S i) b :=
+    truncatedBlockCoupling_biUnion_right V {n} hd b
+  have hbi2 (n : ℕ) : truncatedBlockCoupling V S_high {n} b =
+      ∑ i ∈ I, truncatedBlockCoupling V (S i) {n} b :=
+    truncatedBlockCoupling_biUnion_left V hd {n} b
   have hcross1 : |truncatedBlockCoupling V S_low S_high b| ≤ 50 * K * A_low * B_high := by
-    dsimp only [S_high]
     rw [truncatedBlockCoupling_eq_sum_singletons_left]
-    simp_rw [truncatedBlockCoupling_biUnion_right V _ hd]
+    simp_rw [hbi1]
     calc |∑ n ∈ S_low, ∑ i ∈ I, truncatedBlockCoupling V {n} (S i) b|
         ≤ ∑ n ∈ S_low, ∑ i ∈ I, |truncatedBlockCoupling V {n} (S i) b| :=
           (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun n _ =>
@@ -825,12 +830,12 @@ theorem abs_criticalTruncatedPrimeEnergy_le_of_lowWindow_lacunary {V : ℝ} (hV 
       _ ≤ ∑ n ∈ S_low, ∑ i ∈ I, 50 * K * |b n| * (w i * s i) :=
           Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun i hi => (hpair n hn i hi).1
       _ = 50 * K * A_low * B_high := by
-          simp only [A_low, B_high, Finset.mul_sum, Finset.sum_mul]
-          refine Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun i _ => by ring
+          dsimp only [A_low, B_high]
+          simp_rw [← Finset.mul_sum]
+          rw [← Finset.sum_mul, ← Finset.mul_sum]
   have hcross2 : |truncatedBlockCoupling V S_high S_low b| ≤ 50 * K * A_low * B_high := by
-    dsimp only [S_high]
     rw [truncatedBlockCoupling_eq_sum_singletons_right]
-    simp_rw [truncatedBlockCoupling_biUnion_left V hd]
+    simp_rw [hbi2]
     calc |∑ n ∈ S_low, ∑ i ∈ I, truncatedBlockCoupling V (S i) {n} b|
         ≤ ∑ n ∈ S_low, ∑ i ∈ I, |truncatedBlockCoupling V (S i) {n} b| :=
           (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun n _ =>
@@ -838,8 +843,9 @@ theorem abs_criticalTruncatedPrimeEnergy_le_of_lowWindow_lacunary {V : ℝ} (hV 
       _ ≤ ∑ n ∈ S_low, ∑ i ∈ I, 50 * K * |b n| * (w i * s i) :=
           Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun i hi => (hpair n hn i hi).2
       _ = 50 * K * A_low * B_high := by
-          simp only [A_low, B_high, Finset.mul_sum, Finset.sum_mul]
-          refine Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun i _ => by ring
+          dsimp only [A_low, B_high]
+          simp_rw [← Finset.mul_sum]
+          rw [← Finset.sum_mul, ← Finset.mul_sum]
   have hA_sq : A_low ^ 2 ≤ L_low * E_low := by
     have hcs : A_low ^ 2 ≤ S_low.card * E_low := by
       simpa only [sq_abs] using (sq_sum_le_card_mul_sum_sq (s := S_low) (f := fun n => |b n|))
