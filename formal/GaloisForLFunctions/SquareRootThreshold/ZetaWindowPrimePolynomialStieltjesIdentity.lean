@@ -42,13 +42,13 @@ def windowPrime (ℓ T : ℝ) : ℝ :=
 
 /-- The pole terms of the bump window at height `T`. -/
 def windowPole (ℓ T : ℝ) : ℝ :=
-  (paperFT (bumpKernel ℓ) (I / 2 - T) + paperFT (bumpKernel ℓ) (-I / 2 - T)).re
+  (paperFT (bumpAutocorrelation ℓ) (I / 2 - T) + paperFT (bumpAutocorrelation ℓ) (-I / 2 - T)).re
 
 /-- The localized kernel is the height shift of `K_ℓ`. -/
 theorem weilTest_heightShift_cb (ξ : ℝ) :
-    EF.weilTest (heightShift ξ (cb ℓ 0)) (heightShift ξ (cb ℓ 0)) = heightShift ξ (bumpKernel ℓ) := by
+    EF.weilTest (heightShift ξ (cb ℓ 0)) (heightShift ξ (cb ℓ 0)) = heightShift ξ (bumpAutocorrelation ℓ) := by
   funext v
-  rw [weilTest_heightShift, heightShift, bumpKernel]
+  rw [weilTest_heightShift, heightShift, bumpAutocorrelation]
 
 section Window
 
@@ -62,7 +62,7 @@ theorem tsupport_cb_subset_Icc : tsupport (cb ℓ 0) ⊆ Icc (-ℓ) ℓ := by
 omit hℓ in
 theorem paperFT_localizedKernel (z : ℂ) (T : ℝ) :
     paperFT (EF.weilTest (heightShift (heightWindowShift T) (cb ℓ 0))
-      (heightShift (heightWindowShift T) (cb ℓ 0))) z = paperFT (bumpKernel ℓ) (z - T) := by
+      (heightShift (heightWindowShift T) (cb ℓ 0))) z = paperFT (bumpAutocorrelation ℓ) (z - T) := by
   rw [weilTest_heightShift_cb, paperFT_heightShift]
   congr 1
   have h := two_pi_mul_windowShift T
@@ -74,10 +74,10 @@ theorem paperFT_localizedKernel (z : ℂ) (T : ℝ) :
 Σ_ρ m_ρ Re K̂_ℓ(γ_ρ − T)`. -/
 theorem windowPrime_eq (T : ℝ) :
     Summable (fun ρ : zetaZeroConfig.carrier =>
-        (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re) ∧
+        (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re) ∧
       windowPrime ℓ T = windowPole ℓ T + (∫ τ, psi ℓ 0 (τ - T) * mu τ) -
         ∑' ρ : zetaZeroConfig.carrier,
-          (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re := by
+          (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re := by
   set ξ := heightWindowShift T with hξ
   set g := heightShift ξ (cb ℓ 0) with hg
   have hf : ContDiff ℝ 2 (cb ℓ 0) := contDiff_cb ℓ 0
@@ -89,16 +89,16 @@ theorem windowPrime_eq (T : ℝ) :
   -- the zero sum
   obtain ⟨hsum, -, -⟩ := paperInputs_zeta.EF (2 * ℓ) (by positivity) g g hgd hgd hgs hgs
   have hterm : ∀ ρ : zetaZeroConfig.carrier, zetaZeroConfig.Wsummand g g ρ =
-      (zetaZeroConfig.mult ρ : ℂ) * paperFT (bumpKernel ℓ) (gammaOf ρ - T) := by
+      (zetaZeroConfig.mult ρ : ℂ) * paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T) := by
     intro ρ
     rw [ZeroConfig.Wsummand, mul_assoc, ← EF.paperFT_weilTest hgd.continuous hgd.continuous hgc hgc,
       paperFT_localizedKernel]
   have hsum' : Summable fun ρ : zetaZeroConfig.carrier =>
-      (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re := by
+      (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re := by
     refine (Complex.reCLM.summable hsum).congr fun ρ => ?_
     simp [Complex.reCLM_apply, hterm, Complex.mul_re]
   have hWre : (zetaZeroConfig.W g g).re = ∑' ρ : zetaZeroConfig.carrier,
-      (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re := by
+      (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re := by
     rw [ZeroConfig.W, Complex.re_tsum hsum]
     congr 1 with ρ
     simp [hterm, Complex.mul_re]

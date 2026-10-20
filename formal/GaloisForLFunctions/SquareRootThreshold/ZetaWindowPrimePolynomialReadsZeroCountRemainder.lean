@@ -68,7 +68,7 @@ theorem smoothCountDensity_eq {t : ℝ} (ht : 0 < t) :
 /-- The off-line correction `Σ_ρ m_ρ (Re K̂_ℓ(γ_ρ − T) − ψ_ℓ(Im ρ − T))`. -/
 def offLineCorrection (ℓ T : ℝ) : ℝ :=
   ∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℝ) *
-    ((paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re - psi ℓ 0 ((ρ : ℂ).im - T))
+    ((paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re - psi ℓ 0 ((ρ : ℂ).im - T))
 
 /-- The zeros with ordinate outside `(1, 2T]`, weighted by `ψ_ℓ(Im ρ − T)`. -/
 def zeroTail (ℓ T : ℝ) : ℝ :=
@@ -123,7 +123,7 @@ theorem windowPrime_add_offLineCorrection_sub_eq {T : ℝ} (hT : 1 ≤ T) :
   obtain ⟨hsK, hW⟩ := windowPrime_eq hℓ T
   have hsψ := summable_mult_psi hℓ T
   have hcorr : offLineCorrection ℓ T = (∑' ρ : zetaZeroConfig.carrier,
-      (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re) -
+      (zetaZeroConfig.mult ρ : ℝ) * (paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re) -
         ∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℝ) * psi ℓ 0 ((ρ : ℂ).im - T) := by
     rw [offLineCorrection, ← hsK.tsum_sub hsψ]
     exact tsum_congr fun ρ => by ring
@@ -155,16 +155,16 @@ theorem windowPrime_add_offLineCorrection_sub_eq {T : ℝ} (hT : 1 ≤ T) :
   linarith
 
 /-- The transform of `K_ℓ` decays like `(1 + |Re z|)⁻⁴` in horizontal strips. -/
-theorem norm_paperFT_bumpKernel_le (z : ℂ) : ‖paperFT (bumpKernel ℓ) z‖ ≤
-    2 ^ 4 * Real.exp (|z.im| * (2 * ℓ)) * ((∫ u, ‖bumpKernel ℓ u‖) +
-      ∫ u, ‖iteratedDeriv 4 (bumpKernel ℓ) u‖) / (1 + |z.re|) ^ 4 := by
+theorem norm_paperFT_bumpKernel_le (z : ℂ) : ‖paperFT (bumpAutocorrelation ℓ) z‖ ≤
+    2 ^ 4 * Real.exp (|z.im| * (2 * ℓ)) * ((∫ u, ‖bumpAutocorrelation ℓ u‖) +
+      ∫ u, ‖iteratedDeriv 4 (bumpAutocorrelation ℓ) u‖) / (1 + |z.re|) ^ 4 := by
   rw [le_div_iff₀ (by positivity)]
-  exact norm_paperFT_mul_one_add_pow_le (bumpKernel_contDiff hℓ (n := 4)) (bumpKernel_support hℓ) z
+  exact norm_paperFT_mul_one_add_pow_le (bumpAutocorrelation_contDiff hℓ (n := 4)) (bumpAutocorrelation_support hℓ) z
 
 /-- The pole terms vanish at large height. -/
 theorem tendsto_windowPole : Tendsto (windowPole ℓ) atTop (𝓝 0) := by
-  set B := 2 ^ 4 * Real.exp (|(1 / 2 : ℝ)| * (2 * ℓ)) * ((∫ u, ‖bumpKernel ℓ u‖) +
-      ∫ u, ‖iteratedDeriv 4 (bumpKernel ℓ) u‖) with hB
+  set B := 2 ^ 4 * Real.exp (|(1 / 2 : ℝ)| * (2 * ℓ)) * ((∫ u, ‖bumpAutocorrelation ℓ u‖) +
+      ∫ u, ‖iteratedDeriv 4 (bumpAutocorrelation ℓ) u‖) with hB
   refine squeeze_zero_norm (fun T => ?_) (tendsto_div_one_add_abs_pow
     (tendsto_abs_const_sub_atTop 0) (2 * B) (n := 4) (by norm_num))
   have h1 := norm_paperFT_bumpKernel_le hℓ (I / 2 - T)
@@ -176,10 +176,10 @@ theorem tendsto_windowPole : Tendsto (windowPole ℓ) atTop (𝓝 0) := by
   rw [hre1, him1, ← hB] at h1
   rw [hre2, him2, ← hB] at h2
   rw [Real.norm_eq_abs, windowPole]
-  calc |(paperFT (bumpKernel ℓ) (I / 2 - T) + paperFT (bumpKernel ℓ) (-I / 2 - T)).re|
-      ≤ ‖paperFT (bumpKernel ℓ) (I / 2 - T) + paperFT (bumpKernel ℓ) (-I / 2 - T)‖ :=
+  calc |(paperFT (bumpAutocorrelation ℓ) (I / 2 - T) + paperFT (bumpAutocorrelation ℓ) (-I / 2 - T)).re|
+      ≤ ‖paperFT (bumpAutocorrelation ℓ) (I / 2 - T) + paperFT (bumpAutocorrelation ℓ) (-I / 2 - T)‖ :=
         Complex.abs_re_le_norm _
-    _ ≤ ‖paperFT (bumpKernel ℓ) (I / 2 - T)‖ + ‖paperFT (bumpKernel ℓ) (-I / 2 - T)‖ :=
+    _ ≤ ‖paperFT (bumpAutocorrelation ℓ) (I / 2 - T)‖ + ‖paperFT (bumpAutocorrelation ℓ) (-I / 2 - T)‖ :=
         norm_add_le _ _
     _ ≤ 2 * B / (1 + |0 - T|) ^ 4 := by rw [mul_div_assoc]; linarith
 

@@ -44,18 +44,18 @@ section Defect
 variable {ℓ : ℝ} (hℓ : 0 < ℓ)
 include hℓ
 
-theorem contDiff_sq_mul_bumpKernel : ContDiff ℝ 4 (fun u : ℝ => (u : ℂ) ^ 2 * bumpKernel ℓ u) :=
-  (Complex.ofRealCLM.contDiff.pow 2).mul (bumpKernel_contDiff hℓ)
+theorem contDiff_sq_mul_bumpKernel : ContDiff ℝ 4 (fun u : ℝ => (u : ℂ) ^ 2 * bumpAutocorrelation ℓ u) :=
+  (Complex.ofRealCLM.contDiff.pow 2).mul (bumpAutocorrelation_contDiff hℓ)
 
 /-- **The defect of one zero.**  `|Re K̂_ℓ(γ_ρ − T) − ψ_ℓ(Im ρ − T)| ≤
 8 δ² e^{2ℓ|δ|} Q_ℓ (1 + |Im ρ − T|)⁻⁴`, `δ = Re ρ − ½`. -/
 theorem abs_offLineDefect_le (ρ : ℂ) (T : ℝ) :
-    |(paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re - psi ℓ 0 (ρ.im - T)| ≤
+    |(paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re - psi ℓ 0 (ρ.im - T)| ≤
       8 * (ρ.re - 1 / 2) ^ 2 * Real.exp (|ρ.re - 1 / 2| * (2 * ℓ)) *
-        quadraticDefectNorm (bumpKernel ℓ) / (1 + |ρ.im - T|) ^ 4 := by
+        quadraticDefectNorm (bumpAutocorrelation ℓ) / (1 + |ρ.im - T|) ^ 4 := by
   rw [gammaOf_sub_ofReal, psi_eq_re_paperFT hℓ]
-  exact abs_re_paperFT_sub_mul_I_sub_le (by positivity) (bumpKernel_continuous hℓ)
-    (bumpKernel_support hℓ) (bumpKernel_im ℓ) (bumpKernel_neg ℓ) (contDiff_sq_mul_bumpKernel hℓ) _ _
+  exact abs_re_paperFT_sub_mul_I_sub_le (by positivity) (bumpAutocorrelation_continuous hℓ)
+    (bumpAutocorrelation_support hℓ) (bumpAutocorrelation_im ℓ) (bumpAutocorrelation_neg ℓ) (contDiff_sq_mul_bumpKernel hℓ) _ _
 
 /-- **The correction away from the deep zeros.**  If every zero with `|Re ρ − ½| ≥ v` has
 ordinate at distance `≥ W` from `T`, then `|Corr_ℓ(T)| ≤ C (v² + 1/W) log(|T| + 3)`. -/
@@ -63,14 +63,14 @@ theorem exists_abs_offLineCorrection_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ v W T : �
     (∀ ρ : zetaZeroConfig.carrier, v ≤ |(ρ : ℂ).re - 1 / 2| → W ≤ |(ρ : ℂ).im - T|) →
     |offLineCorrection ℓ T| ≤ C * (v ^ 2 + 1 / W) * Real.log (|T| + 3) := by
   obtain ⟨A₀, hA₀, hloc⟩ := RvM.zetaZeroConfig_local_count
-  set Q := quadraticDefectNorm (bumpKernel ℓ) with hQdef
+  set Q := quadraticDefectNorm (bumpAutocorrelation ℓ) with hQdef
   have hQ : 0 ≤ Q := quadraticDefectNorm_nonneg _
   refine ⟨8 * Real.exp ℓ * Q * (24 * A₀), by positivity, fun v W T hW hfar => ?_⟩
   obtain ⟨hs, hle⟩ := window_tsum_le zetaZeroConfig hA₀ hloc T
   set c := 8 * Real.exp ℓ * Q * (v ^ 2 + 1 / W) with hc
   have hc0 : 0 ≤ c := by positivity
   have hbound : ∀ ρ : zetaZeroConfig.carrier,
-      ‖(zetaZeroConfig.mult ρ : ℝ) * ((paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re -
+      ‖(zetaZeroConfig.mult ρ : ℝ) * ((paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re -
         psi ℓ 0 ((ρ : ℂ).im - T))‖ ≤
         c * ((zetaZeroConfig.mult ρ : ℝ) / (1 + |(ρ : ℂ).im - T|) ^ 3) := by
     intro ρ
@@ -99,7 +99,7 @@ theorem exists_abs_offLineCorrection_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ v W T : �
         _ = (v ^ 2 + 1 / W) * (1 + |w|) ^ 4 := by ring
     have hD := abs_offLineDefect_le hℓ (ρ : ℂ) T
     rw [← hδ, ← hw, ← hQdef] at hD
-    have hD' : |(paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re - psi ℓ 0 w| ≤
+    have hD' : |(paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re - psi ℓ 0 w| ≤
         8 * Real.exp ℓ * Q * ((v ^ 2 + 1 / W) / (1 + |w|) ^ 3) := by
       refine hD.trans ?_
       calc 8 * δ ^ 2 * Real.exp (|δ| * (2 * ℓ)) * Q / (1 + |w|) ^ 4
@@ -108,7 +108,7 @@ theorem exists_abs_offLineCorrection_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ v W T : �
             gcongr
     have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hm]
-    calc (zetaZeroConfig.mult ρ : ℝ) * |(paperFT (bumpKernel ℓ) (gammaOf ρ - T)).re - psi ℓ 0 w|
+    calc (zetaZeroConfig.mult ρ : ℝ) * |(paperFT (bumpAutocorrelation ℓ) (gammaOf ρ - T)).re - psi ℓ 0 w|
         ≤ (zetaZeroConfig.mult ρ : ℝ) * (8 * Real.exp ℓ * Q * ((v ^ 2 + 1 / W) / (1 + |w|) ^ 3)) :=
           mul_le_mul_of_nonneg_left hD' hm
       _ = c * ((zetaZeroConfig.mult ρ : ℝ) / (1 + |w|) ^ 3) := by rw [hc]; ring

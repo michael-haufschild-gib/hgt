@@ -36,12 +36,12 @@ open Zeta23 _root_.RHTower _root_.RHTower.Littlewood
 
 /-- The weights `a_n = 2 Λ(n) n^{−1/2} K_ℓ(log n)`. -/
 def primePowerWindowWeight (ℓ : ℝ) (n : ℕ) : ℝ :=
-  2 * (ArithmeticFunction.vonMangoldt n / Real.sqrt n) * bumpKernelReal ℓ (Real.log n)
+  2 * (ArithmeticFunction.vonMangoldt n / Real.sqrt n) * bumpAutocorrelationReal ℓ (Real.log n)
 
 theorem primePowerWindowWeight_nonneg (ℓ : ℝ) (n : ℕ) : 0 ≤ primePowerWindowWeight ℓ n :=
   mul_nonneg (mul_nonneg zero_le_two
     (div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)))
-    (bumpKernelReal_nonneg _ _)
+    (bumpAutocorrelationReal_nonneg _ _)
 
 theorem re_ofReal_mul_ofReal_mul_exp (a b θ : ℝ) :
     ((a : ℂ) * (b : ℂ) * cexp ((θ : ℂ) * I)).re = a * b * Real.cos θ := by
@@ -65,9 +65,9 @@ theorem windowPrime_eq_sum (ℓ T : ℝ) :
       ring, h2]
     push_cast; ring
   simp only [primeCoeff, primeFreq, if_true, Bool.false_eq_true, if_false]
-  rw [he, he, show EF.weilTest (cb ℓ 0) (cb ℓ 0) = bumpKernel ℓ from rfl, bumpKernel_eq,
-    bumpKernel_eq, re_ofReal_mul_ofReal_mul_exp, re_ofReal_mul_ofReal_mul_exp,
-    bumpKernelReal_neg, primePowerWindowWeight, mul_neg, neg_mul, neg_neg, Real.cos_neg]
+  rw [he, he, show EF.weilTest (cb ℓ 0) (cb ℓ 0) = bumpAutocorrelation ℓ from rfl, bumpAutocorrelation_eq,
+    bumpAutocorrelation_eq, re_ofReal_mul_ofReal_mul_exp, re_ofReal_mul_ofReal_mul_exp,
+    bumpAutocorrelationReal_neg, primePowerWindowWeight, mul_neg, neg_mul, neg_neg, Real.cos_neg]
   ring
 
 /-! ### The lift to the prime torus -/
@@ -159,13 +159,13 @@ theorem windowPhaseObservable_one_ge {ℓ : ℝ} (hℓ : 0 < ℓ) :
       rw [abs_of_nonneg (Real.log_nonneg h1)]
       calc Real.log n ≤ Real.log (Real.exp (ℓ / 2)) := Real.log_le_log (by linarith) hn'
         _ = ℓ / 2 := Real.log_exp _
-  have hK := bumpKernelReal_ge hℓ hlog
+  have hK := bumpAutocorrelationReal_ge hℓ hlog
   have ha : 0 ≤ ArithmeticFunction.vonMangoldt n / Real.sqrt n :=
     div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
   rw [primePowerWindowWeight]
   calc ℓ * c * (ArithmeticFunction.vonMangoldt n / Real.sqrt n)
       = 2 * (ArithmeticFunction.vonMangoldt n / Real.sqrt n) * (ℓ / 2 * c) := by ring
-    _ ≤ 2 * (ArithmeticFunction.vonMangoldt n / Real.sqrt n) * bumpKernelReal ℓ (Real.log n) :=
+    _ ≤ 2 * (ArithmeticFunction.vonMangoldt n / Real.sqrt n) * bumpAutocorrelationReal ℓ (Real.log n) :=
         mul_le_mul_of_nonneg_left hK (by positivity)
 
 /-- **The aligned value beats every multiple of `ℓ²`.** -/
