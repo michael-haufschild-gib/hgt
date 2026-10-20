@@ -423,3 +423,24 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
   `evenCoeff_eq_zero_of_difference_nonneg_above` follows. Corpus: `RHTower.WeilLagFunctionGrowth` has the
   ζ-only analogue for the canonical weights `1/(ρ(1−ρ))` (no compactly supported tests, no windows, no real
   zeros). Oleans C48–C52 rebuilt; axioms clean; wired; README mechanism 21 extended.
+- **C53 · Lag grids see attained tops** — `LagGridsSeeAttainedTops`. Tools: `tendsto_mean_tsum_geom` (Cesàro means
+  of `ū^k Σ q_t w_t^k` on the unit disc → `Σ_{w_t=u} q_t`), `tendsto_mean_abs_of_limsup_nonpos` (limsup ≤ 0 ⇒ mean
+  |b| → −mean b), `norm_tsum_ite_le_of_limsup_nonpos` (one-sided bound controls every frequency:
+  `|Σ_{w_t=u} q_t| ≤ −Re Σ_{w_t=1} q_t`). Resonances: `zeroHeights`, `resonantSteps` (countable),
+  `eq_of_cexp_eq_of_not_resonant`. Main: `exists_re_gt_of_grid_lag_ge` — tempered Z, generic width, non-resonant ℓ:
+  `Re W ≥ −C` on `κ_w(t+kℓ/2) − κ_w(t−kℓ/2)`, k ≥ N ⇒ every right zero is exceeded (chain or none); real top
+  exponents carry positive weight at frequency 1, the top zero's frequency is unshared. Criteria:
+  `onLine_iff_topAttained_and_grid_lag_nonneg`, `zeta_onLine_iff_topAttained_and_grid_primeWindow_nonneg` (RH ⟺
+  top attained (if any off-line) ∧ window functionals ≥ 0 at X = e^{kℓ}, k ≥ N; generic w, ℓ). No `Re ρ < 1`
+  hypothesis needed. SRT form of RHTower's ¬JasOffLineChain progression criteria.
+- **C54 · Chains hide from lag grids (no-go with C53 as positive survivor)** — `ChainsHideFromLagGrids`.
+  General tool `eq_zero_of_re_tsum_exp_le_of_separated` (Landau for real parts: |Re λ| ≤ ½, heights ≥ η,
+  separated ⇒ one-sided bound on v ≥ 0 kills every coefficient with Re λ > 0; doubled family `doubledExp`,
+  `doubledCoeff` over ι ⊕ ι). Explicit chain `gridChainExp n = δ_n + i(2π(n+1) + θ_n)`, `δ_n = (1 − 2^{−(n+1)})/4`,
+  weights `2^{−(n+1)}`, `θ_n = π/(3(n+3)2^{n+4})`: `re_gridChainSum_nat_nonpos` (Re ≤ 0 at every integer lag;
+  dominance `exp_gridChainDepth_le`, balance `gridChain_balance_nonneg`, `gridChain_cos_sum_nonneg`),
+  `not_bddAbove_re_gridChainSum` (unbounded on the continuum), non-resonance `gridChainExp_im_sub_eq`,
+  `gridChainExp_im_ne`; packaged `exists_chain_hidden_from_grid`. Insight: grids lose exactly the non-attained
+  tops (aliasing turns heights → ∞ into exponents accumulating at a real point, defeating Landau); explains why
+  every grid/progression criterion in the corpus carries a chain premise. Positive survivor = C53 (proved).
+  Oleans built; axioms clean; wired; README mechanism 21 + trap row.

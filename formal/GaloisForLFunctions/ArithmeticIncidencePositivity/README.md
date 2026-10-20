@@ -48,11 +48,20 @@ field's thesis is that the sign of the critical form should be understood throug
 structure: which pairs of integers carry negative conductance, how it compares with the positive
 conductance on the same pair, and how the window structure of the primes enters.
 
+**Polar compensation.** The pole of `ζ` enters the form as the variance term; per unit gauge its
+weight on the crossing pair `(−a, s − a)` is the **polar weight** `sinh(a/2) sinh((s − a)/2)`. It
+is the only positive source on crossing pairs. It pays the archimedean crossing density `ω(s)`
+pointwise everywhere except on a collar of the two axes of length `O(e^{−3s/4})`, and it vanishes at
+the axes, so it never pays a prime atom near the ends of its anti-diagonal. Measured at the midpoint,
+where it is largest, it pays the atom `Λ(n)/√n` for every `n ≥ 2` except the ten moduli
+`2, 3, 4, 5, 7, 9, 11, 13, 17, 19`, whose atoms exceed the polar weight on the whole anti-diagonal.
+
 **Where the difficulty sits.** The pair picture separates what is already decided from what is not.
 On lattice pairs the negative atom is never larger than the positive atom on the same pair, and
-the negative archimedean conductance is carried by finitely many pairs. The open problem is the
-continuum: pairs that are not lattice pairs, where the anti-diagonal atom `Λ(n) n^{−1/2}` must be
-paid by same-side atoms at other ratios and by the variance, with no slack to lose.
+the negative archimedean conductance is carried by finitely many pairs. In the continuum the pole
+pays the archimedean density off the collars. What remains is the prime atom near the axes of its
+anti-diagonal, for all `n`, and along the whole anti-diagonal for the ten moduli: it must be paid by
+same-side atoms at other ratios and by the gauge, with no slack to lose.
 
 ---
 
@@ -75,6 +84,11 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Lattice skeleton energies | `Σ_{a<b} (·)(c a − c b)²` with ratio, product or net atoms | `ratioEnergy`, `productEnergy`, `skeletonEnergy` |
 | Dyadic window | `(X/2, 2X)` as a predicate on integers | `InDyadicWindow` |
 | Two-bump window | `|log n − v| ≤ 2w` | `SquareRootThreshold.lagPrimeWindow` |
+| Polar weight | `sinh(a/2) sinh((s−a)/2)` on the crossing pair `(−a, s−a)` | `crossingPolarWeight` |
+| Off-collar region | crossing pairs with `k_arch ≤ 0` | `offCollar` |
+| Collar of an anti-diagonal | `{a ∈ (0,s) : k_arch(−a, s−a) > 0}` | `antiDiagonalCollar` |
+| Payment scale | `Λ(n)/√n` over `sinh²(log n / 4)` | `polarPaymentScale` |
+| Ten moduli | `{2, 3, 4, 5, 7, 9, 11, 13, 17, 19}` | `atomDominatedModuli` |
 
 **Words.**
 * **Pair `(x, y)`:** two points of the real line; **same-side** if `xy > 0`, **crossing** if
@@ -90,6 +104,10 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
   it is a thin neighbourhood of the two axes.
 * **Window:** a dyadic range of integers `(X/2, 2X)`; **window incidence** is the set of ratio and
   product pairs with both members in the window.
+* **Polar weight** of a crossing pair: the variance conductance per unit gauge,
+  `sinh(|x|/2) sinh(y/2)`. **Payment** means that the polar weight on a pair is at least the negative
+  conductance on it; the **payment scale** of `n` is the ratio of the atom to the largest polar weight
+  on its anti-diagonal.
 
 ---
 
@@ -155,6 +173,41 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     incidence obeys 9 and 10 (`eq_two_mul_or_three_mul_of_mem_lagPrimeWindow`,
     `productAtom_lt_of_mem_lagPrimeWindow`).
 
+### The continuum: polar compensation
+
+12. **Anti-diagonal decomposition.** On the anti-diagonal of sum `s > 0`, written `(−a, s − a)`,
+    `k_arch = ω(s) − P_s(a)` with the polar weight `P_s(a) = sinh(a/2) sinh((s−a)/2)
+    = (cosh(s/2) − cosh(s/2 − a))/2` (`archPairKernel_antiDiagonal_eq`, `crossingPolarWeight_eq`).
+    `P_s` is symmetric under `a ↦ s − a`, vanishes at both ends, and has its maximum `sinh²(s/4)` at
+    the midpoint (`crossingPolarWeight_midpoint`, `crossingPolarWeight_le_midpoint`).
+13. **Pointwise payment off the collar.** Where `k_arch(x, y) ≤ 0` on a crossing pair,
+    `ω(y − x) ≤ sinh(|x|/2) sinh(y/2)`; in a gauge with `M(x)M(y) ≤ 0` across the origin the
+    archimedean crossing conductance is at most the variance conductance on that pair, hence for
+    every profile the archimedean crossing energy over the off-collar region is at most the
+    variance energy over it (`lintegral_archCrossingDensity_offCollar_le`). The archimedean
+    negativity that survives the pole lives on the collar.
+14. **Collar measure.** For `s ≥ 4 log 2` the collar of the anti-diagonal lies within `6 e^{−3s/4}`
+    of its two ends (`antiDiagonalCollar_subset`); its length is at most `12 e^{−3s/4}`
+    (`volume_antiDiagonalCollar_le`), and the archimedean conductance the pole leaves unpaid on the
+    anti-diagonal has total mass at most `12 ω(s) e^{−3s/4}` (`lintegral_antiDiagonalCollar_le`).
+15. **Small and large anti-diagonals.** For `2 ≤ n ≤ 9` the whole anti-diagonal `|x| + y = log n`
+    has negative archimedean conductance, because `log 9 = 2 log 3 < s₀`
+    (`archPairKernel_antiDiagonal_pos_of_le_nine`); for `n ≥ 16` only the end collars of length
+    `< 6 n^{−3/4}` do (`antiDiagonal_collar_of_sixteen_le`).
+16. **Axis law.** The polar weight tends to `0` at the ends of every anti-diagonal
+    (`tendsto_crossingPolarWeight_zero`): no pole mass is available against a prime atom near the
+    axes.
+17. **Payment scale.** The ratio of the atom to the midpoint polar weight is
+    `4Λ(n)/(√n − 1)²` (`polarPaymentScale_eq`), at most `16 log n / n` for `n ≥ 4`
+    (`polarPaymentScale_le`).
+18. **Exact classification.** `(√n − 1)² < 4Λ(n)` iff `n ∈ {2, 3, 4, 5, 7, 9, 11, 13, 17, 19}`
+    (`sqrt_sub_one_sq_lt_four_vonMangoldt_iff`): the primes up to `19` and the squares `4`, `9`. For
+    these the atom exceeds the polar weight at every point of the anti-diagonal
+    (`crossingPolarWeight_lt_vonMangoldtAtom`, `antiDiagonal_total_pos_of_mem`); for every other
+    `n ≥ 2` the pole pays the atom at the midpoint (`vonMangoldtAtom_le_crossingPolarWeight_midpoint`).
+    Inputs: `Λ(p^k) = log p`; `log r ≤ sinh(log r)` on fourth roots for `p ≥ 23`
+    (`four_mul_log_le_sqrt_sub_one_sq`); `log p ≤ p − 1` for `k ≥ 2`; eight explicit comparisons.
+
 ---
 
 ## 4. Traps
@@ -169,6 +222,9 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Expecting many crossing atoms inside one dyadic window | At most one pair of consecutive powers of `2` and one of `3`, each of size `O(1/X)`; the ratio atoms inside the window are `O(1)`. |
 | Treating `ratioAtom a b` as symmetric | It is defined for `a ∣ b` with `a < b`; `productAtom` is symmetric. |
 | Deducing a sign for a continuum pair from the lattice | The anti-diagonal `|x| + y = log n` is a segment; its lattice points are the factorizations of `n`, and the dominance law speaks only about those. |
+| Expecting the pole to pay a prime atom near the axes | The polar weight vanishes at both ends of every anti-diagonal; near an axis only same-side atoms and the gauge can pay. |
+| Reading "the pole pays the atom at the midpoint" as payment of the atom | It is a pointwise comparison of weights per unit gauge at one point; the atom is a Dirac mass along the whole segment and the pole's share depends on the gauge profile along it. |
+| Expecting the ten moduli to be the primes below some bound | They are the primes up to `19` together with `4` and `9`; `8`, `16`, `25` and `27` are paid at the midpoint, `19` is kept by a margin of `0.4` in `(√p − 1)² < 4 log p`. |
 
 ---
 
@@ -180,13 +236,19 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
    open core; in a smeared gauge it is RH itself, so the problem is to find the sub-inequalities that
    are unconditional. The smallest instance is the first prime window: a gauge argument for supports
    past `log 2 / 2`, paying the single atom `Λ(2)/√2`.
+1′. **The atom against the pole, integrated.** For an odd gauge `M`, compare the atom mass
+   `Λ(n) n^{−1/2} ∫₀^{log n} |M(−a) M(log n − a)| da` with the polar mass
+   `∫₀^{log n} |M(−a) M(log n − a)| P(a) da` along the anti-diagonal. Determine the gauges for which
+   the pole pays every atom outside the ten moduli, and the amount the same-side atoms must pay
+   for the ten; the axis law says the answer depends on the decay of `M` at `0`.
 2. **The bump bridge.** For an even profile built from bumps of width `w` at the points `± log a`,
    express the prime part of `J_M` in the limit `w → 0`, normalized by `w`, as a diagonal term
    `2 Σ_a c_a² M(log a) 𝒢_prime(M)(log a)` (the prime generator of the gauge) minus the pair term
    `4 Σ_{a<b} c_a c_b M(log a)M(log b) netAtom(a,b)`, and identify the archimedean self-energy
    `≍ w log(1/w)` that dominates the limit.
 3. **Sharp collar.** Replace the bound `min(|x|,y) < 6 e^{−3s/4}` by the exact asymptotic
-   `min(|x|,y) ∼ 4 e^{−s}` of the boundary `cosh((s−2c)/2) = S(s)`.
+   `min(|x|,y) ∼ 4 e^{−s}` of the boundary `cosh((s−2c)/2) = S(s)`, and the unpaid mass
+   `12 ω(s) e^{−3s/4}` by its true order `e^{−3s/2}`.
 4. **Total lattice law.** Combine the archimedean closed form with the atoms on the five pairs and
    the axis pairs into one statement about the lattice conductance at fixed bump width.
 5. **Parity.** Which complete-period quadratic forms of the sieve theory (variance, Bézout

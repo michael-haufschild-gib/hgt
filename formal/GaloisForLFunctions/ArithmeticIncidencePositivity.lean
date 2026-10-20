@@ -3,6 +3,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.CrossingConductanceSign
 import GaloisForLFunctions.ArithmeticIncidencePositivity.LatticeCrossingClassification
 import GaloisForLFunctions.ArithmeticIncidencePositivity.DyadicWindowIncidence
 import GaloisForLFunctions.ArithmeticIncidencePositivity.AntiDiagonalPolarCompensation
+import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeAtomVersusPoleClassification
 
 /-!
 # Arithmetic Incidence Positivity

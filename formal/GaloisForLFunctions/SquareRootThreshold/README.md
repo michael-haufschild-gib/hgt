@@ -311,7 +311,15 @@ The configurations and the probes of the theory:
     iff its window functional at `X` is `≥ −C X^σ` for large `X`, for `ζ` and every primitive
     `L(s, χ)`. A real exponent beyond `σ` is isolated by Landau's theorem at its own level and
     then excluded by Abel means after the shift `e^{−σv}`. Each quasi-RH half-plane is one growth
-    condition on one family of dyadic windows.
+    condition on one family of dyadic windows. A geometric progression of windows, `v = kℓ`,
+    decides the line up to chains (off-line depths without a largest value). After dividing by
+    `e^{Dkℓ}`, a one-sided grid bound gives `limsup ≤ 0`, so the Cesàro mean of `|b_k|` is minus
+    the mean of `b_k`. That mean collects only the real top exponents, whose coefficients are
+    positive, and so every frequency `e^{iγℓ}` of an attained top gets weight `0`. This works for
+    every grid step outside the countably many resonances `(γ − γ')ℓ ∈ 2πℤ`. Chains are the exact
+    limit. On a grid a height counts only modulo `2π/ℓ`, so a chain with heights approaching
+    `(2π/ℓ)ℤ` looks like exponents accumulating at a real point. With negative coefficients its
+    grid values stay `≤ 0`, while on the continuum Landau's theorem still sees it.
 
 ---
 
@@ -342,6 +350,7 @@ The configurations and the probes of the theory:
 | Expecting a bounded exponential sum over the zeros to keep a top pole | A sum `Σ q_t e^{λ_t v}` bounded on `v ≥ 0`, or bounded on one side, has zero coefficient at every rightmost, unshared exponent; its growth rate is the abscissa of its top poles. |
 | Expecting the visibility aperture to depend on the arrangement of the on-line zeros | It depends on the on-line background only through the logarithm of the local on-line mass at the bump; the arrangement is irrelevant. |
 | Expecting the ground energy to vary continuously with the aperture | On lag lattices it is a step function with jumps at every `nL/2`; continuity is a property of the restricted operator of `ζ`, not of configurations. |
+| Expecting a lag grid to decide the line | A grid `v = kℓ` sees every attained top for non-resonant `ℓ`, but a chain whose heights approach `(2π/ℓ)ℤ` can keep a one-sided grid bound. Only the continuum of lags excludes chains. |
 | Expecting all couplings `τ` to be needed in the two-bump criteria | Unimodular `τ`, and for `ζ` the single sign `τ = −1`, suffice; the lag `v` and the height `γ` are the only parameters. |
 
 ---

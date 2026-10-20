@@ -24,6 +24,9 @@ So at second order in the damping the damped divisor function correlates like th
 products of two or more prime factors are `O(ε²)`. The parity of the lag is decisive: pairing the
 odd moduli `e` with `2e` gives `𝔖(h) = (1 + c_2(h)) Σ_{e odd} μ(e)² c_e(h)/φ(e)²`, so `𝔖(h) = 0` and
 `A_ε(h)/ε² → -1` at every odd lag (one of `n`, `n + h` is even), extending the lag-one law.
+Multiplicativity of `e ↦ μ(e)² c_e(h)/φ(e)²` gives the Hardy–Littlewood Euler product
+`𝔖(h) = Π_p (1 + c_p(h)/(p-1)²)`; at even lags every local factor is at least `3/4` and the
+logarithms are summable, so `𝔖(h) > 0`: even lags are strictly less anti-correlated.
 -/
 
 open Finset Filter Topology ArithmeticFunction
@@ -175,7 +178,7 @@ theorem dampedAutocorrelation_eq_singularSum {ε : ℝ} (hε : 0 < ε) {h : ℕ}
   have hterm : ∀ e, ramanujanLagWeight h e * dampedRamanujanCoeff ε e ^ 2 = ρ ^ 2 * t e := fun e => by
     have hD := (RHTower.pmPowerDampedRamanujanDenominator_pos hε e).ne'
     rw [dampedRamanujanCoeff_eq hε]
-    simp only [t]
+    simp only [t, ρ]
     field_simp
   have ht : Summable t := summable_dampedSingular_term hε.le hh
   have hg : Summable fun e => ρ ^ 2 * t e := ht.mul_left _
@@ -262,6 +265,133 @@ theorem pairSingularSeries_of_even {h : ℕ} (hh : 2 ∣ h) (h1 : 1 ≤ h) :
       ramanujanLagWeight h (2 * j + 1) / (Nat.totient (2 * j + 1) : ℝ) ^ 2 := by
   rw [pairSingularSeries_eq_parity h1, ramanujanLagWeight_prime Nat.prime_two, if_pos hh]
   norm_num
+
+
+/-! ### The Euler product and positivity at even lags -/
+
+/-- The singular-series term `μ(e)² c_e(h)/φ(e)²`. -/
+private def singularTerm (h e : ℕ) : ℝ :=
+  moebiusReal e ^ 2 * ramanujanLagWeight h e / (Nat.totient e : ℝ) ^ 2
+
+private theorem moebiusReal_mul_of_coprime {m n : ℕ} (hmn : m.Coprime n) :
+    moebiusReal (m * n) = moebiusReal m * moebiusReal n := by
+  unfold moebiusReal
+  rw [isMultiplicative_moebius.map_mul_of_coprime hmn]
+  push_cast; ring
+
+private theorem singularTerm_mul (h : ℕ) {m n : ℕ} (hmn : m.Coprime n) :
+    singularTerm h (m * n) = singularTerm h m * singularTerm h n := by
+  simp only [singularTerm]
+  rw [moebiusReal_mul_of_coprime hmn, ramanujanLagWeight_mul_of_coprime h hmn,
+    Nat.totient_mul hmn, Nat.cast_mul]
+  ring
+
+private theorem singularTerm_one (h : ℕ) : singularTerm h 1 = 1 := by
+  simp [singularTerm, moebiusReal, ramanujanLagWeight_of_dvd (one_dvd h)]
+
+/-- The local factor at a prime is `1 + c_p(h)/(p-1)²`: higher prime powers are not squarefree. -/
+private theorem tsum_singularTerm_prime_pow (h : ℕ) (p : Nat.Primes) :
+    ∑' k : ℕ, singularTerm h ((p : ℕ) ^ k) =
+      1 + ramanujanLagWeight h p / (((p : ℕ) : ℝ) - 1) ^ 2 := by
+  rw [tsum_eq_sum (s := {0, 1}) (fun k hk => ?_)]
+  · rw [Finset.sum_pair (by norm_num : (0 : ℕ) ≠ 1), pow_zero, pow_one, singularTerm_one]
+    congr 1
+    simp only [singularTerm]
+    have hμ : moebiusReal (p : ℕ) ^ 2 = 1 := by
+      unfold moebiusReal; rw [moebius_apply_prime p.property]; norm_num
+    rw [hμ, one_mul, Nat.totient_prime p.property, Nat.cast_sub p.property.one_lt.le, Nat.cast_one]
+  · have hk0 : k ≠ 0 := fun h' => hk (by simp [h'])
+    have hk1 : k ≠ 1 := fun h' => hk (by simp [h'])
+    have hμ : moebiusReal ((p : ℕ) ^ k) = 0 := by
+      unfold moebiusReal
+      rw [moebius_apply_prime_pow p.property hk0, if_neg hk1]
+      simp
+    simp [singularTerm, hμ]
+
+/-- **Hardy–Littlewood Euler product.** `𝔖(h) = Π_p (1 + c_p(h)/(p-1)²)` for every lag `h ≥ 1`. -/
+theorem hasProd_pairSingularSeries {h : ℕ} (hh : 1 ≤ h) :
+    HasProd (fun p : Nat.Primes => 1 + ramanujanLagWeight h p / (((p : ℕ) : ℝ) - 1) ^ 2)
+      (pairSingularSeries h) := by
+  have hp := EulerProduct.eulerProduct_hasProd (f := singularTerm h) (singularTerm_one h)
+    (fun {_ _} hmn => singularTerm_mul h hmn) (summable_pairSingularSeries_term hh).norm
+    (by simp [singularTerm, moebiusReal])
+  have hfun : (fun p : Nat.Primes => ∑' k : ℕ, singularTerm h ((p : ℕ) ^ k)) =
+      fun p : Nat.Primes => 1 + ramanujanLagWeight h p / (((p : ℕ) : ℝ) - 1) ^ 2 :=
+    by funext p; exact tsum_singularTerm_prime_pow h p
+  rw [hfun] at hp
+  exact hp
+
+/-- Each local factor at an even lag is at least `3/4` and within `4h/p²` of one. -/
+private theorem singular_factor_bounds {h : ℕ} (hh : 2 ∣ h) (h1 : 1 ≤ h) (p : Nat.Primes) :
+    3 / 4 ≤ 1 + ramanujanLagWeight h p / (((p : ℕ) : ℝ) - 1) ^ 2 ∧
+      |ramanujanLagWeight h p / (((p : ℕ) : ℝ) - 1) ^ 2| ≤ 4 * h / ((p : ℕ) : ℝ) ^ 2 := by
+  have hP2 : (2 : ℝ) ≤ (p : ℕ) := by exact_mod_cast p.property.two_le
+  have hP1 : (0 : ℝ) < ((p : ℕ) : ℝ) - 1 := by linarith
+  have hhR : (1 : ℝ) ≤ h := by exact_mod_cast h1
+  rw [ramanujanLagWeight_prime p.property]
+  split_ifs with hph
+  · have hPh : ((p : ℕ) : ℝ) ≤ h := by exact_mod_cast Nat.le_of_dvd (by omega) hph
+    have he : (((p : ℕ) : ℝ) - 1) / (((p : ℕ) : ℝ) - 1) ^ 2 = 1 / (((p : ℕ) : ℝ) - 1) := by
+      field_simp
+    rw [he, abs_of_pos (by positivity)]
+    constructor
+    · have : 0 < 1 / (((p : ℕ) : ℝ) - 1) := by positivity
+      linarith
+    · rw [div_le_div_iff₀ hP1 (by positivity)]
+      nlinarith
+  · have hp3 : (3 : ℝ) ≤ (p : ℕ) := by
+      have hp2 : (p : ℕ) ≠ 2 := fun h2 => hph (h2 ▸ hh)
+      have := p.property.two_le
+      exact_mod_cast (show 3 ≤ (p : ℕ) by omega)
+    rw [abs_div, abs_neg, abs_one, abs_of_pos (by positivity)]
+    constructor
+    · have hq : 1 / (((p : ℕ) : ℝ) - 1) ^ 2 ≤ 1 / 4 := by
+        rw [div_le_div_iff₀ (by positivity) (by norm_num)]; nlinarith
+      rw [neg_div]; linarith
+    · rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+
+/-- `|log a| ≤ (4/3)|a - 1|` for `a ≥ 3/4`. -/
+private theorem abs_log_le_of_ge {a : ℝ} (ha : 3 / 4 ≤ a) : |Real.log a| ≤ 4 / 3 * |a - 1| := by
+  have ha0 : 0 < a := by linarith
+  have hup := Real.log_le_sub_one_of_pos ha0
+  have hlo := Real.one_sub_inv_le_log_of_pos ha0
+  have hinv : a⁻¹ ≤ 4 / 3 := by
+    rw [inv_le_comm₀ ha0 (by norm_num)]; norm_num; linarith
+  have hid : 1 - a⁻¹ = (a - 1) * a⁻¹ := by field_simp
+  rw [hid] at hlo
+  rcases le_or_gt 1 a with h1 | h1
+  · rw [abs_of_nonneg (by linarith : 0 ≤ a - 1)]
+    have : 0 ≤ (a - 1) * a⁻¹ := mul_nonneg (by linarith) (inv_nonneg.mpr ha0.le)
+    rw [abs_le]; constructor <;> linarith
+  · rw [abs_of_neg (by linarith : a - 1 < 0)]
+    have : (a - 1) * (4 / 3) ≤ (a - 1) * a⁻¹ := mul_le_mul_of_nonpos_left hinv (by linarith)
+    rw [abs_le]; constructor <;> linarith
+
+/-- **Even lags are positively seen.** `𝔖(h) > 0` for every even `h ≥ 2`: all local factors are
+positive and their logarithms are summable. -/
+theorem pairSingularSeries_pos_of_even {h : ℕ} (hh : 2 ∣ h) (h1 : 1 ≤ h) :
+    0 < pairSingularSeries h := by
+  set a : Nat.Primes → ℝ := fun p => 1 + ramanujanLagWeight h p / (((p : ℕ) : ℝ) - 1) ^ 2
+  have hmaj : Summable fun p : Nat.Primes => 4 / 3 * (4 * h / ((p : ℕ) : ℝ) ^ 2) := by
+    have hs : Summable fun p : Nat.Primes => 1 / ((p : ℕ) : ℝ) ^ 2 :=
+      (Real.summable_one_div_nat_pow.mpr (by norm_num : 1 < 2)).comp_injective
+        Subtype.val_injective
+    refine (hs.mul_left (4 / 3 * (4 * (h : ℝ)))).congr fun p => ?_
+    ring
+  have hlog : Summable fun p : Nat.Primes => Real.log (a p) := by
+    refine Summable.of_norm_bounded hmaj fun p => ?_
+    obtain ⟨hlo, hx⟩ := singular_factor_bounds hh h1 p
+    rw [Real.norm_eq_abs]
+    refine (abs_log_le_of_ge hlo).trans ?_
+    simp only [add_sub_cancel_left]
+    exact mul_le_mul_of_nonneg_left hx (by norm_num)
+  have hexp := hlog.hasSum.rexp
+  have heq : (Real.exp ∘ fun p : Nat.Primes => Real.log (a p)) = a :=
+    funext fun p => Real.exp_log (by linarith [(singular_factor_bounds hh h1 p).1])
+  rw [heq] at hexp
+  rw [(hasProd_pairSingularSeries h1).unique hexp]
+  exact Real.exp_pos _
 
 end
 

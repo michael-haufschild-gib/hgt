@@ -141,7 +141,7 @@ theorem sqrt_sub_one_sq_lt_four_log_of_prime_le_nineteen {p : ℕ} (hp : p.Prime
     (Real.sqrt p - 1) ^ 2 < 4 * Real.log p := by
   have hcases : p = 2 ∨ p = 3 ∨ p = 5 ∨ p = 7 ∨ p = 11 ∨ p = 13 ∨ p = 17 ∨ p = 19 := by
     have := hp.two_le
-    interval_cases p <;> first | exact absurd hp (by norm_num) | norm_num
+    interval_cases p <;> (revert hp; norm_num)
   have hl2 := Real.log_two_gt_d9
   rcases hcases with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
   all_goals push_cast
@@ -243,7 +243,7 @@ theorem sqrt_sub_one_sq_lt_four_vonMangoldt_iff {n : ℕ} (hn : 2 ≤ n) :
       constructor
       · intro h
         rcases Nat.lt_or_ge p 23 with h23 | h23
-        · interval_cases p <;> first | exact absurd hp (by norm_num) | norm_num
+        · interval_cases p <;> (revert hp; norm_num)
         · exfalso
           have := four_mul_log_le_sqrt_sub_one_sq (x := (p : ℝ)) (by exact_mod_cast h23)
           linarith

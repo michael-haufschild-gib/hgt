@@ -474,3 +474,27 @@ Perturb the folded generator of ω_a = m_a/Φ by ONE extra jump of length ℓ at
 Significance: threshold curve e^{−2a}+e^{−2ℓ} = 1 is the graph of the window killing function N (an involution):
 ω_a sees at infinity exactly the jumps longer than N(a). Answers frontier 5 for the central no-go: origin half
 rate-blind, infinity half rate-critical (any excess at a visible length flips it) — dual to rate-criticality of the form.
+
+### C32 — Explicit small-aperture floor for the CCM restricted Weil operator (discharges Suzuki's non-explicit δ)
+Module: `ArithmeticCriticalityTheory/ExplicitSmallApertureCCMGroundEnergyFloor.lean` (compiled, olean, standard axioms, wired).
+- `one_thirtieth_le_ccmRestrictedWeilGroundEnergy`: μ(A) ≥ 1/30 for every aperture A ≤ 21/200 (unconstrained
+  ground energy, pole directions included). Proof: Suzuki GLB over smooth interior sources
+  (`isGLB_suzukiSmoothInteriorRayleighSet_groundEnergy`), CCM quadratic = Re W_ζ, ACT Markov window (C28).
+- `ccmRestrictedWeilSourceQuadratic_ge_of_le`: Q_A(u) ≥ (1/30)‖u‖² on the whole completed form domain.
+- `lt_of_ccmRestrictedWeilGroundEnergy_nonpos`, `ccmFirstContactBoundaryRoughness_aperture_gt`: any contact aperture
+  (μ ≤ 0), in particular the first contact a failure of RH would produce, exceeds 21/200.
+Significance: corpus small-aperture positivity (`exists_suzukiSmallAperture_ccmGroundEnergy_pos`) has a non-explicit δ
+from an asymptotic expansion; ACT's gauge/Markov-window mechanism makes it explicit (δ = 21/200, floor 1/30).
+
+### C33 — Criticality at infinite aperture: RH ⟺ the CCM ground energy tends to zero
+Module: `ArithmeticCriticalityTheory/RestrictedWeilGroundEnergyCriticalAtInfinity.lean` (compiled, olean, standard axioms, wired).
+- `tendsto_fullZeroForm_thetaPlateau`: Ẑ(Φu_L) → 0 (radical theorem specialised to Φ itself; `fullZeroForm_zero`).
+- `exists_ccmRestrictedWeilGroundEnergy_lt`: UNCONDITIONAL — ∀ε>0, μ(A) < ε for all large A (Φu_L are smooth
+  sources on [−L−1, L+1] with mass ≥ 2Φ(1)²).
+- `ccmRestrictedWeilGroundEnergy_nonneg_of_riemannHypothesis'`: RH ⟹ μ ≥ 0 via ACT's Ẑ-criterion applied to Re/Im of
+  each smooth source (independent ACT route to the corpus fact).
+- `riemannHypothesis_iff_tendsto_ccmRestrictedWeilGroundEnergy_zero`: RH ⟺ μ(A) → 0 as A → ∞.
+Significance: the CCM image of ACT criticality (no Hardy weight): under RH the restricted Weil operators are
+asymptotically critical (ground energy ↓ 0 without crossing); off RH μ → −∞ (corpus: CCMParityTopLayerGroundEnergyLaw,
+ConstrainedWeilPolarGroundDecay). Corpus had no upper bound μ(A) → 0. Combined with C32: 1/30 ≤ μ(A) for A ≤ 21/200
+and μ(A) → 0 (RH) — the full qualitative profile of the ground-energy path.

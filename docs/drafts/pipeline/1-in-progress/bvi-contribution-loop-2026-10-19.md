@@ -70,6 +70,8 @@
 | C45 | EnergyMeanOfThePowerDampedSourceTendsToOne | Σ_p log p/(p^s−1) = −ζ'/ζ(s) (prime regrouping); m(ε,Q) = (1/ζ(1+ε))Σ_{p≤Q+1} log p/(p^{1+ε}−1) → −ζ'(1+ε)/ζ(1+ε)² (Q→∞) → 1 (ε→0+); readout defect (1−m(ε,Q))² eventually < η — the readout half of the README dual question; the dual question is exactly V(ε,Q) → 0 along a path | done |
 | C46 | DampedChebyshevTangentFormOfTheReceiver | ∂_εA_ε(n) = E_ε(n) = Σ_{k≤n}Λ_ε(k) − n m(ε) (damped von Mangoldt Λ_ε = −Σ_{d|k}μ(d)d^{-ε}log d, readout m = −ζ'/ζ²(1+ε)); A_ε → 1 at zero damping; A_ε − 1 = ∫_0^ε E_η; pronic Minkowski ‖A_ε−1‖_T ≤ ∫_0^ε‖E_η‖_T; ONE integrable bound ‖E_η‖_T ≤ g(η) gives receiver (E_T(ε) ≤ (1+∫g)², ⟹ RH) AND dual (residual ≤ (∫_0^ε g)²); unconditional slope (A_ε−1)/ε → ψ(n)−n, dual residual/ε² → Σ(ψ(n)−n)²/(n(n+1)) | done |
 | (C47 withdrawn) | LogarithmicReciprocityDefectForNearbyModuli | NOT COUNTED: the h·H_{p/h} gap-energy bounds duplicate the existing BVI module PronicResidueGapEnergyAndPrimePairDistance (the corpus search was skipped). Reduced to a bridge: existing gap bounds + C44 exact reciprocity ⟹ hH_K − 2h ≤ π(V(p+h,p)+V(p,p+h)) ≤ hH_K + 4h | bridge |
+| C47 | HardyLittlewoodSingularSeriesOfTheDampedSource | lag-h correlation of the damped source over its squared density → Hardy–Littlewood singular series: A_ε(h)/ρ_ε² → 𝔖(h)−1, (ρ²+A)/ρ² → 𝔖(h) = Σ μ²(q)c_q(h)/φ(q)²; JOINT (ε,Q) limit for receiver-row lag covariances; Euler product 𝔖 = ∏_p(1+c_p(h)/(p−1)²); 𝔖(h)=0 for odd h, >0 for even h. Centred: white (A/V→0, THIM); uncentred: prime-pair structure (τ_ε/ε → Λ) | done |
+| C48 | ExactDampedSingularSeriesAndGallagherPrefixDiscrepancy | exact for every ε>0: (ρ²+A_ε(h))/ρ² = 𝔖_ε(h) = Σ c_q(h)μ²/D_ε² = ∏_p(1+c_p(h)/(p^{1+ε}−1)²) → 𝔖(h); lag sums are prefix discrepancies: Σ_{h≤H}A_ε(h) = Σ_e w_ε(e)²R_e(H) (row with squared Selberg coordinates); Gallagher's Σ_{h≤H}(𝔖(h)−1) = Σ_q (μ²/φ²)(q)R_q(H) | done |
 
 ## Conjecture queue
 
@@ -726,3 +728,35 @@
   h·H_K − h ≤ D ≤ h·H_K + 4h). The module is now only the bridge `vasyunin_reciprocity_nearby_moduli`, combining those bounds with
   C44 to answer the README item "Vasyunin reciprocity error below O(p+q)": order h log(p/h). Not counted. Count stays 46.
 - Lesson: run `research` on the exact object (residue difference / gap energy) before building.
+
+### C47 — The damped source carries the Hardy–Littlewood singular series (DONE)
+
+- **Module:** `BezoutValuationIncidence/HardyLittlewoodSingularSeriesOfTheDampedSource.lean`
+- **Statements:** `singularSeriesTerm`, `hardyLittlewoodSingularSeries`; `tendsto_moebius_div_denominator_sq`;
+  **`tendsto_dampedAutocorrelation_div_density_sq`**, **`tendsto_lagProductMean_div_density_sq`**,
+  **`tendsto_periodCovariance_cofactor_div_density_sq`** (joint limit over (𝓝[>]0) ×ˢ atTop);
+  `ramanujanLagWeight_prime`, `singularSeriesTerm_mul_of_coprime`, **`hasProd_hardyLittlewoodSingularSeries`**,
+  **`hardyLittlewoodSingularSeries_eq_zero_of_odd`**, **`hardyLittlewoodSingularSeries_pos_of_even`**.
+- **Why significant:** extends the THIM "small-damping whiteness" law, which normalizes by the variance, with the complementary
+  normalization by the squared density. In that normalization the damped source and the receiver rows reproduce exactly the
+  prime-pair singular series 𝔖(h). This brings the k = 2 Hardy–Littlewood structure into BVI as a theorem about the source
+  (period first, then damping). It is native: lag visibility through gcd(e, h), Bézout parity (odd gaps die at p = 2),
+  Selberg/Ramanujan coordinates. Novelty: research for "singular series", "twin prime constant", "damped correlation Euler product"
+  returned nothing. THIM has A_ε(h) and A/V → 0; BVI has tuple admissibility S_p(H) but no density-normalized limit.
+- **Next:** the k-tuple version (translated moments of the damped source over ρ^k → 𝔖(H)).
+- **Audit:** clean (no warnings); olean; 6 public theorems standard axioms; wired. Count 47.
+
+### C48 — Exact damped singular series and Gallagher's sum as a prefix discrepancy (DONE)
+
+- **Module:** `BezoutValuationIncidence/ExactDampedSingularSeriesAndGallagherPrefixDiscrepancy.lean`
+- **Statements:** `dampedSingularSeries`; `pmPowerDampedRamanujanDenominator_mul_of_coprime`; **`hasProd_dampedSingularSeries`**;
+  **`lagProductMean_div_density_sq_eq`** (exact at every ε>0); `tendsto_dampedSingularSeries`; **`sum_Icc_dampedAutocorrelation`**;
+  **`hasSum_gallagher_prefixDiscrepancy`**.
+- **Why significant:** identity before asymptotics. C47's limit becomes an exact Euler product at every damping: odd gaps are
+  suppressed continuously by the factor 1 − 1/(2^{1+ε}−1)². Lag sums of the source's correlations are BVI prefix discrepancies of
+  the "squared-coordinate row". At zero damping, Gallagher's singular-series sum (which controls the variance of primes in short
+  intervals, Montgomery–Soundararajan) is literally the BVI prefix discrepancy of the row with Selberg coordinates μ²/φ².
+  The whole BVI prefix-discrepancy calculus (pronic means, Gram, Vasyunin forms) therefore applies to Gallagher's sum.
+- **Next:** pronic mean of the Gallagher defect = −Σ_p log p/(p−1)² (needs a joint absolute-convergence bound). Also the k-tuple
+  version.
+- **Audit:** clean; olean; 5 public theorems standard axioms; wired. Count 48.

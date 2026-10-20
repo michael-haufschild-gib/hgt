@@ -85,6 +85,41 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
 - README written (`ArithmeticIncidencePositivity/README.md`): why, objects, mechanisms 1–11, traps,
   open problems 1–6, principles.
 
+### C5 — Polar compensation on the anti-diagonals (`AntiDiagonalPolarCompensation.lean`)
+- `crossingPolarWeight s a = sinh(a/2) sinh((s−a)/2) = (cosh(s/2) − cosh(s/2 − a))/2`; symmetric, zero
+  at both ends, maximum `sinh²(s/4)` at the midpoint (`crossingPolarWeight_le_midpoint`, strict
+  off the midpoint); `tendsto_crossingPolarWeight_zero` (axis law).
+- `archPairKernel_antiDiagonal_pos_iff`; `archPairKernel_antiDiagonal_pos_of_le_nine` (`2 ≤ n ≤ 9`:
+  whole anti-diagonal negative); `antiDiagonal_collar_of_sixteen_le` (`n ≥ 16`: within `6 n^{−3/4}`
+  of an axis).
+- Pointwise payment: `archLevyDensity_le_polar_of_kernel_nonpos`, `archCrossing_le_variance_of_kernel_nonpos`;
+  `offCollar` measurable; `lintegral_archCrossingDensity_offCollar_le` (any profile, any gauge with
+  `M(x)M(y) ≤ 0` across the origin).
+- `polarPaymentScale n = Λ(n)/√n / sinh²(log n/4) = 4Λ(n)/(√n−1)²` (`polarPaymentScale_eq`),
+  `≤ 16 log n / n` for `n ≥ 4`.
+- Imports: C2, `RHTower.WeilPhiDoobPrimeAtoms`. Axioms: standard.
+
+### C6 — Collar measure and the ten moduli (`PrimeAtomVersusPoleClassification.lean`)
+- `archPairKernel_antiDiagonal_eq`: `k_arch(−a, s−a) = ω(s) − P_s(a)`; `antiDiagonalCollar s`
+  measurable; `antiDiagonalCollar_subset` (within `6e^{−3s/4}` of the ends, `s ≥ 4 log 2`);
+  `volume_antiDiagonalCollar_le` (`≤ 12 e^{−3s/4}`); `lintegral_antiDiagonalCollar_le` (unpaid
+  archimedean mass `≤ 12 ω(s) e^{−3s/4}`).
+- Logarithm bounds: `log_add_one_sub_div_le_log` (tangent bound), `four_mul_log_le_sqrt_sub_one_sq`
+  (`x ≥ 23`, via `log r ≤ sinh(log r)` on the fourth root and `r³ − r ≥ 8`),
+  `four_mul_log_le_sqrt_sub_one_sq_of_sq_le` (`p ≥ 5`, `n ≥ p²`),
+  `sqrt_sub_one_sq_lt_four_log_of_prime_le_nineteen` (eight explicit primes).
+- `sqrt_sub_one_sq_lt_four_vonMangoldt_iff`: for `n ≥ 2`, `(√n−1)² < 4Λ(n)` iff
+  `n ∈ atomDominatedModuli = {2,3,4,5,7,9,11,13,17,19}`.
+- `one_lt_polarPaymentScale_iff`, `crossingPolarWeight_lt_vonMangoldtAtom` (atom exceeds polar weight
+  everywhere on the anti-diagonal of a listed `n`), `antiDiagonal_total_pos_of_mem`,
+  `vonMangoldtAtom_le_crossingPolarWeight_midpoint` (all other `n ≥ 2`).
+- Insight: the pole pays the archimedean crossing density off a collar of length `O(e^{−3s/4})` and
+  never pays an atom near the axes; among atoms it fails at the midpoint exactly for the primes up to
+  `19` and for `4`, `9`. The prime-side open core is the axis region of every anti-diagonal plus
+  the ten whole anti-diagonals. Imports: C5. Axioms: standard.
+- README extended: polar-compensation paragraph, objects, mechanisms 12–18, three traps,
+  open problems 1′ and sharpened 3.
+
 ## Conjecture queue
 1. (done as C4) Dyadic-window incidence.
 2. Bump-profile bridge: for even `u` built from bumps at `± log a`, the prime-atom part of ACT's
@@ -93,6 +128,10 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
 3. Sharp collar asymptotic: `min(|x|, y) ∼ 4 e^{−s}` on the boundary of the negative region.
 4. Total lattice kernel (archimedean + atoms) sign law on `(−log a, log b)`; the five pairs with the
    prime atoms added (`{2,2}`: `ab = 4`, product atom `log 2 / 2`; `{2,4}`: `ab = 8`; `{3,3}`: `ab = 9`).
+7. Integrated polar payment against a gauge: for odd `M`, atom mass vs polar mass along the
+   anti-diagonal of `n`; which gauges pay every `n ∉ atomDominatedModuli`; the axis law makes the
+   answer depend on the decay of `M` at `0`.
+8. Sharp unpaid mass: replace `12 ω(s) e^{−3s/4}` by the true order `e^{−3s/2}` (collar `∼ 4e^{−s}`).
 5. Parity pair: complete-period sieve forms are even in the Selberg coordinates (invariant under all
    sign characters); the first-octave response is not.
 6. Open core: extend a gauge argument through the first prime window past `log 2 / 2`, paying the
@@ -103,3 +142,6 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
   oleans produced with `lake --old env lean -j 1 -o`; README pending.
 - 2026-10-20 — C4 (dyadic window incidence, SRT bridge) compiled and wired; README written; umbrella
   compiles; all audited theorems depend only on `propext, Classical.choice, Quot.sound`.
+- 2026-10-20 — C5 (polar compensation) and C6 (collar measure, ten-moduli classification) compiled,
+  wired, oleans built, umbrella recompiled; README extended with the continuum section. Audited
+  theorems depend only on `propext, Classical.choice, Quot.sound`.

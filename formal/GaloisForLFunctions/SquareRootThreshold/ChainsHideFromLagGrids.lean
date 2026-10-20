@@ -85,9 +85,11 @@ theorem eq_zero_of_re_tsum_exp_le_of_separated {ι : Type*} [Countable ι] {lam 
   have hφrep : ∀ v : ℝ, (((∑' t, q t * cexp (lam t * v)).re : ℝ) : ℂ) =
       ∑' T, doubledCoeff q T * cexp (doubledExp lam T * v) := by
     intro v
-    have h1 : Summable fun t => doubledCoeff q (Sum.inl t) * cexp (doubledExp lam (Sum.inl t) * v) :=
+    have h1 : Summable fun t =>
+        doubledCoeff q (Sum.inl t) * cexp (doubledExp lam (Sum.inl t) * v) :=
       ((hS v).div_const 2).congr fun t => by simp only [doubledCoeff_inl, doubledExp_inl]; ring
-    have h2 : Summable fun t => doubledCoeff q (Sum.inr t) * cexp (doubledExp lam (Sum.inr t) * v) :=
+    have h2 : Summable fun t =>
+        doubledCoeff q (Sum.inr t) * cexp (doubledExp lam (Sum.inr t) * v) :=
       ((Summable.of_norm_bounded (f := fun t => conj (q t) * cexp (conj (lam t) * v))
         (hS v).norm fun t => by
           rw [← hconj, Complex.norm_conj]).div_const 2).congr fun t => by
@@ -193,7 +195,8 @@ def gridChainTime (n : ℕ) : ℝ := (n + 3) * 2 ^ (n + 4)
 def gridChainPhase (n : ℕ) : ℝ := π / (3 * gridChainTime n)
 
 /-- The exponents `δ_n + i(2π(n + 1) + θ_n)`. -/
-def gridChainExp (n : ℕ) : ℂ := (gridChainDepth n : ℂ) + ((2 * π * (n + 1) + gridChainPhase n : ℝ) : ℂ) * I
+def gridChainExp (n : ℕ) : ℂ :=
+  (gridChainDepth n : ℂ) + ((2 * π * (n + 1) + gridChainPhase n : ℝ) : ℂ) * I
 
 /-- The chain `Σ_n −c_n e^{λ_n v}`. -/
 def gridChainSum (v : ℝ) : ℂ := ∑' n, -(gridChainWeight n : ℂ) * cexp (gridChainExp n * v)
@@ -264,7 +267,8 @@ theorem half_le_cos_gridChainPhase {n : ℕ} {x : ℝ} (hx0 : 0 ≤ x) (hx : x �
 
 /-- **Dominance.** For `x ≥ gridChainTime n`, `e^{δ_n x} ≤ ½ c_{n+1} e^{δ_{n+1} x}`. -/
 theorem exp_gridChainDepth_le {n : ℕ} {x : ℝ} (hx : gridChainTime n ≤ x) :
-    Real.exp (gridChainDepth n * x) ≤ gridChainWeight (n + 1) * Real.exp (gridChainDepth (n + 1) * x) / 2 := by
+    Real.exp (gridChainDepth n * x) ≤
+      gridChainWeight (n + 1) * Real.exp (gridChainDepth (n + 1) * x) / 2 := by
   have hgap : (n + 3 : ℝ) ≤ (gridChainDepth (n + 1) - gridChainDepth n) * x := by
     rw [gridChainDepth_succ_sub]
     unfold gridChainTime at hx
@@ -276,7 +280,8 @@ theorem exp_gridChainDepth_le {n : ℕ} {x : ℝ} (hx : gridChainTime n ≤ x) :
       _ = Real.exp ((n + 3 : ℕ) * 1) := by rw [Real.exp_nat_mul]
       _ ≤ _ := Real.exp_le_exp.mpr (by push_cast; linarith)
   have hsplit : Real.exp (gridChainDepth (n + 1) * x) =
-      Real.exp ((gridChainDepth (n + 1) - gridChainDepth n) * x) * Real.exp (gridChainDepth n * x) := by
+      Real.exp ((gridChainDepth (n + 1) - gridChainDepth n) * x) *
+        Real.exp (gridChainDepth n * x) := by
     rw [← Real.exp_add]; ring_nf
   rw [hsplit]
   unfold gridChainWeight
@@ -286,7 +291,8 @@ theorem exp_gridChainDepth_le {n : ℕ} {x : ℝ} (hx : gridChainTime n ≤ x) :
     field_simp
     ring
   calc Real.exp (gridChainDepth n * x)
-      = (1 / 2) ^ (n + 1 + 1) * 2 ^ (n + 3) / 2 * Real.exp (gridChainDepth n * x) := by rw [h2, one_mul]
+      = (1 / 2) ^ (n + 1 + 1) * 2 ^ (n + 3) / 2 * Real.exp (gridChainDepth n * x) := by
+        rw [h2, one_mul]
     _ ≤ (1 / 2) ^ (n + 1 + 1) * Real.exp ((gridChainDepth (n + 1) - gridChainDepth n) * x) / 2 *
         Real.exp (gridChainDepth n * x) := by gcongr
     _ = _ := by ring
@@ -364,7 +370,8 @@ theorem gridChain_cos_sum_nonneg {x : ℝ} (hx : 0 ≤ x) :
     · have hexp : Real.exp (gridChainDepth n * x) ≤ E := Real.exp_le_exp.mpr
         (mul_le_mul_of_nonneg_right (gridChainDepth_strictMono.monotone (by omega)) hx)
       have hcos := Real.neg_one_le_cos (gridChainPhase n * x)
-      have h1 := mul_nonneg (mul_pos hw he).le (by linarith : 0 ≤ Real.cos (gridChainPhase n * x) + 1)
+      have h1 := mul_nonneg (mul_pos hw he).le
+        (by linarith : 0 ≤ Real.cos (gridChainPhase n * x) + 1)
       have h2 := mul_le_mul_of_nonneg_left hexp hw.le
       linarith
     · subst h2
@@ -464,7 +471,8 @@ theorem not_bddAbove_re_gridChainSum :
         rw [abs_lt]; constructor <;> linarith [hθ s, hθ t, hθ1 s, hθ1 t]
       have h2 : |2 * π * ((s : ℝ) - t)| = 2 * π * |(s : ℝ) - t| := by
         rw [abs_mul, abs_of_pos (by positivity)]
-      have h3 := abs_sub_abs_le_abs_sub (2 * π * ((s : ℝ) - t)) (-(gridChainPhase s - gridChainPhase t))
+      have h3 := abs_sub_abs_le_abs_sub (2 * π * ((s : ℝ) - t))
+        (-(gridChainPhase s - gridChainPhase t))
       rw [sub_neg_eq_add, abs_neg, h2] at h3
       nlinarith [Real.pi_gt_three])
     (M := M) hM (t₁ := 0) (by rw [gridChainExp_re]; exact gridChainDepth_pos 0)

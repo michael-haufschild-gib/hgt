@@ -55,19 +55,15 @@ theorem abs_singularSeriesTerm_le {h : ℕ} (hh : 1 ≤ h) (q : ℕ) :
 
 theorem summable_singularSeriesTerm {h : ℕ} (hh : 1 ≤ h) :
     Summable fun q => ‖singularSeriesTerm h q‖ :=
-  Summable.of_nonneg_of_le (fun q => norm_nonneg _)
+  Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
     (fun q => (Real.norm_eq_abs _).trans_le (abs_singularSeriesTerm_le hh q))
     (summable_sqfreeTotientInv_div_totient.1.mul_left _)
 
 theorem singularSeriesTerm_zero (h : ℕ) : singularSeriesTerm h 0 = 0 := by
-  simp [singularSeriesTerm, RHTower.Sieve.sqfreeTotientInv_apply]
-
-theorem ramanujanLagWeight_one (h : ℕ) : ramanujanLagWeight h 1 = 1 := by
-  rw [ramanujanLagWeight_eq_ramanujanLagCoefficient, ramanujanLagCoefficient]
-  simp [moebiusReal]
+  simp [singularSeriesTerm]
 
 theorem singularSeriesTerm_one (h : ℕ) : singularSeriesTerm h 1 = 1 := by
-  simp [singularSeriesTerm, ramanujanLagWeight_one, RHTower.Sieve.sqfreeTotientInv_apply]
+  simp [singularSeriesTerm, RHTower.Sieve.sqfreeTotientInv_apply]
 
 /-- `𝔖(h) - 1` is the series over moduli `q ≥ 2`. -/
 theorem hasSum_singularSeriesTerm_ge_two {h : ℕ} (hh : 1 ≤ h) :
@@ -78,7 +74,9 @@ theorem hasSum_singularSeriesTerm_ge_two {h : ℕ} (hh : 1 ≤ h) :
     have h : HasSum (fun q => if q < 2 then singularSeriesTerm h q else 0)
         (∑ q ∈ range 2, if q < 2 then singularSeriesTerm h q else 0) :=
       hasSum_sum_of_ne_finset_zero fun q hq => by rw [if_neg (by simpa using hq)]
-    simpa [sum_range_succ, singularSeriesTerm_zero, singularSeriesTerm_one] using h
+    rw [Finset.sum_range_succ, Finset.sum_range_one, if_pos (by norm_num), if_pos (by norm_num),
+      singularSeriesTerm_zero, singularSeriesTerm_one, zero_add] at h
+    exact h
   refine (hS.sub hlow).congr_fun fun q => ?_
   by_cases hq : 2 ≤ q
   · simp [hq, not_lt.mpr hq]
@@ -229,7 +227,7 @@ theorem tendsto_periodCovariance_cofactor_div_density_sq {h : ℕ} (hh : 1 ≤ h
         ((tendsto_moebius_div_denominator_sq e).comp tendsto_fst).const_mul _
       refine hconv.congr' ?_
       filter_upwards [Filter.Eventually.prod_inr (eventually_ge_atTop e) (𝓝[>] (0 : ℝ))] with x hx
-      simp only [F, Function.comp_apply]
+      simp only [F]
       rw [if_pos (mem_Icc.mpr ⟨he, by omega⟩)]
     · simp only [he, if_false]
       refine tendsto_const_nhds.congr fun x => ?_
@@ -275,8 +273,7 @@ theorem tsum_singularSeriesTerm_prime_pow {p : ℕ} (hp : p.Prime) (h : ℕ) :
   rw [tsum_eq_sum (s := range 2) fun e he =>
     singularSeriesTerm_prime_pow_eq_zero hp h (by simp at he; omega)]
   · have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
-    simp only [sum_range_succ, range_zero, sum_empty, zero_add, pow_zero, pow_one,
-      singularSeriesTerm_one]
+    rw [Finset.sum_range_succ, Finset.sum_range_one, pow_zero, pow_one, singularSeriesTerm_one]
     rw [singularSeriesTerm, RHTower.Sieve.sqfreeTotientInv_apply, if_pos hp.squarefree,
       Nat.totient_prime hp, Nat.cast_sub hp.one_lt.le, Nat.cast_one]
     field_simp
@@ -336,7 +333,7 @@ theorem hardyLittlewoodSingularSeries_pos_of_even {h : ℕ} (hh : 1 ≤ h) (heve
     have hc := abs_ramanujanLagWeight_le_sigma hh (p : ℕ)
     have hden : ((p : ℕ) : ℝ) ^ 2 ≤ 4 * ((p : ℕ) - 1 : ℝ) ^ 2 := by nlinarith
     have hpos : 0 < ((p : ℕ) - 1 : ℝ) ^ 2 := by nlinarith
-    simp only [a, Real.norm_eq_abs, abs_div, abs_of_pos hpos, Function.comp_apply]
+    simp only [a, Real.norm_eq_abs, abs_div, abs_of_pos hpos]
     rw [div_le_iff₀ hpos]
     calc |ramanujanLagWeight h p| ≤ σ := hc
       _ = 4 * σ * (1 / ((p : ℕ) : ℝ) ^ 2) * (((p : ℕ) : ℝ) ^ 2 / 4) := by field_simp
