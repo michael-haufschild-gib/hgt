@@ -46,7 +46,7 @@ theorem dampedGcdKernel_nonneg (ε : ℝ) (p : ℕ × ℕ) : 0 ≤ dampedGcdKern
   unfold dampedGcdKernel; positivity
 
 /-- `Σ_{g | d ≤ N} d^{-1-ε} ≤ g^{-1-ε} ζ(1+ε)`. -/
-private theorem sum_multiples_rpow_le {ε : ℝ} (hε : 0 < ε) (N g : ℕ) (hg : 0 < g) :
+theorem sum_multiples_rpow_le {ε : ℝ} (hε : 0 < ε) (N g : ℕ) (hg : 0 < g) :
     ∑ d ∈ (Icc 1 N).filter (fun d => g ∣ d), (d : ℝ) ^ (-ε) / d ≤
       (g : ℝ) ^ (-1 - ε) * ∑' m : ℕ, (m : ℝ) ^ (-1 - ε) := by
   have hgR : (0 : ℝ) < g := by exact_mod_cast hg
@@ -256,7 +256,7 @@ private theorem sum_sq_factorial_period (N q : ℕ) (c : ℕ → ℝ) :
   simpa using h
 
 /-- `(a + b)² ≤ (1+η) a² + (1 + 1/η) b²`. -/
-private theorem sq_add_le_weighted (a b : ℝ) {η : ℝ} (hη : 0 < η) :
+theorem sq_add_le_weighted (a b : ℝ) {η : ℝ} (hη : 0 < η) :
     (a + b) ^ 2 ≤ (1 + η) * a ^ 2 + (1 + 1 / η) * b ^ 2 := by
   have h : 0 ≤ (η * a - b) ^ 2 / η := by positivity
   have h2 : (η * a - b) ^ 2 / η = η * a ^ 2 - 2 * a * b + b ^ 2 / η := by

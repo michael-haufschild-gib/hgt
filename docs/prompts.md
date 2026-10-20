@@ -6,7 +6,7 @@ do not pivot on unanswered mathematical problems. your job is precisely to solve
 
 do not just optimize numbers and estimates - solve the true hard obstacles that block your route from turning into a proof of the riemann hypothesis. 
 
-use the search tool for our lean corpus. make sure you are note missing existing work.
+always use the search tool for our lean corpus. make sure you are note missing existing work, or things that you could use to create new interesting insights. do not just blindly look for mathlib, but use the search tool to find research we have done.
 
 are you actually working on removing roadblocks and mathematical obstacles to close route CHMD for the final RH proof, or are you taking shortcuts just to create lean files that build? this here does not look like you are actually solving the problems but are just busy creating lean code that does nothing to our research problem
 
@@ -27,11 +27,10 @@ On every turn state what the proof route is you are working on. State what the h
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/apt
+- docs/drafts/pipeline/2-fully-proven/thim-dyadic-antichain-prime-capacity.md
 
-some work is done. see remaining work: docs/drafts/pipeline/2-fully-proven/apt/status.md
 
-the lean code for these goes into formal/GaloisForLFunctions/arithmetic-positivity-theory/
+the lean code for these goes into formal/GaloisForLFunctions/TransHorizonIncidenceMechanics
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -111,15 +110,15 @@ Goal: Create a formal proof or falsification of the Parity-Drift Hypothesis for 
 6. when an experiment has finished, download results into a folder in computations/. write a report in the folder with the results for future agents - no large diary, just enough to understand what you did compute, what the outcome and interpretation/consequences are. 
 
 Keep a working log for yourself and do not pay too much attention what other agents are doing. 
-
+- https://arxiv.org/abs/math/0205003
+- https://arxiv.org/abs/math/0008177
+- - 
+  
 ## apply external paper to corpus experiment
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
-
 papers:
-- https://arxiv.org/abs/2610.10584
-- https://arxiv.org/abs/2609.20367
-- https://arxiv.org/abs/2609.24149
+- https://github.com/openai/math/blob/main/preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026/final.pdf
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -531,7 +530,7 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
-read fully line by line and understand the motivation and context of the fields including traps to avoid: formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+read fully line by line and understand the motivation and context of the fields including traps to avoid:  formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
  
 on every turn: 
 
@@ -569,47 +568,15 @@ the goal is met when you have made 100 such significant contributions.
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
 
 
-## Open obstacles
+## research after review
 
-Our project is about finding and formalizing in lean an unconditional, premise-free proof of the Riemann Hypothesis.
+we did a review of our current research: 
 
-Documents:
-1. A list of all our active research routes and proof candidates: docs/reports/rh-current-frontier-map.md
-2. A list of all "walls", the hard problems we have failed to overcome: docs/reports/walls-ledger.md
+based on your review:
+docs/reports/review-1910/hard-obstacles-1910.md
+docs/reports/review-1910/hard-obstacles-summary-1910.md
 
-We made some new progress by developing new mathematical frameworks / fields:
-1. formal/GaloisForLFunctions/BiScaleUncertainty/README.md
-2. formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
-
-Problem: We still have not overcome any of the walls and found a solution for the final RH proof.
-
-Your task:
-1. Carefully review the documents.
-2. Use the search tool for our lean corpus to investigate details, and things our documents may have missed, and get a clear idea of the hard obstacles that block us from removing a wall or close a RH proof route. Understand why we failed so far to overcome these obstacles.
-3. Create a report in docs/reports/hard-obstacles-1810.md and for every wall and every proof route or candidate list the hard obstacles that we need to overcome to remove all blockers to reach the final RH proof and why we failed so far to overcome the obstacles or our lean corpus or mathematics have failed to find a solution. What makes the obstacle hard?
-
-Split between: Obstacles that are solvable and "just work" and obstacles for which neither our lean corpus nor mathematics as a whole has a solution yet.
-
-After that create a new document docs/reports/hard-obstacles-summary-1810.md that groups in two sections:
-1. Obstacles we can solve and are just work.
-2. Obstacles that require new mathematics nobody has yet and describe what this new mathematic must deliver.
-3. Try to sum together the new mathematics into a description of a new field of mathematics that combines all the requirements for the single obstacles and explain what this field of mathematics need to deliver and be like that it would provide all mathematical tools to overcome the so far unsolvable obstacles.
-
-Note: It is possible that some routes or walls even if hard obstacles are solved will result in a dead end and cannot deliver the RH proof no matter what.
-
-## arithmetic positivity theory
-Work through the research program and develop the new arithmetic positivity theory: docs/reports/arithmetic-positivity-theory/research-foundational.md
-
-solve this problem in our CHMD proof route: 
-
-"All-Scale Control of the Folded Möbius Wave (`CHMDMobiusFoldedTransportOfKleinGordonPrimeWave`):
-*The exact gap:* Bounding the folded Möbius wave uniformly as rapidity $y \to \infty$ requires controlling sums of $\mu(n)$ folded against the Klein–Gordon kernel across all scales, where finite-band ($M < B N$) sieve estimates are useless unless coupled to a scale-invariant cancellation mechanism."
-
-your main tool for this is an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
-
-do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
-
-always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+your task: work through the research tasks in 1. Tasks that are “just work” from the summary.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -619,46 +586,30 @@ always look at the big picture, try to understand what all our research is tryin
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
-8. Add meaningful, helpful comments to lean files without being overly verbose.
-    
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
 Keep a knowledge ledger in logs/ for your own work (there are multiple agents active) - not a working log or history or diary, but a collection of crisp facts and failures to learn from in future research sessions.
 
-Do not clutter documents with history or diary entries or status updates. 
+Do not clutter any document with useless ledgers or diary entries or otherwise add content that is not in the spirit of the document´s purpose. Best you only keep it to pipeline cards and your own log.
 
-Goal is met when the research program is fully completed and the new theory is developed and formalized in lean.
-
-
-[/goal](slashCommand;goal) close all the gaps 
-
-**Lean rules:**
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
-3. No computations
-4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave staleclean up after yourself.
-7. Optimize lean code. No raising heartbeat hacks.
-
-use the search tool for our lean corpus, not just rg or grep or similar.
-
-the goal is met exactly when you assume the role of a fields medalist asked to look at TransHorizonIncidenceMechanics and answer whether it truly is a new field of mathematics and the answer is a clear yes.
-
-
-
+Always make good use the search tool for our lean corpus to find existing work, building blocks, and leads for new ideas and solutions.
 
 
 ## research review
+/l7
 take a fresh look at the our whole research program.
 
 status quo:
 - our route ledger: docs/reports/rh-current-frontier-map.md
-- analysis of hard mathematical obstales: docs/reports/hard-obstacles-summary-1810.md 
+- analysis of hard mathematical obstales: docs/reports/review-1910/hard-obstacles.md
 
 we have then started several research programs to develop new theories and the mathematical tools that will allow us to overcome these obstacles:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
 - formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 - formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
 - formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+- formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
+- formal/GaloisForLFunctions/SquareRootThreshold/README.md
 
 problem: despite all this work, we have not come close to overcome any of the hard obstacles and close a proof route.
 
@@ -666,3 +617,27 @@ questions:
 1. what mathematimatical tools are we or mathematics as a whole missing?
 2. what to research next in each of the four research programs
 3. do we need another research program to develop new mathematics that nobody has developed yet? if so, what would it be about and what would it try to answer and do?
+
+work rules:
+1. use the search tool for our lean corpus.
+2. do only read the documents i mentioned and lean code. do not waste time and token on reading other markdown files. 
+
+write your whole report in docs/reports/review-2010/fable.md
+
+## update obstacles
+previously we had created these two documents:
+- docs/reports/hard-obstacles-1810.md
+- docs/reports/hard-obstacles-summary-1810.md 
+
+the review tasks was:
+based on route ledger: docs/reports/rh-current-frontier-map.md and ledger of hard obstacles (walls) docs/reports/walls/walls-ledger.md create
+1. a complete report for each route and route candidate what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
+2. then create a summary document that combines all the information and:
+   2.1 lists all tasks / obstacles that we can solve and are "just work"
+   2.2 lists the open mathematical obstacles/research topics nobody has a solution to
+   2.3 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+
+
+this review is incorrect and outdated. redo it.
+
+write the new reports in folder docs/reports/review-1910/

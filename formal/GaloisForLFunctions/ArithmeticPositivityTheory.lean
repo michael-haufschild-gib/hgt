@@ -80,6 +80,7 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalCompleteForm
 import GaloisForLFunctions.«arithmetic-positivity-theory».DyadicDilationCorrelationInequality
 import GaloisForLFunctions.«arithmetic-positivity-theory».CollaredCriticalPrimeChannelUniformBound
 import GaloisForLFunctions.«arithmetic-positivity-theory».CollaredCriticalArchimedeanLogCoercivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».CollaredCriticalCompleteFormPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentDepthGapClusterAndPolarGraphBridge
 
@@ -93,7 +94,8 @@ sharp spectral range of the complete critical prime form, the rational dilation 
 sources, critical Mellin exclusion and logarithmic archimedean coercivity, divergence, uniform
 coercivity and growing-pattern positivity of the complete critical form, the dyadic dilation
 inequality, the `ℓ²`-uniform collared critical prime channel, the Lévy calculus of general
-sources and the positive definiteness of the collared Lévy–prime form on high dyadic blocks, the
+sources and the positive definiteness of the collared Lévy–prime and complete collared critical
+forms on high dyadic blocks, the
 sharp affine
 collar constant, Weil completeness of the factorial tent family, universal zero-side reflection
 defect identities, actual-zeta off-line detection by single-scale grid tent patterns, and the

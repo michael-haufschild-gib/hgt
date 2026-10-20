@@ -309,3 +309,53 @@ Rule from now on: run a corpus search against the Weil-form lanes before claimin
   Answers APT README §5 "All apertures … the odd-sector capacity ratio S(g)²/(2M_N(g)) as the support
   aperture grows": it tends to its critical value 1 (no uniform margin); extremal directions = plateau
   truncations of positive odd gauges (capacity defect = zero form J_M + V_μ → 0). Cross-field (APT). Std axioms.
+- **C22 · The pole-free Weil operator is the Doob source of every gauge; every positive profile
+  fails at infinity (README 3.5 "at infinity" and frontier 4 for general profiles)** —
+  `PoleFreeWeilOperatorAndProfileInfinityFailure`. Operator `𝒲M = Σ_nΛ(n)n^{−1/2}(M(·+log n)+M(·−log n))
+  − ∫_0^∞[2ν(u)M − ω(u)(M(·+u)+M(·−u))]du + (γ+log π)M`; harmonic identity = `𝒲Φ = cosh(x/2)`
+  (`poleFreeWeilOperator_riemannKernelReal`). EXACT for every profile with convergent prime sum and
+  archimedean integral: `𝓛_D(M/Φ) − Φcosh(x/2)(M/Φ) = −Φ·𝒲M` (`twoSidedGenerator_profileGauge_sub_potential`;
+  the potential is absorbed by the harmonic identity — C12/C16's source hypothesis is now explicit,
+  `g = −𝒲M`). Folding: `𝓛_N ω = 𝓛_D(ω∘|·|)` on `x ≥ 0` (`foldedGenerator_eq_twoSidedGenerator_abs`), so the
+  folded source is `−Φ𝒲(M∘|·|)`, all reflected points with + sign. In `𝒲(M∘|·|)` all prime terms are ≥ 0
+  and the only negative part (archimedean second difference) is LOCAL, ≤ 2C(e⁸+1)J e^{−8x}
+  (`integral_profileArchTerm_abs_le`). Main: every differentiable `M ≥ 0` on [0,∞) with `M(y₀) > 0`,
+  `|M|,|M'| ≤ Ce^{−8|y|}` is a strict folded subsolution on a half line
+  (`exists_infinity_window_profileGauge_foldedGenerator_lt_potential`; PNT supplies a prime power in every
+  window (y, e^δ y], `exists_vonMangoldt_pos_mem_window`); PNT-free: every prime p ≥ N forces failure at
+  `log p + y₀` (`profileGauge_foldedGenerator_lt_potential_at_prime_shift`); even positive profiles are strict
+  two-sided subsolutions on a half line (`exists_infinity_window_even_profileGauge_twoSidedGenerator_lt_potential`,
+  local strengthening of the trap "no even positive supersolution"). Insight: in test coordinates the
+  supersolution question is the sign of one operator, and a single reflected prime atom `Λ(p)p^{−1/2}M(y₀)`
+  (size `e^{−x/2}`) beats every local term (size `e^{−8x}`); the general-profile failure at infinity needs
+  no collar asymptotics and no span structure (C1/C14/C18 were special cases). Novelty: corpus had only
+  span (C1), convolution (C14) and origin (Θ-dominated) failures. Standard axioms.
+- **C23 · The Doob source at infinity is a pole moment (frontier 4: the exact statement for every
+  profile)** — `DoobSourcePoleMomentLawAtInfinity`. For every `M ∈ C¹`, `M(0) = 0`, `|M|,|M'| ≤ Ce^{−8|y|}`,
+  NO sign condition: folded law `(𝓛_Nω − Φcosh(x/2)ω)/(Φe^{x/2}) → −2∫_0^∞M cosh(r/2)`
+  (`tendsto_foldedSource_div`); for odd M two-sided law `(𝓛_Dω − Φcosh ω)/(Φe^{x/2}) → 2∫_0^∞M sinh(r/2)`
+  (`tendsto_twoSidedSource_div`; reproduces `ω_a`'s exact source and C18's convolution law). New PNT
+  piece: the DIRECT prime mass `e^{−x/2}Σ_{log n≤x}Λ(n)n^{−1/2}M(x−log n) → ∫_0^∞e^{−r/2}M`
+  (`tendsto_exp_neg_half_mul_directPrimeMass`; Abel summation on [1,e^x], substitution t = e^{x−s}, DCT with
+  `ψ(y) ≤ Ky` (`exists_psiSum_le_mul`)); with C17's reflected mass and the bounded archimedean term
+  (`abs_integral_profileArchTerm_le`) and vanishing forward terms, via C22's exact source `−Φ𝒲`.
+  Corollaries: ∫_0^∞Mcosh > 0 ⇒ strict folded subsolution on a half line; ∫_0^∞Mcosh < 0 ⇒ strict folded
+  SUPERsolution on a half line (`exists_infinity_window_potential_lt_foldedGenerator_of_coshMoment_neg`).
+  Insight: at infinity the arithmetic generator sees a profile ONLY through its moments at the pole
+  `e^{±r/2}`; two-sided reads the odd pole moment (sinh), folding reads the half-line cosh moment; the
+  folded supersolution inequality at infinity is exactly the sign of −∫_0^∞Mcosh — positive gauges can
+  never satisfy it, sign-changing ones with negative cosh moment always do (so the obstruction to
+  folded supersolutions is positivity + the cosh moment, not decay or regularity). Standard axioms.
+- **C24 · The folded source at the origin is the jump-measure moment; two-moment necessary
+  conditions for folded supersolutions** — `FoldedSourceOriginJumpMomentLaw`. For every `M ∈ C¹`,
+  `M(0) = 0`, `|M|,|M'| ≤ Ce^{−8|y|}`, no sign condition: `(𝓛_Nω − Φcosh(x/2)ω)(x)/Φ(x) → −2∫M dm =
+  −2[∫_0^∞ω(t)M(t)dt + Σ_nΛ(n)n^{−1/2}M(log n)]` as `x → 0⁺` (`tendsto_foldedSource_div_nhdsGT_zero`;
+  = −𝒲(M∘|·|)(0⁺), series DCT + archimedean DCT with the Lipschitz majorant). With C23: a folded
+  supersolution near the origin has `∫M dm ≤ 0` (`jumpMeasureMoment_nonpos_of_foldedSupersolution_near_zero`),
+  near infinity has `∫_0^∞M cosh ≤ 0` (`coshMoment_nonpos_of_foldedSupersolution_near_infinity`). For
+  nonnegative profiles both moments are positive (`jumpMeasureMoment_pos`, `coshMoment_pos`) ⇒ strict folded
+  subsolution on (0,δ) AND on [X,∞) (`exists_origin_and_infinity_windows_foldedGenerator_lt_potential`) —
+  README 3.5 in full generality: no Θ-domination, no ω(log 2) > 0 (the corpus origin theorem needed both).
+  Insight: the folded generator reads a profile through exactly two linear functionals — the jump measure
+  at the origin, the pole weight e^{±r/2} at infinity; the supersolution question at both ends is a sign
+  condition on these moments. Standard axioms.

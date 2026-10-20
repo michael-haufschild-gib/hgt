@@ -836,13 +836,12 @@ theorem criticalCollarMassLower_pos : 0 < criticalCollarMassLower := by
   have := factorialWindowLength_pos
   positivity
 
-/-- **Collared mass floor.** `∫ g_c² ≥ A_c ∑ b_n²`: the window `[2, 2 + L]` lies beyond the
-collar and carries the Riesz floor of the phases. -/
-theorem integral_criticalCollaredSource_sq_ge (S : Finset ℕ) (b : ℕ → ℝ) :
-    criticalCollarMassLower * ∑ n ∈ S, b n ^ 2 ≤ ∫ y, criticalCollaredSource S b y ^ 2 := by
+/-- **Collared energy in the dilation variable.**
+`∫ g_c² = ∫_{v>1} σ(v - 1)² ‖B_b(v)‖² / v² dv`. -/
+theorem integral_criticalCollaredSource_sq_eq (S : Finset ℕ) (b : ℕ → ℝ) :
+    ∫ y, criticalCollaredSource S b y ^ 2 = ∫ v in Ioi 1, Real.smoothTransition (v - 1) ^ 2 *
+      ‖factorialPhaseCombination S (fun n => (b n : ℂ)) v‖ ^ 2 / v ^ 2 := by
   set B := factorialPhaseCombination S (fun n => (b n : ℂ))
-  set L := factorialWindowLength
-  have hL := factorialWindowLength_pos
   set H : ℝ → ℝ := fun v => Real.smoothTransition (v - 1) ^ 2 * ‖B v‖ ^ 2
   have hBre (v : ℝ) : ‖B v‖ = |(B v).re| := by
     have h : ((B v).re : ℂ) = B v := factorialPhaseCombination_ofReal_re S b v
@@ -860,6 +859,16 @@ theorem integral_criticalCollaredSource_sq_ge (S : Finset ℕ) (b : ℕ → ℝ)
     · rw [indicator_of_notMem (show y ∉ Iic 0 from hy)]
       simp [criticalCollaredSource, criticalFactorialSource,
         indicator_of_notMem (show y ∉ Iic 0 from hy)]
+  rw [funext hpt, integral_indicator measurableSet_Iic, integral_Iic_zero_exp_mul_comp_exp_neg H]
+
+/-- **Collared mass floor.** `∫ g_c² ≥ A_c ∑ b_n²`: the window `[2, 2 + L]` lies beyond the
+collar and carries the Riesz floor of the phases. -/
+theorem integral_criticalCollaredSource_sq_ge (S : Finset ℕ) (b : ℕ → ℝ) :
+    criticalCollarMassLower * ∑ n ∈ S, b n ^ 2 ≤ ∫ y, criticalCollaredSource S b y ^ 2 := by
+  set B := factorialPhaseCombination S (fun n => (b n : ℂ))
+  set L := factorialWindowLength
+  have hL := factorialWindowLength_pos
+  set H : ℝ → ℝ := fun v => Real.smoothTransition (v - 1) ^ 2 * ‖B v‖ ^ 2
   have hcB : Continuous fun v => ‖B v‖ ^ 2 :=
     ((continuous_factorialPhaseCombination S _).norm).pow 2
   have hBb (v : ℝ) : ‖B v‖ ^ 2 ≤ (2 * ∑ n ∈ S, |b n|) ^ 2 := by
@@ -901,7 +910,7 @@ theorem integral_criticalCollaredSource_sq_ge (S : Finset ℕ) (b : ℕ → ℝ)
   have hsub : (∫ v in Ioc 2 (2 + L), H v / v ^ 2) ≤ ∫ v in Ioi 1, H v / v ^ 2 :=
     setIntegral_mono_set hHint (Eventually.of_forall fun v => by simp only [H]; positivity)
       (Eventually.of_forall (Ioc_subset_Ioi_self.trans (Ioi_subset_Ioi one_le_two)))
-  rw [funext hpt, integral_indicator measurableSet_Iic, integral_Iic_zero_exp_mul_comp_exp_neg H]
+  rw [integral_criticalCollaredSource_sq_eq]
   unfold criticalCollarMassLower
   calc L / (16 * Real.pi ^ 4) / (2 + L) ^ 2 * ∑ n ∈ S, b n ^ 2 =
         (L / (16 * Real.pi ^ 4) * ∑ n ∈ S, b n ^ 2) / (2 + L) ^ 2 := by ring

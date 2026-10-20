@@ -256,3 +256,19 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   README is closed for collared sources; the full critical source differs only by the endpoint
   layer (−log 2, 0], whose self-prime interaction vanishes (disjoint supports for r ≥ 2) and whose
   cross terms carry the Hilbert 1/f kernel. Standard axioms.
+- **C15 · Positive definiteness of the complete collared critical form on high dyadic blocks** —
+  `CollaredCriticalCompleteFormPositivity`. Gamma channel: ℓ² ceiling
+  `integral_Ioi_one_rpow_neg_two_mul_norm_sq_le` (∫_1^∞ v⁻²‖B_b‖² ≤ (π²/6)JΣ‖b‖², unit windows with
+  j⁻² weights) ⇒ `sourceAutocorrelation_criticalCollaredSource_zero_le`. Polar channels: readout
+  `criticalCollaredPolarReadout` = ∫ g_c e^{x/2} (`integral_criticalCollaredSource_mul_exp_half`),
+  endpoint `criticalCollaredPolarEndpoint` = improper ∫_1^∞ σ(v−1)B_b(v)/v
+  (`tendsto_integral_criticalCollarEndpointWeight_mul`), both ≤ const·Σ|b_n|/(n+1) by IBP against
+  the bounded primitive (`abs_criticalCollaredPolarReadout_le`, `abs_criticalCollaredPolarEndpoint_le`),
+  product ≤ 144‖ψ'‖₁‖ρ'‖₁Σb² via `sq_sum_abs_div_succ_le`. Complete energy
+  `criticalCollaredCompleteEnergy` = Lévy + Ω(0)ac_c(0) + 2R_cE_c − 2P_c;
+  `criticalCollaredCompleteEnergy_ge` (≥ (s_c(log M − c_c) − K)Σb² on every dyadic block) and
+  capstone `exists_criticalCollaredCompleteEnergy_pos`: ∃ M₀ ∀ M ≥ M₀ ∀ dyadic S at M ∀ b ≠ 0,
+  E_c > 0. New insight: every channel of the complete critical form except the archimedean one is
+  ℓ²-BOUNDED once the endpoint is collared, while the archimedean channel grows like log M on ℓ²;
+  the collared critical form is therefore positive definite on whole high dyadic blocks, the
+  ℓ²-uniform version of C11's growing-pattern theorem (which needed |S| ≲ log M). Standard axioms.

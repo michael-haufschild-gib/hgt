@@ -97,6 +97,60 @@ theorem tendsto_offCritical_zeroSeries {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
       exact mul_le_of_le_one_right (norm_nonneg _)
         (Real.exp_le_one_iff.mpr (mul_nonpos_of_nonpos_of_nonneg (by linarith) hτ))
 
+/-- The critical almost periodic series `Σ_{Re ρ = 1/2} m_ρ f̂(γ_ρ) e^{iγ_ρ τ}`. -/
+def criticalSeries (f : ℝ → ℝ) (τ : ℝ) : ℂ :=
+  ∑' ρ : criticalZeros, packetCoeff f ρ * cexp (((((ρ : 𝒵) : ℂ).im * τ : ℝ) : ℂ) * I)
+
+theorem norm_criticalSeries_le {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (τ : ℝ) : ‖criticalSeries f τ‖ ≤ ∑' ρ : criticalZeros, ‖packetCoeff f ρ‖ := by
+  have ha : Summable fun ρ : criticalZeros => ‖packetCoeff f ρ‖ :=
+    (summable_norm_packetCoeff hf hfc).subtype _
+  have hn : ∀ ρ : criticalZeros,
+      ‖packetCoeff f ρ * cexp (((((ρ : 𝒵) : ℂ).im * τ : ℝ) : ℂ) * I)‖ = ‖packetCoeff f ρ‖ :=
+    fun ρ => by rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
+  exact (norm_tsum_le_tsum_norm (ha.congr fun ρ => (hn ρ).symm)).trans
+    (le_of_eq (tsum_congr hn))
+
+theorem continuous_criticalSeries {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) : Continuous (criticalSeries f) :=
+  continuous_tsum (fun ρ => by fun_prop) ((summable_norm_packetCoeff hf hfc).subtype _)
+    fun ρ τ => by rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]; rfl
+
+/-- **Critical decomposition of a blind packet.** Beyond the support, the packet of a source blind
+to the zeros right of the line is a continuous term tending to `0` minus the critical series. -/
+theorem exists_packet_eq_sub_criticalSeries {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {w : ℝ} (hw0 : 0 ≤ w) (hw : ∀ v : ℝ, w < |v| → f v = 0)
+    (hblind : ∀ ρ : 𝒵, 1 / 2 < (ρ : ℂ).re →
+      Zeta23.paperFT (fun u => (f u : ℂ)) (Zeta23.gammaOf ρ) = 0) :
+    ∃ B : ℝ → ℂ, Continuous B ∧ Tendsto B atTop (𝓝 0) ∧
+      ∀ τ, w < τ → (stationaryPacket f τ : ℂ) = B τ - criticalSeries f τ := by
+  have hc := summable_norm_packetCoeff hf hfc
+  -- the zero series is the critical part plus a decaying part
+  have hsplit : ∀ τ : ℝ, zeroSeries (packetCoeff f) τ = criticalSeries f τ +
+      ∑' ρ : ↥(criticalZerosᶜ : Set 𝒵), packetCoeff f ρ * cexp (zeroShift (ρ : 𝒵) * τ) :=
+    fun τ => by
+    have hS : Summable fun ρ : 𝒵 => packetCoeff f ρ * cexp (zeroShift ρ * τ) :=
+      Summable.of_norm_bounded (hc.mul_right (Real.exp (|τ| / 2))) fun ρ => by
+        rw [norm_mul]
+        exact mul_le_mul_of_nonneg_left (norm_exp_zeroShift_mul_le ρ τ) (norm_nonneg _)
+    rw [zeroSeries, ← Summable.tsum_add_tsum_compl (s := criticalZeros) (hS.subtype _)
+      (hS.subtype _)]
+    congr 1
+    refine tsum_congr fun ρ => ?_
+    rw [zeroShift_of_mem_critical ρ.2]
+    push_cast
+    ring_nf
+  refine ⟨fun τ => packetArchTail f τ - (zeroSeries (packetCoeff f) τ - criticalSeries f τ),
+    (continuous_packetArchTail hf hfc hw).sub
+      ((continuous_zeroSeries hc).sub (continuous_criticalSeries hf hfc)), ?_, fun τ hτ => ?_⟩
+  · have h := (tendsto_packetArchTail f).sub (tendsto_offCritical_zeroSeries hf hfc hblind)
+    rw [sub_zero] at h
+    refine h.congr fun τ => ?_
+    rw [hsplit τ]
+    ring
+  · rw [stationaryPacket_eq hf hfc hw0 hw hτ]
+    ring
+
 /-- **Unconditional packet Parseval law.** For a real compact `C²` source blind to the zeros right
 of the line, `(1/L)∫_w^L P_f² → Σ_{Re ρ = 1/2} m_ρ²|f̂(γ_ρ)|²`. -/
 theorem tendsto_mean_sq_stationaryPacket_of_blind {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
@@ -110,44 +164,10 @@ theorem tendsto_mean_sq_stationaryPacket_of_blind {f : ℝ → ℝ} (hf : ContDi
   set a : criticalZeros → ℂ := fun ρ => packetCoeff f ρ
   have ha : Summable fun ρ => ‖a ρ‖ := hc.subtype _
   set S₁ := ∑' ρ, ‖a ρ‖
-  -- the critical almost periodic part
-  set Gc : ℝ → ℂ := fun τ => ∑' ρ, a ρ * cexp (((((ρ : 𝒵) : ℂ).im * τ : ℝ) : ℂ) * I)
-  have hnormGc : ∀ τ (ρ : criticalZeros),
-      ‖a ρ * cexp (((((ρ : 𝒵) : ℂ).im * τ : ℝ) : ℂ) * I)‖ = ‖a ρ‖ :=
-    fun τ ρ => by rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
-  have hGcb : ∀ τ, ‖Gc τ‖ ≤ S₁ := fun τ =>
-    (norm_tsum_le_tsum_norm (ha.congr fun ρ => (hnormGc τ ρ).symm)).trans
-      (le_of_eq (tsum_congr fun ρ => hnormGc τ ρ))
-  have hGcc : Continuous Gc := continuous_tsum (fun ρ => by fun_prop) ha fun ρ τ => by
-    rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
-  -- the zero series is the critical part plus a decaying part
-  have hsplit : ∀ τ : ℝ, zeroSeries (packetCoeff f) τ = Gc τ +
-      ∑' ρ : ↥(criticalZerosᶜ : Set 𝒵), packetCoeff f ρ * cexp (zeroShift (ρ : 𝒵) * τ) := fun τ => by
-    have hS : Summable fun ρ : 𝒵 => packetCoeff f ρ * cexp (zeroShift ρ * τ) :=
-      Summable.of_norm_bounded (hc.mul_right (Real.exp (|τ| / 2))) fun ρ => by
-        rw [norm_mul]
-        exact mul_le_mul_of_nonneg_left (norm_exp_zeroShift_mul_le ρ τ) (norm_nonneg _)
-    rw [zeroSeries, ← Summable.tsum_add_tsum_compl (s := criticalZeros) (hS.subtype _)
-      (hS.subtype _)]
-    congr 1
-    refine tsum_congr fun ρ => ?_
-    rw [zeroShift_of_mem_critical ρ.2]
-    simp only [a]
-    push_cast
-    ring
-  set B : ℝ → ℂ := fun τ => packetArchTail f τ - (zeroSeries (packetCoeff f) τ - Gc τ)
-  have hBc : Continuous B :=
-    (continuous_packetArchTail hf hfc hw).sub ((continuous_zeroSeries hc).sub hGcc)
-  have hB0 : Tendsto B atTop (𝓝 0) := by
-    have h := (tendsto_packetArchTail f).sub (tendsto_offCritical_zeroSeries hf hfc hblind)
-    rw [sub_zero] at h
-    refine h.congr fun τ => ?_
-    simp only [B, hsplit τ]
-    ring
-  have hEF : ∀ τ, w < τ → (stationaryPacket f τ : ℂ) = B τ - Gc τ := fun τ hτ => by
-    rw [stationaryPacket_eq hf hfc hw0 hw hτ]
-    simp only [B]
-    ring
+  set Gc : ℝ → ℂ := criticalSeries f
+  have hGcb : ∀ τ, ‖Gc τ‖ ≤ S₁ := norm_criticalSeries_le hf hfc
+  have hGcc : Continuous Gc := continuous_criticalSeries hf hfc
+  obtain ⟨B, hBc, hB0, hEF⟩ := exists_packet_eq_sub_criticalSeries hf hfc hw0 hw hblind
   have hsq : ∀ τ, w < τ → stationaryPacket f τ ^ 2 = ‖B τ - Gc τ‖ ^ 2 := fun τ hτ => by
     rw [← hEF τ hτ, Complex.norm_real, Real.norm_eq_abs, sq_abs]
   -- the decaying error
@@ -174,7 +194,8 @@ theorem tendsto_mean_sq_stationaryPacket_of_blind {f : ℝ → ℝ} (hf : ContDi
     have hr : ((ρ : 𝒵) : ℂ).re = ((ρ' : 𝒵) : ℂ).re := by
       rw [show ((ρ : 𝒵) : ℂ).re = 1 / 2 from ρ.2, show ((ρ' : 𝒵) : ℂ).re = 1 / 2 from ρ'.2]
     exact Subtype.ext (Subtype.ext (Complex.ext hr h))
-  have hmain := tendsto_mean_normSq_tsum ha hinj
+  have hmain : Tendsto (fun L : ℝ => (∫ τ in (0 : ℝ)..L, ‖Gc τ‖ ^ 2) / L) atTop
+      (𝓝 (∑' ρ, ‖a ρ‖ ^ 2)) := tendsto_mean_normSq_tsum ha hinj
   have hcesaro := tendsto_mean_of_tendsto_zero hDc hD0 w
   have hconst : Tendsto (fun L : ℝ => (∫ τ in (0 : ℝ)..w, ‖Gc τ‖ ^ 2) / L) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_id
@@ -197,7 +218,6 @@ theorem tendsto_mean_sq_stationaryPacket_of_blind {f : ℝ → ℝ} (hf : ContDi
   rw [hcongr, intervalIntegral.integral_add (hAI w L) (hDc.intervalIntegrable w L),
     ← intervalIntegral.integral_interval_sub_left (hAI 0 L) (hAI 0 w)]
   field_simp
-  ring
 
 /-- Reflection across the line conjugates the ordinate: `conj γ_ρ = γ_{1 − ρ̄}`. -/
 theorem conj_gammaOf (z : ℂ) : (starRingEnd ℂ) (Zeta23.gammaOf z) =

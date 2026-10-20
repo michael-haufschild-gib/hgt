@@ -546,8 +546,8 @@ theorem integral_mul_realHarmonicLayer_mul_dilate {φ : ℝ → ℝ} (hφ : Inte
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [integral_const_mul, integral_mul_cos_mul_cos hφ]
 
-
-private theorem summable_inv_mul_sqrt : Summable fun k : ℕ => 1 / ((k : ℝ) * Real.sqrt k) := by
+/-- `∑_k 1/(k√k)` converges. -/
+theorem summable_inv_mul_sqrt : Summable fun k : ℕ => 1 / ((k : ℝ) * Real.sqrt k) := by
   refine (Real.summable_nat_rpow_inv.mpr (by norm_num : (1 : ℝ) < 3 / 2)).congr fun k => ?_
   rcases Nat.eq_zero_or_pos k with rfl | hk
   · simp
@@ -561,7 +561,10 @@ def dyadicDilationConstant (A B : ℝ) : ℝ :=
       ((∑' k : ℕ, 1 / ((k : ℝ) * Real.sqrt k)) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2) +
     68 * B * ((∑' k : ℕ, 1 / (k : ℝ) ^ 2) * ∑' l : ℕ, 1 / (l : ℝ) ^ 2)
 
-private theorem weight_mul_resonance_le {A B : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) {k l r : ℕ} (hk : 1 ≤ k)
+/-- **Resonance trade.** The harmonic weight `1/(k² l²)` times the `(k, lr)` kernel bound is at
+most `r^{-1/2}` times a summable majorant: near resonance `1/k^{1/2}` is traded for `√(lr) ≥ √r`,
+away from it the kernel already carries `1/(lr)²`. -/
+theorem weight_mul_resonance_le {A B : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) {k l r : ℕ} (hk : 1 ≤ k)
     (hl : 1 ≤ l) (hr : 1 ≤ r) :
     1 / (k : ℝ) ^ 2 * (1 / (l : ℝ) ^ 2) *
         (2 * (dyadicResonanceBound A B k ((l * r : ℕ) : ℝ) + 2 * B / ((l * r : ℕ) : ℝ) ^ 2)) ≤
@@ -624,22 +627,19 @@ private theorem weight_mul_resonance_le {A B : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B
       _ = 1 / Real.sqrt r * (68 * B * (1 / (k : ℝ) ^ 2 * (1 / (l : ℝ) ^ 2))) := by ring
       _ ≤ _ := by gcongr; linarith
 
-/-- **Dyadic dilation inequality.** Let `φ` be integrable on `(1, ∞)` with cosine transform
-bounded by `A` and by `B/f²`. For every finite family on a dyadic scale block and every dilation
-`r ≥ 1`, `|∫_{v>1} φ(v) B_b(v) B_b(rv) dv| ≤ (4/π⁴) K(A,B)/√r · ∑ b_n²`: resonances `k ≈ lr`
-are confined by the block and paid by the harmonic weights, all other cross-scale terms decay
-like `1/f²`. -/
-theorem abs_integral_weight_realPhaseCombination_dilate_le {φ : ℝ → ℝ} (hφ : IntegrableOn φ (Ioi 1))
-    {A B : ℝ} (hA : ∀ f, |weightCosineTransform φ f| ≤ A)
-    (hB : ∀ f, f ≠ 0 → |weightCosineTransform φ f| ≤ B / f ^ 2) (hB0 : 0 ≤ B)
-    {S : Finset ℕ} {M : ℕ} (hM : 1 ≤ M) (hS : DyadicScaleBlock S M) (b : ℕ → ℝ) {r : ℕ} (hr : 1 ≤ r) :
+/-- **Harmonic reduction of a dilation correlation.** If the `(k, l)` harmonic bilinear form of
+the cross-scale kernel of `F_φ` at `(k, lr)`, weighted by `1/(k² l²)`, is at most `μ(k, l)` with
+`μ` summable, then `|∫_{v>1} φ(v) B_b(v) B_b(rv) dv| ≤ (4/π⁴) ∑_{k,l} μ(k, l)`. -/
+theorem abs_integral_weight_realPhaseCombination_dilate_le_of_bilinear {φ : ℝ → ℝ}
+    (hφ : IntegrableOn φ (Ioi 1)) (S : Finset ℕ) (b : ℕ → ℝ) (r : ℕ) {μ : ℕ × ℕ → ℝ}
+    (hμ : Summable μ) (hμ0 : ∀ p, 0 ≤ μ p)
+    (hbil : ∀ p : ℕ × ℕ, 1 ≤ p.1 → 1 ≤ p.2 → 1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2) *
+      |∑ n ∈ S, ∑ n' ∈ S, b n * b n' *
+        dyadicCrossKernel (weightCosineTransform φ) p.1 ((p.2 * r : ℕ) : ℝ) n n'| ≤ μ p) :
     |∫ v in Ioi 1, φ v * (realPhaseCombination S b v * realPhaseCombination S b (r * v))| ≤
-      4 / Real.pi ^ 4 * (dyadicDilationConstant A B / Real.sqrt r) * ∑ n ∈ S, b n ^ 2 := by
-  set E := ∑ n ∈ S, b n ^ 2
+      4 / Real.pi ^ 4 * ∑' p, μ p := by
   set B1 := ∑ n ∈ S, |b n|
-  have hE : 0 ≤ E := Finset.sum_nonneg fun n _ => sq_nonneg _
   have hB1 : 0 ≤ B1 := Finset.sum_nonneg fun n _ => abs_nonneg _
-  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA 0)
   have hpi4 : 0 < 4 / Real.pi ^ 4 := by positivity
   set w := dyadicHarmonicWeight
   set h := realHarmonicLayer S b
@@ -706,6 +706,49 @@ theorem abs_integral_weight_realPhaseCombination_dilate_le {φ : ℝ → ℝ} (h
       ∑' p, ∫ v in Ioi 1, f p v := by
     rw [setIntegral_congr_fun measurableSet_Ioi fun v _ => hpt v]
     exact (integral_tsum_of_summable_integral_norm hint hsumm).symm
+  have hbound (p : ℕ × ℕ) : |∫ v in Ioi 1, f p v| ≤ 4 / Real.pi ^ 4 * μ p := by
+    have hμp := hμ0 p
+    rcases Nat.eq_zero_or_pos p.1 with hk | hk
+    · simp only [f, w, hk, dyadicHarmonicWeight_zero, zero_mul, mul_zero, integral_zero, abs_zero]
+      positivity
+    rcases Nat.eq_zero_or_pos p.2 with hl | hl
+    · simp only [f, w, hl, dyadicHarmonicWeight_zero, zero_mul, mul_zero, integral_zero, abs_zero]
+      positivity
+    simp only [f]
+    rw [integral_const_mul, integral_mul_realHarmonicLayer_mul_dilate hφ, abs_mul, abs_mul,
+      abs_of_pos hpi4, abs_mul]
+    have hwk := abs_dyadicHarmonicWeight_le p.1
+    have hwl := abs_dyadicHarmonicWeight_le p.2
+    have hb := hbil p hk hl
+    calc 4 / Real.pi ^ 4 * (|w p.1| * |w p.2|) *
+          |∑ n ∈ S, ∑ n' ∈ S, b n * b n' * dyadicCrossKernel (weightCosineTransform φ) p.1
+            ((p.2 * r : ℕ) : ℝ) n n'|
+        ≤ 4 / Real.pi ^ 4 * (1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2)) *
+          |∑ n ∈ S, ∑ n' ∈ S, b n * b n' * dyadicCrossKernel (weightCosineTransform φ) p.1
+            ((p.2 * r : ℕ) : ℝ) n n'| := by gcongr
+      _ ≤ 4 / Real.pi ^ 4 * μ p := by rw [mul_assoc]; gcongr
+  have hgs : Summable fun p => 4 / Real.pi ^ 4 * μ p := hμ.mul_left _
+  have habs : Summable fun p => ‖∫ v in Ioi 1, f p v‖ :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun p => by rw [Real.norm_eq_abs]; exact hbound p) hgs
+  rw [hexch, ← Real.norm_eq_abs]
+  refine (norm_tsum_le_tsum_norm habs).trans ?_
+  refine (habs.tsum_le_tsum (fun p => by rw [Real.norm_eq_abs]; exact hbound p) hgs).trans (le_of_eq ?_)
+  rw [tsum_mul_left]
+
+/-- **Dyadic dilation inequality.** Let `φ` be integrable on `(1, ∞)` with cosine transform
+bounded by `A` and by `B/f²`. For every finite family on a dyadic scale block and every dilation
+`r ≥ 1`, `|∫_{v>1} φ(v) B_b(v) B_b(rv) dv| ≤ (4/π⁴) K(A,B)/√r · ∑ b_n²`: resonances `k ≈ lr`
+are confined by the block and paid by the harmonic weights, all other cross-scale terms decay
+like `1/f²`. -/
+theorem abs_integral_weight_realPhaseCombination_dilate_le {φ : ℝ → ℝ} (hφ : IntegrableOn φ (Ioi 1))
+    {A B : ℝ} (hA : ∀ f, |weightCosineTransform φ f| ≤ A)
+    (hB : ∀ f, f ≠ 0 → |weightCosineTransform φ f| ≤ B / f ^ 2) (hB0 : 0 ≤ B)
+    {S : Finset ℕ} {M : ℕ} (hM : 1 ≤ M) (hS : DyadicScaleBlock S M) (b : ℕ → ℝ) {r : ℕ} (hr : 1 ≤ r) :
+    |∫ v in Ioi 1, φ v * (realPhaseCombination S b v * realPhaseCombination S b (r * v))| ≤
+      4 / Real.pi ^ 4 * (dyadicDilationConstant A B / Real.sqrt r) * ∑ n ∈ S, b n ^ 2 := by
+  set E := ∑ n ∈ S, b n ^ 2
+  have hE : 0 ≤ E := Finset.sum_nonneg fun n _ => sq_nonneg _
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA 0)
   set m : ℕ × ℕ → ℝ := fun p =>
     4 * (A + (80 * (Real.pi ^ 2 / 3) + 2) * B) * (1 / ((p.1 : ℝ) * Real.sqrt p.1) * (1 / (p.2 : ℝ) ^ 2)) +
       68 * B * (1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2))
@@ -723,41 +766,26 @@ theorem abs_integral_weight_realPhaseCombination_dilate_le {φ : ℝ → ℝ} (h
       ((hz2.mul_of_nonneg hz2 (fun _ => by positivity) (fun _ => by positivity)).mul_left _),
       tsum_mul_left, tsum_mul_left,
       tsum_mul_tsum_of_summable_norm hn1 hn2, tsum_mul_tsum_of_summable_norm hn2 hn2]
-  have hbound (p : ℕ × ℕ) : |∫ v in Ioi 1, f p v| ≤ 4 / Real.pi ^ 4 * (1 / Real.sqrt r) * E * m p := by
-    have hmp : 0 ≤ m p := by simp only [m]; positivity
-    rcases Nat.eq_zero_or_pos p.1 with hk | hk
-    · simp only [f, w, hk, dyadicHarmonicWeight_zero, zero_mul, mul_zero, integral_zero, abs_zero]
-      positivity
-    rcases Nat.eq_zero_or_pos p.2 with hl | hl
-    · simp only [f, w, hl, dyadicHarmonicWeight_zero, zero_mul, mul_zero, integral_zero, abs_zero]
-      positivity
-    have hr' : (1 : ℝ) ≤ ((p.2 * r : ℕ) : ℝ) := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (by positivity)
-    have hk1 : (1 : ℝ) ≤ (p.1 : ℝ) := by exact_mod_cast hk
-    simp only [f]
-    rw [integral_const_mul, integral_mul_realHarmonicLayer_mul_dilate hφ, abs_mul, abs_mul, abs_of_pos hpi4]
-    have hker := abs_bilinear_dyadicCrossKernel_le hA hB hB0 hM hS hk1 hr' b
-    have hwk := abs_dyadicHarmonicWeight_le p.1
-    have hwl := abs_dyadicHarmonicWeight_le p.2
-    have hmaj := weight_mul_resonance_le hA0 hB0 hk hl hr
-    have hR0 : 0 ≤ 2 * (dyadicResonanceBound A B p.1 ((p.2 * r : ℕ) : ℝ) +
-        2 * B / ((p.2 * r : ℕ) : ℝ) ^ 2) := by
-      unfold dyadicResonanceBound; split_ifs <;> positivity
-    calc 4 / Real.pi ^ 4 * |w p.1 * w p.2| *
-          |∑ n ∈ S, ∑ n' ∈ S, b n * b n' * dyadicCrossKernel (weightCosineTransform φ) p.1 ((p.2 * r : ℕ) : ℝ) n n'|
-        ≤ 4 / Real.pi ^ 4 * (1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2)) *
-            (2 * (dyadicResonanceBound A B p.1 ((p.2 * r : ℕ) : ℝ) + 2 * B / ((p.2 * r : ℕ) : ℝ) ^ 2) * E) := by
-          rw [abs_mul]
-          gcongr
-      _ = 4 / Real.pi ^ 4 * E * (1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2) *
-            (2 * (dyadicResonanceBound A B p.1 ((p.2 * r : ℕ) : ℝ) + 2 * B / ((p.2 * r : ℕ) : ℝ) ^ 2))) := by ring
-      _ ≤ 4 / Real.pi ^ 4 * E * (1 / Real.sqrt r * m p) := by gcongr
-      _ = _ := by ring
-  have hgs : Summable fun p => 4 / Real.pi ^ 4 * (1 / Real.sqrt r) * E * m p := hm.mul_left _
-  have habs : Summable fun p => ‖∫ v in Ioi 1, f p v‖ :=
-    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun p => by rw [Real.norm_eq_abs]; exact hbound p) hgs
-  rw [hexch, ← Real.norm_eq_abs]
-  refine (norm_tsum_le_tsum_norm habs).trans ?_
-  refine (habs.tsum_le_tsum (fun p => by rw [Real.norm_eq_abs]; exact hbound p) hgs).trans (le_of_eq ?_)
+  have hm0 (p : ℕ × ℕ) : 0 ≤ m p := by simp only [m]; positivity
+  have h := abs_integral_weight_realPhaseCombination_dilate_le_of_bilinear hφ S b r
+    (μ := fun p => 1 / Real.sqrt r * E * m p) ((hm.mul_left (1 / Real.sqrt r * E)))
+    (fun p => by have := hm0 p; positivity) fun p hk hl => by
+      have hr' : (1 : ℝ) ≤ ((p.2 * r : ℕ) : ℝ) := by
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr (by positivity)
+      have hk1 : (1 : ℝ) ≤ (p.1 : ℝ) := by exact_mod_cast hk
+      have hker := abs_bilinear_dyadicCrossKernel_le hA hB hB0 hM hS hk1 hr' b
+      have hmaj := weight_mul_resonance_le hA0 hB0 hk hl hr
+      calc 1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2) *
+            |∑ n ∈ S, ∑ n' ∈ S, b n * b n' * dyadicCrossKernel (weightCosineTransform φ) p.1
+              ((p.2 * r : ℕ) : ℝ) n n'|
+          ≤ 1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2) *
+            (2 * (dyadicResonanceBound A B p.1 ((p.2 * r : ℕ) : ℝ) +
+              2 * B / ((p.2 * r : ℕ) : ℝ) ^ 2) * E) := by gcongr
+        _ = E * (1 / (p.1 : ℝ) ^ 2 * (1 / (p.2 : ℝ) ^ 2) * (2 * (dyadicResonanceBound A B p.1
+              ((p.2 * r : ℕ) : ℝ) + 2 * B / ((p.2 * r : ℕ) : ℝ) ^ 2))) := by ring
+        _ ≤ E * (1 / Real.sqrt r * m p) := by gcongr
+        _ = _ := by ring
+  refine h.trans (le_of_eq ?_)
   rw [tsum_mul_left, hmsum]
   ring
 

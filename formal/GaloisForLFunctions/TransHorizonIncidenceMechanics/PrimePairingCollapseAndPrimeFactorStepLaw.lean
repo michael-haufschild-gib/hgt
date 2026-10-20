@@ -10,7 +10,9 @@ inside the horizon cancels:
 `s_X(k; μ) = Σ_{d | k, p ∤ d, X/p < d ≤ X} μ(d)`.
 
 The response at a multiple of `p` lives on the top `p`-adic window `(X/p, X]` of the `p`-free
-divisors; for even `k` it is the sum of `μ` over the odd divisors in the top octave.
+divisors; for even `k` it is the sum of `μ` over the odd divisors in the top octave. (This is the
+prime-chain renormalization `s_X(pb) - s_X(b) = s_{X/p}(μ(p·), b)` read through squarefree
+saturation.)
 
 At a squarefree horizon `m = pa` the band step therefore splits into a universal part and a window
 correction:
@@ -60,17 +62,17 @@ theorem sieveSeq_moebius_prime_pairing {p X k : ℕ} (hp : p.Prime) (hpk : p ∣
       ∑ d' ∈ (Icc 1 (X / p)).filter (fun d' => p * d' ∣ k), moebiusReal (p * d') := by
     refine sum_nbij' (· / p) (p * ·) ?_ ?_ ?_ ?_ ?_
     · intro d hd
-      simp only [coe_filter, mem_Icc, Set.mem_setOf_eq] at hd ⊢
+      simp only [mem_filter, mem_Icc] at hd ⊢
       obtain ⟨⟨h1, h2⟩, hdk, hpd⟩ := hd
       rw [Nat.mul_div_cancel' hpd]
       exact ⟨⟨Nat.div_pos (Nat.le_of_dvd (by omega) hpd) hp0, Nat.div_le_div_right h2⟩, hdk⟩
     · intro d hd
-      simp only [coe_filter, mem_Icc, Set.mem_setOf_eq] at hd ⊢
+      simp only [mem_filter, mem_Icc] at hd ⊢
       obtain ⟨⟨h1, h2⟩, hdk⟩ := hd
       exact ⟨⟨Nat.mul_pos hp0 (by omega), by
         have := (Nat.le_div_iff_mul_le hp0).mp h2; linarith [mul_comm d p]⟩, hdk, dvd_mul_right p d⟩
     · intro d hd
-      simp only [coe_filter, Set.mem_setOf_eq] at hd
+      simp only [mem_filter] at hd
       exact Nat.mul_div_cancel' hd.2.2
     · intro d _
       exact Nat.mul_div_cancel_left d hp0
@@ -102,11 +104,7 @@ theorem sieveSeq_moebius_prime_pairing {p X k : ℕ} (hp : p.Prime) (hpk : p ∣
   have h2 : (Icc 1 X).filter (fun d => (d ∣ k ∧ ¬ p ∣ d) ∧ ¬ d ≤ X / p) =
       (Icc 1 X).filter (fun d => d ∣ k ∧ ¬ p ∣ d ∧ X / p < d) := by
     ext d; simp only [mem_filter, not_le]; tauto
-  have h3 : (Icc 1 X).filter (fun d => d ∣ k ∧ ¬ p ∣ d) =
-      (Icc 1 X).filter (fun d => d ∣ k ∧ ¬ p ∣ d) := rfl
   rw [h1, h2]
-  have h4 : (Icc 1 X).filter (fun d => d ∣ k ∧ p ∣ d) =
-      (Icc 1 X).filter (fun d => d ∣ k ∧ p ∣ d) := rfl
   ring
 
 /-- **Even collapse.** For even `k`, `s_X(k; μ)` is the sum of `μ` over the odd divisors of `k`
@@ -130,9 +128,11 @@ private theorem sieveSeq_prime_mul_horizon {p a j : ℕ} (hp : p.Prime) (ha : 1 
   have hp2 := hp.two_le
   rw [sieveSeq_moebius_prime_pairing hp (by rw [mul_assoc]; exact dvd_mul_right p _)]
   have hq : (p * a - 1) / p = a - 1 := by
+    obtain ⟨b, rfl⟩ : ∃ b, a = b + 1 := ⟨a - 1, by omega⟩
+    rw [Nat.add_sub_cancel]
     apply Nat.div_eq_of_lt_le
-    · rw [Nat.sub_mul, one_mul, mul_comm]; omega
-    · rw [Nat.sub_add_cancel ha, mul_comm]; omega
+    · rw [mul_add, mul_one, mul_comm b p]; omega
+    · rw [mul_add, mul_one, mul_comm (b + 1) p, mul_add, mul_one]; omega
   rw [hq]
   refine sum_congr ?_ fun _ _ => rfl
   ext d
@@ -213,7 +213,11 @@ theorem moebiusBandStep_two_mul_prime {q B : ℕ} (hq : q.Prime) (hq2 : q ≠ 2)
     obtain ⟨⟨h1, h2⟩, h3⟩ := hd
     have hqd : ¬ q ∣ d := fun h => by
       obtain ⟨e, rfl⟩ := h
-      rcases e with _ | _ | e <;> [omega; omega; nlinarith]
+      rcases e with _ | _ | e
+      · omega
+      · omega
+      · have : 2 * q ≤ q * (e + 1 + 1) := by nlinarith
+        omega
     have hg : Nat.gcd d q = 1 := Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd hq).mpr hqd)
     have hd2 : q + 2 ≤ d := by
       rcases Nat.even_or_odd q with ⟨r, hr⟩ | ⟨r, hr⟩

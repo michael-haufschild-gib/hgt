@@ -158,7 +158,10 @@ them.
    minor fails in every window of length `4π/g` once `G` and the weight of the top level outside a
    finite part `F` are below `|q_{t₀}|/8` and `|q_{t₀}| e^{Dv}` exceeds `4(2M + 3Σ|q_t|)`. Here `g`
    is the height separation of `F`: by Ingham's inequality, the top phase sum over `F` exceeds
-   `|q_{t₀}|/2` somewhere in every such window. With the polar-free bump
+   `|q_{t₀}|/2` somewhere in every such window. Visibility is local. Any level, deepest or not, is
+   seen in such a window once its shallower zeros have relaxed, provided the depth-excess transform
+   `E(v) = Σ_{δ_t > D} |q_t| e^{(δ_t − D)v}` of the deeper zeros within reach of the bump has not yet
+   taken over. With the polar-free bump
    the same tests lie in the Hodge class. Without a gap, and with infinitely many off-line zeros,
    every off-line zero is still seen at some aperture. Invisibility would keep the off-line sum
    `Σ_t q_t e^{(δ_t + iγ_t)v}` bounded for `v ≥ 0`. Its Laplace transform is then holomorphic on
@@ -233,7 +236,9 @@ them.
     `v ≥ V` already decides. On `[0, V]` the deficit is bounded a priori by the upper rate, so the
     unbounded negativity forced by an off-line zero lies beyond `V`. RH is thus a conjunction of
     single-window statements over `X ≥ X₀`, for any `X₀`: no prime below `X₀/2` enters, and prime
-    information about a bounded range cannot decide the line. The same holds for every primitive
+    information about a bounded range cannot decide the line. With the polar-free bump the pole
+    terms vanish, and each statement reads: the window prime sum against `k` is at most the
+    archimedean term `(1/2π) ∫ h_k Γ`. The same holds for every primitive
     Dirichlet `L(s, χ)`, with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms. At lag `v = log X`
     the least value of `Re P` over these tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not
     `O(X^σ)` for `σ < Θ − ½`, in windows beyond every `X₀`: RH is the absence of any power growth,
@@ -287,8 +292,12 @@ them.
    gap below the deepest level (mechanism 9). Every off-line zero is visible at some aperture,
    whatever the other off-line zeros do. When the top depth is attained, the aperture is, up to
    one Ingham window `4π/g`, the larger of half the relaxation lag of the depth-deficit transform
-   and `(1/2D) log M`, whether or not depths accumulate at the top. Open: the size of the aperture
-   when the top depth is not attained, at `ζ`-density and with irregularly spaced ordinates.
+   and `(1/2D) log M`, whether or not depths accumulate at the top. When the top depth is not
+   attained, a level is still seen in any window where the deficit of the shallower zeros and the
+   excess of the deeper ones are both small. Open: whether such a window always exists at a
+   controlled lag, at `ζ`-density and with irregularly spaced ordinates. Equivalently: how fast
+   the excess transform at the height of a zero can grow compared with the relaxation of its
+   deficit.
 3. **Sharper constants.** Weil positivity of `ζ` holds unconditionally on every test of aperture
    `a ≤ 1/100`, with `Re W ≥ ‖f‖²/25`. Push this towards Yoshida's aperture. The archimedean
    horizon is `exp(C_ε + (4 + ε)√X)`, so the localized forms at height `T` are positive for

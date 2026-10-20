@@ -53,6 +53,11 @@
 | C28 | CyclotomicLogarithmFormulaForThePronicGram | Σ_M z^M/(M(M+1)) = 1 + (1−z)log(1−z)/z on the closed disk (z ≠ 0,1; continuity from inside); R_q(M) = Σ_ζ ζ/(ζ−1)(ζ^M−1), Σ_ζ ζ/(ζ−1) = φ(q)/2, mean-centered primitive = Σ_ζ a_ζ ζ^M; G^{mc}(p,q) = φ(p)φ(q)/4 + Σ_{ζ,ξ} a_ζ a_ξ Q(ζξ) — the infinite pronic Gram is a finite sum of cyclotomic logarithms | done |
 | C29 | CotangentSawtoothFormOfThePronicGram | a_ζa_ξQ(ζξ) = (1/(1−ζ)+1/(1−ξ)−1)log(1−ζξ); Re 1/(1−ζ) = 1/2 kills log-moduli; Im 1/(1−e(x)) = cot(πx)/2, arg(1−e(y)) = π((y)); G^{mc}(p,q) = φ(p)φ(q)/4 − (π/2)Σ_{(a,p)=1,(b,q)=1}(cot πa/p + cot πb/q)((a/p+b/q)) for all p,q ≥ 2 — elementary Dedekind–Vasyunin cotangent–sawtooth sum | done |
 | C30 | VasyuninCotangentSumsInThePrimePronicGram | Hecke distribution relation Σ_{b<q}((y+b/q)) = ((qy)) (periodicity + one period); V(h,k) = Σ_{a<k} cot(πa/k)((ha/k)); primes: G^{mc}(p,q) = (p−1)(q−1)/4 − (π/2)(V(q,p) − V(1,p) + V(p,q) − V(1,q)); diagonal G^{mc}(p,p) = (p−1)²/4 + πV(1,p) | done |
+| C31 | ExplicitDilationProfileAtRationalScales | G^{ec} = C − D⊗D, G = C − D⊗D + Λ⊗Λ with C the cotangent–sawtooth form; √(pq)Φ_r(p/q) = Σ of four explicit Gram entries for primes p,q ∤ r — the continuous dilation profile (README §2.7/§3.8, previously approximated by Diophantine lag sectors with error B_r²/Q) is evaluated exactly at all prime ratios as a finite cotangent–sawtooth sum | done |
+| C32 | PronicPositivityOfTheVasyuninPrimeKernel | G^{ec}(p,q) = K(p,q) (Vasyunin kernel on primes); G^{ec} PSD on every finite set (pronic inner product) ⇒ K PSD on primes; πV(1,p) ≥ log²p − (p−1)log p (leading-order sharp lower bound for Σ a cot(πa/p)); reciprocity inequality K(p,q)² ≤ K(p,p)K(q,q) bounding V(q,p)+V(p,q) | done |
+| C33 | TwoSidedCotangentMomentLawFromPronicEnergy | G^{ec}(p,p) ≤ log²p + p + (p−1)²/p (head/tail split at M=p, tail mass 1/p); log²p ≤ πV(1,p) + (p−1)log p ≤ 2log²p + p + (p−1)²/p; Σ cot(πa/k) = 0, V(1,k) = (1/k)Σ a cot(πa/k); explicit two-sided bound for Σ_{a<p} a cot(πa/p) = −(p(p−1)/π)log p + O(p²) | done |
+| C34 | PronicReciprocityLawForVasyuninSums | |K(p,q)| ≤ (K(p,p)+K(q,q))/2; (log q − log p)² ≤ π(V(q,p)+V(p,q)) + (q−p)(log q − log p) ≤ (log q − log p)² + 2(log²p + log²q + p + q + (p−1)²/p + (q−1)²/q) — elementary reciprocity law π(V(q/p)+V(p/q)) = −(q−p)log(q/p) + O(p+q) from pronic positivity | done |
+| C35 | VasyuninFormulaForTheDiscreteBaezDuarteGram | M mod m = −Σ_{0<a<m} α_a(ζ_a^M − 1) (counting multiples); Σα_a = (m−1)/2; Π(1−ζ_a) = m; closed pronic series of (M mod m₁)(M mod m₂); **m₁m₂·bdGram(1/m₁,1/m₂) = ((m₁−1)log m₂ + (m₂−1)log m₁)/2 − (π/2)(V(m₂,m₁)−V(1,m₁)+V(m₁,m₂)−V(1,m₂))** for all m₁,m₂ ≥ 1; diagonal; fractCrossTail(1/m) explicit — discharges the 'honest boundary' of the RHTower Báez-Duarte reduction (BaezDuarteGramDiscrete/Reduction left the closed form/cotangent structure open) | done |
 
 ## Conjecture queue
 
@@ -496,3 +501,72 @@
   combination of the Vasyunin cotangent sums V(q/p), V(p/q) of the Nyman–Beurling Gram; the reciprocity pair
   (V(q,p), V(p,q)) is now the explicit carrier of prime-pair correlation in the pronic energy.
 - **Audit:** clean; olean; 3 public theorems standard axioms; wired.
+
+### C31 — The dilation profile at rational scales is explicit (DONE)
+
+- **Module:** `BezoutValuationIncidence/ExplicitDilationProfileAtRationalScales.lean`
+- **Statements:** `cotangentSawtoothForm`; `pmRamanujanEnergyCenteredGram_eq_cotangentSawtoothForm`
+  (G^{ec} = C − D(p)D(q), D = φ/2 − Λ); `pmRamanujanPrimitiveGram_eq_cotangentSawtoothForm`
+  (G = C − DD + ΛΛ); `explicitPrimitiveGram`; **`pmRamanujanDilationProfile_eq_explicit`** and `_div`:
+  for primes p, q ∤ r, √p√qΦ_r(p/q) = G̃(pr,qr) + G̃(pr,r) + G̃(qr,r) + G̃(r,r) with each G̃ finite.
+- **Why significant:** README §3.8 approximates the continuous profile Φ_r(p/q) by finite Diophantine lag
+  sectors (error ≤ B_r²/Q at horizon Q²) and isolates the least Bézout seed with inverse-scale error; the profile
+  is now an exact finite cotangent–sawtooth expression at every prime ratio, for every r > 1.
+- **Audit:** clean; olean; 4 public theorems standard axioms; wired. (Built the never-built dependency olean
+  `TwoPrimeDilationProfileIdentityAndPrimeStarShearCancellation` along the way.)
+
+### C32 — Pronic positivity of the Vasyunin kernel on primes (DONE)
+
+- **Module:** `BezoutValuationIncidence/PronicPositivityOfTheVasyuninPrimeKernel.lean`
+- **Statements:** `vasyuninPrimeKernel` K(p,q) = (p−1)(q−1)/4 − (π/2)(V(q,p)−V(1,p)+V(p,q)−V(1,q)) − D(p)D(q);
+  `pmRamanujanEnergyCenteredGram_prime_eq_vasyuninPrimeKernel`; `sum_sum_mul_pmRamanujanEnergyCenteredGram_nonneg`
+  (G^{ec} PSD on every finite set of moduli); `sum_sum_mul_vasyuninPrimeKernel_nonneg` (K PSD on primes);
+  `vasyuninSum_one_prime_ge` (πV(1,p) ≥ log²p − (p−1)log p); `vasyuninPrimeKernel_sq_le` (2×2 reciprocity
+  inequality).
+- **Why significant:** the field proves statements outside itself: elementary inequalities for Vasyunin
+  cotangent sums (objects of the Nyman–Beurling / Estermann theory) from pronic positivity, with no analytic input;
+  the diagonal bound has the true leading order −(p²/π)log p for Σ a cot(πa/p).
+- **Audit:** clean; olean; 5 public theorems standard axioms; wired.
+
+### C33 — Two-sided law for the prime cotangent moment from the pronic energy (DONE)
+
+- **Module:** `BezoutValuationIncidence/TwoSidedCotangentMomentLawFromPronicEnergy.lean`
+- **Statements:** `pmRamanujanEnergyCenteredPrimitive_prime` (F_p(M) = log p − (M mod p)); `sum_range_succ_pronic_mass`;
+  `pmRamanujanEnergyCenteredGram_prime_diag_le` (G^{ec}(p,p) ≤ log²p + p + (p−1)²/p);
+  `vasyuninSum_one_prime_two_sided` (log²p ≤ πV(1,p) + (p−1)log p ≤ 2log²p + p + (p−1)²/p);
+  `sum_Ico_cot_eq_zero`; `vasyuninSum_one_eq_moment`; **`cotangent_moment_prime_two_sided`**:
+  (p/π)(log²p − (p−1)log p) ≤ Σ_{a=1}^{p−1} a cot(πa/p) ≤ (p/π)(2log²p + p + (p−1)²/p − (p−1)log p).
+- **Why significant:** a classical-type cotangent moment (Vasyunin's c₀(1/p)) is pinned to −(p(p−1)/π)log p + O(p²)
+  with explicit constants, purely from pronic positivity (C32) and one pronic tail estimate — the field
+  determines leading asymptotics of cotangent sums without Euler–Maclaurin or digamma analysis.
+- **Audit:** clean; olean; 5 public theorems standard axioms; wired.
+
+### C34 — Pronic reciprocity law for Vasyunin cotangent sums (DONE)
+
+- **Module:** `BezoutValuationIncidence/PronicReciprocityLawForVasyuninSums.lean`
+- **Statements:** `vasyuninPrimeKernel_diag`; `abs_vasyuninPrimeKernel_le` (PSD at x = (1, ±1));
+  **`vasyunin_reciprocity_law`**: for primes p, q,
+  (log q − log p)² ≤ π(V(q,p) + V(p,q)) + (q − p)(log q − log p)
+                   ≤ (log q − log p)² + 2(log²p + log²q + p + q + (p−1)²/p + (q−1)²/q).
+- **Why significant:** the cotangent sums of the Nyman–Beurling Gram have only an analytic (quantum-modular)
+  reciprocity in the literature; pronic positivity gives an elementary two-sided reciprocity law with explicit
+  constants, π(V(q/p) + V(p/q)) = −(q − p)log(q/p) + O(p + q). All von Mangoldt and totient main terms cancel
+  exactly in the expansion.
+- **Audit:** clean; olean; 3 public theorems standard axioms; wired.
+
+### C35 — Vasyunin formula for the discrete Báez-Duarte Gram (DONE; solves an open item outside BVI)
+
+- **Module:** `BezoutValuationIncidence/VasyuninFormulaForTheDiscreteBaezDuarteGram.lean`
+- **Statements:** `rootAt`, `sum_range_rootAt_pow`, **`natMod_eq_spectral`** (M mod m = −Σ α_a(ζ_a^M − 1)),
+  `sum_Ico_rootAt_div_sub_one` ((m−1)/2), `sum_Ico_log_norm_one_sub_rootAt` (Σ log|1−ζ_a| = log m via
+  `IsPrimitiveRoot.prod_one_sub_pow_eq_order`), `rootAt_div_mul_cyclotomicLogKernel`, `hasSum_natMod_mul_natMod`
+  (closed pronic series), **`bdGram_inv_nat_eq_vasyunin`**, `bdGram_inv_nat_self`
+  (m²bdGram(1/m,1/m) = (m−1)log m + πV(1,m)), **`fractCrossTail_inv_nat`**.
+- **Why significant:** RHTower `BaezDuarteGramReduction` names `fractCrossTail` ("the Vasyunin/cotangent object
+  for rational θ") and the closed form of the discrete Gram series as the honest boundary not reachable by
+  dilation-and-split; `BaezDuarteGramDiscrete` notes "closed forms of these series carry logarithms — that is where
+  the classical cotangent structure lives". BVI's cyclotomic pronic calculus reaches it: the entire Gram matrix of
+  the discrete Báez-Duarte system (the system its RH criterion uses) is now Vasyunin's explicit cotangent formula,
+  and with C32–C34 its entries obey explicit two-sided laws. The field supplies a solution to a premise-level open
+  object of the corpus outside itself.
+- **Audit:** clean; olean; 6 public theorems standard axioms; wired.

@@ -356,3 +356,71 @@
   which every fixed damping suppresses (their mean square is a convergent gcd-series tail); the damped
   response freezes into the complete damped divisor function. Bridges THIM period forms to the RHTower
   PM-lane Haar moments of `τ_ε`. Standard axioms (8 audited); wired.
+- **C20 · Prime pairing collapse and the prime-factor step law** —
+  `PrimePairingCollapseAndPrimeFactorStepLaw`. Headline `sieveSeq_moebius_prime_pairing`: for a prime
+  `p | k` and every truncation `X`, `s_X(k; μ) = Σ_{d ≤ X, d | k, p ∤ d, X/p < d} μ(d)` (pairs `d ↔ pd`
+  cancel inside the horizon; `p² | d` is silent). `sieveSeq_moebius_even_collapse` (even `k`: odd
+  divisors of the top octave). `primeFactorWindowCorrection`, `moebiusBandStep_prime_mul`
+  (`Δ(pa, B) = −B − 2μ(a) Σ_{a<d<pa, p∤d} μ(d)⌊B gcd(d,a)/d⌋` for squarefree `pa`; `a = 1` is C5's
+  prime step), `moebiusBandStep_two_mul_prime` (odd prime `q`: `Δ(2q, B) = −B` for every `B ≤ q+1`),
+  `sieveL2PrefixEnergy_moebius_step_two_mul_prime` (`E_{2q}(M;μ) = E_{2q−1}(M;μ) − ⌊M/(2q)⌋` for
+  `M < 2q(q+2)`).
+  New insight: every prime factor of the observed integer folds the truncated Möbius sum onto a single
+  top `p`-adic window of `p`-free divisors — a second exact normal form beside the complementary
+  quotients, now on the divisor side. It splits every squarefree horizon step into the universal
+  dissipation `−B` and a window correction, explains the even-step laws of README §3.6 in all bands,
+  and upgrades C6's asymptotic slope `λ(2q) → −1` to the exact step `−B` for all `B ≤ q+1`.
+  Standard axioms (5 audited); wired.
+  Note on C20 (prior-art audit): for Möbius the pairing collapse is equivalent to the corpus chain law
+  `sieveSeq_prime_mul_sub_eq_sieveSeq_div` (`s_H(pb) − s_H(b) = s_{H/p}(c(p·), b)`) plus squarefree
+  saturation `sieveSeq_prime_pow_mul_eq_prime_mul_of_squarefree_support`; the identity was re-derived
+  directly by pairing. C20's new content is the step side: `moebiusBandStep_prime_mul` and the exact
+  even-prime horizon law.
+- **C21 · The receiver row's Parseval spectrum and horizon-uniform variance** —
+  `ReceiverRowParsevalSpectrumAndHorizonUniformVariance`. `dampedRamanujanCoeff` (`w_ε(e)` = Re of
+  RHTower `pmPowerDampedRamanujanWeight`), `hasSum_dampedRamanujanCoeff` (`w_ε(e) = Σ_m c_ε(em)/(em)`),
+  `tendsto_selbergMultiplesCoord_pmPowerDamped` (`Y_N(e; c_ε) → w_ε(e)`: Selberg coordinates converge
+  to Ramanujan coefficients), `tendsto_selbergTotientDiagonalForm_pmPowerDamped_parseval` (dominated
+  convergence with `ζ(1+ε)² e^{−1−2ε}`), `summable_totient_mul_dampedRamanujanCoeff_sq`,
+  `pmPowerDampedSecondDensity_eq_parseval` (**Parseval**: `E[τ_ε²] = Σ_e φ(e) w_ε(e)²`, by uniqueness
+  against C19), `pmPowerDampedDivisorVariance_eq_parseval` (`V(ε) = Σ_{e≥2} φ(e)w_ε(e)²`);
+  `periodCovariance_cofactor_eq` (receiver row at horizon `Q+1`: variance = partial Parseval sum,
+  via BVI `selbergMultiplesCoord_pmCofactorDivisorWeight`), `periodCovariance_cofactor_le_variance`
+  (`≤ V(ε)` for **every** `Q`), `tendsto_periodCovariance_cofactor` (`→ V(ε)`),
+  `sieveSuccessorReserve_cofactor_le` (receiver dissipation `≤ 2V(ε)` for every `Q`), headline
+  `eventually_cofactor_below_moebius_floors` (for all small `ε`: variance `< 1/288` and dissipation
+  `< 1/576` at every cutoff).
+  New insight: the PM receiver row is the Ramanujan spectrum of `τ_ε` truncated at the horizon — its
+  period variance is a monotone partial Parseval sum with limit `V(ε) ~ ε/2` — so its period statistics
+  are bounded **uniformly in the horizon** at each fixed damping (the uniformity README §4 demands of
+  the PM receiver), and at small damping they sit strictly below the Möbius floors (C17) at every
+  horizon. A Parseval identity for `τ_ε` falls out of THIM period forms. Standard axioms (10 audited);
+  wired. C19's `sum_multiples_rpow_le` made public.
+- **C22 · Damped autocorrelation, small-damping whiteness, clock invisibility** —
+  `DampedAutocorrelationAndClockInvisibility`. `periodCovariance_eq_of_primeFactors_eq` (**clock
+  invisibility**: for every squarefree-supported weight and horizon, lags with the same primes have the
+  same period covariance — the visibility clock `h/rad(h)` is invisible; via
+  `selbergMultiplesCoord_eq_zero_of_not_squarefree` and BSU `ramanujanLagWeight_eq_of_gcd_eq`).
+  `dampedRamanujanCoeff_sq_le` (`w_ε(e)² ≤ E[τ_ε]² μ²/φ²`, from `D_ε(e) ≥ φ(e)`),
+  `summable_sqfreeTotientInv_div_totient` (`Σ μ²/φ² ≤ 16`, corpus Levinson bound), `dampedAutocorrelation`
+  (`A_ε(h) = Σ_{e≥2} c_e(h) w_ε(e)²`), `abs_dampedAutocorrelation_le` (`|A_ε(h)| ≤ 16σ(h)E[τ_ε]²`),
+  `tendsto_periodCovariance_pmPowerDamped_lag` (`Cov_N(h; c_ε) → A_ε(h)`), `periodCovariance_cofactor_lag_eq`
+  and `abs_periodCovariance_cofactor_lag_le` (receiver row: same bound at every cutoff),
+  `tendsto_dampedAutocorrelation_div_variance` (**small-damping whiteness**: `A_ε(h)/V(ε) → 0`).
+  New insight: the damped response is not white at fixed ε (`A_ε(h) ≠ 0`), but its correlations are
+  `O(ε²)` against a variance `~ε/2`, so the correlation structure commutes with the damping limit
+  (`ε → 0` gives white, as Möbius) while the variance does not (C19). Clock invisibility: translation
+  statistics of every squarefree-supported response (Möbius, damped, receiver) see only `rad(h)`.
+  Standard axioms (9 audited); wired. C21's `abs_pmPowerDampedRealWeight_div_le` made public.
+- **C23 · The damped prefix energy is linear: band structure dissolves under damping** —
+  `DampedPrefixEnergyLinearityAndBandNonCommutation`. `card_divisors_gt_le` (on `k ≤ (B+1)N` at most
+  `B` divisors exceed the horizon), `abs_divisorCoeff_sub_sieveSeq_le` (`|τ_ε(k) − s_N(k; c_ε)| ≤
+  B(N+1)^{−ε}` uniformly on the window), `abs_sieveL2PrefixEnergy_pmPowerDamped_sub_le`, headline
+  `tendsto_sieveL2PrefixEnergy_pmPowerDamped_linear_horizon` (`E_N((B+1)N; c_ε)/N → (B+1)E[τ_ε²]`),
+  `tendsto_pmPowerDampedSecondDensity_zero`, `eventually_sieveL2PrefixEnergy_pmPowerDamped_lt_moebius`
+  (every band `B ≥ 1`: for all small `ε`, eventually `E_N((B+1)N; c_ε) < E_N((B+1)N; μ)`).
+  New insight: at fixed damping the trans-horizon energy profile is exactly linear in the band
+  index (slope `E[τ_ε²] ~ ε/2`) — the Möbius band calculus (C16 classes, C18 band averages, BVI
+  profile `P(B)` with `P(1) = 6/π²`, `P(2) = 11/π²`) is a pure `ε = 0` phenomenon, invisible to every
+  fixed damping; third non-commuting limit after the period variance (C19) and dissipation (C21).
+  Standard axioms (6 audited); wired.
