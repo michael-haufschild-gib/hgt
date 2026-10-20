@@ -323,3 +323,20 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   so the critical form is positive definite on windows [M, M^{1+δ}] spanning polynomially many
   dyadic blocks. The remaining multi-scale regime is width ≫ M^δ (log L ≍ log M), where the
   constants s, C_W decide. Standard axioms.
+- **C20 · Doubly collared (compact) critical sources: block positivity uniform in the truncation** —
+  `DoublyCollaredCriticalSourcePositivity`. Upper cutoff `criticalUpperCutoff` χ = 1 − σ(u−1);
+  compact source `criticalTruncatedSource` g^V = χ(e^{-x}/V)·g_c (support [−log 2V, 0], continuous);
+  far layer `criticalTruncationTail`. Correlation law `integral_criticalTruncatedSource_mul_dilate`
+  (r ≥ 2: weight ψ·χ(rv/V), the two cutoffs merge). Uniform transform bounds for truncated weights
+  `abs_weightCosineTransform_criticalTruncatedWeight_le` (λσ'(λv−1) vanishes unless λ < 2/v ⇒
+  ‖w_λ''‖₁ ≤ ‖ψ''‖₁ + 4sup|σ'|‖ψ'‖₁ + 4sup|σ''|‖ψ‖₁ for ALL λ) ⇒ `abs_criticalTruncatedPrimeEnergy_le`
+  (C_T independent of V). Archimedean: tail mass `integral_criticalTruncationTail_sq_le` (≤ (U/V)E via
+  the dilated ℓ² ceiling — C15's ceiling generalised to dilations), window floor
+  `integral_criticalTruncatedSource_sq_ge`, spectral comparison with the collared low band ⇒
+  `ofReal_le_criticalTruncatedLevyEnergy` (V ≥ V₀). Polar: generic flat IBP
+  `abs_integral_weight_mul_phase_le`, readout/endpoint bounds uniform in V. Capstones
+  `criticalTruncatedCompleteEnergy_ge` and `exists_criticalTruncatedCompleteEnergy_pos`: ∃ M₀ ∀ M ≥ M₀
+  ∀ V ≥ V₀ ∀ dyadic block ∀ b ≠ 0: E(g^V) > 0. New insight: block positivity of the critical family
+  survives truncation to COMPACT tests with a margin uniform in the aperture log(2V) — the answer
+  to README §5 "which compact approximants inherit the block positivity": smooth doubly collared
+  truncations, at every length. Standard axioms.

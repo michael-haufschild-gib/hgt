@@ -456,3 +456,21 @@ Significance: the mean-zero sector is exactly where frontier-1 can see zeros; C2
 the zero-visible sector to 7/20 (10/3 further) and is the first region of the frontier inequality in which a prime
 contributes. Discharges the "pole-vanishing CCM certificates ↔ ACT variation inequality" link (previously unconnected).
 Smooth (C^∞) profiles only: the CCM smooth-source core is C^∞.
+
+### C31 — Which half of the folded no-go sees the rates: the extra-jump visibility threshold (frontier 5)
+Module: `ArithmeticCriticalityTheory/ExtraJumpVisibilityThresholdAtInfinity.lean` (compiled, olean, standard axioms, wired).
+Perturb the folded generator of ω_a = m_a/Φ by ONE extra jump of length ℓ at rate δ (potential Φcosh(x/2) kept).
+- `tendsto_extraJumpRatio_atTop`: e^{−2a}+e^{−2ℓ} < 1 ⇒ extra term /(Φe^{x/2}) → +∞ (doubly exponential, via
+  Φ(x−a)Φ(x−ℓ)/Φ(x) ≥ exp(πe^{2x}(1−e^{−2a}−e^{−2ℓ}) − 5ℓ)).
+- `tendsto_extraJumpRatio_zero`: e^{−2a}+e^{−2ℓ} > 1 ⇒ → 0 (upper bound Φ(0)²e^{6π}exp(−πe^{2x}(…−1)+10x)).
+- `exists_foldedGenerator_add_extraJump_gt_potential`: visible ⇒ for EVERY δ > 0, ω_a is a strict folded
+  SUPERsolution on a neighbourhood of infinity. `…_lt_potential`: invisible ⇒ strict subsolution at infinity ∀δ ≥ 0.
+- `exists_origin_window_foldedGenerator_add_extraJump_lt_potential`: origin failure persists for every extra jump
+  (limit −2Φ(0)(J(m_a)+δ m_a(ℓ)) < 0): the origin half of the no-go is rate-blind.
+- Prime 2: visible iff e^{−2a} < 3/4 (`…_log_two`).
+- New supporting facts: |Φ'(u)| ≤ Ce^{−8|u|} (`exists_abs_deriv_riemannKernelReal_le_exp_eight`; corpus had e^{−2|u|}),
+  m_a, m_a' decay e^{−8|y|} (`exists_shiftDifference_decay_eight`), so C23's infinity law applies to ω_a
+  (`tendsto_foldedSource_shiftedGroundState_div`).
+Significance: threshold curve e^{−2a}+e^{−2ℓ} = 1 is the graph of the window killing function N (an involution):
+ω_a sees at infinity exactly the jumps longer than N(a). Answers frontier 5 for the central no-go: origin half
+rate-blind, infinity half rate-critical (any excess at a visible length flips it) — dual to rate-criticality of the form.

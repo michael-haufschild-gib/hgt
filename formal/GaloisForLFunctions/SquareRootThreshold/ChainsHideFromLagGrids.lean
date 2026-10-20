@@ -88,10 +88,11 @@ theorem eq_zero_of_re_tsum_exp_le_of_separated {ι : Type*} [Countable ι] {lam 
     have h1 : Summable fun t => doubledCoeff q (Sum.inl t) * cexp (doubledExp lam (Sum.inl t) * v) :=
       ((hS v).div_const 2).congr fun t => by simp only [doubledCoeff_inl, doubledExp_inl]; ring
     have h2 : Summable fun t => doubledCoeff q (Sum.inr t) * cexp (doubledExp lam (Sum.inr t) * v) :=
-      ((Summable.of_norm_bounded (hS v).norm fun t => by
-        rw [← hconj, Complex.norm_conj]).div_const 2).congr fun t => by
+      ((Summable.of_norm_bounded (f := fun t => conj (q t) * cexp (conj (lam t) * v))
+        (hS v).norm fun t => by
+          rw [← hconj, Complex.norm_conj]).div_const 2).congr fun t => by
           simp only [doubledCoeff_inr, doubledExp_inr]; ring
-    rw [Summable.tsum_sum h1 h2]
+    rw [Summable.tsum_sum (f := fun T => doubledCoeff q T * cexp (doubledExp lam T * v)) h1 h2]
     have e1 : ∑' t, doubledCoeff q (Sum.inl t) * cexp (doubledExp lam (Sum.inl t) * v) =
         (∑' t, q t * cexp (lam t * v)) / 2 := by
       rw [← tsum_div_const]
@@ -295,5 +296,244 @@ theorem sum_range_gridChainWeight (j : ℕ) :
   induction j with
   | zero => simp
   | succ j ih => rw [Finset.sum_range_succ, ih]; unfold gridChainWeight; ring
+
+theorem summable_gridChainWeight : Summable gridChainWeight :=
+  (summable_nat_add_iff 1).mpr (summable_geometric_of_lt_one (by norm_num) (by norm_num))
+
+theorem gridChainWeight_pos (n : ℕ) : 0 < gridChainWeight n := by
+  unfold gridChainWeight; positivity
+
+theorem summable_gridChain_term (x : ℝ) : Summable fun n =>
+    gridChainWeight n * Real.exp (gridChainDepth n * x) * Real.cos (gridChainPhase n * x) := by
+  refine Summable.of_norm_bounded (summable_gridChainWeight.mul_right (Real.exp |x|)) fun n => ?_
+  rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos (gridChainWeight_pos n),
+    abs_of_pos (Real.exp_pos _), mul_assoc]
+  refine mul_le_mul_of_nonneg_left ?_ (gridChainWeight_pos n).le
+  calc Real.exp (gridChainDepth n * x) * |Real.cos (gridChainPhase n * x)|
+      ≤ Real.exp (gridChainDepth n * x) * 1 :=
+        mul_le_mul_of_nonneg_left (Real.abs_cos_le_one _) (Real.exp_pos _).le
+    _ ≤ Real.exp |x| := by
+        rw [mul_one, Real.exp_le_exp]
+        have h0 := gridChainDepth_pos n
+        have h1 := gridChainDepth_lt n
+        calc gridChainDepth n * x ≤ |gridChainDepth n * x| := le_abs_self _
+          _ = gridChainDepth n * |x| := by rw [abs_mul, abs_of_pos h0]
+          _ ≤ 1 * |x| := mul_le_mul_of_nonneg_right (by linarith) (abs_nonneg _)
+          _ = |x| := one_mul _
+
+/-- The balance at the first lag `x ≤ chainTime j`: the leading term `c_j e^{δ_j x}/2` outweighs
+`e^{δ_{j−1}x} Σ_{n<j} c_n`. -/
+theorem gridChain_balance_nonneg {j : ℕ} {x : ℝ}
+    (hmin : ∀ m < j, gridChainTime m < x) :
+    0 ≤ -(Real.exp (gridChainDepth (j - 1) * x) * (1 - (1 / 2) ^ j)) +
+      gridChainWeight j * Real.exp (gridChainDepth j * x) / 2 := by
+  cases j with
+  | zero =>
+    have := gridChainWeight_pos 0
+    simp only [pow_zero, sub_self, mul_zero, neg_zero, zero_add]
+    positivity
+  | succ m =>
+    have hdom := exp_gridChainDepth_le (hmin m (Nat.lt_succ_self m)).le
+    have h1 : (0 : ℝ) ≤ (1 / 2) ^ (m + 1) := by positivity
+    have hE := Real.exp_pos (gridChainDepth m * x)
+    simp only [Nat.add_sub_cancel]
+    nlinarith
+
+/-- **The chain stays positive.** For `x ≥ 0`, `Σ_n c_n e^{δ_n x} cos(θ_n x) ≥ 0`. At the first
+`j` with `x ≤ chainTime j` the leading term `c_j e^{δ_j x}/2` outweighs all earlier terms, and all
+later terms are positive. -/
+theorem gridChain_cos_sum_nonneg {x : ℝ} (hx : 0 ≤ x) :
+    0 ≤ ∑' n, gridChainWeight n * Real.exp (gridChainDepth n * x) *
+      Real.cos (gridChainPhase n * x) := by
+  classical
+  have hex : ∃ j : ℕ, x ≤ gridChainTime j := by
+    obtain ⟨j, hj⟩ := exists_nat_ge x
+    exact ⟨j, hj.trans (le_gridChainTime j)⟩
+  obtain ⟨j, hj, hmin⟩ : ∃ j, x ≤ gridChainTime j ∧ ∀ m < j, gridChainTime m < x :=
+    ⟨Nat.find hex, Nat.find_spec hex, fun m hm => not_le.mp (Nat.find_min hex hm)⟩
+  set E := Real.exp (gridChainDepth (j - 1) * x) with hE
+  set g : ℕ → ℝ := fun n => if n < j then -(gridChainWeight n * E) else
+    if n = j then gridChainWeight j * Real.exp (gridChainDepth j * x) / 2 else 0 with hg
+  have hag : ∀ n, g n ≤
+      gridChainWeight n * Real.exp (gridChainDepth n * x) * Real.cos (gridChainPhase n * x) := by
+    intro n
+    have hw := gridChainWeight_pos n
+    have he := Real.exp_pos (gridChainDepth n * x)
+    simp only [hg]
+    split_ifs with h1 h2
+    · have hexp : Real.exp (gridChainDepth n * x) ≤ E := Real.exp_le_exp.mpr
+        (mul_le_mul_of_nonneg_right (gridChainDepth_strictMono.monotone (by omega)) hx)
+      have hcos := Real.neg_one_le_cos (gridChainPhase n * x)
+      have h1 := mul_nonneg (mul_pos hw he).le (by linarith : 0 ≤ Real.cos (gridChainPhase n * x) + 1)
+      have h2 := mul_le_mul_of_nonneg_left hexp hw.le
+      linarith
+    · subst h2
+      have := half_le_cos_gridChainPhase hx hj
+      nlinarith [mul_pos hw he]
+    · have hn : x ≤ gridChainTime n := hj.trans (gridChainTime_strictMono.monotone (by omega))
+      have := half_le_cos_gridChainPhase hx hn
+      have hc : 0 ≤ Real.cos (gridChainPhase n * x) := by linarith
+      positivity
+  have hzero : ∀ n ∉ Finset.range (j + 1), g n = 0 := fun n hn => by
+    simp only [Finset.mem_range, not_lt] at hn
+    simp only [hg]
+    rw [if_neg (by omega), if_neg (by omega)]
+  refine le_trans ?_ (Summable.tsum_le_tsum hag (summable_of_ne_finset_zero hzero)
+    (summable_gridChain_term x))
+  rw [tsum_eq_sum hzero, Finset.sum_range_succ]
+  have hlow : ∑ n ∈ Finset.range j, g n = -(E * ∑ n ∈ Finset.range j, gridChainWeight n) := by
+    rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun n hn => ?_
+    rw [Finset.mem_range] at hn
+    simp only [hg]
+    rw [if_pos hn]
+    ring
+  have hgj : g j = gridChainWeight j * Real.exp (gridChainDepth j * x) / 2 := by
+    simp [hg]
+  rw [hlow, hgj, sum_range_gridChainWeight]
+  exact gridChain_balance_nonneg hmin
+
+theorem gridChainExp_re (n : ℕ) : (gridChainExp n).re = gridChainDepth n := by
+  simp [gridChainExp]
+
+theorem gridChainExp_im (n : ℕ) :
+    (gridChainExp n).im = 2 * π * (n + 1) + gridChainPhase n := by
+  simp [gridChainExp]
+
+/-- **The grid hides the chain.** At every integer lag `k`, `Re Σ_n −c_n e^{λ_n k} ≤ 0`: the
+heights `2π(n + 1) + θ_n` are seen on the grid as `θ_n`. -/
+theorem re_gridChainSum_nat_nonpos (k : ℕ) : (gridChainSum k).re ≤ 0 := by
+  have hterm : ∀ n, (-(gridChainWeight n : ℂ) * cexp (gridChainExp n * (k : ℝ))).re =
+      -(gridChainWeight n * Real.exp (gridChainDepth n * k) * Real.cos (gridChainPhase n * k)) := by
+    intro n
+    have hre : (gridChainExp n * ((k : ℝ) : ℂ)).re = gridChainDepth n * k := by
+      simp [gridChainExp]
+    have him : (gridChainExp n * ((k : ℝ) : ℂ)).im =
+        gridChainPhase n * k + ((n + 1) * k : ℕ) * (2 * π) := by
+      simp [gridChainExp]; ring
+    rw [show -(gridChainWeight n : ℂ) = ((-gridChainWeight n : ℝ) : ℂ) by push_cast; ring,
+      Complex.re_ofReal_mul, Complex.exp_re, hre, him, Real.cos_add_nat_mul_two_pi]
+    ring
+  have hs : Summable fun n => -(gridChainWeight n : ℂ) * cexp (gridChainExp n * (k : ℝ)) := by
+    refine Summable.of_norm_bounded
+      (summable_gridChainWeight.mul_right (Real.exp (k : ℝ))) fun n => ?_
+    rw [norm_mul, norm_neg, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (gridChainWeight_pos n), Complex.norm_exp]
+    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (gridChainWeight_pos n).le
+    have hre : (gridChainExp n * ((k : ℝ) : ℂ)).re = gridChainDepth n * k := by
+      simp [gridChainExp]
+    rw [hre]
+    have := gridChainDepth_lt n
+    nlinarith [(k.cast_nonneg : (0 : ℝ) ≤ k)]
+  unfold gridChainSum
+  rw [Complex.re_tsum hs]
+  simp_rw [hterm]
+  rw [tsum_neg]
+  linarith [gridChain_cos_sum_nonneg (k.cast_nonneg : (0 : ℝ) ≤ k)]
+
+/-- **Continuous lags see the chain.** `Re Σ_n −c_n e^{λ_n v}` is not bounded above on `v ≥ 0`. -/
+theorem not_bddAbove_re_gridChainSum :
+    ¬ ∃ M : ℝ, ∀ v : ℝ, 0 ≤ v → (gridChainSum v).re ≤ M := by
+  rintro ⟨M, hM⟩
+  have hθ := gridChainPhase_pos
+  have hθ1 := gridChainPhase_lt_one
+  have h0 := eq_zero_of_re_tsum_exp_le_of_separated (lam := gridChainExp)
+    (q := fun n => -(gridChainWeight n : ℂ))
+    (summable_gridChainWeight.congr fun n => by
+      rw [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (gridChainWeight_pos n)])
+    (fun n => by
+      rw [gridChainExp_re, abs_of_pos (gridChainDepth_pos n)]
+      linarith [gridChainDepth_lt n])
+    one_pos
+    (fun n => by
+      rw [gridChainExp_im]
+      have : (0 : ℝ) ≤ n := n.cast_nonneg
+      nlinarith [Real.pi_gt_three, hθ n])
+    (fun s t hst => by
+      rw [gridChainExp_im, gridChainExp_im]
+      have hst' : (1 : ℝ) ≤ |(s : ℝ) - t| := by
+        rcases lt_or_gt_of_ne hst with h | h
+        · have : (s : ℝ) + 1 ≤ t := by exact_mod_cast Nat.succ_le_of_lt h
+          rw [abs_sub_comm, abs_of_pos (by linarith)]; linarith
+        · have : (t : ℝ) + 1 ≤ s := by exact_mod_cast Nat.succ_le_of_lt h
+          rw [abs_of_pos (by linarith)]; linarith
+      have e : 2 * π * (s + 1) + gridChainPhase s - (2 * π * (t + 1) + gridChainPhase t) =
+          2 * π * ((s : ℝ) - t) + (gridChainPhase s - gridChainPhase t) := by ring
+      rw [e]
+      have h1 : |gridChainPhase s - gridChainPhase t| < 1 := by
+        rw [abs_lt]; constructor <;> linarith [hθ s, hθ t, hθ1 s, hθ1 t]
+      have h2 : |2 * π * ((s : ℝ) - t)| = 2 * π * |(s : ℝ) - t| := by
+        rw [abs_mul, abs_of_pos (by positivity)]
+      have h3 := abs_sub_abs_le_abs_sub (2 * π * ((s : ℝ) - t)) (-(gridChainPhase s - gridChainPhase t))
+      rw [sub_neg_eq_add, abs_neg, h2] at h3
+      nlinarith [Real.pi_gt_three])
+    (M := M) hM (t₁ := 0) (by rw [gridChainExp_re]; exact gridChainDepth_pos 0)
+  have := gridChainWeight_pos 0
+  have h0' : (gridChainWeight 0 : ℂ) = 0 := neg_eq_zero.mp h0
+  exact absurd (Complex.ofReal_eq_zero.mp h0') this.ne'
+
+/-- The grid `v = k` is not resonant for the heights of the chain: no two differ by a multiple of
+`2π`. -/
+theorem gridChainExp_im_sub_eq {n m : ℕ} {z : ℤ}
+    (h : (gridChainExp n).im - (gridChainExp m).im = 2 * π * z) : n = m := by
+  rw [gridChainExp_im, gridChainExp_im] at h
+  set d : ℤ := z - n + m with hd
+  have hθ : gridChainPhase n - gridChainPhase m = 2 * π * d := by
+    rw [hd]; push_cast; linarith
+  have habs : |gridChainPhase n - gridChainPhase m| < 1 := by
+    rw [abs_lt]; constructor <;>
+      linarith [gridChainPhase_pos n, gridChainPhase_pos m, gridChainPhase_lt_one n,
+        gridChainPhase_lt_one m]
+  have hd0 : d = 0 := by
+    rw [hθ, abs_mul, abs_of_pos (by positivity)] at habs
+    have : |(d : ℝ)| < 1 := by nlinarith [Real.pi_gt_three, abs_nonneg (d : ℝ)]
+    rw [← Int.cast_abs, ← Int.cast_one, Int.cast_lt] at this
+    exact Int.abs_lt_one_iff.mp this
+  rw [hd0, Int.cast_zero, mul_zero, sub_eq_zero] at hθ
+  unfold gridChainPhase at hθ
+  have hK : gridChainTime n = gridChainTime m := by
+    have hn := gridChainTime_pos n
+    have hm := gridChainTime_pos m
+    field_simp at hθ
+    nlinarith [Real.pi_pos]
+  exact gridChainTime_strictMono.injective hK
+
+/-- No height of the chain is a multiple of `2π`. -/
+theorem gridChainExp_im_ne (n : ℕ) (z : ℤ) : (gridChainExp n).im ≠ 2 * π * z := by
+  intro h
+  rw [gridChainExp_im] at h
+  set d : ℤ := z - n - 1 with hd
+  have hθ : gridChainPhase n = 2 * π * d := by rw [hd]; push_cast; linarith
+  have hpos := gridChainPhase_pos n
+  have hlt := gridChainPhase_lt_one n
+  rw [hθ] at hpos hlt
+  have h1 : (0 : ℝ) < d := by
+    by_contra h; push Not at h; nlinarith [Real.pi_pos]
+  have h2 : (d : ℝ) < 1 := by nlinarith [Real.pi_gt_three]
+  have h1' : (0 : ℤ) < d := by exact_mod_cast h1
+  have h2' : d < 1 := by exact_mod_cast h2
+  omega
+
+/-- **Chains hide from lag grids.** There is an exponential sum `Σ_n q_n e^{λ_n v}` with
+`Σ|q_n| < ∞`, all `q_n ≠ 0`, depths `Re λ_n` strictly increasing to a value that is not attained,
+heights that are not resonant on the grid `v = k` (no difference and no height in `2πℤ`), whose
+real part is `≤ 0` at every integer lag, but not bounded above on the continuum `v ≥ 0`. -/
+theorem exists_chain_hidden_from_grid :
+    ∃ lam q : ℕ → ℂ, (Summable fun n => ‖q n‖) ∧ (∀ n, q n ≠ 0) ∧
+      StrictMono (fun n => (lam n).re) ∧ (∀ n, 0 < (lam n).re ∧ (lam n).re < 1 / 4) ∧
+      (∀ n m (z : ℤ), (lam n).im - (lam m).im = 2 * π * z → n = m) ∧
+      (∀ n (z : ℤ), (lam n).im ≠ 2 * π * z) ∧
+      (∀ k : ℕ, (∑' n, q n * cexp (lam n * (k : ℝ))).re ≤ 0) ∧
+      ¬ ∃ M : ℝ, ∀ v : ℝ, 0 ≤ v → (∑' n, q n * cexp (lam n * v)).re ≤ M := by
+  refine ⟨gridChainExp, fun n => -(gridChainWeight n : ℂ), ?_, fun n => ?_, ?_, fun n => ?_,
+    fun n m z h => gridChainExp_im_sub_eq h, gridChainExp_im_ne, re_gridChainSum_nat_nonpos,
+    not_bddAbove_re_gridChainSum⟩
+  · exact summable_gridChainWeight.congr fun n => by
+      rw [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (gridChainWeight_pos n)]
+  · exact neg_ne_zero.mpr (Complex.ofReal_ne_zero.mpr (gridChainWeight_pos n).ne')
+  · intro a b hab
+    simp only [gridChainExp_re]
+    exact gridChainDepth_strictMono hab
+  · rw [gridChainExp_re]; exact ⟨gridChainDepth_pos n, gridChainDepth_lt n⟩
 
 end GaloisForLFunctions.SquareRootThreshold

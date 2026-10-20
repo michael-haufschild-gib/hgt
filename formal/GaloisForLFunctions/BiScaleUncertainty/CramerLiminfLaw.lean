@@ -36,7 +36,7 @@ open scoped CompactlySupported
 
 namespace GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
 
-open SignedPrimePolar RHTower.ArchimedeanAnomaly
+open SignedPrimePolar RHTower.ArchimedeanAnomaly RHTower.WeilMarkovPole
 
 noncomputable section
 set_option autoImplicit false
@@ -46,7 +46,7 @@ local notation "𝒵" => Zeta23.zetaZeroConfig.carrier
 /-! ## The gauge bridge -/
 
 /-- Beyond the support and below the cutoff, the stationary packet is the finite signed packet. -/
-theorem stationaryPacket_eq_signedSource (F : C_c(ℝ, ℝ)) {w : ℝ}
+theorem stationaryPacket_eq_signedSource (F : C_c(ℝ, ℝ)) {w : ℝ} (hw0 : 0 ≤ w)
     (hw : ∀ v : ℝ, w < |v| → F v = 0) {τ : ℝ} {N : ℕ} (hN : τ + w < cutoff N) :
     stationaryPacket F τ = signedSource F N (-τ) := by
   show _ = atomicSource F N (-τ) - polarSource F N (-τ)
@@ -80,9 +80,9 @@ theorem stationaryPacket_eq_signedSource (F : C_c(ℝ, ℝ)) {w : ℝ}
 /-- **Gauge bridge.** For `w < τ` and `τ + w < cutoff N`,
 `P_f(τ) = R_N(−τ) − D_N(−τ)`: forward residual minus Chebyshev gauge convolution. -/
 theorem stationaryPacket_eq_gauge (F : C_c(ℝ, ℝ)) (hF : ContDiff ℝ 1 (F : ℝ → ℝ)) {w : ℝ}
-    (hw : ∀ v : ℝ, w < |v| → F v = 0) {τ : ℝ} {N : ℕ} (hN : τ + w < cutoff N) :
+    (hw0 : 0 ≤ w) (hw : ∀ v : ℝ, w < |v| → F v = 0) {τ : ℝ} {N : ℕ} (hN : τ + w < cutoff N) :
     stationaryPacket F τ = forwardResidual F N (-τ) - chebyshevGaugeConvolution F N (-τ) := by
-  rw [stationaryPacket_eq_signedSource F hw hN, signedSource_eq_gauge F hF N,
+  rw [stationaryPacket_eq_signedSource F hw0 hw hN, signedSource_eq_gauge F hF N,
     hw _ (by rw [abs_of_pos (by linarith)]; linarith), mul_zero, add_zero]
 
 /-! ## The windowed packet energy -/
@@ -122,90 +122,83 @@ theorem exists_cutoff_between {a : ℝ} (ha : 0 ≤ a) :
     push_cast
     have h3 : Real.exp (a + 3) = Real.exp (a + 1) * Real.exp 2 := by
       rw [← Real.exp_add]; ring_nf
-    have h4 : 7 ≤ Real.exp 2 := by
-      have := Real.add_one_le_exp 2
-      have h5 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
-      nlinarith [Real.add_one_le_exp 1]
-    have h6 : 1 ≤ Real.exp (a + 1) := Real.one_le_exp (by linarith)
-    nlinarith
+    have h4 : 3 ≤ Real.exp 2 := by linarith [Real.add_one_le_exp 2]
+    have h6 : 2 ≤ Real.exp (a + 1) := by linarith [Real.add_one_le_exp (a + 1)]
+    nlinarith [mul_nonneg (sub_nonneg.mpr h6) (sub_nonneg.mpr h4)]
 
-/-- **Windowed packet energy.** For a compact `C²` source vanishing beyond `w`, every `η > 0` and
-`L ≥ w`: `∫_w^L P_f² ≤ (1+η) ‖f' − f/2‖₁² ∫_0^{L+w+3} Ẽ² + (1 + 1/η) · 10 h_f(0)`. -/
-theorem integral_sq_packet_le {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
-    {w : ℝ} (hw0 : 0 ≤ w) (hw : ∀ v : ℝ, w < |v| → f v = 0) {η : ℝ} (hη : 0 < η) {L : ℝ}
+/-- `(a − b)² ≤ (1+η)b² + (1+1/η)a²`. -/
+theorem sub_sq_le_weighted {η : ℝ} (hη : 0 < η) (a b : ℝ) :
+    (a - b) ^ 2 ≤ (1 + η) * b ^ 2 + (1 + 1 / η) * a ^ 2 := by
+  have h : 0 ≤ (η * b + a) ^ 2 / η := div_nonneg (sq_nonneg _) hη.le
+  have e : (a - b) ^ 2 = (1 + η) * b ^ 2 + (1 + 1 / η) * a ^ 2 - (η * b + a) ^ 2 / η := by
+    field_simp
+    ring
+  linarith
+
+theorem integral_Ioo_le_integral_of_nonneg {g : ℝ → ℝ} (hg : Integrable g) (hg0 : ∀ u, 0 ≤ g u)
+    {a b : ℝ} (hab : a ≤ b) : ∫ u in a..b, g u ≤ ∫ u, g u := by
+  rw [intervalIntegral.integral_of_le hab]
+  exact setIntegral_le_integral hg (Eventually.of_forall hg0)
+
+/-- **Windowed packet energy** for a compactly supported `C²` source. -/
+theorem integral_sq_packet_le_of_compact (F : C_c(ℝ, ℝ)) (hF : ContDiff ℝ 2 (F : ℝ → ℝ))
+    {w : ℝ} (hw0 : 0 ≤ w) (hw : ∀ v : ℝ, w < |v| → F v = 0) {η : ℝ} (hη : 0 < η) {L : ℝ}
     (hL : w ≤ L) :
-    ∫ τ in w..L, stationaryPacket f τ ^ 2 ≤
-      (1 + η) * (∫ u, |gaugeDerivative f u|) ^ 2 *
-          ∫ t in Icc 0 (L + w + 3), normalizedLogError t ^ 2 +
-        (1 + 1 / η) * (10 * autocorr f 0) := by
-  set F : C_c(ℝ, ℝ) := ⟨⟨f, hf.continuous⟩, hfc⟩
-  have hF1 : ContDiff ℝ 1 (F : ℝ → ℝ) := hf.of_le (by norm_num)
+    ∫ τ in w..L, stationaryPacket F τ ^ 2 ≤
+      (1 + η) * ((∫ u, |gaugeDerivative F u|) ^ 2 *
+          ∫ t in Icc 0 (L + w + 3), normalizedLogError t ^ 2) +
+        (1 + 1 / η) * (10 * autocorr F 0) := by
+  have hF1 : ContDiff ℝ 1 (F : ℝ → ℝ) := hF.of_le (by norm_num)
   obtain ⟨N, hN1, hN2⟩ := exists_cutoff_between (a := L + w) (by linarith)
-  set R := forwardResidual F N
-  set D := chebyshevGaugeConvolution F N
   have hRc := continuous_forwardResidual F hF1 N
   have hDc := continuous_chebyshevGaugeConvolution F hF1 N
-  have hR2 : Integrable fun u => R u ^ 2 :=
+  have hR2 : Integrable fun u => forwardResidual F N u ^ 2 :=
     (hRc.pow 2).integrable_of_hasCompactSupport
       ((hasCompactSupport_forwardResidual F hF1 N).comp_left (g := fun x : ℝ => x ^ 2) (by simp))
-  have hD2 : Integrable fun u => D u ^ 2 :=
+  have hD2 : Integrable fun u => chebyshevGaugeConvolution F N u ^ 2 :=
     (hDc.pow 2).integrable_of_hasCompactSupport
       ((hasCompactSupport_chebyshevGaugeConvolution F N).comp_left (g := fun x : ℝ => x ^ 2)
         (by simp))
-  -- pointwise: `(R − D)² ≤ (1+η)D² + (1+1/η)R²`
-  have hpt : ∀ a b : ℝ, (a - b) ^ 2 ≤ (1 + η) * b ^ 2 + (1 + 1 / η) * a ^ 2 := fun a b => by
-    have h := sq_nonneg (η * b + a)
-    have : (a - b) ^ 2 = (1 + η) * b ^ 2 + (1 + 1 / η) * a ^ 2 - (η * b + a) ^ 2 / η := by
-      field_simp
-      ring
-    rw [this]
-    have : 0 ≤ (η * b + a) ^ 2 / η := div_nonneg h hη.le
-    linarith
-  have hPI : IntervalIntegrable (fun τ => stationaryPacket f τ ^ 2) volume w L :=
-    ((continuous_stationaryPacket hf.continuous hfc).pow 2).intervalIntegrable w L
-  have hQc : Continuous fun τ : ℝ => (1 + η) * D (-τ) ^ 2 + (1 + 1 / η) * R (-τ) ^ 2 := by
-    fun_prop
-  calc ∫ τ in w..L, stationaryPacket f τ ^ 2
-      ≤ ∫ τ in w..L, ((1 + η) * D (-τ) ^ 2 + (1 + 1 / η) * R (-τ) ^ 2) := by
-        refine intervalIntegral.integral_mono_ae_restrict hL hPI (hQc.intervalIntegrable w L) ?_
-        rw [EventuallyLE, ae_restrict_iff' measurableSet_Icc]
-        refine (Measure.ae_ne volume w).mono fun τ hτw hτ => ?_
-        have hτ' : w < τ := lt_of_le_of_ne hτ.1 (Ne.symm hτw)
-        rw [show stationaryPacket f τ = stationaryPacket F τ from rfl,
-          stationaryPacket_eq_gauge F hF1 hw (by linarith [hτ.2])]
-        exact hpt _ _
-    _ = (1 + η) * ∫ u in -L..-w, D u ^ 2 + (1 + 1 / η) * ∫ u in -L..-w, R u ^ 2 := by
-        rw [intervalIntegral.integral_add ((by fun_prop : Continuous fun τ : ℝ =>
-            (1 + η) * D (-τ) ^ 2).intervalIntegrable _ _)
-          ((by fun_prop : Continuous fun τ : ℝ => (1 + 1 / η) * R (-τ) ^ 2).intervalIntegrable _ _),
-          intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
-          intervalIntegral.integral_comp_neg (fun u => D u ^ 2),
-          intervalIntegral.integral_comp_neg (fun u => R u ^ 2)]
-    _ ≤ (1 + η) * ∫ u, D u ^ 2 + (1 + 1 / η) * ∫ u, R u ^ 2 := by
-        have hle : ∀ g : ℝ → ℝ, Integrable g → (∀ u, 0 ≤ g u) →
-            ∫ u in -L..-w, g u ≤ ∫ u, g u := fun g hg hg0 => by
-          rw [intervalIntegral.integral_of_le (by linarith)]
-          exact setIntegral_le_integral hg (Eventually.of_forall hg0)
-        gcongr
-        · exact hle _ hD2 fun u => sq_nonneg _
-        · positivity
-        · exact hle _ hR2 fun u => sq_nonneg _
-    _ ≤ (1 + η) * ((∫ u, |gaugeDerivative f u|) ^ 2 *
-          ∫ t in Icc 0 (L + w + 3), normalizedLogError t ^ 2) +
-        (1 + 1 / η) * (10 * autocorr f 0) := by
-        gcongr
-        · calc ∫ u, D u ^ 2 ≤ (∫ u, |gaugeDerivative F u|) ^ 2 *
-                ∫ t in Icc 0 (cutoff N), normalizedLogError t ^ 2 :=
-              integral_sq_chebyshevGaugeConvolution_le F hF1 N
-            _ ≤ (∫ u, |gaugeDerivative f u|) ^ 2 *
-                ∫ t in Icc 0 (L + w + 3), normalizedLogError t ^ 2 := by
-              gcongr
-              exact setIntegral_mono_set (integrableOn_normalizedLogError_sq _)
-                (Eventually.of_forall fun _ => sq_nonneg _)
-                (Eventually.of_forall (Icc_subset_Icc_right hN2))
-        · positivity
-        · exact integral_sq_forwardResidual_le F N
-    _ = _ := by ring
+  have hPI : IntervalIntegrable (fun τ => stationaryPacket F τ ^ 2) volume w L :=
+    ((continuous_stationaryPacket F.continuous F.hasCompactSupport).pow 2).intervalIntegrable w L
+  have hDn : Continuous fun τ : ℝ => chebyshevGaugeConvolution F N (-τ) ^ 2 := by fun_prop
+  have hRn : Continuous fun τ : ℝ => forwardResidual F N (-τ) ^ 2 := by fun_prop
+  -- pointwise comparison on `(w, L]`
+  have h1 : ∫ τ in w..L, stationaryPacket F τ ^ 2 ≤
+      ∫ τ in w..L, ((1 + η) * chebyshevGaugeConvolution F N (-τ) ^ 2 +
+        (1 + 1 / η) * forwardResidual F N (-τ) ^ 2) := by
+    refine intervalIntegral.integral_mono_ae_restrict hL hPI
+      (((hDn.const_smul (1 + η)).add (hRn.const_smul (1 + 1 / η))).intervalIntegrable w L) ?_
+    rw [EventuallyLE, ae_restrict_iff' measurableSet_Icc]
+    refine (Measure.ae_ne volume w).mono fun τ hτw hτ => ?_
+    have hτ' : w < τ := lt_of_le_of_ne hτ.1 (Ne.symm hτw)
+    rw [stationaryPacket_eq_gauge F hF1 hw0 hw (by linarith [hτ.2])]
+    exact sub_sq_le_weighted hη _ _
+  -- split and reflect
+  have h2 : ∫ τ in w..L, ((1 + η) * chebyshevGaugeConvolution F N (-τ) ^ 2 +
+        (1 + 1 / η) * forwardResidual F N (-τ) ^ 2) =
+      (1 + η) * ∫ u in -L..-w, chebyshevGaugeConvolution F N u ^ 2 +
+        (1 + 1 / η) * ∫ u in -L..-w, forwardResidual F N u ^ 2 := by
+    rw [intervalIntegral.integral_add ((hDn.const_smul (1 + η)).intervalIntegrable w L)
+      ((hRn.const_smul (1 + 1 / η)).intervalIntegrable w L),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_comp_neg (fun u => chebyshevGaugeConvolution F N u ^ 2),
+      intervalIntegral.integral_comp_neg (fun u => forwardResidual F N u ^ 2)]
+  have hDle : ∫ u in -L..-w, chebyshevGaugeConvolution F N u ^ 2 ≤
+      (∫ u, |gaugeDerivative F u|) ^ 2 * ∫ t in Icc 0 (L + w + 3), normalizedLogError t ^ 2 := by
+    refine (integral_Ioo_le_integral_of_nonneg hD2 (fun _ => sq_nonneg _) (by linarith)).trans
+      ((integral_sq_chebyshevGaugeConvolution_le F hF1 N).trans ?_)
+    gcongr
+    exact setIntegral_mono_set (integrableOn_normalizedLogError_sq _)
+      (Eventually.of_forall fun _ => sq_nonneg _)
+      (Eventually.of_forall (Icc_subset_Icc_right hN2))
+  have hRle : ∫ u in -L..-w, forwardResidual F N u ^ 2 ≤ 10 * autocorr F 0 :=
+    (integral_Ioo_le_integral_of_nonneg hR2 (fun _ => sq_nonneg _) (by linarith)).trans
+      (integral_sq_forwardResidual_le F N)
+  have hη1 : 0 ≤ 1 + 1 / η := by positivity
+  rw [h2] at h1
+  nlinarith [mul_le_mul_of_nonneg_left hDle (by linarith : (0 : ℝ) ≤ 1 + η),
+    mul_le_mul_of_nonneg_left hRle hη1]
 
 end
 

@@ -220,7 +220,7 @@ private theorem summable_bezout_term {ε : ℝ} (hε : 0 < ε) :
         mul_le_mul_of_nonneg_right hμ (sq_nonneg _)
     _ ≤ _ := by rw [one_mul]; exact dampedRamanujanCoeff_sq_le hε e
 
-private theorem moebiusReal_two_mul_odd {m : ℕ} (hm : ¬ 2 ∣ m) :
+theorem moebiusReal_two_mul_odd {m : ℕ} (hm : ¬ 2 ∣ m) :
     moebiusReal (2 * m) = -moebiusReal m := by
   unfold moebiusReal
   have hcop : Nat.Coprime 2 m := (Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr hm
@@ -228,7 +228,7 @@ private theorem moebiusReal_two_mul_odd {m : ℕ} (hm : ¬ 2 ∣ m) :
     ArithmeticFunction.moebius_apply_prime Nat.prime_two]
   push_cast; ring
 
-private theorem moebiusReal_four_mul (j : ℕ) : moebiusReal (2 * (2 * j)) = 0 := by
+theorem moebiusReal_four_mul (j : ℕ) : moebiusReal (2 * (2 * j)) = 0 := by
   unfold moebiusReal
   rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree]
   · simp

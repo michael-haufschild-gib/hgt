@@ -159,11 +159,11 @@ theorem zero_mem_discHull (x : ℕ → H) : (0 : H) ∈ discHull x :=
 /-- A combination over `range N` is a combination over any longer range (zero padding). -/
 theorem sum_range_eq_sum_range_pad (x : ℕ → H) (c : ℕ → ℂ) {N M : ℕ} (hNM : N ≤ M) :
     ∑ n ∈ range N, c n • x n = ∑ n ∈ range M, (if n < N then c n else 0) • x n := by
-  rw [sum_subset (Finset.range_subset.mpr hNM)]
-  · refine sum_congr rfl fun n hn => ?_
-    rw [if_pos (mem_range.mp hn)]
-  · intro n _ hn
-    rw [if_neg (fun h => hn (mem_range.mpr h)), zero_smul]
+  have h1 : ∑ n ∈ range N, c n • x n = ∑ n ∈ range N, (if n < N then c n else 0) • x n :=
+    sum_congr rfl fun n hn => by rw [if_pos (mem_range.mp hn)]
+  rw [h1]
+  refine sum_subset (Finset.range_mono hNM) fun n _ hn => ?_
+  rw [if_neg (fun h => hn (mem_range.mpr h)), zero_smul]
 
 theorem convex_discHull (x : ℕ → H) : Convex ℝ (discHull x) := by
   intro v hv w hw a b ha hb hab
@@ -269,7 +269,7 @@ theorem exists_unimodular_finite_approx [CompleteSpace H] (x : ℕ → H)
       refine sum_congr rfl fun n _ => ?_
       rw [hx', add_comm]
     have h2 : ∑ n ∈ range N, ‖⟪x n, e⟫_ℂ‖ ≤ ∑ n ∈ range (N₁' + N), ‖⟪x n, e⟫_ℂ‖ :=
-      sum_le_sum_of_subset_of_nonneg (Finset.range_subset.mpr (by omega))
+      sum_le_sum_of_subset_of_nonneg (Finset.range_mono (by omega))
         fun _ _ _ => norm_nonneg _
     linarith
   -- approximate the residual target in the hull of the tail
