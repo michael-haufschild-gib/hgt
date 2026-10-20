@@ -35,32 +35,39 @@ set_option autoImplicit false
 
 /-! ### The Gamma channel: an `ℓ²` upper bound for the collared mass -/
 
-theorem integrableOn_rpow_neg_two_mul_norm_sq_factorialPhaseCombination (S : Finset ℕ)
-    (b : ℕ → ℂ) :
-    IntegrableOn (fun v => v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b v‖ ^ 2) (Ioi 1) := by
+theorem integrableOn_rpow_neg_two_mul_norm_sq_factorialPhaseCombination_dilate (S : Finset ℕ)
+    (b : ℕ → ℂ) (r : ℝ) :
+    IntegrableOn (fun v => v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b (r * v)‖ ^ 2) (Ioi 1) := by
   have hw : IntegrableOn (fun v : ℝ => v ^ (-2 : ℝ)) (Ioi 1) :=
     integrableOn_Ioi_rpow_of_lt (by norm_num) zero_lt_one
   refine (hw.mul_const ((2 * ∑ n ∈ S, ‖b n‖) ^ 2)).mono' ?_ ?_
   · refine ContinuousOn.aestronglyMeasurable (fun x hx => ?_) measurableSet_Ioi
     have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
     exact ((Real.continuousAt_rpow_const _ _ (Or.inl hx0.ne')).mul
-      ((continuous_factorialPhaseCombination S b).norm.pow 2).continuousAt).continuousWithinAt
+      (((continuous_factorialPhaseCombination S b).comp (continuous_const.mul continuous_id)).norm.pow
+        2).continuousAt).continuousWithinAt
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
     have hv0 : 0 < v := lt_trans zero_lt_one hv
     rw [Real.norm_of_nonneg (mul_nonneg (Real.rpow_nonneg hv0.le _) (sq_nonneg _))]
     exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _)
-      (norm_factorialPhaseCombination_le S b v) 2) (Real.rpow_nonneg hv0.le _)
+      (norm_factorialPhaseCombination_le S b (r * v)) 2) (Real.rpow_nonneg hv0.le _)
 
-/-- **`ℓ²` upper bound with the critical weight.**
-`∫_1^∞ v^{-2} ‖B_b(v)‖² dv ≤ (π²/6) J ∑ ‖b_n‖²`, summing unit windows weighted by `j^{-2}`. -/
-theorem integral_Ioi_one_rpow_neg_two_mul_norm_sq_le (S : Finset ℕ) (b : ℕ → ℂ) :
-    (∫ v in Ioi 1, v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b v‖ ^ 2) ≤
+theorem integrableOn_rpow_neg_two_mul_norm_sq_factorialPhaseCombination (S : Finset ℕ)
+    (b : ℕ → ℂ) :
+    IntegrableOn (fun v => v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b v‖ ^ 2) (Ioi 1) := by
+  simpa using integrableOn_rpow_neg_two_mul_norm_sq_factorialPhaseCombination_dilate S b 1
+
+/-- **Dilated `ℓ²` upper bound with the critical weight.** For `r ≥ 1`,
+`∫_1^∞ v^{-2} ‖B_b(rv)‖² dv ≤ (π²/6) J ∑ ‖b_n‖²`, summing unit windows weighted by `j^{-2}`. -/
+theorem integral_Ioi_one_rpow_neg_two_mul_norm_sq_dilate_le (S : Finset ℕ) (b : ℕ → ℂ) {r : ℝ}
+    (hr : 1 ≤ r) :
+    (∫ v in Ioi 1, v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b (r * v)‖ ^ 2) ≤
       Real.pi ^ 2 / 6 * factorialUnitIntervalUpper * ∑ n ∈ S, ‖b n‖ ^ 2 := by
   set Sb := ∑ n ∈ S, ‖b n‖ ^ 2 with hSb
   have hSb0 : 0 ≤ Sb := Finset.sum_nonneg fun _ _ => sq_nonneg _
-  set g : ℝ → ℝ := fun v => v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b v‖ ^ 2 with hg
+  set g : ℝ → ℝ := fun v => v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b (r * v)‖ ^ 2 with hg
   have hint : IntegrableOn g (Ioi 1) :=
-    integrableOn_rpow_neg_two_mul_norm_sq_factorialPhaseCombination S b
+    integrableOn_rpow_neg_two_mul_norm_sq_factorialPhaseCombination_dilate S b r
   have hlim := intervalIntegral_tendsto_integral_Ioi (f := g) (μ := volume) 1 hint
     (b := fun M : ℕ => 1 + (M : ℝ)) (tendsto_atTop_add_const_left _ _ tendsto_natCast_atTop_atTop)
   refine le_of_tendsto' hlim fun M => ?_
@@ -76,11 +83,10 @@ theorem integral_Ioi_one_rpow_neg_two_mul_norm_sq_le (S : Finset ℕ) (b : ℕ �
     have hgi : IntervalIntegrable g volume aj (aj + 1) := by
       rw [intervalIntegrable_iff_integrableOn_Ioc_of_le (by linarith)]
       exact hint.mono_set fun v hv => lt_of_le_of_lt haj1 hv.1
-    obtain ⟨hBi, hBle⟩ := factorialPhaseCombination_dilated_window_upper S b le_rfl aj zero_le_one
-    simp only [one_mul] at hBi hBle
+    obtain ⟨hBi, hBle⟩ := factorialPhaseCombination_dilated_window_upper S b hr aj zero_le_one
     refine ⟨hgi, ?_⟩
     have hmono : (∫ v in aj..aj + 1, g v) ≤
-        ∫ v in aj..aj + 1, aj ^ (-2 : ℝ) * ‖factorialPhaseCombination S b v‖ ^ 2 := by
+        ∫ v in aj..aj + 1, aj ^ (-2 : ℝ) * ‖factorialPhaseCombination S b (r * v)‖ ^ 2 := by
       refine intervalIntegral.integral_mono_on (by linarith) hgi (hBi.const_mul _) fun v hv => ?_
       exact mul_le_mul_of_nonneg_right
         (Real.rpow_le_rpow_of_nonpos haj0 hv.1 (by norm_num)) (sq_nonneg _)
@@ -117,6 +123,13 @@ theorem integral_Ioi_one_rpow_neg_two_mul_norm_sq_le (S : Finset ℕ) (b : ℕ �
         exact hz.sum_le_tsum _ fun d _ => by positivity
     _ = Real.pi ^ 2 / 6 * factorialUnitIntervalUpper * Sb := by
         rw [hasSum_zeta_two.tsum_eq]; ring
+
+/-- **`ℓ²` upper bound with the critical weight.**
+`∫_1^∞ v^{-2} ‖B_b(v)‖² dv ≤ (π²/6) J ∑ ‖b_n‖²`. -/
+theorem integral_Ioi_one_rpow_neg_two_mul_norm_sq_le (S : Finset ℕ) (b : ℕ → ℂ) :
+    (∫ v in Ioi 1, v ^ (-2 : ℝ) * ‖factorialPhaseCombination S b v‖ ^ 2) ≤
+      Real.pi ^ 2 / 6 * factorialUnitIntervalUpper * ∑ n ∈ S, ‖b n‖ ^ 2 := by
+  simpa using integral_Ioi_one_rpow_neg_two_mul_norm_sq_dilate_le S b le_rfl
 
 /-- Upper mass constant `U = (π²/6) J` of collared sources. -/
 def criticalCollarMassUpper : ℝ := Real.pi ^ 2 / 6 * factorialUnitIntervalUpper

@@ -43,6 +43,7 @@ import GaloisForLFunctions.BezoutValuationIncidence
 import GaloisForLFunctions.TransHorizonIncidenceMechanics
 import GaloisForLFunctions.ArithmeticCriticalityTheory
 import GaloisForLFunctions.SquareRootThreshold
+import GaloisForLFunctions.ArithmeticIncidencePositivity
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean

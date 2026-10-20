@@ -83,6 +83,8 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».CollaredCriticalArch
 import GaloisForLFunctions.«arithmetic-positivity-theory».CollaredCriticalCompleteFormPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalPrimeChannelUniformBound
 import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalCompleteFormHighScalePositivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalPrimeChannelScaleWindows
+import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalCompleteFormPolynomialWindows
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentDepthGapClusterAndPolarGraphBridge
 
@@ -99,6 +101,7 @@ inequality, the `ℓ²`-uniform collared critical prime channel, the Lévy calcu
 sources and the positive definiteness of the collared Lévy–prime and complete collared critical
 forms on high dyadic blocks, the `ℓ²`-uniform critical prime channel via the Montgomery–Vaughan
 jump kernel and the positive definiteness of the complete critical form on high dyadic blocks, the
+logarithmic window law of the prime channel and positive definiteness on polynomial scale windows, the
 sharp affine
 collar constant, Weil completeness of the factorial tent family, universal zero-side reflection
 defect identities, actual-zeta off-line detection by single-scale grid tent patterns, and the

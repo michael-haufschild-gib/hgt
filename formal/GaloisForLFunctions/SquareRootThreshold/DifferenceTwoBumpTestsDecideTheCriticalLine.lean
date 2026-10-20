@@ -308,14 +308,14 @@ theorem exists_two_re_lagStructure_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {
     · rw [← hu0]
       exact le_max_left _ _
 
-/-- **No top pole from one side, above the real exponents.** Let `0 ≤ a < ½` bound the real
-exponents of `2 Re S`. If the difference tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at
-every lag `v ≥ V`, then `D(z) = 0` for every exponent with `Re z > a`. -/
-theorem evenCoeff_eq_zero_of_difference_nonneg_above (Z : ZeroConfig) (hZ : TemperedConfig Z)
+/-- **No top pole under one-sided growth, above the real exponents.** Let `0 ≤ a < ½` bound the
+real exponents of `2 Re S`. If `2 Re S(u) ≤ M e^{au}` for `u ≥ 0`, then `D(z) = 0` for every
+exponent with `Re z > a`. -/
+theorem evenCoeff_eq_zero_of_two_re_lagStructure_le_exp (Z : ZeroConfig) (hZ : TemperedConfig Z)
     {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {a : ℝ}
     (ha0 : 0 ≤ a) (ha : a < 1 / 2)
-    (hreal : ∀ x : ℂ, evenCoeff Z b x ≠ 0 → x.im = 0 → x.re ≤ a) {V : ℝ}
-    (hm : ∀ v : ℝ, V ≤ v → 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re)
+    (hreal : ∀ x : ℂ, evenCoeff Z b x ≠ 0 → x.im = 0 → x.re ≤ a) {M : ℝ}
+    (hMa : ∀ u : ℝ, 0 ≤ u → 2 * (lagStructure Z b u).re ≤ M * Real.exp (a * u))
     {z : ℂ} (hz : a < z.re) : evenCoeff Z b z = 0 := by
   classical
   by_contra hne
@@ -368,9 +368,6 @@ theorem evenCoeff_eq_zero_of_difference_nonneg_above (Z : ZeroConfig) (hZ : Temp
     have := Complex.abs_re_le_norm (lagStructure Z b u)
     simp only [hφ, abs_mul, abs_two, hK]
     nlinarith
-  obtain ⟨M, hM0, hMb⟩ := exists_two_re_lagStructure_le Z hZ hb hbs hm
-  have hMa : ∀ u, 0 ≤ u → φ u ≤ M * Real.exp (a * u) := fun u hu =>
-    (hMb u hu).trans (le_mul_of_one_le_right hM0 (Real.one_le_exp (mul_nonneg ha0 hu)))
   obtain ⟨η₀, hη₀, hnear⟩ := exists_im_eq_zero_of_evenCoeff Z b
   set Λ := resolventSum (fun t : ι => (t : ℂ)) fun t => evenCoeff Z b t with hΛ
   have hΛan : ∀ t : ℝ, a < t → AnalyticAt ℂ Λ t := by
@@ -419,6 +416,19 @@ theorem evenCoeff_eq_zero_of_difference_nonneg_above (Z : ZeroConfig) (hZ : Temp
     (q := fun t => evenCoeff Z b t) hD (A := 1 / 2) ⟨z₀, hz₀⟩
     (fun t ht => hmax t ((Set.Finite.mem_toFinset _).mpr ⟨t.2, ht.trans him₀⟩))
     (fun t ht => Subtype.ext ht) (lt_min hη₁ hη₂) hsep (c := a) (by simp; linarith) hF hFG)
+
+/-- **No top pole from one side, above the real exponents.** Let `0 ≤ a < ½` bound the real
+exponents of `2 Re S`. If the difference tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at
+every lag `v ≥ V`, then `D(z) = 0` for every exponent with `Re z > a`. -/
+theorem evenCoeff_eq_zero_of_difference_nonneg_above (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {a : ℝ}
+    (ha0 : 0 ≤ a) (ha : a < 1 / 2)
+    (hreal : ∀ x : ℂ, evenCoeff Z b x ≠ 0 → x.im = 0 → x.re ≤ a) {V : ℝ}
+    (hm : ∀ v : ℝ, V ≤ v → 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re)
+    {z : ℂ} (hz : a < z.re) : evenCoeff Z b z = 0 := by
+  obtain ⟨M, hM0, hMb⟩ := exists_two_re_lagStructure_le Z hZ hb hbs hm
+  exact evenCoeff_eq_zero_of_two_re_lagStructure_le_exp Z hZ hb hbs ha0 ha hreal (fun u hu =>
+    (hMb u hu).trans (le_mul_of_one_le_right hM0 (Real.one_le_exp (mul_nonneg ha0 hu)))) hz
 
 /-- **No top pole from one side.** For a configuration without real zeros, if the difference
 tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at every lag `v ≥ V`, then `D(z) = 0` for

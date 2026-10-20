@@ -17,7 +17,8 @@ form on a window below the first prime as
     Ẑ(F) = ∫_0^∞ (ω(t) − 2cosh(t/2)) I_M(t) dt + ∫ F² [2 ∫ M(y) cosh((x−y)/2) dy − 𝒲M(x)] dx:
 
 a jump form whose density is the archimedean Lévy density minus the pole density, plus one
-potential. The density `ω(t) − 2cosh(t/2)` is positive for `t ≤ 0.22`
+potential. The density `ω(t) − 2cosh(t/2)` is positive exactly below `t_* = log ρ`, `ρ³ = ρ + 1` the
+plastic number (`ω(t) = 2cosh(t/2)` reduces to `e^{3t} = e^t + 1`); we use it on `t ≤ 0.22`
 (`two_mul_cosh_le_archLevyDensity`): on windows of width `0.22` the full zero form is a Markov form in
 every nonnegative gauge, the pole included. The pole now enters the potential with the sign of a
 mass, `2∫M cosh((x−y)/2) ≥ 2∫M`.

@@ -301,3 +301,25 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   log M. Positivity of the critical form can only fail in the low/mid scales M < M₀ or across
   blocks (multi-scale interaction), which is where the remaining difficulty is concentrated.
   Standard axioms.
+- **C18 · Logarithmic window law of the critical prime channel** — `CriticalPrimeChannelScaleWindows`.
+  `ScaleWindow S M L` (M ≤ n+1 ≤ LM). Support-agnostic harmonic bounds
+  `abs_bilinear_dyadicCrossKernel_le_uniform` (Schur on spaced rows/columns, any finite family) and
+  `abs_bilinear_dyadicCrossKernel_jump_le_uniform` (MV on every branch pair); window-far bounds
+  `abs_bilinear_dyadicCrossKernel_le_far` (16LB/q²) / `..._jump_le_far` (4L/(πq)) when lr ≥ 8Lk;
+  generic reductions `abs_integral_weight_dilate_le_of_uniform` (O(1) for every r) and
+  `abs_integral_weight_dilate_le_of_window` (O(√(L/r)) for r ≥ L, near terms pay 1/√k ≤ √(8L/r));
+  combined `abs_criticalWindowCorrelation_le` (≤ (4/π⁴)K_W min(1,√(L/r))Σb²); capstone
+  `abs_criticalPrimeEnergy_le_of_window`: |P| ≤ C_W(3 + log L)Σb² via min(1,√(L/r)) ≤ (L/r)^ε and
+  the corpus Chebyshev series bound `RHTower.tsum_vonMangoldt_div_rpow_le_six` at ε = 1/(2 + log L).
+  New insight: across many dyadic blocks the prime channel grows only like the LOGARITHM of the scale
+  width — cross-block prime coupling is O(1) per dyadic ring of dilations r ≈ width, summed by
+  Mertens; this is the multi-block Gram law asked for in README §5 "Across blocks". Standard axioms.
+- **C19 · Positive definiteness of the complete critical form on polynomial scale windows** —
+  `CriticalCompleteFormPolynomialWindows`. `neg_le_criticalArithmeticChannels_of_window`,
+  `criticalCompleteEnergy_ge_of_window` (E_crit ≥ (s(log M − c₀) − K₀ − 2C_W(3 + log L))Σb²),
+  capstone `exists_criticalCompleteEnergy_pos_of_window`: ∃ δ > 0 ∃ M₀ ∀ M ≥ M₀ ∀ L ≤ M^δ ∀ family on
+  [M, LM] ∀ b ≠ 0: E_crit(g_b) > 0 (δ = s/(4(C_W+1))). New insight: positivity is not a block-local
+  phenomenon — the archimedean gain is log of the smallest scale, the prime cost log of the width,
+  so the critical form is positive definite on windows [M, M^{1+δ}] spanning polynomially many
+  dyadic blocks. The remaining multi-scale regime is width ≫ M^δ (log L ≍ log M), where the
+  constants s, C_W decide. Standard axioms.

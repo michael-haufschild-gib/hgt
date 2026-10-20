@@ -236,7 +236,13 @@ The configurations and the probes of the theory:
    with separated heights, and the threshold is sharp: a `g`-separated union is resolved at every
    aperture `a > π/(2g)` by Ingham's inequality (cosine kernel on `[−T, T]`, threshold `Tg > π`
    from `Σ 2/(4n² − 1) = 1`), and not at `π/(2g)`, where the double lattice of spacing `2π/L` and
-   the simple lattice of spacing `π/L` share their Weil form.
+   the simple lattice of spacing `π/L` share their Weil form. The one-parameter family of
+   mechanism 21 is faithful up to exactly two invisible data. For a width at which `h_w` vanishes
+   at no zero ordinate, two configurations agree on `κ_w(t + v/2) − κ_w(t − v/2)` for all
+   `v ≥ V` iff `m(ρ) + m(ρ̄)` agree at every `ρ ≠ ½`. Equal lag data make `2 Re S` differ by a
+   constant, and an exponential sum vanishing on a half-line has no coefficient with `Re z ≥ 0`;
+   the merged coefficient at `z` is `(m(½ + z) + m(½ + z̄)) h_w(−iz)²`. The exponent `0` carries
+   `s = ½` and cancels, and a real test cannot tell `ρ` from `ρ̄`.
 11. **Rank-two pair estimate.** A reflected pair contributes `2 Re(A conj B)` with
    `A = ⟨F, e^{δ·}⟩` and `B = ⟨F, e^{−δ·}⟩`. On `[-a, a]` this is at least
    `(2a − sinh(2δa)/δ)‖F‖²`, with equality at `F = sinh(δ·)`.
@@ -297,10 +303,15 @@ The configurations and the probes of the theory:
     terms vanish, and each statement reads: the window prime sum against `k` is at most the
     archimedean term `(1/2π) ∫ h_k Γ`. The same holds for every primitive Dirichlet
     `L(s, χ)`, with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms: for all but countably many
-    widths, GRH is one real inequality per dyadic window, possible real zeros included. At lag `v = log X` the least value of `Re P` over
-    the unimodular tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not `O(X^σ)` for
-    `σ < Θ − ½`, in windows beyond every `X₀`: RH is the absence of any power growth, the
-    square-root threshold itself.
+    widths, GRH is one real inequality per dyadic window, possible real zeros included. At lag
+    `v = log X` the least value of `Re P` over the unimodular tests is `≥ −C X^{Θ − 1/2}`,
+    `Θ = sup Re ρ`, and not `O(X^σ)` for `σ < Θ − ½`, in windows beyond every `X₀`: RH is the
+    absence of any power growth, the square-root threshold itself. The one-parameter family
+    alone measures `Θ`: for generic widths and every `σ ≥ 0`, all zeros satisfy `Re ρ ≤ ½ + σ`
+    iff its window functional at `X` is `≥ −C X^σ` for large `X`, for `ζ` and every primitive
+    `L(s, χ)`. A real exponent beyond `σ` is isolated by Landau's theorem at its own level and
+    then excluded by Abel means after the shift `e^{−σv}`. Each quasi-RH half-plane is one growth
+    condition on one family of dyadic windows.
 
 ---
 

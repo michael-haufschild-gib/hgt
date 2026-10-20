@@ -484,3 +484,40 @@
   Haar dissipation of `τ_ε`: on every linear trans-horizon window its renormalized defect falls
   linearly at rate `R(ε) ~ ε/2` (C26). Its defect sign (C14) is thus a quantitative linear law, not
   only a sign. Standard axioms (1 audited); wired.
+- **C29 · The pronic observable commutes with the damping limit** — `PronicEnergyCommutesWithDamping`.
+  `abs_sieveSeq_le_card_divisors` (`|c| ≤ 1 ⇒ |s_N(n)| ≤ τ(n)`), `tendsto_sieveTotalPronicEnergy_of_pointwise`
+  (pronic energy follows pointwise response limits; domination `τ(n)²/(n(n+1)) ≪ n^{−3/2}`),
+  `tendsto_sieveTotalPronicEnergy_moebius` (`P(N; μ) → 1/2`), `tendsto_sieveTotalPronicEnergy_pmPowerDamped`
+  (`P(N; c_ε) → Σ_n τ_ε(n)²/(n(n+1))`), `tendsto_dampedPronicLimit_zero` (that limit → 1/2 as ε → 0⁺).
+  New insight: `lim_{ε→0} lim_N P(N; c_ε) = 1/2 = lim_N P(N; μ)` — the README §2.3 sieve pronic energy
+  (the physical energy of the Fermi receiver) commutes with the damping limit, whereas the period
+  variance (C19), dissipation (C21/C24) and trans-horizon profile (C23) do not. This locates the
+  non-commutation precisely: it lives in the trans-horizon bulk that pronic weights suppress, so any
+  receiver argument passing through pronic energies cannot see the Möbius horizon floor. Standard
+  axioms (5 audited); wired.
+- **C30 · The growth law of the discrepancy energy below one half** —
+  `DampedDiscrepancyEnergyGrowthLaw`. `selbergMultiplesCoord_of_top_octave` (`Y_N(q) = c(q)/q` for
+  `N < 2q`), `sievePrimitiveEnergy_pmPowerDamped_le_rpow` (`0 < ε < 1/2`: `12E_prim ≤ ζ(1+ε)²
+  N^{1−2ε}/(1−2ε)` via HTGeometry `sum_rpow_sub_one_le`), `eventually_sievePrimitiveEnergy_pmPowerDamped_ge`
+  (every `ε ≥ 0`: `⌊N/2⌋N^{−2ε} ≤ 3456 E_prim`, top-octave Jordan modes), headline
+  `eventually_sievePrimitiveEnergy_pmPowerDamped_growth` (**`E_prim(N; c_ε) ≍ N^{1−2ε}`** for
+  `0 < ε < 1/2`), `abs_coprimeHarmonicMoebius_le_ratio` (`|m_f(x)| ≤ f/φ(f)` for squarefree `f`,
+  sharpening C15's `τ(f)`), `sievePrimitiveEnergy_moebius_le` (Möbius: `12E_prim ≤ 64N(1 + log N)`, with
+  RHTower `sum_totientRatio_sq_div_le`; with C25 the Möbius discrepancy energy lies between `N/6912` and
+  `(16/3)N(1 + log N)`).
+  New insight: C25's threshold resolved into an exact power law — the damped discrepancy is a walk
+  with `N^{1−2ε}` effective steps, interpolating continuously between the Möbius row (linear, up to
+  log) and the bounded regime above one half. The exponent `1 − 2ε` is the period-torus shadow of the
+  `1/2 − ε` loss in the PM receiver. Standard axioms (6 audited); wired. C25's `jordan_mode_le` made
+  public.
+- **C31 · Spectral escape of the Möbius response, tightness of the damped one** —
+  `MoebiusSpectralEscapeAndDampedTightness`. `tendsto_moebius_low_spectral_mass` (for every `E`, the
+  Möbius Ramanujan mode mass `Σ_{e ≤ E} φ(e) Y_N(e)²` → 0), `eventually_moebius_high_spectral_mass_ge`
+  (for every `E`, eventually `Σ_{E < e ≤ N} φ(e) Y_N(e)² ≥ 1/300`), `damped_high_spectral_mass_le`
+  (damped mass above `E` ≤ `ζ(1+ε)² ((1+2ε)/(2ε)) E^{−2ε}` uniformly in `N`), `tendsto_damped_tail_bound`.
+  New insight: the C17/C19 non-commutation of the period variance is now a statement about *where*
+  the spectrum lives. The Möbius variance floor escapes to moduli comparable with the horizon (no
+  fixed modulus retains mass), while the damped spectrum is uniformly tight around the Parseval
+  spectrum of `τ_ε` (C21). The non-commuting limits are a loss of tightness, i.e. spectral escape to
+  the horizon — the period-torus form of the README's trans-horizon mechanism. Standard axioms (4
+  audited); wired.

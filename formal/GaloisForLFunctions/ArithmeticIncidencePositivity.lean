@@ -1,0 +1,12 @@
+import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimePowerIncidenceDominance
+import GaloisForLFunctions.ArithmeticIncidencePositivity.CrossingConductanceSignLaw
+import GaloisForLFunctions.ArithmeticIncidencePositivity.LatticeCrossingClassification
+
+/-!
+# Arithmetic Incidence Positivity
+
+Umbrella for the arithmetic incidence positivity programme: the sign of the critical arithmetic
+form as a property of the incidence structure of the integers (which integers are multiples of
+which, which are consecutive), read pair by pair through the gauge-free conductance kernel of the
+zero form. See `ArithmeticIncidencePositivity/README.md`.
+-/

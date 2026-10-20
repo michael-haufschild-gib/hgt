@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.WeilMarkovPrimitiveHyperplane
+import GaloisForLFunctions.RHTower.WeilPhiDoobPrimeAtoms
 
 /-!
 # Prime-power incidence: the ratio atom dominates the product atom
@@ -66,16 +66,17 @@ theorem productAtom_eq_zero_of_not_isPrimePow {a b : ℕ} (h : ¬ IsPrimePow (a 
 theorem exists_prime_pow_of_isPrimePow_mul {a b : ℕ} (h : IsPrimePow (a * b)) :
     ∃ p i j : ℕ, p.Prime ∧ a = p ^ i ∧ b = p ^ j ∧ 0 < i + j := by
   obtain ⟨p, k, hp, hk, hpk⟩ := (isPrimePow_nat_iff _).mp h
-  obtain ⟨i, -, hi⟩ := (Nat.dvd_prime_pow hp).mp (Dvd.intro b hpk)
-  obtain ⟨j, -, hj⟩ := (Nat.dvd_prime_pow hp).mp (Dvd.intro_left a hpk)
+  obtain ⟨i, -, hi⟩ := (Nat.dvd_prime_pow hp).mp (Dvd.intro b hpk.symm)
+  obtain ⟨j, -, hj⟩ := (Nat.dvd_prime_pow hp).mp (Dvd.intro_left a hpk.symm)
   refine ⟨p, i, j, hp, hi, hj, ?_⟩
   by_contra hij
   have hi0 : i = 0 := by omega
   have hj0 : j = 0 := by omega
-  subst hi0 hj0
+  rw [hi, hj, hi0, hj0] at hpk
   simp only [pow_zero, mul_one] at hpk
-  have : p ^ k = 1 := hpk.symm ▸ rfl
-  exact (pow_eq_one_iff hk.ne').mp this ▸ hp |>.one_lt.ne' rfl
+  have hle : p ≤ p ^ k := Nat.le_self_pow hk.ne' p
+  have := hp.two_le
+  omega
 
 /-- `Λ(p^i p^j) = log p` for a prime `p` and `0 < i + j`. -/
 theorem vonMangoldt_pow_mul_pow {p i j : ℕ} (hp : p.Prime) (hij : 0 < i + j) :
@@ -84,20 +85,18 @@ theorem vonMangoldt_pow_mul_pow {p i j : ℕ} (hp : p.Prime) (hij : 0 < i + j) :
 
 /-- On a prime-power tower the product atom is `log p / √(p^{i+j})`. -/
 theorem productAtom_pow_pow {p i j : ℕ} (hp : p.Prime) (hij : 0 < i + j) :
-    productAtom (p ^ i) (p ^ j) = Real.log p / Real.sqrt ((p : ℝ) ^ (i + j)) := by
+    productAtom (p ^ i) (p ^ j) = Real.log p / Real.sqrt ((p ^ (i + j) : ℕ) : ℝ) := by
   unfold productAtom vonMangoldtAtom
   have h2 : 2 ≤ p ^ i * p ^ j := by
     rw [← pow_add]
     calc 2 ≤ p := hp.two_le
       _ = p ^ 1 := (pow_one p).symm
       _ ≤ p ^ (i + j) := Nat.pow_le_pow_right hp.pos hij
-  rw [if_pos h2, vonMangoldt_pow_mul_pow hp hij]
-  push_cast
-  rw [← pow_add]
+  rw [if_pos h2, vonMangoldt_pow_mul_pow hp hij, ← pow_add]
 
 /-- On a prime-power tower with `i < j` the ratio atom is `log p / √(p^{j−i})`. -/
 theorem ratioAtom_pow_pow {p i j : ℕ} (hp : p.Prime) (hij : i < j) :
-    ratioAtom (p ^ i) (p ^ j) = Real.log p / Real.sqrt ((p : ℝ) ^ (j - i)) := by
+    ratioAtom (p ^ i) (p ^ j) = Real.log p / Real.sqrt ((p ^ (j - i) : ℕ) : ℝ) := by
   unfold ratioAtom vonMangoldtAtom
   have hdvd : p ^ i ∣ p ^ j := Nat.pow_dvd_pow p hij.le
   have hdiv : p ^ j / p ^ i = p ^ (j - i) := by
@@ -107,8 +106,6 @@ theorem ratioAtom_pow_pow {p i j : ℕ} (hp : p.Prime) (hij : i < j) :
       _ = p ^ 1 := (pow_one p).symm
       _ ≤ p ^ (j - i) := Nat.pow_le_pow_right hp.pos (by omega)
   rw [if_pos hdvd, hdiv, if_pos h2, vonMangoldt_apply_pow (by omega), vonMangoldt_apply_prime hp]
-  push_cast
-  rfl
 
 /-- **Dominance law.** For `1 ≤ a < b` the crossing atom never exceeds the same-side atom. -/
 theorem productAtom_le_ratioAtom {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
@@ -118,11 +115,10 @@ theorem productAtom_le_ratioAtom {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
     have hlt : i < j := (Nat.pow_lt_pow_iff_right hp.one_lt).mp hab
     rw [productAtom_pow_pow hp hij, ratioAtom_pow_pow hp hlt]
     have hlogp : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_lt.le)
-    have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.one_lt.le
-    have hpow : (p : ℝ) ^ (j - i) ≤ (p : ℝ) ^ (i + j) :=
-      pow_le_pow_right₀ hp1 (by omega)
-    have hpos : 0 < Real.sqrt ((p : ℝ) ^ (j - i)) :=
-      Real.sqrt_pos.mpr (pow_pos (by linarith) _)
+    have hpow : ((p ^ (j - i) : ℕ) : ℝ) ≤ ((p ^ (i + j) : ℕ) : ℝ) := by
+      exact_mod_cast Nat.pow_le_pow_right hp.pos (by omega)
+    have hpos : 0 < Real.sqrt ((p ^ (j - i) : ℕ) : ℝ) :=
+      Real.sqrt_pos.mpr (by exact_mod_cast pow_pos hp.pos _)
     exact div_le_div_of_nonneg_left hlogp hpos (Real.sqrt_le_sqrt hpow)
   · rw [productAtom_eq_zero_of_not_isPrimePow h]
     exact ratioAtom_nonneg a b
@@ -140,11 +136,10 @@ theorem productAtom_lt_ratioAtom {a b : ℕ} (ha : 2 ≤ a) (hab : a < b) (h : I
     simp at ha
   rw [productAtom_pow_pow hp hij, ratioAtom_pow_pow hp hlt]
   have hlogp : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
-  have hpow : (p : ℝ) ^ (j - i) < (p : ℝ) ^ (i + j) :=
-    pow_lt_pow_right₀ hp1 (by omega)
-  have hpos : 0 < Real.sqrt ((p : ℝ) ^ (j - i)) :=
-    Real.sqrt_pos.mpr (pow_pos (by linarith) _)
+  have hpow : ((p ^ (j - i) : ℕ) : ℝ) < ((p ^ (i + j) : ℕ) : ℝ) := by
+    exact_mod_cast (Nat.pow_lt_pow_iff_right hp.one_lt).mpr (by omega)
+  have hpos : 0 < Real.sqrt ((p ^ (j - i) : ℕ) : ℝ) :=
+    Real.sqrt_pos.mpr (by exact_mod_cast pow_pos hp.pos _)
   exact div_lt_div_of_pos_left hlogp hpos (Real.sqrt_lt_sqrt (by positivity) hpow)
 
 /-- At `a = 1` the two atoms coincide: the pair `{1, b}` is prime-neutral. -/
@@ -213,7 +208,8 @@ theorem productEnergy_eq_zero_of_tower_constant {S : Finset ℕ} (c : ℕ → �
   split_ifs with hab
   · by_cases h : IsPrimePow (a * b)
     · obtain ⟨p, i, j, hp, rfl, rfl, -⟩ := exists_prime_pow_of_isPrimePow_mul h
-      rw [hc p i j hp, sub_self, sq, mul_zero, mul_zero]
+      rw [hc p i j hp]
+      simp
     · rw [productAtom_eq_zero_of_not_isPrimePow h, zero_mul]
   · rfl
 

@@ -67,6 +67,7 @@
 | C42 | MobiusVasyuninFormulaForThePronicGramAtAllModuli | Σ_{d|m} R_d(M) = m⌊M/m⌋, M mod m = −Σ_{d|m,d≥2} R_d(M); S(m₁,m₂) = Σ_{d₁|m₁,d₂|m₂,≥2} G(d₁,d₂); **G(m₁,m₂) = Σ_{a₁b₁=m₁}Σ_{a₂b₂=m₂} μ(a₁)μ(a₂) S(b₁,b₂)** for all m₁,m₂ ≥ 2 — every pronic Gram entry is a Möbius transform of Vasyunin second moments | done |
 | C43 | RelationSpectrumDeterminesTheRowUpToTheCompanion | degree-m relation spectrum ⟺ degree-m translated moments (Parseval both ways); equal relation spectra in degrees 5,6 (⟺ all degrees) ⟺ e = c or e = companion(c) on [1,N] — answers README frontier 'which rows are determined by their relation spectrum beyond translation and Galois': only the half-period companion | done |
 | C44 | ExactVasyuninReciprocityAsResidueDifferenceEnergy | **π(V(m₂,m₁)+V(m₁,m₂)) + (m₂−m₁)(log m₂ − log m₁) = Σ_M ((M mod m₁) − (M mod m₂))²/(M(M+1))** exactly (all moduli); defect ≥ m₁(m₂−m₁)/m₂ for m₁<m₂, ≤ 4((m₁−1)²/m₁+(m₂−1)²/m₂) — README frontier 'error term below O(p+q)': the defect is an exact positive pronic energy of order ≥ min·(1 − min/max) | done |
+| C45 | EnergyMeanOfThePowerDampedSourceTendsToOne | Σ_p log p/(p^s−1) = −ζ'/ζ(s) (prime regrouping); m(ε,Q) = (1/ζ(1+ε))Σ_{p≤Q+1} log p/(p^{1+ε}−1) → −ζ'(1+ε)/ζ(1+ε)² (Q→∞) → 1 (ε→0+); readout defect (1−m(ε,Q))² eventually < η — the readout half of the README dual question; the dual question is exactly V(ε,Q) → 0 along a path | done |
 
 ## Conjecture queue
 
@@ -684,4 +685,16 @@
   exactly the pronic energy of the difference of residues — an identity, not an estimate — and it is at least
   min(m₁,m₂)(1 − min/max): no bound below O(m₁ + m₂) holds for moduli of different sizes; the question reduces to
   the size of an explicit pronic energy (small only for nearby moduli).
+- **Audit:** clean; olean; 4 public theorems standard axioms; wired.
+
+### C45 — The energy mean of the power-damped source tends to one (DONE)
+
+- **Module:** `BezoutValuationIncidence/EnergyMeanOfThePowerDampedSourceTendsToOne.lean`
+- **Statements:** `hasSum_vonMangoldt_rpow`, `hasSum_prime_power_vonMangoldt`, **`hasSum_primes_log_div`**
+  (Σ_p log p/(p^s−1) = Re(−ζ'/ζ)(s)); `pmPowerDampedRamanujanEnergyMean_eq_primes`;
+  **`tendsto_pmPowerDampedRamanujanEnergyMean`** (Q → ∞ limit); `tendsto_neg_deriv_div_sq_riemannZeta`;
+  **`tendsto_limit_energyMean_one`**; **`readout_defect_eventually_small`**.
+- **Why significant:** settles the readout half of the README §5 dual question: along ε → 0, Q → ∞ the energy mean of the
+  power-damped cofactor rows tends to one. What remains (user check-in 2026-10-20): a cofinal source-specific bound on
+  the centred energy V(ε,Q).
 - **Audit:** clean; olean; 4 public theorems standard axioms; wired.

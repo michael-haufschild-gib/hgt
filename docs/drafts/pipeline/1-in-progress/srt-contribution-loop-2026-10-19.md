@@ -395,3 +395,31 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
 - C48 refactors (C48 module only imported by C49/C50): `exists_two_re_lagStructure_le` (one-sided bound on all lags), `exists_im_eq_zero_of_evenCoeff`, **`evenCoeff_eq_zero_of_difference_nonneg_above`** (Landau at any level a ∈ [0,½) above the real exponents); old hreal lemma now a corollary.
 - **`evenCoeff_eq_zero_of_lag_nonneg`** (largest real right exponent δ*: Landau above δ*, then Abel mean contradiction; then Landau at 0), **`onLine_iff_lag_twoBump_nonneg_of_lt_one`** (all tempered configs with zeros in Re < 1, generic width), **`grh_iff_lag_primeWindow_nonneg`**: for every primitive χ mod q > 1: ∃ countable E, ∀ w ∈ (0, ½log2)\E, ∀ V ≥ 0: GRH(χ) ⟺ twisted window functional of κ_w(t+v/2) − κ_w(t−v/2) ≥ 0 for all v ≥ V.
 - README mechanisms 9, 21. Axioms clean; wired after C49.
+- **C51 · The one-parameter lag family determines the configuration, exactly up to conjugation and `s = ½`** —
+  `OneParameterLagFamilyDeterminesTheConfiguration`. (i) Uniqueness of exponential sums with locally finite
+  heights: `Σ q_t e^{λ_t v} = 0` on `[V, ∞)` kills every coefficient with `Re λ_t ≥ 0` (top poles right of the
+  axis, Cesàro means on it) — `eq_zero_of_tsum_cexp_eq_zero`, `eq_zero_of_tsum_exp_eq_zero_of_re_nonpos`.
+  (ii) `Re W(f_v,f_v) = 2Re S(0) − 2Re S(v)` (`re_W_lag_eq`); merged coefficient
+  `D(z) = (m(½+z)+m(½+z̄)) h_w(−iz)²` for all `z` (`evenCoeff_modScaledBump_zero_eq`); reflection
+  `D(−z̄) = conj D(z)` (`evenCoeff_neg_conj`). (iii) `lag_weil_eq_iff_symmMult_eq`: for `h_w` nonvanishing on the
+  zero ordinates, equal `Re W` on `κ_w(t+v/2) − κ_w(t−v/2)`, `v ≥ V` ⟺ `m(ρ)+m(ρ̄)` agree for all `ρ ≠ ½`
+  (converse holds at every lag, no width condition). (iv) `eq_of_lag_weil_eq_of_conj`,
+  `eq_zetaZeroConfig_of_lag_weil_eq`: conjugation-symmetric configurations with equal multiplicity at `½`
+  are determined; the zeros of ζ are determined by its lag data. Sharpens mechanism 10 (faithfulness needed
+  three parameters τ = 0, 1, i and all centers) to one parameter with the exact kernel. Axioms clean; olean
+  built; wired after RealZerosCannotHideFromTheLagFamily; README mechanism 10 extended.
+- **C52 · The one-parameter lag family measures the abscissa `Θ = sup Re ρ`** —
+  `OneParameterLagFamilyMeasuresTheAbscissa`. For tempered `Z` with zeros in `Re ρ < 1`, generic width `w`
+  and every `σ ≥ 0`: all zeros have `Re ρ ≤ ½ + σ` ⟺ `Re W(f_v,f_v) ≥ −C e^{σv}` for large `v`,
+  `f_v = κ_w(t+v/2) − κ_w(t−v/2)` (`re_le_iff_lag_twoBump_ge_neg_exp`). Ingredients: upper rate
+  `two_re_lagStructure_le_mul_exp`; one-sided growth on all lags `exists_two_re_lagStructure_le_exp`;
+  `evenCoeff_eq_zero_of_lag_ge_neg_exp` (Landau at the level of the largest real exponent `δ* > σ`, then Abel
+  means after the shift `e^{−σv}` kill its positive coefficient, then Landau at `σ`); nonvanishing
+  `evenCoeff_modScaledBump_zero_sub_half_ne_zero`. Prime side: `zeta_re_le_iff_lag_primeWindow_ge_neg_exp`,
+  `dirichlet_re_le_iff_lag_primeWindow_ge_neg_exp` — for all but countably many `w ∈ (0, ½ log 2)`, each
+  quasi-(G)RH half-plane `Re ρ ≤ ½ + σ` is the single growth condition `P_v ≥ −C X^σ` (X = e^v) on one family
+  of dyadic prime windows, real zeros included. Refactor: C48 now has the growth form
+  `evenCoeff_eq_zero_of_two_re_lagStructure_le_exp` (Landau with `2Re S ≤ M e^{au}`), from which
+  `evenCoeff_eq_zero_of_difference_nonneg_above` follows. Corpus: `RHTower.WeilLagFunctionGrowth` has the
+  ζ-only analogue for the canonical weights `1/(ρ(1−ρ))` (no compactly supported tests, no windows, no real
+  zeros). Oleans C48–C52 rebuilt; axioms clean; wired; README mechanism 21 extended.

@@ -51,7 +51,7 @@ theorem abs_selbergMultiplesCoord_pmPowerDamped_le {ε : ℝ} (hε : 0 < ε) (N 
     abs_pmPowerDampedRealWeight_div_le d).trans (sum_multiples_rpow_le hε N q hq))
 
 /-- Mode masses are dominated by `ζ(1+ε)² q^{-2ε}`. -/
-private theorem jordan_mode_le {ε : ℝ} (hε : 0 < ε) (N : ℕ) {q : ℕ} (hq : 0 < q) :
+theorem jordan_mode_le {ε : ℝ} (hε : 0 < ε) (N : ℕ) {q : ℕ} (hq : 0 < q) :
     jordanTotient2 q * selbergMultiplesCoord N (pmPowerDampedRealWeight ε) q ^ 2 ≤
       (∑' m : ℕ, (m : ℝ) ^ (-1 - ε)) ^ 2 * (q : ℝ) ^ (-2 * ε) := by
   set Z := ∑' m : ℕ, (m : ℝ) ^ (-1 - ε)

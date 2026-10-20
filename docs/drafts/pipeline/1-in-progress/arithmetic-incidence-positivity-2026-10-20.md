@@ -1,0 +1,89 @@
+# Arithmetic Incidence Positivity (AIP): programme card
+
+- **ID:** aip-2026-10-20
+- **Stage:** 1-in-progress
+- **Type:** THEOREM (Lean) per contribution; CONJECTURE for open items
+- **Source:** docs/reports/review-2010/hard-obstacles-summary-2010.md §2.3 (the field described there)
+- **Statement:** Develop the field whose object is the sign of the critical arithmetic form as a
+  property of the incidence structure of the integers (which integers are multiples of which, which
+  are consecutive), read pair by pair through the gauge-free conductance kernel
+  `k(x,y) = dm(|x−y|) + sinh(x/2) sinh(y/2)` of the zero form. Every contribution is an unconditional
+  Lean theorem in `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/`, wired into the umbrella
+  `GaloisForLFunctions.ArithmeticIncidencePositivity` (registered in `MainTheorems.lean`).
+
+## Goal
+Make the negative conductance of the zero form an explicit arithmetic object: where it sits (which
+pairs of points, which pairs of integers), how large it is, and what pays it. RH is the statement
+that the form is nonnegative on all even profiles in every odd gauge (ACT). The field studies the
+form's conductance geometry unconditionally; the open core is the prime-side inequality between
+anti-diagonal atoms `|x| + y = log n` and same-side atoms `|x − y| = log m` plus the variance.
+
+## Gates
+- [x] 0 → 1 in-progress: folder, umbrella, registration, three modules compiled with `lake env lean`
+- [ ] 1 → 2 fully-proven: README written; the first analytic bridge theorem (bump profiles) proved on paper
+- [ ] 2 → 3 formalized: bridge theorem in Lean, axioms `propext, Classical.choice, Quot.sound`
+- [ ] 3 → 4 not pursued (user rule: no stage 4)
+
+## Approach
+Work in ACT's gauge-free coordinates (odd gauge `M`, even profile `u`, conductance
+`M(x)M(y)k(x,y)`): same-side pairs positive, crossing pairs negative where `k > 0`. Separate the
+archimedean density (continuous) from the prime atoms (lattice). Prove exact sign laws for the
+archimedean part, exact incidence laws for the atoms, then the bridge to profiles built from bumps
+at lattice points, then dyadic-window incidence, then the first-prime-window gauge problem.
+
+## Contribution ledger (append-only)
+
+### C1 — Prime-power incidence dominance (`PrimePowerIncidenceDominance.lean`)
+- `ratioAtom a b = Λ(b/a)/√(b/a)` (same side, `a ∣ b`), `productAtom a b = Λ(ab)/√(ab)` (crossing),
+  `netAtom = ratioAtom − productAtom`.
+- `exists_prime_pow_of_isPrimePow_mul`: `ab` a prime power ⇒ `a = p^i`, `b = p^j`.
+- `productAtom_le_ratioAtom` (`1 ≤ a < b`), `productAtom_lt_ratioAtom` (`2 ≤ a`, `ab` prime power),
+  `productAtom_one_left` (`a = 1`: equality). Net conductance of every lattice pair is `≥ 0`;
+  zero exactly on `{1, p^j}` or when no atom is present.
+- Skeleton Laplacian: `skeletonEnergy_nonneg`, `productEnergy_le_ratioEnergy`,
+  `productEnergy_eq_zero_of_tower_constant` (profiles constant on prime-power towers have no
+  crossing energy).
+- Insight: the negative prime atoms never win on a lattice pair; the prime obstruction lives strictly
+  between lattice points. Imports: `RHTower.WeilPhiDoobPrimeAtoms`. Axioms: standard.
+
+### C2 — Archimedean crossing sign law (`CrossingConductanceSignLaw.lean`)
+- `archPairKernel x y = ω(|x−y|) + sinh(x/2)sinh(y/2)`; `crossingSymbol s = cosh(s/2) − 2ω(s)`.
+- `archPairKernel_pos_of_sameSide`; `archPairKernel_pos_iff` (`x<y`): `k > 0 ⟺ S(y−x) < cosh((x+y)/2)`.
+- `crossingSymbol_strictMonoOn`, `crossingSymbol_two_log_three = 119/120`,
+  `crossingSymbol_four_log_two = 3311/2040`, `exists_crossingThreshold`, `crossingThreshold`
+  (unique root `s₀ ∈ (2 log 3, 4 log 2)`), `crossingSymbol_lt_one_iff`.
+- `archPairKernel_pos_of_lt_threshold`, `archPairKernel_pos_iff_of_eq_threshold` (only the balanced
+  pair is neutral), `archPairKernel_balanced_neg_iff`.
+- `archPairKernel_reflection_pos_iff`: `(−log a, log a)` negative conductance iff `a ∈ {2,3}`.
+- `min_lt_of_archPairKernel_pos`: for `s ≥ 4 log 2` negative crossing pairs have
+  `min(|x|,y) < 6 e^{−3s/4}` (collar).
+- Imports: `RHTower.WeilPhiDoobReflectedKillingPotentialAndDisjointSupportDiagonal`,
+  `ArithmeticCriticalityTheory.ShiftedGroundStateKernelBounds`. Axioms: standard.
+
+### C3 — Negative lattice crossing pairs (`LatticeCrossingClassification.lean`)
+- `archPairKernel_neg_log_log`: closed form
+  `(4(ab)² − (a−1)(b−1)((ab)²−1)) / (4√(ab)((ab)²−1))` for `a, b > 0`, `ab > 1`.
+- `archPairKernel_neg_log_log_pos_iff` (naturals): `k > 0 ⟺ (a−1)(b−1)((ab)²−1) < 4(ab)²`.
+- `latticeCrossing_inequality_iff` and `archPairKernel_neg_log_log_pos_iff_of_two_le`: for
+  `a, b ≥ 2` exactly `{2,2},{2,3},{2,4},{2,5},{3,3}` (near-misses `396 < 400`, `320 < 324`).
+- `archPairKernel_zero_pos` (axis pairs), `archPairKernel_neg_log_log_neg_of_six_le`.
+- Insight: on the lattice the whole negative archimedean conductance is the axis pairs plus five
+  small pairs; with C1 the lattice carries no other negative conductance at all.
+
+## Conjecture queue
+1. Dyadic-window incidence: inside `(X/2, 2X)` ratio pairs are `b = 2a` or `3a`, crossing prime pairs
+   are consecutive powers of `2` or `3`, product atoms are `< 2 log 3 / X`.
+2. Bump-profile bridge: for even `u` built from bumps at `± log a`, the prime-atom part of ACT's
+   `signedJumpEnergy` decomposes into ratio and product pairs with the common gauge factor; the
+   archimedean self-energy of a bump of width `w` is `≍ w log(1/w)` and dominates as `w → 0`.
+3. Sharp collar asymptotic: `min(|x|, y) ∼ 4 e^{−s}` on the boundary of the negative region.
+4. Total lattice kernel (archimedean + atoms) sign law on `(−log a, log b)`; the five pairs with the
+   prime atoms added (`{2,2}`: `ab = 4`, product atom `log 2 / 2`; `{2,4}`: `ab = 8`; `{3,3}`: `ab = 9`).
+5. Parity pair: complete-period sieve forms are even in the Selberg coordinates (invariant under all
+   sign characters); the first-octave response is not.
+6. Open core: extend a gauge argument through the first prime window past `log 2 / 2`, paying the
+   single atom `Λ(2)/√2` by the potential (summary §2.3, mechanism 1).
+
+## Log
+- 2026-10-20 — folder, umbrella and registration created; C1–C3 compiled with `lake env lean`,
+  oleans produced with `lake --old env lean -j 1 -o`; README pending.

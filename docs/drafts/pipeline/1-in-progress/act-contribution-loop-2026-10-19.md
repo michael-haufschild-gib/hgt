@@ -391,3 +391,54 @@ Rule from now on: run a corpus search against the Weil-form lanes before claimin
   positivity is a pointwise inequality between ω, ν, the killing log and γ + log π. Further gain available from
   the pole-product potential 2C_M cosh(x/2) (dropped here) up to the Z-type aperture t₀/2 ≈ 0.14 where
   ω(t₀) = 2cosh(t₀/2). Standard axioms.
+- **C27 · The pole product as a conductance: the Markov window; Weil positivity on [−0.105, 0.105]** —
+  `PoleConductanceWindowWeilPositivity`. Exact gauge decomposition of the Lorentz correction
+  (`two_mul_expMoments_eq_gauge`, F = MF): `2E₊E₋ = 2∫F(x)²∫M(y)cosh((x−y)/2)dy dx − 2∫_0^∞cosh(t/2)I_M(t)dt`,
+  I_M(t) = ∫M(x)M(x+t)(F(x)−F(x+t))² — the pole is a NEGATIVE jump density 2cosh(t/2) plus a mass potential.
+  On a window below the first prime (`signedJumpEnergy_eq_arch_of_window`):
+  Ẑ(F) = ∫_0^∞(ω(t) − 2cosh(t/2))I_M(t)dt + ∫F²[2∫Mcosh((x−y)/2) − 𝒲M] — a jump form with density "Lévy minus
+  pole" + one potential. Z-type aperture: ω(t) ≥ 2cosh(t/2) for t ≤ 0.22 (`two_mul_cosh_le_archLevyDensity`): on
+  windows of width 0.22 the FULL zero form is a Markov form in every nonnegative gauge. Sharp killing
+  N(a)+N(b) ≥ −log(1−e^{−2R}) (`neg_log_one_sub_exp_le_sum`, `neg_poleFreeWeilOperator_ge_sharp`); gauge mass ≥ 2r
+  (`two_mul_le_integral_gauge_cosh`); Taylor-5 exp bounds (`exp_le_taylor_five`). **Theorem**
+  `fullZeroForm_ge_of_support_le_sharp`: every F ∈ C²_c vanishing outside [−21/200, 21/200] has Ẑ(F) ≥ (1/30)∫F²
+  — window 1.55× C26 and 10.5× the corpus's 1/100. C26 refactored: `markovEnergy_eq_gauge_window`,
+  `signedJumpEnergy_nonneg_of_nonneg` (reusable window gauge representation). Remaining headroom: γ < 2/3 is
+  crude (true 0.5772): sharper γ/log π would push R to the Z-type limit ≈ 0.14. Standard axioms.
+- **C28 · SRT's aperture premise discharged at 21/200: zeta positivity on every window of length
+  21/100, complex tests, height windows** — `MarkovWindowZetaPositivityTransfer`. Ẑ translation invariant
+  (`fullZeroForm_translate`, via Ẑ = Re W(autocorrelation) and `CHMDTranslation.weilTest_translate`) ⇒
+  `fullZeroForm_ge_of_support_window`: Ẑ(F) ≥ (1/30)∫F² for F supported in ANY interval of length 21/100.
+  Complex tests (`zetaZeroConfig_re_W_ge_of_support_le`, APT real/imag splitting): Re W_ζ(g,g) ≥ (1/30)∫|g|² on
+  [−21/200, 21/200]. SRT machinery: windowed Weil form and height-averaged Weil form of ζ nonnegative for every
+  window η supported in [−21/200, 21/200] and every test of any aperture
+  (`re_windowedW_zetaZeroConfig_nonneg_of_markovWindow`, `re_integral_heightShift_zetaZeroConfig_nonneg_of_markovWindow`),
+  upgrading SRT's 1/100 (`re_windowedW_zetaZeroConfig_nonneg_of_hundredth`) by 10.5× — height resolution of
+  the windowed explicit formula ~1/aperture correspondingly finer. Cross-field (SRT frontier 3). Standard axioms.
+- **C29 · Frontiers 1 and 2 on short profiles: the pole-free variation inequality and remainder ≥ defect,
+  coercively, at every shift** — `ShortProfilePoleFreeVariationInequality`. For every a > 0 and every even
+  u ∈ C²_c vanishing outside [−21/200, 21/200] (μ_a-mean-zero allowed):
+  `D_a(u) + (1/30)∫(m_a u)² ≤ 2S_a(u) + V_a(u)` (`reflectedDifferenceEnergy_add_le_poleFree_of_support_le`) and
+  `4∫_{x>0}u²ω_aΦ(C_a − sinh(a/2)sinh(x/2)) + (1/30)∫(m_a u)² ≤ R_N(ω_a,u)`
+  (`collarDefect_add_le_groundRemainder_of_support_le`). Mechanism: gauge invariance PF_a(u) = Z(m_a u) (C8),
+  Z = Ẑ on odd tests (`zeroForm_eq_fullZeroForm_of_odd`), Markov window (C27). Insight: the README says the known
+  positive regions (wide plateaus, far bumps with nonzero moment) are exactly regions of pole domination;
+  short profiles are a pole-FREE positive region of both frontier inequalities — there the reflected variation
+  across the fold is paid by same-side variation + variance with a uniform margin, at every shift. Standard axioms.
+
+## Overlap note on C26–C29 (2026-10-20)
+The corpus proves positivity of the POLE-VANISHING restricted Weil form (tests with vanishing exponential
+moments) with ground energy ≥ 1/20 on every aperture ≤ (log 2 + 1/50)/2 via a symbol-grid numerical certificate
+(`RHTower.one_twentieth_le_ccmRestrictedWeilPolarGroundEnergy_of_le_primeTwo`). C26–C28 are about the FULL zero
+form Ẑ on ALL tests (pole terms included, no moment constraint) — the statement SRT/APT proved at 1/100 — and use
+no certificate (pointwise archimedean inequalities only). They do not imply or follow from the pole-vanishing
+result; the full-form aperture remains the relevant comparison (1/100 → 21/200). C29 uses the full form on odd
+tests (where C = 0 but S ≠ 0, so the pole-vanishing result does not apply).
+Further overlap (found after C29): `RHTower.WeilLevyCoshCrossover` (WeilLevyCoshPlasticCrossover) already has the
+mechanism of C27 — replacing ω by the pole kernel 2cosh(t/2) on |u−v| ≤ c cancels the pole term, leaving the
+nonnegative excess ω − 2cosh below the plastic threshold t_* = log ρ, ρ³ = ρ + 1 (= C27's "Z-type aperture") —
+with signed short-support positivity of the archimedean part W_∞ for support LENGTH ≤ 1/130
+(`weilArchRe_nonneg_of_signed_support_Icc_le_inv_130`). C27's new content: the gauge/potential formulation with
+the exact two-sided window killing N(a)+N(b) and the gauge mass, for the FULL zero form (pole terms included),
+reaching support length 21/100 (27× the corpus's 1/130 for W_∞, 10.5× SRT's full-form 1/100). Status of C27:
+PARTIAL overlap in mechanism; quantitative and full-form statements new.
