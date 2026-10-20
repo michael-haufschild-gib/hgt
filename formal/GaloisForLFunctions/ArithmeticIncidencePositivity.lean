@@ -1,6 +1,8 @@
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimePowerIncidenceDominance
 import GaloisForLFunctions.ArithmeticIncidencePositivity.CrossingConductanceSignLaw
 import GaloisForLFunctions.ArithmeticIncidencePositivity.LatticeCrossingClassification
+import GaloisForLFunctions.ArithmeticIncidencePositivity.DyadicWindowIncidence
+import GaloisForLFunctions.ArithmeticIncidencePositivity.AntiDiagonalPolarCompensation
 
 /-!
 # Arithmetic Incidence Positivity

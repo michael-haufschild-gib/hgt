@@ -521,3 +521,49 @@
   spectrum of `τ_ε` (C21). The non-commuting limits are a loss of tightness, i.e. spectral escape to
   the horizon — the period-torus form of the README's trans-horizon mechanism. Standard axioms (4
   audited); wired.
+- **C32 · Second-order law of the damped variance and dissipation** (README §5 frontier item
+  "second-order terms of V(ε) and R(ε)" — resolved) — `DampedVarianceAndDissipationSecondOrderLaw`.
+  `tendsto_pmPowerDampedSecondDensity_second_order` (**`E[τ_ε²] = ε/2 + o(ε²)`**: γ cancels between
+  `ζ(1+2ε)` and `ζ(1+ε)^{-2}`; Euler correction `1 − H(ε) ≤ 64ε²Σ_p p^{−3/2}`; Mathlib
+  `ZetaAsymptotics.tendsto_riemannZeta_sub_one_div_nhds_right`), `tendsto_pmPowerDampedDivisorVariance_second_order`
+  (**`V(ε) = ε/2 − ε² + o(ε²)`**), `dampedBezoutLimit_eq_parity` (exact: `Σ_e μ(e)w_ε(e)² =
+  (1 − (2^{1+ε}−1)^{−2})·Σ_{e odd} μ(e)w_ε(e)²`), `abs_dampedBezoutLimit_le` (`|Σ_e μ(e)w_ε(e)²| ≤
+  128ε E[τ_ε]²` for `ε ≤ 1`, i.e. `O(ε³)`), `tendsto_dampedDissipationRate_second_order` (**`R(ε) = ε/2 +
+  o(ε²)`**), `tendsto_dampedAutocorrelation_one_second_order` (`A_ε(1) = −ε² + o(ε²)`),
+  `tendsto_dampedDissipationRate_sub_variance` (`(R − V)/ε² → 1`).
+  New insight: V and R separate at second order by exactly the squared mean. The dissipation follows
+  the full second moment, because the uncentred lag-one Bézout mean is cubic: parity (one of `n, n+1`
+  is even, and `τ_ε(2m)` carries `1 − 2^{−ε}`) factors out an `O(ε)` prime-2 term. Neighbours are
+  anti-correlated at exactly the scale `E[τ_ε]²`. Standard axioms (8 audited); wired.
+- **C33 · The damped crossover: Euler's constant and an additive window** (README §5 frontier items
+  "second-order term of εΛ(ε)" and "prime horizons with log p = Λ(ε) + O(1)" — both resolved) —
+  `DampedCrossoverEulerConstantAndAdditiveWindow`. `tendsto_pmPowerDampedDivisorDensity_re_second_order`
+  (`ρ_ε = ε − γε² + o(ε²)`), `tendsto_dampedCrossoverScale_sub_main` (**`Λ(ε) = log(1/(2ε))/ε + γ +
+  o(1)`**, i.e. `εΛ(ε) = log(1/(2ε)) + γε + o(ε)`; squeeze `(ρ−ε)/(ερ) ≤ log(ρ/ε)/ε ≤ (ρ−ε)/ε²`),
+  `tendsto_exp_dampedCrossoverScale_mul` (crossover prime `e^{Λ(ε)}(2ε)^{1/ε} → e^γ`),
+  `dampedPrimeSlope_additive_crossover` (**past one absolute `P₀`, for all small ε: `λ_ε(p) > 0` when
+  `log p ≤ Λ(ε) − ε`, `< 0` when `log p ≥ Λ(ε) + ε`**; uses RHTower `exists_abs_deningerHarmonicPartial_log_rate`
+  `|m(t)| ≪ (log t)^{−3}` against the gap `ε²·2ρ_ε`), `dampedPrimeSlope_explicit_crossover`
+  (inject for `p ≤ e^{γ−δ}(2ε)^{−1/ε}`, dissipate for `p ≥ e^{γ+δ}(2ε)^{−1/ε}`),
+  `pmPowerDamped_prime_step_additive_crossover` (energy-step form).
+  New insight: the multiplicative window `(1±δ)Λ(ε)` of the earlier crossover shrinks to an additive
+  window `Λ(ε) ± ε` (relative width `ε²/log(1/ε)`). The crossover prime is a Mertens-type constant
+  `e^γ` times `(2ε)^{−1/ε}`: Euler's constant enters through `ζ(1+ε) = 1/ε + γ + o(1)`. A horizon at
+  `log p = Λ(ε) + c` with fixed `c ≠ 0` has slope of sign `−sign c` for all small ε. Standard axioms
+  (6 audited); wired. C32's `tendsto_riemannZeta_one_add_sub_inv` made public.
+- **C34 · The long-window regime starts at the quadratic scale** (README §5 "least long-window
+  threshold" — explicit threshold lowered from `11N⁵ + 8N³` to `10N² + 8N`) —
+  `QuadraticLongWindowThreshold`. `abs_finiteHarmonicSum_moebiusReal_le_one` (`|m(N)| ≤ 1` via RHTower
+  `abs_sum_moebius_div_le_one`), `two_mul_moebius_defect_le_quadratic_window` (every `N ≥ 2`,
+  `M ≥ 10N²`: `2D̃_N(M;μ) ≤ 4 − (M − 10N²)/(2N)`; BVI quadratic window law
+  `two_mul_shortWindowRenormalizedDefect_le_ten_mul_sq` + Bertrand terminal mode),
+  `moebius_defect_nonpos_of_quadratic_window` (**`D̃_N(M;μ) ≤ 0` for `M ≥ 10N² + 8N`, every `N ≥ 2`**),
+  `eventually_two_mul_moebius_defect_le_uniform_slope` (eventually: slope `1/288` uniform in `N`, via
+  C17's white-noise floor), `eventually_moebius_defect_neg_all` (**eventually `D̃_N(M;μ) < 0` strictly at
+  every `M ≥ 2N`**; polynomial window only up to `N³`), `abs_finiteHarmonicSum_pmPowerDamped_le_three`,
+  `two_mul_pmPowerDamped_defect_le_quadratic_window`, `pmPowerDamped_defect_nonpos_of_quadratic_window`
+  (damped: `D̃_N(M;c_ε) ≤ 0` for `M ≥ 10N² + 72N^{1+2ε}` at every `N ≥ 2`).
+  New insight: the README's quintic threshold (from `S_N ≤ N⁵`) is three powers too pessimistic.
+  Bounded Möbius harmonic sum + quadratic observability put the explicit threshold at the natural
+  scale `S_N ≍ N²`. The global sign at large horizons becomes strict on `M ≥ 2N`, and the polynomial
+  window is only needed up to `N³`. Standard axioms (8 audited); wired.

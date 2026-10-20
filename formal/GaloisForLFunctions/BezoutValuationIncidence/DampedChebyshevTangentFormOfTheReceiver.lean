@@ -290,7 +290,7 @@ theorem pronicNorm_one_le (T : ℕ) : pronicNorm T (fun _ => 1) ≤ 1 := by
   have hsum : ∑ n ∈ Icc 1 T, (1 : ℝ) ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ 1 := by
     simp only [one_pow]
     rw [hIcc, sum_Ico_pronic_mass one_pos (by omega)]
-    have : (0 : ℝ) ≤ 1 / ((T + 1 : ℕ) : ℝ) := by positivity
+    have : (0 : ℝ) ≤ 1 / ((T : ℝ) + 1) := by positivity
     push_cast
     linarith
   exact (Real.sqrt_le_sqrt hsum).trans_eq Real.sqrt_one

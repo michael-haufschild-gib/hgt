@@ -68,6 +68,8 @@
 | C43 | RelationSpectrumDeterminesTheRowUpToTheCompanion | degree-m relation spectrum ⟺ degree-m translated moments (Parseval both ways); equal relation spectra in degrees 5,6 (⟺ all degrees) ⟺ e = c or e = companion(c) on [1,N] — answers README frontier 'which rows are determined by their relation spectrum beyond translation and Galois': only the half-period companion | done |
 | C44 | ExactVasyuninReciprocityAsResidueDifferenceEnergy | **π(V(m₂,m₁)+V(m₁,m₂)) + (m₂−m₁)(log m₂ − log m₁) = Σ_M ((M mod m₁) − (M mod m₂))²/(M(M+1))** exactly (all moduli); defect ≥ m₁(m₂−m₁)/m₂ for m₁<m₂, ≤ 4((m₁−1)²/m₁+(m₂−1)²/m₂) — README frontier 'error term below O(p+q)': the defect is an exact positive pronic energy of order ≥ min·(1 − min/max) | done |
 | C45 | EnergyMeanOfThePowerDampedSourceTendsToOne | Σ_p log p/(p^s−1) = −ζ'/ζ(s) (prime regrouping); m(ε,Q) = (1/ζ(1+ε))Σ_{p≤Q+1} log p/(p^{1+ε}−1) → −ζ'(1+ε)/ζ(1+ε)² (Q→∞) → 1 (ε→0+); readout defect (1−m(ε,Q))² eventually < η — the readout half of the README dual question; the dual question is exactly V(ε,Q) → 0 along a path | done |
+| C46 | DampedChebyshevTangentFormOfTheReceiver | ∂_εA_ε(n) = E_ε(n) = Σ_{k≤n}Λ_ε(k) − n m(ε) (damped von Mangoldt Λ_ε = −Σ_{d|k}μ(d)d^{-ε}log d, readout m = −ζ'/ζ²(1+ε)); A_ε → 1 at zero damping; A_ε − 1 = ∫_0^ε E_η; pronic Minkowski ‖A_ε−1‖_T ≤ ∫_0^ε‖E_η‖_T; ONE integrable bound ‖E_η‖_T ≤ g(η) gives receiver (E_T(ε) ≤ (1+∫g)², ⟹ RH) AND dual (residual ≤ (∫_0^ε g)²); unconditional slope (A_ε−1)/ε → ψ(n)−n, dual residual/ε² → Σ(ψ(n)−n)²/(n(n+1)) | done |
+| (C47 withdrawn) | LogarithmicReciprocityDefectForNearbyModuli | NOT COUNTED: the h·H_{p/h} gap-energy bounds duplicate the existing BVI module PronicResidueGapEnergyAndPrimePairDistance (the corpus search was skipped). Reduced to a bridge: existing gap bounds + C44 exact reciprocity ⟹ hH_K − 2h ≤ π(V(p+h,p)+V(p,p+h)) ≤ hH_K + 4h | bridge |
 
 ## Conjecture queue
 
@@ -698,3 +700,29 @@
   power-damped cofactor rows tends to one. What remains (user check-in 2026-10-20): a cofinal source-specific bound on
   the centred energy V(ε,Q).
 - **Audit:** clean; olean; 4 public theorems standard axioms; wired.
+
+### C46 — Damped Chebyshev tangent form of the receiver (DONE)
+
+- **Trigger:** user check-in 2026-10-20: "readout and finite Gram/reciprocity structure sharpened, but still no cofinal
+  source-specific centred-energy bound". Such a bound is the README receiver. It is RH-equivalent, and at any fixed ε < 1/2 it is
+  already a zero-free half-plane. Direct attack: express the source's centred prefix through its damping derivative.
+- **Module:** `BezoutValuationIncidence/DampedChebyshevTangentFormOfTheReceiver.lean`
+- **Statements:** `hasDerivAt_pmPowerDampedCenteredDivisorPrefix` (tangent law); `tendsto_pmPowerDampedCenteredDivisorPrefix_zero`
+  (A → 1); `tendsto_dampedChebyshevError_zero` (tangent at 0 = ψ(n) − n); `pronicNorm_integral_le` (Minkowski);
+  `pmPowerDampedCenteredDivisorPrefix_sub_eq_integral`; **`pronicNorm_centeredPrefix_sub_one_le`**;
+  `pmPowerDampedDivisorDiscreteEnergy_le_of_tangent_bound`; **`riemannHypothesis_of_integrable_tangent_energy`**;
+  **`dual_residual_le_of_tangent_bound`**; `tendsto_centeredPrefix_sub_one_div`; **`tendsto_dual_residual_div_sq`**.
+- **Insight:** the README's receiver and dual problem are ONE obligation: a horizon-uniform bound on the pronic energy of the
+  centred damped Chebyshev function E_η that is integrable at η = 0. Heuristically, RH predicts ‖E_η‖² ≍ (1/η)Σ_ρ|ρ|^{-2}, which is
+  integrable after taking the square root. Unconditionally, the finite-T dual residual has small-damping slope equal to the pronic Chebyshev
+  energy Σ_{n≤T}(ψ(n)−n)²/(n(n+1)).
+- **Failed part (recorded):** the bound ‖E_η‖ ≤ g(η) itself is not proved. For η < 1/2 it is quasi-RH, and the README Beurling test
+  applies: the reduction holds for every Beurling system, so it cannot close the frontier by itself.
+- **Audit:** clean; olean; 9 public theorems standard axioms; wired.
+
+### C47 — WITHDRAWN (duplicate), kept as bridge
+
+- The block analysis duplicated `PronicResidueGapEnergyAndPrimePairDistance.lean` (exact prefix h·H_K − h²K²/(p(K+1)), bounds
+  h·H_K − h ≤ D ≤ h·H_K + 4h). The module is now only the bridge `vasyunin_reciprocity_nearby_moduli`, combining those bounds with
+  C44 to answer the README item "Vasyunin reciprocity error below O(p+q)": order h log(p/h). Not counted. Count stays 46.
+- Lesson: run `research` on the exact object (residue difference / gap energy) before building.

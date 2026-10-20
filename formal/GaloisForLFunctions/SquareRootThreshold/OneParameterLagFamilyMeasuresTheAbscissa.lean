@@ -61,7 +61,8 @@ theorem two_re_lagStructure_le_mul_exp (Z : ZeroConfig) (hZ : TemperedConfig Z) 
         rw [Complex.norm_real, Real.norm_eq_abs]; exact le_abs_self _
     _ = ‖∑' z : ℂ, evenCoeff Z b z * cexp (z * u)‖ := by rw [he]
     _ ≤ ∑' z : ℂ, ‖evenCoeff Z b z‖ * Real.exp (τ * u) :=
-        (norm_tsum_le_tsum_norm hs.norm).trans (Summable.tsum_le_tsum hterm hs.norm (hD.mul_right _))
+        (norm_tsum_le_tsum_norm hs.norm).trans
+          (Summable.tsum_le_tsum hterm hs.norm (hD.mul_right _))
     _ = (∑' z : ℂ, ‖evenCoeff Z b z‖) * Real.exp (τ * u) := tsum_mul_right
 
 /-! ### Lower rate -/

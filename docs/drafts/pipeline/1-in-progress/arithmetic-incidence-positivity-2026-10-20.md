@@ -20,7 +20,8 @@ anti-diagonal atoms `|x| + y = log n` and same-side atoms `|x − y| = log m` pl
 
 ## Gates
 - [x] 0 → 1 in-progress: folder, umbrella, registration, three modules compiled with `lake env lean`
-- [ ] 1 → 2 fully-proven: README written; the first analytic bridge theorem (bump profiles) proved on paper
+- [x] README written
+- [ ] 1 → 2 fully-proven: the first analytic bridge theorem (bump profiles) proved on paper
 - [ ] 2 → 3 formalized: bridge theorem in Lean, axioms `propext, Classical.choice, Quot.sound`
 - [ ] 3 → 4 not pursued (user rule: no stage 4)
 
@@ -70,9 +71,22 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
 - Insight: on the lattice the whole negative archimedean conductance is the axis pairs plus five
   small pairs; with C1 the lattice carries no other negative conductance at all.
 
+### C4 — Incidence inside a dyadic window (`DyadicWindowIncidence.lean`)
+- `InDyadicWindow X n := X/2 < n < 2X`; `lt_four_mul_of_inDyadicWindow`.
+- `eq_two_mul_or_three_mul_of_dvd`: a proper divisor relation inside a window is a doubling or a
+  tripling; `ratioAtom_inDyadicWindow`: same-side atoms inside a window are `0`, `Λ(2)/√2`, `Λ(3)/√3`.
+- `exponent_sub_le_one_of_inDyadicWindow`, `exponent_eq_of_inDyadicWindow_of_five_le`: consecutive
+  exponents only; primes `≥ 5` have at most one power per window.
+- `consecutive_powers_of_isPrimePow_mul`: window product pairs are `(p^i, p^{i+1})`, `p ∈ {2,3}`;
+  `productAtom_lt_of_inDyadicWindow`: their atoms are `< 2 log 3 / X`.
+- SRT bridge: `inDyadicWindow_of_mem_lagPrimeWindow` (`2w < log 2`, `n ≥ 1`),
+  `eq_two_mul_or_three_mul_of_mem_lagPrimeWindow`, `productAtom_lt_of_mem_lagPrimeWindow`.
+- Imports: C1 and `SquareRootThreshold.LargeDyadicPrimeWindowsDecideTheCriticalLine`. Axioms: standard.
+- README written (`ArithmeticIncidencePositivity/README.md`): why, objects, mechanisms 1–11, traps,
+  open problems 1–6, principles.
+
 ## Conjecture queue
-1. Dyadic-window incidence: inside `(X/2, 2X)` ratio pairs are `b = 2a` or `3a`, crossing prime pairs
-   are consecutive powers of `2` or `3`, product atoms are `< 2 log 3 / X`.
+1. (done as C4) Dyadic-window incidence.
 2. Bump-profile bridge: for even `u` built from bumps at `± log a`, the prime-atom part of ACT's
    `signedJumpEnergy` decomposes into ratio and product pairs with the common gauge factor; the
    archimedean self-energy of a bump of width `w` is `≍ w log(1/w)` and dominates as `w → 0`.
@@ -87,3 +101,5 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
 ## Log
 - 2026-10-20 — folder, umbrella and registration created; C1–C3 compiled with `lake env lean`,
   oleans produced with `lake --old env lean -j 1 -o`; README pending.
+- 2026-10-20 — C4 (dyadic window incidence, SRT bridge) compiled and wired; README written; umbrella
+  compiles; all audited theorems depend only on `propext, Classical.choice, Quot.sound`.

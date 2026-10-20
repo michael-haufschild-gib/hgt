@@ -33,7 +33,7 @@ set_option autoImplicit false
 /-! ### Zeta near one -/
 
 /-- `ζ(1 + cε) - 1/(cε) → γ` as `ε → 0⁺`. -/
-private theorem tendsto_zeta_shift_sub_inv {c : ℝ} (hc : 0 < c) :
+theorem tendsto_riemannZeta_one_add_sub_inv {c : ℝ} (hc : 0 < c) :
     Tendsto (fun ε : ℝ => riemannZeta (1 + ((c * ε : ℝ) : ℂ)) - 1 / ((c * ε : ℝ) : ℂ)) (𝓝[>] 0)
       (𝓝 (Real.eulerMascheroniConstant : ℂ)) := by
   have hmap : Tendsto (fun ε : ℝ => 1 + c * ε) (𝓝[>] 0) (𝓝[>] 1) := by
@@ -55,8 +55,8 @@ private theorem tendsto_zeta_second_order :
     Tendsto (fun ε : ℝ => riemannZeta (1 + ((2 * ε : ℝ) : ℂ)) -
       (ε : ℂ) * riemannZeta (1 + (ε : ℂ)) ^ 2 / 2) (𝓝[>] 0) (𝓝 0) ∧
     Tendsto (fun ε : ℝ => (ε : ℂ) * riemannZeta (1 + (ε : ℂ))) (𝓝[>] 0) (𝓝 1) := by
-  have hu := tendsto_zeta_shift_sub_inv (c := 1) one_pos
-  have hv := tendsto_zeta_shift_sub_inv (c := 2) two_pos
+  have hu := tendsto_riemannZeta_one_add_sub_inv (c := 1) one_pos
+  have hv := tendsto_riemannZeta_one_add_sub_inv (c := 2) two_pos
   simp only [one_mul] at hu
   have he : Tendsto (fun ε : ℝ => (ε : ℂ)) (𝓝[>] 0) (𝓝 0) := by
     simpa using (Complex.continuous_ofReal.tendsto 0).mono_left

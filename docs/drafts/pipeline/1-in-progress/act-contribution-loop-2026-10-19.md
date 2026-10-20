@@ -442,3 +442,17 @@ with signed short-support positivity of the archimedean part W_∞ for support L
 the exact two-sided window killing N(a)+N(b) and the gauge mass, for the FULL zero form (pole terms included),
 reaching support length 21/100 (27× the corpus's 1/130 for W_∞, 10.5× SRT's full-form 1/100). Status of C27:
 PARTIAL overlap in mechanism; quantitative and full-form statements new.
+
+### C30 — The variation inequality on mean-zero profiles, past the prime 2
+Module: `ArithmeticCriticalityTheory/MeanZeroProfileVariationInequalityPastPrimeTwo.lean` (compiled, olean, standard axioms, wired).
+- `polarGroundEnergy_mul_le_fullZeroForm`: real smooth F supported in (−A, A) with ∫F cosh(x/2) = ∫F sinh(x/2) = 0
+  ⇒ μ₀(A)∫F² ≤ Ẑ(F). Bridge: CCM quadratic of the real source = Re W_ζ = Ẑ (`ccmRestrictedWeilSource_complexSmooth_eq_zetaWeil`,
+  APT `fullZeroForm_eq_re_weilFullFunctional`); pole coefficients = exponential moments = C ± S.
+- `reflectedDifferenceEnergy_add_le_poleFree_of_meanZero`: a > 0, u smooth even, profileMoment a u = 0 (μ_a-mean zero),
+  tsupport u ⊆ (−A, A) ⇒ D_a(u) + μ₀(A)∫(m_a u)² ≤ 2S_a(u) + V_a(u).
+- Explicit: margin 1/10 on [−1/3, 1/3] (test length 2/3 < log 2, prime-free; μ₀(½log2) ≥ 1/10) and margin 1/20 on
+  [−7/20, 7/20] (length 7/10 > log 2: the prime 2 is inside the form; μ₀(½(log2+1/50)) ≥ 1/20).
+Significance: the mean-zero sector is exactly where frontier-1 can see zeros; C29 covered all profiles to 21/200, C30 covers
+the zero-visible sector to 7/20 (10/3 further) and is the first region of the frontier inequality in which a prime
+contributes. Discharges the "pole-vanishing CCM certificates ↔ ACT variation inequality" link (previously unconnected).
+Smooth (C^∞) profiles only: the CCM smooth-source core is C^∞.
