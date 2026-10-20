@@ -63,6 +63,10 @@
 | C38 | VonMangoldtReadoutFormOfTheBaezDuarteCriterion | Σ_M (1+L_N(M,c))²w = (1 − Σ_eΛ(e)Y_c(e))² + Q^{ec}(c); RH ⟺ ∀ε ∃N,c: (1 − ΣΛY)² + Q^{ec} < ε (steer the von Mangoldt readout to 1 with vanishing energy-centered pronic energy); unconditional floor ∃κ>0 ∀N≥2 ∀c: (1 − ΣΛY)² + Q^{ec}(c) ≥ κ/log N | done |
 | C39 | BaezDuarteEnergyOfThePowerDampedMobiusRows | Báez-Duarte residual of −w_{ε,Q} (power-damped cofactor row) = (1 − m(ε,Q))² + V(ε,Q) (energy mean/variance of the receiver source); RH ⟸ ∀η ∃ε,Q: (1−m)²+V < η; unconditional floor (1 − m(ε,Q))² + V(ε,Q) ≥ κ/log(Q+1) for all ε>0, Q≥1 | done |
 | C40 | ReadoutEnergyUncertaintyPrinciple | scaling R(tc)=tR, Q(tc)=t²Q; min_t residual = Q/(R²+Q); **κ·R(c)² ≤ (log N − κ)·Q^{ec}(c)** for every row on [1,N] (unconditional readout–energy uncertainty principle); **RH ⟺ sup_{N,c} R(c)²/Q^{ec}(c) = ∞** | done |
+| C41 | LogHarmonicReadoutAndTheMobiusRowEnergyFloor | R(c) = Σ_eΛ(e)Y_c(e) = Σ_{d≤N} c(d)log d/d (log-harmonic readout); Q^{ec} even; Möbius row: eventually Q^{ec}(μ_N) ≥ κ/(4 log N) (from Σμ(d)log d/d → −1 + uncertainty); (1 + Σμ(d)log d/d)² + Q^{ec}(μ_N) ≥ κ/log N for all N ≥ 2 | done |
+| C42 | MobiusVasyuninFormulaForThePronicGramAtAllModuli | Σ_{d|m} R_d(M) = m⌊M/m⌋, M mod m = −Σ_{d|m,d≥2} R_d(M); S(m₁,m₂) = Σ_{d₁|m₁,d₂|m₂,≥2} G(d₁,d₂); **G(m₁,m₂) = Σ_{a₁b₁=m₁}Σ_{a₂b₂=m₂} μ(a₁)μ(a₂) S(b₁,b₂)** for all m₁,m₂ ≥ 2 — every pronic Gram entry is a Möbius transform of Vasyunin second moments | done |
+| C43 | RelationSpectrumDeterminesTheRowUpToTheCompanion | degree-m relation spectrum ⟺ degree-m translated moments (Parseval both ways); equal relation spectra in degrees 5,6 (⟺ all degrees) ⟺ e = c or e = companion(c) on [1,N] — answers README frontier 'which rows are determined by their relation spectrum beyond translation and Galois': only the half-period companion | done |
+| C44 | ExactVasyuninReciprocityAsResidueDifferenceEnergy | **π(V(m₂,m₁)+V(m₁,m₂)) + (m₂−m₁)(log m₂ − log m₁) = Σ_M ((M mod m₁) − (M mod m₂))²/(M(M+1))** exactly (all moduli); defect ≥ m₁(m₂−m₁)/m₂ for m₁<m₂, ≤ 4((m₁−1)²/m₁+(m₂−1)²/m₂) — README frontier 'error term below O(p+q)': the defect is an exact positive pronic energy of order ≥ min·(1 − min/max) | done |
 
 ## Conjecture queue
 
@@ -636,3 +640,48 @@
   critical line), and RH is exactly the statement that no uniform constant exists. This gives the receiver-type
   programme a sharp target: rows with large readout and small centered energy.
 - **Audit:** clean; olean; 3 public theorems standard axioms; wired.
+
+### C41 — Log-harmonic readout; energy floor of the Möbius row (DONE)
+
+- **Module:** `BezoutValuationIncidence/LogHarmonicReadoutAndTheMobiusRowEnergyFloor.lean`
+- **Statements:** **`vonMangoldtReadout_eq_log_harmonic`** (R(c) = Σ_{d≤N} c(d)log d/d via Σ_{e|d}Λ(e) = log d);
+  `sieveEnergyCenteredPronicGramForm_neg`; **`exists_mobius_centered_energy_floor`** (∃κ>0, eventually
+  Q^{ec}(μ_N) ≥ κ/(4 log N)); **`exists_mobius_residual_floor`**.
+- **Why significant:** identifies the BVI von Mangoldt readout with the log-harmonic sum of the row (so all of C37–C40
+  are statements about Σ c(d) log d/d against the centered pronic energy), and gives an unconditional lower bound on
+  the energy-centered pronic energy of the actual truncated Möbius row — the BVI receiver's source at ε = 0 — of order
+  1/log N.
+- **Audit:** clean; olean; 3 public theorems standard axioms; wired.
+
+### C42 — Möbius–Vasyunin formula for the pronic Gram at all moduli (DONE)
+
+- **Module:** `BezoutValuationIncidence/MobiusVasyuninFormulaForThePronicGramAtAllModuli.lean`
+- **Statements:** `pmRamanujanPrimitive_re_eq_sum`; **`sum_divisors_pmRamanujanPrimitive_re`** (Σ_{d|m} R_d(M) =
+  m⌊M/m⌋); **`natMod_eq_neg_sum_pmRamanujanPrimitive`**; `vasyuninSecondMoment_eq_sum_divisors_gram`; `gramExtended`,
+  `sum_divisors_gramExtended`; **`pmRamanujanPrimitiveGram_eq_mobius_vasyunin`**.
+- **Why significant:** completes the bridge C28–C36: the full pronic Gram of the divisor theory (README §2.7; uncentered,
+  and with C31 the energy- and mean-centered) is the double Möbius transform of the Vasyunin second moments of residues,
+  i.e. of the Nyman–Beurling cotangent sums, at every pair of moduli — prime powers and composites included.
+- **Audit:** clean; olean; 4 public theorems standard axioms; wired.
+
+### C43 — The relation spectrum determines the row up to the companion (DONE; answers README frontier item)
+
+- **Module:** `BezoutValuationIncidence/RelationSpectrumDeterminesTheRowUpToTheCompanion.lean`
+- **Statements:** `SameRelationSpectrum`; **`sameRelationSpectrum_iff_translatedMoment`** (relation spectrum ⟺ moments at
+  each degree, via C22 Parseval and the spectral form); **`sameRelationSpectrum_five_six_iff`**,
+  **`sameRelationSpectrum_all_iff`** (⟺ e = c or e = companion(c) on [1,N], via BiScale fifth/sixth classification).
+- **Why significant:** README §5 lists "which rows are determined by their relation spectrum, beyond translation and the
+  Galois action" as open. Answer: none beyond — the only ambiguity is the canonical half-period companion translation,
+  and degrees five and six already suffice.
+- **Audit:** clean; olean; 3 public theorems standard axioms; wired.
+
+### C44 — Exact Vasyunin reciprocity as a residue-difference energy (DONE; answers README frontier item)
+
+- **Module:** `BezoutValuationIncidence/ExactVasyuninReciprocityAsResidueDifferenceEnergy.lean`
+- **Statements:** `residueDifferenceEnergy`, `hasSum_residueDifferenceEnergy`; **`vasyunin_reciprocity_exact`**;
+  `sum_Ico_pronic_mass`; **`residueDifferenceEnergy_ge`** (m₁(m₂−m₁)/m₂ for m₁ < m₂); **`residueDifferenceEnergy_le`**.
+- **Why significant:** README §5 asks for the error term in the Vasyunin reciprocity law below O(p+q). The defect is
+  exactly the pronic energy of the difference of residues — an identity, not an estimate — and it is at least
+  min(m₁,m₂)(1 − min/max): no bound below O(m₁ + m₂) holds for moduli of different sizes; the question reduces to
+  the size of an explicit pronic energy (small only for nearby moduli).
+- **Audit:** clean; olean; 4 public theorems standard axioms; wired.

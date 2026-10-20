@@ -29,6 +29,11 @@ bound `|2 Re S(v)| ≤ K e^{v/2}` keeps the one-sided bound. For `ζ`, whose non
 satisfy `|Im ρ| ≥ 4`, this holds on the prime side
 (`onLine_iff_primeSide_difference_twoBump_nonneg`). It also holds through the dyadic prime windows
 beyond any `X₀` (`onLine_iff_difference_primeWindow_nonneg`).
+
+**Hodge class.** For the polar-free bump the merged coefficient is `(¼ − z²)²` times that of the
+modulated bump (`evenCoeff_scaledBumpPolarFree`), and the pole terms vanish. RH holds iff, for
+every height and every lag `v ≥ V`, the dyadic window prime sum of the polar-free difference
+kernel is at most its archimedean term (`onLine_iff_polarFree_difference_primeWindow_le_arch`).
 -/
 
 open MeasureTheory Complex Set Filter Topology Asymptotics
@@ -257,26 +262,61 @@ theorem continuous_lagStructure (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : �
           neg_abs_le x, le_abs_self x])
   exact hon.continuousAt (Ioo_mem_nhds (by linarith) (by linarith))
 
-/-- **Without real zeros the exponents keep away from the real axis.** -/
-theorem exists_abs_im_ge_of_evenCoeff (Z : ZeroConfig) (b : ℝ → ℂ)
-    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) :
-    ∃ η₀ : ℝ, 0 < η₀ ∧ ∀ z : ℂ, evenCoeff Z b z ≠ 0 → η₀ ≤ |z.im| := by
+/-- **Near the real axis the exponents are real.** -/
+theorem exists_im_eq_zero_of_evenCoeff (Z : ZeroConfig) (b : ℝ → ℂ) :
+    ∃ η₀ : ℝ, 0 < η₀ ∧ ∀ z : ℂ, evenCoeff Z b z ≠ 0 → |z.im| < η₀ → z.im = 0 := by
   obtain ⟨η₀, hη₀, hsep⟩ := exists_sep_height Z 0
-  refine ⟨η₀, hη₀, fun z hz => ?_⟩
-  by_contra hlt
-  push Not at hlt
+  refine ⟨η₀, hη₀, fun z hz hlt => ?_⟩
   rcases mem_of_evenCoeff_ne_zero hz with h | h
-  · exact hreal _ h (hsep _ h (by simpa using hlt))
-  · exact hreal _ h (hsep _ h (by simpa using hlt))
+  · simpa using hsep _ h (by simpa using hlt)
+  · simpa using hsep _ h (by simpa using hlt)
 
-/-- **No top pole from one side.** For a configuration without real zeros, if the difference
-tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at every lag `v ≥ V`, then `D(z) = 0` for
-every exponent with `Re z > 0`. -/
-theorem evenCoeff_eq_zero_of_difference_nonneg (Z : ZeroConfig) (hZ : TemperedConfig Z)
-    {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w)
-    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {V : ℝ}
+/-- **The one-sided bound on all lags.** If the difference tests `b(t + v/2) − b(t − v/2)` are Weil
+nonnegative at every lag `v ≥ V`, then `2 Re S(v) ≤ M` for all `v ≥ 0`, with some `M ≥ 0`: on
+`[V, ∞)` from `Re W = 2 Re S(0) − 2 Re S(v)`, on `[0, V]` from `|2 Re S(v)| ≤ K e^{v/2}`. -/
+theorem exists_two_re_lagStructure_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {V : ℝ}
+    (hm : ∀ v : ℝ, V ≤ v → 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ u : ℝ, 0 ≤ u → 2 * (lagStructure Z b u).re ≤ M := by
+  set K := 2 * ∑' z : ℂ, ‖lagCoeff Z b z‖ with hK
+  have hK0 : 0 ≤ K := mul_nonneg zero_le_two (tsum_nonneg fun _ => norm_nonneg _)
+  have hKb : ∀ u, 0 < u → |2 * (lagStructure Z b u).re| ≤ K * Real.exp (u / 2) := by
+    intro u hu
+    obtain ⟨hs, he⟩ := lagStructure_eq_tsum_lagCoeff Z hZ hb hbs u
+    have hle : ‖lagStructure Z b u‖ ≤ (∑' z : ℂ, ‖lagCoeff Z b z‖) * Real.exp (u / 2) := by
+      rw [he, ← tsum_mul_right]
+      refine (norm_tsum_le_tsum_norm hs.norm).trans (Summable.tsum_le_tsum
+        (fun z => norm_lagCoeff_mul_exp_le z (le_of_eq (abs_of_pos hu))) hs.norm
+        ((summable_norm_lagCoeff Z hZ hb hbs).mul_right _))
+    have := Complex.abs_re_le_norm (lagStructure Z b u)
+    simp only [abs_mul, abs_two, hK]
+    nlinarith
+  refine ⟨max (2 * (lagStructure Z b 0).re) (K * Real.exp (|V| / 2)),
+    (mul_nonneg hK0 (Real.exp_pos _).le).trans (le_max_right _ _), fun u hu => ?_⟩
+  rcases le_or_gt V u with hVu | huV
+  · have h := hm u hVu
+    have hX : lagStructure Z b u + conj (lagStructure Z b (-u)) = 2 * lagStructure Z b u := by
+      rw [conj_lagStructure_neg Z hZ hb hbs u]; ring
+    rw [re_W_unit_twoBump Z hZ hb hbs u (by simp), hX] at h
+    simp only [neg_mul, one_mul, Complex.neg_re, Complex.mul_re, Complex.re_ofNat,
+      Complex.im_ofNat, zero_mul, sub_zero] at h
+    linarith [le_max_left (2 * (lagStructure Z b 0).re) (K * Real.exp (|V| / 2))]
+  · rcases hu.lt_or_eq with hu0 | hu0
+    · refine (le_abs_self _).trans ((hKb u hu0).trans ((mul_le_mul_of_nonneg_left
+        (Real.exp_le_exp.mpr ?_) hK0).trans (le_max_right _ _)))
+      linarith [le_abs_self V]
+    · rw [← hu0]
+      exact le_max_left _ _
+
+/-- **No top pole from one side, above the real exponents.** Let `0 ≤ a < ½` bound the real
+exponents of `2 Re S`. If the difference tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at
+every lag `v ≥ V`, then `D(z) = 0` for every exponent with `Re z > a`. -/
+theorem evenCoeff_eq_zero_of_difference_nonneg_above (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {a : ℝ}
+    (ha0 : 0 ≤ a) (ha : a < 1 / 2)
+    (hreal : ∀ x : ℂ, evenCoeff Z b x ≠ 0 → x.im = 0 → x.re ≤ a) {V : ℝ}
     (hm : ∀ v : ℝ, V ≤ v → 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re)
-    {z : ℂ} (hz : 0 < z.re) : evenCoeff Z b z = 0 := by
+    {z : ℂ} (hz : a < z.re) : evenCoeff Z b z = 0 := by
   classical
   by_contra hne
   set ι : Set ℂ := {z | evenCoeff Z b z ≠ 0} with hι
@@ -328,64 +368,71 @@ theorem evenCoeff_eq_zero_of_difference_nonneg (Z : ZeroConfig) (hZ : TemperedCo
     have := Complex.abs_re_le_norm (lagStructure Z b u)
     simp only [hφ, abs_mul, abs_two, hK]
     nlinarith
-  have hK0 : 0 ≤ K := mul_nonneg zero_le_two (tsum_nonneg fun _ => norm_nonneg _)
-  set M := max (2 * (lagStructure Z b 0).re) (K * Real.exp (|V| / 2)) with hMdef
-  have hMb : ∀ u, 0 ≤ u → φ u ≤ M * Real.exp (0 * u) := by
-    intro u hu
-    simp only [zero_mul, Real.exp_zero, mul_one]
-    rcases le_or_gt V u with hVu | huV
-    · have h := hm u hVu
-      have hX : lagStructure Z b u + conj (lagStructure Z b (-u)) = 2 * lagStructure Z b u := by
-        rw [conj_lagStructure_neg Z hZ hb hbs u]; ring
-      rw [re_W_unit_twoBump Z hZ hb hbs u (by simp), hX] at h
-      simp only [neg_mul, one_mul, Complex.neg_re, Complex.mul_re, Complex.re_ofNat,
-        Complex.im_ofNat, zero_mul, sub_zero] at h
-      simp only [hφ]
-      linarith [le_max_left (2 * (lagStructure Z b 0).re) (K * Real.exp (|V| / 2))]
-    · rcases hu.lt_or_eq with hu0 | hu0
-      · refine (le_abs_self _).trans ((hKb u hu0).trans ((mul_le_mul_of_nonneg_left
-          (Real.exp_le_exp.mpr ?_) hK0).trans (le_max_right _ _)))
-        linarith [le_abs_self V]
-      · rw [← hu0]
-        exact le_max_left _ _
-  obtain ⟨η₀, hη₀, hfar⟩ := exists_abs_im_ge_of_evenCoeff Z b hreal
+  obtain ⟨M, hM0, hMb⟩ := exists_two_re_lagStructure_le Z hZ hb hbs hm
+  have hMa : ∀ u, 0 ≤ u → φ u ≤ M * Real.exp (a * u) := fun u hu =>
+    (hMb u hu).trans (le_mul_of_one_le_right hM0 (Real.one_le_exp (mul_nonneg ha0 hu)))
+  obtain ⟨η₀, hη₀, hnear⟩ := exists_im_eq_zero_of_evenCoeff Z b
   set Λ := resolventSum (fun t : ι => (t : ℂ)) fun t => evenCoeff Z b t with hΛ
-  have hΛan : ∀ t : ℝ, 0 < t → AnalyticAt ℂ Λ t := by
-    intro t _
-    have hgap : ∀ (x : ι) (s : ℂ), s ∈ Metric.ball (t : ℂ) (η₀ / 2) →
-        η₀ / 2 ≤ ‖s - (x : ℂ)‖ := by
+  have hΛan : ∀ t : ℝ, a < t → AnalyticAt ℂ Λ t := by
+    intro t hat
+    set r := min η₀ (t - a) / 2 with hr
+    have hr0 : 0 < r := by rw [hr]; exact half_pos (lt_min hη₀ (by linarith))
+    have hr1 : 2 * r ≤ η₀ := by rw [hr]; linarith [min_le_left η₀ (t - a)]
+    have hr2 : 2 * r ≤ t - a := by rw [hr]; linarith [min_le_right η₀ (t - a)]
+    have hgap : ∀ (x : ι) (s : ℂ), s ∈ Metric.ball (t : ℂ) r → r ≤ ‖s - (x : ℂ)‖ := by
       intro x s hs
       rw [Metric.mem_ball, Complex.dist_eq] at hs
-      have h1 := hfar _ x.2
       have h2 : |s.im| ≤ ‖s - t‖ := by
         have := Complex.abs_im_le_norm (s - t); simpa using this
-      have h3 : |(s - (x : ℂ)).im| ≤ ‖s - (x : ℂ)‖ := Complex.abs_im_le_norm _
-      have h4 : |(x : ℂ).im| ≤ |(s - (x : ℂ)).im| + |s.im| := by
-        rw [Complex.sub_im]
-        calc |(x : ℂ).im| = |-(s.im - (x : ℂ).im) + s.im| := by ring_nf
-          _ ≤ |-(s.im - (x : ℂ).im)| + |s.im| := abs_add_le _ _
-          _ = |s.im - (x : ℂ).im| + |s.im| := by rw [abs_neg]
-      linarith
-    have hdiff : DifferentiableOn ℂ Λ (Metric.ball (t : ℂ) (η₀ / 2)) := by
-      refine Complex.differentiableOn_tsum_of_summable_norm (u := fun x => ‖evenCoeff Z b x‖ /
-        (η₀ / 2)) (hD.div_const _) (fun x => ?_) Metric.isOpen_ball (fun x s hs => ?_)
+      have h2' : |s.re - t| ≤ ‖s - t‖ := by
+        have := Complex.abs_re_le_norm (s - t); simpa using this
+      by_cases hx : |(x : ℂ).im| < η₀
+      · have him := hnear _ x.2 hx
+        have hre := hreal _ x.2 him
+        have h3 : (s - (x : ℂ)).re ≤ ‖s - (x : ℂ)‖ := Complex.re_le_norm _
+        rw [Complex.sub_re] at h3
+        linarith [(abs_le.mp h2').1]
+      · push Not at hx
+        have h3 : |(s - (x : ℂ)).im| ≤ ‖s - (x : ℂ)‖ := Complex.abs_im_le_norm _
+        have h4 : |(x : ℂ).im| ≤ |(s - (x : ℂ)).im| + |s.im| := by
+          rw [Complex.sub_im]
+          calc |(x : ℂ).im| = |-(s.im - (x : ℂ).im) + s.im| := by ring_nf
+            _ ≤ |-(s.im - (x : ℂ).im)| + |s.im| := abs_add_le _ _
+            _ = |s.im - (x : ℂ).im| + |s.im| := by rw [abs_neg]
+        linarith
+    have hdiff : DifferentiableOn ℂ Λ (Metric.ball (t : ℂ) r) := by
+      refine Complex.differentiableOn_tsum_of_summable_norm (u := fun x => ‖evenCoeff Z b x‖ / r)
+        (hD.div_const _) (fun x => ?_) Metric.isOpen_ball (fun x s hs => ?_)
       · refine (differentiableOn_const _).div (differentiableOn_id.sub_const _) fun s hs h0 => ?_
         have := hgap x s hs
         rw [h0, norm_zero] at this
         linarith
       · rw [norm_div]
-        exact div_le_div_of_nonneg_left (norm_nonneg _) (by positivity) (hgap x s hs)
-    exact hdiff.analyticAt (Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self (by positivity)))
+        exact div_le_div_of_nonneg_left (norm_nonneg _) hr0 (hgap x s hs)
+    exact hdiff.analyticAt (Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self hr0))
   have hΛφ : ∀ s : ℂ, 1 / 2 < s.re →
       ∫ u in Ioi (0 : ℝ), ((φ u : ℝ) : ℂ) * cexp (-s * u) = Λ s := fun s hs => by
     simp_rw [hφrep]
     exact integral_tsum_exp_mul_exp_neg hD (fun t => re_le_of_evenCoeff_ne_zero t.2) hs
-  obtain ⟨F, hF, hFG⟩ := exists_differentiable_extension_of_le_exp hφm hKb le_rfl (by norm_num)
-    hMb hΛan hΛφ
+  obtain ⟨F, hF, hFG⟩ := exists_differentiable_extension_of_le_exp hφm hKb ha0 ha hMa hΛan hΛφ
   exact hz₀ (eq_zero_of_resolventSum_eq_differentiable (lam := fun t : ι => (t : ℂ))
     (q := fun t => evenCoeff Z b t) hD (A := 1 / 2) ⟨z₀, hz₀⟩
     (fun t ht => hmax t ((Set.Finite.mem_toFinset _).mpr ⟨t.2, ht.trans him₀⟩))
-    (fun t ht => Subtype.ext ht) (lt_min hη₁ hη₂) hsep (c := 0) (by simp; linarith) hF hFG)
+    (fun t ht => Subtype.ext ht) (lt_min hη₁ hη₂) hsep (c := a) (by simp; linarith) hF hFG)
+
+/-- **No top pole from one side.** For a configuration without real zeros, if the difference
+tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at every lag `v ≥ V`, then `D(z) = 0` for
+every exponent with `Re z > 0`. -/
+theorem evenCoeff_eq_zero_of_difference_nonneg (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w)
+    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {V : ℝ}
+    (hm : ∀ v : ℝ, V ≤ v → 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re)
+    {z : ℂ} (hz : 0 < z.re) : evenCoeff Z b z = 0 :=
+  evenCoeff_eq_zero_of_difference_nonneg_above Z hZ hb hbs le_rfl (by norm_num)
+    (fun x hx him => absurd him (by
+      rcases mem_of_evenCoeff_ne_zero hx with h | h
+      · exact fun h0 => hreal _ h (by simpa using h0)
+      · exact fun h0 => hreal _ h (by simpa using h0))) hm hz
 
 /-! ### One sign decides the line -/
 

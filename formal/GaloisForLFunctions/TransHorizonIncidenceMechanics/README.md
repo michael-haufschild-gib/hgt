@@ -668,7 +668,13 @@ $$
 $$
 the damped defect dissipates linearly in the window at the Haar dissipation rate
 of $\tau_\varepsilon$; the prime-boundary mechanism of §3.4 is the visible part of
-a positive-density dissipation.
+a positive-density dissipation. The rate is half the damping: the dissipation
+splits as variance minus lag-one autocorrelation, $R(\varepsilon)=V(\varepsilon)-A_\varepsilon(1)$,
+with $\lvert A_\varepsilon(1)\rvert\le16\,\mathbb E[\tau_\varepsilon]^2=O(\varepsilon^2)$
+against $V(\varepsilon)\sim\varepsilon/2$, so $R(\varepsilon)/\varepsilon\to\tfrac12$,
+$R(\varepsilon)/V(\varepsilon)\to1$, and the window defect has small-damping slope
+$\lim_{\varepsilon\to0}\varepsilon^{-1}\lim_N\widetilde{\mathcal D}_N((B+1)N;c_\varepsilon)/N=-(B+1)/2$:
+every unit of window dissipates half the damping parameter.
 
 **Slope reversal and the crossover.** At a prime horizon the damped step is, with
 $r=p^{-\varepsilon}$, $\mathcal E_p(M)-\mathcal E_{p-1}(M)=r^2B-2r\sum_{d<p}c_\varepsilon(d)\lfloor B/d\rfloor=rB\lambda_\varepsilon(p)+O(rp)$.
@@ -1039,8 +1045,8 @@ values $P(1),P(2)$ are known; the sign of $A(B)$ for every band, the monotonicit
 and concavity of the profile, and the classification of the squarefree cores
 with negative slope in each band are open. The damped crossover is located to
 first order; the second-order term of $\varepsilon\Lambda(\varepsilon)$, the behaviour
-of prime horizons with $\log p=\Lambda(\varepsilon)+O(1)$, and expansions of
-$V(\varepsilon)$ and $R(\varepsilon)$ beyond the leading $\varepsilon/2$ are open.
+of prime horizons with $\log p=\Lambda(\varepsilon)+O(1)$, and the second-order terms of
+$V(\varepsilon)$ and $R(\varepsilon)$ beyond the common leading term $\varepsilon/2$ are open.
 
 **The odd sector.** After exact collar cancellation the remaining obligation is
 an independently quantified bound on the low-prime diagonal potential, or an

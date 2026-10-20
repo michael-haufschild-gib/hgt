@@ -79,6 +79,29 @@ them.
 | Prime polynomial | `Π_f(ξ) = Σ_{2≤n≤X} Λ(n) n^{−1/2}(k_f(log n) n^{2πiξ} + k_f(−log n) n^{−2πiξ})` | `primePolynomial` |
 | Archimedean–pole part | `A_f(ξ) = h_k(i/2) + h_k(−i/2) + ∫ h_k μ` with `k = S_ξ f ⋆ (S_ξ f)~` | `archPart` |
 | Diagonal energy | `V_f = Σ_{2≤n≤X} Λ(n)²/n (|k_f(log n)|² + |k_f(−log n)|²)` | `primeVariance` |
+| Prime-only polynomial and envelope | the prime terms of `Π_f`; the `ℓ¹` envelope `M_f` of its coefficients | `primeOnlyPolynomial`, `primeEnvelope` |
+| Prime window functional | `P_v(k) = Σ_n Λ(n)/√n (k(log n) + k(−log n))` read on `|log n − v| ≤ 2w` | `lagPrimeWindow`, `lagPrimeWindowRHS` |
+
+The configurations and the probes of the theory:
+
+| Object | Meaning | Lean |
+|---|---|---|
+| Isolated pair, run, cluster | one reflected off-line pair; a contiguous run of off-line lattice points; a finite off-line set of comparable depths | `isolatedPairConfig`, `runConfig`, `clusterConfig` |
+| Periodic patterns and profiles | `P` off-line pairs per period at offsets `θ_r` and depths `d_r`; a periodic depth profile on a lattice | `patternConfig`, `profileConfig` |
+| Jittered and diluted lattices | ordinates `2πk/L + (−1)^k ε`; a sparse off-line lattice of spacing `2π/ℓ` inside the on-line lattice of spacing `2π/L` | `jitterConfig`, `dilutedLatticeConfig` |
+| On-line shadow | a weighted on-line periodic configuration with moments `M(m) = Σ_k w_k e^{ic_k mℓ}` | `onLineShadow`, `shadowMoment` |
+| Symbols and floors | depth, pattern and lattice symbols `D(m)`; the shifted symbol; the lattice ground energy `L(n − √(S₊S₋))` | `depthSymbol`, `patternSymbol`, `latticeSymbol`, `shiftSymbol`, `latticeFloor` |
+| Modulated bumps | the corpus bump `κ` scaled to width `w` and modulated to height `γ`; its polar-free version with transform vanishing at `±i/2` | `RHTower.modScaledBump`, `RHTower.scaledBumpPolarFree`, `modBump` |
+| Two-bump test | `β(t + v/2) + τβ(t − v/2)`, lag `v`, coupling `τ`; unimodular when `|τ| = 1`, difference test when `τ = −1` | `twoBump` |
+| Lag structure | `S(v) = Σ_ρ m_ρ h_{β⋆β̃}(γ_ρ) e^{iγ_ρ v}`, so that `W(twoBump) = (1 + |τ|²)S(0) + τS(v) + τ̄S(−v)` | `lagStructure`, `lagTerm`, `lagCoeff`, `evenCoeff` |
+| Minor deficit | `2 Re S(0) − |S(v) + conj S(−v)|`, the least `Re W` over unimodular two-bump tests at lag `v` | `minorDeficit` |
+| Right zeros, off-line weights | the zeros `Re ρ > ½`; the weight `q_t = m_t h_b(γ_t − iδ_t) conj h_b(γ_t + iδ_t)` of a pair at the bump | `rightZeros`, `offLineWeight`, `pairWeight` |
+| On-line mass | `Σ_{on-line} m_ρ |h_β(γ_ρ − γ₀)|²`, the local on-line mass seen by a bump at height `γ₀` | `onLineMass`, `onLineMassOf` |
+| Depth-deficit and depth-excess transforms, level tail | `G(v) = Σ_{δ_t < D} |q_t| e^{−(D − δ_t)v}`, `E(v) = Σ_{δ_t > D} |q_t| e^{(δ_t − D)v}`, and the weight of a level outside a finite part | `depthDeficit`, `depthExcess`, `levelTail` |
+| Ingham kernel and constant | `∫_{−T}^{T} cos(πt/2T) e^{ixt} dt` and the constant `C(T, g) > 0` for `Tg > π` | `inghamKernel`, `inghamConst` |
+| Exponential-sum profile, resolvent | the Mellin profile `x ↦ Σ q_t x^{−λ_t}` of `Σ q_t e^{λ_t v}` and its resolvent `Σ q_t/(s − λ_t)` | `expSumProfile`, `resolventSum` |
+| Polar-free kernel | the autocorrelation of the polar-free two-bump test | `polarFreeKernel` |
+| Three archimedean bands | the piecewise lower bounds of the archimedean symbol below aperture `1/100` | `muLow`, `muMid`, `muHigh` |
 
 **Words.**
 * **Aperture `a`:** the support radius of the test; resolution `π/a`, prime length `e^{2a}`.
@@ -91,6 +114,14 @@ them.
   index.
 * **Crystal:** a periodic off-line configuration with uniform depth whose ordinates form one
   arithmetic progression.
+* **Shadow:** a weighted on-line configuration whose Weil form coincides with that of a given
+  configuration on all tests of some aperture.
+* **Level:** the off-line zeros of one common depth; the **top level** is the deepest one, and a
+  depth is **attained** when some zero has it.
+* **Minor:** the two-point inequality `|S(v) + conj S(−v)| ≤ 2 Re S(0)` forced by invisibility;
+  a configuration is seen at lag `v` when the minor fails there.
+* **Nyquist aperture:** the aperture `Pℓ/2` at which a periodic configuration with `P` ordinates per
+  period `2π/ℓ` becomes resolvable; position and depth become visible there.
 
 ---
 
@@ -127,7 +158,10 @@ them.
    lattice it is `L(n − √(S₊S₋))`, `S_± = Σ_{j<n} e^{±2δjL}`: it decays like `−e^{2δa}`. For every
    periodic configuration the decay exponent is exactly twice the maximal depth: the relaxed
    Hodge index `Re W ≥ −e^{θa}∫|f|²` holds at all large apertures for `θ > 2d_max` and fails for
-   `θ < 2d_max`.
+   `θ < 2d_max`. On the off-line lattice the ground energy is explicit,
+   `L(n − U_{n−1}(cosh δL))` with `U` the Chebyshev polynomial of the second kind, for apertures in
+   `((n−1)L/2, nL/2]`: a strictly decreasing step function of the aperture, right-discontinuous
+   at every multiple of `L/2`.
 7. **Modes are amplified by `cosh`.** For offsets `θ_r` and depths `d_r`, the mode `D(m)` is the
    `m`-th Fourier coefficient of the ordinate pattern weighted by `2cosh(d_r mℓ)`. Hiding up to
    the Nyquist aperture needs `|D(m)| ≤ D(0)` for every mode below the period. At growing density
@@ -181,7 +215,16 @@ them.
    difference tests `κ_γ(t + v/2) − κ_γ(t − v/2)` only bound `2 Re S(v)` from above. By Landau's
    theorem, the abscissa of the Laplace transform of a function bounded on one side is a real
    singularity. The exponents keep away from the real axis, so the transform continues to
-   `Re s > 0`, and the top residue vanishes again.
+   `Re s > 0`, and the top residue vanishes again. The height parameter can be dropped too. For
+   the unmodulated bump the conjugate zeros add, and the merged coefficient is
+   `(m_t + m_{t̄}) h_w(γ − iδ)²`. Since `w ↦ h_w(p)` is a rescaled entire function with
+   `h(0) = ∫κ > 0`, it vanishes for only countably many widths. So for all but countably many `w`
+   the one-parameter family `κ_w(t + v/2) − κ_w(t − v/2)`, `v ≥ 0`, decides the line. Real
+   zeros cannot hide from it. At the center `0` a real zero `½ + δ` has coefficient
+   `2m h_w(−iδ)² > 0`. Once Landau has removed everything to the right of the largest real
+   exponent `δ*`, the Abel means `(s − δ*)∫_0^∞ e^{−sv} 2 Re S(v) dv` tend to that positive
+   coefficient as `s ↓ δ*`, which the one-sided bound forbids. No hypothesis on real zeros
+   remains.
    The same argument measures the rate: the least `Re W` over these tests at lag `v` is
    `≥ −Ce^{Dv}` when every depth is at most `D`, and is not `O(e^{σv})` for any `σ` below the
    depth of a zero. Negativity grows exactly at the rate of the deepest zero.
@@ -238,9 +281,11 @@ them.
     `±M_f`, and stays near it on intervals of explicit length. The archimedean part grows only like
     `log(1 + |ξ|)`. A coherent prime excursion of size `B` therefore either makes the localized
     Weil form negative or occurs at a height with `log(1 + 2π|ξ|) ≳ (B − C_f)/‖f‖²`.
-21. **Two parameters decide the line.** Through the explicit formula the two-bump criteria
+21. **One parameter decides the line.** Through the explicit formula the two-bump criteria
     become prime-side ones. Every zero of `ζ` is on the critical line iff `Re P(f ⋆ f̃) ≥ 0` for
-    the difference tests `f = κ_γ(t + v/2) − κ_γ(t − v/2)`, `γ ∈ ℝ`, `v ≥ 0`, where
+    the difference tests `f = κ_γ(t + v/2) − κ_γ(t − v/2)`, `γ ∈ ℝ`, `v ≥ 0`. For all but
+    countably many widths the height can be fixed at `γ = 0`, leaving the lag as the only
+    parameter. Here
     `P(k) = h_k(i/2) + h_k(−i/2) − Σ_n Λ(n)/√n (k(log n) + k(−log n)) + (1/2π)∫ h_k Γ`. The kernel
     `f ⋆ f̃` lives on `[−2w, 2w] ∪ ±[v − 2w, v + 2w]`. For `2w < log 2` the lag `v` therefore reads
     `Λ(n)` only on the window `|log n − v| ≤ 2w`, inside `(X/2, 2X)` for `X = e^v`. Any tail of
@@ -250,9 +295,9 @@ them.
     single-window statements over `X ≥ X₀`, for any `X₀`: no prime below `X₀/2` enters, and prime
     information about a bounded range cannot decide the line. With the polar-free bump the pole
     terms vanish, and each statement reads: the window prime sum against `k` is at most the
-    archimedean term `(1/2π) ∫ h_k Γ`. The unimodular criterion holds for every primitive
-    Dirichlet `L(s, χ)`, with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms; the one-sign
-    reduction needs the absence of real zeros. At lag `v = log X` the least value of `Re P` over
+    archimedean term `(1/2π) ∫ h_k Γ`. The same holds for every primitive Dirichlet
+    `L(s, χ)`, with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms: for all but countably many
+    widths, GRH is one real inequality per dyadic window, possible real zeros included. At lag `v = log X` the least value of `Re P` over
     the unimodular tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not `O(X^σ)` for
     `σ < Θ − ½`, in windows beyond every `X₀`: RH is the absence of any power growth, the
     square-root threshold itself.
@@ -277,11 +322,16 @@ them.
 | Looking for a quantity that certifies an off-line zero below its visibility aperture | There is none in the Weil form: an invisible lag-lattice configuration has exactly the Weil form of a weighted on-line configuration on every test of that aperture. |
 | Expecting the prime side to keep a sign along a short height window | For windows of aperture `2r ≤ log 2` the windowed mean of `Π_f` is exactly `0`; its positive and negative excursions balance. |
 | Expecting the small primes to carry the criterion | RH is decided by the two-bump tests at lags `v ≥ V`, each reading one dyadic window of primes near `e^v`, for any `V`. Finite prime data can be discarded entirely. |
+| Reading the one-parameter criterion as a local detector | The unmodulated tests see a zero at height `γ` with weight `|h_w(γ − iδ)|²`, which decays in `γ`. The criterion is exact through the Laplace–Landau argument, but it gives no visibility aperture; apertures come from modulating to the zero's height. |
 | Positivity on a restricted family as evidence for RH | State the family's resolution and compare it with the lattice law first. |
 | Weakening to "fixed σ < 1" | These are quasi-RH half-planes, open for every `σ < 1`. |
 | Applying an upper-bound sieve beyond `X = T` | The sieve bounds prime pairs only against weights `w ≥ 0`. The height phase `(m/n)^{iT}` changes sign, so the sieve reverts to the size-only bound. |
 | Treating `X = T` as a technical limit of one method | It is the diagonal threshold of the mean value theorem, the point where the sieve loses the height phase, and the density-hypothesis threshold of the zero side. |
 | Using `Re W` without the conjugation convention | `W(f, f)` uses `conj(h_f(conj γ))`. For an off-line pair it is `2 Re(A conj B)`. |
+| Expecting a bounded exponential sum over the zeros to keep a top pole | A sum `Σ q_t e^{λ_t v}` bounded on `v ≥ 0`, or bounded on one side, has zero coefficient at every rightmost, unshared exponent; its growth rate is the abscissa of its top poles. |
+| Expecting the visibility aperture to depend on the arrangement of the on-line zeros | It depends on the on-line background only through the logarithm of the local on-line mass at the bump; the arrangement is irrelevant. |
+| Expecting the ground energy to vary continuously with the aperture | On lag lattices it is a step function with jumps at every `nL/2`; continuity is a property of the restricted operator of `ζ`, not of configurations. |
+| Expecting all couplings `τ` to be needed in the two-bump criteria | Unimodular `τ`, and for `ζ` the single sign `τ = −1`, suffice; the lag `v` and the height `γ` are the only parameters. |
 
 ---
 
@@ -331,3 +381,10 @@ them.
 4. **Unconditional statements on honest classes.** `C²` compactly supported tests; configurations
    quantified as classes (finite, lattice, periodic, tempered) or concrete (`zetaZeroConfig`); no
    hypotheses that only restate the conclusion.
+5. **Choose the coordinates by the configuration.** Periodic configurations are Toeplitz questions
+   about their symbol `D(m)`; aperiodic ones are questions about the lag structure `S(v)` of a bump,
+   where the zeros enter as an exponential sum and the Laplace transform, Landau's theorem and
+   Ingham's inequality are the tools. The two meet on lag lattices, where both apply.
+6. **Keep the other programmes in view.** The packet laws of the bi-scale theory and the tent
+   detectors of the arithmetic positivity theory consume the visibility theorems here; the Hodge
+   index, the lattice tools and the explicit formula live in `RHTower` and `Zeta23`.

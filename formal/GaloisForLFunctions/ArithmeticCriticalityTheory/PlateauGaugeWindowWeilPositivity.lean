@@ -353,6 +353,260 @@ theorem sq_oddPoleMoment_le {F M : ℝ → ℝ} {R : ℝ} (hR0 : 0 ≤ R) (hR2 :
         mul_le_mul_of_nonneg_left hGb (integral_nonneg fun x => sq_nonneg _)
     _ = _ := by ring
 
+/-! ### Continuity of the pole-free Weil operator -/
+
+theorem continuous_poleFreeWeilOperator {M : ℝ → ℝ} {C K : ℝ} (hMc : Continuous M)
+    (hLip : ∀ a b, |M a - M b| ≤ K * |a - b|) (hdec : ∀ y, |M y| ≤ C * Real.exp (-(8 * |y|))) :
+    Continuous (poleFreeWeilOperator M) := by
+  have hC0 := nonneg_of_abs_le_mul_exp hdec
+  have hMb : ∀ y, |M y| ≤ C := fun y => (hdec y).trans
+    (mul_le_of_le_one_right hC0 (Real.exp_le_one_iff.mpr (by linarith [abs_nonneg y])))
+  have hshift : ∀ n : ℕ, Continuous fun x =>
+      vonMangoldtAtom n * (M (x + Real.log n) + M (x - Real.log n)) := fun n =>
+    continuous_const.mul ((hMc.comp (continuous_id.add continuous_const)).add
+      (hMc.comp (continuous_id.sub continuous_const)))
+  have hP : Continuous (profilePrimeSum M) := by
+    refine continuous_iff_continuousAt.mpr fun x₀ => ?_
+    set X := |x₀| + 1 with hX
+    have hX0 : 0 ≤ X := by positivity
+    have hon : ContinuousOn (profilePrimeSum M) (Icc (x₀ - 1) (x₀ + 1)) := by
+      refine continuousOn_tsum (u := fun n => vonMangoldtAtom n *
+        (2 * (C * Real.exp (8 * |X|) * Real.exp (-(8 * Real.log n))))) (fun n => (hshift n).continuousOn)
+        ((summable_atom_mul_exp_neg_eight_log.mul_left (2 * (C * Real.exp (8 * |X|)))).congr
+          fun n => by ring) fun n x hx => ?_
+      have hxX : |x| ≤ X := by
+        have h1 := abs_sub_abs_le_abs_sub x x₀
+        have h2 : |x - x₀| ≤ 1 := abs_le.mpr ⟨by linarith [hx.1], by linarith [hx.2]⟩
+        linarith
+      have hl := Real.log_natCast_nonneg n
+      have h1 := abs_le_of_decay_of_le hdec (x := X) (y := x + Real.log n) (n := n) (by
+        rw [abs_of_nonneg hX0]
+        have := abs_sub_abs_le_abs_sub (Real.log n) (-x)
+        rw [abs_of_nonneg hl, abs_neg, sub_neg_eq_add, add_comm] at this
+        linarith)
+      have h2 := abs_le_of_decay_of_le hdec (x := X) (y := x - Real.log n) (n := n) (by
+        rw [abs_of_nonneg hX0, abs_sub_comm]
+        have := abs_sub_abs_le_abs_sub (Real.log n) x
+        rw [abs_of_nonneg hl] at this
+        linarith)
+      rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (vonMangoldtAtom_nonneg n)]
+      refine mul_le_mul_of_nonneg_left ?_ (vonMangoldtAtom_nonneg n)
+      calc |M (x + Real.log n) + M (x - Real.log n)| ≤
+          |M (x + Real.log n)| + |M (x - Real.log n)| := abs_add_le _ _
+        _ ≤ _ := by linarith
+    exact hon.continuousAt (Icc_mem_nhds (by linarith) (by linarith))
+  have hA : Continuous fun x => ∫ u in Ioi (0 : ℝ), profileArchTerm M x u := by
+    refine continuous_of_dominated (bound := fun u => (2 * K + 3 * C) * (archLevyDensity u * u))
+      (fun x => (integrableOn_profileArchTerm hMc hLip x).aestronglyMeasurable)
+      (fun x => ae_restrict_of_forall_mem measurableSet_Ioi fun u hu => ?_)
+      (integrableOn_archLevyDensity_mul_id.const_mul _) (Eventually.of_forall fun u => ?_)
+    · rw [Real.norm_eq_abs]
+      refine (abs_profileArchTerm_le hLip x hu).trans (mul_le_mul_of_nonneg_right ?_
+        (mul_nonneg (archLevyDensity_pos hu).le (le_of_lt hu)))
+      linarith [hMb x]
+    · unfold profileArchTerm
+      exact (continuous_const.mul hMc).sub (continuous_const.mul
+        ((hMc.comp (continuous_id.add continuous_const)).add
+          (hMc.comp (continuous_id.sub continuous_const))))
+  show Continuous fun x => profilePrimeSum M x - (∫ u in Ioi (0 : ℝ), profileArchTerm M x u) +
+    2 * archConstantReal * M x
+  exact (hP.sub hA).add (continuous_const.mul hMc)
+
+/-! ### The plateau gauge -/
+
+/-- The plateau gauge: `1` on `[−(R − δ), R − δ]`, `0` outside `(−R, R)`. -/
+def plateauGauge (R δ x : ℝ) : ℝ :=
+  Real.smoothTransition ((R - x) / δ) * Real.smoothTransition ((R + x) / δ)
+
+theorem contDiff_plateauGauge (R δ : ℝ) : ContDiff ℝ 2 (plateauGauge R δ) := by
+  unfold plateauGauge
+  exact (Real.smoothTransition.contDiff.comp ((contDiff_const.sub contDiff_id).div_const δ)).mul
+    (Real.smoothTransition.contDiff.comp ((contDiff_const.add contDiff_id).div_const δ))
+
+theorem plateauGauge_nonneg (R δ x : ℝ) : 0 ≤ plateauGauge R δ x :=
+  mul_nonneg (Real.smoothTransition.nonneg _) (Real.smoothTransition.nonneg _)
+
+theorem plateauGauge_le_one (R δ x : ℝ) : plateauGauge R δ x ≤ 1 :=
+  mul_le_one₀ (Real.smoothTransition.le_one _) (Real.smoothTransition.nonneg _)
+    (Real.smoothTransition.le_one _)
+
+theorem plateauGauge_eq_one {R δ x : ℝ} (hδ : 0 < δ) (h : |x| ≤ R - δ) : plateauGauge R δ x = 1 := by
+  unfold plateauGauge
+  rw [Real.smoothTransition.one_of_one_le (by rw [le_div_iff₀ hδ]; linarith [le_abs_self x]),
+    Real.smoothTransition.one_of_one_le (by rw [le_div_iff₀ hδ]; linarith [neg_abs_le x]), one_mul]
+
+theorem plateauGauge_eq_zero {R δ x : ℝ} (hδ : 0 < δ) (h : R ≤ |x|) : plateauGauge R δ x = 0 := by
+  unfold plateauGauge
+  rcases le_or_gt 0 x with hx | hx
+  · rw [abs_of_nonneg hx] at h
+    rw [Real.smoothTransition.zero_of_nonpos
+      (div_nonpos_of_nonpos_of_nonneg (by linarith : R - x ≤ 0) hδ.le), zero_mul]
+  · rw [abs_of_neg hx] at h
+    rw [Real.smoothTransition.zero_of_nonpos
+      (div_nonpos_of_nonpos_of_nonneg (by linarith : R + x ≤ 0) hδ.le), mul_zero]
+
+theorem hasCompactSupport_plateauGauge {R δ : ℝ} (hδ : 0 < δ) :
+    HasCompactSupport (plateauGauge R δ) :=
+  HasCompactSupport.intro (isCompact_Icc (a := -R) (b := R)) fun x hx => by
+    refine plateauGauge_eq_zero hδ ?_
+    rw [mem_Icc, not_and_or, not_le, not_le] at hx
+    rcases hx with hx | hx
+    · linarith [neg_abs_le x]
+    · linarith [le_abs_self x]
+
+/-! ### The ground-state representation in a window gauge -/
+
+/-- **The Markov energy in a window gauge.** For a gauge `M ∈ C²_c`, `0 ≤ M ≤ 1`, vanishing outside
+`(−R, R)`, and a test `F = M F`: `Q(F) = J_M(F) − ∫ F² M 𝒲M`. -/
+theorem markovEnergy_eq_gauge_window {F M : ℝ → ℝ} {R : ℝ} (hF : ContDiff ℝ 2 F)
+    (hFc : HasCompactSupport F) (hMd : ContDiff ℝ 2 M) (hMcs : HasCompactSupport M)
+    (hle : ∀ y, M y ≤ 1) (hnn : ∀ y, 0 ≤ M y) (hzero : ∀ y, R ≤ |y| → M y = 0)
+    (hFM : ∀ x, F x ≠ 0 → M x = 1) :
+    markovEnergy (fun x => (F x : ℂ)) =
+      signedJumpEnergy M F + ∫ x, F x ^ 2 * M x * -poleFreeWeilOperator M x := by
+  obtain ⟨K, -, hK⟩ := exists_lipschitz_bound_of_compactSupport (hMd.of_le (by norm_num)) hMcs
+  have hLip : ∀ a b, |M a - M b| ≤ K * |a - b| := fun a b => hK b a
+  have hdecay : ∀ k : ℝ, 0 ≤ k → ∀ y, |M y| ≤ Real.exp (k * |R|) * Real.exp (-(k * |y|)) := by
+    intro k hk y
+    by_cases hy : |y| < R
+    · rw [abs_of_nonneg (hnn y), ← Real.exp_add]
+      exact (hle y).trans (Real.one_le_exp (by nlinarith [le_abs_self R]))
+    · rw [hzero y (not_lt.mp hy), abs_zero]
+      positivity
+  have hdec8 := hdecay 8 (by norm_num)
+  set ω : ℝ → ℝ := fun y => M y / riemannKernelReal y with hωdef
+  have hΦω : ∀ y, riemannKernelReal y * ω y = M y := fun y =>
+    mul_div_cancel₀ _ (riemannKernelReal_pos y).ne'
+  have hω : ContDiff ℝ 2 ω := hMd.div contDiff_riemannKernelReal fun y => (riemannKernelReal_pos y).ne'
+  have hP' : ∀ x, Summable fun n : ℕ => vonMangoldtAtom n * (M (x + Real.log n) + M (x - Real.log n)) :=
+    summable_atom_mul_profileShift hdec8
+  have hA' : ∀ x, IntegrableOn (profileArchTerm M x) (Ioi 0) :=
+    integrableOn_profileArchTerm hMd.continuous hLip
+  have hAgen : ∀ x, IntegrableOn (fun t => archLevyDensity t * twoSidedShiftGenerator ω t x)
+      (Ioi 0) := fun x => by
+    refine IntegrableOn.congr_fun ((((integrableOn_symArchTerm x).const_mul (M x)).sub
+      ((hA' x).const_mul (riemannKernelReal x))).neg) (fun t _ => ?_) measurableSet_Ioi
+    simp only [Pi.neg_apply, Pi.sub_apply]
+    rw [hωdef, twoSidedShiftGenerator_profileGauge]
+    unfold symArchTerm profileArchTerm
+    ring
+  have hPgen : ∀ x, Summable fun n : ℕ =>
+      vonMangoldtAtom n * twoSidedShiftGenerator ω (Real.log n) x := fun x => by
+    refine (((summable_primeKernelSum x).mul_left (M x)).sub
+      ((hP' x).mul_left (riemannKernelReal x))).congr fun n => ?_
+    rw [hωdef, twoSidedShiftGenerator_profileGauge]
+    ring
+  have hsrc : ∀ x, twoSidedGenerator ω x - riemannKernelReal x * Real.cosh (x / 2) * ω x =
+      riemannKernelReal x * (fun x => -poleFreeWeilOperator M x) x := fun x => by
+    rw [hωdef, twoSidedGenerator_profileGauge_sub_potential (hP' x) (hA' x)]
+    ring
+  have hg : Continuous fun x => -poleFreeWeilOperator M x :=
+    (continuous_poleFreeWeilOperator hMd.continuous hLip hdec8).neg
+  have hC12 := markovEnergy_phiDoob_mul_eq_signedJump_add_source (C := Real.exp (24 * |R|)) hω
+    (by positivity) (fun y => by rw [hΦω]; exact hdecay 24 (by norm_num) y) hAgen hPgen hsrc hg
+    hF hFc
+  have hFeq : phiDoobTest (fun y => ω y * F y) = F := funext fun x => by
+    unfold phiDoobTest
+    rw [← mul_assoc, hΦω]
+    by_cases h : F x = 0
+    · rw [h, mul_zero]
+    · rw [hFM x h, one_mul]
+  have hMeq : (fun y => riemannKernelReal y * ω y) = M := funext hΦω
+  rw [hFeq, hMeq] at hC12
+  simp only [hΦω] at hC12
+  exact hC12
+
+/-- In a nonnegative gauge the jump energy is nonnegative. -/
+theorem signedJumpEnergy_nonneg_of_nonneg {M F : ℝ → ℝ} (hnn : ∀ y, 0 ≤ M y) :
+    0 ≤ signedJumpEnergy M F := by
+  unfold signedJumpEnergy
+  refine add_nonneg (setIntegral_nonneg measurableSet_Ioi fun t ht => mul_nonneg
+    (archLevyDensity_pos ht).le (integral_nonneg fun x => ?_)) (tsum_nonneg fun n =>
+      mul_nonneg (vonMangoldtAtom_nonneg n) (integral_nonneg fun x => ?_))
+  · unfold signedShiftJump
+    exact mul_nonneg (mul_nonneg (hnn _) (hnn _)) (sq_nonneg _)
+  · unfold signedShiftJump
+    exact mul_nonneg (mul_nonneg (hnn _) (hnn _)) (sq_nonneg _)
+
+/-! ### Coercive positivity on the window -/
+
+/-- **Weil positivity on the window `[−r, r]`, `r < e^{−2}/2`.** Every real `F ∈ C²_c` vanishing
+outside `[−r, r]` satisfies `Ẑ(F) ≥ (3/40) ∫ F²`. -/
+theorem fullZeroForm_ge_of_support_le {F : ℝ → ℝ} {r : ℝ} (hr : r < Real.exp (-2) / 2)
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hsupp : ∀ x, r < |x| → F x = 0) :
+    3 / 40 * ∫ x, F x ^ 2 ≤ fullZeroForm F := by
+  set R := Real.exp (-2) / 2 with hRdef
+  have hR0 : 0 < R := by positivity
+  have hRsmall : R < 0.0678 := by have := exp_neg_two_lt; rw [hRdef]; linarith
+  have hlog2 : 2 * R < Real.log 2 := by have := Real.log_two_gt_d9; linarith
+  have hlogR : Real.log (2 * R) = -2 := by
+    rw [hRdef, mul_div_cancel₀ _ two_ne_zero, Real.log_exp]
+  set r' := max r (R / 2) with hr'def
+  have hr' : r' < R := max_lt hr (by linarith)
+  set δ := R - r' with hδdef
+  have hδ : 0 < δ := by linarith
+  set M := plateauGauge R δ with hMdef
+  have hMd : ContDiff ℝ 2 M := contDiff_plateauGauge R δ
+  have hMcs : HasCompactSupport M := hasCompactSupport_plateauGauge hδ
+  have hnn : ∀ y, 0 ≤ M y := plateauGauge_nonneg R δ
+  have hle : ∀ y, M y ≤ 1 := plateauGauge_le_one R δ
+  have hzero : ∀ y, R ≤ |y| → M y = 0 := fun y hy => plateauGauge_eq_zero hδ hy
+  have hFM : ∀ x, F x ≠ 0 → M x = 1 := fun x hx => by
+    refine plateauGauge_eq_one hδ ?_
+    by_contra h
+    exact hx (hsupp x (by linarith [le_max_left r (R / 2)]))
+  have hFx : ∀ x, F x ≠ 0 → |x| < R := fun x hx => by
+    by_contra h
+    exact hx (by
+      have := hzero x (not_lt.mp h)
+      rw [hFM x hx] at this
+      norm_num at this)
+  obtain ⟨K, -, hK⟩ := exists_lipschitz_bound_of_compactSupport (hMd.of_le (by norm_num)) hMcs
+  have hLip : ∀ a b, |M a - M b| ≤ K * |a - b| := fun a b => hK b a
+  have hC12 := markovEnergy_eq_gauge_window hF hFc hMd hMcs hle hnn hzero hFM
+  have hJ := signedJumpEnergy_nonneg_of_nonneg (F := F) hnn
+  have hdec8 : ∀ y, |M y| ≤ Real.exp (8 * |R|) * Real.exp (-(8 * |y|)) := by
+    intro y
+    by_cases hy : |y| < R
+    · rw [abs_of_nonneg (hnn y), ← Real.exp_add]
+      exact (hle y).trans (Real.one_le_exp (by nlinarith [le_abs_self R]))
+    · rw [hzero y (not_lt.mp hy), abs_zero]
+      positivity
+  have hg : Continuous fun x => -poleFreeWeilOperator M x :=
+    (continuous_poleFreeWeilOperator hMd.continuous hLip hdec8).neg
+  -- the potential
+  set V := 2 - 3 / 2 * R - 2 * archConstantReal with hVdef
+  have hV : 0.0817 < V := by
+    have := two_sub_three_quarter_exp_neg_two_sub_archConstant_gt
+    rw [hVdef, hRdef]
+    linarith
+  have hF2 : Integrable fun x => F x ^ 2 :=
+    (hF.continuous.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
+  have hpot : V * ∫ x, F x ^ 2 ≤ ∫ x, F x ^ 2 * M x * -poleFreeWeilOperator M x := by
+    rw [← integral_const_mul]
+    refine integral_mono (hF2.const_mul V) ((((hF.continuous.pow 2).mul hMd.continuous).mul
+      hg).integrable_of_hasCompactSupport ((hasCompactSupport_sq hFc).mul_right.mul_right)) fun x => ?_
+    by_cases h : F x = 0
+    · simp [h]
+    · have hW := neg_poleFreeWeilOperator_ge hMd.continuous hLip hle hzero hlog2 (hFx x h) (hFM x h)
+      rw [hlogR] at hW
+      rw [hFM x h, mul_one]
+      nlinarith [sq_nonneg (F x)]
+  -- the odd pole moment
+  have hS := sq_oddPoleMoment_le hR0.le (by linarith) hF.continuous hFc hMd.continuous hMcs hnn hle
+    hzero hFM
+  have hR3 : 4 * R ^ 3 ≤ 0.00125 := by
+    have h1 : R ^ 3 ≤ 0.0678 ^ 3 := pow_le_pow_left₀ hR0.le hRsmall.le 3
+    norm_num at h1 ⊢
+    linarith
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun x => sq_nonneg _
+  have h1 := mul_le_mul_of_nonneg_right hV.le hI0
+  have h2 := mul_le_mul_of_nonneg_right hR3 hI0
+  have hE := sq_nonneg (evenPoleMoment F)
+  unfold fullZeroForm
+  rw [hC12]
+  linarith
+
 end GaloisForLFunctions.ArithmeticCriticalityTheory
 
 end

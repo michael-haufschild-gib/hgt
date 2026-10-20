@@ -374,3 +374,20 @@ Rule from now on: run a corpus search against the Weil-form lanes before claimin
   contains a strictly positive element (Φ), unlike the half-line-nonneg odd cone (no positive pole-free odd
   span element), which the corpus (`WeilMarkovThinNonnegativeOddPositivity`) leaves open. Novelty: corpus
   one-sided cones are about values at ±log n of Weil tests, not positivity of the profile. Standard axioms.
+- **C26 · Coercive Weil positivity on the window [−r, r], r < e^{−2}/2 ≈ 0.0677, by a plateau gauge
+  (SRT frontier 3: aperture pushed 6.7× beyond the corpus's 1/100)** — `PlateauGaugeWindowWeilPositivity`.
+  `fullZeroForm_ge_of_support_le`: every real F ∈ C²_c vanishing outside [−r, r] has Ẑ(F) ≥ (3/40)∫F²
+  (corpus best: aperture 1/100 with ‖F‖²/25, `SquareRootThreshold.zetaZeroConfig_re_W_ge_of_aperture_le_hundredth`,
+  APT `fullZeroForm_ge_l2_div_twenty_five_of_aperture_le_hundredth`). Mechanism (ACT-native, no Fourier/digamma
+  bounds): ground-state representation (C12) in a plateau gauge M (=1 on [−r,r], 0 off (−R,R), R = e^{−2}/2) with
+  the exact source −Φ𝒲M (C22): Q(F) = J_M(F) − ∫F²𝒲M, J_M ≥ 0 (all conductances M(x)M(x+t) ≥ 0); inside the window
+  no prime shift lands in the gauge (`profilePrimeSum_eq_zero`), and at plateau points
+  −𝒲M ≥ N(R−x) + N(R+x) − (3/2)R − (γ+log π), N(a) = ∫_a^∞ν = −½log(1−e^{−2a}) (window killing,
+  `integral_Ioi_archDiagonalDensity`), ω − ν ≤ 3/4 (`archLevyDensity_sub_archDiagonalDensity_le`),
+  N(a)+N(b) ≥ −log(2R) = 2 (`neg_poleFreeWeilOperator_ge`); constants γ < 2/3, log π < 1.15, e^{−2} < 0.1355 give
+  potential > 0.0817 (`two_sub_three_quarter_exp_neg_two_sub_archConstant_gt`); odd pole cost 2S² ≤ 4R³∫F²
+  (`sq_oddPoleMoment_le`). New reusable: `continuous_poleFreeWeilOperator`, `plateauGauge`. Insight: below the
+  first prime the arithmetic form in a nonnegative gauge is a Markov form plus one explicit potential; window
+  positivity is a pointwise inequality between ω, ν, the killing log and γ + log π. Further gain available from
+  the pole-product potential 2C_M cosh(x/2) (dropped here) up to the Z-type aperture t₀/2 ≈ 0.14 where
+  ω(t₀) = 2cosh(t₀/2). Standard axioms.

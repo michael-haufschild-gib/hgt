@@ -170,7 +170,9 @@ theorem dyadicCrossKernel_add (F G : ℝ → ℝ) (p q : ℝ) (n n' : ℕ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   ring
 
-private theorem dilated_scaleBranch_sep {p : ℝ} (hp : 1 ≤ p) (i : Bool) (S : Finset ℕ) :
+/-- A dilated scale branch is `11/12`-separated: `|pθ_n - pθ_m| ≥ 11/12` for distinct scales and
+`p ≥ 1`. -/
+theorem dilated_scaleBranch_sep {p : ℝ} (hp : 1 ≤ p) (i : Bool) (S : Finset ℕ) :
     ∀ n ∈ S, ∀ m ∈ S, n ≠ m → 11 / 12 ≤ |p * scaleBranch i n - p * scaleBranch i m| := by
   intro n _ m _ hnm
   have h := scaleBranch_spacing i n m

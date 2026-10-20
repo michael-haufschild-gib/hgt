@@ -453,3 +453,34 @@
   iff ε > 1/2 (mode masses `J₂ w_ε² ≍ q^{−2ε}`), diverges for ε ≤ 1/2, and grows linearly for Möbius.
   So no receiver estimate below one half can come from complete-period averages of the discrepancy;
   it must exploit the pronic weighting of small arguments. Standard axioms (5 audited); wired.
+- **C26 · The half-damping law** — `HalfDampingDissipationLaw`.
+  `dampedDissipationRate_eq_variance_sub_autocorrelation` (`R(ε) = V(ε) − A_ε(1)`, splitting the modes
+  `e ≤ 1` off the Bézout limit), `tendsto_dampedDissipationRate_div_parameter` (`R(ε)/ε → 1/2`, since
+  `|A_ε(1)| ≤ 16E[τ_ε]² = O(ε²)` by C22), `tendsto_dampedDissipationRate_div_variance` (`R(ε)/V(ε) → 1`),
+  `tendsto_linear_defect_rate_div_parameter` (`−(B+1)R(ε)/ε → −(B+1)/2`).
+  New insight: combined with C24 the trans-horizon defect has an explicit small-damping slope,
+  `lim_{ε→0} (1/ε) lim_N D̃_N((B+1)N; c_ε)/N = −(B+1)/2`: at small damping every unit of window
+  dissipates half the damping parameter, and dissipation and variance coincide to first order (the
+  damped response is asymptotically white, C22). Standard axioms (4 audited); wired.
+- **C27 · The Möbius energy profile through the fourth band** — `MoebiusEnergyProfileThroughFourthBand`.
+  `bandAverageStep_three` (`A(3) = −4/π²`), `bandAverageStep_four` (`A(4) = −2/π²`), via the four core
+  classes `1, 2, 3, 6` of bands 3–4 (density `3/π²·1/r`, class steps from C16);
+  `cofinalMobiusQuadraticProfile_three` (`P(3) = 16/π²`: `E_N(4N; μ)/N → 16/π²`),
+  `cofinalMobiusQuadraticProfile_four` (`P(4) = 41/(2π²)`: `E_N(5N; μ)/N → 41/(2π²)`),
+  `bandAverageStep_neg_of_le_four` (the first four bands dissipate on average).
+  New insight: README §3.6 gives only linear bounds `E_N(M;μ) ≤ 1 + B(M − N)` through the fourth band;
+  the class calculus (C16+C18) gives the exact asymptotic energy through the fifth multiple of the
+  horizon, with band means of `s²` equal to `6, 5, 5, 9/2` (units `1/π²`) — the squared response thins
+  out band by band while each band still dissipates on average. Standard axioms (5 audited); wired.
+- **C28 · The PM receiver row dissipates linearly at the Haar rate** — `ReceiverRowLinearDissipationRate`.
+  Headline `tendsto_sieveRenormalizedPrefixDefect_cofactor_linear`: for every `ε > 0` and band `B`,
+  `D̃_Q((B+1)Q; c_Q)/Q → −(B+1)R(ε)` for the actual PM cofactor row `c_Q = pmCofactorRealWeight ε Q`
+  at horizon `Q`. Mechanism: C14's pointwise approximation `|s_Q − τ_ε| ≤ ((1+ε)/ε)τ(n)Q^{−ε}`, the
+  divisor moments `Σ τ ≤ X(1+log X)` (BVI) and `Σ τ² ≤ X·invSum³` (RHTower), the bound
+  `Q^{−ε}(1+log((B+2)Q))³ → 0` (`isLittleO_log_rpow_rpow_atTop`), bounded boundary values via
+  `τ(k) ≪ k^{ε/2}`, and C24's Cesàro law for `τ_ε`; helpers `abs_gradient_receiver_sub_le`,
+  `receiver_boundary_bounded`.
+  New insight: the receiver's own row — the object of README §1.2's first receiver — carries the exact
+  Haar dissipation of `τ_ε`: on every linear trans-horizon window its renormalized defect falls
+  linearly at rate `R(ε) ~ ε/2` (C26). Its defect sign (C14) is thus a quantitative linear law, not
+  only a sign. Standard axioms (1 audited); wired.

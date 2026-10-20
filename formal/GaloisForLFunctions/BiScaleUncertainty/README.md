@@ -272,6 +272,7 @@ translation with error $C\varepsilon^\alpha$ from fifth and sixth arrays within 
 | signed packet, packet energy | `signedSource`, `packetEnergy` |
 | stationary packet, zero series, critical packet and Weil energies | `stationaryPacket`, `zeroSeries`, `criticalPacketEnergy`, `criticalWeilEnergy` |
 | stationary gauge convolution, tuned probe, universal probe | `stationaryGaugeConvolution`, `tunedProbe`, `SeesAllZeros` |
+| simplicity criterion of a universal probe | `riemannHypothesis_and_simple_iff_of_universal` |
 | normalized Chebyshev error, gauge derivative | `normalizedLogError`, `gaugeDerivative` |
 | causal response, Laplace energy, Fourier pairing, spectral density of $\nu_N$ | `causalResponse`, `laplaceEnergy`, `fourierPairing`, `spectralDensity` |
 | zero width | `XiZeroHalfPlaneBound` |
@@ -705,6 +706,15 @@ $m_\rho/(1+\gamma_\rho^2)$, summable over the zeros). Under RH both $E(f_R)$ and
 prime-side quantities, the asymptotic mean square of the packet and the Weil functional of the
 autocorrelation, so multiplicities are prime-side observables.
 
+**Simplicity as one packet identity.** For a universal probe $U$ the two critical energies agree,
+$E(U)=W(U)$, exactly when every critical zero is simple, unconditionally. Hence RH together with
+the simplicity of every zero of $\zeta$ is equivalent to two prime–polar statements about the one
+source $U$: its packet $P_U$ is eventually bounded above, and the asymptotic mean square of $P_U$
+equals the Weil functional of $h_U$, which in the field's coordinates is
+$\Omega(0)h_U(0)+\mathcal J(U)-2\langle h_U,\nu\rangle$. A linear packet energy equal to a
+quadratic bi-scale energy, for one compact source, is RH and simple zeros at once; such sources
+are boosts of every nonzero source.
+
 ### 3.12 Producers
 
 Receivers rewrite the explicit formula; producers bound it. The theory insists on both.
@@ -925,9 +935,11 @@ $\asymp e^X/X$ nodes per window, already makes zero-pole positivity RH-equivalen
 the full odd Weil sign is not proved; at pole weight one the odd bound retains a positive
 $\sinh$-moment cost.
 
-**Packets.** The multiplicity readout is a limit along tuned probes; whether $\sup_fE(f)/W(f)$
-over all compact sources equals the maximal multiplicity, and whether a single fixed probe family
-reads all multiplicities, is open. Packet persistence is qualitative for general sources; an
+**Packets.** The multiplicity readout is a limit along tuned probes, and a universal probe turns
+the simple-zero conjecture into one energy identity; whether $\sup_fE(f)/W(f)$ over all compact
+sources equals the maximal multiplicity, whether a single fixed probe family reads all
+multiplicities, and whether the identity $E(U)=W(U)$ can be tested through finitely many primes,
+is open. Packet persistence is qualitative for general sources; an
 amplitude law for probes that are not dilates, in terms of the zeros they see, would make the
 oscillation quantitative. Whether the Weil energy of $h_f$ can be bounded above by prime-side
 data of a single linear packet without the one-sided hypothesis is the question that separates

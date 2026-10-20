@@ -11,8 +11,8 @@ $\operatorname{lcm}(1,\dots,N)$, which signed cancellations of Möbius-type sour
 arithmetic alone, and to isolate exactly the one inequality that is not.
 
 Everything in the theory is unconditional. The Riemann Hypothesis appears only as the
-conclusion of criteria whose premise is one explicit finite inequality; the theory never
-asserts that premise.
+conclusion of criteria whose premise is one explicit finite inequality, or inside exact
+equivalences; the theory never asserts such a premise.
 
 ---
 
@@ -103,11 +103,21 @@ remaining obligation (§5).
 
 ### 2.1 Rows, responses, and Selberg coordinates
 
-A row $c$ has three coordinate systems.
+A row $c$ has four coordinate systems.
 
 - **Raw weights** $c(d)$, $1\le d\le N$.
 - **Responses** $s_{N,c}(k)=\sum_{d\le N,\,d\mid k}c(d)$, the signal at position $k$.
 - **Selberg multiples coordinates** $Y_{N,c}(e)=\sum_{e\mid d\le N}c(d)/d$, $1\le e\le N$.
+- **Spectral form.** Character orthogonality $\sum_{\zeta^d=1}\zeta^k=d\,\mathbf 1_{d\mid k}$
+  writes the response as a finite exponential sum over the **response frequencies**
+  $T_N=\{\zeta:\zeta^d=1\text{ for some }d\le N\}$, the roots of unity of order at most $N$,
+  graded by order:
+  $$
+  s_{N,c}(k)=\sum_{\zeta\in T_N}Y_{N,c}(\operatorname{ord}\zeta)\,\zeta^k .
+  $$
+  The coefficient depends only on the order of the frequency (Galois invariance under
+  $\zeta\mapsto\zeta^u$, $u$ a unit), the characters $n\mapsto\zeta^n$ are linearly independent,
+  and distinct response frequencies are $1/N^2$-separated on the circle.
 
 Raw and Selberg coordinates are related by a triangular bijection; the inverse is finite
 Ramanujan inversion, $c(d)=d\sum_{m\le N/d}\mu(m)\,a(dm)$, which realizes any prescribed
@@ -115,13 +125,17 @@ $Y$ on $[1,N]$. The coordinate $Y_{N,c}(1)=\mathcal H_N(c)=\sum_{d\le N}c(d)/d$ 
 **harmonic mode**, the mean of the response over a period; the subspace $\mathcal H_N(c)=0$
 is written $\ker P$. The period mean square of the centered response is
 $\sum_{e\ge 2}\varphi(e)\,Y_{N,c}(e)^2$, and totient-normalized Selberg coordinates are an
-isometry from rows to $\ell^2$.
+isometry from rows to $\ell^2$. The **Selberg support** of a row is $\{q:Y_{N,c}(q)\ne0\}$, and
+its **recurrence complexity** is $\sum_{Y(q)\ne0}\varphi(q)$; the **cyclotomic incidence
+polynomial** $Q_N=\prod_{q\le N}\Phi_q$ has degree $\Phi(N)=\sum_{q\le N}\varphi(q)$, with
+$N^2/8+N-\tfrac N2H_N\le\Phi(N)\le N(N+1)/2$.
 
 The first discipline of the theory: say in which coordinates a statement lives, and whether it
-concerns the period or a prefix. A statement about the period mean square says nothing about a
-prefix of length $N$.
+concerns the period, a prefix, or a window at an arbitrary phase. A statement about the period
+mean square says nothing about a prefix of length $N$; a window law says nothing below its
+horizon.
 
-### 2.2 Horizons
+### 2.2 Horizons and windows
 
 For the literal Möbius row $c=\mu$ the response is explicit on each band.
 
@@ -137,7 +151,17 @@ The **multiplicative state** of a position is $\sigma_N(k)=\operatorname{lcm}\{d
 its **radical state** is $\gcd(k,N\#)$. Two positions with the same state are indistinguishable
 by every row, respectively by every squarefree-supported row.
 
-### 2.3 Discrepancy, sawtooth, and the interior
+A **window** is a block $A<k\le A+K$ of $K$ consecutive positions at an arbitrary **phase** $A$.
+The theory distinguishes four horizons for windows: the period $L_N$, the **cyclotomic horizon**
+$\Phi(N)$, the **quadratic horizon** $N^{2\pm o(1)}$ of mean-square transfer, and the
+**degree-$m$ horizon** $N^{m\pm o(1)}$ of $m$-point statistics. A **window sandwich constant**
+at level $N$ is a number $S$ with
+$\bigl\lvert\sum_{A<k\le A+K}(s(k)-\kappa)^2-KQ\bigr\rvert\le SQ$, $Q=(H-\kappa)^2+V$, for every
+row, phase, length and offset; a **degree-$m$ transfer constant** bounds the window error of
+every translated moment of degree $m$ by $S\,Q_{\mathrm{Sel}}^{m/2}$. The **observability
+constant** is $S_N=\sum_{q\le N}\sigma(q)^2/\varphi(q)$.
+
+### 2.3 Discrepancy, sawtooth, primitive, and the interior
 
 The **centered sawtooth** of modulus $d$ is $\tilde B_1(d,n)=\{n/d\}-\frac{d-1}{2d}$, with step law
 $\tilde B_1(d,n+1)-\tilde B_1(d,n)=\frac1d-\mathbf 1_{d\mid n+1}$. The **weighted centered sawtooth
@@ -145,8 +169,12 @@ sum** $W_{N,c}(n)=-\sum_{d\le N}c(d)\tilde B_1(d,n)$ therefore has forward diffe
 $$
 W_{N,c}(n+1)-W_{N,c}(n)=s_{N,c}(n+1)-Y_{N,c}(1),
 $$
-so on $\ker P$ it is the primitive of the response, and $L_N(M,c)$ is $W_{N,c}(M)$ up to the
-constant $W_{N,c}(0)$. Across the step $n\mapsto n+1$ the moduli split three ways:
+so it is the zero-mean **canonical primitive** of the centered response, $L_N(M,c)=W_{N,c}(M)-W_{N,c}(0)$,
+and on the response frequencies integration is division by $\zeta-1$:
+$$
+W_{N,c}(k)=\sum_{\zeta\in T_N,\ \zeta\ne1}Y_{N,c}(\operatorname{ord}\zeta)\frac{\zeta}{\zeta-1}\,\zeta^k .
+$$
+Across the step $n\mapsto n+1$ the moduli split three ways:
 
 - **active at $n$** ($d\mid n$): the sawtooth sits at its post-jump peak $+\frac{d-1}{2d}$;
 - **active at $n+1$** ($d\mid n+1$): the sawtooth sits at its pre-jump trough $-\frac{d-1}{2d}$
@@ -169,33 +197,46 @@ $Y(e)=Y_{N,c}(e)$:
 | form | modal weight at $e\ge 2$ | meaning |
 |---|---|---|
 | Selberg variance $V$ | $\varphi(e)$ | period variance of the response |
-| Bézout successor covariance $C$ | $\mu(e)$ | period covariance of $s(k)$ and $s(k+1)$ |
-| successor reserve | $\varphi(e)-\mu(e)$ | half the period mean square of the gradient $s(k+1)-s(k)$ |
+| Bézout successor covariance $C$ | $\mu(e)$ | period covariance of $s(k)$ and $s(k+1)$; equals $V-R$ |
+| successor reserve $R$ | $\varphi(e)-\mu(e)$ | half the period mean square of the gradient $s(k+1)-s(k)$ |
 | one-step phase loss | $\varphi(e)-\mu(e)^2/\varphi(e)$ | variance not predictable from the present |
-| primitive energy $\times 12$ | $J_2(e)$ | period mean square of $W_{N,c}$ |
-| lag-$h$ covariance | $\varphi(e)\lambda_e(h)$, $\lambda_e(h)=\dfrac{\mu(e/g)}{\varphi(e/g)}$, $g=\gcd(e,h)$ | period covariance at lag $h$ |
+| primitive energy $E\times 12$ | $J_2(e)$ | period mean square of $W_{N,c}$; equals the coefficient energy $\sum_{\zeta\ne1}Y(\operatorname{ord}\zeta)^2/\lvert\zeta-1\rvert^2$ |
+| lag-$h$ covariance $\mathrm{Cov}(h)$ | $c_e(h)=\varphi(e)\lambda_e(h)$, $\lambda_e(h)=\dfrac{\mu(e/g)}{\varphi(e/g)}$, $g=\gcd(e,h)$ | period covariance at lag $h$; $c_e(h)$ is the power sum of the primitive $e$-th roots |
 | consecutive triple $(0,1,2)$ variance | $3\varphi(e)+4\mu(e)+2\lambda_e(2)\varphi(e)$ | variance of $s(k)+s(k+1)+s(k+2)$ |
+| tuple variance $\mathrm{Var}_H$ | $S_e(H)=\sum_{\zeta\text{ prim. of order }e}\lvert\sum_{h\in H}\zeta^h\rvert^2$ | variance of $\sum_{h\in H}(s(n+h)-H_c)$; $S_e(H)$ is the **structure factor** of the tuple |
 
 The harmonic mode $e=1$ cancels between the Selberg and Bézout forms, $\varphi(1)-\mu(1)=0$,
 even off $\ker P$. The successor covariance is the period main term of the finite successor
 correlation; its diagonal weight $\mu(e)$ separates $4$ from $6$ where the totient does not
-($\varphi(4)=\varphi(6)=2$, $\mu(4)=0\ne 1=\mu(6)$).
+($\varphi(4)=\varphi(6)=2$, $\mu(4)=0\ne 1=\mu(6)$). The **multi-lag covariance cone** at lag
+horizon $h$ is the cone of all vectors $(\mathrm{Cov}(0),\dots,\mathrm{Cov}(h))$ over all rows
+and cutoffs. Higher moments are **translated moments** $M_m(c;v)$, the period averages of
+$\prod_{i<m}s(k+v_i)$; in spectral form they are sums over the **zero-product tuples**
+$\prod_i\zeta_i=1$ of the **relation coefficients** $A_c(\zeta)=\prod_iY(\operatorname{ord}\zeta_i)$,
+and an order tuple $(q_1,\dots,q_m)$ is **layer admissible** when for every prime $p$ and every
+$a\ge1$ with no $q_i$ divisible by $p^{a+1}$, the number of $q_i$ divisible by $p^a$ is not one,
+and is even when $p=2$.
 
 ### 2.5 Incidence objects
 
 - **Successor incidence count** $\mathcal I(M;d_1,d_2)=\#\{k\le M:d_1\mid k,\ d_2\mid k+1\}$. It is
   zero unless $\gcd(d_1,d_2)=1$, and for coprime moduli every block of $d_1d_2$ consecutive
   integers contains exactly one hit, so $\lfloor M/d_1d_2\rfloor\le\mathcal I\le\lfloor M/d_1d_2\rfloor+1$.
+  For a family $d_i\mid k+h_i$ the set of positions is empty or one residue class modulo
+  $\operatorname{lcm}(d_i)$ (Chinese remainder), so on every window its count is within one of
+  $K/\operatorname{lcm}(d_i)$.
 - **Bézout sawtooth defect** $\delta(M;d_1,d_2)=\mathcal I(M;d_1,d_2)-M/d_1d_2\in[-1,1]$ for
   coprime moduli, zero otherwise and zero at common returns.
 - **Combined and renormalized defects.** The successor correlation is
   $\sum_{k\le M}s(k)s(k+1)=M\,Q_{\mathrm{Bez}}(c)+\sum c(d_1)c(d_2)\delta(M;d_1,d_2)$ with
   $Q_{\mathrm{Bez}}=\sum_{e\ge 1}\mu(e)Y(e)^2$. The renormalized defect is
   $R_N(M;c)=\sum_{k\le M}s(k)\bigl(s(k+1)-s(k)\bigr)$; its short-window version lives on
-  $[M_0+1,M_0+M]$.
-- **Prefix $L^2$ energy** $\mathcal E_N(M;c)=\sum_{k\le M}s_{N,c}(k)^2$.
+  $[M_0+1,M_0+M]$ and its window version $R_W$ on a window of length $K$ at any phase.
+- **Prefix $L^2$ energy** $\mathcal E_N(M;c)=\sum_{k\le M}s_{N,c}(k)^2$; **window Dirichlet
+  energy** $D_W=\sum_W(s(k+1)-s(k))^2$.
 - **Tuple residue occupancy** $\nu_H(p,r)=\#\{i:h_i\equiv r\ (p)\}$ and the prime structure
-  factor $S_p(H)=p\sum_r\nu_H(p,r)^2-k^2$ of a $k$-tuple $H$.
+  factor $S_p(H)=p\sum_r\nu_H(p,r)^2-k^2$ of a $k$-tuple $H$; for squarefree $q$ the structure
+  factor $S_q(H)$ of §2.4 is the Montgomery sum of $H$ at $q$.
 
 ### 2.6 Valuation objects
 
@@ -203,6 +244,11 @@ correlation; its diagonal weight $\mu(e)$ separates $4$ from $6$ where the totie
   the mode $q$ is visible to compressed translation.
 - **Lag multiplier trichotomy** at a prime power: $\lambda_{p^{a+1}}(h)=1$ if $p^{a+1}\mid h$,
   $=-1/(p-1)$ if $p^a\mid h$ but $p^{a+1}\nmid h$, $=0$ otherwise.
+- **Smooth and rough parts of a mode** relative to a lag horizon $h$: $e=gr$ with
+  $g=\gcd(e,(h!)^e)$ its $h$-smooth part and $r$ coprime to $h!$; lags $j\le h$ see $r$ only
+  through $\mu(r)$.
+- **Layers** of an order tuple: the $p^a$-layer is the set of indices whose order is divisible
+  by $p^a$; the **top layer** at $p$ is the highest nonempty one.
 - **GCD–LCM modular functions**: $F(1)=1$ and $F(j)F(k)=F(\operatorname{lcm}(j,k))\,F(\gcd(j,k))$.
   Every function $n\mapsto\prod_{p\mid n}(1-w(p))$ is of this kind; it is radical-invariant,
   divisor-absorbing ($d\mid m\Rightarrow F(dm)=F(m)$), and satisfies $F(k)F(k+1)=F(k(k+1))$.
@@ -210,26 +256,46 @@ correlation; its diagonal weight $\mu(e)$ separates $4$ from $6$ where the totie
 - **Shifted exponent**: $\tau_{1+\varepsilon}(n)=\sum_{d\mid n}\mu(d)d^{-1-\varepsilon}$, equal to
   $c_\varepsilon(d)/d$ summed over $d\mid n$, and to $\varphi(n)/n$ at $\varepsilon=0$.
 
-### 2.7 The pronic measure and the non-periodic Gram
+### 2.7 The pronic measure, the Gram, and its cotangent form
 
-The **pronic measure** puts mass $\frac{1}{M(M+1)}$ on each $M\ge 1$; it has total mass $1$ and
-tail mass $\frac1{H+1}$ beyond $H$. It replaces period averaging. The **Ramanujan primitive**
+The **pronic measure** puts mass $w(M)=\frac{1}{M(M+1)}$ on each $M\ge 1$; it has total mass $1$
+and tail mass $\frac1{H+1}$ beyond $H$. It replaces period averaging. The **Ramanujan primitive**
 $R_e(M)=\sum_{n\le M}c_e(n)$ has period $e$ and mean $-\varphi(e)/2$, with
 $\operatorname{Re}R_p(M)=-(M\bmod p)$ at primes, and
 $$
 L_N(M,c)=\sum_{e=2}^{N}\operatorname{Re}R_e(M)\,Y_{N,c}(e).
 $$
-Pronic averaging turns the primitives into the von Mangoldt function:
+On the primitive roots of order $e$ the primitive is the pure exponential sum
+$R_e(M)=\sum_\zeta a_\zeta(\zeta^M-1)$ with $a_\zeta=\zeta/(\zeta-1)$ and $\sum_\zeta a_\zeta=\varphi(e)/2$.
+Pronic averaging turns the primitives into the von Mangoldt function and the residues into
+logarithms:
 $$
 \sum_{M\ge 1}\frac{\operatorname{Re}R_e(M)}{M(M+1)}=-\Lambda(e),\qquad
-\sum_{M\ge 1}\frac{L_N(M,c)}{M(M+1)}=-\sum_{e=2}^{N}\Lambda(e)\,Y_{N,c}(e).
+\sum_{M\ge1}\frac{M\bmod m}{M(M+1)}=\log m,\qquad
+\sum_{M\ge 1}\frac{L_N(M,c)}{M(M+1)}=-\mathcal R(c),\quad \mathcal R(c)=\sum_{e=2}^{N}\Lambda(e)\,Y_{N,c}(e),
 $$
+the last being the **von Mangoldt readout** of the row. The pronic weight sums against
+characters in closed form: $\sum_{M\ge1}z^M/(M(M+1))=1+Q(z)$ with $Q(z)=(1-z)\log(1-z)/z$ on the
+closed disk.
+
 The **pronic Gram matrix** $\mathcal G(e_1,e_2)=\sum_M R_{e_1}(M)R_{e_2}(M)/(M(M+1))$ represents
 the pronic-weighted squared discrepancy. Its **energy-centered** form uses
 $F^{\mathrm{ec}}_e=R_e+\Lambda(e)$, has pronic mean zero, and satisfies
 $\mathcal G=\Lambda\Lambda^{\top}+\mathcal G^{\mathrm{ec}}$ with $\mathcal G^{\mathrm{ec}}\succeq 0$;
-its **mean-centered** form uses $R_e+\varphi(e)/2$ and differs from the energy-centered one by
-the rank-one matrix of $\varphi(e)/2-\Lambda(e)$.
+its **mean-centered** form $\mathcal G^{\mathrm{mc}}$ uses $R_e+\varphi(e)/2$, and with
+$D(e)=\varphi(e)/2-\Lambda(e)$ the three are related by
+$\mathcal G^{\mathrm{ec}}=\mathcal G^{\mathrm{mc}}-D\otimes D$ and
+$\mathcal G=\mathcal G^{\mathrm{mc}}-D\otimes D+\Lambda\otimes\Lambda$. The energy-centered
+**Gram form** of a row is $Q^{\mathrm{ec}}(c)=\sum Y(e_1)Y(e_2)\mathcal G^{\mathrm{ec}}(e_1,e_2)$.
+The **cotangent–sawtooth form** is, with $((t))$ the sawtooth vanishing at integers,
+$$
+C(p,q)=\frac{\varphi(p)\varphi(q)}4-\frac\pi2\sum_{(a,p)=1}\sum_{(b,q)=1}\Bigl(\cot\frac{\pi a}p+\cot\frac{\pi b}q\Bigr)\Bigl(\Bigl(\frac ap+\frac bq\Bigr)\Bigr),
+$$
+the **Vasyunin sums** are $V(h,k)=\sum_{a=1}^{k-1}\cot(\pi a/k)\,((ha/k))$, and the **Vasyunin
+prime kernel** is $K(p,q)=\mathcal G^{\mathrm{ec}}(p,q)$ written in them. The **discrete
+Báez-Duarte Gram** is $\mathrm{bdGram}(1/m_1,1/m_2)=\frac1{m_1m_2}\sum_M(M\bmod m_1)(M\bmod m_2)\,w(M)$,
+and the **Báez-Duarte residual** of a row is
+$\bigl\|\mathbf 1_{(0,1]}-\sum_{n\le N}c(n)\rho_{1/n}\bigr\|^2$ with $\rho_\alpha(x)=\{\alpha/x\}$.
 
 In Hilbert space the primitive of modulus $r$ is a step vector $f_r\in L^2((1,\infty),dx/x^2)$
 with $\langle f_r,f_s\rangle=\mathcal G(r,s)$. Dilation $D_c$ acts unitarily, the **dilation
@@ -245,7 +311,10 @@ $\tau_\varepsilon(n)$, the centered coefficient is $\tilde\tau_\varepsilon=\tau_
 the centered prefix is $A_\varepsilon$, and the discrete energy is $E_T(\varepsilon)$ of §1.3. The
 horizon-free interior prefix $I_\varepsilon(n)$ and the interior energy
 $E^{\mathrm{int}}_T(\varepsilon)=\sum_{n\le T}I_\varepsilon(n)^2/(n(n+1))$ are its Bézout-interior
-counterparts.
+counterparts. The **cofactor row** $w_{\varepsilon,Q}$ carries the power-damped Ramanujan weights
+$Y_\varepsilon(q)=\operatorname{Re}\sum_{m\ge1}\mu(qm)(qm)^{-1-\varepsilon}$ as its Selberg
+coordinates at level $Q+1$; the pronic mean of its prefix discrepancy is the **energy mean**
+$m(\varepsilon,Q)$ and the pronic variance the **energy variance** $V(\varepsilon,Q)$.
 
 The **Fermi–Nyman cells** $I_n=(\frac1{n+1},\frac1n]$ have Lebesgue measure $\frac1{n(n+1)}$: the
 pronic measure is Lebesgue measure on $(0,1]$ read through the cells. The cell response of a row
@@ -262,19 +331,27 @@ quantity.
 | harmonic mode | $\mathcal H_N(c)=Y_{N,c}(1)$ | `finiteHarmonicSum N c` |
 | Selberg coordinate | $Y_{N,c}(e)$ | `selbergMultiplesCoord N c e` |
 | Ramanujan inverse | row realizing prescribed $Y$ | `pmRamanujanResidueCoeff` |
+| response frequencies, Selberg support, recurrence complexity | $T_N$, $\{Y\ne0\}$, $\sum\varphi$ | `responseRoots`, `selbergSpectralSupport`, `selbergRecurrenceComplexity` |
+| cyclotomic incidence polynomial and order | $Q_N$, $\Phi(N)$ | `cyclotomicIncidencePolynomial`, `cyclotomicIncidenceOrder` |
 | variance, successor covariance, reserve | §2.4 | `sieveVariance`, `sieveSuccessorCovariance`, `sieveSuccessorReserve` |
-| phase loss, primitive energy | §2.4 | `successorPhaseLoss`, `sievePrimitiveEnergy` |
-| lag multiplier, visibility clock | $\lambda_q(h)$, $q/\operatorname{rad}q$ | `sieveLagMultiplier`, `lagVisibilityClock` |
+| phase loss, primitive energy, primitive spectral coefficient | §2.4 | `successorPhaseLoss`, `sievePrimitiveEnergy`, `primitiveSpectralCoeff` |
+| lag multiplier, visibility clock, lag sign | $\lambda_q(h)$, $q/\operatorname{rad}q$, $\pm1$ | `sieveLagMultiplier`, `lagVisibilityClock`, `lagSign` |
+| lag cone generators, cone membership | $G_h$ | `lagConeGenerators`, `InLagCovarianceCone` |
+| tuple response, variance, structure factor | §2.4 | `tupleResponse`, `tupleVariance`, `tupleStructureFactor` |
+| zero-product tuples, relation coefficient, layer admissibility, layer count | §2.4, §2.6 | `zeroProductTuples`, `relationCoeff`, `IsLayerAdmissible`, `layerCount` |
 | prefix discrepancy | $L_N(M,c)$ | `sievePrefixDiscrepancy N M c` |
 | centered sawtooth, its weighted sum | $\tilde B_1(d,n)$, $W_{N,c}(n)$ | `centeredDiscreteSawtooth`, `weightedCenteredSawtoothSum` |
 | interior sawtooth sum, interior prefix | §2.3 | `bezoutInteriorSawtoothSum`, `pmBezoutInteriorPrefix` |
 | successor incidence count, sawtooth defect | §2.5 | `bezoutIncidenceCount`, `bezoutSawtoothDefect` |
 | renormalized defect | $R_N(M;c)$ | `sieveRenormalizedPrefixDefect` |
+| observability constant, sandwich and transfer constants | $S_N$ | `sieveWindowObservabilityConstant`, `IsWindowSandwichConstant`, `IsTranslatedMomentTransferConstant` |
 | pronic sequence | $n(n+1)$ | `pronicSeq` |
 | power-damped row and coefficient | $c_\varepsilon$, $\tau_\varepsilon$ | `pmPowerDampedRealWeight`, `pmPowerDampedDivisorCoeff` |
 | centered prefix, discrete energy | $A_\varepsilon$, $E_T(\varepsilon)$ | `pmPowerDampedCenteredDivisorPrefix`, `pmPowerDampedDivisorDiscreteEnergy` |
 | interior energy | $E^{\mathrm{int}}_T(\varepsilon)$ | `pmBezoutInteriorPronicEnergy` |
 | Ramanujan primitive, pronic Gram | $R_e(M)$, $\mathcal G$, $\mathcal G^{\mathrm{ec}}$ | `pmRamanujanPrimitive`, `pmRamanujanPrimitiveGram`, `pmRamanujanEnergyCenteredGram` |
+| sawtooth, Vasyunin sum, prime kernel | $((t))$, $V(h,k)$, $K(p,q)$ | `sawtooth`, `vasyuninSum`, `vasyuninPrimeKernel` |
+| von Mangoldt readout | $\mathcal R(c)$ | `vonMangoldtReadout` |
 | dilation profile | $\Phi_r(c)$ | `pmRamanujanDilationProfile` |
 | least Bézout seed | least $(a,b)$ with $pa=qb+1$ | `leastSuccessorSeed p q` |
 | Fermi cell response | §2.8 | `fermiCellResponse` |
@@ -285,7 +362,7 @@ quantity.
 ## 3. How: the mechanisms
 
 The mechanisms are listed in logical order. Each is an exact identity or a sharp finite
-inequality; the asymptotic statements of §3.7 and §3.9 all rest on one of them.
+inequality; the asymptotic statements of §3.8 and §3.10 all rest on one of them.
 
 ### 3.1 Bézout splitting and the prime-power exclusion
 
@@ -320,15 +397,31 @@ $2\alpha+\beta\ge 0$. Equality at the upper endpoint $C=V/2$ forces the row onto
 and divisor-six coordinates; deleting the six-coordinate (an idempotent operation on rows)
 lowers the constant to $C\le V/4$, and that constant is optimal.
 
+**Every lag horizon has a finite cone.** The lag weight $c_e(j)$ is multiplicative in the mode
+and vanishes when $e/\gcd(e,j)$ is not squarefree. Splitting $e=gr$ into $h$-smooth and rough
+parts, lags $1\le j\le h$ see $c_e(j)=\mu(r)c_g(j)$ while $c_e(0)=\varphi(g)\varphi(r)$; a smooth
+part not dividing $(h!)^2$ is invisible to every lag in $[1,h]$; and with $p_h<p_h'$ the first two
+primes beyond $h$ the rough part is absorbed, $v_e=av_g+bv_{gp_h}$ with
+$b=(\varphi(r)-\mu(r))/p_h$ and $a=\mu(r)+b$, both nonnegative. Hence for every $h$ the cone of all
+$(\mathrm{Cov}(0),\dots,\mathrm{Cov}(h))$ is generated by the explicit modes
+$G_h=\{g\ge2:g\mid(h!)^2\}\cup\{gp_h:g\mid(h!)^2\}\cup\{p_hp_h'\}$, all realized once the cutoff
+contains them, and a linear lag inequality $\sum_{j\le h}\alpha_j\mathrm{Cov}(j)\ge0$ is universal
+iff it holds on the generators: $G_1=\{2,6\}$ gives the lag-one law above, $G_2$ contains
+$\{2,3,4,6,12\}$ and gives $0\le\mathcal V_{(0,1,2)}\le4V$.
+
 Adding the primitive energy, the least energy at prescribed $(V,C)$ is
 $\max\bigl(5V+2C,\ 6V+4C,\ 6V+12C\bigr)/12$ for $N\ge 6$, with edges supported on the mode pairs
 $\{2,3\},\{3,4\},\{4,6\}$; the four modes $\{2,3,4,6\}$ realize every boundary point, and
 prime modes escape every upper bound of the energy by the variance ($J_2(p)/\varphi(p)=p+1$).
-With two lags and the consecutive triple the cone is spanned by $\{2,3,4,6,12\}$, giving
-$0\le\mathcal V_{(0,1,2)}\le 4V$. For an arbitrary $k$-tuple $H$ and prime $p$ the structure
-factor satisfies the sum-of-squares identity $p\,S_p(H)=\sum_r(p\,\nu_H(p,r)-k)^2$, and if $H$
-omits a residue class modulo $p$ (Hardy–Littlewood admissibility at $p$) then
-$S_p(H)\ge k^2/\varphi(p)$; the case $k=2$, $p=3$ is the $1/2$ above.
+For a $k$-tuple $H$ the structure factor obeys $p\,S_p(H)=\sum_r(p\,\nu_H(p,r)-k)^2$ at primes,
+and **Montgomery's inequality** $S_q(H)\ge k^2\prod_{p\mid q}(p-c_p)/c_p$ for squarefree $q$ when
+$H$ occupies $c_p$ classes modulo each $p$ (Parseval over the $p$-th roots and Cauchy–Schwarz at
+a prime, multiplicative along coprime factors because the primitive roots of order $pq$ are the
+products of those of orders $p$ and $q$). A Hardy–Littlewood admissible tuple therefore has
+$\mathrm{Var}_H(c)\ge k^2\sum_{q\text{ squarefree}}Y(q)^2/\varphi(q)$. Translation by $h$ maps the
+row space to itself exactly when every active order $q$ has $q/\gcd(q,2)\mid h$ (then
+$\zeta^h$ is constant on the primitive $q$-th roots and the translated coordinates are $\pm Y(q)$);
+at $h=1$ this is closure only on $\{1,2\}$.
 
 The mechanism behind all of these is the same: bound the modal weights of the forms against
 each other arithmetically, identify the finitely many modes where the bounds are tight, and
@@ -362,9 +455,9 @@ endpoints share their multiplicative state, $\sigma_N(M_0+M+1)=\sigma_N(M_0+1)$,
 squarefree-supported rows iff they share their radical state. Period return is replaced by
 state return.
 
-### 3.4 Finite-prefix inversion and observability
+### 3.4 Observability at every phase: the cyclotomic recurrence and the quadratic horizon
 
-The discrepancy on the initial prefix $M\in[1,n]$ at level $N=n+1$ determines
+**Prefix inversion.** The discrepancy on the initial prefix $M\in[1,n]$ at level $N=n+1$ determines
 $c(2),\dots,c(n+1)$: second differences in $M$ annihilate the drift, Möbius inversion over
 divisors recovers each $c(d)$ up to a rank-one coupling to the top column, and an explicit
 harmonic endpoint correction interpolates arbitrary prefix data. The rational prefix matrix has
@@ -375,17 +468,93 @@ and kernel modulo $p^a$ of cardinality $p^{\sum_{r\le a}\lfloor n/p^r\rfloor}$. 
 stable with a cutoff-independent constant: if two rows have discrepancies within $\varepsilon$
 on $M\in[1,d]$ then $|c(d)-b(d)|\le 2\tau(d)\varepsilon$, and sampling the active sawtooth at
 arbitrary powers recovers squarefree coefficients with the attained constant
-$\frac{2d}{d-1}(\tau(d)-1)$.
-
-Around a common return $R$ (all $d\le N$ divide $R$) the discrepancy reflects with defect
-$\mathcal H_N(c)-\sum c(d)$; the window $[R-(N-2),R+(N-1)]$ of length $2N-3$ detects every
-non-constant row, while on the window of length $2N-4$ the kernel is one-dimensional, spanned by
-the normalized second-difference weight supported on $\{1,N-2,N-1,N\}$. The least period of
-the signal of a row is the lcm of its active divisors; signed cancellation never shortens it.
-For the full row this is $L_N=\operatorname{lcm}(1,\dots,N)$, whose logarithm is $\psi(N)$, not
-$\log N!$. In the dual picture
+$\frac{2d}{d-1}(\tau(d)-1)$. Around a common return $R$ (all $d\le N$ divide $R$) the discrepancy
+reflects with defect $\mathcal H_N(c)-\sum c(d)$; the window $[R-(N-2),R+(N-1)]$ of length
+$2N-3$ detects every non-constant row, while on the window of length $2N-4$ the kernel is
+one-dimensional, spanned by the normalized second-difference weight supported on
+$\{1,N-2,N-1,N\}$. The least period of the signal of a row is the lcm of its active divisors;
+signed cancellation never shortens it. In the dual picture
 $L_N(M,c)^2\le V\cdot\sum_{e\ge 2}\operatorname{Re}R_e(M)^2/\varphi(e)$, attained by an explicit
 row, and the right-hand energy vanishes iff every $e\le N$ divides $M$.
+
+**The cyclotomic recurrence.** Each indicator $k\mapsto\mathbf 1_{d\mid k}$ is $d$-periodic, so
+$E^d-1=\prod_{q\mid d}\Phi_q$ kills it ($E$ the unit shift); hence every level-$N$ response and
+every prefix discrepancy satisfy the same linear recurrence $Q_N(E)s=0$ of order $\Phi(N)$,
+whatever the row, and $Q_N$ is the shortest universal recurrence, because the shifts of
+$\mathbf 1_{d\mid\cdot}$ are the $d$ residue-class indicators and distinct cyclotomics are
+coprime. A monic recurrence propagates vanishing forward and responses are $N!$-periodic, so at
+**every** phase $A$: the response vanishes on $[A,A+\Phi(N))$ iff the row vanishes on $[1,N]$,
+and the discrepancy vanishes there iff the variance vanishes. In spectral form $P(E)$ kills a
+response iff $\prod_{Y(q)\ne0}\Phi_q\mid P$, so the shortest recurrence of a row has order equal
+to the totient mass of its Selberg support, and a class of rows with Selberg support in $S$ is
+determined at every phase by $\sum_{q\in S}\varphi(q)$ consecutive values. The universal
+horizon $\Phi(N)\le N(N+1)/2$ is quadratic with no logarithm; the common-return horizon $2N-3$
+shows it is not sharp for the discrepancy at special phases.
+
+**The window sandwich at quadratic order.** The response frequencies are $1/N^2$-separated, since
+a nontrivial $m$-th root of unity is at distance at least $1/m$ from $1$. Smoothing a window by a
+trapezoid, the average of $L$ box windows of length $K'$, makes the off-diagonal kernel of an
+exponential sum $u(k)=\sum_{\zeta\in T_N}a(\zeta)\zeta^k$ a product of two geometric sums of size
+at most $4/\lvert z-1\rvert^2$, and squared reciprocal distances of a $\delta$-separated family sum
+to at most $4/\delta^2$, so
+$\bigl\lvert\sum_{i<L}\sum_{j<K'}\lvert u(T_0+i+j)\rvert^2-LK'\sum\lvert a\rvert^2\bigr\rvert\le N^4\sum\lvert a\rvert^2$.
+Squeezing a box between trapezoids with ramps $L=N^2$ gives, at every phase, length and offset,
+$$
+\Bigl\lvert\sum_{A<k\le A+K}(s(k)-\kappa)^2-K\bigl((H-\kappa)^2+V\bigr)\Bigr\rvert\ \le\ (2N^2-1)\bigl((H-\kappa)^2+V\bigr).
+$$
+The constant is sharp in order: at a common return every modulus divides $k$, so the **flat
+Selberg row** ($Y(q)=1$ for $2\le q\le N$, $Y(1)=0$) has mean zero, variance $\Phi(N)-1$ and the
+spike $s(N!)=\Phi(N)-1$; it attains the pointwise bound $(s(k)-H)^2\le(\Phi(N)-1)V$ with
+equality, and its one-point window forces every sandwich constant to be at least $\Phi(N)-2$.
+The optimal sandwich constant lies in $[N^2/8+N-\tfrac N2H_N-2,\ 2N^2-1]$: exact order $N^2$.
+The all-ones row shows the same for every inverse $\ell^1$ constant, $\|c\|_1^2\le C\,Q_{\mathrm{Sel}}$
+needs $C\ge\Phi(N)$, and finite Ramanujan inversion gives $\|c\|_1\le\sum_q\sigma(q)\lvert Y(q)\rvert$,
+hence $\|c\|_1^2\le S_NQ_{\mathrm{Sel}}$ with $S_N=\sum_{q\le N}\sigma(q)^2/\varphi(q)\le e^{19/2}N^2$
+(from $\sigma(q)\varphi(q)\le q^2$ and $\sum_{q\le N}(q/\varphi(q))^3\le e^{19/2}N$). Quantitative
+window–period transfer starts at length $N^{2\pm o(1)}$ and no mean-square comparison reaches a
+linear horizon.
+
+**Window laws at quadratic order.** With $S=2N^2-1$, polarization of the lagged sums
+$s'(k)\pm s'(k+g)$ (coefficients $Y(\operatorname{ord}\zeta)(1\pm\zeta^g)$, and
+$\sum_{\zeta\text{ prim. }q}\zeta^g=c_q(g)$) gives the window covariance at every lag,
+$\bigl\lvert\sum_W(s(k)-H)(s(k+g)-H)-K\,\mathrm{Cov}(g)\bigr\rvert\le SV$, uniformly in $g$. Hence
+$\lvert D_W-2KR\rvert\le4SV$ for the window Dirichlet energy, the **window Poincaré inequality**
+$\sum_W(s-H)^2\le D_W+5SV$ (the torus constant one survives on every window longer than $N^2$,
+not only on complete periods), the pointwise bound $(s(k)-H)^2\le(\Phi(N)-1)V$, and the
+**long-window dissipation**
+$$
+2R_W\ \le\ 4H^2-(K-10N^2)\,V:
+$$
+in $\ker P$ every window longer than $10N^2$ is strictly dissipative at every phase, whatever
+the endpoint states. The canonical primitive obeys the same sandwich,
+$\lvert\sum_WW(k)^2-KE\rvert\le SE$ with $E$ the primitive energy, and $W(k)^2\le(\Phi(N)-1)E$,
+so the prefix discrepancy has its period energy on every window longer than $N^2$ up to a
+relative error $N^2/K$. Abel summation against the decreasing pronic weight turns this into the
+second-order **pronic tail law**
+$\bigl\lvert\sum_{k>H}W(k)^2/(k(k+1))-E/(H+1)\bigr\rvert\le SE/((H+1)(H+2))$: beyond $H\ge4N^2-4$
+the pronic tail lies between $E/(2(H+1))$ and $3E/(2(H+1))$.
+
+**Moments and the degree hierarchy.** By the Chinese remainder theorem a product
+$\prod_is(k+h_i)$ expands over moduli families whose joint incidence count on a window is within
+one of $K/\operatorname{lcm}(d_i)$, so every translated moment of degree $m$ satisfies
+$\bigl\lvert\sum_W\prod_is(k+h_i)-K\,M_m(c;h)\bigr\rvert\le\|c\|_1^m\le(e^{19/4}N\sqrt{Q_{\mathrm{Sel}}})^m$
+at every phase. The exponent is exact: the flat Selberg row is bounded by $\Phi(N)$, has period
+$m$-th moment at most $\Phi(N)^{m-1}$ and value $\Phi(N)$ at $N!$, so every degree-$m$ transfer
+constant is at least $\Phi(N)^{m/2}/2$. Observations of degree $m$ reach their period values
+only on windows of length $N^{m\pm o(1)}$; the sixth-moment protocols of the arithmetic
+observation theory need windows of length $N^{6-o(1)}$. Within that horizon the period theory
+transfers whole: Möbius inversion in the lag variable, $\sum_{ab=f}\mu(a)c_e(b)=f\mu(e/f)\mathbf 1_{f\mid e}$,
+recovers every Selberg energy from the lags $1,\dots,N$,
+$Y(q)^2=\sum_{u\le N/q}(qu)^{-1}\sum_{ab=qu}\mu(a)\mathrm{Cov}(b)$, with stability constant $H_N^2$;
+one window at arbitrary phase therefore gives all Selberg energies within $H_N^2SV/K$, and the
+up-to-translation recovery theorems lift to windows at unrelated unknown phases. The moment
+arrays are isometric to the relation spectrum: the multi-characters of distinct zero-product
+tuples are orthogonal over $[0,N!)^m$, so
+$(N!)^{-m}\sum_v(M_m(c;v)-M_m(c';v))^2=\sum_{\prod\zeta_i=1}(A_c(\zeta)-A_{c'}(\zeta))^2$, and
+degree-$m$ window averages within $\eta$ at shift-dependent phases give
+$\|A_c-A_{c'}\|_2\le\eta+(e^{19/4}N)^m(Q_c^{m/2}+Q_{c'}^{m/2})/K$, with constants independent of
+$N$ once $K$ exceeds a fixed multiple of $N^m$; at degree two the relation spectrum is the
+Selberg magnitude profile $\sum_q\varphi(q)(Y_c(q)^2-Y_{c'}(q)^2)^2$.
 
 ### 3.5 Translation, compression, and visibility
 
@@ -409,9 +578,25 @@ primitive energy at most $h^2V/16$, independently of the cutoff. Cross-coprime m
 a tensor, and sampling the composite clock wavelet at the transverse clock isolates adjacent
 valuation shells $v_p(q)\in\{a,a+1\}$ with amplitudes $\pm p^a$.
 
-All two-point data see only $Y(q)^2$. Third translated moments recover the sign of $Y(q)$ for
-odd $q$; on the even pair $\{6,10\}$ every moment of degree $\le 5$ is blind to the relative sign
-and the zero-lag sixth moment recovers it.
+**Sign visibility is a valuation law.** All two-point data see only $Y(q)^2$, since
+$\zeta_1\zeta_2=1$ forces equal orders. Rescaling the coordinates by signs $\varepsilon(q)$
+multiplies the relation coefficient of a zero-product tuple by $\prod_i\varepsilon(\operatorname{ord}\zeta_i)$,
+and the multi-characters of distinct tuples are independent, so the degree-$m$ moments of $Y$
+and $\varepsilon Y$ agree for all shifts iff every zero-product $m$-tuple of active frequencies
+has $\prod\varepsilon=1$. The sign of $Y(q)$ at odd $q\ge3$ is seen at degree three through
+$\zeta\cdot\zeta\cdot\zeta^{q-2}=1$. Which order tuples carry relations is decided by layers:
+raising a relation $\prod\zeta_i=1$ to the power $p^{a-1}R$, with $R$ the product of the
+prime-to-$p$ parts of the orders, kills every frequency off the top $p^a$-layer and sends each
+frequency on it to a nontrivial $p$-th root of unity ($-1$ when $p=2$), so the top layer has
+cardinality different from one, and even when $p=2$. Conversely every layer-admissible tuple of
+orders is realized by primitive roots with product one, constructed prime by prime and glued
+along coprime orders. Hence **a degree-$m$ moment distinguishes $Y$ from $\varepsilon Y$ iff some
+layer-admissible active $m$-tuple has $\prod\varepsilon\ne1$**: the signs on the top dyadic layer
+are invisible to moments of every degree, two modes sharing their top dyadic layer with private
+odd layers are relatively invisible through degree five, and $\{2p,2r\}$ for distinct odd primes
+has visibility degree exactly six, through $\zeta\zeta\zeta^{p-2}\xi\xi\xi^{r-2}=1$. The cost of a
+sign pattern is measured as well as decided: the mean square of the moment-array difference is
+four times the energy of the zero-product relations of odd $\varepsilon$-weight.
 
 ### 3.6 Pronic duality and the Gram calculus
 
@@ -423,9 +608,46 @@ $\bigl(\sum_e\Lambda(e)Y(e)\bigr)^2\le\sum_M L_N(M,c)^2/(M(M+1))$. Finite horizo
 by the pronic tail: a bounded sequence has pronic remainder $\le B/(H+1)$ beyond $H$, and a
 sequence with bounded partial sums has remainder $\le 2B/((H+1)(H+2))$, so after subtracting the
 first-order tail $\frac{\varphi(e)}{2(H+1)}$ of the mean the von Mangoldt readout holds to second
-order.
+order; for the energy the second-order tail law of §3.4 applies.
 
-The Gram matrix obeys exact prime-dilation laws. For $p\nmid q,r$,
+**The Gram is a finite cotangent–sawtooth sum.** Since the mean-centered primitive is the pure
+exponential sum $\sum_\zeta a_\zeta\zeta^M$ and the pronic weight sums characters to $1+Q(z)$,
+$$
+\mathcal G^{\mathrm{mc}}(p,q)=\frac{\varphi(p)\varphi(q)}4+\sum_{\zeta\text{ prim }p}\sum_{\xi\text{ prim }q}a_\zeta a_\xi\,Q(\zeta\xi),
+$$
+the infinite pronic series being replaced by logarithms of cyclotomic numbers $1-\zeta\xi$. The
+kernel collapses: $a_\zeta a_\xi Q(\zeta\xi)=\kappa(\zeta,\xi)\log(1-\zeta\xi)$ with
+$\kappa=\frac1{1-\zeta}+\frac1{1-\xi}-1$, whose real part vanishes on the circle, so the
+log-moduli cancel and only arguments survive; with $\operatorname{Im}\frac1{1-e(x)}=\tfrac12\cot\pi x$
+and $\arg(1-e(t))=\pi((t))$ this is $\mathcal G^{\mathrm{mc}}(p,q)=C(p,q)$ for all moduli
+$p,q\ge2$. Hecke's distribution relation $\sum_{b<q}((y+b/q))=((qy))$ collapses the inner sums at
+primes: $\mathcal G^{\mathrm{mc}}(p,q)=\frac{(p-1)(q-1)}4-\frac\pi2\bigl(V(q,p)-V(1,p)+V(p,q)-V(1,q)\bigr)$
+and $\mathcal G^{\mathrm{mc}}(p,p)=\frac{(p-1)^2}4+\pi V(1,p)$. The same calculus evaluates the
+discrete Báez-Duarte Gram for all moduli: $M\bmod m=-\sum_{0<a<m}\alpha_a(\zeta_a^M-1)$ with
+$\sum\alpha_a=(m-1)/2$ and $\prod_a(1-\zeta_a)=m$, so
+$$
+m_1m_2\,\mathrm{bdGram}(1/m_1,1/m_2)=\frac{(m_1-1)\log m_2+(m_2-1)\log m_1}2-\frac\pi2\bigl(V(m_2,m_1)-V(1,m_1)+V(m_1,m_2)-V(1,m_2)\bigr),
+$$
+Vasyunin's formula, with the cross tail $\int_1^\infty\{v/m\}\{v\}v^{-2}dv$ explicit as well.
+
+**Positivity reads cotangent sums.** $\mathcal G^{\mathrm{ec}}$ is a pronic inner product, so the
+Vasyunin prime kernel $K(p,q)=\mathcal G^{\mathrm{ec}}(p,q)$ is positive semidefinite on every
+finite set of primes, and the pronic covariance $S(m_1,m_2)-\log m_1\log m_2$ of residues is
+positive semidefinite for all moduli. A head/tail split at $M=m$ bounds the diagonal, and
+nonnegativity bounds it below:
+$$
+\log^2p\ \le\ \pi V(1,p)+(p-1)\log p\ \le\ 2\log^2p+p+\frac{(p-1)^2}p ,\qquad
+\log^2m\le\pi V(1,m)+(m-1)\log m\le\frac{2(m-1)^2}m ,
+$$
+so $\sum_{a<p}a\cot(\pi a/p)=-\frac{p(p-1)}\pi\log p+O(p^2)$ with explicit constants, and the
+off-diagonal bound $\lvert K(p,q)\rvert\le(K(p,p)+K(q,q))/2$ gives the **reciprocity law**
+$$
+(\log q-\log p)^2\ \le\ \pi\bigl(V(q,p)+V(p,q)\bigr)+(q-p)(\log q-\log p)\ \le\ (\log q-\log p)^2+O(p+q),
+$$
+for all moduli, with explicit error terms: the reciprocity pair of Vasyunin sums is determined up
+to $O(m_1+m_2)$ by elementary terms, from pronic positivity alone.
+
+**Dilation laws.** The Gram matrix obeys exact prime-dilation laws. For $p\nmid q,r$,
 $$
 \mathcal G^{\mathrm{ec}}(pq,pr)+\mathcal G^{\mathrm{ec}}(pq,r)+\mathcal G^{\mathrm{ec}}(q,pr)
 =(p-1)\mathcal G^{\mathrm{ec}}(q,r)+(p-1)\Lambda(q)\Lambda(r),
@@ -434,10 +656,11 @@ in the mean-centered form the von Mangoldt term is replaced by $\frac{p(p-1)}4\v
 and for primes $p,q\nmid r$
 $$
 \mathcal G(pr,qr)+\mathcal G(pr,r)+\mathcal G(qr,r)+\mathcal G(r,r)=\sqrt{pq}\,\Phi_r(p/q),\qquad
-\lim_{p\to\infty}\sqrt p\,\Phi_r(p)=\tfrac12\varphi(r)\Lambda(r).
+\lim_{p\to\infty}\sqrt p\,\Phi_r(p)=\tfrac12\varphi(r)\Lambda(r),
 $$
-For the power-damped Ramanujan weight $Y_\varepsilon(q)=\operatorname{Re}\sum_{m\ge 1}\mu(qm)(qm)^{-1-\varepsilon}$
-one has $Y_\varepsilon(pr)=-Y_\varepsilon(r)/(p^{1+\varepsilon}-1)$, and the pair $\{r,pr\}$ of adjacent
+so with $\mathcal G=C-D\otimes D+\Lambda\otimes\Lambda$ the dilation profile is explicit at every
+prime ratio as a finite cotangent–sawtooth sum. For the power-damped Ramanujan weight one has
+$Y_\varepsilon(pr)=-Y_\varepsilon(r)/(p^{1+\varepsilon}-1)$, and the pair $\{r,pr\}$ of adjacent
 depths combines into the single Euler factor $\frac{p^{1+\varepsilon}}{p^{1+\varepsilon}-1}$ times the
 scale difference $f_r-p^{-1/2-\varepsilon}D_{1/p}f_r$. Iterated over all divisors of a squarefree
 $P$ coprime to $r$ this gives the **hypercube factorization**
@@ -451,7 +674,39 @@ removing the undilated singularity across all depths at once. This is the exact 
 $\zeta(1+\varepsilon)\cdot\zeta(1+\varepsilon)^{-1}=1$; the cancellation that a fixed-depth prime star
 cannot produce (§4) is produced coherently across depths.
 
-### 3.7 The sawtooth martingale calculus of the power-damped energy
+### 3.7 The Báez-Duarte criterion in the theory's coordinates
+
+The Báez-Duarte residual of a row is
+$1-2\sum_nc(n)\log n/n+\sum_{n,m}c(n)c(m)\,\mathrm{bdGram}(1/n,1/m)$; by Vasyunin's formula and
+the pronic mean $\sum_M(M\bmod n)w(M)=\log n$ it is the pronic energy of the shifted prefix
+discrepancy,
+$$
+\Bigl\|\mathbf 1_{(0,1]}-\sum_{n\le N}c(n)\rho_{1/n}\Bigr\|^2=\sum_{M\ge1}\frac{(1+L_N(M,c))^2}{M(M+1)}
+=\bigl(1-\mathcal R(c)\bigr)^2+Q^{\mathrm{ec}}(c),
+$$
+the second form because the pronic mean of $L_N$ is $-\mathcal R(c)$ and $w$ has mass one. Hence
+$$
+\text{RH}\iff\forall\varepsilon>0\ \exists N,c:\ \sum_M\frac{(1+L_N(M,c))^2}{M(M+1)}<\varepsilon
+\iff\forall\varepsilon>0\ \exists N,c:\ (1-\mathcal R(c))^2+Q^{\mathrm{ec}}(c)<\varepsilon ,
+$$
+an exact equivalence of RH with a statement purely about rows: steer the von Mangoldt readout to
+one while the energy-centered pronic energy vanishes. The receiver of §1.3 bounds the pronic
+energy of a centered prefix; the criterion asks the opposite extremal problem, approximating the
+constant $-1$ by prefix discrepancies in pronic energy. The two quantities are coupled
+unconditionally: there is $\kappa>0$ with
+$$
+(1-\mathcal R(c))^2+Q^{\mathrm{ec}}(c)\ \ge\ \frac\kappa{\log N}\qquad\text{for every row on }[1,N],\ N\ge2,
+$$
+from the critical zeros through the Báez-Duarte dual sequence. Since $\mathcal R(tc)=t\mathcal R(c)$
+and $Q^{\mathrm{ec}}(tc)=t^2Q^{\mathrm{ec}}(c)$, minimizing over the scale gives the
+scale-invariant **readout–energy uncertainty principle**
+$\kappa\,\mathcal R(c)^2\le(\log N-\kappa)\,Q^{\mathrm{ec}}(c)$, and RH is equivalent to the
+unboundedness of $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)$ over finite rows. For the power-damped
+cofactor row the residual of $-w_{\varepsilon,Q}$ is $(1-m(\varepsilon,Q))^2+V(\varepsilon,Q)$, so RH
+follows if this can be made arbitrarily small, while unconditionally it is at least
+$\kappa/\log(Q+1)$.
+
+### 3.8 The sawtooth martingale calculus of the power-damped energy
 
 This is the physical-space analysis of $E_T(\varepsilon)$. Every step is an identity valid for
 all $\varepsilon$ and $T$; only the logarithmic limits need $\varepsilon>0$.
@@ -521,11 +776,12 @@ atom is born. Shared proper factors of composite interior moduli are the resonan
 contribution; summing the compensated bounds over all moduli with absolute coefficients is not
 uniform in the cutoff.
 
-### 3.8 Dilation profiles and the Bézout seed
+### 3.9 Dilation profiles and the Bézout seed
 
 The continuous profile $\Phi_r(p/q)$ equals the reciprocal pairing of the integer jump streams
 of $pr$ and $qr$; finite Diophantine lag sectors approximate it with error $\le B_r^2/Q$ at the
-quadratic horizon $Q^2$. A pair contributes at the gap $h=pa-qb$ only if
+quadratic horizon $Q^2$, and the cotangent–sawtooth form of §3.6 evaluates it exactly at every
+prime ratio. A pair contributes at the gap $h=pa-qb$ only if
 $\tau_{\mathrm{vis}}(r)\gcd(p,q)\mid h$. For coprime scales every positive solution of
 $pa=qb+1$ is $(a+qt,\,b+pt)$, so the complete successor sector is a weighted reciprocal
 progression with exact digamma finite part; a complete modulus period of it has signed mass
@@ -540,7 +796,7 @@ This is the point at which additive structure enters the spectral half of the th
 profile is treated as a sum over solutions of a linear Diophantine equation, not only as an
 inner product.
 
-### 3.9 The literal Möbius source on linear windows
+### 3.10 The literal Möbius source on linear windows
 
 For $c=\mu$ the trans-horizon band formula gives unconditional laws on every window
 $M\le(B+1)N$ with $B$ fixed.
@@ -551,20 +807,24 @@ $M\le(B+1)N$ with $B$ fixed.
   $|\sum_{k\le M}s_{N,\mu}(k)|\le 1+2B\sup_{x\le(B+1)N}|M(x)|$, fed by the unconditional Mertens
   limit, and quantitatively by the Vinogradov–Korobov rate.
 - **Quadratic profile.** $\frac1N\sum_{k\le(B+1)N}s_{N,\mu}(k)^2$ converges to an explicit finite
-  Euler-product profile, monotone in $B$, equal to $6/\pi^2$ at $B=1$. Odd moments vanish in
-  the limit; all moments have finite profiles; the source takes values in a finite alphabet
-  determined by the primorial through $B+1$, every value is attained cofinally, and the value
-  frequencies converge to a symmetric law whose support is exactly that alphabet. Both signs
-  have positive frequency, at least $\frac{\text{profile}}{4C^2}N$ at horizon $(C+1)N$.
+  Euler-product profile $P(B)$, monotone in $B$, equal to $6/\pi^2$ at $B=1$ and $11/\pi^2$ at
+  $B=2$. Odd moments vanish in the limit; all moments have finite profiles; the source takes
+  values in a finite alphabet determined by the primorial through $B+1$, every value is
+  attained cofinally, and the value frequencies converge to a symmetric law whose support is
+  exactly that alphabet. Both signs have positive frequency, at least
+  $\frac{\text{profile}}{4C^2}N$ at horizon $(C+1)N$.
 - **Gradient coercivity.** Every odd squarefree integer in $(N,2N]$ selects an adjacent edge
   ending at a multiple of four with gradient square $1$, so eventually, uniformly on
   $2N\le M\le N^A$, $R_N(M;\mu)\le -N/(2\pi^2)$, while on a fixed linear window
-  $(2/\pi^2)N\le\mathcal E_N(M;\mu)\le 4A^3N$.
+  $(2/\pi^2)N\le\mathcal E_N(M;\mu)\le 4A^3N$. Combined with the long-window dissipation of
+  §3.4, which starts at the explicit polynomial scale where a Bertrand prime bounds the
+  variance below, the renormalized Möbius defect is nonpositive at every prefix for all large
+  cutoffs.
 
 These are statements about the actual arithmetic source with no receiver hypothesis. They are
 first-moment and fixed-ratio second-moment laws; none is a square-root bound.
 
-### 3.10 Fermi cells and the trans-horizon octaves
+### 3.11 Fermi cells and the trans-horizon octaves
 
 On the cell $I_n$ the response of a row is twice its half-scale prefix minus its prefix, and
 across a cell boundary it changes by $2\cdot\mathbf 1_{2\mid n+1}s(\frac{n+1}2)-s(n+1)$; by
@@ -576,9 +836,9 @@ exponent are equivalent to the corresponding Mertens bounds, hence to RH. The si
 $(2m,2m+1)$ satisfy an exact polarization identity, and the dyadic wavelet
 $A\mapsto 2A(\lfloor n/2\rfloor)-A(n)$ reconstructs any prefix by multiscale telescoping.
 
-### 3.11 General classes and ceilings
+### 3.12 General classes and ceilings
 
-The algebra of §3.1 and §3.7 is not special to $\tau_\varepsilon$. Every GCD–LCM modular function
+The algebra of §3.1 and §3.8 is not special to $\tau_\varepsilon$. Every GCD–LCM modular function
 satisfies the pronic law $F(k)F(k+1)=F(k(k+1))$, the shifted law $F(k)F(k+h)=F(k(k+h))$ for
 $\gcd(k,h)=1$, and the conservation law $(\Delta F)(n)^2+2F(n(n+1))=F(n)^2+F(n+1)^2$. For
 $F=\prod_{p\mid n}(1-w(p))$ with $w\in[0,1]$ on primes one has divisor antitonicity,
@@ -588,7 +848,7 @@ $24\mid k(k+1)(k+2)$. The totient ratio $\varphi(n)/n$ and the Dedekind ratio $J
 instances; at every prime $J_2(p)=(\varphi(p)-\mu(p))^2-1$ and $(q+1)\varphi(q)\le J_2(q)$ with
 equality exactly at primes.
 
-### 3.12 Bridges to classical sieve estimates
+### 3.13 Bridges to classical sieve estimates
 
 The response of the Möbius row is, up to sign, the Vaughan Type-II short coefficient:
 $\mathbf 1_{k=1}-s_{N,\mu}(k)$. This identifies the prefix $L^2$ energy with Type-II short
@@ -601,6 +861,25 @@ mollifier $\mu(d)\log(X/d)$ vanishes in Selberg coordinates beyond $X$ and has n
 variance $O(1/\log X)$; the $\ker P$ projection annihilates the harmonic mode so that variance
 equals the Selberg form and the discrepancy is drift-free.
 
+**The large sieve, log-free.** The window sandwich bounds the dual large-sieve sums over the
+roots of unity of order at most $Q$, $\sum_{A<k\le A+K}\lvert\sum_{\zeta\in T}a(\zeta)\zeta^k\rvert^2\le(K+2Q^2-1)\sum\lvert a\rvert^2$,
+and the duality principle carries the constant to the primal Farey-point sums:
+$$
+\sum_{q\le Q}\sum_{(a,q)=1}\Bigl\lvert\sum_{n<N}x(n)e(an/q)\Bigr\rvert^2\le(N+2Q^2-1)\sum\lvert x(n)\rvert^2,
+$$
+with unit main coefficient and no logarithm, within a factor two on $Q^2$ of the
+Montgomery–Vaughan constant. Gauss sums turn it into the multiplicative large sieve
+$\sum_{q\le R}\frac q{\varphi(q)}\sum_{\psi\text{ prim. mod }q}\lvert\sum_{n<N}c_n\bar\psi(n)\rvert^2\le(N+2R^2-1)\sum\lvert c_n\rvert^2$,
+Montgomery's combinatorial inequality gives $\lvert A\rvert\sum_{p\in P}(p-\omega_p)/\omega_p\le N+2Q^2-1$
+for a set occupying $\omega_p$ classes modulo each prime, and Montgomery's inequality at
+squarefree moduli gives the arithmetic large sieve
+$\lvert A\rvert\sum_{q\le Q\text{ squarefree}}h(q)\le N+2Q^2-1$ with $h(q)=\prod_{p\mid q}(p-c_p)/c_p$.
+The window laws of §3.4 are consumed outside the theory as well: the long-window dissipation,
+with its variance bounded below by a Bertrand prime, is what makes the renormalized defect of
+Möbius and damped rows nonpositive at every prefix for large horizons in the trans-horizon
+theory, and the polynomial-window transfer of moments is what lifts the arithmetic observation
+theory from complete periods to windows at unknown phases.
+
 ---
 
 ## 4. Traps and sharp boundaries
@@ -609,25 +888,36 @@ equals the Selberg form and the discrepancy is drift-free.
 |---|---|
 | Pronic reach is cancellation. | $d\mid n(n+1)$ for some $d\in(M,M(M+1)]$ says nothing about $L_N(M,c)$: a single modulus $d>M$ contributes only the drift $-Mc(d)/d$. |
 | A symmetric return window determines the row. | The window $[R-(N-2),R+(N-3)]$ of length $2N-4$ has a one-dimensional kernel; the asymmetric window of length $2N-3$ is needed. |
+| Observability needs a period or a common return. | At every phase, $\Phi(N)\le N(N+1)/2$ consecutive responses determine the row and $\Phi(N)$ discrepancies decide the variance; a support class needs only its totient mass. |
+| A sharper window sandwich reaches the linear horizon. | The optimal sandwich constant has exact order $N^2$ (flat Selberg row at a common return); linear observability, if true, is an incidence-algebraic statement no mean-square comparison sees. |
+| Degree-$m$ statistics transfer at the quadratic horizon. | The degree-$m$ transfer horizon is $N^{m\pm o(1)}$; sixth-moment protocols need windows of length $N^{6-o(1)}$. |
+| Window constants carry a logarithm. | The sandwich constant $2N^2-1$, the inverse $\ell^1$ constant $e^{19/2}N^2$ and the window covariance bound at every lag are log-free. |
 | Compressed lags form a semigroup. | $\lambda_q(h_1+h_2)\ne\lambda_q(h_1)\lambda_q(h_2)$; at $p^{a+1}$ all lags below $p^a$ are erased and two of them revive the mode with defect $-1/(p-1)$; even on squarefree support $\lambda_q(2)-\lambda_q(1)^2=-3/4$ at $q=3,6$. |
-| Quadratic or odd data determine the row. | All two-point data see $Y(q)^2$; on $\{6,10\}$ every moment of degree $\le 5$ is blind to the relative sign. |
+| Quadratic or bounded-degree data determine the row. | All two-point data see $Y(q)^2$; sign visibility is a valuation law: the top dyadic layer is invisible at every degree, $\{2p,2r\}$ needs degree six, and every layer-admissible relation is realized. |
+| Universal lag inequalities need infinitely many checks. | For every lag horizon the covariance cone is finitely generated by explicit modes; an inequality is universal iff it holds on the generators. |
 | Short windows read valuation phase. | Observing $t\mapsto\gcd(k+t,p^a)$ on fewer than $\varphi(p^a)$ points cannot distinguish $k=1$ from $k=1+p^{a-1}$; the threshold $\varphi(p^a)$ is sharp. |
 | The raw Möbius defect is small. | The unrenormalized combined defect at $M=N$ exceeds every $CN^\alpha$, $\alpha<1$; only the renormalized defect, which keeps the diagonal main term, is bounded. |
 | Multiplicative identities can close the problem. | Möbius inversion, Euler products, Gibbs log-submodularity and one-large-prime splits hold for every Beurling system, some of which violate RH. Closure needs $pa-qb=1$. |
 | Fixed-depth cancellation. | Within a prime star $\{pr\}$ the Möbius sign is constant and nearby-prime terms $Y(pr)Y(qr)\mathcal G^{\mathrm{ec}}(pr,qr)$ are all positive; the depth-$k$ truncation of $1/\zeta(s+\varepsilon)$ still has the singularity at $1-\varepsilon$. Cancellation is coherent across depths only (§3.6). |
+| The pronic Gram is an infinite, analytic object. | It is a finite cotangent–sawtooth sum in two moduli; its positivity alone yields the cotangent moment law and the Vasyunin reciprocity law with explicit errors. |
+| The three Grams are interchangeable. | $\mathcal G$, $\mathcal G^{\mathrm{ec}}$ and $\mathcal G^{\mathrm{mc}}$ differ by rank-one terms in $\Lambda$ and $\varphi/2-\Lambda$; positivity holds for $\mathcal G^{\mathrm{ec}}$, the dilation laws change their inhomogeneous term with the centering. |
+| The Báez-Duarte criterion is foreign to the theory. | Its residual is the pronic energy of $1+L_N(M,c)$, equal to $(1-\mathcal R(c))^2+Q^{\mathrm{ec}}(c)$; RH is an exact statement about rows. |
+| A small readout defect or a small centered energy alone is progress. | They are coupled by the unconditional floor $\kappa/\log N$ and the uncertainty principle $\kappa\mathcal R^2\le(\log N-\kappa)Q^{\mathrm{ec}}$; only their simultaneous decay is RH. |
 | Summation by parts is an estimate. | Along $n$ it is the product rule in reverse and returns $E_T$ with coefficient $1$; it never yields $(1-\delta)E_T$. |
 | Changing the kernel is harmless. | Replacing $w_T(n)=\frac1{n+1}-\frac1{T+1}$ by $H_T-H_n$, or dropping the second difference of the active component from $\tilde\tau_\varepsilon(n+1)=\Delta I_\varepsilon(n)+\Delta^2S_\varepsilon(n)$, changes the target. |
 | Misreading the damping quantifiers. | The receiver asks: for every $\delta>0$ some $\varepsilon<\delta$ and some $B_\varepsilon<\infty$ with $E_T(\varepsilon)\le B_\varepsilon$ for all $T$. The constant may depend on $\varepsilon$; divergence of constants as $\varepsilon\downarrow 0$ is no obstruction. Conversely $\prod_p(1+p^{-1-2\varepsilon})=\zeta(1+2\varepsilon)/\zeta(2+4\varepsilon)$ is not an estimate of the energy. |
 | First-octave exactness is cofinal control. | $s_{N,\mu}=-\mu$ on $(N,2N]$ and the cell energies there are exact identities; they bound nothing beyond the octave. |
-| Period statements bound prefixes. | Variance, covariance and reserve are period quantities; a prefix of length $N$ carries the signed defects and endpoint squares in addition. |
+| Period statements bound prefixes. | Variance, covariance and reserve are period quantities; a prefix of length $N$ carries the signed defects and endpoint squares in addition, and the window laws start at length $N^2$. |
 | Absolute values early. | Bounding the signed modulus sum of compensated interior atoms by absolute coefficients is not uniform in the cutoff; signed coupling must be retained. |
 
 **Lean conventions.** Capstones are stated on data parameters and carry no analytic premise;
 where a finite statement has hypotheses they are arithmetic side conditions on the data
-(a prime, a coprimality, a horizon inequality, a damping range). Theorems that conclude `RiemannHypothesis` are
-implications whose premise is one explicit finite inequality on $E_T(\varepsilon)$ or on an
-equivalent bracket; the corpus never asserts such a premise. Analytic inputs (Mertens,
-Vinogradov–Korobov, the prime number theorem, divisor moments) are proved corpus theorems, not
+(a prime, a coprimality, a horizon inequality, a damping range, a layer condition). Theorems
+that conclude `RiemannHypothesis` are implications whose premise is one explicit finite
+inequality on $E_T(\varepsilon)$ or on an equivalent bracket, or equivalences of the Báez-Duarte
+type; the corpus never asserts such a premise. Window statements are universally quantified
+over the phase. Analytic inputs (Mertens, Vinogradov–Korobov, the prime number theorem, divisor
+moments, the Báez-Duarte criterion and its dual sequence) are proved corpus theorems, not
 assumptions. Every module says in its header what its bounds do not prove.
 
 ---
@@ -636,9 +926,19 @@ assumptions. Every module says in its header what its bounds do not prove.
 
 **The receiver.** For every $\delta>0$ exhibit $\varepsilon\in(0,\delta)$ with
 $\sup_TE_T(\varepsilon)<\infty$. Equivalently, exhibit such $\varepsilon$ with $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$,
-or with the strict interior contraction of §3.7. Known for every $\varepsilon\ge\frac12$, open
+or with the strict interior contraction of §3.8. Known for every $\varepsilon\ge\frac12$, open
 for every $\varepsilon<\frac12$; a bound at one fixed $\varepsilon<\frac12$ is already a zero-free
-half-plane statement, so no routine bookkeeping can supply it.
+half-plane statement, so no routine bookkeeping can supply it. On the period torus the
+primitive energy of the damped row diverges for $\varepsilon\le1/2$, so the bound, if it exists,
+is carried by the pronic weighting of small arguments below the first period.
+
+**The dual problem.** RH is also the statement that rows exist whose shifted prefix discrepancy
+has arbitrarily small pronic energy, equivalently with readout near one and vanishing centered
+energy, equivalently with unbounded ratio $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)$. The unconditional
+floor is $\kappa/\log N$. Whether rows attain $O(1/\log N)$, which would be a quantitative form
+of RH, and whether the power-damped cofactor rows have $(1-m(\varepsilon,Q))^2+V(\varepsilon,Q)\to0$
+along some path $\varepsilon\to0$, $Q\to\infty$, are the open questions on this side; both
+require signed input across moduli.
 
 **What the energy is made of.** After the canonical drifts are subtracted, the active-deleted
 diagonal and the predecessor-peak bracket are bounded for every positive damping; the whole
@@ -650,46 +950,59 @@ missing is the signed sum over moduli.
 **The four tools.** Each known obstruction names a tool.
 
 1. *Cross-depth cancellation.* Built at the level of exact identities (hypercube factorization,
-   finite $\zeta\cdot\zeta^{-1}=1$ cancellation, natural-cutoff head/mean/tail split). Missing: a
-   bound on the resulting Dirichlet form of the profile that is uniform in the cutoff.
+   finite $\zeta\cdot\zeta^{-1}=1$ cancellation, natural-cutoff head/mean/tail split), and the
+   Gram is now explicit as a cotangent–sawtooth sum. Missing: a bound on the resulting Dirichlet
+   form of the profile that is uniform in the cutoff.
 2. *Bézout coupling at high scale.* The least seed $pa=qb+1$ is isolated inside the profile
-   with inverse-scale error, and its complete fibre has mass $r\mu(r)$. Missing: control of the
-   signed complement of all other lags, or of a signed prime packet, not only of a cofinal
-   family of nearby prime pairs.
+   with inverse-scale error, its complete fibre has mass $r\mu(r)$, and the profile is evaluated
+   exactly at every prime ratio. Missing: control of the signed complement of all other lags, or
+   of a signed prime packet, not only of a cofinal family of nearby prime pairs.
 3. *Internal bilinear dispersion.* The reciprocity $\{N/pq\}\leftrightarrow\bar p/q+\bar q/p$
-   converts correlations between moduli into exponential sums with modular inverses. The
-   corpus has terminal-block and gcd-fibre reductions and log-free band bounds for Type-II
-   sums; it does not have a dispersion estimate on $\sum a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$
-   without an external character average.
+   converts correlations between moduli into exponential sums with modular inverses, and the
+   Vasyunin reciprocity law is now a theorem with $O(p+q)$ error. The corpus has terminal-block
+   and gcd-fibre reductions and log-free band bounds for Type-II sums; it does not have a
+   dispersion estimate on $\sum a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$ without an external character
+   average.
 4. *A coercive contraction.* An inequality
    $2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C_\varepsilon$
    with $\delta>0$, equivalent to the receiver. Identities cannot produce it; a signed
    arithmetic input across moduli must.
 
-**Other open boundaries.** The sharp observability horizon at arbitrary phase $M_0$ for
-$N\ge 5$ (the $2N-3$ law is proved at common returns and for $N=3,4$ everywhere); the sign of a
-general signed prime packet in the energy-centered Gram; rates in the cofinal Möbius laws that
-are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue cells,
-which are positive when the cells share a factor and start together.
+**Other open boundaries.** The sharp observability horizon at arbitrary phase: $\Phi(N)$ is the
+shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the
+gap between a quadratic universal horizon and a linear special one is open, and any linear law
+must be incidence-algebraic. The exact window sandwich constant between $\Phi(N)-2$ and
+$2N^2-1$, and whether the factor two on $Q^2$ in the log-free large sieve can be removed by a
+better window kernel. The sign of a general signed prime packet in the energy-centered Gram.
+The error term in the Vasyunin reciprocity law below $O(p+q)$. Which rows are determined by
+their relation spectrum, beyond translation and the Galois action. Rates in the cofinal Möbius
+laws that are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue
+cells, which are positive when the cells share a factor and start together.
 
 ---
 
 ## 6. Working in the theory
 
-- **Name the coordinates and the regime first.** Raw, response, or Selberg; period, prefix,
-  octave, or linear band. Most false claims in this area are category errors between these.
+- **Name the coordinates and the regime first.** Raw, response, Selberg, or spectral; period,
+  prefix, octave, linear band, or window at arbitrary phase, and at which horizon
+  ($\Phi(N)$, $N^2$, $N^m$). Most false claims in this area are category errors between these.
+- **Pass to the spectral form for window questions.** A response is an exponential sum over
+  $1/N^2$-separated frequencies with Galois-invariant coefficients; separation, Parseval over
+  the period and multi-character orthogonality are what the window, moment and visibility laws
+  use.
 - **Search before building.** The corpus already holds the exact identities for most finite
-  objects of §2; a new estimate is a new rearrangement of an existing identity more often than
-  a new object.
-- **Identity before asymptotics.** Every logarithmic drift in §3.7 and every density in §3.9
+  objects of §2, and the neighbouring programmes consume this theory's window laws; a new
+  estimate is a new rearrangement of an existing identity more often than a new object.
+- **Identity before asymptotics.** Every logarithmic drift in §3.8 and every density in §3.10
   is a limit of an exact finite formula that retains boundary terms and signed defects. Prove
   the finite formula, then pass to the limit.
 - **Keep cancellation with the main term.** Never bound a signed defect in absolute value
   before the diagonal main term has been subtracted (§3.3); never sum compensated atoms with
-  absolute coefficients (§3.7).
+  absolute coefficients (§3.8).
 - **Test against Beurling.** If a proposed mechanism would hold verbatim for a Beurling
   system, it cannot close the frontier. The additive input must be visible: $\gcd(n,n+1)=1$, a
-  solution of $pa-qb=h$, a residue class omitted modulo $p$.
+  solution of $pa-qb=h$, a residue class omitted modulo $p$, a layer condition on valuations.
 - **State what a bound does not prove.** A first-moment law is not a square-root law; a
   fixed-$B$ profile is not uniform in $B$; a bound for $\varepsilon\ge\frac12$ is not a bound
-  below $\frac12$; an exact octave is not a cofinal estimate.
+  below $\frac12$; an exact octave is not a cofinal estimate; a window law says nothing below
+  its horizon; a floor of $\kappa/\log N$ is not a rate.

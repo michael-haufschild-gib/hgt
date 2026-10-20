@@ -229,8 +229,12 @@ $\psi(v)=\sigma(v-1)/v^2$ and the **collared critical source** is
 $g^c_b(x)=\sigma(e^{-x}-1)\,g_b(x)$. It agrees with $g_b$ for $x\le-\log2$ and
 vanishes for $x\ge0$; the **endpoint layer** $(-\log2,0]$ is the only place
 where the two differ. The collar weight is $C^\infty$, flat at $v=1$ and equal to
-$v^{-2}$ for $v\ge2$, so its cosine transform decays like $1/f^2$ while that of
-the raw weight $v^{-2}\mathbf 1_{v>1}$ decays only like $1/f$. The collar
+$v^{-2}$ for $v\ge2$, so its cosine transform decays like $1/f^2$, while the
+complementary **endpoint weight** $\varphi_e(v)=(1-\sigma(v-1))/v^2$, supported on
+$[1,2]$ with a unit jump at $v=1$, has cosine transform $j(f)+e(f)$ with the
+**jump kernel** $j(f)=-\sin(2\pi f)/(2\pi f)=-\tfrac12\int_{-1}^1\cos(2\pi fu)\,du$
+and a remainder $\lvert e(f)\rvert\le\kappa_e/f^2$; the raw weight
+$v^{-2}\mathbf 1_{v>1}=\psi+\varphi_e$ decays only like $1/f$. The collar
 amplitude $\sigma(v-1)v^{-3/2}$ and the endpoint weight $\sigma(v-1)/v$ play
 the same role for the readout and for the polar channel.
 
@@ -343,6 +347,7 @@ the nodal data: it is a complete test family inside the laboratory. The
 | logarithmic slope and offset, channel constant, relative cutoff $\eta$ | `criticalArchLogSlope`, `criticalArchLogOffset`, `criticalChannelConstant`, `lowFreqRelativeCutoff` |
 | dyadic block, dilation constant $K(A,B)$, cross kernel | `DyadicScaleBlock`, `dyadicDilationConstant`, `dyadicCrossKernel` |
 | collar weight, amplitude, endpoint weight, collared source | `criticalCollarWeight`, `criticalCollarAmplitude`, `criticalCollarEndpointWeight`, `criticalCollaredSource` |
+| endpoint weight $\varphi_e$, jump kernel $j$, uncollared prime constant | `criticalEndpointWeight`, `dyadicJumpKernel`, `criticalPrimeChannelConstant` |
 | collared prime energy and constant, polar readout and endpoint, complete energy | `criticalCollaredPrimeEnergy`, `criticalCollaredPrimeConstant`, `criticalCollaredPolarReadout`, `criticalCollaredPolarEndpoint`, `criticalCollaredCompleteEnergy` |
 | general source interface | `AdmissibleSource` |
 | affine model $\Psi_N$, affine error layers, collar head | `factorialAffinePhaseCombination`, `factorialAffineHarmonicError`, `factorialAffineCollarHead` |
@@ -840,6 +845,27 @@ constant parts. The uncollared form differs by the endpoint layer alone: its
 self-interaction with the prime channel vanishes for $r\ge2$ by disjointness of
 supports, and its cross terms with the far part carry the Hilbert $1/f$ kernel.
 
+**The endpoint layer is paid by Montgomery–Vaughan.** The critical prime atoms
+of a dyadic block are $\Lambda(r)r^{-1}\int_{v>1}v^{-2}B_b(v)B_b(rv)\,dv$, and
+$v^{-2}=\psi+\varphi_e$ splits each into a collared part, covered by the dyadic
+dilation inequality, and an endpoint part whose weight transform is $j+e$. The
+remainder $e$ has the $1/f^2$ decay the dilation inequality needs. The jump
+kernel is an average of cosines over $[-1,1]$, so its bilinear form over two
+separated frequency families splits by Cauchy–Schwarz into two mean squares of
+exponential sums over a unit interval, and the Montgomery–Vaughan interval
+inequality bounds each by $(2+26/(\pi D))\sum b_n^2$ with no separation needed
+between the two families; away from the resonance $k\approx lr$ the trivial
+$1/f$ bound suffices. With the harmonic reduction of the dyadic dilation
+inequality the endpoint correlations decay like $r^{-1/2}$, exactly as the
+collared ones, and
+$$
+\Bigl\lvert\sum_r\Lambda(r)r^{-1/2}a_{g_b}(\log r)\Bigr\rvert\ \le\ C_P\sum b_j^2
+\qquad\text{on every dyadic block},
+$$
+uniformly in the scale, the number and the positions of the offsets. The
+Hilbert tail of the endpoint jump was the only obstruction to $\ell^2$-uniformity
+of the uncollared prime channel, and it is removed without the collar.
+
 ### 3.13 Full-form stability and the tent family as a receiver
 
 For compact real sources with value bounds $M_f,M_g$, Lipschitz bounds
@@ -958,7 +984,7 @@ along plateaus, with no uniform margin at large aperture.
 | The spectral range of $P_\infty$ is attained by short patterns | The extremal patterns are long frequency-modulated patterns concentrating at the extrema of $R$; short patterns see averaged couplings. |
 | Irrational dilations contribute to the prime channel | The critical limit has rational spectrum; primes read only the integer atoms $\log r$, the atoms at $\log(p/q)$ feed the archimedean channel. |
 | The archimedean channel is bounded at the critical scale | It diverges: the source decorrelates at almost every shift and $\omega(x)\ge e^{-1/2}/x$ is not integrable at the origin. |
-| An $\ell^1$ prime bound transfers to $\ell^2$ | The uncollared finite-scale prime bound is quadratic in $\sum\lvert b_j\rvert$; the $\ell^1$ comes from the $1/f$ tail of the endpoint jump alone. |
+| An $\ell^1$ prime bound transfers to $\ell^2$ | The admission bound is quadratic in $\sum\lvert b_j\rvert$; the $\ell^2$-uniform bound on dyadic blocks needs the dilation inequality for the collared part and the Montgomery–Vaughan inequality for the jump kernel of the endpoint. |
 | A threshold "eventually in $n$" is uniform in the support | On a fixed support the threshold depends on $S$; $\ell^2$-uniform statements are made on dyadic blocks, where the logarithm is common. |
 | The collar changes the prime channel materially | For $r\ge2$ the endpoint layer has no self-prime interaction; only its cross terms with the far part remain, through a Hilbert kernel. |
 | Model detection is a zeta sign | The lattice-plus-pair model lacks the Euler product and calibrates the family; the actual-zeta detection theorems go through the visibility laws of the zero configuration. |
@@ -995,16 +1021,16 @@ inside an equivalence.
 
 ## 5. The frontier
 
-**The endpoint layer.** The complete collared critical form is positive
-definite on high dyadic blocks; the uncollared form is known to be positive
-only for patterns with $\lvert S\rvert\lesssim\log M$. The difference is the
-layer $(-\log2,0]$ of the source. Its self-interaction with the prime channel
-vanishes, so the obstruction is exactly the cross terms between the layer and
-the far part, whose weight has the Hilbert $1/f$ tail. An $\ell^2$-uniform bound
-on these cross terms over a dyadic block, for instance through the
-Montgomery–Vaughan Hilbert inequality on the $11/12$-spaced branches, would make
-the full critical form positive definite on high dyadic blocks with no
-restriction on the pattern.
+**The complete uncollared form on blocks.** The complete collared critical form
+is positive definite on high dyadic blocks, and the uncollared prime channel is
+now $\ell^2$-bounded on dyadic blocks as well. The Gamma constant term obeys the
+same $\ell^2$ ceiling for uncollared sources, the two polar readouts are each
+$O(\sum\lvert b_n\rvert/(n+1))$, and the critical Lévy energy grows like
+$\log M$ on $\ell^2$; the assembly of these four bounds into positive
+definiteness of the complete uncollared critical form on every high dyadic
+block, with no restriction on the pattern, is the statement that replaces the
+$\lvert S\rvert\lesssim\log M$ theorem. Its constants, the block threshold and
+the slope, are the next sharpening.
 
 **Explicit thresholds and the range of $R$.** The block threshold $M_0$, the
 slopes $s,s_c$ and the offsets $c_0,c_c$ are named constants; the exact values

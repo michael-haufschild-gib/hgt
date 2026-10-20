@@ -272,3 +272,32 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   ℓ²-BOUNDED once the endpoint is collared, while the archimedean channel grows like log M on ℓ²;
   the collared critical form is therefore positive definite on whole high dyadic blocks, the
   ℓ²-uniform version of C11's growing-pattern theorem (which needed |S| ≲ log M). Standard axioms.
+- **C16 · The critical prime channel is bounded on ℓ² (Montgomery–Vaughan jump kernel)** —
+  `CriticalPrimeChannelUniformBound` (+ refactor of C12: general harmonic reduction
+  `abs_integral_weight_realPhaseCombination_dilate_le_of_bilinear`, public `weight_mul_resonance_le`).
+  Jump kernel `dyadicJumpKernel` j(f) = −(1/2)∫_{−1}^{1}cos(2πfu) = −sin(2πf)/(2πf); MV bilinear
+  bound `abs_bilinear_dyadicJumpKernel_le` (|Σb_nb_{n'}j(x_n − y_{n'})| ≤ (1 + 13/(πD))Σb² for two
+  D-separated families, NO cross-separation: sinc = average of exponentials ⇒ Cauchy–Schwarz +
+  `HTGeometry.interval_integral_normSq_expSum_le`); dyadic jump cross-kernel bound
+  `abs_bilinear_dyadicCrossKernel_jump_le` (MV near resonance, 1/f far). Endpoint weight
+  `criticalEndpointWeight` φ_e = (1−σ(v−1))/v² (ψ + φ_e = v⁻²), exact two-IBP split
+  `criticalEndpointRemainder_eq` (F_{φ_e} = j + e, |e| ≤ κ_e/f²); endpoint dilation inequality
+  `abs_integral_criticalEndpointWeight_dilate_le` (≤ (4/π⁴)K_e r^{-1/2}Σb²); splitting
+  `integral_criticalFactorialSource_mul_dilate_eq`; capstone `abs_criticalPrimeEnergy_le_of_dyadic`:
+  |Σ_r Λ(r)r^{-1/2}ac(log r)| ≤ C_P Σb² on EVERY dyadic block for the actual critical source. New
+  insight: the README's open gap (ℓ²-uniform finite-scale critical prime bound; C11 had only
+  (Σ|b|)²) is closed. The endpoint jump produces a Hilbert/sinc kernel whose log-divergent Schur sum
+  is cancelled by Montgomery–Vaughan; the prime channel of critical sources is a bounded operator
+  on ℓ² of every dyadic block. Standard axioms.
+- **C17 · Positive definiteness of the complete critical form on high dyadic blocks** —
+  `CriticalCompleteFormHighScalePositivity`. ℓ² Gamma ceiling `criticalAutocorrelation_zero_le_sq`,
+  ℓ² channel bound `neg_le_criticalArithmeticChannels_sq` (K = |Ω(0)|U + 1152 + 2C_P),
+  `criticalCompleteEnergy_ge_of_dyadic` (E_crit ≥ (s(log M − c₀) − K)Σb²), capstones
+  `exists_criticalCompleteEnergy_pos` (∃ M₀ ∀ M ≥ M₀ ∀ dyadic S ∀ b ≠ 0: E_crit(g_b) > 0) and
+  `exists_criticalTranslatedCompleteEnergy_pos` (every nonzero pattern with offsets ≤ n translated
+  to n ≥ N₀ is positive — C11's |S| ≲ log n restriction removed). New insight: the complete
+  critical form (Weil-type Gamma–Lévy form of the critical sources) is uniformly positive definite
+  on every high dyadic block — all arithmetic channels are ℓ²-bounded, the archimedean one grows like
+  log M. Positivity of the critical form can only fail in the low/mid scales M < M₀ or across
+  blocks (multi-scale interaction), which is where the remaining difficulty is concentrated.
+  Standard axioms.
