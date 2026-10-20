@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.BlindSymbolSlackPrimePowerPeriodization
+import GaloisForLFunctions.BiScaleUncertainty.CombinationSpectralDensity
 import GaloisForLFunctions.BiScaleUncertainty.SquareRootDensityPoleInvisibility
 import GaloisForLFunctions.BiScaleUncertainty.BroadSpectralCostRealization
 
@@ -44,9 +44,6 @@ set_option autoImplicit false
 
 /-! ### 1. Slack on a node set -/
 
-/-- The powers `q^j`, `j ≥ 1`. -/
-abbrev powerNodes (q : ℕ) : Set ℕ := {n | ∃ j : ℕ, 1 ≤ j ∧ n = q ^ j}
-
 /-- Symbol slack `M` with blindness imposed only on `𝒩`. -/
 def BlindSymbolSlackOn (𝒩 : Set ℕ) (M : ℝ) : Prop :=
   ∀ c : WeilTestFn →₀ ℝ, (∀ f, 0 ≤ c f) → BlindOn 𝒩 c → 0 ≤ nodeArchOnly c + M * massOf c
@@ -76,87 +73,26 @@ theorem symbolPeriodMean_two : symbolPeriodMean 2 = twoPeriodMean := by
 
 /-! ### 2. The lower bound -/
 
-/-- The cosine moment at `j log q` is the node value at `q^j`. -/
-theorem integral_normSq_paperFT_mul_cos_pow {q : ℕ} (hq : 1 ≤ q) (f : WeilTestFn) (j : ℕ) :
-    ∫ r : ℝ, ‖paperFT f.1 r‖ ^ 2 * Real.cos (r * ((j : ℝ) * Real.log q)) =
-      π * Real.sqrt ((q ^ j : ℕ) : ℝ) * logValue f.1 (q ^ j) := by
-  obtain ⟨a, ha⟩ := exists_Icc_support f
-  rw [integral_normSq_paperFT_mul_cos_eq f.2.1 ha, logValue]
-  have hlog : Real.log ((q ^ j : ℕ) : ℝ) = (j : ℝ) * Real.log q := by
-    rw [Nat.cast_pow, Real.log_pow]
-  rw [hlog]
-  have hs : 0 < Real.sqrt ((q ^ j : ℕ) : ℝ) :=
-    Real.sqrt_pos.mpr (Nat.cast_pos.mpr (pow_pos (by omega) j))
-  field_simp
-
 /-- **The single-integer bathtub.** A nonnegative combination blind at every `q^j` has archimedean
 part without the pole at least `m_q` times its mass. -/
 theorem symbolPeriodMean_mul_massOf_le {q : ℕ} (hq : 2 ≤ q) (c : WeilTestFn →₀ ℝ)
     (hc : ∀ f, 0 ≤ c f) (hb : BlindOn (powerNodes q) c) :
     symbolPeriodMean q * massOf c ≤ nodeArchOnly c := by
-  set ℓ : ℝ := Real.log q with hℓdef
-  have hℓ : 0 < ℓ := Real.log_pos (by exact_mod_cast hq)
-  set G : ℝ → ℝ := fun r => ∑ f ∈ c.support, c f * ‖paperFT f.1 r‖ ^ 2 with hG
-  have hGc : Continuous G :=
-    continuous_finsetSum _ fun f _ => continuous_const.mul (continuous_normSq_paperFT f)
-  have hG0 : ∀ r, 0 ≤ G r := fun r =>
-    Finset.sum_nonneg fun f _ => mul_nonneg (hc f) (by positivity)
-  have hGi : Integrable G :=
-    integrable_finsetSum _ fun f _ => (integrable_normSq_paperFT f).const_mul _
-  have hcos : ∀ j : ℕ, 1 ≤ j → ∫ r, G r * Real.cos (r * ((j : ℝ) * ℓ)) = 0 := by
-    intro j hj
-    have hqj : 2 ≤ q ^ j := le_trans hq (Nat.le_self_pow (by omega) q)
-    have hnode := hb ⟨q ^ j, hqj⟩ ⟨j, hj, rfl⟩
-    rw [nodeVector_eq, linearCombination_logVector_apply] at hnode
-    change (c.sum fun f t => t * logValue f.1 (q ^ j)) = 0 at hnode
-    simp only [hG, Finset.sum_mul]
-    rw [integral_finsetSum _ fun f _ => by
-      simpa [mul_assoc] using ((integrable_normSq_paperFT_mul_cos f.2.1
-        (exists_Icc_support f).choose_spec ((j : ℝ) * ℓ)).const_mul (c f))]
-    simp_rw [mul_assoc, integral_const_mul, hℓdef,
-      integral_normSq_paperFT_mul_cos_pow (by omega : 1 ≤ q)]
-    have e : ∀ f : WeilTestFn, c f * (π * Real.sqrt ((q ^ j : ℕ) : ℝ) * logValue f.1 (q ^ j)) =
-        π * Real.sqrt ((q ^ j : ℕ) : ℝ) * (c f * logValue f.1 (q ^ j)) := fun f => by ring
-    simp_rw [e, ← Finset.mul_sum]
-    rw [Finsupp.sum] at hnode
-    rw [hnode, mul_zero]
-  have hper := integral_mul_periodic_eq_of_cos_blind hGc hG0 hGi hcos
-    (continuous_foldedSymbol ℓ) (foldedSymbol_neg ℓ)
-  rw [integral_foldedSymbol hℓ] at hper
-  have hfold : Continuous fun r => foldedSymbol ℓ (phase ℓ r) :=
-    (continuous_foldedSymbol _).comp (continuous_phase _)
-  have hsplit : (fun r => G r * EF.gammaBracket r) =
-      fun r : ℝ => ∑ f ∈ c.support, c f * (‖paperFT f.1 r‖ ^ 2 * EF.gammaBracket r) := by
-    ext r; simp only [hG, Finset.sum_mul]; refine Finset.sum_congr rfl fun f _ => by ring
-  have hGγ : Integrable fun r => G r * EF.gammaBracket r := by
-    rw [hsplit]
-    exact integrable_finsetSum _ fun f _ =>
-      (integrable_normSq_paperFT_mul_gammaBracket f).const_mul _
-  have hGf : Integrable fun r => G r * foldedSymbol ℓ (phase ℓ r) := by
+  have hℓ : 0 < Real.log q := Real.log_pos (by exact_mod_cast hq)
+  have hper := integral_combinationSpectralDensity_mul_periodic hq hc hb
+    (continuous_foldedSymbol (Real.log q)) (foldedSymbol_neg (Real.log q))
+  rw [integral_foldedSymbol hℓ, integral_combinationSpectralDensity] at hper
+  have hGf : Integrable fun r =>
+      combinationSpectralDensity c r * foldedSymbol (Real.log q) (phase (Real.log q) r) := by
     obtain ⟨C, hC⟩ := isCompact_univ.exists_bound_of_continuousOn
-      (continuous_foldedSymbol ℓ).continuousOn
-    exact integrable_mul_bounded hGi hfold (C := C) fun r => by
-      rw [← Real.norm_eq_abs]; exact hC _ (Set.mem_univ _)
-  have hmono : ∫ r, G r * foldedSymbol ℓ (phase ℓ r) ≤ ∫ r, G r * EF.gammaBracket r :=
-    integral_mono hGf hGγ fun r =>
-      mul_le_mul_of_nonneg_left (foldedSymbol_phase_le hℓ r) (hG0 r)
-  have hsym : ∫ r, G r * EF.gammaBracket r = 2 * π * nodeArchOnly c := by
-    rw [hsplit, integral_finsetSum _ fun f _ =>
-      (integrable_normSq_paperFT_mul_gammaBracket f).const_mul _]
-    simp_rw [integral_const_mul]
-    rw [nodeArchOnly, nodeArchEnergy_eq, nodePoleMass, Finsupp.linearCombination_apply,
-      Finsupp.linearCombination_apply, Finsupp.sum, Finsupp.sum, ← Finset.sum_sub_distrib,
-      Finset.mul_sum]
-    refine Finset.sum_congr rfl fun f _ => ?_
-    simp only [smul_eq_mul]
-    rw [← mul_sub, weilArchRe_sub_pole_eq]
-    field_simp
-  have hmass : ∫ r, G r = 2 * π * massOf c := by
-    rw [hG, integral_finsetSum _ fun f _ => (integrable_normSq_paperFT f).const_mul _]
-    simp_rw [integral_const_mul, integral_normSq_paperFT_eq]
-    rw [massOf, Finsupp.sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun f _ => by ring
-  rw [hper, hsym, hmass] at hmono
+      (continuous_foldedSymbol (Real.log q)).continuousOn
+    exact integrable_mul_bounded (integrable_combinationSpectralDensity c)
+      ((continuous_foldedSymbol _).comp (continuous_phase _)) (C := C) fun r => by
+        rw [← Real.norm_eq_abs]; exact hC _ (Set.mem_univ _)
+  have hmono := integral_mono hGf (integrable_combinationSpectralDensity_mul_gammaBracket c)
+    fun r => mul_le_mul_of_nonneg_left (foldedSymbol_phase_le hℓ r)
+      (combinationSpectralDensity_nonneg hc r)
+  rw [hper, integral_combinationSpectralDensity_mul_gammaBracket] at hmono
   have hpi : 0 < 2 * π := by positivity
   rw [symbolPeriodMean]
   nlinarith
@@ -248,7 +184,7 @@ theorem archOnly_realTest {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCo
 theorem integral_norm_sq_ofReal (g : ℝ → ℝ) :
     ∫ x, ‖((g x : ℝ) : ℂ)‖ ^ 2 = autocorr g 0 := by
   unfold autocorr
-  simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs, add_zero, sq]
+  simp only [Complex.norm_real, Real.norm_eq_abs, add_zero, sq, abs_mul_abs_self]
 
 theorem massOf_eq_linearCombination (c : WeilTestFn →₀ ℝ) :
     massOf c = linearCombination ℝ (fun f : WeilTestFn => ∫ x, ‖f.1 x‖ ^ 2) c := by
@@ -283,7 +219,8 @@ def pairCombination {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactS
 
 theorem pairCombination_nonneg {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
     (ω : ℕ → ℝ) (N : ℕ) (g : WeilTestFn) : 0 ≤ pairCombination hf hfc ω N g := by
-  rw [pairCombination, Finsupp.finset_sum_apply]
+  classical
+  rw [pairCombination, Finsupp.finsetSum_apply]
   refine Finset.sum_nonneg fun k _ => ?_
   rw [Finsupp.add_apply, Finsupp.single_apply, Finsupp.single_apply]
   split_ifs <;> norm_num
@@ -323,9 +260,9 @@ theorem nodeArchOnly_pairCombination_le {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f
     rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
   rw [hN, ← Finset.sum_add_distrib]
   refine Finset.sum_le_sum fun k _ => ?_
-  have h1 := archOnly_realTest (contDiff_cosineSource hf (ω k)) (hfc.mul_right (g :=
+  have h1 := archOnly_realTest (contDiff_cosineSource hf (ω k)) (hfc.mul_right (f' :=
     fun u => Real.cos (ω k * u)))
-  have h2 := archOnly_realTest (contDiff_sineSource hf (ω k)) (hfc.mul_right (g :=
+  have h2 := archOnly_realTest (contDiff_sineSource hf (ω k)) (hfc.mul_right (f' :=
     fun u => Real.sin (ω k * u)))
   have h3 := biScaleLevyEnergy_cosine_sine_eq hf hfc (ω k)
   have h4 : EF.gammaBracket 0 * autocorr (cosineSource f (ω k)) 0 +

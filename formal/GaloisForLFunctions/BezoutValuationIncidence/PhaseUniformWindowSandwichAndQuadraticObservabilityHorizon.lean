@@ -32,7 +32,7 @@ set_option autoImplicit false
 def sieveRowShift (c : ℕ → ℝ) (κ : ℝ) : ℕ → ℝ :=
   fun d => c d - if d = 1 then κ else 0
 
-theorem sieveSeq_sieveRowShift {N k : ℕ} (hN : 1 ≤ N) (hk : 1 ≤ k) (c : ℕ → ℝ) (κ : ℝ) :
+theorem sieveSeq_sieveRowShift {N : ℕ} (hN : 1 ≤ N) (k : ℕ) (c : ℕ → ℝ) (κ : ℝ) :
     sieveSeq N (sieveRowShift c κ) k = sieveSeq N c k - κ := by
   have h1 : (1 : ℕ) ∈ (Icc 1 N).filter (fun d => d ∣ k) :=
     mem_filter.mpr ⟨mem_Icc.mpr ⟨le_rfl, hN⟩, one_dvd k⟩
@@ -243,7 +243,7 @@ theorem abs_window_sum_sq_sub_le_observabilityConstant {N : ℕ} (hN : 1 ≤ N) 
   have hshift : (∑ k ∈ Icc (A + 1) (A + K), (sieveSeq N c k - κ) ^ 2) =
       ∑ k ∈ Icc (A + 1) (A + K), sieveSeq N (sieveRowShift c κ) k ^ 2 :=
     sum_congr rfl fun k hk => by
-      rw [sieveSeq_sieveRowShift hN (by have := (mem_Icc.mp hk).1; omega)]
+      rw [sieveSeq_sieveRowShift hN k]
   rw [hshift, ← selbergTotientDiagonalForm_sieveRowShift hN]
   exact (abs_window_sum_sq_sieveSeq_sub_le N A K _).trans
     (sum_abs_sq_le_observabilityConstant_mul_selberg N _)
@@ -270,7 +270,7 @@ theorem sieveVariance_eq_zero_of_const_on_window {N A K : ℕ} (hN : 1 ≤ N) (c
     sum_nonneg fun _ _ => mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
   have hQ : (finiteHarmonicSum N c - κ) ^ 2 + sieveVariance N c ≤ 0 := by
     by_contra hneg
-    push_neg at hneg
+    push Not at hneg
     have := mul_pos (sub_pos.mpr hK) hneg
     linarith
   have hsq := sq_nonneg (finiteHarmonicSum N c - κ)
@@ -285,7 +285,7 @@ theorem sieveVariance_eq_zero_of_discrepancy_window {N A K : ℕ} (hN : 1 ≤ N)
     (hK : sieveWindowObservabilityConstant N < K)
     (hzero : ∀ M ∈ Icc A (A + K), sievePrefixDiscrepancy N M c = 0) :
     sieveVariance N c = 0 := by
-  refine (sieveVariance_eq_zero_of_const_on_window hN c (finiteHarmonicSum N c) hK
+  refine (sieveVariance_eq_zero_of_const_on_window (A := A) hN c (finiteHarmonicSum N c) hK
     fun k hk => ?_).1
   obtain ⟨hk1, hk2⟩ := mem_Icc.mp hk
   obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
@@ -313,10 +313,11 @@ private theorem indicator_mul_of_coprime {r : ℕ} (hr : r.Prime) {a b : ℕ} (h
     (x : ℝ) :
     (if r ∣ a * b then x else 1) = (if r ∣ a then x else 1) * (if r ∣ b then x else 1) := by
   by_cases ha : r ∣ a <;> by_cases hb : r ∣ b
-  · exact absurd (Nat.eq_one_of_self_dvd_one (hab ▸ Nat.dvd_gcd ha hb)) hr.one_lt.ne'
+  · have h1 : r ∣ 1 := by rw [← Nat.Coprime.gcd_eq_one hab]; exact Nat.dvd_gcd ha hb
+    exact absurd (Nat.dvd_one.mp h1) hr.one_lt.ne'
   · simp [ha, hb, dvd_mul_of_dvd_left ha]
   · simp [ha, hb, dvd_mul_of_dvd_right hb]
-  · simp [ha, hb, fun h => (hr.dvd_mul.mp h).elim ha hb]
+  · simp [ha, hb, hr.dvd_mul]
 
 private theorem smallPrimeSigmaLoss_mul {a b : ℕ} (hab : a.Coprime b) :
     smallPrimeSigmaLoss (a * b) = smallPrimeSigmaLoss a * smallPrimeSigmaLoss b := by
@@ -328,8 +329,8 @@ private theorem prime_pow_sigma_bound {p : ℕ} (hp : p.Prime) (j : ℕ) :
     ((ArithmeticFunction.sigma 1 (p ^ (j + 1)) : ℕ) : ℝ) ^ 2 ≤
       smallPrimeSigmaLoss (p ^ (j + 1)) * ((p ^ (j + 1) : ℕ) : ℝ) *
         ((p ^ (j + 1)).divisors.card : ℝ) * (Nat.totient (p ^ (j + 1)) : ℝ) := by
-  set P : ℝ := p with hPdef
-  have hP2 : 2 ≤ P := by exact_mod_cast hp.two_le
+  set P : ℝ := (p : ℝ) with hPdef
+  have hP2 : (2 : ℝ) ≤ P := by rw [hPdef]; exact_mod_cast hp.two_le
   set S : ℝ := ((ArithmeticFunction.sigma 1 (p ^ (j + 1)) : ℕ) : ℝ) with hSdef
   have hS : S * (P - 1) = P ^ (j + 2) - 1 := by
     rw [hSdef, sigma_apply_prime_pow hp]
@@ -342,9 +343,8 @@ private theorem prime_pow_sigma_bound {p : ℕ} (hp : p.Prime) (j : ℕ) :
     push_cast
     ring
   have htot : (Nat.totient (p ^ (j + 1)) : ℝ) = P ^ j * (P - 1) := by
-    rw [Nat.totient_prime_pow hp (Nat.succ_pos j)]
-    push_cast [Nat.cast_sub hp.one_le]
-    simp
+    rw [Nat.totient_prime_pow hp (Nat.succ_pos j), Nat.succ_sub_one, Nat.cast_mul,
+      Nat.cast_pow, Nat.cast_sub hp.one_le, Nat.cast_one]
   rw [hcard, htot]
   push_cast
   -- the loss covers `p³ ≤ κ (j + 2) (p - 1)³`
@@ -352,30 +352,33 @@ private theorem prime_pow_sigma_bound {p : ℕ} (hp : p.Prime) (j : ℕ) :
     have hj : (2 : ℝ) ≤ (j : ℝ) + 2 := by linarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
     have h2 : 2 ∣ p ^ (j + 1) ↔ p = 2 :=
       ⟨fun h => ((Nat.prime_dvd_prime_iff_eq Nat.prime_two hp).mp
-        (Nat.prime_two.dvd_of_dvd_pow h)).symm, fun h => h ▸ dvd_pow_self 2 (Nat.succ_ne_zero j)⟩
+        (Nat.prime_two.dvd_of_dvd_pow h)).symm,
+        fun h => by subst h; exact dvd_pow_self 2 (Nat.succ_ne_zero j)⟩
     have h3 : 3 ∣ p ^ (j + 1) ↔ p = 3 :=
       ⟨fun h => ((Nat.prime_dvd_prime_iff_eq Nat.prime_three hp).mp
-        (Nat.prime_three.dvd_of_dvd_pow h)).symm, fun h => h ▸ dvd_pow_self 3 (Nat.succ_ne_zero j)⟩
+        (Nat.prime_three.dvd_of_dvd_pow h)).symm,
+        fun h => by subst h; exact dvd_pow_self 3 (Nat.succ_ne_zero j)⟩
     unfold smallPrimeSigmaLoss
     by_cases hp2 : p = 2
-    · subst hp2
-      simp [hPdef] at *
-      norm_num
+    · rw [if_pos (h2.mpr hp2), if_neg (by rw [h3]; omega)]
+      have hP : P = 2 := by rw [hPdef, hp2]; norm_num
+      rw [hP]
       nlinarith
     by_cases hp3 : p = 3
-    · subst hp3
-      rw [if_neg (by rw [h2]; omega), if_pos (h3.mpr rfl)]
-      simp only [hPdef]
-      norm_num
+    · rw [if_neg (by rw [h2]; omega), if_pos (h3.mpr hp3)]
+      have hP : P = 3 := by rw [hPdef, hp3]; norm_num
+      rw [hP]
       nlinarith
     rw [if_neg (by rw [h2]; exact hp2), if_neg (by rw [h3]; exact hp3)]
     have hp5 : (5 : ℝ) ≤ P := by
-      have : 5 ≤ p := by
-        rcases hp.eq_one_or_self_of_dvd 2 with h | h
-        all_goals
-          by_contra hlt
-          interval_cases p <;> simp_all (config := { decide := true })
-      exact_mod_cast this
+      have h5 : 5 ≤ p := by
+        rcases (by have := hp.two_le; omega : p = 2 ∨ p = 3 ∨ p = 4 ∨ 5 ≤ p) with h | h | h | h
+        · exact absurd h hp2
+        · exact absurd h hp3
+        · exact absurd hp (by rw [h]; norm_num)
+        · exact h
+      rw [hPdef]
+      exact_mod_cast h5
     have hcube : P ^ 3 ≤ 2 * (P - 1) ^ 3 := by nlinarith [sq_nonneg (P - 5)]
     nlinarith [pow_nonneg (by linarith : (0 : ℝ) ≤ P - 1) 3]
   have hP1 : 0 < P - 1 := by linarith
@@ -411,18 +414,21 @@ theorem sigma_sq_le_smallPrimeSigmaLoss_mul (q : ℕ) :
   | prime_pow p k hp =>
     rcases k with _ | j
     · simp [smallPrimeSigmaLoss]
-      norm_num
     · exact prime_pow_sigma_bound hp j
   | coprime a b _ _ hab ha hb =>
     rw [isMultiplicative_sigma.map_mul_of_coprime hab, Nat.Coprime.card_divisors_mul hab,
       Nat.totient_mul hab, smallPrimeSigmaLoss_mul hab]
     push_cast
-    have hka := smallPrimeSigmaLoss_nonneg a
-    have hkb := smallPrimeSigmaLoss_nonneg b
-    calc ((ArithmeticFunction.sigma 1 a : ℕ) : ℝ) ^ 2 * ((ArithmeticFunction.sigma 1 b : ℕ) : ℝ) ^ 2 = _ := by ring
+    have hrb : 0 ≤ smallPrimeSigmaLoss a * (a : ℝ) * (a.divisors.card : ℝ) *
+        (Nat.totient a : ℝ) := by
+      have := smallPrimeSigmaLoss_nonneg a
+      positivity
+    calc (((ArithmeticFunction.sigma 1 a : ℕ) : ℝ) * ((ArithmeticFunction.sigma 1 b : ℕ) : ℝ)) ^ 2
+        = ((ArithmeticFunction.sigma 1 a : ℕ) : ℝ) ^ 2 *
+            ((ArithmeticFunction.sigma 1 b : ℕ) : ℝ) ^ 2 := by ring
       _ ≤ (smallPrimeSigmaLoss a * (a : ℝ) * (a.divisors.card : ℝ) * (Nat.totient a : ℝ)) *
           (smallPrimeSigmaLoss b * (b : ℝ) * (b.divisors.card : ℝ) * (Nat.totient b : ℝ)) :=
-        mul_le_mul ha hb (sq_nonneg _) (by positivity)
+        mul_le_mul ha hb (sq_nonneg _) hrb
       _ = _ := by ring
 
 /-- Dirichlet's divisor bound `Σ_{q ≤ N} d(q) ≤ N (1 + log N)`. -/
@@ -454,8 +460,9 @@ theorem sum_card_divisors_le (N : ℕ) :
     exact Nat.cast_div_le
   refine (sum_le_sum hcol).trans ?_
   have hharm : (∑ j ∈ Icc 1 N, (N : ℝ) / j) = (N : ℝ) * (harmonic N : ℝ) := by
-    rw [harmonic_eq_sum_Icc, mul_sum]
+    rw [_root_.harmonic_eq_sum_Icc]
     push_cast
+    rw [mul_sum]
     exact sum_congr rfl fun j _ => by rw [div_eq_mul_inv]
   rw [hharm]
   exact mul_le_mul_of_nonneg_left (harmonic_le_one_add_log N) (Nat.cast_nonneg N)

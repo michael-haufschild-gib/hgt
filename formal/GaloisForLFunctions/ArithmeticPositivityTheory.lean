@@ -64,10 +64,24 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».BakerPrimeLogTransce
 import GaloisForLFunctions.«arithmetic-positivity-theory».SquareRootThresholdPrimeTailAndSelbergTwistSpectrum
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeHarmonicTruncationAndThreeCellKernel
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentClusterAndLatticeDetection
+import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalBandWeightPoissonWindow
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeKernelNegativeDefinite
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialAffineCollarSharpConstant
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentPatternWeilCompleteness
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeScaleCoupling
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalRationalDilationLaw
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalCompleteFormDivergence
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeFiniteScaleNegativity
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalCompleteFormUniformCoercivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeToeplitzSymbolRange
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,
 Riesz window coercivity, source-relative Krein perturbation calculus, rank-one pole
 readout nullspaces, envelope-critical prime dilation transitions, nonstationary Mellin
-low-frequency exclusion, and hyperbolic pole parity decoupling for the sign and
-stability of explicit-formula spectral energies. -/
+low-frequency exclusion, hyperbolic pole parity decoupling, band-limited Poisson windows,
+negative definiteness, scale coupling, isotropy, finite-scale negativity, Toeplitz symbol and
+sharp spectral range of the complete critical prime form, the rational dilation law of critical
+sources, divergence and uniform coercivity of the complete critical form, the sharp affine
+collar constant, and Weil completeness of the factorial tent family for the sign and stability
+of explicit-formula spectral energies. -/

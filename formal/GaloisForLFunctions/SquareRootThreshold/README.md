@@ -118,64 +118,111 @@ them.
    `M(m) = Σ_k w_k e^{ic_k mℓ}`, `|m| < ⌈2a/ℓ⌉`. A configuration with `r` ordinates per period is
    determined by them iff `⌈2a/ℓ⌉ > r` (its vanishing polynomial has degree `r`); below, the
    `r`-point crystal and its half-step rotation coincide. Height position and depth become visible
-   at the same Nyquist aperture.
+   at the same Nyquist aperture. Reading an off-line configuration completely takes at most twice
+   as much: its modes are two-sided exponential moments `Σ_r (λ_r^m + μ_r^m)` with
+   `λ_r, μ_r = e^{±d_rℓ + 2πiθ_r}`, and `|m| ≤ 2P` of them determine all `2P` nodes, hence every
+   depth and ordinate.
 6. **Ground state.** `inf Re W(f,f)/∫|f|²` over tests of aperture `a` is `ℓ` times the lowest
    eigenvalue of the Toeplitz section, with or without the polar constraint. For the off-line
-   lattice it is `L(n − √(S₊S₋))`, `S_± = Σ_{j<n} e^{±2δjL}`: it decays like `−e^{2δa}`, with
-   exponent the depth.
+   lattice it is `L(n − √(S₊S₋))`, `S_± = Σ_{j<n} e^{±2δjL}`: it decays like `−e^{2δa}`. For every
+   periodic configuration the decay exponent is exactly twice the maximal depth: the relaxed
+   Hodge index `Re W ≥ −e^{θa}∫|f|²` holds at all large apertures for `θ > 2d_max` and fails for
+   `θ < 2d_max`.
 7. **Modes are amplified by `cosh`.** For offsets `θ_r` and depths `d_r`, the mode `D(m)` is the
    `m`-th Fourier coefficient of the ordinate pattern weighted by `2cosh(d_r mℓ)`. Hiding up to
    the Nyquist aperture needs `|D(m)| ≤ D(0)` for every mode below the period. At growing density
    the weights grow exponentially, so the pattern's Fourier coefficients must be exponentially
    small: the deepest points dominate, and only uniform depth with crystalline ordinates survives
-   (Newton's identities turn vanishing power sums into an arithmetic progression).
+   (Newton's identities turn vanishing power sums into an arithmetic progression). At every single
+   scale the crystal is also the variational extremum: it is exactly the uniform-depth pattern
+   whose Weil floor up to the Nyquist aperture equals the on-line value `ℓ D(0)`.
 8. **Edges and variation.** Inside an on-line background the off-line part enters as
    `∫ k(u) Σ_k 2(cosh(d_k u) − 1) e^{2πiku/L} du`. Summation by parts in `k` turns the exponential
    sum into differences of depths. So a small aperture reads the *variation* of the depth profile,
    not the depth: the edge of a long run (a jump `0 → δ`) in a dense background is visible at an
    aperture of order `1/δ` that depends neither on the length of the run nor on the density;
    slowly varying profiles hide much longer.
-9. **Rank-two pair estimate.** A reflected pair contributes `2 Re(A conj B)` with
+9. **Two-point minors for any configuration.** For every tempered configuration and bump `β`
+   supported in `[−w, w]`, the test `β(t + v/2) + τβ(t − v/2)` has Weil form
+   `(1 + |τ|²)S(0) + τS(v) + τ̄S(−v)`, with the smeared lag structure
+   `S(v) = Σ_ρ m_ρ h_{β⋆β̃}(γ_ρ) e^{iγ_ρ v}`. Invisibility forces `|S(v) + conj S(−v)| ≤ 2 Re S(0)`.
+   Modulated to a height `γ₀`, on-line zeros contribute positive multiples of phases, bounded in
+   total by their mass at lag `0`, while an off-line pair at `γ₀` contributes a term growing like
+   `e^{δv}`: an isolated off-line pair is seen once `e^{δv}` exceeds the local on-line mass, whatever
+   the arrangement of the on-line zeros. The same holds for any finite off-line set: the deepest
+   level `D` cannot cancel itself, since its phase sum `Σ q_t e^{iγ_t v}` stays bounded below on
+   every window of `|T|` grid lags. The levels below lose `e^{−gv}`, `g` the depth gap, so the
+   aperture is `(1/2g) log M + O(1)`, uniformly in the on-line background. With the polar-free bump
+   the same tests lie in the Hodge class. Without a gap, and with infinitely many off-line zeros,
+   every off-line zero is still seen at some aperture. Invisibility would keep the off-line sum
+   `Σ_t q_t e^{(δ_t + iγ_t)v}` bounded for `v ≥ 0`. Its Laplace transform is then holomorphic on
+   `Re s > 0` and equals `Σ_t q_t/(s − δ_t − iγ_t)` to the right of all poles. Continued along the
+   pole-free strip at any height `γ`, it reaches the rightmost pole on that line, whose residue
+   `q_t` must therefore vanish. The modulated bump makes that residue nonzero. Zero-side Weil
+   positivity on compactly supported tests is thus equivalent to all zeros on the critical line,
+   for every tempered configuration. Only the unimodular two-bump tests
+   `κ_γ(t + v/2) + τκ_γ(t − v/2)`, `|τ| = 1`, are needed: three real parameters decide the line.
+10. **Faithfulness.** The Weil form determines the configuration: two tempered configurations
+   that agree on the modulated two-bump tests have the same zeros with the same multiplicities.
+   Polarization at `τ = 0, 1, i` recovers each lag structure `S_γ`. The difference is the lag
+   structure of the signed multiplicity, whose off-line part dies at its top poles and whose
+   on-line part dies under Cesàro means. A finite aperture suffices for on-line configurations
+   with separated heights, and the threshold is sharp: a `g`-separated union is resolved at every
+   aperture `a > π/(2g)` by Ingham's inequality (cosine kernel on `[−T, T]`, threshold `Tg > π`
+   from `Σ 2/(4n² − 1) = 1`), and not at `π/(2g)`, where the double lattice of spacing `2π/L` and
+   the simple lattice of spacing `π/L` share their Weil form.
+11. **Rank-two pair estimate.** A reflected pair contributes `2 Re(A conj B)` with
    `A = ⟨F, e^{δ·}⟩` and `B = ⟨F, e^{−δ·}⟩`. On `[-a, a]` this is at least
    `(2a − sinh(2δa)/δ)‖F‖²`, with equality at `F = sinh(δ·)`.
-10. **The pole is a pair.** The pole terms `h_k(i/2) + h_k(−i/2)` have the shape of a depth-`½`
+12. **The pole is a pair.** The pole terms `h_k(i/2) + h_k(−i/2)` have the shape of a depth-`½`
    pair at height `0`. For an odd real profile they equal `−2(∫ f sinh(u/2))²`. The pole of `ζ` at
    `s = 1` is the contribution of the whole infinite prime tail.
-11. **Polar blindness.** Constraining tests by `h_f(±i/2) = 0` (the Hodge class) removes the pole
+13. **Polar blindness.** Constraining tests by `h_f(±i/2) = 0` (the Hodge class) removes the pole
    terms, but costs nothing against lag-lattice configurations: the bump `κ'' − κ/4` has transform
    vanishing at `±i/2`, and so does every combination of its translates. On such configurations the
-   Hodge index at level `a` is full Weil positivity at aperture `a`.
+   Hodge index at level `a` is full Weil positivity at aperture `a`. The Hodge class is blind to
+   exactly two points, the zeros `s = 0, 1` at heights `∓i/2`: for every tempered configuration
+   the Hodge index holds at every level iff every off-line zero is `0` or `1`. For finitely many
+   off-line zeros the violation occurs at `(1/2g) log M + O(1)`.
 
 ### Windows and heights
 
-12. **Slice factorization.** `k_f · k_η = ∫ k_{g_s} ds`, and every slice lies in the support of
+14. **Slice factorization.** `k_f · k_η = ∫ k_{g_s} ds`, and every slice lies in the support of
     `η`.
-13. **Height averaging.** `k_η(v) = ∫ |h_η(−2πξ)|² e^{2πiξv} dξ`. So windowed forms are height
+15. **Height averaging.** `k_η(v) = ∫ |h_η(−2πξ)|² e^{2πiξv} dξ`. So windowed forms are height
     averages of localized forms, and positivity at aperture `r` passes to every windowed form of
     resolution `r`, whatever the aperture of the test.
-14. **Windowed Gram identity.**
+16. **Windowed Gram identity.**
     `∫ |h_η(−2πξ)|² |Q(ξ)|² dξ = Σ_{j,k} c_j c̄_k k_η(ν_j − ν_k)`. Since `k_η` vanishes beyond
     `2r`, only pairs of frequencies closer than `2r` interact.
-15. **Minimum-aperture resolution.** Averaging with two windows of apertures `r` and `ρ` multiplies
+17. **Minimum-aperture resolution.** Averaging with two windows of apertures `r` and `ρ` multiplies
     their kernels, so only frequency pairs closer than `2 min(r, ρ)` interact. A secondary window
     that separates the frequencies restores the exact diagonal even when the primary window lies
     beyond the threshold.
 
 ### Prime side
 
-16. **Height phase of prime pairs.** At height `T` a pair `(n, m)` enters with the phase
+18. **Height phase of prime pairs.** At height `T` a pair `(n, m)` enters with the phase
     `(m/n)^{iT}`. In Zeta23 this is the kernel `Aminus`, an integral over `t ∈ [T, 2T]`. For
     `m = n + h` the phase `e^{iTh/n}` changes sign as `n` varies.
-17. **Reality and windowed mean zero.** `k_f(−v) = conj(k_f(v))` for every `f`, so the prime
+19. **Reality and windowed mean zero.** `k_f(−v) = conj(k_f(v))` for every `f`, so the prime
     polynomial `Π_f` is real at every height. A window of aperture `2r ≤ log 2` sees no prime
     frequency `± log n`, so the windowed mean of `Π_f` is exactly `0`: its positive and negative
     excursions balance, and it exceeds `V_f / M_f` somewhere (`M_f` the `ℓ¹` envelope of its
     coefficients).
-18. **Kronecker alignment costs height.** The `log p` are linearly independent, so the prime phases
+20. **Kronecker alignment costs height.** The `log p` are linearly independent, so the prime phases
     `p^{iξ}` can be aligned to any target; the prime-only polynomial comes arbitrarily close to
     `±M_f`, and stays near it on intervals of explicit length. The archimedean part grows only like
     `log(1 + |ξ|)`. A coherent prime excursion of size `B` therefore either makes the localized
     Weil form negative or occurs at a height with `log(1 + 2π|ξ|) ≳ (B − C_f)/‖f‖²`.
+21. **Three parameters decide the line.** Through the explicit formula the unimodular two-bump
+    criterion becomes a prime-side one: every zero of `ζ` is on the critical line iff
+    `Re P(f ⋆ f̃) ≥ 0` for `f = κ_γ(t + v/2) + τκ_γ(t − v/2)`, `v ≥ 0`, `|τ| = 1`, where
+    `P(k) = h_k(i/2) + h_k(−i/2) − Σ_n Λ(n)/√n (k(log n) + k(−log n)) + (1/2π)∫ h_k Γ`. The test
+    `f ⋆ f̃` is supported in `[−(v + 2w), v + 2w]`, so the lag `v` sees exactly the primes
+    `n ≤ e^{v + 2w}`. Unconditional prime information reaches small lags; the square-root threshold
+    marks the lag beyond which it runs out. The same holds for every primitive Dirichlet `L(s, χ)`,
+    with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms.
 
 ---
 
@@ -185,9 +232,13 @@ them.
 |---|---|
 | Treating aperture as a height cutoff | Aperture is a frequency resolution. A small aperture sees deep isolated zeros at any height. |
 | Expecting thresholds for finite configurations | A finite configuration with an off-line pair is visible at every aperture. Thresholds come from the density of the background. |
+| Expecting some off-line configuration to hide from every aperture | None does: a tempered configuration with an off-line zero is visible at some finite aperture. Hiding is always a statement about bounded apertures. |
 | Thinking depth is what a test sees | Below the threshold a test sees depth only through variation: edges and rough profiles are seen at `O(1/δ)`, uniform depth only at `L/2`. |
-| Treating the off-line lattice as a typical dense configuration | Its invisibility up to `L/2` is crystalline. A jitter of relative size `η` is seen at `L/2` once `cosh(δL/2) sin(πη) > 1`, and every periodic off-line pattern of fixed shape other than a crystal is seen strictly below `L/2` at large height. |
+| Treating the off-line lattice as a typical dense configuration | Its invisibility up to `L/2` is crystalline. A jitter of relative size `η` is seen at `L/2` once `cosh(δL/2) sin(πη) > 1`, and every periodic off-line pattern or depth profile of fixed shape other than the uniform crystal (in particular any shape mixing on-line and off-line zeros) is seen strictly below `L/2` at large height. |
 | Expecting the polar constraint to help against dense configurations | On lag-lattice configurations the Hodge index equals full Weil positivity. |
+| Reading the Hodge index as "all zeros on the line" | It cannot see zeros at `s = 0, 1`: a configuration whose only off-line zeros are `0` and `1` satisfies the Hodge index at every level. |
+| Expecting more off-line zeros to mean more visibility | Visibility is not monotone: the off-line lattice of spacing `2π/L` is visible on `(L/2, L]`, yet adding its half-step translate at the same depth gives a crystal that hides up to `L`. Positivity is a collective property. |
+| Counting on critical zeros to supply mass `A∫|f|²` at every aperture | On-line zeros sample the tests of aperture `a` only below the Nyquist aperture of their ordinates; a periodic on-line configuration with `r` ordinates per period gives `A > 0` iff `⌈2a/ℓ⌉ ≤ r`, and above that some test of positive mass sees no on-line zero at all. |
 | Expecting sparse off-line structure to hide as long as dense structure | An off-line lattice of density `ℓ/2π` inside an on-line background of density `L/2π` hides only up to `≈ (1/2δ) log(L/ℓ)`, like isolated pairs; only a crystal of the full density reaches `L/2`. |
 | Expecting averaged information to reach depth | Window averages of resolution `r` are integrals of aperture-`r` Weil forms. Off-line lattices of spacing at most `π/r`, and clusters invisible at aperture `r`, pass them. |
 | Looking for a quantity that certifies an off-line zero below its visibility aperture | There is none in the Weil form: an invisible lag-lattice configuration has exactly the Weil form of a weighted on-line configuration on every test of that aperture. |
@@ -209,16 +260,18 @@ them.
    * **Coefficient sizes.** Size-only bounds have an excess `O(rX)` that is attained for aligned
      phases.
    * **Upper-bound sieve.** It requires `w ≥ 0`, but the height phase changes sign
-     (mechanism 16). Using the phase requires prime-pair asymptotics with error terms: the parity
+     (mechanism 18). Using the phase requires prime-pair asymptotics with error terms: the parity
      problem.
    * **Zero side.** An off-line zero of depth `δ` has weight `T^{2λδ}`, so the needed estimate is
      `N(½ + δ, T) ≪ T^{1 − 2λδ + ε}`. The density hypothesis gives `λ ≤ 1` exactly.
 
    The pair-correlation conjecture is open on `(1, λ)` even under RH.
-2. **Aperiodic clusters.** For periodic configurations visibility is a Toeplitz question about
-   cosh-weighted modes. Find the visibility aperture of a cluster of `ζ`-density with no depth gap
-   and no periodic structure, e.g. with irregularly spaced ordinates, and the quantity that
-   replaces the Toeplitz matrix.
+2. **Clusters without a depth gap.** For periodic configurations visibility is a Toeplitz question
+   about cosh-weighted modes; for finite off-line sets the aperture is `(1/2g) log M` with `g` the
+   gap below the deepest level (mechanism 9). Every off-line zero is visible at some aperture,
+   whatever the other off-line zeros do. Open: the size of that aperture when depths accumulate
+   at the top or the top is not attained, at `ζ`-density and with irregularly spaced ordinates,
+   and the quantity that replaces the gap.
 3. **Sharper constants.** Improve the small-aperture constant `e^{−50}` towards Yoshida's
    aperture. Replace the horizon `68√X` by the sharp prime-sum constant.
 
