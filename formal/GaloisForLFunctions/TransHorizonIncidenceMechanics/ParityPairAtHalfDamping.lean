@@ -51,8 +51,6 @@ theorem weightPronicEnergy_pmPowerDamped (ε : ℝ) (T : ℕ) :
   refine sum_congr rfl fun n _ => ?_
   rw [weightCenteredPrefix, RHTower.pmPowerDampedCenteredDivisorPrefix_eq]
   congr 3
-  · refine sum_congr rfl fun j _ => ?_
-    simp [RHTower.pmPowerDampedDivisorCoeff, pmPowerDampedRealWeight, moebiusReal]
 
 private theorem Icc_one_eq_Ioc_zero (n : ℕ) : Icc 1 n = Ioc 0 n := by
   ext d; simp only [mem_Icc, mem_Ioc]; omega
@@ -100,12 +98,12 @@ theorem weightCenteredPrefix_le_neg_drift {c : ℕ → ℝ} {m : ℝ} (hc : ∀ 
 /-- At least `n/8` squarefree integers lie in `(n, 2n]` once `n ≥ 100`. -/
 theorem squarefree_count_dyadic_ge {n : ℕ} (hn : 100 ≤ n) :
     (n : ℝ) / 8 ≤ ∑ d ∈ Ioc n (n + n), ((moebius d : ℤ) : ℝ) ^ (2 : ℕ) := by
-  set R := Nat.sqrt (2 * n) + 1
-  have hR : 1 ≤ R := by omega
-  have hRsq : n + n ≤ R ^ (2 : ℕ) := by
+  have hRsq : n + n ≤ (Nat.sqrt (2 * n) + 1) ^ (2 : ℕ) := by
     have := Nat.lt_succ_sqrt' (2 * n)
     simp only [Nat.succ_eq_add_one] at this
     omega
+  set R := Nat.sqrt (2 * n) + 1 with hRdef
+  have hR : 1 ≤ R := by omega
   have hw := RHTower.Sieve.abs_window_squarefree_sub_le hR hRsq
   have hD := RHTower.Sieve.squarefreeDensity_ge
   set s := Real.sqrt (2 * (n : ℝ))
@@ -161,21 +159,22 @@ theorem parityTwin_drift_ge {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hn : 100 ≤ n)
       simp only [Int.cast_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero]
       exact div_nonneg (parityTwinWeight_nonneg hε d) hd0.le
   have hsum := sum_le_sum hterm
-  rw [← mul_sum, two_mul] at hsum
-  rw [two_mul]
-  have hcount := squarefree_count_dyadic_ge hn
+  rw [← mul_sum] at hsum
+  have hcount : (n : ℝ) / 8 ≤ ∑ d ∈ Ioc n (2 * n), ((moebius d : ℤ) : ℝ) ^ (2 : ℕ) := by
+    have h := squarefree_count_dyadic_ge hn
+    rwa [← two_mul] at h
   have hpow : (2 * (n : ℝ)) ^ (-1 - ε) = (2 * (n : ℝ)) ^ (-ε) / (2 * n) := by
     rw [show -1 - ε = -ε - 1 by ring, Real.rpow_sub_one h2n.ne']
-  have hp0 : 0 ≤ (2 * (n : ℝ)) ^ (-ε) := Real.rpow_nonneg h2n.le _
-  rw [hpow] at hsum
-  rw [← two_mul]
   have key : K * ((2 * (n : ℝ)) ^ (-ε) / (2 * n)) * ((n : ℝ) / 8) ≤
-      ∑ d ∈ Ioc n (n + n), parityTwinWeight ε d / d :=
-    (mul_le_mul_of_nonneg_left hcount (mul_nonneg hK.le (div_nonneg hp0 h2n.le))).trans hsum
-  rw [two_mul]
+      ∑ d ∈ Ioc n (2 * n), parityTwinWeight ε d / d := by
+    rw [← hpow]
+    exact (mul_le_mul_of_nonneg_left hcount
+      (mul_nonneg hK.le (Real.rpow_nonneg h2n.le _))).trans hsum
   have e1 : K / 16 * (n : ℝ) * (2 * (n : ℝ)) ^ (-ε) =
       (n : ℝ) * (K * ((2 * (n : ℝ)) ^ (-ε) / (2 * n)) * ((n : ℝ) / 8)) := by
-    field_simp; ring
+    have := hn0.ne'
+    field_simp
+    ring
   rw [e1]
   exact mul_le_mul_of_nonneg_left key hn0.le
 
@@ -184,42 +183,40 @@ theorem parityTwin_cell_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {n : 
     (dampedDensity ε / parityTwinCoprimeMass ε 1 / 16) ^ 2 / 4 / n ≤
       weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n ^ 2 /
         ((n : ℝ) * ((n : ℝ) + 1)) := by
-  set K := dampedDensity ε / parityTwinCoprimeMass ε 1 / 16
-  have hK : 0 ≤ K := by
-    have := div_pos (RHTower.pmPowerDampedDivisorDensity_re_pos hε) (parityTwinCoprimeMass_one_pos hε)
-    positivity
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
-  have h2n : (1 : ℝ) ≤ 2 * n := by linarith [show (100 : ℝ) ≤ n by exact_mod_cast hn]
+  have hn100 : (100 : ℝ) ≤ n := by exact_mod_cast hn
+  have h2n : (1 : ℝ) ≤ 2 * n := by linarith
   have hA := weightCenteredPrefix_le_neg_drift (parityTwinWeight_nonneg hε)
     (hasSum_parityTwinWeight_div hε) n
   have hdrift := parityTwin_drift_ge hε hn
-  set P := (2 * (n : ℝ)) ^ (-ε)
-  have hP : (2 * (n : ℝ)) ^ (-1 : ℝ) ≤ P :=
-    Real.rpow_le_rpow_of_exponent_le h2n (by linarith)
-  have hP' : 1 / (2 * (n : ℝ)) ≤ P := by rwa [Real.rpow_neg_one, ← one_div] at hP
-  have hPnn : 0 ≤ P := Real.rpow_nonneg (by linarith) _
-  -- `|A(n)| ≥ K n P`
-  have hlow : K * n * P ≤ -weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n := by
-    linarith
-  have hsq : (K * n * P) ^ 2 ≤ weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n ^ 2 := by
-    have h0 : 0 ≤ K * n * P := by positivity
+  set K := dampedDensity ε / parityTwinCoprimeMass ε 1 / 16 with hKdef
+  have hK : 0 ≤ K := by
+    have := div_pos (RHTower.pmPowerDampedDivisorDensity_re_pos hε) (parityTwinCoprimeMass_one_pos hε)
+    rw [hKdef]; positivity
+  set A := weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n with hAdef
+  have hPnn : 0 ≤ (2 * (n : ℝ)) ^ (-ε) := Real.rpow_nonneg (by linarith) _
+  -- `ε ≤ 1/2` gives `(2n)^{-2ε} ≥ 1/(2n)`
+  have hP2 : 1 / (2 * (n : ℝ)) ≤ ((2 * (n : ℝ)) ^ (-ε)) ^ 2 := by
+    have h1 : ((2 * (n : ℝ)) ^ (-ε)) ^ 2 = (2 * (n : ℝ)) ^ (-ε * 2) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (by linarith)]
+      norm_num
+    rw [h1, one_div, ← Real.rpow_neg_one]
+    exact Real.rpow_le_rpow_of_exponent_le h2n (by linarith)
+  have hlow : K * n * (2 * (n : ℝ)) ^ (-ε) ≤ -A := by linarith
+  have hsq : (K * n * (2 * (n : ℝ)) ^ (-ε)) ^ 2 ≤ A ^ 2 := by
+    have h0 : 0 ≤ K * n * (2 * (n : ℝ)) ^ (-ε) := by positivity
     nlinarith
   rw [div_le_div_iff₀ hn0 (by positivity)]
-  have hKnP : K ^ 2 / 4 * ((n : ℝ) * ((n : ℝ) + 1)) ≤ (K * n * P) ^ 2 * n := by
-    have hPn : (1 : ℝ) / 2 ≤ n * P := by
-      have := mul_le_mul_of_nonneg_left hP' hn0.le
-      rwa [show (n : ℝ) * (1 / (2 * n)) = 1 / 2 by field_simp] at this
-    have hn1 : (n : ℝ) + 1 ≤ 2 * n := by linarith [show (100 : ℝ) ≤ n by exact_mod_cast hn]
-    have hK2 : 0 ≤ K ^ 2 := sq_nonneg K
-    calc K ^ 2 / 4 * ((n : ℝ) * ((n : ℝ) + 1)) ≤ K ^ 2 / 4 * ((n : ℝ) * (2 * n)) :=
-          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hn1 hn0.le) (by positivity)
-      _ = K ^ 2 * (1 / 2) ^ 2 * (2 * n) * n := by ring
-      _ ≤ K ^ 2 * (n * P) ^ 2 * (2 * n) * n := by gcongr
-      _ = (K * n * P) ^ 2 * n * (2 * n) := by ring
-      _ ≤ (K * n * P) ^ 2 * n * (2 * n) := le_rfl
-      _ = (K * n * P) ^ 2 * n * 2 * n := by ring
-      _ ≤ _ := by nlinarith [sq_nonneg (K * n * P)]
-  nlinarith [mul_le_mul_of_nonneg_right hsq hn0.le]
+  have hexp : (K * n * (2 * (n : ℝ)) ^ (-ε)) ^ 2 * n =
+      K ^ 2 * (n : ℝ) ^ 3 * ((2 * (n : ℝ)) ^ (-ε)) ^ 2 := by ring
+  have h1 : K ^ 2 * (n : ℝ) ^ 3 * (1 / (2 * n)) = K ^ 2 * (n : ℝ) ^ 2 / 2 := by
+    have := hn0.ne'
+    field_simp
+  have h2 : K ^ 2 * (n : ℝ) ^ 3 * (1 / (2 * n)) ≤ K ^ 2 * (n : ℝ) ^ 3 * ((2 * (n : ℝ)) ^ (-ε)) ^ 2 :=
+    mul_le_mul_of_nonneg_left hP2 (by positivity)
+  have h3 : K ^ 2 / 4 * ((n : ℝ) * ((n : ℝ) + 1)) ≤ K ^ 2 * (n : ℝ) ^ 2 / 2 := by
+    nlinarith [mul_nonneg (mul_nonneg (sq_nonneg K) hn0.le) (show (0 : ℝ) ≤ n - 1 by linarith)]
+  linarith [mul_le_mul_of_nonneg_right hsq hn0.le]
 
 private theorem weightPronicEnergy_eq_sum_range (c : ℕ → ℝ) (m : ℝ) (T : ℕ) :
     weightPronicEnergy c m T = ∑ n ∈ range (T + 1),
@@ -227,8 +224,8 @@ private theorem weightPronicEnergy_eq_sum_range (c : ℕ → ℝ) (m : ℝ) (T :
   induction T with
   | zero => simp [weightPronicEnergy]
   | succ T ih =>
-    rw [weightPronicEnergy, sum_Icc_succ_top (by omega), ← weightPronicEnergy, ih,
-      sum_range_succ _ (T + 1)]
+    rw [weightPronicEnergy, Finset.sum_Icc_succ_top (by omega), ← weightPronicEnergy, ih,
+      Finset.sum_range_succ _ (T + 1)]
 
 /-- **The twin's receiver energy diverges** for every `0 < ε ≤ 1/2`. -/
 theorem tendsto_weightPronicEnergy_parityTwin {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
@@ -253,12 +250,11 @@ theorem tendsto_weightPronicEnergy_parityTwin {ε : ℝ} (hε : 0 < ε) (hε2 : 
     have hg' : Summable (fun n : ℕ => c / ((n + 100 : ℕ) : ℝ)) := by
       refine ((summable_nat_add_iff 100).mpr hg).congr fun n => ?_
       simp
+    have hc0 := hc.ne'
     have h1 : Summable (fun n : ℕ => 1 / ((n + 100 : ℕ) : ℝ)) :=
       (hg'.mul_left c⁻¹).congr fun n => by field_simp
-    have h2 : Summable (fun n : ℕ => 1 / (n : ℝ)) := by
-      refine (summable_nat_add_iff 100).mp (h1.congr fun n => ?_)
-      push_cast; ring_nf
-    exact Real.not_summable_one_div_natCast h2
+    exact Real.not_summable_one_div_natCast
+      ((summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℝ)) 100).mp h1)
   have ht := (not_summable_iff_tendsto_nat_atTop_of_nonneg he0).mp hns
   refine (ht.comp (tendsto_add_atTop_nat 1)).congr fun T => ?_
   simp only [Function.comp_apply, e]

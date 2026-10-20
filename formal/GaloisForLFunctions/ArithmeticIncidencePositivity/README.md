@@ -338,6 +338,24 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     `p = 2` with `(a−1)(b−1) ≥ 7`, `N ≥ 16`, `p = 3` with `(a−1)(b−1) ≥ 16`, `N ≥ 27`, and `p ≥ 5`
     with `(a−1)(b−1) ≥ (p−1)²`, `N ≥ 25` (`lattice_atom_inequality`).
 
+### The fold of the odd sector
+
+23. **Folded odd plateau.** For an odd test `F` in an even gauge `P` (equivalently an even profile in
+    the odd gauge `sign(x) P(x)`), the crossing pair `(−a, b)` and the same-side pair `(a, b)` carry
+    `(F(a) + F(b))²` and `(F(a) − F(b))²` at the rates `ω(a + b) ≤ ω(|a − b|)`, so their sum is at least
+    `2ω(a + b)(F(a)² + F(b)²)`: every archimedean crossing conductance is paid by its same-side partner
+    and leaves a killing. Integrated (`fourKilling_le_archJump`, via the Z-type law
+    `archCrossingDiff_le_two_mul_archSame` in test coordinates),
+    `J_P(F) ≥ 4 ∫_{x>0} F(x)² (Ω(x) − Ω(x + r))` when `P = 1` on `[−r, r] ⊇ supp F`, with
+    `Ω(y) = ∫_y^∞ ω` (`archLevyAntideriv`). The plateau potential is exact through the edge function
+    `E = Ω − N` (`integral_one_sided_window_eq`): `−𝒲P(x) ≥ Ω(R − x) + Ω(R + x) − log 8 − π/2 − (γ + log π)`.
+    The pole is not converted, so the plastic threshold plays no role; the odd pole costs
+    `(R³/3) cosh²(R/2) ∫F²`. The total potential is `−log 2 − ½ log((R² − x²)x²/(x + r)²) − O(r²) − (γ + log π)`,
+    worst at the golden point `x = R/φ`, where `(R − x)x² ≤ R²(R + x)/11`; it is positive up to
+    `R ≈ 0.297`. Every odd `F` supported in `[−7/25, 7/25]` has `Ẑ(F) ≥ (1/40) ∫ F²`
+    (`fullZeroForm_ge_of_odd_support_le`), that is `J_M(u) + V_μ(u) ≥ 0` for every even profile
+    with `M u` supported there, in every odd gauge.
+
 ---
 
 ## 4. Traps
@@ -398,8 +416,10 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 ### Research topics toward the shared target
 
 1. **The first selective statement.** The variation inequality for all even profiles with support
-   between `21/200` and `log 2/2`, paying the atom `Λ(2)/√2` without the pole-free margin; the unit
-   is the support reached.
+   between `7/25` (mechanism 23) and `log 2/2`, and past `log 2/2`, paying the atom `Λ(2)/√2` without
+   the pole-free margin; the unit is the support reached. Past `log 2/2` the fold of mechanism 23
+   meets the atom on the anti-diagonal `a + b = log 2` of the inside pairs, where the folded
+   conductance is `2M(a)M(b)(ω(|a − b|) − ω(a + b) + 4 sinh(a/2) sinh(b/2))` minus the atom.
 2. **The integrated atom-versus-pole law** in the shifted ground-state gauge of
    `ArithmeticCriticalityTheory`: which `n` the pole pays in the integrated sense, and what the
    same-side atoms must pay for `n ∈ {2, 3, 4, 5, 7}`.

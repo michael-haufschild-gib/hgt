@@ -832,7 +832,7 @@ theorem integral_killingIntegrand_eq {r x : ℝ} (hr : 0 < r) (hx : 0 < x) :
     Set.inter_eq_right.mpr (fun t ht => mem_Ioi.mpr (lt_trans hx ht.1)), integral_const_mul,
     ← intervalIntegral.integral_of_le (by linarith), integral_archLevyDensity_Icc hx (by linarith)]
 
-include hFc hFo hFB hFL hB0 hB1 in
+include hFc hFo hFB hFL hB1 in
 /-- The folded killing density `F(x)²(Ω(x) − Ω(x + r))` is integrable on `(0, ∞)`. -/
 theorem integrableOn_sq_mul_antideriv_sub {r : ℝ} (hr0 : 0 < r) (hrB : r ≤ B) :
     IntegrableOn (fun x => F x ^ 2 * (archLevyAntideriv x - archLevyAntideriv (x + r))) (Ioi 0) := by
@@ -1212,7 +1212,7 @@ theorem fullZeroForm_ge_of_odd_support_le {F : ℝ → ℝ} (hF : ContDiff ℝ 2
   have hF2e : ∀ x, (fun x => F x ^ 2) (-x) = F x ^ 2 := fun x => by simp only [hodd, neg_sq]
   have hGint := integral_eq_two_mul_Ioi_of_even hGi hGe
   have hF2int := integral_eq_two_mul_Ioi_of_even hF2 hF2e
-  have hHi := integrableOn_sq_mul_antideriv_sub hF.continuous hodd hFB hFL hR0 hR1
+  have hHi := integrableOn_sq_mul_antideriv_sub hF.continuous hodd hFB hFL hR1
     (r := r) (by rw [hrdef]; norm_num) (by rw [hrdef, hRdef]; norm_num)
   -- pointwise potential on the half line
   set c₀ : ℝ := 1 / 40 + 751 / 100000 with hc₀

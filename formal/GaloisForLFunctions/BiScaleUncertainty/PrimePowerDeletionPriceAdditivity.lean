@@ -124,6 +124,80 @@ theorem radius_lt_of_log_two_le (j : ℕ) {t : ℝ} (ht : Real.log 2 ≤ |t|) :
   rw [div_le_iff₀ (by positivity)]
   nlinarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
 
+theorem lt_abs_of_eq_or_eq_neg {δ X Y : ℝ} (h : δ < |Y|) (e : X = Y ∨ X = -Y) : δ < |X| := by
+  rcases e with rfl | rfl
+  · exact h
+  · rwa [abs_neg]
+
+/-- The autocorrelation of the inner pair `h(u) + σ₂ h(u − log m₂)`. -/
+theorem weilTest_innerPair (t : ℝ) :
+    EF.weilTest (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂)
+        (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂) t =
+      ((1 + σ₂ ^ 2 : ℝ) : ℂ) * EF.weilTest (narrowBumpC (m₁ * m₂)) (narrowBumpC (m₁ * m₂)) t +
+        (σ₂ : ℂ) * (EF.weilTest (narrowBumpC (m₁ * m₂)) (narrowBumpC (m₁ * m₂)) (t + Real.log m₂) +
+          EF.weilTest (narrowBumpC (m₁ * m₂)) (narrowBumpC (m₁ * m₂)) (t - Real.log m₂)) :=
+  weilTest_pairOf (contDiff_narrowBumpC _).continuous (hasCompactSupport_narrowBumpC _) _ _ t
+
+/-- The autocorrelation of the double pair through the inner pair. -/
+theorem weilTest_doublePair (y : ℝ) :
+    EF.weilTest (doublePair m₁ m₂ σ₁ σ₂) (doublePair m₁ m₂ σ₁ σ₂) y =
+      ((1 + σ₁ ^ 2 : ℝ) : ℂ) * EF.weilTest (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂)
+          (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂) y +
+        (σ₁ : ℂ) * (EF.weilTest (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂)
+            (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂) (y + Real.log m₁) +
+          EF.weilTest (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂)
+            (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂) (y - Real.log m₁)) :=
+  weilTest_pairOf (continuous_pairOf (contDiff_narrowBumpC _).continuous _ _)
+    (hasCompactSupport_pairOf (hasCompactSupport_narrowBumpC _) _ _) _ _ y
+
+/-- The inner pair vanishes away from the lags `0, ±log m₂`. -/
+theorem weilTest_innerPair_eq_zero {t : ℝ} (h0 : 1 / (2 * (((m₁ * m₂ : ℕ) : ℝ) + 1)) < |t|)
+    (h1 : 1 / (2 * (((m₁ * m₂ : ℕ) : ℝ) + 1)) < |t + Real.log m₂|)
+    (h2 : 1 / (2 * (((m₁ * m₂ : ℕ) : ℝ) + 1)) < |t - Real.log m₂|) :
+    EF.weilTest (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂)
+      (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂) t = 0 := by
+  rw [weilTest_innerPair, weilTest_narrowBumpC_eq_zero _ h0, weilTest_narrowBumpC_eq_zero _ h1,
+    weilTest_narrowBumpC_eq_zero _ h2]
+  ring
+
+include h₂ in
+/-- At the origin the inner pair is `(1 + σ₂²) ∫ h²`. -/
+theorem weilTest_innerPair_zero :
+    EF.weilTest (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂)
+      (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂) 0 =
+      ((1 + σ₂ ^ 2 : ℝ) : ℂ) * ((∫ t, (narrowBump (m₁ * m₂) t) ^ 2 : ℝ) : ℂ) := by
+  have hl : Real.log 2 ≤ Real.log m₂ := Real.log_le_log two_pos (by exact_mod_cast h₂)
+  have hl2 := Real.log_pos one_lt_two
+  have hp : Real.log 2 ≤ |Real.log m₂| := by rw [abs_of_pos (by linarith)]; exact hl
+  have hn : Real.log 2 ≤ |-Real.log m₂| := by rw [abs_neg]; exact hp
+  rw [weilTest_innerPair, zero_add, zero_sub, weilTest_narrowBumpC_zero,
+    weilTest_narrowBumpC_eq_zero _ (radius_lt_of_log_two_le _ hp),
+    weilTest_narrowBumpC_eq_zero _ (radius_lt_of_log_two_le _ hn)]
+  ring
+
+include h₂ in
+/-- At `±log m₂` the inner pair is `σ₂ ∫ h²`. -/
+theorem weilTest_innerPair_pm_log (s : ℝ) (hs : s = 1 ∨ s = -1) :
+    EF.weilTest (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂)
+      (pairOf (narrowBumpC (m₁ * m₂)) (Real.log m₂) σ₂) (s * Real.log m₂) =
+      (σ₂ : ℂ) * ((∫ t, (narrowBump (m₁ * m₂) t) ^ 2 : ℝ) : ℂ) := by
+  have hl : Real.log 2 ≤ Real.log m₂ := Real.log_le_log two_pos (by exact_mod_cast h₂)
+  have hl2 := Real.log_pos one_lt_two
+  have hbig : ∀ t : ℝ, Real.log 2 ≤ |t| →
+      EF.weilTest (narrowBumpC (m₁ * m₂)) (narrowBumpC (m₁ * m₂)) t = 0 :=
+    fun t ht => weilTest_narrowBumpC_eq_zero _ (radius_lt_of_log_two_le _ ht)
+  rw [weilTest_innerPair]
+  rcases hs with rfl | rfl
+  · rw [one_mul, sub_self, weilTest_narrowBumpC_zero, hbig _ (by rw [abs_of_pos (by linarith)]; linarith),
+      hbig _ (by rw [abs_of_pos (by linarith)]; linarith)]
+    ring
+  · rw [show -1 * Real.log m₂ + Real.log m₂ = 0 by ring, weilTest_narrowBumpC_zero,
+      hbig (-1 * Real.log m₂) (by rw [neg_one_mul, abs_neg, abs_of_pos (by linarith)]; linarith),
+      hbig (-1 * Real.log m₂ - Real.log m₂) (by
+        rw [show -1 * Real.log m₂ - Real.log m₂ = -(2 * Real.log m₂) by ring, abs_neg,
+          abs_of_pos (by linarith)]; linarith)]
+    ring
+
 end Computation
 
 end

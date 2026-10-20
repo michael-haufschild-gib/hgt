@@ -1709,7 +1709,7 @@ theorem exists_sharp_exp_le_ccmRestrictedWeilPolarGroundEnergy {ε : ℝ} (hε :
   refine ⟨C, hC0, fun A => neg_le_ccmRestrictedWeilPolarGroundEnergy_of_symbol A fun τ => ?_⟩
   have hsq : Real.sqrt (Real.exp (2 * A.1)) = Real.exp A.1 := by
     rw [show 2 * A.1 = A.1 + A.1 by ring, Real.exp_add, Real.sqrt_mul_self (Real.exp_pos A.1).le]
-  have hlog : 0 ≤ Real.log (1 + |τ| / 4) := Real.log_nonneg (by positivity)
+  have hlog : 0 ≤ Real.log (1 + |τ| / 4) := Real.log_nonneg (by linarith [abs_nonneg τ])
   have h1 := hC (Real.exp (2 * A.1)) (Real.exp_pos _).le τ
   rw [hsq] at h1
   have h2 : -((C + (4 + ε) * Real.exp A.1) / (2 * π)) ≤
@@ -1755,7 +1755,7 @@ theorem exists_reflectedDifferenceEnergy_add_sharp_exp_le_poleFree_of_meanZero_I
               ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 ≤
           2 * sameSideEnergy (shiftedGroundState a) u + profileVariance a u := by
   obtain ⟨C, hC0, hC⟩ := exists_sharp_exp_le_ccmRestrictedWeilPolarGroundEnergy hε
-  refine ⟨C, hC0, fun hu heven hmean ha A hsupp => ?_⟩
+  refine ⟨C, hC0, fun {a} {u} hu heven hmean ha A hsupp => ?_⟩
   have h := reflectedDifferenceEnergy_add_le_poleFree_of_meanZero_Icc hu heven hmean ha A hsupp
   have hfl := hC A
   have hI : 0 ≤ ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 :=
@@ -1792,10 +1792,12 @@ theorem exists_sharp_exp_le_arch_sub_primeWindow_polarFree {ε : ℝ} (hε : 0 <
           (polarFreeKernel w ω v (-1) (Real.log n) +
             polarFreeKernel w ω v (-1) (-Real.log n))).re := by
   obtain ⟨C, hC0, hC⟩ := exists_sharp_exp_le_ccmRestrictedWeilPolarGroundEnergy hε
-  refine ⟨C, hC0, fun hw hw2 ω hv => ?_⟩
+  refine ⟨C, hC0, fun {w} {v} hw hw2 ω hv => ?_⟩
   have hray := two_mul_ccmRestrictedWeilPolarGroundEnergy_le_arch_sub_primeWindow_polarFree
     hw hw2 ω hv
-  have hfl := hC ⟨v / 2 + w, by linarith⟩
+  have hfl : -(C + (4 + ε) * Real.exp (v / 2 + w)) ≤
+      ccmRestrictedWeilPolarGroundEnergy ⟨v / 2 + w, by linarith⟩ :=
+    hC ⟨v / 2 + w, by linarith⟩
   have hB0 : 0 ≤ ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
   nlinarith
 

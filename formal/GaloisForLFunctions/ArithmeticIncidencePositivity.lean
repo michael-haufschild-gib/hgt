@@ -8,6 +8,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.CollarSandwichLaw
 import GaloisForLFunctions.ArithmeticIncidencePositivity.TotalLatticeCrossingLaw
 import GaloisForLFunctions.ArithmeticIncidencePositivity.TotalAntiDiagonalClassification
 import GaloisForLFunctions.ArithmeticIncidencePositivity.UnpaidAxisIntervals
+import GaloisForLFunctions.ArithmeticIncidencePositivity.OddPlateauFoldedWindowPositivity
 
 /-!
 # Arithmetic Incidence Positivity

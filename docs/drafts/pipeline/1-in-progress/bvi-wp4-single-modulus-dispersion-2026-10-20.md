@@ -32,6 +32,13 @@ Not significant: reciprocity error, window constants, horizons, large-sieve fact
   `Q^{ec}(a) ≥ (k²−1)/(24(2P+1)) Σ p a_p²`, `(J+3)k ≤ |S|`. Named class: Type-II ℓ² inputs with
   `J` side conditions; loss `≳ |S|/((J+3)² log P)` vs trivial `≲ 3|S|`. Replacement: square-root
   size of the summatory jump function `C` on the block (θ = 2 window).
+- **C2 DONE (criterion 4).** `BVI/CoherentPrimeBlocksAndTheTypeIIWindowNoGo`.
+  `k` primes in `[p₀,p₀+ℓ]`, unit jumps: on clean regions `j(p₀+ℓ) ≤ n < (j+1)p₀` the packet is
+  exactly affine `L + kj − ns`; on `[J₀p₀, 2J₀p₀)`, `4J₀ℓ ≤ p₀`: window energy `≥ (k/2304)·k Σ_W w`
+  (window diagonal bound). Pigeonhole: every `S⊆(P,2P]` has such a block with
+  `k ≥ |S|/((P−1)/(ℓ+1)+1)`. Large-sieve loss `P²/X` attained at every window below `P²`:
+  no Type-II input reaches any θ > 1. Replacement: square-root cancellation of the jump measure
+  `Σ_{p∈I} a_p p` on intervals of length `P²/X`.
 
 ## Queue
 
