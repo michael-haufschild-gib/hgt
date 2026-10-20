@@ -25,6 +25,14 @@ Not significant: reciprocity error, window constants, horizons, large-sieve fact
 
 (count = number of entries marked DONE; Lean module named on each)
 
+- **C1 DONE (criterion 4).** `BVI/BrownianBridgeLawOfThePrimeBlockAndCodimensionNoGo`.
+  First-jump window: `V(n) = L − nA + C(n)`, `C(n)=Σ_{p≤n}a_p p`, for `n < 2 min S`; for `S⊆(P,2P]`,
+  `A=L=0`: window energy `= Σ a_p a_q (min(p,q) − pq/(2P+2))` (Brownian bridge) `≤ 𝒢^{ec}`-form.
+  No-go: any `J` linear side conditions admit `a≠0`, `A=L=0`, with
+  `Q^{ec}(a) ≥ (k²−1)/(24(2P+1)) Σ p a_p²`, `(J+3)k ≤ |S|`. Named class: Type-II ℓ² inputs with
+  `J` side conditions; loss `≳ |S|/((J+3)² log P)` vs trivial `≲ 3|S|`. Replacement: square-root
+  size of the summatory jump function `C` on the block (θ = 2 window).
+
 ## Queue
 
 - C1 first-jump window: Brownian-bridge law and codimension no-go.

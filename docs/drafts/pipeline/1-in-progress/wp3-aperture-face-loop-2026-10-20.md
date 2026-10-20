@@ -42,6 +42,23 @@ Knowledge ledger: `logs/wp3-aperture-face-knowledge.md`.
 4. APT: `log M`-free margin from the sign of the critical prime channel plus low-band exclusion.
 
 ## Contribution ledger (append-only)
+- **C1 · Markov window past the plastic threshold: all-profile aperture 21/200 → 29/200** —
+  `ArithmeticCriticalityTheory/MarkovWindowPastPlasticThreshold.lean` (compiled, olean, standard
+  axioms, wired, lint clean for this module). `two_mul_cosh_le_archLevyDensity_of_le_plastic`
+  (`ω ≥ 2cosh(t/2)` on `(0, 0.28]` via `a⁴ + a⁶ ≥ 1`, `a = e^{−t/2}`),
+  `two_mul_cosh_sub_archLevyDensity_le` (negative density ≤ 0.07 on `(0, 0.292]`),
+  `gaugeJumpProfile_le_four_mul_integral_sq`, sharp constants `log π < 1.1449`, `γ + log π < 1.722116`.
+  Capstones `fullZeroForm_ge_of_support_le_pastPlastic` (`Ẑ(F) ≥ (1/125)∫F²` on `[−29/200, 29/200]`),
+  `zetaZeroConfig_re_W_ge_of_support_le_pastPlastic`, `one_div_125_le_ccmRestrictedWeilGroundEnergy`
+  (`μ(A) ≥ 1/125` for `A ≤ 29/200`), `lt_of_ccmRestrictedWeilGroundEnergy_nonpos_pastPlastic` (contact
+  apertures exceed `29/200`). Criterion 1. Insight: the Z-type threshold `log ρ` is not a barrier for
+  the aperture; the negative pole-minus-Lévy density beyond it is small and is paid by the potential.
+  The binding constraint is the centre value of the window potential (exact limit ≈ 0.1526).
+  Selectivity: archimedean (prime-free window); the same argument holds for `ζ(s−a)ζ(s+a)` at small
+  `a` with modified constants — nonselective, as every prime-free window statement.
 
 ## Log
 - 2026-10-20 — loop started; frontier read (ACT/APT READMEs, ACT/APT ledgers, frontier map).
+- 2026-10-20 — overlap: another agent (WP1/AIP) is building the odd-sector folded plateau result
+  `AIP/OddPlateauFoldedWindowPositivity` (`[−7/25, 7/25]`, golden point); WP3 leaves the odd sector to
+  it and works on the even sector (the all-profile bottleneck), APT criterion 2 and realization.

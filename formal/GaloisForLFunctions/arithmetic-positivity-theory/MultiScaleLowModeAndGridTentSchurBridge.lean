@@ -35,10 +35,12 @@ This module closes the multi-scale and low-mode positivity bridge across four un
      prime coefficient from `C_TW (3 + log L)` to `C_TW (4 + log L)` with no lacunary gap required
      between `S_low` and `S_high`.
    - **Low-Scale Window (`[1, L_low]`) + Arbitrary-Depth Lacunary Block Family (`[M_0, M_0^{8^{J-1}}]`):**
-     Decomposing `S_low` into singletons `{n}` (`DyadicScaleBlock {n} (n+1)`) and applying
-     `abs_truncatedBlockCoupling_le_of_pow_le` against `IsLacunaryBlockFamily J M S` (`L_low^8 ≤ M 0`)
-     bounds the cross-window coupling beyond any `δ`-polynomial width by
-     `50 K_CB L_low E_low + 100 K_CB E_high` for every `b : ℕ → ℝ`, uniformly in `J` and `V`.
+     Decomposing `S_low` into dyadic slices `dyadicSlice S_low k` (`DyadicScaleBlock (dyadicSlice S_low k) (2^k)`)
+     and summing the geometric decay `∑_k (2^k)^{-1/8} ≤ 13` against `IsLacunaryBlockFamily J M S` (`L_low^8 ≤ M 0`)
+     bounds the cross-window coupling beyond any `δ`-polynomial width by the scale-free `O(1)` bound
+     `650 K_CB E_low + 100 K_CB E_high` (so the total low-window prime coefficient is
+     `C_TW (3 + log L_low) + 650 K_CB = O(log L_low) = O(A)`, with zero `O(L_low) = O(e^A)` loss)
+     for every `b : ℕ → ℝ`, uniformly in `L_low`, `J`, and `V`.
 
 4. **Unconditional Spatial Translation Invariance & Direct Grid-Tent / Smooth-Detector Transfer
    (`compactFullWeilEnergy_translate_eq`,
@@ -727,6 +729,91 @@ theorem dyadicScaleBlock_singleton (n : ℕ) : DyadicScaleBlock ({n} : Finset �
   rw [Finset.mem_singleton.mp hk]
   omega
 
+/-- Dyadic slice `S.filter (fun n => 2^k ≤ n + 1 ∧ n + 1 < 2^(k + 1))` of a support `S` at scale `2^k`. -/
+def dyadicSlice (S : Finset ℕ) (k : ℕ) : Finset ℕ :=
+  S.filter (fun n => 2 ^ k ≤ n + 1 ∧ n + 1 < 2 ^ (k + 1))
+
+theorem dyadicScaleBlock_dyadicSlice (S : Finset ℕ) (k : ℕ) :
+    DyadicScaleBlock (dyadicSlice S k) (2 ^ k) := by
+  intro n hn
+  have h := (Finset.mem_filter.mp hn).2
+  refine ⟨h.1, ?_⟩
+  calc n + 1 ≤ 2 ^ (k + 1) := h.2.le
+    _ = 2 * 2 ^ k := by ring
+
+theorem pairwiseDisjoint_dyadicSlice (S : Finset ℕ) (I : Set ℕ) :
+    I.PairwiseDisjoint (dyadicSlice S) := by
+  intro k₁ _ k₂ _ hne
+  have key : ∀ a b, a < b → Disjoint (dyadicSlice S a) (dyadicSlice S b) := by
+    intro a b hab
+    rw [Finset.disjoint_left]
+    intro n hna hnb
+    have ha := (Finset.mem_filter.mp hna).2.2
+    have hb := (Finset.mem_filter.mp hnb).2.1
+    have hpow : 2 ^ (a + 1) ≤ 2 ^ b := Nat.pow_le_pow_right (by norm_num) hab
+    omega
+  rcases lt_or_gt_of_ne hne with hlt | hlt
+  · exact key k₁ k₂ hlt
+  · exact (key k₂ k₁ hlt).symm
+
+/-- Dyadic exponents `k ≤ L_low` with `2^k ≤ L_low` covering a low-scale window `ScaleWindow S_low 1 L_low`. -/
+def lowDyadicIndices (L_low : ℕ) : Finset ℕ :=
+  (Finset.range (L_low + 1)).filter (fun k => 2 ^ k ≤ L_low)
+
+theorem biUnion_dyadicSlice_lowDyadicIndices {S_low : Finset ℕ} {L_low : ℕ}
+    (hlow : ScaleWindow S_low 1 L_low) :
+    (lowDyadicIndices L_low).biUnion (dyadicSlice S_low) = S_low := by
+  ext n
+  simp only [Finset.mem_biUnion, lowDyadicIndices, dyadicSlice, Finset.mem_filter,
+    Finset.mem_range]
+  constructor
+  · rintro ⟨_, _, hn, _⟩
+    exact hn
+  · intro hn
+    have hwin := hlow n hn
+    set k := Nat.log 2 (n + 1)
+    have hk_le : 2 ^ k ≤ n + 1 := Nat.pow_log_le_self 2 (by omega)
+    have hk_lt : n + 1 < 2 ^ (k + 1) := Nat.lt_pow_succ_log_self (by norm_num) (n + 1)
+    have hk_pow : 2 ^ k ≤ L_low := by omega
+    have hk_self : k < 2 ^ k := Nat.lt_two_pow_self
+    refine ⟨k, ⟨by omega, hk_pow⟩, hn, hk_le, hk_lt⟩
+
+/-- Geometric sum bound `∑_{k ∈ lowDyadicIndices L_low} ((2^k)^{-1/16})^2 ≤ 13`, independent of `L_low`. -/
+theorem sum_lowDyadicIndices_weight_sq_le (L_low : ℕ) :
+    ∑ k ∈ lowDyadicIndices L_low, ((((2 ^ k : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹) ^ 2 ≤ 13 := by
+  have hterm : ∀ k : ℕ, ((((2 ^ k : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹) ^ 2 ≤ (12 / 13 : ℝ) ^ k := by
+    intro k
+    have h13 : (13 / 12 : ℝ) ≤ (2 : ℝ) ^ (1 / 8 : ℝ) := by
+      have hpow : ((13 / 12 : ℝ) ^ (8 : ℕ)) ≤ 2 := by norm_num
+      have h1 : (13 / 12 : ℝ) = ((13 / 12 : ℝ) ^ (8 : ℕ)) ^ (1 / 8 : ℝ) := by
+        rw [show (1 / 8 : ℝ) = ((8 : ℕ) : ℝ)⁻¹ by norm_num,
+          Real.pow_rpow_inv_natCast (by positivity) (by norm_num)]
+      rw [h1]
+      exact Real.rpow_le_rpow (by positivity) hpow (by norm_num)
+    have hinv : ((2 : ℝ) ^ (1 / 8 : ℝ))⁻¹ ≤ 12 / 13 := by
+      have := inv_anti₀ (by positivity : (0 : ℝ) < 13 / 12) h13
+      linarith
+    have heq : ((((2 ^ k : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹) ^ 2 = (((2 : ℝ) ^ (1 / 8 : ℝ))⁻¹) ^ k := by
+      rw [inv_pow, inv_pow, Nat.cast_pow, Nat.cast_ofNat,
+        ← Real.rpow_natCast (((2 : ℝ) ^ k) ^ (1 / 16 : ℝ)),
+        ← Real.rpow_mul (by positivity), show (1 / 16 : ℝ) * (2 : ℕ) = 1 / 8 by norm_num,
+        ← Real.rpow_natCast (2 : ℝ) k, ← Real.rpow_mul (by positivity),
+        mul_comm (k : ℝ) (1 / 8 : ℝ), Real.rpow_mul (by positivity), Real.rpow_natCast]
+    rw [heq]
+    exact pow_le_pow_left₀ (by positivity) hinv k
+  calc ∑ k ∈ lowDyadicIndices L_low, ((((2 ^ k : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹) ^ 2
+      ≤ ∑ k ∈ Finset.range (L_low + 1), ((((2 ^ k : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹) ^ 2 :=
+        Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) fun _ _ _ => sq_nonneg _
+    _ ≤ ∑ k ∈ Finset.range (L_low + 1), (12 / 13 : ℝ) ^ k :=
+        Finset.sum_le_sum fun k _ => hterm k
+    _ = ((12 / 13 : ℝ) ^ (L_low + 1) - 1) / (12 / 13 - 1) :=
+        geom_sum_eq (by norm_num) (L_low + 1)
+    _ ≤ 13 := by
+        have hpos : 0 ≤ (12 / 13 : ℝ) ^ (L_low + 1) := by positivity
+        have hsub : ((12 / 13 : ℝ) ^ (L_low + 1) - 1) / (12 / 13 - 1) =
+            13 * (1 - (12 / 13 : ℝ) ^ (L_low + 1)) := by ring
+        linarith
+
 /-- If `ScaleWindow S_low 1 L_low` and `IsLacunaryBlockFamily J M S` with `L_low^8 ≤ M 0`, then
 `S_low` and `(Finset.range J).biUnion S` are automatically disjoint. -/
 theorem disjoint_lowWindow_lacunary {S_low : Finset ℕ} {L_low J : ℕ} {M : ℕ → ℕ}
@@ -749,116 +836,113 @@ theorem disjoint_lowWindow_lacunary {S_low : Finset ℕ} {L_low J : ℕ} {M : �
 Lacunary Block Family Spanning Beyond `δ`-Polynomial Width.**
 For every `V > 0`, every low-scale window `ScaleWindow S_low 1 L_low` (`L_low ≥ 1`), every
 lacunary block family `IsLacunaryBlockFamily J M S` with `L_low^8 ≤ M 0`, and every `b : ℕ → ℝ`,
-the prime channel on `S_low ∪ ⋃_{i < J} S_i` is bounded by
-`(C_TW (3 + log L_low) + 50 K_CB L_low) E_low + (lacunaryPrimeConstant + 100 K_CB) E_high`,
-uniformly in `V` and in the number of blocks `J`. -/
+decomposing `S_low` into dyadic slices `dyadicSlice S_low k` (`DyadicScaleBlock (dyadicSlice S_low k) (2^k)`)
+and summing `∑_k (2^k)^{-1/8} ≤ 13` bounds the prime channel on `S_low ∪ ⋃_{i < J} S_i` by
+`(C_TW (3 + log L_low) + 650 K_CB) E_low + (lacunaryPrimeConstant + 100 K_CB) E_high`
+(with scale-free `O(1)` cross-window coupling and total low-window factor `O(log L_low) = O(A)`),
+uniformly in `L_low`, `V`, and the number of blocks `J`. -/
 theorem abs_criticalTruncatedPrimeEnergy_le_of_lowWindow_lacunary {V : ℝ} (hV : 0 < V)
     {S_low : Finset ℕ} {L_low J : ℕ} (hL_low : 1 ≤ L_low) (hlow : ScaleWindow S_low 1 L_low)
     {M : ℕ → ℕ} {S : ℕ → Finset ℕ} (hlac : IsLacunaryBlockFamily J M S)
     (hsep : L_low ^ 8 ≤ M 0) (b : ℕ → ℝ) :
     |criticalTruncatedPrimeEnergy V (S_low ∪ (Finset.range J).biUnion S) b| ≤
       (criticalTruncatedWindowPrimeSlope * (3 + Real.log L_low) +
-        50 * truncatedCrossBlockConstant * L_low) * (∑ n ∈ S_low, b n ^ 2) +
+        650 * truncatedCrossBlockConstant) * (∑ n ∈ S_low, b n ^ 2) +
       (lacunaryPrimeConstant + 100 * truncatedCrossBlockConstant) *
         ∑ n ∈ (Finset.range J).biUnion S, b n ^ 2 := by
   set I := Finset.range J
+  set J_low := lowDyadicIndices L_low
   set S_high := I.biUnion S
   set K := truncatedCrossBlockConstant
   have hK : 0 ≤ K := truncatedCrossBlockConstant_nonneg
+  set X_low : ℕ → ℝ := fun k => ∑ n ∈ dyadicSlice S_low k, b n ^ 2
+  set s_low : ℕ → ℝ := fun k => Real.sqrt (X_low k)
+  set w_low : ℕ → ℝ := fun k => (((2 ^ k : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹
   set X : ℕ → ℝ := fun i => ∑ n ∈ S i, b n ^ 2
   set s : ℕ → ℝ := fun i => Real.sqrt (X i)
   set w : ℕ → ℝ := fun i => ((M i : ℝ) ^ (1 / 16 : ℝ))⁻¹
+  have hX_low (k : ℕ) : 0 ≤ X_low k := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hw_low (k : ℕ) : 0 ≤ w_low k := by simp only [w_low]; positivity
   have hX (i : ℕ) : 0 ≤ X i := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hw (i : ℕ) : 0 ≤ w i := by simp only [w]; positivity
+  have hd_low := pairwiseDisjoint_dyadicSlice S_low (J_low : Set ℕ)
   have hd := hlac.pairwiseDisjoint
+  have hbi_low := biUnion_dyadicSlice_lowDyadicIndices hlow
   have hdisj := disjoint_lowWindow_lacunary hlow hlac hsep
   set E_low := ∑ n ∈ S_low, b n ^ 2
   set E_high := ∑ n ∈ S_high, b n ^ 2
+  have hE_low_eq : E_low = ∑ k ∈ J_low, X_low k := by
+    calc E_low = ∑ n ∈ J_low.biUnion (dyadicSlice S_low), b n ^ 2 := by
+          dsimp only [E_low, J_low]; rw [hbi_low]
+      _ = ∑ k ∈ J_low, X_low k := Finset.sum_biUnion hd_low
   have hE_high_eq : E_high = ∑ i ∈ I, X i := Finset.sum_biUnion hd
   have hP_low := abs_criticalTruncatedPrimeEnergy_le_of_window hV le_rfl hL_low hlow b
   have hP_high := abs_criticalTruncatedPrimeEnergy_le_of_lacunary hV hlac b
-  have hpair : ∀ n ∈ S_low, ∀ i ∈ I,
-      |truncatedBlockCoupling V {n} (S i) b| ≤ 50 * K * |b n| * (w i * s i) ∧
-      |truncatedBlockCoupling V (S i) {n} b| ≤ 50 * K * |b n| * (w i * s i) := by
-    intro n hn i hi
+  have hpair : ∀ k ∈ J_low, ∀ i ∈ I,
+      |truncatedBlockCoupling V (dyadicSlice S_low k) (S i) b| ≤
+        50 * K * (w_low k * s_low k) * (w i * s i) ∧
+      |truncatedBlockCoupling V (S i) (dyadicSlice S_low k) b| ≤
+        50 * K * (w_low k * s_low k) * (w i * s i) := by
+    intro k hk i hi
     have hi_lt := Finset.mem_range.mp hi
-    have hn_le : n + 1 ≤ L_low := by have := (hlow n hn).2; omega
+    have hk_le : 2 ^ k ≤ L_low := (Finset.mem_filter.mp hk).2
     have hM0_le : M 0 ≤ M i := by
       rcases Nat.eq_zero_or_pos i with rfl | hpos
       · exact le_rfl
       · exact hlac.le_of_lt hpos hi_lt
-    have hpow : (n + 1) ^ 8 ≤ M i :=
-      (Nat.pow_le_pow_left hn_le 8).trans (hsep.trans hM0_le)
+    have hpow : (2 ^ k) ^ 8 ≤ M i :=
+      (Nat.pow_le_pow_left hk_le 8).trans (hsep.trans hM0_le)
+    have h2k_1 : 1 ≤ 2 ^ k := Nat.one_le_two_pow
     have hMi_1 : 1 ≤ M i := by have := hlac.three_le i hi_lt; omega
-    have h1 := abs_truncatedBlockCoupling_le_of_pow_le hV (dyadicScaleBlock_singleton n)
-      (hlac.2.2 i hi_lt) (by omega) hMi_1 (Or.inl hpow) b
+    have h1 := abs_truncatedBlockCoupling_le_of_pow_le hV (dyadicScaleBlock_dyadicSlice S_low k)
+      (hlac.2.2 i hi_lt) h2k_1 hMi_1 (Or.inl hpow) b
     have h2 := abs_truncatedBlockCoupling_le_of_pow_le hV (hlac.2.2 i hi_lt)
-      (dyadicScaleBlock_singleton n) hMi_1 (by omega) (Or.inr hpow) b
-    have hsing : Real.sqrt (∑ k ∈ ({n} : Finset ℕ), b k ^ 2) = |b n| := by
-      rw [Finset.sum_singleton, Real.sqrt_sq_eq_abs]
-    have hn_inv : (((n + 1 : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹ ≤ 1 := by
-      rw [inv_le_one₀ (Real.rpow_pos_of_pos (by positivity) _)]
-      exact Real.one_le_rpow (by exact_mod_cast (show 1 ≤ n + 1 by omega)) (by norm_num)
-    have hrhs : 50 * K * (((n + 1 : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹ * w i * |b n| * s i ≤
-        50 * K * |b n| * (w i * s i) := by
-      calc 50 * K * (((n + 1 : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹ * w i * |b n| * s i
-          = (((n + 1 : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹ * (50 * K * |b n| * (w i * s i)) := by ring
-        _ ≤ 1 * (50 * K * |b n| * (w i * s i)) :=
-            mul_le_mul_of_nonneg_right hn_inv (by have := hw i; simp only [s]; positivity)
-        _ = 50 * K * |b n| * (w i * s i) := one_mul _
-    rw [hsing] at h1 h2
-    refine ⟨h1.trans ?_, h2.trans ?_⟩
-    · exact hrhs
-    · calc 50 * K * w i * (((n + 1 : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹ * s i * |b n|
-          = 50 * K * (((n + 1 : ℕ) : ℝ) ^ (1 / 16 : ℝ))⁻¹ * w i * |b n| * s i := by ring
-        _ ≤ 50 * K * |b n| * (w i * s i) := hrhs
-  set A_low := ∑ n ∈ S_low, |b n|
+      (dyadicScaleBlock_dyadicSlice S_low k) hMi_1 h2k_1 (Or.inr hpow) b
+    refine ⟨h1.trans (le_of_eq ?_), h2.trans (le_of_eq ?_)⟩
+    · simp only [w_low, s_low, X_low, w, s, X, K]; ring
+    · simp only [w_low, s_low, X_low, w, s, X, K]; ring
+  set A_low := ∑ k ∈ J_low, w_low k * s_low k
   set B_high := ∑ i ∈ I, w i * s i
-  have hbi1 (n : ℕ) : truncatedBlockCoupling V {n} S_high b =
-      ∑ i ∈ I, truncatedBlockCoupling V {n} (S i) b :=
-    truncatedBlockCoupling_biUnion_right V {n} hd b
-  have hbi2 (n : ℕ) : truncatedBlockCoupling V S_high {n} b =
-      ∑ i ∈ I, truncatedBlockCoupling V (S i) {n} b :=
-    truncatedBlockCoupling_biUnion_left V hd {n} b
+  have hbi1 (k : ℕ) : truncatedBlockCoupling V (dyadicSlice S_low k) S_high b =
+      ∑ i ∈ I, truncatedBlockCoupling V (dyadicSlice S_low k) (S i) b :=
+    truncatedBlockCoupling_biUnion_right V (dyadicSlice S_low k) hd b
+  have hbi2 (k : ℕ) : truncatedBlockCoupling V S_high (dyadicSlice S_low k) b =
+      ∑ i ∈ I, truncatedBlockCoupling V (S i) (dyadicSlice S_low k) b :=
+    truncatedBlockCoupling_biUnion_left V hd (dyadicSlice S_low k) b
   have hcross1 : |truncatedBlockCoupling V S_low S_high b| ≤ 50 * K * A_low * B_high := by
-    rw [truncatedBlockCoupling_eq_sum_singletons_left]
+    rw [← hbi_low, truncatedBlockCoupling_biUnion_left V hd_low S_high b]
     simp_rw [hbi1]
-    calc |∑ n ∈ S_low, ∑ i ∈ I, truncatedBlockCoupling V {n} (S i) b|
-        ≤ ∑ n ∈ S_low, ∑ i ∈ I, |truncatedBlockCoupling V {n} (S i) b| :=
-          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun n _ =>
+    calc |∑ k ∈ J_low, ∑ i ∈ I, truncatedBlockCoupling V (dyadicSlice S_low k) (S i) b|
+        ≤ ∑ k ∈ J_low, ∑ i ∈ I, |truncatedBlockCoupling V (dyadicSlice S_low k) (S i) b| :=
+          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ =>
             Finset.abs_sum_le_sum_abs _ _)
-      _ ≤ ∑ n ∈ S_low, ∑ i ∈ I, 50 * K * |b n| * (w i * s i) :=
-          Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun i hi => (hpair n hn i hi).1
+      _ ≤ ∑ k ∈ J_low, ∑ i ∈ I, 50 * K * (w_low k * s_low k) * (w i * s i) :=
+          Finset.sum_le_sum fun k hk => Finset.sum_le_sum fun i hi => (hpair k hk i hi).1
       _ = 50 * K * A_low * B_high := by
           dsimp only [A_low, B_high]
           simp_rw [← Finset.mul_sum]
           rw [← Finset.sum_mul, ← Finset.mul_sum]
   have hcross2 : |truncatedBlockCoupling V S_high S_low b| ≤ 50 * K * A_low * B_high := by
-    rw [truncatedBlockCoupling_eq_sum_singletons_right]
+    rw [← hbi_low, truncatedBlockCoupling_biUnion_right V S_high hd_low b]
     simp_rw [hbi2]
-    calc |∑ n ∈ S_low, ∑ i ∈ I, truncatedBlockCoupling V (S i) {n} b|
-        ≤ ∑ n ∈ S_low, ∑ i ∈ I, |truncatedBlockCoupling V (S i) {n} b| :=
-          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun n _ =>
+    calc |∑ k ∈ J_low, ∑ i ∈ I, truncatedBlockCoupling V (S i) (dyadicSlice S_low k) b|
+        ≤ ∑ k ∈ J_low, ∑ i ∈ I, |truncatedBlockCoupling V (S i) (dyadicSlice S_low k) b| :=
+          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ =>
             Finset.abs_sum_le_sum_abs _ _)
-      _ ≤ ∑ n ∈ S_low, ∑ i ∈ I, 50 * K * |b n| * (w i * s i) :=
-          Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun i hi => (hpair n hn i hi).2
+      _ ≤ ∑ k ∈ J_low, ∑ i ∈ I, 50 * K * (w_low k * s_low k) * (w i * s i) :=
+          Finset.sum_le_sum fun k hk => Finset.sum_le_sum fun i hi => (hpair k hk i hi).2
       _ = 50 * K * A_low * B_high := by
           dsimp only [A_low, B_high]
           simp_rw [← Finset.mul_sum]
           rw [← Finset.sum_mul, ← Finset.mul_sum]
-  have hA_sq : A_low ^ 2 ≤ L_low * E_low := by
-    have hcs : A_low ^ 2 ≤ S_low.card * E_low := by
-      simpa only [sq_abs] using (sq_sum_le_card_mul_sum_sq (s := S_low) (f := fun n => |b n|))
-    have hsub : S_low ⊆ Finset.range L_low := by
-      intro n hn
-      rw [Finset.mem_range]
-      have := (hlow n hn).2
-      omega
-    have hcard : (S_low.card : ℝ) ≤ L_low := by
-      have := Finset.card_le_card hsub
-      rw [Finset.card_range] at this
-      exact_mod_cast this
-    exact hcs.trans (mul_le_mul_of_nonneg_right hcard (Finset.sum_nonneg fun _ _ => sq_nonneg _))
+  have hA_sq : A_low ^ 2 ≤ 13 * E_low := by
+    have hcs := Finset.sum_mul_sq_le_sq_mul_sq J_low w_low s_low
+    have hs2 : ∑ k ∈ J_low, s_low k ^ 2 = E_low := by
+      rw [hE_low_eq]
+      exact Finset.sum_congr rfl fun k _ => Real.sq_sqrt (hX_low k)
+    rw [hs2] at hcs
+    exact hcs.trans (mul_le_mul_of_nonneg_right (sum_lowDyadicIndices_weight_sq_le L_low)
+      (Finset.sum_nonneg fun _ _ => sq_nonneg _))
   have hB_sq : B_high ^ 2 ≤ 2 * E_high := by
     have hcs := Finset.sum_mul_sq_le_sq_mul_sq I w s
     have hs2 : ∑ i ∈ I, s i ^ 2 = E_high := by
@@ -931,7 +1015,8 @@ theorem compactFullWeilEnergy_criticalTruncatedTest_ge_of_low_and_window
   linarith
 
 /-- **Unconditional Real Weil Energy Lower Bound on Low-Scale Window + High-Scale Lacunary Block Family.**
-Holds for every coefficient vector `b : ℕ → ℝ` and every block count `J`. -/
+Holds for every coefficient vector `b : ℕ → ℝ` and every block count `J`, with low-window prime
+penalty `2 * (C_TW (3 + log L_low) + 650 K_CB) = O(log L_low) = O(A)` (zero `O(L_low) = O(e^A)` loss). -/
 theorem compactFullWeilEnergy_criticalTruncatedTest_ge_of_lowWindow_lacunary
     {S_low : Finset ℕ} {L_low J : ℕ} (hL_low : 1 ≤ L_low) (hlow : ScaleWindow S_low 1 L_low)
     {M : ℕ → ℕ} {S : ℕ → Finset ℕ} (hlac : IsLacunaryBlockFamily J M S)
@@ -945,7 +1030,7 @@ theorem compactFullWeilEnergy_criticalTruncatedTest_ge_of_lowWindow_lacunary
         criticalLowModePenaltyRatio +
         criticalAllScaleGammaPolarConstant +
         2 * (criticalTruncatedWindowPrimeSlope * (3 + Real.log L_low) +
-          50 * truncatedCrossBlockConstant * L_low)) *
+          650 * truncatedCrossBlockConstant)) *
       (∑ n ∈ S_low, b n ^ 2) ≤
       compactFullWeilEnergy (criticalTruncatedTest hVpos (S_low ∪ (Finset.range J).biUnion S) b) := by
   have hV1 : 1 ≤ V := by

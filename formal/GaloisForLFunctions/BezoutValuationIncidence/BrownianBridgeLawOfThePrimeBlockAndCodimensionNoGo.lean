@@ -324,9 +324,18 @@ theorem exists_constrained_primePacket_brownian_energy (S : Finset Nat.Primes) {
   obtain ⟨c, hcker, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hker
   have hΨc : ∀ i, Ψ c i = 0 := fun i => by rw [LinearMap.mem_ker.mp hcker]; rfl
   set a := blockPacket S B k c with ha
-  have hA : primePacketMass S a = 0 := by simpa [hΨ] using hΨc 0
-  have hL : primePacketLogMoment S a = 0 := by simpa [hΨ] using hΨc 1
-  have hφ : ∀ j, φ j a = 0 := fun j => by simpa [hΨ] using hΨc j.succ.succ
+  have hA : primePacketMass S a = 0 := by
+    have h := hΨc 0
+    simp only [hΨ, LinearMap.pi_apply, Fin.cons_zero, LinearMap.comp_apply] at h
+    exact h
+  have hL : primePacketLogMoment S a = 0 := by
+    have h := hΨc 1
+    simp only [hΨ, LinearMap.pi_apply] at h
+    exact h
+  have hφ : ∀ j, φ j a = 0 := fun j => by
+    have h := hΨc j.succ.succ
+    simp only [hΨ, LinearMap.pi_apply, Fin.cons_succ, LinearMap.comp_apply] at h
+    exact h
   have hsupp : ∀ p, p ∉ S → a p = 0 := fun p hp => by simp [ha, blockPacket, dif_neg hp]
   -- the jump sequence and its block amplitudes
   set cn : ℕ → ℝ := fun i => if h : i < B then c ⟨i, h⟩ else 0 with hcn
@@ -372,7 +381,8 @@ theorem exists_constrained_primePacket_brownian_energy (S : Finset Nat.Primes) {
         rw [sum_congr rfl fun v hv => by
           rw [show B * k + v = v + B * k by ring, Nat.add_mul_div_right _ _ hk,
             Nat.div_eq_of_lt (mem_range.mp hv), zero_add], sum_const, card_range, nsmul_eq_mul]
-    rw [sum_eq_sum_orderEmbOfFin, mul_comm, ← div_mul_eq_mul_div, ← hblocks, sum_div]
+    rw [sum_eq_sum_orderEmbOfFin, show (k : ℝ) / P * ∑ i ∈ range B, cn i ^ 2 =
+        ∑ t ∈ range (B * k), cn (t / k) ^ 2 / P by rw [← sum_div, hblocks]; ring]
     calc ∑ t : Fin S.card, (((S.orderEmbOfFin rfl t : Nat.Primes) : ℕ) : ℝ) *
           a (S.orderEmbOfFin rfl t) ^ 2
         ≤ ∑ t : Fin S.card, if (t : ℕ) < B * k then cn ((t : ℕ) / k) ^ 2 / P else 0 := by
@@ -390,13 +400,12 @@ theorem exists_constrained_primePacket_brownian_energy (S : Finset Nat.Primes) {
                 field_simp]
             exact div_le_div_of_nonneg_left (sq_nonneg _) hP0 hp.le
           · simp
-      _ = ∑ t ∈ range (B * k), cn (t / k) ^ 2 / P := hfin _
+      _ = ∑ t ∈ range (B * k), cn (t / k) ^ 2 / P := hfin fun t => cn (t / k) ^ 2 / P
   -- nondegeneracy
   have hpos : 0 < ∑ p ∈ S, ((p : ℕ) : ℝ) * a p ^ 2 := by
     obtain ⟨i, hi⟩ : ∃ i, c i ≠ 0 := by
       by_contra h
-      push_neg at h
-      exact hc0 (funext h)
+      exact hc0 (funext fun i => not_not.mp (not_exists.mp h i))
     have hik : (i : ℕ) * k < S.card := lt_of_lt_of_le
       (by nlinarith [i.isLt] : (i : ℕ) * k < B * k) hBk
     set t : Fin S.card := ⟨(i : ℕ) * k, hik⟩
@@ -422,13 +431,12 @@ theorem exists_constrained_primePacket_brownian_energy (S : Finset Nat.Primes) {
   calc ((k : ℝ) ^ 2 - 1) / (24 * (2 * P + 1)) * ∑ p ∈ S, ((p : ℕ) : ℝ) * a p ^ 2
       ≤ ((k : ℝ) ^ 2 - 1) / (24 * (2 * P + 1)) * ((k : ℝ) / P * ∑ i ∈ range B, cn i ^ 2) :=
         mul_le_mul_of_nonneg_left hdiag (by positivity)
-    _ = (k : ℝ) * ((k : ℝ) ^ 2 - 1) / 12 * ∑ i ∈ range B, cn i ^ 2 /
+    _ = (k : ℝ) * ((k : ℝ) ^ 2 - 1) / 12 * (∑ i ∈ range B, cn i ^ 2) /
           ((2 * P : ℝ) * (2 * P + 1)) := by
         field_simp
         ring
-    _ ≤ (∑ p ∈ S, primePacketJumpSum S a (p : ℕ) ^ 2) / ((2 * P : ℝ) * (2 * P + 1)) := by
-        rw [mul_div_assoc']
-        exact div_le_div_of_nonneg_right henergy hden.le
+    _ ≤ (∑ p ∈ S, primePacketJumpSum S a (p : ℕ) ^ 2) / ((2 * P : ℝ) * (2 * P + 1)) :=
+        div_le_div_of_nonneg_right henergy hden.le
     _ ≤ primePacketBilinear S S a a := hbil
 
 end

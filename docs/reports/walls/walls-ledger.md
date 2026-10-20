@@ -600,9 +600,18 @@ In the Lean corpus:
 - `RHTower/BurnolFirstJetShellScaleLaw`: `not_tendsto_traceNorm_burnolFirstJetDampingShell_zero`,
   positive Burnol damping shells at scale ratio c > 1 tend strongly to zero while their trace tends
   to log(c)/4; trace-norm limits do not pass, so trace masses of the prime part do not vanish.
-
-The stronger classical statement that S(T) is unbounded, which excludes finite-rank perturbations,
-is recorded on paper only (CANNOT-549); the corpus has no theorem stating it.
+- `SquareRootThreshold/ZetaZeroCountRemainderIsUnbounded`: S(T) is unbounded, unconditionally
+  (`rvmRemainder_unbounded`: for every B and T₀ some T ≥ T₀ has |S(T)| > B;
+  `not_isBoundedUnder_abs_rvmRemainder`). This excludes finite-rank perturbations. Mechanism: the
+  localized explicit formula of the bump autocorrelation K_ℓ at height T reads
+  Re Π_ℓ(T) = ∫_1^{2T} S(t) ψ_ℓ'(t − T) dt − Corr_ℓ(T) + o(1)
+  (`ZetaWindowPrimePolynomialReadsZeroCountRemainder`, by Abel summation against dS). The off-line
+  correction is quadratic in the displacement (`RHTower/ImaginaryShiftQuadraticFourierDefect`) and
+  small outside a set of heights of measure o(U) in [U/4, U/2], by the Selberg-type window count
+  (`ZetaOffLineCorrectionSmallOutsideSparseHeights`). Kronecker–Weyl for the prime phases gives
+  heights of positive density in every window where Re Π_ℓ exceeds any level below its aligned
+  value, which is ≫ ℓ e^{ℓ/4} (`ZetaWindowPrimePolynomialOnThePrimeTorus`). A bound |S| ≤ B would cap
+  Re Π_ℓ by Bℓ² ∫|ψ_1'| + o(1).
 
 Rule: a Hilbert–Pólya style model must say in which Schatten class, or with what deficiency index,
 the primes modify the archimedean operator. Trace class, finite rank and finite deficiency are

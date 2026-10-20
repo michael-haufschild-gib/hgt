@@ -24,21 +24,21 @@ continues the transform up to the top pole, so only a top can be seen, and on la
 attained top. On a finite window *every* exponent is tested: the inequality holds for each `z₀`,
 and fails as soon as one pole dominates the potential `Σ |D(z)| |E_V(z − s)|` of the others. The
 attainment premise is replaced by the loudness ratio `N = Σ_z |D(z)| e^{Re z·V} / (|D(z₀)| e^{Re z₀·V})`
-at the lag `V` itself; it is finite at every lag, and `N ≤` the number of loud zeros at a
-*Legendre record*, a maximizer of `|D(z)| e^{Re z·V}`, which exists whether or not the top depth is
-attained.
+at the lag `V` itself. It is finite at every lag. At a *Legendre record*, a maximizer of
+`|D(z)| e^{Re z·V}`, every term is at most the record's, so `N` counts its competitors; a record
+exists at every lag whether or not the top depth is attained.
 
 **Explicit lag** (`exists_lag_neg_of_loudness`). Let `|Im z| ≥ η` on the exponents, let the other
 exponents keep distance `g` from `s = σ + i Im z₀`, put `κ = 1/η + 1/g`, `θ = Re z₀ − σ > 0` with
-`2κNθ ≤ 1`. If `κ N |D(z₀)| (e^{θV} − 2) > 3|φ(0)|/σ + κ Σ_z |D(z)|`, some lag `v ∈ [0, V]` has
+`2κNθ ≤ 1`. If `κ N |D(z₀)| (e^{θV} − 2) > 4|φ(0)|/σ + κ Σ_z |D(z)|`, some lag `v ∈ [0, V]` has
 `Re W(f_v, f_v) < 0`. So the first negative lag is at most
-`(1/θ) log(2 + (3|φ(0)|/σ + κ Σ|D|)/(κ N |D(z₀)|))`: logarithmic in the coefficient of the zero,
+`(1/θ) log(2 + (4|φ(0)|/σ + κ Σ|D|)/(κ N |D(z₀)|))`: logarithmic in the coefficient of the zero,
 linear in its loudness ratio and in the inverse separations.
 
 **For `ζ`: the crowding law** (`zeta_crowding_of_lag_primeWindow_nonneg`). Nontrivial zeros have
 `|Im ρ| ≥ 4`, so `η = 4`. If the dyadic window functionals `P_v` of a width `w ∈ (0, ½ log 2)` are
 nonnegative for all `v ∈ [0, V]`, every off-line zero `ρ₀ = ½ + z₀` satisfies
-`κ N |D(z₀)| (e^{θV} − 2) ≤ 3|φ(0)|/σ + κ Σ|D|`: it is either quiet at lag `V` or crowded, with
+`κ N |D(z₀)| (e^{θV} − 2) ≤ 4|φ(0)|/σ + κ Σ|D|`: it is either quiet at lag `V` or crowded, with
 loudness ratio `N ≳ θ⁻¹`. Finite prime data force companions at the record.
 -/
 
@@ -243,11 +243,11 @@ theorem norm_evenCoeff_mul_lapWin_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b
     have e : ∀ u : ℝ, cexp (-s * u) * ((M - φ u : ℝ) : ℂ) =
         M * cexp (-s * u) - cexp (-s * u) * ((φ u : ℝ) : ℂ) := fun u => by push_cast; ring
     simp_rw [e]
-    rw [intervalIntegral.integral_sub
-        ((by fun_prop : Continuous fun u : ℝ => (M : ℂ) * cexp (-s * u)).intervalIntegrable _ _)
-        (((by fun_prop : Continuous fun u : ℝ => cexp (-s * u)).mul
-          (Complex.continuous_ofReal.comp hφc)).intervalIntegrable _ _),
-      intervalIntegral.integral_const_mul, integral_lagWindow_eq Z hZ hb hbs hV s, lapWin]
+    have hi1 : IntervalIntegrable (fun u : ℝ => (M : ℂ) * cexp (-s * u)) volume 0 V :=
+      (by fun_prop : Continuous fun u : ℝ => (M : ℂ) * cexp (-s * u)).intervalIntegrable _ _
+    have hi2 : IntervalIntegrable (fun u : ℝ => cexp (-s * u) * ((φ u : ℝ) : ℂ)) volume 0 V :=
+      (Continuous.mul (by fun_prop) (Complex.continuous_ofReal.comp hφc)).intervalIntegrable _ _
+    rw [intervalIntegral.integral_sub hi1 hi2, intervalIntegral.integral_const_mul, integral_lagWindow_eq Z hZ hb hbs hV s, lapWin]
   have hsD := summable_norm_evenCoeff Z hZ hb hbs
   -- summability of the potentials
   have hsumL : ∀ s : ℂ, Summable fun z : ℂ => ‖D z‖ * ‖lapWin V (z - s)‖ := fun s =>
@@ -272,10 +272,10 @@ theorem norm_evenCoeff_mul_lapWin_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b
       ∑' z : ℂ, (if z = z₀ then 0 else ‖D z‖ * ‖lapWin V (z - s)‖) := by
     have hn : ∀ z : ℂ, ‖(if z = z₀ then 0 else D z * lapWin V (z - s))‖ =
         (if z = z₀ then 0 else ‖D z‖ * ‖lapWin V (z - s)‖) := fun z => by
-      split_ifs <;> simp [norm_mul]
+      split_ifs <;> simp
     have hs' : Summable fun z : ℂ => (if z = z₀ then 0 else ‖D z‖ * ‖lapWin V (z - s)‖) :=
       (hsumL s).of_nonneg_of_le (fun z => by split_ifs <;> positivity)
-        fun z => by split_ifs <;> simp
+        fun z => by split_ifs <;> first | positivity | exact le_rfl
     refine (norm_tsum_le_tsum_norm ?_).trans_eq (tsum_congr hn)
     simp_rw [hn]
     exact hs'
@@ -285,11 +285,10 @@ theorem norm_evenCoeff_mul_lapWin_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b
     have h1 : (M * lapWin V (-(σ : ℂ))).re ≤ |M| * ‖lapWin V (-σ)‖ := by
       refine (Complex.re_le_norm _).trans_eq ?_
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
-      rfl
     have h2 : -(∑' z : ℂ, D z * lapWin V (z - σ)).re ≤ ∑' z : ℂ, ‖D z‖ * ‖lapWin V (z - σ)‖ := by
       refine (neg_le_abs _).trans ((Complex.abs_re_le_norm _).trans ?_)
       refine (norm_tsum_le_tsum_norm (hsumC σ).norm).trans_eq ?_
-      simp [norm_mul]
+      simp
     linarith
   have hkey : D z₀ * lapWin V (z₀ - s) = M * lapWin V (-s) -
       (∫ u in (0 : ℝ)..V, cexp (-s * u) * ((M - φ u : ℝ) : ℂ)) -
@@ -309,5 +308,226 @@ theorem norm_evenCoeff_mul_lapWin_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b
   have hs1 : (-s : ℂ) = -(σ + t * I) := by rw [hs]
   rw [← hs1]
   linarith
+
+/-! ### Explicit lags -/
+
+/-- `|E_V(z − s)| ≤ (e^{(Re z − Re s)V} + 1)/g` when `|z − s| ≥ g > 0`. -/
+theorem norm_lapWin_sub_le {V g : ℝ} {z s : ℂ} (hg : 0 < g) (hzs : g ≤ ‖z - s‖) :
+    ‖lapWin V (z - s)‖ ≤ (Real.exp ((z.re - s.re) * V) + 1) / g := by
+  have hne : z - s ≠ 0 := fun h => by rw [h, norm_zero] at hzs; linarith
+  refine (norm_lapWin_le_div V hne).trans ?_
+  rw [Complex.sub_re]
+  exact div_le_div_of_nonneg_left (by positivity) hg hzs
+
+/-- **Loudness bound.** Let the difference tests be Weil nonnegative on `[0, V]`. Let
+`|Im z| ≥ η` on the exponents, let the exponents `z ≠ z₀` keep distance `g` from
+`s = σ + i Im z₀`, `κ = 1/η + 1/g`, `θ = Re z₀ − σ > 0` with `2κNθ ≤ 1`, and suppose the loudness at
+lag `V` is at most `N` times that of `z₀`: `Σ_z |D(z)| e^{Re z·V} ≤ N |D(z₀)| e^{Re z₀·V}`. Then
+`κ N |D(z₀)| (e^{θV} − 2) ≤ 4|M|/σ + κ Σ_z |D(z)|`, `M = 2 Re S(0)`. -/
+theorem loudness_bound_of_lag_nonneg (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {V : ℝ} (hV : 0 ≤ V)
+    (hm : ∀ v ∈ Icc (0 : ℝ) V, 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re)
+    {η g σ N : ℝ} (hη : 0 < η) (hηz : ∀ z, evenCoeff Z b z ≠ 0 → η ≤ |z.im|) (hg : 0 < g)
+    {z₀ : ℂ} (hσ : 0 < σ) (hθ : σ < z₀.re)
+    (hsep : ∀ z, z ≠ z₀ → evenCoeff Z b z ≠ 0 → g ≤ ‖z - (σ + z₀.im * I)‖)
+    (hθN : 2 * (1 / η + 1 / g) * N * (z₀.re - σ) ≤ 1)
+    (hL : ∑' z : ℂ, ‖evenCoeff Z b z‖ * Real.exp (z.re * V) ≤
+      N * ‖evenCoeff Z b z₀‖ * Real.exp (z₀.re * V)) :
+    (1 / η + 1 / g) * N * ‖evenCoeff Z b z₀‖ * (Real.exp ((z₀.re - σ) * V) - 2) ≤
+      4 * |2 * (lagStructure Z b 0).re| / σ + (1 / η + 1 / g) * ∑' z : ℂ, ‖evenCoeff Z b z‖ := by
+  classical
+  set D := evenCoeff Z b with hDdef
+  set M : ℝ := 2 * (lagStructure Z b 0).re with hM
+  set κ : ℝ := 1 / η + 1 / g with hκ
+  set θ : ℝ := z₀.re - σ with hθdef
+  have hθ0 : 0 < θ := by rw [hθdef]; linarith
+  have hκ0 : 0 < κ := by rw [hκ]; positivity
+  set s : ℂ := σ + z₀.im * I with hs
+  have hsre : s.re = σ := by simp [hs]
+  have hcore := norm_evenCoeff_mul_lapWin_le Z hZ hb hbs hV hm z₀ σ z₀.im
+  rw [← hs] at hcore
+  -- the kernel of `z₀` is real at `s`
+  have hz₀s : z₀ - s = (θ : ℂ) := by
+    apply Complex.ext <;> simp [hs, hθdef]
+  have hLHS : ‖D z₀ * lapWin V (z₀ - s)‖ = ‖D z₀‖ * ((Real.exp (θ * V) - 1) / θ) := by
+    rw [norm_mul, hz₀s, norm_lapWin_ofReal_pos hV hθ0]
+  -- the archimedean-pole kernels
+  have hE1 : ‖lapWin V (-(σ : ℂ))‖ ≤ 2 / σ := by
+    have hne : (-(σ : ℂ)) ≠ 0 := by
+      rw [neg_ne_zero]; exact_mod_cast hσ.ne'
+    refine (norm_lapWin_le_div V hne).trans ?_
+    rw [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hσ]
+    gcongr
+    have : (-(σ : ℂ)).re * V ≤ 0 := by simp; nlinarith
+    linarith [Real.exp_le_one_iff.mpr this]
+  have hE2 : ‖lapWin V (-s)‖ ≤ 2 / σ := by
+    have hsn : σ ≤ ‖s‖ := by
+      have := Complex.abs_re_le_norm s; rw [hsre, abs_of_pos hσ] at this; exact this
+    have hne : -s ≠ 0 := fun h => by
+      rw [neg_eq_zero] at h; rw [h, norm_zero] at hsn; linarith
+    refine (norm_lapWin_le_div V hne).trans ?_
+    rw [norm_neg]
+    have : (-s).re * V ≤ 0 := by rw [Complex.neg_re, hsre]; nlinarith
+    calc (Real.exp ((-s).re * V) + 1) / ‖s‖ ≤ 2 / ‖s‖ := by
+          gcongr; linarith [Real.exp_le_one_iff.mpr this]
+      _ ≤ 2 / σ := div_le_div_of_nonneg_left (by norm_num) hσ hsn
+  -- the potentials
+  set T : ℝ := ∑' z : ℂ, ‖D z‖ * (Real.exp ((z.re - σ) * V) + 1) with hT
+  have hsL : Summable fun z : ℂ => ‖D z‖ * Real.exp (z.re * V) :=
+    summable_norm_evenCoeff_mul Z hZ hb hbs (C := Real.exp (1 / 2 * V)) (fun _ => (Real.exp_pos _).le)
+      fun z hz => Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right
+        ((le_abs_self _).trans (abs_re_le_of_evenCoeff_ne_zero hz)) hV)
+  have hsD := summable_norm_evenCoeff Z hZ hb hbs
+  have hTeq : T = Real.exp (-σ * V) * ∑' z : ℂ, ‖D z‖ * Real.exp (z.re * V) +
+      ∑' z : ℂ, ‖D z‖ := by
+    rw [hT, ← tsum_mul_left, ← (hsL.mul_left _).tsum_add hsD]
+    refine tsum_congr fun z => ?_
+    rw [show (z.re - σ) * V = -σ * V + z.re * V by ring, Real.exp_add]
+    ring
+  have hsT : Summable fun z : ℂ => ‖D z‖ * (Real.exp ((z.re - σ) * V) + 1) := by
+    refine ((hsL.mul_left (Real.exp (-σ * V))).add hsD).congr fun z => ?_
+    rw [show (z.re - σ) * V = -σ * V + z.re * V by ring, Real.exp_add]
+    ring
+  have hP1 : ∑' z : ℂ, ‖D z‖ * ‖lapWin V (z - σ)‖ ≤ T / η := by
+    rw [hT, ← tsum_div_const]
+    refine Summable.tsum_le_tsum (fun z => ?_) ?_ (hsT.div_const η)
+    · by_cases hz : D z = 0
+      · simp [hz]
+      · have hzs : η ≤ ‖z - (σ : ℂ)‖ := (hηz z hz).trans (by
+          have := Complex.abs_im_le_norm (z - (σ : ℂ)); simpa using this)
+        have := norm_lapWin_sub_le (V := V) hη hzs
+        rw [Complex.ofReal_re] at this
+        calc ‖D z‖ * ‖lapWin V (z - σ)‖ ≤ ‖D z‖ * ((Real.exp ((z.re - σ) * V) + 1) / η) :=
+              mul_le_mul_of_nonneg_left this (norm_nonneg _)
+          _ = _ := by ring
+    · exact summable_norm_evenCoeff_mul Z hZ hb hbs (C := V * Real.exp ((1 / 2 + |σ|) * V))
+        (fun _ => norm_nonneg _) fun z hz => (norm_lapWin_le_const hV _).trans
+          (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (by
+            rw [Complex.sub_re, Complex.ofReal_re]
+            exact (abs_sub _ _).trans (by linarith [abs_re_le_of_evenCoeff_ne_zero hz]))
+            hV)) hV)
+  have hP2 : ∑' z : ℂ, (if z = z₀ then 0 else ‖D z‖ * ‖lapWin V (z - s)‖) ≤ T / g := by
+    rw [hT, ← tsum_div_const]
+    refine Summable.tsum_le_tsum (fun z => ?_) ?_ (hsT.div_const g)
+    · split_ifs with hzz
+      · positivity
+      · by_cases hz : D z = 0
+        · simp [hz]
+        · have := norm_lapWin_sub_le (V := V) hg (hsep z hzz hz)
+          rw [hsre] at this
+          calc ‖D z‖ * ‖lapWin V (z - s)‖ ≤ ‖D z‖ * ((Real.exp ((z.re - σ) * V) + 1) / g) :=
+                mul_le_mul_of_nonneg_left this (norm_nonneg _)
+            _ = _ := by ring
+    · refine (hsT.div_const g).of_nonneg_of_le (fun z => by split_ifs <;> positivity) fun z => ?_
+      split_ifs with hzz
+      · positivity
+      · by_cases hz : D z = 0
+        · simp [hz]
+        · have := norm_lapWin_sub_le (V := V) hg (hsep z hzz hz)
+          rw [hsre] at this
+          calc ‖D z‖ * ‖lapWin V (z - s)‖ ≤ ‖D z‖ * ((Real.exp ((z.re - σ) * V) + 1) / g) :=
+                mul_le_mul_of_nonneg_left this (norm_nonneg _)
+            _ = _ := by ring
+  -- the loudness hypothesis at `s`
+  have hTb : T ≤ N * ‖D z₀‖ * Real.exp (θ * V) + ∑' z : ℂ, ‖D z‖ := by
+    rw [hTeq]
+    have h1 : Real.exp (-σ * V) * ∑' z : ℂ, ‖D z‖ * Real.exp (z.re * V) ≤
+        N * ‖D z₀‖ * Real.exp (θ * V) := by
+      calc Real.exp (-σ * V) * ∑' z : ℂ, ‖D z‖ * Real.exp (z.re * V)
+          ≤ Real.exp (-σ * V) * (N * ‖D z₀‖ * Real.exp (z₀.re * V)) :=
+            mul_le_mul_of_nonneg_left hL (Real.exp_pos _).le
+        _ = N * ‖D z₀‖ * Real.exp (θ * V) := by
+            rw [hθdef, show (z₀.re - σ) * V = -σ * V + z₀.re * V by ring, Real.exp_add]; ring
+    linarith
+  -- assemble
+  have hbig : ‖D z₀‖ * ((Real.exp (θ * V) - 1) / θ) ≤ 4 * |M| / σ + κ * T := by
+    rw [← hLHS]
+    refine hcore.trans ?_
+    have hM0 := abs_nonneg M
+    have h1 : |M| * (‖lapWin V (-(σ : ℂ))‖ + ‖lapWin V (-s)‖) ≤ 4 * |M| / σ := by
+      calc |M| * (‖lapWin V (-(σ : ℂ))‖ + ‖lapWin V (-s)‖) ≤ |M| * (2 / σ + 2 / σ) :=
+            mul_le_mul_of_nonneg_left (add_le_add hE1 hE2) hM0
+        _ = 4 * |M| / σ := by ring
+    have hT0 : 0 ≤ T := tsum_nonneg fun z => by positivity
+    have h2 : T / η + T / g = κ * T := by rw [hκ]; ring
+    linarith
+  have hexp : 0 ≤ Real.exp (θ * V) - 1 := by
+    linarith [Real.one_le_exp (mul_nonneg hθ0.le hV)]
+  have hlow : 2 * κ * N * ‖D z₀‖ * (Real.exp (θ * V) - 1) ≤
+      ‖D z₀‖ * ((Real.exp (θ * V) - 1) / θ) := by
+    have h1 : 2 * κ * N ≤ 1 / θ := by rw [le_div_iff₀ hθ0]; linarith
+    calc 2 * κ * N * ‖D z₀‖ * (Real.exp (θ * V) - 1)
+        = (2 * κ * N) * (‖D z₀‖ * (Real.exp (θ * V) - 1)) := by ring
+      _ ≤ (1 / θ) * (‖D z₀‖ * (Real.exp (θ * V) - 1)) :=
+          mul_le_mul_of_nonneg_right h1 (mul_nonneg (norm_nonneg _) hexp)
+      _ = _ := by ring
+  have hκT : κ * T ≤ κ * (N * ‖D z₀‖ * Real.exp (θ * V)) + κ * ∑' z : ℂ, ‖D z‖ := by
+    rw [← mul_add]; exact mul_le_mul_of_nonneg_left hTb hκ0.le
+  nlinarith
+
+/-- **Explicit first negative lag.** Under the hypotheses of `loudness_bound_of_lag_nonneg`, if
+`κ N |D(z₀)| (e^{θV} − 2) > 4|M|/σ + κ Σ_z |D(z)|`, then some lag `v ∈ [0, V]` has
+`Re W(f_v, f_v) < 0`. -/
+theorem exists_lag_neg_of_loudness (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {V : ℝ} (hV : 0 ≤ V)
+    {η g σ N : ℝ} (hη : 0 < η) (hηz : ∀ z, evenCoeff Z b z ≠ 0 → η ≤ |z.im|) (hg : 0 < g)
+    {z₀ : ℂ} (hσ : 0 < σ) (hθ : σ < z₀.re)
+    (hsep : ∀ z, z ≠ z₀ → evenCoeff Z b z ≠ 0 → g ≤ ‖z - (σ + z₀.im * I)‖)
+    (hθN : 2 * (1 / η + 1 / g) * N * (z₀.re - σ) ≤ 1)
+    (hL : ∑' z : ℂ, ‖evenCoeff Z b z‖ * Real.exp (z.re * V) ≤
+      N * ‖evenCoeff Z b z₀‖ * Real.exp (z₀.re * V))
+    (hbig : 4 * |2 * (lagStructure Z b 0).re| / σ + (1 / η + 1 / g) * ∑' z : ℂ, ‖evenCoeff Z b z‖ <
+      (1 / η + 1 / g) * N * ‖evenCoeff Z b z₀‖ * (Real.exp ((z₀.re - σ) * V) - 2)) :
+    ∃ v ∈ Icc (0 : ℝ) V, (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re < 0 := by
+  by_contra h
+  push Not at h
+  exact (loudness_bound_of_lag_nonneg Z hZ hb hbs hV h hη hηz hg hσ hθ hsep hθN hL).not_gt hbig
+
+/-! ### For `ζ`: the crowding law -/
+
+/-- The exponents of the lag function of `ζ` keep distance `4` from the real axis. -/
+theorem four_le_abs_im_of_evenCoeff_zeta {b : ℝ → ℂ} {z : ℂ}
+    (hz : evenCoeff zetaZeroConfig b z ≠ 0) : 4 ≤ |z.im| := by
+  have key : ∀ ρ ∈ zetaZeroConfig.carrier, 4 ≤ |ρ.im| := fun ρ hρ => by
+    by_contra hlt
+    push Not at hlt
+    have h : 0 < ρ.re ∧ ρ.re < 1 := hρ.2
+    exact riemannZeta_ne_zero_of_abs_im_lt_four h.1 h.2 hlt hρ.1
+  rcases mem_of_evenCoeff_ne_zero hz with h | h
+  · simpa using key _ h
+  · simpa using key _ h
+
+/-- **The crowding law for `ζ`.** Let `0 < w < ½ log 2` and suppose the dyadic window functionals
+`P_v` of the difference tests `κ_w(t + v/2) − κ_w(t − v/2)` are nonnegative for every lag
+`v ∈ [0, V]`. Then every exponent `z₀` of the lag function (an off-line zero `½ + z₀` when
+`Re z₀ > 0`) satisfies, for `0 < σ < Re z₀`, separation `g` of the others from `σ + i Im z₀`,
+`κ = 1/4 + 1/g`, `2κN(Re z₀ − σ) ≤ 1` and loudness ratio `N` at lag `V`:
+`κ N |D(z₀)| (e^{(Re z₀ − σ)V} − 2) ≤ 4|M|/σ + κ Σ_z |D(z)|`. A zero that is loud at lag `V`
+must be crowded: its companions carry a loudness of order `N`. -/
+theorem zeta_crowding_of_lag_primeWindow_nonneg {w V : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real.log 2)
+    (hV : 0 ≤ V)
+    (hP : ∀ v ∈ Icc (0 : ℝ) V, 0 ≤ (lagPrimeWindowRHS v w (EF.weilTest
+      (twoBump (modScaledBump w 0) v (-1)) (twoBump (modScaledBump w 0) v (-1)))).re)
+    {g σ N : ℝ} (hg : 0 < g) {z₀ : ℂ} (hσ : 0 < σ) (hθ : σ < z₀.re)
+    (hsep : ∀ z, z ≠ z₀ → evenCoeff zetaZeroConfig (modScaledBump w 0) z ≠ 0 →
+      g ≤ ‖z - (σ + z₀.im * I)‖)
+    (hθN : 2 * (1 / 4 + 1 / g) * N * (z₀.re - σ) ≤ 1)
+    (hL : ∑' z : ℂ, ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z‖ * Real.exp (z.re * V) ≤
+      N * ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z₀‖ * Real.exp (z₀.re * V)) :
+    (1 / 4 + 1 / g) * N * ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z₀‖ *
+        (Real.exp ((z₀.re - σ) * V) - 2) ≤
+      4 * |2 * (lagStructure zetaZeroConfig (modScaledBump w 0) 0).re| / σ +
+        (1 / 4 + 1 / g) * ∑' z : ℂ, ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z‖ := by
+  have hm : ∀ v ∈ Icc (0 : ℝ) V, 0 ≤ (zetaZeroConfig.W (twoBump (modScaledBump w 0) v (-1))
+      (twoBump (modScaledBump w 0) v (-1))).re := fun v hv => by
+    rw [zeta_W_eq_literatureRHS (f := twoBump (modScaledBump w 0) v (-1))
+      (contDiff_bumpTest (contDiff_modScaledBump_two w 0) v ![1, -1])
+      (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
+        (modScaledBump_support hw 0)) v (-1)),
+      literatureRHS_twoBump_eq_lagPrimeWindowRHS (modScaledBump_support hw 0) hw2 hv.1]
+    exact hP v hv
+  exact loudness_bound_of_lag_nonneg zetaZeroConfig temperedConfig_zetaZeroConfig
+    (contDiff_modScaledBump_two w 0) (modScaledBump_support hw 0) hV hm (by norm_num)
+    (fun z hz => four_le_abs_im_of_evenCoeff_zeta hz) hg hσ hθ hsep hθN hL
 
 end GaloisForLFunctions.SquareRootThreshold

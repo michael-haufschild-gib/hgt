@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SquareRootThreshold.LagFamilyMeetsTheCrystalAtTheThreshold
+import GaloisForLFunctions.SquareRootThreshold.SharpArchimedeanHorizonOfTheZetaSymbol
 import GaloisForLFunctions.ArithmeticCriticalityTheory.WindowGaugeLogarithmicGroundEnergyFloor
 import GaloisForLFunctions.RHTower.ZerosApproachLineAttainment
 
@@ -38,37 +39,54 @@ This module connects three theorem spines across `RHTower`, `ArithmeticCriticali
    height-uniform positivity of the pole-free dyadic prime window functional all the way through
    `v + 2w ≤ log 2 + 1/50`, where the prime `2` actively enters the window.
 
-3. **One-Parameter Pole-Free Lag Abscissa Law and Unconditional Sharp `2σ`-Abscissa Law for `μ₀(A)`**
+3. **One-Parameter Pole-Free Lag Abscissa Law, Unconditional `ZerosApproachLine`-Free RH Criteria,
+   and Sharp `2σ`-Abscissa Law for `μ₀(A)`**
    (`re_le_iff_polarFree_lag_twoBump_ge_neg_exp`,
    `zeta_re_le_iff_polarFree_lag_primeWindow_ge_neg_exp`,
    `re_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp`,
    `abs_im_xiSpectralPoint_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp`,
+   `riemannHypothesis_iff_ccmRestrictedWeilPolarGroundEnergy_nonneg`,
+   `riemannHypothesis_iff_ccmRestrictedWeilPolarGroundEnergy_bddBelow`,
+   `riemannHypothesis_iff_forall_pos_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp`,
+   `riemannHypothesis_iff_polarFree_lag_primeWindow_ge_neg_const`,
+   `riemannHypothesis_iff_polarFree_lag_primeWindow_le_arch`,
+   `riemannHypothesis_iff_forall_pos_polarFree_lag_primeWindow_ge_neg_exp`,
    `riemannHypothesis_iff_zerosApproachLine_and_grid_polarFree_primeWindow_le_arch`,
    `riemannHypothesis_iff_zerosApproachLine_and_grid_ccmRestrictedWeilPolarGroundEnergy_bddBelow`):
    Because `evenCoeff Z (scaledBumpPolarFree w 0) z = (1/4 - z²)² evenCoeff Z (modScaledBump w 0) z`
    and `(1/4 - z²)² > 0` on real strip zeros `z ∈ (-1/2, 1/2)`, the unmodulated (`γ = 0`, `τ = -1`)
    one-parameter pole-free difference family `κ_{2,w}(t + v/2) - κ_{2,w}(t - v/2)` measures every
-   quasi-RH abscissa `1/2 + σ` (`σ ≥ 0`) without any height or phase parameter, and sees every
-   attained top along a single non-resonant geometric grid `v_k = kℓ`. Pairing with the polar
-   Rayleigh bridge proves **unconditionally** that `μ₀(A) ≥ -C e^{2σA}` (`A ≥ A₀`) forces
-   `|Re ρ - 1/2| ≤ σ` for all nontrivial zeros of `ζ`, sharpening the exponent of
-   `CCMRestrictedWeilPolarBombieriYoshidaQuantitative` by the exact factor of `2`.
+   quasi-RH abscissa `1/2 + σ` (`σ ≥ 0`) without any height or phase parameter, decides
+   `RiemannHypothesis` unconditionally without `ZerosApproachLine` over continuous lags `v ≥ V` and
+   apertures `A ≥ A₀`, and sees every attained top along a single non-resonant geometric grid
+   `v_k = kℓ`. Pairing with the polar Rayleigh bridge proves **unconditionally** that
+   `μ₀(A) ≥ -C e^{2σA}` (`A ≥ A₀`) forces `|Re ρ - 1/2| ≤ σ` for all nontrivial zeros of `ζ`.
 
-4. **Global Arithmetic Window Floor for All Apertures `A > 0` and All Lags `v > 2w`**
-   (`profilePrimeSum_le_two_mul_aperturePrimeSum`,
-   `aperturePrimeSum_le_four_mul_mul_exp`,
-   `neg_poleFreeWeilOperator_ge_polarWindowFloor`,
-   `polarWindowFloor_le_ccmRestrictedWeilPolarGroundEnergy`,
-   `explicit_global_le_ccmRestrictedWeilPolarGroundEnergy`,
-   `reflectedDifferenceEnergy_add_polarWindowFloor_le_poleFree_of_meanZero_Icc`,
-   `two_mul_polarWindowFloor_le_arch_sub_primeWindow_polarFree`):
-   Removes the `2R < log 2` restriction of `WindowGaugeLogarithmicGroundEnergyFloor` and the `4R³`
-   odd-pole penalty on the pole-vanishing sector: at any aperture `R > 0`, the prime shift sum
-   `profilePrimeSum M x` on `(-R, R)` truncates to `n ≤ ⌊e^{2R}⌋` and is bounded by
-   `2 Σ_{n ≤ ⌊e^{2R}⌋} Λ(n) n^{-1/2} ≤ 8 R e^R`. Consequently, for **every** aperture `A > 0` and
-   **every** lag `v > 2w`, the pole-vanishing ground energy `μ₀(A)`, the `μ_a`-mean-zero variation
-   inequality, and the pole-free dyadic prime window functional obey explicit global arithmetic
-   lower bounds governed by `polarWindowFloor(A) ≥ -log(2A) - (3/2)A - (γ + log π) - 8 A e^A`.
+4. **Sharp Spectral Symbol Ground-Energy Bounds (`O(e^A)` without Factor `A` or Window Boundary Loss)
+   and Polar-Free PNT Main-Term Vanishing**
+   (`aperturePrimeSum_le_thirty_four_mul_exp`,
+   `exists_aperturePrimeSum_le_two_add_eps_mul_exp`,
+   `neg_horizonExponent_le_ccmRestrictedWeilPolarGroundEnergy`,
+   `exists_sharp_exp_le_ccmRestrictedWeilPolarGroundEnergy`,
+   `reflectedDifferenceEnergy_add_neg_horizonExponent_le_poleFree_of_meanZero_Icc`,
+   `two_mul_neg_horizonExponent_le_arch_sub_primeWindow_polarFree`,
+   `exists_sharp_exp_le_arch_sub_primeWindow_polarFree`,
+   `neg_twenty_mul_le_arch_polarFree_twoBump`,
+   `integral_exp_half_mul_weilTest_scaledBumpPolarFree_eq_zero`,
+   `integral_exp_half_mul_polarFreeKernel_eq_zero`):
+   - **Chebyshev & PNT Aperture Prime Bounds (`34 e^R` and `(2 + ε) e^R + C`):**
+     Eliminates the linear factor `R` from `aperturePrimeSum R ≤ 4 R e^R`, proving
+     `aperturePrimeSum R ≤ 34 e^R` for all `R ∈ ℝ` and `aperturePrimeSum R ≤ (2 + ε) e^R + C` via PNT.
+   - **Spectral Symbol Ground-Energy Floor (`μ₀(A) ≥ -(10 + 68 e^A)` and `μ₀(A) ≥ -(C + (4 + ε) e^A)`):**
+     Evaluating `zeta_W_eq_integral_mu_add_PX_bilinear` on polar-constrained smooth interior sources
+     (where the pole terms at `±I/2` vanish identically) against `neg_horizonExponent_le_mu_add_PX`
+     and `exists_mu_add_PX_ge` eliminates **both** the factor `A` and the spatial window-boundary
+     loss `-log(2A) - (3/2)A - 2 archConstantReal`, proving `-(10 + 68 e^A) ≤ μ₀(A)` and
+     `-(C + (4 + ε) e^A) ≤ μ₀(A)` for **every** aperture `A > 0`.
+   - **Direct $O(1)$ Archimedean Floor & Polar-Free PNT Main-Term Vanishing:**
+     On `polarFreeKernel w ω v (-1)` (`2w < v`), the archimedean term satisfies the lag-independent
+     $O(1)$ lower bound `Arch(v) ≥ -20 ∫ ‖κ_{2,w,ω}‖²`, and the continuous PNT main term
+     `∫ K(y) e^{±y/2} dy` of the prime window sum vanishes identically by `paperFT κ_{2,w,ω} (±I/2) = 0`.
 -/
 
 open MeasureTheory Complex Set Filter Topology
@@ -912,6 +930,143 @@ theorem ccmRestrictedWeilPolarGroundEnergy_nonneg_of_riemannHypothesis
   (ccmRestrictedWeilGroundEnergy_nonneg_of_riemannHypothesis' hRH A).trans
     (ccmRestrictedWeilGroundEnergy_le_polar A)
 
+/-- **Unconditional `ZerosApproachLine`-free RH equivalence via nonnegativity of `μ₀(A)`.**
+`RiemannHypothesis` holds iff `0 ≤ ccmRestrictedWeilPolarGroundEnergy A` for all apertures `A > 0`. -/
+theorem riemannHypothesis_iff_ccmRestrictedWeilPolarGroundEnergy_nonneg :
+    RiemannHypothesis ↔ ∀ A : SuzukiPositiveAperture, 0 ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+  constructor
+  · exact ccmRestrictedWeilPolarGroundEnergy_nonneg_of_riemannHypothesis
+  · intro hnn
+    rw [riemannHypothesis_iff_zetaZeroConfig_onLine']
+    intro ρ hρ
+    have h := abs_re_sub_half_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp (σ := 0)
+      (C := 0) (A₀ := 0) le_rfl (fun A _ => by simpa using hnn A) hρ
+    linarith [abs_le.mp h]
+
+/-- **Unconditional `ZerosApproachLine`-free RH equivalence via boundedness below of `μ₀(A)`.**
+`RiemannHypothesis` holds iff `ccmRestrictedWeilPolarGroundEnergy A` is bounded below (`≥ -C`) for
+all large apertures `A ≥ A₀`. -/
+theorem riemannHypothesis_iff_ccmRestrictedWeilPolarGroundEnergy_bddBelow :
+    RiemannHypothesis ↔
+      ∃ C A₀ : ℝ, ∀ A : SuzukiPositiveAperture, A₀ ≤ A.1 →
+        -C ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+  constructor
+  · intro hRH
+    exact ⟨0, 0, fun A _ => by
+      rw [neg_zero]
+      exact ccmRestrictedWeilPolarGroundEnergy_nonneg_of_riemannHypothesis hRH A⟩
+  · rintro ⟨C, A₀, h⟩
+    rw [riemannHypothesis_iff_zetaZeroConfig_onLine']
+    intro ρ hρ
+    have habs := abs_re_sub_half_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp (σ := 0)
+      (C := C) (A₀ := A₀) le_rfl (fun A hA => by simpa using h A hA) hρ
+    linarith [abs_le.mp habs]
+
+/-- **Unconditional `ZerosApproachLine`-free RH equivalence via sub-exponential growth of `μ₀(A)`.**
+`RiemannHypothesis` holds iff for every `σ > 0`, `μ₀(A) ≥ -C e^{2σA}` for all large `A ≥ A₀`. -/
+theorem riemannHypothesis_iff_forall_pos_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp :
+    RiemannHypothesis ↔
+      ∀ σ : ℝ, 0 < σ → ∃ C A₀ : ℝ, ∀ A : SuzukiPositiveAperture, A₀ ≤ A.1 →
+        -(C * Real.exp (2 * σ * A.1)) ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+  constructor
+  · intro hRH σ _
+    exact ⟨0, 0, fun A _ => by
+      simp [ccmRestrictedWeilPolarGroundEnergy_nonneg_of_riemannHypothesis hRH A]⟩
+  · intro h
+    rw [riemannHypothesis_iff_zetaZeroConfig_onLine']
+    intro ρ hρ
+    by_contra hne
+    have hpos : 0 < |ρ.re - 1 / 2| := abs_pos.mpr (sub_ne_zero.mpr hne)
+    obtain ⟨C, A₀, hA⟩ := h (|ρ.re - 1 / 2| / 2) (half_pos hpos)
+    have habs := abs_re_sub_half_le_of_ccmRestrictedWeilPolarGroundEnergy_ge_neg_exp
+      (half_pos hpos).le hA hρ
+    linarith
+
+private theorem riemannHypothesis_iff_zetaZeroConfig_re_le_half :
+    RiemannHypothesis ↔ ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re ≤ 1 / 2 := by
+  rw [riemannHypothesis_iff_zetaZeroConfig_onLine']
+  constructor
+  · exact fun h ρ hρ => (h ρ hρ).le
+  · intro h ρ hρ
+    have h1 := h ρ hρ
+    have h2 := h (Zeta23.reflect ρ) (zetaZeroConfig.reflect_mem ρ hρ)
+    have hrefl : (Zeta23.reflect ρ).re = 1 - ρ.re := by simp [Zeta23.reflect]
+    linarith
+
+/-- **Unconditional `ZerosApproachLine`-free RH equivalence on the one-parameter pole-free dyadic
+prime window family (`-C` lower bound for `v ≥ V`).** For all but countably many widths
+`w ∈ (0, ½ log 2)`, `RiemannHypothesis` holds iff the archimedean term minus the dyadic prime
+window sum of `polarFreeKernel w 0 v (-1)` is bounded below (`≥ -C`) for all large lags `v ≥ V`. -/
+theorem riemannHypothesis_iff_polarFree_lag_primeWindow_ge_neg_const :
+    ∃ E : Set ℝ, E.Countable ∧ ∀ w : ℝ, 0 < w → 2 * w < Real.log 2 → w ∉ E →
+      (RiemannHypothesis ↔ ∃ C V : ℝ, 0 ≤ V ∧ ∀ v : ℝ, V ≤ v →
+        -C ≤
+          ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w 0 v (-1)) r *
+            (EF.gammaBracket r : ℂ)).re -
+          (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+            (polarFreeKernel w 0 v (-1) (Real.log n) +
+              polarFreeKernel w 0 v (-1) (-Real.log n))).re) := by
+  obtain ⟨E, hEc, hE⟩ := zeta_re_le_iff_polarFree_lag_primeWindow_ge_neg_exp
+  refine ⟨E, hEc, fun w hw hw2 hwE => ?_⟩
+  have h0 := hE w hw hw2 hwE 0 le_rfl
+  rw [riemannHypothesis_iff_zetaZeroConfig_re_le_half]
+  simpa only [add_zero, zero_mul, Real.exp_zero, mul_one] using h0
+
+/-- **Unconditional `ZerosApproachLine`-free RH equivalence on the one-parameter pole-free dyadic
+prime window family (positivity for `v ≥ V`).** For all but countably many widths
+`w ∈ (0, ½ log 2)` and every `V ≥ 0`, `RiemannHypothesis` holds iff the dyadic prime window sum of
+`polarFreeKernel w 0 v (-1)` is bounded above by the archimedean term for all `v ≥ V`. -/
+theorem riemannHypothesis_iff_polarFree_lag_primeWindow_le_arch :
+    ∃ E : Set ℝ, E.Countable ∧ ∀ w : ℝ, 0 < w → 2 * w < Real.log 2 → w ∉ E → ∀ V : ℝ, 0 ≤ V →
+      (RiemannHypothesis ↔ ∀ v : ℝ, V ≤ v →
+        (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+          (polarFreeKernel w 0 v (-1) (Real.log n) +
+            polarFreeKernel w 0 v (-1) (-Real.log n))).re ≤
+        ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w 0 v (-1)) r *
+          (EF.gammaBracket r : ℂ)).re) := by
+  obtain ⟨E, hEc, hE⟩ := riemannHypothesis_iff_polarFree_lag_primeWindow_ge_neg_const
+  refine ⟨E, hEc, fun w hw hw2 hwE V hV => ?_⟩
+  constructor
+  · intro hRH v hv
+    have hnonneg : 0 ≤ (zetaZeroConfig.W (twoBump (scaledBumpPolarFree w 0) v (-1))
+        (twoBump (scaledBumpPolarFree w 0) v (-1))).re :=
+      weil_nonneg_of_onLine _ (riemannHypothesis_iff_zetaZeroConfig_onLine'.mp hRH) _
+    rw [zeta_re_W_polarFree_twoBump_eq_arch_sub_primeWindow hw hw2 0 (hV.trans hv) (-1)] at hnonneg
+    linarith
+  · intro hm
+    rw [hE w hw hw2 hwE]
+    refine ⟨0, V, hV, fun v hv => ?_⟩
+    have := hm v hv
+    linarith
+
+/-- **Unconditional `ZerosApproachLine`-free RH equivalence on the one-parameter pole-free dyadic
+prime window family (`∀ σ > 0, ≥ -C e^{σv}`).** -/
+theorem riemannHypothesis_iff_forall_pos_polarFree_lag_primeWindow_ge_neg_exp :
+    ∃ E : Set ℝ, E.Countable ∧ ∀ w : ℝ, 0 < w → 2 * w < Real.log 2 → w ∉ E →
+      (RiemannHypothesis ↔ ∀ σ : ℝ, 0 < σ → ∃ C V : ℝ, 0 ≤ V ∧ ∀ v : ℝ, V ≤ v →
+        -(C * Real.exp (σ * v)) ≤
+          ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w 0 v (-1)) r *
+            (EF.gammaBracket r : ℂ)).re -
+          (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+            (polarFreeKernel w 0 v (-1) (Real.log n) +
+              polarFreeKernel w 0 v (-1) (-Real.log n))).re) := by
+  obtain ⟨E, hEc, hE⟩ := zeta_re_le_iff_polarFree_lag_primeWindow_ge_neg_exp
+  refine ⟨E, hEc, fun w hw hw2 hwE => ?_⟩
+  constructor
+  · intro hRH σ hσ
+    rw [← hE w hw hw2 hwE σ hσ.le]
+    intro ρ hρ
+    have := riemannHypothesis_iff_zetaZeroConfig_re_le_half.mp hRH ρ hρ
+    linarith
+  · intro h
+    rw [riemannHypothesis_iff_zetaZeroConfig_re_le_half]
+    intro ρ hρ
+    by_contra hgt
+    push Not at hgt
+    have hσ : 0 < (ρ.re - 1 / 2) / 2 := by linarith
+    have hle := (hE w hw hw2 hwE ((ρ.re - 1 / 2) / 2) hσ.le).mpr (h _ hσ) ρ hρ
+    linarith
+
 /-- **Single arithmetic progression of pole-vanishing ground energies `μ₀(kℓ/2 + w)` decides RH
 under `ZerosApproachLine`.** For every good width `w > 0`, non-resonant step `ℓ > 0`, and `N : ℕ`,
 `RiemannHypothesis` holds iff `ZerosApproachLine` holds and `μ₀(kℓ/2 + w)` is bounded below along
@@ -1425,6 +1580,303 @@ theorem two_mul_explicit_le_arch_sub_primeWindow_polarFree {w v : ℝ}
   have hfl := explicitPolarWindowFloor_le_polarWindowFloor (R := v / 2 + w) (by linarith)
   have hB0 : 0 ≤ ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
   nlinarith
+
+/-! ### Sharp `O(e^A)` spectral symbol ground-energy bounds (eliminating factor `A` and window boundary loss) and polar-free PNT main-term vanishing -/
+
+theorem vonMangoldtAtom_eq_vonMangoldt_div_sqrt (n : ℕ) :
+    vonMangoldtAtom n = (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n := by
+  unfold vonMangoldtAtom
+  split_ifs with h2
+  · rfl
+  · rcases n with _ | _ | n
+    · simp
+    · simp [ArithmeticFunction.vonMangoldt_apply_one]
+    · omega
+
+theorem aperturePrimeSum_eq_sum_Ioc (R : ℝ) :
+    aperturePrimeSum R =
+      ∑ n ∈ Finset.Ioc 0 ⌊Real.exp (2 * R)⌋₊,
+        (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n := by
+  unfold aperturePrimeSum
+  simp_rw [vonMangoldtAtom_eq_vonMangoldt_div_sqrt]
+  exact sum_Icc_zero_eq_sum_Ioc_vonMangoldt_div_sqrt _
+
+/-- **Chebyshev global `34 e^R` bound on the aperture prime sum (no linear factor `R`).**
+For **every** `R : ℝ`, `aperturePrimeSum R ≤ 34 * Real.exp R`. -/
+theorem aperturePrimeSum_le_thirty_four_mul_exp (R : ℝ) :
+    aperturePrimeSum R ≤ 34 * Real.exp R := by
+  rw [aperturePrimeSum_eq_sum_Ioc]
+  have hsq : Real.sqrt (⌊Real.exp (2 * R)⌋₊ : ℝ) ≤ Real.exp R := by
+    rw [← Real.sqrt_sq (Real.exp_pos R).le]
+    refine Real.sqrt_le_sqrt ?_
+    calc (⌊Real.exp (2 * R)⌋₊ : ℝ) ≤ Real.exp (2 * R) := Nat.floor_le (Real.exp_pos _).le
+      _ = Real.exp R ^ 2 := by rw [← Real.exp_nat_mul]; ring_nf
+  exact (sum_vonMangoldt_div_sqrt_le _).trans (by linarith)
+
+/-- **Sharp PNT global `(2 + ε) e^R + C` bound on the aperture prime sum.**
+For every `ε > 0` there exists `C ≥ 0` such that for **every** `R : ℝ`,
+`aperturePrimeSum R ≤ (2 + ε) * Real.exp R + C`. -/
+theorem exists_aperturePrimeSum_le_two_add_eps_mul_exp {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, aperturePrimeSum R ≤ (2 + ε) * Real.exp R + C := by
+  obtain ⟨C, hC0, hC⟩ := exists_sum_vonMangoldt_div_sqrt_le hε
+  refine ⟨C, hC0, fun R => ?_⟩
+  rw [aperturePrimeSum_eq_sum_Ioc]
+  have hsq : Real.sqrt (Real.exp (2 * R)) = Real.exp R := by
+    rw [show 2 * R = R + R by ring, Real.exp_add, Real.sqrt_mul_self (Real.exp_pos R).le]
+  simpa [hsq] using hC (Real.exp (2 * R)) (Real.exp_pos _).le
+
+/-- The Chebyshev global pole-free window floor `w₀^{Cheb}(R) = -log(2R) - (3/2)R - 2 archConstantReal - 68 e^R`
+(eliminating the linear factor `R` from `explicitPolarWindowFloor`). -/
+def chebyshevPolarWindowFloor (R : ℝ) : ℝ :=
+  -Real.log (2 * R) - 3 / 2 * R - 2 * archConstantReal - 68 * Real.exp R
+
+theorem chebyshevPolarWindowFloor_le_polarWindowFloor (R : ℝ) :
+    chebyshevPolarWindowFloor R ≤ polarWindowFloor R := by
+  unfold chebyshevPolarWindowFloor polarWindowFloor
+  have := aperturePrimeSum_le_thirty_four_mul_exp R
+  linarith
+
+/-- **Spectral symbol lower bound on polar-constrained `C²` tests.** If `μ(τ) + P_{e^{2A}}(τ) ≥ -E/(2π)`
+for all `τ : ℝ`, then every `C²` test `f` supported in `[-A, A]` with `paperFT f (±I/2) = 0`
+satisfies `-(E * ∫ ‖f‖²) ≤ Re W_ζ(f, f)` (with zero pole terms and zero spatial window-boundary loss). -/
+theorem neg_mul_integral_norm_sq_le_re_W_of_symbol_of_polarFree {A E : ℝ} {f : ℝ → ℂ}
+    (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-A) A)
+    (hp : paperFT f (I / 2) = 0) (hm : paperFT f (-(I / 2)) = 0)
+    (hE : ∀ τ : ℝ, -(E / (2 * π)) ≤ mu τ + PX (Real.exp (2 * A)) τ) :
+    -(E * ∫ u : ℝ, ‖f u‖ ^ 2) ≤ (zetaZeroConfig.W f f).re := by
+  have hfc : HasCompactSupport f :=
+    IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport f) hfs
+  have hk := EF.weilTest_contDiff hf hf.continuous hfc
+  have hkc := EF.weilTest_hasCompactSupport hfc hfc
+  have hW := zeta_W_eq_integral_mu_add_PX_bilinear hf hf hfs hfs hp hm
+  have hi := integrable_paperFT_mul_mu_add_PX hk hkc (2 * A)
+  have hre := integral_re hi
+  simp only [RCLike.re_to_complex] at hre
+  rw [hW, ← hre]
+  have hpt : ∀ τ : ℝ, -(E / (2 * π)) * ‖paperFT f τ‖ ^ 2 ≤
+      (paperFT (EF.weilTest f f) τ * ((mu τ + PX (Real.exp (2 * A)) τ : ℝ) : ℂ)).re := by
+    intro τ
+    rw [paperFT_weilTest_self_ofReal hf.continuous hfc τ, ← Complex.ofReal_mul, Complex.ofReal_re,
+      mul_comm (‖paperFT f τ‖ ^ 2)]
+    exact mul_le_mul_of_nonneg_right (hE τ) (sq_nonneg _)
+  have hi2 := integrable_normSq_paperFT hf hfs
+  have hmono := integral_mono (hi2.const_mul (-(E / (2 * π)))) hi.re hpt
+  rw [integral_const_mul, integral_norm_sq_paperFT_eq hf hfs] at hmono
+  have hπ := Real.pi_pos
+  have e : -(E / (2 * π)) * (2 * π * ∫ u : ℝ, ‖f u‖ ^ 2) = -(E * ∫ u : ℝ, ‖f u‖ ^ 2) := by
+    field_simp
+  rwa [e] at hmono
+
+/-- **General Spectral Symbol Lower Bound for `ccmRestrictedWeilPolarGroundEnergy`.**
+If `μ(τ) + P_{e^{2A}}(τ) ≥ -E/(2π)` for all `τ : ℝ`, then `-E ≤ μ₀(A)`. -/
+theorem neg_le_ccmRestrictedWeilPolarGroundEnergy_of_symbol (A : SuzukiPositiveAperture)
+    {E : ℝ} (hE : ∀ τ : ℝ, -(E / (2 * π)) ≤ mu τ + PX (Real.exp (2 * A.1)) τ) :
+    -E ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+  refine le_of_forall_pos_lt_add fun ε hε => ?_
+  obtain ⟨u, hu, hune, hlt⟩ := exists_polarConstrained_smooth_rayleigh_lt A hε
+  have hpos : 0 < ‖ccmArchimedeanFormToAperture A u.toCCMFormVector‖ ^ (2 : ℕ) :=
+    pow_pos (norm_pos_iff.mpr hune) 2
+  have hu2 : ContDiff ℝ 2 (u : ℝ → ℂ) := u.smooth.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hus : tsupport (u : ℝ → ℂ) ⊆ Icc (-A.1) A.1 := u.tsupport_subset.trans Ioo_subset_Icc_self
+  have hp : paperFT (u : ℝ → ℂ) (I / 2) = 0 := by
+    rw [← inner_ccmPolarApertureVector_neg_half_eq_paperFT_half_I u, hu.2]
+  have hm : paperFT (u : ℝ → ℂ) (-(I / 2)) = 0 := by
+    rw [← inner_ccmPolarApertureVector_half_eq_paperFT_neg_half_I u, hu.1]
+  have hquad : -E * ‖ccmArchimedeanFormToAperture A u.toCCMFormVector‖ ^ (2 : ℕ) ≤
+      ccmRestrictedWeilSourceQuadratic A u.toCCMFormVector := by
+    rw [norm_sq_ccmArchimedeanFormToAperture_toCCMFormVector,
+      ccmRestrictedWeilSource_complexSmooth_eq_zetaWeil, neg_mul]
+    exact neg_mul_integral_norm_sq_le_re_W_of_symbol_of_polarFree hu2 hus hp hm hE
+  exact lt_of_le_of_lt ((le_div_iff₀ hpos).mpr hquad) hlt
+
+/-- **Chebyshev Spectral Ground-Energy Bound (`-(10 + 68 e^A) ≤ μ₀(A)` for all `A > 0`).**
+Eliminates both the linear factor `A` and the spatial window-boundary loss
+`-log(2A) - (3/2)A - 2 archConstantReal` from `explicit_global_le_ccmRestrictedWeilPolarGroundEnergy`. -/
+theorem neg_horizonExponent_le_ccmRestrictedWeilPolarGroundEnergy (A : SuzukiPositiveAperture) :
+    -(10 + 68 * Real.exp A.1) ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+  have hsq : Real.sqrt (Real.exp (2 * A.1)) = Real.exp A.1 := by
+    rw [show 2 * A.1 = A.1 + A.1 by ring, Real.exp_add, Real.sqrt_mul_self (Real.exp_pos A.1).le]
+  refine neg_le_ccmRestrictedWeilPolarGroundEnergy_of_symbol A fun τ => ?_
+  simpa [horizonExponent, hsq] using neg_horizonExponent_le_mu_add_PX (Real.exp_pos (2 * A.1)).le τ
+
+/-- **Sharp PNT Spectral Ground-Energy Bound (`-(C + (4 + ε) e^A) ≤ μ₀(A)` for all `A > 0`).**
+For every `ε > 0` there exists `C ≥ 0` such that `-(C + (4 + ε) * Real.exp A.1) ≤ μ₀(A)` for every
+aperture `A : SuzukiPositiveAperture`. -/
+theorem exists_sharp_exp_le_ccmRestrictedWeilPolarGroundEnergy {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ A : SuzukiPositiveAperture,
+      -(C + (4 + ε) * Real.exp A.1) ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+  obtain ⟨C, hC0, hC⟩ := exists_mu_add_PX_ge hε
+  refine ⟨C, hC0, fun A => neg_le_ccmRestrictedWeilPolarGroundEnergy_of_symbol A fun τ => ?_⟩
+  have hsq : Real.sqrt (Real.exp (2 * A.1)) = Real.exp A.1 := by
+    rw [show 2 * A.1 = A.1 + A.1 by ring, Real.exp_add, Real.sqrt_mul_self (Real.exp_pos A.1).le]
+  have hlog : 0 ≤ Real.log (1 + |τ| / 4) := Real.log_nonneg (by positivity)
+  have h1 := hC (Real.exp (2 * A.1)) (Real.exp_pos _).le τ
+  rw [hsq] at h1
+  have h2 : -((C + (4 + ε) * Real.exp A.1) / (2 * π)) ≤
+      (Real.log (1 + |τ| / 4) - (C + (4 + ε) * Real.exp A.1)) / (2 * π) := by
+    rw [← neg_div]
+    exact div_le_div_of_nonneg_right (by linarith) (by positivity)
+  exact h2.trans h1
+
+/-- **Chebyshev Spectral Closed-Aperture Floor for `fullZeroForm` (`-(10 + 68 e^A) ∫ F² ≤ fullZeroForm F`).** -/
+theorem neg_horizonExponent_mul_le_fullZeroForm_Icc (A : SuzukiPositiveAperture) {F : ℝ → ℝ}
+    (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hFs : tsupport F ⊆ Icc (-A.1) A.1)
+    (hC : evenPoleMoment F = 0) (hS : oddPoleMoment F = 0) :
+    -(10 + 68 * Real.exp A.1) * ∫ x, F x ^ 2 ≤ fullZeroForm F :=
+  (mul_le_mul_of_nonneg_right (neg_horizonExponent_le_ccmRestrictedWeilPolarGroundEnergy A)
+    (integral_nonneg fun _ => sq_nonneg _)).trans
+    (polarGroundEnergy_mul_le_fullZeroForm_Icc A hF hFs hC hS)
+
+/-- **Chebyshev Spectral Mean-Zero Variation Inequality (Closed Support `[-A, A]`, All `A > 0`).**
+Eliminates both the factor `A` and the window-boundary loss from
+`reflectedDifferenceEnergy_add_explicit_le_poleFree_of_meanZero_Icc`. -/
+theorem reflectedDifferenceEnergy_add_neg_horizonExponent_le_poleFree_of_meanZero_Icc {a : ℝ}
+    {u : ℝ → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (heven : ∀ x, u (-x) = u x)
+    (hmean : profileMoment a u = 0) (ha : 0 < a) (A : SuzukiPositiveAperture)
+    (hsupp : tsupport u ⊆ Icc (-A.1) A.1) :
+    reflectedDifferenceEnergy (shiftedGroundState a) u -
+        (10 + 68 * Real.exp A.1) *
+          ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 ≤
+      2 * sameSideEnergy (shiftedGroundState a) u + profileVariance a u := by
+  have h := reflectedDifferenceEnergy_add_le_poleFree_of_meanZero_Icc hu heven hmean ha A hsupp
+  have hfl := neg_horizonExponent_le_ccmRestrictedWeilPolarGroundEnergy A
+  have hI : 0 ≤ ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 :=
+    integral_nonneg fun _ => sq_nonneg _
+  nlinarith
+
+/-- **Sharp PNT Spectral Mean-Zero Variation Inequality (Closed Support `[-A, A]`, All `A > 0`).** -/
+theorem exists_reflectedDifferenceEnergy_add_sharp_exp_le_poleFree_of_meanZero_Icc {ε : ℝ}
+    (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {a : ℝ} {u : ℝ → ℝ}, ContDiff ℝ (⊤ : ℕ∞) u → (∀ x, u (-x) = u x) →
+      profileMoment a u = 0 → 0 < a → ∀ A : SuzukiPositiveAperture,
+        tsupport u ⊆ Icc (-A.1) A.1 →
+        reflectedDifferenceEnergy (shiftedGroundState a) u -
+            (C + (4 + ε) * Real.exp A.1) *
+              ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 ≤
+          2 * sameSideEnergy (shiftedGroundState a) u + profileVariance a u := by
+  obtain ⟨C, hC0, hC⟩ := exists_sharp_exp_le_ccmRestrictedWeilPolarGroundEnergy hε
+  refine ⟨C, hC0, fun hu heven hmean ha A hsupp => ?_⟩
+  have h := reflectedDifferenceEnergy_add_le_poleFree_of_meanZero_Icc hu heven hmean ha A hsupp
+  have hfl := hC A
+  have hI : 0 ≤ ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 :=
+    integral_nonneg fun _ => sq_nonneg _
+  nlinarith
+
+/-- **Chebyshev Spectral Floor on Pole-Free Dyadic Prime Windows (`All v > 2w`, No Factor `v` or Window Loss).**
+For every `0 < w` with `2w < log 2`, every height `ω`, and every lag `v > 2w`,
+`-2 (∫ ‖κ_{2,w,ω}‖²) (10 + 68 e^{v/2 + w}) ≤ Arch(polarFreeKernel w ω v (-1)) - PrimeWindow(polarFreeKernel w ω v (-1))`. -/
+theorem two_mul_neg_horizonExponent_le_arch_sub_primeWindow_polarFree {w v : ℝ}
+    (hw : 0 < w) (hw2 : 2 * w < Real.log 2) (ω : ℝ) (hv : 2 * w < v) :
+    -(2 * (∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2) * (10 + 68 * Real.exp (v / 2 + w))) ≤
+      ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w ω v (-1)) r *
+        (EF.gammaBracket r : ℂ)).re -
+      (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+        (polarFreeKernel w ω v (-1) (Real.log n) +
+          polarFreeKernel w ω v (-1) (-Real.log n))).re := by
+  have hray := two_mul_ccmRestrictedWeilPolarGroundEnergy_le_arch_sub_primeWindow_polarFree
+    hw hw2 ω hv
+  have hfl := neg_horizonExponent_le_ccmRestrictedWeilPolarGroundEnergy ⟨v / 2 + w, by linarith⟩
+  have hB0 : 0 ≤ ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  nlinarith
+
+/-- **Sharp PNT Spectral Floor on Pole-Free Dyadic Prime Windows (`All v > 2w`).**
+For every `ε > 0` there exists `C ≥ 0` such that for all `0 < w` with `2w < log 2`, all `ω`, and all
+`v > 2w`,
+`-2 (∫ ‖κ_{2,w,ω}‖²) (C + (4 + ε) e^{v/2 + w}) ≤ Arch(polarFreeKernel w ω v (-1)) - PrimeWindow(polarFreeKernel w ω v (-1))`. -/
+theorem exists_sharp_exp_le_arch_sub_primeWindow_polarFree {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {w v : ℝ}, 0 < w → 2 * w < Real.log 2 → ∀ ω : ℝ, 2 * w < v →
+      -(2 * (∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2) * (C + (4 + ε) * Real.exp (v / 2 + w))) ≤
+        ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w ω v (-1)) r *
+          (EF.gammaBracket r : ℂ)).re -
+        (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+          (polarFreeKernel w ω v (-1) (Real.log n) +
+            polarFreeKernel w ω v (-1) (-Real.log n))).re := by
+  obtain ⟨C, hC0, hC⟩ := exists_sharp_exp_le_ccmRestrictedWeilPolarGroundEnergy hε
+  refine ⟨C, hC0, fun hw hw2 ω hv => ?_⟩
+  have hray := two_mul_ccmRestrictedWeilPolarGroundEnergy_le_arch_sub_primeWindow_polarFree
+    hw hw2 ω hv
+  have hfl := hC ⟨v / 2 + w, by linarith⟩
+  have hB0 : 0 ≤ ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  nlinarith
+
+/-- **Lag-Independent `O(1)` Archimedean Lower Bound on `polarFreeKernel w ω v (-1)`.**
+For every `0 < w`, every height `ω`, and every lag `v > 2w`, the archimedean term of
+`polarFreeKernel w ω v (-1)` is bounded below by `-20 ∫ ‖κ_{2,w,ω}‖²`, completely independent of `v`. -/
+theorem neg_twenty_mul_le_arch_polarFree_twoBump {w v : ℝ} (hw : 0 < w) (ω : ℝ) (hv : 2 * w < v) :
+    -20 * ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 ≤
+      ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w ω v (-1)) r *
+        (EF.gammaBracket r : ℂ)).re := by
+  set g := twoBump (scaledBumpPolarFree w ω) v (-1)
+  have hg : ContDiff ℝ 2 g := contDiff_bumpTest (contDiff_scaledBumpPolarFree w ω) v ![1, -1]
+  have hgs : tsupport g ⊆ Icc (-(v / 2 + w)) (v / 2 + w) :=
+    tsupport_twoBump_scaledBumpPolarFree_subset hw ω (by linarith) (-1)
+  have hgc : HasCompactSupport g := hasCompactSupport_of_tsupport_subset_Icc hgs
+  have harch := integral_norm_sq_paperFT_mul_mu_ge (a := v / 2 + w) (R := 0) (by linarith)
+    le_rfl hg hgs
+  have hlog0 : Real.log (1 + 0 / 4) - 10 - 2 * (v / 2 + w) * 0 * Real.log (1 + 0 / 4) / π = -10 := by
+    norm_num
+  rw [hlog0, integral_norm_sq_twoBump_scaledBumpPolarFree_eq hw ω hv] at harch
+  have hμre : ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w ω v (-1)) r *
+      (EF.gammaBracket r : ℂ)).re = ∫ τ : ℝ, ‖paperFT g τ‖ ^ 2 * mu τ := by
+    rw [polarFreeKernel, EF.gamma_term]
+    have h : (fun τ : ℝ => paperFT (EF.weilTest g g) τ * (mu τ : ℂ)) =
+        fun τ : ℝ => ((‖paperFT g τ‖ ^ 2 * mu τ : ℝ) : ℂ) := by
+      funext τ
+      rw [paperFT_weilTest_self_ofReal hg.continuous hgc τ, Complex.ofReal_mul]
+    rw [h, integral_complex_ofReal, Complex.ofReal_re]
+  rw [hμre]
+  linarith
+
+/-- **Polar-Free PNT Main-Term Vanishing for `EF.weilTest f f`.**
+If `paperFT f (±I/2) = 0`, then the `e^{±y/2}` moments of `k = EF.weilTest f f` (which govern the
+continuous PNT main term on dyadic prime windows) vanish identically. -/
+theorem integral_exp_half_mul_weilTest_eq_zero_of_polarFree {f : ℝ → ℂ} (hf : Continuous f)
+    (hfc : HasCompactSupport f) (hp : paperFT f (I / 2) = 0) (hm : paperFT f (-(I / 2)) = 0) :
+    (∫ y : ℝ, EF.weilTest f f y * (Real.exp (y / 2) : ℂ)) = 0 ∧
+      (∫ y : ℝ, EF.weilTest f f y * (Real.exp (-(y / 2)) : ℂ)) = 0 := by
+  have hk1 : paperFT (EF.weilTest f f) (-(I / 2)) = 0 := by
+    rw [EF.paperFT_weilTest hf hf hfc hfc, hm, zero_mul]
+  have hk2 : paperFT (EF.weilTest f f) (I / 2) = 0 := by
+    rw [EF.paperFT_weilTest hf hf hfc hfc, hp, zero_mul]
+  rw [paperFT_def] at hk1 hk2
+  refine ⟨?_, ?_⟩
+  · refine (integral_congr_ae (Eventually.of_forall fun y => ?_)).trans hk1
+    congr 1
+    rw [Complex.ofReal_exp]
+    congr 1
+    calc ((y / 2 : ℝ) : ℂ) = -(I ^ 2) / 2 * (y : ℂ) := by rw [Complex.I_sq]; push_cast; ring
+      _ = I * -(I / 2) * (y : ℂ) := by ring
+  · refine (integral_congr_ae (Eventually.of_forall fun y => ?_)).trans hk2
+    congr 1
+    rw [Complex.ofReal_exp]
+    congr 1
+    calc ((-(y / 2) : ℝ) : ℂ) = I ^ 2 / 2 * (y : ℂ) := by rw [Complex.I_sq]; push_cast; ring
+      _ = I * (I / 2) * (y : ℂ) := by ring
+
+/-- **Polar-Free PNT Main-Term Vanishing for the Single-Bump Kernel `EF.weilTest κ_{2,w,ω} κ_{2,w,ω}`.** -/
+theorem integral_exp_half_mul_weilTest_scaledBumpPolarFree_eq_zero {w : ℝ} (hw : 0 < w) (ω : ℝ) :
+    (∫ y : ℝ, EF.weilTest (scaledBumpPolarFree w ω) (scaledBumpPolarFree w ω) y *
+        (Real.exp (y / 2) : ℂ)) = 0 ∧
+      (∫ y : ℝ, EF.weilTest (scaledBumpPolarFree w ω) (scaledBumpPolarFree w ω) y *
+        (Real.exp (-(y / 2)) : ℂ)) = 0 := by
+  obtain ⟨hp, hn⟩ := paperFT_scaledBumpPolarFree_half hw ω
+  exact integral_exp_half_mul_weilTest_eq_zero_of_polarFree
+    (contDiff_scaledBumpPolarFree w ω).continuous
+    (hasCompactSupport_of_support_subset_abs (scaledBumpPolarFree_support hw ω))
+    hp hn
+
+/-- **Polar-Free PNT Main-Term Vanishing for the Two-Bump Lag Kernel `polarFreeKernel w ω v τ`.** -/
+theorem integral_exp_half_mul_polarFreeKernel_eq_zero {w : ℝ} (hw : 0 < w) (ω v : ℝ) (τ : ℂ) :
+    (∫ y : ℝ, polarFreeKernel w ω v τ y * (Real.exp (y / 2) : ℂ)) = 0 ∧
+      (∫ y : ℝ, polarFreeKernel w ω v τ y * (Real.exp (-(y / 2)) : ℂ)) = 0 := by
+  obtain ⟨hp, hn⟩ := paperFT_scaledBumpPolarFree_half hw ω
+  have hc := (contDiff_scaledBumpPolarFree w ω).continuous
+  have hbc := hasCompactSupport_of_support_subset_abs (scaledBumpPolarFree_support hw ω)
+  exact integral_exp_half_mul_weilTest_eq_zero_of_polarFree
+    (contDiff_bumpTest (contDiff_scaledBumpPolarFree w ω) v ![1, τ]).continuous
+    (hasCompactSupport_twoBump hbc v τ)
+    (paperFT_twoBump_eq_zero hc hbc v τ hp)
+    (paperFT_twoBump_eq_zero hc hbc v τ hn)
 
 end GaloisForLFunctions.SquareRootThreshold
 
