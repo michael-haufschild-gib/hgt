@@ -53,6 +53,22 @@ This module connects three theorem spines across `RHTower`, `ArithmeticCriticali
    Rayleigh bridge proves **unconditionally** that `μ₀(A) ≥ -C e^{2σA}` (`A ≥ A₀`) forces
    `|Re ρ - 1/2| ≤ σ` for all nontrivial zeros of `ζ`, sharpening the exponent of
    `CCMRestrictedWeilPolarBombieriYoshidaQuantitative` by the exact factor of `2`.
+
+4. **Global Arithmetic Window Floor for All Apertures `A > 0` and All Lags `v > 2w`**
+   (`profilePrimeSum_le_two_mul_aperturePrimeSum`,
+   `aperturePrimeSum_le_four_mul_mul_exp`,
+   `neg_poleFreeWeilOperator_ge_polarWindowFloor`,
+   `polarWindowFloor_le_ccmRestrictedWeilPolarGroundEnergy`,
+   `explicit_global_le_ccmRestrictedWeilPolarGroundEnergy`,
+   `reflectedDifferenceEnergy_add_polarWindowFloor_le_poleFree_of_meanZero_Icc`,
+   `two_mul_polarWindowFloor_le_arch_sub_primeWindow_polarFree`):
+   Removes the `2R < log 2` restriction of `WindowGaugeLogarithmicGroundEnergyFloor` and the `4R³`
+   odd-pole penalty on the pole-vanishing sector: at any aperture `R > 0`, the prime shift sum
+   `profilePrimeSum M x` on `(-R, R)` truncates to `n ≤ ⌊e^{2R}⌋` and is bounded by
+   `2 Σ_{n ≤ ⌊e^{2R}⌋} Λ(n) n^{-1/2} ≤ 8 R e^R`. Consequently, for **every** aperture `A > 0` and
+   **every** lag `v > 2w`, the pole-vanishing ground energy `μ₀(A)`, the `μ_a`-mean-zero variation
+   inequality, and the pole-free dyadic prime window functional obey explicit global arithmetic
+   lower bounds governed by `polarWindowFloor(A) ≥ -log(2A) - (3/2)A - (γ + log π) - 8 A e^A`.
 -/
 
 open MeasureTheory Complex Set Filter Topology
@@ -123,6 +139,7 @@ theorem inner_ccmPolarApertureVector_half_eq_paperFT_neg_half_I {A : SuzukiPosit
     congr 1
     calc I * -(I / 2) * (x : ℂ) = -(I ^ 2) / 2 * (x : ℂ) := by ring
       _ = ((1 / 2 * x : ℝ) : ℂ) := by rw [Complex.I_sq]; push_cast; ring
+  dsimp only
   rw [hexp, mul_comm]
 
 /-- The `-1/2` polar Riesz inner product of a smooth interior source is `paperFT u (I/2)`. -/
@@ -139,6 +156,7 @@ theorem inner_ccmPolarApertureVector_neg_half_eq_paperFT_half_I {A : SuzukiPosit
     congr 1
     calc I * (I / 2) * (x : ℂ) = I ^ 2 / 2 * (x : ℂ) := by ring
       _ = ((-1 / 2 * x : ℝ) : ℂ) := by rw [Complex.I_sq]; push_cast; ring
+  dsimp only
   rw [hexp, mul_comm]
 
 /-- A smooth interior source whose Fourier transform vanishes at `±I/2` is polar-constrained. -/
@@ -184,7 +202,7 @@ theorem polarGroundEnergy_mul_le_fullZeroForm_Icc (A : SuzukiPositiveAperture) {
     (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hFs : tsupport F ⊆ Icc (-A.1) A.1)
     (hC : evenPoleMoment F = 0) (hS : oddPoleMoment F = 0) :
     ccmRestrictedWeilPolarGroundEnergy A * ∫ x, F x ^ 2 ≤ fullZeroForm F := by
-  have hFc : HasCompactSupport F := hasCompactSupport_of_tsupport_subset_Icc hFs
+  have hFc : HasCompactSupport F := IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport F) hFs
   have hseq : ∀ n : ℕ,
       ccmRestrictedWeilPolarGroundEnergy (suzukiRightAperture A n) * ∫ x, F x ^ 2 ≤
         fullZeroForm F := by
@@ -207,7 +225,7 @@ theorem reflectedDifferenceEnergy_add_le_poleFree_of_meanZero_Icc {a : ℝ} {u :
         ccmRestrictedWeilPolarGroundEnergy A *
           ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 ≤
       2 * sameSideEnergy (shiftedGroundState a) u + profileVariance a u := by
-  have huc : HasCompactSupport u := hasCompactSupport_of_tsupport_subset_Icc hsupp
+  have huc : HasCompactSupport u := IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport u) hsupp
   have hseq : ∀ n : ℕ,
       reflectedDifferenceEnergy (shiftedGroundState a) u +
           ccmRestrictedWeilPolarGroundEnergy (suzukiRightAperture A n) *
@@ -371,8 +389,9 @@ theorem one_fifth_mul_le_arch_sub_primeWindow_polarFree_of_le_halfLogTwo {w v : 
   have hw2 : 2 * w < Real.log 2 := by linarith
   have hray := two_mul_ccmRestrictedWeilPolarGroundEnergy_le_arch_sub_primeWindow_polarFree
     hw hw2 ω hv
-  have hfloor := one_tenth_le_ccmRestrictedWeilPolarGroundEnergy_of_le_halfLogTwo
-    ⟨v / 2 + w, by linarith⟩ hvw
+  have hfloor : (1 / 10 : ℝ) ≤ ccmRestrictedWeilPolarGroundEnergy ⟨v / 2 + w, by linarith⟩ :=
+    one_tenth_le_ccmRestrictedWeilPolarGroundEnergy_halfLogTwo.trans
+      (ccmRestrictedWeilPolarGroundEnergy_antitone hvw)
   have hB0 : 0 ≤ ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
   nlinarith
 
@@ -403,7 +422,7 @@ strictly positive real number `(1/4 - z.re²)² > 0`. -/
 theorem one_fourth_sub_sq_eq_of_im_eq_zero {z : ℂ} (him : z.im = 0) :
     (1 / 4 - z ^ 2) ^ 2 = (((1 / 4 - z.re ^ 2) ^ 2 : ℝ) : ℂ) := by
   have hz : z = (z.re : ℂ) := Complex.ext rfl (by simp [him])
-  rw [hz]
+  conv_lhs => rw [hz]
   push_cast
   ring
 
@@ -412,11 +431,10 @@ theorem one_fourth_sub_sq_eq_of_im_eq_zero {z : ℂ} (him : z.im = 0) :
 part. -/
 theorem re_evenCoeff_scaledBumpPolarFree_zero_pos (Z : ZeroConfig)
     (hlt : ∀ ρ ∈ Z.carrier, ρ.re < 1) {w : ℝ} (hw : 0 < w) {z : ℂ}
-    (hz : (1 / 2 + z) ∈ Z.carrier) (him : z.im = 0) :
+    (hz : (1 / 2 + z) ∈ Z.carrier) (hz0 : -1 / 2 < z.re) (him : z.im = 0) :
     0 < (evenCoeff Z (scaledBumpPolarFree w 0) z).re := by
-  have h1 : 0 < (1 / 2 + z).re := (Z.strip _ hz).1
   have h2 : (1 / 2 + z).re < 1 := hlt _ hz
-  simp only [Complex.add_re, Complex.div_ofNat_re, Complex.one_re] at h1 h2
+  simp only [Complex.add_re, Complex.div_ofNat_re, Complex.one_re] at h2
   have hsq : z.re ^ 2 < 1 / 4 := by nlinarith
   have hpos : 0 < (1 / 4 - z.re ^ 2) ^ 2 := sq_pos_of_pos (by linarith)
   rw [evenCoeff_scaledBumpPolarFree Z hw 0 z, one_fourth_sub_sq_eq_of_im_eq_zero him,
@@ -427,14 +445,13 @@ theorem re_evenCoeff_scaledBumpPolarFree_zero_pos (Z : ZeroConfig)
 has a nonzero merged coefficient for the unmodulated polar-free bump `scaledBumpPolarFree w 0`. -/
 theorem evenCoeff_scaledBumpPolarFree_zero_sub_half_ne_zero (Z : ZeroConfig)
     (hlt : ∀ ρ ∈ Z.carrier, ρ.re < 1) {w : ℝ} (hw : 0 < w) {ρ : ℂ} (hρ : ρ ∈ Z.carrier)
-    (hg : paperFT (scaledBump w) (gammaOf ρ) ≠ 0) :
+    (hre0 : 0 < ρ.re) (hg : paperFT (scaledBump w) (gammaOf ρ) ≠ 0) :
     evenCoeff Z (scaledBumpPolarFree w 0) (ρ - 1 / 2) ≠ 0 := by
   rw [evenCoeff_scaledBumpPolarFree Z hw 0 (ρ - 1 / 2)]
   refine mul_ne_zero (pow_ne_zero 2 ?_)
     (evenCoeff_modScaledBump_zero_sub_half_ne_zero Z hw hρ hg)
   intro h0
   have hfac : ρ * (1 - ρ) = 0 := by linear_combination h0
-  have hre0 : 0 < ρ.re := (Z.strip ρ hρ).1
   have hre1 : ρ.re < 1 := hlt ρ hρ
   rcases mul_eq_zero.mp hfac with rfl | h1
   · simp at hre0
@@ -510,7 +527,8 @@ theorem evenCoeff_eq_zero_of_polarFree_lag_ge_neg_exp (Z : ZeroConfig) (hZ : Tem
               mul_one]
     have hpos := re_evenCoeff_scaledBumpPolarFree_zero_pos Z hlt hw
       ((mem_of_evenCoeff_ne_zero hx₀).elim id fun h => by
-        rwa [show conj x₀ = x₀ from Complex.ext (by simp) (by simp [hx₀im])] at h) hx₀im
+        rwa [show conj x₀ = x₀ from Complex.ext (by simp) (by simp [hx₀im])] at h)
+      (by linarith) hx₀im
     have hnonpos := re_le_zero_of_re_tsum_exp_le (ι := ι) (lam := fun t => (t : ℂ) - σ)
       (q := fun t => evenCoeff Z b t) (hD0.subtype ι) (σ := x₀.re - σ) (by linarith) hle
       ⟨x₀, hx₀⟩ (Complex.ext (by simp) (by simp [hx₀im]))
@@ -552,7 +570,7 @@ theorem re_le_iff_polarFree_lag_twoBump_ge_neg_exp (Z : ZeroConfig) (hZ : Temper
   · rintro ⟨C, V, hm⟩ ρ hρ
     by_contra hre
     push Not at hre
-    exact evenCoeff_scaledBumpPolarFree_zero_sub_half_ne_zero Z hlt hw hρ
+    exact evenCoeff_scaledBumpPolarFree_zero_sub_half_ne_zero Z hlt hw hρ (by linarith)
       (hgood ρ hρ (by linarith))
       (evenCoeff_eq_zero_of_polarFree_lag_ge_neg_exp Z hZ hlt hw hσ hm (by simp; linarith))
 
@@ -788,7 +806,8 @@ theorem exists_re_gt_of_grid_polarFree_lag_ge_neg_exp (Z : ZeroConfig) (hZ : Tem
     exact h3.trans hk'.le
   set z₀ : ℂ := ρ₀ - 1 / 2 with hz₀def
   have hz₀ : evenCoeff Z b z₀ ≠ 0 :=
-    evenCoeff_scaledBumpPolarFree_zero_sub_half_ne_zero Z hlt hw hρ₀ (hgood ρ₀ hρ₀ (by linarith))
+    evenCoeff_scaledBumpPolarFree_zero_sub_half_ne_zero Z hlt hw hρ₀ (by linarith)
+      (hgood ρ₀ hρ₀ (by linarith))
   have hz₀re : z₀.re = D := by rw [hz₀def, hD]; simp
   have hWz₀ : ‖W ⟨z₀, hz₀⟩‖ = 1 := by
     rw [hWre]; simp only [hz₀re, sub_self, zero_mul, Real.exp_zero]
@@ -808,10 +827,11 @@ theorem exists_re_gt_of_grid_polarFree_lag_ge_neg_exp (Z : ZeroConfig) (hZ : Tem
         (im_mem_zeroHeights_of_evenCoeff_ne_zero z.2) (by simp [zeroHeights])
         (h.trans (by simp))
       have him : (z : ℂ).im = 0 := by rw [h0, Complex.ofReal_im]
+      have hzre : -1 / 2 < (z : ℂ).re := by rw [h0, Complex.ofReal_re]; linarith
       have hmem : (1 / 2 + (z : ℂ)) ∈ Z.carrier :=
         (mem_of_evenCoeff_ne_zero z.2).elim id fun h' => by
           rwa [show conj (z : ℂ) = z from Complex.ext (by simp) (by simp [him])] at h'
-      exact (re_evenCoeff_scaledBumpPolarFree_zero_pos Z hlt hw hmem him).le
+      exact (re_evenCoeff_scaledBumpPolarFree_zero_pos Z hlt hw hmem hzre him).le
     · simp
   rw [hL] at key
   have := norm_pos_iff.mpr hz₀
@@ -935,6 +955,476 @@ theorem riemannHypothesis_iff_zerosApproachLine_and_grid_ccmRestrictedWeilPolarG
       temperedConfig_zetaZeroConfig hlt hw hgood hℓ hres le_rfl hmW hρ₀ (by linarith)
     have := hmax ρ' hρ'
     linarith
+
+/-! ### Global arithmetic window floor for all apertures and all lags -/
+
+/-- The prime shift mass `Σ_{n ≤ ⌊e^{2R}⌋} Λ(n) n^{-1/2}` entering a window of half-width `R`. -/
+def aperturePrimeSum (R : ℝ) : ℝ :=
+  ∑ n ∈ Finset.Icc 0 ⌊Real.exp (2 * R)⌋₊, vonMangoldtAtom n
+
+/-- The global pole-free window floor at half-width `R > 0`:
+`w₀(R) = -log(2R) - (3/2)R - (γ + log π) - 2 Σ_{n ≤ ⌊e^{2R}⌋} Λ(n) n^{-1/2}`. -/
+def polarWindowFloor (R : ℝ) : ℝ :=
+  -Real.log (2 * R) - 3 / 2 * R - 2 * archConstantReal - 2 * aperturePrimeSum R
+
+/-- The explicit elementary global pole-free window floor at half-width `R > 0`:
+`w₀^{expl}(R) = -log(2R) - (3/2)R - (γ + log π) - 8 R e^R`. -/
+def explicitPolarWindowFloor (R : ℝ) : ℝ :=
+  -Real.log (2 * R) - 3 / 2 * R - 2 * archConstantReal - 8 * R * Real.exp R
+
+theorem aperturePrimeSum_nonneg (R : ℝ) : 0 ≤ aperturePrimeSum R :=
+  Finset.sum_nonneg fun n _ => vonMangoldtAtom_nonneg n
+
+theorem aperturePrimeSum_mono {R₁ R₂ : ℝ} (h : R₁ ≤ R₂) :
+    aperturePrimeSum R₁ ≤ aperturePrimeSum R₂ := by
+  unfold aperturePrimeSum
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun n _ _ => vonMangoldtAtom_nonneg n
+  intro n hn
+  rw [Finset.mem_Icc] at hn ⊢
+  exact ⟨hn.1, hn.2.trans (Nat.floor_mono (Real.exp_le_exp.mpr (by linarith)))⟩
+
+/-- Below the first prime (`2R < log 2`), the aperture prime sum vanishes identically. -/
+theorem aperturePrimeSum_eq_zero_of_lt_log_two {R : ℝ} (hR : 2 * R < Real.log 2) :
+    aperturePrimeSum R = 0 := by
+  unfold aperturePrimeSum
+  refine Finset.sum_eq_zero fun n hn => ?_
+  have hexp : Real.exp (2 * R) < 2 := (Real.exp_lt_exp.mpr hR).trans_eq (Real.exp_log two_pos)
+  have hfl : ⌊Real.exp (2 * R)⌋₊ < 2 :=
+    (Nat.floor_lt (Real.exp_pos _).le).mpr (by exact_mod_cast hexp)
+  have hnle := (Finset.mem_Icc.mp hn).2
+  unfold vonMangoldtAtom
+  rw [if_neg (by omega)]
+
+/-- Below the first prime (`2R < log 2`), `polarWindowFloor R` improves `windowFloor R` by removing
+the `4R³` odd-pole penalty. -/
+theorem polarWindowFloor_eq_windowFloor_add_four_mul_cube {R : ℝ} (hR : 2 * R < Real.log 2) :
+    polarWindowFloor R = windowFloor R + 4 * R ^ 3 := by
+  unfold polarWindowFloor windowFloor
+  rw [aperturePrimeSum_eq_zero_of_lt_log_two hR]
+  ring
+
+theorem polarWindowFloor_antitoneOn : AntitoneOn polarWindowFloor (Ioi 0) := by
+  intro R₁ hR₁ R₂ hR₂ hle
+  unfold polarWindowFloor
+  have hlog : Real.log (2 * R₁) ≤ Real.log (2 * R₂) :=
+    Real.log_le_log (by linarith [mem_Ioi.mp hR₁]) (by linarith)
+  have hp := aperturePrimeSum_mono hle
+  linarith
+
+/-- Every prime-power atom satisfies `Λ(n) n^{-1/2} ≤ (log n) n^{-1/2}`. -/
+theorem vonMangoldtAtom_le_log_div_sqrt (n : ℕ) :
+    vonMangoldtAtom n ≤ Real.log n / Real.sqrt n := by
+  unfold vonMangoldtAtom
+  split_ifs with h2
+  · exact div_le_div_of_nonneg_right ArithmeticFunction.vonMangoldt_le_log (Real.sqrt_nonneg _)
+  · rcases n with _ | _ | n
+    · simp
+    · simp
+    · omega
+
+/-- Every prime-power atom satisfies `Λ(n) n^{-1/2} ≤ 1`. -/
+theorem vonMangoldtAtom_le_one (n : ℕ) : vonMangoldtAtom n ≤ 1 := by
+  unfold vonMangoldtAtom
+  split_ifs with h2
+  · have hn : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+    have hsq : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn
+    rw [div_le_one hsq]
+    have h1 := Real.log_le_sub_one_of_pos (div_pos hsq two_pos)
+    rw [Real.log_div hsq.ne' two_ne_zero, Real.log_sqrt hn.le] at h1
+    have h2' := Real.log_two_lt_d9
+    linarith [ArithmeticFunction.vonMangoldt_le_log (n := n)]
+  · norm_num
+
+/-- Comparison with Chebyshev's `ψ(e^{2R})`: `aperturePrimeSum R ≤ ψ(e^{2R}) / √2`. -/
+theorem aperturePrimeSum_le_psiSum_div_sqrt_two (R : ℝ) :
+    aperturePrimeSum R ≤
+      GaloisForLFunctions.ArithmeticCriticalityTheory.psiSum (Real.exp (2 * R)) / Real.sqrt 2 := by
+  unfold aperturePrimeSum GaloisForLFunctions.ArithmeticCriticalityTheory.psiSum
+  rw [Finset.sum_div]
+  refine Finset.sum_le_sum fun n _ => ?_
+  unfold vonMangoldtAtom
+  split_ifs with h2
+  · exact div_le_div_of_nonneg_left ArithmeticFunction.vonMangoldt_nonneg
+      (Real.sqrt_pos.mpr two_pos) (Real.sqrt_le_sqrt (by exact_mod_cast h2))
+  · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+
+/-- Elementary telescoping step `1 / √(k + 1) ≤ 2 (√(k + 1) - √k)`. -/
+theorem one_div_sqrt_succ_le_two_mul_sub (k : ℕ) :
+    1 / Real.sqrt ((k + 1 : ℕ) : ℝ) ≤
+      2 * Real.sqrt ((k + 1 : ℕ) : ℝ) - 2 * Real.sqrt (k : ℝ) := by
+  set a := Real.sqrt (k : ℝ)
+  set b := Real.sqrt ((k + 1 : ℕ) : ℝ)
+  have ha2 : a ^ 2 = (k : ℝ) := Real.sq_sqrt (Nat.cast_nonneg k)
+  have hb2 : b ^ 2 = (k : ℝ) + 1 := by
+    change Real.sqrt ((k + 1 : ℕ) : ℝ) ^ 2 = (k : ℝ) + 1
+    rw [show ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 by push_cast; ring]
+    exact Real.sq_sqrt (by positivity)
+  have hb0 : 0 < b := Real.sqrt_pos.mpr (by exact_mod_cast Nat.succ_pos k)
+  have hab : 2 * a * b ≤ a ^ 2 + b ^ 2 := two_mul_le_add_sq a b
+  rw [div_le_iff₀ hb0]
+  nlinarith
+
+/-- **Explicit global `4 R e^R` bound on the aperture prime sum.** For every `R ≥ 0`,
+`aperturePrimeSum R ≤ 4 R e^R`. -/
+theorem aperturePrimeSum_le_four_mul_mul_exp {R : ℝ} (hR : 0 ≤ R) :
+    aperturePrimeSum R ≤ 4 * R * Real.exp R := by
+  set N := ⌊Real.exp (2 * R)⌋₊ with hNdef
+  have hIcc : Finset.Icc 0 N = Finset.range (N + 1) := by ext n; simp
+  unfold aperturePrimeSum
+  rw [← hNdef, hIcc, Finset.sum_range_succ',
+    show vonMangoldtAtom 0 = 0 by unfold vonMangoldtAtom; simp, add_zero]
+  have hterm : ∀ k ∈ Finset.range N,
+      vonMangoldtAtom (k + 1) ≤
+        2 * R * (2 * Real.sqrt ((k + 1 : ℕ) : ℝ) - 2 * Real.sqrt (k : ℝ)) := by
+    intro k hk
+    have hkN : k + 1 ≤ N := Finset.mem_range.mp hk
+    have hkexp : ((k + 1 : ℕ) : ℝ) ≤ Real.exp (2 * R) :=
+      (Nat.cast_le.mpr hkN).trans (Nat.floor_le (Real.exp_pos _).le)
+    have hkpos : (0 : ℝ) < (k + 1 : ℕ) := by exact_mod_cast Nat.succ_pos k
+    have hlog : Real.log ((k + 1 : ℕ) : ℝ) ≤ 2 * R := by
+      rw [← Real.log_exp (2 * R)]
+      exact Real.log_le_log hkpos hkexp
+    have hinv := one_div_sqrt_succ_le_two_mul_sub k
+    have hsub0 : 0 ≤ 2 * Real.sqrt ((k + 1 : ℕ) : ℝ) - 2 * Real.sqrt (k : ℝ) :=
+      le_trans (by positivity) hinv
+    calc vonMangoldtAtom (k + 1)
+        ≤ Real.log ((k + 1 : ℕ) : ℝ) / Real.sqrt ((k + 1 : ℕ) : ℝ) :=
+          vonMangoldtAtom_le_log_div_sqrt (k + 1)
+      _ ≤ (2 * R) * (1 / Real.sqrt ((k + 1 : ℕ) : ℝ)) := by
+          rw [div_eq_mul_one_div]
+          exact mul_le_mul_of_nonneg_right hlog (by positivity)
+      _ ≤ 2 * R * (2 * Real.sqrt ((k + 1 : ℕ) : ℝ) - 2 * Real.sqrt (k : ℝ)) :=
+          mul_le_mul_of_nonneg_left hinv (by linarith)
+  have hsum := Finset.sum_le_sum hterm
+  rw [← Finset.mul_sum, Finset.sum_range_sub (fun k : ℕ => 2 * Real.sqrt (k : ℝ)) N,
+    Nat.cast_zero, Real.sqrt_zero, mul_zero, sub_zero] at hsum
+  have hsqrtN : Real.sqrt (N : ℝ) ≤ Real.exp R := by
+    rw [← Real.sqrt_sq (Real.exp_pos R).le]
+    refine Real.sqrt_le_sqrt ?_
+    calc (N : ℝ) ≤ Real.exp (2 * R) := Nat.floor_le (Real.exp_pos _).le
+      _ = Real.exp R ^ 2 := by rw [← Real.exp_nat_mul]; ring_nf
+  calc ∑ k ∈ Finset.range N, vonMangoldtAtom (k + 1)
+      ≤ 2 * R * (2 * Real.sqrt (N : ℝ)) := hsum
+    _ ≤ 2 * R * (2 * Real.exp R) := by gcongr
+    _ = 4 * R * Real.exp R := by ring
+
+/-- For every `R ≥ 0`, `explicitPolarWindowFloor R ≤ polarWindowFloor R`. -/
+theorem explicitPolarWindowFloor_le_polarWindowFloor {R : ℝ} (hR : 0 ≤ R) :
+    explicitPolarWindowFloor R ≤ polarWindowFloor R := by
+  unfold explicitPolarWindowFloor polarWindowFloor
+  have := aperturePrimeSum_le_four_mul_mul_exp hR
+  linarith
+
+/-- **Global truncation of the prime shift sum on a window.** If `M` vanishes outside `(-R, R)`,
+then at every `|x| < R` all prime shifts with `n > ⌊e^{2R}⌋` miss `(-R, R)`. -/
+theorem profilePrimeSum_eq_sum_Icc {M : ℝ → ℝ} {R x : ℝ} (hsupp : ∀ y, R ≤ |y| → M y = 0)
+    (hx : |x| < R) :
+    profilePrimeSum M x =
+      ∑ n ∈ Finset.Icc 0 ⌊Real.exp (2 * R)⌋₊,
+        vonMangoldtAtom n * (M (x + Real.log n) + M (x - Real.log n)) := by
+  have hR0 : 0 < R := lt_of_le_of_lt (abs_nonneg x) hx
+  unfold profilePrimeSum
+  refine tsum_eq_sum fun n hn => ?_
+  rcases Nat.lt_or_ge n 2 with h2 | h2
+  · unfold vonMangoldtAtom
+    rw [if_neg (by omega), zero_mul]
+  · have hgt : ⌊Real.exp (2 * R)⌋₊ < n := by
+      by_contra hle
+      exact hn (Finset.mem_Icc.mpr ⟨Nat.zero_le n, not_lt.mp hle⟩)
+    have hexp : Real.exp (2 * R) < (n : ℝ) := Nat.lt_of_floor_lt hgt
+    have hlog : 2 * R < Real.log n := by
+      rw [← Real.log_exp (2 * R)]
+      exact Real.log_lt_log (Real.exp_pos _) hexp
+    have hlog0 : 0 ≤ Real.log n := by linarith
+    rw [hsupp (x + Real.log n) ?_, hsupp (x - Real.log n) ?_, add_zero, mul_zero]
+    · rw [abs_sub_comm]
+      have := abs_sub_abs_le_abs_sub (Real.log n) x
+      rw [abs_of_nonneg hlog0] at this
+      linarith
+    · have := abs_sub_abs_le_abs_sub (Real.log n) (-x)
+      rw [abs_of_nonneg hlog0, abs_neg, sub_neg_eq_add, add_comm] at this
+      linarith
+
+/-- **Global bound on the prime shift sum of a window gauge.** For any gauge `0 ≤ M ≤ 1` vanishing
+outside `(-R, R)` and any `|x| < R`, `profilePrimeSum M x ≤ 2 * aperturePrimeSum R`. -/
+theorem profilePrimeSum_le_two_mul_aperturePrimeSum {M : ℝ → ℝ} {R x : ℝ}
+    (hle : ∀ y, M y ≤ 1) (hsupp : ∀ y, R ≤ |y| → M y = 0) (hx : |x| < R) :
+    profilePrimeSum M x ≤ 2 * aperturePrimeSum R := by
+  rw [profilePrimeSum_eq_sum_Icc hsupp hx, aperturePrimeSum, Finset.mul_sum]
+  refine Finset.sum_le_sum fun n _ => ?_
+  have h1 := hle (x + Real.log n)
+  have h2 := hle (x - Real.log n)
+  have hΛ := vonMangoldtAtom_nonneg n
+  nlinarith
+
+/-- **Global potential lower bound at a plateau point (all `R > 0`).** Removing `2R < log 2` from
+`neg_poleFreeWeilOperator_ge`: for any continuous Lipschitz gauge `M ≤ 1` vanishing outside
+`(-R, R)` and any `|x| < R` with `M x = 1`, `polarWindowFloor R ≤ -poleFreeWeilOperator M x`. -/
+theorem neg_poleFreeWeilOperator_ge_polarWindowFloor {M : ℝ → ℝ} {K R x : ℝ}
+    (hMc : Continuous M) (hLip : ∀ a b, |M a - M b| ≤ K * |a - b|)
+    (hle : ∀ y, M y ≤ 1) (hsupp : ∀ y, R ≤ |y| → M y = 0) (hx : |x| < R) (hMx : M x = 1) :
+    polarWindowFloor R ≤ -poleFreeWeilOperator M x := by
+  have ha : 0 < R - x := by linarith [le_abs_self x]
+  have hb : 0 < R + x := by linarith [neg_abs_le x]
+  have hI := integral_profileArchTerm_ge hMc hLip hle hsupp hx hMx
+  have hNa := neg_half_log_one_sub_exp_ge ha
+  have hNb := neg_half_log_one_sub_exp_ge hb
+  have hprod : Real.log (2 * (R - x)) + Real.log (2 * (R + x)) ≤ 2 * Real.log (2 * R) := by
+    rw [← Real.log_mul (by positivity) (by positivity), ← Real.log_rpow (by linarith),
+      Real.rpow_two]
+    exact Real.log_le_log (by positivity) (by nlinarith [sq_nonneg x])
+  have hP := profilePrimeSum_le_two_mul_aperturePrimeSum hle hsupp hx
+  unfold poleFreeWeilOperator polarWindowFloor
+  rw [hMx]
+  linarith
+
+/-- **Global coercivity of `markovEnergy` on every window `[-r, r]` (`r < R`).** Holds for all
+`R > 0`, without the `2R < log 2` or `R ≤ 2` restrictions. -/
+theorem markovEnergy_ge_polarWindowFloor {F : ℝ → ℝ} {r R : ℝ} (hrR : r < R)
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hsupp : ∀ x, r < |x| → F x = 0) :
+    polarWindowFloor R * ∫ x, F x ^ 2 ≤ markovEnergy (fun x => (F x : ℂ)) := by
+  set δ := R - r with hδdef
+  have hδ : 0 < δ := by linarith
+  set M := plateauGauge R δ with hMdef
+  have hMd : ContDiff ℝ 2 M := contDiff_plateauGauge R δ
+  have hMcs : HasCompactSupport M := hasCompactSupport_plateauGauge hδ
+  have hnn : ∀ y, 0 ≤ M y := plateauGauge_nonneg R δ
+  have hle : ∀ y, M y ≤ 1 := plateauGauge_le_one R δ
+  have hzero : ∀ y, R ≤ |y| → M y = 0 := fun y hy => plateauGauge_eq_zero hδ hy
+  have hFM : ∀ x, F x ≠ 0 → M x = 1 := fun x hx => by
+    refine plateauGauge_eq_one hδ ?_
+    by_contra h
+    exact hx (hsupp x (by have := not_le.mp h; linarith))
+  have hFx : ∀ x, F x ≠ 0 → |x| < R := fun x hx => by
+    by_contra h
+    exact hx (by
+      have := hzero x (not_lt.mp h)
+      rw [hFM x hx] at this
+      norm_num at this)
+  obtain ⟨K, -, hK⟩ := exists_lipschitz_bound_of_compactSupport (hMd.of_le (by norm_num)) hMcs
+  have hLip : ∀ a b, |M a - M b| ≤ K * |a - b| := fun a b => hK b a
+  have hC12 := markovEnergy_eq_gauge_window hF hFc hMd hMcs hle hnn hzero hFM
+  have hJ := signedJumpEnergy_nonneg_of_nonneg (F := F) hnn
+  have hdec8 : ∀ y, |M y| ≤ Real.exp (8 * |R|) * Real.exp (-(8 * |y|)) := by
+    intro y
+    by_cases hy : |y| < R
+    · rw [abs_of_nonneg (hnn y), ← Real.exp_add]
+      exact (hle y).trans (Real.one_le_exp (by nlinarith [le_abs_self R]))
+    · rw [hzero y (not_lt.mp hy), abs_zero]
+      positivity
+  have hg : Continuous fun x => -poleFreeWeilOperator M x :=
+    (continuous_poleFreeWeilOperator hMd.continuous hLip hdec8).neg
+  have hF2 : Integrable fun x => F x ^ 2 :=
+    (hF.continuous.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
+  have hpot : polarWindowFloor R * ∫ x, F x ^ 2 ≤
+      ∫ x, F x ^ 2 * M x * -poleFreeWeilOperator M x := by
+    rw [← integral_const_mul]
+    refine integral_mono (hF2.const_mul _) ((((hF.continuous.pow 2).mul hMd.continuous).mul
+      hg).integrable_of_hasCompactSupport ((hasCompactSupport_sq hFc).mul_right.mul_right)) fun x => ?_
+    by_cases h : F x = 0
+    · simp [h]
+    · have hW := neg_poleFreeWeilOperator_ge_polarWindowFloor hMd.continuous hLip hle hzero
+        (hFx x h) (hFM x h)
+      rw [hFM x h, mul_one]
+      nlinarith [sq_nonneg (F x)]
+  rw [hC12]
+  linarith
+
+/-- **Global coercivity of `fullZeroForm` on tests with `oddPoleMoment F = 0` (`r < R`).** -/
+theorem fullZeroForm_ge_polarWindowFloor_of_oddPoleMoment_eq_zero {F : ℝ → ℝ} {r R : ℝ}
+    (hrR : r < R) (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hS : oddPoleMoment F = 0) :
+    polarWindowFloor R * ∫ x, F x ^ 2 ≤ fullZeroForm F := by
+  have hM := markovEnergy_ge_polarWindowFloor hrR hF hFc hsupp
+  have hE := sq_nonneg (evenPoleMoment F)
+  unfold fullZeroForm
+  rw [hS]
+  linarith
+
+/-- For a polar-constrained smooth interior source `u`, both `Re u` and `Im u` have vanishing odd
+pole moment. -/
+theorem oddPoleMoment_re_im_eq_zero_of_isPolarConstrained {A : SuzukiPositiveAperture}
+    (u : CCMComplexSmoothInteriorSource A) (hu : IsPolarConstrained A u.toCCMFormVector) :
+    oddPoleMoment (fun x => (u x).re) = 0 ∧ oddPoleMoment (fun x => (u x).im) = 0 := by
+  have hp := hu.1
+  have hm := hu.2
+  rw [inner_ccmPolarApertureVector_ccmComplexSmoothFormVector] at hp hm
+  have hre_c : Continuous fun x => (u x).re := Complex.continuous_re.comp u.smooth.continuous
+  have him_c : Continuous fun x => (u x).im := Complex.continuous_im.comp u.smooth.continuous
+  have hre_cs : HasCompactSupport fun x => (u x).re := u.hasCompactSupport.comp_left Complex.zero_re
+  have him_cs : HasCompactSupport fun x => (u x).im := u.hasCompactSupport.comp_left Complex.zero_im
+  have hip : Integrable fun x : ℝ => (Real.exp (1 / 2 * x) : ℂ) * u x :=
+    ((Complex.continuous_ofReal.comp (Real.continuous_exp.comp
+      (continuous_const.mul continuous_id))).mul u.smooth.continuous).integrable_of_hasCompactSupport
+      u.hasCompactSupport.mul_left
+  have him' : Integrable fun x : ℝ => (Real.exp (-1 / 2 * x) : ℂ) * u x :=
+    ((Complex.continuous_ofReal.comp (Real.continuous_exp.comp
+      (continuous_const.mul continuous_id))).mul u.smooth.continuous).integrable_of_hasCompactSupport
+      u.hasCompactSupport.mul_left
+  have hre_p : expHalfMoment (fun x => (u x).re) = 0 := by
+    have h := (integral_re hip).symm
+    simp only [hp, map_zero, RCLike.re_to_complex] at h
+    refine (integral_congr_ae (Eventually.of_forall fun x => ?_)).trans h.symm
+    show (u x).re * Real.exp (x / 2) = (((Real.exp (1 / 2 * x) : ℂ) * u x).re)
+    rw [Complex.re_ofReal_mul, show 1 / 2 * x = x / 2 by ring, mul_comm]
+  have hre_m : expNegHalfMoment (fun x => (u x).re) = 0 := by
+    have h := (integral_re him').symm
+    simp only [hm, map_zero, RCLike.re_to_complex] at h
+    refine (integral_congr_ae (Eventually.of_forall fun x => ?_)).trans h.symm
+    show (u x).re * Real.exp (-(x / 2)) = (((Real.exp (-1 / 2 * x) : ℂ) * u x).re)
+    rw [Complex.re_ofReal_mul, show -1 / 2 * x = -(x / 2) by ring, mul_comm]
+  have him_p : expHalfMoment (fun x => (u x).im) = 0 := by
+    have h := (integral_im hip).symm
+    simp only [hp, map_zero, RCLike.im_to_complex] at h
+    refine (integral_congr_ae (Eventually.of_forall fun x => ?_)).trans h.symm
+    show (u x).im * Real.exp (x / 2) = (((Real.exp (1 / 2 * x) : ℂ) * u x).im)
+    rw [Complex.im_ofReal_mul, show 1 / 2 * x = x / 2 by ring, mul_comm]
+  have him_m : expNegHalfMoment (fun x => (u x).im) = 0 := by
+    have h := (integral_im him').symm
+    simp only [hm, map_zero, RCLike.im_to_complex] at h
+    refine (integral_congr_ae (Eventually.of_forall fun x => ?_)).trans h.symm
+    show (u x).im * Real.exp (-(x / 2)) = (((Real.exp (-1 / 2 * x) : ℂ) * u x).im)
+    rw [Complex.im_ofReal_mul, show -1 / 2 * x = -(x / 2) by ring, mul_comm]
+  have h1 := expHalfMoment_eq hre_c hre_cs
+  have h2 := expNegHalfMoment_eq hre_c hre_cs
+  have h3 := expHalfMoment_eq him_c him_cs
+  have h4 := expNegHalfMoment_eq him_c him_cs
+  exact ⟨by linarith, by linarith⟩
+
+/-- Every polar-constrained smooth interior source at aperture `A` satisfies
+`polarWindowFloor A.1 * ‖u‖² ≤ Q_A(u)`. -/
+theorem polarWindowFloor_mul_le_ccmRestrictedWeilSourceQuadratic (A : SuzukiPositiveAperture)
+    (u : CCMComplexSmoothInteriorSource A) (hu : IsPolarConstrained A u.toCCMFormVector) :
+    polarWindowFloor A.1 * ‖ccmArchimedeanFormToAperture A u.toCCMFormVector‖ ^ (2 : ℕ) ≤
+      ccmRestrictedWeilSourceQuadratic A u.toCCMFormVector := by
+  obtain ⟨b, hbA, hsupp⟩ := exists_strict_smaller_aperture_of_compact_tsupport A u
+  have hu2 : ContDiff ℝ 2 (u : ℝ → ℂ) := u.smooth.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hre : ContDiff ℝ 2 fun x => (u x).re := Complex.reCLM.contDiff.comp hu2
+  have him : ContDiff ℝ 2 fun x => (u x).im := Complex.imCLM.contDiff.comp hu2
+  have hrec : HasCompactSupport fun x => (u x).re := u.hasCompactSupport.comp_left Complex.zero_re
+  have himc : HasCompactSupport fun x => (u x).im := u.hasCompactSupport.comp_left Complex.zero_im
+  have hzero : ∀ x, b.1 < |x| → u x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => by
+      have := hsupp h
+      exact absurd (abs_lt.mpr ⟨this.1, this.2⟩) (not_lt.mpr hx.le)
+  obtain ⟨hSre, hSim⟩ := oddPoleMoment_re_im_eq_zero_of_isPolarConstrained u hu
+  have h1 := fullZeroForm_ge_polarWindowFloor_of_oddPoleMoment_eq_zero hbA hre hrec
+    (fun x hx => by simp [hzero x hx]) hSre
+  have h2 := fullZeroForm_ge_polarWindowFloor_of_oddPoleMoment_eq_zero hbA him himc
+    (fun x hx => by simp [hzero x hx]) hSim
+  have hsplit := GaloisForLFunctions.ArithmeticPositivityTheory.zeta_W_re_eq_fullZeroForm_re_add_im
+    hu2 u.hasCompactSupport
+  have i1 : Integrable fun x => (u x).re ^ 2 :=
+    (hre.continuous.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hrec)
+  have i2 : Integrable fun x => (u x).im ^ 2 :=
+    (him.continuous.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq himc)
+  have hnorm : (∫ x, ‖u x‖ ^ 2) = (∫ x, (u x).re ^ 2) + ∫ x, (u x).im ^ 2 := by
+    rw [← integral_add i1 i2]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    ring
+  rw [norm_sq_ccmArchimedeanFormToAperture_toCCMFormVector,
+    ccmRestrictedWeilSource_complexSmooth_eq_zetaWeil]
+  change polarWindowFloor A.1 * ∫ x, ‖u x‖ ^ 2 ≤ (zetaZeroConfig.W (u : ℝ → ℂ) (u : ℝ → ℂ)).re
+  rw [hsplit, hnorm, mul_add]
+  linarith
+
+/-- **Global Arithmetic Ground-Energy Theorem.** For **every** aperture `A : SuzukiPositiveAperture`
+(`A > 0`), the pole-vanishing ground energy satisfies `polarWindowFloor A.1 ≤ μ₀(A)`. -/
+theorem polarWindowFloor_le_ccmRestrictedWeilPolarGroundEnergy (A : SuzukiPositiveAperture) :
+    polarWindowFloor A.1 ≤ ccmRestrictedWeilPolarGroundEnergy A := by
+  refine le_of_forall_pos_lt_add fun ε hε => ?_
+  obtain ⟨g, hg, hgne, hlt⟩ := exists_polarConstrained_smooth_rayleigh_lt A hε
+  have hpos : 0 < ‖ccmArchimedeanFormToAperture A g.toCCMFormVector‖ ^ (2 : ℕ) :=
+    pow_pos (norm_pos_iff.mpr hgne) 2
+  have hfl := (le_div_iff₀ hpos).mpr
+    (polarWindowFloor_mul_le_ccmRestrictedWeilSourceQuadratic A g hg)
+  exact lt_of_le_of_lt hfl hlt
+
+/-- **Explicit Elementary Global Ground-Energy Bound.** For **every** aperture
+`A : SuzukiPositiveAperture` (`A > 0`),
+`-log(2A) - (3/2)A - 2 archConstantReal - 8 A e^A ≤ μ₀(A)`. -/
+theorem explicit_global_le_ccmRestrictedWeilPolarGroundEnergy (A : SuzukiPositiveAperture) :
+    explicitPolarWindowFloor A.1 ≤ ccmRestrictedWeilPolarGroundEnergy A :=
+  (explicitPolarWindowFloor_le_polarWindowFloor A.2.le).trans
+    (polarWindowFloor_le_ccmRestrictedWeilPolarGroundEnergy A)
+
+/-- **Global Closed-Aperture Floor for `fullZeroForm`.** For every `A : SuzukiPositiveAperture` and
+every real smooth `F` supported in `[-A, A]` with `evenPoleMoment F = 0` and `oddPoleMoment F = 0`,
+`polarWindowFloor A.1 * ∫ F² ≤ fullZeroForm F`. -/
+theorem polarWindowFloor_mul_le_fullZeroForm_Icc (A : SuzukiPositiveAperture) {F : ℝ → ℝ}
+    (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hFs : tsupport F ⊆ Icc (-A.1) A.1)
+    (hC : evenPoleMoment F = 0) (hS : oddPoleMoment F = 0) :
+    polarWindowFloor A.1 * ∫ x, F x ^ 2 ≤ fullZeroForm F :=
+  (mul_le_mul_of_nonneg_right (polarWindowFloor_le_ccmRestrictedWeilPolarGroundEnergy A)
+    (integral_nonneg fun _ => sq_nonneg _)).trans
+    (polarGroundEnergy_mul_le_fullZeroForm_Icc A hF hFs hC hS)
+
+/-- **Global Arithmetic Mean-Zero Variation Inequality (Closed Support `[-A, A]`, All `A > 0`).**
+For every shift `a > 0`, every aperture `A > 0`, and every smooth even `μ_a`-mean-zero profile `u`
+supported in `[-A, A]`,
+`D_a(u) + polarWindowFloor(A) ∫ (m_a u)² ≤ 2 S_a(u) + V_a(u)`. -/
+theorem reflectedDifferenceEnergy_add_polarWindowFloor_le_poleFree_of_meanZero_Icc {a : ℝ}
+    {u : ℝ → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (heven : ∀ x, u (-x) = u x)
+    (hmean : profileMoment a u = 0) (ha : 0 < a) (A : SuzukiPositiveAperture)
+    (hsupp : tsupport u ⊆ Icc (-A.1) A.1) :
+    reflectedDifferenceEnergy (shiftedGroundState a) u +
+        polarWindowFloor A.1 *
+          ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 ≤
+      2 * sameSideEnergy (shiftedGroundState a) u + profileVariance a u := by
+  have h := reflectedDifferenceEnergy_add_le_poleFree_of_meanZero_Icc hu heven hmean ha A hsupp
+  have hfl := polarWindowFloor_le_ccmRestrictedWeilPolarGroundEnergy A
+  have hI : 0 ≤ ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 :=
+    integral_nonneg fun _ => sq_nonneg _
+  nlinarith
+
+/-- **Explicit Elementary Global Mean-Zero Variation Inequality (`All A > 0`).** -/
+theorem reflectedDifferenceEnergy_add_explicit_le_poleFree_of_meanZero_Icc {a : ℝ}
+    {u : ℝ → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (heven : ∀ x, u (-x) = u x)
+    (hmean : profileMoment a u = 0) (ha : 0 < a) (A : SuzukiPositiveAperture)
+    (hsupp : tsupport u ⊆ Icc (-A.1) A.1) :
+    reflectedDifferenceEnergy (shiftedGroundState a) u +
+        explicitPolarWindowFloor A.1 *
+          ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 ≤
+      2 * sameSideEnergy (shiftedGroundState a) u + profileVariance a u := by
+  have h := reflectedDifferenceEnergy_add_polarWindowFloor_le_poleFree_of_meanZero_Icc hu heven
+    hmean ha A hsupp
+  have hfl := explicitPolarWindowFloor_le_polarWindowFloor A.2.le
+  have hI : 0 ≤ ∫ x, phiDoobTest (fun y => shiftedGroundState a y * u y) x ^ 2 :=
+    integral_nonneg fun _ => sq_nonneg _
+  nlinarith
+
+/-- **Global Arithmetic Floor on Pole-Free Dyadic Prime Windows (All Lags `v > 2w`, All Heights `ω`).**
+For every `0 < w` with `2w < log 2`, every height `ω`, and every lag `v > 2w`,
+`2 ‖κ_{2,w,ω}‖₂² polarWindowFloor(v/2 + w) ≤ Arch(polarFreeKernel w ω v (-1)) - PrimeWindow(polarFreeKernel w ω v (-1))`. -/
+theorem two_mul_polarWindowFloor_le_arch_sub_primeWindow_polarFree {w v : ℝ}
+    (hw : 0 < w) (hw2 : 2 * w < Real.log 2) (ω : ℝ) (hv : 2 * w < v) :
+    2 * (∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2) * polarWindowFloor (v / 2 + w) ≤
+      ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w ω v (-1)) r *
+        (EF.gammaBracket r : ℂ)).re -
+      (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+        (polarFreeKernel w ω v (-1) (Real.log n) +
+          polarFreeKernel w ω v (-1) (-Real.log n))).re := by
+  have hray := two_mul_ccmRestrictedWeilPolarGroundEnergy_le_arch_sub_primeWindow_polarFree
+    hw hw2 ω hv
+  have hfl := polarWindowFloor_le_ccmRestrictedWeilPolarGroundEnergy ⟨v / 2 + w, by linarith⟩
+  have hB0 : 0 ≤ ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  nlinarith
+
+/-- **Explicit Elementary Global Floor on Pole-Free Dyadic Prime Windows (`All v > 2w`).** -/
+theorem two_mul_explicit_le_arch_sub_primeWindow_polarFree {w v : ℝ}
+    (hw : 0 < w) (hw2 : 2 * w < Real.log 2) (ω : ℝ) (hv : 2 * w < v) :
+    2 * (∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2) * explicitPolarWindowFloor (v / 2 + w) ≤
+      ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w ω v (-1)) r *
+        (EF.gammaBracket r : ℂ)).re -
+      (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+        (polarFreeKernel w ω v (-1) (Real.log n) +
+          polarFreeKernel w ω v (-1) (-Real.log n))).re := by
+  have h := two_mul_polarWindowFloor_le_arch_sub_primeWindow_polarFree hw hw2 ω hv
+  have hfl := explicitPolarWindowFloor_le_polarWindowFloor (R := v / 2 + w) (by linarith)
+  have hB0 : 0 ≤ ∫ t, ‖scaledBumpPolarFree w ω t‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  nlinarith
 
 end GaloisForLFunctions.SquareRootThreshold
 
