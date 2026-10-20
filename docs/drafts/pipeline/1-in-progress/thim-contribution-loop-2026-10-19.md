@@ -438,3 +438,18 @@
   divisor function, `R(ε) = Σ_{e≥2}(φ(e) − μ(e))w_ε(e)² ∈ (0, 2V(ε)]`. The prime-boundary mechanism of C1
   was only the visible part of a positive-density dissipation. C19's `sq_add_le_weighted` made public.
   Standard axioms (6 audited); wired.
+- **C25 · The primitive (discrepancy) energy of the damped response: threshold at ε = 1/2** —
+  `DampedPrimitiveEnergyHalfThreshold`. Uses BVI `twelve_mul_sievePrimitiveEnergy_eq_jordan_diagonal`
+  (`12 E_prim(N;c) = Σ_{2≤q≤N} J₂(q) Y_N(q)²`, `E_prim` = period mean square of the zero-mean primitive,
+  i.e. of the centered discrepancy `Σ_{j≤n} s_N(j) − nH_N`). `jordanTotient2_le_sq` (`J₂(n) ≤ n²`),
+  `abs_selbergMultiplesCoord_pmPowerDamped_le`, `sievePrimitiveEnergy_pmPowerDamped_le` (ε > 1/2: bound
+  `ζ(1+ε)²Σ q^{−2ε}` uniform in `N`), `tendsto_sievePrimitiveEnergy_pmPowerDamped` (ε > 1/2: `12E_prim →
+  Σ_{q≥2} J₂(q)w_ε(q)²`), `tendsto_sievePrimitiveEnergy_pmPowerDamped_atTop` (**0 < ε ≤ 1/2: divergence**,
+  prime modes `J₂(p)w_ε(p)² ≥ (3/4)E[τ_ε]²/p` and Mathlib `not_summable_one_div_on_primes`),
+  `eventually_sievePrimitiveEnergy_moebius_ge` (Möbius: `⌊N/2⌋ ≤ 3456 E_prim(N; μ)`, linear growth from
+  the top octave, C17 window lemmas).
+  New insight: README §1.2/§5 say the PM receiver bound is known for ε ≥ 1/2 and open below. On the
+  period torus the same threshold is exact: the damped discrepancy energy is horizon-uniformly bounded
+  iff ε > 1/2 (mode masses `J₂ w_ε² ≍ q^{−2ε}`), diverges for ε ≤ 1/2, and grows linearly for Möbius.
+  So no receiver estimate below one half can come from complete-period averages of the discrepancy;
+  it must exploit the pronic weighting of small arguments. Standard axioms (5 audited); wired.

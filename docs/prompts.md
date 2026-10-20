@@ -641,3 +641,15 @@ based on route ledger: docs/reports/rh-current-frontier-map.md and ledger of har
 this review is incorrect and outdated. redo it.
 
 write the new reports in folder docs/reports/review-1910/
+
+## update programme README.mds
+go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
+
+- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
+- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+- formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
+- formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+- formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
+- formal/GaloisForLFunctions/SquareRootThreshold/README.md
+
+important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics.

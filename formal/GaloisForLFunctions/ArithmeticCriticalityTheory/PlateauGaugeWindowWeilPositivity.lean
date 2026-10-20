@@ -58,7 +58,10 @@ theorem archLevyDensity_sub_archDiagonalDensity_le {u : ℝ} (hu : 0 < u) :
   have hden : 0 < 1 - z ^ 4 := by nlinarith [pow_lt_one₀ hz0.le hz1 (by norm_num : (4 : ℕ) ≠ 0)]
   unfold archLevyDensity archDiagonalDensity
   rw [h4, ← hz, div_sub_div_same, div_le_iff₀ hden]
-  nlinarith [mul_pos hz0 hz0, mul_pos (mul_pos hz0 hz0) hz0, sub_pos.mpr hz1]
+  have hz2 : z ^ 2 < 1 := pow_lt_one₀ hz0.le hz1 (by norm_num)
+  have hz3 : z ^ 3 < 1 := pow_lt_one₀ hz0.le hz1 (by norm_num)
+  have hfac : 0 ≤ (1 - z) * (3 - z - z ^ 2 - z ^ 3) := mul_nonneg (by linarith) (by linarith)
+  nlinarith [hfac]
 
 theorem archDiagonalDensity_pos {u : ℝ} (hu : 0 < u) : 0 < archDiagonalDensity u := by
   unfold archDiagonalDensity
@@ -74,18 +77,23 @@ theorem hasDerivAt_half_log_one_sub_exp {u : ℝ} (hu : 0 < u) :
   refine ((he.log (by linarith)).const_mul (1 / 2)).congr_deriv ?_
   unfold archDiagonalDensity
   field_simp
-  ring
+
+theorem tendsto_half_log_one_sub_exp :
+    Tendsto (fun u : ℝ => (1 / 2) * Real.log (1 - Real.exp (-2 * u))) atTop (𝓝 0) := by
+  have h0 : Tendsto (fun u : ℝ => Real.exp (-2 * u)) atTop (𝓝 0) := by
+    have := Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
+      (by norm_num : (-2 : ℝ) < 0))
+    simpa [Function.comp_def] using this
+  have h1 := (tendsto_const_nhds (x := (1 : ℝ))).sub h0
+  rw [sub_zero] at h1
+  have h2 := ((Real.continuousAt_log one_ne_zero).tendsto.comp h1).const_mul (1 / 2)
+  rw [Real.log_one, mul_zero] at h2
+  exact h2
 
 /-- **The window killing.** `∫_a^∞ ν = −½ log(1 − e^{−2a})` for `a > 0`. -/
 theorem integral_Ioi_archDiagonalDensity {a : ℝ} (ha : 0 < a) :
     ∫ u in Ioi a, archDiagonalDensity u = -(1 / 2) * Real.log (1 - Real.exp (-2 * a)) := by
-  have hlim : Tendsto (fun u : ℝ => (1 / 2) * Real.log (1 - Real.exp (-2 * u))) atTop (𝓝 0) := by
-    have h1 : Tendsto (fun u : ℝ => 1 - Real.exp (-2 * u)) atTop (𝓝 1) := by
-      have := (Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
-        (by norm_num : (-2 : ℝ) < 0)))
-      simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub this
-    have h2 := (Real.continuousAt_log one_ne_zero).tendsto.comp h1
-    simpa using h2.const_mul (1 / 2)
+  have hlim := tendsto_half_log_one_sub_exp
   have h := integral_Ioi_of_hasDerivAt_of_nonneg
     ((hasDerivAt_half_log_one_sub_exp ha).continuousAt.continuousWithinAt)
     (fun u hu => hasDerivAt_half_log_one_sub_exp (lt_trans ha hu))
@@ -95,13 +103,7 @@ theorem integral_Ioi_archDiagonalDensity {a : ℝ} (ha : 0 < a) :
 
 theorem integrableOn_Ioi_archDiagonalDensity {a : ℝ} (ha : 0 < a) :
     IntegrableOn archDiagonalDensity (Ioi a) := by
-  have hlim : Tendsto (fun u : ℝ => (1 / 2) * Real.log (1 - Real.exp (-2 * u))) atTop (𝓝 0) := by
-    have h1 : Tendsto (fun u : ℝ => 1 - Real.exp (-2 * u)) atTop (𝓝 1) := by
-      have := (Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
-        (by norm_num : (-2 : ℝ) < 0)))
-      simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub this
-    have h2 := (Real.continuousAt_log one_ne_zero).tendsto.comp h1
-    simpa using h2.const_mul (1 / 2)
+  have hlim := tendsto_half_log_one_sub_exp
   exact integrableOn_Ioi_deriv_of_nonneg
     ((hasDerivAt_half_log_one_sub_exp ha).continuousAt.continuousWithinAt)
     (fun u hu => hasDerivAt_half_log_one_sub_exp (lt_trans ha hu))
@@ -176,7 +178,7 @@ section Gauge
 variable {M : ℝ → ℝ} {K R : ℝ} (hMc : Continuous M) (hLip : ∀ a b, |M a - M b| ≤ K * |a - b|)
   (hnn : ∀ y, 0 ≤ M y) (hle : ∀ y, M y ≤ 1) (hsupp : ∀ y, R ≤ |y| → M y = 0)
 
-include hMc hLip hnn hle hsupp in
+include hMc hLip hle hsupp in
 /-- **The archimedean integral at a plateau point.** If `M(x) = 1`, `|x| < R`, then
 `∫_0^∞ profileArchTerm ≥ N(R − x) + N(R + x) − (3/2) R`. -/
 theorem integral_profileArchTerm_ge {x : ℝ} (hx : |x| < R) (hMx : M x = 1) :
@@ -206,12 +208,14 @@ theorem integral_profileArchTerm_ge {x : ℝ} (hx : |x| < R) (hMx : M x = 1) :
     have hm1 := mul_le_mul_of_nonneg_left h1 hω.le
     have hm2 := mul_le_mul_of_nonneg_left h2 hω.le
     split_ifs at hm1 hm2 ⊢ <;> nlinarith
-  have hmono := setIntegral_mono_on (hIa.add hIb) (integrableOn_profileArchTerm hMc hLip x)
-    measurableSet_Ioi hpt
+  have hmono := setIntegral_mono_on (f := fun u =>
+      (if u ≤ R - x then archDiagonalDensity u - archLevyDensity u else archDiagonalDensity u) +
+      (if u ≤ R + x then archDiagonalDensity u - archLevyDensity u else archDiagonalDensity u))
+    (hIa.add hIb) (integrableOn_profileArchTerm hMc hLip x) measurableSet_Ioi hpt
   rw [integral_add hIa hIb] at hmono
   linarith
 
-include hMc hLip hnn hle hsupp in
+include hsupp in
 /-- On a window `2R < log 2` no prime shift of a plateau point lands in the gauge. -/
 theorem profilePrimeSum_eq_zero {x : ℝ} (hR : 2 * R < Real.log 2) (hx : |x| < R) :
     profilePrimeSum M x = 0 := by
@@ -232,7 +236,7 @@ theorem profilePrimeSum_eq_zero {x : ℝ} (hR : 2 * R < Real.log 2) (hx : |x| < 
         sub_neg_eq_add, add_comm] at this
       linarith
 
-include hMc hLip hnn hle hsupp in
+include hMc hLip hle hsupp in
 /-- **The potential of the plateau gauge.** At a plateau point,
 `−𝒲M(x) ≥ −log(2R) − (3/2) R − (γ + log π)`. -/
 theorem neg_poleFreeWeilOperator_ge {x : ℝ} (hR : 2 * R < Real.log 2) (hx : |x| < R)
@@ -240,7 +244,7 @@ theorem neg_poleFreeWeilOperator_ge {x : ℝ} (hR : 2 * R < Real.log 2) (hx : |x
     -Real.log (2 * R) - 3 / 2 * R - 2 * archConstantReal ≤ -poleFreeWeilOperator M x := by
   have ha : 0 < R - x := by linarith [le_abs_self x]
   have hb : 0 < R + x := by linarith [neg_abs_le x]
-  have hI := integral_profileArchTerm_ge hMc hLip hnn hle hsupp hx hMx
+  have hI := integral_profileArchTerm_ge hMc hLip hle hsupp hx hMx
   have hNa := neg_half_log_one_sub_exp_ge ha
   have hNb := neg_half_log_one_sub_exp_ge hb
   have hprod : Real.log (2 * (R - x)) + Real.log (2 * (R + x)) ≤ 2 * Real.log (2 * R) := by
@@ -248,7 +252,7 @@ theorem neg_poleFreeWeilOperator_ge {x : ℝ} (hR : 2 * R < Real.log 2) (hx : |x
       Real.rpow_two]
     exact Real.log_le_log (by positivity) (by nlinarith [sq_nonneg x])
   unfold poleFreeWeilOperator
-  rw [profilePrimeSum_eq_zero hMc hLip hnn hle hsupp hR hx, hMx]
+  rw [profilePrimeSum_eq_zero hsupp hR hx, hMx]
   linarith
 
 end Gauge
@@ -294,26 +298,60 @@ theorem abs_sinh_half_le {x : ℝ} (hx : |x| ≤ 2) : |Real.sinh (x / 2)| ≤ |x
     _ ≤ (2 * |x / 2| + 2 * |-(x / 2)|) / 2 := by gcongr
     _ = |x| := by rw [abs_neg, abs_div, abs_two]; ring
 
-/-- On a window `[−R, R]`, `R ≤ 2`, the odd pole moment satisfies `S(F)² ≤ 2R³ ∫ F²`. -/
-theorem sq_oddPoleMoment_le {F : ℝ → ℝ} {R : ℝ} (hR2 : R ≤ 2) (hF : Continuous F)
-    (hFc : HasCompactSupport F) (hsupp : ∀ x, R < |x| → F x = 0) :
+theorem sq_gauge_mul_sinh_le {M : ℝ → ℝ} {R : ℝ} (hR2 : R ≤ 2) (hnn : ∀ y, 0 ≤ M y)
+    (hle : ∀ y, M y ≤ 1) (hsupp : ∀ y, R ≤ |y| → M y = 0) (x : ℝ) :
+    (M x * Real.sinh (x / 2)) ^ 2 ≤ Set.indicator (Icc (-R) R) (fun _ => R ^ 2) x := by
+  by_cases hx : |x| < R
+  · rw [Set.indicator_of_mem (Set.mem_Icc.mpr ⟨(abs_le.mp hx.le).1, (abs_le.mp hx.le).2⟩)]
+    have h1 := abs_sinh_half_le (by linarith : |x| ≤ 2)
+    have h2 : |M x * Real.sinh (x / 2)| ≤ R := by
+      rw [abs_mul, abs_of_nonneg (hnn x)]
+      calc M x * |Real.sinh (x / 2)| ≤ 1 * |x| :=
+            mul_le_mul (hle x) h1 (abs_nonneg _) zero_le_one
+        _ ≤ R := by linarith
+    rw [← sq_abs]
+    exact pow_le_pow_left₀ (abs_nonneg _) h2 2
+  · rw [hsupp x (not_lt.mp hx), zero_mul, zero_pow two_ne_zero]
+    exact Set.indicator_nonneg (fun _ _ => sq_nonneg R) x
+
+theorem integral_indicator_Icc_sq {R : ℝ} (hR0 : 0 ≤ R) :
+    ∫ x, Set.indicator (Icc (-R) R) (fun _ => R ^ 2) x = 2 * R ^ 3 := by
+  rw [integral_indicator measurableSet_Icc, setIntegral_const, smul_eq_mul,
+    Real.volume_real_Icc, max_eq_left (by linarith)]
+  ring
+
+/-- **The odd pole moment on a window.** If `F` vanishes off the set where a continuous compactly
+supported `0 ≤ M ≤ 1` equals `1`, and `M = 0` outside `(−R, R)`, `R ≤ 2`, then `S(F)² ≤ 2R³ ∫ F²`. -/
+theorem sq_oddPoleMoment_le {F M : ℝ → ℝ} {R : ℝ} (hR0 : 0 ≤ R) (hR2 : R ≤ 2) (hF : Continuous F)
+    (hFc : HasCompactSupport F) (hMc : Continuous M) (hMcs : HasCompactSupport M)
+    (hnn : ∀ y, 0 ≤ M y) (hle : ∀ y, M y ≤ 1) (hsupp : ∀ y, R ≤ |y| → M y = 0)
+    (hFM : ∀ x, F x ≠ 0 → M x = 1) :
     oddPoleMoment F ^ 2 ≤ 2 * R ^ 3 * ∫ x, F x ^ 2 := by
-  set g : ℝ → ℝ := fun x => if |x| ≤ R then Real.sinh (x / 2) else 0 with hg
-  have hFg : (fun x => F x * Real.sinh (x / 2)) = fun x => F x * g x := by
-    funext x
-    simp only [hg]
-    split_ifs with h
-    · rfl
-    · rw [hsupp x (not_le.mp h), zero_mul, zero_mul]
-  have hgm : Measurable g := by
-    simp only [hg]
-    exact Measurable.ite (measurableSet_le continuous_abs.measurable measurable_const)
-      (by fun_prop) measurable_const
-  have hg2 : Integrable (fun x => g x ^ 2) := by
-    refine (integrableOn_Icc (a := -R) (b := R) |>.mpr ?_).integrable_of_forall_notMem_eq_zero ?_
-    · sorry
-    · sorry
-  sorry
+  have hGc : Continuous fun x => M x * Real.sinh (x / 2) :=
+    hMc.mul (Real.continuous_sinh.comp (continuous_id.div_const 2))
+  have hS : oddPoleMoment F = ∫ x, F x * (M x * Real.sinh (x / 2)) := by
+    unfold oddPoleMoment
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    by_cases h : F x = 0
+    · simp only [h, zero_mul]
+    · simp only [hFM x h, one_mul]
+  have hF2 : Integrable fun x => F x ^ 2 :=
+    (hF.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
+  have hGcs : HasCompactSupport fun x => M x * Real.sinh (x / 2) := hMcs.mul_right
+  have hG2 : Integrable fun x => (M x * Real.sinh (x / 2)) ^ 2 :=
+    (hGc.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hGcs)
+  have hCS := GaloisForLFunctions.HTGeometry.sq_integral_mul_le hF.aestronglyMeasurable
+    hGc.aestronglyMeasurable hF2 hG2
+  have hGb : ∫ x, (M x * Real.sinh (x / 2)) ^ 2 ≤ 2 * R ^ 3 := by
+    rw [← integral_indicator_Icc_sq hR0]
+    exact integral_mono hG2 ((integrable_indicator_iff measurableSet_Icc).mpr
+      (integrableOn_const (by simp))) (sq_gauge_mul_sinh_le hR2 hnn hle hsupp)
+  rw [hS]
+  calc (∫ x, F x * (M x * Real.sinh (x / 2))) ^ 2 ≤
+      (∫ x, F x ^ 2) * ∫ x, (M x * Real.sinh (x / 2)) ^ 2 := hCS
+    _ ≤ (∫ x, F x ^ 2) * (2 * R ^ 3) :=
+        mul_le_mul_of_nonneg_left hGb (integral_nonneg fun x => sq_nonneg _)
+    _ = _ := by ring
 
 end GaloisForLFunctions.ArithmeticCriticalityTheory
 

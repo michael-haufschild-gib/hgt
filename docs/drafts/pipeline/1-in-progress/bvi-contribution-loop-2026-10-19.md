@@ -60,6 +60,9 @@
 | C35 | VasyuninFormulaForTheDiscreteBaezDuarteGram | M mod m = −Σ_{0<a<m} α_a(ζ_a^M − 1) (counting multiples); Σα_a = (m−1)/2; Π(1−ζ_a) = m; closed pronic series of (M mod m₁)(M mod m₂); **m₁m₂·bdGram(1/m₁,1/m₂) = ((m₁−1)log m₂ + (m₂−1)log m₁)/2 − (π/2)(V(m₂,m₁)−V(1,m₁)+V(m₁,m₂)−V(1,m₂))** for all m₁,m₂ ≥ 1; diagonal; fractCrossTail(1/m) explicit — discharges the 'honest boundary' of the RHTower Báez-Duarte reduction (BaezDuarteGramDiscrete/Reduction left the closed form/cotangent structure open) | done |
 | C36 | VasyuninReciprocityForAllModuliFromPronicCovariance | pronic mean Σ_M (M mod m)/(M(M+1)) = log m; covariance S(m₁,m₂) − log m₁ log m₂ PSD; S(m,m) ≤ 2(m−1)²/m; for all m: log²m ≤ πV(1,m) + (m−1)log m ≤ 2(m−1)²/m; for all m₁,m₂: (log m₁ − log m₂)² ≤ π(V(m₂,m₁)+V(m₁,m₂)) + (m₂−m₁)(log m₂ − log m₁) ≤ 4((m₁−1)²/m₁ + (m₂−1)²/m₂) − (log m₁ + log m₂)² | done |
 | C37 | PronicBaezDuarteCriterion | ‖1_{(0,1]} − Σ_{n≤N} c(n)ρ_{1/n}‖² = Σ_M (1 + L_N(M,c))²/(M(M+1)) (Báez-Duarte residual = pronic energy of shifted prefix discrepancy); **RH ⟺ ∀ε>0 ∃N,c: Σ_M (1 + L_N(M,c))²/(M(M+1)) < ε** — exact equivalence of RH with a statement purely about BVI rows (README §1.3 had only receiver ⇒ RH) | done |
+| C38 | VonMangoldtReadoutFormOfTheBaezDuarteCriterion | Σ_M (1+L_N(M,c))²w = (1 − Σ_eΛ(e)Y_c(e))² + Q^{ec}(c); RH ⟺ ∀ε ∃N,c: (1 − ΣΛY)² + Q^{ec} < ε (steer the von Mangoldt readout to 1 with vanishing energy-centered pronic energy); unconditional floor ∃κ>0 ∀N≥2 ∀c: (1 − ΣΛY)² + Q^{ec}(c) ≥ κ/log N | done |
+| C39 | BaezDuarteEnergyOfThePowerDampedMobiusRows | Báez-Duarte residual of −w_{ε,Q} (power-damped cofactor row) = (1 − m(ε,Q))² + V(ε,Q) (energy mean/variance of the receiver source); RH ⟸ ∀η ∃ε,Q: (1−m)²+V < η; unconditional floor (1 − m(ε,Q))² + V(ε,Q) ≥ κ/log(Q+1) for all ε>0, Q≥1 | done |
+| C40 | ReadoutEnergyUncertaintyPrinciple | scaling R(tc)=tR, Q(tc)=t²Q; min_t residual = Q/(R²+Q); **κ·R(c)² ≤ (log N − κ)·Q^{ec}(c)** for every row on [1,N] (unconditional readout–energy uncertainty principle); **RH ⟺ sup_{N,c} R(c)²/Q^{ec}(c) = ∞** | done |
 
 ## Conjecture queue
 
@@ -598,3 +601,38 @@
   constant −1 by prefix discrepancies in pronic energy. README §1.3 had only the one-way receiver implication.
   Every BVI tool on pronic energies of L_N now applies to the RH criterion directly.
 - **Audit:** clean; olean; 4 public theorems standard axioms (the corpus criterion is unconditional); wired.
+
+### C38 — Báez-Duarte criterion in Selberg coordinates; unconditional readout–energy floor (DONE)
+
+- **Module:** `BezoutValuationIncidence/VonMangoldtReadoutFormOfTheBaezDuarteCriterion.lean`
+- **Statements:** `vonMangoldtReadout`; **`hasSum_one_add_sievePrefixDiscrepancy_sq`** (readout–energy split of the
+  Báez-Duarte residual); **`riemannHypothesis_iff_readout_and_centered_energy`**;
+  **`exists_readout_centered_energy_floor`** (κ/log N ≤ (1 − ΣΛY)² + Q^{ec}(c) for all rows on [1,N]).
+- **Why significant:** RH becomes a statement about the two central BVI functionals of a row — the von Mangoldt
+  readout (README §2.7/§3.6) and the energy-centered pronic Gram form — and the zeros on the critical line give an
+  unconditional floor on how fast they can be jointly optimized, stated in BVI coordinates.
+- **Audit:** clean; olean; 3 public theorems standard axioms; wired.
+
+### C39 — Báez-Duarte energy of the power-damped Möbius rows (DONE)
+
+- **Module:** `BezoutValuationIncidence/BaezDuarteEnergyOfThePowerDampedMobiusRows.lean`
+- **Statements:** `sievePrefixDiscrepancy_neg`; **`hasSum_baezDuarte_energy_pmCofactor`** (residual of −w_{ε,Q}
+  = (1 − m(ε,Q))² + V(ε,Q)); **`riemannHypothesis_of_energyMean_variance`**; **`exists_energyMean_variance_floor`**.
+- **Why significant:** the energy mean m(ε,Q) and energy variance V(ε,Q) of the power-damped Möbius source are the
+  objects of the receiver programme (README §1.3, §2.8); they now enter the Báez-Duarte criterion exactly, giving a
+  second, independent RH-sufficient condition (mean → 1, variance → 0) and an unconditional lower bound
+  V(ε,Q) ≥ κ/log(Q+1) − (1 − m(ε,Q))² on the receiver's own variance.
+- **Audit:** clean; olean; 3 public theorems standard axioms; wired.
+
+### C40 — The readout–energy uncertainty principle (DONE)
+
+- **Module:** `BezoutValuationIncidence/ReadoutEnergyUncertaintyPrinciple.lean`
+- **Statements:** `selbergMultiplesCoord_smul`, `vonMangoldtReadout_smul`, `sieveEnergyCenteredPronicGramForm_smul`,
+  `residual_smul`, `sieveEnergyCenteredPronicGramForm_nonneg'`; **`exists_readout_energy_uncertainty`**
+  (∃κ>0 ∀N≥2 ∀c: κ(Σ_eΛ(e)Y_c(e))² ≤ (log N − κ)·Q^{ec}_N(c)); **`riemannHypothesis_iff_readout_energy_ratio_unbounded`**
+  (RH ⟺ ∀K ∃N,c: K·Q^{ec}(c) < R(c)²).
+- **Why significant:** a scale-invariant inequality between the two central functionals of a row: the von Mangoldt
+  readout is controlled by the energy-centered pronic energy at cost O(log N), unconditionally (from zeros on the
+  critical line), and RH is exactly the statement that no uniform constant exists. This gives the receiver-type
+  programme a sharp target: rows with large readout and small centered energy.
+- **Audit:** clean; olean; 3 public theorems standard axioms; wired.

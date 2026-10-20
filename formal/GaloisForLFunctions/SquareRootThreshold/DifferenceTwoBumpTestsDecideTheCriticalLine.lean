@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SquareRootThreshold.EvenAndOddTwoBumpTestsDecideTheCriticalLine
+import GaloisForLFunctions.SquareRootThreshold.PoleFreeDyadicWindowsDecideTheCriticalLine
 import GaloisForLFunctions.RHTower.FiniteOffLineLandau
 import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionUnrestricted
 
@@ -23,9 +24,11 @@ suffice: one sign and two real parameters.
 
 **One sign decides the line** (`onLine_iff_difference_twoBump_nonneg`). A tempered configuration
 without real zeros has all its zeros on the critical line iff `Re W ≥ 0` on every test
-`κ_γ(t + v/2) − κ_γ(t − v/2)`, `γ ∈ ℝ`, `v ≥ 0`. For `ζ`, whose nontrivial zeros satisfy
-`|Im ρ| ≥ 4`, this holds on the zero side and on the prime side
-(`onLine_iff_primeSide_difference_twoBump_nonneg`).
+`κ_{w,γ}(t + v/2) − κ_{w,γ}(t − v/2)`, `γ ∈ ℝ`, `v ≥ V`, for any `V`. On `[0, V]` the a priori
+bound `|2 Re S(v)| ≤ K e^{v/2}` keeps the one-sided bound. For `ζ`, whose nontrivial zeros
+satisfy `|Im ρ| ≥ 4`, this holds on the prime side
+(`onLine_iff_primeSide_difference_twoBump_nonneg`). It also holds through the dyadic prime windows
+beyond any `X₀` (`onLine_iff_difference_primeWindow_nonneg`).
 -/
 
 open MeasureTheory Complex Set Filter Topology Asymptotics
@@ -225,7 +228,7 @@ theorem summable_norm_lagCoeff (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ
 theorem norm_lagCoeff_mul_exp_le {Z : ZeroConfig} {b : ℝ → ℂ} (z : ℂ) {v R : ℝ} (hv : |v| ≤ R) :
     ‖lagCoeff Z b z * cexp (z * v)‖ ≤ ‖lagCoeff Z b z‖ * Real.exp (R / 2) := by
   by_cases h0 : lagCoeff Z b z = 0
-  · rw [h0, zero_mul, norm_zero, norm_zero, zero_mul]
+  · simp [h0]
   rw [norm_mul, Complex.norm_exp]
   refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
   have hre := abs_re_le_of_lagCoeff_ne_zero h0
@@ -267,12 +270,12 @@ theorem exists_abs_im_ge_of_evenCoeff (Z : ZeroConfig) (b : ℝ → ℂ)
   · exact hreal _ h (hsep _ h (by simpa using hlt))
 
 /-- **No top pole from one side.** For a configuration without real zeros, if the difference
-tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at every lag `v ≥ 0`, then `D(z) = 0` for
+tests `b(t + v/2) − b(t − v/2)` are Weil nonnegative at every lag `v ≥ V`, then `D(z) = 0` for
 every exponent with `Re z > 0`. -/
 theorem evenCoeff_eq_zero_of_difference_nonneg (Z : ZeroConfig) (hZ : TemperedConfig Z)
     {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w)
-    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0)
-    (hm : ∀ v : ℝ, 0 ≤ v → 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re)
+    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {V : ℝ}
+    (hm : ∀ v : ℝ, V ≤ v → 0 ≤ (Z.W (twoBump b v (-1)) (twoBump b v (-1))).re)
     {z : ℂ} (hz : 0 < z.re) : evenCoeff Z b z = 0 := by
   classical
   by_contra hne
@@ -325,16 +328,26 @@ theorem evenCoeff_eq_zero_of_difference_nonneg (Z : ZeroConfig) (hZ : TemperedCo
     have := Complex.abs_re_le_norm (lagStructure Z b u)
     simp only [hφ, abs_mul, abs_two, hK]
     nlinarith
-  have hMb : ∀ u, 0 ≤ u → φ u ≤ 2 * (lagStructure Z b 0).re * Real.exp (0 * u) := by
+  have hK0 : 0 ≤ K := mul_nonneg zero_le_two (tsum_nonneg fun _ => norm_nonneg _)
+  set M := max (2 * (lagStructure Z b 0).re) (K * Real.exp (|V| / 2)) with hMdef
+  have hMb : ∀ u, 0 ≤ u → φ u ≤ M * Real.exp (0 * u) := by
     intro u hu
-    have h := hm u hu
-    have hX : lagStructure Z b u + conj (lagStructure Z b (-u)) = 2 * lagStructure Z b u := by
-      rw [conj_lagStructure_neg Z hZ hb hbs u]; ring
-    rw [re_W_unit_twoBump Z hZ hb hbs u (by simp), hX] at h
-    simp only [neg_mul, one_mul, Complex.neg_re, Complex.mul_re, Complex.re_ofNat,
-      Complex.im_ofNat, zero_mul, sub_zero] at h
-    simp only [hφ, zero_mul, Real.exp_zero, mul_one]
-    linarith
+    simp only [zero_mul, Real.exp_zero, mul_one]
+    rcases le_or_gt V u with hVu | huV
+    · have h := hm u hVu
+      have hX : lagStructure Z b u + conj (lagStructure Z b (-u)) = 2 * lagStructure Z b u := by
+        rw [conj_lagStructure_neg Z hZ hb hbs u]; ring
+      rw [re_W_unit_twoBump Z hZ hb hbs u (by simp), hX] at h
+      simp only [neg_mul, one_mul, Complex.neg_re, Complex.mul_re, Complex.re_ofNat,
+        Complex.im_ofNat, zero_mul, sub_zero] at h
+      simp only [hφ]
+      linarith [le_max_left (2 * (lagStructure Z b 0).re) (K * Real.exp (|V| / 2))]
+    · rcases hu.lt_or_eq with hu0 | hu0
+      · refine (le_abs_self _).trans ((hKb u hu0).trans ((mul_le_mul_of_nonneg_left
+          (Real.exp_le_exp.mpr ?_) hK0).trans (le_max_right _ _)))
+        linarith [le_abs_self V]
+      · rw [← hu0]
+        exact le_max_left _ _
   obtain ⟨η₀, hη₀, hfar⟩ := exists_abs_im_ge_of_evenCoeff Z b hreal
   set Λ := resolventSum (fun t : ι => (t : ℂ)) fun t => evenCoeff Z b t with hΛ
   have hΛan : ∀ t : ℝ, 0 < t → AnalyticAt ℂ Λ t := by
@@ -376,21 +389,21 @@ theorem evenCoeff_eq_zero_of_difference_nonneg (Z : ZeroConfig) (hZ : TemperedCo
 
 /-! ### One sign decides the line -/
 
-/-- **One sign decides the line.** A tempered configuration without real zeros has all its zeros
-on the critical line iff its Weil form is nonnegative on every difference two-bump test
-`κ_γ(t + v/2) − κ_γ(t − v/2)`, `γ ∈ ℝ`, `v ≥ 0`. -/
+/-- **One sign decides the line.** Let `0 < w` and `V ∈ ℝ`. A tempered configuration without real
+zeros has all its zeros on the critical line iff its Weil form is nonnegative on every difference
+two-bump test `κ_{w,γ}(t + v/2) − κ_{w,γ}(t − v/2)`, `γ ∈ ℝ`, `v ≥ V`. -/
 theorem onLine_iff_difference_twoBump_nonneg (Z : ZeroConfig) (hZ : TemperedConfig Z)
-    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) :
-    (∀ ρ ∈ Z.carrier, ρ.re = 1 / 2) ↔ ∀ (γ v : ℝ), 0 ≤ v →
-      0 ≤ (Z.W (twoBump (modScaledBump 1 γ) v (-1)) (twoBump (modScaledBump 1 γ) v (-1))).re := by
+    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {w : ℝ} (hw : 0 < w) (V : ℝ) :
+    (∀ ρ ∈ Z.carrier, ρ.re = 1 / 2) ↔ ∀ (γ v : ℝ), V ≤ v →
+      0 ≤ (Z.W (twoBump (modScaledBump w γ) v (-1)) (twoBump (modScaledBump w γ) v (-1))).re := by
   refine ⟨fun hon _ _ _ => weil_nonneg_of_onLine Z hon _, fun h ρ hρ => ?_⟩
   by_contra hre
   obtain ⟨t, ht, -⟩ := exists_rightZero_of_offLine Z hρ hre
   have hz : (1 / 2 + (t - 1 / 2)) ∈ Z.carrier := by rw [add_sub_cancel]; exact ht.1
   have hzre : 0 < (t - 1 / 2).re := by simp; linarith [ht.2]
-  obtain ⟨c, hc⟩ := exists_center_evenCoeff_ne_zero Z one_pos hz
-  exact hc (evenCoeff_eq_zero_of_difference_nonneg Z hZ (contDiff_modScaledBump_two 1 c)
-    (modScaledBump_support one_pos c) hreal (fun v hv => h c v hv) hzre)
+  obtain ⟨c, hc⟩ := exists_center_evenCoeff_ne_zero Z hw hz
+  exact hc (evenCoeff_eq_zero_of_difference_nonneg Z hZ (contDiff_modScaledBump_two w c)
+    (modScaledBump_support hw c) hreal (fun v hv => h c v hv) hzre)
 
 /-- The nontrivial zeros of `ζ` are not real. -/
 theorem zetaZeroConfig_im_ne_zero : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.im ≠ 0 := by
@@ -398,25 +411,123 @@ theorem zetaZeroConfig_im_ne_zero : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.im ≠
   have h : 0 < ρ.re ∧ ρ.re < 1 := hρ.2
   exact riemannZeta_ne_zero_of_abs_im_lt_four h.1 h.2 (by rw [him, abs_zero]; norm_num) hρ.1
 
-/-- **For `ζ`.** RH holds iff `Re W_ζ ≥ 0` on every difference test
-`κ_γ(t + v/2) − κ_γ(t − v/2)`. -/
-theorem zeta_onLine_iff_difference_twoBump_nonneg :
-    (∀ ρ ∈ zetaZeroConfig.carrier, ρ.re = 1 / 2) ↔ ∀ (γ v : ℝ), 0 ≤ v →
-      0 ≤ (zetaZeroConfig.W (twoBump (modScaledBump 1 γ) v (-1))
-        (twoBump (modScaledBump 1 γ) v (-1))).re :=
-  onLine_iff_difference_twoBump_nonneg _ temperedConfig_zetaZeroConfig zetaZeroConfig_im_ne_zero
-
 /-- **For `ζ`, on the prime side.** RH holds iff the prime-side functional is nonnegative on the
 autocorrelations of the difference tests `κ_γ(t + v/2) − κ_γ(t − v/2)`, `γ ∈ ℝ`, `v ≥ 0`. -/
 theorem onLine_iff_primeSide_difference_twoBump_nonneg :
     (∀ ρ ∈ zetaZeroConfig.carrier, ρ.re = 1 / 2) ↔ ∀ (γ v : ℝ), 0 ≤ v →
       0 ≤ (EF.literatureRHS (EF.weilTest (twoBump (modScaledBump 1 γ) v (-1))
         (twoBump (modScaledBump 1 γ) v (-1)))).re := by
-  refine zeta_onLine_iff_difference_twoBump_nonneg.trans ?_
+  refine (onLine_iff_difference_twoBump_nonneg _ temperedConfig_zetaZeroConfig
+    zetaZeroConfig_im_ne_zero one_pos 0).trans ?_
   refine forall_congr' fun γ => forall_congr' fun v => ?_
   rw [zeta_W_eq_literatureRHS (f := twoBump (modScaledBump 1 γ) v (-1))
     (contDiff_bumpTest (contDiff_modScaledBump_two 1 γ) v ![1, -1])
     (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
       (modScaledBump_support one_pos γ)) v (-1))]
+
+/-- **RH as one-signed dyadic prime windows.** Let `0 < w`, `2w < log 2` and `V ≥ 0`. RH holds
+iff the window functional `P_v` is nonnegative on the difference tests
+`κ_{w,γ}(t + v/2) − κ_{w,γ}(t − v/2)` at every height `γ` and every lag `v ≥ V`. Two real
+parameters, one sign, and the primes of one dyadic window per test. -/
+theorem onLine_iff_difference_primeWindow_nonneg {w : ℝ} (hw : 0 < w)
+    (hw2 : 2 * w < Real.log 2) {V : ℝ} (hV : 0 ≤ V) :
+    (∀ ρ ∈ zetaZeroConfig.carrier, ρ.re = 1 / 2) ↔ ∀ (γ v : ℝ), V ≤ v →
+      0 ≤ (lagPrimeWindowRHS v w (EF.weilTest (twoBump (modScaledBump w γ) v (-1))
+        (twoBump (modScaledBump w γ) v (-1)))).re := by
+  refine (onLine_iff_difference_twoBump_nonneg _ temperedConfig_zetaZeroConfig
+    zetaZeroConfig_im_ne_zero hw V).trans ?_
+  refine forall_congr' fun γ => forall_congr' fun v => imp_congr_right fun hv => ?_
+  rw [zeta_W_eq_literatureRHS (f := twoBump (modScaledBump w γ) v (-1))
+    (contDiff_bumpTest (contDiff_modScaledBump_two w γ) v ![1, -1])
+    (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
+      (modScaledBump_support hw γ)) v (-1)),
+    literatureRHS_twoBump_eq_lagPrimeWindowRHS (modScaledBump_support hw γ) hw2 (hV.trans hv)]
+
+/-! ### The Hodge class -/
+
+/-- For the polar-free bump `κ₂,w` modulated to `c`, the coefficient of the zero `½ + z` is
+`(¼ − z²)²` times that of `κ_w` modulated to `c`. -/
+theorem lagCoeff_scaledBumpPolarFree (Z : ZeroConfig) {w : ℝ} (hw : 0 < w) (c : ℝ) (z : ℂ) :
+    lagCoeff Z (scaledBumpPolarFree w c) z =
+      (1 / 4 - z ^ 2) ^ 2 * lagCoeff Z (modScaledBump w c) z := by
+  by_cases hz : (1 / 2 + z) ∈ Z.carrier
+  · have hbc : HasCompactSupport (scaledBumpPolarFree w c) :=
+      hasCompactSupport_of_support_subset_abs (scaledBumpPolarFree_support hw c)
+    have hcont := (contDiff_scaledBumpPolarFree w c).continuous
+    rw [lagCoeff_modScaledBump Z hw c hz, lagCoeff, Set.indicator_of_mem hz,
+      EF.paperFT_weilTest hcont hcont hbc hbc, paperFT_scaledBumpPolarFree hw,
+      paperFT_scaledBumpPolarFree hw, map_mul, conj_paperFT_scaledBump, gammaOf_half_add]
+    simp only [map_sub, map_neg, map_mul, map_add, map_pow, map_div₀, map_one, map_ofNat,
+      Complex.conj_I, Complex.conj_conj, Complex.conj_ofReal]
+    ring_nf
+    simp only [Complex.I_sq, Complex.I_pow_four]
+    ring
+  · rw [lagCoeff, lagCoeff, Set.indicator_of_notMem hz, Set.indicator_of_notMem hz, mul_zero]
+
+theorem evenCoeff_scaledBumpPolarFree (Z : ZeroConfig) {w : ℝ} (hw : 0 < w) (c : ℝ) (z : ℂ) :
+    evenCoeff Z (scaledBumpPolarFree w c) z =
+      (1 / 4 - z ^ 2) ^ 2 * evenCoeff Z (modScaledBump w c) z := by
+  rw [evenCoeff, evenCoeff, lagCoeff_scaledBumpPolarFree Z hw, lagCoeff_scaledBumpPolarFree Z hw,
+    map_mul, map_pow, map_sub, map_pow, Complex.conj_conj, map_div₀, map_one, map_ofNat]
+  ring
+
+/-- **One sign decides the line in the Hodge class.** Let `0 < w` and `V ∈ ℝ`. A tempered
+configuration without real zeros has all its zeros on the critical line iff its Weil form is
+nonnegative on every polar-free difference test `κ₂,γ(t + v/2) − κ₂,γ(t − v/2)`, `v ≥ V`. -/
+theorem onLine_iff_polarFree_difference_twoBump_nonneg (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    (hreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {w : ℝ} (hw : 0 < w) (V : ℝ) :
+    (∀ ρ ∈ Z.carrier, ρ.re = 1 / 2) ↔ ∀ (γ v : ℝ), V ≤ v →
+      0 ≤ (Z.W (twoBump (scaledBumpPolarFree w γ) v (-1))
+        (twoBump (scaledBumpPolarFree w γ) v (-1))).re := by
+  refine ⟨fun hon _ _ _ => weil_nonneg_of_onLine Z hon _, fun h ρ hρ => ?_⟩
+  by_contra hre
+  obtain ⟨t, ht, -⟩ := exists_rightZero_of_offLine Z hρ hre
+  have hz : (1 / 2 + (t - 1 / 2)) ∈ Z.carrier := by rw [add_sub_cancel]; exact ht.1
+  have hzre : 0 < (t - 1 / 2).re := by simp; linarith [ht.2]
+  obtain ⟨c, hc⟩ := exists_center_evenCoeff_ne_zero Z hw hz
+  have hpol : (1 / 4 - (t - 1 / 2) ^ 2 : ℂ) ≠ 0 := by
+    intro h0
+    have hfac : (t - 1 / 2 - 1 / 2) * (t - 1 / 2 + 1 / 2) = (0 : ℂ) := by linear_combination -h0
+    rcases mul_eq_zero.mp hfac with h1 | h1
+    · exact hreal t ht.1 (by have := congrArg Complex.im h1; simpa using this)
+    · exact hreal t ht.1 (by have := congrArg Complex.im h1; simpa using this)
+  have h0 := evenCoeff_eq_zero_of_difference_nonneg Z hZ (contDiff_scaledBumpPolarFree w c)
+    (scaledBumpPolarFree_support hw c) hreal (fun v hv => h c v hv) hzre
+  rw [evenCoeff_scaledBumpPolarFree Z hw] at h0
+  exact hc ((mul_eq_zero.mp h0).resolve_left (pow_ne_zero 2 hpol))
+
+/-- **RH: the archimedean term dominates the pole-free dyadic prime windows, one sign.** Let
+`0 < w`, `2w < log 2` and `V ≥ 0`. RH holds iff for every height `γ` and lag `v ≥ V` the window
+prime sum of the kernel `k` of the polar-free difference test `κ₂,γ(t + v/2) − κ₂,γ(t − v/2)` is
+at most its archimedean term. -/
+theorem onLine_iff_polarFree_difference_primeWindow_le_arch {w : ℝ} (hw : 0 < w)
+    (hw2 : 2 * w < Real.log 2) {V : ℝ} (hV : 0 ≤ V) :
+    (∀ ρ ∈ zetaZeroConfig.carrier, ρ.re = 1 / 2) ↔
+      ∀ (γ v : ℝ), V ≤ v →
+        (∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+          (polarFreeKernel w γ v (-1) (Real.log n) +
+            polarFreeKernel w γ v (-1) (-Real.log n))).re ≤
+        ((1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT (polarFreeKernel w γ v (-1)) r *
+          (EF.gammaBracket r : ℂ)).re := by
+  refine (onLine_iff_polarFree_difference_twoBump_nonneg _ temperedConfig_zetaZeroConfig
+    zetaZeroConfig_im_ne_zero hw V).trans ?_
+  refine forall_congr' fun γ => forall_congr' fun v => imp_congr_right fun hv => ?_
+  have hc := (contDiff_scaledBumpPolarFree w γ).continuous
+  have hbc := hasCompactSupport_of_support_subset_abs (scaledBumpPolarFree_support hw γ)
+  have hfc := hasCompactSupport_twoBump hbc v (-1)
+  have hfcont : Continuous (twoBump (scaledBumpPolarFree w γ) v (-1)) :=
+    (contDiff_bumpTest (contDiff_scaledBumpPolarFree w γ) v ![1, -1]).continuous
+  obtain ⟨hp, hn⟩ := paperFT_scaledBumpPolarFree_half hw γ
+  have hpole : ∀ z : ℂ, paperFT (twoBump (scaledBumpPolarFree w γ) v (-1)) z = 0 →
+      paperFT (polarFreeKernel w γ v (-1)) z = 0 := fun z hz => by
+    rw [polarFreeKernel, EF.paperFT_weilTest hfcont hfcont hfc hfc, hz, zero_mul]
+  rw [zeta_W_eq_literatureRHS (f := twoBump (scaledBumpPolarFree w γ) v (-1))
+    (contDiff_bumpTest (contDiff_scaledBumpPolarFree w γ) v ![1, -1]) hfc,
+    literatureRHS_twoBump_eq_lagPrimeWindowRHS (scaledBumpPolarFree_support hw γ) hw2
+      (hV.trans hv), lagPrimeWindowRHS, ← polarFreeKernel,
+    hpole _ (paperFT_twoBump_eq_zero hc hbc v (-1) hp),
+    hpole _ (by rw [neg_div]; exact paperFT_twoBump_eq_zero hc hbc v (-1) hn)]
+  simp only [add_zero, zero_sub, Complex.add_re, Complex.neg_re]
+  constructor <;> intro h <;> linarith
 
 end GaloisForLFunctions.SquareRootThreshold

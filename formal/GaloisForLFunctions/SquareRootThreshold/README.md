@@ -177,7 +177,11 @@ them.
    `t̄`, as `m h(x − iδ)² + m* h(2γ − x − iδ)²`, where `x` is the offset from the bump's height.
    Suppose this vanished at every height. Then `|h(x − iδ)|²` would be multiplied by the fixed
    ratio `m/m*` or `m*/m` at each step `±2γ`, and hence could not decay. So some height leaves
-   the top pole a nonzero residue.
+   the top pole a nonzero residue. Without real zeros (`ζ` included), one sign suffices: the
+   difference tests `κ_γ(t + v/2) − κ_γ(t − v/2)` only bound `2 Re S(v)` from above. By Landau's
+   theorem, the abscissa of the Laplace transform of a function bounded on one side is a real
+   singularity. The exponents keep away from the real axis, so the transform continues to
+   `Re s > 0`, and the top residue vanishes again.
    The same argument measures the rate: the least `Re W` over these tests at lag `v` is
    `≥ −Ce^{Dv}` when every depth is at most `D`, and is not `O(e^{σv})` for any `σ` below the
    depth of a zero. Negativity grows exactly at the rate of the deepest zero.
@@ -234,22 +238,24 @@ them.
     `±M_f`, and stays near it on intervals of explicit length. The archimedean part grows only like
     `log(1 + |ξ|)`. A coherent prime excursion of size `B` therefore either makes the localized
     Weil form negative or occurs at a height with `log(1 + 2π|ξ|) ≳ (B − C_f)/‖f‖²`.
-21. **Two parameters decide the line.** Through the explicit formula the two-bump criterion
-    becomes a prime-side one: every zero of `ζ` is on the critical line iff
-    `Re P(f ⋆ f̃) ≥ 0` for `f = κ_γ(t + v/2) + τκ_γ(t − v/2)`, `v ≥ 0`, `τ = ±1`, where
+21. **Two parameters decide the line.** Through the explicit formula the two-bump criteria
+    become prime-side ones. Every zero of `ζ` is on the critical line iff `Re P(f ⋆ f̃) ≥ 0` for
+    the difference tests `f = κ_γ(t + v/2) − κ_γ(t − v/2)`, `γ ∈ ℝ`, `v ≥ 0`, where
     `P(k) = h_k(i/2) + h_k(−i/2) − Σ_n Λ(n)/√n (k(log n) + k(−log n)) + (1/2π)∫ h_k Γ`. The kernel
     `f ⋆ f̃` lives on `[−2w, 2w] ∪ ±[v − 2w, v + 2w]`. For `2w < log 2` the lag `v` therefore reads
-    `Λ(n)` only on the window `|log n − v| ≤ 2w`, inside `(X/2, 2X)` for `X = e^v`. Any tail of lags
-    `v ≥ V` already decides. On `[0, V]` the deficit is bounded a priori by the upper rate, so the
-    unbounded negativity forced by an off-line zero lies beyond `V`. RH is thus a conjunction of
+    `Λ(n)` only on the window `|log n − v| ≤ 2w`, inside `(X/2, 2X)` for `X = e^v`. Any tail of
+    lags `v ≥ V` already decides, for the difference tests as for the unimodular ones. On `[0, V]`
+    the deficit is bounded a priori by the upper rate, so the unbounded negativity forced by an
+    off-line zero lies beyond `V`. RH is thus a conjunction of
     single-window statements over `X ≥ X₀`, for any `X₀`: no prime below `X₀/2` enters, and prime
     information about a bounded range cannot decide the line. With the polar-free bump the pole
     terms vanish, and each statement reads: the window prime sum against `k` is at most the
-    archimedean term `(1/2π) ∫ h_k Γ`. The same holds for every primitive
-    Dirichlet `L(s, χ)`, with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms. At lag `v = log X`
-    the least value of `Re P` over these tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not
-    `O(X^σ)` for `σ < Θ − ½`, in windows beyond every `X₀`: RH is the absence of any power growth,
-    the square-root threshold itself.
+    archimedean term `(1/2π) ∫ h_k Γ`. The unimodular criterion holds for every primitive
+    Dirichlet `L(s, χ)`, with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms; the one-sign
+    reduction needs the absence of real zeros. At lag `v = log X` the least value of `Re P` over
+    the unimodular tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not `O(X^σ)` for
+    `σ < Θ − ½`, in windows beyond every `X₀`: RH is the absence of any power growth, the
+    square-root threshold itself.
 
 ---
 
