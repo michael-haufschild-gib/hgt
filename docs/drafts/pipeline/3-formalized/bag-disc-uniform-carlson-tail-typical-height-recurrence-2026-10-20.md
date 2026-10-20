@@ -40,6 +40,16 @@ Module `RHTower/ZetaTypicalHeightPairRecurrenceAndHeadZeroObstruction.lean` (wir
 - `exists_zero_of_mem_poleShiftedReturnSet`, `eventually_volume_poleShiftedReturnSet_le` (**head-zero obstruction**): if `head_M(ρ₀) = 0` and `|head_M| ≥ m` on the boundary circle, the pole-shifted return set `{τ : sup_disc |ζ(z+iτ) − head_M(z)| < ε}`, `ε ≤ m/2`, has density zero.
 - `eventually_volume_edPolyReturnSet_le_discTailBadSet_add`: under the same hypotheses, `|edPolyReturnSet(ε/2) ∩ [0,T]| ≤ |discTailBadSet(ε/2) ∩ [0,T]| + κT` eventually — finite-head return heights are tail-bad up to density zero.
 - `exists_headIsolatingDisc`: isolating discs with a positive boundary floor exist around every point of the strip (partial sums are not identically zero), so the obstruction hypotheses are satisfiable at every zero of a partial sum in the strip.
+- `zetaPairReturnFail_subset_discTailBadSet_union`: the failure set of an almost period `d` (with `Mθ ≤ ε/3`) is contained in `Bad(ε/3) ∪ (Bad(ε/3) − d)`.
+
+Module `RHTower/ZetaPartialSumIsolatedZeroHeightsAndUniformPairReturns.lean` (wired into `RHTower.lean`):
+- `exists_zero_of_exists_norm_lt_sphere_on`: minimum-modulus zero criterion at an arbitrary interior point.
+- `headIsolatedZeroSet`, `exists_zeta_zero_of_mem_headIsolatedZeroSet`: an isolated zero of `head_M(·+iτ)` in `ball c r` (modulus `≥ 2ε` on the circle) at a tail-good height forces a zero of ζ in `ball c r + iτ`.
+- `eventually_volume_headIsolatedZeroSet_le_discTailBadSet_add`, `eventually_eventually_volume_headIsolatedZeroSet_le` (**isolated partial-sum zeros are rare**): isolated-zero heights are tail-bad up to density zero, hence have density `≤ δ` for all large `M`. A statement about the Dirichlet polynomials `Σ_{n≤M} n^{-s}` alone, derived from the `o(T)` zero count of ζ right of a fixed abscissa.
+- `exists_zero_of_mem_poleShiftedReturnSet_of_exists_zero`, `eventually_volume_poleShiftedReturnSet_le_of_exists_zero`: the head-zero obstruction for a zero anywhere in the open disc.
+- `eventually_volume_discTailBadSet_le_tailMass`: explicit fixed-`M` density `≤ 28K·tailMass(M, Re c − 2r)/ε² + κ`.
+- `exists_eventually_forall_volume_zetaPairReturnFail_le`: uniform pair returns — for all large `T`, every almost period `d ∈ [0,T]` fails on at most `δT` base heights of `[0,T]`.
+- `exists_relDense_headPhaseReturnSet`, `exists_relDense_zetaReturn_typicalHeight`: the almost periods are relatively dense; every interval of a fixed length contains an ε-almost period of ζ on the disc valid at density-`(1−δ)` base heights.
 
 ## Insight for the route
 
@@ -55,3 +65,4 @@ Module `RHTower/ZetaTypicalHeightPairRecurrenceAndHeadZeroObstruction.lean` (wir
 
 ## Log
 - 2026-10-20 — created; both modules written, compiled, audited (`#print axioms`), wired; lint run; one declaration renamed (`im_sub_abs_lt_of_mem_ball`) to avoid a fully-qualified name collision with `CHMDMasslessContinuationPieces.abs_im_sub_lt_of_mem_ball`.
+- 2026-10-20 — third module added (isolated partial-sum zeros are rare; explicit density; uniform and relatively dense pair returns); `zetaPairReturnFail_subset_discTailBadSet_union` extracted in the second module; all three compiled with `lake --old env lean -j 1 -o`, `#print axioms` standard, wired.
