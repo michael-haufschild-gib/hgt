@@ -120,18 +120,49 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
 - README extended: polar-compensation paragraph, objects, mechanisms 12–18, three traps,
   open problems 1′ and sharpened 3.
 
+### C7 — Collar sandwich (`CollarSandwichLaw.lean`)
+- `two_sinh_mul_sinh_sub`, `sinh_sub_self_le_cosh_sub_one` (`sinh a − a ≤ cosh a − 1` from
+  `−a + 1 ≤ e^{−a}`); `two_mul_crossingPolarWeight_le` (`2P ≤ a sinh(s/2)`),
+  `le_two_mul_crossingPolarWeight` (`a sinh(s/2 − a) ≤ 2P`, `0 ≤ a ≤ s/2`).
+- `collarInnerEnd s = 2ω(s)/sinh(s/2)`, closed form `4e^{−s}/((1−e^{−2s})(1−e^{−s}))`
+  (`collarInnerEnd_eq`), `4e^{−s} ≤ ℓ ≤ (256/239)·4e^{−s}` (`s ≥ 4 log 2`);
+  `collarOuterEnd s = 2ω(s)/sinh(s/2 − 6e^{−3s/4})`, `= ℓ · sinh(s/2)/sinh(s/2 − 6e^{−3s/4})`.
+- `sub_mem_antiDiagonalCollar_iff` (symmetry), `innerEnds_subset_antiDiagonalCollar`,
+  `antiDiagonalCollar_subset_outer`, `volume_antiDiagonalCollar_le_outer` (`≤ 2L`),
+  `lintegral_antiDiagonalCollar_le_outer` (unpaid mass `≤ 2ω(s)L(s)`, order `8e^{−3s/2}`).
+- Insight: the negative archimedean conductance of an anti-diagonal of sum `s` sits in two end
+  intervals of exact length `4e^{−s}(1 + o(1))`. Imports: C6. Axioms: standard.
+
+### C8 — Total lattice crossing law (`TotalLatticeCrossingLaw.lean`)
+- `totalLatticeCrossingKernel a b = k_arch(−log a, log b) + productAtom a b`.
+- `lattice_atom_inequality_aux` (coefficient form `4N² + 4L(N²−1) ≤ C(N²−1)` from `N ≥ m > 1`,
+  `L ≤ c`, `4 + 4/(m²−1) + 4c ≤ C`); regimes `atom_inequality_two` (`C ≥ 7`, `N ≥ 16`),
+  `atom_inequality_three` (`C ≥ 16`, `N ≥ 27`), `atom_inequality_ge_five` (`C ≥ (p−1)²`, `N ≥ 25`,
+  `log p ≤ 3 log 2 + p/8 − 1`); `lattice_atom_inequality` (all tower pairs outside the five);
+  `totalLatticeCrossingKernel_nonpos_of` (closed form + atom → nonpositive).
+- `totalLatticeCrossingKernel_pos_iff` (`a, b ≥ 2`: exactly the five pairs),
+  `totalLatticeCrossingKernel_pos_iff_archPairKernel_pos` (atoms flip no lattice sign),
+  `totalLatticeCrossingKernel_two_eight_nonpos` (near miss `{2,8}`: `7` vs `< 6.79`).
+- Imports: C1, C3, C6. Axioms: standard (audit pending the umbrella rebuild log).
+
 ## Conjecture queue
 1. (done as C4) Dyadic-window incidence.
 2. Bump-profile bridge: for even `u` built from bumps at `± log a`, the prime-atom part of ACT's
    `signedJumpEnergy` decomposes into ratio and product pairs with the common gauge factor; the
    archimedean self-energy of a bump of width `w` is `≍ w log(1/w)` and dominates as `w → 0`.
-3. Sharp collar asymptotic: `min(|x|, y) ∼ 4 e^{−s}` on the boundary of the negative region.
+3. (done as C7, up to the ratio `sinh(s/2)/sinh(s/2 − 6e^{−3s/4})`) Sharp collar asymptotic.
 4. Total lattice kernel (archimedean + atoms) sign law on `(−log a, log b)`; the five pairs with the
    prime atoms added (`{2,2}`: `ab = 4`, product atom `log 2 / 2`; `{2,4}`: `ab = 8`; `{3,3}`: `ab = 9`).
 7. Integrated polar payment against a gauge: for odd `M`, atom mass vs polar mass along the
    anti-diagonal of `n`; which gauges pay every `n ∉ atomDominatedModuli`; the axis law makes the
    answer depend on the decay of `M` at `0`.
-8. Sharp unpaid mass: replace `12 ω(s) e^{−3s/4}` by the true order `e^{−3s/2}` (collar `∼ 4e^{−s}`).
+8. (done as C7) Sharp unpaid mass `≤ 2ω(s)L(s)`.
+9. (done as C8) Total lattice crossing law.
+10. Integrated polar payment against the ACT gauge `shiftedGroundState a` along the anti-diagonal of
+    `n`: atom mass vs polar mass; search ACT for the gauge's values at `± log n` first.
+11. Axis region of an anti-diagonal: for a bump of width `w` at `(−a, log n − a)` with `a ≤ w`,
+    compare the same-side atoms reachable at ratios `log m` with the atom `Λ(n)/√n` (first-prime-window
+    gauge problem, open core).
 5. Parity pair: complete-period sieve forms are even in the Selberg coordinates (invariant under all
    sign characters); the first-octave response is not.
 6. Open core: extend a gauge argument through the first prime window past `log 2 / 2`, paying the
@@ -145,3 +176,6 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
 - 2026-10-20 — C5 (polar compensation) and C6 (collar measure, ten-moduli classification) compiled,
   wired, oleans built, umbrella recompiled; README extended with the continuum section. Audited
   theorems depend only on `propext, Classical.choice, Quot.sound`.
+- 2026-10-20 — C7 (collar sandwich) compiled, wired; README mechanism 19; open problem 3 restated as
+  the collar ratio.
+- 2026-10-20 — C8 (total lattice crossing law) compiled and wired; README mechanism 20 and a trap added.

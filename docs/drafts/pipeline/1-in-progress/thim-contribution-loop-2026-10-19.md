@@ -583,3 +583,19 @@
   `2C₂Π(p−1)/(p−2)` as the `ε → 0` shape of the damped observer's correlations. Prime-pair statistics
   are visible to the damped observer only at order ε², below its variance `ε/2`. Standard axioms (10
   audited); wired. C32's `moebiusReal_two_mul_odd`, `moebiusReal_four_mul` made public.
+- **C36 · Period correlations of the Selberg row are the singular series** —
+  `SelbergRowPeriodCorrelationsSingularSeries`. Row `ℓ_N = barbanVehovWeight N` (`μ(d)log(N/d)`, response
+  = Selberg's truncated `Λ_N`). `selbergMultiplesCoord_barbanVehov_eq` (`Y_N(e) = μ(e)T_e(N/e)/e`, RHTower
+  `barbanVehov_inner_eq`), `tendsto_selbergMultiplesCoord_barbanVehov` (`Y_N(e) → μ(e)/φ(e)`, RHTower
+  `tendsto_coprimeLogMoebius_squarefree`), `tendsto_finiteHarmonicSum_barbanVehov` (`H_N → 1`),
+  **`tendsto_periodCovariance_barbanVehov` (`Cov_N(h;ℓ_N) → 𝔖(h) − 1` for every `h ≥ 1`;** dominated by
+  `σ(h)A²μ²/φ²` via BVI `abs_selbergMultiplesCoord_barbanVehovWeight_le`), `tendsto_periodCorrelation_barbanVehov`
+  (`H² + Cov → 𝔖(h)`: complete-period Goldston–Yıldırım law), `tendsto_periodCovariance_barbanVehov_odd`
+  (`→ −1`), `tendsto_periodCovariance_barbanVehov_zero` (variance `→ ∞`, modes `→ μ²/φ`, RHTower
+  `tendsto_sum_sqfreeTotientInv_div_log_one`), `tendsto_periodCorrelation_barbanVehov_normalised` (normalised
+  correlations `→ 0`), `selberg_and_damped_tangent_correlations_agree`.
+  New insight: the literal Möbius row is white on the period torus (C17, all lag covariances → 0).
+  Its Selberg log-tangent carries the prime-pair singular series at every lag, with divergent variance.
+  The horizon limit of the Selberg tangent and the Haar second-order limit of the damped row (C35)
+  coincide: at the level of lag correlations, the order of the horizon and damping limits does not
+  matter, in contrast to the variance (C19). Standard axioms (9 audited); wired.

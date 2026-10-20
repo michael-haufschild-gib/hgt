@@ -498,3 +498,16 @@ Significance: the CCM image of ACT criticality (no Hardy weight): under RH the r
 asymptotically critical (ground energy ↓ 0 without crossing); off RH μ → −∞ (corpus: CCMParityTopLayerGroundEnergyLaw,
 ConstrainedWeilPolarGroundDecay). Corpus had no upper bound μ(A) → 0. Combined with C32: 1/30 ≤ μ(A) for A ≤ 21/200
 and μ(A) → 0 (RH) — the full qualitative profile of the ground-energy path.
+
+### C34 — The window gauge reproduces Suzuki's small-aperture main term
+Module: `ArithmeticCriticalityTheory/WindowGaugeLogarithmicGroundEnergyFloor.lean` (compiled, olean, standard axioms, wired).
+- `windowFloor R = −log(2R) − (3/2)R − (γ + log π) − 4R³`.
+- `fullZeroForm_ge_windowFloor`: real F ∈ C²_c vanishing off [−r, r], r < R, 2R < log 2 ⇒ Ẑ(F) ≥ w(R)∫F²
+  (C26 mechanism at every radius; complex version `zetaZeroConfig_re_W_ge_windowFloor`).
+- `windowFloor_le_ccmRestrictedWeilGroundEnergy_self`: μ(A) ≥ w(A) for all 2A < log 2.
+- `windowFloor_eq_suzukiMainTerm`: w(A) = log(1/A) − log(2π) + ψ(2) − 1 − (3/2)A − 4A³ = Suzuki's main term with the
+  limiting log ground energy μ₁ removed (uses corpus `digamma_two_re`).
+- `exists_ccmRestrictedWeilGroundEnergy_sub_windowFloor_le`: 0 ≤ μ(A) − w(A) ≤ μ₁ + C·A for small A (Suzuki Thm 1.4).
+Significance: the ACT gauge potential (window killing N(R−x)+N(R+x) ≥ −log 2R plus the constant 2c) carries the entire
+log(1/A) term and both arithmetic constants (log 2π, γ) of Suzuki's asymptotic, explicitly and for every A < (log 2)/2;
+the discarded gauge jump energy is exactly what accounts for μ₁ > 0. Explains the asymptotic's structure in ACT terms.

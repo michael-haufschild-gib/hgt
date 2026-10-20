@@ -51,8 +51,7 @@ theorem two_mul_crossingPolarWeight_le {s a : ℝ} (hs : 0 ≤ s) (ha : 0 ≤ a)
     linarith
   rw [e]
   have h1 : 0 ≤ Real.sinh (s / 2) := Real.sinh_nonneg_iff.mpr (by linarith)
-  have h2 : Real.sinh (s / 2) ≤ Real.cosh (s / 2) :=
-    (Real.sinh_lt_cosh : Real.sinh (s / 2) < Real.cosh (s / 2)).le
+  have h2 : Real.sinh (s / 2) ≤ Real.cosh (s / 2) := (Real.sinh_lt_cosh (s / 2)).le
   have h3 : 0 ≤ Real.sinh a - a := by linarith [Real.self_le_sinh_iff.mpr ha]
   have h4 := sinh_sub_self_le_cosh_sub_one a
   nlinarith [mul_le_mul h2 h4 h3 (by linarith [Real.one_le_cosh (s / 2)])]
@@ -105,9 +104,8 @@ theorem collarInnerEnd_eq {s : ℝ} (hs : 0 < s) :
     rw [eq_div_iff hq.ne', sub_mul, inv_mul_cancel₀ hq.ne']; ring
   have h5 : q⁻¹ - q ≠ 0 := by rw [e5]; exact div_ne_zero h2 hq.ne'
   rw [e5]
-  first
-    | (field_simp; ring)
-    | field_simp
+  field_simp
+  ring
 
 /-- `4e^{−s} ≤ ℓ(s)`. -/
 theorem four_exp_neg_le_collarInnerEnd {s : ℝ} (hs : 0 < s) :
@@ -188,7 +186,7 @@ theorem collarOuterEnd_nonneg {s : ℝ} (hs : 4 * Real.log 2 ≤ s) : 0 ≤ coll
 /-- The collar is symmetric under `a ↦ s − a`. -/
 theorem sub_mem_antiDiagonalCollar_iff {s a : ℝ} (hs : 0 < s) :
     s - a ∈ antiDiagonalCollar s ↔ a ∈ antiDiagonalCollar s := by
-  rw [antiDiagonalCollar_eq hs, antiDiagonalCollar_eq hs]
+  rw [antiDiagonalCollar_eq hs]
   simp only [mem_inter_iff, mem_Ioo, mem_setOf_eq, crossingPolarWeight_symm]
   constructor <;> rintro ⟨⟨h1, h2⟩, h3⟩ <;> exact ⟨⟨by linarith, by linarith⟩, h3⟩
 

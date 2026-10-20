@@ -89,6 +89,8 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Collar of an anti-diagonal | `{a ∈ (0,s) : k_arch(−a, s−a) > 0}` | `antiDiagonalCollar` |
 | Payment scale | `Λ(n)/√n` over `sinh²(log n / 4)` | `polarPaymentScale` |
 | Ten moduli | `{2, 3, 4, 5, 7, 9, 11, 13, 17, 19}` | `atomDominatedModuli` |
+| Collar ends | `ℓ(s) = 2ω(s)/sinh(s/2)`, `L(s) = 2ω(s)/sinh(s/2 − 6e^{−3s/4})` | `collarInnerEnd`, `collarOuterEnd` |
+| Total lattice crossing kernel | `k_arch(−log a, log b) + Λ(ab)/√(ab)` | `totalLatticeCrossingKernel` |
 
 **Words.**
 * **Pair `(x, y)`:** two points of the real line; **same-side** if `xy > 0`, **crossing** if
@@ -207,6 +209,27 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     `n ≥ 2` the pole pays the atom at the midpoint (`vonMangoldtAtom_le_crossingPolarWeight_midpoint`).
     Inputs: `Λ(p^k) = log p`; `log r ≤ sinh(log r)` on fourth roots for `p ≥ 23`
     (`four_mul_log_le_sqrt_sub_one_sq`); `log p ≤ p − 1` for `k ≥ 2`; eight explicit comparisons.
+19. **Collar sandwich.** From `a sinh(s/2 − a) ≤ 2P_s(a) ≤ a sinh(s/2)` on `0 ≤ a ≤ s/2`
+    (`le_two_mul_crossingPolarWeight`, `two_mul_crossingPolarWeight_le`; the upper bound is
+    `sinh a − a ≤ cosh a − 1`): for `s ≥ 4 log 2`,
+    `(0, ℓ) ∪ (s − ℓ, s) ⊆ collar ⊆ (0, L) ∪ (s − L, s)` (`innerEnds_subset_antiDiagonalCollar`,
+    `antiDiagonalCollar_subset_outer`), with `ℓ(s) = 4e^{−s}/((1 − e^{−2s})(1 − e^{−s}))`
+    (`collarInnerEnd_eq`), `4e^{−s} ≤ ℓ(s) ≤ (256/239) · 4e^{−s}`, and
+    `L = ℓ · sinh(s/2)/sinh(s/2 − 6e^{−3s/4})` (`collarOuterEnd_eq`). The collar has exact order
+    `4e^{−s}` at each axis; the unpaid archimedean mass is at most `2ω(s)L(s)`
+    (`lintegral_antiDiagonalCollar_le_outer`), of order `8e^{−3s/2}`.
+
+### The lattice with its atoms
+
+20. **Total lattice crossing law.** For `a, b ≥ 2` the total crossing kernel
+    `k_arch(−log a, log b) + Λ(ab)/√(ab)` is positive exactly on the five pairs of mechanism 6
+    (`totalLatticeCrossingKernel_pos_iff`): the prime atoms flip no lattice sign
+    (`totalLatticeCrossingKernel_pos_iff_archPairKernel_pos`). In closed form the atom changes the
+    condition to `(a−1)(b−1)(N²−1) > 4N² + 4Λ(N)(N²−1)`, `N = ab`; the three tower regimes are
+    `p = 2` with `(a−1)(b−1) ≥ 7`, `N ≥ 16`, `p = 3` with `(a−1)(b−1) ≥ 16`, `N ≥ 27`, and `p ≥ 5`
+    with `(a−1)(b−1) ≥ (p−1)²`, `N ≥ 25` and `log p ≤ 3 log 2 + p/8 − 1`
+    (`lattice_atom_inequality`). The near miss is `{2, 8}`: `7` against `4 + 4/255 + 4 log 2 < 6.79`
+    (`totalLatticeCrossingKernel_two_eight_nonpos`).
 
 ---
 
@@ -225,6 +248,7 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Expecting the pole to pay a prime atom near the axes | The polar weight vanishes at both ends of every anti-diagonal; near an axis only same-side atoms and the gauge can pay. |
 | Reading "the pole pays the atom at the midpoint" as payment of the atom | It is a pointwise comparison of weights per unit gauge at one point; the atom is a Dirac mass along the whole segment and the pole's share depends on the gauge profile along it. |
 | Expecting the ten moduli to be the primes below some bound | They are the primes up to `19` together with `4` and `9`; `8`, `16`, `25` and `27` are paid at the midpoint, `19` is kept by a margin of `0.4` in `(√p − 1)² < 4 log p`. |
+| Expecting the atom to create new negative lattice pairs | On every lattice crossing pair with `a, b ≥ 2` the polar weight that beats the archimedean density also beats the density plus the atom; the closest case `{2, 8}` has a margin of `0.21` in the coefficient inequality. |
 
 ---
 
@@ -246,11 +270,12 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
    `2 Σ_a c_a² M(log a) 𝒢_prime(M)(log a)` (the prime generator of the gauge) minus the pair term
    `4 Σ_{a<b} c_a c_b M(log a)M(log b) netAtom(a,b)`, and identify the archimedean self-energy
    `≍ w log(1/w)` that dominates the limit.
-3. **Sharp collar.** Replace the bound `min(|x|,y) < 6 e^{−3s/4}` by the exact asymptotic
-   `min(|x|,y) ∼ 4 e^{−s}` of the boundary `cosh((s−2c)/2) = S(s)`, and the unpaid mass
-   `12 ω(s) e^{−3s/4}` by its true order `e^{−3s/2}`.
-4. **Total lattice law.** Combine the archimedean closed form with the atoms on the five pairs and
-   the axis pairs into one statement about the lattice conductance at fixed bump width.
+3. **Collar ratio.** The two ends of the sandwich differ by `sinh(s/2)/sinh(s/2 − 6e^{−3s/4})`;
+   show that the collar end `c(s)`, the root of `P_s(c) = ω(s)`, satisfies
+   `c(s) = ℓ(s)(1 + O(e^{−s}))`, and give the explicit second-order term.
+4. **Lattice conductance at fixed width.** Combine mechanism 20 with the archimedean self-energy
+   `≍ w log(1/w)` of a bump of width `w` into one statement about the conductance matrix of a
+   lattice profile at fixed `w`, including the axis pairs `(0, log b)`.
 5. **Parity.** Which complete-period quadratic forms of the sieve theory (variance, Bézout
    successor form, two-lag covariances) are even functions of the Selberg coordinates, hence
    invariant under every sign character on the coordinates, while the trans-horizon response is

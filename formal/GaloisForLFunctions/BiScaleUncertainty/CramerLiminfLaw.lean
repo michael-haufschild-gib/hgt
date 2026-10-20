@@ -337,6 +337,7 @@ theorem gaugeDerivative_gaugeDeltaProbe (u : ℝ) :
   have hF : HasDerivAt (fun u => (∫ s in (0 : ℝ)..u + T, k s) - ∫ s in (0 : ℝ)..u, k s)
       (k (u + T) - k u) u := by
     have h1 := (hd (u + T)).comp u ((hasDerivAt_id u).add_const T)
+    rw [mul_one] at h1
     exact h1.sub (hd u)
   have hfd : HasDerivAt (fun x => Real.exp (x / 2) *
       ((∫ s in (0 : ℝ)..x + T, k s) - ∫ s in (0 : ℝ)..x, k s))
@@ -347,6 +348,305 @@ theorem gaugeDerivative_gaugeDeltaProbe (u : ℝ) :
   ring
 
 end GaugeDelta
+
+/-! ## Norm and transform of the gauge derivative -/
+
+section GaugeDeltaBounds
+
+variable {r : ℝ} (hr : 0 < r) (T : ℝ)
+
+local notation "k" => RHTower.WeilDeletion.smoothBump r hr
+
+theorem exp_mul_smoothBump_le (c u : ℝ) :
+    Real.exp (u / 2) * k (u + c) ≤ Real.exp ((r - c) / 2) * k (u + c) := by
+  by_cases hu : r < |u + c|
+  · rw [smoothBump_eq_zero hr hu, mul_zero, mul_zero]
+  · push Not at hu
+    exact mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith [(abs_le.mp hu).2]))
+      (RHTower.WeilDeletion.smoothBump_nonneg hr _)
+
+theorem integral_smoothBump_comp_add (c : ℝ) : ∫ u, k (u + c) = 1 := by
+  rw [integral_add_right_eq_self (fun u => k u) c, RHTower.WeilDeletion.integral_smoothBump hr]
+
+/-- `‖f' − f/2‖₁ ≤ e^{r/2} + e^{(r−T)/2}` for the gauge-delta probe. -/
+theorem integral_abs_gaugeDerivative_gaugeDeltaProbe_le :
+    ∫ u, |gaugeDerivative (gaugeDeltaProbe hr T) u| ≤
+      Real.exp (r / 2) + Real.exp ((r - T) / 2) := by
+  have hk := RHTower.WeilDeletion.integrable_smoothBump hr
+  have hk0 := RHTower.WeilDeletion.smoothBump_nonneg hr
+  have hB : Integrable fun u => Real.exp ((r - T) / 2) * k (u + T) + Real.exp (r / 2) * k u :=
+    ((hk.comp_add_right T).const_mul _).add (hk.const_mul _)
+  calc ∫ u, |gaugeDerivative (gaugeDeltaProbe hr T) u|
+      ≤ ∫ u, (Real.exp ((r - T) / 2) * k (u + T) + Real.exp (r / 2) * k u) := by
+        refine integral_mono_of_nonneg (Eventually.of_forall fun _ => abs_nonneg _) hB
+          (Eventually.of_forall fun u => ?_)
+        show |gaugeDerivative (gaugeDeltaProbe hr T) u| ≤ _
+        rw [gaugeDerivative_gaugeDeltaProbe, abs_mul, abs_of_pos (Real.exp_pos _)]
+        have h1 := exp_mul_smoothBump_le hr T u
+        have h2 := exp_mul_smoothBump_le hr 0 u
+        simp only [add_zero, sub_zero] at h2
+        have h3 : |k (u + T) - k u| ≤ k (u + T) + k u :=
+          abs_le.mpr ⟨by linarith [hk0 (u + T), hk0 u], by linarith [hk0 (u + T), hk0 u]⟩
+        have h4 := mul_le_mul_of_nonneg_left h3 (Real.exp_pos (u / 2)).le
+        show Real.exp (u / 2) * |k (u + T) - k u| ≤ _
+        nlinarith
+    _ = Real.exp (r / 2) + Real.exp ((r - T) / 2) := by
+        rw [integral_add ((hk.comp_add_right T).const_mul _) (hk.const_mul _), integral_const_mul,
+          integral_const_mul, integral_smoothBump_comp_add hr,
+          RHTower.WeilDeletion.integral_smoothBump hr]
+        ring
+
+/-- **The gauge transform is nearly `1`**: at `ρ = 1/2 + iγ` with `|ρ| r ≤ 1`,
+`|ĝ(γ)| ≥ 1 − 2|ρ|r − e^{(r−T)/2}`. -/
+theorem norm_gaugeTransform_gaugeDeltaProbe_ge (γ : ℝ)
+    (hρr : ‖(1 / 2 + γ * I : ℂ)‖ * r ≤ 1) :
+    1 - 2 * (‖(1 / 2 + γ * I : ℂ)‖ * r) - Real.exp ((r - T) / 2) ≤
+      ‖∫ v, Complex.exp (((γ * v : ℝ) : ℂ) * I) *
+        (gaugeDerivative (gaugeDeltaProbe hr T) v : ℂ)‖ := by
+  set ρ : ℂ := 1 / 2 + γ * I
+  have hkc := (RHTower.WeilDeletion.smoothBump_contDiff hr).continuous
+  have hk := RHTower.WeilDeletion.integrable_smoothBump hr
+  have hk0 := RHTower.WeilDeletion.smoothBump_nonneg hr
+  have hkcs := RHTower.WeilDeletion.smoothBump_hasCompactSupport hr
+  have hnexp : ∀ v : ℝ, ‖Complex.exp (ρ * v)‖ = Real.exp (v / 2) := fun v => by
+    rw [Complex.norm_exp]; congr 1; simp [ρ]; ring
+  have hfac : ∀ v : ℝ, Complex.exp (((γ * v : ℝ) : ℂ) * I) *
+      (gaugeDerivative (gaugeDeltaProbe hr T) v : ℂ) =
+        (k (v + T) : ℂ) * Complex.exp (ρ * v) - (k v : ℂ) * Complex.exp (ρ * v) := fun v => by
+    have e : Complex.exp (((γ * v : ℝ) : ℂ) * I) * (Real.exp (v / 2) : ℂ) = Complex.exp (ρ * v) := by
+      rw [Complex.ofReal_exp, ← Complex.exp_add]; congr 1; simp only [ρ]; push_cast; ring
+    rw [gaugeDerivative_gaugeDeltaProbe, show ((Real.exp (v / 2) * (k (v + T) - k v) : ℝ) : ℂ) =
+      (Real.exp (v / 2) : ℂ) * ((k (v + T) : ℂ) - (k v : ℂ)) by push_cast; ring, ← mul_assoc, e]
+    ring
+  have hAi : Integrable fun v : ℝ => (k (v + T) : ℂ) * Complex.exp (ρ * v) :=
+    (((Complex.continuous_ofReal.comp (hkc.comp (continuous_add_const T))).mul
+      (by fun_prop : Continuous fun v : ℝ => Complex.exp (ρ * v)))).integrable_of_hasCompactSupport
+      (((hasCompactSupport_comp_add hkcs T).comp_left Complex.ofReal_zero).mul_right)
+  have hBi : Integrable fun v : ℝ => (k v : ℂ) * Complex.exp (ρ * v) :=
+    ((Complex.continuous_ofReal.comp hkc).mul
+      (by fun_prop : Continuous fun v : ℝ => Complex.exp (ρ * v))).integrable_of_hasCompactSupport
+      ((hkcs.comp_left Complex.ofReal_zero).mul_right)
+  rw [integral_congr_ae (Eventually.of_forall hfac), integral_sub hAi hBi]
+  set A := ∫ v : ℝ, (k (v + T) : ℂ) * Complex.exp (ρ * v)
+  set B := ∫ v : ℝ, (k v : ℂ) * Complex.exp (ρ * v) with hBdef
+  -- `|A| ≤ e^{(r−T)/2}`
+  have hA : ‖A‖ ≤ Real.exp ((r - T) / 2) := by
+    calc ‖A‖ ≤ ∫ v, Real.exp ((r - T) / 2) * k (v + T) := by
+          refine norm_integral_le_of_norm_le ((hk.comp_add_right T).const_mul _)
+            (Eventually.of_forall fun v => ?_)
+          rw [norm_mul, hnexp, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hk0 _),
+            mul_comm]
+          exact exp_mul_smoothBump_le hr T v
+      _ = Real.exp ((r - T) / 2) := by
+          rw [integral_const_mul, integral_smoothBump_comp_add hr, mul_one]
+  -- `|B − 1| ≤ 2|ρ| r`
+  have hB : ‖B - 1‖ ≤ 2 * (‖ρ‖ * r) := by
+    have h1 : (1 : ℂ) = ∫ v : ℝ, (k v : ℂ) := by
+      rw [integral_complex_ofReal, RHTower.WeilDeletion.integral_smoothBump hr, ofReal_one]
+    have hKi : Integrable fun v : ℝ => (k v : ℂ) := hk.ofReal
+    have hsub : B - 1 = ∫ v : ℝ, (k v : ℂ) * (Complex.exp (ρ * v) - 1) := by
+      have hint : ∫ v : ℝ, (k v : ℂ) * (Complex.exp (ρ * v) - 1) =
+          (∫ v : ℝ, (k v : ℂ) * Complex.exp (ρ * v)) - ∫ v : ℝ, (k v : ℂ) := by
+        rw [← integral_sub hBi hKi]; congr 1; funext v; ring
+      rw [hint, ← h1]
+    rw [hsub]
+    calc ‖∫ v : ℝ, (k v : ℂ) * (Complex.exp (ρ * v) - 1)‖
+        ≤ ∫ v, 2 * (‖ρ‖ * r) * k v := by
+          refine norm_integral_le_of_norm_le (hk.const_mul _) (Eventually.of_forall fun v => ?_)
+          rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hk0 _), mul_comm]
+          by_cases hv : r < |v|
+          · rw [smoothBump_eq_zero hr hv]; simp
+          · push Not at hv
+            have hρv : ‖ρ * v‖ ≤ ‖ρ‖ * r := by
+              rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+              exact mul_le_mul_of_nonneg_left hv (norm_nonneg _)
+            exact mul_le_mul_of_nonneg_right
+              ((Complex.norm_exp_sub_one_le (hρv.trans hρr)).trans (by linarith)) (hk0 _)
+      _ = 2 * (‖ρ‖ * r) := by
+          rw [integral_const_mul, RHTower.WeilDeletion.integral_smoothBump hr, mul_one]
+  have hBn : 1 - 2 * (‖ρ‖ * r) ≤ ‖B‖ := by
+    have h := norm_sub_norm_le (1 : ℂ) B
+    rw [norm_one, norm_sub_rev] at h
+    linarith
+  have h := norm_sub_norm_le B A
+  rw [norm_sub_rev] at h
+  linarith
+
+end GaugeDeltaBounds
+
+/-! ## The liminf law -/
+
+theorem paperFT_ofReal_eq_probeTransform (f : ℝ → ℝ) (γ : ℝ) :
+    Zeta23.paperFT (fun u => (f u : ℂ)) (γ : ℂ) = probeTransform f γ := by
+  unfold Zeta23.paperFT probeTransform
+  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  beta_reduce
+  rw [mul_comm]
+  congr 2
+  push_cast
+  ring
+
+theorem coe_eq_of_mem_critical (ρ : criticalZeros) :
+    ((ρ : 𝒵) : ℂ) = 1 / 2 + (((ρ : 𝒵) : ℂ).im : ℂ) * I := by
+  have hre : ((ρ : 𝒵) : ℂ).re = 1 / 2 := ρ.2
+  apply Complex.ext <;> simp [hre]
+
+/-- **Cramér liminf law.** Under RH, for every finite set `S` of zeros and every `ε > 0`, eventually
+`(1/M) ∫_0^M Ẽ² ≥ Σ_{ρ∈S} m_ρ²/|ρ|² − ε`. -/
+theorem cramer_liminf_law (hRH : RiemannHypothesis) (S : Finset criticalZeros) {ε : ℝ}
+    (hε : 0 < ε) :
+    ∀ᶠ M : ℝ in atTop, (∑ ρ ∈ S, (Zeta23.zetaZeroConfig.mult ((ρ : 𝒵) : ℂ) : ℝ) ^ 2 /
+        ‖((ρ : 𝒵) : ℂ)‖ ^ 2) - ε ≤ (∫ t in Icc 0 M, normalizedLogError t ^ 2) / M := by
+  set m : criticalZeros → ℝ := fun ρ => (Zeta23.zetaZeroConfig.mult ((ρ : 𝒵) : ℂ) : ℝ)
+  set Z := ∑ ρ ∈ S, m ρ ^ 2 / ‖((ρ : 𝒵) : ℂ)‖ ^ 2
+  have hZ0 : 0 ≤ Z := Finset.sum_nonneg fun _ _ => by positivity
+  have hI0 : ∀ M, 0 ≤ ∫ t in Icc 0 M, normalizedLogError t ^ 2 := fun M =>
+    setIntegral_nonneg measurableSet_Icc fun _ _ => sq_nonneg _
+  rcases S.eq_empty_or_nonempty with hS | ⟨ρ₀, hρ₀⟩
+  · filter_upwards [eventually_gt_atTop (0 : ℝ)] with M hM
+    simp only [Z, hS, Finset.sum_empty, zero_sub]
+    exact (neg_nonpos.mpr hε.le).trans (div_nonneg (hI0 M) hM.le)
+  have hρpos : ∀ ρ : criticalZeros, 0 < ‖((ρ : 𝒵) : ℂ)‖ := fun ρ => by
+    rw [norm_pos_iff]
+    intro h
+    have hre : ((ρ : 𝒵) : ℂ).re = 1 / 2 := ρ.2
+    rw [h, zero_re] at hre
+    norm_num at hre
+  -- choose `δ` with `Z(1−2δ)²/(e^{δ/2} + δ)² > Z − ε/2`
+  have hφ : Tendsto (fun δ : ℝ => Z * (1 - 2 * δ) ^ 2 / (Real.exp (δ / 2) + δ) ^ 2) (𝓝 0)
+      (𝓝 (Z * (1 - 2 * 0) ^ 2 / (Real.exp (0 / 2) + 0) ^ 2)) := by
+    refine ((continuous_const.mul ((continuous_const.sub (continuous_const.mul
+      continuous_id)).pow 2)).tendsto 0).div (((Real.continuous_exp.comp
+        (continuous_id.div_const 2)).add continuous_id).pow 2 |>.tendsto 0) ?_
+    simp
+  have hφ0 : Z * (1 - 2 * 0) ^ 2 / (Real.exp (0 / 2) + 0) ^ 2 = Z := by simp
+  rw [hφ0] at hφ
+  obtain ⟨δ₀, hδ₀, hball⟩ := Metric.eventually_nhds_iff.mp
+    (hφ.eventually (lt_mem_nhds (show Z - ε / 2 < Z by linarith)))
+  set δ := min (δ₀ / 2) (1 / 4)
+  have hδ : 0 < δ := by positivity
+  have hδ14 : δ ≤ 1 / 4 := min_le_right _ _
+  have hφδ : Z - ε / 2 < Z * (1 - 2 * δ) ^ 2 / (Real.exp (δ / 2) + δ) ^ 2 := hball (by
+    rw [Real.dist_eq, sub_zero, abs_of_pos hδ]
+    exact (min_le_left _ _).trans_lt (half_lt_self hδ₀))
+  -- the probe parameters
+  set R := 1 + ∑ ρ ∈ S, ‖((ρ : 𝒵) : ℂ)‖
+  have hR1 : 1 ≤ R := le_add_of_nonneg_right (Finset.sum_nonneg fun _ _ => norm_nonneg _)
+  have hRρ : ∀ ρ ∈ S, ‖((ρ : 𝒵) : ℂ)‖ ≤ R := fun ρ hρ => by
+    have := Finset.single_le_sum (f := fun ρ : criticalZeros => ‖((ρ : 𝒵) : ℂ)‖)
+      (fun _ _ => norm_nonneg _) hρ
+    simp only [R]
+    linarith
+  set r := δ / (2 * R)
+  have hr : 0 < r := by positivity
+  have hrδ : r ≤ δ := by
+    simp only [r]
+    rw [div_le_iff₀ (by positivity)]
+    nlinarith
+  set T := r - 2 * Real.log δ
+  have hlogδ : Real.log δ < 0 := Real.log_neg hδ (by linarith)
+  have hT : 0 ≤ T := by simp only [T]; linarith
+  have hexpT : Real.exp ((r - T) / 2) = δ := by
+    rw [show (r - T) / 2 = Real.log δ by simp only [T]; ring, Real.exp_log hδ]
+  set f := gaugeDeltaProbe hr T
+  have hf : ContDiff ℝ 2 f := contDiff_gaugeDeltaProbe hr T
+  have hfc : HasCompactSupport f := hasCompactSupport_gaugeDeltaProbe hr T hT
+  set G := ∫ u, |gaugeDerivative f u|
+  -- the transform at each zero of `S`
+  have hgauge : ∀ ρ ∈ S, (1 - 2 * δ) / ‖((ρ : 𝒵) : ℂ)‖ ≤
+      ‖Zeta23.paperFT (fun u => (f u : ℂ)) ((((ρ : 𝒵) : ℂ).im : ℝ) : ℂ)‖ := fun ρ hρ => by
+    set γ := ((ρ : 𝒵) : ℂ).im
+    have hnρ : ‖(1 / 2 + γ * I : ℂ)‖ = ‖((ρ : 𝒵) : ℂ)‖ := by rw [← coe_eq_of_mem_critical ρ]
+    have hρr : ‖(1 / 2 + γ * I : ℂ)‖ * r ≤ δ / 2 := by
+      rw [hnρ]
+      calc ‖((ρ : 𝒵) : ℂ)‖ * r ≤ R * r := mul_le_mul_of_nonneg_right (hRρ ρ hρ) hr.le
+        _ = δ / 2 := by simp only [r]; field_simp
+    have hb := norm_gaugeTransform_gaugeDeltaProbe_ge hr T γ (by linarith)
+    rw [integral_exp_mul_gaugeDerivative (hf.of_le (by norm_num)) hfc γ, norm_neg, norm_mul,
+      hexpT, hnρ] at hb
+    rw [paperFT_ofReal_eq_probeTransform, div_le_iff₀ (hρpos ρ), mul_comm]
+    rw [hnρ] at hρr
+    linarith
+  -- the energy and the `L¹` norm
+  have hE : (1 - 2 * δ) ^ 2 * Z ≤ criticalPacketEnergy f := by
+    refine le_trans ?_ ((summable_criticalPacketEnergy hf hfc).sum_le_tsum S
+      fun _ _ => by positivity)
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun ρ hρ => ?_
+    have h1 := hgauge ρ hρ
+    have h0 : 0 ≤ (1 - 2 * δ) / ‖((ρ : 𝒵) : ℂ)‖ := div_nonneg (by linarith) (norm_nonneg _)
+    have h2 := pow_le_pow_left₀ h0 h1 2
+    rw [div_pow] at h2
+    have hm : 0 ≤ m ρ ^ 2 := sq_nonneg _
+    calc (1 - 2 * δ) ^ 2 * (m ρ ^ 2 / ‖((ρ : 𝒵) : ℂ)‖ ^ 2)
+        = m ρ ^ 2 * ((1 - 2 * δ) ^ 2 / ‖((ρ : 𝒵) : ℂ)‖ ^ 2) := by ring
+      _ ≤ m ρ ^ 2 * ‖Zeta23.paperFT (fun u => (f u : ℂ)) ((((ρ : 𝒵) : ℂ).im : ℝ) : ℂ)‖ ^ 2 :=
+          mul_le_mul_of_nonneg_left h2 hm
+  have hGle : G ≤ Real.exp (δ / 2) + δ := by
+    have := integral_abs_gaugeDerivative_gaugeDeltaProbe_le hr T
+    rw [hexpT] at this
+    linarith [Real.exp_le_exp.mpr (show r / 2 ≤ δ / 2 by linarith)]
+  have hGpos : 0 < G := by
+    have hb := hgauge ρ₀ hρ₀
+    have hle : ‖Zeta23.paperFT (fun u => (f u : ℂ)) ((((ρ₀ : 𝒵) : ℂ).im : ℝ) : ℂ)‖ *
+        ‖((ρ₀ : 𝒵) : ℂ)‖ ≤ G := by
+      rw [paperFT_ofReal_eq_probeTransform]
+      have hg := integral_exp_mul_gaugeDerivative (hf.of_le (by norm_num)) hfc
+        ((ρ₀ : 𝒵) : ℂ).im
+      have hn := norm_integral_le_integral_norm (μ := volume)
+        (fun v => Complex.exp (((((ρ₀ : 𝒵) : ℂ).im * v : ℝ) : ℂ) * I) *
+          (gaugeDerivative f v : ℂ))
+      rw [hg, norm_neg, norm_mul, ← coe_eq_of_mem_critical ρ₀] at hn
+      refine (le_of_eq (mul_comm _ _)).trans (hn.trans (le_of_eq ?_))
+      refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+      simp only
+      rw [norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
+    have h1 : 0 < (1 - 2 * δ) / ‖((ρ₀ : 𝒵) : ℂ)‖ := div_pos (by linarith) (hρpos ρ₀)
+    have := mul_le_mul_of_nonneg_right hb (hρpos ρ₀).le
+    rw [div_mul_cancel₀ _ (hρpos ρ₀).ne'] at this
+    linarith
+  have hratio : Z * (1 - 2 * δ) ^ 2 / (Real.exp (δ / 2) + δ) ^ 2 ≤ criticalPacketEnergy f / G ^ 2 := by
+    rw [div_le_div_iff₀ (by positivity) (pow_pos hGpos 2)]
+    have hG2 : G ^ 2 ≤ (Real.exp (δ / 2) + δ) ^ 2 := pow_le_pow_left₀ hGpos.le hGle 2
+    calc Z * (1 - 2 * δ) ^ 2 * G ^ 2 = ((1 - 2 * δ) ^ 2 * Z) * G ^ 2 := by ring
+      _ ≤ criticalPacketEnergy f * G ^ 2 := mul_le_mul_of_nonneg_right hE (sq_nonneg G)
+      _ ≤ criticalPacketEnergy f * (Real.exp (δ / 2) + δ) ^ 2 :=
+          mul_le_mul_of_nonneg_left hG2 (tsum_nonneg fun _ => by positivity)
+  filter_upwards [eventually_mean_sq_normalizedLogError_ge hRH hf hfc (half_pos hε)] with M hM
+  linarith
+
+/-- Under RH the zero energy `Σ_ρ m_ρ²/|ρ|²` converges: its finite parts are bounded by twice the
+band constant plus one. -/
+theorem summable_zeroEnergy_of_riemannHypothesis (hRH : RiemannHypothesis) :
+    Summable fun ρ : criticalZeros =>
+      (Zeta23.zetaZeroConfig.mult ((ρ : 𝒵) : ℂ) : ℝ) ^ 2 / ‖((ρ : 𝒵) : ℂ)‖ ^ 2 := by
+  obtain ⟨C, hC0, hC⟩ := exists_meanSquare_band_of_riemannHypothesis hRH
+  refine summable_of_sum_le (c := 2 * C + 1) (fun _ => by positivity) fun S => ?_
+  obtain ⟨M, hM, hM1⟩ := ((cramer_liminf_law hRH S one_pos).and (eventually_ge_atTop 1)).exists
+  have hM0 : 0 < M := by linarith
+  have hband : (∫ t in Icc 0 M, normalizedLogError t ^ 2) / M ≤ 2 * C := by
+    rw [div_le_iff₀ hM0]
+    nlinarith [hC M hM0.le]
+  linarith
+
+/-- **Cramér liminf law, full zero energy.** Under RH, for every `ε > 0`, eventually
+`(1/M) ∫_0^M Ẽ² ≥ Σ_ρ m_ρ²/|ρ|² − ε`, the sum over all nontrivial zeros. -/
+theorem cramer_liminf_law_zeroEnergy (hRH : RiemannHypothesis) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ M : ℝ in atTop, (∑' ρ : 𝒵, (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ) ^ 2 / ‖(ρ : ℂ)‖ ^ 2) - ε ≤
+      (∫ t in Icc 0 M, normalizedLogError t ^ 2) / M := by
+  set g : 𝒵 → ℝ := fun ρ => (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ) ^ 2 / ‖(ρ : ℂ)‖ ^ 2
+  have hs := summable_zeroEnergy_of_riemannHypothesis hRH
+  have huniv : criticalZeros = Set.univ := Set.eq_univ_of_forall fun ρ => re_eq_half_of_mem hRH ρ
+  have htsum : ∑' ρ : 𝒵, g ρ = ∑' ρ : criticalZeros, g ρ := by
+    rw [tsum_subtype criticalZeros g, huniv, Set.indicator_univ]
+  rw [htsum]
+  have ht := hs.hasSum
+  unfold HasSum at ht
+  obtain ⟨S, hS⟩ := (ht.eventually (lt_mem_nhds (show ∑' ρ : criticalZeros, g ρ - ε / 2 <
+    ∑' ρ : criticalZeros, g ρ by linarith))).exists
+  filter_upwards [cramer_liminf_law hRH S (half_pos hε)] with M hM
+  simp only [g] at hS
+  linarith
 
 end
 

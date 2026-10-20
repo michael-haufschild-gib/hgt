@@ -319,7 +319,12 @@ The configurations and the probes of the theory:
     every grid step outside the countably many resonances `(γ − γ')ℓ ∈ 2πℤ`. Chains are the exact
     limit. On a grid a height counts only modulo `2π/ℓ`, so a chain with heights approaching
     `(2π/ℓ)ℤ` looks like exponents accumulating at a real point. With negative coefficients its
-    grid values stay `≤ 0`, while on the continuum Landau's theorem still sees it.
+    grid values stay `≤ 0`, while on the continuum Landau's theorem still sees it. On the
+    off-line lattice of spacing `2π/L > 4w` the family is a comb. It is silent for `v ≤ L − 2w`,
+    where the aperture is at most `L/2`. At every tooth `v = nL` it equals
+    `4L‖κ_w‖²(1 − cosh(nδL)) < 0`, and between the teeth it is `4L‖κ_w‖²`. So the minimal
+    receiver meets the crystal at the threshold aperture, up to the bump width, for every depth;
+    tests of much larger aperture see nothing between the teeth.
 
 ---
 

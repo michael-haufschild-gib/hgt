@@ -340,3 +340,17 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   survives truncation to COMPACT tests with a margin uniform in the aperture log(2V) — the answer
   to README §5 "which compact approximants inherit the block positivity": smooth doubly collared
   truncations, at every length. Standard axioms.
+- **C21 · Compact critical sources are Weil-positive for ζ (family → receiver)** —
+  `CompactCriticalSourceWeilPositivity`. Lipschitz calculus of the field's objects:
+  `abs_dyadicBernoulliFilter_sub_le` (P₀ is 9/2-Lipschitz, from the 1/2-Lipschitz periodic
+  quadratic), `abs_factorialPhaseProfile_sub_le`, `realPhaseLipschitz`,
+  `abs_realPhaseCombination_sub_le`; closed form `criticalTruncatedSource_eq` (collar kills the
+  indicator), continuity, support in [−log 2V, 0], `exists_lipschitz_criticalTruncatedSource`
+  (g^V = g^V ∘ proj_{[a,0]}, four bounded Lipschitz factors). Test `criticalTruncatedTest : C_c(ℝ,ℝ)`.
+  Receiver identity `compactFullWeilEnergy_criticalTruncatedTest`: Re W_Λ(g^V ⋆ g̃^V) =
+  criticalTruncatedCompleteEnergy (prime atoms = Λ(r)r^{-1/2}ac(log r); polar 2cosh integral =
+  product of half-exponential moments; Lévy lintegral = Lévy integral). Capstone
+  `exists_compactFullWeilEnergy_criticalTruncatedTest_pos`: ∃ M₀ ∀ M ≥ M₀ ∀ V ≥ V₀ ∀ dyadic block
+  ∀ b ≠ 0: Re W_Λ(g^V) > 0 — UNCONDITIONAL Weil positivity of ζ on compact tests of ARBITRARILY LONG
+  support (log 2V), not via small-support (Yoshida/Bombieri regime) but via the field's
+  log-coercivity vs ℓ²-uniform prime channel. Standard axioms.

@@ -72,6 +72,7 @@
 | (C47 withdrawn) | LogarithmicReciprocityDefectForNearbyModuli | NOT COUNTED: the h·H_{p/h} gap-energy bounds duplicate the existing BVI module PronicResidueGapEnergyAndPrimePairDistance (the corpus search was skipped). Reduced to a bridge: existing gap bounds + C44 exact reciprocity ⟹ hH_K − 2h ≤ π(V(p+h,p)+V(p,p+h)) ≤ hH_K + 4h | bridge |
 | C47 | HardyLittlewoodSingularSeriesOfTheDampedSource | lag-h correlation of the damped source over its squared density → Hardy–Littlewood singular series: A_ε(h)/ρ_ε² → 𝔖(h)−1, (ρ²+A)/ρ² → 𝔖(h) = Σ μ²(q)c_q(h)/φ(q)²; JOINT (ε,Q) limit for receiver-row lag covariances; Euler product 𝔖 = ∏_p(1+c_p(h)/(p−1)²); 𝔖(h)=0 for odd h, >0 for even h. Centred: white (A/V→0, THIM); uncentred: prime-pair structure (τ_ε/ε → Λ) | done |
 | C48 | ExactDampedSingularSeriesAndGallagherPrefixDiscrepancy | exact for every ε>0: (ρ²+A_ε(h))/ρ² = 𝔖_ε(h) = Σ c_q(h)μ²/D_ε² = ∏_p(1+c_p(h)/(p^{1+ε}−1)²) → 𝔖(h); lag sums are prefix discrepancies: Σ_{h≤H}A_ε(h) = Σ_e w_ε(e)²R_e(H) (row with squared Selberg coordinates); Gallagher's Σ_{h≤H}(𝔖(h)−1) = Σ_q (μ²/φ²)(q)R_q(H) | done |
+| C49 | HardyLittlewoodTupleSeriesFromRadicalClosedRows | radical-closed damped row μ(d)d^{-ε} on divisors of P=∏S: response = ∏_{p∈S} local factors; CRT: every translated moment = ∏_{p∈S} m_p(ε,H) exactly; k=1 gives density 1−p^{-1-ε}; ε→0: normalized moments → ∏_{p∈S}(1−ν_p(H)/p)/(1−1/p)^k; over all primes (distinct shifts, |factor−1| ≤ k²/p²) → Hardy–Littlewood k-tuple series 𝔖(H); 0 iff inadmissible, >0 if admissible; pairs: Euler form = C47 Ramanujan form | done |
 
 ## Conjecture queue
 
@@ -760,3 +761,18 @@
 - **Next:** pronic mean of the Gallagher defect = −Σ_p log p/(p−1)² (needs a joint absolute-convergence bound). Also the k-tuple
   version.
 - **Audit:** clean; olean; 5 public theorems standard axioms; wired. Count 48.
+
+### C49 — The Hardy–Littlewood k-tuple series from radical-closed damped rows (DONE)
+
+- **Module:** `BezoutValuationIncidence/HardyLittlewoodTupleSeriesFromRadicalClosedRows.lean`
+- **Statements:** `radicalClosedDampedRow`, `localDampedFactor`, **`sieveSeq_radicalClosedDampedRow`** (response = local product);
+  **`sum_range_primeSetProduct_prod`** (CRT factorization over a set of primes);
+  **`translatedMoment_radicalClosedDampedRow`** (every BiScale translated moment factors exactly);
+  `dvd_add_iff_eq_neg_residue`, `filter_exists_dvd_eq_image`, `tupleOccupancy_eq_of_incongruent`; `localTupleMean_single` (density);
+  `localTupleMean_zero`; **`tendsto_normalized_translatedMoment`**; `singularFactor_bounds` (1−k²x² ≤ (1−kx)/(1−x)^k ≤ 1);
+  **`hasProd_tupleSingularSeries`**, `tendsto_truncated_tupleSingularSeries`, **`tupleSingularSeries_eq_zero_of_inadmissible`**,
+  **`tupleSingularSeries_pos_of_admissible`**, **`tupleSingularSeries_pair`** (Euler = Ramanujan form for pairs).
+- **Why significant:** at zero damping, the BVI translated-moment array of damped rows carries the full prime k-tuple singular series.
+  Every moment factors exactly over primes (valuation: each prime acts on its own residue). Admissibility is exactly the vanishing law,
+  linking BVI tuple admissibility to 𝔖(H) > 0. The pair case closes a consistency loop: Ramanujan expansion (C47) = Euler product.
+- **Audit:** clean; olean; 9 public theorems standard axioms; wired. Count 49.

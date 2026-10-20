@@ -444,3 +444,13 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
   tops (aliasing turns heights → ∞ into exponents accumulating at a real point, defeating Landau); explains why
   every grid/progression criterion in the corpus carries a chain premise. Positive survivor = C53 (proved).
   Oleans built; axioms clean; wired; README mechanism 21 + trap row.
+- **C55 · The lag family meets the crystal at the threshold** — `LagFamilyMeetsTheCrystalAtTheThreshold`. Kernel of
+  the difference test `weilTest_twoBump_neg_one`: `k(x) = 2K(x) − K(x+v) − K(x−v)`, `K = b⋆b̃`; support
+  `weilTest_self_eq_zero_of_lt` (K = 0 beyond 2w); `integral_norm_sq_modScaledBump_pos`. On `offLineLatticeConfig`
+  (spacing 2π/L, any depth δ ∈ (0, ½]) with L > 4w: teeth `W_offLineLattice_lag_nat_mul` —
+  `W(f_{nL}) = 4L‖κ_w‖²(1 − cosh(nδL)) < 0` (`re_W_offLineLattice_lag_nat_mul_neg`); gaps
+  `W_offLineLattice_lag_eq_of_gap` — `W(f_v) = 4L‖κ_w‖²` for v > 2w off the teeth `|v − nL| ≤ 2w`; silence
+  `re_W_offLineLattice_lag_nonneg_of_le` for 0 ≤ v ≤ L − 2w (aperture ≤ L/2, via
+  `RHTower.offLineLattice_weil_positive_iff`). Capstone `lag_family_meets_crystal_at_threshold`: first negative lag
+  in (L − 2w, L], aperture (L/2, L/2 + w] — the minimal receiver is threshold-exact on crystals; negativity grows
+  like e^{nδL} (rate law). Olean built; axioms clean; wired; README mechanism 21 extended.

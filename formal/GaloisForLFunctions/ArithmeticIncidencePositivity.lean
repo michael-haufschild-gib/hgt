@@ -4,6 +4,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.LatticeCrossingClassifi
 import GaloisForLFunctions.ArithmeticIncidencePositivity.DyadicWindowIncidence
 import GaloisForLFunctions.ArithmeticIncidencePositivity.AntiDiagonalPolarCompensation
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeAtomVersusPoleClassification
+import GaloisForLFunctions.ArithmeticIncidencePositivity.CollarSandwichLaw
 
 /-!
 # Arithmetic Incidence Positivity
