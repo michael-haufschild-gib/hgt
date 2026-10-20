@@ -41,7 +41,7 @@ theorem coe_circleOfUnimodular (ω : ℕ → ℂ) (hω : ∀ n, ‖ω n‖ = 1) 
 theorem map_val_primesLE (y : ℕ) :
     (primesLE y).map ⟨Subtype.val, Subtype.val_injective⟩ = (range (y + 1)).filter Nat.Prime := by
   ext n
-  simp only [mem_map, Function.Embedding.coeFn_mk, mem_filter, mem_range]
+  simp only [Finset.mem_map, Function.Embedding.coeFn_mk, Finset.mem_filter, Finset.mem_range]
   constructor
   · rintro ⟨p, hp, rfl⟩
     exact ⟨by have := (mem_primesLE y p).mp hp; omega, p.2⟩
@@ -98,8 +98,10 @@ theorem exists_pos_density_eulerTargetReturnSet_exp (z₀ : ℂ) {ρ : ℝ} (hρ
       rw [norm_div, Complex.norm_real, Real.norm_of_nonneg hρ.le, div_le_iff₀ hρ]
       linarith
     have h := happrox _ hq
+    have hρ' : (ρ : ℂ) ≠ 0 := by exact_mod_cast hρ.ne'
     have hz' : z₀ + ρ * ((z - z₀) / ρ) = z := by
-      field_simp
+      rw [mul_div_cancel₀ _ hρ']
+      ring
     rw [hz'] at h
     rw [eulerPhaseProduct_circleOfUnimodular, norm_sub_rev]
     exact h
@@ -121,9 +123,10 @@ theorem exists_pos_density_eulerTargetReturnSet_zeta (z₀ : ℂ) {ρ : ℝ} (h�
   have hρR₂ : 0 < ρ * R₂ := by positivity
   have hne1 : ∀ z ∈ ball z₀ (ρ * R₂), z ≠ 1 := by
     intro z hz h1
+    subst h1
     rw [mem_ball, dist_eq_norm] at hz
-    have h := Complex.abs_re_le_norm (z - z₀)
-    rw [Complex.sub_re, h1, Complex.one_re] at h
+    have h := Complex.abs_re_le_norm (1 - z₀)
+    rw [Complex.sub_re, Complex.one_re] at h
     linarith [(abs_le.mp h).2]
   have hζan : AnalyticOnNhd ℂ riemannZeta (ball z₀ (ρ * R₂)) :=
     DifferentiableOn.analyticOnNhd
@@ -158,7 +161,10 @@ theorem exists_pos_density_eulerTargetReturnSet_zeta (z₀ : ℂ) {ρ : ℝ} (h�
     have hq : ‖(z - z₀) / ρ‖ < 1 := by
       rw [norm_div, Complex.norm_real, Real.norm_of_nonneg hρ.le, div_lt_one hρ]
       nlinarith
-    have hz' : z₀ + ρ * ((z - z₀) / ρ) = z := by field_simp
+    have hρ' : (ρ : ℂ) ≠ 0 := by exact_mod_cast hρ.ne'
+    have hz' : z₀ + ρ * ((z - z₀) / ρ) = z := by
+      rw [mul_div_cancel₀ _ hρ']
+      ring
     have hzball : z ∈ ball z₀ (ρ * R₂) := by
       rw [mem_ball, dist_eq_norm]
       nlinarith

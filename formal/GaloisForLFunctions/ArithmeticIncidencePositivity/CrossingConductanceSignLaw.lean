@@ -4,27 +4,33 @@ import GaloisForLFunctions.ArithmeticCriticalityTheory.ShiftedGroundStateKernelB
 /-!
 # The sign law of the archimedean crossing conductance
 
-In an odd gauge `M`, positive on `(0, ∞)`, the zero form is a jump form: the conductance of a
-pair of points `(x, y)` is `M(x) M(y) k(x, y)` with the gauge-free kernel
-`k(x, y) = dm(|x − y|) + sinh(x/2) sinh(y/2)`, where `dm` is the jump measure, the archimedean
-density `ω = archLevyDensity` plus the prime atoms. Same-side pairs (`xy > 0`) have `M(x)M(y) > 0`
-and crossing pairs (`x < 0 < y`) have `M(x)M(y) < 0`: a crossing pair carries negative conductance
-exactly where the kernel is positive.
+In an odd gauge `M`, positive on `(0, ∞)`, the zero form is a jump form
+`Z = J_M(u) + V_μ(u)` with `J_M(u) = ∫ dm(t) ∫ M(x)M(x+t)(u(x) − u(x+t))² dx` over `t > 0` and
+`V_μ(u) = ∫∫ (u(x) − u(y))² μ(x)μ(y) dx dy` over all ordered pairs, `μ = M sinh(x/2)`. The jump term
+counts each unordered pair `{x, y}` once with the weight `dm(|x − y|)`, the variance term twice with
+the weight `μ(x)μ(y)`. So the conductance of the unordered pair `{x, y}` is `M(x) M(y) k(x, y)` with
+the **gauge-free kernel**
 
-This module determines the sign of the archimedean part `k_arch(x, y) = ω(|x − y|) + sinh(x/2) sinh(y/2)`
-exactly, in the coordinates `s = y − x = |x| + y` (sum of the distances to the origin) and
-`e = x + y` (imbalance) of a crossing pair.
+    k(x, y) = dm(|x − y|) + 2 sinh(x/2) sinh(y/2),
+
+where `dm` is the jump measure: the archimedean density `ω = archLevyDensity` plus the prime atoms.
+Same-side pairs (`xy > 0`) have `M(x)M(y) > 0` and crossing pairs (`x < 0 < y`) have `M(x)M(y) < 0`:
+a crossing pair carries negative conductance exactly where the kernel is positive.
+
+This module determines the sign of the archimedean part
+`k_arch(x, y) = ω(|x − y|) + 2 sinh(x/2) sinh(y/2)` exactly, in the coordinates `s = y − x = |x| + y`
+(sum of the distances to the origin) and `e = x + y` (imbalance) of a crossing pair.
 
 * On same-side pairs `k_arch > 0`.
 * On a crossing pair `k_arch > 0 ⟺ cosh(e/2) > S(s)`, with the **crossing symbol**
-  `S(s) = cosh(s/2) − 2 ω(s)`.
-* `S` is strictly increasing on `(0, ∞)` with `S(2 log 3) = 119/120 < 1 < 3311/2040 = S(4 log 2)`,
-  so it has a unique root, the **crossing threshold** `s₀ ∈ (2 log 3, 4 log 2)`. Below the threshold
-  every crossing pair has negative conductance; at the threshold only the balanced pair `x = −y` is
-  neutral; above it the negative pairs are those with `cosh(e/2) > S(s)`, a collar along the axes.
-* On the lattice the reflected pair `(−log a, log a)` has negative archimedean conductance exactly
-  for `a ∈ {2, 3}`.
-* **Collar bound.** For `s ≥ 4 log 2` a negative crossing pair satisfies `min(|x|, y) < 6 e^{−3s/4}`.
+  `S(s) = cosh(s/2) − ω(s)`.
+* `S` is strictly increasing on `(0, ∞)` with `S(log 5) < 1 < S(log 6)`, so it has a unique root, the
+  **crossing threshold** `s₀ ∈ (log 5, log 6)`. Below the threshold every crossing pair has negative
+  conductance; at the threshold only the balanced pair `x = −y` is neutral; above it the negative pairs
+  are those with `cosh(e/2) > S(s)`, a collar along the axes.
+* On the lattice the reflected pair `(−log a, log a)`, `a ≥ 2`, has negative archimedean conductance
+  exactly for `a = 2`.
+* **Collar bound.** For `s ≥ 4 log 2` a negative crossing pair satisfies `min(|x|, y) < 3 e^{−3s/4}`.
 -/
 
 open RHTower Set
@@ -33,25 +39,26 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticIncidencePositivity
 
-/-- The archimedean part of the gauge-free pair kernel, `ω(|x − y|) + sinh(x/2) sinh(y/2)`. -/
+/-- The archimedean part of the gauge-free pair kernel, `ω(|x − y|) + 2 sinh(x/2) sinh(y/2)`. -/
 def archPairKernel (x y : ℝ) : ℝ :=
-  archLevyDensity |x - y| + Real.sinh (x / 2) * Real.sinh (y / 2)
+  archLevyDensity |x - y| + 2 * Real.sinh (x / 2) * Real.sinh (y / 2)
 
-/-- The crossing symbol `S(s) = cosh(s/2) − 2 ω(s)`. -/
-def crossingSymbol (s : ℝ) : ℝ := Real.cosh (s / 2) - 2 * archLevyDensity s
+/-- The crossing symbol `S(s) = cosh(s/2) − ω(s)`. -/
+def crossingSymbol (s : ℝ) : ℝ := Real.cosh (s / 2) - archLevyDensity s
 
 theorem archPairKernel_comm (x y : ℝ) : archPairKernel x y = archPairKernel y x := by
   unfold archPairKernel
-  rw [abs_sub_comm, mul_comm]
+  rw [abs_sub_comm, mul_right_comm]
 
 /-- Reflection symmetry `(x, y) ↦ (−y, −x)` of the kernel. -/
 theorem archPairKernel_neg_neg (x y : ℝ) : archPairKernel (-y) (-x) = archPairKernel x y := by
   unfold archPairKernel
   have h1 : |-y - -x| = |x - y| := by
     rw [show -y - -x = -(y - x) by ring, abs_neg, abs_sub_comm]
-  rw [h1, neg_div, neg_div, Real.sinh_neg, Real.sinh_neg, neg_mul_neg, mul_comm]
+  rw [h1, neg_div, neg_div, Real.sinh_neg, Real.sinh_neg]
+  ring
 
-/-! ### Hyperbolic product-to-sum identities -/
+/-! ### Hyperbolic identities -/
 
 theorem sinh_mul_sinh (A B : ℝ) :
     Real.sinh A * Real.sinh B = (Real.cosh (A + B) - Real.cosh (A - B)) / 2 := by
@@ -63,6 +70,47 @@ theorem cosh_sub_cosh (u v : ℝ) :
   have h := sinh_mul_sinh ((u + v) / 2) ((u - v) / 2)
   rw [show (u + v) / 2 + (u - v) / 2 = u by ring, show (u + v) / 2 - (u - v) / 2 = v by ring] at h
   linarith
+
+theorem cosh_log {t : ℝ} (ht : 0 < t) : Real.cosh (Real.log t) = (t + t⁻¹) / 2 := by
+  rw [Real.cosh_eq, Real.exp_neg, Real.exp_log ht]
+
+theorem log_four_eq : Real.log (4 : ℝ) = 2 * Real.log 2 := by
+  rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; push_cast; ring
+
+/-- `ω(log n) = n² / ((n² − 1) √n)` for `n ≥ 2`. -/
+theorem archLevyDensity_log_nat {n : ℕ} (hn : 2 ≤ n) :
+    archLevyDensity (Real.log n) = (n : ℝ) ^ 2 / (((n : ℝ) ^ 2 - 1) * Real.sqrt n) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hn1 : (1 : ℝ) < n := by exact_mod_cast (by omega : 1 < n)
+  have hs : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
+  unfold archLevyDensity
+  have e1 : Real.exp (-Real.log n / 2) = (Real.sqrt n)⁻¹ := by
+    rw [neg_div, Real.exp_neg, ← Real.log_sqrt hn0.le, Real.exp_log hs]
+  have e2 : Real.exp (-2 * Real.log n) = ((n : ℝ) ^ 2)⁻¹ := by
+    rw [show -2 * Real.log n = -Real.log ((n : ℝ) ^ 2) by rw [Real.log_pow]; push_cast; ring,
+      Real.exp_neg, Real.exp_log (by positivity)]
+  rw [e1, e2]
+  have hn2 : (0 : ℝ) < (n : ℝ) ^ 2 - 1 := by nlinarith
+  have hn2' : (0 : ℝ) < (n : ℝ) ^ 2 := by positivity
+  have e : 1 - ((n : ℝ) ^ 2)⁻¹ = ((n : ℝ) ^ 2 - 1) / (n : ℝ) ^ 2 := by
+    rw [eq_div_iff hn2'.ne', sub_mul, one_mul, inv_mul_cancel₀ hn2'.ne']
+  rw [e, div_div_eq_mul_div, div_eq_div_iff hn2.ne' (by positivity)]
+  field_simp
+
+/-- The symbol at `log n`: `S(log n) = (n + 1)/(2√n) − n²/((n² − 1)√n)`. -/
+theorem crossingSymbol_log_nat {n : ℕ} (hn : 2 ≤ n) :
+    crossingSymbol (Real.log n) =
+      ((n : ℝ) + 1) / (2 * Real.sqrt n) - (n : ℝ) ^ 2 / (((n : ℝ) ^ 2 - 1) * Real.sqrt n) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hs : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
+  unfold crossingSymbol
+  rw [archLevyDensity_log_nat hn,
+    show Real.log n / 2 = Real.log (Real.sqrt n) by rw [Real.log_sqrt hn0.le], cosh_log hs]
+  congr 1
+  rw [div_eq_div_iff two_ne_zero (by positivity)]
+  have e2 : Real.sqrt n * Real.sqrt n = n := Real.mul_self_sqrt hn0.le
+  have e : (Real.sqrt n)⁻¹ * Real.sqrt n = 1 := inv_mul_cancel₀ hs.ne'
+  linear_combination 2 * e2 + 2 * e
 
 /-! ### Same-side pairs -/
 
@@ -77,18 +125,19 @@ theorem archPairKernel_pos_of_sameSide {x y : ℝ} (hxy : 0 < x * y) (hne : x �
     · exact mul_pos (Real.sinh_pos_iff.mpr (by linarith)) (Real.sinh_pos_iff.mpr (by linarith))
     · exact mul_pos_of_neg_of_neg (Real.sinh_neg_iff.mpr (by linarith))
         (Real.sinh_neg_iff.mpr (by linarith))
-  linarith
+  nlinarith
 
 /-! ### Crossing pairs: the symbol form -/
 
-/-- For `x < y`, `k_arch(x, y) = ω(y − x) + (cosh((x+y)/2) − cosh((y−x)/2))/2`. -/
+/-- For `x < y`, `k_arch(x, y) = ω(y − x) + cosh((x+y)/2) − cosh((y−x)/2)`. -/
 theorem archPairKernel_eq_of_lt {x y : ℝ} (hxy : x < y) :
     archPairKernel x y =
-      archLevyDensity (y - x) + (Real.cosh ((x + y) / 2) - Real.cosh ((y - x) / 2)) / 2 := by
+      archLevyDensity (y - x) + (Real.cosh ((x + y) / 2) - Real.cosh ((y - x) / 2)) := by
   unfold archPairKernel
-  rw [abs_sub_comm, abs_of_pos (sub_pos.mpr hxy), sinh_mul_sinh,
+  rw [abs_sub_comm, abs_of_pos (sub_pos.mpr hxy), mul_assoc, sinh_mul_sinh,
     show x / 2 + y / 2 = (x + y) / 2 by ring, show x / 2 - y / 2 = -((y - x) / 2) by ring,
     Real.cosh_neg]
+  ring
 
 /-- **Sign law.** For `x < y` the kernel is positive iff `cosh((x+y)/2)` exceeds the symbol at
 `s = y − x`. On a crossing pair this is the condition for negative conductance. -/
@@ -137,69 +186,56 @@ theorem continuousOn_archLevyDensity_Ioi : ContinuousOn archLevyDensity (Ioi 0) 
 theorem continuousOn_crossingSymbol : ContinuousOn crossingSymbol (Ioi 0) := by
   unfold crossingSymbol
   exact (Real.continuous_cosh.comp (continuous_id.div_const 2)).continuousOn.sub
-    (continuousOn_const.mul continuousOn_archLevyDensity_Ioi)
+    continuousOn_archLevyDensity_Ioi
 
-/-- `S(2 log 3) = 119/120`. -/
-theorem crossingSymbol_two_log_three : crossingSymbol (2 * Real.log 3) = 119 / 120 := by
-  unfold crossingSymbol archLevyDensity
-  have h3 : (0 : ℝ) < 3 := by norm_num
-  have e1 : 2 * Real.log 3 / 2 = Real.log 3 := by ring
-  have e2 : -(2 * Real.log 3) / 2 = -Real.log 3 := by ring
-  have e3 : -2 * (2 * Real.log 3) = -Real.log ((3 : ℝ) ^ 4) := by
-    rw [Real.log_pow]; push_cast; ring
-  rw [e1, e2, e3, Real.cosh_eq, Real.exp_neg, Real.exp_neg, Real.exp_log h3,
-    Real.exp_log (by norm_num)]
-  norm_num
+/-- `S(log 5) < 1`: at `log 5` the balanced pair still has negative conductance. -/
+theorem crossingSymbol_log_five_lt_one : crossingSymbol (Real.log 5) < 1 := by
+  have h := crossingSymbol_log_nat (n := 5) (by norm_num)
+  push_cast at h
+  rw [h]
+  have hq2 : Real.sqrt 5 < 2.2361 := (Real.sqrt_lt' (by norm_num)).mpr (by norm_num)
+  have hq0 : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
+  have hsq : Real.sqrt 5 ^ 2 = 5 := Real.sq_sqrt (by norm_num)
+  rw [div_sub_div _ _ (by positivity) (by positivity), div_lt_one (by positivity)]
+  nlinarith
 
-/-- `S(4 log 2) = 3311/2040`. -/
-theorem crossingSymbol_four_log_two : crossingSymbol (4 * Real.log 2) = 3311 / 2040 := by
-  unfold crossingSymbol archLevyDensity
-  have e1 : 4 * Real.log 2 / 2 = Real.log ((2 : ℝ) ^ 2) := by
-    rw [Real.log_pow]; push_cast; ring
-  have e2 : -(4 * Real.log 2) / 2 = -Real.log ((2 : ℝ) ^ 2) := by
-    rw [Real.log_pow]; push_cast; ring
-  have e3 : -2 * (4 * Real.log 2) = -Real.log ((2 : ℝ) ^ 8) := by
-    rw [Real.log_pow]; push_cast; ring
-  rw [e1, e2, e3, Real.cosh_eq, Real.exp_neg, Real.exp_neg, Real.exp_log (by norm_num),
-    Real.exp_log (by norm_num)]
-  norm_num
+/-- `1 < S(log 6)`: at `log 6` the balanced pair has positive conductance. -/
+theorem one_lt_crossingSymbol_log_six : 1 < crossingSymbol (Real.log 6) := by
+  have h := crossingSymbol_log_nat (n := 6) (by norm_num)
+  push_cast at h
+  rw [h]
+  have hq1 : (2.449 : ℝ) < Real.sqrt 6 := (Real.lt_sqrt (by norm_num)).mpr (by norm_num)
+  have hq0 : 0 < Real.sqrt 6 := Real.sqrt_pos.mpr (by norm_num)
+  have hsq : Real.sqrt 6 ^ 2 = 6 := Real.sq_sqrt (by norm_num)
+  rw [div_sub_div _ _ (by positivity) (by positivity), lt_div_iff₀ (by positivity)]
+  nlinarith
 
-theorem two_mul_log_three_pos : 0 < 2 * Real.log 3 := by
-  have : 0 < Real.log 3 := Real.log_pos (by norm_num)
-  linarith
+theorem log_five_pos : 0 < Real.log (5 : ℝ) := Real.log_pos (by norm_num)
 
-theorem log_four_eq : Real.log (4 : ℝ) = 2 * Real.log 2 := by
-  rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; push_cast; ring
+theorem log_five_lt_log_six : Real.log (5 : ℝ) < Real.log 6 :=
+  Real.log_lt_log (by norm_num) (by norm_num)
 
-theorem two_mul_log_three_lt_four_mul_log_two : 2 * Real.log 3 < 4 * Real.log 2 := by
-  have : Real.log 3 < Real.log 4 := Real.log_lt_log (by norm_num) (by norm_num)
-  rw [log_four_eq] at this
-  linarith
-
-/-- The symbol crosses `1` in `(2 log 3, 4 log 2)`. -/
+/-- The symbol crosses `1` in `(log 5, log 6)`. -/
 theorem exists_crossingThreshold :
-    ∃ s, s ∈ Ioo (2 * Real.log 3) (4 * Real.log 2) ∧ crossingSymbol s = 1 := by
-  have hlt := two_mul_log_three_lt_four_mul_log_two
-  have hcont : ContinuousOn crossingSymbol (Icc (2 * Real.log 3) (4 * Real.log 2)) :=
-    continuousOn_crossingSymbol.mono fun s hs =>
-      mem_Ioi.mpr (lt_of_lt_of_le two_mul_log_three_pos hs.1)
-  have hmem : (1 : ℝ) ∈ Ioo (crossingSymbol (2 * Real.log 3)) (crossingSymbol (4 * Real.log 2)) := by
-    rw [crossingSymbol_two_log_three, crossingSymbol_four_log_two]
-    constructor <;> norm_num
-  obtain ⟨s, hs, hs1⟩ := intermediate_value_Ioo hlt.le hcont hmem
+    ∃ s, s ∈ Ioo (Real.log 5) (Real.log 6) ∧ crossingSymbol s = 1 := by
+  have hcont : ContinuousOn crossingSymbol (Icc (Real.log 5) (Real.log 6)) :=
+    continuousOn_crossingSymbol.mono fun s hs => mem_Ioi.mpr (lt_of_lt_of_le log_five_pos hs.1)
+  have hmem : (1 : ℝ) ∈ Ioo (crossingSymbol (Real.log 5)) (crossingSymbol (Real.log 6)) :=
+    ⟨crossingSymbol_log_five_lt_one, one_lt_crossingSymbol_log_six⟩
+  obtain ⟨s, hs, hs1⟩ := intermediate_value_Ioo log_five_lt_log_six.le hcont hmem
   exact ⟨s, hs, hs1⟩
 
 /-- The crossing threshold `s₀`: the unique positive root of the crossing symbol. -/
 def crossingThreshold : ℝ := Classical.choose exists_crossingThreshold
 
-theorem crossingThreshold_mem : crossingThreshold ∈ Ioo (2 * Real.log 3) (4 * Real.log 2) :=
+theorem crossingThreshold_mem : crossingThreshold ∈ Ioo (Real.log 5) (Real.log 6) :=
   (Classical.choose_spec exists_crossingThreshold).1
 
 theorem crossingSymbol_crossingThreshold : crossingSymbol crossingThreshold = 1 :=
   (Classical.choose_spec exists_crossingThreshold).2
 
 theorem crossingThreshold_pos : 0 < crossingThreshold :=
-  lt_trans two_mul_log_three_pos crossingThreshold_mem.1
+  lt_trans log_five_pos crossingThreshold_mem.1
 
 theorem crossingSymbol_lt_one_iff {s : ℝ} (hs : 0 < s) :
     crossingSymbol s < 1 ↔ s < crossingThreshold := by
@@ -249,9 +285,10 @@ theorem archPairKernel_balanced_neg_iff {s : ℝ} (hs : 0 < s) :
 /-! ### The reflected lattice pair -/
 
 /-- **Reflection law.** The reflected lattice pair `(−log a, log a)`, `a ≥ 2`, has positive
-archimedean kernel, that is negative conductance, exactly for `a ∈ {2, 3}`. -/
+archimedean kernel, that is negative conductance, exactly for `a = 2`: its sum `2 log a` is below
+the threshold iff `a² ≤ 5`. -/
 theorem archPairKernel_reflection_pos_iff {a : ℕ} (ha : 2 ≤ a) :
-    0 < archPairKernel (-Real.log a) (Real.log a) ↔ a ≤ 3 := by
+    0 < archPairKernel (-Real.log a) (Real.log a) ↔ a = 2 := by
   have ha1 : (1 : ℝ) < a := by exact_mod_cast (by omega : 1 < a)
   have hla : 0 < Real.log a := Real.log_pos ha1
   have hxy : -Real.log a < Real.log a := by linarith
@@ -260,14 +297,18 @@ theorem archPairKernel_reflection_pos_iff {a : ℕ} (ha : 2 ≤ a) :
     crossingSymbol_lt_one_iff (by linarith)]
   constructor
   · intro h
-    by_contra h4
-    have h4' : (4 : ℝ) ≤ a := by exact_mod_cast (by omega : 4 ≤ a)
-    have : Real.log (4 : ℝ) ≤ Real.log a := Real.log_le_log (by norm_num) h4'
-    rw [log_four_eq] at this
+    by_contra h3
+    have h3' : (3 : ℝ) ≤ a := by exact_mod_cast (by omega : 3 ≤ a)
+    have : Real.log (3 : ℝ) ≤ Real.log a := Real.log_le_log (by norm_num) h3'
+    have h9 : Real.log (6 : ℝ) < 2 * Real.log 3 := by
+      rw [show (2 : ℝ) * Real.log 3 = Real.log (3 ^ 2) by rw [Real.log_pow]; push_cast; ring]
+      exact Real.log_lt_log (by norm_num) (by norm_num)
     linarith [crossingThreshold_mem.2]
-  · intro h
-    have h3 : (a : ℝ) ≤ 3 := by exact_mod_cast h
-    have : Real.log a ≤ Real.log 3 := Real.log_le_log (by linarith) h3
+  · rintro rfl
+    push_cast
+    have h4 : 2 * Real.log (2 : ℝ) < Real.log 5 := by
+      rw [← log_four_eq]
+      exact Real.log_lt_log (by norm_num) (by norm_num)
     linarith [crossingThreshold_mem.1]
 
 /-! ### The collar bound -/
@@ -295,10 +336,10 @@ theorem exp_neg_half_le_of_four_log_two_le {s : ℝ} (hs : 4 * Real.log 2 ≤ s)
   linarith
 
 /-- **Collar bound.** Beyond `4 log 2`, a crossing pair with negative conductance lies within
-`6 e^{−3s/4}` of an axis: `min(|x|, y) < 6 e^{−3(y−x)/4}`. -/
+`3 e^{−3s/4}` of an axis: `min(|x|, y) < 3 e^{−3(y−x)/4}`. -/
 theorem min_lt_of_archPairKernel_pos {x y : ℝ} (hx : x < 0) (hy : 0 < y)
     (hs : 4 * Real.log 2 ≤ y - x) (hk : 0 < archPairKernel x y) :
-    min (-x) y < 6 * Real.exp (-(3 * (y - x)) / 4) := by
+    min (-x) y < 3 * Real.exp (-(3 * (y - x)) / 4) := by
   set s := y - x with hs_def
   set c := min (-x) y with hc_def
   have hlog2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
@@ -312,7 +353,7 @@ theorem min_lt_of_archPairKernel_pos {x y : ℝ} (hx : x < 0) (hy : 0 < y)
     rcases le_total (-x) y with h | h
     · rw [hc_def, min_eq_left h, abs_of_nonneg (by linarith)]; ring
     · rw [hc_def, min_eq_right h, abs_of_nonpos (by linarith)]; ring
-  have hkey : Real.cosh (s / 2) - Real.cosh ((s - 2 * c) / 2) < 2 * archLevyDensity s := by
+  have hkey : Real.cosh (s / 2) - Real.cosh ((s - 2 * c) / 2) < archLevyDensity s := by
     have h := (archPairKernel_pos_iff (by linarith : x < y)).mp hk
     unfold crossingSymbol at h
     have hc' : Real.cosh ((x + y) / 2) = Real.cosh ((s - 2 * c) / 2) := by
@@ -323,7 +364,7 @@ theorem min_lt_of_archPairKernel_pos {x y : ℝ} (hx : x < 0) (hy : 0 < y)
     archLevyDensity_le_of_four_log_two_le hs
   have hexp : Real.exp (-s / 2) ≤ 1 / 4 := exp_neg_half_le_of_four_log_two_le hs
   rcases le_or_gt c (s / 4) with hc | hc
-  · -- the pair is close to an axis: `c sinh(s/4) ≤ cosh(s/2) − cosh(s/2 − c) < 2ω(s)`
+  · -- the pair is close to an axis: `c sinh(s/4) ≤ cosh(s/2) − cosh(s/2 − c) < ω(s)`
     have hdiff : Real.cosh (s / 2) - Real.cosh ((s - 2 * c) / 2) =
         2 * Real.sinh ((s - c) / 2) * Real.sinh (c / 2) := by
       rw [cosh_sub_cosh, show (s / 2 + (s - 2 * c) / 2) / 2 = (s - c) / 2 by ring,
@@ -349,16 +390,16 @@ theorem min_lt_of_archPairKernel_pos {x y : ℝ} (hx : x < 0) (hy : 0 < y)
       rw [e]
       nlinarith [hE, hexp]
     have hmain : c * (3 / 8) * Real.exp (s / 4) <
-        512 / 255 * Real.exp (-(3 * s) / 4) * Real.exp (s / 4) := by
+        256 / 255 * Real.exp (-(3 * s) / 4) * Real.exp (s / 4) := by
       calc c * (3 / 8) * Real.exp (s / 4) = c * (3 / 8 * Real.exp (s / 4)) := by ring
         _ ≤ c * Real.sinh (s / 4) := mul_le_mul_of_nonneg_left hsinh_lower hc0
-        _ < 2 * archLevyDensity s := lt_of_le_of_lt h3 hkey
-        _ ≤ 512 / 255 * Real.exp (-s / 2) := by linarith
-        _ = 512 / 255 * Real.exp (-(3 * s) / 4) * Real.exp (s / 4) := by rw [hEF]; ring
-    have hdiv : c * (3 / 8) < 512 / 255 * Real.exp (-(3 * s) / 4) :=
+        _ < archLevyDensity s := lt_of_le_of_lt h3 hkey
+        _ ≤ 256 / 255 * Real.exp (-s / 2) := hω
+        _ = 256 / 255 * Real.exp (-(3 * s) / 4) * Real.exp (s / 4) := by rw [hEF]; ring
+    have hdiv : c * (3 / 8) < 256 / 255 * Real.exp (-(3 * s) / 4) :=
       lt_of_mul_lt_mul_right hmain hE.le
     nlinarith [hF]
-  · -- a balanced pair far out: `cosh(s/2) − cosh(s/4) ≥ 3s²/32` beats `2ω(s) ≤ 128/255`
+  · -- a balanced pair far out: `cosh(s/2) − cosh(s/4) ≥ 3s²/32` beats `ω(s) ≤ 64/255`
     exfalso
     have hle : Real.cosh ((s - 2 * c) / 2) ≤ Real.cosh (s / 4) :=
       Real.cosh_strictMonoOn.monotoneOn (mem_Ici.mpr (by linarith)) (mem_Ici.mpr (by linarith))

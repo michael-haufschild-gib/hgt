@@ -601,7 +601,7 @@ take a fresh look at the our whole research program.
 
 status quo:
 - our route ledger: docs/reports/rh-current-frontier-map.md
-- analysis of hard mathematical obstales: docs/reports/review-1910/hard-obstacles.md
+- analysis of hard mathematical obstales: docs/reports/review-2010/hard-obstacles.md
 
 we have then started several research programs to develop new theories and the mathematical tools that will allow us to overcome these obstacles:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
@@ -610,12 +610,13 @@ we have then started several research programs to develop new theories and the m
 - formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
 - formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
 - formal/GaloisForLFunctions/SquareRootThreshold/README.md
-
+- formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
+  
 problem: despite all this work, we have not come close to overcome any of the hard obstacles and close a proof route.
 
 questions:
-1. what mathematimatical tools are we or mathematics as a whole missing?
-2. what to research next in each of the four research programs
+1. what mathematical tools are we or mathematics as a whole missing?
+2. what to research next in each of the research programs
 3. do we need another research program to develop new mathematics that nobody has developed yet? if so, what would it be about and what would it try to answer and do?
 
 work rules:
@@ -626,8 +627,8 @@ write your whole report in docs/reports/review-2010/fable.md
 
 ## update obstacles
 previously we had created these two documents:
-- docs/reports/hard-obstacles-1810.md
-- docs/reports/hard-obstacles-summary-1810.md 
+- docs/reports/review-2010/hard-obstacles.md
+- docs/reports/review-2010/hard-obstacles-summary.md
 
 the review tasks was:
 based on route ledger: docs/reports/rh-current-frontier-map.md and ledger of hard obstacles (walls) docs/reports/walls/walls-ledger.md create
@@ -640,7 +641,7 @@ based on route ledger: docs/reports/rh-current-frontier-map.md and ledger of har
 
 this review is incorrect and outdated. redo it.
 
-write the new reports in folder docs/reports/review-1910/
+rewrite the existing reports in folder docs/reports/review-2010/
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
@@ -651,5 +652,6 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
 - formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
 - formal/GaloisForLFunctions/SquareRootThreshold/README.md
-
+- formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
+  
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics.
