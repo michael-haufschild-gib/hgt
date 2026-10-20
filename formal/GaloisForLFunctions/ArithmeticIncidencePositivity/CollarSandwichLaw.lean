@@ -4,19 +4,19 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeAtomVersusPoleClas
 # The collar of an anti-diagonal: two-sided law
 
 On the anti-diagonal of sum `s`, parametrized by `(−a, s − a)`, the collar is the set of `a ∈ (0, s)`
-with `P_s(a) < ω(s)`, where `P_s(a) = sinh(a/2) sinh((s − a)/2)` is the polar weight. Two elementary
-bounds on the polar weight,
+with `P_s(a) < ω(s)`, where `P_s(a) = 2 sinh(a/2) sinh((s − a)/2) = cosh(s/2) − cosh(s/2 − a)` is
+the polar weight. Two elementary bounds on the polar weight,
 
-    a · sinh(s/2 − a) ≤ 2 P_s(a) ≤ a · sinh(s/2)      (0 ≤ a ≤ s/2),
+    a · sinh(s/2 − a) ≤ P_s(a) ≤ a · sinh(s/2)      (0 ≤ a ≤ s/2),
 
 sandwich the collar between two explicit pairs of end intervals: for `s ≥ 4 log 2`,
 
     (0, ℓ(s)) ∪ (s − ℓ(s), s) ⊆ collar ⊆ (0, L(s)) ∪ (s − L(s), s),
 
-with the **inner end** `ℓ(s) = 2ω(s)/sinh(s/2) = 4e^{−s}/((1 − e^{−2s})(1 − e^{−s}))`, which lies in
-`[4e^{−s}, (256/239) · 4e^{−s}]`, and the **outer end** `L(s) = ℓ(s) · sinh(s/2)/sinh(s/2 − 6e^{−3s/4})`.
-The collar has exact order `4e^{−s}` at each axis, and the unpaid archimedean mass of the
-anti-diagonal is at most `2 ω(s) L(s)`, of order `8 e^{−3s/2}`.
+with the **inner end** `ℓ(s) = ω(s)/sinh(s/2) = 2e^{−s}/((1 − e^{−2s})(1 − e^{−s}))`, which lies in
+`[2e^{−s}, (256/239) · 2e^{−s}]`, and the **outer end** `L(s) = ℓ(s) · sinh(s/2)/sinh(s/2 − 3e^{−3s/4})`.
+The collar has exact order `2e^{−s}` at each axis, and the unpaid archimedean mass of the
+anti-diagonal is at most `2 ω(s) L(s)`, of order `4 e^{−3s/2}`.
 -/
 
 open RHTower Set MeasureTheory
@@ -40,15 +40,15 @@ theorem sinh_sub_self_le_cosh_sub_one (a : ℝ) : Real.sinh a - a ≤ Real.cosh 
   rw [← Real.cosh_sub_sinh] at h
   linarith
 
-/-- Upper bound: `2 P_s(a) ≤ a sinh(s/2)` for `a, s ≥ 0`. -/
-theorem two_mul_crossingPolarWeight_le {s a : ℝ} (hs : 0 ≤ s) (ha : 0 ≤ a) :
-    2 * crossingPolarWeight s a ≤ a * Real.sinh (s / 2) := by
-  have e : 2 * crossingPolarWeight s a =
+/-- Upper bound: `P_s(a) ≤ a sinh(s/2)` for `a, s ≥ 0`. -/
+theorem crossingPolarWeight_le {s a : ℝ} (hs : 0 ≤ s) (ha : 0 ≤ a) :
+    crossingPolarWeight s a ≤ a * Real.sinh (s / 2) := by
+  have e : crossingPolarWeight s a =
       Real.sinh a * Real.sinh (s / 2) - (Real.cosh a - 1) * Real.cosh (s / 2) := by
     unfold crossingPolarWeight
     have h := two_sinh_mul_sinh_sub (a / 2) (s / 2)
     rw [show 2 * (a / 2) = a by ring, show s / 2 - a / 2 = (s - a) / 2 by ring] at h
-    linarith
+    exact h
   rw [e]
   have h1 : 0 ≤ Real.sinh (s / 2) := Real.sinh_nonneg_iff.mpr (by linarith)
   have h2 : Real.sinh (s / 2) ≤ Real.cosh (s / 2) := (Real.sinh_lt_cosh (s / 2)).le
@@ -56,9 +56,9 @@ theorem two_mul_crossingPolarWeight_le {s a : ℝ} (hs : 0 ≤ s) (ha : 0 ≤ a)
   have h4 := sinh_sub_self_le_cosh_sub_one a
   nlinarith [mul_le_mul h2 h4 h3 (by linarith [Real.one_le_cosh (s / 2)])]
 
-/-- Lower bound: `a sinh(s/2 − a) ≤ 2 P_s(a)` for `0 ≤ a ≤ s/2`. -/
-theorem le_two_mul_crossingPolarWeight {s a : ℝ} (ha : 0 ≤ a) (has : a ≤ s / 2) :
-    a * Real.sinh (s / 2 - a) ≤ 2 * crossingPolarWeight s a := by
+/-- Lower bound: `a sinh(s/2 − a) ≤ P_s(a)` for `0 ≤ a ≤ s/2`. -/
+theorem le_crossingPolarWeight {s a : ℝ} (ha : 0 ≤ a) (has : a ≤ s / 2) :
+    a * Real.sinh (s / 2 - a) ≤ crossingPolarWeight s a := by
   unfold crossingPolarWeight
   have h1 : a / 2 ≤ Real.sinh (a / 2) := Real.self_le_sinh_iff.mpr (by linarith)
   have h2 : Real.sinh (s / 2 - a) ≤ Real.sinh ((s - a) / 2) :=
@@ -69,19 +69,19 @@ theorem le_two_mul_crossingPolarWeight {s a : ℝ} (ha : 0 ≤ a) (has : a ≤ s
 
 /-! ### The two ends -/
 
-/-- The inner collar end `ℓ(s) = 2ω(s)/sinh(s/2)`. -/
-def collarInnerEnd (s : ℝ) : ℝ := 2 * archLevyDensity s / Real.sinh (s / 2)
+/-- The inner collar end `ℓ(s) = ω(s)/sinh(s/2)`. -/
+def collarInnerEnd (s : ℝ) : ℝ := archLevyDensity s / Real.sinh (s / 2)
 
-/-- The outer collar end `L(s) = 2ω(s)/sinh(s/2 − 6e^{−3s/4})`. -/
+/-- The outer collar end `L(s) = ω(s)/sinh(s/2 − 3e^{−3s/4})`. -/
 def collarOuterEnd (s : ℝ) : ℝ :=
-  2 * archLevyDensity s / Real.sinh (s / 2 - 6 * Real.exp (-(3 * s) / 4))
+  archLevyDensity s / Real.sinh (s / 2 - 3 * Real.exp (-(3 * s) / 4))
 
 theorem pos_of_four_log_two_le {s : ℝ} (hs : 4 * Real.log 2 ≤ s) : 0 < s := by
   linarith [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
 
-/-- Closed form of the inner end: `ℓ(s) = 4e^{−s}/((1 − e^{−2s})(1 − e^{−s}))`. -/
+/-- Closed form of the inner end: `ℓ(s) = 2e^{−s}/((1 − e^{−2s})(1 − e^{−s}))`. -/
 theorem collarInnerEnd_eq {s : ℝ} (hs : 0 < s) :
-    collarInnerEnd s = 4 * Real.exp (-s) / ((1 - Real.exp (-2 * s)) * (1 - Real.exp (-s))) := by
+    collarInnerEnd s = 2 * Real.exp (-s) / ((1 - Real.exp (-2 * s)) * (1 - Real.exp (-s))) := by
   unfold collarInnerEnd archLevyDensity
   set q := Real.exp (-s / 2) with hq_def
   have hq : 0 < q := Real.exp_pos _
@@ -105,11 +105,10 @@ theorem collarInnerEnd_eq {s : ℝ} (hs : 0 < s) :
   have h5 : q⁻¹ - q ≠ 0 := by rw [e5]; exact div_ne_zero h2 hq.ne'
   rw [e5]
   field_simp
-  ring
 
-/-- `4e^{−s} ≤ ℓ(s)`. -/
-theorem four_exp_neg_le_collarInnerEnd {s : ℝ} (hs : 0 < s) :
-    4 * Real.exp (-s) ≤ collarInnerEnd s := by
+/-- `2e^{−s} ≤ ℓ(s)`. -/
+theorem two_exp_neg_le_collarInnerEnd {s : ℝ} (hs : 0 < s) :
+    2 * Real.exp (-s) ≤ collarInnerEnd s := by
   rw [collarInnerEnd_eq hs]
   have h1 : Real.exp (-2 * s) < 1 := by
     rw [← Real.exp_zero]; exact Real.exp_lt_exp.mpr (by linarith)
@@ -121,13 +120,13 @@ theorem four_exp_neg_le_collarInnerEnd {s : ℝ} (hs : 0 < s) :
     mul_pos (sub_pos.mpr h1) (sub_pos.mpr h2)
   have hle : (1 - Real.exp (-2 * s)) * (1 - Real.exp (-s)) ≤ 1 := by nlinarith
   rw [le_div_iff₀ hden]
-  calc 4 * Real.exp (-s) * ((1 - Real.exp (-2 * s)) * (1 - Real.exp (-s)))
-      ≤ 4 * Real.exp (-s) * 1 := mul_le_mul_of_nonneg_left hle (by positivity)
-    _ = 4 * Real.exp (-s) := mul_one _
+  calc 2 * Real.exp (-s) * ((1 - Real.exp (-2 * s)) * (1 - Real.exp (-s)))
+      ≤ 2 * Real.exp (-s) * 1 := mul_le_mul_of_nonneg_left hle (by positivity)
+    _ = 2 * Real.exp (-s) := mul_one _
 
-/-- `ℓ(s) ≤ (256/239) · 4e^{−s}` for `s ≥ 4 log 2`. -/
+/-- `ℓ(s) ≤ (256/239) · 2e^{−s}` for `s ≥ 4 log 2`. -/
 theorem collarInnerEnd_le {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
-    collarInnerEnd s ≤ 256 / 239 * (4 * Real.exp (-s)) := by
+    collarInnerEnd s ≤ 256 / 239 * (2 * Real.exp (-s)) := by
   have hs0 := pos_of_four_log_two_le hs
   rw [collarInnerEnd_eq hs0]
   have hh := exp_neg_half_le_of_four_log_two_le hs
@@ -149,11 +148,11 @@ theorem collarInnerEnd_le {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
   have hden : 239 / 256 ≤ (1 - Real.exp (-2 * s)) * (1 - Real.exp (-s)) := by
     nlinarith [mul_pos hp1 hp2]
   rw [div_le_iff₀ (by linarith)]
-  nlinarith [mul_le_mul_of_nonneg_left hden (by positivity : (0 : ℝ) ≤ 256 / 239 * (4 * Real.exp (-s)))]
+  nlinarith [mul_le_mul_of_nonneg_left hden (by positivity : (0 : ℝ) ≤ 256 / 239 * (2 * Real.exp (-s)))]
 
-/-- `6 e^{−3s/4} ≤ 3/4` for `s ≥ 4 log 2`. -/
-theorem six_exp_le_three_quarters {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
-    6 * Real.exp (-(3 * s) / 4) ≤ 3 / 4 := by
+/-- `3 e^{−3s/4} ≤ 3/8` for `s ≥ 4 log 2`. -/
+theorem three_exp_le_three_eighths {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
+    3 * Real.exp (-(3 * s) / 4) ≤ 3 / 8 := by
   have h : Real.exp (-(3 * s) / 4) ≤ 1 / 8 := by
     have h8 : -(3 * s) / 4 ≤ -Real.log 8 := by
       rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; push_cast; linarith
@@ -162,24 +161,23 @@ theorem six_exp_le_three_quarters {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
   linarith
 
 theorem sinh_half_sub_pos {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
-    0 < Real.sinh (s / 2 - 6 * Real.exp (-(3 * s) / 4)) := by
-  have h := six_exp_le_three_quarters hs
+    0 < Real.sinh (s / 2 - 3 * Real.exp (-(3 * s) / 4)) := by
+  have h := three_exp_le_three_eighths hs
   have := Real.log_two_gt_d9
   exact Real.sinh_pos_iff.mpr (by linarith)
 
-/-- The two ends differ by the factor `sinh(s/2)/sinh(s/2 − 6e^{−3s/4})`. -/
+/-- The two ends differ by the factor `sinh(s/2)/sinh(s/2 − 3e^{−3s/4})`. -/
 theorem collarOuterEnd_eq {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
     collarOuterEnd s =
-      collarInnerEnd s * (Real.sinh (s / 2) / Real.sinh (s / 2 - 6 * Real.exp (-(3 * s) / 4))) := by
+      collarInnerEnd s * (Real.sinh (s / 2) / Real.sinh (s / 2 - 3 * Real.exp (-(3 * s) / 4))) := by
   unfold collarOuterEnd collarInnerEnd
   have hsh : Real.sinh (s / 2) ≠ 0 :=
     (Real.sinh_pos_iff.mpr (by linarith [pos_of_four_log_two_le hs])).ne'
-  rw [div_mul_div_comm, mul_comm (2 * archLevyDensity s) (Real.sinh (s / 2)),
+  rw [div_mul_div_comm, mul_comm (archLevyDensity s) (Real.sinh (s / 2)),
     mul_div_mul_left _ _ hsh]
 
 theorem collarOuterEnd_nonneg {s : ℝ} (hs : 4 * Real.log 2 ≤ s) : 0 ≤ collarOuterEnd s :=
-  div_nonneg (by linarith [archLevyDensity_pos (pos_of_four_log_two_le hs)])
-    (sinh_half_sub_pos hs).le
+  div_nonneg (archLevyDensity_pos (pos_of_four_log_two_le hs)).le (sinh_half_sub_pos hs).le
 
 /-! ### The sandwich -/
 
@@ -196,7 +194,7 @@ theorem mem_antiDiagonalCollar_of_lt_innerEnd {s a : ℝ} (hs : 0 < s) (ha : 0 <
   refine ⟨ha, has, ?_⟩
   rw [archPairKernel_antiDiagonal_eq hs, sub_pos]
   have hsh : 0 < Real.sinh (s / 2) := Real.sinh_pos_iff.mpr (by linarith)
-  have h := two_mul_crossingPolarWeight_le hs.le ha.le
+  have h := crossingPolarWeight_le hs.le ha.le
   unfold collarInnerEnd at hl
   rw [lt_div_iff₀ hsh] at hl
   linarith
@@ -218,16 +216,16 @@ theorem innerEnds_subset_antiDiagonalCollar {s : ℝ} (hs : 0 < s) :
 theorem antiDiagonalCollar_subset_outer {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
     antiDiagonalCollar s ⊆ Ioo 0 (collarOuterEnd s) ∪ Ioo (s - collarOuterEnd s) s := by
   have hs0 := pos_of_four_log_two_le hs
-  have hδ := six_exp_le_three_quarters hs
+  have hδ := three_exp_le_three_eighths hs
   have hl2 := Real.log_two_gt_d9
   have hsh := sinh_half_sub_pos hs
   have key : ∀ a ∈ antiDiagonalCollar s,
-      a < 6 * Real.exp (-(3 * s) / 4) → a < collarOuterEnd s := by
+      a < 3 * Real.exp (-(3 * s) / 4) → a < collarOuterEnd s := by
     intro a ha hδa
     obtain ⟨ha0, _, hk⟩ := ha
     rw [archPairKernel_antiDiagonal_eq hs0, sub_pos] at hk
-    have h1 := le_two_mul_crossingPolarWeight ha0.le (by linarith : a ≤ s / 2)
-    have h2 : Real.sinh (s / 2 - 6 * Real.exp (-(3 * s) / 4)) ≤ Real.sinh (s / 2 - a) :=
+    have h1 := le_crossingPolarWeight ha0.le (by linarith : a ≤ s / 2)
+    have h2 : Real.sinh (s / 2 - 3 * Real.exp (-(3 * s) / 4)) ≤ Real.sinh (s / 2 - a) :=
       Real.sinh_le_sinh.mpr (by linarith)
     unfold collarOuterEnd
     rw [lt_div_iff₀ hsh]
@@ -255,7 +253,7 @@ theorem volume_antiDiagonalCollar_le_outer {s : ℝ} (hs : 4 * Real.log 2 ≤ s)
         congr 1
         ring
 
-/-- **Unpaid archimedean mass, sharp order.** At most `ω(s) · 2L(s)`, of order `8e^{−3s/2}`. -/
+/-- **Unpaid archimedean mass, sharp order.** At most `ω(s) · 2L(s)`, of order `4e^{−3s/2}`. -/
 theorem lintegral_antiDiagonalCollar_le_outer {s : ℝ} (hs : 4 * Real.log 2 ≤ s) :
     ∫⁻ a in antiDiagonalCollar s, ENNReal.ofReal (archPairKernel (-a) (s - a)) ≤
       ENNReal.ofReal (archLevyDensity s) * ENNReal.ofReal (2 * collarOuterEnd s) := by

@@ -573,10 +573,10 @@ the goal is met when all walls are demolished and no longer a mathematical obsta
 we did a review of our current research: 
 
 based on your review:
-docs/reports/review-1910/hard-obstacles-1910.md
-docs/reports/review-1910/hard-obstacles-summary-1910.md
+docs/reports/review-2010/hard-obstacles.md
+docs/reports/review-2010/hard-obstacles-summary.md
 
-your task: work through the research tasks in 1. Tasks that are “just work” from the summary.
+your task: work through the research tasks from section "## 2.1 Tasks that are just work" in docs/reports/review-2010/hard-obstacles-summary.md
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -641,6 +641,8 @@ based on route ledger: docs/reports/rh-current-frontier-map.md and ledger of har
 
 this review is incorrect and outdated. redo it.
 
+the reports are not diaries or history log, but status quo reports.
+
 rewrite the existing reports in folder docs/reports/review-2010/
 
 ## update programme README.mds
@@ -655,3 +657,5 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
   
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics.
+
+
