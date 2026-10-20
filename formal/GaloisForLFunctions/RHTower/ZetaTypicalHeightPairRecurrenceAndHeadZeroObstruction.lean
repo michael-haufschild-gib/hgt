@@ -94,6 +94,53 @@ theorem norm_edPoly_one_Icc_shift_sub_le {M : ℕ} {θ d : ℝ} (hd : d ∈ head
 
 /-! ## 2. Typical-height pair recurrence -/
 
+/-- Base heights at which an almost period `d` of the head (with `M θ ≤ ε/3`) fails to be an
+`ε`-return shift of `ζ` on the translated disc are tail-bad at height `τ₁` or at `τ₁ + d`. -/
+theorem zetaPairReturnFail_subset_discTailBadSet_union {c : ℂ} {r : ℝ} (hr : 0 < r)
+    (h0 : 1 / 2 < c.re - 2 * r) {ε : ℝ} {M : ℕ} {θ d : ℝ} (hMθ : M * θ ≤ ε / 3)
+    (hd : d ∈ headPhaseReturnSet M θ) :
+    {τ₁ : ℝ | d ∉ zetaReturnSet (closedBall (c + τ₁ * I) r) ε} ⊆
+      discTailBadSet M c r (ε / 3) ∪
+        (fun τ₁ : ℝ => τ₁ + d) ⁻¹' discTailBadSet M c r (ε / 3) := by
+  intro τ₁ hτ₁
+  by_contra hcon
+  simp only [mem_union, mem_preimage, not_or] at hcon
+  obtain ⟨hgood1, hgood2⟩ := hcon
+  apply hτ₁
+  intro s hs
+  set z : ℂ := s - τ₁ * I with hz
+  have hs1 : s = z + τ₁ * I := by rw [hz]; ring
+  have hs2 : s + d * I = z + ((τ₁ + d : ℝ) : ℂ) * I := by rw [hz]; push_cast; ring
+  have hzD : z ∈ closedBall c r := by
+    rw [mem_closedBall] at hs ⊢
+    rwa [hs1, dist_add_right] at hs
+  have hzre : 0 ≤ z.re := by have := re_ge_of_mem_closedBall hzD; linarith
+  have ht1 : ‖zetaTailFun M s‖ < ε / 3 := by
+    rw [hs1]
+    by_contra hcon'
+    exact hgood1 ⟨z, hzD, not_lt.mp hcon'⟩
+  have ht2 : ‖zetaTailFun M (s + d * I)‖ < ε / 3 := by
+    rw [hs2]
+    by_contra hcon'
+    exact hgood2 ⟨z, hzD, not_lt.mp hcon'⟩
+  have hsre : 0 ≤ s.re := by rw [hs1]; simpa using hzre
+  have hhead : ‖edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
+      edPoly (fun _ => 1) (Finset.Icc 1 M) s‖ ≤ ε / 3 :=
+    (norm_edPoly_one_Icc_shift_sub_le hd hsre).trans hMθ
+  have hid : riemannZeta (s + d * I) - riemannZeta s =
+      zetaTailFun M (s + d * I) + (edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
+        edPoly (fun _ => 1) (Finset.Icc 1 M) s) - zetaTailFun M s := by
+    unfold zetaTailFun
+    ring
+  rw [hid]
+  calc ‖zetaTailFun M (s + d * I) + (edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
+        edPoly (fun _ => 1) (Finset.Icc 1 M) s) - zetaTailFun M s‖
+      ≤ ‖zetaTailFun M (s + d * I)‖ + ‖edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
+          edPoly (fun _ => 1) (Finset.Icc 1 M) s‖ + ‖zetaTailFun M s‖ :=
+        (norm_sub_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
+    _ < ε / 3 + ε / 3 + ε / 3 := by linarith
+    _ = ε := by ring
+
 /-- **Typical-height pair recurrence of `ζ`.**  Let `closedBall c (2r)` lie in `1/2 < Re s < 1`
 and `ε, δ > 0`.  There are `M` and `θ > 0` such that every simultaneous `θ`-almost period `d` of
 the phases `n^{-id}`, `n ≤ M`, is an `ε`-return shift of `ζ` on the translated disc
@@ -106,49 +153,10 @@ theorem exists_headPhaseReturnSet_zetaReturn_typicalHeight {c : ℂ} {r : ℝ} (
   obtain ⟨M, hM⟩ := (eventually_eventually_volume_discTailBadSet_le hr h0 h1
     (by positivity : 0 < ε / 3) (by positivity : 0 < δ / 4)).exists
   refine ⟨M, ε / (3 * (M + 1)), by positivity, fun d hd => ?_⟩
-  have hsub : {τ₁ : ℝ | d ∉ zetaReturnSet (closedBall (c + τ₁ * I) r) ε} ⊆
-      discTailBadSet M c r (ε / 3) ∪
-        (fun τ₁ : ℝ => τ₁ + d) ⁻¹' discTailBadSet M c r (ε / 3) := by
-    intro τ₁ hτ₁
-    by_contra hcon
-    simp only [mem_union, mem_preimage, not_or] at hcon
-    obtain ⟨hgood1, hgood2⟩ := hcon
-    apply hτ₁
-    intro s hs
-    set z : ℂ := s - τ₁ * I with hz
-    have hs1 : s = z + τ₁ * I := by rw [hz]; ring
-    have hs2 : s + d * I = z + ((τ₁ + d : ℝ) : ℂ) * I := by rw [hz]; push_cast; ring
-    have hzD : z ∈ closedBall c r := by
-      rw [mem_closedBall] at hs ⊢
-      rwa [hs1, dist_add_right] at hs
-    have hzre : 0 ≤ z.re := by have := re_ge_of_mem_closedBall hzD; linarith
-    have ht1 : ‖zetaTailFun M s‖ < ε / 3 := by
-      rw [hs1]
-      by_contra hcon'
-      exact hgood1 ⟨z, hzD, not_lt.mp hcon'⟩
-    have ht2 : ‖zetaTailFun M (s + d * I)‖ < ε / 3 := by
-      rw [hs2]
-      by_contra hcon'
-      exact hgood2 ⟨z, hzD, not_lt.mp hcon'⟩
-    have hsre : 0 ≤ s.re := by rw [hs1]; simpa using hzre
-    have hhead : ‖edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
-        edPoly (fun _ => 1) (Finset.Icc 1 M) s‖ < ε / 3 := by
-      refine (norm_edPoly_one_Icc_shift_sub_le hd hsre).trans_lt ?_
-      rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
-      linarith
-    have hid : riemannZeta (s + d * I) - riemannZeta s =
-        zetaTailFun M (s + d * I) + (edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
-          edPoly (fun _ => 1) (Finset.Icc 1 M) s) - zetaTailFun M s := by
-      unfold zetaTailFun
-      ring
-    rw [hid]
-    calc ‖zetaTailFun M (s + d * I) + (edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
-          edPoly (fun _ => 1) (Finset.Icc 1 M) s) - zetaTailFun M s‖
-        ≤ ‖zetaTailFun M (s + d * I)‖ + ‖edPoly (fun _ => 1) (Finset.Icc 1 M) (s + d * I) -
-            edPoly (fun _ => 1) (Finset.Icc 1 M) s‖ + ‖zetaTailFun M s‖ :=
-          (norm_sub_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
-      _ < ε / 3 + ε / 3 + ε / 3 := by linarith
-      _ = ε := by ring
+  have hMθ : (M : ℝ) * (ε / (3 * (M + 1))) ≤ ε / 3 := by
+    rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+    linarith
+  have hsub := zetaPairReturnFail_subset_discTailBadSet_union hr h0 hMθ hd
   have hshift : ∀ᶠ T : ℝ in atTop,
       volume ((fun τ₁ : ℝ => τ₁ + d) ⁻¹' discTailBadSet M c r (ε / 3) ∩ Icc 0 T) ≤
         ENNReal.ofReal (|d| + δ / 4 * (T + |d|)) := by

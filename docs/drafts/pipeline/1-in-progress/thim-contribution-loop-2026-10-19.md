@@ -424,3 +424,17 @@
   profile `P(B)` with `P(1) = 6/π²`, `P(2) = 11/π²`) is a pure `ε = 0` phenomenon, invisible to every
   fixed damping; third non-commuting limit after the period variance (C19) and dissipation (C21).
   Standard axioms (6 audited); wired.
+- **C24 · Linear dissipation of the damped defect at an exact rate** (queue item 3) —
+  `DampedLinearDissipationExactRate`. `dampedBezoutLimit`, `dampedDissipationRate` (`R(ε) = E[τ_ε²] −
+  Σ_e μ(e)w_ε(e)²`), `tendsto_bezoutCoprimeQuadraticForm_pmPowerDamped` (`Q_Bez(N; c_ε) → Σ μ w²`),
+  `tendsto_sieveSuccessorReserve_pmPowerDamped` (`R_N(c_ε) → R(ε)`), `dampedDissipationRate_pos`
+  (`R(ε) ≥ 2w_ε(2)² > 0`), `tendsto_mean_successor_energy` (every horizon, every weight: Cesàro mean
+  of `(Δs_N)²` → `2R_N`), `tendsto_mean_divisorCoeff_successor_energy` (**Cesàro law for `τ_ε`**:
+  `(1/X)Σ(τ_ε(k+1) − τ_ε(k))² → 2R(ε)`, transferred from periodic responses through the gcd tail with an
+  abstract uniform-approximation principle), headline
+  `tendsto_sieveRenormalizedPrefixDefect_pmPowerDamped_linear` (`D̃_N((B+1)N; c_ε)/N → −(B+1)R(ε)`).
+  New insight: queue item 3 (and C1's `N/log N`) resolved with an exact rate — the damped defect on
+  linear windows dissipates linearly, the rate being the Haar dissipation of the complete damped
+  divisor function, `R(ε) = Σ_{e≥2}(φ(e) − μ(e))w_ε(e)² ∈ (0, 2V(ε)]`. The prime-boundary mechanism of C1
+  was only the visible part of a positive-density dissipation. C19's `sq_add_le_weighted` made public.
+  Standard axioms (6 audited); wired.

@@ -120,8 +120,10 @@ theorem dampedDissipationRate_pos {ε : ℝ} (hε : 0 < ε) : 0 < dampedDissipat
       rcases eq_or_lt_of_le he1 with h | h
       · subst h; simp [moebiusReal]
       · have hφ : (1 : ℝ) ≤ Nat.totient e := by exact_mod_cast Nat.totient_pos.mpr (by omega)
-        nlinarith [sq_nonneg (selbergMultiplesCoord N (pmPowerDampedRealWeight ε) e),
-          neg_abs_le (moebiusReal e)]
+        have hd : 0 ≤ (Nat.totient e : ℝ) - moebiusReal e := by
+          linarith [(le_abs_self (moebiusReal e)).trans hμ]
+        have := mul_nonneg hd (sq_nonneg (selbergMultiplesCoord N (pmPowerDampedRealWeight ε) e))
+        linarith
     have h2 : (2 : ℕ) ∈ Icc 1 N := mem_Icc.mpr ⟨by norm_num, hN⟩
     have := single_le_sum hterm h2
     simp only [Nat.totient_two, Nat.cast_one, one_mul] at this
@@ -181,31 +183,28 @@ theorem tendsto_mean_successor_energy (N : ℕ) (c : ℕ → ℝ) :
       calc _ ≤ ∑ k ∈ Ioc (X / L * L) X, (2 * S) ^ 2 := sum_le_sum fun k _ => hstep k
         _ = ((X - X / L * L : ℕ) : ℝ) * (2 * S) ^ 2 := by
             rw [sum_const, Nat.card_Ioc, nsmul_eq_mul]
-        _ ≤ L * (2 * S) ^ 2 := by
-            gcongr; exact_mod_cast hgap.le
+        _ ≤ L * (2 * S) ^ 2 :=
+            mul_le_mul_of_nonneg_right (by exact_mod_cast hgap.le) (sq_nonneg _)
     have hgapR : (X : ℝ) - ((X / L * L : ℕ) : ℝ) ≤ L := by
       have : ((X - X / L * L : ℕ) : ℝ) = (X : ℝ) - ((X / L * L : ℕ) : ℝ) := by
         rw [Nat.cast_sub hjL]
       rw [← this]; exact_mod_cast hgap.le
     have hjLR : ((X / L * L : ℕ) : ℝ) ≤ X := by exact_mod_cast hjL
-    rw [hsplit, hper, abs_le, le_div_iff₀ hXR]
-    constructor
-    · rw [neg_div, neg_le, le_div_iff₀ hXR]
-      have := mul_le_mul_of_nonneg_left hgapR (show 0 ≤ 2 * |R| by positivity)
-      rw [show (2 * ((X / L * L : ℕ) : ℝ) * R + _) / X - 2 * R =
-        (2 * R * (((X / L * L : ℕ) : ℝ) - X) +
-          ∑ k ∈ Ioc (X / L * L) X, (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2) / X by
-        field_simp; ring]
-      rw [div_mul_cancel₀ _ hXR.ne']
-      nlinarith [neg_abs_le R, le_abs_self R, abs_nonneg R]
-    · rw [show (2 * ((X / L * L : ℕ) : ℝ) * R + _) / X - 2 * R =
-        (2 * R * (((X / L * L : ℕ) : ℝ) - X) +
-          ∑ k ∈ Ioc (X / L * L) X, (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2) / X by
-        field_simp; ring]
-      rw [div_mul_cancel₀ _ hXR.ne']
-      nlinarith [neg_abs_le R, le_abs_self R, abs_nonneg R]
+    set P := ∑ k ∈ Ioc (X / L * L) X, (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2
+    set J : ℝ := ((X / L * L : ℕ) : ℝ)
+    have hE : (∑ k ∈ Icc 1 X, (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2) / X - 2 * R =
+        (2 * R * (J - X) + P) / X := by
+      rw [hsplit, hper]; field_simp; ring
+    rw [hE, abs_div, abs_of_pos hXR]
+    refine div_le_div_of_nonneg_right ?_ hXR.le
+    have h1 : |2 * R * (J - X)| ≤ 2 * |R| * L := by
+      rw [abs_mul, abs_mul, abs_of_pos (two_pos : (0 : ℝ) < 2), abs_sub_comm,
+        abs_of_nonneg (sub_nonneg.mpr hjLR)]
+      exact mul_le_mul_of_nonneg_left hgapR (by positivity)
+    calc |2 * R * (J - X) + P| ≤ |2 * R * (J - X)| + |P| := abs_add_le _ _
+      _ ≤ 2 * |R| * L + L * (2 * S) ^ 2 := by rw [abs_of_nonneg hpart0]; linarith
   rw [← tendsto_sub_nhds_zero_iff]
-  refine squeeze_zero_norm' ?_ (tendsto_const_div_atTop_nhds_zero_nat _)
+  refine squeeze_zero_norm' ?_ (tendsto_const_div_atTop_nhds_zero_nat (2 * |R| * L + L * (2 * S) ^ 2))
   filter_upwards [eventually_gt_atTop 0] with X hX
   rw [Real.norm_eq_abs]
   exact hbound X hX
@@ -264,7 +263,7 @@ theorem tendsto_mean_divisorCoeff_successor_energy {ε : ℝ} (hε : 0 < ε) :
     rw [add_zero] at h3
     exact h3
   have hKlim : Tendsto K atTop (𝓝 0) := by
-    refine squeeze_zero (fun N => by simp only [K]; positivity) hK ?_
+    refine squeeze_zero (fun N => mul_nonneg (by have := hη N; positivity) (by linarith [hT0 N])) hK ?_
     simpa using ((tendsto_dampedGcdTail hε).const_mul 8).add (hsqrt.const_mul 8)
   have hDlim : Tendsto D atTop (𝓝 0) := by
     simpa using (hηlim.mul ((hηlim.const_add 1).add hKlim)).add hKlim
@@ -310,34 +309,37 @@ theorem tendsto_mean_divisorCoeff_successor_energy {ε : ℝ} (hε : 0 < ε) :
         (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2 + (1 + 1 / η N) * (u (k + 1) - u k) ^ 2 :=
       fun k _ => by
         have := sq_add_le_weighted (sieveSeq N c (k + 1) - sieveSeq N c k) (u (k + 1) - u k) hηN
-        simp only [u] at this ⊢
-        convert this using 2; ring
+        have key : τ (k + 1) - τ k =
+            (sieveSeq N c (k + 1) - sieveSeq N c k) + (u (k + 1) - u k) := by simp only [u]; ring
+        rw [key]; exact this
     have hs := sum_le_sum hpt
     rw [sum_add_distrib, ← mul_sum, ← mul_sum] at hs
     simp only [a, b, K]
     rw [div_le_iff₀ hXR]
     have : (1 + 1 / η N) * ∑ k ∈ Icc 1 X, (u (k + 1) - u k) ^ 2 ≤ (1 + 1 / η N) * (X * (8 * T N)) :=
-      mul_le_mul_of_nonneg_left hu (by positivity)
+      mul_le_mul_of_nonneg_left hu (by have := hη N; positivity)
     have hexp : ((1 + η N) * ((∑ k ∈ Icc 1 X, (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2) / X) +
         (1 + 1 / η N) * (8 * T N)) * X = (1 + η N) *
           (∑ k ∈ Icc 1 X, (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2) +
-        (1 + 1 / η N) * (X * (8 * T N)) := by field_simp; ring
+        (1 + 1 / η N) * (X * (8 * T N)) := by field_simp
     rw [hexp]; linarith
   have hcmp2 : b ≤ (1 + η N) * a + K N := by
     have hpt : ∀ k ∈ Icc 1 X, (sieveSeq N c (k + 1) - sieveSeq N c k) ^ 2 ≤ (1 + η N) *
         (τ (k + 1) - τ k) ^ 2 + (1 + 1 / η N) * (u (k + 1) - u k) ^ 2 := fun k _ => by
       have := sq_add_le_weighted (τ (k + 1) - τ k) (-(u (k + 1) - u k)) hηN
-      simp only [u] at this ⊢
-      convert this using 2 <;> ring
+      rw [neg_sq] at this
+      have key : sieveSeq N c (k + 1) - sieveSeq N c k =
+          (τ (k + 1) - τ k) + -(u (k + 1) - u k) := by simp only [u]; ring
+      rw [key]; exact this
     have hs := sum_le_sum hpt
     rw [sum_add_distrib, ← mul_sum, ← mul_sum] at hs
     simp only [a, b, K]
     rw [div_le_iff₀ hXR]
     have : (1 + 1 / η N) * ∑ k ∈ Icc 1 X, (u (k + 1) - u k) ^ 2 ≤ (1 + 1 / η N) * (X * (8 * T N)) :=
-      mul_le_mul_of_nonneg_left hu (by positivity)
+      mul_le_mul_of_nonneg_left hu (by have := hη N; positivity)
     have hexp : ((1 + η N) * ((∑ k ∈ Icc 1 X, (τ (k + 1) - τ k) ^ 2) / X) +
         (1 + 1 / η N) * (8 * T N)) * X = (1 + η N) * (∑ k ∈ Icc 1 X, (τ (k + 1) - τ k) ^ 2) +
-        (1 + 1 / η N) * (X * (8 * T N)) := by field_simp; ring
+        (1 + 1 / η N) * (X * (8 * T N)) := by field_simp
     rw [hexp]; linarith
   -- `a ≤ 1` since `0 ≤ τ ≤ 1`
   have ha1 : a ≤ 1 := by
@@ -351,7 +353,11 @@ theorem tendsto_mean_divisorCoeff_successor_energy {ε : ℝ} (hε : 0 < ε) :
           nlinarith
       _ = X := by simp
   have ha0 : 0 ≤ a := div_nonneg (sum_nonneg fun _ _ => sq_nonneg _) hXR.le
-  have hK0 : 0 ≤ K N := by simp only [K]; positivity
+  have hK0 : 0 ≤ K N := mul_nonneg (by have := hη N; positivity) (by linarith [hT0 N])
+  have hb1 : b ≤ 1 + η N + K N := by nlinarith
+  have hηb : η N * b ≤ η N * (1 + η N + K N) := mul_le_mul_of_nonneg_left hb1 hηN.le
+  have hηa : η N * a ≤ η N * (1 + η N + K N) := by
+    apply mul_le_mul_of_nonneg_left _ hηN.le; linarith
   simp only [D]
   rw [abs_le]
   constructor <;> nlinarith
@@ -368,14 +374,16 @@ theorem tendsto_sieveRenormalizedPrefixDefect_pmPowerDamped_linear {ε : ℝ} (h
   set τ := RHTower.pmPowerDampedDivisorCoeff ε
   set δ : ℕ → ℝ := fun N => ((B + 1 : ℕ) : ℝ) * ((N : ℝ) + 1) ^ (-ε)
   have hδlim : Tendsto δ atTop (𝓝 0) := by
-    have h := (tendsto_rpow_neg_atTop hε).comp
-      (tendsto_natCast_atTop_atTop.atTop_add (tendsto_const_nhds (x := (1 : ℝ))))
-    simpa using h.const_mul ((B + 1 : ℕ) : ℝ)
+    have h : Tendsto (fun N : ℕ => ((N : ℝ) + 1) ^ (-ε)) atTop (𝓝 0) :=
+      (tendsto_rpow_neg_atTop hε).comp
+        (tendsto_natCast_atTop_atTop.atTop_add (tendsto_const_nhds (x := (1 : ℝ))))
+    have h2 := h.const_mul ((B + 1 : ℕ) : ℝ)
+    rw [mul_zero] at h2
+    exact h2
   -- uniform approximation on `[1, (B+1)N + 1] ⊆ [1, (B+2)N]`
   have happ : ∀ N, 1 ≤ N → ∀ k, 1 ≤ k → k ≤ (B + 1) * N + 1 → |τ k - sieveSeq N c k| ≤ δ N := by
     intro N hN k hk1 hk
-    have := abs_divisorCoeff_sub_sieveSeq_le hε.le (B := B + 1) hk1 (by nlinarith)
-    simpa [δ] using this
+    exact abs_divisorCoeff_sub_sieveSeq_le hε.le (B := B + 1) hk1 (by nlinarith)
   -- the Cesàro gradient energy of `τ` on the window
   have hX : Tendsto (fun N : ℕ => (B + 1) * N) atTop atTop :=
     tendsto_id.const_mul_atTop' (by omega : 0 < B + 1)
@@ -385,7 +393,7 @@ theorem tendsto_sieveRenormalizedPrefixDefect_pmPowerDamped_linear {ε : ℝ} (h
     refine hces.congr' ?_
     filter_upwards [eventually_gt_atTop 0] with N hN
     have hNR : (0 : ℝ) < N := by exact_mod_cast hN
-    simp only [Function.comp_apply]
+    simp only [Function.comp_apply, τ]
     push_cast
     field_simp
   -- compare the gradient energies of `s_N` and `τ`
@@ -454,8 +462,9 @@ theorem tendsto_sieveRenormalizedPrefixDefect_pmPowerDamped_linear {ε : ℝ} (h
       sq_nonneg (sieveSeq N c 1)]
   -- assemble the polarization identity
   have h := ((hbdry.sub (hGdiff.add hGτ)).div_const 2)
-  rw [zero_add] at h
-  refine h.congr' ?_ |>.trans (by congr 1; ring)
+  rw [zero_add, show ((0 : ℝ) - ((B : ℝ) + 1) * (2 * dampedDissipationRate ε)) / 2 =
+    -((B : ℝ) + 1) * dampedDissipationRate ε by ring] at h
+  refine h.congr' ?_
   filter_upwards [eventually_gt_atTop 0] with N hN
   have hpol := two_mul_sieveRenormalizedPrefixDefect_add_gradient_eq_boundary N ((B + 1) * N) c
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN

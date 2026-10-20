@@ -359,3 +359,18 @@ Rule from now on: run a corpus search against the Weil-form lanes before claimin
   Insight: the folded generator reads a profile through exactly two linear functionals — the jump measure
   at the origin, the pole weight e^{±r/2} at infinity; the supersolution question at both ends is a sign
   condition on these moments. Standard axioms.
+- **C25 · RH on the nonnegative cone: a criterion with no signed term** —
+  `NonnegativeConeZeroFormCriterion`. Exact factorisation `Ẑ(F) = Q(F) + 2(∫Fe^{x/2})(∫Fe^{−x/2})`
+  (`fullZeroForm_eq_markovEnergy_add_expMoments`) and the cone form
+  `Ẑ(Φv) = E_arch(v) + E_prime(v) + 2E₊(Φv)E₋(Φv) − ∫Φcosh(x/2)v²` (`fullZeroForm_phiDoob_eq_cone`).
+  **RH ⟺ ∀ v ∈ C²_c, v ≥ 0: ∫Φcosh(x/2)v² ≤ E_arch(v) + E_prime(v) + 2(∫Φve^{x/2})(∫Φve^{−x/2})**
+  (`riemannHypothesis_iff_forall_nonneg_cone`): every term is a nonnegative functional of v; any test is
+  lifted into the cone by `max|v|·u_L` (a theta-span plateau, invisible to Ẑ by C10's radical theorem).
+  Sharpness: along u_L → 1 the jump energy → 0 and pole product, potential → 1/2
+  (`tendsto_cone_terms_smoothPlateau`); for every ε > 0 the (1+ε)-strengthened inequality fails on the cone
+  (`exists_nonneg_cone_violation`). Insight: the sign problem needs no signed quantity — on positive
+  profiles the potential is paid by the Markov (Beurling–Deny) jump energy plus the PRODUCT of the two
+  pole moments, the constant being the exact ground state; the cone is RH-complete because the radical
+  contains a strictly positive element (Φ), unlike the half-line-nonneg odd cone (no positive pole-free odd
+  span element), which the corpus (`WeilMarkovThinNonnegativeOddPositivity`) leaves open. Novelty: corpus
+  one-sided cones are about values at ±log n of Weil tests, not positivity of the profile. Standard axioms.

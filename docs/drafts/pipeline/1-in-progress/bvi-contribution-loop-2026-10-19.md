@@ -58,6 +58,8 @@
 | C33 | TwoSidedCotangentMomentLawFromPronicEnergy | G^{ec}(p,p) ≤ log²p + p + (p−1)²/p (head/tail split at M=p, tail mass 1/p); log²p ≤ πV(1,p) + (p−1)log p ≤ 2log²p + p + (p−1)²/p; Σ cot(πa/k) = 0, V(1,k) = (1/k)Σ a cot(πa/k); explicit two-sided bound for Σ_{a<p} a cot(πa/p) = −(p(p−1)/π)log p + O(p²) | done |
 | C34 | PronicReciprocityLawForVasyuninSums | |K(p,q)| ≤ (K(p,p)+K(q,q))/2; (log q − log p)² ≤ π(V(q,p)+V(p,q)) + (q−p)(log q − log p) ≤ (log q − log p)² + 2(log²p + log²q + p + q + (p−1)²/p + (q−1)²/q) — elementary reciprocity law π(V(q/p)+V(p/q)) = −(q−p)log(q/p) + O(p+q) from pronic positivity | done |
 | C35 | VasyuninFormulaForTheDiscreteBaezDuarteGram | M mod m = −Σ_{0<a<m} α_a(ζ_a^M − 1) (counting multiples); Σα_a = (m−1)/2; Π(1−ζ_a) = m; closed pronic series of (M mod m₁)(M mod m₂); **m₁m₂·bdGram(1/m₁,1/m₂) = ((m₁−1)log m₂ + (m₂−1)log m₁)/2 − (π/2)(V(m₂,m₁)−V(1,m₁)+V(m₁,m₂)−V(1,m₂))** for all m₁,m₂ ≥ 1; diagonal; fractCrossTail(1/m) explicit — discharges the 'honest boundary' of the RHTower Báez-Duarte reduction (BaezDuarteGramDiscrete/Reduction left the closed form/cotangent structure open) | done |
+| C36 | VasyuninReciprocityForAllModuliFromPronicCovariance | pronic mean Σ_M (M mod m)/(M(M+1)) = log m; covariance S(m₁,m₂) − log m₁ log m₂ PSD; S(m,m) ≤ 2(m−1)²/m; for all m: log²m ≤ πV(1,m) + (m−1)log m ≤ 2(m−1)²/m; for all m₁,m₂: (log m₁ − log m₂)² ≤ π(V(m₂,m₁)+V(m₁,m₂)) + (m₂−m₁)(log m₂ − log m₁) ≤ 4((m₁−1)²/m₁ + (m₂−1)²/m₂) − (log m₁ + log m₂)² | done |
+| C37 | PronicBaezDuarteCriterion | ‖1_{(0,1]} − Σ_{n≤N} c(n)ρ_{1/n}‖² = Σ_M (1 + L_N(M,c))²/(M(M+1)) (Báez-Duarte residual = pronic energy of shifted prefix discrepancy); **RH ⟺ ∀ε>0 ∃N,c: Σ_M (1 + L_N(M,c))²/(M(M+1)) < ε** — exact equivalence of RH with a statement purely about BVI rows (README §1.3 had only receiver ⇒ RH) | done |
 
 ## Conjecture queue
 
@@ -570,3 +572,29 @@
   and with C32–C34 its entries obey explicit two-sided laws. The field supplies a solution to a premise-level open
   object of the corpus outside itself.
 - **Audit:** clean; olean; 6 public theorems standard axioms; wired.
+
+### C36 — Vasyunin reciprocity for all moduli from the pronic covariance of residues (DONE)
+
+- **Module:** `BezoutValuationIncidence/VasyuninReciprocityForAllModuliFromPronicCovariance.lean`
+- **Statements:** `vasyuninSecondMoment`; `cotangentSawtooth_sum_eq_vasyunin`; `hasSum_natMod_mul_natMod_vasyunin`;
+  **`hasSum_natMod_pronic`** (pronic mean of M mod m is log m, = Σ_{d|m}Λ(d)); `vasyunin_covariance_nonneg`;
+  `vasyuninSecondMoment_self`, `vasyuninSecondMoment_self_le` (≤ 2(m−1)²/m); **`vasyuninSum_one_two_sided`**,
+  **`vasyunin_reciprocity_all_moduli`** (for every pair of moduli).
+- **Why significant:** extends C32–C34 from primes to all moduli with sharper constants, directly in the
+  Báez-Duarte (residue) coordinates: the reciprocity pair V(h/k) + V(k/h) of the Nyman–Beurling cotangent sums is
+  elementary up to O(h + k) for every h, k ≥ 1.
+- **Audit:** clean; olean; 5 public theorems standard axioms; wired.
+
+### C37 — The pronic Báez-Duarte criterion (DONE; RH ⟺ statement in BVI objects)
+
+- **Module:** `BezoutValuationIncidence/PronicBaezDuarteCriterion.lean`
+- **Statements:** `sievePrefixDiscrepancy_eq_neg_residue`; `bdGram_inv_nat_eq_secondMoment`;
+  **`norm_sq_bdResidual_eq_pronicEnergy`**: for every real row c on [1,N],
+  HasSum (M ↦ (1 + L_N(M,c))²/(M(M+1))) ‖bdTarget − Σ_{n∈[1,N]} c(n)·bdGen(1/n)‖²;
+  **`riemannHypothesis_iff_pronic_prefix_energy`**: RH ⟺ ∀ε>0 ∃N c, Σ'_M (1 + L_N(M,c))²/(M(M+1)) < ε.
+- **Why significant:** the Báez-Duarte residual is exactly the pronic energy of the prefix discrepancy of the
+  coefficient row shifted by one — the central BVI object (README §1.1 L_N(M,c), §2.7 pronic measure). Combined with
+  the corpus Báez-Duarte criterion this is an exact equivalence of RH with a BVI extremal problem: approximate the
+  constant −1 by prefix discrepancies in pronic energy. README §1.3 had only the one-way receiver implication.
+  Every BVI tool on pronic energies of L_N now applies to the RH criterion directly.
+- **Audit:** clean; olean; 4 public theorems standard axioms (the corpus criterion is unconditional); wired.

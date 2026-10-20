@@ -170,7 +170,14 @@ them.
    `q_t` must therefore vanish. The modulated bump makes that residue nonzero. Zero-side Weil
    positivity on compactly supported tests is thus equivalent to all zeros on the critical line,
    for every tempered configuration. Only the unimodular two-bump tests
-   `κ_γ(t + v/2) + τκ_γ(t − v/2)`, `|τ| = 1`, are needed: three real parameters decide the line.
+   `κ_γ(t + v/2) + τκ_γ(t − v/2)`, `|τ| = 1`, are needed, and of these only `τ = ±1`: two real
+   parameters and a sign decide the line. By reflection symmetry `conj S(−v) = S(v)`, so the even
+   and odd tests have `Re W = 2 Re S(0) ± 2 Re S(v)`. `2 Re S(v)` is an exponential sum over the
+   zeros with exponents `ρ − ½`. Its coefficient at a right zero `t` merges `t` with its conjugate
+   `t̄`, as `m h(x − iδ)² + m* h(2γ − x − iδ)²`, where `x` is the offset from the bump's height.
+   Suppose this vanished at every height. Then `|h(x − iδ)|²` would be multiplied by the fixed
+   ratio `m/m*` or `m*/m` at each step `±2γ`, and hence could not decay. So some height leaves
+   the top pole a nonzero residue.
    The same argument measures the rate: the least `Re W` over these tests at lag `v` is
    `≥ −Ce^{Dv}` when every depth is at most `D`, and is not `O(e^{σv})` for any `σ` below the
    depth of a zero. Negativity grows exactly at the rate of the deepest zero.
@@ -227,9 +234,9 @@ them.
     `±M_f`, and stays near it on intervals of explicit length. The archimedean part grows only like
     `log(1 + |ξ|)`. A coherent prime excursion of size `B` therefore either makes the localized
     Weil form negative or occurs at a height with `log(1 + 2π|ξ|) ≳ (B − C_f)/‖f‖²`.
-21. **Three parameters decide the line.** Through the explicit formula the unimodular two-bump
-    criterion becomes a prime-side one: every zero of `ζ` is on the critical line iff
-    `Re P(f ⋆ f̃) ≥ 0` for `f = κ_γ(t + v/2) + τκ_γ(t − v/2)`, `v ≥ 0`, `|τ| = 1`, where
+21. **Two parameters decide the line.** Through the explicit formula the two-bump criterion
+    becomes a prime-side one: every zero of `ζ` is on the critical line iff
+    `Re P(f ⋆ f̃) ≥ 0` for `f = κ_γ(t + v/2) + τκ_γ(t − v/2)`, `v ≥ 0`, `τ = ±1`, where
     `P(k) = h_k(i/2) + h_k(−i/2) − Σ_n Λ(n)/√n (k(log n) + k(−log n)) + (1/2π)∫ h_k Γ`. The kernel
     `f ⋆ f̃` lives on `[−2w, 2w] ∪ ±[v − 2w, v + 2w]`. For `2w < log 2` the lag `v` therefore reads
     `Λ(n)` only on the window `|log n − v| ≤ 2w`, inside `(X/2, 2X)` for `X = e^v`. Any tail of lags
