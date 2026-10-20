@@ -51,6 +51,12 @@ Module `RHTower/ZetaPartialSumIsolatedZeroHeightsAndUniformPairReturns.lean` (wi
 - `exists_eventually_forall_volume_zetaPairReturnFail_le`: uniform pair returns — for all large `T`, every almost period `d ∈ [0,T]` fails on at most `δT` base heights of `[0,T]`.
 - `exists_relDense_headPhaseReturnSet`, `exists_relDense_zetaReturn_typicalHeight`: the almost periods are relatively dense; every interval of a fixed length contains an ε-almost period of ζ on the disc valid at density-`(1−δ)` base heights.
 
+Module `RHTower/ZetaTypicalHeightDiscSupTailLawAndOrbitPrecompactness.lean` (wired into `RHTower.lean`):
+- `norm_edPoly_one_Icc_le_of_re_ge`, `zetaCoefficientTailMass_le`: explicit head bound `M^{1−σ₀}/(1−σ₀)+1` on `Re ≥ σ₀` and tail-mass bound `(2σ/(2σ−1))(M+1)^{1−2σ}` (corpus power-sum lemmas).
+- `eventually_volume_discTailBadSet_le_explicit`: fully explicit density of the bad heights at fixed `M`.
+- `eventually_volume_discZetaLargeSet_le` (**power-law tail of `sup|ζ|` on discs at typical heights**): heights where `|ζ| ≥ 2A_M` somewhere on the translated disc have density `≤ 28K(2σ₀/(2σ₀−1))(1−σ₀)²/M + κ`; with `A_M ≍ M^{1−σ₀}` this is a `B^{-1/(1−σ₀)}` tail for `sup_disc |ζ| ≥ B`, uniform in `T` (compare the corpus's `T^ε` typical-height sup bound `eventually_volume_zetaLargeNear_le`).
+- `exists_finite_headTranslates_cover_typicalHeights` (**precompactness of the typical orbit**, Bochner form): finitely many head translates `head_M(·+is)`, `s ∈ S`, cover `ζ(·+iτ)|_disc` within `ε` for all heights outside density `δ`.
+
 ## Insight for the route
 
 - The *unconditioned* half of the open alignment problem is closed: Carlson-good heights are disc-uniform and have density one, also for the Abel-centered tail.
@@ -66,3 +72,4 @@ Module `RHTower/ZetaPartialSumIsolatedZeroHeightsAndUniformPairReturns.lean` (wi
 ## Log
 - 2026-10-20 — created; both modules written, compiled, audited (`#print axioms`), wired; lint run; one declaration renamed (`im_sub_abs_lt_of_mem_ball`) to avoid a fully-qualified name collision with `CHMDMasslessContinuationPieces.abs_im_sub_lt_of_mem_ball`.
 - 2026-10-20 — third module added (isolated partial-sum zeros are rare; explicit density; uniform and relatively dense pair returns); `zetaPairReturnFail_subset_discTailBadSet_union` extracted in the second module; all three compiled with `lake --old env lean -j 1 -o`, `#print axioms` standard, wired.
+- 2026-10-20 — fourth module added (explicit head/tail-mass bounds, power-law typical-height sup tail law on discs, Bochner precompactness of the typical orbit); compiled with `lake --old env lean -j 1 -o`, `#print axioms` standard, wired.
