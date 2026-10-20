@@ -484,7 +484,7 @@ never enlarge the test class.
 
     Z(Θ(ωu)) = J_M(u) + V_μ(u)        (`zeroForm_phiDoob_mul_eq_signedJump_add_varianceEnergy`),
 
-with conductances `M(x)M(y)` times the gauge-free kernel `dm(|x − y|) + sinh(x/2) sinh(y/2)`. For an
+with conductances `M(x)M(y)` times the gauge-free kernel `dm(|x − y|) + 2 sinh(x/2) sinh(y/2)` per unordered pair (the variance integral counts each pair twice). For an
 odd gauge positive on `(0, ∞)` the variance conductances are positive for every pair, including pairs
 across the origin, where the jump conductances are negative. The smeared shifted ground states are
 positive on `(0, ∞)` and **complete**: RH ⟺ `J_M(u) + V_μ(u) ≥ 0` for every even `u ∈ C²_c`, in every
@@ -688,7 +688,7 @@ the prime number theorem enters only through proved corpus forms.
 ## 5. The frontier
 
 1. **The pure jump form.** In every smeared gauge RH is `J_M(u) + V_μ(u) ≥ 0` for even profiles,
-   with explicit conductances `M(x)M(y)(dm(|x − y|) + sinh(x/2) sinh(y/2))`. The archimedean
+   with explicit conductances `M(x)M(y)(dm(|x − y|) + 2 sinh(x/2) sinh(y/2))` per unordered pair. The archimedean
    crossing conductances are dominated by the same-side ones; the obstruction is confined to the
    prime anti-diagonals `|x| + y = log n`, where `Λ(n) n^{−1/2}` must be paid by same-side atoms at
    `|x − y| = log m` and by the variance. A prime-side inequality between anti-diagonal and same-side

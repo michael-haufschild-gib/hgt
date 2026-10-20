@@ -198,6 +198,28 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.SquareRootThreshold.primePolynomial_le_archPart_iff_poleCompression",
         ],
     },
+    "arithmetic_incidence_positivity": {
+        "module": "GaloisForLFunctions.ArithmeticIncidencePositivity",
+        "path": SRC / "ArithmeticIncidencePositivity",
+        "capstones": [
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.productAtom_le_ratioAtom",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.skeletonEnergy_nonneg",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.archPairKernel_pos_iff",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.crossingThreshold_mem",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.archPairKernel_reflection_pos_iff",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.min_lt_of_archPairKernel_pos",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.archPairKernel_neg_log_log_pos_iff_of_two_le",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.productAtom_lt_of_mem_lagPrimeWindow",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.lintegral_archCrossingDensity_offCollar_le",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.sqrt_sub_one_sq_lt_two_vonMangoldt_iff",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.innerEnds_subset_antiDiagonalCollar",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.antiDiagonalCollar_subset_outer",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.totalLatticeCrossingKernel_pos_iff",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.total_midpoint_inequality_iff",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.totalAntiDiagonalKernel_pos_forall_iff",
+            "GaloisForLFunctions.ArithmeticIncidencePositivity.unpaid_level_subset_outer",
+        ],
+    },
     "quantum_alg": {
         "module": "GaloisForLFunctions.QuantumAlg",
         "path": SRC / "QuantumAlg",
@@ -212,6 +234,7 @@ THEOREM_AREAS = {
 
 ALLOWED_ROOT_LEAN = {
     "ArithmeticCriticalityTheory.lean",
+    "ArithmeticIncidencePositivity.lean",
     "ArithmeticPositivityTheory.lean",
     "BezoutValuationIncidence.lean",
     "BiScaleUncertainty.lean",

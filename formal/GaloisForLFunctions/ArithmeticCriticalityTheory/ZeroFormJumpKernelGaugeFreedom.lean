@@ -15,8 +15,10 @@ pure jump form (`zeroForm_phiDoob_mul_eq_signedJump_add_varianceEnergy`):
 
     Z(Φ(ω u)) = ∫ dm(t) ∫ M(x)M(x+t)(u(x) − u(x+t))² dx + ∫∫ μ(x)μ(y)(u(x) − u(y))² dx dy.
 
-Both pieces carry the factor `M(x)M(y)`; the conductance per unit `M ⊗ M` is the gauge-free kernel
-`dm(|x − y|) + sinh(x/2) sinh(y/2)`. For an odd gauge positive on `(0, ∞)`, `μ ≥ 0` everywhere and the
+Both pieces carry the factor `M(x)M(y)`. The jump integral runs over `t > 0` and counts each unordered
+pair `{x, y}` once; the variance integral runs over all ordered pairs and counts it twice. So the
+conductance of the unordered pair per unit `M(x)M(y)` is the gauge-free kernel
+`dm(|x − y|) + 2 sinh(x/2) sinh(y/2)`. For an odd gauge positive on `(0, ∞)`, `μ ≥ 0` everywhere and the
 variance conductances are positive for every pair, including pairs across the origin, where the jump
 conductances `−|M(x)M(y)| dm(|x − y|)` are negative.
 
