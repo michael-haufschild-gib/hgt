@@ -16,6 +16,74 @@ equivalences; the theory never asserts such a premise.
 
 ---
 
+## The shared target: the sign of the critical arithmetic form
+
+Seven programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+one critical arithmetic form, and the form can be read in three equivalent faces:
+
+- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
+  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
+  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
+  pole as the only positive source on crossing pairs;
+- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
+  per scale on the prime side, for the difference tests of one generic width, at height `T` and
+  bandwidth `λ = log X / log T`;
+- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
+  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
+  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
+  and the gauge and source theories that would prove it.
+
+The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
+Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
+`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
+faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
+mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
+
+**The mechanisms the shared target needs**, with the programme that owns each:
+
+1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
+2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
+   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
+   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
+   `SquareRootThreshold` on the lag side).
+4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
+   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
+5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+
+**Criteria every contribution to the shared target must meet.**
+
+- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
+  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
+  about RH.
+- *No family average.* One character, modulus one, shift zero.
+- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
+  generic uncertainty arguments are excluded in advance.
+- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
+  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
+  archimedean place against a bounded prime cost is nonselective by construction.
+- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
+  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  Identities, finite classifications and nonselective positivity count as zero in these units.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+
+### This programme's role
+
+BVI is the additive finite face. It owns the Bézout relation `pa − qb = h`, the valuation structure of
+moduli, the pronic Gram, the Vasyunin reciprocity law, and the interior martingale whose signed sum
+over moduli is the receiver. It owns mechanism 2 (single-modulus bilinear dispersion) and shares
+mechanism 5 with `TransHorizonIncidenceMechanics`. It supplies the additive window structure
+(consecutive integers, residue classes omitted modulo `p`, the spacing of the jumps of `{N/p}` and
+`{N/q}`) that the incidence face of `ArithmeticIncidencePositivity`, built on divisibility and
+products alone, does not see.
+
+---
+
 ## 1. Why
 
 ### 1.1 The object and the regime
@@ -978,6 +1046,21 @@ The error term in the Vasyunin reciprocity law below $O(p+q)$. Which rows are de
 their relation spectrum, beyond translation and the Galois action. Rates in the cofinal Möbius
 laws that are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue
 cells, which are positive when the cells share a factor and start together.
+
+### Research topics toward the shared target
+
+1. **Single-modulus bilinear dispersion** on `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` through the
+   reciprocity `{N/pq} ↔ p̄/q + q̄/p`, without an external character or modulus average
+   (mechanism 2); the unit is the exponent `θ` obtained, the receiver sits at `θ = 2`.
+2. **The signed sum over moduli** of the interior martingale, equivalently the coercive
+   contraction; identities cannot produce it.
+3. **Additive window structure for the incidence face.** Bézout incidence inside a dyadic window
+   `(X/2, 2X)`: which consecutive integers, residue classes and jump spacings of `{N/p}` couple the
+   divisor edges that `ArithmeticIncidencePositivity` classifies multiplicatively.
+4. **The parity pair** with `TransHorizonIncidenceMechanics`: what the pronic Gram and the
+   divisor-sum data cannot see (mechanism 5).
+5. **Selectivity.** Each exact law is arithmetic and fails for Beurling systems by construction; say
+   for each estimate whether it still distinguishes `ζ` from `ζ(s−a)ζ(s+a)`.
 
 ---
 

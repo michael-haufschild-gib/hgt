@@ -17,6 +17,73 @@ boundaries lie, and how to work inside it. Mathematics only; no ledger.
 
 ---
 
+## The shared target: the sign of the critical arithmetic form
+
+Seven programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+one critical arithmetic form, and the form can be read in three equivalent faces:
+
+- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
+  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
+  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
+  pole as the only positive source on crossing pairs;
+- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
+  per scale on the prime side, for the difference tests of one generic width, at height `T` and
+  bandwidth `λ = log X / log T`;
+- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
+  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
+  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
+  and the gauge and source theories that would prove it.
+
+The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
+Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
+`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
+faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
+mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
+
+**The mechanisms the shared target needs**, with the programme that owns each:
+
+1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
+2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
+   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
+   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
+   `SquareRootThreshold` on the lag side).
+4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
+   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
+5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+
+**Criteria every contribution to the shared target must meet.**
+
+- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
+  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
+  about RH.
+- *No family average.* One character, modulus one, shift zero.
+- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
+  generic uncertainty arguments are excluded in advance.
+- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
+  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
+  archimedean place against a bounded prime cost is nonselective by construction.
+- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
+  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  Identities, finite classifications and nonselective positivity count as zero in these units.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+
+### This programme's role
+
+APT is the source theory of the aperture face. It owns the complete Weil form on exact arithmetic
+sources with every endpoint, collar, Gamma and polar term kept, the critical factorial family, block
+positivity, and the two universal receivers as destinations. It must supply the passage from the
+critical family, where the arithmetic is favourable, to the compact tests of the receiver without an
+archimedean subsidy (mechanism 3 and the criteria of complete expression and no subsidy), and the
+admissible source class on which the prime modification of mechanism 4 can be realized.
+
+---
+
 ## 1. Why
 
 ### 1.1 Exact identities do not supply a sign
@@ -1066,6 +1133,19 @@ floor and a low-band exclusion. Which other arithmetic sources, built from
 divisor stencils other than the dyadic one or from non-Bernoulli remainders,
 satisfy both at the critical envelope with an $\ell^2$-bounded prime channel,
 and whether their cell kernels are also sign-definite, is open.
+
+### Research topics toward the shared target
+
+1. **From the critical family to the receiver without an archimedean subsidy.** Which compact
+   approximants of critical sources inherit block positivity with a margin surviving truncation,
+   stated so that the gain `log M` of the critical Lévy energy plays no role (mechanism 3 and the
+   criterion of no subsidy).
+2. **Quantitative detection.** Nonnegativity of all grid patterns at scale `n` and radius `R`
+   excludes zeros of depth `> δ(n, R)` below height `T(n, R)`; the unit is `δ(n, R)`.
+3. **The complete uncollared form on every high block and across blocks**, as the source class on
+   which the prime modification of mechanism 4 would be realized.
+4. **Selectivity audit.** Which block-positivity and admissible-source statements fail for
+   `ζ(s−a)ζ(s+a)` and for a Beurling system, and which survive and are therefore not about RH.
 
 ---
 

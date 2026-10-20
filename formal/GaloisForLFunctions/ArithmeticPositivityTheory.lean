@@ -91,7 +91,6 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalPrimeChannel
 import GaloisForLFunctions.«arithmetic-positivity-theory».LacunaryCriticalBlockPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentDepthGapClusterAndPolarGraphBridge
-import GaloisForLFunctions.«arithmetic-positivity-theory».CrossCorpusWallSidesteppingSynthesis
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,

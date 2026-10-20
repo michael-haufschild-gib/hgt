@@ -5,42 +5,19 @@ import GaloisForLFunctions.RHTower.CHMDExactParityBoundStateDimensionAndShiftedT
 import GaloisForLFunctions.RHTower.JointAncestryTypicalAsymptoticAbscissa
 
 /-!
-# Cross-Corpus Wall-Sidestepping Synthesis for the Riemann Hypothesis
+# Cross-route RH receiver bridges
 
-This module connects five previously separate umbrellas of the corpus (`RHTower`,
-`SquareRootThreshold`, `BiScaleUncertainty`, `CHMDPolar`, and `ArithmeticPositivityTheory`)
-into a unified two-pillar architecture that sidesteps the 15 single-route walls:
+This module identifies equivalent zero-side receivers and transfers tests between lag windows,
+spline probes, CHMD bound states, and factorial grids:
 
-1. **CHMD Bound-State Finiteness Bridge and the Asymptotic Abscissa Law Dichotomy:**
-   Proves `offLineZeros_finite_iff_finiteOffLine`, identifying `CHMDPolar.offLineZeros.Finite`
-   (and hence `FiniteDimensional ℝ oddBoundStateSpace`, `FiniteDimensional ℝ evenBoundStateSpace`,
-   and `FiniteDimensional ℝ boundStateSpace`) with `BacklundConverse.FiniteOffLine`,
-   `EventualSlicePositivity`, and `EventualFilteredCentralGapBudget`. Consequently,
-   finite-dimensionality of `oddBoundStateSpace` unconditionally implies `ZerosApproachLine` and
-   `¬ JasOffLineChain`, and under `AsymptoticAbscissaLaw` the arithmetic resolvent satisfies the
-   bound-state dichotomy `FiniteDimensional ℝ oddBoundStateSpace ↔ RiemannHypothesis`
-   (`oddBoundStateSpace = ⊥ ∨ ¬ FiniteDimensional ℝ oddBoundStateSpace`).
+- Finite-dimensional odd bound-state space is equivalent to finitely many off-line zeros.
+- A subexponential lower bound on one generic discrete prime-window grid implies
+  `AsymptoticAbscissaLaw`.
+- Positive-slack continuous prime-window and cubic-spline bounds characterize RH.
+- Negative lag tests transfer to negative factorial-grid tests.
 
-2. **Subexponential and Constant-Bounded Discrete Lag Grids as `AsymptoticAbscissaLaw` Producers:**
-   Generalizes `exists_re_gt_of_grid_lag_ge` (`SquareRootThreshold.LagGridsSeeAttainedTops`) to
-   subexponential lower bounds `-(C * Real.exp (σ * (k * ℓ)))` for `0 ≤ σ < ρ₀.re - 1/2` on a
-   single discrete lag grid `v = kℓ`, and proves that subexponential (or constant `-C`) lower
-   bounds on a single geometric progression of prime windows `X = e^{kℓ}` unconditionally rule out
-   attained tops (`¬ ∃ β₀ > 1/2, AttainedTop β₀`) and produce `AsymptoticAbscissaLaw`.
-
-3. **Slack-Preserving Cubic-Spline Prime-Sum and One-Parameter Prime-Window Equivalences:**
-   Connects `BiScaleUncertainty.CubicSplineUniversalProbe` and
-   `SquareRootThreshold.OneParameterLagFamilyMeasuresTheAbscissa` to `RHTower`'s
-   `XiZeroHalfPlaneBound` and `AsymptoticAbscissaLaw`, showing both that
-   `∀ β > 0, XiZeroHalfPlaneBound β ↔ RiemannHypothesis` (retaining strictly positive exponential
-   slack `e^{βτ}` at each individual `β > 0`) and that under `AsymptoticAbscissaLaw` every
-   large-height abscissa receiver (`EventualHadamardPositivityRight (1/2 + β)`,
-   `EventualFilteredCentralGapRate (β + β²/8)`) collapses to the global `splinePrimeSum` and
-   `lagPrimeWindowRHS` bounds at rate `β`.
-
-4. **Cross-Corpus Master Equivalence:**
-   Combines all five umbrellas into an unconditional multi-route equivalence for
-   `RiemannHypothesis`.
+These implications do not establish the required prime-window bounds, bound-state finiteness,
+or `ZerosApproachLine` from the arithmetic source.
 -/
 
 open Complex MeasureTheory Set Filter Topology
@@ -51,11 +28,12 @@ open _root_.RHTower.CHMDPolar _root_.RHTower.CHMDDoobGraph
 open _root_.RHTower.WeilOneSided _root_.RHTower.WeilWorkPBAP _root_.RHTower.WeilSpectral
 open GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar
 open GaloisForLFunctions.ArithmeticCriticalityTheory
+open GaloisForLFunctions.ArithmeticPositivityTheory
 open GaloisForLFunctions.SquareRootThreshold
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
 
 noncomputable section
-namespace GaloisForLFunctions.ArithmeticPositivityTheory
+namespace RHTower.CrossRouteReceiverBridges
 
 /-! ## Section 1: Bridging `zetaZeroConfig`, `XiZeroCopy`, `XiZeroHalfPlaneBound`, and `CHMDPolar` -/
 
@@ -145,7 +123,7 @@ theorem riemannHypothesis_iff_forall_pos_xiZeroHalfPlaneBound :
     have := hall ((ρ.re - 1 / 2) / 2) (by linarith) ρ hxi
     linarith
 
-/-- **Unconditional Bridge between `CHMDPolar.offLineZeros.Finite` and `BacklundConverse.FiniteOffLine`.**
+/-- Identifies `CHMDPolar.offLineZeros.Finite` with `BacklundConverse.FiniteOffLine`.
 The off-line nontrivial zero set of `CHMDPolar` is finite if and only if the off-line `XiZeroCopy`
 set of `BacklundConverse` is finite. -/
 theorem offLineZeros_finite_iff_finiteOffLine :
@@ -385,7 +363,7 @@ theorem exists_re_gt_of_grid_lag_ge_neg_exp (Z : ZeroConfig) (hZ : TemperedConfi
 For any good width `w > 0` and non-resonant step `ℓ > 0` of `zetaZeroConfig`, if for every `σ > 0`
 the two-bump Weil form on the discrete lag grid `v = kℓ` satisfies `-(C * e^{σkℓ}) ≤ Re W(f_{kℓ}, f_{kℓ})`
 for all large `k`, then no off-line zero attains a maximal real part above `1/2`, and
-`AsymptoticAbscissaLaw` holds unconditionally. -/
+`AsymptoticAbscissaLaw` follows from the stated grid bound. -/
 theorem not_attainedTop_of_grid_lag_subexponential {w : ℝ} (hw : 0 < w)
     (hgood : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re ≠ 1 / 2 → paperFT (scaledBump w) (gammaOf ρ) ≠ 0)
     {ℓ : ℝ} (hℓ : 0 < ℓ) (hres : ℓ ∉ resonantSteps zetaZeroConfig)
@@ -421,7 +399,7 @@ theorem asymptoticAbscissaLaw_of_grid_lag_subexponential {w : ℝ} (hw : 0 < w)
 /-- **Prime-Side Discrete Lag Grid Producer for `AsymptoticAbscissaLaw`:**
 For all but countably many widths `w ∈ (0, ½ log 2)` and all but countably many grid steps `ℓ > 0`,
 subexponential lower bounds `-(C * e^{σkℓ}) ≤ Re P_{kℓ}` (`∀ σ > 0`) on a single geometric
-progression of prime windows `X = e^{kℓ}` unconditionally produce `AsymptoticAbscissaLaw`
+progression of prime windows `X = e^{kℓ}` imply `AsymptoticAbscissaLaw`
 (and a fortiori so does any constant lower bound `-C ≤ Re P_{kℓ}`). -/
 theorem zeta_asymptoticAbscissaLaw_of_grid_primeWindow_subexponential :
     ∃ E : Set ℝ, E.Countable ∧ ∃ E' : Set ℝ, E'.Countable ∧ ∀ w : ℝ, 0 < w →
@@ -572,7 +550,7 @@ theorem eventualFilteredCentralGapRate_iff_spline_prime_sum_le_of_asymptoticAbsc
   rw [← eventualHadamardPositivityRight_iff hβ,
     eventualHadamardPositivityRight_iff_spline_prime_sum_le_of_asymptoticAbscissaLaw hAAL hβ]
 
-/-! ## Section 4: Cross-Corpus Wall-Sidestepping Master Synthesis -/
+/-! ## Negative-test transfer and collected receiver equivalences -/
 
 /-- **Grid-Lag Negativity Directly Triggers Single-Scale Factorial-Tent Detection Across All Five
 Channels (`compactFullWeilEnergy`, `fullZeroForm`, `weilFullFunctional Λ`, `zetaZeroConfig.W`,
@@ -613,10 +591,8 @@ theorem grid_lag_neg_detected_by_gridTentPattern {w ℓ : ℝ} (hw : 0 < w) (k :
   obtain ⟨h1, h2, -, h4, h5, h6⟩ := hn.2.2 q hq
   exact ⟨h1, h2, h4, h5, h6⟩
 
-/-- **Cross-Corpus Wall-Sidestepping Master Equivalence for the Riemann Hypothesis:**
-Unconditional synthesis uniting `RHTower`, `SquareRootThreshold`, `BiScaleUncertainty`,
-`CHMDPolar`, and `ArithmeticPositivityTheory`. -/
-theorem cross_corpus_wall_sidestepping_master_equivalence :
+/-- Collects RH receiver equivalences; it supplies no source-side sign or growth estimate. -/
+theorem rh_receiver_bridge_equivalences :
     (RiemannHypothesis ↔ ZerosApproachLine ∧ AsymptoticAbscissaLaw) ∧
     (RiemannHypothesis ↔ EventualHadamardPositivity ∧ AsymptoticAbscissaLaw) ∧
     (RiemannHypothesis ↔ EventualFilteredCentralGapSubexponential ∧ AsymptoticAbscissaLaw) ∧
@@ -652,5 +628,5 @@ theorem cross_corpus_wall_sidestepping_master_equivalence :
       exact riemannHypothesis_iff_finiteDimensional_oddBoundStateSpace_and_asymptoticAbscissaLaw.mpr
         ⟨hfin, asymptoticAbscissaLaw_of_zeroDiscWeaklyRecurrent hW⟩
 
-end GaloisForLFunctions.ArithmeticPositivityTheory
+end RHTower.CrossRouteReceiverBridges
 end
