@@ -346,8 +346,11 @@ theorem tendsto_selbergTotientDiagonalForm_pmPowerDamped {ε : ℝ} (hε : 0 < �
     have h1 : Tendsto (fun N => Real.sqrt (T N)) atTop (𝓝 0) := by
       have := (Real.continuous_sqrt.tendsto 0).comp hT
       rwa [Real.sqrt_zero] at this
-    have h2 := tendsto_one_div_add_atTop_nhds_zero_nat
-    simpa using h1.add h2
+    have h2 : Tendsto (fun N : ℕ => 1 / ((N : ℝ) + 1)) atTop (𝓝 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    have h3 := h1.add h2
+    rw [add_zero] at h3
+    exact h3
   have hsqrt : Tendsto (fun N => Real.sqrt (T N)) atTop (𝓝 0) := by
     have := (Real.continuous_sqrt.tendsto 0).comp hT
     rwa [Real.sqrt_zero] at this

@@ -15,8 +15,10 @@ unconditionally
 * `W(f) = E(f)` iff every critical zero seen by `f` is simple.
 
 In the field's coordinates (`levyWeilEnergy_le_packetEnergy`):
-`Ω(0) h_f(0) + 𝒥(f) − 2⟨h_f, ν⟩ ≤ lim (1/L)∫_w^L P_f²` for every real Weil test whose packet is
-bounded above. Under RH every packet is bounded above, and the simple-zero conjecture becomes an
+`0 ≤ Ω(0) h_f(0) + 𝒥(f) − 2⟨h_f, ν⟩ ≤ lim (1/L)∫_w^L P_f²` for every real Weil test whose packet is
+bounded above. For a source with vanishing prime–polar pairing (a grid-blind polar source) this
+is the bi-scale uncertainty inequality `|Ω(0)| h_f(0) ≤ 𝒥(f)`, obtained from a one-sided bound on
+a single linear packet (`biScaleUncertainty_of_pairing_eq_zero`). Under RH every packet is bounded above, and the simple-zero conjecture becomes an
 energy identity (`forall_mult_eq_one_iff_forall_packet_energy_eq_weil`): all zeros are simple iff
 the asymptotic packet energy equals the Weil energy for every source.
 
@@ -67,7 +69,7 @@ theorem tendsto_offCritical_zeroSeries {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
     (hfc : HasCompactSupport f)
     (hblind : ∀ ρ : 𝒵, 1 / 2 < (ρ : ℂ).re →
       Zeta23.paperFT (fun u => (f u : ℂ)) (Zeta23.gammaOf ρ) = 0) :
-    Tendsto (fun τ : ℝ => ∑' ρ : (criticalZeros)ᶜ,
+    Tendsto (fun τ : ℝ => ∑' ρ : ↥(criticalZerosᶜ : Set 𝒵),
       packetCoeff f ρ * cexp (zeroShift (ρ : 𝒵) * τ)) atTop (𝓝 0) := by
   have hc := summable_norm_packetCoeff hf hfc
   have hzero : ∀ ρ : 𝒵, 1 / 2 < (ρ : ℂ).re → packetCoeff f ρ = 0 := fun ρ h =>
@@ -78,7 +80,7 @@ theorem tendsto_offCritical_zeroSeries {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
     congr 2
     simp [zeroShift]
   have h := tendsto_tsum_of_dominated_convergence (𝓕 := atTop)
-    (f := fun (τ : ℝ) (ρ : (criticalZeros)ᶜ) => packetCoeff f ρ * cexp (zeroShift (ρ : 𝒵) * τ))
+    (f := fun (τ : ℝ) (ρ : ↥(criticalZerosᶜ : Set 𝒵)) => packetCoeff f ρ * cexp (zeroShift (ρ : 𝒵) * τ))
     (g := fun _ => 0) (bound := fun ρ => ‖packetCoeff f ρ‖) (hc.subtype _) (fun ρ => ?_) ?_
   · simpa using h
   · have hρ : ((ρ : 𝒵) : ℂ).re ≠ 1 / 2 := ρ.2
@@ -120,17 +122,19 @@ theorem tendsto_mean_sq_stationaryPacket_of_blind {f : ℝ → ℝ} (hf : ContDi
     rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
   -- the zero series is the critical part plus a decaying part
   have hsplit : ∀ τ : ℝ, zeroSeries (packetCoeff f) τ = Gc τ +
-      ∑' ρ : (criticalZeros)ᶜ, packetCoeff f ρ * cexp (zeroShift (ρ : 𝒵) * τ) := fun τ => by
+      ∑' ρ : ↥(criticalZerosᶜ : Set 𝒵), packetCoeff f ρ * cexp (zeroShift (ρ : 𝒵) * τ) := fun τ => by
     have hS : Summable fun ρ : 𝒵 => packetCoeff f ρ * cexp (zeroShift ρ * τ) :=
       Summable.of_norm_bounded (hc.mul_right (Real.exp (|τ| / 2))) fun ρ => by
         rw [norm_mul]
         exact mul_le_mul_of_nonneg_left (norm_exp_zeroShift_mul_le ρ τ) (norm_nonneg _)
-    rw [zeroSeries, ← hS.tsum_add_tsum_compl (s := criticalZeros) (hS.subtype _) (hS.subtype _)]
+    rw [zeroSeries, ← Summable.tsum_add_tsum_compl (s := criticalZeros) (hS.subtype _)
+      (hS.subtype _)]
     congr 1
     refine tsum_congr fun ρ => ?_
     rw [zeroShift_of_mem_critical ρ.2]
+    simp only [a]
     push_cast
-    ring_nf
+    ring
   set B : ℝ → ℂ := fun τ => packetArchTail f τ - (zeroSeries (packetCoeff f) τ - Gc τ)
   have hBc : Continuous B :=
     (continuous_packetArchTail hf hfc hw).sub ((continuous_zeroSeries hc).sub hGcc)
@@ -218,12 +222,16 @@ theorem literatureRHS_weilTest_of_blind {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f
   have hFT : ∀ z : ℂ, Zeta23.paperFT (Zeta23.EF.weilTest f₀ f₀) z =
       Zeta23.paperFT f₀ z * (starRingEnd ℂ) (Zeta23.paperFT f₀ ((starRingEnd ℂ) z)) :=
     Zeta23.EF.paperFT_weilTest hf₀.continuous hf₀.continuous hf₀c hf₀c
+  set F : 𝒵 → ℂ := fun ρ => (((Zeta23.zetaZeroConfig.mult ρ : ℝ) *
+    ‖Zeta23.paperFT f₀ (((ρ : ℂ).im : ℝ) : ℂ)‖ ^ 2 : ℝ) : ℂ)
   rw [← (Zeta23.WeilEF.EF_lit_zetaZeroConfig _ hk hkc).2, criticalWeilEnergy, Complex.ofReal_tsum,
-    tsum_subtype]
+    show (∑' ρ : criticalZeros, F ρ) = ∑' ρ, criticalZeros.indicator F ρ from
+      tsum_subtype criticalZeros F]
   refine tsum_congr fun ρ => ?_
   by_cases hρ : ρ ∈ criticalZeros
   · rw [indicator_of_mem hρ, hFT, gammaOf_of_mem_critical hρ, Complex.conj_ofReal,
       Complex.mul_conj, Complex.normSq_eq_norm_sq]
+    simp only [F]
     push_cast
     ring
   · rw [indicator_of_notMem hρ, hFT]
@@ -288,7 +296,10 @@ theorem criticalWeilEnergy_le_criticalPacketEnergy {f : ℝ → ℝ} (hf : ContD
     rcases mul_eq_zero.mp hmm with h2 | h2
     · rcases mul_eq_zero.mp h2 with h3 | h3
       · linarith [hm1 ρ]
-      · exact_mod_cast (show m ρ = 1 by linarith)
+      · have h4 : (Zeta23.zetaZeroConfig.mult ((ρ : 𝒵) : ℂ) : ℝ) = 1 := by
+          simp only [m] at h3
+          linarith
+        exact_mod_cast h4
     · linarith
   · intro h
     funext ρ
@@ -317,22 +328,57 @@ theorem packet_weil_law {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasComp
     literatureRHS_weilTest_of_blind hf hfc hblind,
     tsum_nonneg fun ρ => by positivity, (criticalWeilEnergy_le_criticalPacketEnergy hf hfc).1⟩
 
+/-- **Field form of the Weil side.** For a real Weil test whose packet is eventually bounded above,
+`Ω(0) h_f(0) + 𝒥(f) − 2⟨h_f, ν⟩` is the critical Weil energy `Σ_{Re ρ = 1/2} m_ρ|f̂(γ_ρ)|²`. -/
+theorem levyWeilEnergy_eq_criticalWeilEnergy (g : RealWeilTestFn) {w : ℝ} (hw0 : 0 ≤ w)
+    (hw : ∀ v : ℝ, w < |v| → g.source v = 0)
+    (hup : ∃ T K : ℝ, ∀ τ : ℝ, T ≤ τ → stationaryPacket g.source τ ≤ K) :
+    Zeta23.EF.gammaBracket 0 * RHTower.ArchimedeanAnomaly.autocorr g.source 0 +
+        biScaleLevyEnergy g.source -
+        2 * SignedPrimePolar.pairing g.supportScale (RHTower.ArchimedeanAnomaly.autocorr g.source) =
+      criticalWeilEnergy g.source := by
+  obtain ⟨-, hW, -, -⟩ :=
+    packet_weil_law g.contDiff_source g.hasCompactSupport_source hw0 hw hup
+  have hbridge :=
+    RealWeilTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_pairing g
+  rw [_root_.RHTower.weilFullFunctional_vonMangoldt, ← g.source_eq, hW, ofReal_re] at hbridge
+  rw [g.autocorr_eq 0, ← g.source_eq, ← hbridge]
+
 /-- **Field form.** For a real Weil test whose packet is eventually bounded above,
-`Ω(0) h_f(0) + 𝒥(f) − 2⟨h_f, ν⟩` is at most the asymptotic packet energy. -/
+`0 ≤ Ω(0) h_f(0) + 𝒥(f) − 2⟨h_f, ν⟩ ≤ lim (1/L)∫_w^L P_f²`. -/
 theorem levyWeilEnergy_le_packetEnergy (g : RealWeilTestFn) {w : ℝ} (hw0 : 0 ≤ w)
     (hw : ∀ v : ℝ, w < |v| → g.source v = 0)
     (hup : ∃ T K : ℝ, ∀ τ : ℝ, T ≤ τ → stationaryPacket g.source τ ≤ K) :
     Tendsto (fun L : ℝ => (∫ τ in w..L, stationaryPacket g.source τ ^ 2) / L) atTop
         (𝓝 (criticalPacketEnergy g.source)) ∧
-      Zeta23.EF.gammaBracket 0 * autocorr g.source 0 + biScaleLevyEnergy g.source -
-        2 * SignedPrimePolar.pairing g.supportScale (autocorr g.source) ≤
-          criticalPacketEnergy g.source := by
-  obtain ⟨hlim, hW, -, hle⟩ := packet_weil_law g.contDiff_source g.hasCompactSupport_source hw0 hw hup
-  refine ⟨hlim, ?_⟩
-  have hbridge := RealWeilTestFn.re_weilFullFunctional_vonMangoldt_eq_gamma_add_levy_sub_two_pairing g
-  rw [_root_.RHTower.weilFullFunctional_vonMangoldt, ← g.source_eq, hW, ofReal_re] at hbridge
-  rw [g.autocorr_eq 0, ← g.source_eq, ← hbridge]
-  exact hle
+      0 ≤ Zeta23.EF.gammaBracket 0 * RHTower.ArchimedeanAnomaly.autocorr g.source 0 +
+          biScaleLevyEnergy g.source -
+          2 * SignedPrimePolar.pairing g.supportScale (RHTower.ArchimedeanAnomaly.autocorr g.source) ∧
+      Zeta23.EF.gammaBracket 0 * RHTower.ArchimedeanAnomaly.autocorr g.source 0 +
+          biScaleLevyEnergy g.source -
+          2 * SignedPrimePolar.pairing g.supportScale (RHTower.ArchimedeanAnomaly.autocorr g.source) ≤
+        criticalPacketEnergy g.source := by
+  obtain ⟨hlim, -, h0, hle⟩ :=
+    packet_weil_law g.contDiff_source g.hasCompactSupport_source hw0 hw hup
+  rw [levyWeilEnergy_eq_criticalWeilEnergy g hw0 hw hup]
+  exact ⟨hlim, h0, hle⟩
+
+/-- **Bi-scale uncertainty from a one-sided packet bound.** If the signed prime–polar pairing of
+`h_f` vanishes (a grid-blind source on the polar hyperplane, for instance) and the packet of `f` is
+eventually bounded above, then `|Ω(0)| h_f(0) ≤ 𝒥(f)`, with surplus at most the asymptotic packet
+energy. -/
+theorem biScaleUncertainty_of_pairing_eq_zero (g : RealWeilTestFn) {w : ℝ} (hw0 : 0 ≤ w)
+    (hw : ∀ v : ℝ, w < |v| → g.source v = 0)
+    (hpair : SignedPrimePolar.pairing g.supportScale
+      (RHTower.ArchimedeanAnomaly.autocorr g.source) = 0)
+    (hup : ∃ T K : ℝ, ∀ τ : ℝ, T ≤ τ → stationaryPacket g.source τ ≤ K) :
+    0 ≤ Zeta23.EF.gammaBracket 0 * RHTower.ArchimedeanAnomaly.autocorr g.source 0 +
+        biScaleLevyEnergy g.source ∧
+      Zeta23.EF.gammaBracket 0 * RHTower.ArchimedeanAnomaly.autocorr g.source 0 +
+          biScaleLevyEnergy g.source ≤ criticalPacketEnergy g.source := by
+  obtain ⟨-, h0, hle⟩ := levyWeilEnergy_le_packetEnergy g hw0 hw hup
+  rw [hpair, mul_zero, sub_zero] at h0 hle
+  exact ⟨h0, hle⟩
 
 /-- **Simple zeros as an energy identity.** Under RH, every zero of `ζ` is simple iff for every
 real compact `C²` source the asymptotic packet energy equals the Weil energy of `h_f`. -/

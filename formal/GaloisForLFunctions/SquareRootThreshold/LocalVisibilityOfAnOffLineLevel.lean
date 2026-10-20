@@ -2,27 +2,28 @@ import GaloisForLFunctions.SquareRootThreshold.DepthDeficitTransformReplacesTheG
 import GaloisForLFunctions.SquareRootThreshold.InghamInequalityForSeparatedSpectra
 
 /-!
-# An attained top level is seen in every Ingham window
+# Local visibility of an off-line level
 
-Let `t₀` be a zero right of the critical line with pair weight `q_{t₀} ≠ 0` and with the largest
-real part `½ + D` among the zeros of nonzero weight. The top level `Re t = Re t₀` may hold
-infinitely many zeros, and the levels below may accumulate at it.
+Fix a bump `b` and a zero `t₀` right of the critical line with pair weight `q_{t₀} ≠ 0`, on the
+level `Re t = ½ + D`. The level may hold infinitely many zeros, the levels below may accumulate at
+it, and deeper zeros may exist elsewhere. Three transforms measure everything except a finite part
+`F ∋ t₀` of the level: the level tail `τ`, the depth deficit `G(v)` of the shallower zeros, and the
+depth excess `E(v)` of the deeper ones (`norm_offLineSum_sub_level_le`).
 
-* **Ingham windows** (`exists_ingham_window_lower`). If the heights of a finite set `F ∋ t₀` are
-  pairwise at least `g` apart, every interval of length `4π/g` contains a lag with
+* **Ingham windows** (`exists_ingham_window_lower`). Suppose the heights of `F` are pairwise at
+  least `g` apart. Then every interval of length `4π/g` contains a lag with
   `|Σ_{t ∈ F} q_t e^{iγ_t v}| ≥ |q_{t₀}|/2`. On `[−T, T]`, `T = 2π/g`, Ingham's constant is at
-  least `6/g` (`inghamConst_two_pi_div_ge`), while a sum below `|q_{t₀}|/2` throughout has mean
+  least `6/g` (`inghamConst_two_pi_div_ge`), whereas a sum staying below `|q_{t₀}|/2` has mean
   square at most `(π/g)|q_{t₀}|²`.
-* **Explicit visibility** (`exists_minor_fails_of_ingham`). Suppose that the level weight outside
-  `F` and the depth-deficit transform `G(V)` are both at most `|q_{t₀}|/8`, and that
-  `2M_b + 3Σ|q_t| < (|q_{t₀}|/4) e^{DV}`. Then the two-point minor fails at a lag in
-  `[V, V + 4π/g]`.
-* **Every attained top level** (`eventually_minor_fails_in_every_ingham_window`). Finitely many
-  zeros carry all but `|q_{t₀}|/8` of the level weight (`exists_levelTail_le`), and finitely many
-  points on one level have separated heights (`exists_height_sep_of_level`). Hence, beyond some
-  lag, the minor fails in every window of length `4π/g`, whether the top level is finite or not.
-
-The floor and the window are explicit, and the top level need not be finite.
+* **Local visibility** (`exists_minor_fails_of_level`). Suppose `τ`, `G(V)` and `E(V + 4π/g)` are
+  each at most `|q_{t₀}|/12`, and `2M_b + 3Σ|q_t| < (|q_{t₀}|/4) e^{DV}`. Then the two-point minor
+  fails at a lag in `[V, V + 4π/g]`. The level is seen once the shallower zeros have relaxed,
+  provided the deeper zeros within reach of `b` have not yet taken over.
+* **Every attained top level** (`eventually_minor_fails_in_every_ingham_window`). On a top level
+  `E = 0`. Finitely many zeros carry all but `|q_{t₀}|/12` of the level (`exists_levelTail_le`),
+  and finitely many points of one level have separated heights (`exists_height_sep_of_level`).
+  Beyond some lag the minor fails in every window of length `4π/g`, whether the top level is
+  finite or not.
 -/
 
 open MeasureTheory Complex Set Filter Topology
@@ -116,19 +117,18 @@ theorem exists_ingham_window_lower {F : Finset ℂ} {g : ℝ} (hg : 0 < g)
       (by positivity)
   linarith
 
-/-- **Explicit visibility of an attained top level.** Let every zero of nonzero weight satisfy
-`Re t ≤ Re t₀ = ½ + D`, and let `F ∋ t₀` be a finite set of zeros on the top level with heights
-pairwise at least `g > 0` apart. If the level weight outside `F` and `G(V)` are at most
-`|q_{t₀}|/8` and `2M_b + 3Σ|q_t| < (|q_{t₀}|/4) e^{DV}`, `V ≥ 0`, the two-point minor fails at a
-lag in `[V, V + 4π/g]`. -/
-theorem exists_minor_fails_of_ingham (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+/-- **Local visibility of a level.** Let `F ∋ t₀` be a finite set of zeros on the level
+`Re t = Re t₀ = ½ + D` with heights pairwise at least `g > 0` apart. Suppose the level weight
+outside `F`, the depth deficit `G(V)` and the depth excess `E(V + 4π/g)` are each at most
+`|q_{t₀}|/12`, and `2M_b + 3Σ|q_t| < (|q_{t₀}|/4) e^{DV}`, `V ≥ 0`. Then the two-point minor fails
+at a lag in `[V, V + 4π/g]`. -/
+theorem exists_minor_fails_of_level (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
     (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {t₀ : ℂ}
-    (ht₀ : t₀ ∈ rightZeros Z)
-    (htop : ∀ t ∈ rightZeros Z, offLineWeight b (Z.mult t) t ≠ 0 → t.re ≤ t₀.re)
-    {F : Finset ℂ} (hF : ∀ t ∈ F, t ∈ rightZeros Z ∧ t.re = t₀.re) (ht₀F : t₀ ∈ F) {g : ℝ}
-    (hg : 0 < g) (hsep : ∀ t ∈ F, ∀ s ∈ F, t ≠ s → g ≤ |t.im - s.im|)
-    (htail : levelTail Z b t₀.re F ≤ ‖offLineWeight b (Z.mult t₀) t₀‖ / 8) {V : ℝ} (hV : 0 ≤ V)
-    (hG : depthDeficit Z b t₀.re V ≤ ‖offLineWeight b (Z.mult t₀) t₀‖ / 8)
+    (ht₀ : t₀ ∈ rightZeros Z) {F : Finset ℂ} (hF : ∀ t ∈ F, t ∈ rightZeros Z ∧ t.re = t₀.re)
+    (ht₀F : t₀ ∈ F) {g : ℝ} (hg : 0 < g) (hsep : ∀ t ∈ F, ∀ s ∈ F, t ≠ s → g ≤ |t.im - s.im|)
+    (htail : levelTail Z b t₀.re F ≤ ‖offLineWeight b (Z.mult t₀) t₀‖ / 12) {V : ℝ} (hV : 0 ≤ V)
+    (hG : depthDeficit Z b t₀.re V ≤ ‖offLineWeight b (Z.mult t₀) t₀‖ / 12)
+    (hE : depthExcess Z b t₀.re (V + 4 * π / g) ≤ ‖offLineWeight b (Z.mult t₀) t₀‖ / 12)
     (hM : 2 * onLineMassOf Z b + 3 * ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ <
       ‖offLineWeight b (Z.mult t₀) t₀‖ / 4 * Real.exp ((t₀.re - 1 / 2) * V)) :
     ∃ v : ℝ, V ≤ v ∧ v ≤ V + 4 * π / g ∧
@@ -150,10 +150,11 @@ theorem exists_minor_fails_of_ingham (Z : ZeroConfig) (hZ : TemperedConfig Z) {b
       ‖∑ t ∈ F, q t * (Real.exp ((t.re - 1 / 2) * v) : ℂ) * cexp (I * t.im * v)‖ := by
     rw [hlev, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hEv]
     exact mul_le_mul_of_nonneg_left hlow hEv.le
-  have hrest := norm_offLineSum_sub_level_le Z hZ hb hbs htop hF hv0
+  have hrest := norm_offLineSum_sub_level_le Z hZ hb hbs hF hv0
   have hGv := depthDeficit_anti Z hZ hb hbs t₀.re hV hVv
-  have hrest' : Real.exp (D * v) * (levelTail Z b t₀.re F + depthDeficit Z b t₀.re v) ≤
-      Real.exp (D * v) * (‖q t₀‖ / 4) :=
+  have hEv' := depthExcess_mono Z hZ hb hbs t₀.re hv0 hv4
+  have hrest' : Real.exp (D * v) * (levelTail Z b t₀.re F + depthDeficit Z b t₀.re v +
+      depthExcess Z b t₀.re v) ≤ Real.exp (D * v) * (‖q t₀‖ / 4) :=
     mul_le_mul_of_nonneg_left (by linarith) hEv.le
   have hEV : Real.exp (D * V) * (‖q t₀‖ / 4) ≤ Real.exp (D * v) * (‖q t₀‖ / 4) :=
     mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hVv hD0.le))
@@ -237,17 +238,18 @@ theorem eventually_minor_fails_in_every_ingham_window (Z : ZeroConfig) (hZ : Tem
       2 * (lagStructure Z b 0).re < ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ := by
   set Q₀ := ‖offLineWeight b (Z.mult t₀) t₀‖ with hQ₀
   have hQ₀0 : 0 < Q₀ := norm_pos_iff.mpr hq₀
-  obtain ⟨F, hF, ht₀F, htail⟩ := exists_levelTail_le Z hZ hb hbs ht₀ (by positivity : 0 < Q₀ / 8)
+  obtain ⟨F, hF, ht₀F, htail⟩ := exists_levelTail_le Z hZ hb hbs ht₀ (by positivity : 0 < Q₀ / 12)
   obtain ⟨g, hg, hsep⟩ := exists_height_sep_of_level fun t ht => (hF t ht).2
   set K := 2 * onLineMassOf Z b + 3 * ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖
   have hD0 : 0 < t₀.re - 1 / 2 := by linarith [ht₀.2]
   have hG := (tendsto_depthDeficit Z hZ hb hbs t₀.re).eventually
-    (ge_mem_nhds (by positivity : (0 : ℝ) < Q₀ / 8))
+    (ge_mem_nhds (by positivity : (0 : ℝ) < Q₀ / 12))
   have hE : ∀ᶠ V : ℝ in atTop, K < Q₀ / 4 * Real.exp ((t₀.re - 1 / 2) * V) :=
     ((Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop hD0)).const_mul_atTop
       (by positivity : (0 : ℝ) < Q₀ / 4)).eventually (eventually_gt_atTop K)
   obtain ⟨V₀, hV₀⟩ := eventually_atTop.mp (hG.and (hE.and (eventually_ge_atTop 0)))
-  exact ⟨g, V₀, hg, fun V hV => exists_minor_fails_of_ingham Z hZ hb hbs ht₀ htop hF ht₀F hg hsep
-    htail (hV₀ V hV).2.2 (hV₀ V hV).1 (hV₀ V hV).2.1⟩
+  exact ⟨g, V₀, hg, fun V hV => exists_minor_fails_of_level Z hZ hb hbs ht₀ hF ht₀F hg hsep
+    htail (hV₀ V hV).2.2 (hV₀ V hV).1
+    (by rw [depthExcess_eq_zero_of_top htop]; positivity) (hV₀ V hV).2.1⟩
 
 end GaloisForLFunctions.SquareRootThreshold

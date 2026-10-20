@@ -338,3 +338,21 @@
   and is a finite class average; integrating it across bands reproduces the BVI energy profile (built
   from Möbius dilation-pair densities) by a completely different finite formula, and conversely the
   mean step of every band is a second difference of the profile. Standard axioms (10 audited); wired.
+- **C19 · The damped period variance and the non-commuting limits** —
+  `DampedPeriodVarianceAndNonCommutingLimits`. `dampedGcdKernel` (`G(d,e) = (de)^{−ε}/lcm(d,e)`),
+  `sum_box_dampedGcdKernel_le` (boxes are Selberg forms of `d^{−ε}`, `≤ ζ(1+ε)²ζ(1+2ε)`),
+  `summable_dampedGcdKernel`; `pmPowerDampedDivisorCoeff_sub_sieveSeq` (`τ_ε − s_N` = divisors above
+  the horizon), `sum_sq_divisorCoeff_sub_sieveSeq_le` (mean square of the trans-horizon tail ≤ gcd
+  series on `(N,X]²`), `dampedGcdTail`, `tendsto_dampedGcdTail`; headline
+  `tendsto_selbergTotientDiagonalForm_pmPowerDamped` (`Q_Sel(N; c_ε) → E[τ_ε²]` = RHTower
+  `pmPowerDampedSecondDensity`, via complete periods `qN!` vs Cesàro means and
+  `(a+b)² ≤ (1+η)a² + (1+1/η)b²` with adapted `η_N = √T_N + 1/(N+1)`),
+  `tendsto_periodCovariance_pmPowerDamped_zero` (`Cov_N(0; c_ε) → V(ε)` = RHTower
+  `pmPowerDampedDivisorVariance`), `tendsto_pmPowerDampedDivisorVariance_zero` (`V(ε) → 0`, from corpus
+  `V(ε)/ε → 1/2`), `eventually_periodCovariance_pmPowerDamped_lt_moebius` (for all small `ε`, eventually
+  in `N`: `Cov_N(0; c_ε) < Cov_N(0; μ)`).
+  New insight: `lim_{ε→0} lim_N Var_N(c_ε) = 0 < 1/288 ≤ liminf_N Var_N(μ)` — the cofinal and damping
+  limits do not commute. The Möbius variance floor (C17) lives entirely in the trans-horizon divisors,
+  which every fixed damping suppresses (their mean square is a convergent gcd-series tail); the damped
+  response freezes into the complete damped divisor function. Bridges THIM period forms to the RHTower
+  PM-lane Haar moments of `τ_ε`. Standard axioms (8 audited); wired.

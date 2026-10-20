@@ -226,22 +226,26 @@ theorem integrableOn_profileArchTerm {f : ℝ → ℝ} {K : ℝ} (hfc : Continuo
     rw [Real.norm_eq_abs]
     exact abs_profileArchTerm_le hf x hu
 
+theorem nonneg_of_abs_le_mul_exp {f : ℝ → ℝ} {C : ℝ}
+    (hdec : ∀ y, |f y| ≤ C * Real.exp (-(8 * |y|))) : 0 ≤ C := by
+  have := (abs_nonneg _).trans (hdec 0)
+  rwa [abs_zero, mul_zero, neg_zero, Real.exp_zero, mul_one] at this
+
 theorem summable_atom_mul_profileShift {f : ℝ → ℝ} {C : ℝ}
     (hdec : ∀ y, |f y| ≤ C * Real.exp (-(8 * |y|))) (x : ℝ) :
     Summable fun n : ℕ => vonMangoldtAtom n * (f (x + Real.log n) + f (x - Real.log n)) := by
-  have hC0 : 0 ≤ C := by
-    have := (abs_nonneg _).trans (hdec 0)
-    rwa [abs_zero, mul_zero, neg_zero, Real.exp_zero, mul_one] at this
+  have hC0 := nonneg_of_abs_le_mul_exp hdec
   refine Summable.of_norm_bounded
     (summable_atom_mul_exp_neg_eight_log.mul_left (2 * C * Real.exp (8 * |x|))) fun n => ?_
   rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (vonMangoldtAtom_nonneg n)]
   have h1 := (hdec (x + Real.log n)).trans
     (mul_le_mul_of_nonneg_left (exp_neg_eight_mul_abs_add_log_le x n) hC0)
   have hab : |x - Real.log n| = |-x + Real.log n| := by rw [← abs_neg]; ring_nf
-  have h2 := (hdec (x - Real.log n)).trans (by
+  have h2 : |f (x - Real.log n)| ≤ C * (Real.exp (8 * |x|) * Real.exp (-(8 * Real.log n))) := by
+    refine (hdec _).trans ?_
     rw [hab]
-    exact mul_le_mul_of_nonneg_left (exp_neg_eight_mul_abs_add_log_le (-x) n) hC0)
-  rw [abs_neg] at h2
+    have := mul_le_mul_of_nonneg_left (exp_neg_eight_mul_abs_add_log_le (-x) n) hC0
+    rwa [abs_neg] at this
   have hsum := abs_add_le (f (x + Real.log n)) (f (x - Real.log n))
   have hatom := vonMangoldtAtom_nonneg n
   calc vonMangoldtAtom n * |f (x + Real.log n) + f (x - Real.log n)|
@@ -262,8 +266,34 @@ theorem abs_sub_le_of_deriv_decay {M : ℝ → ℝ} {C : ℝ} (hM : Differentiab
     refine (hdec' y).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) ?_)
     · have : x - 1 ≤ |y| := le_trans hy.1 (le_abs_self y)
       linarith
-    · have := (abs_nonneg _).trans (hdec' y)
-      exact nonneg_of_mul_nonneg_left this (Real.exp_pos _)
+    · exact nonneg_of_abs_le_mul_exp hdec'
+
+/-- The even fold `M(|·|)` of a profile with `|M'| ≤ C` is `C`-Lipschitz. -/
+theorem abs_comp_abs_sub_le {M : ℝ → ℝ} {C : ℝ} (hM : Differentiable ℝ M)
+    (hdec' : ∀ y, |deriv M y| ≤ C * Real.exp (-(8 * |y|))) (a b : ℝ) :
+    |M (|a|) - M (|b|)| ≤ C * |a - b| := by
+  have hC0 := nonneg_of_abs_le_mul_exp hdec'
+  have h := Convex.norm_image_sub_le_of_norm_deriv_le (f := M) (s := univ) (C := C)
+    (fun y _ => hM y) (fun y _ => by
+      rw [Real.norm_eq_abs]
+      exact (hdec' y).trans (mul_le_of_le_one_right hC0
+        (Real.exp_le_one_iff.mpr (by linarith [abs_nonneg y]))))
+    convex_univ (mem_univ |b|) (mem_univ |a|)
+  simp only [Real.norm_eq_abs] at h
+  exact h.trans (mul_le_mul_of_nonneg_left (abs_abs_sub_abs_le_abs_sub a b) hC0)
+
+/-- The folded source of a profile with `|M|, |M'| ≤ Ce^{−8|y|}`: all convergence conditions hold. -/
+theorem foldedGenerator_profileGauge_sub_potential_of_decay {M : ℝ → ℝ} {C : ℝ}
+    (hM : Differentiable ℝ M) (hdec : ∀ y, |M y| ≤ C * Real.exp (-(8 * |y|)))
+    (hdec' : ∀ y, |deriv M y| ≤ C * Real.exp (-(8 * |y|))) {x : ℝ} (hx : 0 ≤ x) :
+    foldedGenerator (fun y => M y / riemannKernelReal y) x -
+        riemannKernelReal x * Real.cosh (x / 2) * (M x / riemannKernelReal x) =
+      -(riemannKernelReal x * poleFreeWeilOperator (fun y => M (|y|)) x) :=
+  foldedGenerator_profileGauge_sub_potential hx
+    (summable_atom_mul_profileShift (f := fun y => M (|y|))
+      (fun y => by simpa only [abs_abs] using hdec |y|) x)
+    (integrableOn_profileArchTerm (f := fun y => M (|y|)) (hM.continuous.comp continuous_abs)
+      (abs_comp_abs_sub_le hM hdec') x)
 
 /-- **The archimedean part is local.** For a nonnegative profile on `[0, ∞)` with
 `|M|, |M'| ≤ Ce^{−8|y|}` and `x ≥ 1`, the archimedean integral of `M(|·|)` at `x` is at most
@@ -284,23 +314,8 @@ theorem integral_profileArchTerm_abs_le {M : ℝ → ℝ} {C : ℝ} (hM : Differ
     rw [mul_assoc, ← Real.exp_add]
     congr 2
     ring
-  have hLip : ∀ a b, |M (|a|) - M (|b|)| ≤ C * |a - b| := by
-    intro a b
-    have h := Convex.norm_image_sub_le_of_norm_deriv_le (f := M) (s := univ) (C := C)
-      (fun y _ => hM y) (fun y _ => by
-        rw [Real.norm_eq_abs]
-        refine (hdec' y).trans (mul_le_of_le_one_right ?_ ?_)
-        · have := (abs_nonneg _).trans (hdec' y)
-          exact nonneg_of_mul_nonneg_left this (Real.exp_pos _)
-        · exact Real.exp_le_one_iff.mpr (by linarith [abs_nonneg y]))
-      convex_univ (mem_univ |b|) (mem_univ |a|)
-    simp only [Real.norm_eq_abs] at h
-    have hC0 : 0 ≤ C := by
-      have := (abs_nonneg _).trans (hdec 0)
-      rwa [abs_zero, mul_zero, neg_zero, Real.exp_zero, mul_one] at this
-    exact h.trans (mul_le_mul_of_nonneg_left (abs_abs_sub_abs_le_abs_sub a b) hC0)
   have hint := integrableOn_profileArchTerm (f := fun y => M (|y|))
-    (hM.continuous.comp continuous_abs) hLip x
+    (hM.continuous.comp continuous_abs) (abs_comp_abs_sub_le hM hdec') x
   set B := 2 * C * (Real.exp 8 + 1) * Real.exp (-(8 * x)) with hB
   have hpt : ∀ u ∈ Ioi (0 : ℝ),
       profileArchTerm (fun y => M (|y|)) x u ≤ B * (archLevyDensity u * u) := by
@@ -527,26 +542,7 @@ theorem exists_infinity_window_profileGauge_foldedGenerator_lt_potential {M : �
         (B * Real.exp (-(15 / 2 * x))) * Real.exp (-(x / 2)) by ring]
       exact mul_lt_mul_of_pos_right hBexp (Real.exp_pos _)
     linarith
-  -- the folded source
-  have hdecA : ∀ y, |M (|y|)| ≤ C * Real.exp (-(8 * |y|)) := fun y => by
-    simpa only [abs_abs] using hdec |y|
-  have hP := summable_atom_mul_profileShift hdecA x
-  have hLip : ∀ a b, |M (|a|) - M (|b|)| ≤ C * |a - b| := by
-    intro a b
-    have hC0 : 0 ≤ C := by
-      have := (abs_nonneg _).trans (hdec 0)
-      rwa [abs_zero, mul_zero, neg_zero, Real.exp_zero, mul_one] at this
-    have h := Convex.norm_image_sub_le_of_norm_deriv_le (f := M) (s := univ) (C := C)
-      (fun y _ => hM y) (fun y _ => by
-        rw [Real.norm_eq_abs]
-        exact (hdec' y).trans (mul_le_of_le_one_right hC0
-          (Real.exp_le_one_iff.mpr (by linarith [abs_nonneg y]))))
-      convex_univ (mem_univ |b|) (mem_univ |a|)
-    simp only [Real.norm_eq_abs] at h
-    exact h.trans (mul_le_mul_of_nonneg_left (abs_abs_sub_abs_le_abs_sub a b) hC0)
-  have hA := integrableOn_profileArchTerm (f := fun y => M (|y|)) (hM.continuous.comp continuous_abs)
-    hLip x
-  have hsrc := foldedGenerator_profileGauge_sub_potential hx0 hP hA
+  have hsrc := foldedGenerator_profileGauge_sub_potential_of_decay hM hdec hdec' hx0
   have hΦ := riemannKernelReal_pos x
   nlinarith [mul_pos hΦ hpos]
 
@@ -621,31 +617,14 @@ theorem profileGauge_foldedGenerator_lt_potential_at_prime_shift {M : ℝ → �
           nlinarith
         have h2 : max B 0 * (1 / (p : ℝ)) < Real.log p * M y₀ := by
           rw [mul_one_div, div_lt_iff₀ hp0]
-          nlinarith
+          have := mul_le_mul_of_nonneg_right hlogp (mul_pos hM₀ hp0).le
+          linarith
         linarith
       linarith
     have hl := hW
     rw [hatom] at hl
     linarith
-  have hdecA : ∀ y, |M (|y|)| ≤ C * Real.exp (-(8 * |y|)) := fun y => by
-    simpa only [abs_abs] using hdec |y|
-  have hP := summable_atom_mul_profileShift hdecA x
-  have hC0 : 0 ≤ C := by
-    have := (abs_nonneg _).trans (hdec 0)
-    rwa [abs_zero, mul_zero, neg_zero, Real.exp_zero, mul_one] at this
-  have hLip : ∀ a b, |M (|a|) - M (|b|)| ≤ C * |a - b| := by
-    intro a b
-    have h := Convex.norm_image_sub_le_of_norm_deriv_le (f := M) (s := univ) (C := C)
-      (fun y _ => hM y) (fun y _ => by
-        rw [Real.norm_eq_abs]
-        exact (hdec' y).trans (mul_le_of_le_one_right hC0
-          (Real.exp_le_one_iff.mpr (by linarith [abs_nonneg y]))))
-      convex_univ (mem_univ |b|) (mem_univ |a|)
-    simp only [Real.norm_eq_abs] at h
-    exact h.trans (mul_le_mul_of_nonneg_left (abs_abs_sub_abs_le_abs_sub a b) hC0)
-  have hA := integrableOn_profileArchTerm (f := fun y => M (|y|)) (hM.continuous.comp continuous_abs)
-    hLip x
-  have hsrc := foldedGenerator_profileGauge_sub_potential hx0 hP hA
+  have hsrc := foldedGenerator_profileGauge_sub_potential_of_decay hM hdec hdec' hx0
   have hΦ := riemannKernelReal_pos x
   nlinarith [mul_pos hΦ hpos]
 

@@ -3,10 +3,10 @@ import GaloisForLFunctions.SquareRootThreshold.AttainedDepthIsVisible
 /-!
 # The depth-deficit transform replaces the gap
 
-Fix a bump `b` and let `q_t` be the pair weights of the zeros right of the critical line. Let
-`½ + D` be the largest real part among the zeros of nonzero weight, attained on the top level.
-The zeros below it may accumulate at depth `D`; there need not be a gap. They enter the off-line
-sum `Σ_t q_t e^{(δ_t + iγ_t)v}` only through the **depth-deficit transform**
+Fix a bump `b` and let `q_t` be the pair weights of the zeros right of the critical line. Fix a
+level `Re t = ½ + D` holding a zero of nonzero weight. The zeros below it may accumulate at depth
+`D`; there need not be a gap. They enter the off-line sum `Σ_t q_t e^{(δ_t + iγ_t)v}` only through
+the **depth-deficit transform**
 
 `G(v) = Σ_{δ_t < D} |q_t| e^{−(D − δ_t)v}`,
 
@@ -14,10 +14,14 @@ which is antitone (`depthDeficit_anti`) and relaxes to `0` (`tendsto_depthDefici
 `g` it is at most `e^{−gv} Σ|q_t|` (`depthDeficit_le_of_gap`), which gives back the logarithmic
 aperture of finite off-line sets.
 
-**The level split** (`norm_offLineSum_sub_level_le`). For a finite part `T₀` of the top level,
-the off-line sum at lag `v` is its part over `T₀`, of size `e^{Dv}`, up to an error of at most
-`e^{Dv}(τ + G(v))`, where `τ` is the weight of the level outside `T₀` (`levelTail`).
-`InghamWindowsForAnAttainedTopLevel` turns this into visibility in every window of fixed length.
+Zeros deeper than the level, if any, enter through the **depth-excess transform**
+`E(v) = Σ_{δ_t > D} |q_t| e^{(δ_t − D)v}`. It is monotone (`depthExcess_mono`) and vanishes when
+the level is the top (`depthExcess_eq_zero_of_top`).
+
+**The level split** (`norm_offLineSum_sub_level_le`). For a finite part `T₀` of the level, the
+off-line sum at lag `v` is its part over `T₀`, of size `e^{Dv}`, up to an error of at most
+`e^{Dv}(τ + G(v) + E(v))`. Here `τ` is the weight of the level outside `T₀` (`levelTail`).
+`LocalVisibilityOfAnOffLineLevel` turns this into visibility in windows of fixed length.
 -/
 
 open MeasureTheory Complex Set Filter Topology
@@ -126,19 +130,67 @@ theorem summable_levelTail (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ →
   Summable.of_nonneg_of_le (fun _ => by split_ifs <;> positivity)
     (fun _ => by split_ifs <;> simp) (summable_norm_offLineWeight Z hZ hb hbs)
 
-/-- **The level split.** Let every zero of nonzero weight satisfy `Re t ≤ Re t₀`, and let `T₀` be a
-finite set of zeros right of the line on the level `Re t = Re t₀`. At lag `v ≥ 0` the off-line
-sum differs from its part over `T₀` by at most `e^{Dv}(τ + G(v))`, `D = Re t₀ − ½`, with `τ` the
-weight of the level outside `T₀`. -/
+/-- The depth-excess transform `E(v) = Σ_{Re t > r} |q_t| e^{(Re t − r)v}` of the zeros right of
+the line strictly above the level `Re t = r`. -/
+def depthExcess (Z : ZeroConfig) (b : ℝ → ℂ) (r v : ℝ) : ℝ :=
+  ∑' t : rightZeros Z, if r < (t : ℂ).re then
+    ‖offLineWeight b (Z.mult t) t‖ * Real.exp (((t : ℂ).re - r) * v) else 0
+
+theorem depthExcess_term_le {Z : ZeroConfig} {b : ℝ → ℂ} {r v : ℝ} (hv : 0 ≤ v)
+    (t : rightZeros Z) :
+    0 ≤ (if r < (t : ℂ).re then
+      ‖offLineWeight b (Z.mult t) t‖ * Real.exp (((t : ℂ).re - r) * v) else 0) ∧
+    (if r < (t : ℂ).re then
+      ‖offLineWeight b (Z.mult t) t‖ * Real.exp (((t : ℂ).re - r) * v) else 0) ≤
+      ‖offLineWeight b (Z.mult t) t‖ * Real.exp ((1 - r) * v) := by
+  split_ifs
+  · exact ⟨by positivity, mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
+      (mul_le_mul_of_nonneg_right (by linarith [(Z.strip _ t.2.1).2]) hv)) (norm_nonneg _)⟩
+  · exact ⟨le_rfl, by positivity⟩
+
+theorem summable_depthExcess (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) (r : ℝ) {v : ℝ} (hv : 0 ≤ v) :
+    Summable fun t : rightZeros Z => if r < (t : ℂ).re then
+      ‖offLineWeight b (Z.mult t) t‖ * Real.exp (((t : ℂ).re - r) * v) else 0 :=
+  Summable.of_nonneg_of_le (fun t => (depthExcess_term_le hv t).1)
+    (fun t => (depthExcess_term_le hv t).2)
+    ((summable_norm_offLineWeight Z hZ hb hbs).mul_right _)
+
+/-- `E` is monotone in the lag. -/
+theorem depthExcess_mono (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) (r : ℝ) {V v : ℝ} (hV : 0 ≤ V)
+    (hVv : V ≤ v) : depthExcess Z b r V ≤ depthExcess Z b r v := by
+  refine Summable.tsum_le_tsum (fun t => ?_) (summable_depthExcess Z hZ hb hbs r hV)
+    (summable_depthExcess Z hZ hb hbs r (hV.trans hVv))
+  split_ifs with h
+  · exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
+      (mul_le_mul_of_nonneg_left hVv (by linarith))) (norm_nonneg _)
+  · exact le_rfl
+
+/-- Above a top level there is no excess. -/
+theorem depthExcess_eq_zero_of_top {Z : ZeroConfig} {b : ℝ → ℂ} {r : ℝ}
+    (htop : ∀ t ∈ rightZeros Z, offLineWeight b (Z.mult t) t ≠ 0 → t.re ≤ r) (v : ℝ) :
+    depthExcess Z b r v = 0 := by
+  refine (tsum_congr fun t => ?_).trans tsum_zero
+  split_ifs with h
+  · by_contra hne
+    have hq : offLineWeight b (Z.mult t) t ≠ 0 := fun h0 => hne (by rw [h0, norm_zero, zero_mul])
+    exact absurd (htop t t.2 hq) (not_le.mpr h)
+  · rfl
+
+/-- **The level split.** Let `T₀` be a finite set of zeros right of the line on the level
+`Re t = Re t₀ = ½ + D`. At lag `v ≥ 0` the off-line sum differs from its part over `T₀` by at most
+`e^{Dv}(τ + G(v) + E(v))`: `τ` is the weight of the level outside `T₀`, `G` the depth-deficit
+transform of the zeros below the level, and `E` the depth-excess transform of the zeros above. -/
 theorem norm_offLineSum_sub_level_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
     (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {t₀ : ℂ}
-    (htop : ∀ t ∈ rightZeros Z, offLineWeight b (Z.mult t) t ≠ 0 → t.re ≤ t₀.re)
     {T₀ : Finset ℂ} (hT₀ : ∀ t ∈ T₀, t ∈ rightZeros Z ∧ t.re = t₀.re) {v : ℝ} (hv : 0 ≤ v) :
     ‖∑' t : rightZeros Z, offLineWeight b (Z.mult t) t *
         (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v) -
       ∑ t ∈ T₀, offLineWeight b (Z.mult t) t * (Real.exp ((t.re - 1 / 2) * v) : ℂ) *
         cexp (I * t.im * v)‖ ≤
-      Real.exp ((t₀.re - 1 / 2) * v) * (levelTail Z b t₀.re T₀ + depthDeficit Z b t₀.re v) := by
+      Real.exp ((t₀.re - 1 / 2) * v) * (levelTail Z b t₀.re T₀ + depthDeficit Z b t₀.re v +
+        depthExcess Z b t₀.re v) := by
   classical
   set q : ℂ → ℂ := fun t => offLineWeight b (Z.mult t) t with hq
   set F : ℂ → ℂ := fun t => q t * (Real.exp ((t.re - 1 / 2) * v) : ℂ) * cexp (I * t.im * v)
@@ -151,13 +203,10 @@ theorem norm_offLineSum_sub_level_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b
       abs_of_pos (Real.exp_pos _)]
   have hqs := summable_norm_offLineWeight Z hZ hb hbs
   have hFs : Summable fun t : rightZeros Z => F t := by
-    refine Summable.of_norm_bounded (hqs.mul_right (Real.exp ((t₀.re - 1 / 2) * v))) fun t => ?_
+    refine Summable.of_norm_bounded (hqs.mul_right (Real.exp (1 / 2 * v))) fun t => ?_
     rw [hnF]
-    by_cases h0 : q t = 0
-    · rw [h0, norm_zero, zero_mul]
-      positivity
     exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right
-      (by linarith [htop t t.2 h0]) hv)) (norm_nonneg _)
+      (by linarith [(Z.strip _ t.2.1).2]) hv)) (norm_nonneg _)
   have hIs : Summable fun t : rightZeros Z => if (t : ℂ) ∈ T₀ then F t else 0 :=
     Summable.of_norm_bounded hFs.norm fun t => by split_ifs <;> simp
   have hlevel : ∑' t : rightZeros Z, (if (t : ℂ) ∈ T₀ then F t else 0) = ∑ t ∈ T₀, F t := by
@@ -166,33 +215,40 @@ theorem norm_offLineSum_sub_level_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b
     exact Finset.sum_congr rfl fun z hz => by simp [Set.indicator_of_mem (hT₀ z hz).1, hz]
   have hτ := summable_levelTail Z hZ hb hbs t₀.re T₀
   have hG := summable_depthDeficit Z hZ hb hbs t₀.re hv
+  have hX := summable_depthExcess Z hZ hb hbs t₀.re hv
   have hterm : ∀ t : rightZeros Z, ‖F t - (if (t : ℂ) ∈ T₀ then F t else 0)‖ ≤
       Real.exp ((t₀.re - 1 / 2) * v) * ((if (t : ℂ).re = t₀.re ∧ (t : ℂ) ∉ T₀ then ‖q t‖ else 0) +
-        (if (t : ℂ).re < t₀.re then ‖q t‖ * Real.exp (((t : ℂ).re - t₀.re) * v) else 0)) :=
+        (if (t : ℂ).re < t₀.re then ‖q t‖ * Real.exp (((t : ℂ).re - t₀.re) * v) else 0) +
+        (if t₀.re < (t : ℂ).re then ‖q t‖ * Real.exp (((t : ℂ).re - t₀.re) * v) else 0)) :=
       fun t => by
     have ha : 0 ≤ (if (t : ℂ).re = t₀.re ∧ (t : ℂ) ∉ T₀ then ‖q t‖ else 0) := by
       split_ifs <;> positivity
     have hg := (depthDeficit_term_le (Z := Z) (b := b) (r := t₀.re) hv t).1
-    have hR := mul_nonneg (Real.exp_pos ((t₀.re - 1 / 2) * v)).le (add_nonneg ha hg)
+    have hx := (depthExcess_term_le (Z := Z) (b := b) (r := t₀.re) hv t).1
+    have hR := mul_nonneg (Real.exp_pos ((t₀.re - 1 / 2) * v)).le
+      (add_nonneg (add_nonneg ha hg) hx)
     by_cases hT : (t : ℂ) ∈ T₀
     · rw [if_pos hT, sub_self, norm_zero]
       exact hR
-    rw [if_neg hT, sub_zero]
-    by_cases h0 : q t = 0
-    · have : ‖F t‖ = 0 := by rw [hnF, h0, norm_zero, zero_mul]
-      rw [this]
-      exact hR
-    rw [hnF]
-    rcases (htop t t.2 h0).lt_or_eq with hlt | heq
-    · rw [if_neg fun h => hlt.ne h.1, zero_add, if_pos hlt, ← mul_assoc,
-        mul_comm (Real.exp _), mul_assoc, ← Real.exp_add]
-      exact le_of_eq (by ring_nf)
-    · rw [if_pos ⟨heq, hT⟩, if_neg heq.not_lt, add_zero, heq, mul_comm]
-  rw [← hlevel, ← hFs.tsum_sub hIs, levelTail, depthDeficit, ← hτ.tsum_add hG, ← tsum_mul_left]
+    rw [if_neg hT, sub_zero, hnF]
+    have hsplit : Real.exp (((t : ℂ).re - 1 / 2) * v) =
+        Real.exp ((t₀.re - 1 / 2) * v) * Real.exp (((t : ℂ).re - t₀.re) * v) := by
+      rw [← Real.exp_add]; ring_nf
+    rcases lt_trichotomy (t : ℂ).re t₀.re with hlt | heq | hgt
+    · rw [if_neg fun h => hlt.ne h.1, if_pos hlt, if_neg (not_lt.mpr hlt.le), zero_add, add_zero,
+        hsplit]
+      exact le_of_eq (by ring)
+    · rw [if_pos ⟨heq, hT⟩, if_neg heq.not_lt, if_neg heq.symm.not_lt, add_zero, add_zero, heq,
+        mul_comm]
+    · rw [if_neg fun h => hgt.ne' h.1, if_neg (not_lt.mpr hgt.le), if_pos hgt, zero_add, zero_add,
+        hsplit]
+      exact le_of_eq (by ring)
+  rw [← hlevel, ← hFs.tsum_sub hIs, levelTail, depthDeficit, depthExcess, ← hτ.tsum_add hG,
+    ← (hτ.add hG).tsum_add hX, ← tsum_mul_left]
   refine (norm_tsum_le_tsum_norm ?_).trans ?_
-  · exact Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hterm ((hτ.add hG).mul_left _)
+  · exact Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hterm (((hτ.add hG).add hX).mul_left _)
   · exact Summable.tsum_le_tsum hterm
-      (Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hterm ((hτ.add hG).mul_left _))
-      ((hτ.add hG).mul_left _)
+      (Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hterm (((hτ.add hG).add hX).mul_left _))
+      (((hτ.add hG).add hX).mul_left _)
 
 end GaloisForLFunctions.SquareRootThreshold

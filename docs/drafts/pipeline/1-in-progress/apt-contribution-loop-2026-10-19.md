@@ -237,3 +237,22 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   endpoint by a collar of fixed width log 2 converts it into an ℓ²-bounded form, so the README's
   growing-pattern gap reduces to (i) collared archimedean log-coercivity and (ii) the endpoint
   layer's cross terms (Hilbert-type, MV route). Standard axioms.
+- **C14 · Collared archimedean log-coercivity and positive definiteness of the collared Lévy–prime
+  form on high dyadic blocks** — `CollaredCriticalArchimedeanLogCoercivity`. (i) General-source
+  Lévy calculus: `AdmissibleSource`, `sourceAutocorrelation_eq_spectral`,
+  `sourceLevyEnergy_ge_highBand`, and the abstract law `ofReal_le_sourceLevyEnergy` (mass floor +
+  low-band exclusion ⇒ Lévy ≥ e^{-1/2}(A/2)(log M − 3 − log 1/η)E), reusable for any future source.
+  (ii) Flat nonstationary phase `norm_integral_Ioi_one_flat_mul_cexp_phase_le` (amplitude vanishing
+  at 1: no boundary term, ≤ (2/|ω|)(‖a'‖₁ + ‖a/v²‖₁)); collar amplitude `criticalCollarAmplitude`
+  a_c = σ(v−1)v^{-3/2}; collared readout `paperFT_criticalCollaredSource`; collared exclusion
+  `norm_sq_paperFT_criticalCollaredSource_le` (‖ĝ_c‖² ≤ 2D_c²/M·E on |t| ≤ πM). (iii) Collared mass
+  floor `integral_criticalCollaredSource_sq_ge` (window [2,2+L] beyond the collar).
+  (iv) `ofReal_le_criticalCollaredLevyEnergy`: Lévy(g_c) ≥ s_c(log M − c_c)E for every family on
+  n+1 ≥ M ≥ 2. Capstones `criticalCollaredLevyPrime_ge` / `criticalCollaredLevyPrime_pos`: on every
+  dyadic block, Lévy(g_c) − 2P_c ≥ (s_c(log M − c_c) − 2C_c)E, hence positive definite for all
+  M beyond an absolute threshold, with NO restriction on |S| (contrast C11: |S| ≲ log M). New
+  insight: once the endpoint is collared the critical Weil-type form splits cleanly into an
+  ℓ²-log-growing archimedean part and an ℓ²-bounded prime part — the growing-pattern gap of the
+  README is closed for collared sources; the full critical source differs only by the endpoint
+  layer (−log 2, 0], whose self-prime interaction vanishes (disjoint supports for r ≥ 2) and whose
+  cross terms carry the Hilbert 1/f kernel. Standard axioms.

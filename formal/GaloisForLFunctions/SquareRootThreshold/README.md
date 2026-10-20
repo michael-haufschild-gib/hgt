@@ -154,9 +154,11 @@ them.
    every window of `|T|` grid lags. The levels below lose `e^{−gv}`, `g` the depth gap, so the
    aperture is `(1/2g) log M + O(1)`, uniformly in the on-line background. Without a gap, the
    levels below enter only through the depth-deficit transform `G(v) = Σ_{δ_t < D} |q_t| e^{−(D − δ_t)v}`,
-   which relaxes to `0`. If the top depth is attained at finitely many heights, the minor fails in
-   every window of fixed length once `G` has relaxed below half the window floor of the top phase
-   sum and `e^{Dv}` exceeds the mass `M`. With the polar-free bump
+   which relaxes to `0`. If the top depth is attained, at finitely or infinitely many heights, the
+   minor fails in every window of length `4π/g` once `G` and the weight of the top level outside a
+   finite part `F` are below `|q_{t₀}|/8` and `|q_{t₀}| e^{Dv}` exceeds `4(2M + 3Σ|q_t|)`. Here `g`
+   is the height separation of `F`: by Ingham's inequality, the top phase sum over `F` exceeds
+   `|q_{t₀}|/2` somewhere in every such window. With the polar-free bump
    the same tests lie in the Hodge class. Without a gap, and with infinitely many off-line zeros,
    every off-line zero is still seen at some aperture. Invisibility would keep the off-line sum
    `Σ_t q_t e^{(δ_t + iγ_t)v}` bounded for `v ≥ 0`. Its Laplace transform is then holomorphic on
@@ -283,10 +285,10 @@ them.
 2. **Clusters without a depth gap.** For periodic configurations visibility is a Toeplitz question
    about cosh-weighted modes; for finite off-line sets the aperture is `(1/2g) log M` with `g` the
    gap below the deepest level (mechanism 9). Every off-line zero is visible at some aperture,
-   whatever the other off-line zeros do. When the top depth is attained at finitely many heights,
-   the aperture is, up to one window, the larger of half the relaxation lag of the depth-deficit
-   transform and `(1/2D) log M`, whether or not depths accumulate at the top. Open: the size of the aperture when the top is not attained or is
-   attained at infinitely many heights, at `ζ`-density and with irregularly spaced ordinates.
+   whatever the other off-line zeros do. When the top depth is attained, the aperture is, up to
+   one Ingham window `4π/g`, the larger of half the relaxation lag of the depth-deficit transform
+   and `(1/2D) log M`, whether or not depths accumulate at the top. Open: the size of the aperture
+   when the top depth is not attained, at `ζ`-density and with irregularly spaced ordinates.
 3. **Sharper constants.** Weil positivity of `ζ` holds unconditionally on every test of aperture
    `a ≤ 1/100`, with `Re W ≥ ‖f‖²/25`. Push this towards Yoshida's aperture. The archimedean
    horizon is `exp(C_ε + (4 + ε)√X)`, so the localized forms at height `T` are positive for
