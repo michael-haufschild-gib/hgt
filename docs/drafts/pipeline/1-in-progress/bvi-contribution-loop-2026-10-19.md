@@ -73,6 +73,7 @@
 | C47 | HardyLittlewoodSingularSeriesOfTheDampedSource | lag-h correlation of the damped source over its squared density → Hardy–Littlewood singular series: A_ε(h)/ρ_ε² → 𝔖(h)−1, (ρ²+A)/ρ² → 𝔖(h) = Σ μ²(q)c_q(h)/φ(q)²; JOINT (ε,Q) limit for receiver-row lag covariances; Euler product 𝔖 = ∏_p(1+c_p(h)/(p−1)²); 𝔖(h)=0 for odd h, >0 for even h. Centred: white (A/V→0, THIM); uncentred: prime-pair structure (τ_ε/ε → Λ) | done |
 | C48 | ExactDampedSingularSeriesAndGallagherPrefixDiscrepancy | exact for every ε>0: (ρ²+A_ε(h))/ρ² = 𝔖_ε(h) = Σ c_q(h)μ²/D_ε² = ∏_p(1+c_p(h)/(p^{1+ε}−1)²) → 𝔖(h); lag sums are prefix discrepancies: Σ_{h≤H}A_ε(h) = Σ_e w_ε(e)²R_e(H) (row with squared Selberg coordinates); Gallagher's Σ_{h≤H}(𝔖(h)−1) = Σ_q (μ²/φ²)(q)R_q(H) | done |
 | C49 | HardyLittlewoodTupleSeriesFromRadicalClosedRows | radical-closed damped row μ(d)d^{-ε} on divisors of P=∏S: response = ∏_{p∈S} local factors; CRT: every translated moment = ∏_{p∈S} m_p(ε,H) exactly; k=1 gives density 1−p^{-1-ε}; ε→0: normalized moments → ∏_{p∈S}(1−ν_p(H)/p)/(1−1/p)^k; over all primes (distinct shifts, |factor−1| ≤ k²/p²) → Hardy–Littlewood k-tuple series 𝔖(H); 0 iff inadmissible, >0 if admissible; pairs: Euler form = C47 Ramanujan form | done |
+| C50 | SecondOrderSmallDampingLawsFromTheSingularSeries | THIM frontier answered: V(ε) = ε/2 − ε² + o(ε²) and R(ε) = ε/2 + o(ε²). Variance correction C(ε) = 1 − O(ε²) (prime deficit ≤ ε²(log p/(p−1))²), ζ(1+δ) = 1/δ + γ + o(1), γ cancels; Bézout limit = ρ²𝔖_ε(1), so R = V + ρ²(1 − 𝔖_ε(1)) with 𝔖_ε(1) → 𝔖(1) = 0 (parity of consecutive integers) | done |
 
 ## Conjecture queue
 
@@ -776,3 +777,17 @@
   Every moment factors exactly over primes (valuation: each prime acts on its own residue). Admissibility is exactly the vanishing law,
   linking BVI tuple admissibility to 𝔖(H) > 0. The pair case closes a consistency loop: Ramanujan expansion (C47) = Euler product.
 - **Audit:** clean; olean; 9 public theorems standard axioms; wired. Count 49.
+
+### C50 — Second-order small-damping laws from the singular series (DONE)
+
+- **Module:** `BezoutValuationIncidence/SecondOrderSmallDampingLawsFromTheSingularSeries.lean`
+- **Statements:** `pmPowerDampedVariancePrimeDeficit_le_sq`, `summable_log_div_sub_one_sq`,
+  **`pmPowerDampedVarianceCorrection_ge`** (C(ε) ≥ 1 − Kε²); `tendsto_inv_density_sub_inv` (ζ(1+δ) − 1/δ → γ in BVI form);
+  **`tendsto_variance_second_order`** ((V − ε/2)/ε² → −1); `ramanujanLagWeight_one_left` (c_e(1) = μ(e));
+  **`dampedBezoutLimit_eq`** (Bézout limit = ρ²𝔖_ε(1)); **`dampedDissipationRate_eq`**; **`tendsto_dissipationRate_second_order`**
+  ((R − ε/2)/ε² → 0).
+- **Why significant:** answers the THIM README frontier item "the second-order terms of V(ε) and R(ε) beyond the common leading term
+  ε/2 are open". The answer: −1 for V and 0 for R. The gap between them, ρ²(1 − 𝔖_ε(1)), is the lag-one damped singular series from
+  C47/C48, and it vanishes at zero damping by Bézout parity. This uses BVI singular-series tools to solve a problem outside BVI.
+- **Audit:** clean (no warnings, no sorry); olean; 6 public theorems standard axioms; wired. Count 50.
+- **Paused here at user request (2026-10-20):** finish the current contribution, then do not start a new one.

@@ -135,8 +135,9 @@ theorem lt_abs_int_mul_add {w L t : ℝ} (hw : 0 < w) (ht : |t| < L - 2 * w) {j 
       _ ≤ |(j : ℝ) * L + t| + |t| := abs_sub _ _
   have h3 : L ≤ |(j : ℝ) * L| := by
     have : (1 : ℝ) ≤ |(j : ℝ)| := by exact_mod_cast Int.one_le_abs hj
-    rw [abs_mul, abs_of_pos (by linarith)]
-    nlinarith
+    have hL0 : 0 < L := by linarith
+    rw [abs_mul, abs_of_pos hL0]
+    nlinarith [mul_le_mul_of_nonneg_right this hL0.le]
   linarith
 
 /-- **Teeth read modes.** Let `Z` have the lag formula `W(f, f) = ℓ Σ_m k(mℓ) D(m)`, `ℓ > 4w`,
@@ -166,32 +167,40 @@ theorem W_lag_nat_mul_add_of_lagFormula (Z : ZeroConfig) {ℓ : ℝ} (D : ℤ �
   have hk : ∀ x : ℝ, EF.weilTest (twoBump b v (-1)) (twoBump b v (-1)) x =
       2 * K x - K (x + v) - K (x - v) := weilTest_twoBump_neg_one hb.continuous hbc v
   have hn0 : (n : ℤ) ≠ 0 := by exact_mod_cast (show n ≠ 0 by omega)
-  rw [hW (twoBump b v (-1)) (contDiff_bumpTest hb v ![1, -1]) (hasCompactSupport_twoBump hbc v (-1))]
+  rw [hW (twoBump b v (-1)) (contDiff_bumpTest hb v ![1, -1])
+    (hasCompactSupport_twoBump hbc v (-1))]
   have hp : ∀ m : ℤ, (m : ℝ) * ℓ + v = ((m + n : ℤ) : ℝ) * ℓ + t := fun m => by
     rw [hv]; push_cast; ring
   have hm : ∀ m : ℤ, (m : ℝ) * ℓ - v = ((m - n : ℤ) : ℝ) * ℓ + -t := fun m => by
     rw [hv]; push_cast; ring
-  have hz : ∀ m : ℤ, (m : ℝ) * ℓ = (m : ℝ) * ℓ + 0 := fun m => (add_zero _).symm
+  have hKj0 : ∀ j : ℤ, j ≠ 0 → K (j * ℓ) = 0 := fun j hj => by simpa using hKj j hj 0 h0
   have hsum : ∑' m : ℤ, EF.weilTest (twoBump b v (-1)) (twoBump b v (-1)) (m * ℓ) * D m =
       ∑ m ∈ ({0, (n : ℤ), -(n : ℤ)} : Finset ℤ),
         EF.weilTest (twoBump b v (-1)) (twoBump b v (-1)) (m * ℓ) * D m := by
     refine tsum_eq_sum fun m hm' => ?_
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hm'
     obtain ⟨h1, h2, h3⟩ := hm'
-    rw [hk, hz m, hKj m h1 0 h0, ← hz m, hp, hKj _ (by omega) t ht, hm, hKj _ (by omega) (-t) ht']
+    rw [hk, hKj0 m h1, hp, hKj (m + n) (by omega) t ht, hm, hKj (m - n) (by omega) (-t) ht']
     simp
+  have T0 : EF.weilTest (twoBump b v (-1)) (twoBump b v (-1)) (((0 : ℤ) : ℝ) * ℓ) * D 0 =
+      2 * K 0 * D 0 := by
+    rw [hk, hp 0, hm 0, show ((0 : ℤ) + n : ℤ) = n by ring, show ((0 : ℤ) - n : ℤ) = -n by ring,
+      hKj n hn0 t ht, hKj (-n) (by omega) (-t) ht', Int.cast_zero, zero_mul]
+    ring
+  have Tn : EF.weilTest (twoBump b v (-1)) (twoBump b v (-1)) (((n : ℤ) : ℝ) * ℓ) * D n =
+      -(K (-t) * D n) := by
+    rw [hk, hKj0 n hn0, hp n, hm n, show ((n : ℤ) + n : ℤ) = 2 * n by ring,
+      show ((n : ℤ) - n : ℤ) = 0 by ring, hKj (2 * n) (by omega) t ht, Int.cast_zero, zero_mul,
+      zero_add]
+    ring
+  have Tm : EF.weilTest (twoBump b v (-1)) (twoBump b v (-1)) (((-(n : ℤ) : ℤ) : ℝ) * ℓ) *
+      D (-n) = -(K t * D (-n)) := by
+    rw [hk, hKj0 (-n) (by omega), hp (-n), hm (-n), show (-(n : ℤ) + n : ℤ) = 0 by ring,
+      show (-(n : ℤ) - n : ℤ) = -(2 * n) by ring, hKj (-(2 * n)) (by omega) (-t) ht',
+      Int.cast_zero, zero_mul, zero_add]
+    ring
   rw [hsum, Finset.sum_insert (by simp; omega), Finset.sum_insert (by simp; omega),
-    Finset.sum_singleton, hk, hk, hk, hp, hm, hp, hm, hp, hm]
-  have a1 : ((0 : ℤ) + n : ℤ) = n := by ring
-  have a2 : ((0 : ℤ) - n : ℤ) = -n := by ring
-  have a3 : ((n : ℤ) + n : ℤ) = 2 * n := by ring
-  have a4 : ((n : ℤ) - n : ℤ) = 0 := by ring
-  have a5 : (-(n : ℤ) + n : ℤ) = 0 := by ring
-  have a6 : (-(n : ℤ) - n : ℤ) = -(2 * n) := by ring
-  rw [a1, a2, a3, a4, a5, a6, hKj _ hn0 t ht, hKj _ (by omega) (-t) ht', hKj _ (by omega) t ht,
-    hKj _ (by omega) (-t) ht', Int.cast_zero, zero_mul, zero_mul, zero_add, zero_add,
-    hKj _ hn0 0 h0 |> fun h => by simpa using h, hKj _ (by omega : -(n : ℤ) ≠ 0) 0 h0 |> fun h => by
-      simpa using h]
+    Finset.sum_singleton, T0, Tn, Tm]
   ring
 
 /-- **Teeth read modes**, at the centre of each tooth: `W(f_{nℓ}) = ℓ‖κ_w‖²(2D(0) − D(n) − D(−n))`
@@ -298,25 +307,29 @@ theorem W_offLineLattice_lag_eq_of_gap {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ) 
   push_cast
   ring
 
+/-- The test `κ_w(t + v/2) − κ_w(t − v/2)`, `v ≥ 0`, has aperture `v/2 + w`. -/
+theorem tsupport_twoBump_modScaledBump_subset {w v : ℝ} (hw : 0 < w) (hv0 : 0 ≤ v) :
+    tsupport (twoBump (modScaledBump w 0) v (-1)) ⊆ Icc (-(v / 2 + w)) (v / 2 + w) := by
+  have hbs := modScaledBump_support hw 0
+  refine closure_minimal (fun t ht => ?_) isClosed_Icc
+  have ht' : twoBump (modScaledBump w 0) v (-1) t ≠ 0 := ht
+  rw [twoBump_apply] at ht'
+  by_cases h1 : modScaledBump w 0 (t + v / 2) = 0
+  · have h2 : modScaledBump w 0 (t - v / 2) ≠ 0 := fun h => ht' (by rw [h1, h]; ring)
+    obtain ⟨h3, h4⟩ := abs_le.mp (hbs _ h2)
+    exact ⟨by linarith, by linarith⟩
+  · obtain ⟨h3, h4⟩ := abs_le.mp (hbs _ h1)
+    exact ⟨by linarith, by linarith⟩
+
 /-- **Silence up to the threshold.** For `0 ≤ v ≤ L − 2w` the test `κ_w(t + v/2) − κ_w(t − v/2)`
 has aperture at most `L/2`, and `Re W ≥ 0` on the off-line lattice. -/
 theorem re_W_offLineLattice_lag_nonneg_of_le {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ)
     (hδ' : δ ≤ 1 / 2) {w : ℝ} (hw : 0 < w) {v : ℝ} (hv0 : 0 ≤ v) (hv : v ≤ L - 2 * w) :
     0 ≤ ((offLineLatticeConfig hL hδ hδ').W (twoBump (modScaledBump w 0) v (-1))
         (twoBump (modScaledBump w 0) v (-1))).re := by
-  have hbs := modScaledBump_support hw 0
-  have hsupp : tsupport (twoBump (modScaledBump w 0) v (-1)) ⊆ Icc (-(v / 2 + w)) (v / 2 + w) := by
-    refine closure_minimal (fun t ht => ?_) isClosed_Icc
-    have ht' : twoBump (modScaledBump w 0) v (-1) t ≠ 0 := ht
-    rw [twoBump_apply] at ht'
-    by_cases h1 : modScaledBump w 0 (t + v / 2) = 0
-    · have h2 : modScaledBump w 0 (t - v / 2) ≠ 0 := fun h => ht' (by rw [h1, h]; ring)
-      obtain ⟨h3, h4⟩ := abs_le.mp (hbs _ h2)
-      exact ⟨by linarith, by linarith⟩
-    · obtain ⟨h3, h4⟩ := abs_le.mp (hbs _ h1)
-      exact ⟨by linarith, by linarith⟩
   exact ((offLineLattice_weil_positive_iff hL hδ hδ' (v / 2 + w)).mpr (by linarith)) _
-    (contDiff_bumpTest (contDiff_modScaledBump_two w 0) v ![1, -1]) hsupp
+    (contDiff_bumpTest (contDiff_modScaledBump_two w 0) v ![1, -1])
+    (tsupport_twoBump_modScaledBump_subset hw hv0)
 
 /-- **The lag family meets the crystal at the threshold.** For `L > 4w`, the one-parameter family
 is Weil-nonnegative on the off-line lattice for every lag `0 ≤ v ≤ L − 2w` (aperture `≤ L/2`) and

@@ -91,6 +91,11 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Ten moduli | `{2, 3, 4, 5, 7, 9, 11, 13, 17, 19}` | `atomDominatedModuli` |
 | Collar ends | `ℓ(s) = 2ω(s)/sinh(s/2)`, `L(s) = 2ω(s)/sinh(s/2 − 6e^{−3s/4})` | `collarInnerEnd`, `collarOuterEnd` |
 | Total lattice crossing kernel | `k_arch(−log a, log b) + Λ(ab)/√(ab)` | `totalLatticeCrossingKernel` |
+| Total anti-diagonal kernel | `ω(log n) + Λ(n)/√n − P(a)` on the anti-diagonal of `n` | `totalAntiDiagonalKernel` |
+| Thirteen moduli | `{2, …, 9, 11, 13, 17, 19, 23}` | `totalDominatedModuli` |
+| Unpaid set of a level | `{a ∈ (0,s) : P_s(a) < E}` | `unpaidSet` |
+| Level of `n` | `E_n = ω(log n) + Λ(n)/√n` | `antiDiagonalLevel` |
+| Unpaid ends | `ℓ = 2E/sinh(s/2)`, `L = 2E/sinh(s/2 − min(s/4, 2E/sinh(s/4)))` | `unpaidInnerEnd`, `unpaidOuterEnd` |
 
 **Words.**
 * **Pair `(x, y)`:** two points of the real line; **same-side** if `xy > 0`, **crossing** if
@@ -218,6 +223,32 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     `L = ℓ · sinh(s/2)/sinh(s/2 − 6e^{−3s/4})` (`collarOuterEnd_eq`). The collar has exact order
     `4e^{−s}` at each axis; the unpaid archimedean mass is at most `2ω(s)L(s)`
     (`lintegral_antiDiagonalCollar_le_outer`), of order `8e^{−3s/2}`.
+21. **The pole against the whole anti-diagonal.** On the anti-diagonal of `n` the total kernel
+    `ω(log n) + Λ(n)/√n − P(a)`, with `ω(log n) = n²/((n² − 1)√n)` (`archLevyDensity_log_nat`), is
+    smallest at the midpoint, where it equals `(4n²/(n² − 1) + 4Λ(n) − (√n − 1)²)/(4√n)`
+    (`totalAntiDiagonalKernel_midpoint_eq`). It is positive everywhere iff
+    `(√n − 1)² < 4n²/(n² − 1) + 4Λ(n)`, and for `n ≥ 2` this holds iff
+    `n ∈ {2, …, 9, 11, 13, 17, 19, 23}` (`total_midpoint_inequality_iff`,
+    `totalAntiDiagonalKernel_pos_forall_iff`): every modulus up to `9` and the primes `11` to `23`.
+    For all other `n` the pole pays the whole negative conductance at the midpoint
+    (`totalAntiDiagonalKernel_midpoint_nonpos`). The last prime is `23` (`14.4` against `16.5`);
+    `29` is paid (`19.2` against `17.5`); from `30` on, `4x²/(x² − 1) + 4 log x ≤ (√x − 1)²`
+    (`four_sq_div_add_four_log_le`, through `log r ≤ sinh(log r)` on the fourth root).
+22. **Unpaid axis intervals.** The polar weight increases from the axis to the midpoint
+    (`crossingPolarWeight_mono`), so the unpaid set of a level `E` is two axis intervals once the
+    quarter point is paid, and the bounds of mechanism 19 sandwich its ends:
+    `(0, ℓ) ∪ (s − ℓ, s) ⊆ unpaid ⊆ (0, L) ∪ (s − L, s)` with `ℓ = 2E/sinh(s/2)` and
+    `L = 2E/sinh(s/2 − min(s/4, 2E/sinh(s/4)))` (`innerEnds_subset_unpaidSet`,
+    `unpaidSet_subset_outer`, ratio `unpaidOuterEnd_eq`). For the full level
+    `E_n = ω(log n) + Λ(n)/√n` of the anti-diagonal of `n`, the inner end is
+    `ℓ_n = 4(n²/(n² − 1) + Λ(n))/(n − 1)` (`unpaidInnerEnd_level_eq`), between `4/(n − 1)` and
+    `4(1 + 1/(n² − 1) + log n)/(n − 1)`, and the quarter point is paid for every `n ≥ 41`
+    (`antiDiagonalLevel_le_quarter`, by the fourth-root bound and the polynomial
+    `4.003r + 8(r² − 1) ≤ r⁵ − r⁴ − r² + r` for `r ≥ 2.53`). Hence for `n ≥ 41` the pole pays the
+    whole negative conductance of the anti-diagonal of `n` except on two axis intervals of length
+    between `ℓ_n` and `L_n` (`unpaid_level_subset_outer`, `totalAntiDiagonalKernel_pos_imp_near_axis`):
+    the prime obstruction on the anti-diagonal of `n` is confined to a neighbourhood of the axes
+    of exact order `4(1 + Λ(n))/n`.
 
 ### The lattice with its atoms
 
@@ -249,6 +280,7 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Reading "the pole pays the atom at the midpoint" as payment of the atom | It is a pointwise comparison of weights per unit gauge at one point; the atom is a Dirac mass along the whole segment and the pole's share depends on the gauge profile along it. |
 | Expecting the ten moduli to be the primes below some bound | They are the primes up to `19` together with `4` and `9`; `8`, `16`, `25` and `27` are paid at the midpoint, `19` is kept by a margin of `0.4` in `(√p − 1)² < 4 log p`. |
 | Expecting the atom to create new negative lattice pairs | On every lattice crossing pair with `a, b ≥ 2` the polar weight that beats the archimedean density also beats the density plus the atom; the closest case `{2, 8}` has a margin of `0.21` in the coefficient inequality. |
+| Confusing the ten moduli with the thirteen | Atom alone against the pole: `{2,3,4,5,7,9,11,13,17,19}`. Atom plus archimedean density against the pole: `{2,…,9,11,13,17,19,23}`; the density adds `6`, `8` and `23`, and the composite moduli enter only through the density. |
 
 ---
 
@@ -273,6 +305,10 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 3. **Collar ratio.** The two ends of the sandwich differ by `sinh(s/2)/sinh(s/2 − 6e^{−3s/4})`;
    show that the collar end `c(s)`, the root of `P_s(c) = ω(s)`, satisfies
    `c(s) = ℓ(s)(1 + O(e^{−s}))`, and give the explicit second-order term.
+3′. **The range `24 ≤ n ≤ 40`.** Mechanism 22 needs the quarter point paid, proved for `n ≥ 41`;
+   determine the exact set of `n` for which the quarter point is paid (it fails for `10`, `29`, `31`
+   and the thirteen moduli), and describe the unpaid set when the midpoint is paid but the quarter
+   point is not.
 4. **Lattice conductance at fixed width.** Combine mechanism 20 with the archimedean self-energy
    `≍ w log(1/w)` of a bump of width `w` into one statement about the conductance matrix of a
    lattice profile at fixed `w`, including the axis pairs `(0, log b)`.

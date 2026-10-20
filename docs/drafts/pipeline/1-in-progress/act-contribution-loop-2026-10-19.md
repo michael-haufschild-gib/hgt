@@ -511,3 +511,17 @@ Module: `ArithmeticCriticalityTheory/WindowGaugeLogarithmicGroundEnergyFloor.lea
 Significance: the ACT gauge potential (window killing N(R−x)+N(R+x) ≥ −log 2R plus the constant 2c) carries the entire
 log(1/A) term and both arithmetic constants (log 2π, γ) of Suzuki's asymptotic, explicitly and for every A < (log 2)/2;
 the discarded gauge jump energy is exactly what accounts for μ₁ > 0. Explains the asymptotic's structure in ACT terms.
+
+### C35 — Gaussian criticality of the restricted Weil operators (frontier 2, quantitative)
+Module: `ArithmeticCriticalityTheory/GaussianCriticalityRestrictedWeilGroundEnergy.lean` (compiled, olean, standard axioms, wired).
+- `exists_fullZeroForm_thetaPlateau_le`: Ẑ(Φu_L) ≤ Kτ(L) + 2τ(L)², τ(L) = ∫_{|x|>L} Φ(x)(cosh(x/2)+κ). Mechanism: Φ-gauge
+  representation; potential + even pole term cancel to ≤ 2(∫Φ(1−u_L)cosh)² (u² ≥ 2u−1, ∫Φcosh = 1/2); every jump with a
+  nonzero increment has an endpoint beyond L, prime jumps from x weigh ≤ cosh(x/2)+κ (`primeKernelSum_le`).
+- `tailWeight_le`: τ(L) ≤ (1+κ)E e^L Φ(L) for L ≥ ½log 2.
+- `ccmRestrictedWeilGroundEnergy_le_fullZeroForm_div`: reusable Rayleigh upper bound μ(A) ≤ Ẑ(F)/∫F² for real smooth F in (−A,A).
+- `exists_ccmRestrictedWeilGroundEnergy_le_doubleExp`: UNCONDITIONAL μ(A) ≤ K exp((11/2)A − πe^{2(A−2)}) for A ≥ 3.
+- `ccmRestrictedWeilGroundEnergy_gaussian_of_riemannHypothesis`: under RH, 0 ≤ μ(A) ≤ K exp((11/2)A − πe^{2(A−2)}).
+Significance: answers README frontier 2's "quantitative form of the approach to zero along the null sequences": the
+approach to criticality is doubly exponential, at the Gaussian-tail rate of Θ (vs −∞ exponentially off RH; corpus
+ConstrainedWeilPolarGroundDecay). Sharpens C33 (μ → 0) and the README's O(e^{−8L}).
+Loop paused here at user request (C35 complete).

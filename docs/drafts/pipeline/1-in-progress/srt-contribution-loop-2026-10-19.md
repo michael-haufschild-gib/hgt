@@ -454,3 +454,17 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
   `RHTower.offLineLattice_weil_positive_iff`). Capstone `lag_family_meets_crystal_at_threshold`: first negative lag
   in (L − 2w, L], aperture (L/2, L/2 + w] — the minimal receiver is threshold-exact on crystals; negativity grows
   like e^{nδL} (rate law). Olean built; axioms clean; wired; README mechanism 21 extended.
+- **C56 · Teeth read modes; rotated patterns delay the lag family** — `RotatedPatternsDelayTheLagFamily`, with the
+  general lag-formula layer in `LagFamilyMeetsTheCrystalAtTheThreshold` (refactored: C55's lattice teeth/gaps are now
+  corollaries). General: `W_lag_nat_mul_add_of_lagFormula` (for any configuration with lag formula
+  `W = ℓ Σ_m k(mℓ)D(m)`, ℓ > 4w, n ≥ 1, |t| < ℓ − 2w: `W(f_{nℓ+t}) = ℓ(2K(0)D(0) − K(−t)D(n) − K(t)D(−n))`),
+  `W_lag_nat_mul_of_lagFormula` (teeth `ℓ‖κ‖²(2D(0) − D(n) − D(−n))`), `W_lag_eq_of_gap_of_lagFormula` (gaps
+  `2ℓ‖κ‖²D(0)`), `tsupport_twoBump_modScaledBump_subset`. Patterns: `patternSymbol_tooth`
+  (`2D(0) − D(n) − D(−n) = 4Σ_r(1 − cosh(d_r nℓ)cos(c_r nℓ))`); real even nonnegative kernel
+  `weilTest_modScaledBump_zero`, `weilTest_modScaledBump_zero_neg`; `re_toeplitzForm_nonneg_of_le_one`.
+  Quarter-turn pattern `quarterPattern` (one line per period at offset π/(2ℓ)): `quarterPattern_delays_lag_family` —
+  some test of aperture 3ℓ/4 is negative (2×2 Toeplitz `4 − 4cosh(δℓ) < 0`), yet `Re W(f_v) ≥ 0` for all
+  0 ≤ v < 4ℓ − 2w (teeth 1, 3 imaginary modes; tooth 2 negative mode adds positivity since K ≥ 0; gaps mean mode),
+  and `Re W(f_{4ℓ}) < 0`. Insight: the minimal receiver is threshold-exact on crystals (C55) but not
+  aperture-optimal — a tooth reads Re of the rotated mode, Toeplitz reads its modulus. Oleans C55, C56 rebuilt;
+  axioms clean; wired; README mechanism 21 + trap row.

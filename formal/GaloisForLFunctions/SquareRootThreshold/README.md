@@ -324,7 +324,13 @@ The configurations and the probes of the theory:
     where the aperture is at most `L/2`. At every tooth `v = nL` it equals
     `4L‖κ_w‖²(1 − cosh(nδL)) < 0`, and between the teeth it is `4L‖κ_w‖²`. So the minimal
     receiver meets the crystal at the threshold aperture, up to the bump width, for every depth;
-    tests of much larger aperture see nothing between the teeth.
+    tests of much larger aperture see nothing between the teeth. On any configuration with a lag
+    formula `W(f, f) = ℓ Σ_m k(mℓ) D(m)` the teeth read the modes:
+    `W(f_{nℓ}) = ℓ‖κ_w‖²(2D(0) − D(n) − D(−n))`, and the gaps read `2ℓ‖κ_w‖²D(0)`. For a periodic
+    pattern a tooth therefore sees only `Re(e^{ic_r nℓ})`, while the Toeplitz law sees the
+    modulus. A quarter turn separates them. One off-line line per period at offset `π/(2ℓ)` is seen
+    by tests of aperture `3ℓ/4`, but the family stays nonnegative until lag `4ℓ − 2w`. So the
+    minimal receiver is threshold-exact on crystals but not aperture-optimal.
 
 ---
 
@@ -355,6 +361,7 @@ The configurations and the probes of the theory:
 | Expecting a bounded exponential sum over the zeros to keep a top pole | A sum `Σ q_t e^{λ_t v}` bounded on `v ≥ 0`, or bounded on one side, has zero coefficient at every rightmost, unshared exponent; its growth rate is the abscissa of its top poles. |
 | Expecting the visibility aperture to depend on the arrangement of the on-line zeros | It depends on the on-line background only through the logarithm of the local on-line mass at the bump; the arrangement is irrelevant. |
 | Expecting the ground energy to vary continuously with the aperture | On lag lattices it is a step function with jumps at every `nL/2`; continuity is a property of the restricted operator of `ζ`, not of configurations. |
+| Expecting the minimal receiver to be aperture-optimal | It is exact on crystals, but its teeth read only the real part of each rotated mode: a quarter-turn pattern visible at aperture `3ℓ/4` is first seen by the family at lag `4ℓ`. |
 | Expecting a lag grid to decide the line | A grid `v = kℓ` sees every attained top for non-resonant `ℓ`, but a chain whose heights approach `(2π/ℓ)ℤ` can keep a one-sided grid bound. Only the continuum of lags excludes chains. |
 | Expecting all couplings `τ` to be needed in the two-bump criteria | Unimodular `τ`, and for `ζ` the single sign `τ = −1`, suffice; the lag `v` and the height `γ` are the only parameters. |
 

@@ -315,4 +315,56 @@ theorem exists_unimodular_finite_approx [CompleteSpace H] (x : ℕ → H)
       _ < ε / 2 + ε / 2 := add_lt_add hdist hr
       _ = ε := by ring
 
+/-- The divergence hypothesis passes to every tail of the sequence. -/
+theorem divergence_shift (x : ℕ → H)
+    (hdiv : ∀ e : H, e ≠ 0 → ∀ M : ℝ, ∃ N : ℕ, M < ∑ n ∈ range N, ‖⟪x n, e⟫_ℂ‖) (N₁ : ℕ) :
+    ∀ e : H, e ≠ 0 → ∀ M : ℝ, ∃ N : ℕ, M < ∑ n ∈ range N, ‖⟪x (n + N₁), e⟫_ℂ‖ := by
+  intro e he M
+  obtain ⟨N, hN⟩ := hdiv e he (M + ∑ n ∈ range N₁, ‖⟪x n, e⟫_ℂ‖)
+  refine ⟨N, ?_⟩
+  have h1 : ∑ n ∈ range (N₁ + N), ‖⟪x n, e⟫_ℂ‖
+      = ∑ n ∈ range N₁, ‖⟪x n, e⟫_ℂ‖ + ∑ n ∈ range N, ‖⟪x (n + N₁), e⟫_ℂ‖ := by
+    rw [sum_range_add]
+    congr 1
+    refine sum_congr rfl fun n _ => ?_
+    rw [add_comm]
+  have h2 : ∑ n ∈ range N, ‖⟪x n, e⟫_ℂ‖ ≤ ∑ n ∈ range (N₁ + N), ‖⟪x n, e⟫_ℂ‖ :=
+    sum_le_sum_of_subset_of_nonneg (Finset.range_mono (by omega)) fun _ _ _ => norm_nonneg _
+  linarith
+
+/-- **Finite Pechersky lemma with prescribed initial phases.**  The phases of the first `N₁`
+vectors may be fixed in advance; the approximation is then achieved with the remaining ones. -/
+theorem exists_unimodular_finite_approx_extend [CompleteSpace H] (x : ℕ → H)
+    (hsum : Summable fun n => ‖x n‖ ^ 2)
+    (hdiv : ∀ e : H, e ≠ 0 → ∀ M : ℝ, ∃ N : ℕ, M < ∑ n ∈ range N, ‖⟪x n, e⟫_ℂ‖)
+    (h : H) {ε : ℝ} (hε : 0 < ε) (N₁ : ℕ) (a₀ : ℕ → ℂ) (ha₀ : ∀ n, ‖a₀ n‖ = 1) :
+    ∃ N : ℕ, N₁ ≤ N ∧ ∃ a : ℕ → ℂ, (∀ n, ‖a n‖ = 1) ∧ (∀ n < N₁, a n = a₀ n) ∧
+      ‖h - ∑ n ∈ range N, a n • x n‖ < ε := by
+  obtain ⟨N₂, -, a', ha', hclose⟩ := exists_unimodular_finite_approx (fun n => x (n + N₁))
+    ((summable_nat_add_iff N₁).mpr hsum) (divergence_shift x hdiv N₁)
+    (h - ∑ n ∈ range N₁, a₀ n • x n) hε 0
+  refine ⟨N₁ + N₂, by omega, fun n => if n < N₁ then a₀ n else a' (n - N₁), fun n => ?_,
+    fun n hn => ?_, ?_⟩
+  · show ‖(if n < N₁ then a₀ n else a' (n - N₁))‖ = 1
+    split_ifs
+    · exact ha₀ n
+    · exact ha' _
+  · show (if n < N₁ then a₀ n else a' (n - N₁)) = a₀ n
+    rw [if_pos hn]
+  · rw [sum_range_add]
+    have hfirst : ∑ n ∈ range N₁, (if n < N₁ then a₀ n else a' (n - N₁)) • x n
+        = ∑ n ∈ range N₁, a₀ n • x n :=
+      sum_congr rfl fun n hn => by rw [if_pos (mem_range.mp hn)]
+    have hsecond : ∑ n ∈ range N₂,
+        (if N₁ + n < N₁ then a₀ (N₁ + n) else a' (N₁ + n - N₁)) • x (N₁ + n)
+        = ∑ n ∈ range N₂, a' n • x (n + N₁) :=
+      sum_congr rfl fun n _ => by
+        rw [if_neg (by omega), Nat.add_sub_cancel_left, add_comm]
+    rw [hfirst, hsecond]
+    calc ‖h - (∑ n ∈ range N₁, a₀ n • x n + ∑ n ∈ range N₂, a' n • x (n + N₁))‖
+        = ‖h - ∑ n ∈ range N₁, a₀ n • x n - ∑ n ∈ range N₂, a' n • x (n + N₁)‖ := by
+          congr 1
+          abel
+      _ < ε := hclose
+
 end RHTower

@@ -567,22 +567,12 @@
   Bounded Möbius harmonic sum + quadratic observability put the explicit threshold at the natural
   scale `S_N ≍ N²`. The global sign at large horizons becomes strict on `M ≥ 2N`, and the polynomial
   window is only needed up to `N³`. Standard axioms (8 audited); wired.
-- **C35 · The damped autocorrelation sees the Hardy–Littlewood singular series** —
-  `DampedAutocorrelationSingularSeriesLaw`. `pairSingularSeries h = Σ_e μ(e)²c_e(h)/φ(e)²`,
-  `dampedSingularSum ε h = Σ_e μ(e)²c_e(h)/D_ε(e)²`; `dampedAutocorrelation_eq_singularSum` (exact:
-  `A_ε(h) = ρ_ε²(S_ε(h) − 1)`), `tendsto_dampedSingularSum` (dominated convergence, `D_ε ≥ φ`,
-  `|c_e(h)| ≤ σ(h)`), **`tendsto_dampedAutocorrelation_div_sq` (`A_ε(h)/ε² → 𝔖(h) − 1` for every lag
-  `h ≥ 1`)**, `pairSingularSeries_eq_parity` (`𝔖(h) = (1 + c_2(h))Σ_{e odd}`), `pairSingularSeries_of_odd`
-  (`𝔖 = 0` at odd lags), `tendsto_dampedAutocorrelation_odd_lag` (`A_ε(h) = −ε² + o(ε²)` at every odd
-  lag; generalizes C32), `pairSingularSeries_of_even`, `hasProd_pairSingularSeries` (Hardy–Littlewood
-  Euler product `𝔖(h) = Π_p(1 + c_p(h)/(p−1)²)` via BVI `ramanujanLagWeight_mul_of_coprime`),
-  `pairSingularSeries_pos_of_even` (`𝔖(h) > 0` for even `h`; log-summable factors ≥ 3/4).
-  New insight: the period-torus autocorrelation of the damped receiver at second order in ε is the
-  prime-pair singular series, i.e. `E[τ_ε(n)τ_ε(n+h)] = ε²𝔖(h) + o(ε²)`, because
-  `τ_ε(p) ≈ ε log p`. THIM's Ramanujan lag calculus reproduces the Hardy–Littlewood constants
-  `2C₂Π(p−1)/(p−2)` as the `ε → 0` shape of the damped observer's correlations. Prime-pair statistics
-  are visible to the damped observer only at order ε², below its variance `ε/2`. Standard axioms (10
-  audited); wired. C32's `moebiusReal_two_mul_odd`, `moebiusReal_four_mul` made public.
+- ~~C35 · damped autocorrelation and the singular series~~ — **WITHDRAWN, not counted.** A parallel
+  BVI agent proved the same law 90 s earlier: BVI `HardyLittlewoodSingularSeriesOfTheDampedSource`
+  (`tendsto_dampedAutocorrelation_div_density_sq`: `A_ε(h)/ρ_ε² → 𝔖(h) − 1`, Euler product, `𝔖(odd) = 0`,
+  `𝔖(even) > 0`, plus the joint `(ε, Q)` receiver-row limit). The duplicate THIM module was deleted and
+  unwired; C36 now builds on the BVI series. C32's `moebiusReal_two_mul_odd`/`moebiusReal_four_mul`
+  remain public.
 - **C36 · Period correlations of the Selberg row are the singular series** —
   `SelbergRowPeriodCorrelationsSingularSeries`. Row `ℓ_N = barbanVehovWeight N` (`μ(d)log(N/d)`, response
   = Selberg's truncated `Λ_N`). `selbergMultiplesCoord_barbanVehov_eq` (`Y_N(e) = μ(e)T_e(N/e)/e`, RHTower
@@ -593,9 +583,12 @@
   (`H² + Cov → 𝔖(h)`: complete-period Goldston–Yıldırım law), `tendsto_periodCovariance_barbanVehov_odd`
   (`→ −1`), `tendsto_periodCovariance_barbanVehov_zero` (variance `→ ∞`, modes `→ μ²/φ`, RHTower
   `tendsto_sum_sqfreeTotientInv_div_log_one`), `tendsto_periodCorrelation_barbanVehov_normalised` (normalised
-  correlations `→ 0`), `selberg_and_damped_tangent_correlations_agree`.
+  correlations `→ 0`), `selberg_and_damped_tangent_correlations_agree` (Selberg horizon limit =
+  `lim A_ε(h)/ε²`, the latter derived from BVI's `ρ_ε²`-normalised law with `ρ_ε/ε → 1`). Uses BVI
+  `hardyLittlewoodSingularSeries`, `hasSum_singularSeriesTerm_ge_two`, `hardyLittlewoodSingularSeries_eq_zero_of_odd`.
   New insight: the literal Möbius row is white on the period torus (C17, all lag covariances → 0).
   Its Selberg log-tangent carries the prime-pair singular series at every lag, with divergent variance.
-  The horizon limit of the Selberg tangent and the Haar second-order limit of the damped row (C35)
-  coincide: at the level of lag correlations, the order of the horizon and damping limits does not
-  matter, in contrast to the variance (C19). Standard axioms (9 audited); wired.
+  The horizon limit of the Selberg tangent and the Haar second-order limit of the damped row
+  (BVI) coincide: at the level of lag correlations, the order of the horizon and damping limits
+  does not matter, in contrast to the variance (C19). Standard axioms (9 audited); wired.
+  **Count after C36: 35 counted contributions (C35 withdrawn).**

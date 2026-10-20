@@ -145,6 +145,35 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
   `totalLatticeCrossingKernel_two_eight_nonpos` (near miss `{2,8}`: `7` vs `< 6.79`).
 - Imports: C1, C3, C6. Axioms: standard (audit pending the umbrella rebuild log).
 
+### C9 — The pole against the whole anti-diagonal (`TotalAntiDiagonalClassification.lean`)
+- `totalAntiDiagonalKernel n a = ω(log n) + Λ(n)/√n − P_{log n}(a)`; `totalAntiDiagonalKernel_eq`
+  (`= k_arch(−a, log n − a) + atom`); `archLevyDensity_log_nat` (`ω(log n) = n²/((n²−1)√n)`);
+  `totalAntiDiagonalKernel_midpoint_eq`, `_midpoint_pos_iff`, `_midpoint_le` (midpoint minimizes).
+- `four_sq_div_gt_four`, `four_sq_div_le`, `large_prime_poly_aux` (positive Taylor coefficients at
+  `r = 2.34`), `four_sq_div_add_four_log_le` (`x ≥ 30`).
+- `total_midpoint_inequality_iff`: for `n ≥ 2`, `(√n−1)² < 4n²/(n²−1) + 4Λ(n)` iff
+  `n ∈ totalDominatedModuli = {2,…,9,11,13,17,19,23}`; `totalAntiDiagonalKernel_midpoint_pos_iff_mem`,
+  `totalAntiDiagonalKernel_pos_forall_iff` (pole pays nowhere iff one of the thirteen),
+  `totalAntiDiagonalKernel_midpoint_nonpos` (all other `n`).
+- Insight: with the archimedean density included, the pole fails on the whole anti-diagonal exactly
+  for `n ≤ 9` and the primes `11 ≤ p ≤ 23`; `29` is the first prime paid at the midpoint
+  (`19.2` vs `17.5`). Imports: C3, C6. Axioms: standard (audit in the umbrella log).
+
+### C10 — Unpaid axis intervals (`UnpaidAxisIntervals.lean`)
+- `crossingPolarWeight_mono` (increasing on `[0, s/2]`); `unpaidSet s E`, `sub_mem_unpaidSet_iff`;
+  ends `unpaidInnerEnd = 2E/sinh(s/2)`, `unpaidCrudeEnd = 2E/sinh(s/4)`,
+  `unpaidOuterEnd = 2E/sinh(s/2 − min(s/4, crude))`, `unpaidOuterEnd_eq` (ratio).
+- `innerEnds_subset_unpaidSet` (any `s > 0`); `lt_quarter_of_mem_unpaidSet`,
+  `unpaidSet_subset_outer` (under `E ≤ P_s(s/4)`).
+- Level of `n`: `antiDiagonalLevel n = ω(log n) + Λ(n)/√n`; `mem_unpaidSet_level_iff` (= positive
+  total kernel); `sinh_half_log_nat` (`(n−1)/(2√n)`); `unpaidInnerEnd_level_eq`
+  (`4(n²/(n²−1) + Λ(n))/(n−1)`), `four_div_le_unpaidInnerEnd_level`, `unpaidInnerEnd_level_le`.
+- `quarter_poly_aux`, `antiDiagonalLevel_le_quarter` (`n ≥ 41`); `innerEnds_subset_unpaid_level`,
+  `unpaid_level_subset_outer`, `totalAntiDiagonalKernel_pos_imp_near_axis`.
+- Insight: for `n ≥ 41` the pole pays the whole negative conductance of the anti-diagonal of `n`
+  except on two axis intervals of length `≍ 4(1 + Λ(n))/n`, sandwiched between explicit ends.
+  Imports: C7, C9. Axioms: standard (audit in the umbrella log).
+
 ## Conjecture queue
 1. (done as C4) Dyadic-window incidence.
 2. Bump-profile bridge: for even `u` built from bumps at `± log a`, the prime-atom part of ACT's
@@ -162,7 +191,11 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
     `n`: atom mass vs polar mass; search ACT for the gauge's values at `± log n` first.
 11. Axis region of an anti-diagonal: for a bump of width `w` at `(−a, log n − a)` with `a ≤ w`,
     compare the same-side atoms reachable at ratios `log m` with the atom `Λ(n)/√n` (first-prime-window
-    gauge problem, open core).
+    gauge problem, open core). C10 localizes the problem: `a < L_n ≍ 4(1+Λ(n))/n`.
+12. Quarter-point classification for `10 ≤ n ≤ 40` (fails at `10, 29, 31` and the thirteen moduli).
+13. Gauge-weighted unpaid mass: for an odd gauge `M`, `∫_{unpaid} |M(−a)M(log n − a)| (E_n − P(a)) da`
+    against the same-side atoms at ratios reachable from the axis interval (needs the gauge's
+    behaviour at `0`; search ACT `shiftedGroundState`).
 5. Parity pair: complete-period sieve forms are even in the Selberg coordinates (invariant under all
    sign characters); the first-octave response is not.
 6. Open core: extend a gauge argument through the first prime window past `log 2 / 2`, paying the
@@ -179,3 +212,7 @@ at lattice points, then dyadic-window incidence, then the first-prime-window gau
 - 2026-10-20 — C7 (collar sandwich) compiled, wired; README mechanism 19; open problem 3 restated as
   the collar ratio.
 - 2026-10-20 — C8 (total lattice crossing law) compiled and wired; README mechanism 20 and a trap added.
+- 2026-10-20 — C9 (thirteen-moduli classification of the total anti-diagonal kernel) compiled and wired;
+  README mechanism 21, trap, open problem 3′.
+- 2026-10-20 — C10 (unpaid axis intervals; quarter point paid for `n ≥ 41`) compiled and wired; README
+  mechanism 22; open problem 3′ restated as the range `24 ≤ n ≤ 40`.

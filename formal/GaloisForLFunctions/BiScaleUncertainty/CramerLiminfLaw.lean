@@ -13,7 +13,9 @@ under RH. The slope law shows that a valid band constant is at least the zero en
 `(1/M) ∫_0^M Ẽ² ≥ Σ_{ρ∈S} m_ρ²/|ρ|² − ε` for all large `M`.
 
 So the band is eventually above every finite part of the zero energy, not only infinitely often.
-The mean square of `(ψ(x) − x)/x` in `log x` has `liminf ≥ Σ_ρ m_ρ²/|ρ|²`.
+Under RH the zero energy converges (`summable_zeroEnergy_of_riemannHypothesis`), and the mean
+square of `(ψ(x) − x)/x` in `log x` has `liminf ≥ Σ_ρ m_ρ²/|ρ|²` over all zeros
+(`cramer_liminf_law_zeroEnergy`).
 
 **Mechanism.**
 
