@@ -33,7 +33,7 @@ namespace GaloisForLFunctions.SquareRootThreshold
 open Zeta23 _root_.RHTower
 
 /-- `Re ψ(¼ + iτ/2) ≥ log(|τ|/2) − 6/|τ|` for `|τ| ≥ 4`. -/
-theorem re_digamma_quarter_ge {τ : ℝ} (hτ : 4 ≤ |τ|) :
+theorem re_digamma_quarter_ge_log {τ : ℝ} (hτ : 4 ≤ |τ|) :
     Real.log (|τ| / 2) - 6 / |τ| ≤ (Complex.digamma (1 / 4 + I * τ / 2)).re := by
   set z : ℂ := 1 / 4 + I * τ / 2 with hz
   have hzre : z.re = 1 / 4 := by simp [hz]
@@ -64,7 +64,7 @@ theorem mu_eq_re_digamma (τ : ℝ) :
 theorem mu_ge_log_abs {τ : ℝ} (hτ : 4 ≤ |τ|) :
     (Real.log |τ| - Real.log (2 * π) - 6 / |τ|) / (2 * π) ≤ mu τ := by
   rw [mu_eq_re_digamma, div_le_div_iff_of_pos_right (by positivity)]
-  have h := re_digamma_quarter_ge hτ
+  have h := re_digamma_quarter_ge_log hτ
   have h1 : Real.log (|τ| / 2) = Real.log |τ| - Real.log 2 :=
     Real.log_div (by linarith) two_ne_zero
   have h2 : Real.log (2 * π) = Real.log 2 + Real.log π :=

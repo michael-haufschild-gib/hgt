@@ -386,7 +386,7 @@ theorem continuous_packetArchTail {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc
 /-! ## Cesàro means of vanishing functions -/
 
 /-- A continuous function tending to zero has vanishing Cesàro means. -/
-private theorem tendsto_mean_of_tendsto_zero {g : ℝ → ℝ} (hg : Continuous g)
+theorem tendsto_mean_of_tendsto_zero {g : ℝ → ℝ} (hg : Continuous g)
     (h0 : Tendsto g atTop (𝓝 0)) (w : ℝ) :
     Tendsto (fun L : ℝ => (∫ τ in w..L, g τ) / L) atTop (𝓝 0) := by
   rw [Metric.tendsto_atTop]

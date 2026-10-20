@@ -44,7 +44,11 @@ theorem selbergMultiplesCoord_moebiusReal_sq (N e : ℕ) :
     selbergMultiplesCoord N moebiusReal e ^ 2 =
       moebiusReal e ^ 2 / (e : ℝ) ^ 2 * coprimeHarmonicMoebius e (N / e) ^ 2 := by
   rcases Nat.eq_zero_or_pos e with rfl | he
-  · simp [selbergMultiplesCoord, moebiusReal]
+  · have h0 : selbergMultiplesCoord N moebiusReal 0 = 0 := by
+      unfold selbergMultiplesCoord
+      exact sum_eq_zero fun d hd => by
+        simp only [mem_filter, mem_Icc, zero_dvd_iff] at hd; omega
+    simp [h0, moebiusReal]
   · rw [selbergMultiplesCoord_moebiusReal N he]; ring
 
 /-- **Bounded multipliers are null.** For every bounded weight `w`,
@@ -84,7 +88,6 @@ theorem tendsto_sum_bounded_mul_moebiusCoord_sq {w : ℕ → ℝ} {B : ℝ} (hw 
     rcases Nat.eq_zero_or_pos f with rfl | hf0
     · simp only [F, Nat.cast_zero]
       simp [moebiusReal]
-      positivity
     have hfR : (0 : ℝ) < f := by exact_mod_cast hf0
     have hw0 : 0 ≤ B := (abs_nonneg _).trans (hw 0)
     have hgen : |coprimeHarmonicMoebius f (N / f)| * |moebiusReal f| ≤ C * (f : ℝ) ^ (1 / 4 : ℝ) := by
@@ -159,7 +162,7 @@ theorem tendsto_periodCovariance_moebius {h : ℕ} (hh : 1 ≤ h) :
 theorem sum_totientRatio_le (X : ℕ) :
     ∑ e ∈ Icc 1 X, (e : ℝ) / (Nat.totient e : ℝ) ≤ 4 * X := by
   have hI : Icc 1 X = Ioc 0 X := by ext; simp only [mem_Icc, mem_Ioc]; omega
-  have hconv : ∀ e, (e : ℝ) / (Nat.totient e : ℝ) =
+  have hconv : ∀ e : ℕ, (e : ℝ) / (Nat.totient e : ℝ) =
       (RHTower.Sieve.sqfreeTotientInv * ((ArithmeticFunction.zeta : ArithmeticFunction ℕ) :
         ArithmeticFunction ℝ)) e := fun e => by
     rw [mul_comm, RHTower.Sieve.zeta_mul_sqfreeTotientInv, RHTower.Sieve.totientRatio_apply]
@@ -193,8 +196,11 @@ theorem sum_window_le_periodCovariance_zero (N : ℕ) :
         refine sum_congr rfl fun e he => ?_
         simp only [oddSquarefreeWindow, mem_filter, mem_Ioc] at he
         obtain ⟨⟨h1, h2⟩, -, hsq⟩ := he
+        have he0 : 0 < e := by omega
         have hNe : N / e = 1 := by
-          rw [Nat.div_eq_iff_lt_mul_add_mul_le] <;> omega
+          have h1 : N / e < 2 := (Nat.div_lt_iff_lt_mul he0).mpr (by omega)
+          have h2 : 1 ≤ N / e := (Nat.le_div_iff_mul_le he0).mpr (by omega)
+          omega
         have hμ : moebiusReal e ^ 2 = 1 := by
           unfold moebiusReal
           have h1 : |(μ e : ℝ)| = 1 := by exact_mod_cast abs_moebius_eq_one_of_squarefree hsq
@@ -229,10 +235,10 @@ theorem sq_sum_inv_window_le (M : ℕ) :
     calc ∑ e ∈ W, 1 / (Nat.totient e : ℝ)
         ≤ ∑ e ∈ W, ((e : ℝ) / (Nat.totient e : ℝ)) / M := by
           refine sum_le_sum fun e he => ?_
-          have he := hmem e he
+          have hme := hmem e he
           have hφ := hφpos e he
           rw [div_div, div_le_div_iff₀ hφ (by positivity), one_mul]
-          have : (M : ℝ) ≤ e := by exact_mod_cast he.1.le
+          have : (M : ℝ) ≤ e := by exact_mod_cast hme.1.le
           nlinarith
       _ ≤ ∑ e ∈ Icc 1 (2 * M), ((e : ℝ) / (Nat.totient e : ℝ)) / M :=
           sum_le_sum_of_subset_of_nonneg hWsub fun _ _ _ => by positivity
@@ -264,8 +270,9 @@ theorem eventually_periodCovariance_moebius_zero_ge :
   have hD : (1 : ℝ) / 3 < RHTower.Sieve.squarefreeDensity * 2 / 3 := by
     rw [RHTower.Sieve.squarefreeDensity_eq]
     have hpi : Real.pi ^ 2 < 12 := by nlinarith [Real.pi_lt_d2, Real.pi_pos]
-    rw [lt_div_iff₀ (by norm_num : (0 : ℝ) < 3), div_mul_eq_mul_div, lt_div_iff₀ (by positivity)]
-    nlinarith
+    have h6 : (1 : ℝ) / 2 < 6 / Real.pi ^ 2 := by
+      rw [lt_div_iff₀ (by positivity)]; linarith
+    linarith
   have hcount := (tendsto_oddSquarefreeWindow_card_div.eventually (eventually_gt_nhds hD)).and
     (eventually_gt_atTop 0)
   filter_upwards [(Nat.tendsto_div_const_atTop (by norm_num : (2 : ℕ) ≠ 0)).eventually hcount]
@@ -329,9 +336,9 @@ theorem eventually_sieveSuccessorReserve_moebius_ge :
   have hsel : TwoLagSieve.periodCovariance N moebiusReal 0 ≤
       selbergTotientDiagonalForm N moebiusReal := by
     rw [periodCovariance_eq_ramanujanLagWeight_diagonal, selbergTotientDiagonalForm]
-    refine sum_le_sum_of_subset_of_nonneg (fun e he => ?_) fun e _ _ => by positivity
-      |>.trans_eq' (sum_congr rfl fun e _ => by rw [ramanujanLagWeight_zero_left])
-    simp only [mem_Icc] at he ⊢; omega
+    simp_rw [ramanujanLagWeight_zero_left]
+    exact sum_le_sum_of_subset_of_nonneg (fun e he => by simp only [mem_Icc] at he ⊢; omega)
+      fun e _ _ => by positivity
   unfold sieveSuccessorReserve
   linarith
 

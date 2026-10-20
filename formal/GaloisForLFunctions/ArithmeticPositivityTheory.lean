@@ -77,7 +77,10 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPri
 import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalSourceMellinLowFrequencyExclusion
 import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalArchimedeanLogCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalCompleteFormGrowingPatterns
+import GaloisForLFunctions.«arithmetic-positivity-theory».DyadicDilationCorrelationInequality
+import GaloisForLFunctions.«arithmetic-positivity-theory».CollaredCriticalPrimeChannelUniformBound
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentDepthGapClusterAndPolarGraphBridge
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,
@@ -87,7 +90,8 @@ low-frequency exclusion, hyperbolic pole parity decoupling, band-limited Poisson
 negative definiteness, scale coupling, isotropy, finite-scale negativity, Toeplitz symbol and
 sharp spectral range of the complete critical prime form, the rational dilation law of critical
 sources, critical Mellin exclusion and logarithmic archimedean coercivity, divergence, uniform
-coercivity and growing-pattern positivity of the complete critical form, the sharp affine
+coercivity and growing-pattern positivity of the complete critical form, the dyadic dilation
+inequality and the `ℓ²`-uniform collared critical prime channel, the sharp affine
 collar constant, Weil completeness of the factorial tent family, universal zero-side reflection
 defect identities, actual-zeta off-line detection by single-scale grid tent patterns, and the
 full-zero-form / single-shift gauge bridge across explicit-formula spectral energies. -/

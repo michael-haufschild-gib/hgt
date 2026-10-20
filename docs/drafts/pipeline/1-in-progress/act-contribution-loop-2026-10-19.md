@@ -286,3 +286,26 @@ Rule from now on: run a corpus search against the Weil-form lanes before claimin
   fails by exactly the other-pole moment `∫_0^∞e^{−r/2}m_x > 0` (same excess as R(a)). No numerics;
   README's heuristic ("slope comparison fails for large a") made rigorous and strengthened (fails at
   every small x, not only in slope). What replaces it must absorb the other-pole moment. Standard axioms.
+- **C20 · The variance is indispensable: criticality of the pure-jump RH form in every smeared gauge**
+  — `SmearedGaugeVarianceCriticality`. In every smeared shifted ground state `M = ∫ν(c)m_c dc` (ν ≥ 0
+  smooth on (0,∞)): ∀ε>0 ∃ even `u ∈ C²_c`, `Z(Φ(ω_νu)) < εV_μ(u)` (`exists_zeroForm_lt_mul_varianceEnergy`),
+  so `J_M + (1−ε)V_μ` takes negative values and the signed jump energy alone is negative somewhere,
+  unconditionally (`exists_signedJumpEnergy_add_lt`, `exists_signedJumpEnergy_neg`). Mechanism: pole-free
+  pair `M'` divided by the gauge (corpus Hadamard division `smoothCoordinateQuotient`, cross-lane reuse
+  from HTGeometry); slope at the origin `M'(0) = 2∫ν(−Φ') > 0` (integration by parts + MVT on strictly
+  decreasing Φ, `deriv_thetaConv_smearedProfile_zero_pos`); quotient non-constant since `M' = cM` forces
+  `0 = σ' = cB/2`; window variance lemma `setIntegral_setIntegral_sq_sub_pos`. Insight: no positive odd
+  gauge makes the conductance form positive — the all-pairs variance (the pole-free source) is exactly
+  critical; with C5 (potential) and C15 (rates) the RH form has no slack in any of its terms. Standard
+  axioms. (Compile was delayed by another agent's cascade build; no interference.)
+- **C21 · APT frontier answered: the odd-sector capacity ratio is asymptotically critical in the
+  aperture** — `CapacityRatioApertureCriticality`. Bridge: APT's Markov part at any prime aperture
+  beyond the autocorrelation support IS the ACT Markov energy (`markovForm_eq_markovEnergy`); RH ⟺ the
+  odd capacity inequality `S(Φv)² ≤ 2M(Φv)` (`riemannHypothesis_iff_forall_odd_capacity_le`, = zero form);
+  plateau truncations of every shifted-ground-state superposition with `σ ≠ 0` have
+  `S²/(2M) → 1` (`tendsto_capacityRatio_spanPlateau`, `S → 2σ`, `M → 2σ²`, rate `e^{−8L}`); hence for every
+  ε, at every large aperture R, some odd test supported in [−R,R] has capacity ratio > 1 − ε, for APT's
+  own `markovForm` at every prime aperture `N ≥ e^{2R}` (`exists_odd_capacityRatio_markovForm_gt`).
+  Answers APT README §5 "All apertures … the odd-sector capacity ratio S(g)²/(2M_N(g)) as the support
+  aperture grows": it tends to its critical value 1 (no uniform margin); extremal directions = plateau
+  truncations of positive odd gauges (capacity defect = zero form J_M + V_μ → 0). Cross-field (APT). Std axioms.

@@ -153,13 +153,13 @@ theorem weilTest_twoBump_eq_zero {b : ℝ → ℂ} {w : ℝ} (hbs : ∀ u, b u �
   simp_rw [hz, integral_zero]
 
 /-- The integers `n ≤ e^{v + 2w}` with `|log n − v| ≤ 2w`. -/
-def lagWindow (v w : ℝ) : Finset ℕ :=
+def lagPrimeWindow (v w : ℝ) : Finset ℕ :=
   (Finset.range (⌊Real.exp (v + 2 * w)⌋₊ + 1)).filter fun n => |Real.log n - v| ≤ 2 * w
 
 /-- Off the window, either `Λ(n) = 0` or the two-bump kernel vanishes at `± log n`. -/
 theorem vonMangoldt_eq_zero_or_weilTest_twoBump_eq_zero {b : ℝ → ℂ} {w : ℝ}
     (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) (hw2 : 2 * w < Real.log 2) {v : ℝ} (hv : 0 ≤ v) (τ : ℂ)
-    {n : ℕ} (hn : n ∉ lagWindow v w) :
+    {n : ℕ} (hn : n ∉ lagPrimeWindow v w) :
     ArithmeticFunction.vonMangoldt n = 0 ∨
       (EF.weilTest (twoBump b v τ) (twoBump b v τ) (Real.log n) = 0 ∧
         EF.weilTest (twoBump b v τ) (twoBump b v τ) (-Real.log n) = 0) := by
@@ -187,7 +187,7 @@ theorem tsum_vonMangoldt_twoBump_eq_window {b : ℝ → ℂ} {w : ℝ} (hbs : �
     ∑' n : ℕ, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
         (c n * EF.weilTest (twoBump b v τ) (twoBump b v τ) (Real.log n) +
           c' n * EF.weilTest (twoBump b v τ) (twoBump b v τ) (-Real.log n)) =
-      ∑ n ∈ lagWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
+      ∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ) *
         (c n * EF.weilTest (twoBump b v τ) (twoBump b v τ) (Real.log n) +
           c' n * EF.weilTest (twoBump b v τ) (twoBump b v τ) (-Real.log n)) :=
   tsum_eq_sum fun n hn => by
@@ -199,19 +199,19 @@ theorem tsum_vonMangoldt_twoBump_eq_window {b : ℝ → ℂ} {w : ℝ} (hbs : �
 
 /-- The explicit-formula functional of `ζ` with the prime sum cut to the window
 `|log n − v| ≤ 2w`. -/
-def lagWindowRHS (v w : ℝ) (k : ℝ → ℂ) : ℂ :=
+def lagPrimeWindowRHS (v w : ℝ) (k : ℝ → ℂ) : ℂ :=
   paperFT k (I / 2) + paperFT k (-I / 2)
-  - ∑ n ∈ lagWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ)
+  - ∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ)
       * (k (Real.log n) + k (-Real.log n))
   + (1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT k r * (EF.gammaBracket r : ℂ)
 
-theorem literatureRHS_twoBump_eq_lagWindowRHS {b : ℝ → ℂ} {w : ℝ}
+theorem literatureRHS_twoBump_eq_lagPrimeWindowRHS {b : ℝ → ℂ} {w : ℝ}
     (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) (hw2 : 2 * w < Real.log 2) {v : ℝ} (hv : 0 ≤ v) (τ : ℂ) :
     EF.literatureRHS (EF.weilTest (twoBump b v τ) (twoBump b v τ)) =
-      lagWindowRHS v w (EF.weilTest (twoBump b v τ) (twoBump b v τ)) := by
+      lagPrimeWindowRHS v w (EF.weilTest (twoBump b v τ) (twoBump b v τ)) := by
   have h := tsum_vonMangoldt_twoBump_eq_window hbs hw2 hv τ 1 1
   simp only [Pi.one_apply, one_mul] at h
-  rw [EF.literatureRHS, lagWindowRHS, h]
+  rw [EF.literatureRHS, lagPrimeWindowRHS, h]
 
 /-- **RH is decided by large dyadic prime windows.** Let `0 < w`, `2w < log 2` and `V ≥ 0`. Every
 nontrivial zero of `ζ` lies on the critical line iff the window functional `P_v` is nonnegative on
@@ -221,7 +221,7 @@ theorem onLine_iff_primeWindow_nonneg {w : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real
     (hV : 0 ≤ V) :
     (∀ ρ ∈ zetaZeroConfig.carrier, ρ.re = 1 / 2) ↔
       ∀ (γ v : ℝ) (τ : ℂ), V ≤ v → ‖τ‖ = 1 →
-        0 ≤ (lagWindowRHS v w (EF.weilTest (twoBump (modScaledBump w γ) v τ)
+        0 ≤ (lagPrimeWindowRHS v w (EF.weilTest (twoBump (modScaledBump w γ) v τ)
           (twoBump (modScaledBump w γ) v τ))).re := by
   refine (onLine_iff_twoBump_nonneg_of_ge _ temperedConfig_zetaZeroConfig hw V).trans ?_
   refine forall_congr' fun γ => forall_congr' fun v => forall_congr' fun τ =>
@@ -230,7 +230,7 @@ theorem onLine_iff_primeWindow_nonneg {w : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real
     (contDiff_bumpTest (contDiff_modScaledBump_two w γ) v ![1, τ])
     (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
       (modScaledBump_support hw γ)) v τ),
-    literatureRHS_twoBump_eq_lagWindowRHS (modScaledBump_support hw γ) hw2 (hV.trans hv)]
+    literatureRHS_twoBump_eq_lagPrimeWindowRHS (modScaledBump_support hw γ) hw2 (hV.trans hv)]
 
 /-- **Window negativity at the rate of the depth.** If some nontrivial zero of `ζ` has
 `|Re ρ − ½| > σ ≥ 0`, then for every `K` and `V` some unimodular two-bump test at a lag
@@ -239,14 +239,14 @@ theorem zeta_exists_primeWindow_lt {w : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real.lo
     (hρ : ρ ∈ zetaZeroConfig.carrier) {σ : ℝ} (hσ0 : 0 ≤ σ) (hσ : σ < |ρ.re - 1 / 2|)
     (K V : ℝ) :
     ∃ (γ v : ℝ) (τ : ℂ), V ≤ v ∧ ‖τ‖ = 1 ∧
-      (lagWindowRHS v w (EF.weilTest (twoBump (modScaledBump w γ) v τ)
+      (lagPrimeWindowRHS v w (EF.weilTest (twoBump (modScaledBump w γ) v τ)
         (twoBump (modScaledBump w γ) v τ))).re < -(K * Real.exp (σ * v)) := by
   obtain ⟨γ, v, hv, hVv, hlt⟩ := exists_minorDeficit_lt_of_ge zetaZeroConfig
     temperedConfig_zetaZeroConfig hw hρ hσ0 hσ K V
   obtain ⟨τ, hτ, heq⟩ := exists_unit_re_W_eq_minorDeficit zetaZeroConfig
     temperedConfig_zetaZeroConfig (contDiff_modScaledBump_two w γ) (modScaledBump_support hw γ) v
   refine ⟨γ, v, τ, hVv, hτ, ?_⟩
-  rw [← literatureRHS_twoBump_eq_lagWindowRHS (modScaledBump_support hw γ) hw2 hv,
+  rw [← literatureRHS_twoBump_eq_lagPrimeWindowRHS (modScaledBump_support hw γ) hw2 hv,
     ← zeta_W_eq_literatureRHS (f := twoBump (modScaledBump w γ) v τ)
     (contDiff_bumpTest (contDiff_modScaledBump_two w γ) v ![1, τ])
     (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
@@ -255,8 +255,8 @@ theorem zeta_exists_primeWindow_lt {w : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real.lo
 
 /-- The twisted explicit-formula functional of `L(s, χ)` with the prime sum cut to the window
 `|log n − v| ≤ 2w`. -/
-def lagWindowRHSchi (κ q : ℕ) (c : ℕ → ℂ) (v w : ℝ) (k : ℝ → ℂ) : ℂ :=
-  - ∑ n ∈ lagWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ)
+def lagPrimeWindowRHSchi (κ q : ℕ) (c : ℕ → ℂ) (v w : ℝ) (k : ℝ → ℂ) : ℂ :=
+  - ∑ n ∈ lagPrimeWindow v w, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ)
       * (c n * k (Real.log n) + (starRingEnd ℂ) (c n) * k (-Real.log n))
   + (1 / (2 * π) : ℂ) * ∫ r : ℝ, paperFT k r
       * ((((Complex.digamma (1 / 4 + (κ : ℂ) / 2 + I * r / 2)).re + Real.log (q / π) : ℝ)) : ℂ)
@@ -271,7 +271,7 @@ theorem grh_iff_primeWindow_nonneg (hq : 1 < q) (hprim : χ.IsPrimitive) {w : �
     (hw2 : 2 * w < Real.log 2) {V : ℝ} (hV : 0 ≤ V) :
     (∀ ρ ∈ (ThmE.LZeros (ThmE.LSeam_of hq hprim)).carrier, ρ.re = 1 / 2) ↔
       ∀ (γ v : ℝ) (τ : ℂ), V ≤ v → ‖τ‖ = 1 →
-        0 ≤ (lagWindowRHSchi (ThmE.parity χ) q (ThmE.coeff χ) v w
+        0 ≤ (lagPrimeWindowRHSchi (ThmE.parity χ) q (ThmE.coeff χ) v w
           (EF.weilTest (twoBump (modScaledBump w γ) v τ) (twoBump (modScaledBump w γ) v τ))).re := by
   refine (onLine_iff_twoBump_nonneg_of_ge _ (temperedConfig_LZeros hq hprim) hw V).trans ?_
   refine forall_congr' fun γ => forall_congr' fun v => forall_congr' fun τ =>
@@ -282,6 +282,6 @@ theorem grh_iff_primeWindow_nonneg (hq : 1 < q) (hprim : χ.IsPrimitive) {w : �
   rw [LZeros_W_eq_literatureRHSchi hq hprim (f := twoBump (modScaledBump w γ) v τ)
     (contDiff_bumpTest (contDiff_modScaledBump_two w γ) v ![1, τ])
     (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
-      (modScaledBump_support hw γ)) v τ), ThmE.literatureRHSchi, lagWindowRHSchi, h]
+      (modScaledBump_support hw γ)) v τ), ThmE.literatureRHSchi, lagPrimeWindowRHSchi, h]
 
 end GaloisForLFunctions.SquareRootThreshold

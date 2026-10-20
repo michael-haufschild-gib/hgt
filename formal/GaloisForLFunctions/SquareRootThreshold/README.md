@@ -152,7 +152,11 @@ them.
    the arrangement of the on-line zeros. The same holds for any finite off-line set: the deepest
    level `D` cannot cancel itself, since its phase sum `Σ q_t e^{iγ_t v}` stays bounded below on
    every window of `|T|` grid lags. The levels below lose `e^{−gv}`, `g` the depth gap, so the
-   aperture is `(1/2g) log M + O(1)`, uniformly in the on-line background. With the polar-free bump
+   aperture is `(1/2g) log M + O(1)`, uniformly in the on-line background. Without a gap, the
+   levels below enter only through the depth-deficit transform `G(v) = Σ_{δ_t < D} |q_t| e^{−(D − δ_t)v}`,
+   which relaxes to `0`. If the top depth is attained at finitely many heights, the minor fails in
+   every window of fixed length once `G` has relaxed below half the window floor of the top phase
+   sum and `e^{Dv}` exceeds the mass `M`. With the polar-free bump
    the same tests lie in the Hodge class. Without a gap, and with infinitely many off-line zeros,
    every off-line zero is still seen at some aperture. Invisibility would keep the off-line sum
    `Σ_t q_t e^{(δ_t + iγ_t)v}` bounded for `v ≥ 0`. Its Laplace transform is then holomorphic on
@@ -221,13 +225,17 @@ them.
 21. **Three parameters decide the line.** Through the explicit formula the unimodular two-bump
     criterion becomes a prime-side one: every zero of `ζ` is on the critical line iff
     `Re P(f ⋆ f̃) ≥ 0` for `f = κ_γ(t + v/2) + τκ_γ(t − v/2)`, `v ≥ 0`, `|τ| = 1`, where
-    `P(k) = h_k(i/2) + h_k(−i/2) − Σ_n Λ(n)/√n (k(log n) + k(−log n)) + (1/2π)∫ h_k Γ`. The test
-    `f ⋆ f̃` is supported in `[−(v + 2w), v + 2w]`, so the lag `v` sees exactly the primes
-    `n ≤ e^{v + 2w}`. Unconditional prime information reaches small lags; the square-root threshold
-    marks the lag beyond which it runs out. The same holds for every primitive Dirichlet `L(s, χ)`,
-    with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms. At lag `v = log X` the least value of
-    `Re P` over these tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not `O(X^σ)` for `σ < Θ − ½`:
-    RH is the absence of any power growth, the square-root threshold itself.
+    `P(k) = h_k(i/2) + h_k(−i/2) − Σ_n Λ(n)/√n (k(log n) + k(−log n)) + (1/2π)∫ h_k Γ`. The kernel
+    `f ⋆ f̃` lives on `[−2w, 2w] ∪ ±[v − 2w, v + 2w]`. For `2w < log 2` the lag `v` therefore reads
+    `Λ(n)` only on the window `|log n − v| ≤ 2w`, inside `(X/2, 2X)` for `X = e^v`. Any tail of lags
+    `v ≥ V` already decides. On `[0, V]` the deficit is bounded a priori by the upper rate, so the
+    unbounded negativity forced by an off-line zero lies beyond `V`. RH is thus a conjunction of
+    single-window statements over `X ≥ X₀`, for any `X₀`: no prime below `X₀/2` enters, and prime
+    information about a bounded range cannot decide the line. The same holds for every primitive
+    Dirichlet `L(s, χ)`, with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms. At lag `v = log X`
+    the least value of `Re P` over these tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not
+    `O(X^σ)` for `σ < Θ − ½`, in windows beyond every `X₀`: RH is the absence of any power growth,
+    the square-root threshold itself.
 
 ---
 
@@ -248,6 +256,7 @@ them.
 | Expecting averaged information to reach depth | Window averages of resolution `r` are integrals of aperture-`r` Weil forms. Off-line lattices of spacing at most `π/r`, and clusters invisible at aperture `r`, pass them. |
 | Looking for a quantity that certifies an off-line zero below its visibility aperture | There is none in the Weil form: an invisible lag-lattice configuration has exactly the Weil form of a weighted on-line configuration on every test of that aperture. |
 | Expecting the prime side to keep a sign along a short height window | For windows of aperture `2r ≤ log 2` the windowed mean of `Π_f` is exactly `0`; its positive and negative excursions balance. |
+| Expecting the small primes to carry the criterion | RH is decided by the two-bump tests at lags `v ≥ V`, each reading one dyadic window of primes near `e^v`, for any `V`. Finite prime data can be discarded entirely. |
 | Positivity on a restricted family as evidence for RH | State the family's resolution and compare it with the lattice law first. |
 | Weakening to "fixed σ < 1" | These are quasi-RH half-planes, open for every `σ < 1`. |
 | Applying an upper-bound sieve beyond `X = T` | The sieve bounds prime pairs only against weights `w ≥ 0`. The height phase `(m/n)^{iT}` changes sign, so the sieve reverts to the size-only bound. |
@@ -274,11 +283,16 @@ them.
 2. **Clusters without a depth gap.** For periodic configurations visibility is a Toeplitz question
    about cosh-weighted modes; for finite off-line sets the aperture is `(1/2g) log M` with `g` the
    gap below the deepest level (mechanism 9). Every off-line zero is visible at some aperture,
-   whatever the other off-line zeros do. Open: the size of that aperture when depths accumulate
-   at the top or the top is not attained, at `ζ`-density and with irregularly spaced ordinates,
-   and the quantity that replaces the gap.
-3. **Sharper constants.** Improve the small-aperture constant `e^{−50}` towards Yoshida's
-   aperture. Replace the horizon `68√X` by the sharp prime-sum constant.
+   whatever the other off-line zeros do. When the top depth is attained at finitely many heights,
+   the aperture is, up to one window, the larger of half the relaxation lag of the depth-deficit
+   transform and `(1/2D) log M`, whether or not depths accumulate at the top. Open: the size of the aperture when the top is not attained or is
+   attained at infinitely many heights, at `ζ`-density and with irregularly spaced ordinates.
+3. **Sharper constants.** Weil positivity of `ζ` holds unconditionally on every test of aperture
+   `a ≤ 1/100`, with `Re W ≥ ‖f‖²/25`. Push this towards Yoshida's aperture. The archimedean
+   horizon is `exp(C_ε + (4 + ε)√X)`, so the localized forms at height `T` are positive for
+   `√X ≤ (¼ − ε) log T`. The coefficient `4` is optimal for bounds on the prime symbol that are
+   uniform in height, since `P_X(0) = −(1/π) Σ_{n ≤ X} Λ(n)/√n ~ −(2/π)√X`. A larger single-height
+   range must use how the prime phases depend on the height (mechanism 20).
 
 ---
 

@@ -284,3 +284,57 @@
   dissipation rate of the Möbius defect becomes the full period mean square of its response.
   Open: positivity of `liminf Q_Sel(N;μ)` (squarefree-weighted `φ(f)/f²` mass on `(N/2,N]`).
   Standard axioms (4 audited); wired.
+- **C16 · The smooth-core law of Möbius Buchstab steps** — `MoebiusBuchstabStepSmoothCoreLaw`.
+  `moebiusBandStep m B = μ(m)²B + 2μ(m)Σ_{j≤B} s_{m−1}(mj)`;
+  `sieveL2PrefixEnergy_moebius_step_eq_bandStep` (`E_{n+1}(M;μ) − E_n(M;μ) = Δ(n+1, ⌊M/(n+1)⌋)`).
+  `sieveSeq_moebius_mul_eq_neg_quotients` (`s_{m−1}(mj) = −Σ_{q|mj, q≤j} μ(mj/q)`),
+  `sum_quotients_rough_cofactor` (quotients `q ≤ j ≤ B` do not see a cofactor with all primes `> B`),
+  `moebiusBandStep_mul_rough` (`Δ(rm', B) = Δ(r, B)`, `r ≥ 2`, `m'` squarefree `B`-rough coprime),
+  `moebiusBandStep_rough` (`Δ(m, B) = B − 2` for squarefree `B`-rough `m ≥ 2`), headline
+  `moebiusBandStep_eq_smoothCore` (step depends only on the `B`-smooth core `gcd(m, B#)`),
+  `moebiusBandStep_mem_finite_values` (in band `B` the step lies in `{0, B−2} ∪ {Δ(r,B) : r | B#}`),
+  classes `moebiusBandStep_two` (`−B`), `moebiusBandStep_three` (`2⌊B/2⌋ − B`), `moebiusBandStep_six`
+  (`−B − 2⌊B/5⌋`), energy forms `sieveL2PrefixEnergy_moebius_step_smoothCore`,
+  `sieveL2PrefixEnergy_moebius_step_even_rough` (`n+1 = 2m'`, `m'` odd squarefree `B`-rough: step `−B`).
+  New insight: README §3.6 classifies Möbius horizon steps in bands 1–3 (first-octave −1, parity
+  dichotomy, `(2,3)`-adic law); these are the cases `B ≤ 3` of one exact law valid in every band —
+  rough absorption acts on horizon steps through complementary quotients, so in band `B` the step is a
+  function of the `B#`-core alone (finitely many classes; C6's slope inheritance `λ(aq) → λ(a)` is its
+  `B → ∞` shadow, exact here at finite `B`). Standard axioms (9 audited); wired. Repaired the missing
+  upstream olean `RHTower.CHMDSpectralGraphCompletion` (left by another agent's interrupted build).
+- **C17 · The Möbius response is asymptotically white noise** — `MoebiusResponseWhiteNoiseLaw`.
+  `tendsto_sum_bounded_mul_moebiusCoord_sq` (any bounded multiplier `w`: `Σ_{e≤N} w(e)Y_N(e;μ)² → 0`),
+  `abs_ramanujanLagWeight_le_sigma` (`|c_e(h)| ≤ σ(h)`), `tendsto_periodCovariance_moebius`
+  (`Cov_N(h; μ) → 0` for every lag `h ≥ 1`, via BSU's diagonalization
+  `periodCovariance_eq_ramanujanLagWeight_diagonal`); `sum_totientRatio_le` (`Σ_{e≤X} e/φ(e) ≤ 4X`),
+  `sum_window_le_periodCovariance_zero` (variance ≥ `Σ φ(e)/e²` over the odd squarefree top octave,
+  where `m_e(1) = 1`), `sq_sum_inv_window_le` (Cauchy–Schwarz, `(Σ1/e)² ≤ 8Σφ(e)/e²`),
+  `eventually_periodCovariance_moebius_zero_ge` (variance `≥ 1/288` at large horizons, density `4/π²`
+  of odd squarefree integers); `tendsto_periodCorrelation_moebius` (`Cov_N(h)/Cov_N(0) → 0`),
+  `tendsto_periodShiftDifferenceEnergy_div_variance_moebius` (every translation dissipates twice the
+  variance), `eventually_sieveSuccessorReserve_moebius_ge` (`R_N(μ) ≥ 1/576`: by the period law the
+  Möbius renormalized defect drops by `≥ L/576` per complete period).
+  New insight: closes C15's open item. On the period torus the Möbius response is white noise: lag
+  multipliers are bounded clock weights against summable `τ²/e²` masses and null coprime harmonic
+  sums, while the variance is held up by the top octave `N/2 < e ≤ N` where the harmonic sum is
+  frozen at `1`. The dissipation rate of the Möbius defect therefore has a horizon-uniform floor.
+  Standard axioms (7 audited); wired. C15 olean rebuilt after its docstring edit.
+- **C18 · Band averages of Möbius horizon steps and the energy profile** —
+  `MoebiusBandAverageStepAndEnergyProfile`. `bandClassValue` (`v_B(1) = B−2`, `v_B(r) = Δ(r,B)`),
+  `bandRoughDensity` (`δ_B = (6/π²)∏_{p≤B} p/(p+1)`), `bandAverageStep` (`A(B) = δ_B Σ_{r|B#} v_B(r)/r`).
+  `moebiusBandStep_eq_sum_classes`; `bandCoreCount_eq` (core class `r` up to `X` ↔ squarefree
+  `B`-rough integers up to `X/r`, bijection `m ↦ m/r`); `sum_moebiusBandStep_eq_classes`
+  (exact class-count formula); headline `tendsto_sum_moebiusBandStep_div` (band-average law:
+  `(1/X)Σ_{2≤m≤X} Δ(m,B) → A(B)`, via corpus RHTower `tendsto_fixedCoreSquarefreeCount_div`).
+  `sieveL2PrefixEnergy_moebius_eq_one_sub_bandSteps`, `sum_Ioc_band_split` (horizons in
+  `(M/(b+1), M/b]` lie in band `b`), `sieveL2PrefixEnergy_moebius_linear_horizon_eq_bands`,
+  `tendsto_sieveL2PrefixEnergy_moebius_linear_horizon_bands` (`E_N((B+1)N;μ)/N →
+  −Σ_b A(b)((B+1)/b − (B+1)/(b+1))`); `cofinalMobiusQuadraticProfile_eq_band_integral` (identity with
+  BVI's quotient profile: `P(B) = −(B+1)Σ_{b≤B} A(b)/(b(b+1))`), `bandAverageStep_eq_profile`
+  (`A(B) = (B+1)P(B−1) − B P(B)`), `bandAverageStep_one` (`−6/π²`), `bandAverageStep_two`
+  (`−4/π²`), `cofinalMobiusQuadraticProfile_two` (`P(2) = 11/π²`, new value).
+  New insight: the smooth-core law turns the Buchstab calculus into a density calculus — each band
+  has a finite set of core classes with explicit Euler densities, so the mean horizon step exists
+  and is a finite class average; integrating it across bands reproduces the BVI energy profile (built
+  from Möbius dilation-pair densities) by a completely different finite formula, and conversely the
+  mean step of every band is a second difference of the profile. Standard axioms (10 audited); wired.

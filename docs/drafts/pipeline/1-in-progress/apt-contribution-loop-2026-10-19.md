@@ -213,3 +213,27 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   admissible pattern size is logarithmic in the scale, the exact trade-off between the ℓ¹ prime
   budget and the ℓ² Lévy gain. Remaining sharp gap: ℓ²-uniform finite-scale prime bound would
   remove the |S| restriction. Standard axioms.
+- **C12 · Dyadic dilation inequality** — `DyadicDilationCorrelationInequality`. For a weight φ
+  integrable on (1,∞) with cosine transform |F_φ| ≤ A, |F_φ(f)| ≤ B/f², every dyadic block
+  (`DyadicScaleBlock S M`: M ≤ n+1 ≤ 2M) and every integer dilation r ≥ 1:
+  `abs_integral_weight_realPhaseCombination_dilate_le` |∫_{v>1} φ B_b(v)B_b(rv)| ≤ (4/π⁴)K(A,B)r^{-1/2}Σb².
+  Ingredients: spaced/far sums (`sum_abs_le_of_spaced`, 11/12-spacing `scaleBranch_spacing`),
+  resonance localisation `dyadicResonanceBound` (A + O(B/q²) only for k ≍ lr), cross-scale kernel
+  `dyadicCrossKernel` + harmonic kernel identity `integral_mul_realHarmonicLayer_mul_dilate`, Schur
+  test `abs_bilinear_le_of_row_col`, per-harmonic bound `abs_bilinear_dyadicCrossKernel_le`,
+  resonance trade `weight_mul_resonance_le` (1/k² paid against √(lr) ≥ √r). New insight: the
+  ℓ¹-obstruction of the critical prime channel is not intrinsic to the dilation structure; with a
+  1/f²-decaying weight the cross-scale correlations of phase combinations form an ℓ²-bounded,
+  r^{-1/2}-decaying family. The only ℓ¹ source is the 1/f tail of the endpoint jump. Standard axioms.
+- **C13 · ℓ²-uniform collared critical prime channel** — `CollaredCriticalPrimeChannelUniformBound`.
+  Second-order cosine decay `integral_Ioi_mul_cos_eq_of_flat` (∫φcos(ωv) = −ω⁻²∫φ''cos(ωv) for φ
+  flat at the endpoint); smooth collar weight `criticalCollarWeight` ψ(v) = σ(v−1)/v² (C^∞, flat at
+  1, = v⁻² on v ≥ 2) with `abs_integral_criticalCollarWeight_mul_cos_le_div_sq`; collared source
+  `criticalCollaredSource` g_c = σ(e^{-x}−1)g_b; correlation law
+  `integral_criticalCollaredSource_mul_dilate` (r ≥ 2: ∫g_c g_c(·−log r) = r^{-1/2}∫ψB_b(v)B_b(rv));
+  capstone `abs_criticalCollaredPrimeEnergy_le`: |Σ_r Λ(r)r^{-1/2}ac_c(log r)| ≤ C_c Σb² on EVERY
+  dyadic block, C_c = (4/π⁴)K(‖ψ‖₁,‖ψ''‖₁/4π²)ΣΛ(r)r^{-3/2}. New insight: the uncollared prime
+  channel's quadratic-in-Σ|b| bound (C11, 384B₁²) is entirely an endpoint effect; removing the
+  endpoint by a collar of fixed width log 2 converts it into an ℓ²-bounded form, so the README's
+  growing-pattern gap reduces to (i) collared archimedean log-coercivity and (ii) the endpoint
+  layer's cross terms (Hilbert-type, MV route). Standard axioms.

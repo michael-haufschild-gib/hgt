@@ -24,9 +24,10 @@ does not annihilate. Consequences:
 transform is holomorphic on `Re z > σ`. On `Re z > 1/2` it is the zero resolvent
 `R(z) = Σ_ρ c_ρ e^{(λ_ρ − z)b}/(z − λ_ρ)`, holomorphic off the locally finite set `{λ_ρ}`. The
 half-plane minus a countable set is preconnected, so the two agree there, and at `λ_ρ` with
-`Re λ_ρ > σ` the residue `c_ρ` of `R` must vanish (`coeff_eq_zero_of_growth`). Local finiteness
-replaces any choice of a rightmost zero. A normed bump of small support has `f̂(ξ) ≠ 0` at any
-prescribed complex point (`exists_bump_paperFT_ne_zero`).
+`Re λ_ρ > σ` the residue `c_ρ` of `R` must vanish (`coeff_eq_zero_of_eqOn_zeroResolvent`,
+`coeff_eq_zero_of_growth`). Local finiteness replaces any choice of a rightmost zero. A normed
+bump of small support has `f̂(ξ) ≠ 0` at any prescribed complex point
+(`exists_bump_paperFT_ne_zero`).
 -/
 
 open MeasureTheory Set Filter Topology Complex
@@ -302,6 +303,66 @@ theorem integral_exp_mul_zeroSeries {c : Z.carrier → ℂ} (hc : Summable fun �
   rw [← integral_tsum_of_summable_integral_norm hint hsum, zeroResolvent]
   exact tsum_congr hval
 
+/-- **Residues of a continued zero resolvent.** If the zero resolvent agrees on a right half-plane
+with a function holomorphic on `Re z > σ`, then `c_ρ = 0` at every zero of depth `Re λ_ρ > σ`. The
+identity theorem on the half-plane minus the locally finite shifted zeros carries the agreement
+down, and the residue `c_ρ` of the resolvent becomes a residue of a holomorphic function. -/
+theorem coeff_eq_zero_of_eqOn_zeroResolvent {c : Z.carrier → ℂ} (hc : Summable fun ρ => ‖c ρ‖)
+    {b σ s₀ : ℝ} {L : ℂ → ℂ} (hLan : AnalyticOnNhd ℂ L {z : ℂ | σ < z.re})
+    (hLR : ∀ z : ℂ, s₀ < z.re → L z = zeroResolvent c b z)
+    {ρ₀ : Z.carrier} (hρ₀ : σ < (zeroShift ρ₀).re) : c ρ₀ = 0 := by
+  set x₀ : ℝ := 1 + |s₀| + |σ|
+  set U : Set ℂ := {z : ℂ | σ < z.re} \ range (zeroShift (Z := Z))
+  have hx₀U : (x₀ : ℂ) ∈ U := by
+    refine ⟨by simp only [mem_setOf_eq, ofReal_re, x₀]; linarith [le_abs_self σ, abs_nonneg s₀],
+      ?_⟩
+    rintro ⟨ρ, hρ⟩
+    have := (abs_le.mp (abs_re_zeroShift_le ρ)).2
+    rw [hρ, ofReal_re] at this
+    linarith [abs_nonneg s₀, abs_nonneg σ]
+  have hUpre : IsPreconnected U := by
+    haveI : Countable Z.carrier := (countable_carrier Z).to_subtype
+    exact GaloisForLFunctions.HTGeometry.isPreconnected_diff_of_countable_of_convex_complex
+      (convex_halfSpace_re_gt σ) (isOpen_lt continuous_const Complex.continuous_re)
+      (countable_range _) hx₀U
+  have hRan : AnalyticOnNhd ℂ (zeroResolvent c b) U := fun z hz =>
+    analyticAt_zeroResolvent hc b fun ρ h => hz.2 ⟨ρ, h⟩
+  have hEq : EqOn L (zeroResolvent c b) U := by
+    refine (hLan.mono sdiff_subset).eqOn_of_preconnected_of_eventuallyEq hRan hUpre hx₀U ?_
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+      (show s₀ < ((x₀ : ℝ) : ℂ).re by
+        simp only [ofReal_re, x₀]; linarith [le_abs_self s₀, abs_nonneg σ])] with z hz
+    exact hLR z hz
+  -- the residue at `λ_{ρ₀}`
+  set z₀ := zeroShift ρ₀
+  obtain ⟨r, hr, hrad⟩ := exists_radius_zeroShift (Z := Z) z₀
+  have hevU : ∀ᶠ z in 𝓝[≠] z₀, z ∈ U := by
+    have hball : Metric.ball z₀ (min r (z₀.re - σ)) ∈ 𝓝 z₀ :=
+      Metric.ball_mem_nhds _ (lt_min hr (sub_pos.mpr hρ₀))
+    filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds hball] with z hz hzb
+    have hd : ‖z - z₀‖ < min r (z₀.re - σ) := by rw [← dist_eq_norm]; exact hzb
+    refine ⟨?_, ?_⟩
+    · have := (abs_re_le_norm (z - z₀)).trans_lt (hd.trans_le (min_le_right _ _))
+      simp only [sub_re, abs_lt] at this
+      change σ < z.re
+      linarith
+    · rintro ⟨ρ, hρ⟩
+      have hρz : zeroShift ρ ≠ z₀ := fun h => hz (hρ.symm.trans h)
+      have := hrad ρ hρz
+      rw [hρ] at this
+      linarith [hd.trans_le (min_le_left _ _), norm_sub_rev z₀ z]
+  have hres := tendsto_residue_zeroResolvent hc b ρ₀
+  have hzero : Tendsto (fun z => (z - z₀) * zeroResolvent c b z) (𝓝[≠] z₀) (𝓝 0) := by
+    have hcont : ContinuousAt L z₀ := (hLan z₀ hρ₀).continuousAt
+    have h0 : Tendsto (fun z => (z - z₀) * L z) (𝓝 z₀) (𝓝 ((z₀ - z₀) * L z₀)) :=
+      ((continuousAt_id.sub continuousAt_const).mul hcont).tendsto
+    rw [sub_self, zero_mul] at h0
+    refine (h0.mono_left nhdsWithin_le_nhds).congr' ?_
+    filter_upwards [hevU] with z hz
+    rw [hEq hz]
+  exact tendsto_nhds_unique hres hzero
+
+
 /-- **Growth beyond the depth kills the coefficient.** If `|G(τ)| ≤ K e^{στ}` for `τ > b` with
 `b > 0`, then `c_ρ = 0` at every zero of depth `Re λ_ρ > σ`. -/
 theorem coeff_eq_zero_of_growth {c : Z.carrier → ℂ} (hc : Summable fun ρ => ‖c ρ‖) {b σ K : ℝ}
@@ -373,57 +434,7 @@ theorem coeff_eq_zero_of_growth {c : Z.carrier → ℂ} (hc : Summable fun ρ =>
           simp only [H]
           rw [← mul_assoc, ← Complex.exp_add]
           ring_nf
-  -- identity theorem on the half-plane minus the shifted zeros
-  set U : Set ℂ := {z : ℂ | σ < z.re} \ range (zeroShift (Z := Z))
-  have hnot : ∀ x : ℝ, 1 / 2 < x → (x : ℂ) ∉ range (zeroShift (Z := Z)) := by
-    rintro x hx ⟨ρ, hρ⟩
-    have := (abs_le.mp (abs_re_zeroShift_le ρ)).2
-    rw [hρ, ofReal_re] at this
-    linarith
-  have hz₁U : ((2 + |σ| : ℝ) : ℂ) ∈ U :=
-    ⟨by simp only [mem_setOf_eq, ofReal_re]; linarith [le_abs_self σ],
-      hnot _ (by linarith [abs_nonneg σ])⟩
-  have hUpre : IsPreconnected U := by
-    haveI : Countable Z.carrier := (countable_carrier Z).to_subtype
-    exact GaloisForLFunctions.HTGeometry.isPreconnected_diff_of_countable_of_convex_complex
-      (convex_halfSpace_re_gt σ) (isOpen_lt continuous_const Complex.continuous_re)
-      (countable_range _) hz₁U
-  have hRan : AnalyticOnNhd ℂ (zeroResolvent c b) U := fun z hz =>
-    analyticAt_zeroResolvent hc b fun ρ h => hz.2 ⟨ρ, h⟩
-  have hEq : EqOn L (zeroResolvent c b) U := by
-    refine (hLan.mono sdiff_subset).eqOn_of_preconnected_of_eventuallyEq hRan hUpre hz₁U ?_
-    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds
-      (show (1 / 2 + |σ| : ℝ) < (((2 + |σ| : ℝ) : ℂ)).re by simp only [ofReal_re]; linarith)]
-      with z hz
-    exact hLR z hz
-  -- the residue at `λ_{ρ₀}`
-  set z₀ := zeroShift ρ₀
-  obtain ⟨r, hr, hrad⟩ := exists_radius_zeroShift (Z := Z) z₀
-  have hevU : ∀ᶠ z in 𝓝[≠] z₀, z ∈ U := by
-    have hball : Metric.ball z₀ (min r (z₀.re - σ)) ∈ 𝓝 z₀ :=
-      Metric.ball_mem_nhds _ (lt_min hr (sub_pos.mpr hρ₀))
-    filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds hball] with z hz hzb
-    have hd : ‖z - z₀‖ < min r (z₀.re - σ) := by rw [← dist_eq_norm]; exact hzb
-    refine ⟨?_, ?_⟩
-    · have := (abs_re_le_norm (z - z₀)).trans_lt (hd.trans_le (min_le_right _ _))
-      simp only [sub_re, abs_lt] at this
-      change σ < z.re
-      linarith
-    · rintro ⟨ρ, hρ⟩
-      have hρz : zeroShift ρ ≠ z₀ := fun h => hz (hρ.symm.trans h)
-      have := hrad ρ hρz
-      rw [hρ] at this
-      linarith [hd.trans_le (min_le_left _ _), norm_sub_rev z₀ z]
-  have hres := tendsto_residue_zeroResolvent hc b ρ₀
-  have hzero : Tendsto (fun z => (z - z₀) * zeroResolvent c b z) (𝓝[≠] z₀) (𝓝 0) := by
-    have hcont : ContinuousAt L z₀ := (hLan z₀ hρ₀).continuousAt
-    have h0 : Tendsto (fun z => (z - z₀) * L z) (𝓝 z₀) (𝓝 ((z₀ - z₀) * L z₀)) :=
-      ((continuousAt_id.sub continuousAt_const).mul hcont).tendsto
-    rw [sub_self, zero_mul] at h0
-    refine (h0.mono_left nhdsWithin_le_nhds).congr' ?_
-    filter_upwards [hevU] with z hz
-    rw [hEq hz]
-  exact tendsto_nhds_unique hres hzero
+  exact coeff_eq_zero_of_eqOn_zeroResolvent hc hLan hLR hρ₀
 
 end ZeroSeries
 

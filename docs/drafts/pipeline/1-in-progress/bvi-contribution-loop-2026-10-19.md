@@ -51,6 +51,8 @@
 | C26 | ValuationLawForZeroProductRelationsAndVisibilityDegree | layer law: Πζ=1, no order ÷ p^{a+1} ⇒ #(p^a-layer) ≠ 1, even for p=2; visibility ⇒ layer-admissible active order tuple; top dyadic layer invisible at all degrees; shared dyadic + private odd layers ⇒ relative sign blind through degree 5; {2p,2r} (p≠r odd primes) visibility degree exactly 6 — explains/generalizes BiScale {6,10} trap | done |
 | C27 | CompleteClassificationOfZeroProductRelations | converse of the layer law: every layer-admissible tuple of positive orders is the order tuple of primitive roots with product 1 (prime-by-prime construction + coprime gluing); zero-product relations ⟺ layer admissibility; complete visibility law: degree-m moments see εY iff some layer-admissible active m-tuple has Πε ≠ 1 | done |
 | C28 | CyclotomicLogarithmFormulaForThePronicGram | Σ_M z^M/(M(M+1)) = 1 + (1−z)log(1−z)/z on the closed disk (z ≠ 0,1; continuity from inside); R_q(M) = Σ_ζ ζ/(ζ−1)(ζ^M−1), Σ_ζ ζ/(ζ−1) = φ(q)/2, mean-centered primitive = Σ_ζ a_ζ ζ^M; G^{mc}(p,q) = φ(p)φ(q)/4 + Σ_{ζ,ξ} a_ζ a_ξ Q(ζξ) — the infinite pronic Gram is a finite sum of cyclotomic logarithms | done |
+| C29 | CotangentSawtoothFormOfThePronicGram | a_ζa_ξQ(ζξ) = (1/(1−ζ)+1/(1−ξ)−1)log(1−ζξ); Re 1/(1−ζ) = 1/2 kills log-moduli; Im 1/(1−e(x)) = cot(πx)/2, arg(1−e(y)) = π((y)); G^{mc}(p,q) = φ(p)φ(q)/4 − (π/2)Σ_{(a,p)=1,(b,q)=1}(cot πa/p + cot πb/q)((a/p+b/q)) for all p,q ≥ 2 — elementary Dedekind–Vasyunin cotangent–sawtooth sum | done |
+| C30 | VasyuninCotangentSumsInThePrimePronicGram | Hecke distribution relation Σ_{b<q}((y+b/q)) = ((qy)) (periodicity + one period); V(h,k) = Σ_{a<k} cot(πa/k)((ha/k)); primes: G^{mc}(p,q) = (p−1)(q−1)/4 − (π/2)(V(q,p) − V(1,p) + V(p,q) − V(1,q)); diagonal G^{mc}(p,p) = (p−1)²/4 + πV(1,p) | done |
 
 ## Conjecture queue
 
@@ -464,3 +466,33 @@
   dividing lcm(p,q) (log|2 sin πx| and sawtooth values) — a Vasyunin-type evaluation, replacing the infinite
   pronic series; connects the Gram to cyclotomic units.
 - **Audit:** clean; olean; 5 public theorems standard axioms; wired.
+
+### C29 — Cotangent–sawtooth form of the pronic Gram (DONE)
+
+- **Module:** `BezoutValuationIncidence/CotangentSawtoothFormOfThePronicGram.lean`
+- **Statements:** `sawtooth` (((y)), 0 at integers); `div_mul_div_mul_cyclotomicLogKernel`
+  (a_ζ a_ξ Q(ζξ) = κ(ζ,ξ) log(1−ζξ), κ = 1/(1−ζ)+1/(1−ξ)−1, from 1−ζξ = (1−ζ)+ζ(1−ξ));
+  `re_one_div_one_sub` (|ζ|=1 ⇒ Re 1/(1−ζ) = 1/2, so κ is purely imaginary); `one_sub_exp_re_im`,
+  `im_one_div_one_sub_exp` (cot(πx)/2), `arg_one_sub_exp` (π((y))); `primitiveRoots_eq_image`,
+  `sum_primitiveRoots_eq_sum_coprime`; `pmRamanujanMeanCenteredGram_eq_arg_form` (only arguments of 1−ζξ
+  survive); **`pmRamanujanMeanCenteredGram_eq_cotangent_sawtooth`**:
+  G^{mc}(p,q) = φ(p)φ(q)/4 − (π/2) Σ_{(a,p)=1} Σ_{(b,q)=1} (cot(πa/p) + cot(πb/q)) ((a/p + b/q)).
+- **Why significant:** the pronic Gram (README §2.7) becomes an elementary finite cotangent–sawtooth sum of
+  Dedekind–Vasyunin type; the log-modulus (cyclotomic unit) parts cancel identically. This is the BVI-native
+  bridge to Vasyunin cotangent sums V(h/k) = Σ{mh/k}cot(πm/k) (Nyman–Beurling Gram / Estermann period
+  functions); next: prime reduction to V via the Hermite distribution relation.
+- **Audit:** clean; olean; 4 public theorems standard axioms; wired.
+
+### C30 — Vasyunin cotangent sums in the prime pronic Gram (DONE)
+
+- **Module:** `BezoutValuationIncidence/VasyuninCotangentSumsInThePrimePronicGram.lean`
+- **Statements:** `vasyuninSum h k` = Σ_{a=1}^{k−1} cot(πa/k)((ha/k)); `sum_range_sawtooth_add_div` (one period),
+  `sum_range_sawtooth_add` (Hecke: Σ_{b<q}((y+b/q)) = ((qy)), via q-periodicity of n ↦ (((n+θ)/q)) and
+  shift-invariance of full-period sums); `filter_coprime_range_prime`, `sum_Ico_sawtooth_add`;
+  **`pmRamanujanMeanCenteredGram_prime_eq_vasyunin`**; **`pmRamanujanMeanCenteredGram_prime_diag`**
+  (V(p,p) = 0 ⇒ G^{mc}(p,p) = (p−1)²/4 + πV(1,p)).
+- **Why significant:** the pronic Gram of two primes — the object of README tool 3 (internal bilinear dispersion,
+  "reciprocity converts correlations between moduli into exponential sums with modular inverses") — is exactly a
+  combination of the Vasyunin cotangent sums V(q/p), V(p/q) of the Nyman–Beurling Gram; the reciprocity pair
+  (V(q,p), V(p,q)) is now the explicit carrier of prime-pair correlation in the pronic energy.
+- **Audit:** clean; olean; 3 public theorems standard axioms; wired.

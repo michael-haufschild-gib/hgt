@@ -331,3 +331,29 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
 - **`minorDeficit_ge`**: all depths ≤ D ⇒ `μ(v) ≥ −C e^{Dv}`. **`exists_minorDeficit_lt`**: a zero of depth > σ ≥ 0 ⇒ ∀K ∃ height, lag with `μ(v) < −K e^{σv}`. Exact negativity rate = sup depth.
 - **`zeta_primeSide_twoBump_ge`**, **`zeta_exists_primeSide_twoBump_lt`**: prime-side version for ζ: at lag log X, min Re P ≥ −C X^{D} if all Re ρ ≤ ½ + D; not O(X^σ) for σ below any depth. RH ⟺ no power growth (square-root threshold).
 - README mechanisms 9, 21 extended. Axioms: [propext, Classical.choice, Quot.sound]. Wired after DirichletLFunctionTwoBumpCriterion.
+
+### C42 — Weil positivity of ζ below aperture 1/100 (`ZetaWeilPositivityBelowApertureOneHundredth.lean`)
+- `re_digamma_quarter_ge_log` (`Re ψ(¼+iτ/2) ≥ log(|τ|/2) − 6/|τ|`, `|τ| ≥ 4`), `mu_eq_re_digamma`, `mu_ge_log_abs`, `mu_ge_neg` (`μ ≥ −(7+log π)/2π`), three-band constants `muHigh/muMid/muLow`, `integral_norm_sq_paperFT_mul_mu_ge_three_band` (spectral mass of `[−R,R]` ≤ `4aR‖f‖²`), `pairEnergy_half_le_sq`.
+- **`zetaZeroConfig_re_W_ge_of_aperture_le_hundredth`**: `(1/25)‖f‖² ≤ Re W_ζ(f,f)` for every C² test supported in `[−a,a]`, `0 < a ≤ 1/100` (was `e^{−50}`). `zetaZeroConfig_re_W_nonneg_of_aperture_le_hundredth`, `re_windowedW_zetaZeroConfig_nonneg_of_hundredth` (height windows of aperture 1/100).
+- Import narrowed to `ZetaSmallApertureHeightWindowPositivity`. README open problem 3 updated. Axioms: [propext, Classical.choice, Quot.sound]. Wired after NegativityRateEqualsMaximalDepth.
+
+### C43 — Large dyadic prime windows decide the critical line (`LargeDyadicPrimeWindowsDecideTheCriticalLine.lean`)
+- **`exists_minor_gt_of_top_of_ge`**, **`exists_minorDeficit_lt_of_ge`** (any bump width w > 0): tail visibility — minor excess `> K e^{σv}` at some lag `v ≥ V`, every K, V. Proof: a priori bound on `[0,V]` from `minorDeficit_ge` with D = ½, then C33 with an enlarged K (no upstream edit).
+- **`onLine_iff_twoBump_nonneg_of_ge`**: for every V, tempered config on the line ⟺ Weil ≥ 0 on unimodular two-bump tests with lag `v ≥ V`.
+- `twoBump_apply`, **`weilTest_twoBump_eq_zero`** (kernel vanishes off `[−2w,2w] ∪ ±[v−2w,v+2w]`), `lagPrimeWindow v w` (`|log n − v| ≤ 2w`), `vonMangoldt_eq_zero_or_weilTest_twoBump_eq_zero`, `tsum_vonMangoldt_twoBump_eq_window` (twisted prime tsum = finite window sum for `2w < log 2`, v ≥ 0).
+- `lagPrimeWindowRHS`, `lagPrimeWindowRHSchi`, `literatureRHS_twoBump_eq_lagPrimeWindowRHS`. **`onLine_iff_primeWindow_nonneg`**: RH ⟺ window functional ≥ 0 at every height, every lag `v ≥ V` (any V ≥ 0), `|τ| = 1`; each test reads Λ only on one dyadic window ⊂ (X/2, 2X), X = e^v. **`zeta_exists_primeWindow_lt`**: off-line zero of depth > σ ⇒ window functional `< −K e^{σv}` beyond every V. **`grh_iff_primeWindow_nonneg`**: same for primitive Dirichlet L.
+- README mechanism 21 rewritten (kernel support, tail law, finite prime data irrelevant), new trap. Axioms: [propext, Classical.choice, Quot.sound]. Wired after C42.
+
+### C44 — The sharp archimedean horizon of the symbol of ζ (`SharpArchimedeanHorizonOfTheZetaSymbol.lean`)
+- Solves README open problem 3 (second half): horizon `68√X` → `(4+ε)√X`, coefficient optimal.
+- `sum_Icc_zero_eq_sum_Ioc_vonMangoldt_div_sqrt`; **`exists_sum_vonMangoldt_div_sqrt_le`** (`Σ_{n≤X} Λ(n)/√n ≤ (2+ε)√X + C_ε`, from corpus PNT asymptotic `RHTower.FreeLagTrace.tendsto_sum_vonMangoldt_div_sqrt` + Chebyshev `34√N` below the threshold).
+- **`exists_PX_ge`** (`P_X ≥ −((2+ε)√X + C)/π`, uniform in τ), **`exists_mu_add_PX_ge`** (sharp horizon `μ + P_X ≥ (log(1+|τ|/4) − C − (4+ε)√X)/2π`), `PX_zero`, **`not_exists_PX_ge_of_lt_two`** (no height-uniform bound with coefficient c < 2: optimal).
+- `zetaZeroConfig_re_W_heightShift_ge_of_symbol` (single-height lower bound from any symbol bound E; the corpus theorem is the E = 10 + 68√X instance), **`exists_sharp_zetaZeroConfig_re_W_heightShift_ge`**, **`zetaZeroConfig_re_W_heightShift_nonneg_of_horizon`**: localized ζ forms positive once `C + (4+ε)e^a + 2S(a) + 1 ≤ log(1 + π|ξ|/4)` (√X ≤ (¼ − ε) log T).
+- README open problem 3 rewritten. Axioms: [propext, Classical.choice, Quot.sound]. Wired after C43.
+
+### C45 — The depth-deficit transform replaces the gap (`DepthDeficitTransformReplacesTheGap.lean`)
+- Open problem 2 (part): quantitative visibility of an attained top depth with finitely many top-level heights, no gap required (shallower zeros may accumulate at the top; infinitely many off-line zeros allowed).
+- `exists_level_window_lower` (window lower bound for one level, standalone form of the C29 grid argument), `depthDeficit Z b r v = Σ_{Re t<r} |q_t| e^{(Re t − r)v}`, `summable_norm_offLineWeight`, `depthDeficit_term_le`, `summable_depthDeficit`, `depthDeficit_anti`, **`tendsto_depthDeficit`** (G → 0, dominated convergence), **`depthDeficit_le_of_gap`** (gap g ⇒ G ≤ e^{−gv}Σ|q|).
+- **`norm_offLineSum_sub_level_le`**: off-line sum = top-level sum + remainder of norm ≤ e^{Dv}G(v).
+- **`exists_minor_fails_of_depthDeficit`**: ∃ c, ℓ > 0 (top-level data only) s.t. for every V ≥ 0 with G(V) ≤ c/2 and 2M_b + 3Σ|q| < (c/2)e^{DV}, the minor fails at some lag in [V, V + (|T₀|+1)ℓ]. **`eventually_minor_fails_in_every_window`**: failures recur with bounded gaps beyond some V₀ (quantitative strengthening of C31 for finite top level).
+- README mechanism 9 + open problem 2 updated. Axioms: [propext, Classical.choice, Quot.sound]. Wired after C44.
