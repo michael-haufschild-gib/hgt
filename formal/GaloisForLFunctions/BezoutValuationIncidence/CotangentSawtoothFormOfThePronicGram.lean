@@ -146,9 +146,9 @@ theorem primitiveRoots_eq_image {k : ℕ} (hk : 0 < k) :
   rw [mem_primitiveRoots hk, Complex.isPrimitiveRoot_iff ζ k hk.ne', mem_image]
   constructor
   · rintro ⟨i, hi, hcop, rfl⟩
-    exact ⟨i, mem_filter.mpr ⟨mem_range.mpr hi, hcop⟩, by push_cast <;> ring⟩
+    exact ⟨i, mem_filter.mpr ⟨mem_range.mpr hi, hcop⟩, by push_cast; ring⟩
   · rintro ⟨i, hi, rfl⟩
-    exact ⟨i, mem_range.mp (mem_filter.mp hi).1, (mem_filter.mp hi).2, by push_cast <;> ring⟩
+    exact ⟨i, mem_range.mp (mem_filter.mp hi).1, (mem_filter.mp hi).2, by push_cast; ring⟩
 
 theorem sum_primitiveRoots_eq_sum_coprime {k : ℕ} (hk : 0 < k) (f : ℂ → ℝ) :
     ∑ ζ ∈ primitiveRoots k ℂ, f ζ =
@@ -163,6 +163,7 @@ theorem sum_primitiveRoots_eq_sum_coprime {k : ℕ} (hk : 0 < k) (f : ℂ → �
     congr 1
     push_cast
     ring
+  dsimp only at hij
   rw [hpow, hpow] at hij
   exact hζ.pow_inj (mem_range.mp (mem_filter.mp hi).1) (mem_range.mp (mem_filter.mp hj).1) hij
 

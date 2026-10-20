@@ -50,8 +50,7 @@ theorem sieveL2PrefixEnergy_moebius_step_eq_bandStep (n M : ℕ) :
 
 /-- Past the horizon `m - 1`, the response at `mj` is read from the complementary quotients
 `q ≤ j`: `s_{m-1}(mj) = -Σ_{q | mj, q ≤ j} μ(mj/q)`. -/
-theorem sieveSeq_moebius_mul_eq_neg_quotients {m j : ℕ} (hm : 1 ≤ m) (hj : 1 ≤ j)
-    (hmj : 2 ≤ m * j) :
+theorem sieveSeq_moebius_mul_eq_neg_quotients {m j : ℕ} (hm : 1 ≤ m) (hmj : 2 ≤ m * j) :
     sieveSeq (m - 1) moebiusReal (m * j) =
       -∑ q ∈ (m * j).divisors.filter (· ≤ j), moebiusReal (m * j / q) := by
   rw [sieveSeq_moebiusReal_eq_neg_sum_gt _ hmj,
@@ -65,7 +64,7 @@ theorem sieveSeq_moebius_mul_eq_neg_quotients {m j : ℕ} (hm : 1 ≤ m) (hj : 1
     refine ⟨⟨hq, hne⟩, ?_⟩
     have hq0 : 0 < q := Nat.pos_of_dvd_of_pos hq (by omega)
     by_contra hqj
-    push_neg at hqj
+    replace hqj := not_le.mp hqj
     have : m * j / q < m := by
       rw [Nat.div_lt_iff_lt_mul hq0]
       exact Nat.mul_lt_mul_of_pos_left hqj (by omega)
@@ -80,7 +79,7 @@ theorem sieveSeq_moebius_mul_eq_neg_quotients {m j : ℕ} (hm : 1 ≤ m) (hj : 1
 
 /-- Complementary quotients `q ≤ j ≤ B` do not see a cofactor `m'` whose prime factors all exceed
 `B` and which is coprime to `r`: the quotient sum of `r m' j` is `μ(m')` times that of `r j`. -/
-theorem sum_quotients_rough_cofactor {r m' j B : ℕ} (hjB : j ≤ B)
+theorem sum_quotients_rough_cofactor {r m' j B : ℕ} (hj : 1 ≤ j) (hjB : j ≤ B) (hm' : m' ≠ 0)
     (hrough : ∀ p, p.Prime → p ∣ m' → B < p) (hcop : Nat.Coprime r m') :
     ∑ q ∈ (r * m' * j).divisors.filter (· ≤ j), moebiusReal (r * m' * j / q) =
       moebiusReal m' * ∑ q ∈ (r * j).divisors.filter (· ≤ j), moebiusReal (r * j / q) := by
@@ -90,30 +89,20 @@ theorem sum_quotients_rough_cofactor {r m' j B : ℕ} (hjB : j ≤ B)
       have := hrough p hp hpm
       have := Nat.le_of_dvd (by omega) hpx
       omega
-  have hjm : Nat.Coprime (r * j) m' := by
-    rcases Nat.eq_zero_or_pos j with rfl | hj
-    · simp only [mul_zero, Nat.coprime_zero_left]
-      rcases Nat.eq_zero_or_pos m' with rfl | hm'
-      · exfalso
-        exact absurd (hrough 2 Nat.prime_two (dvd_zero 2)) (by omega)
-      · by_contra h1
-        obtain ⟨p, hp, hpm⟩ := Nat.exists_prime_and_dvd h1
-        exact absurd (hrough p hp hpm) (by omega)
-    · exact Nat.Coprime.mul hcop (hsmall j hj hjB)
+  have hjm : Nat.Coprime (r * j) m' := Nat.Coprime.mul_left hcop (hsmall j hj hjB)
   have hset : (r * m' * j).divisors.filter (· ≤ j) = (r * j).divisors.filter (· ≤ j) := by
     ext q
     simp only [mem_filter, Nat.mem_divisors]
     constructor
     · rintro ⟨⟨hq, hne⟩, hqj⟩
-      have hq0 : 0 < q := Nat.pos_of_ne_zero fun h => by subst h; simp at hq; omega
+      have hq0 : 0 < q := Nat.pos_of_dvd_of_pos hq (Nat.pos_of_ne_zero hne)
       have hqm : Nat.Coprime q m' := hsmall q hq0 (hqj.trans hjB)
       refine ⟨⟨hqm.dvd_of_dvd_mul_left ?_, fun h => hne (by rw [mul_right_comm, h, zero_mul])⟩, hqj⟩
       rwa [mul_right_comm, mul_comm] at hq
     · rintro ⟨⟨hq, hne⟩, hqj⟩
       refine ⟨⟨?_, ?_⟩, hqj⟩
       · rw [mul_right_comm]; exact Dvd.dvd.mul_right hq m'
-      · rw [mul_right_comm]; exact mul_ne_zero hne (fun h => by
-          subst h; exact absurd (hrough 2 Nat.prime_two (dvd_zero 2)) (by omega))
+      · rw [mul_right_comm]; exact mul_ne_zero hne hm'
   rw [hset, mul_sum]
   refine sum_congr rfl fun q hq => ?_
   obtain ⟨⟨hqd, -⟩, -⟩ := by simpa only [mem_filter, Nat.mem_divisors] using hq
@@ -147,9 +136,9 @@ theorem moebiusBandStep_mul_rough {r m' B : ℕ} (hr : 2 ≤ r) (hsq : Squarefre
     obtain ⟨hj1, hjB⟩ := mem_Icc.mp hj
     have h2 : 2 ≤ r * j := by nlinarith
     have h2' : 2 ≤ r * m' * j := by nlinarith
-    rw [sieveSeq_moebius_mul_eq_neg_quotients (by nlinarith) hj1 h2',
-      sieveSeq_moebius_mul_eq_neg_quotients (by omega) hj1 h2,
-      sum_quotients_rough_cofactor hjB hrough hcop]
+    rw [sieveSeq_moebius_mul_eq_neg_quotients (by nlinarith) h2',
+      sieveSeq_moebius_mul_eq_neg_quotients (by omega) h2,
+      sum_quotients_rough_cofactor hj1 hjB hsq.ne_zero hrough hcop]
     ring
   unfold moebiusBandStep
   rw [sum_congr rfl hterm, ← mul_sum, hμ]
@@ -169,11 +158,12 @@ theorem moebiusBandStep_rough {m B : ℕ} (hm : 2 ≤ m) (hB : 1 ≤ B) (hsq : S
       if j = 1 then -moebiusReal m else 0 := by
     intro j hj
     obtain ⟨hj1, hjB⟩ := mem_Icc.mp hj
-    have hq := sum_quotients_rough_cofactor (r := 1) hjB hrough (Nat.coprime_one_left m)
+    have hq := sum_quotients_rough_cofactor (r := 1) hj1 hjB hsq.ne_zero hrough
+      (Nat.coprime_one_left m)
     simp only [one_mul] at hq
     have hall : j.divisors.filter (· ≤ j) = j.divisors :=
       filter_true_of_mem fun q hq => Nat.divisor_le hq
-    rw [sieveSeq_moebius_mul_eq_neg_quotients (by omega) hj1 (by nlinarith), hq, hall,
+    rw [sieveSeq_moebius_mul_eq_neg_quotients (by omega) (by nlinarith), hq, hall,
       Nat.sum_div_divisors]
     split_ifs with h1
     · subst h1; simp [moebiusReal]
@@ -196,16 +186,18 @@ theorem moebiusBandStep_eq_smoothCore {m B : ℕ} (hm : 2 ≤ m) (hB : 1 ≤ B) 
   have hrough : ∀ p, p.Prime → p ∣ m / r → B < p := by
     intro p hp hpm
     by_contra hpB
-    push_neg at hpB
+    replace hpB := not_lt.mp hpB
     have hpr : p ∣ r := Nat.dvd_gcd (hpm.trans (Nat.div_dvd_of_dvd (Nat.gcd_dvd_left m _)))
       ((hp.dvd_primorial_iff).mpr hpB)
     exact hp.one_lt.ne' ((hcop.coprime_dvd_left hpr).eq_one_of_dvd hpm)
   split_ifs with h1
-  · have hmr : m / r = m := by rw [h1, Nat.div_one]
+  · have hr1 : r = 1 := h1
+    have hmr : m / r = m := by rw [hr1, Nat.div_one]
     exact moebiusBandStep_rough hm hB hsq (hmr ▸ hrough)
   · have hr0 : r ≠ 0 := Nat.gcd_ne_zero_left (by omega)
-    rw [← hrm]
-    exact moebiusBandStep_mul_rough (by omega) hsq'.of_mul_right hrough hcop
+    have h := moebiusBandStep_mul_rough (by omega) hsq'.of_mul_right hrough hcop
+    rw [hrm] at h
+    exact h
 
 /-- In band `B ≥ 1` the step at any horizon `m ≥ 2` lies in the finite set made of `0`, `B - 2`
 and the steps `Δ(r, B)` of the divisors `r` of the primorial `B#`. -/
@@ -229,7 +221,9 @@ theorem moebiusBandStep_two (B : ℕ) : moebiusBandStep 2 B = -(B : ℝ) := by
     simp [moebiusReal, ArithmeticFunction.moebius_apply_prime Nat.prime_two]
   have hs : ∀ j ∈ Icc 1 B, sieveSeq (2 - 1) moebiusReal (2 * j) = 1 := by
     intro j _
-    simp [sieveSeq, moebiusReal]
+    simp only [sieveSeq, show (2 : ℕ) - 1 = 1 by rfl, Icc_self, sum_filter, sum_singleton,
+      one_dvd, if_true]
+    simp [moebiusReal]
   unfold moebiusBandStep
   rw [sum_congr rfl hs, hμ]
   simp only [sum_const, Nat.card_Icc, nsmul_eq_mul, mul_one, Nat.add_sub_cancel]

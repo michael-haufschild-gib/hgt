@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticCriticalityTheory.ZeroFormJumpKernelGaugeFreedom
 import GaloisForLFunctions.ArithmeticCriticalityTheory.ThetaConvolutionCoshMomentLaw
+import GaloisForLFunctions.ArithmeticCriticalityTheory.OddFormCriticality
 import GaloisForLFunctions.HTGeometry.NavierStokesHadamardQuotient
 
 /-!
@@ -239,6 +240,38 @@ theorem setIntegral_setIntegral_le_varianceEnergy {μ u : ℝ → ℝ} (hμ : In
         setIntegral_le_integral houter (Eventually.of_forall fun x =>
           integral_nonneg fun y => hnn x y)
 
+/-- **Positivity of a window variance.** If `w` takes different values at two points of `(p, q)`
+where `μ > 0`, then `∫_{[p,q]} ∫_{[p,q]} (w(x) − w(y))² μ(x)μ(y) > 0`. -/
+theorem setIntegral_setIntegral_sq_sub_pos {w μ : ℝ → ℝ} (hw : Continuous w) (hμ : Continuous μ)
+    (hμ0 : ∀ x, 0 ≤ μ x) {p q p₀ q₀ : ℝ} (hp₀ : p₀ ∈ Ioo p q) (hq₀ : q₀ ∈ Ioo p q)
+    (hμp : 0 < μ p₀) (hμq : 0 < μ q₀) (hne : w p₀ ≠ w q₀) :
+    0 < ∫ x in Icc p q, ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y) := by
+  have hgc : Continuous fun z : ℝ × ℝ => (w z.1 - w z.2) ^ 2 * (μ z.1 * μ z.2) :=
+    (((hw.comp continuous_fst).sub (hw.comp continuous_snd)).pow 2).mul
+      ((hμ.comp continuous_fst).mul (hμ.comp continuous_snd))
+  have hg0 : ∀ x y, 0 ≤ (w x - w y) ^ 2 * (μ x * μ y) := fun x y =>
+    mul_nonneg (sq_nonneg _) (mul_nonneg (hμ0 x) (hμ0 y))
+  have hGc : Continuous fun x => ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y) :=
+    continuous_parametric_integral_of_continuous (f := fun x y => (w x - w y) ^ 2 * (μ x * μ y))
+      hgc isCompact_Icc
+  have hgx : Continuous fun y => (w p₀ - w y) ^ 2 * (μ p₀ * μ y) :=
+    ((continuous_const.sub hw).pow 2).mul (continuous_const.mul hμ)
+  have hGp : 0 < ∫ y in Icc p q, (w p₀ - w y) ^ 2 * (μ p₀ * μ y) := by
+    rw [setIntegral_pos_iff_support_of_nonneg_ae (ae_of_all _ (hg0 p₀)) hgx.integrableOn_Icc]
+    have hopen : IsOpen (Function.support (fun y => (w p₀ - w y) ^ 2 * (μ p₀ * μ y)) ∩ Ioo p q) :=
+      (isOpen_ne_fun hgx continuous_const).inter isOpen_Ioo
+    have hmem : q₀ ∈ Function.support (fun y => (w p₀ - w y) ^ 2 * (μ p₀ * μ y)) ∩ Ioo p q :=
+      ⟨(mul_pos (sq_pos_of_ne_zero (sub_ne_zero.mpr hne)) (mul_pos hμp hμq)).ne', hq₀⟩
+    exact lt_of_lt_of_le (hopen.measure_pos volume ⟨_, hmem⟩)
+      (measure_mono fun y hy => ⟨hy.1, Ioo_subset_Icc_self hy.2⟩)
+  have hG0 : ∀ x, 0 ≤ ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y) := fun x =>
+    setIntegral_nonneg measurableSet_Icc fun y _ => hg0 x y
+  rw [setIntegral_pos_iff_support_of_nonneg_ae (ae_of_all _ hG0) hGc.integrableOn_Icc]
+  have hopen : IsOpen (Function.support (fun x => ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y)) ∩
+      Ioo p q) := (isOpen_ne_fun hGc continuous_const).inter isOpen_Ioo
+  exact lt_of_lt_of_le (hopen.measure_pos volume ⟨p₀, hGp.ne', hp₀⟩)
+    (measure_mono fun y hy => ⟨hy.1, Ioo_subset_Icc_self hy.2⟩)
+
 /-! ### Variance criticality -/
 
 section Smeared
@@ -366,42 +399,16 @@ theorem exists_zeroForm_lt_mul_varianceEnergy {ε : ℝ} (hε : 0 < ε) :
   set p := p₀ / 2
   set q := q₀ + 1
   have hwc : Continuous w := (hws 0).continuous
-  set g : ℝ → ℝ → ℝ := fun x y => (w x - w y) ^ 2 * (μ x * μ y) with hg_def
-  have hgc : Continuous (Function.uncurry g) :=
-    (((hwc.comp continuous_fst).sub (hwc.comp continuous_snd)).pow 2).mul
-      ((hμc.comp continuous_fst).mul (hμc.comp continuous_snd))
-  have hg0 : ∀ x y, 0 ≤ g x y := fun x y => mul_nonneg (sq_nonneg _) (mul_nonneg (hμ0 x) (hμ0 y))
-  set G : ℝ → ℝ := fun x => ∫ y in Icc p q, g x y with hG_def
-  have hGc : Continuous G := continuous_parametric_integral_of_continuous hgc isCompact_Icc
   have hμp : 0 < μ p₀ := mul_pos (hMpos p₀ hp₀) (Real.sinh_pos_iff.mpr (by linarith))
   have hμq : 0 < μ q₀ := mul_pos (hMpos q₀ (by linarith)) (Real.sinh_pos_iff.mpr (by linarith))
-  have hGp : 0 < G p₀ := by
-    have hgx : Continuous (g p₀) := hgc.comp (continuous_const.prodMk continuous_id)
-    show 0 < ∫ y in Icc p q, g p₀ y
-    rw [setIntegral_pos_iff_support_of_nonneg_ae (ae_of_all _ (hg0 p₀)) hgx.integrableOn_Icc]
-    have hopen : IsOpen (Function.support (g p₀) ∩ Ioo p q) :=
-      (isOpen_ne_fun hgx continuous_const).inter isOpen_Ioo
-    have hmem : q₀ ∈ Function.support (g p₀) ∩ Ioo p q := by
-      refine ⟨(mul_pos (sq_pos_of_ne_zero (sub_ne_zero.mpr hwne)) (mul_pos hμp hμq)).ne', ?_, ?_⟩
-      · show p₀ / 2 < q₀; linarith
-      · show q₀ < q₀ + 1; linarith
-    exact lt_of_lt_of_le (hopen.measure_pos volume ⟨_, hmem⟩)
-      (measure_mono fun y hy => ⟨hy.1, Ioo_subset_Icc_self hy.2⟩)
-  have hG0 : ∀ x, 0 ≤ G x := fun x => setIntegral_nonneg measurableSet_Icc fun y _ => hg0 x y
-  have hκ : 0 < ∫ x in Icc p q, G x := by
-    rw [setIntegral_pos_iff_support_of_nonneg_ae (ae_of_all _ hG0) hGc.integrableOn_Icc]
-    have hopen : IsOpen (Function.support G ∩ Ioo p q) :=
-      (isOpen_ne_fun hGc continuous_const).inter isOpen_Ioo
-    have hmem : p₀ ∈ Function.support G ∩ Ioo p q := by
-      refine ⟨hGp.ne', ?_, ?_⟩
-      · show p₀ / 2 < p₀; linarith
-      · show p₀ < q₀ + 1; linarith
-    exact lt_of_lt_of_le (hopen.measure_pos volume ⟨_, hmem⟩)
-      (measure_mono fun y hy => ⟨hy.1, Ioo_subset_Icc_self hy.2⟩)
+  have hκ : 0 < ∫ x in Icc p q, ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y) :=
+    setIntegral_setIntegral_sq_sub_pos hwc hμc hμ0 ⟨by simp only [p]; linarith, by
+      simp only [q]; linarith⟩ ⟨by simp only [p]; linarith, by simp only [q]; linarith⟩ hμp hμq hwne
   -- the null sequence
   obtain ⟨K, -, hK⟩ := exists_abs_markovEnergy_spanPlateauProfile_le_of_poleFree
     (s := Finset.univ) (c := c) (a := a) (spanSourceCoefficient_nullPair n)
-  obtain ⟨L, hLq, hLK⟩ : ∃ L : ℝ, q ≤ L ∧ K * Real.exp (-(8 * L)) < ε * ∫ x in Icc p q, G x := by
+  obtain ⟨L, hLq, hLK⟩ : ∃ L : ℝ, q ≤ L ∧ K * Real.exp (-(8 * L)) <
+      ε * ∫ x in Icc p q, ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y) := by
     have h0 : Tendsto (fun L : ℝ => K * Real.exp (-(8 * L))) atTop (𝓝 0) := by
       have := (Real.tendsto_exp_neg_atTop_nhds_zero.comp
         (tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 8))).const_mul K
@@ -428,7 +435,8 @@ theorem exists_zeroForm_lt_mul_varianceEnergy {ε : ℝ} (hε : 0 < ε) :
   -- the variance stays above the window energy
   obtain ⟨Z, hZb⟩ := huc.exists_bound_of_continuous hu.continuous
   have hZ' : ∀ x, |u x| ≤ Z := fun x => by simpa [Real.norm_eq_abs] using hZb x
-  have hV : (∫ x in Icc p q, G x) ≤ varianceEnergy μ u := by
+  have hV : (∫ x in Icc p q, ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y)) ≤
+      varianceEnergy μ u := by
     refine le_trans (le_of_eq ?_) (setIntegral_setIntegral_le_varianceEnergy hμi hμ0 hμc
       hu.continuous hZ' p q)
     refine setIntegral_congr_fun measurableSet_Icc fun x hx => ?_
@@ -437,9 +445,9 @@ theorem exists_zeroForm_lt_mul_varianceEnergy {ε : ℝ} (hε : 0 < ε) :
       rw [abs_le]; constructor <;> linarith [hx.1, hx.2, show (0 : ℝ) < p from by positivity]
     have hy1 : |y| ≤ L := by
       rw [abs_le]; constructor <;> linarith [hy.1, hy.2, show (0 : ℝ) < p from by positivity]
-    simp only [hg_def, hu_def, smoothPlateau_eq_one hx1, smoothPlateau_eq_one hy1, mul_one]
+    simp only [hu_def, smoothPlateau_eq_one hx1, smoothPlateau_eq_one hy1, mul_one]
   calc zeroForm (phiDoobTest fun y => convGauge φ y * u y) ≤ K * Real.exp (-(8 * L)) := hZ
-    _ < ε * ∫ x in Icc p q, G x := hLK
+    _ < ε * ∫ x in Icc p q, ∫ y in Icc p q, (w x - w y) ^ 2 * (μ x * μ y) := hLK
     _ ≤ ε * varianceEnergy μ u := mul_le_mul_of_nonneg_left hV hε.le
 
 /-- **The signed jump energy alone is not positive** in any smeared gauge: some even `u ∈ C²_c` has

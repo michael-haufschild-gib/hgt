@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SquareRootThreshold.NegativityRateEqualsMaximalDepth
+import GaloisForLFunctions.SquareRootThreshold.ZetaSmallApertureHeightWindowPositivity
 
 /-!
 # Weil positivity of `ζ` below aperture `1/100`

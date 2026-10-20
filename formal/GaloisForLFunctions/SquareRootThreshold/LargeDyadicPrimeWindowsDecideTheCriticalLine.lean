@@ -121,6 +121,11 @@ theorem onLine_iff_twoBump_nonneg_of_ge (Z : ZeroConfig) (hZ : TemperedConfig Z)
 
 /-! ### The window read by a two-bump test -/
 
+theorem twoBump_apply (b : ℝ → ℂ) (v : ℝ) (τ : ℂ) (t : ℝ) :
+    twoBump b v τ t = b (t + v / 2) + τ * b (t - v / 2) := by
+  simp [twoBump, bumpTest, lagPoint, Fin.sum_univ_two]
+  ring_nf
+
 /-- **Support of the two-bump Weil kernel.** For `b` supported in `[−w, w]`, the kernel of
 `b(t + v/2) + τ b(t − v/2)` vanishes off `[−2w, 2w] ∪ ±[v − 2w, v + 2w]`. -/
 theorem weilTest_twoBump_eq_zero {b : ℝ → ℂ} {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) (v : ℝ)
@@ -131,13 +136,7 @@ theorem weilTest_twoBump_eq_zero {b : ℝ → ℂ} {w : ℝ} (hbs : ∀ u, b u �
     push Not at hcon
     have e1 : b (t + v / 2) = 0 := by_contra fun hb => absurd (hbs _ hb) (not_le.mpr hcon.1)
     have e2 : b (t - v / 2) = 0 := by_contra fun hb => absurd (hbs _ hb) (not_le.mpr hcon.2)
-    refine ht ?_
-    simp only [twoBump, bumpTest, Fin.sum_univ_two, lagPoint]
-    simp only [Fin.isValue, Matrix.cons_val_zero, Fin.val_zero, Nat.cast_zero, Nat.cast_ofNat,
-      Matrix.cons_val_one, Fin.val_one, Nat.cast_one]
-    rw [show t - (0 - (2 - 1) / 2) * v = t + v / 2 by ring,
-      show t - (1 - (2 - 1) / 2) * v = t - v / 2 by ring, e1, e2]
-    simp
+    exact ht (by rw [twoBump_apply, e1, e2, mul_zero, add_zero])
   rw [EF.weilTest, convolution_def]
   have hz : ∀ t, (ContinuousLinearMap.mul ℝ ℂ) (twoBump b v τ t)
       (EF.tilde (twoBump b v τ) (x - t)) = 0 := fun t => by
@@ -234,11 +233,11 @@ theorem onLine_iff_primeWindow_nonneg {w : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real
     literatureRHS_twoBump_eq_lagWindowRHS (modScaledBump_support hw γ) hw2 (hV.trans hv)]
 
 /-- **Window negativity at the rate of the depth.** If some nontrivial zero of `ζ` has
-`|Re ρ − ½| > σ ≥ 0`, then for every `K` and `V ≥ 0` some unimodular two-bump test at a lag
+`|Re ρ − ½| > σ ≥ 0`, then for every `K` and `V` some unimodular two-bump test at a lag
 `v ≥ V` has window functional `P_v < −K e^{σv}`. -/
 theorem zeta_exists_primeWindow_lt {w : ℝ} (hw : 0 < w) (hw2 : 2 * w < Real.log 2) {ρ : ℂ}
     (hρ : ρ ∈ zetaZeroConfig.carrier) {σ : ℝ} (hσ0 : 0 ≤ σ) (hσ : σ < |ρ.re - 1 / 2|)
-    (K : ℝ) {V : ℝ} (hV : 0 ≤ V) :
+    (K V : ℝ) :
     ∃ (γ v : ℝ) (τ : ℂ), V ≤ v ∧ ‖τ‖ = 1 ∧
       (lagWindowRHS v w (EF.weilTest (twoBump (modScaledBump w γ) v τ)
         (twoBump (modScaledBump w γ) v τ))).re < -(K * Real.exp (σ * v)) := by
