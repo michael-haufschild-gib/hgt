@@ -181,3 +181,35 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   about the limiting critical prime channel are equivalent to pointwise questions about R, and the
   extremal patterns are long frequency-modulated patterns concentrating at argmax/argmin R.
   Standard axioms.
+- **C10 · Logarithmic coercivity of the critical archimedean channel (uniform in the support)** —
+  `CriticalSourceMellinLowFrequencyExclusion` + `CriticalArchimedeanLogCoercivity`.
+  General-exponent nonstationary bound `norm_integral_Ioi_one_rpow_mul_cexp_phase_le_of_one_lt`
+  (‖∫_1^∞ v^{-p}e^{i(ωv−t log v)}‖ ≤ 5/|ω| for p > 1); critical readout
+  `paperFT_criticalFactorialSource` (ĝ(t) = ∫_1^∞ v^{-3/2}B_b(v)e^{-it log v}); critical
+  low-frequency exclusion `norm_sq_paperFT_criticalFactorialSource_le` (‖ĝ‖² ≤ (2D²/M)Σb² on |t| ≤ πM).
+  Spectral autocorrelation `criticalFactorialSource_autocorrelation_eq_spectral`
+  (ac(x) = (1/2π)∫‖ĝ‖²cos(tx), via polarized Plancherel + translation rule); Lévy symbol bound
+  `ofReal_log_sub_le_lintegral_one_sub_cos_mul_archLevySinhWeight` (W(t) ≥ e^{-1/2}(log|t| − 3));
+  Tonelli `criticalLevyEnergy_ge_highBand`; mass floor `integral_criticalFactorialSource_sq_ge`.
+  Capstone `ofReal_le_criticalLevyEnergy`: for EVERY finite family on scales n+1 ≥ M ≥ 2 and every
+  real b, Lévy(g_b) ≥ e^{-1/2}(A/2)(log M − 3 − log(1/η))Σb². New insight: C6/C8's divergence of
+  the critical archimedean channel is not a limit phenomenon of fixed patterns — it is a uniform
+  logarithmic law in the minimal scale, exactly as at the canonical envelope (§3.8): the critical
+  envelope inherits high-scale archimedean coercivity even though its prime majorant diverges.
+  Standard axioms.
+- **C11 · Positivity of the complete critical form on growing patterns (effective)** —
+  `CriticalCompleteFormGrowingPatterns`. General-support complete energy `criticalCompleteEnergy`
+  (Lévy + Ω(0)ac(0) + 2·polar − 2·prime), identified with C6's translated form by `rfl`
+  (`criticalTranslatedCompleteEnergy_eq`). Atom bound `abs_criticalPrimeAtom_le` (|atom_r| ≤ KΛ(r)/r²),
+  `abs_criticalPrimeEnergy_le`, dyadic admission constant `criticalFactorialPrimeConstant_le_of_dyadic`
+  (K ≤ 384B₁² on M ≤ n+1 ≤ 2M), mass `criticalAutocorrelation_zero_le` (≤ 4B₁²), channel bound
+  `neg_le_criticalArithmeticChannels` (≥ −C B₁², C = 4|Ω(0)| + 288 + 768ΣΛ/r²).
+  `criticalCompleteEnergy_ge`: E_crit ≥ s(log M − c₀)Σb² − C(Σ|b|)² for every pattern on [M,2M].
+  `criticalCompleteEnergy_pos`: every nonzero pattern with C|S| < s(log M − c₀) has E_crit > 0.
+  `criticalTranslatedCompleteEnergy_pos`: effective threshold for C8 (offsets ≤ n and
+  C|S| < s(log(n+1) − c₀)). New insight: the README's "finite-scale error strong enough for
+  growing patterns" is supplied — not by sharpening the prime channel (whose finite-scale bound
+  only sees ℓ¹ mass) but by the ℓ²-uniform log-growth of the critical archimedean channel; the
+  admissible pattern size is logarithmic in the scale, the exact trade-off between the ℓ¹ prime
+  budget and the ℓ² Lévy gain. Remaining sharp gap: ℓ²-uniform finite-scale prime bound would
+  remove the |S| restriction. Standard axioms.

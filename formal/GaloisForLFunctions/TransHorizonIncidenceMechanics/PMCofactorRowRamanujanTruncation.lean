@@ -102,14 +102,16 @@ theorem multiples_rpow_tail_le {ε : ℝ} (hε : 0 < ε) {Q d : ℕ} (hQ : 1 ≤
     fun a _ b _ h => Nat.eq_of_mul_eq_mul_left hd h
   have h1 : ∑ q ∈ (Ico (Q + 1) R).filter (d ∣ ·), (q : ℝ) ^ (-(1 + ε)) ≤
       ∑ m ∈ Icc (Q / d + 1) R, ((d * m : ℕ) : ℝ) ^ (-(1 + ε)) := by
-    rw [← sum_image hinj]
-    exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => Real.rpow_nonneg (Nat.cast_nonneg _) _
+    calc _ ≤ ∑ q ∈ (Icc (Q / d + 1) R).image (fun m => d * m), (q : ℝ) ^ (-(1 + ε)) :=
+          sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => Real.rpow_nonneg (Nat.cast_nonneg _) _
+      _ = _ := sum_image hinj
   have h2 : ∑ m ∈ Icc (Q / d + 1) R, ((d * m : ℕ) : ℝ) ^ (-(1 + ε)) =
       (d : ℝ) ^ (-(1 + ε)) * ∑ m ∈ Icc (Q / d + 1) R, (m : ℝ) ^ (-(1 + ε)) := by
     rw [mul_sum]
     refine sum_congr rfl fun m _ => ?_
     rw [Nat.cast_mul, Real.mul_rpow hdR.le (Nat.cast_nonneg m)]
-  have h3 := RHTower.Sieve.sum_rpow_neg_tail_le (c := 1 + ε) (by linarith) (R := Q / d + 1) (N := R) (by omega)
+  have h3 := RHTower.Sieve.sum_rpow_neg_tail_le (c := 1 + ε) (by linarith) (R := (Q / d + 1 : ℕ))
+    (N := R) (Nat.le_add_left 1 _)
   rw [show (1 : ℝ) - (1 + ε) = -ε by ring, show (1 + ε - 1 : ℝ) = ε by ring] at h3
   -- `(⌊Q/d⌋ + 1)^{-ε} ≤ (Q/d)^{-ε}`
   have h4 : (((Q / d + 1 : ℕ) : ℝ)) ^ (-ε) ≤ ((Q : ℝ) / d) ^ (-ε) := by
@@ -138,6 +140,115 @@ theorem multiples_rpow_tail_le {ε : ℝ} (hε : 0 < ε) {Q d : ℕ} (hQ : 1 ≤
         gcongr
     _ = (1 + ε) / ε * (Q : ℝ) ^ (-ε) * ((d : ℝ) * (d : ℝ) ^ (-(1 + ε)) * (d : ℝ) ^ ε) := by ring
     _ = (1 + ε) / ε * (Q : ℝ) ^ (-ε) := by rw [h6, mul_one]
+
+/-- **Ramanujan truncation.** For `Q ≥ 1`, `n ≥ 1`:
+`|s_Q(n) - τ_ε(n)| ≤ (1+ε)/ε · τ(n) · Q^{-ε}`, where `s_Q` is the response of the cofactor row. -/
+theorem abs_sieveSeq_pmCofactor_sub_divisorCoeff_le {ε : ℝ} (hε : 0 < ε) {Q : ℕ} (hQ : 1 ≤ Q)
+    {n : ℕ} (hn : 0 < n) :
+    |sieveSeq Q (pmCofactorRealWeight ε Q) n - pmPowerDampedDivisorCoeff ε n| ≤
+      (1 + ε) / ε * (n.divisors.card : ℝ) * (Q : ℝ) ^ (-ε) := by
+  set f : ℕ → ℂ := fun q => pmPowerDampedRamanujanWeight ε q * d4BMRamanujanNaturalCoefficient n q
+  have hsum : HasSum f (pmPowerDampedDivisorCoeff ε n : ℂ) := by
+    rw [pmPowerDampedDivisorCoeff_eq_ramanujan hε hn]
+    exact (summable_pmPowerDampedRamanujanExpansion hε hn).hasSum
+  have hf0 : f 0 = 0 := by simp [f, pmPowerDampedRamanujanWeight_zero]
+  set B := (1 + ε) / ε * (n.divisors.card : ℝ) * (Q : ℝ) ^ (-ε)
+  -- every block of omitted modes is bounded by `B`
+  have hblock (R : ℕ) : ‖∑ q ∈ Ico (Q + 1) R, f q‖ ≤ B := by
+    refine (norm_sum_le _ _).trans ?_
+    have hterm : ∀ q ∈ Ico (Q + 1) R, ‖f q‖ ≤
+        ∑ d ∈ n.divisors, if d ∣ q then (d : ℝ) * (q : ℝ) ^ (-(1 + ε)) else 0 := by
+      intro q hq
+      have hq0 : 0 < q := by have := (mem_Ico.mp hq).1; omega
+      have hqR : (0 : ℝ) < q := by exact_mod_cast hq0
+      have hw : ‖pmPowerDampedRamanujanWeight ε q‖ ≤ (q : ℝ) ^ (-(1 + ε)) := by
+        rw [Real.rpow_neg hqR.le, ← one_div]; exact norm_pmPowerDampedRamanujanWeight_le hε hq0
+      have hc := norm_ramanujan_le_common_divisor_mass hn hq0
+      calc ‖f q‖ = ‖pmPowerDampedRamanujanWeight ε q‖ *
+            ‖d4BMRamanujanNaturalCoefficient n q‖ := norm_mul _ _
+        _ ≤ (q : ℝ) ^ (-(1 + ε)) * ∑ d ∈ n.divisors, if d ∣ q then (d : ℝ) else 0 :=
+            mul_le_mul hw hc (norm_nonneg _) (Real.rpow_nonneg hqR.le _)
+        _ = _ := by
+            rw [mul_sum]; refine sum_congr rfl fun d _ => ?_; split_ifs <;> ring
+    refine (sum_le_sum hterm).trans ?_
+    rw [sum_comm]
+    calc ∑ d ∈ n.divisors, ∑ q ∈ Ico (Q + 1) R,
+          (if d ∣ q then (d : ℝ) * (q : ℝ) ^ (-(1 + ε)) else 0)
+        = ∑ d ∈ n.divisors, (d : ℝ) * ∑ q ∈ (Ico (Q + 1) R).filter (d ∣ ·),
+            (q : ℝ) ^ (-(1 + ε)) := by
+          refine sum_congr rfl fun d _ => ?_
+          rw [mul_sum, sum_filter]
+      _ ≤ ∑ _d ∈ n.divisors, (1 + ε) / ε * (Q : ℝ) ^ (-ε) :=
+          sum_le_sum fun d hd => multiples_rpow_tail_le hε hQ (Nat.pos_of_mem_divisors hd) R
+      _ = B := by rw [sum_const, nsmul_eq_mul]; simp only [B]; ring
+  -- pass to the limit of the partial sums
+  have hlim : Tendsto (fun R => ‖(∑ q ∈ range R, f q) - ∑ q ∈ Icc 1 Q, f q‖) atTop
+      (𝓝 ‖(pmPowerDampedDivisorCoeff ε n : ℂ) - ∑ q ∈ Icc 1 Q, f q‖) :=
+    (hsum.tendsto_sum_nat.sub_const _).norm
+  have hle : ‖(pmPowerDampedDivisorCoeff ε n : ℂ) - ∑ q ∈ Icc 1 Q, f q‖ ≤ B := by
+    refine le_of_tendsto hlim ?_
+    filter_upwards [eventually_ge_atTop (Q + 1)] with R hR
+    have hsplit : (∑ q ∈ range R, f q) = f 0 + (∑ q ∈ Icc 1 Q, f q) + ∑ q ∈ Ico (Q + 1) R, f q := by
+      rw [range_eq_Ico, ← sum_Ico_consecutive f (Nat.zero_le (Q + 1)) hR,
+        sum_eq_sum_Ico_succ_bot (by omega : 0 < Q + 1)]
+      congr 2
+    rw [hsplit, hf0, zero_add, add_sub_cancel_left]
+    exact hblock R
+  have hre : sieveSeq Q (pmCofactorRealWeight ε Q) n - pmPowerDampedDivisorCoeff ε n =
+      (∑ q ∈ Icc 1 Q, f q - (pmPowerDampedDivisorCoeff ε n : ℂ)).re := by
+    rw [sieveSeq_pmCofactorRealWeight_eq ε Q hn, Complex.sub_re, Complex.ofReal_re]
+  rw [hre]
+  exact (Complex.abs_re_le_norm _).trans (by rw [norm_sub_rev]; exact hle)
+
+/-- **Uniform agreement on polynomial ranges.** For every `r` and `η > 0`, eventually in `Q`,
+`|s_Q(n) - τ_ε(n)| ≤ η` for all `1 ≤ n ≤ Q^r + 1`. -/
+theorem eventually_abs_sieveSeq_pmCofactor_sub_divisorCoeff_le {ε : ℝ} (hε : 0 < ε) (r : ℕ)
+    {η : ℝ} (hη : 0 < η) :
+    ∀ᶠ Q : ℕ in atTop, ∀ n : ℕ, 1 ≤ n → n ≤ Q ^ r + 1 →
+      |sieveSeq Q (pmCofactorRealWeight ε Q) n - pmPowerDampedDivisorCoeff ε n| ≤ η := by
+  set a : ℝ := ε / (2 * ((r : ℝ) + 1))
+  have ha : 0 < a := by positivity
+  obtain ⟨C, hC, hτ⟩ := card_divisors_le_const_mul_rpow ha
+  set K : ℝ := (1 + ε) / ε * C * (2 : ℝ) ^ a
+  have hK : 0 < K := by positivity
+  have hdecay : Tendsto (fun Q : ℕ => K * (Q : ℝ) ^ (-(ε / 2))) atTop (𝓝 0) := by
+    have := ((tendsto_rpow_neg_atTop (by positivity : (0 : ℝ) < ε / 2)).comp
+      tendsto_natCast_atTop_atTop).const_mul K
+    simpa using this
+  filter_upwards [hdecay.eventually (eventually_le_nhds hη), eventually_ge_atTop 1] with Q hQη hQ
+    n hn1 hnQ
+  have hQR : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
+  have hQ0 : (0 : ℝ) < Q := by linarith
+  refine (abs_sieveSeq_pmCofactor_sub_divisorCoeff_le hε hQ (by omega)).trans ?_
+  have hn2 : (n : ℝ) ≤ 2 * (Q : ℝ) ^ r := by
+    have : (n : ℝ) ≤ (Q : ℝ) ^ r + 1 := by exact_mod_cast hnQ
+    have : (1 : ℝ) ≤ (Q : ℝ) ^ r := one_le_pow₀ hQR
+    linarith
+  have hτn : (n.divisors.card : ℝ) ≤ C * (2 : ℝ) ^ a * (Q : ℝ) ^ ((r : ℝ) * a) := by
+    refine (hτ n hn1).trans ?_
+    have h1 : (n : ℝ) ^ a ≤ (2 * (Q : ℝ) ^ r) ^ a :=
+      Real.rpow_le_rpow (Nat.cast_nonneg n) hn2 ha.le
+    rw [Real.mul_rpow (by norm_num) (by positivity), ← Real.rpow_natCast (Q : ℝ) r,
+      ← Real.rpow_mul hQ0.le] at h1
+    nlinarith [Real.rpow_nonneg (Nat.cast_nonneg n) a]
+  have hexp : (r : ℝ) * a - ε ≤ -(ε / 2) := by
+    have : (r : ℝ) * a ≤ ε / 2 := by
+      simp only [a]
+      rw [show (r : ℝ) * (ε / (2 * ((r : ℝ) + 1))) = ε / 2 * ((r : ℝ) / ((r : ℝ) + 1)) by
+        field_simp]
+      have : (r : ℝ) / ((r : ℝ) + 1) ≤ 1 := by
+        rw [div_le_one (by positivity)]; linarith
+      nlinarith
+    linarith
+  have hpow : (Q : ℝ) ^ ((r : ℝ) * a) * (Q : ℝ) ^ (-ε) ≤ (Q : ℝ) ^ (-(ε / 2)) := by
+    rw [← Real.rpow_add hQ0]
+    exact Real.rpow_le_rpow_of_exponent_le hQR (by linarith)
+  calc (1 + ε) / ε * (n.divisors.card : ℝ) * (Q : ℝ) ^ (-ε)
+      ≤ (1 + ε) / ε * (C * (2 : ℝ) ^ a * (Q : ℝ) ^ ((r : ℝ) * a)) * (Q : ℝ) ^ (-ε) := by
+        gcongr
+    _ = K * ((Q : ℝ) ^ ((r : ℝ) * a) * (Q : ℝ) ^ (-ε)) := by simp only [K]; ring
+    _ ≤ K * (Q : ℝ) ^ (-(ε / 2)) := mul_le_mul_of_nonneg_left hpow hK.le
+    _ ≤ η := hQη
 
 end
 

@@ -74,6 +74,10 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalCom
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeFiniteScaleNegativity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalCompleteFormUniformCoercivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPrimeToeplitzSymbolRange
+import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalSourceMellinLowFrequencyExclusion
+import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalArchimedeanLogCoercivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalCompleteFormGrowingPatterns
+import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
 
 /-! Arithmetic Positivity Theory (`GaloisForLFunctions.ArithmeticPositivityTheory`):
 arithmetic source estimates, divisor-stencil Bernoulli filters, collar irrationality,
@@ -82,6 +86,8 @@ readout nullspaces, envelope-critical prime dilation transitions, nonstationary 
 low-frequency exclusion, hyperbolic pole parity decoupling, band-limited Poisson windows,
 negative definiteness, scale coupling, isotropy, finite-scale negativity, Toeplitz symbol and
 sharp spectral range of the complete critical prime form, the rational dilation law of critical
-sources, divergence and uniform coercivity of the complete critical form, the sharp affine
-collar constant, and Weil completeness of the factorial tent family for the sign and stability
-of explicit-formula spectral energies. -/
+sources, critical Mellin exclusion and logarithmic archimedean coercivity, divergence, uniform
+coercivity and growing-pattern positivity of the complete critical form, the sharp affine
+collar constant, Weil completeness of the factorial tent family, universal zero-side reflection
+defect identities, actual-zeta off-line detection by single-scale grid tent patterns, and the
+full-zero-form / single-shift gauge bridge across explicit-formula spectral energies. -/

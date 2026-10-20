@@ -162,6 +162,9 @@ them.
    positivity on compactly supported tests is thus equivalent to all zeros on the critical line,
    for every tempered configuration. Only the unimodular two-bump tests
    `κ_γ(t + v/2) + τκ_γ(t − v/2)`, `|τ| = 1`, are needed: three real parameters decide the line.
+   The same argument measures the rate: the least `Re W` over these tests at lag `v` is
+   `≥ −Ce^{Dv}` when every depth is at most `D`, and is not `O(e^{σv})` for any `σ` below the
+   depth of a zero. Negativity grows exactly at the rate of the deepest zero.
 10. **Faithfulness.** The Weil form determines the configuration: two tempered configurations
    that agree on the modulated two-bump tests have the same zeros with the same multiplicities.
    Polarization at `τ = 0, 1, i` recovers each lag structure `S_γ`. The difference is the lag
@@ -222,7 +225,9 @@ them.
     `f ⋆ f̃` is supported in `[−(v + 2w), v + 2w]`, so the lag `v` sees exactly the primes
     `n ≤ e^{v + 2w}`. Unconditional prime information reaches small lags; the square-root threshold
     marks the lag beyond which it runs out. The same holds for every primitive Dirichlet `L(s, χ)`,
-    with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms.
+    with `χ(n)Λ(n)` in place of `Λ(n)` and no pole terms. At lag `v = log X` the least value of
+    `Re P` over these tests is `≥ −C X^{Θ − 1/2}`, `Θ = sup Re ρ`, and not `O(X^σ)` for `σ < Θ − ½`:
+    RH is the absence of any power growth, the square-root threshold itself.
 
 ---
 

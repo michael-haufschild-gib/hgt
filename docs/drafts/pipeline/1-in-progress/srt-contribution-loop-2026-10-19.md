@@ -321,3 +321,13 @@ queue item needs otherwise. Check `ls SquareRootThreshold/` before naming a modu
 - `temperedConfig_LZeros` (primitive χ mod q > 1; from `ThmE.localCountChi` + `WeilEF.zero_sum_inv_sq_gen`), `LZeros_W_eq_literatureRHSchi` (from unconditional `ThmE.EF_lit_chi_L`).
 - **`grh_iff_weil_nonneg`**, **`grh_iff_primeSide_twoBump_nonneg`**, **`grh_iff_primeSide_polarFree_twoBump_nonneg`**: GRH for L(s,χ) ⟺ zero-side Weil positivity ⟺ twisted prime-side positivity on unimodular two-bump tests (also Hodge class).
 - README mechanism 21: one sentence. Axioms: [propext, Classical.choice, Quot.sound]. Wired after PrimeSideTwoBumpCriterion.
+
+### C40 — The growth rate of an exponential sum is the abscissa of its top poles (`ExponentialGrowthRateOfExponentialSums.lean`)
+- **`eq_zero_of_norm_tsum_exp_le_exp`**: `Σ|q_t| < ∞`, `Re λ_t ≤ A`, `|Σ q_t e^{λ_t v}| ≤ K e^{σv}` on `v ≥ 0` ⇒ `q_{t₁} = 0` for every line-top, separated, unshared `t₁` with `Re λ_{t₁} > σ`. Reduced to C32 by splitting off `Re λ ≤ σ` and shifting by σ. Module now imported directly after C32; C33 imports it.
+
+### C41 — The negativity rate of two-bump tests equals the maximal depth (`NegativityRateEqualsMaximalDepth.lean`)
+- Refactors: C31 `rightZeros_minor_bounds` (two-sided bounds of `|S(v)+conj S(−v)|` by `2|A(v)| ± (2Σ|q|+2M)`, `|Re S(0) − M| ≤ 2Σ|q|`; `rightZeros_lagStructure_gt` now a 3-line corollary). C33 `exists_minor_gt_of_top` (growth version via C40: `|X(v)| > 2Re S(0) + K e^{σv}` for some v, any K, `0 ≤ σ < depth(t₀)`); `exists_minor_fails_of_top` is its σ = K = 0 corollary. C31–C39 rebuilt (0 messages each).
+- `minorDeficit Z b v := 2 Re S(0) − |S(v) + conj S(−v)|`; `re_W_unit_twoBump`, `minorDeficit_le_re_W`, `exists_unit_re_W_eq_minorDeficit` (= min of Re W over unimodular two-bump tests, attained).
+- **`minorDeficit_ge`**: all depths ≤ D ⇒ `μ(v) ≥ −C e^{Dv}`. **`exists_minorDeficit_lt`**: a zero of depth > σ ≥ 0 ⇒ ∀K ∃ height, lag with `μ(v) < −K e^{σv}`. Exact negativity rate = sup depth.
+- **`zeta_primeSide_twoBump_ge`**, **`zeta_exists_primeSide_twoBump_lt`**: prime-side version for ζ: at lag log X, min Re P ≥ −C X^{D} if all Re ρ ≤ ½ + D; not O(X^σ) for σ below any depth. RH ⟺ no power growth (square-root threshold).
+- README mechanisms 9, 21 extended. Axioms: [propext, Classical.choice, Quot.sound]. Wired after DirichletLFunctionTwoBumpCriterion.

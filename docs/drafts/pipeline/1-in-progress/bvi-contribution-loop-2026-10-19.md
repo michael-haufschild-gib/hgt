@@ -47,6 +47,10 @@
 | C22 | ParsevalForTranslatedMomentArrays | multi-character orthogonality on [0,P)^m; Σ_v (M_m(c;v)−M_m(c';v))² = P^m Σ_{Πζ=1}(A_c−A_{c'})²; sign-scaled cost Σ(ΠY)²(1−Πε)² = 4×(odd-relation energy) — BiScale frontier 'quantitative version through bounded-length relations with energy costs' | done |
 | C23 | StableRelationSpectrumFromPolynomialWindows | window averages within η at arbitrary shift-dependent phases ⇒ ‖A_c − A_{c'}‖₂ ≤ η + (e^{19/4}N)^m(Q_c^{m/2}+Q_{c'}^{m/2})/K; degree 2: Σ_qφ(q)(Y_c²−Y_{c'}²)² — stable polynomial-horizon recovery with N-independent constants (BiScale frontier) | done |
 | C24 | TupleStructureFactorsAtSquarefreeModuli | tuple variance Var_H(c) = Σ_{2≤q≤N} Y(q)² S_q(H) (Parseval); S_q(H) ≥ k²Π_{p|q}(p−c_p)/c_p for squarefree q (Montgomery); admissible H ⇒ Var_H ≥ k²Σ_{sqfree q} Y(q)²/φ(q) — extends README's prime-only S_p(H) ≥ k²/φ(p) to all squarefree moduli | done |
+| C25 | PronicEnergyTailAtTheQuadraticHorizon | Abel inequality for pronic weights + window law ⇒ |Σ_{k>H}W(k)²/(k(k+1)) − E/(H+1)| ≤ (2N²−1)E/((H+1)(H+2)); same for (L_N−m)²; coercivity E/(2(H+1)) ≤ tail ≤ 3E/(2(H+1)) for H ≥ 4N²−4 — second-order pronic tail law for the energy (README §3.6 had only first-order tails of bounded sequences) | done |
+| C26 | ValuationLawForZeroProductRelationsAndVisibilityDegree | layer law: Πζ=1, no order ÷ p^{a+1} ⇒ #(p^a-layer) ≠ 1, even for p=2; visibility ⇒ layer-admissible active order tuple; top dyadic layer invisible at all degrees; shared dyadic + private odd layers ⇒ relative sign blind through degree 5; {2p,2r} (p≠r odd primes) visibility degree exactly 6 — explains/generalizes BiScale {6,10} trap | done |
+| C27 | CompleteClassificationOfZeroProductRelations | converse of the layer law: every layer-admissible tuple of positive orders is the order tuple of primitive roots with product 1 (prime-by-prime construction + coprime gluing); zero-product relations ⟺ layer admissibility; complete visibility law: degree-m moments see εY iff some layer-admissible active m-tuple has Πε ≠ 1 | done |
+| C28 | CyclotomicLogarithmFormulaForThePronicGram | Σ_M z^M/(M(M+1)) = 1 + (1−z)log(1−z)/z on the closed disk (z ≠ 0,1; continuity from inside); R_q(M) = Σ_ζ ζ/(ζ−1)(ζ^M−1), Σ_ζ ζ/(ζ−1) = φ(q)/2, mean-centered primitive = Σ_ζ a_ζ ζ^M; G^{mc}(p,q) = φ(p)φ(q)/4 + Σ_{ζ,ξ} a_ζ a_ξ Q(ζξ) — the infinite pronic Gram is a finite sum of cyclotomic logarithms | done |
 
 ## Conjecture queue
 
@@ -399,3 +403,64 @@
   primitive roots) gives a global admissibility law for tuple statistics of every row — additive
   (non-Beurling) input visible in BVI quadratic forms.
 - **Audit:** clean; olean; 4 public theorems standard axioms; wired.
+
+### C25 — Pronic tail of the primitive energy at the quadratic horizon (DONE)
+
+- **Module:** `BezoutValuationIncidence/PronicEnergyTailAtTheQuadraticHorizon.lean`
+- **Statements:** `pronicWeight`, telescoping `sum_range_pronicWeight`; `abs_sum_range_mul_pronicWeight_le`
+  (Abel inequality: partial sums ≤ B ⇒ pronic-weighted partial sums ≤ B/((H+1)(H+2)));
+  finite and infinite tail laws `abs_pronicTail_sum_sq_weightedCenteredSawtoothSum_sub_le`,
+  `pronicTail_sq_weightedCenteredSawtoothSum` (summable, |tail − E/(H+1)| ≤ (2N²−1)E/((H+1)(H+2)));
+  `pronicTail_sq_weightedCenteredSawtoothSum_bounds` (H ≥ 4N²−4 ⇒ E/(2(H+1)) ≤ tail ≤ 3E/(2(H+1)));
+  `pronicTail_sq_sievePrefixDiscrepancy` (same law for the period-mean-centered prefix discrepancy).
+- **Why significant:** README §3.6 controls finite horizons only to first order (bounded sequences have
+  pronic remainder ≤ B/(H+1)). The phase-uniform quadratic window law (C10/C14) upgrades this to an exact
+  second-order law for the pronic *energy*: beyond the quadratic horizon the pronic energy of any row is
+  E/(H+1) with relative error 2N²/H, and the pronic energy is coercive for E with constant ~N⁻².
+- **Audit:** clean; olean; 4 public theorems standard axioms; wired.
+
+### C26 — Valuation law for zero-product relations and the visibility degree (DONE)
+
+- **Module:** `BezoutValuationIncidence/ValuationLawForZeroProductRelationsAndVisibilityDegree.lean`
+- **Statements:** `layerCount`; `layer_law` (roots of unity with product 1, no order divisible by p^{a+1}:
+  the p^a-layer count ≠ 1, and even when p = 2; proof by the power p^{a−1}·Π ordCompl);
+  `exists_layer_admissible_of_translatedMoment_ne` (visibility ⇒ an active order m-tuple with Πε ≠ 1 obeying
+  the layer law at all primes); `translatedMoment_topDyadicFlip_eq` (top dyadic layer sign flip invisible
+  at every degree); `translatedMoment_relativeFlip_eq_of_le_five` (shared top dyadic layer + private odd
+  prime layers ⇒ relative sign blind through degree 5); `exists_translatedMoment_six_ne_relativeFlip`;
+  `relativeSign_visibility_degree_six` ({2p,2r}, p ≠ r odd primes: exact visibility degree 6).
+- **Why significant:** README trap "on {6,10} every moment of degree ≤ 5 is blind to the relative sign"
+  and BiScale `evenPair_through_five_flip` were case computations (CRT); the layer law explains them by
+  valuations and gives the exact visibility degree for the infinite family {2p,2r} plus the general
+  blindness criterion — the quantitative "bounded-length relations" item of the BiScale frontier.
+- **Audit:** clean; olean; 5 public theorems standard axioms; wired.
+
+### C27 — Complete classification of zero-product relations and of sign visibility (DONE)
+
+- **Module:** `BezoutValuationIncidence/CompleteClassificationOfZeroProductRelations.lean`
+- **Statements:** `IsLayerAdmissible`; `exists_primePower_relation` (one prime: top exponent attained ≠ once,
+  even times if p = 2 ⇒ primitive p^{e_i}-th roots with product 1; ω = exp(2πi/p^A), η_i = ω^{p^{A−e_i}w_i},
+  closing residue prime to p since the top layer contributes n−1 or n mod p); `isPrimitiveRoot_prod_primePowers`
+  (coprime prime-power orders multiply); `exists_zeroProduct_of_isLayerAdmissible`;
+  `exists_zeroProduct_iff_isLayerAdmissible` (classification); `exists_translatedMoment_ne_iff` (complete
+  visibility law at every single degree m).
+- **Why significant:** with C26 this decides exactly, degree by degree, which sign patterns translated moments
+  see — a statement about valuations alone. BiScale had the qualitative fibre (degrees 5 and 6 jointly, companion)
+  and case computations; the per-degree law is new.
+- **Audit:** clean; olean; 4 public theorems standard axioms; wired.
+
+### C28 — Cyclotomic-logarithm formula for the pronic Gram (DONE)
+
+- **Module:** `BezoutValuationIncidence/CyclotomicLogarithmFormulaForThePronicGram.lean`
+- **Statements:** `pronicTerm`, `cyclotomicLogKernel` Q(z) = (1−z)log(1−z)/z (Q(1)=0);
+  `hasSum_pronicTerm_of_norm_lt`, `hasSum_pronicTerm` (closed disk, by uniform convergence + radial limit),
+  `hasSum_pronicTerm_of_norm_eq_one`; `d4BMRamanujanNaturalCoefficient_eq_sum_primitiveRoots`,
+  `pmRamanujanPrimitive_eq_spectral` (R_q(M) = Σ_ζ ζ/(ζ−1)(ζ^M − 1)); `sum_primitiveRoots_div_sub_one`
+  (inversion pairing a_ζ + a_{ζ⁻¹} = 1 ⇒ Σ = φ/2); `pmRamanujanMeanCenteredPrimitive_eq_spectral`
+  (mean-centered primitive is the pure sum Σ a_ζ ζ^M); **`pmRamanujanMeanCenteredGram_eq_cyclotomicLog`**:
+  G^{mc}(p,q) = φ(p)φ(q)/4 + Σ_{ζ prim p, ξ prim q} a_ζ a_ξ Q(ζξ).
+- **Why significant:** every entry of the pronic Gram (README §2.7/§3.6; uncentered and energy-centered via the
+  corpus rank-one bridges) becomes a finite sum of logarithms of cyclotomic numbers 1 − η, η = ζξ of order
+  dividing lcm(p,q) (log|2 sin πx| and sawtooth values) — a Vasyunin-type evaluation, replacing the infinite
+  pronic series; connects the Gram to cyclotomic units.
+- **Audit:** clean; olean; 5 public theorems standard axioms; wired.

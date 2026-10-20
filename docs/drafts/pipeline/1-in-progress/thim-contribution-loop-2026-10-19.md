@@ -249,3 +249,38 @@
   half-observed mixed chains the gap creates — a continuous position law from `1/π²` (half depth,
   free) to `4/π²` (edges; the selected trace is the case α = 0). Matching quarter-wave packets attain
   it on each side. Standard axioms (11 audited); wired.
+- **C14 · The actual PM receiver row has a global defect sign** — `PMCofactorRowRamanujanTruncation`,
+  `PMCofactorRowGlobalDefectSign`. The cofactor row `c_Q` lives on `[1,Q]`
+  (`pmCofactorRealWeight_eq_zero_of_gt`), so its horizon-`Q` response is its complete divisor sum
+  at every integer: `sieveSeq_pmCofactorRealWeight_eq` (`s_Q(n) = Re Σ_{q≤Q} w(q)c_q(n)`).
+  `norm_ramanujan_le_common_divisor_mass` (`|c_q(n)| ≤ Σ_{d|(n,q)} d`), `multiples_rpow_tail_le`,
+  `abs_sieveSeq_pmCofactor_sub_divisorCoeff_le`: `|s_Q(n) − τ_ε(n)| ≤ (1+ε)/ε·τ(n)·Q^{−ε}` for all
+  `n ≥ 1`; `eventually_abs_sieveSeq_pmCofactor_sub_divisorCoeff_le` (uniform `≤ η` on `n ≤ Q^r+1`).
+  `eventually_pmCofactor_defect_nonpos_polynomial`: all `M ≤ Q^r` via just the first jump
+  `τ_ε(1) − τ_ε(2) = 2^{−ε}` and the global unit envelope `0 ≤ τ_ε ≤ 1`;
+  `pmCofactor_primeTail_mode_ge` (terminal mode `≥ ρ_ε²/(4Q^{2k+1})`, Euler form of `w(p)`);
+  headline `eventually_pmCofactor_renormalizedDefect_nonpos_all`: for every `ε > 0`, eventually in
+  `Q`, `D̃_Q(M; c_Q) ≤ 0` for every prefix `M`.
+  New insight: README frontier lists only certified checkpoints for the cofactor row. The row is
+  built to have the Selberg coordinates of `τ_ε`, so far beyond its horizon it *observes the complete
+  damped divisor function* (error `τ(n)Q^{−ε} = Q^{−ε+o(1)}` on polynomial ranges); `τ_ε` never exceeds
+  its initial value, so the trans-horizon envelope problem (ratio five, ladders, C9) does not arise for
+  the receiver's actual row — its sign is controlled by one jump. Standard axioms (10 audited); wired
+  (rebuilt the missing olean of `CofactorSquarefreeFermiSamplingAndPronicObservability`).
+- **C15 · Bézout decorrelation of the Möbius observer** — `MoebiusBezoutDecorrelation`.
+  `abs_coprimeHarmonicMoebius_one_le`, `abs_coprimeHarmonicMoebius_prod_le` (each prime of a
+  squarefree modulus at most doubles `m_f`, via `m_{fp}(n) = m_f(n) + m_{fp}(n/p)/p` and strong
+  induction along `n ↦ n/p`), `abs_coprimeHarmonicMoebius_le_card_divisors` (`|m_f(n)| ≤ τ(f)`),
+  `selbergMultiplesCoord_moebiusReal` (`Y_N(f) = μ(f)/f · m_f(N/f)`),
+  `bezoutCoprimeQuadraticForm_moebius_eq` (`Q_Bez(N;μ) = Σ_{f≤N} μ(f)/f²·m_f(N/f)²`); headline
+  `tendsto_bezoutCoprimeQuadraticForm_moebius` (`Q_Bez(N;μ) → 0`, dominated convergence with
+  `C² f^{−3/2}` and C6's `tendsto_coprimeHarmonicMoebius_prod`);
+  `tendsto_sieveSuccessorReserve_sub_selberg_moebius` (`R_N(μ) − Q_Sel(N;μ) → 0`);
+  `eventually_abs_period_correlation_moebius_le` (every full period of the Möbius response has
+  unit-shift correlation `≤ ηL`, eventually in the horizon).
+  New insight: the Bézout form is the period lag-one correlation; for the Möbius observer it is
+  diagonal with the *summable* weights `μ(f)/f²` against coprime harmonic sums that are both
+  τ-bounded and null, so successive Möbius observations decorrelate completely over a period, and the
+  dissipation rate of the Möbius defect becomes the full period mean square of its response.
+  Open: positivity of `liminf Q_Sel(N;μ)` (squarefree-weighted `φ(f)/f²` mass on `(N/2,N]`).
+  Standard axioms (4 audited); wired.

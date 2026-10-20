@@ -263,5 +263,26 @@ Rule from now on: run a corpus search against the Weil-form lanes before claimin
   source → `1 − R(a) < −1` (`tendsto_foldedDefect_shiftedGroundState_div_source`). New infrastructure:
   `|Φ'(u)| ≤ Ce^{−2|u|}`, `HasDerivAt Φ`, decay of `m_a, m_a'`. Insight: the collar reads the profile
   through `e^{r/2} = 2sinh(r/2) + e^{−r/2}` — "twice the source" is the sinh part, the exact excess is
-  the moment at the OTHER pole (`s = 0`, weight `e^{−r/2}`); the README's `a → 0` value
-  `1 + 8Φ(0) + 4σ` is the same formula's limit (not formalised here). Standard axioms.
+  the moment at the OTHER pole (`s = 0`, weight `e^{−r/2}`). Small-shift end also proved:
+  `R(a) → 1 + 8Φ(0) + 4σ` as `a → 0⁺` (`tendsto_collarRatio_nhdsGT_zero`; mean-value domination of
+  `m_a/a → −2Φ'`, integration by parts `∫e^{−u/2}(−Φ') = Φ(0) − ½∫e^{−u/2}Φ`, `∫_0^∞e^{−u/2}Φ = 1/4 − σ`).
+  README 3.4's heuristic sharpening is now a theorem at both ends. Standard axioms.
+- **C18 · The cosh-moment law of folded failure** — `ThetaConvolutionCoshMomentLaw`. For every odd
+  `φ ∈ C²_c` with `M = Φ∗φ ≥ 0` on `(0,∞)`: `(𝓛_Nω_φ − ρω_φ)(x)/(Φ(x)e^{x/2}) → −2∫_0^∞M(r)cosh(r/2)dr`
+  (`tendsto_foldedDefect_convGauge_div`), negative for every nonzero profile
+  (`integral_Ioi_thetaConv_mul_cosh_pos`); collar `e^{−x/2}C_φ(x) → ∫_0^∞e^{r/2}M`
+  (`tendsto_exp_neg_half_mul_convCollarMass`). Tools: `(Φ∗φ)' = Φ∗φ'`, decay of `M, M'`, arch-collar
+  bound. Insight: folding converts the odd profile's failure into its HALF-LINE COSH MOMENT — the sinh
+  (odd-pole) parts of the exact two-sided source `B sinh(x/2)` and of the collar cancel to leading
+  order, leaving the full `e^{±r/2}` average (even-pole quantity); exact quantitative form of frontier 4
+  for the whole convolution class; reproduces `1 − R(a)` of C17 for `ω_a`. Standard axioms.
+- **C19 · The weight criterion of fold domination fails for every large shift (README frontier 1 /
+  3.9 question answered)** — `FoldExcessWeightCriterionFailure`. For every `x` with `0 < 2x < log 2`,
+  `W_a(x) > 2sinh(a/2)sinh(x/2)` for all large `a` (`exists_foldExcessWeight_gt_criterion`); hence
+  `exists_not_weightCriterion`: the criterion `W_a ≤ 2sinh(a/2)sinh(x/2)` ∀x>0 is false for all large
+  shifts. Mechanism: `m_a(t−x) − m_a(t+x) = m_x(t−a) − m_x(t+a)` — the fold excess of `ω_a` at `x` is
+  the reflected prime mass of the profile `m_x` read at `a`; by C17 it is `e^{a/2}(κ_x + o(1))`,
+  `κ_x = sinh(x/2) + ∫_0^∞e^{−r/2}m_x`, while the criterion is `e^{a/2}(sinh(x/2) + o(1))`. The criterion
+  fails by exactly the other-pole moment `∫_0^∞e^{−r/2}m_x > 0` (same excess as R(a)). No numerics;
+  README's heuristic ("slope comparison fails for large a") made rigorous and strengthened (fails at
+  every small x, not only in slope). What replaces it must absorb the other-pole moment. Standard axioms.

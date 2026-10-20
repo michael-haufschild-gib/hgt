@@ -145,14 +145,22 @@ theorem lagStructure_split_right (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : �
     tsum_subtype Z.carrier f, tsum_congr hdec, Summable.tsum_add hOn (hR.add hL),
     Summable.tsum_add hR hL, hLR, hOnEq, hRt, Set.indicator_add, Summable.tsum_add hR hR']
 
-/-- **Lag criterion for the zeros right of the line.** If
-`|Σ_t q_t e^{δ_t v} e^{iγ_t v}| > 2M_b + 3Σ_t |q_t|`, the two-point minor fails at lag `v`. -/
-theorem rightZeros_lagStructure_gt (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
-    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {v : ℝ} (hv : 0 ≤ v)
-    (hvis : 2 * onLineMassOf Z b + 3 * ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ <
-      ‖∑' t : rightZeros Z, offLineWeight b (Z.mult t) t *
-        (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖) :
-    2 * (lagStructure Z b 0).re < ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ := by
+/-- **Two-sided bounds for the minor.** With `q_t` the pair weights, `A(v) = Σ_t q_t e^{δ_t v} e^{iγ_t v}`
+over the zeros right of the line and `M_b` the on-line mass, for `v ≥ 0`:
+`2|A(v)| − 2Σ|q_t| − 2M_b ≤ |S(v) + conj S(−v)| ≤ 2|A(v)| + 2Σ|q_t| + 2M_b` and
+`|Re S(0) − M_b| ≤ 2Σ|q_t|`. -/
+theorem rightZeros_minor_bounds (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {v : ℝ} (hv : 0 ≤ v) :
+    2 * ‖∑' t : rightZeros Z, offLineWeight b (Z.mult t) t *
+        (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ -
+        2 * ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ - 2 * onLineMassOf Z b ≤
+      ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ ∧
+    ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ ≤
+      2 * ‖∑' t : rightZeros Z, offLineWeight b (Z.mult t) t *
+        (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ +
+        2 * ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ + 2 * onLineMassOf Z b ∧
+    |(lagStructure Z b 0).re - onLineMassOf Z b| ≤
+      2 * ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ := by
   have hbc : HasCompactSupport b := hasCompactSupport_of_support_subset_abs hbs
   obtain ⟨hon, hon0⟩ := onLinePart_bounds Z hZ hb hbs v
   set q : ℂ → ℂ := fun t => offLineWeight b (Z.mult t) t with hq
@@ -222,12 +230,40 @@ theorem rightZeros_lagStructure_gt (Z : ZeroConfig) (hZ : TemperedConfig Z) {b :
     refine (norm_tsum_le_tsum_norm hBs.norm).trans ?_
     rw [← tsum_mul_left]
     exact Summable.tsum_le_tsum hBb hBs.norm (hqs.mul_left 2)
-  have hvis' : 2 * onLineMassOf Z b + 3 * ∑' t : rightZeros Z, ‖q t‖ < ‖∑' t, Af t‖ := hvis
-  rw [hX, hre0]
-  have h1 := norm_sub_le (2 * ∑' t, Af t + ∑' t, Bf t) (∑' t, Bf t)
-  rw [add_sub_cancel_right, norm_mul, Complex.norm_two] at h1
-  have h2 := norm_sub_le (C + (2 * ∑' t, Af t + ∑' t, Bf t)) C
-  rw [add_sub_cancel_left] at h2
+  have hm2re : -(2 * ∑' t : rightZeros Z, ‖q t‖) ≤ ∑' t : rightZeros Z, 2 * (q t).re := by
+    rw [← tsum_mul_left, ← tsum_neg]
+    refine Summable.tsum_le_tsum (fun t => by linarith [(abs_le.mp (Complex.abs_re_le_norm (q t))).1]) ?_ ?_
+    · exact ((hqs.mul_left 2).neg)
+    · exact Summable.of_norm_bounded (hqs.mul_left 2) fun t => by
+        rw [Real.norm_eq_abs, abs_mul, abs_two]
+        nlinarith [Complex.abs_re_le_norm (q t)]
+  have hAeq : ‖∑' t : rightZeros Z, offLineWeight b (Z.mult t) t *
+      (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ = ‖∑' t, Af t‖ := rfl
+  have hQeq : ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ = ∑' t : rightZeros Z, ‖q t‖ := rfl
+  rw [hAeq, hQeq, hX, hre0]
+  refine ⟨?_, ?_, ?_⟩
+  · have h1 := norm_sub_le (2 * ∑' t, Af t + ∑' t, Bf t) (∑' t, Bf t)
+    rw [add_sub_cancel_right, norm_mul, Complex.norm_two] at h1
+    have h2 := norm_sub_le (C + (2 * ∑' t, Af t + ∑' t, Bf t)) C
+    rw [add_sub_cancel_left] at h2
+    linarith
+  · have h1 := norm_add_le C (2 * ∑' t, Af t + ∑' t, Bf t)
+    have h2 := norm_add_le (2 * ∑' t, Af t) (∑' t, Bf t)
+    rw [norm_mul, Complex.norm_two] at h2
+    linarith
+  · rw [add_sub_cancel_left, abs_le]
+    exact ⟨hm2re, h2re⟩
+
+/-- **Lag criterion for the zeros right of the line.** If
+`|Σ_t q_t e^{δ_t v} e^{iγ_t v}| > 2M_b + 3Σ_t |q_t|`, the two-point minor fails at lag `v`. -/
+theorem rightZeros_lagStructure_gt (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {v : ℝ} (hv : 0 ≤ v)
+    (hvis : 2 * onLineMassOf Z b + 3 * ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ <
+      ‖∑' t : rightZeros Z, offLineWeight b (Z.mult t) t *
+        (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖) :
+    2 * (lagStructure Z b 0).re < ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ := by
+  obtain ⟨h1, -, h3⟩ := rightZeros_minor_bounds Z hZ hb hbs hv
+  have := (abs_le.mp h3).2
   linarith
 
 /-- The Cesàro means of the powers of `w`, `|w| ≤ 1`, have norm at most `1`. -/

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SquareRootThreshold.BoundedExponentialSumsHaveNoTopPole
+import GaloisForLFunctions.SquareRootThreshold.ExponentialGrowthRateOfExponentialSums
 
 /-!
 # Every off-line zero is visible at a finite aperture
@@ -78,27 +78,55 @@ theorem exists_top_at_height (Z : ZeroConfig) {t : ℂ} (ht : t ∈ rightZeros Z
   exact ⟨t₀, ⟨ht₀.1.1, ht₀.2.1⟩, ht₀.2.2.1, ht₀.2.2.2,
     fun t' ht' him hPt' => hmax t' (hmem t' ht' him hPt')⟩
 
-/-- **A top zero breaks a two-point minor.** If `t₀` is the rightmost zero right of the line at its
-height among those with nonzero weight, and its own weight is nonzero, some two-point minor of `b`
-fails. -/
-theorem exists_minor_fails_of_top (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+/-- **A top zero forces exponentially growing minors.** Let `t₀` be the rightmost zero right of the
+line at its height among those with nonzero weight, with nonzero weight itself, and let
+`0 ≤ σ < Re t₀ − ½`. For every `K` some lag `v ≥ 0` has
+`|S(v) + conj S(−v)| > 2 Re S(0) + K e^{σv}`. -/
+theorem exists_minor_gt_of_top (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
     (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {t₀ : ℂ}
     (ht₀ : t₀ ∈ rightZeros Z) (hq₀ : offLineWeight b (Z.mult t₀) t₀ ≠ 0)
-    (htop : ∀ t ∈ rightZeros Z, t.im = t₀.im → offLineWeight b (Z.mult t) t ≠ 0 → t.re ≤ t₀.re) :
-    ∃ v : ℝ, 0 ≤ v ∧
-      2 * (lagStructure Z b 0).re < ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ := by
+    (htop : ∀ t ∈ rightZeros Z, t.im = t₀.im → offLineWeight b (Z.mult t) t ≠ 0 → t.re ≤ t₀.re)
+    {σ : ℝ} (hσ0 : 0 ≤ σ) (hσ : σ < t₀.re - 1 / 2) (K : ℝ) :
+    ∃ v : ℝ, 0 ≤ v ∧ 2 * (lagStructure Z b 0).re + K * Real.exp (σ * v) <
+      ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ := by
   classical
   have hbc : HasCompactSupport b := hasCompactSupport_of_support_subset_abs hbs
   by_contra hcon
   push Not at hcon
   set q : ℂ → ℂ := fun t => offLineWeight b (Z.mult t) t with hq
-  set K := 2 * onLineMassOf Z b + 3 * ∑' t : rightZeros Z, ‖q t‖ with hK
+  set M := onLineMassOf Z b with hM
+  have hM0 : 0 ≤ M := tsum_nonneg fun ρ => by split_ifs <;> positivity
+  set Q := ∑' t : rightZeros Z, ‖q t‖ with hQ
+  have hQ0 : 0 ≤ Q := tsum_nonneg fun _ => norm_nonneg _
+  set K' := 2 * M + 3 * Q + |K| with hK'def
   have hbound : ∀ v : ℝ, 0 ≤ v → ‖∑' t : rightZeros Z, q t *
-      (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ ≤ K := by
+      (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ ≤
+        K' * Real.exp (σ * v) := by
     intro v hv
-    by_contra hlt
-    push Not at hlt
-    exact absurd (rightZeros_lagStructure_gt Z hZ hb hbs hv hlt) (not_lt.mpr (hcon v hv))
+    obtain ⟨h1, -, h3⟩ := rightZeros_minor_bounds Z hZ hb hbs hv
+    have h0 := (abs_le.mp h3).2
+    have hc := hcon v hv
+    have he : 1 ≤ Real.exp (σ * v) := Real.one_le_exp (mul_nonneg hσ0 hv)
+    have hK : K * Real.exp (σ * v) ≤ |K| * Real.exp (σ * v) :=
+      mul_le_mul_of_nonneg_right (le_abs_self K) (Real.exp_pos _).le
+    have hA : ‖∑' t : rightZeros Z, q t *
+        (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ ≤
+          2 * M + 3 * Q + |K| * Real.exp (σ * v) := by
+      have hQe : ∑' t : rightZeros Z, ‖offLineWeight b (Z.mult t) t‖ = Q := rfl
+      have hMe : onLineMassOf Z b = M := rfl
+      have hAe : ‖∑' t : rightZeros Z, offLineWeight b (Z.mult t) t *
+          (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ =
+          ‖∑' t : rightZeros Z, q t *
+            (Real.exp (((t : ℂ).re - 1 / 2) * v) : ℂ) * cexp (I * (t : ℂ).im * v)‖ := rfl
+      rw [hQe, hMe, hAe] at h1
+      rw [hQe, hMe] at h0
+      have hKe : 0 ≤ |K| * Real.exp (σ * v) := by positivity
+      linarith
+    calc _ ≤ 2 * M + 3 * Q + |K| * Real.exp (σ * v) := hA
+      _ ≤ (2 * M + 3 * Q) * Real.exp (σ * v) + |K| * Real.exp (σ * v) := by
+          have : 0 ≤ 2 * M + 3 * Q := by positivity
+          nlinarith
+      _ = K' * Real.exp (σ * v) := by rw [hK'def]; ring
   have hsum0 : Summable fun t : rightZeros Z => lagTerm Z b 0 t := by
     have hF : Summable (Z.carrier.indicator (lagTerm Z b 0)) :=
       summable_subtype_iff_indicator.mp (summable_lagStructure Z hZ hb hbs 0)
@@ -113,17 +141,15 @@ theorem exists_minor_fails_of_top (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : 
   haveI : Countable (rightZeros Z) := ((carrier_countable Z).mono fun z hz => hz.1).to_subtype
   set S : Set (rightZeros Z) := {t | q t ≠ 0} with hS
   set lam : S → ℂ := fun t => (((t.1 : ℂ).re - 1 / 2 : ℝ) : ℂ) + I * ((t.1 : ℂ).im : ℂ) with hlamdef
-  have hlam : ∀ t : S, 0 < (lam t).re ∧ (lam t).re ≤ 1 / 2 := fun t => by
-    have h1 := t.1.2.2
-    have h2 := (Z.strip _ t.1.2.1).2
-    simp only [hlamdef, Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-      Complex.I_im, Complex.ofReal_im, zero_mul, one_mul, sub_zero, add_zero]
-    constructor <;> linarith
   have hlre : ∀ t : S, (lam t).re = (t.1 : ℂ).re - 1 / 2 := fun t => by simp [hlamdef]
   have hlim : ∀ t : S, (lam t).im = (t.1 : ℂ).im := fun t => by simp [hlamdef]
+  have hlamA : ∀ t : S, (lam t).re ≤ 1 / 2 := fun t => by
+    rw [hlre]
+    linarith [(Z.strip _ t.1.2.1).2]
   set t₁ : S := ⟨⟨t₀, ht₀⟩, hq₀⟩ with ht₁
   obtain ⟨η, hη, hsepZ⟩ := exists_sep_height Z t₀.im
-  have hK' : ∀ v : ℝ, 0 ≤ v → ‖∑' t : S, q t * cexp (lam t * v)‖ ≤ K := by
+  have hK'' : ∀ v : ℝ, 0 ≤ v →
+      ‖∑' t : S, q t * cexp (lam t * v)‖ ≤ K' * Real.exp (σ * v) := by
     intro v hv
     have hsupp : Function.support (fun t : rightZeros Z => q t * cexp
         (((((t : ℂ).re - 1 / 2 : ℝ) : ℂ) + I * ((t : ℂ).im : ℂ)) * v)) ⊆ S := fun t ht h0 =>
@@ -132,8 +158,8 @@ theorem exists_minor_fails_of_top (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : 
     refine le_of_eq_of_le (congrArg norm (tsum_congr fun t => ?_)) (hbound v hv)
     rw [add_mul, Complex.exp_add, ← Complex.ofReal_mul, ← Complex.ofReal_exp]
     ring_nf
-  have hq0 := eq_zero_of_norm_tsum_exp_le (lam := lam) (q := fun t : S => q t)
-    ((hqs.comp_injective Subtype.val_injective)) hlam t₁
+  have hq0 := eq_zero_of_norm_tsum_exp_le_exp (lam := lam) (q := fun t : S => q t)
+    ((hqs.comp_injective Subtype.val_injective)) hlamA t₁ (by rw [hlre]; exact hσ)
     (fun t him => by
       rw [hlre, hlre]
       rw [hlim, hlim] at him
@@ -147,8 +173,21 @@ theorem exists_minor_fails_of_top (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : 
       exact Subtype.ext (Subtype.ext (Complex.ext (by linarith) him)))
     hη (fun t hlt => by
       rw [hlim, hlim] at hlt ⊢
-      exact hsepZ _ t.1.2.1 hlt) hK'
+      exact hsepZ _ t.1.2.1 hlt) hK''
   exact hq₀ hq0
+
+/-- **A top zero breaks a two-point minor.** If `t₀` is the rightmost zero right of the line at its
+height among those with nonzero weight, and its own weight is nonzero, some two-point minor of `b`
+fails. -/
+theorem exists_minor_fails_of_top (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {t₀ : ℂ}
+    (ht₀ : t₀ ∈ rightZeros Z) (hq₀ : offLineWeight b (Z.mult t₀) t₀ ≠ 0)
+    (htop : ∀ t ∈ rightZeros Z, t.im = t₀.im → offLineWeight b (Z.mult t) t ≠ 0 → t.re ≤ t₀.re) :
+    ∃ v : ℝ, 0 ≤ v ∧
+      2 * (lagStructure Z b 0).re < ‖lagStructure Z b v + conj (lagStructure Z b (-v))‖ := by
+  obtain ⟨v, hv, h⟩ := exists_minor_gt_of_top Z hZ hb hbs ht₀ hq₀ htop le_rfl
+    (by linarith [ht₀.2]) 0
+  exact ⟨v, hv, by simpa using h⟩
 
 theorem contDiff_modScaledBump_two (w γ : ℝ) : ContDiff ℝ 2 (modScaledBump w γ) :=
   (contDiff_modScaledBump w γ).of_le (by norm_num)
