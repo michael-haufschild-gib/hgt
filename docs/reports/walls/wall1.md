@@ -9,8 +9,9 @@ In FZZ-P the wall appears in three concrete places.
 - The log-Möbius head error is (ψ(x) − 2ψ(x/2))/log N, and its energy in dx/x² over [1, N] tends to zero only if ψ(x) − x has mean-square size x^{1/2}. By Landau's argument, energy O(X^{2κ}) already gives a zero-free half-plane Re s > 1/2 + κ.
 - The superposition Ψ_ρ = −∫₁^∞ b^{ρ−1} φ_b db converges in L² exactly when Re ρ < 1/2, because ‖φ_b‖² = log 2/b. The Fubini swap fails on the line Re s = 1/2, and that failure is the wall in Mellin form.
 
-The 2026-10-15 refxponent is forced.Under Poisson summation in t = e^y, a test function vanishiat the nodes log nctral content atfrequency about e^y with amplitude e^{−y/2}. That amplitudesquare-root size.  at √-cancellation, so every blind family loses a logarithmic margin against thpole weight e^{y/2on method caps atthe Nyquist density for the same reason.                   
-The practical rule in the walls catalogue: before trying a producer, name thee exponent itneeds. If the exponent is 1/2, the route is a restatement of RH, not a step tow
+The lag–frequency law explains why the exponent is forced. Under Poisson summation in t = e^y, a test function vanishing at the nodes log n near lag y must carry spectral content at frequency about e^y with amplitude e^{−y/2}. That amplitude is square-root size. Prime lattices sit exactly at √-cancellation, so every blind family loses a logarithmic margin against the pole weight e^{y/2}, and the Zeta23 proportion method caps at the Nyquist density for the same reason.
+
+The practical rule in the walls catalogue: before trying a producer, name the prime sum it needs and the exponent it needs. If the exponent is 1/2, the route is a restatement of RH, not a step toward it.
 
 ## How to get the unconditional O(log x) bound?
 
@@ -18,8 +19,8 @@ The short answer first: an unconditional O(log x) bound for the band is not a st
 
 Why the band bound is RH itself
 
-- Band ⟹ RH. If ∫_0^L Ẽ² ≤ C·L for all L, the Laplace transform of Ẽ converges absolutely on Re z > 0 (Cauchy–Schwarz against the dyadic blocks). The corpus identity criticalNormalizedChebyshevErrorLaplace_eq_logDeriv says this transform equals −(ζ'/ζ(z+½) + 1)/(z+½) on Re z > ½, so that function continues holomorphically to Re z > 0 and ζ has no zero with real part above one half. The corpus has this receiver pattern for the Weil lag function (riemannHypothesis_of_lagSquare_laplace) but not yet for Ẽ.
-- RH ⟹ band. This is Cramér's mean square via the explicit formula and the local zero count. It is also not in Lean; the corpus only has von Koch's pointwise bound, which gives O(L⁵), not O(L).
+- Band ⟹ RH. If ∫_0^L Ẽ² ≤ C·L for all L, the Laplace transform of Ẽ converges absolutely on Re z > 0 (Cauchy–Schwarz against the dyadic blocks). The corpus identity criticalNormalizedChebyshevErrorLaplace_eq_logDeriv says this transform equals −(ζ'/ζ(z+½) + 1)/(z+½) on Re z > ½, so that function continues holomorphically to Re z > 0 and ζ has no zero with real part above one half. This direction is in Lean for Ẽ itself: `riemannHypothesis_iff_meanSquare_band` in `BiScaleUncertainty/BandSpectrumZeroWidthLaw`, alongside the lag-function receiver `riemannHypothesis_of_lagSquare_laplace`.
+- RH ⟹ band. This is Cramér's mean square via the explicit formula and the local zero count: `dyadic_chebyshev_mean_square_of_riemannHypothesis` in `RHTower/CramerChebyshevMeanSquare` and `exists_meanSquare_band_of_riemannHypothesis` in `BiScaleUncertainty/BandSpectrumZeroWidthLaw`; under RH the band liminf is at least the zero energy Σ m_ρ²/|ρ|² (`cramer_liminf_law_zeroEnergy`, `BiScaleUncertainty/CramerLiminfLaw`). Von Koch's pointwise bound alone would give O(L⁵), not O(L).
 - Beurling test. Every statement in modules 1–17, and every producer bound of the parallel programme, uses only Λ ≥ 0, Chebyshev and Mertens bounds. Those hold for Beurling systems, and RHTower/BeurlingRegularIntegersOffLineZeros builds such systems with zeros at any β in (½,1), for which the same band energy is at least of order x^{2β−1}. So any derivation of the band bound must contain a step that is false for Beurling systems. That step is the whole difficulty.
 
 Where the wall sits in each coordinate of the field
@@ -31,7 +32,7 @@ Where the wall sits in each coordinate of the field
 
 Expansions that are honest, and what each buys
 
-1. Make the equivalence a theorem of the field: both directions in Lean (two modules). This ends any hope that the band is weaker than RH and gives the field its sharpest receiver.
+1. The equivalence is a theorem of the field, both directions in Lean (the two modules above). This ends any hope that the band is weaker than RH and gives the field its sharpest receiver; the prime-side form with no height parameter is the one-parameter window inequality of `SquareRootThreshold/OneParameterLagFamilyDecidesTheCriticalLine` (`zeta_onLine_iff_lag_primeWindow_nonneg`).
 2. An x-free form. With R_∞ = Ẽ + (1−t)e^{−t/2} on all of [0,∞), set M(σ) = ∫_0^∞ e^{−(2σ−1)t} R_∞². Plancherel gives M(σ) = (1/2π)∫ |−ζ'/ζ − 1/(s−1) − 1/s|²/|s|² dt on Re s = σ > 1, and a Tauberian pair gives Wall 1 ⟺ M(σ) ≤ C/(2σ−1) on (½,1]. That is a Hardy-space growth law for one meromorphic function and could feed the corpus's de Branges lane. It is still a restatement of the zero set.
 3. Möbius factorization of the atomic transform and the θ = 2 law, tying Wall 1 exactly to the mollifier terminus already audited in the corpus.
 4. The family-averaged band: unconditional and sharp for Q ≥ x^{1/4} characters, by the hybrid large sieve. This isolates Wall 1 as "the trivial character is not exceptional" with an explicit exponent. Upgrading from the family to one member is Wall 7.

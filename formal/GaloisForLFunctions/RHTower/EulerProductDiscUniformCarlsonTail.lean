@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.ThetaEulerTwoPortJetPole
 import GaloisForLFunctions.RHTower.SteinhausEulerLocalMeanSq
 import GaloisForLFunctions.RHTower.SteinhausEulerSmoothSeries
 import GaloisForLFunctions.RHTower.FiniteEulerProductUniversalityOnDiscs
+import GaloisForLFunctions.RHTower.ZetaStripBesicovitchAlmostPeriodicity
 
 /-!
 # The disc-uniform Carlson tail law for the finite Euler product
@@ -76,7 +77,7 @@ theorem lt_of_not_mem_smoothNumbers {y n : ℕ} (hn : n ≠ 0) (h : n ∉ Nat.sm
     y < n := by
   rw [Nat.mem_smoothNumbers, not_and] at h
   have h' := h hn
-  push_neg at h'
+  simp only [not_forall, not_lt, exists_prop] at h'
   obtain ⟨p, hp, hpy⟩ := h'
   have hdvd := Nat.dvd_of_mem_primeFactorsList hp
   have := Nat.le_of_dvd (Nat.pos_of_ne_zero hn) hdvd
@@ -97,6 +98,7 @@ theorem head_eq_smoothHead_add_nonSmoothHead (y M : ℕ) (s : ℂ) :
   unfold smoothHead nonSmoothHead edPoly
   rw [← sum_add_distrib]
   refine sum_congr rfl fun n _ => ?_
+  dsimp only
   split_ifs <;> ring
 
 /-- The smooth tail `E_y − Σ_{n ≤ M, smooth} n^{−s}`. -/
@@ -140,14 +142,14 @@ theorem smoothTailMass_nonneg (y M : ℕ) (σ : ℝ) : 0 ≤ smoothTailMass y M 
   tsum_nonneg fun i => Set.indicator_nonneg (fun n _ => by positivity) _
 
 /-- The smooth tail mass tends to zero with `M`. -/
-theorem tendsto_smoothTailMass (y : ℕ) {σ : ℝ} (hσ : 0 < σ) :
+theorem tendsto_smoothTailMass (y : ℕ) (σ : ℝ) :
     Tendsto (fun M => smoothTailMass y M σ) atTop (𝓝 0) := by
   have h := tendsto_sum_nat_add
     (fun n : ℕ => (Nat.smoothNumbers (y + 1)).indicator (fun n : ℕ => (n : ℝ) ^ (-σ)) n)
   exact h.comp (tendsto_add_atTop_nat 1)
 
 /-- **The smooth tail is bounded by its mass** for `Re s ≥ σ > 0`. -/
-theorem norm_smoothTail_le (y M : ℕ) {s : ℂ} {σ : ℝ} (hσ : 0 < σ) (hs : σ ≤ s.re) :
+theorem norm_eulerSmoothTail_le (y M : ℕ) {s : ℂ} {σ : ℝ} (hσ : 0 < σ) (hs : σ ≤ s.re) :
     ‖smoothTail y M s‖ ≤ smoothTailMass y M σ := by
   rw [smoothTail_eq_tsum y M (by linarith)]
   have hnorm : ∀ n : ℕ,
@@ -240,6 +242,7 @@ theorem nonSmoothHead_meanSquare_window_le (y M : ℕ) {σ₀ σ : ℝ} (h0 : 1 
         else (((n : ℕ) : ℝ) + 1) ^ (-(2 * σ)) := by
     intro n
     rw [hb]
+    dsimp only
     split_ifs with hn
     · simp
     · rw [one_mul, norm_real_rpow_sq' σ (hpos n)]
@@ -250,11 +253,11 @@ theorem nonSmoothHead_meanSquare_window_le (y M : ℕ) {σ₀ σ : ℝ} (h0 : 1 
     have hsum : Summable (fun n : ℕ => if n ≤ y then (0 : ℝ) else (n : ℝ) ^ (-2 * σ₀)) :=
       Summable.of_nonneg_of_le (fun n => by split_ifs <;> positivity)
         (fun n => by split_ifs <;> simp [Real.rpow_nonneg]) hs
-    have hterm : ∀ n : Fin M, ‖b n‖ ^ 2
-        ≤ (fun m : ℕ => if m ≤ y then (0 : ℝ) else (m : ℝ) ^ (-2 * σ₀)) ((n : ℕ) + 1) := by
+    set d : ℕ → ℝ := fun m => if m ≤ y then (0 : ℝ) else (m : ℝ) ^ (-2 * σ₀) with hd
+    have hterm : ∀ n : Fin M, ‖b n‖ ^ 2 ≤ d ((n : ℕ) + 1) := by
       intro n
-      rw [hb_sq]
-      simp only
+      rw [hb_sq, hd]
+      dsimp only
       split_ifs with h1 h2 h2
       · exact le_rfl
       · positivity
@@ -263,18 +266,18 @@ theorem nonSmoothHead_meanSquare_window_le (y M : ℕ) {σ₀ σ : ℝ} (h0 : 1 
         omega
       · push_cast
         exact Real.rpow_le_rpow_of_exponent_le (hone n) (by linarith)
-    calc ∑ n : Fin M, ‖b n‖ ^ 2
-        ≤ ∑ n : Fin M, (fun m : ℕ => if m ≤ y then (0 : ℝ) else (m : ℝ) ^ (-2 * σ₀)) ((n : ℕ) + 1) :=
-          sum_le_sum fun n _ => hterm n
-      _ = ∑ n ∈ range M, (fun m : ℕ => if m ≤ y then (0 : ℝ) else (m : ℝ) ^ (-2 * σ₀)) (n + 1) :=
-          Fin.sum_univ_eq_sum_range _ M
-      _ ≤ ∑' n : ℕ, (fun m : ℕ => if m ≤ y then (0 : ℝ) else (m : ℝ) ^ (-2 * σ₀)) (n + 1) :=
-          ((summable_nat_add_iff 1).mpr hsum).sum_le_tsum _
-            (fun n _ => by simp only; split_ifs <;> positivity)
+    have hd0 : ∀ m, 0 ≤ d m := fun m => by
+      rw [hd]
+      dsimp only
+      split_ifs <;> positivity
+    calc ∑ n : Fin M, ‖b n‖ ^ 2 ≤ ∑ n : Fin M, d ((n : ℕ) + 1) := sum_le_sum fun n _ => hterm n
+      _ = ∑ n ∈ range M, d (n + 1) := Fin.sum_univ_eq_sum_range (fun m => d (m + 1)) M
+      _ ≤ ∑' n : ℕ, d (n + 1) :=
+          ((summable_nat_add_iff 1).mpr hsum).sum_le_tsum _ (fun n _ => hd0 _)
       _ = zetaCoefficientTailMass y σ₀ := by
           unfold zetaCoefficientTailMass
           rw [hsum.tsum_eq_zero_add]
-          simp
+          simp [hd]
   -- off-diagonal: a constant depending on `M` only
   have hoff : 208 * ∑ n : Fin M, (((n : ℕ) : ℝ) + 1) * ‖b n‖ ^ 2 ≤ nonSmoothOffDiagonal M σ₀ := by
     unfold nonSmoothOffDiagonal
@@ -285,10 +288,11 @@ theorem nonSmoothHead_meanSquare_window_le (y M : ℕ) {σ₀ σ : ℝ} (h0 : 1 
     split_ifs
     · rw [mul_zero]
       positivity
-    · rw [← Real.rpow_one (((n : ℕ) : ℝ) + 1)]
-      nth_rewrite 2 [Real.rpow_one]
-      rw [← Real.rpow_add (hpos n)]
-      exact Real.rpow_le_rpow_of_exponent_le (hone n) (by linarith)
+    · calc (((n : ℕ) : ℝ) + 1) * (((n : ℕ) : ℝ) + 1) ^ (-(2 * σ))
+          = (((n : ℕ) : ℝ) + 1) ^ (1 + -(2 * σ)) := by
+            rw [Real.rpow_add (hpos n), Real.rpow_one]
+        _ ≤ (((n : ℕ) : ℝ) + 1) ^ (1 - 2 * σ₀) :=
+            Real.rpow_le_rpow_of_exponent_le (hone n) (by linarith)
   have hT' : 0 ≤ T₂ - T₁ := by linarith
   calc (∫ t in T₁..T₂, ‖Sieve.dirPoly M b (-t)‖ ^ 2)
       ≤ (T₂ - T₁) * ∑ n : Fin M, ‖b n‖ ^ 2 + 208 * ∑ n : Fin M, (((n : ℕ) : ℝ) + 1) * ‖b n‖ ^ 2 := by
@@ -313,7 +317,7 @@ theorem eulerLineTail_decomposition (y M : ℕ) (σ t : ℝ) :
 theorem continuousOn_eulerHead (y : ℕ) :
     ContinuousOn (eulerHead y) {s : ℂ | 0 < s.re} := by
   unfold eulerHead
-  refine continuousOn_finset_prod _ fun n hn => ?_
+  refine continuousOn_finsetProd _ fun n hn => ?_
   have hn2 : 2 ≤ n := (mem_filter.mp hn).2.two_le
   have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
   refine ContinuousOn.inv₀ ?_ fun s hs => ?_
@@ -323,12 +327,16 @@ theorem continuousOn_eulerHead (y : ℕ) :
 
 theorem differentiableOn_eulerHead (y : ℕ) :
     DifferentiableOn ℂ (eulerHead y) {s : ℂ | 0 < s.re} := by
-  unfold eulerHead
+  have hfun : eulerHead y = ∏ n ∈ (range (y + 1)).filter Nat.Prime,
+      fun s : ℂ => (1 - (n : ℂ) ^ (-s))⁻¹ := by
+    funext s
+    rw [eulerHead, Finset.prod_apply]
+  rw [hfun]
   refine DifferentiableOn.finsetProd fun n hn => ?_
   have hn2 : 2 ≤ n := (mem_filter.mp hn).2.two_le
   have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
   refine DifferentiableOn.inv ?_ fun s hs => ?_
-  · exact (differentiableOn_const _).sub (differentiableOn_neg.const_cpow (Or.inl hn0))
+  · exact (differentiableOn_const _).sub (differentiableOn_id.neg.const_cpow (Or.inl hn0))
   · have := one_sub_phase_cpow_ne_zero_nat (ω := 1) (by simp) hn2 (hs : 0 < s.re) le_rfl
     simpa using this
 
@@ -343,9 +351,9 @@ theorem continuous_eulerLineTail (y : ℕ) {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ
     Continuous (eulerLineTail y σ) := by
   unfold eulerLineTail
   refine (continuous_riemannZeta_vertical_line hσ1).sub ?_
-  refine (continuousOn_eulerHead y).comp_continuous
-    (continuous_const.add (Complex.continuous_ofReal.mul continuous_const)) fun t => ?_
-  simp [hσ0]
+  exact (continuousOn_eulerHead y).comp_continuous
+    (continuous_const.add (Complex.continuous_ofReal.mul continuous_const)) fun t => by
+      simp [hσ0]
 
 /-- **Uniform window mean square of the Euler tail.**  For `y ≤ M` and `[σ₀, σ₁] ⊂ (1/2, 1)`, the
 window mean square of `ζ − E_y` on `[V/4, 2V]` is eventually at most
@@ -388,7 +396,7 @@ theorem eventually_uniform_window_eulerLineTail_meanSquare_le (y M : ℕ) (hyM :
     intro t
     rw [eulerLineTail_decomposition y M]
     have h3 : ‖T t + P t - R t‖ ≤ ‖T t‖ + ‖P t‖ + ‖R t‖ :=
-      (norm_sub_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+      (norm_sub_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
     have h0' : 0 ≤ ‖T t + P t - R t‖ := norm_nonneg _
     nlinarith [sq_nonneg (‖T t‖ - ‖P t‖), sq_nonneg (‖T t‖ - ‖R t‖), sq_nonneg (‖P t‖ - ‖R t‖),
       norm_nonneg (T t), norm_nonneg (P t), norm_nonneg (R t)]
@@ -417,7 +425,7 @@ theorem eventually_uniform_window_eulerLineTail_meanSquare_le (y M : ℕ) (hyM :
       ≤ 7 * V / 4 * (zetaCoefficientTailMass y σ₀ + η / 3) := by
     refine (nonSmoothHead_meanSquare_window_le y M h0 hσ.1 hVle).trans ?_
     have hoff : nonSmoothOffDiagonal M σ₀ ≤ 7 * V / 4 * (η / 3) := by
-      rw [ge_iff_le, div_le_iff₀ (by positivity)] at hVoff
+      rw [div_le_iff₀ (by positivity)] at hVoff
       linarith
     have : 2 * V - V / 4 = 7 * V / 4 := by ring
     rw [this]
@@ -426,7 +434,7 @@ theorem eventually_uniform_window_eulerLineTail_meanSquare_le (y M : ℕ) (hyM :
   have hR : (∫ t in V / 4..2 * V, ‖R t‖ ^ 2) ≤ 7 * V / 4 * smoothTailMass y M σ₀ ^ 2 := by
     have hbound : ∀ t ∈ Icc (V / 4) (2 * V), ‖R t‖ ^ 2 ≤ smoothTailMass y M σ₀ ^ 2 := by
       intro t _
-      have h := norm_smoothTail_le y M (s := (σ : ℂ) + (t : ℂ) * I) hσ₀0 (by simp [hσ.1])
+      have h := norm_eulerSmoothTail_le y M (s := (σ : ℂ) + (t : ℂ) * I) hσ₀0 (by simp [hσ.1])
       exact pow_le_pow_left₀ (norm_nonneg _) h 2
     calc (∫ t in V / 4..2 * V, ‖R t‖ ^ 2)
         ≤ ∫ _t in V / 4..2 * V, smoothTailMass y M σ₀ ^ 2 :=
@@ -739,7 +747,7 @@ theorem eventually_eventually_volume_eulerDiscTailBadSet_le {c : ℂ} {r : ℝ} 
   filter_upwards [(tendsto_zetaCoefficientTailMass h0).eventually (gt_mem_nhds hη0)] with y hy
   -- a cutoff `M ≥ y` with small smooth tail mass
   obtain ⟨M₀, hM₀⟩ := eventually_atTop.mp
-    ((tendsto_smoothTailMass y hσ₀pos).eventually (gt_mem_nhds (Real.sqrt_pos.mpr hη0)))
+    ((tendsto_smoothTailMass y σ₀).eventually (gt_mem_nhds (Real.sqrt_pos.mpr hη0)))
   set M : ℕ := max y M₀ with hM
   have hmass : smoothTailMass y M σ₀ ^ 2 ≤ η := by
     have h := hM₀ M (le_max_right _ _)
@@ -753,9 +761,9 @@ theorem eventually_eventually_volume_eulerDiscTailBadSet_le {c : ℂ} {r : ℝ} 
   set β : ℝ := 7 * θ / ε ^ 2 with hβ
   have hβ0 : 0 ≤ β := by positivity
   have hβle : β ≤ δ / 4 := by
-    rw [hβ, hη]
-    rw [div_le_iff₀ (by positivity)]
-    nlinarith
+    rw [hβ, div_le_iff₀ (by positivity)]
+    calc 7 * θ ≤ 7 * (16 * η) := by gcongr
+      _ = δ / 4 * ε ^ 2 := by rw [hη]; ring
   have hwin : ∀ᶠ V : ℝ in atTop,
       volume (eulerDiscTailBadSet y c r ε ∩ Icc (V / 2) V) ≤ ENNReal.ofReal (β * V) := by
     filter_upwards [eventually_uniform_window_eulerLineTail_meanSquare_le y M (le_max_left _ _)

@@ -211,7 +211,7 @@ theorem total_midpoint_inequality_iff {n : ℕ} (hn : 2 ≤ n) :
               push_cast
               have hL : (2.8284 : ℝ) < Real.sqrt 8 :=
                 (Real.lt_sqrt (by norm_num)).mpr (by norm_num)
-              have hf : 2 * ((2 : ℝ) ^ 3) ^ 2 / (((2 : ℝ) ^ 3) ^ 2 - 1) = 128 / 63 := by norm_num
+              have hf : 2 * (8 : ℝ) ^ 2 / ((8 : ℝ) ^ 2 - 1) = 128 / 63 := by norm_num
               rw [hf]
               exact sqrt_sub_one_sq_lt (by norm_num) hL (by linarith)
             · -- `n ≥ 16`
@@ -243,7 +243,8 @@ theorem total_midpoint_inequality_iff {n : ℕ} (hn : 2 ≤ n) :
               obtain rfl : k = 2 := by omega
               refine iff_of_true ?_ (by norm_num)
               push_cast
-              have h9 : Real.sqrt ((3 : ℝ) ^ 2) = 3 := Real.sqrt_sq (by norm_num)
+              have h9 : Real.sqrt 9 = 3 := by
+                rw [show (9 : ℝ) = 3 ^ 2 by norm_num]; exact Real.sqrt_sq (by norm_num)
               rw [h9]
               have hlog := log_add_one_sub_div_le_log (m := 2) (p := 3) (by norm_num) (by norm_num)
               norm_num
@@ -306,12 +307,15 @@ theorem total_midpoint_inequality_iff {n : ℕ} (hn : 2 ≤ n) :
         have c2 : (1.449 : ℝ) ^ 2 = 2.099601 := by norm_num
         linarith
       · rintro (h | h | h | h | h | h | h | h | h) <;> subst h
-        all_goals first
-          | omega
-          | exact hpp (Nat.Prime.isPrimePow (by norm_num))
-          | exact hpp ((isPrimePow_nat_iff _).mpr ⟨2, 2, Nat.prime_two, by norm_num, by norm_num⟩)
-          | exact hpp ((isPrimePow_nat_iff _).mpr ⟨2, 3, Nat.prime_two, by norm_num, by norm_num⟩)
-          | exact hpp ((isPrimePow_nat_iff _).mpr ⟨3, 2, Nat.prime_three, by norm_num, by norm_num⟩)
+        · omega
+        · omega
+        · omega
+        · omega
+        · exact hpp (Nat.Prime.isPrimePow (by norm_num : Nat.Prime 7))
+        · exact hpp ((isPrimePow_nat_iff 8).mpr ⟨2, 3, Nat.prime_two, by norm_num, by norm_num⟩)
+        · exact hpp ((isPrimePow_nat_iff 9).mpr ⟨3, 2, Nat.prime_three, by norm_num, by norm_num⟩)
+        · exact hpp (Nat.Prime.isPrimePow (by norm_num : Nat.Prime 11))
+        · exact hpp (Nat.Prime.isPrimePow (by norm_num : Nat.Prime 13))
 
 /-- **Midpoint law.** The total kernel is positive at the midpoint iff `n` is one of the nine. -/
 theorem totalAntiDiagonalKernel_midpoint_pos_iff_mem {n : ℕ} (hn : 2 ≤ n) :

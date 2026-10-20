@@ -354,3 +354,27 @@ foreground Lean process at a time (`lake env lean`; oleans only via
   ∀ b ≠ 0: Re W_Λ(g^V) > 0 — UNCONDITIONAL Weil positivity of ζ on compact tests of ARBITRARILY LONG
   support (log 2V), not via small-support (Yoshida/Bombieri regime) but via the field's
   log-coercivity vs ℓ²-uniform prime channel. Standard axioms.
+- **C22 · Cross-block decay law + positivity across lacunary blocks (README §5 "Across blocks")** —
+  modules `CriticalPrimeChannelCrossBlockDecay` and `LacunaryCriticalBlockPositivity`.
+  (1) Bilinear multi-dilation harmonic reduction `abs_sum_integral_weight_dilate_le_of_bilinear`
+  (two patterns, finite dilation family, r-dependent weights). (2) Dilation-sum lemma
+  `primeDilationSum_le`: ∑_r (Λ(r)/r)(|F_r(y−rD)|+|F_r(y+rD)|) ≤ 9B/(yD)+6√(D/y)(A+14B/D²), and
+  ≤ 5B/D² + [D<y](…) — resonant weight (2D/y)log(2y/D) ≤ 6√(D/y). (3) Cauchy–Schwarz over dilations
+  `sum_abs_mul_abs_mul_le_sqrt` with row bound 2(M'+1)β and column bound 12(A+16B)(1+log(1+6kM/M'))²
+  (Mertens partial sum `sum_vonMangoldt_div_le`). (4) Per-harmonic bounds for both dilation orders
+  (`abs_bilinear_crossBlock_down_le` / `_up_le`), harmonic mass finite (k^{-9/8}, l^{-3/2}).
+  Cross-block law `abs_sum_integral_crossBlock_down_le` / `_up_le`:
+  |∑_r (Λ(r)/r)∫φ_r B_b(v)B_c(rv)| ≤ K(A,B)·τ(m,n)‖b‖‖c‖, τ(m,n) = (1+log n)√(1/n + m√(m/n)).
+  (5) g^V: finite dilation form `criticalTruncatedPrimeEnergy_eq_sum`, block expansion
+  `criticalTruncatedPrimeEnergy_biUnion`; lacunary families `IsLacunaryBlockFamily` (M_{i+1} ≥ M_i⁸);
+  `crossBlockDecay_le_of_pow_le` (τ ≤ 50 m^{-1/16}n^{-1/16}); `abs_criticalTruncatedPrimeEnergy_le_of_lacunary`
+  (|P| ≤ (C_T+100K)∑b², ANY number of blocks). Capstones `exists_criticalTruncatedCompleteEnergy_pos_of_lacunary`
+  and `exists_compactFullWeilEnergy_pos_of_lacunary`: ∃M₀ ∀ lacunary families with M_0 ≥ M₀ (any J)
+  ∀V ≥ V₀ ∀ b ≠ 0: Re W_Λ(g^V) > 0 — patterns spanning scales M_0 … M_0^{8^{J−1}}. Standard axioms.
+  Insight: the multi-scale prime coupling is an ℓ²-sum over dilations (Cauchy–Schwarz over r),
+  costing √(D/y) per resonant partner × (number of partners in the smaller block); distinct
+  blocks decouple at rate τ(m,n) → 0 once n ≫ m³. Boundary (paper, not formalised): the
+  divisibility structure of resonances (k(n+1) ≡ j mod lr) that would give √log-uniform dense
+  windows survives only for scale ratios ≲ √scale, because λ_N = N(1+1/(4N))^{1/3} has
+  1/12 − δ_N ≈ 1/(144N) (integer and shifted branches resonate arithmetically only while
+  lr·η_{n'} ≲ 1). Dense (non-lacunary) windows beyond polynomial remain open.

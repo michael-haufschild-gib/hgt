@@ -87,6 +87,8 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalPrimeChannel
 import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalCompleteFormPolynomialWindows
 import GaloisForLFunctions.«arithmetic-positivity-theory».DoublyCollaredCriticalSourcePositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».CompactCriticalSourceWeilPositivity
+import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalPrimeChannelCrossBlockDecay
+import GaloisForLFunctions.«arithmetic-positivity-theory».LacunaryCriticalBlockPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentDepthGapClusterAndPolarGraphBridge
 
@@ -105,7 +107,8 @@ forms on high dyadic blocks, the `ℓ²`-uniform critical prime channel via the 
 jump kernel and the positive definiteness of the complete critical form on high dyadic blocks, the
 logarithmic window law of the prime channel and positive definiteness on polynomial scale windows,
 block positivity of compact doubly collared critical sources uniformly in the truncation and
-their unconditional positivity for the full Weil functional of `ζ`, the sharp affine
+their unconditional positivity for the full Weil functional of `ζ`, the cross-block decay law of
+the prime channel and positivity across lacunary block families, the sharp affine
 collar constant, Weil completeness of the factorial tent family, universal zero-side reflection
 defect identities, actual-zeta off-line detection by single-scale grid tent patterns, and the
 full-zero-form / single-shift gauge bridge across explicit-formula spectral energies. -/
