@@ -210,6 +210,17 @@ theorem sum_primeShift_le_lightCone {δ : ℝ} (hr : 2 ≤ r) (hδ0 : 0 < δ)
 
 end LightCone
 
+/-- **The light cone for `C¹` tests.** For every odd `C¹` test supported in `[−r, r]`, `r ≥ 2`,
+`0 < δ ≤ e^{−r}/(16r)`: `Σ_{band} 2Λ(n)/√n ∫ F(x) F(x + log n) dx ≤ T(r − 2δ, r)`; the Lipschitz bound
+comes from the compact support. -/
+theorem sum_primeShift_le_lightCone_of_contDiff {F : ℝ → ℝ} {r δ : ℝ} (hF : ContDiff ℝ 1 F)
+    (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x) (hsupp : ∀ x, r < |x| → F x = 0)
+    (hr : 2 ≤ r) (hδ0 : 0 < δ) (hδ : δ ≤ Real.exp (-r) / (16 * r)) :
+    ∑ n ∈ lightConeBand r δ, 2 * (vonMangoldtAtom n * ∫ x, F x * F (x + Real.log n)) ≤
+      stripBoxEnergy F (r - 2 * δ) r := by
+  obtain ⟨K, -, hK⟩ := exists_lipschitz_bound_of_compactSupport hF hFc
+  exact sum_primeShift_le_lightCone hF.continuous hFc hodd (fun a b => hK b a) hsupp hr hδ0 hδ
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 end

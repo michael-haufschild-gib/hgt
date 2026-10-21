@@ -202,6 +202,13 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Unpaid set of a level | `{a ∈ (0,s) : P_s(a) < E}` | `unpaidSet` |
 | Level of `n` | `E_n = ω(log n) + Λ(n)/√n` | `antiDiagonalLevel` |
 | Unpaid ends | `ℓ = E/sinh(s/2)`, `L = E/sinh(s/2 − min(s/4, E/sinh(s/4)))` | `unpaidInnerEnd`, `unpaidOuterEnd` |
+| Box energy of a strip | `T(p, r) = ∫_p^r ∫_p^r k(x, y)(F x − F y)²`, both orders | `stripBoxEnergy` |
+| Shell integrand | the strip integrand with the inner box `(p', ∞)²` removed | `shellIntegrand` |
+| Strip and shell constants | `λ₀ = 1.9 − η/p − 3η²`; `λ₀ − (r − p')((2 + η/2)/c + 1)` | `stripFoldConstant`, `shellFoldConstant` |
+| Prime strip charge | `2Λ(n)/√n ∫ F F(· + log n) + 2(Λ(n)/√n) t ∫_{S_n} F²` | `primeStripCharge` |
+| Light-cone band | `2r − 2δ ≤ log n < 2r` | `lightConeBand` |
+| Thin band | `2r − 1/6 ≤ log n ≤ 2r − 1/24` | `thinBand` |
+| Edge tent | `max(ε/2 − abs(x − (r − ε/2)), 0)` and its odd extension | `edgeTent`, `edgeTentOdd` |
 
 **Words.**
 * **Pair `(x, y)`:** two points of the real line; **same-side** if `xy > 0`, **crossing** if
@@ -578,6 +585,63 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     (`two_mul_primeFourShift_le_stripSurplus_sub`). The same holds for every proper prime power,
     since `Λ(p^k)/p^{k/2} ≤ log p/p ≤ 1/e`.
 
+### The shared strip surplus
+
+For an odd test on `[−r, r]` every strip `S_n = [log n − r, r]` ends at `r`, so the strips of the
+entered prime powers are nested and share their inner pairs. Mechanisms 30 and 35 pay each atom from
+the box `T(S_n) = ∫∫_{S_n × S_n} k(x, y)(F x − F y)²` (`stripBoxEnergy`); summed, they count the pairs
+of the innermost strip once per atom.
+
+36. **The shell micro-fold.** Let `S' = [p', r]` be an inner strip right of the centre of `S = [p, r]`,
+    `c = p' − m > 0`. A point `m − u` of the left half never exceeds `p'`, so of the four pairs
+    `x, L − x, y, L − y` of a quadruple only the right–right pair `(m + u, m + v)` can lie in `S' × S'`,
+    and it does exactly when `u, v > c`. Off this corner the sharp quadruple bound holds for the
+    strip integrand with the inner box removed (`shellQuadruple_ge`); on the corner the folded weight
+    is at most `(2 + η/2)/c + 1` (`sharpFoldWeight_le_corner`: `k(u, v)(u − v) ≤ ½ + (u − v)/4`,
+    `4ω(u + v) ≤ 1/c + 1`), and the corner has width `r − p'`. Hence
+    `T(S) − T(S') ≥ (λ₀ − (r − p')((2 + η/2)/c + 1)) ∫_S α²`, `λ₀ = 1.9 − η/p − 3η²`
+    (`sharpMicroFold_shell_ge`; `T(S) − T(S')` is the shell, `integral_shellIntegrand_eq`). The loss is
+    of the order of the width ratio `(r − p')/c` of the two strips.
+
+37. **Allocation without double counting.** *Union:* weights `θ_n ≥ 0`, `Σ θ_n ≤ 1`,
+    `(1 + t_n) 2Λ(n)/√n ≤ θ_n λ₀(n)` pay a family of thin strips from one box, since boxes of nested
+    strips are monotone (`stripBoxEnergy_mono`, `sum_primeStripCharge_le_union`). *Chain:* for
+    `n₀ < … < n_k`, each next strip right of the centre of the previous one, strip `j` pays from the
+    shell `T(S_{n_j}) − T(S_{n_{j+1}})` with the shell constant (`shellFoldConstant`) and the last
+    from its box; the shells are disjoint and telescope to `T(S_{n₀})`
+    (`sum_primeStripCharge_le_chain`). The summand `primeStripCharge` is the atom plus the potential
+    `2(Λ(n)/√n)t ∫_{S_n} F²` of its even part. Strips of very different widths share nothing. For
+    `½ log 25 < r ≤ ½ log 25 + 1/250` both strips of `23` and `25` are thin, but
+    `2Λ(23)/√23 + 2Λ(25)/5 > 1.95` exceeds `λ₀`, so no union allocation exists; the shell constant is
+    at least `1.4 > 2Λ(23)/√23` (`shellFoldConstant_twentyThree_twentyFive`) and `7/10` of the box of
+    `25` pays twice its atom, so both atoms are paid by `2 stripSurplus_{S_23}` with the even part of
+    `25` left as the potential `16/25` (`primeStripCharge_twentyThree_twentyFive_le`, `C¹` form
+    `…_of_contDiff`).
+
+38. **The light cone, at every scale.** The band `2r − 2δ ≤ log n < 2r` (`lightConeBand`) has at most
+    `2δe^{2r} + 1` integers (`card_lightConeBand_le`), each atom at most `2r/(e^r(1 − δ))`
+    (`vonMangoldtAtom_le_of_mem_lightConeBand`). For `r ≥ 2` and `δ ≤ e^{−r}/(16r)` its mass is below
+    `1.6` (`sum_vonMangoldtAtom_lightConeBand_le`), under the strip constant `1.89`, so every atom of
+    the band is paid by one copy of the surplus of `[r − 2δ, r]`:
+    `Σ_{band} 2Λ(n)/√n ∫ F F(· + log n) ≤ T(r − 2δ, r)` (`sum_primeShift_le_lightCone`, `C¹` form
+    `…_of_contDiff`). The band holds `≍ e^r/r` integers, `n > N − √N/(8 log N)` for `N = e^{2r}`.
+
+39. **Outside the light cone the odd parts cannot share.** The odd edge tent of width `ε`
+    (`edgeTent`, `edgeTentOdd`) lies in every strip at once. For `r ≤ L ≤ 2(r − ε)` its shift product
+    vanishes identically, so the atom of `e^L` is zero and `2∫_{L−r}^r α_L² = ∫_{L−r}^r F² ≥ ε³/32`
+    (`edgeTent_oddPart_eq`, `edgeTent_sq_integral_ge`), while all pairs of the support carry
+    `T(0, r) ≤ 3ε²r` (`stripBoxEnergy_edgeTent_le`). The thin band `2r − 1/6 ≤ log n ≤ 2r − 1/24`
+    (`thinBand`) carries `Σ Λ(n)/√n ≥ (ψ(X) − ψ(e^{−1/8}X))/√X`, `X = e^{2r − 1/24}`
+    (`psi_sub_div_le_sum_thinBand`), which by the prime number theorem of `RHTower.Sieve` outgrows every
+    linear budget (`eventually_lt_sum_thinBand`). Hence for all large `r` there is an odd test on
+    which every atom of the thin band vanishes and every odd part is paid by its own strip, yet the
+    odd parts together exceed the surplus of all pairs of `[0, r]²`
+    (`exists_edgeTent_oddPart_sharing_fails`). Mechanisms 30 and 36–38 do not globalize through the
+    odd parts: the archimedean surplus is a logarithmic energy whose capacity at the common edge is
+    `O(log(1/ε))` per width layer, the atom mass of a layer `[η, 2η]` is `≍ ηe^r`, and only the light
+    cone `η ≲ e^{−r}` fits. A global allocation must keep the even parts, which cancel the odd parts
+    exactly on the edge tent.
+
 ---
 
 ## 4. Traps
@@ -597,6 +661,9 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Expecting the pole to pay a prime atom near the axes | The polar weight vanishes at both ends of every anti-diagonal; near an axis only same-side atoms and the gauge can pay. |
 | Reading "the pole pays the atom at the midpoint" as payment of the atom | It is a pointwise comparison of weights per unit gauge at one point; the atom is a Dirac mass along the whole segment and the pole's share depends on the gauge profile along it. |
 | Confusing the five moduli with the nine | Atom alone against the pole: `{2,3,4,5,7}`. Atom plus archimedean density against the pole: `{2,3,4,5,7,8,9,11,13}`; the density adds `8`, `9`, `11`, `13`, and `6` is paid although every `n ≤ 5` is not. |
+| Summing the per-strip Harnack inequalities of mechanisms 30 and 35 | The strips `[log n − r, r]` are nested; the sum counts the inner pairs once per atom. One copy of the surplus pays a family only under an allocation (mechanism 37), and the odd parts of the thin band exceed the whole surplus for large `r` (mechanism 39). |
+| Expecting the union allocation to cover every thin family | It fails already for `{23, 25}`: `2Λ(23)/√23 + 2Λ(25)/5 > λ₀`. The shell (mechanism 36) is needed there. |
+| Reading the edge-tent obstruction as a failure of the form | On the edge tent every atom of the band is zero; what fails is the payment of the odd parts alone. The even parts cancel them. |
 
 ---
 
@@ -618,11 +685,14 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
    integration against the collar kernel `m_a(x)m_a(log n − x)`, for every shift `a`
    (`collarPolarMass_lt_collarAtomMass_of_mem_atomDominatedModuli`); which prime powers outside the
    five the pole pays in the integrated sense is open.
-2. **The bump bridge.** For an even profile built from bumps of width `w` at the points `± log a`,
-   express the prime part of `J_M` in the limit `w → 0`, normalized by `w`, as a diagonal term
-   `2 Σ_a c_a² M(log a) 𝒢_prime(M)(log a)` (the prime generator of the gauge) minus the pair term
-   `4 Σ_{a<b} c_a c_b M(log a)M(log b) netAtom(a,b)`, and identify the archimedean self-energy
-   `≍ w log(1/w)` that dominates the limit.
+2. **The bump bridge (prime part settled).** For an odd gauge with `|M(x)| ≤ Ce^{−|x|}` and the even
+   lattice profile `u_w = Σ_{a ∈ S} c_a(β((x − log a)/w) + β((x + log a)/w))`, `S ⊆ {a ≥ 2}`, the prime
+   part of `J_M(u_w)` normalized by `w` tends to
+   `∫β² (2 Σ_a c_a² M(log a) 𝒢(M)(log a) − 4 Σ_{a<b} c_a c_b M(log a)M(log b) netAtom(a,b)
+   − 2 Σ_a c_a² M(log a)² netAtom(a,a))` (`tendsto_gaugePrimeJump_latticeBumpProfile_netAtom`); the
+   last term is the crossing pair `(−log a, log a)` at the gap `log a²`. The general centre form is
+   `tendsto_gaugePrimeJump_bumpProfile`. Open: the archimedean self-energy `≍ w log(1/w)` that
+   dominates the limit, as an asymptotic.
 3. **Collar ratio (settled).** For `s ≥ 4 log 2` the collar is exactly `(0, c) ∪ (s − c, s)` with
    `P_s(c) = ω(s)`, `ℓ ≤ c ≤ 2ℓ` and `|c − ℓ − (coth(s/2)/2)ℓ²| ≤ 8ℓ³` (`collarEnd_second_order`);
    the second-order coefficient is exact, `(coth(s/2)/2)ℓ(s) = e^{−s}/(1 − e^{−s})³`
@@ -637,6 +707,19 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
    not; exhibit the pair of rows this separates.
 6. **Windows across scales.** The ratio atoms at `m ≥ 4` and the product atoms couple different
    dyadic windows; describe the coupling graph between windows and the size of its edges.
+7. **The shared surplus between the light cone and the thin band.** Mechanism 38 pays the odd parts
+   of all atoms of strip width `≤ e^{−r}/(16r)`; mechanism 39 refutes it for the band of width
+   `[1/48, 1/12]` at large `r`. (a) The logarithmic capacity: for the edge tent `T(0, r) ≤
+   (log(1/ε) + C)∫F²` (here `3ε²r`), and the maximal family of nested strips wider than `ε` that one
+   copy of the surplus can pay has total weight `O(log(1/ε))` per width layer. (b) The exact width:
+   with a Brun–Titchmarsh count the light cone widens to `δ ≍ e^{−r}`; a refutation at width
+   `C e^{−r}` needs prime powers in `(N − C√N, N)`, a lower bound in square-root intervals. (c) The
+   signed allocation: whether `Σ_{band} 2Λ(n)/√n ∫ F F(· + log n) ≤ T` holds with the even parts kept.
+   The band's charge is a Hankel form whose symbol is the Dirichlet polynomial
+   `Σ_{band} Λ(n) n^{−1/2−iξ}`; the mean part is a gain. Heuristically the fluctuation is of the
+   order of the surplus symbol `log ξ` when the zeros near height `ξ` lie on the line, and larger by
+   `e^{(2β − 1)r}` for a zero `β + iγ` off it, so the signed allocation is not expected to be
+   unconditional beyond the light cone.
 
 ### Research topics toward the shared target
 

@@ -336,6 +336,21 @@ theorem primeStripCharge_twentyThree_twentyFive_le (hr : Real.log 25 / 2 < r)
 
 end TwentyThreeTwentyFive
 
+/-- **The atoms of `23` and `25` share one strip, for `C¹` tests.** Every odd `C¹` test supported in
+`[−r, r]`, `½ log 25 < r ≤ ½ log 25 + 1/250`, satisfies the inequality of
+`primeStripCharge_twentyThree_twentyFive_le`; its Lipschitz bound comes from the compact support. -/
+theorem primeStripCharge_twentyThree_twentyFive_le_of_contDiff {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hr : Real.log 25 / 2 < r)
+    (hr' : r ≤ Real.log 25 / 2 + 1 / 250) :
+    2 * (vonMangoldtAtom 23 * ∫ x, F x * F (x + Real.log 23)) +
+        2 * (vonMangoldtAtom 25 * ∫ x, F x * F (x + Real.log 25)) +
+          16 / 25 * ∫ x in (Real.log 25 - r)..r, F x ^ 2 ≤
+      2 * stripSurplus F (Real.log 23 - r) r := by
+  obtain ⟨K, -, hK⟩ := exists_lipschitz_bound_of_compactSupport hF hFc
+  exact primeStripCharge_twentyThree_twentyFive_le hF.continuous hFc hodd (fun a b => hK b a) hsupp
+    hr hr'
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 end

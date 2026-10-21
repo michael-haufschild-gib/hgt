@@ -76,7 +76,19 @@ extra width is paid by Vinogradov's mean value theorem, i.e. by the additive str
 `exists_abs_weightCenteredPrefix_pmPowerDamped_le_vk`, `vkScale_le_vkScale`, `vkScale_div_log_le`,
 `four_ninths_mul_vkScale_le`. Clean, standard axioms, wired.
 
+### C3 — the parity pair is separated on the band (DONE, Lean)
+**Statement.** `|W_{c'}(e)| = |W_c(e)|` for every damping, and on the VK band `E_T(c_ε) ≤ E` while the
+parity twin has `E_T(c'_ε) ≥ c(log(T+1) − log 100)` with one `c > 0`.
+**Proof.** Twin drift constant `K_ε = ρ_ε/U_ε ≥ ρ_{1/4}/U_{1/4}` on `[1/4,1/2]`: `ρ_ε` increases
+(Euler product, factorwise), `U_ε` decreases (local factors `1/(p^{1+ε}−2)` decrease); then the THIM
+drift-cell bound and `log(T+1) − log a ≤ Σ_{a≤n≤T} 1/n`.
+**Meaning.** Wall 16 (no sign-blind datum decides below half damping) has its visibility witness on the
+band: the VK input reads the Möbius signs. **Lean.**
+`BezoutValuationIncidence/ParityPairSeparatedOnTheVinogradovKorobovBand.lean`:
+`parityPair_separated_on_vinogradovKorobovBand`, `parityTwin_receiver_ge`; standard axioms; wired.
+
 ## Log
 - 2026-10-21 — card created; C1 paper proof written; Lean module
   `BezoutValuationIncidence/ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean` started.
 - 2026-10-21 — C1 formalized and wired; C2 (VK band) formalized and wired.
+- 2026-10-21 — C3 (parity pair on the band) formalized and wired.

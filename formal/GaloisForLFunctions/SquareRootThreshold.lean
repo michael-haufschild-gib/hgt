@@ -117,3 +117,5 @@ import GaloisForLFunctions.SquareRootThreshold.DifferenceLagFamilyPositiveThroug
 Umbrella for the Square-Root Threshold programme: localized explicit formulas at the resolution of
 the local zero spacing. See `SquareRootThreshold/README.md`.
 -/
+import GaloisForLFunctions.SquareRootThreshold.LagRateBoundsTheDeBruijnNewmanHeatTime
+import GaloisForLFunctions.SquareRootThreshold.NearTopZerosForceNegativeGroundEnergyBeyondAnExplicitAperture

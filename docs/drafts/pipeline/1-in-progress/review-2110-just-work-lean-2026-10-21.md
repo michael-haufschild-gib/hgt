@@ -63,3 +63,9 @@ their module lands; this card does not edit their files.
   for `s ≥ 4 log 2`; `half_coth_mul_collarInnerEnd`: coefficient `= e^{−s}/(1−e^{−s})³` exactly;
   `collarEnd_ratio`: `|c/ℓ − 1 − e^{−s}/(1−e^{−s})³| ≤ 37e^{−2s}`). Axioms standard, wired, README item 3.
   Remaining in row 10: bump bridge.
+- 2026-10-21 — **row 10, bump bridge closed (prime part)**: `ArithmeticIncidencePositivity/BumpBridgeOfThePrimeJumpEnergy`
+  (`tendsto_gaugePrimeJump_bumpProfile`: centre form for any finite centre set, gauge `|M| ≤ Ce^{−|x|}`;
+  `tendsto_gaugePrimeJump_latticeBumpProfile_netAtom`: lattice `{± log a}`, odd gauge,
+  `∫β²(2Σc_a²M𝒢 − 4Σ_{a<b}c_ac_bMM·netAtom − 2Σc_a²M²·netAtom(a,a))`; the README formula lacked the
+  crossing-pair term `(−log a, log a)`). Axioms standard, wired, README item 2 updated. Follow-up (not
+  in the §2.1 row): archimedean self-energy asymptotic `≍ w log(1/w)`. **Row 10 complete.**

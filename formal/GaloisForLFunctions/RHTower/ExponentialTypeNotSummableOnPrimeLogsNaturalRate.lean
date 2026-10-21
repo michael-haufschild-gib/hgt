@@ -239,9 +239,10 @@ theorem integral_norm_mul_exp_le {Φ : ℂ → ℂ} (hΦ : Continuous Φ) {a x :
   have hc : Continuous fun t : ℝ => Φ (x + t) := hΦ.comp (continuous_const.add continuous_ofReal)
   rw [← intervalIntegral.integral_const_mul]
   refine intervalIntegral.integral_mono_on (μ := volume) (by norm_num) ?_ ?_ fun t ht => ?_
-  · exact (hc.norm.mul (Complex.continuous_exp.comp
-      (continuous_const.mul (continuous_const.add continuous_ofReal))).norm).intervalIntegrable 0 1
-  · exact (hc.norm.const_mul _).intervalIntegrable 0 1
+  · exact (hc.mul (Complex.continuous_exp.comp
+      (continuous_const.mul (continuous_const.add continuous_ofReal)))).norm.intervalIntegrable
+      (μ := volume) 0 1
+  · exact (hc.norm.const_mul _).intervalIntegrable (μ := volume) 0 1
   · rw [norm_mul, Complex.norm_exp, mul_comm]
     gcongr
     rw [show ((a : ℂ) * ((x : ℂ) + t)).re = a * (x + t) by
@@ -513,7 +514,7 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
   obtain ⟨hyX₁, hy1, hyc₁, hyαβ, hyM⟩ := hY₀ y hyY
   have hlogy : Real.log y = x := by rw [hy]; exact Real.log_exp x
   have hypow : ∀ s : ℝ, y ^ s = Real.exp (s * x) := fun s => by
-    rw [Real.rpow_def_of_pos hy0, hlogy]
+    rw [Real.rpow_def_of_pos hy0, hlogy, mul_comm]
   clear_value y
   -- the window-integral lower bound `m`
   set f : ℝ → ℝ := fun t => ‖Φ (x + t)‖ with hf
@@ -522,8 +523,8 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
   have hm0 : 0 < m := by positivity
   have hmint : m ≤ ∫ t in (0 : ℝ)..1, f t := by
     have h : Real.exp (-((ρ + δ) * x)) / Real.exp (ρ + δ) ≤ ∫ t in (0 : ℝ)..1, f t := by
-      rw [div_le_iff₀ (Real.exp_pos _), mul_comm]
-      exact hint
+      rw [div_le_iff₀ (Real.exp_pos _)]
+      linarith [hint]
     rw [← Real.exp_sub] at h
     rw [hm, hm₀, ← Real.exp_add]
     convert h using 2
@@ -608,13 +609,12 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
       simp only [mul_sub, sum_sub_distrib, sum_const, card_range, nsmul_eq_mul]
       rw [← mul_assoc, ← mul_assoc, hNh, one_mul]
     linarith
+  clear_value mk f
   -- the prime windows `(Y k, Y (k+1)]`
   set Y : ℕ → ℝ := fun k => Real.exp (x + k * h) with hY
   have hYpos : ∀ k, 0 < Y k := fun k => Real.exp_pos _
-  have hYmono : Monotone Y := fun i j hij => by
-    rw [hY]
-    simp only
-    exact Real.exp_le_exp.mpr (by gcongr)
+  have hYmono : Monotone Y := fun i j hij =>
+    Real.exp_le_exp.mpr (add_le_add le_rfl (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij) hh0.le))
   have hY0 : Y 0 = y := by simp [hY, hy]
   have hYge : ∀ k, y ≤ Y k := fun k => hY0 ▸ hYmono (Nat.zero_le k)
   have hYle : ∀ k ∈ range (N + 1), Y k ≤ Real.exp (x + 1) := fun k hk => by
@@ -623,7 +623,7 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
     have hkN : (k : ℝ) ≤ N := by exact_mod_cast Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
     refine Real.exp_le_exp.mpr ?_
     have : (k : ℝ) * h ≤ 1 := by
-      calc (k : ℝ) * h ≤ N * h := by gcongr
+      calc (k : ℝ) * h ≤ N * h := mul_le_mul_of_nonneg_right hkN hh0.le
         _ = 1 := hNh
     linarith
   have hYsucc : ∀ k, Y (k + 1) = Y k * Real.exp h := fun k => by
@@ -637,6 +637,7 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
     rw [hYsucc]
     nlinarith [Real.add_one_le_exp h, hYpos k]
   have hlogY : ∀ k, Real.log (Y k) = x + k * h := fun k => by rw [hY]; exact Real.log_exp _
+  clear_value Y
   -- the lower bound for each prime window
   have hwin : ∀ k ∈ range N,
       Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (y * h / 4)
@@ -649,7 +650,7 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
     have hkh : (k : ℝ) * h + h ≤ 1 := by
       have : ((k + 1 : ℕ) : ℝ) ≤ N := by exact_mod_cast Finset.mem_range.mp hk
       calc (k : ℝ) * h + h = ((k + 1 : ℕ) : ℝ) * h := by push_cast; ring
-        _ ≤ N * h := by gcongr
+        _ ≤ N * h := mul_le_mul_of_nonneg_right this hh0.le
         _ = 1 := hNh
     set L : ℝ := Y (k + 1) - Y k with hL
     have hyhL : y * h ≤ L :=
@@ -671,7 +672,8 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
       have hsub := norm_sub_le_of_exponentialType hΦ hC.le hρ hgrow (x := x) (u := x + k * h)
         (v := Real.log p) hx0 (le_add_of_nonneg_right (by positivity)) hlog1 (by linarith)
       rw [← hD] at hsub
-      show max 0 (f (k * h) - h * D) ≤ ‖Φ (Real.log p)‖
+      rw [hmk]
+      dsimp only
       refine max_le (norm_nonneg _) ?_
       have hval : f (k * h) = ‖Φ (((x + k * h : ℝ)) : ℂ)‖ := by
         rw [hf]

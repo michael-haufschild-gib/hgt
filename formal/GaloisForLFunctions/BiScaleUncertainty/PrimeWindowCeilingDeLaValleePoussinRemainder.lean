@@ -1,32 +1,43 @@
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingWidthLaw
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowFloorPolarAsymptotics
+import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowLiouvilleMirror
 import GaloisForLFunctions.RHTower.ChebyshevPsiErrorInputs
 
 /-!
-# The window ceiling with a de la Vallée Poussin remainder
+# The window spectrum with a de la Vallée Poussin remainder
 
-The prime-side ceiling on windows of length `L` is `c(L) = e^{L/2}(1 + o(1))`
-(`tendsto_windowCeiling_div_exp`); on the lag side the corpus's strongest unconditional envelope
-is `P_v ≥ −|φ(0)| − C e^{v/2 − √v/10}` (`zeta_lag_envelope`). This module gives the window
-spectrum the same strength. Unconditionally there are `C ≥ 0`, `κ > 0` with
+The prime-side ceiling on windows of length `L` is `c(L) = e^{L/2}(1 + o(1))` and the floor is
+`−e^{L/2}(1 + o(1))` (`tendsto_windowCeiling_div_exp`, `tendsto_windowFloor_div_exp`); on the lag
+side the corpus's strongest unconditional envelope is `P_v ≥ −|φ(0)| − C e^{v/2 − √v/10}`
+(`zeta_lag_envelope`). This module gives the window spectrum the same strength. Unconditionally
+there are `C ≥ 0`, `κ > 0` with, for all large `L`,
 
-`|x| ≤ e^{L/2} + C e^{L/2 − κ√L}`  for every window deviation `x` at every large length `L`
+* `|x| ≤ e^{L/2} + C e^{L/2 − κ√L}` for every window deviation `x` at length `L`
+  (`exists_eventually_abs_windowDeviations_le_exp_half_add_remainder`);
+* some window deviation is `≥ e^{L/2} − C e^{L/2 − κ√L}`
+  (`exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder`);
+* hence `|c(L) − e^{L/2}| ≤ C e^{L/2 − κ√L}` and `|floor(L) + e^{L/2}| ≤ C e^{L/2 − κ√L}`
+  (`exists_eventually_abs_windowCeiling_sub_exp_half_le`,
+  `exists_eventually_abs_windowFloor_add_exp_half_le`), and `c(L)/e^{L/2} − 1 ≤ C e^{−κ√L}`.
 
-(`exists_eventually_abs_windowDeviations_le_exp_half_add_remainder`); hence
-`c(L) ≤ e^{L/2} + C e^{L/2 − κ√L}`, `floor(L) ≥ −e^{L/2} − C e^{L/2 − κ√L}` and
-`c(L)/e^{L/2} − 1 ≤ C e^{−κ√L}`.
+**Mechanism, upper side.** The prime number theorem with error term,
+`|ψ(x) − x| ≤ K x e^{−c√(log x)}` (`RHTower.exists_psi_error_eventually`), enters the polar Schur
+bound of `PrimeWindowCeilingWidthLaw` through the majorant `ψ(e^y) ≤ e^y + K e^y e^{−c√y} + B`
+(`exists_psi_exp_le_dlvp`). At the point `τ` of a window of length `L` the error at distance `τ`
+costs `K e^{L/2} e^{−(L−τ)/2} e^{−c√τ}` against the polar weight `φ = e^{−τ/2} + e^{−(L−τ)/2}`.
+Near the ends (`τ < L/4`) the factor `e^{−(L−τ)/2} ≤ e^{−L/4} e^{−τ/2}` pays; in the bulk
+(`τ ≥ L/4`) the error `e^{−c√τ} ≤ e^{−c√L/2}` pays (`exp_neg_half_mul_exp_neg_sqrt_le`). The
+Schur constant is `e^{L/2}(1 + 2K(e^{−c√L/2} + e^{−L/4})) + B + (1 + L)²`
+(`abs_nodeArchEnergy_sub_weilEnergy_le_dlvp`): the polar weight loses at the midpoint only
+against power errors `x^γ` (the loss `1/4 + β/2` of the width law), not against the
+de la Vallée Poussin error.
 
-**Mechanism.** The prime number theorem with error term, `|ψ(x) − x| ≤ K x e^{−c√(log x)}`
-(`RHTower.exists_psi_error_eventually`), enters the polar Schur bound of
-`PrimeWindowCeilingWidthLaw` through the majorant `ψ(e^y) ≤ e^y + K e^y e^{−c√y} + B`
-(`exists_psi_exp_le_dlvp`). At the point `τ` of a window of length `L` the error at distance
-`τ` costs `K e^{L/2} e^{−(L−τ)/2} e^{−c√τ}` against the polar weight
-`φ = e^{−τ/2} + e^{−(L−τ)/2}`. Near the ends (`τ < L/4`) the factor
-`e^{−(L−τ)/2} ≤ e^{−L/4} e^{−τ/2}` pays; in the bulk (`τ ≥ L/4`) the error `e^{−c√τ} ≤ e^{−c√L/2}`
-pays (`exp_neg_half_mul_exp_neg_sqrt_le`). The Schur constant is therefore
-`e^{L/2}(1 + 2K(e^{−c√L/2} + e^{−L/4})) + B + (1 + L)²` (`abs_nodeArchEnergy_sub_weilEnergy_le_dlvp`):
-the polar weight loses at the midpoint only against power errors `x^γ` (the loss
-`1/4 + β/2` of the width law), not against the de la Vallée Poussin error.
+**Mechanism, lower side.** The polar test with cutoff `δ = e^{−L/2}` has prime side
+`≥ 2δ (e^T − 1 − D(T))`, `T = L − 2δ`, with the integrated deficit `D`
+(`primeSide_polarTest_ge`, `riesz_eq_deficit`), and the two-sided majorant gives
+`|D(T)| ≤ T (K e^{c²/2} e^{T} e^{−c√T} + B)` (`abs_ccmLogChebyshevDeficitPrimitive_le_dlvp`), since
+`e^{t − c√t} ≤ e^{c²/2} e^{T − c√T}` on `[0, T]` (`exp_sub_mul_sqrt_le_of_le`). The floor follows
+from the Liouville mirror `|c(L) + floor(L)| ≤ 2T(N) = O(L)`.
 
 The gap to RH is unchanged: RH is `c(L) ≤ e^{L/2} + O(L)` (`riemannHypothesis_of_windowCeiling_le`),
 and `e^{L/2 − κ√L}` is `O(e^{θL})` for no `θ < 1/2`.
@@ -293,6 +304,309 @@ theorem exists_eventually_windowCeiling_div_exp_sub_one_le :
   rw [sub_le_iff_le_add, div_le_iff₀ hE]
   rw [hsplit] at hL
   linarith
+
+/-! ### 5. The lower side: the polar test attains the pole to de la Vallée Poussin precision -/
+
+/-- **The two-sided de la Vallée Poussin majorant.** There are `K ≥ 0`, `c > 0`, `B ≥ 0` with
+`|ψ(e^y) − e^y| ≤ K e^y e^{−c√y} + B` for every `y ≥ 0`. -/
+theorem exists_abs_psi_exp_sub_le_dlvp : ∃ K c B : ℝ, 0 ≤ K ∧ 0 < c ∧ 0 ≤ B ∧ ∀ y : ℝ, 0 ≤ y →
+    |Chebyshev.psi (Real.exp y) - Real.exp y| ≤
+      K * (Real.exp y * Real.exp (-c * Real.sqrt y)) + B := by
+  obtain ⟨K, c, hc, hK, hev⟩ := RHTower.exists_psi_error_eventually
+  obtain ⟨X₀, hX₀⟩ := eventually_atTop.1 hev
+  have hlog : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
+  have hmax : 0 < max X₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  refine ⟨K, c, (Real.log 4 + 5) * max X₀ 1, hK, hc, mul_nonneg (by linarith) hmax.le,
+    fun y hy => ?_⟩
+  have hx0 : 0 < Real.exp y := Real.exp_pos y
+  have hterm : 0 ≤ K * (Real.exp y * Real.exp (-c * Real.sqrt y)) := by positivity
+  have hB : 0 ≤ (Real.log 4 + 5) * max X₀ 1 := mul_nonneg (by linarith) hmax.le
+  by_cases hge : X₀ ≤ Real.exp y
+  · have hb := hX₀ (Real.exp y) hge
+    rw [Real.log_exp] at hb
+    linarith
+  · have hlt : Real.exp y < X₀ := not_le.mp hge
+    have h1 : Chebyshev.psi (Real.exp y) ≤ (Real.log 4 + 4) * Real.exp y :=
+      Chebyshev.psi_le_const_mul_self hx0.le
+    have h0 := Chebyshev.psi_nonneg (Real.exp y)
+    have h2 : (Real.log 4 + 5) * Real.exp y ≤ (Real.log 4 + 5) * max X₀ 1 :=
+      mul_le_mul_of_nonneg_left (hlt.le.trans (le_max_left _ _)) (by linarith)
+    have h3 : Real.exp y ≤ (Real.log 4 + 5) * Real.exp y := by nlinarith
+    rw [abs_le]; constructor <;> linarith
+
+/-- `e^{t − c√t} ≤ e^{c²/2} e^{T − c√T}` for `0 ≤ t ≤ T`: `c(√T − √t) ≤ (c² + (√T − √t)²)/2` and
+`(√T − √t)² ≤ T − t`. -/
+theorem exp_sub_mul_sqrt_le_of_le {c t T : ℝ} (ht : 0 ≤ t) (htT : t ≤ T) :
+    Real.exp t * Real.exp (-c * Real.sqrt t) ≤
+      Real.exp (c ^ 2 / 2) * (Real.exp T * Real.exp (-c * Real.sqrt T)) := by
+  rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+  apply Real.exp_le_exp.mpr
+  have hT : 0 ≤ T := ht.trans htT
+  have hst : Real.sqrt t ≤ Real.sqrt T := Real.sqrt_le_sqrt htT
+  have h1 := Real.sq_sqrt ht
+  have h2 := Real.sq_sqrt hT
+  have hs0 := Real.sqrt_nonneg t
+  nlinarith [sq_nonneg (c - (Real.sqrt T - Real.sqrt t)), mul_nonneg hs0 (sub_nonneg.mpr hst)]
+
+/-- **The integrated Chebyshev deficit to de la Vallée Poussin precision.** With the two-sided
+majorant `|ψ(e^y) − e^y| ≤ K e^y e^{−c√y} + B`, `|D(T)| ≤ T (K e^{c²/2} e^{T} e^{−c√T} + B)` for
+`T ≥ 0`, where `D(T) = ∫₀^T (e^t − ψ(e^t)) dt`. -/
+theorem abs_ccmLogChebyshevDeficitPrimitive_le_dlvp {K c B : ℝ} (hK : 0 ≤ K)
+    (hψ : ∀ y : ℝ, 0 ≤ y → |Chebyshev.psi (Real.exp y) - Real.exp y| ≤
+      K * (Real.exp y * Real.exp (-c * Real.sqrt y)) + B) {T : ℝ} (hT : 0 ≤ T) :
+    |ccmLogChebyshevDeficitPrimitive T| ≤
+      T * (K * Real.exp (c ^ 2 / 2) * (Real.exp T * Real.exp (-c * Real.sqrt T)) + B) := by
+  unfold ccmLogChebyshevDeficitPrimitive
+  have hi : IntervalIntegrable (fun t : ℝ => Real.exp t - Chebyshev.psi (Real.exp t)) volume 0 T :=
+    (Real.continuous_exp.intervalIntegrable 0 T).sub
+      ((Chebyshev.psi_mono.comp Real.exp_monotone).intervalIntegrable)
+  set M := K * Real.exp (c ^ 2 / 2) * (Real.exp T * Real.exp (-c * Real.sqrt T)) + B with hM
+  calc |∫ t in (0 : ℝ)..T, Real.exp t - Chebyshev.psi (Real.exp t)|
+      ≤ ∫ t in (0 : ℝ)..T, |Real.exp t - Chebyshev.psi (Real.exp t)| :=
+        intervalIntegral.abs_integral_le_integral_abs hT
+    _ ≤ ∫ _t in (0 : ℝ)..T, M := by
+        refine intervalIntegral.integral_mono_on hT hi.abs intervalIntegrable_const
+          fun t ht => ?_
+        rw [abs_sub_comm]
+        refine (hψ t ht.1).trans ?_
+        have := mul_le_mul_of_nonneg_left (exp_sub_mul_sqrt_le_of_le ht.1 ht.2) hK
+        rw [hM]
+        linarith
+    _ = T * M := by rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul]
+
+/-- `L ≤ e^{κ√L}` for all large `L`, from `e^u ≥ u⁴/24`. -/
+theorem eventually_le_exp_mul_sqrt {κ : ℝ} (hκ : 0 < κ) :
+    ∀ᶠ L in atTop, L ≤ Real.exp (κ * Real.sqrt L) := by
+  filter_upwards [eventually_ge_atTop (24 / κ ^ 4), eventually_ge_atTop (0 : ℝ)] with L h1 hL0
+  have hu : 0 ≤ κ * Real.sqrt L := by positivity
+  have h4 := Real.pow_div_factorial_le_exp _ hu 4
+  have hfac : ((Nat.factorial 4 : ℕ) : ℝ) = 24 := by norm_num [Nat.factorial]
+  have hsq : (κ * Real.sqrt L) ^ 4 = κ ^ 4 * L ^ 2 := by
+    rw [mul_pow, show (4 : ℕ) = 2 * 2 from rfl, pow_mul, pow_mul, Real.sq_sqrt hL0]
+  rw [hfac, hsq] at h4
+  have hκ4 : 0 < κ ^ 4 := by positivity
+  have h24 : 24 ≤ κ ^ 4 * L := by
+    have := mul_le_mul_of_nonneg_left h1 hκ4.le
+    rwa [mul_div_cancel₀ _ hκ4.ne'] at this
+  nlinarith [h4, mul_nonneg hL0 (sub_nonneg.mpr h24)]
+
+/-- **The polar test attains the pole to de la Vallée Poussin precision.** Unconditionally there
+are `C ≥ 0`, `κ > 0` such that for all large `L` some window deviation at length `L` is
+`≥ e^{L/2} − C e^{L/2 − κ√L}`. -/
+theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧ ∀ᶠ L in atTop, ∃ x ∈ windowDeviations L,
+      Real.exp (L / 2) - C * Real.exp (L / 2 - κ * Real.sqrt L) ≤ x := by
+  classical
+  obtain ⟨K, c, B, hK, hc, hB, hψ⟩ := exists_abs_psi_exp_sub_le_dlvp
+  set K' := K * Real.exp (c ^ 2 / 2) * Real.exp c with hK'def
+  have hK' : 0 ≤ K' := by positivity
+  set C := K' + B + 4 with hCdef
+  have hC0 : 0 ≤ C := by positivity
+  refine ⟨C, c / 2, hC0, by positivity, ?_⟩
+  filter_upwards [eventually_le_exp_mul_sqrt (κ := c / 2) (by positivity),
+    eventually_add_sq_le_exp_half_sub_sqrt (B := 0) (κ := c / 2) (by positivity),
+    eventually_ge_atTop (4 : ℝ), eventually_ge_atTop C] with L hLexp hpoly hL4 hLC
+  rw [zero_add] at hpoly
+  have hL0 : 0 ≤ L := by linarith
+  -- the polar test of the window `(0, L)` with cutoff `δ = e^{−L/2}`
+  set E := Real.exp (L / 2) with hEdef
+  have hEL : 0 < E := Real.exp_pos _
+  set R := Real.exp (L / 2 - c / 2 * Real.sqrt L) with hRdef
+  have hR0 : 0 < R := Real.exp_pos _
+  set δ := Real.exp (-(L / 2)) with hδdef
+  have hδ : 0 < δ := Real.exp_pos _
+  have hδ1 : δ ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+  have hLδ : 2 * δ < L := by linarith
+  have hEδ : δ * E = 1 := by
+    rw [hδdef, hEdef, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  have hδneg : Real.exp (-L / 2) = δ := by rw [hδdef]; congr 1; ring
+  have hLδ1 : L * δ ≤ 1 := by
+    have h1 : 1 + L / 2 + (L / 2) ^ 2 / 2 ≤ E := Real.quadratic_le_exp_of_nonneg (by linarith)
+    have : L ≤ E := by nlinarith
+    calc L * δ ≤ E * δ := mul_le_mul_of_nonneg_right this hδ.le
+      _ = 1 := by rw [mul_comm]; exact hEδ
+  set T := L - 2 * δ with hTdef
+  have hT : 0 ≤ T := by linarith
+  set f := polarTestFn hδ hLδ
+  set cf : WeilTestFn →₀ ℝ := Finsupp.single f 1
+  have hcf : ∀ g, 0 ≤ cf g := fun g => by
+    simp only [cf]; rw [Finsupp.single_apply]; split_ifs <;> norm_num
+  have hsupp : ∀ g ∈ cf.support, ∃ a, ∀ u, g.1 u ≠ 0 → u ∈ Ioo a (a + L) := fun g hg => by
+    have : g = f := by
+      by_contra hne; exact (Finsupp.mem_support_iff.mp hg) (by simp [cf, Ne.symm hne])
+    exact ⟨0, this ▸ polarTestFn_supp hδ hLδ⟩
+  have hm := massOf_polarTest_pos hδ hLδ
+  have hM := massOf_polarTest_le hδ hLδ
+  rw [hδneg] at hM
+  have hdev : nodeArchEnergy cf - weilEnergy cf =
+      linearCombination ℝ (fun j : LogIndex => (ArithmeticFunction.vonMangoldt (j : ℕ) : ℝ))
+        (logVector f) := by
+    rw [nodeArchEnergy_eq_weilEnergy_add, add_sub_cancel_left, nodeVector_single_test]
+  have hP := primeSide_polarTest_ge hδ hLδ
+  rw [riesz_eq_deficit hT, hδneg, ← hdev] at hP
+  refine ⟨(nodeArchEnergy cf - weilEnergy cf) / massOf cf, ⟨cf, hcf, hsupp, hm, rfl⟩, ?_⟩
+  -- the pole: `e^T = E² e^{−2δ}`, so `2δ e^T ≥ 2E − 4` and `δ e^T ≤ E`
+  have h1 : Real.exp T = E * E * Real.exp (-(2 * δ)) := by
+    rw [hTdef, hEdef, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+  have heT : 2 * E - 4 ≤ 2 * δ * Real.exp T := by
+    have h2 : 1 - 2 * δ ≤ Real.exp (-(2 * δ)) := Real.one_sub_le_exp_neg _
+    rw [h1]
+    have : 2 * δ * (E * E * Real.exp (-(2 * δ))) = 2 * E * Real.exp (-(2 * δ)) := by
+      rw [show 2 * δ * (E * E * Real.exp (-(2 * δ))) = 2 * (δ * E) * E * Real.exp (-(2 * δ)) by
+        ring, hEδ]; ring
+    rw [this]
+    nlinarith
+  have hδT : δ * Real.exp T ≤ E := by
+    rw [h1, show δ * (E * E * Real.exp (-(2 * δ))) = (δ * E) * E * Real.exp (-(2 * δ)) by ring,
+      hEδ, one_mul]
+    exact mul_le_of_le_one_right hEL.le (Real.exp_le_one_iff.mpr (by linarith))
+  -- the deficit: `√T ≥ √L − 1`, `L e^{−c√L} ≤ e^{−(c/2)√L}`, so `2δ|D(T)| ≤ 2K'R + 2B`
+  have hsL : 2 ≤ Real.sqrt L := by
+    rw [Real.le_sqrt (by norm_num) hL0]; nlinarith
+  have hsqT : Real.sqrt L - 1 ≤ Real.sqrt T := by
+    rw [Real.le_sqrt (by linarith) hT]
+    nlinarith [Real.sq_sqrt hL0]
+  have hexpT : Real.exp (-c * Real.sqrt T) ≤ Real.exp c * Real.exp (-c * Real.sqrt L) := by
+    rw [← Real.exp_add]
+    exact Real.exp_le_exp.mpr (by nlinarith [mul_le_mul_of_nonneg_left hsqT hc.le])
+  have hLsmall : L * Real.exp (-c * Real.sqrt L) ≤ Real.exp (-(c / 2 * Real.sqrt L)) := by
+    have hsplit : Real.exp (-c * Real.sqrt L) =
+        Real.exp (-(c / 2 * Real.sqrt L)) * Real.exp (-(c / 2 * Real.sqrt L)) := by
+      rw [← Real.exp_add]; congr 1; ring
+    have hLe : L * Real.exp (-(c / 2 * Real.sqrt L)) ≤ 1 := by
+      calc L * Real.exp (-(c / 2 * Real.sqrt L))
+          ≤ Real.exp (c / 2 * Real.sqrt L) * Real.exp (-(c / 2 * Real.sqrt L)) :=
+            mul_le_mul_of_nonneg_right hLexp (Real.exp_pos _).le
+        _ = 1 := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+    rw [hsplit, ← mul_assoc]
+    exact mul_le_of_le_one_left (Real.exp_pos _).le hLe
+  have hER : E * Real.exp (-(c / 2 * Real.sqrt L)) = R := by
+    rw [hEdef, hRdef, ← Real.exp_add, sub_eq_add_neg]
+  have hp2 : L * Real.exp (-c * Real.sqrt T) ≤ Real.exp c * Real.exp (-(c / 2 * Real.sqrt L)) :=
+    calc L * Real.exp (-c * Real.sqrt T)
+        ≤ L * (Real.exp c * Real.exp (-c * Real.sqrt L)) :=
+          mul_le_mul_of_nonneg_left hexpT hL0
+      _ = Real.exp c * (L * Real.exp (-c * Real.sqrt L)) := by ring
+      _ ≤ Real.exp c * Real.exp (-(c / 2 * Real.sqrt L)) :=
+          mul_le_mul_of_nonneg_left hLsmall (Real.exp_pos _).le
+  have hDabs := abs_ccmLogChebyshevDeficitPrimitive_le_dlvp hK hψ hT
+  have hD : 2 * δ * |ccmLogChebyshevDeficitPrimitive T| ≤ 2 * K' * R + 2 * B := by
+    have hq := mul_le_mul hδT hp2 (by positivity) hEL.le
+    have h0 : 0 ≤ K * Real.exp (c ^ 2 / 2) * (Real.exp T * Real.exp (-c * Real.sqrt T)) + B := by
+      positivity
+    calc 2 * δ * |ccmLogChebyshevDeficitPrimitive T|
+        ≤ 2 * δ * (T * (K * Real.exp (c ^ 2 / 2) *
+            (Real.exp T * Real.exp (-c * Real.sqrt T)) + B)) :=
+          mul_le_mul_of_nonneg_left hDabs (by positivity)
+      _ ≤ 2 * δ * (L * (K * Real.exp (c ^ 2 / 2) *
+            (Real.exp T * Real.exp (-c * Real.sqrt T)) + B)) := by
+          refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right ?_ h0) (by positivity)
+          linarith
+      _ = 2 * K * Real.exp (c ^ 2 / 2) *
+            ((δ * Real.exp T) * (L * Real.exp (-c * Real.sqrt T))) + 2 * B * (L * δ) := by ring
+      _ ≤ 2 * K * Real.exp (c ^ 2 / 2) *
+            (E * (Real.exp c * Real.exp (-(c / 2 * Real.sqrt L)))) + 2 * B * 1 :=
+          add_le_add (mul_le_mul_of_nonneg_left hq (by positivity))
+            (mul_le_mul_of_nonneg_left hLδ1 (by positivity))
+      _ = 2 * K' * (E * Real.exp (-(c / 2 * Real.sqrt L))) + 2 * B := by rw [hK'def]; ring
+      _ = 2 * K' * R + 2 * B := by rw [hER]
+  -- the prime side is at least `2E − 4 − 2δ − 2K'R − 2B`
+  have hnum : 2 * E - 4 - 2 * δ - (2 * K' * R + 2 * B) ≤ nodeArchEnergy cf - weilEnergy cf := by
+    have habs := neg_abs_le (ccmLogChebyshevDeficitPrimitive T)
+    linarith [hP, heT, hD, mul_le_mul_of_nonneg_left habs (by positivity : (0 : ℝ) ≤ 2 * δ)]
+  -- `C R ≤ E`, since `C ≤ L ≤ e^{(c/2)√L}`
+  have hECR : 0 ≤ E - C * R := by
+    have h1' : C * Real.exp (-(c / 2 * Real.sqrt L)) ≤ 1 := by
+      calc C * Real.exp (-(c / 2 * Real.sqrt L))
+          ≤ Real.exp (c / 2 * Real.sqrt L) * Real.exp (-(c / 2 * Real.sqrt L)) :=
+            mul_le_mul_of_nonneg_right (hLC.trans hLexp) (Real.exp_pos _).le
+        _ = 1 := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+    have : C * R = E * (C * Real.exp (-(c / 2 * Real.sqrt L))) := by rw [← hER]; ring
+    rw [this]
+    linarith [mul_le_mul_of_nonneg_left h1' hEL.le]
+  have hpoly' : B + 3 + L ≤ (B + 4) * R := by
+    have h1' : 1 + L ≤ (1 + L) ^ 2 := by nlinarith
+    have hB4 : (0 : ℝ) ≤ B + 4 := by linarith
+    linarith [mul_le_mul_of_nonneg_left h1' hB4, mul_le_mul_of_nonneg_left hpoly hB4,
+      mul_nonneg hB hL0]
+  have hLEδ : E * L * δ = L := by
+    rw [show E * L * δ = L * (δ * E) by ring, hEδ, mul_one]
+  -- conclude: if the deviation were below `E − C R`, the prime side would be below its floor
+  by_contra hcon
+  push_neg at hcon
+  rw [div_lt_iff₀ hm] at hcon
+  have hmass : (E - C * R) * massOf cf ≤ (E - C * R) * (2 + 2 * L * δ) :=
+    mul_le_mul_of_nonneg_left hM hECR
+  linarith [hcon, hmass, hnum, hpoly', hLEδ, hδ1,
+    mul_nonneg (mul_nonneg hC0 hR0.le) (mul_nonneg hL0 hδ.le)]
+
+/-- **The ceiling from below.** `c(L) ≥ e^{L/2} − C e^{L/2 − κ√L}` for all large `L`. -/
+theorem exists_eventually_exp_half_sub_remainder_le_windowCeiling :
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧ ∀ᶠ L in atTop,
+      Real.exp (L / 2) - C * Real.exp (L / 2 - κ * Real.sqrt L) ≤ windowCeiling L := by
+  obtain ⟨C, κ, hC, hκ, hev⟩ := exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder
+  refine ⟨C, κ, hC, hκ, ?_⟩
+  filter_upwards [hev, eventually_ge_atTop (0 : ℝ)] with L hL hL0
+  obtain ⟨x, hx, hxge⟩ := hL
+  exact hxge.trans (le_csSup (bddAbove_windowDeviations hL0) hx)
+
+/-- **The window ceiling is the pole to de la Vallée Poussin precision:**
+`|c(L) − e^{L/2}| ≤ C e^{L/2 − κ√L}` for all large `L`. -/
+theorem exists_eventually_abs_windowCeiling_sub_exp_half_le :
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧ ∀ᶠ L in atTop,
+      |windowCeiling L - Real.exp (L / 2)| ≤ C * Real.exp (L / 2 - κ * Real.sqrt L) := by
+  obtain ⟨C₁, κ₁, hC₁, hκ₁, h₁⟩ := exists_eventually_windowCeiling_le_exp_half_add_remainder
+  obtain ⟨C₂, κ₂, hC₂, hκ₂, h₂⟩ := exists_eventually_exp_half_sub_remainder_le_windowCeiling
+  refine ⟨max C₁ C₂, min κ₁ κ₂, le_max_of_le_left hC₁, lt_min hκ₁ hκ₂, ?_⟩
+  filter_upwards [h₁, h₂] with L h1 h2
+  have hs := Real.sqrt_nonneg L
+  have e1 : Real.exp (L / 2 - κ₁ * Real.sqrt L) ≤ Real.exp (L / 2 - min κ₁ κ₂ * Real.sqrt L) :=
+    Real.exp_le_exp.mpr (by nlinarith [min_le_left κ₁ κ₂])
+  have e2 : Real.exp (L / 2 - κ₂ * Real.sqrt L) ≤ Real.exp (L / 2 - min κ₁ κ₂ * Real.sqrt L) :=
+    Real.exp_le_exp.mpr (by nlinarith [min_le_right κ₁ κ₂])
+  have m1 := mul_le_mul (le_max_left C₁ C₂) e1 (Real.exp_pos _).le (le_max_of_le_left hC₁)
+  have m2 := mul_le_mul (le_max_right C₁ C₂) e2 (Real.exp_pos _).le (le_max_of_le_left hC₁)
+  rw [abs_le]; constructor <;> linarith
+
+/-- **The window floor is minus the pole to de la Vallée Poussin precision:**
+`|floor(L) + e^{L/2}| ≤ C e^{L/2 − κ√L}` for all large `L`, by the Liouville mirror
+`|c(L) + floor(L)| ≤ 2T(N) = O(L)`. -/
+theorem exists_eventually_abs_windowFloor_add_exp_half_le :
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧ ∀ᶠ L in atTop,
+      |windowFloor L + Real.exp (L / 2)| ≤ C * Real.exp (L / 2 - κ * Real.sqrt L) := by
+  obtain ⟨C, κ, hC, hκ, hev⟩ := exists_eventually_abs_windowCeiling_sub_exp_half_le
+  refine ⟨C + 28, κ, by positivity, hκ, ?_⟩
+  filter_upwards [hev, eventually_add_sq_le_exp_half_sub_sqrt (B := 0) hκ,
+    eventually_exists_windowDeviation_ge (η := 1) one_pos le_rfl,
+    eventually_ge_atTop (0 : ℝ)] with L hcl hpoly hne hL0
+  rw [zero_add] at hpoly
+  obtain ⟨x, hx, -⟩ := hne
+  set N := ⌈Real.exp L⌉₊ with hN
+  have hNpos : 0 < N := Nat.ceil_pos.mpr (Real.exp_pos L)
+  have hLN : L ≤ Real.log N :=
+    calc L = Real.log (Real.exp L) := (Real.log_exp L).symm
+      _ ≤ Real.log N := Real.log_le_log (Real.exp_pos L) (Nat.le_ceil _)
+  have hlogN : Real.log N ≤ L + 1 := by
+    have h1 : (N : ℝ) < Real.exp L + 1 := Nat.ceil_lt_add_one (Real.exp_pos L).le
+    have h2 : Real.exp L + 1 ≤ Real.exp (L + 1) := by
+      rw [Real.exp_add]
+      nlinarith [mul_le_mul_of_nonneg_left (Real.add_one_le_exp (1 : ℝ)) (Real.exp_pos L).le,
+        Real.one_le_exp hL0]
+    calc Real.log N ≤ Real.log (Real.exp (L + 1)) :=
+          Real.log_le_log (by exact_mod_cast hNpos) (h1.le.trans h2)
+      _ = L + 1 := Real.log_exp _
+  have hmir := abs_windowCeiling_add_windowFloor_le hL0 ⟨x, hx⟩ hLN
+  have hdef := mirrorDefect_le hNpos
+  have hlog4 : Real.log 4 ≤ 2 := by
+    rw [Real.log_le_iff_le_exp (by norm_num)]
+    have := Real.add_one_le_exp (1 : ℝ)
+    rw [show (2 : ℝ) = 1 + 1 by norm_num, Real.exp_add]
+    nlinarith
+  have hmir' := abs_le.mp hmir
+  have hcl' := abs_le.mp hcl
+  have h1' : 1 + L ≤ (1 + L) ^ 2 := by nlinarith
+  have h28 : 4 * L + 28 ≤ 28 * Real.exp (L / 2 - κ * Real.sqrt L) := by linarith
+  rw [abs_le]; constructor <;> linarith [hmir'.1, hmir'.2, hcl'.1, hcl'.2, hdef, hlogN, hlog4, h28]
 
 end
 
