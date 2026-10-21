@@ -113,6 +113,55 @@ height rather than almost every, the control of near-top zeros beyond a finite h
 the Bagchi lane of `RHTower`, the recurrence of `ζ` on a prescribed disc, which holds on every
 zero-free disc and around an off-line zero is literally the exclusion of that zero.
 
+### How the programme connects to the other programmes
+
+SRT is the zero-side and height-side coordinate system of the family: it owns the configuration
+object, the visibility laws and the lag family, takes its analysis from `RHTower` and `Zeta23`
+alone, and exports its theorems to the three faces and to the finite programmes through one
+dictionary, the explicit formula read at a lag.
+
+- **Arithmetic Criticality Theory is the aperture face of the same path.** The Rayleigh bridge
+  `2‖κ_w‖² μ(v/2 + w) ≤ Re P_v` (mechanism 27) turns every aperture floor of ACT into a lag floor
+  and every negative lag into a negative ground energy: ACT's all-profile window through `3/10`
+  gives `Re W_ζ ≥ ‖f‖²/5000` at aperture `3/10` and height-window positivity here, ACT's
+  logarithmic ground-energy floor enters the same transfer, and SRT's explicit visibility lags
+  bound ACT's contact aperture from above (mechanism 30). The rate `μ(A) ≥ −Ce^{2σA}` and the lag
+  envelope `−Ce^{σv}` are two readings of one number, the zero width `σ`, which also bounds the
+  de Bruijn–Newman heat time (mechanism 29). SRT's small-aperture height-window positivity and its
+  height-window average representation are the inputs of ACT's Markov-window transfer.
+- **Arithmetic Incidence Positivity pays the lag family's first prime.** The difference test is odd,
+  so AIP's odd-sector windows transfer to `P_v` without the all-profile `μ(A)`: positivity of the
+  family through `v/2 + w ≤ 353/1000`, past `½ log 2`, with the atom `Λ(2)/√2` paid on the window
+  `{2}` (mechanism 27). AIP's dyadic window `(X/2, 2X)` with its divisor edges (doublings,
+  triplings, consecutive powers of `2` and `3`) is the window the lag `v = log X` reads; AIP uses
+  the dyadic-window criterion of this programme to place its incidence structure.
+- **Arithmetic Positivity Theory detects with SRT's eyes.** The isolated-pair, finite-set,
+  depth-gap, equal-depth-cluster and attained-depth visibility laws, the prime-side two-bump
+  criterion, the prime-tail coupling criterion, the windowed blindness of clusters and profiles,
+  the single-height positivity above the archimedean horizon and the localized windowed variance
+  law are the theorems through which APT's factorial tent family becomes a detector on the actual
+  zero set; APT's open quantitative-detection problem is SRT's visibility tradeoff (research topic
+  4) read on grid patterns.
+- **Bi-Scale Uncertainty reads the same threshold at the cutoff.** BiScale's band `|ξ| ≤ √(N+2)`
+  and the bandwidth `λ = log X/log T` here are two coordinates of the square-root threshold; its
+  band spectrum and packet growth exponent are the zero width of mechanism 29, its window
+  remainder `|c(L) − e^{L/2}| ≤ Ce^{L/2−κ√L}` is the window form of the lag envelope of mechanism
+  26, and its universal probes and SRT's two-bump tests are the linear and the quadratic reading
+  of one zero series. BiScale owns the test models (shifted pair, Beurling, Liouville, `F_q[T]`)
+  against which SRT's threshold and first-negative-lag law are to be calibrated.
+- **Trans-Horizon Incidence Mechanics and Bézout–Valuation Incidence hold the sieve side of open
+  problem 1.** The upper-bound sieve loses the height phase `(m/n)^{iT}` beyond `X = T` because,
+  below half damping, no sign-blind datum decides the receiver (THIM's parity barrier); BVI's
+  zero-free bands below half damping are read here as zero widths, its damping `ε` corresponds to
+  the bandwidth, and its every-horizon receiver problem is the every-height problem of this
+  programme in finite coordinates.
+- **RHTower and Zeta23 supply the analysis**: the explicit formula of the zero configuration, the
+  Hodge index and lattice tools, the Landau pair tests and isolated deep-zero detection, the
+  zero-free regions and the local zero count, the Lorentzian zero mass, the pair-correlation
+  exchange rate, the CCM pole-compression criterion, the zeta symbol's archimedean horizon, the
+  strong recurrence receiver and the Kronecker–Weyl law of finite Euler products, the
+  de Bruijn–Newman half bound and the non-integrability of the zero-count remainder.
+
 ---
 
 ## 1. Why: motivation

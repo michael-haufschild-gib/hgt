@@ -119,6 +119,64 @@ the question of which sources and which Hilbert space carry a prime modification
 `S(T)`. Every certificate of positivity of the complete form is the critical-zero measure, so a
 positivity proof and such a realization are one object.
 
+### How the programme connects to the other programmes
+
+APT is the one programme of the family built on a concrete noncompact exact source rather than on
+a space of test functions. Everything it proves is transported to the others through the
+dictionary of §2.2 (one form, five names), and most of its analytic inputs come from them.
+
+- **Bi-Scale Uncertainty supplies the sources.** The factorial Müntz family (the tail primitive,
+  the analytic repair of the readout across the negative pole, the zero-side smoothing limit, the
+  prime–polar budget, the Weil smoothing and the Gram decoupling of the tent direction) and the
+  signed prime–polar jump domain are BiScale objects (`SignedPrimePolar`); APT's sampling,
+  Gram-margin and smoothing-limit theorems continue them. The archimedean log-coercivity of the
+  critical scale uses BiScale's logarithmic increment energy and origin-collar leverage; the
+  compact truncations use its compact Lipschitz Lévy energy and its polar moment identity. In the
+  other direction BiScale owns the test models (the shifted pair `ζ(s−a)ζ(s+a)`, Beurling
+  systems, the Liouville twist) and the function-field calibration against which every APT
+  positivity statement is audited; the windows-of-scales theorem of §3.13 is the APT statement
+  whose proof is selective, because it uses the temperedness the shifted pair lacks.
+- **Square-Root Threshold supplies the zero side.** APT never locates a zero. The configuration
+  object, the pairing `𝒲`, the mass `𝒵`, the reflection defect `ℛ` and the visibility laws
+  (isolated pairs, finite off-line sets, depth gaps, equal-depth clusters, attained depths, large
+  dyadic prime windows, windowed blindness, the prime-tail coupling criterion, single-height
+  positivity above the archimedean horizon) are SRT theorems; the tent family becomes a detector
+  on the actual zero set by composing them with APT's grid convergence and joint smoothing. SRT's
+  explicit visibility lags `V₀(w, η, δ₀)` and its horizon law are the units in which APT's
+  quantitative-detection problem has to be answered, and SRT's zero width `sup|Re ρ − ½|` is the
+  quantity the tent detectors measure.
+- **Arithmetic Criticality Theory supplies the receiver's coordinates on compact tests.** ACT's
+  full zero form equals APT's complete physical energy on continuous compact sources, its Markov
+  energy equals APT's Markov form beyond the support, and its ground-energy path `μ(A)` is the
+  aperture-face reading of what APT proves at high scale. ACT's all-profile window through `3/10`
+  and the criticality of `μ` at infinity bound APT's task from both sides: positivity through
+  `3/10` is paid by sign-changing gauges with no critical-scale input, APT's block positivity is
+  paid by `log M` with no small-aperture input, and neither crosses into the other's regime.
+- **Arithmetic Incidence Positivity works on the same form at the opposite scale:** pairs of
+  points and single prime atoms at apertures up to `181/500` on odd tests, against APT's
+  unbounded-support patterns at scales beyond `M₀`. APT's parity decoupling (odd tests carry the
+  whole pole risk `S(g)²/2`, §3.9) is the statement AIP's odd gauges address, and AIP's Harnack
+  propagation across the prime shifts is what a passage from APT's family to the receiver would
+  have to reproduce at every scale.
+- **Trans-Horizon Incidence Mechanics and Bézout–Valuation Incidence hold the finite arithmetic
+  APT does not see.** APT's prime channel on dyadic blocks is bounded by mean-value inputs
+  (Montgomery–Vaughan, Mertens) and never by cancellation in a single arithmetic row. THIM's
+  parity pairs explain why such size-only bounds cannot select `ζ` below half damping; BVI's
+  coherent-block ceiling is the general statement that size-only bilinear bounds on arithmetic
+  rows stop short of the receiver, and APT's cross-block decay, a size-only Cauchy–Schwarz bound
+  over dilations, decouples only lacunary blocks for the same reason. The critical-scale receiver
+  `D(T) ≤ B(1+T)e^{T/2}` of §1.2 is the receiver these programmes study at finite modulus.
+- **RHTower supplies the analytic infrastructure:** the Weil–Markov–pole split, the full-cone
+  Plancherel and Herglotz representations, the von Mangoldt mollifier mean square, van der Corput
+  and Poisson summation, the CHMD divisor pairing, Baker's theorem, the Selberg near-line and
+  Ingham–Huxley densities, the non-tempered shifted-pair countermodel and the causal von Mangoldt
+  wall, and the operators (HF, CHMD, Connes–Consani–Moscovici) of mechanism 4 whose source class
+  APT is to supply.
+
+The other programmes use APT through its statements rather than its modules: the dictionary of
+§2.2, the dyadic dilation inequality and the admissible-source law (§3.12), the parity decoupling
+of the pole plane (§3.9), and the factorial tent family as an RH-complete receiver (§3.14).
+
 ---
 
 ## 1. Why
@@ -1086,13 +1144,20 @@ regime where every sub-Nyquist test and every height-windowed average is
 nonnegative. On the lattice-plus-pair model without Euler product the same
 computations calibrate the family; on $\zeta$ they are detection.
 
-**Small apertures and large heights.** For $0<a\le1/100$ and every real
-$C^2_c$ source supported in $[-a,a]$, the three-band archimedean bound gives
-$Q(F)\ge\tfrac1{25}\int F^2$ unconditionally; at any aperture the localised
-explicit formula gives nonnegativity of $\mathcal Z-\mathcal R$ on height
-shifts beyond an explicit horizon. Small-aperture and high-height positivity
-are archimedean facts; the arithmetic question lives at finite height and
-aperture beyond $1/100$.
+**Small apertures and large heights.** For every real $C^2_c$ source supported
+in $[-a,a]$ the complete energy has an explicit unconditional floor:
+$Q(F)\ge\tfrac1{25}\int F^2$ for $a\le1/100$ by the three-band archimedean
+bound alone, and $Q(F)\ge\tfrac1{5000}\int F^2$ for $a\le3/10$ by the sharp
+quartic gauges of Arithmetic Criticality Theory, still below the first prime
+window $2a\ge\log2$; odd sources are positive through $a\le181/500$, past the
+first prime, by the strip surplus and Schur lending of Arithmetic Incidence
+Positivity. At any aperture the localised explicit formula gives nonnegativity
+of $\mathcal Z-\mathcal R$ on height shifts beyond an explicit horizon. Off RH
+the ground-energy path $\mu(A)$ has a first contact aperture, beyond $3/10$,
+and a near-top zero seen by the lag family at lag $V$ forces $\mu(A)<0$ for
+every $A\ge V/2+w$. High-height positivity is an archimedean fact; the
+arithmetic question lives at finite height, on even tests beyond $3/10$ where
+the conductances across $\log2$ turn negative, and at the critical scale.
 
 ### 3.15 Bridges
 
@@ -1116,7 +1181,13 @@ odd profiles the pole term strengthens the odd Dirichlet–Poincaré inequality
 by a square while remaining RH-equivalent. The Markov form of §1.2 agrees with
 the Markov energy of Arithmetic Criticality Theory beyond the support, and that
 theory shows the odd capacity ratio $S(g)^2/(2\mathcal M_N(g))$ tends to one
-along plateaus, with no uniform margin at large aperture.
+along plateaus, with no uniform margin at large aperture. The zero width
+$\sup_\rho\lvert\Re\rho-\tfrac12\rvert$ is read by the lag family as the exact
+exponential rate at which its dyadic prime windows turn negative, by the
+ground-energy path as the rate in $\mu(A)\ge-Ce^{2\sigma A}$, and it bounds the
+de Bruijn–Newman heat time by half its square; RH is width zero, and the tent
+detectors of this programme measure the same width through the depths they
+see.
 
 ---
 
@@ -1153,7 +1224,7 @@ along plateaus, with no uniform margin at large aperture.
 | Replace the conditionally convergent polar readout by a Lebesgue integral | At $\beta=1/2$ the endpoint is defined through the bounded primitive, $-G(1)+\int_1^\infty G(v)v^{-2}dv$, with cutoff error $\le(24/T)\sum\lvert b_n\rvert/(n+1)$. |
 | An endpoint value of the $L^1$ periodisation is a sign witness | The $L^1$ kernel and its continuous representative differ at integers; only pattern integrals matter. |
 | Zero-density bounds exclude a zero | They are upper counts; a single fixed off-line zero survives all of them. |
-| Small-aperture or high-height positivity is arithmetic progress | Both are archimedean facts ($a\le1/100$, heights beyond the horizon); the arithmetic lives at finite height and larger aperture. |
+| Window or high-height positivity is critical-scale progress | Windows through $3/10$ (all profiles) and $181/500$ (odd) are paid by sign-changing gauges on the archimedean conductance and one prime atom, heights beyond the horizon by the Gamma factor alone; neither sees the critical scale, and the block positivity of the critical family sees no small aperture. |
 | The corrected-source smoothing limit is the ramp limit | Different theorems: $H_{n,k}\to H_n$ concerns the noncompact source, the ramp limit needs the common compact support. |
 | The dyadic stencil is drift-free | It kills the quadratic drift and $4\mid k$; its linear drift is one, the secular ramp. |
 | Rename an RH-equivalent cone, metric or contraction as a hypothesis | The arithmetic work is unchanged; only universal statements proved from source data count. |
@@ -1208,12 +1279,16 @@ the compact tests of the receiver on which RH is decided, those without the
 archimedean gain $\log M$: every positivity theorem on the critical family is paid
 by that gain, and on the RH-complete cone it is absent.
 
-**Quantitative detection.** Eventual grid-tent nonnegativity at a scale $n$
-forces the asymptotic abscissa law, but the dependence of the detected depth on
-the scale, the radius and the profile is not quantified; a statement of the
-form "nonnegativity of all grid patterns at scale $n$ and radius $R$ implies no
-zero of depth $>\delta(n,R)$ below height $T(n,R)$" would turn the family into
-a computable receiver.
+**Quantitative detection.** On the lag face the units exist: a near-top zero
+of depth $\delta_0$ with readout at least $\eta$ is visible at an explicit lag
+$V_0(w,\eta,\delta_0)$, an attained top at a logarithmic lag, and a near-top zero
+seen at lag $V$ makes $\mu(A)$ negative beyond $V/2+w$. On the tent family only
+the qualitative statement is proved: eventual grid-tent nonnegativity at scale
+$n$ forces the asymptotic abscissa law. The missing law is "nonnegativity of
+all grid patterns at scale $n$ and radius $R$ excludes zeros of depth
+$>\delta(n,R)$ below height $T(n,R)$", with $\delta(n,R)$ read from the explicit
+lags through the grid convergence of §3.14; it would turn the family into a
+computable receiver.
 
 **Beyond the factorial family.** The admissible-source law needs only a mass
 floor and a low-band exclusion. Which other arithmetic sources, built from

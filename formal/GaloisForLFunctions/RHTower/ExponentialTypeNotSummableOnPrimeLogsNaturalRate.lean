@@ -13,9 +13,10 @@ up to the cap `ρ < 5/24` inherited from the exponent `7/12` of the short-interv
 The gain comes from replacing the pointwise largeness `‖Φ x‖ ≥ e^{−(ρ+δ)x}` at a single point by
 the largeness of the unit-window integral `∫_0^1 ‖Φ(x+t)‖ dt ≥ e^{−(ρ+δ)x}`.
 
-* **Window two-ray theorem** (`eq_zero_of_two_ray_window_integral_decay`): an entire function of
-  exponential type that decays exponentially on the negative ray and whose unit-window integrals
-  decay exponentially on the positive ray vanishes.  Its unit-window average
+* **Window two-ray theorem** (`eq_zero_of_two_ray_window_average_decay`, and its modulus form
+  `eq_zero_of_two_ray_window_integral_decay`): an entire function of exponential type that decays
+  exponentially on the negative ray and whose unit-window averages decay exponentially on the
+  positive ray vanishes.  Its unit-window average
   `F(w) = ∫_0^1 g(w+t) dt` is entire with the same two-ray decay, so `F ≡ 0` by the Paley–Wiener
   two-ray theorem; then `F' = g(·+1) − g ≡ 0` makes `g` periodic, the decay on the negative ray
   forces `g = 0` on `ℝ`, and the identity theorem finishes.
@@ -115,12 +116,13 @@ theorem eq_zero_of_forall_ofReal_eq_zero {g : ℂ → ℂ} (hg : Differentiable 
   funext z
   exact hEq (Set.mem_univ z)
 
-/-- **Window two-ray theorem.**  An entire `g` of exponential type with `‖g x‖ ≤ C e^{εx}` on the
-negative ray and `∫_0^1 ‖g(x+t)‖ dt ≤ C e^{−εx}` on the positive ray vanishes identically. -/
-theorem eq_zero_of_two_ray_window_integral_decay {g : ℂ → ℂ} (hg : Differentiable ℂ g)
+/-- **Window two-ray theorem, signed form.**  An entire `g` of exponential type with
+`‖g x‖ ≤ C e^{εx}` on the negative ray and `‖∫_0^1 g(x+t) dt‖ ≤ C e^{−εx}` on the positive ray
+vanishes identically. -/
+theorem eq_zero_of_two_ray_window_average_decay {g : ℂ → ℂ} (hg : Differentiable ℂ g)
     {A C τ ε : ℝ} (hA : 0 ≤ A) (hτ : 0 ≤ τ) (hε : 0 < ε)
     (hgrow : ∀ z : ℂ, ‖g z‖ ≤ A * Real.exp (τ * ‖z‖))
-    (hplus : ∀ x : ℝ, 0 ≤ x → ∫ t in (0 : ℝ)..1, ‖g (x + t)‖ ≤ C * Real.exp (-(ε * x)))
+    (hplus : ∀ x : ℝ, 0 ≤ x → ‖unitWindowAverage g x‖ ≤ C * Real.exp (-(ε * x)))
     (hminus : ∀ x : ℝ, x ≤ 0 → ‖g x‖ ≤ C * Real.exp (ε * x)) :
     g = 0 := by
   have hC : 0 ≤ C := by
@@ -146,11 +148,8 @@ theorem eq_zero_of_two_ray_window_integral_decay {g : ℂ → ℂ} (hg : Differe
   have hCC' : C ≤ C' :=
     le_trans (le_max_left _ _)
       (le_mul_of_one_le_right (le_max_of_le_left hC) (Real.one_le_exp hε.le))
-  have hplusF : ∀ x : ℝ, 0 ≤ x → ‖F x‖ ≤ C' * Real.exp (-(ε * x)) := fun x hx => by
-    calc ‖F x‖ ≤ ∫ t in (0 : ℝ)..1, ‖g (x + t)‖ :=
-          intervalIntegral.norm_integral_le_integral_norm zero_le_one
-      _ ≤ C * Real.exp (-(ε * x)) := hplus x hx
-      _ ≤ C' * Real.exp (-(ε * x)) := by gcongr
+  have hplusF : ∀ x : ℝ, 0 ≤ x → ‖F x‖ ≤ C' * Real.exp (-(ε * x)) := fun x hx =>
+    le_trans (hplus x hx) (by gcongr)
   have hminusF : ∀ x : ℝ, x ≤ 0 → ‖F x‖ ≤ C' * Real.exp (ε * x) := fun x hx => by
     refine norm_unitWindowAverage_le fun t ht => ?_
     rcases le_or_gt (x + t) 0 with hxt | hxt
@@ -229,6 +228,18 @@ theorem eq_zero_of_two_ray_window_integral_decay {g : ℂ → ℂ} (hg : Differe
       _ = η := by rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
       _ = 0 + η := by ring
   exact eq_zero_of_forall_ofReal_eq_zero hg hreal
+
+/-- **Window two-ray theorem.**  An entire `g` of exponential type with `‖g x‖ ≤ C e^{εx}` on the
+negative ray and `∫_0^1 ‖g(x+t)‖ dt ≤ C e^{−εx}` on the positive ray vanishes identically. -/
+theorem eq_zero_of_two_ray_window_integral_decay {g : ℂ → ℂ} (hg : Differentiable ℂ g)
+    {A C τ ε : ℝ} (hA : 0 ≤ A) (hτ : 0 ≤ τ) (hε : 0 < ε)
+    (hgrow : ∀ z : ℂ, ‖g z‖ ≤ A * Real.exp (τ * ‖z‖))
+    (hplus : ∀ x : ℝ, 0 ≤ x → ∫ t in (0 : ℝ)..1, ‖g (x + t)‖ ≤ C * Real.exp (-(ε * x)))
+    (hminus : ∀ x : ℝ, x ≤ 0 → ‖g x‖ ≤ C * Real.exp (ε * x)) :
+    g = 0 :=
+  eq_zero_of_two_ray_window_average_decay hg hA hτ hε hgrow
+    (fun x hx => le_trans (intervalIntegral.norm_integral_le_integral_norm zero_le_one) (hplus x hx))
+    hminus
 
 /-! ## Window largeness along the positive ray -/
 

@@ -25,10 +25,9 @@ Hence (`tendsto_mul_kernelStatistic_primeWindowRow`)
 `Q · Λ_p(c'_Q) → -(𝔅(p, 0) - m_p)/(2(p-1)) = -π²(p² - 1)²/(144 p² (p - 1))`.
 
 The single-modulus statistic of the actual prime row is therefore not small: it is the sieve term of
-the residue class that the primes omit, of relative size `≍ 1/p` against the trivial bound. A row
-equidistributed in all classes (such as the Möbius row, by the prime number theorem in progressions)
-has statistic `o(1/Q)` instead. This law is for fixed moduli; it says nothing about moduli growing
-with `Q`.
+the residue class that the primes omit, of relative size `≍ 1/p` against the trivial bound; a row
+equidistributed in every class, including `0`, has statistic `o(1/Q)` instead. This law is for fixed
+moduli; it says nothing about moduli growing with `Q`.
 -/
 
 open Finset Filter Topology
@@ -104,10 +103,10 @@ theorem eventually_abs_sum_classDefect_le {p r : ℕ} (hp : p.Prime) (hr0 : 0 < 
 /-! ## §2. The window mass `W(Q) = Σ_{Q<n≤2Q} n^{-2}` -/
 
 /-- The window mass `W(Q) = Σ_{Q<n≤2Q} n^{-2}`. -/
-def windowMass (Q : ℕ) : ℝ := ∑ n ∈ Ioc Q (2 * Q), 1 / (n : ℝ) ^ 2
+def dyadicInverseSquareMass (Q : ℕ) : ℝ := ∑ n ∈ Ioc Q (2 * Q), 1 / (n : ℝ) ^ 2
 
-theorem windowMass_le (Q : ℕ) : windowMass Q ≤ 1 / ((Q : ℝ) + 1) := by
-  unfold windowMass
+theorem dyadicInverseSquareMass_le (Q : ℕ) : dyadicInverseSquareMass Q ≤ 1 / ((Q : ℝ) + 1) := by
+  unfold dyadicInverseSquareMass
   rcases Nat.eq_zero_or_pos Q with rfl | hQ
   · simp
   have hterm : ∀ n ∈ Ioc Q (2 * Q), 1 / (n : ℝ) ^ 2 ≤ 1 / ((Q : ℝ) + 1) ^ 2 := by
@@ -123,7 +122,7 @@ theorem windowMass_le (Q : ℕ) : windowMass Q ≤ 1 / ((Q : ℝ) + 1) := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]; nlinarith
 
 /-- Telescoping bounds `1/(n(n+1)) ≤ 1/n² ≤ 1/((n-1)n)` give `Q W(Q) → 1/2`. -/
-theorem tendsto_mul_windowMass : Tendsto (fun Q : ℕ => (Q : ℝ) * windowMass Q) atTop (𝓝 (1 / 2)) := by
+theorem tendsto_mul_dyadicInverseSquareMass : Tendsto (fun Q : ℕ => (Q : ℝ) * dyadicInverseSquareMass Q) atTop (𝓝 (1 / 2)) := by
   -- lower bound by the telescoping sum `Σ (1/n - 1/(n+1)) = 1/(Q+1) - 1/(2Q+1)`
   have htel : ∀ Q : ℕ, ∑ n ∈ Ioc Q (2 * Q), (1 / (n : ℝ) - 1 / ((n : ℝ) + 1)) =
       1 / ((Q : ℝ) + 1) - 1 / (2 * (Q : ℝ) + 1) := by
@@ -137,7 +136,7 @@ theorem tendsto_mul_windowMass : Tendsto (fun Q : ℕ => (Q : ℝ) * windowMass 
         rw [show Q + (K + 1) = Q + K + 1 by ring, Finset.sum_Ioc_succ_top (by omega), ih]
         push_cast; ring
     rw [show 2 * Q = Q + Q by ring, hshift]; ring
-  have hupper : ∀ Q : ℕ, 1 ≤ Q → (Q : ℝ) * windowMass Q ≤ 1 / 2 := by
+  have hupper : ∀ Q : ℕ, 1 ≤ Q → (Q : ℝ) * dyadicInverseSquareMass Q ≤ 1 / 2 := by
     intro Q hQ
     have htel' : ∑ n ∈ Ioc Q (2 * Q), (1 / ((n : ℝ) - 1) - 1 / (n : ℝ)) =
         1 / (Q : ℝ) - 1 / (2 * (Q : ℝ)) := by
@@ -151,8 +150,8 @@ theorem tendsto_mul_windowMass : Tendsto (fun Q : ℕ => (Q : ℝ) * windowMass 
           push_cast; ring
       rw [show 2 * Q = Q + Q by ring, hshift]; ring
     have hQ0 : (0 : ℝ) < Q := by exact_mod_cast hQ
-    have hle : windowMass Q ≤ 1 / (Q : ℝ) - 1 / (2 * (Q : ℝ)) := by
-      rw [← htel', windowMass]
+    have hle : dyadicInverseSquareMass Q ≤ 1 / (Q : ℝ) - 1 / (2 * (Q : ℝ)) := by
+      rw [← htel', dyadicInverseSquareMass]
       refine sum_le_sum fun n hn => ?_
       rw [mem_Ioc] at hn
       have hn1 : (1 : ℝ) < n := by exact_mod_cast (by omega : 1 < n)
@@ -162,14 +161,14 @@ theorem tendsto_mul_windowMass : Tendsto (fun Q : ℕ => (Q : ℝ) * windowMass 
         field_simp; ring
       rw [he]
       exact one_div_le_one_div_of_le (by nlinarith) (by nlinarith)
-    calc (Q : ℝ) * windowMass Q ≤ (Q : ℝ) * (1 / (Q : ℝ) - 1 / (2 * (Q : ℝ))) :=
+    calc (Q : ℝ) * dyadicInverseSquareMass Q ≤ (Q : ℝ) * (1 / (Q : ℝ) - 1 / (2 * (Q : ℝ))) :=
           mul_le_mul_of_nonneg_left hle hQ0.le
       _ = 1 / 2 := by field_simp; ring
   have hlower : ∀ Q : ℕ, (Q : ℝ) * (1 / ((Q : ℝ) + 1) - 1 / (2 * (Q : ℝ) + 1)) ≤
-      (Q : ℝ) * windowMass Q := by
+      (Q : ℝ) * dyadicInverseSquareMass Q := by
     intro Q
     refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg Q)
-    rw [← htel Q, windowMass]
+    rw [← htel Q, dyadicInverseSquareMass]
     refine sum_le_sum fun n hn => ?_
     rw [mem_Ioc] at hn
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
@@ -195,12 +194,12 @@ theorem tendsto_mul_windowMass : Tendsto (fun Q : ℕ => (Q : ℝ) * windowMass 
 /-! ## §3. The class masses -/
 
 /-- The mass `M_r(Q) = Σ_{Q<n≤2Q, n ≡ r} Λ(n)/n²` of the class `r` modulo `p`. -/
-def classMass (p r Q : ℕ) : ℝ := ∑ n ∈ Ioc Q (2 * Q), (if n % p = r then vonMangoldt n else 0) / (n : ℝ) ^ 2
+def primeClassMass (p r Q : ℕ) : ℝ := ∑ n ∈ Ioc Q (2 * Q), (if n % p = r then vonMangoldt n else 0) / (n : ℝ) ^ 2
 
 /-- **The coprime classes are equidistributed.** For `0 < r < p`,
 `Q (M_r(Q) - W(Q)/(p-1)) → 0`. -/
-theorem tendsto_mul_classMass_sub {p r : ℕ} (hp : p.Prime) (hr0 : 0 < r) (hrp : r < p) :
-    Tendsto (fun Q : ℕ => (Q : ℝ) * (classMass p r Q - windowMass Q / ((p : ℝ) - 1)))
+theorem tendsto_mul_primeClassMass_sub {p r : ℕ} (hp : p.Prime) (hr0 : 0 < r) (hrp : r < p) :
+    Tendsto (fun Q : ℕ => (Q : ℝ) * (primeClassMass p r Q - dyadicInverseSquareMass Q / ((p : ℝ) - 1)))
       atTop (𝓝 0) := by
   rw [Metric.tendsto_atTop]
   intro η hη
@@ -208,9 +207,9 @@ theorem tendsto_mul_classMass_sub {p r : ℕ} (hp : p.Prime) (hr0 : 0 < r) (hrp 
     (show (0 : ℝ) < η / 4 by positivity))
   refine ⟨x₀ + 1, fun Q hQ => ?_⟩
   have hQ0 : (0 : ℝ) < Q := by exact_mod_cast (by omega : 0 < Q)
-  have hid : classMass p r Q - windowMass Q / ((p : ℝ) - 1) =
+  have hid : primeClassMass p r Q - dyadicInverseSquareMass Q / ((p : ℝ) - 1) =
       ∑ n ∈ Ioc Q (2 * Q), classDefect p r n * (1 / (n : ℝ) ^ 2) := by
-    rw [classMass, windowMass, sum_div, ← sum_sub_distrib]
+    rw [primeClassMass, dyadicInverseSquareMass, sum_div, ← sum_sub_distrib]
     refine sum_congr rfl fun n _ => ?_
     simp only [classDefect]; ring
   have hab := abs_sum_Ioc_mul_le_of_linear (s := classDefect p r)
@@ -222,7 +221,7 @@ theorem tendsto_mul_classMass_sub {p r : ℕ} (hp : p.Prime) (hr0 : 0 < r) (hrp 
   have hhead : 2 * (Q : ℝ) * (1 / ((Q + 1 : ℕ) : ℝ) ^ 2) ≤ 2 / (Q : ℝ) := by
     rw [mul_one_div, div_le_div_iff₀ (by positivity) hQ0]; push_cast; nlinarith
   have htail : ∑ n ∈ Ioc Q (2 * Q), 1 / (n : ℝ) ^ 2 ≤ 1 / (Q : ℝ) :=
-    (windowMass_le Q).trans (one_div_le_one_div_of_le hQ0 (by linarith))
+    (dyadicInverseSquareMass_le Q).trans (one_div_le_one_div_of_le hQ0 (by linarith))
   rw [Real.dist_eq, sub_zero, abs_mul, abs_of_pos hQ0, hid]
   calc (Q : ℝ) * |∑ n ∈ Ioc Q (2 * Q), classDefect p r n * (1 / (n : ℝ) ^ 2)|
       ≤ (Q : ℝ) * (η / 4 * (2 / (Q : ℝ) + 1 / (Q : ℝ))) :=
@@ -258,18 +257,18 @@ theorem card_filter_dvd_isPrimePow_le_one {p : ℕ} (hp : p.Prime) (Q : ℕ) :
   · exact (key j i h hb.1.1 ha.1.2).elim
 
 /-- **The class `0` is omitted.** `Q M_0(Q) → 0`. -/
-theorem tendsto_mul_classMass_zero {p : ℕ} (hp : p.Prime) :
-    Tendsto (fun Q : ℕ => (Q : ℝ) * classMass p 0 Q) atTop (𝓝 0) := by
-  have hbound : ∀ Q : ℕ, 1 ≤ Q → 0 ≤ (Q : ℝ) * classMass p 0 Q ∧
-      (Q : ℝ) * classMass p 0 Q ≤ Real.log (2 * Q) / Q := by
+theorem tendsto_mul_primeClassMass_zero {p : ℕ} (hp : p.Prime) :
+    Tendsto (fun Q : ℕ => (Q : ℝ) * primeClassMass p 0 Q) atTop (𝓝 0) := by
+  have hbound : ∀ Q : ℕ, 1 ≤ Q → 0 ≤ (Q : ℝ) * primeClassMass p 0 Q ∧
+      (Q : ℝ) * primeClassMass p 0 Q ≤ Real.log (2 * Q) / Q := by
     intro Q hQ
     have hQ0 : (0 : ℝ) < Q := by exact_mod_cast hQ
-    have hnn : 0 ≤ classMass p 0 Q := sum_nonneg fun n _ => by
+    have hnn : 0 ≤ primeClassMass p 0 Q := sum_nonneg fun n _ => by
       split_ifs <;> positivity [vonMangoldt_nonneg (n := n)]
     refine ⟨mul_nonneg hQ0.le hnn, ?_⟩
     set S := (Ioc Q (2 * Q)).filter (fun n => n % p = 0 ∧ IsPrimePow n)
-    have hsupp : classMass p 0 Q = ∑ n ∈ S, vonMangoldt n / (n : ℝ) ^ 2 := by
-      rw [classMass, sum_filter]
+    have hsupp : primeClassMass p 0 Q = ∑ n ∈ S, vonMangoldt n / (n : ℝ) ^ 2 := by
+      rw [primeClassMass, sum_filter]
       refine sum_congr rfl fun n _ => ?_
       by_cases h0 : n % p = 0
       · by_cases hpp : IsPrimePow n
@@ -297,7 +296,7 @@ theorem tendsto_mul_classMass_zero {p : ℕ} (hp : p.Prime) :
     have hlog0 : 0 ≤ Real.log (2 * (Q : ℝ)) :=
       Real.log_nonneg (by have : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
                           linarith)
-    calc (Q : ℝ) * classMass p 0 Q ≤ (Q : ℝ) * (S.card * (Real.log (2 * Q) / (Q : ℝ) ^ 2)) := by
+    calc (Q : ℝ) * primeClassMass p 0 Q ≤ (Q : ℝ) * (S.card * (Real.log (2 * Q) / (Q : ℝ) ^ 2)) := by
           rw [hsupp]
           refine mul_le_mul_of_nonneg_left ?_ hQ0.le
           exact (sum_le_sum hterm).trans (by rw [sum_const, nsmul_eq_mul])
@@ -365,7 +364,7 @@ theorem tendsto_mul_cubicPart {p : ℕ} (hp : p.Prime) :
 /-- The kernel statistic of the prime row, grouped by residues modulo `p`. -/
 theorem kernelStatistic_primeWindowRow_eq {p : ℕ} (hp : p.Prime) (Q : ℕ) :
     kernelStatistic (2 * Q) (primeWindowRow Q) p =
-      ∑ r ∈ range p, (bernoulliKernel p r - primeKernelMean p) * classMass p r Q +
+      ∑ r ∈ range p, (bernoulliKernel p r - primeKernelMean p) * primeClassMass p r Q +
         ∑ n ∈ Ioc Q (2 * Q), vonMangoldt n / (n : ℝ) ^ 3 * cubicKernel p n := by
   have hsub : Ioc Q (2 * Q) ⊆ Icc 1 (2 * Q) := fun n hn => by
     rw [mem_Ioc] at hn; rw [mem_Icc]; omega
@@ -385,7 +384,7 @@ theorem kernelStatistic_primeWindowRow_eq {p : ℕ} (hp : p.Prime) (Q : ℕ) :
     (fun n => vonMangoldt n / (n : ℝ) ^ 2 * (bernoulliKernel p n - primeKernelMean p))
   rw [← hfib]
   refine sum_congr rfl fun r hr => ?_
-  rw [classMass, mul_sum, sum_filter]
+  rw [primeClassMass, mul_sum, sum_filter]
   refine sum_congr rfl fun n _ => ?_
   split_ifs with h
   · rw [bernoulliKernel_mod, h]; ring
@@ -400,9 +399,9 @@ theorem tendsto_mul_kernelStatistic_primeWindowRow {p : ℕ} (hp : p.Prime) :
   set b : ℕ → ℝ := fun r => bernoulliKernel p r - primeKernelMean p with hbdef
   -- the class decomposition, with the coprime classes centred at `W(Q)/(p-1)`
   have hdecomp : ∀ Q : ℕ, (Q : ℝ) * kernelStatistic (2 * Q) (primeWindowRow Q) p =
-      -(b 0) / ((p : ℝ) - 1) * ((Q : ℝ) * windowMass Q) +
-        ∑ r ∈ (range p).erase 0, b r * ((Q : ℝ) * (classMass p r Q - windowMass Q / ((p : ℝ) - 1))) +
-          b 0 * ((Q : ℝ) * classMass p 0 Q) +
+      -(b 0) / ((p : ℝ) - 1) * ((Q : ℝ) * dyadicInverseSquareMass Q) +
+        ∑ r ∈ (range p).erase 0, b r * ((Q : ℝ) * (primeClassMass p r Q - dyadicInverseSquareMass Q / ((p : ℝ) - 1))) +
+          b 0 * ((Q : ℝ) * primeClassMass p 0 Q) +
             (Q : ℝ) * ∑ n ∈ Ioc Q (2 * Q), vonMangoldt n / (n : ℝ) ^ 3 * cubicKernel p n := by
     intro Q
     have hsum0 : ∑ r ∈ (range p).erase 0, b r = -(b 0) := by
@@ -410,9 +409,9 @@ theorem tendsto_mul_kernelStatistic_primeWindowRow {p : ℕ} (hp : p.Prime) :
       rw [← add_sum_erase _ _ (mem_range.mpr hp.pos)] at h
       linarith
     rw [kernelStatistic_primeWindowRow_eq hp Q, ← add_sum_erase _ _ (mem_range.mpr hp.pos)]
-    have hsplit : ∑ r ∈ (range p).erase 0, b r * ((Q : ℝ) * (classMass p r Q -
-        windowMass Q / ((p : ℝ) - 1))) = (Q : ℝ) * ∑ r ∈ (range p).erase 0, b r * classMass p r Q -
-          (Q : ℝ) * windowMass Q / ((p : ℝ) - 1) * ∑ r ∈ (range p).erase 0, b r := by
+    have hsplit : ∑ r ∈ (range p).erase 0, b r * ((Q : ℝ) * (primeClassMass p r Q -
+        dyadicInverseSquareMass Q / ((p : ℝ) - 1))) = (Q : ℝ) * ∑ r ∈ (range p).erase 0, b r * primeClassMass p r Q -
+          (Q : ℝ) * dyadicInverseSquareMass Q / ((p : ℝ) - 1) * ∑ r ∈ (range p).erase 0, b r := by
       rw [mul_sum, mul_sum, ← sum_sub_distrib]
       exact sum_congr rfl fun r _ => by ring
     rw [hsplit, hsum0]
@@ -421,13 +420,13 @@ theorem tendsto_mul_kernelStatistic_primeWindowRow {p : ℕ} (hp : p.Prime) :
     ring
   -- each piece converges
   have hcop : Tendsto (fun Q : ℕ => ∑ r ∈ (range p).erase 0,
-      b r * ((Q : ℝ) * (classMass p r Q - windowMass Q / ((p : ℝ) - 1)))) atTop (𝓝 0) := by
+      b r * ((Q : ℝ) * (primeClassMass p r Q - dyadicInverseSquareMass Q / ((p : ℝ) - 1)))) atTop (𝓝 0) := by
     have h := tendsto_finsetSum ((range p).erase 0) fun r hr =>
-      (tendsto_mul_classMass_sub hp (Nat.pos_of_ne_zero (ne_of_mem_erase hr))
+      (tendsto_mul_primeClassMass_sub hp (Nat.pos_of_ne_zero (ne_of_mem_erase hr))
         (mem_range.mp (mem_of_mem_erase hr))).const_mul (b r)
     simpa using h
-  have hlim := (((tendsto_mul_windowMass.const_mul (-(b 0) / ((p : ℝ) - 1))).add hcop).add
-    ((tendsto_mul_classMass_zero hp).const_mul (b 0))).add (tendsto_mul_cubicPart hp)
+  have hlim := (((tendsto_mul_dyadicInverseSquareMass.const_mul (-(b 0) / ((p : ℝ) - 1))).add hcop).add
+    ((tendsto_mul_primeClassMass_zero hp).const_mul (b 0))).add (tendsto_mul_cubicPart hp)
   have hb0 : b 0 = Real.pi ^ 2 * ((p : ℝ) ^ 2 - 1) ^ 2 / (72 * (p : ℝ) ^ 2) := by
     simp only [hbdef, bernoulliKernel_zero hp.pos, primeKernelMean]
     have : (p : ℝ) ≠ 0 := by positivity

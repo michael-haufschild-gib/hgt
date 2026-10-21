@@ -38,7 +38,8 @@ description of the obstacle, it does not move it.
 - `zeta_orbit_closure_dichotomy` (positive density for nonvanishing targets; density zero for targets with an interior zero and boundary floor, via `eventually_volume_zetaTargetReturnSet_le`).
 
 ## Limits
-Discs are the Pechersky discs (`3ρ < 1 − Re z₀`); the natural-rate replacement is being built in `ExponentialTypeNotSummableOnPrimeLogsNaturalRate` by another agent. No Rouché step (exact value-taking `ζ = w`) is included. Nothing about the self-target at a point not known to be zero-free.
+Discs are the Pechersky discs at the natural rate: `ρ < Re z₀ − 1/2`, `ρ < 1 − Re z₀`, `2ρ < 5/12` (the last is the cap inherited from the `7/12` short-interval prime theorem through `exists_primeLogWeightedSum_gt_of_lt_one_sub`, built by another agent and propagated here on 2026-10-21; universal radius now `min((Re z₀−1/2)/6, (1−Re z₀)/6, 1/10)`). Removing the cap needs primes in almost all short intervals of length `x^{θ}` with `θ < 1/2`, i.e. a zero-density input; not in the corpus. No Rouché step (exact value-taking `ζ = w`) is included. Nothing about the self-target at a point not known to be zero-free.
 
 ## Log
+- 2026-10-21 — natural-rate constraint propagated (`ρ < 1 − Re z₀`, `2ρ < 5/12`); recompiled, olean rebuilt, axioms standard, lint clean.
 - 2026-10-21 — created directly in 3-formalized; compiled, olean built single-threaded, umbrella wired, lint clean for the module.

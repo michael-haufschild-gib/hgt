@@ -111,6 +111,56 @@ part of mechanism 1 is the theory of sign-changing supersolutions and a Harnack-
 across the prime shifts; its part of mechanism 3 is the aperture through which `Ẑ ≥ 0` holds for
 all profiles.
 
+### How the programme connects to the other programmes
+
+ACT is the operator-theoretic centre of the three faces: it owns the coordinates (gauges, generators,
+sources, the zero forms, the ground-energy path) in which the aperture face is stated, and its
+theorems are consumed on both sides of it.
+
+- **Arithmetic Incidence Positivity is the pair-by-pair continuation of §3.8.** The gauge-free
+  kernel `dm(|x − y|) + 2 sinh(x/2) sinh(y/2)`, the general-gauge ground-state representation, the
+  kernel bounds of the shifted ground state, the archimedean Z-type law, the curved-gauge
+  archimedean bounds, the pole-conductance window and the short-profile variation inequality are
+  ACT theorems that AIP builds on; AIP's folded odd plateau, curved fold, prime-atom-versus-pole
+  classification and shifted-pair Hankel selectivity are AIP theorems that ACT's window
+  positivity of §3.13 consumes for the odd sector. The division of labour is by sector and
+  support: ACT pays the even sector and the all-profile window through `3/10`, AIP pays the odd
+  sector through `181/500`, past the first prime; the even sector between `3/10` and `½ log 2`,
+  where the folded conductances across `log 2` turn negative, is the open instance of mechanism 1
+  that both share.
+- **Square-Root Threshold reads the ground-energy path through the lag family.** ACT's `3/10`
+  window and its logarithmic ground-energy floor transfer to SRT's zero configuration as
+  positivity of `Re W_ζ` at every height and on height windows; SRT's small-aperture height-window
+  positivity and height-window average representation enter ACT's Markov-window transfer (§3.14).
+  The Rayleigh bridge `2‖κ_w‖² μ(v/2 + w) ≤ Re P_v` makes the no-crossing law of `μ` and the
+  absence of a first negative lag one statement, SRT's explicit visibility lags bound the contact
+  aperture from above, and the rate `μ(A) ≥ −Ce^{2σA}` is SRT's zero width `σ`.
+- **Arithmetic Positivity Theory is the same form on a concrete family.** The full zero form `Ẑ`
+  equals APT's complete physical energy on continuous compact sources (APT's dictionary of five
+  names), the Markov energy equals APT's Markov form beyond the support, and the capacity ratio of
+  §3.8 is APT's odd-sector capacity inequality; APT's block positivity at high scale and ACT's
+  window positivity at small aperture bound the aperture face from its two ends, and APT's
+  detection theorems use ACT's full-zero-form positivity through the five-way identity.
+- **Trans-Horizon Incidence Mechanics holds the chain-side reading of the odd sector.** THIM's
+  Markov operator, odd eigenvector criterion, prime chains and collar transport are the same odd
+  sector in `oddProfile` coordinates (`m_a = 2 sinh(a/2)·oddProfile a`, the source is THIM's
+  `oddSinhPotential` with coefficient one); THIM's collar duality and Lamzouri four-trace use ACT's
+  folded ground-state representation, two-sided representation and combination failure, and
+  THIM's absorption boundary is the chain form of the collar ratio `R(a) > 2` of §3.4.
+- **Bi-Scale Uncertainty and Bézout–Valuation Incidence supply the blind cone and the finite
+  arithmetic.** BiScale's power-node removal law enters the atom-versus-pole integral law; its
+  exact blind-polar slack and deletion prices `Λ(m)/√m` are the archimedean budget every gauge of
+  this theory must at least pay at the nodes it uses, and its `log 4`/`log 6` thresholds are the
+  node criticality of the shared target. BVI's receiver and its zero-free bands are the
+  finite-modulus form of the same no-crossing law.
+- **RHTower supplies the analytic inputs**: the harmonic identity of `Θ` and the Weil–Markov–pole
+  split with its capacity, the phi-Doob jump energies and half-line folding, the reflected killing
+  potential, the CCM restricted and polar ground energies with Suzuki's small-aperture theorem,
+  ground-energy continuity and first-contact roughness, the Barta layer bounds and far tail of
+  Riemann's kernel, the CHMD odd harmonic identity and translated primitive source, the
+  pole-vanishing Weil positivity at the prime `2`, the full-cone Bochner measure, the half-line
+  trivial-zero criterion, the primitive hyperplane and the log-window prime number theorem.
+
 ---
 
 ## 1. Why: the sign problem and the criticality viewpoint
@@ -781,7 +831,11 @@ satisfies
 
     Ẑ(F) ≥ (1/5000) ∫ F²        (`fullZeroForm_ge_of_support_le_threeTenths`),
 
-so `μ(A) ≥ 1/5000` for every aperture `A ≤ 3/10`. Pairs with one point in a hub `Z` carry at least
+so `μ(A) ≥ 1/5000` for every aperture `A ≤ 3/10`. The odd sector alone reaches further: the
+strip surplus, the micro-fold Harnack across `½ log 2` and the Schur lending of
+`ArithmeticIncidencePositivity` make `Ẑ ≥ (1/1000)∫F²` for every odd `F` supported in
+`[−181/500, 181/500]`, past the first prime, with the atom `Λ(2)/√2` paid; between `3/10` and
+`½ log 2` the even sector is therefore the binding one. Pairs with one point in a hub `Z` carry at least
 `(∫_Z M) ∫ M (u − ū)²` (`hub_energy_ge`): the folded jump form has a Poincaré inequality, and with
 `A(t − c)² + Bt² ≥ c²AB/(A + B)` a potential negative in places is paid by it. The free even fold ends at `log ρ`; Weil
 positivity does not. On even tests the shifted pair `ζ(s − a)ζ(s + a)` has, for every radius `r` and
@@ -825,7 +879,16 @@ this one real function of one variable never crosses zero.
   the first regions of the frontier inequality that are not regions of pole domination.
 * **The lag face.** On the centred difference test of `SquareRootThreshold` at `A = v/2 + w`,
   `2‖κ_w‖²μ(v/2 + w) ≤ Re P_v`, and a bound `μ(A) ≥ −Ce^{2σA}` forces every zero into
-  `|Re ρ − ½| ≤ σ`: the no-crossing of `μ` and the absence of a first negative lag are one law.
+  `|Re ρ − ½| ≤ σ`: the no-crossing of `μ` and the absence of a first negative lag are one law,
+  and the rate `σ` is the zero width `sup|Re ρ − ½|`, which also bounds the de Bruijn–Newman heat
+  time by `σ²/2`. Off RH the path has a **contact aperture** `a* = inf{A : μ(A) < 0}`, beyond
+  `3/10`; a negative value of the difference test at lag `v` gives `μ(v/2 + w) < 0`, and a
+  near-top zero `½ + z₀` with readout at least `η`, seen by the lag family at its explicit lag
+  `V ≥ V₀(w, η, Re z₀)` with no zero deeper than `Re z₀ + 1/V`, gives `μ(A) < 0` for every
+  `A ≥ V/2 + w` (`ccmRestrictedWeilGroundEnergy_neg_of_near_top_zero`). So every certified
+  aperture `μ(A) ≥ 0` is a lower bound `V > 2(A − w)` on the visibility lag of every near-top
+  zero, and the contact aperture of a hypothetical near-top zero is at most half its visibility
+  lag plus the width.
 
 The path is pinned between explicit floors on `[0, 3/10]` and a doubly exponential ceiling at
 infinity; what is open is the stretch between, where the primes act at full strength.
@@ -918,10 +981,12 @@ the prime number theorem enters only through proved corpus forms.
    sharp window radius of problem 4, are not.
 7. **The ground-energy path between its floors.** `μ(A)` is bounded below explicitly on `[0, 3/10]`
    and by Suzuki's main term below `½ log 2`, and above by `K exp((11/2)A − πe^{2(A−2)})`; RH is the
-   absence of a contact aperture (3.14). Open: any floor past `½ log 2` on all profiles, where the
-   folded conductances across `log 2` are negative on even tests; the size of `μ(A)` on the stretch
-   where it is doubly exponentially small; and a mechanism excluding contact that sees every prime at
-   critical strength while losing nothing at the archimedean place.
+   absence of a contact aperture (3.14), and a near-top zero seen at lag `V` would place the
+   contact aperture below `V/2 + w`. Open: any floor past `3/10` on all profiles, in particular
+   past `½ log 2`, where the folded conductances across `log 2` are negative on even tests (the odd
+   sector is paid through `181/500`); the size of `μ(A)` on the stretch where it is doubly
+   exponentially small; and a mechanism excluding contact that sees every prime at critical
+   strength while losing nothing at the archimedean place.
 
 ### Research topics toward the shared target
 

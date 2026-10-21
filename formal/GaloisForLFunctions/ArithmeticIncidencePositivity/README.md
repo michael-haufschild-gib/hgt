@@ -111,8 +111,57 @@ the anti-diagonals and axis intervals the pole does not pay, the five moduli `{2
 nine moduli `{2,3,4,5,7,8,9,11,13}`, the lattice pairs the atoms flip, and the window incidence of
 the lag tests of `SquareRootThreshold`. It takes the gauge, the generators and the identity
 `Z = J_M + V_μ` from `ArithmeticCriticalityTheory` and must hand back a profile-level inequality,
-not a pointwise one. In the shared units every present theorem of AIP is infrastructure; its
-progress begins with the first selective statement, listed first in §5.
+not a pointwise one. In the shared units its odd-sector window reaches `181/500`, past the first
+prime, with the atom `Λ(2)/√2` paid and selective against the shifted pair from the Markov window
+on (mechanisms 24–34); its pointwise classifications, collar constants and the ledger of mechanism
+43 count as zero, and its next unit is the even sector and the ledger past `221/400`.
+
+### How the programme connects to the other programmes
+
+AIP is the youngest programme and the one with the smallest footprint of its own: it owns no
+analytic object, only the pair geometry of a form that `ArithmeticCriticalityTheory` defines, and it
+hands its results back as windows, atoms paid, and the ledger.
+
+- **Arithmetic Criticality Theory is the source of every object here.** The jump measure, the
+  zero form, the identity `Z = J_M + V_μ`, the general-gauge ground-state representation, the
+  kernel bounds of the shifted ground state, the archimedean Z-type law, the curved-gauge
+  archimedean bounds, the pole-conductance window and the short-profile variation inequality are
+  ACT theorems on which §3 is built; the folded odd plateau, the curved fold, the
+  atom-versus-pole classification and the shifted-pair selectivity go back to ACT, where they pay
+  the odd sector of its all-profile window through `3/10`. The division is by sector and support:
+  ACT pays the even sector and all profiles through `3/10`, AIP the odd sector through `181/500`;
+  the even sector between `3/10` and `½ log 2`, where the folded conductances across `log 2` are
+  negative, is the open instance of mechanism 1 the two programmes share, and the sign-changing
+  supersolution and the Harnack propagation of research topic 4 are joint work.
+- **Square-Root Threshold reads the windows on its lag family.** The difference test of the lag
+  family is odd, so the odd windows transfer to it without the all-profile `μ(A)`: `P_v ≥ 0`
+  through `v/2 + w ≤ 353/1000`, past `½ log 2`, with the atom paid on the window `{2}` of the
+  family itself. In the other direction the dyadic window `(X/2, 2X)` of mechanisms 9–11 is the
+  window SRT's lag `v = log X` reads, and SRT's dyadic-window criterion places the incidence
+  structure (doublings, triplings, consecutive powers of `2` and `3`) inside it.
+- **Arithmetic Positivity Theory is the same form at the opposite scale.** APT's odd tests carry
+  the whole pole risk `S(g)²/2`, which is the pole charge of the ledger; APT's block positivity at
+  scales beyond `M₀` and AIP's windows at apertures below `181/500` bound the form from its two
+  ends, and a passage from APT's family to the receiver would have to reproduce at every scale the
+  Harnack inequality across the prime shifts that AIP proves on one strip.
+- **Bézout–Valuation Incidence and Trans-Horizon Incidence Mechanics hold the additive side of the
+  same window.** AIP's lattice pairs are the multiplicative incidence of a dyadic window
+  (divisibility, products); BVI's successor incidence `d₁ ∣ k`, `d₂ ∣ k + 1`, Bézout seeds and
+  omitted residue classes are its additive incidence, which the form cannot see through pairs
+  alone (research topic 3 of BVI). THIM's low-prime diagonal potential after exact collar
+  cancellation is the chain-side counterpart of the unpaid axis intervals and the nine moduli, and
+  THIM's parity rows answer the parity question of open problem 5.
+- **Bi-Scale Uncertainty supplies the archimedean budget and the calibration models.** Its exact
+  blind-polar slack and the deletion prices `Λ(m)/√m` of the nodes are what any gauge of this
+  programme pays at the nodes it uses; its `log 4`/`log 6` thresholds are the node criticality the
+  windows must respect (the lattice pairs `{2,4}` and `{3,3}` of mechanism 22 are where the atoms
+  flip a sign); its test models (shifted pair, Beurling, Liouville, `F_q[T]`) are the audit of
+  research topic 5.
+- **RHTower supplies** the archimedean density and the von Mangoldt atoms, the reflected killing
+  potential and the disjoint-support diagonal, the Lévy–pole Gauss-mode cancellation and the
+  plastic crossover, the archimedean anomaly constants, the Euler–Mascheroni bounds, the prime
+  number theorem of its sieve library (the edge-tent obstruction), and the half-line folding and
+  divisor cuts of CHMD.
 
 ---
 

@@ -114,6 +114,51 @@ mechanism 5 with `TransHorizonIncidenceMechanics`. It supplies the additive wind
 `{N/q}`) that the incidence face of `ArithmeticIncidencePositivity`, built on divisibility and
 products alone, does not see.
 
+### How the programme connects to the other programmes
+
+BVI is the static incidence algebra of the finite side; everything it proves is an exact
+rearrangement of the bilinear form of a row against the incidence matrix `𝟙_{d∣n}`, and the other
+programmes either move that algebra (THIM), observe it (BiScale) or read its receiver in their own
+units (the three faces).
+
+- **Trans-Horizon Incidence Mechanics is the dynamics of this algebra**; the two programmes are
+  one theory in two folders. BVI's prefix-discrepancy duality, renormalized defect, gradient
+  coercivity, window Poincaré and long-window dissipation (§3.4), Jordan and primitive energies,
+  quotient–octave reciprocity, dilation-pair densities and singular series are consumed by THIM's
+  horizon filtration, band calculus and damped observer; THIM's horizon steps, radical states,
+  clock wavelets, Fermi schedules, parity pairs and the receiver classification of multiplicative
+  weights are consumed here, where the pairs are separated on the zero-free bands (§3.15). BVI's
+  coherent-block Type-II ceiling (§3.13) and THIM's parity barrier are the Gram side and the
+  receiver side of mechanism 5.
+- **Bi-Scale Uncertainty observes the rows BVI builds.** BiScale's sieve phase recoveries (cubic,
+  sixth), affine spectrum and translation anchoring, highest-mode stability, two-lag moment cone,
+  universal Ramanujan covariance, `ker P` centred sieve, Barban–Vehov pinch, signed lcm defect and
+  Vasyunin tail-Gram producer are used in §3.2, §3.5, §3.6 and §3.14; BVI's translation prediction
+  and exact compression, six-mode stability, gcd-orbit projection, Ramanujan lag coefficient,
+  pronic Bézout split and successor moment region are used in BiScale's arithmetic observation
+  theory. The passage from complete periods to windows at unknown phases (§3.4) is owned here and
+  consumed there; the pronic measure of §2.7 is Lebesgue measure on `(0, 1]` read through
+  BiScale's Fermi–Nyman cells.
+- **Arithmetic Incidence Positivity classifies the multiplicative incidence that BVI complements
+  additively.** AIP's lattice pairs `(−log a, log b)` with `a ∣ b` or `ab` a prime power are the
+  divisor edges of one dyadic window; BVI's successor incidence `d₁ ∣ k`, `d₂ ∣ k + 1`, the
+  Bézout seeds `pa − qb = 1` and the residue classes omitted modulo `p` (§3.13) are the additive
+  edges of the same window, which the incidence face cannot see. The omitted-class law of the
+  prime row is the first statement of this programme written in AIP's window.
+- **The three faces read BVI's receiver in their own units.** The receiver `E_T(ε)` is bounded
+  for `ε ≥ 1/2` and on the zero-free bands below it (§3.15); every band is a zero-free region,
+  which `SquareRootThreshold` reads as a zero width and `ArithmeticCriticalityTheory` as the rate
+  of the ground-energy path. The pronic Báez-Duarte criterion of §3.7 is the Nyman–Beurling form
+  of the one critical form the three faces state through lags, apertures and incidence; the
+  critical-scale receiver `D(T) ≤ B(1+T)e^{T/2}` of `ArithmeticPositivityTheory` is the
+  Chebyshev-level form of the same square-root barrier that §1.3 states for rows.
+- **RHTower supplies the analytic inputs**: the PM lane (power-damped Möbius Ramanujan weights,
+  cofactor rows, the receiver's zero-translation converse), the sieve library (Farey-point large
+  sieve infrastructure, Kuzmin–Landau, Vinogradov–Korobov, Mertens rates, Selberg and
+  Barban–Vehov diagonals, Dirichlet's theorem in Chebyshev form), the Báez-Duarte criterion with
+  its dual sequence, Estermann's `D(s, a/q)` and the Montgomery–Vaughan cosecant inequality of
+  `HTGeometry`.
+
 ---
 
 ## 1. Why
@@ -1080,6 +1125,21 @@ $\theta=2K/(K+1)$, the sequence $4/3,3/2,8/5,\dots\to2$
 (`abs_rowBilinear_add_mean_add_beta_le_smoothnessNorm`). The receiver is the limit of infinite
 smoothness; the Möbius and prime rows are not smooth at any order.
 
+**The single-modulus statistic of the actual prime row is an omitted residue class.** For a fixed
+prime $p$ and the von Mangoldt row $c'_Q=\Lambda\mathbf 1_{(Q,2Q]}$ the kernel statistic depends on
+$n$ only through $n\bmod p$. The coprime classes carry equal mass $W(Q)/(p-1)+o(1/Q)$ by
+Dirichlet's theorem in Chebyshev form, and since the centred kernel has zero residue mean they
+contribute $-(\mathfrak B(p,0)-m_p)W(Q)/(p-1)$; the class $0$ holds at most one prime power in
+$(Q,2Q]$ and contributes $O(\log Q/Q^2)$. Hence
+$$
+Q\,\Lambda_p(c'_Q)\ \longrightarrow\ -\frac{\mathfrak B(p,0)-m_p}{2(p-1)}=-\frac{\pi^2(p^2-1)^2}{144\,p^2(p-1)}
+$$
+(`tendsto_mul_kernelStatistic_primeWindowRow`): the statistic of the prime row is not small, it is
+the sieve term of the residue class the primes omit, of relative size $\asymp1/p$ against the
+trivial bound, while a row equidistributed in every class, such as the Möbius row by the prime
+number theorem in progressions, has statistic $o(1/Q)$. This is a law for fixed moduli; the dual
+norm at moduli $p\sim P$ growing with $Q$ is the open question of §5.
+
 ### 3.14 Bridges to classical sieve estimates
 
 The response of the Möbius row is, up to sign, the Vaughan Type-II short coefficient:
@@ -1117,6 +1177,73 @@ Möbius and damped rows nonpositive at every prefix for large horizons in the tr
 theory, and the polynomial-window transfer of moments is what lifts the arithmetic observation
 theory from complete periods to windows at unknown phases.
 
+### 3.15 The receiver below half damping: the zero-free bands
+
+The receiver $E_T(\varepsilon)$ is bounded for $\varepsilon\ge\tfrac12$ by size alone (§1.3, and the
+universal law of the damped class in the trans-horizon theory). Below one half it is bounded
+exactly where $1/\zeta$ is known to be zero-free, and the mechanism is a rate transfer.
+
+**Rate transfer.** If a sign pattern $s$ with $\lvert s\rvert\le1$ has partial sums
+$\lvert S(x)\rvert\le Lx$ from $D$ on, summation by parts against the antitone weights $d^{-\varepsilon}$
+and $d^{-1-\varepsilon}$ in the hyperbola split of the centred prefix at $D$ gives, for
+$\tfrac14\le\varepsilon\le\tfrac12$,
+$$
+\lvert A(n)\rvert\ \le\ 3D^{1-\varepsilon}+31\,L\,n\,D^{-\varepsilon}
+$$
+(`abs_weightCenteredPrefix_dampedSign_le_of_linear`): any Mertens rate becomes a prefix bound.
+Fed with the de la Vallée Poussin rate $\lvert M(x)\rvert\le Bxe^{-\sqrt{\log x}/12}$ at
+$D=ne^{-\sqrt{\log n}/20}$ this is $\lvert A_\varepsilon(n)\rvert\le Kn^{1-\varepsilon}e^{-\sqrt{\log n}/40}$,
+and the factor $n^{1-2\varepsilon}$ is absorbed for all $n\le T$ once
+$\varepsilon\ge\tfrac12-1/(80\sqrt{\log T})$; fed with the Vinogradov–Korobov rate
+$\lvert M(x)\rvert\le Bxe^{-\kappa\sigma(x)/24}$, $\sigma(x)=(\log x)^{3/5}(\log\log x)^{-5/3}$, at
+$D=ne^{-\kappa\sigma(n)/120}$ it is $\lvert A_\varepsilon(n)\rvert\le Kn^{1-\varepsilon}e^{-\kappa\sigma(n)/240}$.
+Hence **the receiver and the Bézout interior energy are bounded uniformly in $T$ and in
+$\varepsilon$ on the band**
+$$
+\tfrac12-\frac{\kappa\,\sigma(T)}{480\log T}\ \le\ \varepsilon\ \le\ \tfrac12
+$$
+(`exists_receiver_le_on_vinogradovKorobovBand`, `exists_receiver_le_on_zeroFreeBand`): the damping
+unit moves from $\tfrac12$ to $\tfrac12-c/\sqrt{\log T}$ and then to
+$\tfrac12-c(\log T)^{-2/5}(\log\log T)^{-5/3}$ at horizon $T$. The band is exactly the zero-free
+region, in both directions: a band of fixed width would be a zero-free strip, and the corpus's
+converse (zero translation of the power-damped receiver) turns any receiver bound below one half
+into a zero-free half-plane. No bound reaches a fixed $\varepsilon<\tfrac12$.
+
+**The band reads the signs.** The damped Möbius row and its parity twin $c'_\varepsilon$ (nonnegative,
+squarefree-supported, with Ramanujan coefficients of equal absolute value) have identical
+sign-blind data at every damping; on the band the twin's receiver is at least
+$c(\log(T+1)-\log100)$ with one $c>0$ (the drift of the squarefree moduli beyond the prefix, made
+uniform in $\varepsilon\in[\tfrac14,\tfrac12]$ by monotonicity of $\rho_\varepsilon$ and of the twin's
+local factors), while the Möbius receiver is bounded (`parityPair_separated_on_vinogradovKorobovBand`).
+The parity barrier of the trans-horizon theory therefore has its visibility witness on the band:
+the bound is paid by the zero-free region of $1/\zeta$, that is by the signs of $\mu$. In the same
+way the receiver of a multiplicative weight with $\lvert f\rvert\le1$ is decided at the primes on
+the band: $f(p)=-1$ at every prime gives a bounded receiver uniformly on the band (through the
+critical Wiener factorization $f=(f\star1)\star\mu$ and the finite convolution law of the
+trans-horizon theory), $f(p)=+1$ with $f\ge0$ gives $E_T\ge(\log(T+1)-\log100)/1024$ at every
+$0<\varepsilon\le\tfrac12$ (`exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one`,
+`receiver_ge_log_of_primes_one`).
+
+**The pronic weighting carries exactly the Vinogradov–Korobov factor.** At fixed
+$\varepsilon\in[\tfrac14,\tfrac12)$ the period energy of the damped row grows like $N^{1-2\varepsilon}$
+(the top octave of moduli acts as $N^{1-2\varepsilon}$ independent unit steps, §3.4 and the
+trans-horizon growth law), while the receiver, the pronic energy of the prefix below the first
+period, satisfies
+$$
+E_T(\varepsilon)\ \le\ C_\varepsilon\,T^{1-2\varepsilon}e^{-\kappa\sigma(T)/270},\qquad
+\frac{E_N(\varepsilon)}{\mathcal E_{\mathrm{prim}}(N)}\ \le\ Ce^{-\kappa\sigma(N)/270}\to0
+$$
+(`eventually_receiver_le_growth`, `eventually_receiver_le_mul_periodEnergy`; split at $\sqrt T$,
+where above it $\sigma(n)\ge\tfrac49\sigma(T)$). The prefix below the period carries a cancellation
+the period torus does not have, and its unconditional size is the zero-free region. A growth
+exponent below $1-2\varepsilon$ at one fixed $\varepsilon<\tfrac12$ would be a zero-free strip.
+
+**Selectivity.** The de la Vallée Poussin width $(\log T)^{-1/2}$ is the most a Beurling system
+can guarantee (Diamond–Montgomery–Vorhauer); the Vinogradov–Korobov band is wider by the factor
+$(\log T)^{1/10}(\log\log T)^{-5/3}$, and the extra width is paid by Vinogradov's mean value
+theorem, that is by the additive structure of $\mathbb N$. The band is the first receiver
+statement of this programme that is selective against Beurling systems.
+
 ---
 
 ## 4. Traps and sharp boundaries
@@ -1152,6 +1279,9 @@ theory from complete periods to windows at unknown phases.
 | The second-order coupling has a sign. | It oscillates with $q\bmod p$ at amplitude $\asymp p^2/q$: positive near residue $0$, negative near the half. |
 | $\Lambda_d(c')$ is the von Mangoldt function. | In the cross-scale theory it is the kernel statistic of the large-scale row at the modulus $d$. |
 | The window exponent and the cross-scale exponent are one unit. | On a pronic window $\theta=2\log P/\log X$ and no $\ell^2$ Type-II input passes $1$; across two scales $\theta=2\log P/\log Q$ and Type II reaches $6/5$. Name the coordinates. |
+| A Mertens rate bounds the receiver at a fixed $\varepsilon<\tfrac12$. | It moves the damping unit only to $\tfrac12-(\text{rate})/\log T$ at horizon $T$; a band of fixed width is a zero-free strip, and every receiver bound below one half is a zero-free region. |
+| The single-modulus statistics of the prime row are small. | At fixed $p$ they are $\asymp p/Q$, the sieve term of the omitted residue class $0$; only rows equidistributed in every class modulo $p$ have $o(1/Q)$. |
+| Dilation $k\mapsto pk$ alone reads enough of the signs. | A Kátai-type single-modulus law saves only $(\log\log)^{-1/2}$ and is dominated by the $\ell^2$ large-sieve dispersion except at $P\asymp Q$. |
 
 **Lean conventions.** Capstones are stated on data parameters and carry no analytic premise;
 where a finite statement has hypotheses they are arithmetic side conditions on the data
@@ -1169,11 +1299,14 @@ assumptions. Every module says in its header what its bounds do not prove.
 
 **The receiver.** For every $\delta>0$ exhibit $\varepsilon\in(0,\delta)$ with
 $\sup_TE_T(\varepsilon)<\infty$. Equivalently, exhibit such $\varepsilon$ with $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$,
-or with the strict interior contraction of §3.8. Known for every $\varepsilon\ge\frac12$, open
-for every $\varepsilon<\frac12$; a bound at one fixed $\varepsilon<\frac12$ is already a zero-free
-half-plane statement, so no routine bookkeeping can supply it. On the period torus the
-primitive energy of the damped row diverges for $\varepsilon\le1/2$, so the bound, if it exists,
-is carried by the pronic weighting of small arguments below the first period.
+or with the strict interior contraction of §3.8. Known for every $\varepsilon\ge\frac12$ and on
+the zero-free bands $\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ below it (§3.15), open at
+every fixed $\varepsilon<\frac12$; a bound at one fixed $\varepsilon<\frac12$ is a zero-free
+half-plane statement and every band of fixed width a zero-free strip, so no routine bookkeeping
+can supply it. On the period torus the primitive energy of the damped row grows like
+$N^{1-2\varepsilon}$ for $\varepsilon<1/2$, and the receiver is smaller than it by exactly the
+Vinogradov–Korobov factor, so the bound, if it exists, is carried by the pronic weighting of
+small arguments below the first period, and its unconditional size is the zero-free region.
 
 **The dual problem.** RH is also the statement that rows exist whose shifted prefix discrepancy
 has arbitrarily small pronic energy, equivalently with readout near one and vanishing centered
@@ -1205,10 +1338,13 @@ missing is the signed sum over moduli.
    Vasyunin reciprocity law holds with $O(p+q)$ error, and the cross-scale form is explicit to
    every order (§3.13): rank two at diagonal quality for $Q\ge P^{5/3}$ with arbitrary
    coefficients, sharply; exact loss the $\ell^1$ residue discrepancy; dual norm
-   $\sum_p\lvert\Lambda_p(c')\rvert/p$. Missing: a bound on these single-modulus statistics for the
-   actual Möbius or prime row in the balanced regime $P\le Q<P^{5/3}$, that is on low-frequency
-   exponential sums of an arithmetic row at the rationals $k/p$, without an external character or
-   modulus average.
+   $\sum_p\lvert\Lambda_p(c')\rvert/p$. At fixed moduli the statistics are known: $o(1/Q)$ for the
+   Möbius row, and for the prime row the omitted-class value $-\pi^2(p^2-1)^2/(144p^2(p-1)Q)$,
+   which is not small. Missing: a bound on these single-modulus statistics for the actual Möbius
+   or prime row at moduli $p\sim P$ growing with $Q$ in the balanced regime $P\le Q<P^{5/3}$, that
+   is on low-frequency exponential sums of an arithmetic row at the rationals $k/p$, without an
+   external character or modulus average; for the prime row the omitted class must be subtracted
+   first.
 4. *A coercive contraction.* An inequality
    $2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C_\varepsilon$
    with $\delta>0$, equivalent to the receiver. Identities cannot produce it; a signed
@@ -1227,10 +1363,13 @@ cells, which are positive when the cells share a factor and start together.
 
 1. **Single-modulus statistics of arithmetic rows.** The bilinear dispersion of
    `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` (mechanism 2) is reduced exactly to the dual norm
-   `Σ_p |Λ_p(c')|/p` of the large-scale row; bound it for the Möbius and prime rows, through the
-   reciprocity `{N/pq} ↔ p̄/q + q̄/p` and without an external character or modulus average. The unit
-   is the cross-scale exponent `θ = 2 log P/log Q`: Type II stands at `6/5`, sharp cutoffs at `4/3`,
-   rows smooth to order `K − 1` at `2K/(K + 1)`, the receiver at `θ = 2`.
+   `Σ_p |Λ_p(c')|/p` of the large-scale row; bound it for the Möbius and prime rows at moduli
+   growing with the window, through the reciprocity `{N/pq} ↔ p̄/q + q̄/p` and without an external
+   character or modulus average, after subtracting the omitted-class term of the prime row
+   (§3.13). The unit is the cross-scale exponent `θ = 2 log P/log Q`: Type II stands at `6/5`,
+   sharp cutoffs at `4/3`, rows smooth to order `K − 1` at `2K/(K + 1)`, the receiver at `θ = 2`.
+   On the damping side the unit is the band: the receiver is bounded through
+   `ε = 1/2 − κσ(T)/(480 log T)` (§3.15), and every wider band is a zero-free region.
 2. **The signed sum over moduli** of the interior martingale, equivalently the coercive
    contraction; identities cannot produce it.
 3. **Additive window structure for the incidence face.** Bézout incidence inside a dyadic window

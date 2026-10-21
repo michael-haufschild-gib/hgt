@@ -119,6 +119,60 @@ that uses `ℤ`. It supplies to `ArithmeticIncidencePositivity` and
 `ArithmeticCriticalityTheory` the exact slack of the blind polar class and to `SquareRootThreshold`
 the band energy law.
 
+### How the programme connects to the other programmes
+
+BiScale is the hub of the finite arithmetic side and the laboratory of the analytic side: it owns
+the coordinates (autocorrelation, Lévy energy, polar density, the signed prime–polar measure, the
+hyperbolic gauge) in which the other programmes state their estimates, and it consumes their
+arithmetic.
+
+- **Arithmetic Positivity Theory is built on BiScale sources.** The factorial Müntz family (tail
+  primitive, analytic repair of the readout, zero-side smoothing limit, prime–polar budget, Weil
+  smoothing, Gram decoupling of the tent direction), the signed prime–polar jump domain, the
+  logarithmic increment energy and the origin-collar leverage of §3.2 and §3.5, the compact
+  Lipschitz Lévy energy and the polar moment identity are the objects APT continues at the
+  critical envelope `β = 1/2`. The Müntz tail's unbounded normalized energy (§3.12) is the fact
+  APT turns into the critical factorial family. In return APT's complete critical form, dyadic
+  dilation inequality and tent family are the producers of this programme at unbounded support.
+- **Bézout–Valuation Incidence and Trans-Horizon Incidence Mechanics supply the finite
+  arithmetic of §3.14.** The translation prediction and exact compression of divisor-sieve
+  signals, the six-mode stability and sharp quarter decorrelation, the gcd-orbit projection and
+  exact translation periods, the Ramanujan lag coefficient, the pronic Bézout split and the
+  successor moment region are BVI theorems; the radical checkpoint sign rigidity and the finite
+  multiplicative observation state are THIM theorems. BiScale's arithmetic observation theory
+  (recovery degrees, stability exponents, sign characters) is stated on top of them, and the
+  passage from period moments to polynomial horizons stays in BVI. In the other direction BVI's
+  Barban–Vehov pinch, Vasyunin tail Gram, witness-cell transfer, sieve phase recoveries and the
+  two-lag moment cone, and THIM's producer–consumer duality, Lorentz boost, stationary resolvent
+  Markov positivity and Euler–Poisson chiral drift, are built on BiScale's coordinates. THIM's
+  parity pairs are the receiver-side reason why the sign-character classification of §3.14 is
+  the right organizing principle: below half damping no sign-blind observable decides.
+- **Arithmetic Criticality Theory and Arithmetic Incidence Positivity receive the blind cone.**
+  The exact slack of the blind polar class, the power-node removal law and the deletion prices of
+  §3.16 are the archimedean inputs to the sign-changing gauges of ACT and the pair-by-pair
+  payment of AIP: a gauge that pays the prime atoms must at least pay the Euler prices
+  `Λ(m)/√m` of the nodes it uses, and the `log 4`/`log 6` thresholds of §3.16 are the node
+  criticality every such gauge is measured against. ACT's Lévy–Krein rigidity of the even sector
+  and its Euler–Maclaurin cell quadrature are shared with §3.3.
+- **Square-Root Threshold reads the same barrier at height `T`.** BiScale's band
+  `|ξ| ≤ √(N+2)` and SRT's bandwidth `λ = log X/log T` are two coordinates of the square-root
+  threshold; the band spectrum of §3.10 and SRT's zero width `sup|Re ρ − ½|` are the same number,
+  read here from the Chebyshev mean square and the packet growth, there from the first negative lag.
+  The window remainder `|c(L) − e^{L/2}| ≤ Ce^{L/2−κ√L}` of §3.16 is the window form of SRT's lag
+  envelope `P_v ≥ −|φ(0)| − Ce^{v/2−√v/10}`; SRT's de Bruijn–Newman heat-time bound uses the width
+  this programme reads from the band.
+- **RHTower supplies the analytic theorems** the mechanisms consume: Hardy's theorem and the
+  superlinear count of simple critical zeros, the critical-Mellin resolvent width and the
+  generalized von Koch bound, Cramér's dyadic mean square, the one-sided Landau engine and the
+  Chebyshev-deficit criterion, Montgomery–Vaughan, Vinogradov–Korobov and the prime number
+  theorem with error term, the Selberg and Barban–Vehov diagonals, the Fermi–Nyman generators, the
+  CHMD graph mollification and the Weil deletion test kit. The blind symbol slacks of §3.6 refine
+  RHTower's prime-blind archimedean constants, whose full-grid zero-pole version is RH.
+- **Calibration duty.** BiScale owns the test models of the shared criteria: the shifted pair
+  `ζ(s−a)ζ(s+a)`, Beurling systems with an off-line zero, the Liouville twist and `F_q[T]`. The
+  twist invariance of window spectra (§3.16) is the first calibration theorem: window extremes
+  see atoms only through their sizes, so they cannot read GRH.
+
 ---
 
 ## 1. Why
@@ -1137,11 +1191,13 @@ certificates*, continuous circle observables with $P_1(r\ell_1)+P_2(r\ell_2)\le\
 real $r$, and product midpoint designs $\omega_a\pm\omega'_b$, whose cosine sums factor, attain the
 mean $T(q_1,q_2)$ of $\gamma$ under the convolution of the two uniform period laws. Hence the exact
 slack lies in $[-T(q_1,q_2),\,-m_{q_1}-\eta(q_1,q_2)]$ (`TwoTowerBlindSlackEnclosure`). Open: its exact
-value (the box convolution is the admissible law of smallest support, not expected to be optimal); the infimum of $\mathcal J/h(0)$ on the full blind polar class against
-$|\Omega(0)|$, which is prime-blind archimedean positivity; and the exact density threshold for
-pole visibility between the sub-square-root sets, where the pole is invisible, and the full grid,
-where zero-pole positivity is RH, in particular whether blindness at the primes alone, with
-$\asymp e^X/X$ nodes per window, already makes zero-pole positivity RH-equivalent.
+value (the box convolution is the admissible law of smallest support, not expected to be
+optimal); the infimum of $\mathcal J/h(0)$ on the full blind polar class against $|\Omega(0)|$,
+which is prime-blind archimedean positivity; and, since zero-pole positivity on a node set is
+decided by incidence rather than density (§3.16: RH together with containment of every prime
+power, so the primes alone never suffice and no composite matters), the slack of the cone blind
+at exactly the prime powers as a function of the window length, between the Euler prices of
+§3.16 and the full-grid value.
 
 **The odd sector.** The coherent price $\log 2$ is sharp and the finite-filter gain is strict, but
 the full odd Weil sign is not proved; at pole weight one the odd bound retains a positive
@@ -1168,8 +1224,10 @@ estimates for the mass and edge kernels and the sign of their difference are ope
 ### Research topics toward the shared target
 
 1. **Node criticality.** What in the multiplicative incidence of the node set `{log n}` makes
-   `log 4` indispensable and `log 6` redundant, and how a positivity argument reads it; this is the
-   criterion every mechanism of the shared target must pass.
+   `log 4` indispensable and `log 6` redundant beyond the deletion prices and window thresholds of
+   §3.16 (the price of `4` is a local Euler factor and appears at its own lag, `log 6` is the lag
+   of a node that is never charged), and how a positivity argument at arbitrary support reads it;
+   this is the criterion every mechanism of the shared target must pass.
 2. **Prime-blind archimedean positivity.** The infimum of `𝒥/h(0)` on the full blind polar class
    against `|Ω(0)|`, with its exact slack, as the input to the sign-changing gauges of mechanism 1.
 3. **The linear band itself**, tested against the four requirements of §5: failure for Beurling

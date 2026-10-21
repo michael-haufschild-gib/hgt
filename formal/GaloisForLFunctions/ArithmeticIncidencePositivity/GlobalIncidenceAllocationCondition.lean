@@ -411,6 +411,167 @@ theorem riemannHypothesis_iff_exists_plateau_globalIncidenceAllocation :
     rw [globalIncidenceAllocation_iff_fullZeroForm_nonneg hF hFc hodd hr hsupp hR'] at hGIA
     exact (globalIncidenceAllocation_iff_fullZeroForm_nonneg hF hFc hodd hr hsupp hrR).mpr hGIA
 
+/-! ### The gauge remainder is archimedean and has an explicit floor -/
+
+/-- The archimedean potential `x ↦ ∫_{u>0} profileArchTerm M x u` of a bounded Lipschitz gauge is
+continuous. -/
+theorem continuous_integral_profileArchTerm {M : ℝ → ℝ} {C K : ℝ} (hMc : Continuous M)
+    (hLip : ∀ a b, |M a - M b| ≤ K * |a - b|) (hMb : ∀ y, |M y| ≤ C) :
+    Continuous fun x => ∫ u in Ioi (0 : ℝ), profileArchTerm M x u := by
+  refine continuous_of_dominated (bound := fun u => (2 * K + 3 * C) * (archLevyDensity u * u))
+    (fun x => (integrableOn_profileArchTerm hMc hLip x).aestronglyMeasurable)
+    (fun x => ae_restrict_of_forall_mem measurableSet_Ioi fun u hu => ?_)
+    (integrableOn_archLevyDensity_mul_id.const_mul _) (Eventually.of_forall fun u => ?_)
+  · rw [Real.norm_eq_abs]
+    refine (abs_profileArchTerm_le hLip x hu).trans (mul_le_mul_of_nonneg_right ?_
+      (mul_nonneg (archLevyDensity_pos hu).le (le_of_lt hu)))
+    linarith [hMb x]
+  · unfold profileArchTerm
+    exact (continuous_const.mul hMc).sub (continuous_const.mul
+      ((hMc.comp (continuous_id.add continuous_const)).add
+        (hMc.comp (continuous_id.sub continuous_const))))
+
+/-- **The gauge remainder is archimedean.** The prime part of `−𝒲P` cancels the returned prime
+sum exactly: `gaugeRemainder P F = ∫ F² P (∫_{u>0} profileArchTerm P x u − (γ + log π) P(x))`. -/
+theorem gaugeRemainder_eq_arch (P F : ℝ → ℝ) :
+    gaugeRemainder P F = ∫ x, F x ^ 2 * P x *
+      ((∫ u in Ioi (0 : ℝ), profileArchTerm P x u) - 2 * archConstantReal * P x) := by
+  unfold gaugeRemainder poleFreeWeilOperator
+  exact integral_congr_ae (Eventually.of_forall fun x => by ring)
+
+/-- The plateau potential floor `Ω(R − x) + Ω(R + x) − 2E(0) − (γ + log π)` at the plateau radius
+`R`, `E(0) = (3/2) log 2 + π/4`. -/
+def plateauPotentialFloor (R x : ℝ) : ℝ :=
+  archLevyAntideriv (R - x) + archLevyAntideriv (R + x) - 2 * windowEdgeFunction 0 -
+    2 * archConstantReal
+
+theorem measurable_archLevyAntideriv : Measurable archLevyAntideriv := by
+  unfold archLevyAntideriv
+  fun_prop
+
+theorem measurable_plateauPotentialFloor (R : ℝ) : Measurable (plateauPotentialFloor R) := by
+  unfold plateauPotentialFloor
+  exact (((measurable_archLevyAntideriv.comp (measurable_const.sub measurable_id)).add
+    (measurable_archLevyAntideriv.comp (measurable_const.add measurable_id))).sub
+    measurable_const).sub measurable_const
+
+/-- On `|x| ≤ r < R` the floor is bounded by `2Ω(R − r) + |2E(0) + (γ + log π)|`. -/
+theorem abs_plateauPotentialFloor_le {R r x : ℝ} (hrR : r < R) (hx : |x| ≤ r) :
+    |plateauPotentialFloor R x| ≤
+      2 * archLevyAntideriv (R - r) + |2 * windowEdgeFunction 0 + 2 * archConstantReal| := by
+  unfold plateauPotentialFloor
+  have hx1 := le_abs_self x
+  have hx2 := neg_abs_le x
+  have h0 : 0 < R - r := by linarith
+  have ha : 0 < archLevyAntideriv (R - x) := archLevyAntideriv_pos (by linarith)
+  have hb : 0 < archLevyAntideriv (R + x) := archLevyAntideriv_pos (by linarith)
+  have ha' : archLevyAntideriv (R - x) ≤ archLevyAntideriv (R - r) :=
+    antitoneOn_archLevyAntideriv h0 (show (0 : ℝ) < R - x by linarith) (by linarith)
+  have hb' : archLevyAntideriv (R + x) ≤ archLevyAntideriv (R - r) :=
+    antitoneOn_archLevyAntideriv h0 (show (0 : ℝ) < R + x by linarith) (by linarith)
+  have hc1 := le_abs_self (2 * windowEdgeFunction 0 + 2 * archConstantReal)
+  have hc2 := neg_abs_le (2 * windowEdgeFunction 0 + 2 * archConstantReal)
+  rw [abs_le]
+  constructor <;> linarith
+
+theorem integrable_sq_mul_plateauPotentialFloor {F : ℝ → ℝ} {r R : ℝ} (hF : Continuous F)
+    (hFc : HasCompactSupport F) (hrR : r < R) (hsupp : ∀ x, r < |x| → F x = 0) :
+    Integrable fun x => F x ^ 2 * plateauPotentialFloor R x := by
+  have hF2 : Integrable fun x => F x ^ 2 :=
+    (hF.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
+  refine (hF2.const_mul (2 * archLevyAntideriv (R - r) +
+    |2 * windowEdgeFunction 0 + 2 * archConstantReal|)).mono'
+    ((hF.measurable.pow_const 2).mul (measurable_plateauPotentialFloor R)).aestronglyMeasurable
+    (Eventually.of_forall fun x => ?_)
+  rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (sq_nonneg (F x))]
+  by_cases h : F x = 0
+  · rw [h]; simp
+  · have hx : |x| ≤ r := by
+      by_contra h'
+      exact h (hsupp x (not_le.mp h'))
+    rw [mul_comm (2 * archLevyAntideriv (R - r) + |2 * windowEdgeFunction 0 + 2 * archConstantReal|)]
+    exact mul_le_mul_of_nonneg_left (abs_plateauPotentialFloor_le hrR hx) (sq_nonneg _)
+
+/-- **The gauge remainder of the aperture plateau has an explicit floor.** For every `F ∈ C²_c`
+supported in `[−r, r]`, `0 < r < R`: `∫ F² · plateauPotentialFloor R ≤ gaugeRemainder P F`. -/
+theorem gaugeRemainder_ge_plateauPotentialFloor {F : ℝ → ℝ} {r R : ℝ} (hF : ContDiff ℝ 2 F)
+    (hFc : HasCompactSupport F) (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    (∫ x, F x ^ 2 * plateauPotentialFloor R x) ≤ gaugeRemainder (aperturePlateau r R) F := by
+  set P := aperturePlateau r R with hPdef
+  have hδ : 0 < R - r := by linarith
+  have hPd : ContDiff ℝ 2 P := by rw [hPdef]; exact contDiff_plateauGauge R (R - r)
+  have hPcs : HasCompactSupport P := by rw [hPdef]; exact hasCompactSupport_plateauGauge hδ
+  have hP0 : ∀ y, 0 ≤ P y := fun y => by rw [hPdef]; exact plateauGauge_nonneg R (R - r) y
+  have hP1 : ∀ y, P y ≤ 1 := fun y => by rw [hPdef]; exact plateauGauge_le_one R (R - r) y
+  have hPB : ∀ y, R ≤ |y| → P y = 0 := fun y hy => by
+    rw [hPdef]; exact plateauGauge_eq_zero hδ hy
+  have hPr : ∀ y, |y| ≤ r → P y = 1 := fun y hy => by
+    rw [hPdef]; exact plateauGauge_eq_one hδ (by linarith)
+  have hFr : ∀ x, F x ≠ 0 → |x| ≤ r := fun x hx => by
+    by_contra h
+    exact hx (hsupp x (not_le.mp h))
+  have hFM : ∀ x, F x ≠ 0 → P x = 1 := fun x hx => hPr x (hFr x hx)
+  obtain ⟨KM, -, hKM⟩ := exists_lipschitz_bound_of_compactSupport (hPd.of_le (by norm_num)) hPcs
+  have hPL : ∀ a b, |P a - P b| ≤ KM * |a - b| := fun a b => hKM b a
+  have hA := continuous_integral_profileArchTerm hPd.continuous hPL
+    (fun y => by rw [abs_of_nonneg (hP0 y)]; exact hP1 y)
+  have hGi : Integrable fun x => F x ^ 2 * P x *
+      ((∫ u in Ioi (0 : ℝ), profileArchTerm P x u) - 2 * archConstantReal * P x) :=
+    (((hF.continuous.pow 2).mul hPd.continuous).mul
+      (hA.sub (continuous_const.mul hPd.continuous))).integrable_of_hasCompactSupport
+      ((hasCompactSupport_sq hFc).mul_right.mul_right)
+  rw [gaugeRemainder_eq_arch]
+  refine integral_mono (integrable_sq_mul_plateauPotentialFloor hF.continuous hFc hrR hsupp) hGi
+    fun x => ?_
+  by_cases h : F x = 0
+  · simp [h]
+  · have hxR : |x| < R := lt_of_le_of_lt (hFr x h) hrR
+    have hPx := hFM x h
+    have hb := neg_poleFreeWeilOperator_add_primeSum_ge hPd.continuous hPL hP1 hPB hxR hPx
+    have e : -poleFreeWeilOperator P x + profilePrimeSum P x =
+        (∫ u in Ioi (0 : ℝ), profileArchTerm P x u) - 2 * archConstantReal * P x := by
+      unfold poleFreeWeilOperator; ring
+    rw [e, hPx, mul_one] at hb
+    simp only [hPx, mul_one]
+    unfold plateauPotentialFloor
+    exact mul_le_mul_of_nonneg_left hb (sq_nonneg _)
+
+/-- **The explicit ledger floor.** For an odd `F ∈ C²_c` supported in `[−r, r]`, `0 < r < R`:
+`Ẑ(F) ≥ pool + crossing potential + Σ gains − Σ costs + ∫ F² · plateauPotentialFloor R
+− (R³/3) cosh²(R/2) ∫ F²`: every term is an explicit functional of `F`, with no Weil operator
+and no pole moment. -/
+theorem fullZeroForm_ge_explicitLedgerFloor {F : ℝ → ℝ} {r R : ℝ} (hF : ContDiff ℝ 2 F)
+    (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x) (hr : 0 < r)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    surplusPool (aperturePlateau r R) F + crossingPotentialTerm (aperturePlateau r R) F +
+        (∑ n ∈ relevantShifts r, evenStripGain F r n) -
+        (∑ n ∈ relevantShifts r, oddStripCost F r n) +
+        (∫ x, F x ^ 2 * plateauPotentialFloor R x) -
+        R ^ 3 / 3 * Real.cosh (R / 2) ^ 2 * ∫ x, F x ^ 2 ≤ fullZeroForm F := by
+  have hled := fullZeroForm_eq_incidenceLedger hF hFc hodd hr hsupp hrR
+  have hrem := gaugeRemainder_ge_plateauPotentialFloor hF hFc hr hsupp hrR
+  set P := aperturePlateau r R with hPdef
+  have hδ : 0 < R - r := by linarith
+  have hPd : ContDiff ℝ 2 P := by rw [hPdef]; exact contDiff_plateauGauge R (R - r)
+  have hPcs : HasCompactSupport P := by rw [hPdef]; exact hasCompactSupport_plateauGauge hδ
+  have hP0 : ∀ y, 0 ≤ P y := fun y => by rw [hPdef]; exact plateauGauge_nonneg R (R - r) y
+  have hP1 : ∀ y, P y ≤ 1 := fun y => by rw [hPdef]; exact plateauGauge_le_one R (R - r) y
+  have hPB : ∀ y, R ≤ |y| → P y = 0 := fun y hy => by
+    rw [hPdef]; exact plateauGauge_eq_zero hδ hy
+  have hFr : ∀ x, F x ≠ 0 → |x| ≤ r := fun x hx => by
+    by_contra h
+    exact hx (hsupp x (not_le.mp h))
+  have hFM : ∀ x, F x ≠ 0 → P x = 1 := fun x hx => by
+    rw [hPdef]; exact plateauGauge_eq_one hδ (by linarith [hFr x hx])
+  have hS := sq_oddPoleMoment_le_cosh (by linarith : (0 : ℝ) ≤ R) hF.continuous hFc hPd.continuous
+    hPcs hP0 hP1 hPB hFM
+  have hpole : poleCharge F ≤ R ^ 3 / 3 * Real.cosh (R / 2) ^ 2 * ∫ x, F x ^ 2 := by
+    calc poleCharge F = 2 * oddPoleMoment F ^ 2 := rfl
+      _ ≤ 2 * (R ^ 3 / 6 * Real.cosh (R / 2) ^ 2 * ∫ x, F x ^ 2) := by linarith
+      _ = R ^ 3 / 3 * Real.cosh (R / 2) ^ 2 * ∫ x, F x ^ 2 := by ring
+  rw [hled]
+  linarith
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 end

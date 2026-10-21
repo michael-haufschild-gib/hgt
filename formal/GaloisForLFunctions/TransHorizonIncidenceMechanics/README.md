@@ -120,6 +120,55 @@ logarithmic moments, the pole value of a kernel) and the receiver-preserving cri
 algebra. Its odd-sector low-prime diagonal potential is the sieve-side reading of the unpaid axis
 intervals of `ArithmeticIncidencePositivity`.
 
+### How the programme connects to the other programmes
+
+THIM is the dynamical layer over the static incidence algebra of Bézout–Valuation Incidence, and
+the two are one theory with two folders. Its outward connections run through the receiver
+`E_T(c)` and the parity involution.
+
+- **Bézout–Valuation Incidence is the algebra THIM moves.** The exact prefix-discrepancy duality
+  and return times, the renormalized defect and pronic ceiling, the cofinal Möbius gradient
+  coercivity, the phase-uniform window Poincaré law (the long-window regime of §3.4), the
+  prime-tail calibration, the Jordan and primitive energies, the quotient–octave reciprocity, the
+  Euler deletion remainder, the cyclotomic incidence recurrence, the dilation-pair densities behind
+  the energy profile and the Hardy–Littlewood singular series are BVI theorems consumed here; the
+  horizon filtration, the Buchstab and band calculus, the damped observer, the Fermi schedules,
+  the radical states and the parity pairs are THIM theorems consumed by BVI, where the pairs are
+  separated on the Vinogradov–Korobov band and the receiver of a multiplicative weight is decided
+  at the primes on that band. The Type-II window no-go of BVI (no `ℓ²` class reaches `θ > 1` at
+  one modulus) and the parity barrier of §3.16 are the two halves of mechanism 5: the Gram side
+  and the receiver side of the same sign-blindness.
+- **Bi-Scale Uncertainty supplies the continuous coordinates and the producer–consumer duality.**
+  The Nyman–Beurling bridge, the Lorentz boost and light cone, the stationary resolvent's Markov
+  positivity, the Euler–Poisson chiral drift, the `ker P` centred sieve and the universal Ramanujan
+  covariance are BiScale theorems used in §3.6, §3.13 and §3.17; BiScale's arithmetic observation
+  theory uses THIM's radical checkpoint rigidity and finite multiplicative observation state.
+  BiScale's sign-character classification (which moments recover a sieve signal, up to which
+  translation) and THIM's parity pairs (which observables decide the receiver) are the same
+  phenomenon read from the recovery side and from the receiver side; the half-damping threshold
+  of §3.8 and §3.16 is the square-root barrier of BiScale's band in the receiver's coordinates.
+- **Arithmetic Criticality Theory and Arithmetic Incidence Positivity meet THIM in the odd
+  sector.** The Markov operator, the theta ground state, the odd eigenvector criterion of §3.13
+  and the collar transport of §3.14 are the chain-side reading of ACT's odd-sector criticality;
+  the shifted ground state's folded representation and its combination failure are ACT theorems
+  used in the collar duality of §3.17. The low-prime diagonal potential left after exact collar
+  cancellation (§3.15) is the sieve-side counterpart of AIP's unpaid axis intervals and its nine
+  atom-dominated moduli: the same prime atoms `Λ(d)d^{−1/2}` that AIP pays pair by pair on the
+  jump form are the ones the chain variances must absorb.
+- **Square-Root Threshold and Arithmetic Positivity Theory see the same zeros from the other
+  side.** The poles of `1/ζ(s+ε)` right of `Re s = 1/2` that a bound on the Möbius receiver must
+  exclude (§3.16) are the off-line zeros SRT's lag family makes visible; THIM's "uniform in the
+  horizon at fixed damping" is the receiver form of SRT's every-height problem, and the damping
+  `ε` plays the role of SRT's bandwidth and APT's envelope exponent. The critical-scale receiver
+  `D(T) ≤ B(1+T)e^{T/2}` of APT is the Chebyshev-level statement whose finite-modulus form is the
+  interior pronic energy of §1.2.
+- **RHTower supplies the analytic inputs**: the PM lane (power-damped Möbius Ramanujan weights,
+  second moment, small-damping variance, cofactor rows), the sieve library (Levinson's gcd form,
+  Möbius harmonic log rate, Gallagher's range, prime-window levels, Matomäki–Teräväinen
+  coefficients), the zero-density exponents, the CHMD prime-chain source factorization and
+  balanced nodal graph, the Liouville summatory criterion, the floor-transform harmonic inverse
+  and the zeta-residue calculus.
+
 ---
 
 ## 1. Why
@@ -362,7 +411,7 @@ $r_\beta(m)=m^\beta$ paired with $r_{-\beta}$.
 | radical ratio $13$ | $N=1155p-1$, $k=15015p$, response $4$ |
 | radical ratio $Q$ | prime shells give responses of size $\asymp Q/\log Q$; the envelope is at most $Q$ |
 | $M\le N^A$ | polynomial windows: paid by first-octave edges and rough-prime boundaries, eventually in $N$ |
-| $M\ge11N^5$ | long windows: the Möbius defect decreases with slope at least $1/(4N)$; nonpositive beyond $11N^5+8N^3$; $19N^5$ suffices uniformly in $\varepsilon\in[0,1]$ |
+| $M\ge10N^2$ | long windows, at every horizon $N\ge2$: the Möbius defect decreases with slope at least $1/(4N)$ and is nonpositive beyond $10N^2+8N$; for the damped weight beyond $10N^2+72N^{1+2\varepsilon}$ |
 | $p\le M<p^2$ | quadratic window of a prime horizon: $\lfloor M/p\rfloor\le N$ lies in the exact zone |
 | $\log p\lessgtr\Lambda(\varepsilon)$ | damped prime horizons inject below the crossover scale $\exp((1+o(1))\log(1/2\varepsilon)/\varepsilon)$ and dissipate above it |
 | $L_N$ vs $N!$ | least full period divides $\operatorname{lcm}(1..N)$; $N!$ is a convenient period, not the same integer |
@@ -589,21 +638,25 @@ at every prefix of any size whose horizon radical state is at most a fixed
 power of the horizon.
 
 **Long windows.** The phase-uniform window Poincaré law of the Bézout–valuation
-theory gives $2\widetilde{\mathcal D}_N(M)\le4H^2-(M-11S_N)V$ with the harmonic
-sum $H$, the window observability constant $S_N\le N^5$ and the non-harmonic
-variance $V$. A Bertrand prime $p\in(N/2,N]$ has the single-multiple Selberg
-coordinate $c(p)/p$, so $V\ge(p-1)c(p)^2/p^2$, at least $1/(2N)$ for the Möbius
-weight and at least $1/(2N^{2\lceil\varepsilon\rceil+1})$ for the damped weight.
-The long-window regime therefore starts at an explicit polynomial scale at
-every horizon $N\ge2$: beyond $11N^5$ the Möbius defect decreases at least
-linearly with slope $1/(4N)$,
-$2\widetilde{\mathcal D}_N(M;\mu)\le4N^2-(M-11N^5)/(2N)$, and is nonpositive beyond
-$11N^5+8N^3$. The polynomial-window regime has not yet ended there, so no
-prefix is left uncovered: **at every sufficiently large horizon the renormalized
-defect is nonpositive at every prefix**, for the literal Möbius weight, for
-every fixed damping $\varepsilon>0$, and uniformly for all $\varepsilon\in[0,1]$
-with one threshold independent of the damping. Only the polynomial-window
-regime is eventual; the long-window law is explicit at every horizon.
+theory gives $2\widetilde{\mathcal D}_N(M)\le4H^2-(M-10N^2)V$ with the harmonic
+sum $H$, the window observability constant, which has exact order $N^2$, and
+the non-harmonic variance $V$. A Bertrand prime $p\in(N/2,N]$ has the
+single-multiple Selberg coordinate $c(p)/p$, so $V\ge(p-1)c(p)^2/p^2$, at least
+$1/(2N)$ for the Möbius weight. For the Möbius weight the harmonic sum is
+bounded by one (the floor identity $\sum_{d\le N}\mu(d)\lfloor N/d\rfloor=1$), so
+the long-window regime starts at the quadratic scale at every horizon
+$N\ge2$:
+$2\widetilde{\mathcal D}_N(M;\mu)\le4-(M-10N^2)/(2N)$, nonpositive beyond
+$10N^2+8N$; at large horizons the white-noise floor $V\ge1/288$ of §3.6 makes
+the slope horizon-uniform, $2\widetilde{\mathcal D}_N(M;\mu)\le4-(M-10N^2)/288$.
+For the damped weight $\lvert H_\varepsilon(N)\rvert\le3$ and the threshold is
+$10N^2+72N^{1+2\varepsilon}$. The polynomial-window regime has not yet ended
+there, so no prefix is left uncovered: **at every sufficiently large horizon
+the renormalized defect is nonpositive at every prefix**, strictly negative at
+every prefix $M\ge2N$ for the literal Möbius weight, for every fixed damping
+$\varepsilon>0$, and uniformly for all $\varepsilon\in[0,1]$ with one threshold
+independent of the damping. Only the polynomial-window regime is eventual; the
+long-window law is explicit at every horizon.
 
 **The actual receiver row.** The cofactor row $c_Q$ is supported on $[1,Q]$, so
 its horizon-$Q$ response is its complete divisor sum at every integer, which by
@@ -748,7 +801,11 @@ P(B)=\lim_N\frac{\mathcal E_N((B+1)N;\mu)}N=-(B+1)\sum_{b\le B}\frac{A(b)}{b(b+1
 $$
 so the mean horizon step of every band is a second difference of the energy
 profile, which the Bézout–valuation theory builds from dilation-pair densities;
-$A(1)=-6/\pi^2$, $A(2)=-4/\pi^2$, $P(1)=6/\pi^2$, $P(2)=11/\pi^2$. Centering the
+$A(1)=-6/\pi^2$, $A(2)=-4/\pi^2$, $A(3)=-4/\pi^2$, $A(4)=-2/\pi^2$ (in bands
+$3$ and $4$ the cores are $1,2,3,6$ with density $3/\pi^2$ each divided by the
+core), $P(1)=6/\pi^2$, $P(2)=11/\pi^2$, $P(3)=16/\pi^2$, $P(4)=41/(2\pi^2)$: the
+band means $P(B)-P(B-1)$ of the squared response are $6,5,5,9/2$ in units of
+$1/\pi^2$, and each of the first four bands dissipates on average. Centering the
 $q=1$ quotient yields $(B-2)(\mathcal E_n-\mathcal E_{n+1})=S_2^2-((B-2)\mu(n+1)+S_2)^2$
 with $S_2=\sum_{2\le q\le B}s_{n,\mu}(q(n+1))$, and a completed square gives the
 universal subadditivity
@@ -818,7 +875,37 @@ with $\lvert A_\varepsilon(1)\rvert\le16\,\mathbb E[\tau_\varepsilon]^2=O(\varep
 against $V(\varepsilon)\sim\varepsilon/2$, so $R(\varepsilon)/\varepsilon\to\tfrac12$,
 $R(\varepsilon)/V(\varepsilon)\to1$, and the window defect has small-damping slope
 $\lim_{\varepsilon\to0}\varepsilon^{-1}\lim_N\widetilde{\mathcal D}_N((B+1)N;c_\varepsilon)/N=-(B+1)/2$:
-every unit of window dissipates half the damping parameter.
+every unit of window dissipates half the damping parameter. At second order
+the two rates separate,
+$$
+V(\varepsilon)=\tfrac\varepsilon2-\varepsilon^2+o(\varepsilon^2),\qquad
+R(\varepsilon)=\tfrac\varepsilon2+o(\varepsilon^2),\qquad
+A_\varepsilon(1)=-\varepsilon^2+o(\varepsilon^2):
+$$
+Euler's constant cancels in the second moment
+$\mathbb E[\tau_\varepsilon^2]=H(\varepsilon)\zeta(1+2\varepsilon)/\zeta(1+\varepsilon)^2=\varepsilon/2+o(\varepsilon^2)$,
+parity kills the lag-one Bézout mean to $O(\varepsilon^3)$ (removing the prime
+$2$ factors out $1-(2^{1+\varepsilon}-1)^{-2}$), and consecutive values of
+$\tau_\varepsilon$ are anti-correlated at exactly the scale of the squared mean
+because one of two consecutive integers is even. The actual receiver row
+inherits the rate: $\widetilde{\mathcal D}_Q((B+1)Q;c_Q)/Q\to-(B+1)R(\varepsilon)$,
+since the Ramanujan truncation error is negligible against the window and the
+divisor moments keep the boundary values bounded. The spectral geometry of the
+two rows is opposite: the Möbius variance **escapes**, every fixed modulus
+losing its mass $\varphi(e)Y_N(e)^2\to0$ while the total stays above $1/288$,
+so the floor is carried by moduli comparable with the horizon; the damped
+spectrum is **tight** uniformly in the horizon, the moduli above $E$ carrying at
+most $\zeta(1+\varepsilon)^2((1+2\varepsilon)/2\varepsilon)E^{-2\varepsilon}$. The pronic
+observable alone commutes with the damping limit, $P(N;\mu)\to1/2$ and
+$\lim_\varepsilon\lim_NP(N;c_\varepsilon)=1/2$, because the pronic weight sees only
+bounded arguments; the horizon effect lives in the trans-horizon bulk. The
+Selberg tangent row $\ell_N(d)=\mu(d)\log(N/d)$, whose response is Selberg's
+truncated von Mangoldt function, has period covariances
+$\mathrm{Cov}_N(h;\ell_N)\to\mathfrak S(h)-1$ at every lag $h\ge1$, the
+Hardy–Littlewood singular series, with divergent variance: unlike the Möbius
+row it sees prime-pair correlations on the period torus, and its horizon limit
+agrees at every lag with the Haar limit $\lim_\varepsilon A_\varepsilon(h)/\varepsilon^2$
+of the damped row.
 
 **Slope reversal and the crossover.** At a prime horizon the damped step is, with
 $r=p^{-\varepsilon}$, $\mathcal E_p(M)-\mathcal E_{p-1}(M)=r^2B-2r\sum_{d<p}c_\varepsilon(d)\lfloor B/d\rfloor=rB\lambda_\varepsilon(p)+O(rp)$.
@@ -840,9 +927,17 @@ $$
 \log p\ge(1+\delta)\Lambda(\varepsilon)\ \Rightarrow\ \lambda_\varepsilon(p)<0,\qquad
 \varepsilon\Lambda(\varepsilon)-\log\tfrac1{2\varepsilon}\to0 .
 $$
-The damped observer is Möbius-like, injecting at prime horizons, up to horizons
-$\exp((1+o(1))\log(1/2\varepsilon)/\varepsilon)$ and dissipative beyond; the receivers at
-fixed small damping live beyond this scale.
+To second order $\rho_\varepsilon=\varepsilon-\gamma\varepsilon^2+o(\varepsilon^2)$, so
+$\Lambda(\varepsilon)=\log(1/(2\varepsilon))/\varepsilon+\gamma+o(1)$ and the crossover prime
+is $e^{\gamma+o(1)}(2\varepsilon)^{-1/\varepsilon}$; since the Möbius harmonic sums decay
+like $(\log t)^{-3}$ the Abel error is $O(\varepsilon^3p^{-\varepsilon})$ against a gap
+of at least $2\varepsilon^2\rho_\varepsilon$ once $\log p$ leaves $\Lambda(\varepsilon)\pm\varepsilon$,
+and the window is additive: injection for $\log p\le\Lambda(\varepsilon)-\varepsilon$,
+dissipation for $\log p\ge\Lambda(\varepsilon)+\varepsilon$. The damped observer is
+Möbius-like, injecting at prime horizons, up to horizons
+$e^{\gamma-\delta}(2\varepsilon)^{-1/\varepsilon}$ and dissipative beyond
+$e^{\gamma+\delta}(2\varepsilon)^{-1/\varepsilon}$; the receivers at fixed small damping
+live beyond this scale.
 
 **The threshold at one half.** The primitive energy has the Jordan spectrum
 $12\,\mathcal E_{\mathrm{prim}}(N;c)=\sum_{2\le q\le N}J_2(q)Y_N(q)^2$ with
@@ -850,8 +945,13 @@ $J_2(q)\le q^2$. For the damped row the mode masses are of size $q^{-2\varepsilo
 for $\varepsilon>1/2$ the primitive energy is bounded uniformly in the horizon and
 converges to $\tfrac1{12}\sum_{q\ge2}J_2(q)w_\varepsilon(q)^2$; for $0<\varepsilon\le1/2$
 the prime modes alone carry $J_2(p)w_\varepsilon(p)^2\ge\tfrac34\mathbb E[\tau_\varepsilon]^2/p$,
-whose sum diverges, so it tends to infinity; for the Möbius row the top octave
-forces linear growth. This is the barrier $\varepsilon=1/2$ of the PM receiver
+whose sum diverges, so it tends to infinity, with the exact order
+$\mathcal E_{\mathrm{prim}}(N;c_\varepsilon)\asymp N^{1-2\varepsilon}$ for $0<\varepsilon<1/2$
+(every mode at most $\zeta(1+\varepsilon)^2q^{-2\varepsilon}$; the odd squarefree top
+octave carries at least $N^{1-2\varepsilon}/3456$): the discrepancy grows like a walk
+of $N^{1-2\varepsilon}$ independent unit steps. For the Möbius row the top octave
+forces linear growth, capped at $N\log N$ by $\lvert\mathfrak m_f\rvert\le f/\varphi(f)$.
+This is the barrier $\varepsilon=1/2$ of the PM receiver
 seen on the period torus: below one half no horizon-uniform bound on the
 discrepancy can come from complete-period averages, and a receiver estimate must
 use the pronic weighting of small arguments.
@@ -1222,7 +1322,7 @@ Poincaré law of that theory with its variance bounded below.
 | Full-period diagonalization controls a moving window | Period laws fix complete periods; short and moving windows are classified by endpoint states instead. |
 | The unit envelope holds beyond ratio five | False at $k=5N+5$ for arbitrarily large horizons; the ladder continues with exact rungs $2$ at ratio $11$ and $3$ at ratio $13$, and grows like $Q/\log Q$. |
 | Ratio five is a sign boundary | Integer jump energy certifies nonpositive Möbius defect up to radical ratio $11$; a positive Möbius defect needs ratio at least $11$. |
-| Endpoint-square methods reach every scale | They fail at ratios $(\log N)^{O(1)}$, where the envelope is unbounded; beyond $11N^5$ the long-window law takes over. |
+| Endpoint-square methods reach every scale | They fail at ratios $(\log N)^{O(1)}$, where the envelope is unbounded; beyond $10N^2$ the long-window law takes over. |
 | The defect sign needs a damping radius shrinking with $N$ | At large horizons the sign holds at every prefix uniformly for $\varepsilon\in[0,1]$; rough-prime boundaries do not degenerate as $\varepsilon\to0$. |
 | The receiver row needs the envelope ladder | It observes the complete damped divisor function, which never exceeds its initial value; one jump controls its sign. |
 | The Möbius picture is the $\varepsilon\to0$ limit of the damped one | Only on bounded horizon ranges: the cofinal limit and the damping limit do not commute for the variance, the dissipation and the energy profile, and the crossover scale diverges. |
@@ -1297,20 +1397,21 @@ mixed covariance and growing cutoffs retained, at fixed $\varepsilon\in(0,1/2)$,
 where the small arguments carry the weight $1/(n(n+1))$ and the Ramanujan
 truncation error $Q^{-\varepsilon}\tau(n)$ is not small.
 
-**Small horizons.** The all-prefix sign of the defect is proved at every
-sufficiently large horizon, with an eventual threshold for the polynomial
-windows and the explicit long-window thresholds $11N^5+8N^3$ and $19N^5$. Whether
-the sign holds at every horizon $N\ge2$, and what the least long-window threshold
-is (the window observability constant $S_N$ is bounded by $N^5$ but should be of
-size $N^2\log N$), are open.
+**Small horizons.** The long-window law is explicit and quadratic at every
+horizon $N\ge2$ (threshold $10N^2+8N$ for Möbius), but the polynomial-window
+sign is proved only eventually in the horizon, through prime counts in octaves.
+Whether the renormalized defect is nonpositive at every prefix for every
+horizon $N\ge2$, and the exact constant of the window observability law (its
+order $N^2$ is exact), are open.
 
-**Buchstab calculus.** The band averages $A(1),A(2)$ are negative and the profile
-values $P(1),P(2)$ are known; the sign of $A(B)$ for every band, the monotonicity
-and concavity of the profile, and the classification of the squarefree cores
-with negative slope in each band are open. The damped crossover is located to
-first order; the second-order term of $\varepsilon\Lambda(\varepsilon)$, the behaviour
-of prime horizons with $\log p=\Lambda(\varepsilon)+O(1)$, and the second-order terms of
-$V(\varepsilon)$ and $R(\varepsilon)$ beyond the common leading term $\varepsilon/2$ are open.
+**Buchstab calculus.** The band averages $A(1),\dots,A(4)$ are negative and the
+profile values $P(1),\dots,P(4)$ are known; the sign of $A(B)$ for every band,
+the monotonicity and concavity of the profile, and the classification of the
+squarefree cores with negative slope in each band are open. The damped
+crossover is located to second order with an additive window $\pm\varepsilon$;
+the sign of the slope for prime horizons inside that window,
+$\lvert\log p-\Lambda(\varepsilon)\rvert<\varepsilon$, is open, as is every term of
+$V(\varepsilon)$ and $R(\varepsilon)$ beyond the second order.
 
 **The odd sector.** After exact collar cancellation the remaining obligation is
 an independently quantified bound on the low-prime diagonal potential, or an
