@@ -132,7 +132,6 @@ include hεr in
 theorem edgeTentOdd_of_nonneg {x : ℝ} (hx : 0 ≤ x) : edgeTentOdd r ε x = edgeTent r ε x := by
   unfold edgeTentOdd; rw [edgeTent_eq_zero_of_le (x := -x) (by linarith), sub_zero]
 
-include hεr in
 /-- The odd test vanishes off `(r − ε, r) ∪ (−r, −(r − ε))`. -/
 theorem mem_of_edgeTentOdd_ne_zero {x : ℝ} (h : edgeTentOdd r ε x ≠ 0) :
     (r - ε < x ∧ x < r) ∨ (r - ε < -x ∧ -x < r) := by
@@ -149,11 +148,11 @@ end Odd
 
 /-- For `r ≤ L ≤ 2(r − ε)` the shift product of the edge tent vanishes identically: a point of the
 right tent is moved past `r`, a point of the left tent lands in `(L − r, L − r + ε) ⊂ [0, r − ε]`. -/
-theorem edgeTentOdd_mul_shift_eq_zero {r ε L : ℝ} (hε0 : 0 < ε) (hεr : ε < r) (hrL : r ≤ L)
+theorem edgeTentOdd_mul_shift_eq_zero {r ε L : ℝ} (hrL : r ≤ L)
     (hL : L ≤ 2 * (r - ε)) (x : ℝ) : edgeTentOdd r ε x * edgeTentOdd r ε (x + L) = 0 := by
   by_contra h
-  have h1 := mem_of_edgeTentOdd_ne_zero hεr (left_ne_zero_of_mul h)
-  have h2 := mem_of_edgeTentOdd_ne_zero hεr (right_ne_zero_of_mul h)
+  have h1 := mem_of_edgeTentOdd_ne_zero (left_ne_zero_of_mul h)
+  have h2 := mem_of_edgeTentOdd_ne_zero (right_ne_zero_of_mul h)
   rcases h1 with ⟨a1, a2⟩ | ⟨a1, a2⟩ <;> rcases h2 with ⟨b1, b2⟩ | ⟨b1, b2⟩ <;> linarith
 
 /-- **The odd part on the edge tent.** For `r ≤ L ≤ 2(r − ε)` the atom of `e^L` vanishes and the odd
@@ -164,7 +163,7 @@ theorem edgeTent_oddPart_eq {r ε L : ℝ} (hε0 : 0 < ε) (hεr : ε < r) (hrL 
       2 * (∫ a in (L - r)..r, reflectedOddPart (edgeTentOdd r ε) L a ^ 2) =
         ∫ a in (L - r)..r, edgeTentOdd r ε a ^ 2 := by
   have h0 : (∫ x, edgeTentOdd r ε x * edgeTentOdd r ε (x + L)) = 0 := by
-    simp_rw [edgeTentOdd_mul_shift_eq_zero hε0 hεr hrL hL, integral_zero]
+    simp_rw [edgeTentOdd_mul_shift_eq_zero hrL hL, integral_zero]
   refine ⟨h0, ?_⟩
   have h := integral_mul_shift_eq_two_reflectedOdd_sub (continuous_edgeTentOdd r ε)
     (edgeTentOdd_odd r ε) (r := r) (L := L) (by linarith) (by linarith)
@@ -378,10 +377,10 @@ theorem psi_sub_div_le_sum_thinBand {r : ℝ} (hr : 1 ≤ r) :
     _ ≤ ∑ n ∈ thinBand r, vonMangoldtAtom n :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub fun n _ _ => vonMangoldtAtom_nonneg n
 
-/-- **The thin band outgrows every linear budget.** For every `C ≥ 0`, eventually
+/-- **The thin band outgrows every linear budget.** For every `C`, eventually
 `C r < Σ_{thin band} Λ(n)/√n`: by the prime number theorem the band carries
 `(ψ(X) − ψ(e^{−1/8}X))/√X ≥ √X/11`. -/
-theorem eventually_lt_sum_thinBand {C : ℝ} (hC : 0 ≤ C) :
+theorem eventually_lt_sum_thinBand (C : ℝ) :
     ∀ᶠ r in atTop, C * r < ∑ n ∈ thinBand r, vonMangoldtAtom n := by
   have hpnt := RHTower.Sieve.tendsto_sum_vonMangoldt_div
   have hlin : ∀ c : ℝ, Tendsto (fun r : ℝ => Real.exp (2 * r - c)) atTop atTop := fun c =>
@@ -450,7 +449,7 @@ theorem exists_edgeTent_oddPart_sharing_fails :
         ∑ n ∈ thinBand r,
           2 * vonMangoldtAtom n * ∫ a in (Real.log n - r)..r, reflectedOddPart F (Real.log n) a ^ 2 := by
   obtain ⟨r₀, hr₀⟩ := Filter.eventually_atTop.mp
-    ((eventually_lt_sum_thinBand (C := 4608) (by norm_num)).and (eventually_ge_atTop (1 : ℝ)))
+    ((eventually_lt_sum_thinBand 4608).and (eventually_ge_atTop (1 : ℝ)))
   refine ⟨r₀, fun r hr => ?_⟩
   obtain ⟨hmass, hr1⟩ := hr₀ r hr
   set ε : ℝ := 1 / 48 with hεdef
@@ -501,7 +500,7 @@ theorem exists_edgeTent_oddPart_sharing_fails :
     have hpos : 0 < ε ^ 3 / 64 := by positivity
     have : 3 * ε ^ 2 * r < 2 * (∑ n ∈ thinBand r, vonMangoldtAtom n) * (ε ^ 3 / 64) := by
       rw [hεdef]; nlinarith
-    linarith
+    exact lt_of_le_of_lt hbox (lt_of_lt_of_le this hsum)
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 

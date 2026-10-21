@@ -34,7 +34,7 @@ attacks one concrete missing statement; failures are recorded with their positiv
 
 ## Cycle ledger
 
-### C1 — the receiver is bounded in the zero-free band below half damping (IN PROGRESS)
+### C1 — the receiver is bounded in the zero-free band below half damping (DONE, Lean)
 **Conjecture.** There is `E` such that for every horizon `T` and every damping
 `ε ∈ [1/2 − 1/(80√(log T)), 1/2]` (and `ε ≥ 1/4`), `E_T(ε) ≤ E`; consequently the Bézout interior
 energy is bounded on the same band.
@@ -56,6 +56,27 @@ energy is bounded on the same band.
 to `1/2 − c/√(log T)` at horizon `T`, paid by the zero-free region (VK ⟹ dVP rate). A fixed-width band
 would be a zero-free strip (README §5), so the band profile is the zero-free profile.
 
+**Lean.** `BezoutValuationIncidence/ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean`:
+`exists_receiver_le_on_zeroFreeBand`, `exists_interiorEnergy_le_on_zeroFreeBand`, tools
+`abs_sum_Ioc_mul_le_of_linear`, `abs_weightCenteredPrefix_dampedSign_le_of_linear`,
+`exists_abs_sum_moebiusReal_le_sqrtLog`, `exists_abs_weightCenteredPrefix_pmPowerDamped_le`.
+`lake env lean` clean; axioms `propext, Classical.choice, Quot.sound`; wired.
+
+### C2 — the Vinogradov–Korobov band (DONE, Lean)
+**Statement.** `E_T(ε) ≤ E` for `1/4 ≤ ε ≤ 1/2`, `ε ≥ 1/2 − κσ(T)/(480 log T)`,
+`σ = (log)^{3/5}(log log)^{-5/3}`; same for the interior energy.
+**Proof.** As C1 with rate `g = κσ/24`, split `D = ⌊n e^{-g(n)/5}⌋`; shape lemmas: `σ` nondecreasing
+from `exp(exp(25/9))` (via `log t/t^{9/25}` antitone), `σ/log` decreasing from `exp(e)`,
+`σ(z) ≥ (4/9)σ(x)` when `log z ∈ [(4/9)log x, log x]`.
+**Selectivity.** Width `(log T)^{-2/5}(log log T)^{-5/3}` exceeds the dVP width `(log T)^{-1/2}`; dVP
+is the best possible zero-free region for Beurling systems (Diamond–Montgomery–Vorhauer), so the
+extra width is paid by Vinogradov's mean value theorem, i.e. by the additive structure of ℕ.
+**Lean.** `BezoutValuationIncidence/ReceiverBoundedInTheVinogradovKorobovBand.lean`:
+`exists_receiver_le_on_vinogradovKorobovBand`, `exists_interiorEnergy_le_on_vinogradovKorobovBand`,
+`exists_abs_weightCenteredPrefix_pmPowerDamped_le_vk`, `vkScale_le_vkScale`, `vkScale_div_log_le`,
+`four_ninths_mul_vkScale_le`. Clean, standard axioms, wired.
+
 ## Log
 - 2026-10-21 — card created; C1 paper proof written; Lean module
   `BezoutValuationIncidence/ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean` started.
+- 2026-10-21 — C1 formalized and wired; C2 (VK band) formalized and wired.

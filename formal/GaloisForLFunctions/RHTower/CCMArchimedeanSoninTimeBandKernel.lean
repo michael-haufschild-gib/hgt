@@ -283,7 +283,7 @@ theorem suzukiConj_evenFourierScaling (u : ℝ) :
   have hF : ((evenFourierTransform σ.toEvenSubspace : evenSubspace) : SoninL2) =ᵐ[volume]
       𝓕 (ccmTimeBandSourceFun u g) := by
     rw [coe_evenFourierTransform_apply]
-    exact coeFn_fourier_toLp σ.integrable σ.memLp_two
+    exact GaloisForLFunctions.RHTower.coeFn_fourier_toLp σ.integrable σ.memLp_two
   have hP : ((Pc (evenFourierTransform σ.toEvenSubspace) : evenSubspace) : SoninL2) =ᵐ[volume]
       (Icc (-1 : ℝ) 1).indicator (𝓕 (ccmTimeBandSourceFun u g)) := by
     rw [coe_evenIndicatorCutoff_apply]
@@ -302,20 +302,15 @@ theorem suzukiConj_evenFourierScaling (u : ℝ) :
   simp only [ccmFiniteCosineKernel_toFun, ccmFiniteCosineKernelFun]
   by_cases hx1 : x ≤ 1
   · rw [indicator_of_mem (show x ∈ Icc (-1 : ℝ) 1 from ⟨by linarith [mem_Ioi.mp hx], hx1⟩),
-      fourier_ccmTimeBandSourceFun, indicator_of_mem (show x ∈ Iic (1 : ℝ) from hx1), one_mul,
-      ← mul_assoc, ← integral_const_mul]
+      fourier_ccmTimeBandSourceFun, ← mul_assoc, ← integral_const_mul]
     refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
-    have hs2 : ((Real.sqrt 2 : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) = 2 := by
-      rw [← Complex.ofReal_mul, Real.mul_self_sqrt (by norm_num)]
-      norm_num
-    simp only [Complex.ofReal_mul]
-    calc ((Real.sqrt 2 : ℝ) : ℂ) * (((Real.sqrt 2 : ℝ) : ℂ) * ((Real.exp (u / 2) : ℝ) : ℂ)) *
-          ((Iic (1 : ℝ)).indicator (fun _ => (1 : ℂ)) z *
-            ((Real.cos (2 * Real.pi * Real.exp u * x * z) : ℝ) : ℂ) * g z)
-        = (((Real.sqrt 2 : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ)) * ((Real.exp (u / 2) : ℝ) : ℂ) *
-          ((Iic (1 : ℝ)).indicator (fun _ => (1 : ℂ)) z *
-            ((Real.cos (2 * Real.pi * Real.exp u * x * z) : ℝ) : ℂ) * g z) := by ring
-      _ = _ := by rw [hs2]; push_cast; ring
+    have hs2 : ((Real.sqrt 2 : ℝ) : ℂ) * ((Real.sqrt 2 * Real.exp (u / 2) : ℝ) : ℂ) =
+        ((2 * Real.exp (u / 2) : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_mul, ← mul_assoc, Real.mul_self_sqrt (by norm_num)]
+    simp only [indicator_of_mem (show x ∈ Iic (1 : ℝ) from hx1)]
+    rw [hs2]
+    push_cast
+    ring
   · have hx1' : x ∉ Icc (-1 : ℝ) 1 := fun h => hx1 h.2
     rw [indicator_of_notMem hx1', indicator_of_notMem (show x ∉ Iic (1 : ℝ) from hx1)]
     simp
@@ -349,57 +344,73 @@ theorem evenIndicatorCutoff_mul_evenFourierTransform_mul_eq (u : ℝ) :
   simp only [ContinuousLinearMap.comp_apply, LinearIsometry.coe_toContinuousLinearMap,
     LinearIsometryEquiv.coe_toLinearIsometry, LinearIsometryEquiv.symm_apply_apply]
 
+theorem evenIndicatorCutoff_mul_evenFourierTransform_mul_self_eq :
+    Pc * evenFourierTransform * Pc = Wi ∘L (ccmFiniteCosineKernel 0).op ∘L Wc := by
+  rw [← evenIndicatorCutoff_mul_evenFourierTransform_mul_eq 0,
+    ccmLogDilation_zero.trans ContinuousLinearMap.one_def.symm, mul_one]
+
+theorem one_sub_evenIndicatorCutoff_mul_self' : (1 - Pc) * Pc = 0 := by
+  rw [sub_mul, one_mul, evenIndicatorCutoff_mul_self, sub_self]
+
+/-- If `P X = X`, then `Tr X = Tr(X P)`: the complementary part `X (1 - P)` is traceless. -/
+theorem opTrace_eq_opTrace_mul_evenIndicatorCutoff {X : evenSubspace →L[ℂ] evenSubspace}
+    (hX : MemSchattenClass 1 X) (h : Pc * X = X) : opTrace X = opTrace (X * Pc) := by
+  have hsum : X = X * Pc + X * (1 - Pc) := by rw [← mul_add, add_sub_cancel, mul_one]
+  have hzero : opTrace (X * (1 - Pc)) = 0 := by
+    have hc : opTrace (X * (1 - Pc)) = opTrace ((1 - Pc) * X) :=
+      (hX.one_opTrace_comp_comm (1 - Pc)).symm
+    rw [hc, ← h, ← mul_assoc, one_sub_evenIndicatorCutoff_mul_self', zero_mul]
+    exact opTrace_zero
+  have h1 : MemSchattenClass 1 (X * Pc) := memSchattenClass_one_comp_right hX _
+  have h2 : MemSchattenClass 1 (X * (1 - Pc)) := memSchattenClass_one_comp_right hX _
+  conv_lhs => rw [hsum]
+  rw [opTrace_add_of_memSchattenClass_one h1 h2, hzero, add_zero]
+
+/-- `P P̂ ϑ_u P = (P F P)(P F ϑ_u P)`. -/
+theorem evenIndicatorCutoff_mul_evenFourierCutoff_mul_eq (u : ℝ) :
+    Pc * Rc * ccmLogDilation u * Pc =
+      (Pc * evenFourierTransform * Pc) * (Pc * evenFourierTransform * ccmLogDilation u * Pc) := by
+  rw [evenFourierCutoff_eq_reflectedCutoff, reflectedCutoff]
+  simp only [mul_assoc]
+  rw [← mul_assoc Pc Pc, evenIndicatorCutoff_mul_self]
+
+theorem setIntegral_Ioi_indicator_ofReal (f : ℝ → ℝ) :
+    ∫ z in Ioi (0 : ℝ), (Iic (1 : ℝ)).indicator (fun _ => (1 : ℂ)) z * (f z : ℂ) =
+      ((∫ z in Ioc (0 : ℝ) 1, f z : ℝ) : ℂ) := by
+  rw [setIntegral_Ioi_indicator_Iic_one, integral_complex_ofReal]
+
 /-- **The time-band scaling trace.**  `Tr(P P̂ ϑ_u) = T(u)`. -/
 theorem ccmScalingTrace_evenIndicatorCutoff_mul_evenFourierCutoff (u : ℝ) :
     ccmScalingTrace (Pc * Rc) u = (ccmTimeBandTrace u : ℂ) := by
-  have hPR := memSchattenClass_one_evenIndicatorCutoff_mul_evenFourierCutoff
-  set F := evenFourierTransform
-  have hR : Rc = F * Pc * F := by rw [evenFourierCutoff_eq_reflectedCutoff, reflectedCutoff]
-  have hX : MemSchattenClass 1 (Pc * Rc * ccmLogDilation u) := memSchattenClass_one_comp_right hPR _
-  -- `Tr X = Tr(X P)`, the complementary part vanishing by `(1 - P) P = 0`
-  have hsplit : opTrace (Pc * Rc * ccmLogDilation u) =
-      opTrace (Pc * Rc * ccmLogDilation u * Pc) := by
-    have hQ : MemSchattenClass 1 (Pc * Rc * ccmLogDilation u * (1 - Pc)) :=
-      memSchattenClass_one_comp_right hX _
-    have hP : MemSchattenClass 1 (Pc * Rc * ccmLogDilation u * Pc) :=
-      memSchattenClass_one_comp_right hX _
-    have hzero : opTrace (Pc * Rc * ccmLogDilation u * (1 - Pc)) = 0 := by
-      have h := hX.one_opTrace_comp_comm (1 - Pc)
-      change opTrace ((1 - Pc) * (Pc * Rc * ccmLogDilation u)) =
-        opTrace (Pc * Rc * ccmLogDilation u * (1 - Pc)) at h
-      rw [← h, ← mul_assoc, ← mul_assoc, sub_mul, one_mul, evenIndicatorCutoff_mul_self, sub_self,
-        zero_mul, zero_mul]
-      exact opTrace_zero
-    have hsum : Pc * Rc * ccmLogDilation u =
-        Pc * Rc * ccmLogDilation u * Pc + Pc * Rc * ccmLogDilation u * (1 - Pc) := by
-      rw [← mul_add, add_sub_cancel, mul_one]
-    conv_lhs => rw [hsum]
-    rw [opTrace_add_of_memSchattenClass_one hP hQ, hzero, add_zero]
-  have hfac : Pc * Rc * ccmLogDilation u * Pc =
-      (Pc * F * ccmLogDilation 0 * Pc) * (Pc * F * ccmLogDilation u * Pc) := by
-    rw [ccmLogDilation_zero, hR]
-    change _ = Pc * F * 1 * Pc * (Pc * F * ccmLogDilation u * Pc)
-    rw [mul_one]
-    calc Pc * (F * Pc * F) * ccmLogDilation u * Pc
-        = Pc * F * (Pc * Pc) * F * ccmLogDilation u * Pc := by
-          rw [evenIndicatorCutoff_mul_self]; noncomm_ring
-      _ = _ := by noncomm_ring
-  rw [ccmScalingTrace]
-  change opTrace (Pc * Rc * ccmLogDilation u) = _
-  rw [hsplit, hfac, evenIndicatorCutoff_mul_evenFourierTransform_mul_eq,
-    evenIndicatorCutoff_mul_evenFourierTransform_mul_eq]
+  have hX : MemSchattenClass 1 (Pc * Rc * ccmLogDilation u) :=
+    memSchattenClass_one_comp_right memSchattenClass_one_evenIndicatorCutoff_mul_evenFourierCutoff _
+  have hPX : Pc * (Pc * Rc * ccmLogDilation u) = Pc * Rc * ccmLogDilation u := by
+    rw [← mul_assoc, ← mul_assoc, evenIndicatorCutoff_mul_self]
   have hcomp : (Wi ∘L (ccmFiniteCosineKernel 0).op ∘L Wc) * (Wi ∘L (ccmFiniteCosineKernel u).op ∘L Wc) =
       Wi ∘L ((ccmFiniteCosineKernel 0).op ∘L (ccmFiniteCosineKernel u).op) ∘L Wc := by
     refine ContinuousLinearMap.ext fun f => ?_
-    simp only [ContinuousLinearMap.mul_apply', ContinuousLinearMap.comp_apply,
-      LinearIsometry.coe_toContinuousLinearMap, LinearIsometryEquiv.coe_toLinearIsometry,
-      LinearIsometryEquiv.apply_symm_apply]
-  rw [hcomp, opTrace_unitaryConjugate_of_isTraceClass suzukiPositiveHalfLineUnitary _
-    (isTraceClass_ccmFiniteCosineKernel_comp 0 u),
+    rw [ContinuousLinearMap.mul_def]
+    simp only [ContinuousLinearMap.comp_apply, LinearIsometry.coe_toContinuousLinearMap,
+      LinearIsometryEquiv.coe_toLinearIsometry, LinearIsometryEquiv.apply_symm_apply]
+  have hpt : ∀ y z, (ccmFiniteCosineKernel 0).toFun z y * (ccmFiniteCosineKernel u).toFun y z =
+      (Iic (1 : ℝ)).indicator (fun _ => (1 : ℂ)) y * ((Iic (1 : ℝ)).indicator (fun _ => (1 : ℂ)) z *
+        ((4 * Real.exp (u / 2) * Real.cos (2 * Real.pi * y * z) *
+          Real.cos (2 * Real.pi * Real.exp u * y * z) : ℝ) : ℂ)) := by
+    intro y z
+    simp only [ccmFiniteCosineKernel_toFun, ccmFiniteCosineKernelFun]
+    rw [show 2 * Real.pi * Real.exp 0 * z * y = 2 * Real.pi * y * z by rw [Real.exp_zero]; ring,
+      show Real.exp (0 / 2) = 1 by simp]
+    by_cases hy : y ∈ Iic (1 : ℝ) <;> by_cases hz : z ∈ Iic (1 : ℝ) <;> simp [hy, hz]
+    ring
+  change opTrace (Pc * Rc * ccmLogDilation u) = _
+  rw [opTrace_eq_opTrace_mul_evenIndicatorCutoff hX hPX, evenIndicatorCutoff_mul_evenFourierCutoff_mul_eq,
+    evenIndicatorCutoff_mul_evenFourierTransform_mul_self_eq,
+    evenIndicatorCutoff_mul_evenFourierTransform_mul_eq, hcomp,
+    opTrace_unitaryConjugate_of_isTraceClass suzukiPositiveHalfLineUnitary _
+      (isTraceClass_ccmFiniteCosineKernel_comp 0 u),
     SchurKernel.opTrace_comp_op _ _ (lintegral_ccmFiniteCosineKernel_sq_lt_top 0)
       (lintegral_ccmFiniteCosineKernel_sq_lt_top u)]
-  simp only [ccmFiniteCosineKernel_toFun, ccmFiniteCosineKernelFun, Real.exp_zero, zero_div,
-    mul_one]
-  sorry
+  simp_rw [hpt, integral_const_mul, setIntegral_Ioi_indicator_ofReal]
+  rfl
 
 end RHTower

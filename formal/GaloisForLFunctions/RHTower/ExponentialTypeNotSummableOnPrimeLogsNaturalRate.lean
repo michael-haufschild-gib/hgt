@@ -69,10 +69,7 @@ theorem hasDerivAt_unitWindowAverage {g : ℂ → ℂ} (hg : Differentiable ℂ 
         (fun t _ => ((hg (w + t)).hasDerivAt.comp_const_add w (t : ℂ)).comp_ofReal)
         (hcont'.intervalIntegrable 0 1)
       simpa using h
-    have h2 := hderiv.2
-    simp only at h2
-    rw [hint] at h2
-    exact h2
+    exact hint ▸ hderiv.2
   · -- `x + t` stays in the closed ball of radius `2`
     rw [Set.uIoc_of_le zero_le_one] at ht
     rw [mem_ball, dist_eq_norm] at hx
@@ -90,7 +87,7 @@ theorem norm_unitWindowAverage_le {g : ℂ → ℂ} {w : ℂ} {B : ℝ}
     (hB : ∀ t ∈ Icc (0 : ℝ) 1, ‖g (w + t)‖ ≤ B) : ‖unitWindowAverage g w‖ ≤ B := by
   have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := (0 : ℝ)) (b := 1)
     (f := fun t : ℝ => g (w + t)) (C := B)
-    (fun t ht => hB t (Ioc_subset_Icc_self ((Set.uIoc_of_le zero_le_one) ▸ ht)))
+    (fun t ht => hB t (Set.Ioc_subset_Icc_self ((Set.uIoc_of_le (by norm_num : (0 : ℝ) ≤ 1)) ▸ ht)))
   simpa [unitWindowAverage] using h
 
 /-! ## The window two-ray theorem -/
@@ -182,11 +179,12 @@ theorem eq_zero_of_two_ray_window_integral_decay {g : ℂ → ℂ} (hg : Differe
         _ = (A * Real.exp τ) * (Real.exp ε * Real.exp (ε * (-1))) := by
             rw [mul_one, ← Real.exp_add]
             simp
-        _ ≤ max C (A * Real.exp τ) * (Real.exp ε * Real.exp (ε * x)) := by
-            gcongr
-            · exact le_max_right _ _
-            · linarith
-        _ = C' * Real.exp (ε * x) := by rw [hC']; ring
+        _ ≤ max C (A * Real.exp τ) * (Real.exp ε * Real.exp (ε * x)) :=
+            mul_le_mul (le_max_right _ _)
+              (mul_le_mul_of_nonneg_left
+                (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hx1 hε.le)) (Real.exp_pos _).le)
+              (by positivity) (le_max_of_le_left hC)
+        _ = C' * Real.exp (ε * x) := by rw [hC', mul_assoc]
   have hF0 : F = 0 :=
     eq_zero_of_two_ray_exponential_decay hFd (by positivity) hτ hε hFgrow hplusF hminusF
   -- `F ≡ 0` forces `g(w+1) = g(w)`
@@ -201,10 +199,10 @@ theorem eq_zero_of_two_ray_window_integral_decay {g : ℂ → ℂ} (hg : Differe
     induction n with
     | zero => simp
     | succ n ih =>
-      rw [ih, ← hper]
-      congr 1
-      push_cast
-      ring
+      have hcast : ((x - n : ℝ) : ℂ) = ((x - (n + 1 : ℕ) : ℝ) : ℂ) + 1 := by
+        push_cast
+        ring
+      rw [ih, hcast, hper]
   have hreal : ∀ x : ℝ, g x = 0 := by
     intro x
     rw [← norm_eq_zero]
@@ -226,9 +224,8 @@ theorem eq_zero_of_two_ray_window_integral_decay {g : ℂ → ℂ} (hg : Differe
           rw [mul_assoc, ← Real.exp_add]
           congr 2
           ring
-      _ < η * Real.exp (ε * n) * Real.exp (-(ε * n)) := by
-          gcongr
-          exact lt_of_lt_of_le (by linarith) hexp
+      _ < η * Real.exp (ε * n) * Real.exp (-(ε * n)) :=
+          mul_lt_mul_of_pos_right (lt_of_lt_of_le (by linarith) hexp) (Real.exp_pos _)
       _ = η := by rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
       _ = 0 + η := by ring
   exact eq_zero_of_forall_ofReal_eq_zero hg hreal
@@ -241,7 +238,7 @@ theorem integral_norm_mul_exp_le {Φ : ℂ → ℂ} (hΦ : Continuous Φ) {a x :
       ≤ Real.exp (a * (x + 1)) * ∫ t in (0 : ℝ)..1, ‖Φ (x + t)‖ := by
   have hc : Continuous fun t : ℝ => Φ (x + t) := hΦ.comp (continuous_const.add continuous_ofReal)
   rw [← intervalIntegral.integral_const_mul]
-  refine intervalIntegral.integral_mono_on zero_le_one ?_ ?_ fun t ht => ?_
+  refine intervalIntegral.integral_mono_on (μ := volume) (by norm_num) ?_ ?_ fun t ht => ?_
   · exact (hc.norm.mul (Complex.continuous_exp.comp
       (continuous_const.mul (continuous_const.add continuous_ofReal))).norm).intervalIntegrable 0 1
   · exact (hc.norm.const_mul _).intervalIntegrable 0 1
@@ -351,10 +348,10 @@ theorem exists_window_integral_ge_of_exponentialType {Φ : ℂ → ℂ} (hΦ : D
         _ = C * Real.exp (τ * (X' + 1)) := by simp
         _ = (C * Real.exp (τ * (X' + 1)) * Real.exp (δ / 2 * X')) * Real.exp (-(δ / 2 * X')) := by
             rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
-        _ ≤ C₂ * Real.exp (-(δ / 2 * x)) := by
-            gcongr
-            · exact le_max_right _ _
-            · nlinarith
+        _ ≤ C₂ * Real.exp (-(δ / 2 * x)) :=
+            mul_le_mul (le_max_right _ _)
+              (Real.exp_le_exp.mpr (neg_le_neg (mul_le_mul_of_nonneg_left hXx.le (by positivity))))
+              (Real.exp_pos _).le (le_trans zero_le_one (le_max_left _ _))
   have hg0 : g = 0 := eq_zero_of_two_ray_window_integral_decay hgdiff hC hτ0
     (half_pos hδ) hgrow' hplus hminus
   apply hne
@@ -380,9 +377,9 @@ theorem norm_sub_le_of_exponentialType {Φ : ℂ → ℂ} (hΦ : Differentiable 
   · have hs0 : 0 ≤ s := by linarith [hs.1]
     calc ‖deriv Φ s‖ ≤ C * Real.exp (ρ * (s + 1)) :=
           norm_deriv_le_of_exponentialType hΦ hC hρ hgrow hs0
-      _ ≤ C * Real.exp (ρ * (x + 3)) := by
-          gcongr
-          linarith [hs.2]
+      _ ≤ C * Real.exp (ρ * (x + 3)) :=
+          mul_le_mul_of_nonneg_left
+            (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left (by linarith [hs.2]) hρ)) hC
 
 /-- **Lower Riemann sum.**  For continuous `f` with `f v ≤ f u + D (v − u)` on `0 ≤ u ≤ v ≤ 1`
 and `h = 1/N`: `∫_0^1 f ≤ Σ_{k<N} h f(kh) + hD`. -/
@@ -409,8 +406,8 @@ theorem integral_le_sum_window_values_add {f : ℝ → ℝ} (hf : Continuous f) 
     rw [hkh]
     calc ∫ t in ((k : ℝ) * h)..(k * h + h), f t
         ≤ ∫ t in ((k : ℝ) * h)..(k * h + h), (f (k * h) + h * D) := by
-          refine intervalIntegral.integral_mono_on (by linarith) (hf.intervalIntegrable _ _)
-            intervalIntegrable_const fun t ht => ?_
+          refine intervalIntegral.integral_mono_on (μ := volume) (by linarith)
+            (hf.intervalIntegrable _ _) intervalIntegrable_const fun t ht => ?_
           have ht1 : t ≤ 1 := by
             calc t ≤ k * h + h := ht.2
               _ = ((k : ℝ) + 1) * h := by ring
@@ -436,7 +433,8 @@ theorem sum_range_sum_Ioc_eq_sum_Ioc {f : ℕ → ℝ} {b : ℕ → ℕ} (hb : M
   induction N with
   | zero => simp
   | succ N ih =>
-    rw [sum_range_succ, ih, Finset.sum_Ioc_consecutive f (hb (Nat.zero_le N)) (hb (Nat.le_succ N))]
+    rw [Finset.sum_range_succ, ih,
+      Finset.sum_Ioc_consecutive f (hb (Nat.zero_le N)) (hb (Nat.le_succ N))]
 
 /-! ## The prime sums are unbounded at the natural rate -/
 
@@ -523,7 +521,9 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
   set m : ℝ := m₀ * Real.exp (-((ρ + δ) * x)) with hm
   have hm0 : 0 < m := by positivity
   have hmint : m ≤ ∫ t in (0 : ℝ)..1, f t := by
-    have h := (div_le_iff₀ (Real.exp_pos (ρ + δ))).mpr (by rw [mul_comm]; exact hint)
+    have h : Real.exp (-((ρ + δ) * x)) / Real.exp (ρ + δ) ≤ ∫ t in (0 : ℝ)..1, f t := by
+      rw [div_le_iff₀ (Real.exp_pos _), mul_comm]
+      exact hint
     rw [← Real.exp_sub] at h
     rw [hm, hm₀, ← Real.exp_add]
     convert h using 2
@@ -615,10 +615,8 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
     rw [hY]
     simp only
     exact Real.exp_le_exp.mpr (by gcongr)
-  have hYge : ∀ k, y ≤ Y k := fun k => by
-    rw [hY, hy]
-    simp only
-    exact Real.exp_le_exp.mpr (le_add_of_nonneg_right (by positivity))
+  have hY0 : Y 0 = y := by simp [hY, hy]
+  have hYge : ∀ k, y ≤ Y k := fun k => hY0 ▸ hYmono (Nat.zero_le k)
   have hYle : ∀ k ∈ range (N + 1), Y k ≤ Real.exp (x + 1) := fun k hk => by
     rw [hY]
     simp only

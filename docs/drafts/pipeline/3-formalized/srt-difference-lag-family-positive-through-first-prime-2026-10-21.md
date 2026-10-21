@@ -34,8 +34,10 @@ against the shifted pair). Non-circular: no RH input; standard axioms.
 1. `modScaledBump_neg`: `κ_{w,γ}(−u) = conj κ_{w,γ}(u)`; `twoBump_modScaledBump_neg`: `f(−t) = −conj f(t)`
    (real part odd, imaginary part even); at `γ = 0` the test is real, hence odd
    (`twoBump_modScaledBump_zero_neg`).
-2. `zetaZeroConfig_re_W_ge_of_odd_window`: an odd real window `Ẑ(F) ≥ c∫F²` on `[−A, A]` transfers to odd
-   complex tests, `Re W_ζ(f, f) ≥ c∫|f|²` (both parts of an odd test are odd).
+2. `zetaZeroConfig_re_W_ge_of_odd_aperture_le_threeHundredFiftyThreeThousandths`: every odd complex `C²`
+   test supported in `[−353/1000, 353/1000]` has `Re W_ζ(f, f) ≥ (1/1000)∫|f|²` (both parts of an odd test
+   are odd; the AIP odd window applies to each). No abstract window premise: the statement is specialized
+   to the proven window, so every declaration of the module is unconditional.
 3. `one_div_1000_mul_le_re_W_twoBump_of_le` (aperture `v/2 + w ≤ 353/1000`), then the disjoint-bump norm
    identity `∫|f|² = 2∫‖κ_w‖²` and the explicit-formula rewrite `W_ζ = literatureRHS = lagPrimeWindowRHS`
    give `one_div_500_mul_le_re_lagPrimeWindowRHS_of_le`.
@@ -51,4 +53,5 @@ mechanism stops before the prime `3`; nothing about late lags; the modulated fam
 part and even imaginary part, so past `3/10` only the unmodulated family is covered.
 
 ## Log
+- 2026-10-21 — generic transfer lemma with an abstract window premise replaced by its specialization to the proven AIP window (user rule: no unproven premises); recompiled, olean rebuilt, axioms standard.
 - 2026-10-21 — created directly in 3-formalized; module compiled (`lake env lean`), olean built single-threaded, umbrella import added; lint shows no issue for this module (other errors in the working tree belong to other agents' unwired modules).
