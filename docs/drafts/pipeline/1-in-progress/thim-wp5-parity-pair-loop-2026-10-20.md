@@ -508,3 +508,12 @@ multiples), so with signed data no pair exists trivially; the parity is the real
   f₀ d^{−ε} is a finite kernel over u_{p₀} with pole value L_{p₀} = 0 → C32 sufficiency; then C11.
 - Example class: cube-free f with f(p)=1 and f(4) = −6 (L_2 = 1 + 1/2 − 6/4 = 0) is paid; any other value of f(4)
   (other local factors nonzero) leaves it unpaid for ε ≤ 1/2. Higher prime powers matter exactly through L_p.
+
+### C34 — The even flip shifts the pole value by the even part of the kernel (formalized)
+- Module: `TransHorizonIncidenceMechanics/TheEvenFlipShiftsThePoleValueByTheEvenPartOfTheKernel.lean`, capstone `evenFlip_exactLoss`.
+- Every finite kernel k on [1,J] with k(4m)=0: k = k_o + δ₂⋆k_e (k_e(j) = 1_odd(j)k(2j)); the even flip of k⋆o is
+  k^♭⋆o with k^♭ = k_o + k_e − δ₂⋆k_e (`dirichletConv_flipKernelOf`); identical |W|;
+  EXACT LOSS: K^♭(1−ε) = K(1−ε) + (1 − 2^ε)K_e(1−ε) (`poleValue_flipKernelOf`).
+- Receivers (0<ε≤1/2): flip preserves the receiver iff ... if K_e(1−ε) = 0 it preserves it; if K_e(1−ε) ≠ 0 at most one
+  member is paid. Generalizes C29 (two-point) to all finite kernels; the WP5 "separating observable and exact loss".
+- Tools: `dirichletConv_shiftTwo` ((δ₂⋆b)⋆c = δ₂⋆(b⋆c) via toAF), odd support of odd-kernel ⋆ o, `sum_Icc_filter_dvd_reindex`.

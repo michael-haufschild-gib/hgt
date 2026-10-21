@@ -215,6 +215,22 @@ Not significant: reciprocity error, window constants, horizons, large-sieve fact
   `|B+mR'+βH' − (π²/72)S'Σ_p c(p)(p²−1)/p³| ≤ (π²/72)Σ_p|c(p)|((p²−1)/p)Δ_p(c') + ¾Σ|c|p²Σ|c'|/n³`.
   Type-II θ>1 at one modulus ⟺ `Σ_p|a_p| p Δ_p(c') = o(Σ_p|a_p| p S')`; rate π²/72 attained (C10, C24).
 
+- **C27 DONE (criterion 3: third-order law; the 4/3 bottleneck term identified exactly).**
+  `BVI/ThirdOrderCrossScaleLawAndTheCubicBernoulliKernel`. Cubic potential `Ψ_d = (4ρ³−6(d−1)ρ²+2d(d−3)ρ+d²−1)/24`,
+  `Ψ(M+1)−Ψ(M) = Φ(M+1)`, period sums 0, `|Ψ| ≤ d³/6`, window sums `≤ d⁴/6`, `2Ψ−Φ = (d³/3)B₃(ρ/d)`. Third summation
+  by parts: `Σ_{M≥A} r_d w = −Φ(A)/A² − (2Ψ−Φ)(A)/A³ + O(3d⁴/A⁴)`. Cubic kernel `𝔅₃(d,n) = Σ_j (2Ψ−Φ)(jn)/j³` (mod d,
+  `|𝔅₃| ≤ d³`). Law: `|E − Σ c'(n)(c(d)/d)(𝔅/n² + 𝔅₃/n³)| ≤ 6Σ|c|d³Σ|c'|/n⁴`. The second-order error (which capped
+  both Type-I classes at θ = 4/3) is now an explicit residue-class kernel term.
+
+- **C28 DONE (criterion 1: smooth large-scale rows, θ up to 3/2, arbitrary prime small-scale coefficients).**
+  `BVI/SmoothLargeScaleRowsAndTheCancellationOfBothKernels`. `2Ψ−Φ = f_d(ρ)`, `f_d(d−ρ) = −f_d(ρ)` ⇒ `Σ_{r<d}𝔅₃(d,r) = 0`.
+  Periodic zero-sum sequences have bounded primitives; Abel with vanishing ends:
+  `|Σ y𝔅₃(d,·)| ≤ d⁴Σ|Δy|`, `|Σ x(𝔅(p,·) − m_p)| ≤ (p⁴/2)Σ|Δ²x|` (two Abel steps, centred primitive).
+  Law (c on primes, c' on [2,N], x = c'/n², y = c'/n³):
+  `|E − (π²/72)S'Σc(p)(p²−1)/p³| ≤ Σ|c|p³(½Σ|Δ²x| + Σ|Δy|) + 6Σ|c|p³Σ|c'|/n⁴`.
+  Weights smooth at scale A ⇒ all errors `≍ S₀Σ|c|p³/A²` ⇒ diagonal quality for `A ≥ P^{4/3}`: θ up to 3/2,
+  beyond the sharp-cutoff Type-I cap 4/3 (C14, C22).
+
 ## Queue
 
 - C1 first-jump window: Brownian-bridge law and codimension no-go.

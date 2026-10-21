@@ -32,16 +32,17 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticIncidencePositivity
 
-/-- The Schur inequality of two terms: `c² AB/(A + B) ≤ A(c − t)² + B t²`. -/
-theorem schur_two_terms {A B c t : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (hAB : 0 < A + B) :
+/-- The Schur inequality of two terms: `c² AB/(A + B) ≤ A(c − t)² + B t²`, from
+`(A(c − t)² + Bt²)(A + B) − c²AB = (A(c − t) − Bt)²`. -/
+theorem schur_two_terms {A B c t : ℝ} (hAB : 0 < A + B) :
     c ^ 2 * (A * B / (A + B)) ≤ A * (c - t) ^ 2 + B * t ^ 2 := by
   rw [mul_div_assoc', div_le_iff₀ hAB]
   nlinarith [sq_nonneg (A * (c - t) - B * t)]
 
-/-- **The Schur step of a pair.** For `p, q > 0`, `k, β ≥ 0`, `k + β q/p > 0`:
+/-- **The Schur step of a pair.** For `p, q > 0`, `k ≥ 0`, `k + β q/p > 0`:
 `k(a − b)² ≥ a²(k(1 − q/p) + kβ(q/p)²/(k + β q/p)) + b²(k(1 − p/q) − β)`. -/
 theorem sq_sub_ge_groundState_schur (a b : ℝ) {p q k β : ℝ} (hp : 0 < p) (hq : 0 < q) (hk : 0 ≤ k)
-    (hβ : 0 ≤ β) (hkβ : 0 < k + β * (q / p)) :
+    (hkβ : 0 < k + β * (q / p)) :
     a ^ 2 * (k * (1 - q / p) + k * β * (q / p) ^ 2 / (k + β * (q / p))) +
         b ^ 2 * (k * (1 - p / q) - β) ≤ k * (a - b) ^ 2 := by
   set t := q / p with ht
@@ -56,7 +57,7 @@ theorem sq_sub_ge_groundState_schur (a b : ℝ) {p q k β : ℝ} (hp : 0 < p) (h
   have hden : 0 < k / t + β := by
     have : k / t + β = (k + β * t) / t := by field_simp
     rw [this]; exact div_pos hkβ ht0
-  have schur := schur_two_terms (c := a * t) (t := b) hA hβ hden
+  have schur := schur_two_terms (A := k / t) (B := β) (c := a * t) (t := b) hden
   have e : a ^ 2 * (k * β * t ^ 2 / (k + β * t)) = (a * t) ^ 2 * (k / t * β / (k / t + β)) := by
     field_simp
   nlinarith [key, schur, e]
@@ -222,7 +223,7 @@ theorem surplusEnergy_ge_potential_add_schur {h : ℝ → ℝ} {r a₀ L z₁ z�
       have hpy := lt_of_lt_of_le ha₀ (hhpos (x + s) (by linarith) hxs)
       have hq : 0 < h (x + s) / h x := div_pos hpy hpx
       have hkβ : 0 < surplusKernel x (x + s) + β * (h (x + s) / h x) := by positivity
-      have hsch := sq_sub_ge_groundState_schur (F x) (F (x + s)) hpx hpy hk hβ.le hkβ
+      have hsch := sq_sub_ge_groundState_schur (F x) (F (x + s)) hpx hpy hk hkβ
       have hS' := hS x hR.1 (x + s) hR.2
       have hF0 := sq_nonneg (F x)
       simp only [hgA, hgB, hgC, hfS, if_pos hxs, if_pos hR]

@@ -12,9 +12,9 @@
 
 | # | Published result | Plan | Status |
 |---|---|---|---|
-| T2 | CCM 2023 Thm 4.6: `θ_S : Sonin_λ(ℝ) ≃ Sonin_λ(X_S)` for every finite `S`, Fourier compatible | `θ_S = w_S ∘ E_S`, `E_S = ∏_{p∈S}(1 − p^{-1/2}ϑ(p))` (Neumann-invertible, `‖p^{-1/2}ϑ(p)‖<1`); `E_S^{±1}` preserve `ran(1−P_λ)`; `F_S θ_S = θ_S F` ⇒ `Sonin_λ(X_S) = θ_S(Sonin_λ(ℝ))` | **Lean-closed** (`FieldOneFiniteStageThetaSoninIsomorphism`); finite-S Hardy–Titchmarsh square still to add (T2b) |
+| T2 | CCM 2023 Thm 4.6: `θ_S : Sonin_λ(ℝ) ≃ Sonin_λ(X_S)` for every finite `S`, Fourier compatible | `θ_S = w_S ∘ E_S`, `E_S = ∏_{p∈S}(1 − p^{-1/2}ϑ(p))` (Neumann-invertible, `‖p^{-1/2}ϑ(p)‖<1`); `E_S^{±1}` preserve `ran(1−P_λ)`; `F_S θ_S = θ_S F` ⇒ `Sonin_λ(X_S) = θ_S(Sonin_λ(ℝ))` | **Lean-closed** (`FieldOneFiniteStageThetaSoninIsomorphism`, `FieldOneFiniteStageThetaHardyTitchmarsh`) |
 | T4 | CCM 2023 Thm 5.2(iv): Jacobi/Gamma data = even metaplectic representation | build sl₂ operators from Jacobi coefficients, identify on even Hermite basis | **Lean-closed** (`CCMMetaplecticOscillatorTriple`, `CCMMetaplecticRepresentationIdentification`) |
-| T3 | CCM 2025 Thm 5.10: `D_log^{(λ,N)}` self-adjoint, `det_reg(D_log − z) = −i λ^{−iz} ξ̂(z)` | finite-rank perturbation of `diag(2πn/L)`; define regularized determinant explicitly; no simple-even premise laundering | open |
+| T3 | CCM 2025 Thm 5.10: `D_log^{(λ,N)}` self-adjoint, `det_reg(D_log − z) = −i λ^{−iz} ξ̂(z)` | finite-rank perturbation of `diag(πn/a)`; ζ-regularized determinant defined explicitly; unconditional dichotomy, simple-even as a corollary | **Lean-closed** (`HTGeometry/ComplexShiftLerch`, `CCMCircleDiracZetaDeterminant`, `CCMLogDiracRankOneDeterminant`, `CCMLogDiracDeterminantTheorem`) |
 | T1 | CC 2020 Thm 1: `W_∞(g∗g*) ≥ Tr(ϑ(g)Sϑ(g)*)`, supp `g ⊆ [2^{-1/2},2^{1/2}]`, `ĝ(i/2)=ĝ(0)=0` | `1−P−P̂ = S + D`, `D = P∨P̂ − P − P̂` trace class; prove `Tr(ϑ(g)Dϑ(g)*) ≥ 0` analytically (paper uses numerics) | open |
 
 ## Gates
@@ -60,3 +60,25 @@
   spectrum `±√λ_k` (λ_k even prolate eigenvalues), `Tr G = 0`. T1 ⟺
   `Σ_k √λ_k (‖ϑ(g)v_k^−‖² − ‖ϑ(g)v_k^+‖²) ≥ 0`. The paper closes this with finite numerics; an
   unconditional proof needs new analytic control of the dominant prolate modes.
+- 2026-10-21 — T2b closed: `fieldOneFiniteStageClassHardyTitchmarshUnitary_literalTheta(_ae)`
+  (`Υ_S θ_S f = c·σ_S·υ_∞ f`, `σ_S` the finite Euler symbol) and the Sonin-restricted form
+  `..._soninThetaEquiv` (`FieldOneFiniteStageThetaHardyTitchmarsh`). Clean, axioms standard, wired.
+- 2026-10-21 — T3 closed. (a) Complex-shift Lerch on the slit plane:
+  `exp(−∂_sζ_H(0,b)) = √(2π)/Γ(b)` (`exp_neg_deriv_hurwitzZetaEMC_zero`, Euler–Maclaurin continuation,
+  Binet extended by the identity theorem). (b) `det_ζ(D₀ − z) = 1 − e^{−2iaz}` for `Im z < 0`
+  (`exp_neg_deriv_ccmLogDiracZeta_zero`), with `Z = Σ_{n∈ℤ}(d_n − z)^{−s}` for `Re s > 1`
+  (`ccmLogDiracZeta_eq_tsum`, `summable_ccmLogDiracSpectrum`). (c) Rank-one algebra:
+  `charpoly(D − |Dξ⟩⟨1|) = X·P_ξ`, `P_ξ = Σ ξ_i ∏_{j≠i}(X − d_j)` monic of degree `|n|−1`
+  (`charpoly_ccmSourceCompletion_diagonal`); replacing block eigenvalues by `roots P_ξ` multiplies
+  `det_ζ` by `Σ ξ_i/(d_i − z)` (`exp_neg_deriv_ccmRankOneModifiedZeta`). (d) Literal matrix: ground
+  energy `ε = min spec W`, metric `T = W − ε` PSD and singular; spectral zeta of `D_log − z` equals
+  the series over `{d_n : |n|>N} ∪ roots P_ξ` (`ccmLogDiracSpectralZeta_eq_series`);
+  `det_reg(D_log − z) = −iλ^{−iz}ξ̂(z)` (`ccmLogDiracRegularizedDeterminant_eq`).
+  Main theorem `ccmPublished_logDirac_theorem` (no premises beyond `a > 0`): either η-branch —
+  normalized ground `ξ`, `T D_log = D_logᴴ T`, `D_log ξ = 0`, charpoly `X·P_ξ`, real quotient
+  spectrum, `ξ̂` has only real zeros, determinant identity on `Im z < 0` — or the boundary-blind
+  β-branch with metric-adjoint real-spectrum response completion. Published case
+  `ccmPublished_logDirac_simpleEven`: ground level on the line of a reflection-even `v` ⇒ `Σv ≠ 0`
+  and the η-branch holds for `ξ = v/Σv` (odd source cannot see `v`). All clean under `--json`,
+  axioms `propext, Classical.choice, Quot.sound`, wired after `CCMPublishedRestrictedWeilMatrix`,
+  oleans built single-threaded.

@@ -157,7 +157,7 @@ def ccmRankOneModifiedZeta (Z₀ : ℂ → ℂ) (d ξ : n → ℂ) (z s : ℂ) :
   Z₀ s - ∑ i, (d i - z) ^ (-s) +
     ((ccmRankOneQuotientCharpoly d ξ).roots.map fun μ => (μ - z) ^ (-s)).sum
 
-theorem hasDerivAt_cpow_neg_zero {c : ℂ} (hc : c ≠ 0) :
+theorem hasDerivAt_const_cpow_neg_zero {c : ℂ} (hc : c ≠ 0) :
     HasDerivAt (fun s : ℂ => c ^ (-s)) (-Complex.log c) 0 := by
   have h := (hasDerivAt_neg (0 : ℂ)).const_cpow (c := c) (Or.inl hc)
   simpa using h
@@ -168,7 +168,7 @@ theorem hasDerivAt_multiset_sum_cpow_neg {M : Multiset ℂ} {z : ℂ} (hM : ∀ 
   induction M using Multiset.induction_on with
   | empty => simpa using hasDerivAt_const (0 : ℂ) (0 : ℂ)
   | cons μ M ih =>
-    have hμ := hasDerivAt_cpow_neg_zero (hM μ (Multiset.mem_cons_self μ M))
+    have hμ := hasDerivAt_const_cpow_neg_zero (hM μ (Multiset.mem_cons_self μ M))
     have hrest := ih fun ν hν => hM ν (Multiset.mem_cons_of_mem hν)
     have hfun : (fun s : ℂ => ((μ ::ₘ M).map fun ν => (ν - z) ^ (-s)).sum) =
         fun s => (μ - z) ^ (-s) + (M.map fun ν => (ν - z) ^ (-s)).sum := by
@@ -179,7 +179,7 @@ theorem hasDerivAt_multiset_sum_cpow_neg {M : Multiset ℂ} {z : ℂ} (hM : ∀ 
     simp only [Multiset.map_cons, Multiset.sum_cons]
     ring
 
-theorem exp_multiset_sum_log {M : Multiset ℂ} (hM : ∀ c ∈ M, c ≠ 0) :
+theorem ccm_exp_multiset_sum_log {M : Multiset ℂ} (hM : ∀ c ∈ M, c ≠ 0) :
     Complex.exp (M.map Complex.log).sum = M.prod := by
   induction M using Multiset.induction_on with
   | empty => simp
@@ -189,7 +189,7 @@ theorem exp_multiset_sum_log {M : Multiset ℂ} (hM : ∀ c ∈ M, c ≠ 0) :
       ih fun x hx => hM x (Multiset.mem_cons_of_mem hx)]
 
 /-- `∏_μ (μ - z) = (-1)^{deg} P_ξ(z)` over the roots of the monic `P_ξ`. -/
-theorem prod_roots_sub_eq (d ξ : n → ℂ) (hξ : ∑ i, ξ i = 1) (z : ℂ) :
+theorem ccmRankOneQuotientCharpoly_prod_roots_sub (d ξ : n → ℂ) (hξ : ∑ i, ξ i = 1) (z : ℂ) :
     ((ccmRankOneQuotientCharpoly d ξ).roots.map fun μ => μ - z).prod =
       (-1) ^ (Fintype.card n - 1) * (ccmRankOneQuotientCharpoly d ξ).eval z := by
   set P := ccmRankOneQuotientCharpoly d ξ
@@ -221,7 +221,7 @@ theorem exp_neg_deriv_ccmRankOneModifiedZeta {Z₀ : ℂ → ℂ} {Z₀' : ℂ} 
       Complex.exp (-Z₀') * ∑ i, ξ i / (d i - z) := by
   have hblock : HasDerivAt (fun s : ℂ => ∑ i, (d i - z) ^ (-s))
       (∑ i, -Complex.log (d i - z)) 0 :=
-    HasDerivAt.fun_sum fun i _ => hasDerivAt_cpow_neg_zero (hd i)
+    HasDerivAt.fun_sum fun i _ => hasDerivAt_const_cpow_neg_zero (hd i)
   have hroot := hasDerivAt_multiset_sum_cpow_neg hroots
   have hmod : HasDerivAt (ccmRankOneModifiedZeta Z₀ d ξ z)
       (Z₀' - ∑ i, -Complex.log (d i - z) +
@@ -239,14 +239,15 @@ theorem exp_neg_deriv_ccmRankOneModifiedZeta {Z₀ : ℂ → ℂ} {Z₀' : ℂ} 
   have hroots' : Complex.exp
       (((ccmRankOneQuotientCharpoly d ξ).roots.map fun μ => Complex.log (μ - z)).sum) =
         ((ccmRankOneQuotientCharpoly d ξ).roots.map fun μ => μ - z).prod := by
-    have h := exp_multiset_sum_log (M := (ccmRankOneQuotientCharpoly d ξ).roots.map fun μ => μ - z)
+    have h := ccm_exp_multiset_sum_log
+      (M := (ccmRankOneQuotientCharpoly d ξ).roots.map fun μ => μ - z)
       (by
         intro c hc
         obtain ⟨μ, hμ, rfl⟩ := Multiset.mem_map.mp hc
         exact hroots μ hμ)
     rw [Multiset.map_map] at h
     exact h
-  rw [hlogs, hroots', prod_roots_sub_eq d ξ hξ z]
+  rw [hlogs, hroots', ccmRankOneQuotientCharpoly_prod_roots_sub d ξ hξ z]
   have hz' : ∀ j, z - d j ≠ 0 := fun j h => hd j (by rw [← neg_sub, h, neg_zero])
   rw [eval_ccmRankOneQuotientCharpoly_eq_mul_resolvent d ξ hz', ccm_prod_sub_eq_neg_one_pow_mul]
   have hprod : ∏ j, (z - d j) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun j _ => hz' j

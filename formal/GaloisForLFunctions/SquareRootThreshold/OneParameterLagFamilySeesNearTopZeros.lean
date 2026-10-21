@@ -16,10 +16,13 @@ hide a near-top zero `½ + z₀` with `η = |h_w(γ₀ − iδ₀)| > 0`: a coll
   modulated family, no height condition is needed.
 * **Loud records** (`le_norm_paperFT_of_loud_zero`). `|D(z*)| ≥ ε₀` and `m ≤ 40 log(180Γ₀)` give
   `|h_w(−iz*)|² ≥ ε₀/(80 log(180Γ₀))`.
-* **Visibility** (`one_param_near_top_visible`). Scale separation, partial elimination of the loose
-  members and the coherent core give, against the elimination noise `B₀(p)`
-  (`oneParamCollapseBound`), `(ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(δ₀/8)^{2k+1} ≤ 2B₀(p)`. Under the
-  reverse inequality some `P_v`, `v ∈ [0, V]`, is negative. The top need not be attained.
+* **A loud record is visible** (`one_param_record_visible`). For the Legendre record `z*` at lag `V`
+  with `|D(z*)| ≥ a`, `|Im z*| ≤ Γ`, `Re z* ≥ σ`: scale separation, partial elimination of the loose
+  members and the coherent core give, against the elimination noise `B(a, Γ; p)`
+  (`recordCollapseBound`), `(ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(σ/4)^{2k+1} ≤ 2B(a, Γ; p)`. Under the
+  reverse inequality some `P_v`, `v ∈ [0, V]`, is negative.
+* **Near-top zeros** (`one_param_near_top_visible`). A zero `1/V`-near the top makes a record with
+  `a = 2η²/e`, `Γ = Γ₀(η)`, `σ = δ₀/2` (`one_param_record_facts`). The top need not be attained.
 -/
 
 open MeasureTheory Complex Set Filter Topology
@@ -112,35 +115,44 @@ theorem le_norm_paperFT_of_loud_zero {w : ℝ} (hw : 0 < w) {y : ℂ}
     linarith
   exact le_of_pow_le_pow_left₀ two_ne_zero (norm_nonneg _) (hH.trans h1)
 
-/-- **The one-parameter family sees near-top zeros.** Let `½ + z₀` be a zero right of the line,
-`δ₀ = Re z₀`, with `η = |h_w(γ₀ − iδ₀)| > 0`, `1/V`-near the top, `Γ₀ = Γ₀(η)`, `P ≥ 80 log(180Γ₀)`.
-Let `k ≥ 1`, `κ₀ ≥ 1`, `2κ₀/V ≤ δ₀/16`, `V ≥ π(k + P)`, `Vδ₀/8 ≥ 4π(k + P)`, the record-depth
-condition, `H₀² ≤ (2η²/e)/(80 log(180Γ₀))`, and a core scale `ρ > 0` and gap `G ≥ 1` with
-`ρV ≤ 1`, `wρ ≤ 1`, `8w e^{w/2} J_w ρ ≤ H₀`, `ρ ≤ δ₀/16`,
-`((1 + τ)·2ρV + τ)(P + 1)·80 log(180(Γ₀ + 1))(e^{w/2}B_w)² ≤ η²/e` (`τ = coreFactorPerturbation`),
-and for every `p ≤ P`, `2B₀(p) < (ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(δ₀/8)^{2k+1}`
-(`oneParamCollapseBound`). Then `P_v < 0` for some lag `v ∈ [0, V]`, where `P_v` is the Weil form of
-`κ_w(t + v/2) − κ_w(t − v/2)`. -/
-theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
-    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
-    {η : ℝ} (hη : 0 < η) (hηle : η ≤ ‖paperFT (scaledBump w) (-(I * z₀))‖)
-    {V : ℝ} (hV : 0 < V)
-    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) {P : ℕ}
-    (hP : 80 * Real.log (180 * oneParamRecordHeight w η) ≤ P)
-    {κ₀ : ℝ} {k : ℕ} (hk : 1 ≤ k) (hκ₀ : 1 ≤ κ₀)
-    (hV2 : 2 * Real.log (80 * Real.log (180 * oneParamRecordHeight w η) *
-        (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / (2 * η ^ 2)) ≤ z₀.re * V)
-    (hκV : 2 * κ₀ / V ≤ z₀.re / 16) (hVk : π * (k + P : ℕ) ≤ V)
-    (hVr : 4 * π * (k + P : ℕ) ≤ V * (z₀.re / 8)) {H₀ : ℝ}
-    (hH : H₀ ^ 2 ≤ 2 * η ^ 2 / Real.exp 1 / (80 * Real.log (180 * oneParamRecordHeight w η)))
+/-- The collapse bound `B(a, Γ; p) = (8/3)^p (4/3)^k 2κ₀ (4κ₀² + 4π²(k + p)²)^{k+p}
+(4m₀/((e − 1)a) + 6144 log(180(Γ + 6)))`, `m₀ = 32(e^{w/2}B_w)²(C_ξ + log 4)`, for a record coefficient
+`≥ a` below the height `Γ`. -/
+def recordCollapseBound (w a Γ κ₀ : ℝ) (k p : ℕ) : ℝ :=
+  (8 / 3) ^ p * (4 / 3) ^ k * (2 * κ₀) * (4 * κ₀ ^ 2 + 4 * π ^ 2 * (k + p : ℕ) ^ 2) ^ (k + p) *
+    (4 * (32 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 *
+        (xiLineTwoLogDerivConstant + Real.log 4)) / ((Real.exp 1 - 1) * a) +
+      6144 * Real.log (180 * (Γ + 6)))
+
+theorem oneParamCollapseBound_eq_record (w η κ₀ : ℝ) (k p : ℕ) :
+    oneParamCollapseBound w η κ₀ k p =
+      recordCollapseBound w (2 * η ^ 2 / Real.exp 1) (oneParamRecordHeight w η) κ₀ k p := rfl
+
+/-- **A loud record is visible.** Let `z*` be the Legendre record of the unmodulated family at lag
+`V` with `|D(z*)| ≥ a > 0`, `|Im z*| ≤ Γ`, `Re z* ≥ σ`, `0 < σ ≤ ½`, `P ≥ 80 log(180Γ)`. Let `k ≥ 1`,
+`κ₀ ≥ 1`, `2κ₀/V ≤ σ/8`, `V ≥ π(k + P)`, `Vσ/4 ≥ 4π(k + P)`, `H₀² ≤ a/(80 log(180Γ))`, and a core
+scale `ρ > 0` and gap `G ≥ 1` with `ρV ≤ 1`, `wρ ≤ 1`, `8w e^{w/2} J_w ρ ≤ H₀`, `ρ ≤ σ/8`,
+`((1 + τ)·2ρV + τ)(P + 1)·80 log(180(Γ + 1))(e^{w/2}B_w)² ≤ a/2` (`τ = coreFactorPerturbation`),
+and for every `p ≤ P`, `2B(a, Γ; p) < (ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(σ/4)^{2k+1}`
+(`recordCollapseBound`). Then `P_v < 0` for some `v ∈ [0, V]`. -/
+theorem one_param_record_visible {w : ℝ} (hw : 0 < w) {V : ℝ} (hV : 0 < V) {z₁ : ℂ}
+    (hz₁ : evenCoeff zetaZeroConfig (modScaledBump w 0) z₁ ≠ 0) {σ : ℝ} (hσ : 0 < σ)
+    (hσ1 : σ ≤ 1 / 2) (hre₁ : σ ≤ z₁.re) {a Γ : ℝ} (ha : 0 < a)
+    (hD₁ : a ≤ ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z₁‖) (hup : |z₁.im| ≤ Γ)
+    (hrec : ∀ z, evenCoeff zetaZeroConfig (modScaledBump w 0) z ≠ 0 → 0 < z.re →
+      ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z‖ * Real.exp (z.re * V) ≤
+        ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z₁‖ * Real.exp (z₁.re * V)) {P : ℕ}
+    (hP : 80 * Real.log (180 * Γ) ≤ P) {κ₀ : ℝ} {k : ℕ} (hk : 1 ≤ k) (hκ₀ : 1 ≤ κ₀)
+    (hκV : 2 * κ₀ / V ≤ σ / 8) (hVk : π * (k + P : ℕ) ≤ V)
+    (hVr : 4 * π * (k + P : ℕ) ≤ V * (σ / 4)) {H₀ : ℝ}
+    (hH : H₀ ^ 2 ≤ a / (80 * Real.log (180 * Γ)))
     {ρ G : ℝ} (hρ : 0 < ρ) (hG : 1 ≤ G) (hρV : ρ * V ≤ 1) (hρw : w * ρ ≤ 1)
-    (hρL : 8 * w * Real.exp (w / 2) * bumpMass w * ρ ≤ H₀) (hρr : ρ ≤ z₀.re / 16)
+    (hρL : 8 * w * Real.exp (w / 2) * bumpMass w * ρ ≤ H₀) (hρr : ρ ≤ σ / 8)
     (hηm : ((1 + coreFactorPerturbation P κ₀ V ρ G) * (2 * (ρ * V)) +
-        coreFactorPerturbation P κ₀ V ρ G) * ((P + 1) * (80 * Real.log (180 *
-          (oneParamRecordHeight w η + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) ≤
-      2 * η ^ 2 / Real.exp 1 / 2)
-    (hmain : ∀ p : ℕ, p ≤ P → 2 * oneParamCollapseBound w η κ₀ k p <
-      (ρ * κ₀ / (2 * (P + 1) * G ^ P)) ^ p * V ^ (2 * k + p + 1) * (z₀.re / 8) ^ (2 * k + 1)) :
+        coreFactorPerturbation P κ₀ V ρ G) * ((P + 1) * (80 * Real.log (180 * (Γ + 1)) *
+          (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) ≤ a / 2)
+    (hmain : ∀ p : ℕ, p ≤ P → 2 * recordCollapseBound w a Γ κ₀ k p <
+      (ρ * κ₀ / (2 * (P + 1) * G ^ P)) ^ p * V ^ (2 * k + p + 1) * (σ / 4) ^ (2 * k + 1)) :
     ∃ v ∈ Icc (0 : ℝ) V, (zetaZeroConfig.W (twoBump (modScaledBump w 0) v (-1))
       (twoBump (modScaledBump w 0) v (-1))).re < 0 := by
   by_contra hneg
@@ -148,50 +160,20 @@ theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
   classical
   set b := modScaledBump w 0 with hbdef
   set D := evenCoeff zetaZeroConfig b with hDdef
-  set Γ := oneParamRecordHeight w η with hΓdef
-  set r : ℝ := z₀.re / 8 with hr
-  have hstrip := zetaZeroConfig.strip _ hz₀
-  have hre₀1' : z₀.re ≤ 1 / 2 := by
-    have e : (1 / 2 + z₀).re = 1 / 2 + z₀.re := by simp
-    linarith [hstrip.2]
+  set r : ℝ := σ / 4 with hr
   have hr0 : 0 < r := by rw [hr]; positivity
-  have hr1 : r ≤ 1 := by rw [hr]; linarith [hre₀1']
+  have hr1 : r ≤ 1 := by rw [hr]; linarith
   have hmem : ∀ x : ℂ, D x ≠ 0 → (1 / 2 + x) ∈ zetaZeroConfig.carrier := fun x hx => by
     rcases mem_of_evenCoeff_ne_zero hx with h | h
     · exact h
     · have := conj_mem_zetaZeroConfig h
       have e : conj (1 / 2 + conj x) = 1 / 2 + x := by apply Complex.ext <;> simp
       rwa [e] at this
-  have htop' : ∀ z, D z ≠ 0 → z.re ≤ z₀.re + 1 / V := fun z hz => by
-    have := htop _ (hmem z hz)
-    have e : (1 / 2 + z).re = 1 / 2 + z.re := by simp
-    linarith
-  obtain ⟨z₁, hz₁, hre₁, hup, hD₁, hrec⟩ :=
-    one_param_record_facts hw hV hz₀ hre₀ hη hηle htop' hV2
   have hκ₀0 : 0 < κ₀ := by linarith
   have h2κ : 2 * κ₀ / V ≤ r / 2 := by rw [hr]; linarith
   -- the companions of the record, independent of the depth
   set R₀ : ℝ := r + 2 * κ₀ / V with hR₀
   set T : Finset ℂ := (finite_evenCoeff_ball zetaZeroConfig b z₁ R₀).toFinset.erase z₁ with hT
-  have hTbox : ∀ z ∈ T, (1 / 2 + z) ∈ zetaZeroConfig.carrier ∧ |(1 / 2 + z).im| ≤ Γ + 1 ∧
-      1 / 2 + z₀.re / 4 ≤ (1 / 2 + z).re := fun z hz => by
-    rw [hT, Finset.mem_erase, Set.Finite.mem_toFinset] at hz
-    obtain ⟨-, hDz, hzr⟩ := hz
-    refine ⟨hmem z hDz, ?_, ?_⟩
-    · have e : (1 / 2 + z).im = z.im := by simp
-      rw [e]
-      have := Complex.abs_im_le_norm (z - z₁)
-      rw [Complex.sub_im] at this
-      have := abs_sub_abs_le_abs_sub z.im z₁.im
-      have : R₀ ≤ 1 := by rw [hR₀]; linarith
-      linarith
-    · have e : (1 / 2 + z).re = 1 / 2 + z.re := by simp
-      rw [e]
-      have := Complex.abs_re_le_norm (z - z₁)
-      rw [Complex.sub_re] at this
-      have := neg_abs_le (z.re - z₁.re)
-      have : R₀ ≤ z₀.re / 4 := by rw [hR₀, hr]; linarith
-      linarith
   have hTcard : T.card ≤ P := by
     have h4 : 4 ≤ |z₁.im| := four_le_abs_im_of_evenCoeff_zeta hz₁
     have hloc := card_exponent_window_le (b := b) h4 T fun z hz => by
@@ -302,7 +284,7 @@ theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
       rw [Complex.sub_im] at h1
       have h2 := abs_sub_abs_le_abs_sub c.im z₁.im
       have h3 := hcρ c hc
-      linarith only [h1, h2, h3, hup, hρr, hre₀1']
+      linarith only [h1, h2, h3, hup, hρr, hσ1]
     have h5 : Real.log (180 * |c.im|) ≤ Real.log (180 * (Γ + 1)) :=
       Real.log_le_log (by linarith only [h4]) (by linarith only [himc])
     rw [hDm]
@@ -383,7 +365,7 @@ theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
     rw [hL, hLΓ]
     exact Real.log_le_log (by have := abs_nonneg z₁.im; positivity) (by linarith only [hup])
   have hκ1' : 1 ≤ κ := hκ₀.trans hκ1
-  have hε₀ : 0 < 2 * η ^ 2 / Real.exp 1 := by positivity
+  have hε₀ : 0 < a := ha
   have hΞ := xi_ratio_le_general hκ1' hε₀ hD₁ hL0 hW0 hMW
   have hQQ : κ * Q ≤ 2 * κ₀ * Q₂ := by
     have hq : Q ≤ Q₂ := by
@@ -395,7 +377,7 @@ theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
     exact mul_le_mul hκ2 hq hQ0.le (by linarith only [hκ₀0])
   have he1 : 0 < Real.exp 1 - 1 := by linarith only [Real.add_one_lt_exp (one_ne_zero (α := ℝ))]
   have hm00 : 0 ≤ m₀ := le_trans (add_nonneg (abs_nonneg _) hW0) hMW
-  obtain ⟨X, hX⟩ : ∃ X : ℝ, X = 4 * m₀ / ((Real.exp 1 - 1) * (2 * η ^ 2 / Real.exp 1)) := ⟨_, rfl⟩
+  obtain ⟨X, hX⟩ : ∃ X : ℝ, X = 4 * m₀ / ((Real.exp 1 - 1) * a) := ⟨_, rfl⟩
   have hX0 : 0 ≤ X := by rw [hX]; exact div_nonneg (by linarith only [hm00]) (mul_pos he1 hε₀).le
   rw [← hX] at hΞ
   have hΞ' : 4 * |2 * (lagStructure zetaZeroConfig b 0).re| + 4 * ∑' z : ℂ, ‖D z‖ +
@@ -429,15 +411,15 @@ theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
   have h2 : 0 ≤ (8 / 3) ^ p * (4 / 3) ^ k * (2 * κ₀ * Q₂) :=
     mul_nonneg hc0 (mul_nonneg (by linarith only [hκ₀0]) hQ₂0)
   have hb : (ρ₁ ^ p * (κ₀ / (2 * (P + 1))) ^ p) / 2 * (V ^ (2 * k + p + 1) * r ^ (2 * k + 1)) ≤
-      oneParamCollapseBound w η κ₀ k p :=
+      recordCollapseBound w a Γ κ₀ k p :=
     calc (ρ₁ ^ p * (κ₀ / (2 * (P + 1))) ^ p) / 2 * (V ^ (2 * k + p + 1) * r ^ (2 * k + 1))
         = ρ₁ ^ p / 2 * (ε ^ p * V ^ (2 * (k + p) + 1)) * r ^ (2 * k + 1) := by rw [e]; ring
       _ = ρ₁ ^ p / 2 * ε ^ p * V ^ (2 * (k + p) + 1) * r ^ (2 * k + 1) := by ring
       _ ≤ (8 / 3) ^ p * (4 / 3) ^ k * (2 * κ₀ * Q₂) * ((X + 6144 * L) * 1) := hfin
       _ ≤ (8 / 3) ^ p * (4 / 3) ^ k * (2 * κ₀ * Q₂) * (X + 6144 * LΓ) :=
           mul_le_mul_of_nonneg_left h1 h2
-      _ = oneParamCollapseBound w η κ₀ k p := by
-          rw [oneParamCollapseBound, ← hΓdef, ← hLΓ, ← hQ₂, hX, hm₀]; ring
+      _ = recordCollapseBound w a Γ κ₀ k p := by
+          rw [recordCollapseBound, ← hLΓ, ← hQ₂, hX, hm₀]; ring
   -- the gap ladder bounds the loose radius from below
   have hab : (ρ * κ₀ / (2 * (P + 1) * G ^ P)) ^ p ≤ ρ₁ ^ p * (κ₀ / (2 * (P + 1))) ^ p := by
     rw [← mul_pow]
@@ -447,5 +429,58 @@ theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
     rw [e2]
     exact mul_le_mul_of_nonneg_right hρ₁P (by positivity)
   exact visible_final_arith hab (by positivity) hb (hmain p hpP)
+
+
+/-- **The one-parameter family sees near-top zeros.** Let `½ + z₀` be a zero right of the line,
+`δ₀ = Re z₀`, with `η = |h_w(γ₀ − iδ₀)| > 0`, `1/V`-near the top, `Γ₀ = Γ₀(η)`, `P ≥ 80 log(180Γ₀)`.
+Let `k ≥ 1`, `κ₀ ≥ 1`, `2κ₀/V ≤ δ₀/16`, `V ≥ π(k + P)`, `Vδ₀/8 ≥ 4π(k + P)`, the record-depth
+condition, `H₀² ≤ (2η²/e)/(80 log(180Γ₀))`, and a core scale `ρ > 0` and gap `G ≥ 1` with
+`ρV ≤ 1`, `wρ ≤ 1`, `8w e^{w/2} J_w ρ ≤ H₀`, `ρ ≤ δ₀/16`,
+`((1 + τ)·2ρV + τ)(P + 1)·80 log(180(Γ₀ + 1))(e^{w/2}B_w)² ≤ η²/e` (`τ = coreFactorPerturbation`),
+and for every `p ≤ P`, `2B₀(p) < (ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(δ₀/8)^{2k+1}`
+(`oneParamCollapseBound`). Then `P_v < 0` for some lag `v ∈ [0, V]`, where `P_v` is the Weil form of
+`κ_w(t + v/2) − κ_w(t − v/2)`. -/
+theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
+    (hz₀ : (1 / 2 + z₀) ∈ zetaZeroConfig.carrier) (hre₀ : 0 < z₀.re)
+    {η : ℝ} (hη : 0 < η) (hηle : η ≤ ‖paperFT (scaledBump w) (-(I * z₀))‖)
+    {V : ℝ} (hV : 0 < V)
+    (htop : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re - 1 / 2 ≤ z₀.re + 1 / V) {P : ℕ}
+    (hP : 80 * Real.log (180 * oneParamRecordHeight w η) ≤ P)
+    {κ₀ : ℝ} {k : ℕ} (hk : 1 ≤ k) (hκ₀ : 1 ≤ κ₀)
+    (hV2 : 2 * Real.log (80 * Real.log (180 * oneParamRecordHeight w η) *
+        (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / (2 * η ^ 2)) ≤ z₀.re * V)
+    (hκV : 2 * κ₀ / V ≤ z₀.re / 16) (hVk : π * (k + P : ℕ) ≤ V)
+    (hVr : 4 * π * (k + P : ℕ) ≤ V * (z₀.re / 8)) {H₀ : ℝ}
+    (hH : H₀ ^ 2 ≤ 2 * η ^ 2 / Real.exp 1 / (80 * Real.log (180 * oneParamRecordHeight w η)))
+    {ρ G : ℝ} (hρ : 0 < ρ) (hG : 1 ≤ G) (hρV : ρ * V ≤ 1) (hρw : w * ρ ≤ 1)
+    (hρL : 8 * w * Real.exp (w / 2) * bumpMass w * ρ ≤ H₀) (hρr : ρ ≤ z₀.re / 16)
+    (hηm : ((1 + coreFactorPerturbation P κ₀ V ρ G) * (2 * (ρ * V)) +
+        coreFactorPerturbation P κ₀ V ρ G) * ((P + 1) * (80 * Real.log (180 *
+          (oneParamRecordHeight w η + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) ≤
+      2 * η ^ 2 / Real.exp 1 / 2)
+    (hmain : ∀ p : ℕ, p ≤ P → 2 * oneParamCollapseBound w η κ₀ k p <
+      (ρ * κ₀ / (2 * (P + 1) * G ^ P)) ^ p * V ^ (2 * k + p + 1) * (z₀.re / 8) ^ (2 * k + 1)) :
+    ∃ v ∈ Icc (0 : ℝ) V, (zetaZeroConfig.W (twoBump (modScaledBump w 0) v (-1))
+      (twoBump (modScaledBump w 0) v (-1))).re < 0 := by
+  have htop' : ∀ z, evenCoeff zetaZeroConfig (modScaledBump w 0) z ≠ 0 →
+      z.re ≤ z₀.re + 1 / V := fun z hz => by
+    have hmem : (1 / 2 + z) ∈ zetaZeroConfig.carrier := by
+      rcases mem_of_evenCoeff_ne_zero hz with h | h
+      · exact h
+      · have := conj_mem_zetaZeroConfig h
+        have e : conj (1 / 2 + conj z) = 1 / 2 + z := by apply Complex.ext <;> simp
+        rwa [e] at this
+    have := htop _ hmem
+    have e : (1 / 2 + z).re = 1 / 2 + z.re := by simp
+    linarith
+  obtain ⟨z₁, hz₁, hre₁, hup, hD₁, hrec⟩ := one_param_record_facts hw hV hz₀ hre₀ hη hηle htop' hV2
+  have hstrip := zetaZeroConfig.strip _ hz₀
+  have hre₀1 : z₀.re ≤ 1 / 2 := by
+    have e : (1 / 2 + z₀).re = 1 / 2 + z₀.re := by simp
+    linarith [hstrip.2]
+  have e8 : z₀.re / 2 / 4 = z₀.re / 8 := by ring
+  exact one_param_record_visible hw hV hz₁ (half_pos hre₀) (by linarith) hre₁ (by positivity) hD₁ hup
+    hrec hP hk hκ₀ (by linarith) hVk (by rw [e8]; exact hVr) hH hρ hG hρV hρw hρL (by linarith) hηm
+    (fun p hp => by rw [e8, ← oneParamCollapseBound_eq_record]; exact hmain p hp)
 
 end GaloisForLFunctions.SquareRootThreshold

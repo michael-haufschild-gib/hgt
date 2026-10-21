@@ -274,3 +274,17 @@ effective (finite-window) visibility of the lag family, records, non-attained to
   P_v < 0 for some v ∈ [0, V]; no height condition; V₀ ≍ (log Γ₀)² log log Γ₀/δ₀, Γ₀ ≍ η^{−2/3}.
   `one_param_depth_gap_of_lag_positivity`: P_v ≥ 0 on [0, V] ⟹ every zero with V₀ ≤ V lies ≥ 1/V
   below the top. Criteria (1), (2), (5) for the single family P_v. Axioms clean; olean; wired.
+- **L27 · Horizon law for P_v** — `OneParameterLagFamilyHorizonLaw`. `oneParamHorizon w z = V₀(w,
+  |h_w(−iz)|, Re z)`. `one_param_horizon_law`: for a width with h_w(−iz) ≠ 0 at all zeros, P_v ≥ 0 on
+  [0, V] ⟹ from every zero inside the horizon (V₀ ≤ V) a zero beyond it (V₀ > V) is reached, deeper
+  by > 1/V (iterated depth gap, < V/2 steps). `one_param_visible_of_horizon`: if all zeros deeper than
+  z₀ + 1/V are inside the horizon, some P_v < 0 on [0, V] — the attainment premise replaced by a
+  condition on zeros beyond the horizon. `one_param_near_top_primeWindow_neg`: prime-window form of
+  L26 (2w < log 2). Criterion (5). Axioms clean; olean; wired.
+- **L28 · Loud records are visible at an explicit lag** — `OneParameterLagFamilyRecordsAreVisibleAtAnExplicitLag`
+  (+ refactor of L25). `one_param_record_visible` (L25 file): the record z* of P_v at lag V with
+  |D(z*)| ≥ a, |Im z*| ≤ Γ, Re z* ≥ σ is visible under explicit conditions (bound `recordCollapseBound`);
+  `one_param_near_top_visible` is now a corollary. `one_param_record_visible_at_explicit_lag`:
+  V ≥ V(a, σ) = `recordLag` with Γ(a) = `recordHeightOf` ⟹ P_v < 0 on [0, V];
+  V(a, σ) ≍ log²(1/a)·loglog(1/a)/σ. Every near-top variant now reduces to a record lemma.
+  Axioms clean; olean; wired.
