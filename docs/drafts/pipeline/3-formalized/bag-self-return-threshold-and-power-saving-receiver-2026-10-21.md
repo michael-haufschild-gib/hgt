@@ -55,6 +55,16 @@ analytic and nonvanishing near `D`. Hurwitz's theorem is the whole obstruction (
 receiver cannot be lowered below "beat `T^θ` infinitely often": below the threshold the
 self-returns are shadows of nearby zeros and Ingham–Huxley caps them at `T^θ`.
 
+## Modules (all wired into `GaloisForLFunctions.RHTower`, `lake env lean` clean, axioms standard)
+
+1. `ZetaSelfReturnThresholdIsTheDistanceToNonvanishingTargets` — threshold law, dichotomy,
+   power-saving receiver.
+2. `ZetaSelfReturnThresholdReadsTheVanishingOrder` — `d(z₀,r) ≍ r^{ord}`.
+3. `ZetaOrbitApproachesEveryAnalyticTargetWithTheHurwitzThreshold` — every analytic target.
+4. `ZetaTwistedDirichletHeadsNearAZeroHaveVanishingHaarMass` — twisted heads, Haar mass → 0.
+5. `ZetaTwistedDirichletHeadsApproximateZetaWithPositiveHaarMassIffZeroFree` — Haar mass bounded
+   below iff zero-free; explicit decay; RH ⟺ Haar-mass law.
+
 ## Conjecture log
 
 - C1 threshold law: **proved** (items 1–5).
@@ -81,8 +91,33 @@ self-returns are shadows of nearby zeros and Ingham–Huxley caps them at `T^θ`
   exact threshold `exists_pos_density_zetaTargetReturnSet_iff_forall_ne_zero`. Reusable:
   `exists_volume_le_rpow_of_subset_zetaZeroShadow` (any set carried into the zero shadow by a
   translation is power-saving rare).
-- C5 twisted-head rigidity: `ζ(z₀) = 0 ⟹` every unimodular completely multiplicative twist
-  `Σ_{n<M} ω(n) n^{−z}` of the Dirichlet head stays at distance `≥ d/2` from `ζ` on `D` for all large
-  `M` (an open set of phases would give, by Kronecker–Weyl and the Carlson tail law, positive-density
-  self-returns below the threshold); conversely zero-free ⟹ twisted heads approximate `ζ`.
-  RH ⟺ twisted heads approximate `ζ` on every strip disc. In progress.
+- C5 twisted heads: **the emptiness version is not implied** (a set of phases of vanishing Haar
+  mass can still be nonempty for every `M`); the true statement was **proved** 2026-10-21 in
+  `formal/GaloisForLFunctions/RHTower/ZetaTwistedDirichletHeadsNearAZeroHaveVanishingHaarMass.lean`
+  (wired, axioms standard): `primePhaseTwist ω n = ∏_{p∣n} ω(p)^{v_p(n)}` (continuous, unimodular,
+  equal to `n^{−iτ}` along the prime phase flow), `twistedDirichletHead M ω = edPoly (primePhaseTwist ω) (Icc 1 M)`,
+  `twistedHeadPhaseSet M D ε` (open; `headTargetReturnSet = flow⁻¹' twistedHeadPhaseSet`).
+  **`eventually_torusHaar_twistedHeadPhaseSet_le`**: for `ε < d(z₀,r)` and every `δ > 0`, the Haar
+  mass of the phases under which the length-`M` twisted head is within `ε` of `ζ` on the disc is
+  `≤ δ` for all large `M` (Kronecker–Weyl lower density of visits + head-target ⊆ tail-bad ∪
+  self-return, self-return `≤ T^θ`, tail-bad density `≤ δ/2`). Zero-free open disc ⟹ the phase set
+  is nonempty for all large `M` (`eventually_nonempty_twistedHeadPhaseSet_of_zeroFree`). Around an
+  off-line zero: `exists_eventually_torusHaar_twistedHeadPhaseSet_le_of_zero`. Twisted heads can
+  vanish, so this is not Hurwitz: it is the zero-density theorem acting on finite Dirichlet
+  polynomials. The uniform lower bound and the RH equivalence were **proved** the same day in
+  `formal/GaloisForLFunctions/RHTower/ZetaTwistedDirichletHeadsApproximateZetaWithPositiveHaarMassIffZeroFree.lean`
+  (wired, axioms standard): `le_torusHaar_twistedHeadPhaseSet_of_density` (a Urysohn function
+  `1_{U(ε/2)} ≤ ψ ≤ 1_{U(ε)}` on the prime torus, `exists_continuous_zero_one_of_isClosed`, turns
+  the lower density of visits into the Haar integral via `tendsto_windowAverage_primeFlow_real`),
+  `exists_pos_forall_eventually_torusHaar_twistedHeadPhaseSet_ge` (zero-free open disc ⟹
+  `Haar(U_M(ε)) ≥ c > 0` for all long heads), `torusHaar_twistedHeadPhaseSet_le_tailMass` and
+  `torusHaar_twistedHeadPhaseSet_le_rpow` (below the threshold:
+  `Haar(U_M(ε)) ≤ 28K ε'^{−2}·tailMass(M, Re z₀−2r) = O((M+1)^{1−2(Re z₀−2r)})`, from the corpus
+  explicit fixed-`M` tail density `eventually_volume_discTailBadSet_le_tailMass`), and
+  **`riemannHypothesis_iff_forall_twistedHeadPhaseSet_haar_pos`**: RH ⟺ on every strip disc with
+  doubled closure in the strip and for every `ε > 0`, the Haar mass of the prime phases under
+  which the twisted length-`M` head is within `ε` of `ζ` on the disc is bounded below by a positive
+  constant for all long heads. So RH is a statement about *random completely multiplicative
+  twists of finite Dirichlet polynomials*: the probability that a random twist of the head of
+  length `M` reproduces `ζ` on a disc stays bounded below (RH) or decays like the Carlson tail mass
+  (a zero inside).

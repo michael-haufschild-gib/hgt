@@ -244,8 +244,9 @@ theorem zetaZeroAbscissa_lt_one_of_moebiusPowerWindowSaving (h : MoebiusPowerWin
             mul_le_mul_of_nonneg_left hEQ (Real.sqrt_nonneg _)
         _ = Real.sqrt C * (Q : ℝ) ^ (1 - δ / 2) * (Q : ℝ) ^ α := by
             rw [Real.sqrt_eq_rpow, mul_left_comm, mul_assoc, ← Real.rpow_add hQ0,
-              mul_assoc, ← Real.rpow_add hQ0]
-            congr 2; ring
+              ← Real.rpow_add hQ0]
+            congr 2
+            ring
         _ ≤ Real.sqrt C * (Q : ℝ) ^ (1 - δ / 2) * H :=
             mul_le_mul_of_nonneg_left hHlo (by positivity)
     have h2 : Real.sqrt C * (Q : ℝ) ^ (1 - δ / 2) ≤ Real.sqrt C * (Q : ℝ) ^ γ :=

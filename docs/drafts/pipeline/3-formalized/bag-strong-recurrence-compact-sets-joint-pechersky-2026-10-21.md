@@ -76,6 +76,32 @@ enlarged discs `closedBall (z i) (ρ i R₂)` lie in the strip and in a zero-fre
 - The prime-sum divergence lemma depends only on the negative-ray rate of the pairing function
   (horizontal extent), not on its vertical extent: tall compacta cost nothing.
 
+## Follow-ups closed the same day
+
+7. **The closed span is the polynomial closure** (`PrimeSpanIsThePolynomialClosure`):
+   `primeSpan = expTupleSpan` (closed span of the exponential tuples `E_ξ`, `ξ ∈ ℝ`) `=
+   polyTupleSpan c₀` (closed span of the monomial tuples about any centre `c₀`), since the prime
+   tuples are `E_{log p}` and the tuples of the entire functions `s ↦ p^{−s}` are limits of their
+   Taylor polynomials (`mem_of_differentiableOn_ball_of_monoTuple_mem`, the Taylor step for any
+   closed submodule containing the monomial tuples). `primeSpanᗮ = {e : F_e ≡ 0}`
+   (`mem_orthogonal_primeSpan_iff_tuplePairing_eq_zero`); for one disc `primeSpan = ⊤`
+   (`primeSpan_eq_top_of_unique`). So the joint targets are exactly the limits of diagonal
+   restrictions of polynomials (equivalently of entire functions) to the discs.
+8. **Voronin universality on compact sets** (`ZetaVoroninUniversalityOnCompactSets`,
+   unconditional): for `K` compact in the strip contained in an open disc `ball c₀ R₀` on which
+   `g` is analytic and nonvanishing (the disc may leave the strip, `K` may be tall), the shifts
+   with `sup_K |ζ(s+iτ) − g(s)| < ε` have positive lower density
+   (`exists_pos_density_zetaTargetReturnSet_of_isCompact`); corollaries for nonzero constants and
+   nonvanishing entire functions. The density statements of module 5 are proved for any target
+   `g` whose logarithm tuple lies in `primeSpan`
+   (`exists_pos_density_eulerTargetReturnSet_exp_union`,
+   `exists_uniform_pos_density_eulerTargetReturnSet_exp_union`); `ζ` under RH is the case where the
+   zero-free disc supplies the logarithm.
+
+Not reached: targets analytic only on a neighbourhood of `K` with connected complement
+(Mergelyan/Runge are not in the corpus; `HTGeometry/RungeDensity` approximates by differentially
+algebraic functions), and targets with zeros (excluded by `exists_zero_of_mem_zetaTargetReturnSet`).
+
 ## Gates
 - [x] 0 → 1  well-posed, route fixed by corpus search
 - [x] 1 → 2  paper proof complete (module docstrings)
@@ -86,6 +112,7 @@ enlarged discs `closedBall (z i) (ρ i R₂)` lie in the strip and in a zero-fre
 - 2026-10-21 — created after the all-disc theorem; corpus searched; route fixed.
 - 2026-10-21 — modules 1–6 compiled (`lake --old env lean -j 1 -o`), wired into `RHTower.lean`;
   `riemannHypothesis_iff_zetaStronglyRecurrent` proved; card moved to 3-formalized.
-  Next conjectures: (i) `primeSpan` = closure of the polynomial tuples = closure of the exponential
-  tuples; (ii) unconditional Voronin universality on compact sets for targets analytic and
-  nonvanishing on a disc containing `K`.
+  Same day: (i) `primeSpan` = closure of the polynomial tuples = closure of the exponential
+  tuples (`PrimeSpanIsThePolynomialClosure`); (ii) unconditional Voronin universality on compact
+  sets for targets analytic and nonvanishing on a disc containing `K`
+  (`ZetaVoroninUniversalityOnCompactSets`); both compiled, wired, standard axioms.

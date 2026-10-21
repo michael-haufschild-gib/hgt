@@ -371,3 +371,29 @@ bound; whether GM's Theorem 1.1 survives with it is not examined.
   primes in `(x, x + x^{17/30+ε}]` through `tendsto_tsum_zeroShortWeight_of_density` (any exponent `A < 4`), and the
   prime-row dispersion regime of `BezoutValuationIncidence/CentredPrimeRowPassesTheCoherentBlockObstruction`
   extends from `Q ≤ P^{12/7}` to `Q ≤ P^{30/17}`.
+
+### 2026-10-21 (later) — second wave and fixed interfaces
+
+Running bricks (each in its own `RHTower/Sieve/GuthMaynard<Section>*.lean` modules, new files only):
+Heath-Brown pair sum (`HeathBrownPairSum*`), Lemma 6.2 for ζ + S₂ reduction (`ChenGuptaLiLemma62Principal*`,
+`GuthMaynardSTwoReduction*`), §7 (`GuthMaynardSmoothedLagSum`, `GuthMaynardCubicTermIntegral`,
+`GuthMaynardPropSevenOne*`, `GuthMaynardPropSevenTwo*`), §8 (`GuthMaynardLagSumL2`, `…L4`,
+`GuthMaynardSmoothedLagSumFourierDecay`, `GuthMaynardPropEightOne`), §9–10 (`GuthMaynardAffineSum`,
+`…AffineIteration`, `…AffineEquidistribution`, `GuthMaynardPropTenOne`).
+
+Briefs written for the next wave (scratchpad `gm-brief-s11-energy.md`, `gm-brief-s12-assembly.md`,
+`gm-brief-s13-zero-density.md`): §11 energy bound (Lemmas 11.3–11.9, 1.5, Props 11.1, 11.2), §3+§12 assembly
+(Prop 3.1 from the S-bounds, Theorem 1.1 from Prop 3.1, Prop 12.1), §13.1 zero density through the corpus
+detector (`exists_window_class_card_le` template, `exists_zeroHeightBox_ncard_le_window`,
+`tendsto_tsum_zeroShortWeight_of_density` for the 17/30 transfer).
+
+Fixed Lean shape of Theorem 1.1 (interface between the §12 and §13 bricks):
+`theorem guthMaynard_largeValues {ε : ℝ} (hε : 0 < ε) : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (T T₀ V : ℝ) (b : ℕ → ℂ)
+(W : Finset ℝ), 1 ≤ N → 2 ≤ T → 0 < V → (∀ n, ‖b n‖ ≤ 1) → (∀ t ∈ W, T₀ ≤ t ∧ t ≤ T₀ + T) →
+(∀ t ∈ W, ∀ t' ∈ W, t ≠ t' → 1 ≤ |t − t'|) →
+(∀ t ∈ W, V ≤ ‖∑ n ∈ Finset.Ioc N (2 * N), b n * Complex.exp (Complex.I * t * Real.log n)‖) →
+(W.card : ℝ) ≤ C * T ^ ε * (N² / V² + N^{18/5} / V⁴ + T N^{12/5} / V⁴)`, plus the scaled form for `‖b n‖ ≤ B`.
+Zero-density target: `ncard (zeroHeightBox σ T) ≤ D (1 + log T)^B T^{(30/13 + ε)(1−σ)}` uniformly in
+`σ ∈ [1/2, 1]` for `T ≥ T₀`; window `a = 10/(6 + 10σ)` (ratio 3/2, equal to (13.1)) on `[7/10, 8/10]`,
+mean-value window `a = 10/13` below, Huxley window `a = 35/52` above; then `u < 13/30` in
+`tendsto_tsum_zeroShortWeight_of_density` gives `ψ(x + x^α) − ψ(x) ∼ x^α` for `α > 17/30`.

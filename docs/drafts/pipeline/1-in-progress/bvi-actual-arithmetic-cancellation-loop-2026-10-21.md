@@ -189,6 +189,22 @@ windows of length `≍ P`; by the transfer law (a) that is exactly the missing i
 (`tendsto_sum_sq_moebius_window_div`), `…/MoebiusBlockBeatsTheTypeTwoBarrier.lean`
 (`eventually_abs_rowBilinear_moebiusWindowRow_le`); standard axioms; wired.
 
+### C12 — short-window Möbius saving is the quasi-Riemann hypothesis (DONE, Lean)
+**Statement.** With `E_α(Q) = Σ_{Q≤t<2Q}(Σ_{t<n≤t+⌈Q^α⌉}μ(n))²`:
+`(∃ α ∈ (0,1), δ > 0, C, ∀ Q ≥ 1, E_α(Q) ≤ C Q^{1+2α-δ}) ↔ Θ < 1`, `Θ` the zero abscissa. Explicitly,
+`Θ < 1` gives the saving at `α = (1+Θ)/2`, `δ = (1-Θ)/2`; a saving `(α, δ)` forces
+`Θ ≤ max(1 - δ/2, α)`.
+**Proof.** `⇐` Littlewood at the abscissa (`mobiusMertens_subpower_zetaZeroAbscissa`). `⇒` windows
+telescope, `Σ_t (M(t+H)-M(t)) = Σ_{i<H}(M(2Q+i)-M(Q+i))`, so `|M(2Q)-M(Q)| ≤ √Q√E/H + 2H ≪ Q^γ`;
+halving induction `|M(N)| ≤ K(N+1)^γ`; absolute-moment exponent law
+(`zetaZeroAbscissa_le_of_sum_norm_mertens_le`).
+**Meaning.** Closes the C11 route: the input the transfer law needs for an exponent gain of the
+Möbius row in the balanced regime is equivalent to a fixed-width zero-free strip. Same profile as
+the receiver (C1–C6): BVI's missing cancellation is, on every route built so far, a zero-free-region
+statement. Neither side of the iff is proved; no strip is claimed.
+**Lean.** `BezoutValuationIncidence/ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis.lean`
+(`moebiusPowerWindowSaving_iff`); standard axioms; wired.
+
 ## Synthesis after C1–C10 (what the research says about the missing cancellation)
 
 1. **Receiver = zero-free region, both directions.** Any Mertens rate becomes a receiver band through
@@ -221,3 +237,4 @@ windows of length `≍ P`; by the transfer law (a) that is exactly the missing i
 - 2026-10-21 — C9 formalized and wired.
 - 2026-10-21 — C10 formalized and wired (Möbius in progressions mod p; Möbius/prime pair).
 - 2026-10-21 — C11 formalized and wired (transfer law; linear-window MR; Möbius block beats the Type-II barrier).
+- 2026-10-21 — C12 formalized and wired (short-window Möbius saving ⟺ Θ < 1).

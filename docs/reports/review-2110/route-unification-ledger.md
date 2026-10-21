@@ -278,3 +278,61 @@ is the record of producers; this ledger is the record of what the producers woul
   and of the cosine-shift law (`cos(hD)Ξ` Laguerre–Pólya ⟹ `zetaZeroWidth ≤ h`).
 - The open arrow of the width dictionary, width to ground-energy floor, which is the only arrow
   whose closure would be progress on RH rather than on the ledger.
+
+## The unifying object: the ground-energy path
+
+The three graded units are three readings of one function, the ground-energy path
+`A ↦ μ(A) = ccmRestrictedWeilGroundEnergy A` of the restricted Weil operator at aperture `A`:
+antitone and continuous (`R:CCMRestrictedWeilApertureMonotonicity`, `R:SuzukiGroundEnergyContinuity`
+[L]), positive through `3/10`, tending to `0` under RH and to `−∞` otherwise.
+
+- **Its first sign change is the aperture unit.** Off RH the apertures with `μ(A) ≥ 0` and the
+  window-positive apertures are down-sets with one supremum, the contact aperture
+  `zetaContactAperture`; the path is nonnegative below it, zero at it (continuity), negative beyond
+  it; it is at least `3/10` and at most `V/2 + w` for every near-top zero with visibility lag `V`;
+  both sets are unbounded iff RH (`Q:TheContactApertureOfTheGroundEnergyPath` [S]:
+  `theContactApertureOfTheGroundEnergyPath`, `riemannHypothesis_iff_not_bddAbove_groundEnergyNonnegApertures`,
+  `zetaContactAperture_le_of_near_top_zero`). So the unit of cluster B is one number, read by RW
+  as the first zero of `μ`, by SRT and AIP/APT as the last window-positive aperture, by OWU as the
+  last aperture of the capacity inequality.
+- **The rate of its fall is the width.** `μ(A) ≥ −Ce^{2σA}` at all large apertures gives
+  `zetaZeroWidth ≤ σ`, hence every reading of cluster A at once: the regularized prime series
+  converge right of `½ + σ`, the Wold energy is finite below radius `½ − σ`, Lagarias' criterion
+  holds right of `½ + σ`, every cosine shift `h > σ` of `Ξ` is Laguerre–Pólya, every point right of
+  `½ + σ` carries a recurrent disc (`groundEnergyFloor_feeds_every_width_reading` [S]); in exponent
+  form the fall rate of the polar path dominates the width (`Q:TheZeroWidthIsALandauExponent` [S]).
+  The converse (width to fall rate) is the open arrow.
+- **The zero that forces the contact is the per-zero side, and the side is the depth.** Every
+  indicator of cluster C is an explicit monotone function of the depth `|Re ρ − ½|`
+  (`Q:TheSideIsTheDepthAndTheWidthIsItsSupremum` [S]): the first-prime seam charge is
+  `√2 · log 2 · sinh(log 2 · |Re ρ − ½|)` (`norm_orbitwiseFirstPrimeSeamCharge_eq_sinh`), the
+  Hurwitz two-seed residual is `(2 Re ρ − 1)` times its Mellin factor
+  (`primeTailSeedTwoReflectionResidual_eq_depth_mul`), the Deninger mate gain is the radial
+  character `n^{2 Re ρ − 1}` (`abs_log_deningerHalfDensityMateGain_eq`), the Berry–Keating
+  coordinate and the weight-one Clifford energy have imaginary part `∓2 Im ρ (Re ρ − ½)`
+  (`im_berryKeatingU_eq`, `im_weightOneCliffordEnergy_eq`), the centred spectral point has imaginary
+  part `½ − Re ρ`. Hence the width is their supremum:
+  `sSup ‖seam charge‖ = √2 log 2 sinh(log 2 · zetaZeroWidth)` and `zetaZeroWidth ≤ σ` iff every seam
+  charge is at most `√2 log 2 sinh(σ log 2)` iff every mate gain satisfies
+  `|log(mateGain n ρ)| ≤ 2σ log n` (`theWidthIsTheSupremumOfTheDepthMeters`). Cluster C is cluster A
+  read one zero at a time: the zero-indexed routes are not a separate unit, and their Boolean is
+  the value zero of a depth meter.
+
+**The unifying question.** What remains open between the units is a single law about this path:
+how the contact aperture depends on the height and the depth of the top zero, and whether the fall
+rate equals twice the width. The corpus has the one-sided answers: a near-top zero at height `γ`
+and depth `δ` forces contact by `A ≍ (log γ)² log log γ / δ`, and the synthetic diluted-lattice law
+(`Q:DilutedOffLineLatticeHidingLaw` [L]) says that inside a background of `ζ`'s local zero density
+`≍ log γ` an off-line family of depth `δ` hides exactly up to aperture `≍ (1/2δ) log log γ`. The
+conjecture that the model law is `ζ`'s law, `c log log γ*/δ ≤ A_c ≤ C (log γ*)² log log γ*/δ`, is the
+[contact-law card](../../drafts/pipeline/0-backlog/contact-aperture-law-of-the-ground-energy-path-2026-10-21.md).
+Together with the open arrow it would make the path a complete invariant of the configuration in
+the three currencies: where it first touches zero (height and depth of the top zero through the
+exchange rate), how fast it falls (the width), and which zero it sees first (the side).
+
+**What the object is not.** It is not a new route and supplies no sign: the certificates that
+move the contact aperture are the window certificates of cluster B, the estimates that move the
+fall rate are the prime-sum bounds of cluster A, and the indicators of cluster C are evaluated on
+the divisor. Its use is bookkeeping with teeth: three lanes that report "aperture", "exponent" and
+"side" are reporting one path, and a claim on any of them is a claim on the other two through the
+proved arrows and the open ones above.

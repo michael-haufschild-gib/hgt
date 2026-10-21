@@ -107,3 +107,46 @@ for ζ, `zetaZeroWidth = sInf (zetaLagRates w)` (good w), `= sInf deficitAbsRate
 collects these. The open arrow of the dictionary is now the inequality `polarGroundEnergyRate ≤ zetaZeroWidth`.
 Chain: walls → zero width → tail exponent (Landau abscissa) → unbounded-aperture property (exponents are
 invisible to bounded parameter ranges; mimics realize every width below every aperture).
+
+## Round four: walls 3 and 15 are one Nyquist law; wall 5 dissolves (2026-10-21)
+
+Count 7 → 5 (walls 1, 3, 13, 14, 16). Two new modules in `SquareRootThreshold/`, both clean under
+`lake env lean`, oleans built single-threaded, every theorem on `[propext, Classical.choice, Quot.sound]`,
+wired into the umbrella (uncommitted at checkpoint `4a2204291`).
+
+- `PositionAndDepthShareOneNyquistAperture.lean`. For the lattices of density `L/π`: the double on-line
+  lattice `D`, the simple on-line lattice `S` and the off-line pairs `P_δ` all have the flat form
+  `2L∫|f|²` on aperture `a ≤ L/2` (`weil_eq_flat_of_le_nyquist`); `D` and `S` agree on aperture `a` iff
+  `a ≤ L/2` (`onLineLattices_agree_iff_le_nyquist`, via `eq_of_weil_eq_of_separated` with `g = π/L` above
+  and `lattice_resolution_sharp` below); `P_δ` and `D` agree on aperture `a` iff `a ≤ L/2`, every `δ`
+  (`offLineLattice_agrees_iff_le_nyquist`, via `exists_re_W_offLineLatticeConfig_neg` and
+  `re_W_onLineLatticeConfig_nonneg`); the position face holds at an aperture iff the depth face holds for
+  every depth, and below the threshold the position mimic and every depth mimic coincide
+  (`position_and_depth_share_nyquist_aperture`); the aperture-`a` fibre through `D` contains a second
+  on-line configuration and a configuration of every width for `a ≤ L/2`
+  (`nyquist_fibre_through_onLineLattice`; widths `configWidth_onLineLatticeConfig = 0`,
+  `configWidth_simpleHalfLatticeConfig = 0`, `configWidth_offLineLatticeConfig = δ`), and both mimics are
+  detected above (`mimics_detected_of_nyquist_lt`). Old wall 3 (local clustering) = position face 3.1,
+  old wall 15 (support versus positivity) = depth face 3.2. For `ζ` the local spacing `2π/log γ₀` gives a
+  Nyquist aperture `(log γ₀)/4 → ∞`: Wall 3 at all heights is the aperture property of the width.
+- `AmplificationMultipliesTheZeroWidthExponent.lean`. `deficitPowerRates k` = exponents `γ ≥ 0` with
+  `|D(T)|^k ≤ B(1+T)^k e^{(k/2+γ)T}`; `mem_deficitPowerRates_iff : γ ∈ rates k ↔ γ/k ∈ deficitAbsRates`
+  (`k`-th roots via `Real.pow_rpow_inv_natCast`, `Real.mul_rpow`; powers via `pow_le_pow_left₀`,
+  `Real.exp_nat_mul`); `deficitPowerRates_eq_image` (`k`-fold dilate); `sInf_deficitPowerRates = k * zetaZeroWidth`;
+  `riemannHypothesis_iff_sInf_deficitPowerRates_eq_zero`. This is the formal content of "every analytic
+  imitation of Deligne's amplification returns the Landau abscissa": wall 5's analytic face is face 1.7 of
+  the width; its algebraic face (Frobenius torsion law, no integral Frobenius lattice, Euler-factor
+  rigidity) is face 14.2 of the carrier wall, next to the size law (face 14.1).
+
+Ledger `docs/reports/review-2110/walls-ledger.md` rewritten as status quo: header (five walls, four with
+faces; concordance 5 = 1.7 and 14.2, 15 = 3.2; labels 2, 4–12, 15, 17 retired), principle section
+(Nyquist bullet cites the shared threshold; exponent bullet gets the power law), face 1.7, Wall 3 with
+dictionary and faces 3.1/3.2, wall 13 cross-reference, Wall 14 with intro and faces 14.1/14.2, route
+table rows and closing paragraph. Earlier [S] items (cone module import, exponent module) are committed
+and now tagged [L].
+
+Not folded: wall 13's cone mismatch (its reach limit is face 3.2, its mechanism is the pointwise/Bochner
+gap); wall 16 (sign coarsening; the principle already classifies it next to the aperture coarsening of
+wall 3). Candidate for a later round: wall 13 as "the pointwise face" of Wall 3 if a theorem ties the
+certificate radius to the Nyquist threshold; ζ's own flat regime `a ≤ (log 2)/2` (prime-blind tests) as
+the first dual point, to be checked against the AIP/odd-window results.
