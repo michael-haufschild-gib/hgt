@@ -185,3 +185,42 @@ Remaining standalone structure: Wall 16 (sign coarsening) and Wall 14 (carrier) 
 width) and Wall 3 (aperture coarsening). Candidate next unification: Wall 16 as the sign face of the same
 principle (a coarsening with threshold `ε = ½`), if a theorem ties the damped class to an aperture or
 exponent reading; Wall 14 stays a constraint on carriers, not a coarsening.
+
+## Round six: wall 16 is the sign face of the zero width
+
+The damped Möbius receiver `E_T(ε)` is read like the other families of the exponent dictionary, by
+its admissible parameters `receiverDampings = {ε > 0 : ∃ B, ∀ T, E_T(ε) ≤ B}`.
+
+- `RHTower/ReceiverDampingsAccumulateAboveTheZeros.lean`: `Ici_half_subset_receiverDampings`
+  (half damping is the trivial rate), `riemannZeta_sub_eq_zero_of_mem_receiverDampings` (one
+  admissible damping translates zeros of real part in `(½ + ε, 1)` down by `ε`, from
+  `pmPowerDamped_zero_translation`), `accPt_of_Ioo_subset`, `re_le_of_accPt_receiverDampings`
+  (dampings accumulating at `ε₀` confine every zero to `Re ρ ≤ ½ + ε₀`: the translates would
+  accumulate at `ρ − ε₀`, against `zetaResidueUnit_order_ne_top`),
+  `re_le_of_Ioo_subset_receiverDampings`, `accPt_zero_receiverDampings_iff` (accumulation at `0` is
+  the cofinal budget hypothesis), `riemannHypothesis_of_accPt_zero_receiverDampings` (a second proof
+  of the cofinal criterion).
+- `SquareRootThreshold/TheReceiverDampingReadsTheZeroWidth.lean`:
+  `zetaZeroWidth_le_of_accPt_receiverDampings`, `Ioi_subset_deficitAbsRates_of_accPt_receiverDampings`
+  (a damping accumulation point is a Chebyshev-deficit exponent),
+  `zetaZeroWidth_le_of_Ioo_subset_receiverDampings`, `receiverDampingRate := sInf (derivedSet
+  receiverDampings)` with `zetaZeroWidth_le_receiverDampingRate`, `receiverDampingRate_le_half`,
+  `receiverDampingRate_eq_zero_iff_accPt_zero` (the derived set is closed, so the infimum is
+  attained), `riemannHypothesis_of_receiverDampingRate_eq_zero`,
+  `receiverDampingRate_eq_zero_iff_cofinal_budget`, capstone `receiver_damping_reads_the_zero_width`.
+- `TransHorizonIncidenceMechanics/SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros.lean`:
+  `signBlindDampings K = {ε > 0 : one budget bounds every receiver on 𝒞(K, ε)}`;
+  `signBlindDampings_eq_Ioi_half`, `sInf_signBlindDampings = ½`, `derivedSet_signBlindDampings =
+  Ici ½`, `dampedClass_one_pmPowerDampedRealWeight`, `mem_receiverDampings_iff_receiverBounded`,
+  `signBlindDampings_subset_receiverDampings`, capstone `signs_read_below_half_damping`.
+- Import geometry forced the split: the SRT chain reaches `RHTower.SoninDilationAverage` and the
+  THIM chain reaches `RHTower.FermiNymanHaarApproximationEquivalence`, both of which declare
+  `RHTower.dilationAverage`, so no module can import both; the core lives in RHTower (clean PM
+  chain), the width reading in SRT, the coarsening in THIM.
+- Ledger: Wall 16 became face 1.8 of Wall 1 (its four faces are bold paragraphs inside 1.8);
+  three walls remain (1, 3, 14); concordance 16 = 1.8, 6 = 1.8, 17 = 1.8, 10 = 1.1 and 1.8; the
+  principle's Signs bullet and the exponent bullet cite the damping rate; the route table has three
+  rows. The open arrow of the face is `receiverDampingRate ≤ zetaZeroWidth`, at `σ = 0` the PM
+  admission at small damping under RH; it has the shape of the open arrow of face 1.3.
+- What is not a face of the principle: Wall 14 (carrier). Wall 3 is the aperture coarsening, face
+  1.8 the sign coarsening, face 1.6 the grid coarsening, face 1.4 the weight coarsening.

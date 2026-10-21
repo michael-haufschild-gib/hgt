@@ -1,14 +1,34 @@
+
 # RH ledger checkpoint
-Latest audited committed tip: 9e1fa313ac9324d52e689058ad15a669dba4200c. Previous checkpoint 46cfca88e5557855e2f0e506d024f4c7a720e85c. Edited only docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md. No builds, Lean edits, commits. Full committed Lean delta reviewed: 15 leaf modules + 4 umbrellas; concurrent working-tree Landau exponent module also reviewed.
-Counts unchanged: 30 live; 17 standalone candidates + PM/PW-B; BVI support; 37 named dead mechanisms.
-Changed: BAG common analytic target tuples in joint prime span, simultaneous Euler approximation [L]; joint cutoff-uniform density under common zero-free ball [S]; distance to nonvanishing-target threshold [S], below threshold power-saving rare, above threshold positive density under doubled-strip-disc margin, equality unspecified; d=0 iff OPEN disc zero-free (boundary zeros allowed); pointwise non-power-saving-return criterion.
-AIP [L]: harmonic fold and joint primes2/3 payment r=23/40 with 1/62 mass margin, 69/100 withholding; NOT full odd positivity at this radius. OWU/ACT pointers updated. Full odd positivity still181/500, full complex3/10.
-BVI/MC [S]: full short-window prime-layer dispersion (mass+cubic terms retained); actual μ averaged linear-window cancellation for slowly growing monotone H→∞, H(2Q)≤H(Q)+1,H≤Q; finite inverse-square weighted-window square bound. MoebiusBlockBeatsTheTypeTwoBarrier currently has only8 theorems through sum_sq_shortWindowAverage_moebiusWindowRow_le; NO final Type-II saving or asymptotic weighted-norm declaration despite header. This file changed concurrently to254lines. CentredPrimeRow... source has16ε relative rank-two budget saving under α>7/12 and H harmonics²≲εP,3P≤2εQ; cannot promote to all scale ranges from header. Currently561-ishlines due concurrent refactor, conclusions same.
-PM [L]: uniform damped-class boundedness and boundedness decided by Ramanujan or coefficient magnitudes each iffε>1/2. Class obstruction, not actualμ impossibility.
-EWU/KR-APW [L]: unconditional full-cone singleton/empty rule; anyt≠1 admixture positive iffRH&λ0=Λ, shifted pair neverdegree1, degree2 iffRH&a0. Removed stale mixed-critical-deviation escape.
-SRT [L]: grid width criterion retains conditional top attainment above threshold, not automatic; signed dilation-covariance exponent dictionary. Every finite aperture hides models of every exactwidthδ, on-line shadow equality; not actualζ counterexample.
-Shared aperture dictionary [S]: μ(A)≥0 iff every SMALLER positive aperture window positive; full window splits even/odd; odd capacity; odd→ACT; μ→evenBlindMinimum (no converse at finiteA); real/complex and lag transfer. Not a newroute.
-Concurrent untracked TheZeroWidthIsALandauExponent.lean [S],232lines: Δ=inf admissible lag/deficit/band rates; polar rate r0 satisfies0≤Δ≤r0≤1/2, r0=0iffRH; reverse graded r0≤Δ remains open. WL/shared pointer added.
-Working imports to UniformEulerTargetDensityOnDiscUnions, ZetaSelfReturnThreshold..., TheRoutesMeasureOneAperture appeared but are uncommitted, so retained[S].
-All new citations (52),counts,anchors,diff--check verified. Repo search used documented research query (--any --no-refresh --budget-seconds30 --json); partialFTS and pending coverage, source audit authoritative.
-Next update start from checkpoint and inspect ALL newer committed/uncommitted Lean declarations. Do not trust headers. Do not mark compiler verified. Only source [L]/[S] unless actual compile requested. Preserve concurrent research edits.
+- Audited committed range: 9e1fa313ac9324d52e689058ad15a669dba4200c..8cbf5160ec0310b142d31e1287b7cef51b7fe6b0.
+- Updated docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md from actual Lean declarations/proofs and umbrella imports. No Lean edits, builds, umbrella builds, commits.
+- Classification: 30 live; 17 standalone candidates + PM/PW-B; BVI supporting PM/MC/CTF; 37 named dead mechanisms. No route/candidate addition/promotion/retirement. New scalar-power limitation is scoped obstruction, not death of WL/SRT.
+- [L] means committed umbrella-reachable source, NOT freshly compiled. [S] uncommitted/non-umbrella source. Source research command ran with --no-refresh; partial indexed coverage; direct source/diff audit primary.
+
+## Incorporated facts
+- BVI/MC: actual μ (H=floor log₂Q) and Λ−1 (H=ceil(2Q)^α, 7/12<α<1) weighted averaged block squared norm=o(Q^-3); final rank-two-subtracted Type-II estimate WITH arbitrary-small leading large-sieve coefficient now present, under prime-support/horizon restrictions. Mass/cubic tails remain. Centred-prime relative16ε theorem imported. ShortWindowMeanSquareCarriesTheCrossScaleLoss and MoebiusCancelsInAlmostAllLinearShortWindows imported.
+- MoebiusPowerWindowSaving (one α∈(0,1), fixed powerδ>0, allQ) iff Θ<1 imported. This is quasi-RH boundary, NOT a zero-free-strip proof or RH.
+- BAG: RH iff strong recurrence on EVERY compact right-strip set (no connected-complement restriction). Prime span=common polynomial/exponential closure; cutoff-uniform exp-target density on disc unions. Runge on connected-complement compacts; universality for targets with neighborhood analytic log or nonvanishing analytic extension to simply connected neighborhood. Not full interior-only/continuous-boundary Voronin theorem. Finite-point joint nonzero targets.
+- BAG: target Hurwitz distance; subthreshold power-saving rarity, superthreshold positive density, equality case not asserted. At possible zero orderm, d(r)≍r^m. Uniform positive Haar mass of approximating multiplicative-prime Dirichlet-head twists on all doubled-strip discs iff RH; below distance threshold explicit mass O((M+1)^(1−2σ)). Target-zero elimination remains open.
+- RW: contact aperture under ¬RH; common sup of nonnegative μ and positive-window apertures, μ=0 at contact, ≥0 below, <0 above; do NOT call first zero (zero plateau not excluded). RH iff sets unbounded; real sSup is not infinity underRH.
+- EWU: blind minimum=even POLAR ground energy only for2A<log2; full even window iff Markov≥0 on zero cosh moment AND ≥−2 on unit cosh moment. No arbitrary-aperture converse from blind sign.
+- ACT: finite-window shifted variation vs full odd form; converse only off-origin. Markov energy adds8(profileMoment)^2; don't identify finite Markov/variation windows generally. All-aperture at fixed positive shift isRH.
+- SRT shared: width dictionaries imported, no producer. WL/FU/MC/TT/HCF/SZ/TH/HF/RW/PA/PBM/BAG equivalences; logderiv sign/cosine-shiftLP are only consequences. HJ/SEC/CDC/BSH/IRK/W1C dictionary and depth measurements remain post-divisor diagnostics, no promotion.
+- Fixed finite aperture admits λ≥Λ, λ≠Λ, not full-positive, whose functional equals ζ on every windowtest; lattice position/depth have exact Nyquist L/2 blindness/detection. Scalar powers of absolute integrated Chebyshev deficit multiply excess rate byk (inf=kΔ), do not lower normalized exponent.
+- Shared toolbox[L]: GuthMaynard Prop7.1 cubic expansion/phase decay/localization/unbalancedtails; HeathBrown majorants/power/dilation/corollary/meanvalue (T≤N) imported.
+- Shared toolbox[S]: lagL2/L4/smoothedmoments, Prop8.1 CONDITIONAL on cubic expansion/localization premise, affineFejer/divisorcount, unitblockPerron. Principal ChenGuptaLi reflected-modes chain (5modules) source only, q=1ζ not generalcharacters. Full large-values/bootstrap unresolved.
+
+## Concurrent working tree at handoff (not our edits)
+- V/ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis.lean: finite energy defs/telescope/doubling bound only; NO equivalence declaration despite title. hH≤Q removed in favor of log(2Q+H) endpoint term.
+- R/ChenGuptaLiLemma62PrincipalGuthMaynardForm.lean: proof refactor/helper constants; same principal nonzero-mode lemma62 conclusion, not umbrella-imported.
+- R/Sieve/HeathBrownPairSumUnitBlock.lean: proof corrections; same Perron pair-sum scope.
+- R/Sieve/GuthMaynardAffineDivisorCount.lean: Lorentz reuse; highfrequency bound improved4πKM→2πKM; same auxiliary scope, no bootstrap closure.
+- Untracked R/Sieve/GuthMaynardPropSevenTwoTruncation.lean (341lines): absolute summability and frequency-box truncation of allNonzeroCubicSum, errorC|W|³T^-A forK=floor(T^(1+η)/N), W⊂[0,T], N,T≥1. NOT smoothed Prop7.2 producer; recorded[S].
+- Concurrent sources preserved. Future changes/commits need fresh diff; do not assume these drafts compiled.
+
+## Verification
+- git diff --check clean for both ledgers.
+- 77 new/changed real evidence paths exist (exclude six X legend placeholders).
+- Counts30/17/37 and route family table preserved.
+- Stale claims that Möbius Type-II assembly or arbitrarycompact Bagchi criterion are absent removed; old imported[S] labels corrected.
+- No history/date/work-package sections added. Checkpoint replaced in place.

@@ -221,6 +221,20 @@ zero-free strip (cf. C12).
 **Lean.** `BezoutValuationIncidence/CentredPrimeBlockBeatsTheLargeSieve.lean`
 (`eventually_abs_rowBilinear_centredPrimeBlock_le`); standard axioms; wired.
 
+### C14 — short-window prime saving is the quasi-Riemann hypothesis (DONE, Lean)
+**Statement.** With `R = ψ - id`, `F_α(Q) = Σ_{Q≤t<2Q}(Σ_{t<n≤t+⌈Q^α⌉}Λ(n) - ⌈Q^α⌉)²`:
+`(∃ α ∈ (0,1), δ > 0, C, ∀ Q ≥ 1, F_α(Q) ≤ C Q^{1+2α-δ}) ↔ Θ < 1`. A saving `(α, δ)` forces
+`Θ ≤ max(1 - δ/2, (1+α)/2, 1/2)`; `Θ < 1` gives the saving at `α = (1+Θ)/2`, `δ = (1-Θ)/2`.
+**Proof.** `⇐` `exists_psiRemainder_le_rpow_zetaZeroAbscissa`. `⇒` generic window telescoping
+(`sum_Ico_window_telescope`), `|R(a+i) - R(a)| ≤ i(log(a+i)+1)`, doubling
+`|R(2Q)-R(Q)| ≤ √Q√F/H + 2H(log(2Q+H)+1)`, `log 4Q + 1 ≤ (4/η+1)Q^η` (`Real.log_le_rpow_div`), halving
+induction, square-sample law `zetaZeroAbscissa_eq_half_add_sInf_psiRemainder_squareSum_upper`.
+**Meaning.** Prime-row counterpart of C12: with C13 the centred prime row gains `o(1)` over the large
+sieve unconditionally (Huxley) and a power exactly when `Θ < 1`. Both actual rows now have the same
+profile as the receiver: the missing cancellation is a zero-free strip.
+**Lean.** `BezoutValuationIncidence/ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis.lean`
+(`primePowerWindowSaving_iff`); standard axioms; wired.
+
 ## Synthesis after C1–C10 (what the research says about the missing cancellation)
 
 1. **Receiver = zero-free region, both directions.** Any Mertens rate becomes a receiver band through
@@ -255,3 +269,4 @@ zero-free strip (cf. C12).
 - 2026-10-21 — C11 formalized and wired (transfer law; linear-window MR; Möbius block beats the Type-II barrier).
 - 2026-10-21 — C12 formalized and wired (short-window Möbius saving ⟺ Θ < 1).
 - 2026-10-21 — C13 formalized and wired (centred prime block o(large sieve) via Huxley).
+- 2026-10-21 — C14 formalized and wired (short-window prime saving ⟺ Θ < 1).

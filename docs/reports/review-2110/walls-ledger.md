@@ -1,9 +1,9 @@
 # The walls ledger
 
-Four proved obstructions on which direct attacks on the Riemann hypothesis stop, each a unified wall
-with faces: Wall 1, the zero width, read in seven languages; Wall 3, the Nyquist law, with a
+Three proved obstructions on which direct attacks on the Riemann hypothesis stop, each a unified wall
+with faces: Wall 1, the zero width, read in eight languages; Wall 3, the Nyquist law, with a
 position face, a depth face and a pointwise face; Wall 14, the carrier, with a size face and a
-torsion face; Wall 16, the sign-blindness barrier, read in four. The faces of a wall are one obstruction, and the
+torsion face. The faces of a wall are one obstruction, and the
 dictionary between them is a proved theorem stated at the head of the wall. One principle stands behind the walls and is stated
 first: the information that decides the width lives only in the complete, signed, unbounded-aperture,
 pointwise data of the explicit formula, and every coarsening of those data has an exact blindness
@@ -14,18 +14,21 @@ field](hard-obstacles-summary.md), [route unification](route-unification-ledger.
 grouped by the unit their receivers measure, with the dictionaries proving each group is one route);
 the first two cite faces by the labels of the companion numbering:
 2 = face 1.5, 4 = 1.2, 5 = 1.7 and 14.2, 7 = 1.6, 8 and 9 and 11 = 1.4, 12 = 1.3 and 1.4,
-10 = 1.1 and 16.4, 13 = 3.3, 15 = 3.2, 6 = 16.1, 17 = 16.3. Walls keep their labels; the labels 2,
-4–13, 15 and 17 are not used for separate walls.
+10 = 1.1 and 1.8, 13 = 3.3, 15 = 3.2, 16 = 1.8, 6 = 1.8, 17 = 1.8. Walls keep their labels; the
+labels 2, 4–13 and 15–17 are not used for separate walls.
 
-**Lean checkpoint** `854afb550`. Evidence tags: [L] = committed Lean declaration imported by its
+**Lean checkpoint** `8cbf5160e`. Evidence tags: [L] = committed Lean declaration imported by its
 committed umbrella; [S] = Lean source in the working tree whose file or umbrella import is
 uncommitted, or a module not imported by its umbrella (compiles standalone, no committed audit);
 [P] = paper only. Module paths are relative to `formal/GaloisForLFunctions/`, with
 `R:` = `RHTower/`, `H:` = `HTGeometry/`, `B:` = `BiScaleUncertainty/`, `V:` = `BezoutValuationIncidence/`,
 `T:` = `TransHorizonIncidenceMechanics/`, `A:` = `arithmetic-positivity-theory/`,
 `C:` = `ArithmeticCriticalityTheory/`, `I:` = `ArithmeticIncidencePositivity/`,
-`Q:` = `SquareRootThreshold/`. No working-tree [S] items at this checkpoint: every cited module is
-committed and imported by its committed umbrella, every theorem closed with standard axioms.
+`Q:` = `SquareRootThreshold/`. Working-tree [S] items at this checkpoint: the three modules of face
+1.8, `R:ReceiverDampingsAccumulateAboveTheZeros`, `Q:TheReceiverDampingReadsTheZeroWidth` and
+`T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros`, each compiled, imported by its umbrella
+in the working tree and closed with standard axioms; every other cited module is committed and
+imported by its committed umbrella.
 
 Two general facts frame every wall. First, every graded relaxation of a surveyed route is a zero-free
 half-plane or a finite-height verification: a one-sided power bound `O(x^θ)` on a Chebyshev, Mertens or
@@ -33,9 +36,11 @@ Möbius–divisor quantity is the statement `Θ ≤ θ` (`R:QuasiRHMeanSquareAbs
 `R:QuasiRHDilationCovarianceAbscissa`, `R:QuasiRHQuotientHeadBoundary` [L]); a horizon-uniform bound on
 the damped Möbius receiver at one fixed damping `ε ∈ (0, 1/2)` already gives the zero-translation law
 `ζ(ρ) = 0, Re ρ > 1/2 + ε ⟹ ζ(ρ − ε) = 0` (`pmPowerDamped_zero_translation`,
-`R:PMPowerDampedMobiusCriterion` [L]). There is no producer target weaker than RH on these routes.
+`R:PMPowerDampedMobiusCriterion` [L]), and bounds at dampings accumulating at `ε₀` give the zero-free
+half-plane `Re ρ ≤ 1/2 + ε₀` (`re_le_of_accPt_receiverDampings`,
+`R:ReceiverDampingsAccumulateAboveTheZeros` [S]). There is no producer target weaker than RH on these routes.
 Second, a new attempt must name the wall it passes and the concrete input that passes it before
-anything is built; Wall 1 in each of its faces and Wall 16 are RH-strength targets in disguise,
+anything is built; Wall 1 in each of its faces is an RH-strength target in disguise,
 Wall 3 states what a class of evidence cannot do, Wall 14 constrains the shape of any
 construction.
 
@@ -71,10 +76,16 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   the window-boundedness of every certificate in faces 1.3 and 1.4, and the finite-lag statements of
   face 1.6.
 - *Signs.* On the damped Möbius class `|c(d)| ≤ Kd^{−ε}` the receiver is decided by the coefficient
-  magnitudes, by the Ramanujan amplitudes, or by one unsigned majorant, in each case iff `ε > ½`
-  (`receiverBounded_magnitudeInvariant_iff`, `uniformReceiverBound_iff_amplitudeInvariant`,
-  `uniformReceiverBound_iff_half_lt`, `T:UnsignedMajorantsAndSignBlindDataStopAtHalfDamping` [L]). This is
-  Wall 16.
+  magnitudes, by the Ramanujan amplitudes, or by one unsigned majorant, in each case iff `ε > ½`: the
+  sign-blind dampings, those at which one budget bounds every receiver of the class, are exactly
+  `(½, ∞)`, with accumulation points `[½, ∞)` (`receiverBounded_magnitudeInvariant_iff`,
+  `uniformReceiverBound_iff_amplitudeInvariant`, `uniformReceiverBound_iff_half_lt`,
+  `T:UnsignedMajorantsAndSignBlindDataStopAtHalfDamping` [L]; `signBlindDampings_eq_Ioi_half`,
+  `derivedSet_signBlindDampings`, `T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros` [S]).
+  The signed weight `μ(d)d^{−ε}` is admissible on `[½, ∞)` and its admissible dampings read the
+  width: every accumulation point `ε₀` of them satisfies `zetaZeroWidth ≤ ε₀`
+  (`zetaZeroWidth_le_of_accPt_receiverDampings`, `Q:TheReceiverDampingReadsTheZeroWidth` [S]). This is
+  face 1.8.
 - *Grids.* A geometric progression of dyadic prime windows reads the width exactly up to the attainment
   of the top (`zetaZeroWidth_le_iff_attainedTop_and_grid_primeWindow_ge_neg_exp`,
   `Q:LagGridsAndTransportLawsReadTheZeroWidth` [L]): a discrete probe loses exactly the unattained tops.
@@ -103,7 +114,13 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   `polarGroundEnergyRate = inf{σ ≥ 0 : μ₀(A) ≥ −Ce^{2σA} eventually} ∈ [0, ½]`, which dominates the
   width and vanishes iff RH (`zetaZeroWidth_le_polarGroundEnergyRate`,
   `riemannHypothesis_iff_polarGroundEnergyRate_eq_zero`); the open arrow of the width dictionary
-  is the inequality `polarGroundEnergyRate ≤ zetaZeroWidth`.
+  is the inequality `polarGroundEnergyRate ≤ zetaZeroWidth`. The receiver damping is one more such
+  family: its rate `receiverDampingRate`, the infimum of the accumulation points of the admissible
+  dampings of the signed Möbius weight, lies in `[zetaZeroWidth, ½]` and vanishes only with RH
+  (`zetaZeroWidth_le_receiverDampingRate`, `receiverDampingRate_le_half`,
+  `riemannHypothesis_of_receiverDampingRate_eq_zero`, `Q:TheReceiverDampingReadsTheZeroWidth` [S]);
+  its open arrow `receiverDampingRate ≤ zetaZeroWidth` is admission below half damping. The
+  sign-blind reading of the same family has rate exactly `½`.
 
 What the principle does not cover: the carrier constraints of Wall 14 (no finite-rank, trace-class or
 Frobenius-integral arithmetic realization), proved by the size of `S(T)` and by transcendence and
@@ -126,8 +143,9 @@ transport law; the axis face as the strip itself and as the de Bruijn–Newman h
 ground-energy face as the decay rate of the restricted Weil ground energy; the cone face as the only
 point of the Weil cone; the Jensen face as the Balazard–Saias–Yor integral; the quantifier face as what
 grids and averages read up to attainment; the amplification face as the exponent of every power of
-the deficit. Progress on any face is progress on the width, and an
-improvement counts once.
+the deficit; the sign face as the damping threshold of the Möbius receiver, read from above by the
+dampings at which the signed weight is admissible. Progress on any face is progress on the width,
+and an improvement counts once.
 
 **The dictionary** (`Q:TheWallsMeasureOneZeroWidth`, `Q:LagGridsAndTransportLawsReadTheZeroWidth` [L],
 `R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` [L]; every statement unconditional, no premises).
@@ -203,8 +221,9 @@ graded form of the no-crossing problem of face 1.3; every other reading is exact
 
 **Walls without a width face.** Walls 3, 5, 13, 14 and 15 carry no parameter tied to the width: 3 is
 the Nyquist law at the zero spacing, 5 and 14 are finite-carrier impossibilities, 13 is a cone
-mismatch, 15 an orientation blindness. Wall 16 carries the damping parameter, whose threshold `½` is
-the unconditional width.
+mismatch, 15 an orientation blindness. The damping parameter of the former Wall 16 is tied to the
+width, which is why it is face 1.8: its sign-blind threshold `½` is the trivial rate of the receiver
+family, and the signed family reads the width below it.
 
 ### Face 1.1: the square-root barrier in prime counting
 
@@ -219,7 +238,7 @@ carries spectral content at frequency `≍ e^y` with amplitude `e^{−y/2}`, the
 blind family loses a logarithmic margin against the pole weight `e^{y/2}`. Transport of a zero detector
 does not change this: the exponent of any power saving on a non-oscillating sum (the Möbius–divisor Abel
 source, its dilation covariance, its quotient head and tail) is the width, and oscillating transports
-carry no pole information (face 16.4).
+carry no pole information (face 1.8).
 
 **Sharpest corpus forms.** Three statements put the whole of RH into one prime quantity with no height
 parameter and no averaging.
@@ -574,6 +593,191 @@ carrier of Wall 14.
 that does not come from the unamplified one. Without it every tensor-power or Rankin trick returns
 `k` times the width.
 
+### Face 1.8: the signs, the damping threshold of the Möbius receiver
+
+The damped Möbius receiver, the pronic energy `E_T(ε) = Σ_{n≤T} A_ε(n)²/(n(n + 1))` of the centred
+prefix of `(μ(d)d^{−ε}) ∗ 1`, is a one-parameter family in the damping `ε`, read like every family
+of the exponent dictionary by its admissible parameters, the dampings with a horizon-uniform budget
+(`receiverDampings`). Half damping is its trivial rate: every `ε ≥ ½` is admissible, by the Mellin
+bound resting on `ζ(1 + it) ≠ 0` (`Ici_half_subset_receiverDampings`). Below it the family reads the
+width from above. One admissible damping `ε ≤ ½` translates every zero of real part in `(½ + ε, 1)`
+down by `ε` (`riemannZeta_sub_eq_zero_of_mem_receiverDampings`); admissible dampings accumulating at
+`ε₀` translate one zero of real part `> ½ + ε₀` onto zeros accumulating at `ρ − ε₀`, which the
+isolation of the zeros forbids, so every zero has `Re ρ ≤ ½ + ε₀` and `zetaZeroWidth ≤ ε₀`
+(`re_le_of_accPt_receiverDampings`, `zetaZeroWidth_le_of_accPt_receiverDampings`); admissibility on
+an interval `(a, b)` gives `zetaZeroWidth ≤ a`, and every exponent above an accumulation point is an
+admissible exponent of the integrated Chebyshev deficit
+(`zetaZeroWidth_le_of_Ioo_subset_receiverDampings`,
+`Ioi_subset_deficitAbsRates_of_accPt_receiverDampings`). The receiver damping rate, the infimum of
+the accumulation points, lies in `[zetaZeroWidth, ½]` and vanishes iff the admissible dampings
+accumulate at `0`, which is RH; the cofinal criterion
+`riemannHypothesis_of_pmPowerDamped_cofinal_discrete_budget` is this case (`receiverDampingRate`,
+`zetaZeroWidth_le_receiverDampingRate`, `receiverDampingRate_le_half`,
+`receiverDampingRate_eq_zero_iff_accPt_zero`, `riemannHypothesis_of_receiverDampingRate_eq_zero`,
+`accPt_zero_receiverDampings_iff`; `R:ReceiverDampingsAccumulateAboveTheZeros`,
+`Q:TheReceiverDampingReadsTheZeroWidth` [S]). The open arrow is the converse
+`receiverDampingRate ≤ zetaZeroWidth`: at `σ = 0` it is the admission of the signed weight at
+arbitrarily small damping under RH, the same shape as the open arrow of face 1.3.
+
+The coarsening is the sign. On the damped class `𝒞(K, ε) = {|c(d)| ≤ Kd^{−ε}}` the sign-blind
+dampings, those at which one budget bounds the receiver of every weight of the class, are exactly
+`(½, ∞)`, with infimum `½` and accumulation points `[½, ∞)` (`signBlindDampings_eq_Ioi_half`,
+`sInf_signBlindDampings`, `derivedSet_signBlindDampings`); the signed dampings contain them
+(`signBlindDampings_subset_receiverDampings`, `mem_receiverDampings_iff_receiverBounded`;
+`T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros` [S]). Through the sign-blind family the
+width is read only as `zetaZeroWidth ≤ ½`; the signed family reads it below `½`, and at `ε = ½` the
+Möbius weight itself has a bounded receiver because `ζ(1 + it) ≠ 0`. The four languages of the
+former Wall 16 say what the sign-blind data are and where each stops.
+
+**The sign-blind dictionary** (`T:UnsignedMajorantsAndSignBlindDataStopAtHalfDamping`,
+`T:HalfDampingIsTheExactThresholdOfTheParityPair`, `T:RealCharacterParityPairsAndTheParityBarrier`,
+`T:DyadicMassesGovernPositiveReceivers` [L]). For every `K > 0` and `ε > 0` the following are
+equivalent, and equivalent to `ε > ½`: one constant bounds every receiver on `𝒞(K, ε)`
+(`uniformReceiverBound_iff_half_lt`, the unsigned majorant `|A_c(n)| ≤ KC_ε n^{1−ε}` converges);
+receiver boundedness is a function of the Ramanujan amplitudes `|W_c(e)|`
+(`uniformReceiverBound_iff_amplitudeInvariant`, `receiverBounded_amplitudeInvariant_iff`); receiver
+boundedness is a function of the coefficient magnitudes `|c(d)|`
+(`receiverBounded_magnitudeInvariant_iff`). Below half damping the character weight `Kχ₄(d)d^{−ε}` and
+the odd weight `K1_{odd}(d)d^{−ε}` have the same magnitudes and opposite receivers; for nonnegative
+weights the receiver is read off the dyadic masses, bounded iff `Σ_k M_k²/2^k < ∞`
+(`bounded_weightPronicEnergy_iff_summable_dyadicMass`).
+
+**The probability cone** (the former face 16.1). Positivity statements derived from the Euler product hold exactly where the Dirichlet series converges
+absolutely, `Re s > 1`; continuation into the strip is not positivity-preserving. `log ζ(σ + it)` is
+positive definite for `σ > 1` only; the Eisenstein series is a positive sum for `u > 1` only; random
+Euler products are zero-free almost surely on `Re s > 1/2`, but `ζ` is one point of the torus. In
+receiver coordinates the absolute-convergence line is `ε = ½`.
+
+**In the corpus** [L]. `H:PrimeDirichletPositiveDefinite` (positive definiteness needs absolute
+summability); `R:FiniteEulerStageNearLineStrip` (finite Euler stages are zero-free near the line only
+up to a truncation-determined height); `R:SelbergPositiveEisenstein`;
+`R:JointAncestryEndpointBudgetProducer` (the native prime-product form is nonnegative on finite prime
+sets of budget `Σ_P p^{−(σ−1/2)} ≤ ((log y)/(128·10⁸))^{3/2}/(log log y)⁴`; the level-one RH receiver
+needs budget `y^{1/2}`); `R:SteinhausEulerVerticalBarrier`, `R:SteinhausEulerQuadraticApprox`;
+`T:HalfDampingIsTheExactThresholdOfTheParityPair` (`exists_uniform_weightPronicEnergy_bound`),
+`T:DyadicMassesGovernPositiveReceivers`, `T:ReceiverOfMultiplicativeWeightsIsDecidedAtThePrimes`.
+
+**Rule.** When a positivity or definiteness statement is proved, check the half-plane on which it is
+proved. If it is `Re s > 1`, or damping `ε > 1/2`, the strip statement must be obtained some other way.
+
+**Parity pairs** (the former face 16.2). The damped Möbius receiver (the PM and BVI receiver) is bounded for `c = μ(d)d^{−ε}` at `ε = 1/2` and
+must be bounded at arbitrarily small `ε > 0` for RH. Below half damping the receiver cannot be decided
+by any sign-blind data: parity pairs exist at every `0 < ε ≤ 1/2`, two weights with identical Ramanujan
+amplitudes, identical complete-period divisor-sum statistics and identical pronic Gram data, one with
+bounded and one with divergent receiver. This is the sieve parity problem in the receiver's own
+coordinates, and it is sharp at `ε = 1/2`.
+
+**In the corpus** [L]. `T:ParityPairAtHalfDamping` (the Möbius weight and its nonnegative parity twin
+`c'_ε(d) = (ρ_ε/U_ε) d μ²(d) ∏_{p|d} 1/(p^{1+ε} − 2)`); `T:CharacterFourParityPairAtEveryDamping`,
+`T:RealCharacterParityPairsAndTheParityBarrier` (`parity_barrier`: for `0 < ε ≤ 1/2` no function of the
+amplitudes decides receiver boundedness on the damped class); `receiverBounded_amplitudeInvariant_iff`
+(`T:HalfDampingIsTheExactThresholdOfTheParityPair`: amplitude-invariance holds iff `ε > 1/2`; the
+whole difference lives in the trans-horizon tail `nΣ_{d>n} c(d)/d` and the head drift, both of order
+`n^{1−ε}`); `T:CriticalWienerConvolutionsPreserveTheReceiver` (the Liouville weight and the smooth
+power form a pair); `T:UnimodularCharacterCompletionsAreParityPartnersOfTheSmoothPower`;
+`T:FermiRowsAgreeInEveryTranslatedMomentAndSplitTheReceiver`,
+`T:EvenFlipOfTheFermiSquarefreeWeightBreaksTheReceiver` (rows indistinguishable by every translated
+moment of every degree and shift, with opposite trans-horizon growth: the even flip is the Fermi
+transform of the even part, `T:EvenFlipIsTheFermiTransformOfTheEvenPart`).
+
+**What separates a pair.** The first pronic moment is the von Mangoldt pairing
+`Σ_n A_c(n)/(n(n + 1)) = −Σ_e Λ(e)W_c(e)`, supported on prime powers (`T:FirstPronicMomentIsTheVonMangoldtPairing`);
+it orders every pair with a positive member and is blind exactly when the parity lives on composite
+moduli (`T:FirstPronicMomentOrdersPositivePairs`, `T:FirstMomentBlindParityPairOfTheNegatedMoebiusWeight`);
+the `k`-th logarithmic moment reads `Λ_{k+1}`, supported on `ω(e) ≤ k + 1`, and the logarithmic moments
+are a complete receiver invariant (`T:SecondVonMangoldtMomentSeparatesTheBlindPair`,
+`T:LogarithmicMomentHierarchySeparatesEveryPositivePair`, `T:LogarithmicMomentsAreACompleteReceiverInvariant`);
+cubic translated moments pin odd rows and pin squarefree rows up to the even flip
+(`T:CubicMomentsPinTheParityOfOddRows`, `T:CubicMomentsPinSquarefreeRowsUpToTheEvenFlip`). The receiver
+is a local critical-line detector: a local factor `δ₁ − aδ_p` preserves the growth class iff
+`|a| < √p`, sparse prime flips preserve it, and a bounded `±1` pattern must flip a prime set of
+divergent critical-line mass (`T:LocalEulerFactorsAndPronicDilationContraction`,
+`T:SparsePrimeFlipsPreserveTheReceiver`). Pole laws: a finite or critical-Wiener kernel repairs a
+positive drift only when its value at the pole `K(1 − ε) = Σ_j k(j)j^{−(1−ε)}` vanishes, the paid
+perturbations of the smooth power and of every coprime weight form that hyperplane, multiplicative
+weights pretending to one are paid exactly when some local factor vanishes at the pole, and the even
+flip shifts the pole value by `(1 − 2^ε)K_e(1 − ε)` (`T:FiniteKernelsRepairAPositiveDriftOnlyAtItsPole`,
+`T:CriticalWienerKernelsRepairAPositiveDriftOnlyAtItsPole`, `T:FinitePerturbationsOfTheSmoothPowerAreDecidedAtThePole`,
+`T:FinitePerturbationsOfCoprimeWeightsAreDecidedAtThePole`,
+`T:MultiplicativeWeightsPretendingToOneArePaidOnlyByAVanishingLocalFactor`,
+`T:AVanishingFiniteLocalFactorPaysAWeightPretendingToOne`,
+`T:TheEvenFlipShiftsThePoleValueByTheEvenPartOfTheKernel` [L]; a double pole needs a double zero,
+`T:APoleOfOrderTwoNeedsAZeroOfOrderTwo` [L]).
+
+**Rule.** Any bound on the Möbius receiver below half damping must read the signs of the coefficients:
+first-order data at prime moduli (`k ↦ pk`) or odd-degree additive moments (`k ↦ k + v`). Magnitude
+data, two-point data and, for squarefree rows, all translated moments are blind. The Type-II input the
+cancellation routes need is a signed one; its loss is not controlled by any data invariant under the
+parity involution.
+
+**Coherent blocks and the one-modulus large-sieve ceiling** (the former face 16.3). The bilinear form `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` on the pronic Gram must be bounded with no
+character or modulus average at exponent `θ = 2 log P/log X = 2` (the receiver); the large sieve is of
+diagonal quality only at `θ ≤ 1`. Between them every Type-II input in the sense of an `ℓ²` bound on
+coefficients fails, because coherent blocks of primes near a multiple have packet energy matching the
+large-sieve loss exactly. An `ℓ²` class is a magnitude class, and magnitudes are blind below half
+damping (`receiverBounded_magnitudeInvariant_iff`); the coherent-block law gives the exact exponent at
+which they stop.
+
+**In the corpus** [L]. `V:BrownianBridgeLawOfThePrimeBlockAndCodimensionNoGo` (any `J` linear side
+conditions admit a nonzero packet with `Q ≥ (k² − 1)/(24(2P + 1))·Σ_p a_p² p`, `(J + 3)k ≤ |S|`);
+`V:CoherentPrimeBlocksAndTheTypeIIWindowNoGo` (unit-jump prime blocks are affine on clean regions and
+carry window energy `≥ (k/2304)·kΣ_W w`: the large-sieve loss `P²/X` is attained at every window below
+`P²`, so no Type-II input reaches any `θ > 1`); `V:ExactTypeIILossOfTheReceiverGram` (exact loss
+`Θ(N²/X)`); `V:TypeIIBarrierSurvivesTheRankTwoSideConditions` (killing both harmonic and `Λ` readouts
+leaves `B(c, c') ≥ (Σc(d)d)(Σ|c'|/n²)/200` on coherent/anti-coherent windows);
+`V:CoherentNearMultipleObstructionToCrossScaleDispersion` (the rank-two plus large-sieve threshold
+`Q ≥ P^{5/3}` is sharp up to `√log`); `V:CrossScaleParityBlindnessOfThePronicGram` (the cross-scale Gram
+sees the large scale only through residue masses mod the small moduli plus two readouts: it is
+parity-blind). What is reached: the unbalanced regime `Q ≥ P²` by the exact rank-two law
+(`V:ExactRankTwoCrossScaleLawOfTheReceiverGram`); diagonal quality for `Q ≥ P^{5/3}` with arbitrary
+coefficients at one modulus (`V:LargeSieveDispersionOfTheCrossScaleRemainder`,
+`V:LargeSieveDispersionInSelbergCoordinates`, `V:LargeSieveDispersionForBoundedRows`); Type-I gains,
+flat rows at either scale reaching `θ ≤ 4/3` and smooth large-scale rows `θ ≤ 3/2`
+(`V:KuzminLandauGainForFlatSmallScaleRows`, `V:FlatLargeScaleRowsAndTheTypeIGain`,
+`V:SmoothLargeScaleRowsAndTheCancellationOfBothKernels`); bounded partial sums giving receiver-quality
+dispersion `Q_N(c) ≤ 11B² + 4Σc_n²/n` (`V:SummatoryFunctionBoundForTheDyadicPronicGram`); the exact
+second- and third-order cross-scale laws with the Bernoulli kernels `𝔅`, `𝔅₃`, their reciprocity form
+in Kloosterman fractions `kq̄/p` with cosecant–Bernoulli weights, and the signed residue law
+(`V:SecondOrderCrossScaleLawAndTheBernoulliKernel`, `V:ThirdOrderCrossScaleLawAndTheCubicBernoulliKernel`,
+`V:ReciprocityFormOfTheBernoulliKernel`, `V:TwoSidedSignLawOfTheSecondOrderKernel`,
+`V:SharpConstantAttainedByPrimesInTheUnitClass`). Replacement hypotheses proved sufficient: block
+equidistribution of the large-scale row at scale `H = o(P/log²P)`
+(`V:BlockEquidistributionSufficesForCrossScaleDispersion`), which the centred prime row `Λ(n) − 1` on
+`[Q, 2Q]` satisfies unconditionally throughout `P^{1+δ} ≤ Q ≤ P^{12/7−δ}` by Huxley's theorem at `7/12`,
+so its cross-scale remainder is `16ε` times the rank-two bound at every exponent `θ ∈ (7/6, 2)`, leaving
+only the balanced regime `Q ≍ P` (`V:CentredPrimeRowPassesTheCoherentBlockObstruction` [L]); twisted short-interval square-root
+cancellation over prime intervals of length `4P²/(aK)` (`V:TwistedShortIntervalCancellationGivesWindowDispersion`,
+with the window spectrum and numerator split `V:DiscreteGallagherInequalityAndTheWindowSpectrum`,
+`V:NumeratorSplitOfTheWindowEnergy`, `V:OneNumeratorClustersAreShortIntervalSums`); and the exact
+residue discrepancy `Δ_p(c')` at rate `π²/72` (`V:ResidueDiscrepancyIsTheExactCrossScaleLoss`). The
+dual norm reduces every Type-II bound for bounded small-scale coefficients to the single-modulus
+statistics `Σ_{p∈S}|Λ_p(c')|/p`, low-frequency exponential sums `Σ_a W_p(a)Σ_n (c'(n)/n²)e(an/p)` of the
+large-scale row, with no bilinear structure left (`V:DualNormOfTheCrossScaleFunctional` [L]).
+
+**Rule.** A dispersion claim on the pronic Gram must say which coefficient class it covers and at
+which exponent; `ℓ²` classes stop at `θ = 1` by the coherent-block law, Type-I classes at `θ ≤ 3/2`.
+The receiver needs cancellation of the actual Möbius or prime row at `θ = 2`, that is, of the
+single-modulus low-frequency statistics of an arithmetic row, with the signs of the parity pairs read.
+
+**Unsigned transport** (the former face 16.4). Exponential-sum methods give power savings for oscillating sums; zero-detecting sums
+(`ψ(x/j) − ψ(x/(j+1))`, `Σ μ(m)m^{−s}` with its transported poles, the sawtooth `Σ Λ(d){x/d}`) do not
+oscillate. Transport either keeps the `1/ζ` structure and the transported poles, with no power saving
+(its exponent is then the width, face 1.1), or acquires a phase that destroys the pole structure, with
+no zero information. Absolute-value attacks on the transported object stop at the critical dilation
+weight `k^{−1/2}`, the half-damping line.
+
+**In the corpus** [L]. `R:Sieve/MontgomeryVaughanArbitraryLogPhaseReceiver` (oscillating objects with
+fixed small exponents carrying no pole information); `V:VaughanTypeIIShortAndAllHorizonMobiusL2Energy`,
+`V:LinearBandVaughanTypeIIBilinearEstimate` (the Type-II short side is the negative literal Möbius sieve
+above `1`; the saving lives on the bilinear piece; the unsigned all-horizon energy `M·invSum(M)³`
+carries no sign); `R:MobiusLaplaceCriticalDilationNoGo` (absolute-value Neumann attacks fail at the
+critical dilation weight `k^{−1/2}`); `R:FermiNymanRawMobiusTailFloor`; `R:MoebiusAbelSmoothedSaving`,
+`R:Sieve/VinogradovRouteTSaving` (VK-shaped savings because the sums are non-oscillating).
+
+**Rule.** Classify the sum a method bounds. If it oscillates, say how the bound is transported back to
+a non-oscillating zero detector without introducing a phase; if it does not oscillate, the method is a
+zero-free-region argument in disguise, and its unsigned version stops at half damping.
+
 ## Wall 3: the Nyquist law
 
 A test of bounded aperture reads a zero configuration through its Weil form on that aperture, and
@@ -801,7 +1005,7 @@ autocorrelation, the sparse-height off-line correction and Kronecker–Weyl visi
 `Q:ZetaWindowPrimePolynomialReadsZeroCountRemainder`, `Q:ZetaOffLineCorrectionSmallOutsideSparseHeights`,
 `Q:ZetaWindowPrimePolynomialOnThePrimeTorus`); `R:QuantumGraphPrimePowerDecoupling`;
 `R:UnitaryEulerFactorRigidity`; `R:ArithmeticDilationTraceClass` (the trace-class realizations the
-corpus has are of absolutely summable matrices, the absolute-convergence regime of face 16.1);
+corpus has are of absolutely summable matrices, the absolute-convergence regime of face 1.8);
 `R:BurnolFirstJetShellScaleLaw` (positive damping shells tend strongly to zero while their trace tends
 to `log(c)/4`); `R:SourceInverseTraceIdealNoGo` (the Xi inverse is `S₂` but not `S₁`);
 `R:HermitianPencilEulerFactorObstruction`.
@@ -833,182 +1037,16 @@ interacting cycles).
 modes. Frobenius-stable integral lattices are excluded at three primes; an integral structure on the
 modes, if any, is not a lattice.
 
-## Wall 16: the sign-blindness barrier at half damping
-
-On the damped class `𝒞(K, ε) = {|c(d)| ≤ Kd^{−ε}}` the Möbius receiver, the pronic energy
-`E_T(c) = Σ_{n≤T} A_c(n)²/(n(n + 1))` of the centred prefix of `c ∗ 1`, is decided by sign-blind data
-exactly above half damping. Four faces say this in four languages, and the threshold `ε = ½` is the
-unconditional width `½`: at `ε = ½` the Möbius weight itself has bounded receiver because
-`ζ(1 + it) ≠ 0`.
-
-**The dictionary** (`T:UnsignedMajorantsAndSignBlindDataStopAtHalfDamping`,
-`T:HalfDampingIsTheExactThresholdOfTheParityPair`, `T:RealCharacterParityPairsAndTheParityBarrier`,
-`T:DyadicMassesGovernPositiveReceivers` [L]). For every `K > 0` and `ε > 0` the following are
-equivalent, and equivalent to `ε > ½`: one constant bounds every receiver on `𝒞(K, ε)`
-(`uniformReceiverBound_iff_half_lt`, the unsigned majorant `|A_c(n)| ≤ KC_ε n^{1−ε}` converges);
-receiver boundedness is a function of the Ramanujan amplitudes `|W_c(e)|`
-(`uniformReceiverBound_iff_amplitudeInvariant`, `receiverBounded_amplitudeInvariant_iff`); receiver
-boundedness is a function of the coefficient magnitudes `|c(d)|`
-(`receiverBounded_magnitudeInvariant_iff`). Below half damping the character weight `Kχ₄(d)d^{−ε}` and
-the odd weight `K1_{odd}(d)d^{−ε}` have the same magnitudes and opposite receivers; for nonnegative
-weights the receiver is read off the dyadic masses, bounded iff `Σ_k M_k²/2^k < ∞`
-(`bounded_weightPronicEnergy_iff_summable_dyadicMass`).
-
-### Face 16.1: the probability cone
-
-Positivity statements derived from the Euler product hold exactly where the Dirichlet series converges
-absolutely, `Re s > 1`; continuation into the strip is not positivity-preserving. `log ζ(σ + it)` is
-positive definite for `σ > 1` only; the Eisenstein series is a positive sum for `u > 1` only; random
-Euler products are zero-free almost surely on `Re s > 1/2`, but `ζ` is one point of the torus. In
-receiver coordinates the absolute-convergence line is `ε = ½`.
-
-**In the corpus** [L]. `H:PrimeDirichletPositiveDefinite` (positive definiteness needs absolute
-summability); `R:FiniteEulerStageNearLineStrip` (finite Euler stages are zero-free near the line only
-up to a truncation-determined height); `R:SelbergPositiveEisenstein`;
-`R:JointAncestryEndpointBudgetProducer` (the native prime-product form is nonnegative on finite prime
-sets of budget `Σ_P p^{−(σ−1/2)} ≤ ((log y)/(128·10⁸))^{3/2}/(log log y)⁴`; the level-one RH receiver
-needs budget `y^{1/2}`); `R:SteinhausEulerVerticalBarrier`, `R:SteinhausEulerQuadraticApprox`;
-`T:HalfDampingIsTheExactThresholdOfTheParityPair` (`exists_uniform_weightPronicEnergy_bound`),
-`T:DyadicMassesGovernPositiveReceivers`, `T:ReceiverOfMultiplicativeWeightsIsDecidedAtThePrimes`.
-
-**Rule.** When a positivity or definiteness statement is proved, check the half-plane on which it is
-proved. If it is `Re s > 1`, or damping `ε > 1/2`, the strip statement must be obtained some other way.
-
-### Face 16.2: parity pairs
-
-The damped Möbius receiver (the PM and BVI receiver) is bounded for `c = μ(d)d^{−ε}` at `ε = 1/2` and
-must be bounded at arbitrarily small `ε > 0` for RH. Below half damping the receiver cannot be decided
-by any sign-blind data: parity pairs exist at every `0 < ε ≤ 1/2`, two weights with identical Ramanujan
-amplitudes, identical complete-period divisor-sum statistics and identical pronic Gram data, one with
-bounded and one with divergent receiver. This is the sieve parity problem in the receiver's own
-coordinates, and it is sharp at `ε = 1/2`.
-
-**In the corpus** [L]. `T:ParityPairAtHalfDamping` (the Möbius weight and its nonnegative parity twin
-`c'_ε(d) = (ρ_ε/U_ε) d μ²(d) ∏_{p|d} 1/(p^{1+ε} − 2)`); `T:CharacterFourParityPairAtEveryDamping`,
-`T:RealCharacterParityPairsAndTheParityBarrier` (`parity_barrier`: for `0 < ε ≤ 1/2` no function of the
-amplitudes decides receiver boundedness on the damped class); `receiverBounded_amplitudeInvariant_iff`
-(`T:HalfDampingIsTheExactThresholdOfTheParityPair`: amplitude-invariance holds iff `ε > 1/2`; the
-whole difference lives in the trans-horizon tail `nΣ_{d>n} c(d)/d` and the head drift, both of order
-`n^{1−ε}`); `T:CriticalWienerConvolutionsPreserveTheReceiver` (the Liouville weight and the smooth
-power form a pair); `T:UnimodularCharacterCompletionsAreParityPartnersOfTheSmoothPower`;
-`T:FermiRowsAgreeInEveryTranslatedMomentAndSplitTheReceiver`,
-`T:EvenFlipOfTheFermiSquarefreeWeightBreaksTheReceiver` (rows indistinguishable by every translated
-moment of every degree and shift, with opposite trans-horizon growth: the even flip is the Fermi
-transform of the even part, `T:EvenFlipIsTheFermiTransformOfTheEvenPart`).
-
-**What separates a pair.** The first pronic moment is the von Mangoldt pairing
-`Σ_n A_c(n)/(n(n + 1)) = −Σ_e Λ(e)W_c(e)`, supported on prime powers (`T:FirstPronicMomentIsTheVonMangoldtPairing`);
-it orders every pair with a positive member and is blind exactly when the parity lives on composite
-moduli (`T:FirstPronicMomentOrdersPositivePairs`, `T:FirstMomentBlindParityPairOfTheNegatedMoebiusWeight`);
-the `k`-th logarithmic moment reads `Λ_{k+1}`, supported on `ω(e) ≤ k + 1`, and the logarithmic moments
-are a complete receiver invariant (`T:SecondVonMangoldtMomentSeparatesTheBlindPair`,
-`T:LogarithmicMomentHierarchySeparatesEveryPositivePair`, `T:LogarithmicMomentsAreACompleteReceiverInvariant`);
-cubic translated moments pin odd rows and pin squarefree rows up to the even flip
-(`T:CubicMomentsPinTheParityOfOddRows`, `T:CubicMomentsPinSquarefreeRowsUpToTheEvenFlip`). The receiver
-is a local critical-line detector: a local factor `δ₁ − aδ_p` preserves the growth class iff
-`|a| < √p`, sparse prime flips preserve it, and a bounded `±1` pattern must flip a prime set of
-divergent critical-line mass (`T:LocalEulerFactorsAndPronicDilationContraction`,
-`T:SparsePrimeFlipsPreserveTheReceiver`). Pole laws: a finite or critical-Wiener kernel repairs a
-positive drift only when its value at the pole `K(1 − ε) = Σ_j k(j)j^{−(1−ε)}` vanishes, the paid
-perturbations of the smooth power and of every coprime weight form that hyperplane, multiplicative
-weights pretending to one are paid exactly when some local factor vanishes at the pole, and the even
-flip shifts the pole value by `(1 − 2^ε)K_e(1 − ε)` (`T:FiniteKernelsRepairAPositiveDriftOnlyAtItsPole`,
-`T:CriticalWienerKernelsRepairAPositiveDriftOnlyAtItsPole`, `T:FinitePerturbationsOfTheSmoothPowerAreDecidedAtThePole`,
-`T:FinitePerturbationsOfCoprimeWeightsAreDecidedAtThePole`,
-`T:MultiplicativeWeightsPretendingToOneArePaidOnlyByAVanishingLocalFactor`,
-`T:AVanishingFiniteLocalFactorPaysAWeightPretendingToOne`,
-`T:TheEvenFlipShiftsThePoleValueByTheEvenPartOfTheKernel` [L]; a double pole needs a double zero,
-`T:APoleOfOrderTwoNeedsAZeroOfOrderTwo` [L]).
-
-**Rule.** Any bound on the Möbius receiver below half damping must read the signs of the coefficients:
-first-order data at prime moduli (`k ↦ pk`) or odd-degree additive moments (`k ↦ k + v`). Magnitude
-data, two-point data and, for squarefree rows, all translated moments are blind. The Type-II input the
-cancellation routes need is a signed one; its loss is not controlled by any data invariant under the
-parity involution.
-
-### Face 16.3: coherent blocks and the one-modulus large-sieve ceiling
-
-The bilinear form `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` on the pronic Gram must be bounded with no
-character or modulus average at exponent `θ = 2 log P/log X = 2` (the receiver); the large sieve is of
-diagonal quality only at `θ ≤ 1`. Between them every Type-II input in the sense of an `ℓ²` bound on
-coefficients fails, because coherent blocks of primes near a multiple have packet energy matching the
-large-sieve loss exactly. An `ℓ²` class is a magnitude class, and magnitudes are blind below half
-damping (`receiverBounded_magnitudeInvariant_iff`); the coherent-block law gives the exact exponent at
-which they stop.
-
-**In the corpus** [L]. `V:BrownianBridgeLawOfThePrimeBlockAndCodimensionNoGo` (any `J` linear side
-conditions admit a nonzero packet with `Q ≥ (k² − 1)/(24(2P + 1))·Σ_p a_p² p`, `(J + 3)k ≤ |S|`);
-`V:CoherentPrimeBlocksAndTheTypeIIWindowNoGo` (unit-jump prime blocks are affine on clean regions and
-carry window energy `≥ (k/2304)·kΣ_W w`: the large-sieve loss `P²/X` is attained at every window below
-`P²`, so no Type-II input reaches any `θ > 1`); `V:ExactTypeIILossOfTheReceiverGram` (exact loss
-`Θ(N²/X)`); `V:TypeIIBarrierSurvivesTheRankTwoSideConditions` (killing both harmonic and `Λ` readouts
-leaves `B(c, c') ≥ (Σc(d)d)(Σ|c'|/n²)/200` on coherent/anti-coherent windows);
-`V:CoherentNearMultipleObstructionToCrossScaleDispersion` (the rank-two plus large-sieve threshold
-`Q ≥ P^{5/3}` is sharp up to `√log`); `V:CrossScaleParityBlindnessOfThePronicGram` (the cross-scale Gram
-sees the large scale only through residue masses mod the small moduli plus two readouts: it is
-parity-blind). What is reached: the unbalanced regime `Q ≥ P²` by the exact rank-two law
-(`V:ExactRankTwoCrossScaleLawOfTheReceiverGram`); diagonal quality for `Q ≥ P^{5/3}` with arbitrary
-coefficients at one modulus (`V:LargeSieveDispersionOfTheCrossScaleRemainder`,
-`V:LargeSieveDispersionInSelbergCoordinates`, `V:LargeSieveDispersionForBoundedRows`); Type-I gains,
-flat rows at either scale reaching `θ ≤ 4/3` and smooth large-scale rows `θ ≤ 3/2`
-(`V:KuzminLandauGainForFlatSmallScaleRows`, `V:FlatLargeScaleRowsAndTheTypeIGain`,
-`V:SmoothLargeScaleRowsAndTheCancellationOfBothKernels`); bounded partial sums giving receiver-quality
-dispersion `Q_N(c) ≤ 11B² + 4Σc_n²/n` (`V:SummatoryFunctionBoundForTheDyadicPronicGram`); the exact
-second- and third-order cross-scale laws with the Bernoulli kernels `𝔅`, `𝔅₃`, their reciprocity form
-in Kloosterman fractions `kq̄/p` with cosecant–Bernoulli weights, and the signed residue law
-(`V:SecondOrderCrossScaleLawAndTheBernoulliKernel`, `V:ThirdOrderCrossScaleLawAndTheCubicBernoulliKernel`,
-`V:ReciprocityFormOfTheBernoulliKernel`, `V:TwoSidedSignLawOfTheSecondOrderKernel`,
-`V:SharpConstantAttainedByPrimesInTheUnitClass`). Replacement hypotheses proved sufficient: block
-equidistribution of the large-scale row at scale `H = o(P/log²P)`
-(`V:BlockEquidistributionSufficesForCrossScaleDispersion`), which the centred prime row `Λ(n) − 1` on
-`[Q, 2Q]` satisfies unconditionally throughout `P^{1+δ} ≤ Q ≤ P^{12/7−δ}` by Huxley's theorem at `7/12`,
-so its cross-scale remainder is `16ε` times the rank-two bound at every exponent `θ ∈ (7/6, 2)`, leaving
-only the balanced regime `Q ≍ P` (`V:CentredPrimeRowPassesTheCoherentBlockObstruction` [L]); twisted short-interval square-root
-cancellation over prime intervals of length `4P²/(aK)` (`V:TwistedShortIntervalCancellationGivesWindowDispersion`,
-with the window spectrum and numerator split `V:DiscreteGallagherInequalityAndTheWindowSpectrum`,
-`V:NumeratorSplitOfTheWindowEnergy`, `V:OneNumeratorClustersAreShortIntervalSums`); and the exact
-residue discrepancy `Δ_p(c')` at rate `π²/72` (`V:ResidueDiscrepancyIsTheExactCrossScaleLoss`). The
-dual norm reduces every Type-II bound for bounded small-scale coefficients to the single-modulus
-statistics `Σ_{p∈S}|Λ_p(c')|/p`, low-frequency exponential sums `Σ_a W_p(a)Σ_n (c'(n)/n²)e(an/p)` of the
-large-scale row, with no bilinear structure left (`V:DualNormOfTheCrossScaleFunctional` [L]).
-
-**Rule.** A dispersion claim on the pronic Gram must say which coefficient class it covers and at
-which exponent; `ℓ²` classes stop at `θ = 1` by the coherent-block law, Type-I classes at `θ ≤ 3/2`.
-The receiver needs cancellation of the actual Möbius or prime row at `θ = 2`, that is, of the
-single-modulus low-frequency statistics of an arithmetic row, with the signs of face 16.2 read.
-
-### Face 16.4: unsigned transport
-
-Exponential-sum methods give power savings for oscillating sums; zero-detecting sums
-(`ψ(x/j) − ψ(x/(j+1))`, `Σ μ(m)m^{−s}` with its transported poles, the sawtooth `Σ Λ(d){x/d}`) do not
-oscillate. Transport either keeps the `1/ζ` structure and the transported poles, with no power saving
-(its exponent is then the width, face 1.1), or acquires a phase that destroys the pole structure, with
-no zero information. Absolute-value attacks on the transported object stop at the critical dilation
-weight `k^{−1/2}`, the half-damping line.
-
-**In the corpus** [L]. `R:Sieve/MontgomeryVaughanArbitraryLogPhaseReceiver` (oscillating objects with
-fixed small exponents carrying no pole information); `V:VaughanTypeIIShortAndAllHorizonMobiusL2Energy`,
-`V:LinearBandVaughanTypeIIBilinearEstimate` (the Type-II short side is the negative literal Möbius sieve
-above `1`; the saving lives on the bilinear piece; the unsigned all-horizon energy `M·invSum(M)³`
-carries no sign); `R:MobiusLaplaceCriticalDilationNoGo` (absolute-value Neumann attacks fail at the
-critical dilation weight `k^{−1/2}`); `R:FermiNymanRawMobiusTailFloor`; `R:MoebiusAbelSmoothedSaving`,
-`R:Sieve/VinogradovRouteTSaving` (VK-shaped savings because the sums are non-oscillating).
-
-**Rule.** Classify the sum a method bounds. If it oscillates, say how the bound is transported back to
-a non-oscillating zero detector without introducing a phase; if it does not oscillate, the method is a
-zero-free-region argument in disguise, and its unsigned version stops at half damping.
-
 ## How the walls bind the routes
 
 | Wall | Routes it binds | Status and the open unit |
 |---|---|---|
-| 1 The zero width (faces 1.1–1.7) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC, RN. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, every positivity route, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL. 1.6: BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids. 1.7: HF, IRK, PTR, W1C, TG | [L]. One open unit in seven currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`, the attained top of a grid; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor. Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. By the aperture principle none of these units can be closed at a bounded aperture or lag. |
+| 1 The zero width (faces 1.1–1.8) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC, RN. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, every positivity route, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL. 1.6: BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids. 1.7: HF, IRK, PTR, W1C, TG. 1.8: PA, JAS, PBM, DR, WBF, PM, MC, CTF, BVI, THIM, WL, FU, RP, LI, RN, EGC | [L]. One open unit in eight currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`, the attained top of a grid, the accumulation point of the admissible dampings; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor. Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. By the aperture principle none of these units can be closed at a bounded aperture or lag. Sign face: sharp at `ε = 1/2` for every sign-blind reading (unsigned majorant, amplitudes and magnitudes decide iff `ε > 1/2`; Type-II `ℓ²` stops at `θ = 1`, Type-I at `3/2`, the receiver sits at `θ = 2`; absolute transports stop at `k^{−1/2}`; separating observables classified); the signed dampings read `zetaZeroWidth ≤ ε₀` at every accumulation point `ε₀`, and `receiverDampingRate ∈ [zetaZeroWidth, 1/2]` [S]. |
 | 3 The Nyquist law (faces 3.1–3.3) | 3.1: LA, TH, HCF, XN, WD, JAS, SRT. 3.2: TT, WD, XN, TG, RN, HF, CHMD, OWU, ACT, AIP, BSH, CDC, HJ, IRK, FEL, RFHM, SC, SEC, PTR, W1C, EGC. 3.3: RW, HF, EWU, OWU, CHMD, TT, RN, ACT, AIP, MSC | [L]. One threshold `L/2` for position and depth; resolution aperture `π/(2g)` exact; invisibility is mimicry below it; a certificate of radius `R` reads the primes below `e^{2R}`, with `3/10 < (log 2)/2 < 9/25` for the all-test and the odd certificates, and every radius is mimicked by a weight outside the cone; lag side: hiding needs collapsed clusters, the pair-correlation barrier remains. |
 | 14 No finite carrier (faces 14.1, 14.2) | 14.1: FU, RP, TG, RN, SZ, HF, CHMD, OWU, APF, EWJ, PCS, IRK, SC, SEC, PTR, W1C, WBF. 14.2: HF, IRK, PTR, W1C, TG | [L]. CCM's finite-aperture realization is unconditional and convergence to `Ξ` is the premise; purity `|ω| = √q` is not formalized. |
-| 16 Sign blindness (faces 16.1–16.4) | 16.1: PA, JAS, PBM, DR, WBF; PM/BVI at `ε > 1/2`. 16.2: PM, MC, CTF, BVI, THIM. 16.3: BVI, MC, PM, CTF. 16.4: WL, MC, FU, RP, LI, PBM, PM, CTF, RN, EGC | [L]. Sharp at `ε = 1/2` in every face: unsigned majorant, amplitudes and magnitudes decide iff `ε > 1/2`; Type-II `ℓ²` stops at `θ = 1`, Type-I at `3/2`, the receiver sits at `θ = 2`; absolute transports stop at `k^{−1/2}`. Separating observables classified. |
 
 A new mechanism has to supply one of: square-root cancellation of a prime sum at one modulus with
-the signs read (face 1.1, Wall 16); equality in Jensen for `log|ζ|` (face 1.5); an evaluation of an
+the signs read (faces 1.1, 1.8); equality in Jensen for `log|ζ|` (face 1.5); an evaluation of an
 amplified exponent independent of the unamplified one, which is what a Frobenius-type fibration
 would give (face 1.7, Wall 14); a Bochner-cone positivity certificate at arbitrary support
 compatible with node criticality (face 1.4, face 3.3); or a definite spectral realization of the

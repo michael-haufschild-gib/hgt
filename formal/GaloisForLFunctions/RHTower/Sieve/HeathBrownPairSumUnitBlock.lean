@@ -74,7 +74,7 @@ theorem hbAmp_half_le_two_mul_hbAmp_one (W : Finset ℝ) (N : ℕ) :
       exact mul_le_mul_of_nonneg_right hsq (Real.rpow_nonneg hn0.le _)
   refine hmaj.trans (le_of_eq ?_)
   have e : (fun n : ℕ => ((Real.sqrt (2 * N) * (n : ℝ) ^ (-(1 : ℝ)) : ℝ) : ℂ)) =
-      fun n => ((Real.sqrt (2 * N) : ℝ) : ℂ) * ((((n : ℝ) ^ (-(1 : ℝ))) : ℝ) : ℂ) := by
+      fun n : ℕ => ((Real.sqrt (2 * N) : ℝ) : ℂ) * ((((n : ℝ) ^ (-(1 : ℝ))) : ℝ) : ℂ) := by
     funext n; push_cast; ring
   rw [e, hbPairSum_const_mul, Complex.norm_real, Real.norm_eq_abs, sq_abs,
     Real.sq_sqrt (by positivity), hbAmp]
@@ -98,10 +98,11 @@ theorem hbAmp_one_le_hbAmp_half_div (W : Finset ℝ) {B : ℕ} (hB : 0 < B) :
       exact mul_le_mul_of_nonneg_right hsq (Real.rpow_nonneg hn0.le _)
   refine hmaj.trans (le_of_eq ?_)
   have e : (fun n : ℕ => (((Real.sqrt B)⁻¹ * (n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)) =
-      fun n => (((Real.sqrt B)⁻¹ : ℝ) : ℂ) * ((((n : ℝ) ^ (-(1 / 2 : ℝ))) : ℝ) : ℂ) := by
+      fun n : ℕ => (((Real.sqrt B)⁻¹ : ℝ) : ℂ) * ((((n : ℝ) ^ (-(1 / 2 : ℝ))) : ℝ) : ℂ) := by
     funext n; push_cast; ring
   rw [e, hbPairSum_const_mul, Complex.norm_real, Real.norm_eq_abs, sq_abs, inv_pow,
-    Real.sq_sqrt hB0.le, hbAmp, div_eq_inv_mul]
+    Real.sq_sqrt hB0.le, hbAmp]
+  ring
 
 /-- The unweighted pair sum with `|a_n| ≤ 1` is at most `2N 𝒜_{1/2}((N,2N])`. -/
 theorem hbPairSum_le_two_mul_hbAmp_half (W : Finset ℝ) {N : ℕ} {a : ℕ → ℂ}
@@ -120,7 +121,7 @@ theorem hbPairSum_le_two_mul_hbAmp_half (W : Finset ℝ) {N : ℕ} {a : ℕ → 
             (Real.rpow_nonneg hn0.le _)
   refine hmaj.trans (le_of_eq ?_)
   have e : (fun n : ℕ => ((Real.sqrt (2 * N) * (n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)) =
-      fun n => ((Real.sqrt (2 * N) : ℝ) : ℂ) * ((((n : ℝ) ^ (-(1 / 2 : ℝ))) : ℝ) : ℂ) := by
+      fun n : ℕ => ((Real.sqrt (2 * N) : ℝ) : ℂ) * ((((n : ℝ) ^ (-(1 / 2 : ℝ))) : ℝ) : ℂ) := by
     funext n; push_cast; ring
   rw [e, hbPairSum_const_mul, Complex.norm_real, Real.norm_eq_abs, sq_abs,
     Real.sq_sqrt (by positivity), hbAmp]
@@ -142,7 +143,7 @@ theorem card_filter_abs_sub_le {W : Finset ℝ} (hW : GuthMaynard.IsSeparated 1 
 theorem sum_sq_ubPerronMass_abs_le (W : Finset ℝ) (B : ℕ) {U : ℝ} (hU : 0 ≤ U) :
     ∑ t₁ ∈ W, ∑ t₂ ∈ W, ubPerronMass B U |t₁ - t₂| ^ 2 ≤
       2 * (4 * Real.log (1 + U)) ^ 2 * hbAmp W 1 (Finset.Ioc B (2 * B)) := by
-  obtain ⟨w, hw⟩ : ∃ w : ℝ → ℝ, w = fun u => 1 / ‖(1 : ℂ) + (u : ℂ) * I‖ := ⟨_, rfl⟩
+  obtain ⟨w, hw⟩ : ∃ w : ℝ → ℝ, w = fun u : ℝ => 1 / ‖(1 : ℂ) + (u : ℂ) * Complex.I‖ := ⟨_, rfl⟩
   have hwc : Continuous w := hw ▸ continuous_inv_norm_one_add
   have hw0 : ∀ u, 0 ≤ w u := fun u => hw ▸ inv_norm_one_add_nonneg u
   have hwmass : ∫ u in (-U)..U, w u ≤ 4 * Real.log (1 + U) := hw ▸ integral_inv_norm_one_add_le hU
@@ -165,8 +166,8 @@ theorem sum_sq_ubPerronMass_abs_le (W : Finset ℝ) (B : ℕ) {U : ℝ} (hU : 0 
     have e1 : (∫ u in (-U)..U, F s u * Real.sqrt (w u) * Real.sqrt (w u)) = ubPerronMass B U s := by
       rw [ubPerronMass]
       refine intervalIntegral.integral_congr fun u _ => ?_
-      simp only [hF, hw]
-      rw [mul_assoc, Real.mul_self_sqrt (by positivity), mul_one_div]
+      simp only [hF]
+      rw [mul_assoc, Real.mul_self_sqrt (hw0 u), hw, mul_one_div]
     have e2 : (∫ u in (-U)..U, (F s u * Real.sqrt (w u)) ^ 2) = ∫ u in (-U)..U, F s u ^ 2 * w u :=
       intervalIntegral.integral_congr fun u _ => by rw [mul_pow, Real.sq_sqrt (hw0 u)]
     have e3 : (∫ u in (-U)..U, Real.sqrt (w u) ^ 2) = ∫ u in (-U)..U, w u :=
@@ -225,17 +226,20 @@ theorem sum_sq_ubPerronMass_abs_le (W : Finset ℝ) (B : ℕ) {U : ℝ} (hU : 0 
   calc ∑ t₁ ∈ W, ∑ t₂ ∈ W, ubPerronMass B U |t₁ - t₂| ^ 2
       ≤ ∑ t₁ ∈ W, ∑ t₂ ∈ W, 4 * Real.log (1 + U) * ∫ u in (-U)..U, F |t₁ - t₂| u ^ 2 * w u :=
         Finset.sum_le_sum fun t₁ _ => Finset.sum_le_sum fun t₂ _ => hcs _
+    _ = 4 * Real.log (1 + U) * ∑ t₁ ∈ W, ∑ t₂ ∈ W, ∫ u in (-U)..U, F |t₁ - t₂| u ^ 2 * w u := by
+        simp only [Finset.mul_sum]
     _ = 4 * Real.log (1 + U) *
           ∫ u in (-U)..U, (∑ t₁ ∈ W, ∑ t₂ ∈ W, F |t₁ - t₂| u ^ 2) * w u := by
-        rw [← Finset.mul_sum]
-        simp only [← Finset.mul_sum]
         congr 1
-        rw [← intervalIntegral.integral_finset_sum fun t₁ _ =>
-          IntervalIntegrable.sum W fun t₂ _ => hint t₁ t₂]
-        refine intervalIntegral.integral_congr fun u _ => ?_
-        simp only [Finset.sum_mul]
-        exact Finset.sum_congr rfl fun t₁ _ =>
-          (intervalIntegral.integral_finset_sum fun t₂ _ => hint t₁ t₂).symm ▸ rfl
+        have hinner : ∀ t₁ : ℝ, ∑ t₂ ∈ W, ∫ u in (-U)..U, F |t₁ - t₂| u ^ 2 * w u =
+            ∫ u in (-U)..U, ∑ t₂ ∈ W, F |t₁ - t₂| u ^ 2 * w u := fun t₁ =>
+          (intervalIntegral.integral_finsetSum fun t₂ _ => hint t₁ t₂).symm
+        simp only [hinner]
+        rw [← intervalIntegral.integral_finsetSum (fun t₁ _ => ?_)]
+        · refine intervalIntegral.integral_congr fun u _ => ?_
+          simp only [Finset.sum_mul]
+        · exact (continuous_finsetSum _ fun t₂ _ =>
+            ((hFc |t₁ - t₂|).pow 2).mul hwc).intervalIntegrable _ _
     _ ≤ 4 * Real.log (1 + U) * ∫ u in (-U)..U, 2 * hbAmp W 1 (Finset.Ioc B (2 * B)) * w u := by
         refine mul_le_mul_of_nonneg_left (intervalIntegral.integral_mono_on hUU ?_ ?_
           fun u _ => mul_le_mul_of_nonneg_right (hpt u) (hw0 u)) hlog0

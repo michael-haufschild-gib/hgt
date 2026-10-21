@@ -61,9 +61,9 @@ theorem tsum_puncturedFrequency_eq_sum_add_tail (f : ℤ → ℂ) (hf : Summable
     push_cast
     ring_nf
 
-/-- The Poisson modes `m ↦ ĥ_t(mN)` are summable over `ℤ` for `N > 0`. -/
-theorem summable_fourier_cglSmoothBumpHt_int (w : CGLSmoothBump) (t N : ℝ) (hN : 0 < N) :
-    Summable fun m : ℤ => 𝓕 (cglSmoothBumpHt w t : ℝ → ℂ) ((m : ℝ) * N) := by
+/-- The Poisson modes `m ↦ ĥ_t(mN)` are absolutely summable over `ℤ` for `N > 0`. -/
+theorem summable_norm_fourier_cglSmoothBumpHt_int (w : CGLSmoothBump) (t N : ℝ) (hN : 0 < N) :
+    Summable fun m : ℤ => ‖𝓕 (cglSmoothBumpHt w t : ℝ → ℂ) ((m : ℝ) * N)‖ := by
   set A : ℝ := cglSmoothBumpHtAllOrderBudget w 2 / (2 * Real.pi) ^ 2 * (1 + |t|) ^ 2 / N ^ 2
   have hbase : Summable fun n : ℕ => A * (1 / ((n : ℝ) + 1) ^ 2) := by
     have h := (summable_nat_add_iff 1).mpr
@@ -86,12 +86,17 @@ theorem summable_fourier_cglSmoothBumpHt_int (w : CGLSmoothBump) (t N : ℝ) (hN
     field_simp
   refine Summable.of_nat_of_neg_add_one ?_ ?_
   · refine (summable_nat_add_iff 1).mp ?_
-    refine Summable.of_norm_bounded hbase fun n => ?_
+    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun n => ?_) hbase
     have := hbound 1 (Or.inl rfl) n
     simpa using this
-  · refine Summable.of_norm_bounded hbase fun n => ?_
+  · refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun n => ?_) hbase
     have := hbound (-1) (Or.inr rfl) n
     simpa [neg_mul, Int.cast_add] using this
+
+/-- The Poisson modes `m ↦ ĥ_t(mN)` are summable over `ℤ` for `N > 0`. -/
+theorem summable_fourier_cglSmoothBumpHt_int (w : CGLSmoothBump) (t N : ℝ) (hN : 0 < N) :
+    Summable fun m : ℤ => 𝓕 (cglSmoothBumpHt w t : ℝ → ℂ) ((m : ℝ) * N) :=
+  (summable_norm_fourier_cglSmoothBumpHt_int w t N hN).of_norm
 
 /-- The inverse-square mass `Z = Σ_{k ≥ 0} (k+1)^{−2}`. -/
 def cglGMInverseSquareMass : ℝ :=

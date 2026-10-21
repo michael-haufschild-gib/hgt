@@ -89,18 +89,18 @@ theorem sum_Ico_window_telescope (f : ℕ → ℝ) (Q H : ℕ) :
   rw [sum_congr rfl fun t _ => by rw [show t + (i + 1) = t + 1 + i by ring],
     sum_Ico_telescope (fun t => f (t + i)) (by omega : Q ≤ 2 * Q)]
 
-/-- **One doubling.** `|R(2Q) - R(Q)| ≤ √Q √F/H + 2H (log 3Q + 1)` for `1 ≤ H ≤ Q`. -/
-theorem abs_psiRemainder_two_mul_sub_le {Q H : ℕ} (hH : 1 ≤ H) (hHQ : H ≤ Q) :
+/-- **One doubling.** `|R(2Q) - R(Q)| ≤ √Q √F/H + 2H (log(2Q + H) + 1)` for `1 ≤ H`. -/
+theorem abs_psiRemainder_two_mul_sub_le {Q H : ℕ} (hH : 1 ≤ H) :
     |psiRemainder (2 * Q) - psiRemainder Q| ≤
       Real.sqrt Q * Real.sqrt (∑ t ∈ Ico Q (2 * Q),
         (∑ n ∈ Ioc t (t + H), vonMangoldt n - H) ^ 2) / H +
-        2 * H * (Real.log (3 * Q : ℕ) + 1) := by
+        2 * H * (Real.log (2 * Q + H : ℕ) + 1) := by
   have hHR : (1 : ℝ) ≤ H := by exact_mod_cast hH
   set E := ∑ t ∈ Ico Q (2 * Q), (∑ n ∈ Ioc t (t + H), vonMangoldt n - H) ^ 2
   set S := ∑ t ∈ Ico Q (2 * Q), (psiRemainder (t + H) - psiRemainder t)
-  set ℓ := Real.log (3 * Q : ℕ) + 1
+  set ℓ := Real.log (2 * Q + H : ℕ) + 1
   have hℓ : 0 ≤ ℓ := by
-    have : 0 ≤ Real.log (3 * Q : ℕ) := Real.log_natCast_nonneg _
+    have : 0 ≤ Real.log (2 * Q + H : ℕ) := Real.log_natCast_nonneg _
     simp only [ℓ]; linarith
   have hCS : |S| ≤ Real.sqrt Q * Real.sqrt E := by
     rw [show S = ∑ t ∈ Ico Q (2 * Q), (∑ n ∈ Ioc t (t + H), vonMangoldt n - H) from
@@ -110,11 +110,12 @@ theorem abs_psiRemainder_two_mul_sub_le {Q H : ℕ} (hH : 1 ≤ H) (hHQ : H ≤ 
       (fun t => |∑ n ∈ Ioc t (t + H), vonMangoldt n - H|)
     simp only [one_mul, one_pow, sum_const, Nat.card_Ico, nsmul_eq_mul, mul_one, sq_abs] at h
     rwa [show 2 * Q - Q = Q by omega] at h
-  have hstep : ∀ a i, i ≤ H → a + i ≤ 3 * Q → |psiRemainder (a + i) - psiRemainder a| ≤ H * ℓ := by
+  have hstep : ∀ a i, i ≤ H → a + i ≤ 2 * Q + H →
+      |psiRemainder (a + i) - psiRemainder a| ≤ H * ℓ := by
     intro a i hi hai
     refine (abs_psiRemainder_add_sub_le a i).trans ?_
     have hiR : (i : ℝ) ≤ H := by exact_mod_cast hi
-    have hlog : Real.log (a + i : ℕ) ≤ Real.log (3 * Q : ℕ) := by
+    have hlog : Real.log (a + i : ℕ) ≤ Real.log (2 * Q + H : ℕ) := by
       rcases Nat.eq_zero_or_pos (a + i) with h0 | h0
       · rw [h0, Nat.cast_zero, Real.log_zero]; exact Real.log_natCast_nonneg _
       · exact Real.log_le_log (by exact_mod_cast h0) (by exact_mod_cast hai)
@@ -154,6 +155,276 @@ theorem abs_psiRemainder_two_mul_sub_le {Q H : ℕ} (hH : 1 ≤ H) (hHQ : H ≤ 
     linarith
   rw [div_add' _ _ _ (by positivity), le_div_iff₀ (by positivity)]
   nlinarith
+
+/-! ## §2. A zero-free strip gives the saving -/
+
+theorem primePowerWindowSaving_of_lt_one (hΘ : zetaZeroAbscissa < 1) : PrimePowerWindowSaving := by
+  set Θ := zetaZeroAbscissa
+  have hΘ0 : (1 / 2 : ℝ) ≤ Θ := half_le_zetaZeroAbscissa
+  set ε : ℝ := (1 - Θ) / 4
+  have hε : 0 < ε := by simp only [ε]; linarith
+  obtain ⟨C₀, hC₀, hR⟩ := exists_psiRemainder_le_rpow_zetaZeroAbscissa ε hε
+  set s : ℝ := Θ + ε
+  have hs : 0 ≤ s := by simp only [s]; linarith
+  refine ⟨(1 + Θ) / 2, (1 - Θ) / 2, 4 * C₀ ^ 2 * (5 : ℝ) ^ (2 * s), by linarith, by linarith,
+    by linarith, fun Q hQ => ?_⟩
+  have hQR : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
+  have hQ0 : (0 : ℝ) < Q := by linarith
+  set H := powerWindow ((1 + Θ) / 2) Q
+  have hH : (H : ℝ) ≤ 2 * Q := by
+    have h1 : (H : ℝ) < (Q : ℝ) ^ ((1 + Θ) / 2) + 1 :=
+      Nat.ceil_lt_add_one (Real.rpow_nonneg hQ0.le _)
+    have h2 : (Q : ℝ) ^ ((1 + Θ) / 2) ≤ Q := by
+      calc (Q : ℝ) ^ ((1 + Θ) / 2) ≤ (Q : ℝ) ^ (1 : ℝ) :=
+            Real.rpow_le_rpow_of_exponent_le hQR (by linarith)
+        _ = Q := Real.rpow_one _
+    linarith
+  have hb : ∀ N : ℕ, 1 ≤ N → (N : ℝ) ≤ 5 * Q → |psiRemainder N| ≤ C₀ * (5 * (Q : ℝ)) ^ s := by
+    intro N hN hN5
+    refine (hR N hN).trans (mul_le_mul_of_nonneg_left ?_ hC₀)
+    exact Real.rpow_le_rpow (Nat.cast_nonneg _) hN5 hs
+  have hwin : ∀ t ∈ Ico Q (2 * Q), (∑ n ∈ Ioc t (t + H), vonMangoldt n - H) ^ 2 ≤
+      4 * C₀ ^ 2 * (5 : ℝ) ^ (2 * s) * (Q : ℝ) ^ (2 * s) := by
+    intro t ht
+    have ht' := mem_Ico.mp ht
+    have ht2 : (t : ℝ) ≤ 2 * Q := by
+      have h : ((t : ℕ) : ℝ) ≤ ((2 * Q : ℕ) : ℝ) := by exact_mod_cast ht'.2.le
+      push_cast at h; exact h
+    have htH : ((t + H : ℕ) : ℝ) ≤ 5 * Q := by push_cast; linarith
+    have ht5 : (t : ℝ) ≤ 5 * Q := by linarith
+    have hA : |∑ n ∈ Ioc t (t + H), vonMangoldt n - H| ≤ 2 * (C₀ * (5 * (Q : ℝ)) ^ s) := by
+      rw [sum_Ioc_vonMangoldt_sub_eq]
+      refine (abs_sub _ _).trans ?_
+      linarith [hb (t + H) (by omega) htH, hb t (by omega) ht5]
+    have hsq := pow_le_pow_left₀ (abs_nonneg _) hA 2
+    rw [sq_abs] at hsq
+    have e1 : ((5 * (Q : ℝ)) ^ s) ^ 2 = (5 : ℝ) ^ (2 * s) * (Q : ℝ) ^ (2 * s) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity),
+        show s * ((2 : ℕ) : ℝ) = 2 * s by push_cast; ring, Real.mul_rpow (by norm_num) hQ0.le]
+    refine hsq.trans (le_of_eq ?_)
+    rw [mul_pow, mul_pow, e1]
+    ring
+  calc primeWindowEnergy ((1 + Θ) / 2) Q
+      ≤ ∑ _t ∈ Ico Q (2 * Q), 4 * C₀ ^ 2 * (5 : ℝ) ^ (2 * s) * (Q : ℝ) ^ (2 * s) := sum_le_sum hwin
+    _ = 4 * C₀ ^ 2 * (5 : ℝ) ^ (2 * s) * ((Q : ℝ) * (Q : ℝ) ^ (2 * s)) := by
+        rw [sum_const, Nat.card_Ico, show 2 * Q - Q = Q by omega, nsmul_eq_mul]; ring
+    _ = 4 * C₀ ^ 2 * (5 : ℝ) ^ (2 * s) *
+        (Q : ℝ) ^ (1 + 2 * ((1 + Θ) / 2) - (1 - Θ) / 2) := by
+        rw [← Real.rpow_one_add' hQ0.le (by positivity)]
+        congr 2
+        simp only [s, ε]; ring
+
+/-! ## §3. The saving gives a zero-free strip -/
+
+/-- `log(4Q) + 1 ≤ (4/η + 1) Q^η` for `Q ≥ 1`, `0 < η ≤ 1`. -/
+theorem log_four_mul_add_one_le {η : ℝ} (hη : 0 < η) (hη1 : η ≤ 1) {Q : ℕ} (hQ : 1 ≤ Q) :
+    Real.log (4 * Q : ℕ) + 1 ≤ (4 / η + 1) * (Q : ℝ) ^ η := by
+  have hQR : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
+  have hQ0 : (0 : ℝ) < Q := by linarith
+  have h1 := Real.log_le_rpow_div (x := ((4 * Q : ℕ) : ℝ)) (Nat.cast_nonneg _) hη
+  have h4 : (((4 * Q : ℕ) : ℝ)) ^ η ≤ 4 * (Q : ℝ) ^ η := by
+    push_cast
+    rw [Real.mul_rpow (by norm_num) hQ0.le]
+    have : (4 : ℝ) ^ η ≤ 4 := by
+      calc (4 : ℝ) ^ η ≤ (4 : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) hη1
+        _ = 4 := Real.rpow_one 4
+    exact mul_le_mul_of_nonneg_right this (Real.rpow_nonneg hQ0.le _)
+  have hQη : 1 ≤ (Q : ℝ) ^ η := Real.one_le_rpow hQR hη.le
+  have h5 : (((4 * Q : ℕ) : ℝ)) ^ η / η ≤ 4 / η * (Q : ℝ) ^ η := by
+    rw [div_le_iff₀ hη]
+    calc (((4 * Q : ℕ) : ℝ)) ^ η ≤ 4 * (Q : ℝ) ^ η := h4
+      _ = 4 / η * (Q : ℝ) ^ η * η := by field_simp
+  nlinarith
+
+/-- **The saving gives a zero-free strip.** -/
+theorem zetaZeroAbscissa_lt_one_of_primePowerWindowSaving (h : PrimePowerWindowSaving) :
+    zetaZeroAbscissa < 1 := by
+  obtain ⟨α, δ, C, hα0, hα1, hδ, hE⟩ := h
+  set η : ℝ := (1 - α) / 2
+  have hη0 : 0 < η := by simp only [η]; linarith
+  have hη1 : η ≤ 1 := by simp only [η]; linarith
+  set γ := max (1 - δ / 2) ((1 + α) / 2)
+  have hγ1 : γ < 1 := max_lt (by linarith) (by linarith)
+  have hγα : (1 + α) / 2 ≤ γ := le_max_right _ _
+  have hγ0 : 0 < γ := lt_of_lt_of_le (by linarith) hγα
+  have hηγ : η ≤ γ := by simp only [η]; linarith
+  have hC : 0 ≤ C := by
+    have h1 := hE 1 le_rfl
+    have h0 : 0 ≤ primeWindowEnergy α 1 := sum_nonneg fun _ _ => sq_nonneg _
+    simp only [Nat.cast_one, Real.one_rpow, mul_one] at h1
+    linarith
+  set B := Real.sqrt C + 4 * (4 / η + 1) + (4 / η + 1)
+  have hB0 : 0 ≤ B := by positivity
+  -- one doubling, and one odd step, cost `B Q^γ`
+  have hstep : ∀ Q : ℕ, 1 ≤ Q → ∀ N : ℕ, 2 * Q ≤ N → N ≤ 2 * Q + 1 →
+      |psiRemainder N - psiRemainder Q| ≤ B * (Q : ℝ) ^ γ := by
+    intro Q hQ N hN1 hN2
+    have hQR : (1 : ℝ) ≤ Q := by exact_mod_cast hQ
+    have hQ0 : (0 : ℝ) < Q := by linarith
+    set H := powerWindow α Q
+    have hQα : 1 ≤ (Q : ℝ) ^ α := Real.one_le_rpow hQR hα0.le
+    have hHlo : (Q : ℝ) ^ α ≤ H := Nat.le_ceil _
+    have hH1 : 1 ≤ H := by exact_mod_cast hQα.trans hHlo
+    have hHhi : (H : ℝ) ≤ 2 * (Q : ℝ) ^ α := by
+      have : (H : ℝ) < (Q : ℝ) ^ α + 1 := Nat.ceil_lt_add_one (Real.rpow_nonneg hQ0.le α)
+      linarith
+    have hQαQ : (Q : ℝ) ^ α ≤ Q := by
+      calc (Q : ℝ) ^ α ≤ (Q : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hQR hα1.le
+        _ = Q := Real.rpow_one _
+    have hH2Q : 2 * Q + H ≤ 4 * Q := by
+      have : (H : ℝ) ≤ 2 * Q := by linarith
+      have h' : ((2 * Q + H : ℕ) : ℝ) ≤ ((4 * Q : ℕ) : ℝ) := by push_cast; linarith
+      exact_mod_cast h'
+    have hlog4 := log_four_mul_add_one_le hη0 hη1 hQ
+    have hlogH : Real.log (2 * Q + H : ℕ) + 1 ≤ (4 / η + 1) * (Q : ℝ) ^ η := by
+      refine le_trans ?_ hlog4
+      have : Real.log (2 * Q + H : ℕ) ≤ Real.log (4 * Q : ℕ) :=
+        Real.log_le_log (by exact_mod_cast (by omega : 0 < 2 * Q + H)) (by exact_mod_cast hH2Q)
+      linarith
+    have hd := abs_psiRemainder_two_mul_sub_le (Q := Q) hH1
+    have hEQ : Real.sqrt (primeWindowEnergy α Q) ≤ Real.sqrt C * (Q : ℝ) ^ ((1 + 2 * α - δ) / 2) := by
+      rw [show (Q : ℝ) ^ ((1 + 2 * α - δ) / 2) = Real.sqrt ((Q : ℝ) ^ (1 + 2 * α - δ)) by
+        rw [Real.sqrt_eq_rpow, ← Real.rpow_mul hQ0.le]; ring_nf, ← Real.sqrt_mul hC]
+      exact Real.sqrt_le_sqrt (hE Q hQ)
+    have h1 : Real.sqrt Q * Real.sqrt (primeWindowEnergy α Q) / H ≤ Real.sqrt C * (Q : ℝ) ^ γ := by
+      rw [div_le_iff₀ (by linarith)]
+      calc Real.sqrt Q * Real.sqrt (primeWindowEnergy α Q)
+          ≤ Real.sqrt Q * (Real.sqrt C * (Q : ℝ) ^ ((1 + 2 * α - δ) / 2)) :=
+            mul_le_mul_of_nonneg_left hEQ (Real.sqrt_nonneg _)
+        _ = Real.sqrt C * (Q : ℝ) ^ (1 - δ / 2) * (Q : ℝ) ^ α := by
+            rw [Real.sqrt_eq_rpow, mul_left_comm, mul_assoc, ← Real.rpow_add hQ0,
+              ← Real.rpow_add hQ0]
+            congr 2
+            ring
+        _ ≤ Real.sqrt C * (Q : ℝ) ^ γ * H := by
+            refine mul_le_mul (mul_le_mul_of_nonneg_left
+              (Real.rpow_le_rpow_of_exponent_le hQR (le_max_left _ _)) (Real.sqrt_nonneg _)) hHlo
+              (by positivity) (by positivity)
+    have h2 : 2 * (H : ℝ) * (Real.log (2 * Q + H : ℕ) + 1) ≤ 4 * (4 / η + 1) * (Q : ℝ) ^ γ := by
+      have hl0 : 0 ≤ Real.log (2 * Q + H : ℕ) + 1 := by
+        have := Real.log_natCast_nonneg (2 * Q + H); linarith
+      calc 2 * (H : ℝ) * (Real.log (2 * Q + H : ℕ) + 1)
+          ≤ 2 * (2 * (Q : ℝ) ^ α) * ((4 / η + 1) * (Q : ℝ) ^ η) := by gcongr
+        _ = 4 * (4 / η + 1) * (Q : ℝ) ^ ((1 + α) / 2) := by
+            rw [show (1 + α) / 2 = α + η by simp only [η]; ring, Real.rpow_add hQ0]; ring
+        _ ≤ 4 * (4 / η + 1) * (Q : ℝ) ^ γ := by
+            gcongr
+    have hodd : |psiRemainder N - psiRemainder (2 * Q)| ≤ (4 / η + 1) * (Q : ℝ) ^ γ := by
+      obtain ⟨r, hr, rfl⟩ : ∃ r, r ≤ 1 ∧ N = 2 * Q + r := ⟨N - 2 * Q, by omega, by omega⟩
+      refine (abs_psiRemainder_add_sub_le (2 * Q) r).trans ?_
+      have hrR : (r : ℝ) ≤ 1 := by exact_mod_cast hr
+      have hl : Real.log (2 * Q + r : ℕ) + 1 ≤ (4 / η + 1) * (Q : ℝ) ^ η := by
+        refine le_trans ?_ hlog4
+        have : Real.log (2 * Q + r : ℕ) ≤ Real.log (4 * Q : ℕ) :=
+          Real.log_le_log (by exact_mod_cast (by omega : 0 < 2 * Q + r)) (by exact_mod_cast (by omega))
+        linarith
+      have hl0 : 0 ≤ Real.log (2 * Q + r : ℕ) + 1 := by
+        have := Real.log_natCast_nonneg (2 * Q + r); linarith
+      have hQηγ : (Q : ℝ) ^ η ≤ (Q : ℝ) ^ γ := Real.rpow_le_rpow_of_exponent_le hQR hηγ
+      calc (r : ℝ) * (Real.log (2 * Q + r : ℕ) + 1) ≤ 1 * ((4 / η + 1) * (Q : ℝ) ^ η) :=
+            mul_le_mul hrR hl hl0 (by norm_num)
+        _ ≤ (4 / η + 1) * (Q : ℝ) ^ γ := by rw [one_mul]; gcongr
+    have hd' : |psiRemainder (2 * Q) - psiRemainder Q| ≤
+        Real.sqrt Q * Real.sqrt (primeWindowEnergy α Q) / H +
+          2 * H * (Real.log (2 * Q + H : ℕ) + 1) := hd
+    have := abs_sub_le (psiRemainder N) (psiRemainder (2 * Q)) (psiRemainder Q)
+    simp only [B]
+    linarith
+  -- halving induction: `|R(N)| ≤ K (N+1)^γ`
+  have hgap : 0 < (3 / 2 : ℝ) ^ γ - 1 := by
+    have := Real.one_lt_rpow (by norm_num : (1 : ℝ) < 3 / 2) hγ0; linarith
+  set K := max 1 (B / ((3 / 2 : ℝ) ^ γ - 1))
+  have hK1 : 1 ≤ K := le_max_left _ _
+  have hKB : B ≤ K * ((3 / 2 : ℝ) ^ γ - 1) := by
+    rw [← div_le_iff₀ hgap]; exact le_max_right _ _
+  have hind : ∀ N : ℕ, |psiRemainder N| ≤ K * ((N : ℝ) + 1) ^ γ := by
+    intro N
+    induction N using Nat.strong_induction_on with
+    | _ N ih =>
+      have hN1 : (1 : ℝ) ≤ ((N : ℝ) + 1) ^ γ :=
+        Real.one_le_rpow (by linarith [N.cast_nonneg' (α := ℝ)]) hγ0.le
+      rcases Nat.lt_or_ge N 2 with hN | hN
+      · have h1 : |psiRemainder N| ≤ 1 := by
+          interval_cases N <;> simp [psiRemainder, chebyshevPsi]
+        nlinarith
+      · set Q := N / 2
+        have hQ1 : 1 ≤ Q := by omega
+        have hQN : Q < N := by omega
+        have hst := hstep Q hQ1 N (by omega) (by omega)
+        have hih := ih Q hQN
+        have hgrow : (3 / 2 : ℝ) ^ γ * ((Q : ℝ) + 1) ^ γ ≤ ((N : ℝ) + 1) ^ γ := by
+          rw [← Real.mul_rpow (by norm_num) (by positivity)]
+          refine Real.rpow_le_rpow (by positivity) ?_ hγ0.le
+          have h' : ((2 * Q : ℕ) : ℝ) ≤ N := by exact_mod_cast (by omega : 2 * Q ≤ N)
+          have hQR : (1 : ℝ) ≤ Q := by exact_mod_cast hQ1
+          push_cast at h'
+          linarith
+        have hQγ : (Q : ℝ) ^ γ ≤ ((Q : ℝ) + 1) ^ γ :=
+          Real.rpow_le_rpow (by positivity) (by linarith) hγ0.le
+        have htri : |psiRemainder N| ≤ B * (Q : ℝ) ^ γ + K * ((Q : ℝ) + 1) ^ γ := by
+          have := abs_add_le (psiRemainder N - psiRemainder Q) (psiRemainder Q)
+          rw [sub_add_cancel] at this
+          linarith
+        have hfin : B * (Q : ℝ) ^ γ + K * ((Q : ℝ) + 1) ^ γ ≤
+            K * ((3 / 2 : ℝ) ^ γ * ((Q : ℝ) + 1) ^ γ) := by
+          have hb := mul_le_mul_of_nonneg_right hKB (by positivity : (0 : ℝ) ≤ ((Q : ℝ) + 1) ^ γ)
+          have hb2 := mul_le_mul_of_nonneg_left hQγ hB0
+          nlinarith
+        calc |psiRemainder N| ≤ K * ((3 / 2 : ℝ) ^ γ * ((Q : ℝ) + 1) ^ γ) := htri.trans hfin
+          _ ≤ K * ((N : ℝ) + 1) ^ γ := mul_le_mul_of_nonneg_left hgrow (by linarith)
+  -- the square-sample exponent law
+  set c := max γ (1 / 2)
+  have hc1 : c < 1 := max_lt hγ1 (by norm_num)
+  have hRc : ∀ N : ℕ, 1 ≤ N → |psiRemainder N| ≤ 2 * K * (N : ℝ) ^ c := by
+    intro N hN
+    have hNR : (1 : ℝ) ≤ N := by exact_mod_cast hN
+    have hN0 : (0 : ℝ) < N := by linarith
+    refine (hind N).trans ?_
+    have h1 : ((N : ℝ) + 1) ^ γ ≤ 2 * (N : ℝ) ^ γ := by
+      calc ((N : ℝ) + 1) ^ γ ≤ (2 * (N : ℝ)) ^ γ := Real.rpow_le_rpow (by positivity) (by linarith) hγ0.le
+        _ = (2 : ℝ) ^ γ * (N : ℝ) ^ γ := Real.mul_rpow (by norm_num) hN0.le
+        _ ≤ 2 * (N : ℝ) ^ γ := by
+            gcongr
+            calc (2 : ℝ) ^ γ ≤ (2 : ℝ) ^ (1 : ℝ) :=
+                  Real.rpow_le_rpow_of_exponent_le (by norm_num) hγ1.le
+              _ = 2 := Real.rpow_one 2
+    have h2 : (N : ℝ) ^ γ ≤ (N : ℝ) ^ c := Real.rpow_le_rpow_of_exponent_le hNR (le_max_left _ _)
+    nlinarith
+  have hmem : c - 1 / 2 ∈ psiRemainderSquareSumUpperExponentSet := by
+    refine ⟨sub_nonneg.mpr (le_max_right _ _), 2 * K, by positivity, fun N hN => ?_⟩
+    have hNR : (2 : ℝ) ≤ N := by exact_mod_cast hN
+    have hN0 : (0 : ℝ) < N := by linarith
+    have hN2 : ((N ^ 2 : ℕ) : ℝ) = (N : ℝ) ^ 2 := by push_cast; ring
+    have hsum : ∑ s ∈ Ico 1 N, psiRemainder (s ^ 2) ≤ N * (2 * K * ((N ^ 2 : ℕ) : ℝ) ^ c) := by
+      calc ∑ s ∈ Ico 1 N, psiRemainder (s ^ 2) ≤ ∑ s ∈ Ico 1 N, |psiRemainder (s ^ 2)| :=
+            sum_le_sum fun s _ => le_abs_self _
+        _ ≤ ∑ _s ∈ Ico 1 N, 2 * K * ((N ^ 2 : ℕ) : ℝ) ^ c := by
+            refine sum_le_sum fun s hs => ?_
+            have hs' := mem_Ico.mp hs
+            refine (hRc (s ^ 2) (Nat.one_le_pow _ _ hs'.1)).trans ?_
+            refine mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) ?_
+              (by linarith [le_max_right γ (1 / 2 : ℝ)])) (by positivity)
+            exact_mod_cast Nat.pow_le_pow_left hs'.2.le 2
+        _ = ((N - 1 : ℕ) : ℝ) * (2 * K * ((N ^ 2 : ℕ) : ℝ) ^ c) := by
+            rw [sum_const, Nat.card_Ico, nsmul_eq_mul]
+        _ ≤ N * (2 * K * ((N ^ 2 : ℕ) : ℝ) ^ c) := by
+            gcongr
+            exact_mod_cast Nat.sub_le N 1
+    rw [div_le_iff₀ (by positivity)]
+    refine hsum.trans (le_of_eq ?_)
+    rw [hN2, Real.rpow_sub (by positivity), show ((N : ℝ) ^ 2) ^ (1 / 2 : ℝ) = N by
+      rw [← Real.sqrt_eq_rpow, Real.sqrt_sq hN0.le]]
+    field_simp
+  have hbdd : BddBelow psiRemainderSquareSumUpperExponentSet := ⟨0, fun _ hc => hc.1⟩
+  have := csInf_le hbdd hmem
+  rw [zetaZeroAbscissa_eq_half_add_sInf_psiRemainder_squareSum_upper]
+  linarith
+
+/-- **Short-window prime saving is the quasi-Riemann hypothesis.** A power saving for the prime
+number theorem in almost all windows of one power length `Q^α`, `0 < α < 1`, holds if and only if
+`ζ` has a zero-free strip `Re s > Θ` with `Θ < 1`. -/
+theorem primePowerWindowSaving_iff : PrimePowerWindowSaving ↔ zetaZeroAbscissa < 1 :=
+  ⟨zetaZeroAbscissa_lt_one_of_primePowerWindowSaving, primePowerWindowSaving_of_lt_one⟩
 
 end
 

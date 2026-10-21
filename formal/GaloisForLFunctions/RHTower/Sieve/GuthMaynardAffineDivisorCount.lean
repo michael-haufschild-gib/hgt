@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardAffineFejer
 import GaloisForLFunctions.RHTower.Sieve.DivisorBound
+import GaloisForLFunctions.HTGeometry.LorentzOrderedSums
+import GaloisForLFunctions.RHTower.XiWardEdgeMassQuantization
 
 set_option autoImplicit false
 
@@ -7,17 +9,18 @@ set_option autoImplicit false
 # Dilated Fejér weights and the divisor bound
 
 The Fejér weight `P_K(θ) = |Σ_{a<K} e(aθ)|²` satisfies `P_K ≤ K²` and `P_K(θ) · 4‖θ‖² ≤ 1`
-(`‖θ‖` the distance to `ℤ`). For the Fourier transform of the Fejér majorant one needs, at a
-frequency `ξ`, the dilated sum `Σ_{n ∼ M₁} P_K(ξ/n)`:
+(`‖θ‖` the distance to `ℤ`). Both together give `P_K ≤ 2K² f_{τ}` at scale `τ = M/K` for the
+Lorentzian `f_τ(t) = τ²/(τ² + t²)` (`HTGeometry.lorentzF`). For the Fourier transform of the Fejér
+majorant one needs, at a frequency `ξ`, the dilated sum `Σ_{n ∼ M₁} P_K(ξ/n)`:
 
-* for `|ξ| ≤ M₁/2` every `ξ/n` lies in `(−1/2, 1/2)`, so `P_K(ξ/n) ≤ 2K² λ(Kξ/M₁)` with the
-  Lorentzian `λ(x) = (1 + x²)⁻¹` (`fejerWeight_div_le_low`);
+* for `|ξ| ≤ M₁/2` every `ξ/n` lies in `(−1/2, 1/2)`, so `P_K(ξ/n) ≤ 2K² f_{M₁/K}(ξ)`
+  (`fejerWeight_div_le_low`);
 * for `M₁/2 < |ξ| ≤ Ξ` (`sum_fejerWeight_div_le`): writing `ℓ = round(ξ/n)`, the terms with
-  `ℓ = 0` are `≤ 4`, and the others are `≤ 2K² λ(K(ξ − s)/M₁)` with `s = ℓ n ≠ 0`. Each nonzero
+  `ℓ = 0` are `≤ 4`, and the others are `≤ 2K² f_{M₁/K}(ξ − s)` with `s = ℓ n ≠ 0`. Each nonzero
   integer `s` arises from at most `d(|s|) ≤ C_ε (3Ξ)^ε` values `n ∣ s`, and a Lorentzian summed
-  over integers is `≤ 2(1 + π/a)` (`sum_lorentz_int_le`), so
+  over a set of integers is `≤ 2 + πτ` (`HTGeometry.sum_lorentz_sparse_le`), so
 
-  `Σ_{n ∼ M₁} P_K(ξ/n) ≤ 12 M₁ + C_ε (3Ξ)^ε (4K² + 4π K M₁)`.
+  `Σ_{n ∼ M₁} P_K(ξ/n) ≤ 12 M₁ + C_ε (3Ξ)^ε (4K² + 2π K M₁)`.
 
 This is the only place where arithmetic enters Guth–Maynard's Lemma 9.2: the number of
 factorisations `s = ℓ m₁`.
@@ -30,14 +33,11 @@ namespace RHTower.GuthMaynard
 noncomputable section
 
 open RHTower.Sieve (finitePhaseProgression unitPhaseDistance divisorBoundConst)
+open GaloisForLFunctions.HTGeometry (lorentzF lorentzF_nonneg)
 
 /-- The Fejér weight `P_K(θ) = |D_K(θ)|²`. -/
 def fejerWeight (K : ℕ) (θ : ℝ) : ℝ :=
   ‖finitePhaseProgression K θ‖ ^ 2
-
-/-- The Lorentzian `(1 + (a x)²)⁻¹`. -/
-def lorentz (a x : ℝ) : ℝ :=
-  (1 + (a * x) ^ 2)⁻¹
 
 theorem fejerWeight_nonneg (K : ℕ) (θ : ℝ) : 0 ≤ fejerWeight K θ := sq_nonneg _
 
@@ -64,135 +64,67 @@ theorem fejerWeight_mul_dist_le (K : ℕ) (θ : ℝ) :
       _ ≤ 1 ^ 2 := pow_le_pow_left₀ hx0 h 2
       _ = 1 := one_pow 2
 
-theorem lorentz_pos (a x : ℝ) : 0 < lorentz a x := inv_pos.mpr (by positivity)
-
-theorem lorentz_le_one (a x : ℝ) : lorentz a x ≤ 1 :=
-  inv_le_one_of_one_le₀ (by nlinarith [sq_nonneg (a * x)])
-
-/-- The Lorentzian decreases in `|x|`. -/
-theorem lorentz_anti (a : ℝ) {x y : ℝ} (h : |x| ≤ |y|) : lorentz a y ≤ lorentz a x := by
-  unfold lorentz
-  apply inv_anti₀ (by positivity)
-  have : (a * x) ^ 2 ≤ (a * y) ^ 2 := by
-    rw [mul_pow, mul_pow]
-    exact mul_le_mul_of_nonneg_left (sq_le_sq.mpr h) (sq_nonneg a)
-  linarith
-
-theorem integrable_lorentz {a : ℝ} (ha : a ≠ 0) : Integrable (lorentz a) :=
-  (integrable_inv_one_add_sq).comp_mul_left' ha
-
-/-- `∫ (1 + (a x)²)⁻¹ dx = π / a`. -/
-theorem integral_lorentz {a : ℝ} (ha : 0 < a) : ∫ x, lorentz a x = π / a := by
-  have h := Measure.integral_comp_mul_left (fun y : ℝ => (1 + y ^ 2)⁻¹) a
-  show ∫ x, (1 + (a * x) ^ 2)⁻¹ = π / a
-  rw [h, integral_univ_inv_one_add_sq, smul_eq_mul, abs_inv, abs_of_pos ha]
+/-- `f_τ` integrates to `πτ` over the line (from `RHTower.lorentzian_integral`). -/
+theorem integral_lorentzF_univ {τ : ℝ} (hτ : 0 < τ) : ∫ u, lorentzF τ u = π * τ := by
+  have hfun : (fun u => lorentzF τ u) = fun u => τ / 2 * (2 * τ / (τ ^ 2 + u ^ 2)) := by
+    funext u
+    have : 0 < τ ^ 2 + u ^ 2 := by positivity
+    unfold lorentzF
+    field_simp
+  rw [hfun, integral_const_mul, RHTower.lorentzian_integral hτ]
   ring
 
-/-- **Harmonic-mean bound.** `0 ≤ P ≤ K²` and `P t² ≤ M²` give `P ≤ 2K² λ(Kt/M)`. -/
-theorem le_two_mul_lorentz {P K M t : ℝ} (hPK : P ≤ K ^ 2) (hPt : P * t ^ 2 ≤ M ^ 2)
-    (hM : 0 < M) : P ≤ 2 * K ^ 2 * lorentz (K / M) t := by
-  have hM' : M ≠ 0 := hM.ne'
-  unfold lorentz
-  rw [← div_eq_mul_inv, le_div_iff₀ (by positivity)]
-  have h1 : P * (K / M * t) ^ 2 = K ^ 2 * (P * t ^ 2) / M ^ 2 := by
-    field_simp
-  have h2 : K ^ 2 * (P * t ^ 2) / M ^ 2 ≤ K ^ 2 := by
-    rw [div_le_iff₀ (by positivity)]
-    exact mul_le_mul_of_nonneg_left hPt (sq_nonneg K)
-  have h3 : P * (1 + (K / M * t) ^ 2) = P + P * (K / M * t) ^ 2 := by ring
-  linarith
+theorem integrable_lorentzF {τ : ℝ} (hτ : 0 < τ) : Integrable (lorentzF τ) := by
+  refine ((RHTower.lorentzian_integrable0 hτ).const_mul (τ / 2)).congr
+    (Filter.Eventually.of_forall fun u => ?_)
+  have : 0 < τ ^ 2 + u ^ 2 := by positivity
+  show τ / 2 * (2 * τ / (τ ^ 2 + u ^ 2)) = τ ^ 2 / (τ ^ 2 + u ^ 2)
+  field_simp
 
-/-! ### Lorentzians summed over integers -/
+/-- **Harmonic-mean bound.** `P ≤ K²` and `P t² ≤ M²` give `P ≤ 2K² f_{M/K}(t)`. -/
+theorem le_two_mul_lorentzF {P K M t : ℝ} (hPK : P ≤ K ^ 2) (hPt : P * t ^ 2 ≤ M ^ 2)
+    (hK : 0 < K) (hM : 0 < M) : P ≤ 2 * K ^ 2 * lorentzF (M / K) t := by
+  have hl : lorentzF (M / K) t = M ^ 2 / (M ^ 2 + K ^ 2 * t ^ 2) := by
+    unfold lorentzF
+    rw [div_pow, div_add' _ _ _ (by positivity), div_div_div_cancel_right₀ (by positivity)]
+    ring_nf
+  rw [hl, mul_div_assoc', le_div_iff₀ (by positivity)]
+  nlinarith [mul_le_mul_of_nonneg_right hPK (sq_nonneg M),
+    mul_le_mul_of_nonneg_left hPt (sq_nonneg K)]
 
-/-- `Σ_{k ∈ T} λ(a k) ≤ 1 + π/a` for a finite set of naturals. -/
-theorem sum_lorentz_nat_le {a : ℝ} (ha : 0 < a) (T : Finset ℕ) :
-    ∑ k ∈ T, lorentz a k ≤ 1 + π / a := by
-  set N := T.sup id
-  have hsub : T ⊆ range (N + 1) := fun k hk =>
-    Finset.mem_range.mpr (Nat.lt_succ_of_le (Finset.le_sup (f := id) hk))
-  have hanti : AntitoneOn (lorentz a) (Set.Icc (0 : ℝ) (0 + N)) := fun x hx y hy hxy =>
-    lorentz_anti a (by rw [abs_of_nonneg hx.1, abs_of_nonneg hy.1]; exact hxy)
-  have hint := AntitoneOn.sum_le_integral hanti
-  simp only [zero_add] at hint
-  have hII : ∫ x in (0 : ℝ)..N, lorentz a x ≤ π / a := by
-    rw [intervalIntegral.integral_of_le (Nat.cast_nonneg N), ← integral_lorentz ha]
-    exact setIntegral_le_integral (integrable_lorentz ha.ne')
-      (Filter.Eventually.of_forall fun x => (lorentz_pos a x).le)
-  calc ∑ k ∈ T, lorentz a k ≤ ∑ k ∈ range (N + 1), lorentz a k :=
-        Finset.sum_le_sum_of_subset_of_nonneg hsub fun k _ _ => (lorentz_pos a k).le
-    _ = lorentz a 0 + ∑ i ∈ range N, lorentz a ((i + 1 : ℕ) : ℝ) := by
-        rw [Finset.sum_range_succ', Nat.cast_zero]
-        ring
-    _ ≤ 1 + π / a := by
-        have h0 := lorentz_le_one a 0
-        have hsum : ∑ i ∈ range N, lorentz a ((i + 1 : ℕ) : ℝ) ≤ π / a := hint.trans hII
-        linarith
-
-/-- **Lattice Lorentzian sum.** `Σ_{s ∈ S} λ(a(x − s)) ≤ 2(1 + π/a)` for any finite `S ⊆ ℤ`. -/
-theorem sum_lorentz_int_le {a : ℝ} (ha : 0 < a) (x : ℝ) (S : Finset ℤ) :
-    ∑ s ∈ S, lorentz a (x - s) ≤ 2 * (1 + π / a) := by
-  rw [← Finset.sum_filter_add_sum_filter_not S (fun s : ℤ => (s : ℝ) ≤ x)]
-  -- left of `x`: `s ↦ ⌊x⌋ − s`
-  have hleft : ∑ s ∈ S.filter (fun s : ℤ => (s : ℝ) ≤ x), lorentz a (x - s) ≤ 1 + π / a := by
-    set j : ℤ → ℕ := fun s => (⌊x⌋ - s).toNat
-    have hj : ∀ s ∈ S.filter (fun s : ℤ => (s : ℝ) ≤ x), (j s : ℝ) = ⌊x⌋ - s := fun s hs => by
-      have : s ≤ ⌊x⌋ := Int.le_floor.mpr (Finset.mem_filter.mp hs).2
-      simp only [j]
-      rw [show ((⌊x⌋ - s).toNat : ℝ) = (((⌊x⌋ - s).toNat : ℤ) : ℝ) from rfl,
-        Int.toNat_of_nonneg (by omega)]
-      push_cast
-      ring
-    have hinj : Set.InjOn j ↑(S.filter (fun s : ℤ => (s : ℝ) ≤ x)) := fun s hs s' hs' h => by
-      have e1 := hj s hs
-      have e2 := hj s' hs'
-      rw [h] at e1
-      exact_mod_cast (by linarith : (s : ℝ) = s')
-    have hle : ∀ s ∈ S.filter (fun s : ℤ => (s : ℝ) ≤ x), |((j s : ℕ) : ℝ)| ≤ |x - s| :=
-      fun s hs => by
-        have hs' := (Finset.mem_filter.mp hs).2
-        have hfl' : (s : ℝ) ≤ ⌊x⌋ := by exact_mod_cast Int.le_floor.mpr hs'
-        rw [hj s hs, abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)]
-        linarith [Int.floor_le x]
-    calc ∑ s ∈ S.filter (fun s : ℤ => (s : ℝ) ≤ x), lorentz a (x - s)
-        ≤ ∑ s ∈ S.filter (fun s : ℤ => (s : ℝ) ≤ x), lorentz a (j s) :=
-          Finset.sum_le_sum fun s hs => lorentz_anti a (hle s hs)
-      _ = ∑ k ∈ (S.filter (fun s : ℤ => (s : ℝ) ≤ x)).image j, lorentz a k :=
-          (Finset.sum_image (f := fun k : ℕ => lorentz a k) hinj).symm
-      _ ≤ 1 + π / a := sum_lorentz_nat_le ha _
-  -- right of `x`: `s ↦ s − ⌈x⌉`
-  have hright : ∑ s ∈ S.filter (fun s : ℤ => ¬ (s : ℝ) ≤ x), lorentz a (x - s) ≤ 1 + π / a := by
-    set j : ℤ → ℕ := fun s => (s - ⌈x⌉).toNat
-    have hj : ∀ s ∈ S.filter (fun s : ℤ => ¬ (s : ℝ) ≤ x), (j s : ℝ) = s - ⌈x⌉ := fun s hs => by
-      have : ⌈x⌉ ≤ s := Int.ceil_le.mpr (not_le.mp (Finset.mem_filter.mp hs).2).le
-      simp only [j]
-      rw [show ((s - ⌈x⌉).toNat : ℝ) = (((s - ⌈x⌉).toNat : ℤ) : ℝ) from rfl,
-        Int.toNat_of_nonneg (by omega)]
-      push_cast
-      ring
-    have hinj : Set.InjOn j ↑(S.filter (fun s : ℤ => ¬ (s : ℝ) ≤ x)) := fun s hs s' hs' h => by
-      have e1 := hj s hs
-      have e2 := hj s' hs'
-      rw [h] at e1
-      exact_mod_cast (by linarith : (s : ℝ) = s')
-    have hle : ∀ s ∈ S.filter (fun s : ℤ => ¬ (s : ℝ) ≤ x), |((j s : ℕ) : ℝ)| ≤ |x - s| :=
-      fun s hs => by
-        have hlt := not_le.mp (Finset.mem_filter.mp hs).2
-        have hce : (⌈x⌉ : ℝ) ≤ s := by exact_mod_cast Int.ceil_le.mpr hlt.le
-        rw [hj s hs, abs_of_nonneg (by linarith), abs_of_neg (by linarith)]
-        linarith [Int.le_ceil x]
-    calc ∑ s ∈ S.filter (fun s : ℤ => ¬ (s : ℝ) ≤ x), lorentz a (x - s)
-        ≤ ∑ s ∈ S.filter (fun s : ℤ => ¬ (s : ℝ) ≤ x), lorentz a (j s) :=
-          Finset.sum_le_sum fun s hs => lorentz_anti a (hle s hs)
-      _ = ∑ k ∈ (S.filter (fun s : ℤ => ¬ (s : ℝ) ≤ x)).image j, lorentz a k :=
-          (Finset.sum_image (f := fun k : ℕ => lorentz a k) hinj).symm
-      _ ≤ 1 + π / a := sum_lorentz_nat_le ha _
-  linarith
+/-- `Σ_{t ∈ S} f_τ(x − t) ≤ 2 + πτ` for a finite set of integers (`sum_lorentz_sparse_le` with
+gaps one). -/
+theorem sum_lorentzF_int_le {τ : ℝ} (hτ : 0 < τ) (x : ℝ) (S : Finset ℤ) :
+    ∑ t ∈ S, lorentzF τ (x - t) ≤ 2 + π * τ := by
+  set N : ℕ := S.sup Int.natAbs
+  have hsub : S ⊆ (Finset.Icc 0 (2 * N)).image (fun n : ℕ => (n : ℤ) - N) := by
+    intro t ht
+    have hN : t.natAbs ≤ N := Finset.le_sup (f := Int.natAbs) ht
+    refine Finset.mem_image.mpr ⟨(t + N).toNat, ?_, ?_⟩
+    · rw [Finset.mem_Icc]
+      omega
+    · omega
+  have hinj : Set.InjOn (fun n : ℕ => (n : ℤ) - N) ↑(Finset.Icc 0 (2 * N)) := fun a _ b _ h => by
+    simp only at h
+    omega
+  have hsparse := GaloisForLFunctions.HTGeometry.sum_lorentz_sparse_le hτ one_pos
+    (y := fun n : ℕ => (n : ℝ) - N) (a := 0) (b := 2 * N) (fun n _ _ => by push_cast; linarith) x
+  calc ∑ t ∈ S, lorentzF τ (x - t)
+      ≤ ∑ t ∈ (Finset.Icc 0 (2 * N)).image (fun n : ℕ => (n : ℤ) - N), lorentzF τ (x - t) :=
+        Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => lorentzF_nonneg _ _
+    _ = ∑ n ∈ Finset.Icc 0 (2 * N), lorentzF τ (x - ((n : ℝ) - N)) := by
+        rw [Finset.sum_image hinj]
+        push_cast
+        rfl
+    _ ≤ 2 + π * τ / 1 := hsparse
+    _ = 2 + π * τ := by rw [div_one]
 
 /-! ### The dilated Fejér sums -/
 
-/-- **Low frequencies.** For `|ξ| ≤ M₁/2` and `n ∼ M₁`: `P_K(ξ/n) ≤ 2K² λ(Kξ/M₁)`. -/
+/-- **Low frequencies.** For `|ξ| ≤ M₁/2` and `n ∼ M₁`: `P_K(ξ/n) ≤ 2K² f_{M₁/K}(ξ)`. -/
 theorem fejerWeight_div_le_low (K : ℕ) {M₁ ξ : ℝ} {n : ℕ} (hn : n ∈ dyadicNat M₁)
-    (hξ : |ξ| ≤ M₁ / 2) : fejerWeight K (ξ / n) ≤ 2 * (K : ℝ) ^ 2 * lorentz (K / M₁) ξ := by
+    (hK : 1 ≤ K) (hξ : |ξ| ≤ M₁ / 2) :
+    fejerWeight K (ξ / n) ≤ 2 * (K : ℝ) ^ 2 * lorentzF (M₁ / K) ξ := by
   obtain ⟨hn1, hn2⟩ := mem_dyadicNat.mp hn
   have hM₁ := half_le_of_mem_dyadicNat hn
   have hn0 : (0 : ℝ) < n := by linarith
@@ -203,7 +135,7 @@ theorem fejerWeight_div_le_low (K : ℕ) {M₁ ξ : ℝ} {n : ℕ} (hn : n ∈ d
     round_eq_zero_iff.mpr ⟨by linarith [neg_abs_le (ξ / n)], by linarith [le_abs_self (ξ / n)]⟩
   have hmain := fejerWeight_mul_dist_le K (ξ / n)
   rw [hround, Int.cast_zero, sub_zero, sq_abs, div_pow] at hmain
-  refine le_two_mul_lorentz (fejerWeight_le _ _) ?_ (by linarith)
+  refine le_two_mul_lorentzF (fejerWeight_le _ _) ?_ (by exact_mod_cast hK) (by linarith)
   have h1 := mul_le_mul_of_nonneg_right hmain (sq_nonneg (n : ℝ))
   have h2 : fejerWeight K (ξ / n) * (4 * (ξ ^ 2 / (n : ℝ) ^ 2)) * (n : ℝ) ^ 2 =
       4 * (fejerWeight K (ξ / n) * ξ ^ 2) := by
@@ -225,11 +157,11 @@ theorem card_divisors_le_of_le {ε X : ℝ} (hε : 0 < ε) {n : ℕ} (hn : n ≠
       (divisorBoundConst_nonneg hε))
 
 /-- **High frequencies.** For `M₁/2 < |ξ| ≤ Ξ`:
-`Σ_{n ∼ M₁} P_K(ξ/n) ≤ 12 M₁ + C_ε (3Ξ)^ε (4K² + 4π K M₁)`. -/
+`Σ_{n ∼ M₁} P_K(ξ/n) ≤ 12 M₁ + C_ε (3Ξ)^ε (4K² + 2π K M₁)`. -/
 theorem sum_fejerWeight_div_le {K : ℕ} (hK : 1 ≤ K) {M₁ ξ Ξ ε : ℝ} (hM₁ : 1 / 2 ≤ M₁)
     (hε : 0 < ε) (hξ1 : M₁ / 2 < |ξ|) (hξ2 : |ξ| ≤ Ξ) :
     ∑ n ∈ dyadicNat M₁, fejerWeight K (ξ / n) ≤
-      12 * M₁ + divisorBoundConst ε * (3 * Ξ) ^ ε * (4 * (K : ℝ) ^ 2 + 4 * π * K * M₁) := by
+      12 * M₁ + divisorBoundConst ε * (3 * Ξ) ^ ε * (4 * (K : ℝ) ^ 2 + 2 * π * K * M₁) := by
   have hK0 : (0 : ℝ) < K := by exact_mod_cast hK
   have hM0 : 0 < M₁ := by linarith
   have hΞ0 : 0 < Ξ := by linarith [abs_nonneg ξ]
@@ -303,8 +235,8 @@ theorem sum_fejerWeight_div_le {K : ℕ} (hK : 1 ≤ K) {M₁ ξ Ξ ε : ℝ} (h
         nlinarith [abs_nonneg (ξ / n - round (ξ / n))]
       have := abs_sub_abs_le_abs_sub (s n : ℝ) ξ
       linarith
-  have hterm : ∀ n ∈ A, fejerWeight K (ξ / n) ≤ 2 * (K : ℝ) ^ 2 * lorentz (K / M₁) (ξ - s n) :=
-    fun n hn => le_two_mul_lorentz (fejerWeight_le _ _) (hdist n (hAmem n hn).1) hM0
+  have hterm : ∀ n ∈ A, fejerWeight K (ξ / n) ≤ 2 * (K : ℝ) ^ 2 * lorentzF (M₁ / K) (ξ - s n) :=
+    fun n hn => le_two_mul_lorentzF (fejerWeight_le _ _) (hdist n (hAmem n hn).1) hK0 hM0
   have hfib : ∀ t ∈ A.image s, ((A.filter fun n => s n = t).card : ℝ) ≤ dmax := by
     intro t ht
     obtain ⟨n₀, hn₀, rfl⟩ := Finset.mem_image.mp ht
@@ -321,25 +253,25 @@ theorem sum_fejerWeight_div_le {K : ℕ} (hK : 1 ≤ K) {M₁ ξ Ξ ε : ℝ} (h
       (card_divisors_le_of_le hε (Int.natAbs_ne_zero.mpr hs0) ?_)
     rw [Nat.cast_natAbs, Int.cast_abs]
     exact hsb
-  have hnonzero : ∑ n ∈ A, fejerWeight K (ξ / n) ≤ dmax * (4 * (K : ℝ) ^ 2 + 4 * π * K * M₁) := by
+  have hnonzero : ∑ n ∈ A, fejerWeight K (ξ / n) ≤ dmax * (4 * (K : ℝ) ^ 2 + 2 * π * K * M₁) := by
     calc ∑ n ∈ A, fejerWeight K (ξ / n)
-        ≤ ∑ n ∈ A, 2 * (K : ℝ) ^ 2 * lorentz (K / M₁) (ξ - s n) := Finset.sum_le_sum hterm
+        ≤ ∑ n ∈ A, 2 * (K : ℝ) ^ 2 * lorentzF (M₁ / K) (ξ - s n) := Finset.sum_le_sum hterm
       _ = ∑ t ∈ A.image s, (A.filter fun n => s n = t).card •
-            (2 * (K : ℝ) ^ 2 * lorentz (K / M₁) (ξ - t)) :=
-          Finset.sum_comp (fun t : ℤ => 2 * (K : ℝ) ^ 2 * lorentz (K / M₁) (ξ - t)) s
-      _ ≤ ∑ t ∈ A.image s, dmax * (2 * (K : ℝ) ^ 2 * lorentz (K / M₁) (ξ - t)) := by
+            (2 * (K : ℝ) ^ 2 * lorentzF (M₁ / K) (ξ - t)) :=
+          Finset.sum_comp (fun t : ℤ => 2 * (K : ℝ) ^ 2 * lorentzF (M₁ / K) (ξ - t)) s
+      _ ≤ ∑ t ∈ A.image s, dmax * (2 * (K : ℝ) ^ 2 * lorentzF (M₁ / K) (ξ - t)) := by
           refine Finset.sum_le_sum fun t ht => ?_
           rw [nsmul_eq_mul]
           exact mul_le_mul_of_nonneg_right (hfib t ht)
-            (mul_nonneg (by positivity) (lorentz_pos _ _).le)
-      _ = dmax * (2 * (K : ℝ) ^ 2) * ∑ t ∈ A.image s, lorentz (K / M₁) (ξ - t) := by
+            (mul_nonneg (by positivity) (lorentzF_nonneg _ _))
+      _ = dmax * (2 * (K : ℝ) ^ 2) * ∑ t ∈ A.image s, lorentzF (M₁ / K) (ξ - t) := by
           rw [Finset.mul_sum]
           refine Finset.sum_congr rfl fun t _ => ?_
           ring
-      _ ≤ dmax * (2 * (K : ℝ) ^ 2) * (2 * (1 + π / (K / M₁))) :=
-          mul_le_mul_of_nonneg_left (sum_lorentz_int_le (div_pos hK0 hM0) ξ _)
+      _ ≤ dmax * (2 * (K : ℝ) ^ 2) * (2 + π * (M₁ / K)) :=
+          mul_le_mul_of_nonneg_left (sum_lorentzF_int_le (div_pos hM0 hK0) ξ _)
             (mul_nonneg hdmax0 (by positivity))
-      _ = dmax * (4 * (K : ℝ) ^ 2 + 4 * π * K * M₁) := by
+      _ = dmax * (4 * (K : ℝ) ^ 2 + 2 * π * K * M₁) := by
           field_simp
           ring
   linarith
