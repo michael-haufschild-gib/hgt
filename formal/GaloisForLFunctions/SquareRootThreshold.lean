@@ -120,6 +120,8 @@ import GaloisForLFunctions.SquareRootThreshold.WindowCertificatesAndThePrimeWeig
 import GaloisForLFunctions.SquareRootThreshold.OrderOfTheExplicitVisibilityLags
 import GaloisForLFunctions.SquareRootThreshold.ZetaLagFamilyVinogradovKorobovEnvelope
 import GaloisForLFunctions.SquareRootThreshold.TheRoutesMeasureOneAperture
+import GaloisForLFunctions.SquareRootThreshold.TheRoutesMeasureOneZeroWidth
+import GaloisForLFunctions.SquareRootThreshold.TheZeroIndexedRoutesMeasureOneSide
 
 /-!
 # Square-Root Threshold

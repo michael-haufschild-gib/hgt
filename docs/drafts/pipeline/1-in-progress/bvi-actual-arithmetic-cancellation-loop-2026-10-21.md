@@ -162,6 +162,33 @@ no uniformity in `p` (the balanced regime needs `p` growing with `Q`).
 `BezoutValuationIncidence/SingleModulusCancellationOfTheMoebiusBlock.lean`
 (`singleModulus_pair_moebius_primes`); standard axioms; wired.
 
+### C11 — the Möbius block beats the Type-II barrier (DONE, Lean)
+**Statement.** (a) *Transfer law, every row.* For `c` on primes `≤ Q₀`, `c'` on `[A+1, A+L]`,
+`x = c'/n²` and its `H`-window average `x̄`:
+`|B + mR' + βH'| ≤ (π²/48)√(Σc²p²)√(L+H+2Q₀²)‖x̄‖₂ + √(2H)√(Σc²p)√(L+2Q₀²)‖x‖₂ + |Σx|Σ|c|/(6p) + cubic`.
+(b) *Matomäki–Radziwiłł in linear windows.* For every monotone unbounded `H(Q) ≤ Q` growing by at most
+one per doubling, `Σ_{Q≤t<2Q}(Σ_{t<n≤t+H}μ(n))² = o(H²Q)`. (c) *Corollary.* For every `ε > 0` and all
+large `Q`, every row `c` on primes `p ≤ Q₀` with `8 log₂Q ≤ ε²p` has, against `μ·𝟙_{(Q,2Q]}`,
+`|B + mR' + βH'| ≤ ε√(Σc²p²)√(Q+2Q₀²)Q^{-3/2} + |Σ_{Q<n≤2Q}μ(n)/n²|Σ|c|/(6p) + cubic`.
+**Proof.** (a) Exact multiplier `X̄ = B_H X`, `B_H(1) = 1`, `|1 - B_H(ζ)| ≤ H|ζ-1|`; in the Fourier form
+the averaged part keeps the weight `Σ|η-1|^{-4} ≤ p⁴/64`, the defect has weight
+`2Hk Σ|η-1|^{-3} ≤ Hkp³/8`; powering by `k` permutes `T_p`; the classes `p | k` cancel because `x̄` and
+`x` have the same mass; log-free large sieve over the primes. (b) From the corpus fibre MR
+(`averagedMeanSquare_moebius_of_tendsto`) via the corpus fibre geometry (`exists_start_preimage`,
+`fibreStartIdx_eq_of_start_interval`, `innerFibre_eq_Ioc`, `fibreLen_bounds`): on `m` ranges of starts
+with `√x = 2(Y-1)`, `h = 2H(Y-1)`, linear windows are fibres up to `2 + 2(H+1)/m` points, and the start
+determines the outer factor. (c) `H = log₂ Q`; Abel against `1/m²` on windows inside the block, the
+`2H` edge windows trivially, so `‖x̄‖² = o(Q⁻³)` with `‖x‖² ≤ Q⁻³`.
+**Meaning.** The first actual arithmetic cancellation of the Möbius row in the balanced regime: its
+cross-scale remainder is `o` of the size of the large-sieve bound, which coherent rows attain (Type-II
+barrier), uniformly in small-scale coefficients supported above `8 log₂Q/ε²`. Strength: a factor
+`o(1)`, no exponent gain. A power gain past `θ = 6/5` needs power cancellation of `μ` in almost all
+windows of length `≍ P`; by the transfer law (a) that is exactly the missing input.
+**Lean.** `BezoutValuationIncidence/ShortWindowMeanSquareCarriesTheCrossScaleLoss.lean`
+(`abs_rowBilinear_add_mean_add_beta_le_shortWindow`), `…/MoebiusCancelsInAlmostAllLinearShortWindows.lean`
+(`tendsto_sum_sq_moebius_window_div`), `…/MoebiusBlockBeatsTheTypeTwoBarrier.lean`
+(`eventually_abs_rowBilinear_moebiusWindowRow_le`); standard axioms; wired.
+
 ## Synthesis after C1–C10 (what the research says about the missing cancellation)
 
 1. **Receiver = zero-free region, both directions.** Any Mertens rate becomes a receiver band through
@@ -193,3 +220,4 @@ no uniformity in `p` (the balanced regime needs `p` growing with `Q`).
 - 2026-10-21 — C8 formalized and wired.
 - 2026-10-21 — C9 formalized and wired.
 - 2026-10-21 — C10 formalized and wired (Möbius in progressions mod p; Möbius/prime pair).
+- 2026-10-21 — C11 formalized and wired (transfer law; linear-window MR; Möbius block beats the Type-II barrier).

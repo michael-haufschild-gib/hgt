@@ -13,6 +13,8 @@ import GaloisForLFunctions.RHTower.XiCosineShiftLaguerrePolya
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangleExhaustion
 import GaloisForLFunctions.BiScaleUncertainty.PacketOneSidedGrowthLaw
 import GaloisForLFunctions.BiScaleUncertainty.CubicSplineUniversalProbe
+import GaloisForLFunctions.RHTower.XiLogDerivReStripBound
+import GaloisForLFunctions.RHTower.ZetaRecurrenceAtEveryPointModuloItsZeros
 
 /-!
 # The prime-side and zero-side routes measure one zero width

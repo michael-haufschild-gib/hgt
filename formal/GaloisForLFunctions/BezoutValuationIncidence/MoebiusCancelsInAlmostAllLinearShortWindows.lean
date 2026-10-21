@@ -7,12 +7,13 @@ import GaloisForLFunctions.RHTower.Sieve.StartFibreLength
 
 The fibre mean square of `RHTower.Sieve` is a mean square over multiplicative windows: at `x` the
 fibre of the outer factor `a ∈ [√x, 2√x]` is the window `[x/a, (x + h√x)/a]`, of length
-`h·(x/a)/√x`. On a range `y ∈ [Y, Y + D)` with `√x = 2(Y - 1)` and `h = 2Hⱼ` the outer factor
-`a = ⌈x/(y+1)⌉` lies in the block, its fibre is exactly the window `(y, t]` with
-`y + Hⱼ ≤ t ≤ y + 1 + Hⱼ(y+1)/(Y-1)`, and `y ↦ a` is injective. Cutting `[Q, 2Q)` into `m` such
-ranges, the linear windows `(y, y + H]` are fibres up to `2 + 2(H+1)/m` points, so
+`h·(x/a)/√x`. On a range of starts `t ∈ [Y, Y + D)` take `√x = 2(Y - 1)` and `h = 2Hⱼ`. Every such
+start is the fibre start of an outer factor in the block (`exists_start_preimage`), the fibre is
+`(t, t + ℓ]` with `Hⱼ - 1 ≤ ℓ ≤ Hⱼ + Hⱼ(D+1)/(Y-1) + 1` (`fibreLen_bounds`), and the start determines
+the outer factor. Cutting `[Q, 2Q)` into `m` such ranges, the linear windows `(t, t + H]` are fibres
+up to `2 + 2(H+1)/m` points, so
 
-`Σ_{Q ≤ y < 2Q} (Σ_{y < n ≤ y+H} f(n))² ≤ 32 ε' m (H+1)² Q + 2Q (2 + 2(H+1)/m)² + m H²`
+`Σ_{Q ≤ t < 2Q} (Σ_{t < n ≤ t+H} f(n))² ≤ 32 ε' m (H+1)² Q + 2Q (2 + 2(H+1)/m)² + m H²`
 
 whenever the fibre mean squares are `≤ ε' h² √x` at the `m` scales `x = (2(Y-1))²`. Hence for every
 length `H(Q) → ∞` that grows by at most one per doubling, Matomäki–Radziwiłł holds in linear windows:

@@ -1112,8 +1112,14 @@ sums $\sum_aW_p(a)\sum_n(c'(n)/n^2)e(an/p)$. Two replacement hypotheses are prov
 equidistribution of $c'$ at scale $o(P/\log^2P)$ (`abs_rowBilinear_add_mean_add_beta_le_block`), and, on
 pronic windows, square-root cancellation of twisted prime sums over short intervals, after a discrete
 Gallagher inequality shows that the window energy is the clustering energy of the row's Farey
-spectrum and only numerators $a\lesssim P^2/X$ matter (`window_energy_le_twisted_short_sums`). Both are
-themselves statements of the strength of the square-root barrier.
+spectrum and only numerators $a\lesssim P^2/X$ matter (`window_energy_le_twisted_short_sums`). The twisted cancellation is a
+statement of the strength of the square-root barrier; block equidistribution is not, for the prime
+row: the centred row $\Lambda(n)-1$ on $[Q,2Q]$ is block-equidistributed at $H\asymp Q^{\alpha}$,
+$\alpha>7/12$, by Huxley's theorem in short intervals, so for every row on $(P,2P]$ its cross-scale
+remainder is $16\varepsilon$ times the rank-two remainder bound throughout
+$P^{1+\delta}\le Q\le P^{12/7-\delta}$, that is at every exponent $\theta\in(7/6,2)$
+(`CentredPrimeRowPassesTheCoherentBlockObstruction`, with Huxley uniform in the window length,
+`eventually_abs_psi_window_sub_le`); only the balanced regime $Q\asymp P$ remains.
 
 **Type I passes the barrier one order at a time.** A flat large-scale row has
 $\lvert\sum_{n\in I}\zeta^n/n\rvert\ll1/(A\lvert\zeta-1\rvert)$, and a flat small-scale row is controlled by

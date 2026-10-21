@@ -59,6 +59,22 @@ self-returns are shadows of nearby zeros and Ingham–Huxley caps them at `T^θ`
 
 - C1 threshold law: **proved** (items 1–5).
 - C2 power-saving receiver: **proved** (items 6–7).
-- C3 vanishing-order law (`d(z₀, r) ≍ r^{ord} |g(z₀)|` as `r → 0`): queued.
+- C3 vanishing-order law: **proved** 2026-10-21 in
+  `formal/GaloisForLFunctions/RHTower/ZetaSelfReturnThresholdReadsTheVanishingOrder.lean` (wired,
+  axioms standard): at a zero `z₀` of order `D = analyticOrderNatAt ζ z₀ ≥ 1` with cofactor `g`
+  (`exists_zeta_local_factorization`, Mathlib `AnalyticAt.analyticOrderAt_ne_top`), for all small
+  `r` the disc has doubled closure in the strip and
+  `|g(z₀)|/4 · r^D ≤ d(z₀,r) ≤ 4·3^D·|g(z₀)|·r^D`
+  (`exists_vanishingOrder_bounds_zetaNonvanishingDistance`; lower bound: minimum modulus on the
+  circle of radius `r` via `half_le_zetaNonvanishingDistance_of_sphere`; upper bound: the admissible
+  target `(z − z₀ − 2r)^D g` via `zetaNonvanishingDistance_le_of_target`). Hence the threshold
+  exponent `log d/log r → D` reads the multiplicity, and `zetaReturnSet_volume_dichotomy_at_zero`:
+  returns are `≤ T^θ` for `ε < |g(z₀)| r^D/4` and of positive lower density for
+  `ε > 4·3^D|g(z₀)| r^D`.
 - C4 general analytic targets (dichotomy for every analytic `h` on a neighbourhood of `D`, zeros
   allowed, threshold `dist(h, N)`): queued.
+- C5 twisted-head rigidity: `ζ(z₀) = 0 ⟹` every unimodular completely multiplicative twist
+  `Σ_{n<M} ω(n) n^{−z}` of the Dirichlet head stays at distance `≥ d/2` from `ζ` on `D` for all large
+  `M` (an open set of phases would give, by Kronecker–Weyl and the Carlson tail law, positive-density
+  self-returns below the threshold); conversely zero-free ⟹ twisted heads approximate `ζ`.
+  RH ⟺ twisted heads approximate `ζ` on every strip disc. In progress.

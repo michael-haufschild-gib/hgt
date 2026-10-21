@@ -825,7 +825,10 @@ in Kloosterman fractions `kq̄/p` with cosecant–Bernoulli weights, and the sig
 `V:ReciprocityFormOfTheBernoulliKernel`, `V:TwoSidedSignLawOfTheSecondOrderKernel`,
 `V:SharpConstantAttainedByPrimesInTheUnitClass`). Replacement hypotheses proved sufficient: block
 equidistribution of the large-scale row at scale `H = o(P/log²P)`
-(`V:BlockEquidistributionSufficesForCrossScaleDispersion`); twisted short-interval square-root
+(`V:BlockEquidistributionSufficesForCrossScaleDispersion`), which the centred prime row `Λ(n) − 1` on
+`[Q, 2Q]` satisfies unconditionally throughout `P^{1+δ} ≤ Q ≤ P^{12/7−δ}` by Huxley's theorem at `7/12`,
+so its cross-scale remainder is `16ε` times the rank-two bound at every exponent `θ ∈ (7/6, 2)`, leaving
+only the balanced regime `Q ≍ P` (`V:CentredPrimeRowPassesTheCoherentBlockObstruction` [S]); twisted short-interval square-root
 cancellation over prime intervals of length `4P²/(aK)` (`V:TwistedShortIntervalCancellationGivesWindowDispersion`,
 with the window spectrum and numerator split `V:DiscreteGallagherInequalityAndTheWindowSpectrum`,
 `V:NumeratorSplitOfTheWindowEnergy`, `V:OneNumeratorClustersAreShortIntervalSums`); and the exact
