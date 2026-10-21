@@ -353,3 +353,25 @@ and windows only) are unaffected.
 - Insight: mechanisms 28–32 discarded the even part of the atom, which is the ground-state direction; with it kept the
   first prime window has no inner-edge wall, and the support is limited by the archimedean middle only (dilation
   costs log s in potential; hand slack min ≈ 0.0155 at x ≈ 0.2 for r = 0.356).
+
+### C23 — Odd window 181/500: lending potential to the middle (`OffStripGroundStateSchurRectangles`, `SchurLendingWindowNumeratorBounds`, `SchurLendingOddWindowThreeHundredSixtyTwoThousandths`)
+- Goal-loop contribution G13 (criterion 1: support 9/25 → 181/500 = 0.362). Lead "lend potential from the origin to x ≈ 0.2".
+- Generic: `surplusEnergy_ge_potentialOff_add_strip_add_schur` (off-strip GS transform with a hub-below rectangle
+  H_A < Z_A and a hub-above rectangle Z_B < H_B ≤ r, disjoint as pair sets); `sq_sub_ge_schur_pair`, `rectDensity`
+  (+ measurable/integrable/integral), `offStrip_schur_pointwise`; reduction
+  `fourKilling_add_potentialMixPrimeSchur_le_archJump_sub_prime` (Schur with weight θ of the off-strip part).
+- Certificate: t = 4/5, θ = 24/25; Z = [7/50, 27/100]; H_A = [11/250, 7/100] (β = 9/25, s = 33/1000; k ≥ 31/50, q ≥ 1/3);
+  H_B = [207/625, 181/500] (β = 1, s = 89/500; k ≥ 5/4, q ≥ 1/2); gauge 1/500 + (59/100)y − (29/30)y² − (21/100)y³ − (16/7)y⁴;
+  R = 7241/20000, c₀ = 347/20000, pole ≤ 8174/500000. Numerator: ≥ 0 off the hubs, ≥ 173/100000 on H_A, ≥ −38/100000 on Z.
+- Finding: the origin hub is intrinsically weak (gain per pair ≤ kq² ≈ 0.07, 14% of the total); the strip hub (fed by
+  the prime even part) carries 86%.
+- `fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`: Ẑ ≥ (1/1000)∫F². Axioms standard; oleans; wired; README 34.
+
+### C24 — Harnack across prime-power shifts with the even part (`PrimePowerEvenPartHarnack`)
+- Goal-loop contribution G14 (criterion 3: Harnack across the shifts log 3, log 4 with explicit constants and a gain).
+  Lead "the same even-part identity for n = 3, 4".
+- `two_mul_primePowerShift_le_stripSurplus_sub_evenPart` (all n ≥ 2, windows ½log n < r ≤ ½log n + 1/12, (1+t)2Λ_n ≤ θλ):
+  2Λ_n∫FF(+log n) ≤ θ·2·stripSurplus − 2Λ_n t∫_{S_n}F².
+- n = 3: Λ₃ ∈ [0.634, 0.6344], λ ≥ 1.7, t = 1/3, θ = 1: gain (2/5)∫_{S₃}F² (`two_mul_primeThreeShift_le_stripSurplus_sub`).
+- n = 4: Λ₄ = ½log 2 (`vonMangoldtAtom_four`), t = 1, θ = 4/5: gain log 2·∫_{S₄}F², 20% of the strip surplus left over
+  (`two_mul_primeFourShift_le_stripSurplus_sub`). Axioms standard; olean; wired; README 35.

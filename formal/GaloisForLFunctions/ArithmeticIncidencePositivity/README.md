@@ -508,6 +508,39 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     supported in `[−9/25, 9/25]` has `Ẑ(F) ≥ (1/1000)∫F²`
     (`fullZeroForm_ge_of_odd_support_le_nineTwentyFifths`).
 
+34. **Lending potential to the middle of the window: window `181/500`.** Past `9/25` the binding
+    region is the archimedean middle, `x ≈ 0.2`. The off-strip ground-state transform drops the
+    remainder of every pair with its lower point below the strip. Two Schur rectangles in it
+    (`surplusEnergy_ge_potentialOff_add_strip_add_schur`, with the pair step `sq_sub_ge_schur_pair` and
+    the densities `rectDensity`) move potential to `Z = [7/50, 27/100]`:
+    * from a hub below, the origin region `[11/250, 7/100]`, where the killing `log((x + r)/x)` is
+      large;
+    * from a hub above, the strip `[207/625, 181/500]`, where the even part of the atom (mechanism 33,
+      now with `t = 4/5`, `θ = 24/25`) leaves the potential `(49/125)h − 97/10000 ≥ 0.0057` in units of
+      the gauge.
+
+    They enter with the weight `θ` of the off-strip transform
+    (`fourKilling_add_potentialMixPrimeSchur_le_archJump_sub_prime`). The middle gains
+    `(24/25)(s_A|H_A| + s_B|H_B|) ≥ 0.0061` per unit of mass, `86%` of it from the strip. The origin
+    lends little because a gain per pair is at most `kq²`: its pairs are far apart (`k ≥ 31/50`) and
+    the gauge ratio is small (`q ≥ 1/3`), so `kq² ≈ 0.07`. The strip pairs have `k ≥ 5/4` and `q ≥ 1/2`.
+    With the gauge of mechanism 33 dilated to `181/500`, every odd `F` supported in
+    `[−181/500, 181/500]` has `Ẑ(F) ≥ (1/1000)∫F²`
+    (`fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`).
+
+35. **Harnack across the prime-power shifts with the even part kept.** The identity of mechanism 33
+    holds for every shift `log n`. With the sharp micro-fold of the strip `S_n = [log n − r, r]`,
+    `(1 + t)2Λ(n)/√n ≤ θλ` gives
+    `2Λ(n)/√n ∫F F(· + log n) ≤ θ · 2 stripSurplus_{S_n} − 2(Λ(n)/√n)t ∫_{S_n} F²`
+    for all windows `½ log n < r ≤ ½ log n + 1/12`
+    (`two_mul_primePowerShift_le_stripSurplus_sub_evenPart`). It sharpens mechanism 30, which is the
+    case `t = 0`. For `n = 3`, `Λ(3)/√3 ≤ 0.6344` and `λ ≥ 1.7`, so `t = 1/3`: the atom of `3` is paid
+    by its strip and leaves the potential `2/5` (`two_mul_primeThreeShift_le_stripSurplus_sub`). For
+    `n = 4`, `Λ(4)/√4 = ½ log 2`: the full even part (`t = 1`) costs `2 log 2 ≤ (4/5)λ`, so `80%` of the
+    strip surplus pays the atom and the atom is a net gain `log 2 ∫_{S_4} F²`
+    (`two_mul_primeFourShift_le_stripSurplus_sub`). The same holds for every proper prime power,
+    since `Λ(p^k)/p^{k/2} ≤ log p/p ≤ 1/e`.
+
 ---
 
 ## 4. Traps
@@ -568,7 +601,7 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 ### Research topics toward the shared target
 
 1. **Beyond the first prime window.** The variation inequality for all even profiles is proved past
-   `log 2/2` (`9/25`, mechanisms 27–33); the unit is the support reached. Up to `2/5` the prime atom
+   `log 2/2` (`181/500`, mechanisms 27–34); the unit is the support reached. Up to `2/5` the prime atom
    is dominated by the strip surplus (mechanism 28), so the support is limited only by the
    archimedean potential `U_h^{off}` (mechanism 29). The archimedean odd sector alone is expected to stay positive
    up to `≈ 0.375` (second eigenvalue of the logarithmic Laplacian on an interval). Past `log 2/2` the fold of mechanism 23
