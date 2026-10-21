@@ -1,4 +1,4 @@
-# BAG — Pechersky prime-sum lemma at the natural rate; Bagchi's criterion on every half-scale disc
+# BAG — Pechersky prime-sum lemma at the natural rate; Bagchi's criterion on every closed disc of the strip
 
 - **ID:** BAG-pechersky-natural-rate-half-scale-bagchi-2026-10-21
 - **Stage:** 3-formalized
@@ -90,6 +90,41 @@ only `1/2 ≤ Re z₀`, `2ρ − 2Re z₀ < −1`, `ρ < 1 − Re z₀` (the cap
 and the half-scale Bagchi module needs no cap argument. What a genuine Remez/Cartan theorem would
 add is divergence for `ρ ∈ [5/12, 1 − σ)`, which no disc of the strip uses.
 
+## Third pass (same day): the doubled-closure margin of the Euler tail law
+
+The remaining gap to all closed discs of the strip was the margin `closedBall c (2r) ⊂ strip` of
+the two disc-uniform Carlson tail laws (`eventually_eventually_volume_discTailBadSet_le`,
+`eventually_eventually_volume_eulerDiscTailBadSet_le`): the planar mean-value discs that turn the
+sup over `closedBall c r` into a planar energy have radius `r`, so the energy lives on
+`closedBall c (2r)`. The corpus search found no margin-free version and no covering argument for
+the bad sets; it did confirm mathlib's `finite_cover_balls_of_compact`.
+
+**Mechanism (no new analysis).** For a closed disc `closedBall c r` with `closedBall c R` in the
+strip, `R > r`, cover `closedBall c r` by finitely many balls of radius `ρ = (R − r)/2` centred in
+it. Each small disc `closedBall x ρ` has doubled closure `closedBall x (2ρ) ⊂ closedBall c R`, so
+the existing laws apply to it; the bad set of the big disc lies in the finite union of the bad sets
+of the small discs (if the tail is `≥ ε` at some `z` of the big disc, `z` lies in one small disc);
+densities add over a finite union, and `δ/(card + 1)` per small disc gives `δ` for the union. Hence
+both tail laws hold on every closed disc of the open strip
+(`eventually_eventually_volume_discTailBadSet_le_of_lt`,
+`eventually_eventually_volume_eulerDiscTailBadSet_le_of_lt`). The universality side already covers
+every disc of the strip (Hardy radius `(r+R)/2`, zero-free radius `((r+R)/2 + R)/2 < R`), so:
+
+* `zetaDiscStronglyRecurrentOn_of_zeroFree_of_lt`: `ζ` zero-free on `ball c R`, `closedBall c R` in
+  the strip, `r < R` ⟹ `ζ` strongly recurrent on `closedBall c r`;
+* `zetaDiscStronglyRecurrentOn_iff_headTargetUniformlyDense_of_lt`: recurrence ⟺ cutoff-uniform
+  head-target density on every closed disc of the strip;
+* `riemannHypothesis_iff_forall_closedBall_zetaDiscStronglyRecurrentOn`,
+  `riemannHypothesis_iff_forall_closedBall_headTargetUniformlyDense`;
+* **`riemannHypothesis_iff_zetaDiscRecurrent`**: RH ⟺ `ZetaDiscRecurrent` (the receiver's disc
+  recurrence: positive upper density of `ε`-return shifts on every closed disc of the strip).
+  The direction RH ⟸ is the corpus `riemannHypothesis_of_zetaDiscRecurrent`; the direction RH ⟹
+  is new. This is Bagchi's criterion in the disc form the receiver was built for.
+
+Module: `formal/GaloisForLFunctions/RHTower/ZetaDiscRecurrenceOnEveryClosedDiscOfTheStrip.lean`
+(wired). Not claimed: `ZetaStronglyRecurrent` for arbitrary compacta of the strip (a compact set
+need not lie in one disc of the strip; the Hilbert-space universality step is disc-based).
+
 ## Lean
 
 - `formal/GaloisForLFunctions/RHTower/ExponentialTypeNotSummableOnPrimeLogsNaturalRate.lean`:
@@ -137,9 +172,7 @@ add is divergence for `ρ ∈ [5/12, 1 − σ)`, which no disc of the strip uses
   second-order method needs `ρ < 5/12`, which every disc of the strip satisfies (`ρ < 1/4`). A
   Remez/Cartan small-value theorem (not in the corpus; only Jensen counts and Borel–Carathéodory are)
   would push the prime-sum divergence to all `ρ < 1 − σ`, but no disc of the strip uses that range.
-- **Doubled-closure margin.** The Euler tail law requires `closedBall c (2r)` in the strip. Relaxing
-  it to `closedBall c (r + ε)` would give RH ⟹ recurrence on every closed disc of the strip of
-  radius `< 5/24`, and together with the cap removal the full `RH ⟺ ZetaDiscRecurrent`.
+- **Doubled-closure margin: closed (third pass).** `RH ⟺ ZetaDiscRecurrent` is in Lean.
 - The RH-selective obstacle (recurrence at a possible off-line zero) is untouched.
 
 ## Log
@@ -147,6 +180,8 @@ add is divergence for `ρ ∈ [5/12, 1 − σ)`, which no disc of the strip uses
   downstream hypotheses weakened in place; half-scale Bagchi criterion module written.
 - 2026-10-21 (second pass) — corpus search for Remez/Cartan building blocks (Jensen counts only);
   second-order window module written and compiled; cap hypothesis removed from the chain.
+- 2026-10-21 (third pass) — doubled-closure margin removed by finite covering; `RH ⟺
+  ZetaDiscRecurrent` formalized (`ZetaDiscRecurrenceOnEveryClosedDiscOfTheStrip`).
 - 2026-10-21 — all seven modules compiled (`lake --old env lean -j 1 -o`, one at a time), axioms
   standard, both new modules wired into `RHTower.lean`, lint clean on these modules; moved to
   3-formalized.

@@ -145,6 +145,44 @@ positive packets couple negatively with weight `1 − p^{-2}`. Fixed small scale
 **Lean.** `BezoutValuationIncidence/CrossScaleCouplingOfPrimePacketsWithThePrimeBlock.lean`:
 `tendsto_mul_rowBilinear_primeWindowRow`, `tendsto_mul_sum_primeWindowRow_div_sq`; standard axioms; wired.
 
+### C10 — single-modulus cancellation of the Möbius block (DONE, Lean)
+**Statement.** For a fixed prime `p` and `0 < a < p`: `Σ_{n≤x, n≡a} μ(n) log n = o(x log x)`; every class
+mass `Σ_{Q<n≤2Q, n≡r} μ(n)/n²` (class `0` included) is `o(1/Q)`; hence `Q Λ_p(μ_Q) → 0` and, for every
+row `c` on a fixed finite prime set, `Q(B + mR' + βH')(c, μ_Q) → 0`. **Pair:** the prime block has
+`Q Λ_p → −π²(p²−1)²/(144p²(p−1))` and coupling `−(π²/144)Σc(p)(1−p^{-2})`.
+**Proof.** Twisted hyperbola `μ log = −μ⋆Λ` with `dm ≡ a ⟺ (p∤d, m ≡ a d̄)`; `WeakPNT_AP` uniformly over
+the coprime classes (`|D_r(y)| ≤ εy + K`); main terms recombine to `Σ_{p∤d}μ(d)⌊x/d⌋ = O(x)` (coprime
+Möbius harmonic bound `p/(p−1)`); class masses by Abel against `1/(n² log n)`; class `0` = block − coprime
+classes, block mass by `M(x) = o(x)`.
+**Meaning.** The actual arithmetic cancellation at one modulus, in its fixed-modulus form: the Möbius
+signs cancel inside every residue class, which removes exactly the sieve term the primes carry. No rate,
+no uniformity in `p` (the balanced regime needs `p` growing with `Q`).
+**Lean.** `BezoutValuationIncidence/MoebiusEquidistributionInTheResidueClassesOfAPrime.lean`
+(`eventually_abs_sum_class_moebius_log_le`, twisted swap `sum_Icc_mul_dirichletConv_twist`) and
+`BezoutValuationIncidence/SingleModulusCancellationOfTheMoebiusBlock.lean`
+(`singleModulus_pair_moebius_primes`); standard axioms; wired.
+
+## Synthesis after C1–C10 (what the research says about the missing cancellation)
+
+1. **Receiver = zero-free region, both directions.** Any Mertens rate becomes a receiver band through
+   `abs_weightCenteredPrefix_dampedSign_le_of_linear`; conversely a horizon-uniform bound at damping
+   `ε` forces the zero-translation law (`RHTower.pmPowerDamped_zero_translation`). Unconditionally the
+   band is exactly VK-wide (C2). The cancellation is sign-reading (C3) and decided at the primes for every
+   multiplicative weight (C7). There is no BVI-internal cancellation in the receiver beyond the zero-free
+   region: a single zero just past the region kills every wider band (zero-density does not help, the
+   Möbius explicit formula carries `1/ζ'(ρ)`).
+2. **Single-modulus statistics at fixed moduli are Dirichlet-strength and exact.** The prime row carries
+   the omitted-class sieve term (C8), which reverses the sign of the cross-scale coupling (C9); the Möbius
+   row cancels in every class including `0` (C10). This is the actual arithmetic cancellation at one
+   modulus, from `L(1+it, χ) ≠ 0` for the characters of that modulus.
+3. **The balanced regime needs moduli growing with `Q`.** Per modulus even GRH gives `√(pQ)` and stalls at
+   `θ = 6/5` (the large-sieve value); class-wise square-root cancellation with absolute values over
+   classes also stalls at `6/5`; the kernel-weighted class sums reduce to short-interval mean squares of
+   μ at scale `P`, where unconditional savings are sub-power (VK, Matomäki–Radziwiłł). The random model
+   gives `θ = 3/2` for the dual norm; the receiver's `θ = 2` needs the Möbius signs of the small-scale
+   coefficients, i.e. cancellation across moduli. No unconditional input in the corpus or classical
+   literature provides power savings there.
+
 ## Log
 - 2026-10-21 — card created; C1 paper proof written; Lean module
   `BezoutValuationIncidence/ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean` started.
@@ -154,3 +192,4 @@ positive packets couple negatively with weight `1 − p^{-2}`. Fixed small scale
 - 2026-10-21 — C7 formalized and wired.
 - 2026-10-21 — C8 formalized and wired.
 - 2026-10-21 — C9 formalized and wired.
+- 2026-10-21 — C10 formalized and wired (Möbius in progressions mod p; Möbius/prime pair).

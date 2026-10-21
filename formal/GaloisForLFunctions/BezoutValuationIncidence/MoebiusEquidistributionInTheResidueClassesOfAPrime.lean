@@ -2,6 +2,7 @@ import GaloisForLFunctions.BezoutValuationIncidence.OmittedResidueClassLawOfTheP
 import GaloisForLFunctions.PNTPlus.Consequences
 import GaloisForLFunctions.RHTower.Sieve.MoebiusMaximalWindow
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.DampedDiscrepancyEnergyGrowthLaw
+import GaloisForLFunctions.RHTower.Sieve.HarmonicLogBound
 
 /-!
 # The Möbius function in the residue classes of a prime
@@ -181,12 +182,6 @@ theorem exists_abs_sum_classDefect_le_uniform {p : ℕ} (hp : p.Prime) {ε : ℝ
 
 /-! ## §4. The log-weighted class sum -/
 
-theorem sum_Icc_one_div_le_one_add_log (x : ℕ) : ∑ d ∈ Icc 1 x, 1 / (d : ℝ) ≤ 1 + Real.log x := by
-  have h := harmonic_le_one_add_log x
-  rw [harmonic_eq_sum_Icc] at h
-  push_cast at h
-  simpa [one_div] using h
-
 /-- The coprime main terms recombine: `|Σ_{d ≤ x, p ∤ d} μ(d) ⌊x/d⌋| ≤ 3x`. -/
 theorem abs_sum_coprime_moebius_floor_le {p : ℕ} (hp : p.Prime) (x : ℕ) :
     |∑ d ∈ Icc 1 x, (if p ∣ d then 0 else moebiusReal d * ((x / d : ℕ) : ℝ))| ≤ 3 * x := by
@@ -315,7 +310,7 @@ theorem eventually_abs_sum_class_moebius_log_le {p a : ℕ} (hp : p.Prime) (ha0 
       _ = δ / 2 * x * ∑ d ∈ Icc 1 x, 1 / (d : ℝ) + K * x := by
           rw [sum_add_distrib, ← mul_sum, ← mul_sum, sum_const, Nat.card_Icc]; simp; ring
       _ ≤ δ / 2 * x * (1 + Real.log x) + K * x := by
-          gcongr; exact sum_Icc_one_div_le_one_add_log x
+          gcongr; exact RHTower.Sieve.sum_Icc_one_div_le_one_add_log x
   have hpinv : 1 / ((p : ℝ) - 1) ≤ 1 := by
     rw [div_le_one (by linarith)]
     have : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
