@@ -491,6 +491,321 @@ theorem summable_tsum_norm_sq_testTransform_le_of_locallyBounded {a : ℝ} (ha :
     summable_of_sum_le (fun _ => sq_nonneg _) hbound
   exact ⟨hs, hs.tsum_le_of_sum_le hbound⟩
 
+/-! ### 7. The depth-weighted sampling inequality
+
+The difference `Φ(x + iy) − Φ(x − iy)` is the odd part of the power series in the displacement and
+carries one factor `y`; sampling it costs the depth-weighted count `Σ y_q²` on unit windows instead
+of the plain count. -/
+
+/-- `‖w^n − w̄^n‖ ≤ n r^{n−1} ‖w − w̄‖` for `‖w‖ ≤ r`. -/
+theorem norm_pow_sub_pow_conj_le {w : ℂ} {r : ℝ} (hw : ‖w‖ ≤ r) (n : ℕ) :
+    ‖w ^ n - (starRingEnd ℂ) w ^ n‖ ≤ n * r ^ (n - 1) * ‖w - (starRingEnd ℂ) w‖ := by
+  have hr : 0 ≤ r := (norm_nonneg _).trans hw
+  have hwc : ‖(starRingEnd ℂ) w‖ ≤ r := by rw [Complex.norm_conj]; exact hw
+  rcases n with _ | n
+  · simp
+  · rw [← geom_sum₂_mul, norm_mul]
+    refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+    refine (norm_sum_le _ _).trans ?_
+    have hterm : ∀ i ∈ Finset.range (n + 1),
+        ‖w ^ i * (starRingEnd ℂ) w ^ (n + 1 - 1 - i)‖ ≤ r ^ n := by
+      intro i hi
+      rw [norm_mul, norm_pow, norm_pow]
+      have hi' : i ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+      calc ‖w‖ ^ i * ‖(starRingEnd ℂ) w‖ ^ (n + 1 - 1 - i) ≤ r ^ i * r ^ (n + 1 - 1 - i) := by
+            gcongr
+        _ = r ^ n := by rw [← pow_add]; congr 1; omega
+    refine (Finset.sum_le_sum hterm).trans ?_
+    rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, Nat.add_sub_cancel]
+
+/-- **The odd part of the power series.** For `‖w‖ ≤ r`,
+`‖Φ(c + w) − Φ(c + w̄)‖ ≤ 2|Im w| Σ_m r^m/m! ‖Φ_{m+1}(c)‖`. -/
+theorem norm_testTransform_sub_conj_le_tsum_momentSource {a : ℝ} {f : ℝ → ℂ}
+    (hf : IntervalSource a f) (c : ℝ) {w : ℂ} {r : ℝ} (hw : ‖w‖ ≤ r) :
+    ‖testTransform f ((c : ℂ) + w) - testTransform f ((c : ℂ) + (starRingEnd ℂ) w)‖ ≤
+      2 * |w.im| * ∑' m : ℕ, r ^ m / m.factorial *
+        ‖testTransform (momentSource f (m + 1)) c‖ := by
+  have hr : 0 ≤ r := (norm_nonneg _).trans hw
+  have hwc : ‖(starRingEnd ℂ) w‖ ≤ r := by rw [Complex.norm_conj]; exact hw
+  set B : ℕ → ℝ := fun j => ‖testTransform (momentSource f j) c‖ with hB
+  have hB0 : ∀ j, 0 ≤ B j := fun j => norm_nonneg _
+  have hBle : ∀ j, B j ≤ a ^ j * ∫ u, ‖f u‖ := fun j =>
+    norm_testTransform_momentSource_le hf j c
+  set I₁ := ∫ u, ‖f u‖ with hI₁
+  have hI₁0 : 0 ≤ I₁ := integral_nonneg fun _ => norm_nonneg _
+  set F : ℕ → ℂ := fun j =>
+    (I * w) ^ j / (j.factorial : ℂ) * testTransform (momentSource f j) c with hF
+  set G : ℕ → ℂ := fun j =>
+    (I * (starRingEnd ℂ) w) ^ j / (j.factorial : ℂ) * testTransform (momentSource f j) c with hG
+  have hnormF : ∀ j, ‖F j‖ ≤ (r * a) ^ j / j.factorial * I₁ := by
+    intro j
+    simp only [hF]
+    rw [norm_mul, norm_div, norm_pow, norm_mul, Complex.norm_I, one_mul, Complex.norm_natCast]
+    calc ‖w‖ ^ j / j.factorial * B j ≤ r ^ j / j.factorial * (a ^ j * I₁) := by
+          gcongr
+          exact hBle j
+      _ = (r * a) ^ j / j.factorial * I₁ := by rw [mul_pow]; ring
+  have hnormG : ∀ j, ‖G j‖ ≤ (r * a) ^ j / j.factorial * I₁ := by
+    intro j
+    simp only [hG]
+    rw [norm_mul, norm_div, norm_pow, norm_mul, Complex.norm_I, one_mul, Complex.norm_natCast]
+    calc ‖(starRingEnd ℂ) w‖ ^ j / j.factorial * B j ≤ r ^ j / j.factorial * (a ^ j * I₁) := by
+          gcongr
+          exact hBle j
+      _ = (r * a) ^ j / j.factorial * I₁ := by rw [mul_pow]; ring
+  have hmaj : Summable fun j : ℕ => (r * a) ^ j / j.factorial * I₁ :=
+    (Real.summable_pow_div_factorial (r * a)).mul_right _
+  have hFs : Summable F := Summable.of_norm_bounded hmaj hnormF
+  have hGs : Summable G := Summable.of_norm_bounded hmaj hnormG
+  have hFGs : Summable fun j => F j - G j := hFs.sub hGs
+  have hFGn : Summable fun j => ‖F j - G j‖ := summable_norm_iff.mpr hFGs
+  have hFG0 : F 0 - G 0 = 0 := by simp [hF, hG]
+  have hsub : ∀ m : ℕ, ‖F (m + 1) - G (m + 1)‖ ≤
+      2 * |w.im| * (r ^ m / m.factorial * B (m + 1)) := by
+    intro m
+    simp only [hF, hG]
+    rw [← sub_mul, ← sub_div, norm_mul, norm_div, Complex.norm_natCast]
+    have h1 : (I * w) ^ (m + 1) - (I * (starRingEnd ℂ) w) ^ (m + 1) =
+        I ^ (m + 1) * (w ^ (m + 1) - (starRingEnd ℂ) w ^ (m + 1)) := by
+      rw [mul_pow, mul_pow]; ring
+    rw [h1, norm_mul, norm_pow, Complex.norm_I, one_pow, one_mul]
+    have h2 := norm_pow_sub_pow_conj_le hw (m + 1)
+    rw [Nat.add_sub_cancel, Complex.sub_conj, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
+      Real.norm_eq_abs, abs_mul, abs_two] at h2
+    have hfac : (((m + 1).factorial : ℕ) : ℝ) = (m + 1) * m.factorial := by
+      exact_mod_cast Nat.factorial_succ m
+    rw [hfac]
+    have hm : (0 : ℝ) < (m + 1) * m.factorial := by positivity
+    calc ‖w ^ (m + 1) - (starRingEnd ℂ) w ^ (m + 1)‖ / ((m + 1) * m.factorial) * B (m + 1)
+        ≤ ((m + 1) * r ^ m * (2 * |w.im|)) / ((m + 1) * m.factorial) * B (m + 1) := by
+          gcongr
+          push_cast at h2
+          exact h2
+      _ = 2 * |w.im| * (r ^ m / m.factorial * B (m + 1)) := by
+          field_simp
+  have hrhs : Summable fun m : ℕ => 2 * |w.im| * (r ^ m / m.factorial * B (m + 1)) := by
+    refine Summable.of_nonneg_of_le (fun m => by positivity) (fun m => ?_)
+      (((Real.summable_pow_div_factorial (r * a)).mul_right (a * I₁)).mul_left (2 * |w.im|))
+    have := hBle (m + 1)
+    calc 2 * |w.im| * (r ^ m / m.factorial * B (m + 1))
+        ≤ 2 * |w.im| * (r ^ m / m.factorial * (a ^ (m + 1) * I₁)) := by
+          gcongr
+      _ = 2 * |w.im| * ((r * a) ^ m / m.factorial * (a * I₁)) := by
+          rw [mul_pow, pow_succ]; ring
+  rw [testTransform_add_eq_tsum_momentSource hf c w,
+    testTransform_add_eq_tsum_momentSource hf c ((starRingEnd ℂ) w), ← hFs.tsum_sub hGs]
+  calc ‖∑' j, (F j - G j)‖ ≤ ∑' j, ‖F j - G j‖ := norm_tsum_le_tsum_norm hFGn
+    _ = ‖F 0 - G 0‖ + ∑' m, ‖F (m + 1) - G (m + 1)‖ := hFGn.tsum_eq_zero_add
+    _ ≤ 0 + ∑' m, 2 * |w.im| * (r ^ m / m.factorial * B (m + 1)) := by
+        rw [hFG0, norm_zero]
+        refine add_le_add le_rfl (Summable.tsum_le_tsum hsub ?_ hrhs)
+        exact (summable_nat_add_iff 1).mpr hFGn
+    _ = 2 * |w.im| * ∑' m, r ^ m / m.factorial * B (m + 1) := by rw [zero_add, tsum_mul_left]
+
+/-- **Depth-weighted cell counts against a grid function.** If every unit window of `s` carries
+weight at most `W`, then `Σ_{q ∈ s} y_q² G(k_q) ≤ W Σ_k G(k)` for nonnegative `G` with partial sums
+at most `Gs`. -/
+theorem sum_weight_mul_grid_le_of_depthWeighted {ι : Type*} {x y : ι → ℝ} {a : ℝ} (ha : 0 < a)
+    (s : Finset ι) {W : ℝ}
+    (hW : ∀ T : ℝ, ∀ t : Finset ι, t ⊆ s → (∀ q ∈ t, |x q - T| ≤ 1) → ∑ q ∈ t, y q ^ 2 ≤ W)
+    (G : ℤ → ℝ) (hG0 : ∀ k, 0 ≤ G k) {Gs : ℝ} (hGs : ∀ t : Finset ℤ, ∑ k ∈ t, G k ≤ Gs) :
+    ∑ q ∈ s, y q ^ 2 * G (gridIndex a (x q)) ≤ W * Gs := by
+  classical
+  have hW0 : 0 ≤ W := by simpa using hW 0 ∅ (Finset.empty_subset _) (by simp)
+  rw [← Finset.sum_fiberwise_of_maps_to (g := fun q => gridIndex a (x q))
+    (t := s.image fun q => gridIndex a (x q)) (fun q hq => Finset.mem_image_of_mem _ hq)]
+  have hcell : ∀ k ∈ s.image (fun q => gridIndex a (x q)),
+      ∑ q ∈ s with gridIndex a (x q) = k, y q ^ 2 * G (gridIndex a (x q)) ≤ W * G k := by
+    intro k _
+    have hsum : ∑ q ∈ s with gridIndex a (x q) = k, y q ^ 2 * G (gridIndex a (x q)) =
+        (∑ q ∈ s with gridIndex a (x q) = k, y q ^ 2) * G k := by
+      rw [Finset.sum_mul]
+      refine Finset.sum_congr rfl fun q hq => ?_
+      rw [(Finset.mem_filter.mp hq).2]
+    rw [hsum]
+    refine mul_le_mul_of_nonneg_right ?_ (hG0 k)
+    refine hW (-((k : ℝ) * gridStep a)) _ (Finset.filter_subset _ _) fun q hq => ?_
+    have hqk := (Finset.mem_filter.mp hq).2
+    rw [← hqk]
+    exact (abs_sub_gridPoint_le ha (x q)).trans (gridStep_le_one ha)
+  calc ∑ k ∈ s.image (fun q => gridIndex a (x q)),
+        ∑ q ∈ s with gridIndex a (x q) = k, y q ^ 2 * G (gridIndex a (x q))
+      ≤ ∑ k ∈ s.image (fun q => gridIndex a (x q)), W * G k := Finset.sum_le_sum hcell
+    _ = W * ∑ k ∈ s.image (fun q => gridIndex a (x q)), G k := by rw [Finset.mul_sum]
+    _ ≤ W * Gs := mul_le_mul_of_nonneg_left (hGs _) hW0
+
+/-- **Depth-weighted sampling of the conjugate difference.** With at most weight `W = Σ y_q²` in
+any unit window of `s` and all depths `|y_q| ≤ σ`,
+`Σ_{q ∈ s} |Φ(x_q + i y_q) − Φ(x_q − i y_q)|² ≤ 4 a² e^{2(h+σ)a} W L ∫|f|²`. -/
+theorem sum_norm_sq_testTransform_sub_conj_le_of_depthWeighted {a : ℝ} (ha : 0 < a) {f : ℝ → ℂ}
+    (hf : IntervalSource a f) {ι : Type*} (x y : ι → ℝ) {σ : ℝ} (hσ : 0 ≤ σ)
+    (hy : ∀ q, |y q| ≤ σ) {W : ℝ} (s : Finset ι)
+    (hW : ∀ T : ℝ, ∀ t : Finset ι, t ⊆ s → (∀ q ∈ t, |x q - T| ≤ 1) → ∑ q ∈ t, y q ^ 2 ≤ W) :
+    ∑ q ∈ s, ‖testTransform f ((x q : ℂ) + (y q : ℂ) * I) -
+        testTransform f ((x q : ℂ) - (y q : ℂ) * I)‖ ^ 2 ≤
+      4 * a ^ 2 * Real.exp (2 * (gridStep a + σ) * a) *
+        (W * (windowLength a * ∫ u, ‖f u‖ ^ 2)) := by
+  have hh0 : 0 < gridStep a := gridStep_pos ha
+  set ρ₀ := gridStep a + σ with hρ₀
+  have hρ₀0 : 0 < ρ₀ := by linarith
+  set N := ∫ u, ‖f u‖ ^ 2 with hN
+  have hN0 : 0 ≤ N := integral_nonneg fun _ => by positivity
+  set I₁ := ∫ u, ‖f u‖ with hI₁
+  have hI₁0 : 0 ≤ I₁ := integral_nonneg fun _ => norm_nonneg _
+  set L := windowLength a with hL
+  have hL0 : 0 < L := windowLength_pos ha
+  have hW0 : 0 ≤ W := by simpa using hW 0 ∅ (Finset.empty_subset _) (by simp)
+  set g : ι → ℝ := fun q => -((gridIndex a (x q) : ℝ) * gridStep a) with hg
+  set B : ℕ → ι → ℝ := fun j q => ‖testTransform (momentSource f j) ((g q : ℝ) : ℂ)‖ with hB
+  set D : ℕ → ℝ := fun m => ρ₀ ^ m / (m.factorial * a ^ m) with hD
+  have hD0 : ∀ m, 0 ≤ D m := fun m => by positivity
+  have hB0 : ∀ j q, 0 ≤ B j q := fun j q => norm_nonneg _
+  have hBle : ∀ j q, B j q ≤ a ^ j * I₁ := fun j q =>
+    norm_testTransform_momentSource_le hf j (g q)
+  have hE : ∑' m : ℕ, (ρ₀ * a) ^ m / m.factorial = Real.exp (ρ₀ * a) := by
+    rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum_div]
+  have hDB : ∀ m q, D m * B (m + 1) q ^ 2 ≤ (ρ₀ * a) ^ m / m.factorial * (a * I₁) ^ 2 := by
+    intro m q
+    calc D m * B (m + 1) q ^ 2 ≤ D m * (a ^ (m + 1) * I₁) ^ 2 := by
+          gcongr
+          exact hBle (m + 1) q
+      _ = (ρ₀ * a) ^ m / m.factorial * (a * I₁) ^ 2 := by
+          simp only [hD]
+          rw [show (a ^ (m + 1) * I₁) ^ 2 = (a ^ m) ^ 2 * (a * I₁) ^ 2 by rw [pow_succ]; ring]
+          exact momentWeight_mul_sq ρ₀ a ((a * I₁) ^ 2) m ha.ne'
+  have hsummD : ∀ q, Summable fun m => D m * B (m + 1) q ^ 2 := fun q =>
+    Summable.of_nonneg_of_le (fun m => by positivity) (fun m => hDB m q)
+      ((Real.summable_pow_div_factorial (ρ₀ * a)).mul_right _)
+  -- pointwise bound
+  have hpt : ∀ q, ‖testTransform f ((x q : ℂ) + (y q : ℂ) * I) -
+      testTransform f ((x q : ℂ) - (y q : ℂ) * I)‖ ^ 2 ≤
+      4 * y q ^ 2 * (Real.exp (ρ₀ * a) * ∑' m, D m * B (m + 1) q ^ 2) := by
+    intro q
+    set w : ℂ := ((x q - g q : ℝ) : ℂ) + (y q : ℂ) * I with hw
+    have hwim : w.im = y q := by simp [hw]
+    have hwn : ‖w‖ ≤ ρ₀ := by
+      rw [hw]
+      refine (norm_add_le _ _).trans ?_
+      rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Complex.norm_real,
+        Real.norm_eq_abs, Real.norm_eq_abs]
+      have := abs_sub_gridPoint_le ha (x q)
+      linarith [hy q]
+    have hz1 : (x q : ℂ) + (y q : ℂ) * I = (g q : ℂ) + w := by rw [hw]; push_cast; ring
+    have hz2 : (x q : ℂ) - (y q : ℂ) * I = (g q : ℂ) + (starRingEnd ℂ) w := by
+      rw [hw]
+      apply Complex.ext <;> simp
+    rw [hz1, hz2]
+    have h1 := norm_testTransform_sub_conj_le_tsum_momentSource hf (g q) hwn
+    rw [hwim] at h1
+    have hp : ∀ m : ℕ, 0 < (ρ₀ * a) ^ m / m.factorial := fun m => by positivity
+    have hps : Summable fun m : ℕ => (ρ₀ * a) ^ m / m.factorial :=
+      Real.summable_pow_div_factorial _
+    have hconv : ∀ m : ℕ, (ρ₀ ^ m / m.factorial * B (m + 1) q) ^ 2 /
+        ((ρ₀ * a) ^ m / m.factorial) = D m * B (m + 1) q ^ 2 := by
+      intro m
+      simp only [hD]
+      exact sq_div_momentWeight ρ₀ a (B (m + 1) q) m ha.ne' hρ₀0.ne'
+    have hcs : Summable fun m : ℕ =>
+        (ρ₀ ^ m / m.factorial * B (m + 1) q) ^ 2 / ((ρ₀ * a) ^ m / m.factorial) := by
+      simp only [hconv]
+      exact hsummD q
+    have hCS := sq_tsum_le_tsum_mul_tsum_div hp (fun m => by positivity) hps hcs
+    have hS0 : 0 ≤ ∑' m : ℕ, ρ₀ ^ m / m.factorial * B (m + 1) q :=
+      tsum_nonneg fun m => by positivity
+    calc ‖testTransform f ((g q : ℂ) + w) - testTransform f ((g q : ℂ) + (starRingEnd ℂ) w)‖ ^ 2
+        ≤ (2 * |y q| * ∑' m : ℕ, ρ₀ ^ m / m.factorial * B (m + 1) q) ^ 2 :=
+          pow_le_pow_left₀ (norm_nonneg _) h1 2
+      _ = 4 * y q ^ 2 * (∑' m : ℕ, ρ₀ ^ m / m.factorial * B (m + 1) q) ^ 2 := by
+          rw [mul_pow, mul_pow, sq_abs]; ring
+      _ ≤ 4 * y q ^ 2 * ((∑' m : ℕ, (ρ₀ * a) ^ m / m.factorial) *
+            ∑' m : ℕ, (ρ₀ ^ m / m.factorial * B (m + 1) q) ^ 2 /
+              ((ρ₀ * a) ^ m / m.factorial)) := by
+          gcongr
+      _ = 4 * y q ^ 2 * (Real.exp (ρ₀ * a) * ∑' m, D m * B (m + 1) q ^ 2) := by
+          rw [hE]
+          congr 2
+          exact tsum_congr hconv
+  -- grid cells with weights
+  have hcell : ∀ m, ∑ q ∈ s, y q ^ 2 * B (m + 1) q ^ 2 ≤ W * (L * ((a ^ (m + 1)) ^ 2 * N)) := by
+    intro m
+    set G : ℤ → ℝ := fun k =>
+      ‖testTransform (momentSource f (m + 1)) ((-(k * gridStep a) : ℝ) : ℂ)‖ ^ 2 with hG
+    have hGq : ∀ q, B (m + 1) q ^ 2 = G (gridIndex a (x q)) := fun q => rfl
+    simp_rw [hGq]
+    exact sum_weight_mul_grid_le_of_depthWeighted ha s hW G (fun k => sq_nonneg _)
+      (fun t => sum_norm_sq_testTransform_grid_le ha hf (m + 1) t)
+  have hterm : ∀ m : ℕ, D m * (W * (L * ((a ^ (m + 1)) ^ 2 * N))) =
+      (ρ₀ * a) ^ m / m.factorial * (a ^ 2 * (W * (L * N))) := by
+    intro m
+    simp only [hD]
+    rw [show (W : ℝ) * (L * ((a ^ (m + 1)) ^ 2 * N)) = (a ^ m) ^ 2 * (a ^ 2 * (W * (L * N))) by
+      rw [pow_succ]; ring]
+    exact momentWeight_mul_sq ρ₀ a (a ^ 2 * (W * (L * N))) m ha.ne'
+  calc ∑ q ∈ s, ‖testTransform f ((x q : ℂ) + (y q : ℂ) * I) -
+        testTransform f ((x q : ℂ) - (y q : ℂ) * I)‖ ^ 2
+      ≤ ∑ q ∈ s, 4 * y q ^ 2 * (Real.exp (ρ₀ * a) * ∑' m, D m * B (m + 1) q ^ 2) :=
+        Finset.sum_le_sum fun q _ => hpt q
+    _ = 4 * Real.exp (ρ₀ * a) * ∑' m, D m * ∑ q ∈ s, y q ^ 2 * B (m + 1) q ^ 2 := by
+        have e : ∀ q, 4 * y q ^ 2 * (Real.exp (ρ₀ * a) * ∑' m, D m * B (m + 1) q ^ 2) =
+            4 * Real.exp (ρ₀ * a) * ∑' m, D m * (y q ^ 2 * B (m + 1) q ^ 2) := by
+          intro q
+          rw [← tsum_mul_left, ← tsum_mul_left, ← tsum_mul_left]
+          exact tsum_congr fun m => by ring
+        simp_rw [e]
+        rw [← Finset.mul_sum, ← Summable.tsum_finsetSum]
+        · congr 1
+          refine tsum_congr fun m => ?_
+          rw [Finset.mul_sum]
+        · intro q _
+          exact (hsummD q).mul_left (y q ^ 2) |>.congr fun m => by ring
+    _ ≤ 4 * Real.exp (ρ₀ * a) * ∑' m, D m * (W * (L * ((a ^ (m + 1)) ^ 2 * N))) := by
+        refine mul_le_mul_of_nonneg_left (Summable.tsum_le_tsum (fun m => ?_) ?_ ?_)
+          (by positivity)
+        · exact mul_le_mul_of_nonneg_left (hcell m) (hD0 m)
+        · refine Summable.of_nonneg_of_le (fun m => ?_) (fun m => ?_)
+            ((Real.summable_pow_div_factorial (ρ₀ * a)).mul_right (a ^ 2 * (W * (L * N))))
+          · exact mul_nonneg (hD0 m) (Finset.sum_nonneg fun q _ => by positivity)
+          · calc D m * ∑ q ∈ s, y q ^ 2 * B (m + 1) q ^ 2
+                ≤ D m * (W * (L * ((a ^ (m + 1)) ^ 2 * N))) :=
+                  mul_le_mul_of_nonneg_left (hcell m) (hD0 m)
+              _ = (ρ₀ * a) ^ m / m.factorial * (a ^ 2 * (W * (L * N))) := hterm m
+        · refine Summable.of_nonneg_of_le (fun m => by positivity) (fun m => ?_)
+            ((Real.summable_pow_div_factorial (ρ₀ * a)).mul_right (a ^ 2 * (W * (L * N))))
+          exact le_of_eq (hterm m)
+    _ = 4 * Real.exp (ρ₀ * a) * (Real.exp (ρ₀ * a) * (a ^ 2 * (W * (L * N)))) := by
+        congr 1
+        rw [tsum_congr hterm, tsum_mul_right, hE]
+    _ = 4 * a ^ 2 * Real.exp (2 * (gridStep a + σ) * a) * (W * (L * N)) := by
+        rw [← hρ₀, show 4 * Real.exp (ρ₀ * a) * (Real.exp (ρ₀ * a) * (a ^ 2 * (W * (L * N)))) =
+          4 * a ^ 2 * (Real.exp (ρ₀ * a) * Real.exp (ρ₀ * a)) * (W * (L * N)) by ring,
+          ← Real.exp_add, show ρ₀ * a + ρ₀ * a = 2 * ρ₀ * a by ring]
+
+/-- **The depth-weighted sampling inequality with the explicit constant**
+`4 a² (2a + 2π) e^{2π} e^{2σa} W`. -/
+theorem sum_norm_sq_testTransform_sub_conj_le_of_depthWeighted' {a : ℝ} (ha : 0 < a)
+    {f : ℝ → ℂ} (hf : IntervalSource a f) {ι : Type*} (x y : ι → ℝ) {σ : ℝ} (hσ : 0 ≤ σ)
+    (hy : ∀ q, |y q| ≤ σ) {W : ℝ} (s : Finset ι)
+    (hW : ∀ T : ℝ, ∀ t : Finset ι, t ⊆ s → (∀ q ∈ t, |x q - T| ≤ 1) → ∑ q ∈ t, y q ^ 2 ≤ W) :
+    ∑ q ∈ s, ‖testTransform f ((x q : ℂ) + (y q : ℂ) * I) -
+        testTransform f ((x q : ℂ) - (y q : ℂ) * I)‖ ^ 2 ≤
+      4 * a ^ 2 * ((2 * a + 2 * π) * Real.exp (2 * π) * Real.exp (2 * σ * a)) * W *
+        ∫ u, ‖f u‖ ^ 2 := by
+  refine (sum_norm_sq_testTransform_sub_conj_le_of_depthWeighted ha hf x y hσ hy s hW).trans ?_
+  have hN0 : 0 ≤ ∫ u, ‖f u‖ ^ 2 := integral_nonneg fun _ => by positivity
+  have hW0 : 0 ≤ W := by simpa using hW 0 ∅ (Finset.empty_subset _) (by simp)
+  have hexp : Real.exp (2 * (gridStep a + σ) * a) ≤ Real.exp (2 * π) * Real.exp (2 * σ * a) := by
+    rw [← Real.exp_add]
+    apply Real.exp_le_exp.mpr
+    have h1 := gridStep_mul_le_pi ha
+    have h2 : 2 * (gridStep a + σ) * a = 2 * (gridStep a * a) + 2 * σ * a := by ring
+    linarith
+  unfold windowLength
+  calc 4 * a ^ 2 * Real.exp (2 * (gridStep a + σ) * a) *
+        (W * ((2 * a + 2 * π) * ∫ u, ‖f u‖ ^ 2))
+      ≤ 4 * a ^ 2 * (Real.exp (2 * π) * Real.exp (2 * σ * a)) *
+        (W * ((2 * a + 2 * π) * ∫ u, ‖f u‖ ^ 2)) := by gcongr
+    _ = _ := by ring
+
 end
 
 end GaloisForLFunctions.SquareRootThreshold

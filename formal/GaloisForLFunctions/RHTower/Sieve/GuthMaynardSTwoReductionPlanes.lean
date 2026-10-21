@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62PrincipalNonzeroModes
+import GaloisForLFunctions.RHTower.Sieve.GuthMaynardCubicTermIntegral
 
 /-!
 # Guth–Maynard §6: `S₂` as a sum over three planes
@@ -16,8 +17,8 @@ This module proves the exact form
 for the Chen–Gupta–Li bump: the exactly-two-nonzero frequencies are the disjoint union of three
 punctured planes; on each plane the frequency sum factorizes into two absolutely convergent
 punctured sums (Lemma 4.3 decay), and the three plane sums agree after a cyclic relabelling of
-`(x, y, z)`.  For `q = 1` this `I_m` is the Chen–Gupta–Li trace coefficient
-`cglLemma45TraceFrequencyTerm` (the residue and character factors are trivial).
+`(x, y, z)`.  `I_m` is the corpus `cubicTerm` (`GuthMaynardCubicTermIntegral`); for `q = 1` it is
+the Chen–Gupta–Li trace coefficient `cglLemma45TraceFrequencyTerm`.
 -/
 
 set_option autoImplicit false
@@ -29,18 +30,18 @@ noncomputable section
 
 namespace RHTower.GuthMaynard
 
-/-- `ĥ_τ(ξ)` for the Chen–Gupta–Li bump `h_τ(u) = w(u)² u^{iτ}`. -/
+/-- `ĥ_τ(ξ)` for the Chen–Gupta–Li bump `h_τ(u) = w(u)² u^{iτ}` (the corpus `bumpFourier`). -/
 abbrev gmHat (w : CGLRealSmoothBump) (τ ξ : ℝ) : ℂ :=
-  𝓕 (cglSmoothBumpHt w.toCGLSmoothBump τ : ℝ → ℂ) ξ
+  bumpFourier w.toCGLSmoothBump τ ξ
 
 /-- `A(τ) = Σ_{m ≠ 0} ĥ_τ(mN)`. -/
 abbrev gmNonzero (w : CGLRealSmoothBump) (N τ : ℝ) : ℂ :=
   cglGMNonzeroModeSum w.toCGLSmoothBump N τ
 
-/-- Guth–Maynard's `I_m = N³ Σ_{x,y,z∈W} ĥ_{x−y}(m₁N) ĥ_{y−z}(m₂N) ĥ_{z−x}(m₃N)`. -/
-def gmIm (w : CGLRealSmoothBump) (N : ℝ) (W : Finset ℝ) (m : (ℤ × ℤ) × ℤ) : ℂ :=
-  (N : ℂ) ^ 3 * ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W,
-    gmHat w (x - y) (m.1.1 * N) * gmHat w (y - z) (m.1.2 * N) * gmHat w (z - x) (m.2 * N)
+/-- Guth–Maynard's `I_m = N³ Σ_{x,y,z∈W} ĥ_{x−y}(m₁N) ĥ_{y−z}(m₂N) ĥ_{z−x}(m₃N)`: the corpus
+`cubicTerm` on the triple-frequency carrier. -/
+abbrev gmIm (w : CGLRealSmoothBump) (N : ℝ) (W : Finset ℝ) (m : (ℤ × ℤ) × ℤ) : ℂ :=
+  cubicTerm w.toCGLSmoothBump W N m.1.1 m.1.2 m.2
 
 /-- Frequencies with exactly two nonzero coordinates: the carrier of `S₂`. -/
 def gmS2Frequency (m : (ℤ × ℤ) × ℤ) : Prop :=
@@ -135,8 +136,10 @@ theorem hasSum_gmHat_pair (w : CGLRealSmoothBump) {N : ℝ} (hN : 0 < N) (α β 
   have h₂ := summable_norm_gmHat_punctured w hN β
   have hprod : HasSum (fun p : P × P => gmHat w α ((p.1 : ℝ) * N) * gmHat w β ((p.2 : ℝ) * N))
       (gmNonzero w N α * gmNonzero w N β) := by
-    have hs := summable_mul_of_summable_norm (f := fun m : P => gmHat w α ((m : ℝ) * N))
-      (g := fun m : P => gmHat w β ((m : ℝ) * N)) h₁ h₂
+    simp only [gmHat, bumpFourier] at h₁ h₂ ⊢
+    have hs := summable_mul_of_summable_norm
+      (f := fun m : P => 𝓕 (cglSmoothBumpHt w.toCGLSmoothBump α : ℝ → ℂ) ((m : ℝ) * N))
+      (g := fun m : P => 𝓕 (cglSmoothBumpHt w.toCGLSmoothBump β : ℝ → ℂ) ((m : ℝ) * N)) h₁ h₂
     rw [gmNonzero, gmNonzero, cglGMNonzeroModeSum, cglGMNonzeroModeSum,
       tsum_mul_tsum_of_summable_norm h₁ h₂]
     exact hs.hasSum
@@ -150,8 +153,14 @@ def gmS2Kernel (w : CGLRealSmoothBump) (N x y z : ℝ) : ℂ :=
 theorem hasSum_gmIm_planeThree (w : CGLRealSmoothBump) {N : ℝ} (hN : 0 < N) (W : Finset ℝ) :
     HasSum (fun p : P × P => gmIm w N W (gmPlaneThree p))
       ((N : ℂ) ^ 3 * ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, gmS2Kernel w N x y z) := by
-  refine HasSum.mul_left _ (hasSum_sum fun x _ => hasSum_sum fun y _ => hasSum_sum fun z _ => ?_)
-  simpa [gmPlaneThree, gmS2Kernel] using hasSum_gmHat_pair w hN (x - y) (y - z) (gmHat w (z - x) 0)
+  have hrw : (fun p : P × P => gmIm w N W (gmPlaneThree p)) = fun p => (N : ℂ) ^ 3 *
+      ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, gmHat w (x - y) ((p.1 : ℝ) * N) *
+        gmHat w (y - z) ((p.2 : ℝ) * N) * gmHat w (z - x) 0 := by
+    funext p
+    simp only [gmIm, cubicTerm, gmHat, gmPlaneThree, Int.cast_zero, zero_mul]
+  rw [hrw]
+  exact HasSum.mul_left _ (hasSum_sum fun x _ => hasSum_sum fun y _ => hasSum_sum fun z _ =>
+    hasSum_gmHat_pair w hN _ _ _)
 
 /-- The plane `m₁ = 0` sums to `N³ Σ_{x,y,z} F(y,z,x)`. -/
 theorem hasSum_gmIm_planeOne (w : CGLRealSmoothBump) {N : ℝ} (hN : 0 < N) (W : Finset ℝ) :
@@ -161,7 +170,7 @@ theorem hasSum_gmIm_planeOne (w : CGLRealSmoothBump) {N : ℝ} (hN : 0 < N) (W :
       ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, gmHat w (y - z) ((p.1 : ℝ) * N) *
         gmHat w (z - x) ((p.2 : ℝ) * N) * gmHat w (x - y) 0 := by
     funext p
-    simp only [gmIm, gmPlaneOne, Int.cast_zero, zero_mul]
+    simp only [gmIm, cubicTerm, gmHat, gmPlaneOne, Int.cast_zero, zero_mul]
     congr 1
     exact sum_congr rfl fun x _ => sum_congr rfl fun y _ => sum_congr rfl fun z _ => by ring
   rw [hrw]
@@ -176,7 +185,7 @@ theorem hasSum_gmIm_planeTwo (w : CGLRealSmoothBump) {N : ℝ} (hN : 0 < N) (W :
       ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, gmHat w (z - x) ((p.1 : ℝ) * N) *
         gmHat w (x - y) ((p.2 : ℝ) * N) * gmHat w (y - z) 0 := by
     funext p
-    simp only [gmIm, gmPlaneTwo, Int.cast_zero, zero_mul]
+    simp only [gmIm, cubicTerm, gmHat, gmPlaneTwo, Int.cast_zero, zero_mul]
     congr 1
     exact sum_congr rfl fun x _ => sum_congr rfl fun y _ => sum_congr rfl fun z _ => by ring
   rw [hrw]

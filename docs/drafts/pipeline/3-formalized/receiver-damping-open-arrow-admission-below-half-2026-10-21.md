@@ -1,8 +1,8 @@
 # The receiver damping open arrow: admission of the signed Möbius weight below half damping under a width bound
 
 - **ID:** receiver-damping-open-arrow
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) → Lean in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-2110/walls-ledger.md, face 1.8 (the signs); card
   `3-formalized/walls-one-zero-width-dictionary-2026-10-21.md`, round six
 - **Statement:** `zetaZeroWidth < ε ⟹ ε ∈ receiverDampings`, i.e. `receiverDampingRate ≤ zetaZeroWidth`;
@@ -17,10 +17,13 @@ deficit exponent, and turns the cofinal RH criterion into an equivalence.
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed (both sides are Lean objects), attack idea below
-- [ ] 1 → 2  fully-proven: paper proof of the sharp arrow is classical (Mellin–Plancherel); the
-  elementary partial arrow is complete on paper (below)
-- [ ] 2 → 3  formalized: partial arrow `receiverDampingRate ≤ zetaZeroAbscissa/2` (phase A); sharp
-  arrow (phase B)
+- [x] 1 → 2  fully-proven: the sharp arrow is the Mellin–Hardy argument of phase B (below)
+- [x] 2 → 3  formalized: phase A `V:LittlewoodAdmitsTheReceiverAboveHalfTheZeroAbscissa`
+  (`receiverDampingRate_le_half_zetaZeroAbscissa`); phase B
+  `R:TheDampedMoebiusMellinQuotientIsHardyRightOfTheZeroAbscissa` (`isMellinTailHardy_etaZetaQuotient`)
+  and `R:AdmissionBelowHalfDampingAboveTheZeroWidth` (`mem_receiverDampings_of_zetaZeroAbscissa_lt`,
+  `receiverDampingRate_eq_zetaZeroAbscissa_sub_half`, `riemannHypothesis_iff_cofinal_budget`); all
+  compiled with `lake env lean`, standard axioms
 - [ ] 3 → 4  not applicable (no stage 4 for RH work)
 
 ## Approach
@@ -65,3 +68,18 @@ Conclusion: `Ioi zetaZeroWidth ⊆ receiverDampings`, `receiverDampingRate = zet
   Mellin–Hardy toolkit (`MellinHardyClasses`, `MellinHardyBridge`, `HalfPlaneHardy`,
   `PaleyWienerHalfPlane`), convexity (`ZetaConvexityBound`), reciprocal zeta
   (`InvZetaAbscissaSubpolynomial`), Littlewood (`MobiusMertensAbscissaLittlewood`).
+- 2026-10-22 — phase A compiled (Littlewood + rate transfer: `Ioi (Θ/2) ⊆ receiverDampings`,
+  `receiverDampingRate ≤ Θ/2`, `receiverDampingRate < ½ ↔ Θ < 1`, RH ⟹ admission above `¼`).
+- 2026-10-22 — phase B compiled. B1: `etaSlope := dslope (1 − 2^{1−s}) 1` (entire),
+  `etaZetaQuotient ε s := etaSlope s · zetaResidueUnit s · invZeta (s+ε) / s`, line bound
+  `‖·‖ ≤ K (1+|Im s|)^{−9/16}` on `Re s ≥ ½` (convexity with `η = 1/8`, `exists_invZeta_shift_data_of_zeroFree`
+  with `d = 2` plus `norm_riemannZeta_ge_of_two_le_re`, `|s| ≥ (1+|Im s|)/4`), hence
+  `IsMellinTailHardy 1`. B2: `invertedFermiSource ε := 1_{(1,∞)} · u⁻¹ f_ε(u⁻¹)`;
+  `mellinTail_invertedFermiSource` by `integral_Ioi_comp_inv` + `ofReal_inv_cpow`;
+  `exists_memLp_of_isMellinTailHardy` datum `h`; both `logChart 1` data have the same `laplaceRay` on
+  the line `Re w = τ := (max 0 (½−ε) + ½)/2` via `mellinTail_eq_laplaceRay`; `rayDamp` difference has
+  zero Fourier transform (`fourierIntegral_rayDamp`), `HTGeometry.ae_eq_zero_of_fourierIntegral_eq_zero`
+  gives a.e. equality; `memLp_two_logChartInv` + `logChartInv_logChart_one` return to `(1,∞)`;
+  the inversion Jacobian (`integrableOn_image_iff_integrableOn_abs_deriv_smul`) returns to `(0,∞)`.
+  Result: `receiverDampingRate = zetaZeroAbscissa − ½`, `RiemannHypothesis ↔ receiverDampingRate = 0
+  ↔ AccPt 0 (𝓟 receiverDampings) ↔ cofinal budgets`. Moved to 3-formalized.

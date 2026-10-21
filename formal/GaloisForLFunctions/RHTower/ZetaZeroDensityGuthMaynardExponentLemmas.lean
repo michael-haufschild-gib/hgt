@@ -16,7 +16,10 @@ For `σ ∈ [7/10, 8/10]` the zero-detecting polynomial is raised into the windo
 * `E₀ ≤ (30/13)(1 - σ)` for `σ ≥ 7/10`, Ingham's `3/(2 - σ) ≤ 30/13` for `σ ≤ 7/10`, Huxley's
   `3/(3σ - 1) ≤ 30/13` for `σ ≥ 23/30`, and `(30/13)(1 - σ) ≥ 1` for `σ ≤ 17/30`.
 
-The last part collects the power comparisons `X ↦ X^e` used with these exponents.
+The last two parts collect the power comparisons `X ↦ X^e` used with these exponents, and the
+bookkeeping of the three terms `B²L²/V'² + B⁴L^{18/5}/V'⁴ + T B⁴L^{12/5}/V'⁴` of the large values
+estimate for a raised polynomial of length `L ≤ 2^M X` at level `V' = X^σ v/R`
+(`class_count_gm_arith`, `gm_loss_le`).
 -/
 
 set_option autoImplicit false
@@ -191,6 +194,159 @@ theorem mul_rpow_le_of_rpow_le {T X a e : ℝ} (hT : 0 < T) (hX : T ^ a ≤ X) (
         mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_nonpos (Real.rpow_pos_of_pos hT _) hX he)
           hT.le
     _ = T ^ (1 + a * e) := by rw [← Real.rpow_mul hT.le, Real.rpow_add hT, Real.rpow_one]
+
+/-! ## The three terms for a raised polynomial -/
+
+/-- `X^{e - kσ} = X^e/(X^σ)^k` for `X > 0`. -/
+theorem rpow_sub_nat_mul_eq_div {X e σ : ℝ} (hX : 0 < X) (k : ℕ) :
+    X ^ (e - k * σ) = X ^ e / (X ^ σ) ^ k := by
+  rw [Real.rpow_sub hX, mul_comm, Real.rpow_mul hX.le, Real.rpow_natCast]
+
+/-- A length `0 ≤ L ≤ 2^M X` raised to `0 ≤ e ≤ 4` is at most `2^{4M} X^e`. -/
+theorem rpow_le_two_pow_mul_rpow {L X e : ℝ} {M : ℕ} (hL0 : 0 ≤ L) (hX0 : 0 ≤ X)
+    (hL : L ≤ 2 ^ M * X) (he0 : 0 ≤ e) (he4 : e ≤ 4) : L ^ e ≤ 2 ^ (4 * M) * X ^ e := by
+  have h2M : (1 : ℝ) ≤ 2 ^ M := one_le_pow₀ (by norm_num)
+  calc L ^ e ≤ (2 ^ M * X) ^ e := Real.rpow_le_rpow hL0 hL he0
+    _ = (2 ^ M : ℝ) ^ e * X ^ e := Real.mul_rpow (by positivity) hX0
+    _ ≤ (2 ^ M : ℝ) ^ (4 : ℝ) * X ^ e :=
+        mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le h2M he4)
+          (Real.rpow_nonneg hX0 _)
+    _ = 2 ^ (4 * M) * X ^ e := by
+        rw [show (4 : ℝ) = ((4 : ℕ) : ℝ) by norm_num, Real.rpow_natCast, ← pow_mul, mul_comm M 4]
+
+/-- **One term of the estimate.**  With `1 ≤ B`, `1 ≤ R`, `0 < v`, `1/v ≤ Q^M`, `1 ≤ Q`, `p > 0`,
+`k ≤ 4` and `0 ≤ l ≤ 2^{4M} x`: `B^k l/(pv/R)^k ≤ B⁴ R⁴ 2^{4M} Q^{4M} · x/p^k`. -/
+theorem gm_term_le {B R v Q p l x : ℝ} {k M : ℕ} (hk : k ≤ 4) (hB : 1 ≤ B) (hR : 1 ≤ R)
+    (hv : 0 < v) (hQ : 1 ≤ Q) (hvQ : 1 / Q ^ M ≤ v) (hp : 0 < p) (hl0 : 0 ≤ l)
+    (hl : l ≤ 2 ^ (4 * M) * x) :
+    B ^ k * l / (p * v / R) ^ k ≤ B ^ 4 * R ^ 4 * 2 ^ (4 * M) * Q ^ (4 * M) * (x / p ^ k) := by
+  have hR0 : 0 < R := by linarith
+  have hQM : 1 ≤ Q ^ M := one_le_pow₀ hQ
+  have hw : 1 / v ≤ Q ^ M := by
+    rw [div_le_iff₀ hv]
+    rw [div_le_iff₀ (by positivity)] at hvQ
+    linarith
+  have hw0 : 0 ≤ 1 / v := by positivity
+  have hkey : B ^ k * l / (p * v / R) ^ k = (B ^ k * R ^ k * (1 / v) ^ k) * (l / p ^ k) := by
+    rw [div_pow, mul_pow, one_div_pow]
+    field_simp
+  have hBk : B ^ k ≤ B ^ 4 := pow_le_pow_right₀ hB hk
+  have hRk : R ^ k ≤ R ^ 4 := pow_le_pow_right₀ hR hk
+  have hwk : (1 / v) ^ k ≤ Q ^ (4 * M) := by
+    calc (1 / v) ^ k ≤ (Q ^ M) ^ k := pow_le_pow_left₀ hw0 hw k
+      _ ≤ (Q ^ M) ^ 4 := pow_le_pow_right₀ hQM hk
+      _ = Q ^ (4 * M) := by rw [← pow_mul, mul_comm]
+  have hlk : l / p ^ k ≤ 2 ^ (4 * M) * (x / p ^ k) := by
+    rw [← mul_div_assoc]
+    exact div_le_div_of_nonneg_right hl (by positivity)
+  have hQ0 : 0 < Q := by linarith
+  rw [hkey]
+  calc B ^ k * R ^ k * (1 / v) ^ k * (l / p ^ k)
+      ≤ B ^ 4 * R ^ 4 * Q ^ (4 * M) * (2 ^ (4 * M) * (x / p ^ k)) := by
+        apply mul_le_mul _ hlk (by positivity) (by positivity)
+        exact mul_le_mul (mul_le_mul hBk hRk (by positivity) (by positivity)) hwk
+          (by positivity) (by positivity)
+    _ = B ^ 4 * R ^ 4 * 2 ^ (4 * M) * Q ^ (4 * M) * (x / p ^ k) := by ring
+
+/-- **The Guth–Maynard range, arithmetic.**  Let `T^a ≤ X ≤ T^α`, `X^{2-2σ} ≤ T^{E₀+κ}`,
+`α(18/5 - 4σ) ≤ E₀` and `1 + a(12/5 - 4σ) ≤ E₀`, and let the large values estimate for a
+polynomial of length `L ≤ 2^M X` at level `X^σ v` (`1/v ≤ Q^M`) on `R ≤ M + 1` blocks with
+coefficients `≤ B` give
+`c ≤ R C T^{ε₁}(B²L²/(X^σv/R)² + B⁴L^{18/5}/(X^σv/R)⁴ + T B⁴L^{12/5}/(X^σv/R)⁴)`.
+Then `c ≤ 3(M+1)⁵ 2^{4M} C · T^{ε₁} B⁴ Q^{4M} · T^{E₀+κ}`. -/
+theorem class_count_gm_arith {T X σ E₀ a α κ C ε₁ B R L v Q c : ℝ} {M : ℕ}
+    (hT : 1 ≤ T) (hX : 1 ≤ X) (hσ0 : 3 / 5 < σ) (hσ1 : σ < 9 / 10)
+    (hXa : T ^ a ≤ X) (hXα : X ≤ T ^ α) (hdiag : X ^ (2 - 2 * σ) ≤ T ^ (E₀ + κ)) (hκ : 0 ≤ κ)
+    (hg2 : α * (18 / 5 - 4 * σ) ≤ E₀) (hg3 : 1 + a * (12 / 5 - 4 * σ) ≤ E₀)
+    (hv : 0 < v) (hQ : 1 ≤ Q) (hvQ : 1 / Q ^ M ≤ v) (hR : 1 ≤ R) (hRM : R ≤ M + 1)
+    (hL0 : 0 ≤ L) (hL : L ≤ 2 ^ M * X) (hB : 1 ≤ B) (hC : 0 ≤ C)
+    (hc : c ≤ R * (C * T ^ ε₁ * (B ^ 2 * L ^ 2 / (X ^ σ * v / R) ^ 2
+      + B ^ 4 * L ^ (18/5 : ℝ) / (X ^ σ * v / R) ^ 4
+      + T * B ^ 4 * L ^ (12/5 : ℝ) / (X ^ σ * v / R) ^ 4))) :
+    c ≤ 3 * ((M : ℝ) + 1) ^ 5 * 2 ^ (4 * M) * C * (T ^ ε₁ * B ^ 4 * Q ^ (4 * M)) *
+      T ^ (E₀ + κ) := by
+  have hT0 : 0 < T := by linarith
+  have hX0 : 0 < X := by linarith
+  have hp : 0 < X ^ σ := Real.rpow_pos_of_pos hX0 σ
+  obtain ⟨Y, hY⟩ : ∃ Y : ℝ, Y = B ^ 4 * R ^ 4 * 2 ^ (4 * M) * Q ^ (4 * M) := ⟨_, rfl⟩
+  -- the three terms
+  have h1 : B ^ 2 * L ^ 2 / (X ^ σ * v / R) ^ 2 ≤ Y * X ^ (2 - 2 * σ) := by
+    have hL2 : L ^ 2 ≤ 2 ^ (4 * M) * X ^ 2 := by
+      have h := rpow_le_two_pow_mul_rpow hL0 hX0.le hL (e := 2) (by norm_num) (by norm_num)
+      rwa [Real.rpow_two, Real.rpow_two] at h
+    have h := gm_term_le (k := 2) (by norm_num) hB hR hv hQ hvQ hp (by positivity) hL2
+    rw [show (2 : ℝ) - 2 * σ = 2 - ((2 : ℕ) : ℝ) * σ by norm_num, rpow_sub_nat_mul_eq_div hX0,
+      Real.rpow_two, hY]
+    exact h
+  have h2 : B ^ 4 * L ^ (18/5 : ℝ) / (X ^ σ * v / R) ^ 4 ≤ Y * X ^ (18 / 5 - 4 * σ) := by
+    have h := gm_term_le (k := 4) le_rfl hB hR hv hQ hvQ hp (by positivity)
+      (rpow_le_two_pow_mul_rpow hL0 hX0.le hL (e := 18 / 5) (by norm_num) (by norm_num))
+    rw [show (18 / 5 : ℝ) - 4 * σ = 18 / 5 - ((4 : ℕ) : ℝ) * σ by norm_num,
+      rpow_sub_nat_mul_eq_div hX0, hY]
+    exact h
+  have h3 : T * B ^ 4 * L ^ (12/5 : ℝ) / (X ^ σ * v / R) ^ 4 ≤ Y * (T * X ^ (12 / 5 - 4 * σ)) := by
+    have h := gm_term_le (k := 4) le_rfl hB hR hv hQ hvQ hp (by positivity)
+      (rpow_le_two_pow_mul_rpow hL0 hX0.le hL (e := 12 / 5) (by norm_num) (by norm_num))
+    rw [show (12 / 5 : ℝ) - 4 * σ = 12 / 5 - ((4 : ℕ) : ℝ) * σ by norm_num,
+      rpow_sub_nat_mul_eq_div hX0, hY]
+    rw [mul_assoc T, mul_div_assoc]
+    calc T * (B ^ 4 * L ^ (12 / 5 : ℝ) / (X ^ σ * v / R) ^ 4)
+        ≤ T * (B ^ 4 * R ^ 4 * 2 ^ (4 * M) * Q ^ (4 * M) * (X ^ (12 / 5 : ℝ) / (X ^ σ) ^ 4)) :=
+          mul_le_mul_of_nonneg_left h hT0.le
+      _ = B ^ 4 * R ^ 4 * 2 ^ (4 * M) * Q ^ (4 * M) * (T * (X ^ (12 / 5 : ℝ) / (X ^ σ) ^ 4)) := by
+          ring
+  -- the three exponents
+  have e2 : X ^ (18 / 5 - 4 * σ) ≤ T ^ (E₀ + κ) :=
+    le_trans (rpow_le_rpow_mul_of_le hT0.le hX0.le hXα (by linarith))
+      (Real.rpow_le_rpow_of_exponent_le hT (by linarith))
+  have e3 : T * X ^ (12 / 5 - 4 * σ) ≤ T ^ (E₀ + κ) :=
+    le_trans (mul_rpow_le_of_rpow_le hT0 hXa (by linarith))
+      (Real.rpow_le_rpow_of_exponent_le hT (by linarith))
+  have hY0 : 0 ≤ Y := by rw [hY]; positivity
+  have hsum : B ^ 2 * L ^ 2 / (X ^ σ * v / R) ^ 2 + B ^ 4 * L ^ (18/5 : ℝ) / (X ^ σ * v / R) ^ 4
+      + T * B ^ 4 * L ^ (12/5 : ℝ) / (X ^ σ * v / R) ^ 4 ≤ Y * (3 * T ^ (E₀ + κ)) := by
+    have := mul_le_mul_of_nonneg_left hdiag hY0
+    have := mul_le_mul_of_nonneg_left e2 hY0
+    have := mul_le_mul_of_nonneg_left e3 hY0
+    nlinarith
+  have hR4 : R ^ 4 ≤ ((M : ℝ) + 1) ^ 4 := pow_le_pow_left₀ (by linarith) hRM 4
+  have hR0 : 0 ≤ R := by linarith
+  have hTε : 0 ≤ T ^ ε₁ := Real.rpow_nonneg hT0.le _
+  have hTE : 0 ≤ T ^ (E₀ + κ) := Real.rpow_nonneg hT0.le _
+  calc c ≤ R * (C * T ^ ε₁ * (Y * (3 * T ^ (E₀ + κ)))) :=
+        le_trans hc (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hsum (by positivity)) hR0)
+    _ = 3 * C * (R * R ^ 4) * 2 ^ (4 * M) * (T ^ ε₁ * B ^ 4 * Q ^ (4 * M)) * T ^ (E₀ + κ) := by
+        rw [hY]
+        ring
+    _ ≤ 3 * C * (((M : ℝ) + 1) * ((M : ℝ) + 1) ^ 4) * 2 ^ (4 * M) *
+          (T ^ ε₁ * B ^ 4 * Q ^ (4 * M)) * T ^ (E₀ + κ) := by
+        gcongr
+    _ = 3 * ((M : ℝ) + 1) ^ 5 * 2 ^ (4 * M) * C * (T ^ ε₁ * B ^ 4 * Q ^ (4 * M)) *
+          T ^ (E₀ + κ) := by ring
+
+/-- **The losses of the Guth–Maynard range.**  With the coefficient bound
+`B = ((C_η + 1) T^{3η})^{2M}`, `24Mη = ε/4` and `Q^{4M} ≤ T^{ε/4}`:
+`T^{ε/4} B⁴ Q^{4M} T^{E₀+ε/4} ≤ (C_η + 1)^{8M} T^{E₀+ε}`. -/
+theorem gm_loss_le {T Cη η Q ε E₀ : ℝ} {M : ℕ} (hT : 0 < T) (hCη : 0 ≤ Cη)
+    (h24 : 24 * (M : ℝ) * η = ε / 4) (hQ : Q ^ (4 * M) ≤ T ^ (ε / 4)) :
+    T ^ (ε / 4) * (((Cη + 1) * T ^ (3 * η)) ^ (2 * M)) ^ 4 * Q ^ (4 * M) * T ^ (E₀ + ε / 4)
+      ≤ (Cη + 1) ^ (8 * M) * T ^ (E₀ + ε) := by
+  have hB4 : (((Cη + 1) * T ^ (3 * η)) ^ (2 * M)) ^ 4 = (Cη + 1) ^ (8 * M) * T ^ (ε / 4) := by
+    rw [← pow_mul, mul_pow, ← Real.rpow_natCast (T ^ (3 * η)), ← Real.rpow_mul hT.le,
+      show 2 * M * 4 = 8 * M by ring]
+    congr 2
+    push_cast
+    linarith
+  have hs : T ^ (ε / 4) * T ^ (ε / 4) * T ^ (ε / 4) * T ^ (E₀ + ε / 4) = T ^ (E₀ + ε) := by
+    rw [← Real.rpow_add hT, ← Real.rpow_add hT, ← Real.rpow_add hT]
+    ring_nf
+  rw [hB4]
+  calc T ^ (ε / 4) * ((Cη + 1) ^ (8 * M) * T ^ (ε / 4)) * Q ^ (4 * M) * T ^ (E₀ + ε / 4)
+      ≤ T ^ (ε / 4) * ((Cη + 1) ^ (8 * M) * T ^ (ε / 4)) * T ^ (ε / 4) * T ^ (E₀ + ε / 4) := by
+        gcongr
+    _ = (Cη + 1) ^ (8 * M) * (T ^ (ε / 4) * T ^ (ε / 4) * T ^ (ε / 4) * T ^ (E₀ + ε / 4)) := by
+        ring
+    _ = (Cη + 1) ^ (8 * M) * T ^ (E₀ + ε) := by rw [hs]
 
 end
 

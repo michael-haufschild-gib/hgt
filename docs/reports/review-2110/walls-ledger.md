@@ -17,20 +17,18 @@ the first two cite faces by the labels of the companion numbering:
 10 = 1.1 and 1.8, 13 = 3.3, 15 = 3.2, 16 = 1.8, 6 = 1.8, 17 = 1.8. Walls keep their labels; the
 labels 2, 4–13 and 15–17 are not used for separate walls.
 
-**Lean checkpoint** `8cbf5160e`. Evidence tags: [L] = committed Lean declaration imported by its
+**Lean checkpoint** `2fd2179bf`. Evidence tags: [L] = committed Lean declaration imported by its
 committed umbrella; [S] = Lean source in the working tree whose file or umbrella import is
 uncommitted, or a module not imported by its umbrella (compiles standalone, no committed audit);
 [P] = paper only. Module paths are relative to `formal/GaloisForLFunctions/`, with
 `R:` = `RHTower/`, `H:` = `HTGeometry/`, `B:` = `BiScaleUncertainty/`, `V:` = `BezoutValuationIncidence/`,
 `T:` = `TransHorizonIncidenceMechanics/`, `A:` = `arithmetic-positivity-theory/`,
 `C:` = `ArithmeticCriticalityTheory/`, `I:` = `ArithmeticIncidencePositivity/`,
-`Q:` = `SquareRootThreshold/`. Working-tree [S] items at this checkpoint: the modules of face
-1.8, `R:ReceiverDampingsAccumulateAboveTheZeros`, `Q:TheReceiverDampingReadsTheZeroWidth`,
-`T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros`,
-`V:LittlewoodAdmitsTheReceiverAboveHalfTheZeroAbscissa` and
-`R:TheDampedMoebiusMellinQuotientIsHardyRightOfTheZeroAbscissa`, each compiled, imported by its
-umbrella in the working tree and closed with standard axioms; every other cited module is committed
-and imported by its committed umbrella.
+`Q:` = `SquareRootThreshold/`. Working-tree [S] items at this checkpoint:
+`R:AdmissionBelowHalfDampingAboveTheZeroWidth` (the sharp arrow of face 1.8), compiled, imported by
+`RHTower.lean` in the working tree and closed with standard axioms, and the modules tagged [S] in
+face 1.3 (the clustering law of the ground-energy rate); every other cited module is committed and
+imported by its committed umbrella.
 
 Two general facts frame every wall. First, every graded relaxation of a surveyed route is a zero-free
 half-plane or a finite-height verification: a one-sided power bound `O(x^θ)` on a Chebyshev, Mertens or
@@ -40,7 +38,7 @@ the damped Möbius receiver at one fixed damping `ε ∈ (0, 1/2)` already gives
 `ζ(ρ) = 0, Re ρ > 1/2 + ε ⟹ ζ(ρ − ε) = 0` (`pmPowerDamped_zero_translation`,
 `R:PMPowerDampedMobiusCriterion` [L]), and bounds at dampings accumulating at `ε₀` give the zero-free
 half-plane `Re ρ ≤ 1/2 + ε₀` (`re_le_of_accPt_receiverDampings`,
-`R:ReceiverDampingsAccumulateAboveTheZeros` [S]). There is no producer target weaker than RH on these routes.
+`R:ReceiverDampingsAccumulateAboveTheZeros` [L]). There is no producer target weaker than RH on these routes.
 Second, a new attempt must name the wall it passes and the concrete input that passes it before
 anything is built; Wall 1 in each of its faces is an RH-strength target in disguise,
 Wall 3 states what a class of evidence cannot do, Wall 14 constrains the shape of any
@@ -83,10 +81,10 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   `(½, ∞)`, with accumulation points `[½, ∞)` (`receiverBounded_magnitudeInvariant_iff`,
   `uniformReceiverBound_iff_amplitudeInvariant`, `uniformReceiverBound_iff_half_lt`,
   `T:UnsignedMajorantsAndSignBlindDataStopAtHalfDamping` [L]; `signBlindDampings_eq_Ioi_half`,
-  `derivedSet_signBlindDampings`, `T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros` [S]).
+  `derivedSet_signBlindDampings`, `T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros` [L]).
   The signed weight `μ(d)d^{−ε}` is admissible on `[½, ∞)` and its admissible dampings read the
   width: every accumulation point `ε₀` of them satisfies `zetaZeroWidth ≤ ε₀`
-  (`zetaZeroWidth_le_of_accPt_receiverDampings`, `Q:TheReceiverDampingReadsTheZeroWidth` [S]). This is
+  (`zetaZeroWidth_le_of_accPt_receiverDampings`, `Q:TheReceiverDampingReadsTheZeroWidth` [L]). This is
   face 1.8.
 - *Grids.* A geometric progression of dyadic prime windows reads the width exactly up to the attainment
   of the top (`zetaZeroWidth_le_iff_attainedTop_and_grid_primeWindow_ge_neg_exp`,
@@ -124,14 +122,14 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   `Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]); unconditionally the exponent
   is the width or the off-line zeros cluster without bound. The receiver damping is one more such
   family: its rate `receiverDampingRate`, the infimum of the accumulation points of the admissible
-  dampings of the signed Möbius weight, lies in `[zetaZeroWidth, ½]` and vanishes only with RH
+  dampings of the signed Möbius weight, lies in `[zetaZeroWidth, ½]` and vanishes iff RH
   (`zetaZeroWidth_le_receiverDampingRate`, `receiverDampingRate_le_half`,
-  `riemannHypothesis_of_receiverDampingRate_eq_zero`, `Q:TheReceiverDampingReadsTheZeroWidth` [S]);
-  its open arrow `receiverDampingRate ≤ zetaZeroWidth` is admission below half damping, closed
-  half-way by Littlewood: `receiverDampingRate ≤ ¼ + zetaZeroWidth/2`, and crossing below `½` is
-  quasi-RH (`receiverDampingRate_le_half_zetaZeroAbscissa`, `receiverDampingRate_lt_half_iff`,
-  `V:LittlewoodAdmitsTheReceiverAboveHalfTheZeroAbscissa` [S]). The sign-blind reading of the
-  same family has rate exactly `½`.
+  `riemannHypothesis_iff_receiverDampingRate_eq_zero`, `Q:TheReceiverDampingReadsTheZeroWidth` [L]);
+  the converse `receiverDampingRate ≤ zetaZeroWidth` is admission below half damping, proved by
+  the Mellin–Hardy argument, so the damping is an exact currency,
+  `receiverDampingRate = zetaZeroWidth` (`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`,
+  `R:AdmissionBelowHalfDampingAboveTheZeroWidth` [S]). The sign-blind reading of the same family
+  has rate exactly `½`.
 
 What the principle does not cover: the carrier constraints of Wall 14 (no finite-rank, trace-class or
 Frobenius-integral arithmetic realization), proved by the size of `S(T)` and by transcendence and
@@ -154,9 +152,9 @@ transport law; the axis face as the strip itself and as the de Bruijn–Newman h
 ground-energy face as the decay rate of the restricted Weil ground energy; the cone face as the only
 point of the Weil cone; the Jensen face as the Balazard–Saias–Yor integral; the quantifier face as what
 grids and averages read up to attainment; the amplification face as the exponent of every power of
-the deficit; the sign face as the damping threshold of the Möbius receiver, read from above by the
-dampings at which the signed weight is admissible. Progress on any face is progress on the width,
-and an improvement counts once.
+the deficit; the sign face as the damping threshold of the Möbius receiver, the infimum of the
+accumulation points of the dampings at which the signed weight is admissible. Progress on any face
+is progress on the width, and an improvement counts once.
 
 **The dictionary** (`Q:TheWallsMeasureOneZeroWidth`, `Q:LagGridsAndTransportLawsReadTheZeroWidth` [L],
 `R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` [L]; every statement unconditional, no premises).
@@ -634,32 +632,37 @@ accumulate at `0`, which is RH; the cofinal criterion
 `zetaZeroWidth_le_receiverDampingRate`, `receiverDampingRate_le_half`,
 `receiverDampingRate_eq_zero_iff_accPt_zero`, `riemannHypothesis_of_receiverDampingRate_eq_zero`,
 `accPt_zero_receiverDampings_iff`; `R:ReceiverDampingsAccumulateAboveTheZeros`,
-`Q:TheReceiverDampingReadsTheZeroWidth` [S]). The open arrow is the converse
-`receiverDampingRate ≤ zetaZeroWidth`: at `σ = 0` it is the admission of the signed weight at
-arbitrarily small damping under RH, the same shape as the open arrow of face 1.3. Half of it is
-closed by Littlewood's bound: with `Θ = zetaZeroAbscissa = ½ + zetaZeroWidth`, every damping
-`ε > Θ/2` is admissible, by the rate transfer `|A_ε(n)| ≤ 3D^{1−ε} + 31Ln D^{−ε}` fed with
-`|M(x)| ≤ Cx^{Θ+δ}` beyond `D ≈ n^{1/(2−Θ−δ)}`, so the rate is sandwiched,
-`zetaZeroWidth ≤ receiverDampingRate ≤ ¼ + zetaZeroWidth/2`; the signed family crosses below half
-damping iff `Θ < 1`, a zero-free strip, and under RH every damping above `¼` is admissible
-(`mem_receiverDampings_of_half_zetaZeroAbscissa_lt`, `receiverDampingRate_sandwich`,
-`receiverDampingRate_lt_half_iff`, `receiverDampingRate_le_quarter_of_riemannHypothesis`;
-`V:LittlewoodAdmitsTheReceiverAboveHalfTheZeroAbscissa` [S]). The elementary transfer is pointwise
-and loses on the sawtooth head `Σ_{d≤n} μ(d)d^{−ε}{n/d}`; the sharp arrow is a mean-square
-statement: the Mellin quotient `(1 − 2^{1−s})ζ(s)/(sζ(s+ε))` of the Fermi source lies in Burnol's
-Mellin–Hardy class right of `½` as soon as `Θ < ½ + ε` (`isMellinTailHardy_etaZetaQuotient`,
-`R:TheDampedMoebiusMellinQuotientIsHardyRightOfTheZeroAbscissa` [S]: convexity, the subpolynomial
-reciprocal-zeta datum and `|s|^{−1}` give line masses `≤ ∫K²(1+|ξ|)^{−9/8}`), so by the
-Paley–Wiener identification it is the Mellin transform of a square-integrable tail datum; what
-remains is the identification of that datum with the inverted source
-(`docs/drafts/pipeline/1-in-progress/receiver-damping-open-arrow-admission-below-half-2026-10-21.md`).
+`Q:TheReceiverDampingReadsTheZeroWidth` [L]). The converse arrow is closed: for every damping
+`ε > zetaZeroWidth` the Fermi source is square-integrable, so the receiver damping rate is exactly
+the width, `receiverDampingRate = zetaZeroAbscissa − ½ = zetaZeroWidth`, RH is the vanishing of the
+rate, the accumulation of admissible dampings at `0`, and the cofinal budget criterion of the PM
+route is an equivalence (`mem_receiverDampings_of_zetaZeroAbscissa_lt`,
+`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`, in the width's own language
+`receiverDampingRate_eq_zetaZeroWidth` and `Ioi_zetaZeroWidth_subset_receiverDampings`
+(`Q:TheReceiverDampingReadsTheZeroWidth` [S] for these two), `riemannHypothesis_iff_receiverDampingRate_eq_zero`,
+`riemannHypothesis_iff_accPt_zero_receiverDampings`, `riemannHypothesis_iff_cofinal_budget`,
+`Ioi_zero_subset_receiverDampings_of_riemannHypothesis`;
+`R:AdmissionBelowHalfDampingAboveTheZeroWidth` [S]). The mechanism is a mean-square one: the
+Mellin quotient `(1 − 2^{1−s})ζ(s)/(sζ(s+ε))` of the Fermi source lies in Burnol's Mellin–Hardy
+class right of `½` as soon as `Θ < ½ + ε` (`isMellinTailHardy_etaZetaQuotient`,
+`R:TheDampedMoebiusMellinQuotientIsHardyRightOfTheZeroAbscissa` [L]: convexity
+`‖ζ(σ+it)‖ ≤ Ct^{(9/8−σ)/2}`, the subpolynomial reciprocal-zeta datum right of `Θ + δ`, and
+`|s|^{−1}` give line masses `≤ ∫K²(1+|ξ|)^{−9/8}`), so by the Paley–Wiener identification it is
+the right Mellin transform of a square-integrable tail datum; inversion `g(u) = u⁻¹f_ε(1/u)` turns
+the source into a tail datum with the same Mellin transform on the strip `max(½, 1−ε) < Re s < 1`,
+the two data have the same Laplace transform on a vertical line in the logarithmic chart, and
+Fourier uniqueness on `L¹` identifies them (`mellinTail_invertedFermiSource`,
+`memLp_source_of_memLp_inverted`). The elementary bound through Littlewood,
+`receiverDampingRate ≤ ¼ + zetaZeroWidth/2`, is superseded but kept as the pointwise reading
+(`V:LittlewoodAdmitsTheReceiverAboveHalfTheZeroAbscissa` [L]); its loss on the sawtooth head is
+exactly what the mean square does not pay.
 
 The coarsening is the sign. On the damped class `𝒞(K, ε) = {|c(d)| ≤ Kd^{−ε}}` the sign-blind
 dampings, those at which one budget bounds the receiver of every weight of the class, are exactly
 `(½, ∞)`, with infimum `½` and accumulation points `[½, ∞)` (`signBlindDampings_eq_Ioi_half`,
 `sInf_signBlindDampings`, `derivedSet_signBlindDampings`); the signed dampings contain them
 (`signBlindDampings_subset_receiverDampings`, `mem_receiverDampings_iff_receiverBounded`;
-`T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros` [S]). Through the sign-blind family the
+`T:SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros` [L]). Through the sign-blind family the
 width is read only as `zetaZeroWidth ≤ ½`; the signed family reads it below `½`, and at `ε = ½` the
 Möbius weight itself has a bounded receiver because `ζ(1 + it) ≠ 0`. The four languages of the
 former Wall 16 say what the sign-blind data are and where each stops.
@@ -1076,7 +1079,7 @@ modes, if any, is not a lattice.
 
 | Wall | Routes it binds | Status and the open unit |
 |---|---|---|
-| 1 The zero width (faces 1.1–1.8) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC, RN. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, every positivity route, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL. 1.6: BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids. 1.7: HF, IRK, PTR, W1C, TG. 1.8: PA, JAS, PBM, DR, WBF, PM, MC, CTF, BVI, THIM, WL, FU, RP, LI, RN, EGC | [L]. One open unit in eight currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`, the attained top of a grid, the accumulation point of the admissible dampings; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor (transferred when the off-line zeros are uniformly bounded in number on unit height windows [S]). Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. By the aperture principle none of these units can be closed at a bounded aperture or lag. Sign face: sharp at `ε = 1/2` for every sign-blind reading (unsigned majorant, amplitudes and magnitudes decide iff `ε > 1/2`; Type-II `ℓ²` stops at `θ = 1`, Type-I at `3/2`, the receiver sits at `θ = 2`; absolute transports stop at `k^{−1/2}`; separating observables classified); the signed dampings read `zetaZeroWidth ≤ ε₀` at every accumulation point `ε₀`, and `zetaZeroWidth ≤ receiverDampingRate ≤ 1/4 + zetaZeroWidth/2`, with `receiverDampingRate < 1/2` iff quasi-RH [S]; the sharp arrow `receiverDampingRate = zetaZeroWidth` is open, reduced to a Paley–Wiener identification. |
+| 1 The zero width (faces 1.1–1.8) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC, RN. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, every positivity route, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL. 1.6: BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids. 1.7: HF, IRK, PTR, W1C, TG. 1.8: PA, JAS, PBM, DR, WBF, PM, MC, CTF, BVI, THIM, WL, FU, RP, LI, RN, EGC | [L]. One open unit in eight currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`, the attained top of a grid, the accumulation point of the admissible dampings; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor (transferred when the off-line zeros are uniformly bounded in number on unit height windows [S]). Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. By the aperture principle none of these units can be closed at a bounded aperture or lag. Sign face: sharp at `ε = 1/2` for every sign-blind reading (unsigned majorant, amplitudes and magnitudes decide iff `ε > 1/2`; Type-II `ℓ²` stops at `θ = 1`, Type-I at `3/2`, the receiver sits at `θ = 2`; absolute transports stop at `k^{−1/2}`; separating observables classified); the signed dampings read `zetaZeroWidth ≤ ε₀` at every accumulation point `ε₀`, and `receiverDampingRate = zetaZeroWidth` exactly, so RH is the accumulation of admissible dampings at `0` and the PM cofinal budget criterion is an equivalence [S]. |
 | 3 The Nyquist law (faces 3.1–3.3) | 3.1: LA, TH, HCF, XN, WD, JAS, SRT. 3.2: TT, WD, XN, TG, RN, HF, CHMD, OWU, ACT, AIP, BSH, CDC, HJ, IRK, FEL, RFHM, SC, SEC, PTR, W1C, EGC. 3.3: RW, HF, EWU, OWU, CHMD, TT, RN, ACT, AIP, MSC | [L]. One threshold `L/2` for position and depth; resolution aperture `π/(2g)` exact; invisibility is mimicry below it; a certificate of radius `R` reads the primes below `e^{2R}`, with `3/10 < (log 2)/2 < 9/25` for the all-test and the odd certificates, and every radius is mimicked by a weight outside the cone; lag side: hiding needs collapsed clusters, the pair-correlation barrier remains. |
 | 14 No finite carrier (faces 14.1, 14.2) | 14.1: FU, RP, TG, RN, SZ, HF, CHMD, OWU, APF, EWJ, PCS, IRK, SC, SEC, PTR, W1C, WBF. 14.2: HF, IRK, PTR, W1C, TG | [L]. CCM's finite-aperture realization is unconditional and convergence to `Ξ` is the premise; purity `|ω| = √q` is not formalized. |
 

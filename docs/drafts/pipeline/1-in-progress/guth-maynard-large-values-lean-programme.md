@@ -559,3 +559,82 @@ Nine wired modules `RHTower/Sieve/HeathBrownPairSum*` (umbrella lines appended; 
   Corollary 2.1 does not return to a length `≤ N` and the closure fails; the reflection+fourth-moment route gives
   only `|W|^{3/2}`-type third terms. Needs HB 1979 Theorem 1 / Ivić Lemma 11.5 (not open access). GM (6.3) uses the
   full form at length `M^k`; it is covered without the third term whenever `M^k ≥ (2T)^{2/3}`.
+
+### Lean (2026-10-22): §9 (Lemma 9.2, Proposition 9.1) and §10 (Proposition 10.1)
+
+Eight new modules in `RHTower/Sieve/`, namespace `RHTower.GuthMaynard`, each compiled with
+`lake env lean` (0 errors, 0 warnings), oleans built, all wired at the end of `RHTower.lean`
+(lines 27995–28002); `#print axioms` of every theorem below = `[propext, Classical.choice, Quot.sound]`.
+
+* `GuthMaynardAffineSum` — `J(f)`: `affineSum f M₁ M₂ M₃ u = Σ_{|m₁|∼M₁, m₂∼M₂, |m₃|≤M₃} f((m₁u+m₃)/m₂)`
+  (`n ∼ M` ⇔ `M < n ≤ 2M`; the `≪` in `|m₃| ≪ M₃` taken as `≤`), `affineEnergy = ∫ A²`,
+  `affineSup f M = sSup {affineEnergy f t : 0 < tᵢ < M}` (= `J_M(f)`); `affineSum_eq_posAffineSum_add`
+  (two signs of `m₁`), `affineEnergy_le_trivial` (`∫ A² ≤ 10368 μ⁶ ∫ f²`, `μ = max(M₁,M₂,M₃,½)`),
+  `affineEnergy_le_affineSup`, `affineSup_le`.
+* `GuthMaynardAffineFejer` — Fejér majorant `L·A₊ ≤ G = Σ_{n∼M₁} Σ_{a,b<2L} ψ(nu+a−b)`, `ψ = Σ_m f(·/m)`
+  (`posAffineSum_le_fejerMajorant`); exact transforms `ψ̂(θ) = Σ m f̂(mθ)`, `χ̂ = D_K ψ̂`,
+  `Ĝ(ξ) = Σ_n n⁻¹ conj(D_K(ξ/n)) χ̂(ξ/n)` (`fourier_dilationSum`, `fourier_translateSum`,
+  `fourier_fejerMajorant`); square function one level down `∫ χ² ≤ 2KM₂ ∫ f·A₊'`
+  (`integral_translateSum_sq_le`).
+* `GuthMaynardAffineDivisorCount` — `Σ_{n∼M₁} P_K(ξ/n) ≤ 12M₁ + C_ε(3Ξ)^ε(4K² + 2πKM₁)` for
+  `M₁/2 < |ξ| ≤ Ξ` (`sum_fejerWeight_div_le`: rounding `s = round(ξ/n)·n`, divisor bound
+  `card_divisors_le_rpow`, lattice Lorentzian sums `HTGeometry.sum_lorentz_sparse_le`); low range
+  `P_K(ξ/n) ≤ 2K² f_{M₁/K}(ξ)` (`fejerWeight_div_le_low`).
+* `GuthMaynardAffineSpectral` — `∫ G² ≤ 36πK³M₁Ψ₀² + 3D ∫χ² + 648πK⁴B²M₁⁴Ξ⁻³` under
+  `η²|f̂(η)| ≤ B` (`integral_fejerMajorant_sq_le`; Plancherel `RHTower.integral_norm_sq_fourier_eq`).
+* `GuthMaynardAffineIteration` — **Lemma 9.2** (unsmoothed form, explicit constants):
+  `affineEnergy_le_iteration`: `∫A² ≤ 124416π μ⁶(∫f)² + 3072(1+C_ε(3Ξ)^ε) μ² ‖f‖₂ (∫A'²)^{1/2}
+  + 373248π μ⁶ B²Ξ⁻³`, `A'` at scales `(M₂, M₂, 2⌊M₃⌋+1)`; `J`-form `affineSup_le_iteration`
+  (`J_M(f) ≤ … ‖f‖₂ J_{4M}(f)^{1/2} …`).
+* `GuthMaynardAffineEquidistribution` — `iSup_le_of_fourier_decay` (`ξ²|f̂| ≤ A sup f ⇒
+  sup f ≤ 16π²A ∫f`, Fourier inversion), `bootstrap_affine_bound` (sup over triples of
+  `E/(μ⁶F₁²+μ⁴F₂)` is finite by the trivial bound; `Φ ≤ α + 64β√Φ ⇒ Φ ≤ 2α + 4096β²`),
+  **Proposition 9.1** `affineSup_le_of_fourier_decay` (core: `∀ δ>0, A≥0, ∃ c, ∀ f T M`, `f ≥ 0`
+  continuous, compact support, `ξ²|f̂(ξ)| ≤ A T³ sup f` ⇒ `J_M(f) ≤ c T^δ (M⁶(∫f)² + M⁴∫f²)`),
+  paper's precise reading `prop91_affineEquidistribution` (`∀ C c δ, ∃ c' > 0, ∀ f T M`, support in
+  `[1/C, C]`, `|ξ|^j|f̂(ξ)| ≤ c(j,ε)T^εT^j sup f` ∀ j, ε ⇒ same bound; `c'` depends only on `δ` and
+  `c(2,1)`), and Lemma 9.2 in `T^δ` form `affineSup_le_iteration_of_decay`.
+* `GuthMaynardPropTenOneBlocks` — the Prop. 7.2 box `InPropSevenTwoBox M₁ M` (= membership in
+  `dyadicFrequencyBlock M₁ M`) re-indexed into affine sums: `sum_box_le_affineSum`,
+  `sum_box_swap_le_affineSum` (four dyadic shells of `|m₃|`), `∫_{1/2}^2 Q² ≤ 4·∫A²`,
+  `∫_{1/2}^2 P² ≤ 64 Σ_k ∫A_k²` (inversion `v ↦ 1/v` via the Prop 8.1 brick's
+  `setIntegral_comp_le_inv_mul_integral`), all `≤ J_{16M}(f)` (`affineEnergy_box_le_affineSup`).
+* `GuthMaynardPropTenOne` — `sum_smoothedCubicTerm_sq_le` (unconditional):
+  `(Σ_{m∈𝓜} Ĩ_m)² ≤ (∫_{1/2}^2|R|²)·130 J_{16M}(f)` for every continuous compactly supported
+  `f ≥ 0` with `R̃² ≤ f` on `[−20,20]` (all arguments `α_m v, β_m v` lie there);
+  `sum_smoothedCubicTerm_le_of_decay` (with Prop 9.1 and Lemma 8.2 for `R`:
+  `Σ Ĩ_m ≤ K T^δ |W|^{1/2}(M³L₁ + M²L₄^{1/2})` given `∫f ≤ L₁`, `∫f² ≤ L₄`, `ξ²|f̂| ≤ A T³ sup f`);
+  **Proposition 10.1 assembly** `propTenOne_of_expansion` (hypothesis = Prop 7.2 inequality for an
+  arbitrary real `S₃`) and paper-shaped `guthMaynard_prop101`:
+  `S₃ ≤ C₇K(C₇²C₁ + C₇C₄^{1/2}) T^δ (T^ε)³ (T²|W|^{3/2} + TN|W|^{1/2}E(W)^{1/2}) + C₇T^{-100}`
+  from `S₃ ≤ C₇T^ε(N²/M)ΣĨ_m + C₇T^{-100}`, `NM ≤ C₇T^{1+ε}`, `∫f ≤ C₁|W|`, `∫f² ≤ C₄E(W)`.
+
+Mathematical notes. (1) The proof of Lemma 9.2 does not need the smoothing `f̃`: with Fejér weights
+the Fourier transform of the majorant factorises exactly, Cauchy–Schwarz in `n` with weights
+`n⁻¹|D_K(ξ/n)|²` plus Plancherel for `χ = Σ_{a<K} ψ(·+a)` returns `f` itself, at the price of the
+scale `4M`. The divisor bound is needed only for `|s| ≤ 3Ξ` with `Ξ = T⁴` (the far range uses the
+`j = 2` decay), so no case `M > T⁴` arises. (2) Proposition 9.1 then follows by the bootstrap above
+instead of the paper's downward induction on `ε`, and uses only the `j = 2`, `ε = 1` instance of the
+decay hypothesis; `T^δ` comes solely from `d(n) ≪_ε n^ε`. (3) Corpus reuse: Plancherel/continuity
+(`FourierPlancherelIntegral`), dilation/translation/additivity (`HTGeometry.FourierIntegralDilation`),
+`finitePhaseProgression` + geometric bound (`Sieve.PhaseGeometricBound`), divisor bound
+(`Sieve.DivisorBound`), `lorentzF` + sparse Lorentzian sums (`HTGeometry.LorentzOrderedSums`),
+`RHTower.lorentzian_integral`, Cauchy–Schwarz `HTGeometry.sq_integral_mul_le`, `‖𝓕g‖ ≤ ∫‖g‖`
+(`HTGeometry.norm_fourierReal_le_integral_norm`), the self-bound
+`Sieve.le_two_mul_add_sq_mul_of_le_add_of_sq_le_mul`, `HTGeometry.sqrt_add_le_sqrt_add_sqrt'`, and the
+sibling GM bricks (`smoothedLagSum`, `smoothedCubicTerm`, `integrableOn_norm_lagSum_mul_smoothedLagSum`,
+`setIntegral_Icc_inv_normSq_lagSum_le`, `setIntegral_comp_le_inv_mul_integral`).
+
+Remaining, precisely.
+* The paper's *smoothed* statement of Lemma 9.2 (a bump `ψ` with `f̃ = T∫ψ(T(u−u'))f(u')du'` and
+  `J(f̃)` on the right) is not formalized; it is not needed for Proposition 9.1 or 10.1. It would
+  need the locally-constant domination `f ≤ C T^δ f̃ + T^{-100} sup f` (Fourier inversion against a
+  Schwartz `φ` with `φ̂ ≡ 1` near `0`).
+* Proposition 10.1 for the bumps of Prop. 7.2 without data hypotheses: construct
+  `f = smoothedDensity ψ₁' outerBump (innerBump (2T^{ε/2})) (NM) W` (= `ψ₁' R̃²`) with
+  `0 ≤ ψ₁' ≤ 1`, `ψ₁' ≡ 1` on `supp R̃ ∩ [−20, 20]`, and discharge (i) `R̃² ≤ f` on `[−20, 20]`;
+  (ii) `ξ²|f̂(ξ)| ≤ A T³ sup f` from `guthMaynard_lemma84` with `j = 2` (its `D ⪅ T^{ε/2}`,
+  `K ⪅ T^ε` losses fit under the `T³` since `T^{2ε} ≤ T`); (iii) `∫f ≤ ∫R̃² = (∫ψ̃₁)∫ψ₂|R|² ≪ T^{ε/2}|W|`
+  (the convolution mass identity for `R̃²` is not in the corpus) and `∫f² ≤ ∫R̃⁴` (sibling Lemma 8.3);
+  then feed `prop72` (block `dyadicFrequencyBlock M₁ M`, which satisfies `InPropSevenTwoBox` by
+  `mem_dyadicFrequencyBlock`) into `guthMaynard_prop101`.

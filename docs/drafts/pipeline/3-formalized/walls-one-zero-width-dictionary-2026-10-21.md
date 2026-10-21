@@ -224,3 +224,27 @@ its admissible parameters `receiverDampings = {ε > 0 : ∃ B, ∀ T, E_T(ε) �
   admission at small damping under RH; it has the shape of the open arrow of face 1.3.
 - What is not a face of the principle: Wall 14 (carrier). Wall 3 is the aperture coarsening, face
   1.8 the sign coarsening, face 1.6 the grid coarsening, face 1.4 the weight coarsening.
+
+## Round seven: the open arrow of face 1.8 is closed
+
+`receiverDampingRate = zetaZeroAbscissa − ½ = zetaZeroWidth` (`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`,
+`RHTower/AdmissionBelowHalfDampingAboveTheZeroWidth.lean`), hence
+`RiemannHypothesis ↔ receiverDampingRate = 0 ↔ AccPt 0 (𝓟 receiverDampings) ↔` cofinal budgets
+(`riemannHypothesis_iff_cofinal_budget`): the PM route's cofinal criterion is now an equivalence,
+and under RH every positive damping is admissible.
+
+- Phase A (elementary, kept): `BezoutValuationIncidence/LittlewoodAdmitsTheReceiverAboveHalfTheZeroAbscissa`,
+  `receiverDampingRate ≤ Θ/2`, crossing below `½` iff quasi-RH.
+- Phase B1: `RHTower/TheDampedMoebiusMellinQuotientIsHardyRightOfTheZeroAbscissa`:
+  `etaZetaQuotient ε s = (1−2^{1−s})ζ(s)/(sζ(s+ε))` written as `etaSlope · zetaResidueUnit · invZeta(s+ε)/s`
+  with `etaSlope = dslope (1 − 2^{1−s}) 1`; line bound `K(1+|Im s|)^{−9/16}` on `Re s ≥ ½`;
+  `isMellinTailHardy_etaZetaQuotient` when `Θ < ½ + ε`.
+- Phase B2: `RHTower/AdmissionBelowHalfDampingAboveTheZeroWidth`: inversion to a tail datum,
+  `mellinTail_invertedFermiSource`, Paley–Wiener datum, equal Laplace transforms on a line in the
+  log chart, `HTGeometry.ae_eq_zero_of_fourierIntegral_eq_zero`, return through `logChartInv` and
+  the inversion Jacobian. Details on the card
+  `3-formalized/receiver-damping-open-arrow-admission-below-half-2026-10-21.md`.
+- Ledger: face 1.8 now states the exact law; the rate `receiverDampingRate` is an exact currency of
+  the width like the deficit exponent. The only open arrow left in Wall 1 is face 1.3's
+  `polarGroundEnergyRate ≤ zetaZeroWidth` (closed by another agent under locally bounded off-line
+  multiplicity).

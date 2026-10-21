@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SquareRootThreshold.TheZeroWidthIsALandauExponent
 import GaloisForLFunctions.RHTower.ReceiverDampingsAccumulateAboveTheZeros
+import GaloisForLFunctions.RHTower.AdmissionBelowHalfDampingAboveTheZeroWidth
 
 /-!
 # The receiver damping reads the zero width
@@ -15,16 +16,17 @@ from above.
 * `Ioi_subset_deficitAbsRates_of_accPt_receiverDampings`: every exponent above such an `ε₀` is an
   admissible exponent of the integrated Chebyshev deficit. The damping family and the deficit
   family are read in one unit.
-* `zetaZeroWidth_le_receiverDampingRate`: the rate lies in `[zetaZeroWidth, ½]`, and it vanishes
-  iff the admissible dampings accumulate at `0`, which is RH.
+* `zetaZeroWidth_le_receiverDampingRate`: the rate lies in `[zetaZeroWidth, ½]`.
+* `receiverDampingRate_eq_zetaZeroWidth`: with the admission below half damping
+  (`mem_receiverDampings_of_zetaZeroAbscissa_lt`) the rate *is* the width: the damping is an exact
+  currency of the zero width, like the Chebyshev deficit exponent, and
+  `RiemannHypothesis ↔ receiverDampingRate = 0`.
 * `zetaZeroWidth_le_of_Ioo_subset_receiverDampings`: admissibility on an interval `(a, b)` gives
-  `zetaZeroWidth ≤ a`.
+  `zetaZeroWidth ≤ a`; conversely every damping above the width is admissible
+  (`Ioi_zetaZeroWidth_subset_receiverDampings`).
 
-Half damping is the trivial rate of the family, where it is bounded unconditionally. The open
-direction, `zetaZeroWidth < ε ⟹ ε ∈ receiverDampings`, is admission below half damping; the
-elementary partial arrow `receiverDampingRate ≤ ¼ + zetaZeroWidth/2` is
-`receiverDampingRate_le_half_zetaZeroAbscissa`. With the polar ground energy rate, the receiver
-damping rate is the second family rate that dominates the width with the converse inequality open.
+Half damping is the trivial rate of the family, where it is bounded unconditionally; the width is
+where the admissible dampings stop accumulating.
 -/
 
 open Complex Set Filter Topology
@@ -65,21 +67,34 @@ theorem zetaZeroWidth_eq_zero_of_receiverDampingRate_eq_zero (h : receiverDampin
     zetaZeroWidth = 0 :=
   le_antisymm (zetaZeroWidth_le_receiverDampingRate.trans h.le) zetaZeroWidth_nonneg
 
+/-- **The receiver damping rate is the zero width.** -/
+theorem receiverDampingRate_eq_zetaZeroWidth : receiverDampingRate = zetaZeroWidth := by
+  rw [receiverDampingRate_eq_zetaZeroAbscissa_sub_half, zetaZeroWidth_eq_zetaZeroAbscissa_sub_half]
+
+/-- Every damping above the zero width is admissible. -/
+theorem Ioi_zetaZeroWidth_subset_receiverDampings : Ioi zetaZeroWidth ⊆ receiverDampings := by
+  rw [zetaZeroWidth_eq_zetaZeroAbscissa_sub_half]
+  exact Ioi_zetaZeroAbscissa_sub_half_subset_receiverDampings
+
+/-- RH is the vanishing of the receiver damping rate, in the language of the width. -/
+theorem riemannHypothesis_iff_receiverDampingRate_eq_zero' :
+    RiemannHypothesis ↔ receiverDampingRate = 0 := by
+  rw [receiverDampingRate_eq_zetaZeroWidth, riemannHypothesis_iff_zetaZeroWidth_eq_zero]
+
 /-- **The damping reads the width.** Half damping is admissible and is an accumulation point;
 every accumulation point of the admissible dampings bounds the width and every exponent above it
-is an admissible deficit exponent; the rate lies in `[zetaZeroWidth, ½]` and vanishes only with
-RH. -/
+is an admissible deficit exponent; the rate is the width, at most `½`, and vanishes iff RH. -/
 theorem receiver_damping_reads_the_zero_width :
     Ici (1 / 2 : ℝ) ⊆ receiverDampings ∧
     (1 / 2 : ℝ) ∈ derivedSet receiverDampings ∧
     (∀ ε₀ : ℝ, AccPt ε₀ (𝓟 receiverDampings) →
       zetaZeroWidth ≤ ε₀ ∧ Ioi ε₀ ⊆ deficitAbsRates) ∧
-    zetaZeroWidth ≤ receiverDampingRate ∧ receiverDampingRate ≤ 1 / 2 ∧
-    (receiverDampingRate = 0 → RiemannHypothesis) :=
+    receiverDampingRate = zetaZeroWidth ∧ receiverDampingRate ≤ 1 / 2 ∧
+    (RiemannHypothesis ↔ receiverDampingRate = 0) :=
   ⟨Ici_half_subset_receiverDampings, half_mem_derivedSet_receiverDampings,
     fun _ h => ⟨zetaZeroWidth_le_of_accPt_receiverDampings h,
       Ioi_subset_deficitAbsRates_of_accPt_receiverDampings h⟩,
-    zetaZeroWidth_le_receiverDampingRate, receiverDampingRate_le_half,
-    riemannHypothesis_of_receiverDampingRate_eq_zero⟩
+    receiverDampingRate_eq_zetaZeroWidth, receiverDampingRate_le_half,
+    riemannHypothesis_iff_receiverDampingRate_eq_zero'⟩
 
 end GaloisForLFunctions.SquareRootThreshold

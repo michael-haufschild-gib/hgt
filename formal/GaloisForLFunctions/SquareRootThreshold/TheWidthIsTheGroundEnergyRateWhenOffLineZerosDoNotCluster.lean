@@ -4,6 +4,7 @@ import GaloisForLFunctions.SquareRootThreshold.TheSideIsTheDepthAndTheWidthIsIts
 import GaloisForLFunctions.RHTower.CCMParityTopLayerGroundEnergyLaw
 import GaloisForLFunctions.RHTower.XiThermalSourceRelativeGapBound
 import GaloisForLFunctions.RHTower.XiWeilPolarization
+import GaloisForLFunctions.RHTower.ZetaLocalZeroCount
 
 /-!
 # The zero width is the fall rate of the ground energy when the off-line zeros do not cluster
@@ -397,6 +398,273 @@ theorem theWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster :
     fun _ hM => polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineCopiesLocallyBounded hM,
     polarGroundEnergyRate_eq_zetaZeroWidth_or_offLineCopies_cluster,
     infinite_offLine_of_zetaZeroWidth_lt_polarGroundEnergyRate⟩
+
+/-! ### 6. The depth-weighted hypothesis: only the squared depths on unit windows matter
+
+The count hypothesis above charges every off-line copy equally, however shallow. The floor only
+needs the squared depths: the conjugate difference `Φ(−z) − Φ(−z̄)` carries one factor of the depth,
+and the depth-weighted sampling inequality pays it with `Σ (Im z_q)²` on unit windows. Zeros that
+are off the line by a small amount cost little, and on-line zeros cost nothing. -/
+
+/-- On every unit height window the copies carry total squared depth at most `W`. -/
+def OffLineDepthLocallyBounded (W : ℝ) : Prop :=
+  ∀ T : ℝ, ∀ s : Finset XiZeroCopy, (∀ q ∈ s, |(xiSpectralPoint q).re - T| ≤ 1) →
+    ∑ q ∈ s, (xiSpectralPoint q).im ^ 2 ≤ W
+
+theorem OffLineDepthLocallyBounded.nonneg {W : ℝ} (hW : OffLineDepthLocallyBounded W) : 0 ≤ W := by
+  simpa using hW 0 ∅ (by simp)
+
+/-- Every copy has squared depth at most the squared width. -/
+theorem sq_im_xiSpectralPoint_le (q : XiZeroCopy) :
+    (xiSpectralPoint q).im ^ 2 ≤ zetaZeroWidth ^ 2 := by
+  rw [← sq_abs]
+  exact pow_le_pow_left₀ (abs_nonneg _) (abs_im_xiSpectralPoint_le_zetaZeroWidth q) 2
+
+/-- A bounded off-line count gives a bounded weighted count. -/
+theorem offLineDepthLocallyBounded_of_offLineCopiesLocallyBounded {M : ℕ}
+    (hM : OffLineCopiesLocallyBounded M) :
+    OffLineDepthLocallyBounded (M * zetaZeroWidth ^ 2) := by
+  classical
+  intro T s hs
+  set s' := s.filter (fun q => (xiSpectralPoint q).im ≠ 0) with hs'
+  have hcard : (s'.card : ℝ) ≤ M := by
+    have hsub : ((s' : Set XiZeroCopy)) ⊆
+        {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0 ∧ |(xiSpectralPoint q).re - T| ≤ 1} := by
+      intro q hq
+      rw [Finset.mem_coe, hs', Finset.mem_filter] at hq
+      exact ⟨hq.2, hs q hq.1⟩
+    have h := (Set.encard_le_encard hsub).trans (hM T)
+    rw [Set.encard_coe_eq_coe_finsetCard] at h
+    exact_mod_cast h
+  calc ∑ q ∈ s, (xiSpectralPoint q).im ^ 2 = ∑ q ∈ s', (xiSpectralPoint q).im ^ 2 := by
+        rw [hs', Finset.sum_filter]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        split_ifs with h
+        · rfl
+        · push Not at h
+          rw [h]
+          ring
+    _ ≤ ∑ _q ∈ s', zetaZeroWidth ^ 2 := Finset.sum_le_sum fun q _ => sq_im_xiSpectralPoint_le q
+    _ = s'.card * zetaZeroWidth ^ 2 := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ M * zetaZeroWidth ^ 2 := mul_le_mul_of_nonneg_right hcard (sq_nonneg _)
+
+/-- **Unconditionally the weighted count is at most `40 σ² log(180 T)`** on unit windows at height
+`|T| ≥ 4`, from the local zero count; the hypothesis asks for a bound independent of `T`. -/
+theorem sum_sq_im_xiSpectralPoint_window_le {T : ℝ} (hT : 4 ≤ |T|) (s : Finset XiZeroCopy)
+    (hs : ∀ q ∈ s, |(xiSpectralPoint q).re - T| ≤ 1) :
+    ∑ q ∈ s, (xiSpectralPoint q).im ^ 2 ≤ 40 * zetaZeroWidth ^ 2 * Real.log (180 * |T|) := by
+  have hre : ∀ q : XiZeroCopy, (xiSpectralPoint q).re = (q.1 : ℂ).im := fun q => by
+    simp [xiSpectralPoint]
+  have hcard := card_le_of_ordinates_in_window hT s fun q hq => by
+    have := hs q hq
+    rwa [hre] at this
+  calc ∑ q ∈ s, (xiSpectralPoint q).im ^ 2 ≤ ∑ _q ∈ s, zetaZeroWidth ^ 2 :=
+        Finset.sum_le_sum fun q _ => sq_im_xiSpectralPoint_le q
+    _ = s.card * zetaZeroWidth ^ 2 := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ 40 * Real.log (180 * |T|) * zetaZeroWidth ^ 2 :=
+        mul_le_mul_of_nonneg_right hcard (sq_nonneg _)
+    _ = 40 * zetaZeroWidth ^ 2 * Real.log (180 * |T|) := by ring
+
+/-- The depth-weighted floor constant `A² (2A + 2π) e^{2π} e^{2σA} W`, `σ = zetaZeroWidth`. -/
+def depthFloorConst (W A : ℝ) : ℝ :=
+  A ^ 2 * ((2 * A + 2 * π) * Real.exp (2 * π) * Real.exp (2 * zetaZeroWidth * A)) * W
+
+/-- **The depth-weighted floor on smooth sources.** -/
+theorem sourceQuadratic_ge_of_offLineDepthLocallyBounded {W : ℝ}
+    (hW : OffLineDepthLocallyBounded W) {a : SuzukiPositiveAperture}
+    (u : CCMComplexSmoothInteriorSource a) :
+    -(depthFloorConst W a.1) * ∫ x, ‖u x‖ ^ 2 ≤
+      ccmRestrictedWeilSourceQuadratic a u.toCCMFormVector := by
+  have ha : 0 < a.1 := a.2
+  have hI := smoothSource_intervalSource u
+  set N := ∫ x, ‖u x‖ ^ 2 with hN
+  set K := depthFloorConst W a.1 with hK
+  have hK_eq : K = a.1 ^ 2 * ((2 * a.1 + 2 * π) * Real.exp (2 * π) *
+      Real.exp (2 * zetaZeroWidth * a.1)) * W := rfl
+  set T : XiZeroCopy → ℂ := fun q => zeroSumTerm u (xiSpectralPoint q) with hT
+  have hsumm : Summable T := summable_zeroSumTerm u
+  have hsumm_re : Summable fun q => (T q).re := Complex.reCLM.summable hsumm
+  rw [sourceQuadratic_eq_re_tsum, Complex.re_tsum hsumm]
+  have hWs : ∀ s : Finset XiZeroCopy, ∀ T₀ : ℝ, ∀ t : Finset XiZeroCopy, t ⊆ s →
+      (∀ q ∈ t, |-(xiSpectralPoint q).re - T₀| ≤ 1) →
+      ∑ q ∈ t, (-(xiSpectralPoint q).im) ^ 2 ≤ W := by
+    intro s T₀ t _ ht
+    have e : ∀ q ∈ t, |(xiSpectralPoint q).re - -T₀| ≤ 1 := by
+      intro q hq
+      have := ht q hq
+      rwa [show -(xiSpectralPoint q).re - T₀ = -((xiSpectralPoint q).re - -T₀) by ring,
+        abs_neg] at this
+    simp_rw [neg_sq]
+    exact hW (-T₀) t e
+  have hdepth : ∀ q : XiZeroCopy, |-(xiSpectralPoint q).im| ≤ zetaZeroWidth := fun q => by
+    rw [abs_neg]; exact abs_im_xiSpectralPoint_le_zetaZeroWidth q
+  have e1 : ∀ q : XiZeroCopy, -xiSpectralPoint q =
+      ((-(xiSpectralPoint q).re : ℝ) : ℂ) + ((-(xiSpectralPoint q).im : ℝ) : ℂ) * I := fun q => by
+    apply Complex.ext <;> simp
+  have e2 : ∀ q : XiZeroCopy, -(starRingEnd ℂ) (xiSpectralPoint q) =
+      ((-(xiSpectralPoint q).re : ℝ) : ℂ) - ((-(xiSpectralPoint q).im : ℝ) : ℂ) * I := fun q => by
+    apply Complex.ext <;> simp
+  have hA : ∀ s : Finset XiZeroCopy,
+      ∑ q ∈ s, ‖testTransform u (-xiSpectralPoint q) -
+        testTransform u (-(starRingEnd ℂ) (xiSpectralPoint q))‖ ^ 2 ≤ 4 * (K * N) := by
+    intro s
+    have h := sum_norm_sq_testTransform_sub_conj_le_of_depthWeighted' ha hI
+      (fun q => -(xiSpectralPoint q).re) (fun q => -(xiSpectralPoint q).im)
+      zetaZeroWidth_nonneg hdepth s (hWs s)
+    simp_rw [e1, e2]
+    rw [hK_eq, hN]
+    exact h.trans (le_of_eq (by ring))
+  set low : XiZeroCopy → ℝ := fun q => -(‖testTransform u (-xiSpectralPoint q) -
+      testTransform u (-(starRingEnd ℂ) (xiSpectralPoint q))‖ ^ 2 / 4) with hlow
+  have hlow_le : ∀ q, low q ≤ (T q).re := fun q => by
+    simp only [hlow, hT, zeroSumTerm]
+    exact re_mul_conj_ge _ _
+  have hlow_sum : ∀ s : Finset XiZeroCopy, ∑ q ∈ s, -low q ≤ K * N := by
+    intro s
+    have := hA s
+    simp only [hlow, neg_neg]
+    rw [← Finset.sum_div]
+    linarith
+  have hlow_summ : Summable fun q => -low q :=
+    summable_of_sum_le (fun q => by simp only [hlow, neg_neg]; positivity) hlow_sum
+  have hlow_summ' : Summable low := by simpa using hlow_summ.neg
+  calc -K * N = -(K * N) := by ring
+    _ ≤ -∑' q, -low q := neg_le_neg (hlow_summ.tsum_le_of_sum_le hlow_sum)
+    _ = ∑' q, low q := by rw [tsum_neg, neg_neg]
+    _ ≤ ∑' q, (T q).re := hlow_summ'.tsum_le_tsum hlow_le hsumm_re
+
+/-- The depth-weighted floor on every pure-parity form vector. -/
+theorem sourceQuadratic_ge_of_offLineDepthLocallyBounded_of_parity {W : ℝ}
+    (hW : OffLineDepthLocallyBounded W) {a : SuzukiPositiveAperture}
+    (w : CCMArchimedeanFormDomain a)
+    (hw : ccmArchimedeanFormReflection a w = w ∨ ccmArchimedeanFormReflection a w = -w) :
+    -(depthFloorConst W a.1) * ‖ccmArchimedeanFormToAperture a w‖ ^ 2 ≤
+      ccmRestrictedWeilSourceQuadratic a w := by
+  rcases hw with hw | hw
+  · exact floor_of_isEven_of_smooth
+      (fun u _ => sourceQuadratic_ge_of_offLineDepthLocallyBounded hW u) w hw
+  · exact floor_of_isOdd_of_smooth
+      (fun u _ => sourceQuadratic_ge_of_offLineDepthLocallyBounded hW u) w hw
+
+/-- **The width-to-floor arrow under a bounded depth mass on unit windows.**
+`μ(A) ≥ −A² (2A + 2π) e^{2π} e^{2·zetaZeroWidth·A} W`. -/
+theorem neg_depthFloorConst_le_ccmRestrictedWeilGroundEnergy {W : ℝ}
+    (hW : OffLineDepthLocallyBounded W) (A : SuzukiPositiveAperture) :
+    -(depthFloorConst W A.1) ≤ ccmRestrictedWeilGroundEnergy A := by
+  obtain ⟨f, hf0, hpar, hground⟩ := exists_ccmRestrictedWeil_pureParity_groundFormState A
+  have hpos : 0 < ‖ccmArchimedeanFormToAperture A f‖ ^ 2 := by positivity
+  have hfl := sourceQuadratic_ge_of_offLineDepthLocallyBounded_of_parity hW f hpar
+  rw [hground] at hfl
+  exact le_of_mul_le_mul_right hfl hpos
+
+/-- `A²(2A + 2π) ≤ (12/(2ε)³ + 4π/(2ε)²) e^{2εA}` for `A ≥ 0`. -/
+theorem sq_mul_linear_le_exp {ε : ℝ} (hε : 0 < ε) {A : ℝ} (hA : 0 ≤ A) :
+    A ^ 2 * (2 * A + 2 * π) ≤
+      (12 / (2 * ε) ^ 3 + 4 * π / (2 * ε) ^ 2) * Real.exp (2 * ε * A) := by
+  have hx : 0 ≤ 2 * ε * A := by positivity
+  have h3 := Real.pow_div_factorial_le_exp (2 * ε * A) hx 3
+  have h2 := Real.pow_div_factorial_le_exp (2 * ε * A) hx 2
+  have hf3 : (((3 : ℕ).factorial : ℕ) : ℝ) = 6 := by norm_num [Nat.factorial]
+  have hf2 : (((2 : ℕ).factorial : ℕ) : ℝ) = 2 := by norm_num [Nat.factorial]
+  rw [hf3, div_le_iff₀ (by norm_num), mul_pow] at h3
+  rw [hf2, div_le_iff₀ (by norm_num), mul_pow] at h2
+  have hε' : 0 < (2 * ε) ^ 3 := by positivity
+  have hε'' : 0 < (2 * ε) ^ 2 := by positivity
+  have hA3 : A ^ 3 ≤ 6 * Real.exp (2 * ε * A) / (2 * ε) ^ 3 := by
+    rw [le_div_iff₀ hε']
+    linarith [mul_comm ((2 * ε) ^ 3) (A ^ 3)]
+  have hA2 : A ^ 2 ≤ 2 * Real.exp (2 * ε * A) / (2 * ε) ^ 2 := by
+    rw [le_div_iff₀ hε'']
+    linarith [mul_comm ((2 * ε) ^ 2) (A ^ 2)]
+  have hpi := Real.pi_pos
+  have e : A ^ 2 * (2 * A + 2 * π) = 2 * A ^ 3 + 2 * π * A ^ 2 := by ring
+  rw [e, add_mul, div_mul_eq_mul_div, div_mul_eq_mul_div]
+  have hpiA : 2 * π * A ^ 2 ≤ 2 * π * (2 * Real.exp (2 * ε * A) / (2 * ε) ^ 2) :=
+    mul_le_mul_of_nonneg_left hA2 (by positivity)
+  have hA3' : 2 * A ^ 3 ≤ 2 * (6 * Real.exp (2 * ε * A) / (2 * ε) ^ 3) :=
+    mul_le_mul_of_nonneg_left hA3 (by norm_num)
+  calc 2 * A ^ 3 + 2 * π * A ^ 2
+      ≤ 2 * (6 * Real.exp (2 * ε * A) / (2 * ε) ^ 3) +
+        2 * π * (2 * Real.exp (2 * ε * A) / (2 * ε) ^ 2) := add_le_add hA3' hpiA
+    _ = 12 * Real.exp (2 * ε * A) / (2 * ε) ^ 3 + 4 * π * Real.exp (2 * ε * A) / (2 * ε) ^ 2 := by
+        ring
+
+/-- **Pure exponential floors at every rate above the width**, from the weighted count. -/
+theorem exists_ccmRestrictedWeilGroundEnergy_ge_neg_exp_of_offLineDepthLocallyBounded {W : ℝ}
+    (hW : OffLineDepthLocallyBounded W) {σ : ℝ} (hσ : zetaZeroWidth < σ) :
+    ∃ C : ℝ, ∀ A : SuzukiPositiveAperture,
+      -(C * Real.exp (2 * σ * A.1)) ≤ ccmRestrictedWeilGroundEnergy A := by
+  set ε := σ - zetaZeroWidth with hε
+  have hε0 : 0 < ε := by linarith
+  have hW0 : 0 ≤ W := hW.nonneg
+  refine ⟨(12 / (2 * ε) ^ 3 + 4 * π / (2 * ε) ^ 2) * Real.exp (2 * π) * W, fun A => ?_⟩
+  refine le_trans ?_ (neg_depthFloorConst_le_ccmRestrictedWeilGroundEnergy hW A)
+  apply neg_le_neg
+  have hA : 0 < A.1 := A.2
+  have hpoly := sq_mul_linear_le_exp hε0 hA.le
+  have hsplit : Real.exp (2 * σ * A.1) = Real.exp (2 * ε * A.1) *
+      Real.exp (2 * zetaZeroWidth * A.1) := by
+    rw [← Real.exp_add]; congr 1; rw [hε]; ring
+  unfold depthFloorConst
+  rw [hsplit]
+  have hP := Real.exp_pos (2 * π)
+  have hE := Real.exp_pos (2 * zetaZeroWidth * A.1)
+  calc A.1 ^ 2 * ((2 * A.1 + 2 * π) * Real.exp (2 * π) * Real.exp (2 * zetaZeroWidth * A.1)) * W
+      = (A.1 ^ 2 * (2 * A.1 + 2 * π)) *
+          (Real.exp (2 * π) * Real.exp (2 * zetaZeroWidth * A.1) * W) := by ring
+    _ ≤ ((12 / (2 * ε) ^ 3 + 4 * π / (2 * ε) ^ 2) * Real.exp (2 * ε * A.1)) *
+          (Real.exp (2 * π) * Real.exp (2 * zetaZeroWidth * A.1) * W) :=
+        mul_le_mul_of_nonneg_right hpoly (by positivity)
+    _ = _ := by ring
+
+/-- **The polar ground-energy exponent is the zero width** under a bounded depth mass. -/
+theorem polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineDepthLocallyBounded {W : ℝ}
+    (hW : OffLineDepthLocallyBounded W) : polarGroundEnergyRate = zetaZeroWidth := by
+  refine le_antisymm ?_ zetaZeroWidth_le_polarGroundEnergyRate
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  obtain ⟨C, hC⟩ := exists_ccmRestrictedWeilGroundEnergy_ge_neg_exp_of_offLineDepthLocallyBounded
+    hW (show zetaZeroWidth < zetaZeroWidth + ε by linarith)
+  refine csInf_le bddBelow_polarGroundEnergyRates
+    ⟨by linarith [zetaZeroWidth_nonneg], C, 0, fun A _ => ?_⟩
+  exact (hC A).trans (ccmRestrictedWeilGroundEnergy_le_polar A)
+
+/-- **The exponent is the width, or the depth mass of the zeros clusters without bound.** -/
+theorem polarGroundEnergyRate_eq_zetaZeroWidth_or_depthMass_clusters :
+    polarGroundEnergyRate = zetaZeroWidth ∨ ∀ W : ℝ, ¬ OffLineDepthLocallyBounded W := by
+  by_cases h : ∃ W : ℝ, OffLineDepthLocallyBounded W
+  · obtain ⟨W, hW⟩ := h
+    exact Or.inl (polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineDepthLocallyBounded hW)
+  · push Not at h
+    exact Or.inr h
+
+/-- A strict inequality between the exponent and the width forces windows of unbounded depth
+mass: for every `W` some unit window carries squared depth more than `W`. -/
+theorem exists_window_depthMass_gt_of_zetaZeroWidth_lt_polarGroundEnergyRate
+    (hlt : zetaZeroWidth < polarGroundEnergyRate) (W : ℝ) :
+    ∃ T : ℝ, ∃ s : Finset XiZeroCopy, (∀ q ∈ s, |(xiSpectralPoint q).re - T| ≤ 1) ∧
+      W < ∑ q ∈ s, (xiSpectralPoint q).im ^ 2 := by
+  by_contra h
+  push Not at h
+  exact hlt.ne' (polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineDepthLocallyBounded
+    fun T s hs => h T s hs)
+
+/-- **The width reads the ground-energy rate when the depth mass does not cluster.** The
+hypothesis is weaker than the count hypothesis, costs `A² (2A + 2π) e^{2π} e^{2σA} W`, and is
+unconditionally true with `40 σ² log(180 T)` in place of `W` on the window at height `T`. -/
+theorem theWidthIsTheGroundEnergyRateWhenTheDepthMassDoesNotCluster :
+    (∀ M : ℕ, OffLineCopiesLocallyBounded M → OffLineDepthLocallyBounded (M * zetaZeroWidth ^ 2)) ∧
+    (∀ W : ℝ, OffLineDepthLocallyBounded W → ∀ A : SuzukiPositiveAperture,
+      -(depthFloorConst W A.1) ≤ ccmRestrictedWeilGroundEnergy A) ∧
+    (∀ W : ℝ, OffLineDepthLocallyBounded W → polarGroundEnergyRate = zetaZeroWidth) ∧
+    (polarGroundEnergyRate = zetaZeroWidth ∨ ∀ W : ℝ, ¬ OffLineDepthLocallyBounded W) ∧
+    (∀ T : ℝ, 4 ≤ |T| → ∀ s : Finset XiZeroCopy,
+      (∀ q ∈ s, |(xiSpectralPoint q).re - T| ≤ 1) →
+      ∑ q ∈ s, (xiSpectralPoint q).im ^ 2 ≤ 40 * zetaZeroWidth ^ 2 * Real.log (180 * |T|)) :=
+  ⟨fun _ hM => offLineDepthLocallyBounded_of_offLineCopiesLocallyBounded hM,
+    fun _ hW => neg_depthFloorConst_le_ccmRestrictedWeilGroundEnergy hW,
+    fun _ hW => polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineDepthLocallyBounded hW,
+    polarGroundEnergyRate_eq_zetaZeroWidth_or_depthMass_clusters,
+    fun _ hT s hs => sum_sq_im_xiSpectralPoint_window_le hT s hs⟩
 
 end
 

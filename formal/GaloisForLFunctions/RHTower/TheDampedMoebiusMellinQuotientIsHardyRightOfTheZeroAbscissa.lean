@@ -302,15 +302,15 @@ theorem exists_norm_etaZetaQuotient_le {ε : ℝ} (hΘ : zetaZeroAbscissa < 1 / 
 /-! ### Hardy membership -/
 
 /-- The majorant `K (1 + |ξ|)^{−9/16}` of the line values. -/
-def lineMajorant (K : ℝ) (ξ : ℝ) : ℝ := K * (1 + |ξ|) ^ (-(9 / 16 : ℝ))
+def hardyLineMajorant (K : ℝ) (ξ : ℝ) : ℝ := K * (1 + |ξ|) ^ (-(9 / 16 : ℝ))
 
-theorem continuous_lineMajorant (K : ℝ) : Continuous (lineMajorant K) :=
+theorem continuous_hardyLineMajorant (K : ℝ) : Continuous (hardyLineMajorant K) :=
   continuous_const.mul ((continuous_const.add continuous_abs).rpow_const
     fun x => Or.inl (by show (1 + |x|) ≠ 0; positivity))
 
 /-- The square of the majorant is integrable. -/
-theorem integrable_sq_lineMajorant (K : ℝ) :
-    Integrable (fun ξ : ℝ => ‖lineMajorant K ξ‖ ^ (2 : ℕ)) volume := by
+theorem integrable_sq_hardyLineMajorant (K : ℝ) :
+    Integrable (fun ξ : ℝ => ‖hardyLineMajorant K ξ‖ ^ (2 : ℕ)) volume := by
   have hint : Integrable (fun ξ : ℝ => (1 + ‖ξ‖) ^ (-(9 / 8 : ℝ))) volume :=
     integrable_one_add_norm (E := ℝ) (r := 9 / 8) (by rw [Module.finrank_self]; norm_num)
   refine (hint.const_mul (K ^ 2)).congr (Filter.Eventually.of_forall fun ξ => ?_)
@@ -318,13 +318,13 @@ theorem integrable_sq_lineMajorant (K : ℝ) :
   have hy : ((1 + |ξ|) ^ (-(9 / 16 : ℝ))) ^ (2 : ℕ) = (1 + |ξ|) ^ (-(9 / 8 : ℝ)) := by
     rw [← Real.rpow_natCast, ← Real.rpow_mul hu.le]
     norm_num
-  simp only [lineMajorant, Real.norm_eq_abs]
+  simp only [hardyLineMajorant, Real.norm_eq_abs]
   rw [sq_abs, mul_pow, hy]
 
 /-- The majorant is square-integrable. -/
-theorem memLp_two_lineMajorant (K : ℝ) : MemLp (lineMajorant K) 2 volume :=
-  (memLp_two_iff_integrable_sq_norm (continuous_lineMajorant K).aestronglyMeasurable).mpr
-    (integrable_sq_lineMajorant K)
+theorem memLp_two_hardyLineMajorant (K : ℝ) : MemLp (hardyLineMajorant K) 2 volume :=
+  (memLp_two_iff_integrable_sq_norm (continuous_hardyLineMajorant K).aestronglyMeasurable).mpr
+    (integrable_sq_hardyLineMajorant K)
 
 /-- **The quotient is Mellin–Hardy at aperture `1`.** -/
 theorem isMellinTailHardy_etaZetaQuotient {ε : ℝ} (hΘ : zetaZeroAbscissa < 1 / 2 + ε) :
@@ -336,7 +336,7 @@ theorem isMellinTailHardy_etaZetaQuotient {ε : ℝ} (hΘ : zetaZeroAbscissa < 1
     funext w; simp
   -- pointwise bound on the line `Re w = σ`
   have hline : ∀ σ : ℝ, 0 ≤ σ → ∀ ξ : ℝ,
-      ‖etaZetaQuotient ε (rayLine σ ξ + 1 / 2)‖ ≤ ‖lineMajorant K ξ‖ := by
+      ‖etaZetaQuotient ε (rayLine σ ξ + 1 / 2)‖ ≤ ‖hardyLineMajorant K ξ‖ := by
     intro σ hσ ξ
     have hre : 1 / 2 ≤ (rayLine σ ξ + 1 / 2).re := by
       simp only [add_re, rayLine_re]
@@ -346,7 +346,7 @@ theorem isMellinTailHardy_etaZetaQuotient {ε : ℝ} (hΘ : zetaZeroAbscissa < 1
     have h := hbound _ hre
     rw [him] at h
     refine h.trans ?_
-    rw [lineMajorant, Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hK
+    rw [hardyLineMajorant, Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hK
       (Real.rpow_nonneg (x := 1 + |ξ|) (by linarith [abs_nonneg ξ]) _))]
     refine mul_le_mul_of_nonneg_left ?_ hK
     -- `(1 + |2πξ|)^{−9/16} ≤ (1 + |ξ|)^{−9/16}` since `|ξ| ≤ |2πξ|`
@@ -367,7 +367,7 @@ theorem isMellinTailHardy_etaZetaQuotient {ε : ℝ} (hΘ : zetaZeroAbscissa < 1
     show ContinuousAt (etaZetaQuotient ε ∘ fun ξ : ℝ => rayLine σ ξ + 1 / 2) ξ
     exact ContinuousAt.comp (differentiableAt_etaZetaQuotient hΘ hre).continuousAt
       hc.continuousAt
-  refine ⟨∫ ξ : ℝ, ‖lineMajorant K ξ‖ ^ (2 : ℕ), ?_⟩
+  refine ⟨∫ ξ : ℝ, ‖hardyLineMajorant K ξ‖ ^ (2 : ℕ), ?_⟩
   rw [hfun]
   refine ⟨?_, fun σ hσ => ?_, fun σ hσ => ?_⟩
   · intro w hw
@@ -375,10 +375,10 @@ theorem isMellinTailHardy_etaZetaQuotient {ε : ℝ} (hΘ : zetaZeroAbscissa < 1
       simp only [add_re]; norm_num; exact le_of_lt hw
     exact ((differentiableAt_etaZetaQuotient hΘ hre).comp w
       (differentiableAt_id.add_const _)).differentiableWithinAt
-  · exact (memLp_two_lineMajorant K).of_le (hcont σ hσ.le).aestronglyMeasurable
+  · exact (memLp_two_hardyLineMajorant K).of_le (hcont σ hσ.le).aestronglyMeasurable
       (Filter.Eventually.of_forall (hline σ hσ.le))
   · refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun ξ => by positivity)
-      (integrable_sq_lineMajorant K) (Filter.Eventually.of_forall fun ξ => ?_)
+      (integrable_sq_hardyLineMajorant K) (Filter.Eventually.of_forall fun ξ => ?_)
     exact pow_le_pow_left₀ (norm_nonneg _) (hline σ hσ.le ξ) 2
 
 end RHTower
