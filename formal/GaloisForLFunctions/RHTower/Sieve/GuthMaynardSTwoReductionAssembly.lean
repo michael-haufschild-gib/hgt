@@ -297,7 +297,8 @@ theorem norm_gmS2_le_diag_add (w : CGLRealSmoothBump) {ε T N : ℝ} (hε : 0 < 
   have hD0 : 0 ≤ gmS2Diagonal w N W :=
     Finset.sum_nonneg fun x _ => Finset.sum_nonneg fun y _ => by positivity
   have hhat : ‖gmHat w 0 0‖ ≤ cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 0 := by
-    simpa using cglSmoothBumpHt_allOrder_fourier_decay w.toCGLSmoothBump 0 0 0
+    simpa [gmHat, bumpFourier] using
+      cglSmoothBumpHt_allOrder_fourier_decay w.toCGLSmoothBump 0 0 0
   have hmain : ‖3 * ((N : ℂ) ^ 3 * (gmHat w 0 0 * (gmS2Diagonal w N W : ℂ)))‖ ≤
       3 * cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump 0 * (N ^ 3 * gmS2Diagonal w N W) := by
     rw [norm_mul, norm_mul, norm_mul, norm_pow, Complex.norm_real, Complex.norm_real,

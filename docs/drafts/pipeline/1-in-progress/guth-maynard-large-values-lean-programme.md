@@ -638,3 +638,57 @@ Remaining, precisely.
   (the convolution mass identity for `R̃²` is not in the corpus) and `∫f² ≤ ∫R̃⁴` (sibling Lemma 8.3);
   then feed `prop72` (block `dyadicFrequencyBlock M₁ M`, which satisfies `InPropSevenTwoBox` by
   `mem_dyadicFrequencyBlock`) into `guthMaynard_prop101`.
+
+### Sources for Heath-Brown's theorem: the reflection machinery is open access (2026-10-22)
+
+Heath-Brown 1979 (JLMS 20, 8–18) and Heath-Brown 1979a (JLMS 19, 221–232, equation 33) remain paywalled, and
+Maynard's `arXiv:1201.1787` (Lemma 5.4, "Heath-Brown's R* Bound", which is exactly
+`R*(S;T) ≪ N^{1−2σ'}T^δ (R N + R² + R^{5/4}T^{1/2})^{1/2}(R* N + R⁴ + R R*^{3/4} T^{1/2})^{1/2}`)
+cites [13, Equation 33] rather than proving it. Peck's thesis is not in ORA; his published version
+(Proc. LMS 76 (1998), 33–69) is paywalled.
+
+The INPUTS of Heath-Brown's proof are however open access, in the Huxley large-values series in Acta Arithmetica,
+reachable through the Wayback Machine (the publisher `matwbn.icm.edu.pl` and `eudml.org` both refuse automated
+fetches; `https://web.archive.org/web/<timestamp>id_/<matwbn url>` serves the files). Local copies, scanned
+images without a text layer, read them with the Read tool's `pages` parameter:
+`<scratchpad>/eudml/huxley-jutila-IV-aa32.pdf` (Huxley–Jutila, "Large values of Dirichlet polynomials, IV",
+Acta Arith. 32 (1977), 297–312), `<scratchpad>/eudml/huxley-I-aa24.pdf` (Acta Arith. 24 (1973), 329–346),
+`<scratchpad>/eudml/huxley-III-aa26.pdf` (Acta Arith. 26 (1975), 435–444).
+
+Paper IV works throughout with the FLAT DIFFERENCE SET `U^{(2)}` of the `R²` pairs `(it − it', χ̄χ')`, i.e. with
+exactly the pair sums of Heath-Brown's theorem, and contains:
+* **Lemma 8** (p. 303), attributed to Jutila [9] as "a very simple form of the reflection argument": for `U`
+  `D`-spaced and `N ≤ D` there is an `H(N,2N)` series with
+  `H(s,χ) ≪ N^{1/2} q^ε ∫_{−l⁴}^{l⁴} |Σ_{n ≤ D/N} χ̄(n) n^{−1+it−iτ}| dτ + 1`, and
+  `E_k(H, U²) ≪ R N^k log l + R² + N^{k/2}Q^{2kε} l^{l⁶} B*_k(D/N, U^{(2)})`. This is the reflection `N ↦ D/N`
+  (`D = T` for ζ), in the direction that carries a short block onto a long one.
+* **Lemma 9** (p. 303): `(B(M,U))² ≪ R M log l + R² + M^{1/2} Q^{l⁶} B*(D/M, U^{(2)})` — the bootstrap inequality.
+* **Lemma 14** (p. 306), WITH PROOF: the approximate functional equation, built from the smooth weight
+  `h(n) = exp(−(n/M)^g)`, `g = l²`, `M = D^{1/2}/2`, through the Mellin transform (4.14) and the functional
+  equation (4.16), splitting the dual sum at (4.19). The text notes that Lemma 8's proof differs only by taking
+  `M = N` and `2N` and subtracting, so the break falls at `D/N`. Same weight shape as the Warwick notes'
+  statement of Jutila's lemma.
+* Lemma 5 is the large sieve (`B₂(M,U) ≪ D + M`); Lemmas 11, 15, 16, 17 and Theorem 2 combine reflection,
+  Hölder and the large sieve.
+
+Consequence for the programme: the small-block range of Heath-Brown's theorem is no longer source-blocked. It is
+also narrower than it first appeared — see the next section.
+
+### Where the Heath-Brown gap actually bites (2026-10-22)
+
+The Lean proof `hbPairSum_Ioc_le_of_twoThirds` is unconditional for `N ≥ (2T)^{2/3}`, which is exactly the range
+in which the third term may be dropped (the footnote at TeX line 250). So Heath-Brown's theorem is FULLY available
+for long blocks. Tracing every use of it in the chain:
+
+* **Lemma 1.5** (`lmm:BasicEnergy`) applies it at `M = N > T^{2/3}` — covered.
+* **Lemma 11.8** (small gcd) does not use it at all; it runs on Lemmas 8.2 and 8.3, which are proved.
+* **Lemma 11.9** (large gcd, TeX 2091–2150) is the ONLY place needing the short-block case. There `N ≥ T^{3/4}`,
+  `D = N²/T`, and Lemmas 11.5/11.6 are applied at `M = N/d` for `d ≥ D`, hence `M ≤ N/D = T/N ≤ T^{1/4}`.
+* **§6** applies it to `ℓ`-th powers with divisor-bounded coefficients; the relevant length is `M^ℓ` and must be
+  checked separately by the S₂ brick.
+
+So the whole 30/13 chain needs Heath-Brown only for `1 ≤ M ≤ T^{1/4}` beyond what is proved. Under the reflection
+`M ↦ T/M` such a block maps to a dual block of length `≥ T^{3/4} ≥ (2T)^{2/3}`, i.e. INTO the proved range (for
+`T ≥ 256`). The earlier obstruction — "the dual block has length about `T/N`, which exceeds `√N`, so Corollary 2.1
+cannot return to length `N`" — is the obstruction for MEDIUM blocks; for short blocks the same reflection runs the
+favourable way. The remaining untouched interval is `T^{1/3} < M < (2T)^{2/3}`, which the chain does not use.

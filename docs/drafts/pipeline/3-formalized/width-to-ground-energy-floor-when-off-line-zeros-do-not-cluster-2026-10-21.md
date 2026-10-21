@@ -104,6 +104,27 @@ both cones. The second copy, used only inside its own module, is renamed
 `integrable_mul_cexp_of_vanish`; its olean was rebuilt single-threaded. No consumer outside the
 module used the name.
 
+## The depth-weighted form (2026-10-22)
+The count hypothesis is replaced by the squared depths: `OffLineDepthLocallyBounded W` asks
+`Σ_{|Re z_q − T| ≤ 1} (Im z_q)² ≤ W` for every `T` (on-line copies cost nothing; the count
+hypothesis implies it with `W = M·zetaZeroWidth²`). Mechanism: the conjugate difference
+`Φ(c + w) − Φ(c + w̄)` is the odd part of the power series and is at most
+`2|Im w| Σ_m r^m/m! |Φ_{m+1}(c)|` (`norm_testTransform_sub_conj_le_tsum_momentSource`, through
+`‖w^n − w̄^n‖ ≤ n r^{n−1}‖w − w̄‖`); the weighted cell count
+(`sum_weight_mul_grid_le_of_depthWeighted`) and the same grid Parseval give
+`Σ_q |Φ(x_q + iy_q) − Φ(x_q − iy_q)|² ≤ 4a²(2a + 2π)e^{2π}e^{2σa} W ∫|f|²`
+(`sum_norm_sq_testTransform_sub_conj_le_of_depthWeighted'`). With `Re(p conj q) ≥ −|p − q|²/4`
+(`re_mul_conj_ge`) the zero-side floor needs no on-line/off-line split:
+`μ(A) ≥ −A²(2A + 2π)e^{2π}e^{2·zetaZeroWidth·A} W` (`neg_depthFloorConst_le_ccmRestrictedWeilGroundEnergy`),
+`polarGroundEnergyRate = zetaZeroWidth` (`polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineDepthLocallyBounded`),
+dichotomy (`polarGroundEnergyRate_eq_zetaZeroWidth_or_depthMass_clusters`,
+`exists_window_depthMass_gt_of_zetaZeroWidth_lt_polarGroundEnergyRate`), and the unconditional
+comparison `Σ_{window at T ≥ 4} (Im z_q)² ≤ 40·zetaZeroWidth²·log(180T)`
+(`sum_sq_im_xiSpectralPoint_window_le`, from `R:ZetaLocalZeroCount`). Collected statement
+`theWidthIsTheGroundEnergyRateWhenTheDepthMassDoesNotCluster`. The residual of the width
+dictionary is now exactly one logarithm: a `T`-independent bound on the window depth mass in
+place of `log T`.
+
 ## Prior corpus work found after the build
 `R:OffLineDensityWeilLowerBound` (`re_W_ge_of_depth_offLineDensity`, hypothesis
 `OffLineDensityBound`) already proves the configuration-space form of the floor,
@@ -126,3 +147,6 @@ large level.
   axioms), oleans built, wired into the `SquareRootThreshold` umbrella; lint reachable. Ledger
   sections updated (`route-unification-ledger.md`: arrows, open arrows, new section "The
   width-to-floor arrow"; `walls-ledger.md`: Wall 1 open-arrow paragraph and rule).
+
+- 2026-10-22 — depth-weighted form added to both modules (section 7 of the sampling module,
+  section 6 of the width-rate module), compiled, audited, oleans rebuilt; ledgers updated.

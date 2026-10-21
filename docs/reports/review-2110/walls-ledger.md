@@ -232,8 +232,12 @@ window, the off-line zero sum of an `L²` test of aperture `A` is at most `M(2A 
 times its `L²` norm (grid Parseval plus weighted Cauchy–Schwarz over the moment transforms,
 `Q:IntervalSourceTransformsSampledOnLocallyBoundedPoints` [S]) and the arrow closes,
 `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2·zetaZeroWidth·A}`, two-sided when the off-line zeros are finitely
-many (`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]). What is open is the arrow
-from the width alone, that is, without a uniform unit-window bound on the off-line zeros.
+many (`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]). The count can be replaced
+by the squared depths: if `Σ_{|Re z_q − T| ≤ 1} (Im z_q)² ≤ W` for every `T`, then
+`μ(A) ≥ −A²(2A + 2π)e^{2π}e^{2·zetaZeroWidth·A} W` and the exponent is the width
+(`OffLineDepthLocallyBounded`, same module), while unconditionally that sum is at most
+`40·zetaZeroWidth²·log(180T)`. What is open is the arrow from the width alone, that is, the
+removal of that one logarithm.
 
 **Walls without a width face.** Walls 3, 5, 13, 14 and 15 carry no parameter tied to the width: 3 is
 the Nyquist law at the zero spacing, 5 and 14 are finite-carrier impossibilities, 13 is a cone

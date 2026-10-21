@@ -202,11 +202,12 @@ theorem integral_bandKernel_mul_exp {a L x : ℝ} (hL : 0 < L) (hx : |x - a| ≤
   have hpt : ∀ η, bandKernel a L η * Complex.exp (((2 * Real.pi * (η * x) : ℝ) : ℂ) * Complex.I)
       = (L : ℂ) * g (L * η) := by
     intro η
+    have hreal : -2 * Real.pi * (η * a) + 2 * Real.pi * (η * x) =
+        2 * Real.pi * (L * η * ((x - a) / L)) := by
+      field_simp
+      ring
     simp only [bandKernel, g]
-    rw [mul_assoc, mul_assoc, ← Complex.exp_add, mul_assoc]
-    congr 3
-    push_cast
-    field_simp
+    rw [mul_assoc ((L : ℂ) * _), ← Complex.exp_add, ← add_mul, ← Complex.ofReal_add, hreal]
     ring
   have hx' : |(x - a) / L| ≤ 1 := by
     rw [abs_div, abs_of_pos hL, div_le_one hL]
@@ -295,7 +296,7 @@ theorem integral_mul_pow_three_le {ρ g : ℝ → ℝ} {B : ℝ} (hρ : ∀ y, 0
   have hc : 0 ≤ c := integral_nonneg fun y => mul_nonneg (hρ y) (pow_nonneg (hg y) 2)
   have hd : 0 ≤ d := integral_nonneg fun y => mul_nonneg (hρ y) (pow_nonneg (hg y) 3)
   rcases hb.eq_or_lt with hb0 | hbpos
-  · rw [← hb0]; positivity
+  · rw [← hb0, zero_pow (by norm_num)]; positivity
   · have h4 : b ^ 4 ≤ a ^ 2 * (b * d) := by
       calc b ^ 4 = (b ^ 2) ^ 2 := by ring
         _ ≤ (a * c) ^ 2 := pow_le_pow_left₀ (by positivity) h1 2
@@ -372,45 +373,39 @@ theorem setIntegral_norm_bandKernel_tail {L : ℝ} (hL : 0 < L) (a δ : ℝ) :
 theorem integral_norm_bandKernel_mul_le {a L δ B : ℝ} (hL : 0 < L) (hδ : 0 ≤ δ) {g : ℝ → ℝ}
     (hg : ∀ y, 0 ≤ g y) (hgB : ∀ y, g y ≤ B) (hgc : Continuous g) :
     ∫ η, ‖bandKernel a L η‖ * g η ≤
-      L * bandSup * ∫ η in -δ..δ, g η + B * bandTail (L * δ) := by
+      L * bandSup * (∫ η in -δ..δ, g η) + B * bandTail (L * δ) := by
   have hρi : Integrable fun η => ‖bandKernel a L η‖ := (integrable_bandKernel hL a).norm
   have hF : Integrable fun η => ‖bandKernel a L η‖ * g η :=
     hρi.mul_bdd (c := B) hgc.aestronglyMeasurable (Filter.Eventually.of_forall fun η => by
       rw [Real.norm_of_nonneg (hg η)]; exact hgB η)
   have hcompl : (Icc (-δ) δ)ᶜ = {η : ℝ | δ < |η|} := by
     ext η
-    simp only [mem_compl_iff, mem_Icc, mem_setOf_eq, not_and_or, not_le]
-    constructor
-    · rintro (h | h)
-      · rw [lt_abs]; right; linarith
-      · rw [lt_abs]; left; exact h
-    · intro h
-      rcases lt_abs.mp h with h | h
-      · right; exact h
-      · left; linarith
-  rw [← integral_add_compl measurableSet_Icc hF, hcompl]
-  have hin : ∫ η in Icc (-δ) δ, ‖bandKernel a L η‖ * g η ≤ L * bandSup * ∫ η in -δ..δ, g η := by
+    rw [Set.mem_compl_iff, Set.mem_Icc, Set.mem_setOf_eq, ← abs_le, not_le]
+  have hin : ∫ η in Icc (-δ) δ, ‖bandKernel a L η‖ * g η ≤ L * bandSup * (∫ η in -δ..δ, g η) := by
     rw [intervalIntegral.integral_of_le (by linarith), ← integral_Icc_eq_integral_Ioc,
       ← integral_const_mul]
     refine setIntegral_mono_on hF.integrableOn
       ((hgc.integrableOn_Icc).const_mul _) measurableSet_Icc fun η _ => ?_
     rw [norm_bandKernel hL.le]
-    have := norm_bandProfile_le (L * η)
-    have := hg η
-    nlinarith
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left (norm_bandProfile_le _) hL.le) (hg η)
   have hout : ∫ η in {η : ℝ | δ < |η|}, ‖bandKernel a L η‖ * g η ≤ B * bandTail (L * δ) := by
     rw [← setIntegral_norm_bandKernel_tail hL a δ, ← integral_const_mul]
     refine setIntegral_mono_on hF.integrableOn (hρi.const_mul B).integrableOn
       (measurableSet_lt_abs δ) fun η _ => ?_
     rw [mul_comm B]
     exact mul_le_mul_of_nonneg_left (hgB η) (norm_nonneg _)
-  linarith
+  calc ∫ η, ‖bandKernel a L η‖ * g η
+      = (∫ η in Icc (-δ) δ, ‖bandKernel a L η‖ * g η) +
+          ∫ η in {η : ℝ | δ < |η|}, ‖bandKernel a L η‖ * g η := by
+        rw [← hcompl]; exact (integral_add_compl measurableSet_Icc hF).symm
+    _ ≤ _ := add_le_add hin hout
 
 /-- **Local form, first power.** `|f(u)| ≤ L ‖K‖_∞ ∫_{−δ}^{δ} |f(u+η)| dη + (Σ|c_i|) ∫_{|ξ|>Lδ} |K|`. -/
 theorem norm_finiteFrequencyPoly_le_local {ι : Type*} (c : ι → ℂ) (s : Finset ι)
     (x : ι → ℝ) {a L δ : ℝ} (hL : 0 < L) (hδ : 0 ≤ δ) (hx : ∀ i ∈ s, |x i - a| ≤ L) (u : ℝ) :
     ‖Sieve.finiteFrequencyPoly c s x u‖ ≤
-      L * bandSup * ∫ η in -δ..δ, ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ +
+      L * bandSup * (∫ η in -δ..δ, ‖Sieve.finiteFrequencyPoly c s x (u + η)‖) +
         (∑ i ∈ s, ‖c i‖) * bandTail (L * δ) :=
   (norm_finiteFrequencyPoly_le_integral c s x hL hx u).trans
     (integral_norm_bandKernel_mul_le hL hδ (fun _ => norm_nonneg _)
@@ -422,7 +417,7 @@ theorem norm_finiteFrequencyPoly_le_local {ι : Type*} (c : ι → ℂ) (s : Fin
 theorem norm_finiteFrequencyPoly_cube_le_local {ι : Type*} (c : ι → ℂ) (s : Finset ι)
     (x : ι → ℝ) {a L δ : ℝ} (hL : 0 < L) (hδ : 0 ≤ δ) (hx : ∀ i ∈ s, |x i - a| ≤ L) (u : ℝ) :
     ‖Sieve.finiteFrequencyPoly c s x u‖ ^ 3 ≤
-      bandMass ^ 2 * (L * bandSup * ∫ η in -δ..δ, ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 3 +
+      bandMass ^ 2 * (L * bandSup * (∫ η in -δ..δ, ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 3) +
         (∑ i ∈ s, ‖c i‖) ^ 3 * bandTail (L * δ)) := by
   refine (norm_finiteFrequencyPoly_cube_le c s x hL hx u).trans
     (mul_le_mul_of_nonneg_left ?_ (sq_nonneg _))
@@ -438,28 +433,28 @@ theorem norm_finiteFrequencyPoly_sub_sq_le {ι : Type*} (c : ι → ℂ) (s : Fi
     ‖Sieve.finiteFrequencyPoly c s x (u - σ)‖ ^ 2 ≤
       bandMass * ∫ η, 3 * bandCauchy / (1 + η ^ 2) *
         ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 2 := by
-  set F : ℝ → ℝ := fun y => ‖Sieve.finiteFrequencyPoly c s x y‖ ^ 2 with hFdef
-  have hFc : Continuous F := (Sieve.continuous_finiteFrequencyPoly c s x).norm.pow 2
-  have hFB : ∀ y, F y ≤ (∑ i ∈ s, ‖c i‖) ^ 2 := fun y =>
-    pow_le_pow_left₀ (norm_nonneg _) (norm_finiteFrequencyPoly_le c s x y) 2
+  have hFc : Continuous fun η => ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 2 :=
+    ((Sieve.continuous_finiteFrequencyPoly c s x).comp (continuous_const_add u)).norm.pow 2
+  have hFB : ∀ η, ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 2 ≤ (∑ i ∈ s, ‖c i‖) ^ 2 :=
+    fun η => pow_le_pow_left₀ (norm_nonneg _) (norm_finiteFrequencyPoly_le c s x _) 2
   have h := norm_finiteFrequencyPoly_sq_le c s x one_pos hx (u - σ)
   refine h.trans (mul_le_mul_of_nonneg_left ?_ bandMass_nonneg)
   -- shift the variable by `σ`
-  have hshift : ∫ η, ‖bandKernel a 1 η‖ * F (u - σ + η) =
-      ∫ η, ‖bandKernel a 1 (η + σ)‖ * F (u + η) := by
-    rw [← integral_add_right_eq_self (fun η => ‖bandKernel a 1 η‖ * F (u - σ + η)) σ]
+  have hshift : ∫ η, ‖bandKernel a 1 η‖ * ‖Sieve.finiteFrequencyPoly c s x (u - σ + η)‖ ^ 2 =
+      ∫ η, ‖bandKernel a 1 (η + σ)‖ * ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 2 := by
+    rw [← integral_add_right_eq_self
+      (fun η => ‖bandKernel a 1 η‖ * ‖Sieve.finiteFrequencyPoly c s x (u - σ + η)‖ ^ 2) σ]
     congr 1; funext η
-    congr 2; ring
-  simp only [hFdef] at hshift ⊢
+    congr 4; ring
   rw [hshift]
-  have hmaj : Integrable fun η => 3 * bandCauchy / (1 + η ^ 2) * F (u + η) := by
-    have : Integrable fun η : ℝ => 3 * bandCauchy * (1 + η ^ 2)⁻¹ :=
-      integrable_inv_one_add_sq.const_mul _
-    refine this.mul_bdd (c := (∑ i ∈ s, ‖c i‖) ^ 2)
-      (hFc.comp (continuous_const.add continuous_id)).aestronglyMeasurable
-      (Filter.Eventually.of_forall fun η => ?_) |>.congr (Filter.Eventually.of_forall fun η => ?_)
-    · rw [Real.norm_of_nonneg (by positivity)]; exact hFB _
-    · simp [div_eq_mul_inv]
+  have hmaj : Integrable fun η =>
+      3 * bandCauchy / (1 + η ^ 2) * ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 2 := by
+    have h1 : Integrable fun η : ℝ => 3 * bandCauchy / (1 + η ^ 2) := by
+      simpa [div_eq_mul_inv] using integrable_inv_one_add_sq.const_mul (3 * bandCauchy)
+    refine h1.mul_bdd (c := (∑ i ∈ s, ‖c i‖) ^ 2) hFc.aestronglyMeasurable
+      (Filter.Eventually.of_forall fun η => ?_)
+    rw [Real.norm_of_nonneg (by positivity)]
+    exact hFB η
   refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun η => by positivity) hmaj
     (Filter.Eventually.of_forall fun η => ?_)
   refine mul_le_mul_of_nonneg_right ?_ (by positivity)

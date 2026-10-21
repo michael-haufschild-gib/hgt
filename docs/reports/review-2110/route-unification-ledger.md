@@ -344,10 +344,10 @@ is the record of producers; this ledger is the record of what the producers woul
 - The converse of Lagarias at width `σ` (`Re(ξ'/ξ) ≥ 0` on `Re s > ½ + σ ⟹ zetaZeroWidth ≤ σ`)
   and of the cosine-shift law (`cos(hD)Ξ` Laguerre–Pólya ⟹ `zetaZeroWidth ≤ h`).
 - The arrow of the width dictionary from the width alone, width to ground-energy floor: closed
-  under locally bounded off-line copies and two-sided in the finite case
-  (`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]); the exact residual is a
-  uniform unit-window bound on the off-line zeros, the only arrow whose closure would be progress
-  on RH rather than on the ledger.
+  under a `T`-independent bound on the squared depths `Σ (Im z_q)²` of the zeros in unit height
+  windows (unconditionally `≪ zetaZeroWidth² log T`), and two-sided in the finite case
+  (`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]); the exact residual is that
+  one logarithm, the only arrow whose closure would be progress on RH rather than on the ledger.
 
 ## The width-to-floor arrow: closed when the off-line zeros do not cluster
 
@@ -403,7 +403,26 @@ below ordinate `2` and off-line multiplicity at most `D` per unit window, all ze
 to `ζ`'s ground energy `μ(A)` (the quantity of this ledger), the exponent identity for
 `polarGroundEnergyRate`, the finite-case two-sided law and the dichotomy.
 
-**What remains open, exactly.** The arrow from the width alone. The sampling inequality needs the
+**The depth-weighted form.** The count hypothesis charges every off-line copy equally, however
+shallow, and is out of reach: only two thirds of the zeros are known to lie on the line, so up to a
+third of the `≈ (log T)/2π` zeros in a unit window may be off it by tiny amounts. The floor needs
+only the squared depths: the conjugate difference `Φ(−z) − Φ(−z̄)` is the odd part of the power
+series in the displacement and carries one factor of `Im z`, so the depth-weighted sampling
+inequality (`sum_norm_sq_testTransform_sub_conj_le_of_depthWeighted'`) pays the off-line sum with
+`Σ_{window} (Im z_q)²`. Under `OffLineDepthLocallyBounded W`, that is
+`Σ_{|Re z_q − T| ≤ 1} (Im z_q)² ≤ W` for every `T` (on-line copies cost nothing),
+`μ(A) ≥ −A²(2A + 2π)e^{2π}e^{2·zetaZeroWidth·A} W` (`neg_depthFloorConst_le_ccmRestrictedWeilGroundEnergy`)
+and `polarGroundEnergyRate = zetaZeroWidth` (`polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineDepthLocallyBounded`);
+the count hypothesis implies the weighted one with `W = M·zetaZeroWidth²`. Unconditionally the
+weighted count on the window at height `T ≥ 4` is at most `40·zetaZeroWidth²·log(180T)`
+(`sum_sq_im_xiSpectralPoint_window_le`, from the local zero count): the residual is one logarithm,
+a `T`-independent bound in place of `log T`. The dichotomy in this currency: the exponent is the
+width, or for every `W` some unit window carries squared depth above `W`
+(`polarGroundEnergyRate_eq_zetaZeroWidth_or_depthMass_clusters`,
+`exists_window_depthMass_gt_of_zetaZeroWidth_lt_polarGroundEnergyRate`).
+
+**What remains open, exactly.** The arrow from the width alone, that is, a `T`-independent bound
+on the squared depths of the zeros in unit height windows. The sampling inequality needs the
 local count: without it the off-line sum of a rough `L²` test is not controlled by
 `e^{2σA} ∫|u|²`, and the modulated test `e^{iγ_k x} φ(x)` against a cluster of `m_k` off-line
 copies of depth `σ` at height `γ_k` whose phases `2γ_j A` align indicates [P] that a floor at rate
