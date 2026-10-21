@@ -696,35 +696,48 @@ of the innermost strip once per atom.
     (`exists_edgeTent_oddPart_sharing_fails`). Mechanisms 30 and 36–38 do not globalize through the
     odd parts.
 
-40. **A wide strip shares with a thin one: the atoms of `2` and `3` past `½ log 3`.** Mechanisms 30
-    and 36 need thin strips (`η ≤ p`, `η ≤ 1/12`). At `r = 221/400` the strip of `2` is wide,
-    `η = r − ½ log 2 ≈ 0.206 > p = log 2 − r ≈ 0.141`, and `S₃ = [log 3 − r, r] ⊂ S₂`; since
-    `e^{2r} < 4` these two atoms are the whole prime side. The *wide fold* keeps the exact rates of a
-    quadruple (`WideMicroFoldExactRates`). In folded coordinates `u = |x − L/2|`, `v = |y − L/2|`,
-    the same-side rate is `R₋ = ω(|u − v|) − ω(L − u − v)` and the crossing rate is
-    `R₊ = ω(u + v) − ω(L − |u − v|)`. Complete monotonicity of `ω` gives `R₋ ≥ R₊`
-    (`archLevyDensity_sub_shift_le`). The folded weight is
-    `W = 2(R₋ − R₊)(1 − (β + v)/(β + u)) + 4R₊`. The strip pays `λ ∫_S α²` once
-    `∫_0^η W(u, v) dv ≥ λ` at every `u` (`wideBandMicroFold_strip_ge`), and withholding the pairs of
-    `[c, r]²` sets `W` to zero on the band `u, v ≥ c − L/2` (`withheldKernel`,
-    `wideFoldWeightBand`). After integration (`OverlappingPrimeStripsJointHarnack`),
-    `W = 2k(1 − q) − 2D(1 − q) + 4R₊`, `q = (β + v)/(β + u)`:
-    * `k` gives the surplus potential in the gauge `β + t`;
-    * the defect `D = ω(L − u − v) − ω(L − |u − v|)` costs at most `(c₁u³/6 + c₀u²/2)/(β + u)`,
-      with `c₁ ≥ 1/(L(L − 2η)) + 1/24 + L/8` (`integral_wideFoldDefect_le`);
-    * the crossing rate gives
-      `4∫R₊ ≥ 2 log((u + η)/u) − 2 log(L/(L − η)) − (3η² + 7η³)/24 − 8L⁴/1000`: three windows of
-      `ω`, with concavity of `log` (`wideCrossRate_integral_ge`).
+40. **The overlapping strips of `2` and `3`, and the end of the odd-part payment.** For
+    `½ log 3 < r < log 2` the strip `S₃ = [log 3 − r, r]` lies inside `S₂ = [log 2 − r, r]`, and since
+    `e^{2r} < 4` the atoms of `2` and `3` are the whole prime side. Past `r = ¾ log 2` the half-width
+    `η = r − ½ log 2` of `S₂` exceeds its distance `p = log 2 − r` to the origin, beyond the sharp fold.
+    In folded coordinates `u = |x − L/2|`, `v = |y − L/2|` a quadruple has a same-distance pair group
+    with kernels `ω(|u − v|) − ω(L ± (u + v))` and a crossing group with kernels
+    `ω(u + v) − ω(L ± |u − v|)`; both pairs of a group see the same odd difference and the same even
+    difference.
+    * *Wide fold.* Each group at its smaller kernel, `R₋ = ω(|u − v|) − ω(L − u − v)` and
+      `R₊ = ω(u + v) − ω(L − |u − v|)`, with `R₋ ≥ R₊` by complete monotonicity of `ω`; in the gauge
+      `β + t` the folded weight is `W = 2(R₋ − R₊)(1 − q) + 4R₊`, `q = (β + v)/(β + u)`, and the
+      strip pays `λ ∫_{S₂} α²` once `∫_0^η W(u, v) dv ≥ λ` at every `u`. Integrated, `W` is the
+      surplus potential minus a defect of order `u³/(L(L − 2η))` plus the crossing term
+      `2 log((u + η)/u) − 2 log(L/(L − η)) − O(η²)`.
+    * *Harmonic fold.* The even difference of a group is optimized away:
+      `K₁(D + e)² + K₂(D − e)² ≥ (4K₁K₂/(K₁ + K₂)) D²`. A group keeps `R + γw` of its excess
+      `ω(L − w) − ω(L + w)` when `cs·w ≤ κR`, `γ = cs/(2 + κ)`; at `L = log 2` the excess is at least
+      `(28/(9√2)) w` term by term in `ω = Σ e^{−(2k+½)t}` (`slope_mul_le_archLevyDensity_reflect`). A
+      pair shared with an inner strip at the fraction `θ` leaves the group the rate
+      `2(1 − θ)/(2 − θ) · R` instead of `0`.
+    * *Sharing.* Withholding the fraction `θ` of `S₃ × S₃` from the box of `S₂` removes `θ T(S₃)`;
+      `θ T(S₃)` pays the atom of `3` by the sharp fold and the rest pays the atom of `2`. For odd
+      Lipschitz `F` supported in `[−r, r]`:
 
-    At `β = 1/50`, with the band of `S₃` withheld, the potential is at least `1 > √2 log 2` at every
-    folded point. The band costs `≤ 0.044` (`wideBandFold_potential_logTwo`). The box of `S₂` splits
-    into the withheld box plus `T(S₃)` (`integral_box_eq_withheld_add`). `T(S₃)` pays the atom of `3`
-    by the sharp micro-fold (`λ₃ ≥ 1.89`, even part kept at `t = 2/5`), and the rest pays the atom of
-    `2` (even part kept at `t = 1/60`). For every odd `F` supported in `[−221/400, 221/400]`:
-    `2Λ(2)/√2 ∫ F F(· + log 2) + 2Λ(3)/√3 ∫ F F(· + log 3) ≤ 2 stripSurplus_{S₂} − (1/62)∫_{S₂} F² − ½ ∫_{S₃} F²`
-    (`two_mul_primeTwoThreeShifts_le_stripSurplus_sub`). The Harnack inequality across the first
-    prime shift now reaches `r = 0.5525 > ½ log 3`; the sharp fold of `2` stops at
-    `½ log 2 + 1/12 ≈ 0.43`.
+          2Λ(2)/√2 ∫ F F(· + log 2) + 2Λ(3)/√3 ∫ F F(· + log 3)
+            ≤ 2 stripSurplus_{S₂} − (1/62) ∫_{S₂} F² − c ∫_{S₃} F²,
+
+      with `c = ½` at `r = 221/400` (wide fold, all of `S₃ × S₃` to the atom of `3`) and `c = 0` at
+      `r = 23/40` (harmonic fold, `θ = 69/100`)
+      (`two_mul_primeTwoThreeShifts_le_stripSurplus_twentyThreeFortieths`).
+    * *The end of the odd-part payment.* On `S₂ = [p, log 2 − p]`, `0 < p ≤ 1/400`, the linear
+      profile `F(x) = x` has `∫∫_{S₂ × S₂} k(x, y)(x − y)² < 2Λ(2)/√2 ∫_{S₂} α²`. The box of
+      `[0, a]²` is at most `a³ − (4/3)a³ log 2 + a⁵/288 + a⁶/180`, so the quotient is at most
+      `12 − 16 log 2 + a²/24 + a³/15`: the regional eigenvalue `2` minus `6J`,
+      `J = ∫∫_{[0,1]²} (x − y)²/(x + y) = (8 log 2 − 5)/3`, the share of the reflected pairs. At
+      `a = log 2` it is `≈ 0.952 < √2 log 2`. Hence no inequality
+      `2Λ(2)/√2 ∫_{S₂} α²_F ≤ 2 stripSurplus_{S₂}(F)` holds near `log 2`
+      (`not_forall_oddPart_le_stripSurplus_logTwo`): every fold of `S₂ × S₂` that bounds the odd part
+      alone stops before `log 2`. With mechanisms 39 and 41, the strip surplus pays odd parts neither
+      for a single atom near `log 2` nor for the thin band at large `r`. What any allocation must use
+      is the cancellation of the odd parts against the even parts of the atoms, the prime–polar
+      balance of mechanism 42 (open problem 7(c)).
 
 41. **The logarithmic capacity of the shared surplus.** For the edge tent the pairs across the foot
     `a = r − ε` carry `∫_0^a ω(x − y) dy = Ω(x − a) − Ω(x) ≤ ½ log(4/ε) + ε/(2(x − a)) + 4/5`
@@ -886,17 +899,14 @@ of the innermost strip once per atom.
    order of the surplus symbol `log ξ` when the zeros near height `ξ` lie on the line, and larger by
    `e^{(2β − 1)r}` for a zero `β + iγ` off it, so the signed allocation is not expected to be
    unconditional beyond the light cone.
-8. **The prime side up to `log 2`.** For `r < log 2` only the atoms of `2` and `3` act
-   (`e^{2r} < 4`), so mechanism 40 at a given `r ∈ (½ log 3, log 2)` pays the whole prime side from
-   `T(S₂)`. It is proved at `r = 221/400`. In the wide fold the defect constant
-   `c₁ ≥ 1/(L(L − 2η)) = 1/(2Lp)` grows as `p = log 2 − r → 0`, and the withheld band
-   `[log 3 − r, r]` widens. Find the largest `r` at which the potential with the band withheld stays
-   above `√2 log 2`, and the gauge `β` that attains it.
 
 ### Research topics toward the shared target
 
 1. **Beyond the first prime window.** The variation inequality for all even profiles is proved past
-   `log 2/2` (`181/500`, mechanisms 27–34); the unit is the support reached. Up to `2/5` the prime atom
+   `log 2/2` (`181/500`, mechanisms 27–34). A larger window is not by itself progress toward the
+   shared target: the strip payment of the atoms ends before `log 2` (mechanism 40) and does not
+   globalize (mechanisms 39, 41), and what remains at every aperture is the even–odd balance of the
+   atoms (mechanism 42). Up to `2/5` the prime atom
    is dominated by the strip surplus (mechanism 28), so the support is limited only by the
    archimedean potential `U_h^{off}` (mechanism 29). The archimedean odd sector alone is expected to stay positive
    up to `≈ 0.375` (second eigenvalue of the logarithmic Laplacian on an interval). Past `log 2/2` the fold of mechanism 23

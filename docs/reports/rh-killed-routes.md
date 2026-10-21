@@ -138,10 +138,10 @@
 ### KR-CRT — Fixed-aperture finite-horizon positivity
 
 - **Path:** Finite Hodge certificate → all-height exclusion.
-- **Obstruction:** Finite aperture/depth cannot reach arbitrary height or arbitrarily shallow zeros.
-- **Survivor:** Conditional Nyquist horizon ~2πe^(2a), depth loss and negative-index law.
+- **Obstruction [L]:** Finite aperture/depth misses arbitrary heights/shallow zeros. Kernel support below `log 2` reads no prime weights; below `log 3` reads only atom `2`. Full complex aperture-`3/10` positivity holds for every weight, and odd aperture-`181/500` positivity for every weight with `w(2)=log 2`.
+- **Survivor [L]:** Exact finite-prefix dependence and first-atom difference; Liouville twist retains a signed correlation correction, not automatic odd positivity. Conditional Nyquist horizon ~2πe^(2a), depth loss and negative-index law.
 - **Needs:** Source positivity at every aperture; RW/HF.
-- **E:** R:TiltedClusterNyquistExclusion; R:TiltedWeilSpectralSeparation.
+- **E:** R:TiltedClusterNyquistExclusion; R:TiltedWeilSpectralSeparation; formal/GaloisForLFunctions/SquareRootThreshold/WindowCertificatesAndThePrimeWeight.lean.
 
 <a id="kr-trc"></a>
 ### KR-TRC — Trace-ideal transport
@@ -220,7 +220,7 @@
 
 - **Path:** Finite Euler carriers + vanishing tail / conditioned means → zeta recurrence.
 - **Obstruction:** Finite Euler zero-free winding barrier; conditioning retains smooth-ratio cross terms; vanishing dual edge insufficient.
-- **Survivor [L]:** General nonvanishing-target universality on a small disc about every right-strip point. Local ζ self-recurrence iff the base point is not a zero; exceptional heights countable. Recurrence of a zero-stripped cofactor holds even at possible zeros and does not eliminate them. BAG remains live. E: R:ZetaVoroninUniversalityOnSmallDiscs; R:ZetaRecurrenceAtEveryPointModuloItsZeros.
+- **Survivor [L]:** General nonvanishing-target universality on a small disc about every right-strip point. Every closed disc inside a larger zero-free right-strip disc is strongly recurrent; no doubled-disc margin. All closed right-strip discs recurrent iff RH. Local ζ self-recurrence iff the base point is not a zero; exceptional heights countable. Recurrence of a zero-stripped cofactor holds even at possible zeros and does not eliminate them. BAG remains live. E: R:ZetaDiscRecurrenceOnEveryClosedDiscOfTheStrip; R:ZetaVoroninUniversalityOnSmallDiscs; R:ZetaRecurrenceAtEveryPointModuloItsZeros.
 - **Needs:** Source-derived recurrence at every right-half-strip point without local zero-freeness; finite Euler winding does not cross the zero-containing-target obstruction.
 - **E:** R:FullReflectedAFECompactTarget; R:ChiPrimeGaussianCubicLocalAxesReduction; R:UniformEulerTargetDensityOnZeroFreeDiscs; R:ZetaDiscRecurrenceOnZeroFreeDiscs.
 
@@ -365,10 +365,11 @@
 
 ## Route-class obstructions
 
+- SRT polylogarithmic interpretation of explicit fixed-family horizons — Excluded [L, chosen certificates only]: at fixed positive width/depth, `√a·recordLag→∞` and `η·oneParamLag→∞` as loudness/amplitude vanish. Survivor [L]: exact two-sided Fejér-order bounds, coherence drift and record/near-top horizon identity. No lower bound on all possible detecting lags; faster certificates are not ruled out. Open: source sign or uniform horizon containment. E: formal/GaloisForLFunctions/SquareRootThreshold/OrderOfTheExplicitVisibilityLags.lean.
 Each obstruction applies only to its stated hypotheses.
 
 - RW unit-cutoff Sonin domination without mean-zero — Kill [L, nonzero real nonnegative compact Schwartz log tests supported in `(−ε,ε)`, `0<ε≤1/[2(B+1)]`, `B=ccmTimeBandBound₂(0)≥0`]: `−Re W∞(g★⋆g)<Re Tr(ϑ(g★⋆g)S₁)`. Survivor [L]: required domination holds for every mean-zero test in the same small-support class, via `T′(0)=1`, primitive identity `−2‖Γ‖₂²` and bounded `T″`. Needs: correct test restrictions and all-aperture full prime−polar sign; no RW retirement. E: H:MeanZeroTentQuadraticForm; R:CCMArchimedeanSoninSmallSupportDomination.
-- SZ/RW identification of derivative and Weil completions — Kill [S, fixed aperture]: no core bound `‖g′‖₂≤C‖g‖_W`; primitive `P:L²₀→CCMArchimedeanFormDomain` is not onto. Survivor [S]: `P` is continuous, injective, dense-range and preserves screw/Weil pairings; nonnegativity on either complete domain is equivalent. Fixed-aperture CHMD graph/Weil core norms are equivalent; quotient coordinate is continuous. Needs: actual source sign, not a nonexistent derivative-norm isomorphism or an aperture-uniform coercive gap. E: R:SuzukiScrewCompletionInsideTheWeilFormDomain; R:CHMDGraphNormIsTheWeilFormNormOnAnAperture.
+- SZ/RW identification of derivative and Weil completions — Kill [L, fixed aperture]: no core bound `‖g′‖₂≤C‖g‖_W`; primitive `P:L²₀→CCMArchimedeanFormDomain` is not onto. Survivor [L]: `P` is continuous, injective, dense-range and preserves screw/Weil pairings; nonnegativity on either complete domain is equivalent. Fixed-aperture CHMD graph/Weil core norms are equivalent; quotient coordinate is continuous. Needs: actual source sign, not a nonexistent derivative-norm isomorphism or an aperture-uniform coercive gap. E: R:SuzukiScrewCompletionInsideTheWeilFormDomain; R:CHMDGraphNormIsTheWeilFormNormOnAnAperture.
 
 - WL stationary-packet convergence to zero — Kill [L, nonzero real compact `C²` source]: the actual prime-minus-polar packet has values `>c` and `<−c` arbitrarily late for some `c>0`, so it cannot converge. Survivor [L]: one-sided eventual bounds remain RH-equivalent; narrow-probe amplitudes have an unconditional `√(t log(1/t))` lower scale. Open: arithmetic one-sided upper/lower bound, not decay. E: B:PacketPersistenceLaw; B:ProbeAmplitudeLaw; B:PacketOneSidedGrowthLaw.
 - BAG automatic fixed-base head/tail overlap from disc-uniform Carlson control — Obstruction [L, conditional on an interior finite-head zero and positive boundary margin]: pole-shifted returns have density zero; head-return heights lie in the tail-bad set up to density zero. Survivor [L]: cutoff-uniform target density and same-height subtraction prove recurrence on zero-free neighborhoods; general nonvanishing-target universality holds about every right-strip point. A recurrent neighborhood exists iff the base point is not a ζ zero. Recurrence modulo the actual zero divisor and full-measure recurrent heights do not remove the exceptional zeros. Open: eliminate that set. E: R:ZetaTypicalHeightPairRecurrenceAndHeadZeroObstruction; R:UniformEulerTargetDensityOnZeroFreeDiscs; R:ZetaDiscRecurrenceOnZeroFreeDiscs; R:ZetaVoroninUniversalityOnSmallDiscs; R:ZetaRecurrenceAtEveryPointModuloItsZeros.

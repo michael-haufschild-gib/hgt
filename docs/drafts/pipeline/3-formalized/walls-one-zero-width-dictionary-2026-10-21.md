@@ -3,8 +3,8 @@
 - **ID:** walls-one-zero-width-dictionary-2026-10-21
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** docs/reports/review-2110/walls-ledger.md (walls 1, 2, 4, 11, 12) · hard-obstacles-summary.md §2.2 ("O1 and O2 are one problem")
-- **Statement:** The graded forms of walls 1, 2, 4 and 12 are readings of one number, the zero width `zetaZeroWidth = sup |Re ρ − ½| = Θ − ½`; wall 11 (node criticality) is the support condition of wall 12 (Weil cone uniqueness). Lean module `formal/GaloisForLFunctions/SquareRootThreshold/TheWallsMeasureOneZeroWidth.lean`.
+- **Source:** docs/reports/review-2110/walls-ledger.md, Wall 1 with faces 1.1–1.5 (cited in the companion documents by the labels 1, 2, 4, 11, 12) · hard-obstacles-summary.md §2.2 ("O1 and O2 are one problem")
+- **Statement:** The graded forms of the square-root barrier (face 1.1), the axis outside the zero set (1.2) and the ground-energy path (1.3) are readings of one number, the zero width `zetaZeroWidth = sup |Re ρ − ½| = Θ − ½`; the Jensen gap (1.5) reads it at the endpoint; node criticality is the support condition of the forced dual measure (1.4). Lean module `formal/GaloisForLFunctions/SquareRootThreshold/TheWallsMeasureOneZeroWidth.lean`.
 
 ## Goal
 The walls ledger lists seventeen obstructions in seventeen languages. The suspicion was that

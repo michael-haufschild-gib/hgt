@@ -123,3 +123,6 @@ their module lands; this card does not edit their files.
   `< θZ + 18` (`innerClock_lt_mul_action_add`), current sign from the clock (`enrichedClockCurrent_pos_of_clock_lt`);
   enlarged chamber `Z ≥ 710 e⁴` (was `4050 e⁴`; method limit `(5625/8) e⁴`) —
   `enrichedClockCurrent_pos_inner_action_ge`. Olean rebuilt (no downstream importers); axioms standard.
+- 2026-10-21 — Row 2: a Schur-complement route was explored with Float `#eval` numerics. That was numerical
+  computation, not proof, and is withdrawn: no number from it is recorded or used. Row 2 remains open; no
+  Lean-checked progress.

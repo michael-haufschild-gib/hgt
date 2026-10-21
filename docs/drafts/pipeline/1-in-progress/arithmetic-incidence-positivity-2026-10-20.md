@@ -439,3 +439,23 @@ and windows only) are unaffected.
   (integral_mono of mechanism 27's pointwise bound), `fullZeroForm_ge_explicitLedgerFloor`:
   `pool + crossing + Σ gains − Σ costs + ∫F²·plateauPotentialFloor R − (R³/3)cosh²(R/2)∫F² ≤ Ẑ(F)` — all terms explicit
   functionals of `F`. Axioms standard. README mechanism 43 extended.
+
+### C27 — The odd-part payment of the first prime atom ends before log 2 (`FirstPrimeOddPartPaymentWall`)
+- `linearProfile_stripBox_lt_firstAtom`: on `S₂ = [p, log 2 − p]`, `0 < p ≤ 1/400`, `∫∫ k(x,y)(x−y)² < 2Λ₂ ∫ α²` for `F = id`.
+  Box of `[0,a]²` ≤ `a³ − (4/3)a³ log 2 + a⁵/288 + a⁶/180` (`integral_square_surplus_linear_le`, exact square integral of the
+  majorant via `J = (8 log 2 − 5)/3`), inner squares smaller (`integral_square_mono`), `ω ≥ ω₂` on `(0, 2]`
+  (`mul_archLevyDensity_ge_sharp_of_le_two`). `not_forall_oddPart_le_stripSurplus_logTwo`: no odd-part fold of `S₂ × S₂` pays
+  the atom of 2 there. Hand: the linear-profile quotient crosses `√2 log 2` near `r ≈ 0.68`. Axioms standard; wired.
+
+### C28 — The harmonic wide fold; joint Harnack of 2 and 3 at 23/40 (`HarmonicWideMicroFold`, `OverlappingPrimeStripsTwentyThreeFortieths`)
+- Pair groups with the even difference optimized away (`harmonic_pair_ge`), recovered rate `R + γw` under `cs·w ≤ κR`, slope
+  `ω(log 2 − w) − ω(log 2 + w) ≥ 2.19w` from the mode series (`slope_mul_le_archLevyDensity_reflect`), shared band rate
+  `2(1−θ)/(2−θ)·R`; generic `foldedStrip_ge`; `integral_box_thetaWithheld_eq`.
+- `two_mul_primeTwoThreeShifts_le_stripSurplus_twentyThreeFortieths` (θ = 69/100, β = 1/100, cs = 2.19, κ = 1): atoms 2+3
+  ≤ `2 stripSurplus_{S₂} − (1/62)∫_{S₂}F²` on `[−23/40, 23/40]`. Certificate: two quartics, minimum ≈ 0.006 at `u = η`.
+  Axioms standard; wired. Hand reach of this fold ≈ 0.58–0.59.
+
+## Lane closed (2026-10-21)
+- The odd-window support lane (goal loop G1–G17 ≙ C11–C25, C27, C28) is closed at user request after review: window increments
+  are finite-window calibrations and do not approach RH. Closing record and no-go closure:
+  `docs/drafts/pipeline/5-failed/aip-odd-window-strip-harnack-route.md`. Status-quo ledger: `logs/aip-act-support-goal-ledger.md`.
