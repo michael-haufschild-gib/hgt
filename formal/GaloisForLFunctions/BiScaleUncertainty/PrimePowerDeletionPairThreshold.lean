@@ -356,33 +356,37 @@ theorem two_nodes_extreme {c : WeilTestFn →₀ ℝ} (hc : ∀ f, 0 ≤ c f) {p
       Real.sqrt ((q ^ e q : ℕ) : ℝ) := by
     rw [eulerPrice, Finset.sum_pair hpq]
   rw [hid, hprice] at hext
-  -- `s N_i √m_i ≤ M` for each node, with equality forced by the sum
+  set w₁ := ArithmeticFunction.vonMangoldt (p ^ e p) / Real.sqrt ((p ^ e p : ℕ) : ℝ) with hw₁def
+  set w₂ := ArithmeticFunction.vonMangoldt (q ^ e q) / Real.sqrt ((q ^ e q : ℕ) : ℝ) with hw₂def
+  have hw₁ : 0 < w₁ := div_pos hΛ₁ hs₁
+  have hw₂ : 0 < w₂ := div_pos hΛ₂ hs₂
+  have hsabs : |s| = 1 := by nlinarith [sq_abs s, abs_nonneg s]
+  -- `s √m_i N_i ≤ M` for each node
   have u₁ : s * (Real.sqrt ((p ^ e p : ℕ) : ℝ) * N₁) ≤ M := by
-    have : |s| = 1 := by nlinarith [sq_abs s, abs_nonneg s]
-    have h := abs_le.mp hb₁
-    rw [le_div_iff₀ hs₁] at h
-    rw [div_le_iff₀ hs₁] at h
-    rcases abs_eq (zero_le_one) |>.mp this with h1 | h1 <;> subst h1 <;> nlinarith [h.1, h.2]
+    have h := (le_div_iff₀ hs₁).mp hb₁
+    calc s * (Real.sqrt ((p ^ e p : ℕ) : ℝ) * N₁)
+        ≤ |s * (Real.sqrt ((p ^ e p : ℕ) : ℝ) * N₁)| := le_abs_self _
+      _ = |N₁| * Real.sqrt ((p ^ e p : ℕ) : ℝ) := by
+          rw [abs_mul, abs_mul, hsabs, abs_of_pos hs₁]; ring
+      _ ≤ M := h
   have u₂ : s * (Real.sqrt ((q ^ e q : ℕ) : ℝ) * N₂) ≤ M := by
-    have : |s| = 1 := by nlinarith [sq_abs s, abs_nonneg s]
-    have h := abs_le.mp hb₂
-    rw [le_div_iff₀ hs₂] at h
-    rw [div_le_iff₀ hs₂] at h
-    rcases abs_eq (zero_le_one) |>.mp this with h1 | h1 <;> subst h1 <;> nlinarith [h.1, h.2]
-  -- the sum identity in the scaled variables
-  have hsum : (ArithmeticFunction.vonMangoldt (p ^ e p) / Real.sqrt ((p ^ e p : ℕ) : ℝ)) *
-        (M - s * (Real.sqrt ((p ^ e p : ℕ) : ℝ) * N₁)) +
-      (ArithmeticFunction.vonMangoldt (q ^ e q) / Real.sqrt ((q ^ e q : ℕ) : ℝ)) *
-        (M - s * (Real.sqrt ((q ^ e q : ℕ) : ℝ) * N₂)) = 0 := by
-    have hs2 : s * s = 1 := by nlinarith
-    field_simp
-    linear_combination (-(Real.sqrt ((p ^ e p : ℕ) : ℝ)) * Real.sqrt ((q ^ e q : ℕ) : ℝ) * s) * hext +
-      (ArithmeticFunction.vonMangoldt (p ^ e p) * Real.sqrt ((q ^ e q : ℕ) : ℝ) * M +
-        ArithmeticFunction.vonMangoldt (q ^ e q) * Real.sqrt ((p ^ e p : ℕ) : ℝ) * M) * hs2
-  have hw₁ : 0 < ArithmeticFunction.vonMangoldt (p ^ e p) / Real.sqrt ((p ^ e p : ℕ) : ℝ) :=
-    div_pos hΛ₁ hs₁
-  have hw₂ : 0 < ArithmeticFunction.vonMangoldt (q ^ e q) / Real.sqrt ((q ^ e q : ℕ) : ℝ) :=
-    div_pos hΛ₂ hs₂
+    have h := (le_div_iff₀ hs₂).mp hb₂
+    calc s * (Real.sqrt ((q ^ e q : ℕ) : ℝ) * N₂)
+        ≤ |s * (Real.sqrt ((q ^ e q : ℕ) : ℝ) * N₂)| := le_abs_self _
+      _ = |N₂| * Real.sqrt ((q ^ e q : ℕ) : ℝ) := by
+          rw [abs_mul, abs_mul, hsabs, abs_of_pos hs₂]; ring
+      _ ≤ M := h
+  have e₁ : ArithmeticFunction.vonMangoldt (p ^ e p) * N₁ =
+      w₁ * (Real.sqrt ((p ^ e p : ℕ) : ℝ) * N₁) := by
+    rw [hw₁def]; field_simp
+  have e₂ : ArithmeticFunction.vonMangoldt (q ^ e q) * N₂ =
+      w₂ * (Real.sqrt ((q ^ e q : ℕ) : ℝ) * N₂) := by
+    rw [hw₂def]; field_simp
+  rw [e₁, e₂] at hext
+  have hs2 : s * s = 1 := by nlinarith
+  have hsum : w₁ * (M - s * (Real.sqrt ((p ^ e p : ℕ) : ℝ) * N₁)) +
+      w₂ * (M - s * (Real.sqrt ((q ^ e q : ℕ) : ℝ) * N₂)) = 0 := by
+    linear_combination (-s) * hext + (-(w₁ + w₂) * M) * hs2
   have t₁ : M - s * (Real.sqrt ((p ^ e p : ℕ) : ℝ) * N₁) = 0 := by
     nlinarith [mul_nonneg hw₁.le (sub_nonneg.mpr u₁), mul_nonneg hw₂.le (sub_nonneg.mpr u₂)]
   have t₂ : M - s * (Real.sqrt ((q ^ e q : ℕ) : ℝ) * N₂) = 0 := by

@@ -173,6 +173,30 @@ Knowledge ledger: `logs/wp3-aperture-face-knowledge.md`.
   `≤ 0.07` that the edge logarithm of the gauge (`≥ 0.044` there) absorbs. The binding constraint is
   again the bulk potential `≈ 0.003` of the quartic gauge, not the fold; quartic limit ≈ 0.295.
 
+- **C8 · Sharp Lévy moments and a two-point fold cost: all-profile aperture 29/100 → 3/10** — modules
+  `SharpLevyMomentQuarticPotential` (sharp `u ω ≤ ½ + u/4 − u²/48 − u³/32 + u⁴/1152 + u⁵/256`
+  `mul_archLevyDensity_le_sharper`; upper moments `P_k − E_k + E⁺_k`
+  `integral_pow_mul_archLevyDensity_le_sharper`; sharp quartic potential
+  `neg_poleFreeWeilOperator_quarticWindowGauge_ge_sharp`, radius `≤ 1/3`), `FoldedJumpHubSchur` (hub
+  Jensen `hub_jensen`, hub energy `hub_energy_ge` via Fubini over upper/lower hub pairs, the fold with a
+  hub and a two-point cost `integral_kappa_mul_gaugeJumpProfile_ge_hub` with outer cutoff `X₀`, Schur
+  step `schur_pointwise`, `integral_schur_piece_ge`), `ThreeTenthsSharpGaugeWeilPositivity` (gained fold
+  `κ(s) + κ(s + 2x) ≥ 2f(x + s) + 36x²` for `x + s < 301/1000`; two-point cost
+  `G(x, y) = (13.03(y − 281/1000) − 36x²)⁺`, zero for `x ≥ 0.0851`; inner cost
+  `C₁(x) = 0.2231·6.515·(0.02 − 2.763x²)₊² ≥ ∫ G(x, x+s) M(x+s) ds`; outer cost `2X₀ G_y`, `X₀ = 0.0851`;
+  gauge `1 − 12.88y² + 38.5y⁴`, `R = 301/1000`; thirty window pieces; potential
+  `≥ 1/5000 + 2C₁(x) + 2X₀ G_y(|x|)`). Also: `QuarticGaugeWindowPotential` radius hypothesis relaxed
+  `3/10 → 1/3` (downstream oleans rebuilt). Capstones `fullZeroForm_ge_of_even_support_le_threeTenths`,
+  `fullZeroForm_ge_of_support_le_threeTenths` (`Ẑ(F) ≥ (1/5000)∫F²` on `[−3/10, 3/10]`),
+  `zetaZeroConfig_re_W_ge_of_support_le_threeTenths`, `one_div_5000_le_ccmRestrictedWeilGroundEnergy_threeTenths`,
+  `lt_of_ccmRestrictedWeilGroundEnergy_nonpos_threeTenths`. Compiled, oleans, standard axioms, wired; lint
+  clean for ACT. Criterion 1. Insight: the quartic limit ≈ 0.295 was an artefact of the moment bound,
+  not of the gauge family: dropping the exact `−u³/32` of `u ω` cost `≈ 3·10⁻³` at `x ≈ 0.2` (the inner
+  first moment and the fourth moments, all of negative coefficient). With it kept the quartic potential
+  at `R = 0.301` is `≥ 0.0005–0.003` on the bulk. The fold cost beyond `log ρ` is a two-point cost:
+  the quadratic gain `36x²` of the inner point confines it to `x < 0.085`, so the centre pays at most
+  `1.2·10⁻³` and the edge strip pays with the inner width `X₀` instead of `R`.
+
 ## Log
 - 2026-10-20 — loop started; frontier read (ACT/APT READMEs, ACT/APT ledgers, frontier map).
 - 2026-10-20 — overlap: another agent (WP1/AIP) is building the odd-sector folded plateau result
@@ -189,3 +213,7 @@ Knowledge ledger: `logs/wp3-aperture-face-knowledge.md`.
 - 2026-10-21 — C7 done (`[−29/100, 29/100]`, past `log ρ` with the fold cost). Even and odd sectors
   now both pass the plastic threshold; next even limit is the quartic gauge family (≈ 0.295); beyond it
   a richer gauge or a non-pointwise (Schur/Ritz) certificate is needed.
+- 2026-10-21 — C8 done (`[−3/10, 3/10]`, sharp moments + two-point fold cost). Hub–Schur
+  infrastructure (`FoldedJumpHubSchur`) built and ready: it replaces pointwise supersolution by a Schur
+  mean condition. Next: hub–Schur certificates past `0.3` (bulk potential dips allowed), then the even
+  sector toward `½ log 2` with the prime 2.

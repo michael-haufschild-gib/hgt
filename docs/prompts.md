@@ -643,7 +643,7 @@ this review is incorrect and outdated. redo it.
 
 the reports are not diaries or history log, but status quo reports.
 
-rewrite the existing reports in folder docs/reports/review-2010/
+write the new reports in folder docs/reports/review-2110/
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
@@ -659,3 +659,19 @@ go one by one through the following research programmes and update their README.
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics.
 
 
+## TASKS
+formalize unconditionally in lean the part of the CCM research that we are lacking following this review report: docs/reports/ccm-comparison-us-vs-sota.md
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+If anything is missing from our lean corpus or mathlib, you build it no matter the effort.
+
+Always make good use the search tool for our lean corpus to find existing work, building blocks, and leads for new ideas and solutions.

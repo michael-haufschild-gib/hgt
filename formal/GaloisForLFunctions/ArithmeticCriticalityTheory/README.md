@@ -711,13 +711,21 @@ threshold `log ρ ≈ 0.2812`, the zero of `κ`; the binding pair is `(x, s) →
 `2κ(R)`. Past `log ρ` midpoint convexity of a minorant of `κ` bounds the folded conductance below by a
 function `−G(x + s)` of the outer point, and such a bound is paid by potentials: the constant
 `2 ∫_{y>0} G M` and the edge potential `2R G(|x|)` (`integral_kappa_mul_gaugeJumpProfile_ge_foldCost`),
-which the edge logarithm of the gauge absorbs. With quartic profiles `q = 1 − c y² + d y⁴` the
-potential is nearly flat, and with the odd sector paid by the folded odd plateau of
-`ArithmeticIncidencePositivity`, every real `F ∈ C²_c` supported in `[−29/100, 29/100]` satisfies
+which the edge logarithm of the gauge absorbs. The inner point carries a quadratic gain,
+`κ(s) + κ(s + 2x) ≥ 2f(x + s) + 36x²`, so the cost is a two-point cost supported on inner points
+`x < 0.085`; it is paid on `u(x)²` by its integral over the outer point and on `u(y)²` with the inner
+width as factor (`integral_kappa_mul_gaugeJumpProfile_ge_hub`). The potential of a quartic profile
+`q = 1 − c y² + d y⁴` needs the moments of `ω` to fourth order: `u ω = ½ + u/4 − u²/48 − u³/32 + O(u⁴)`,
+and the cubic term matters on every moment of negative coefficient
+(`neg_poleFreeWeilOperator_quarticWindowGauge_ge_sharp`). With the odd sector paid by the folded odd
+plateau of `ArithmeticIncidencePositivity`, every real `F ∈ C²_c` supported in `[−3/10, 3/10]`
+satisfies
 
-    Ẑ(F) ≥ (1/1000) ∫ F²        (`fullZeroForm_ge_of_support_le_pastFold`),
+    Ẑ(F) ≥ (1/5000) ∫ F²        (`fullZeroForm_ge_of_support_le_threeTenths`),
 
-so `μ(A) ≥ 1/1000` for every aperture `A ≤ 29/100`. The free even fold ends at `log ρ`; Weil
+so `μ(A) ≥ 1/5000` for every aperture `A ≤ 3/10`. Pairs with one point in a hub `Z` carry at least
+`(∫_Z M) ∫ M (u − ū)²` (`hub_energy_ge`): the folded jump form has a Poincaré inequality, and with
+`A(t − c)² + Bt² ≥ c²AB/(A + B)` a potential negative in places is paid by it. The free even fold ends at `log ρ`; Weil
 positivity does not. On even tests the shifted pair `ζ(s − a)ζ(s + a)` has, for every radius `r` and
 every large `a`, an even test on `[−r, r]` with negative zero form
 (`exists_even_shiftedPairZeroForm_neg`): window positivity of `ζ` is selective at every aperture.
@@ -794,8 +802,8 @@ the prime number theorem enters only through proved corpus forms.
 3. **The monotone cone.** The weight criterion fails by the other-pole moment; a replacement that
    retains the same-side terms away from the origin, or a proof that no inequality in `Θ` alone
    decides the monotone cone, is open.
-4. **Beyond the first prime.** Window gauges with the even fold give `Ẑ ≥ (1/1000)∫F²` on
-   `[−29/100, 29/100]` with nonnegative conductances; past `log 2 / 2` the conductances across the
+4. **Beyond the first prime.** Window gauges with the even fold give `Ẑ ≥ (1/5000)∫F²` on
+   `[−3/10, 3/10]` with nonnegative conductances; past `log 2 / 2` the conductances across the
    first prime turn negative. Extending a gauge argument through the first prime window, with the prime atom paid by
    the potential, is the smallest instance of problem 1.
 5. **Selectivity.** The identities of 3.1–3.3 and 3.6 hold for any even positive kernel; the

@@ -47,6 +47,30 @@ theorem evenCoeff_modScaledBump_zero_eq_two_mul {w : ℝ} (hw : 0 < w) {z : ℂ}
   rw [evenCoeff_modScaledBump_zero zetaZeroConfig hw hz, Set.indicator_of_mem hzc, hmc]
   push_cast; ring
 
+/-- **The transform moves little near a loud record.** For a zero `½ + z₁` with
+`|h_w(−iz₁)| ≥ H₀`, `8w e^{w/2} J_w |z − z₁| ≤ H₀` and `w|z − z₁| ≤ 1`:
+`|h_w(−iz) − h_w(−iz₁)| ≤ |h_w(−iz₁)|/4`. -/
+theorem norm_paperFT_sub_le_quarter {w : ℝ} (hw : 0 < w) {z₁ z : ℂ}
+    (hz₁ : (1 / 2 + z₁) ∈ zetaZeroConfig.carrier) {H₀ : ℝ}
+    (hh₁ : H₀ ≤ ‖paperFT (scaledBump w) (-(I * z₁))‖)
+    (hL : 8 * w * Real.exp (w / 2) * bumpMass w * ‖z - z₁‖ ≤ H₀) (hwz : w * ‖z - z₁‖ ≤ 1) :
+    ‖paperFT (scaledBump w) (-(I * z)) - paperFT (scaledBump w) (-(I * z₁))‖ ≤
+      ‖paperFT (scaledBump w) (-(I * z₁))‖ / 4 := by
+  have hxy : w * ‖-(I * z) - -(I * z₁)‖ ≤ 1 := by
+    rw [show -(I * z) - -(I * z₁) = -I * (z - z₁) by ring, norm_mul, norm_neg, Complex.norm_I,
+      one_mul]
+    exact hwz
+  have hy : |(-(I * z₁)).im| ≤ 1 / 2 := by
+    have hs := zetaZeroConfig.strip _ hz₁
+    have e : (1 / 2 + z₁).re = 1 / 2 + z₁.re := by simp
+    have : |z₁.re| ≤ 1 / 2 := by rw [abs_le]; constructor <;> linarith [hs.1, hs.2]
+    simpa using this
+  have h := norm_paperFT_scaledBump_sub_le hw hxy hy
+  rw [show -(I * z) - -(I * z₁) = -I * (z - z₁) by ring, norm_mul, norm_neg, Complex.norm_I,
+    one_mul] at h
+  have : 2 * w * Real.exp (w / 2) * bumpMass w * ‖z - z₁‖ ≤ H₀ / 4 := by linarith
+  linarith
+
 /-- **Unmodulated coefficients of nearby zeros are coherent.** For zeros `½ + z₁`, `½ + z` with
 `|h_w(−iz₁)| ≥ H₀`, `8w e^{w/2} J_w |z − z₁| ≤ H₀` and `w|z − z₁| ≤ 1`:
 `Re(D(z) conj D(z₁)) ≥ 0`. No reflected term arises, since both conjugate zeros carry `h_w(−iz)²`. -/
@@ -56,24 +80,10 @@ theorem re_one_param_mul_conj_nonneg {w : ℝ} (hw : 0 < w) {z₁ z : ℂ}
     (hL : 8 * w * Real.exp (w / 2) * bumpMass w * ‖z - z₁‖ ≤ H₀) (hwz : w * ‖z - z₁‖ ≤ 1) :
     0 ≤ (evenCoeff zetaZeroConfig (modScaledBump w 0) z *
       conj (evenCoeff zetaZeroConfig (modScaledBump w 0) z₁)).re := by
+  have hdiff := norm_paperFT_sub_le_quarter hw hz₁ hh₁ hL hwz
   rw [evenCoeff_modScaledBump_zero_eq_two_mul hw hz₁, evenCoeff_modScaledBump_zero_eq_two_mul hw hz]
   set h₁ := paperFT (scaledBump w) (-(I * z₁)) with hh₁def
   set h₂ := paperFT (scaledBump w) (-(I * z)) with hh₂def
-  have hdiff : ‖h₂ - h₁‖ ≤ ‖h₁‖ / 4 := by
-    have hxy : w * ‖-(I * z) - -(I * z₁)‖ ≤ 1 := by
-      rw [show -(I * z) - -(I * z₁) = -I * (z - z₁) by ring, norm_mul, norm_neg, Complex.norm_I,
-        one_mul]
-      exact hwz
-    have hy : |(-(I * z₁)).im| ≤ 1 / 2 := by
-      have hs := zetaZeroConfig.strip _ hz₁
-      have e : (1 / 2 + z₁).re = 1 / 2 + z₁.re := by simp
-      have : |z₁.re| ≤ 1 / 2 := by rw [abs_le]; constructor <;> linarith [hs.1, hs.2]
-      simpa using this
-    have h := norm_paperFT_scaledBump_sub_le hw hxy hy
-    rw [show -(I * z) - -(I * z₁) = -I * (z - z₁) by ring, norm_mul, norm_neg, Complex.norm_I,
-      one_mul] at h
-    have : 2 * w * Real.exp (w / 2) * bumpMass w * ‖z - z₁‖ ≤ H₀ / 4 := by linarith
-    linarith
   have h0 : ‖(0 : ℂ)‖ ≤ ‖h₁‖ ^ 2 / 16 := by rw [norm_zero]; positivity
   have hcoh := re_coherent_squares_nonneg hdiff h0 h0
   simp only [add_zero] at hcoh
@@ -84,6 +94,48 @@ theorem re_one_param_mul_conj_nonneg {w : ℝ} (hw : 0 < w) {z₁ z : ℂ}
     rw [map_mul, Complex.conj_natCast]; push_cast; ring
   rw [e, Complex.re_ofReal_mul]
   exact mul_nonneg (Nat.cast_nonneg _) hcoh
+
+/-- **Coefficients near a loud record are comparable to it.** Under the hypotheses of
+`norm_paperFT_sub_le_quarter`, for a zero `½ + z` with `|Im z| ≤ Γ'`:
+`|D(z)| ≤ (125/2) log(180Γ') |D(z₁)|`, since `|h_w(−iz)| ≤ (5/4)|h_w(−iz₁)|` and `m ≤ 40 log(180Γ')`. -/
+theorem norm_evenCoeff_zero_le_of_near {w : ℝ} (hw : 0 < w) {z₁ z : ℂ}
+    (hz₁ : (1 / 2 + z₁) ∈ zetaZeroConfig.carrier) (hz : (1 / 2 + z) ∈ zetaZeroConfig.carrier)
+    {H₀ Γ' : ℝ} (hh₁ : H₀ ≤ ‖paperFT (scaledBump w) (-(I * z₁))‖)
+    (hL : 8 * w * Real.exp (w / 2) * bumpMass w * ‖z - z₁‖ ≤ H₀) (hwz : w * ‖z - z₁‖ ≤ 1)
+    (hΓ' : |z.im| ≤ Γ') :
+    ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z‖ ≤
+      125 / 2 * Real.log (180 * Γ') * ‖evenCoeff zetaZeroConfig (modScaledBump w 0) z₁‖ := by
+  have hdiff := norm_paperFT_sub_le_quarter hw hz₁ hh₁ hL hwz
+  set h₁ := paperFT (scaledBump w) (-(I * z₁)) with hh₁def
+  set h₂ := paperFT (scaledBump w) (-(I * z)) with hh₂def
+  have hh₂ : ‖h₂‖ ≤ 5 / 4 * ‖h₁‖ := by
+    have := norm_sub_norm_le h₂ h₁; linarith
+  have hD : ∀ y, (1 / 2 + y) ∈ zetaZeroConfig.carrier →
+      ‖evenCoeff zetaZeroConfig (modScaledBump w 0) y‖ =
+        2 * zetaZeroConfig.mult (1 / 2 + y) * ‖paperFT (scaledBump w) (-(I * y))‖ ^ 2 :=
+    fun y hy => by
+      rw [evenCoeff_modScaledBump_zero_eq_two_mul hw hy, norm_mul, norm_pow, Complex.norm_natCast]
+      push_cast; ring
+  rw [hD z hz, hD z₁ hz₁, ← hh₁def, ← hh₂def]
+  have him' : (1 / 2 + z).im = z.im := by simp
+  have h4 : 4 ≤ |z.im| := by have := four_le_abs_im_of_mem_zetaCarrier hz; rwa [him'] at this
+  have hm := mult_le_log_zeta hz
+  rw [him'] at hm
+  have hmΓ : (zetaZeroConfig.mult (1 / 2 + z) : ℝ) ≤ 40 * Real.log (180 * Γ') :=
+    hm.trans (mul_le_mul_of_nonneg_left (Real.log_le_log (by linarith) (by linarith)) (by norm_num))
+  have hm1 : (1 : ℝ) ≤ zetaZeroConfig.mult (1 / 2 + z₁) := by
+    exact_mod_cast zetaZeroConfig.one_le_mult _ hz₁
+  have hsq : ‖h₂‖ ^ 2 ≤ 25 / 16 * ‖h₁‖ ^ 2 := by
+    have := pow_le_pow_left₀ (norm_nonneg _) hh₂ 2; nlinarith
+  have h1 : 2 * (zetaZeroConfig.mult (1 / 2 + z) : ℝ) * ‖h₂‖ ^ 2 ≤
+      2 * (40 * Real.log (180 * Γ')) * (25 / 16 * ‖h₁‖ ^ 2) :=
+    mul_le_mul (by linarith) hsq (sq_nonneg _) (by linarith [Nat.cast_nonneg (α := ℝ)
+      (zetaZeroConfig.mult (1 / 2 + z))])
+  have hL0 : 0 ≤ Real.log (180 * Γ') := Real.log_nonneg (by linarith)
+  have h2 : 2 * ‖h₁‖ ^ 2 ≤ 2 * (zetaZeroConfig.mult (1 / 2 + z₁) : ℝ) * ‖h₁‖ ^ 2 := by
+    have := sq_nonneg ‖h₁‖; nlinarith
+  have h3 := mul_le_mul_of_nonneg_left h2 (show 0 ≤ 125 / 4 * Real.log (180 * Γ') by positivity)
+  linarith
 
 /-- **A loud unmodulated coefficient has a large transform.** For a zero `½ + y` with `|Im y| ≤ Γ'`,
 `|D(y)| ≥ ε₀` and `H₀² ≤ ε₀/(80 log(180Γ'))`: `|h_w(−iy)| ≥ H₀`. -/
@@ -132,7 +184,7 @@ theorem oneParamCollapseBound_eq_record (w η κ₀ : ℝ) (k p : ℕ) :
 `V` with `|D(z*)| ≥ a > 0`, `|Im z*| ≤ Γ`, `Re z* ≥ σ`, `0 < σ ≤ ½`, `P ≥ 80 log(180Γ)`. Let `k ≥ 1`,
 `κ₀ ≥ 1`, `2κ₀/V ≤ σ/8`, `V ≥ π(k + P)`, `Vσ/4 ≥ 4π(k + P)`, `H₀² ≤ a/(80 log(180Γ))`, and a core
 scale `ρ > 0` and gap `G ≥ 1` with `ρV ≤ 1`, `wρ ≤ 1`, `8w e^{w/2} J_w ρ ≤ H₀`, `ρ ≤ σ/8`,
-`((1 + τ)·2ρV + τ)(P + 1)·80 log(180(Γ + 1))(e^{w/2}B_w)² ≤ a/2` (`τ = coreFactorPerturbation`),
+`((1 + τ)·2ρV + τ)(P + 1)·(125/2) log(180(Γ + 1)) ≤ 1/2` (`τ = coreFactorPerturbation`),
 and for every `p ≤ P`, `2B(a, Γ; p) < (ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(σ/4)^{2k+1}`
 (`recordCollapseBound`). Then `P_v < 0` for some `v ∈ [0, V]`. -/
 theorem one_param_record_visible {w : ℝ} (hw : 0 < w) {V : ℝ} (hV : 0 < V) {z₁ : ℂ}
@@ -149,8 +201,8 @@ theorem one_param_record_visible {w : ℝ} (hw : 0 < w) {V : ℝ} (hV : 0 < V) {
     {ρ G : ℝ} (hρ : 0 < ρ) (hG : 1 ≤ G) (hρV : ρ * V ≤ 1) (hρw : w * ρ ≤ 1)
     (hρL : 8 * w * Real.exp (w / 2) * bumpMass w * ρ ≤ H₀) (hρr : ρ ≤ σ / 8)
     (hηm : ((1 + coreFactorPerturbation P κ₀ V ρ G) * (2 * (ρ * V)) +
-        coreFactorPerturbation P κ₀ V ρ G) * ((P + 1) * (80 * Real.log (180 * (Γ + 1)) *
-          (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) ≤ a / 2)
+        coreFactorPerturbation P κ₀ V ρ G) * ((P + 1) * (125 / 2 * Real.log (180 * (Γ + 1)))) ≤
+          1 / 2)
     (hmain : ∀ p : ℕ, p ≤ P → 2 * recordCollapseBound w a Γ κ₀ k p <
       (ρ * κ₀ / (2 * (P + 1) * G ^ P)) ^ p * V ^ (2 * k + p + 1) * (σ / 4) ^ (2 * k + 1)) :
     ∃ v ∈ Icc (0 : ℝ) V, (zetaZeroConfig.W (twoBump (modScaledBump w 0) v (-1))
@@ -271,24 +323,20 @@ theorem one_param_record_visible {w : ℝ} (hw : 0 < w) {V : ℝ} (hV : 0 < V) {
     exact re_one_param_mul_conj_nonneg hw (hmem z₁ hz₁) (hmem c (hDS c hcS)) hh₁
       (le_trans (mul_le_mul_of_nonneg_left hcz (mul_nonneg (by positivity) hJ0)) hρL)
       (le_trans (mul_le_mul_of_nonneg_left hcz hw.le) hρw)
-  -- the mass of the core
-  obtain ⟨Dm, hDm⟩ : ∃ Dm : ℝ,
-      Dm = 80 * Real.log (180 * (Γ + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 := ⟨_, rfl⟩
-  rw [← hDm] at hηm
+  -- the mass of the core, relative to the record
+  obtain ⟨Dm, hDm⟩ : ∃ Dm : ℝ, Dm = 125 / 2 * Real.log (180 * (Γ + 1)) * ‖D z₁‖ := ⟨_, rfl⟩
   have hDc : ∀ c ∈ S.filter (fun z => z ∉ SL), ‖D c‖ ≤ Dm := fun c hc => by
     have hcS := (Finset.mem_filter.mp hc).1
-    refine (norm_evenCoeff_modScaledBump_le_log hw 0 (hDS c hcS)).trans ?_
-    have h4 := four_le_abs_im_of_evenCoeff_zeta (hDS c hcS)
+    have hcz := hcρ c hc
     have himc : |c.im| ≤ Γ + 1 := by
       have h1 := Complex.abs_im_le_norm (c - z₁)
       rw [Complex.sub_im] at h1
       have h2 := abs_sub_abs_le_abs_sub c.im z₁.im
-      have h3 := hcρ c hc
-      linarith only [h1, h2, h3, hup, hρr, hσ1]
-    have h5 : Real.log (180 * |c.im|) ≤ Real.log (180 * (Γ + 1)) :=
-      Real.log_le_log (by linarith only [h4]) (by linarith only [himc])
+      linarith only [h1, h2, hcz, hup, hρr, hσ1]
     rw [hDm]
-    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h5 (by norm_num)) (by positivity)
+    exact norm_evenCoeff_zero_le_of_near hw (hmem z₁ hz₁) (hmem c (hDS c hcS)) hh₁
+      (le_trans (mul_le_mul_of_nonneg_left hcz (mul_nonneg (by positivity) hJ0)) hρL)
+      (le_trans (mul_le_mul_of_nonneg_left hcz hw.le) hρw) himc
   have hCcard : (S.filter fun z => z ∉ SL).card ≤ P + 1 :=
     (Finset.card_filter_le _ _).trans (by
       rw [← Finset.card_erase_add_one hz₁S]
@@ -315,7 +363,9 @@ theorem one_param_record_visible {w : ℝ} (hw : 0 < w) {V : ℝ} (hV : 0 < V) {
     have hη0 : 0 ≤ (1 + coreFactorPerturbation P κ₀ V ρ G) * (2 * (ρ * V)) +
         coreFactorPerturbation P κ₀ V ρ G := by positivity
     have h1 := mul_le_mul_of_nonneg_left hsumD hη0
-    linarith only [h1, hηm, hD₁]
+    have h2 := mul_le_mul_of_nonneg_right hηm (norm_nonneg (D z₁))
+    rw [hDm] at h1
+    linarith only [h1, h2]
   have hgap : ρ₀ * (2 * (κ / V) + ρ₀) ≤ t₀ * (ρ₁ * ε) := by
     rw [ht₀, hρ₁ρ₀, hε]
     exact core_gap_arith hρ₀0.le hρ₀ρ hG0 hκ₀0 hV (Nat.cast_nonneg P) hκ2
@@ -436,7 +486,7 @@ theorem one_param_record_visible {w : ℝ} (hw : 0 < w) {V : ℝ} (hV : 0 < V) {
 Let `k ≥ 1`, `κ₀ ≥ 1`, `2κ₀/V ≤ δ₀/16`, `V ≥ π(k + P)`, `Vδ₀/8 ≥ 4π(k + P)`, the record-depth
 condition, `H₀² ≤ (2η²/e)/(80 log(180Γ₀))`, and a core scale `ρ > 0` and gap `G ≥ 1` with
 `ρV ≤ 1`, `wρ ≤ 1`, `8w e^{w/2} J_w ρ ≤ H₀`, `ρ ≤ δ₀/16`,
-`((1 + τ)·2ρV + τ)(P + 1)·80 log(180(Γ₀ + 1))(e^{w/2}B_w)² ≤ η²/e` (`τ = coreFactorPerturbation`),
+`((1 + τ)·2ρV + τ)(P + 1)·(125/2) log(180(Γ₀ + 1)) ≤ 1/2` (`τ = coreFactorPerturbation`),
 and for every `p ≤ P`, `2B₀(p) < (ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(δ₀/8)^{2k+1}`
 (`oneParamCollapseBound`). Then `P_v < 0` for some lag `v ∈ [0, V]`, where `P_v` is the Weil form of
 `κ_w(t + v/2) − κ_w(t − v/2)`. -/
@@ -455,9 +505,8 @@ theorem one_param_near_top_visible {w : ℝ} (hw : 0 < w) {z₀ : ℂ}
     {ρ G : ℝ} (hρ : 0 < ρ) (hG : 1 ≤ G) (hρV : ρ * V ≤ 1) (hρw : w * ρ ≤ 1)
     (hρL : 8 * w * Real.exp (w / 2) * bumpMass w * ρ ≤ H₀) (hρr : ρ ≤ z₀.re / 16)
     (hηm : ((1 + coreFactorPerturbation P κ₀ V ρ G) * (2 * (ρ * V)) +
-        coreFactorPerturbation P κ₀ V ρ G) * ((P + 1) * (80 * Real.log (180 *
-          (oneParamRecordHeight w η + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) ≤
-      2 * η ^ 2 / Real.exp 1 / 2)
+        coreFactorPerturbation P κ₀ V ρ G) * ((P + 1) * (125 / 2 * Real.log (180 *
+          (oneParamRecordHeight w η + 1)))) ≤ 1 / 2)
     (hmain : ∀ p : ℕ, p ≤ P → 2 * oneParamCollapseBound w η κ₀ k p <
       (ρ * κ₀ / (2 * (P + 1) * G ^ P)) ^ p * V ^ (2 * k + p + 1) * (z₀.re / 8) ^ (2 * k + 1)) :
     ∃ v ∈ Icc (0 : ℝ) V, (zetaZeroConfig.W (twoBump (modScaledBump w 0) v (-1))
