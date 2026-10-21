@@ -653,7 +653,7 @@ theorem slab_mem_gridEulerDeviations :
   refine ⟨_, fun g => ?_, hb, hpos, ?_⟩
   · rw [Finsupp.single_apply]; split_ifs <;> norm_num
   · set I := ∫ t, (narrowBump N t) ^ 2
-    set B : ℝ := (slabBox Q M).card
+    set B : ℝ := ((slabBox Q M).card : ℝ)
     set c : ℝ := (M : ℝ) / (M + 1)
     have hnode : ∀ p ∈ insert p₀ Q, nodeAt (Finsupp.single (slabTrainFn Q (slabNode e)
         (slabNode e p₀) M N σ) 1) (p ^ e p) =
@@ -693,7 +693,6 @@ theorem slab_mem_gridEulerDeviations :
       ring
     rw [hsum, eq_div_iff (by positivity)]
     field_simp
-    ring
 
 end Deviation
 

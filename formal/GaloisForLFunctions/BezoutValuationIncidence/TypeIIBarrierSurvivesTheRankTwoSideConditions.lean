@@ -3,29 +3,33 @@ import GaloisForLFunctions.BezoutValuationIncidence.SharpConstantAttainedByPrime
 /-!
 # The Type-II barrier survives the rank-two side conditions
 
-The coherent obstruction bounds the remainder `B + m R' + β H'` from below. Here it is shown that the
-bilinear form `B` itself, with both rank-two readouts of the large scale killed, `R(c') = H(c') = 0`,
-still attains the rank-two remainder bound up to a constant.
+The coherent obstruction bounds the remainder `B + m R' + β H'` of the rank-two law from below. Here the
+bilinear form `B` itself is bounded from below, with both rank-two readouts of the large scale killed:
+`R(c') = H(c') = 0`.
 
-Anti-coherent windows are the mirror of coherent ones: if `|n₂ mod d/d - 1/2| ≤ 1/512` and the window
-has length `H ≤ d/512`, every `n` in it has `|n mod d/d - 1/2| ≤ 1/64`, so `𝔅(d, n) ≤ -d²/100`. For a
-nonnegative small-scale row on such moduli and a nonnegative row on the window, when `n₂ ≥ 150 D`,
+Anti-coherent windows mirror coherent ones. Suppose `|n₀ mod d/d - 1/2| ≤ 1/512` and the window
+`[n₀, n₀ + H)` has `512 H ≤ d`. Then every `n` in the window has `|n mod d/d - 1/2| ≤ 1/64`, so
+`𝔅(d, n) ≤ -d²/100`. By double counting, a set of moduli in `[512, D]` has a `1/1024` share
+anti-coherent for some shift in any interval of length `2D`.
 
-`B + m R' + β H' ≤ -(1/200)(Σ_d c(d) d)(Σ_n c'(n)/n²)`.
+Take three windows `W₂ < W₁ < W₃` in height, with `W₁` coherent and `W₂, W₃` anti-coherent for the same
+moduli. Nested pigeonholes give a common modulus set of relative size `2⁻²⁷`. On `c' = c₁ - a₂ c₂ - a₃ c₃`
+with nonnegative `cᵢ` on `Wᵢ` and `a₂, a₃ ≥ 0`, every piece pushes the kernel term up. For `n₂ ≥ 150 D`,
 
-Choose three windows `W₂ < W₁ < W₃` in height: `W₁` coherent and `W₂, W₃` anti-coherent for the same
-moduli. The averages `ℓ_i = R(1_{W_i})/H(1_{W_i})` of `log n` are then strictly increasing, so the large
-row `c' = 1_{W₁} - λ₂ 1_{W₂} - λ₃ 1_{W₃}` with
+`B(c, c') + m R(c') + β H(c') ≥ (1/200)(Σ_d c(d) d)(Σ_n |c'(n)|/n²)`.
 
-`λ₂ = H₁(ℓ₃ - ℓ₁)/(H₂(ℓ₃ - ℓ₂)) ≥ 0`,  `λ₃ = H₁(ℓ₁ - ℓ₂)/(H₃(ℓ₃ - ℓ₂)) ≥ 0`
+The ratio `ℓ = R/H` is an average of `log n` over the support, so `ℓ₂ < ℓ₁ < ℓ₃`. Then
 
-has `R(c') = H(c') = 0`. Each of the three pieces then pushes `B(c, c')` up, and
+`a₂ = H₁(ℓ₃ - ℓ₁)/(H₂(ℓ₃ - ℓ₂)) ≥ 0`,  `a₃ = H₁(ℓ₁ - ℓ₂)/(H₃(ℓ₃ - ℓ₂)) ≥ 0`
+
+kill both readouts, and
 
 `B(c, c') ≥ (1/200)(Σ_d c(d) d)(Σ_n |c'(n)|/n²)`  with  `R(c') = H(c') = 0`.
 
-No pair of rank-two side conditions on the large scale can bring Type-II inputs below the rank-two
-remainder size. The cross-scale barrier is intrinsic to the bilinear form, not an artefact of its rank-two
-part.
+The two rank-two side conditions on the large scale cannot bring Type-II inputs below the rank-two
+remainder size. The cross-scale barrier `Q ≍ P^{5/3}` is intrinsic to the bilinear form, not an artefact
+of its rank-two part. The replacement hypothesis is still equidistribution of the large-scale
+coefficients across near-multiple and near-half windows of the small moduli.
 -/
 
 open Finset Filter Topology Complex RHTower RHTower.Sieve GaloisForLFunctions.BiScaleUncertainty
@@ -123,7 +127,7 @@ theorem near_half_of_antiCoherent {d n₀ t H : ℕ} (h₀ : antiCoherent d n₀
   have e4 : (0 : ℝ) ≤ t := Nat.cast_nonneg t
   have hx : ((n₀ % d + t : ℕ) : ℝ) / d - 1 / 2 =
       (2 * ((n₀ % d : ℕ) : ℝ) + 2 * t - d) / (2 * d) := by
-    push_cast; field_simp; ring
+    push_cast; field_simp
   rw [hmod, hx, abs_div, abs_of_pos (by positivity : (0 : ℝ) < 2 * d), div_le_iff₀ (by positivity),
     abs_le]
   constructor <;> linarith
