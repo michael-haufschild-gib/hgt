@@ -30,7 +30,7 @@ as `ρ + δ/2 < 5/12` (`primeWindow_sum_ge_of_lower_bound`), and the window boun
 -/
 
 open Complex Filter Topology Set Finset Metric MeasureTheory
-open scoped Real
+open scoped Real Interval
 
 noncomputable section
 
@@ -112,7 +112,7 @@ theorem norm_sub_sub_mul_deriv_le_of_norm_deriv_deriv_le {Φ : ℂ → ℂ} (hΦ
       rcases Set.mem_uIoc.mp hs with ⟨h1, h2⟩ | ⟨h1, h2⟩
       · rw [abs_of_pos (by linarith), abs_of_pos (by linarith)]
         linarith
-      · rw [abs_of_neg (by linarith), abs_of_neg (by linarith)]
+      · rw [abs_of_nonpos (by linarith), abs_of_neg (by linarith)]
         linarith
     rcases le_or_gt c s with hcs | hcs
     · have hsc : s - c = |s - c| := (abs_of_nonneg (by linarith)).symm
@@ -170,12 +170,16 @@ theorem norm_integral_sub_midpoint_le {Φ : ℂ → ℂ} (hΦ : Differentiable �
       show c - r - c = -r by ring, show c + r - c = r by ring, integral_id]
     simp
   -- decomposition of the integral
+  have hint1 : IntervalIntegrable (fun s : ℝ => Φ s - Φ c) volume (c - r) (c + r) :=
+    (hcΦ.sub continuous_const).intervalIntegrable _ _
+  have hint2 : IntervalIntegrable (fun s : ℝ => ((s - c : ℝ) : ℂ) * deriv Φ c) volume (c - r)
+      (c + r) := hlin.intervalIntegrable _ _
+  have hint3 : IntervalIntegrable (fun s : ℝ => Φ s) volume (c - r) (c + r) :=
+    hcΦ.intervalIntegrable _ _
   have hsplit : (∫ s in (c - r)..(c + r), Φ s) - ((2 * r : ℝ) : ℂ) * Φ c
       = ∫ s in (c - r)..(c + r), (Φ s - Φ c - ((s - c : ℝ) : ℂ) * deriv Φ c) := by
-    rw [intervalIntegral.integral_sub ((hcΦ.sub continuous_const).intervalIntegrable _ _)
-      (hlin.intervalIntegrable _ _), intervalIntegral.integral_sub (hcΦ.intervalIntegrable _ _)
+    rw [intervalIntegral.integral_sub hint1 hint2, intervalIntegral.integral_sub hint3
       intervalIntegrable_const, hlin0, intervalIntegral.integral_const, Complex.real_smul]
-    congr 2
     push_cast
     ring
   rw [hsplit]
@@ -190,7 +194,7 @@ theorem norm_integral_sub_midpoint_le {Φ : ℂ → ℂ} (hΦ : Differentiable �
 `[x − 1, x + 2]` and `N h = 1`, the midpoint sum `Σ_{k<N} h g(x + kh + h/2)` differs from
 `∫_0^1 g(x+t) dt` by at most `S h²/4`. -/
 theorem norm_sum_midpoint_sub_integral_le {g : ℂ → ℂ} (hg : Differentiable ℂ g) {x h S : ℝ}
-    (hx0 : 0 ≤ x) (hh0 : 0 < h) {N : ℕ} (hNh : (N : ℝ) * h = 1) (hS : 0 ≤ S)
+    (hh0 : 0 < h) {N : ℕ} (hNh : (N : ℝ) * h = 1) (hS : 0 ≤ S)
     (hbound : ∀ s : ℝ, x - 1 ≤ s → s ≤ x + 2 → ‖deriv (deriv g) s‖ ≤ S) :
     ‖(∑ k ∈ range N, (h : ℂ) * g ((x + k * h + h / 2 : ℝ) : ℂ)) - ∫ t in (0 : ℝ)..1, g (x + t)‖
       ≤ S * h ^ 2 / 4 := by
@@ -217,7 +221,7 @@ theorem norm_sum_midpoint_sub_integral_le {g : ℂ → ℂ} (hg : Differentiable
         _ ≤ N * h := by gcongr
         _ = 1 := hNh
     have hmid := norm_integral_sub_midpoint_le hg (c := x + k * h + h / 2) (r := h / 2)
-      (by positivity) hS (fun s hs => hbound s (by linarith [(abs_le.mp hs).1])
+      (by positivity) hS (fun s hs => hbound s (by linarith [(abs_le.mp hs).1, mul_nonneg hk0 hh0.le])
         (by linarith [(abs_le.mp hs).2]))
     rw [show x + k * h + h / 2 - h / 2 = x + k * h by ring,
       show x + k * h + h / 2 + h / 2 = x + ((k + 1 : ℕ) : ℝ) * h by push_cast; ring,
@@ -241,7 +245,8 @@ theorem norm_sum_midpoint_sub_integral_le {g : ℂ → ℂ} (hg : Differentiable
 theorem norm_le_norm_add_mul_of_nonneg {A B : ℂ} {t : ℝ}
     (h : 0 ≤ t * (starRingEnd ℂ A * B).re) : ‖A‖ ≤ ‖A + (t : ℂ) * B‖ := by
   rcases eq_or_ne A 0 with hA | hA
-  · simp [hA]
+  · rw [hA, norm_zero, zero_add]
+    exact norm_nonneg _
   have hApos : 0 < ‖A‖ := norm_pos_iff.mpr hA
   have hre : (starRingEnd ℂ A * (A + (t : ℂ) * B)).re
       = ‖A‖ ^ 2 + t * (starRingEnd ℂ A * B).re := by
@@ -258,7 +263,7 @@ theorem norm_le_norm_add_mul_of_nonneg {A B : ℂ} {t : ℝ}
 /-- **One-sided second-order propagation.**  If `‖Φ''‖ ≤ S` at the real points within `ℓ` of `c`,
 then on one of the intervals `[c, c + ℓ]`, `[c − ℓ, c]` one has `‖Φ‖ ≥ ‖Φ c‖ − S ℓ²`. -/
 theorem exists_side_norm_ge_of_norm_deriv_deriv_le {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
-    {c ℓ S : ℝ} (hℓ : 0 ≤ ℓ) (hS : 0 ≤ S)
+    {c ℓ S : ℝ} (hS : 0 ≤ S)
     (hbound : ∀ s : ℝ, |s - c| ≤ ℓ → ‖deriv (deriv Φ) s‖ ≤ S) :
     ∃ α : ℝ, (α = c ∨ α = c - ℓ) ∧ ∀ u ∈ Icc α (α + ℓ), ‖Φ c‖ - S * ℓ ^ 2 ≤ ‖Φ u‖ := by
   have key : ∀ u : ℝ, |u - c| ≤ ℓ → 0 ≤ (u - c) * (starRingEnd ℂ (Φ c) * deriv Φ c).re →
@@ -355,11 +360,9 @@ theorem exists_window_average_ge_of_exponentialType {Φ : ℂ → ℂ} (hΦ : Di
       calc ‖unitWindowAverage g x‖
           = ‖∫ t in (0 : ℝ)..1, Φ (x + t) * Complex.exp (((ρ + δ / 2 : ℝ) : ℂ) * (x + t))‖ := rfl
         _ ≤ Real.exp (-(δ / 2 * x)) := h1.le
-        _ ≤ C₂ * Real.exp (-(δ / 2 * x)) := by
-            rw [← one_mul (Real.exp (-(δ / 2 * x)))]
-            gcongr
-            · simp
-            · exact le_max_left _ _
+        _ = 1 * Real.exp (-(δ / 2 * x)) := (one_mul _).symm
+        _ ≤ C₂ * Real.exp (-(δ / 2 * x)) :=
+            mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le
     · refine norm_unitWindowAverage_le fun t ht => ?_
       calc ‖g (x + t)‖ ≤ C * Real.exp (τ * ‖(x : ℂ) + t‖) := hgrow' _
         _ ≤ C * Real.exp (τ * (X' + 1)) := by
@@ -410,16 +413,17 @@ theorem sum_norm_midpoint_ge_of_window_average {Φ : ℂ → ℂ} (hΦ : Differe
           rw [mul_assoc, ← Real.exp_add]
           congr 2
           ring
-  set S : ℝ := (C * Real.exp (2 * (ρ + a))) * Real.exp ((ρ + a) * (x + 2)) with hS
-  have hS0 : 0 ≤ S := by positivity
-  have hbound : ∀ s : ℝ, x - 1 ≤ s → s ≤ x + 2 → ‖deriv (deriv g) s‖ ≤ S := fun s hs1 hs2 =>
+  have hbound : ∀ s : ℝ, x - 1 ≤ s → s ≤ x + 2 → ‖deriv (deriv g) s‖
+      ≤ (C * Real.exp (2 * (ρ + a))) * Real.exp ((ρ + a) * (x + 2)) := fun s hs1 hs2 =>
     norm_deriv_deriv_le_on_window hgdiff hC (by positivity) hgrow' hx0 hs1 hs2
-  have hmid := norm_sum_midpoint_sub_integral_le hgdiff hx0 hh0 hNh hS0 hbound
+  have hmid := norm_sum_midpoint_sub_integral_le hgdiff hh0 hNh (by positivity) hbound
   have hint' : m₁ ≤ ‖∫ t in (0 : ℝ)..1, g (x + t)‖ := hint
   -- the midpoint sum of `g` is large
   have hsum : m₁ / 2 ≤ ‖∑ k ∈ range N, (h : ℂ) * g ((x + k * h + h / 2 : ℝ) : ℂ)‖ := by
-    have h1 := norm_sub_norm_le (∑ k ∈ range N, (h : ℂ) * g ((x + k * h + h / 2 : ℝ) : ℂ))
-      (∫ t in (0 : ℝ)..1, g (x + t))
+    set Ssum : ℂ := ∑ k ∈ range N, (h : ℂ) * g ((x + k * h + h / 2 : ℝ) : ℂ) with hSsum
+    set Iint : ℂ := ∫ t in (0 : ℝ)..1, g (x + t) with hIint
+    have h2 : ‖Ssum - Iint‖ ≤ m₁ / 2 := le_trans hmid herr
+    have h3 : ‖Iint‖ ≤ ‖Ssum‖ + ‖Ssum - Iint‖ := norm_le_norm_add_norm_sub Ssum Iint
     linarith
   -- pass to the moduli and remove the exponential weight
   have hterm : ∀ k ∈ range N,
@@ -434,9 +438,10 @@ theorem sum_norm_midpoint_ge_of_window_average {Φ : ℂ → ℂ} (hΦ : Differe
         _ = 1 := hNh
     rw [norm_mul, hgnorm, Complex.norm_real, Real.norm_of_nonneg hh0.le, Complex.ofReal_re]
     calc h * (‖Φ ((x + k * h + h / 2 : ℝ) : ℂ)‖ * Real.exp (a * (x + k * h + h / 2)))
-        ≤ h * (‖Φ ((x + k * h + h / 2 : ℝ) : ℂ)‖ * Real.exp (a * (x + 1))) := by
-          gcongr
-          linarith
+        ≤ h * (‖Φ ((x + k * h + h / 2 : ℝ) : ℂ)‖ * Real.exp (a * (x + 1))) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
+            (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left (by linarith) ha)) (norm_nonneg _))
+            hh0.le
       _ = Real.exp (a * (x + 1)) * (h * ‖Φ ((x + k * h + h / 2 : ℝ) : ℂ)‖) := by ring
   have h2 : m₁ / 2 ≤ Real.exp (a * (x + 1)) * ∑ k ∈ range N, h * ‖Φ ((x + k * h + h / 2 : ℝ) : ℂ)‖ := by
     calc m₁ / 2 ≤ ‖∑ k ∈ range N, (h : ℂ) * g ((x + k * h + h / 2 : ℝ) : ℂ)‖ := hsum
@@ -588,7 +593,7 @@ theorem exists_primeLogWeightedSum_gt_of_midpoint_data {Φ : ℂ → ℂ} (hΦ :
         _ = 1 := hNh
     -- the favourable half-window about the midpoint
     obtain ⟨α, hα, hside⟩ := exists_side_norm_ge_of_norm_deriv_deriv_le hΦ
-      (c := x + k * h + h / 2) (ℓ := h / 2) (by positivity) hS
+      (c := x + k * h + h / 2) (ℓ := h / 2) hS
       (fun s hs => hbound s (by linarith [(abs_le.mp hs).1]) (by linarith [(abs_le.mp hs).2]))
     have hαx : x + k * h ≤ α := by
       rcases hα with rfl | rfl <;> linarith
@@ -636,6 +641,186 @@ theorem exists_primeLogWeightedSum_gt_of_midpoint_data {Φ : ℂ → ℂ} (hΦ :
     _ ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (8 * (x + 1)) * ∑ k ∈ range N, h * mk k :=
         mul_le_mul_of_nonneg_left hmksum (by positivity)
 
+/-! ## The constants of the second-order method -/
+
+/-- Windows of length `h = 1/⌈1/η⌉` for `0 < η ≤ 1`: `N h = 1`, `η/2 ≤ h ≤ η`. -/
+theorem exists_window_count {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
+    ∃ (N : ℕ) (h : ℝ), 0 < N ∧ 0 < h ∧ (N : ℝ) * h = 1 ∧ h ≤ η ∧ η / 2 ≤ h := by
+  have hN0 : 0 < ⌈1 / η⌉₊ := Nat.ceil_pos.mpr (by positivity)
+  have hN0' : (0 : ℝ) < ⌈1 / η⌉₊ := by exact_mod_cast hN0
+  refine ⟨⌈1 / η⌉₊, 1 / ⌈1 / η⌉₊, hN0, by positivity, mul_one_div_cancel hN0'.ne', ?_, ?_⟩
+  · rw [div_le_iff₀ hN0']
+    have h1 := Nat.le_ceil (1 / η)
+    rw [div_le_iff₀ hη0] at h1
+    linarith
+  · rw [le_div_iff₀ hN0']
+    have h1 := Nat.ceil_lt_add_one (by positivity : 0 ≤ 1 / η)
+    have h2 : (⌈1 / η⌉₊ : ℝ) ≤ 2 / η := by
+      calc (⌈1 / η⌉₊ : ℝ) ≤ 1 / η + 1 := h1.le
+        _ ≤ 1 / η + 1 / η := by
+            gcongr
+            rw [le_div_iff₀ hη0]
+            linarith
+        _ = 2 / η := by ring
+    calc η / 2 * ⌈1 / η⌉₊ ≤ η / 2 * (2 / η) := by gcongr
+      _ = 1 := by field_simp
+
+/-- `C (e^{−K}/(C+1))² ≤ e^{−2K}` for `C ≥ 0`. -/
+theorem mul_sq_exp_div_le {C K : ℝ} (hC : 0 ≤ C) :
+    C * (Real.exp (-K) / (C + 1)) ^ 2 ≤ Real.exp (-(2 * K)) := by
+  rw [div_pow, ← Real.exp_nat_mul, mul_div_assoc', div_le_iff₀ (by positivity)]
+  have hCle : C ≤ (C + 1) ^ 2 := by nlinarith
+  calc C * Real.exp (((2 : ℕ) : ℝ) * -K) = Real.exp (-(2 * K)) * C := by
+        rw [mul_comm]
+        congr 1
+        push_cast
+        ring
+    _ ≤ Real.exp (-(2 * K)) * (C + 1) ^ 2 := by gcongr
+
+/-- The midpoint error of `g = Φ e^{(ρ+δ/2)·}` on windows of length `h ≤ c₁ e^{−(ρ+δ/2)x}` is at
+most half of `e^{−δx/2}`, when `C c₁² ≤ e^{−2K}` with `K ≥ 2(2ρ + δ/2)`. -/
+theorem midpoint_error_le {C ρ δ x h c₁ K : ℝ} (hC : 0 ≤ C)
+    (hh0 : 0 ≤ h) (hh : h ≤ c₁ * Real.exp (-((ρ + δ / 2) * x)))
+    (hK : 2 * (2 * ρ + δ / 2) ≤ K) (hCc₁ : C * c₁ ^ 2 ≤ Real.exp (-(2 * K))) :
+    (C * Real.exp (2 * (ρ + (ρ + δ / 2)))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2)) * h ^ 2 / 4
+      ≤ Real.exp (-(δ / 2 * x)) / 2 := by
+  have hh2 : h ^ 2 ≤ (c₁ * Real.exp (-((ρ + δ / 2) * x))) ^ 2 := by gcongr
+  have hsq : (c₁ * Real.exp (-((ρ + δ / 2) * x))) ^ 2
+      = c₁ ^ 2 * Real.exp (-(2 * ((ρ + δ / 2) * x))) := by
+    rw [mul_pow, ← Real.exp_nat_mul]
+    congr 2
+    push_cast
+    ring
+  set E : ℝ := Real.exp (2 * (ρ + (ρ + δ / 2))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2))
+    * Real.exp (-(2 * ((ρ + δ / 2) * x))) with hE
+  have hE0 : 0 ≤ E := by positivity
+  have hEeq : E = Real.exp (2 * (ρ + (ρ + δ / 2)) + (ρ + (ρ + δ / 2)) * (x + 2)
+      + -(2 * ((ρ + δ / 2) * x))) := by
+    rw [hE, ← Real.exp_add, ← Real.exp_add]
+  calc (C * Real.exp (2 * (ρ + (ρ + δ / 2)))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2)) * h ^ 2 / 4
+      ≤ (C * Real.exp (2 * (ρ + (ρ + δ / 2)))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2))
+          * (c₁ * Real.exp (-((ρ + δ / 2) * x))) ^ 2 / 4 := by gcongr
+    _ = (C * c₁ ^ 2) * E / 4 := by
+        rw [hsq, hE]
+        ring
+    _ ≤ Real.exp (-(2 * K)) * E / 4 := by gcongr
+    _ = Real.exp (-(2 * K) + (2 * (ρ + (ρ + δ / 2)) + (ρ + (ρ + δ / 2)) * (x + 2)
+          + -(2 * ((ρ + δ / 2) * x)))) / 4 := by
+        rw [hEeq, ← Real.exp_add]
+    _ ≤ Real.exp (-(δ / 2 * x)) / 4 := by
+        gcongr
+        nlinarith [hK]
+    _ ≤ Real.exp (-(δ / 2 * x)) / 2 := by
+        have := Real.exp_pos (-(δ / 2 * x))
+        linarith
+
+/-- The second-order loss `‖Φ''‖ (h/2)²` on windows of length `h ≤ c₁ e^{−(ρ+δ/2)x}` is at most half
+of the midpoint mass `(e^{−(ρ+δ/2)}/2) e^{−(ρ+δ)x}`, when `C c₁² ≤ e^{−2K}` with `2K ≥ 5ρ + δ/2`. -/
+theorem second_order_loss_le {C ρ δ x h c₁ K : ℝ} (hC : 0 ≤ C)
+    (hh0 : 0 ≤ h) (hh : h ≤ c₁ * Real.exp (-((ρ + δ / 2) * x)))
+    (hK : 5 * ρ + δ / 2 ≤ 2 * K) (hCc₁ : C * c₁ ^ 2 ≤ Real.exp (-(2 * K))) :
+    (C * Real.exp (2 * ρ)) * Real.exp (ρ * (x + 2)) * (h / 2) ^ 2
+      ≤ Real.exp (-(ρ + δ / 2)) / 2 * Real.exp (-((ρ + δ) * x)) / 2 := by
+  have hh2 : (h / 2) ^ 2 ≤ (c₁ * Real.exp (-((ρ + δ / 2) * x)) / 2) ^ 2 := by gcongr
+  have hsq : (c₁ * Real.exp (-((ρ + δ / 2) * x)) / 2) ^ 2
+      = c₁ ^ 2 * Real.exp (-(2 * ((ρ + δ / 2) * x))) / 4 := by
+    rw [div_pow, mul_pow, ← Real.exp_nat_mul]
+    push_cast
+    ring_nf
+  set E : ℝ := Real.exp (2 * ρ) * Real.exp (ρ * (x + 2)) * Real.exp (-(2 * ((ρ + δ / 2) * x)))
+    with hE
+  have hE0 : 0 ≤ E := by positivity
+  have hEeq : E = Real.exp (2 * ρ + ρ * (x + 2) + -(2 * ((ρ + δ / 2) * x))) := by
+    rw [hE, ← Real.exp_add, ← Real.exp_add]
+  calc (C * Real.exp (2 * ρ)) * Real.exp (ρ * (x + 2)) * (h / 2) ^ 2
+      ≤ (C * Real.exp (2 * ρ)) * Real.exp (ρ * (x + 2))
+          * (c₁ * Real.exp (-((ρ + δ / 2) * x)) / 2) ^ 2 := by gcongr
+    _ = (C * c₁ ^ 2) * E / 4 := by
+        rw [hsq, hE]
+        ring
+    _ ≤ Real.exp (-(2 * K)) * E / 4 := by gcongr
+    _ = Real.exp (-(2 * K) + (2 * ρ + ρ * (x + 2) + -(2 * ((ρ + δ / 2) * x)))) / 4 := by
+        rw [hEeq, ← Real.exp_add]
+    _ ≤ Real.exp (-(ρ + δ / 2) + -((ρ + δ) * x)) / 4 :=
+        div_le_div_of_nonneg_right (Real.exp_le_exp.mpr (by nlinarith [hK]))
+          (by norm_num)
+    _ = Real.exp (-(ρ + δ / 2)) / 2 * Real.exp (-((ρ + δ) * x)) / 2 := by
+        rw [Real.exp_add]
+        ring
+
+/-- The window-size condition of the short-interval theorem for half-windows of length `h/2`,
+`η/2 ≤ h`, `η = c₁ e^{−ax}`: it follows from the threshold `8 e^{α'}/c₁ ≤ y^{1−a−α'}`. -/
+theorem window_size_condition {x y c₁ a α' η h : ℝ} (hy : y = Real.exp x) (hc₁0 : 0 < c₁)
+    (hthr : 8 * Real.exp α' / c₁ ≤ y ^ (1 - a - α')) (hη : η = c₁ * Real.exp (-(a * x)))
+    (hηh : η / 2 ≤ h) : Real.exp (x + 1) ^ α' ≤ Real.exp x * (h / 2) / 2 := by
+  have hy0 : 0 < y := by rw [hy]; exact Real.exp_pos x
+  have hypow : ∀ s : ℝ, y ^ s = Real.exp (s * x) := fun s => by
+    rw [Real.rpow_def_of_pos hy0, hy, Real.log_exp, mul_comm]
+  have hexpa : Real.exp (-(a * x)) = (y ^ a)⁻¹ := by rw [hypow, ← Real.exp_neg]
+  rw [← hy]
+  calc Real.exp (x + 1) ^ α' = Real.exp α' * y ^ α' := by
+        rw [Real.exp_add, Real.mul_rpow (Real.exp_pos x).le (Real.exp_pos 1).le, ← hy,
+          ← Real.exp_mul, one_mul, mul_comm]
+    _ ≤ c₁ / 8 * y ^ (1 - a) := by
+        have h3 : 8 * Real.exp α' / c₁ * y ^ α' ≤ y ^ (1 - a - α') * y ^ α' :=
+          mul_le_mul_of_nonneg_right hthr (Real.rpow_nonneg hy0.le _)
+        rw [← Real.rpow_add hy0, sub_add_cancel] at h3
+        have hc₁ne : c₁ ≠ 0 := hc₁0.ne'
+        calc Real.exp α' * y ^ α' = (8 * Real.exp α' / c₁ * y ^ α') * c₁ / 8 := by
+              field_simp
+          _ ≤ y ^ (1 - a) * c₁ / 8 :=
+              div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right h3 hc₁0.le) (by norm_num)
+          _ = c₁ / 8 * y ^ (1 - a) := by ring
+    _ = η * y / 8 := by
+        rw [hη, hexpa, Real.rpow_sub hy0, Real.rpow_one, div_eq_mul_inv]
+        ring
+    _ = (η / 2) * y / 4 := by ring
+    _ ≤ h * y / 4 := by gcongr
+    _ = y * (h / 2) / 2 := by ring
+
+/-- The final power bound: from the threshold `(M+1)/c₃ ≤ y^{e/2}` to
+`M + 1 ≤ e^{−σ(x+1)} y (m/2)/(8(x+1))`, with `m = m₀ y^{−(ρ+δ)}`, `c₂ = e^{−σ} m₀/16`,
+`c₃ = c₂ (e/2) e^{−e/2}`, `e = 1 − σ − ρ − δ`. -/
+theorem final_power_bound {M σ ρ δ e x y m m₀ c₂ c₃ : ℝ} (hx0 : 0 ≤ x) (hy : y = Real.exp x)
+    (he : e = 1 - σ - ρ - δ) (he0 : 0 < e) (hm : m = m₀ * Real.exp (-((ρ + δ) * x)))
+    (hc₂ : c₂ = Real.exp (-σ) * m₀ / 16) (hc₂0 : 0 < c₂)
+    (hc₃ : c₃ = c₂ * (e / 2) * Real.exp (-(e / 2))) (hc₃0 : 0 < c₃)
+    (hyM : (M + 1) / c₃ ≤ y ^ (e / 2)) :
+    M + 1 ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (8 * (x + 1)) * (m / 2) := by
+  have hy0 : 0 < y := by rw [hy]; exact Real.exp_pos x
+  have hlogy : Real.log y = x := by rw [hy]; exact Real.log_exp x
+  have hypow : ∀ s : ℝ, y ^ s = Real.exp (s * x) := fun s => by
+    rw [Real.rpow_def_of_pos hy0, hlogy, mul_comm]
+  have hx1 : (0 : ℝ) < x + 1 := by linarith
+  have hlog3 : x + 1 ≤ (Real.exp 1 * y) ^ (e / 2) / (e / 2) := by
+    have := Real.log_le_rpow_div (by positivity : 0 ≤ Real.exp 1 * y) (by positivity : 0 < e / 2)
+    rwa [Real.log_mul (Real.exp_pos 1).ne' hy0.ne', Real.log_exp, hlogy, add_comm] at this
+  have hye : y ^ e = y ^ (e / 2) * y ^ (e / 2) := by
+    rw [← Real.rpow_add hy0]
+    congr 1
+    ring
+  have hexp3 : Real.exp (-(σ * (x + 1))) * Real.exp x * Real.exp (-((ρ + δ) * x))
+      = Real.exp (-σ) * Real.exp ((1 - σ - ρ - δ) * x) := by
+    rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+    congr 1
+    ring
+  have hid : Real.exp (-(σ * (x + 1))) * y / (8 * (x + 1)) * (m / 2) = c₂ * y ^ e / (x + 1) := by
+    have h1 : Real.exp (-(σ * (x + 1))) * y * m / 16 = c₂ * y ^ e := by
+      rw [hm, hc₂, hypow, he, hy]
+      linear_combination (m₀ / 16) * hexp3
+    rw [← h1, div_mul_div_comm, div_div]
+    congr 1
+    ring
+  rw [← hy, hid]
+  calc M + 1 ≤ c₃ * y ^ (e / 2) := by
+        rw [mul_comm]
+        exact (div_le_iff₀ hc₃0).mp hyM
+    _ = c₂ * y ^ e / ((Real.exp 1 * y) ^ (e / 2) / (e / 2)) := by
+        rw [hc₃, Real.mul_rpow (Real.exp_pos 1).le hy0.le, ← Real.exp_mul, one_mul, hye,
+          Real.exp_neg]
+        field_simp
+    _ ≤ c₂ * y ^ e / (x + 1) := div_le_div_of_nonneg_left (by positivity) hx1 hlog3
+
 /-! ## The prime sums are unbounded for `ρ < 1 − σ`, `ρ < 5/12` -/
 
 /-- **The prime-sum lower bound without the first-order cap.**  For `Φ ≢ 0` entire with
@@ -655,17 +840,13 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_of_lt_five_twelfths {Φ : �
     have h := hgrow ξ
     have h2 : C * Real.exp (ρ * ‖ξ‖) ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hC (Real.exp_pos _).le
     exact norm_le_zero_iff.mp (le_trans h h2)
-  have hC0 : C ≠ 0 := hC.ne'
   -- the exponents
   obtain ⟨δ, hδ0, hδ1, hδ2⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ (1 - σ - ρ) / 4 ∧ δ ≤ (5 / 12 - ρ) / 2 :=
     ⟨min ((1 - σ - ρ) / 4) ((5 / 12 - ρ) / 2), lt_min (by linarith) (by linarith),
       min_le_left _ _, min_le_right _ _⟩
-  obtain ⟨β, hβ⟩ : ∃ β : ℝ, β = 1 - (ρ + δ / 2) := ⟨_, rfl⟩
-  have hβ7 : 7 / 12 < β := by rw [hβ]; linarith
-  obtain ⟨α', hα'⟩ : ∃ α' : ℝ, α' = (7 / 12 + β) / 2 := ⟨_, rfl⟩
+  obtain ⟨α', hα'⟩ : ∃ α' : ℝ, α' = (7 / 12 + (1 - (ρ + δ / 2))) / 2 := ⟨_, rfl⟩
   have hα'7 : 7 / 12 < α' := by rw [hα']; linarith
-  have hα'β : α' < β := by rw [hα']; linarith
-  have hα'1 : α' < 1 := by rw [hα', hβ]; linarith
+  have hα'1 : α' < 1 := by rw [hα']; linarith
   obtain ⟨e, he⟩ : ∃ e : ℝ, e = 1 - σ - ρ - δ := ⟨_, rfl⟩
   have he0 : 0 < e := by rw [he]; linarith
   -- the prime-mass window theorem
@@ -674,19 +855,19 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_of_lt_five_twelfths {Φ : �
   obtain ⟨K, hK⟩ : ∃ K : ℝ, K = 4 * (ρ + (ρ + δ / 2)) + 4 * ρ + (ρ + δ / 2) := ⟨_, rfl⟩
   obtain ⟨c₁, hc₁⟩ : ∃ c₁ : ℝ, c₁ = Real.exp (-K) / (C + 1) := ⟨_, rfl⟩
   have hc₁0 : 0 < c₁ := by rw [hc₁]; positivity
+  have hCc₁ : C * c₁ ^ 2 ≤ Real.exp (-(2 * K)) := by rw [hc₁]; exact mul_sq_exp_div_le hC.le
   obtain ⟨m₀, hm₀⟩ : ∃ m₀ : ℝ, m₀ = Real.exp (-(ρ + δ / 2)) / 2 := ⟨_, rfl⟩
-  have hm₀0 : 0 < m₀ := by rw [hm₀]; positivity
   obtain ⟨c₂, hc₂⟩ : ∃ c₂ : ℝ, c₂ = Real.exp (-σ) * m₀ / 16 := ⟨_, rfl⟩
-  have hc₂0 : 0 < c₂ := by rw [hc₂]; positivity
+  have hc₂0 : 0 < c₂ := by rw [hc₂, hm₀]; positivity
   obtain ⟨c₃, hc₃⟩ : ∃ c₃ : ℝ, c₃ = c₂ * (e / 2) * Real.exp (-(e / 2)) := ⟨_, rfl⟩
   have hc₃0 : 0 < c₃ := by rw [hc₃]; positivity
   -- the thresholds in `y`
-  have hev : ∀ᶠ y : ℝ in atTop, X₁ ≤ y ∧ 1 ≤ y ∧ c₁ ≤ y ^ (ρ + δ / 2) ∧
-      8 * Real.exp α' / c₁ ≤ y ^ (β - α') ∧ (M + 1) / c₃ ≤ y ^ (e / 2) := by
-    refine (eventually_ge_atTop X₁).and ((eventually_ge_atTop 1).and
+  have hev : ∀ᶠ y : ℝ in atTop, X₁ ≤ y ∧ c₁ ≤ y ^ (ρ + δ / 2) ∧
+      8 * Real.exp α' / c₁ ≤ y ^ (1 - (ρ + δ / 2) - α') ∧ (M + 1) / c₃ ≤ y ^ (e / 2) := by
+    refine (eventually_ge_atTop X₁).and
       (((tendsto_rpow_atTop (by linarith)).eventually_ge_atTop c₁).and
       (((tendsto_rpow_atTop (by linarith)).eventually_ge_atTop _).and
-      ((tendsto_rpow_atTop (by positivity)).eventually_ge_atTop _))))
+      ((tendsto_rpow_atTop (by positivity)).eventually_ge_atTop _)))
   obtain ⟨Y₀, hY₀⟩ := eventually_atTop.mp hev
   clear hev
   -- a large window with a large signed window average
@@ -695,176 +876,57 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_of_lt_five_twelfths {Φ : �
   have hx0 : 0 ≤ x := le_trans (le_max_right _ _) hxY
   obtain ⟨y, hy⟩ : ∃ y : ℝ, y = Real.exp x := ⟨_, rfl⟩
   have hy0 : 0 < y := by rw [hy]; exact Real.exp_pos x
-  have hxy : x + 1 ≤ y := by rw [hy]; exact Real.add_one_le_exp x
   have hyY : Y₀ ≤ y := by
     calc Y₀ ≤ max Y₀ 0 := le_max_left _ _
       _ ≤ x := hxY
-      _ ≤ y := by linarith
-  obtain ⟨hyX₁, hy1, hyc₁, hyαβ, hyM⟩ := hY₀ y hyY
+      _ ≤ y := by rw [hy]; linarith [Real.add_one_le_exp x]
+  obtain ⟨hyX₁, hyc₁, hyαβ, hyM⟩ := hY₀ y hyY
   clear hY₀
-  have hlogy : Real.log y = x := by rw [hy]; exact Real.log_exp x
-  have hypow : ∀ s : ℝ, y ^ s = Real.exp (s * x) := fun s => by
-    rw [Real.rpow_def_of_pos hy0, hlogy, mul_comm]
   -- the window length `η` and the window count `N`
   obtain ⟨η, hη⟩ : ∃ η : ℝ, η = c₁ * Real.exp (-((ρ + δ / 2) * x)) := ⟨_, rfl⟩
   have hη0 : 0 < η := by rw [hη]; positivity
-  have hexpa : Real.exp (-((ρ + δ / 2) * x)) = (y ^ (ρ + δ / 2))⁻¹ := by
-    rw [hypow, ← Real.exp_neg]
   have hη1 : η ≤ 1 := by
+    have hexpa : Real.exp (-((ρ + δ / 2) * x)) = (y ^ (ρ + δ / 2))⁻¹ := by
+      rw [Real.rpow_def_of_pos hy0, hy, Real.log_exp, ← Real.exp_neg]
+      congr 1
+      ring
     rw [hη, hexpa, mul_inv_le_iff₀ (by positivity), one_mul]
     exact hyc₁
-  obtain ⟨N, hN⟩ : ∃ N : ℕ, N = ⌈1 / η⌉₊ := ⟨_, rfl⟩
-  have hN0 : 0 < N := by rw [hN]; exact Nat.ceil_pos.mpr (by positivity)
-  obtain ⟨h, hh⟩ : ∃ h : ℝ, h = 1 / N := ⟨_, rfl⟩
-  have hh0 : 0 < h := by rw [hh]; positivity
-  have hNh : (N : ℝ) * h = 1 := by rw [hh]; field_simp
-  have hhη : h ≤ η := by
-    rw [hh, div_le_iff₀ (by positivity)]
-    have h1 := Nat.le_ceil (1 / η)
-    rw [← hN, div_le_iff₀ hη0] at h1
-    linarith
-  have hηh : η / 2 ≤ h := by
-    rw [hh, le_div_iff₀ (by positivity)]
-    have h1 := Nat.ceil_lt_add_one (by positivity : 0 ≤ 1 / η)
-    rw [← hN] at h1
-    have h2 : (N : ℝ) ≤ 2 / η := by
-      calc (N : ℝ) ≤ 1 / η + 1 := h1.le
-        _ ≤ 1 / η + 1 / η := by
-            gcongr
-            rw [le_div_iff₀ hη0]
-            linarith
-        _ = 2 / η := by ring
-    calc η / 2 * N ≤ η / 2 * (2 / η) := by gcongr
-      _ = 1 := by field_simp
-  have hh2 : h ^ 2 ≤ η ^ 2 := by gcongr
-  have hη2 : η ^ 2 = c₁ ^ 2 * Real.exp (-(2 * (ρ + δ / 2) * x)) := by
-    rw [hη, mul_pow, ← Real.exp_nat_mul]
-    congr 2
-    push_cast
-    ring
-  have hCc₁ : C * c₁ ^ 2 ≤ Real.exp (-(2 * K)) := by
-    rw [hc₁, div_pow, ← Real.exp_nat_mul, mul_div_assoc', div_le_iff₀ (by positivity)]
-    have hCle : C ≤ (C + 1) ^ 2 := by nlinarith
-    calc C * Real.exp (((2 : ℕ) : ℝ) * -K) = Real.exp (-(2 * K)) * C := by
-          rw [mul_comm]
-          congr 1
-          push_cast
-          ring
-      _ ≤ Real.exp (-(2 * K)) * (C + 1) ^ 2 := by gcongr
-  -- the midpoint error of `g = Φ e^{(ρ+δ/2)·}` is at most half of the window average
-  have herr : (C * Real.exp (2 * (ρ + (ρ + δ / 2)))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2))
-      * h ^ 2 / 4 ≤ Real.exp (-(δ / 2 * x)) / 2 := by
-    calc (C * Real.exp (2 * (ρ + (ρ + δ / 2)))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2))
-          * h ^ 2 / 4
-        ≤ (C * Real.exp (2 * (ρ + (ρ + δ / 2)))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2))
-          * η ^ 2 / 4 := by gcongr
-      _ = (C * c₁ ^ 2) * (Real.exp (2 * (ρ + (ρ + δ / 2))) * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2))
-          * Real.exp (-(2 * (ρ + δ / 2) * x))) / 4 := by
-          rw [hη2]
-          ring
-      _ ≤ Real.exp (-(2 * K)) * (Real.exp (2 * (ρ + (ρ + δ / 2)))
-          * Real.exp ((ρ + (ρ + δ / 2)) * (x + 2)) * Real.exp (-(2 * (ρ + δ / 2) * x))) / 4 := by
-          gcongr
-      _ = Real.exp (-(2 * K) + (2 * (ρ + (ρ + δ / 2)) + (ρ + (ρ + δ / 2)) * (x + 2)
-          + -(2 * (ρ + δ / 2) * x))) / 4 := by
-          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
-      _ ≤ Real.exp (-(δ / 2 * x)) / 4 := by
-          gcongr
-          rw [hK]
-          nlinarith [hx0, hρ, hδ0]
-      _ ≤ Real.exp (-(δ / 2 * x)) / 2 := by
-          have := Real.exp_pos (-(δ / 2 * x))
-          linarith
+  obtain ⟨N, h, hN0, hh0, hNh, hhη, hηh⟩ := exists_window_count hη0 hη1
+  have hhc : h ≤ c₁ * Real.exp (-((ρ + δ / 2) * x)) := hη ▸ hhη
   -- the midpoint sum of `‖Φ‖`
+  have herr := midpoint_error_le hC.le hh0.le hhc (by rw [hK]; linarith) hCc₁
   obtain ⟨m, hm⟩ : ∃ m : ℝ,
       m = Real.exp (-(δ / 2 * x)) / 2 * Real.exp (-((ρ + δ / 2) * (x + 1))) := ⟨_, rfl⟩
   have hmid : m ≤ ∑ k ∈ range N, h * ‖Φ ((x + k * h + h / 2 : ℝ) : ℂ)‖ := by
     rw [hm]
-    exact sum_norm_midpoint_ge_of_window_average hΦ hC.le hρ hgrow (a := ρ + δ / 2) (by positivity)
-      hx0 hh0 hNh hint herr
+    exact sum_norm_midpoint_ge_of_window_average hΦ hC.le hρ hgrow (a := ρ + δ / 2)
+      (by positivity) hx0 hh0 hNh hint herr
   have hm' : m = m₀ * Real.exp (-((ρ + δ) * x)) := by
-    rw [hm, hm₀, div_mul_eq_mul_div, div_mul_eq_mul_div, ← Real.exp_add, ← Real.exp_add]
-    congr 2
-    ring
-  -- the second-order loss is at most half of the midpoint mass
-  obtain ⟨SΦ, hSΦ⟩ : ∃ SΦ : ℝ, SΦ = (C * Real.exp (2 * ρ)) * Real.exp (ρ * (x + 2)) := ⟨_, rfl⟩
-  have hSΦ0 : 0 ≤ SΦ := by rw [hSΦ]; positivity
-  have hboundΦ : ∀ s : ℝ, x - 1 ≤ s → s ≤ x + 2 → ‖deriv (deriv Φ) s‖ ≤ SΦ := fun s hs1 hs2 => by
-    rw [hSΦ]
-    exact norm_deriv_deriv_le_on_window hΦ hC.le hρ hgrow hx0 hs1 hs2
-  have hloss : SΦ * (h / 2) ^ 2 ≤ m / 2 := by
-    rw [hm', hm₀, hSΦ, div_pow]
-    calc C * Real.exp (2 * ρ) * Real.exp (ρ * (x + 2)) * (h ^ 2 / 2 ^ 2)
-        ≤ C * Real.exp (2 * ρ) * Real.exp (ρ * (x + 2)) * (η ^ 2 / 2 ^ 2) := by gcongr
-      _ = (C * c₁ ^ 2) * (Real.exp (2 * ρ) * Real.exp (ρ * (x + 2))
-          * Real.exp (-(2 * (ρ + δ / 2) * x))) / 4 := by
-          rw [hη2]
-          ring
-      _ ≤ Real.exp (-(2 * K)) * (Real.exp (2 * ρ) * Real.exp (ρ * (x + 2))
-          * Real.exp (-(2 * (ρ + δ / 2) * x))) / 4 := by gcongr
-      _ = Real.exp (-(2 * K) + (2 * ρ + ρ * (x + 2) + -(2 * (ρ + δ / 2) * x))) / 4 := by
-          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
-      _ ≤ Real.exp (-(ρ + δ / 2) + -((ρ + δ) * x)) / 4 := by
-          gcongr
-          rw [hK]
-          nlinarith [hx0, hρ, hδ0]
-      _ = Real.exp (-(ρ + δ / 2)) / 2 * Real.exp (-((ρ + δ) * x)) / 2 := by
+    rw [hm, hm₀]
+    calc Real.exp (-(δ / 2 * x)) / 2 * Real.exp (-((ρ + δ / 2) * (x + 1)))
+        = Real.exp (-(δ / 2 * x) + -((ρ + δ / 2) * (x + 1))) / 2 := by
           rw [Real.exp_add]
           ring
-  -- the window-size condition `e^{(x+1)α'} ≤ y (h/2) / 2`
-  have hwin : Real.exp (x + 1) ^ α' ≤ Real.exp x * (h / 2) / 2 := by
-    rw [← hy]
-    calc Real.exp (x + 1) ^ α' = Real.exp α' * y ^ α' := by
-          rw [Real.exp_add, Real.mul_rpow (Real.exp_pos x).le (Real.exp_pos 1).le, ← hy,
-            ← Real.exp_mul, one_mul, mul_comm]
-      _ ≤ c₁ / 8 * y ^ β := by
-          have h3 : 8 * Real.exp α' / c₁ * y ^ α' ≤ y ^ (β - α') * y ^ α' :=
-            mul_le_mul_of_nonneg_right hyαβ (Real.rpow_nonneg hy0.le _)
-          rw [← Real.rpow_add hy0, sub_add_cancel] at h3
-          have hc₁ne : c₁ ≠ 0 := hc₁0.ne'
-          calc Real.exp α' * y ^ α' = (8 * Real.exp α' / c₁ * y ^ α') * c₁ / 8 := by
-                field_simp
-            _ ≤ y ^ β * c₁ / 8 :=
-                div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right h3 hc₁0.le) (by norm_num)
-            _ = c₁ / 8 * y ^ β := by ring
-      _ = η * y / 8 := by
-          rw [hη, hβ, hexpa, Real.rpow_sub hy0, Real.rpow_one, div_eq_mul_inv]
+      _ = Real.exp (-(ρ + δ / 2) + -((ρ + δ) * x)) / 2 := by
+          congr 2
           ring
-      _ = (η / 2) * y / 4 := by ring
-      _ ≤ h * y / 4 := by gcongr
-      _ = y * (h / 2) / 2 := by ring
-  -- the explicit power lower bound `M + 1 ≤ e^{−σ(x+1)} y (m/2) / (8(x+1))`
-  have hx1 : (0 : ℝ) < x + 1 := by linarith
-  have hlog3 : x + 1 ≤ (Real.exp 1 * y) ^ (e / 2) / (e / 2) := by
-    have := Real.log_le_rpow_div (by positivity : 0 ≤ Real.exp 1 * y) (by positivity : 0 < e / 2)
-    rwa [Real.log_mul (Real.exp_pos 1).ne' hy0.ne', Real.log_exp, hlogy, add_comm] at this
-  have hye : y ^ e = y ^ (e / 2) * y ^ (e / 2) := by
-    rw [← Real.rpow_add hy0]
-    congr 1
-    ring
-  have hexp3 : Real.exp (-(σ * (x + 1))) * Real.exp x * Real.exp (-((ρ + δ) * x))
-      = Real.exp (-σ) * Real.exp ((1 - σ - ρ - δ) * x) := by
-    rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
-    congr 1
-    ring
-  have hid : Real.exp (-(σ * (x + 1))) * y / (8 * (x + 1)) * (m / 2) = c₂ * y ^ e / (x + 1) := by
-    have h1 : Real.exp (-(σ * (x + 1))) * y * m / 16 = c₂ * y ^ e := by
-      rw [hm', hc₂, hypow, he, hy]
-      linear_combination (m₀ / 16) * hexp3
-    rw [← h1, div_mul_div_comm, div_div]
-    congr 1
-    ring
-  have hM : M + 1 ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (8 * (x + 1)) * (m / 2) := by
-    rw [← hy, hid]
-    calc M + 1 ≤ c₃ * y ^ (e / 2) := by
-          rw [mul_comm]
-          exact (div_le_iff₀ hc₃0).mp hyM
-      _ = c₂ * y ^ e / ((Real.exp 1 * y) ^ (e / 2) / (e / 2)) := by
-          rw [hc₃, Real.mul_rpow (Real.exp_pos 1).le hy0.le, ← Real.exp_mul, one_mul, hye,
-            Real.exp_neg]
-          field_simp
-      _ ≤ c₂ * y ^ e / (x + 1) := div_le_div_of_nonneg_left (by positivity) hx1 hlog3
+      _ = Real.exp (-(ρ + δ / 2)) / 2 * Real.exp (-((ρ + δ) * x)) := by
+          rw [Real.exp_add]
+          ring
+  -- the second-order loss is at most half of the midpoint mass
+  have hboundΦ : ∀ s : ℝ, x - 1 ≤ s → s ≤ x + 2 →
+      ‖deriv (deriv Φ) s‖ ≤ (C * Real.exp (2 * ρ)) * Real.exp (ρ * (x + 2)) :=
+    fun s hs1 hs2 => norm_deriv_deriv_le_on_window hΦ hC.le hρ hgrow hx0 hs1 hs2
+  have hloss : (C * Real.exp (2 * ρ)) * Real.exp (ρ * (x + 2)) * (h / 2) ^ 2 ≤ m / 2 := by
+    rw [hm', hm₀]
+    exact second_order_loss_le hC.le hh0.le hhc (by rw [hK]; linarith) hCc₁
+  -- the window-size condition and the final power bound
+  have hwin : Real.exp (x + 1) ^ α' ≤ Real.exp x * (h / 2) / 2 :=
+    window_size_condition hy hc₁0 hyαβ hη hηh
+  have hM : M + 1 ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (8 * (x + 1)) * (m / 2) :=
+    final_power_bound hx0 hy he he0 hm' hc₂ hc₂0 hc₃ hc₃0 hyM
   exact exists_primeLogWeightedSum_gt_of_midpoint_data hΦ hσ hx0 hh0 hNh hθ
-    (le_trans (by norm_num) hα'7.le) (hy ▸ hyX₁) hwin hSΦ0 hboundΦ hmid hloss hM
+    (le_trans (by norm_num) hα'7.le) (hy ▸ hyX₁) hwin (by positivity) hboundΦ hmid hloss hM
 
 end RHTower

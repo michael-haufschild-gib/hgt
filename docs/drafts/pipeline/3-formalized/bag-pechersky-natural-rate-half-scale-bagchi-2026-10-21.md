@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** Read-only current frontier, BAG (`docs/reports/rh-current-frontier-map.md`); local Lean corpus (`ExponentialTypeNotSummableOnPrimeLogs`, `WeightedEulerPaleyWienerVanishing`, `PrimeShortIntervalsSevenTwelfths`, the Pechersky/Euler-product/recurrence chain of 2026-10-20).
-- **Statement:** (i) For `Φ ≢ 0` entire of exponential type `ρ` and `0 ≤ σ`, the prime sums `Σ_{p<N} p^{−σ}‖Φ(log p)‖` are unbounded whenever `ρ < 1 − σ` and `2ρ < 5/12` (formerly `3ρ < 1 − σ`). (ii) Consequently every closed disc `closedBall c r` with `1/2 < Re c − 2r`, `Re c + 2r < 1` ("half-scale") is a disc of fixed-base strong recurrence of `ζ` as soon as `ζ` has no zero on `ball c (2r)`; and RH ⟺ `ζ` is strongly recurrent on every half-scale disc (equivalently: uniform head-target density on every half-scale disc).
+- **Statement:** (i) For `Φ ≢ 0` entire of exponential type `ρ` and `0 ≤ σ`, the prime sums `Σ_{p<N} p^{−σ}‖Φ(log p)‖` are unbounded whenever `ρ < 1 − σ` and `ρ < 5/12` (formerly `3ρ < 1 − σ`; the intermediate first-order version needs `2ρ < 5/12`). In the Pechersky application `ρ < 1/4`, so the admissible range is exactly `ρ < min(Re z₀ − 1/2, 1 − Re z₀)`: the disc lies in the strip. (ii) Consequently every closed disc `closedBall c r` with `1/2 < Re c − 2r`, `Re c + 2r < 1` ("half-scale") is a disc of fixed-base strong recurrence of `ζ` as soon as `ζ` has no zero on `ball c (2r)`; and RH ⟺ `ζ` is strongly recurrent on every half-scale disc (equivalently: uniform head-target density on every half-scale disc).
 
 ## Goal
 
@@ -59,6 +59,37 @@ Riemann sum differs from the integral by at most `hD ≤ m/4` (`D = Ce^{ρ(x+3)}
 `1 − 2ρ − 2δ > 7/12` (this is where `2ρ < 5/12` enters), and summing the window bounds gives a
 prime sum over `(y, ey]` of size `≥ c·y^{1−σ−ρ−δ}/(x+1)`, unbounded iff `ρ < 1 − σ`.
 
+## Second pass (same day): the small-value theorem that removes the cap
+
+Asked for the Remez/Cartan small-value theorem behind the cap `2ρ < 5/12`, the corpus search found
+Jensen-type zero counts (`LittlewoodXi.xi_zeroCount_disc_le_logModulus`, `JensenCount`,
+`PrimeBlindCarlsonThreshold.sum_log_le_of_jensen`, mathlib `MeromorphicOn.divisor`) and the vendored
+Borel–Carathéodory lemma, but no Cartan lemma, no polynomial Remez inequality and no analytic Remez
+inequality. The full Remez/Cartan route (Jensen count → factor the zeros → Harnack on the zero-free
+factor → Cartan/Remez on the polynomial factor) would give divergence for every `ρ < 1 − σ`, but it
+is far larger than what the cap needs. The cap only has to move past `1/4`, and that follows from a
+**second-order small-value lemma** that needs no zero counting:
+
+* `eq_zero_of_two_ray_window_average_decay` (signed window two-ray theorem; the modulus form is now
+  a corollary) gives `‖∫_0^1 Φ(x+t)e^{(ρ+δ/2)(x+t)}dt‖ ≥ e^{−δx/2}` at arbitrarily large `x`
+  (`exists_window_average_ge_of_exponentialType`).
+* **Midpoint rule** for entire functions along the real axis (`norm_integral_sub_midpoint_le`,
+  error `2‖Φ''‖r³`; `norm_sum_midpoint_sub_integral_le`, total error `‖g''‖h²/4`): with windows of
+  length `h ≍ y^{−ρ−δ/2}` the midpoint values of `‖Φ‖` carry the mass `≍ y^{−ρ−δ}`
+  (`sum_norm_midpoint_ge_of_window_average`). The signed average is essential: the modulus `‖Φ‖`
+  has no second-order Riemann-sum error.
+* **One-sided second-order propagation** (`exists_side_norm_ge_of_norm_deriv_deriv_le`): for any
+  `c`, on `[c, c+ℓ]` or on `[c−ℓ, c]`, `‖Φ‖ ≥ ‖Φ(c)‖ − ‖Φ''‖ℓ²`, because `‖A + tB‖ ≥ ‖A‖` whenever
+  `t·Re(Ā B) ≥ 0` (`norm_le_norm_add_mul_of_nonneg`). With `ℓ = h/2` the loss is
+  `≍ y^{ρ}y^{−2ρ−δ} = y^{−ρ−δ}`, a small multiple of the midpoint value, and the half-windows of
+  log-length `≍ y^{−ρ−δ/2}` carry prime mass by the `7/12` theorem as soon as `ρ + δ/2 < 5/12`.
+
+Result: `exists_primeLogWeightedSum_gt_of_lt_one_sub_of_lt_five_twelfths` (`ρ < 1 − σ`, `ρ < 5/12`),
+module `RHTower/ExponentialTypeNotSummableOnPrimeLogsMidpointWindows.lean`. The chain now carries
+only `1/2 ≤ Re z₀`, `2ρ − 2Re z₀ < −1`, `ρ < 1 − Re z₀` (the cap `ρ < 5/12` is derived from them),
+and the half-scale Bagchi module needs no cap argument. What a genuine Remez/Cartan theorem would
+add is divergence for `ρ ∈ [5/12, 1 − σ)`, which no disc of the strip uses.
+
 ## Lean
 
 - `formal/GaloisForLFunctions/RHTower/ExponentialTypeNotSummableOnPrimeLogsNaturalRate.lean`:
@@ -67,7 +98,18 @@ prime sum over `(y, ey]` of size `≥ c·y^{1−σ−ρ−δ}/(x+1)`, unbounded 
   `norm_sub_le_of_exponentialType`, `integral_le_sum_window_values_add`,
   `sum_range_sum_Ioc_eq_sum_Ioc`, `primeWindow_sum_ge_of_window_value`,
   `exists_primeLogWeightedSum_gt_of_window_data`, **`exists_primeLogWeightedSum_gt_of_lt_one_sub`**.
-- Hypothesis `3ρ < 1 − Re z₀` replaced by `ρ < 1 − Re z₀ ∧ 2ρ < 5/12` in
+- `formal/GaloisForLFunctions/RHTower/ExponentialTypeNotSummableOnPrimeLogsMidpointWindows.lean`:
+  `norm_deriv_le_of_exponentialType_at`, `norm_deriv_deriv_le_of_exponentialType`,
+  `norm_sub_sub_mul_deriv_le_of_norm_deriv_deriv_le`, `norm_integral_sub_midpoint_le`,
+  `norm_sum_midpoint_sub_integral_le`, `norm_le_norm_add_mul_of_nonneg`,
+  `exists_side_norm_ge_of_norm_deriv_deriv_le`, `exists_window_average_ge_of_exponentialType`,
+  `sum_norm_midpoint_ge_of_window_average`, `primeWindow_sum_ge_of_lower_bound`,
+  `exists_primeLogWeightedSum_gt_of_midpoint_data`, the constant lemmas
+  (`exists_window_count`, `mul_sq_exp_div_le`, `midpoint_error_le`, `second_order_loss_le`,
+  `window_size_condition`, `final_power_bound`), and
+  **`exists_primeLogWeightedSum_gt_of_lt_one_sub_of_lt_five_twelfths`**.
+- Hypothesis `3ρ < 1 − Re z₀` replaced by `ρ < 1 − Re z₀` (the first pass carried `2ρ < 5/12` as an
+  extra hypothesis; the second pass removed it) in
   `PecherskyDensityPrimeVectorsHardyDisc` (`exists_sum_norm_inner_primeTerm_gt`,
   `exists_unimodular_primeTerm_sum_approx`, `exists_unimodular_prime_sum_approx_on_disc`),
   `PhasedEulerProductsApproximateExponentialsOfHardyFunctions`
@@ -91,12 +133,10 @@ prime sum over `(y, ey]` of size `≥ c·y^{1−σ−ρ−δ}/(x+1)`, unbounded 
 
 ## What remains open (exact)
 
-- **Hoheisel cap.** The window method needs windows of log-length `≍ y^{−(2ρ+2δ)}` to carry prime
-  mass, which with the corpus exponent `7/12` forces `2ρ < 5/12`. Discs of radius `r ∈ [5/24, 1/4)`
-  are therefore outside the sharpened Pechersky range. Removing the cap needs either a short-interval
-  exponent `≤ 1/2` (beyond current technology) or a Remez/Cartan-type small-value theorem for
-  entire functions of exponential type (a positive-proportion lower bound on `[x, x+1]` without the
-  derivative loss); the latter is a self-contained analytic project.
+- **Hoheisel cap: closed for the strip.** The first-order window method needed `2ρ < 5/12`; the
+  second-order method needs `ρ < 5/12`, which every disc of the strip satisfies (`ρ < 1/4`). A
+  Remez/Cartan small-value theorem (not in the corpus; only Jensen counts and Borel–Carathéodory are)
+  would push the prime-sum divergence to all `ρ < 1 − σ`, but no disc of the strip uses that range.
 - **Doubled-closure margin.** The Euler tail law requires `closedBall c (2r)` in the strip. Relaxing
   it to `closedBall c (r + ε)` would give RH ⟹ recurrence on every closed disc of the strip of
   radius `< 5/24`, and together with the cap removal the full `RH ⟺ ZetaDiscRecurrent`.
@@ -105,6 +145,8 @@ prime sum over `(y, ey]` of size `≥ c·y^{1−σ−ρ−δ}/(x+1)`, unbounded 
 ## Log
 - 2026-10-21 — created; window two-ray theorem and natural-rate prime-sum lemma proved in Lean;
   downstream hypotheses weakened in place; half-scale Bagchi criterion module written.
+- 2026-10-21 (second pass) — corpus search for Remez/Cartan building blocks (Jensen counts only);
+  second-order window module written and compiled; cap hypothesis removed from the chain.
 - 2026-10-21 — all seven modules compiled (`lake --old env lean -j 1 -o`, one at a time), axioms
   standard, both new modules wired into `RHTower.lean`, lint clean on these modules; moved to
   3-formalized.

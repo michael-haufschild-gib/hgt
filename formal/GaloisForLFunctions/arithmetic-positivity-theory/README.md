@@ -1258,8 +1258,13 @@ truncations uniformly in the truncation, and on lacunary unions of blocks. Below
 $M_0$ nothing is proved; the constants (the threshold and the slope) decide how
 much of the form is covered.
 
-**Explicit thresholds and the range of $R$.** The block threshold $M_0$, the
-slopes $s,s_c$ and the offsets $c_0,c_c$ are named constants; the exact values
+**Explicit thresholds and the range of $R$.** Every block threshold is the
+closed form $M_0=\max\bigl(2,\lfloor e^{c+C/s}\rfloor+1\bigr)$ in its slope $s$,
+offset $c$ and channel constant $C$, and the window exponent is
+$\delta=s/(4(W+1))$ (`ExplicitBlockThresholdsOfTheCriticalFamily`). A numerical
+value of $M_0$ needs explicit bounds on the collar integrals
+$\int\lvert\psi'\rvert,\int\lvert\psi''\rvert$ of the smooth transition and on
+$\sum_r\Lambda(r)r^{-3/2}$, which enter $C$. The exact values
 of $\max R$ and $\min R$ on the cell, their locations, and the first couplings
 $\kappa(1),\kappa(2)$ decide the optimal negativity constant
 $-(4/\pi^4)\max R$ and how far it is from the singleton mean $-\log2/390$.

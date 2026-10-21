@@ -5,8 +5,7 @@ import GaloisForLFunctions.RHTower.ArgumentVariation
 /-!
 # Universality of the finite Euler products on discs of the strip
 
-Let `z₀` and `ρ` satisfy `1/2 ≤ Re z₀`, `2ρ − 2Re z₀ < −1`, `ρ < 1 − Re z₀`, `2ρ < 5/12`, and let
-`K` be the
+Let `z₀` and `ρ` satisfy `1/2 ≤ Re z₀`, `2ρ − 2Re z₀ < −1`, `ρ < 1 − Re z₀`, and let `K` be the
 closed disc `|z − z₀| ≤ ρ r₁` with `r₁ < 1`.  For every target of the form
 `g(z) = exp(L((z − z₀)/ρ))` with `L` in the Hardy space of the disc `|z − z₀| < ρ`, every `ε > 0`
 and every `y₀'`, there is a cutoff `y ≥ y₀'` such that the heights `τ` at which the finite Euler
@@ -73,13 +72,12 @@ space of the disc, the heights at which `E_y(· + iτ)` is within `ε` of `exp(L
 closed disc `|z − z₀| ≤ ρ r₁` have positive lower density, for a suitable cutoff `y ≥ y₀'`. -/
 theorem exists_pos_density_eulerTargetReturnSet_exp (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
     (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
-    (hρ5 : 2 * ρ < 5 / 12)
     (L : HardyDisk) {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1) {ε : ℝ} (hε : 0 < ε) (y₀' : ℕ) :
     ∃ y : ℕ, y₀' ≤ y ∧ ∃ c > 0, ∀ᶠ T in atTop, ENNReal.ofReal (c * T) ≤
       volume (eulerTargetReturnSet y (fun z => Complex.exp (hardyFun L ((z - z₀) / ρ)))
         (closedBall z₀ (ρ * r₁)) ε ∩ Icc 0 T) := by
   obtain ⟨y, hy, ω, hω, happrox⟩ :=
-    exists_unimodular_eulerProduct_approx_exp z₀ hρ hσ hρσ₁ hρσ₂ hρ5 L hr₁0 hr₁ hε y₀'
+    exists_unimodular_eulerProduct_approx_exp z₀ hρ hσ hρσ₁ hρσ₂ L hr₁0 hr₁ hε y₀'
   have hρr : ρ * r₁ < z₀.re := by nlinarith
   refine ⟨y, hy, exists_pos_density_eulerTargetReturnSet y (isCompact_closedBall _ _)
     (fun z hz => ?_) ?_ ⟨circleOfUnimodular ω hω, fun z hz => ?_⟩⟩
@@ -116,7 +114,6 @@ theorem exists_pos_density_eulerTargetReturnSet_exp (z₀ : ℂ) {ρ : ℝ} (hρ
 `|z − z₀| ≤ ρ r₁` have positive lower density. -/
 theorem exists_pos_density_eulerTargetReturnSet_zeta (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
     (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
-    (hρ5 : 2 * ρ < 5 / 12)
     {R₂ : ℝ} (hR₂ : 1 < R₂) (hR₂1 : z₀.re + ρ * R₂ < 1)
     (hζ : ∀ z ∈ ball z₀ (ρ * R₂), riemannZeta z ≠ 0)
     {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1) {ε : ℝ} (hε : 0 < ε) (y₀' : ℕ) :
@@ -177,7 +174,7 @@ theorem exists_pos_density_eulerTargetReturnSet_zeta (z₀ : ℂ) {ρ : ℝ} (h�
     exact hexpf z hzball
   -- universality for the exponential target, transported to `ζ`
   obtain ⟨y, hy, c, hc, hev⟩ :=
-    exists_pos_density_eulerTargetReturnSet_exp z₀ hρ hσ hρσ₁ hρσ₂ hρ5 L hr₁0 hr₁ hε y₀'
+    exists_pos_density_eulerTargetReturnSet_exp z₀ hρ hσ hρσ₁ hρσ₂ L hr₁0 hr₁ hε y₀'
   refine ⟨y, hy, c, hc, ?_⟩
   have hset : eulerTargetReturnSet y (fun z => Complex.exp (hardyFun L ((z - z₀) / ρ)))
       (closedBall z₀ (ρ * r₁)) ε

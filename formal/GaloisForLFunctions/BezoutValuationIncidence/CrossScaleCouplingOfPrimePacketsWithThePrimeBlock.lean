@@ -91,10 +91,6 @@ theorem tendsto_mul_rowBilinear_primeWindowRow {c : ℕ → ℝ} {S : Finset ℕ
     ⟨S.sup id, fun Q hQ p hp => by
       rw [mem_Icc]
       exact ⟨(hSp p hp).one_lt.le, by have := le_sup (f := id) hp; simp at this; omega⟩⟩
-  have hrestrict : ∀ Q, Q₀ ≤ Q → ∀ f : ℕ → ℝ, ∑ d ∈ Icc 1 (2 * Q), c d * f d = ∑ d ∈ S, c d * f d :=
-    fun Q hQ f => (sum_subset (hQ₀ Q hQ) fun d _ hd => by
-      have : c d = 0 := by by_contra h; exact hd (hS d h)
-      simp [this]).symm
   set L : ℕ → ℝ := fun p => -(Real.pi ^ 2 * ((p : ℝ) ^ 2 - 1) ^ 2 / (144 * (p : ℝ) ^ 2 * ((p : ℝ) - 1)))
   -- the main term
   have hmain : Tendsto (fun Q : ℕ => (Q : ℝ) * equidistributedMain (2 * Q) c (primeWindowRow Q))
@@ -102,22 +98,26 @@ theorem tendsto_mul_rowBilinear_primeWindowRow {c : ℕ → ℝ} {S : Finset ℕ
     have h := (tendsto_mul_sum_primeWindowRow_div_sq.const_mul (Real.pi ^ 2 / 72)).mul_const
       (∑ d ∈ S, c d * ((d : ℝ) ^ 2 - 1) / (d : ℝ) ^ 3)
     refine h.congr' (eventually_ge_atTop Q₀ |>.mono fun Q hQ => ?_)
-    rw [equidistributedMain]
-    have hr := hrestrict Q hQ (fun d => ((d : ℝ) ^ 2 - 1) / (d : ℝ) ^ 3)
-    simp only [mul_div_assoc] at hr ⊢
-    rw [hr]; ring
+    have hr : ∑ d ∈ Icc 1 (2 * Q), c d * ((d : ℝ) ^ 2 - 1) / (d : ℝ) ^ 3 =
+        ∑ d ∈ S, c d * ((d : ℝ) ^ 2 - 1) / (d : ℝ) ^ 3 :=
+      (sum_subset (hQ₀ Q hQ) fun d _ hd => by
+        have : c d = 0 := by by_contra h; exact hd (hS d h)
+        simp [this]).symm
+    dsimp only
+    rw [equidistributedMain, hr]; ring
   -- the kernel statistics
   have hker : Tendsto (fun Q : ℕ => (Q : ℝ) * ∑ d ∈ Icc 1 (2 * Q),
       c d / d * kernelStatistic (2 * Q) (primeWindowRow Q) d) atTop (𝓝 (∑ p ∈ S, c p / p * L p)) := by
     have h := tendsto_finsetSum S fun p hp =>
       (tendsto_mul_kernelStatistic_primeWindowRow (hSp p hp)).const_mul (c p / p)
     refine h.congr' (eventually_ge_atTop Q₀ |>.mono fun Q hQ => ?_)
-    have hr := hrestrict Q hQ (fun d => 1 / (d : ℝ) * kernelStatistic (2 * Q) (primeWindowRow Q) d)
-    simp only [mul_one_div] at hr
-    rw [mul_sum, show ∑ d ∈ Icc 1 (2 * Q), c d / d * kernelStatistic (2 * Q) (primeWindowRow Q) d =
-      ∑ d ∈ S, c d / d * kernelStatistic (2 * Q) (primeWindowRow Q) d by
-        rw [← hr.symm.trans rfl]; rfl]
-    rw [mul_sum]
+    have hr : ∑ d ∈ Icc 1 (2 * Q), c d / d * kernelStatistic (2 * Q) (primeWindowRow Q) d =
+        ∑ d ∈ S, c d / d * kernelStatistic (2 * Q) (primeWindowRow Q) d :=
+      (sum_subset (hQ₀ Q hQ) fun d _ hd => by
+        have : c d = 0 := by by_contra h; exact hd (hS d h)
+        simp [this]).symm
+    dsimp only
+    rw [hr, mul_sum]
     exact sum_congr rfl fun p _ => by ring
   -- the fourth-order error
   set C₃ := ∑ d ∈ S, |c d| * (d : ℝ) ^ 3
@@ -195,7 +195,7 @@ theorem tendsto_mul_rowBilinear_primeWindowRow {c : ℕ → ℝ} {S : Finset ℕ
   have hval : Real.pi ^ 2 / 72 * (1 / 2) * ∑ d ∈ S, c d * ((d : ℝ) ^ 2 - 1) / (d : ℝ) ^ 3 +
       ∑ p ∈ S, c p / p * L p + 0 =
       -(Real.pi ^ 2 / 144 * ∑ p ∈ S, c p * ((p : ℝ) ^ 2 - 1) / (p : ℝ) ^ 2) := by
-    rw [add_zero, mul_sum, mul_sum, mul_sum, ← sum_add_distrib, ← sum_neg_distrib]
+    rw [add_zero, mul_sum, mul_sum, ← sum_add_distrib, ← sum_neg_distrib]
     refine sum_congr rfl fun p hp => ?_
     have hp1 : (1 : ℝ) < p := by exact_mod_cast (hSp p hp).one_lt
     have : (p : ℝ) - 1 ≠ 0 := by linarith

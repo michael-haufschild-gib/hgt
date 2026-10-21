@@ -5,7 +5,7 @@ import GaloisForLFunctions.RHTower.AnalyticOnLargerDiscLiesInHardyDisc
 # Phased Euler products approximate the exponential of every Hardy function
 
 With `z₀`, `ρ` as in the Pechersky density lemma (`1/2 ≤ Re z₀`, `2ρ − 2Re z₀ < −1`,
-`ρ < 1 − Re z₀`, `2ρ < 5/12`), let `L` be any element of the Hardy space of the disc `|z − z₀| < ρ`, read in
+`ρ < 1 − Re z₀`), let `L` be any element of the Hardy space of the disc `|z − z₀| < ρ`, read in
 the coordinate `q = (z − z₀)/ρ`.  Then for every `r₁ < 1` and `ε > 0` there are a cutoff `y` and
 unimodular phases `ω` with
 
@@ -252,7 +252,6 @@ there are `y ≥ y₀'` and unimodular phases `ω` with
 `‖exp(L(q)) − ∏_{p ≤ y} (1 − ω_p p^{−(z₀+ρq)})^{−1}‖ < ε` for all `|q| ≤ r₁`. -/
 theorem exists_unimodular_eulerProduct_approx_exp (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
     (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
-    (hρ5 : 2 * ρ < 5 / 12)
     (L : HardyDisk) {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1) {ε : ℝ} (hε : 0 < ε) (y₀' : ℕ) :
     ∃ y : ℕ, y₀' ≤ y ∧ ∃ ω : ℕ → ℂ, (∀ n, ‖ω n‖ = 1) ∧ ∀ q : ℂ, ‖q‖ ≤ r₁ →
       ‖Complex.exp (hardyFun L q) - ∏ n ∈ (range (y + 1)).filter Nat.Prime,
@@ -301,7 +300,8 @@ theorem exists_unimodular_eulerProduct_approx_exp (z₀ : ℂ) {ρ : ℝ} (hρ :
   -- the Pechersky approximation with the first phases fixed to one
   obtain ⟨N, hN, ω, hω, hωone, hclose⟩ := exists_unimodular_finite_approx_extend
     (primeTerm z₀ hρ.le) (summable_norm_primeTerm_sq z₀ hρ.le hρσ₁)
-    (fun _ he M => exists_sum_norm_inner_primeTerm_gt z₀ hρ hσ hρσ₂ hρ5 he M) (L - R₀v)
+    (fun _ he M => exists_sum_norm_inner_primeTerm_gt z₀ hρ hσ hρσ₂ (by linarith) he M)
+    (L - R₀v)
     (by positivity : (0 : ℝ) < δ / 3 / K) (y₀ + 1) (fun _ => 1) (fun _ => by simp)
   refine ⟨N - 1, by omega, ω, hω, fun q hq => ?_⟩
   have hN1 : N - 1 + 1 = N := by omega

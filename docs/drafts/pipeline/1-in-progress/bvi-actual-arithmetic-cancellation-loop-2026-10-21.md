@@ -133,6 +133,18 @@ class omitted modulo p"), relative size `≍ 1/p` against trivial; the coprime c
 **Lean.** `BezoutValuationIncidence/OmittedResidueClassLawOfThePrimeRow.lean`:
 `tendsto_mul_kernelStatistic_primeWindowRow`, `eventually_abs_sum_classDefect_le`; standard axioms; wired.
 
+### C9 — coupling of a fixed prime packet with the prime block (DONE, Lean)
+**Statement.** For `c` supported on a finite set `S` of primes and `c'_Q = Λ·1_{(Q,2Q]}`:
+`Q(B + mR' + βH') → −(π²/144) Σ_{p∈S} c(p)(1 − p^{-2})`.
+**Proof.** Third-order cross-scale law (`abs_rowBilinear_sub_kernelStatistic_le`): equidistributed
+main term with `Q S' → 1/2` (PNT via the two classes mod 2), kernel statistics by C8, fourth-order
+error `O(Σ|c|p³ · log Q/Q²)`.
+**Meaning (README tool 2 / "sign of a signed prime packet").** Against the actual prime block the
+equidistributed main term is multiplied by `−p` at each prime: the omitted class reverses the sign;
+positive packets couple negatively with weight `1 − p^{-2}`. Fixed small scale only.
+**Lean.** `BezoutValuationIncidence/CrossScaleCouplingOfPrimePacketsWithThePrimeBlock.lean`:
+`tendsto_mul_rowBilinear_primeWindowRow`, `tendsto_mul_sum_primeWindowRow_div_sq`; standard axioms; wired.
+
 ## Log
 - 2026-10-21 — card created; C1 paper proof written; Lean module
   `BezoutValuationIncidence/ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean` started.
@@ -141,3 +153,4 @@ class omitted modulo p"), relative size `≍ 1/p` against trivial; the coprime c
 - 2026-10-21 — C4 killed (duplicate), C5 killed (dominated), C6 formalized and wired.
 - 2026-10-21 — C7 formalized and wired.
 - 2026-10-21 — C8 formalized and wired.
+- 2026-10-21 — C9 formalized and wired.

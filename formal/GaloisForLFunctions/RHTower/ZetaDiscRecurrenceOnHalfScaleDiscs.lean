@@ -41,9 +41,8 @@ theorem zetaDiscStronglyRecurrentOn_of_zeroFree_halfScale {c : ℂ} {r : ℝ}
     (hK : IsHalfScaleStripDisc c r) (hζ : ∀ z ∈ ball c (2 * r), riemannZeta z ≠ 0) :
     ZetaDiscStronglyRecurrentOn (closedBall c r) := by
   obtain ⟨hr, h0, h1⟩ := hK
-  have hr8 : r < 1 / 8 := by linarith
   have h := zetaDiscStronglyRecurrentOn_of_zeroFree c (ρ := 3 / 2 * r) (by positivity)
-    (by linarith) (by linarith) (by linarith) (by linarith) (R₂ := 4 / 3) (by norm_num)
+    (by linarith) (by linarith) (by linarith) (R₂ := 4 / 3) (by norm_num)
     (by linarith) (fun z hz => hζ z (by rwa [show 3 / 2 * r * (4 / 3) = 2 * r by ring] at hz))
     (r₁ := 2 / 3) (by norm_num) (by norm_num) (by linarith) (by linarith)
   rwa [show 3 / 2 * r * (2 / 3) = r by ring] at h

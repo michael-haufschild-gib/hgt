@@ -54,7 +54,6 @@ and `K` has the margins `1/2 < Re z₀ − 2ρ r₁`, `Re z₀ + 2ρ r₁ < 1`, 
 on `K`. -/
 theorem zetaDiscStronglyRecurrentOn_of_zeroFree (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
     (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
-    (hρ5 : 2 * ρ < 5 / 12)
     {R₂ : ℝ} (hR₂ : 1 < R₂) (hR₂1 : z₀.re + ρ * R₂ < 1)
     (hζ : ∀ z ∈ ball z₀ (ρ * R₂), riemannZeta z ≠ 0)
     {r₁ : ℝ} (hr₁0 : 0 < r₁) (hr₁ : r₁ < 1)
@@ -62,7 +61,7 @@ theorem zetaDiscStronglyRecurrentOn_of_zeroFree (z₀ : ℂ) {ρ : ℝ} (hρ : 0
     ZetaDiscStronglyRecurrentOn (closedBall z₀ (ρ * r₁)) := by
   intro ε hε
   obtain ⟨c, hc, y₁, hy₁⟩ := exists_uniform_pos_density_eulerTargetReturnSet_zeta z₀ hρ hσ hρσ₁
-    hρσ₂ hρ5 hR₂ hR₂1 hζ hr₁0.le hr₁ (half_pos hε)
+    hρσ₂ hR₂ hR₂1 hζ hr₁0.le hr₁ (half_pos hε)
   have hbad := eventually_eventually_volume_eulerDiscTailBadSet_le (by positivity : 0 < ρ * r₁)
     h0 h1 (half_pos hε) (half_pos hc)
   obtain ⟨y, hy, hyb⟩ := ((eventually_ge_atTop y₁).and hbad).exists
@@ -96,7 +95,7 @@ theorem exists_zetaDiscStronglyRecurrentOn_of_zeroFree {z₀ : ℂ} (h1 : 1 / 2 
   have hρ2 : ρ ≤ (1 - z₀.re) / 8 := (min_le_right _ _).trans (min_le_right _ _)
   refine ⟨ρ * (1 / 2), by positivity, by linarith, by linarith, ?_⟩
   exact zetaDiscStronglyRecurrentOn_of_zeroFree z₀ hρ h1.le (by linarith) (by linarith)
-    (by linarith) (R₂ := 2) (by norm_num) (by linarith) (fun z hz => hζ z (ball_subset_ball (by linarith) hz))
+    (R₂ := 2) (by norm_num) (by linarith) (fun z hz => hζ z (ball_subset_ball (by linarith) hz))
     (by norm_num) (by norm_num) (by linarith) (by linarith)
 
 /-- **The Abel base-point pole is paid on zero-free discs**: around every locally zero-free point

@@ -227,7 +227,6 @@ are `c > 0` and `y₁` such that for every `y ≥ y₁` the heights at which `E_
 of `ζ` on the disc have lower density at least `c`. -/
 theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
     (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
-    (hρ5 : 2 * ρ < 5 / 12)
     {R₂ : ℝ} (hR₂ : 1 < R₂) (hR₂1 : z₀.re + ρ * R₂ < 1)
     (hζ : ∀ z ∈ ball z₀ (ρ * R₂), riemannZeta z ≠ 0)
     {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1) {ε : ℝ} (hε : 0 < ε) :
@@ -286,7 +285,7 @@ theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta (z₀ : ℂ) {ρ : 
   obtain ⟨y₀, -, hy₀⟩ := exists_remainder_tail_le hσ₁ hC0 hδ'pos 0
   -- the base phases, at a stage `y₁ ≥ y₀`
   obtain ⟨y₁, hy₁, c₁, hc₁, hev₁⟩ := exists_pos_density_eulerTargetReturnSet_zeta z₀ hρ hσ hρσ₁
-    hρσ₂ hρ5 hR₂ hR₂1 hζ hr₁0 hr₁ (half_pos hε) y₀
+    hρσ₂ hR₂ hR₂1 hζ hr₁0 hr₁ (half_pos hε) y₀
   have hne : (eulerTargetReturnSet y₁ riemannZeta (closedBall z₀ (ρ * r₁)) (ε / 2)).Nonempty := by
     rw [Set.nonempty_iff_ne_empty]
     intro hemp

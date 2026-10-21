@@ -87,3 +87,19 @@ their module lands; this card does not edit their files.
   covered only eventually in `N` (ineffective PNT inputs). Closing it needs explicit prime-count
   inputs in `eventually_moebiusRenormalizedDefect_polynomial_cofinal_bound` and
   `eventually_periodCovariance_moebius_zero_ge`, plus the finite horizons below the resulting `N₀`.
+- 2026-10-21 — **Row 5 decided** (RW/SZ/CHMD completed norms). `RHTower/SuzukiScrewCompletionInsideTheWeilFormDomain`:
+  dilation `g(r·)` multiplies `‖g'‖²` by `r` while the Weil form norm decays like `√((1+log r)/r)`, so
+  `not_exists_derivative_norm_le_weilFormNorm`; the primitive map `P : L²₀ → 𝒟_W` is injective with dense range
+  and `not_surjective_suzukiZeroMeanPrimitiveCCMFormCLM` — the SZ completion is a proper dense subspace of RW's.
+  Signs agree: `screw_nonneg_iff_restrictedWeil_nonneg`, `quotientWeilForm_nonneg_of_restrictedWeil_nonneg`.
+  `RHTower/CHMDGraphNormIsTheWeilFormNormOnAnAperture`: `‖testLift u‖² = W(u) + 2‖u/Φ‖²_μ − 2⟨·,1⟩² + 2⟨·,tanh⟩²`
+  gives `exists_testLift_norm_sq_equiv_weilFormNorm` (graph ≍ RW norm on a fixed aperture) and
+  `exists_norm_suzukiCoreSignedQuotient_le`. Answer: one receiver for the sign; norms SZ ⊊ RW ≍ CHMD-graph;
+  open: lower bound of the signed-radical quotient norm on the aperture core. Wired in RHTower.lean; axioms standard.
+- 2026-10-21 — **Row 8 (closed-form thresholds)**: `arithmetic-positivity-theory/ExplicitBlockThresholdsOfTheCriticalFamily`
+  replaces every `∃ M₀` of the critical family by `logLinearThreshold s c C = max 2 (⌊exp(c + C/s)⌋ + 1)`:
+  complete form + translated patterns (`criticalBlockThreshold`), collared, doubly collared truncations and the
+  full Weil functional of ζ on them (`criticalTruncatedBlockThreshold`), lacunary unions, polynomial windows with
+  `δ = s/(4(W+1))`, threshold `max 2 (⌊exp(2K/s)⌋ + 1)`. Numerical evaluation of `C` blocked on explicit bounds
+  for the smooth-transition collar integrals (`∫|ψ'|, ∫|ψ''|`) and `Σ Λ(r) r^{-3/2}`; range of `R` beyond
+  `R ≤ −1/7000` not attempted. Wired in ArithmeticPositivityTheory.lean; axioms standard.
