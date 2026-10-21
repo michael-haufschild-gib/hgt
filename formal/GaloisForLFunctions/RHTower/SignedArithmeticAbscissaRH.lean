@@ -105,7 +105,7 @@ theorem riemannHypothesis_iff_moebius_converges :
   rw [← mobiusMertensAllStrictHalfPowerBound_iff_riemannHypothesis,
     ← forall_halfPower_bound_iff_forall_converges]
   unfold MobiusMertensAllStrictHalfPowerBound
-  simp only [norm_mobiusMertensPartialSum_eq]
+  simp only [norm_mobiusMertensPartialSum_eq_abs_sourcePartialSum_moebiusR]
 
 /-- **RH as the abscissa of `Σ λ(n) n^{-s}`.** -/
 theorem riemannHypothesis_iff_liouville_converges :

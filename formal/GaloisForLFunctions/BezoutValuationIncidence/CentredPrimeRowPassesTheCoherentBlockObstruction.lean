@@ -339,6 +339,146 @@ theorem mass_centredPrimeRow_ge {N A H K Q : ℕ} (hQ : 1 ≤ Q) (hA : Q ≤ A) 
     _ ≤ ∑ n ∈ Icc 1 N, |centredPrimeRow A H K n| / (n : ℝ) ^ 2 :=
         sum_le_sum_of_subset_of_nonneg hsub fun n _ _ => by positivity
 
+/-- One block of the window satisfies the short-interval prime number theorem with error `ε` once
+`Q ≥ 100`, `Q − 1 ≥ X₀`, `(2Q)^α ≤ H` and `25H ≤ εQ`: then
+`|Σ_{block} (Λ(n) − 1)/n²| ≤ 2εH/Q²`. -/
+theorem abs_sum_block_le_of_window {α ε X₀ : ℝ} (hα0 : 0 ≤ α) (hε : 0 < ε) (hε1 : ε ≤ 1)
+    (hX₀ : ∀ b : ℝ, X₀ ≤ b → ∀ h : ℝ, b ^ α ≤ h → h ≤ b / 2 →
+      |Chebyshev.psi (b + h) - Chebyshev.psi b - h| ≤ ε * h)
+    {A H K Q : ℕ} (hA : Q ≤ A) (hAK : A + K * H ≤ 2 * Q) (hHnat : 1 ≤ H)
+    (hq100 : (100 : ℝ) ≤ Q) (hqX : X₀ + 1 ≤ Q) (hH1 : (2 * (Q : ℝ)) ^ α ≤ H)
+    (hHQ : 25 * (H : ℝ) ≤ ε * Q) {m : ℕ} (hm : m < K) :
+    |∑ n ∈ Ico (A + m * H) (A + m * H + H), (vonMangoldt n - 1) / (n : ℝ) ^ 2| ≤
+      2 * ε * H / (Q : ℝ) ^ 2 := by
+  obtain ⟨a, hadef⟩ : ∃ a : ℕ, a = A + m * H := ⟨_, rfl⟩
+  rw [← hadef]
+  have hQ0 : (0 : ℝ) < Q := by linarith
+  have h1 : m * H + H ≤ K * H := by
+    rw [← Nat.succ_mul]; exact Nat.mul_le_mul_right H hm
+  have ha1 : 1 ≤ a := by
+    have : (1 : ℝ) ≤ Q := by linarith
+    have hQ1 : 1 ≤ Q := by exact_mod_cast this
+    omega
+  have haQ : Q ≤ a := by omega
+  have haQR : (Q : ℝ) ≤ a := by exact_mod_cast haQ
+  have ha2Q : a + H ≤ 2 * Q := by omega
+  have ha2QR : (a : ℝ) + H ≤ 2 * Q := by exact_mod_cast ha2Q
+  have hx : ((a - 1 : ℕ) : ℝ) = (a : ℝ) - 1 := by
+    rw [Nat.cast_sub ha1, Nat.cast_one]
+  have hH1' : (1 : ℝ) ≤ H := by exact_mod_cast hHnat
+  have hxX : X₀ ≤ ((a - 1 : ℕ) : ℝ) := by rw [hx]; linarith
+  have hxα : ((a - 1 : ℕ) : ℝ) ^ α ≤ H := by
+    refine le_trans ?_ hH1
+    exact Real.rpow_le_rpow (by rw [hx]; linarith) (by rw [hx]; linarith) hα0
+  have hxh : (H : ℝ) ≤ ((a - 1 : ℕ) : ℝ) / 2 := by
+    rw [hx]
+    have : 25 * (H : ℝ) ≤ Q := by nlinarith
+    linarith
+  have hψ := hX₀ _ hxX H hxα hxh
+  have hψ2 : Chebyshev.psi (((a - 1 : ℕ) : ℝ) + H) - Chebyshev.psi ((a - 1 : ℕ) : ℝ) ≤ 2 * H := by
+    have := (abs_le.mp hψ).2
+    nlinarith
+  refine (abs_sum_centredPrimeRow_block_le ha1 hψ hψ2).trans ?_
+  have haR0 : (0 : ℝ) < a := by linarith
+  have h6 : 6 * (H : ℝ) / a ≤ ε := by
+    rw [div_le_iff₀ haR0]
+    nlinarith
+  calc (H : ℝ) / (a : ℝ) ^ 2 * (ε + 6 * H / a) ≤ (H : ℝ) / (Q : ℝ) ^ 2 * (ε + ε) := by
+        gcongr
+    _ = 2 * ε * H / (Q : ℝ) ^ 2 := by ring
+
+/-- The inverse-square mass `Σ_{n ≤ N} |c'(n)|/n²` of a row. -/
+def rowInverseSquareMass (N : ℕ) (c' : ℕ → ℝ) : ℝ := ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 2
+
+/-- The linear weight `Σ_{d ≤ N} |c(d)| d` of a row. -/
+def rowLinearWeight (N : ℕ) (c : ℕ → ℝ) : ℝ := ∑ d ∈ Icc 1 N, |c d| * d
+
+theorem rowInverseSquareMass_nonneg (N : ℕ) (c' : ℕ → ℝ) : 0 ≤ rowInverseSquareMass N c' :=
+  sum_nonneg fun n _ => by positivity
+
+theorem rowLinearWeight_nonneg (N : ℕ) (c : ℕ → ℝ) : 0 ≤ rowLinearWeight N c :=
+  sum_nonneg fun d _ => by positivity
+
+/-- A row on `(P, 2P]`: `P Σ|c| ≤ Σ|c| d`. -/
+theorem mul_sum_abs_le_rowLinearWeight {N P : ℕ} {c : ℕ → ℝ}
+    (hc : ∀ d, c d ≠ 0 → P < d ∧ d ≤ 2 * P) :
+    (P : ℝ) * ∑ d ∈ Icc 1 N, |c d| ≤ rowLinearWeight N c := by
+  unfold rowLinearWeight
+  rw [mul_sum]
+  refine sum_le_sum fun d _ => ?_
+  by_cases hd : c d = 0
+  · simp [hd]
+  · have hdR : (P : ℝ) ≤ d := by exact_mod_cast (hc d hd).1.le
+    exact mul_comm (P : ℝ) |c d| ▸ mul_le_mul_of_nonneg_left hdR (abs_nonneg _)
+
+/-- A row on `(P, 2P]`: `Σ|c| d² ≤ 2P Σ|c| d`. -/
+theorem sum_abs_mul_sq_le_rowLinearWeight {N P : ℕ} {c : ℕ → ℝ}
+    (hc : ∀ d, c d ≠ 0 → P < d ∧ d ≤ 2 * P) :
+    ∑ d ∈ Icc 1 N, |c d| * (d : ℝ) ^ 2 ≤ 2 * P * rowLinearWeight N c := by
+  unfold rowLinearWeight
+  rw [mul_sum]
+  refine sum_le_sum fun d _ => ?_
+  by_cases hd : c d = 0
+  · simp [hd]
+  · have hdR : (d : ℝ) ≤ 2 * P := by exact_mod_cast (hc d hd).2
+    have h0 : 0 ≤ |c d| * (d : ℝ) := by positivity
+    calc |c d| * (d : ℝ) ^ 2 = |c d| * d * d := by ring
+      _ ≤ |c d| * d * (2 * P) := mul_le_mul_of_nonneg_left hdR h0
+      _ = 2 * P * (|c d| * d) := by ring
+
+/-- A row supported above `Q`: `Q Σ|c'|/n³ ≤ Σ|c'|/n²`. -/
+theorem mul_sum_abs_div_cube_le_rowInverseSquareMass {N Q : ℕ} {c' : ℕ → ℝ}
+    (hc' : ∀ n, c' n ≠ 0 → Q ≤ n) :
+    (Q : ℝ) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 3 ≤ rowInverseSquareMass N c' := by
+  unfold rowInverseSquareMass
+  rw [mul_sum]
+  refine sum_le_sum fun n _ => ?_
+  by_cases hn : c' n = 0
+  · simp [hn]
+  · rcases Nat.eq_zero_or_pos n with h | h
+    · subst h; simp
+    have hnQ : (Q : ℝ) ≤ n := by exact_mod_cast hc' n hn
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast h
+    have heq : (Q : ℝ) * (|c' n| / (n : ℝ) ^ 3) = |c' n| / (n : ℝ) ^ 2 * (Q / n) := by
+      field_simp
+    rw [heq]
+    exact mul_le_of_le_one_right (by positivity) ((div_le_one hn0).mpr hnQ)
+
+/-- The real-number assembly of the three terms of the block bound. -/
+theorem assembly_le {X Δ S₀ Sc Sa Sq Sk h H P Q ε : ℝ} (hε : 0 < ε) (hS₀ : 0 ≤ S₀) (hSc : 0 ≤ Sc)
+    (hΔ0 : 0 ≤ Δ) (hSa : 0 ≤ Sa) (hSk : 0 ≤ Sk)
+    (hmain : X ≤ Real.pi ^ 2 / 72 * Δ * Sc + ((H * h ^ 2 / 2 + 1 / 8) * S₀) * Sa +
+      (3 / 4 * Sq) * Sk)
+    (hΔ : Δ ≤ 96 * ε * S₀) (hterm2 : H * h ^ 2 / 2 + 1 / 8 ≤ ε * P) (hS1 : P * Sa ≤ Sc)
+    (hS2 : Sq ≤ 2 * P * Sc) (hS3 : Q * Sk ≤ S₀) (hterm3 : 3 * P ≤ 2 * ε * Q) :
+    X ≤ 16 * ε * S₀ * Sc := by
+  have hpi : Real.pi ^ 2 ≤ 10 := by nlinarith [Real.pi_lt_d2, Real.pi_pos]
+  have hT1 : Real.pi ^ 2 / 72 * Δ * Sc ≤ 14 * ε * S₀ * Sc := by
+    have h1 : Δ * Sc ≤ 96 * ε * S₀ * Sc := mul_le_mul_of_nonneg_right hΔ hSc
+    have h2 : 0 ≤ Δ * Sc := mul_nonneg hΔ0 hSc
+    have h3 : Real.pi ^ 2 / 72 * (Δ * Sc) ≤ 10 / 72 * (96 * ε * S₀ * Sc) :=
+      mul_le_mul (by linarith) h1 h2 (by norm_num)
+    have h4 : 0 ≤ ε * S₀ * Sc := by positivity
+    calc Real.pi ^ 2 / 72 * Δ * Sc = Real.pi ^ 2 / 72 * (Δ * Sc) := by ring
+      _ ≤ 10 / 72 * (96 * ε * S₀ * Sc) := h3
+      _ ≤ 14 * ε * S₀ * Sc := by linarith
+  have hT2 : ((H * h ^ 2 / 2 + 1 / 8) * S₀) * Sa ≤ ε * S₀ * Sc := by
+    calc ((H * h ^ 2 / 2 + 1 / 8) * S₀) * Sa ≤ ((ε * P) * S₀) * Sa :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hterm2 hS₀) hSa
+      _ = ε * S₀ * (P * Sa) := by ring
+      _ ≤ ε * S₀ * Sc := mul_le_mul_of_nonneg_left hS1 (by positivity)
+  have hT3 : (3 / 4 * Sq) * Sk ≤ ε * S₀ * Sc := by
+    have h1 : 3 * P * Sk ≤ 2 * ε * S₀ := by
+      calc 3 * P * Sk ≤ 2 * ε * Q * Sk := mul_le_mul_of_nonneg_right hterm3 hSk
+        _ = 2 * ε * (Q * Sk) := by ring
+        _ ≤ 2 * ε * S₀ := mul_le_mul_of_nonneg_left hS3 (by positivity)
+    calc (3 / 4 * Sq) * Sk ≤ (3 / 4 * (2 * P * Sc)) * Sk :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hS2 (by norm_num)) hSk
+      _ = 1 / 2 * Sc * (3 * P * Sk) := by ring
+      _ ≤ 1 / 2 * Sc * (2 * ε * S₀) := mul_le_mul_of_nonneg_left h1 (by positivity)
+      _ = ε * S₀ * Sc := by ring
+  linarith
+
 /-- **The centred prime row passes the coherent-block obstruction.** For `7/12 < α < 1` and
 `0 < ε ≤ 1` there is a scale `Q₀` such that for every window `[A, A + KH) ⊆ [Q, 2Q]` with
 `Q ≥ Q₀`, blocks of length `(2Q)^α ≤ H ≤ 4Q^α`, horizon `N ≥ 2Q`, and every row `c` on `(P, 2P]`
@@ -346,20 +486,19 @@ with `H h_N²/2 + 1/8 ≤ εP` and `3P ≤ 2εQ`,
 
 `|B + m R' + β H'| ≤ 16 ε S₀ Σ_d |c(d)| d`,
 
-`S₀ = Σ_n |c'(n)|/n²` the mass of the centred prime row: the cross-scale remainder is `16ε` times
-the rank-two remainder bound. -/
+`S₀ = Σ_n |c'(n)|/n²` the inverse-square mass of the centred prime row: the cross-scale remainder
+is `16ε` times the rank-two remainder bound. -/
 theorem exists_abs_rowBilinear_centredPrimeRow_le {α : ℝ} (hα : 7 / 12 < α) (hα1 : α < 1)
     {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) :
     ∃ Q₀ : ℕ, ∀ {N A H K P Q : ℕ} {c : ℕ → ℝ}, Q₀ ≤ Q → Q ≤ A → A + K * H ≤ 2 * Q →
-      2 * Q ≤ N → 1 ≤ K → 1 ≤ P → (2 * (Q : ℝ)) ^ α ≤ H → (H : ℝ) ≤ 4 * (Q : ℝ) ^ α →
+      2 * Q ≤ N → 1 ≤ P → (2 * (Q : ℝ)) ^ α ≤ H → (H : ℝ) ≤ 4 * (Q : ℝ) ^ α →
       (∀ d, c d ≠ 0 → P < d ∧ d ≤ 2 * P) →
       (H : ℝ) * (∑ k ∈ Icc 1 N, 1 / (k : ℝ)) ^ 2 / 2 + 1 / 8 ≤ ε * P →
       3 * (P : ℝ) ≤ 2 * ε * Q →
       |rowBilinear N c (centredPrimeRow A H K) +
           rowMean N c * vonMangoldtReadout N (centredPrimeRow A H K) +
           rowBeta N c * finiteHarmonicSum N (centredPrimeRow A H K)| ≤
-        16 * ε * (∑ n ∈ Icc 1 N, |centredPrimeRow A H K n| / (n : ℝ) ^ 2) *
-          ∑ d ∈ Icc 1 N, |c d| * d := by
+        16 * ε * rowInverseSquareMass N (centredPrimeRow A H K) * rowLinearWeight N c := by
   -- the thresholds in `Q`: the uniform window theorem and `100 Q^α ≤ ε Q`
   obtain ⟨X₀, hX₀⟩ := eventually_atTop.1 (eventually_abs_psi_window_sub_le hα hα1 hε)
   have hev : ∀ᶠ q : ℝ in atTop, 100 / ε ≤ q ^ (1 - α) ∧ 100 ≤ q ∧ X₀ + 1 ≤ q :=
@@ -367,144 +506,50 @@ theorem exists_abs_rowBilinear_centredPrimeRow_le {α : ℝ} (hα : 7 / 12 < α)
       ((eventually_ge_atTop _).and (eventually_ge_atTop _))
   obtain ⟨Q₀, hQ₀⟩ := eventually_atTop.1 (tendsto_natCast_atTop_atTop.eventually hev)
   refine ⟨Q₀, ?_⟩
-  intro N A H K P Q c hQ hA hAK hN hK hP hH1 hH2 hc hterm2 hterm3
+  intro N A H K P Q c hQ hA hAK hN hP hH1 hH2 hc hterm2 hterm3
   obtain ⟨hq1, hq100, hqX⟩ := hQ₀ Q hQ
   have hQ0 : (0 : ℝ) < Q := by linarith
   have hQ1 : 1 ≤ Q := by exact_mod_cast (show (1 : ℝ) ≤ Q by linarith)
   have hQα : (Q : ℝ) ^ α * (Q : ℝ) ^ (1 - α) = Q := by
     rw [← Real.rpow_add hQ0, show α + (1 - α) = (1 : ℝ) by ring, Real.rpow_one]
   have hQα0 : 0 < (Q : ℝ) ^ α := Real.rpow_pos_of_pos hQ0 α
-  -- `100 Q^α ≤ ε Q`, hence `H ≤ εQ/25`
+  -- `100 Q^α ≤ ε Q`, hence `25 H ≤ εQ`
   have h100 : 100 * (Q : ℝ) ^ α ≤ ε * Q := by
     rw [div_le_iff₀ hε] at hq1
     calc 100 * (Q : ℝ) ^ α ≤ (Q : ℝ) ^ (1 - α) * ε * (Q : ℝ) ^ α :=
           mul_le_mul_of_nonneg_right hq1 hQα0.le
-      _ = ε * Q := by rw [mul_comm ((Q : ℝ) ^ (1 - α)) ε, mul_assoc, mul_comm ((Q : ℝ) ^ (1 - α)), hQα]
+      _ = ε * Q := by
+          rw [mul_comm ((Q : ℝ) ^ (1 - α)) ε, mul_assoc, mul_comm ((Q : ℝ) ^ (1 - α)), hQα]
   have hHQ : 25 * (H : ℝ) ≤ ε * Q := by linarith
-  have hH1' : (1 : ℝ) ≤ H := by
-    refine le_trans ?_ hH1
-    exact Real.one_le_rpow (by linarith) (by linarith)
-  have hHnat : 1 ≤ H := by exact_mod_cast hH1'
-  -- every block satisfies the short-interval prime number theorem with error `ε`
-  have hblock : ∀ m < K, |∑ n ∈ Ico (A + m * H) (A + m * H + H),
-      (vonMangoldt n - 1) / (n : ℝ) ^ 2| ≤ 2 * ε * H / (Q : ℝ) ^ 2 := by
-    intro m hm
-    set a := A + m * H with hadef
-    have ha1 : 1 ≤ a := by rw [hadef]; omega
-    have haQ : Q ≤ a := by rw [hadef]; omega
-    have haQR : (Q : ℝ) ≤ a := by exact_mod_cast haQ
-    have ha2Q : a + H ≤ 2 * Q := by
-      have := Ico_block_subset (A := A) (H := H) (K := K) hm
-      have h1 : m * H + H ≤ K * H := by
-        rw [← Nat.succ_mul]; exact Nat.mul_le_mul_right H hm
-      rw [hadef]; omega
-    have ha2QR : (a : ℝ) + H ≤ 2 * Q := by exact_mod_cast ha2Q
-    have hx : ((a - 1 : ℕ) : ℝ) = (a : ℝ) - 1 := by
-      rw [Nat.cast_sub ha1, Nat.cast_one]
-    have hxX : X₀ ≤ ((a - 1 : ℕ) : ℝ) := by rw [hx]; linarith
-    have hxα : ((a - 1 : ℕ) : ℝ) ^ α ≤ H := by
-      refine le_trans ?_ hH1
-      exact Real.rpow_le_rpow (by rw [hx]; linarith) (by rw [hx]; linarith) (by linarith)
-    have hxh : (H : ℝ) ≤ ((a - 1 : ℕ) : ℝ) / 2 := by
-      rw [hx]
-      have : 25 * (H : ℝ) ≤ Q := by nlinarith
-      linarith
-    have hψ := hX₀ _ hxX H hxα hxh
-    have hψ2 : Chebyshev.psi (((a - 1 : ℕ) : ℝ) + H) - Chebyshev.psi ((a - 1 : ℕ) : ℝ) ≤ 2 * H := by
-      have := (abs_le.mp hψ).2
-      nlinarith
-    have hb := abs_sum_centredPrimeRow_block_le ha1 hψ hψ2
-    refine hb.trans ?_
-    have haR0 : (0 : ℝ) < a := by linarith
-    have h6 : 6 * (H : ℝ) / a ≤ ε := by
-      rw [div_le_iff₀ haR0]
-      nlinarith
-    calc (H : ℝ) / (a : ℝ) ^ 2 * (ε + 6 * H / a) ≤ (H : ℝ) / (Q : ℝ) ^ 2 * (ε + ε) := by
-          gcongr
-      _ = 2 * ε * H / (Q : ℝ) ^ 2 := by ring
-  have hΔ := blockDiscrepancy_centredPrimeRow_le hblock
+  have hHnat : 1 ≤ H := by
+    have : (1 : ℝ) ≤ H := le_trans (Real.one_le_rpow (by linarith) (by linarith)) hH1
+    exact_mod_cast this
+  -- the block discrepancy and the mass
+  have hΔ := blockDiscrepancy_centredPrimeRow_le (A := A) (H := H) (K := K) (Q := Q) (ε := ε)
+    fun m hm => abs_sum_block_le_of_window (by linarith) hε hε1 hX₀ hA hAK hHnat hq100 hqX hH1
+      hHQ hm
   have hS₀ := mass_centredPrimeRow_ge (N := N) hQ1 hA hAK hN
-  -- the three terms of the block bound against the rank-two remainder bound
-  set c' := centredPrimeRow A H K with hc'def
-  set S₀ := ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 2 with hS₀def
-  set Sc := ∑ d ∈ Icc 1 N, |c d| * d with hScdef
-  have hS₀0 : 0 ≤ S₀ := sum_nonneg fun n _ => by positivity
-  have hSc0 : 0 ≤ Sc := sum_nonneg fun d _ => by positivity
-  have hmain := abs_rowBilinear_add_mean_add_beta_le_block (N := N) (A := A) (H := H) (K := K)
-    (c := c) (c' := c') (by omega) (by omega) fun n => centredPrimeRow_support
-  -- the small-scale row: `P Σ|c| ≤ Σ|c| d ≤ 2P Σ|c| d / ...`
-  have hPR : (0 : ℝ) < P := by exact_mod_cast hP
-  have hS1 : (P : ℝ) * ∑ d ∈ Icc 1 N, |c d| ≤ Sc := by
-    rw [mul_sum]
-    refine sum_le_sum fun d _ => ?_
-    by_cases hd : c d = 0
-    · simp [hd]
-    · have := (hc d hd).1
-      have hdR : (P : ℝ) ≤ d := by exact_mod_cast this.le
-      nlinarith [abs_nonneg (c d)]
-  have hS2 : ∑ d ∈ Icc 1 N, |c d| * (d : ℝ) ^ 2 ≤ 2 * P * Sc := by
-    rw [mul_sum]
-    refine sum_le_sum fun d _ => ?_
-    by_cases hd : c d = 0
-    · simp [hd]
-    · have := (hc d hd).2
-      have hdR : (d : ℝ) ≤ 2 * P := by exact_mod_cast this
-      nlinarith [abs_nonneg (c d), (Nat.cast_nonneg d : (0 : ℝ) ≤ d)]
-  -- the large-scale row sits above `Q`: `Q Σ|c'|/n³ ≤ S₀`
-  have hS3 : (Q : ℝ) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 3 ≤ S₀ := by
-    rw [hS₀def, mul_sum]
-    refine sum_le_sum fun n _ => ?_
-    by_cases hn : c' n = 0
-    · simp [hn]
-    · have hmem := centredPrimeRow_support (A := A) (H := H) (K := K) hn
-      rw [mem_Ico] at hmem
-      have hnQ : (Q : ℝ) ≤ n := by exact_mod_cast hA.trans hmem.1
-      have hn0 : (0 : ℝ) < n := by linarith
-      rw [show (Q : ℝ) * (|c' n| / (n : ℝ) ^ 3) = |c' n| / (n : ℝ) ^ 2 * (Q / n) by
-        field_simp]
-      exact mul_le_of_le_one_right (by positivity) ((div_le_one hn0).mpr hnQ)
-  -- assemble
-  have hpi : Real.pi ^ 2 ≤ 10 := by nlinarith [Real.pi_lt_d2, Real.pi_pos]
-  have hKH : 2 * ε * K * H / (Q : ℝ) ^ 2 ≤ 96 * ε * S₀ := by
-    have : (K : ℝ) * H / (Q : ℝ) ^ 2 ≤ 48 * S₀ := by
-      have h48 : (K : ℝ) * H / (48 * (Q : ℝ) ^ 2) = (K : ℝ) * H / (Q : ℝ) ^ 2 / 48 := by
-        rw [div_div, mul_comm 48]
-      rw [h48, div_le_iff₀ (by norm_num)] at hS₀
-      linarith
+  have hKH : 2 * ε * K * H / (Q : ℝ) ^ 2 ≤ 96 * ε * rowInverseSquareMass N (centredPrimeRow A H K) := by
+    have h48 : (K : ℝ) * H / (48 * (Q : ℝ) ^ 2) = (K : ℝ) * H / (Q : ℝ) ^ 2 / 48 := by
+      rw [div_div, mul_comm 48]
+    rw [h48, div_le_iff₀ (by norm_num)] at hS₀
+    have : 0 ≤ (K : ℝ) * H / (Q : ℝ) ^ 2 := by positivity
     calc 2 * ε * K * H / (Q : ℝ) ^ 2 = 2 * ε * ((K : ℝ) * H / (Q : ℝ) ^ 2) := by ring
-      _ ≤ 2 * ε * (48 * S₀) := mul_le_mul_of_nonneg_left this (by positivity)
-      _ = 96 * ε * S₀ := by ring
-  have hT1 : Real.pi ^ 2 / 72 * blockDiscrepancy c' A H K * Sc ≤ 14 * ε * S₀ * Sc := by
-    have hΔ' : blockDiscrepancy c' A H K ≤ 96 * ε * S₀ := hΔ.trans hKH
-    have hΔ0 : 0 ≤ blockDiscrepancy c' A H K := sum_nonneg fun m _ => abs_nonneg _
-    calc Real.pi ^ 2 / 72 * blockDiscrepancy c' A H K * Sc
-        ≤ 10 / 72 * (96 * ε * S₀) * Sc := by gcongr
-      _ ≤ 14 * ε * S₀ * Sc := by nlinarith [mul_nonneg (mul_nonneg hε.le hS₀0) hSc0]
-  have hT2 : ((H : ℝ) * (∑ k ∈ Icc 1 N, 1 / (k : ℝ)) ^ 2 / 2 + 1 / 8) * S₀ *
-      ∑ d ∈ Icc 1 N, |c d| ≤ ε * S₀ * Sc := by
-    have h0 : (0 : ℝ) ≤ ∑ d ∈ Icc 1 N, |c d| := sum_nonneg fun d _ => abs_nonneg _
-    calc ((H : ℝ) * (∑ k ∈ Icc 1 N, 1 / (k : ℝ)) ^ 2 / 2 + 1 / 8) * S₀ * ∑ d ∈ Icc 1 N, |c d|
-        ≤ (ε * P) * S₀ * ∑ d ∈ Icc 1 N, |c d| := by gcongr
-      _ = ε * S₀ * ((P : ℝ) * ∑ d ∈ Icc 1 N, |c d|) := by ring
-      _ ≤ ε * S₀ * Sc := mul_le_mul_of_nonneg_left hS1 (by positivity)
-  have hT3 : 3 / 4 * (∑ d ∈ Icc 1 N, |c d| * (d : ℝ) ^ 2) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 3 ≤
-      ε * S₀ * Sc := by
-    have h0 : (0 : ℝ) ≤ ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 3 := sum_nonneg fun n _ => by positivity
-    calc 3 / 4 * (∑ d ∈ Icc 1 N, |c d| * (d : ℝ) ^ 2) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 3
-        ≤ 3 / 4 * (2 * P * Sc) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 3 := by gcongr
-      _ = (3 * P / (2 * Q)) * Sc * ((Q : ℝ) * ∑ n ∈ Icc 1 N, |c' n| / (n : ℝ) ^ 3) := by
-          field_simp
-          ring
-      _ ≤ ε * Sc * S₀ := by
-          have h1 : 3 * (P : ℝ) / (2 * Q) ≤ ε := by
-            rw [div_le_iff₀ (by positivity)]; linarith
-          gcongr
-      _ = ε * S₀ * Sc := by ring
-  calc |rowBilinear N c c' + rowMean N c * vonMangoldtReadout N c' +
-          rowBeta N c * finiteHarmonicSum N c'|
-      ≤ _ := hmain
-    _ ≤ 14 * ε * S₀ * Sc + ε * S₀ * Sc + ε * S₀ * Sc := add_le_add (add_le_add hT1 hT2) hT3
-    _ = 16 * ε * S₀ * Sc := by ring
+      _ ≤ 2 * ε * (48 * rowInverseSquareMass N (centredPrimeRow A H K)) :=
+          mul_le_mul_of_nonneg_left (by unfold rowInverseSquareMass; linarith) (by positivity)
+      _ = 96 * ε * rowInverseSquareMass N (centredPrimeRow A H K) := by ring
+  -- the three terms of the block bound
+  have hmain := abs_rowBilinear_add_mean_add_beta_le_block (N := N) (A := A) (H := H) (K := K)
+    (c := c) (c' := centredPrimeRow A H K) (by omega) (by omega) fun n => centredPrimeRow_support
+  have hS1 := mul_sum_abs_le_rowLinearWeight (N := N) hc
+  have hS2 := sum_abs_mul_sq_le_rowLinearWeight (N := N) hc
+  have hS3 := mul_sum_abs_div_cube_le_rowInverseSquareMass (N := N) (Q := Q)
+    (c' := centredPrimeRow A H K) fun n hn => hA.trans (mem_Ico.mp (centredPrimeRow_support hn)).1
+  have hPR : (0 : ℝ) < P := by exact_mod_cast hP
+  refine assembly_le hε (rowInverseSquareMass_nonneg _ _) (rowLinearWeight_nonneg _ _)
+    (sum_nonneg fun m _ => abs_nonneg _) (sum_nonneg fun d _ => abs_nonneg _)
+    (sum_nonneg fun n _ => by positivity) ?_ (hΔ.trans hKH) hterm2 hS1 hS2 hS3 hterm3
+  exact hmain
 
 end
 

@@ -95,3 +95,15 @@ explicit formula; walls 3, 7, 13, 15 and the window-boundedness of all certifica
 
 Ledger structure after this round: seven walls — Wall 1 (faces 1.1–1.6, old 1, 2, 4, 7, 8, 9, 10, 11, 12),
 Wall 16 (faces 16.1–16.4, old 6, 16, 17, 10), standalone 3, 5, 13, 14, 15; a "principle" section precedes Wall 1.
+
+## Round three: the width is a Landau exponent
+
+`formal/GaloisForLFunctions/SquareRootThreshold/TheZeroWidthIsALandauExponent.lean` (clean, standard axioms):
+`lagRates Z w = Ici (configWidth Z)` and `configWidth Z = sInf (lagRates Z w)` for tempered Z and good w;
+for ζ, `zetaZeroWidth = sInf (zetaLagRates w)` (good w), `= sInf deficitAbsRates` (two-sided deficit rates
+`|D(T)| ≤ B(1+T)e^{(½+β)T}`), `= sInf bandRates` (mean-square band rates); the polar ground-energy exponent
+`polarGroundEnergyRate = sInf {σ ≥ 0 | μ₀(A) ≥ −Ce^{2σA} eventually}` satisfies
+`zetaZeroWidth ≤ polarGroundEnergyRate ≤ ½` and `RH ↔ polarGroundEnergyRate = 0`; `zetaZeroWidth_exponent_law`
+collects these. The open arrow of the dictionary is now the inequality `polarGroundEnergyRate ≤ zetaZeroWidth`.
+Chain: walls → zero width → tail exponent (Landau abscissa) → unbounded-aperture property (exponents are
+invisible to bounded parameter ranges; mimics realize every width below every aperture).

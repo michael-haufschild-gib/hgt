@@ -70,7 +70,7 @@ theorem sourcePartialSum_liouvilleR_eq (N : ℕ) :
   refine Finset.sum_congr rfl fun n _ => ?_
   exact liouvilleR_eq_dirichletConv n
 
-theorem norm_mobiusMertensPartialSum_eq (k : ℕ) :
+theorem norm_mobiusMertensPartialSum_eq_abs_sourcePartialSum_moebiusR (k : ℕ) :
     ‖mobiusMertensPartialSum k‖ = |sourcePartialSum moebiusR k| := by
   rw [mobiusMertensPartialSum, Finset.range_eq_Ico, Finset.sum_eq_sum_Ico_succ_bot (by omega)]
   simp only [mobiusComplexCoefficient, ArithmeticFunction.map_zero, Int.cast_zero, zero_add]
@@ -102,7 +102,7 @@ theorem exists_abs_sourcePartialSum_liouvilleR_le_of_riemannHypothesis (hRH : Ri
     have hsq1 : squareIndicatorR d ≤ 1 := by unfold squareIndicatorR; split_ifs <;> norm_num
     rw [abs_mul, abs_of_nonneg hsq]
     refine mul_le_mul_of_nonneg_left ?_ hsq
-    rw [← norm_mobiusMertensPartialSum_eq]
+    rw [← norm_mobiusMertensPartialSum_eq_abs_sourcePartialSum_moebiusR]
     refine le_trans (hCM (N / d)) ?_
     have hfl : ((N / d : ℕ) : ℝ) + 1 ≤ 2 * ((N : ℝ) + 1) / d := by
       have h1 : ((N / d : ℕ) : ℝ) ≤ N / d := Nat.cast_div_le

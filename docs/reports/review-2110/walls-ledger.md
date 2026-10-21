@@ -14,16 +14,17 @@ field](hard-obstacles-summary.md); they cite faces by the labels of the companio
 6 = 16.1, 17 = 16.3. Walls keep their labels; the labels 2, 4, 6–12 and 17 are not used for
 separate walls.
 
-**Lean checkpoint** `52648abc6`. Evidence tags: [L] = committed Lean declaration imported by its
+**Lean checkpoint** `9e1fa313a`. Evidence tags: [L] = committed Lean declaration imported by its
 committed umbrella; [S] = Lean source in the working tree whose file or umbrella import is
 uncommitted, or a module not imported by its umbrella (compiles standalone, no committed audit);
 [P] = paper only. Module paths are relative to `formal/GaloisForLFunctions/`, with
 `R:` = `RHTower/`, `H:` = `HTGeometry/`, `B:` = `BiScaleUncertainty/`, `V:` = `BezoutValuationIncidence/`,
 `T:` = `TransHorizonIncidenceMechanics/`, `A:` = `arithmetic-positivity-theory/`,
 `C:` = `ArithmeticCriticalityTheory/`, `I:` = `ArithmeticIncidencePositivity/`,
-`Q:` = `SquareRootThreshold/`. Working-tree [S] item at this checkpoint:
-`R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` (file committed, umbrella import uncommitted; every
-theorem in it is closed, with standard axioms).
+`Q:` = `SquareRootThreshold/`. Working-tree [S] items at this checkpoint:
+`R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` (file committed, umbrella import uncommitted) and
+`Q:TheZeroWidthIsALandauExponent` (file and umbrella import uncommitted); every theorem in both is
+closed, with standard axioms.
 
 Two general facts frame every wall. First, every graded relaxation of a surveyed route is a zero-free
 half-plane or a finite-height verification: a one-sided power bound `O(x^θ)` on a Chebyshev, Mertens or
@@ -76,6 +77,23 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   `not_weilPositiveFull_shiftedPairVonMangoldt`, `weilPositiveDegree_two_shiftedPairVonMangoldt_iff`,
   `R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` [S]; `R:WeilConeUniquenessUnconditional`,
   `R:WeilPositivityBeurlingPerturbationRigidity` [L]). This is face 1.4.
+- *Why coarsenings are blind: the width is an exponent.* Every graded reading is the infimum of the
+  admissible exponential rates of one one-parameter family, the abscissa at which a one-sided bound
+  `−Ce^{σ·parameter}` first holds (`Q:TheZeroWidthIsALandauExponent` [S]). For a tempered
+  configuration and a good width the admissible rates of the lag family are the half-line
+  `[configWidth Z, ∞)` (`lagRates_eq_Ici`, `configWidth_eq_sInf_lagRates`); for `ζ`,
+  `zetaZeroWidth` is the infimum of the admissible rates of the dyadic prime windows, of the
+  integrated Chebyshev deficit `|D(T)| ≤ B(1 + T)e^{(½+β)T}` and of the mean-square band
+  (`zetaZeroWidth_eq_sInf_zetaLagRates`, `zetaZeroWidth_eq_sInf_deficitAbsRates`,
+  `zetaZeroWidth_eq_sInf_bandRates`; `zetaZeroWidth_exponent_law`). An exponent is a tail
+  invariant, fixed by arbitrarily late values of the parameter: no bounded range of lags,
+  apertures, lengths or primes carries any of it, which is what the aperture law realizes with
+  explicit mimics. At the trivial rate `½` every family is bounded unconditionally; the width is
+  where the bounds stop. On the operator side the polar ground energy defines its own exponent
+  `polarGroundEnergyRate = inf{σ ≥ 0 : μ₀(A) ≥ −Ce^{2σA} eventually} ∈ [0, ½]`, which dominates the
+  width and vanishes iff RH (`zetaZeroWidth_le_polarGroundEnergyRate`,
+  `riemannHypothesis_iff_polarGroundEnergyRate_eq_zero`); the open arrow of the width dictionary
+  is the inequality `polarGroundEnergyRate ≤ zetaZeroWidth`.
 
 What the principle does not cover: the finite-carrier constraints of walls 5 and 14 (no finite-rank or
 trace-class arithmetic realization), which are proved separately and are consistent with it; and the
