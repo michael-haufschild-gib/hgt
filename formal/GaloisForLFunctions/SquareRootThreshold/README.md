@@ -543,9 +543,12 @@ argument becomes quantitative.
 24. **Explicit lags.** A zero `1/V`-near the top at height `γ₀`, attained or not, is seen by a
     modulated difference test at a lag at most `V_w(γ₀, δ₀) ≍_w (log γ₀)² log log γ₀/δ₀`
     (`zeta_near_top_visible_at_polylog_lag`). For the one-parameter family `P_v` itself, with
-    `η = |h_w(γ₀ − iδ₀)| > 0`, the lag is `V₀(w, η, δ₀) ≍ (log Γ₀)² log log Γ₀/δ₀`, `Γ₀ ≍ η^{−2/3}`, with no
-    height condition (`one_param_near_top_visible_at_explicit_lag`), and every such statement reduces to
-    one record lemma at `V(a, σ) ≍ log²(1/a) log log(1/a)/σ` (`one_param_record_visible_at_explicit_lag`).
+    `η = |h_w(γ₀ − iδ₀)| > 0`, the lag is `V₀(w, η, δ₀) ≍ (log Γ₀)² log log Γ₀/δ₀ + Γ₀^{3/2}(log Γ₀)^{1/2}`,
+    `Γ₀ ≍ η^{−2/3}`, with no height condition (`one_param_near_top_visible_at_explicit_lag`), and every
+    such statement reduces to one record lemma at
+    `V(a, σ) ≍ log²(1/a) log log(1/a)/σ + (log(1/a)/a)^{1/2}` (`one_param_record_visible_at_explicit_lag`).
+    The Fejér order is `≍ P² log P`, `P ≍ log(1/a)`, from both sides; the second term is the coherence
+    drift `8w e^{w/2} J_w/H₀(a)`, and `√a V(a, σ) → ∞`, `η V₀ → ∞` (`OrderOfTheExplicitVisibilityLags`).
     An attained top, and in particular every finite set of zeros right of the line, gives `P_v < 0` at
     some `v ≤ V₀(z₀)`, with no separation hypothesis (`one_param_first_negative_lag_of_finite`); the
     prime-window forms hold for `2w < log 2`.
@@ -564,7 +567,10 @@ argument becomes quantitative.
     `w ∈ (0, ½ log 2)` and `v ≥ V₀ = max(230², 1/(100η₀²))`,
     `P_v ≥ −|φ(0)| − (W + S₂)e^{v/2 − √v/10}` (`zeta_lag_envelope`): an explicit lag at de la Vallée
     Poussin strength. The exact tradeoff behind it: a zero-free width `η` below height `G` gives
-    `|φ(v)| ≤ e^{v/2}(W e^{−ηv} + S₂/(1 + G)²)`.
+    `|φ(v)| ≤ e^{v/2}(W e^{−ηv} + S₂/(1 + G)²)`. The Vinogradov–Korobov region in the same tradeoff,
+    cut at `G = exp(v^θ)` with `θ = (ex + 3/5)/2`, gives for every `ex < 3/5` and all large lags
+    `P_v ≥ −|φ(0)| − (W + S₂)e^{v/2 − v^ex}` (`zeta_lag_envelope_vinogradovKorobov`): the envelope
+    carries exactly the strength of the zero-free region that enters.
 27. **The ground-energy bridge to the aperture face.** For every smooth test supported in the closed
     interval `[−A, A]`, `μ(A)∫|g|² ≤ Re W_ζ(g, g)`; on the centred difference test at `A = v/2 + w` this
     reads `2‖κ_w‖² μ(v/2 + w) ≤ Re P_v` (`two_mul_ccmRestrictedWeilGroundEnergy_le_re_lagPrimeWindowRHS`),

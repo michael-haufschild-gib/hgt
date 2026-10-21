@@ -1,7 +1,9 @@
 import GaloisForLFunctions.RHTower.ThetaCuspC5OuterClockCurrent
 
 /-! Source action, rather than displacement alone, pays the complete clock
-current in the inner chamber. The bounded-action remainder stays open. -/
+current in the inner chamber `0 < t ≤ min(2, u)`: the current is positive once the action is
+`Z ≥ 710 e⁴`, and the mass-payment method reaches every action above `(5625/8) e⁴`. The
+bounded-action remainder stays open. -/
 
 namespace RHTower.ThetaCuspDefect
 open Set Filter Topology
@@ -94,8 +96,9 @@ private theorem gamma_ge_one {u t : ℝ} (ht : 0 < t) (htu : t ≤ u) : 1 ≤ g 
   unfold curvatureShapeGamma
   exact (le_div_iff₀ (thetaCuspReflectedLogAction_pos (u:=u) ht)).mpr (by linarith only [hh])
 
-private theorem clock_mass_le_action {u t : ℝ} (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u)
-    (hZ : 4050*Real.exp 4 ≤ Z u t) : 30*k u*E u t ≤ Z u t := by
+/-- The clock mass is paid by `θ` times the action once `4050 e⁴ ≤ θ² Z`. -/
+private theorem clock_mass_le_mul_action {u t θ : ℝ} (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u)
+    (hθ : 0 < θ) (hZ : 4050*Real.exp 4 ≤ θ^2*Z u t) : 30*k u*E u t ≤ θ*Z u t := by
   have hc := thetaCuspLogCurvature_pos u
   have hE := primitive_pos u ht
   have hz : 0 < Z u t := mul_pos ht hE
@@ -115,12 +118,14 @@ private theorem clock_mass_le_action {u t : ℝ} (ht : 0 < t) (ht2 : t ≤ 2) (h
   have hp := mul_le_mul_of_nonneg_right hZ hz.le
   have hn : 0 ≤ 30*k u*E u t :=
     mul_nonneg (mul_nonneg (by norm_num) (denominatorClockRate_pos u).le) hE.le
-  nlinarith only [hs,hp,hn,hz]
+  have hsq : (30*k u*E u t)^2 ≤ (θ*Z u t)^2 := by nlinarith only [hs,hp]
+  exact (pow_le_pow_iff_left₀ hn (by positivity) two_ne_zero).mp hsq
 
-/-- Source action pays the literal clock on the unbounded-center part of the inner chamber. -/
-theorem innerClock_lt_actionGrowth_of_large_action {u t : ℝ}
-    (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u) (hZ : 4050*Real.exp 4 ≤ Z u t) :
-    intrinsicClockLogElasticity u t < 1+12*Z u t/5 := by
+/-- **The clock against the action.** If `4050 e⁴ ≤ θ² Z`, `θ > 0`, the intrinsic clock
+elasticity is below `θ Z + 18` on the inner chamber `0 < t ≤ min(2, u)`. -/
+theorem innerClock_lt_mul_action_add {u t θ : ℝ}
+    (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u) (hθ : 0 < θ) (hZ : 4050*Real.exp 4 ≤ θ^2*Z u t) :
+    intrinsicClockLogElasticity u t < θ*Z u t+18 := by
   have hE := primitive_pos u ht
   have ha0 : 0 < a u t := div_pos (mul_pos ht (completedCurvatureEven_pos u t)) hE
   have hb := beta_lt ht htu
@@ -158,23 +163,29 @@ theorem innerClock_lt_actionGrowth_of_large_action {u t : ℝ}
     unfold curvatureShapeAlpha curvatureShapeBeta completedLocalDenominator shapeCurvatureSlope
     field_simp [hE.ne']
   have hm := mul_lt_mul_of_pos_left hD (mul_pos (denominatorClockRate_pos u) hE)
-  have hpay := clock_mass_le_action ht ht2 htu hZ
+  have hpay := clock_mass_le_mul_action ht ht2 htu hθ hZ
   have hC := intrinsicClockLogElasticity_lt_upper u ht
   unfold intrinsicClockUpperElasticity at hC
-  have hclock : intrinsicClockLogElasticity u t < Z u t+18 := by
-    rw [hid] at henv
-    dsimp only [z] at henv
-    nlinarith only [henv,hT,hm,hpay,hC]
+  rw [hid] at henv
+  dsimp only [z] at henv
+  nlinarith only [henv,hT,hm,hpay,hC]
+
+/-- Source action pays the literal clock on the unbounded-center part of the inner chamber. -/
+theorem innerClock_lt_actionGrowth_of_large_action {u t : ℝ}
+    (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u) (hZ : 4050*Real.exp 4 ≤ Z u t) :
+    intrinsicClockLogElasticity u t < 1+12*Z u t/5 := by
+  have hclock := innerClock_lt_mul_action_add ht ht2 htu one_pos (by simpa using hZ)
   have hexp : 1 ≤ Real.exp (4 : ℝ) := Real.one_le_exp (by norm_num)
   have hbig : 4050 ≤ Z u t := by nlinarith only [hZ,hexp]
   linarith only [hclock,hbig]
 
-/-- Unconditional actual theta-current sign at large action, including small displacement. -/
-theorem enrichedClockCurrent_pos_inner_large_action {u t : ℝ}
-    (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u) (hZ : 4050*Real.exp 4 ≤ Z u t) :
+
+/-- **The current is positive wherever the clock elasticity is below `1 + 12Z/5`** on the inner
+chamber `0 < t ≤ u`. -/
+theorem enrichedClockCurrent_pos_of_clock_lt {u t : ℝ} (ht : 0 < t) (htu : t ≤ u)
+    (hclock : intrinsicClockLogElasticity u t < 1+12*Z u t/5) :
     0 < enrichedClockCurrent u t := by
   have hg := gamma_ge_one ht htu
-  have hclock := innerClock_lt_actionGrowth_of_large_action ht ht2 htu hZ
   have h16 : 0 < actionPowerReserve 16 u t := by
     rw [actionPowerReserve_sixteen u ht]
     exact normalizedActionInverseReserve_pos ht htu
@@ -195,6 +206,25 @@ theorem enrichedClockCurrent_pos_inner_large_action {u t : ℝ}
     linarith only [hclock,hg]
   exact add_pos_of_pos_of_nonneg (add_pos (mul_pos hc16 h16) hf16)
     (mul_nonneg (by positivity) (add_pos (mul_pos hc36 h36) hf36).le)
+
+/-- Unconditional actual theta-current sign at large action, including small displacement. -/
+theorem enrichedClockCurrent_pos_inner_large_action {u t : ℝ}
+    (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u) (hZ : 4050*Real.exp 4 ≤ Z u t) :
+    0 < enrichedClockCurrent u t :=
+  enrichedClockCurrent_pos_of_clock_lt ht htu (innerClock_lt_actionGrowth_of_large_action ht ht2 htu hZ)
+
+/-- **The enlarged inner chamber.** The current is positive on `0 < t ≤ min(2, u)` once the action is
+`Z ≥ 710 e⁴`: the clock mass is paid at ratio `θ = 239/100` instead of `1`, and `(12/5 − θ) Z ≥ 17`.
+The ratio can approach `12/5`, so the method reaches every action above `(5625/8) e⁴`. -/
+theorem enrichedClockCurrent_pos_inner_action_ge {u t : ℝ}
+    (ht : 0 < t) (ht2 : t ≤ 2) (htu : t ≤ u) (hZ : 710*Real.exp 4 ≤ Z u t) :
+    0 < enrichedClockCurrent u t := by
+  have hexp : (4 : ℝ) + 1 ≤ Real.exp 4 := Real.add_one_le_exp 4
+  have hZ' : 4050*Real.exp 4 ≤ (239/100)^2*Z u t := by nlinarith only [hZ,hexp]
+  have hclock := innerClock_lt_mul_action_add ht ht2 htu (by norm_num) hZ'
+  refine enrichedClockCurrent_pos_of_clock_lt ht htu ?_
+  have hbig : 3550 ≤ Z u t := by nlinarith only [hZ,hexp]
+  linarith only [hclock,hbig]
 
 end
 end RHTower.ThetaCuspDefect

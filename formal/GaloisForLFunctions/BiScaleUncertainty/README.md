@@ -158,9 +158,9 @@ arithmetic.
   `|ξ| ≤ √(N+2)` and SRT's bandwidth `λ = log X/log T` are two coordinates of the square-root
   threshold; the band spectrum of §3.10 and SRT's zero width `sup|Re ρ − ½|` are the same number,
   read here from the Chebyshev mean square and the packet growth, there from the first negative lag.
-  The window remainder `|c(L) − e^{L/2}| ≤ Ce^{L/2−κ√L}` of §3.16 is the window form of SRT's lag
-  envelope `P_v ≥ −|φ(0)| − Ce^{v/2−√v/10}`; SRT's de Bruijn–Newman heat-time bound uses the width
-  this programme reads from the band.
+  The window remainder `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}` (every `ex < 3/5`) of §3.16 is the window
+  form of SRT's lag envelope `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}`, both of Vinogradov–Korobov strength;
+  SRT's de Bruijn–Newman heat-time bound uses the width this programme reads from the band.
 - **RHTower supplies the analytic theorems** the mechanisms consume: Hardy's theorem and the
   superlinear count of simple critical zeros, the critical-Mellin resolvent width and the
   generalized von Koch bound, Cramér's dyadic mean square, the one-sided Landau engine and the
@@ -1104,6 +1104,12 @@ $|\mathrm{floor}(L)+e^{L/2}|\le Ce^{L/2-\kappa\sqrt L}$ for all large $L$, the w
 lag envelope $P_v\ge-|\varphi(0)|-Ce^{v/2-\sqrt v/10}$: the prime number theorem with error term
 enters the polar Schur bound, and the polar weight loses at the window midpoint only against power
 errors $x^\gamma$, never against $xe^{-c\sqrt{\log x}}$ (`PrimeWindowCeilingDeLaValleePoussinRemainder`).
+The polar Schur bound holds for every nonincreasing error profile $E\le1$, with gain
+$E(L/4)+e^{-L/4}$, so the window remainder carries exactly the strength of the prime number theorem
+that enters: with the Vinogradov–Korobov theorem, for every $ex<3/5$,
+$|c(L)-e^{L/2}|\le Ce^{L/2-\kappa L^{ex}}$, $|\mathrm{floor}(L)+e^{L/2}|\le Ce^{L/2-\kappa L^{ex}}$, and
+$|D(T)|\le Ce^{T-\kappa T^{ex}}$ for the integrated Chebyshev deficit $D(T)=\int_0^T(e^t-\psi(e^t))\,dt$
+(`PrimeWindowCeilingVinogradovKorobovRemainder`).
 At square-root precision:
 $c(L)\le e^{L/2}+O(L)$ forces RH, the excess exponent $\theta^*$ satisfies
 $\mathrm{width}\le\theta^*\le\mathrm{width}/2+\tfrac14$ (`PrimeWindowCeilingRHCriterion`,

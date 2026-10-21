@@ -112,3 +112,14 @@ their module lands; this card does not edit their files.
   (`re_weilFullFunctional_liouvilleTwist_odd_window`). Continuous Beurling systems (no integer weight) are outside
   the `weilFullFunctional` API; the audit of non-window positivity theorems (APT blocks, BVI, SRT lags) is open.
   Also repaired the SRT umbrella (two imports had been appended after its docstring by another lane).
+- 2026-10-21 — **Row 7 (lag constants)**: `SquareRootThreshold/OrderOfTheExplicitVisibilityLags`: Fejér order
+  `2P² log(P+1)/log 2 ≤ k ≤ P + 2 + L/log 2` (`le_explicitOrder`, `explicitOrder_le`, explicit `L`);
+  `recordLag_two_sided`; `V₀ = V(2η²/e, δ₀/2) + (8/δ₀)|log …|` (`oneParamLag_eq_recordLag`); drift theorems
+  `√a·V(a,σ) → ∞`, `η·V₀ → ∞` (`tendsto_sqrt_mul_recordLag`, `tendsto_mul_oneParamLag`): the README's
+  `V ≍ log²(1/a) loglog(1/a)/σ` omitted the coherence drift `√(log(1/a)/a)`; README corrected. Axioms standard;
+  wired in SquareRootThreshold.lean.
+- 2026-10-21 — **Row 11 (TT/TH inner chamber)**: `BiScaleUncertainty/ThetaInnerLargeActionCurrent` generalized in
+  place (old statements kept as corollaries): mass payment at ratio θ (`clock_mass_le_mul_action`), clock bound
+  `< θZ + 18` (`innerClock_lt_mul_action_add`), current sign from the clock (`enrichedClockCurrent_pos_of_clock_lt`);
+  enlarged chamber `Z ≥ 710 e⁴` (was `4050 e⁴`; method limit `(5625/8) e⁴`) —
+  `enrichedClockCurrent_pos_inner_action_ge`. Olean rebuilt (no downstream importers); axioms standard.

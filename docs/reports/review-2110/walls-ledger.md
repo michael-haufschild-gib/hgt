@@ -52,7 +52,11 @@ parameter and no averaging.
   nonnegative at every lag `v ≥ V`; each test reads `Λ(n)` only on `|log n − v| ≤ 2w ⊂ (X/2, 2X)`,
   `X = e^v` (`zeta_onLine_iff_lag_primeWindow_nonneg`, `Q:OneParameterLagFamilyDecidesTheCriticalLine`;
   `Q:LargeDyadicPrimeWindowsDecideTheCriticalLine` [L]). The strongest unconditional lower bound is of
-  de la Vallée Poussin strength: `P_v ≥ −|φ(0)| − C_w exp(v/2 − √v/10)` for `v ≥ V₀`
+  Vinogradov–Korobov strength: for every `ex < 3/5`, `P_v ≥ −|φ(0)| − C_w exp(v/2 − v^ex)` for
+  `v ≥ V₀(w, ex)` (`zeta_lag_envelope_vinogradovKorobov`, `Q:ZetaLagFamilyVinogradovKorobovEnvelope`
+  [S]: the Vinogradov–Korobov zero-free width at the height cut `G = exp(v^θ)`, `θ = (ex + 3/5)/2`,
+  in the width–height tradeoff `|φ(v)| ≤ e^{v/2}(W e^{−ηv} + S₂/(1 + G)²)`); with an explicit lag,
+  `P_v ≥ −|φ(0)| − C_w exp(v/2 − √v/10)` for `v ≥ max(230², 1/(100η₀²))`
   (`zeta_lag_envelope`, `Q:ZetaLagFamilyUnconditionalEnvelope` [L]); the pole-free window has the
   all-aperture floor `Q⁰ ≥ −2B₂(10 + 68e^A)`, `A = v/2 + w`, with the continuous main term paid exactly
   and the discrete prime discrepancy unpaid at scale `e^{v/2}`
@@ -633,7 +637,7 @@ single-modulus low-frequency statistics of an arithmetic row, with the signs of 
 
 | Wall | Routes it binds | Status and the open unit |
 |---|---|---|
-| 1 Square-root barrier | WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC | [L]. Open unit: the lag `V` beyond which `P_v ≥ 0`, or the window remainder below `O(e^{L/2})`. Best unconditional: `P_v ≥ −|φ(0)| − Ce^{v/2−√v/10}`; `|c(L) − e^{L/2}| ≤ Ce^{L/2−κ√L}` and `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κ√L}` (`B:PrimeWindowCeilingDeLaValleePoussinRemainder` [S]: the PNT error term in the polar Schur bound; the polar weight loses at the midpoint only against power errors). |
+| 1 Square-root barrier | WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC | [L]. Open unit: the lag `V` beyond which `P_v ≥ 0`, or the window remainder below `O(e^{L/2})`. Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [S]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [S]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors). Explicit-constant de la Vallée Poussin forms: `Q:ZetaLagFamilyUnconditionalEnvelope` [L], `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [S]. |
 | 2 Jensen gap | PA, SZ, PM, CTF, BAG, FEL | [L]. Open unit: a row with residual `o(1/log N)` beyond the floor `κ/log N`. |
 | 3 Local clustering | LA, TH, HCF, XN, WD, JAS, SRT | [L]. Lag side: hiding needs collapsed clusters; the pair-correlation barrier remains. |
 | 4 Axis outside the zero set | LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR | [L]. The strip width `1/8` is the only unconditional value. The zero width `zetaZeroWidth = sup |Re ρ − ½|` is read on the prime side as the exact negativity rate of the lag family and on the heat side as the de Bruijn–Newman time: `H_t` is real-rooted for `t ≥ zetaZeroWidth²/2`, RH iff `zetaZeroWidth = 0` (`Q:LagRateBoundsTheDeBruijnNewmanHeatTime` [S]); nothing moves the width. |
