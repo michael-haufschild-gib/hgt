@@ -561,9 +561,18 @@ In the Lean corpus:
   sum below the threshold s₀ ∈ (log 5, log 6) and on axis collars of width < 3e^{−3s/4} beyond it.
   The pointwise cone of the jump form has an explicit negative region; positivity of the form is a
   Bochner statement about profiles, not a pointwise statement about pairs.
-- The Mehler–Fock (Bochner–Godement) dictionary that identifies the Bochner cone with
-  positive-definite zonal functions on the arc remains on paper; what is formalized is the
-  cone mismatch it was used to establish.
+- `RHTower/HyperbolicPointPairMehlerFockDictionary`: the Mehler–Fock (Bochner–Godement)
+  dictionary, unconditionally. For a continuous point-pair kernel k of compact support on ℍ the
+  following are equivalent: k(u(z, w)) is positive definite on C_c(ℍ); Re h_k(½ + iτ) ≥ 0 for every
+  real τ (`isPositiveDefinitePointPair_iff_re_selbergTransform_nonneg`); the Abel transform 𝒜k lies
+  in the Bochner cone on ℝ (`isPositiveDefinitePointPair_iff_isBochnerPositive`). Necessity is the
+  horocyclic-packet and Fejér-window argument (`HyperbolicPointPairPositiveDefiniteNecessity`).
+  Sufficiency decomposes the form along horocycles, Q_k(g) = ∫ B_ξ(A(ξ, ·)) dξ
+  (`HyperbolicPointPairFormHorocyclicFibreDecomposition`), and diagonalizes each fibre by
+  Kontorovich–Lebedev inversion, B_ξ(G) = π^{−2} ∫ τ sinh(πτ) |⟨G, W_τ⟩|² h_k(½ + iτ) dτ with
+  W_τ(y) = √y K_{iτ}(2π|ξ|y) (`HorocyclicFibreKontorovichLebedevPositivity`). The Bochner cone is
+  exactly the cone of positive-definite zonal kernels on ℍ, so the cone mismatch above is a
+  statement about that cone.
 
 Rule: when a positivity statement is proved by a maximum principle, a transfer operator or a
 pointwise gauge, identify the cone it lives on. A Bochner-cone statement needs a transfer from

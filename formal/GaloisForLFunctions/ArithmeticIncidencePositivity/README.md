@@ -355,6 +355,89 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     `R ≈ 0.297`. Every odd `F` supported in `[−7/25, 7/25]` has `Ẑ(F) ≥ (1/40) ∫ F²`
     (`fullZeroForm_ge_of_odd_support_le`), that is `J_M(u) + V_μ(u) ≥ 0` for every even profile
     with `M u` supported there, in every odd gauge.
+24. **Selectivity past the plastic threshold.** The zero form of `ζ(s − a) ζ(s + a)` is
+    `Ẑ_a(F) = 2(Ẑ(F cosh(a·)) − Ẑ(F sinh(a·)))` (`shiftedPairZeroForm`; on autocorrelations the shift acts
+    by `cosh(a·)`, `autoCorr_cosh_sub_autoCorr_sinh`). On supports shorter than `log 2`,
+    `Ẑ_a(F) = 2Ẑ(F) + 4 ∫_0^∞ (cosh(at) − 1)(2cosh(t/2) − ω(t)) A_F(t) dt` (`shiftedPairZeroForm_eq`): the
+    product system adds the screw kernel weighted by `cosh(at) − 1`. Two opposite bumps separated beyond
+    `t_* = log ρ` make it negative for all large `a` (`exists_odd_shiftedPairZeroForm_neg`), so on every
+    window `t_*/2 < r ≤ 7/25` the odd form of `ζ` is coercive while that of the shifted pair is not
+    (`odd_window_selective`): odd-window positivity past `t_*/2` sees the position of the zeros.
+25. **The infinite-shift Hankel limit.** For `H` supported in `[y₀, r]`, `y₀ > 0`, the odd test
+    `F_a = G_a − G_a(−·)`, `G_a = e^{−ay} H`, splits the shifted-pair form into
+    `2Ẑ(F_a) + 8∫(cosh(at) − 1)κ A_{G_a} + 2∫(1 − e^{−at})² f (H ∗ H)` with `f = ω − 2cosh(t/2)`
+    (`shiftedPairZeroForm_oddReweightedHankel`); the reflection turns the crossing autocorrelation into the
+    self-convolution `e^{−at}(H ∗ H)`, and `(cosh u − 1)e^{−u} = (1 − e^{−u})²/2`. The first two terms are
+    `O(a² e^{−2ay₀})`, so as `a → ∞` the form tends to the Hankel form `2∫∫ f(y + z) H(y) H(z)`. Near `0`,
+    `f ≈ 1/(2t)` is Hilbert-like, but `f` is not log-convex on `[0.12, 0.20]` (`screwWeight_values`), so the
+    two-bump `H = φ_{0.06} − (93/50) φ_{0.10}` makes the Hankel form negative
+    (`integral_weighted_hankelProfile_le`). Hence the shifted pair fails on odd tests supported in
+    `[−13/125, 13/125]` for every large `a` (`exists_odd_shiftedPairZeroForm_neg_below_markovWindow`), while
+    `ζ` is coercive on `[−21/200, 21/200]` (`markovWindow_selective`): positivity at the Markov window is
+    already selective, well below `t_*/2`.
+26. **The curved fold.** The fold of mechanism 23 is exact: `J_P(F)` is the killing plus twice the
+    surplus `S_P(F) = ∫_{x>0}∫_{s>0} (ω(s) − ω(s + 2x)) P(x)P(x+s)(F(x) − F(x+s))²`
+    (`two_mul_archSame_sub_archCrossingDiff_eq`): each same-side pair keeps the excess
+    `k(x, y) = ω(|x − y|) − ω(x + y)` of its rate over its crossing partner. Pairwise
+    `(a − b)² ≥ a²(1 − q/p) + b²(1 − p/q)`, so for any gauge `h > 0` on `[0, r]`
+    `S_P(F) ≥ ∫ F² U_h`, `U_h(x) = ∫_0^r k(x, y)(1 − h(y)/h(x)) dy` (`surplusEnergy_ge_potential`).
+    For a cubic gauge `U_h` is explicit: `ω = 1/(2t) + ρ` with `1/4 − t/16 − t²/32 ≤ ρ ≤ 1/4`, and
+    `∫_0^r k₀(x, y)(h(x) − h(y)) dy = a₁x(1 − ℓ) + a₂(3x²/2 − rx) + a₃(11x³/6 − r²x/2 − x³ℓ)`,
+    `ℓ = log((x + r)/x)` (`integral_principalSurplus_cubicGauge`): only the odd part of `h` meets the
+    reflected pole. The gauge `h = 1/500 + (3/5)y − y² − (6/5)y³` peaks near the golden point and
+    lifts the potential there by `≈ 0.2`; after multiplying by `h`, the two logarithms `ℓ` of the
+    killing and of `U_h` merge into the single coefficient `1/500 − x²` (the even part of `h`). Every
+    odd `F` supported in `[−17/50, 17/50]` has `Ẑ(F) ≥ (1/100)∫F²`
+    (`fullZeroForm_ge_of_odd_support_le_curved`): the variation inequality for all even profiles
+    reaches `0.98 · log 2/2`. In the small-window scaling the odd sector is governed by the second
+    eigenvalue of the logarithmic Laplacian on an interval; the flat fold captures `−γ + (5/2) log φ`
+    of it, the cubic gauge most of the remaining gap.
+27. **The first prime window.** For a plateau with `2R < log 3` only the prime `2` acts
+    (`signedJumpEnergy_eq_arch_add_two`, `profilePrimeSum_eq_two`), and on a test with `P = 1` on its
+    support the prime jump minus the prime potential is the autocorrelation
+    `−2 ∫ F(x)F(x + log 2)` (`gaugeJumpProfile_sub_primePotential_eq`). For odd `F` on `[−r, r]` the
+    product lives on the crossing pairs `(−a, log 2 − a)` of the edge strip `S = [log 2 − r, r]` and
+    `∫ F(x)F(x + log 2) ≤ ∫_S F²` (`integral_mul_shift_le_strip`): the atom `Λ(2)/√2 ≤ 0.4902` is a
+    charge per unit of mass on `S` only, where the plateau potential `−½ log(R² − x²)` is large. With
+    a flatter quartic gauge (`QuarticGaugeSurplusPotential`, `quarticSurplusMain`: the `y⁴` term is
+    even and never meets the reflected pole) the potential exceeds `489/20000` on `(0, 347/1000]` and
+    `489/20000 + 0.4902` on `[0.346, 0.347] ⊇ S`. Every odd `F` supported in `[−347/1000, 347/1000]`
+    has `Ẑ(F) ≥ (1/100)∫F²` (`fullZeroForm_ge_of_odd_support_le_pastFirstPrime`): the variation
+    inequality for all even profiles holds past `½ log 2`, with the atom paid on the first prime window
+    and no pole-free margin. The crossing of `½ log 2` costs nothing at the prime: the binding
+    constraint stays the archimedean middle of the window.
+
+28. **The micro-fold: the first prime atom is dominated.** On the edge strip `S` split `F` into its
+    even and odd parts about `½ log 2`: `F(a)F(log 2 − a) = F_e(a)² − α(a)²`, so the atom costs only
+    `α²`. For four points `x, log 2 − x, y, log 2 − y` of `S` the even parts drop out of the four
+    surplus terms (`microFold_quadruple_ge`), and integrating over `S × S`
+    (`microFold_strip_ge`) gives the Harnack inequality across the prime shift
+
+        ∫_S ∫_S k(x, y)(F x − F y)² ≥ (2K + 2η k₀(2η)) ∫_S α²,   η = r − ½ log 2,
+
+    with `K = Ω(η) − Ω(2η) − η ω(2(log 2 − r))`. As `η → 0` the constant tends to `log 2 + ½`, above
+    `2Λ(2)/√2 = √2 log 2`, and it stays above `0.9804` up to `r = 2/5` (`microFoldConstant_ge`). Hence
+    `2Λ(2)/√2 ∫ F(x)F(x + log 2) ≤ ∫_S ∫_S k(F x − F y)²` for every odd `F` on `[−r, r]`,
+    `r ≤ 2/5` (`two_mul_primeShift_le_stripSurplus`). With the `S × S` pairs kept exact in the
+    ground-state transform (`surplusEnergy_ge_potentialOff_add_strip`), the first prime window becomes
+    atom-free (`fourKilling_add_potentialOff_le_archJump_sub_prime`): up to `2/5` positivity of the
+    variation inequality is a purely archimedean potential bound for `U_h^{off}`, with no strip charge.
+    The reason is local: across the reflection about `½ log 2` the archimedean jump rate
+    `ω(t) ≈ 1/(2t)` integrates to `½ log 2` per octave, and the limit constant `log 2 + ½` does not
+    depend on the shift. The comparison `Λ(n)/√n < ½ log 2 + ¼ ≈ 0.597` therefore governs every prime
+    power at its own reflection point `½ log n`: it holds for `n = 2` (`0.490`), fails for `n = 3`
+    (`0.634`), so at the second prime window the micro-fold alone does not dominate the atom.
+
+29. **The window `7/20` without a strip charge.** Off `S × S` the ground-state transform keeps every
+    pair; on `S` the removed pairs cost `h(x)(U_h − U_h^{off})(x) = ∫_S k(x, y)(h(x) − h(y)) dy ≤
+    L|S|(½ + |S|/4)` (`mul_surplusPotential_le_off_add`), since `k(x, y)|x − y| ≤ ½ + |x − y|/4`. At
+    `r = 7/20`, `|S| = 0.7 − log 2 < 0.00686`, the charge is `0.0023` per unit of gauge instead of
+    `Λ(2)/√2 · h ≈ 0.49 h`. With `R = 701/2000` and the gauge
+    `1/500 + (3/5)y − y² − (3/10)y³ − (49/20)y⁴` the numerator exceeds `0` on `(0, 7/20]` and `0.0023`
+    on `[0.343, 0.35]` (`atomFreeNumerator_nonneg`, `atomFreeNumerator_strip`; margins `≈ 0.001` in the
+    middle, `≥ 0.0074` on the strip). Every odd `F` supported in `[−7/20, 7/20]` has
+    `Ẑ(F) ≥ (1/200)∫F²` (`fullZeroForm_ge_of_odd_support_le_sevenTwentieths`). The strip is now cheap;
+    the binding constraint is the middle of the window, where the margin is that of the gauge.
 
 ---
 
@@ -415,9 +498,11 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 
 ### Research topics toward the shared target
 
-1. **The first selective statement.** The variation inequality for all even profiles with support
-   between `7/25` (mechanism 23) and `log 2/2`, and past `log 2/2`, paying the atom `Λ(2)/√2` without
-   the pole-free margin; the unit is the support reached. Past `log 2/2` the fold of mechanism 23
+1. **Beyond the first prime window.** The variation inequality for all even profiles is proved past
+   `log 2/2` (`7/20`, mechanisms 27–29); the unit is the support reached. Up to `2/5` the prime atom
+   is dominated by the strip surplus (mechanism 28), so the support is limited only by the
+   archimedean potential `U_h^{off}` (mechanism 29). The archimedean odd sector alone is expected to stay positive
+   up to `≈ 0.375` (second eigenvalue of the logarithmic Laplacian on an interval). Past `log 2/2` the fold of mechanism 23
    meets the atom on the anti-diagonal `a + b = log 2` of the inside pairs, where the folded
    conductance is `2M(a)M(b)(ω(|a − b|) − ω(a + b) + 4 sinh(a/2) sinh(b/2))` minus the atom.
 2. **The integrated atom-versus-pole law** in the shifted ground-state gauge of

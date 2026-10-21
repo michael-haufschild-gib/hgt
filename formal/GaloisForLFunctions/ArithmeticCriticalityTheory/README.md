@@ -698,6 +698,30 @@ the odd pole moment costing at most `4R³ ∫ F²`. Below the first prime positi
 reduces to one explicit archimedean potential; the first prime, where conductances across `log 2`
 turn negative, is where the mechanism of 3.7 takes over.
 
+**Curved gauges and the even fold.** The plateau gauge is the case `q = 1` of the window gauge
+`M = q P`, `P` a plateau with collar `δ` and `q > 0` an even profile on the window. For `F = M u`,
+
+    Ẑ(F) = ∫_{t>0} κ(t) I(t) dt + ∫ u² M (−𝒲M + 2 ∫ M(y) cosh((x − y)/2) dy),   κ = ω − 2cosh(t/2),
+
+`I` the gauge jump profile (`fullZeroForm_mul_eq_gauge_window`). `Ẑ` splits into its even and odd
+parts. On even tests the jump energy folds onto the positive quadrant,
+`∫ κ I = 2 ∫_{x>0} ∫_{s>0} (κ(s) + κ(s + 2x)) J_s(x)` (`integral_kappa_mul_gaugeJumpProfile_eq_fold_sum`),
+and the folded conductance is nonnegative on all pairs `x + s < R` as long as `R` stays below the plastic
+threshold `log ρ ≈ 0.2812`, the zero of `κ`; the binding pair is `(x, s) → (0, R)`, where it equals
+`2κ(R)`. Past `log ρ` midpoint convexity of a minorant of `κ` bounds the folded conductance below by a
+function `−G(x + s)` of the outer point, and such a bound is paid by potentials: the constant
+`2 ∫_{y>0} G M` and the edge potential `2R G(|x|)` (`integral_kappa_mul_gaugeJumpProfile_ge_foldCost`),
+which the edge logarithm of the gauge absorbs. With quartic profiles `q = 1 − c y² + d y⁴` the
+potential is nearly flat, and with the odd sector paid by the folded odd plateau of
+`ArithmeticIncidencePositivity`, every real `F ∈ C²_c` supported in `[−29/100, 29/100]` satisfies
+
+    Ẑ(F) ≥ (1/1000) ∫ F²        (`fullZeroForm_ge_of_support_le_pastFold`),
+
+so `μ(A) ≥ 1/1000` for every aperture `A ≤ 29/100`. The free even fold ends at `log ρ`; Weil
+positivity does not. On even tests the shifted pair `ζ(s − a)ζ(s + a)` has, for every radius `r` and
+every large `a`, an even test on `[−r, r]` with negative zero form
+(`exists_even_shiftedPairZeroForm_neg`): window positivity of `ζ` is selective at every aperture.
+
 ### 3.14 Admissibility: how the analysis is discharged
 
 The ground-state representation requires the remainder and the potential density to be integrable
@@ -770,9 +794,9 @@ the prime number theorem enters only through proved corpus forms.
 3. **The monotone cone.** The weight criterion fails by the other-pole moment; a replacement that
    retains the same-side terms away from the origin, or a proof that no inequality in `Θ` alone
    decides the monotone cone, is open.
-4. **Beyond the first prime.** The plateau-gauge mechanism gives `Ẑ ≥ (3/40)∫F²` below `e^{−2}/2`
-   with nonnegative conductances; past `log 2 / 2` the conductances across the first prime turn
-   negative. Extending a gauge argument through the first prime window, with the prime atom paid by
+4. **Beyond the first prime.** Window gauges with the even fold give `Ẑ ≥ (1/1000)∫F²` on
+   `[−29/100, 29/100]` with nonnegative conductances; past `log 2 / 2` the conductances across the
+   first prime turn negative. Extending a gauge argument through the first prime window, with the prime atom paid by
    the potential, is the smallest instance of problem 1.
 5. **Selectivity.** The identities of 3.1–3.3 and 3.6 hold for any even positive kernel; the
    arithmetic enters only through the equation of motion of `Θ` (3.4). Rate-criticality shows every

@@ -21,9 +21,12 @@ distances `|Im z|` and `|z − s|` of the finite Laplace window are replaced by 
 `η_ℓ` (to the real axis) and `g_ℓ` (to the record), `κ_ℓ = 1/η_ℓ + 1/g_ℓ`, `θ = Re z₀ − σ` with
 `2κ_ℓ N (e^{θℓ} − 1) ≤ 1`, and loudness ratio `N` at the lag `V = (K+1)ℓ`, some grid lag `kℓ ≤ Kℓ` is
 negative once `κ_ℓ N |D(z₀)| (e^{θV} − 2) > 3|φ(0)|/(1 − e^{−σℓ}) + κ_ℓ Σ|D|`. A grid needs no
-attained top; it needs that the loud zeros do not alias onto the real axis or onto the record.
-The chains that hide from grids (`exists_chain_hidden_from_grid`) are exactly those whose grid
-images `e^{zℓ}` accumulate on the positive real axis, where `η_ℓ → 0`.
+attained top; it needs that the loud zeros do not alias onto the real axis or onto the record,
+with gaps large compared with the record's own scale `e^{θℓ} − 1`. The chains that hide from
+grids (`exists_chain_hidden_from_grid`) have heights in `2πℤ/ℓ + o(1)`: their grid images `e^{zℓ}`
+accumulate on the positive real axis, next to the image of the record, so both gaps fall to the
+scale `θℓ` and the side condition fails by the factor `N`. On the continuum the same chain keeps
+gaps `≥ 5` (`GridHiddenChainsHaveAnExplicitContinuumLag`).
 
 **For `ζ`** (`zeta_grid_crowding_of_lag_primeWindow_nonneg`): if the window functionals are
 nonnegative at the lags `kℓ`, `k ≤ K`, every loud off-line zero is crowded in the aliased sense.

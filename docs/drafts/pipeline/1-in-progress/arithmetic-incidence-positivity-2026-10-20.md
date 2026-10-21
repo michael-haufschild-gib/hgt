@@ -172,3 +172,124 @@ and windows only) are unaffected.
   kernel; README rewritten. New constants: threshold in `(log 5, log 6)`; reflection `a = 2`; lattice
   pairs `{2,2},{2,3}`; total lattice pairs `{2,2},{2,3},{2,4},{3,3}`; five moduli `{2,3,4,5,7}`; nine
   moduli `{2,3,4,5,7,8,9,11,13}`; collar `≍ 2e^{−s}`; quarter point from `n ≥ 23`.
+
+### C11 — Odd-sector Weil positivity on [−7/25, 7/25]: the folded odd plateau (`OddPlateauFoldedWindowPositivity.lean`)
+- Goal-loop contribution G1 (criterion 1: support increase). Every odd `F ∈ C²_c` vanishing outside
+  `[−7/25, 7/25]` has `Ẑ(F) ≥ (1/40)∫F²` (`fullZeroForm_ge_of_odd_support_le`), i.e. `J_M(u)+V_μ(u) ≥ 0`
+  for all even profiles with `Mu` supported there, in every odd gauge. Support `21/200 → 7/25` (2.67×).
+- Mechanism: even plateau `P` (= odd gauge `sign·P`), odd test; crossing pair `(−a,b)` carries
+  `(F(a)+F(b))²` at `ω(a+b)`, same-side `(a,b)` carries `(F(a)−F(b))²` at `ω(|a−b|) ≥ ω(a+b)` ⇒ killing
+  `2ω(a+b)(F(a)²+F(b)²)`; `fourKilling_le_archJump`: `J_P(F) ≥ 4∫_{x>0}F²(Ω(x)−Ω(x+r))`
+  (Z-type law in test coordinates `archCrossingDiff_le_two_mul_archSame`, three Fubini swaps).
+  Pole not converted (no plastic threshold); odd pole `2S² ≤ (R³/3)cosh²(R/2)∫F²` (`sq_oddPoleMoment_le_cosh`).
+- Exact plateau potential: edge function `E = Ω − N` (`windowEdgeFunction`), `∫_0^∞(ν − ω1_{u≤a}) = Ω(a) − E(0)`,
+  `E(0) = ½log 8 + π/4` (`integral_one_sided_window_eq`); `−𝒲P(x) ≥ Ω(R−x)+Ω(R+x) − log 8 − π/2 − (γ+log π)`
+  (`neg_poleFreeWeilOperator_ge_antideriv`).
+- Ω bounds `½log(4/y) + π/4 − y/4 ≤ Ω(y) ≤ … + y²/96 + 5y³/384` (via `sinh z ≤ z cosh z`,
+  `z cosh z ≤ sinh z(1+z²/3)`, `arctan(e^{−2z}) + arctan(tanh z) = π/4`); golden-point cubic
+  `(R−x)x² ≤ R²(R+x)/11`; numerics `γ < 0.577216`, `log π ≤ 1.1448`, `e^{3.5318} ≤ 34.3`.
+- Axioms: `propext, Classical.choice, Quot.sound`. Olean built, wired into the AIP umbrella. README mechanism 23.
+- Limit of this gauge: total potential `≈ −log(2R) + (5/2)log φ − (γ+log π) − O(R²)` vanishes at `R ≈ 0.297`.
+- Overlap check: corpus RHTower `reflectedArchLevy_killing_term_le_jump_add_collar` (pointwise only,
+  Φ-gauge), ACT `ArchimedeanZTypeLaw` (m_a gauges only), odd-window corpus best `1/130`
+  (`two_mul_sinh_sq_le_markovEnergy_of_odd_support_Icc_le_inv_130`). Another agent works on ACT
+  `CurvedGauge*` (all profiles, pole converted) — adjacent, not overlapping.
+
+### C12 — Selectivity: odd-window positivity past the plastic threshold fails for ζ(s−a)ζ(s+a) (`ShiftedPairOddWindowSelectivity.lean`)
+- Goal-loop contribution G2 (criterion 5). `shiftedPairZeroForm a F = 2(Ẑ(F cosh(a·)) − Ẑ(F sinh(a·)))`, the
+  zero form of `Λ(s−a)Λ(s+a)` (zeros `ρ ± a`); justified by `autoCorr_cosh_sub_autoCorr_sinh`
+  (`A_{F cosh} − A_{F sinh} = cosh(a·) A_F`, so it is `2W_ζ(cosh(a·) A_F)`).
+- Exact comparison (`shiftedPairZeroForm_eq`, supports `2r < log 2`):
+  `Ẑ_a(F) = 2Ẑ(F) + 4∫_0^∞ (cosh(at) − 1)(2cosh(t/2) − ω(t)) A_F(t) dt` — from the Markov-window
+  representation `fullZeroForm_eq_window` and the jump identity `gaugeJumpProfile_cosh_sub_sinh`.
+- `exists_odd_shiftedPairZeroForm_neg`: for every `r` with `t* < 2r` (`t* = log ρ`, plastic) some odd
+  `F ∈ C²_c` on `[−r, r]` has `Ẑ_a(F) < 0` for all large `a` (odd two-bump, width `2w ≤ t*`, separation
+  in `(t*, min(2r, log 2))`; `Ẑ_a(F) ≤ 2Ẑ(F) − 2a²t₁²κ(t₁)w²`). `odd_window_selective`: on every window
+  `t*/2 < r ≤ 7/25`, ζ's odd form is coercive (C11) but the shifted pair's is not.
+- Axioms standard; olean built; wired. Corpus overlap: `SuzukiScrewDisjointCrossCoupling` (disjoint bumps
+  beyond t* have positive screw cross pairing ⇒ no Beurling–Deny) — mechanism-adjacent, different
+  statement (no shifted-pair system, no selectivity). `NonTemperedShiftedZetaPairCountermodel` defines the
+  countermodel's structural properties but no zero form.
+
+### C13 — The infinite-shift Hankel limit: ζ(s−a)ζ(s+a) fails at support 13/125 < 21/200 (`ShiftedPairHankelSelectivity.lean`)
+- Goal-loop contribution G3 (criterion 5, sharpened). For `H` on `[y₀, r]`, `G_a = e^{−ay}H`, odd `F_a = G_a − G_a(−·)`:
+  `Ẑ_a(F_a) = 2Ẑ(F_a) + 8∫(cosh(at)−1)κ A_{G_a} + 2∫(1−e^{−at})² f (H∗H)` (`shiftedPairZeroForm_oddReweightedHankel`;
+  `autoCorr_sub_reflect`, `selfConv_exp_mul`, `(cosh u − 1)e^{−u} = (1−e^{−u})²/2`). The first two terms are
+  `O(a² e^{−2ay₀})` (`exists_fullZeroForm_le_lipschitz`: `Ẑ(F) ≤ K² + C∫F²` on windows `2r < log 2`;
+  `abs_integral_correction_reweightedHankel_le`), the last tends to the Hankel form `2∫∫f(y+z)H(y)H(z)` of the
+  screw weight `f = ω − 2cosh(t/2)`.
+- `f` is not log-convex: `f(0.1198) ≤ 2.43`, `1.35 ≤ f(0.1602)`, `f(0.1998) ≤ 0.74` (`screwWeight_values`),
+  so `H = φ_{0.06} − (93/50)φ_{0.10}` (half-width 10⁻⁴) has Hankel form `≤ m²(2.43 − 2.7c + 0.74c²) < 0`, `c = 93/50`
+  (`integral_weighted_hankelProfile_le`, bump-convolution calculus `integral_mul_bumpConv_bounds`).
+- `exists_odd_shiftedPairZeroForm_neg_below_markovWindow`: ∀ large `a` ∃ odd `F ∈ C²_c` on `[−13/125, 13/125]`
+  with `Ẑ_a(F) < 0`. `markovWindow_selective`: paired with ACT C27 (`Ẑ ≥ (1/30)∫F²` on `[−21/200, 21/200]`).
+  Refutes the G2 conjecture "`2r ≤ t*` ⇒ shifted pair odd-positive" (here `2r = 0.208 < t* ≈ 0.281`).
+- Consequence: the existing 21/200 theorem is already selective; selectivity is not a feature of new support
+  only. Any proof of window positivity at 21/200 must use a property of ζ that ζ(s−a)ζ(s+a) lacks at large `a`
+  — here the Hankel positivity of `ω − 2cosh(t/2)` is replaced by the `cosh(at)`-weighted kernel.
+- Axioms standard; olean built; wired into the AIP umbrella. README mechanism 25.
+
+### C14 — The curved fold: odd window 17/50 (`FoldedSurplusGroundStatePotential`, `CubicGaugeSurplusPotential`, `CurvedFoldOddWindowPositivity`)
+- Goal-loop contribution G4 (criterion 1: support 7/25 → 17/50 = 0.98·½log 2, for all even profiles in every odd gauge).
+- Exact fold: `2S_arch − D_arch = 2S_P(F)`, `S_P = ∫_{x>0}∫_{s>0}(ω(s) − ω(s+2x))J_s(x)` (`two_mul_archSame_sub_archCrossingDiff_eq`);
+  `J_P(F) ≥ 4·killing + 2S_P(F)` (`fourKilling_add_surplusEnergy_le_archJump`). G1 discarded `S_P`.
+- Ground-state transform of the surplus: pairwise `(a−b)² ≥ a²(1−q/p) + b²(1−p/q)` ⇒ `S_P ≥ ∫_{x>0}F²U_h`,
+  `U_h(x) = ∫_{(0,r]} k(x,y)(1 − h(y)/h(x))` for any `h ≥ a₀ > 0`, Lipschitz on `[0,r]` (`surplusEnergy_ge_potential`;
+  one Fubini swap + translations).
+- Cubic gauge closed form: `ω(t) = 1/(4sinh(t/2)) + 1/(4cosh(t/2))`, `1/(2t) + 1/4 − t/16 − t²/32 ≤ ω ≤ 1/(2t) + 1/4`;
+  `∫_0^r k₀(h(x) − h(y)) = a₁x(1−ℓ) + a₂(3x²/2 − rx) + a₃(11x³/6 − r²x/2 − x³ℓ)` (`integral_principalSurplus_cubicGauge`);
+  remainder ≤ `L∫((x+y)/16 + (x+y)²/32)|x−y|` (`mul_surplusPotential_cubicGauge_ge`).
+- Gauge `h = 1/500 + (3/5)y − y² − (6/5)y³` (peak 0.216 ≈ r/φ, `h(r)/h_max ≈ 0.6`), R = 681/2000; numerator
+  `(1/500 − x²)ℓ + h(λ − κ − …) + P₁ − (3/5)ρ ≥ 0` on (0, 17/50] (`curvedOddNumerator_nonneg`): 12 tangent intervals
+  (7-smooth anchors; log 3, 5, 7 to 1e-7 via `Real.abs_log_sub_add_sum_range_le`) + origin/collar/edge/rim pieces,
+  each closed by nlinarith on a quartic. Min slack ≈ 0.0016 (in h-units) near x ≈ 0.22–0.24.
+- `fullZeroForm_ge_of_odd_support_le_curved`: odd `F ∈ C²_c` on `[−17/50, 17/50]` ⇒ `Ẑ(F) ≥ (1/100)∫F²`.
+  Pole `2S² ≤ (271/20000)∫F²`. Axioms standard; oleans built; wired. README mechanism 26.
+- Asymptotics: odd-sector constant = second eigenvalue of `log|ξ|` on an interval (Kwaśnicki: `≈ log(3π/4) ≈ 0.86`);
+  flat fold gives `−γ + (5/2)log φ ≈ 0.63`; main-term odd positivity would reach ≈ 0.375 (> ½log 2).
+
+### C15 — Past ½ log 2: the prime atom paid on the first prime window (`QuarticGaugeSurplusPotential`, `FirstPrimeWindowOddStrip`, `OddWindowPastFirstPrime`)
+- Goal-loop contribution G5 — the goal statement itself: `J_M(u) + V_μ(u) ≥ 0` for all even profiles with support
+  347/1000 > ½log 2 (past 21/200), every odd gauge, prime atom `Λ(2)/√2` paid on the first prime window, no pole-free margin.
+- Prime-2 representation (`2R < log 3`): `signedJumpEnergy = arch + Λ₂·gJP(log 2)`, `profilePrimeSum = Λ₂(P(x+L)+P(x−L))`;
+  `gJP(L) − ∫F²P(P(·+L)+P(·−L)) = −2∫F(x)F(x+L)` when `P = 1` on supp F (`gaugeJumpProfile_sub_primePotential_eq`);
+  odd strip `∫F(x)F(x+L) ≤ ∫_{[L−r,r]}F²` (`integral_mul_shift_le_strip`, pointwise AM-GM + reflection); `Λ₂ ≤ 0.4902`.
+  Plateau bound with prime returned (`neg_poleFreeWeilOperator_add_primeSum_ge`, no window restriction).
+- Quartic gauge closed form (`integral_principalSurplus_quarticGauge`: extra `a₄(25x⁴/12 − rx³ − r³x/3)`).
+  Gauge `1/500 + (119/200)y − y² − (3/10)y³ − (5/2)y⁴` (window units `0.017 + 1.715s − s² − 0.108s³ − 0.30s⁴`: found by
+  shifting the cubic's b₃ up and adding b₄ < 0, b₁ down — flattens W over s ∈ [0.35, 0.9]). L = 63/100. R = 139/400.
+- Certificate: 14 tangent intervals + origin + 2 collars + 4 monotone edge pieces + strip [0.346, 0.347] (numerator ≥ 0.4902·h).
+  Margins ≈ 0.001–0.0015 (h-units) in the middle; strip margin ≈ 0.013. Pole `2S² ≤ (289/20000)∫F²`.
+- `fullZeroForm_ge_of_odd_support_le_pastFirstPrime`: odd F on [−347/1000, 347/1000] ⇒ Ẑ ≥ (1/100)∫F². Axioms standard;
+  oleans built; wired. README mechanism 27.
+- Insight: crossing ½log 2 costs nothing at the prime — on the strip the plateau potential ≥ 1.7 ≫ Λ₂; the binding constraint
+  is the archimedean middle. Archimedean odd positivity should persist to ≈ 0.375; past that the atom's sign must be used.
+
+### C16 — The micro-fold: Harnack across ½ log 2, the first prime window is atom-free (`FirstPrimeMicroFold.lean`)
+- Goal-loop contribution G6 (criterion 3: Harnack inequality across a prime shift with explicit constant).
+- Even/odd split about L/2 on S = [L − r, r]: F(a)F(L − a) = F_e² − α², α = (F(a) − F(L − a))/2 (`reflectedOddPart`); the atom
+  costs only ∫_S α² (`integral_mul_shift_le_reflectedOdd`, sharper than the AM-GM strip bound of C15).
+- Quadruple inequality (`microFold_quadruple_ge`) with k₀(t) = ω(t) − ω(2p) (`microFoldKernel`): even parts drop out.
+  Integrated (`microFold_strip_ge`): ∫_S∫_S k(Fx − Fy)² ≥ (2K + 2η k₀(2η))∫_S α², K = Ω(η) − Ω(2η) − ηω(2p), η = r − L/2.
+- `microFoldConstant_ge`: constant ≥ 0.9804 ≥ 2Λ(2)/√2 for every r ∈ (L/2, 2/5] (C ≥ log2 + ½ − d/(2p) − O(d²), d = 2η).
+- `two_mul_primeShift_le_stripSurplus`: 2Λ₂∫F(x)F(x+L) ≤ 2·stripSurplus for odd F on [−r, r], r ≤ 2/5.
+- `integral_strip_eq_two_mul_stripSurplus` (box = 2 × triangle), `surplusEnergy_ge_potentialOff_add_strip` (GS transform with
+  the S×S pairs exact), `fourKilling_add_potentialOff_le_archJump_sub_prime`: 4·killing + 2∫F²U_off ≤ J_arch − prime term.
+  Up to 2/5 the window problem is purely archimedean (U_off potential, no strip charge). Axioms standard; olean built; wired;
+  README mechanism 28.
+- Insight: limit constant log 2 + ½ is shift-independent ⇒ the local test is Λ(n)/√n < ½log 2 + ¼ ≈ 0.597: holds for n = 2,
+  fails for n = 3 (0.634). The second prime window needs more than the micro-fold.
+- Next: certificate for U_off at r = 7/20 (support record); loss on S vs U bounded by ∫_S |k(1 − h(y)/h(x))| ≤ (½ + d/4)·L_h·d/h_S.
+
+### C17 — Odd window 7/20 without a strip charge (`AtomFreeOddWindowSevenTwentieths.lean`)
+- Goal-loop contribution G7 (criterion 1: support 347/1000 → 7/20, all even profiles, every odd gauge, atom paid).
+- Strip loss: h(x)(U − U_off)(x) ≤ L|S|(½ + |S|/4) (`mul_surplusPotential_le_off_add`); at r = 7/20 this is ≤ 0.0023.
+- R = 701/2000, gauge (1/500, 3/5, −1, −3/10, −49/20), L = 16/25, c₀ = 397/20000, pole ≤ 297/20000.
+- Certificate: origin + 2 collars + 14 tangent intervals (a-anchors re-centred on R − x: 4/15, 15/64, 50/243, 9/50, 4/25, 7/50,
+  3/25, 1/10, 2/25, 3/50, 3/70, 3/100, 3/140, 3/200) + 2 monotone edges + 4 strip pieces (≥ 0.0023). All passed first try.
+- `fullZeroForm_ge_of_odd_support_le_sevenTwentieths`: odd F on [−7/20, 7/20] ⇒ Ẑ ≥ (1/200)∫F². Axioms standard; olean; wired;
+  README mechanism 29.
+- Lean traps: `linarith` timed out (isDefEq on `surplusPotentialOff`'s `if` via let-bound equalities) → `clear_value` the
+  `set` variables + `linarith only`; `set c₀` is an opaque atom for linarith → `rw [hc₀]` first.
+- Next: the middle margin (≈ 0.001 h-units) is the bottleneck; push toward 0.36–0.375 needs a better gauge (quintic/sextic or
+  log-corrected) and/or keeping part of the S×S surplus in the transform.

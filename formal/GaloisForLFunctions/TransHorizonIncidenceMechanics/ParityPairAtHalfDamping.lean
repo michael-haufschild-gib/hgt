@@ -178,22 +178,18 @@ theorem parityTwin_drift_ge {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hn : 100 ≤ n)
   rw [e1]
   exact mul_le_mul_of_nonneg_left key hn0.le
 
-/-- For `ε ≤ 1/2` every pronic cell `n ≥ 100` of the twin carries at least `c/n`. -/
-theorem parityTwin_cell_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {n : ℕ} (hn : 100 ≤ n) :
-    (dampedDensity ε / parityTwinCoprimeMass ε 1 / 16) ^ 2 / 4 / n ≤
-      weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n ^ 2 /
-        ((n : ℝ) * ((n : ℝ) + 1)) := by
+/-- **Cell bound from the drift.** If a nonnegative weight of mean `m` carries
+`K n (2n)^{-ε}` on the dyadic tail `(n, 2n]` and `ε ≤ 1/2`, its pronic cell `n` carries at least
+`K²/(4n)`. -/
+theorem weightCell_ge_of_drift {c : ℕ → ℝ} {m K ε : ℝ} (hc : ∀ d, 0 ≤ c d)
+    (hm : HasSum (fun d : ℕ => c d / d) m) (hK : 0 ≤ K) (hε2 : ε ≤ 1 / 2) {n : ℕ} (hn : 1 ≤ n)
+    (hdrift : K * n * (2 * (n : ℝ)) ^ (-ε) ≤ (n : ℝ) * ∑ d ∈ Ioc n (2 * n), c d / d) :
+    K ^ 2 / 4 / n ≤ weightCenteredPrefix c m n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
-  have hn100 : (100 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn1' : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have h2n : (1 : ℝ) ≤ 2 * n := by linarith
-  have hA := weightCenteredPrefix_le_neg_drift (parityTwinWeight_nonneg hε)
-    (hasSum_parityTwinWeight_div hε) n
-  have hdrift := parityTwin_drift_ge hε hn
-  set K := dampedDensity ε / parityTwinCoprimeMass ε 1 / 16 with hKdef
-  have hK : 0 ≤ K := by
-    have := div_pos (RHTower.pmPowerDampedDivisorDensity_re_pos hε) (parityTwinCoprimeMass_one_pos hε)
-    rw [hKdef]; positivity
-  set A := weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n with hAdef
+  have hA := weightCenteredPrefix_le_neg_drift hc hm n
+  set A := weightCenteredPrefix c m n with hAdef
   have hPnn : 0 ≤ (2 * (n : ℝ)) ^ (-ε) := Real.rpow_nonneg (by linarith) _
   -- `ε ≤ 1/2` gives `(2n)^{-2ε} ≥ 1/(2n)`
   have hP2 : 1 / (2 * (n : ℝ)) ≤ ((2 * (n : ℝ)) ^ (-ε)) ^ 2 := by
@@ -212,7 +208,8 @@ theorem parityTwin_cell_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {n : 
   have h1 : K ^ 2 * (n : ℝ) ^ 3 * (1 / (2 * n)) = K ^ 2 * (n : ℝ) ^ 2 / 2 := by
     have := hn0.ne'
     field_simp
-  have h2 : K ^ 2 * (n : ℝ) ^ 3 * (1 / (2 * n)) ≤ K ^ 2 * (n : ℝ) ^ 3 * ((2 * (n : ℝ)) ^ (-ε)) ^ 2 :=
+  have h2 : K ^ 2 * (n : ℝ) ^ 3 * (1 / (2 * n)) ≤
+      K ^ 2 * (n : ℝ) ^ 3 * ((2 * (n : ℝ)) ^ (-ε)) ^ 2 :=
     mul_le_mul_of_nonneg_left hP2 (by positivity)
   have h3 : K ^ 2 / 4 * ((n : ℝ) * ((n : ℝ) + 1)) ≤ K ^ 2 * (n : ℝ) ^ 2 / 2 := by
     nlinarith [mul_nonneg (mul_nonneg (sq_nonneg K) hn0.le) (show (0 : ℝ) ≤ n - 1 by linarith)]
@@ -227,38 +224,47 @@ private theorem weightPronicEnergy_eq_sum_range (c : ℕ → ℝ) (m : ℝ) (T :
     rw [weightPronicEnergy, Finset.sum_Icc_succ_top (by omega), ← weightPronicEnergy, ih,
       Finset.sum_range_succ _ (T + 1)]
 
-/-- **The twin's receiver energy diverges** for every `0 < ε ≤ 1/2`. -/
-theorem tendsto_weightPronicEnergy_parityTwin {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
-    Tendsto (fun T => weightPronicEnergy (parityTwinWeight ε) (dampedDensity ε) T)
-      atTop atTop := by
-  set e : ℕ → ℝ := fun n => weightCenteredPrefix (parityTwinWeight ε) (dampedDensity ε) n ^ 2 /
-    ((n : ℝ) * ((n : ℝ) + 1))
+/-- **Drift divergence.** A nonnegative weight whose dyadic tails carry `K (2n)^{-ε}` per unit,
+`K > 0`, `ε ≤ 1/2`, has divergent receiver energy: the drift of the moduli beyond the prefix
+cannot cancel. -/
+theorem tendsto_weightPronicEnergy_of_drift {c : ℕ → ℝ} {m K ε : ℝ} (hc : ∀ d, 0 ≤ c d)
+    (hm : HasSum (fun d : ℕ => c d / d) m) (hK : 0 < K) (hε2 : ε ≤ 1 / 2) (n₀ : ℕ)
+    (hdrift : ∀ n, n₀ ≤ n → K * n * (2 * (n : ℝ)) ^ (-ε) ≤ (n : ℝ) * ∑ d ∈ Ioc n (2 * n), c d / d) :
+    Tendsto (fun T => weightPronicEnergy c m T) atTop atTop := by
+  set e : ℕ → ℝ := fun n => weightCenteredPrefix c m n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))
   have he0 : ∀ n, 0 ≤ e n := fun n => div_nonneg (sq_nonneg _)
     (mul_nonneg (Nat.cast_nonneg n) (by positivity))
-  set c := (dampedDensity ε / parityTwinCoprimeMass ε 1 / 16) ^ 2 / 4
-  have hc : 0 < c := by
-    have := div_pos (RHTower.pmPowerDampedDivisorDensity_re_pos hε) (parityTwinCoprimeMass_one_pos hε)
-    positivity
+  set N := n₀ + 1
+  have hc4 : 0 < K ^ 2 / 4 := by positivity
   have hns : ¬ Summable e := by
     intro hs
-    have hg : Summable (fun n : ℕ => if 100 ≤ n then c / n else 0) :=
+    have hg : Summable (fun n : ℕ => if N ≤ n then K ^ 2 / 4 / n else 0) :=
       hs.of_nonneg_of_le (fun n => by split_ifs <;> positivity)
         (fun n => by
           split_ifs with h
-          · exact parityTwin_cell_ge hε hε2 h
+          · exact weightCell_ge_of_drift hc hm hK.le hε2 (by omega) (hdrift n (by omega))
           · exact he0 n)
-    have hg' : Summable (fun n : ℕ => c / ((n + 100 : ℕ) : ℝ)) := by
-      refine ((summable_nat_add_iff 100).mpr hg).congr fun n => ?_
+    have hg' : Summable (fun n : ℕ => K ^ 2 / 4 / ((n + N : ℕ) : ℝ)) := by
+      refine ((summable_nat_add_iff N).mpr hg).congr fun n => ?_
       simp
-    have hc0 := hc.ne'
-    have h1 : Summable (fun n : ℕ => 1 / ((n + 100 : ℕ) : ℝ)) :=
-      (hg'.mul_left c⁻¹).congr fun n => by field_simp
+    have hc0 := hc4.ne'
+    have h1 : Summable (fun n : ℕ => 1 / ((n + N : ℕ) : ℝ)) :=
+      (hg'.mul_left (K ^ 2 / 4)⁻¹).congr fun n => by field_simp
     exact Real.not_summable_one_div_natCast
-      ((summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℝ)) 100).mp h1)
+      ((summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℝ)) N).mp h1)
   have ht := (not_summable_iff_tendsto_nat_atTop_of_nonneg he0).mp hns
   refine (ht.comp (tendsto_add_atTop_nat 1)).congr fun T => ?_
   simp only [Function.comp_apply, e]
   rw [weightPronicEnergy_eq_sum_range]
+
+/-- **The twin's receiver energy diverges** for every `0 < ε ≤ 1/2`. -/
+theorem tendsto_weightPronicEnergy_parityTwin {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
+    Tendsto (fun T => weightPronicEnergy (parityTwinWeight ε) (dampedDensity ε) T)
+      atTop atTop :=
+  tendsto_weightPronicEnergy_of_drift (parityTwinWeight_nonneg hε) (hasSum_parityTwinWeight_div hε)
+    (by have := div_pos (RHTower.pmPowerDampedDivisorDensity_re_pos hε)
+          (parityTwinCoprimeMass_one_pos hε)
+        positivity) hε2 100 fun n hn => parityTwin_drift_ge hε hn
 
 /-! ### The pair -/
 

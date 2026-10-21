@@ -1,7 +1,7 @@
 # The size law (`S(T)` unbounded) and the Mehler–Fock / Bochner–Godement dictionary
 
 - **ID:** size-law-mehler-fock-2026-10-20
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) ×2
 - **Source:** walls ledger, Wall 14 (paper item CANNOT-549) and Wall 13 (producer loop row 241)
 - **Statement:** (A) `S(T) = N(T) − M(T)` is unbounded. (B) A continuous compactly supported
@@ -16,8 +16,8 @@ the Abel transform, with positive-definite zonal kernels on `ℍ`.
 
 ## Gates
 - [x] 0 → 1  in-progress: both statements well-posed, unconditional, proof architectures below
-- [ ] 1 → 2  fully-proven: paper proofs complete (below)
-- [ ] 2 → 3  formalized: Lean theorems, `lake env lean` clean, axioms standard, umbrellas wired
+- [x] 1 → 2  fully-proven: paper proofs complete (below)
+- [x] 2 → 3  formalized: Lean theorems, `lake env lean` clean, axioms standard, umbrellas wired
 - [ ] 3 → 4  not pursued (no stage 4)
 
 ## (A) Paper proof: `S(T)` is unbounded
@@ -80,10 +80,14 @@ PD means `Q_k(g) = ∫∫ k(u(z,w)) g(z) ḡ(w) dμ dμ ≥ 0` for every continu
    ∫∫ √(yy') 𝒜k(log y − log y') β(y) β̄(y') dy dy'/(y²y'²)`; with `y = e^a`, `B(a) = β(e^a)e^{−a/2}`
    this is `∫∫ 𝒜k(a − b) B(a) B̄(b)`, `B` arbitrary in `C_c(ℝ)`. Fejér: `f = e^{iτa} 1_{[0,L]}`
    (trapezoid-smoothed) and `L → ∞` give `∫ 𝒜k(v) e^{iτv} dv ≥ 0`.
-4. **Horocyclic Fourier decomposition.** For `g` smooth with compact support in `ℍ`, with
+4. **Horocyclic Fourier decomposition.** For `g` whose zero extension to `ℂ` is smooth, with
    `G(ξ, y) = ∫ g(x + iy) e^{−2πixξ} dx` and the fibre kernel
-   `K_ξ(y, y') = ∫ k((t² + (y − y')²)/(4yy')) e^{−2πitξ} dt` (real, even in `ξ`), Parseval in `x`
-   gives `Q_k(g) = ∫_ξ B_ξ(G(ξ, ·)) dξ`, `B_ξ(G) = ∫∫ K_ξ(y, y') G(y) Ḡ(y') dy dy'/(y²y'²)`.
+   `K_ξ(y, y') = ∫ k((t² + (y − y')²)/(4yy')) e^{−2πitξ} dt`, the point-pair kernel on two
+   horocycles is the convolution kernel `κ(x − x')` with `κ̂ = K_ξ`; Fourier inversion of the second
+   slice and Fubini give `∫∫ κ(x − x') a(x) b̄(x') = ∫ K_ξ â(ξ) b̂(ξ)‾ dξ`. `y ↦ G(ξ, y)` is smooth
+   (a parametric average after rescaling to `[0, 1]`) with support in the `y`-range of `g`, and
+   `|G(ξ, y)|(1 + 2π|ξ|) ≤ D` uniformly (one integration by parts in `x`). Hence
+   `Q_k(g) = ∫_ξ B_ξ(G(ξ, ·)) dξ`, `B_ξ(G) = ∫∫ K_ξ(y, y') G(y) Ḡ(y') dy dy'/(y²y'²)`.
 5. **Whittaker eigenfunctions.** `E(x + iy) = e^{2πiξx} W_τ(y)`, `W_τ(y) = √y K_{iτ}(2π|ξ|y)`, is
    `C²` with `−y²ΔE = (¼ + τ²) E` (Bessel's equation). Selberg's theorem
    (`integral_pairKernel_mul_eigen`) and integration in `x` give the fibre eigen-relation
@@ -93,11 +97,26 @@ PD means `Q_k(g) = ∫∫ k(u(z,w)) g(z) ḡ(w) dμ dμ ≥ 0` for every continu
    `π² G(y) = ∫ τ sinh(πτ) ⟨G, W_τ⟩ W_τ(y) dτ`, `⟨G, W⟩ = ∫ G W dy/y²`. With 5 and Fubini
    (bounds: `|K_{iτ}(x)| ≪ (|log x| + log(2+|τ|)) e^{−π|τ|/2}`, KL transforms of test functions
    `≪ e^{−π|τ|/2}/(1+τ^{2m})`): `B_ξ(G) = π^{−2} ∫ τ sinh(πτ) h(½ + iτ) |⟨G, W_τ⟩|² dτ ≥ 0`.
-7. **Sufficiency.** Mollify `g` by a product bump in `(x, y)`: the fibres become `C^∞` in `y`,
-   `G(ξ, ·)` decays in `ξ`, and `Q_k(g_ε) → Q_k(g)` by dominated convergence. So 4–6 give
-   `Q_k(g) ≥ 0` whenever `h(½ + iτ) ≥ 0` for all real `τ`.
+7. **Sufficiency.** Smooth the zero extension of `g` on `ℂ` by bumps of radius
+   `ε_n ≤ min(δ_n, a/2, 1)` (`δ_n` a modulus of uniform continuity for `1/(n+1)`): the approximants
+   `g_n` have smooth zero extensions, vanish off one compact `K ⊂ ℍ`, and `|g_n − g| ≤ 1/(n+1)`.
+   With `|k| ≤ M`, `|g| ≤ C`: `|Q_k(g_n) − Q_k(g)| ≤ μ(K)² M (2C + 1)/(n + 1)`. So 4–6 give
+   `Q_k(g) ≥ 0` whenever `Re h(½ + iτ) ≥ 0` for all real `τ`.
 
 Chain: PD ⟹ (3) Bochner cone ⟹ (3, Fejér) `h ≥ 0` on the critical line ⟹ (7) PD.
+
+**Lean (complete, unconditional, standard axioms):**
+`isPositiveDefinitePointPair_iff_re_selbergTransform_nonneg` and
+`isPositiveDefinitePointPair_iff_isBochnerPositive` (`RHTower/HyperbolicPointPairMehlerFockDictionary`,
+which also holds step 7: `exists_contDiff_approximation`, `tendsto_pointPairForm`). Ingredients:
+`RHTower/HyperbolicAbelTransformHorocyclicSlice` (steps 1–2),
+`RHTower/HyperbolicPointPairFormHorocyclicCoordinates` (`Q_k` in chart coordinates),
+`RHTower/BochnerConeFejerTrapezoidWindows` and `RHTower/HyperbolicPointPairPositiveDefiniteNecessity`
+(step 3), `RHTower/HorocyclicWhittakerEigenfunctionFibreRelation` (step 5),
+`RHTower/HorocyclicFibreKontorovichLebedevPositivity` (step 6: `horocyclicFibreForm_eq`,
+`re_horocyclicFibreForm_nonneg`), `RHTower/HorocyclicSlicePointPairParseval` and
+`RHTower/HyperbolicPointPairFormHorocyclicFibreDecomposition` (step 4:
+`pointPairForm_eq_integral_horocyclicFibreForm`, `re_pointPairForm_nonneg_of_contDiff`).
 
 ## Log
 - 2026-10-20 — created; corpus survey done (Zeta23 EF/RvM/Stirling, SRT localized form and
@@ -106,3 +125,11 @@ Chain: PD ⟹ (3) Bochner cone ⟹ (3, Fejér) `h ≥ 0` on the critical line �
 - 2026-10-20 — (A) formalized: 7 modules, olean built single-threaded, `lake env lean` audit clean,
   `#print axioms` = propext/choice/Quot.sound, wired (2 in `RHTower.lean`, 5 in
   `SquareRootThreshold.lean`); walls ledger Wall 14 updated. Starting (B).
+- 2026-10-21 — (B) steps 1–3 in Lean (oleans built, not yet wired): `HyperbolicAbelTransformHorocyclicSlice`
+  (chart, Abel transform, slice, Mehler–Fock = Fourier∘Abel, critical line real),
+  `HyperbolicPointPairFormHorocyclicCoordinates` (Q_k in coordinates), `BochnerConeFejerTrapezoidWindows`
+  (Fejér windows, Bochner cone ⟹ cosine transform ≥ 0), `HyperbolicPointPairPositiveDefiniteNecessity`
+  (`isBochnerPositive_abelTransform`, `selbergTransform_critical_re_nonneg`). Next: steps 4–7.
+- 2026-10-21 — (B) formalized: steps 4–7 in 5 further modules; all 9 (B) modules audited with
+  `lake --old env lean`, axioms propext/choice/Quot.sound, no umbrella name collisions (ilean scan),
+  wired in `RHTower.lean`; walls ledger Wall 13 and review-2010 reports updated. Card → 3-formalized.
