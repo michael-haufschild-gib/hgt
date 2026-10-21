@@ -462,7 +462,11 @@ The configurations and the probes of the theory:
    the excess transform at the height of a zero can grow compared with the relaxation of its
    deficit.
 3. **Sharper constants.** Weil positivity of `ζ` holds unconditionally on every test of aperture
-   `a ≤ 1/100`, with `Re W ≥ ‖f‖²/25`. Push this towards Yoshida's aperture. The archimedean
+   `a ≤ 3/10`, with `Re W ≥ ‖f‖²/5000` (`ZetaWeilPositivityThroughApertureThreeTenths`: the
+   zero-side form splits as `Ẑ(Re f) + Ẑ(Im f)`, so every all-profile window of the full zero form
+   transfers with its constant; the three archimedean bands alone give `a ≤ 1/100`,
+   `Re W ≥ ‖f‖²/25`). The remaining distance to Yoshida's aperture `(log 2)/2` is the all-profile
+   window of the aperture face. The archimedean
    horizon is `exp(C_ε + (4 + ε)√X)`, so the localized forms at height `T` are positive for
    `√X ≤ (¼ − ε) log T`. The coefficient `4` is optimal for bounds on the prime symbol that are
    uniform in height, since `P_X(0) = −(1/π) Σ_{n ≤ X} Λ(n)/√n ~ −(2/π)√X`. A larger single-height

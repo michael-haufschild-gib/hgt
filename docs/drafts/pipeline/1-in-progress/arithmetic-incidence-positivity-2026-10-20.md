@@ -325,3 +325,31 @@ and windows only) are unaffected.
   constant fix (strip G Llam 3270410 → 3270409: worst-case log bounds must be recomputed with exact y/s).
 - `fullZeroForm_ge_of_odd_support_le_threeHundredFiftyThreeThousandths`: Ẑ ≥ (1/1000)∫F². Axioms standard; olean; wired; README 31.
 - Wall: at 0.355 the inner edge needs N(p) ≥ 0.0030 vs 0.0017 available; structural (see ledger wall analysis).
+
+### C21 — Odd window 356/1000: the ground-state remainder carries potential (`SchurAbsorbedGroundState`, `SchurFoldWindowNumeratorBounds`, `SchurFoldOddWindowThreeHundredFiftySixThousandths`)
+- Goal-loop contribution G10+G11 (criterion 1: support 353/1000 → 356/1000, through the inner-edge wall of C20).
+- New mechanism: Schur step on the dropped ground-state remainder k h(x)h(y)(f(x)−f(y))². `sq_sub_ge_groundState_schur`:
+  k(a−b)² ≥ a²(k(1−q) + kβq²/(k+βq)) + b²(k(1−1/q) − β); `surplusEnergy_ge_potential_add_schur`:
+  S_P(F) ≥ ∫F²U_h + s₀|H|∫_Z F² − β|Z|∫_H F² when s₀ ≤ kβq²/(k+βq) on Z×H. The potential becomes nonlocal.
+- `fourKilling_add_potentialMixSchur_le_archJump_sub_prime`: θ-split + Schur rectangle (Schur on the (1−θ) full-GS part).
+- Certificate: Z = [0.337, 0.343], H = [0.35, 0.356], β = 40, s₀ = 21/2 (k ≥ 128/5 from the second-order ω bounds, q ≥ 31/40);
+  gauge 1/500 + (3/5)y − y² − (11/50)y³ − (49/20)y⁴ (L = 16/25), R = 7121/20000, c₀ = 331/20000, pole ≤ 7767/500000.
+  Numerator ≥ 0 on (0, 0.337], ≥ 2/1000 on Z, ≥ 33/10000 on [0.343, 0.35], ≥ 85/10000 on H (18 tangent + 3 monotone pieces);
+  every piece passed on the first attempt.
+- `fullZeroForm_ge_of_odd_support_le_threeHundredFiftySixThousandths`: Ẑ ≥ (1/1000)∫F². Axioms standard; oleans; wired; README 32.
+- Insight: the structural inner-edge loss of C20 is a loss of the LOCAL potential only; with the remainder kept, the wall
+  moves to where the hub's spare potential runs out.
+
+### C22 — Odd window 9/25: the prime atom pays the strip (`PrimeAtomEvenPartPotential`, `PrimeEvenPartWindowNumeratorBounds`, `PrimeEvenPartOddWindowNineTwentyFifths`)
+- Goal-loop contribution G12 (criterion 1: support 356/1000 → 9/25 = 0.36).
+- Exact identity for odd F on [−r, r], L/2 < r: ∫F(x)F(x+L) = 2∫_S α² − ∫_S F² (`integral_mul_shift_eq_two_reflectedOdd_sub`);
+  the atom is a GAIN 2Λ₂∫_S F² on the even (ground-state) part, a cost 4Λ₂∫_S α² on the odd part. Interpolation
+  `integral_mul_shift_le_interp` (t ≤ 1); `vonMangoldtAtom_two_ge` (Λ₂ ≥ 49/100);
+  `fourKilling_add_potentialMixPrime_le_archJump_sub_prime` (θ-split with (1+t)·cost; strip potential (49/100)t).
+- Certificate: t = 1/2, θ = 4/5 (λ ≥ 1.858), strip loss ≤ 7/1000 < (49/200)h (h ≥ 79/2000 on S); numerator N ≥ 0 on the
+  whole window suffices; gauge = the 356/1000 gauge dilated by 90/89; R = 7201/20000, c₀ = 171/10000, pole ≤ 8038/500000;
+  origin + 2 collars + 24 tangent + 3 monotone pieces (refined to width 0.01 on [0.18, 0.24], the slack minimum).
+- `fullZeroForm_ge_of_odd_support_le_nineTwentyFifths`: Ẑ ≥ (1/1000)∫F². Axioms standard; oleans; wired; README 33.
+- Insight: mechanisms 28–32 discarded the even part of the atom, which is the ground-state direction; with it kept the
+  first prime window has no inner-edge wall, and the support is limited by the archimedean middle only (dilation
+  costs log s in potential; hand slack min ≈ 0.0155 at x ≈ 0.2 for r = 0.356).

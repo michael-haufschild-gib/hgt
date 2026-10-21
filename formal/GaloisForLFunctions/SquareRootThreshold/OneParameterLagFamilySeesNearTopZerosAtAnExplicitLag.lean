@@ -5,9 +5,10 @@ import GaloisForLFunctions.SquareRootThreshold.OneParameterLagFamilySeesNearTopZ
 # The one-parameter lag family sees near-top zeros at an explicit lag
 
 The parameters of `one_param_near_top_visible` chosen explicitly, through the generic
-`explicitCount`, `explicitCoherence`, `explicitGap`, `explicitRatio`, `explicitOrder` with record
-bound `a = 2η²/e`, neighbour bound `D₀(η) = 80 log(180(Γ₀ + 1))(e^{w/2}B_w)²` (`oneParamMass`) and
-noise constant `M₀(η)` (`oneParamNoise`); `Γ₀ = Γ₀(η) = oneParamRecordHeight w η ≥ 1`.
+`explicitCount`, `explicitCoherence`, `explicitGap`, `explicitRatio`, `explicitOrder` with the
+relative neighbour bound `D₀(η) = (125/2) log(180(Γ₀ + 1))` (`oneParamMass`), coherence
+`c = 1/(10(P + 1)D₀ + 1)` and noise constant `M₀(η)` (`oneParamNoise`);
+`Γ₀ = Γ₀(η) = oneParamRecordHeight w η ≥ 1`.
 
 **Theorem** (`one_param_near_top_visible_at_explicit_lag`). Let `½ + z₀` be a zero of `ζ` right of
 the line, `δ₀ = Re z₀`, `0 < η ≤ |h_w(γ₀ − iδ₀)|`, and let `½ + z₀` be `1/V`-near the top for some
@@ -31,9 +32,9 @@ namespace GaloisForLFunctions.SquareRootThreshold
 
 open Zeta23 _root_.RHTower
 
-/-- The coefficient bound `D₀(η) = 80 log(180(Γ₀ + 1))(e^{w/2}B_w)²` near the record. -/
-def oneParamMass (w η : ℝ) : ℝ :=
-  80 * Real.log (180 * (oneParamRecordHeight w η + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2
+/-- The relative neighbour bound `D₀(η) = (125/2) log(180(Γ₀ + 1))` of the coefficients near the
+record. -/
+def oneParamMass (w η : ℝ) : ℝ := 125 / 2 * Real.log (180 * (oneParamRecordHeight w η + 1))
 
 /-- The noise constant `M₀(η) = 4m₀/((e − 1)(2η²/e)) + 6144 log(180(Γ₀ + 6))`,
 `m₀ = 32(e^{w/2}B_w)²(C_ξ + log 4)`, of `oneParamCollapseBound`. -/
@@ -42,10 +43,9 @@ def oneParamNoise (w η : ℝ) : ℝ :=
       ((Real.exp 1 - 1) * (2 * η ^ 2 / Real.exp 1)) +
     6144 * Real.log (180 * (oneParamRecordHeight w η + 6))
 
-/-- The coherence product of the unmodulated family, with record bound `a = 2η²/e`. -/
+/-- The coherence product `c = 1/(10(P + 1)D₀(η) + 1)` of the unmodulated family. -/
 def oneParamCoherence (w η : ℝ) : ℝ :=
-  explicitCoherence (2 * η ^ 2 / Real.exp 1) (oneParamMass w η)
-    (explicitCount (oneParamRecordHeight w η))
+  explicitCoherence 1 (oneParamMass w η) (explicitCount (oneParamRecordHeight w η))
 
 /-- The Fejér order of the unmodulated family. -/
 def oneParamOrder (w η : ℝ) : ℕ :=
@@ -125,9 +125,8 @@ theorem one_param_near_top_visible_at_explicit_lag {w : ℝ} (hw : 0 < w) {z₀ 
       Real.log_pos (by linarith only [hΓ1])
     positivity
   obtain ⟨P, hP⟩ : ∃ P : ℕ, P = explicitCount (oneParamRecordHeight w η) := ⟨_, rfl⟩
-  obtain ⟨hc0, hc1, hca, hG1, hq0, hq1, hPk, hk1, hY⟩ := explicit_parameter_facts ha0 hDm0 hM P
-  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = explicitCoherence (2 * η ^ 2 / Real.exp 1) (oneParamMass w η) P :=
-    ⟨_, rfl⟩
+  obtain ⟨hc0, hc1, hca, hG1, hq0, hq1, hPk, hk1, hY⟩ := explicit_parameter_facts one_pos hDm0 hM P
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = explicitCoherence 1 (oneParamMass w η) P := ⟨_, rfl⟩
   rw [← hc] at hc0 hc1 hca hG1 hq0 hq1 hPk hk1 hY
   obtain ⟨k, hk⟩ : ∃ k : ℕ, k = explicitOrder (oneParamNoise w η) c P := ⟨_, rfl⟩
   rw [← hk] at hPk hk1 hY
@@ -190,12 +189,10 @@ theorem one_param_near_top_visible_at_explicit_lag {w : ℝ} (hw : 0 < w) {z₀ 
     linarith only [h1, h2]
   have hρr : c / V ≤ z₀.re / 16 := by
     rw [div_le_div_iff₀ hV0 (by norm_num)]; linarith only [hδV, hπk, hℓa, hc1]
-  have hDm : oneParamMass w η = 80 * Real.log (180 * (oneParamRecordHeight w η + 1)) *
-      (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 := rfl
+  have hDm : oneParamMass w η = 125 / 2 * Real.log (180 * (oneParamRecordHeight w η + 1)) := rfl
   have hηm : ((1 + coreFactorPerturbation P 1 V (c / V) G) * (2 * (c / V * V)) +
-      coreFactorPerturbation P 1 V (c / V) G) * ((P + 1) * (80 * Real.log (180 *
-        (oneParamRecordHeight w η + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) ≤
-      2 * η ^ 2 / Real.exp 1 / 2 := by
+      coreFactorPerturbation P 1 V (c / V) G) * ((P + 1) * (125 / 2 * Real.log (180 *
+        (oneParamRecordHeight w η + 1)))) ≤ 1 / 2 := by
     rw [div_mul_cancel₀ c hV0.ne', ← hDm, hG]
     have hτ := coreFactorPerturbation_le hc0 hc1 hV0 P
     have h1 : coreFactorPerturbation P 1 V (c / V) (explicitGap c P) * (2 * c) ≤ 1 * (2 * c) :=

@@ -942,6 +942,11 @@ Montgomery's combinatorial inequality gives $\lvert A\rvert\sum_{p\in P}(p-\omeg
 for a set occupying $\omega_p$ classes modulo each prime, and Montgomery's inequality at
 squarefree moduli gives the arithmetic large sieve
 $\lvert A\rvert\sum_{q\le Q\text{ squarefree}}h(q)\le N+2Q^2-1$ with $h(q)=\prod_{p\mid q}(p-c_p)/c_p$.
+The Montgomery–Vaughan cosecant inequality $\bigl\lvert\sum_{r\ne s}z_r\bar z_s/\sin\pi(\alpha_r-\alpha_s)\bigr\rvert\le\delta^{-1}\sum\lvert z_r\rvert^2$
+(`HTGeometry/MontgomeryVaughanCosecantInequality`) gives the dual sums over $\delta$-separated
+frequencies with constant $K+\delta^{-1}$; distinct Farey fractions and distinct roots of unity of
+order at most $Q$ are $1/(Q(Q-1))$-separated, so all four statements hold with $N+Q^2-1$
+(`LargeSieveWithTheMontgomeryVaughanConstant`, `ArithmeticLargeSieveWithTheMontgomeryVaughanConstant`).
 The window laws of §3.4 are consumed outside the theory as well: the long-window dissipation,
 with its variance bounded below by a Bertrand prime, is what makes the renormalized defect of
 Möbius and damped rows nonpositive at every prefix for large horizons in the trans-horizon
@@ -1040,8 +1045,7 @@ missing is the signed sum over moduli.
 shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the
 gap between a quadratic universal horizon and a linear special one is open, and any linear law
 must be incidence-algebraic. The exact window sandwich constant between $\Phi(N)-2$ and
-$2N^2-1$, and whether the factor two on $Q^2$ in the log-free large sieve can be removed by a
-better window kernel. The sign of a general signed prime packet in the energy-centered Gram.
+$2N^2-1$. The sign of a general signed prime packet in the energy-centered Gram.
 The error term in the Vasyunin reciprocity law below $O(p+q)$. Which rows are determined by
 their relation spectrum, beyond translation and the Galois action. Rates in the cofinal Möbius
 laws that are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue

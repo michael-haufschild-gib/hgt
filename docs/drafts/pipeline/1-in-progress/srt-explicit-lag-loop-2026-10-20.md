@@ -288,3 +288,27 @@ effective (finite-window) visibility of the lag family, records, non-attained to
   V ≥ V(a, σ) = `recordLag` with Γ(a) = `recordHeightOf` ⟹ P_v < 0 on [0, V];
   V(a, σ) ≍ log²(1/a)·loglog(1/a)/σ. Every near-top variant now reduces to a record lemma.
   Axioms clean; olean; wired.
+- **Correction to L26/L28 (2026-10-21).** As first built, the core-mass condition was absolute
+  (Σ_core |D_c| ≤ (P+1)·80 log Γ·B_w² against |D*| ≥ a), forcing c ∝ a and log G ≍ log(1/a); the lags
+  were then ≍ log³(1/a)/σ, not log² · loglog. Fixed: `norm_evenCoeff_zero_le_of_near` (|D_c| ≤
+  (125/2) log(180Γ)|D*| in the coherent core) makes the mass condition relative
+  (`one_param_record_visible` hηm: … · (P+1)(125/2)log(180(Γ+1)) ≤ 1/2); `oneParamMass`,
+  `recordMass` are now relative and `oneParamCoherence`, `recordCoherence` = explicitCoherence 1 ….
+  Now c ≍ 1/(P log Γ), log G ≍ log P, and V ≍ log²(1/a)·loglog(1/a)/σ holds. L25–L28 rebuilt.
+- **L29 · Wide near-top zone, square-root depth gap** — `OneParameterLagFamilyWideNearTopZone`.
+  `exists_loud_record_of_zone` (μ/V-near top ⟹ |D(z*)| ≥ |D(z₀)|e^{−μ}), `one_param_record_facts_of_zone`,
+  `zoneLag`, `one_param_zone_visible`, `one_param_zone_depth_gap`: P_v ≥ 0 on [0, V] with
+  V ≥ V_μ(w, η, δ₀) ⟹ a zero more than μ/V deeper. V_μ ≍ (μ + log(1/η))² log(μ + log(1/η))/δ₀, so
+  μ ≍ (δ₀V/log V)^{1/2}: depth gap ≍ (δ₀/(V log V))^{1/2} instead of 1/V. Axioms clean; olean; wired.
+- **L30 · Zone horizon law; twisted prime windows** — `ZoneHorizonLawAndTwistedPrimeWindows`.
+  `one_param_zone_horizon_law`: with `zoneHorizon w μ z = V_μ(z)`, P_v ≥ 0 on [0, V] ⟹ from every
+  zero inside the μ-horizon a zero beyond it, deeper by > μ/V (≤ ⌈V/μ⌉ steps). `zeta_near_top_primeWindow_neg`:
+  prime-side form of L24 for the bump modulated to γ₀ (2w < log 2): a twisted prime-window
+  functional is negative at a lag ≤ V_w(γ₀, δ₀). Axioms clean; olean; wired.
+- **L31 · Attained tops without separation** — `AttainedTopsAreVisibleWithoutSeparation`.
+  `one_param_attained_top_visible_at_horizon` (attained top, h_w(−iz₀) ≠ 0 ⟹ P_v < 0 at some
+  v ≤ V₀(z₀)), `zeta_attained_top_visible_at_polylog_lag` (modulated, v ≤ V_w(γ₀, δ₀)): the
+  separation hypothesis g of L13/L16/L20 is removed. `one_param_first_negative_lag_of_finite` and its
+  prime-window form: if ζ had a nonempty finite set of zeros right of the line (generic h_w there),
+  P_v < 0 for some v ≤ V₀(z₀) at a top zero z₀ — the finite off-line case of the goal with explicit V.
+  Axioms clean; olean; wired.

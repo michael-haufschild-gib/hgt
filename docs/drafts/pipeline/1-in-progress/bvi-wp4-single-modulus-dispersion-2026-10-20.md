@@ -231,6 +231,41 @@ Not significant: reciprocity error, window constants, horizons, large-sieve fact
   Weights smooth at scale A ⇒ all errors `≍ S₀Σ|c|p³/A²` ⇒ diagonal quality for `A ≥ P^{4/3}`: θ up to 3/2,
   beyond the sharp-cutoff Type-I cap 4/3 (C14, C22).
 
+- **C29 DONE (criteria 3+4: exact two-sided reduction of arbitrary small-scale coefficients to single-modulus statistics).**
+  `BVI/DualNormOfTheCrossScaleFunctional`. Kernel statistic `Λ_p(c') = Σ_n (c'/n²)(𝔅(p,n) − m_p) + Σ_n (c'/n³)𝔅₃(p,n)`.
+  Exact: `|E − main(c) − Σ_p (c(p)/p)Λ_p| ≤ 6Σ|c|p³Σ|c'|/n⁴`; attained (`c = sign Λ_p` on S):
+  `sup_{|c|≤1 on S} |E − main| = Σ_{p∈S}|Λ_p(c')|/p ± 6(Σ_S p³)Σ|c'|/n⁴`. Type II for arbitrary bounded a_p ⟺
+  bounds on one linear statistic of c' per small prime — no bilinear structure left. For arithmetic c' these are low-frequency
+  exponential sums `Σ_a W_p(a)X(a/p)` (replacement hypothesis made exact).
+
+- **C30 DONE (criteria 1+3 at every modulus: Möbius-type small-scale rows).**
+  `BVI/KernelMeanAtCompositeModuliAndTheAllRowsLaws`. Residue mean `m_d = (1/d)Σ_{r<d}𝔅(d,r) = Σ_j (gcd(j,d)²−1)/(12j²)`,
+  `0 ≤ m_d ≤ (π²/72)(τ(d)−1)` (gcd² ≤ Σ_{e|d,e|j}e², multiples of e carry ζ(2)). `|𝔅(d,·) − m_d| ≤ d²/3`. Abstract lemma:
+  d-periodic zero-sum `|D| ≤ B` vs second-order-vanishing weights: `|Σ xD| ≤ 2d²BΣ|Δ²x|`. All-rows smooth law:
+  `|E − S'Σ_d c(d)m_d/d| ≤ Σ|c|d³((2/3)Σ|Δ²x| + Σ|Δy|) + 6Σ|c|d³Σ|c'|/n⁴`; all-rows dual norm (attained + two-sided)
+  `Σ_{d∈S}|Λ_d(c')|/d`. θ up to 3/2 and the single-modulus reduction now hold for rows on all integers.
+
+- **C31 DONE (criterion 4: sharp-cutoff Type I at the large scale stops exactly at θ = 4/3; replacement = one order of smoothness).**
+  `BVI/SharpCutoffTypeIStopsAtFourThirds`. General density pigeonhole (`exists_shift_of_density`: density-1/K periodic
+  residue condition ⇒ 1/(2K) share at some shift in any length-2D interval). Centred-kernel primitive `G_p` periodic,
+  `|G_p| ≤ p³/4`, `|G_p(b)| ≤ bp²/4`, `G_p(a) ≥ ap²/50` for `32a ≤ p`. Flat row on `[A+1, A+L]`:
+  `Λ_p ≥ (G_p((A+L+1) mod p) − G_p((A+1) mod p))/(A+L) − (3/2)p³L/(A+1)²`. Nested pigeonholes (left end in `[0,p/8192]`,
+  right end in `[p/64,p/32]`, `|S| ≤ 2²²|S'|`) + C29 attained dual norm: some `|c| ≤ 1` on S' has
+  `E − main ≥ Σ_{S'} p²/(14400A) − 6(Σ_{S'}p³)Σ1/n³`; exceeds the diagonal for `A ≲ P^{3/2}`, so C22 is sharp.
+
+- **C32 DONE (criterion 3: the cross-scale law of every order).** `BVI/IteratedDifferencesAndRisingFactorialPronicWeights`
+  (tools) + `BVI/CrossScaleLawOfEveryOrder`. Exact tail identity `E = −Σ_{n,d} c'(n)(c(d)/d)Σ_{j≥1} t_d(jn)`,
+  `t_d(A) = Σ_{M≥A} r_d(M)w(M)`. Potential chain `X₀ = r_d`, `Y_i` = centred periodic primitive of `X_i`, `X_{i+1} = Y_i(·+1)`,
+  `|Y_i| ≤ (2d)^{i+1}d/2`; rising-factorial weights `u_i(A) = (i+1)!/(A(A+1)⋯(A+i+1))`, `u_i − u_i(·+1) = u_{i+1}`.
+  Tail expansion `t_d(A) = −Σ_{i<L} Y_i(A)u_i(A) + T_L`, `|T_L| ≤ (2d)^L(d²/2)u_L(A)`. Law of order `L+1`:
+  `|E − Σ c'(n)(c(d)/d)Σ_{i<L}Σ_j Y_{d,i}(jn)u_i(jn)| ≤ 2^L(L+1)!Σ|c|d^{L+1}Σ|c'|/n^{L+2}` (all rows, every L).
+- **C33 DONE (criterion 1: θ = 2K/(K+1) for (K−1)-smooth large-scale weights, every K).** `BVI/SmoothLargeScaleRowsOfEveryOrder`.
+  Smoothness norm `𝒮_L(c') = Σ_{t≤L}Σ_n|Δᵗc'(n)|/n^{L+2−t}`. Rows on primes, `c'` on `[L+1,N]`:
+  `|E| ≤ 2(L+1)4^L(L+1)!Σ_p|c(p)|(p^{L+1}𝒮_L(c') + Σ|c'|/n²/p)`. Mechanism: `p ∤ j` ⇒ `n ↦ Y(jn)` periodic zero-sum,
+  `L−i` iterated periodic Abel steps; Leibniz bound + step-j bound `|Δʳu_i(j·)| ≤ jʳu_{i+r}`; `p | j` crude (baseline).
+  `c' = n²x`, x smooth at scale A ⇒ `𝒮_L ≍ A^{1−L}` ⇒ diagonal quality for `A ≥ P^{(L+2)/(L+1)}`: θ = 2(L+1)/(L+2) →
+  4/3, 3/2, 8/5, …, → 2. Recovers C22/C28 shapes and is consistent with C31 (sharp cutoffs only K = 2).
+
 ## Queue
 
 - C1 first-jump window: Brownian-bridge law and codimension no-go.

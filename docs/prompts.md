@@ -627,6 +627,7 @@ write your whole report in docs/reports/review-2010/fable.md
 
 ## update obstacles
 previously we had created these two documents:
+- docs/reports/walls/walls-ledger.md
 - docs/reports/review-2010/hard-obstacles.md
 - docs/reports/review-2010/hard-obstacles-summary.md
 
@@ -639,7 +640,9 @@ based on route ledger: docs/reports/rh-current-frontier-map.md and ledger of har
    2.3 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 
 
-this review is incorrect and outdated. redo it.
+this review is incorrect and outdated. redo it. start with the wall-ledger.
+
+docs/reports/rh-current-frontier-map.md is the most up to date document, but do not rely only on it. use the search tool for the lean corpus to confirm the actual frontier and walls.
 
 the reports are not diaries or history log, but status quo reports.
 
@@ -660,7 +663,7 @@ important: the readme.md is not a ledger or status report but a foundational doc
 
 
 ## TASKS
-formalize unconditionally in lean the part of the CCM research that we are lacking following this review report: docs/reports/ccm-comparison-us-vs-sota.md
+formalize unconditionally in lean every task from the "## 2.1 Tasks that are just work" section in docs/reports/review-2110/hard-obstacles-summary.md
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -675,3 +678,23 @@ formalize unconditionally in lean the part of the CCM research that we are lacki
 If anything is missing from our lean corpus or mathlib, you build it no matter the effort.
 
 Always make good use the search tool for our lean corpus to find existing work, building blocks, and leads for new ideas and solutions.
+
+## argon
+
+general: follow the lean rules and the rule that proofs must be unconditional without unproven hypotheses and premises!!! 
+
+task: use the search tool for our whole lean corpus. find opportunities to "connect the dots" of theorems in different parts of the lean corpus to create a stronger theorem that delivers a valueable insight or mathematical tool to answer a question we were not able to answer before from the "## 2.2 Open mathematical obstacles" section in docs/reports/review-2010/hard-obstacles-summary.md
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+do not edit the hard-obstacles.md or route ledger.
+
+docs/reports/review-2110/walls-ledger.md

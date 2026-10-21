@@ -76,3 +76,28 @@ These four are published-result formalization targets. Ground-state simple-evenn
 - [Connes–Consani–Moscovici, *Zeta zeros and prolate wave operators: Semilocal adelic operators*](https://arxiv.org/html/2310.18423v2), Theorems 1, 4.6, 5.2 and equation (81).
 - [Connes–Consani–Moscovici, *Zeta Spectral Triples*](https://arxiv.org/html/2511.22755v1), §§3, 5, 8.
 - [Connes–van Suijlekom, *Quadratic Forms, Real Zeros and Echoes of the Spectral Action*](https://arxiv.org/html/2511.23257v1), adjacent non-CCM comparator.
+
+## Closure status of the four targets (2026-10-21)
+
+Ledger card: `docs/drafts/pipeline/1-in-progress/ccm-published-gap-closure-2026-10-21.md`.
+
+- **CCM 2023 Thm 4.6 (θₛ).** Closed: `fieldOneFiniteStageSoninThetaEquiv S λ : Sonin_λ(ℝ) ≃L[ℂ] Sonin_λ(X_S)`
+  with Fourier compatibility (`RHTower/FieldOneFiniteStageThetaSoninIsomorphism.lean`) and the
+  finite-S Hardy–Titchmarsh square (`RHTower/FieldOneFiniteStageThetaHardyTitchmarsh.lean`).
+- **CCM 2025 Thm 5.10 (D_log).** Closed: `ccmPublished_logDirac_theorem` (unconditional η/β dichotomy;
+  η-branch gives metric self-adjointness, real quotient spectrum, real zeros of ξ̂ and
+  `det_reg(D_log − z) = −iλ^{−iz}ξ̂(z)` for `Im z < 0`) and `ccmPublished_logDirac_simpleEven`
+  (`RHTower/CCMLogDiracDeterminantTheorem.lean`, `CCMLogDiracRankOneDeterminant.lean`,
+  `CCMCircleDiracZetaDeterminant.lean`, `HTGeometry/ComplexShiftLerch.lean`).
+- **CCM 2023 Thm 5.2(iv) (metaplectic).** Closed: `ccmMetaplectic_even_representation`,
+  `ccmMetaplecticJacobi_moment_eq_gamma` (`RHTower/CCMMetaplecticOscillatorTriple.lean`,
+  `CCMMetaplecticRepresentationIdentification.lean`).
+- **CC 2020 Thm 1 (Sonin-trace domination).** Exact framework closed:
+  `−W(H) = Tr(ϑ(H)S) + Tr(ϑ(H)G)`, `G = 1 − P − P̂ − S`, and the domination is equivalent to
+  `0 ≤ Re Tr(ϑ(H)G)` (`RHTower/CCMArchimedeanSoninGenericDecomposition.lean`); at every cutoff
+  `Λ > 1`, `−W(g★⋆g) = 2 log Λ‖g‖² + Tr(ϑ(g)S_Λϑ(g)†) + Tr(ϑ(g)G_Λϑ(g)†)` and domination holds for all
+  tests supported in `|log u| < log Λ/(‖G_Λ‖₁+1)` with no moment condition
+  (`RHTower/CCMArchimedeanSoninCutoffTraceFormula.lean`). The inequality itself on
+  the `[2^{−1/2}, 2^{1/2}]` class is **not** derivable from the existing identities alone: it is a
+  quantitative statement about the prolate resolvent kernel on the square `[1/2,1]×[1,2]`, which the
+  paper settles with numerical spectral input. It remains open in the corpus.

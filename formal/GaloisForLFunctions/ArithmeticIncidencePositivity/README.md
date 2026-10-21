@@ -471,6 +471,43 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     gauge whatever `|S|`, so the micro-fold plus ground-state transform cannot go far past this window
     with near-optimal gauges.
 
+32. **The ground-state remainder carries potential: window `356/1000`.** The ground-state transform
+    splits each pair energy exactly, `k(F(x) − F(y))² = F(x)²k(1 − q) + F(y)²k(1 − 1/q) +
+    k h(x)h(y)(f(x) − f(y))²`, `q = h(y)/h(x)`, `f = F/h`, and mechanisms 21–31 drop the remainder. On a
+    rectangle `Z × H` the Schur step `A(c − t)² + Bt² ≥ c²AB/(A + B)` with `A = k/q`, `B = β` turns the
+    remainder into potential at `x`, paid for at `y` (`sq_sub_ge_groundState_schur`):
+    `k(a − b)² ≥ a²(k(1 − q) + kβq²/(k + βq)) + b²(k(1 − 1/q) − β)`. Integrated
+    (`surplusEnergy_ge_potential_add_schur`),
+    `S_P(F) ≥ ∫F²U_h + s₀|H|∫_Z F² − β|Z|∫_H F²` whenever `s₀ ≤ kβq²/(k + βq)` on `Z × H`. The potential
+    is no longer local: a deficit on `Z` is paid by any `H` that can afford `β|Z|` per unit of mass. In
+    the first prime window the inner edge `Z = [337/1000, 343/1000]` of the strip borrows from its outer
+    part `H = [35/100, 356/1000]`, where the plateau logarithm is large. There `k ≥ 128/5`, because the
+    distance is at most `19/1000`, and `q ≥ 31/40`; with `β = 40` this gives `s₀ = 21/2`
+    (`schurFold_pairWeight_ge`). With the gauge `1/500 + (3/5)y − y² − (11/50)y³ − (49/20)y⁴`, every odd
+    `F` supported in `[−356/1000, 356/1000]` has `Ẑ(F) ≥ (1/1000)∫F²`
+    (`fullZeroForm_ge_of_odd_support_le_threeHundredFiftySixThousandths`). The structural inner-edge
+    loss of mechanism 31 is a loss of the local potential only. With the remainder kept, the wall moves
+    to the point where the hub runs out of spare potential.
+
+33. **The prime atom pays the strip: window `9/25`.** For odd `F` supported in `[−r, r]`, `L/2 < r`,
+    split `F` on `S = [L − r, r]` into its parts even and odd about `L/2`, `F(a) = e + α`,
+    `F(L − a) = e − α`. The atom sees `F(a)F(L − a) = e² − α²` and `e² + α² = (F(a)² + F(L − a)²)/2`,
+    so exactly (`integral_mul_shift_eq_two_reflectedOdd_sub`)
+    `∫ F(x)F(x + L) dx = 2∫_S α² − ∫_S F²`. Mechanisms 28–32 used only `∫ F F(· + L) ≤ ∫_S α²` and
+    dropped the even part. But the even part is the direction of the ground state, and for it the atom
+    is a gain: the prime term of `Ẑ` equals `2Λ(2)/√2 ∫_S F² − 4Λ(2)/√2 ∫_S α²`. Interpolating
+    (`integral_mul_shift_le_interp`) gives `∫ F F(· + L) ≤ (1 + t)∫_S α² − t∫_S F²` for `t ≤ 1`. The
+    sharp micro-fold pays `(1 + t)` times the odd part with the fraction `θ = (1 + t)2Λ(2)/√2/λ`, and the
+    strip carries the prime potential `(Λ(2)/√2)t ≥ (49/100)t`
+    (`fourKilling_add_potentialMixPrime_le_archJump_sub_prime`). With `t = 1/2` and `θ = 4/5`, in units
+    of the gauge this is `(49/200)h ≥ 0.0096` against a strip loss `≤ 7/1000`, so the inner-edge wall of
+    mechanisms 31–32 disappears. The window is then limited by the archimedean middle (minimum near
+    `x ≈ 0.2`). Under the dilation `x ↦ sx` the log-kernel potential is invariant except for the
+    plateau term, which drops by `log s`. The gauge of mechanism 32 dilated by `90/89`,
+    `1/500 + (89/150)y − (44/45)y² − (17/80)y³ − (82/35)y⁴`, still has slack there. Every odd `F`
+    supported in `[−9/25, 9/25]` has `Ẑ(F) ≥ (1/1000)∫F²`
+    (`fullZeroForm_ge_of_odd_support_le_nineTwentyFifths`).
+
 ---
 
 ## 4. Traps
@@ -531,7 +568,7 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 ### Research topics toward the shared target
 
 1. **Beyond the first prime window.** The variation inequality for all even profiles is proved past
-   `log 2/2` (`353/1000`, mechanisms 27–31); the unit is the support reached. Up to `2/5` the prime atom
+   `log 2/2` (`9/25`, mechanisms 27–33); the unit is the support reached. Up to `2/5` the prime atom
    is dominated by the strip surplus (mechanism 28), so the support is limited only by the
    archimedean potential `U_h^{off}` (mechanism 29). The archimedean odd sector alone is expected to stay positive
    up to `≈ 0.375` (second eigenvalue of the logarithmic Laplacian on an interval). Past `log 2/2` the fold of mechanism 23

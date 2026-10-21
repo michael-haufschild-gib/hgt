@@ -22,8 +22,12 @@ domination `Re Tr(ϑ(H) S) ≤ -Re W(H)` of Connes--Consani (Weil positivity and
 archimedean place, Theorem 1, for `H = g ⋆ g★`) is equivalent to `0 ≤ Re Tr(ϑ(H) G)`.
 
 The generic part is self-adjoint and Fourier-invariant, annihilates the Sonin space, anticommutes
-with `P - P̂`, and satisfies `G² + (P - P̂)² = 1 - S`: on each two-dimensional block of the pair it is
-`±cos θ` against `(P - P̂)² = sin² θ`.
+with `P - P̂`, and satisfies `G² + (P - P̂)² = 1 - S`: on each two-dimensional block of the pair it
+is `±cos θ` against `(P - P̂)² = sin² θ`.  Moreover `G = G² - (P P̂ + P̂ P)`, so
+
+`-W(H) = Tr(ϑ(H) S) + Tr(ϑ(H) G²) - Tr(ϑ(H)(P P̂ + P̂ P))`
+
+with a positive square and the explicit time-band anticommutator.
 -/
 
 noncomputable section
@@ -55,7 +59,8 @@ theorem isTraceClass_mem_hsTraceIdeal {T : evenSubspace →L[ℂ] evenSubspace}
 theorem ccmIntegratedScaling_mul_scatteringLogDifferential_mem (g : 𝓢(ℝ, ℂ)) :
     ccmIntegratedScaling (ccmSchwartzLogKernel g) * ccmArchimedeanGeometricScatteringLogDifferential
       ∈ hsTraceIdeal evenSubspace :=
-  isTraceClass_mem_hsTraceIdeal (ccmIntegratedScaling_mul_geometricScatteringLogDifferential_isTraceClass g)
+  isTraceClass_mem_hsTraceIdeal
+    (ccmIntegratedScaling_mul_geometricScatteringLogDifferential_isTraceClass g)
 
 theorem ccmIntegratedScaling_mul_soninProjection_mem (g : 𝓢(ℝ, ℂ)) :
     ccmIntegratedScaling (ccmSchwartzLogKernel g) * evenCentralSoninProjection 1
@@ -66,7 +71,14 @@ theorem ccmIntegratedScaling_mul_soninProjection_mem (g : 𝓢(ℝ, ℂ)) :
 theorem ccmIntegratedScaling_mul_soninGenericPart_mem (g : 𝓢(ℝ, ℂ)) :
     ccmIntegratedScaling (ccmSchwartzLogKernel g) * ccmSoninGenericPart
       ∈ hsTraceIdeal evenSubspace := by
-  rw [ccmSoninGenericPart_eq, mul_sub, mul_neg]
+  have h : ccmIntegratedScaling (ccmSchwartzLogKernel g) * ccmSoninGenericPart =
+      -(ccmIntegratedScaling (ccmSchwartzLogKernel g) *
+          ccmArchimedeanGeometricScatteringLogDifferential) -
+        ccmIntegratedScaling (ccmSchwartzLogKernel g) * evenCentralSoninProjection 1 := by
+    refine ContinuousLinearMap.ext fun x => ?_
+    simp only [ccmSoninGenericPart_eq, mul_apply_eq_comp, _root_.sub_apply, _root_.neg_apply,
+      map_sub, map_neg]
+  rw [h]
   exact sub_mem (neg_mem (ccmIntegratedScaling_mul_scatteringLogDifferential_mem g))
     (ccmIntegratedScaling_mul_soninProjection_mem g)
 
@@ -81,8 +93,10 @@ theorem neg_ccmArchimedeanWeilDistribution_eq_sonin_add_generic (H : CCMCompactS
   set T := ccmIntegratedScaling (ccmSchwartzLogKernel H.toSchwartzMap)
   have hD : T * ccmArchimedeanGeometricScatteringLogDifferential =
       -(T * ccmSoninGenericPart) - T * evenCentralSoninProjection 1 := by
-    rw [ccmSoninGenericPart_eq]
-    noncomm_ring
+    refine ContinuousLinearMap.ext fun x => ?_
+    simp only [ccmSoninGenericPart_eq, mul_apply_eq_comp, _root_.sub_apply, _root_.neg_apply,
+      map_sub, map_neg, neg_sub]
+    abel
   rw [← opTrace_ccmIntegratedScaling_mul_geometricScatteringLogDifferential_eq_weilDistribution H]
   change -opTrace (T * ccmArchimedeanGeometricScatteringLogDifferential) = _
   rw [hD, opTrace_sub_of_mem (neg_mem (ccmIntegratedScaling_mul_soninGenericPart_mem _))
@@ -125,19 +139,27 @@ theorem evenCentralSoninProjection_one_mul_self :
 /-- `G` is self-adjoint. -/
 theorem adjoint_ccmSoninGenericPart :
     ContinuousLinearMap.adjoint ccmSoninGenericPart = ccmSoninGenericPart := by
-  simp only [ccmSoninGenericPart, map_sub, adjoint_one, adjoint_evenIndicatorCutoff,
-    adjoint_evenFourierCutoff, adjoint_evenCentralSoninProjection]
+  have hP : IsSelfAdjoint (evenIndicatorCutoff 1) :=
+    ContinuousLinearMap.isSelfAdjoint_iff'.mpr (adjoint_evenIndicatorCutoff 1)
+  have hR : IsSelfAdjoint (evenFourierCutoff 1) :=
+    ContinuousLinearMap.isSelfAdjoint_iff'.mpr (adjoint_evenFourierCutoff 1)
+  have hS : IsSelfAdjoint (evenCentralSoninProjection 1) :=
+    ContinuousLinearMap.isSelfAdjoint_iff'.mpr (adjoint_evenCentralSoninProjection 1)
+  exact ContinuousLinearMap.isSelfAdjoint_iff'.mp
+    ((((IsSelfAdjoint.one _).sub hP).sub hR).sub hS)
 
 /-- `G` annihilates the Sonin space. -/
 theorem ccmSoninGenericPart_mul_soninProjection :
     ccmSoninGenericPart * evenCentralSoninProjection 1 = 0 := by
-  simp only [ccmSoninGenericPart, sub_mul, one_mul, evenIndicatorCutoff_mul_evenCentralSoninProjection,
+  simp only [ccmSoninGenericPart, sub_mul, one_mul,
+    evenIndicatorCutoff_mul_evenCentralSoninProjection,
     evenFourierCutoff_mul_evenCentralSoninProjection, evenCentralSoninProjection_one_mul_self]
   abel
 
 theorem soninProjection_mul_ccmSoninGenericPart :
     evenCentralSoninProjection 1 * ccmSoninGenericPart = 0 := by
-  simp only [ccmSoninGenericPart, mul_sub, mul_one, evenCentralSoninProjection_mul_evenIndicatorCutoff,
+  simp only [ccmSoninGenericPart, mul_sub, mul_one,
+    evenCentralSoninProjection_mul_evenIndicatorCutoff,
     evenCentralSoninProjection_mul_evenFourierCutoff, evenCentralSoninProjection_one_mul_self]
   abel
 
@@ -167,6 +189,43 @@ theorem ccmSoninGenericPart_anticommute :
     evenFourierCutoff_mul_evenCentralSoninProjection]
   abel
 
+/-- **Anticommutator law.**  `G² - G = P P̂ + P̂ P`. -/
+theorem ccmSoninGenericPart_sq_sub_self :
+    ccmSoninGenericPart * ccmSoninGenericPart - ccmSoninGenericPart =
+      evenIndicatorCutoff 1 * evenFourierCutoff 1 +
+        evenFourierCutoff 1 * evenIndicatorCutoff 1 := by
+  simp only [ccmSoninGenericPart, sub_mul, mul_sub, one_mul, mul_one,
+    evenIndicatorCutoff_one_mul_self, evenFourierCutoff_one_mul_self,
+    evenCentralSoninProjection_one_mul_self, evenIndicatorCutoff_mul_evenCentralSoninProjection,
+    evenFourierCutoff_mul_evenCentralSoninProjection,
+    evenCentralSoninProjection_mul_evenIndicatorCutoff,
+    evenCentralSoninProjection_mul_evenFourierCutoff]
+  abel
+
+/-- **Square--anticommutator form of the Weil distribution.**
+`-W(H) = Tr(ϑ(H) S) + Tr(ϑ(H) G²) - Tr(ϑ(H)(P P̂ + P̂ P))`, all three terms trace class. -/
+theorem neg_ccmArchimedeanWeilDistribution_eq_sonin_add_square_sub_anticommutator
+    (H : CCMCompactSchwartzLogTest) :
+    -ccmArchimedeanWeilDistribution H =
+      opTrace (ccmIntegratedScaling (ccmSchwartzLogKernel H.toSchwartzMap) *
+          evenCentralSoninProjection 1) +
+        opTrace (ccmIntegratedScaling (ccmSchwartzLogKernel H.toSchwartzMap) *
+          (ccmSoninGenericPart * ccmSoninGenericPart)) -
+        opTrace (ccmIntegratedScaling (ccmSchwartzLogKernel H.toSchwartzMap) *
+          (evenIndicatorCutoff 1 * evenFourierCutoff 1 +
+            evenFourierCutoff 1 * evenIndicatorCutoff 1)) := by
+  set T := ccmIntegratedScaling (ccmSchwartzLogKernel H.toSchwartzMap)
+  have hG := ccmIntegratedScaling_mul_soninGenericPart_mem H.toSchwartzMap
+  have hG2 : T * (ccmSoninGenericPart * ccmSoninGenericPart) ∈ hsTraceIdeal evenSubspace := by
+    rw [← mul_assoc]
+    exact hsTraceIdeal_comp_right hG _
+  have hA : T * (evenIndicatorCutoff 1 * evenFourierCutoff 1 +
+      evenFourierCutoff 1 * evenIndicatorCutoff 1) =
+        T * (ccmSoninGenericPart * ccmSoninGenericPart) - T * ccmSoninGenericPart := by
+    rw [← ccmSoninGenericPart_sq_sub_self, mul_sub]
+  rw [neg_ccmArchimedeanWeilDistribution_eq_sonin_add_generic, hA, opTrace_sub_of_mem hG2 hG]
+  ring
+
 /-- **Fourier invariance.**  The cosine transform conjugates `G` to itself. -/
 theorem evenFourierTransform_conj_ccmSoninGenericPart :
     evenFourierTransform * ccmSoninGenericPart * evenFourierTransform = ccmSoninGenericPart := by
@@ -191,8 +250,7 @@ theorem evenFourierTransform_conj_ccmSoninGenericPart :
         evenFourierTransform * evenIndicatorCutoff 1 * evenFourierTransform -
           evenFourierTransform * evenFourierCutoff 1 * evenFourierTransform -
             evenFourierTransform * evenCentralSoninProjection 1 * evenFourierTransform := by
-    rw [ccmSoninGenericPart]
-    noncomm_ring
+    simp only [ccmSoninGenericPart, mul_sub, sub_mul, mul_one]
   rw [hexp, hP, hR, hS, evenFourierTransform_mul_self, ccmSoninGenericPart]
   abel
 

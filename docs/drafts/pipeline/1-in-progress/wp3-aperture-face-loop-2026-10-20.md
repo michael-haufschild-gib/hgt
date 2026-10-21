@@ -217,3 +217,5 @@ Knowledge ledger: `logs/wp3-aperture-face-knowledge.md`.
   infrastructure (`FoldedJumpHubSchur`) built and ready: it replaces pointwise supersolution by a Schur
   mean condition. Next: hub–Schur certificates past `0.3` (bulk potential dips allowed), then the even
   sector toward `½ log 2` with the prime 2.
+- 2026-10-21 — loop paused after C8 at user request. Open: quartic insufficient at R = 0.311; sextic
+  certificate scheme unfinished (see knowledge ledger).

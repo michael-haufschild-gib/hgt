@@ -6,17 +6,19 @@ import GaloisForLFunctions.SquareRootThreshold.OneParameterLagFamilyHorizonLaw
 `one_param_record_visible` sees the Legendre record `z*` of `P_v` at lag `V` from three numbers:
 its loudness `|D(z*)| ≥ a`, its height `|Im z*| ≤ Γ` and its depth `Re z* ≥ σ`. Here the remaining
 parameters are chosen from `a` and `σ` alone. No coefficient reaches `a` above
-`Γ(a) = (2880 · 80(e^{w/2}B_w)²/a)^{1/3}` (`recordHeightOf`). The neighbour bound is
-`D(a) = recordMass`, the noise constant `M(a) = recordNoise`, and the order is
-`k(a) = explicitOrder(M(a), c(a), P(a))` with `P(a) = ⌈80 log(180Γ(a))⌉`.
+`Γ(a) = (2880 · 80(e^{w/2}B_w)²/a)^{1/3}` (`recordHeightOf`). The relative neighbour bound is
+`D(a) = (125/2) log(180(Γ(a) + 1))` (`recordMass`), the coherence `c(a) = 1/(10(P + 1)D(a) + 1)`,
+the noise constant `M(a) = recordNoise`, and the order is `k(a) = explicitOrder(M(a), c(a), P(a))`
+with `P(a) = ⌈80 log(180Γ(a))⌉`.
 
 **Theorem** (`one_param_record_visible_at_explicit_lag`). If the record at lag
 `V ≥ V(a, σ) = (4/σ)(13πk(a) + 4) + w + 8we^{w/2}J_w/H₀(a)` (`recordLag`) has `|D(z*)| ≥ a`,
 `|Im z*| ≤ Γ(a)` and `Re z* ≥ σ`, then `P_v < 0` for some `v ∈ [0, V]`.
 
-Every near-top statement reduces to this one through a record lemma that produces `(a, σ)`. Since
-`log Γ(a) ≍ log(1/a)` and `log k(a) ≍ 2 log P(a) + log log G`,
-`V(a, σ) ≍_w (log(1/a))² log log(1/a)/σ`.
+Every near-top statement reduces to this one through a record lemma that produces `(a, σ)`.
+`P(a) ≍ log Γ(a) ≍ log(1/a)`. The coherence `c(a)` does not depend on the loudness `a` (the core
+mass is measured relative to the record), so `log G ≍ log P` and
+`log₂ Y ≍ P² log P + log(1/a)`. Hence `V(a, σ) ≍_w (log(1/a))² log log(1/a)/σ`.
 -/
 
 open MeasureTheory Complex Set Filter Topology
@@ -33,18 +35,17 @@ unmodulated family reaches `a`. -/
 def recordHeightOf (w a : ℝ) : ℝ :=
   (2880 * (80 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 / a)) ^ ((1 : ℝ) / 3)
 
-/-- The neighbour bound `D(a) = 80 log(180(Γ(a) + 1))(e^{w/2}B_w)²`. -/
-def recordMass (w a : ℝ) : ℝ :=
-  80 * Real.log (180 * (recordHeightOf w a + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2
+/-- The relative neighbour bound `D(a) = (125/2) log(180(Γ(a) + 1))`. -/
+def recordMass (w a : ℝ) : ℝ := 125 / 2 * Real.log (180 * (recordHeightOf w a + 1))
 
 /-- The noise constant `M(a) = 4m₀/((e − 1)a) + 6144 log(180(Γ(a) + 6))`. -/
 def recordNoise (w a : ℝ) : ℝ :=
   4 * (32 * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 * (xiLineTwoLogDerivConstant + Real.log 4)) /
       ((Real.exp 1 - 1) * a) + 6144 * Real.log (180 * (recordHeightOf w a + 6))
 
-/-- The coherence product for a record of loudness `a`. -/
+/-- The coherence product `c = 1/(10(P + 1)D(a) + 1)`. -/
 def recordCoherence (w a : ℝ) : ℝ :=
-  explicitCoherence a (recordMass w a) (explicitCount (recordHeightOf w a))
+  explicitCoherence 1 (recordMass w a) (explicitCount (recordHeightOf w a))
 
 /-- The Fejér order for a record of loudness `a`. -/
 def recordOrder (w a : ℝ) : ℕ :=
@@ -90,8 +91,8 @@ theorem one_param_record_visible_at_explicit_lag {w : ℝ} (hw : 0 < w) {V : ℝ
     have hL : 0 < Real.log (180 * (recordHeightOf w a + 6)) := Real.log_pos (by linarith only [hΓ4])
     positivity
   obtain ⟨P, hP⟩ : ∃ P : ℕ, P = explicitCount (recordHeightOf w a) := ⟨_, rfl⟩
-  obtain ⟨hc0, hc1, hca, hG1, hq0, hq1, hPk, hk1, hY⟩ := explicit_parameter_facts ha hDm0 hM P
-  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = explicitCoherence a (recordMass w a) P := ⟨_, rfl⟩
+  obtain ⟨hc0, hc1, hca, hG1, hq0, hq1, hPk, hk1, hY⟩ := explicit_parameter_facts one_pos hDm0 hM P
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = explicitCoherence 1 (recordMass w a) P := ⟨_, rfl⟩
   rw [← hc] at hc0 hc1 hca hG1 hq0 hq1 hPk hk1 hY
   obtain ⟨k, hk⟩ : ∃ k : ℕ, k = explicitOrder (recordNoise w a) c P := ⟨_, rfl⟩
   rw [← hk] at hPk hk1 hY
@@ -148,11 +149,10 @@ theorem one_param_record_visible_at_explicit_lag {w : ℝ} (hw : 0 < w) {V : ℝ
     linarith only [h1, h2]
   have hρr : c / V ≤ σ / 8 := by
     rw [div_le_div_iff₀ hV0 (by norm_num)]; linarith only [hσV, hπk, hc1]
-  have hDm : recordMass w a = 80 * Real.log (180 * (recordHeightOf w a + 1)) *
-      (Real.exp (w / 2) * scaledBumpDecay w) ^ 2 := rfl
+  have hDm : recordMass w a = 125 / 2 * Real.log (180 * (recordHeightOf w a + 1)) := rfl
   have hηm : ((1 + coreFactorPerturbation P 1 V (c / V) G) * (2 * (c / V * V)) +
-      coreFactorPerturbation P 1 V (c / V) G) * ((P + 1) * (80 * Real.log (180 *
-        (recordHeightOf w a + 1)) * (Real.exp (w / 2) * scaledBumpDecay w) ^ 2)) ≤ a / 2 := by
+      coreFactorPerturbation P 1 V (c / V) G) * ((P + 1) * (125 / 2 * Real.log (180 *
+        (recordHeightOf w a + 1)))) ≤ 1 / 2 := by
     rw [div_mul_cancel₀ c hV0.ne', ← hDm, hG]
     have hτ := coreFactorPerturbation_le hc0 hc1 hV0 P
     have h1 : coreFactorPerturbation P 1 V (c / V) (explicitGap c P) * (2 * c) ≤ 1 * (2 * c) :=

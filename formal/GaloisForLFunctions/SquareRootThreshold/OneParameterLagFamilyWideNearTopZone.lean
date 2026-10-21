@@ -3,7 +3,21 @@ import GaloisForLFunctions.SquareRootThreshold.OneParameterLagFamilyRecordsAreVi
 /-!
 # The one-parameter lag family sees a wide zone below the top
 
-(docstring to be completed)
+The near-top theorems ask for a zero `½ + z₀` within `1/V` of the top. Here the zone has width
+`μ/V` for any `μ`. The Legendre record then only keeps `|D(z*)| ≥ |D(z₀)|e^{−μ}`
+(`exists_loud_record_of_zone`), and its loudness `a = 2η²e^{−μ}` and depth `Re z* ≥ Re z₀/2`
+(`one_param_record_facts_of_zone`) feed `one_param_record_visible_at_explicit_lag`.
+
+* **Zone visibility** (`one_param_zone_visible`). If every zero satisfies `Re ρ − ½ ≤ δ₀ + μ/V` with
+  `V ≥ V_μ(w, η, δ₀) = V(2η²e^{−μ}, δ₀/2) + (2/δ₀)|log(80 log(180Γ)(e^{w/2}B_w)²/(2η²))|`
+  (`zoneLag`), then `P_v < 0` for some `v ∈ [0, V]`.
+* **Depth gap across a zone** (`one_param_zone_depth_gap`). If `P_v ≥ 0` on `[0, V]` and
+  `V ≥ V_μ(w, η, δ₀)`, some zero lies more than `μ/V` to the right of `½ + z₀`.
+
+Since the coherence of the record does not depend on its loudness, `log(1/a) = μ + log(1/(2η²))`
+enters `V(a, σ)` only through `P ≍ log(1/a)`: `V_μ ≍_w (μ + log(1/η))² log(μ + log(1/η))/δ₀`. The
+largest admissible `μ` is `≍ (δ₀V/log V)^{1/2}`, so positivity of `P_v` on `[0, V]` keeps such a zero
+at depth `≥ c_w(δ₀/(V log V))^{1/2}` below the top, against `1/V` for `one_param_depth_gap_of_lag_positivity`.
 -/
 
 open MeasureTheory Complex Set Filter Topology

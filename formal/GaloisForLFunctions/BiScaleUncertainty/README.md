@@ -954,7 +954,19 @@ live on the slab of exponent sum $0,1$, whose only integer lags are $m_1$ and $m
 supremum by an explicit constant, $\ge 9/10$ for $\{2,3\}$, because the prime-power extremal sits at the
 joint phase where every composite is charged; the certificate is $-(c_0/2)\cos(t\log pq)$ against the
 quadratic drop $S_x(\theta)\le x/(1-x)-x(1-\cos\theta)/(1-x^2)$ (`PrimeTowerDeletionCompositeCharge`).
-So $\log 6$ is free for the nodes $\{2,3\}$ and costs for their towers.
+So $\log 6$ is free for the nodes $\{2,3\}$ and costs for their towers. For any finite set of
+primes the same slab construction gives the Euler price on the integer grid
+(`PrimePowerDeletionSlabTrains`). Attainment is rigid: the deletion defect at $m$ is the energy of
+the alternating periodization along $\log m$ over one period, so only pairs $g+g(\cdot-\log m)$
+attain $w(m)$ (`PrimePowerDeletionPeriodizationDefect`); peeling primes one at a time, with the
+periodizations of the remainder forced to vanish by the density of $\log m_1\mathbb Z+\log m_2\mathbb Z$,
+the Euler price is attained on windows of length $L$ iff $L>\log\prod_pm_p$
+(`PrimePowerDeletionPairThreshold`, `PrimePowerDeletionEulerThreshold`). Composites are free for the
+price and forced for its extremals. A tower pair behaves differently: deleting $\{m,m^2\}$, the
+window spectrum is $\{0\}$ up to $\log m$, exactly $[-w(m),w(m)]$ up to $\log m^2$ (the square's lag
+does not fit, so the square is blind for free), and the joint range of the tower beyond
+(`PrimePowerTowerPairWindowSpectrum`). The joint price of $\{2,4\}$ appears at $\log 4$, the lag of a
+deleted node; that of $\{2,3\}$ at $\log 6$, the lag of a node that is never charged.
 
 **Window spectra.** For tests in intervals of length $L=\log X$ the prime side is the compressed
 operator $\sum_{n<X}w(n)(S_{\log n}+S_{\log n}^*)$. Its extremes: $\pm\lambda_{23}$,
@@ -971,7 +983,10 @@ $\mathrm{width}\le\theta^*\le\mathrm{width}/2+\tfrac14$ (`PrimeWindowCeilingRHCr
 $|c(L)+\mathrm{floor}(L)|\le4L+O(1)$, so the floor reads RH and the width as the ceiling does
 (`PrimeWindowLiouvilleMirror`). The mirror is Kronecker's theorem: modulating by $e^{i\xi u}$ with
 $p^{i\xi}\approx-1$ for all $p<X$ turns the prime measure into its Liouville twist up to the squares;
-window extremes see the atoms only through their sizes.
+window extremes see the atoms only through their sizes; more generally the window ceiling and
+floor of every unimodular completely multiplicative twist of the atoms (Dirichlet characters,
+vertical shifts) equal those of $\zeta$ (`PrimeWindowTwistInvariance`), so window extremes cannot
+read GRH.
 
 ## 4. Traps and sharp boundaries
 
@@ -1038,10 +1053,15 @@ finite-cutoff packet energy including the endpoint term $\tilde E(L)^2$, and an 
 of the universal-probe criterion in which the boost is explicit.
 
 **The blind cone.** On the powers of one integer the slack is completely known, as a circle
-moment problem with closed forms for the full set, one deleted node and the off-multiples. Open:
-the exact slack on the powers of two multiplicatively independent integers (the gain of
-blindness at $3$ over the dyadic constant is explicit but not sharp, and the joint phase measure
-lives on a torus); the infimum of $\mathcal J/h(0)$ on the full blind polar class against
+moment problem with closed forms for the full set, one deleted node and the off-multiples. On the
+powers of two integers the spectral law is a probability law on the line with uniform projections
+on both circles $r\mapsto r\ell_i\bmod 2\pi$; the joint phase winds densely around the torus and
+the symbol $\gamma(r)$ is a function on the line, not on the torus. Weak duality holds with *line
+certificates*, continuous circle observables with $P_1(r\ell_1)+P_2(r\ell_2)\le\gamma(r)$ for all
+real $r$, and product midpoint designs $\omega_a\pm\omega'_b$, whose cosine sums factor, attain the
+mean $T(q_1,q_2)$ of $\gamma$ under the convolution of the two uniform period laws. Hence the exact
+slack lies in $[-T(q_1,q_2),\,-m_{q_1}-\eta(q_1,q_2)]$ (`TwoTowerBlindSlackEnclosure`). Open: its exact
+value (the box convolution is the admissible law of smallest support, not expected to be optimal); the infimum of $\mathcal J/h(0)$ on the full blind polar class against
 $|\Omega(0)|$, which is prime-blind archimedean positivity; and the exact density threshold for
 pole visibility between the sub-square-root sets, where the pole is invisible, and the full grid,
 where zero-pole positivity is RH, in particular whether blindness at the primes alone, with

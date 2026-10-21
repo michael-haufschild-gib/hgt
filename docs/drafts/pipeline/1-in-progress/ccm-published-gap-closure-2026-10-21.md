@@ -15,7 +15,7 @@
 | T2 | CCM 2023 Thm 4.6: `θ_S : Sonin_λ(ℝ) ≃ Sonin_λ(X_S)` for every finite `S`, Fourier compatible | `θ_S = w_S ∘ E_S`, `E_S = ∏_{p∈S}(1 − p^{-1/2}ϑ(p))` (Neumann-invertible, `‖p^{-1/2}ϑ(p)‖<1`); `E_S^{±1}` preserve `ran(1−P_λ)`; `F_S θ_S = θ_S F` ⇒ `Sonin_λ(X_S) = θ_S(Sonin_λ(ℝ))` | **Lean-closed** (`FieldOneFiniteStageThetaSoninIsomorphism`, `FieldOneFiniteStageThetaHardyTitchmarsh`) |
 | T4 | CCM 2023 Thm 5.2(iv): Jacobi/Gamma data = even metaplectic representation | build sl₂ operators from Jacobi coefficients, identify on even Hermite basis | **Lean-closed** (`CCMMetaplecticOscillatorTriple`, `CCMMetaplecticRepresentationIdentification`) |
 | T3 | CCM 2025 Thm 5.10: `D_log^{(λ,N)}` self-adjoint, `det_reg(D_log − z) = −i λ^{−iz} ξ̂(z)` | finite-rank perturbation of `diag(πn/a)`; ζ-regularized determinant defined explicitly; unconditional dichotomy, simple-even as a corollary | **Lean-closed** (`HTGeometry/ComplexShiftLerch`, `CCMCircleDiracZetaDeterminant`, `CCMLogDiracRankOneDeterminant`, `CCMLogDiracDeterminantTheorem`) |
-| T1 | CC 2020 Thm 1: `W_∞(g∗g*) ≥ Tr(ϑ(g)Sϑ(g)*)`, supp `g ⊆ [2^{-1/2},2^{1/2}]`, `ĝ(i/2)=ĝ(0)=0` | `1−P−P̂ = S + D`, `D = P∨P̂ − P − P̂` trace class; prove `Tr(ϑ(g)Dϑ(g)*) ≥ 0` analytically (paper uses numerics) | open |
+| T1 | CC 2020 Thm 1: `W_∞(g∗g*) ≥ Tr(ϑ(g)Sϑ(g)*)`, supp `g ⊆ [2^{-1/2},2^{1/2}]`, `ĝ(i/2)=ĝ(0)=0` | `−W(H) = Tr(ϑ(H)S) + Tr(ϑ(H)G)`, `G = 1−P−P̂−S`; T1 ⟺ `Re Tr(ϑ(g)Gϑ(g)†) ≥ 0` | **framework + cutoff-Λ trace formula + small-support domination Lean-closed** (`CCMArchimedeanSoninGenericDecomposition`, `CCMArchimedeanSoninCutoffTraceFormula`); the support-`log 2` inequality itself **open** (paper: numerical prolate input) |
 
 ## Gates
 - [x] 0 → 1  in-progress: targets identified, attack per target sketched
@@ -82,3 +82,43 @@
   and the η-branch holds for `ξ = v/Σv` (odd source cannot see `v`). All clean under `--json`,
   axioms `propext, Classical.choice, Quot.sound`, wired after `CCMPublishedRestrictedWeilMatrix`,
   oleans built single-threaded.
+- 2026-10-21 — T1 framework closed, inequality open. Lean (`CCMArchimedeanSoninGenericDecomposition`,
+  axioms standard, wired, olean built): `G := 1 − P − P̂ − S` on `L²(ℝ)^ev` (unit cutoffs, the corpus's
+  source cutoff); `ϑ(g)G` trace class; **`−W(H) = Tr(ϑ(H)S) + Tr(ϑ(H)G)`**
+  (`neg_ccmArchimedeanWeilDistribution_eq_sonin_add_generic`); T1 ⟺ `0 ≤ Re Tr(ϑ(H)G)`
+  (`ccmSoninTraceDomination_iff`); `G = G† = FGF`, `GS = SG = 0`, `G² + (P−P̂)² = 1−S`,
+  `G(P−P̂) = −(P−P̂)G`, `G² − G = PP̂ + P̂P`, hence `−W = Tr ϑS + Tr ϑG² − Tr ϑ(PP̂+P̂P)`.
+  Paper analysis (not Lean): with prolate data `φ_n`, `μ_n = ⟨φ_n,Fφ_n⟩`, `G = Σ μ_n(|w⁻⟩⟨w⁻| − |w⁺⟩⟨w⁺|)`
+  (`w^± ∝ φ_n ± Fφ_n`), `Tr G = 0`; `τ(u) := Tr(Gϑ(e^u))` is real, even, `τ(0)=0`, and for `u ≥ 0`
+  `τ(u) = −2∫_1^{e^u} e^{−u/2} Z(ye^{−u},y) dy`, `Z` = kernel of `K(1−K²)^{−1}PF(1−P)`, `K = PFP`;
+  on `|u| ≤ log 2` only `Z` on the little square `[1/2,1]×[1,2]` enters. `τ(u) = −κ|u| + O(u²)`,
+  `κ = 2[(1−K²)^{−1} − 1](1,1) > 0` (= `−c∂_c log det(1−K_c)|_ev`, `c = 2π`), which is why `ĝ(0)=0` is
+  needed. T1 ⟺ `∫∫ ḡ(s)g(t)τ(t−s) ≥ 0` on `L²(−½log2, ½log2) ∩ {ĝ(0)=ĝ(i/2)=0}`; equivalently
+  `∫|ĝ|²(θ'/2π − σ) ≥ 0`, `σ` the Mellin density of the Sonin projection (`θ'/2π − σ ∈ L¹`, mean 0,
+  tail `2κ/t²`) — the non-innerness defect of the quasi-inner Gamma ratio. Tried and failed as
+  unconditional routes: (i) Pólya convexity of `τ` on `[0,log 2]` (would make `ĝ(i/2)=0` superfluous;
+  not derivable without numerics); (ii) the sufficient condition `Re Tr(ϑ(g)(PP̂+P̂P)ϑ(g)†) ≤ 0`
+  (fails for small support: by the explicit Si-formula `k(u) = Tr(ϑ(e^u)PP̂)` is smooth with
+  `k''(0) < 0`, so the anticommutator term is positive on mean-zero tests); (iii) the Schur/Young
+  criterion `∫_0^{log 2}|τ''| ≤ κ` (needs the size of `τ''` on `[0, log 2]`, unavailable without
+  numerics); (iv) the cutoff transfer `Σ₁(g) ≤ Σ_{1/√2}(g★)`, which only reduces T1 to the harder
+  positivity `Re Tr(ϑ(g)G_{1/√2}ϑ(g)†) ≥ ln 2·‖g‖²`.
+  Status: the support-`log 2` inequality needs quantitative control of `Z` on the little square
+  (the paper's numerical spectral input); no unconditional proof found. Positive survivor still to
+  formalize: small-support T1 (∃ ℓ₀ > 0) from the kink `κ > 0` plus smoothness of `Z`.
+- 2026-10-21 — T1 cutoff law and positive survivor in Lean (`CCMArchimedeanSoninCutoffTraceFormula`,
+  0 messages under `--json`, axioms standard, wired after the generic decomposition, olean built).
+  (a) Log coordinates: `log ∘ ϑ(g) = C_g ∘ log`, `C_g` the convolution kernel `g(t−s)`
+  (`logEvenUnitary_ccmIntegratedScaling`). (b) Shell traces:
+  `Tr(ϑ(g)(P_Λ−P₁)ϑ(g)†) = log Λ ∫|g|²` via `C_g 1_I C_g† = K K†` with the Schur kernel
+  `g(t−s)1_I(s)` (`opTrace_ccmIntegratedScaling_physicalShell`); Fourier shell equal via
+  `F ϑ(g) = ϑ(ǧ) F` (`opTrace_ccmIntegratedScaling_fourierShell`). (c) Test `g★⋆g`
+  (`ccmSoninGramTest`, `ϑ(g★⋆g) = ϑ(g)†ϑ(g)`) and the **Sonin trace formula at every `Λ > 1`**:
+  `−W(g★⋆g) = 2 log Λ‖g‖² + Tr(ϑ(g)S_Λϑ(g)†) + Tr(ϑ(g)G_Λϑ(g)†)`, `G_Λ = 1−P_Λ−P̂_Λ−S_Λ ∈ S₁`
+  (`neg_ccmArchimedeanWeilDistribution_eq_cutoffAt`); domination at `Λ` ⟺
+  `0 ≤ 2 log Λ‖g‖² + Re Tr(ϑ(g)G_Λϑ(g)†)` (`ccmSoninTraceDomination_cutoffAt_iff`). (d) Survivor:
+  `|Tr(ϑ(g)G_Λϑ(g)†)| ≤ ‖G_Λ‖₁(∫|g|)²`, and `(∫|g|)² ≤ 2ε‖g‖²` on `|x| < ε`, hence domination for
+  every test supported in `|log u| < log Λ/(‖G_Λ‖₁+1)`, without any vanishing condition
+  (`exists_ccmSoninTraceDomination_cutoffAt_small_support`). For the paper's `Λ = √2` and support
+  `½ log 2` this crude bound would need `‖G_{√2}‖₁ ≤ 1`, while `‖G_{√2}‖₁ = 2Σ|μ_n|` is about 8 by the Shannon count (heuristic, not proved); the gap is
+  exactly the Mellin localisation of the negative eigenvectors of `G_{√2}` (prolate data), still open.

@@ -517,3 +517,23 @@ multiples), so with signed data no pair exists trivially; the parity is the real
 - Receivers (0<ε≤1/2): flip preserves the receiver iff ... if K_e(1−ε) = 0 it preserves it; if K_e(1−ε) ≠ 0 at most one
   member is paid. Generalizes C29 (two-point) to all finite kernels; the WP5 "separating observable and exact loss".
 - Tools: `dirichletConv_shiftTwo` ((δ₂⋆b)⋆c = δ₂⋆(b⋆c) via toAF), odd support of odd-kernel ⋆ o, `sum_Icc_filter_dvd_reindex`.
+
+### C35 — A pole of order two needs a zero of order two (formalized)
+- Module: `TransHorizonIncidenceMechanics/APoleOfOrderTwoNeedsAZeroOfOrderTwo.lean`, capstones
+  `poleValue_eq_zero_and_poleSlope_eq_zero_of_receiverBounded`, `..._of_receiverBounded_log`.
+- q ≥ 0 with LOGARITHMIC drift n Σ_{(n,2n]} q(d)/d ≥ κ n^{1−ε} log n (double pole), q in DampedClass (ε−η) ∀η>0,
+  k finite: ReceiverBounded (k⋆q) ⟹ K(1−ε) = 0 AND poleSlope = Σ k(j) log j j^{−(1−ε)} = 0.
+- Mechanism: Φ_q(1−ε+δ) ≲ −(κσ/2)((2/δ²)(M^{−δ}−2/3) − log2/δ) via log m ≥ (2/δ)(1 − m^{−δ/2}) and the tail
+  bounds of Σm^{−1−δ}, Σm^{−1−3δ/2}; K(σ) ≈ K'δ (HasDerivAt.tendsto_slope_zero_right); vs receiver O(δ^{−1/2}).
+- Application: log(d)d^{−ε} is paid by no kernel with nonzero slope at the pole — the Fermi kernel δ₁ − 2^{1−ε}δ₂
+  (pays d^{−ε}) never pays log(d)d^{−ε} (slope log 2). The receiver reads the ORDER of the pole; separating
+  observables are the Taylor coefficients of K at s = 1−ε (cf. the log-moment hierarchy C22/C23).
+
+### C36 — Finite perturbations of every positive weight pretending to one are decided at the pole (formalized)
+- Module: `TransHorizonIncidenceMechanics/FinitePerturbationsOfEveryPositiveWeightPretendingToOneAreDecidedAtThePole.lean`,
+  capstone `receiverBounded_dirichletConv_primesOne_iff`.
+- b ≥ 0 multiplicative, b(p)=1 ∀p, |b| ≤ B (μ², 1, odd squarefree, 1_{(·,q)=1}μ², …), k on [1,J], 0<ε≤1/2:
+  ReceiverBounded (k ⋆ b d^{−ε}) ⟺ K(1−ε) = 0. UNIVERSAL hyperplane, independent of the base.
+- Necessity: b = 1 on squarefrees ⟹ b d^{−ε} ≥ o, inherits the odd squarefree drift; C25.
+  Sufficiency: b = g⋆1 (g = b⋆μ zero at primes, critical Wiener), k⋆(b d^{−ε}) = (g d^{−ε}) ⋆ (k⋆d^{−ε}); C28 + C11.
+- Loop paused here at user request (36/100); count lives on this card.

@@ -14,6 +14,9 @@ hide a near-top zero `½ + z₀` with `η = |h_w(γ₀ − iδ₀)| > 0`: a coll
 * **Coherence** (`re_one_param_mul_conj_nonneg`). Nearby zeros have coefficients of nonnegative
   inner product as soon as `|h_w(−iz*)| ≥ H₀` and `8w e^{w/2}J_w|z − z*| ≤ H₀`. Unlike the
   modulated family, no height condition is needed.
+* **Comparability** (`norm_evenCoeff_zero_le_of_near`). Near the record the coefficients are at most
+  `(125/2) log(180Γ)` times the record coefficient, so the core mass condition is relative and
+  independent of the loudness of the record.
 * **Loud records** (`le_norm_paperFT_of_loud_zero`). `|D(z*)| ≥ ε₀` and `m ≤ 40 log(180Γ₀)` give
   `|h_w(−iz*)|² ≥ ε₀/(80 log(180Γ₀))`.
 * **A loud record is visible** (`one_param_record_visible`). For the Legendre record `z*` at lag `V`
@@ -127,10 +130,10 @@ theorem norm_evenCoeff_zero_le_of_near {w : ℝ} (hw : 0 < w) {z₁ z : ℂ}
     exact_mod_cast zetaZeroConfig.one_le_mult _ hz₁
   have hsq : ‖h₂‖ ^ 2 ≤ 25 / 16 * ‖h₁‖ ^ 2 := by
     have := pow_le_pow_left₀ (norm_nonneg _) hh₂ 2; nlinarith
+  have hm0 : (0 : ℝ) ≤ zetaZeroConfig.mult (1 / 2 + z) := Nat.cast_nonneg _
   have h1 : 2 * (zetaZeroConfig.mult (1 / 2 + z) : ℝ) * ‖h₂‖ ^ 2 ≤
       2 * (40 * Real.log (180 * Γ')) * (25 / 16 * ‖h₁‖ ^ 2) :=
-    mul_le_mul (by linarith) hsq (sq_nonneg _) (by linarith [Nat.cast_nonneg (α := ℝ)
-      (zetaZeroConfig.mult (1 / 2 + z))])
+    mul_le_mul (by linarith) hsq (sq_nonneg _) (by linarith)
   have hL0 : 0 ≤ Real.log (180 * Γ') := Real.log_nonneg (by linarith)
   have h2 : 2 * ‖h₁‖ ^ 2 ≤ 2 * (zetaZeroConfig.mult (1 / 2 + z₁) : ℝ) * ‖h₁‖ ^ 2 := by
     have := sq_nonneg ‖h₁‖; nlinarith
