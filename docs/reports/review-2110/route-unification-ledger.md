@@ -390,7 +390,18 @@ The `L²` normalization of `μ` is kept throughout: no derivative of the test en
 moment weights `A^{2j}` are summed against the factorial series. Density extends the floor from
 smooth sources to the even and odd form vectors (`R:CCMParityQuartetEvenFloor`,
 `R:CCMParityTopLayerOddFloor`), and a pure-parity ground state (`R:CCMRestrictedWeilGroundParity`)
-turns it into the bound on `μ(A)`.
+turns it into the bound on `μ(A)`. The configuration-space form of this floor was already in the
+corpus and was missed by the first survey: `R:OffLineDensityWeilLowerBound`
+(`re_W_ge_of_depth_offLineDensity`) bounds `Re W(f, f)` of any configuration of width `η` with
+off-line multiplicity at most `D` per unit window by `−3500(2a + 3)D e^{2η(a+2)}∫|f|²`, by a
+weighted Bessel inequality (Schur test on the depth exponentials) instead of grid Parseval, and
+`R:ErrorExponentAbscissaExcessLaw` (`abs_re_sub_half_le_iff_eventually_relaxed`) already states
+the configuration-space form of the two-way exponent law: under a `ζ`-type local count, no zeros
+below ordinate `2` and off-line multiplicity at most `D` per unit window, all zeros have depth
+`≤ η` iff the relaxed Hodge index `Re W(f, f) ≥ −e^{θa}∫|f|²` holds at all large levels for every
+`θ > 2η`. The two proofs of the floor are independent, and the new content here is the transfer
+to `ζ`'s ground energy `μ(A)` (the quantity of this ledger), the exponent identity for
+`polarGroundEnergyRate`, the finite-case two-sided law and the dichotomy.
 
 **What remains open, exactly.** The arrow from the width alone. The sampling inequality needs the
 local count: without it the off-line sum of a rough `L²` test is not controlled by

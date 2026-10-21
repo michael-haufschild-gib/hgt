@@ -279,18 +279,18 @@ theorem exists_norm_etaZetaQuotient_le {ε : ℝ} (hΘ : zetaZeroAbscissa < 1 / 
     refine h.trans ?_
     rw [mul_assoc, ← Real.mul_rpow (x := 2) (y := 1 + |s.im|) (by norm_num) hu.le]
     exact mul_le_mul_of_nonneg_left
-      (Real.rpow_le_rpow (by linarith [abs_nonneg s.im]) (by linarith) (by norm_num)) hB
+      (Real.rpow_le_rpow (by linarith [abs_nonneg s.im]) (by linarith [abs_nonneg s.im])
+        (by norm_num)) hB
   have hinv : ‖s‖⁻¹ ≤ 4 * (1 + |s.im|)⁻¹ := by
-    rw [← one_div, ← one_div, div_le_iff₀ hs0, mul_comm, ← mul_assoc, mul_one_div,
-      div_le_iff₀ hu, one_mul]
-    linarith [one_add_abs_im_le_four_mul_norm hs]
+    have h := inv_anti₀ (by positivity : (0 : ℝ) < (1 + |s.im|) / 4)
+      (by linarith [one_add_abs_im_le_four_mul_norm hs] : (1 + |s.im|) / 4 ≤ ‖s‖)
+    rwa [inv_div, div_eq_mul_inv] at h
   rw [etaZetaQuotient, norm_div, norm_mul, div_eq_mul_inv]
   calc ‖etaSlope s * zetaResidueUnit s‖ * ‖invZeta (s + (ε : ℂ))‖ * ‖s‖⁻¹
       ≤ (A * (1 + |s.im|) ^ ((5 : ℝ) / 16)) *
-          (B * 2 ^ ((1 : ℝ) / 8) * (1 + |s.im|) ^ ((1 : ℝ) / 8)) * (4 * (1 + |s.im|)⁻¹) := by
-        gcongr
-        · exact hE s hs
-        · exact hI'
+          (B * 2 ^ ((1 : ℝ) / 8) * (1 + |s.im|) ^ ((1 : ℝ) / 8)) * (4 * (1 + |s.im|)⁻¹) :=
+        mul_le_mul (mul_le_mul (hE s hs) hI' (norm_nonneg _) (by positivity)) hinv
+          (by positivity) (by positivity)
     _ = 4 * A * B * 2 ^ ((1 : ℝ) / 8) *
           ((1 + |s.im|) ^ ((5 : ℝ) / 16) * (1 + |s.im|) ^ ((1 : ℝ) / 8) * (1 + |s.im|)⁻¹) := by
         ring
@@ -346,8 +346,8 @@ theorem isMellinTailHardy_etaZetaQuotient {ε : ℝ} (hΘ : zetaZeroAbscissa < 1
     have h := hbound _ hre
     rw [him] at h
     refine h.trans ?_
-    rw [lineMajorant, Real.norm_eq_abs, abs_mul, abs_of_nonneg hK,
-      abs_of_nonneg (Real.rpow_nonneg (x := 1 + |ξ|) (by linarith [abs_nonneg ξ]) _)]
+    rw [lineMajorant, Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hK
+      (Real.rpow_nonneg (x := 1 + |ξ|) (by linarith [abs_nonneg ξ]) _))]
     refine mul_le_mul_of_nonneg_left ?_ hK
     -- `(1 + |2πξ|)^{−9/16} ≤ (1 + |ξ|)^{−9/16}` since `|ξ| ≤ |2πξ|`
     have h1 : 1 + |ξ| ≤ 1 + |2 * Real.pi * ξ| := by
@@ -362,9 +362,11 @@ theorem isMellinTailHardy_etaZetaQuotient {ε : ℝ} (hΘ : zetaZeroAbscissa < 1
     refine continuous_iff_continuousAt.mpr fun ξ => ?_
     have hre : 1 / 2 ≤ (rayLine σ ξ + 1 / 2).re := by
       simp only [add_re, rayLine_re]; norm_num; linarith
-    exact (differentiableAt_etaZetaQuotient hΘ hre).continuousAt.comp
-      (((continuous_const.mul continuous_ofReal).mul continuous_const).add
-        continuous_const |>.continuousAt)
+    have hc : Continuous (fun ξ : ℝ => rayLine σ ξ + 1 / 2) := by
+      unfold rayLine; fun_prop
+    show ContinuousAt (etaZetaQuotient ε ∘ fun ξ : ℝ => rayLine σ ξ + 1 / 2) ξ
+    exact ContinuousAt.comp (differentiableAt_etaZetaQuotient hΘ hre).continuousAt
+      hc.continuousAt
   refine ⟨∫ ξ : ℝ, ‖lineMajorant K ξ‖ ^ (2 : ℕ), ?_⟩
   rw [hfun]
   refine ⟨?_, fun σ hσ => ?_, fun σ hσ => ?_⟩

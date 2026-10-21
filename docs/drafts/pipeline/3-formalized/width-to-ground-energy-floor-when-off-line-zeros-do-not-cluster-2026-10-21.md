@@ -104,6 +104,23 @@ both cones. The second copy, used only inside its own module, is renamed
 `integrable_mul_cexp_of_vanish`; its olean was rebuilt single-threaded. No consumer outside the
 module used the name.
 
+## Prior corpus work found after the build
+`R:OffLineDensityWeilLowerBound` (`re_W_ge_of_depth_offLineDensity`, hypothesis
+`OffLineDensityBound`) already proves the configuration-space form of the floor,
+`Re W(f, f) ≥ −3500(2a + 3) D e^{2η(a+2)} ∫|f|²` for a configuration of width `η` with off-line
+multiplicity at most `D` per unit window, by a weighted Bessel inequality (Schur test). The
+sampling inequality of `Q:IntervalSourceTransformsSampledOnLocallyBoundedPoints` is an
+independent proof of the same kind of bound (grid Parseval, better constant, moment transforms);
+the new content of this card is the transfer to the CCM ground energy `μ(A)` of `ζ`, the exponent
+identity, the finite-case two-sided law and the dichotomy. `R:ErrorExponentAbscissaExcessLaw`
+(`abs_re_sub_half_le_iff_eventually_relaxed`) already proves the configuration-space two-way law
+(depth `≤ η` ⟺ relaxed Hodge index at every exponent `θ > 2η` eventually, under the local count
+`≪ log t`, no zeros below ordinate `2`, off-line multiplicity `≤ D` per unit window), so the
+exponent identity of this card is its transfer to `ζ`'s CCM ground energy.
+`R:OffLineClusterWeilUnbounded` is the model on the other side: pairs `¼, ¾ + ie^{k+1}` of
+multiplicity `⌊log γ⌋`, within the `log t` local count, with the Weil form unbounded below at every
+large level.
+
 ## Log
 - 2026-10-21 — created directly in 3-formalized: both modules compiled, audited (standard
   axioms), oleans built, wired into the `SquareRootThreshold` umbrella; lint reachable. Ledger
