@@ -640,14 +640,16 @@ theorem zetaNonvanishingDistance_pos_of_zero {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
   have hball : closedBall z₀ r ⊆ ball z₀ (r + η) := closedBall_subset_ball (by linarith)
   have hdiff : DifferentiableOn ℂ g (closedBall w s) := fun z hz =>
     (hg z (hball (hsub hz))).differentiableAt.differentiableWithinAt
-  obtain ⟨z, hz, hgz⟩ := DeBruijn.exists_zero_of_norm_lt_sphere_on hs hdiff fun z hz => ?_
-  · exact hg0 z (hball (hsub (ball_subset_closedBall hz))) hgz
-  · have h1' := hclose w (hsub (mem_closedBall_self hs.le))
+  have hsph : ∀ z ∈ sphere w s, ‖g w‖ < ‖g z‖ := by
+    intro z hz
+    have h1' := hclose w (hsub (mem_closedBall_self hs.le))
     have h2' := hclose z (hsub (sphere_subset_closedBall hz))
     have h3' := hm z hz
     have h4 := norm_sub_norm_le (riemannZeta z) (g z)
     rw [hw0, zero_sub, norm_neg] at h1'
     linarith
+  obtain ⟨z, hz, hgz⟩ := DeBruijn.exists_zero_of_norm_lt_sphere_on hs hdiff hsph
+  exact hg0 z (hball (hsub (ball_subset_closedBall hz))) hgz
 
 /-- **The threshold vanishes exactly off the zeros.** -/
 theorem zetaNonvanishingDistance_eq_zero_iff {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
