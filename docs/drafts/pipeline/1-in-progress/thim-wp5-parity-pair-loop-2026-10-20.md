@@ -408,3 +408,40 @@ multiples), so with signed data no pair exists trivially; the parity is the real
   positive twin (`weightPronicEnergy_smul`, t = sign L).
 - Step named: N ↦ N+1 (horizon), with the separating additive observable the cubic translated moment at one inert odd modulus.
 - Generalizes C3 (χ₄ only) to all real characters; partial sums ≤ q replace {0,1}.
+
+### C25 — Finite kernels repair a positive drift only at its pole (formalized)
+- Module: `TransHorizonIncidenceMechanics/FiniteKernelsRepairAPositiveDriftOnlyAtItsPole.lean`, capstone
+  `not_receiverBounded_dirichletConv_of_drift`.
+- Statement: 0 < ε ≤ 1/2, q ≥ 0 in DampedClass K ε with eventual drift n Σ_{(n,2n]} q(d)/d ≥ κ n^{1−ε},
+  k supported on [1,J] with K(1−ε) = Σ_j k(j) j^{−(1−ε)} ≠ 0 ⟹ ¬ReceiverBounded (k ⋆ q).
+- Mechanism: Mellin cells Δ_n(σ) = n^{−σ} − (n+1)^{−σ}; dilation law Σ_n A(⌊n/j⌋)Δ_n = j^{−σ}Σ_n A(n)Δ_n
+  (cells of [tj, tj+j) telescope); convolution law Φ_{k⋆q} = K(σ)Φ_q + m_qΦ_k; receiver bound
+  |Φ| ≤ √E·√(2σ²(1+1/(2σ−1))) (Cauchy–Schwarz vs pronic weights); drift gives Φ_q(1−ε+δ) ≤ −(κσ/2)(N₀+1)^{−δ}/δ.
+  O(δ^{−1/2}) vs exact order δ^{−1}: contradiction as δ → 0⁺ unless K(1−ε) = 0.
+- First divergence tool for SIGN-CHANGING weights (all earlier divergence proofs needed c ≥ 0).
+- Step named: k ↦ jk (dilation telescoping of the Mellin cells). Separating observable: the single value K(1−ε).
+
+### C26 — The even flip breaks the receiver of the Fermi squarefree weight (formalized)
+- Module: `TransHorizonIncidenceMechanics/EvenFlipOfTheFermiSquarefreeWeightBreaksTheReceiver.lean`, capstone
+  `fermi_evenFlip_parityPair`.
+- F = (δ₁ − 2^{1−ε}δ₂) ⋆ o, o = 1_{odd sqf} d^{−ε}; F^♭ = ((1−2^{1−ε})δ₁ + 2^{1−ε}δ₂) ⋆ o is the C6 even flip
+  (`fermiFlipWeight_eq`: F^♭ = F + localFactorWeight (evenPartWeight F) 2 2). Both in DampedClass 3 ε;
+  W_{F^♭}(e) = evenSign(e)·W_F(e) (identical amplitudes); F bounded at every ε>0; F^♭ unbounded for ε ≤ 1/2.
+- Bounded side: F d^{ε} = g ⋆ s₀, g(j²) = μ(j)1_{j odd} (odd square-root Möbius normalization from
+  RHTower.sqrtPart_moebius_mul_zeta + complete multiplicativity of 1_odd), s₀ = (0,1,−2,1) mod 4, partial sums in {−1,0,1}.
+- Unbounded side: C25 with K(1−ε) = 2 − 2^{1−ε} ≠ 0; drift from BVI `tendsto_oddSquarefreeWindow_card_div` (density 4/π²).
+- Answers C6's open question: the even flip (invisible to every translated moment of squarefree rows)
+  CAN change the receiver; its exact loss is the even part's receiver, which here diverges.
+- Step named: k ↦ 2k — the Fermi factor at 2 is the only local factor whose zero sits on the pole.
+
+### C27 — The Fermi rows agree in every translated moment and split the receiver (formalized)
+- Module: `TransHorizonIncidenceMechanics/FermiRowsAgreeInEveryTranslatedMomentAndSplitTheReceiver.lean`,
+  capstone `fermi_parityRows`.
+- Rows F_N = F·1_{≤N} and their even flips F_N^♭ = evenFlipRow N F_N: (i) every translated moment of
+  EVERY degree and shift agrees at every horizon N (rows squarefree ⟹ C6 invisibility); (ii) ∃E ∀T, eventually
+  E_T(F_N) ≤ E; (iii) ∀C, eventually ∃T, E_T(F_N^♭) > C.
+- Mechanism: F_N^♭(d) = F^♭(d) once N ≥ 2d (C6 Fermi transform), means agree (W_{F^♭}(1) = W_F(1)),
+  energies at fixed cutoff converge; C26 receivers.
+- Strongest data identity so far: rows indistinguishable by all additive observables of all degrees
+  (not just two-point/cubic as in C3/C24), yet opposite trans-horizon growth. Steps: N ↦ N+1 (stabilisation),
+  k ↦ 2k (Fermi factor at the pole).

@@ -757,6 +757,12 @@ theorem zeta_near_top_twin_tight_or_triple {w V : ℝ} (hw : 0 < w) (hV : 0 < V)
     (hVR : 2 * (twinRadiusNumerator w z₀.im + uniformTwinDepth w) ≤ V * r)
     (hVk : 2 * (4 + 2 * π * (k + 1)) ≤ V * r) :
     ∃ z₁ : ℂ, evenCoeff zetaZeroConfig (modScaledBump w z₀.im) z₁ ≠ 0 ∧ z₀.re / 2 ≤ z₁.re ∧
+      z₀.im / 2 ≤ |z₁.im| ∧ |z₁.im| ≤ recordHeightEnvelope w z₀.im ∧
+      centerAmplitude w ^ 2 / (2 * Real.exp 1) ≤
+        ‖evenCoeff zetaZeroConfig (modScaledBump w z₀.im) z₁‖ ∧
+      (∀ z, evenCoeff zetaZeroConfig (modScaledBump w z₀.im) z ≠ 0 → 0 < z.re →
+        ‖evenCoeff zetaZeroConfig (modScaledBump w z₀.im) z‖ * Real.exp (z.re * V) ≤
+          ‖evenCoeff zetaZeroConfig (modScaledBump w z₀.im) z₁‖ * Real.exp (z₁.re * V)) ∧
       ((∃ z z', z ≠ z₁ ∧ z' ≠ z₁ ∧ z ≠ z' ∧
           evenCoeff zetaZeroConfig (modScaledBump w z₀.im) z ≠ 0 ∧
           evenCoeff zetaZeroConfig (modScaledBump w z₀.im) z' ≠ 0 ∧
@@ -791,7 +797,7 @@ theorem zeta_near_top_twin_tight_or_triple {w V : ℝ} (hw : 0 < w) (hV : 0 < V)
     rw [div_le_iff₀ hre₀] at this; linarith
   obtain ⟨z₁, hz₁, hre₁, hlow, hup, hD₁, hrec, z, hz, hDz, hdist⟩ :=
     zeta_uniform_twin_radius hw hV hz₀ hre₀ hpos₀ hΓ hsmall htop' hm hV1 hV2
-  refine ⟨z₁, hz₁, hre₁, ?_⟩
+  refine ⟨z₁, hz₁, hre₁, hlow, hup, hD₁, hrec, ?_⟩
   -- the twin of the uniform law is within `r/2` of the record
   have hκ0 : 0 < κw := by
     rw [hκw, uniformTwinDepth]

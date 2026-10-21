@@ -96,6 +96,86 @@ theorem abs_selbergMultiplesCoord_le {N Q₀ e : ℕ} (he : 1 ≤ e) {c : ℕ �
         mul_le_mul_of_nonneg_left (sum_Icc_inv_le_two_sqrt _) (by positivity)
     _ = 2 * Real.sqrt ((Q₀ / e : ℕ) : ℝ) / e := by ring
 
+theorem sum_Icc_cast_eq (n : ℕ) : ∑ e ∈ Icc 1 n, (e : ℝ) = (n : ℝ) * ((n : ℝ) + 1) / 2 := by
+  induction n with
+  | zero => simp
+  | succ n ih => rw [sum_Icc_succ_top (by omega), ih]; push_cast; ring
+
+theorem sum_selberg_sq_mul_pow_four_le {N Q₀ : ℕ} {c : ℕ → ℝ} (hc : ∀ d, |c d| ≤ 1)
+    (hsupp : ∀ d, c d ≠ 0 → d ≤ Q₀) :
+    ∑ e ∈ Icc 2 Q₀, selbergMultiplesCoord N c e ^ 2 * (e : ℝ) ^ 4 ≤
+      2 * (Q₀ : ℝ) ^ 2 * ((Q₀ : ℝ) + 1) := by
+  have hterm : ∀ e ∈ Icc 2 Q₀, selbergMultiplesCoord N c e ^ 2 * (e : ℝ) ^ 4 ≤ 4 * Q₀ * (e : ℝ) := by
+    intro e he
+    have he' := mem_Icc.mp he
+    have heR : (0 : ℝ) < e := by exact_mod_cast (by omega : 0 < e)
+    have hY := abs_selbergMultiplesCoord_le (N := N) (e := e) (by omega) hc hsupp
+    have hm : ((Q₀ / e : ℕ) : ℝ) * e ≤ Q₀ := by exact_mod_cast Nat.div_mul_le_self Q₀ e
+    have hsq : selbergMultiplesCoord N c e ^ 2 ≤ 4 * ((Q₀ / e : ℕ) : ℝ) / (e : ℝ) ^ 2 := by
+      have h0 : 0 ≤ |selbergMultiplesCoord N c e| := abs_nonneg _
+      have := pow_le_pow_left₀ h0 hY 2
+      rw [sq_abs, div_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg _)] at this
+      linarith
+    calc selbergMultiplesCoord N c e ^ 2 * (e : ℝ) ^ 4
+        ≤ 4 * ((Q₀ / e : ℕ) : ℝ) / (e : ℝ) ^ 2 * (e : ℝ) ^ 4 :=
+          mul_le_mul_of_nonneg_right hsq (by positivity)
+      _ = 4 * (((Q₀ / e : ℕ) : ℝ) * e) * e := by field_simp
+      _ ≤ 4 * Q₀ * (e : ℝ) := by gcongr
+  calc ∑ e ∈ Icc 2 Q₀, selbergMultiplesCoord N c e ^ 2 * (e : ℝ) ^ 4
+      ≤ ∑ e ∈ Icc 2 Q₀, 4 * Q₀ * (e : ℝ) := sum_le_sum hterm
+    _ ≤ ∑ e ∈ Icc 1 Q₀, 4 * Q₀ * (e : ℝ) :=
+        sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc (by norm_num) le_rfl)
+          fun _ _ _ => by positivity
+    _ = 2 * (Q₀ : ℝ) ^ 2 * ((Q₀ : ℝ) + 1) := by rw [← mul_sum, sum_Icc_cast_eq]; ring
+
+theorem sum_abs_selberg_mul_pow_three_le {N Q₀ : ℕ} {c : ℕ → ℝ} (hc : ∀ d, |c d| ≤ 1)
+    (hsupp : ∀ d, c d ≠ 0 → d ≤ Q₀) :
+    ∑ e ∈ Icc 2 Q₀, |selbergMultiplesCoord N c e| * (e : ℝ) ^ 3 ≤ (Q₀ : ℝ) ^ 2 * ((Q₀ : ℝ) + 1) := by
+  have hterm : ∀ e ∈ Icc 2 Q₀, |selbergMultiplesCoord N c e| * (e : ℝ) ^ 3 ≤ 2 * Q₀ * (e : ℝ) := by
+    intro e he
+    have he' := mem_Icc.mp he
+    have heR : (0 : ℝ) < e := by exact_mod_cast (by omega : 0 < e)
+    have heQ : (e : ℝ) ≤ Q₀ := by exact_mod_cast he'.2
+    have hY := abs_selbergMultiplesCoord_le (N := N) (e := e) (by omega) hc hsupp
+    have hm : ((Q₀ / e : ℕ) : ℝ) * e ≤ Q₀ := by exact_mod_cast Nat.div_mul_le_self Q₀ e
+    -- `√(Q₀/e) e ≤ Q₀`
+    have hs : Real.sqrt ((Q₀ / e : ℕ) : ℝ) * e ≤ Q₀ := by
+      have h1 : (Real.sqrt ((Q₀ / e : ℕ) : ℝ) * e) ^ 2 ≤ (Q₀ : ℝ) ^ 2 := by
+        rw [mul_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
+        nlinarith
+      exact (pow_le_pow_iff_left₀ (by positivity) (by positivity) two_ne_zero).mp h1
+    calc |selbergMultiplesCoord N c e| * (e : ℝ) ^ 3
+        ≤ 2 * Real.sqrt ((Q₀ / e : ℕ) : ℝ) / e * (e : ℝ) ^ 3 :=
+          mul_le_mul_of_nonneg_right hY (by positivity)
+      _ = 2 * (Real.sqrt ((Q₀ / e : ℕ) : ℝ) * e) * e := by field_simp
+      _ ≤ 2 * Q₀ * (e : ℝ) := by gcongr
+  calc ∑ e ∈ Icc 2 Q₀, |selbergMultiplesCoord N c e| * (e : ℝ) ^ 3
+      ≤ ∑ e ∈ Icc 2 Q₀, 2 * Q₀ * (e : ℝ) := sum_le_sum hterm
+    _ ≤ ∑ e ∈ Icc 1 Q₀, 2 * Q₀ * (e : ℝ) :=
+        sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc (by norm_num) le_rfl)
+          fun _ _ _ => by positivity
+    _ = (Q₀ : ℝ) ^ 2 * ((Q₀ : ℝ) + 1) := by rw [← mul_sum, sum_Icc_cast_eq]; ring
+
+/-- **Large-sieve dispersion for bounded rows.** For `|c| ≤ 1` on `[1, Q₀]`, `2 ≤ Q₀ ≤ N`, and `c'`
+on `[A+1, A+L]`, `A + L ≤ N`:
+`|B + m R' + β H'| ≤ ½ √(2Q₀²(Q₀+1)) √(L + 2Q₀² - 1) √(Σ c'²/n⁴) + ½ Q₀²(Q₀+1) Σ |c'|/n³`. -/
+theorem abs_rowBilinear_add_mean_add_beta_le_bounded {N Q₀ A L : ℕ} {c c' : ℕ → ℝ}
+    (hQ₀ : 2 ≤ Q₀) (hQN : Q₀ ≤ N) (hc : ∀ d, |c d| ≤ 1) (hsupp : ∀ d, c d ≠ 0 → d ≤ Q₀)
+    (hsupp' : ∀ n, c' n ≠ 0 → n ∈ Icc (A + 1) (A + L)) (hAL : A + L ≤ N) :
+    |rowBilinear N c c' + rowMean N c * vonMangoldtReadout N c' +
+        rowBeta N c * finiteHarmonicSum N c'| ≤
+      1 / 2 * Real.sqrt (2 * (Q₀ : ℝ) ^ 2 * ((Q₀ : ℝ) + 1)) *
+          Real.sqrt ((L : ℝ) + 2 * (Q₀ : ℝ) ^ 2 - 1) *
+          Real.sqrt (∑ n ∈ Icc (A + 1) (A + L), c' n ^ 2 / (n : ℝ) ^ 4) +
+        1 / 2 * ((Q₀ : ℝ) ^ 2 * ((Q₀ : ℝ) + 1)) *
+          ∑ n ∈ Icc (A + 1) (A + L), |c' n| / (n : ℝ) ^ 3 := by
+  refine (abs_rowBilinear_add_mean_add_beta_le_selberg hQ₀ hQN hsupp hsupp' hAL).trans ?_
+  have h1 := sum_selberg_sq_mul_pow_four_le (N := N) hc hsupp
+  have h2 := sum_abs_selberg_mul_pow_three_le (N := N) hc hsupp
+  have hn : 0 ≤ ∑ n ∈ Icc (A + 1) (A + L), |c' n| / (n : ℝ) ^ 3 :=
+    sum_nonneg fun n _ => by positivity
+  gcongr
+
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence

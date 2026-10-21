@@ -19,6 +19,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.FirstPrimeWindowOddStri
 import GaloisForLFunctions.ArithmeticIncidencePositivity.OddWindowPastFirstPrime
 import GaloisForLFunctions.ArithmeticIncidencePositivity.FirstPrimeMicroFold
 import GaloisForLFunctions.ArithmeticIncidencePositivity.AtomFreeOddWindowSevenTwentieths
+import GaloisForLFunctions.ArithmeticIncidencePositivity.SharpMicroFoldHarnack
 
 /-!
 # Arithmetic Incidence Positivity

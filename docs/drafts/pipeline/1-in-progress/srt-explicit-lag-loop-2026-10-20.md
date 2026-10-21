@@ -215,3 +215,33 @@ effective (finite-window) visibility of the lag family, records, non-attained to
   count `P ≥ 80 log(180Γ)` (companions within 1 of the record, `card_exponent_window_le`). Attained
   tops: first negative lag `O_w((log γ₀·log(log γ₀/g) + log log γ₀)/δ₀)`; collapsed clusters have
   multiplicity `p + 1 ≤ 80 log(180Γ) + 1`. Both modules rebuilt, axioms clean.
+- **L19 · The one-parameter lag family hides only in collapsed clusters** —
+  `OneParameterLagFamilyHidesOnlyInCollapsedClusters`. Criteria 2, 5 — for the goal's own family
+  (one fixed width, c = 0). `two_mul_sq_le_norm_evenCoeff_zero` (|D(z₀)| = 2m|h_w(γ₀−iδ₀)|²),
+  `exists_loud_record` (any bump), `one_param_record_facts` (height ≤ Γ₀(η) ~ η^{−2/3}, depth ≥ δ₀/2),
+  `xi_ratio_le_general`, **`one_param_cluster_collapse`**: positivity of P_v on [0,V] ⟹ the record
+  of any 1/V-near-top zero with η = |h_w(γ₀−iδ₀)| > 0 carries a cluster of p ≤ 80 log(180Γ₀) zeros
+  with Π|z−z*|·(κ₀/(2(P+1)))^p V^{2k+p+1}(δ₀/8)^{2k+1} ≤ B₀(p) (`oneParamCollapseBound`).
+  Constants explicit in w, η. Axioms clean; olean built; wired.
+- **L20 · The one-parameter lag family sees attained tops at an explicit lag** —
+  `OneParameterLagFamilySeesAttainedTopsAtAnExplicitLag`. Criteria 1(partial), 2, 4 — for P_v itself.
+  **`one_param_attained_top_visible`** / **`one_param_attained_top_primeWindow_neg`** (prime side,
+  2w < log 2): attained top of ζ with η = |h_w(γ₀−iδ₀)| > 0 ⟹ P_v < 0 for some v ≤ V under explicit
+  conditions; first negative lag `O_w((log(1/η)·log(log(1/η)/g) + log log(1/η))/δ₀)`. Effective
+  version of AttainedDepthIsVisible for the goal's family; covers every finite off-line set.
+  Axioms clean; olean built; wired.
+- **L21 · Isolated twins of ζ cannot hide** — `ZetaIsolatedTwinsCannotHide`. Criteria 2, 5.
+  New insight: coefficients D_c(z) = m(h(−iz−c)² + small) of nearby zeros are phase-coherent
+  (`re_coherent_squares_nonneg`: nearby squares of a smooth transform cannot cancel), so an
+  exponentially tight twin ADDS to its record (`norm_coherent_pair_ge`) and cannot hide it.
+  Ingredients: `norm_fejerPowWin_sub_ofReal_le`, `norm_paperFT_scaledBump_sub_le` (via corpus
+  `RHTower.norm_paperFT_sub_le`), `evenCoeff_modScaledBump_eq_mult_mul`, `norm_reflected_le`,
+  `evenCoeff_conj`, `le_norm_paperFT_of_loud`, `re_twin_mul_conj_nonneg`, `quiet_record_arith`.
+  **`zeta_isolated_twins_cannot_hide`**: positivity of the modulated family on [0,V] (explicit
+  conditions) forces ≥ 2 further zeros within 2r of the near-top record. Twin alternative of L10–L14
+  reduced to triples. (L14's ζ theorem now exports record facts.) Axioms clean; olean built; wired.
+- **L22 · Coherent cores add up** — `ZetaCoherentCoresAddUp`. Tools for removing the cluster
+  alternative: `norm_sum_coherent_ge` (coherent weighted sums keep the record), `exists_empty_annulus`
+  (P+1 nested annuli, one empty: core/loose split with gap G), `norm_prod_sub_prod_le`,
+  `zeta_partial_elimination_le` (eliminate only the loose members), `norm_mul_sub_mul_le`,
+  `norm_core_sum_ge` (eliminated coherent core ≥ |F*|K(θ)|D*|/2). Axioms clean; olean; wired.

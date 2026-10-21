@@ -171,6 +171,37 @@ Not significant: reciprocity error, window constants, horizons, large-sieve fact
   Attained: `c ≥ 0` with all moduli dividing `n₀`: `B(c,δ_{n₀}) + mR + βH ≥ (π²/72)Σc(d)(d²−1)/(dn₀²) − ¾Σcd²/n₀³`.
   The C6 constant 1 improves to the exact `π²/72`; extremal = coherence at residue zero (common multiples).
 
+- **C20 DONE (criterion 3: Type-II dispersion for every bounded receiver row).** `BVI/LargeSieveDispersionForBoundedRows`.
+  `Σ_{k≤m}1/k ≤ 2√m`; `|Y_c(e)| ≤ 2√(Q₀/e)/e` for `|c| ≤ 1` on `[1,Q₀]`; `Σ_{e≤Q₀}Y²e⁴ ≤ 2Q₀²(Q₀+1)`,
+  `Σ|Y|e³ ≤ Q₀²(Q₀+1)`; hence `|B+mR'+βH'| ≤ ½√(2Q₀²(Q₀+1))√(L+2Q₀²−1)√(Σc'²/n⁴) + ½Q₀²(Q₀+1)Σ|c'|/n³`
+  for every bounded row (μ, λ, characters, truncations), no arithmetic input. Gain over rank-two bound `≍ √(Q₀/L)`.
+
+- **C21 DONE (criterion 4: no one-sided improvement; README sign question).** `BVI/TwoSidedSignLawOfTheSecondOrderKernel`.
+  `B₂({k(1/2+σ)}) = (kσ)²−1/12` (k odd), `≤ (kσ)²+1/6` (k even) for `|kσ| ≤ 1/4`; `Φ_d(M) = (d²/2)B₂({M/d}) − 1/12`;
+  `|n mod d/d − 1/2| ≤ 1/64 ⟹ 𝔅(d,n) ≤ −d²/100` (16 terms exact + tail `1/16`). Two primes:
+  `𝒢^{ec}(p,q) − [D_p log q − pβ_p] ≤ −p²/(100q) + ¾p³/q²` near the half, `≥ (p²/25 − 1/4)/q − ¾p³/q²` near zero.
+  The second-order cross-scale term oscillates in sign with `q mod p` at amplitude `≍ p²/q`.
+
+- **C22 DONE (criterion 1: θ up to 4/3, flat large scale × arbitrary prime small scale).**
+  `BVI/FlatLargeScaleRowsAndTheTypeIGain`. `c' = n·1_{[A+1,A+L]}` (`b = 1`): `|Σ_I ζⁿ/n| ≤ 2/((A+1)|ζ−1|)` (Abel +
+  geometric), `|ζ−1| ≥ 4/p` ⇒ `σ_p ≤ p/(2(A+1))`; via C11: `|B+mR'+βH'| ≤ (π²/144)Σ|c(p)|p²/(A+1) + (Σ_I1/n)/6·Σ|c(p)|/p
+  + ¾Σ|c|d²Σ_I 1/n²`. Gain `≍ P/Q` ⇒ diagonal quality for `Q ≥ P^{3/2}`. With C14: Type I at either scale beats `P^{5/3}`.
+
+- **C23 DONE (criterion 4: parity barrier for the cross-scale method; README topic 4).**
+  `BVI/CrossScaleParityBlindnessOfThePronicGram`. Residue masses `ρ_{c'}(d,r) = Σ_{n≡r(d)}c'(n)/n²`;
+  `Σ_n c'(n)𝔅(d,n)/n² = Σ_{r<d}𝔅(d,r)ρ_{c'}(d,r)`. If `c'₁, c'₂` share all residue masses mod every modulus of `c`:
+  `|B(c,c'₁) − B(c,c'₂) + m(c)ΔR + β(c)ΔH| ≤ ¾Σ|c|d²(Σ|c'₁|/n³ + Σ|c'₂|/n³)`. The cross-scale Gram sees the large
+  scale only through local distribution mod the small moduli + two readouts: it is parity-blind (primes vs
+  matched almost-primes, λ vs 1 on rough numbers). Parity-breaking input must come from the large-scale
+  self-Gram or from near-diagonal scales.
+
+- **C24 DONE (criterion 3: the sharp constant is attained within the primes).**
+  `BVI/SharpConstantAttainedByPrimesInTheUnitClass`. `Φ_d(0) − Φ_d(j) ≤ min(jd/2, d²/8)` ⇒
+  `π²(d²−1)/72 − (d/2)(h_d + 1/4) ≤ 𝔅(d,1) ≤ π²(d²−1)/72`. Dirichlet (mathlib `Nat.forall_exists_prime_gt_and_eq_mod`):
+  for every prime `p` and bound `n` there is a prime `q > n`, `q ≡ 1 (p)`, with
+  `𝒢^{ec}(p,q) − [D_p log q − pβ_p] ≥ (π²(p²−1)/72 − (p/2)(h_p+1/4))/q − ¾p³/q²` (vs upper `π²(p²−1)/(72q) + ¾p³/q²`).
+  The extremal second-order coupling is realised by the Bézout seeds `q ≡ 1 (mod p)`.
+
 ## Queue
 
 - C1 first-jump window: Brownian-bridge law and codimension no-go.

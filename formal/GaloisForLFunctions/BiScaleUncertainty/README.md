@@ -925,6 +925,54 @@ is RH itself.
 
 ---
 
+### 3.16 Node criticality: deletion prices, window spectra and composite nodes
+
+Write $A(c)$ for the archimedean part with the pole, $W(c)$ for the Weil functional, so that
+$A-W=\sum_n\Lambda(n)L_n(c)$ with the node values $L_n$, and $w(m)=\Lambda(m)/\sqrt m$.
+
+**Incidence decides zero-pole positivity.** On every node set $\mathcal N$, zero-pole blind positivity
+holds iff RH holds and every prime power lies in $\mathcal N$; the pole constraint is invisible to
+node criticality, density never suffices (the primes miss $4$), and a non-prime-power such as $6$ can be
+added or deleted freely (`PrimePowerZeroPoleNodeCriticality`).
+
+**Deletion prices are local Euler factors.** On the cone blind at every prime power outside a set $D$,
+$(A-W)/\|c\|^2$ ranges over: $[-w(m),w(m)]$ for $D=\{m\}$ (tower Fejér bound, narrow pairs);
+$\pm\sum_{p\in P}w(p^{e(p)})$ for one prime power per prime (iterated pairs: a lag $\log(m_A/m_B)$ between
+subset products is a prime power only along $A=B\cup\{r\}$); the open interval
+$(-\sum_p 2\log p/(\sqrt p+1),\ \sum_p 2\log p/(\sqrt p-1))$ for whole towers, the range of the local
+factor $2\operatorname{Re}(-\zeta_p'/\zeta_p)(\tfrac12+it)$ through the spectral identity
+$\pi\sum_kL_{p^k}=\int G_c\,S_{p^{-1/2}}(t\log p)$, $S_x(\theta)=\sum_{k\ge1}x^k\cos k\theta$; inside one tower the
+prices interact (for $\{2,4\}$: $(\sqrt{17}-1)\log2/4$). Prices add across primes and never inside a
+tower (`PrimePowerNodeDeletionPrice`, `PrimePowerDeletionPriceAdditivity`,
+`PrimePowerDeletionPriceEulerAdditivity`, `PrimePowerTowerDeletionInteraction`,
+`PrimeTowerDeletionLocalEulerFactor`).
+
+**Composite nodes.** On the integer-grid cone (blindness also at every composite), deleting one prime
+power per prime costs exactly the same supremum: staircase trains at $k\log(m_2/m_1)+\varepsilon\log m_1$
+live on the slab of exponent sum $0,1$, whose only integer lags are $m_1$ and $m_2$
+(`PrimePowerDeletionStaircaseTrains`). Deleting whole towers does not: blindness at $pq$ lowers the
+supremum by an explicit constant, $\ge 9/10$ for $\{2,3\}$, because the prime-power extremal sits at the
+joint phase where every composite is charged; the certificate is $-(c_0/2)\cos(t\log pq)$ against the
+quadratic drop $S_x(\theta)\le x/(1-x)-x(1-\cos\theta)/(1-x^2)$ (`PrimeTowerDeletionCompositeCharge`).
+So $\log 6$ is free for the nodes $\{2,3\}$ and costs for their towers.
+
+**Window spectra.** For tests in intervals of length $L=\log X$ the prime side is the compressed
+operator $\sum_{n<X}w(n)(S_{\log n}+S_{\log n}^*)$. Its extremes: $\pm\lambda_{23}$,
+$\lambda_{23}=(w_3+\sqrt{w_3^2+4w_2^2})/2$, for $\log3<L<\log4$ (path components, `PrimeWindowCeilings`);
+the $\{2,3\}$ price is $\le 1.11<w_2+w_3$ for $L\le\log6$ and exactly $w_2+w_3$ beyond, since below
+$\log 6$ the lag graph is a union of Sturmian paths with double-$w_2$ vertices
+(`PrimeTwoThreeDecouplingLength`); asymptotically $c(L)/e^{L/2}\to1$ and $\mathrm{floor}(L)/e^{L/2}\to-1$, the
+spectral pair of the polar kernel $e^{|s-t|/2}$ with eigenfunction $e^{-t/2}\pm e^{-(L-t)/2}$
+(`PrimeWindowCeilingPolarAsymptotics`, `PrimeWindowFloorPolarAsymptotics`). At square-root precision:
+$c(L)\le e^{L/2}+O(L)$ forces RH, the excess exponent $\theta^*$ satisfies
+$\mathrm{width}\le\theta^*\le\mathrm{width}/2+\tfrac14$ (`PrimeWindowCeilingRHCriterion`,
+`PrimeWindowCeilingWidthLaw`, through the width-$\alpha$ Landau criterion of
+`DeficitPrimitiveOneSidedWidth`), and the spectrum is mirror-symmetric to $O(\log X)$:
+$|c(L)+\mathrm{floor}(L)|\le4L+O(1)$, so the floor reads RH and the width as the ceiling does
+(`PrimeWindowLiouvilleMirror`). The mirror is Kronecker's theorem: modulating by $e^{i\xi u}$ with
+$p^{i\xi}\approx-1$ for all $p<X$ turns the prime measure into its Liouville twist up to the squares;
+window extremes see the atoms only through their sizes.
+
 ## 4. Traps and sharp boundaries
 
 | trap | correct statement |

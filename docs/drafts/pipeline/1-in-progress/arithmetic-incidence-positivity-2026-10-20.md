@@ -293,3 +293,17 @@ and windows only) are unaffected.
   `set` variables + `linarith only`; `set c₀` is an opaque atom for linarith → `rw [hc₀]` first.
 - Next: the middle margin (≈ 0.001 h-units) is the bottleneck; push toward 0.36–0.375 needs a better gauge (quintic/sextic or
   log-corrected) and/or keeping part of the S×S surplus in the transform.
+
+### C18 — The sharp micro-fold: Harnack across every prime-power shift (`SharpMicroFoldHarnack.lean`)
+- Goal-loop contribution G8 (criterion 3, all prime shifts, explicit constant).
+- Scaling limit: strip problem = regional log kernel 1/(2|s−t|) on [−1,1]; odd ground state g(s) = s EXACTLY,
+  eigenvalue 2 (∫ sign(s−t) dt = 2s). The G6 constant log 2 + ½ was not sharp (dropped surplus, crude second variable).
+- `sharpQuadruple_ge` (fold onto [m,r], same-side |u−v| vs crossing u+v, 4 sign cases), `sharpFold_core`, `sharpFold_folded`.
+- `sharpFold_potential_ge`: 2U_g + 4K ≥ 1.9 − η/p − 3η² with g = η/10 + t (cubicGauge closed form, logs cancel).
+- `integral_sharpFoldWeight`, `integral_abs_sub_symm`, `integral_integral_swap_box` (Fubini on a box), `abs_foldedWeight_le`.
+- `sharpMicroFold_strip_ge`: ∫_S∫_S k(Fx−Fy)² ≥ (1.9 − η/p − 3η²)∫_S α² (η ≤ 1/12).
+- `vonMangoldtAtom_le`: Λ(n)/√n ≤ 2/e < 0.7358. `two_mul_primePowerShift_le_stripSurplus`: for all n ≥ 2 and windows
+  ½log n < r ≤ ½log n + 1/12: 2Λ(n)/√n ∫F F(+log n) ≤ 2·stripSurplus F (log n − r) r. Axioms standard; olean; wired.
+- README: mechanism 28's "fails for n = 3" corrected; mechanism 30 added.
+- Consequence for the support push: the micro-fold needs only θ = 2Λ₂/λ ≈ 0.98/1.9 ≈ 0.52 of the S×S surplus; the rest can stay
+  in the ground-state transform, halving the inner-edge loss (next: G9 window 0.353–0.355 with θ-split).

@@ -423,10 +423,8 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     atom-free (`fourKilling_add_potentialOff_le_archJump_sub_prime`): up to `2/5` positivity of the
     variation inequality is a purely archimedean potential bound for `U_h^{off}`, with no strip charge.
     The reason is local: across the reflection about `½ log 2` the archimedean jump rate
-    `ω(t) ≈ 1/(2t)` integrates to `½ log 2` per octave, and the limit constant `log 2 + ½` does not
-    depend on the shift. The comparison `Λ(n)/√n < ½ log 2 + ¼ ≈ 0.597` therefore governs every prime
-    power at its own reflection point `½ log n`: it holds for `n = 2` (`0.490`), fails for `n = 3`
-    (`0.634`), so at the second prime window the micro-fold alone does not dominate the atom.
+    `ω(t) ≈ 1/(2t)` dominates the atom; the constant `log 2 + ½` of this mechanism is not sharp
+    (mechanism 30).
 
 29. **The window `7/20` without a strip charge.** Off `S × S` the ground-state transform keeps every
     pair; on `S` the removed pairs cost `h(x)(U_h − U_h^{off})(x) = ∫_S k(x, y)(h(x) − h(y)) dy ≤
@@ -438,6 +436,22 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     middle, `≥ 0.0074` on the strip). Every odd `F` supported in `[−7/20, 7/20]` has
     `Ẑ(F) ≥ (1/200)∫F²` (`fullZeroForm_ge_of_odd_support_le_sevenTwentieths`). The strip is now cheap;
     the binding constraint is the middle of the window, where the margin is that of the gauge.
+
+30. **The sharp micro-fold: every prime-power atom is dominated.** Folding the odd part `α` about
+    `m = L/2` onto `[m, r]` turns the four pairs `x, L − x, y, L − y` into a same-side pair at
+    distance `|u − v|` and a crossing pair at distance `u + v`; their sum is
+    `2k(u, v)(a − b)² + 4k₀(u + v)(a² + b²)`, `k` the surplus kernel. Mechanism 28 dropped the surplus
+    term; keeping it and transforming it in the gauge `η/10 + t` (`sharpQuadruple_ge`) gives the
+    potential `2U_g + 4K ≥ 1.9 − η/p − 3η²` (`sharpFold_potential_ge`), hence
+    `∫_S ∫_S k(F x − F y)² ≥ (1.9 − η/p − 3η²) ∫_S α²` (`sharpMicroFold_strip_ge`). In the scaling limit
+    the strip problem is the regional logarithmic kernel `1/(2|s − t|)` on `[−1, 1]`, whose odd ground
+    state is exactly linear, `∫_{−1}^{1} sign(s − t) dt = 2s`: the gauge `t` gives `U = 1 − ℓ`,
+    `4K = 2ℓ`, and the logarithms cancel to the eigenvalue `2`. Since `Λ(n)/√n ≤ log n/√n ≤ 2/e < 0.736`
+    (`vonMangoldtAtom_le`) and `2 · 0.736 < 1.56`, **every** prime-power atom is paid by the
+    archimedean surplus of its own reflection strip `[log n − r, r]`, for all windows
+    `½ log n < r ≤ ½ log n + 1/12` (`two_mul_primePowerShift_le_stripSurplus`): a Harnack inequality
+    across every prime shift with explicit constant. The atoms never win locally; positivity can only
+    fail through the interaction of several strips or through the ground-state gradient at the edge.
 
 ---
 
