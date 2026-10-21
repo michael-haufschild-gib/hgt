@@ -239,7 +239,8 @@ theorem integrable_rayIntegrand (w : CGLSmoothBump) (a b c ξ₁ ξ₂ ξ₃ : �
     unfold rayIntegrand
     fun_prop
   refine hc.integrable_of_hasCompactSupport (HasCompactSupport.intro
-    (isCompact_Icc.prod (isCompact_Icc.prod isCompact_Icc)) fun p hp => ?_)
+    (isCompact_Icc.prod (isCompact_Icc.prod isCompact_Icc) :
+      IsCompact (Icc (1 : ℝ) 2 ×ˢ (Icc (1 / 2 : ℝ) 2 ×ˢ Icc (1 / 2 : ℝ) 2))) fun p hp => ?_)
   unfold rayIntegrand
   by_cases h1 : p.1 ∈ Icc (1 : ℝ) 2
   · by_cases h2 : p.1 * p.2.1 ∈ Icc (1 : ℝ) 2
@@ -295,14 +296,12 @@ theorem bumpFourier_mul_mul_eq_integral_ray (w : CGLSmoothBump) {a b c : ℝ} (h
     intro u
     by_cases hu : u = 0
     · subst hu
-      simp [hF, rayIntegrand, kernelTerm, cglSmoothBumpHt_eq, w0]
+      simp [hF, rayIntegrand, kernelTerm, cglSmoothBumpHt_apply, cglSmoothBumpHtValue, w0]
     have hscale := Measure.integral_comp_smul (μ := (volume : Measure (ℝ × ℝ)))
       (fun x : ℝ × ℝ => kernelTerm w a ξ₁ x.1 * kernelTerm w b ξ₂ x.2) u
     simp only [Prod.smul_fst, Prod.smul_snd, smul_eq_mul, Module.finrank_prod,
       Module.finrank_self] at hscale
-    have hu2 : |((u ^ (1 + 1))⁻¹ : ℝ)| = (u ^ 2)⁻¹ := by
-      rw [abs_of_nonneg (by positivity)]
-    rw [hu2] at hscale
+    rw [show (1 + 1 : ℕ) = 2 from rfl, abs_of_nonneg (inv_nonneg.mpr (sq_nonneg u))] at hscale
     have : (∫ x : ℝ × ℝ, kernelTerm w a ξ₁ x.1 * kernelTerm w b ξ₂ x.2) =
         (u : ℂ) ^ 2 * ∫ v : ℝ × ℝ, kernelTerm w a ξ₁ (u * v.1) * kernelTerm w b ξ₂ (u * v.2) := by
       rw [hscale, Complex.real_smul, ← mul_assoc]
@@ -310,12 +309,12 @@ theorem bumpFourier_mul_mul_eq_integral_ray (w : CGLSmoothBump) {a b c : ℝ} (h
       rw [mul_inv_cancel₀ (pow_ne_zero 2 (by exact_mod_cast hu)), one_mul]
     rw [this, hF]
     simp only [rayIntegrand]
-    rw [← integral_const_mul, ← integral_const_mul]
+    rw [← integral_const_mul, ← integral_mul_const]
     refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
     simp only; ring
   have hswap := integral_integral_swap (μ := (volume : Measure ℝ))
     (ν := (volume : Measure (ℝ × ℝ))) (f := fun u v => F (u, v))
-    (by simpa [Function.uncurry] using integrable_rayIntegrand w a b c ξ₁ ξ₂ ξ₃)
+    (by exact integrable_rayIntegrand w a b c ξ₁ ξ₂ ξ₃)
   calc bumpFourier w a ξ₁ * bumpFourier w b ξ₂ * bumpFourier w c ξ₃
       = ∫ u, (∫ x : ℝ × ℝ, kernelTerm w a ξ₁ x.1 * kernelTerm w b ξ₂ x.2) *
           kernelTerm w c ξ₃ u := by
@@ -348,9 +347,12 @@ theorem cubicPhaseIntegral_mul_lagTriple (w : CGLSmoothBump) (W : Finset ℝ) (v
   by_cases hv : v ∈ Icc (1 / 2 : ℝ) 2 ×ˢ Icc (1 / 2 : ℝ) 2
   · have h₁ : v.1 ≠ 0 := by have := hv.1.1; positivity
     have h₂ : v.2 ≠ 0 := by have := hv.2.1; positivity
-    simp only [lagPhase_sub_mul_ray h₁ h₂, ← Finset.mul_sum]
-    rw [sum_sum_sum_mul_mul, lagTriple, lagSum_eq_sum_lagPhase, lagSum_eq_sum_lagPhase,
-      lagSum_eq_sum_lagPhase]
+    rw [lagTriple, lagSum_eq_sum_lagPhase, lagSum_eq_sum_lagPhase, lagSum_eq_sum_lagPhase,
+      ← sum_sum_sum_mul_mul]
+    simp only [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun t₁ _ => Finset.sum_congr rfl fun t₂ _ =>
+      Finset.sum_congr rfl fun t₃ _ => ?_
+    rw [lagPhase_sub_mul_ray h₁ h₂]
   · simp [cubicPhaseIntegral_eq_zero w hv]
 
 /-- **Guth–Maynard (7.4).** `I_m = N³ ∫_{ℝ²} J(v, N(m₁v₁ + m₂v₂ + m₃)) R(v₁) R(v₂/v₁) R(1/v₂) dv`,
@@ -384,7 +386,8 @@ theorem integrable_tripleIntegrand (w : CGLSmoothBump) (a b c ξ₁ ξ₂ ξ₃ 
     unfold tripleIntegrand
     fun_prop
   refine hc.integrable_of_hasCompactSupport (HasCompactSupport.intro
-    (isCompact_Icc.prod (isCompact_Icc.prod isCompact_Icc)) fun u hu => ?_)
+    (isCompact_Icc.prod (isCompact_Icc.prod isCompact_Icc) :
+      IsCompact (Icc (1 : ℝ) 2 ×ˢ (Icc (1 : ℝ) 2 ×ˢ Icc (1 : ℝ) 2))) fun u hu => ?_)
   unfold tripleIntegrand
   by_cases h1 : u.1 ∈ Icc (1 : ℝ) 2
   · by_cases h2 : u.2.1 ∈ Icc (1 : ℝ) 2
@@ -407,9 +410,13 @@ theorem cubicTerm_eq_integral (w : CGLSmoothBump) (W : Finset ℝ) (N : ℝ) (m�
   have htriple : ∀ a b c ξ₁ ξ₂ ξ₃ : ℝ, bumpFourier w a ξ₁ * bumpFourier w b ξ₂ *
       bumpFourier w c ξ₃ = ∫ u : ℝ × ℝ × ℝ, tripleIntegrand w a b c ξ₁ ξ₂ ξ₃ u := by
     intro a b c ξ₁ ξ₂ ξ₃
+    have e1 := integral_prod_mul (μ := (volume : Measure ℝ)) (ν := (volume : Measure ℝ))
+      (kernelTerm w b ξ₂) (kernelTerm w c ξ₃)
+    have e2 := integral_prod_mul (μ := (volume : Measure ℝ)) (ν := (volume : Measure (ℝ × ℝ)))
+      (kernelTerm w a ξ₁) fun z => kernelTerm w b ξ₂ z.1 * kernelTerm w c ξ₃ z.2
+    rw [← Measure.volume_eq_prod] at e1 e2
     rw [bumpFourier_eq_integral, bumpFourier_eq_integral, bumpFourier_eq_integral, mul_assoc,
-      ← integral_prod_mul (μ := (volume : Measure ℝ)) (ν := (volume : Measure ℝ)),
-      ← integral_prod_mul (μ := (volume : Measure ℝ)) (ν := (volume : Measure (ℝ × ℝ)))]
+      ← e1, ← e2]
     rfl
   simp only [htriple]
   rw [← integral_sum_sum_sum W fun t₁ t₂ t₃ => integrable_tripleIntegrand w _ _ _ _ _ _]
@@ -432,8 +439,11 @@ theorem cubicTerm_eq_integral (w : CGLSmoothBump) (W : Finset ℝ) (N : ℝ) (m�
     intro t₁ t₂ t₃
     rw [← hK, ← lagPhase_sub_mul h₁ h₂ h₃]
     ring
-  simp only [hsum, ← Finset.mul_sum]
-  rw [sum_sum_sum_mul_mul, lagSum_eq_sum_lagPhase, lagSum_eq_sum_lagPhase, lagSum_eq_sum_lagPhase]
+  rw [lagSum_eq_sum_lagPhase, lagSum_eq_sum_lagPhase, lagSum_eq_sum_lagPhase,
+    ← sum_sum_sum_mul_mul]
+  simp only [Finset.mul_sum]
+  exact Finset.sum_congr rfl fun t₁ _ => Finset.sum_congr rfl fun t₂ _ =>
+    Finset.sum_congr rfl fun t₃ _ => hsum t₁ t₂ t₃
 
 end
 

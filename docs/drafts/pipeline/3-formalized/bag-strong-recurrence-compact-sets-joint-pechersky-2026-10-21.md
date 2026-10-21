@@ -98,9 +98,17 @@ enlarged discs `closedBall (z i) (ρ i R₂)` lie in the strip and in a zero-fre
    `exists_uniform_pos_density_eulerTargetReturnSet_exp_union`); `ζ` under RH is the case where the
    zero-free disc supplies the logarithm.
 
-Not reached: targets analytic only on a neighbourhood of `K` with connected complement
-(Mergelyan/Runge are not in the corpus; `HTGeometry/RungeDensity` approximates by differentially
-algebraic functions), and targets with zeros (excluded by `exists_zero_of_mem_zetaTargetReturnSet`).
+9. **Joint value denseness** (`ZetaJointValueDensenessAtFinitelyManyPoints`):
+   `exists_pos_density_forall_norm_zeta_sub_lt` — for distinct points `s_j` of the strip and
+   nonzero `w_j`, the shifts with `|ζ(s_j + iτ) − w_j| < ε` for all `j` have positive lower density
+   (target `exp P`, `P` the Lagrange interpolation polynomial of the logarithms).
+10. **Connected-complement compacts** (`ZetaVoroninUniversalityOnConnectedComplementCompacts`, via
+   the polynomial Runge theorem `HTGeometry/PolynomialRungeOnConnectedComplement`; card
+   `polynomial-runge-connected-complement-voronin-2026-10-21`): targets analytic and nonvanishing
+   on a simply connected open neighbourhood of `K`, `ℂ \ K` connected.
+
+Not reached: targets merely continuous on `K` and analytic inside (Mergelyan), and targets with
+zeros (excluded by `exists_zero_of_mem_zetaTargetReturnSet`).
 
 ## Gates
 - [x] 0 → 1  well-posed, route fixed by corpus search

@@ -1,9 +1,9 @@
 # The walls ledger
 
-Five proved obstructions on which direct attacks on the Riemann hypothesis stop. Four of them are
-unified walls with faces: Wall 1, the zero width, read in seven languages; Wall 3, the Nyquist law,
-with a position face and a depth face; Wall 14, the carrier, with a size face and a torsion face;
-Wall 16, the sign-blindness barrier, read in four. The faces of a wall are one obstruction, and the
+Four proved obstructions on which direct attacks on the Riemann hypothesis stop, each a unified wall
+with faces: Wall 1, the zero width, read in seven languages; Wall 3, the Nyquist law, with a
+position face, a depth face and a pointwise face; Wall 14, the carrier, with a size face and a
+torsion face; Wall 16, the sign-blindness barrier, read in four. The faces of a wall are one obstruction, and the
 dictionary between them is a proved theorem stated at the head of the wall. One principle stands behind the walls and is stated
 first: the information that decides the width lives only in the complete, signed, unbounded-aperture,
 pointwise data of the explicit formula, and every coarsening of those data has an exact blindness
@@ -14,19 +14,18 @@ field](hard-obstacles-summary.md), [route unification](route-unification-ledger.
 grouped by the unit their receivers measure, with the dictionaries proving each group is one route);
 the first two cite faces by the labels of the companion numbering:
 2 = face 1.5, 4 = 1.2, 5 = 1.7 and 14.2, 7 = 1.6, 8 and 9 and 11 = 1.4, 12 = 1.3 and 1.4,
-10 = 1.1 and 16.4, 15 = 3.2, 6 = 16.1, 17 = 16.3. Walls keep their labels; the labels 2, 4–12, 15
-and 17 are not used for separate walls.
+10 = 1.1 and 16.4, 13 = 3.3, 15 = 3.2, 6 = 16.1, 17 = 16.3. Walls keep their labels; the labels 2,
+4–13, 15 and 17 are not used for separate walls.
 
-**Lean checkpoint** `4a2204291`. Evidence tags: [L] = committed Lean declaration imported by its
+**Lean checkpoint** `854afb550`. Evidence tags: [L] = committed Lean declaration imported by its
 committed umbrella; [S] = Lean source in the working tree whose file or umbrella import is
 uncommitted, or a module not imported by its umbrella (compiles standalone, no committed audit);
 [P] = paper only. Module paths are relative to `formal/GaloisForLFunctions/`, with
 `R:` = `RHTower/`, `H:` = `HTGeometry/`, `B:` = `BiScaleUncertainty/`, `V:` = `BezoutValuationIncidence/`,
 `T:` = `TransHorizonIncidenceMechanics/`, `A:` = `arithmetic-positivity-theory/`,
 `C:` = `ArithmeticCriticalityTheory/`, `I:` = `ArithmeticIncidencePositivity/`,
-`Q:` = `SquareRootThreshold/`. Working-tree [S] items at this checkpoint:
-`Q:PositionAndDepthShareOneNyquistAperture` and `Q:AmplificationMultipliesTheZeroWidthExponent`
-(files and umbrella imports uncommitted); every theorem in both is closed, with standard axioms.
+`Q:` = `SquareRootThreshold/`. No working-tree [S] items at this checkpoint: every cited module is
+committed and imported by its committed umbrella, every theorem closed with standard axioms.
 
 Two general facts frame every wall. First, every graded relaxation of a surveyed route is a zero-free
 half-plane or a finite-height verification: a one-sided power bound `O(x^θ)` on a Chebyshev, Mertens or
@@ -37,7 +36,7 @@ the damped Möbius receiver at one fixed damping `ε ∈ (0, 1/2)` already gives
 `R:PMPowerDampedMobiusCriterion` [L]). There is no producer target weaker than RH on these routes.
 Second, a new attempt must name the wall it passes and the concrete input that passes it before
 anything is built; Wall 1 in each of its faces and Wall 16 are RH-strength targets in disguise,
-Wall 3 states what a class of evidence cannot do, walls 13 and 14 constrain the shape of any
+Wall 3 states what a class of evidence cannot do, Wall 14 constrains the shape of any
 construction.
 
 ## The principle: the width is a complete-data property
@@ -64,9 +63,13 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   Nyquist law: aperture `a` resolves on-line configurations of height separation `g` iff `a > π/(2g)`
   (`eq_of_weil_eq_of_separated`, `lattice_resolution_sharp`, `Q:NyquistResolutionOfTheWeilForm`), and
   position and depth share that threshold (`position_and_depth_share_nyquist_aperture`,
-  `Q:PositionAndDepthShareOneNyquistAperture` [S]). This is Wall 3 in both faces, the
-  window-boundedness of every certificate in faces 1.3 and 1.4 and of wall 13, and the finite-lag
-  statements of face 1.6.
+  `Q:PositionAndDepthShareOneNyquistAperture` [L]). On the weight side a certificate of radius `R`
+  reads the prime weights below `e^{2R}` only, and is shared by weights outside the Weil cone
+  (`weilFullFunctional_weilTest_congr_of_agree_below`,
+  `exists_weight_not_weilPositiveFull_eq_zeta_W_on_aperture`,
+  `Q:CertificateRadiusReadsAFinitePrimeWindow` [L]). This is Wall 3 in its three faces, including
+  the window-boundedness of every certificate in faces 1.3 and 1.4, and the finite-lag statements of
+  face 1.6.
 - *Signs.* On the damped Möbius class `|c(d)| ≤ Kd^{−ε}` the receiver is decided by the coefficient
   magnitudes, by the Ramanujan amplitudes, or by one unsigned majorant, in each case iff `ε > ½`
   (`receiverBounded_magnitudeInvariant_iff`, `uniformReceiverBound_iff_amplitudeInvariant`,
@@ -95,7 +98,7 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   explicit mimics. At the trivial rate `½` every family is bounded unconditionally; the width is
   where the bounds stop. Powers add nothing: the admissible exponents of `|D|^k` are the `k`-fold
   dilates of those of `D`, with infimum `k · zetaZeroWidth` (`sInf_deficitPowerRates`,
-  `Q:AmplificationMultipliesTheZeroWidthExponent` [S]); this is face 1.7. On the operator side the
+  `Q:AmplificationMultipliesTheZeroWidthExponent` [L]); this is face 1.7. On the operator side the
   polar ground energy defines its own exponent
   `polarGroundEnergyRate = inf{σ ≥ 0 : μ₀(A) ≥ −Ce^{2σA} eventually} ∈ [0, ½]`, which dominates the
   width and vanishes iff RH (`zetaZeroWidth_le_polarGroundEnergyRate`,
@@ -104,7 +107,8 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
 
 What the principle does not cover: the carrier constraints of Wall 14 (no finite-rank, trace-class or
 Frobenius-integral arithmetic realization), proved by the size of `S(T)` and by transcendence and
-consistent with it; and the cone mismatch of wall 13 beyond its aperture reach.
+consistent with it. The mismatch of the pointwise and the Bochner cone (face 3.3) is a fact about
+cones; its bite on the width is the Nyquist law itself.
 
 **Rule.** Before building, name the coarsening the method uses, its blindness threshold, and the
 complete datum it would need to pass it: an aperture that grows without bound, the signs of the prime
@@ -549,7 +553,7 @@ exponents of `|D|^k`, `D` the integrated Chebyshev deficit, are the `k`-fold dil
 their infimum is `k · zetaZeroWidth`, and RH is its vanishing for any one `k`
 (`mem_deficitPowerRates_iff`, `deficitPowerRates_eq_image`, `sInf_deficitPowerRates`,
 `riemannHypothesis_iff_sInf_deficitPowerRates_eq_zero`;
-`Q:AmplificationMultipliesTheZeroWidthExponent` [S]). The abscissa of `|D|^k` is
+`Q:AmplificationMultipliesTheZeroWidthExponent` [L]). The abscissa of `|D|^k` is
 `k/2 + k · zetaZeroWidth`, and there is no second evaluation of it. In the cone currency the same
 fact is twin rigidity: the degree-`d` Weil cone is the point `dΛ`, a degree-`d` twin of `ζ^d` with
 all zeros critical is `ζ^d`, and the second-degree readings of the shifted pair are RH again
@@ -580,14 +584,19 @@ test supported in `[−a, a]` with `a ≤ L/2`: below the Nyquist aperture the f
 and nothing else, neither the position nor the depth of the zeros; above it, it reads both. The
 position face is local zero clustering: windows shorter than the Nyquist length of the local
 spacing do not separate zeros. The depth face is support versus positivity: positivity on a bounded
-aperture does not orient a zero relative to the critical line. For `ζ` the mean spacing of the
+aperture does not orient a zero relative to the critical line. The pointwise face is the cone
+mismatch: a certificate produced on the pointwise cone holds through a radius `R`, and through
+radius `R` the form reads the prime weights below `e^{2R}` only, so the certificate is shared by
+weights outside the Weil cone. For `ζ` the mean spacing of the
 ordinates at height `γ₀` is `2π/log γ₀`, so the Nyquist aperture grows like `(log γ₀)/4`, and the
 width, the depth at every height, needs unbounded aperture: Wall 3 at all heights is the aperture
 property of Wall 1.
 
-**The dictionary** (`Q:PositionAndDepthShareOneNyquistAperture` [S]; `Q:NyquistResolutionOfTheWeilForm`,
+**The dictionary** (`Q:PositionAndDepthShareOneNyquistAperture`,
+`Q:CertificateRadiusReadsAFinitePrimeWindow`, `Q:NyquistResolutionOfTheWeilForm`,
 `R:ZeroLatticeDepthNyquistLaw`, `Q:OnLineNyquistPinning`, `Q:DepthTomographyAtTwiceNyquist`,
-`Q:OnLineShadowIndistinguishability` [L]).
+`Q:OnLineShadowIndistinguishability`, `R:WeilFullConeRiemannKernelRigidity`,
+`R:WeilConeUniquenessUnconditional` [L]).
 
 - *Flat value.* For `a ≤ L/2` the three forms equal `2L∫|f|²` on every `C²` test supported in
   `[−a, a]` (`weil_eq_flat_of_le_nyquist`).
@@ -610,6 +619,18 @@ property of Wall 1.
   Nyquist aperture on (`depthTomography`). Below its visibility aperture an off-line configuration
   is, for every test the aperture allows, a weighted on-line configuration of the same density
   (`weil_nonneg_iff_onLineShadow_of_lagFormula`).
+- *Weight side.* A test of aperture `R` pairs the prime weights of the full Weil functional only
+  below `e^{2R}`: weights agreeing on `2 ≤ n < e^{2R}` have the same functional on every test of
+  aperture `R` (`weilFullFunctional_weilTest_congr_of_agree_below`); for `2R ≤ log 2` no weight is
+  read and the functional of every weight is the zero side of `ζ`
+  (`weilFullFunctional_weilTest_eq_of_two_mul_le_log_two`). The first dual point of `ζ` is `log 2`
+  and its flat regime the aperture `(log 2)/2`.
+- *Mimicry on the weight side.* For every radius `R` a weight `lam ≥ Λ` differing from `Λ` above
+  `e^{2R}` has the functional of `ζ` on every test of aperture `R` and is not Weil-positive
+  (`exists_weight_not_weilPositiveFull_eq_zeta_W_on_aperture`,
+  `eq_vonMangoldt_of_weilPositiveFull_of_ge`); the full cone is `{Λ}` and its membership is RH
+  (`weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt`). A weight modified above `e^{2R}`
+  mimics `Λ` through aperture `R` as the lattice of spacing `2π/L` mimics the line through `L/2`.
 
 ### Face 3.1: position, local zero clustering
 
@@ -677,14 +698,15 @@ results that exist are strip statements).
 measure, ask what in it changes sign when a zero is reflected across the critical line. If nothing
 does, the construction cannot locate zeros.
 
-## Wall 13: cone mismatch
+### Face 3.3: the pointwise cone
 
 Maximum principles, transfer-operator positivity and pointwise gauges act on pointwise cones; the
 positivity to be proved lives on the Bochner cone (autocorrelations, positive-definite functions,
 nonnegative spectral measures). The two cones differ in both directions, and the Bochner cone is
 exactly the cone of positive-definite zonal kernels on `ℍ`. Every pointwise certificate is
-window-bounded, and by the depth face of Wall 3 a window-bounded certificate is consistent with every
-width.
+window-bounded, and a window is a Nyquist aperture: by the depth face a window-bounded certificate is
+consistent with every width, and by the weight side of the dictionary a certificate of radius `R`
+reads the prime weights below `e^{2R}` only.
 
 **In the corpus** [L]. `R:WeilConeMismatchWitnesses` (`weilTest_self_re_neg_twoSignedWeilTest`: a
 smooth Weil autocorrelation negative at lag `3`; a nonnegative two-hump profile that is no
@@ -715,22 +737,37 @@ average) give the full real and complex form `Ẑ(F) ≥ (1/1000)∫F²` on `[�
 its ground-state transform, the sharp micro-fold (Harnack across every prime-power shift: `2Λ(n)/√n·∫F F(· + log n)
 ≤ 2·stripSurplus` for `log n/2 < r ≤ log n/2 + 1/12`, with constant `λ ≈ 1.88`) and the strip shared by
 a convex `θ`-split give `Ẑ(F) ≥ (1/100)∫F²` through `347/1000`, `(1/200)∫F²` through `7/20`,
-`(1/1000)∫F²` through `353/1000`: the odd sector passes the first prime with the atom `Λ(2)/√2` paid
+`(1/1000)∫F²` through `353/1000`, and, with the even part of the prime atom paying the strip,
+`(1/1000)∫F²` through `9/25`: the odd sector passes the first prime with the atom `Λ(2)/√2` paid
 and no pole-free margin (`I:OddWindowPastFirstPrime`, `I:SharpMicroFoldHarnack`,
-`I:AtomFreeOddWindowSevenTwentieths`, `I:SharpFoldOddWindowPastSevenTwentieths` [L]; the
-Schur-absorbed ground state, which lends potential from a hub to the inner edge of the strip, is
-`I:SchurAbsorbedGroundState` [L]). Every such certificate is window-bounded: on even tests the
-conductances across the first prime turn negative past `log 2/2`, and on odd tests the inner edge of
-the prime strip at `≈ 0.355` needs potential `0.0030` against `0.0017` available
-(`I:SchurFoldWindowNumeratorBounds` [L] certifies the numerator at `356/1000` without a capstone). The
-meeting of the pointwise and Bochner cones is thus not confined to the window sector `|supp| ≤ log 2`
-of the mismatch witnesses, but no pointwise or Schur certificate reaches arbitrary support, and the
-maximum-principle route has no nonnegative candidate at all.
+`I:AtomFreeOddWindowSevenTwentieths`, `I:SharpFoldOddWindowPastSevenTwentieths`,
+`I:SchurFoldOddWindowThreeHundredFiftySixThousandths`, `I:PrimeEvenPartOddWindowNineTwentyFifths`
+[L]; the Schur-absorbed ground state, which lends potential from a hub to the inner edge of the
+strip, is `I:SchurAbsorbedGroundState` [L]). Every such certificate is window-bounded: on even tests
+the conductances across the first prime turn negative past `log 2/2`; on odd tests the inner-edge
+wall of the prime strip at `353/1000`–`356/1000` is gone and the binding constraint is the
+archimedean middle of the window. The meeting of the pointwise and Bochner cones is thus not
+confined to the window sector `|supp| ≤ log 2` of the mismatch witnesses, but no pointwise or Schur
+certificate reaches arbitrary support, and the maximum-principle route has no nonnegative candidate
+at all.
+
+**What the radii read** (`Q:CertificateRadiusReadsAFinitePrimeWindow` [L]). The windows sit on
+either side of the Nyquist aperture of the first prime: `3/10 < (log 2)/2 < 9/25`
+(`three_tenths_lt_half_log_two`, `half_log_two_lt_nine_twenty_fifths`). The all-test certificate
+through `3/10` therefore certifies every weight sequence, `Λ` or not
+(`weilFullFunctional_re_ge_of_support_le_threeTenths`): it is a theorem about the pole and
+archimedean form alone. The odd certificate through `9/25` lies between the first and the second
+dual point (`log 3/2 ≈ 0.549`) and certifies every weight with the von Mangoldt value at `2`
+(`weilFullFunctional_re_ge_of_odd_support_le_nineTwentyFifths`): the pointwise route has read
+exactly one prime. At every radius the certified statement is shared by a weight outside the Weil
+cone (`exists_weight_not_weilPositiveFull_eq_zeta_W_on_aperture`), while membership in the cone is
+RH.
 
 **Rule.** When a positivity statement is proved by a maximum principle, a transfer operator or a
 pointwise gauge, identify the cone it lives on and the support through which it holds. A Bochner-cone
 statement at arbitrary support needs a transfer from pointwise positivity compatible with blindness;
-every known transfer stops at an explicit radius, and no radius decides the width.
+every known transfer stops at an explicit radius, a radius `R` reads the primes below `e^{2R}`, and
+no radius decides the width.
 
 ## Wall 14: no finite carrier
 
@@ -965,9 +1002,8 @@ zero-free-region argument in disguise, and its unsigned version stops at half da
 
 | Wall | Routes it binds | Status and the open unit |
 |---|---|---|
-| 1 The zero width (faces 1.1–1.7) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC, RN. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, every positivity route, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL. 1.6: BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids. 1.7: HF, IRK, PTR, W1C, TG | [L], with face 1.7 [S]. One open unit in seven currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`, the attained top of a grid; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor. Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. By the aperture principle none of these units can be closed at a bounded aperture or lag. |
-| 3 The Nyquist law (faces 3.1, 3.2) | 3.1: LA, TH, HCF, XN, WD, JAS, SRT. 3.2: TT, WD, XN, TG, RN, HF, CHMD, OWU, ACT, AIP, BSH, CDC, HJ, IRK, FEL, RFHM, SC, SEC, PTR, W1C, EGC | [L], dictionary [S]. One threshold `L/2` for position and depth; resolution aperture `π/(2g)` exact; invisibility is mimicry below it; lag side: hiding needs collapsed clusters, the pair-correlation barrier remains. |
-| 13 Cone mismatch | RW, HF, EWU, OWU, CHMD, TT, RN, ACT, AIP, MSC | [L]. Pointwise/Schur certificates reach `3/10` (all) and `353/1000` (odd); no radius decides. |
+| 1 The zero width (faces 1.1–1.7) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC, RN. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, every positivity route, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL. 1.6: BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids. 1.7: HF, IRK, PTR, W1C, TG | [L]. One open unit in seven currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`, the attained top of a grid; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor. Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. By the aperture principle none of these units can be closed at a bounded aperture or lag. |
+| 3 The Nyquist law (faces 3.1–3.3) | 3.1: LA, TH, HCF, XN, WD, JAS, SRT. 3.2: TT, WD, XN, TG, RN, HF, CHMD, OWU, ACT, AIP, BSH, CDC, HJ, IRK, FEL, RFHM, SC, SEC, PTR, W1C, EGC. 3.3: RW, HF, EWU, OWU, CHMD, TT, RN, ACT, AIP, MSC | [L]. One threshold `L/2` for position and depth; resolution aperture `π/(2g)` exact; invisibility is mimicry below it; a certificate of radius `R` reads the primes below `e^{2R}`, with `3/10 < (log 2)/2 < 9/25` for the all-test and the odd certificates, and every radius is mimicked by a weight outside the cone; lag side: hiding needs collapsed clusters, the pair-correlation barrier remains. |
 | 14 No finite carrier (faces 14.1, 14.2) | 14.1: FU, RP, TG, RN, SZ, HF, CHMD, OWU, APF, EWJ, PCS, IRK, SC, SEC, PTR, W1C, WBF. 14.2: HF, IRK, PTR, W1C, TG | [L]. CCM's finite-aperture realization is unconditional and convergence to `Ξ` is the premise; purity `|ω| = √q` is not formalized. |
 | 16 Sign blindness (faces 16.1–16.4) | 16.1: PA, JAS, PBM, DR, WBF; PM/BVI at `ε > 1/2`. 16.2: PM, MC, CTF, BVI, THIM. 16.3: BVI, MC, PM, CTF. 16.4: WL, MC, FU, RP, LI, PBM, PM, CTF, RN, EGC | [L]. Sharp at `ε = 1/2` in every face: unsigned majorant, amplitudes and magnitudes decide iff `ε > 1/2`; Type-II `ℓ²` stops at `θ = 1`, Type-I at `3/2`, the receiver sits at `θ = 2`; absolute transports stop at `k^{−1/2}`. Separating observables classified. |
 
@@ -975,7 +1011,7 @@ A new mechanism has to supply one of: square-root cancellation of a prime sum at
 the signs read (face 1.1, Wall 16); equality in Jensen for `log|ζ|` (face 1.5); an evaluation of an
 amplified exponent independent of the unamplified one, which is what a Frobenius-type fibration
 would give (face 1.7, Wall 14); a Bochner-cone positivity certificate at arbitrary support
-compatible with node criticality (face 1.4, Wall 13); or a definite spectral realization of the
+compatible with node criticality (face 1.4, face 3.3); or a definite spectral realization of the
 zeros whose prime part is as large as `S(T)` and whose finite-aperture ground transforms converge to
 `Ξ` (faces 1.3, 1.4, Wall 14). All five are the statement `zetaZeroWidth = 0` in five of the
 currencies of Wall 1, and by the principle each needs the complete datum its coarsening lacks: the

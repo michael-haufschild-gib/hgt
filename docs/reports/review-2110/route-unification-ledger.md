@@ -20,7 +20,9 @@ uncommitted; [P] = paper only. Module paths are relative to `formal/GaloisForLFu
 `Q:TheRoutesMeasureOneAperture`, `Q:TheRoutesMeasureOneZeroWidth`,
 `Q:TheZeroIndexedRoutesMeasureOneSide` (files and umbrella imports uncommitted; every theorem closed,
 standard axioms), `Q:TheZeroWidthIsALandauExponent` and `Q:TheZeroWidthIsAnUnboundedApertureProperty`
-(same status), and the rename of the duplicate declaration `RHTower.norm_mobiusMertensPartialSum_eq`
+(same status), `Q:TheShiftedGroundStateInequalitiesReadTheOddWindow` and
+`Q:TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` (same status), and the rename of
+the duplicate declaration `RHTower.norm_mobiusMertensPartialSum_eq`
 of `R:LiouvilleSummatoryRH` (now `norm_mobiusMertensPartialSum_eq_abs_sourcePartialSum_moebiusR`, its
 consumer `R:SignedArithmeticAbscissaRH` updated), which collided with the declaration of the same
 name in `R:CausalMobiusThetaTail` inside the `RHTower` umbrella.
@@ -121,15 +123,43 @@ dictionary is `Q:TheRoutesMeasureOneAperture` [S].
 - *OWU is the odd window.* `ZetaOddWindowPositive A` iff every odd window test satisfies the
   capacity inequality `sinhPairing g² ≤ 2·markovForm N g` at the prime cutoff `N = ⌈e^{2A}⌉`
   (`zetaOddWindowPositive_iff_sinhCapacity`).
-- *ACT is paid by the odd window.* The ACT test `Φ(ω_a u)` of an even profile is an odd window test,
-  and on odd tests the pole term is `−2|F̂(i/2)|² ≤ 0`, so the pole-free Markov energy dominates `Ẑ`
-  (`shiftedGroundState_markovEnergy_nonneg_of_zetaOddWindowPositive`): at a fixed aperture the odd
-  window implies the single-shift inequality; the converse at fixed aperture is not available, and
-  both are RH over all apertures (`C:SingleShiftCompleteness` [L]).
-- *EWU is dominated.* `0 ≤ μ(A)` gives `0 ≤ evenBlindMinimum A`
-  (`evenBlindMinimum_nonneg_of_ccmRestrictedWeilGroundEnergy_nonneg`, the dominance chain of
-  `R:EvenSectorBlindMinimumSmallAperturePositivity` [L]); the blind minimum reads only the blind tests,
-  so the converse at fixed aperture is open, and the two agree at the endpoint
+- *ACT is the odd window.* The ACT test `Φ(ω_a u) = m_a u` of an even window profile is an odd
+  window test, and on odd tests `Ẑ(F) = markovEnergy(F) − 2(∫F sinh(x/2))²`, so the pole-free
+  variation form of ACT is the full zero form of its test, `Ẑ(m_a u) = 2S_a(u) − D_a(u) + V_a(u)`
+  (`fullZeroForm_phiDoob_shiftedGroundState`,
+  `Q:TheShiftedGroundStateInequalitiesReadTheOddWindow` [S]). Hence the odd window at `A` gives the
+  variation inequality at `A` for every shift (`shiftVariationWindow_of_zetaOddWindowPositive`), the
+  variation inequality at `A` and one shift gives the odd window at `A` on the tests vanishing near
+  the origin, through the quotient `u = F/m_a`
+  (`zetaOddWindowPositiveOffOrigin_of_shiftVariationWindow`), and on those tests the two are one
+  predicate at every shift (`shiftVariationWindowOffOrigin_iff_zetaOddWindowPositiveOffOrigin`,
+  `shiftVariationWindowOffOrigin_iff_of_pos`). The single-shift Markov inequality is the odd window
+  plus the pole energy, `markovEnergy(m_a u) = Ẑ(m_a u) + 8(∫u dμ_a)²`
+  (`markovEnergy_phiDoob_shiftedGroundState_eq_fullZeroForm_add`): the odd window gives it
+  (`shiftedGroundState_markovEnergy_nonneg_of_zetaOddWindowPositive`), on tests vanishing near the
+  origin it is the pole-free odd window `markovEnergy ≥ 0` at every shift
+  (`shiftMarkovWindowOffOrigin_iff_zetaPoleFreeOddWindowPositiveOffOrigin`), and it gives `Ẑ ≥ 0`
+  on the odd tests of vanishing pole moment
+  (`zetaPolarOddWindowPositive_of_zetaPoleFreeOddWindowPositive`). RH is each of them at every
+  aperture (`riemannHypothesis_iff_forall_shiftVariationWindow`, `…_shiftMarkovWindow`,
+  `…_zetaOddWindowPositive`; `C:SingleShiftCompleteness` [L]).
+- *EWU is the blind even window, and below the first prime the polar even window.* `0 ≤ μ(A)`
+  gives `0 ≤ evenBlindMinimum A` (`evenBlindMinimum_nonneg_of_ccmRestrictedWeilGroundEnergy_nonneg`,
+  the dominance chain of `R:EvenSectorBlindMinimumSmallAperturePositivity` [L]), and
+  `0 ≤ evenBlindMinimum A` gives `0 ≤ Re W(f, f)` for every smooth even pole-free test inside
+  `(−A, A)` whose autocorrelation vanishes at every integer lag
+  (`re_W_nonneg_of_evenBlindMinimum_nonneg`,
+  `Q:TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` [S]). For `2A < log 2` a window
+  source has no correlation at any integer lag, so the blind minimum is the even polar ground
+  energy `μᵉ(A)` of the restricted Weil form
+  (`evenBlindMinimum_eq_evenGroundEnergy_of_two_mul_lt_log_two`): there EWU reads the polar even
+  window exactly, with the unconditional floor `1/20` through `½(log 2 + 1/50)`
+  (`one_twentieth_le_evenGroundEnergy_of_le_primeTwo`), and `ZetaWindowPositive A` pays it through
+  `μ ≤ μ_polar ≤ μᵉ` (`evenGroundEnergy_nonneg_of_zetaWindowPositive`). The even window itself is
+  the polar even window plus one affine slice: on even tests
+  `Ẑ(F) = markovEnergy(F) + 2(∫F cosh(x/2))²`, so `ZetaEvenWindowPositive A` iff `markovEnergy ≥ 0`
+  on the even window tests of vanishing cosh moment and `markovEnergy ≥ −2` on those of unit cosh
+  moment (`zetaEvenWindowPositive_iff_polar_and_unitCoshMoment`). The two agree at the endpoint
   (`riemannHypothesis_iff_forall_evenBlindMinimum_nonneg` [L]).
 - *SRT's window and lag.* The real window transfers to complex tests of the same aperture and back
   (`re_W_nonneg_of_zetaWindowPositive`, `zetaWindowPositive_of_re_W_nonneg`), and
@@ -230,12 +260,25 @@ condition (`Q:OneParameterLagFamilyHorizonLaw` [L]).
 
 Pairs that look alike and are not, with the theorem that separates them:
 
-- ACT's single-shift inequality at aperture `A` and OWU's capacity inequality at aperture `A`
-  differ by the pole term `−2|F̂(i/2)|²` on odd tests: OWU implies ACT at every aperture, the
-  converse holds only at the endpoint (`shiftedGroundState_markovEnergy_nonneg_of_zetaOddWindowPositive` [S],
-  `C:SingleShiftCompleteness` [L]).
+- ACT's single-shift Markov inequality at aperture `A` and the odd window at aperture `A` differ by
+  the pole energy `8(∫u dμ_a)² = 2(∫ m_a u sinh(x/2))²` on every profile of nonzero `μ_a`-mean and
+  agree exactly on the profiles of zero `μ_a`-mean (`markovEnergy_phiDoob_eq_fullZeroForm_iff`):
+  the odd window gives the Markov inequality at every aperture, the Markov inequality at `A` is the
+  inequality `−8(∫u dμ_a)² ≤ Ẑ(m_a u)` on every window profile
+  (`shiftMarkovWindow_iff_fullZeroForm_ge`), and its converse is the odd window on the tests of
+  nonzero pole moment, OWU's capacity inequality. ACT's variation inequality is not a different
+  route: it is the odd window (`Q:TheShiftedGroundStateInequalitiesReadTheOddWindow` [S]). A
+  separation of the two windows at any aperture refutes RH
+  (`not_riemannHypothesis_of_not_zetaOddWindowPositive`), so the pole term separates the two ACT
+  forms, not the Markov window from the odd window.
 - EWU's blind minimum at aperture `A` and RW's ground energy at aperture `A` differ by the blind
-  restriction: `μ(A) ≤ evenBlindMinimum A`, equality of signs only at the endpoint [L].
+  restriction: `μ(A) ≤ μ_polar(A) ≤ μᵉ(A) ≤ evenBlindMinimum A`, with `μᵉ(A) = evenBlindMinimum A`
+  for `2A < log 2` (`Q:TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` [S]) and
+  equality of signs only at the endpoint [L]. Below the first prime the gap to the even window is
+  the one-dimensional pole direction, the slice inequality `markovEnergy ≥ −2` on the even window
+  tests of unit cosh moment; beyond it the integer-lag constraints are quadratic and active. A
+  failure of the even window at any aperture refutes RH
+  (`not_riemannHypothesis_of_not_zetaEvenWindowPositive`).
 - HF's prime-blind positivity on a node set and the aperture: the first is graded by the support
   of the weight, the second by the support of the test (face 1.4).
 - CHMD's odd bound-state dimension and the width: the first counts off-line zeros, the second
@@ -268,9 +311,23 @@ is the record of producers; this ledger is the record of what the producers woul
 
 ## Open arrows of the dictionaries
 
-- The graded converse of EWU at fixed aperture (`0 ≤ evenBlindMinimum A ⟹ ZetaEvenWindowPositive A'`).
-- The graded converse of ACT at fixed aperture, or a proof that the pole term separates them at
-  some aperture.
+- *Closed.* The graded converse of EWU at fixed aperture
+  (`0 ≤ evenBlindMinimum A ⟹ ZetaEvenWindowPositive A'`): below the first prime
+  `0 ≤ evenBlindMinimum A` is `0 ≤ μᵉ(A)`, the polar even window, and its converse to
+  `ZetaEvenWindowPositive A` is exactly the slice inequality `markovEnergy ≥ −2` on the even window
+  tests of unit cosh moment (`zetaEvenWindowPositive_iff_polar_and_unitCoshMoment`,
+  `Q:TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` [S]); beyond the first prime the
+  blind restriction adds the quadratic integer-lag constraints. What remains is that slice
+  inequality itself on `(3/10, ½(log 2 + 1/50)]`, where the polar sector carries the floor `1/20`
+  and the even window is proved only through `3/10`: a quantitative archimedean inequality, not a
+  dictionary, and the open unit of cluster B.
+- *Closed.* The graded converse of ACT at fixed aperture: ACT's variation inequality is the odd
+  window at every aperture and every shift, converse included on the tests vanishing near the
+  origin, and its Markov inequality is the odd window plus the pole energy `8(∫u dμ_a)²`
+  (`Q:TheShiftedGroundStateInequalitiesReadTheOddWindow` [S]). The pole term separates the two ACT
+  forms on every non-polar profile and cannot separate the Markov window from the odd window at
+  any aperture without refuting RH. The residual is OWU's capacity inequality on the tests of
+  nonzero pole moment, the odd window itself.
 - Per-zero `iff` forms for PCS and PTR; any per-zero indicator for APF, EWJ, SC, RFHM, WBF, EGC.
 - Graded readings of Robin, Li and the Báez-Duarte residual: none exists, because their weights
   decay with the height of the zero; the obstruction is face 1.5.

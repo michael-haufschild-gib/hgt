@@ -150,3 +150,38 @@ gap); wall 16 (sign coarsening; the principle already classifies it next to the 
 wall 3). Candidate for a later round: wall 13 as "the pointwise face" of Wall 3 if a theorem ties the
 certificate radius to the Nyquist threshold; ζ's own flat regime `a ≤ (log 2)/2` (prime-blind tests) as
 the first dual point, to be checked against the AIP/odd-window results.
+
+## Round five: wall 13 is the pointwise face of the Nyquist law (2026-10-21)
+
+Count 5 → 4 (walls 1, 3, 14, 16; all four with faces). New module
+`SquareRootThreshold/CertificateRadiusReadsAFinitePrimeWindow.lean` (clean, standard axioms, olean built
+single-threaded, wired; committed at `854afb550` together with the two round-four modules by a research
+commit). Weight-side Nyquist law for the full Weil functional `weilFullFunctional lam (f ⋆ f̃)`:
+
+- `weilFullFunctional_weilTest_congr_of_agree_below`: weights agreeing on `2 ≤ n < e^{2R}` have the same
+  functional on every `C²` test with `tsupport ⊆ [−R, R]` (the autocorrelation vanishes at `|v| ≥ 2R`,
+  `weilTest_eq_zero_of_two_mul_le`).
+- `weilFullFunctional_weilTest_eq_of_two_mul_le_log_two`: for `2R ≤ log 2` the functional of every weight
+  is `zetaZeroConfig.W f f` (flat regime; via `zeta_W_eq_weilFullFunctional`).
+- `three_tenths_lt_half_log_two`, `half_log_two_lt_nine_twenty_fifths`, `one_lt_log_three`
+  (`Real.log_two_gt_d9`, `Real.log_two_lt_d9`, `Real.exp_one_lt_d9`).
+- `weilFullFunctional_re_ge_of_support_le_threeTenths`: the ACT all-test certificate
+  (`zetaZeroConfig_re_W_ge_of_support_le_threeTenths`) holds for every weight sequence.
+- `weilFullFunctional_re_ge_of_odd_support_le_nineTwentyFifths`: the AIP odd certificate at `9/25`
+  (`fullZeroForm_ge_of_odd_support_le_nineTwentyFifths`, bridge `fullZeroForm_eq_re_weilFullFunctional`)
+  holds for every weight with `lam 2 = Λ(2)`: the pointwise route has read one prime.
+- `exists_weight_not_weilPositiveFull_eq_zeta_W_on_aperture`: for every `R`, `lam = Λ + 1_{n₀}` with
+  `n₀ = ⌈e^{2R}⌉₊ + 1` has ζ's functional on aperture `R`, `lam ≥ Λ`, and is not Weil-positive
+  (`eq_vonMangoldt_of_weilPositiveFull_of_ge`).
+- `certificate_radius_reads_finite_prime_window`: the capstone conjunction.
+
+Ledger: Wall 13 → Face 3.3 "the pointwise cone" of Wall 3 (dictionary bullets "Weight side" and "Mimicry
+on the weight side"; paragraph "What the radii read"; odd window updated to `9/25`, inner-edge wall gone
+per `I:PrimeEvenPartOddWindowNineTwentyFifths`); concordance 13 = 3.3; four walls; checkpoint `854afb550`;
+no [S] items. The cone mismatch itself (pointwise ≠ Bochner, both directions) stays recorded as the
+mechanism of the face; its bite on the width is the Nyquist law.
+
+Remaining standalone structure: Wall 16 (sign coarsening) and Wall 14 (carrier) beside Wall 1 (the
+width) and Wall 3 (aperture coarsening). Candidate next unification: Wall 16 as the sign face of the same
+principle (a coarsening with threshold `ε = ½`), if a theorem ties the damped class to an aperture or
+exponent reading; Wall 14 stays a constraint on carriers, not a coarsening.

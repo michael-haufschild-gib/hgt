@@ -388,9 +388,7 @@ theorem differentiableAt_edgeCauchyIntegral {γ : ℝ → ℂ} {a b : ℝ} (hab 
   have hδpos : 0 < δ := by
     rw [hδ]
     exact norm_pos_iff.mpr (sub_ne_zero.mpr (hne x₀ hx₀))
-  have hsep : ∀ x ∈ Icc a b, δ ≤ ‖γ x - z₀‖ := fun x hx => by
-    have := isMaxOn_iff.mp (fun y hy => (isMinOn_iff.mp hmin) y hy) x hx
-    exact this
+  have hsep : ∀ x ∈ Icc a b, δ ≤ ‖γ x - z₀‖ := fun x hx => isMinOn_iff.mp hmin x hx
   -- a bound for `F` on the edge
   obtain ⟨M, hM⟩ := (isCompact_Icc.image_of_continuousOn hγ).exists_bound_of_continuousOn hFc
   have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM _ ⟨x₀, hx₀, rfl⟩)
@@ -408,9 +406,12 @@ theorem differentiableAt_edgeCauchyIntegral {γ : ℝ → ℂ} {a b : ℝ} (hab 
   · intro z hz
     refine (hFc.comp hγ (mapsTo_image _ _)).mul ((hγ.sub continuousOn_const).inv₀ ?_)
     exact fun x hx => hnz x hx z hz
-  · intro x hx
-    refine (differentiableOn_const _).mul ((differentiableOn_const _).sub differentiableOn_id).inv₀ ?_
-    exact fun z hz => hnz x hx z hz
+  · intro x hx z hz
+    have h1 : DifferentiableAt ℂ (fun z : ℂ => γ x - z) z :=
+      (differentiableAt_const _).sub differentiableAt_id
+    have h2 : DifferentiableAt ℂ (fun z : ℂ => (γ x - z)⁻¹) z :=
+      (differentiableAt_inv (hnz x hx z hz)).comp z h1
+    exact ((differentiableAt_const _).mul h2).differentiableWithinAt
   · intro x hx z hz
     rw [norm_mul, norm_inv]
     exact mul_le_mul (hM _ ⟨x, hx, rfl⟩) (inv_anti₀ (by positivity) (hdist x hx z hz))
@@ -588,7 +589,7 @@ theorem contourFunctional_eq_of_mem (hF : AnalyticOnNhd ℂ F Ω) (hs : 0 < s)
     (differentiableAt_contourFunctional hs hS hmemS hF hz₀).continuousAt.continuousWithinAt.tendsto
   have hFz : Tendsto (fun w => 2 * Real.pi * Complex.I * F w) (𝓝[U] z₀)
       (𝓝 (2 * Real.pi * Complex.I * F z₀)) :=
-    (((hF z₀ (hSsub _ hmn hzsq)).continuousAt).const_smul _ |>.continuousWithinAt.tendsto)
+    (continuousAt_const.mul (hF z₀ (hSsub _ hmn hzsq)).continuousAt).continuousWithinAt.tendsto
   have hΦ' : Tendsto (contourFunctional F s S) (𝓝[U] z₀)
       (𝓝 (2 * Real.pi * Complex.I * F z₀)) :=
     hFz.congr' (eventually_nhdsWithin_of_forall fun w hw => (hUeq w hw).symm)
@@ -614,6 +615,7 @@ theorem approxOn_polyFun_of_analyticOnNhd (hΩo : IsOpen Ω) (hF : AnalyticOnNhd
   refine approxOn_of_approxOn fun ε hε =>
     ⟨fun z => (2 * (Real.pi : ℂ) * Complex.I)⁻¹ * contourFunctional F s S z,
       approxOn_smul polyFun_smul _ hΦapprox, fun z hz => ?_⟩
+  beta_reduce
   rw [hΦeq z hz, ← mul_assoc, inv_mul_cancel₀ hcne, one_mul, sub_self, norm_zero]
   exact hε.le
 

@@ -230,15 +230,16 @@ theorem sqrt_two_mul_window_le {H : ℕ} {L ε : ℝ} (hL : 1 ≤ L) (hε : 0 < 
     {c : ℕ → ℝ} (hSP : ∀ p ∈ S, 8 * (H : ℝ) * L ^ 2 ≤ ε ^ 2 * p) :
     Real.sqrt (2 * H) * Real.sqrt (∑ p ∈ S, c p ^ 2 * p) * L ≤
       ε / 2 * Real.sqrt (∑ p ∈ S, c p ^ 2 * (p : ℝ) ^ 2) := by
-  rw [show Real.sqrt (2 * H) * Real.sqrt (∑ p ∈ S, c p ^ 2 * p) * L =
-      Real.sqrt (2 * H * L ^ 2 * ∑ p ∈ S, c p ^ 2 * p) by
-    rw [Real.sqrt_mul (by positivity), Real.sqrt_mul (by positivity), Real.sqrt_mul (by positivity),
-      Real.sqrt_sq (by linarith)]; ring,
-    show ε / 2 * Real.sqrt (∑ p ∈ S, c p ^ 2 * (p : ℝ) ^ 2) =
+  have hsum0 : (0 : ℝ) ≤ ∑ p ∈ S, c p ^ 2 * p := sum_nonneg fun p _ => by positivity
+  have e : Real.sqrt (2 * H * (∑ p ∈ S, c p ^ 2 * p) * L ^ 2) =
+      Real.sqrt (2 * H) * Real.sqrt (∑ p ∈ S, c p ^ 2 * p) * L := by
+    rw [Real.sqrt_mul (show (0 : ℝ) ≤ 2 * H * ∑ p ∈ S, c p ^ 2 * p by positivity) (L ^ 2),
+      Real.sqrt_mul (show (0 : ℝ) ≤ 2 * (H : ℝ) by positivity), Real.sqrt_sq (by linarith)]
+  rw [← e, show ε / 2 * Real.sqrt (∑ p ∈ S, c p ^ 2 * (p : ℝ) ^ 2) =
       Real.sqrt ((ε / 2) ^ 2 * ∑ p ∈ S, c p ^ 2 * (p : ℝ) ^ 2) by
       rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)]]
   refine Real.sqrt_le_sqrt ?_
-  rw [mul_sum, mul_sum]
+  rw [mul_sum, mul_sum, sum_mul]
   refine sum_le_sum fun p hp => ?_
   have h8p := hSP p hp
   have hc2 : 0 ≤ c p ^ 2 * p := by positivity

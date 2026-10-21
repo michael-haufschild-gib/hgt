@@ -205,6 +205,22 @@ statement. Neither side of the iff is proved; no strip is claimed.
 **Lean.** `BezoutValuationIncidence/ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis.lean`
 (`moebiusPowerWindowSaving_iff`); standard axioms; wired.
 
+### C13 — the centred prime block beats the large sieve (DONE, Lean)
+**Statement.** For `7/12 < α < 1`, `ε > 0`, all large `Q`, `H = ⌈(2Q)^α⌉`: every row `c` on primes
+`p ≤ Q₀` with `8H(log 2Q + 1)² ≤ ε²p` has, against `c' = (Λ - 1)·𝟙_{(Q,2Q]}`,
+`|B + mR' + βH'| ≤ ε√(Σc²p²)√(Q+2Q₀²)Q^{-3/2} + |Σ_{Q<n≤2Q}(Λ(n)-1)/n²|Σ|c|/(6p) + cubic`.
+The threshold is `p ≥ Q^{α+o(1)}`; at `α < 3/5` it covers the whole balanced regime.
+**Proof.** Generic `sum_sq_shortWindowAverage_le_of_window` (`Σ x̄² ≤ Q(G/H)² + 2HB²`); Huxley in
+all windows via the sibling module's `abs_sum_block_le_of_window` (`G = 2εH/Q²`), `B = (log 2Q+1)/Q²`;
+`⌈(2Q)^α⌉(log 2Q+1)² ≤ 16δ²Q` from corpus `tendsto_one_add_log_div_rpow_atTop_zero`; C11 transfer law.
+**Meaning.** The prime-row counterpart of C11, stronger than the sibling's rank-two result
+(`exists_abs_rowBilinear_centredPrimeRow_le`) by the large-sieve factor `(P/Q)^{1/2}`. The omitted
+class (C8) is inside the bound: its dual-norm size `P/Q` is `o(P^{5/2}Q^{-3/2})` for `P ≥ Q^{1/3+δ}`.
+Input strength: Huxley (zero density); a power gain needs power-saving short-interval PNT, again a
+zero-free strip (cf. C12).
+**Lean.** `BezoutValuationIncidence/CentredPrimeBlockBeatsTheLargeSieve.lean`
+(`eventually_abs_rowBilinear_centredPrimeBlock_le`); standard axioms; wired.
+
 ## Synthesis after C1–C10 (what the research says about the missing cancellation)
 
 1. **Receiver = zero-free region, both directions.** Any Mertens rate becomes a receiver band through
@@ -238,3 +254,4 @@ statement. Neither side of the iff is proved; no strip is claimed.
 - 2026-10-21 — C10 formalized and wired (Möbius in progressions mod p; Möbius/prime pair).
 - 2026-10-21 — C11 formalized and wired (transfer law; linear-window MR; Möbius block beats the Type-II barrier).
 - 2026-10-21 — C12 formalized and wired (short-window Möbius saving ⟺ Θ < 1).
+- 2026-10-21 — C13 formalized and wired (centred prime block o(large sieve) via Huxley).

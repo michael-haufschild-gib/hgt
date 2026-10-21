@@ -96,7 +96,8 @@ smooth even pole-free test `f` supported strictly inside `(−a, a)` whose autoc
 at every integer lag `log n`, `n ≥ 2`. -/
 theorem re_W_nonneg_of_evenBlindMinimum_nonneg {a : SuzukiPositiveAperture}
     (hmin : 0 ≤ evenBlindMinimum a) (f : InteriorWindowedSmoothEvenPolarTestFn a)
-    (hblind : ∀ n : LogIndex, EF.weilTest f.1.1.1.1 f.1.1.1.1 (Real.log (n : ℕ)) = 0) :
+    (hblind : ∀ n : WeilOneSided.LogIndex,
+      EF.weilTest f.1.1.1.1 f.1.1.1.1 (Real.log (n : ℕ)) = 0) :
     0 ≤ (zetaZeroConfig.W f.1.1.1.1 f.1.1.1.1).re := by
   have hb : energyProfile a
       (ccmArchimedeanFormToAperture a (interiorCCMSource f).toCCMFormVector) ∈ blindProfiles := by
@@ -114,7 +115,8 @@ theorem re_W_nonneg_of_evenBlindMinimum_nonneg {a : SuzukiPositiveAperture}
 autocorrelation vanishes at every integer lag. -/
 theorem fullZeroForm_nonneg_of_evenBlindMinimum_nonneg {a : SuzukiPositiveAperture}
     (hmin : 0 ≤ evenBlindMinimum a) (f : InteriorWindowedSmoothEvenPolarTestFn a)
-    (hblind : ∀ n : LogIndex, EF.weilTest f.1.1.1.1 f.1.1.1.1 (Real.log (n : ℕ)) = 0)
+    (hblind : ∀ n : WeilOneSided.LogIndex,
+      EF.weilTest f.1.1.1.1 f.1.1.1.1 (Real.log (n : ℕ)) = 0)
     {F : ℝ → ℝ} (hF : f.1.1.1.1 = fun x => (F x : ℂ)) : 0 ≤ fullZeroForm F := by
   have h := re_W_nonneg_of_evenBlindMinimum_nonneg hmin f hblind
   have hc : ContDiff ℝ 2 f.1.1.1.1 := f.1.1.1.2.1
@@ -197,7 +199,7 @@ theorem zetaEvenWindowPositive_iff_polar_and_unitCoshMoment (A : ℝ) :
 /-- A failure of the even window at any aperture refutes RH. -/
 theorem not_riemannHypothesis_of_not_zetaEvenWindowPositive {A : ℝ}
     (h : ¬ ZetaEvenWindowPositive A) : ¬ RiemannHypothesis :=
-  fun hRH => h fun F hF hFc _ _ => fullZeroForm_nonneg_of_riemannHypothesis hRH hF hFc
+  fun hRH => h fun _ hF hFc _ _ => fullZeroForm_nonneg_of_riemannHypothesis hRH hF hFc
 
 /-! ### 5. The collected statement -/
 

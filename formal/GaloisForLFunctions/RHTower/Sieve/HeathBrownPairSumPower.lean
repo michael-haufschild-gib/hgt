@@ -10,14 +10,14 @@ power is the polynomial of the `k`-fold Dirichlet convolution (corpus `dirPoly_c
 coefficient at `u` is a sum over the ordered `k`-factorisations of `u` with factors in `S`; each
 term has modulus at most `u^{−σ}`, the number of terms is at most `d(u)^k`
 (`powFibreOn_univ_card_le_divisors`), and the coefficient vanishes unless `u ∈ (A^k, B^k]`.  The
-majorant principle therefore gives the `2k`-th moment over pairs
+majorant principle therefore gives the `2k`-th moment over pairs of points of `W`
 
-`Σ_{r,s} |D(τ_r − τ_s)|^{2k} ≤ D^{2k} Σ_{r,s} |Σ_{A^k<u≤B^k} u^{−σ+i(τ_r−τ_s)}|²`
+`Σ_{t₁,t₂∈W} |D(t₁ − t₂)|^{2k} ≤ D^{2k} Σ_{t₁,t₂∈W} |Σ_{A^k<u≤B^k} u^{−σ+i(t₁−t₂)}|²`
 
-whenever `d(u) ≤ D` on `(A^k, B^k]`.  With Hölder over the `R²` pairs this is Guth–Maynard (6.2)
+whenever `d(u) ≤ D` on `(A^k, B^k]`.  With Hölder over the `|W|²` pairs this is Guth–Maynard (6.2)
 and, for `k = 2`, the Cauchy–Schwarz step of Heath-Brown's Corollary 2.1:
 
-`(Σ_{r,s} |D(τ_r−τ_s)|²)² ≤ R² D⁴ Σ_{r,s} |Σ_{A²<u≤B²} u^{−σ+i(τ_r−τ_s)}|²`.
+`(Σ_{t₁,t₂∈W} |D(t₁−t₂)|²)² ≤ |W|² D⁴ Σ_{t₁,t₂∈W} |Σ_{A²<u≤B²} u^{−σ+i(t₁−t₂)}|²`.
 -/
 
 set_option autoImplicit false
@@ -153,14 +153,15 @@ theorem norm_hbPowCoeff_le {A B k : ℕ} (hk : 1 ≤ k) {S : Finset ℕ}
       _ = 0 := by simp
 
 /-- **The `2k`-th moment over pairs.**  If `|a_n| ≤ n^{−σ}` on `S ⊆ (A, B]` and `d(u) ≤ D` on
-`(A^k, B^k]`, then `Σ_{r,s} |D(τ_r−τ_s)|^{2k} ≤ D^{2k} Σ_{r,s} |Σ_{A^k<u≤B^k} u^{−σ+i(τ_r−τ_s)}|²`. -/
-theorem sum_norm_hbPoly_pow_le {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {A B k : ℕ} (hk : 1 ≤ k)
+`(A^k, B^k]`, then
+`Σ_{t₁,t₂} |D(t₁−t₂)|^{2k} ≤ D^{2k} Σ_{t₁,t₂} |Σ_{A^k<u≤B^k} u^{−σ+i(t₁−t₂)}|²`. -/
+theorem sum_norm_hbPoly_pow_le (W : Finset ℝ) {A B k : ℕ} (hk : 1 ≤ k)
     {S : Finset ℕ} (hS : S ⊆ Finset.Ioc A B) {σ : ℝ} {a : ℕ → ℂ}
     (ha : ∀ n ∈ S, ‖a n‖ ≤ (n : ℝ) ^ (-σ)) {D : ℝ}
     (hD : ∀ u ∈ Finset.Ioc (A ^ k) (B ^ k), (u.divisors.card : ℝ) ≤ D) :
-    ∑ r, ∑ s, ‖hbPoly S a (τ r - τ s)‖ ^ (2 * k) ≤
+    ∑ t₁ ∈ W, ∑ t₂ ∈ W, ‖hbPoly S a (t₁ - t₂)‖ ^ (2 * k) ≤
       D ^ (2 * k) *
-        hbPairSum τ (Finset.Ioc (A ^ k) (B ^ k)) (fun u => (((u : ℝ) ^ (-σ) : ℝ) : ℂ)) := by
+        hbPairSum W (Finset.Ioc (A ^ k) (B ^ k)) (fun u => (((u : ℝ) ^ (-σ) : ℝ) : ℂ)) := by
   classical
   have hSI : S ⊆ Finset.Icc 1 B := fun n hn => by
     have := Finset.mem_Ioc.mp (hS hn)
@@ -168,17 +169,17 @@ theorem sum_norm_hbPoly_pow_le {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {A B 
   have hII : Finset.Ioc (A ^ k) (B ^ k) ⊆ Finset.Icc 1 (B ^ k) := fun u hu => by
     have := Finset.mem_Ioc.mp hu
     exact Finset.mem_Icc.mpr ⟨by omega, this.2⟩
-  have hpow : ∑ r, ∑ s, ‖hbPoly S a (τ r - τ s)‖ ^ (2 * k) =
-      hbPairSum τ (Finset.Icc 1 (B ^ k)) (hbPowCoeff B k S a) := by
+  have hpow : ∑ t₁ ∈ W, ∑ t₂ ∈ W, ‖hbPoly S a (t₁ - t₂)‖ ^ (2 * k) =
+      hbPairSum W (Finset.Icc 1 (B ^ k)) (hbPowCoeff B k S a) := by
     refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun s _ => ?_
     rw [← hbPoly_pow hSI, norm_pow, ← pow_mul, mul_comm]
   set b : ℕ → ℝ := fun u =>
     if u ∈ Finset.Ioc (A ^ k) (B ^ k) then D ^ k * (u : ℝ) ^ (-σ) else 0 with hb
-  have hmaj := hbPairSum_le_of_norm_le τ (S := Finset.Icc 1 (B ^ k))
+  have hmaj := hbPairSum_le_of_norm_le W (S := Finset.Icc 1 (B ^ k))
     (a := hbPowCoeff B k S a) (b := b) fun u hu =>
       norm_hbPowCoeff_le hk hS ha hD (Finset.mem_Icc.mp hu).1
-  have hres : hbPairSum τ (Finset.Icc 1 (B ^ k)) (fun u => (b u : ℂ)) =
-      hbPairSum τ (Finset.Ioc (A ^ k) (B ^ k))
+  have hres : hbPairSum W (Finset.Icc 1 (B ^ k)) (fun u => (b u : ℂ)) =
+      hbPairSum W (Finset.Ioc (A ^ k) (B ^ k))
         (fun u => ((D ^ k : ℝ) : ℂ) * (((u : ℝ) ^ (-σ) : ℝ) : ℂ)) := by
     have hfun : (fun u => (b u : ℂ)) = fun n => if n ∈ Finset.Ioc (A ^ k) (B ^ k) then
         ((D ^ k : ℝ) : ℂ) * (((n : ℝ) ^ (-σ) : ℝ) : ℂ) else 0 := by
@@ -193,59 +194,57 @@ theorem sum_norm_hbPoly_pow_le {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {A B 
     mul_comm k 2]
 
 /-- **Hölder over the pairs** (Guth–Maynard (6.2)):
-`Σ_{r,s} x_{rs} ≤ (R²)^{1−1/k} (Σ_{r,s} x_{rs}^k)^{1/k}` for `x_{rs} = |D(τ_r−τ_s)|²`. -/
-theorem hbPairSum_le_card_rpow_mul_moment {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {k : ℕ}
+`Σ_{t₁,t₂} x ≤ (|W|²)^{1−1/k} (Σ_{t₁,t₂} x^k)^{1/k}` for `x = |D(t₁−t₂)|²`. -/
+theorem hbPairSum_le_card_rpow_mul_moment (W : Finset ℝ) {k : ℕ}
     (hk : 1 ≤ k) (S : Finset ℕ) (a : ℕ → ℂ) :
-    hbPairSum τ S a ≤ ((Fintype.card ρ : ℝ) ^ 2) ^ (1 - 1 / (k : ℝ)) *
-      (∑ r, ∑ s, ‖hbPoly S a (τ r - τ s)‖ ^ (2 * k)) ^ (1 / (k : ℝ)) := by
-  have h := RHTower.GuthMaynard.sum_le_card_rpow_mul_sum_pow_rpow (Finset.univ : Finset (ρ × ρ))
-    (fun p => ‖hbPoly S a (τ p.1 - τ p.2)‖ ^ 2) (fun _ _ => by positivity) hk
-  have hcard : ((Finset.univ : Finset (ρ × ρ)).card : ℝ) = (Fintype.card ρ : ℝ) ^ 2 := by
-    rw [Finset.card_univ, Fintype.card_prod]
+    hbPairSum W S a ≤ ((W.card : ℝ) ^ 2) ^ (1 - 1 / (k : ℝ)) *
+      (∑ t₁ ∈ W, ∑ t₂ ∈ W, ‖hbPoly S a (t₁ - t₂)‖ ^ (2 * k)) ^ (1 / (k : ℝ)) := by
+  have h := RHTower.GuthMaynard.sum_le_card_rpow_mul_sum_pow_rpow (W ×ˢ W)
+    (fun p => ‖hbPoly S a (p.1 - p.2)‖ ^ 2) (fun _ _ => by positivity) hk
+  have hcard : ((W ×ˢ W).card : ℝ) = (W.card : ℝ) ^ 2 := by
+    rw [Finset.card_product]
     push_cast
     ring
   simp only [← pow_mul] at h
-  rw [hcard, Fintype.sum_prod_type' (fun r s => ‖hbPoly S a (τ r - τ s)‖ ^ 2),
-    Fintype.sum_prod_type' (fun r s => ‖hbPoly S a (τ r - τ s)‖ ^ (2 * k))] at h
+  rw [hcard, Finset.sum_product, Finset.sum_product] at h
   exact h
 
 /-- **Guth–Maynard (6.2) with divisor-bounded coefficients.**  For `|a_n| ≤ n^{−σ}` on
 `S ⊆ (A, B]` and `d ≤ D` on `(A^k, B^k]`:
-`Σ_{r,s}|D(τ_r−τ_s)|² ≤ (R²)^{1−1/k} (D^{2k} Σ_{r,s}|Σ_{A^k<u≤B^k} u^{−σ+i(τ_r−τ_s)}|²)^{1/k}`. -/
-theorem hbPairSum_le_power_lift {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {A B k : ℕ}
+`Σ_{t₁,t₂}|D(t₁−t₂)|² ≤ (|W|²)^{1−1/k} (D^{2k} Σ_{t₁,t₂}|Σ_{A^k<u≤B^k} u^{−σ+i(t₁−t₂)}|²)^{1/k}`. -/
+theorem hbPairSum_le_power_lift (W : Finset ℝ) {A B k : ℕ}
     (hk : 1 ≤ k) {S : Finset ℕ} (hS : S ⊆ Finset.Ioc A B) {σ : ℝ} {a : ℕ → ℂ}
     (ha : ∀ n ∈ S, ‖a n‖ ≤ (n : ℝ) ^ (-σ)) {D : ℝ}
     (hD : ∀ u ∈ Finset.Ioc (A ^ k) (B ^ k), (u.divisors.card : ℝ) ≤ D) :
-    hbPairSum τ S a ≤ ((Fintype.card ρ : ℝ) ^ 2) ^ (1 - 1 / (k : ℝ)) *
-      (D ^ (2 * k) * hbPairSum τ (Finset.Ioc (A ^ k) (B ^ k))
+    hbPairSum W S a ≤ ((W.card : ℝ) ^ 2) ^ (1 - 1 / (k : ℝ)) *
+      (D ^ (2 * k) * hbPairSum W (Finset.Ioc (A ^ k) (B ^ k))
         (fun u => (((u : ℝ) ^ (-σ) : ℝ) : ℂ))) ^ (1 / (k : ℝ)) := by
-  refine (hbPairSum_le_card_rpow_mul_moment τ hk S a).trans ?_
+  refine (hbPairSum_le_card_rpow_mul_moment W hk S a).trans ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-  exact Real.rpow_le_rpow (by positivity) (sum_norm_hbPoly_pow_le τ hk hS ha hD)
+  exact Real.rpow_le_rpow (by positivity) (sum_norm_hbPoly_pow_le W hk hS ha hD)
     (by positivity)
 
 /-- **The fourth-moment step of Heath-Brown's Corollary 2.1** (squared form):
-`(Σ_{r,s}|D(τ_r−τ_s)|²)² ≤ R² D⁴ Σ_{r,s}|Σ_{A²<u≤B²} u^{−σ+i(τ_r−τ_s)}|²`. -/
-theorem hbPairSum_sq_le_fourthMoment {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {A B : ℕ}
+`(Σ_{t₁,t₂}|D(t₁−t₂)|²)² ≤ |W|² D⁴ Σ_{t₁,t₂}|Σ_{A²<u≤B²} u^{−σ+i(t₁−t₂)}|²`. -/
+theorem hbPairSum_sq_le_fourthMoment (W : Finset ℝ) {A B : ℕ}
     {S : Finset ℕ} (hS : S ⊆ Finset.Ioc A B) {σ : ℝ} {a : ℕ → ℂ}
     (ha : ∀ n ∈ S, ‖a n‖ ≤ (n : ℝ) ^ (-σ)) {D : ℝ}
     (hD : ∀ u ∈ Finset.Ioc (A ^ 2) (B ^ 2), (u.divisors.card : ℝ) ≤ D) :
-    hbPairSum τ S a ^ 2 ≤ (Fintype.card ρ : ℝ) ^ 2 * D ^ 4 *
-      hbPairSum τ (Finset.Ioc (A ^ 2) (B ^ 2)) (fun u => (((u : ℝ) ^ (-σ) : ℝ) : ℂ)) := by
-  have hcs := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset (ρ × ρ)))
-    (f := fun p => ‖hbPoly S a (τ p.1 - τ p.2)‖ ^ 2)
-  have hcard : ((Finset.univ : Finset (ρ × ρ)).card : ℝ) = (Fintype.card ρ : ℝ) ^ 2 := by
-    rw [Finset.card_univ, Fintype.card_prod]
+    hbPairSum W S a ^ 2 ≤ (W.card : ℝ) ^ 2 * D ^ 4 *
+      hbPairSum W (Finset.Ioc (A ^ 2) (B ^ 2)) (fun u => (((u : ℝ) ^ (-σ) : ℝ) : ℂ)) := by
+  have hcs := sq_sum_le_card_mul_sum_sq (s := W ×ˢ W)
+    (f := fun p => ‖hbPoly S a (p.1 - p.2)‖ ^ 2)
+  have hcard : ((W ×ˢ W).card : ℝ) = (W.card : ℝ) ^ 2 := by
+    rw [Finset.card_product]
     push_cast
     ring
-  rw [hcard, Fintype.sum_prod_type' (fun r s => ‖hbPoly S a (τ r - τ s)‖ ^ 2),
-    Fintype.sum_prod_type' (fun r s => (‖hbPoly S a (τ r - τ s)‖ ^ 2) ^ 2)] at hcs
+  rw [hcard, Finset.sum_product, Finset.sum_product] at hcs
   simp only [← pow_mul] at hcs
-  have hmom := sum_norm_hbPoly_pow_le τ (by norm_num) hS ha hD
-  calc hbPairSum τ S a ^ 2 ≤ (Fintype.card ρ : ℝ) ^ 2 *
-        ∑ r, ∑ s, ‖hbPoly S a (τ r - τ s)‖ ^ (2 * 2) := hcs
-    _ ≤ (Fintype.card ρ : ℝ) ^ 2 * (D ^ (2 * 2) *
-        hbPairSum τ (Finset.Ioc (A ^ 2) (B ^ 2)) (fun u => (((u : ℝ) ^ (-σ) : ℝ) : ℂ))) :=
+  have hmom := sum_norm_hbPoly_pow_le W (by norm_num) hS ha hD
+  calc hbPairSum W S a ^ 2 ≤ (W.card : ℝ) ^ 2 *
+        ∑ t₁ ∈ W, ∑ t₂ ∈ W, ‖hbPoly S a (t₁ - t₂)‖ ^ (2 * 2) := hcs
+    _ ≤ (W.card : ℝ) ^ 2 * (D ^ (2 * 2) *
+        hbPairSum W (Finset.Ioc (A ^ 2) (B ^ 2)) (fun u => (((u : ℝ) ^ (-σ) : ℝ) : ℂ))) :=
         mul_le_mul_of_nonneg_left hmom (by positivity)
     _ = _ := by ring
 

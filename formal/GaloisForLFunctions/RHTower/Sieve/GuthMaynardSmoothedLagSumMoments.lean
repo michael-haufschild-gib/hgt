@@ -95,7 +95,7 @@ theorem lintegral_smoothedLagSum_pow_four_le (h : IsSmoothingPair ψ₁ ψ₂) (
     refine lintegral_congr fun x => ?_
     simp only [smoothedLagSumIntegrand, sub_sub_cancel]
     rw [← enorm_mul, mul_assoc]
-  have hY := HTGeometry.lintegral_enorm_sq_le_of_convolution_bound hK hF hG
+  have hY := GaloisForLFunctions.HTGeometry.lintegral_enorm_sq_le_of_convolution_bound hK hF hG
   rw [lintegral_enorm_smoothingKernel h hNM] at hY
   have hψ₁ : 0 ≤ ∫ x, ψ₁ x := integral_nonneg h.nonneg₁
   have hleft : ∀ u, ‖smoothedLagSum ψ₁ ψ₂ N M W u ^ 2‖ₑ ^ 2

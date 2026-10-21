@@ -10433,6 +10433,7 @@ import GaloisForLFunctions.HTGeometry.IntervalRiemannSum
 import GaloisForLFunctions.HTGeometry.RungeApproxClass
 import GaloisForLFunctions.HTGeometry.RungeCompactOpenDensity
 import GaloisForLFunctions.HTGeometry.RungeDensity
+import GaloisForLFunctions.HTGeometry.PolynomialRungeOnConnectedComplement
 import GaloisForLFunctions.HTGeometry.RungeSelection
 import GaloisForLFunctions.HTGeometry.RungeEdgeApprox
 import GaloisForLFunctions.HTGeometry.RungeGridContour

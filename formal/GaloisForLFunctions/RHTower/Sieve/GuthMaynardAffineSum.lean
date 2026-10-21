@@ -128,8 +128,8 @@ theorem mem_dyadicInt {M : ℝ} {m : ℤ} : m ∈ dyadicInt M ↔ M < |(m : ℝ)
   simp only [dyadicInt, Finset.mem_union, Finset.mem_image]
   constructor
   · rintro (⟨n, hn, rfl⟩ | ⟨n, hn, rfl⟩)
-    · simpa [abs_of_nonneg (Nat.cast_nonneg n)] using mem_dyadicNat.mp hn
-    · simpa [abs_of_nonneg (Nat.cast_nonneg n)] using mem_dyadicNat.mp hn
+    · simpa [Nat.abs_cast] using mem_dyadicNat.mp hn
+    · simpa [Nat.abs_cast] using mem_dyadicNat.mp hn
   · intro h
     have hn : m.natAbs ∈ dyadicNat M := by
       rw [mem_dyadicNat, Nat.cast_natAbs]
@@ -192,11 +192,10 @@ theorem affineSum_eq_posAffineSum_add (f : ℝ → ℝ) (M₁ M₂ M₃ u : ℝ)
     affineSum f M₁ M₂ M₃ u = posAffineSum f M₁ M₂ M₃ u + posAffineSum f M₁ M₂ M₃ (-u) := by
   rw [affineSum, sum_dyadicInt, Finset.sum_add_distrib, posAffineSum, posAffineSum]
   congr 1
-  · simp
-  · refine Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun m₂ _ =>
-      Finset.sum_congr rfl fun m₃ _ => ?_
-    push_cast
-    ring_nf
+  refine Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun m₂ _ =>
+    Finset.sum_congr rfl fun m₃ _ => ?_
+  push_cast
+  ring_nf
 
 theorem posAffineSum_nonneg {f : ℝ → ℝ} (hf0 : ∀ x, 0 ≤ f x) (M₁ M₂ M₃ u : ℝ) :
     0 ≤ posAffineSum f M₁ M₂ M₃ u :=
@@ -237,10 +236,9 @@ theorem memLp_affine_term {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompac
     (hasCompactSupport_affine_term hfc hn hm h)
 
 /-- Change of variables `y = a u + b` on the line. -/
-theorem integral_comp_affine (g : ℝ → ℝ) {a : ℝ} (b : ℝ) (ha : a ≠ 0) :
+theorem integral_comp_affine (g : ℝ → ℝ) (a b : ℝ) :
     ∫ u, g (a * u + b) = |a⁻¹| * ∫ y, g y := by
   have h := Measure.integral_comp_mul_left (fun y => g (y + b)) a
-  simp only at h
   rw [h, integral_add_right_eq_self, smul_eq_mul]
 
 /-- `∫ f((n u + h)/m)² du = (m/n) ∫ f²` for `n, m > 0`. -/
@@ -250,15 +248,15 @@ theorem integral_affine_term_sq (f : ℝ → ℝ) {n m : ℝ} (hn : 0 < n) (hm :
     funext u
     congr 2
     field_simp
-  rw [hrw, integral_comp_affine (fun y => f y ^ 2) _ (div_ne_zero hn.ne' hm.ne'), inv_div,
+  rw [hrw, integral_comp_affine (fun y => f y ^ 2), inv_div,
     abs_of_pos (div_pos hm hn)]
 
 /-- The positive affine sum is continuous. -/
 theorem continuous_posAffineSum {f : ℝ → ℝ} (hf : Continuous f) (M₁ M₂ M₃ : ℝ) :
     Continuous (posAffineSum f M₁ M₂ M₃) := by
   unfold posAffineSum
-  exact continuous_finset_sum _ fun n _ => continuous_finset_sum _ fun m₂ _ =>
-    continuous_finset_sum _ fun m₃ _ => continuous_affine_term hf _ _ _
+  exact continuous_finsetSum _ fun n _ => continuous_finsetSum _ fun m₂ _ =>
+    continuous_finsetSum _ fun m₃ _ => continuous_affine_term hf _ _ _
 
 /-- The positive affine sum lies in every `Lᵖ`. -/
 theorem memLp_posAffineSum {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f)
@@ -266,10 +264,10 @@ theorem memLp_posAffineSum {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompa
   have h : posAffineSum f M₁ M₂ M₃ = fun u => ∑ n ∈ dyadicNat M₁, ∑ m₂ ∈ dyadicNat M₂,
       ∑ m₃ ∈ centredInt M₃, f ((n * u + m₃) / m₂) := rfl
   rw [h]
-  refine memLp_finsetSum' _ fun n hn => memLp_finsetSum' _ fun m₂ hm₂ =>
-    memLp_finsetSum' _ fun m₃ _ => memLp_affine_term hf hfc ?_ ?_ _ p
-  · exact_mod_cast (one_le_of_mem_dyadicNat hn).ne'
-  · exact_mod_cast (one_le_of_mem_dyadicNat hm₂).ne'
+  refine memLp_finsetSum _ fun n hn => memLp_finsetSum _ fun m₂ hm₂ =>
+    memLp_finsetSum _ fun m₃ _ => memLp_affine_term hf hfc ?_ ?_ _ p
+  · exact Nat.cast_ne_zero.mpr (by have := one_le_of_mem_dyadicNat hn; omega)
+  · exact Nat.cast_ne_zero.mpr (by have := one_le_of_mem_dyadicNat hm₂; omega)
 
 theorem memLp_affineSum {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f)
     (M₁ M₂ M₃ : ℝ) (p : ENNReal) : MemLp (affineSum f M₁ M₂ M₃) p := by
@@ -314,15 +312,16 @@ theorem integral_posAffineSum_sq_le {f : ℝ → ℝ} (hf : Continuous f) (hfc :
         ≤ 3 * M₁ * (3 * M₂ * (2 * M₃ + 1)) := by gcongr
       _ = 3 * M₁ * (3 * M₂) * (2 * M₃ + 1) := by ring
   have hweight : ∑ p ∈ ι, (p.2.1 : ℝ) / p.1 ≤ 3 * (6 * M₂ ^ 2) * (2 * M₃ + 1) := by
-    rw [hι, Finset.sum_product]
-    have hinner : ∀ n ∈ dyadicNat M₁, ∑ q ∈ dyadicNat M₂ ×ˢ centredInt M₃, ((q.1 : ℝ) / n) =
-        (n : ℝ)⁻¹ * ((∑ m ∈ dyadicNat M₂, (m : ℝ)) * (centredInt M₃).card) := fun n _ => by
+    have hfac : ∑ p ∈ ι, (p.2.1 : ℝ) / p.1 = (∑ n ∈ dyadicNat M₁, (n : ℝ)⁻¹) *
+        ((∑ m ∈ dyadicNat M₂, (m : ℝ)) * (centredInt M₃).card) := by
+      rw [hι, Finset.sum_product, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun n _ => ?_
       rw [Finset.sum_product, Finset.sum_mul, Finset.mul_sum]
       refine Finset.sum_congr rfl fun m _ => ?_
+      dsimp only
       rw [Finset.sum_const, nsmul_eq_mul]
       ring
-    simp only at hinner ⊢
-    rw [Finset.sum_congr rfl hinner, ← Finset.sum_mul]
+    rw [hfac]
     have hS := sum_dyadicNat_le hM₂
     have hC := card_centredInt_le hM₃
     have hI := sum_dyadicNat_inv_le hM₁

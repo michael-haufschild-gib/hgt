@@ -44,6 +44,14 @@ per-zero orientation (zero-indexed candidates). The dictionaries make the merges
    zero-indexed candidates (HJ residual, SEC jet boundedness, CDC confluence, …): all vanish at a
    zero iff it is on the line, and the global forms are RH.
 4. `docs/reports/review-2110/route-unification-ledger.md` — the clusters, merges and open arrows.
+5. `SquareRootThreshold/TheShiftedGroundStateInequalitiesReadTheOddWindow.lean` — the ACT arrow:
+   `Ẑ(m_a u) = 2S_a − D_a + V_a`, so the variation inequality at aperture `A` is the odd window at
+   `A` (converse on tests vanishing near the origin, the shift a gauge); the Markov inequality is
+   the odd window plus `8(∫u dμ_a)²`, nested between the odd and the polar odd window; endpoints.
+6. `SquareRootThreshold/TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime.lean` — the
+   EWU arrow: for `2A < log 2`, `evenBlindMinimum A = μᵉ(A)`; EWU is the blind even window on
+   smooth interior tests; the even window is the polar even window plus the unit-cosh-moment slice
+   `markovEnergy ≥ −2`; no separation without refuting RH.
 
 ## Approach
 Glue through the corpus's three zero-set languages (`zetaZeroWidth`, `XiZeroHalfPlaneBound`,
@@ -84,6 +92,55 @@ of `μ`), and the parity split of `Ẑ` turns the all-profile window into the ev
   CDC confluence, BSH mate gain, IRK non-unit, W1C reality), `theZeroIndexedRoutesMeasureOneSide`,
   five global `riemannHypothesis_iff_forall_*` instances.
 
+- `Q:TheSideIsTheDepthAndTheWidthIsItsSupremum` (round two, the unifying object): `criticalDepth`;
+  `norm_orbitwiseFirstPrimeSeamCharge_eq_sinh` (`= √2 log 2 sinh(log 2 · depth)`),
+  `primeTailSeedTwoReflectionResidual_eq_depth_mul`, `norm_primeTailSeedTwoReflectionResidual_eq`,
+  `abs_log_deningerHalfDensityMateGain_eq`, `im_berryKeatingU_eq`, `abs_im_berryKeatingU_eq`,
+  `im_weightOneCliffordEnergy_eq`, `abs_im_xiSpectralPoint_eq`,
+  `zetaZeroWidth_le_iff_forall_criticalDepth_le`, `zetaZeroWidth_le_iff_forall_norm_seamCharge_le`,
+  `zetaZeroWidth_le_iff_forall_abs_log_mateGain_le`, `sSup_norm_seamCharge_eq_sinh_zetaZeroWidth`,
+  `theSideIsTheDepth`, `theWidthIsTheSupremumOfTheDepthMeters`.
+- `Q:TheContactApertureOfTheGroundEnergyPath` (round two): `groundEnergyNonnegApertures`,
+  `windowPositiveApertures`, `zetaContactAperture`; down-set lemmas, `windowPositiveApertures_subset`,
+  `Ioo_subset_windowPositiveApertures`, `threeTenths_mem_*`,
+  `riemannHypothesis_iff_not_bddAbove_{groundEnergyNonneg,windowPositive}Apertures`,
+  `zetaContactAperture_eq_sSup_windowPositiveApertures`, `threeTenths_le_zetaContactAperture`,
+  `ccmRestrictedWeilGroundEnergy_{nonneg_of_lt_contact,contact_eq_zero,neg_of_contact_lt}`,
+  `zetaWindowPositive_of_lt_contact`, `zetaContactAperture_le_of_near_top_zero`,
+  `groundEnergyFloor_feeds_every_width_reading`, `theContactApertureOfTheGroundEnergyPath`.
+- Conjecture spun off: `0-backlog/contact-aperture-law-of-the-ground-energy-path-2026-10-21.md`.
+- `Q:TheShiftedGroundStateInequalitiesReadTheOddWindow` (round three, the ACT arrow):
+  `ShiftVariationWindow`, `ShiftMarkovWindow`, their `OffOrigin` forms,
+  `ZetaOddWindowPositiveOffOrigin`, `ZetaPoleFreeOddWindowPositive(OffOrigin)`,
+  `ZetaPolarOddWindowPositive`; `fullZeroForm_eq_zeroForm_of_odd`,
+  `markovEnergy_eq_fullZeroForm_add_of_odd`, `fullZeroForm_phiDoob_shiftedGroundState`,
+  `variationInequality_iff_fullZeroForm_nonneg`,
+  `markovEnergy_phiDoob_shiftedGroundState_eq_fullZeroForm_add`,
+  `markovEnergy_phiDoob_eq_fullZeroForm_iff`, `shiftVariationWindow_of_zetaOddWindowPositive`,
+  `zetaOddWindowPositiveOffOrigin_of_shiftVariationWindow`,
+  `shiftVariationWindowOffOrigin_iff_zetaOddWindowPositiveOffOrigin`,
+  `shiftVariationWindowOffOrigin_iff_of_pos`, `shiftMarkovWindow_of_zetaOddWindowPositive`,
+  `zetaPoleFreeOddWindowPositive_of_zetaOddWindowPositive`,
+  `zetaPolarOddWindowPositive_of_zetaPoleFreeOddWindowPositive`,
+  `shiftMarkovWindow_of_zetaPoleFreeOddWindowPositive`,
+  `zetaPoleFreeOddWindowPositiveOffOrigin_of_shiftMarkovWindow`,
+  `shiftMarkovWindowOffOrigin_iff_zetaPoleFreeOddWindowPositiveOffOrigin`,
+  `shiftMarkovWindowOffOrigin_iff_of_pos`,
+  `variationInequality_of_shiftMarkovWindow_of_profileMoment_eq_zero`,
+  `shiftMarkovWindow_iff_fullZeroForm_ge`, `not_riemannHypothesis_of_not_zetaOddWindowPositive`,
+  `riemannHypothesis_iff_forall_{shiftVariationWindow,shiftMarkovWindow,zetaOddWindowPositive}`,
+  `theShiftedGroundStateInequalitiesReadTheOddWindow`.
+- `Q:TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` (round three, the EWU arrow):
+  `energyProfile_mem_blindProfiles_of_two_mul_lt_log_two`,
+  `evenBlindMinimum_eq_evenGroundEnergy_of_two_mul_lt_log_two`,
+  `evenBlindMinimum_nonneg_iff_evenGroundEnergy_nonneg_of_two_mul_lt_log_two`,
+  `one_twentieth_le_evenGroundEnergy_of_le_primeTwo`, `evenGroundEnergy_nonneg_of_zetaWindowPositive`,
+  `re_W_nonneg_of_evenBlindMinimum_nonneg`, `fullZeroForm_nonneg_of_evenBlindMinimum_nonneg`,
+  `fullZeroForm_eq_markovEnergy_add_of_even`, `evenPoleMoment_const_mul`,
+  `markovEnergy_ofReal_const_mul`, `zetaEvenWindowPositive_iff_polar_and_unitCoshMoment`,
+  `not_riemannHypothesis_of_not_zetaEvenWindowPositive`,
+  `theBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime`.
+
 ## Corpus repair made on the way
 `RHTower.norm_mobiusMertensPartialSum_eq` was declared in both `R:LiouvilleSummatoryRH` and
 `R:CausalMobiusThetaTail` (different statements), both wired into the `RHTower` umbrella; any module
@@ -100,3 +157,16 @@ importing both cones fails to elaborate. The Liouville copy is renamed
   `R:ZetaOrbitApproachesEveryAnalyticTargetWithTheHurwitzThreshold`,
   `V:ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis`,
   `Q:PositionAndDepthShareOneNyquistAperture`), left to their owners.
+- 2026-10-21 — round two (the unifying object): `TheSideIsTheDepthAndTheWidthIsItsSupremum` and
+  `TheContactApertureOfTheGroundEnergyPath` compiled with `lake --old env lean`, axioms standard,
+  oleans built single-threaded, wired; ledger section "The unifying object: the ground-energy path"
+  appended; contact-law conjecture card created in 0-backlog.
+- 2026-10-21 — round three (the two open arrows of cluster B):
+  `TheShiftedGroundStateInequalitiesReadTheOddWindow` and
+  `TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` compiled with `lake --old env lean`
+  (no warnings), 42 declarations with axioms propext/Classical.choice/Quot.sound only, oleans built
+  single-threaded, wired into the umbrella import block; lint: both reachable (the gate reports the
+  ChenGuptaLi* and GuthMaynard* modules of other lanes unreachable). Ledger: cluster B bullets, "Not
+  the same route" and "Open arrows" updated; both arrows closed, the residuals recorded as the
+  unit-cosh-moment slice inequality on `(3/10, ½(log 2 + 1/50)]` (EWU) and the capacity inequality
+  on the non-polar tests (ACT).

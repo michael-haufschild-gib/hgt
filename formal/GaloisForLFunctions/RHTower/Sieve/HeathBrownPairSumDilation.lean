@@ -5,13 +5,13 @@ import GaloisForLFunctions.RHTower.Sieve.HeathBrownPairSumMajorant
 
 Heath-Brown's Lemma 2 says, morally, that the weighted pair sum
 
-`𝒜_σ(S) = Σ_{r,s} |Σ_{n∈S} n^{−σ+i(τ_r−τ_s)}|² = Σ_{n,m∈S} n^{−σ} m^{−σ} K(n,m)`
+`𝒜_σ(S) = Σ_{t₁,t₂∈W} |Σ_{n∈S} n^{−σ+i(t₁−t₂)}|² = Σ_{n,m∈S} n^{−σ} m^{−σ} K(n,m)`
 
 does not decrease when the support moves to longer integers.  Literal monotonicity in the dyadic
 length is false (ratios `n/m` close to `2` with `n, m ≍ M` need not occur among integers of a
 longer dyadic block), so this file proves a precise substitute by dilation.
 
-The kernel `K(n,m) = |Σ_r n^{iτ_r} m^{−iτ_r}|²` depends only on the ratio `n/m`:
+The kernel `K(n,m) = |Σ_{t∈W} n^{it} m^{−it}|²` depends only on the ratio `n/m`:
 `K(jn, jm) = K(n,m)`.  Hence every dilation `(n, m) ↦ (jn, jm)` with `j ∈ J` carries the terms of
 `𝒜_σ(S)` to terms of `𝒜_σ(L)` with weight `j^{−2σ}`, provided `jS ⊆ L`.  A pair `(u, v) ∈ L²` is hit
 by at most `d(u)` triples `(j, n, m)`, since `j | u` determines `n = u/j` and `m = v/j`.  Summing,
@@ -30,46 +30,45 @@ open Finset ComplexConjugate
 
 noncomputable section
 
-/-- Heath-Brown's weighted pair sum `𝒜_σ(S) = Σ_{r,s}|Σ_{n∈S} n^{−σ+i(τ_r−τ_s)}|²`. -/
-def hbAmp {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) (σ : ℝ) (S : Finset ℕ) : ℝ :=
-  hbPairSum τ S (fun n => (((n : ℝ) ^ (-σ) : ℝ) : ℂ))
+/-- Heath-Brown's weighted pair sum `𝒜_σ(S) = Σ_{t₁,t₂∈W}|Σ_{n∈S} n^{−σ+i(t₁−t₂)}|²`. -/
+def hbAmp (W : Finset ℝ) (σ : ℝ) (S : Finset ℕ) : ℝ :=
+  hbPairSum W S (fun n => (((n : ℝ) ^ (-σ) : ℝ) : ℂ))
 
-theorem hbAmp_nonneg {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) (σ : ℝ) (S : Finset ℕ) :
-    0 ≤ hbAmp τ σ S :=
-  hbPairSum_nonneg τ S _
+theorem hbAmp_nonneg (W : Finset ℝ) (σ : ℝ) (S : Finset ℕ) :
+    0 ≤ hbAmp W σ S :=
+  hbPairSum_nonneg W S _
 
 /-- **The kernel depends only on the ratio:** `K(jn, jm) = K(n, m)`. -/
-theorem hbKernel_mul_mul {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {j n m : ℕ} (hj : j ≠ 0)
-    (hn : n ≠ 0) (hm : m ≠ 0) : hbKernel τ (j * n) (j * m) = hbKernel τ n m := by
-  have hterm : ∀ r, hbPhase (j * n) (τ r) * conj (hbPhase (j * m) (τ r)) =
-      hbPhase n (τ r) * conj (hbPhase m (τ r)) := fun r => by
+theorem hbKernel_mul_mul (W : Finset ℝ) {j n m : ℕ} (hj : j ≠ 0)
+    (hn : n ≠ 0) (hm : m ≠ 0) : hbKernel W (j * n) (j * m) = hbKernel W n m := by
+  have hterm : ∀ t, hbPhase (j * n) t * conj (hbPhase (j * m) t) =
+      hbPhase n t * conj (hbPhase m t) := fun t => by
     rw [hbPhase_mul hj hn, hbPhase_mul hj hm, map_mul]
-    calc hbPhase j (τ r) * hbPhase n (τ r) * (conj (hbPhase j (τ r)) * conj (hbPhase m (τ r)))
-        = (hbPhase j (τ r) * conj (hbPhase j (τ r))) *
-            (hbPhase n (τ r) * conj (hbPhase m (τ r))) := by ring
-      _ = hbPhase n (τ r) * conj (hbPhase m (τ r)) := by rw [hbPhase_mul_conj_self, one_mul]
+    calc hbPhase j t * hbPhase n t * (conj (hbPhase j t) * conj (hbPhase m t))
+        = (hbPhase j t * conj (hbPhase j t)) * (hbPhase n t * conj (hbPhase m t)) := by ring
+      _ = hbPhase n t * conj (hbPhase m t) := by rw [hbPhase_mul_conj_self, one_mul]
   simp only [hbKernel, hterm]
 
 /-- **Heath-Brown's Lemma 2, dilation form.**  If `jS ⊆ L` for every `j ∈ J` (all of `S`, `J`
 positive) and `d(u) ≤ D` on `L`, then `(Σ_{j∈J} j^{−2σ}) 𝒜_σ(S) ≤ D · 𝒜_σ(L)`. -/
-theorem sum_rpow_sq_mul_hbAmp_le {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) (σ : ℝ)
+theorem sum_rpow_sq_mul_hbAmp_le (W : Finset ℝ) (σ : ℝ)
     {S L J : Finset ℕ} (hS : (0 : ℕ) ∉ S) (hJ : (0 : ℕ) ∉ J)
     (hmap : ∀ j ∈ J, ∀ n ∈ S, j * n ∈ L) {D : ℝ}
     (hD : ∀ u ∈ L, (u.divisors.card : ℝ) ≤ D) :
-    (∑ j ∈ J, ((j : ℝ) ^ (-σ)) ^ 2) * hbAmp τ σ S ≤ D * hbAmp τ σ L := by
+    (∑ j ∈ J, ((j : ℝ) ^ (-σ)) ^ 2) * hbAmp W σ S ≤ D * hbAmp W σ L := by
   classical
   obtain ⟨w, hw⟩ : ∃ w : ℕ → ℝ, w = fun n : ℕ => (n : ℝ) ^ (-σ) := ⟨_, rfl⟩
-  obtain ⟨F, hF⟩ : ∃ F : ℕ → ℕ → ℝ, F = fun u v => w u * w v * hbKernel τ u v := ⟨_, rfl⟩
+  obtain ⟨F, hF⟩ : ∃ F : ℕ → ℕ → ℝ, F = fun u v => w u * w v * hbKernel W u v := ⟨_, rfl⟩
   have hw0 : ∀ n, 0 ≤ w n := fun n => by rw [hw]; exact Real.rpow_nonneg (Nat.cast_nonneg _) _
   have hF0 : ∀ u v, 0 ≤ F u v := fun u v => by
-    rw [hF]; exact mul_nonneg (mul_nonneg (hw0 u) (hw0 v)) (hbKernel_nonneg τ u v)
-  have hAmp : ∀ T : Finset ℕ, hbAmp τ σ T = ∑ u ∈ T, ∑ v ∈ T, F u v := fun T => by
+    rw [hF]; exact mul_nonneg (mul_nonneg (hw0 u) (hw0 v)) (hbKernel_nonneg W u v)
+  have hAmp : ∀ T : Finset ℕ, hbAmp W σ T = ∑ u ∈ T, ∑ v ∈ T, F u v := fun T => by
     rw [hbAmp, hbPairSum_ofReal, hF, hw]
   -- each dilation carries a term of `𝒜_σ(S)` to a term of `𝒜_σ(L)` with weight `j^{−2σ}`
   have hscale : ∀ j ∈ J, ∀ n ∈ S, ∀ m ∈ S, w j ^ 2 * F n m = F (j * n) (j * m) := by
     intro j hj n hn m hm
     simp only [hF]
-    rw [hbKernel_mul_mul τ (ne_of_mem_of_not_mem hj hJ) (ne_of_mem_of_not_mem hn hS)
+    rw [hbKernel_mul_mul W (ne_of_mem_of_not_mem hj hJ) (ne_of_mem_of_not_mem hn hS)
       (ne_of_mem_of_not_mem hm hS)]
     simp only [hw, Nat.cast_mul]
     rw [Real.mul_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _),
@@ -169,19 +168,19 @@ private theorem half_le_sum_inv_Ioc {q : ℕ} (hq : 0 < q) :
 
 /-- **Heath-Brown's Lemma 2, block form.**  For `1 ≤ A ≤ N`, `S ⊆ (A, cA]` and `d(u) ≤ D` on
 `(N, 2cN]`: `𝒜_{1/2}(S) ≤ 2D · 𝒜_{1/2}((N, 2cN])`. -/
-theorem hbAmp_half_le_of_le {ρ : Type*} [Fintype ρ] (τ : ρ → ℝ) {A N c : ℕ} (hA : 0 < A)
+theorem hbAmp_half_le_of_le (W : Finset ℝ) {A N c : ℕ} (hA : 0 < A)
     (hAN : A ≤ N) {S : Finset ℕ} (hS : S ⊆ Finset.Ioc A (c * A)) {D : ℝ}
     (hD : ∀ u ∈ Finset.Ioc N (2 * c * N), (u.divisors.card : ℝ) ≤ D) :
-    hbAmp τ (1 / 2) S ≤ 2 * D * hbAmp τ (1 / 2) (Finset.Ioc N (2 * c * N)) := by
+    hbAmp W (1 / 2) S ≤ 2 * D * hbAmp W (1 / 2) (Finset.Ioc N (2 * c * N)) := by
   have hq : 0 < N / A := Nat.div_pos hAN hA
   have hS0 : (0 : ℕ) ∉ S := fun h0 => by
     have := Finset.mem_Ioc.mp (hS h0); omega
   have hJ0 : (0 : ℕ) ∉ Finset.Ioc (N / A) (2 * (N / A)) := fun h0 => by
     have := Finset.mem_Ioc.mp h0; omega
-  have hmain := sum_rpow_sq_mul_hbAmp_le τ (1 / 2) hS0 hJ0
+  have hmain := sum_rpow_sq_mul_hbAmp_le W (1 / 2) hS0 hJ0
     (fun j hj n hn => mul_mem_Ioc_of_dilate hA hj (hS hn)) hD
   have hsum := half_le_sum_inv_Ioc hq
-  have hA0 := hbAmp_nonneg τ (1 / 2) S
+  have hA0 := hbAmp_nonneg W (1 / 2) S
   nlinarith [mul_le_mul_of_nonneg_right hsum hA0]
 
 end

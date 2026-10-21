@@ -63,7 +63,7 @@ theorem sum_Icc_exp_log_mul_eq_head (τ N : ℝ) (hN : 0 < N) (M : ℕ) :
   rw [Real.log_mul hk.ne' hN.ne', one_mul, ← Complex.exp_add]
   congr 1
   push_cast
-  ring
+  ring_nf
 
 /-- Pointwise form of the reflected integrand summed over `m`. -/
 theorem sum_cglGMReflectedTerm_eq (w : CGLRealSmoothBump) (t N : ℝ) (hN : 0 < N) (M : ℕ)
@@ -193,7 +193,7 @@ theorem cglGM_norm_sum_fourier_pos_le (w : CGLRealSmoothBump) {t N U : ℝ} (hN 
     {M : ℕ} (hM : 1 ≤ M) (hU : 0 < U) (hUt : U ≤ |t| / 2) (ht : 2 ≤ |t|) (n : ℕ) :
     ‖∑ m ∈ Finset.Icc 1 M, 𝓕 (cglSmoothBumpHt w.toCGLSmoothBump t : ℝ → ℂ) ((m : ℝ) * N)‖ ≤
       cglGMWindowWeight w t / (2 * Real.pi) *
-          ∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖ +
+          (∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖) +
         cglGMTailWeight w n U M / 2 := by
   have hN0 : 0 < N := by linarith
   have hpi : 0 < 2 * Real.pi := by positivity
@@ -209,18 +209,17 @@ theorem cglGM_norm_sum_fourier_pos_le (w : CGLRealSmoothBump) {t N U : ℝ} (hN 
     integral_mono_of_nonneg (Filter.Eventually.of_forall fun _ => norm_nonneg _) hgint
       (Filter.Eventually.of_forall fun y =>
         norm_sum_cglGMReflectedTerm_le w hN hM hU hUt ht n y)
-  have hgval : ∫ y, g y = cglGMWindowWeight w t * ∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖ +
+  have hgval : ∫ y, g y = cglGMWindowWeight w t * (∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖) +
       cglGMTailWeight w n U M * Real.pi := by
     rw [hg, integral_add (hcont.integrableOn_Icc.integrable_indicator measurableSet_Icc)
       (integrable_inv_one_add_sq.const_mul _), integral_indicator measurableSet_Icc,
       integral_const_mul (cglGMTailWeight w n U M), integral_univ_inv_one_add_sq,
       integral_const_mul (cglGMWindowWeight w t),
       integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by linarith)]
-    congr 2
     have h := intervalIntegral.integral_comp_neg (a := -U) (b := U)
       (fun u => ‖cglGMHeadPoly M (t + u)‖)
     simp only [neg_neg, ← sub_eq_add_neg] at h
-    exact h
+    rw [h]
   rw [cglGM_sum_fourier_eq_reflected w t N hN0 M, norm_mul]
   have hc : ‖((1 / (2 * Real.pi) : ℝ) : ℂ)‖ = 1 / (2 * Real.pi) := by
     rw [Complex.norm_real, Real.norm_of_nonneg (by positivity)]
@@ -231,6 +230,7 @@ theorem cglGM_norm_sum_fourier_pos_le (w : CGLRealSmoothBump) {t N U : ℝ} (hN 
         exact (norm_integral_le_integral_norm _).trans hint
     _ = _ := by
         rw [hgval]
+        generalize ∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖ = J
         field_simp
 
 /-- For a real bump `h_{−t} = conj h_t`, hence `ĥ_t(−ξ) = conj ĥ_{−t}(ξ)`. -/
@@ -252,23 +252,26 @@ theorem cglGM_norm_sum_fourier_neg_le (w : CGLRealSmoothBump) {t N U : ℝ} (hN 
     {M : ℕ} (hM : 1 ≤ M) (hU : 0 < U) (hUt : U ≤ |t| / 2) (ht : 2 ≤ |t|) (n : ℕ) :
     ‖∑ m ∈ Finset.Icc 1 M, 𝓕 (cglSmoothBumpHt w.toCGLSmoothBump t : ℝ → ℂ) (-((m : ℝ) * N))‖ ≤
       cglGMWindowWeight w t / (2 * Real.pi) *
-          ∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖ +
+          (∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖) +
         cglGMTailWeight w n U M / 2 := by
   simp_rw [cglGM_fourier_neg_eq_conj w t, ← map_sum, RCLike.norm_conj]
   have h := cglGM_norm_sum_fourier_pos_le w (t := -t) hN hM hU (by rwa [abs_neg])
     (by rwa [abs_neg]) n
   rw [show cglGMWindowWeight w (-t) = cglGMWindowWeight w t by
     simp [cglGMWindowWeight]] at h
-  refine h.trans (le_of_eq ?_)
-  congr 2
   -- `‖head(−t + u)‖ = ‖head(t − u)‖`, then `u ↦ −u`
   have h1 : ∀ u, ‖cglGMHeadPoly M (-t + u)‖ = ‖cglGMHeadPoly M (t + -u)‖ := by
     intro u
     rw [← norm_cglGMHeadPoly_neg, neg_add, neg_neg]
-  simp_rw [h1]
   have h2 := intervalIntegral.integral_comp_neg (a := -U) (b := U)
     (fun u => ‖cglGMHeadPoly M (t + u)‖)
-  simpa only [neg_neg] using h2
+  simp only [neg_neg] at h2
+  have hI : ∫ u in (-U)..U, ‖cglGMHeadPoly M (-t + u)‖ =
+      ∫ u in (-U)..U, ‖cglGMHeadPoly M (t + u)‖ := by
+    simp_rw [h1]
+    exact h2
+  rw [hI] at h
+  exact h
 
 /-- Lemma 4.3 decay at a nonzero frequency: `‖ĥ_t(ξ)‖ ≤ A_j (1+|t|)^j / |ξ|^j`. -/
 theorem norm_fourier_cglSmoothBumpHt_le_div (w : CGLSmoothBump) (j : ℕ) (t : ℝ) {ξ : ℝ}

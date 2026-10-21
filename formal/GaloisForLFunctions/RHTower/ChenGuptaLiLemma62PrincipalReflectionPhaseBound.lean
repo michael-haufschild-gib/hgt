@@ -155,18 +155,18 @@ theorem norm_integral_exp_reflectionPhase_le_of_pos {ρ a b : ℝ} (hab : a ≤ 
             _ ≤ 2 * Real.pi * Real.exp x := by gcongr
         linarith
 
-/-- `10/√(ρ/2) ≤ 20/√ρ`. -/
-theorem ten_div_sqrt_half_le {ρ : ℝ} (hρ : 0 < ρ) :
-    10 / Real.sqrt (ρ / 2) ≤ 20 / Real.sqrt ρ := by
+/-- `c/√(ρ/2) ≤ 2c/√ρ` for `c ≥ 0`, `ρ > 0`. -/
+theorem div_sqrt_half_le {c ρ : ℝ} (hc : 0 ≤ c) (hρ : 0 < ρ) :
+    c / Real.sqrt (ρ / 2) ≤ 2 * c / Real.sqrt ρ := by
   have hs : Real.sqrt ρ / 2 ≤ Real.sqrt (ρ / 2) := by
     rw [show Real.sqrt ρ / 2 = Real.sqrt (ρ / 4) by
       rw [Real.sqrt_div' ρ (by norm_num : (0 : ℝ) ≤ 4),
         show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2)]]
     exact Real.sqrt_le_sqrt (by linarith)
   have hsq : 0 < Real.sqrt ρ := Real.sqrt_pos.mpr hρ
-  calc 10 / Real.sqrt (ρ / 2) ≤ 10 / (Real.sqrt ρ / 2) :=
-        div_le_div_of_nonneg_left (by norm_num) (by positivity) hs
-    _ = 20 / Real.sqrt ρ := by field_simp; norm_num
+  calc c / Real.sqrt (ρ / 2) ≤ c / (Real.sqrt ρ / 2) :=
+        div_le_div_of_nonneg_left hc (by positivity) hs
+    _ = 2 * c / Real.sqrt ρ := by field_simp
 
 /-- `c/|ρ| ≤ c/√|ρ|` for `|ρ| ≥ 1`, `c ≥ 0`. -/
 theorem div_abs_le_div_sqrt_abs {ρ : ℝ} (hρ : 1 ≤ |ρ|) {c : ℝ} (hc : 0 ≤ c) :
@@ -188,10 +188,10 @@ theorem norm_integral_exp_reflectionPhase_le {ρ a b : ℝ} (hab : a ≤ b) (hρ
     norm_num
   · have h := norm_integral_exp_reflectionPhase_le_of_pos hab hpos
     have h1 := div_abs_le_div_sqrt_abs hρ (by norm_num : (0 : ℝ) ≤ 8)
-    have h2 := ten_div_sqrt_half_le hpos
+    have h2 := div_sqrt_half_le (by norm_num : (0 : ℝ) ≤ 10) hpos
     rw [abs_of_pos hpos] at h1 ⊢
     calc _ ≤ 8 / ρ + 10 / Real.sqrt (ρ / 2) := h
-      _ ≤ 8 / Real.sqrt ρ + 20 / Real.sqrt ρ := add_le_add h1 h2
+      _ ≤ 8 / Real.sqrt ρ + 2 * 10 / Real.sqrt ρ := add_le_add h1 h2
       _ = 28 / Real.sqrt ρ := by ring
 
 /-- **Uniform phase bound.** `‖∫_α^β exp(i(ρx − 2πeˣ)) dx‖ ≤ 28/√|ρ|` for `|ρ| ≥ 1`, all `α, β`. -/

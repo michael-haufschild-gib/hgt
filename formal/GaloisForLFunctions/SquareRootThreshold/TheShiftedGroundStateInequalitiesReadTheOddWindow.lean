@@ -248,7 +248,7 @@ theorem shiftVariationWindowOffOrigin_of_shiftVariationWindow {a A : ℝ}
 
 /-- The odd window at `A` pays the Markov inequality at every shift. -/
 theorem shiftMarkovWindow_of_zetaOddWindowPositive {A : ℝ} (h : ZetaOddWindowPositive A)
-    (a : ℝ) : ShiftMarkovWindow a A := fun u hu huc heven hv =>
+    (a : ℝ) : ShiftMarkovWindow a A := fun _ hu huc heven hv =>
   shiftedGroundState_markovEnergy_nonneg_of_zetaOddWindowPositive h a hu huc heven hv
 
 /-- The odd window is contained in the pole-free odd window. -/
@@ -267,7 +267,7 @@ theorem zetaPolarOddWindowPositive_of_zetaPoleFreeOddWindowPositive {A : ℝ}
 /-- The pole-free odd window pays the Markov inequality at every shift and every profile. -/
 theorem shiftMarkovWindow_of_zetaPoleFreeOddWindowPositive {A : ℝ}
     (h : ZetaPoleFreeOddWindowPositive A) (a : ℝ) : ShiftMarkovWindow a A :=
-  fun u hu huc heven hv =>
+  fun _ hu huc heven hv =>
     h _ (contDiff_phiDoobTest ((contDiff_shiftedGroundState a).mul hu))
       (hasCompactSupport_phiDoobTest huc.mul_left) (phiDoob_shiftedGroundState_odd a heven)
       (phiDoob_shiftedGroundState_window hv)
@@ -350,7 +350,7 @@ theorem shiftMarkovWindow_iff_fullZeroForm_ge {a A : ℝ} (ha : 0 < a) :
 Markov window from the odd window unconditionally. -/
 theorem not_riemannHypothesis_of_not_zetaOddWindowPositive {A : ℝ}
     (h : ¬ ZetaOddWindowPositive A) : ¬ RiemannHypothesis :=
-  fun hRH => h fun F hF hFc _ _ => fullZeroForm_nonneg_of_riemannHypothesis hRH hF hFc
+  fun hRH => h fun _ hF hFc _ _ => fullZeroForm_nonneg_of_riemannHypothesis hRH hF hFc
 
 /-! ### 7. The endpoint -/
 
@@ -383,7 +383,7 @@ theorem riemannHypothesis_iff_forall_shiftMarkovWindow {a : ℝ} (ha : 0 < a) :
 theorem riemannHypothesis_iff_forall_zetaOddWindowPositive :
     RiemannHypothesis ↔ ∀ A : ℝ, ZetaOddWindowPositive A := by
   constructor
-  · intro hRH A F hF hFc _ _
+  · intro hRH A _ hF hFc _ _
     exact fullZeroForm_nonneg_of_riemannHypothesis hRH hF hFc
   · intro h
     rw [riemannHypothesis_iff_forall_odd_zeroForm_nonneg]
