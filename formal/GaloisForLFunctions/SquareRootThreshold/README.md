@@ -696,7 +696,12 @@ argument becomes quantitative.
    horizon is `exp(C_ε + (4 + ε)√X)`, so the localized forms at height `T` are positive for
    `√X ≤ (¼ − ε) log T`. The coefficient `4` is optimal for bounds on the prime symbol that are
    uniform in height, since `P_X(0) = −(1/π) Σ_{n ≤ X} Λ(n)/√n ~ −(2/π)√X`. A larger single-height
-   range must use how the prime phases depend on the height (mechanism 20).
+   range must use how the prime phases depend on the height (mechanism 20). These window
+   certificates are nonselective (`WindowCertificatesAndThePrimeWeight`): the Weil functional of a
+   weight `w` reads `w(n)` only where `log n` meets the support of `f ⋆ f̃`, so the aperture-`3/10`
+   certificate holds verbatim for every prime weight (the Liouville twist `λΛ` included), and the
+   odd window `[−181/500, 181/500]` for every weight with `w(2) = log 2`; the Liouville twist
+   reverses the atom at `2` and adds `√2 log 2 (k(log 2) + k(−log 2))`.
 
 ### Research topics toward the shared target
 

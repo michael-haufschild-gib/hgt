@@ -106,7 +106,7 @@ theorem zetaDiscStronglyRecurrentOn_explicit_of_zeroFree {z₀ : ℂ} (h1 : 1 / 
   have hρ1 : ρ ≤ (z₀.re - 1 / 2) / 4 := (min_le_right _ _).trans (min_le_left _ _)
   have hρ2 : ρ ≤ (1 - z₀.re) / 8 := (min_le_right _ _).trans (min_le_right _ _)
   exact zetaDiscStronglyRecurrentOn_of_zeroFree z₀ hρ h1.le (by linarith) (by linarith)
-    (by linarith) (R₂ := 2) (by norm_num) (by linarith)
+    (R₂ := 2) (by norm_num) (by linarith)
     (fun z hz => hζ z (ball_subset_ball (by linarith) hz))
     (by norm_num) (by norm_num) (by linarith) (by linarith)
 
@@ -308,7 +308,7 @@ theorem exists_zeta_recurrence_modulo_zeros {z₀ : ℂ} (h1 : 1 / 2 < z₀.re) 
       rw [mem_ball, dist_eq_norm] at hz
       exact hg0 z (hsub z (by linarith))
     exact exists_pos_density_zetaTargetReturnSet_of_analyticOnNhd z₀ hr' h1.le (by linarith)
-      (by linarith) (by linarith) (R₂ := 2) (by norm_num) hgan' hg0' (r₁ := 1 / 2) (by norm_num)
+      (by linarith) (R₂ := 2) (by norm_num) hgan' hg0' (r₁ := 1 / 2) (by norm_num)
       (by norm_num) (by linarith) (by linarith) hε
 
 /-- **At an off-line zero the orbit erases the zero divisor.**  If `ζ(ρ₀) = 0` with

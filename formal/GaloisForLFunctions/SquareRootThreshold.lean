@@ -110,6 +110,9 @@ import GaloisForLFunctions.SquareRootThreshold.ZoneHorizonLawAndTwistedPrimeWind
 import GaloisForLFunctions.SquareRootThreshold.AttainedTopsAreVisibleWithoutSeparation
 import GaloisForLFunctions.SquareRootThreshold.ZetaWeilPositivityThroughApertureThreeTenths
 import GaloisForLFunctions.SquareRootThreshold.DifferenceLagFamilyPositiveThroughTheFirstPrime
+import GaloisForLFunctions.SquareRootThreshold.LagRateBoundsTheDeBruijnNewmanHeatTime
+import GaloisForLFunctions.SquareRootThreshold.NearTopZerosForceNegativeGroundEnergyBeyondAnExplicitAperture
+import GaloisForLFunctions.SquareRootThreshold.WindowCertificatesAndThePrimeWeight
 
 /-!
 # Square-Root Threshold
@@ -117,5 +120,3 @@ import GaloisForLFunctions.SquareRootThreshold.DifferenceLagFamilyPositiveThroug
 Umbrella for the Square-Root Threshold programme: localized explicit formulas at the resolution of
 the local zero spacing. See `SquareRootThreshold/README.md`.
 -/
-import GaloisForLFunctions.SquareRootThreshold.LagRateBoundsTheDeBruijnNewmanHeatTime
-import GaloisForLFunctions.SquareRootThreshold.NearTopZerosForceNegativeGroundEnergyBeyondAnExplicitAperture

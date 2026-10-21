@@ -103,3 +103,12 @@ their module lands; this card does not edit their files.
   `δ = s/(4(W+1))`, threshold `max 2 (⌊exp(2K/s)⌋ + 1)`. Numerical evaluation of `C` blocked on explicit bounds
   for the smooth-transition collar integrals (`∫|ψ'|, ∫|ψ''|`) and `Σ Λ(r) r^{-3/2}`; range of `R` beyond
   `R ≤ −1/7000` not attempted. Wired in ArithmeticPositivityTheory.lean; axioms standard.
+- 2026-10-21 — **Row 6 (selectivity audit, window theorems)**: `SquareRootThreshold/WindowCertificatesAndThePrimeWeight`:
+  `weilFullFunctional_eq_of_eqOn` (the functional reads `w(n)` only for `log n ∈ supp k`); prime-free windows are
+  weight-independent (`weilFullFunctional_eq_of_tsupport_subset`), so the 3/10 certificate holds for every weight,
+  incl. `λΛ` (`re_weilFullFunctional_ge_of_aperture_le_threeTenths`, `…liouvilleTwist…`); below `log 3` only the
+  atom at 2 is read (`weilFullFunctional_sub_eq_atom_two`); the 362/1000 odd window holds for every `w` with
+  `w(2) = log 2` (`re_weilFullFunctional_ge_of_odd_window`); Liouville twist: certificate + `√2 log 2·(k(log2)+k(−log2))`
+  (`re_weilFullFunctional_liouvilleTwist_odd_window`). Continuous Beurling systems (no integer weight) are outside
+  the `weilFullFunctional` API; the audit of non-window positivity theorems (APT blocks, BVI, SRT lags) is open.
+  Also repaired the SRT umbrella (two imports had been appended after its docstring by another lane).

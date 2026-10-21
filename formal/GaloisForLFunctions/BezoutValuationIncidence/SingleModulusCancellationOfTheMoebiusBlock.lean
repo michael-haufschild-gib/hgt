@@ -164,6 +164,7 @@ theorem tendsto_mul_moebiusClassMass {p r : ℕ} (hp : p.Prime) (hr0 : 0 < r) (h
       _ = 1 / ((Q : ℝ) * Real.log Q) := by
           rw [sum_const, Nat.card_Ioc, nsmul_eq_mul, show 2 * Q - Q = Q by omega]; field_simp
   have hL0 : 0 ≤ η / 8 * Real.log (2 * (Q : ℝ)) := by
+    have hQ2R : (2 : ℝ) ≤ Q := by exact_mod_cast hQ2
     have := Real.log_nonneg (show (1 : ℝ) ≤ 2 * Q by linarith)
     positivity
   rw [Real.dist_eq, sub_zero, abs_mul, abs_of_pos hQ0, hid]
@@ -247,7 +248,7 @@ theorem tendsto_mul_moebius_cubicPart {p : ℕ} (hp : p.Prime) :
       rw [mem_Ioc] at hn
       have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
       have hQn : (Q : ℝ) ≤ n := by exact_mod_cast hn.1.le
-      rw [abs_mul, abs_div, abs_of_pos (by positivity)]
+      rw [abs_mul, abs_div, abs_of_pos (show (0 : ℝ) < (n : ℝ) ^ 3 by positivity)]
       refine mul_le_mul ?_ (abs_cubicKernel_le hp.pos n) (abs_nonneg _) (by positivity)
       calc |moebiusReal n| / (n : ℝ) ^ 3 ≤ 1 / (n : ℝ) ^ 3 :=
             div_le_div_of_nonneg_right (abs_moebiusReal_le_one' n) (by positivity)
@@ -264,26 +265,30 @@ theorem tendsto_mul_moebius_cubicPart {p : ℕ} (hp : p.Prime) :
   refine squeeze_zero_norm' (eventually_ge_atTop 1 |>.mono fun Q hQ => ?_) hlim
   rw [Real.norm_eq_abs]; exact hbound Q hQ
 
+/-- Every class mass of the Möbius block is `o(1/Q)`. -/
+theorem tendsto_mul_moebiusClassMass_all {p : ℕ} (hp : p.Prime) (r : ℕ) :
+    Tendsto (fun Q : ℕ => (Q : ℝ) * moebiusClassMass p r Q) atTop (𝓝 0) := by
+  rcases Nat.eq_zero_or_pos r with rfl | hr
+  · exact tendsto_mul_moebiusClassMass_zero hp
+  · by_cases hrp : r < p
+    · exact tendsto_mul_moebiusClassMass hp hr hrp
+    · have h0 : ∀ Q, moebiusClassMass p r Q = 0 := fun Q => sum_eq_zero fun n _ => by
+        rw [if_neg (by have := Nat.mod_lt n hp.pos; omega), zero_div]
+      simp only [h0, mul_zero]
+      exact tendsto_const_nhds
+
 /-- **The Möbius block's kernel statistic vanishes at every fixed prime**: `Q Λ_p(μ_Q) → 0`. -/
 theorem tendsto_mul_kernelStatistic_moebiusWindowRow {p : ℕ} (hp : p.Prime) :
     Tendsto (fun Q : ℕ => (Q : ℝ) * kernelStatistic (2 * Q) (moebiusWindowRow Q) p) atTop (𝓝 0) := by
-  have hcls : Tendsto (fun Q : ℕ => ∑ r ∈ range p,
-      (bernoulliKernel p r - primeKernelMean p) * ((Q : ℝ) * moebiusClassMass p r Q)) atTop (𝓝 0) := by
-    have h := tendsto_finsetSum (range p) fun r _ =>
-      ((show Tendsto (fun Q : ℕ => (Q : ℝ) * moebiusClassMass p r Q) atTop (𝓝 0) from by
-        rcases Nat.eq_zero_or_pos r with rfl | hr
-        · exact tendsto_mul_moebiusClassMass_zero hp
-        · by_cases hrp : r < p
-          · exact tendsto_mul_moebiusClassMass hp hr hrp
-          · have : ∀ Q, moebiusClassMass p r Q = 0 := fun Q => sum_eq_zero fun n _ => by
-              rw [if_neg (by have := Nat.mod_lt n hp.pos; omega), zero_div]
-            simp [this])).const_mul (bernoulliKernel p r - primeKernelMean p))
-    simpa using h
+  have hcls := tendsto_finsetSum (range p) fun r _ =>
+    (tendsto_mul_moebiusClassMass_all hp r).const_mul (bernoulliKernel p r - primeKernelMean p)
+  simp only [mul_zero, sum_const_zero] at hcls
   have h := hcls.add (tendsto_mul_moebius_cubicPart hp)
   rw [add_zero] at h
   refine h.congr fun Q => ?_
-  rw [kernelStatistic_moebiusWindowRow_eq hp, mul_add, mul_sum]
+  rw [kernelStatistic_moebiusWindowRow_eq hp, mul_add]
   congr 1
+  rw [mul_sum]
   exact sum_congr rfl fun r _ => by ring
 
 /-- **The coupling of a fixed prime packet with the Möbius block vanishes.** For `c` supported on a
@@ -416,9 +421,9 @@ theorem singleModulus_pair_moebius_primes :
       Tendsto (fun Q : ℕ => (Q : ℝ) * (rowBilinear (2 * Q) c (moebiusWindowRow Q) +
           rowMean (2 * Q) c * vonMangoldtReadout (2 * Q) (moebiusWindowRow Q) +
           rowBeta (2 * Q) c * finiteHarmonicSum (2 * Q) (moebiusWindowRow Q))) atTop (𝓝 0)) :=
-  ⟨fun p hp => ⟨tendsto_mul_kernelStatistic_primeWindowRow hp,
+  ⟨fun _ hp => ⟨tendsto_mul_kernelStatistic_primeWindowRow hp,
       tendsto_mul_kernelStatistic_moebiusWindowRow hp⟩,
-    fun c S hS hSp => ⟨tendsto_mul_rowBilinear_primeWindowRow hS hSp,
+    fun _ _ hS hSp => ⟨tendsto_mul_rowBilinear_primeWindowRow hS hSp,
       tendsto_mul_rowBilinear_moebiusWindowRow hS hSp⟩⟩
 
 end

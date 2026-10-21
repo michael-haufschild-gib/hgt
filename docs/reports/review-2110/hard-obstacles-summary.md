@@ -26,6 +26,25 @@ Each item is finishable with known methods. The last column states what the item
 | AIP finite items: the collar ratio second-order term; the quarter-point set in `14 ≤ n ≤ 22`; the bump bridge normalizing the prime part of `J_M` by the bump width. | Finite calculation (a3) | AIP | Exact geometry of where the pole fails to pay. | No payment of the unpaid axis regions. |
 | Finite checks the routes name: finite blocks of Hausdorff orders and shifts (PA); fixed-rank Hankel forms (HCF, TH); the inner chamber of the enriched clock current (TT, TH); a specified disc (XN); a finite range of integers (RB); the logarithmic budget constant (JAS). | Finite calculation (a3) | PA, HCF, TH, TT, XN, RB, JAS | Certified finite statements. | Infinitely many orders, ranks, discs, integers or shells remain. |
 
+**Lean status of the rows (2026-10-21).**
+
+- *Wiring (row 1):* all nine modules are wired in their umbrellas.
+- *All-profile window (row 2):* still `3/10` (`ZetaWeilPositivityThroughApertureThreeTenths`: `Re W_ζ ≥ ‖f‖²/5000`); the quartic gauge with hub–Schur fails at `0.311`, a sextic or Schur certificate is unbuilt.
+- *Odd window (row 3):* `[−181/500, 181/500]` with `1/1000` and `9/25` (AIP), past the inner-edge limit; the ceiling `0.375` is open.
+- *Shift-averaged converse (row 4):* undecided. The averaged energy is the Schur product of the Weil kernel with the positive kernel `G(x−y) − G(x+y)`; deciding the converse is either an unconditional positivity theorem or a new RH criterion, neither bookkeeping.
+- *Completed norms (row 5):* decided. `SuzukiScrewCompletionInsideTheWeilFormDomain` shows the SZ completion is a proper dense subspace of the RW form domain, since the derivative norm is not bounded by the Weil form norm. `CHMDGraphNormIsTheWeilFormNormOnAnAperture` shows the CHMD graph norm is equivalent to the RW norm on each aperture. All three carry the same sign. Open: a lower bound for the signed-radical quotient norm on the aperture core.
+- *Selectivity audit (row 6):* window part done (`WindowCertificatesAndThePrimeWeight`). The functional reads `w(n)` only for `log n` in the support, so the `3/10` certificate holds for every prime weight (the Liouville twist included). The odd window holds for every weight with `w(2) = log 2`; the Liouville twist adds `√2 log 2 (k(log 2) + k(−log 2))`. The audit of the non-window theorems (APT blocks, BVI, SRT lags) and of continuous Beurling systems is open.
+- *SRT constants (row 7):* aperture `3/10` done. `V₀` and `V(a, σ)` are explicit closed forms; the constants in `≍` are not formalized.
+- *APT constants (row 8):* `ExplicitBlockThresholdsOfTheCriticalFamily` gives every block threshold as `max(2, ⌊e^{c + C/s}⌋ + 1)` and the window exponent `s/(4(W + 1))`. Numerical values need bounds on the smooth-transition collar integrals; the range of `R` beyond `R ≤ −1/7000` is open.
+- *BVI/THIM laws (row 9):*
+  - the least long-window threshold `10N² + 8N` holds at every `N ≥ 2` (THIM);
+  - the window sandwich constant lies in `[Φ(N) − 2, N(N − 1)]` (`WindowSandwichWithTheMontgomeryVaughanConstant`);
+  - the factor two in the log-free large sieve is removed: `N + Q² − 1` (`LargeSieveWithTheMontgomeryVaughanConstant`);
+  - the Vasyunin defect has exact order `h(1 + log⁺(p/h))` (`ExactOrderOfTheVasyuninReciprocityDefect`);
+  - open: the defect sign for `11N + 10 ≤ M < 10N² + 8N` at every `N`. Only the eventual version holds; the explicit version needs effective prime counts and the finitely many horizons below them.
+- *AIP items (row 10):* done (`QuarterPointClassification`, `CollarEndSecondOrderLaw`, `BumpBridgeOfThePrimeJumpEnergy`).
+- *Finite checks (row 11):* not done. Specified discs, moment matrices, integer ranges and the finite blocks of orders and shifts are certified evaluations. The logarithmic budget constant needs an explicit Vinogradov–Korobov constant.
+
 Three statements sometimes listed as intermediate milestones are not on this list because they are not of lesser difficulty than RH-strength problems:
 
 - A horizon-uniform bound on the complete pronic energy at **one fixed** damping `ε ∈ (0, 1/2)`: it implies the zero-translation law `ζ(ρ) = 0, Re ρ > 1/2 + ε ⟹ ζ(ρ − ε) = 0` [L], and by Wall 16 it must read the signs of the coefficients at prime moduli, which no data invariant under the parity involution can do.

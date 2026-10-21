@@ -60,7 +60,7 @@ theorem mem_rayExponentSet_of_le {Φ : ℂ → ℂ} {a b : ℝ} (ha : a ∈ rayE
   exact h1.trans (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right hab h2))
 
 /-- `ρ + 1` is admissible when `‖Φ ξ‖ ≤ C e^{ρ‖ξ‖}` with `C > 0`. -/
-theorem add_one_mem_rayExponentSet {Φ : ℂ → ℂ} {C ρ : ℝ} (hC : 0 < C) (hρ : 0 ≤ ρ)
+theorem add_one_mem_rayExponentSet {Φ : ℂ → ℂ} {C ρ : ℝ} (hC : 0 < C)
     (hgrow : ∀ ξ : ℂ, ‖Φ ξ‖ ≤ C * Real.exp (ρ * ‖ξ‖)) : ρ + 1 ∈ rayExponentSet Φ := by
   refine ⟨max 0 (Real.log C), fun t ht => ?_⟩
   have ht0 : 0 ≤ t := le_trans (le_max_left _ _) ht
@@ -110,10 +110,10 @@ theorem neg_le_of_mem_rayExponentSet {Φ : ℂ → ℂ} (hΦ : Differentiable �
   -- global growth of `g`
   have hgrow' : ∀ z : ℂ, ‖g z‖ ≤ C * Real.exp ((ρ + κ) * ‖z‖) := fun z => by
     rw [hgnorm]
-    calc ‖Φ z‖ * Real.exp (κ * z.re) ≤ C * Real.exp (ρ * ‖z‖) * Real.exp (κ * ‖z‖) := by
-          gcongr
-          · exact hgrow z
-          · exact Complex.re_le_norm z
+    calc ‖Φ z‖ * Real.exp (κ * z.re) ≤ C * Real.exp (ρ * ‖z‖) * Real.exp (κ * ‖z‖) :=
+          mul_le_mul (hgrow z)
+            (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left (Complex.re_le_norm z) hκ0))
+            (Real.exp_pos _).le (by positivity)
       _ = C * Real.exp ((ρ + κ) * ‖z‖) := by
           rw [mul_assoc, ← Real.exp_add]
           congr 2
@@ -141,9 +141,9 @@ theorem neg_le_of_mem_rayExponentSet {Φ : ℂ → ℂ} (hΦ : Differentiable �
             rw [mul_assoc, mul_assoc, ← Real.exp_add, ← Real.exp_add]
             congr 2
             ring
-        _ ≤ C * Real.exp ((ρ + κ + ε) * t₀) * Real.exp (-(ε * x)) := by
-            gcongr
-            exact hxt.le
+        _ ≤ C * Real.exp ((ρ + κ + ε) * t₀) * Real.exp (-(ε * x)) :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
+              (mul_le_mul_of_nonneg_left hxt.le (by linarith))) hC.le) (Real.exp_pos _).le
         _ ≤ C' * Real.exp (-(ε * x)) := by
             rw [hC']
             exact mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.exp_pos _).le
@@ -171,9 +171,9 @@ theorem neg_le_of_mem_rayExponentSet {Φ : ℂ → ℂ} (hΦ : Differentiable �
   simp only [Pi.zero_apply, mul_eq_zero, Complex.exp_ne_zero, or_false] at this
   exact this
 
-theorem rayExponentSet_nonempty {Φ : ℂ → ℂ} {C ρ : ℝ} (hC : 0 < C) (hρ : 0 ≤ ρ)
+theorem rayExponentSet_nonempty {Φ : ℂ → ℂ} {C ρ : ℝ} (hC : 0 < C)
     (hgrow : ∀ ξ : ℂ, ‖Φ ξ‖ ≤ C * Real.exp (ρ * ‖ξ‖)) : (rayExponentSet Φ).Nonempty :=
-  ⟨ρ + 1, add_one_mem_rayExponentSet hC hρ hgrow⟩
+  ⟨ρ + 1, add_one_mem_rayExponentSet hC hgrow⟩
 
 theorem rayExponentSet_bddBelow {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ) {C ρ : ℝ} (hC : 0 < C)
     (hρ : 0 ≤ ρ) (hgrow : ∀ ξ : ℂ, ‖Φ ξ‖ ≤ C * Real.exp (ρ * ‖ξ‖)) (hne : Φ ≠ 0) :
@@ -184,14 +184,14 @@ theorem rayExponentSet_bddBelow {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
 theorem neg_le_rayExponent {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ) {C ρ : ℝ} (hC : 0 < C)
     (hρ : 0 ≤ ρ) (hgrow : ∀ ξ : ℂ, ‖Φ ξ‖ ≤ C * Real.exp (ρ * ‖ξ‖)) (hne : Φ ≠ 0) :
     -ρ ≤ rayExponent Φ :=
-  le_csInf (rayExponentSet_nonempty hC hρ hgrow)
+  le_csInf (rayExponentSet_nonempty hC hgrow)
     fun _ ha => neg_le_of_mem_rayExponentSet hΦ hC hρ hgrow hne ha
 
 /-- **Upper bound at the ray exponent**: `‖Φ(t)‖ ≤ e^{(a+δ)t}` for all `t ≥ t₀`, `t₀ ≥ 0`. -/
 theorem exists_forall_norm_le_exp_rayExponent_add {Φ : ℂ → ℂ} {C ρ : ℝ} (hC : 0 < C)
-    (hρ : 0 ≤ ρ) (hgrow : ∀ ξ : ℂ, ‖Φ ξ‖ ≤ C * Real.exp (ρ * ‖ξ‖)) {δ : ℝ} (hδ : 0 < δ) :
+    (hgrow : ∀ ξ : ℂ, ‖Φ ξ‖ ≤ C * Real.exp (ρ * ‖ξ‖)) {δ : ℝ} (hδ : 0 < δ) :
     ∃ t₀ : ℝ, 0 ≤ t₀ ∧ ∀ t : ℝ, t₀ ≤ t → ‖Φ (t : ℂ)‖ ≤ Real.exp ((rayExponent Φ + δ) * t) := by
-  obtain ⟨a, ha, hlt⟩ := exists_lt_of_csInf_lt (rayExponentSet_nonempty hC hρ hgrow)
+  obtain ⟨a, ha, hlt⟩ := exists_lt_of_csInf_lt (rayExponentSet_nonempty hC hgrow)
     (show sInf (rayExponentSet Φ) < rayExponent Φ + δ by unfold rayExponent; linarith)
   obtain ⟨t₀, ht₀⟩ := mem_rayExponentSet_of_le ha hlt.le
   exact ⟨max t₀ 0, le_max_right _ _, fun t ht => ht₀ t (le_trans (le_max_left _ _) ht)⟩
@@ -202,7 +202,7 @@ theorem exists_exp_rayExponent_sub_lt {Φ : ℂ → ℂ} (hΦ : Differentiable �
     {δ : ℝ} (hδ : 0 < δ) (T : ℝ) :
     ∃ t : ℝ, T ≤ t ∧ Real.exp ((rayExponent Φ - δ) * t) < ‖Φ (t : ℂ)‖ := by
   by_contra h
-  push_neg at h
+  push Not at h
   have hmem : rayExponent Φ - δ ∈ rayExponentSet Φ := ⟨T, h⟩
   have := csInf_le (rayExponentSet_bddBelow hΦ hC hρ hgrow hne) hmem
   unfold rayExponent at this
@@ -257,8 +257,10 @@ theorem norm_le_exp_of_quadrant_I {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ �
             congr 2
             ring
         _ ≤ C * Real.exp ((ρ + |a|) * t₀) := by
-            gcongr
-            nlinarith [neg_abs_le a, abs_nonneg a, hxt.le]
+            refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hC.le
+            calc (ρ - a) * x ≤ (ρ + |a|) * x :=
+                  mul_le_mul_of_nonneg_right (by linarith [neg_abs_le a]) hx
+              _ ≤ (ρ + |a|) * t₀ := mul_le_mul_of_nonneg_left hxt.le (by positivity)
         _ ≤ K := by rw [hK]; exact le_max_right _ _
   -- the positive imaginary axis
   have himag : ∀ x : ℝ, 0 ≤ x → ‖F ((x : ℂ) * I)‖ ≤ K := by
@@ -348,8 +350,10 @@ theorem norm_le_exp_of_quadrant_IV {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ 
             congr 2
             ring
         _ ≤ C * Real.exp ((ρ + |a|) * t₀) := by
-            gcongr
-            nlinarith [neg_abs_le a, abs_nonneg a, hxt.le]
+            refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hC.le
+            calc (ρ - a) * x ≤ (ρ + |a|) * x :=
+                  mul_le_mul_of_nonneg_right (by linarith [neg_abs_le a]) hx
+              _ ≤ (ρ + |a|) * t₀ := mul_le_mul_of_nonneg_left hxt.le (by positivity)
         _ ≤ K := by rw [hK]; exact le_max_right _ _
   -- the negative imaginary axis
   have himag : ∀ x : ℝ, x ≤ 0 → ‖F ((x : ℂ) * I)‖ ≤ K := by
@@ -410,13 +414,15 @@ theorem exists_thinStrip_bound {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ) 
       _ ≤ max 1 (C * Real.exp ((ρ + |a|) * t₀)) * Real.exp ρ * Real.exp (a * z.re) := by
           rw [mul_assoc, ← Real.exp_add]
           refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hK0
-          nlinarith
+          have := mul_le_mul_of_nonneg_left him2 hρ
+          linarith
   · calc ‖Φ z‖ ≤ max 1 (C * Real.exp ((ρ + |a|) * t₀)) * Real.exp (a * z.re - ρ * z.im) :=
           norm_le_exp_of_quadrant_IV hΦ hC hρ hgrow ht₀ hup hre hz.le
       _ ≤ max 1 (C * Real.exp ((ρ + |a|) * t₀)) * Real.exp ρ * Real.exp (a * z.re) := by
           rw [mul_assoc, ← Real.exp_add]
           refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hK0
-          nlinarith
+          have := mul_le_mul_of_nonneg_left (show -z.im ≤ 1 by linarith) hρ
+          linarith
 
 /-! ## 3. Lipschitz control at the ray rate -/
 
@@ -533,7 +539,7 @@ theorem primeWindow_sum_ge_of_window_value_lip (Φ : ℂ → ℂ) {σ : ℝ} (h�
     linarith
   -- the Chebyshev mass of the window
   have hθwin : y * h / 4 ≤ Chebyshev.theta (Yk + L) - Chebyshev.theta Yk := by
-    have h1 := hθ Yk L (le_trans (by rw [hy] at hX₁; exact hX₁) hYkge) hL0.le
+    have h1 := hθ Yk L (le_trans (by rw [hy]; exact hX₁) hYkge) hL0.le
     have h2 : (Yk + L) ^ α ≤ L / 2 := by
       rw [hYL]
       calc Yk1 ^ α ≤ Real.exp (x + 1) ^ α := Real.rpow_le_rpow hYk10.le hYk1le hα0
@@ -689,7 +695,7 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_capFree {Φ : ℂ → ℂ}
   -- the ray exponent `a ≥ −ρ` and the admissible exponent `a' = a + δ`
   obtain ⟨a, ha⟩ : ∃ a : ℝ, a = rayExponent Φ := ⟨_, rfl⟩
   have ha_lo : -ρ ≤ a := by rw [ha]; exact neg_le_rayExponent hΦ hC hρ hgrow hne
-  obtain ⟨t₀, ht₀0, hup⟩ := exists_forall_norm_le_exp_rayExponent_add hC hρ hgrow hδ0
+  obtain ⟨t₀, ht₀0, hup⟩ := exists_forall_norm_le_exp_rayExponent_add hC hgrow hδ0
   rw [← ha] at hup
   -- the thin-strip bound and the Lipschitz constant `K₀ e^{(a+δ)x}`
   obtain ⟨M₁, hM₁0, hstrip⟩ := exists_thinStrip_bound hΦ hC hρ hgrow ht₀0 hup
@@ -743,7 +749,8 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_capFree {Φ : ℂ → ℂ}
   -- the window `[x, x + ℓ]`, `ℓ = e^{−3δx}`, on which `Φ` stays above `½ e^{(a−δ)x}`
   obtain ⟨ℓ, hℓ⟩ : ∃ ℓ : ℝ, ℓ = Real.exp (-(3 * δ * x)) := ⟨_, rfl⟩
   have hℓ0 : 0 < ℓ := by rw [hℓ]; exact Real.exp_pos _
-  have hℓ1 : ℓ ≤ 1 := by rw [hℓ]; exact Real.exp_le_one_iff.mpr (by nlinarith)
+  have hδx : 0 ≤ δ * x := mul_nonneg hδ0.le hx0
+  have hℓ1 : ℓ ≤ 1 := by rw [hℓ]; exact Real.exp_le_one_iff.mpr (by linarith)
   obtain ⟨v₀, hv₀⟩ : ∃ v₀ : ℝ, v₀ = Real.exp ((a - δ) * x) := ⟨_, rfl⟩
   have hv₀0 : 0 < v₀ := by rw [hv₀]; exact Real.exp_pos _
   have hDℓ : D * ℓ ≤ v₀ / 2 := by
@@ -754,7 +761,11 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_capFree {Φ : ℂ → ℂ}
     have h2 : K₀ * Real.exp (-(δ * x)) ≤ 1 / 2 := by
       rw [Real.exp_neg, mul_inv_le_iff₀ (Real.exp_pos _)]
       linarith
-    nlinarith [Real.exp_pos ((a - δ) * x)]
+    calc K₀ * (Real.exp ((a - δ) * x) * Real.exp (-(δ * x)))
+        = (K₀ * Real.exp (-(δ * x))) * Real.exp ((a - δ) * x) := by ring
+      _ ≤ 1 / 2 * Real.exp ((a - δ) * x) :=
+          mul_le_mul_of_nonneg_right h2 (Real.exp_pos _).le
+      _ = Real.exp ((a - δ) * x) / 2 := by ring
   have hwindow : ∀ t : ℝ, 0 ≤ t → t ≤ ℓ → v₀ / 2 ≤ ‖Φ (x + t)‖ := by
     intro t ht0 htℓ
     have hsub := hlip x (x + t) le_rfl (by linarith) (by linarith)
@@ -785,7 +796,7 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_capFree {Φ : ℂ → ℂ}
   have hη1 : η ≤ 1 := by
     rw [hη]
     calc c₀ * Real.exp (-(6 * δ * x)) ≤ 1 * 1 :=
-          mul_le_mul hc₀1 (Real.exp_le_one_iff.mpr (by nlinarith)) (Real.exp_pos _).le zero_le_one
+          mul_le_mul hc₀1 (Real.exp_le_one_iff.mpr (by linarith)) (Real.exp_pos _).le zero_le_one
       _ = 1 := mul_one 1
   obtain ⟨N, hN⟩ : ∃ N : ℕ, N = ⌈1 / η⌉₊ := ⟨_, rfl⟩
   have hN0 : 0 < N := by rw [hN]; exact Nat.ceil_pos.mpr (by positivity)
@@ -816,10 +827,11 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_capFree {Φ : ℂ → ℂ}
           rw [← Real.exp_add, ← Real.exp_add]; congr 2; ring
       _ ≤ 1 / 8 * (1 * Real.exp ((a - 4 * δ) * x)) := by
           gcongr
-          exact Real.exp_le_one_iff.mpr (by nlinarith)
+          exact Real.exp_le_one_iff.mpr (by linarith)
       _ = m / 4 := by
-          rw [hm, hℓ, hv₀, ← Real.exp_add]
-          rw [show (a - 4 * δ) * x = -(3 * δ * x) + (a - δ) * x by ring]
+          rw [hm, hℓ, hv₀, show Real.exp ((a - 4 * δ) * x)
+            = Real.exp (-(3 * δ * x)) * Real.exp ((a - δ) * x) by
+              rw [← Real.exp_add]; congr 1; ring]
           ring
   -- the short-interval condition `e^{(x+1)α} ≤ e^x h/2`
   have hα : Real.exp (x + 1) ^ α ≤ Real.exp x * h / 2 := by
@@ -848,18 +860,21 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_capFree {Φ : ℂ → ℂ}
   have hM : M + 1 ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1)) * (m / 2) := by
     have hx1' : (0 : ℝ) < x + 1 := by linarith
     have hm2 : m / 2 = 1 / 4 * Real.exp ((a - 4 * δ) * x) := by
-      rw [hm, hℓ, hv₀, ← Real.exp_add]
-      rw [show (a - 4 * δ) * x = -(3 * δ * x) + (a - δ) * x by ring]
+      rw [hm, hℓ, hv₀, show Real.exp ((a - 4 * δ) * x)
+        = Real.exp (-(3 * δ * x)) * Real.exp ((a - δ) * x) by
+          rw [← Real.exp_add]; congr 1; ring]
       ring
     rw [hm2]
     have h1 : Real.exp (-(σ * (x + 1))) * Real.exp x * Real.exp ((a - 4 * δ) * x)
         = Real.exp (-σ) * Real.exp ((1 - σ + a - 4 * δ) * x) := by
       rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-    have h2 : Real.exp (4 * δ * x) ≤ Real.exp ((1 - σ + a - 4 * δ) * x) :=
-      Real.exp_le_exp.mpr (by nlinarith)
+    have h2 : Real.exp (4 * δ * x) ≤ Real.exp ((1 - σ + a - 4 * δ) * x) := by
+      refine Real.exp_le_exp.mpr ?_
+      have := mul_nonneg (show 0 ≤ 1 - σ + a - 8 * δ by linarith) hx0
+      linarith
     have h3 : 2 * δ * (x + 1) ≤ Real.exp (2 * δ * x) := by
       have := Real.add_one_le_exp (2 * δ * x)
-      nlinarith
+      linarith
     have h4 : Real.exp (4 * δ * x) = Real.exp (2 * δ * x) * Real.exp (2 * δ * x) := by
       rw [← Real.exp_add]; congr 1; ring
     have h5 : (M + 1) * 16 * Real.exp σ * (x + 1) ≤ Real.exp (4 * δ * x) := by
@@ -871,9 +886,13 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub_capFree {Φ : ℂ → ℂ}
             mul_le_mul_of_nonneg_left h3 (Real.exp_pos _).le
     have hexpσ : Real.exp (-σ) * Real.exp σ = 1 := by
       rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
-    rw [show Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1)) * (1 / 4 * Real.exp ((a - 4 * δ) * x))
-        = Real.exp (-(σ * (x + 1))) * Real.exp x * Real.exp ((a - 4 * δ) * x) / (16 * (x + 1)) by
-          field_simp; ring, h1, le_div_iff₀ (by positivity)]
+    have hQ : Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1))
+          * (1 / 4 * Real.exp ((a - 4 * δ) * x))
+        = Real.exp (-σ) * Real.exp ((1 - σ + a - 4 * δ) * x) / (16 * (x + 1)) := by
+      rw [← h1]
+      field_simp
+      ring
+    rw [hQ, le_div_iff₀ (by positivity)]
     calc (M + 1) * (16 * (x + 1)) = Real.exp (-σ) * ((M + 1) * 16 * Real.exp σ * (x + 1)) := by
           rw [show Real.exp (-σ) * ((M + 1) * 16 * Real.exp σ * (x + 1))
               = (Real.exp (-σ) * Real.exp σ) * ((M + 1) * (16 * (x + 1))) by ring, hexpσ, one_mul]
