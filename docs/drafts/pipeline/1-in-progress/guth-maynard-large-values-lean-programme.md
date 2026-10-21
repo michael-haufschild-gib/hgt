@@ -692,3 +692,333 @@ So the whole 30/13 chain needs Heath-Brown only for `1 ≤ M ≤ T^{1/4}` beyond
 `T ≥ 256`). The earlier obstruction — "the dual block has length about `T/N`, which exceeds `√N`, so Corollary 2.1
 cannot return to length `N`" — is the obstruction for MEDIUM blocks; for short blocks the same reflection runs the
 favourable way. The remaining untouched interval is `T^{1/3} < M < (2T)^{2/3}`, which the chain does not use.
+
+### Lean (2026-10-22): Lemma 6.2 for ζ in Guth–Maynard's form, and the reduction of S₂ to (6.1)
+
+All modules compile clean (no warnings), axioms `[propext, Classical.choice, Quot.sound]`, wired by append into
+`RHTower.lean`. Route: Guth–Maynard's own proof (pp. 19–20), which does not use the functional equation of ζ: Mellin
+inversion of `w²` on `Re s = 1`, the `u`-range extended to `[1/m, 2M/m]` so that after `v = mNu` the `v`-range is
+`m`-independent, Fubini, and van der Corput for `∫ v^{-1+iρ} e(-v) dv` (log variable: `∫ exp(i(ρx − 2πeˣ)) dx`).
+**Lemma 6.2 (RHTower/, namespace `RHTower`):**
+- `ChenGuptaLiLemma62PrincipalReflectionPhaseBound`: `norm_cglGMReflectionPhaseIntegral_le` — `‖∫_α^β exp(i(ρx−2πeˣ))dx‖ ≤ 28/√|ρ|`
+  for `|ρ| ≥ 1`, every interval (reuses corpus `norm_integral_weight_cexp_le_anti`, `norm_integral_weight_cexp_secondDeriv_neg`,
+  `norm_integral_cexp_ofReal_mul_I_le_mono`, `norm_integral_cexp_neg_phase`).
+- `ChenGuptaLiLemma62PrincipalReflectionIdentity`: `cglGM_sum_fourier_eq_reflected` — exact identity
+  `Σ_{m=1}^M ĥ_t(mN) = (1/2π)∫ H(1+iy) Σ_m e^{-i(t−y)log(mN)} K(t−y; log N, log 2MN) dy` (reuses `mellinInv_mellin_eq`,
+  `cglLemma62_mellinTransform_verticalIntegrable`, `mellinConvergent_schwartz`, `cglSmoothBumpHt_fourier_eq_logFourier`).
+- `ChenGuptaLiLemma62PrincipalReflectionBound`: `cglGM_norm_sum_fourier_pos_le`, `cglGM_norm_sum_fourier_neg_le`,
+  `cglGM_fourier_neg_eq_conj` (`ĥ_t(−ξ) = conj ĥ_{−t}(ξ)`, via `conj_fourierIntegral_conj`); head `cglGMHeadPoly M τ = dirPoly M 1 (−τ)`.
+- `ChenGuptaLiLemma62PrincipalNonzeroModes`: `cglGMNonzeroModeSum w N t = Σ'_{m≠0} ĥ_t(mN)` (CGL punctured carrier),
+  `norm_cglGMNonzeroModeSum_le` (explicit two-sided form with `|m| > M` tail via `cglSmoothBumpHt_allOrder_fourier_decay`).
+- `ChenGuptaLiLemma62PrincipalGuthMaynardForm`: **`cglGM_lemma62_zeta`**: ∀ ε ∈ (0,1] ∃ C ≥ 0 ∀ T ≥ 1, N ≥ 1 (ℕ),
+  `T^ε ≤ |t| ≤ T`: `‖Σ_{m≠0} ĥ_t(mN)‖ ≤ C|t|^{−1/2} ∫_{−T^ε/2}^{T^ε/2} ‖Σ_{m≤M} m^{−i(t+u)}‖ du + C T^{−100}`, `M = ⌈|t|^{1+ε}/N⌉`;
+  **`cglGM_lemma62_zeta_of_length`**: same with any `M`, `|t|^{1+ε}/N ≤ M ≤ 8T²`, real `N ≥ 1`.
+**S₂ → (6.1) (RHTower/Sieve/, namespace `RHTower.GuthMaynard`):** `I_m` is the corpus `cubicTerm`
+(`GuthMaynardCubicTermIntegral`, abbreviation `gmIm`), `ĥ` the corpus `bumpFourier` (abbreviation `gmHat`).
+- `GuthMaynardSTwoReductionPlanes`: `gmS2` (sum of `I_m` over exactly-two-nonzero frequencies), `gmS2_eq_three_mul`:
+  `S₂ = 3N³ Σ_{x,y,z∈W} A(x−y)A(y−z)ĥ_{z−x}(0)`, `A = cglGMNonzeroModeSum` (three punctured planes, cyclic relabelling).
+- `GuthMaynardSTwoReductionDiagonal`: `gmNonzero_neg` (`A(−τ) = conj A(τ)`), `norm_gmS2_sub_diag_le`
+  (`‖S₂ − 3N³ĥ₀(0)Σ|A(x−y)|²‖ ≤ 3N³|W|³α²β`), `norm_gmHat_zero_le_of_separated` ((5.1)).
+- `GuthMaynardSTwoReductionPairBounds`: `sum_normSq_head_le_hbPairSum` (the shift `u` removed by the corpus majorant
+  `hbPairSum_le_of_norm_le`), `hbPairSum_Icc_le_dyadicBlocks` (corpus `normSq_logPoly_Icc_le_card_mul_sum_blocks`),
+  `norm_gmNonzero_le_decay`, `sq_le_of_lemma62` (Cauchy–Schwarz in `u`, corpus `integral_norm_le_sqrt_length_mul_sqrt_meanSquare`).
+- `GuthMaynardSTwoReductionClasses`, `…SixOne`, `…Assembly`: dyadic classes of `|t₁−t₂|`, class lengths
+  `M_k = ⌈(2^{k+1})^{1+ε}/N⌉`, long/short split, block count via corpus `natLog_two_floor_le`, `|W| ≤ T+1` via
+  `card_le_of_separated_subset_Icc`; **`gmS2_le_sixOne`**: ∀ ε ∈ (0,1] ∃ C ∀ T ≥ 1, N ≥ 1, `W ⊂ [0,T]` `T^ε`-separated:
+  `‖S₂‖ ≤ C((T^ε)^4 Σ_{k long}Σ_{j≤log₂M_k}(N²/2^j) hbPairSum W (dyadicSegmentBlock M_k j) 1) + C N²|W|²`.
+- `GuthMaynardSTwoReductionSingleBlock`: **`gmS2_le_sixOne_single`** (paper's (6.1)): ∃ M j, `1 ≤ M`,
+  `2^j ≤ M ≤ (2T)^{1+ε}/N + 1`, `‖S₂‖ ≤ C (T^ε)^6 (N²/2^j) hbPairSum W (dyadicSegmentBlock M j) 1`.
+- `GuthMaynardSTwoReductionChenGuptaLiBridge`: `cglLemma45TraceFrequencyTerm_modulusOne` (the CGL trace coefficient
+  at `q = 1` is `I_m` on the set of row times; reuses `modulusOne`, `cglLemma45CharacterPairFourierTerm_modulusOne` of
+  `GuthMaynardCubicTermCGL`), **`cglTraceS2_modulusOne_le_sixOne`**: (6.1) for the S₂ component of the actual CGL cubic trace.
+(6.2) with divisor control is the corpus `hbPairSum_le_power_lift` (HeathBrownPairSumPower); not re-proved.
+**Remaining for Proposition 6.1 (ζ):** Heath-Brown's (6.3) for `hbPairSum W (Ioc (A^k) (B^k)) (u ↦ u^{−σ})`; then the
+assembly `gmS2_le_sixOne_single` + `hbPairSum_le_power_lift` + (6.3) + `prop61_abstract` (its `M ≤ T/N` hypothesis is
+met with `T' = (2T)^{1+ε}` up to the `+1`, and the `(T^ε)^6` loss is the paper's `⪅`).
+
+### Lean (2026-10-22, later): Heath-Brown's Theorem 1.6 for short blocks `M ≤ (2T)^{1/3}`
+
+`RHTower/Sieve/HeathBrownPairSumSmallBlock.lean` (wired, `lake env lean` clean, 0 warnings, axioms
+`[propext, Classical.choice, Quot.sound]`).  **`hbPairSum_Ioc_le_smallBlock`**: for `W` `1`-separated
+of diameter `≤ T`, `T ≥ 1`, `M ≥ 1` with `M² ≤ (2T)^{2/3}`, every `δ > 0` and `|a_n| ≤ 1`,
+
+`Σ_{t₁,t₂∈W} |Σ_{M<n≤2M} a_n n^{i(t₁−t₂)}|² ≤ C(T,δ)(|W|²M + |W|M² + |W|^{5/4}T^{1/2}M)`,
+
+`C(T,δ) = hbSmallConst T δ` explicit (polylog in `T` times `(8⌈(2T)^{2/3}⌉)^{10δ}`).  This is the
+literal Theorem 1.6 shape, third term included.  `hbPairSum_Ioc_le_of_le_rpow_quarter` is the same
+with the hypothesis `M ≤ T^{1/4}`, and `sum_sum_norm_sq_exp_le_smallBlock` states it in the §11
+phase convention `exp(i(t₁−t₂) log n)` (bridge `hbPairSum_eq_sum_exp`, `hbPhase_eq_exp_I_mul`).
+
+* **Mechanism (no new analytic input).**  Heath-Brown's Corollary 2.1 in the dilation form
+  `hbAmp_sq_le_rpow` already runs short → long: `𝒜_{1/2}((M,2M])² ≤ 2(C_δ(8N)^δ)⁵|W|²𝒜_{1/2}((N,8N])`
+  for any `N ≥ M²`.  Choosing `N = ⌈(2T)^{2/3}⌉` (`hbLongBlock`, admissible by
+  `two_mul_lt_hbLongBlock_sq`, `four_mul_sq_le_hbLongBlock_cube`) lands on the unconditional
+  long-block bound `hbAmp_half_Ioc_eight_le_of_diam`, giving `𝒜_{1/2}((M,2M]) ⪅ T^{1/3}|W|^{3/2} + |W|²`.
+  The elementary `rpow_two_thirds_mul_cube_le` (`T^{2/3}w³ ≤ w^{13/4}T^{1/2} + w^{5/2}T` for `w,T ≥ 1`,
+  by the case split at `w = T^{2/3}` — the same dichotomy as Lemma 11.9's) converts this into the
+  Heath-Brown shape; `|W| ≥ T^{2/3}` gives the `|W|²M` term, `|W| ≤ T^{2/3}` the `|W|^{5/4}T^{1/2}M`
+  term.  The square root is avoided: the bound is proved squared and compared with the squared target.
+* **Consequence for §11.**  Lemma 11.9 (large gcd) applies Lemmas 11.5/11.6 only at `M = N/d`,
+  `d ≥ D = N²/T`, `N ≥ T^{3/4}`, hence only at `M ≤ T/N ≤ T^{1/4}` — covered.  Lemma 1.5/11.5 at
+  `M = N ≥ T^{2/3}` is covered by `hbPairSum_Ioc_le_of_twoThirds`.  Lemma 11.8 uses 8.2/8.3, not
+  Theorem 1.6.  So the whole `30/13` chain is supplied, in two regimes with explicit constants.
+* **Huxley–Jutila, Acta Arith. 32 (1977), 297–312** (Lemma 8 (3.16)–(3.17), Lemma 9 (3.18)) was read
+  and is *not* needed: their (3.14) `(B(M,U))² ≪ M^{1/2}B*(M,U²)` is the same Cauchy–Schwarz/square
+  step as Corollary 2.1, and the reflection `N ↦ D/N` of their Lemma 8 is only required if one
+  insists on a dual block of length exactly `T/M`.  The route above reaches *some* long block, which
+  is all the bound needs.  No display of theirs is used in the Lean proof.
+* **Still open:** the middle range `(2T)^{1/3} < M < (4/9)^{1/3}T^{2/3}`, where neither the short-block
+  reflection (`M² > N` for admissible `N`) nor the long-block theorem applies.  The full datum
+  `GuthMaynard.HeathBrownPairSumBound` (all `N`, in `C_ε T^ε` form) therefore stays unproved; its two
+  used regimes are available as above, and converting the explicit constants into `C_ε T^ε` (polylog
+  and `N^{10δ}` against `T^ε`) is the remaining bookkeeping for a consumer that wants the `∀ ε` shape.
+
+### Lean (2026-10-21): Section 13.1 — zero density 30/13 and primes in x^{17/30+ε}
+
+Six new modules, all compiled clean with `lake env lean` (zero errors, zero warnings), `.olean`s produced,
+appended to the `RHTower` umbrella (lines 28016–28021); every main theorem audited
+`[propext, Classical.choice, Quot.sound]`; `formal_tools.py lint` reports nothing for them.
+
+* `RHTower/Sieve/GuthMaynardLargeValuesStatement.lean` (namespace `RHTower.GuthMaynard`):
+  `GuthMaynardLargeValuesBound : Prop` — Theorem 1.1 in exactly the fixed shape
+  (`∀ {ε}, 0 < ε → ∃ C ≥ 0, ∀ N T T₀ V b W, … → |W| ≤ C T^ε (N²/V² + N^{18/5}/V⁴ + T N^{12/5}/V⁴)`);
+  `GuthMaynardLargeValuesBound.scaled` (coefficients `‖b n‖ ≤ B`: `B²N²/V² + B⁴N^{18/5}/V⁴ + T B⁴N^{12/5}/V⁴`,
+  same constant). The §12 module `GuthMaynardTheoremOneOneFromKeyProp` already imports this file and proves
+  `guthMaynardLargeValuesBound_of_keyProp (hkey : KeyPropBound w) : GuthMaynardLargeValuesBound`.
+* `RHTower/ZetaZeroDensityGuthMaynardExponentLemmas.lean` (Mathlib only): `gmWindowExponent σ = 10/(6+10σ)`,
+  `gmDensityExponent σ = 15(1-σ)/(3+5σ)`, `gmSwitchExponent σ = 15(1-σ)/((3+5σ)(18/5-4σ))`;
+  `three_mul_gmWindowExponent_mul` (`3a(1-σ) = E₀`), `gmSwitchExponent_mul` (`α(18/5-4σ) = E₀`),
+  `one_add_gmWindowExponent_mul` (`1 + a(12/5-4σ) = E₀`), the identity of TeX line 2362 in both forms
+  `one_add_mul_gmSwitchExponent_eq` (`= (129-195σ+50σ²)/(2(3+5σ)(9-10σ))`) and
+  `one_add_mul_gmSwitchExponent_eq_sub` (`= E₀ - (250(σ-3/4)²+3/8)/(2(3+5σ)(9-10σ))`), hence
+  `one_add_gmSwitchExponent_mul_le`; Type II margin `gmDensityExponent_sub_typeTwo_eq` (`= (9-10σ)/(6+10σ)`) and
+  `typeTwo_le_gmDensityExponent` (`δ ≤ 1/64`, `σ ≤ 4/5`); `gmDensityExponent_le_thirty_thirteenths` (`σ ≥ 7/10`),
+  `ingham_exponent_le_thirty_thirteenths` (`σ ≤ 7/10`), `huxley_exponent_le_thirty_thirteenths` (`σ ≥ 23/30`),
+  `one_le_thirty_thirteenths_mul` (`σ ≤ 17/30`); power bookkeeping `rpow_two_sub_le_of_le_window`,
+  `rpow_le_rpow_mul_of_le`, `mul_rpow_le_of_rpow_le`, `rpow_sub_nat_mul_eq_div`, `rpow_le_two_pow_mul_rpow`,
+  `gm_term_le`, `class_count_gm_arith` (the three GM terms of a raised polynomial of length `≤ 2^M X` at level
+  `X^σ v` are `≤ 3(M+1)⁵2^{4M}C·T^{ε₁}B⁴Q^{4M}·T^{E₀+κ}` in the window `T^a ≤ X ≤ T^α`), `gm_loss_le`. All unconditional.
+* `RHTower/ZetaZeroDensityGuthMaynardClassCount.lean`: `GuthMaynardLargeValuesBound.card_le_of_dyadic_range`
+  (the estimate on `R` dyadic blocks `(N₀2^r, N₀2^{r+1}]`, pigeonhole via corpus `exists_fiber_card_ge` and
+  `Sieve.sum_Ioc_dyadic`); `norm_sum_ofReal_mul_cexp_eq_norm_dpoly` (`|Σ a_n n^{it}| = |dpoly a S t|` for real `a`),
+  `norm_sum_Ioc_dpolySupportCoeff_eq`, `norm_dpolySupportCoeff_powConv_le` (the `X^σ`-normalized coefficients of the
+  `ℓ`-th power are `≤ d(n)^{2ℓ} ≤ ((C_η+1)T^{3η})^{2M}`, corpus `abs_powConv_le` + `Sieve.card_divisors_le_rpow`);
+  **step 1** `exists_gm_window_class_card_le hGM`: for `0 < a ≤ 1`, `M ≥ max(2, 2a/δ)`, `3/5 < σ < 9/10` and exponents
+  with `3a(1-σ) ≤ E₀`, `α(18/5-4σ) ≤ E₀`, `1 + a(12/5-4σ) ≤ E₀`, `1 + α(1-2σ) ≤ E₀`, every Type I class of the corpus
+  window detector (`pDetCut (3a/4)`, `pDetMoll δ`) has `|W| ≤ K T^{E₀+ε}` for large `T`. Proof: dichotomy of TeX
+  lines 2339–2364 — `X = (2^j)^ℓ ≤ T^α`: GM for `X^σP^ℓ` on `ℓ+1` blocks; `X > T^α`: corpus mean value count
+  `card_mul_pow_le_genClass_mvt` + `class_count_mvt_arith_of_le`.
+* `RHTower/ZetaZeroDensityGuthMaynardBox.lean`: **step 2 = Theorem 1.2** `exists_zeroHeightBox_ncard_le_gm hGM`:
+  for `σ ∈ [7/10, 8/10]`, `ε > 0`: `ncard (zeroHeightBox σ T) ≤ D (1+log T)^{12} T^{15(1-σ)/(3+5σ)+ε}` for `T ≥ T₀`
+  (window `a = 10/(6+10σ)`, mollifier `T^{1/64}`, Type II by corpus `card_typeTwo_le_window`, separation by
+  `exists_separated_gDet_class`, prefactor `gDet_prefactor_le`).
+* `RHTower/ZetaZeroDensityThirtyThirteenths.lean`: `zeroHeightBox_ncard_antitone`; `exists_uniform_of_antitone_of_forall`
+  (finite grid of step `θ`: fixed-`σ` bounds `T^{A(1-σ)+η}` on `[σ₁,σ₂]` become one uniform bound `T^{A(1-σ)+η+Aθ}`,
+  unconditional); `exists_zeroHeightBox_ncard_le_global_thirty_thirteenths` (`σ ≤ 17/30`, unconditional);
+  `exists_zeroHeightBox_ncard_le_fixed_thirty_thirteenths hGM` (fixed `σ ∈ [1/2, 5/6]`: global count / Ingham /
+  GM / Huxley); **step 3** `exists_zeroHeightBox_ncard_le_thirty_thirteenths hGM`: for `0 < ε ≤ 1` there are `D, B, T₀`
+  with `ncard (zeroHeightBox σ T) ≤ D (1+log T)^B T^{(30/13+ε)(1-σ)}` for all `T ≥ T₀`, all `σ ∈ [1/2, 1]`
+  (grid on `[1/2, 5/6]`, corpus density hypothesis `exists_zeroHeightBox_ncard_le_density_hypothesis` on `[5/6, 1]`).
+* `RHTower/PrimeShortIntervalsSeventeenThirtieths.lean`: `tendsto_tsum_zeroShortWeight_seventeen_thirtieths hGM`
+  (`u < 13/30`, via corpus `tendsto_tsum_zeroShortWeight_of_density`); `tendsto_psi_short_window_div_of_tendsto`
+  (unconditional: vanishing at `u = 1-α` for all `c ≥ 1` ⇒ `(ψ(x+x^α)-ψ(x))/x^α → 1`, any `0 < α < 1`);
+  **step 4** `tendsto_psi_short_window_div_seventeen_thirtieths hGM` (`17/30 < α < 1`: `ψ(x+x^α)-ψ(x) ∼ x^α`),
+  `exists_theta_window_lower_seventeen_thirtieths hGM` (`θ(y+L)-θ(y) ≥ (L-(y+L)^α)/2`, `y ≥ X`),
+  `eventually_exists_prime_short_interval_of_theta_window` (unconditional), and
+  `eventually_exists_prime_short_interval_seventeen_thirtieths hGM` (a prime in `(x, x+x^α]` for all large `x`).
+
+Theorems carrying the Theorem 1.1 datum `hGM : GuthMaynardLargeValuesBound` (each discharged by
+`exact … (guthMaynardLargeValuesBound_of_keyProp hkey)` once Proposition 3.1 lands):
+`GuthMaynardLargeValuesBound.scaled`, `GuthMaynardLargeValuesBound.card_le_of_dyadic_range`,
+`exists_gm_window_class_card_le`, `exists_zeroHeightBox_ncard_le_gm`, `exists_zeroHeightBox_ncard_le_fixed_thirty_thirteenths`,
+`exists_zeroHeightBox_ncard_le_thirty_thirteenths`, `tendsto_tsum_zeroShortWeight_seventeen_thirtieths`,
+`tendsto_psi_short_window_div_seventeen_thirtieths`, `exists_theta_window_lower_seventeen_thirtieths`,
+`eventually_exists_prime_short_interval_seventeen_thirtieths`. Everything else above is unconditional.
+
+Open for this brick: (i) the datum itself, i.e. Theorem 1.1 — now reduced by the §12 brick to `KeyPropBound w`
+(Proposition 3.1), which rests on the §6–§11 bounds; (ii) not formalized (outside the brief): Corollary 1.3 with the
+paper's error term `O(y exp(-(log x)^{1/4}))` for every `y ∈ [x^{17/30+ε}, x^{0.99}]` (needs the Vinogradov–Korobov
+zero-free region in the explicit-formula transfer; the corpus transfer gives `o(x^α)` at `y = x^α`), and Corollary 1.4
+(almost all intervals of length `X^{2/15+ε}`).
+
+### Correction: Vinogradov–Korobov is in the corpus (2026-10-22)
+
+The §13 brick recorded the paper's error term in Corollary 1.3 as out of reach "because it needs the
+Vinogradov–Korobov zero-free region". That was wrong: the corpus owns the region unconditionally.
+
+* `RHTower.Sieve.riemannZeta_ne_zero_vinogradovKorobov` (`RHTower/Sieve/VinogradovKorobovZeroFree.lean`):
+  `∃ γ₀, ∀ β γ, γ₀ ≤ γ → 1 − (log γ)^{−2/3}(log log γ)^{−5/3}/10^8 < β → riemannZeta (β + γ I) ≠ 0`,
+  with `exists_riemannZeta_ne_zero_vinogradovKorobov_width` and `vinogradovKorobovZeroFreeWidth` beside it.
+  The second exponent is `−5/3` against the paper's `−1/3`, which is harmless: the proof only needs a width
+  at least `c(log T)^{−5/7}`, and `2/3 < 5/7`.
+* `RHTower/Sieve/VinogradovKorobovPrimeNumberTheorem.lean`: `chebyshevPsi_sub_id_isBigO_vinogradovKorobov`
+  (`ψ − id = O(x exp(−c (log x)^{3/5}(log log x)^{−5/3}))`).
+* `RHTower/Sieve/VinogradovKorobovMoebius.lean`: `sum_moebius_isBigO_vinogradovKorobov`.
+* Supporting layer: `VinogradovZetaGrowth.lean`, `VinogradovZetaGrowthGeneralSigma.lean`,
+  `VinogradovZetaGrowthBlocks.lean`, `VinogradovKorobovInvZeta.lean`; roughly 141 modules mention Vinogradov.
+
+Consequence: Corollaries 1.3 and 1.4 are both reachable with the paper's error terms, on the single datum
+`hGM`. A brick is building them in `RHTower/VinogradovKorobovWidthComparison.lean`,
+`RHTower/ZeroDensitySupremumVinogradovKorobov.lean`,
+`RHTower/PrimeShortIntervalsSeventeenThirtiethsSharp.lean` (Corollary 1.3, `y ∈ [x^{17/30+ε}, x^{0.99}]`,
+error `y exp(−c(log x)^{1/4})`) and `RHTower/PrimeAlmostAllShortIntervalsTwoFifteenths.lean`
+(Corollary 1.4, almost all `x ∈ [X, 2X]`, `y ≥ X^{2/15+ε}`). The corpus already owns the explicit-formula
+window layer (`zeroShortWeight`, `psi_window_ge_sub_zeroShortWeight`, `tsum_zeroShortWeight_le`) and the
+almost-all second-moment layer (`PrimeAlmostAllShortIntervals*`).
+
+LESSON for every brick: do not record an input as missing without searching the corpus for it first.
+
+### Lean (2026-10-22): Proposition 10.1 unconditional
+
+Three new modules in `RHTower/Sieve/`, namespace `RHTower.GuthMaynard`, each compiled with
+`lake env lean` (0 errors, 0 warnings), oleans built, appended to the `RHTower` umbrella
+(lines 28024–28026); `#print axioms` of every theorem below = `[propext, Classical.choice, Quot.sound]`;
+`formal_tools.py lint` reports nothing for them.
+
+* `GuthMaynardSmoothedLagSumL2` — **the `L²` mass of `R̃`** (the one analytic fact §8 did not own):
+  `integral_smoothingKernel` (`∫_u NM ψ₁(NM(u−x)) du = ∫ψ₁` for every centre `x`, by translation and
+  scaling invariance of Lebesgue measure), `integral_smoothedLagSumIntegrand_right`,
+  `integrable_uncurry_smoothedLagSumIntegrand` (the plane integrand `(x,u) ↦ NMψ₁(NM(u−x))ψ₂(x)|R(x)|²`
+  is integrable on `ℝ²`, via mathlib `integrable_prod_iff` in the `(x,u)` order), and
+  **`integrable_and_integral_smoothedLagSum_sq`**: `R̃²` is integrable and
+  `∫_ℝ R̃(u)² du = (∫ψ₁) · ∫ψ₂(x)|R(x)|² dx` (Tonelli, `integral_integral_swap`). Consequence with
+  Lemma 8.2 (`setIntegral_Icc_inv_normSq_lagSum_le`): **`integral_smoothedLagSum_sq_le`**, for `A ≥ 1`,
+  `ψ₂` vanishing off `[A⁻¹,A]` and `1`-separated `W`,
+  `∫ R̃² ≤ (∫ψ₁)·(5π/2)A max(1,log A)·|W|`.
+* `GuthMaynardPropTenOneMajorant` — **the majorant and its four data bounds**.
+  Bump toolkit: `exists_uniform_bound_le` (a common bound on an initial segment of indices),
+  `exists_abs_iteratedDeriv_innerBump_le_of_le`, `exists_integral_abs_iteratedDeriv_innerBump_le`
+  (`∫|ψ̃₁^{(i)}| ≤ C·A` for every width `A ≥ 1` and `i ≤ j`: the `i`-th derivative of `φ(·/A)` scales by
+  `A^{-i}` and the integral by `A`), `integral_outerBump_le` (`∫ outerBump ≤ 8`),
+  `abs_sub_le_of_abs_deriv_le` (thin wrapper over the corpus `HTGeometry.abs_sub_le_of_deriv_bound`).
+  Smoothed density: `continuous_smoothedDensity` (dominated convergence against `|B|·sup ψ₃·|ψ₂|·|W|²`),
+  `hasCompactSupport_smoothedDensity`.
+  `propTenOneMajorant η B W = smoothedDensity (innerBump 21) outerBump (innerBump (2η)) B W` (= `ψ·R̃²`),
+  `windowConstant = (5π/2)·8·max(1, log 8)`; `propTenOneMajorant_eq`,
+  **`smoothedLagSum_sq_le_propTenOneMajorant`** (`R̃(u)² ≤ f(u)` for `|u| ≤ 20`, with equality),
+  **`integral_propTenOneMajorant_le`** (`∫f ≤ ∫R̃² ≤ 8η·windowConstant·|W|`),
+  **`integral_sq_propTenOneMajorant_le`** (`∫f² ≤ ∫R̃⁴ ≤ 64η²·windowConstant·E(W)`, Lemma 8.3 for `R̃`),
+  **`exists_fourier_decay_propTenOneMajorant`**: there is an absolute `A₀` with
+  `ξ²‖f̂(ξ)‖ ≤ A₀ η⁵ T² sup f` for `T ≥ 1`, `η ≥ 1`, `1 ≤ B ≤ η²T` and `W ⊂ [0,T]`.
+* `GuthMaynardPropTenOneUnconditional` — **`prop101_of_le_quarter`** (the same statement for
+  `0 < ε ≤ 1/4`) and **`prop101`**: for a real CGL bump `w` and every `ε > 0` there is `C ≥ 0` with
+  `‖allNonzeroCubicSum w W N‖ ≤ C·T^{5ε}·(T²|W|^{3/2} + T N |W|^{1/2}E(W)^{1/2}) + C·T^{−100}`
+  for `2 ≤ T`, `1 ≤ N ≤ T`, `T^ε ≤ N` and every `1`-separated `W ⊂ [0,T]`. Proof: `prop72` feeds
+  `guthMaynard_prop101` with `𝓜 = dyadicFrequencyBlock M₁ M` (box by `mem_dyadicFrequencyBlock`),
+  `C₇ = max C 1`, `C₁ = 8η·windowConstant`, `C₄ = 64η²·windowConstant`, `A = A₀`, `δ = ε`,
+  `η = T^{ε/2}`, `B = NM ≤ η²T`; the exponent bookkeeping is `T^{ε/2}·T^ε·(T^ε)³ = η⁹ ≤ η¹⁰ = T^{5ε}`.
+
+Mathematical notes.
+1. **`guthMaynard_lemma84` cannot be used as a black box here.** It requires the outer cutoff `ψ₁` to be
+   supported in a window `[A⁻¹, A] ⊂ (0,∞)`, but `R̃` need not vanish at negative arguments
+   (`supp R̃² ⊆ [1/8 − 4T^{ε/2}/(NM), 33/8 + 4T^{ε/2}/(NM)]`, and `NM` can be as small as `T^ε`), while the
+   §10 majorisation is needed on all of `[−20, 20]` because `α_m v = (m₁v+m₃)/(m₂v)` and `β_m v` take both
+   signs. The cutoff used is therefore the plateau `innerBump 21` and the decay is re-assembled from the two
+   exported pieces of the Lemma 8.4 module (`pow_mul_norm_fourier_smoothedDensity_le` at `j = 2` and
+   `smoothedDensity_one_ge`) with `∫ψ₂|R|² ≤ 8|W|²` and `(1+B)² ≤ 4B·η²T`. The alternative — a window
+   cutoff plus a threshold `T ≥ 32^{2/ε}`, with small `T` absorbed by `prop81` — was not needed.
+2. The `T^{5ε}` exponent splits as `T^{ε}` (Prop. 7.2) × `(T^ε)³` (Prop. 9.1 applied at scale `16M`)
+   × `T^{δ}` with `δ = ε` × `T^{ε/2}` (the mass `∫ innerBump(2T^{ε/2}) ≤ 8T^{ε/2}` entering both `C₁` and
+   `√C₄`), i.e. `T^{9ε/2}`, rounded up to `T^{5ε}`. The restriction `ε ≤ 1/4` of the core statement comes
+   from the Fourier decay: Prop. 9.1 wants `ξ²|f̂| ≤ A T³ sup f` with `A` free of `T`, and Lemma 8.4 delivers
+   `A₀ η⁵T² = A₀T^{5ε/2}T²`, so `5ε/2 ≤ 1` is needed; `prop101` removes the restriction by applying the core
+   at `min ε (1/4)`, which only strengthens the hypothesis `T^ε ≤ N` and weakens `T^{5·min(ε,1/4)} ≤ T^{5ε}`.
+3. `prop101` carries no `ε ≤ 1` hypothesis (it is not needed; `prop72` is invoked at `min ε (1/4) ≤ 1`),
+   and, like `prop81`, quantifies the bump `w` before the constant `C`.
+4. Corpus reuse (no new copies written): `setIntegral_Icc_inv_normSq_lagSum_le` (Lemma 8.2),
+   `integral_smoothedLagSum_pow_four_le_energy` and `integrable_and_integral_smoothedLagSum_pow_four_le`
+   (Lemma 8.3 for `R̃`), `integrable_mul_norm_lagSum_sq`, `pow_mul_norm_fourier_smoothedDensity_le`,
+   `smoothedDensity_one_ge`, `smoothedDensity_nonneg` (Lemma 8.4 module), `integral_innerBump_le`,
+   `outerBump_eq_zero_of_not_mem_Icc` (Prop. 8.1 module), `exists_abs_iteratedDeriv_innerBump_le`,
+   `exists_abs_iteratedDeriv_outerBump_le`, `isSmoothingPair_innerBump_outerBump`, `smoothedLagSum_sq`
+   (§7 vocabulary), `HTGeometry.abs_sub_le_of_deriv_bound`, `prop72`, `guthMaynard_prop101`,
+   `mem_dyadicFrequencyBlock`. The nearest existing kernel-mass lemmas (`RHTower.integral_scaledBump`,
+   `HTGeometry.integral_scaledMollifier`) are parametrised as `R⁻¹β(x/R)` without a translation, so they do
+   not cover `∫_u B ψ(B(u−x)) du`; `integral_smoothingKernel` is the translated form.
+
+**Remaining for §10.** Nothing: Proposition 10.1 is unconditional. Its consumers are §11 (the energy bound
+`E(W) ≲ |W|³N²/T²`) and §12 (Prop. 3.1), where `prop101` is to be combined with `prop81`
+(`S₃ ⪅ T²|W|^{1/2}E(W)^{1/2}`) and the `S₁`, `S₂` bounds.
+
+### Retraction of the "blocked on source access" entries (2026-10-22)
+
+Earlier sections of this card (notably the 2026-09 entries at the lines recording Heath-Brown's Theorem 1.6
+as "blocked on source access, not on mathematics", and the instruction "it must not be reconstructed from
+memory") are RETRACTED. They were wrong in principle and have been falsified in practice:
+
+* Heath-Brown's theorem is now proved in Lean, unconditionally, for long blocks
+  (`hbPairSum_Ioc_le_of_twoThirds`) and for short blocks (`hbPairSum_Ioc_le_smallBlock`), covering every use
+  the Guth–Maynard chain makes of it, and none of the proofs needed the 1979 paper.
+* The Vinogradov–Korobov zero-free region, recorded by the §13 brick as the reason Corollary 1.3's error term
+  was out of reach, has been in the corpus all along.
+* Jutila's reflection and the approximate functional equation, recorded as inaccessible, are open access in
+  Huxley–Jutila (Acta Arith. 32, 1977) and in the end were not even needed.
+
+Standing rule for this programme, from the user: a paywalled source is not a mathematical obstruction. These
+are results from the 1960s and 1970s, their proofs are standard, and most of the building blocks are already
+formalized in this repository. Before recording anything as open, (i) search the corpus, and (ii) state the
+precise mathematical step that fails. "I could not download the paper" is not such a step.
+
+### Lean (2026-10-22, later): CGL Lemma 6.2 principal branch (q general, ζ at q = 1), small-time regime closed uniformly
+
+Four modules in RHTower/ (namespace `RHTower`), compile clean, axioms `[propext, Classical.choice, Quot.sound]`, wired.
+Unlike the corpus's `…_X200_bound` statements (constant chosen after the regime `S`, hence trivially satisfiable), every
+bound below has `C` depending only on the bump and `ε`, uniformly in `N`, `q`, `t`, `X`.
+- `ChenGuptaLiLemma62PrincipalFarLineSharp`: **`cglLemma62_principalRegularizedFactor_far_sharp`** —
+  `‖χ_reg(z)‖ ≤ C_k(1+|Im z|)^{2k+1/2}` on `Re z = −2k` (sharp exponent; mirrors the nonprincipal pattern, whose Gamma
+  lemmas `cglGamma_ratio_tail_high`/`cglGammaFactor_reflection_tail_high` are `private`, via the public corpus
+  `HTGeometry.norm_Gamma_one_add_nat_bounds`, `norm_cos_le_exp_abs_im`, and the corpus all-heights bound below height 1);
+  `cglLemma62_far_dirichletTail_norm_le_of_character` (any character, `≤ M^{−2k}/(2k)`);
+  `cglLemma62PrincipalCorrectionDeepBudget_le` (`∏_{p|q}4(1+p^{2k}) ≤ 2q^{2k+2}`); pointwise far-tail bounds.
+- `ChenGuptaLiLemma62PrincipalSmallTimeDeepWindow`: **`cglLemma62_principal_smallTime_farTail_window_uniform`** —
+  `‖∫_{|v|≤X^{ε/2}} FarTail_k‖ ≤ C_ε X^{−200}` (item (i) of the earlier list).
+- `ChenGuptaLiLemma62PrincipalSmallTimeTruncation`: **`cglLemma62_principal_smoothedCharacterSum_eq_residue_add_reflected`**
+  (exact: `2π·phase·SmoothedSum = 2π·Res + ∫ ReflectedLine`), `cglLemma62_principal_smallTime_finiteCritical_truncation_uniform`.
+- `ChenGuptaLiLemma62PrincipalSmallTimeAssembly`: `cglLemma62_principal_smallTime_farTail_truncation_uniform`,
+  **`cglLemma62_principal_smallTime_smoothedSum_uniform'`**: `‖phase·SmoothedSum − Res − (1/2π)∫_{|v|≤X^{ε/2}} F_M(1/2+iv)dv‖ ≤ C_ε X^{−200}`
+  (item (ii)). Item (iii) is superseded by `cglGM_lemma62_zeta` above (GM's own route, no functional equation needed).
+**Precise remaining statements.**
+1. Proposition 6.1 for ζ as one theorem: from `gmS2_le_sixOne_single` (block `S ⊆ [2^j, 2^{j+1})`, `2^j ≤ M ≤ (2T)^{1+ε}/N+1`),
+   `hbPairSum_le_power_lift` ((6.2), support `(A^k, B^k]` with `A = 2^j − 1`, `B = 2^{j+1} − 1`, divisor bound `D ≤ C_δ B^{kδ}`
+   from `Sieve.DivisorBound.card_divisors_le_rpow`), Heath-Brown at block length `≍ M^k` (the statement `HeathBrownPairSumBound`
+   in `GuthMaynardHeathBrownStatement`; the support `(A^k, B^k]` must be covered by `O(k)` blocks `(L, 2L]`, Cauchy–Schwarz
+   cost `O(k)`), and `prop61_abstract` (its hypothesis `M ≤ T/N` holds with `T' := 2(2T)^{1+ε}` in place of `T`). This is
+   formal glue between proved statements; no analytic input is missing beyond `HeathBrownPairSumBound` itself.
+2. CGL principal large-time regime (`|t| ≥ X^ε`) with uniform constants: not needed by Guth–Maynard (covered by `cglGM_lemma62_zeta`).
+   (Precision for item 1: `M ≤ (2T)^{1+ε}/N + 1 ≤ 2(2T)^{1+ε}/N` uses `N ≤ (2T)^{1+ε}`, true in Guth–Maynard's range `N ≤ T`.)
+
+### Lean (2026-10-22, later still): every block length, and the exact size of the residual loss
+
+`RHTower/Sieve/HeathBrownPairSumMiddleBlock.lean` (wired, clean, axioms
+`[propext, Classical.choice, Quot.sound]`).  The variable target `N = M²` works: there is **no**
+hidden cap, because the hypotheses of `hbAmp_half_Ioc_eight_le_of_diam` (`2T < N²`, `4T² ≤ 9N³`)
+are *lower* bounds on `N`, and `hbAmp_sq_le_rpow` only asks `M² ≤ N`.  Both follow from
+`(2T)^{1/3} ≤ M`, which meets the short-block hypothesis `M² ≤ (2T)^{2/3}` exactly.
+
+* `hbPairSum_Ioc_le_middleBlock`: for `(2T)^{1/3} ≤ M`,
+  `Σ_{t₁,t₂∈W}|Σ_{M<n≤2M} a_n n^{i(t₁−t₂)}|² ≤ hbBlockConst T δ (M²) (|W|²M + |W|^{3/2}M²)`.
+* **`hbPairSum_Ioc_le_anyBlock`** (and `sum_sum_norm_sq_exp_le_anyBlock` in the §11 phase): for
+  **every** `M ≥ 1`, `T ≥ 1`, `δ > 0`, `W` `1`-separated of diameter `≤ T`, `|a_n| ≤ 1`,
+  `Σ ≤ (hbSmallConst T δ + hbBlockConst T δ (M²))(|W|²M + |W|M² + |W|^{5/4}T^{1/2}M + |W|^{3/2}M²)`.
+  `hbBlockConst T δ L` generalises `hbSmallConst` (`hbSmallConst T δ = hbBlockConst T δ (hbLongBlock T)`,
+  by `rfl`).
+
+**The fourth term is not removable by this route.**  Corollary 2.1 pays a Cauchy–Schwarz factor
+`|W|^{1/2}` that Heath-Brown's `|W|M² + |W|^{5/4}T^{1/2}M` does not: at `M = T^{1/2}`, `|W| = T^{1/2}`
+the route gives `T^{7/4}` where Theorem 1.6 gives `T^{13/8}`, a deficit of `T^{1/8}`.  The extra term
+is absorbed exactly when `|W|^{1/4}M ≤ T^{1/2}`, and for `M ≥ (2T)^{2/3}` the sharper
+`hbPairSum_Ioc_le_of_twoThirds` applies, so the loss is confined to `T^{1/2}/|W|^{1/4} < M < (2T)^{2/3}`.
+Consequently a `∀ M` datum in the **four-term** shape is now dischargeable; the exact three-term
+`HeathBrownPairSumBound` is not.
+
+**Why the remaining window is hard, precisely.**  In `x = log M / log T` the two available moves are
+`S : x ↦ 2x` (Corollary 2.1) and the difference-set reflection `R : x ↦ 1 − x` (Huxley–Jutila,
+Acta Arith. 32 (1977), Lemma 8 (3.17): `P(N) ⪅ |W|N² + |W|² + (N²/T)P(T/N)`).  The window
+`(1/3, 2/3)` is `R`-invariant, and applying (3.17) twice is exactly neutral since `N·(T/N) = T`, so
+reflection alone cannot contract it; `S` once gives the `|W|^{3/2}M²` above, and `S` twice is worse
+(`|W|^{7/4}M`).  Other routes checked and their deficits: the mean value theorem needs `|W| ≥ T²`,
+impossible since `|W| ≤ T + 1`; the dyadic split with the classical large-values bound (1.1) gives
+`|W|^{5/3}T^{1/3}M^{4/3}`, worse by `T^{5/8}` at the witness point.  Heath-Brown's own middle range
+therefore rests on the fourth-moment/Hölder step of that family (Huxley–Jutila Lemmas 7 and 10,
+`E_{2k}(F,U²) ≪ A^{2k}N^k E₂(H,U²)`), which the corpus does not own; building it is the remaining
+task for the exact theorem.

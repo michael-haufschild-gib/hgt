@@ -57,7 +57,7 @@ theorem exists_zeroHeightBox_ncard_le_gm (hGM : GuthMaynardLargeValuesBound) {σ
   have hm : 1 + gmSwitchExponent σ * (1 - 2 * σ) ≤ gmDensityExponent σ :=
     one_add_gmSwitchExponent_mul_le hσ0' (by linarith)
   have hII : 1 + 4 * (1 / 64) + 3 * a / 4 * (2 - 4 * σ) ≤ E := by
-    have h := typeTwo_le_gmDensityExponent hσ0' hσ1 (δ := 1 / 64) le_rfl
+    have h := typeTwo_le_gmDensityExponent hσ0' (by linarith) (δ := 1 / 64) le_rfl
     rw [← ha] at h
     linarith
   have hy0 : 0 < 3 * a / 4 := by positivity
@@ -141,7 +141,7 @@ theorem exists_zeroHeightBox_ncard_le_gm (hGM : GuthMaynardLargeValuesBound) {σ
           densityWindowCapacity T * W.card := hcount
     _ ≤ (F₀ * ℓ ^ 4) * ((K + K₂) * ℓ ^ 8 * T ^ E) :=
         mul_le_mul hpre hWcard (Nat.cast_nonneg _) (by positivity)
-    _ = F₀ * (K + K₂) * ℓ ^ 12 * T ^ E := by ring
+    _ = F₀ * (K + K₂) * (1 + Real.log T) ^ 12 * T ^ E := by rw [hℓ]; ring
 
 end RHTower
 

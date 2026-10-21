@@ -1,9 +1,0 @@
-New source-derived survivor formalized in `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingTeukolskyQuadraticRealClosureMixing.lean` and imported by `RHTower.lean`.
-
-Result: local quadratic Teukolsky cusp weight is `2*s = rho`. Theta/FE closure gives `{rho,1-rho}`; Lorentzian reality adds `{conj rho,1-conj rho}`. Actual Xi divisor points are nonreal. The FE-Schwarz closure has card 2 iff `Re rho=1/2`, and card 4 for every tilted fibre. Any finite theta- and conjugation-closed return packet containing the source has card >=4. Controlled cross-branch AIME numerator is nonzero on all four divisor copies for every nonzero seed.
-
-Hostile corrections: scalar seed-phase loop is pure U(1) gauge because linear `A` and cubic `A|A|^2` have same charge; no RH winding. APS/spectral-flow on negative-Q algebraically-special mediator is not a physical L2 horizon Hamiltonian. Negative two-sector Starobinsky crossing chamber is not a passivity contradiction: FE-Schwarz completion squares its determinant, so tilted midpoint pair product is negative while full real-closure product is strictly positive. It diagnoses omitted Schwarz channels.
-
-Verification: targeted Lean file passed. All new declarations checked in /tmp; only `propext`, `Classical.choice`, `Quot.sound`. Formal lint found only preexisting umbrella reachability errors. Scratch removed. Targeted-build cache artifacts for six touched Teukolsky modules moved recoverably to `/Users/michael/.Trash/hgt-targeted-build-20260825-real-closure`.
-
-Next open core: after quartet completion, find a genuinely chiral/projective KR or relative-index obstruction from full nonlinear Teukolsky return. Ordinary determinant sign, generic passivity, KMS, U(1) winding, and virtual-Q APS cannot distinguish tilt.

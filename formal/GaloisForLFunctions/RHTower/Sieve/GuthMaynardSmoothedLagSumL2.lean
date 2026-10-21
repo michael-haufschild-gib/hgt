@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Sieve.GuthMaynardSmoothedLagSum
+import GaloisForLFunctions.RHTower.Sieve.GuthMaynardSmoothedLagSumFourierDecay
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardLagSumL2
 
 set_option autoImplicit false
@@ -71,14 +71,8 @@ theorem integrable_uncurry_smoothedLagSumIntegrand (h : IsSmoothingPair ψ₁ ψ
     refine h1.congr (Filter.Eventually.of_forall fun u => ?_)
     simp only [Function.uncurry, smoothedLagSumIntegrand]
     ring
-  · have hg : Integrable fun x => ψ₂ x * ‖lagSum W x‖ ^ 2 := by
-      refine (hψ₂.bdd_mul (c := (W.card : ℝ) ^ 2)
-        ((measurable_lagSum W).norm.pow_const 2).aestronglyMeasurable
-        (Filter.Eventually.of_forall fun x => by
-          rw [Real.norm_eq_abs, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖lagSum W x‖ ^ 2)]
-          exact pow_le_pow_left₀ (norm_nonneg _) (norm_lagSum_le W x) 2)).congr
-        (Filter.Eventually.of_forall fun x => ?_)
-      ring
+  · have hg : Integrable fun x => ψ₂ x * ‖lagSum W x‖ ^ 2 :=
+      integrable_mul_norm_lagSum_sq h.continuous₂ h.compactSupport₂ W
     refine (hg.const_mul (∫ y, ψ₁ y)).congr (Filter.Eventually.of_forall fun x => ?_)
     have hnorm : ∀ u,
         ‖(Function.uncurry fun x u => smoothedLagSumIntegrand ψ₁ ψ₂ N M W u x) (x, u)‖
@@ -132,20 +126,7 @@ theorem integral_smoothedLagSum_sq_le (hA : 1 ≤ A) (h : IsSmoothingPair ψ₁ 
       (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
         rw [hsupp x hx, zero_mul]).symm
     have hint₁ : IntegrableOn (fun x => ψ₂ x * ‖lagSum W x‖ ^ 2) (Icc A⁻¹ A) :=
-      Measure.integrableOn_of_bounded measure_Icc_lt_top.ne
-        (by
-          have := h.continuous₂.measurable
-          have := measurable_lagSum W
-          exact (by fun_prop : Measurable fun x =>
-            ψ₂ x * ‖lagSum W x‖ ^ 2).aestronglyMeasurable)
-        (M := (W.card : ℝ) ^ 2) (Filter.Eventually.of_forall fun x => by
-          rw [Real.norm_eq_abs, abs_of_nonneg (by
-            have := h.nonneg₂ x
-            positivity)]
-          have h1 := h.le_one₂ x
-          have h2 : ‖lagSum W x‖ ^ 2 ≤ (W.card : ℝ) ^ 2 :=
-            pow_le_pow_left₀ (norm_nonneg _) (norm_lagSum_le W x) 2
-          nlinarith [h.nonneg₂ x, sq_nonneg ‖lagSum W x‖])
+      (integrable_mul_norm_lagSum_sq h.continuous₂ h.compactSupport₂ W).integrableOn
     have hint₂ : IntegrableOn (fun x => ‖lagSum W x‖ ^ 2) (Icc A⁻¹ A) :=
       Measure.integrableOn_of_bounded measure_Icc_lt_top.ne
         (measurable_norm_lagSum_sq W).aestronglyMeasurable

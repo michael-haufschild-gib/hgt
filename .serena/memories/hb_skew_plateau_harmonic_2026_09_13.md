@@ -1,9 +1,0 @@
-HB goal remains open. New leaf formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewPlateauHarmonic.lean (namespace RHTower.D4BMScalarStream), wired after ThetaCuspHawkingBMEvenSectorSkewHorizonPlateau; standard axioms; generator scratchpad gen_plateau_mu.py, data skew_mu_plateau.py (general-mu radial density skew_mu_dens_r.pkl, plateau skew_mu_plateau.pkl).
-
-Content: general-harmonic horizon plateau skewPlateauMu s mu = N(s,mu)/(128 (2-mu)^2 (mu-(2s+1)(2s+2)) (mu-(2s+4)(2s+5))), N 65 terms; skewPlateauMu_fundamental: at mu=(s+1)(s+2) equals certified skewHorizonPlateau. Horizon regularity 2L(1)+R(1)=0 holds at every mu (paper bookkeeping). On the line mu = -l: purely imaginary, denominator 128(2+l)^2((4t^2-2-l)^2+36t^2) > 0; line form = -(5/64) t^9 l^2 (l-4t^2)^2 + lower weights (exact): negative semidefinite leading term with double zeros at l=0 and the edge l=4t^2; at fixed 0<l/t^2<4 the plateau is harmonic independent ~ -(5/8192) t^9. Certified skewPlateauMu_line_im_neg: 50 <= t -> 40 t <= l -> Im < 0, via three exact identities -F = sum of nonnegative-coefficient products (regions 40t<=l<=3t^2, 3t^2<=l<=5t^2, l>=5t^2; compound factors t^e-50^e, (3t^2)^m-l^m, l^n-(5t^2)^n, (5t^2)^k-l^k; weight-15 form certificate -q-768u^4=(l-3u)(5u-l)(31l^2+82ul+379u^2)+u^3(4405u-874l)).
-
-Consequence: SS-sector on-line sign law for the all-harmonic plateau needs only that the spectral mass of the quadratic source in the low band l < 40t is not >> t^2 times the bulk mass; supersedes theta<5/9 and the edge-resonance formulation.
-
-Lean engineering: >300 unannotated ^ in one statement -> HPow maxRecDepth (annotate ^ (n : N)); ring on 115 binomial-expanded terms times out (use compound factors, 42 terms); never linarith with 100+ nonlinear facts (structural add_nonneg chain + neg_pos.mp); le_or_gt not le_or_lt; pow_le_pow_left₀.
-
-Open: low-band mass estimate, VV sector (corpus clockCoefficients), cross-sector assembly, cusp flux, producer.

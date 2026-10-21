@@ -1,9 +1,0 @@
-2026-08-27 corpus-led Hawking–Birmingham–Mokhtari endpoint work.
-
-Closed HB-GAUSS-SQRT-ABEL in formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicGaussSquareRootEndpoint.lean. Proved complex half-order Abel transfer, one-sided square-root L'Hopital endpoint lemma, derivative coefficient asymptotics, regular/forbidden/normalizable endpoint limits, Gamma ratio identity, Gamma(-1/2)=-2*sqrt(pi), and final theorem d4BMPlusPlusRegularAdSNormalizableConnectionCoefficient_eq identifying the Cramer normalizable coefficient with d4BMCausalDecayingBoundaryCoefficient at ++ frequency. No analytic-continuation premise.
-
-Prior completed modules: GaussEulerSummation, GaussSummation, GaussEndpoint, GaussConnectionCoefficient and coefficient asymptotic/transport infrastructure. RHTower umbrella imports GaussSquareRootEndpoint.
-
-Verification: direct Lean clean; targeted lake build 11158/11158; #print axioms for complex Abel helper, L'Hopital helper, final coefficient theorem returned only propext, Classical.choice, Quot.sound; scoped forbidden-declaration checks clean. Full lint not rerun because known unrelated PositiveContactTropicalization umbrella reachability blocker.
-
-Docs updated: hawking-bm-augmented-einstein-mode-evaluation.md and rh-current-frontier-map.md. Current hardest open core is HB-GREEN-CUT-INCIDENCE: construct physical endpoint-selected retarded/advanced ++ and +- response maps; prove mixed ret-adv response on literal quadratic residual equals actual Xi-fibre unit-Wronskian log monodromy, ++ ret-adv response vanishes, and augmented Einstein cokernel pairing equals exact horizon optical norm-square. Literature audit found only general linear BM/QNM excitation/conserved-current frameworks, not these exact source-faithful identities.

@@ -1,1 +1,0 @@
-Superseded by `mem:selberg/sqb-native-source-energy-2026-09-09`. NativeSource and NativeEnergy are now canonical and fully audited. Old scratch-in-progress description no longer applies. No owned live Lean/Lake processes remain. Goal ACTIVE, RH UNPROVED.

@@ -1,9 +1,0 @@
-User requires rotation across 27 live RH routes and 18 candidates, not repeated work on one family. Goal remains unconditional RH in Lean and is OPEN.
-
-Latest verified rotation: RFHM -> EGC. Exact EGC source-ray scale separation: nonzero Gamma floor (m+1) C -> -eps^2/2; literal Gamma-subtracted arithmetic remainder has uniform base-2/base-3 tail budgets, exact first-prime coefficient and eventual centered sign. Framework contributions: uniform logarithmic-grid Dirichlet tails and sharp horizontal Gamma pair asymptotics. Four leaves compiled; 23 axiom audits standard3 only; 57 API probes passed. Details: `mem:rh/egc-source-ray-scale-separation-2026-10-18` and docs/drafts/pipeline/3-formalized/egc-source-ray-scale-separation-2026-10-18.md.
-
-Recent own cycle: RW -> TH -> MSC -> RB -> SZ -> BVI -> HCF audit -> JAS -> PA -> RFHM -> EGC. Next cycle should select a different mathematical family from current frontier/corpus, not extend EGC or return automatically to PA/JAS/RFHM. Candidates count alongside live routes. EWJ was inspected but no theorem or progress credited there.
-
-EGC outer expanding-contour covariance/sign remains open. The full-ray faster-decay premise fails; its positive survivor is exact arithmetic renormalization with all prime powers preserved. This is verified source analysis, not RH orientation.
-
-Global lint exit1 on seven unrelated concurrent orphan leaves (four BSU, three BVI); own modules wired. All owned process handles terminal. No commits/pushes or full/umbrella builds. Four exact source hashes and final audit manifest retained under /tmp/hgt-egc-ray-* for next-turn revalidation.

@@ -1,9 +1,0 @@
-Created `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingConservativeReflectedTransferEndpoint.lean` and imported it in `formal/GaloisForLFunctions/RHTower.lean`; documented in `docs/reports/endpoints.md`.
-
-Core unconditional result: theta root-energy reflection gives `E(-alpha)=E(alpha)>0`; Hawking anomaly law gives `D(-alpha)=-D(alpha)`. A conservative material correction `c,-c` makes both reflected ports passive iff uniquely `c=-D(alpha)=-2*thetaSource.mass*Im(alpha)*E(alpha)`. Hence every nonzero tilted dark sector forces nonzero reflected-sector transfer; zero-transfer sector locality is equivalent to RH.
-
-Key declarations: `thetaCuspHawkingBackreactionPhysicalEnergy_reflected`, `thetaCuspHawkingBackreactionPortDissipation_reflected`, `thetaCuspHawkingConservativePairPassive_iff`, `existsUnique_thetaCuspHawkingConservativePairPassive`, `thetaCuspHawkingTiltedDarkMode_zeroTransfer_passive_iff`, `thetaCuspHawking_allTiltedConservativePairMixing`, `riemannHypothesis_iff_thetaCuspHawkingConservativePairSectorLocal`.
-
-Interpretation: causal/passive partially transmitting mirror literature establishes passive total mechanical impedance, not sectorwise theta/Xi port passivity. Full conservative dilation therefore yields exact dichotomy: neutral tilt or unique cross-reflection modular-work transfer. Remaining producer must forbid such inter-orbit transfer by theta-specific locality, or derive physical all-tilt mixing with exact coefficient.
-
-Verification: direct Lean check and targeted olean build pass. `#print axioms` for all 19 created declarations reports only `propext`, `Classical.choice`, `Quot.sound`. Formal lint reports only pre-existing large-file warnings and unrelated unreachable modules. No git used. `/tmp` scratch cleaned.

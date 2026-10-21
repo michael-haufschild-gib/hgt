@@ -1,9 +1,0 @@
-HC94 remains in progress on hardest surviving HB burden: coefficient-normalized, gauge/constraint/corner-completed third-order Einstein–Teukolsky source before divisor selection. Frontier map is read-only. Corpus discovery must use only `scripts/formal_tools.py research`, never rg.
-
-New audited modules:
-1. `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicSecondDerivativeEdge`: exact law `(1-z)*sqrt(1-z)*Rpp'' -> (sqrt(pi)/2)*Gamma(c)/(Gamma(a)Gamma(b))`, coefficient nonzero, and premise-free Xi no-finite-endpoint theorem for bare `Rpp''`. Target build 11171/11171.
-2. `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicCornerRenormalizedSecondDerivative`: exact interior second-jet connection, subtraction of full normalizable branch, explicit finite part `A_forbidden*a(a+1)b(b+1)/(c(c+1))`, exact finite endpoint, and premise-free Xi nonvanishing. Target build 11173/11173. Both main Xi theorems depend only on propext, Classical.choice, Quot.sound. Lint has no finding in either module; global lint fails only pre-existing unreachable modules. Both wired into RHTower umbrella.
-
-Failed shortcut: bare second derivative has no finite AdS endpoint; subtracting only leading square-root asymptotic is scheme-dependent. Full normalizable branch is forced corner counterterm. Positive survivor: corner-completed radial cascade has unavoidable explicit nonzero finite coefficient, so regularity/corner renormalization cannot extinguish it.
-
-HC94 card updated at `docs/drafts/pipeline/1-in-progress/hb-complete-augmented-third-order-source-coefficient.md`. Next HC94-A.3: use corpus to derive actual coefficient-normalized Plebanski/Einstein radial differential vertex acting on this renormalized BM response, then combine interior projected radial integral with stationary +- and direct third variation. Do not claim complete source solved.

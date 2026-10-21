@@ -1,9 +1,0 @@
-Continuation 1001k: route MC still active/unmet, NO new mathematical frontier result, NO Lean edits/builds. Main card mc-complete-signed-correlation.md C12.9; working log appended.
-
-Tested C12.8 (large literal selection energy implies available nonincreasing insertion) on cores with exactly two remaining primes. Four signed fibres a,b,c,d have insertion costs 2(ab+cd), 2(ac+bd). No source sign established, no actual arithmetic counterexample. Never treat an arbitrary four-vector example as source evidence.
-
-Read MobiusDivisorTwoPrimeLocalCriterion first230 lines: it is FIRST TWO PROCESSED primes, four oriented unsigned/nonnegative original channels, factor-two parent comparison. Cannot transfer to LAST TWO UNPROCESSED primes; prior processed-core sums already signed. Read MobiusDivisorCoprimeHeadDeletion entire: exact masked/clipped renewal. On paper same coprime head gives four scale copies; inverse renewal uses full S(x/(p^i q^j)) with p^(i/2)q^(j/2), finite support. No source bound from identity. Don't formalize duplicate identity/conditional bound as progress.
-
-Scoped current exact-name rg for MobiusDivisorSquareRootAbelBounded: seven occurrences in original producer, UnitRieszWeld, ObserverJetFormation/Classification, CoupledFloorMobiusAffineRieszHandoff. Inspected latter producer-shaped uses: ObserverJetFormation assumes CompletedSourceObserverJetLinearActionBounded; affine handoff is equivalence conditional on landing plus bounded readout. No unconditional producer found in this scope; not global absence certificate.
-
-Two-prime deep search partial=false snapshot; exact lexical producer search metadata coverage absent. Candidate/source fields inspected. All processes terminal; own two 1001k temp JSONs removed. Current C12/C12.8 open, no RH proof/falsification. Continue hardest actual signed product/collective cancellation. Do not repeat this initial-versus-terminal comparison or confuse squarefree/coprime masks.

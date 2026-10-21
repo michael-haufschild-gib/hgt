@@ -1,1 +1,0 @@
-Superseded by mem:hawking_bm_opposite_physical_regular_extension_2026_09_12_0911n. No 0911m process or tempfile remains. OppositePairingFactor, native OppositePairingFinitePart and PhysicalOppositePairingRegularity all now pass exact cached-import audits and are installed/wired. Do not resume or poll any process recorded in the earlier version of this memory.

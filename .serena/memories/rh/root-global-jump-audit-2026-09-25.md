@@ -1,7 +1,0 @@
-# Global jump audit facts
-- Prior turn was progress: exact real theta atom Mellin formalized and cutoff-independent critical blow-up falsified on paper; neither RH-bearing.
-- Corpus already kills local matched-cell positivity: `CCMActualHeadMatchedAllFrequencyCofinalScalarWallNoGo` proves cofinal positive/negative reporter orientations. The signed all-prime aggregate remains open.
-- Suzuki finite minimal derivative has deficiency indices (1,1) (`SuzukiTaDeficiencyIndices`); `SuzukiCompactCorePhaseUniversality` needs global shifted-range density as a premise. Finite self-adjointness or phase choice alone cannot give the source-specific cofinal limit.
-- `PrimeBoundaryMonodromyEscape` proves zero-generated prime-log charge escapes every fixed boundary chart and archimedean factor has zero strip monodromy. Any fixed compact tangent profile is RH-blind; this fact predates the theta chronology comparison.
-- `CCMFUSuzukiSignedCurvatureMeasure` gives exact signed arithmetic cell `integral_(log N)^(log(N+1)) screwRegularKernel - criticalMellinAtomWeight (N+1)`. `SuzukiAffineMixtureTriangularCurvatureReduction` bounds affine/reset channels and isolates uniform triangular transform of this signed cell as hard producer.
-- This turn found no new theorem. Failed candidate mechanisms: atomwise sign, automatic Suzuki essential self-adjointness, fixed-chart monodromy, prime-log aperiodicity. Next attack must produce a source-specific bound/cancellation for signed curvature transform; do not repackage an RH equivalence or prove another leading profile.

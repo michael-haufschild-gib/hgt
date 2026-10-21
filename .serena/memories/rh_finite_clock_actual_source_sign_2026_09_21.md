@@ -1,9 +1,0 @@
-# Actual finite-clock inverse-cube source sign
-
-Formalized `RHTower.mobiusDivisorContinuousHead_finite_clock_cancellation` in `formal/GaloisForLFunctions/RHTower/MobiusDivisorTruncatedMomentCancellation.lean`; own card `docs/drafts/pipeline/3-formalized/rh-clock-truncated-source-cancellation.md`.
-
-For every finite set P : Finset Nat.Primes and every real cutoff X, the actual signed processed-head inverse-cube primitive is at least 1/48 of the unprocessed primitive, and is strictly positive iff 1 < X. No external assumptions. Exact finite dilation keeps J(X/d). Finite Euler products plus symbolic p-series telescoping prove odd divisor weight <=47/48; monotonicity of J retains a positive unit contribution. Uniform in simultaneous core/cutoff variation, without per-core onset.
-
-LIMIT: inverse-cube weight only. This does not produce RH-critical mixed-source cancellation, bound the Suzuki clock action, control a sign-changing second head, or exhaust prescribed prime cores. Do not sell the margin as critical cancellation. Next work must preserve actual critical weight and signed cross-scale product throughout insertion/cutoff recurrence; more absolute estimates at stronger decay do not close this gate.
-
-Verification: scratch lake env lean passed, #print axioms [propext, Classical.choice, Quot.sound]; named final lake build GaloisForLFunctions.RHTower.MobiusDivisorTruncatedMomentCancellation passed; umbrella wired; index passed. Global lint FAILED with 4 unrelated unreachable modules (ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector, ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical, ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux, XiHeatCassiniWoldJointDepthMöbiusSourceTransport). Last already directly imported, so no blind duplicate import. No full build, commit, or owned running Lean process.

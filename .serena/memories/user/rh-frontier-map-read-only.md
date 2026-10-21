@@ -1,1 +1,0 @@
-User explicitly instructed on 2026-10-17: docs/reports/rh-current-frontier-map.md is read only for this agent. Do not modify, overwrite, regenerate, move, or revert that file. Preserve any concurrent/pre-existing changes. This constraint applies during the active 100 cross-route theorems goal.

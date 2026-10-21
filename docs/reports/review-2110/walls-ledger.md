@@ -17,18 +17,16 @@ the first two cite faces by the labels of the companion numbering:
 10 = 1.1 and 1.8, 13 = 3.3, 15 = 3.2, 16 = 1.8, 6 = 1.8, 17 = 1.8. Walls keep their labels; the
 labels 2, 4–13 and 15–17 are not used for separate walls.
 
-**Lean checkpoint** `2fd2179bf`. Evidence tags: [L] = committed Lean declaration imported by its
+**Lean checkpoint** `fe110f0a1`. Evidence tags: [L] = committed Lean declaration imported by its
 committed umbrella; [S] = Lean source in the working tree whose file or umbrella import is
 uncommitted, or a module not imported by its umbrella (compiles standalone, no committed audit);
 [P] = paper only. Module paths are relative to `formal/GaloisForLFunctions/`, with
 `R:` = `RHTower/`, `H:` = `HTGeometry/`, `B:` = `BiScaleUncertainty/`, `V:` = `BezoutValuationIncidence/`,
 `T:` = `TransHorizonIncidenceMechanics/`, `A:` = `arithmetic-positivity-theory/`,
 `C:` = `ArithmeticCriticalityTheory/`, `I:` = `ArithmeticIncidencePositivity/`,
-`Q:` = `SquareRootThreshold/`. Working-tree [S] items at this checkpoint:
-`R:AdmissionBelowHalfDampingAboveTheZeroWidth` (the sharp arrow of face 1.8), compiled, imported by
-`RHTower.lean` in the working tree and closed with standard axioms, and the modules tagged [S] in
-face 1.3 (the clustering law of the ground-energy rate); every other cited module is committed and
-imported by its committed umbrella.
+`Q:` = `SquareRootThreshold/`. Every module of face 1.8 is committed at this checkpoint and imported
+by its committed umbrella, every theorem closed with standard axioms; the modules tagged [S] in
+face 1.3 (the clustering law of the ground-energy rate) are the working-tree items.
 
 Two general facts frame every wall. First, every graded relaxation of a surveyed route is a zero-free
 half-plane or a finite-height verification: a one-sided power bound `O(x^θ)` on a Chebyshev, Mertens or
@@ -128,7 +126,7 @@ coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDetermines
   the converse `receiverDampingRate ≤ zetaZeroWidth` is admission below half damping, proved by
   the Mellin–Hardy argument, so the damping is an exact currency,
   `receiverDampingRate = zetaZeroWidth` (`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`,
-  `R:AdmissionBelowHalfDampingAboveTheZeroWidth` [S]). The sign-blind reading of the same family
+  `R:AdmissionBelowHalfDampingAboveTheZeroWidth` [L]). The sign-blind reading of the same family
   has rate exactly `½`.
 
 What the principle does not cover: the carrier constraints of Wall 14 (no finite-rank, trace-class or
@@ -643,10 +641,10 @@ rate, the accumulation of admissible dampings at `0`, and the cofinal budget cri
 route is an equivalence (`mem_receiverDampings_of_zetaZeroAbscissa_lt`,
 `receiverDampingRate_eq_zetaZeroAbscissa_sub_half`, in the width's own language
 `receiverDampingRate_eq_zetaZeroWidth` and `Ioi_zetaZeroWidth_subset_receiverDampings`
-(`Q:TheReceiverDampingReadsTheZeroWidth` [S] for these two), `riemannHypothesis_iff_receiverDampingRate_eq_zero`,
+(`Q:TheReceiverDampingReadsTheZeroWidth` [L]), `riemannHypothesis_iff_receiverDampingRate_eq_zero`,
 `riemannHypothesis_iff_accPt_zero_receiverDampings`, `riemannHypothesis_iff_cofinal_budget`,
 `Ioi_zero_subset_receiverDampings_of_riemannHypothesis`;
-`R:AdmissionBelowHalfDampingAboveTheZeroWidth` [S]). The mechanism is a mean-square one: the
+`R:AdmissionBelowHalfDampingAboveTheZeroWidth` [L]). The mechanism is a mean-square one: the
 Mellin quotient `(1 − 2^{1−s})ζ(s)/(sζ(s+ε))` of the Fermi source lies in Burnol's Mellin–Hardy
 class right of `½` as soon as `Θ < ½ + ε` (`isMellinTailHardy_etaZetaQuotient`,
 `R:TheDampedMoebiusMellinQuotientIsHardyRightOfTheZeroAbscissa` [L]: convexity

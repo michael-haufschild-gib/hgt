@@ -1,5 +1,0 @@
-# MSC phase-gauge Hilbert rigidity
-
-Lean-proved: any coefficient-faithful positive Hilbert realization of exact physical MSC source and literal overlap vector with independent unitary mode sign gauges forces `Re ρ > 1`. Each coordinate flip forces pairwise orthogonality; normalized modes are orthonormal; Bessel for source and overlap produces reciprocal diagonal rigging `w n = ‖mode n‖²`; existing exact diagonal classification closes wall. Therefore every strict-right Xi zero excludes such realization. Full phase gauges include sign flips.
-
-Formal module: `formal/GaloisForLFunctions/RHTower/HedenmalmGammaSewnSquarefreeFisherPhaseGaugeRiggingNoGo.lean`. Capstone: `strictRightXiZero_mscPhysicalOverlapSignGaugeHilbertNoGo`. Targeted build passed. Axioms: `propext`, `Classical.choice`, `Quot.sound`. Survivor: gauge-breaking non-diagonal or genuinely distributional MSC completion. Frontier map remained read-only.

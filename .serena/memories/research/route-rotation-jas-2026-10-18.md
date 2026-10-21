@@ -1,7 +1,0 @@
-# Route rotation after the JAS finite-window component
-
-Standing user instruction: there are 27 live routes and 18 candidates; do not keep working one family. Rotate families after a certified contribution, keeping a durable handoff. Recent own sequence: RW → TH → MSC → RB → SZ → BVI → HCF audit → JAS. HCF source audit produced no new theorem; it found an already-complete source bridge and remains on hold, not retired.
-
-JAS component completed: RH iff the literal Riesz sums on infinitely many square shells obey the subpower bound for only m<k≤m+m/log(m+1). Actual prime-shell mass controls loud rank; source height gap gives a uniform weight cone; growing-rank Turán cost and the infinite quiet tail are discharged. Four canonical leaves pass cleanly; 17 public declarations have only standard axioms. Card: docs/drafts/pipeline/3-formalized/jas-square-shell-finite-power-window-2026-10-18.md. Full details: mem:rh/jas-square-shell-finite-power-window-2026-10-18.
-
-Next cycle must inspect another live family or candidate before expanding JAS. Prefer an independent arithmetic producer. Do not count the new finite-window upper bound as proved: that bound and RH remain OPEN. Active goal is still unconditional RH, not completion of this component. Global lint last failed only for two unrelated unwired leaves, recorded in the detailed memory/card; do not change other workers' files to force the gate.
