@@ -58,3 +58,8 @@ their module lands; this card does not edit their files.
   `midpoint_paid_and_quarter_unpaid_iff`: exactly `n ∈ {6, 17}`; `unpaidSet_level_eq_of_quarter_unpaid`).
   Axioms standard, wired; AIP README item 3′ updated. Remaining in row 10: collar ratio second-order
   term, bump bridge.
+- 2026-10-21 — **row 10, collar ratio closed**: `ArithmeticIncidencePositivity/CollarEndSecondOrderLaw`
+  (`collarEnd_second_order`: collar = `(0,c) ∪ (s−c,s)`, `ℓ ≤ c ≤ 2ℓ`, `|c − ℓ − (coth(s/2)/2)ℓ²| ≤ 8ℓ³`
+  for `s ≥ 4 log 2`; `half_coth_mul_collarInnerEnd`: coefficient `= e^{−s}/(1−e^{−s})³` exactly;
+  `collarEnd_ratio`: `|c/ℓ − 1 − e^{−s}/(1−e^{−s})³| ≤ 37e^{−2s}`). Axioms standard, wired, README item 3.
+  Remaining in row 10: bump bridge.

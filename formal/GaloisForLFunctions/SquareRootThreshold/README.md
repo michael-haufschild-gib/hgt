@@ -525,6 +525,18 @@ argument becomes quantitative.
     windows RH is equivalent to grid positivity together with the approach of the zeros to the line
     (`riemannHypothesis_iff_zerosApproachLine_and_grid_primeWindow_nonneg`). The no-crossing of `μ(A)`
     and the absence of a first negative lag are one law in two coordinates.
+    The difference test `f_{w,v}` is odd (`twoBump_modScaledBump_zero_neg`), so the odd-sector
+    windows of `ArithmeticIncidencePositivity` transfer to the family without passing through the
+    all-profile `μ(A)`: `Re P_{w,v} ≥ (1/500)‖κ_w‖²` for every `2w < v` with `v/2 + w ≤ 353/1000`
+    (`one_div_500_mul_le_re_lagPrimeWindowRHS_of_le`), that is for every lag `v ≤ 706/1000 − 2w`,
+    past the first prime. For `w < 1/12` and `|v − log 2| ≤ 2w` the window read by the test is
+    exactly `{2}` (`lagPrimeWindow_eq_singleton_two`) and the inequality reads
+    `(log 2/√2) Re(k(log 2) + k(−log 2)) + (1/500)‖κ_w‖² ≤ Re(polar + archimedean)`, `k` the
+    autocorrelation of `f_{w,v}` (`firstPrime_atom_paid_on_lagFamily`): the first prime atom is paid
+    on the problem's own family; for `w ≤ 3/1000` every lag of the prime-`2` window is covered. A
+    negative lag of the family has `v/2 + w > 353/1000` (`lt_of_re_lagPrimeWindowRHS_neg`). The
+    second prime window `log 3/2 ≈ 0.549` lies beyond the archimedean odd ceiling, so this mechanism
+    stops before the prime `3`.
 28. **The window prime polynomial reads `S(T)`.** The localized Weil form at height `T` is the
     archimedean part minus `Re Π_ℓ(T)`, a cosine polynomial with nonnegative coefficients over the
     prime powers `n ≤ e^{2ℓ}`. Through the Stieltjes identity it is a smoothed derivative of the
@@ -610,7 +622,8 @@ argument becomes quantitative.
    zero-side form splits as `Ẑ(Re f) + Ẑ(Im f)`, so every all-profile window of the full zero form
    transfers with its constant; the three archimedean bands alone give `a ≤ 1/100`,
    `Re W ≥ ‖f‖²/25`). The remaining distance to Yoshida's aperture `(log 2)/2` is the all-profile
-   window of the aperture face. The archimedean
+   window of the aperture face; on the family `P_v` itself the odd window reaches
+   `v/2 + w ≤ 353/1000`, past `(log 2)/2` (mechanism 27). The archimedean
    horizon is `exp(C_ε + (4 + ε)√X)`, so the localized forms at height `T` are positive for
    `√X ≤ (¼ − ε) log T`. The coefficient `4` is optimal for bounds on the prime symbol that are
    uniform in height, since `P_X(0) = −(1/π) Σ_{n ≤ X} Λ(n)/√n ~ −(2/π)√X`. A larger single-height

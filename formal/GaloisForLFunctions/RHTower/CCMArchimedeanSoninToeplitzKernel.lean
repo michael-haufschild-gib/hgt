@@ -143,48 +143,72 @@ theorem opTrace_comp_ccmIntegratedScaling {T : evenSubspace →L[ℂ] evenSubspa
   rw [h1, integral_tsum_of_summable_integral_norm hF_int hF_sum]
   exact integral_congr_ae (Filter.Eventually.of_forall h2)
 
-/-! ## The Toeplitz kernel -/
+/-! ## Scaling traces of trace-class operators -/
+
+/-- The scaling trace `u ↦ Tr(T ϑ_u)` of an operator. -/
+def ccmScalingTrace (T : evenSubspace →L[ℂ] evenSubspace) (u : ℝ) : ℂ :=
+  opTrace (T ∘L ccmLogDilation u)
+
+/-- `|Tr(T ϑ_u)| ≤ ‖T‖₁`. -/
+theorem norm_ccmScalingTrace_le {T : evenSubspace →L[ℂ] evenSubspace}
+    (hT : MemSchattenClass 1 T) (u : ℝ) :
+    ‖ccmScalingTrace T u‖ ≤ traceNorm evenSubspace T :=
+  (norm_opTrace_comp_le_norm_mul_traceNorm hT _).trans
+    (mul_le_of_le_one_right (traceNorm_nonneg _) (norm_ccmLogDilation_le u))
+
+/-- The scaling trace of a trace-class operator is continuous: a uniformly summable series of
+continuous matrix coefficients. -/
+theorem continuous_ccmScalingTrace {T : evenSubspace →L[ℂ] evenSubspace}
+    (hT : MemSchattenClass 1 T) : Continuous (ccmScalingTrace T) := by
+  obtain ⟨S, U, hS, hU, rfl⟩ := hT.one_isTraceClass
+  set b := hsBasis ℂ evenSubspace
+  have key : ∀ u, ccmScalingTrace (S ∘L U) u =
+      ∑' i, ⟪ContinuousLinearMap.adjoint U (b i), ccmLogDilationOrbit (S (b i)) u⟫_ℂ := by
+    intro u
+    rw [ccmScalingTrace, opTrace_comp_comp_eq_tsum hS hU]
+    rfl
+  rw [funext key]
+  refine continuous_tsum
+    (fun i => Continuous.inner (𝕜 := ℂ) continuous_const (continuous_ccmLogDilationOrbit _))
+    (summable_norm_adjoint_mul_norm hS hU) fun i u => ?_
+  refine (norm_inner_le_norm (𝕜 := ℂ) (ContinuousLinearMap.adjoint U (b i))
+    (ccmLogDilationOrbit (S (b i)) u)).trans_eq ?_
+  rw [norm_ccmLogDilationOrbit]
+
+/-- The adjoint of a trace-class operator is trace class. -/
+theorem memSchattenClass_one_adjoint {T : evenSubspace →L[ℂ] evenSubspace}
+    (hT : MemSchattenClass 1 T) : MemSchattenClass 1 (ContinuousLinearMap.adjoint T) := by
+  obtain ⟨S, U, hS, hU, rfl⟩ := hT.one_isTraceClass
+  rw [ContinuousLinearMap.adjoint_comp]
+  exact memSchattenClass_one_comp hU.adjoint hS.adjoint
+
+/-- `conj Tr(T ϑ_u) = Tr(T† ϑ_{-u})`. -/
+theorem conj_ccmScalingTrace {T : evenSubspace →L[ℂ] evenSubspace}
+    (hT : MemSchattenClass 1 T) (u : ℝ) :
+    conj (ccmScalingTrace T u) = ccmScalingTrace (ContinuousLinearMap.adjoint T) (-u) := by
+  unfold ccmScalingTrace
+  rw [← opTrace_adjoint, ContinuousLinearMap.adjoint_comp, adjoint_ccmLogDilation]
+  exact (memSchattenClass_one_adjoint hT).one_opTrace_comp_comm _
+
+/-! ## The Toeplitz kernel of the generic part -/
 
 /-- The scaling trace `τ_Λ(u) = Tr(G_Λ ϑ_u)` of the generic part. -/
 def ccmSoninToeplitzKernel (Λ u : ℝ) : ℂ :=
-  opTrace (ccmSoninGenericPartAt Λ ∘L ccmLogDilation u)
+  ccmScalingTrace (ccmSoninGenericPartAt Λ) u
 
 /-- `τ_Λ(0) = Tr G_Λ = 0`. -/
 theorem ccmSoninToeplitzKernel_zero {Λ : ℝ} (hΛ : 0 < Λ) : ccmSoninToeplitzKernel Λ 0 = 0 := by
-  rw [ccmSoninToeplitzKernel, ccmLogDilation_zero, ContinuousLinearMap.comp_id]
+  rw [ccmSoninToeplitzKernel, ccmScalingTrace, ccmLogDilation_zero, ContinuousLinearMap.comp_id]
   exact opTrace_ccmSoninGenericPartAt Λ hΛ
 
 /-- `|τ_Λ(u)| ≤ ‖G_Λ‖₁`. -/
 theorem norm_ccmSoninToeplitzKernel_le {Λ : ℝ} (hΛ : 0 < Λ) (u : ℝ) :
     ‖ccmSoninToeplitzKernel Λ u‖ ≤ traceNorm evenSubspace (ccmSoninGenericPartAt Λ) :=
-  (norm_opTrace_comp_le_norm_mul_traceNorm (memSchattenClass_one_ccmSoninGenericPartAt hΛ) _).trans
-    (mul_le_of_le_one_right (traceNorm_nonneg _) (norm_ccmLogDilation_le u))
+  norm_ccmScalingTrace_le (memSchattenClass_one_ccmSoninGenericPartAt hΛ) u
 
-/-- `τ_Λ` is continuous: a uniformly summable series of continuous matrix coefficients. -/
 theorem continuous_ccmSoninToeplitzKernel {Λ : ℝ} (hΛ : 0 < Λ) :
-    Continuous (ccmSoninToeplitzKernel Λ) := by
-  obtain ⟨S, U, hS, hU, hSU⟩ := (memSchattenClass_one_ccmSoninGenericPartAt hΛ).one_isTraceClass
-  set b := hsBasis ℂ evenSubspace
-  have key : ∀ u, ccmSoninToeplitzKernel Λ u =
-      ∑' i, ⟪ContinuousLinearMap.adjoint U (b i), ccmLogDilationOrbit (S (b i)) u⟫_ℂ := by
-    intro u
-    rw [ccmSoninToeplitzKernel, hSU, ContinuousLinearMap.comp_assoc,
-      opTrace_comp_comm hS (hU.comp_right _), opTrace_comp_eq_tsum_basis (hU.comp_right _) hS b]
-    refine tsum_congr fun i => ?_
-    rw [ContinuousLinearMap.adjoint_inner_left]
-    rfl
-  have hc : Summable fun i => ‖ContinuousLinearMap.adjoint U (b i)‖ * ‖S (b i)‖ := by
-    refine Summable.of_nonneg_of_le (fun i => by positivity) (fun i => ?_)
-      (((hU.adjoint.summable b).add (hS.summable b)).div_const 2)
-    have := two_mul_le_add_sq ‖ContinuousLinearMap.adjoint U (b i)‖ ‖S (b i)‖
-    linarith
-  rw [funext key]
-  refine continuous_tsum
-    (fun i => Continuous.inner (𝕜 := ℂ) continuous_const (continuous_ccmLogDilationOrbit _)) hc
-    fun i u => ?_
-  refine (norm_inner_le_norm (𝕜 := ℂ) (ContinuousLinearMap.adjoint U (b i))
-    (ccmLogDilationOrbit (S (b i)) u)).trans_eq ?_
-  rw [norm_ccmLogDilationOrbit]
+    Continuous (ccmSoninToeplitzKernel Λ) :=
+  continuous_ccmScalingTrace (memSchattenClass_one_ccmSoninGenericPartAt hΛ)
 
 /-- `F G_Λ F = G_Λ`. -/
 theorem evenFourierTransform_conj_ccmSoninGenericPartAt (Λ : ℝ) :
@@ -225,7 +249,7 @@ theorem ccmSoninToeplitzKernel_neg {Λ : ℝ} (hΛ : 0 < Λ) (u : ℝ) :
   calc ccmSoninToeplitzKernel Λ (-u)
       = opTrace (ccmSoninGenericPartAt Λ *
           (evenFourierTransform * ccmLogDilation u * evenFourierTransform)) := by
-        rw [ccmSoninToeplitzKernel, evenFourierTransform_conj_ccmLogDilation]
+        rw [ccmSoninToeplitzKernel, ccmScalingTrace, evenFourierTransform_conj_ccmLogDilation]
         rfl
     _ = opTrace (ccmSoninGenericPartAt Λ * evenFourierTransform * ccmLogDilation u *
           evenFourierTransform) := by simp only [mul_assoc]
@@ -241,10 +265,9 @@ theorem ccmSoninToeplitzKernel_neg {Λ : ℝ} (hΛ : 0 < Λ) (u : ℝ) :
 /-- `conj τ_Λ(u) = τ_Λ(-u)`, from `G_Λ† = G_Λ` and `ϑ_u† = ϑ_{-u}`. -/
 theorem conj_ccmSoninToeplitzKernel {Λ : ℝ} (hΛ : 0 < Λ) (u : ℝ) :
     conj (ccmSoninToeplitzKernel Λ u) = ccmSoninToeplitzKernel Λ (-u) := by
-  unfold ccmSoninToeplitzKernel
-  rw [← opTrace_adjoint, ContinuousLinearMap.adjoint_comp, adjoint_ccmLogDilation,
+  rw [ccmSoninToeplitzKernel, conj_ccmScalingTrace (memSchattenClass_one_ccmSoninGenericPartAt hΛ),
     adjoint_ccmSoninGenericPartAt]
-  exact (memSchattenClass_one_ccmSoninGenericPartAt hΛ).one_opTrace_comp_comm _
+  rfl
 
 /-- `τ_Λ` is real. -/
 theorem im_ccmSoninToeplitzKernel {Λ : ℝ} (hΛ : 0 < Λ) (u : ℝ) :
@@ -263,21 +286,6 @@ theorem ccmSoninGramTest_apply (g : CCMCompactSchwartzLogTest) (x : ℝ) :
   rw [SchwartzMap.autocorrelationSchwartz_apply, SchwartzMap.autocorrelation, convolution_def]
   refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
   simp [SchwartzMap.conjugateReflection]
-
-/-- **Generic trace of a Gram test.**  `Tr(ϑ(g) G_Λ ϑ(g)†) = ∫ (g★ ⋆ g)(u) τ_Λ(u) du`. -/
-theorem opTrace_ccmSoninGenericPartAt_gram (g : CCMCompactSchwartzLogTest) {Λ : ℝ}
-    (hΛ : 0 < Λ) :
-    opTrace (ϑ[g.toSchwartzMap] ∘L ccmSoninGenericPartAt Λ ∘L
-        ContinuousLinearMap.adjoint ϑ[g.toSchwartzMap]) =
-      ∫ u, ccmSoninGramTest g u * ccmSoninToeplitzKernel Λ u := by
-  have hG := memSchattenClass_one_ccmSoninGenericPartAt hΛ
-  rw [(memSchattenClass_one_comp_right hG _).one_opTrace_comp_comm,
-    ContinuousLinearMap.comp_assoc, ← ccmIntegratedScaling_ccmSoninGramTest,
-    opTrace_comp_ccmIntegratedScaling hG]
-  refine integral_congr_ae ?_
-  filter_upwards [ccmSchwartzLogKernel_ae (ccmSoninGramTest g).toSchwartzMap] with u hu
-  rw [hu]
-  rfl
 
 /-- Pairing a Gram test with a bounded continuous kernel is the Toeplitz form
 `∫∫ conj (g s) g t τ(t - s)`. -/
@@ -308,6 +316,38 @@ theorem integral_ccmSoninGramTest_mul (g : CCMCompactSchwartzLogTest) {τ : ℝ 
     _ = ∫ s, ∫ t, conj (g s) * g t * τ (t - s) := by
         have h := integral_neg_eq_self (fun s : ℝ => ∫ t, conj (g s) * g t * τ (t - s)) volume
         simpa [sub_neg_eq_add] using h
+
+/-- **Trace of a Gram conjugate.**  For trace-class `T`,
+`Tr(ϑ(g) T ϑ(g)†) = ∫ (g★ ⋆ g)(u) Tr(T ϑ_u) du`. -/
+theorem opTrace_conj_ccmIntegratedScaling_eq_gram (g : CCMCompactSchwartzLogTest)
+    {T : evenSubspace →L[ℂ] evenSubspace} (hT : MemSchattenClass 1 T) :
+    opTrace (ϑ[g.toSchwartzMap] ∘L T ∘L ContinuousLinearMap.adjoint ϑ[g.toSchwartzMap]) =
+      ∫ u, ccmSoninGramTest g u * ccmScalingTrace T u := by
+  rw [(memSchattenClass_one_comp_right hT _).one_opTrace_comp_comm,
+    ContinuousLinearMap.comp_assoc, ← ccmIntegratedScaling_ccmSoninGramTest,
+    opTrace_comp_ccmIntegratedScaling hT]
+  refine integral_congr_ae ?_
+  filter_upwards [ccmSchwartzLogKernel_ae (ccmSoninGramTest g).toSchwartzMap] with u hu
+  rw [hu]
+  rfl
+
+/-- **Generic trace of a Gram test.**  `Tr(ϑ(g) G_Λ ϑ(g)†) = ∫ (g★ ⋆ g)(u) τ_Λ(u) du`. -/
+theorem opTrace_ccmSoninGenericPartAt_gram (g : CCMCompactSchwartzLogTest) {Λ : ℝ}
+    (hΛ : 0 < Λ) :
+    opTrace (ϑ[g.toSchwartzMap] ∘L ccmSoninGenericPartAt Λ ∘L
+        ContinuousLinearMap.adjoint ϑ[g.toSchwartzMap]) =
+      ∫ u, ccmSoninGramTest g u * ccmSoninToeplitzKernel Λ u :=
+  opTrace_conj_ccmIntegratedScaling_eq_gram g (memSchattenClass_one_ccmSoninGenericPartAt hΛ)
+
+/-- **Gram conjugates are Toeplitz forms.**  For trace-class `T`,
+`Tr(ϑ(g) T ϑ(g)†) = ∫∫ conj (g s) g t Tr(T ϑ_{t-s}) ds dt`. -/
+theorem opTrace_conj_ccmIntegratedScaling_eq_toeplitz (g : CCMCompactSchwartzLogTest)
+    {T : evenSubspace →L[ℂ] evenSubspace} (hT : MemSchattenClass 1 T) :
+    opTrace (ϑ[g.toSchwartzMap] ∘L T ∘L ContinuousLinearMap.adjoint ϑ[g.toSchwartzMap]) =
+      ∫ s, ∫ t, conj (g s) * g t * ccmScalingTrace T (t - s) := by
+  rw [opTrace_conj_ccmIntegratedScaling_eq_gram g hT]
+  exact integral_ccmSoninGramTest_mul g (continuous_ccmScalingTrace hT)
+    (norm_ccmScalingTrace_le hT)
 
 /-- **The generic trace is a Toeplitz form.**
 `Tr(ϑ(g) G_Λ ϑ(g)†) = ∫∫ conj (g s) g t τ_Λ(t - s) ds dt`. -/

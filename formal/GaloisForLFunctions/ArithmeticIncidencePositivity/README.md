@@ -623,9 +623,11 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
    `2 Σ_a c_a² M(log a) 𝒢_prime(M)(log a)` (the prime generator of the gauge) minus the pair term
    `4 Σ_{a<b} c_a c_b M(log a)M(log b) netAtom(a,b)`, and identify the archimedean self-energy
    `≍ w log(1/w)` that dominates the limit.
-3. **Collar ratio.** The two ends of the sandwich differ by `sinh(s/2)/sinh(s/2 − 3e^{−3s/4})`;
-   show that the collar end `c(s)`, the root of `P_s(c) = ω(s)`, satisfies
-   `c(s) = ℓ(s)(1 + O(e^{−s}))`, and give the explicit second-order term.
+3. **Collar ratio (settled).** For `s ≥ 4 log 2` the collar is exactly `(0, c) ∪ (s − c, s)` with
+   `P_s(c) = ω(s)`, `ℓ ≤ c ≤ 2ℓ` and `|c − ℓ − (coth(s/2)/2)ℓ²| ≤ 8ℓ³` (`collarEnd_second_order`);
+   the second-order coefficient is exact, `(coth(s/2)/2)ℓ(s) = e^{−s}/(1 − e^{−s})³`
+   (`half_coth_mul_collarInnerEnd`), so `|c/ℓ − 1 − e^{−s}/(1 − e^{−s})³| ≤ 37e^{−2s}` and
+   `c(s)/ℓ(s) = 1 + e^{−s} + O(e^{−2s})` (`collarEnd_ratio`).
 4. **Lattice conductance at fixed width.** Combine mechanism 22 with the archimedean self-energy
    `≍ w log(1/w)` of a bump of width `w` into one statement about the conductance matrix of a
    lattice profile at fixed `w`, including the axis pairs `(0, log b)`.
