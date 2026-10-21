@@ -337,7 +337,6 @@ theorem integral_integral_mul_abs_sub :
     refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
     dsimp only
     rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-    push_cast; ring
   rw [hI, Complex.conj_ofReal]
   ring
 
@@ -376,9 +375,11 @@ theorem norm_integral_integral_mul_tentMixture_le {h : ℝ → ℝ} (hh : Contin
       refine ENNReal.mul_ne_top (measure_Icc_prod_Icc_ne_top (-R) R) ?_
       rw [Measure.restrict_apply measurableSet_Ioc, inter_self]
       simp [Real.volume_Ioc]
-    · have hae : ∀ᵐ q ∂((volume.prod volume).prod (volume.restrict (Ioc (0 : ℝ) δ))),
+    · have hae : ∀ᵐ q : (ℝ × ℝ) × ℝ ∂(((volume : Measure ℝ).prod (volume : Measure ℝ)).prod
+          ((volume : Measure ℝ).restrict (Ioc (0 : ℝ) δ))),
           q.2 ∈ Ioc (0 : ℝ) δ := by
-        rw [← Measure.restrict_univ (μ := volume.prod volume), Measure.prod_restrict]
+        rw [← Measure.restrict_univ (μ := (volume : Measure ℝ).prod (volume : Measure ℝ)),
+          Measure.prod_restrict]
         filter_upwards [ae_restrict_mem (MeasurableSet.univ.prod measurableSet_Ioc)] with q hq
         exact hq.2
       filter_upwards [hae] with q hq2

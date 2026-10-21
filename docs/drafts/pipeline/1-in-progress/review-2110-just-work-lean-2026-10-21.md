@@ -74,3 +74,9 @@ their module lands; this card does not edit their files.
   `vasyunin_reciprocity_exact_order`: `h(1+log⁺(p/h))/18 ≤ π(V(q,p)+V(p,q)) + (q−p)log(q/p) ≤ 12h(1+log⁺(p/h))`,
   `h = q − p`). The defect is below `O(p+q)` iff `h = o(p)`; for moduli of different sizes no bound
   below `O(p+q)` holds. Axioms standard, wired, BVI README updated.
+- 2026-10-21 — **9(iii) sharpened** (window sandwich constant): `abs_sum_window_norm_sq_sub_le` (two-sided MV
+  window bound `|Σ_W − K Σ|b|²| ≤ δ⁻¹ Σ|b|²`), `abs_window_rootsOfUnity_sub_le` (`Q(Q−1)` over roots of
+  unity), `BezoutValuationIncidence/WindowSandwichWithTheMontgomeryVaughanConstant`
+  (`isWindowSandwichConstant_mv`: `N(N−1)` admissible; `windowSandwichConstant_between`: optimal
+  constant in `[Φ(N)−2, N(N−1)]`, previously `[N²/8 + N − (N/2)H_N − 2, 2N²−1]`). The exact value is
+  arithmetic (the length-two window already reads `Σ_{q≤N} μ(q)`); recorded as open in the README.

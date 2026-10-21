@@ -640,7 +640,9 @@ The constant is sharp in order: at a common return every modulus divides $k$, so
 Selberg row** ($Y(q)=1$ for $2\le q\le N$, $Y(1)=0$) has mean zero, variance $\Phi(N)-1$ and the
 spike $s(N!)=\Phi(N)-1$; it attains the pointwise bound $(s(k)-H)^2\le(\Phi(N)-1)V$ with
 equality, and its one-point window forces every sandwich constant to be at least $\Phi(N)-2$.
-The optimal sandwich constant lies in $[N^2/8+N-\tfrac N2H_N-2,\ 2N^2-1]$: exact order $N^2$.
+The optimal sandwich constant lies in $[\Phi(N)-2,\ N(N-1)]$, the upper end from the two-sided
+Montgomery–Vaughan window bound over the $1/(N(N-1))$-separated response frequencies
+(`WindowSandwichWithTheMontgomeryVaughanConstant`): exact order $N^2$, ratio at most $\pi^2/3+o(1)$.
 The all-ones row shows the same for every inverse $\ell^1$ constant, $\|c\|_1^2\le C\,Q_{\mathrm{Sel}}$
 needs $C\ge\Phi(N)$, and finite Ramanujan inversion gives $\|c\|_1\le\sum_q\sigma(q)\lvert Y(q)\rvert$,
 hence $\|c\|_1^2\le S_NQ_{\mathrm{Sel}}$ with $S_N=\sum_{q\le N}\sigma(q)^2/\varphi(q)\le e^{19/2}N^2$
@@ -1215,8 +1217,7 @@ missing is the signed sum over moduli.
 **Other open boundaries.** The sharp observability horizon at arbitrary phase: $\Phi(N)$ is the
 shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the
 gap between a quadratic universal horizon and a linear special one is open, and any linear law
-must be incidence-algebraic. The exact window sandwich constant between $\Phi(N)-2$ and
-$2N^2-1$. The sign of a general signed prime packet in the energy-centered Gram.
+must be incidence-algebraic. The exact window sandwich constant in $[\Phi(N)-2,N(N-1)]$. The sign of a general signed prime packet in the energy-centered Gram.
 Which rows are determined by
 their relation spectrum, beyond translation and the Galois action. Rates in the cofinal Möbius
 laws that are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue

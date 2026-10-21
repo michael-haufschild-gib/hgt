@@ -250,8 +250,11 @@ theorem eventually_receiver_le_growth {ε : ℝ} (hε4 : 1 / 4 ≤ ε) (hε2 : �
     have := Real.add_one_le_exp (Real.log T)
     rw [Real.exp_log hT0] at this; linarith) (by positivity)) hGsq
   -- the three ranges
-  rw [pmPowerDampedDivisorDiscreteEnergy_eq_sum_receiverCell, ← sum_filter_add_sum_filter_not _
-    (fun n => n < N), ← sum_filter_add_sum_filter_not _ (fun n => n * n ≤ T)]
+  have hsplit : ∑ n ∈ Icc 1 T, receiverCell ε n = ∑ n ∈ Icc 1 T with n < N, receiverCell ε n +
+      (∑ n ∈ (Icc 1 T).filter (fun n => ¬ n < N) with n * n ≤ T, receiverCell ε n +
+        ∑ n ∈ (Icc 1 T).filter (fun n => ¬ n < N) with ¬ n * n ≤ T, receiverCell ε n) := by
+    rw [sum_filter_add_sum_filter_not, sum_filter_add_sum_filter_not]
+  rw [pmPowerDampedDivisorDiscreteEnergy_eq_sum_receiverCell, hsplit]
   have h1 : ∑ n ∈ Icc 1 T with n < N, receiverCell ε n ≤ C₀ := sum_receiverCell_lt_le hε4 hε2.le T N
   have h2 := sum_receiverCell_mid_le hε4 hε2 (T := T) hcell'
   have h3 := sum_receiverCell_top_le (s := s) hε4 hε2 (N := N) (T := T) fun n hn hnT hsq => by
@@ -280,7 +283,6 @@ theorem eventually_receiver_le_growth {ε : ℝ} (hε4 : 1 / 4 ≤ ε) (hε2 : �
     (sub_nonneg.mpr hG1)
   have hfin : (C₀ + 2 * K ^ 2 + 2 * K ^ 2 / a) * G =
       (C₀ + 2 * K ^ 2 + 2 * K ^ 2 / a) * (T : ℝ) ^ a * Real.exp (-s) := by rw [hGdef]; ring
-  rw [← hadef, ← hsdef]
   linarith
 
 /-- **The receiver against the period energy.** For `1/4 ≤ ε < 1/2` there is `C` with
