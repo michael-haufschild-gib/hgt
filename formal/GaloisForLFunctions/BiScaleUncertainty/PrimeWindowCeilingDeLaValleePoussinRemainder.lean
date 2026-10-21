@@ -369,7 +369,7 @@ theorem abs_ccmLogChebyshevDeficitPrimitive_le_dlvp {K c B : ℝ} (hK : 0 ≤ K)
           fun t ht => ?_
         rw [abs_sub_comm]
         refine (hψ t ht.1).trans ?_
-        have := mul_le_mul_of_nonneg_left (exp_sub_mul_sqrt_le_of_le ht.1 ht.2) hK
+        have := mul_le_mul_of_nonneg_left (exp_sub_mul_sqrt_le_of_le (c := c) ht.1 ht.2) hK
         rw [hM]
         linarith
     _ = T * M := by rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul]
@@ -390,36 +390,27 @@ theorem eventually_le_exp_mul_sqrt {κ : ℝ} (hκ : 0 < κ) :
     rwa [mul_div_cancel₀ _ hκ4.ne'] at this
   nlinarith [h4, mul_nonneg hL0 (sub_nonneg.mpr h24)]
 
-/-- **The polar test attains the pole to de la Vallée Poussin precision.** Unconditionally there
-are `C ≥ 0`, `κ > 0` such that for all large `L` some window deviation at length `L` is
-`≥ e^{L/2} − C e^{L/2 − κ√L}`. -/
-theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
-    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧ ∀ᶠ L in atTop, ∃ x ∈ windowDeviations L,
-      Real.exp (L / 2) - C * Real.exp (L / 2 - κ * Real.sqrt L) ≤ x := by
-  classical
-  obtain ⟨K, c, B, hK, hc, hB, hψ⟩ := exists_abs_psi_exp_sub_le_dlvp
-  set K' := K * Real.exp (c ^ 2 / 2) * Real.exp c with hK'def
-  have hK' : 0 ≤ K' := by positivity
-  set C := K' + B + 4 with hCdef
-  have hC0 : 0 ≤ C := by positivity
-  refine ⟨C, c / 2, hC0, by positivity, ?_⟩
-  filter_upwards [eventually_le_exp_mul_sqrt (κ := c / 2) (by positivity),
-    eventually_add_sq_le_exp_half_sub_sqrt (B := 0) (κ := c / 2) (by positivity),
-    eventually_ge_atTop (4 : ℝ), eventually_ge_atTop C] with L hLexp hpoly hL4 hLC
-  rw [zero_add] at hpoly
+/-- **The deficit against the polar cutoff.** For `L ≥ 4` with `L ≤ e^{(c/2)√L}`, the integrated
+deficit at `T = L − 2δ`, `δ = e^{−L/2}`, satisfies
+`2δ |D(T)| ≤ 2 K e^{c²/2} e^{c} e^{L/2 − (c/2)√L} + 2B`: `√T ≥ √L − 1`, `δ e^T ≤ e^{L/2}`, `Lδ ≤ 1`
+and `L e^{−c√L} ≤ e^{−(c/2)√L}`. -/
+theorem two_mul_exp_neg_half_mul_abs_deficit_le {K c B : ℝ} (hK : 0 ≤ K) (hc : 0 < c)
+    (hψ : ∀ y : ℝ, 0 ≤ y → |Chebyshev.psi (Real.exp y) - Real.exp y| ≤
+      K * (Real.exp y * Real.exp (-c * Real.sqrt y)) + B)
+    {L : ℝ} (hL4 : 4 ≤ L) (hLexp : L ≤ Real.exp (c / 2 * Real.sqrt L)) :
+    2 * Real.exp (-(L / 2)) *
+        |ccmLogChebyshevDeficitPrimitive (L - 2 * Real.exp (-(L / 2)))| ≤
+      2 * (K * Real.exp (c ^ 2 / 2) * Real.exp c) * Real.exp (L / 2 - c / 2 * Real.sqrt L) +
+        2 * B := by
   have hL0 : 0 ≤ L := by linarith
-  -- the polar test of the window `(0, L)` with cutoff `δ = e^{−L/2}`
   set E := Real.exp (L / 2) with hEdef
   have hEL : 0 < E := Real.exp_pos _
   set R := Real.exp (L / 2 - c / 2 * Real.sqrt L) with hRdef
-  have hR0 : 0 < R := Real.exp_pos _
   set δ := Real.exp (-(L / 2)) with hδdef
   have hδ : 0 < δ := Real.exp_pos _
   have hδ1 : δ ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-  have hLδ : 2 * δ < L := by linarith
   have hEδ : δ * E = 1 := by
     rw [hδdef, hEdef, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
-  have hδneg : Real.exp (-L / 2) = δ := by rw [hδdef]; congr 1; ring
   have hLδ1 : L * δ ≤ 1 := by
     have h1 : 1 + L / 2 + (L / 2) ^ 2 / 2 ≤ E := Real.quadratic_le_exp_of_nonneg (by linarith)
     have : L ≤ E := by nlinarith
@@ -427,40 +418,14 @@ theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
       _ = 1 := by rw [mul_comm]; exact hEδ
   set T := L - 2 * δ with hTdef
   have hT : 0 ≤ T := by linarith
-  set f := polarTestFn hδ hLδ
-  set cf : WeilTestFn →₀ ℝ := Finsupp.single f 1
-  have hcf : ∀ g, 0 ≤ cf g := fun g => by
-    simp only [cf]; rw [Finsupp.single_apply]; split_ifs <;> norm_num
-  have hsupp : ∀ g ∈ cf.support, ∃ a, ∀ u, g.1 u ≠ 0 → u ∈ Ioo a (a + L) := fun g hg => by
-    have : g = f := by
-      by_contra hne; exact (Finsupp.mem_support_iff.mp hg) (by simp [cf, Ne.symm hne])
-    exact ⟨0, this ▸ polarTestFn_supp hδ hLδ⟩
-  have hm := massOf_polarTest_pos hδ hLδ
-  have hM := massOf_polarTest_le hδ hLδ
-  rw [hδneg] at hM
-  have hdev : nodeArchEnergy cf - weilEnergy cf =
-      linearCombination ℝ (fun j : LogIndex => (ArithmeticFunction.vonMangoldt (j : ℕ) : ℝ))
-        (logVector f) := by
-    rw [nodeArchEnergy_eq_weilEnergy_add, add_sub_cancel_left, nodeVector_single_test]
-  have hP := primeSide_polarTest_ge hδ hLδ
-  rw [riesz_eq_deficit hT, hδneg, ← hdev] at hP
-  refine ⟨(nodeArchEnergy cf - weilEnergy cf) / massOf cf, ⟨cf, hcf, hsupp, hm, rfl⟩, ?_⟩
-  -- the pole: `e^T = E² e^{−2δ}`, so `2δ e^T ≥ 2E − 4` and `δ e^T ≤ E`
-  have h1 : Real.exp T = E * E * Real.exp (-(2 * δ)) := by
-    rw [hTdef, hEdef, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  have heT : 2 * E - 4 ≤ 2 * δ * Real.exp T := by
-    have h2 : 1 - 2 * δ ≤ Real.exp (-(2 * δ)) := Real.one_sub_le_exp_neg _
-    rw [h1]
-    have : 2 * δ * (E * E * Real.exp (-(2 * δ))) = 2 * E * Real.exp (-(2 * δ)) := by
-      rw [show 2 * δ * (E * E * Real.exp (-(2 * δ))) = 2 * (δ * E) * E * Real.exp (-(2 * δ)) by
-        ring, hEδ]; ring
-    rw [this]
-    nlinarith
+  -- `δ e^T ≤ E`
   have hδT : δ * Real.exp T ≤ E := by
+    have h1 : Real.exp T = E * E * Real.exp (-(2 * δ)) := by
+      rw [hTdef, hEdef, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
     rw [h1, show δ * (E * E * Real.exp (-(2 * δ))) = (δ * E) * E * Real.exp (-(2 * δ)) by ring,
       hEδ, one_mul]
     exact mul_le_of_le_one_right hEL.le (Real.exp_le_one_iff.mpr (by linarith))
-  -- the deficit: `√T ≥ √L − 1`, `L e^{−c√L} ≤ e^{−(c/2)√L}`, so `2δ|D(T)| ≤ 2K'R + 2B`
+  -- `√T ≥ √L − 1`, hence `e^{−c√T} ≤ e^{c} e^{−c√L}`
   have hsL : 2 ≤ Real.sqrt L := by
     rw [Real.le_sqrt (by norm_num) hL0]; nlinarith
   have hsqT : Real.sqrt L - 1 ≤ Real.sqrt T := by
@@ -469,6 +434,7 @@ theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
   have hexpT : Real.exp (-c * Real.sqrt T) ≤ Real.exp c * Real.exp (-c * Real.sqrt L) := by
     rw [← Real.exp_add]
     exact Real.exp_le_exp.mpr (by nlinarith [mul_le_mul_of_nonneg_left hsqT hc.le])
+  -- `L e^{−c√L} ≤ e^{−(c/2)√L}`
   have hLsmall : L * Real.exp (-c * Real.sqrt L) ≤ Real.exp (-(c / 2 * Real.sqrt L)) := by
     have hsplit : Real.exp (-c * Real.sqrt L) =
         Real.exp (-(c / 2 * Real.sqrt L)) * Real.exp (-(c / 2 * Real.sqrt L)) := by
@@ -490,40 +456,116 @@ theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
       _ ≤ Real.exp c * Real.exp (-(c / 2 * Real.sqrt L)) :=
           mul_le_mul_of_nonneg_left hLsmall (Real.exp_pos _).le
   have hDabs := abs_ccmLogChebyshevDeficitPrimitive_le_dlvp hK hψ hT
-  have hD : 2 * δ * |ccmLogChebyshevDeficitPrimitive T| ≤ 2 * K' * R + 2 * B := by
-    have hq := mul_le_mul hδT hp2 (by positivity) hEL.le
-    have h0 : 0 ≤ K * Real.exp (c ^ 2 / 2) * (Real.exp T * Real.exp (-c * Real.sqrt T)) + B := by
-      positivity
-    calc 2 * δ * |ccmLogChebyshevDeficitPrimitive T|
-        ≤ 2 * δ * (T * (K * Real.exp (c ^ 2 / 2) *
-            (Real.exp T * Real.exp (-c * Real.sqrt T)) + B)) :=
-          mul_le_mul_of_nonneg_left hDabs (by positivity)
-      _ ≤ 2 * δ * (L * (K * Real.exp (c ^ 2 / 2) *
-            (Real.exp T * Real.exp (-c * Real.sqrt T)) + B)) := by
-          refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right ?_ h0) (by positivity)
-          linarith
-      _ = 2 * K * Real.exp (c ^ 2 / 2) *
-            ((δ * Real.exp T) * (L * Real.exp (-c * Real.sqrt T))) + 2 * B * (L * δ) := by ring
-      _ ≤ 2 * K * Real.exp (c ^ 2 / 2) *
-            (E * (Real.exp c * Real.exp (-(c / 2 * Real.sqrt L)))) + 2 * B * 1 :=
-          add_le_add (mul_le_mul_of_nonneg_left hq (by positivity))
-            (mul_le_mul_of_nonneg_left hLδ1 (by positivity))
-      _ = 2 * K' * (E * Real.exp (-(c / 2 * Real.sqrt L))) + 2 * B := by rw [hK'def]; ring
-      _ = 2 * K' * R + 2 * B := by rw [hER]
+  have hq := mul_le_mul hδT hp2 (by positivity) hEL.le
+  have h0 : 0 ≤ K * Real.exp (c ^ 2 / 2) * (Real.exp T * Real.exp (-c * Real.sqrt T)) + B := by
+    have := abs_nonneg (ccmLogChebyshevDeficitPrimitive T)
+    rcases hT.lt_or_eq with hT' | hT'
+    · exact nonneg_of_mul_nonneg_right (this.trans hDabs) hT'
+    · rw [← hT']
+      have h2 := hψ 0 le_rfl
+      simp only [Real.sqrt_zero, mul_zero, Real.exp_zero, mul_one, one_mul] at h2 ⊢
+      exact (abs_nonneg _).trans h2
+  calc 2 * δ * |ccmLogChebyshevDeficitPrimitive T|
+      ≤ 2 * δ * (T * (K * Real.exp (c ^ 2 / 2) *
+          (Real.exp T * Real.exp (-c * Real.sqrt T)) + B)) :=
+        mul_le_mul_of_nonneg_left hDabs (by positivity)
+    _ ≤ 2 * δ * (L * (K * Real.exp (c ^ 2 / 2) *
+          (Real.exp T * Real.exp (-c * Real.sqrt T)) + B)) := by
+        refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right ?_ h0) (by positivity)
+        linarith
+    _ = 2 * K * Real.exp (c ^ 2 / 2) *
+          ((δ * Real.exp T) * (L * Real.exp (-c * Real.sqrt T))) + 2 * B * (L * δ) := by ring
+    _ ≤ 2 * K * Real.exp (c ^ 2 / 2) *
+          (E * (Real.exp c * Real.exp (-(c / 2 * Real.sqrt L)))) + 2 * B * 1 :=
+        add_le_add (mul_le_mul_of_nonneg_left hq (by positivity))
+          (mul_le_mul_of_nonneg_left hLδ1 (by positivity))
+    _ = 2 * (K * Real.exp (c ^ 2 / 2) * Real.exp c) *
+          (E * Real.exp (-(c / 2 * Real.sqrt L))) + 2 * B := by ring
+    _ = 2 * (K * Real.exp (c ^ 2 / 2) * Real.exp c) * R + 2 * B := by rw [hER]
+
+/-- **The polar test attains the pole to de la Vallée Poussin precision.** Unconditionally there
+are `C ≥ 0`, `κ > 0` such that for all large `L` some window deviation at length `L` is
+`≥ e^{L/2} − C e^{L/2 − κ√L}`. -/
+theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
+    ∃ C κ : ℝ, 0 ≤ C ∧ 0 < κ ∧ ∀ᶠ L in atTop, ∃ x ∈ windowDeviations L,
+      Real.exp (L / 2) - C * Real.exp (L / 2 - κ * Real.sqrt L) ≤ x := by
+  classical
+  obtain ⟨K, c, B, hK, hc, hB, hψ⟩ := exists_abs_psi_exp_sub_le_dlvp
+  set K' := K * Real.exp (c ^ 2 / 2) * Real.exp c with hK'def
+  have hK' : 0 ≤ K' := by positivity
+  set C := K' + B + 4 with hCdef
+  have hC0 : 0 ≤ C := by positivity
+  refine ⟨C, c / 2, hC0, by positivity, ?_⟩
+  filter_upwards [eventually_le_exp_mul_sqrt (κ := c / 2) (by positivity),
+    eventually_add_sq_le_exp_half_sub_sqrt (B := 0) (κ := c / 2) (by positivity),
+    eventually_ge_atTop (4 : ℝ), eventually_ge_atTop C] with L hLexp hpoly hL4 hLC
+  rw [zero_add] at hpoly
+  have hL0 : 0 ≤ L := by linarith
+  have hD := two_mul_exp_neg_half_mul_abs_deficit_le hK hc hψ hL4 hLexp
+  -- the polar test of the window `(0, L)` with cutoff `δ = e^{−L/2}`
+  set E := Real.exp (L / 2) with hEdef
+  have hEL : 0 < E := Real.exp_pos _
+  set R := Real.exp (L / 2 - c / 2 * Real.sqrt L) with hRdef
+  have hR0 : 0 < R := Real.exp_pos _
+  set δ := Real.exp (-(L / 2)) with hδdef
+  have hδ : 0 < δ := Real.exp_pos _
+  have hδ1 : δ ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+  have hLδ : 2 * δ < L := by linarith
+  have hEδ : δ * E = 1 := by
+    rw [hδdef, hEdef, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  have hδneg : Real.exp (-L / 2) = δ := by rw [hδdef]; congr 1; ring
+  set T := L - 2 * δ with hTdef
+  have hT : 0 ≤ T := by linarith
+  set f := polarTestFn hδ hLδ
+  set cf : WeilTestFn →₀ ℝ := Finsupp.single f 1
+  have hcf : ∀ g, 0 ≤ cf g := fun g => by
+    simp only [cf]; rw [Finsupp.single_apply]; split_ifs <;> norm_num
+  have hsupp : ∀ g ∈ cf.support, ∃ a, ∀ u, g.1 u ≠ 0 → u ∈ Ioo a (a + L) := fun g hg => by
+    have : g = f := by
+      by_contra hne; exact (Finsupp.mem_support_iff.mp hg) (by simp [cf, Ne.symm hne])
+    exact ⟨0, this ▸ polarTestFn_supp hδ hLδ⟩
+  have hm := massOf_polarTest_pos hδ hLδ
+  have hM := massOf_polarTest_le hδ hLδ
+  rw [hδneg] at hM
+  have hdev : nodeArchEnergy cf - weilEnergy cf =
+      linearCombination ℝ (fun j : LogIndex => (ArithmeticFunction.vonMangoldt (j : ℕ) : ℝ))
+        (logVector f) := by
+    rw [nodeArchEnergy_eq_weilEnergy_add, add_sub_cancel_left, nodeVector_single_test]
+  have hP := primeSide_polarTest_ge hδ hLδ
+  rw [riesz_eq_deficit hT, hδneg, ← hdev] at hP
+  have hP' : 2 * δ * (Real.exp T - 1 - ccmLogChebyshevDeficitPrimitive T) ≤
+      nodeArchEnergy cf - weilEnergy cf := hP
+  refine ⟨(nodeArchEnergy cf - weilEnergy cf) / massOf cf, ⟨cf, hcf, hsupp, hm, rfl⟩, ?_⟩
+  -- the pole: `2δ e^T ≥ 2E − 4`
+  have heT : 2 * E - 4 ≤ 2 * δ * Real.exp T := by
+    have h1 : Real.exp T = E * E * Real.exp (-(2 * δ)) := by
+      rw [hTdef, hEdef, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+    have h2 : 1 - 2 * δ ≤ Real.exp (-(2 * δ)) := Real.one_sub_le_exp_neg _
+    rw [h1]
+    have : 2 * δ * (E * E * Real.exp (-(2 * δ))) = 2 * E * Real.exp (-(2 * δ)) := by
+      rw [show 2 * δ * (E * E * Real.exp (-(2 * δ))) = 2 * (δ * E) * E * Real.exp (-(2 * δ)) by
+        ring, hEδ]; ring
+    rw [this]
+    nlinarith
   -- the prime side is at least `2E − 4 − 2δ − 2K'R − 2B`
   have hnum : 2 * E - 4 - 2 * δ - (2 * K' * R + 2 * B) ≤ nodeArchEnergy cf - weilEnergy cf := by
-    have habs := neg_abs_le (ccmLogChebyshevDeficitPrimitive T)
-    linarith [hP, heT, hD, mul_le_mul_of_nonneg_left habs (by positivity : (0 : ℝ) ≤ 2 * δ)]
+    have habs := mul_le_mul_of_nonneg_left (neg_abs_le (ccmLogChebyshevDeficitPrimitive T))
+      (by positivity : (0 : ℝ) ≤ 2 * δ)
+    linarith [hP', heT, hD, habs]
   -- `C R ≤ E`, since `C ≤ L ≤ e^{(c/2)√L}`
+  have hER : E * Real.exp (-(c / 2 * Real.sqrt L)) = R := by
+    rw [hEdef, hRdef, ← Real.exp_add, sub_eq_add_neg]
   have hECR : 0 ≤ E - C * R := by
     have h1' : C * Real.exp (-(c / 2 * Real.sqrt L)) ≤ 1 := by
       calc C * Real.exp (-(c / 2 * Real.sqrt L))
           ≤ Real.exp (c / 2 * Real.sqrt L) * Real.exp (-(c / 2 * Real.sqrt L)) :=
             mul_le_mul_of_nonneg_right (hLC.trans hLexp) (Real.exp_pos _).le
         _ = 1 := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
-    have : C * R = E * (C * Real.exp (-(c / 2 * Real.sqrt L))) := by rw [← hER]; ring
-    rw [this]
-    linarith [mul_le_mul_of_nonneg_left h1' hEL.le]
+    have h2' : C * R = E * (C * Real.exp (-(c / 2 * Real.sqrt L))) := by
+      rw [mul_left_comm, hER]
+    have h3' := mul_le_mul_of_nonneg_left h1' hEL.le
+    rw [mul_one] at h3'
+    linarith
   have hpoly' : B + 3 + L ≤ (B + 4) * R := by
     have h1' : 1 + L ≤ (1 + L) ^ 2 := by nlinarith
     have hB4 : (0 : ℝ) ≤ B + 4 := by linarith

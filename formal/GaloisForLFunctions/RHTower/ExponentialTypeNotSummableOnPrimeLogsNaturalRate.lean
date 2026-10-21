@@ -519,6 +519,8 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
   -- the window-integral lower bound `m`
   set f : ℝ → ℝ := fun t => ‖Φ (x + t)‖ with hf
   have hfc : Continuous f := (hΦ.continuous.comp (continuous_const.add continuous_ofReal)).norm
+  have hfdef : ∀ t : ℝ, f t = ‖Φ (x + t)‖ := fun t => rfl
+  clear_value f
   set m : ℝ := m₀ * Real.exp (-((ρ + δ) * x)) with hm
   have hm0 : 0 < m := by positivity
   have hmint : m ≤ ∫ t in (0 : ℝ)..1, f t := by
@@ -586,8 +588,7 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
     have hsub := norm_sub_le_of_exponentialType hΦ hC.le hρ hgrow (x := x) (u := x + u)
       (v := x + v) hx0 (by linarith) (by linarith) (by linarith)
     rw [Complex.ofReal_add, Complex.ofReal_add] at hsub
-    rw [hD, hf]
-    simp only
+    rw [hD, hfdef, hfdef]
     calc ‖Φ (x + v)‖ ≤ ‖Φ (x + u)‖ + ‖Φ (x + v) - Φ (x + u)‖ := by
           have := norm_sub_norm_le (Φ (x + v)) (Φ (x + u))
           linarith
@@ -598,28 +599,34 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
   rw [← hh] at hriemann
   -- the per-window lower bounds `m_k` and their weighted sum
   set mk : ℕ → ℝ := fun k => max 0 (f (k * h) - h * D) with hmk
-  have hmk0 : ∀ k, 0 ≤ mk k := fun k => le_max_left _ _
+  have hmkdef : ∀ k, mk k = max 0 (f (k * h) - h * D) := fun k => rfl
+  clear_value mk
+  have hmk0 : ∀ k, 0 ≤ mk k := fun k => by rw [hmkdef]; exact le_max_left _ _
   have hmksum : m / 2 ≤ ∑ k ∈ range N, h * mk k := by
     have h1 : ∑ k ∈ range N, h * (f (k * h) - h * D) ≤ ∑ k ∈ range N, h * mk k :=
       sum_le_sum fun k _ => by
-        gcongr
-        exact le_max_right _ _
+        rw [hmkdef]
+        exact mul_le_mul_of_nonneg_left (le_max_right _ _) hh0.le
     have h2 : ∑ k ∈ range N, h * (f (k * h) - h * D)
         = (∑ k ∈ range N, h * f (k * h)) - h * D := by
       simp only [mul_sub, sum_sub_distrib, sum_const, card_range, nsmul_eq_mul]
       rw [← mul_assoc, ← mul_assoc, hNh, one_mul]
     linarith
-  clear_value mk f
   -- the prime windows `(Y k, Y (k+1)]`
   set Y : ℕ → ℝ := fun k => Real.exp (x + k * h) with hY
-  have hYpos : ∀ k, 0 < Y k := fun k => Real.exp_pos _
-  have hYmono : Monotone Y := fun i j hij =>
-    Real.exp_le_exp.mpr (add_le_add le_rfl (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij) hh0.le))
-  have hY0 : Y 0 = y := by simp [hY, hy]
-  have hYge : ∀ k, y ≤ Y k := fun k => hY0 ▸ hYmono (Nat.zero_le k)
+  have hYdef : ∀ k : ℕ, Y k = Real.exp (x + k * h) := fun k => rfl
+  clear_value Y
+  have hYpos : ∀ k, 0 < Y k := fun k => by rw [hYdef]; exact Real.exp_pos _
+  have hYmono : Monotone Y := fun i j hij => by
+    rw [hYdef, hYdef]
+    exact Real.exp_le_exp.mpr
+      (add_le_add le_rfl (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij) hh0.le))
+  have hY0 : Y 0 = y := by
+    rw [hYdef, hy]
+    simp only [Nat.cast_zero, zero_mul, add_zero]
+  have hYge : ∀ k, y ≤ Y k := fun k => hY0.symm.le.trans (hYmono (Nat.zero_le k))
   have hYle : ∀ k ∈ range (N + 1), Y k ≤ Real.exp (x + 1) := fun k hk => by
-    rw [hY]
-    simp only
+    rw [hYdef]
     have hkN : (k : ℝ) ≤ N := by exact_mod_cast Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
     refine Real.exp_le_exp.mpr ?_
     have : (k : ℝ) * h ≤ 1 := by
@@ -627,17 +634,16 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
         _ = 1 := hNh
     linarith
   have hYsucc : ∀ k, Y (k + 1) = Y k * Real.exp h := fun k => by
-    rw [hY]
-    simp only
-    rw [← Real.exp_add]
+    rw [hYdef, hYdef, ← Real.exp_add]
     congr 1
     push_cast
     ring
   have hLk : ∀ k, Y k * h ≤ Y (k + 1) - Y k := fun k => by
     rw [hYsucc]
-    nlinarith [Real.add_one_le_exp h, hYpos k]
-  have hlogY : ∀ k, Real.log (Y k) = x + k * h := fun k => by rw [hY]; exact Real.log_exp _
-  clear_value Y
+    have h1 := Real.add_one_le_exp h
+    have h2 := hYpos k
+    nlinarith
+  have hlogY : ∀ k, Real.log (Y k) = x + k * h := fun k => by rw [hYdef]; exact Real.log_exp _
   -- the lower bound for each prime window
   have hwin : ∀ k ∈ range N,
       Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (y * h / 4)
@@ -672,13 +678,10 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
       have hsub := norm_sub_le_of_exponentialType hΦ hC.le hρ hgrow (x := x) (u := x + k * h)
         (v := Real.log p) hx0 (le_add_of_nonneg_right (by positivity)) hlog1 (by linarith)
       rw [← hD] at hsub
-      rw [hmk]
-      dsimp only
+      rw [hmkdef]
       refine max_le (norm_nonneg _) ?_
       have hval : f (k * h) = ‖Φ (((x + k * h : ℝ)) : ℂ)‖ := by
-        rw [hf]
-        simp only
-        rw [Complex.ofReal_add]
+        rw [hfdef, Complex.ofReal_add]
       rw [hval]
       have h1 := norm_sub_norm_le (Φ ((x + k * h : ℝ) : ℂ)) (Φ (Real.log p))
       rw [norm_sub_rev] at h1

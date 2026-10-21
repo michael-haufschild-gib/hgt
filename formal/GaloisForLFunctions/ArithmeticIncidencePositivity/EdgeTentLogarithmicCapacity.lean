@@ -291,7 +291,8 @@ theorem stripBoxEnergy_edgeTent_le_log {r ε : ℝ} (hε0 : 0 < ε) (hε1 : ε �
     have hmono := intervalIntegral.integral_mono_on hr0 hCo ((hFi.const_mul
       (Real.log (4 / ε) / 2 + 4 / 5)).add hlin) fun x hx => integral_edgeTentCross_le hε0 hε1 hεr hx
     rw [intervalIntegral.integral_add (hFi.const_mul _) hlin, intervalIntegral.integral_const_mul,
-      integral_ite_lt (φ := fun x => ε * (x - (r - ε)) / 2) (by linarith) le_rfl] at hmono
+      integral_ite_lt (φ := fun x => ε * (x - (r - ε)) / 2) (c := r - ε) (by linarith)
+        (by linarith)] at hmono
     have hpoly : (∫ x in (r - ε)..r, ε * (x - (r - ε)) / 2) = ε ^ 3 / 4 := by
       rw [intervalIntegral.integral_div, intervalIntegral.integral_const_mul,
         intervalIntegral.integral_comp_sub_right (fun x => x) (r - ε), integral_id]
@@ -315,7 +316,8 @@ theorem stripBoxEnergy_edgeTent_le_log {r ε : ℝ} (hε0 : 0 < ε) (hε1 : ε �
           funext fun y => by unfold edgeTentTop; rw [if_neg fun h => hx h.1]
         rw [e, intervalIntegral.integral_zero]
     simp_rw [hin]
-    rw [integral_ite_lt (φ := fun _ => (ε / 2 + ε ^ 2 / 4) * ε) (by linarith) le_rfl,
+    rw [integral_ite_lt (φ := fun _ => (ε / 2 + ε ^ 2 / 4) * ε) (c := r - ε) (by linarith)
+        (by linarith),
       intervalIntegral.integral_const, smul_eq_mul]
     ring
   -- the tent mass: `ε³ ≤ 32 M`
