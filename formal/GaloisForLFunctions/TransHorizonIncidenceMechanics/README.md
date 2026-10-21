@@ -42,38 +42,70 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
+methods see the additive structure of `ℕ` only after averaging over a family, and below half
+damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
+methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
+identities hold for every even positive kernel, and positivity on restricted families is paid by an
+archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
+operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
+the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
+scale. No existing field has its basic objects built with all three; the seven programmes build
+them.
+
 **The mechanisms the shared target needs**, with the programme that owns each:
 
 1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
+   Harnack-type propagation across the prime shifts `log 2, log 3, …`
    (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
 2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
+   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
 3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
    for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
    `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
-   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
-5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
+   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
+   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
+   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
+   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
+   seen from the other side.
+5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
+   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
+   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
+   `log 6`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH.
+  about RH (test models: `BiScaleUncertainty`).
 - *No family average.* One character, modulus one, shift zero.
-- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
+  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
+  family, `θ = 2` on the Gram.
+- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
+  member is infrastructure (the every-height problem: `SquareRootThreshold`).
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
+- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
+  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
+  parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
   archimedean place against a bounded prime cost is nonselective by construction.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
   Identities, finite classifications and nonselective positivity count as zero in these units.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
+  (`BiScaleUncertainty`).
+- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
+  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
+  hypothesis proved sufficient.
 
 ### This programme's role
 
@@ -81,9 +113,12 @@ THIM is the mechanics face of the finite theories. It owns the trans-horizon res
 sieves, the conservation and dissipation laws under `k ↦ k+1`, `N ↦ N+1` and `k ↦ pk`, the transfer
 to the continuous energies (the signed energies of `BezoutValuationIncidence`, the Fermi–Nyman traces,
 the odd-sector prime-chain energies), and the exact collar cancellation of the odd sector. It owns
-mechanism 5: the parity pair, two weights with identical divisor-sum, Ramanujan and pronic data and
-opposite trans-horizon growth. Its odd-sector low-prime diagonal potential is the sieve-side reading
-of the unpaid axis intervals of `ArithmeticIncidencePositivity`.
+mechanism 5: the parity pairs (two weights with identical divisor-sum, Ramanujan and pronic data and
+opposite trans-horizon growth, constructed at every damping `ε ≤ 1/2`), the parity barrier, the
+classification of the observables that read the parity (first-order data at prime powers, the
+logarithmic moments, the pole value of a kernel) and the receiver-preserving critical Wiener
+algebra. Its odd-sector low-prime diagonal potential is the sieve-side reading of the unpaid axis
+intervals of `ArithmeticIncidencePositivity`.
 
 ---
 
@@ -332,7 +367,45 @@ $r_\beta(m)=m^\beta$ paired with $r_{-\beta}$.
 | $\log p\lessgtr\Lambda(\varepsilon)$ | damped prime horizons inject below the crossover scale $\exp((1+o(1))\log(1/2\varepsilon)/\varepsilon)$ and dissipate above it |
 | $L_N$ vs $N!$ | least full period divides $\operatorname{lcm}(1..N)$; $N!$ is a convenient period, not the same integer |
 
-### 2.8 Glossary
+### 2.8 Parity data and receiver classes
+
+For a weight $c$ with absolutely convergent **Ramanujan coefficients**
+$W_c(e)=\sum_{e\mid d}c(d)/d$, the **receiver** is the pronic energy of the centred prefix of
+$c*1$,
+$$
+E_T(c)=\sum_{n\le T}\frac{A_c(n)^2}{n(n+1)},\qquad A_c(n)=\sum_{j\le n}\bigl((c*1)(j)-W_c(1)\bigr),
+$$
+and $c$ is **paid** when $\sup_TE_T(c)<\infty$. For $c_\varepsilon$ this is the interior receiver of
+§1.2 up to the factor $2$ and the constant $1/2$. The **damped class**
+$\mathcal C(K,\varepsilon)$ is the set of weights with $\lvert c(d)\rvert\le Kd^{-\varepsilon}$.
+
+**Sign-blind data** of a weight are the amplitude spectrum $\lvert W_c(e)\rvert$, the
+complete-period translation statistics of $c*1$ (mean and every lag covariance
+$\sum_ec_e(h)W_c(e)^2$) and the pronic mode masses $W_c(e)^2\mathcal G(e,e)$. They are invariant
+under the **parity involution** $W\mapsto\lambda\cdot W$ on moduli ($\lambda(e)=\mu(e)$ on
+squarefree support). Signed coefficients determine the weight (Möbius inversion over multiples),
+so the parity is the whole content. A **parity pair** is two weights with the same sign-blind data,
+one paid and one not. The **parity twin** of $c_\varepsilon$ is the nonnegative weight
+$c'_\varepsilon(d)=(\rho_\varepsilon/U_\varepsilon)\,d\,\mu^2(d)\prod_{p\mid d}(p^{1+\varepsilon}-2)^{-1}$
+with $W_{c'_\varepsilon}(e)=\mu(e)w_\varepsilon(e)$. **Parity rows** are horizon-$N$ sign twists of
+truncated rows in Selberg coordinates. The **even flip** $c^\flat$ twists the even moduli; on
+four-free weights $c^\flat=c+c_e\star(\delta_1-2\delta_2)$ with $c_e(d)=\mathbf 1_{\mathrm{odd}}(d)c(2d)$,
+the Fermi cell factor $1-2\cdot2^{-s}$.
+
+The **critical Wiener algebra** is the set of kernels $g$ with $\sum_q\lvert g(q)\rvert q^{-1/2}<\infty$,
+Dirichlet series absolutely convergent on $\operatorname{Re}s\ge1/2$. The **pole value** of a
+kernel at damping $\varepsilon$ is $K(1-\varepsilon)=\sum_jk(j)j^{-(1-\varepsilon)}$, its **pole
+slope** $\sum_jk(j)\log j\,j^{-(1-\varepsilon)}$. A nonnegative weight has **dyadic masses**
+$M_k=\sum_{2^k<d\le2^{k+1}}c(d)$ and **drift** $n\sum_{n<d\le2n}c(d)/d$. The **first pronic
+moment** is $M(c)=\sum_nA_c(n)/(n(n+1))$, the **logarithmic moments** are $M(c\log^k)$, and the
+higher von Mangoldt functions $\Lambda_{k+1}$ satisfy $\sum_{e\mid d}\Lambda_{k+1}(e)=\log^{k+1}d$
+and are positive exactly on the $e\ge2$ with at most $k+1$ distinct prime factors. The **Mellin
+cells** are $\Delta_n(\sigma)=n^{-\sigma}-(n+1)^{-\sigma}$, with $\Delta_n(1)$ the pronic weight, and
+the **Mellin pairing** is $\Phi_c(\sigma)=\sum_nA_c(n)\Delta_n(\sigma)$. A multiplicative $f$
+**pretends** to a model $g$ when $f(p)=g(p)$ at every prime; its **local factor** at $p$ is
+$L_p=\sum_{e\ge0}f(p^e)p^{-e}$.
+
+### 2.9 Glossary
 
 | Object | Lean name |
 |---|---|
@@ -376,6 +449,9 @@ $r_\beta(m)=m^\beta$ paired with $r_{-\beta}$.
 | source energy, pairing, radical, ground vector, contractions | `sourceEnergy`, `sourcePair`, `signedRadical`, `oneL`, `absGraph`, `posGraph`, `negGraph`, `evenFold` |
 | windowed quarter zeros | `windowedQuarterZeros` |
 | Nyquist cell primitive, interior prefix | `nyquistCellPrimitive`, `pmBezoutInteriorPrefix` |
+| Ramanujan coefficients of a weight, receiver energy, paid receiver, damped class | `weightRamanujanCoeff`, `weightPronicEnergy`, `ReceiverBounded`, `DampedClass` |
+| parity twin, even-flip row, dyadic mass | `parityTwinWeight`, `evenFlipRow`, `dyadicMass` |
+| critical Wiener algebra, pole value, first pronic moment, higher von Mangoldt | `CriticalWiener`, `poleValue`, `firstPronicMoment`, `higherVonMangoldt` |
 
 ---
 
@@ -997,7 +1073,120 @@ subtraction and the reflected collar retained. Hence no uniform positive energy
 gap relative to the graph norm exists on compact primitive tests; vanishing
 energy neither proves nor refutes nonnegativity.
 
-### 3.16 Bridges
+### 3.16 The parity pair: sign-blind data and the receiver
+
+**The universal law and the threshold.** Along $k\mapsto k+1$ the centred prefix splits exactly,
+$A_c(n)=\sum_{d\le n}c(d)(\lfloor n/d\rfloor-n/d)-n\sum_{d>n}c(d)/d$. On $\mathcal C(K,\varepsilon)$
+this gives $\lvert A_c(n)\rvert\le KC_\varepsilon n^{1-\varepsilon}$ with
+$C_\varepsilon=1+1/(1-\varepsilon)+1/\varepsilon$, hence $E_T\le(KC_\varepsilon)^2\sum_{n\le T}n^{-2\varepsilon}$
+on the whole class: above half damping one constant pays every weight, signs are irrelevant. Below
+it, everything lives in the trans-horizon tail $n\sum_{d>n}c(d)/d$ and in the head drift, both of
+order $n^{1-\varepsilon}$.
+
+**Positive weights cannot cancel.** For $c\ge0$ both terms of the split are nonpositive and
+$A_c(n)\le-n\sum_{n<d\le2n}c(d)/d$. The receiver of a nonnegative weight is exactly the
+$\ell^2(2^{-k})$ norm of its dyadic masses: $c$ is paid iff $\sum_kM_k^2/2^k<\infty$, with explicit
+two-sided constants (`bounded_weightPronicEnergy_iff_summable_dyadicMass`). For $c\asymp d^{-\varepsilon}$,
+$M_k\asymp2^{k(1-\varepsilon)}$: half damping is the square-root law of the dyadic masses. For
+nonnegative weights the horizon limit commutes with the receiver (`rows_uniformly_bounded_iff`).
+
+**Bounded partial sums pay.** A weight $c(d)=s(d)d^{-\varepsilon}$ whose sign pattern $s$ has bounded
+partial sums is paid at every $\varepsilon>0$: split the moduli at $D=\lfloor n^{1/(2+\varepsilon)}\rfloor$,
+bound the short ones absolutely and count the long ones along the cofactor step $k\mapsto k+1$, which
+gives $\lvert A_c(n)\rvert\le6Bn^{1/(2+\varepsilon)}$.
+
+**The pairs and the barrier.** Twists that preserve the amplitudes turn these two laws into pairs.
+At half damping, $\mu(d)d^{-1/2}$ (paid, through the corpus Mellin bound and $\zeta(1+it)\ne0$) and its
+twin $c'_{1/2}$ (drift on the squarefree integers of $(n,2n]$) form a pair
+(`parityPair_at_half_damping`); the twin diverges at every $\varepsilon\le1/2$, so for the Möbius
+weight a parity pair at damping $\varepsilon$ exists exactly when its receiver is bounded there. At
+every damping $\varepsilon\le1/2$ and for every real non-principal character $\chi$, the weight
+$\chi(d)d^{-\varepsilon}$ and the positive twin $(\lvert L\rvert/O)\mathbf 1_{(d,q)=1}d^{-\varepsilon}$
+form a pair, unconditionally; the twist is the parity of the inert prime factors (`char_parityPair`).
+The completion $\hat\chi$ ($\pm1$-valued, completely multiplicative) pairs with the full-density
+smooth power $\kappa d^{-\varepsilon}$ (`charCompletion_parityPair`), and $\lambda(d)d^{-1/2}$ pairs with
+$\kappa d^{-1/2}$ (`liouville_parityPair_at_half_damping`). The positive members attain the maximal
+growth $\sum n^{-2\varepsilon}$ of the class, so the pairs are extremal. Hence the **parity barrier**:
+on $\mathcal C(K,\varepsilon)$ boundedness of the receiver is a function of the Ramanujan amplitudes
+if and only if $\varepsilon>1/2$ (`receiverBounded_amplitudeInvariant_iff`, `parity_barrier`). This is
+the parity barrier of sieve theory as a sharp theorem in the receiver's coordinates. The same holds
+at every horizon: the rows $\chi(d)d^{-\varepsilon}\mathbf 1_{d\le N}$ and their twins have equal
+Selberg coordinates up to sign and equal two-point translated moments, uniformly bounded against
+divergent pronic energy (`char_parityRows`).
+
+**Which additive data read the parity.** Translated moments of degree two see only $Y(q)^2$. Cubic
+moments read the sign at every odd modulus through $\zeta_q\zeta_q\zeta_q^{q-2}=1$ and pin squarefree
+rows up to the even flip (`scaledSelbergRow_eq_or_evenFlip_of_translatedMoment_three`). The even flip
+is invisible to translated moments of every degree and shift on squarefree rows
+(`translatedMoment_evenFlipRow`), and on the receiver it is the Fermi transform of the even part. It
+can break the receiver: $F=(\delta_1-2^{1-\varepsilon}\delta_2)\star\mathbf 1_{\mathrm{odd\,sqf}}d^{-\varepsilon}$ is
+paid and $F^\flat$ is not (`fermi_evenFlip_parityPair`), and their rows agree in every translated
+moment of every degree at every horizon (`fermi_parityRows`). So for squarefree rows no additive
+moment of any degree decides the receiver.
+
+**First-order data at prime powers and the logarithmic hierarchy.** Summation by parts along
+$n\mapsto n+1$ and harmonic numbers along $k\mapsto dk$ give
+$\sum_n(\lfloor n/d\rfloor-n/d)/(n(n+1))=-\log d/d$, hence the first pronic moment is the von
+Mangoldt pairing, $M(c)=-\sum_e\Lambda(e)W_c(e)$ (`hasSum_firstPronicMoment`). It orders every pair
+with a positive member, strictly iff $W_c<0$ at some prime power. The weight
+$2\rho_\varepsilon\delta_1-\mu(d)d^{-\varepsilon}$, which has the Möbius receiver, agrees with the twin
+at every prime power and in the first moment (`firstMomentBlind_parityPair`); its parity lives on
+the moduli $pq$ and is read by $M(c\log)=-\sum_e\Lambda_2(e)W_c(e)$
+(`logMoment_separates_firstMomentBlind`). In general $M(c\log^k)=-\sum_e\Lambda_{k+1}(e)W_c(e)$ reads
+the moduli with at most $k+1$ prime factors, a positive pair is separated at the order of the least
+$\omega(e)$ with $W_c(e)<0$ (`exists_logMoment_separating`), and since the logarithmic moments are the
+Taylor coefficients at $s=1$ of $\sum_dc(d)d^{-s}$ they determine the weight up to the unit mass, which
+the receiver does not see: every parity pair is separated by some logarithmic moment
+(`exists_logMoment_ne`). The first moment is a derivation, $M(a\star b)=m_bM(a)+m_aM(b)$; for the damped
+Möbius weight $M(c_\varepsilon)=\rho_\varepsilon\sum_n\Lambda(n)n^{-1-\varepsilon}\to1$ as
+$\varepsilon\to0^+$, and the twin and the first-moment-blind weight have $-M(c_\varepsilon)$.
+
+**Receiver-preserving symmetries.** The pronic weight contracts the dilation $n\mapsto\lfloor n/p\rfloor$
+by exactly $p^{-1/2}$, and a local factor acts as $A_{c\star(\delta_1-a\delta_p)}(n)=A_c(n)-aA_c(\lfloor n/p\rfloor)+am\{n/p\}$:
+for $\lvert a\rvert<\sqrt p$ the receiver class is invariant, sharply
+(`bounded_weightPronicEnergy_localFactor_iff`). Zeros of Euler factors never hurt; poles hurt exactly
+when they lie on or to the right of $\operatorname{Re}s=1/2$. Globally,
+$A_{g\star c}(n)=\sum_{q\le n}g(q)A_c(\lfloor n/q\rfloor)+m_cA_g(n)$ and
+$\lVert A_{g\star c}\rVert\le G\lVert A_c\rVert+(\sqrt2+1)G\lvert m_c\rvert$, $G=\sum_q\lvert g(q)\rvert q^{-1/2}$:
+kernels of the critical Wiener algebra preserve paid receivers (`receiverBounded_dirichletConv`). So
+the Möbius and Liouville receivers are bounded at the same dampings, through the square dilation
+$k\mapsto j^2k$ (`receiverBounded_moebius_iff_liouville`); the receiver of a multiplicative weight
+with $\lvert f\rvert\le1$ is decided at the primes, with the trichotomy $\chi$-pretentious paid at every
+damping, $\mu$-pretentious paid wherever $\mu$ is, nonnegative $1$-pretentious unpaid for
+$\varepsilon\le1/2$ (`receiver_trichotomy`); flips on a prime set with
+$\sum_{p\in P}p^{-1/2-\varepsilon}<\infty$ never change the class (`receiverBounded_of_sparse_flip`), so a
+paid $\pm1$ pattern flips a prime set of divergent critical-line mass. The twist kernels of all the
+pairs lie just outside the algebra exactly when $\varepsilon\le1/2$.
+
+**The pole law.** The Mellin pairing is multiplicative under convolution,
+$\Phi_{k\star q}=K(\sigma)\Phi_q+m_q\Phi_k$, because the cells of a dilation telescope. A paid receiver
+has $\lvert\Phi(\sigma)\rvert=O((\sigma-1/2)^{-1/2})$, while a positive drift $\kappa n^{1-\varepsilon}$
+forces $\Phi_q(1-\varepsilon+\delta)\asymp-\delta^{-1}$. Hence for every kernel of the critical Wiener
+algebra, $k\star q$ with $q$ a positive drift weight is unpaid unless $K(1-\varepsilon)=0$
+(`not_receiverBounded_dirichletConv_of_drift_critical`); this is the divergence tool for
+sign-changing weights. For finite kernels over any positive weight pretending to one ($d^{-\varepsilon}$,
+$\mu^2$, the odd squarefree weight, the coprime weights) the paid perturbations form one universal
+hyperplane, $K(1-\varepsilon)=0$ (`receiverBounded_dirichletConv_primesOne_iff`). A multiplicative
+$1$-pretentious weight with finite local factors is paid iff some $L_p=0$
+(`receiverBounded_iff_exists_poleLocalFactor_eq_zero`), never when $\lvert f\rvert\le1$, since then
+$L_p\ge1$: higher prime powers enter only through the local factor at the pole. The even flip shifts
+the pole value by the even part of the kernel, $K^\flat(1-\varepsilon)=K(1-\varepsilon)+(1-2^\varepsilon)K_e(1-\varepsilon)$
+(`evenFlip_exactLoss`), so at most one member of a flipped pair is paid when $K_e(1-\varepsilon)\ne0$.
+A pole of order two needs a zero of order two: under a logarithmic drift a paid convolution has
+vanishing pole value and pole slope
+(`poleValue_eq_zero_and_poleSlope_eq_zero_of_receiverBounded`). The receiver reads the order of the
+pole, and the separating observables on the kernel side are the Taylor coefficients of $K$ at
+$s=1-\varepsilon$, the counterpart of the logarithmic hierarchy.
+
+**Reading.** In every case proved, a pole of the weight's Dirichlet series on or to the right of
+$\operatorname{Re}s=1/2$ leaves the receiver unpaid and zeros never do; in the pole-law cases the
+pole sits at $s=1-\varepsilon$. A parity pair is a pair in which the twist creates such a pole: the
+positive twins acquire the pole of $\zeta$, moved to $s=1-\varepsilon$, by flipping a positive density
+of primes. For the Möbius weight the series is $1/\zeta(s+\varepsilon)$, whose poles to the right of
+$\operatorname{Re}s=1/2$ are the zeros of $\zeta$ with $\operatorname{Re}\rho>1/2+\varepsilon$; these are
+what a bound on the Möbius receiver must exclude, and no sign-blind datum can see them.
+
+### 3.17 Bridges
 
 Quarter-plane zeros in any height box are finite without hypothesis, inherit
 the Ingham–Huxley, Huxley $12/5$ and density-hypothesis exponents, are
@@ -1065,6 +1254,13 @@ Poincaré law of that theory with its variance bounded below.
 | Vanishing primitive energy settles the sign | The $O((n+1)^{-2})$ family only excludes a uniform gap relative to the graph norm. |
 | Compensated positivity is odd Weil positivity | The local correction is not shown to be paid by jump energy on arbitrary profiles. |
 | The PM receiver needs a bound uniform in damping | It needs a bound uniform in the horizon at each arbitrarily small fixed damping; the constant may depend on $\varepsilon$. |
+| Ramanujan amplitudes, translation statistics or pronic mode masses decide the receiver | Only above half damping. For every $\varepsilon\le1/2$ every real character gives an unconditional parity pair; amplitude invariance of boundedness holds iff $\varepsilon>1/2$. |
+| The barrier is "no bound $E_T\le F(\lvert W_c\rvert)$" | That follows from a single divergent weight. The parity content is that the predicate "paid" is not a function of the amplitudes, which needs a pair. |
+| Higher-degree translated moments see the parity of squarefree rows | Cubic moments pin odd-modulus signs, but the even flip is invisible at every degree and can break the receiver (the Fermi pair). |
+| Finitely many flipped primes make a parity pair | Local factors with $\lvert a\rvert<\sqrt p$ never change the receiver class, nor do flips on prime sets of convergent $\sum p^{-1/2-\varepsilon}$; a pair needs a prime set of divergent critical-line mass. |
+| Higher prime powers are invisible to the receiver | True for $\mu$-pretentious weights; for $1$-pretentious weights they enter through the local factor $L_p$ at the pole. |
+| A separating observable bounds the receiver | The logarithmic moments separate every pair and bound nothing; separation is qualitative and carries no exponent. |
+| Divergence proofs need a nonnegative weight | The pole law proves divergence of sign-changing convolutions $k\star q$ through the Mellin pairing at $\sigma=1-\varepsilon+\delta$. |
 
 **Lean conventions.** Everything lives in
 `GaloisForLFunctions.TransHorizonIncidenceMechanics`. Sieve objects are imported
@@ -1130,11 +1326,23 @@ injective, is a least-squares question: which rows are recovered and at what
 price. Non-dyadic schedules (levels of an odd prime) and weighted traces have no
 classification yet.
 
+**The parity pair.** Below half damping the receiver of a weight is not a function of its
+sign-blind data, and every known pair is decided by a pole at $s=1-\varepsilon$. Open: the pole law
+for kernels outside the critical Wiener algebra, where floor sums lose a logarithm; whether a
+completely multiplicative $\pm1$ sign whose $-1$-primes have relative density $\delta$ is paid at
+half damping exactly when $\delta>1/4$ (the heuristic $F\approx\zeta^{1-2\delta}$; only the sparse
+necessary condition is proved); whether signed rows can be uniformly bounded while their pointwise
+limit is unpaid, or conversely (positivity forces commutation); and a quantitative form of the
+logarithmic hierarchy, bounding the receiver by finitely many logarithmic moments with an explicit
+loss.
+
 ### Research topics toward the shared target
 
-1. **The parity pair.** Construct, or prove impossible, two weights with identical divisor-sum,
-   Ramanujan and pronic Gram data and opposite trans-horizon energy growth (mechanism 5); its
-   negation is the Type-II input the shared target needs.
+1. **From separation to a bound.** The parity pairs exist at every damping `ε ≤ 1/2` and the
+   observables that separate them are classified: first-order data at prime powers, the logarithmic
+   moment hierarchy, the pole value `K(1 − ε)` and its Taylor coefficients (mechanism 5). Find an
+   estimate that turns one of them into a bound on the actual Möbius receiver at one fixed
+   `ε < 1/2`, with its exact loss; this is the Type-II input the shared target needs.
 2. **The complete signed trans-horizon energy** at fixed small damping, with means, endpoints,
    mixed covariance and growing cutoffs retained.
 3. **The odd-sector low-prime diagonal potential**, matched term by term with the unpaid axis

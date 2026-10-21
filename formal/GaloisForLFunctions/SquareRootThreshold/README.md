@@ -34,38 +34,70 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
+methods see the additive structure of `ℕ` only after averaging over a family, and below half
+damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
+methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
+identities hold for every even positive kernel, and positivity on restricted families is paid by an
+archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
+operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
+the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
+scale. No existing field has its basic objects built with all three; the seven programmes build
+them.
+
 **The mechanisms the shared target needs**, with the programme that owns each:
 
 1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
+   Harnack-type propagation across the prime shifts `log 2, log 3, …`
    (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
 2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
+   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
 3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
    for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
    `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
-   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
-5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
+   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
+   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
+   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
+   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
+   seen from the other side.
+5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
+   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
+   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
+   `log 6`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH.
+  about RH (test models: `BiScaleUncertainty`).
 - *No family average.* One character, modulus one, shift zero.
-- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
+  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
+  family, `θ = 2` on the Gram.
+- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
+  member is infrastructure (the every-height problem: `SquareRootThreshold`).
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
+- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
+  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
+  parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
   archimedean place against a bounded prime cost is nonselective by construction.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
   Identities, finite classifications and nonselective positivity count as zero in these units.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
+  (`BiScaleUncertainty`).
+- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
+  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
+  hypothesis proved sufficient.
 
 ### This programme's role
 
@@ -75,7 +107,11 @@ first-negative-lag law on crystals and finite off-line sets. It supplies the win
 (`lagPrimeWindow`) whose internal incidence `ArithmeticIncidencePositivity` classifies, and the
 units `θ`, `V` and `δ(n, R)` in which the shared target measures progress. Its part of mechanism 3
 is the lag version of the no-crossing law: why the actual zero configuration of `ζ` has no first
-negative lag when every crystal and every finite off-line set has one.
+negative lag when every crystal and every finite off-line set has one. It also carries the
+every-height criterion of the shared target: statements about the zeros near the line at every
+height rather than almost every, the control of near-top zeros beyond a finite horizon, and, with
+the Bagchi lane of `RHTower`, the recurrence of `ζ` on a prescribed disc, which holds on every
+zero-free disc and around an off-line zero is literally the exclusion of that zero.
 
 ---
 
@@ -171,6 +207,20 @@ The configurations and the probes of the theory:
 | Polar-free kernel | the autocorrelation of the polar-free two-bump test | `polarFreeKernel` |
 | Three archimedean bands | the piecewise lower bounds of the archimedean symbol below aperture `1/100` | `muLow`, `muMid`, `muHigh` |
 
+Finite lag ranges, records and the height window:
+
+| Object | Meaning | Lean |
+|---|---|---|
+| Laplace lag window | `E_V(z) = ∫_0^V e^{zu} du`, the Laplace window of the lag range `[0, V]` | `lapWin` |
+| Fejér windows | the windows of the weights `sin^{2k}(πu/V)`, `k ≥ 1`; order `k` decays like `|z|^{−(2k+1)}` | `fejerWin`, `fejerPowWin` |
+| Grid window | `Q_K(w) = Σ_{k≤K} w^k`, the window of the lag grid `v = kℓ`, `k ≤ K` | `geomWin` |
+| Record | at lag `V`, the right exponent `z` maximizing `|D(z)| e^{Re z · V}`; it exists at every lag, attained top or not | — |
+| Visibility lags | `V₀(w, η, δ₀)` for a zero of depth `δ₀` with `η = |h_w(γ₀ − iδ₀)|`; `V(a, σ)` for a record of size `a` and depth `σ`; `V_w(γ₀, δ₀)` for the bump modulated to `γ₀`; the zone lag `V_μ` | `oneParamLag`, `recordLag`, `nearTopLag`, `zoneLag` |
+| Horizon of a zero | `V₀(w, |h_w(−iz)|, Re z)`: zeros with `V₀ ≤ V` are inside the horizon of the lag range `[0, V]` | `oneParamHorizon` |
+| Window prime polynomial | `Re Π_ℓ(T) = Σ_{n ≤ e^{2ℓ}} a_n cos(T log n)`, `a_n = 2Λ(n)n^{−1/2}K_ℓ(log n) ≥ 0`, the prime part of the Weil form of the bump of aperture `ℓ` modulated to height `T` | `windowPrime` |
+| Off-line correction | `Corr_ℓ(T) = Σ_ρ m_ρ (Re K̂_ℓ(γ_ρ − T) − ψ_ℓ(Im ρ − T))`, zero under RH | `offLineCorrection` |
+| Zero-count remainder | `S(T) = N(T) − (T/2π) log(T/2πe) − 7/8` | `rvmRemainder` |
+
 **Words.**
 * **Aperture `a`:** the support radius of the test; resolution `π/a`, prime length `e^{2a}`.
 * **Visible at aperture `a`:** some `C²` test supported in `[-a, a]` makes `Re W(f, f) < 0`.
@@ -190,6 +240,13 @@ The configurations and the probes of the theory:
   a configuration is seen at lag `v` when the minor fails there.
 * **Nyquist aperture:** the aperture `Pℓ/2` at which a periodic configuration with `P` ordinates per
   period `2π/ℓ` becomes resolvable; position and depth become visible there.
+* **Near-top zero:** a zero whose depth is within `1/V` (or `μ/V`, a **zone**) of the supremum of
+  the depths; it exists at every lag when RH fails, whether or not the supremum is attained.
+* **Loud, quiet:** a record is loud when its coefficient dominates the potential of the other
+  exponents; the **loudness ratio** compares them at the lag itself.
+* **Twin, cluster, collapsed cluster:** a companion zero of a record within a radius `r`; a set of
+  `p` companions; a cluster whose geometric-mean radius is exponentially small in `Vr/p`, an
+  approximate multiple zero.
 
 ---
 
@@ -400,6 +457,85 @@ The configurations and the probes of the theory:
     by tests of aperture `3ℓ/4`, but the family stays nonnegative until lag `4ℓ − 2w`. So the
     minimal receiver is threshold-exact on crystals but not aperture-optimal.
 
+### Finite lag ranges: records, twins and horizons
+
+The criteria of mechanisms 9 and 21 decide the line through Landau's theorem, which is not
+effective: it says that some lag is negative, not which one. On a finite lag range the same
+argument becomes quantitative.
+
+22. **The record-potential law.** If the difference family is nonnegative on `[0, V]`, the Laplace
+    window `G` of the nonnegative function `φ(0) − φ` satisfies `|G(σ + it)| ≤ G(σ)`. Expanding `φ`
+    over the exponents gives, for every exponent `z₀` and every `s = σ + it`,
+    `|D(z₀)E_V(z₀ − s)| ≤` the archimedean and pole terms plus the potential `Σ_{z ≠ z₀}|D(z)||E_V(z − s)|`
+    of the other exponents (`norm_evenCoeff_mul_lapWin_le`). This is an effective Landau theorem that
+    tests every exponent, not only the top. Once the loudness ratio of the record is bounded, the first
+    negative lag is at most `θ⁻¹ log(2 + (4|M|/σ + κΣ|D|)/(κN|D(z₀)|))`, `θ` the depth of the record
+    above `σ` (`exists_lag_neg_of_loudness`). What replaces attainment is the loudness of the record at
+    the lag itself. Fejér weights `sin^{2k}(πu/V)` keep the positivity and raise the decay of the
+    potential to `|z|^{−(2k+1)}`, through the exact recursion
+    `(z² + ((2k+2)π/V)²)K_{k+1} = (2k+2)(2k+1)(π/V)²K_k`; already at `k = 1` the loudness ratio enters
+    only as `N^{1/3}`. On a grid `v = kℓ` the distances become aliasing gaps `|1 − e^{(z − s)ℓ}|`
+    (`norm_evenCoeff_mul_geomWin_le`): a chain hides from the grid exactly when its loud members alias
+    onto the record and onto the real axis at the record's own scale, and the continuum family sees
+    such a chain at a lag `O(log M)` (`exists_re_gridChainSum_gt`).
+23. **For `ζ`, hiding needs twins, twins need triples, clusters collapse.** With the local zero count
+    (at most `160 log(180(|a| + 5))` zeros with height in `[a, a + 1]`) and the Lorentzian zero mass,
+    positivity of the modulated family on `[0, V]` forces every loud near-top record to have a
+    companion within `73(κ_w + π log log(180(Γ + 6)) + 4π)/V`, with `κ_w` explicit in the width
+    (`zeta_uniform_twin_radius`): the uncertainty scale `1/V` up to `log log γ`. Two Fejér orders
+    eliminate a twin exactly (`dipole_elimination`), so an isolated twin is exponentially tight; and the
+    coefficients of nearby zeros are phase-coherent, because nearby squares of a smooth transform cannot
+    cancel, so a tight twin adds to its record instead of hiding it (`zeta_isolated_twins_cannot_hide`).
+    Iterated elimination shows that a cluster of `p` zeros hiding a record has geometric-mean radius
+    `O(r e^{−cVr/p})`, `p ≤ 80 log(180Γ)`: positivity forces approximate multiple zeros near the top
+    (`zeta_near_top_cluster_collapse`). An empty annulus among nested ones splits a cluster into a
+    coherent core and loose members; eliminating only the loose members closes the collapsed-cluster
+    alternative.
+24. **Explicit lags.** A zero `1/V`-near the top at height `γ₀`, attained or not, is seen by a
+    modulated difference test at a lag at most `V_w(γ₀, δ₀) ≍_w (log γ₀)² log log γ₀/δ₀`
+    (`zeta_near_top_visible_at_polylog_lag`). For the one-parameter family `P_v` itself, with
+    `η = |h_w(γ₀ − iδ₀)| > 0`, the lag is `V₀(w, η, δ₀) ≍ (log Γ₀)² log log Γ₀/δ₀`, `Γ₀ ≍ η^{−2/3}`, with no
+    height condition (`one_param_near_top_visible_at_explicit_lag`), and every such statement reduces to
+    one record lemma at `V(a, σ) ≍ log²(1/a) log log(1/a)/σ` (`one_param_record_visible_at_explicit_lag`).
+    An attained top, and in particular every finite set of zeros right of the line, gives `P_v < 0` at
+    some `v ≤ V₀(z₀)`, with no separation hypothesis (`one_param_first_negative_lag_of_finite`); the
+    prime-window forms hold for `2w < log 2`.
+25. **The horizon law.** `P_v ≥ 0` on `[0, V]` forces a depth gap: every zero inside the horizon lies at
+    least `1/V` below the top. Iterated, from every zero inside the horizon a zero beyond it, deeper by
+    more than `1/V`, is reached in fewer than `V/2` steps (`one_param_horizon_law`); on zones of width
+    `μ/V` the gap is `≍ (δ₀/(V log V))^{1/2}` (`one_param_zone_depth_gap`). The attainment premise of
+    the grid theorems is replaced by a condition on the zeros beyond the horizon: a configuration that
+    hides from every lag in `[0, V]` must have zeros beyond it, approaching the top with ever smaller
+    transform amplitude or ever larger height. What remains is the pair-correlation barrier, twins
+    closer than `log log γ/V`.
+
+### The lag face and its neighbours
+
+26. **The unconditional envelope of `ζ`.** With the corpus zero-free regions, for every
+    `w ∈ (0, ½ log 2)` and `v ≥ V₀ = max(230², 1/(100η₀²))`,
+    `P_v ≥ −|φ(0)| − (W + S₂)e^{v/2 − √v/10}` (`zeta_lag_envelope`): an explicit lag at de la Vallée
+    Poussin strength. The exact tradeoff behind it: a zero-free width `η` below height `G` gives
+    `|φ(v)| ≤ e^{v/2}(W e^{−ηv} + S₂/(1 + G)²)`.
+27. **The ground-energy bridge to the aperture face.** For every smooth test supported in the closed
+    interval `[−A, A]`, `μ(A)∫|g|² ≤ Re W_ζ(g, g)`; on the centred difference test at `A = v/2 + w` this
+    reads `2‖κ_w‖² μ(v/2 + w) ≤ Re P_v` (`two_mul_ccmRestrictedWeilGroundEnergy_le_re_lagPrimeWindowRHS`),
+    so every aperture floor of `ArithmeticCriticalityTheory` is a lag floor. Conversely a ground-energy
+    bound `μ(A) ≥ −Ce^{2σA}` forces `|Re ρ − ½| ≤ σ` for every zero, unconditionally
+    (`re_le_of_ccmRestrictedWeilGroundEnergy_ge_neg_exp`), and along one non-resonant geometric grid of
+    windows RH is equivalent to grid positivity together with the approach of the zeros to the line
+    (`riemannHypothesis_iff_zerosApproachLine_and_grid_primeWindow_nonneg`). The no-crossing of `μ(A)`
+    and the absence of a first negative lag are one law in two coordinates.
+28. **The window prime polynomial reads `S(T)`.** The localized Weil form at height `T` is the
+    archimedean part minus `Re Π_ℓ(T)`, a cosine polynomial with nonnegative coefficients over the
+    prime powers `n ≤ e^{2ℓ}`. Through the Stieltjes identity it is a smoothed derivative of the
+    zero-count remainder, `Re Π_ℓ(T) = ∫_1^{2T} S(t)ψ_ℓ'(t − T) dt − Corr_ℓ(T) + o(1)`
+    (`tendsto_windowPrime_add_offLineCorrection_sub`). On the prime torus the aligned value
+    `F_ℓ(1) ≥ ℓϑ²e^{ℓ/4}` is visited on a positive proportion of heights (Kronecker–Weyl), and the
+    off-line correction is small outside a sparse set of heights (Selberg-type density); hence `S(T)`
+    is unbounded, unconditionally (`rvmRemainder_unbounded`). A bounded spectral shift is the
+    signature of a finite-rank modification of a reference operator, so no such model of the zeros
+    exists: this is the size constraint of mechanism 4 of the shared target, read on the lag side.
+
 ---
 
 ## 4. Traps
@@ -432,6 +568,11 @@ The configurations and the probes of the theory:
 | Expecting the minimal receiver to be aperture-optimal | It is exact on crystals, but its teeth read only the real part of each rotated mode: a quarter-turn pattern visible at aperture `3ℓ/4` is first seen by the family at lag `4ℓ`. |
 | Expecting a lag grid to decide the line | A grid `v = kℓ` sees every attained top for non-resonant `ℓ`, but a chain whose heights approach `(2π/ℓ)ℤ` can keep a one-sided grid bound. Only the continuum of lags excludes chains. |
 | Expecting all couplings `τ` to be needed in the two-bump criteria | Unimodular `τ`, and for `ζ` the single sign `τ = −1`, suffice; the lag `v` and the height `γ` are the only parameters. |
+| Reading Landau's theorem as a visibility lag | It is not effective. Lags come from the record-potential law on a finite range, and they need the loudness of the record at that lag. |
+| Expecting an unattained top to escape every explicit lag | A `1/V`-near-top zero exists at every lag and is seen at `V₀(w, η, δ₀)`; what escapes is a configuration with zeros beyond the horizon. |
+| Expecting a twin to hide a record | Nearby coefficients are phase-coherent, so a tight twin adds to the record; hiding needs at least triples, and then a collapsed cluster. |
+| Mixing the visibility lags | `V₀(w, η, δ₀)` is for `P_v` itself and carries the transform amplitude `η`; `V_w(γ₀, δ₀)` is for the bump modulated to the zero's height and carries `log γ₀`. |
+| Treating the ground-energy floor and the lag floor as different problems | `2‖κ_w‖²μ(v/2 + w) ≤ Re P_v`: aperture floors are lag floors, and the two no-crossing laws are one. |
 
 ---
 
@@ -457,10 +598,13 @@ The configurations and the probes of the theory:
    one Ingham window `4π/g`, the larger of half the relaxation lag of the depth-deficit transform
    and `(1/2D) log M`, whether or not depths accumulate at the top. When the top depth is not
    attained, a level is still seen in any window where the deficit of the shallower zeros and the
-   excess of the deeper ones are both small. Open: whether such a window always exists at a
-   controlled lag, at `ζ`-density and with irregularly spaced ordinates. Equivalently: how fast
-   the excess transform at the height of a zero can grow compared with the relaxation of its
-   deficit.
+   excess of the deeper ones are both small. For `ζ` itself the finite-range theory of mechanisms
+   22–25 answers the near-top question: a near-top zero is seen at an explicit polylogarithmic lag,
+   and hiding from `[0, V]` needs zeros beyond the horizon. Open: control of the zeros beyond every
+   finite horizon, that is of tops approached by zeros of vanishing transform amplitude or growing
+   height, and the removal of the residual pair-correlation alternative (twins closer than
+   `log log γ/V`); for general configurations, how fast the excess transform at the height of a zero
+   can grow compared with the relaxation of its deficit.
 3. **Sharper constants.** Weil positivity of `ζ` holds unconditionally on every test of aperture
    `a ≤ 3/10`, with `Re W ≥ ‖f‖²/5000` (`ZetaWeilPositivityThroughApertureThreeTenths`: the
    zero-side form splits as `Ẑ(Re f) + Ẑ(Im f)`, so every all-profile window of the full zero form
@@ -476,9 +620,11 @@ The configurations and the probes of the theory:
 
 1. **`P_v ≥ 0` beyond an explicit lag `V` for one generic width**: the first selective, cofinal,
    weight-specific estimate; the unit is `V`.
-2. **The attainment premise.** What replaces it for the actual zero configuration of `ζ`: why there
-   is no first negative lag when every crystal and every finite off-line set has one (mechanism 3,
-   lag side).
+2. **Beyond the horizon.** The attainment premise of the grids is replaced by the horizon law
+   (mechanism 25): a first negative lag exists, at an explicit lag, unless zeros lie beyond the
+   horizon. Why the actual zero configuration of `ζ` has no first negative lag when every crystal and
+   every finite off-line set has one (mechanism 3, lag side) is the question of what bounds the
+   zeros beyond every finite horizon.
 3. **Localized explicit formula at height `T`** with the off-diagonal pair structure at bandwidth
    `λ > 1`, organized around the square-root threshold rather than the cutoff.
 4. **The visibility tradeoff.** The exact relation between aperture, height localization and
@@ -488,6 +634,11 @@ The configurations and the probes of the theory:
    `ArithmeticIncidencePositivity` (doublings, triplings, consecutive powers of `2` and `3`); turn it
    into a lag-side statement about which prime pairs a window inequality must pay.
 6. **Calibration** of the threshold and of the first-negative-lag law over `F_q[T]`.
+7. **Every height.** Conditioned-tail estimates for the orbit `τ ↦ ζ(· + iτ)` on a prescribed disc
+   (the Bagchi lane of `RHTower`): recurrence holds on every zero-free disc, RH is local disc
+   recurrence at every point of the strip, and the error to control is the tail conditioned on the
+   return set of the finite Euler head, which no bound on the tail averaged over all heights
+   controls. With it, the control of near-top zeros beyond a finite horizon (mechanism 25).
 
 ---
 

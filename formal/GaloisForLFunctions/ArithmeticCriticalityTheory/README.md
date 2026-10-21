@@ -35,38 +35,70 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
+methods see the additive structure of `ℕ` only after averaging over a family, and below half
+damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
+methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
+identities hold for every even positive kernel, and positivity on restricted families is paid by an
+archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
+operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
+the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
+scale. No existing field has its basic objects built with all three; the seven programmes build
+them.
+
 **The mechanisms the shared target needs**, with the programme that owns each:
 
 1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
+   Harnack-type propagation across the prime shifts `log 2, log 3, …`
    (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
 2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
+   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
 3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
    for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
    `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
-   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
-5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
+   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
+   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
+   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
+   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
+   seen from the other side.
+5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
+   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
+   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
+   `log 6`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH.
+  about RH (test models: `BiScaleUncertainty`).
 - *No family average.* One character, modulus one, shift zero.
-- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
+  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
+  family, `θ = 2` on the Gram.
+- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
+  member is infrastructure (the every-height problem: `SquareRootThreshold`).
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
+- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
+  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
+  parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
   archimedean place against a bounded prime cost is nonselective by construction.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
   Identities, finite classifications and nonselective positivity count as zero in these units.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
+  (`BiScaleUncertainty`).
+- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
+  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
+  hypothesis proved sufficient.
 
 ### This programme's role
 
@@ -263,6 +295,7 @@ with **conductances** `M(x)M(x+t)`, negative exactly on the jumps that cross a n
 | Pure jump form | `J_M(u) + V_μ(u) = Z(Θ(ωu))` in any odd gauge with source `σ sinh(x/2) Θ` | RH ⟺ `≥ 0` on even profiles, in every smeared gauge |
 | Cone form | `Ẑ(Θv) = E_arch(v) + E_prime(v) + 2(∫ Θv e^{x/2})(∫ Θv e^{−x/2}) − ∫ Θ cosh(x/2) v²` | RH ⟺ the potential is paid on nonnegative profiles |
 | Primitive hyperplane | `H = {F : ∫ F cosh(x/2) = 0}`, the `Q`-orthogonal complement of `Θ` | RH ⟺ `Q ≥ 0` on `H` |
+| Restricted Weil ground energy | `μ(A)`, the infimum of `Re W_ζ(u, u)/∫|u|²` over smooth sources supported in `(−A, A)`; `μ₀(A)` the same on pole-vanishing sources | RH ⟺ `μ(A) ≥ 0` for every `A` ⟺ `μ(A) → 0` |
 
 A **Hardy weight** for a nonnegative form `Q` on a class of tests is a locally integrable `W ≥ 0`,
 positive on a set of positive measure, with `Q(F) ≥ ∫ W F²`; the form is **subcritical** if one
@@ -291,6 +324,8 @@ the tests stay away from zero. The **theta span** is the span of the translates 
 | autocorrelation, averaged kernel, smooth plateau | `riemannAutocorr`, `averagedKernel`, `smoothPlateau` |
 | folded admissibility, finite model | `FoldedAdmissible`, `FiniteJumpFormAllegrettoPiepenbrink` |
 | Doob jump energies, cosh mass, capacity ratio | `phiDoobArchJump`, `phiDoobPrimeJump`, `phiDoobCoshMass`, `capacityRatio` |
+| restricted and polar ground energies, window floor | `ccmRestrictedWeilGroundEnergy`, `ccmRestrictedWeilPolarGroundEnergy`, `windowFloor` |
+| quadratic folded potential, origin-balanced profile | `quadraticFoldedPotential`, `originBalancedProfile` |
 | RH criteria (entry points) | `riemannHypothesis_iff_forall_odd_zeroForm_nonneg`, `riemannHypothesis_iff_forall_fullZeroForm_nonneg`, `riemannHypothesis_iff_forall_smearedGauge_jumpForm_nonneg`, `riemannHypothesis_iff_forall_nonneg_cone`, `riemannHypothesis_iff_nonneg_and_no_hardyWeight`, `riemannHypothesis_iff_isLeast_primeRate` |
 
 ---
@@ -421,6 +456,29 @@ folded **super**solution on a half line (`exists_infinity_window_potential_lt_fo
 The obstruction to folded supersolutions is therefore positivity together with the cosh moment, not
 decay or regularity, and no positive gauge can satisfy the sufficiency theorem.
 
+**Dropping the sign decouples the ends from the moments.** The folded representation holds for every
+odd `C²` gauge with no sign condition, `Q(Θ(ωu)) = R_N(ω,u) + 2∫_{x>0} u² q_ω` with the quadratic
+folded potential density `q_ω`. For `ω = M/Θ`, `q_ω(x)/x → −2M'(0) ∫ M dm` at the origin, so a
+profile whose slope at `0` and jump-measure moment have opposite signs is a strict supersolution on
+an origin window; at infinity the same holds when the eventual sign of `M` and its half-line cosh
+moment are opposite (`exists_both_ends_quadraticFoldedPotential_pos_of_opposite_moments`). The origin
+moment of a shift difference is its collar mass at the origin, `∫ m_a dm = C_a(0)`, so the two-shift
+profile `C_b(0) m_a − C_a(0) m_b` has vanishing jump-measure moment
+(`jumpMeasureMoment_originBalancedProfile_eq_zero`). A folded supersolution, if one exists, is a
+sign-changing profile whose local signs at both ends oppose its two global moments; the theorems
+produce each end separately, never both on one profile with positivity on the half line.
+
+**Extra jumps are seen only at infinity.** Add to the jump measure of `ω_a` one extra jump of length
+`ℓ` at any rate `δ > 0`. Against the scale `Θ(x)e^{x/2}` of the folded source the extra term grows
+like `exp(πe^{2x}(1 − e^{−2a} − e^{−2ℓ}))`: if `e^{−2a} + e^{−2ℓ} < 1`, `ω_a` becomes a strict
+supersolution of the perturbed generator near infinity for every rate
+(`exists_foldedGenerator_add_extraJump_gt_potential`); if `e^{−2a} + e^{−2ℓ} > 1` it stays a strict
+subsolution there; near the origin every extra jump only deepens the failure. The threshold curve is
+the graph of the killing function `N(a) = −½ log(1 − e^{−2a})`, an involution: `ω_a` detects at
+infinity exactly the jumps longer than `N(a)`; at the prime `2` the condition is `e^{−2a} < 3/4`.
+The arithmetic rates are critical at infinity in the direction opposite to rate-criticality of the
+form, while the origin half of the no-go does not see the rates at all.
+
 This is the exact sense in which the odd arithmetic form is **not of Z-type**: the reflected jumps
 enter the odd-sector operator with a plus sign, and the hard direction of Allegretto–Piepenbrink,
 which for a finite Z-matrix follows from Perron–Frobenius (3.12), fails. Positivity, if RH holds, is
@@ -477,7 +535,7 @@ equation. This is the structural reason for the criticality of 3.9.
 ### 3.7 The two-sided representation and the variation inequality; the archimedean place is Z-type
 
 For `ω = ω_a` the ground-state representation holds with no side condition: `(ω_a, u)` is admissible
-for every `a > 0` and `u ∈ C¹_c` (3.14). Adding the reflected sum and difference jumps,
+for every `a > 0` and `u ∈ C¹_c` (3.15). Adding the reflected sum and difference jumps,
 `P + D = 4 ∫_{x>0} u² m_a C_a` (collar Fubini), and the folded representation `R_N = 2S + P` becomes
 the **two-sided representation**: for `a > 0` and even `u ∈ C²_c`
 (`markovEnergy_phiDoob_shiftedGroundState_eq_twoSided`)
@@ -730,7 +788,49 @@ positivity does not. On even tests the shifted pair `ζ(s − a)ζ(s + a)` has, 
 every large `a`, an even test on `[−r, r]` with negative zero form
 (`exists_even_shiftedPairZeroForm_neg`): window positivity of `ζ` is selective at every aperture.
 
-### 3.14 Admissibility: how the analysis is discharged
+### 3.14 The ground-energy path
+
+The **restricted Weil ground energy** `μ(A)` is the greatest lower bound of the Rayleigh quotients
+of smooth sources compactly supported in `(−A, A)` for the restricted Weil operator of
+Connes–Consani–Moscovici; on a complex smooth source the restricted quadratic is
+`Re W_ζ(u, u) = Ẑ(Re u) + Ẑ(Im u)`, so `μ(A)` is the ground energy of the full zero form at aperture
+`A`. It is antitone in `A`. The **polar ground energy** `μ₀(A)` is the same infimum over sources with
+`∫ F cosh(x/2) = ∫ F sinh(x/2) = 0`. The aperture face of the shared target is the statement that
+this one real function of one variable never crosses zero.
+
+* **Criticality at infinite aperture.** The plateau truncations `Θu_L` have `Ẑ(Θu_L) → 0` with
+  `∫(Θu_L)²` bounded below, so `μ(A)` is eventually below every positive level, unconditionally, and
+  RH is equivalent to `μ(A) → 0`, equivalently to `μ(A) ≥ 0` at every aperture
+  (`riemannHypothesis_iff_tendsto_ccmRestrictedWeilGroundEnergy_zero`): the CCM image of the absence
+  of a Hardy weight. The approach is doubly exponential: in the `Θ`-gauge the potential and the even
+  pole term cancel up to a tail, every jump with a nonzero increment has one endpoint beyond `L`, and
+  `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})` for `A ≥ 3`, unconditionally
+  (`exists_ccmRestrictedWeilGroundEnergy_le_doubleExp`); without RH the ground energy instead tends to
+  `−∞`.
+* **Floors at small aperture.** The window gauges of 3.13 give explicit floors: `μ(A) ≥ 1/30` for
+  `A ≤ 21/200` (`one_thirtieth_le_ccmRestrictedWeilGroundEnergy`), so every contact aperture of a
+  failure of RH exceeds `21/200`; `μ(A) ≥ 1/5000` for `A ≤ 3/10`; and the plateau window floor
+  `w(R) = −log(2R) − (3/2)R − (γ + log π) − 4R³` satisfies `μ(A) ≥ w(A)` for `2A < log 2`
+  (`windowFloor_le_ccmRestrictedWeilGroundEnergy_self`). The floor is exactly Suzuki's small-aperture
+  main term with the limiting log ground energy `μ₁` removed (`windowFloor_eq_suzukiMainTerm`), and
+  `0 ≤ μ(A) − w(A) ≤ μ₁ + CA`: the gauge potential carries the whole logarithm and every arithmetic
+  constant of the asymptotic, and the discarded jump energy of the gauge is the constant `μ₁`.
+* **The mean-zero sector.** The `μ_a`-mean-zero profiles, on which the zeros are seen, are exactly the
+  pole-vanishing sources, so `μ₀(A)∫F² ≤ Ẑ(F)` for real smooth pole-vanishing `F` in `(−A, A)`
+  (`polarGroundEnergy_mul_le_fullZeroForm`) and `D_a(u) + μ₀(A)∫(m_a u)² ≤ 2S_a(u) + V_a(u)` for every
+  shift (`reflectedDifferenceEnergy_add_le_poleFree_of_meanZero`). The corpus certificates of `μ₀` give
+  margin `1/10` through the prime-free threshold `½ log 2` and margin `1/20` through
+  `½(log 2 + 1/50)`, where the prime `2` acts; for all even profiles, mean-zero or not, the margin is
+  `1/30` on `[−21/200, 21/200]` (`reflectedDifferenceEnergy_add_le_poleFree_of_support_le`). These are
+  the first regions of the frontier inequality that are not regions of pole domination.
+* **The lag face.** On the centred difference test of `SquareRootThreshold` at `A = v/2 + w`,
+  `2‖κ_w‖²μ(v/2 + w) ≤ Re P_v`, and a bound `μ(A) ≥ −Ce^{2σA}` forces every zero into
+  `|Re ρ − ½| ≤ σ`: the no-crossing of `μ` and the absence of a first negative lag are one law.
+
+The path is pinned between explicit floors on `[0, 3/10]` and a doubly exponential ceiling at
+infinity; what is open is the stretch between, where the primes act at full strength.
+
+### 3.15 Admissibility: how the analysis is discharged
 
 The ground-state representation requires the remainder and the potential density to be integrable
 in `t` against `dm` and in `x`. In test coordinates the potential density of `ω_a` is `u(x)² K_a(t,x)`
@@ -773,6 +873,9 @@ explicit `a`-integrals needs no majorant.
 | Confusing `Ẑ` with a new form | On compact tests `Ẑ` is the Weil form; what is native is its generator-calculus proof, the exact source of every gauge and the cone criterion. |
 | Expecting a uniform margin in the capacity inequality | The capacity ratio tends to one along plateau truncations of positive odd gauges at every large aperture. |
 | The weight criterion of fold domination | It fails for every large shift by the other-pole moment; monotone-cone positivity needs the dropped same-side terms. |
+| Expecting a margin of `μ(A)` at large aperture | `μ(A)` tends to `0` doubly exponentially, unconditionally; the only question is its sign, and the floors are window-bounded. |
+| Reading the window floor `w(A)` as a positivity mechanism at every small aperture | It is Suzuki's main term minus `μ₁`: positive only on short windows, and the jump energy it discards is exactly `μ₁`. |
+| Adding jump rate to manufacture a supersolution | An extra jump of length `ℓ` helps only at infinity and only if `e^{−2a} + e^{−2ℓ} < 1`; the origin failure is rate-blind. |
 | Aperture conditions of THIM's gauge (`a < (log 2)/2`) | Supersolution statements here are pointwise in `x` and carry no aperture window; THIM's absorption ratio grows like `exp(πe^{2R})` and is a different object. The plateau-gauge window `R < e^{−2}/2` is a window on the test, not on the shift. |
 
 Conventions in the Lean development that are easy to get wrong: `integral_add` and `integral_sub`
@@ -813,11 +916,21 @@ the prime number theorem enters only through proved corpus forms.
 6. **Exact constants.** The collar ratio `R(a)`, the cosh-moment law and the plateau-gauge potential
    are explicit; the dependence of the capacity ratio's approach to one on the aperture, and the
    sharp window radius of problem 4, are not.
+7. **The ground-energy path between its floors.** `μ(A)` is bounded below explicitly on `[0, 3/10]`
+   and by Suzuki's main term below `½ log 2`, and above by `K exp((11/2)A − πe^{2(A−2)})`; RH is the
+   absence of a contact aperture (3.14). Open: any floor past `½ log 2` on all profiles, where the
+   folded conductances across `log 2` are negative on even tests; the size of `μ(A)` on the stretch
+   where it is doubly exponentially small; and a mechanism excluding contact that sees every prime at
+   critical strength while losing nothing at the archimedean place.
 
 ### Research topics toward the shared target
 
 1. **Sign-changing folded supersolutions.** Existence or impossibility of a folded supersolution
-   satisfying both moment conditions (mechanism 1); nonnegative ones are excluded.
+   satisfying both moment conditions (mechanism 1); nonnegative ones are excluded, and each end can
+   be made a supersolution separately by opposing the local sign to the global moment (3.5). The
+   problem is one profile that does both at once, together with a ground-state representation in
+   which such a sign-changing gauge certifies positivity: the folded sufficiency theorem needs
+   positivity on the half line, which the two moment conditions exclude.
 2. **Through the first prime window.** Extend the gauge argument past `log 2 / 2` with the prime
    atom paid by the potential, using the localization of the unpaid set proved in
    `ArithmeticIncidencePositivity` (two axis intervals of length `≍ 2(1 + Λ(n))/n` for `n ≥ 23`,

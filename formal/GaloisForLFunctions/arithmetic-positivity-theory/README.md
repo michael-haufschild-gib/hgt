@@ -40,38 +40,70 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
+methods see the additive structure of `ℕ` only after averaging over a family, and below half
+damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
+methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
+identities hold for every even positive kernel, and positivity on restricted families is paid by an
+archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
+operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
+the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
+scale. No existing field has its basic objects built with all three; the seven programmes build
+them.
+
 **The mechanisms the shared target needs**, with the programme that owns each:
 
 1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
+   Harnack-type propagation across the prime shifts `log 2, log 3, …`
    (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
 2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
+   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
 3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
    for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
    `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
-   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
-5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
+   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
+   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
+   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
+   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
+   seen from the other side.
+5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
+   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
+   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
+   `log 6`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH.
+  about RH (test models: `BiScaleUncertainty`).
 - *No family average.* One character, modulus one, shift zero.
-- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
+  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
+  family, `θ = 2` on the Gram.
+- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
+  member is infrastructure (the every-height problem: `SquareRootThreshold`).
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
+- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
+  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
+  parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
   archimedean place against a bounded prime cost is nonselective by construction.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
   Identities, finite classifications and nonselective positivity count as zero in these units.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
+  (`BiScaleUncertainty`).
+- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
+  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
+  hypothesis proved sufficient.
 
 ### This programme's role
 
@@ -80,7 +112,12 @@ sources with every endpoint, collar, Gamma and polar term kept, the critical fac
 positivity, and the two universal receivers as destinations. It must supply the passage from the
 critical family, where the arithmetic is favourable, to the compact tests of the receiver without an
 archimedean subsidy (mechanism 3 and the criteria of complete expression and no subsidy), and the
-admissible source class on which the prime modification of mechanism 4 can be realized.
+admissible source class on which the prime modification of mechanism 4 can be realized. It is the
+programme home of mechanism 4, the definite spectral realization: the operators themselves (HF,
+CHMD, the finite-aperture operators of Connes–Consani–Moscovici) live in `RHTower`, and APT owns
+the question of which sources and which Hilbert space carry a prime modification as large as
+`S(T)`. Every certificate of positivity of the complete form is the critical-zero measure, so a
+positivity proof and such a realization are one object.
 
 ---
 
@@ -933,7 +970,63 @@ uniformly in the scale, the number and the positions of the offsets. The
 Hilbert tail of the endpoint jump was the only obstruction to $\ell^2$-uniformity
 of the uncollared prime channel, and it is removed without the collar.
 
-### 3.13 Full-form stability and the tent family as a receiver
+### 3.13 Many scales, compact truncations, and the passage to compact tests
+
+**High blocks, uncollared.** With the Gamma term under its $\ell^2$ ceiling and the
+uncollared prime channel $\ell^2$-bounded, the complete uncollared critical form
+satisfies $E_{\mathrm{crit}}\ge(s(\log M-c_0)-K)\sum b_j^2$ on every dyadic block,
+so beyond an absolute $M_0$ it is positive definite on every block with no
+restriction on the pattern (`exists_criticalCompleteEnergy_pos`). Positivity of
+the critical form can fail only at low scales or across blocks.
+
+**Windows of scales.** On a scale window $[M,LM]$ the prime channel grows only like
+the logarithm of the width: the correlation of two dilation rings is
+$O(\min(1,\sqrt{L/r}))$, and summing $\Lambda(r)r^{-1}(L/r)^{\varepsilon}$ at
+$\varepsilon=1/(2+\log L)$ against the tempered critical-line bound gives
+$\lvert P\rvert\le C_W(3+\log L)\sum b_j^2$ (`abs_criticalPrimeEnergy_le_of_window`).
+The archimedean gain is $\log$ of the smallest scale and the prime cost $\log$ of
+the width, so the form is positive definite on every window $[M,M^{1+\delta}]$
+spanning polynomially many dyadic blocks (`exists_criticalCompleteEnergy_pos_of_window`).
+The proof uses the temperedness of the prime channel of $\zeta$, which the shifted
+pair $\zeta(s-a)\zeta(s+a)$ does not have: its von Mangoldt weight
+$\Lambda(r)(r^a+r^{-a})r^{-1-\varepsilon}$ is not summable once
+$\varepsilon\le\lvert a\rvert$. That separates the proof from the shifted pair, not
+the statement.
+
+**Compact truncations.** The doubly collared source $g^V=\chi(e^{-x}/V)\,g_c$ is
+compact, supported in $[-\log2V,0]$. The two cutoffs merge in the correlation law,
+the transforms of the truncated weights are bounded uniformly in the truncation,
+the tail mass of the archimedean energy is at most $(U/V)E$, and block positivity
+survives with a margin uniform in $V$
+(`exists_criticalTruncatedCompleteEnergy_pos`). On these compact tests the complete
+energy is the Weil functional, $\operatorname{Re}W_\Lambda(g^V\star\tilde g^V)=E(g^V)$,
+so the Weil form of $\zeta$ is positive on compact tests of arbitrarily long
+support at every high block, unconditionally
+(`exists_compactFullWeilEnergy_criticalTruncatedTest_pos`). This positivity is not
+the small-support regime: it comes from the logarithmic coercivity of the critical
+family against an $\ell^2$-uniform prime channel.
+
+**Across blocks.** The multi-scale prime coupling is an $\ell^2$-sum over dilations:
+Cauchy–Schwarz over $r$ with the Mertens partial sum gives the cross-block decay law
+$\bigl\lvert\sum_r(\Lambda(r)/r)\int\varphi_rB_b(v)B_c(rv)\bigr\rvert\le K\,\tau(m,n)\lVert b\rVert\lVert c\rVert$,
+$\tau(m,n)=(1+\log n)\sqrt{1/n+m\sqrt{m/n}}$ (`abs_sum_integral_crossBlock_down_le`):
+distinct blocks decouple once $n\gg m^3$. On lacunary families $M_{i+1}\ge M_i^8$
+the decay sums, and the compact Weil form is positive on every pattern spread over
+any number of such blocks (`exists_compactFullWeilEnergy_pos_of_lacunary`). Low
+modes enter through a two-band split of the archimedean energy and scale-free
+bounds on the polar and Gamma readouts, at a cost $O(\log)$ of the low window and no
+exponential loss. The divisibility structure of the resonances $k(n+1)\equiv j\pmod{lr}$,
+which would control dense windows uniformly, survives only for scale ratios up to
+about the square root of the scale.
+
+**What these theorems are.** Each positivity statement on the critical family is
+paid by an archimedean gain of size $\log M$ against an $\ell^2$-bounded prime cost,
+so by the no-subsidy criterion of the shared target it is nonselective by
+construction; on the RH-complete cone the gain is absent and the limiting critical
+prime channel is negative definite. The passage from the family to the receiver
+needs a statement that survives the loss of the gain.
+
+### 3.14 Full-form stability and the tent family as a receiver
 
 For compact real sources with value bounds $M_f,M_g$, Lipschitz bounds
 $K_f,K_g$ and $L^1$ distance $\Delta$, the identity
@@ -1001,7 +1094,7 @@ shifts beyond an explicit horizon. Small-aperture and high-height positivity
 are archimedean facts; the arithmetic question lives at finite height and
 aperture beyond $1/100$.
 
-### 3.14 Bridges
+### 3.15 Bridges
 
 Unconditional zero-density inputs replace the abscissa-blind $O(\log T)$ count
 of §3.4 by Ingham–Huxley and density-hypothesis exponents on abscissa slabs,
@@ -1088,16 +1181,11 @@ inside an equivalence.
 
 ## 5. The frontier
 
-**The complete uncollared form on blocks.** The complete collared critical form
-is positive definite on high dyadic blocks, and the uncollared prime channel is
-now $\ell^2$-bounded on dyadic blocks as well. The Gamma constant term obeys the
-same $\ell^2$ ceiling for uncollared sources, the two polar readouts are each
-$O(\sum\lvert b_n\rvert/(n+1))$, and the critical Lévy energy grows like
-$\log M$ on $\ell^2$; the assembly of these four bounds into positive
-definiteness of the complete uncollared critical form on every high dyadic
-block, with no restriction on the pattern, is the statement that replaces the
-$\lvert S\rvert\lesssim\log M$ theorem. Its constants, the block threshold and
-the slope, are the next sharpening.
+**Low scales.** The complete critical form, collared or not, is positive definite
+on every dyadic block beyond an absolute $M_0$, on polynomial windows, on compact
+truncations uniformly in the truncation, and on lacunary unions of blocks. Below
+$M_0$ nothing is proved; the constants (the threshold and the slope) decide how
+much of the form is covered.
 
 **Explicit thresholds and the range of $R$.** The block threshold $M_0$, the
 slopes $s,s_c$ and the offsets $c_0,c_c$ are named constants; the exact values
@@ -1106,20 +1194,19 @@ $\kappa(1),\kappa(2)$ decide the optimal negativity constant
 $-(4/\pi^4)\max R$ and how far it is from the singleton mean $-\log2/390$.
 Whether $R$ is monotone on $[0,1/2]$ is open.
 
-**Across blocks.** Positivity is proved block by block. The interaction of
-patterns spread over several dyadic blocks $M,2M,4M,\dots$ is governed by the
-same cross kernel, but the common logarithm is lost; a multi-block Gram law, or
-a proof that the critical sources of distinct blocks are asymptotically
-orthogonal in the complete form, is the next uniformity.
+**Dense windows.** Across blocks the prime coupling decays like $\tau(m,n)$ and
+lacunary families are covered; windows wider than $M^\delta$ that are not
+lacunary, where $\log L\asymp\log M$ and the constants $s$ and $C_W$ decide, are
+open. The resonance structure $k(n+1)\equiv j\pmod{lr}$ that would make dense
+windows uniform survives only for scale ratios up to about the square root of the
+scale.
 
 **From the family to the receiver.** The tent family is Weil-complete and
-detects every actual off-line zero, and the critical sources are positive on
-high blocks; what is missing is a passage from the critical family, where the
-arithmetic is favourable, to the compact tests of the receiver, where RH is
-decided. The complete energy of a critical source is the limit of the complete
-energies of its compact truncations, so the question is which compact
-approximants of critical sources inherit the block positivity with a margin
-that survives the truncation.
+detects every actual off-line zero, and doubly collared truncations carry block
+positivity to compact tests of every length. What is missing is the passage to
+the compact tests of the receiver on which RH is decided, those without the
+archimedean gain $\log M$: every positivity theorem on the critical family is paid
+by that gain, and on the RH-complete cone it is absent.
 
 **Quantitative detection.** Eventual grid-tent nonnegativity at a scale $n$
 forces the asymptotic abscissa law, but the dependence of the detected depth on
@@ -1142,8 +1229,17 @@ and whether their cell kernels are also sign-definite, is open.
    criterion of no subsidy).
 2. **Quantitative detection.** Nonnegativity of all grid patterns at scale `n` and radius `R`
    excludes zeros of depth `> δ(n, R)` below height `T(n, R)`; the unit is `δ(n, R)`.
-3. **The complete uncollared form on every high block and across blocks**, as the source class on
-   which the prime modification of mechanism 4 would be realized.
+3. **The spectral realization (mechanism 4).** In which Schatten or deficiency class, on which
+   Hilbert space, do the primes modify the archimedean operator so that the spectral measure is the
+   critical-zero measure, and under what condition do the finite-aperture ground transforms of the
+   Connes–Consani–Moscovici operators converge to `Ξ`. Known constraints: the prime part is not
+   trace class, finite rank or finite deficiency, and is as large as the unbounded `S(T)`; unitary
+   producers have unit-modulus Euler factors; the finite-aperture logarithmic Dirac operator is
+   real-rooted in its η-branch and reaches `Ξ` only under an unproved premise; the archimedean
+   Sonin-trace domination has an exact decomposition `−W = Tr ϑS + Tr ϑG` with the sign of
+   `Re Tr ϑG` open. The candidate source class is the complete critical family on blocks, windows,
+   compact truncations and lacunary unions; a positivity theorem and a realization theorem would be
+   the same theorem.
 4. **Selectivity audit.** Which block-positivity and admissible-source statements fail for
    `ζ(s−a)ζ(s+a)` and for a Beurling system, and which survive and are therefore not about RH.
 

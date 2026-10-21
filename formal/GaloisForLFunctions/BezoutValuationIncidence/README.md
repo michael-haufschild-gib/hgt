@@ -39,38 +39,70 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
+methods see the additive structure of `ℕ` only after averaging over a family, and below half
+damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
+methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
+identities hold for every even positive kernel, and positivity on restricted families is paid by an
+archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
+operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
+the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
+scale. No existing field has its basic objects built with all three; the seven programmes build
+them.
+
 **The mechanisms the shared target needs**, with the programme that owns each:
 
 1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
+   Harnack-type propagation across the prime shifts `log 2, log 3, …`
    (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
 2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
+   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
 3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
    for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
    `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
-   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
-5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
+   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
+   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
+   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
+   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
+   seen from the other side.
+5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
+   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
+   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
+   `log 6`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH.
+  about RH (test models: `BiScaleUncertainty`).
 - *No family average.* One character, modulus one, shift zero.
-- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
+  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
+  family, `θ = 2` on the Gram.
+- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
+  member is infrastructure (the every-height problem: `SquareRootThreshold`).
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
+- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
+  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
+  parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
   archimedean place against a bounded prime cost is nonselective by construction.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
   Identities, finite classifications and nonselective positivity count as zero in these units.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
+  (`BiScaleUncertainty`).
+- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
+  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
+  hypothesis proved sufficient.
 
 ### This programme's role
 
@@ -391,7 +423,39 @@ of the Mellin picture equals minus this response on each sub-horizon cell. In th
 $L^2(0,1]$ energy of the analytic source and the pronic energy of the arithmetic prefix are one
 quantity.
 
-### 2.9 Glossary
+### 2.9 Cross-scale objects
+
+The bilinear form of the receiver between a **small-scale row** $c$ (moduli $\sim P$) and a
+**large-scale row** $c'$ (moduli $\sim Q$) is the **cross-scale form**
+$$
+B(c,c')=\sum_{M\ge1}\frac{V_c(M)V_{c'}(M)}{M(M+1)},\qquad V_c(M)=\mathcal R(c)-\sum_nc(n)\frac{M\bmod n}{n},
+$$
+so that $B(c,c)=Q^{\mathrm{ec}}(c)$ and $B(\delta_p,\delta_q)=\mathcal G^{\mathrm{ec}}(p,q)/(pq)$ at primes.
+Split $V_c=m(c)+F_c$ into the **mean** $m(c)=\mathcal R(c)-\sum_nc(n)(n-1)/(2n)$ and the
+**fluctuation** $F_c$, and $V_{c'}(M)=\mathcal R(c')-MH(c')+\sum_nc'(n)\lfloor M/n\rfloor$ into ramp
+and steps, $H(c')=\sum_nc'(n)/n$; put $\beta(c)=\sum_MF_c(M)/(M+1)$. The **rank-two part** is
+$-m(c)\mathcal R(c')-\beta(c)H(c')$ and the **remainder** is $B+m\mathcal R'+\beta H'$.
+
+The **residue potential** $\Phi_d(M)=\frac{d^2-1}{12}-\frac{\rho(d-\rho)}2=\frac{d^2}2B_2(\rho/d)-\frac1{12}$,
+$\rho=M\bmod d$, is the second primitive of the centred residue; the **Bernoulli kernel**
+$\mathfrak B(d,n)=\sum_{j\ge1}\Phi_d(jn)/j^2$ depends only on $n\bmod d$, has maximum
+$\mathfrak B(d,0)=\pi^2(d^2-1)/72$ and **kernel mean** $m_d=\frac1d\sum_r\mathfrak B(d,r)=\sum_j(\gcd(j,d)^2-1)/(12j^2)$.
+The **cubic potential** $\Psi_d$ ($\Psi_d(M+1)-\Psi_d(M)=\Phi_d(M+1)$, period sum zero) gives the
+**cubic kernel** $\mathfrak B_3(d,n)=\sum_j(2\Psi_d-\Phi_d)(jn)/j^3$, odd under $\rho\mapsto d-\rho$. For the
+large-scale row put $S'=\sum_nc'(n)/n^2$, the **residue masses** $\rho_{c'}(d,r)=\sum_{n\equiv r\,(d)}c'(n)/n^2$,
+the **residue discrepancy** $\Delta_d(c')=\sum_r\lvert\rho_{c'}(d,r)-S'/d\rvert$, and the **kernel
+statistic**
+$$
+\Lambda_d(c')=\sum_n\frac{c'(n)}{n^2}\bigl(\mathfrak B(d,n)-m_d\bigr)+\sum_n\frac{c'(n)}{n^3}\mathfrak B_3(d,n),
+$$
+whose sum $\sum_{d\in S}\lvert\Lambda_d(c')\rvert/d$ is the **dual norm** of the cross-scale functional on
+the modulus set $S$. **Type-II** inputs are arbitrary bounded small-scale coefficients; **Type-I**
+large-scale rows are flat (sharp cutoff) or smooth, measured by the smoothness norm
+$\mathcal S_L(c')=\sum_{t\le L}\sum_n\lvert\Delta^tc'(n)\rvert/n^{L+2-t}$. A bound is of **diagonal
+quality** when the remainder is at most the Cauchy–Schwarz diagonal; the cross-scale exponent is
+$\theta=2\log P/\log Q$, and the receiver sits at $\theta=2$.
+
+### 2.10 Glossary
 
 | object | formula | Lean |
 |---|---|---|
@@ -424,6 +488,8 @@ quantity.
 | least Bézout seed | least $(a,b)$ with $pa=qb+1$ | `leastSuccessorSeed p q` |
 | Fermi cell response | §2.8 | `fermiCellResponse` |
 | GCD–LCM modular class | §2.6 | `IsGcdLcmModular`, `radicalPrimeProd` |
+| cross-scale form, residue potential, Bernoulli kernel | $B(c,c')$, $\Phi_d$, $\mathfrak B$ | `rowBilinear`, `residuePotential`, `bernoulliKernel` |
+| cubic potential and kernel, residue discrepancy, kernel statistic | $\Psi_d$, $\mathfrak B_3$, $\Delta_d$, $\Lambda_d$ | `cubicPotential`, `cubicKernel`, `residueDiscrepancy`, `kernelStatistic`, `kernelStatisticAll` |
 
 ---
 
@@ -916,7 +982,99 @@ $24\mid k(k+1)(k+2)$. The totient ratio $\varphi(n)/n$ and the Dedekind ratio $J
 instances; at every prime $J_2(p)=(\varphi(p)-\mu(p))^2-1$ and $(q+1)\varphi(q)\le J_2(q)$ with
 equality exactly at primes.
 
-### 3.13 Bridges to classical sieve estimates
+### 3.13 Cross-scale dispersion of the pronic Gram
+
+This is the theory of mechanism 2 of the shared target: the bilinear form
+$\sum_{p\sim P}\sum_{q\sim Q}a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$ at one modulus, organised by how far apart
+the two scales are.
+
+**Rank two across scales.** Abel summation of the fluctuation $F_c$, whose interval sums are at most
+$K_c=\sum_n\lvert c(n)\rvert n/2$, against the steps $\mathbf 1[jn\le M]$ of the large-scale row gives
+$\lvert B(c,c')+m(c)\mathcal R(c')+\beta(c)H(c')\rvert\le2K_c\sum_n\lvert c'(n)\rvert/n^2$ for all rows
+(`abs_rowBilinear_add_mean_add_beta_le`): across scales the receiver Gram is the rank-two form plus a
+remainder smaller by $P/Q$. For two single moduli $e<q$,
+$eq\,B(\delta_e,\delta_q)=D_e\log q-e\beta(\delta_e)+O(e^2/q)$ with $D_e=(e-1)/2-\log e$, and $D_e<0$
+exactly for $e\in\{2,3\}$: the moduli $2$ and $3$ couple negatively to every large modulus, every
+$e\ge4$ positively. For primes $\mathcal G^{\mathrm{ec}}(p,q)=(p/2)\log(q/p)+O(p)$ once $q\ge p^2$. The
+unbalanced regime $Q\ge P^2$ is solved for arbitrary coefficients; the open regime is $P\le Q\le P^2$.
+
+**Large-sieve dispersion of the remainder.** On the Farey roots the fluctuation is
+$F_c(M)=\sum_{\zeta}\kappa(\zeta)\zeta^M$, and summing the pronic weight by parts turns the remainder into
+the residues of the large moduli modulo the small ones. The log-free large sieve of §3.14 and the
+Farey bound $\sum_{\zeta\text{ prim }p}\lvert\zeta-1\rvert^{-4}\le p^4/64$ give, for $c$ on primes $\le Q_0$
+and $c'$ on a window of length $L$,
+$$
+\lvert B+m\mathcal R'+\beta H'\rvert\le\tfrac12\sqrt{\textstyle\sum c(p)^2p^2}\sqrt{L+2Q_0^2-1}\sqrt{\textstyle\sum c'(n)^2/n^4}+\tfrac12\textstyle\sum\lvert c(p)\rvert p^2\sum\lvert c'(n)\rvert/n^3
+$$
+(`abs_rowBilinear_add_mean_add_beta_le_largeSieve`), and in Selberg coordinates the same with the
+Jordan weight $e^4$ for every small-scale row. For prime packets the loss is $P^{5/2}/Q^{3/2}$: the
+rank-two law holds at diagonal quality with arbitrary coefficients once $Q\ge P^{5/3}$ ($\theta\le6/5$).
+The cubic layer disperses the same way, because the spectral weights of the cubic potential sum to
+zero at every modulus.
+
+**The expansion of every order.** At second order the remainder is
+$\sum_{n,d}c'(n)c(d)\mathfrak B(d,n)/(dn^2)$ up to $\frac34\sum\lvert c\rvert d^2\sum\lvert c'\rvert/n^3$
+(`abs_rowBilinear_add_mean_add_beta_sub_bernoulli_le`), at third order the cubic kernel enters with
+$1/n^3$, and at every order the potential chain of centred periodic primitives meets the
+rising-factorial pronic weights $u_i(A)=(i+1)!/(A(A+1)\cdots(A+i+1))$, which satisfy
+$u_i-u_i(\cdot+1)=u_{i+1}$, with error $2^L(L+1)!\sum\lvert c\rvert d^{L+1}\sum\lvert c'\rvert/n^{L+2}$. The
+cosine form of $\Phi_d$ makes the kernel finite,
+$\mathfrak B(d,n)=\frac{\pi^2}4\sum_{k=1}^{d-1}B_2(k/d)/\sin^2(\pi k\bar n/d)$ for $n\bar n\equiv1\ (d)$
+(`bernoulliKernel_eq_reciprocity`): beyond rank two, $\sum a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$ is a bilinear
+form in the Kloosterman fractions $k\bar q/p$ with cosecant–Bernoulli weights, the reciprocity
+$\{N/pq\}\leftrightarrow\bar p/q+\bar q/p$ at second order. The second-order coupling oscillates in sign
+with $q\bmod p$ at amplitude $\asymp p^2/q$, positive near residue $0$ and negative near $p/2$; its sharp
+constant $\pi^2/72$ is attained by the Bézout seeds $q\equiv1\ (\mathrm{mod}\ p)$.
+
+**The Type-II barrier.** Double counting gives, for every modulus set $S$ and every $Q$, a point
+$n_0\in[Q,Q+2D)$ near which a fixed share of $S$ nearly divides, where $\mathfrak B(d,n_0)\ge d^2/25-1/4$.
+Nonnegative small-scale coefficients on that share and a large-scale row on a short window at $n_0$
+attain the rank-two remainder bound up to a constant, a loss $\asymp P^{5/2}/(Q^{3/2}\sqrt{\log P})$
+against the diagonal (`coherent_configuration_exceeds_diagonal`): the threshold $Q\ge P^{5/3}$ is sharp
+for Type-II inputs, and it survives the side conditions $\mathcal R(c')=H(c')=0$
+(`exists_readout_free_barrier`). On pronic windows $M\sim X$ the same coherence is the coherent-block
+law: $k$ primes in a short interval act as one affine packet on clean regions, the large-sieve loss
+$P^2/X$ is attained at every window below $P^2$, and no $\ell^2$ Type-II input reaches a window
+exponent $2\log P/\log X>1$ (`exists_primeBlock_typeII_window_loss`).
+
+**The exact loss at one modulus and parity blindness.** In residue form,
+$\sum_nc'(n)\mathfrak B(d,n)/n^2=\sum_r\mathfrak B(d,r)\rho_{c'}(d,r)$, and since the kernel mean is
+explicit,
+$$
+\Bigl\lvert B+m\mathcal R'+\beta H'-\tfrac{\pi^2}{72}S'\sum_pc(p)\tfrac{p^2-1}{p^3}\Bigr\rvert\le\tfrac{\pi^2}{72}\sum_p\lvert c(p)\rvert\tfrac{p^2-1}p\Delta_p(c')+\tfrac34\sum\lvert c\rvert p^2\sum\lvert c'\rvert/n^3
+$$
+(`abs_rowBilinear_add_mean_add_beta_sub_equidistributed_le`): a Type-II gain at one modulus is exactly
+smallness of the $\ell^1$ residue discrepancies, at the attained rate $\pi^2/72$. Consequently the
+cross-scale form sees the large scale only through its residue masses modulo the small moduli and
+two readouts (`abs_rowBilinear_sub_of_residueMass_eq`): it is parity-blind, it cannot tell the primes
+from matched almost-primes or $\lambda$ from $1$ on rough numbers, and parity-breaking input must come
+from the large-scale self-Gram or from near-diagonal scales.
+
+**The dual norm.** By the third-order law the remainder minus its main term is
+$\sum_p(c(p)/p)\Lambda_p(c')$ up to $6\sum\lvert c\rvert p^3\sum\lvert c'\rvert/n^4$, and the sign pattern
+$c(p)=\operatorname{sign}\Lambda_p(c')$ attains it (`exists_rowBilinear_sub_main_ge`): for arbitrary
+bounded small-scale coefficients the cross-scale problem is exactly the size of
+$\sum_{p\in S}\lvert\Lambda_p(c')\rvert/p$, one linear statistic of the large-scale row per small modulus,
+with no bilinear structure left; on all moduli the same holds with the kernel mean
+$0\le m_d\le(\pi^2/72)(\tau(d)-1)$. For an arithmetic row these statistics are low-frequency exponential
+sums $\sum_aW_p(a)\sum_n(c'(n)/n^2)e(an/p)$. Two replacement hypotheses are proved sufficient: block
+equidistribution of $c'$ at scale $o(P/\log^2P)$ (`abs_rowBilinear_add_mean_add_beta_le_block`), and, on
+pronic windows, square-root cancellation of twisted prime sums over short intervals, after a discrete
+Gallagher inequality shows that the window energy is the clustering energy of the row's Farey
+spectrum and only numerators $a\lesssim P^2/X$ matter (`window_energy_le_twisted_short_sums`). Both are
+themselves statements of the strength of the square-root barrier.
+
+**Type I passes the barrier one order at a time.** A flat large-scale row has
+$\lvert\sum_{n\in I}\zeta^n/n\rvert\ll1/(A\lvert\zeta-1\rvert)$, and a flat small-scale row is controlled by
+Kuzmin–Landau; either gives diagonal quality for $Q\ge P^{3/2}$ ($\theta\le4/3$), and sharp cutoffs stop
+exactly there (`exists_sharp_cutoff_configuration`). Smooth large-scale rows cancel both kernels,
+because $\mathfrak B-m_d$ and $\mathfrak B_3$ have zero residue means and periodic zero-sum sequences have
+bounded primitives: a row smooth to order $K-1$ gives diagonal quality for $Q\ge P^{(K+1)/K}$, that is
+$\theta=2K/(K+1)$, the sequence $4/3,3/2,8/5,\dots\to2$
+(`abs_rowBilinear_add_mean_add_beta_le_smoothnessNorm`). The receiver is the limit of infinite
+smoothness; the Möbius and prime rows are not smooth at any order.
+
+### 3.14 Bridges to classical sieve estimates
 
 The response of the Möbius row is, up to sign, the Vaughan Type-II short coefficient:
 $\mathbf 1_{k=1}-s_{N,\mu}(k)$. This identifies the prefix $L^2$ energy with Type-II short
@@ -982,6 +1140,12 @@ theory from complete periods to windows at unknown phases.
 | First-octave exactness is cofinal control. | $s_{N,\mu}=-\mu$ on $(N,2N]$ and the cell energies there are exact identities; they bound nothing beyond the octave. |
 | Period statements bound prefixes. | Variance, covariance and reserve are period quantities; a prefix of length $N$ carries the signed defects and endpoint squares in addition, and the window laws start at length $N^2$. |
 | Absolute values early. | Bounding the signed modulus sum of compensated interior atoms by absolute coefficients is not uniform in the cutoff; signed coupling must be retained. |
+| Far-apart scales decouple. | Only for $Q\ge P^{5/3}$ with arbitrary coefficients; below, coherent near-multiples attain the rank-two remainder bound, and the barrier survives $\mathcal R(c')=H(c')=0$. |
+| The cross-scale form can break parity. | It sees the large scale only through residue masses modulo the small moduli and two readouts; matched almost-primes and $\lambda$ against $1$ on rough numbers have the same form. |
+| Flat or smooth rows model the prime row. | Type-I gains are exactly one order per order of smoothness ($\theta=2K/(K+1)$); sharp cutoffs stop at $\theta=4/3$; Möbius and prime rows are not smooth. |
+| The second-order coupling has a sign. | It oscillates with $q\bmod p$ at amplitude $\asymp p^2/q$: positive near residue $0$, negative near the half. |
+| $\Lambda_d(c')$ is the von Mangoldt function. | In the cross-scale theory it is the kernel statistic of the large-scale row at the modulus $d$. |
+| The window exponent and the cross-scale exponent are one unit. | On a pronic window $\theta=2\log P/\log X$ and no $\ell^2$ Type-II input passes $1$; across two scales $\theta=2\log P/\log Q$ and Type II reaches $6/5$. Name the coordinates. |
 
 **Lean conventions.** Capstones are stated on data parameters and carry no analytic premise;
 where a finite statement has hypotheses they are arithmetic side conditions on the data
@@ -1031,11 +1195,14 @@ missing is the signed sum over moduli.
    exactly at every prime ratio. Missing: control of the signed complement of all other lags, or
    of a signed prime packet, not only of a cofinal family of nearby prime pairs.
 3. *Internal bilinear dispersion.* The reciprocity $\{N/pq\}\leftrightarrow\bar p/q+\bar q/p$
-   converts correlations between moduli into exponential sums with modular inverses, and the
-   Vasyunin reciprocity law is now a theorem with $O(p+q)$ error. The corpus has terminal-block
-   and gcd-fibre reductions and log-free band bounds for Type-II sums; it does not have a
-   dispersion estimate on $\sum a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$ without an external character
-   average.
+   converts correlations between moduli into exponential sums with modular inverses, the
+   Vasyunin reciprocity law holds with $O(p+q)$ error, and the cross-scale form is explicit to
+   every order (§3.13): rank two at diagonal quality for $Q\ge P^{5/3}$ with arbitrary
+   coefficients, sharply; exact loss the $\ell^1$ residue discrepancy; dual norm
+   $\sum_p\lvert\Lambda_p(c')\rvert/p$. Missing: a bound on these single-modulus statistics for the
+   actual Möbius or prime row in the balanced regime $P\le Q<P^{5/3}$, that is on low-frequency
+   exponential sums of an arithmetic row at the rationals $k/p$, without an external character or
+   modulus average.
 4. *A coercive contraction.* An inequality
    $2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C_\varepsilon$
    with $\delta>0$, equivalent to the receiver. Identities cannot produce it; a signed
@@ -1053,9 +1220,12 @@ cells, which are positive when the cells share a factor and start together.
 
 ### Research topics toward the shared target
 
-1. **Single-modulus bilinear dispersion** on `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` through the
-   reciprocity `{N/pq} ↔ p̄/q + q̄/p`, without an external character or modulus average
-   (mechanism 2); the unit is the exponent `θ` obtained, the receiver sits at `θ = 2`.
+1. **Single-modulus statistics of arithmetic rows.** The bilinear dispersion of
+   `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` (mechanism 2) is reduced exactly to the dual norm
+   `Σ_p |Λ_p(c')|/p` of the large-scale row; bound it for the Möbius and prime rows, through the
+   reciprocity `{N/pq} ↔ p̄/q + q̄/p` and without an external character or modulus average. The unit
+   is the cross-scale exponent `θ = 2 log P/log Q`: Type II stands at `6/5`, sharp cutoffs at `4/3`,
+   rows smooth to order `K − 1` at `2K/(K + 1)`, the receiver at `θ = 2`.
 2. **The signed sum over moduli** of the interior martingale, equivalently the coercive
    contraction; identities cannot produce it.
 3. **Additive window structure for the incidence face.** Bézout incidence inside a dyadic window

@@ -52,3 +52,9 @@ their module lands; this card does not edit their files.
   (`zetaZeroConfig_re_W_ge_of_window` transfer lemma; `Re W_ζ(f,f) ≥ (1/5000)∫|f|²` on `[−3/10,3/10]`;
   windowed positivity at `3/10`), axioms standard, wired; SRT README updated. Further toward
   `(log 2)/2` is row 2 (WP3 lane) and transfers through the same lemma.
+- 2026-10-21 — **row 10, quarter-point set closed**: `ArithmeticIncidencePositivity/QuarterPointClassification`
+  (`antiDiagonalLevel_le_quarter_iff_mem`: quarter paid ⟺ `n ∈ {10,12}` or `n ≥ 14, n ≠ 17`, all `n ≥ 2`;
+  `unpaidSet_eq_of_le_midpoint`: midpoint paid ⟹ unpaid set = two axis intervals with exact end `c`;
+  `midpoint_paid_and_quarter_unpaid_iff`: exactly `n ∈ {6, 17}`; `unpaidSet_level_eq_of_quarter_unpaid`).
+  Axioms standard, wired; AIP README item 3′ updated. Remaining in row 10: collar ratio second-order
+  term, bump bridge.

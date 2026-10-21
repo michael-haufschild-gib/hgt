@@ -41,46 +41,81 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
+methods see the additive structure of `ℕ` only after averaging over a family, and below half
+damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
+methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
+identities hold for every even positive kernel, and positivity on restricted families is paid by an
+archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
+operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
+the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
+scale. No existing field has its basic objects built with all three; the seven programmes build
+them.
+
 **The mechanisms the shared target needs**, with the programme that owns each:
 
 1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
+   Harnack-type propagation across the prime shifts `log 2, log 3, …`
    (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
 2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
+   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
 3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
    for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
    `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
-   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
-5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
+   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
+   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
+   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
+   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
+   seen from the other side.
+5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
+   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
+   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
+   `log 6`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH.
+  about RH (test models: `BiScaleUncertainty`).
 - *No family average.* One character, modulus one, shift zero.
-- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
+  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
+  family, `θ = 2` on the Gram.
+- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
+  member is infrastructure (the every-height problem: `SquareRootThreshold`).
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
+- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
+  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
+  parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
   archimedean place against a bounded prime cost is nonselective by construction.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
   Identities, finite classifications and nonselective positivity count as zero in these units.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
+  (`BiScaleUncertainty`).
+- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
+  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
+  hypothesis proved sufficient.
 
 ### This programme's role
 
 BiScale is the uncertainty face. It owns the two-structure constraint on the logarithmic line (the
 integer grid against the hyperbolic weight), the band formulation of the square-root barrier, the
 blind cone (prime-blind positivity, `log 4` against `log 6`), packets and multiplicity, and the
-sign-character classification of arithmetic observation. It owns the node-criticality criterion and
-the Beurling test of selectivity; it supplies to `ArithmeticIncidencePositivity` and
+sign-character classification of arithmetic observation. It owns the node-criticality criterion,
+the Beurling test of selectivity and the function-field calibration of the shared criteria: a
+statement that holds verbatim for a Beurling system with an off-line zero is not about RH, and a
+claimed cofinal sign or cancellation must reproduce its counterpart over `F_q[T]` or name the step
+that uses `ℤ`. It supplies to `ArithmeticIncidencePositivity` and
 `ArithmeticCriticalityTheory` the exact slack of the blind polar class and to `SquareRootThreshold`
 the band energy law.
 
@@ -783,6 +818,40 @@ $\Omega(0)h_U(0)+\mathcal J(U)-2\langle h_U,\nu\rangle$. A linear packet energy 
 quadratic bi-scale energy, for one compact source, is RH and simple zeros at once; such sources
 are boosts of every nonzero source.
 
+**Every zero a probe sees is felt in both directions.** Unconditionally, for every critical zero
+$\rho$, $\limsup_{\tau\to\infty}P_f(\tau)\ge m_\rho\lvert\hat f(\gamma_\rho)\rvert$ and
+$\liminf P_f\le-m_\rho\lvert\hat f(\gamma_\rho)\rvert$ (`packet_zero_amplitude_law`): the Bohr mean of the
+critical series against $e^{-i\gamma_\rho\tau}$ picks out its coefficient. When the packet is bounded
+above, the sign changes occur in every window of one fixed length, so under RH the smoothed
+prime–polar discrepancy changes sign in every multiplicative interval $[X,e^\ell X]$
+(`packet_sign_changes_in_every_window_of_riemannHypothesis`).
+
+**The Weil energy is the recurrent maximum of the translated pairings.** The packet of the
+autocorrelation at shift $\tau$ is the translated pairing $\langle h_f(\cdot-\tau),\nu\rangle$; beyond
+the support its negative is a series with nonnegative coefficients $m_\rho\lvert\hat f(\gamma_\rho)\rvert^2$,
+bounded by its value at $0$ and returning to it by simultaneous recurrence of finitely many
+characters. Hence $W(h_f)\le\limsup_\tau-\langle h_f(\cdot-\tau),\nu\rangle$ unconditionally
+(`weil_le_translated_pairing_frequently`), with equality when the packet is bounded above
+(`pairing_recurrence_law`): the Lévy energy of a source is fixed by prime–polar pairings alone, its
+pairing at the origin and the recurrent maximum of its translates.
+
+**Multiplicities, bands and an explicit probe.** $E\le KW$ for every compact source iff every
+critical zero has multiplicity at most $K$ (`multiplicity_ceiling_law`): $\sup_fE(f)/W(f)$ is the
+maximal critical multiplicity, read by one family of tuned splines. The band of a single packet obeys
+the band law of §3.10: $\int_T^LP_f^2=O((1+L)e^{2\sigma L})$ iff $f$ is blind beyond depth $\sigma$
+(`packet_band_iff`), so for a universal probe RH is linearity of the band of one packet
+(`riemannHypothesis_iff_packet_band_of_universal`) and the zero width is half its exponential rate. A
+universal probe is explicit: for a source whose transform is real-rooted every boost $e^{tu}\varphi$
+with $\lvert t\rvert\ge1/2$ is universal (`seesAllZeros_tiltedSource_of_im_ne_zero`), and the cubic
+spline $B=U_1^{\star4}$, transform $(\sin z/z)^4$, gives
+$\text{RH}\iff\sum_n\Lambda(n)\sqrt n\,B(\log n-\tau)\le\int_0^\infty2\cosh(x/2)e^xB(x-\tau)\,dx+Ke^\tau$ for
+all large $\tau$: one fixed spline-weighted prime sum against its polar prediction.
+
+**The band is eventually above the zero energy.** Under RH, for every finite set $S$ of zeros and
+every $\varepsilon>0$, $(1/M)\int_0^M\tilde E^2\ge\sum_{\rho\in S}m_\rho^2/\lvert\rho\rvert^2-\varepsilon$ for
+all large $M$ (`cramer_liminf_law`), not only infinitely often: Cramér's lower bound in liminf form,
+through the gauge bridge from the packet to the Chebyshev gauge convolution.
+
 ### 3.12 Producers
 
 Receivers rewrite the explicit formula; producers bound it. The theory insists on both.
@@ -1048,7 +1117,8 @@ Beurling systems, survive the degenerate point of one character and modulus one,
 information beyond polynomial length equal to height at square-root precision, and separate
 $\log4$ from $\log6$; additive tools do the first and third only after averaging over a family,
 multiplicative tools are Beurling-invariant. Sharper questions inside the band: whether the band
-constant under RH equals the zero energy (Cramér's limiting constant), the asymptotics of the
+constant under RH equals the zero energy (Cramér's limiting constant; the liminf of the band mean
+is at least the zero energy), the asymptotics of the
 finite-cutoff packet energy including the endpoint term $\tilde E(L)^2$, and an effective version
 of the universal-probe criterion in which the boost is explicit.
 
@@ -1071,15 +1141,12 @@ $\asymp e^X/X$ nodes per window, already makes zero-pole positivity RH-equivalen
 the full odd Weil sign is not proved; at pole weight one the odd bound retains a positive
 $\sinh$-moment cost.
 
-**Packets.** The multiplicity readout is a limit along tuned probes, and a universal probe turns
-the simple-zero conjecture into one energy identity; whether $\sup_fE(f)/W(f)$ over all compact
-sources equals the maximal multiplicity, whether a single fixed probe family reads all
-multiplicities, and whether the identity $E(U)=W(U)$ can be tested through finitely many primes,
-is open. Packet persistence is qualitative for general sources; an
-amplitude law for probes that are not dilates, in terms of the zeros they see, would make the
-oscillation quantitative. Whether the Weil energy of $h_f$ can be bounded above by prime-side
-data of a single linear packet without the one-sided hypothesis is the question that separates
-the packet laws from an RH proof.
+**Packets.** The maximal critical multiplicity is $\sup_fE(f)/W(f)$, every zero a probe sees is
+felt with its amplitude in both directions, and the Weil energy is bounded by the recurrent
+maximum of the translated pairings of one packet. Open: whether the identity $E(U)=W(U)$ can be
+tested through finitely many primes, and whether the Weil energy of $h_f$ is bounded above by
+prime-side data of a single linear packet without the one-sided hypothesis, which is the question
+that separates the packet laws from an RH proof.
 
 **Arithmetic observation.** A common organizing theorem for the two halves exists only as a
 classification by sign characters of the subgroup generated by the support; the quantitative
@@ -1102,8 +1169,16 @@ estimates for the mass and edge kernels and the sign of their difference are ope
 3. **The linear band itself**, tested against the four requirements of §5: failure for Beurling
    systems, survival at one character and modulus one, information beyond polynomial length at
    square-root precision, separation of `log 4` from `log 6`.
-4. **Packets and multiplicity.** Whether a single probe family reads all multiplicities, as the
-   spectral input of mechanism 4.
+4. **Packets and multiplicity.** Whether the packet identity `E(U) = W(U)` can be tested through
+   finitely many primes, and a one-packet upper bound for the Weil energy without the one-sided
+   hypothesis, as the spectral input of mechanism 4.
+5. **Selectivity and calibration models.** A Beurling system with an off-line zero, the shifted pair
+   `ζ(s−a)ζ(s+a)`, the Liouville twist and the function-field case `F_q[T]`, each written in the
+   coordinates of the shared target (node values, window spectra, packets, the blind cone), so that
+   every positivity or cancellation theorem of the seven programmes can be tested against them. The
+   Beurling deletion and perturbation systems of `RHTower` and `HTGeometry` and the function-field
+   window and purity modules are the starting objects; the unit is the list of shared-target
+   statements each model refutes.
 
 ---
 

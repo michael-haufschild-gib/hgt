@@ -38,38 +38,70 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
+methods see the additive structure of `ℕ` only after averaging over a family, and below half
+damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
+methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
+identities hold for every even positive kernel, and positivity on restricted families is paid by an
+archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
+operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
+the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
+scale. No existing field has its basic objects built with all three; the seven programmes build
+them.
+
 **The mechanisms the shared target needs**, with the programme that owns each:
 
 1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges
+   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
+   Harnack-type propagation across the prime shifts `log 2, log 3, …`
    (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
 2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p` (`BezoutValuationIncidence`).
+   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
+   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
 3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
    for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
    `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)` (the operator
-   routes HF and CHMD in `RHTower`, on the complete sources of `ArithmeticPositivityTheory`).
-5. A parity-breaking additive input at a single modulus (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against `log 6`).
+4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
+   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
+   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
+   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
+   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
+   seen from the other side.
+5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
+   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
+   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
+   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
+   `log 6`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH.
+  about RH (test models: `BiScaleUncertainty`).
 - *No family average.* One character, modulus one, shift zero.
-- *Square-root precision beyond the diagonal*, at every scale rather than almost every.
+- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
+  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
+  family, `θ = 2` on the Gram.
+- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
+  member is infrastructure (the every-height problem: `SquareRootThreshold`).
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
+- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
+  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
+  parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
   archimedean place against a bounded prime cost is nonselective by construction.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)`.
+  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
   Identities, finite classifications and nonselective positivity count as zero in these units.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done.
+- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
+  (`BiScaleUncertainty`).
+- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
+  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
+  hypothesis proved sufficient.
 
 ### This programme's role
 
@@ -322,7 +354,12 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     whole negative conductance of the anti-diagonal of `n` except on two axis intervals of length
     between `ℓ_n` and `L_n` (`unpaid_level_subset_outer`, `totalAntiDiagonalKernel_pos_imp_near_axis`):
     the prime obstruction on the anti-diagonal of `n` is confined to a neighbourhood of the axes of
-    exact order `2(1 + Λ(n))/n`.
+    exact order `2(1 + Λ(n))/n`. The quarter point itself is classified: with `r = n^{1/4}` it is paid
+    iff `n²/(n² − 1) + Λ(n) ≤ (n + 1 − r³ − r)/2`, that is exactly for `n ∈ {10, 12}` and `n ≥ 14`,
+    `n ≠ 17` (`antiDiagonalLevel_le_quarter_iff_mem`). Once the midpoint is paid the unpaid set is
+    `(0, c) ∪ (s − c, s)` with `P_s(c) = E` (`unpaidSet_eq_of_le_midpoint`), and the midpoint is paid
+    while the quarter point is not exactly for `n ∈ {6, 17}`, where `s/4 < c ≤ s/2`
+    (`unpaidSet_level_eq_of_quarter_unpaid`).
 
 ### The lattice with its atoms
 
@@ -576,7 +613,11 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
    `Λ(n) n^{−1/2} ∫₀^{log n} |M(−a) M(log n − a)| da` with the polar mass
    `∫₀^{log n} |M(−a) M(log n − a)| P(a) da` along the anti-diagonal. Determine the gauges for which
    the pole pays every atom outside the five moduli, and the amount the same-side atoms must pay for
-   the five; the axis law says the answer depends on the decay of `M` at `0`.
+   the five; the axis law says the answer depends on the decay of `M` at `0`. In the shifted
+   ground-state gauge of `ArithmeticCriticalityTheory` the five moduli stay atom-dominated after
+   integration against the collar kernel `m_a(x)m_a(log n − x)`, for every shift `a`
+   (`collarPolarMass_lt_collarAtomMass_of_mem_atomDominatedModuli`); which prime powers outside the
+   five the pole pays in the integrated sense is open.
 2. **The bump bridge.** For an even profile built from bumps of width `w` at the points `± log a`,
    express the prime part of `J_M` in the limit `w → 0`, normalized by `w`, as a diagonal term
    `2 Σ_a c_a² M(log a) 𝒢_prime(M)(log a)` (the prime generator of the gauge) minus the pair term
@@ -585,9 +626,6 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 3. **Collar ratio.** The two ends of the sandwich differ by `sinh(s/2)/sinh(s/2 − 3e^{−3s/4})`;
    show that the collar end `c(s)`, the root of `P_s(c) = ω(s)`, satisfies
    `c(s) = ℓ(s)(1 + O(e^{−s}))`, and give the explicit second-order term.
-3′. **The range `14 ≤ n ≤ 22`.** Mechanism 21 needs the quarter point paid, proved for `n ≥ 23`;
-   determine the exact set of `n` for which the quarter point is paid, and describe the unpaid set
-   when the midpoint is paid but the quarter point is not.
 4. **Lattice conductance at fixed width.** Combine mechanism 22 with the archimedean self-energy
    `≍ w log(1/w)` of a bump of width `w` into one statement about the conductance matrix of a
    lattice profile at fixed `w`, including the axis pairs `(0, log b)`.
