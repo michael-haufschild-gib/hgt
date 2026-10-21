@@ -431,3 +431,11 @@ and windows only) are unaffected.
   reverse order; `Set.indicator_of_notMem` needs the set ascribed (`show t ∉ Ioi x from …`) or it elaborates `Real.lt`;
   `integrable_finset_sum` is deprecated → `integrable_finsetSum`; `Finset.sum_subset` with an explicit type on the
   `have` avoids beta-redexes.
+- C26 addendum (explicit remainder): `continuous_integral_profileArchTerm` (standalone copy of the `hA` block of ACT's
+  `continuous_poleFreeWeilOperator`); `gaugeRemainder_eq_arch` (the prime part of `−𝒲P` cancels the returned prime sum:
+  remainder = `∫F²P(∫_{u>0}profileArchTerm P x u − 2γ'P)`); `plateauPotentialFloor R x = Ω(R−x)+Ω(R+x) − 2E(0) − 2γ'`,
+  `measurable_archLevyAntideriv`, `abs_plateauPotentialFloor_le` (`≤ 2Ω(R−r) + |2E(0)+2γ'|` on `|x| ≤ r`, via
+  `antitoneOn_archLevyAntideriv`), `integrable_sq_mul_plateauPotentialFloor`, `gaugeRemainder_ge_plateauPotentialFloor`
+  (integral_mono of mechanism 27's pointwise bound), `fullZeroForm_ge_explicitLedgerFloor`:
+  `pool + crossing + Σ gains − Σ costs + ∫F²·plateauPotentialFloor R − (R³/3)cosh²(R/2)∫F² ≤ Ẑ(F)` — all terms explicit
+  functionals of `F`. Axioms standard. README mechanism 43 extended.

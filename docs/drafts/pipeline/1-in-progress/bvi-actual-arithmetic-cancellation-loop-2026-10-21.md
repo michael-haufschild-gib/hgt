@@ -120,6 +120,19 @@ and the squarefree drift. **Lean.** `BezoutValuationIncidence/MultiplicativeWeig
 `exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one`, `receiver_ge_log_of_primes_one`;
 standard axioms; wired.
 
+### C8 — the omitted residue class law of the prime row (DONE, Lean)
+**Statement.** For every prime `p`, `Q · Λ_p(Λ·1_{(Q,2Q]}) → −(𝔅(p,0) − m_p)/(2(p−1)) =
+−π²(p²−1)²/(144p²(p−1))`.
+**Proof.** Kernel depends only on `n mod p`; classes `r ≢ 0` carry `W(Q)/(p−1) + o(1/Q)` by Dirichlet
+(`WeakPNT_AP`) with a linear rate and Abel summation (`abs_sum_Ioc_mul_le_of_linear`); the centred
+kernel has zero residue mean; class `0` holds at most one prime power in `(Q,2Q]`, so `O(log Q/Q²)`;
+cubic part `O(p³ log Q/Q²)`; `Q·W(Q) → 1/2` by telescoping.
+**Meaning (README Q5, fixed moduli).** The single-modulus statistic of the actual prime row is not
+small: it is exactly the sieve term of the omitted residue class (the additive input "a residue
+class omitted modulo p"), relative size `≍ 1/p` against trivial; the coprime classes cancel exactly.
+**Lean.** `BezoutValuationIncidence/OmittedResidueClassLawOfThePrimeRow.lean`:
+`tendsto_mul_kernelStatistic_primeWindowRow`, `eventually_abs_sum_classDefect_le`; standard axioms; wired.
+
 ## Log
 - 2026-10-21 — card created; C1 paper proof written; Lean module
   `BezoutValuationIncidence/ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean` started.
@@ -127,3 +140,4 @@ standard axioms; wired.
 - 2026-10-21 — C3 (parity pair on the band) formalized and wired.
 - 2026-10-21 — C4 killed (duplicate), C5 killed (dominated), C6 formalized and wired.
 - 2026-10-21 — C7 formalized and wired.
+- 2026-10-21 — C8 formalized and wired.

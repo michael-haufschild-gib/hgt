@@ -495,7 +495,7 @@ theorem integrable_sq_mul_plateauPotentialFloor {F : ℝ → ℝ} {r R : ℝ} (h
 /-- **The gauge remainder of the aperture plateau has an explicit floor.** For every `F ∈ C²_c`
 supported in `[−r, r]`, `0 < r < R`: `∫ F² · plateauPotentialFloor R ≤ gaugeRemainder P F`. -/
 theorem gaugeRemainder_ge_plateauPotentialFloor {F : ℝ → ℝ} {r R : ℝ} (hF : ContDiff ℝ 2 F)
-    (hFc : HasCompactSupport F) (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    (hFc : HasCompactSupport F) (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
     (∫ x, F x ^ 2 * plateauPotentialFloor R x) ≤ gaugeRemainder (aperturePlateau r R) F := by
   set P := aperturePlateau r R with hPdef
   have hδ : 0 < R - r := by linarith
@@ -549,7 +549,7 @@ theorem fullZeroForm_ge_explicitLedgerFloor {F : ℝ → ℝ} {r R : ℝ} (hF : 
         (∫ x, F x ^ 2 * plateauPotentialFloor R x) -
         R ^ 3 / 3 * Real.cosh (R / 2) ^ 2 * ∫ x, F x ^ 2 ≤ fullZeroForm F := by
   have hled := fullZeroForm_eq_incidenceLedger hF hFc hodd hr hsupp hrR
-  have hrem := gaugeRemainder_ge_plateauPotentialFloor hF hFc hr hsupp hrR
+  have hrem := gaugeRemainder_ge_plateauPotentialFloor hF hFc hsupp hrR
   set P := aperturePlateau r R with hPdef
   have hδ : 0 < R - r := by linarith
   have hPd : ContDiff ℝ 2 P := by rw [hPdef]; exact contDiff_plateauGauge R (R - r)

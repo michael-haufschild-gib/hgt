@@ -790,6 +790,21 @@ of the innermost strip once per atom.
     the light cone with the strip masses; the ledger names what must pay those masses, the remainder
     and the crossing potential of the pairs the cone does not use, together with the gains.
 
+    The remainder is archimedean and has an explicit floor. The prime part of `−𝒲P` cancels the
+    returned prime sum exactly, `gaugeRemainder P F = ∫ F² P (∫_{u>0} profileArchTerm P x u − (γ + log π) P(x))`
+    (`gaugeRemainder_eq_arch`), and for the aperture plateau
+    `gaugeRemainder ≥ ∫ F² · (Ω(R − x) + Ω(R + x) − 2E(0) − (γ + log π))`
+    (`plateauPotentialFloor`, `gaugeRemainder_ge_plateauPotentialFloor`; mechanism 27 pointwise,
+    integrated through `Ω ≤ Ω(R − r)` on the support). With the pole bound of mechanism 23 this gives
+    the **explicit ledger floor** (`fullZeroForm_ge_explicitLedgerFloor`):
+
+        Ẑ(F) ≥ surplusPool + crossingPotentialTerm + Σ gains − Σ costs
+               + ∫ F² · plateauPotentialFloor R − (R³/3) cosh²(R/2) ∫ F²,
+
+    every term an explicit functional of `F` with no Weil operator and no pole moment; its
+    nonnegativity is a sufficient condition for the sign of the form, and every window certificate
+    of the programme is a proof of it at its aperture with a gauge transform of the pool.
+
 ---
 
 ## 4. Traps
