@@ -1,25 +1,29 @@
 # The walls ledger
 
-Thirteen proved obstructions on which direct attacks on the Riemann hypothesis stop. The first wall
-has five faces: the square-root barrier in prime counting, the axis outside the zero set, the
-ground-energy path, the forced dual measure with node criticality, and the Jensen gap. The faces are
-one obstruction read in five languages; the dictionary between them is a proved theorem, stated at
-the head of Wall 1. Each entry gives the mechanism, the exact place where unconditional methods end,
-the Lean evidence, the positive statements the obstruction exposes, and the practical rule.
-Companion documents: [per-route obstacles](hard-obstacles.md), [summary and the missing
-field](hard-obstacles-summary.md); they cite the faces 1.5, 1.2, 1.4 and 1.3 by the labels 2, 4, 11
-and 12. Walls keep their labels; the labels 2, 4, 11 and 12 are not used for separate walls.
+Seven proved obstructions on which direct attacks on the Riemann hypothesis stop. Two of them are
+unified walls with faces: Wall 1, the zero width, read in six languages; Wall 16, the sign-blindness
+barrier, read in four. The faces of a wall are one obstruction, and the dictionary between them is a
+proved theorem stated at the head of the wall. One principle stands behind the walls and is stated
+first: the information that decides the width lives only in the complete, signed, unbounded-aperture,
+pointwise data of the explicit formula, and every coarsening of those data has an exact blindness
+threshold. Each entry gives the mechanism, the exact place where unconditional methods end, the Lean
+evidence, the positive statements the obstruction exposes, and the practical rule. Companion
+documents: [per-route obstacles](hard-obstacles.md), [summary and the missing
+field](hard-obstacles-summary.md); they cite faces by the labels of the companion numbering:
+2 = face 1.5, 4 = 1.2, 7 = 1.6, 8 and 9 and 11 = 1.4, 12 = 1.3 and 1.4, 10 = 1.1 and 16.4,
+6 = 16.1, 17 = 16.3. Walls keep their labels; the labels 2, 4, 6–12 and 17 are not used for
+separate walls.
 
-**Lean checkpoint** `46cfca88e`. Evidence tags: [L] = committed Lean declaration imported by its
+**Lean checkpoint** `52648abc6`. Evidence tags: [L] = committed Lean declaration imported by its
 committed umbrella; [S] = Lean source in the working tree whose file or umbrella import is
 uncommitted, or a module not imported by its umbrella (compiles standalone, no committed audit);
 [P] = paper only. Module paths are relative to `formal/GaloisForLFunctions/`, with
 `R:` = `RHTower/`, `H:` = `HTGeometry/`, `B:` = `BiScaleUncertainty/`, `V:` = `BezoutValuationIncidence/`,
 `T:` = `TransHorizonIncidenceMechanics/`, `A:` = `arithmetic-positivity-theory/`,
 `C:` = `ArithmeticCriticalityTheory/`, `I:` = `ArithmeticIncidencePositivity/`,
-`Q:` = `SquareRootThreshold/`. Working-tree [S] items at this checkpoint: none; the working tree
-relocates the umbrella import of `Q:ZetaLagFamilyVinogradovKorobovEnvelope` into the import block
-of the `SquareRootThreshold` umbrella (position only).
+`Q:` = `SquareRootThreshold/`. Working-tree [S] item at this checkpoint:
+`R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` (file committed, umbrella import uncommitted; every
+theorem in it is closed, with standard axioms).
 
 Two general facts frame every wall. First, every graded relaxation of a surveyed route is a zero-free
 half-plane or a finite-height verification: a one-sided power bound `O(x^θ)` on a Chebyshev, Mertens or
@@ -29,9 +33,57 @@ the damped Möbius receiver at one fixed damping `ε ∈ (0, 1/2)` already gives
 `ζ(ρ) = 0, Re ρ > 1/2 + ε ⟹ ζ(ρ − ε) = 0` (`pmPowerDamped_zero_translation`,
 `R:PMPowerDampedMobiusCriterion` [L]). There is no producer target weaker than RH on these routes.
 Second, a new attempt must name the wall it passes and the concrete input that passes it before
-anything is built; Wall 1 in each of its faces and walls 16 and 17 are RH-strength targets in
-disguise, walls 3, 6, 7, 10 and 15 state what a class of evidence cannot do, walls 5, 8, 9, 13 and 14
-constrain the shape of any construction.
+anything is built; Wall 1 in each of its faces and Wall 16 are RH-strength targets in disguise,
+walls 3 and 15 state what a class of evidence cannot do, walls 5, 13 and 14 constrain the shape of any
+construction.
+
+## The principle: the width is a complete-data property
+
+Every wall is a coarsening of one object, the signed Weil form of the zero configuration on all
+compactly supported tests, and every coarsening has an exact blindness threshold. The width
+`configWidth Z = sup |Re ρ − ½|` of a tempered configuration is read by the complete form and by no
+coarsening (`Q:TheZeroWidthIsAnUnboundedApertureProperty`, `Q:WeilFormDeterminesTheConfiguration`,
+`Q:WeilPositivityForcesTheCriticalLine`, `Q:OnLineShadowIndistinguishability`,
+`R:ZeroLatticeDepthNyquistLaw` [L]).
+
+- *Faithful.* The Weil form on all compactly supported `C²` tests determines a tempered configuration
+  (`eq_of_weil_eq`); it is nonnegative iff the width is zero (`configWidth_eq_zero_iff_weil_nonneg`);
+  its negativity rate along the lag family is the width (`configWidth_le_iff_lag_twoBump_ge_neg_exp`);
+  for `ζ` the configuration width is `zetaZeroWidth` and RH is its vanishing
+  (`riemannHypothesis_iff_configWidth_zetaZeroConfig_eq_zero`).
+- *Aperture.* For every aperture `a > 0` and every depth `δ ∈ (0, ½]` there is a tempered configuration
+  of width exactly `δ`, the lattice `{½ ± δ + πik/a}`, whose Weil form is nonnegative on every test
+  supported in `[−a, a]`; below that aperture its form is literally the form of a weighted on-line
+  configuration (`exists_configWidth_eq_and_weil_nonneg_on_aperture`,
+  `exists_configWidth_eq_and_onLineShadow_on_aperture`; the lattice of ordinate spacing `2π/L` hides
+  exactly up to aperture `L/2`, `offLineLattice_weil_positive_iff`). Hence no bounded aperture decides
+  the width (`not_forall_configWidth_eq_zero_of_weil_nonneg_on_aperture`), and the exchange rate is the
+  Nyquist law: aperture `a` resolves on-line configurations of height separation `g` iff `a > π/(2g)`
+  (`eq_of_weil_eq_of_separated`, `lattice_resolution_sharp`, `Q:NyquistResolutionOfTheWeilForm`). This is
+  the content of walls 3 and 15, of the window-boundedness of every certificate in faces 1.3 and 1.4
+  and of wall 13, and of the finite-lag statements of face 1.6.
+- *Signs.* On the damped Möbius class `|c(d)| ≤ Kd^{−ε}` the receiver is decided by the coefficient
+  magnitudes, by the Ramanujan amplitudes, or by one unsigned majorant, in each case iff `ε > ½`
+  (`receiverBounded_magnitudeInvariant_iff`, `uniformReceiverBound_iff_amplitudeInvariant`,
+  `uniformReceiverBound_iff_half_lt`, `T:UnsignedMajorantsAndSignBlindDataStopAtHalfDamping` [L]). This is
+  Wall 16.
+- *Grids.* A geometric progression of dyadic prime windows reads the width exactly up to the attainment
+  of the top (`zetaZeroWidth_le_iff_attainedTop_and_grid_primeWindow_ge_neg_exp`,
+  `Q:LagGridsAndTransportLawsReadTheZeroWidth` [L]): a discrete probe loses exactly the unattained tops.
+  This is the quantifier gap of face 1.6.
+- *Weights.* The full Weil cone is `{Λ}`: every admixture, every shift of the coefficient size and every
+  move of a prime atom leaves it (`weilPositiveFull_admixture_iff`,
+  `not_weilPositiveFull_shiftedPairVonMangoldt`, `weilPositiveDegree_two_shiftedPairVonMangoldt_iff`,
+  `R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` [S]; `R:WeilConeUniquenessUnconditional`,
+  `R:WeilPositivityBeurlingPerturbationRigidity` [L]). This is face 1.4.
+
+What the principle does not cover: the finite-carrier constraints of walls 5 and 14 (no finite-rank or
+trace-class arithmetic realization), which are proved separately and are consistent with it; and the
+cone mismatch of wall 13 beyond its aperture reach.
+
+**Rule.** Before building, name the coarsening the method uses, its blindness threshold, and the
+complete datum it would need to pass it: an aperture that grows without bound, the signs of the prime
+row, the attained top, or the exact weight `Λ`.
 
 ## Wall 1: the zero width
 
@@ -40,13 +92,15 @@ Every face of this wall is a reading of the one number
 `zetaZeroWidth = sup_ρ |Re ρ − 1/2| = Θ − 1/2 ∈ [0, 1/2]`,
 
 the half-width of the strip containing the nontrivial zeros, and RH is `zetaZeroWidth = 0`. The
-prime-counting face measures it as the exponent of every one-sided prime estimate; the axis face as
-the strip itself and as the de Bruijn–Newman heat time; the ground-energy face as the decay rate of
-the restricted Weil ground energy; the dual-measure face as the only point of the Weil cone; the
-Jensen face as the Balazard–Saias–Yor integral. Progress on any face is progress on the width, and
-an improvement counts once.
+prime-counting face measures it as the exponent of every one-sided prime estimate and of every
+transport law; the axis face as the strip itself and as the de Bruijn–Newman heat time; the
+ground-energy face as the decay rate of the restricted Weil ground energy; the cone face as the only
+point of the Weil cone; the Jensen face as the Balazard–Saias–Yor integral; the quantifier face as what
+grids and averages read up to attainment. Progress on any face is progress on the width, and an
+improvement counts once.
 
-**The dictionary** (`Q:TheWallsMeasureOneZeroWidth` [L]; every statement unconditional, no premises).
+**The dictionary** (`Q:TheWallsMeasureOneZeroWidth`, `Q:LagGridsAndTransportLawsReadTheZeroWidth` [L],
+`R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` [S]; every statement unconditional, no premises).
 
 - *One number in four languages.* `zetaZeroWidth = zetaZeroAbscissa − 1/2`
   (`zetaZeroWidth_eq_zetaZeroAbscissa_sub_half`), and for `σ ≥ 0` the statements `zetaZeroWidth ≤ σ`,
@@ -60,10 +114,12 @@ an improvement counts once.
   energy and the spectral band grow at every rate above `σ`
   (`zetaZeroWidth_le_iff_forall_meanSquareBandRate`, `…_laplaceEnergyRate`, `…_spectralBandRate`;
   `B:BandSpectrumZeroWidthLaw` [L]); iff the completed Suzuki formation energy is subpower at
-  exponent `1 + 2σ` (`zetaZeroWidth_le_iff_suzukiCompletedFormationEnergy_subpower`); and, for a
-  generic width, iff the lag family is `≥ −Ce^{σv}` at all large lags
-  (`zetaZeroWidth_le_iff_lag_primeWindow_ge_neg_exp` [L]). The infimum of the cumulative
-  Möbius–divisor Abel energy exponents is `1 + 2·zetaZeroWidth`
+  exponent `1 + 2σ` (`zetaZeroWidth_le_iff_suzukiCompletedFormationEnergy_subpower`); iff the signed
+  dilation covariance prefix of the Möbius–divisor Abel source is subpower at exponent `1 + 2σ`
+  (`zetaZeroWidth_le_iff_mobiusDivisorDilationCovariancePrefix_subpower`;
+  `R:QuasiRHDilationCovarianceAbscissa` [L]); and, for a generic width, iff the lag family is
+  `≥ −Ce^{σv}` at all large lags (`zetaZeroWidth_le_iff_lag_primeWindow_ge_neg_exp` [L]). The infimum
+  of the cumulative Möbius–divisor Abel energy exponents is `1 + 2·zetaZeroWidth`
   (`one_add_two_mul_zetaZeroWidth_eq_sInf_mobiusDivisorAbelMeanSquareEnergy_exponents`;
   `R:QuasiRHMeanSquareAbscissa` [L]). The window ceiling is pinched, not exact: its excess exponent
   `θ* = inf{θ ≥ 0 : c(L) ≤ e^{L/2} + B(1 + L)e^{θL}` eventually`}` satisfies
@@ -82,20 +138,31 @@ an improvement counts once.
   `zetaZeroWidth = 0 ⟺ μ(A) → 0` (`zetaZeroWidth_eq_zero_iff_tendsto_ccmRestrictedWeilGroundEnergy_zero`).
   The three graded statements are ordered: ground-energy floor at rate `2σ` ⟹ lag floor at rate
   `σ` ⟺ `zetaZeroWidth ≤ σ` ⟺ every reading of face 1.1 at rate `σ`.
-- *Face 1.4 is a support condition.* Prime-blind positivity on a node set `S` is the existence of
-  a full-cone Weil-positive weight vanishing off `S`
+- *Face 1.4 is the point `Λ`.* Prime-blind positivity on a node set `S` is the existence of a
+  full-cone Weil-positive weight vanishing off `S`
   (`primeBlindPositiveOn_iff_exists_weilPositiveFull_eq_zero_off`); since the cone is `{Λ}`, it is
   Weil positivity of `Λ` together with `supp Λ ⊆ S`
   (`primeBlindPositiveOn_iff_weilPositiveFull_vonMangoldt_and_support`), and
   `zetaZeroWidth = 0 ⟺` prime-blind positivity on the prime powers
-  (`zetaZeroWidth_eq_zero_iff_primeBlindPositiveOn_primePowers`).
+  (`zetaZeroWidth_eq_zero_iff_primeBlindPositiveOn_primePowers`). For `t ≠ 1` the admixture
+  `tΛ + (1 − t)λ₀` is full-cone Weil-positive iff RH holds and `λ₀ = Λ`
+  (`weilPositiveFull_admixture_iff`). The shifted-pair weights `Λ(n)(n^a + n^{−a})` are outside the
+  full cone for every `a` (`not_weilPositiveFull_shiftedPairVonMangoldt`), and in the degree-two cone,
+  the cone of `ζ²`, they are positive iff RH holds and `a = 0`
+  (`weilPositiveDegree_two_shiftedPairVonMangoldt_iff`): the cone reads the coefficient size at the
+  node `2`, through `2^a + 2^{−a} = 2`.
 - *Face 1.5 is the width at the endpoint only.* Every zero right of the line contributes
   `2π m_ρ log|ρ/(1 − ρ)|` to the Balazard–Saias–Yor integral
   (`two_pi_mul_log_norm_div_le_integral_log_norm_zeta_criticalLine`), and the integral vanishes iff
   the width does (`integral_log_norm_zeta_criticalLine_eq_zero_iff_zetaZeroWidth_eq_zero`). The
   Blaschke weight of a zero decays with its height, so the face carries no exponent.
+- *Face 1.6 reads the width up to attainment.* For all but countably many widths `w` and steps `ℓ`,
+  `zetaZeroWidth ≤ σ` iff the dyadic prime windows at `X_k = e^{kℓ}` are `≥ −Ce^{σkℓ}` for all large
+  `k` and every zero above `½ + σ` forces the real parts of the zeros to attain their supremum
+  (`zetaZeroWidth_le_iff_attainedTop_and_grid_primeWindow_ge_neg_exp`). What a discrete probe loses
+  against the continuum family is exactly the unattained tops.
 - *Endpoint.* `zetaZeroWidth = 0 ⟺ |D(T)| ≤ Be^{T/2}` (`zetaZeroWidth_eq_zero_iff_deficitPrimitive_bound`),
-  and through `riemannHypothesis_iff_zetaZeroWidth_eq_zero` every RH criterion of faces 1.1–1.5 is a
+  and through `riemannHypothesis_iff_zetaZeroWidth_eq_zero` every RH criterion of faces 1.1–1.6 is a
   statement about the width.
 
 **The open arrow.** The dictionary has one missing direction: `zetaZeroWidth ≤ σ ⟹ μ(A) ≥ −Ce^{2σA}`
@@ -104,12 +171,10 @@ off-line zero sum of the Weil form on a test of aperture `A` is controlled by `e
 norm of the test, while `μ(A)` is the `L²`-normalized bottom of the spectrum. This arrow is the
 graded form of the no-crossing problem of face 1.3; every other reading is exactly the width.
 
-**Walls without a width face.** Walls 3, 5–10 and 13–17 carry no parameter tied to the width: 3 and 7
-are quantifier statements on one lag family, 5, 14 and 15 are structural impossibilities, 6 and 16
-are threshold classifications at damping `1/2`, 8, 9 and 13 are rigidity and selectivity laws, 10
-is a transport dichotomy, 17 an exponent law on the pronic Gram. The admission at one damping `ε` of
-wall 16 yields the translation closure `ζ(ρ) = 0, Re ρ > 1/2 + ε ⟹ ζ(ρ − ε) = 0` and bounds no
-width.
+**Walls without a width face.** Walls 3, 5, 13, 14 and 15 carry no parameter tied to the width: 3 is
+the Nyquist law at the zero spacing, 5 and 14 are finite-carrier impossibilities, 13 is a cone
+mismatch, 15 an orientation blindness. Wall 16 carries the damping parameter, whose threshold `½` is
+the unconditional width.
 
 ### Face 1.1: the square-root barrier in prime counting
 
@@ -121,7 +186,10 @@ saving `x^θ`, `θ < 1`, is already the zero-free half-plane `Re s > θ`. One-si
 Nicolas, Lagarias, sieve-weight positivity) trigger only at the full exponent `1/2`. The lag–frequency
 law explains why the exponent is forced: a test function vanishing at the nodes `log n` near lag `y`
 carries spectral content at frequency `≍ e^y` with amplitude `e^{−y/2}`, the square-root size, so every
-blind family loses a logarithmic margin against the pole weight `e^{y/2}`.
+blind family loses a logarithmic margin against the pole weight `e^{y/2}`. Transport of a zero detector
+does not change this: the exponent of any power saving on a non-oscillating sum (the Möbius–divisor Abel
+source, its dilation covariance, its quotient head and tail) is the width, and oscillating transports
+carry no pole information (face 16.4).
 
 **Sharpest corpus forms.** Three statements put the whole of RH into one prime quantity with no height
 parameter and no averaging.
@@ -169,6 +237,12 @@ implies RH), `T:MoebiusAndLiouvilleReceiversAreEquivalent` (`riemannHypothesis_o
 `R:FermiNymanRawMobiusTailFloor` (raw Möbius approximant error `(N+1)H_N²/6`),
 `R:LittlewoodOmega` (`Ω±(√x log log log x)`: no `O(√x)` target, no eventual fixed sign).
 
+**Transport laws** [L]. `R:QuasiRHMeanSquareAbscissa`, `R:QuasiRHDilationCovarianceAbscissa` (the
+cumulative Abel energy and the signed dilation covariance prefix have exponent `2Θ`),
+`R:QuasiRHQuotientHeadBoundary` (the shortened quotient head keeps the boundary saving `Θ + ε`),
+`R:CCMFUSuzukiMobiusQuotientTail` (tail past quotient cutoff `Q` is `O_ε(M^{Θ+ε+1/2}Q^{1/2−Θ−ε})`: the
+head keeps all signs).
+
 **Where unconditional methods stop** [L]. `R:MoebiusAbelSmoothedSaving`, `R:Sieve/VinogradovRouteTSaving`,
 `V:VinogradovKorobovCofinalMobiusDiscrepancy` (VK shape, never a power); `R:QuasiRHHighDilationPositiveEnvelope`
 (the positive absolute envelope of the signed covariance grows at the wrong exponent `J^{m+1}`: the
@@ -181,6 +255,8 @@ bounds the coefficient-weighted complete energy below the first period);
 **Rule.** Before trying a producer, name the prime sum it needs and the exponent it needs. If the
 exponent is `1/2`, or the precision is `O(log X)` at scale `√X`, the route is a restatement of RH; at
 any other exponent it is a bound on `zetaZeroWidth`, and the dictionary says which other face it moves.
+Classify the sum: if it does not oscillate, the method is a zero-free-region argument; if it does, say
+how its bound is transported back without introducing a phase.
 
 ### Face 1.2: the axis outside the zero set
 
@@ -215,7 +291,8 @@ has a dominance parameter. State what unconditional fact pushes that parameter p
 
 The restricted Weil ground energy `μ(A)` at aperture `A` is the quantitative form of "no margin"
 (face 1.4): a positivity producer must prove `μ(A) ≥ 0` at every aperture, and `μ(A)` decays to `0`
-under RH and to `−∞` off it at the rate `2·zetaZeroWidth`.
+under RH and to `−∞` off it at the rate `2·zetaZeroWidth`. By the aperture principle, every certified
+aperture is consistent with every width; only the whole path `A → ∞` reads it.
 
 **Floors and limits** [L]. `μ(A) ≥ 1/30` for `A ≤ 21/200` (`one_thirtieth_le_ccmRestrictedWeilGroundEnergy`,
 `C:ExplicitSmallApertureCCMGroundEnergyFloor`); `μ(A) ≥ 1/125, 1/50, 1/250, 1/250, 1/500` for
@@ -267,25 +344,65 @@ all profiles; identities count as zero. A floor `μ(A) ≥ −Ce^{2σA}` is a bo
 and a lag floor at rate `σ`; the converse, a floor from the width, is the open arrow of the
 dictionary and is where the no-crossing problem sits in graded form.
 
-### Face 1.4: the forced dual measure and node criticality
+### Face 1.4: the Weil cone is the point `Λ`
 
 Every certificate of prime-blind or Weil positivity yields a positive spectral measure on the line; by
 uniqueness of the Weil cone and atomicity of the boundary measure that measure is the critical-zero
 counting measure. A producer of positivity is a spectral realization of the zeros, every linear or
 convex reformulation has exact duality whose only certificate is the zero measure, and near-null tests
 with pole `≈ −archimedean part` and `|pole|/mass → ∞` exist under RH, so no estimate with a margin can
-certify positivity. Node criticality is the support condition of the same statement: prime-blind
-positivity on a node set `S` (the pole-plus-archimedean part of the Weil functional nonnegative on
-every nonnegative combination of autocorrelations vanishing at `±log n`, `n ∈ S`) is the existence of
-a full-cone Weil-positive weight vanishing off `S`, hence RH together with `S ⊇ {prime powers}`.
-Deleting one prime-power node, even `log 4`, makes it false; non-prime-power nodes are redundant. Any
-argument insensitive to a single node cannot work: sampling density, Nyquist, Beurling–Malliavin,
-generic uncertainty principles.
+certify positivity. Four statements usually kept apart are this one point.
 
-**The cone** [L]. `R:WeilConeUniquenessUnconditional` (`eq_vonMangoldt_of_weilPositiveFull`);
-`R:WeilConePoleWeightRigidity`; `R:WeilPositivityBeurlingPerturbationRigidity`,
-`R:WeilPositivityResidueRigidity`; `R:EvenSectorPoleWeightUniqueness`, `R:EvenSectorTwistedArcNull`;
-`R:ArchimedeanUnitNodeEnergy`.
+- *Node criticality.* Prime-blind positivity on a node set `S` (the pole-plus-archimedean part of the
+  Weil functional nonnegative on every nonnegative combination of autocorrelations vanishing at
+  `±log n`, `n ∈ S`) is the existence of a full-cone Weil-positive weight vanishing off `S`, hence RH
+  together with `S ⊇ {prime powers}`. Deleting one prime-power node, even `log 4`, makes it false;
+  non-prime-power nodes are redundant. Any argument insensitive to a single node cannot work: sampling
+  density, Nyquist, Beurling–Malliavin, generic uncertainty principles.
+- *Admixture.* Deforming an unconditionally positive producer `λ₀` toward `Λ` does not dilute the RH
+  content: for every `t ≠ 1`, positivity of `tΛ + (1 − t)λ₀` is RH together with `λ₀ = Λ`. An off-line
+  pair costs `t·2Re f̂(γ₀ − iε)² ≈ −te^{2aε}‖f‖²` against an archimedean slack of size `log γ₀·‖f‖²`.
+  The pole weight is forced to `1`, moving one prime atom leaves the cone, and even a boosted
+  archimedean datum admits only trivial weights.
+- *The temperedness gate.* `ζ(s − a)ζ(s + a)`, `a` real and nonzero, has an Euler product, the
+  functional equation `s ↦ 1 − s`, polynomial growth and nonnegative coefficients `2Λ(n)cosh(a log n)`,
+  yet its zeros lie on `Re s = 1/2 ± a` and its poles at `1 ± a`. It fails only coefficient size, and
+  the cone reads exactly that: its weights are outside the full cone for every `a` and inside the
+  degree-two cone only at `a = 0` under RH. Any producer using only Euler product, functional
+  equation, growth and nonnegativity would prove a false statement; a Beurling system with regular
+  integers and zeros at any `β ∈ (1/2, 1)` shows the same for atom positions.
+- *Twin rigidity.* A degree-`d` twin of `ζ^d` with all zeros critical is `ζ^d`: tensor powers and
+  Rankin amplifications add no freedom, because the degree-`d` cone is `{dΛ}`.
+
+**The cone** [L]. `R:WeilConeUniquenessUnconditional` (`eq_vonMangoldt_of_weilPositiveFull`,
+`weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt`); `R:WeilFullConeExposedPoint` (`Λ` is an
+exposed and an extreme point); `R:WeilConeDegreeTwinRigidity` (`weilPositiveDegree_iff`: the degree-`d`
+cone is `{dΛ}` under RH), `R:TwinRigidityZetaPower`, `R:TwinRigidityOffLineZero`;
+`R:WeilConePoleWeightRigidity`, `R:WeilPoleWeightForcedOne` (the full cone fixes the pole weight at
+one; even super-residue deformations `β > 1` are impossible); `R:WeilConeVonMangoldtZetaPencil` (the
+pencil `βΛ + γ[n ≥ 2] + v` meets the cone only at `Λ`); `R:WeilPositivityBeurlingPerturbationRigidity`
+(`vonMangoldt_move_atom_not_weilPositive`); `R:WeilPositivityResidueRigidity`;
+`R:WeilLittleOVonMangoldtRigidity` (an `o(Λ)` deviation leaves the cone); `R:WeilFullConeMinorantRigidity`
+(`λ ≤ Λ` or `λ ≥ Λ` full-positive forces `λ = Λ`); `R:TrivialWeightBoostedWeilCone` (a boosted
+archimedean datum admits trivial weights: positivity after changing the datum is not positivity of the
+fixed form); `R:LebesgueAtomArchimedeanWeilDensity` (the explicit positive system whose deformation
+was tried); `R:EvenSectorPoleWeightUniqueness`, `R:EvenSectorTwistedArcNull`; `R:ArchimedeanUnitNodeEnergy`.
+`R:AdmixturesAndTheShiftedPairLeaveTheWeilCone` [S] (`weilPositiveFull_admixture_iff`,
+`not_weilPositiveFull_shiftedPairVonMangoldt`, `weilPositiveDegree_two_shiftedPairVonMangoldt_iff`).
+
+**The gate's countermodels** [L]. `R:NonTemperedShiftedZetaPairCountermodel` (`not_ramanujan_shiftedPairCoeff`
+and the full list of positive properties); `R:BeurlingRegularIntegersOffLineZeros`. Selectivity
+theorems, which pass the gate at finite aperture: the full odd window positivity of `ζ` past the
+plastic threshold fails for the shifted pair at every radius `> t*/2` and already at radius
+`13/125 < 21/200` for large `a` (`I:ShiftedPairOddWindowSelectivity`, `I:ShiftedPairHankelSelectivity`);
+on even tests the shifted pair has a negative window at every positive radius for large `a`
+(`C:EvenWindowShiftedPairSelectivity`); the weighted prime majorant `ΣΛ(n)(n^a + n^{−a})n^{−1−ε}`
+diverges for `ε ≤ |a|` while `ζ`'s converges for every `ε > 0`
+(`A:CompactCriticalPolynomialWindowAndTemperednessBridge`); for the shifted pair with `a < 1/2`
+every local Euler factor of the damped receiver sits left of the line, so no finite prime set sees
+its off-line zeros (`T:LocalEulerFactorsAndPronicDilationContraction`). Window positivity of `ζ` is
+selective against large shifts; the cone statement covers every `a ≠ 0` at unbounded aperture; no
+window statement has been tested against a Beurling system.
 
 **The nodes** [L]. `primeBlindPositiveOn_iff` (`R:PrimeBlindNodeCriticality`);
 `riemannHypothesis_iff_primeBlindPositive_unconditional` (`R:TwistedArcMinimumPrincipleProof`);
@@ -321,9 +438,13 @@ lattice pair (`I:PrimePowerIncidenceDominance`).
 
 **Rule.** A positivity producer must come with the Hilbert space and the self-adjoint operator whose
 spectrum it realizes. If the argument only manipulates test functions and inequalities, its certificate
-is the zero measure and the argument is circular. Before a positivity argument on blind tests, check
-whether it survives removal of one prime-power node or thinning of the node set. If it does, it proves
-something false. A mechanism must read the Euler-product prices above, not a density.
+is the zero measure and the argument is circular. Do not try to reach `Λ` from an unconditionally
+positive system by a small deformation: every direction out of the point is RH-equivalent at any
+amplitude. List the properties of `ζ` a proposed argument uses; if `ζ(s − a)ζ(s + a)` has all of them,
+the argument is wrong somewhere, and a positivity statement counts only after its selectivity is
+proved. Before a positivity argument on blind tests, check whether it survives removal of one
+prime-power node; if it does, it proves something false. A mechanism must read the Euler-product prices
+above, not a density.
 
 ### Face 1.5: the Jensen gap between `|ζ|²` and `log|ζ|`
 
@@ -351,13 +472,56 @@ pronic energy `≥ κ/(4 log N)` (`V:LogHarmonicReadoutAndTheMobiusRowEnergyFloo
 must say how the logarithm is reached. Outerness needs equality in Jensen, which no mean-value estimate
 provides; in Báez-Duarte coordinates the residual cannot be made `o(1/log N)` by any finite row.
 
+### Face 1.6: the quantifier gap
+
+Families, Bohr–Jessen–Bagchi value distribution, universality, Kac–Rice densities, almost-all
+short-interval theorems and lag grids give statements true for a positive proportion, for almost all
+members, or on sets of density one. RH is a statement about one function at every height. Around an
+off-line zero the return set has density zero, so the statistical and the pointwise statement are
+separated exactly by the zeros one wants to exclude. On the lag family the gap is exact: a geometric
+grid of windows reads the width up to the attainment of the top, and the continuum family reads it
+completely.
+
+**In the corpus** [L]. `R:ZetaStrongRecurrenceReceiver`, `R:ZetaTypicalHeightApproximationExcludesZeroTargets`
+(any target with a zero inside the disc is approximated by `ζ` only on a density-zero set of heights);
+`R:ZetaDiscRecurrenceIffUniformHeadTargetDensity` (`zetaDiscStronglyRecurrentOn_iff_headTargetUniformlyDense`,
+`riemannHypothesis_of_forall_headTargetUniformlyDense`); `R:ZetaDiscRecurrenceOnZeroFreeDiscs`: every
+locally zero-free right-strip point has a recurrent closed disc with cutoff-uniform Dirichlet-head
+target approximation, and RH iff every right-half-strip point has some strongly recurrent closed disc.
+Recurrence is therefore closed exactly on zero-free discs, and the open statement is literally "exclude
+a zero from the disc". `R:FiniteEulerProductKroneckerWeylLimitLaw`, `R:FiniteEulerProductUniversalityOnDiscs`,
+`R:UniformEulerTargetDensityOnZeroFreeDiscs` (positive-density visits of finite Euler products, the
+statistical half); `R:ZetaWeakRecurrenceLadderCollapse` (weak recurrence relocates off-line zeros, it does
+not remove them); `R:WeilPositiveAlmostAllShortIntervals`; `R:XiReciprocalSlicePositiveDensity`;
+`R:XiCardGateUnification`.
+Lag grids: `exists_chain_hidden_from_grid` (`Q:ChainsHideFromLagGrids`), a summable nonresonant chain
+with strictly increasing unattained depths is nonpositive at every integer lag and unbounded on the
+continuum; `Q:GridHiddenChainsHaveAnExplicitContinuumLag` (the continuum sees it at lag `O(log M)`);
+`Q:LagGridsSeeAttainedTops` (RH iff grid nonnegativity together with attainment of a rightmost zero in
+every nonempty off-line set); `Q:LagGridAliasingPotentialLaw` (grids need no loud zero aliasing onto
+the record); `R:WeilLagPositiveDensityBlindConfiguration` (an off-line configuration with positive
+weights whose lag sums vanish at every grid lag). The exact width law of a grid is
+`zetaZeroWidth_le_iff_attainedTop_and_grid_primeWindow_ge_neg_exp`
+(`Q:LagGridsAndTransportLawsReadTheZeroWidth` [L]). For the continuum family the attainment premise is
+replaced by a horizon condition: if `P_v ≥ 0` on `[0, V]`, then from every zero inside the horizon
+(`V₀(z₀) ≤ V`) a zero beyond it is reached, deeper by `> 1/V`; hence some `P_v < 0` on `[0, V]`
+whenever all zeros deeper than `z₀ + 1/V` lie inside the horizon (`one_param_horizon_law`,
+`one_param_visible_of_horizon`, `Q:OneParameterLagFamilyHorizonLaw` [L]). What remains unattainable is
+the depth of the zeros beyond every finite horizon.
+
+**Rule.** An attempt that averages over `τ`, over characters, over a random model or over a lag grid
+must name the step that upgrades "almost all" to "all". The upgrade is where the off-line zero hides;
+on the lag family it is the attained top, and on the continuum family the condition on the zeros
+beyond the horizon.
+
 ## Wall 3: local zero clustering
 
 A localized explicit formula at height `γ₀` with a test of log-length `λ log γ₀` excludes a zero at
 real part `β` only if the window around `γ₀` contains few zeros. Unconditionally a window of width
 `1/(λ log γ₀)` may contain `≍ log γ₀` zeros, and Turán's loss `(n/(8e(M + n)))^n` with `n ≍ log γ₀` is
 `γ₀^{−c log log γ₀}`, larger than any power gain. Zero-density estimates count in strips, never inside
-one window.
+one window. This is the aperture principle at the zero spacing: a test of aperture `a` resolves zeros
+separated by `g` only for `a > π/(2g)`, and the spacing at height `γ₀` is `2π/log γ₀`.
 
 **In the corpus** [L]. `exists_xiZeroCount_window_le` (`R:XiZeroCountLocalCeiling`): the sharp local
 ceiling `N(t + H) − N(t) ≤ (H/2π)log(t + H) + 2C log(t + H)`; `R:XiLogDerivLineOneWindowLower`: fixed-width
@@ -366,7 +530,9 @@ windows contain `≥ log T` zeros; `R:ZetaRightZeroWeightedCount`, `T:WindowedQu
 (density majorants over height ranges, none excluding one fixed off-line zero);
 `R:TuranSumOneSidedBoundary`; `R:JointAncestryShellPowerSumCriterion` (RH iff zeros approach the line
 and a power-sum growth bound holds on dyadic shells); `R:DeBruijnClusterPersistence` (clusters persist
-under the heat flow).
+under the heat flow); `Q:NyquistResolutionOfTheWeilForm` (`eq_of_weil_eq_of_separated`,
+`lattice_resolution_sharp`: the resolution aperture of `g`-separated on-line configurations is exactly
+`π/(2g)`).
 
 **Lag-side form.** Positivity of the one-parameter lag family on a finite lag range `[0, V]` forces
 every near-top zero to hide in a collapsed cluster: a loud record has two companions within `2r` or an
@@ -394,14 +560,15 @@ cohomology, with the identity `f(x)^q = f^{(q)}(x^q)` on fixed points and, in De
 tensor-power amplification exact by the known pole of `H²_c`. For `ζ` there is no archimedean object
 whose fixed points are the primes, and every analytic imitation of the amplification is circular:
 rescaling moves the pole, moments of `Ξ` are zero-blind, the amplified Chebyshev error `E(x)^{2k}` has
-Landau abscissa `2k(Θ − 1/2)`, function-field positive cones with `q ≥ 2` have periodic zeros.
+Landau abscissa `2k(Θ − 1/2)`, function-field positive cones with `q ≥ 2` have periodic zeros, and
+tensor powers add no freedom because the degree-`d` Weil cone is the point `dΛ` (face 1.4).
 
 **In the corpus** [L]. `R:StepanovCount`, `R:StepanovCharacterSum` (the auxiliary-polynomial count and
 the elementary Weil bound; the vanishing uses the Frobenius identity); `R:FunctionFieldFE` (closure of
 Frobenius eigenvalues under `ω ↦ q/ω`; purity `|ω| = √q` is not formalized);
 `R:CCMFUCompactAutocorrelationDeningerAmplification` (amplified responses grow without bound at late
 translations; the arithmetic side of the amplification is the open weld); `R:TwinRigidityZetaPower`
-(a degree-`d` twin of `ζ^d` with all zeros critical is `ζ^d`: tensor powers add no freedom);
+(a degree-`d` twin of `ζ^d` with all zeros critical is `ζ^d`);
 `R:DeningerCarrierNoIntegralLattice`, `R:FrobeniusTorsionLaw` (three distinct prime actions are
 incompatible with a nonreal `ρ` in any finite-rank lattice; torsion is unitary).
 
@@ -409,135 +576,14 @@ incompatible with a nonreal `ρ` in any finite-rank lattice; torsion is unitary)
 primes sit. Without a fibration making `Spec ℤ` a fibre over a one-dimensional base, every tensor-power
 or Rankin trick returns the Landau abscissa.
 
-## Wall 6: the probability cone
-
-Positivity statements derived from the Euler product hold exactly where the Dirichlet series converges
-absolutely, `Re s > 1`; continuation into the strip is not positivity-preserving. `log ζ(σ + it)` is
-positive definite for `σ > 1` only; the Eisenstein series is a positive sum for `u > 1` only; random
-Euler products are zero-free almost surely on `Re s > 1/2`, but `ζ` is one point of the torus.
-
-**In the corpus** [L]. `H:PrimeDirichletPositiveDefinite` (positive definiteness needs absolute
-summability); `R:FiniteEulerStageNearLineStrip` (finite Euler stages are zero-free near the line only
-up to a truncation-determined height); `R:SelbergPositiveEisenstein`;
-`R:JointAncestryEndpointBudgetProducer` (the native prime-product form is nonnegative on finite prime
-sets of budget `Σ_P p^{−(σ−1/2)} ≤ ((log y)/(128·10⁸))^{3/2}/(log log y)⁴`; the level-one RH receiver
-needs budget `y^{1/2}`); `R:SteinhausEulerVerticalBarrier`, `R:SteinhausEulerQuadraticApprox`.
-The receiver form of the same line: on the damped class `|c(d)| ≤ Kd^{−ε}` one constant bounds every
-Möbius-type receiver when `ε > 1/2`, and for `ε ≤ 1/2` a nonnegative weight has bounded receiver iff
-its dyadic masses satisfy `Σ_k M_k²/2^k < ∞`, so without signs there is no cancellation at all
-(`T:HalfDampingIsTheExactThresholdOfTheParityPair`, `T:DyadicMassesGovernPositiveReceivers`,
-`T:ReceiverOfMultiplicativeWeightsIsDecidedAtThePrimes` [L]).
-
-**Rule.** When a positivity or definiteness statement is proved, check the half-plane on which it is
-proved. If it is `Re s > 1`, or damping `ε > 1/2`, the strip statement must be obtained some other way.
-
-## Wall 7: statistical and almost-all results
-
-Families, Bohr–Jessen–Bagchi value distribution, universality, Kac–Rice densities, almost-all
-short-interval theorems and lag grids give statements true for a positive proportion, for almost all
-members, or on sets of density one. RH is a statement about one function at every height. Around an
-off-line zero the return set has density zero, so the statistical and the pointwise statement are
-separated exactly by the zeros one wants to exclude.
-
-**In the corpus** [L]. `R:ZetaStrongRecurrenceReceiver`, `R:ZetaTypicalHeightApproximationExcludesZeroTargets`
-(any target with a zero inside the disc is approximated by `ζ` only on a density-zero set of heights);
-`R:ZetaDiscRecurrenceIffUniformHeadTargetDensity` (`zetaDiscStronglyRecurrentOn_iff_headTargetUniformlyDense`,
-`riemannHypothesis_of_forall_headTargetUniformlyDense`); `R:ZetaDiscRecurrenceOnZeroFreeDiscs`: every
-locally zero-free right-strip point has a recurrent closed disc with cutoff-uniform Dirichlet-head
-target approximation, and RH iff every right-half-strip point has some strongly recurrent closed disc.
-Recurrence is therefore closed exactly on zero-free discs, and the open statement is literally "exclude
-a zero from the disc". `R:FiniteEulerProductKroneckerWeylLimitLaw`, `R:FiniteEulerProductUniversalityOnDiscs`,
-`R:UniformEulerTargetDensityOnZeroFreeDiscs` (positive-density visits of finite Euler products, the
-statistical half); `R:ZetaWeakRecurrenceLadderCollapse` (weak recurrence relocates off-line zeros, it does
-not remove them); `R:WeilPositiveAlmostAllShortIntervals`; `R:XiReciprocalSlicePositiveDensity`;
-`R:XiCardGateUnification`.
-Lag grids: `exists_chain_hidden_from_grid` (`Q:ChainsHideFromLagGrids`), a summable nonresonant chain
-with strictly increasing unattained depths is nonpositive at every integer lag and unbounded on the
-continuum; `Q:GridHiddenChainsHaveAnExplicitContinuumLag` (the continuum sees it at lag `O(log M)`);
-`Q:LagGridsSeeAttainedTops` (RH iff grid nonnegativity together with attainment of a rightmost zero in
-every nonempty off-line set); `Q:LagGridAliasingPotentialLaw` (grids need no loud zero aliasing onto
-the record). For the continuum family the attainment premise is replaced by a horizon condition: if
-`P_v ≥ 0` on `[0, V]`, then from every zero inside the horizon (`V₀(z₀) ≤ V`) a zero beyond it is
-reached, deeper by `> 1/V`; hence some `P_v < 0` on `[0, V]` whenever all zeros deeper than `z₀ + 1/V`
-lie inside the horizon (`one_param_horizon_law`, `one_param_visible_of_horizon`,
-`Q:OneParameterLagFamilyHorizonLaw` [L]). What remains unattainable is the depth of the zeros beyond
-every finite horizon.
-
-**Rule.** An attempt that averages over `τ`, over characters, over a random model or over a lag grid
-must name the step that upgrades "almost all" to "all". The upgrade is where the off-line zero hides;
-on the lag family it is the condition on the zeros beyond the horizon.
-
-## Wall 8: infinitesimal admixture
-
-The Weil functional is affine in the weight system. Deforming an unconditionally positive producer
-toward `Λ` does not dilute the RH content: for every `t > 0` positivity of `tΛ + (1 − t)λ₀` at all
-apertures is RH, because an off-line pair costs `t·2Re f̂(γ₀ − iε)² ≈ −te^{2aε}‖f‖²` against an
-archimedean slack of size `log γ₀·‖f‖²`.
-
-**In the corpus** [L]. `R:LebesgueAtomArchimedeanWeilDensity` (the explicit positive system whose
-deformation was tried); `R:WeilConePoleWeightRigidity`, `R:WeilPoleWeightForcedOne` (the full cone fixes
-the pole weight at one; even super-residue deformations `β > 1` are impossible);
-`R:WeilConeVonMangoldtZetaPencil` (the pencil `βΛ + γ[n ≥ 2] + v` meets the cone only at `Λ`);
-`R:WeilPositivityBeurlingPerturbationRigidity`; `R:WeilLittleOVonMangoldtRigidity` (an `o(Λ)` deviation
-leaves the cone); `R:WeilFullConeMinorantRigidity` (`λ ≤ Λ` or `λ ≥ Λ` full-positive forces `λ = Λ`);
-`R:TrivialWeightBoostedWeilCone` (a boosted archimedean datum admits trivial weights: positivity after
-changing the datum is not positivity of the fixed form).
-
-**Rule.** Do not try to reach `Λ` from an unconditionally positive system by a small deformation. The
-cone is a point, and every direction out of it is RH-equivalent at any amplitude.
-
-## Wall 9: the temperedness gate
-
-`ζ(s − a)ζ(s + a)`, `a` real and nonzero, has an Euler product, the functional equation `s ↦ 1 − s`,
-polynomial growth and nonnegative coefficients `2Λ(n)cosh(a log n)`, yet its zeros lie on
-`Re s = 1/2 ± a` and its poles at `1 ± a`. It fails only coefficient size. Any producer using only
-Euler product, functional equation, growth and nonnegativity would prove a false statement.
-
-**In the corpus** [L]. `R:NonTemperedShiftedZetaPairCountermodel` (`not_ramanujan_shiftedPairCoeff` and
-the full list of positive properties); `R:BeurlingRegularIntegersOffLineZeros`;
-`R:TwinRigidityZetaPower`, `R:TwinRigidityOffLineZero`; `R:WeilConePoleWeightRigidity`.
-Selectivity theorems, which pass the gate: the full odd window positivity of `ζ` past the plastic
-threshold fails for the shifted pair at every radius `> t*/2` and already at radius `13/125 < 21/200`
-for large `a` (`I:ShiftedPairOddWindowSelectivity`, `I:ShiftedPairHankelSelectivity` [L]); on even
-tests the shifted pair has a negative window at every positive radius for large `a`
-(`C:EvenWindowShiftedPairSelectivity` [L]); the weighted prime majorant `ΣΛ(n)(n^a + n^{−a})n^{−1−ε}`
-diverges for `ε ≤ |a|` while `ζ`'s converges for every `ε > 0`
-(`A:CompactCriticalPolynomialWindowAndTemperednessBridge` [L]); for the shifted pair with `a < 1/2`
-every local Euler factor of the damped receiver sits left of the line, so no finite prime set sees
-its off-line zeros (`T:LocalEulerFactorsAndPronicDilationContraction` [L]). Window positivity of `ζ`
-is selective against large shifts; small shifts still pass every prime-free window, and no window
-statement has been tested against a Beurling system.
-
-**Rule.** List the properties of `ζ` a proposed argument uses. If `ζ(s − a)ζ(s + a)` has all of them,
-the argument is wrong somewhere. A positivity statement counts only after its selectivity is proved.
-
-## Wall 10: the oscillation–transport dichotomy
-
-Exponential-sum methods give power savings for oscillating sums; zero-detecting sums
-(`ψ(x/j) − ψ(x/(j+1))`, `Σ μ(m)m^{−s}` with its transported poles, the sawtooth `Σ Λ(d){x/d}`) do not
-oscillate. Transport either keeps the `1/ζ` structure and the transported poles, with no power saving,
-or acquires a phase that destroys the pole structure, with no zero information.
-
-**In the corpus** [L]. `R:MoebiusAbelSmoothedSaving` (VK-shaped saving because the sum is
-non-oscillating); `R:Sieve/VinogradovRouteTSaving`, `R:Sieve/MontgomeryVaughanArbitraryLogPhaseReceiver`
-(oscillating objects with fixed small exponents carrying no pole information);
-`V:VaughanTypeIIShortAndAllHorizonMobiusL2Energy`, `V:LinearBandVaughanTypeIIBilinearEstimate` (the
-Type-II short side is the negative literal Möbius sieve above `1`; the saving lives on the bilinear
-piece; the unsigned all-horizon energy `M·invSum(M)³` carries no sign);
-`R:MobiusLaplaceCriticalDilationNoGo` (absolute-value Neumann attacks fail at the critical dilation
-weight `k^{−1/2}`); `R:FermiNymanRawMobiusTailFloor`; `R:CCMFUSuzukiMobiusQuotientTail` (tail past
-quotient cutoff `Q` is `O_ε(M^{Θ+ε+1/2}Q^{1/2−Θ−ε})`: the head keeps all signs).
-
-**Rule.** Classify the sum a method bounds. If it oscillates, say how the bound is transported back to
-a non-oscillating zero detector without introducing a phase; if it does not oscillate, the method is a
-zero-free-region argument in disguise.
-
 ## Wall 13: cone mismatch
 
 Maximum principles, transfer-operator positivity and pointwise gauges act on pointwise cones; the
 positivity to be proved lives on the Bochner cone (autocorrelations, positive-definite functions,
 nonnegative spectral measures). The two cones differ in both directions, and the Bochner cone is
-exactly the cone of positive-definite zonal kernels on `ℍ`.
+exactly the cone of positive-definite zonal kernels on `ℍ`. Every pointwise certificate is
+window-bounded, and by the aperture principle a window-bounded certificate is consistent with every
+width.
 
 **In the corpus** [L]. `R:WeilConeMismatchWitnesses` (`weilTest_self_re_neg_twoSignedWeilTest`: a
 smooth Weil autocorrelation negative at lag `3`; a nonnegative two-hump profile that is no
@@ -583,7 +629,7 @@ maximum-principle route has no nonnegative candidate at all.
 **Rule.** When a positivity statement is proved by a maximum principle, a transfer operator or a
 pointwise gauge, identify the cone it lives on and the support through which it holds. A Bochner-cone
 statement at arbitrary support needs a transfer from pointwise positivity compatible with blindness;
-every known transfer stops at an explicit radius.
+every known transfer stops at an explicit radius, and no radius decides the width.
 
 ## Wall 14: the size law
 
@@ -600,7 +646,7 @@ autocorrelation, the sparse-height off-line correction and Kronecker–Weyl visi
 `Q:ZetaWindowPrimePolynomialReadsZeroCountRemainder`, `Q:ZetaOffLineCorrectionSmallOutsideSparseHeights`,
 `Q:ZetaWindowPrimePolynomialOnThePrimeTorus`); `R:QuantumGraphPrimePowerDecoupling`;
 `R:UnitaryEulerFactorRigidity`; `R:ArithmeticDilationTraceClass` (the trace-class realizations the
-corpus has are of absolutely summable matrices, the absolute-convergence regime of Wall 6);
+corpus has are of absolutely summable matrices, the absolute-convergence regime of face 16.1);
 `R:BurnolFirstJetShellScaleLaw` (positive damping shells tend strongly to zero while their trace tends
 to `log(c)/4`); `R:SourceInverseTraceIdealNoGo` (the Xi inverse is `S₂` but not `S₁`);
 `R:HermitianPencilEulerFactorObstruction`.
@@ -615,7 +661,8 @@ Positivity of currents, positive-definite functions and Schur products never con
 lie. The Poincaré–Lelong current `i∂∂̄ log|ξ|² = Σ[ρ]` is positive for any zero set; the positive
 definiteness of `Ξ` bounds `|Ξ(t)| ≤ Ξ(0)` and says nothing about zeros. An orientation of the zero
 set relative to the critical axis is a reality or unitarity structure, and reflection-even data cannot
-recover a reflection-odd sign.
+recover a reflection-odd sign. The aperture principle is its sharp form: at every bounded aperture the
+form of an off-line configuration is the form of an on-line one.
 
 **In the corpus** [L]. `H:EntirePoincareLelong`; `R:EulerShiftPairIncidenceCurrent`
 (`xi_isPoincareLelongOfSmooth`: the collision charge is a multiplicity count);
@@ -623,21 +670,62 @@ recover a reflection-odd sign.
 the survivor is the squared displacement); `Q:WeilFormDeterminesTheConfiguration` (`eq_of_weil_eq`: the
 all-aperture signed form determines a tempered configuration); `Q:CrystallizationHidesOffLineZeros`
 (`exists_offLine_superset_hiding`: finite-aperture positivity is not monotone in the zero set);
-`R:TranslationAveragedDensityDepthBlindness` (full translation averages are independent of a zero's
-transverse depth); `B:PrimeWindowTwistInvariance` (window extremes see atoms only through sizes);
-`R:XiCosineShiftLaguerrePolya`, `R:DeBruijnNewmanHalfBound` (the real-rootedness results that exist are
-strip statements).
+`Q:OnLineShadowIndistinguishability`, `Q:DepthTomographyAtTwiceNyquist` (depth is read only from twice
+the Nyquist aperture on); `R:TranslationAveragedDensityDepthBlindness` (full translation averages are
+independent of a zero's transverse depth); `B:PrimeWindowTwistInvariance` (window extremes see atoms
+only through sizes); `R:XiCosineShiftLaguerrePolya`, `R:DeBruijnNewmanHalfBound` (the real-rootedness
+results that exist are strip statements).
 
 **Rule.** When a construction yields a positive current, a positive-definite function or a positive
 measure, ask what in it changes sign when a zero is reflected across the critical line. If nothing
 does, the construction cannot locate zeros.
 
-## Wall 16: the parity barrier at half damping
+## Wall 16: the sign-blindness barrier at half damping
 
-The damped Möbius receiver (the pronic energy `E_T(c) = Σ_{n≤T} A_c(n)²/(n(n + 1))` of the centred
-prefix of `c ∗ 1`, the PM and BVI receiver) is bounded for `c = μ(d)d^{−ε}` at `ε = 1/2` and must be
-bounded at arbitrarily small `ε > 0` for RH. Below half damping the receiver cannot be decided by any
-sign-blind data: parity pairs exist at every `0 < ε ≤ 1/2`, two weights with identical Ramanujan
+On the damped class `𝒞(K, ε) = {|c(d)| ≤ Kd^{−ε}}` the Möbius receiver, the pronic energy
+`E_T(c) = Σ_{n≤T} A_c(n)²/(n(n + 1))` of the centred prefix of `c ∗ 1`, is decided by sign-blind data
+exactly above half damping. Four faces say this in four languages, and the threshold `ε = ½` is the
+unconditional width `½`: at `ε = ½` the Möbius weight itself has bounded receiver because
+`ζ(1 + it) ≠ 0`.
+
+**The dictionary** (`T:UnsignedMajorantsAndSignBlindDataStopAtHalfDamping`,
+`T:HalfDampingIsTheExactThresholdOfTheParityPair`, `T:RealCharacterParityPairsAndTheParityBarrier`,
+`T:DyadicMassesGovernPositiveReceivers` [L]). For every `K > 0` and `ε > 0` the following are
+equivalent, and equivalent to `ε > ½`: one constant bounds every receiver on `𝒞(K, ε)`
+(`uniformReceiverBound_iff_half_lt`, the unsigned majorant `|A_c(n)| ≤ KC_ε n^{1−ε}` converges);
+receiver boundedness is a function of the Ramanujan amplitudes `|W_c(e)|`
+(`uniformReceiverBound_iff_amplitudeInvariant`, `receiverBounded_amplitudeInvariant_iff`); receiver
+boundedness is a function of the coefficient magnitudes `|c(d)|`
+(`receiverBounded_magnitudeInvariant_iff`). Below half damping the character weight `Kχ₄(d)d^{−ε}` and
+the odd weight `K1_{odd}(d)d^{−ε}` have the same magnitudes and opposite receivers; for nonnegative
+weights the receiver is read off the dyadic masses, bounded iff `Σ_k M_k²/2^k < ∞`
+(`bounded_weightPronicEnergy_iff_summable_dyadicMass`).
+
+### Face 16.1: the probability cone
+
+Positivity statements derived from the Euler product hold exactly where the Dirichlet series converges
+absolutely, `Re s > 1`; continuation into the strip is not positivity-preserving. `log ζ(σ + it)` is
+positive definite for `σ > 1` only; the Eisenstein series is a positive sum for `u > 1` only; random
+Euler products are zero-free almost surely on `Re s > 1/2`, but `ζ` is one point of the torus. In
+receiver coordinates the absolute-convergence line is `ε = ½`.
+
+**In the corpus** [L]. `H:PrimeDirichletPositiveDefinite` (positive definiteness needs absolute
+summability); `R:FiniteEulerStageNearLineStrip` (finite Euler stages are zero-free near the line only
+up to a truncation-determined height); `R:SelbergPositiveEisenstein`;
+`R:JointAncestryEndpointBudgetProducer` (the native prime-product form is nonnegative on finite prime
+sets of budget `Σ_P p^{−(σ−1/2)} ≤ ((log y)/(128·10⁸))^{3/2}/(log log y)⁴`; the level-one RH receiver
+needs budget `y^{1/2}`); `R:SteinhausEulerVerticalBarrier`, `R:SteinhausEulerQuadraticApprox`;
+`T:HalfDampingIsTheExactThresholdOfTheParityPair` (`exists_uniform_weightPronicEnergy_bound`),
+`T:DyadicMassesGovernPositiveReceivers`, `T:ReceiverOfMultiplicativeWeightsIsDecidedAtThePrimes`.
+
+**Rule.** When a positivity or definiteness statement is proved, check the half-plane on which it is
+proved. If it is `Re s > 1`, or damping `ε > 1/2`, the strip statement must be obtained some other way.
+
+### Face 16.2: parity pairs
+
+The damped Möbius receiver (the PM and BVI receiver) is bounded for `c = μ(d)d^{−ε}` at `ε = 1/2` and
+must be bounded at arbitrarily small `ε > 0` for RH. Below half damping the receiver cannot be decided
+by any sign-blind data: parity pairs exist at every `0 < ε ≤ 1/2`, two weights with identical Ramanujan
 amplitudes, identical complete-period divisor-sum statistics and identical pronic Gram data, one with
 bounded and one with divergent receiver. This is the sieve parity problem in the receiver's own
 coordinates, and it is sharp at `ε = 1/2`.
@@ -685,13 +773,15 @@ data, two-point data and, for squarefree rows, all translated moments are blind.
 cancellation routes need is a signed one; its loss is not controlled by any data invariant under the
 parity involution.
 
-## Wall 17: coherent blocks and the one-modulus large-sieve ceiling
+### Face 16.3: coherent blocks and the one-modulus large-sieve ceiling
 
 The bilinear form `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` on the pronic Gram must be bounded with no
 character or modulus average at exponent `θ = 2 log P/log X = 2` (the receiver); the large sieve is of
 diagonal quality only at `θ ≤ 1`. Between them every Type-II input in the sense of an `ℓ²` bound on
 coefficients fails, because coherent blocks of primes near a multiple have packet energy matching the
-large-sieve loss exactly.
+large-sieve loss exactly. An `ℓ²` class is a magnitude class, and magnitudes are blind below half
+damping (`receiverBounded_magnitudeInvariant_iff`); the coherent-block law gives the exact exponent at
+which they stop.
 
 **In the corpus** [L]. `V:BrownianBridgeLawOfThePrimeBlockAndCodimensionNoGo` (any `J` linear side
 conditions admit a nonzero packet with `Q ≥ (k² − 1)/(24(2P + 1))·Σ_p a_p² p`, `(J + 3)k ≤ |S|`);
@@ -729,31 +819,47 @@ large-scale row, with no bilinear structure left (`V:DualNormOfTheCrossScaleFunc
 **Rule.** A dispersion claim on the pronic Gram must say which coefficient class it covers and at
 which exponent; `ℓ²` classes stop at `θ = 1` by the coherent-block law, Type-I classes at `θ ≤ 3/2`.
 The receiver needs cancellation of the actual Möbius or prime row at `θ = 2`, that is, of the
-single-modulus low-frequency statistics of an arithmetic row, with the signs of Wall 16 read.
+single-modulus low-frequency statistics of an arithmetic row, with the signs of face 16.2 read.
+
+### Face 16.4: unsigned transport
+
+Exponential-sum methods give power savings for oscillating sums; zero-detecting sums
+(`ψ(x/j) − ψ(x/(j+1))`, `Σ μ(m)m^{−s}` with its transported poles, the sawtooth `Σ Λ(d){x/d}`) do not
+oscillate. Transport either keeps the `1/ζ` structure and the transported poles, with no power saving
+(its exponent is then the width, face 1.1), or acquires a phase that destroys the pole structure, with
+no zero information. Absolute-value attacks on the transported object stop at the critical dilation
+weight `k^{−1/2}`, the half-damping line.
+
+**In the corpus** [L]. `R:Sieve/MontgomeryVaughanArbitraryLogPhaseReceiver` (oscillating objects with
+fixed small exponents carrying no pole information); `V:VaughanTypeIIShortAndAllHorizonMobiusL2Energy`,
+`V:LinearBandVaughanTypeIIBilinearEstimate` (the Type-II short side is the negative literal Möbius sieve
+above `1`; the saving lives on the bilinear piece; the unsigned all-horizon energy `M·invSum(M)³`
+carries no sign); `R:MobiusLaplaceCriticalDilationNoGo` (absolute-value Neumann attacks fail at the
+critical dilation weight `k^{−1/2}`); `R:FermiNymanRawMobiusTailFloor`; `R:MoebiusAbelSmoothedSaving`,
+`R:Sieve/VinogradovRouteTSaving` (VK-shaped savings because the sums are non-oscillating).
+
+**Rule.** Classify the sum a method bounds. If it oscillates, say how the bound is transported back to
+a non-oscillating zero detector without introducing a phase; if it does not oscillate, the method is a
+zero-free-region argument in disguise, and its unsigned version stops at half damping.
 
 ## How the walls bind the routes
 
 | Wall | Routes it binds | Status and the open unit |
 |---|---|---|
-| 1 The zero width (faces 1.1–1.5) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL | [L]. One open unit in five currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor. Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. |
-| 3 Local clustering | LA, TH, HCF, XN, WD, JAS, SRT | [L]. Lag side: hiding needs collapsed clusters; the pair-correlation barrier remains. |
+| 1 The zero width (faces 1.1–1.6) | 1.1: WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC, RN. 1.2: LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR. 1.3 and 1.4: RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, MC, BVI, RB, BiScale, every positivity route, all candidates. 1.5: PA, SZ, PM, CTF, BAG, FEL. 1.6: BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids | [L], with the cone readings of face 1.4 [S]. One open unit in six currencies: the lag `V` beyond which `P_v ≥ 0`, the window remainder below `O(e^{L/2})`, the aperture through which `μ(A) ≥ 0` for all profiles, the Báez-Duarte residual below `κ/log N`, the heat time below `1/8`, the attained top of a grid; every graded improvement of one face is `zetaZeroWidth ≤ σ` and transfers to the others by the dictionary, the one direction not transferred being width ⟹ ground-energy floor. Best unconditional, at Vinogradov–Korobov strength for every `ex < 3/5`: `P_v ≥ −|φ(0)| − Ce^{v/2−v^ex}` (`Q:ZetaLagFamilyVinogradovKorobovEnvelope` [L]); `|c(L) − e^{L/2}| ≤ Ce^{L/2−κL^ex}`, `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κL^ex}` and `|D(T)| ≤ Ce^{T−κT^ex}` for the integrated Chebyshev deficit (`B:PrimeWindowCeilingVinogradovKorobovRemainder` [L]: the polar Schur bound holds for every nonincreasing error profile `E` with gain `E(L/4) + e^{−L/4}`, so the window remainder carries exactly the strength of the prime number theorem that enters; the polar weight loses at the midpoint only against power errors); explicit-constant de la Vallée Poussin forms `Q:ZetaLagFamilyUnconditionalEnvelope`, `B:PrimeWindowCeilingDeLaValleePoussinRemainder` [L]; `μ(A) ≥ 1/5000` through `3/10` on all profiles [L]; `newmanConstant ∈ [0, 1/8]`; residual floor `κ/log N` on every finite row. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w`. By the aperture principle none of these units can be closed at a bounded aperture or lag. |
+| 3 Local clustering | LA, TH, HCF, XN, WD, JAS, SRT | [L]. Lag side: hiding needs collapsed clusters; the pair-correlation barrier remains; resolution aperture `π/(2g)` exact. |
 | 5 No Frobenius | HF, IRK, PTR, W1C, TG | [L]; purity `|ω| = √q` not formalized. |
-| 6 Probability cone | PA, JAS, PBM, DR, WBF; PM/BVI at `ε > 1/2` | [L]. |
-| 7 Almost all versus all | BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids | [L]. BAG closed on zero-free discs; SRT attainment replaced by the horizon condition. |
-| 8 Admixture | RW, EWU, OWU, HF | [L]. |
-| 9 Temperedness gate | every positivity route; RB | [L]. Window positivity is selective against large shifts; Beurling selectivity untested. |
-| 10 Oscillation–transport | WL, MC, FU, RP, LI, PBM, PM, CTF, RN, EGC | [L]. |
-| 13 Cone mismatch | RW, HF, EWU, OWU, CHMD, TT, RN, ACT, AIP, MSC | [L]. Pointwise/Schur certificates reach `3/10` (all) and `353/1000` (odd). |
+| 13 Cone mismatch | RW, HF, EWU, OWU, CHMD, TT, RN, ACT, AIP, MSC | [L]. Pointwise/Schur certificates reach `3/10` (all) and `353/1000` (odd); no radius decides. |
 | 14 Size law | FU, RP, TG, RN, SZ, HF, CHMD, OWU, APF, EWJ, PCS, IRK, SC, SEC, PTR, W1C, WBF | [L]. CCM's finite-aperture realization is unconditional; convergence to `Ξ` is the premise. |
-| 15 Support versus positivity | TT, WD, XN, TG, RN, HF, CHMD, OWU, ACT, AIP, BSH, CDC, HJ, IRK, FEL, RFHM, SC, SEC, PTR, W1C, EGC | [L]. |
-| 16 Parity at half damping | PM, MC, CTF, BVI, THIM | [L]. Sharp at `ε = 1/2`; separating observables classified. |
-| 17 Coherent blocks | BVI, MC, PM, CTF | [L]. Type-II `ℓ²` stops at `θ = 1`, Type-I at `3/2`; receiver at `θ = 2`. |
+| 15 Support versus positivity | TT, WD, XN, TG, RN, HF, CHMD, OWU, ACT, AIP, BSH, CDC, HJ, IRK, FEL, RFHM, SC, SEC, PTR, W1C, EGC | [L]. Sharp form: invisibility is mimicry below the Nyquist aperture. |
+| 16 Sign blindness (faces 16.1–16.4) | 16.1: PA, JAS, PBM, DR, WBF; PM/BVI at `ε > 1/2`. 16.2: PM, MC, CTF, BVI, THIM. 16.3: BVI, MC, PM, CTF. 16.4: WL, MC, FU, RP, LI, PBM, PM, CTF, RN, EGC | [L]. Sharp at `ε = 1/2` in every face: unsigned majorant, amplitudes and magnitudes decide iff `ε > 1/2`; Type-II `ℓ²` stops at `θ = 1`, Type-I at `3/2`, the receiver sits at `θ = 2`; absolute transports stop at `k^{−1/2}`. Separating observables classified. |
 
 A new mechanism has to supply one of: square-root cancellation of a prime sum at one modulus with
-the signs read (face 1.1, Walls 16, 17); equality in Jensen for `log|ζ|` (face 1.5); a Frobenius-type
+the signs read (face 1.1, Wall 16); equality in Jensen for `log|ζ|` (face 1.5); a Frobenius-type
 fibration (Wall 5); a Bochner-cone positivity certificate at arbitrary support compatible with node
 criticality (face 1.4, Wall 13); or a definite spectral realization of the zeros whose prime part is
 as large as `S(T)` and whose finite-aperture ground transforms converge to `Ξ` (faces 1.3, 1.4, Wall
 14). The first, second, fourth and fifth are the statement `zetaZeroWidth = 0` in four of the
-currencies of Wall 1; the kills recorded in the [retired-mechanism ledger](../rh-killed-routes.md) are
-rediscoveries of these walls.
+currencies of Wall 1, and by the principle each needs the complete datum its coarsening lacks: the
+signs, the unbounded aperture, the attained top, the exact weight. The kills recorded in the
+[retired-mechanism ledger](../rh-killed-routes.md) are rediscoveries of these walls.

@@ -63,3 +63,35 @@ Glue the three zero-set languages (`zetaZeroConfig`, `zetaZeroAbscissa`, `XiZero
 
 ## Log
 - 2026-10-21 — created directly in 3-formalized; module compiled with `lake env lean`; wired into the SquareRootThreshold umbrella (import uncommitted, [S] until committed).
+
+## Round two: more walls folded, and the principle behind them
+
+Three further modules (all unconditional, standard axioms; `lake env lean` clean; wired):
+
+- `formal/GaloisForLFunctions/RHTower/AdmixturesAndTheShiftedPairLeaveTheWeilCone.lean` —
+  admixture (old wall 8) and temperedness gate (old wall 9) are the Weil-cone point (face 1.4):
+  `weilPositiveFull_admixture_iff` (`tΛ + (1−t)λ₀` positive iff RH ∧ λ₀ = Λ, t ≠ 1);
+  `not_weilPositiveFull_shiftedPairVonMangoldt` (every shift); `weilPositiveDegree_two_shiftedPairVonMangoldt_iff`
+  (degree-two cone: positive iff RH ∧ a = 0; the cone reads the coefficient size at the node 2).
+- `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/UnsignedMajorantsAndSignBlindDataStopAtHalfDamping.lean` —
+  old walls 6, 16, 17 are one threshold: `uniformReceiverBound_iff_half_lt` (unsigned majorant on the
+  damped class iff ε > ½), `uniformReceiverBound_iff_amplitudeInvariant`,
+  `receiverBounded_magnitudeInvariant_iff` (magnitudes |c(d)|, the ℓ²-class data, decide iff ε > ½; below
+  it `Kχ₄(d)d^{−ε}` and `K1_odd(d)d^{−ε}` have equal magnitudes and opposite receivers).
+- `formal/GaloisForLFunctions/SquareRootThreshold/LagGridsAndTransportLawsReadTheZeroWidth.lean` —
+  old wall 7 (grids) is the width up to attainment: `zetaZeroWidth_le_iff_attainedTop_and_grid_primeWindow_ge_neg_exp`;
+  old wall 10 (transport) is a width reading: `zetaZeroWidth_le_iff_mobiusDivisorDilationCovariancePrefix_subpower`.
+
+**The principle** — `formal/GaloisForLFunctions/SquareRootThreshold/TheZeroWidthIsAnUnboundedApertureProperty.lean`:
+`configWidth Z = sup |Re ρ − ½|` for any zero configuration (`zetaZeroWidth = configWidth zetaZeroConfig`, rfl).
+Faithful at unbounded aperture: `configWidth_eq_zero_iff_weil_nonneg` (tempered Z), `configWidth_le_iff_lag_twoBump_ge_neg_exp`.
+Blind at every bounded aperture: `exists_configWidth_eq_and_weil_nonneg_on_aperture` (∀ a > 0, ∀ δ ∈ (0, ½],
+the lattice {½ ± δ + πik/a} is tempered, has width δ and nonnegative form on all tests of aperture a);
+`exists_configWidth_eq_and_onLineShadow_on_aperture` (its form below a is the form of a weighted on-line
+configuration: invisibility is mimicry); `not_forall_configWidth_eq_zero_of_weil_nonneg_on_aperture`;
+`configWidth_unbounded_aperture_property` (the conjunction). Together with the sign theorem and the grid
+theorem: the width is decided only by the complete, signed, unbounded-aperture, pointwise data of the
+explicit formula; walls 3, 7, 13, 15 and the window-boundedness of all certificates are its coarsenings.
+
+Ledger structure after this round: seven walls — Wall 1 (faces 1.1–1.6, old 1, 2, 4, 7, 8, 9, 10, 11, 12),
+Wall 16 (faces 16.1–16.4, old 6, 16, 17, 10), standalone 3, 5, 13, 14, 15; a "principle" section precedes Wall 1.

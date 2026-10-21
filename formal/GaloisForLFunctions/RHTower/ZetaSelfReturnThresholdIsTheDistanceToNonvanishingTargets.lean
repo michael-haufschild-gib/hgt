@@ -265,10 +265,13 @@ theorem volume_window_le_of_le {Sh : Set ℝ} {C E T₁ : ℝ} {B : ℕ} (hC : 0
   have h1' : (1 + Real.log a) ^ B ≤ (1 + Real.log (2 * T)) ^ B :=
     pow_le_pow_left₀ hl (by linarith [Real.log_le_log (by linarith : (0 : ℝ) < a) ha2]) B
   have h2' : a ^ E ≤ (2 * T) ^ E := Real.rpow_le_rpow (by linarith) ha2 hE0
-  gcongr
+  have hl2 : 0 ≤ 1 + Real.log (2 * T) := by
+    linarith [Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * T)]
+  exact mul_le_mul (mul_le_mul_of_nonneg_left h1' hC) h2' (Real.rpow_nonneg (by linarith) E)
+    (mul_nonneg hC (pow_nonneg hl2 B))
 
 /-- The polylogarithmic window bound at `2T` is absorbed into the one at `T`, for `0 ≤ E ≤ 2`. -/
-theorem three_mul_window_bound_le {C E : ℝ} {B : ℕ} (hC : 0 ≤ C) (hE0 : 0 ≤ E) (hE2 : E ≤ 2)
+theorem three_mul_window_bound_le {C E : ℝ} {B : ℕ} (hC : 0 ≤ C) (hE2 : E ≤ 2)
     {T : ℝ} (hT1 : 1 ≤ T) :
     3 * (C * (1 + Real.log (2 * T)) ^ B * (2 * T) ^ E) ≤
       12 * 2 ^ B * C * (1 + Real.log T) ^ B * T ^ E := by
@@ -352,7 +355,7 @@ theorem exists_volume_zetaReturnSet_window_le_rpow_of_lt_distance {z₀ : ℂ} {
         ring
     _ ≤ ENNReal.ofReal (T ^ (1 - g / 4)) := by
         apply ENNReal.ofReal_le_ofReal
-        have hW' := three_mul_window_bound_le (B := B) hC hE0 hE2 hT1
+        have hW' := three_mul_window_bound_le (B := B) hC hE2 hT1
         rw [← hW] at hW'
         have habs := hT₂ T hTT₂
         have hsplit : T ^ (g / 4) * T ^ E = T ^ (g / 4 + E) := (Real.rpow_add hT0 _ _).symm
@@ -501,6 +504,280 @@ theorem exists_volume_zetaReturnSet_le_rpow_of_lt_distance {z₀ : ℂ} {r ε : 
   obtain ⟨T₀, hT₀⟩ := exists_forall_volume_inter_Icc_zero_le_rpow_of_window hθ'0 hT₁ hwin
     (show θ' < (1 + θ') / 2 by linarith)
   exact ⟨(1 + θ') / 2, by linarith, T₀, hT₀⟩
+
+/-! ## 6. Above the threshold: positive density from universality -/
+
+/-- **Above the threshold the self-returns have positive lower density.**  If the doubled disc
+lies in the strip and `d < ε`, then `zetaReturnSet (closedBall z₀ r) ε` has positive lower
+density: a nonvanishing target within `ε₁ < ε` of `ζ` is approximated by `ζ(· + iτ)` within
+`ε − ε₁` at positive density, and those heights are `ε`-self-returns. -/
+theorem exists_pos_density_zetaReturnSet_of_distance_lt {z₀ : ℂ} {r ε : ℝ} (hr : 0 < r)
+    (h0 : 1 / 2 < z₀.re - 2 * r) (h1 : z₀.re + 2 * r < 1)
+    (hε : zetaNonvanishingDistance z₀ r < ε) :
+    ∃ c > 0, ∀ᶠ T : ℝ in atTop,
+      ENNReal.ofReal (c * T) ≤ volume (zetaReturnSet (closedBall z₀ r) ε ∩ Icc 0 T) := by
+  have hr1 : z₀.re + r < 1 := by linarith
+  obtain ⟨ε₁, hε₁S, hε₁⟩ := exists_lt_of_csInf_lt (nonempty_zetaNonvanishingTolerances hr1) hε
+  obtain ⟨g, ⟨η, hη, hg, hg0⟩, hclose⟩ := hε₁S
+  -- universality parameters: Hardy radius `ρ = r + η'/2`, target radius `r + η'`, return radius `r`
+  obtain ⟨η', hη'⟩ : ∃ η' : ℝ, η' = min η r := ⟨_, rfl⟩
+  have hη'0 : 0 < η' := by rw [hη']; exact lt_min hη hr
+  have hη'η : η' ≤ η := by rw [hη']; exact min_le_left _ _
+  have hη'r : η' ≤ r := by rw [hη']; exact min_le_right _ _
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℝ, ρ = r + η' / 2 := ⟨_, rfl⟩
+  have hρ0 : 0 < ρ := by rw [hρ]; positivity
+  obtain ⟨R₂, hR₂⟩ : ∃ R₂ : ℝ, R₂ = (r + η') / ρ := ⟨_, rfl⟩
+  obtain ⟨r₁, hr₁⟩ : ∃ r₁ : ℝ, r₁ = r / ρ := ⟨_, rfl⟩
+  have hρR₂ : ρ * R₂ = r + η' := by rw [hR₂]; field_simp
+  have hρr₁ : ρ * r₁ = r := by rw [hr₁]; field_simp
+  have hR₂1 : 1 < R₂ := by rw [hR₂, lt_div_iff₀ hρ0, hρ]; linarith
+  have hr₁0 : 0 < r₁ := by rw [hr₁]; positivity
+  have hr₁1 : r₁ < 1 := by rw [hr₁, div_lt_one hρ0, hρ]; linarith
+  have hball : ball z₀ (ρ * R₂) ⊆ ball z₀ (r + η) := ball_subset_ball (by rw [hρR₂]; linarith)
+  obtain ⟨c, hc, hT⟩ := exists_pos_density_zetaTargetReturnSet_of_analyticOnNhd z₀ hρ0
+    (by linarith) (by rw [hρ]; linarith) (by rw [hρ]; linarith) hR₂1 (hg.mono hball)
+    (fun z hz => hg0 z (hball hz)) hr₁0 hr₁1 (by rw [hρr₁]; exact h0) (by rw [hρr₁]; exact h1)
+    (sub_pos.mpr hε₁)
+  rw [hρr₁] at hT
+  refine ⟨c, hc, ?_⟩
+  filter_upwards [hT] with T hT
+  refine hT.trans (measure_mono (inter_subset_inter_left _ fun τ hτ z hz => ?_))
+  have h1' : ‖riemannZeta (z + τ * I) - g z‖ < ε - ε₁ := hτ z hz
+  have h2' := hclose z hz
+  calc ‖riemannZeta (z + τ * I) - riemannZeta z‖
+      = ‖(riemannZeta (z + τ * I) - g z) + (g z - riemannZeta z)‖ := by ring_nf
+    _ ≤ ‖riemannZeta (z + τ * I) - g z‖ + ‖g z - riemannZeta z‖ := norm_add_le _ _
+    _ < (ε - ε₁) + ε₁ := by rw [norm_sub_rev (g z)]; exact add_lt_add h1' h2'
+    _ = ε := by ring
+
+/-! ## 7. The threshold vanishes exactly off the zeros -/
+
+/-- If `ζ` has no zero in the open disc, the distance vanishes: the scaled copies
+`z ↦ ζ(z₀ + λ(z − z₀))`, `λ ↑ 1`, are admissible targets converging uniformly to `ζ`. -/
+theorem zetaNonvanishingDistance_eq_zero_of_zeroFree {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
+    (h1 : z₀.re + r < 1) (hζ : ∀ z ∈ ball z₀ r, riemannZeta z ≠ 0) :
+    zetaNonvanishingDistance z₀ r = 0 := by
+  refine le_antisymm ?_ (zetaNonvanishingDistance_nonneg hr.le)
+  refine le_of_forall_pos_lt_add fun ε hε => ?_
+  rw [zero_add]
+  refine lt_of_le_of_lt (csInf_le (bddBelow_zetaNonvanishingTolerances z₀ hr.le) ?_)
+    (half_lt_self hε)
+  have hunif := (isCompact_closedBall z₀ r).uniformContinuousOn_of_continuous
+    (continuousOn_riemannZeta_closedBall h1)
+  obtain ⟨δ, hδ, hδ'⟩ := Metric.uniformContinuousOn_iff.mp hunif (ε / 2) (half_pos hε)
+  obtain ⟨lam, hlam⟩ : ∃ lam : ℝ, lam = max (1 / 2) (1 - δ / (2 * r)) := ⟨_, rfl⟩
+  have hlam0 : 0 < lam := by rw [hlam]; exact lt_of_lt_of_le (by norm_num) (le_max_left _ _)
+  have hlam1 : lam < 1 := by
+    rw [hlam]
+    have : 0 < δ / (2 * r) := by positivity
+    exact max_lt (by norm_num) (by linarith)
+  have hlamδ : (1 - lam) * r ≤ δ / 2 := by
+    have h2 : 1 - lam ≤ δ / (2 * r) := by rw [hlam]; linarith [le_max_right (1 / 2) (1 - δ / (2 * r))]
+    calc (1 - lam) * r ≤ δ / (2 * r) * r := mul_le_mul_of_nonneg_right h2 hr.le
+      _ = δ / 2 := by field_simp
+  obtain ⟨φ, hφ⟩ : ∃ φ : ℂ → ℂ, φ = fun z => z₀ + (lam : ℂ) * (z - z₀) := ⟨_, rfl⟩
+  have hφdist : ∀ z, ‖φ z - z₀‖ = lam * ‖z - z₀‖ := by
+    intro z
+    rw [hφ]
+    simp only
+    rw [add_sub_cancel_left, norm_mul, Complex.norm_real, Real.norm_of_nonneg hlam0.le]
+  have hφball : ∀ z ∈ ball z₀ (r / lam), φ z ∈ ball z₀ r := by
+    intro z hz
+    rw [mem_ball_iff_norm] at hz ⊢
+    rw [hφdist]
+    calc lam * ‖z - z₀‖ < lam * (r / lam) := by gcongr
+      _ = r := by field_simp
+  have hφdiff : ∀ z, DifferentiableAt ℂ φ z := by
+    intro z
+    rw [hφ]
+    exact ((differentiableAt_id.sub_const z₀).const_mul (lam : ℂ)).const_add z₀
+  have hrlam : r < r / lam := by rw [lt_div_iff₀ hlam0]; nlinarith
+  refine ⟨fun z => riemannZeta (φ z), ⟨r / lam - r, by linarith, ?_, ?_⟩, fun z hz => ?_⟩
+  · rw [show r + (r / lam - r) = r / lam by ring]
+    refine DifferentiableOn.analyticOnNhd (fun z hz => ?_) isOpen_ball
+    have hmem := hφball z hz
+    have hne : φ z ≠ 1 := by
+      intro h
+      have := (abs_lt.mp ((abs_re_le_norm (φ z - z₀)).trans_lt (mem_ball_iff_norm.mp hmem))).2
+      rw [sub_re, h, one_re] at this
+      linarith
+    exact ((differentiableAt_riemannZeta hne).comp z (hφdiff z)).differentiableWithinAt
+  · rw [show r + (r / lam - r) = r / lam by ring]
+    exact fun z hz => hζ _ (hφball z hz)
+  · have hzn := mem_closedBall_iff_norm.mp hz
+    have hz' : φ z ∈ closedBall z₀ r := by
+      rw [mem_closedBall_iff_norm, hφdist]
+      calc lam * ‖z - z₀‖ ≤ 1 * r := by gcongr
+        _ = r := one_mul r
+    have hd : dist z (φ z) < δ := by
+      rw [dist_eq_norm]
+      have : z - φ z = ((1 - lam : ℝ) : ℂ) * (z - z₀) := by rw [hφ]; simp only; push_cast; ring
+      rw [this, norm_mul, Complex.norm_real, Real.norm_of_nonneg (by linarith)]
+      calc (1 - lam) * ‖z - z₀‖ ≤ (1 - lam) * r := by gcongr
+        _ ≤ δ / 2 := hlamδ
+        _ < δ := half_lt_self hδ
+    have := hδ' z hz (φ z) hz' hd
+    rwa [dist_eq_norm] at this
+
+/-- A zero of `ζ` in the open disc keeps the distance positive: every admissible target would
+have, by the minimum modulus principle, a zero near it. -/
+theorem zetaNonvanishingDistance_pos_of_zero {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
+    (h0 : 1 / 2 < z₀.re - r) (h1 : z₀.re + r < 1) {w : ℂ} (hw : w ∈ ball z₀ r)
+    (hw0 : riemannZeta w = 0) : 0 < zetaNonvanishingDistance z₀ r := by
+  have hwn := mem_ball_iff_norm.mp hw
+  have hwre := abs_lt.mp ((abs_re_le_norm (w - z₀)).trans_lt hwn)
+  rw [sub_re] at hwre
+  have hwd : dist w z₀ < r := mem_ball.mp hw
+  obtain ⟨s, hs, hsδ, -, -, m, hm0, hm⟩ := exists_zetaIsolatingDisc_le
+    (show 1 / 2 < w.re by linarith [hwre.1]) (by linarith [hwre.2])
+    (show 0 < r - dist w z₀ by linarith)
+  have hsub : closedBall w s ⊆ closedBall z₀ r := closedBall_subset_closedBall' (by linarith)
+  by_contra hd
+  have hd0 : zetaNonvanishingDistance z₀ r = 0 :=
+    le_antisymm (not_lt.mp hd) (zetaNonvanishingDistance_nonneg hr.le)
+  obtain ⟨g, ⟨η, hη, hg, hg0⟩, hclose⟩ := mem_zetaNonvanishingTolerances_of_distance_lt h1
+    (show zetaNonvanishingDistance z₀ r < m / 2 by rw [hd0]; positivity)
+  have hball : closedBall z₀ r ⊆ ball z₀ (r + η) := closedBall_subset_ball (by linarith)
+  have hdiff : DifferentiableOn ℂ g (closedBall w s) := fun z hz =>
+    (hg z (hball (hsub hz))).differentiableAt.differentiableWithinAt
+  obtain ⟨z, hz, hgz⟩ := DeBruijn.exists_zero_of_norm_lt_sphere_on hs hdiff fun z hz => ?_
+  · exact hg0 z (hball (hsub (ball_subset_closedBall hz))) hgz
+  · have h1' := hclose w (hsub (mem_closedBall_self hs.le))
+    have h2' := hclose z (hsub (sphere_subset_closedBall hz))
+    have h3' := hm z hz
+    have h4 := norm_sub_norm_le (riemannZeta z) (g z)
+    rw [hw0, zero_sub, norm_neg] at h1'
+    linarith
+
+/-- **The threshold vanishes exactly off the zeros.** -/
+theorem zetaNonvanishingDistance_eq_zero_iff {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
+    (h0 : 1 / 2 < z₀.re - r) (h1 : z₀.re + r < 1) :
+    zetaNonvanishingDistance z₀ r = 0 ↔ ∀ z ∈ ball z₀ r, riemannZeta z ≠ 0 := by
+  constructor
+  · intro hd z hz hz0
+    exact absurd hd (zetaNonvanishingDistance_pos_of_zero hr h0 h1 hz hz0).ne'
+  · exact zetaNonvanishingDistance_eq_zero_of_zeroFree hr h1
+
+/-! ## 8. Dichotomy, strong recurrence, and the power-saving receiver -/
+
+/-- Below exponent one, `T^θ` is eventually smaller than any positive multiple of `T`. -/
+theorem eventually_rpow_lt_const_mul_atTop {θ κ : ℝ} (hθ : θ < 1) (hκ : 0 < κ) :
+    ∀ᶠ T : ℝ in atTop, T ^ θ < κ * T := by
+  filter_upwards [(tendsto_rpow_atTop (by linarith : 0 < 1 - θ)).eventually_ge_atTop (2 / κ),
+    eventually_ge_atTop 1] with T hT hT1
+  have hT0 : 0 < T := by linarith
+  have hθT : 0 < T ^ θ := Real.rpow_pos_of_pos hT0 θ
+  have hsplit : T ^ θ * T ^ (1 - θ) = T := by
+    rw [← Real.rpow_add hT0]
+    simp
+  rw [div_le_iff₀ hκ] at hT
+  calc T ^ θ < 2 * T ^ θ := by linarith
+    _ ≤ T ^ θ * (T ^ (1 - θ) * κ) := by linarith [mul_le_mul_of_nonneg_left hT hθT.le]
+    _ = κ * T := by rw [← mul_assoc, hsplit, mul_comm]
+
+/-- **The self-return dichotomy.**  On a disc whose doubled closure lies in the strip, the
+`ε`-self-return measure is linear in `T` for `ε > d` and at most `T^θ`, `θ < 1`, for `ε < d`:
+there is no intermediate regime. -/
+theorem zetaReturnSet_volume_dichotomy {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
+    (h0 : 1 / 2 < z₀.re - 2 * r) (h1 : z₀.re + 2 * r < 1) (ε : ℝ) :
+    (zetaNonvanishingDistance z₀ r < ε → ∃ c > 0, ∀ᶠ T : ℝ in atTop,
+      ENNReal.ofReal (c * T) ≤ volume (zetaReturnSet (closedBall z₀ r) ε ∩ Icc 0 T)) ∧
+    (ε < zetaNonvanishingDistance z₀ r → ∃ θ : ℝ, θ < 1 ∧ ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      volume (zetaReturnSet (closedBall z₀ r) ε ∩ Icc 0 T) ≤ ENNReal.ofReal (T ^ θ)) :=
+  ⟨exists_pos_density_zetaReturnSet_of_distance_lt hr h0 h1,
+    exists_volume_zetaReturnSet_le_rpow_of_lt_distance hr (by linarith) (by linarith)⟩
+
+/-- **Strong recurrence on a disc is the vanishing of the threshold.** -/
+theorem zetaDiscStronglyRecurrentOn_iff_distance_eq_zero {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
+    (h0 : 1 / 2 < z₀.re - 2 * r) (h1 : z₀.re + 2 * r < 1) :
+    ZetaDiscStronglyRecurrentOn (closedBall z₀ r) ↔ zetaNonvanishingDistance z₀ r = 0 := by
+  constructor
+  · intro hrec
+    by_contra hd
+    have hd0 : 0 < zetaNonvanishingDistance z₀ r :=
+      lt_of_le_of_ne (zetaNonvanishingDistance_nonneg hr.le) (Ne.symm hd)
+    obtain ⟨θ, hθ, T₀, hT₀⟩ := exists_volume_zetaReturnSet_le_rpow_of_lt_distance hr
+      (by linarith) (by linarith) (half_lt_self hd0)
+    obtain ⟨κ, hκ, hev⟩ := hrec _ (half_pos hd0)
+    obtain ⟨T, hT1, hT2, hT3, hT4⟩ := (hev.and ((eventually_ge_atTop T₀).and
+      ((eventually_rpow_lt_const_mul_atTop hθ hκ).and (eventually_ge_atTop 0)))).exists
+    have h := hT1.trans (hT₀ T hT2)
+    rw [ENNReal.ofReal_le_ofReal_iff (Real.rpow_nonneg hT4 θ)] at h
+    linarith
+  · intro hd ε hε
+    exact exists_pos_density_zetaReturnSet_of_distance_lt hr h0 h1 (by rw [hd]; exact hε)
+
+/-- **Strong recurrence on a disc is zero-freeness of the open disc.** -/
+theorem zetaDiscStronglyRecurrentOn_iff_forall_ball_ne_zero {z₀ : ℂ} {r : ℝ} (hr : 0 < r)
+    (h0 : 1 / 2 < z₀.re - 2 * r) (h1 : z₀.re + 2 * r < 1) :
+    ZetaDiscStronglyRecurrentOn (closedBall z₀ r) ↔ ∀ z ∈ ball z₀ r, riemannZeta z ≠ 0 := by
+  rw [zetaDiscStronglyRecurrentOn_iff_distance_eq_zero hr h0 h1,
+    zetaNonvanishingDistance_eq_zero_iff hr (by linarith) (by linarith)]
+
+/-- **Around an off-line zero the self-returns are power-saving rare.**  For a zero `z₀` of `ζ`
+in the strip there are a disc about `z₀` in the strip, a tolerance `ε > 0` and `θ < 1` with
+`|zetaReturnSet (closedBall z₀ r) ε ∩ [0, T]| ≤ T^θ` for all large `T`. -/
+theorem exists_volume_zetaReturnSet_le_rpow_of_zero {z₀ : ℂ} (hz : riemannZeta z₀ = 0)
+    (h1 : 1 / 2 < z₀.re) (h2 : z₀.re < 1) :
+    ∃ r > 0, (1 / 2 < z₀.re - r ∧ z₀.re + r < 1) ∧ ∃ ε > 0, ∃ θ : ℝ, θ < 1 ∧ ∃ T₀ : ℝ,
+      ∀ T : ℝ, T₀ ≤ T →
+        volume (zetaReturnSet (closedBall z₀ r) ε ∩ Icc 0 T) ≤ ENNReal.ofReal (T ^ θ) := by
+  obtain ⟨r, hr⟩ : ∃ r : ℝ, r = min ((z₀.re - 1 / 2) / 2) ((1 - z₀.re) / 2) := ⟨_, rfl⟩
+  have hr0 : 0 < r := by rw [hr]; exact lt_min (by linarith) (by linarith)
+  have hr1 : r ≤ (z₀.re - 1 / 2) / 2 := by rw [hr]; exact min_le_left _ _
+  have hr2 : r ≤ (1 - z₀.re) / 2 := by rw [hr]; exact min_le_right _ _
+  have h0 : 1 / 2 < z₀.re - r := by linarith
+  have h1' : z₀.re + r < 1 := by linarith
+  have hd := zetaNonvanishingDistance_pos_of_zero hr0 h0 h1' (mem_ball_self hr0) hz
+  obtain ⟨θ, hθ, T₀, hT₀⟩ :=
+    exists_volume_zetaReturnSet_le_rpow_of_lt_distance hr0 h0 h1' (half_lt_self hd)
+  exact ⟨r, hr0, ⟨h0, h1'⟩, _, half_pos hd, θ, hθ, T₀, hT₀⟩
+
+/-- **The power-saving receiver.**  A point `z₀` of the strip is not a zero of `ζ` iff on some
+disc about `z₀` with doubled closure in the strip the self-return measure exceeds `T^θ`
+infinitely often, for every tolerance `ε > 0` and every `θ < 1`. -/
+theorem riemannZeta_ne_zero_iff_zetaReturnSet_not_powerSaving {z₀ : ℂ} (h1 : 1 / 2 < z₀.re)
+    (h2 : z₀.re < 1) :
+    riemannZeta z₀ ≠ 0 ↔ ∃ r > 0, 1 / 2 < z₀.re - 2 * r ∧ z₀.re + 2 * r < 1 ∧
+      ∀ ε > 0, ∀ θ : ℝ, θ < 1 → ∃ᶠ T : ℝ in atTop,
+        ENNReal.ofReal (T ^ θ) < volume (zetaReturnSet (closedBall z₀ r) ε ∩ Icc 0 T) := by
+  constructor
+  · intro hz
+    have hne : z₀ ≠ 1 := by
+      intro h
+      rw [h] at h2
+      simp at h2
+    obtain ⟨r₀, hr₀, hball⟩ := Metric.eventually_nhds_iff_ball.mp
+      ((differentiableAt_riemannZeta hne).continuousAt.eventually_ne hz)
+    obtain ⟨r, hr⟩ : ∃ r : ℝ, r = min r₀ (min ((z₀.re - 1 / 2) / 4) ((1 - z₀.re) / 4)) :=
+      ⟨_, rfl⟩
+    have hr0 : 0 < r := by rw [hr]; exact lt_min hr₀ (lt_min (by linarith) (by linarith))
+    have hrr₀ : r ≤ r₀ := by rw [hr]; exact min_le_left _ _
+    have hr1 : r ≤ (z₀.re - 1 / 2) / 4 := by
+      rw [hr]; exact (min_le_right _ _).trans (min_le_left _ _)
+    have hr2 : r ≤ (1 - z₀.re) / 4 := by
+      rw [hr]; exact (min_le_right _ _).trans (min_le_right _ _)
+    have h0 : 1 / 2 < z₀.re - 2 * r := by linarith
+    have h1' : z₀.re + 2 * r < 1 := by linarith
+    refine ⟨r, hr0, h0, h1', fun ε hε θ hθ => ?_⟩
+    have hd : zetaNonvanishingDistance z₀ r = 0 :=
+      zetaNonvanishingDistance_eq_zero_of_zeroFree hr0 (by linarith)
+        fun z hz => hball z (ball_subset_ball hrr₀ hz)
+    obtain ⟨c, hc, hT⟩ := exists_pos_density_zetaReturnSet_of_distance_lt hr0 h0 h1'
+      (by rw [hd]; exact hε)
+    refine ((eventually_rpow_lt_const_mul_atTop hθ hc).and
+      (hT.and (eventually_gt_atTop 0))).frequently.mono ?_
+    rintro T ⟨hlt, hle, hT0⟩
+    exact ((ENNReal.ofReal_lt_ofReal_iff (by positivity)).mpr hlt).trans_le hle
+  · rintro ⟨r, hr, h0, h1', hfreq⟩ hz
+    have h0' : 1 / 2 < z₀.re - r := by linarith
+    have h1'' : z₀.re + r < 1 := by linarith
+    have hd := zetaNonvanishingDistance_pos_of_zero hr h0' h1'' (mem_ball_self hr) hz
+    obtain ⟨θ, hθ, T₀, hT₀⟩ :=
+      exists_volume_zetaReturnSet_le_rpow_of_lt_distance hr h0' h1'' (half_lt_self hd)
+    obtain ⟨T, hlt, hTT₀⟩ :=
+      ((hfreq _ (half_pos hd) θ hθ).and_eventually (eventually_ge_atTop T₀)).exists
+    exact absurd (hT₀ T hTT₀) (not_le.mpr hlt)
 
 end
 
