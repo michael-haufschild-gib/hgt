@@ -235,6 +235,22 @@ profile as the receiver: the missing cancellation is a zero-free strip.
 **Lean.** `BezoutValuationIncidence/ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis.lean`
 (`primePowerWindowSaving_iff`); standard axioms; wired.
 
+### C15 — the dual norm of the actual rows beats the large sieve (DONE, Lean)
+**Statement.** README tool 3 in its own terms. For every `ε > 0`, all large `Q`, every prime set `S`
+above the row's threshold (`8 log₂Q ≤ ε²p` for `μ`, `8⌈(2Q)^α⌉(log 2Q+1)² ≤ ε²p` for `Λ - 1`):
+`Σ_{p∈S}|Λ_p(c')|/p ≤ ε√(Σp²)√(Q+2Q₀²)Q^{-3/2} + (1/6+π²/72)|S'|Σ1/p + ¾(Σp²)Σ|c'|/n³ + 6(Σp³)Σ|c'|/n⁴`
+for the actual Möbius block and the centred prime block, `S'` the block mass.
+**Proof.** Generic `sum_abs_kernelStatistic_le_of_remainder`: the corpus sign pattern
+(`exists_rowBilinear_sub_main_ge`) turns a remainder bound for all bounded rows on `S` into a
+dual-norm bound; the main term `|main(c)| ≤ (π²/72)|S'|Σ1/p`; then C11, C13.
+**Meaning.** The single-modulus statistics of the actual rows at moduli `p ∼ P` growing with `Q`, in
+the balanced regime, bounded by `ε` times the large-sieve size that coherent rows attain, with no
+character or modulus average: the bound README tool 3 names as missing, at `o(1)` strength. Its
+power-saving form is `Θ < 1` (C12, C14).
+**Lean.** `BezoutValuationIncidence/DualNormOfTheActualRowsBeatsTheLargeSieve.lean`
+(`eventually_sum_abs_kernelStatistic_moebiusWindowRow_le`,
+`eventually_sum_abs_kernelStatistic_centredPrimeBlock_le`); standard axioms; wired.
+
 ## Synthesis after C1–C10 (what the research says about the missing cancellation)
 
 1. **Receiver = zero-free region, both directions.** Any Mertens rate becomes a receiver band through
@@ -270,3 +286,4 @@ profile as the receiver: the missing cancellation is a zero-free strip.
 - 2026-10-21 — C12 formalized and wired (short-window Möbius saving ⟺ Θ < 1).
 - 2026-10-21 — C13 formalized and wired (centred prime block o(large sieve) via Huxley).
 - 2026-10-21 — C14 formalized and wired (short-window prime saving ⟺ Θ < 1).
+- 2026-10-21 — C15 formalized and wired (dual norm of actual rows o(large sieve)).

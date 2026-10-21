@@ -283,7 +283,7 @@ theorem paperFT_add_ofReal (ψ : ℝ → ℂ) (z : ℂ) (Δ : ℝ) :
   congr 2
   ring
 
-theorem integrable_mul_cexp {ψ : ℝ → ℂ} {L : ℝ} (hc : Continuous ψ)
+theorem integrable_mul_cexp_of_vanish {ψ : ℝ → ℂ} {L : ℝ} (hc : Continuous ψ)
     (hsupp : ∀ u, L / 2 ≤ |u| → ψ u = 0) (z : ℂ) :
     Integrable (fun u : ℝ => ψ u * cexp (I * z * u)) := by
   have hcs : HasCompactSupport ψ :=
@@ -317,8 +317,8 @@ theorem hasSum_re_mul_re_paperFT_grid {φ : ℝ → ℝ} {ψ : ℝ → ℂ} {L :
         = Zeta23.paperFT a z + Zeta23.paperFT ψ z ∧
       Zeta23.paperFT (fun u => a u - ψ u) z = Zeta23.paperFT a z - Zeta23.paperFT ψ z := by
     intro z
-    have i1 := integrable_mul_cexp hac has z
-    have i2 := integrable_mul_cexp hψ hsψ z
+    have i1 := integrable_mul_cexp_of_vanish hac has z
+    have i2 := integrable_mul_cexp_of_vanish hψ hsψ z
     simp only [Zeta23.paperFT]
     refine ⟨?_, ?_⟩
     · rw [← integral_add i1 i2]

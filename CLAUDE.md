@@ -1,3 +1,6 @@
+## IMMUTABLE RULE: First search lean corpus, then check mathlib
+Always use the search tool for the lean corpus to find existing work, before checking mathlib.
+
 ## The research pipeline (Kanban)
 Card template: docs/drafts/pipeline/_card-template.md
 1. Backlog → docs/drafts/pipeline/0-backlog
@@ -39,11 +42,14 @@ Card template: docs/drafts/pipeline/_card-template.md
 - Keep jobs in the runner's process group; do not detach them. Search commands and managed services retain their documented launch commands.
 
 ## Lean discipline
-- Verify every mathlib name against THIS toolchain in a /tmp scratch file
-  (`lake env lean /tmp/x.lean` with `have := @Name` lines). Never trust a recalled name.
-- `#print axioms` via a /tmp scratch file, never by editing the tree.
-- The formal lint gate is authoritative: run `scripts/formal_tools.py lint`; currently no active
-  `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is allowed.
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 ## No-go closure discipline
 - A no-go is not finished when only its negative statement is proved.

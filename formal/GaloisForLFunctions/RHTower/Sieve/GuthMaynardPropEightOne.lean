@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardSmoothedLagSumMoments
+import GaloisForLFunctions.RHTower.Sieve.GuthMaynardPropEightOneHolder
 
 set_option autoImplicit false
 
@@ -27,192 +28,6 @@ open MeasureTheory Set Finset
 namespace RHTower.GuthMaynard
 
 noncomputable section
-
-/-! ### Hölder with exponents `(2, 4, 4)` -/
-
-/-- Pointwise Young inequality `XYZ ≤ X²/2 + Y⁴/4 + Z⁴/4`. -/
-theorem mul_mul_le_sq_add_pow_four_add_pow_four (X Y Z : ℝ) :
-    X * Y * Z ≤ X ^ 2 / 2 + Y ^ 4 / 4 + Z ^ 4 / 4 := by
-  nlinarith [sq_nonneg (X - Y * Z), sq_nonneg (Y ^ 2 - Z ^ 2)]
-
-/-- The weighted form `xyz ≤ (bc/2a) x² + (ac/4b³) y⁴ + (ab/4c³) z⁴` for `a, b, c > 0`. -/
-theorem mul_mul_le_weighted {a b c : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (x y z : ℝ) :
-    x * y * z ≤ b * c / (2 * a) * x ^ 2 + a * c / (4 * b ^ 3) * y ^ 4
-      + a * b / (4 * c ^ 3) * z ^ 4 := by
-  have key := mul_mul_le_sq_add_pow_four_add_pow_four (x / a) (y / b) (z / c)
-  calc x * y * z = (a * b * c) * (x / a * (y / b) * (z / c)) := by field_simp
-    _ ≤ (a * b * c) * ((x / a) ^ 2 / 2 + (y / b) ^ 4 / 4 + (z / c) ^ 4 / 4) :=
-        mul_le_mul_of_nonneg_left key (by positivity)
-    _ = b * c / (2 * a) * x ^ 2 + a * c / (4 * b ^ 3) * y ^ 4
-          + a * b / (4 * c ^ 3) * z ^ 4 := by
-        field_simp
-
-/-- **Hölder `(2, 4, 4)` on a set, positive majorants.** If `∫_S f² ≤ a²`, `∫_S g⁴ ≤ b⁴`,
-`∫_S h⁴ ≤ c⁴` with `a, b, c > 0`, then `∫_S fgh ≤ abc`. -/
-theorem setIntegral_mul_mul_le_of_pos {S : Set ℝ} (hS : MeasurableSet S) {f g h : ℝ → ℝ}
-    (hf2 : IntegrableOn (fun v => f v ^ 2) S) (hg4 : IntegrableOn (fun v => g v ^ 4) S)
-    (hh4 : IntegrableOn (fun v => h v ^ 4) S)
-    (hfgh : IntegrableOn (fun v => f v * g v * h v) S) {a b c : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hc : 0 < c) (hF : ∫ v in S, f v ^ 2 ≤ a ^ 2) (hG : ∫ v in S, g v ^ 4 ≤ b ^ 4)
-    (hH : ∫ v in S, h v ^ 4 ≤ c ^ 4) :
-    ∫ v in S, f v * g v * h v ≤ a * b * c := by
-  have hsum : IntegrableOn (fun v => b * c / (2 * a) * f v ^ 2 + a * c / (4 * b ^ 3) * g v ^ 4
-      + a * b / (4 * c ^ 3) * h v ^ 4) S :=
-    ((hf2.const_mul _).add (hg4.const_mul _)).add (hh4.const_mul _)
-  calc ∫ v in S, f v * g v * h v
-      ≤ ∫ v in S, (b * c / (2 * a) * f v ^ 2 + a * c / (4 * b ^ 3) * g v ^ 4
-          + a * b / (4 * c ^ 3) * h v ^ 4) :=
-        setIntegral_mono_on hfgh hsum hS fun v hv =>
-          mul_mul_le_weighted ha hb hc (f v) (g v) (h v)
-    _ = b * c / (2 * a) * (∫ v in S, f v ^ 2) + a * c / (4 * b ^ 3) * (∫ v in S, g v ^ 4)
-          + a * b / (4 * c ^ 3) * (∫ v in S, h v ^ 4) := by
-        rw [integral_add (f := fun v => b * c / (2 * a) * f v ^ 2 + a * c / (4 * b ^ 3) * g v ^ 4)
-            (g := fun v => a * b / (4 * c ^ 3) * h v ^ 4)
-            ((hf2.const_mul _).add (hg4.const_mul _)) (hh4.const_mul _),
-          integral_add (f := fun v => b * c / (2 * a) * f v ^ 2)
-            (g := fun v => a * c / (4 * b ^ 3) * g v ^ 4) (hf2.const_mul _) (hg4.const_mul _),
-          integral_const_mul, integral_const_mul, integral_const_mul]
-    _ ≤ b * c / (2 * a) * a ^ 2 + a * c / (4 * b ^ 3) * b ^ 4 + a * b / (4 * c ^ 3) * c ^ 4 := by
-        gcongr
-    _ = a * b * c := by
-        field_simp
-        ring
-
-/-- **Hölder `(2, 4, 4)` on a set.** If `∫_S f² ≤ a²`, `∫_S g⁴ ≤ b⁴`, `∫_S h⁴ ≤ c⁴` with
-`a, b, c ≥ 0`, then `∫_S fgh ≤ abc` (positive majorants `a + η`, `b + η`, `c + η`, `η → 0`). -/
-theorem setIntegral_mul_mul_le {S : Set ℝ} (hS : MeasurableSet S) {f g h : ℝ → ℝ}
-    (hf2 : IntegrableOn (fun v => f v ^ 2) S) (hg4 : IntegrableOn (fun v => g v ^ 4) S)
-    (hh4 : IntegrableOn (fun v => h v ^ 4) S)
-    (hfgh : IntegrableOn (fun v => f v * g v * h v) S) {a b c : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (hc : 0 ≤ c) (hF : ∫ v in S, f v ^ 2 ≤ a ^ 2) (hG : ∫ v in S, g v ^ 4 ≤ b ^ 4)
-    (hH : ∫ v in S, h v ^ 4 ≤ c ^ 4) :
-    ∫ v in S, f v * g v * h v ≤ a * b * c := by
-  refine le_of_forall_pos_le_add fun ε hε => ?_
-  obtain ⟨K, hK⟩ : ∃ K, K = a * b + b * c + c * a + a + b + c + 1 := ⟨_, rfl⟩
-  have hKpos : 0 < K := by rw [hK]; positivity
-  obtain ⟨η, hη⟩ : ∃ η, η = min 1 (ε / K) := ⟨_, rfl⟩
-  have hη0 : 0 < η := by rw [hη]; exact lt_min one_pos (div_pos hε hKpos)
-  have hη1 : η ≤ 1 := by rw [hη]; exact min_le_left _ _
-  have hηK : η * K ≤ ε := by
-    have : η ≤ ε / K := by rw [hη]; exact min_le_right _ _
-    rwa [le_div_iff₀ hKpos] at this
-  have hmain := setIntegral_mul_mul_le_of_pos hS hf2 hg4 hh4 hfgh
-    (add_pos_of_nonneg_of_pos ha hη0) (add_pos_of_nonneg_of_pos hb hη0)
-    (add_pos_of_nonneg_of_pos hc hη0)
-    (hF.trans (pow_le_pow_left₀ ha (by linarith) 2))
-    (hG.trans (pow_le_pow_left₀ hb (by linarith) 4))
-    (hH.trans (pow_le_pow_left₀ hc (by linarith) 4))
-  refine hmain.trans ?_
-  have hη2 : η * η ≤ η := by nlinarith
-  have hη3 : η * η * η ≤ η := by nlinarith
-  have hexp : (a + η) * (b + η) * (c + η)
-      = a * b * c + η * (a * b + b * c + c * a) + η * η * (a + b + c) + η * η * η := by ring
-  have hab : 0 ≤ a + b + c := by positivity
-  calc (a + η) * (b + η) * (c + η)
-      ≤ a * b * c + η * (a * b + b * c + c * a) + η * (a + b + c) + η := by
-        rw [hexp]
-        nlinarith [mul_le_mul_of_nonneg_right hη2 hab]
-    _ = a * b * c + η * K := by rw [hK]; ring
-    _ ≤ a * b * c + ε := by linarith
-
-/-! ### Changes of variables -/
-
-/-- **Comparison under a change of variables.** If `|φ'| ≥ λ > 0` on `S` and `φ` is injective on
-`S`, then `∫_S G(φ(v)) dv ≤ λ⁻¹ ∫_ℝ G` for nonnegative integrable `G`. -/
-theorem setIntegral_comp_le_inv_mul_integral {S : Set ℝ} (hS : MeasurableSet S)
-    {φ φ' : ℝ → ℝ} (hφ : ∀ v ∈ S, HasDerivWithinAt φ (φ' v) S v) (hinj : InjOn φ S)
-    {lam : ℝ} (hlam : 0 < lam) (hφ' : ∀ v ∈ S, lam ≤ |φ' v|) {G : ℝ → ℝ} (hG : Integrable G)
-    (hG0 : ∀ u, 0 ≤ G u) (hGφ : IntegrableOn (fun v => G (φ v)) S) :
-    ∫ v in S, G (φ v) ≤ lam⁻¹ * ∫ u, G u := by
-  have hcov := integral_image_eq_integral_abs_deriv_smul hS hφ hinj G
-  have hint := (integrableOn_image_iff_integrableOn_abs_deriv_smul hS hφ hinj G).mp
-    hG.integrableOn
-  have h1 : lam * ∫ v in S, G (φ v) ≤ ∫ v in S, |φ' v| • G (φ v) := by
-    rw [← integral_const_mul]
-    refine setIntegral_mono_on (hGφ.const_mul lam) hint hS fun v hv => ?_
-    rw [smul_eq_mul]
-    exact mul_le_mul_of_nonneg_right (hφ' v hv) (hG0 _)
-  have h2 : ∫ u in φ '' S, G u ≤ ∫ u, G u :=
-    setIntegral_le_integral hG (Filter.Eventually.of_forall hG0)
-  rw [hcov] at h2
-  rw [le_inv_mul_iff₀ hlam]
-  exact h1.trans h2
-
-/-- Derivative of the Möbius map `v ↦ (pv + q)/(rv)`: it is `-q/(rv²)`. -/
-theorem hasDerivAt_mobius (p q r : ℝ) {v : ℝ} (hv : v ≠ 0) (hr : r ≠ 0) :
-    HasDerivAt (fun v => (p * v + q) / (r * v)) (-q / (r * v ^ 2)) v := by
-  have h := (((hasDerivAt_id' v).const_mul p).add_const q).div
-    ((hasDerivAt_id' v).const_mul r) (mul_ne_zero hr hv)
-  refine h.congr_deriv ?_
-  field_simp
-  ring
-
-/-- The Möbius map `v ↦ (pv + q)/(rv)` is injective on `v ≠ 0` when `q, r ≠ 0`. -/
-theorem injOn_mobius {p q r : ℝ} (hq : q ≠ 0) (hr : r ≠ 0) {S : Set ℝ} (hS : ∀ v ∈ S, v ≠ 0) :
-    InjOn (fun v => (p * v + q) / (r * v)) S := by
-  intro v hv w hw hvw
-  have hv0 := hS v hv
-  have hw0 := hS w hw
-  simp only at hvw
-  rw [div_eq_div_iff (mul_ne_zero hr hv0) (mul_ne_zero hr hw0)] at hvw
-  have h : q * r * (w - v) = 0 := by linear_combination hvw
-  rcases mul_eq_zero.mp h with h | h
-  · exact absurd h (mul_ne_zero hq hr)
-  · linarith
-
-/-- The affine map `v ↦ (pv + q)/r` is injective when `p, r ≠ 0`. -/
-theorem injective_affine {p q r : ℝ} (hp : p ≠ 0) (hr : r ≠ 0) :
-    Function.Injective fun v : ℝ => (p * v + q) / r := by
-  intro v w hvw
-  simp only at hvw
-  rw [div_left_inj' hr] at hvw
-  exact mul_left_cancel₀ hp (by linarith)
-
-/-! ### The number of frequency triples -/
-
-/-- The integer box `[-⌊X⌋, ⌊X⌋]` has at most `2X + 1` points. -/
-theorem card_Icc_neg_floor_le {X : ℝ} (hX : 0 ≤ X) :
-    ((Finset.Icc (-⌊X⌋) ⌊X⌋).card : ℝ) ≤ 2 * X + 1 := by
-  have hfl : 0 ≤ ⌊X⌋ := Int.floor_nonneg.mpr hX
-  rw [Int.card_Icc]
-  have hnn : 0 ≤ ⌊X⌋ + 1 - -⌊X⌋ := by linarith
-  have hcast : (((⌊X⌋ + 1 - -⌊X⌋).toNat : ℤ) : ℝ) = 2 * (⌊X⌋ : ℝ) + 1 := by
-    rw [Int.toNat_of_nonneg hnn]
-    push_cast
-    ring
-  rw [← Int.cast_natCast, hcast]
-  linarith [Int.floor_le X]
-
-/-- An integer with `|m| ≤ X` lies in `[-⌊X⌋, ⌊X⌋]`. -/
-theorem mem_Icc_neg_floor {X : ℝ} {m : ℤ} (hm : |(m : ℝ)| ≤ X) : m ∈ Finset.Icc (-⌊X⌋) ⌊X⌋ := by
-  rw [Finset.mem_Icc]
-  constructor
-  · have : -m ≤ ⌊X⌋ := Int.le_floor.mpr (by push_cast; linarith [neg_abs_le (m : ℝ)])
-    linarith
-  · exact Int.le_floor.mpr (le_trans (le_abs_self _) hm)
-
-/-- A set of integer triples in the box `|m₁| ≤ X₁`, `|m₂| ≤ X₂`, `|m₃| ≤ X₃` has at most
-`(2X₁ + 1)(2X₂ + 1)(2X₃ + 1)` elements. -/
-theorem card_le_of_mem_box (𝓜 : Finset (ℤ × ℤ × ℤ)) {X₁ X₂ X₃ : ℝ} (h₁ : 0 ≤ X₁) (h₂ : 0 ≤ X₂)
-    (h₃ : 0 ≤ X₃) (h : ∀ m ∈ 𝓜, |(m.1 : ℝ)| ≤ X₁ ∧ |(m.2.1 : ℝ)| ≤ X₂ ∧ |(m.2.2 : ℝ)| ≤ X₃) :
-    (𝓜.card : ℝ) ≤ (2 * X₁ + 1) * ((2 * X₂ + 1) * (2 * X₃ + 1)) := by
-  have hsub : 𝓜 ⊆ Finset.Icc (-⌊X₁⌋) ⌊X₁⌋ ×ˢ (Finset.Icc (-⌊X₂⌋) ⌊X₂⌋ ×ˢ
-      Finset.Icc (-⌊X₃⌋) ⌊X₃⌋) := by
-    intro m hm
-    obtain ⟨hm₁, hm₂, hm₃⟩ := h m hm
-    exact Finset.mem_product.mpr ⟨mem_Icc_neg_floor hm₁,
-      Finset.mem_product.mpr ⟨mem_Icc_neg_floor hm₂, mem_Icc_neg_floor hm₃⟩⟩
-  have hcard := Finset.card_le_card hsub
-  rw [Finset.card_product, Finset.card_product] at hcard
-  calc (𝓜.card : ℝ)
-      ≤ ((Finset.Icc (-⌊X₁⌋) ⌊X₁⌋).card * ((Finset.Icc (-⌊X₂⌋) ⌊X₂⌋).card *
-          (Finset.Icc (-⌊X₃⌋) ⌊X₃⌋).card) : ℕ) := by exact_mod_cast hcard
-    _ ≤ (2 * X₁ + 1) * ((2 * X₂ + 1) * (2 * X₃ + 1)) := by
-        push_cast
-        gcongr
-        · exact card_Icc_neg_floor_le h₁
-        · exact card_Icc_neg_floor_le h₂
-        · exact card_Icc_neg_floor_le h₃
 
 /-! ### The bound for one `Ĩ_m` -/
 
@@ -492,7 +307,7 @@ Proposition 7.2 in the paper's `T^{o(1)}` form.
 
 Assembly lemma: the hypothesis is the conclusion of Proposition 7.2 with an arbitrary constant
 `C₇` and loss `T^ε` — `S₃ ≤ C₇ T^ε (N²/M) Σ_{m ∈ 𝓜} Ĩ_m + C₇ T^{-100}` with `NM ≤ C₇ T^{1+ε}`
-(`M ⪅ T/N`) and `∫ψ₁ ≤ C₇ T^ε` (`‖ψ̃₁‖_{L¹} ⪅ 1`). For a nonempty `T^ε`-separated `W` the
+(`M ⪅ T/N`) and `∫ψ₁ ≤ C₇ T^ε` (`‖ψ̃₁‖_{L¹} ⪅ 1`). For a nonempty `1`-separated `W` (in particular a `T^ε`-separated one) the
 conclusion is `S₃ ≤ (K C₇⁴ + C₇) T^{4ε} T² |W|^{1/2} E(W)^{1/2}` with `K` depending only on the
 box constants `c, C` and the window `A`. -/
 theorem guthMaynard_prop81 {A c C : ℝ} (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤ C) :
@@ -500,7 +315,7 @@ theorem guthMaynard_prop81 {A c C : ℝ} (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤
       (𝓜 : Finset (ℤ × ℤ × ℤ)), 0 ≤ ε → 2 ≤ T → 0 ≤ C₇ →
       IsSmoothingPair ψ₁ ψ₂ → (∀ x, x ∉ Icc A⁻¹ A → ψ₂ x = 0) → (∫ x, ψ₁ x) ≤ C₇ * T ^ ε →
       0 < N → 1 ≤ M₁ → M₁ ≤ M → N * M ≤ C₇ * T ^ (1 + ε) →
-      W.Nonempty → IsSeparated (T ^ ε) W →
+      W.Nonempty → IsSeparated 1 W →
       (∀ m ∈ 𝓜, M₁ ≤ |(m.1 : ℝ)| ∧ |(m.1 : ℝ)| ≤ 2 * M₁ ∧ c * M ≤ |(m.2.1 : ℝ)| ∧
         |(m.2.1 : ℝ)| ≤ C * M ∧ c * M ≤ |(m.2.2 : ℝ)| ∧ |(m.2.2 : ℝ)| ≤ C * M) →
       S₃ ≤ C₇ * T ^ ε * (N ^ 2 / M) * ∑ m ∈ 𝓜, smoothedCubicTerm ψ₁ ψ₂ N M W m.1 m.2.1 m.2.2
@@ -511,11 +326,10 @@ theorem guthMaynard_prop81 {A c C : ℝ} (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤
     unfold propEightOneConstant
     positivity
   refine ⟨propEightOneConstant c C A, hK0, ?_⟩
-  intro ε T N M M₁ C₇ S₃ ψ₁ ψ₂ W 𝓜 hε hT hC₇ hψ hsupp hψ₁ hN hM₁ hM₁M hNM hWne hW h𝓜 hS₃
+  intro ε T N M M₁ C₇ S₃ ψ₁ ψ₂ W 𝓜 hε hT hC₇ hψ hsupp hψ₁ hN hM₁ hM₁M hNM hWne hW1 h𝓜 hS₃
   have hT0 : 0 < T := by linarith
   have hT1 : 1 ≤ T := by linarith
   have hTε : 1 ≤ T ^ ε := Real.one_le_rpow hT1 hε
-  have hW1 : IsSeparated 1 W := hW.mono hTε
   have hX : 0 ≤ C₇ * T ^ ε := by positivity
   have hmain := propEightOne_of_expansion hψ hA hsupp hN hM₁ hM₁M hc hC hW1 𝓜 h𝓜 hX hS₃
   obtain ⟨P, hP⟩ : ∃ P, P = Real.sqrt W.card * Real.sqrt (additiveEnergy W) := ⟨_, rfl⟩
@@ -564,6 +378,80 @@ theorem guthMaynard_prop81 {A c C : ℝ} (hA : 1 ≤ A) (hc : 0 < c) (hC : 0 ≤
   calc S₃ ≤ propEightOneConstant c C A * C₇ ^ 4 * (T ^ ε) ^ 4 * (T ^ 2 * P)
         + C₇ * (T ^ ε) ^ 4 * (T ^ 2 * P) := by linarith
     _ = (propEightOneConstant c C A * C₇ ^ 4 + C₇) * (T ^ ε) ^ 4 * (T ^ 2 * P) := by ring
+
+/-! ### The bumps of Proposition 7.2 -/
+
+/-- `∫ ψ̃₁ ≤ 4A` for the inner bump of width `A` (values in `[0, 1]`, support `|x| < 2A`). -/
+theorem integral_innerBump_le {A : ℝ} (hA : 0 < A) : ∫ x, innerBump A x ≤ 4 * A := by
+  have hzero : ∀ x, x ∉ Icc (-(2 * A)) (2 * A) → innerBump A x = 0 := fun x hx =>
+    innerBump_eq_zero hA (by
+      rw [Set.mem_Icc, not_and_or, not_le, not_le] at hx
+      rcases hx with hx | hx
+      · rw [abs_of_neg (by linarith)]; linarith
+      · rw [abs_of_pos (by linarith)]; linarith)
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+  calc ∫ x in Icc (-(2 * A)) (2 * A), innerBump A x
+      ≤ ∫ _x in Icc (-(2 * A)) (2 * A), (1 : ℝ) :=
+        setIntegral_mono_on (contDiff_innerBump A).continuous.integrableOn_Icc
+          continuous_const.integrableOn_Icc measurableSet_Icc fun x _ => innerBump_le_one A x
+    _ = 4 * A := by
+        rw [setIntegral_const, Real.volume_real_Icc_of_le (by linarith), smul_eq_mul]
+        ring
+
+/-- The outer bump vanishes off `[1/8, 8]`. -/
+theorem outerBump_eq_zero_of_not_mem_Icc {x : ℝ} (hx : x ∉ Icc (8 : ℝ)⁻¹ 8) : outerBump x = 0 :=
+  outerBump_eq_zero fun h => hx ⟨by norm_num at h ⊢; linarith [h.1], by linarith [h.2]⟩
+
+/-- **Guth–Maynard Proposition 8.1 for the bumps of Proposition 7.2.**
+
+Assembly lemma, specialised to `ψ̃₁ = innerBump (2T^{ε/2})`, `ψ̃₂ = outerBump` and the block
+`|m₁| ∈ [M₁, 2M₁]`, `|m₂|, |m₃| ∈ [M, 9M]`: if
+`S₃ ≤ C₇ T^ε (N²/M) Σ_{m ∈ 𝓜} Ĩ_m + C₇ T^{-100}` with `NM ≤ T^{1+ε}` (i.e. `M ≤ T^{1+ε}/N`), then
+`S₃ ≤ (K (8C₇)⁴ + 8C₇) T^{4ε} T² |W|^{1/2} E(W)^{1/2}` for every nonempty `1`-separated `W`. -/
+theorem guthMaynard_prop81_innerBump_outerBump :
+    ∃ K ≥ 0, ∀ (ε T N M M₁ C₇ S₃ : ℝ) (W : Finset ℝ) (𝓜 : Finset (ℤ × ℤ × ℤ)),
+      0 < ε → 2 ≤ T → 1 ≤ C₇ → 0 < N → 1 ≤ M₁ → M₁ ≤ M → N * M ≤ T ^ (1 + ε) →
+      W.Nonempty → IsSeparated 1 W →
+      (∀ m ∈ 𝓜, M₁ ≤ |(m.1 : ℝ)| ∧ |(m.1 : ℝ)| ≤ 2 * M₁ ∧ M ≤ |(m.2.1 : ℝ)| ∧
+        |(m.2.1 : ℝ)| ≤ 9 * M ∧ M ≤ |(m.2.2 : ℝ)| ∧ |(m.2.2 : ℝ)| ≤ 9 * M) →
+      S₃ ≤ C₇ * T ^ ε * (N ^ 2 / M) * ∑ m ∈ 𝓜, smoothedCubicTerm (innerBump (2 * T ^ (ε / 2)))
+          outerBump N M W m.1 m.2.1 m.2.2 + C₇ * T ^ (-100 : ℝ) →
+      S₃ ≤ (K * (8 * C₇) ^ 4 + 8 * C₇) * T ^ (4 * ε)
+        * (T ^ 2 * Real.sqrt W.card * Real.sqrt (additiveEnergy W)) := by
+  obtain ⟨K, hK0, hK⟩ := guthMaynard_prop81 (A := 8) (c := 1) (C := 9) (by norm_num) one_pos
+    (by norm_num)
+  refine ⟨K, hK0, fun ε T N M M₁ C₇ S₃ W 𝓜 hε hT hC₇ hN hM₁ hM₁M hNM hWne hW h𝓜 hS₃ => ?_⟩
+  have hT1 : 1 ≤ T := by linarith
+  have hTε2 : T ^ (ε / 2) ≤ T ^ ε := Real.rpow_le_rpow_of_exponent_le hT1 (by linarith)
+  have hTε0 : 0 < T ^ (ε / 2) := Real.rpow_pos_of_pos (by linarith) _
+  have hψ₁ : ∫ x, innerBump (2 * T ^ (ε / 2)) x ≤ 8 * C₇ * T ^ ε := by
+    refine (integral_innerBump_le (by positivity)).trans ?_
+    nlinarith
+  have hNM' : N * M ≤ 8 * C₇ * T ^ (1 + ε) := by
+    have : 0 ≤ T ^ (1 + ε) := by positivity
+    nlinarith
+  have hsum : 0 ≤ N ^ 2 / M * ∑ m ∈ 𝓜, smoothedCubicTerm (innerBump (2 * T ^ (ε / 2)))
+      outerBump N M W m.1 m.2.1 m.2.2 :=
+    mul_nonneg (div_nonneg (sq_nonneg _) (by linarith))
+      (Finset.sum_nonneg fun m _ => smoothedCubicTerm_nonneg _ _ _ _ _ _ _ _)
+  have hS₃' : S₃ ≤ 8 * C₇ * T ^ ε * (N ^ 2 / M) * ∑ m ∈ 𝓜, smoothedCubicTerm
+      (innerBump (2 * T ^ (ε / 2))) outerBump N M W m.1 m.2.1 m.2.2
+        + 8 * C₇ * T ^ (-100 : ℝ) := by
+    have hTe : 0 ≤ T ^ ε := by positivity
+    have hT100 : 0 ≤ T ^ (-100 : ℝ) := by positivity
+    have h1 : C₇ * T ^ ε * (N ^ 2 / M * ∑ m ∈ 𝓜, smoothedCubicTerm (innerBump (2 * T ^ (ε / 2)))
+        outerBump N M W m.1 m.2.1 m.2.2) ≤ 8 * C₇ * T ^ ε * (N ^ 2 / M * ∑ m ∈ 𝓜,
+        smoothedCubicTerm (innerBump (2 * T ^ (ε / 2))) outerBump N M W m.1 m.2.1 m.2.2) :=
+      mul_le_mul_of_nonneg_right (by nlinarith) hsum
+    have h2 : C₇ * T ^ (-100 : ℝ) ≤ 8 * C₇ * T ^ (-100 : ℝ) := by nlinarith
+    simp only [mul_assoc] at hS₃ h1 ⊢
+    linarith
+  exact hK ε T N M M₁ (8 * C₇) S₃ (innerBump (2 * T ^ (ε / 2))) outerBump W 𝓜 hε.le hT
+    (by linarith) (isSmoothingPair_innerBump_outerBump (by positivity))
+    (fun x hx => outerBump_eq_zero_of_not_mem_Icc hx) hψ₁ hN hM₁ hM₁M hNM' hWne hW
+    (fun m hm => by
+      obtain ⟨h1, h2, h3, h4, h5, h6⟩ := h𝓜 m hm
+      exact ⟨h1, h2, by linarith, h4, by linarith, h6⟩) hS₃'
 
 end
 

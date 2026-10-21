@@ -18,7 +18,8 @@ Summing its square over the pairs `(t₁, t₂)` of a `1`-separated set `W` with
 
 `Σ_{shell} |U_N(t₁−t₂)|² ≤ |W|(2T+1)·2C²E² + [Y ≥ 11] 3174 (Y²/T) Σ_{i<3} 2(4 log(1+T/4))² 𝒜₁((B_i, 2B_i])`,
 
-`B_i = 2^i M`.  When `Y ≥ 11` the dual length satisfies `Y/9 ≤ M ≤ Y/2`.
+`B_i = 2^i M`.  When `Y ≥ 11` the dual length satisfies `Y/9 ≤ M ≤ Y/2` (corpus
+`ub_dualBase_ge`, `ub_dual_edges`).
 -/
 
 set_option autoImplicit false
@@ -163,29 +164,6 @@ theorem sq_norm_mtWattUnitBlock_le_unified {N : ℕ} (hN : 1 ≤ N) {T : ℝ} (h
     calc ‖mtWattUnitBlock N (2 * N) t‖ ^ 2 ≤ a ^ 2 := pow_le_pow_left₀ hU0 h 2
       _ ≤ 2 * a ^ 2 := by nlinarith [sq_nonneg a]
       _ = _ := by rw [ha]; ring
-
-/-- **The dual length.**  For `N ≥ 1` and `Y = T/(2πN) ≥ 11`, `Y/9 ≤ ⌊T/(4π(2N + 1/4))⌋ ≤ Y/2`
-(the corpus `ubDualBase_bounds` for the real length, then the floor). -/
-theorem ubDualBase_two_mul_bounds {N : ℕ} (hN : 1 ≤ N) {T : ℝ}
-    (hY : 11 ≤ T / (2 * Real.pi * N)) :
-    T / (2 * Real.pi * N) / 9 ≤ (ubDualBase (2 * N) T : ℝ) ∧
-      (ubDualBase (2 * N) T : ℝ) ≤ T / (2 * Real.pi * N) / 2 := by
-  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
-  have hT0 : 0 < T := by
-    by_contra h
-    have : T / (2 * Real.pi * N) ≤ 0 :=
-      div_nonpos_of_nonpos_of_nonneg (not_lt.mp h) (by positivity)
-    linarith
-  have hcast : ((2 * N : ℕ) : ℝ) = 2 * N := by push_cast; ring
-  have h := ubDualBase_bounds (N := N) (N' := ((2 * N : ℕ) : ℝ)) hT0 hN1
-    (by rw [hcast]; linarith) (by rw [hcast])
-  obtain ⟨x, hx⟩ : ∃ x : ℝ, x = T / (4 * Real.pi * (((2 * N : ℕ) : ℝ) + 1 / 4)) := ⟨_, rfl⟩
-  rw [← hx] at h
-  have hfl : (ubDualBase (2 * N) T : ℝ) = (⌊x⌋₊ : ℝ) := by rw [ubDualBase, hx]
-  rw [hfl]
-  refine ⟨?_, (Nat.floor_le (by linarith)).trans h.2⟩
-  have h1 := Nat.lt_floor_add_one x
-  linarith [h.1]
 
 /-- **The shell bound.**  For `2 ≤ T < N²` and `W` `1`-separated, the pairs with
 `T/2 ≤ |t₁ − t₂| ≤ T` contribute at most

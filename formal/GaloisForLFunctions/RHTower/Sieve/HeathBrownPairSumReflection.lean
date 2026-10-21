@@ -114,10 +114,9 @@ private theorem shell_perron_le (W : Finset ℝ) {N J j : ℕ} (hN : 1 ≤ N) (h
   have hpi := Real.pi_gt_d2
   split_ifs with hY
   · obtain ⟨Y, hYdef⟩ : ∃ Y, Y = (2 : ℝ) ^ j / (2 * Real.pi * N) := ⟨_, rfl⟩
-    rw [← hYdef] at hY ⊢
-    obtain ⟨hMlo, -⟩ := ubDualBase_two_mul_bounds hN (hYdef ▸ hY)
-    rw [← hYdef] at hMlo
     have hT0 : (0 : ℝ) < 2 ^ j := by positivity
+    have hMlo := ub_dualBase_ge hN (by omega : N < 2 * N) le_rfl hT0 (by linarith)
+    rw [← hYdef] at hY hMlo ⊢
     have hT2 : (2 : ℝ) ≤ 2 ^ j := by
       calc (2 : ℝ) = 2 ^ 1 := by norm_num
         _ ≤ 2 ^ j := pow_le_pow_right₀ (by norm_num) hj1

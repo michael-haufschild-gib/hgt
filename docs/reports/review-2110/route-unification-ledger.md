@@ -21,7 +21,12 @@ uncommitted; [P] = paper only. Module paths are relative to `formal/GaloisForLFu
 `Q:TheZeroIndexedRoutesMeasureOneSide` (files and umbrella imports uncommitted; every theorem closed,
 standard axioms), `Q:TheZeroWidthIsALandauExponent` and `Q:TheZeroWidthIsAnUnboundedApertureProperty`
 (same status), `Q:TheShiftedGroundStateInequalitiesReadTheOddWindow` and
-`Q:TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` (same status), and the rename of
+`Q:TheBlindMinimumIsTheEvenPolarGroundEnergyBelowTheFirstPrime` (same status),
+`Q:IntervalSourceTransformsSampledOnLocallyBoundedPoints` and
+`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` (same status; with the rename
+`integrable_mul_cexp_of_vanish` of the duplicate `RHTower.integrable_mul_cexp` of
+`R:WindowTransformSamplingParseval`, which collided with the declaration of the same name in
+`R:IsolatedDeepZeroHodgeIndex` inside the `RHTower` umbrella), and the rename of
 the duplicate declaration `RHTower.norm_mobiusMertensPartialSum_eq`
 of `R:LiouvilleSummatoryRH` (now `norm_mobiusMertensPartialSum_eq_abs_sourcePartialSum_moebiusR`, its
 consumer `R:SignedArithmeticAbscissaRH` updated), which collided with the declaration of the same
@@ -249,8 +254,13 @@ condition (`Q:OneParameterLagFamilyHorizonLaw` [L]).
   `zetaZeroWidth ≤ polarGroundEnergyRate` (`Q:TheZeroWidthIsALandauExponent` [S]). A certificate at
   one bounded aperture, however large, is consistent with every width
   (`Q:TheZeroWidthIsAnUnboundedApertureProperty` [S]).
-- *Width to aperture, open.* `zetaZeroWidth ≤ σ ⟹ μ(A) ≥ −Ce^{2σA}` for `σ > 0` is the open arrow
-  of the width dictionary; at `σ = 0` it is `RH ⟹ μ ≥ 0`, proved.
+- *Width to aperture.* `zetaZeroWidth ≤ σ ⟹ μ(A) ≥ −Ce^{2σA}` for `σ > 0` is the open arrow of
+  the width dictionary from the width alone; at `σ = 0` it is `RH ⟹ μ ≥ 0`, proved. It is closed
+  when the off-line zeros are uniformly bounded in number on unit height windows, with the
+  two-sided law `−μ(A) ≍ e^{2·zetaZeroWidth·A}` when they are finitely many, and unconditionally
+  the exponent equals the width or the off-line zeros cluster without bound
+  (`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]; the section "The
+  width-to-floor arrow" below).
 - *Side to width.* `RH ⟺ ∀ ρ, Re ρ = ½` is the endpoint of both; no graded per-zero reading
   exists, because a single off-line zero already breaks every indicator.
 - *Receiver to width.* The damping unit does not bound the width (Wall 16); the energy exponent of
@@ -333,8 +343,72 @@ is the record of producers; this ledger is the record of what the producers woul
   decay with the height of the zero; the obstruction is face 1.5.
 - The converse of Lagarias at width `σ` (`Re(ξ'/ξ) ≥ 0` on `Re s > ½ + σ ⟹ zetaZeroWidth ≤ σ`)
   and of the cosine-shift law (`cos(hD)Ξ` Laguerre–Pólya ⟹ `zetaZeroWidth ≤ h`).
-- The open arrow of the width dictionary, width to ground-energy floor, which is the only arrow
-  whose closure would be progress on RH rather than on the ledger.
+- The arrow of the width dictionary from the width alone, width to ground-energy floor: closed
+  under locally bounded off-line copies and two-sided in the finite case
+  (`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]); the exact residual is a
+  uniform unit-window bound on the off-line zeros, the only arrow whose closure would be progress
+  on RH rather than on the ledger.
+
+## The width-to-floor arrow: closed when the off-line zeros do not cluster
+
+The open arrow of the width dictionary, `zetaZeroWidth ≤ σ ⟹ μ(A) ≥ −Ce^{2σA}`, is closed under
+one hypothesis on the off-line zeros and is two-sided in the finite case
+(`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S], on the sampling inequality of
+`Q:IntervalSourceTransformsSampledOnLocallyBoundedPoints` [S]; standard axioms, wired into the
+`SquareRootThreshold` umbrella).
+
+- **Hypothesis.** `OffLineCopiesLocallyBounded M`: at most `M` off-line divisor copies have height
+  within `1` of any `T` (copies are counted with multiplicity; nothing is assumed about their
+  depths beyond the width, and nothing about the on-line zeros).
+- **The floor.** `μ(A) ≥ −M (2A + 2π) e^{2π} e^{2·zetaZeroWidth·A}` at every aperture
+  (`neg_clusterFloorConst_le_ccmRestrictedWeilGroundEnergy`), hence `μ(A) ≥ −C_σ e^{2σA}` for every
+  `σ > zetaZeroWidth` and `polarGroundEnergyRate = zetaZeroWidth`
+  (`polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineCopiesLocallyBounded`): the exponent arrow
+  `polarGroundEnergyRate ≤ zetaZeroWidth` of `Q:TheZeroWidthIsALandauExponent` closes.
+- **The finite case.** Finitely many off-line zeros form a finite top layer at depth exactly
+  `zetaZeroWidth` (`exists_finiteTopLayer_of_finite_offLine`: the quartet symmetries supply the copy
+  at `|Re z| + i|Im z|`, and the maximal depth is the width by the half-plane dictionary), so the
+  law of `R:CCMParityTopLayerGroundEnergyLaw` applies: `c e^{2σA} ≤ −μ(A) ≤ C e^{2σA}` for all large
+  `A`, `σ = zetaZeroWidth` (`exists_groundEnergy_exponential_bounds_of_finite_offLine`).
+- **The dichotomy.** Unconditionally, `polarGroundEnergyRate = zetaZeroWidth` or no `M` bounds the
+  off-line copies on unit windows (`polarGroundEnergyRate_eq_zetaZeroWidth_or_offLineCopies_cluster`);
+  a strict inequality forces infinitely many off-line zeros
+  (`infinite_offLine_of_zetaZeroWidth_lt_polarGroundEnergyRate`).
+
+**Mechanism.** On the zero side the source quadratic of a smooth interior source `u` is
+`Σ_q Re Φ(−z_q) conj Φ(−z̄_q)` (`R:CCMParityQuartetZeroSum`); the on-line copies contribute
+`|Φ(−z_q)|² ≥ 0`, each off-line copy at least `−(|Φ(−z_q)|² + |Φ(−z̄_q)|²)/2`. The sum over the
+off-line copies is a sum of `|Φ|²` over points of depth at most `zetaZeroWidth` whose heights are
+locally bounded, and for the transform `Φ` of a source vanishing off `[−A, A]` such a sum is at
+most `M (2A + 2π) e^{2π} e^{2σA} ∫|u|²` (`sum_norm_sq_testTransform_le_of_locallyBounded'`): write
+every point as a grid point `g ∈ hℤ`, `h = 2π/(2A + 2π)`, plus a displacement of modulus
+`≤ h + σ`; expand `Φ(g + w) = Σ_j (iw)^j/j! · Φ_j(g)` in the moment transforms `Φ_j` of
+`x ↦ x^j u(x)`; apply weighted Cauchy–Schwarz with the weights `((h+σ)A)^j/j!`; count at most `M`
+points per grid cell; and use the grid Parseval identity
+`Σ_k |Φ_j(kh)|² = (2A + 2π) ∫|x^j u|² ≤ (2A + 2π) A^{2j} ∫|u|²` (`R:WindowTransformSamplingParseval`).
+The `L²` normalization of `μ` is kept throughout: no derivative of the test enters, because the
+moment weights `A^{2j}` are summed against the factorial series. Density extends the floor from
+smooth sources to the even and odd form vectors (`R:CCMParityQuartetEvenFloor`,
+`R:CCMParityTopLayerOddFloor`), and a pure-parity ground state (`R:CCMRestrictedWeilGroundParity`)
+turns it into the bound on `μ(A)`.
+
+**What remains open, exactly.** The arrow from the width alone. The sampling inequality needs the
+local count: without it the off-line sum of a rough `L²` test is not controlled by
+`e^{2σA} ∫|u|²`, and the modulated test `e^{iγ_k x} φ(x)` against a cluster of `m_k` off-line
+copies of depth `σ` at height `γ_k` whose phases `2γ_j A` align indicates [P] that a floor at rate
+`2σ` with constant `C` forces the aligned cluster sizes to stay below `C/c_φ`: the fall rate of the
+ground energy reads the width and the clustering of the off-line zeros together, and the width is
+blind to the second. The unconditional local count `≪ log T` of all zeros
+(`Zeta23.RvM.zetaZeroConfig_local_count`) gives only a floor in the archimedean (log-Sobolev) norm
+of the test, not in `L²`. So the residual of the width dictionary is one statement about `ζ`: a
+uniform bound on the number of off-line zeros in unit height windows, true when the off-line zeros
+are finitely many and the exact gap otherwise.
+
+**Corpus repair made on the way.** `RHTower.integrable_mul_cexp` was declared in both
+`R:IsolatedDeepZeroHodgeIndex` (continuous, compact support) and `R:WindowTransformSamplingParseval`
+(continuous, vanishing off `[−L/2, L/2]`), both wired into the `RHTower` umbrella since
+2026-09-27; the second is renamed `integrable_mul_cexp_of_vanish` (used only inside its module) and
+its olean rebuilt.
 
 ## The unifying object: the ground-energy path
 
@@ -358,7 +432,10 @@ antitone and continuous (`R:CCMRestrictedWeilApertureMonotonicity`, `R:SuzukiGro
   holds right of `½ + σ`, every cosine shift `h > σ` of `Ξ` is Laguerre–Pólya, every point right of
   `½ + σ` carries a recurrent disc (`groundEnergyFloor_feeds_every_width_reading` [S]); in exponent
   form the fall rate of the polar path dominates the width (`Q:TheZeroWidthIsALandauExponent` [S]).
-  The converse (width to fall rate) is the open arrow.
+  The converse (width to fall rate) holds, with equality of the rates, whenever the off-line zeros
+  are uniformly bounded in number on unit height windows, and is two-sided when they are finitely
+  many (`Q:TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster` [S]); from the width alone it
+  is the open arrow.
 - **The zero that forces the contact is the per-zero side, and the side is the depth.** Every
   indicator of cluster C is an explicit monotone function of the depth `|Re ρ − ½|`
   (`Q:TheSideIsTheDepthAndTheWidthIsItsSupremum` [S]): the first-prime seam charge is
@@ -383,7 +460,8 @@ and depth `δ` forces contact by `A ≍ (log γ)² log log γ / δ`, and the syn
 `≍ log γ` an off-line family of depth `δ` hides exactly up to aperture `≍ (1/2δ) log log γ`. The
 conjecture that the model law is `ζ`'s law, `c log log γ*/δ ≤ A_c ≤ C (log γ*)² log log γ*/δ`, is the
 [contact-law card](../../drafts/pipeline/0-backlog/contact-aperture-law-of-the-ground-energy-path-2026-10-21.md).
-Together with the open arrow it would make the path a complete invariant of the configuration in
+Together with the open arrow (closed when the off-line zeros do not cluster) it would make the
+path a complete invariant of the configuration in
 the three currencies: where it first touches zero (height and depth of the top zero through the
 exchange rate), how fast it falls (the width), and which zero it sees first (the side).
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusCriterion
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusDiscreteEnergy
+import GaloisForLFunctions.RHTower.ZetaZeroAbscissa
 
 /-!
 # The admissible dampings of the Möbius receiver accumulate above the zeros
@@ -22,6 +23,10 @@ the dampings with a horizon-uniform budget.
   criterion `riemannHypothesis_of_pmPowerDamped_cofinal_discrete_budget` is the case `ε₀ = 0`.
 * `re_le_of_Ioo_subset_receiverDampings`: admissibility on an interval `(a, b)` bounds every zero
   in the strip by `½ + a`.
+* `receiverDampingRate`: the infimum of the accumulation points of the admissible dampings. It lies
+  in `[zetaZeroAbscissa − ½, ½]` (`zetaZeroAbscissa_le_half_add_receiverDampingRate`,
+  `receiverDampingRate_le_half`), and it vanishes iff the admissible dampings accumulate at `0`
+  (`receiverDampingRate_eq_zero_iff_accPt_zero`, the derived set being closed), which is RH.
 
 A single admissible damping only translates zeros; it is the accumulation of admissible dampings
 that confines them, because a nonzero analytic function has isolated zeros.
@@ -151,5 +156,70 @@ theorem riemannHypothesis_of_accPt_zero_receiverDampings
   obtain ⟨ρ, hzero, hρ0, hρ1⟩ := exists_zetaZero_re_gt_half_of_not_riemannHypothesis hRH
   have := re_le_of_accPt_receiverDampings h hzero hρ1
   linarith
+
+/-- Every accumulation point of the admissible dampings bounds the zero abscissa. -/
+theorem zetaZeroAbscissa_le_of_accPt_receiverDampings {ε₀ : ℝ}
+    (h : AccPt ε₀ (𝓟 receiverDampings)) : zetaZeroAbscissa ≤ 1 / 2 + ε₀ := by
+  refine csSup_le zetaZeroReSet_nonempty ?_
+  rintro _ ⟨ρ, hzero, rfl⟩
+  rcases lt_or_ge ρ.re 1 with hρ1 | hρ1
+  · exact re_le_of_accPt_receiverDampings h hzero hρ1
+  · exact absurd hzero (riemannZeta_ne_zero_of_one_le_re hρ1)
+
+/-! ### The receiver damping rate -/
+
+/-- The receiver damping rate: the infimum of the accumulation points of the admissible
+dampings. -/
+def receiverDampingRate : ℝ := sInf (derivedSet receiverDampings)
+
+theorem bddBelow_derivedSet_receiverDampings : BddBelow (derivedSet receiverDampings) :=
+  ⟨0, fun _ h => nonneg_of_accPt_receiverDampings (mem_derivedSet.mp h)⟩
+
+theorem half_mem_derivedSet_receiverDampings : (1 / 2 : ℝ) ∈ derivedSet receiverDampings :=
+  mem_derivedSet.mpr (accPt_receiverDampings_of_half_le le_rfl)
+
+theorem receiverDampingRate_nonneg : 0 ≤ receiverDampingRate :=
+  le_csInf ⟨_, half_mem_derivedSet_receiverDampings⟩ fun _ h =>
+    nonneg_of_accPt_receiverDampings (mem_derivedSet.mp h)
+
+/-- The receiver damping rate is at most the trivial rate `½`. -/
+theorem receiverDampingRate_le_half : receiverDampingRate ≤ 1 / 2 :=
+  csInf_le bddBelow_derivedSet_receiverDampings half_mem_derivedSet_receiverDampings
+
+/-- The receiver damping rate dominates the zero abscissa excess `Θ − ½`. -/
+theorem zetaZeroAbscissa_le_half_add_receiverDampingRate :
+    zetaZeroAbscissa ≤ 1 / 2 + receiverDampingRate := by
+  have h : zetaZeroAbscissa - 1 / 2 ≤ receiverDampingRate :=
+    le_csInf ⟨_, half_mem_derivedSet_receiverDampings⟩ fun _ h => by
+      linarith [zetaZeroAbscissa_le_of_accPt_receiverDampings (mem_derivedSet.mp h)]
+  linarith
+
+/-- The rate vanishes iff the admissible dampings accumulate at `0`: the set of accumulation
+points is closed, so its infimum is attained. -/
+theorem receiverDampingRate_eq_zero_iff_accPt_zero :
+    receiverDampingRate = 0 ↔ AccPt (0 : ℝ) (𝓟 receiverDampings) := by
+  constructor
+  · intro h
+    have hmem : receiverDampingRate ∈ derivedSet receiverDampings :=
+      (isClosed_derivedSet receiverDampings).csInf_mem ⟨_, half_mem_derivedSet_receiverDampings⟩
+        bddBelow_derivedSet_receiverDampings
+    rw [h] at hmem
+    exact mem_derivedSet.mp hmem
+  · intro h
+    exact le_antisymm (csInf_le bddBelow_derivedSet_receiverDampings (mem_derivedSet.mpr h))
+      receiverDampingRate_nonneg
+
+/-- A vanishing receiver damping rate is RH. -/
+theorem riemannHypothesis_of_receiverDampingRate_eq_zero (h : receiverDampingRate = 0) :
+    RiemannHypothesis :=
+  riemannHypothesis_of_accPt_zero_receiverDampings (receiverDampingRate_eq_zero_iff_accPt_zero.mp h)
+
+/-- The rate vanishes iff receiver budgets exist at dampings tending to `0`: the cofinal criterion
+in the language of the rate. -/
+theorem receiverDampingRate_eq_zero_iff_cofinal_budget :
+    receiverDampingRate = 0 ↔
+      ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧
+        ∃ B : ℝ, ∀ T : ℕ, pmPowerDampedDivisorDiscreteEnergy ε T ≤ B :=
+  receiverDampingRate_eq_zero_iff_accPt_zero.trans accPt_zero_receiverDampings_iff
 
 end RHTower

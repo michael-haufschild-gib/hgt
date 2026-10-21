@@ -397,3 +397,165 @@ Zero-density target: `ncard (zeroHeightBox σ T) ≤ D (1 + log T)^B T^{(30/13 +
 `σ ∈ [1/2, 1]` for `T ≥ T₀`; window `a = 10/(6 + 10σ)` (ratio 3/2, equal to (13.1)) on `[7/10, 8/10]`,
 mean-value window `a = 10/13` below, Huxley window `a = 35/52` above; then `u < 13/30` in
 `tendsto_tsum_zeroShortWeight_of_density` gives `ψ(x + x^α) − ψ(x) ∼ x^α` for `α > 17/30`.
+
+### Lean (2026-10-21): Section 7 — Proposition 7.1 and Proposition 7.2 (ζ case, unconditional)
+
+Nine new modules in `formal/GaloisForLFunctions/RHTower/Sieve/`, namespace `RHTower.GuthMaynard`, all compiled
+clean with `lake env lean` (zero errors, zero warnings), `.olean`s produced, appended to the `RHTower` umbrella;
+every main theorem audited `[propext, Classical.choice, Quot.sound]`; `formal_tools.py lint` reports nothing for them.
+
+* `GuthMaynardSmoothedLagSum` (shared vocabulary for §8/§10, imports only `GuthMaynardLagSum`): `smoothedLagSum ψ₁ ψ₂ N M W u`
+  `= (∫ NM ψ₁(NM(u−x)) ψ₂(x) |R(x)|² dx)^{1/2}` (R̃, (7.5)); `smoothedCubicTerm ψ₁ ψ₂ N M W m₁ m₂ m₃`
+  `= ∫_{v∈[1/2,2]} |R(v)| R̃((m₁v+m₃)/(m₂v)) R̃((m₁v+m₃)/m₂) dv` (Ĩ_m); `IsSmoothingPair` (continuous, compact support, values in
+  `[0,1]`); the Prop 7.2 bumps `innerBump A` (= 1 on `[−A,A]`, support `(−2A,2A)`, `innerBump A 0 = 1`,
+  `exists_abs_iteratedDeriv_innerBump_le`: derivatives bounded uniformly in `A ≥ 1`) and `outerBump` (= 1 on `[1/4,4]`, support
+  `(1/8,33/8)`, `outerBump_one`); `smoothedLagSum_sq`, `smoothedLagSum_le` (`R̃ ≤ |W| (∫ψ₁)^{1/2}`), `measurable_smoothedLagSum`,
+  `integrableOn_norm_lagSum_mul_smoothedLagSum`, `smoothedCubicTerm_nonneg`, and the majorisation
+  `setIntegral_normSq_lagSum_le`: `ψ₂ ≥ 1` on `S`, `ψ₁ ≥ 1` on `[−NMr, NMr]` ⇒ `∫_{S∩[c−r,c+r]} |R|² ≤ R̃(c)²/(NM)`.
+* `GuthMaynardCubicTermIntegral`: `bumpFourier w t ξ = ĥ_t(ξ)` (CGL `cglSmoothBumpHt`), `cubicTerm w W N m₁ m₂ m₃ = I_m`,
+  `cubicAmplitude` (= `w₂` of (7.4)), `cubicPhaseIntegral w v ξ = ∫ e(−ξu) w₂(u,v) du`, `cubicLinearForm`, `lagTriple`.
+  **(7.3)** `cubicTerm_eq_integral` (integral over ℝ³ of `e(−N m·u) w(u₁)²w(u₂)²w(u₃)² R(u₁/u₃)R(u₂/u₁)R(u₃/u₂)`);
+  **(7.4)** `cubicTerm_eq_integral_ray`: `I_m = N³ ∫_{ℝ²} J(v, N(m₁v₁+m₂v₂+m₃)) R(v₁)R(v₂/v₁)R(1/v₂) dv` (Jacobian `u²` via
+  `Measure.integral_comp_smul`, Fubini on continuous compactly supported integrands per triple `(t₁,t₂,t₃)`);
+  `cubicPhaseIntegral_eq_zero` (`J = 0` off `[1/2,2]²`).
+* `GuthMaynardCubicTermCGL`: `cubicTerm_eq_sum_cglLemma45TripleFrequencyTerm` — `I_m` is the sum over `W³` of the CGL Lemma 4.5
+  term `cglLemma45TripleFrequencyTerm` at modulus `q = 1` (`modulusOne`), residues `0`, any characters mod 1.
+* `GuthMaynardPropSevenOneDecay`: `exists_pow_mul_norm_cubicPhaseIntegral_le` — uniform non-stationary phase
+  `|ξ|^j |J(v,ξ)| ≤ K_j` for all `v ∈ ℝ²` (derivatives of the compactly supported `w₂` on ℝ³ restricted to lines).
+* `GuthMaynardPropSevenOne`: `cancellationRegion m (δ) = {v ∈ [1/2,2]² : |m₁v₁+m₂v₂+m₃| ≤ δ}`, `lagTripleNorm W v =
+  |R(v₁)R(v₂/v₁)R(v₂)|`. **Prop 7.1**: `norm_cubicTerm_le_of_threshold` (∀ j ∃ C: `|I_m| ≤ C N³ ∫_{region(δ/N)} lagTripleNorm +
+  C N³|W|³/δ^j`), `prop71` (∀ η>0 ∀ A ∃ C, T ≥ 1, N > 0, any finite W: region `T^η/N`, error `C N³|W|³T^{−A}`), `prop71_paper`
+  (1-separated `W ⊂ [0,T]`, `N ≤ T`: error `C T^{−200}`); second claim `cancellationRegion_eq_empty`
+  (`|m₃| > 2|m₁|+2|m₂|+δ`), `prop71_negligible` (`|m₁| ≤ |m₂|`, `|m₃| > 4|m₂| + T^η/N` ⇒ `|I_m| ≤ C N³|W|³T^{−A}`),
+  `prop71_negligible_of_le` (`T^η ≤ N`, `|m₃| > 5|m₂|`).
+* `GuthMaynardPropSevenTwoTruncation`: `allNonzeroCubicSum w W N = S₃ = Σ'_{m₁m₂m₃≠0} I_m`, `nonzeroFrequencyBox K`,
+  `summable_allNonzeroCubicSummand` (absolute convergence for `W ⊂ [0,T]`), **(7.1)** `allNonzeroCubicSum_truncation`
+  (∀ η>0 ∀ A ∃ C: `|S₃ − Σ_{0<|m_i|≤⌊T^{1+η}/N⌋} I_m| ≤ C|W|³T^{−A}` for `T,N ≥ 1`, `W ⊂ [0,T]`), from the corpus Lemma 4.3
+  `cglSmoothBumpHt_allOrder_fourier_decay`.
+* `GuthMaynardPropSevenTwoSymmetry`: `cubicTerm_cycle` (`I_{(m₂,m₃,m₁)} = I_m`), `conj_cubicTerm` (real bump:
+  `conj I_m = I_{(−m₁,−m₃,−m₂)}`; the paper's `I_{(m₁,m₂,m₃)} = conj I_{(m₂,m₁,m₃)}` omits the global sign change, harmless for
+  `|I_m|`), `sum_norm_cubicTerm_le_six_sorted` (box sum ≤ 6 × sum over `|m₁| ≤ |m₂| ≤ |m₃|`).
+* `GuthMaynardPropSevenTwoSmoothing`: `setIntegral_lagTripleNorm_le_smoothedCubicTerm` (`M ≤ |m₂|`:
+  `∫_{region(δ/N)} lagTripleNorm ≤ (√2/(NM)) Ĩ_{(m₁,−m₂,m₃)}` with `ψ̃₁ = innerBump(2δ)`, `ψ̃₂ = outerBump`; fibrewise
+  Cauchy–Schwarz via corpus `HTGeometry.sq_integral_mul_le`), `norm_cubicTerm_le_smoothedCubicTerm`
+  (`|I_m| ≤ C (N²/M) Ĩ_{(m₁,−m₂,m₃)} + C N³|W|³T^{−A}`).
+* `GuthMaynardPropSevenTwo`: `dyadicFrequencyBlock M₁ M = {M₁≤|m₁|<2M₁, M≤|m₂|<2M, M≤|m₃|<9M}`, `IsNearDiagonal`,
+  `middleScale`, `dyadicSmoothedTerm`, `exists_dyadic_block` (weighted pigeonhole, mathlib
+  `Finset.exists_le_sum_fiber_of_maps_to_of_nsmul_le_sum`), `natLog_add_one_le` (`log₂K+1 ≤ (4/(ε log2)+1)T^{ε/2}`), and
+  **Prop 7.2** `prop72`: for a real CGL bump, `0 < ε ≤ 1`, ∃ C, ∀ `2 ≤ T`, `T^ε ≤ N ≤ T`, 1-separated `W ⊂ [0,T]`: ∃ `1 ≤ M₁ ≤ M`
+  (powers of two) with `M ≤ T^{1+ε}/N` and
+  `|S₃| ≤ C T^ε (N²/M) Σ_{m∈dyadicFrequencyBlock M₁ M} Ĩ_m + C T^{−100}`, `Ĩ_m = smoothedCubicTerm (innerBump (2T^{ε/2})) outerBump N M W m`.
+* Normalisations fixed for consumers: `v ≍ 1` is `[1/2,2]` (forced by `supp w = [1,2]`); `|m₁| ∼ M₁` is `M₁ ≤ |m₁| < 2M₁`;
+  `|m₂|,|m₃| ≍ M` is `[M,2M)` and `[M,9M)`; the hypothesis `T^ε ≤ N` is used only to get `|m₃| < 9M`; separation of `W` is
+  used only through `|W| ≤ T + 1` (`card_le_of_isSeparated`, from corpus `card_le_of_separated_of_subset_Icc`).
+* Remaining for §7: none. Open interfaces for the chain: (i) the full CGL identity `Σ_{m≠0} I_m` = CGL nonzero-frequency sum at
+  `q = 1` (only the per-term identification is proved), needed to feed `S₃` into `cglProposition46_realAsymptotic_bound`;
+  (ii) §8 consumers must use `prop72` with the bump pair `(innerBump (2T^{ε/2}), outerBump)`, `IsSmoothingPair` from
+  `isSmoothingPair_innerBump_outerBump`.
+
+### Lean (2026-10-21): Section 8 — Lemmas 8.2, 8.3, 8.4 and Proposition 8.1
+
+Six new modules under `formal/GaloisForLFunctions/RHTower/Sieve/`, namespace `RHTower.GuthMaynard`, each compiled
+clean with `lake env lean` (0 errors, 0 warnings), oleans built, axioms `[propext, Classical.choice, Quot.sound]`,
+wired at the end of `RHTower.lean` (lines 27982–27987). Window convention: `v ≍ 1` is `v ∈ [A⁻¹, A]`, `A ≥ 1`.
+R̃ is the §7 brick's `smoothedLagSum ψ₁ ψ₂ N M W` and Ĩ_m its `smoothedCubicTerm` (window `[1/2, 2]`), imported
+from `GuthMaynardSmoothedLagSum` — no duplicate definition, nothing to merge.
+
+* `GuthMaynardLagSumL2` — **Lemma 8.2**, stronger than the paper: `setIntegral_Icc_inv_normSq_lagSum_le`:
+  `IsSeparated 1 W → ∫_{A⁻¹}^{A} |R|² ≤ (5π/2)·A·max(1, log A)·|W|` (only 1-separation, no `T`, no interval);
+  `guthMaynard_lemma82` (paper shape, `T^ε`-separated). Mechanism: `v = e^u` (`setIntegral_Icc_inv_le`, Jacobian
+  `≤ A`) and the corpus Fejér-majorant mean value `Sieve.integral_Icc_normSq_finiteFrequencyPoly_le_collisionWeight`
+  (`setIntegral_Icc_normSq_unitPoly_le`, collision scale `windowScale A`), diagonal only by separation.
+* `GuthMaynardLagSumL4` — **Lemma 8.3 for R**, no `T^{o(1)}` loss and no separation:
+  `setIntegral_Icc_inv_lagSum_pow_four_le`: `∫_{A⁻¹}^{A} |R|⁴ ≤ (5π/2)·A·max(1, log A)·E(W)` for every finite `W`;
+  `guthMaynard_lemma83_lagSum`. Same window inequality applied to `R² = Σ_{W²} e^{i(t₁+t₂)u}`; pair collisions at
+  distance `< 1` are energy quadruples (`pairCollisionWeight_le_additiveEnergy`).
+* `GuthMaynardSmoothedLagSumMoments` — **Lemma 8.3 for R̃**, over all of `ℝ`: for `IsSmoothingPair ψ₁ ψ₂` with `ψ₂ = 0`
+  off `[A⁻¹, A]` and `NM > 0`: `integrable_and_integral_smoothedLagSum_pow_four_le` (`R̃⁴` integrable,
+  `∫ R̃⁴ ≤ (∫ψ₁)² ∫_{A⁻¹}^{A}|R|⁴`) and `integral_smoothedLagSum_pow_four_le_energy`
+  (`≤ (∫ψ₁)²·(5π/2)A max(1,log A)·E(W)`). Mechanism: `R̃² = k ⋆ (ψ₂|R|²)`, `‖k‖₁ = ∫ψ₁`, corpus Young inequality
+  `HTGeometry.lintegral_enorm_sq_le_of_convolution_bound`.
+* `GuthMaynardPropEightOneHolder` — tools: Hölder `(2,4,4)` on a set `setIntegral_mul_mul_le` (pointwise Young
+  `XYZ ≤ X²/2 + Y⁴/4 + Z⁴/4`, degenerate majorants by `η → 0`), `setIntegral_comp_le_inv_mul_integral`
+  (`∫_S G∘φ ≤ λ⁻¹ ∫ G` for injective `φ` with `|φ'| ≥ λ`), `hasDerivAt_mobius`, `injOn_mobius`, `injective_affine`,
+  `card_le_of_mem_box` (`#𝓜 ≤ Π(2Xᵢ+1)`). Corpus searched (search tool + `rg`): no duplicates.
+* `GuthMaynardPropEightOne` — **Proposition 8.1 as assembly lemmas** (hypothesis = Proposition 7.2's conclusion as
+  data: arbitrary real `S₃`, arbitrary finite `𝓜 ⊂ ℤ³` in the box `|m₁| ∈ [M₁,2M₁]`, `|m₂|,|m₃| ∈ [cM, CM]`,
+  arbitrary smoothing pair):
+  - `smoothedCubicTerm_le`: `Ĩ_m ≤ (K₂|W|)^{1/2}(Λ (∫ψ₁)² K_A E(W))^{1/2}` for any `Λ ≥ 4|m₂|/|m₃|, |m₂|/|m₁|`
+    (Möbius Jacobian `≥ |m₃|/(4|m₂|)` on `[1/2,2]`, affine Jacobian `|m₁|/|m₂|`);
+  - `propEightOne_of_expansion` (explicit): `S₃ ≤ X(N²/M)Σ_𝓜 Ĩ_m + Y ⟹
+    S₃ ≤ X·propEightOneConstant c C A·(∫ψ₁)·(NM)²·|W|^{1/2}E(W)^{1/2} + Y`, constant
+    `5(2C+1)²(1+4C/c)(1+C)√(K₂K_A)`;
+  - `guthMaynard_prop81` (`T^{o(1)}` form): from `S₃ ≤ C₇T^ε(N²/M)Σ Ĩ_m + C₇T^{-100}`, `NM ≤ C₇T^{1+ε}`,
+    `∫ψ₁ ≤ C₇T^ε`, nonempty 1-separated `W`: `S₃ ≤ (K C₇⁴ + C₇) T^{4ε}·T²|W|^{1/2}E(W)^{1/2}`;
+  - `guthMaynard_prop81_innerBump_outerBump`: the same for the §7 bumps `innerBump (2T^{ε/2})`, `outerBump`, the
+    block `|m₂|,|m₃| ∈ [M, 9M]` and `NM ≤ T^{1+ε}` (uses `integral_innerBump_le : ∫ innerBump A ≤ 4A`,
+    `outerBump_eq_zero_of_not_mem_Icc` off `[1/8, 8]`).
+* `GuthMaynardSmoothedLagSumFourierDecay` — **Lemma 8.4**, `smoothedDensity ψ₁ ψ₂ ψ₃ B W u = ψ₁(u)∫Bψ₃(B(u−x))ψ₂(x)|R(x)|²dx`:
+  - `fourier_smoothedDensity_eq`: `f̂(ξ) = ∫ g(x) ĥ_x(ξ) dx`, `h_x(u) = ψ₁(u)Bψ₃(B(u−x))` (corpus Fubini
+    `HTGeometry.integral_swap_of_dominated_prod`);
+  - `integral_abs_iteratedDeriv_localKernel_le` (Leibniz: `∫|h_x^{(j)}| ≤ D₁J₃(1+B)^j`),
+    `pow_mul_norm_fourier_localKernel_le` (corpus `RHTower.pow_mul_norm_fourier_le_of_iteratedDeriv`),
+    `pow_mul_norm_fourier_smoothedDensity_le`: `(2π|ξ|)^j|f̂(ξ)| ≤ D₁J₃(1+B)^j ∫|ψ₂||R|²`;
+  - `card_div_two_le_norm_lagSum` (`W ⊂ [x₀,x₀+T]`, `|log v| ≤ 1/T ⟹ |R(v)| ≥ |W|/2`), `smoothedDensity_one_ge`
+    (`f(1) ≥ B|W|²/(16(1+2D)KT)` for `B ≤ KT`);
+  - **`guthMaynard_lemma84`**: smooth nonnegative `ψ₁,ψ₂` supported in `[A⁻¹,A]`, `ψ₃` compactly supported,
+    `ψ₁(1)=ψ₂(1)=ψ₃(0)=1`, `|ψ₁^{(i)}| ≤ D`, `∫|ψ₃^{(i)}| ≤ D` (`i ≤ j`), `|ψ₂'|,|ψ₃'| ≤ D`, `1 ≤ B ≤ KT`,
+    `K,T ≥ 1`, `W ⊂ [x₀,x₀+T]`, `f ≤ S₀`: `|ξ|^j|f̂(ξ)| ≤ (A + 16D²(∫ψ₂)(1+2D))·K^jT^j·S₀` for all `ξ`, `j`.
+    With `D, ∫ψ₂, K ⪅ 1` this is the paper's `f̂(ξ) ⪅_j (T/|ξ|)^j sup f`.
+  The duplicate `abs_sub_le_of_abs_deriv_le` I first wrote (= corpus `HTGeometry.abs_sub_le_of_deriv_bound`) was
+  deleted; the mean value inequality is called from mathlib directly.
+
+**Remaining for this brick.** Only the composition with the Proposition 7.2 brick, which was not yet wired when this
+section was written (`GuthMaynardPropSevenTwo.prop72`, in flight). Its conclusion matches
+`guthMaynard_prop81_innerBump_outerBump` term for term: take `C₇ = max C 1`, `S₃ = ‖allNonzeroCubicSum w W N‖`,
+`𝓜 = dyadicFrequencyBlock M₁ M` (its `|m₂| < 2M`, `|m₃| < 9M` give the `[M, 9M]` box), `NM ≤ T^{1+ε}` from
+`M ≤ T^{1+ε}/N`. The resulting unconditional statement, to be added as a ~25-line corollary once `prop72` is wired:
+for every `0 < ε ≤ 1` there is `C` with `‖S₃‖ ≤ C·T^{4ε}·T²|W|^{1/2}E(W)^{1/2}` for `2 ≤ T`, `T^ε ≤ N ≤ T` and
+every nonempty 1-separated `W ⊂ [0, T]` (Guth–Maynard Proposition 8.1).
+
+**Addendum (2026-10-21, later): Proposition 8.1 closed.** `GuthMaynardPropSevenTwo.prop72` was wired in the meantime,
+so the composition above is done: `RHTower/Sieve/GuthMaynardPropEightOneUnconditional.lean` (compiled clean, olean
+built, wired after `GuthMaynardPropEightOneHolder`), **`prop81`**: for a real CGL bump `w` and `0 < ε ≤ 1` there is
+`C ≥ 0` with `‖allNonzeroCubicSum w W N‖ ≤ C·T^{4ε}·T²|W|^{1/2}E(W)^{1/2}` for `2 ≤ T`, `1 ≤ N ≤ T`, `T^ε ≤ N` and
+every nonempty 1-separated `W ⊂ [0, T]`; axioms `[propext, Classical.choice, Quot.sound]` (this includes `prop72`).
+Nothing of Section 8 remains open; the next consumers are the Section 9–10 `S₃` refinements (Lemma 8.4 is their
+Fourier input, `guthMaynard_lemma84`).
+
+### Lean (2026-10-22): Heath-Brown's Theorem 1.6 in the range `N ≥ (2T)^{2/3}`, unconditional
+
+Nine wired modules `RHTower/Sieve/HeathBrownPairSum*` (umbrella lines appended; each `lake env lean` clean,
+0 warnings; axioms `[propext, Classical.choice, Quot.sound]`). Points are a `W : Finset ℝ`
+(`GuthMaynard.IsSeparated 1 W`), `hbPoly S a t = Σ_{n∈S} a_n e^{it log n}` (phase of `dirPoly`),
+`hbPairSum W S a = Σ_{t₁,t₂∈W} |hbPoly S a (t₁−t₂)|²`, `hbAmp W σ S` = pair sum with `a_n = n^{−σ}`.
+* `Majorant`: ratio-kernel identity `hbPairSum_eq_sum_kernel` (from corpus `dual_sum_expand`),
+  `sum_normSq_lagSum_eq_hbPairSum` (GM Lemma 11.5 identity, `R = GuthMaynard.lagSum`), majorant principle
+  `hbPairSum_le_of_norm_le` (pointwise; corpus `jutila_coefficient_removal` is the uniform case), support
+  monotonicity, shift invariance `sum_normSq_hbPoly_shift_le`, diagonal split, bridges `hbPoly_eq_dirPoly`/`dirPoly_eq_hbPoly`.
+* `Power`: `hbPoly_pow` (corpus `dirPoly_convPow`), `norm_hbPowCoeff_le` (corpus `powFibreOn_univ_card_le_divisors`),
+  `sum_norm_hbPoly_pow_le` (2k-th moment ≤ D^{2k}·pair sum on `(A^k,B^k]`), `hbPairSum_le_power_lift` (GM (6.2)),
+  `hbPairSum_sq_le_fourthMoment`.
+* `Dilation` (rigorous Heath-Brown Lemma 2): `hbKernel_mul_mul` (`K(jn,jm)=K(n,m)`),
+  `sum_rpow_sq_mul_hbAmp_le` (`(Σ_{j∈J} j^{−2σ})𝒜_σ(S) ≤ max_L d · 𝒜_σ(L)` if `jS ⊆ L`), `hbAmp_half_le_of_le`
+  (`S ⊆ (A,cA]`, `A ≤ N` ⇒ `𝒜_{1/2}(S) ≤ 2D 𝒜_{1/2}((N,2cN])`). Literal dyadic monotonicity is false; this replaces it.
+* `Corollary`: Corollary 2.1 `hbAmp_sq_le_rpow` (`S ⊆ (M,2M]`, `M² ≤ N` ⇒ `𝒜_{1/2}(S)² ≤ 2(C_δ(8N)^δ)⁵|W|²𝒜_{1/2}((N,8N])`),
+  closing inequality `le_two_mul_add_of_le_add_mul_sum` (corpus `le_two_mul_add_sq_mul_of_le_add_of_sq_le_mul`).
+* `MeanValue`: `hbPairSum_le_meanValue` (corpus `sum_normSq_dirPoly_finset_le`), `hbPairSum_Ioc_le_of_le`
+  (range `N ≥ T`: `≤ 20|W|N²(1+log 2N)²`).
+* AFE input = corpus unit-block reflection, not Jutila/Lemma 6.2: `UnitBlock` (bridges, weights,
+  `sum_sq_ubPerronMass_abs_le`: `Σ_{pairs} P_B(|t₁−t₂|)² ≤ 2(4log(1+U))²𝒜₁((B,2B])`), `Shells`
+  (`norm_mtWattUnitBlock_le_unified` from `norm_mtWattUnitBlock_le_over_height`, `exists_norm_mtWattUnitBlock_le_short_dual`,
+  `exists_norm_mtWattUnitBlock_le_perronMass`; `sum_shell_sq_norm_mtWattUnitBlock_le`), `Reflection`
+  (`hbAmp_half_le_reflection`: `𝒜_{1/2}((N,2N]) ≤ 2N|W|c(J) + 300000J² Σ_{j≤J,i<3} hbDualTerm`).
+* `RestrictedRange`: `hbAmp_half_Ioc_eight_le_restricted`, **`hbPairSum_Ioc_le_restrictedRange`** (`T ≤ 2^J`, `2^J < N²`,
+  `4^J ≤ 9N³`) and **`hbPairSum_Ioc_le_of_twoThirds`**: `W` 1-separated of diameter `≤ T`, `T ≥ 1`, `2T < N²`,
+  `4T² ≤ 9N³`, `|a_n| ≤ 1`, `δ > 0`, `L = 1 + log₂T`:
+  `Σ_{t₁,t₂}|Σ_{N<n≤2N} a_n n^{i(t₁−t₂)}|² ≤ 224 c(L)|W|N² + 4(1200000L²)²(9L)²(C_δ(8N)^δ)⁵|W|²N`,
+  `c(L) = 1+12C²L((1+L)²+1)`, `C = hbReflConst` absolute. This is Theorem 1.6 without the third term for
+  `N ≥ (2T)^{2/3}` (all larger `N` included); it supplies GM Lemma 11.5 and Lemma 1.7 (`N > T^{2/3}`).
+* Remaining for this brick: the range `N < (2T)^{2/3}` with the third term,
+  `Σ ≤ T^{o(1)}(|W|²N + |W|N² + |W|^{5/4}T^{1/2}N)`. Mechanism gap: dual blocks there have `B ≍ T/N > √N`, so
+  Corollary 2.1 does not return to a length `≤ N` and the closure fails; the reflection+fourth-moment route gives
+  only `|W|^{3/2}`-type third terms. Needs HB 1979 Theorem 1 / Ivić Lemma 11.5 (not open access). GM (6.3) uses the
+  full form at length `M^k`; it is covered without the third term whenever `M^k ≥ (2T)^{2/3}`.

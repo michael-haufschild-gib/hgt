@@ -314,14 +314,6 @@ theorem card_div_two_le_norm_lagSum {W : Finset ℝ} {x₀ T : ℝ} (hT : 0 < T)
     _ ≤ ‖∑ t ∈ W, Complex.exp (↑((t - x₀) * Real.log v) * Complex.I)‖ := Complex.re_le_norm _
     _ = ‖lagSum W v‖ := by rw [← hrot, norm_mul, hunit, one_mul]
 
-/-- A derivative bound `|ψ'| ≤ D` gives the Lipschitz bound `|ψ(a) − ψ(b)| ≤ D|a − b|`. -/
-theorem abs_sub_le_of_abs_deriv_le {ψ : ℝ → ℝ} (hψ : Differentiable ℝ ψ) {D : ℝ}
-    (hD : ∀ x, |deriv ψ x| ≤ D) (a b : ℝ) : |ψ a - ψ b| ≤ D * |a - b| := by
-  have h := Convex.norm_image_sub_le_of_norm_deriv_le (s := univ) (x := b) (y := a)
-    (fun x _ => hψ x) (fun x _ => by rw [Real.norm_eq_abs]; exact hD x) convex_univ trivial
-    trivial
-  simpa only [Real.norm_eq_abs] using h
-
 /-- **Size of `f` at `1`.** If `ψ₁(1) = ψ₂(1) = ψ₃(0) = 1`, `ψ₂, ψ₃ ≥ 0` have Lipschitz constant
 `D`, `B ≤ KT` with `K, T ≥ 1`, and `W ⊂ [x₀, x₀ + T]`, then
 `f(1) ≥ B |W|² / (16 (1 + 2D) K T)`. -/
@@ -520,11 +512,14 @@ theorem guthMaynard_lemma84 {ψ₁ ψ₂ ψ₃ : ℝ → ℝ} {A : ℝ} (hA : 1 
         have h4 : ‖lagSum W x‖ ^ 2 ≤ (W.card : ℝ) ^ 2 :=
           pow_le_pow_left₀ (norm_nonneg _) (norm_lagSum_le W x) 2
         nlinarith [hn₂ x]
-    have hdiff₂ : Differentiable ℝ ψ₂ := h₂.differentiable (by simp)
-    have hdiff₃ : Differentiable ℝ ψ₃ := h₃.differentiable (by simp)
+    -- the mean value inequality turns `|ψ'| ≤ D` into the Lipschitz bounds
+    have hlip : ∀ ψ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → (∀ u, |deriv ψ u| ≤ D) →
+        ∀ a b, |ψ a - ψ b| ≤ D * |a - b| := fun ψ hψ hd a b => by
+      simpa only [Real.norm_eq_abs] using Convex.norm_image_sub_le_of_norm_deriv_le (s := univ)
+        (x := b) (y := a) (fun x _ => hψ.differentiable (by simp) x)
+        (fun x _ => by rw [Real.norm_eq_abs]; exact hd x) convex_univ trivial trivial
     have hlow := smoothedDensity_one_ge h₂.continuous hcs₂ h₃.continuous hs₃ hn₂ hn₃ h1₁ h1₂ h0₃
-      hD (abs_sub_le_of_abs_deriv_le hdiff₂ hd₂) (abs_sub_le_of_abs_deriv_le hdiff₃ hd₃') hB0 hK
-      hT hBT hW
+      hD (hlip ψ₂ h₂ hd₂) (hlip ψ₃ h₃ hd₃') hB0 hK hT hBT hW
     have hden : 0 < 16 * ((1 + 2 * D) * K * T) := by positivity
     have hW2 : B * (W.card : ℝ) ^ 2 ≤ 16 * ((1 + 2 * D) * K * T) * S₀ := by
       have h := hlow.trans (hS₀ 1)

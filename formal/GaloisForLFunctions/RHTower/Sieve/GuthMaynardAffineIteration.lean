@@ -51,7 +51,7 @@ theorem integral_mul_le_sqrt_mul_sqrt {g h : ℝ → ℝ} (hg : MemLp g 2) (hh :
 `D ≤ 32 (1 + C) μ K`, the three spectral terms collapse to powers of `μ`. -/
 theorem iteration_real_bound {K L μ M₁ M₂ D C F S Y : ℝ} (hKL : K = 2 * L) (hL : 1 ≤ L)
     (hKμ : K ≤ 6 * μ) (hM₁ : 0 ≤ M₁) (hM₁μ : M₁ ≤ μ) (hM₂ : 0 ≤ M₂) (hM₂μ : M₂ ≤ μ)
-    (hC : 0 ≤ C) (hD : D ≤ 32 * (1 + C) * μ * K) (hF : 0 ≤ F) (hS : 0 ≤ S) (hY : 0 ≤ Y) :
+    (hC : 0 ≤ C) (hD : D ≤ 32 * (1 + C) * μ * K) (hS : 0 ≤ S) (hY : 0 ≤ Y) :
     4 * (L⁻¹ ^ 2 * (36 * π * K ^ 3 * M₁ * (6 * M₂ ^ 2 * F) ^ 2 + 3 * D * (K * (2 * M₂) * S) +
       648 * π * K ^ 4 * M₁ ^ 4 * Y)) ≤
       124416 * π * μ ^ 6 * F ^ 2 + 3072 * (1 + C) * μ ^ 2 * S + 373248 * π * μ ^ 6 * Y := by
@@ -193,8 +193,9 @@ theorem affineEnergy_le_iteration (hf : Continuous f) (hfc : HasCompactSupport f
   have hspec := integral_posAffineSum_sq_le_spectral hf hfc hf0 hB hΞ hε hM₁ hM₂ hM₃
   have hD := fejerCount_le hε hΞ.le (K := 2 * (⌊M₃⌋₊ + 1)) (by rw [hKL]; linarith) hKμ
     (by linarith) hμ1
-  have hreal := iteration_real_bound hKL hL1 hKμ (by linarith) hμ1 (by linarith) hμ2 hC0 hD
-    hF0 (by positivity) (by positivity)
+  have hreal := iteration_real_bound (F := ∫ x, f x)
+    (S := √(∫ x, f x ^ 2) * √(affineEnergy f M₂ M₂ (2 * ⌊M₃⌋₊ + 1))) (Y := B ^ 2 * Ξ⁻¹ ^ 3)
+    hKL hL1 hKμ (by linarith) hμ1 (by linarith) hμ2 hC0 hD (by positivity) (by positivity)
   calc affineEnergy f M₁ M₂ M₃ ≤ 4 * ∫ u, posAffineSum f M₁ M₂ M₃ u ^ 2 :=
         affineEnergy_le_four_mul hf hfc M₁ M₂ M₃
     _ ≤ _ := (mul_le_mul_of_nonneg_left hspec (by norm_num)).trans hreal

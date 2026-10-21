@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardAffineSum
 import GaloisForLFunctions.RHTower.Sieve.PhaseGeometricBound
 import GaloisForLFunctions.HTGeometry.FourierIntegralDilation
+import GaloisForLFunctions.HTGeometry.FourierDecayFromDerivative
 
 set_option autoImplicit false
 
@@ -305,15 +306,12 @@ theorem fourier_fejerMajorant {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCo
 
 /-! ### Norm bounds -/
 
-/-- `‖f̂(η)‖ ≤ ∫ f` for `f ≥ 0`. -/
+/-- `‖f̂(η)‖ ≤ ∫ f` for `f ≥ 0` (`HTGeometry.norm_fourierReal_le_integral_norm`). -/
 theorem norm_fourier_complexify_le {f : ℝ → ℝ} (hf0 : ∀ x, 0 ≤ f x) (η : ℝ) :
     ‖𝓕 (complexify f) η‖ ≤ ∫ x, f x := by
-  rw [Real.fourier_real_eq_integral_exp_smul]
-  refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
-  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  dsimp only
-  rw [norm_smul, Complex.norm_exp_ofReal_mul_I, one_mul, complexify, Complex.norm_real,
-    Real.norm_of_nonneg (hf0 x)]
+  refine (GaloisForLFunctions.HTGeometry.norm_fourierReal_le_integral_norm _ η).trans
+    (le_of_eq (integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)))
+  simp [complexify, abs_of_nonneg (hf0 x)]
 
 /-- `‖ψ̂(θ)‖ ≤ Σ_m m ‖f̂(mθ)‖`. -/
 theorem norm_fourier_dilationSum_le {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f)

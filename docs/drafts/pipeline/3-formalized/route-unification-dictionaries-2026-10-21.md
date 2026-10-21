@@ -170,3 +170,6 @@ importing both cones fails to elaborate. The Liouville copy is renamed
   the same route" and "Open arrows" updated; both arrows closed, the residuals recorded as the
   unit-cosh-moment slice inequality on `(3/10, ½(log 2 + 1/50)]` (EWU) and the capacity inequality
   on the non-polar tests (ACT).
+- 2026-10-21 — the width-to-floor arrow is closed under locally bounded off-line zeros (two-sided
+  in the finite case; dichotomy unconditional): see
+  `width-to-ground-energy-floor-when-off-line-zeros-do-not-cluster-2026-10-21.md`.

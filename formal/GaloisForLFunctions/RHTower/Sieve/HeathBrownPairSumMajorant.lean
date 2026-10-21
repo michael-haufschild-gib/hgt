@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.LargeValuesDuality
 import GaloisForLFunctions.RHTower.Sieve.DirichletPoly
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardLagSum
+import GaloisForLFunctions.RHTower.SteinhausComplexFourthMomentBound
 
 /-!
 # Heath-Brown's pair sums: the ratio-kernel identity and the majorant principle
@@ -23,7 +24,8 @@ coefficients the pair sum is monotone in the support, scales quadratically, and 
 common shift `t₁ − t₂ ↦ t₁ − t₂ + u` after the majorant step.
 
 The phase is the one of the corpus `dirPoly`, and `hbPoly_eq_dirPoly` identifies a polynomial on
-a support inside `[1, L]` with `dirPoly L` of the zero-extended coefficient vector.
+a support inside `[1, L]` with `dirPoly L` of the zero-extended coefficient vector (reindexing by
+the corpus `sum_fin_succ_eq_sum_Icc`).
 -/
 
 set_option autoImplicit false
@@ -123,13 +125,6 @@ theorem hbPoly_eq_ite_of_subset {S S' : Finset ℕ} (hSS' : S ⊆ S') (a : ℕ �
 /-- The polynomial at the origin is the coefficient sum. -/
 theorem hbPoly_zero (S : Finset ℕ) (a : ℕ → ℂ) : hbPoly S a 0 = ∑ n ∈ S, a n := by
   simp [hbPoly, hbPhase_zero_right]
-
-/-- Reindexing `Fin L` as `{1, …, L}`. -/
-theorem sum_fin_succ_eq_sum_Icc {M : Type*} [AddCommMonoid M] (L : ℕ) (f : ℕ → M) :
-    ∑ i : Fin L, f ((i : ℕ) + 1) = ∑ n ∈ Finset.Icc 1 L, f n := by
-  rw [Fin.sum_univ_eq_sum_range (fun i => f (i + 1)) L, Finset.range_eq_Ico,
-    Finset.sum_Ico_add' f 0 L 1, zero_add]
-  rfl
 
 /-- **Bridge to the corpus `dirPoly`.**  A polynomial supported in `[1, L]` is `dirPoly L` of
 its zero-extended coefficient vector (index `i` carries `n = i + 1`). -/

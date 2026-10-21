@@ -205,13 +205,9 @@ of the source. -/
 theorem intervalIntegral_norm_sq_momentSource_le {a : ℝ} {f : ℝ → ℂ}
     (hf : IntervalSource a f) (j : ℕ) {b : ℝ} (hb : 0 ≤ b) :
     ∫ u in (-b)..b, ‖momentSource f j u‖ ^ 2 ≤ (a ^ j) ^ 2 * ∫ u, ‖f u‖ ^ 2 := by
-  have hfint : Integrable fun u => ‖f u‖ ^ 2 :=
-    (hf.continuous.norm.pow 2).integrable_of_hasCompactSupport
-      (hf.hasCompactSupport.comp_left (g := fun z : ℂ => ‖z‖ ^ 2) (by simp))
+  have hfint : Integrable fun u => ‖f u‖ ^ 2 := hf.memLp.norm.integrable_sq
   have hmint : Integrable fun u => ‖momentSource f j u‖ ^ 2 :=
-    ((intervalSource_momentSource hf j).continuous.norm.pow 2).integrable_of_hasCompactSupport
-      ((intervalSource_momentSource hf j).hasCompactSupport.comp_left
-        (g := fun z : ℂ => ‖z‖ ^ 2) (by simp))
+    (intervalSource_momentSource hf j).memLp.norm.integrable_sq
   calc ∫ u in (-b)..b, ‖momentSource f j u‖ ^ 2
       ≤ ∫ u in (-b)..b, (a ^ j) ^ 2 * ‖f u‖ ^ 2 := by
         refine intervalIntegral.integral_mono_on (by linarith) hmint.intervalIntegrable
