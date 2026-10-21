@@ -245,3 +245,32 @@ effective (finite-window) visibility of the lag family, records, non-attained to
   (P+1 nested annuli, one empty: core/loose split with gap G), `norm_prod_sub_prod_le`,
   `zeta_partial_elimination_le` (eliminate only the loose members), `norm_mul_sub_mul_le`,
   `norm_core_sum_ge` (eliminated coherent core ≥ |F*|K(θ)|D*|/2). Axioms clean; olean; wired.
+- **L23 · Near-top zeros are visible (no attainment)** — `ZetaNearTopZerosAreVisibleBelowAnExplicitHeight`.
+  `zeta_near_top_visible`: a zero `1/V`-near the top at height `γ₀` forces a Weil-negative difference
+  test of the bump modulated to `γ₀` at some lag in `[0, V]`, under explicit numeric conditions on
+  `(k, κ₀, ρ, G, H₀)`. Mechanism: empty annulus (core radius `ρ/G^{j+1}`, loose beyond `ρ/G^j`),
+  partial elimination of the loose members only, phase coherence of the core
+  (`eliminated_core_ge`), then the L17 arithmetic with `Π|y−z*|` replaced by `ρ₁^p/2`. Closes the
+  collapsed-cluster door of L17. Heuristic parameter count: hypotheses hold for
+  `V ≫_w log²γ₀ · log log γ₀ / δ₀` (to be made explicit in L24). Axioms clean; olean; wired.
+- **L24 · Explicit polylogarithmic lag for near-top zeros** — `ZetaNearTopZerosAreVisibleAtAPolylogarithmicLag`.
+  `zeta_near_top_visible_at_polylog_lag`: explicit `V_w(γ₀, δ₀) = nearTopLag` (closed form via
+  `nearTopCount/Coherence/Gap/Ratio/Order/Scale`); a zero `1/V`-near the top with `V ≥ V_w(γ₀, δ₀)` and
+  `1280 log(180Γ)(e^{w/2}B_w)² ≤ a(1+γ₀)⁴` is seen by a modulated difference test at a lag in `[0, V]`.
+  `V_w ≍_w (log γ₀)² log log γ₀ / δ₀`. Corollary `zeta_depth_gap_of_lag_positivity`: positivity on
+  `[0, V]` ⟹ a zero more than `1/V` deeper exists. Replaces the attainment premise: an unattained top
+  is approached only by zeros of depth gap ≥ 1/V_w(γ, δ) ≍ δ/((log γ)² log log γ). Criteria (1), (2), (5).
+  Axioms clean; olean; wired.
+- **L25 · The one-parameter family P_v sees near-top zeros** — `OneParameterLagFamilySeesNearTopZeros`.
+  For the problem's own family (c = 0): `evenCoeff_modScaledBump_zero_eq_two_mul` (D = 2m h_w(−iz)²,
+  no reflected term), `re_one_param_mul_conj_nonneg` (coherence without height condition),
+  `le_norm_paperFT_of_loud_zero`, and `one_param_near_top_visible`: a zero 1/V-near the top with
+  η = |h_w(γ₀ − iδ₀)| > 0 makes some P_v < 0, v ∈ [0, V], under explicit conditions. Closes the
+  collapsed-cluster door of L19. Axioms clean; olean; wired. The L24 parameters were refactored into
+  η-free generic `explicitCount/Coherence/Gap/Ratio/Order` + `collapse_form_lt` for reuse.
+- **L26 · Explicit lag for P_v itself** — `OneParameterLagFamilySeesNearTopZerosAtAnExplicitLag`.
+  `one_param_near_top_visible_at_explicit_lag`: for the problem's family P_v (unmodulated, c = 0), a
+  zero 1/V-near the top with 0 < η ≤ |h_w(γ₀ − iδ₀)| and V ≥ V₀(w, η, δ₀) = `oneParamLag` gives
+  P_v < 0 for some v ∈ [0, V]; no height condition; V₀ ≍ (log Γ₀)² log log Γ₀/δ₀, Γ₀ ≍ η^{−2/3}.
+  `one_param_depth_gap_of_lag_positivity`: P_v ≥ 0 on [0, V] ⟹ every zero with V₀ ≤ V lies ≥ 1/V
+  below the top. Criteria (1), (2), (5) for the single family P_v. Axioms clean; olean; wired.

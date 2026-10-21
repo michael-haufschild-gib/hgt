@@ -390,7 +390,10 @@ theorem archLevyAntideriv_ge_second {y : ℝ} (hy : 0 < y) (hy1 : y ≤ 1) :
   obtain ⟨-, hs2, hc1, -⟩ := sinh_cosh_taylor_bounds hz.le (by linarith)
   -- `log(cosh z / sinh z) ≥ −log z + z²/3 − 7z⁴/36`
   set w := z ^ 2 / 3 - z ^ 4 / 12 with hw
-  have hw0 : 0 ≤ w := by rw [hw]; nlinarith [pow_nonneg hz.le 4]
+  have hw0 : 0 ≤ w := by
+    have hz2 : z ^ 2 ≤ 1 / 16 := by nlinarith
+    have := mul_le_mul_of_nonneg_left hz2 (sq_nonneg z)
+    rw [hw]; nlinarith [sq_nonneg z]
   have hratio : 1 + w ≤ z * Real.cosh z / Real.sinh z := by
     rw [le_div_iff₀ hs, hw]
     have h6 : 0 ≤ 1 - z ^ 2 / 6 := by nlinarith
@@ -421,6 +424,8 @@ theorem archLevyAntideriv_ge_second {y : ℝ} (hy : 0 < y) (hy1 : y ≤ 1) :
   have hpoly : 0 ≤ z ^ 3 / 3 - 7 * z ^ 4 / 72 - z ^ 5 / 5 := by
     nlinarith [pow_nonneg hz.le 3, mul_nonneg (pow_nonneg hz.le 3) (by linarith : (0 : ℝ) ≤ 1 / 4 - z),
       mul_nonneg (pow_nonneg hz.le 4) (by linarith : (0 : ℝ) ≤ 1 / 4 - z)]
+  have hy96 : y ^ 2 / 96 = z ^ 2 / 6 := by rw [hzdef]; ring
+  rw [hy96]
   linarith
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity

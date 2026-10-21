@@ -7421,6 +7421,7 @@ import GaloisForLFunctions.HTGeometry.LeftNormedBracketLayer
 import GaloisForLFunctions.HTGeometry.LeibnizJetMatrix
 import GaloisForLFunctions.HTGeometry.LengthReflectionLaw
 import GaloisForLFunctions.HTGeometry.LerchHurwitzDerivative
+import GaloisForLFunctions.HTGeometry.ComplexShiftLerch
 import GaloisForLFunctions.HTGeometry.LeviCivita.Connection
 import GaloisForLFunctions.HTGeometry.LeviCivita.Fundamental
 import GaloisForLFunctions.HTGeometry.LeviCivita.Koszul

@@ -445,3 +445,66 @@ multiples), so with signed data no pair exists trivially; the parity is the real
 - Strongest data identity so far: rows indistinguishable by all additive observables of all degrees
   (not just two-point/cubic as in C3/C24), yet opposite trans-horizon growth. Steps: N ↦ N+1 (stabilisation),
   k ↦ 2k (Fermi factor at the pole).
+
+### C28 — Finite perturbations of the smooth power are decided at the pole (formalized)
+- Module: `TransHorizonIncidenceMechanics/FinitePerturbationsOfTheSmoothPowerAreDecidedAtThePole.lean`,
+  capstone `receiverBounded_dirichletConv_unit_iff`.
+- 0 < ε ≤ 1/2, k on [1,J]: ReceiverBounded (k ⋆ d^{−ε}) ⟺ poleValue k J ε = Σ_j k(j) j^{−(1−ε)} = 0.
+- ⟸: k ⋆ (c d^{−ε}) = (k̃ ⋆ c) d^{−ε}, k̃(j) = k(j)j^ε (`dirichletConv_damped_eq`); partial sums of k̃ ⋆ 1 are
+  the floor sums Σ_j k̃(j)⌊n/j⌋ = A_{k̃}(n) + n·K(1−ε), bounded by Σ|k̃| when K(1−ε)=0; C2 engine.
+  ⟹: C25 with the drift 2^{−1−ε}n^{1−ε} of d^{−ε}.
+- The paid finite perturbations form a HYPERPLANE: exact classification, observable = one number.
+
+### C29 — Even-flip pairs over the odd squarefree weight are classified at the pole (formalized)
+- Module: `TransHorizonIncidenceMechanics/EvenFlipPairsOverTheOddSquarefreeWeightAreClassifiedAtThePole.lean`,
+  capstones `receiverBounded_dirichletConv_oddSqf_iff`, `twoPoint_evenFlip_classification`.
+- Pole law over o: ReceiverBounded (k ⋆ o) ⟺ K(1−ε) = 0 (⟸ via o = g ⋆ 1_odd d^{−ε}, convolutions commute
+  through `toAF`, partial sums of k̃ ⋆ 1_odd = Σ_j k̃(j)⌈⌊n/j⌋/2⌉ bounded).
+- Two-point classification: even flip acts by (α,β) ↦ (α+β, −β); identical amplitudes; c paid ⟺ α + 2^{ε−1}β = 0,
+  c^♭ paid ⟺ α + (1−2^{ε−1})β = 0; both paid ⟹ α = β = 0. Every nonzero two-point even-flip pair has AT MOST one
+  paid member; exactly two lines of pairs have one. (C26 is the line α = −2^{ε−1}β.)
+- Refactor: C26 now exposes `weightRamanujanCoeff_evenFlip` (any four-free damped weight: W_{c^♭} = σ₂W_c) and
+  `criticalWiener_dampedOddSqrtMoebius`.
+
+### C30 — Critical Wiener kernels repair a positive drift only at its pole (formalized)
+- Module: `TransHorizonIncidenceMechanics/CriticalWienerKernelsRepairAPositiveDriftOnlyAtItsPole.lean`,
+  capstone `not_receiverBounded_dirichletConv_of_drift_critical`.
+- Extends C25 from finite kernels to the whole critical Wiener algebra: k with Σ|k(j)|j^{−1/2} < ∞ and
+  Σ' k(j) j^{−(1−ε)} ≠ 0 ⟹ ¬ReceiverBounded (k ⋆ q) for every positive drift weight q, 0 < ε ≤ 1/2.
+- New pieces: Fubini for Σ_nΣ_j k(j)A_q(⌊n/j⌋)Δ_n (bound |A_q(⌊n/j⌋)| ≤ C n^{1−ε} j^{−(1−ε)});
+  `summable_mul_mellinCell_of_energy` (bounded pronic energy ⟹ absolute Mellin pairing for σ>1/2);
+  |Φ_k| ≤ (√2+1)W·√B(σ) from C11's pronic norm bound; K(σ) → K(1−ε) by dominated convergence (bound |k|j^{−1/2}).
+- Consequence: the receiver class of k⋆(positive drift) inside the critical Wiener algebra is contained in the
+  hyperplane K(1−ε) = 0. Prepares the multiplicative classification (local factors at the pole).
+
+### C31 — Multiplicative weights pretending to one are paid only by a vanishing local factor (formalized)
+- Module: `TransHorizonIncidenceMechanics/MultiplicativeWeightsPretendingToOneArePaidOnlyByAVanishingLocalFactor.lean`,
+  capstones `not_receiverBounded_of_primes_one_of_poleLocalFactor_ne_zero`, `not_receiverBounded_of_primes_one_of_abs_le_one`.
+- f multiplicative, f(p) = 1 ∀p, |f| ≤ B, all L_p := Σ_e f(p^e)p^{−e} ≠ 0 ⟹ ¬ReceiverBounded (f d^{−ε}), 0<ε≤1/2.
+  If |f| ≤ 1 then L_p ≥ 1 automatically: EVERY sign pattern on higher prime powers leaves a 1-pretentious weight unpaid
+  (removes the positivity hypothesis of C17's third case).
+- Mechanism: f d^{−ε} = (g d^{−ε}) ⋆ d^{−ε}, g = f⋆μ critical Wiener (C18); pole value Σ g(n)/n = Π_p λ_p
+  (Mathlib `EulerProduct.eulerProduct_tprod`), λ_p = (1−1/p)L_p, Σ_p|λ_p−1| ≤ Σ 2(2B+1)p^{−2};
+  `tprod_one_add_ne_zero_of_summable`; then C30.
+- Insight: the receiver reads higher prime powers ONLY through L_p at the pole (correcting the slogan of C17 that
+  higher prime powers are invisible — true for μ-pretentious, false for 1-pretentious weights with large |f(p^k)|).
+
+### C32 — Finite perturbations of the coprime weights are decided at the pole (formalized)
+- Module: `TransHorizonIncidenceMechanics/FinitePerturbationsOfCoprimeWeightsAreDecidedAtThePole.lean`,
+  capstone `receiverBounded_dirichletConv_coprime_iff`.
+- For every modulus q ≥ 1, 0<ε≤1/2, k on [1,J]: ReceiverBounded (k ⋆ 1_{(·,q)=1} d^{−ε}) ⟺ K(1−ε) = 0.
+- Counting law `abs_coprimeCount_sub_le`: |N_q(y) − yφ(q)/q| ≤ q (windows of length q hold φ(q) coprimes,
+  Mathlib `Nat.filter_coprime_Ico_eq_totient`); floor sums Σ_j k̃(j)N_q(⌊n/j⌋) within qΣ|k̃| of (φ/q)Σk̃(j)⌊n/j⌋.
+- The paid hyperplane is independent of q: Euler factors at p | q never move the pole. Base needed for the converse
+  of C31 (vanishing local factor at p₀ ⟹ paid) with q = p₀.
+
+### C33 — A vanishing finite local factor pays a weight pretending to one (formalized)
+- Module: `TransHorizonIncidenceMechanics/AVanishingFiniteLocalFactorPaysAWeightPretendingToOne.lean`,
+  capstones `receiverBounded_of_poleLocalFactor_eq_zero`, `receiverBounded_iff_exists_poleLocalFactor_eq_zero`.
+- f multiplicative, f(p)=1 ∀p, |f| ≤ B, local factor at p₀ finite (f(p₀^k)=0, k>K) with L_{p₀} = 0 ⟹ ReceiverBounded
+  (f d^{−ε}) at EVERY ε > 0. With C31: if all local factors are finite, paid ⟺ ∃p, L_p = 0 (0<ε≤1/2).
+- Mechanism: f = f₀ ⋆ (1_{(·,p₀)=1} f) (`localPart_mul_pmul_coprime`, multiplicativity of the p₀-part),
+  1_{(·,p₀)=1} f = h ⋆ 1_{(·,p₀)=1} with h = 1_{(·,p₀)=1}(f⋆μ) zero at every prime (critical Wiener, C18);
+  f₀ d^{−ε} is a finite kernel over u_{p₀} with pole value L_{p₀} = 0 → C32 sufficiency; then C11.
+- Example class: cube-free f with f(p)=1 and f(4) = −6 (L_2 = 1 + 1/2 − 6/4 = 0) is paid; any other value of f(4)
+  (other local factors nonzero) leaves it unpaid for ε ≤ 1/2. Higher prime powers matter exactly through L_p.

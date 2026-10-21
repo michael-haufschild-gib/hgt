@@ -3,7 +3,26 @@ import GaloisForLFunctions.SquareRootThreshold.ZetaCoherentCoresAddUp
 /-!
 # Near-top zeros of `ζ` are visible below an explicit height
 
-(docstring to be completed)
+`ZetaNearTopZerosHideOnlyInCollapsedClusters` leaves one way to hide a near-top zero `½ + z₀` from the
+difference tests of the bump modulated to its height: a cluster of `p ≤ P ≍ log γ₀` companions whose
+product of distances to the Legendre record `z*` is `e^{−cVδ₀}`-small. This file closes that door.
+
+* **Scale separation.** Among `P + 1` nested annuli `ρ/G^{j+1} < |z − z*| ≤ ρ/G^j` one is empty. The
+  companions split into a *core* of radius `ρ₀ = ρ/G^{j+1}` and *loose* members beyond `ρ₁ = Gρ₀`.
+* **Partial elimination.** Only the loose members are eliminated, through the Fejér orders
+  `k, …, k + |S_L|`. Each contributes the factor `x_y² − θ²` (`θ = κ/V`, `x_z = z − s`), of size at least
+  `ρ₁ε` by the mirror avoidance of the depth `κ`.
+* **The core is coherent.** Members of the core lie within `ρ` of the record, so their coefficients
+  share its phase (`re_twin_mul_conj_nonneg`), the eliminated factors move by the relative amount
+  `τ = coreFactorPerturbation` across the gap `G`, and the kernels by `2ρV`. The eliminated core sum
+  is at least `|D*|(ρ₁ε)^p K(θ)/2` (`eliminated_core_ge`).
+* **Conclusion** (`zeta_near_top_visible`). Against the noise level of the elimination this forces
+  `(ρκ₀/(2(P + 1)G^P))^p V^{2k+p+1}(δ₀/8)^{2k+1} ≤ 2B(p)`, so under the reverse inequality some
+  difference test is Weil negative at a lag in `[0, V]`. No attainment of the top is used: the record
+  only needs to be `1/V`-near it.
+
+With `ρ ≍ 1/(V log²Γ)`, `G ≍ log⁴Γ` and `k ≍ P² log G` the hypotheses hold once
+`V ≫_w (log γ₀)² log log γ₀/δ₀`.
 -/
 
 open MeasureTheory Complex Set Filter Topology

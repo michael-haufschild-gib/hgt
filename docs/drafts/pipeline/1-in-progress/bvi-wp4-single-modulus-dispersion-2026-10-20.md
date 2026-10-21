@@ -202,6 +202,19 @@ Not significant: reciprocity error, window constants, horizons, large-sieve fact
   `𝒢^{ec}(p,q) − [D_p log q − pβ_p] ≥ (π²(p²−1)/72 − (p/2)(h_p+1/4))/q − ¾p³/q²` (vs upper `π²(p²−1)/(72q) + ¾p³/q²`).
   The extremal second-order coupling is realised by the Bézout seeds `q ≡ 1 (mod p)`.
 
+- **C25 DONE (criterion 4: Type-II barrier is intrinsic to `B`, not to its rank-two part).**
+  `BVI/TypeIIBarrierSurvivesTheRankTwoSideConditions`. Anti-coherent windows (`|n₀ mod d/d − ½| ≤ 1/512`,
+  `512H ≤ d`) give `𝔅 ≤ −d²/100` (C21). Three windows `W₂ < W₁ < W₃` (coherent middle, anti-coherent outside),
+  nested pigeonhole `|S| ≤ 2²⁷|S'|`; `c' = c₁ − a₂c₂ − a₃c₃` with `a₂ = H₁(ℓ₃−ℓ₁)/(H₂(ℓ₃−ℓ₂))`,
+  `a₃ = H₁(ℓ₁−ℓ₂)/(H₃(ℓ₃−ℓ₂)) ≥ 0` (`ℓ = R/H` = average of log n) has `R(c') = H(c') = 0` and
+  `B(c,c') ≥ (1/200)(Σc(d)d)(Σ|c'|/n²)` for `n₂ ≥ 150D`. Killing both readouts does not move the `P^{5/3}` barrier.
+
+- **C26 DONE (criterion 3: exact Type-II loss at one modulus = ℓ¹ residue discrepancy).**
+  `BVI/ResidueDiscrepancyIsTheExactCrossScaleLoss`. `Σ_{r<d}Φ_d(jr) = d(gcd(j,d)²−1)/12` (Fourier: `η^j=1` on `T_d` ⟺ `T_{gcd}`);
+  `Σ_{r<p}𝔅(p,r) = π²(p²−1)/(72p)` (kernel mean is `p²` below its max). With `Δ_p(c') = Σ_r|ρ(p,r) − S'/p|`:
+  `|B+mR'+βH' − (π²/72)S'Σ_p c(p)(p²−1)/p³| ≤ (π²/72)Σ_p|c(p)|((p²−1)/p)Δ_p(c') + ¾Σ|c|p²Σ|c'|/n³`.
+  Type-II θ>1 at one modulus ⟺ `Σ_p|a_p| p Δ_p(c') = o(Σ_p|a_p| p S')`; rate π²/72 attained (C10, C24).
+
 ## Queue
 
 - C1 first-jump window: Brownian-bridge law and codimension no-go.

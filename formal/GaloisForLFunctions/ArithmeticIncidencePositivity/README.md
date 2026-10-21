@@ -453,6 +453,24 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
     across every prime shift with explicit constant. The atoms never win locally; positivity can only
     fail through the interaction of several strips or through the ground-state gradient at the edge.
 
+31. **The strip shared: window `353/1000`.** Past `7/20` the binding point is the inner edge
+    `p = log 2 − r` of the strip: the `S × S` pairs that pay the atom are missing from the
+    ground-state potential at `p`, a loss `≈ |h'(p)| |S|/2` per unit of gauge. The sharp micro-fold
+    needs only the fraction `θ = 2Λ(2)/√2/λ ≈ 0.53` of the strip surplus, and the convex combination of
+    the full ground-state transform with the transform keeping `S × S` exact
+    (`fourKilling_add_potentialMix_le_archJump_sub_prime`) leaves the potential
+    `(1 − θ)U_h + θU_h^{off}`. Two second-order expansions pay the rest
+    (`SecondOrderSurplusPotential`): `ω₂ ≤ ω ≤ ω₂ + u³/250` on `(0, 3/4]`,
+    `ω₂(u) = 1/(2u) + 1/4 − u/48 − u²/32`, so `k = k₀ + min(x, y)/24 + xy/8 + O((x + y)³)` and the
+    curvature cost drops from `L·O(r³)` to `L(4/125)r⁵` (`mul_surplusPotential_quarticGauge_ge_second`,
+    with the exact polynomial `firstOrderSurplus`); and `Ω(y) ≥ −½ log(y/4) + π/4 − y/4 + y²/96`
+    (`archLevyAntideriv_ge_second`) adds `(2x² + R²)/48`. With the plateau collar `R − r = 1/20000`
+    every odd `F` supported in `[−353/1000, 353/1000]` has `Ẑ(F) ≥ (1/1000)∫F²`
+    (`fullZeroForm_ge_of_odd_support_le_threeHundredFiftyThreeThousandths`). The inner-edge loss is
+    structural: for a gauge with the true edge behaviour `(R − x)^{1/2}` it tends to `¼` per unit of
+    gauge whatever `|S|`, so the micro-fold plus ground-state transform cannot go far past this window
+    with near-optimal gauges.
+
 ---
 
 ## 4. Traps
@@ -513,7 +531,7 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 ### Research topics toward the shared target
 
 1. **Beyond the first prime window.** The variation inequality for all even profiles is proved past
-   `log 2/2` (`7/20`, mechanisms 27–29); the unit is the support reached. Up to `2/5` the prime atom
+   `log 2/2` (`353/1000`, mechanisms 27–31); the unit is the support reached. Up to `2/5` the prime atom
    is dominated by the strip surplus (mechanism 28), so the support is limited only by the
    archimedean potential `U_h^{off}` (mechanism 29). The archimedean odd sector alone is expected to stay positive
    up to `≈ 0.375` (second eigenvalue of the logarithmic Laplacian on an interval). Past `log 2/2` the fold of mechanism 23

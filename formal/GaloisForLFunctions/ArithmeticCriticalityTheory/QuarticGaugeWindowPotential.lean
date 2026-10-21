@@ -310,7 +310,7 @@ theorem integral_archLevyDensity_mul_quartic {s : Set ℝ}
 /-- **The potential of a profile gauge** `M = q P` at a plateau point `|x| ≤ R − δ`: the profile
 times the two one-sided killings plus the two one-sided regional integrals. -/
 theorem neg_poleFreeWeilOperator_profileGauge_ge {q : ℝ → ℝ} {R δ x : ℝ} (hqd : ContDiff ℝ 2 q)
-    (hδ : 0 < δ) (hR : R ≤ 3 / 10) (hx : |x| ≤ R - δ) (hq0 : ∀ y, |y| ≤ R → 0 ≤ q y)
+    (hδ : 0 < δ) (hR : R ≤ 1 / 3) (hx : |x| ≤ R - δ) (hq0 : ∀ y, |y| ≤ R → 0 ≤ q y)
     (hia : IntegrableOn (fun u => archLevyDensity u * (q x - q (x + u))) (Ioc 0 (R - x)))
     (hib : IntegrableOn (fun u => archLevyDensity u * (q x - q (x - u))) (Ioc 0 (R + x))) :
     q x * ((∫ u in Ioi (0 : ℝ), (if u ≤ R - x then archDiagonalDensity u - archLevyDensity u
@@ -491,7 +491,7 @@ bracket plus the regional moments with bounds of the right sign; the second-mome
 `c − 6dx²` may change sign, whence the correction `max(c − 6dx², 0)(E₂(a) + E₂(b))`. -/
 theorem neg_poleFreeWeilOperator_quarticWindowGauge_ge_max {c d R δ x : ℝ} (hd : 0 ≤ d)
     (hdc2 : 2 * d * R ^ 2 ≤ c) (hqR : 0 ≤ 1 - c * R ^ 2 + d * R ^ 4) (hδ : 0 < δ)
-    (hR : R ≤ 3 / 10) (hx0 : 0 ≤ x) (hx : x ≤ R - δ) :
+    (hR : R ≤ 1 / 3) (hx0 : 0 ≤ x) (hx : x ≤ R - δ) :
     quarticProfile c d x *
         ((-(1 / 2) * Real.log (1 - Real.exp (-2 * (R - x))) - 3 / 4 * (R - x) +
             3 * (R - x) ^ 2 / 32 - (R - x) ^ 4 / 192) +
@@ -609,7 +609,7 @@ theorem neg_poleFreeWeilOperator_quarticWindowGauge_ge_max {c d R δ x : ℝ} (h
 second-moment coefficient is nonnegative (`6 d R² ≤ c`). -/
 theorem neg_poleFreeWeilOperator_quarticWindowGauge_ge {c d R δ x : ℝ} (hd : 0 ≤ d)
     (hdc : 6 * d * R ^ 2 ≤ c) (hqR : 0 ≤ 1 - c * R ^ 2 + d * R ^ 4) (hδ : 0 < δ)
-    (hR : R ≤ 3 / 10) (hx0 : 0 ≤ x) (hx : x ≤ R - δ) :
+    (hR : R ≤ 1 / 3) (hx0 : 0 ≤ x) (hx : x ≤ R - δ) :
     quarticProfile c d x *
         ((-(1 / 2) * Real.log (1 - Real.exp (-2 * (R - x))) - 3 / 4 * (R - x) +
             3 * (R - x) ^ 2 / 32 - (R - x) ^ 4 / 192) +

@@ -307,3 +307,21 @@ and windows only) are unaffected.
 - README: mechanism 28's "fails for n = 3" corrected; mechanism 30 added.
 - Consequence for the support push: the micro-fold needs only θ = 2Λ₂/λ ≈ 0.98/1.9 ≈ 0.52 of the S×S surplus; the rest can stay
   in the ground-state transform, halving the inner-edge loss (next: G9 window 0.353–0.355 with θ-split).
+
+### C19 — Second-order surplus kernel and antiderivative (`SecondOrderSurplusPotential.lean`)
+- Infrastructure for G9 (and reusable for the all-profile sector): `mul_archLevyDensity_le_second`
+  (uω ≤ ½ + u/4 − u²/48 − u³/32 + u⁴/250 on (0, 3/4]), `archLevyDensity_secondOrder_bounds`, `abs_surplusKernel_sub_secondOrder_le`
+  (k = k₀ + (x+y−|x−y|)/48 + xy/8 ± (x+y)³/250), `firstOrderSurplus` + `integral_firstOrder_quarticGauge` (exact polynomial),
+  `mul_surplusPotential_quarticGauge_ge_second` (remainder L(4/125)r⁵ instead of L·rem), `tanh_le_quintic`,
+  `archLevyAntideriv_ge_second` (Ω ≥ −½log(y/4) + π/4 − y/4 + y²/96 on (0,1]). Imports ACT `CurvedGaugeArchimedeanBounds` (Taylor six).
+- Gain ≈ 0.0009 (surplus) + 0.0004 (Ω) h-units in the middle of the window: doubles the margin.
+
+### C20 — Odd window 353/1000: the strip shared (`SharpFoldOddWindowPastSevenTwentieths.lean`)
+- Goal-loop contribution G9 (criterion 1: support 7/20 → 353/1000).
+- θ-split: convex combination of `surplusEnergy_ge_potential` and `surplusEnergy_ge_potentialOff_add_strip`
+  (`fourKilling_add_potentialMix_le_archJump_sub_prime`), θ = 53/100 (sharp micro-fold λ ≥ 1.88).
+- R − r = 1/20000 (collar is free), c₀ = 41/2500, pole ≤ 757/50000, L = 13/20, a-anchors re-centred for R = 7061/20000.
+- Certificate: origin + 2 collars + 14 tangent + 1 monotone edge [0.338, 0.3401] + 7 strip pieces (≥ 0.0023); all passed after one
+  constant fix (strip G Llam 3270410 → 3270409: worst-case log bounds must be recomputed with exact y/s).
+- `fullZeroForm_ge_of_odd_support_le_threeHundredFiftyThreeThousandths`: Ẑ ≥ (1/1000)∫F². Axioms standard; olean; wired; README 31.
+- Wall: at 0.355 the inner edge needs N(p) ≥ 0.0030 vs 0.0017 available; structural (see ledger wall analysis).
