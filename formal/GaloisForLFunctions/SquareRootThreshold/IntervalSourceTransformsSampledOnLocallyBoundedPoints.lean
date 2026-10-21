@@ -60,7 +60,8 @@ theorem norm_testTransform_momentSource_le {a : ℝ} {f : ℝ → ℂ} (hf : Int
   refine integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _) ?_
     (Eventually.of_forall fun u => ?_)
   · exact (hf.continuous.norm.integrable_of_hasCompactSupport hf.hasCompactSupport.norm).const_mul _
-  · rw [norm_mul, norm_exp_I_mul]
+  · show ‖momentSource f j u * cexp (I * (c : ℂ) * (u : ℂ))‖ ≤ a ^ j * ‖f u‖
+    rw [norm_mul, norm_exp_I_mul]
     simp only [Complex.ofReal_im, mul_zero, neg_zero, Real.exp_zero, mul_one]
     exact norm_momentSource_le hf j u
 
@@ -189,9 +190,14 @@ theorem hasSum_norm_sq_testTransform_grid {a : ℝ} (ha : 0 < a) {ψ : ℝ → �
     unfold windowLength at hu
     linarith [Real.pi_pos]
   have h := hasSum_norm_sq_paperFT_grid hL hψ.continuous hsupp 0 0
-  have e : ∀ k : ℤ, ((0 : ℝ) - (0 + k * (2 * π / windowLength a)) : ℝ) = -(k * gridStep a) := by
-    intro k; unfold gridStep; ring
-  simp only [e] at h
+  have hfun : (fun k : ℤ => ‖testTransform ψ ((-(k * gridStep a) : ℝ) : ℂ)‖ ^ 2) =
+      fun k : ℤ => ‖Zeta23.paperFT ψ ((0 - (0 + k * (2 * π / windowLength a)) : ℝ) : ℂ)‖ ^ 2 := by
+    funext k
+    have e : ((0 : ℝ) - (0 + k * (2 * π / windowLength a)) : ℝ) = -(k * gridStep a) := by
+      unfold gridStep; ring
+    rw [e]
+    simp only [testTransform, Zeta23.paperFT]
+  rw [hfun]
   exact h
 
 /-- The energy of a moment source on any symmetric window is at most `a^{2j}` times the energy
@@ -240,21 +246,18 @@ theorem gridPoint_le {a : ℝ} (ha : 0 < a) (x : ℝ) :
     -((gridIndex a x : ℝ) * gridStep a) ≤ x := by
   unfold gridIndex
   have hh := gridStep_pos ha
-  have := Int.floor_le (x / gridStep a)
+  have := (le_div_iff₀ hh).mp (Int.floor_le (x / gridStep a))
   push_cast
-  rw [neg_neg]
-  rwa [← le_div_iff₀ hh]
+  linarith
 
 theorem lt_gridPoint_add {a : ℝ} (ha : 0 < a) (x : ℝ) :
     x < -((gridIndex a x : ℝ) * gridStep a) + gridStep a := by
   unfold gridIndex
   have hh := gridStep_pos ha
-  have h1 := Int.lt_floor_add_one (x / gridStep a)
-  push_cast
-  rw [neg_neg]
-  have h2 : x < ((⌊x / gridStep a⌋ : ℝ) + 1) * gridStep a := by
-    rwa [← div_lt_iff₀ hh]
+  have h2 : x < ((⌊x / gridStep a⌋ : ℝ) + 1) * gridStep a :=
+    (div_lt_iff₀ hh).mp (Int.lt_floor_add_one (x / gridStep a))
   rw [add_mul, one_mul] at h2
+  push_cast
   linarith
 
 theorem abs_sub_gridPoint_le {a : ℝ} (ha : 0 < a) (x : ℝ) :
@@ -308,7 +311,25 @@ theorem sq_tsum_le_tsum_mul_tsum_div {p c : ℕ → ℝ} (hp : ∀ j, 0 < p j) (
     _ = _ := by
         rw [mul_pow, ← Real.sqrt_eq_rpow, ← Real.sqrt_eq_rpow, Real.sq_sqrt hA, Real.sq_sqrt hB]
 
-/-! ### 5. The sampling inequality -/
+/-! ### 5. Two weight identities -/
+
+theorem momentWeight_mul_sq (ρ₀ a X : ℝ) (j : ℕ) (ha : a ≠ 0) :
+    ρ₀ ^ j / (j.factorial * a ^ j) * ((a ^ j) ^ 2 * X) = (ρ₀ * a) ^ j / j.factorial * X := by
+  have ha0 : a ^ j ≠ 0 := pow_ne_zero _ ha
+  have hf : (j.factorial : ℝ) ≠ 0 := by positivity
+  rw [mul_pow ρ₀ a]
+  field_simp
+
+theorem sq_div_momentWeight (ρ₀ a B : ℝ) (j : ℕ) (ha : a ≠ 0) (hρ : ρ₀ ≠ 0) :
+    (ρ₀ ^ j / j.factorial * B) ^ 2 / ((ρ₀ * a) ^ j / j.factorial) =
+      ρ₀ ^ j / (j.factorial * a ^ j) * B ^ 2 := by
+  have ha0 : a ^ j ≠ 0 := pow_ne_zero _ ha
+  have hρ0 : ρ₀ ^ j ≠ 0 := pow_ne_zero _ hρ
+  have hf : (j.factorial : ℝ) ≠ 0 := by positivity
+  rw [mul_pow ρ₀ a]
+  field_simp
+
+/-! ### 6. The sampling inequality -/
 
 /-- **Sampling a transform on a locally bounded point set.** If at most `M` of the heights `x_q`,
 `q ∈ s`, fall in any unit window and all depths satisfy `|y_q| ≤ σ`, then
@@ -343,8 +364,8 @@ theorem sum_norm_sq_testTransform_le_of_locallyBounded {a : ℝ} (ha : 0 < a) {f
           exact hBle j q
       _ = (ρ₀ * a) ^ j / j.factorial * I₁ ^ 2 := by
           simp only [hD]
-          field_simp
-          ring
+          rw [mul_pow (a ^ j) I₁]
+          exact momentWeight_mul_sq ρ₀ a (I₁ ^ 2) j ha.ne'
   have hsummD : ∀ q, Summable fun j => D j * B j q ^ 2 := fun q =>
     Summable.of_nonneg_of_le (fun j => by positivity) (fun j => hDB j q)
       ((Real.summable_pow_div_factorial (ρ₀ * a)).mul_right _)
@@ -372,8 +393,7 @@ theorem sum_norm_sq_testTransform_le_of_locallyBounded {a : ℝ} (ha : 0 < a) {f
         D j * B j q ^ 2 := by
       intro j
       simp only [hD]
-      field_simp
-      ring
+      exact sq_div_momentWeight ρ₀ a (B j q) j ha.ne' hρ₀0.ne'
     have hcs : Summable fun j : ℕ =>
         (ρ₀ ^ j / j.factorial * B j q) ^ 2 / ((ρ₀ * a) ^ j / j.factorial) := by
       simp only [hconv]
@@ -405,6 +425,12 @@ theorem sum_norm_sq_testTransform_le_of_locallyBounded {a : ℝ} (ha : 0 < a) {f
       _ ≤ M • (L * ((a ^ j) ^ 2 * N)) :=
           nsmul_le_nsmul_right (sum_norm_sq_testTransform_grid_le ha hf j _) M
       _ = M * (L * ((a ^ j) ^ 2 * N)) := nsmul_eq_mul _ _
+  have hterm : ∀ j : ℕ, D j * (M * (L * ((a ^ j) ^ 2 * N))) =
+      (ρ₀ * a) ^ j / j.factorial * (M * (L * N)) := by
+    intro j
+    simp only [hD]
+    rw [show (M : ℝ) * (L * ((a ^ j) ^ 2 * N)) = (a ^ j) ^ 2 * (M * (L * N)) by ring]
+    exact momentWeight_mul_sq ρ₀ a (M * (L * N)) j ha.ne'
   -- assemble
   calc ∑ q ∈ s, ‖testTransform f ((x q : ℂ) + (y q : ℂ) * I)‖ ^ 2
       ≤ ∑ q ∈ s, Real.exp (ρ₀ * a) * ∑' j, D j * B j q ^ 2 :=
@@ -423,24 +449,12 @@ theorem sum_norm_sq_testTransform_le_of_locallyBounded {a : ℝ} (ha : 0 < a) {f
           · exact mul_nonneg (hD0 j) (Finset.sum_nonneg fun q _ => sq_nonneg _)
           · calc D j * ∑ q ∈ s, B j q ^ 2 ≤ D j * (M * (L * ((a ^ j) ^ 2 * N))) :=
                   mul_le_mul_of_nonneg_left (hcell j) (hD0 j)
-              _ = (ρ₀ * a) ^ j / j.factorial * (M * (L * N)) := by
-                  simp only [hD]
-                  field_simp
-                  ring
+              _ = (ρ₀ * a) ^ j / j.factorial * (M * (L * N)) := hterm j
         · refine Summable.of_nonneg_of_le (fun j => by positivity) (fun j => ?_)
             ((Real.summable_pow_div_factorial (ρ₀ * a)).mul_right (M * (L * N)))
-          apply le_of_eq
-          simp only [hD]
-          field_simp
-          ring
+          exact le_of_eq (hterm j)
     _ = Real.exp (ρ₀ * a) * (Real.exp (ρ₀ * a) * (M * (L * N))) := by
         congr 1
-        have hterm : ∀ j : ℕ, D j * (M * (L * ((a ^ j) ^ 2 * N))) =
-            (ρ₀ * a) ^ j / j.factorial * (M * (L * N)) := by
-          intro j
-          simp only [hD]
-          field_simp
-          ring
         rw [tsum_congr hterm, tsum_mul_right, hE]
     _ = Real.exp (2 * (gridStep a + σ) * a) * (M * (L * N)) := by
         rw [← mul_assoc, ← Real.exp_add, ← hρ₀, show ρ₀ * a + ρ₀ * a = 2 * ρ₀ * a by ring]

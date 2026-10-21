@@ -53,12 +53,12 @@ theorem cglGMWindowWeight_div_pi_le (w : CGLRealSmoothBump) {t : ℝ} (ht : 0 < 
     _ = 56 * cglGMMellinBudget w 0 / Real.pi * (Real.sqrt |t|)⁻¹ := by
         field_simp; ring
 
-/-- The Mellin tail: `c₂ ≤ 8 · 2^n (B_n + B_{n+2}) T^{−100}` for `U = T^ε/2`, `εn ≥ 104`,
-`M ≤ 2T²`. -/
+/-- The Mellin tail: `c₂ ≤ 128 · 2^n (B_n + B_{n+2}) T^{−100}` for `U = T^ε/2`, `εn ≥ 104`,
+`M ≤ 8T²`. -/
 theorem cglGMTailWeight_le_rpow (w : CGLRealSmoothBump) {T ε : ℝ} (hT : 1 ≤ T) {n : ℕ}
-    (hn : 104 ≤ ε * n) {M : ℕ} (hM1 : 1 ≤ M) (hM : (M : ℝ) ≤ 2 * T ^ 2) :
+    (hn : 104 ≤ ε * n) {M : ℕ} (hM1 : 1 ≤ M) (hM : (M : ℝ) ≤ 8 * T ^ 2) :
     cglGMTailWeight w n (T ^ ε / 2) M ≤
-      8 * 2 ^ n * (cglGMMellinBudget w n + cglGMMellinBudget w (n + 2)) * T ^ (-100 : ℝ) := by
+      128 * 2 ^ n * (cglGMMellinBudget w n + cglGMMellinBudget w (n + 2)) * T ^ (-100 : ℝ) := by
   set B : ℝ := cglGMMellinBudget w n + cglGMMellinBudget w (n + 2) with hB
   have hB0 : 0 ≤ B := add_nonneg (cglGMMellinBudget_nonneg w n) (cglGMMellinBudget_nonneg w _)
   have hT0 : 0 < T := by linarith
@@ -67,34 +67,34 @@ theorem cglGMTailWeight_le_rpow (w : CGLRealSmoothBump) {T ε : ℝ} (hT : 1 ≤
     rw [div_pow, ← Real.rpow_mul_natCast hT0.le]
     gcongr
     exact pow_hundredFour_le_rpow hT hn
-  have hlog : (M : ℝ) * Real.log (2 * M) ≤ 8 * T ^ 4 := by
+  have hlog : (M : ℝ) * Real.log (2 * M) ≤ 128 * T ^ 4 := by
     have h1 : Real.log (2 * M) ≤ 2 * M := by
       have := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < 2 * M)
       linarith
     have h2 : 0 ≤ Real.log (2 * M) := Real.log_nonneg (by linarith)
-    calc (M : ℝ) * Real.log (2 * M) ≤ (2 * T ^ 2) * (2 * (2 * T ^ 2)) := by
+    calc (M : ℝ) * Real.log (2 * M) ≤ (8 * T ^ 2) * (2 * (8 * T ^ 2)) := by
           gcongr
           linarith
-      _ = 8 * T ^ 4 := by ring
+      _ = 128 * T ^ 4 := by ring
   unfold cglGMTailWeight
   rw [← hB, rpow_neg_hundred T hT0.le]
   have hML : 0 ≤ (M : ℝ) * Real.log (2 * M) :=
     mul_nonneg (Nat.cast_nonneg _) (Real.log_nonneg (by linarith))
   calc B / (T ^ ε / 2) ^ n * ((M : ℝ) * Real.log (2 * M))
-      ≤ B / (T ^ 104 / 2 ^ n) * (8 * T ^ 4) :=
+      ≤ B / (T ^ 104 / 2 ^ n) * (128 * T ^ 4) :=
         mul_le_mul (div_le_div_of_nonneg_left hB0 (by positivity) hU) hlog hML
           (div_nonneg hB0 (by positivity))
-    _ = 8 * 2 ^ n * B * (T ^ 100)⁻¹ := by
+    _ = 128 * 2 ^ n * B * (T ^ 100)⁻¹ := by
         field_simp
 
-/-- The frequency tail: for `N M ≥ |t|^{1+ε}`, `|t| ≥ T^ε`, `ε² j ≥ 104`, `M ≤ 2T²`,
-`tail_j ≤ 8 · 2^j A_j Z T^{−100}`. -/
+/-- The frequency tail: for `N M ≥ |t|^{1+ε}`, `|t| ≥ T^ε`, `ε² j ≥ 104`, `M ≤ 8T²`,
+`tail_j ≤ 128 · 2^j A_j Z T^{−100}`. -/
 theorem cglGMFrequencyTailWeight_le_rpow (w : CGLSmoothBump) {T ε t N : ℝ} (hT : 1 ≤ T)
     (hε : 0 < ε) (hN : 1 ≤ N) (htT : T ^ ε ≤ |t|) (ht1 : 1 ≤ |t|) {M : ℕ} (hM1 : 1 ≤ M)
-    (hMx : |t| ^ (1 + ε) / N ≤ M) (hM : (M : ℝ) ≤ 2 * T ^ 2) {j : ℕ} (hj : 2 ≤ j)
+    (hMx : |t| ^ (1 + ε) / N ≤ M) (hM : (M : ℝ) ≤ 8 * T ^ 2) {j : ℕ} (hj : 2 ≤ j)
     (hjε : 104 ≤ ε ^ 2 * j) :
     cglGMFrequencyTailWeight w j t N M ≤
-      8 * 2 ^ j * (cglSmoothBumpHtAllOrderBudget w j / (2 * Real.pi) ^ j) *
+      128 * 2 ^ j * (cglSmoothBumpHtAllOrderBudget w j / (2 * Real.pi) ^ j) *
         cglGMInverseSquareMass * T ^ (-100 : ℝ) := by
   set A : ℝ := cglSmoothBumpHtAllOrderBudget w j / (2 * Real.pi) ^ j with hA
   have hA0 : 0 ≤ A := div_nonneg (cglSmoothBumpHtAllOrderBudget_nonneg w j) (by positivity)
@@ -136,15 +136,15 @@ theorem cglGMFrequencyTailWeight_le_rpow (w : CGLSmoothBump) {T ε t N : ℝ} (h
     rw [Nat.add_sub_cancel_left, div_pow, mul_pow, pow_add]
     field_simp
     ring
-  have hM2 : (M : ℝ) ^ 2 ≤ 4 * T ^ 4 := by
-    calc (M : ℝ) ^ 2 ≤ (2 * T ^ 2) ^ 2 := by gcongr
-      _ = 4 * T ^ 4 := by ring
+  have hM2 : (M : ℝ) ^ 2 ≤ 64 * T ^ 4 := by
+    calc (M : ℝ) ^ 2 ≤ (8 * T ^ 2) ^ 2 := by gcongr
+      _ = 64 * T ^ 4 := by ring
   unfold cglGMFrequencyTailWeight
   rw [rpow_neg_hundred T hT0.le, mul_div_assoc, ← hA, hsplit]
   calc 2 * (A * ((M : ℝ) ^ 2 * ((1 + |t|) / (N * M)) ^ j)) * cglGMInverseSquareMass
-      ≤ 2 * (A * ((4 * T ^ 4) * (2 ^ j / T ^ 104))) * cglGMInverseSquareMass := by
+      ≤ 2 * (A * ((64 * T ^ 4) * (2 ^ j / T ^ 104))) * cglGMInverseSquareMass := by
         gcongr
-    _ = 8 * 2 ^ j * A * cglGMInverseSquareMass * (T ^ 100)⁻¹ := by
+    _ = 128 * 2 ^ j * A * cglGMInverseSquareMass * (T ^ 100)⁻¹ := by
         field_simp
         ring
 
@@ -220,9 +220,9 @@ def cglGMLemma62WindowConst (w : CGLRealSmoothBump) : ℝ :=
 
 /-- The error constant of the large-time case: Mellin tail plus frequency tail. -/
 def cglGMLemma62ErrorConst (w : CGLRealSmoothBump) (ε : ℝ) : ℝ :=
-  8 * 2 ^ cglGMLemma62MellinOrder ε * (cglGMMellinBudget w (cglGMLemma62MellinOrder ε) +
+  128 * 2 ^ cglGMLemma62MellinOrder ε * (cglGMMellinBudget w (cglGMLemma62MellinOrder ε) +
       cglGMMellinBudget w (cglGMLemma62MellinOrder ε + 2)) +
-    8 * 2 ^ cglGMLemma62FourierOrder ε *
+    128 * 2 ^ cglGMLemma62FourierOrder ε *
       (cglSmoothBumpHtAllOrderBudget w.toCGLSmoothBump (cglGMLemma62FourierOrder ε) /
         (2 * Real.pi) ^ cglGMLemma62FourierOrder ε) * cglGMInverseSquareMass
 
@@ -274,10 +274,10 @@ theorem cglGMLemma62Length_spec {ε T t N : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1
   have h3 : 1 ≤ T ^ 2 := one_le_pow₀ hT
   linarith
 
-/-- Large-time case `|t| ≥ 2` with an admissible length `M`. -/
+/-- Large-time case `|t| ≥ 2` with an admissible length `|t|^{1+ε}/N ≤ M ≤ 8T²`. -/
 theorem cglGM_lemma62_zeta_largeTime (w : CGLRealSmoothBump) {ε T t N : ℝ} (hε : 0 < ε)
     (hT : 1 ≤ T) (hN : 1 ≤ N) (htT : T ^ ε ≤ |t|) (ht2 : 2 ≤ |t|) {M : ℕ} (hM1 : 1 ≤ M)
-    (hMx : |t| ^ (1 + ε) / N ≤ M) (hMT : (M : ℝ) ≤ 2 * T ^ 2) :
+    (hMx : |t| ^ (1 + ε) / N ≤ M) (hMT : (M : ℝ) ≤ 8 * T ^ 2) :
     ‖cglGMNonzeroModeSum w.toCGLSmoothBump N t‖ ≤
       cglGMLemma62WindowConst w * |t| ^ (-(1 / 2 : ℝ)) *
           (∫ u in (-(T ^ ε / 2))..(T ^ ε / 2), ‖cglGMHeadPoly M (t + u)‖) +
@@ -355,10 +355,42 @@ theorem cglGM_lemma62_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (h�
   have hmain0 := mul_nonneg hrp hI0
   rcases le_or_gt 2 |t| with ht2 | ht2
   · obtain ⟨hM1, hMx, hMT⟩ := cglGMLemma62Length_spec hε hε1 hT hN1 ht1 htT'
-    have h := cglGM_lemma62_zeta_largeTime w hε hT hN1 htT ht2 hM1 hMx hMT
+    have h := cglGM_lemma62_zeta_largeTime w hε hT hN1 htT ht2 hM1 hMx (by linarith)
     nlinarith [mul_nonneg h₃ hmain0, mul_nonneg h₂ hmain0, mul_nonneg h₁ hTr,
       mul_nonneg h₃ hTr]
   · have h := cglGM_lemma62_zeta_smallTime w hε hT hN1 htT ht2.le
+    nlinarith [mul_nonneg h₁ hmain0, mul_nonneg h₂ hmain0, mul_nonneg h₃ hmain0,
+      mul_nonneg h₁ hTr, mul_nonneg h₂ hTr]
+
+/-- **Lemma 6.2 for `ζ` with a free admissible length.**  For every `ε ∈ (0,1]` there is `C ≥ 0`
+such that for all `T ≥ 1`, real `N ≥ 1`, `T^ε ≤ |t| ≤ T` and every `M` with
+`|t|^{1+ε}/N ≤ M ≤ 8T²`,
+`‖Σ_{m ≠ 0} ĥ_t(mN)‖ ≤ C |t|^{−1/2} ∫_{−T^ε/2}^{T^ε/2} ‖Σ_{m=1}^{M} m^{−i(t+u)}‖ du + C T^{−100}`. -/
+theorem cglGM_lemma62_zeta_of_length (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (T t N : ℝ) (M : ℕ), 1 ≤ T → 1 ≤ N → T ^ ε ≤ |t| → |t| ≤ T → 1 ≤ M →
+      |t| ^ (1 + ε) / N ≤ M → (M : ℝ) ≤ 8 * T ^ 2 →
+      ‖cglGMNonzeroModeSum w.toCGLSmoothBump N t‖ ≤
+        C * |t| ^ (-(1 / 2 : ℝ)) *
+            (∫ u in (-(T ^ ε / 2))..(T ^ ε / 2), ‖cglGMHeadPoly M (t + u)‖) +
+          C * T ^ (-100 : ℝ) := by
+  have h₁ := cglGMLemma62WindowConst_nonneg w
+  have h₂ := cglGMLemma62ErrorConst_nonneg w ε
+  have h₃ := cglGMLemma62SmallTimeConst_nonneg w ε
+  refine ⟨cglGMLemma62WindowConst w + cglGMLemma62ErrorConst w ε +
+    cglGMLemma62SmallTimeConst w ε, by positivity, ?_⟩
+  intro T t N M hT hN htT _ hM1 hMx hMT
+  have hT0 : 0 < T := by linarith
+  have hI0 : 0 ≤ ∫ u in (-(T ^ ε / 2))..(T ^ ε / 2), ‖cglGMHeadPoly M (t + u)‖ :=
+    intervalIntegral.integral_nonneg (by have := Real.rpow_pos_of_pos hT0 ε; linarith)
+      fun _ _ => norm_nonneg _
+  have hrp : 0 ≤ |t| ^ (-(1 / 2 : ℝ)) := Real.rpow_nonneg (abs_nonneg t) _
+  have hTr : 0 ≤ T ^ (-100 : ℝ) := Real.rpow_nonneg hT0.le _
+  have hmain0 := mul_nonneg hrp hI0
+  rcases le_or_gt 2 |t| with ht2 | ht2
+  · have h := cglGM_lemma62_zeta_largeTime w hε hT hN htT ht2 hM1 hMx hMT
+    nlinarith [mul_nonneg h₃ hmain0, mul_nonneg h₂ hmain0, mul_nonneg h₁ hTr,
+      mul_nonneg h₃ hTr]
+  · have h := cglGM_lemma62_zeta_smallTime w hε hT hN htT ht2.le
     nlinarith [mul_nonneg h₁ hmain0, mul_nonneg h₂ hmain0, mul_nonneg h₃ hmain0,
       mul_nonneg h₁ hTr, mul_nonneg h₂ hTr]
 

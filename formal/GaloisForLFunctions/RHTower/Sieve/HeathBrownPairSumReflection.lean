@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.HeathBrownPairSumShells
 import GaloisForLFunctions.RHTower.Sieve.ImprovedMeanValue
 import GaloisForLFunctions.HTGeometry.BorelGrowthLemma
+import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenLemma35LargeA
 
 /-!
 # Heath-Brown's pair sums: the reflection inequality for one block
@@ -168,8 +169,9 @@ private theorem shell_perron_le (W : Finset ℝ) {N J j : ℕ} (hN : 1 ≤ N) (h
       _ ≤ 150000 * (J : ℝ) ^ 2 / N * A := by
           refine mul_le_mul_of_nonneg_right ?_ hA
           rw [div_le_div_iff₀ (by positivity) hN0]
-          have hJ2 : 0 ≤ (J : ℝ) ^ 2 := sq_nonneg _
-          nlinarith
+          have hJN0 : 0 ≤ (J : ℝ) ^ 2 * N := by positivity
+          have hc : (914112 : ℝ) ≤ 300000 * Real.pi := by linarith
+          nlinarith [mul_le_mul_of_nonneg_right hc hJN0]
   · exact mul_nonneg (by positivity)
       (Finset.sum_nonneg fun i _ => hbDualTerm_nonneg W N j i)
 
@@ -195,10 +197,11 @@ theorem hbAmp_half_le_reflection {W : Finset ℝ} (hW : GuthMaynard.IsSeparated 
     intro t₁ ht₁
     rw [← Finset.add_sum_erase _ _ ht₁]
     refine add_le_add ?_ ?_
-    · rw [hf, sub_self]
+    · simp only [hf, sub_self]
       exact pow_le_one₀ (norm_nonneg _) (norm_mtWattUnitBlock_le_one hN le_rfl 0)
-    · refine (Finset.sum_le_sum_of_subset_of_nonneg
-        (hsh ▸ erase_subset_biUnion_shells hW hJ hdiam ht₁) fun _ _ _ => hf0 _ _).trans ?_
+    · have hsub : W.erase t₁ ⊆ (Finset.Icc 1 J).biUnion (sh t₁) := by
+        rw [hsh]; exact erase_subset_biUnion_shells hW hJ hdiam ht₁
+      refine (Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => hf0 _ _).trans ?_
       exact sum_biUnion_le_of_nonneg' _ _ _ fun t₂ => hf0 t₁ t₂
   -- the shells
   have hshell : ∀ j ∈ Finset.Icc 1 J, ∑ t₁ ∈ W, ∑ t₂ ∈ sh t₁ j, f t₁ t₂ ≤

@@ -114,6 +114,88 @@ theorem sum_abs_kernelStatistic_le_of_remainder {N : ℕ} {S : Finset ℕ}
   have hmain := neg_abs_le (equidistributedMain N c c')
   linarith
 
+/-! ## §2. The Möbius block and the centred prime block -/
+
+theorem sum_Icc_div_sq_eq_of_supp {N Q : ℕ} (hN : Q + Q ≤ N) {c' : ℕ → ℝ}
+    (hsupp : ∀ n, c' n ≠ 0 → n ∈ Icc (Q + 1) (Q + Q)) :
+    ∑ n ∈ Icc 1 N, c' n / (n : ℝ) ^ 2 = ∑ n ∈ Icc (Q + 1) (Q + Q), c' n / (n : ℝ) ^ 2 := by
+  symm
+  refine sum_subset (Icc_subset_Icc (by omega) hN) fun n _ hn => ?_
+  have : c' n = 0 := by by_contra h; exact hn (hsupp n h)
+  simp [this]
+
+/-- **The dual norm of the Möbius block.** For every `ε > 0` and all large `Q`, every set `S` of
+primes `p ≤ Q₀` with `8 log₂ Q ≤ ε² p` has
+`Σ_{p ∈ S} |Λ_p(μ_Q)|/p ≤ ε √(Σ p²) √(Q + 2Q₀²) Q^{-3/2} + (1/6 + π²/72)|Σ_{Q<n≤2Q} μ(n)/n²| Σ 1/p
+  + ¾ (Σ p²) Σ_n |μ_Q(n)|/n³ + 6 (Σ p³) Σ_n |μ_Q(n)|/n⁴`. -/
+theorem eventually_sum_abs_kernelStatistic_moebiusWindowRow_le {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ Q : ℕ in atTop, ∀ {N Q₀ : ℕ} {S : Finset ℕ}, 2 ≤ Q₀ →
+      Q + Q + Nat.log 2 Q ≤ N + 1 → (∀ p ∈ S, p.Prime ∧ p ≤ N ∧ p ≤ Q₀) →
+      (∀ p ∈ S, 8 * (Nat.log 2 Q : ℝ) ≤ ε ^ 2 * p) →
+      ∑ p ∈ S, |kernelStatistic N (moebiusWindowRow Q) p| / p ≤
+        ε * Real.sqrt (∑ p ∈ S, (p : ℝ) ^ 2) *
+            (Real.sqrt ((Q : ℝ) + 2 * (Q₀ : ℝ) ^ 2) * Real.sqrt (1 / (Q : ℝ) ^ 3)) +
+          (1 / 6 + Real.pi ^ 2 / 72) * |moebiusBlockMass Q| * ∑ p ∈ S, 1 / (p : ℝ) +
+          3 / 4 * (∑ p ∈ S, (p : ℝ) ^ 2) * ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 3 +
+          6 * (∑ p ∈ S, (p : ℝ) ^ 3) * ∑ n ∈ Icc 1 N, |moebiusWindowRow Q n| / (n : ℝ) ^ 4 := by
+  filter_upwards [eventually_abs_rowBilinear_moebiusWindowRow_le hε,
+    tendsto_natLog_two_atTop.eventually_ge_atTop 1] with Q hQ hH1
+  intro N Q₀ S hQ₀ hN hS hSP
+  have hS' : ∀ p ∈ S, p.Prime ∧ p ≤ N := fun p hp => ⟨(hS p hp).1, (hS p hp).2.1⟩
+  have hmass : ∑ n ∈ Icc 1 N, moebiusWindowRow Q n / (n : ℝ) ^ 2 = moebiusBlockMass Q := by
+    rw [sum_Icc_div_sq_eq_of_supp (by omega) (fun n hn => moebiusWindowRow_supp hn),
+      sum_Icc_moebiusWindowRow_div_eq_blockMass]
+  have h := sum_abs_kernelStatistic_le_of_remainder hS' (c' := moebiusWindowRow Q) hε.le
+    (V := Real.sqrt ((Q : ℝ) + 2 * (Q₀ : ℝ) ^ 2) * Real.sqrt (1 / (Q : ℝ) ^ 3))
+    (m := |moebiusBlockMass Q| / 6) (by positivity) (by positivity)
+    (fun c _ hsupp => by
+      have := hQ hQ₀ hN hS hSP hsupp
+      calc _ ≤ _ := this
+        _ = _ := by ring)
+  rw [hmass] at h
+  refine h.trans (le_of_eq ?_)
+  ring
+
+/-- **The dual norm of the centred prime block.** For `7/12 < α < 1`, `ε > 0` and all large `Q`,
+with `H = ⌈(2Q)^α⌉`, every set `S` of primes `p ≤ Q₀` with `8H(log 2Q + 1)² ≤ ε² p` has
+`Σ_{p ∈ S} |Λ_p(c')|/p ≤ ε √(Σ p²) √(Q + 2Q₀²) Q^{-3/2} + (1/6 + π²/72)|Σ_{Q<n≤2Q}(Λ(n) - 1)/n²| Σ 1/p
+  + ¾ (Σ p²) Σ_n |c'(n)|/n³ + 6 (Σ p³) Σ_n |c'(n)|/n⁴` for `c' = (Λ - 1)·𝟙_{(Q, 2Q]}`. -/
+theorem eventually_sum_abs_kernelStatistic_centredPrimeBlock_le {α : ℝ} (hα : 7 / 12 < α)
+    (hα1 : α < 1) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ Q : ℕ in atTop, ∀ {N Q₀ : ℕ} {S : Finset ℕ}, 2 ≤ Q₀ →
+      Q + Q + ⌈(2 * (Q : ℝ)) ^ α⌉₊ ≤ N + 1 → (∀ p ∈ S, p.Prime ∧ p ≤ N ∧ p ≤ Q₀) →
+      (∀ p ∈ S, 8 * (⌈(2 * (Q : ℝ)) ^ α⌉₊ : ℝ) * (Real.log (2 * Q) + 1) ^ 2 ≤ ε ^ 2 * p) →
+      ∑ p ∈ S, |kernelStatistic N (centredPrimeBlock Q) p| / p ≤
+        ε * Real.sqrt (∑ p ∈ S, (p : ℝ) ^ 2) *
+            (Real.sqrt ((Q : ℝ) + 2 * (Q₀ : ℝ) ^ 2) * Real.sqrt (1 / (Q : ℝ) ^ 3)) +
+          (1 / 6 + Real.pi ^ 2 / 72) * |∑ n ∈ Ioc Q (2 * Q), (vonMangoldt n - 1) / (n : ℝ) ^ 2| *
+            ∑ p ∈ S, 1 / (p : ℝ) +
+          3 / 4 * (∑ p ∈ S, (p : ℝ) ^ 2) * ∑ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 3 +
+          6 * (∑ p ∈ S, (p : ℝ) ^ 3) * ∑ n ∈ Icc 1 N, |centredPrimeBlock Q n| / (n : ℝ) ^ 4 := by
+  filter_upwards [eventually_abs_rowBilinear_centredPrimeBlock_le hα hα1 hε,
+    eventually_ge_atTop 1] with Q hQ hQ1
+  intro N Q₀ S hQ₀ hN hS hSP
+  have hS' : ∀ p ∈ S, p.Prime ∧ p ≤ N := fun p hp => ⟨(hS p hp).1, (hS p hp).2.1⟩
+  have hH1 : 1 ≤ ⌈(2 * (Q : ℝ)) ^ α⌉₊ := by
+    have hQR : (1 : ℝ) ≤ Q := by exact_mod_cast hQ1
+    have : (1 : ℝ) ≤ (2 * (Q : ℝ)) ^ α := Real.one_le_rpow (by linarith) (by linarith)
+    exact_mod_cast this.trans (Nat.le_ceil _)
+  have hmass : ∑ n ∈ Icc 1 N, centredPrimeBlock Q n / (n : ℝ) ^ 2 =
+      ∑ n ∈ Ioc Q (2 * Q), (vonMangoldt n - 1) / (n : ℝ) ^ 2 := by
+    rw [sum_Icc_div_sq_eq_of_supp (by omega) (fun n hn => centredPrimeBlock_supp hn),
+      sum_Icc_centredPrimeBlock_div_eq]
+  have h := sum_abs_kernelStatistic_le_of_remainder hS' (c' := centredPrimeBlock Q) hε.le
+    (V := Real.sqrt ((Q : ℝ) + 2 * (Q₀ : ℝ) ^ 2) * Real.sqrt (1 / (Q : ℝ) ^ 3))
+    (m := |∑ n ∈ Ioc Q (2 * Q), (vonMangoldt n - 1) / (n : ℝ) ^ 2| / 6) (by positivity)
+    (by positivity)
+    (fun c _ hsupp => by
+      have := hQ hQ₀ hN hS hSP hsupp
+      calc _ ≤ _ := this
+        _ = _ := by ring)
+  rw [hmass] at h
+  refine h.trans (le_of_eq ?_)
+  ring
+
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence

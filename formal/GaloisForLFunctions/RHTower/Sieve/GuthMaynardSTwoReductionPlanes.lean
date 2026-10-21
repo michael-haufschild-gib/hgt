@@ -118,7 +118,7 @@ def gmS2FrequencyEquiv :
   right_inv x := by
     rcases x with p | p | p
     · simp [gmPlaneThree]
-    · simp [gmPlaneOne, p.1.2]
+    · simp [gmPlaneOne, p.2.2]
     · simp [gmPlaneTwo, p.1.2, p.2.2]
 
 /-- Absolute summability of `m ↦ ĥ_τ(mN)` over the punctured integers. -/
@@ -192,26 +192,19 @@ theorem sum_cyclic_one (W : Finset ℝ) (G : ℝ → ℝ → ℝ → ℂ) :
 /-- Cyclic relabelling of a triple sum over `W³`: `Σ G(z,x,y) = Σ G(x,y,z)`. -/
 theorem sum_cyclic_two (W : Finset ℝ) (G : ℝ → ℝ → ℝ → ℂ) :
     ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, G z x y = ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, G x y z := by
-  rw [← sum_cyclic_one W (fun x y z => G z x y)]
-  exact sum_cyclic_one W G
+  exact (sum_cyclic_one W (fun x y z => G z x y)).symm
 
 /-- **`S₂` by symmetry (exact).** `S₂ = 3N³ Σ_{x,y,z∈W} A(x−y) A(y−z) ĥ_{z−x}(0)`. -/
 theorem gmS2_eq_three_mul (w : CGLRealSmoothBump) {N : ℝ} (hN : 0 < N) (W : Finset ℝ) :
     gmS2 w N W = 3 * ((N : ℂ) ^ 3 * ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, gmS2Kernel w N x y z) := by
-  set S : ℂ := (N : ℂ) ^ 3 * ∑ x ∈ W, ∑ y ∈ W, ∑ z ∈ W, gmS2Kernel w N x y z with hS
   have h3 := hasSum_gmIm_planeThree w hN W
   have h1 := hasSum_gmIm_planeOne w hN W
   have h2 := hasSum_gmIm_planeTwo w hN W
   rw [sum_cyclic_one W (gmS2Kernel w N)] at h1
   rw [sum_cyclic_two W (gmS2Kernel w N)] at h2
   -- transport the three plane sums through the equivalence
-  set f : ((P × P) ⊕ (P × P) ⊕ (P × P)) → ℂ := fun s => gmIm w N W (gmS2FrequencyEquiv.symm s).1
-    with hf
-  have hsum : HasSum f (S + (S + S)) := by
-    refine HasSum.sum (f := f) ?_ (HasSum.sum (f := fun s => f (Sum.inr s)) ?_ ?_)
-    · simpa [hf, gmS2FrequencyEquiv] using h3
-    · simpa [hf, gmS2FrequencyEquiv] using h1
-    · simpa [hf, gmS2FrequencyEquiv] using h2
+  have hsum := HasSum.sum (f := fun s => gmIm w N W (gmS2FrequencyEquiv.symm s).1) h3
+    (HasSum.sum (f := fun s => gmIm w N W (gmS2FrequencyEquiv.symm (Sum.inr s)).1) h1 h2)
   unfold gmS2
   rw [← gmS2FrequencyEquiv.symm.tsum_eq (fun m => gmIm w N W m.1), hsum.tsum_eq]
   ring
