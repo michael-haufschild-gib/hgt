@@ -2,7 +2,7 @@
 
 - **ID:** aip-shared-surplus-2026-10-21
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean): allocation survivors and the sharing obstruction; the signed global allocation stays CONJECTURE (B-RH)
+- **Type:** THEOREM (Lean): global shared-surplus allocation of the complete prime side, its optimality (sharing obstruction, logarithmic capacity), and the allocation tools
 - **Source:** frontier map, AIP open/hard obstacle "Allocate shared strip surplus without double
   counting"; review-2110 hard-obstacles AIP (b); AIP README mechanisms 28–35.
 - **Statement:** For odd `F` on `[−r, r]` the strips `S_n = [log n − r, r]` of the entered prime powers
@@ -12,7 +12,12 @@
   outside.
 
 ## Result
-The surplus can be shared exactly in the light cone, and not beyond it through the odd parts.
+**Global allocation** (`GlobalSharedSurplusAllocation`, `tsum_primeShift_le_globalAllocation`, `C¹`
+form `…_of_contDiff`). For every window `r ≥ 2`, `0 < δ ≤ e^{−r}/(16r)` and odd `F` on `[−r, r]`:
+`Σ_n 2Λ(n)/√n ∫ F F(· + log n) ≤ T(r − 2δ, r) + Σ_{n ≤ e^{2r}, n ∉ cone} 2Λ(n)/√n m_n(F)`. The complete
+prime side (a `tsum`, finite by `tsum_primeShift_eq_sum_primeSide`) is allocated. The light cone
+shares one copy of the surplus, and every other atom is charged once to its own strip mass. The
+surplus share is optimal in kind: by items 4–5 it cannot extend past the cone through odd parts.
 
 1. **Shell micro-fold** (`NestedStripShellMicroFold`, `sharpMicroFold_shell_ge`). For an inner
    strip `[p', r]` right of the centre of `[p, r]` (`c = p' − m > 0`) only the right–right pair of a
@@ -51,7 +56,7 @@ The surplus can be shared exactly in the light cone, and not beyond it through t
   symbol is `Σ_{band} Λ(n) n^{−1/2−iξ}`. Its mean (PNT) part is a gain; its fluctuation competes with
   the surplus symbol `log ξ`, heuristically of that order only when the nearby zeros are on the
   line. So the signed global allocation is the B-RH core, not an unconditional target.
-- **Status:** all five items dependency-closed and formalized; axioms `propext, Classical.choice,
+- **Status:** the global allocation and all five items dependency-closed and formalized; axioms `propext, Classical.choice,
   Quot.sound`; modules wired in the AIP umbrella. Gap between the light cone (`e^{−r}/r`) and the
   obstruction (fixed width) is arithmetic: Brun–Titchmarsh widens the cone to `e^{−r}`; refuting at
   width `Ce^{−r}` needs lower bounds for prime powers in `(N − C√N, N)`.
@@ -64,7 +69,13 @@ The surplus can be shared exactly in the light cone, and not beyond it through t
 - C5 light cone at every scale — PROVED (Lean), width `e^{−r}/(16r)`.
 - C6 global odd-part allocation of the thin band — FALSE (Lean), large `r`.
 - C7 logarithmic capacity of the edge — PROVED (Lean), `2 log(4/ε) + 84`.
-- C8 signed global allocation of the thin band — OPEN, B-RH heuristic (Hankel symbol vs `log ξ`).
+- C8 (boundary, not a conjecture of this card): paying the strip masses `m_n(F)` and the pole is the
+  positivity of the odd zero form. That is the Riemann Hypothesis (ACT receiver;
+  `riemannHypothesis_iff_forall_fullZeroForm_nonneg`; a sibling session is formalizing the odd form as
+  the global incidence allocation condition, `GlobalIncidenceAllocationCondition`). It lies outside
+  the surplus allocation.
+- C10 global shared-surplus allocation of the complete prime side, every window `r ≥ 2` — PROVED
+  (Lean).
 - C9 wide strip `S₂` sharing with `S₃` past `½ log 3` — done by a sibling agent
   (`WideMicroFoldExactRates`, `OverlappingPrimeStripsJointHarnack`, README mechanism 40); not
   duplicated.
@@ -72,10 +83,12 @@ The surplus can be shared exactly in the light cone, and not beyond it through t
 ## Gates
 - [x] 0 → 1 well-posed, corpus searched (`research "shared strip surplus allocation prime shifts"`:
   only per-strip theorems existed).
-- [x] 1 → 2 paper proofs (this card, README mechanisms 36–39, 41)
+- [x] 1 → 2 paper proofs (this card, README mechanisms 36–39, 41, 42)
 - [x] 2 → 3 Lean: `NestedStripShellMicroFold`, `SharedStripSurplusAllocation`,
-  `PrimeLightConeAllocation`, `EdgeTentSharingObstruction`, `EdgeTentLogarithmicCapacity`; each
+  `PrimeLightConeAllocation`, `EdgeTentSharingObstruction`, `EdgeTentLogarithmicCapacity`,
+  `GlobalSharedSurplusAllocation`; each
   checked with `lake env lean`, oleans via `lake --old env lean -j 1 -o`, axiom audit clean.
 
 ## Log
-- 2026-10-21 — created; C1–C7 formalized; C8 recorded open; moved to 3-formalized.
+- 2026-10-21 — created; C1–C7 formalized; C10 global allocation formalized; C8 reassigned to the
+  prime–polar item; in 3-formalized.

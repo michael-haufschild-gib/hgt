@@ -31,6 +31,13 @@ exactly and discharges it wherever the corpus allows.
    (`exists_zeta_recurrence_modulo_zeros_of_zero`): the orbit erases the local zero divisor and
    returns to the cofactor, while the self-target is returned to only on a density-zero set.
 
+5. **The Dirichlet heads approximate the zero-erased target, uniformly in the cutoff**
+   (`exists_uniform_pos_density_headTarget_cofactor`).  Subtracting the Carlson tail-bad set from
+   the return set of the cofactor gives, at every point of the strip, a positive lower density of
+   heights at which the head `Σ_{n ≤ M} n^{−z−iτ}` is within `ε` of `g` on the disc, with one
+   constant for all large `M`.  This is the cutoff-uniform head-target density that is equivalent
+   to fixed-base recurrence, obtained for the base target with its local zero divisor erased.
+
 Together: strong recurrence at `z₀` holds exactly when the local zero divisor is trivial, and the
 Riemann hypothesis is the statement that the divisor `S` is empty at every point of the strip.
 -/
@@ -318,5 +325,56 @@ theorem exists_zeta_recurrence_modulo_zeros_of_zero {ρ₀ : ℂ} (h1 : 1 / 2 < 
   obtain ⟨r, hr, -, -, S, D, g, hS, hfac, hmem, huniv⟩ := exists_zeta_recurrence_modulo_zeros h1 h2
   exact ⟨r, hr, S, D, g, hmem ρ₀ (mem_closedBall_self hr.le) hρ₀,
     fun u hu => ⟨(hS u hu).2.1, (hS u hu).2.2⟩, hfac, huniv⟩
+
+/-! ## 5. The Dirichlet heads approximate the zero-erased target at every point -/
+
+/-- Target heights of `ζ` that are tail-good are head-target heights, for any target `g`. -/
+theorem zetaTargetReturnSet_diff_discTailBadSet_subset_headTarget (M : ℕ) (g : ℂ → ℂ) (c : ℂ)
+    (r ε ε' : ℝ) :
+    zetaTargetReturnSet g (closedBall c r) ε \ discTailBadSet M c r ε' ⊆
+      {τ : ℝ | ∀ z ∈ closedBall c r,
+        ‖edPoly (fun _ => 1) (Finset.Icc 1 M) (z + τ * I) - g z‖ < ε' + ε} := by
+  rintro τ ⟨hret, hgood⟩ z hz
+  have htail : ‖zetaTailFun M (z + τ * I)‖ < ε' := by
+    by_contra hcon
+    exact hgood ⟨z, hz, not_lt.mp hcon⟩
+  have hr := hret z hz
+  have hid : edPoly (fun _ => 1) (Finset.Icc 1 M) (z + τ * I) - g z =
+      -(zetaTailFun M (z + τ * I)) + (riemannZeta (z + τ * I) - g z) := by
+    unfold zetaTailFun
+    ring
+  rw [hid]
+  refine (norm_add_le _ _).trans_lt ?_
+  rw [norm_neg]
+  exact add_lt_add htail hr
+
+/-- **The Dirichlet heads approximate the zero-erased `ζ` at every point, uniformly in the
+cutoff.**  At every `z₀` of the strip, with the local factorization `ζ = P · g` on `|z − z₀| ≤ r`
+(`S` the local zeros, `g` analytic and nonvanishing): for every `ε > 0` there is `c > 0` such that
+for all large `M` the heights at which the head `Σ_{n ≤ M} n^{−z−iτ}` is within `ε` of `g` on the
+disc have lower density at least `c`.  This is the cutoff-uniform head-target density equivalent to
+fixed-base recurrence, for the base target with its local zero divisor erased. -/
+theorem exists_uniform_pos_density_headTarget_cofactor {z₀ : ℂ} (h1 : 1 / 2 < z₀.re)
+    (h2 : z₀.re < 1) :
+    ∃ r > 0, ∃ (S : Finset ℂ) (D : ℂ → ℕ) (g : ℂ → ℂ),
+      (∀ u ∈ S, riemannZeta u = 0 ∧ 1 ≤ D u) ∧
+      (∀ z ∈ closedBall z₀ r, g z ≠ 0 ∧
+        riemannZeta z = (∏ u ∈ S, (z - u) ^ D u) * g z) ∧
+      ∀ ε > 0, ∃ c > 0, ∀ᶠ M : ℕ in atTop, ∀ᶠ T : ℝ in atTop,
+        ENNReal.ofReal (c * T) ≤ volume ({τ : ℝ | ∀ z ∈ closedBall z₀ r,
+          ‖edPoly (fun _ => 1) (Finset.Icc 1 M) (z + τ * I) - g z‖ < ε} ∩ Icc 0 T) := by
+  obtain ⟨r, hr, hr0, hr1, S, D, g, hS, hfac, -, huniv⟩ :=
+    exists_zeta_recurrence_modulo_zeros h1 h2
+  refine ⟨r, hr, S, D, g, fun u hu => ⟨(hS u hu).2.1, (hS u hu).2.2⟩, hfac, fun ε hε => ?_⟩
+  obtain ⟨c, hc, hev⟩ := huniv (ε / 2) (half_pos hε)
+  refine ⟨c / 2, half_pos hc, ?_⟩
+  have hbad := eventually_eventually_volume_discTailBadSet_le (c := z₀) hr (by linarith)
+    (by linarith) (half_pos hε) (half_pos hc)
+  filter_upwards [hbad] with M hM
+  filter_upwards [hev, hM, eventually_ge_atTop (0 : ℝ)] with T hT1 hT2 hT0
+  have hsub := zetaTargetReturnSet_diff_discTailBadSet_subset_headTarget M g z₀ r (ε / 2) (ε / 2)
+  rw [add_halves] at hsub
+  exact (ofReal_half_le_volume_diff_inter hc hT0 hT1 hT2).trans
+    (measure_mono (inter_subset_inter_left _ hsub))
 
 end RHTower

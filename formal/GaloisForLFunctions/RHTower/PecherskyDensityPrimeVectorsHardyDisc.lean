@@ -1,13 +1,13 @@
 import GaloisForLFunctions.HTGeometry.HardyDiskModelSpace
 import GaloisForLFunctions.RHTower.FinitePecherskyUnimodularApproximation
-import GaloisForLFunctions.RHTower.ExponentialTypeNotSummableOnPrimeLogs
+import GaloisForLFunctions.RHTower.ExponentialTypeNotSummableOnPrimeLogsNaturalRate
 import Mathlib.NumberTheory.SumPrimeReciprocals
 
 /-!
 # The Pechersky density lemma for the prime vectors in the Hardy space of a disc
 
-Fix a centre `z₀` with `1/2 < Re z₀ < 1` and a radius `ρ` with `ρ < Re z₀ − 1/2` and
-`3ρ < 1 − Re z₀`.  The disc `|z − z₀| < ρ` is the unit disc in the coordinate `q = (z − z₀)/ρ`, and
+Fix a centre `z₀` with `1/2 < Re z₀ < 1` and a radius `ρ` with `ρ < Re z₀ − 1/2`,
+`ρ < 1 − Re z₀` and `2ρ < 5/12`.  The disc `|z − z₀| < ρ` is the unit disc in the coordinate `q = (z − z₀)/ρ`, and
 the Hardy space `H²` of that disc is the coefficient model `HardyDisk = ℓ²(ℕ)` of the corpus.  The
 function `q ↦ p^{−(z₀ + ρq)}` has the coefficient vector
 
@@ -17,7 +17,7 @@ of squared norm at most `p^{2ρ − 2 Re z₀}`, hence square-summable over the 
 (`summable_norm_primeTerm_sq`).  Its pairing with a vector `e` is
 `conj(p^{−z₀}) · Φ_e(log p)`, where `Φ_e(ξ) = Σ_k ((−ρξ)^k/k!) e_k` is entire of exponential type
 `ρ` and vanishes identically only for `e = 0` (`coefficientTransform_ne_zero`).  The prime-sum lower
-bound `exists_primeLogWeightedSum_gt` therefore makes the partial sums `Σ_{p<N} |⟪u_p, e⟫|`
+bound `exists_primeLogWeightedSum_gt_of_lt_one_sub` therefore makes the partial sums `Σ_{p<N} |⟪u_p, e⟫|`
 unbounded for every `e ≠ 0`, and the finite Pechersky lemma `exists_unimodular_finite_approx`
 gives:
 
@@ -315,10 +315,11 @@ theorem sum_norm_inner_primeTerm (z₀ : ℂ) {ρ : ℝ} (hρ : 0 ≤ ρ) (e : H
 /-- **Divergence of the absolute pairings**: for `e ≠ 0` the sums `Σ_{p<N} |⟪u_p, e⟫|` are
 unbounded. -/
 theorem exists_sum_norm_inner_primeTerm_gt (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ) (hσ : 1 / 2 ≤ z₀.re)
-    (hρσ : 3 * ρ < 1 - z₀.re) {e : HardyDisk} (he : e ≠ 0) (M : ℝ) :
+    (hρσ : ρ < 1 - z₀.re) (hρ5 : 2 * ρ < 5 / 12) {e : HardyDisk} (he : e ≠ 0) (M : ℝ) :
     ∃ N : ℕ, M < ∑ n ∈ range N, ‖⟪primeTerm z₀ hρ.le n, e⟫_ℂ‖ := by
-  obtain ⟨N, hN⟩ := exists_primeLogWeightedSum_gt (differentiable_coefficientTransform ρ e)
-    hρ.le (norm_coefficientTransform_le hρ.le e) (coefficientTransform_ne_zero hρ.ne' he) hσ hρσ M
+  obtain ⟨N, hN⟩ := exists_primeLogWeightedSum_gt_of_lt_one_sub
+    (differentiable_coefficientTransform ρ e) hρ.le (norm_coefficientTransform_le hρ.le e)
+    (coefficientTransform_ne_zero hρ.ne' he) (by linarith) hρσ hρ5 M
   exact ⟨N, by rwa [sum_norm_inner_primeTerm]⟩
 
 /-! ## The Pechersky density lemma -/
@@ -326,12 +327,13 @@ theorem exists_sum_norm_inner_primeTerm_gt (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ
 /-- **Pechersky density for the prime vectors.**  Every `h ∈ H²` is within `ε` of a finite
 unimodular prime sum `Σ_{n<N} ω_n • u_n` (`u_n = 0` for composite `n`), with `N ≥ N₀`. -/
 theorem exists_unimodular_primeTerm_sum_approx (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
-    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : 3 * ρ < 1 - z₀.re)
+    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
+    (hρ5 : 2 * ρ < 5 / 12)
     (h : HardyDisk) {ε : ℝ} (hε : 0 < ε) (N₀ : ℕ) :
     ∃ N : ℕ, N₀ ≤ N ∧ ∃ ω : ℕ → ℂ, (∀ n, ‖ω n‖ = 1) ∧
       ‖h - ∑ n ∈ range N, ω n • primeTerm z₀ hρ.le n‖ < ε :=
   exists_unimodular_finite_approx (primeTerm z₀ hρ.le) (summable_norm_primeTerm_sq z₀ hρ.le hρσ₁)
-    (fun _ he M => exists_sum_norm_inner_primeTerm_gt z₀ hρ hσ hρσ₂ he M) h hε N₀
+    (fun _ he M => exists_sum_norm_inner_primeTerm_gt z₀ hρ hσ hρσ₂ hρ5 he M) h hε N₀
 
 /-! ## Uniform approximation on the disc -/
 
@@ -359,7 +361,8 @@ theorem hardyFun_primeTerm (z₀ : ℂ) {ρ : ℝ} (hρ : 0 ≤ ρ) (n : ℕ) {q
 the approximant of `exists_unimodular_primeTerm_sum_approx` satisfies
 `‖h(q) − Σ_{p<N} ω_p p^{−(z₀+ρq)}‖ < ε (1 − |q|²)^{−1/2}`. -/
 theorem exists_unimodular_prime_sum_approx_on_disc (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
-    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : 3 * ρ < 1 - z₀.re)
+    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
+    (hρ5 : 2 * ρ < 5 / 12)
     (h : HardyDisk) {ε : ℝ} (hε : 0 < ε) (N₀ : ℕ) :
     ∃ N : ℕ, N₀ ≤ N ∧ ∃ ω : ℕ → ℂ, (∀ n, ‖ω n‖ = 1) ∧
       ∀ q : ℂ, ‖q‖ < 1 →
@@ -367,7 +370,7 @@ theorem exists_unimodular_prime_sum_approx_on_disc (z₀ : ℂ) {ρ : ℝ} (hρ 
             ω n * (if n.Prime then (n : ℂ) ^ (-(z₀ + ρ * q)) else 0)‖
           < ε * Real.sqrt ((1 - ‖q‖ ^ 2)⁻¹) := by
   obtain ⟨N, hN, ω, hω, hclose⟩ :=
-    exists_unimodular_primeTerm_sum_approx z₀ hρ hσ hρσ₁ hρσ₂ h hε N₀
+    exists_unimodular_primeTerm_sum_approx z₀ hρ hσ hρσ₁ hρσ₂ hρ5 h hε N₀
   refine ⟨N, hN, ω, hω, fun q hq => ?_⟩
   have hsq : ‖q‖ ^ 2 < 1 := by nlinarith [norm_nonneg q]
   have hinv : 0 < (1 - ‖q‖ ^ 2)⁻¹ := by

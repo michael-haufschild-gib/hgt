@@ -80,3 +80,10 @@ their module lands; this card does not edit their files.
   (`isWindowSandwichConstant_mv`: `N(N−1)` admissible; `windowSandwichConstant_between`: optimal
   constant in `[Φ(N)−2, N(N−1)]`, previously `[N²/8 + N − (N/2)H_N − 2, 2N²−1]`). The exact value is
   arithmetic (the length-two window already reads `Σ_{q≤N} μ(q)`); recorded as open in the README.
+  Correction: the "length-two window reads `Σ μ(q)`" remark holds for general coefficients on the
+  response roots, not proved for Selberg (class-constant) rows; it is not in the README.
+- 2026-10-21 — **9(i) status**: at every `N ≥ 2` the Möbius defect is `≤ 0` for `M + 1 < 11(N+1)`
+  (ratio ladder) and for `M ≥ 10N² + 8N` (THIM, both [L]); the window `11N + 10 ≤ M < 10N² + 8N` is
+  covered only eventually in `N` (ineffective PNT inputs). Closing it needs explicit prime-count
+  inputs in `eventually_moebiusRenormalizedDefect_polynomial_cofinal_bound` and
+  `eventually_periodCovariance_moebius_zero_ge`, plus the finite horizons below the resulting `N₀`.

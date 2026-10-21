@@ -672,6 +672,13 @@ argument becomes quantitative.
    recurrence at every point of the strip, and the error to control is the tail conditioned on the
    return set of the finite Euler head, which no bound on the tail averaged over all heights
    controls. With it, the control of near-top zeros beyond a finite horizon (mechanism 25).
+   The orbit lane now has Voronin universality and recurrence modulo the local zero divisor at
+   every point (`RHTower/ZetaVoroninUniversalityOnSmallDiscs`,
+   `RHTower/ZetaRecurrenceAtEveryPointModuloItsZeros`); the cofactor-return heights fix the phases
+   of the primes `≤ y` only through the disc values `Σ Λ(n) ω(n) n^{−z} ≈ −g′/g`, weights `n^{−Re z}`
+   with `Re z > 1/2`, which leave `Σ_{p ≤ N} Λ(p) p^{−1/2} k_f(log p) ω_p` free once `N` exceeds the
+   base cutoff: the orbit reads the prime phases at bandwidth zero, the localized criterion needs
+   them at `√X ≳ log T`. The two lanes meet only at the square-root threshold (open problem 1).
 
 ---
 

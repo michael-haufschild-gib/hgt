@@ -87,8 +87,43 @@ band: the VK input reads the Möbius signs. **Lean.**
 `BezoutValuationIncidence/ParityPairSeparatedOnTheVinogradovKorobovBand.lean`:
 `parityPair_separated_on_vinogradovKorobovBand`, `parityTwin_receiver_ge`; standard axioms; wired.
 
+### C4 — cofinal Möbius law uniform in the band ratio (KILLED: duplicate)
+Identity `Σ_{d≤N}μ(d)⌊M/d⌋ = 1 − Σ_{k:⌊M/k⌋>N}(M(⌊M/k⌋) − M(N))` gives `|Σ_{k≤M}s_{N,μ}(k) − 1| ≪
+Mρ(N)(1 + log(M/N))`. The corpus already has this `log B` law
+(`exists_abs_sum_sieveSeq_moebiusReal_le_vk_quotient_windows`, BVI). No new content.
+
+### C5 — Kátai single-modulus law for BVI kernels (KILLED: dominated)
+Ramaré/Turán–Kubilius + Bézout correlations `e(k(p−q)m/d)` give `|Λ_d(f_Q)| ≤ (d²/Q)·O((log log P)^{-1/2})`
+for every bounded multiplicative row and prime `d ∈ [P, Q/P³]`. The ℓ² large-sieve dispersion already
+in BVI (C7/C8/C20 of WP4) saves `√(P/Q)` on averages over `d`, which dominates except at `P ≍ Q`, where
+PNT partial summation suffices. **Positive survivor:** none beyond the sup-over-one-modulus form, judged
+not worth formalizing. **Insight:** mechanism 5 by dilation alone saves at most `(log log)^{-1/2}`.
+
+### C6 — receiver growth below half damping against the period energy (DONE, Lean)
+**Statement.** For `1/4 ≤ ε < 1/2`: `E_T(ε) ≤ C T^{1−2ε} e^{−κσ(T)/270}` eventually, and
+`E_N(ε) ≤ C e^{−κσ(N)/270} E_prim(N)` (period energy `≥ N^{1−2ε}/10368`, THIM).
+**Proof.** Cells from the VK prefix bound; split at `√T`: below, the trivial exponent `(1−2ε)/2`
+(absorbed since `σ/log → 0`); above, `σ(n) ≥ (4/9)σ(T)`.
+**Meaning.** Quantifies README §5 ("the bound is carried by the pronic weighting below the first
+period"): unconditionally the prefix receiver is smaller than the period energy by exactly the VK
+factor. **Lean.** `BezoutValuationIncidence/ReceiverGrowthBelowHalfDampingAgainstThePeriodEnergy.lean`:
+`eventually_receiver_le_growth`, `eventually_receiver_le_mul_periodEnergy`; split into small lemmas to
+stay inside the default heartbeat budget; standard axioms; wired.
+
+### C7 — multiplicative weights are decided at the primes on the band (DONE, Lean)
+**Statement.** For multiplicative `|f| ≤ 1`: if `f(p) = −1` at every prime (μ, λ, …) the receiver of
+`f d^{-ε}` is bounded uniformly on the VK band; if `f(p) = +1` and `f ≥ 0`, it is
+`≥ (log(T+1) − log 100)/1024` for every `0 < ε ≤ 1/2`.
+**Proof.** `f = (f⋆1) ⋆ μ`, `(f⋆1)(q)q^{-ε}` in the critical Wiener algebra with mass `G_ε ≤ G_{1/4}`;
+THIM's finite convolution law `‖A_{g⋆c}‖ ≤ G‖A_c‖ + (√2+1)G|m_c|` with `0 < ρ_ε ≤ 1`; for `+1`, `f ≥ μ²`
+and the squarefree drift. **Lean.** `BezoutValuationIncidence/MultiplicativeWeightsAreDecidedAtThePrimesOnTheBand.lean`:
+`exists_receiver_le_on_vinogradovKorobovBand_of_primes_neg_one`, `receiver_ge_log_of_primes_one`;
+standard axioms; wired.
+
 ## Log
 - 2026-10-21 — card created; C1 paper proof written; Lean module
   `BezoutValuationIncidence/ReceiverBoundedInTheZeroFreeBandBelowHalfDamping.lean` started.
 - 2026-10-21 — C1 formalized and wired; C2 (VK band) formalized and wired.
 - 2026-10-21 — C3 (parity pair on the band) formalized and wired.
+- 2026-10-21 — C4 killed (duplicate), C5 killed (dominated), C6 formalized and wired.
+- 2026-10-21 — C7 formalized and wired.

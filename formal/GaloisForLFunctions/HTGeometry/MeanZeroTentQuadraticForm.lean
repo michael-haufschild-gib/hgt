@@ -386,7 +386,7 @@ theorem norm_integral_integral_mul_tentMixture_le {h : ℝ → ℝ} (hh : Contin
       by_cases hq : q ∈ (Icc (-R) R ×ˢ Icc (-R) R) ×ˢ Ioc 0 δ
       · rw [indicator_of_mem hq]
         obtain ⟨⟨⟨h1, h2⟩, h3, h4⟩, h5, h6⟩ := hq
-        simp only [K, norm_mul, Complex.norm_conj, Complex.norm_real, Real.norm_eq_abs, abs_mul]
+        simp only [K, norm_mul, Complex.norm_conj, Complex.norm_real, Real.norm_eq_abs]
         have hmax : |max (|q.1.2 - q.1.1| - q.2) 0| ≤ 2 * R := by
           rw [abs_of_nonneg (le_max_right _ _)]
           have : |q.1.2 - q.1.1| ≤ 2 * R := by rw [abs_le]; constructor <;> linarith

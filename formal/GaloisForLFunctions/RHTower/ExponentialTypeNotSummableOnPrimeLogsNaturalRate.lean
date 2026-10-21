@@ -547,6 +547,111 @@ theorem primeWindow_sum_ge_of_window_value {Φ : ℂ → ℂ} (hΦ : Differentia
         mul_le_mul_of_nonneg_left hθwin (div_nonneg hnn hlogpos.le)
     _ ≤ _ := hsum
 
+/-! ## Assembly: from window data to the unbounded prime sum -/
+
+/-- **Assembly.**  Let `[x, x+1]` be cut into `N` windows of length `h = 1/N`, let
+`D = C e^{ρ(x+3)}` be the Lipschitz constant of `Φ` on `[x, x+2]`, and suppose
+`m ≤ ∫_0^1 ‖Φ(x+t)‖ dt` with `hD ≤ m/4`.  If every window of `(e^x, e^{x+1}]` carries the
+Chebyshev mass of the short-interval theorem, the prime sum up to `e^{x+1}` is at least
+`e^{−σ(x+1)} e^x (m/2) / (4(x+1))`; so if this exceeds `M + 1`, the prime sum exceeds `M`. -/
+theorem exists_primeLogWeightedSum_gt_of_window_data {Φ : ℂ → ℂ} (hΦ : Differentiable ℂ Φ)
+    {C ρ σ : ℝ} (hC : 0 ≤ C) (hρ : 0 ≤ ρ) (hgrow : ∀ ξ : ℂ, ‖Φ ξ‖ ≤ C * Real.exp (ρ * ‖ξ‖))
+    (hσ : 0 ≤ σ) {x h : ℝ} (hx0 : 0 ≤ x) (hh0 : 0 < h) {N : ℕ} (hN0 : 0 < N)
+    (hNh : (N : ℝ) * h = 1) {α X₁ : ℝ}
+    (hθ : ∀ y L : ℝ, X₁ ≤ y → 0 ≤ L →
+      (L - (y + L) ^ α) / 2 ≤ Chebyshev.theta (y + L) - Chebyshev.theta y)
+    (hα0 : 0 ≤ α) (hX₁ : X₁ ≤ Real.exp x) (hα : Real.exp (x + 1) ^ α ≤ Real.exp x * h / 2)
+    {m : ℝ} (hmint : m ≤ ∫ t in (0 : ℝ)..1, ‖Φ (x + t)‖)
+    (hhD : h * (C * Real.exp (ρ * (x + 3))) ≤ m / 4) {M : ℝ}
+    (hM : M + 1 ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1)) * (m / 2)) :
+    ∃ N' : ℕ, M < primeLogWeightedSum Φ σ N' := by
+  obtain ⟨f, hfdef⟩ : ∃ f : ℝ → ℝ, ∀ t : ℝ, f t = ‖Φ (x + t)‖ := ⟨_, fun _ => rfl⟩
+  have hfc : Continuous f := by
+    rw [show f = fun t : ℝ => ‖Φ (x + t)‖ from funext hfdef]
+    exact (hΦ.continuous.comp (continuous_const.add continuous_ofReal)).norm
+  have hmint' : m ≤ ∫ t in (0 : ℝ)..1, f t := by simpa only [hfdef] using hmint
+  obtain ⟨D, hD⟩ : ∃ D : ℝ, D = C * Real.exp (ρ * (x + 3)) := ⟨_, rfl⟩
+  have hD0 : 0 ≤ D := by rw [hD]; positivity
+  rw [← hD] at hhD
+  -- the Lipschitz property of `f` on `[0, 1]`
+  have hlip : ∀ u v : ℝ, 0 ≤ u → u ≤ v → v ≤ 1 → f v ≤ f u + D * (v - u) := by
+    intro u v hu huv hv1
+    have hsub := norm_sub_le_of_exponentialType hΦ hC hρ hgrow (x := x) (u := x + u)
+      (v := x + v) hx0 (by linarith) (by linarith) (by linarith)
+    rw [Complex.ofReal_add, Complex.ofReal_add, ← hD] at hsub
+    rw [hfdef, hfdef]
+    calc ‖Φ (x + v)‖ ≤ ‖Φ (x + u)‖ + ‖Φ (x + v) - Φ (x + u)‖ := by
+          have := norm_sub_norm_le (Φ (x + v)) (Φ (x + u))
+          linarith
+      _ ≤ ‖Φ (x + u)‖ + D * (x + v - (x + u)) := by gcongr
+      _ = ‖Φ (x + u)‖ + D * (v - u) := by ring
+  -- the lower Riemann sum
+  have hriemann := integral_le_sum_window_values_add hfc hN0 hD0 hlip
+  have hh : h = 1 / N := by
+    field_simp
+    linarith
+  rw [← hh] at hriemann
+  -- the per-window lower bounds `m_k` and their weighted sum
+  obtain ⟨mk, hmkdef⟩ : ∃ mk : ℕ → ℝ, ∀ k : ℕ, mk k = max 0 (f (k * h) - h * D) :=
+    ⟨_, fun _ => rfl⟩
+  have hmk0 : ∀ k, 0 ≤ mk k := fun k => by rw [hmkdef]; exact le_max_left _ _
+  have hmksum : m / 2 ≤ ∑ k ∈ range N, h * mk k := by
+    have h1 : ∑ k ∈ range N, h * (f (k * h) - h * D) ≤ ∑ k ∈ range N, h * mk k :=
+      sum_le_sum fun k _ => by
+        rw [hmkdef]
+        exact mul_le_mul_of_nonneg_left (le_max_right _ _) hh0.le
+    have h2 : ∑ k ∈ range N, h * (f (k * h) - h * D)
+        = (∑ k ∈ range N, h * f (k * h)) - h * D := by
+      simp only [mul_sub, sum_sub_distrib, sum_const, card_range, nsmul_eq_mul]
+      rw [← mul_assoc, ← mul_assoc, hNh, one_mul]
+    linarith
+  clear hmint hmint' hriemann hlip hfc
+  -- the prime windows `(Y k, Y (k+1)]`
+  obtain ⟨Y, hYdef⟩ : ∃ Y : ℕ → ℝ, ∀ k : ℕ, Y k = Real.exp (x + k * h) := ⟨_, fun _ => rfl⟩
+  have hYmono : Monotone Y := fun i j hij => by
+    rw [hYdef, hYdef]
+    exact Real.exp_le_exp.mpr
+      (add_le_add le_rfl (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij) hh0.le))
+  -- the lower bound for each prime window
+  have hwin : ∀ k ∈ range N,
+      Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (Real.exp x * h / 4)
+        ≤ ∑ p ∈ Finset.Ioc ⌊Y k⌋₊ ⌊Y (k + 1)⌋₊,
+            if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0 := by
+    intro k hk
+    have hkh : (k : ℝ) * h + h ≤ 1 := by
+      have : ((k + 1 : ℕ) : ℝ) ≤ N := by exact_mod_cast Finset.mem_range.mp hk
+      calc (k : ℝ) * h + h = ((k + 1 : ℕ) : ℝ) * h := by push_cast; ring
+        _ ≤ N * h := mul_le_mul_of_nonneg_right this hh0.le
+        _ = 1 := hNh
+    have h := primeWindow_sum_ge_of_window_value hΦ hC hρ hgrow hσ hx0 hh0 hkh hθ hα0 hX₁ hα
+    rw [← hD, ← hfdef, ← hmkdef, ← hYdef, ← hYdef] at h
+    exact h
+  -- the window sums merge into one prime sum
+  have hmerge := sum_range_sum_Ioc_eq_sum_Ioc
+    (f := fun p : ℕ => if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0)
+    (b := fun k => ⌊Y k⌋₊) (fun i j hij => Nat.floor_le_floor (hYmono hij)) N
+  have hchain : ∑ k ∈ range N, Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (Real.exp x * h / 4)
+      ≤ primeLogWeightedSum Φ σ (⌊Y N⌋₊ + 1) := by
+    calc ∑ k ∈ range N, Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (Real.exp x * h / 4)
+        ≤ ∑ k ∈ range N, ∑ p ∈ Finset.Ioc ⌊Y k⌋₊ ⌊Y (k + 1)⌋₊,
+            (if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0) := sum_le_sum hwin
+      _ = ∑ p ∈ Finset.Ioc ⌊Y 0⌋₊ ⌊Y N⌋₊,
+            (if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0) := hmerge
+      _ ≤ primeLogWeightedSum Φ σ (⌊Y N⌋₊ + 1) := window_sum_le_primeLogWeightedSum Φ σ _ _
+  refine ⟨⌊Y N⌋₊ + 1, lt_of_lt_of_le ?_ hchain⟩
+  have hx1 : (0 : ℝ) < x + 1 := by linarith
+  have hfactor : ∑ k ∈ range N,
+      Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (Real.exp x * h / 4)
+      = Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1)) * ∑ k ∈ range N, h * mk k := by
+    rw [mul_sum]
+    refine sum_congr rfl fun k _ => ?_
+    field_simp
+  rw [hfactor]
+  calc M < M + 1 := by linarith
+    _ ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1)) * (m / 2) := hM
+    _ ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1)) * ∑ k ∈ range N, h * mk k :=
+        mul_le_mul_of_nonneg_left hmksum (by positivity)
+
 /-! ## The prime sums are unbounded at the natural rate -/
 
 /-- **The prime-sum lower bound at the natural rate.**  For `Φ ≢ 0` entire with
@@ -567,41 +672,30 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
     exact norm_le_zero_iff.mp (le_trans h h2)
   have hC0 : C ≠ 0 := hC.ne'
   -- the exponents
-  set δ : ℝ := min ((1 - σ - ρ) / 4) (min ((5 / 12 - 2 * ρ) / 4) (1 / 24)) with hδ
-  have hδ0 : 0 < δ := lt_min (by linarith) (lt_min (by linarith) (by norm_num))
-  have hδ1 : δ ≤ (1 - σ - ρ) / 4 := min_le_left _ _
-  have hδ2 : δ ≤ (5 / 12 - 2 * ρ) / 4 := (min_le_right _ _).trans (min_le_left _ _)
-  clear_value δ
-  set γ : ℝ := 2 * ρ + 2 * δ with hγ
+  obtain ⟨δ, hδ0, hδ1, hδ2⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ (1 - σ - ρ) / 4 ∧ δ ≤ (5 / 12 - 2 * ρ) / 4 :=
+    ⟨min ((1 - σ - ρ) / 4) ((5 / 12 - 2 * ρ) / 4), lt_min (by linarith) (by linarith),
+      min_le_left _ _, min_le_right _ _⟩
+  obtain ⟨γ, hγ⟩ : ∃ γ : ℝ, γ = 2 * ρ + 2 * δ := ⟨_, rfl⟩
   have hγ0 : 0 < γ := by rw [hγ]; linarith
-  have hγ5 : γ < 5 / 12 := by rw [hγ]; linarith
-  clear_value γ
-  set β : ℝ := 1 - γ with hβ
-  have hβ7 : 7 / 12 < β := by rw [hβ]; linarith
-  clear_value β
-  set α : ℝ := (7 / 12 + β) / 2 with hα
-  have hα7 : 7 / 12 < α := by rw [hα]; linarith
-  have hαβ : α < β := by rw [hα]; linarith
-  have hα1 : α < 1 := by rw [hα, hβ]; linarith
-  clear_value α
-  set e : ℝ := 1 - σ - ρ - δ with he
+  obtain ⟨β, hβ⟩ : ∃ β : ℝ, β = 1 - γ := ⟨_, rfl⟩
+  have hβ7 : 7 / 12 < β := by rw [hβ, hγ]; linarith
+  obtain ⟨α, hα'⟩ : ∃ α : ℝ, α = (7 / 12 + β) / 2 := ⟨_, rfl⟩
+  have hα7 : 7 / 12 < α := by rw [hα']; linarith
+  have hαβ : α < β := by rw [hα']; linarith
+  have hα1 : α < 1 := by rw [hα', hβ]; linarith
+  obtain ⟨e, he⟩ : ∃ e : ℝ, e = 1 - σ - ρ - δ := ⟨_, rfl⟩
   have he0 : 0 < e := by rw [he]; linarith
-  clear_value e
   -- the prime-mass window theorem
   obtain ⟨X₁, hX₁1, hθ⟩ := exists_theta_window_lower_seven_twelfths hα7 hα1
   -- constants
-  set c₁ : ℝ := Real.exp (-(4 * ρ + δ)) / (4 * C) with hc₁
-  have hc₁0 : 0 < c₁ := by positivity
-  clear_value c₁
-  set m₀ : ℝ := Real.exp (-(ρ + δ)) with hm₀
-  have hm₀0 : 0 < m₀ := Real.exp_pos _
-  clear_value m₀
-  set c₂ : ℝ := Real.exp (-σ) * m₀ / 8 with hc₂
-  have hc₂0 : 0 < c₂ := by positivity
-  clear_value c₂
-  set c₃ : ℝ := c₂ * (e / 2) * Real.exp (-(e / 2)) with hc₃
-  have hc₃0 : 0 < c₃ := by positivity
-  clear_value c₃
+  obtain ⟨c₁, hc₁⟩ : ∃ c₁ : ℝ, c₁ = Real.exp (-(4 * ρ + δ)) / (4 * C) := ⟨_, rfl⟩
+  have hc₁0 : 0 < c₁ := by rw [hc₁]; positivity
+  obtain ⟨m₀, hm₀⟩ : ∃ m₀ : ℝ, m₀ = Real.exp (-(ρ + δ)) := ⟨_, rfl⟩
+  have hm₀0 : 0 < m₀ := by rw [hm₀]; exact Real.exp_pos _
+  obtain ⟨c₂, hc₂⟩ : ∃ c₂ : ℝ, c₂ = Real.exp (-σ) * m₀ / 8 := ⟨_, rfl⟩
+  have hc₂0 : 0 < c₂ := by rw [hc₂]; positivity
+  obtain ⟨c₃, hc₃⟩ : ∃ c₃ : ℝ, c₃ = c₂ * (e / 2) * Real.exp (-(e / 2)) := ⟨_, rfl⟩
+  have hc₃0 : 0 < c₃ := by rw [hc₃]; positivity
   -- the thresholds in `y`
   have hev : ∀ᶠ y : ℝ in atTop, X₁ ≤ y ∧ 1 ≤ y ∧ c₁ ≤ y ^ γ ∧
       4 * Real.exp α / c₁ ≤ y ^ (β - α) ∧ (M + 1) / c₃ ≤ y ^ (e / 2) := by
@@ -610,59 +704,55 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
       (((tendsto_rpow_atTop (by linarith)).eventually_ge_atTop _).and
       ((tendsto_rpow_atTop (by positivity)).eventually_ge_atTop _))))
   obtain ⟨Y₀, hY₀⟩ := eventually_atTop.mp hev
+  clear hev
   -- a large window on which the integral of `‖Φ‖` is not small
   obtain ⟨x, hxY, hint⟩ :=
     exists_window_integral_ge_of_exponentialType hΦ hρ hgrow hne hδ0 (max Y₀ 0)
   have hx0 : 0 ≤ x := le_trans (le_max_right _ _) hxY
-  set y : ℝ := Real.exp x with hy
-  have hy0 : 0 < y := Real.exp_pos x
+  obtain ⟨y, hy⟩ : ∃ y : ℝ, y = Real.exp x := ⟨_, rfl⟩
+  have hy0 : 0 < y := by rw [hy]; exact Real.exp_pos x
   have hxy : x + 1 ≤ y := by rw [hy]; exact Real.add_one_le_exp x
   have hyY : Y₀ ≤ y := by
     calc Y₀ ≤ max Y₀ 0 := le_max_left _ _
       _ ≤ x := hxY
       _ ≤ y := by linarith
   obtain ⟨hyX₁, hy1, hyc₁, hyαβ, hyM⟩ := hY₀ y hyY
+  clear hY₀
   have hlogy : Real.log y = x := by rw [hy]; exact Real.log_exp x
   have hypow : ∀ s : ℝ, y ^ s = Real.exp (s * x) := fun s => by
     rw [Real.rpow_def_of_pos hy0, hlogy, mul_comm]
-  clear_value y
   -- the window-integral lower bound `m`
-  set f : ℝ → ℝ := fun t => ‖Φ (x + t)‖ with hf
-  have hfc : Continuous f := (hΦ.continuous.comp (continuous_const.add continuous_ofReal)).norm
-  have hfdef : ∀ t : ℝ, f t = ‖Φ (x + t)‖ := fun t => rfl
-  clear_value f
-  set m : ℝ := m₀ * Real.exp (-((ρ + δ) * x)) with hm
-  have hm0 : 0 < m := by positivity
-  have hmint : m ≤ ∫ t in (0 : ℝ)..1, f t := by
-    have h : Real.exp (-((ρ + δ) * x)) / Real.exp (ρ + δ) ≤ ∫ t in (0 : ℝ)..1, f t := by
+  obtain ⟨m, hm⟩ : ∃ m : ℝ, m = m₀ * Real.exp (-((ρ + δ) * x)) := ⟨_, rfl⟩
+  have hmint : m ≤ ∫ t in (0 : ℝ)..1, ‖Φ (x + t)‖ := by
+    have h : Real.exp (-((ρ + δ) * x)) / Real.exp (ρ + δ) ≤ ∫ t in (0 : ℝ)..1, ‖Φ (x + t)‖ := by
       rw [div_le_iff₀ (Real.exp_pos _)]
       linarith [hint]
     rw [← Real.exp_sub] at h
     rw [hm, hm₀, ← Real.exp_add]
     convert h using 2
     ring
-  clear_value m
+  clear hint
   -- the window length `η` and the window count `N`
-  set η : ℝ := c₁ * Real.exp (-(γ * x)) with hη
-  have hη0 : 0 < η := by positivity
+  obtain ⟨η, hη⟩ : ∃ η : ℝ, η = c₁ * Real.exp (-(γ * x)) := ⟨_, rfl⟩
+  have hη0 : 0 < η := by rw [hη]; positivity
   have hexpγ : Real.exp (-(γ * x)) = (y ^ γ)⁻¹ := by rw [hypow, ← Real.exp_neg]
   have hη1 : η ≤ 1 := by
     rw [hη, hexpγ, mul_inv_le_iff₀ (by positivity), one_mul]
     exact hyc₁
-  clear_value η
-  set N : ℕ := ⌈1 / η⌉₊ with hN
-  have hN0 : 0 < N := Nat.ceil_pos.mpr (by positivity)
-  set h : ℝ := 1 / N with hh
-  have hh0 : 0 < h := by positivity
+  obtain ⟨N, hN⟩ : ∃ N : ℕ, N = ⌈1 / η⌉₊ := ⟨_, rfl⟩
+  have hN0 : 0 < N := by rw [hN]; exact Nat.ceil_pos.mpr (by positivity)
+  obtain ⟨h, hh⟩ : ∃ h : ℝ, h = 1 / N := ⟨_, rfl⟩
+  have hh0 : 0 < h := by rw [hh]; positivity
   have hNh : (N : ℝ) * h = 1 := by rw [hh]; field_simp
   have hhη : h ≤ η := by
     rw [hh, div_le_iff₀ (by positivity)]
     have h1 := Nat.le_ceil (1 / η)
-    rw [div_le_iff₀ hη0] at h1
+    rw [← hN, div_le_iff₀ hη0] at h1
     linarith
   have hηh : η / 2 ≤ h := by
     rw [hh, le_div_iff₀ (by positivity)]
     have h1 := Nat.ceil_lt_add_one (by positivity : 0 ≤ 1 / η)
+    rw [← hN] at h1
     have h2 : (N : ℝ) ≤ 2 / η := by
       calc (N : ℝ) ≤ 1 / η + 1 := h1.le
         _ ≤ 1 / η + 1 / η := by
@@ -672,18 +762,11 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
         _ = 2 / η := by ring
     calc η / 2 * N ≤ η / 2 * (2 / η) := by gcongr
       _ = 1 := by field_simp
-  clear_value N
-  clear_value h
-  -- the Lipschitz constant on `[x, x+2]` and the Riemann-sum error
-  set D : ℝ := C * Real.exp (ρ * (x + 3)) with hD
-  have hD0 : 0 ≤ D := by positivity
-  have hhD : h * D ≤ m / 4 := by
-    calc h * D ≤ η * D := by gcongr
-      _ = Real.exp (-(4 * ρ + δ)) / (4 * C) * Real.exp (-(γ * x))
-            * (C * Real.exp (ρ * (x + 3))) := by
-          rw [hη, hD, hc₁]
+  -- the Riemann-sum error is at most `m/4`
+  have hhD : h * (C * Real.exp (ρ * (x + 3))) ≤ m / 4 := by
+    calc h * (C * Real.exp (ρ * (x + 3))) ≤ η * (C * Real.exp (ρ * (x + 3))) := by gcongr
       _ = m₀ / 4 * Real.exp (-((ρ + δ) * x)) * Real.exp (-(δ * x)) := by
-          rw [hm₀, hγ]
+          rw [hη, hc₁, hm₀, hγ]
           field_simp
           simp only [← Real.exp_add]
           ring_nf
@@ -691,47 +774,6 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
           gcongr
           exact Real.exp_le_one_iff.mpr (by nlinarith)
       _ = m / 4 := by rw [hm]; ring
-  clear_value D
-  -- the Lipschitz property of `f` on `[0, 1]`
-  have hlip : ∀ u v : ℝ, 0 ≤ u → u ≤ v → v ≤ 1 → f v ≤ f u + D * (v - u) := by
-    intro u v hu huv hv1
-    have hsub := norm_sub_le_of_exponentialType hΦ hC.le hρ hgrow (x := x) (u := x + u)
-      (v := x + v) hx0 (by linarith) (by linarith) (by linarith)
-    rw [Complex.ofReal_add, Complex.ofReal_add] at hsub
-    rw [hD, hfdef, hfdef]
-    calc ‖Φ (x + v)‖ ≤ ‖Φ (x + u)‖ + ‖Φ (x + v) - Φ (x + u)‖ := by
-          have := norm_sub_norm_le (Φ (x + v)) (Φ (x + u))
-          linarith
-      _ ≤ ‖Φ (x + u)‖ + C * Real.exp (ρ * (x + 3)) * (x + v - (x + u)) := by gcongr
-      _ = ‖Φ (x + u)‖ + C * Real.exp (ρ * (x + 3)) * (v - u) := by ring
-  -- the lower Riemann sum
-  have hriemann := integral_le_sum_window_values_add hfc hN0 hD0 hlip
-  rw [← hh] at hriemann
-  -- the per-window lower bounds `m_k` and their weighted sum
-  set mk : ℕ → ℝ := fun k => max 0 (f (k * h) - h * D) with hmk
-  have hmkdef : ∀ k, mk k = max 0 (f (k * h) - h * D) := fun k => rfl
-  clear_value mk
-  have hmk0 : ∀ k, 0 ≤ mk k := fun k => by rw [hmkdef]; exact le_max_left _ _
-  have hmksum : m / 2 ≤ ∑ k ∈ range N, h * mk k := by
-    have h1 : ∑ k ∈ range N, h * (f (k * h) - h * D) ≤ ∑ k ∈ range N, h * mk k :=
-      sum_le_sum fun k _ => by
-        rw [hmkdef]
-        exact mul_le_mul_of_nonneg_left (le_max_right _ _) hh0.le
-    have h2 : ∑ k ∈ range N, h * (f (k * h) - h * D)
-        = (∑ k ∈ range N, h * f (k * h)) - h * D := by
-      simp only [mul_sub, sum_sub_distrib, sum_const, card_range, nsmul_eq_mul]
-      rw [← mul_assoc, ← mul_assoc, hNh, one_mul]
-    linarith
-  clear hint hmint hriemann hlip hfc
-  -- the prime windows `(Y k, Y (k+1)]`
-  set Y : ℕ → ℝ := fun k => Real.exp (x + k * h) with hY
-  have hYdef : ∀ k : ℕ, Y k = Real.exp (x + k * h) := fun k => rfl
-  clear_value Y
-  have hYmono : Monotone Y := fun i j hij => by
-    rw [hYdef, hYdef]
-    exact Real.exp_le_exp.mpr
-      (add_le_add le_rfl (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij) hh0.le))
-  have hYN : Y N = Real.exp (x + 1) := by rw [hYdef, hNh]
   -- the window-size condition `e^{(x+1)α} ≤ y h / 2`
   have hα : Real.exp (x + 1) ^ α ≤ Real.exp x * h / 2 := by
     rw [← hy]
@@ -754,43 +796,8 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
       _ = (η / 2) * y / 2 := by ring
       _ ≤ h * y / 2 := by gcongr
       _ = y * h / 2 := by ring
-  -- the lower bound for each prime window
-  have hwin : ∀ k ∈ range N,
-      Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (y * h / 4)
-        ≤ ∑ p ∈ Finset.Ioc ⌊Y k⌋₊ ⌊Y (k + 1)⌋₊,
-            if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0 := by
-    intro k hk
-    have hkh : (k : ℝ) * h + h ≤ 1 := by
-      have : ((k + 1 : ℕ) : ℝ) ≤ N := by exact_mod_cast Finset.mem_range.mp hk
-      calc (k : ℝ) * h + h = ((k + 1 : ℕ) : ℝ) * h := by push_cast; ring
-        _ ≤ N * h := mul_le_mul_of_nonneg_right this hh0.le
-        _ = 1 := hNh
-    have h := primeWindow_sum_ge_of_window_value hΦ hC.le hρ hgrow hσ hx0 hh0 hkh hθ
-      (le_trans (by norm_num) hα7.le) (hy ▸ hyX₁) hα
-    rw [← hy, ← hD, ← hfdef, ← hmkdef, ← hYdef, ← hYdef] at h
-    exact h
-  -- the window sums merge into one prime sum
-  have hmerge := sum_range_sum_Ioc_eq_sum_Ioc
-    (f := fun p : ℕ => if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0)
-    (b := fun k => ⌊Y k⌋₊) (fun i j hij => Nat.floor_le_floor (hYmono hij)) N
-  have hchain : ∑ k ∈ range N, Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (y * h / 4)
-      ≤ primeLogWeightedSum Φ σ (⌊Y N⌋₊ + 1) := by
-    calc ∑ k ∈ range N, Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (y * h / 4)
-        ≤ ∑ k ∈ range N, ∑ p ∈ Finset.Ioc ⌊Y k⌋₊ ⌊Y (k + 1)⌋₊,
-            (if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0) := sum_le_sum hwin
-      _ = ∑ p ∈ Finset.Ioc ⌊Y 0⌋₊ ⌊Y N⌋₊,
-            (if p.Prime then (p : ℝ) ^ (-σ) * ‖Φ (Real.log p)‖ else 0) := hmerge
-      _ ≤ primeLogWeightedSum Φ σ (⌊Y N⌋₊ + 1) := window_sum_le_primeLogWeightedSum Φ σ _ _
-  refine ⟨⌊Y N⌋₊ + 1, lt_of_lt_of_le ?_ hchain⟩
-  -- the explicit power lower bound
+  -- the explicit power lower bound `M + 1 ≤ e^{−σ(x+1)} y (m/2) / (4(x+1))`
   have hx1 : (0 : ℝ) < x + 1 := by linarith
-  have hfactor : ∑ k ∈ range N, Real.exp (-(σ * (x + 1))) * mk k / (x + 1) * (y * h / 4)
-      = Real.exp (-(σ * (x + 1))) * y / (4 * (x + 1)) * ∑ k ∈ range N, h * mk k := by
-    rw [mul_sum]
-    refine sum_congr rfl fun k _ => ?_
-    field_simp
-    ring
-  rw [hfactor]
   have hlog3 : x + 1 ≤ (Real.exp 1 * y) ^ (e / 2) / (e / 2) := by
     have := Real.log_le_rpow_div (by positivity : 0 ≤ Real.exp 1 * y) (by positivity : 0 < e / 2)
     rwa [Real.log_mul (Real.exp_pos 1).ne' hy0.ne', Real.log_exp, hlogy, add_comm] at this
@@ -798,21 +805,29 @@ theorem exists_primeLogWeightedSum_gt_of_lt_one_sub {Φ : ℂ → ℂ} (hΦ : Di
     rw [← Real.rpow_add hy0]
     congr 1
     ring
-  calc M < M + 1 := by linarith
-    _ ≤ c₃ * y ^ (e / 2) := by
-        rw [mul_comm]
-        exact (div_le_iff₀ hc₃0).mp hyM
-    _ = c₂ * y ^ e / ((Real.exp 1 * y) ^ (e / 2) / (e / 2)) := by
-        rw [hc₃, Real.mul_rpow (Real.exp_pos 1).le hy0.le, ← Real.exp_mul, one_mul, hye,
-          Real.exp_neg]
-        field_simp
-    _ ≤ c₂ * y ^ e / (x + 1) := div_le_div_of_nonneg_left (by positivity) hx1 hlog3
-    _ = Real.exp (-(σ * (x + 1))) * y / (4 * (x + 1)) * (m / 2) := by
-        rw [hc₂, hm, hm₀, hypow, hy, he]
-        field_simp
-        simp only [← Real.exp_add]
-        ring_nf
-    _ ≤ Real.exp (-(σ * (x + 1))) * y / (4 * (x + 1)) * ∑ k ∈ range N, h * mk k := by
-        gcongr
+  have hexp3 : Real.exp (-(σ * (x + 1))) * Real.exp x * Real.exp (-((ρ + δ) * x))
+      = Real.exp (-σ) * Real.exp ((1 - σ - ρ - δ) * x) := by
+    rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+    congr 1
+    ring
+  have hid : Real.exp (-(σ * (x + 1))) * y / (4 * (x + 1)) * (m / 2) = c₂ * y ^ e / (x + 1) := by
+    have h1 : Real.exp (-(σ * (x + 1))) * y * m / 8 = c₂ * y ^ e := by
+      rw [hm, hc₂, hypow, he, hy]
+      linear_combination (m₀ / 8) * hexp3
+    rw [← h1, div_mul_div_comm, div_div]
+    congr 1
+    ring
+  have hM : M + 1 ≤ Real.exp (-(σ * (x + 1))) * Real.exp x / (4 * (x + 1)) * (m / 2) := by
+    rw [← hy, hid]
+    calc M + 1 ≤ c₃ * y ^ (e / 2) := by
+          rw [mul_comm]
+          exact (div_le_iff₀ hc₃0).mp hyM
+      _ = c₂ * y ^ e / ((Real.exp 1 * y) ^ (e / 2) / (e / 2)) := by
+          rw [hc₃, Real.mul_rpow (Real.exp_pos 1).le hy0.le, ← Real.exp_mul, one_mul, hye,
+            Real.exp_neg]
+          field_simp
+      _ ≤ c₂ * y ^ e / (x + 1) := div_le_div_of_nonneg_left (by positivity) hx1 hlog3
+  exact exists_primeLogWeightedSum_gt_of_window_data hΦ hC.le hρ hgrow hσ hx0 hh0 hN0 hNh hθ
+    (le_trans (by norm_num) hα7.le) (hy ▸ hyX₁) hα hmint hhD hM
 
 end RHTower

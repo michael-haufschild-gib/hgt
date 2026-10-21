@@ -50,7 +50,7 @@ theorem tendsto_vkScale_div_log : Tendsto (fun x : ℝ => vkScale x / Real.log x
 theorem vkScale_nonneg {x : ℝ} (hx : 1 ≤ Real.log x) : 0 ≤ vkScale x :=
   mul_nonneg (Real.rpow_nonneg (by linarith) _) (Real.rpow_nonneg (Real.log_nonneg hx) _)
 
-theorem one_le_log_of_three_le {n : ℕ} (hn : 3 ≤ n) : 1 ≤ Real.log n := by
+theorem one_le_log_natCast_of_three_le {n : ℕ} (hn : 3 ≤ n) : 1 ≤ Real.log n := by
   have h3 : (3 : ℝ) ≤ n := by exact_mod_cast hn
   have he := Real.exp_one_lt_d9
   rw [← Real.log_exp 1]
@@ -209,7 +209,7 @@ theorem eventually_receiver_le_growth {ε : ℝ} (hε4 : 1 / 4 ≤ ε) (hε2 : �
       (hpre₀ ε hε4 hε2.le n (le_trans (le_max_left _ _) hn))
   have hcell' : ∀ n, N ≤ n → receiverCell ε n ≤ K ^ 2 * (n : ℝ) ^ (-(2 * ε)) := by
     intro n hn
-    have hvk := vkScale_nonneg (one_le_log_of_three_le (n := n) (hN3.trans hn))
+    have hvk := vkScale_nonneg (one_le_log_natCast_of_three_le (n := n) (hN3.trans hn))
     refine (hcell n hn).trans (mul_le_mul_of_nonneg_left ?_ (sq_nonneg K))
     exact mul_le_of_le_one_right (Real.rpow_nonneg (Nat.cast_nonneg _) _)
       (Real.exp_le_one_iff.mpr (by nlinarith))

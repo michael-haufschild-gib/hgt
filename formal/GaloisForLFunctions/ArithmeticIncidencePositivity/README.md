@@ -209,6 +209,7 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Light-cone band | `2r − 2δ ≤ log n < 2r` | `lightConeBand` |
 | Thin band | `2r − 1/6 ≤ log n ≤ 2r − 1/24` | `thinBand` |
 | Edge tent | `max(ε/2 − abs(x − (r − ε/2)), 0)` and its odd extension | `edgeTent`, `edgeTentOdd` |
+| Prime side and strip mass | `n ≤ e^{2r}`; `m_n(F) = ∫_{log n − r}^{r} F²` (crossing strip) or `∫ F²` | `primeSide`, `atomStripMass` |
 
 **Words.**
 * **Pair `(x, y)`:** two points of the real line; **same-side** if `xy > 0`, **crossing** if
@@ -681,6 +682,19 @@ of the innermost strip once per atom.
     A global allocation must keep the even parts, which cancel the odd parts exactly on the edge
     tent.
 
+42. **The global shared-surplus allocation.** The prime side `Σ_n 2Λ(n)/√n ∫ F F(· + log n)` of an
+    odd test on `[−r, r]` is the finite sum over `n ≤ e^{2r}`: past `2r` the supports are disjoint
+    (`integral_mul_shift_eq_zero_of_lt`, `tsum_primeShift_eq_sum_primeSide`). For every `r ≥ 2` and
+    `0 < δ ≤ e^{−r}/(16r)` it is at most `T(r − 2δ, r) + Σ_{n ≤ e^{2r}, n ∉ cone} 2Λ(n)/√n m_n(F)`
+    (`tsum_primeShift_le_globalAllocation`, `C¹` form `…_of_contDiff`). The atoms of the light cone
+    share one copy of the surplus (mechanism 38). Every other atom is charged once, to the mass
+    `m_n(F)` of its own strip, `∫_{log n − r}^{r} F²` on a crossing strip (the parity identity at
+    `t = −1`) and `∫ F²` otherwise (`atomStripMass`, `two_mul_primeShift_le_atomStripMass`). Every
+    atom of the prime side is allocated, and no pair of the surplus is counted twice. By mechanisms
+    39 and 41 the surplus share cannot be extended past the cone through odd parts. What remains is
+    to pay the strip masses, which is the prime–polar problem of the form, not an allocation of the
+    surplus.
+
 ---
 
 ## 4. Traps
@@ -753,7 +767,9 @@ of the innermost strip once per atom.
    between the chain construction and `2 log(4/ε) + 84`. (b) The exact width:
    with a Brun–Titchmarsh count the light cone widens to `δ ≍ e^{−r}`; a refutation at width
    `C e^{−r}` needs prime powers in `(N − C√N, N)`, a lower bound in square-root intervals. (c) The
-   signed allocation: whether `Σ_{band} 2Λ(n)/√n ∫ F F(· + log n) ≤ T` holds with the even parts kept.
+   strip masses of mechanism 42 with the even parts kept: whether
+   `Σ_{band} 2Λ(n)/√n ∫ F F(· + log n) ≤ T` holds signed. Paying all strip masses and the pole for
+   every odd test is the positivity of the odd zero form, that is, the Riemann Hypothesis.
    The band's charge is a Hankel form whose symbol is the Dirichlet polynomial
    `Σ_{band} Λ(n) n^{−1/2−iξ}`; the mean part is a gain. Heuristically the fluctuation is of the
    order of the surplus symbol `log ξ` when the zeros near height `ξ` lie on the line, and larger by
