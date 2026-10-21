@@ -68,8 +68,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.SquareRootThreshold
 
-open _root_.RHTower _root_.RHTower.Sieve GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
-  GaloisForLFunctions.HTGeometry
+open _root_.Zeta23 _root_.RHTower _root_.RHTower.Sieve
+  GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge GaloisForLFunctions.HTGeometry
 
 /-! ### 1. Prime-side routes -/
 
@@ -186,6 +186,40 @@ theorem zetaZeroWidth_le_iff_xiPoissonTraceVerticalTypeAtMost {σ : ℝ} (hσ : 
     zetaZeroWidth ≤ σ ↔ XiPoissonTraceVerticalTypeAtMost σ :=
   (zetaZeroWidth_le_iff_xiZeroHalfPlaneBound hσ).trans
     (xiPoissonTraceVerticalTypeAtMost_iff_xiZeroHalfPlaneBound hσ).symm
+
+/-! ### 3b. Zero-side routes: Lagarias' criterion and the local Bagchi criterion at width `σ` -/
+
+/-- **LA / XN / WD.** Lagarias' criterion at width `σ`: once `zetaZeroWidth ≤ σ`, the logarithmic
+derivative of `ξ` has nonnegative real part at every `s` with `Re s > ½ + σ` and `ξ(s) ≠ 0`. -/
+theorem re_logDeriv_xi_nonneg_of_zetaZeroWidth_le {σ : ℝ} (hσ : zetaZeroWidth ≤ σ) {s : ℂ}
+    (hs : 1 / 2 + σ < s.re) (hxi : xi s ≠ 0) : 0 ≤ (logDeriv xi s).re := by
+  have hs' : 1 / 2 < s.re := by linarith [zetaZeroWidth_nonneg]
+  refine re_logDeriv_xi_nonneg_of_strip_bound hs' hxi fun q => ?_
+  have h := abs_re_sub_half_le_zetaZeroWidth
+    (RHTower.CrossRouteReceiverBridges.xiZeroCopy_mem_zetaZeroConfig_carrier q)
+  have h1 : |(q.1 : ℂ).re - 1 / 2| < s.re - 1 / 2 := by linarith
+  have h2 : 0 ≤ |(q.1 : ℂ).re - 1 / 2| := abs_nonneg _
+  calc ((q.1 : ℂ).re - 1 / 2) ^ 2 = |(q.1 : ℂ).re - 1 / 2| ^ 2 := (sq_abs _).symm
+    _ < (s.re - 1 / 2) ^ 2 := by nlinarith
+
+/-- **BAG.** `zetaZeroWidth ≤ σ` iff every point of the strip right of `½ + σ` carries a closed
+disc on which `ζ` is strongly recurrent: the local Bagchi criterion at width `σ`. -/
+theorem zetaZeroWidth_le_iff_forall_exists_zetaDiscStronglyRecurrentOn {σ : ℝ} (hσ : 0 ≤ σ) :
+    zetaZeroWidth ≤ σ ↔ ∀ z : ℂ, 1 / 2 + σ < z.re → z.re < 1 →
+      ∃ r > 0, ZetaDiscStronglyRecurrentOn (Metric.closedBall z r) := by
+  rw [zetaZeroWidth_le_iff_re_le hσ]
+  constructor
+  · intro h z hz1 hz2
+    rw [exists_zetaDiscStronglyRecurrentOn_iff_ne_zero (by linarith) hz2]
+    intro hzero
+    have hmem : z ∈ zetaZeroConfig.carrier :=
+      show IsNontrivialZero z from ⟨hzero, by linarith, hz2⟩
+    linarith [h z hmem]
+  · intro h ρ hρ
+    by_contra hlt
+    have hlt' : 1 / 2 + σ < ρ.re := not_le.mp hlt
+    exact (exists_zetaDiscStronglyRecurrentOn_iff_ne_zero (by linarith) hρ.2.2).mp
+      (h ρ hlt' hρ.2.2) hρ.1
 
 /-! ### 4. Shifted `Ξ`: the cosine shifts past the width are Laguerre–Pólya -/
 

@@ -343,3 +343,31 @@ bound; whether GM's Theorem 1.1 survives with it is not examined.
   reflection `N ↦ T/N`; Hölder lengthening; dual large sieve with ratio multiplicities; Halász with the
   `|ζ|` kernel; pointwise twelfth moment) all stop at `|𝒯|^{3/2}T^{1/2}` or `|𝒯|^{11/6}T^{1/3}`; the `5/4`
   needs an input beyond these. Still blocked on the source.
+
+### Programme resumed (2026-10-21): sources and work split
+
+* Sources. Guth–Maynard is open (arXiv 2405.20552v2; Oxford ORA copy
+  `https://ora.ox.ac.uk/objects/uuid:ad11b8bf-ad2b-4ebf-a627-647f023c378f/files/s73666708v`). Heath-Brown 1979
+  (JLMS 20, DOI 10.1112/jlms/s2-20.1.8) and Jutila 1977 (Acta Arith. 32, `matwbn.icm.edu.pl/ksiazki/aa/aa32/aa3216.pdf`)
+  are behind bot walls for automated fetches (Wiley 403, Anubis challenge on matwbn); a browser download would
+  unblock them. The Warwick notes (Seth Hardy, Feb 2025, "Large values of Dirichlet polynomials: difference sets and
+  additive energy", `warwick.ac.uk/fac/sci/maths/people/staff/hardy/large_values_of_dirichlet_polynomials.pdf`) state
+  Heath-Brown's theorem verbatim — `Σ_{r,s≤R}|Σ_{n∼N} a_n n^{−i(t_r−t_s)}|² ≤ T^{o(1)}(R²N + RN² + R^{5/4}T^{1/2}N)`,
+  last term droppable for `N ∈ [T^{2/3}, T]` — and sketch its proof: majorant principle through
+  `Σ_{r,s}|Σ_n a_n n^{−i(t_r−t_s)}|² = Σ_{n,m} a_n ā_m |Σ_r (n/m)^{−it_r}|²`; Jutila's smoothed approximate functional
+  equation (`|Σ_n b_n n^{−it}| ≪ N^{1/2}∫_{−h²}^{h²}|Σ_{n≤T/πN} n^{−1/2+i(t+τ)}|dτ`, `b_n = e^{−(n/2N)^h} − e^{−(n/N)^h}`,
+  `h = log T`, `T^ε < |t| ≤ T`); Heath-Brown's Lemma 2 (monotonicity of `𝒜(N) = Σ_{r,s}|Σ_{n∼N} n^{−1/2−i(t_r−t_s)}|²`
+  in `N`, "white lie" form) with the corollary `𝒜(T/πN) ≤ T^{o(1)} R 𝒜(N)^{1/2}` (Cauchy–Schwarz, fourth moment,
+  divisor bound); and the bootstrap `𝒜(N) ≪ RN + T^{o(1)}R𝒜(N)^{1/2} ⇒ 𝒜(N) ≪ T^{o(1)}(RN + R²)`. The same notes
+  (§3) sketch the high-energy application: `E(S_V) ≤ V^{−2}|S_V| Σ_{t₁,t₂∈S_V}|Σ_{n∼N} n^{−i(t₁−t₂)}|²`, hence
+  `E(S_V) ≤ T^{o(1)}(|S_V|³NV^{−2} + |S_V|²N²V^{−2})` for `N ∈ (T^{2/3}, T]`.
+* Work split (five Lean agents, user-authorised): (1) Heath-Brown pair-sum theorem,
+  `RHTower/Sieve/HeathBrownPairSum*`; (2) Lemma 6.2 for `ζ` in Guth–Maynard form and the `S₂` reduction to (6.1),
+  `RHTower/ChenGuptaLiLemma62Principal*`, `RHTower/Sieve/GuthMaynardSTwoReduction*`; (3)–(5) Sections 7–11 of the
+  paper (Prop. 7.1–7.2, the `R̃` moments, the small-closed-set argument, the energy bound, Prop. 3.1 and the
+  reduction to Theorem 1.1), split after the statement extraction of pp. 20–45.
+* Consumers waiting on Theorem 1.1: `N(σ,T) ≪ T^{(30/13)(1−σ)+o(1)}` through the corpus's class-count machinery
+  (`ZetaZeroDensityEdgeRanges`, `class_count_*_of_exponent`, `ZetaZeroDensityTwelveFifths` as the template), then
+  primes in `(x, x + x^{17/30+ε}]` through `tendsto_tsum_zeroShortWeight_of_density` (any exponent `A < 4`), and the
+  prime-row dispersion regime of `BezoutValuationIncidence/CentredPrimeRowPassesTheCoherentBlockObstruction`
+  extends from `Q ≤ P^{12/7}` to `Q ≤ P^{30/17}`.

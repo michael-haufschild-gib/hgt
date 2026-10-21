@@ -23,6 +23,11 @@ has no zero on a disc `ball c₀ R₀` containing all the discs `closedBall (z i
   argument runs with the random linear prime sum taken in the direct sum `DiscTuple ι`: Chebyshev
   controls its norm, hence every component at once, and the per-disc stability lemma then holds
   on every disc.
+
+Both statements are proved for an arbitrary target `g` continuous on `K` whose logarithm tuple
+lies in `primeSpan` (`exists_pos_density_eulerTargetReturnSet_exp_union`,
+`exists_uniform_pos_density_eulerTargetReturnSet_exp_union`); `ζ` is the case where the zero-free
+disc provides the logarithm.
 -/
 
 open Complex Filter Topology Finset Metric MeasureTheory Set
@@ -138,6 +143,58 @@ theorem exists_mem_primeSpan_exp_eq_zeta (z : ι → ℂ) {ρ : ι → ℝ} (hρ
 
 /-! ## Universality with target `ζ` on the disc union -/
 
+/-- **Universality of the finite Euler products on a finite union of discs, for exponential targets
+of the closed span.**  With the common floor `σ₁` and ceiling `b`, `R > 1`, `ρ i R < Re (z i)`:
+for `L ∈ primeSpan` and a target `g` continuous on `K = ⋃_i closedBall (z i) (ρ i r₁)` with
+`exp (L_i(q)) = g (z i + ρ i q)` on the unit discs, for every `ε > 0` and `y₀'` there is `y ≥ y₀'`
+such that the heights at which `E_y(· + iτ)` is within `ε` of `g` on `K` have positive lower
+density. -/
+theorem exists_pos_density_eulerTargetReturnSet_exp_union (z : ι → ℂ) {ρ : ι → ℝ}
+    (hρ : ∀ i, 0 < ρ i) {σ₁ : ℝ} (hσ₁ : 1 / 2 < σ₁) (hσ₁le : ∀ i, σ₁ ≤ (z i).re - ρ i)
+    {b : ℝ} (hb : ∀ i, (z i).re + ρ i ≤ b) (hb1 : b < 1)
+    {R : ℝ} (hR : 1 < R) (hρR : ∀ i, ρ i * R < (z i).re)
+    {L : DiscTuple ι} (hL : L ∈ primeSpan z (fun i => (hρ i).le)) {g : ℂ → ℂ}
+    (hexpL : ∀ i, ∀ q : ℂ, ‖q‖ < 1 → Complex.exp (hardyFun (L i) q) = g (z i + ρ i * q))
+    {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1)
+    (hg : ContinuousOn g (⋃ i, closedBall (z i) (ρ i * r₁))) {ε : ℝ} (hε : 0 < ε) (y₀' : ℕ) :
+    ∃ y : ℕ, y₀' ≤ y ∧ ∃ c > 0, ∀ᶠ T in atTop, ENNReal.ofReal (c * T) ≤
+      volume (eulerTargetReturnSet y g (⋃ i, closedBall (z i) (ρ i * r₁)) ε ∩ Icc 0 T) := by
+  have hρ' : ∀ i, 0 ≤ ρ i := fun i => (hρ i).le
+  obtain ⟨y, hy, ω, hω, happrox⟩ := exists_unimodular_eulerProduct_approx_exp_tuple z hρ hσ₁ hσ₁le
+    hb hb1 hR hρR hL hr₁0 hr₁ hε y₀'
+  refine ⟨y, hy, exists_pos_density_eulerTargetReturnSet y
+    (isCompact_iUnion fun i => isCompact_closedBall _ _)
+    (pos_re_of_mem_iUnion_closedBall z hρ hσ₁ hσ₁le hr₁) hg
+    ⟨circleOfUnimodular ω hω, fun s hs => ?_⟩⟩
+  obtain ⟨i, hsi⟩ := mem_iUnion.mp hs
+  rw [mem_closedBall, dist_eq_norm] at hsi
+  have hρi : (ρ i : ℂ) ≠ 0 := by exact_mod_cast (hρ i).ne'
+  have hq : ‖(s - z i) / ρ i‖ ≤ r₁ := by
+    rw [norm_div, Complex.norm_real, Real.norm_of_nonneg (hρ' i), div_le_iff₀ (hρ i)]
+    linarith
+  have hs' : z i + ρ i * ((s - z i) / ρ i) = s := by
+    rw [mul_div_cancel₀ _ hρi]
+    ring
+  have h := happrox i _ hq
+  rw [hs', hexpL i _ (lt_of_le_of_lt hq hr₁), hs'] at h
+  rw [eulerPhaseProduct_circleOfUnimodular, norm_sub_rev]
+  exact h
+
+omit [Fintype ι] in
+/-- The Hardy-extension radius `R = (1 + R₂)/2` inherits the disc conditions from `R₂`. -/
+theorem disc_conditions_of_half_radius (z : ι → ℂ) {ρ : ι → ℝ} (hρ : ∀ i, 0 < ρ i)
+    {R₂ : ℝ} (hR₂ : 1 < R₂) (hρR₂ : ∀ i, ρ i * R₂ < (z i).re)
+    (hR₂1 : ∀ i, (z i).re + ρ i * R₂ < 1) {c₀ : ℂ} {R₀ : ℝ}
+    (hsub : ∀ i, ‖z i - c₀‖ + ρ i * R₂ < R₀) :
+    1 < (1 + R₂) / 2 ∧ (∀ i, ρ i * ((1 + R₂) / 2) < (z i).re) ∧
+      (∀ i, (z i).re + ρ i * ((1 + R₂) / 2) < 1) ∧
+      ∀ i, ‖z i - c₀‖ + ρ i * ((1 + R₂) / 2) < R₀ := by
+  have hRR₂ : (1 + R₂) / 2 < R₂ := by linarith
+  have hle : ∀ i, ρ i * ((1 + R₂) / 2) ≤ ρ i * R₂ := fun i =>
+    mul_le_mul_of_nonneg_left hRR₂.le (hρ i).le
+  exact ⟨by linarith, fun i => by linarith [hρR₂ i, hle i], fun i => by linarith [hR₂1 i, hle i],
+    fun i => by linarith [hsub i, hle i]⟩
+
 /-- **Universality of the finite Euler products with target `ζ` on a finite union of discs.**
 With the common floor `σ₁` and ceiling `b`, a zero-free disc `ball c₀ R₀` containing all
 `closedBall (z i) (ρ i R₂)`, `R₂ > 1`, lying in `Re s < 1`: for every `ε > 0` and `y₀'` there is
@@ -153,46 +210,11 @@ theorem exists_pos_density_eulerTargetReturnSet_zeta_union (z : ι → ℂ) {ρ 
     ∃ y : ℕ, y₀' ≤ y ∧ ∃ c > 0, ∀ᶠ T in atTop, ENNReal.ofReal (c * T) ≤
       volume (eulerTargetReturnSet y riemannZeta (⋃ i, closedBall (z i) (ρ i * r₁)) ε
         ∩ Icc 0 T) := by
-  have hρ' : ∀ i, 0 ≤ ρ i := fun i => (hρ i).le
-  -- the Hardy-extension radius
-  set R : ℝ := (1 + R₂) / 2 with hRdef
-  have hR : 1 < R := by rw [hRdef]; linarith
-  have hRR₂ : R < R₂ := by rw [hRdef]; linarith
-  have hsubR : ∀ i, ‖z i - c₀‖ + ρ i * R < R₀ := fun i => by
-    have := hsub i
-    have h2 : ρ i * R ≤ ρ i * R₂ := mul_le_mul_of_nonneg_left hRR₂.le (hρ' i)
-    linarith
-  have hR1 : ∀ i, (z i).re + ρ i * R < 1 := fun i => by
-    have := hR₂1 i
-    have h2 : ρ i * R ≤ ρ i * R₂ := mul_le_mul_of_nonneg_left hRR₂.le (hρ' i)
-    linarith
-  have hρR : ∀ i, ρ i * R < (z i).re := fun i => by
-    have := hρR₂ i
-    have h2 : ρ i * R ≤ ρ i * R₂ := mul_le_mul_of_nonneg_left hRR₂.le (hρ' i)
-    linarith
-  -- the logarithm of `ζ` as a tuple of the closed span
-  obtain ⟨L, hL, hexpL⟩ := exists_mem_primeSpan_exp_eq_zeta z hρ' hb hb1 hR hR1 hR₀ hsubR hζ
-  -- the joint phased Euler product approximation
-  obtain ⟨y, hy, ω, hω, happrox⟩ := exists_unimodular_eulerProduct_approx_exp_tuple z hρ hσ₁ hσ₁le
-    hb hb1 hR hρR hL hr₁0 hr₁ hε y₀'
-  refine ⟨y, hy, exists_pos_density_eulerTargetReturnSet y
-    (isCompact_iUnion fun i => isCompact_closedBall _ _)
-    (pos_re_of_mem_iUnion_closedBall z hρ hσ₁ hσ₁le hr₁)
-    (continuousOn_riemannZeta_iUnion_closedBall z hρ hb hb1 hr₁)
-    ⟨circleOfUnimodular ω hω, fun s hs => ?_⟩⟩
-  obtain ⟨i, hsi⟩ := mem_iUnion.mp hs
-  rw [mem_closedBall, dist_eq_norm] at hsi
-  have hρi : (ρ i : ℂ) ≠ 0 := by exact_mod_cast (hρ i).ne'
-  have hq : ‖(s - z i) / ρ i‖ ≤ r₁ := by
-    rw [norm_div, Complex.norm_real, Real.norm_of_nonneg (hρ' i), div_le_iff₀ (hρ i)]
-    linarith
-  have hs' : z i + ρ i * ((s - z i) / ρ i) = s := by
-    rw [mul_div_cancel₀ _ hρi]
-    ring
-  have h := happrox i _ hq
-  rw [hs', hexpL i _ (lt_of_le_of_lt hq hr₁), hs'] at h
-  rw [eulerPhaseProduct_circleOfUnimodular, norm_sub_rev]
-  exact h
+  obtain ⟨hR, hρR, hR1, hsubR⟩ := disc_conditions_of_half_radius z hρ hR₂ hρR₂ hR₂1 hsub
+  obtain ⟨L, hL, hexpL⟩ := exists_mem_primeSpan_exp_eq_zeta z (fun i => (hρ i).le) hb hb1 hR hR1
+    hR₀ hsubR hζ
+  exact exists_pos_density_eulerTargetReturnSet_exp_union z hρ hσ₁ hσ₁le hb hb1 hR hρR hL hexpL
+    hr₁0 hr₁ (continuousOn_riemannZeta_iUnion_closedBall z hρ hb hb1 hr₁) hε y₀'
 
 /-! ## The random prime sum in the direct sum -/
 
@@ -234,33 +256,35 @@ theorem norm_primeVectorTuple_sq_le (z : ι → ℂ) {ρ : ι → ℝ} (hρ : �
 /-! ## Uniform lower density of the Euler-target heights on the disc union -/
 
 /-- **Positive lower density of the Euler-target heights on a finite union of discs, uniformly in
-the cutoff.**  Under the hypotheses of `exists_pos_density_eulerTargetReturnSet_zeta_union`,
-there are `c > 0` and `y₁` such that for every `y ≥ y₁` the heights at which `E_y(· + iτ)` is
-within `ε` of `ζ` on `⋃_i closedBall (z i) (ρ i r₁)` have lower density at least `c`. -/
-theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta_union (z : ι → ℂ) {ρ : ι → ℝ}
+the cutoff, for exponential targets of the closed span.**  Under the hypotheses of
+`exists_pos_density_eulerTargetReturnSet_exp_union`, there are `c > 0` and `y₁` such that for
+every `y ≥ y₁` the heights at which `E_y(· + iτ)` is within `ε` of `g` on
+`⋃_i closedBall (z i) (ρ i r₁)` have lower density at least `c`.  The single-disc argument runs
+with the random linear prime sum in the direct sum `DiscTuple ι`: Chebyshev controls its norm,
+hence every component, and the per-disc stability lemma holds on every disc. -/
+theorem exists_uniform_pos_density_eulerTargetReturnSet_exp_union (z : ι → ℂ) {ρ : ι → ℝ}
     (hρ : ∀ i, 0 < ρ i) {σ₁ : ℝ} (hσ₁ : 1 / 2 < σ₁) (hσ₁le : ∀ i, σ₁ ≤ (z i).re - ρ i)
     {b : ℝ} (hb : ∀ i, (z i).re + ρ i ≤ b) (hb1 : b < 1)
-    {R₂ : ℝ} (hR₂ : 1 < R₂) (hρR₂ : ∀ i, ρ i * R₂ < (z i).re)
-    (hR₂1 : ∀ i, (z i).re + ρ i * R₂ < 1) {c₀ : ℂ} {R₀ : ℝ} (hR₀ : 0 < R₀)
-    (hsub : ∀ i, ‖z i - c₀‖ + ρ i * R₂ < R₀) (hζ : ∀ s ∈ ball c₀ R₀, riemannZeta s ≠ 0)
-    {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1) {ε : ℝ} (hε : 0 < ε) :
+    {R : ℝ} (hR : 1 < R) (hρR : ∀ i, ρ i * R < (z i).re)
+    {L : DiscTuple ι} (hL : L ∈ primeSpan z (fun i => (hρ i).le)) {g : ℂ → ℂ}
+    (hexpL : ∀ i, ∀ q : ℂ, ‖q‖ < 1 → Complex.exp (hardyFun (L i) q) = g (z i + ρ i * q))
+    {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1)
+    (hg : ContinuousOn g (⋃ i, closedBall (z i) (ρ i * r₁))) {ε : ℝ} (hε : 0 < ε) :
     ∃ c > 0, ∃ y₁ : ℕ, ∀ y, y₁ ≤ y → ∀ᶠ T in atTop, ENNReal.ofReal (c * T) ≤
-      volume (eulerTargetReturnSet y riemannZeta (⋃ i, closedBall (z i) (ρ i * r₁)) ε
-        ∩ Icc 0 T) := by
+      volume (eulerTargetReturnSet y g (⋃ i, closedBall (z i) (ρ i * r₁)) ε ∩ Icc 0 T) := by
   have hρ' : ∀ i, 0 ≤ ρ i := fun i => (hρ i).le
   have hσ₁pos : 0 < σ₁ := by linarith
   set K : Set ℂ := ⋃ i, closedBall (z i) (ρ i * r₁) with hKdef
   have hK : IsCompact K := isCompact_iUnion fun i => isCompact_closedBall _ _
   have hre : ∀ s ∈ K, 0 < s.re := pos_re_of_mem_iUnion_closedBall z hρ hσ₁ hσ₁le hr₁
-  have hζc : ContinuousOn riemannZeta K :=
-    continuousOn_riemannZeta_iUnion_closedBall z hρ hb hb1 hr₁
+  have hgK : ContinuousOn g K := hg
   have hsubK : ∀ i, closedBall (z i) (ρ i * r₁) ⊆ K := fun i =>
     subset_iUnion (fun i => closedBall (z i) (ρ i * r₁)) i
   -- a bound for `ζ` on the union
-  obtain ⟨M', hM'⟩ := hK.exists_bound_of_continuousOn hζc
+  obtain ⟨M', hM'⟩ := hK.exists_bound_of_continuousOn hgK
   set M : ℝ := max M' 0 with hM
   have hM0 : 0 ≤ M := le_max_right _ _
-  have hMK : ∀ s ∈ K, ‖riemannZeta s‖ ≤ M := fun s hs => (hM' s hs).trans (le_max_left _ _)
+  have hMK : ∀ s ∈ K, ‖g s‖ ≤ M := fun s hs => (hM' s hs).trans (le_max_left _ _)
   -- the constants
   set K₁ : ℝ := Real.sqrt ((1 - r₁ ^ 2)⁻¹) with hK₁
   have hK₁0 : 0 ≤ K₁ := Real.sqrt_nonneg _
@@ -301,9 +325,9 @@ theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta_union (z : ι → �
   have hδ'le2 : δ' ≤ δ ^ 2 / 2 := min_le_right _ _
   obtain ⟨y₀, -, hy₀⟩ := exists_remainder_tail_le hσ₁ hC0 hδ'pos 0
   -- the base phases, at a stage `y₁ ≥ y₀`
-  obtain ⟨y₁, hy₁, c₁, hc₁, hev₁⟩ := exists_pos_density_eulerTargetReturnSet_zeta_union z hρ hσ₁
-    hσ₁le hb hb1 hR₂ hρR₂ hR₂1 hR₀ hsub hζ hr₁0 hr₁ (half_pos hε) y₀
-  have hne : (eulerTargetReturnSet y₁ riemannZeta K (ε / 2)).Nonempty := by
+  obtain ⟨y₁, hy₁, c₁, hc₁, hev₁⟩ := exists_pos_density_eulerTargetReturnSet_exp_union z hρ hσ₁
+    hσ₁le hb hb1 hR hρR hL hexpL hr₁0 hr₁ hg (half_pos hε) y₀
+  have hne : (eulerTargetReturnSet y₁ g K (ε / 2)).Nonempty := by
     rw [Set.nonempty_iff_ne_empty]
     intro hemp
     obtain ⟨T, hT, hTpos⟩ := (hev₁.and (eventually_gt_atTop (0 : ℝ))).exists
@@ -312,9 +336,9 @@ theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta_union (z : ι → �
   obtain ⟨τ₀, hτ₀⟩ := hne
   -- the base event `A`: phases of the primes `≤ y₁` approximating `ζ` within `ε/2` on `K`
   set A : Set (UnitAddTorus Nat.Primes) := unitTorusHomeomorphCircles Nat.Primes ⁻¹'
-    eulerPhaseTargetSet y₁ riemannZeta K (ε / 2) with hA
+    eulerPhaseTargetSet y₁ g K (ε / 2) with hA
   have hAopen : IsOpen A :=
-    (Homeomorph.isOpen_preimage _).mpr (isOpen_eulerPhaseTargetSet y₁ hK hre hζc _)
+    (Homeomorph.isOpen_preimage _).mpr (isOpen_eulerPhaseTargetSet y₁ hK hre hgK _)
   have hAne : A.Nonempty := by
     refine ⟨(unitTorusHomeomorphCircles Nat.Primes).symm (circlePhaseFlow primeFrequency τ₀), ?_⟩
     rw [hA, Set.mem_preimage, Homeomorph.apply_symm_apply]
@@ -384,14 +408,14 @@ theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta_union (z : ι → �
       (isOpen_blockExtendTorus_preimage _ hByopen).measurableSet
   -- `A ∩ B_y` lies in the target phases at stage `y`, on every disc at once
   have hsubAB : A ∩ By ⊆ unitTorusHomeomorphCircles Nat.Primes ⁻¹'
-      eulerPhaseTargetSet y riemannZeta K ε := by
+      eulerPhaseTargetSet y g K ε := by
     rintro x ⟨hxA, hxB⟩
     rw [Set.mem_preimage]
-    show ∀ s ∈ K, ‖eulerPhaseProduct y (unitTorusHomeomorphCircles Nat.Primes x) s - riemannZeta s‖ < ε
+    show ∀ s ∈ K, ‖eulerPhaseProduct y (unitTorusHomeomorphCircles Nat.Primes x) s - g s‖ < ε
     intro s hs
     obtain ⟨i, hsi⟩ := mem_iUnion.mp hs
     have hxA' : ∀ s ∈ closedBall (z i) (ρ i * r₁),
-        ‖eulerPhaseProduct y₁ (unitTorusHomeomorphCircles Nat.Primes x) s - riemannZeta s‖
+        ‖eulerPhaseProduct y₁ (unitTorusHomeomorphCircles Nat.Primes x) s - g s‖
           < ε / 2 := fun s hs => hxA s (hsubK i hs)
     have hxB' : ‖torusPrimePhaseSum Bl (primeVectorOf (z i) (hρ' i)) x‖ < δ := by
       rw [← torusPrimePhaseSum_primeVectorTuple_apply z hρ' Bl x i]
@@ -409,10 +433,10 @@ theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta_union (z : ι → �
   -- the target phases at stage `y` have Haar measure at least `Haar(A)/2`
   have hUy : (torusHaar Nat.Primes A).toReal / 4
       < (torusHaar Nat.Primes (unitTorusHomeomorphCircles Nat.Primes ⁻¹'
-          eulerPhaseTargetSet y riemannZeta K ε)).toReal := by
+          eulerPhaseTargetSet y g K ε)).toReal := by
     have h1 : torusHaar Nat.Primes A * ENNReal.ofReal (1 / 2)
         ≤ torusHaar Nat.Primes (unitTorusHomeomorphCircles Nat.Primes ⁻¹'
-          eulerPhaseTargetSet y riemannZeta K ε) := by
+          eulerPhaseTargetSet y g K ε) := by
       calc torusHaar Nat.Primes A * ENNReal.ofReal (1 / 2)
           ≤ torusHaar Nat.Primes A * torusHaar Nat.Primes By := by gcongr
         _ = torusHaar Nat.Primes (A ∩ By) := hAB.symm
@@ -422,6 +446,26 @@ theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta_union (z : ι → �
     linarith
   rw [eulerTargetReturnSet_eq_preimage]
   exact eventually_ofReal_mul_le_volume_preimage_primeFlow
-    (isOpen_eulerPhaseTargetSet y hK hre hζc ε) hUy
+    (isOpen_eulerPhaseTargetSet y hK hre hgK ε) hUy
+
+/-- **Positive lower density of the Euler-target heights on a finite union of discs, uniformly in
+the cutoff.**  Under the hypotheses of `exists_pos_density_eulerTargetReturnSet_zeta_union`,
+there are `c > 0` and `y₁` such that for every `y ≥ y₁` the heights at which `E_y(· + iτ)` is
+within `ε` of `ζ` on `⋃_i closedBall (z i) (ρ i r₁)` have lower density at least `c`. -/
+theorem exists_uniform_pos_density_eulerTargetReturnSet_zeta_union (z : ι → ℂ) {ρ : ι → ℝ}
+    (hρ : ∀ i, 0 < ρ i) {σ₁ : ℝ} (hσ₁ : 1 / 2 < σ₁) (hσ₁le : ∀ i, σ₁ ≤ (z i).re - ρ i)
+    {b : ℝ} (hb : ∀ i, (z i).re + ρ i ≤ b) (hb1 : b < 1)
+    {R₂ : ℝ} (hR₂ : 1 < R₂) (hρR₂ : ∀ i, ρ i * R₂ < (z i).re)
+    (hR₂1 : ∀ i, (z i).re + ρ i * R₂ < 1) {c₀ : ℂ} {R₀ : ℝ} (hR₀ : 0 < R₀)
+    (hsub : ∀ i, ‖z i - c₀‖ + ρ i * R₂ < R₀) (hζ : ∀ s ∈ ball c₀ R₀, riemannZeta s ≠ 0)
+    {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1) {ε : ℝ} (hε : 0 < ε) :
+    ∃ c > 0, ∃ y₁ : ℕ, ∀ y, y₁ ≤ y → ∀ᶠ T in atTop, ENNReal.ofReal (c * T) ≤
+      volume (eulerTargetReturnSet y riemannZeta (⋃ i, closedBall (z i) (ρ i * r₁)) ε
+        ∩ Icc 0 T) := by
+  obtain ⟨hR, hρR, hR1, hsubR⟩ := disc_conditions_of_half_radius z hρ hR₂ hρR₂ hR₂1 hsub
+  obtain ⟨L, hL, hexpL⟩ := exists_mem_primeSpan_exp_eq_zeta z (fun i => (hρ i).le) hb hb1 hR hR1
+    hR₀ hsubR hζ
+  exact exists_uniform_pos_density_eulerTargetReturnSet_exp_union z hρ hσ₁ hσ₁le hb hb1 hR hρR hL
+    hexpL hr₁0 hr₁ (continuousOn_riemannZeta_iUnion_closedBall z hρ hb hb1 hr₁) hε
 
 end RHTower

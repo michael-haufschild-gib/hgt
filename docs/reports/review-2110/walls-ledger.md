@@ -9,7 +9,9 @@ pointwise data of the explicit formula, and every coarsening of those data has a
 threshold. Each entry gives the mechanism, the exact place where unconditional methods end, the Lean
 evidence, the positive statements the obstruction exposes, and the practical rule. Companion
 documents: [per-route obstacles](hard-obstacles.md), [summary and the missing
-field](hard-obstacles-summary.md); they cite faces by the labels of the companion numbering:
+field](hard-obstacles-summary.md), [route unification](route-unification-ledger.md) (the routes
+grouped by the unit their receivers measure, with the dictionaries proving each group is one route);
+the first two cite faces by the labels of the companion numbering:
 2 = face 1.5, 4 = 1.2, 7 = 1.6, 8 and 9 and 11 = 1.4, 12 = 1.3 and 1.4, 10 = 1.1 and 16.4,
 6 = 16.1, 17 = 16.3. Walls keep their labels; the labels 2, 4, 6–12 and 17 are not used for
 separate walls.

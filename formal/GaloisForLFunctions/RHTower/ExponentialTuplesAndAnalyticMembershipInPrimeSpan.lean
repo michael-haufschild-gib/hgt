@@ -476,14 +476,17 @@ theorem mapsTo_disc_coordinate (z : ι → ℂ) {ρ : ι → ℝ} (hρ : ∀ i, 
         gcongr
     _ < R₀ := hsub i
 
-/-- **Tuples of functions analytic on a disc containing the discs lie in the closed span.**  If
-`F` is analytic on `ball c₀ R₀`, `R > 1`, and `‖z i − c₀‖ + ρ i R < R₀` for every `i`, then every
-tuple `t` with `hardyFun (t i) q = F (z i + ρ i q)` on the unit disc lies in `primeSpan`. -/
-theorem mem_primeSpan_of_differentiableOn_ball (z : ι → ℂ) {ρ : ι → ℝ} (hρ : ∀ i, 0 ≤ ρ i)
-    {b : ℝ} (hb : ∀ i, (z i).re + ρ i ≤ b) (hb1 : b < 1) {R : ℝ} (hR : 1 < R) {c₀ : ℂ} {R₀ : ℝ}
+/-- **Tuples of functions analytic on a disc containing the discs lie in every closed submodule
+containing the monomial tuples.**  If `V` is closed and contains the monomial tuples centred at
+`c₀`, `F` is analytic on `ball c₀ R₀`, `R > 1`, and `‖z i − c₀‖ + ρ i R < R₀` for every `i`, then
+every tuple `t` with `hardyFun (t i) q = F (z i + ρ i q)` on the unit disc lies in `V`: the Taylor
+polynomials of `F` at `c₀` converge uniformly on a disc containing all `closedBall (z i) (ρ i R)`. -/
+theorem mem_of_differentiableOn_ball_of_monoTuple_mem (z : ι → ℂ) {ρ : ι → ℝ}
+    (hρ : ∀ i, 0 ≤ ρ i) {V : Submodule ℂ (DiscTuple ι)} (hV : IsClosed (V : Set (DiscTuple ι)))
+    {c₀ : ℂ} (hmono : ∀ k, monoTuple z ρ c₀ k ∈ V) {R : ℝ} (hR : 1 < R) {R₀ : ℝ}
     (hsub : ∀ i, ‖z i - c₀‖ + ρ i * R < R₀) {F : ℂ → ℂ} (hF : DifferentiableOn ℂ F (ball c₀ R₀))
     {t : DiscTuple ι} (ht : ∀ i, ∀ q : ℂ, ‖q‖ < 1 → hardyFun (t i) q = F (z i + ρ i * q)) :
-    t ∈ primeSpan z hρ := by
+    t ∈ V := by
   rcases isEmpty_or_nonempty ι with hι | hι
   · have : t = 0 := PiLp.ext fun i => (IsEmpty.false i).elim
     rw [this]
@@ -511,11 +514,10 @@ theorem mem_primeSpan_of_differentiableOn_ball (z : ι → ℂ) {ρ : ι → ℝ
   have hunif := hps.tendstoUniformlyOn' hlt
   rw [Metric.tendstoUniformlyOn_iff] at hunif
   set p := cauchyPowerSeries F c₀ R₀' with hp
-  refine mem_of_forall_exists_circle_approx (Submodule.isClosed_topologicalClosure _) hR
-    fun ε hε => ?_
+  refine mem_of_forall_exists_circle_approx hV hR fun ε hε => ?_
   obtain ⟨n, hn⟩ := (hunif ε hε).exists
   refine ⟨∑ k ∈ range n, p.coeff k • monoTuple z ρ c₀ k,
-    Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (monoTuple_mem_primeSpan z hρ hb hb1 c₀ k),
+    Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (hmono k),
     fun i q => F (z i + ρ i * q) - ∑ k ∈ range n, p.coeff k * (z i + ρ i * q - c₀) ^ k,
     ?_, ?_, ?_⟩
   · intro i
@@ -550,6 +552,17 @@ theorem mem_primeSpan_of_differentiableOn_ball (z : ι → ℂ) {ρ : ι → ℝ
     congr 1
     refine sum_congr rfl fun k _ => ?_
     rw [PiLp.smul_apply, hardyFun_smul _ _ hq, hardyFun_monoTuple _ _ _ _ _ hq]
+
+/-- **Tuples of functions analytic on a disc containing the discs lie in the closed span.**  If
+`F` is analytic on `ball c₀ R₀`, `R > 1`, and `‖z i − c₀‖ + ρ i R < R₀` for every `i`, then every
+tuple `t` with `hardyFun (t i) q = F (z i + ρ i q)` on the unit disc lies in `primeSpan`. -/
+theorem mem_primeSpan_of_differentiableOn_ball (z : ι → ℂ) {ρ : ι → ℝ} (hρ : ∀ i, 0 ≤ ρ i)
+    {b : ℝ} (hb : ∀ i, (z i).re + ρ i ≤ b) (hb1 : b < 1) {R : ℝ} (hR : 1 < R) {c₀ : ℂ} {R₀ : ℝ}
+    (hsub : ∀ i, ‖z i - c₀‖ + ρ i * R < R₀) {F : ℂ → ℂ} (hF : DifferentiableOn ℂ F (ball c₀ R₀))
+    {t : DiscTuple ι} (ht : ∀ i, ∀ q : ℂ, ‖q‖ < 1 → hardyFun (t i) q = F (z i + ρ i * q)) :
+    t ∈ primeSpan z hρ :=
+  mem_of_differentiableOn_ball_of_monoTuple_mem z hρ (Submodule.isClosed_topologicalClosure _)
+    (monoTuple_mem_primeSpan z hρ hb hb1 c₀) hR hsub hF ht
 
 /-- **A representing tuple in the closed span.**  For `F` analytic on `ball c₀ R₀` with
 `‖z i − c₀‖ + ρ i R < R₀`, `R > 1`, there is a tuple of `primeSpan` whose disc functions are

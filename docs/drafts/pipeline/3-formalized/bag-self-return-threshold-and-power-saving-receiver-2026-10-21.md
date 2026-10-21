@@ -71,8 +71,16 @@ self-returns are shadows of nearby zeros and Ingham–Huxley caps them at `T^θ`
   exponent `log d/log r → D` reads the multiplicity, and `zetaReturnSet_volume_dichotomy_at_zero`:
   returns are `≤ T^θ` for `ε < |g(z₀)| r^D/4` and of positive lower density for
   `ε > 4·3^D|g(z₀)| r^D`.
-- C4 general analytic targets (dichotomy for every analytic `h` on a neighbourhood of `D`, zeros
-  allowed, threshold `dist(h, N)`): queued.
+- C4 general analytic targets: **proved** 2026-10-21 in
+  `formal/GaloisForLFunctions/RHTower/ZetaOrbitApproachesEveryAnalyticTargetWithTheHurwitzThreshold.lean`
+  (wired, axioms standard): `targetNonvanishingDistance h z₀ r` (Hurwitz distance of any target),
+  `zetaTargetReturnSet_volume_dichotomy` (linear above, `≤ T^θ` below, for every target continuous
+  on the closed disc), `targetNonvanishingDistance_eq_zero_iff` (analytic `h ≢ 0`: distance zero iff
+  no zero in the open disc; identity theorem on the ball + minimum modulus on a small circle via
+  `exists_sphere_norm_ge_of_analyticAt_of_not_eventually_zero`), and the universality law with its
+  exact threshold `exists_pos_density_zetaTargetReturnSet_iff_forall_ne_zero`. Reusable:
+  `exists_volume_le_rpow_of_subset_zetaZeroShadow` (any set carried into the zero shadow by a
+  translation is power-saving rare).
 - C5 twisted-head rigidity: `ζ(z₀) = 0 ⟹` every unimodular completely multiplicative twist
   `Σ_{n<M} ω(n) n^{−z}` of the Dirichlet head stays at distance `≥ d/2` from `ζ` on `D` for all large
   `M` (an open set of phases would give, by Kronecker–Weyl and the Carlson tail law, positive-density
