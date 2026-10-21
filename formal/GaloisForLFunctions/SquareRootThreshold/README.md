@@ -547,6 +547,26 @@ argument becomes quantitative.
     is unbounded, unconditionally (`rvmRemainder_unbounded`). A bounded spectral shift is the
     signature of a finite-rank modification of a reference operator, so no such model of the zeros
     exists: this is the size constraint of mechanism 4 of the shared target, read on the lag side.
+29. **The zero width and the de Bruijn–Newman heat time.** The zero width
+    `zetaZeroWidth = sup |Re ρ − ½|` lies in `[0, ½]`, RH is `zetaZeroWidth = 0`, and for all but
+    countably many widths `w` and every `σ ≥ 0`: `zetaZeroWidth ≤ σ` iff `P_{w,v} ≥ −Ce^{σv}` for
+    all large lags (`zetaZeroWidth_le_iff_lag_primeWindow_ge_neg_exp`): the width is the exact
+    negativity rate of the lag family. A zero `w` of `Ξ(w) = ξ(½ + iw)` is the nontrivial zero
+    `½ + iw` of `ζ`, so `Ξ` has the zero strip `(Im w)² ≤ zetaZeroWidth²`, which the de Bruijn–Newman
+    flow `H_t = ∫Φ(x)e^{tx²}e^{izx}dx` contracts: every zero of `H_t` has
+    `(Im z)² ≤ max(zetaZeroWidth² − 2t, 0)` and `H_t` is real-rooted for every `t ≥ zetaZeroWidth²/2`
+    (`riemannHeat_zeros_real_of_half_sq_zetaZeroWidth_le`); de Bruijn's heat time `1/8` is the
+    case `zetaZeroWidth = ½`. A lag envelope `−Ce^{σv}` is therefore a heat time `σ²/2`
+    (`LagRateBoundsTheDeBruijnNewmanHeatTime`).
+30. **Near-top zeros and the contact aperture of `μ(A)`.** A negative value of the difference test
+    at lag `v` is a negative ground energy, `μ(v/2 + w) < 0`, by the Rayleigh bridge of mechanism 27
+    (`ccmRestrictedWeilGroundEnergy_neg_of_re_W_twoBump_neg`). Hence a zero `½ + z₀` right of the
+    line with `η ≤ |h_w(−iz₀)|`, seen at the explicit lag `V ≥ V₀(w, η, Re z₀)` of mechanism 25, with
+    no zero deeper than `Re z₀ + 1/V`, makes `μ(A) < 0` for every aperture `A ≥ V/2 + w`
+    (`ccmRestrictedWeilGroundEnergy_neg_of_near_top_zero`): the first contact aperture of a
+    hypothetical near-top zero is at most half its visibility lag plus the width, and every certified
+    aperture `μ(A) ≥ 0` is the bound `V > 2(A − w)` on the visibility lag of every near-top zero
+    (`NearTopZerosForceNegativeGroundEnergyBeyondAnExplicitAperture`).
 
 ---
 

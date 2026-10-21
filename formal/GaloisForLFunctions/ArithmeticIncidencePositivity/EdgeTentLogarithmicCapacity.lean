@@ -349,12 +349,12 @@ theorem edgeTent_oddPart_eq_half_mass {r ε L : ℝ} (hε0 : 0 < ε) (hεr : ε 
   linarith
 
 /-- **The capacity bound.** For any finite family of strips `[L_j − r, r]` with
-`r ≤ L_j ≤ 2(r − ε)`, `0 < ε ≤ 1`, and weights `c_j ≥ 0` summing to more than `2 log(4/ε) + 84`, the
+`r ≤ L_j ≤ 2(r − ε)`, `0 < ε ≤ 1`, and weights `c_j` summing to more than `2 log(4/ε) + 84`, the
 odd parts of the odd edge tent charged with these weights exceed the surplus of all pairs of the
 support: `T(0, r) < Σ_j c_j ∫_{L_j − r}^{r} α_{L_j}²`. -/
 theorem stripBoxEnergy_edgeTent_lt_sum_oddPart {ι : Type*} {r ε : ℝ} (hε0 : 0 < ε) (hε1 : ε ≤ 1)
     (hεr : ε < r) (s : Finset ι) (L c : ι → ℝ) (hL : ∀ j ∈ s, r ≤ L j ∧ L j ≤ 2 * (r - ε))
-    (hc : ∀ j ∈ s, 0 ≤ c j) (hsum : 2 * (Real.log (4 / ε) + 42) < ∑ j ∈ s, c j) :
+    (hsum : 2 * (Real.log (4 / ε) + 42) < ∑ j ∈ s, c j) :
     stripBoxEnergy (edgeTentOdd r ε) 0 r <
       ∑ j ∈ s, c j * ∫ a in (L j - r)..r, reflectedOddPart (edgeTentOdd r ε) (L j) a ^ 2 := by
   set M := ∫ x in (0 : ℝ)..r, edgeTentOdd r ε x ^ 2 with hM

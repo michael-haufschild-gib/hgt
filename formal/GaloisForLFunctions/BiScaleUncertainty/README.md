@@ -1044,7 +1044,13 @@ the $\{2,3\}$ price is $\le 1.11<w_2+w_3$ for $L\le\log6$ and exactly $w_2+w_3$ 
 $\log 6$ the lag graph is a union of Sturmian paths with double-$w_2$ vertices
 (`PrimeTwoThreeDecouplingLength`); asymptotically $c(L)/e^{L/2}\to1$ and $\mathrm{floor}(L)/e^{L/2}\to-1$, the
 spectral pair of the polar kernel $e^{|s-t|/2}$ with eigenfunction $e^{-t/2}\pm e^{-(L-t)/2}$
-(`PrimeWindowCeilingPolarAsymptotics`, `PrimeWindowFloorPolarAsymptotics`). At square-root precision:
+(`PrimeWindowCeilingPolarAsymptotics`, `PrimeWindowFloorPolarAsymptotics`), and to de la Vallée
+Poussin precision, unconditionally: $|c(L)-e^{L/2}|\le Ce^{L/2-\kappa\sqrt L}$ and
+$|\mathrm{floor}(L)+e^{L/2}|\le Ce^{L/2-\kappa\sqrt L}$ for all large $L$, the window analogue of the
+lag envelope $P_v\ge-|\varphi(0)|-Ce^{v/2-\sqrt v/10}$: the prime number theorem with error term
+enters the polar Schur bound, and the polar weight loses at the window midpoint only against power
+errors $x^\gamma$, never against $xe^{-c\sqrt{\log x}}$ (`PrimeWindowCeilingDeLaValleePoussinRemainder`).
+At square-root precision:
 $c(L)\le e^{L/2}+O(L)$ forces RH, the excess exponent $\theta^*$ satisfies
 $\mathrm{width}\le\theta^*\le\mathrm{width}/2+\tfrac14$ (`PrimeWindowCeilingRHCriterion`,
 `PrimeWindowCeilingWidthLaw`, through the width-$\alpha$ Landau criterion of

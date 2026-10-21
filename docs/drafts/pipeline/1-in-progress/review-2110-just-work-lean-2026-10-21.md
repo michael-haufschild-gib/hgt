@@ -69,3 +69,8 @@ their module lands; this card does not edit their files.
   `∫β²(2Σc_a²M𝒢 − 4Σ_{a<b}c_ac_bMM·netAtom − 2Σc_a²M²·netAtom(a,a))`; the README formula lacked the
   crossing-pair term `(−log a, log a)`). Axioms standard, wired, README item 2 updated. Follow-up (not
   in the §2.1 row): archimedean self-energy asymptotic `≍ w log(1/w)`. **Row 10 complete.**
+- 2026-10-21 — **9(v) closed** (Vasyunin error): `BezoutValuationIncidence/ExactOrderOfTheVasyuninReciprocityDefect`
+  (`residueDifferenceEnergy_ge_gap`: `E(p,q) ≥ (q−p)/8`; `residueDifferenceEnergy_exact_order` /
+  `vasyunin_reciprocity_exact_order`: `h(1+log⁺(p/h))/18 ≤ π(V(q,p)+V(p,q)) + (q−p)log(q/p) ≤ 12h(1+log⁺(p/h))`,
+  `h = q − p`). The defect is below `O(p+q)` iff `h = o(p)`; for moduli of different sizes no bound
+  below `O(p+q)` holds. Axioms standard, wired, BVI README updated.

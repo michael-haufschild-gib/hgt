@@ -375,3 +375,24 @@ and windows only) are unaffected.
 - n = 3: Λ₃ ∈ [0.634, 0.6344], λ ≥ 1.7, t = 1/3, θ = 1: gain (2/5)∫_{S₃}F² (`two_mul_primeThreeShift_le_stripSurplus_sub`).
 - n = 4: Λ₄ = ½log 2 (`vonMangoldtAtom_four`), t = 1, θ = 4/5: gain log 2·∫_{S₄}F², 20% of the strip surplus left over
   (`two_mul_primeFourShift_le_stripSurplus_sub`). Axioms standard; olean; wired; README 35.
+
+### C25 — Overlapping strips of 2 and 3: the wide fold and the shared S₃×S₃ (`WideMicroFoldExactRates`, `OverlappingPrimeStripsJointHarnack`)
+- Goal-loop contribution G15 (criterion 3: joint Harnack across the shifts log 2 and log 3 past ½ log 3, explicit
+  constants and gains). Request: "windows past ½ log 3, where the strips of 2 and 3 overlap and would have to share the
+  surplus on S₃×S₃".
+- Wide fold (`WideMicroFoldExactRates`): exact quadruple rates R₋ = ω(|u−v|) − ω(L−u−v), R₊ = ω(u+v) − ω(L−|u−v|),
+  R₋ ≥ R₊ by complete monotonicity (`archLevyDensity_sub_shift_le`), weight W = 2(R₋−R₊)(1−q) + 4R₊; valid for any
+  strip width with p > 0 (no η ≤ p, η ≤ 1/12). Band version with the pairs of [c, r]² withheld (`withheldKernel`,
+  `wideFoldWeightBand`, `wideBandMicroFold_strip_ge`).
+- Integrated weight: W = 2k(1−q) − 2D(1−q) + 4R₊; defect ≤ (c₁u³/6 + c₀u²/2)/(β+u), c₁ ≥ 1/(L(L−2η)) + 1/24 + L/8,
+  c₀ ≥ L³/250; 4∫R₊ ≥ 2ℓ − 2log(L/(L−η)) − (3η²+7η³)/24 − 8L⁴/1000; ∫_a^b ω to second order (both sides).
+- Certificate at r = 221/400, β = 1/50: ∫_0^η W_band ≥ 1 at every folded point (`wideBandFold_potential_logTwo`); band
+  cost ≤ 0.044 (M = 6.8804 on the band × (η − b) ≤ 0.0063878); polynomial core margin ≈ 0.026 in G·P units.
+- Sharing: T(S₂) = withheld box + T(S₃) (`integral_box_eq_withheld_add`). Joint theorem
+  `two_mul_primeTwoThreeShifts_le_stripSurplus_sub`: odd F on [−221/400, 221/400] ⇒
+  2Λ₂∫FF(+log2) + 2Λ₃∫FF(+log3) ≤ 2 stripSurplus_{S₂} − (1/62)∫_{S₂}F² − ½∫_{S₃}F² (t₂ = 1/60, t₃ = 2/5, λ₃ ≥ 1.8939).
+  Since e^{2r} < 4 this is the whole prime side at this window.
+- Relation: `NestedStripShellMicroFold` / `SharedStripSurplusAllocation` (other agent) share nested *thin* strips with
+  the sharp shell constant; the outer strip of 2 at r = 221/400 has λ₀ = 1.9 − η/p − 3η² ≈ 0.31 < √2 log 2, out of
+  their reach. `integral_box_eq_withheld_add` is the closed-box analogue of `integral_shellIntegrand_eq` (open box).
+- Axioms standard (propext, choice, Quot.sound); oleans built; both modules wired; README mechanism 40, open problem 8.

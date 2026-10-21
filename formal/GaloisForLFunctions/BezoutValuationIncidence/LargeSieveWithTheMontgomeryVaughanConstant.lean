@@ -86,13 +86,13 @@ theorem window_sum_eq (θ : ℝ) (hθ : θ = 0 ∨ ∀ m : ℤ, θ ≠ m) (A K :
     generalize (Real.sin (Real.pi * θ) : ℂ) = s at hs ⊢
     field_simp
 
-/-- **Large sieve with the Montgomery–Vaughan constant, dual form.** For frequencies
+/-- **Two-sided window bound with the Montgomery–Vaughan constant.** For frequencies
 `δ`-separated modulo one and any window of `K` consecutive integers,
-`Σ_{A<n≤A+K} |Σ_r b_r e(nα_r)|² ≤ (K + δ⁻¹) Σ |b_r|²`. -/
-theorem sum_window_norm_sq_le {ι : Type*} [Fintype ι] [DecidableEq ι] (α : ι → ℝ) {δ : ℝ}
+`|Σ_{A<n≤A+K} |Σ_r b_r e(nα_r)|² − K Σ |b_r|²| ≤ δ⁻¹ Σ |b_r|²`. -/
+theorem abs_sum_window_norm_sq_sub_le {ι : Type*} [Fintype ι] [DecidableEq ι] (α : ι → ℝ) {δ : ℝ}
     (hδ : 0 < δ) (hsep : ∀ r s, r ≠ s → δ ≤ toIntDist (α r - α s)) (b : ι → ℂ) (A K : ℕ) :
-    ∑ n ∈ Icc (A + 1) (A + K), ‖∑ r, b r * circleFreq ((n : ℝ) * α r)‖ ^ 2 ≤
-      ((K : ℝ) + δ⁻¹) * ∑ r, ‖b r‖ ^ 2 := by
+    |∑ n ∈ Icc (A + 1) (A + K), ‖∑ r, b r * circleFreq ((n : ℝ) * α r)‖ ^ 2 -
+        K * ∑ r, ‖b r‖ ^ 2| ≤ δ⁻¹ * ∑ r, ‖b r‖ ^ 2 := by
   set P : ℝ := ((A + K : ℕ) + 1 / 2 : ℝ)
   set B : ℝ := ((A : ℕ) + 1 / 2 : ℝ)
   set c : ι → ι → ℝ := fun r s => 1 / Real.sin (Real.pi * (α r - α s))
@@ -167,20 +167,30 @@ theorem sum_window_norm_sq_le {ι : Type*} [Fintype ι] [DecidableEq ι] (α : �
   have hV := norm_sum_mul_conj_div_sin_le α hδ hsep' v
   rw [hnu] at hU
   rw [hnv] at hV
-  have hnn : 0 ≤ ∑ n ∈ Icc (A + 1) (A + K), ‖∑ r, b r * circleFreq ((n : ℝ) * α r)‖ ^ 2 :=
-    sum_nonneg fun _ _ => sq_nonneg _
-  have hX : 0 ≤ ∑ r, ‖b r‖ ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
   have h2I : ‖(1 : ℂ) / (2 * Complex.I)‖ = 1 / 2 := by
     rw [norm_div, norm_one, norm_mul, Complex.norm_I, Complex.norm_two, mul_one]
-  have key := congrArg (‖·‖) hexp
-  simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hnn] at key
-  rw [key]
-  refine (norm_add_le _ _).trans ?_
-  rw [norm_mul, norm_mul, h2I, Complex.norm_natCast, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg hX]
+  -- the off-diagonal part is `(1/2i)(Y_u − Y_v)`, of norm at most `δ⁻¹ Σ |b_r|²`
+  have hreal : (((∑ n ∈ Icc (A + 1) (A + K), ‖∑ r, b r * circleFreq ((n : ℝ) * α r)‖ ^ 2 -
+      K * ∑ r, ‖b r‖ ^ 2 : ℝ) : ℂ)) = 1 / (2 * Complex.I) *
+        (∑ r, ∑ s, u r * conj (u s) * (c r s : ℂ) - ∑ r, ∑ s, v r * conj (v s) * (c r s : ℂ)) := by
+    rw [Complex.ofReal_sub, hexp, Complex.ofReal_mul, Complex.ofReal_natCast]
+    ring
+  have key := congrArg (‖·‖) hreal
+  simp only [Complex.norm_real, Real.norm_eq_abs] at key
+  rw [key, norm_mul, h2I]
   have hsub := norm_sub_le (∑ r, ∑ s, u r * conj (u s) * (c r s : ℂ))
     (∑ r, ∑ s, v r * conj (v s) * (c r s : ℂ))
   nlinarith
+
+/-- **Large sieve with the Montgomery–Vaughan constant, dual form.** For frequencies
+`δ`-separated modulo one and any window of `K` consecutive integers,
+`Σ_{A<n≤A+K} |Σ_r b_r e(nα_r)|² ≤ (K + δ⁻¹) Σ |b_r|²`. -/
+theorem sum_window_norm_sq_le {ι : Type*} [Fintype ι] [DecidableEq ι] (α : ι → ℝ) {δ : ℝ}
+    (hδ : 0 < δ) (hsep : ∀ r s, r ≠ s → δ ≤ toIntDist (α r - α s)) (b : ι → ℂ) (A K : ℕ) :
+    ∑ n ∈ Icc (A + 1) (A + K), ‖∑ r, b r * circleFreq ((n : ℝ) * α r)‖ ^ 2 ≤
+      ((K : ℝ) + δ⁻¹) * ∑ r, ‖b r‖ ^ 2 := by
+  have h := (abs_le.mp (abs_sum_window_norm_sq_sub_le α hδ hsep b A K)).2
+  linarith
 
 
 /-! ## §2. Duality and the primal form -/
@@ -581,11 +591,13 @@ theorem exists_int_of_circleFreq_eq_one {y : ℝ} (h : circleFreq y = 1) : ∃ n
   have hpi : (0 : ℝ) < 2 * Real.pi := by positivity
   nlinarith
 
-/-- **Large sieve over roots of unity of order at most `Q`, constant `K + Q² − 1`.** -/
-theorem largeSieve_rootsOfUnity_sharp {Q : ℕ} (hQ : 2 ≤ Q) {T : Finset ℂ}
-    (hT : ∀ ζ ∈ T, ∃ d, 1 ≤ d ∧ d ≤ Q ∧ ζ ^ d = 1) (A K : ℕ) (x : ℕ → ℂ) :
-    ∑ ζ ∈ T, ‖∑ k ∈ Icc (A + 1) (A + K), x k * ζ ^ k‖ ^ 2 ≤
-      ((K : ℝ) + (Q : ℝ) ^ 2 - 1) * ∑ k ∈ Icc (A + 1) (A + K), ‖x k‖ ^ 2 := by
+/-- The angle `arg ζ / 2π` of a root of unity of order at most `Q ≥ 2`: its circle frequency
+reproduces the powers of `ζ`, and distinct roots are `1/(Q(Q−1))`-separated. -/
+theorem rootsOfUnity_angle_facts {Q : ℕ} (hQ : 2 ≤ Q) {T : Finset ℂ}
+    (hT : ∀ ζ ∈ T, ∃ d, 1 ≤ d ∧ d ≤ Q ∧ ζ ^ d = 1) :
+    (∀ ζ ∈ T, ∀ k : ℕ, ζ ^ k = circleFreq ((k : ℝ) * (Complex.arg ζ / (2 * Real.pi)))) ∧
+      ∀ r s : T, r ≠ s → 1 / ((Q : ℝ) * ((Q : ℝ) - 1)) ≤
+        toIntDist (Complex.arg (r : ℂ) / (2 * Real.pi) - Complex.arg (s : ℂ) / (2 * Real.pi)) := by
   classical
   have hQR : (2 : ℝ) ≤ Q := by exact_mod_cast hQ
   set α : ℂ → ℝ := fun ζ => Complex.arg ζ / (2 * Real.pi) with hα
@@ -652,6 +664,20 @@ theorem largeSieve_rootsOfUnity_sharp {Q : ℕ} (hQ : 2 ≤ Q) {T : Finset ℂ}
       exact hne' h2
     refine le_trans ?_ (one_div_le_toIntDist_of_mul_mem_int hm0 hint hnot)
     exact one_div_le_one_div_of_le (by exact_mod_cast hm0) hmQ
+  exact ⟨hpow, hsep⟩
+
+/-- **Large sieve over roots of unity of order at most `Q`, constant `K + Q² − 1`.** -/
+theorem largeSieve_rootsOfUnity_sharp {Q : ℕ} (hQ : 2 ≤ Q) {T : Finset ℂ}
+    (hT : ∀ ζ ∈ T, ∃ d, 1 ≤ d ∧ d ≤ Q ∧ ζ ^ d = 1) (A K : ℕ) (x : ℕ → ℂ) :
+    ∑ ζ ∈ T, ‖∑ k ∈ Icc (A + 1) (A + K), x k * ζ ^ k‖ ^ 2 ≤
+      ((K : ℝ) + (Q : ℝ) ^ 2 - 1) * ∑ k ∈ Icc (A + 1) (A + K), ‖x k‖ ^ 2 := by
+  classical
+  have hQR : (2 : ℝ) ≤ Q := by exact_mod_cast hQ
+  obtain ⟨hpow, hsep⟩ := rootsOfUnity_angle_facts hQ hT
+  set α : ℂ → ℝ := fun ζ => Complex.arg ζ / (2 * Real.pi) with hα
+  have hδ : (0 : ℝ) < 1 / ((Q : ℝ) * ((Q : ℝ) - 1)) := by
+    have : (0 : ℝ) < (Q : ℝ) * ((Q : ℝ) - 1) := by nlinarith
+    positivity
   have h := largeSieve_separated_sharp (ι := T) (fun ζ => α ζ) hδ hsep A K x
   rw [Finset.sum_coe_sort T (fun ζ : ℂ => ‖∑ n ∈ Icc (A + 1) (A + K),
     x n * circleFreq ((n : ℝ) * α ζ)‖ ^ 2)] at h
@@ -660,6 +686,29 @@ theorem largeSieve_rootsOfUnity_sharp {Q : ℕ} (hQ : 2 ≤ Q) {T : Finset ℂ}
   · congr 2
     exact sum_congr rfl fun k _ => by rw [hpow ζ hζ k]
   · linarith [inv_farey_delta_le hQ]
+
+/-- **Two-sided window bound over roots of unity of order at most `Q`.**
+`|Σ_{A<k≤A+K} |Σ_{ζ ∈ T} a(ζ) ζ^k|² − K Σ |a(ζ)|²| ≤ Q(Q − 1) Σ |a(ζ)|²`. -/
+theorem abs_window_rootsOfUnity_sub_le {Q : ℕ} (hQ : 2 ≤ Q) {T : Finset ℂ}
+    (hT : ∀ ζ ∈ T, ∃ d, 1 ≤ d ∧ d ≤ Q ∧ ζ ^ d = 1) (a : ℂ → ℂ) (A K : ℕ) :
+    |∑ k ∈ Icc (A + 1) (A + K), ‖∑ ζ ∈ T, a ζ * ζ ^ k‖ ^ 2 - K * ∑ ζ ∈ T, ‖a ζ‖ ^ 2| ≤
+      ((Q : ℝ) * ((Q : ℝ) - 1)) * ∑ ζ ∈ T, ‖a ζ‖ ^ 2 := by
+  classical
+  have hQR : (2 : ℝ) ≤ Q := by exact_mod_cast hQ
+  obtain ⟨hpow, hsep⟩ := rootsOfUnity_angle_facts hQ hT
+  have hδ : (0 : ℝ) < 1 / ((Q : ℝ) * ((Q : ℝ) - 1)) := by
+    have : (0 : ℝ) < (Q : ℝ) * ((Q : ℝ) - 1) := by nlinarith
+    positivity
+  have h := abs_sum_window_norm_sq_sub_le (ι := T)
+    (fun ζ => Complex.arg (ζ : ℂ) / (2 * Real.pi)) hδ hsep (fun ζ => a ζ) A K
+  rw [one_div, inv_inv] at h
+  have e1 : ∑ ζ : T, ‖a ζ‖ ^ 2 = ∑ ζ ∈ T, ‖a ζ‖ ^ 2 := Finset.sum_coe_sort T (fun ζ => ‖a ζ‖ ^ 2)
+  have e2 : ∀ k : ℕ, ∑ ζ : T, a ζ * circleFreq ((k : ℝ) * (Complex.arg (ζ : ℂ) / (2 * Real.pi))) =
+      ∑ ζ ∈ T, a ζ * ζ ^ k := fun k => by
+    rw [← Finset.sum_coe_sort T (fun ζ => a ζ * ζ ^ k)]
+    exact Finset.sum_congr rfl fun ζ _ => by rw [hpow ζ ζ.2 k]
+  simp only [e2, e1] at h
+  exact h
 
 /-- **Large sieve over roots of unity on the window `[0, N)`.** -/
 theorem largeSieve_rootsOfUnity_range_sharp {Q : ℕ} (hQ : 2 ≤ Q) {T : Finset ℂ}

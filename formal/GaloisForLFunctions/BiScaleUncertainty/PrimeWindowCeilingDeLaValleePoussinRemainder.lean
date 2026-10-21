@@ -395,7 +395,7 @@ deficit at `T = L − 2δ`, `δ = e^{−L/2}`, satisfies
 `2δ |D(T)| ≤ 2 K e^{c²/2} e^{c} e^{L/2 − (c/2)√L} + 2B`: `√T ≥ √L − 1`, `δ e^T ≤ e^{L/2}`, `Lδ ≤ 1`
 and `L e^{−c√L} ≤ e^{−(c/2)√L}`. -/
 theorem two_mul_exp_neg_half_mul_abs_deficit_le {K c B : ℝ} (hK : 0 ≤ K) (hc : 0 < c)
-    (hψ : ∀ y : ℝ, 0 ≤ y → |Chebyshev.psi (Real.exp y) - Real.exp y| ≤
+    (hB : 0 ≤ B) (hψ : ∀ y : ℝ, 0 ≤ y → |Chebyshev.psi (Real.exp y) - Real.exp y| ≤
       K * (Real.exp y * Real.exp (-c * Real.sqrt y)) + B)
     {L : ℝ} (hL4 : 4 ≤ L) (hLexp : L ≤ Real.exp (c / 2 * Real.sqrt L)) :
     2 * Real.exp (-(L / 2)) *
@@ -458,13 +458,7 @@ theorem two_mul_exp_neg_half_mul_abs_deficit_le {K c B : ℝ} (hK : 0 ≤ K) (hc
   have hDabs := abs_ccmLogChebyshevDeficitPrimitive_le_dlvp hK hψ hT
   have hq := mul_le_mul hδT hp2 (by positivity) hEL.le
   have h0 : 0 ≤ K * Real.exp (c ^ 2 / 2) * (Real.exp T * Real.exp (-c * Real.sqrt T)) + B := by
-    have := abs_nonneg (ccmLogChebyshevDeficitPrimitive T)
-    rcases hT.lt_or_eq with hT' | hT'
-    · exact nonneg_of_mul_nonneg_right (this.trans hDabs) hT'
-    · rw [← hT']
-      have h2 := hψ 0 le_rfl
-      simp only [Real.sqrt_zero, mul_zero, Real.exp_zero, mul_one, one_mul] at h2 ⊢
-      exact (abs_nonneg _).trans h2
+    positivity
   calc 2 * δ * |ccmLogChebyshevDeficitPrimitive T|
       ≤ 2 * δ * (T * (K * Real.exp (c ^ 2 / 2) *
           (Real.exp T * Real.exp (-c * Real.sqrt T)) + B)) :=
@@ -478,7 +472,7 @@ theorem two_mul_exp_neg_half_mul_abs_deficit_le {K c B : ℝ} (hK : 0 ≤ K) (hc
     _ ≤ 2 * K * Real.exp (c ^ 2 / 2) *
           (E * (Real.exp c * Real.exp (-(c / 2 * Real.sqrt L)))) + 2 * B * 1 :=
         add_le_add (mul_le_mul_of_nonneg_left hq (by positivity))
-          (mul_le_mul_of_nonneg_left hLδ1 (by positivity))
+          (mul_le_mul_of_nonneg_left hLδ1 (by linarith))
     _ = 2 * (K * Real.exp (c ^ 2 / 2) * Real.exp c) *
           (E * Real.exp (-(c / 2 * Real.sqrt L))) + 2 * B := by ring
     _ = 2 * (K * Real.exp (c ^ 2 / 2) * Real.exp c) * R + 2 * B := by rw [hER]
@@ -501,7 +495,8 @@ theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
     eventually_ge_atTop (4 : ℝ), eventually_ge_atTop C] with L hLexp hpoly hL4 hLC
   rw [zero_add] at hpoly
   have hL0 : 0 ≤ L := by linarith
-  have hD := two_mul_exp_neg_half_mul_abs_deficit_le hK hc hψ hL4 hLexp
+  have hD := two_mul_exp_neg_half_mul_abs_deficit_le hK hc hB hψ hL4 hLexp
+  rw [← hK'def] at hD
   -- the polar test of the window `(0, L)` with cutoff `δ = e^{−L/2}`
   set E := Real.exp (L / 2) with hEdef
   have hEL : 0 < E := Real.exp_pos _
@@ -549,7 +544,7 @@ theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
     nlinarith
   -- the prime side is at least `2E − 4 − 2δ − 2K'R − 2B`
   have hnum : 2 * E - 4 - 2 * δ - (2 * K' * R + 2 * B) ≤ nodeArchEnergy cf - weilEnergy cf := by
-    have habs := mul_le_mul_of_nonneg_left (neg_abs_le (ccmLogChebyshevDeficitPrimitive T))
+    have habs := mul_le_mul_of_nonneg_left (le_abs_self (ccmLogChebyshevDeficitPrimitive T))
       (by positivity : (0 : ℝ) ≤ 2 * δ)
     linarith [hP', heT, hD, habs]
   -- `C R ≤ E`, since `C ≤ L ≤ e^{(c/2)√L}`
@@ -575,11 +570,11 @@ theorem exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder :
     rw [show E * L * δ = L * (δ * E) by ring, hEδ, mul_one]
   -- conclude: if the deviation were below `E − C R`, the prime side would be below its floor
   by_contra hcon
-  push_neg at hcon
-  rw [div_lt_iff₀ hm] at hcon
+  have hcon' := not_le.mp hcon
+  rw [div_lt_iff₀ hm] at hcon'
   have hmass : (E - C * R) * massOf cf ≤ (E - C * R) * (2 + 2 * L * δ) :=
     mul_le_mul_of_nonneg_left hM hECR
-  linarith [hcon, hmass, hnum, hpoly', hLEδ, hδ1,
+  linarith [hcon', hmass, hnum, hpoly', hLEδ, hδ1,
     mul_nonneg (mul_nonneg hC0 hR0.le) (mul_nonneg hL0 hδ.le)]
 
 /-- **The ceiling from below.** `c(L) ≥ e^{L/2} − C e^{L/2 − κ√L}` for all large `L`. -/

@@ -637,10 +637,49 @@ of the innermost strip once per atom.
     which every atom of the thin band vanishes and every odd part is paid by its own strip, yet the
     odd parts together exceed the surplus of all pairs of `[0, r]²`
     (`exists_edgeTent_oddPart_sharing_fails`). Mechanisms 30 and 36–38 do not globalize through the
-    odd parts: the archimedean surplus is a logarithmic energy whose capacity at the common edge is
-    `O(log(1/ε))` per width layer, the atom mass of a layer `[η, 2η]` is `≍ ηe^r`, and only the light
-    cone `η ≲ e^{−r}` fits. A global allocation must keep the even parts, which cancel the odd parts
-    exactly on the edge tent.
+    odd parts.
+
+40. **A wide strip shares with a thin one: the atoms of `2` and `3` past `½ log 3`.** Mechanisms 30
+    and 36 need thin strips (`η ≤ p`, `η ≤ 1/12`). At `r = 221/400` the strip of `2` is wide,
+    `η = r − ½ log 2 ≈ 0.206 > p = log 2 − r ≈ 0.141`, and `S₃ = [log 3 − r, r] ⊂ S₂`; since
+    `e^{2r} < 4` these two atoms are the whole prime side. The *wide fold* keeps the exact rates of a
+    quadruple (`WideMicroFoldExactRates`). In folded coordinates `u = |x − L/2|`, `v = |y − L/2|`,
+    the same-side rate is `R₋ = ω(|u − v|) − ω(L − u − v)` and the crossing rate is
+    `R₊ = ω(u + v) − ω(L − |u − v|)`. Complete monotonicity of `ω` gives `R₋ ≥ R₊`
+    (`archLevyDensity_sub_shift_le`). The folded weight is
+    `W = 2(R₋ − R₊)(1 − (β + v)/(β + u)) + 4R₊`. The strip pays `λ ∫_S α²` once
+    `∫_0^η W(u, v) dv ≥ λ` at every `u` (`wideBandMicroFold_strip_ge`), and withholding the pairs of
+    `[c, r]²` sets `W` to zero on the band `u, v ≥ c − L/2` (`withheldKernel`,
+    `wideFoldWeightBand`). After integration (`OverlappingPrimeStripsJointHarnack`),
+    `W = 2k(1 − q) − 2D(1 − q) + 4R₊`, `q = (β + v)/(β + u)`:
+    * `k` gives the surplus potential in the gauge `β + t`;
+    * the defect `D = ω(L − u − v) − ω(L − |u − v|)` costs at most `(c₁u³/6 + c₀u²/2)/(β + u)`,
+      with `c₁ ≥ 1/(L(L − 2η)) + 1/24 + L/8` (`integral_wideFoldDefect_le`);
+    * the crossing rate gives
+      `4∫R₊ ≥ 2 log((u + η)/u) − 2 log(L/(L − η)) − (3η² + 7η³)/24 − 8L⁴/1000`: three windows of
+      `ω`, with concavity of `log` (`wideCrossRate_integral_ge`).
+
+    At `β = 1/50`, with the band of `S₃` withheld, the potential is at least `1 > √2 log 2` at every
+    folded point. The band costs `≤ 0.044` (`wideBandFold_potential_logTwo`). The box of `S₂` splits
+    into the withheld box plus `T(S₃)` (`integral_box_eq_withheld_add`). `T(S₃)` pays the atom of `3`
+    by the sharp micro-fold (`λ₃ ≥ 1.89`, even part kept at `t = 2/5`), and the rest pays the atom of
+    `2` (even part kept at `t = 1/60`). For every odd `F` supported in `[−221/400, 221/400]`:
+    `2Λ(2)/√2 ∫ F F(· + log 2) + 2Λ(3)/√3 ∫ F F(· + log 3) ≤ 2 stripSurplus_{S₂} − (1/62)∫_{S₂} F² − ½ ∫_{S₃} F²`
+    (`two_mul_primeTwoThreeShifts_le_stripSurplus_sub`). The Harnack inequality across the first
+    prime shift now reaches `r = 0.5525 > ½ log 3`; the sharp fold of `2` stops at
+    `½ log 2 + 1/12 ≈ 0.43`.
+
+41. **The logarithmic capacity of the shared surplus.** For the edge tent the pairs across the foot
+    `a = r − ε` carry `∫_0^a ω(x − y) dy = Ω(x − a) − Ω(x) ≤ ½ log(4/ε) + ε/(2(x − a)) + 4/5`
+    (`archLevyAntideriv_le_capacity`), so `T(0, r) ≤ (log(4/ε) + 42) ∫_0^r F²` uniformly in `r`
+    (`stripBoxEnergy_edgeTent_le_log`), while every strip `[L − r, r]`, `r ≤ L ≤ 2(r − ε)`, charges
+    `½ ∫_0^r F²` to its odd part (`edgeTent_oddPart_eq_half_mass`). One copy of the surplus of all
+    pairs of the support therefore pays the odd parts of a family of strips wider than `ε` only if
+    their weights sum to at most `2 log(4/ε) + 84` (`stripBoxEnergy_edgeTent_lt_sum_oddPart`). The
+    telescoping chain of mechanism 37 attains this order with one strip per geometric width layer.
+    The atom mass of the width layer `[η, 2η]` is `≍ ηe^r`, so only the light cone `η ≲ e^{−r}` fits.
+    A global allocation must keep the even parts, which cancel the odd parts exactly on the edge
+    tent.
 
 ---
 
@@ -661,7 +700,7 @@ of the innermost strip once per atom.
 | Expecting the pole to pay a prime atom near the axes | The polar weight vanishes at both ends of every anti-diagonal; near an axis only same-side atoms and the gauge can pay. |
 | Reading "the pole pays the atom at the midpoint" as payment of the atom | It is a pointwise comparison of weights per unit gauge at one point; the atom is a Dirac mass along the whole segment and the pole's share depends on the gauge profile along it. |
 | Confusing the five moduli with the nine | Atom alone against the pole: `{2,3,4,5,7}`. Atom plus archimedean density against the pole: `{2,3,4,5,7,8,9,11,13}`; the density adds `8`, `9`, `11`, `13`, and `6` is paid although every `n ≤ 5` is not. |
-| Summing the per-strip Harnack inequalities of mechanisms 30 and 35 | The strips `[log n − r, r]` are nested; the sum counts the inner pairs once per atom. One copy of the surplus pays a family only under an allocation (mechanism 37), and the odd parts of the thin band exceed the whole surplus for large `r` (mechanism 39). |
+| Summing the per-strip Harnack inequalities of mechanisms 30 and 35 | The strips `[log n − r, r]` are nested; the sum counts the inner pairs once per atom. One copy of the surplus pays a family only under an allocation (mechanisms 37 and 40), and the odd parts of the thin band exceed the whole surplus for large `r` (mechanisms 39 and 41). |
 | Expecting the union allocation to cover every thin family | It fails already for `{23, 25}`: `2Λ(23)/√23 + 2Λ(25)/5 > λ₀`. The shell (mechanism 36) is needed there. |
 | Reading the edge-tent obstruction as a failure of the form | On the edge tent every atom of the band is zero; what fails is the payment of the odd parts alone. The even parts cancel them. |
 
@@ -709,9 +748,9 @@ of the innermost strip once per atom.
    dyadic windows; describe the coupling graph between windows and the size of its edges.
 7. **The shared surplus between the light cone and the thin band.** Mechanism 38 pays the odd parts
    of all atoms of strip width `≤ e^{−r}/(16r)`; mechanism 39 refutes it for the band of width
-   `[1/48, 1/12]` at large `r`. (a) The logarithmic capacity: for the edge tent `T(0, r) ≤
-   (log(1/ε) + C)∫F²` (here `3ε²r`), and the maximal family of nested strips wider than `ε` that one
-   copy of the surplus can pay has total weight `O(log(1/ε))` per width layer. (b) The exact width:
+   `[1/48, 1/12]` at large `r`; mechanism 41 bounds the capacity by `2 log(4/ε) + 84`. (a) The
+   capacity constant: the largest total weight of nested strips wider than `ε` payable by one copy,
+   between the chain construction and `2 log(4/ε) + 84`. (b) The exact width:
    with a Brun–Titchmarsh count the light cone widens to `δ ≍ e^{−r}`; a refutation at width
    `C e^{−r}` needs prime powers in `(N − C√N, N)`, a lower bound in square-root intervals. (c) The
    signed allocation: whether `Σ_{band} 2Λ(n)/√n ∫ F F(· + log n) ≤ T` holds with the even parts kept.
@@ -720,6 +759,12 @@ of the innermost strip once per atom.
    order of the surplus symbol `log ξ` when the zeros near height `ξ` lie on the line, and larger by
    `e^{(2β − 1)r}` for a zero `β + iγ` off it, so the signed allocation is not expected to be
    unconditional beyond the light cone.
+8. **The prime side up to `log 2`.** For `r < log 2` only the atoms of `2` and `3` act
+   (`e^{2r} < 4`), so mechanism 40 at a given `r ∈ (½ log 3, log 2)` pays the whole prime side from
+   `T(S₂)`. It is proved at `r = 221/400`. In the wide fold the defect constant
+   `c₁ ≥ 1/(L(L − 2η)) = 1/(2Lp)` grows as `p = log 2 − r → 0`, and the withheld band
+   `[log 3 − r, r]` widens. Find the largest `r` at which the potential with the band withheld stays
+   above `√2 log 2`, and the gauge `β` that attains it.
 
 ### Research topics toward the shared target
 

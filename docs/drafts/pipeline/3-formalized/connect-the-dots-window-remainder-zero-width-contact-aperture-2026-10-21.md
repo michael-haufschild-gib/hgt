@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean), three modules
 - **Source:** docs/reports/review-2110/walls-ledger.md (walls 1, 4, 12); task "connect the dots of theorems in different parts of the Lean corpus"
-- **Statement:** (A) unconditionally `|x| ≤ e^{L/2} + C e^{L/2 − κ√L}` for every window deviation `x` at every large length `L`, hence `c(L) ≤ e^{L/2} + C e^{L/2−κ√L}`, `floor(L) ≥ −e^{L/2} − C e^{L/2−κ√L}`, `c(L)/e^{L/2} − 1 ≤ C e^{−κ√L}`; (M) the zero width `zetaZeroWidth = sup |Re ρ − ½|` satisfies: RH ⟺ width `= 0`; for generic `w` and every `σ ≥ 0`, width `≤ σ` ⟺ `P_{w,v} ≥ −C e^{σv}` eventually; every zero of the de Bruijn–Newman deformation `H_t` has `(Im z)² ≤ max(width² − 2t, 0)`, and `H_t` is real-rooted for `t ≥ width²/2`; (D) every near-top zero `½ + z₀` of `ζ` (data `w, η, V ≥ V₀(w, η, Re z₀)`, no zero deeper than `Re z₀ + 1/V`) makes the restricted Weil ground energy `μ(A) < 0` for every aperture `A ≥ V/2 + w`.
+- **Statement:** (A) unconditionally `|x| ≤ e^{L/2} + C e^{L/2 − κ√L}` for every window deviation `x` at every large length `L`, and some window deviation is `≥ e^{L/2} − C e^{L/2 − κ√L}`; hence `|c(L) − e^{L/2}| ≤ C e^{L/2−κ√L}`, `|floor(L) + e^{L/2}| ≤ C e^{L/2−κ√L}`, `c(L)/e^{L/2} − 1 ≤ C e^{−κ√L}`: both extremes of the window spectrum are `±e^{L/2}` to de la Vallée Poussin precision; (M) the zero width `zetaZeroWidth = sup |Re ρ − ½|` satisfies: RH ⟺ width `= 0`; for generic `w` and every `σ ≥ 0`, width `≤ σ` ⟺ `P_{w,v} ≥ −C e^{σv}` eventually; every zero of the de Bruijn–Newman deformation `H_t` has `(Im z)² ≤ max(width² − 2t, 0)`, and `H_t` is real-rooted for `t ≥ width²/2`; (D) every near-top zero `½ + z₀` of `ζ` (data `w, η, V ≥ V₀(w, η, Re z₀)`, no zero deeper than `Re z₀ + 1/V`) makes the restricted Weil ground energy `μ(A) < 0` for every aperture `A ≥ V/2 + w`.
 
 ## Goal
 Three pairs of theorems that lived in different areas and were never composed:
@@ -39,7 +39,16 @@ distance `τ` of a window of length `L` costs `K e^{L/2} e^{−(L−τ)/2} e^{�
 `e^{L/2}(1 + 2K(e^{−c√L/2} + e^{−L/4})) + B + (1+L)²` (`abs_nodeArchEnergy_sub_weilEnergy_le_dlvp`);
 the remainder terms are `≤ (4K + 1) e^{L/2 − (c/2)√L}` for large `L`
 (`eventually_add_sq_le_exp_half_sub_sqrt`). Ceiling by `csSup_le`, floor by `le_csInf`, nonemptiness
-from `eventually_exists_windowDeviation_ge`.
+from `eventually_exists_windowDeviation_ge`. Lower side: the two-sided majorant
+(`exists_abs_psi_exp_sub_le_dlvp`) gives `|D(T)| ≤ T(K e^{c²/2} e^{T} e^{−c√T} + B)` for the integrated
+deficit (`abs_ccmLogChebyshevDeficitPrimitive_le_dlvp`, pointwise `e^{t−c√t} ≤ e^{c²/2}e^{T−c√T}` by
+`(√T − √t)² ≤ T − t` and AM–GM); on the polar test with cutoff `δ = e^{−L/2}`, `T = L − 2δ`, the prime
+side is `≥ 2δ(e^T − 1 − D(T)) ≥ 2E − 4 − 2δ − 2K'R − 2B` with `√T ≥ √L − 1`, `δe^T ≤ E`, `Lδ ≤ 1`,
+`L e^{−c√L} ≤ e^{−(c/2)√L}` (`two_mul_exp_neg_half_mul_abs_deficit_le`, `eventually_le_exp_mul_sqrt`
+from `e^u ≥ u⁴/24`), and the mass is `≤ 2 + 2Lδ`; a deviation below `E − CR` would put the prime side
+below its floor (`exists_eventually_exists_windowDeviation_ge_exp_half_sub_remainder`). The floor's
+upper side is the Liouville mirror `|c(L) + floor(L)| ≤ 2T(N) ≤ 4(L + 7)`
+(`exists_eventually_abs_windowFloor_add_exp_half_le`).
 
 **M.** `zetaZeroWidth := sSup {|Re ρ − ½| : ρ ∈ zetaZeroConfig.carrier}`; bounded by `½` (open strip),
 so `|Re ρ − ½| ≤ width` for every zero, and `width ≤ σ ⟺ ∀ρ, Re ρ ≤ ½ + σ` by the reflection

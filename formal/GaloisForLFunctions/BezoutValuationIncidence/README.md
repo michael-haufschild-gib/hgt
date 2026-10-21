@@ -779,7 +779,11 @@ $$
 (\log q-\log p)^2\ \le\ \pi\bigl(V(q,p)+V(p,q)\bigr)+(q-p)(\log q-\log p)\ \le\ (\log q-\log p)^2+O(p+q),
 $$
 for all moduli, with explicit error terms: the reciprocity pair of Vasyunin sums is determined up
-to $O(m_1+m_2)$ by elementary terms, from pronic positivity alone.
+to $O(m_1+m_2)$ by elementary terms, from pronic positivity alone. The defect is exactly the
+residue-difference energy $E(p,q)$, and with $h=q-p$ it has exact order
+$h(1+\log^+(p/h))/18\le E(p,p+h)\le12h(1+\log^+(p/h))$
+(`ExactOrderOfTheVasyuninReciprocityDefect`): it is $o(p+q)$ exactly when $h=o(p)$, and no bound
+below $O(p+q)$ holds for moduli of different sizes.
 
 **Dilation laws.** The Gram matrix obeys exact prime-dilation laws. For $p\nmid q,r$,
 $$
@@ -1213,7 +1217,7 @@ shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$
 gap between a quadratic universal horizon and a linear special one is open, and any linear law
 must be incidence-algebraic. The exact window sandwich constant between $\Phi(N)-2$ and
 $2N^2-1$. The sign of a general signed prime packet in the energy-centered Gram.
-The error term in the Vasyunin reciprocity law below $O(p+q)$. Which rows are determined by
+Which rows are determined by
 their relation spectrum, beyond translation and the Galois action. Rates in the cofinal Möbius
 laws that are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue
 cells, which are positive when the cells share a factor and start together.

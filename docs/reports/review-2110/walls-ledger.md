@@ -633,10 +633,10 @@ single-modulus low-frequency statistics of an arithmetic row, with the signs of 
 
 | Wall | Routes it binds | Status and the open unit |
 |---|---|---|
-| 1 Square-root barrier | WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC | [L]. Open unit: the lag `V` beyond which `P_v ≥ 0`, or the window remainder below `O(e^{L/2})`. Best unconditional: `P_v ≥ −|φ(0)| − Ce^{v/2−√v/10}`; `c(L) = e^{L/2}(1 + o(1))`. |
+| 1 Square-root barrier | WL, MC, PM, CTF, PBM, RB, FU, RP, LI, SRT, CHMD (discrepancy pairing); BVI, EGC, DR, MSC | [L]. Open unit: the lag `V` beyond which `P_v ≥ 0`, or the window remainder below `O(e^{L/2})`. Best unconditional: `P_v ≥ −|φ(0)| − Ce^{v/2−√v/10}`; `|c(L) − e^{L/2}| ≤ Ce^{L/2−κ√L}` and `|floor(L) + e^{L/2}| ≤ Ce^{L/2−κ√L}` (`B:PrimeWindowCeilingDeLaValleePoussinRemainder` [S]: the PNT error term in the polar Schur bound; the polar weight loses at the midpoint only against power errors). |
 | 2 Jensen gap | PA, SZ, PM, CTF, BAG, FEL | [L]. Open unit: a row with residual `o(1/log N)` beyond the floor `κ/log N`. |
 | 3 Local clustering | LA, TH, HCF, XN, WD, JAS, SRT | [L]. Lag side: hiding needs collapsed clusters; the pair-correlation barrier remains. |
-| 4 Axis outside the zero set | LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR | [L]. The strip width `1/8` is the only unconditional value. |
+| 4 Axis outside the zero set | LA, TT, TH, HCF, XN, SZ, HJ, SEC, DR | [L]. The strip width `1/8` is the only unconditional value. The zero width `zetaZeroWidth = sup |Re ρ − ½|` is read on the prime side as the exact negativity rate of the lag family and on the heat side as the de Bruijn–Newman time: `H_t` is real-rooted for `t ≥ zetaZeroWidth²/2`, RH iff `zetaZeroWidth = 0` (`Q:LagRateBoundsTheDeBruijnNewmanHeatTime` [S]); nothing moves the width. |
 | 5 No Frobenius | HF, IRK, PTR, W1C, TG | [L]; purity `|ω| = √q` not formalized. |
 | 6 Probability cone | PA, JAS, PBM, DR, WBF; PM/BVI at `ε > 1/2` | [L]. |
 | 7 Almost all versus all | BAG, JAS, LA, WL, MC, FU, TT, HCF, GTA, EWJ, FEL, PCS, RFHM; SRT grids | [L]. BAG closed on zero-free discs; SRT attainment replaced by the horizon condition. |
@@ -644,7 +644,7 @@ single-modulus low-frequency statistics of an arithmetic row, with the signs of 
 | 9 Temperedness gate | every positivity route; RB | [L]. Window positivity is selective against large shifts; Beurling selectivity untested. |
 | 10 Oscillation–transport | WL, MC, FU, RP, LI, PBM, PM, CTF, RN, EGC | [L]. |
 | 11 Node criticality | RW, HF, EWU, OWU, MC, BVI, RB, AIP, BiScale | [L]. Prices are exact; what reads them is missing. |
-| 12 Forced dual measure | RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, all candidates | [L]/[S]. Open unit: the aperture through which `μ(A) ≥ 0` for all profiles, at `3/10` [S], `29/100` [L]. |
+| 12 Forced dual measure | RW, HF, CHMD, EWU, OWU, PA, TH, HCF, TG, WD, LI, SZ, ACT, AIP, all candidates | [L]/[S]. Open unit: the aperture through which `μ(A) ≥ 0` for all profiles, at `3/10` [S], `29/100` [L]. Contact aperture: a near-top zero `½ + z₀` with data `(w, η, V ≥ V₀(w, η, Re z₀))` makes `μ(A) < 0` for every `A ≥ V/2 + w` (the explicit-lag visibility law through the Rayleigh bridge, `Q:NearTopZerosForceNegativeGroundEnergyBeyondAnExplicitAperture` [S]); every certified aperture is the bound `V > 2(A − w)` on the visibility lag of every near-top zero. |
 | 13 Cone mismatch | RW, HF, EWU, OWU, CHMD, TT, RN, ACT, AIP, MSC | [L]. Pointwise/Schur certificates reach `3/10` (all) and `353/1000` (odd). |
 | 14 Size law | FU, RP, TG, RN, SZ, HF, CHMD, OWU, APF, EWJ, PCS, IRK, SC, SEC, PTR, W1C, WBF | [L]. CCM's finite-aperture realization is unconditional; convergence to `Ξ` is the premise. |
 | 15 Support versus positivity | TT, WD, XN, TG, RN, HF, CHMD, OWU, ACT, AIP, BSH, CDC, HJ, IRK, FEL, RFHM, SC, SEC, PTR, W1C, EGC | [L]. |

@@ -41,6 +41,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.NestedStripShellMicroFo
 import GaloisForLFunctions.ArithmeticIncidencePositivity.SharedStripSurplusAllocation
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeLightConeAllocation
 import GaloisForLFunctions.ArithmeticIncidencePositivity.EdgeTentSharingObstruction
+import GaloisForLFunctions.ArithmeticIncidencePositivity.EdgeTentLogarithmicCapacity
 
 /-!
 # Arithmetic Incidence Positivity
