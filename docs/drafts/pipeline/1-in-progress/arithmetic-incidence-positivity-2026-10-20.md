@@ -396,3 +396,38 @@ and windows only) are unaffected.
   the sharp shell constant; the outer strip of 2 at r = 221/400 has λ₀ = 1.9 − η/p − 3η² ≈ 0.31 < √2 log 2, out of
   their reach. `integral_box_eq_withheld_add` is the closed-box analogue of `integral_shellIntegrand_eq` (open box).
 - Axioms standard (propext, choice, Quot.sound); oleans built; both modules wired; README mechanism 40, open problem 8.
+
+### C26 — The incidence ledger at every aperture and the global incidence allocation condition (`OddFoldCrossingPotentialAtEveryAperture`, `GlobalIncidenceAllocationCondition`)
+- Request (2026-10-21): an explicit global incidence/allocation condition covering every relevant prime-power
+  shift, the favorable components, the axial collars and the pole/gauge remainder, with a proved transfer to
+  complete odd Weil positivity and RH; every declaration without unproven premises (iff theorems, no reduction lemmas).
+- Fold at every aperture: `archLevyDensity_mul_sq_le` (`ω(t)t² ≤ 3/2 + 4B²` on `(0, 2B]`) replaces `2B ≤ 1`;
+  `integrable_archLevy_mul_signedShiftJump_prod_everyAperture`, `integrable_foldedCrossingIntegrand_everyAperture`,
+  `two_mul_archSame_sub_archCrossingDiff_eq_everyAperture`; crossing potential `crossingPotential P x = ∫_{t>x} ω(t)P(t−x)`,
+  integrand `crossingKillingIntegrand` (Fubini on the quadrant, `integrable_crossingKillingIntegrand`);
+  exact fold `archJump_eq_two_mul_surplus_add_crossingPotential`: `J_P(F) = 2S_P(F) + 4∫_{x>0}F²Π_P`.
+  `crossingPotential_eq_killing_add_collar`: `Π_P = (Ω(x) − Ω(x+r)) + collarCrossingPotential`, `0 ≤ collar ≤ Ω(x+r) − Ω(x+B)`
+  (`collarCrossingPotential_bounds`).
+- Ledger: `relevantShifts r = {n ≥ 2 : log n < 2r}` (`mem_relevantShifts`, `relevantShifts_mono`); components
+  `oddStripCost`, `evenStripGain`, `surplusPool`, `crossingPotentialTerm`, `gaugeRemainder`, `poleCharge`,
+  `aperturePlateau r R = plateauGauge R (R − r)`; signs (`surplusEnergy_nonneg`, `crossingPotentialTerm_nonneg`,
+  `sum_oddStripCost_nonneg`, `sum_evenStripGain_nonneg`, `poleCharge_nonneg`); boundary vanishing
+  `eq_zero_at_support_radius`, `integral_mul_shift_eq_zero_of_two_mul_le` (shift `≥ 2r`).
+  `fullZeroForm_eq_incidenceLedger`: odd `F ∈ C²_c` on `[−r, r]`, `0 < r < R` ⇒
+  `Ẑ(F) = pool + crossing + Σ gains − Σ costs + remainder − pole` (prime tsum → finite sum over `relevantShifts R`,
+  the shifts in `[2r, 2R)` cancel between jump and potential, those below `2r` split by C22's identity).
+- Condition and transfer: `GlobalIncidenceAllocation r R F` (costs + pole ≤ pool + crossing + gains + remainder);
+  `globalIncidenceAllocation_iff_fullZeroForm_nonneg` (test by test); `riemannHypothesis_iff_forall_odd_fullZeroForm_nonneg`
+  (via ACT `riemannHypothesis_iff_forall_odd_zeroForm_nonneg`, `zeroForm_eq_fullZeroForm_of_odd`, `phiDoobInv`);
+  `forall_odd_fullZeroForm_nonneg_iff_globalIncidenceAllocation`; `riemannHypothesis_iff_globalIncidenceAllocation`
+  (RH ⟺ condition at every aperture `r > 0`, plateau `R > r`, odd compact test);
+  `riemannHypothesis_iff_exists_plateau_globalIncidenceAllocation` (one plateau per test).
+- Axioms `propext, Classical.choice, Quot.sound` for all nine audited theorems; oleans built (`lake --old env lean -j 1`);
+  both modules wired into the umbrella; README mechanism 43, table rows, trap, research topic 6.
+- Relation to the sibling's C-loop: `GlobalSharedSurplusAllocation` (mechanism 42) bounds the prime side by cone surplus
+  plus strip masses for `r ≥ 2`; the ledger is the exact identity it is a sub-inequality of. Not duplicated:
+  their `integral_mul_shift_eq_zero_of_lt` needs `L > 2r` and no continuity, the ledger's version covers `L = 2r`.
+- Lean notes: `Σ` cannot start an identifier (`hΣi`); `rw [hPB (x + L) ?_, hPB (x − L) ?_]` produces the side goals in
+  reverse order; `Set.indicator_of_notMem` needs the set ascribed (`show t ∉ Ioi x from …`) or it elaborates `Real.lt`;
+  `integrable_finset_sum` is deprecated → `integrable_finsetSum`; `Finset.sum_subset` with an explicit type on the
+  `have` avoids beta-redexes.

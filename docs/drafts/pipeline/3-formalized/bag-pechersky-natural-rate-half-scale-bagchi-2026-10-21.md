@@ -1,7 +1,7 @@
 # BAG — Pechersky prime-sum lemma at the natural rate; Bagchi's criterion on every half-scale disc
 
 - **ID:** BAG-pechersky-natural-rate-half-scale-bagchi-2026-10-21
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** Read-only current frontier, BAG (`docs/reports/rh-current-frontier-map.md`); local Lean corpus (`ExponentialTypeNotSummableOnPrimeLogs`, `WeightedEulerPaleyWienerVanishing`, `PrimeShortIntervalsSevenTwelfths`, the Pechersky/Euler-product/recurrence chain of 2026-10-20).
 - **Statement:** (i) For `Φ ≢ 0` entire of exponential type `ρ` and `0 ≤ σ`, the prime sums `Σ_{p<N} p^{−σ}‖Φ(log p)‖` are unbounded whenever `ρ < 1 − σ` and `2ρ < 5/12` (formerly `3ρ < 1 − σ`). (ii) Consequently every closed disc `closedBall c r` with `1/2 < Re c − 2r`, `Re c + 2r < 1` ("half-scale") is a disc of fixed-base strong recurrence of `ζ` as soon as `ζ` has no zero on `ball c (2r)`; and RH ⟺ `ζ` is strongly recurrent on every half-scale disc (equivalently: uniform head-target density on every half-scale disc).
@@ -86,7 +86,7 @@ prime sum over `(y, ey]` of size `≥ c·y^{1−σ−ρ−δ}/(x+1)`, unbounded 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
 - [x] 1 → 2  fully-proven: complete paper proof (above), no open dependency
-- [ ] 2 → 3  formalized: Lean theorems above, per-module `lake env lean` green, axioms PASS
+- [x] 2 → 3  formalized: Lean theorems above, per-module `lake env lean` green, axioms PASS
 - [ ] 3 → 4  not pursued (user rule: no stage 4)
 
 ## What remains open (exact)
@@ -105,3 +105,6 @@ prime sum over `(y, ey]` of size `≥ c·y^{1−σ−ρ−δ}/(x+1)`, unbounded 
 ## Log
 - 2026-10-21 — created; window two-ray theorem and natural-rate prime-sum lemma proved in Lean;
   downstream hypotheses weakened in place; half-scale Bagchi criterion module written.
+- 2026-10-21 — all seven modules compiled (`lake --old env lean -j 1 -o`, one at a time), axioms
+  standard, both new modules wired into `RHTower.lean`, lint clean on these modules; moved to
+  3-formalized.

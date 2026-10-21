@@ -101,3 +101,12 @@ Ledger card: `docs/drafts/pipeline/1-in-progress/ccm-published-gap-closure-2026-
   the `[2^{−1/2}, 2^{1/2}]` class is **not** derivable from the existing identities alone: it is a
   quantitative statement about the prolate resolvent kernel on the square `[1/2,1]×[1,2]`, which the
   paper settles with numerical spectral input. It remains open in the corpus.
+  Further closed around it: `Tr G = 0`, `‖G‖ < 1`; T1 is exactly the positivity of the Toeplitz form
+  with the real, even, continuous kernel `τ(u) = Tr(Gϑ(e^u))`, `τ(0) = 0`
+  (`RHTower/CCMArchimedeanSoninToeplitzKernel.lean`); `G = M − A` with `M = QQ̂Q − S ≥ 0` and the
+  time-band part `A`, whose scaling trace is the explicit `T(|u|)`,
+  `T(u) = ∫₀¹∫₀¹ 4e^{u/2}cos(2πxz)cos(2πe^u xz)`, `T'(0) = 1`
+  (`CCMArchimedeanSoninTimeBandSplit/Kernel/Slope.lean`). Consequences
+  (`CCMArchimedeanSoninSmallSupportDomination.lean`): domination at cutoff one for every test of
+  support `≤ ε₀` with the single condition `ĝ(0) = 0`, and failure for every nonzero nonnegative test
+  of that support (so the vanishing condition is necessary).

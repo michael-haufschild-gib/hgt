@@ -122,3 +122,37 @@
   (`exists_ccmSoninTraceDomination_cutoffAt_small_support`). For the paper's `Λ = √2` and support
   `½ log 2` this crude bound would need `‖G_{√2}‖₁ ≤ 1`, while `‖G_{√2}‖₁ = 2Σ|μ_n|` is about 8 by the Shannon count (heuristic, not proved); the gap is
   exactly the Mellin localisation of the negative eigenvectors of `G_{√2}` (prolate data), still open.
+- 2026-10-21 — T1: exact Toeplitz reduction, explicit time-band split, small-support domination
+  and its necessity, all Lean-closed (0 messages under `lake env lean`, axioms
+  `propext, Classical.choice, Quot.sound`, oleans single-threaded, wired after
+  `CCMArchimedeanSoninCutoffTraceFormula`; tent lemmas in HTGeometry).
+  (a) `CCMArchimedeanSoninGenericTraceless`: `‖G_Λ‖ < 1` (no eigenvalue `±1`: `S v = 0`,
+  `P v = P̂ v`, then `ran P ∩ ran P̂ = 0` / Sonin carrier) and `Tr G_Λ = 0`
+  (`Tr G^{2k+1} = Tr G^{2k+3}` by anticommutation, `‖G‖^{2k}‖G‖₁ → 0`).
+  (b) `CCMArchimedeanSoninToeplitzKernel`: `Tr(T ϑ(g)) = ∫ g(u) Tr(T ϑ_u)` for trace-class `T`;
+  `τ_Λ(u) = Tr(G_Λ ϑ_u)` real, even, continuous, `|τ| ≤ ‖G_Λ‖₁`, `τ(0) = 0`;
+  `Tr(ϑ(g) T ϑ(g)†) = ∫∫ conj g(s) g(t) Tr(Tϑ_{t-s})`; T1 ⟺ `0 ≤ Re ∫∫ ḡ g τ_1(t-s)`
+  (`ccmSoninTraceDomination_iff_toeplitz`).
+  (c) `CCMArchimedeanSoninTimeBandSplit`: `G = M - A`, `M = QQ̂Q - S ≥ 0` (`S = S Q̂ Q`),
+  `A = PP̂ + P̂P - PP̂P` trace class; `Re Tr(TGT†) ≥ -Re Tr(TAT†)`;
+  `Re Tr(Gϑ_u) ≤ Re Tr A - Re Tr(Aϑ_u)` (via `2 - ϑ - ϑ† = (1-ϑ)(1-ϑ)†`, `Tr G = 0`);
+  `Pϑ_uP = Pϑ_u` (`u ≥ 0`) so `Tr(Aϑ_u) = Tr(PP̂ϑ_u)`.
+  (d) `CCMArchimedeanSoninTimeBandKernel` (half-line model `W`): `W(PFϑ_uP)W⁻¹` is the kernel
+  `1_{x≤1}1_{z≤1} 2e^{u/2}cos(2πe^u xz)`; `T(u) := Tr(PP̂ϑ_u) = ∫₀¹∫₀¹ 4e^{u/2}cos(2πxz)cos(2πe^u xz)`.
+  (e) `CCMArchimedeanSoninTimeBandSlope`: `T ∈ C²` (dominated differentiation on the unit square),
+  `T''` continuous and bounded, **`T'(0) = 1`** (inner integrand `= ∂_z(2z cos²(2πxz))`,
+  `∫₀¹ 2cos²(2πx) = 1`).
+  (f) `HTGeometry/MeanZeroTentQuadraticForm`: for continuous mean-zero `g` supported in `[-R,R]`
+  with primitive `Γ`, `∫∫ ḡ(s)g(t)(|t-s|-w)₊ = -(I + Ī)`, `I = ∫ Γ̄(x)Γ(x+w)`, `|I| ≤ ‖Γ‖²`,
+  `∫∫ ḡ g |t-s| = -2‖Γ‖²`, and tent mixtures `|∫∫ ḡ g ∫₀^δ(|t-s|-w)₊h(w)| ≤ 2(∫|h|)‖Γ‖²`.
+  (g) `CCMArchimedeanSoninSmallSupportDomination`: `Tr(Aϑ_u) = T(|u|)`, Taylor
+  `T(r) = T(0) + r + ∫₀^δ (r-w)₊T''`; **survivor 1** `ccmSoninTraceDomination_of_small_support`:
+  `ε₀ = 1/(2(B+1))` (`B` explicit bound of `|T''|` on `[-1,1]`), every compact test supported in
+  `(-ε, ε)`, `ε ≤ ε₀`, with only `∫ g = 0` satisfies CC Sonin-trace domination at cutoff one
+  (`Re ≥ 2‖Γ‖²(1 - 2εB) ≥ 0`); **survivor 2** `not_ccmSoninTraceDomination_of_nonneg`: every
+  real nonnegative nonzero test of that support violates it (`Re τ_1(u) ≤ -(|u| - u²B)`), so the
+  vanishing condition is necessary.
+  Status of the literal T1 (support `½ log 2`, `ĝ(0) = ĝ(i/2) = 0`): still open. The split loses `M`,
+  which carries most of the kink (`κ = 2Z(1,1)`, `Z` the prolate resolvent kernel) while `A`
+  contributes slope 1 only; reaching `½ log 2` needs quantitative control of either `M` (prolate
+  resolvent) or of `T''` on `[0, log 2]` beyond crude bounds — the paper's numerical input.

@@ -210,6 +210,13 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Thin band | `2r − 1/6 ≤ log n ≤ 2r − 1/24` | `thinBand` |
 | Edge tent | `max(ε/2 − abs(x − (r − ε/2)), 0)` and its odd extension | `edgeTent`, `edgeTentOdd` |
 | Prime side and strip mass | `n ≤ e^{2r}`; `m_n(F) = ∫_{log n − r}^{r} F²` (crossing strip) or `∫ F²` | `primeSide`, `atomStripMass` |
+| Crossing potential of a gauge | `Π_P(x) = ∫_{t>x} ω(t) P(t − x) dt`; collar part `∫_{t>x+r} ω(t) P(t − x) dt` | `crossingPotential`, `collarCrossingPotential` |
+| Relevant shifts | `n ≥ 2`, `log n < 2r` | `relevantShifts` |
+| Odd strip cost, even strip gain | `4Λ(n)/√n ∫_{S_n} α_n²`, `2Λ(n)/√n ∫_{S_n} F²` | `oddStripCost`, `evenStripGain` |
+| Surplus pool, crossing potential term | `2 S_P(F)`, `4 ∫_{x>0} F² Π_P` | `surplusPool`, `crossingPotentialTerm` |
+| Gauge remainder, pole charge | `∫ F² P (−𝒲P + prime part)`, `2 (∫ F sinh(x/2))²` | `gaugeRemainder`, `poleCharge` |
+| Plateau of an aperture | `1` on `[−r, r]`, `0` outside `(−R, R)` | `aperturePlateau` |
+| Global incidence allocation | costs + pole ≤ pool + crossing potential + gains + remainder | `GlobalIncidenceAllocation` |
 
 **Words.**
 * **Pair `(x, y)`:** two points of the real line; **same-side** if `xy > 0`, **crossing** if
@@ -695,6 +702,45 @@ of the innermost strip once per atom.
     to pay the strip masses, which is the prime–polar problem of the form, not an allocation of the
     surplus.
 
+### The ledger at every aperture
+
+43. **The incidence ledger and the global allocation condition.** For an odd test `F` supported in
+    `[−r, r]`, every `r > 0`, and the plateau `P = aperturePlateau r R` (`1` on `[−r, r]`, `0` outside
+    `(−R, R)`, any `R > r`) the fold of mechanism 26 is exact at every aperture:
+    `J_P(F) = 2 S_P(F) + 4 ∫_{x>0} F(x)² Π_P(x) dx` with the crossing potential
+    `Π_P(x) = ∫_{t>x} ω(t) P(t − x) dt` (`archJump_eq_two_mul_surplus_add_crossingPotential`; the
+    bound `ω(t) t² ≤ 3/2 + 4B²` on `(0, 2B]` replaces the restriction `2B ≤ 1` of the windows), and
+    `Π_P(x) = (Ω(x) − Ω(x + r)) + ∫_{t>x+r} ω(t) P(t − x) dt`, the killing of the plateau plus the
+    axial collar potential of the gauge beyond `r`, between `0` and `Ω(x + r) − Ω(x + R)`
+    (`crossingPotential_eq_killing_add_collar`, `collarCrossingPotential_bounds`). The prime side is
+    the finite sum over the relevant shifts `n ≥ 2`, `log n < 2r` (`relevantShifts`; a shift
+    `log n ≥ 2r` meets no translate, `integral_mul_shift_eq_zero_of_two_mul_le`), and each shift
+    splits by mechanism 33 into its even gain and its odd cost. Hence, exactly
+    (`fullZeroForm_eq_incidenceLedger`):
+
+        Ẑ(F) = surplusPool + crossingPotentialTerm + Σ_n evenStripGain_n − Σ_n oddStripCost_n
+               + gaugeRemainder − poleCharge.
+
+    The pool, the crossing potential, the gains, the costs and the pole are nonnegative
+    (`surplusPool_nonneg`, `crossingPotentialTerm_nonneg`, `sum_evenStripGain_nonneg`,
+    `sum_oddStripCost_nonneg`, `poleCharge_nonneg`); the gauge remainder
+    `∫ F² P(−𝒲P + prime part)` is the only signed piece, bounded below pointwise by the plateau
+    potential of mechanism 27. The **global incidence allocation condition**
+    `GlobalIncidenceAllocation r R F` is the inequality costs + pole ≤ pool + crossing potential +
+    gains + remainder. By the ledger it is the sign of the form, test by test
+    (`globalIncidenceAllocation_iff_fullZeroForm_nonneg`), and since RH is the positivity of `Ẑ` on
+    odd compact tests (`riemannHypothesis_iff_forall_odd_fullZeroForm_nonneg`):
+
+        RH ⟺ every odd compact test satisfies the condition at every aperture and plateau radius
+
+    (`riemannHypothesis_iff_globalIncidenceAllocation`; one plateau radius per test suffices,
+    `riemannHypothesis_iff_exists_plateau_globalIncidenceAllocation`). Every window theorem of
+    mechanisms 23–35 and 40 is the condition at its aperture: the sharp micro-fold pays
+    `oddStripCost` from a share of the pool, the even part is `evenStripGain`, and the certificate
+    bounds the remainder with the crossing potential and the pole. Mechanism 42 pays the costs beyond
+    the light cone with the strip masses; the ledger names what must pay those masses, the remainder
+    and the crossing potential of the pairs the cone does not use, together with the gains.
+
 ---
 
 ## 4. Traps
@@ -717,6 +763,7 @@ of the innermost strip once per atom.
 | Summing the per-strip Harnack inequalities of mechanisms 30 and 35 | The strips `[log n − r, r]` are nested; the sum counts the inner pairs once per atom. One copy of the surplus pays a family only under an allocation (mechanisms 37 and 40), and the odd parts of the thin band exceed the whole surplus for large `r` (mechanisms 39 and 41). |
 | Expecting the union allocation to cover every thin family | It fails already for `{23, 25}`: `2Λ(23)/√23 + 2Λ(25)/5 > λ₀`. The shell (mechanism 36) is needed there. |
 | Reading the edge-tent obstruction as a failure of the form | On the edge tent every atom of the band is zero; what fails is the payment of the odd parts alone. The even parts cancel them. |
+| Reading the ledger (mechanism 43) as a positivity theorem | It is an exact identity, and the condition it defines is equivalent to `Ẑ(F) ≥ 0` test by test. Its content is the shape of what must be paid, the costs and the pole, against what can pay, the pool, the crossing potential, the gains and the signed remainder. Positivity is proved only where a certificate bounds the remainder (the windows). |
 
 ---
 
@@ -801,6 +848,15 @@ of the innermost strip once per atom.
    (mechanism 1, with `ArithmeticCriticalityTheory`).
 5. **Selectivity audit.** For each theorem of §3, what it says for `ζ(s−a)ζ(s+a)` (shifted atoms
    and polar weight), for a Beurling system with an off-line zero, and for the Liouville twist.
+6. **Paying the ledger past the windows.** The global condition of mechanism 43 is the target in
+   its exact shape. Past `221/400` the costs of several relevant shifts must be paid at once from
+   the pool, the gains and the remainder. The light cone (mechanism 38) pays the costs of the band
+   `2r − 2δ ≤ log n < 2r` from the pool alone; mechanism 42 charges every other cost to its strip
+   mass; what pays the strip masses is the remainder `∫ F²(−𝒲P + prime part)` on the strips, whose
+   pointwise floor is the plateau potential of mechanism 27, together with the gains
+   `2Λ(n)/√n ∫_{S_n} F²` (the atom pays its own strip at `t = 1`, mechanism 35). The first open
+   instance is the window `r ∈ (221/400, log 2)`, where the relevant shifts are still `2` and `3`
+   (open problem 8); the ledger there has two costs, two gains, and the remainder.
 
 ---
 

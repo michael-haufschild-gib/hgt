@@ -246,4 +246,166 @@ theorem ccmSoninTraceDomination_of_small_support (g : CCMCompactSchwartzLogTest)
   simp_rw [ccmScalingTrace_ccmSoninTimeBandPart]
   linarith [re_integral_integral_mul_ccmTimeBandTrace_abs_nonpos g hε hε₀ hsupp hmean]
 
+/-! ## Failure for nonnegative tests -/
+
+/-- `T(r) - T(0) ≥ r - r² B` for `0 ≤ r ≤ 1`. -/
+theorem ccmTimeBandTrace_sub_zero_ge {r : ℝ} (hr : 0 ≤ r) (hr1 : r ≤ 1) :
+    r - r ^ 2 * ccmTimeBandBound₂ 0 ≤ ccmTimeBandTrace r - ccmTimeBandTrace 0 := by
+  have hT := ccmTimeBandTrace_taylor hr (le_refl r)
+  have hcont : Continuous fun w => max (r - w) 0 * ccmTimeBandTrace'' w :=
+    ((continuous_const.sub continuous_id).max continuous_const).mul continuous_ccmTimeBandTrace''
+  have hbound : |∫ w in Ioc 0 r, max (r - w) 0 * ccmTimeBandTrace'' w| ≤
+      r ^ 2 * ccmTimeBandBound₂ 0 := by
+    calc |∫ w in Ioc 0 r, max (r - w) 0 * ccmTimeBandTrace'' w|
+        ≤ ∫ w in Ioc 0 r, |max (r - w) 0 * ccmTimeBandTrace'' w| := abs_integral_le_integral_abs
+      _ ≤ ∫ _w in Ioc 0 r, r * ccmTimeBandBound₂ 0 := by
+          refine setIntegral_mono_on hcont.abs.integrableOn_Ioc continuous_const.integrableOn_Ioc
+            measurableSet_Ioc fun w hw => ?_
+          rw [abs_mul, abs_of_nonneg (le_max_right _ _)]
+          have h1 : max (r - w) 0 ≤ r := max_le (by linarith [hw.1]) hr
+          have h2 : |ccmTimeBandTrace'' w| ≤ ccmTimeBandBound₂ 0 := by
+            refine abs_ccmTimeBandTrace''_le (u := 0) ?_
+            rw [abs_zero, zero_add, abs_le]
+            constructor <;> linarith [hw.1, hw.2]
+          exact mul_le_mul h1 h2 (abs_nonneg _) hr
+      _ = r ^ 2 * ccmTimeBandBound₂ 0 := by
+          rw [setIntegral_const, smul_eq_mul, Measure.real, Real.volume_Ioc, sub_zero,
+            ENNReal.toReal_ofReal hr]
+          ring
+  have := neg_abs_le (∫ w in Ioc 0 r, max (r - w) 0 * ccmTimeBandTrace'' w)
+  linarith
+
+/-- `Re Tr(G ϑ_u) ≤ -(|u| - |u|² B)` for `|u| ≤ 1`. -/
+theorem re_ccmSoninToeplitzKernel_le_neg {u : ℝ} (hu : |u| ≤ 1) :
+    (ccmSoninToeplitzKernel 1 u).re ≤ -(|u| - |u| ^ 2 * ccmTimeBandBound₂ 0) := by
+  have h := re_ccmSoninToeplitzKernel_le u
+  rw [ccmScalingTrace_ccmSoninTimeBandPart, ccmScalingTrace_ccmSoninTimeBandPart, abs_zero,
+    Complex.ofReal_re, Complex.ofReal_re] at h
+  linarith [ccmTimeBandTrace_sub_zero_ge (abs_nonneg u) hu]
+
+/-- **Sonin-trace domination fails for nonnegative tests of small support.**  If `g` is real,
+nonnegative, not identically zero, and vanishes off `(-ε₀, ε₀)`, then
+`Re Tr(ϑ(g★ ⋆ g) S) > -Re W(g★ ⋆ g)`: the vanishing condition `ĝ(0) = 0` cannot be dropped. -/
+theorem not_ccmSoninTraceDomination_of_nonneg (g : CCMCompactSchwartzLogTest) {ε : ℝ}
+    (hε : 0 < ε) (hε₀ : ε ≤ ccmSoninSmallSupportRadius) (hsupp : ∀ x, ε ≤ |x| → g x = 0)
+    (hreal : ∀ x, (g x).im = 0) (hnonneg : ∀ x, 0 ≤ (g x).re) {x₀ : ℝ} (hx₀ : g x₀ ≠ 0) :
+    (-ccmArchimedeanWeilDistribution (ccmSoninGramTest g)).re <
+      (opTrace (ccmIntegratedScaling (ccmSchwartzLogKernel (ccmSoninGramTest g).toSchwartzMap) *
+        evenCentralSoninProjection 1)).re := by
+  rw [← not_le, ccmSoninTraceDomination_iff_toeplitz, not_le]
+  set f : ℝ → ℂ := fun x => g x
+  have hf : Continuous f := g.toSchwartzMap.continuous
+  set φ : ℝ → ℝ := fun x => (g x).re
+  have hφc : Continuous φ := Complex.continuous_re.comp hf
+  have hfφ : ∀ x, f x = (φ x : ℂ) := fun x => Complex.ext (by simp [φ, f]) (by simp [f, hreal x])
+  set B := ccmTimeBandBound₂ 0
+  have hB := ccmTimeBandBound₂_nonneg
+  have hδ1 : 2 * ε ≤ 1 := le_trans (by linarith) two_mul_ccmSoninSmallSupportRadius_le_one
+  have hδB : 2 * ε * B ≤ 1 := le_trans
+    (mul_le_mul_of_nonneg_right (by linarith) hB) two_mul_ccmSoninSmallSupportRadius_mul_le_one
+  have hsuppφ : ∀ x, ε ≤ |x| → φ x = 0 := fun x hx => by simp [φ, hsupp x hx]
+  -- the kernel is real
+  set k : ℝ × ℝ → ℝ := fun p => (ccmSoninToeplitzKernel 1 (p.2 - p.1)).re
+  have hkc : Continuous k := Complex.continuous_re.comp
+    ((continuous_ccmSoninToeplitzKernel one_pos).comp (continuous_snd.sub continuous_fst))
+  have hτ : ∀ u, ccmSoninToeplitzKernel 1 u = ((ccmSoninToeplitzKernel 1 u).re : ℂ) := fun u =>
+    Complex.ext rfl (by simp [im_ccmSoninToeplitzKernel one_pos u])
+  have hF := integrable_conj_mul_mul hf hsupp hkc
+    (C := traceNorm evenSubspace (ccmSoninGenericPartAt 1)) fun p _ =>
+      (Complex.abs_re_le_norm _).trans (norm_ccmSoninToeplitzKernel_le one_pos _)
+  have hplane : ∫ s, ∫ t, conj (g s) * g t * ccmSoninToeplitzKernel 1 (t - s) =
+      ∫ p : ℝ × ℝ, conj (f p.1) * f p.2 * ((k p : ℝ) : ℂ) ∂(volume.prod volume) := by
+    rw [integral_prod _ hF]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    change conj (f s) * f t * ccmSoninToeplitzKernel 1 (t - s) = _
+    rw [hτ]
+  rw [hplane]
+  change RCLike.re (∫ p : ℝ × ℝ, conj (f p.1) * f p.2 * ((k p : ℝ) : ℂ) ∂(volume.prod volume)) < 0
+  rw [← integral_re hF]
+  have hre : ∀ p : ℝ × ℝ, RCLike.re (conj (f p.1) * f p.2 * ((k p : ℝ) : ℂ)) =
+      φ p.1 * φ p.2 * k p := by
+    intro p
+    rw [hfφ, hfφ, Complex.conj_ofReal]
+    change (((φ p.1 : ℂ) * (φ p.2 : ℂ) * (k p : ℂ))).re = _
+    norm_cast
+  simp_rw [hre]
+  -- comparison with `-φ(s) φ(t) |t - s| (1 - |t - s| B)`
+  set h : ℝ × ℝ → ℝ := fun p => φ p.1 * φ p.2 * (|p.2 - p.1| - |p.2 - p.1| ^ 2 * B)
+  have hhc : Continuous h := by
+    refine ((hφc.comp continuous_fst).mul (hφc.comp continuous_snd)).mul ?_
+    fun_prop
+  have hin : ∀ p : ℝ × ℝ, φ p.1 ≠ 0 → φ p.2 ≠ 0 → |p.2 - p.1| < 2 * ε := by
+    intro p h1 h2
+    have a1 : |p.1| < ε := lt_of_not_ge fun h => h1 (hsuppφ _ h)
+    have a2 : |p.2| < ε := lt_of_not_ge fun h => h2 (hsuppφ _ h)
+    calc |p.2 - p.1| ≤ |p.2| + |p.1| := abs_sub _ _
+      _ < 2 * ε := by linarith
+  have hfactor : ∀ p : ℝ × ℝ, φ p.1 ≠ 0 → φ p.2 ≠ 0 → 0 ≤ |p.2 - p.1| - |p.2 - p.1| ^ 2 * B := by
+    intro p h1 h2
+    have hd := hin p h1 h2
+    have : |p.2 - p.1| * B ≤ 1 := by nlinarith [abs_nonneg (p.2 - p.1)]
+    nlinarith [abs_nonneg (p.2 - p.1)]
+  have hh0 : 0 ≤ h := fun p => by
+    by_cases h1 : φ p.1 = 0
+    · simp [h, h1]
+    by_cases h2 : φ p.2 = 0
+    · simp [h, h2]
+    exact mul_nonneg (mul_nonneg (hnonneg _) (hnonneg _)) (hfactor p h1 h2)
+  have hhsupp : HasCompactSupport h := by
+    refine HasCompactSupport.intro (K := Icc (-ε) ε ×ˢ Icc (-ε) ε)
+      ((isCompact_Icc (a := -ε) (b := ε)).prod (isCompact_Icc (a := -ε) (b := ε))) fun p hp => ?_
+    rw [mem_prod, not_and_or] at hp
+    rcases hp with hp | hp
+    · simp [h, hsuppφ p.1 (by
+        rw [mem_Icc, not_and_or, not_le, not_le] at hp
+        rcases hp with hp | hp
+        · exact (by linarith : ε ≤ -p.1).trans (neg_le_abs _)
+        · exact hp.le.trans (le_abs_self _))]
+    · simp [h, hsuppφ p.2 (by
+        rw [mem_Icc, not_and_or, not_le, not_le] at hp
+        rcases hp with hp | hp
+        · exact (by linarith : ε ≤ -p.2).trans (neg_le_abs _)
+        · exact hp.le.trans (le_abs_self _))]
+  -- a point where `h > 0`
+  have hφ₀ : 0 < φ x₀ := by
+    refine lt_of_le_of_ne (hnonneg x₀) (Ne.symm fun h0 => hx₀ ?_)
+    change f x₀ = 0
+    rw [hfφ, h0, Complex.ofReal_zero]
+  obtain ⟨ε', hε', hball⟩ := Metric.eventually_nhds_iff.mp
+    (hφc.continuousAt.eventually (lt_mem_nhds hφ₀))
+  set η := min (ε' / 2) ε
+  have hη : 0 < η := lt_min (by linarith) hε
+  have hφ₁ : 0 < φ (x₀ + η) := hball (by
+    rw [Real.dist_eq, add_sub_cancel_left, abs_of_pos hη]
+    exact lt_of_le_of_lt (min_le_left _ _) (by linarith))
+  have hpos : h (x₀, x₀ + η) ≠ 0 := by
+    have hd : |(x₀ + η) - x₀| = η := by rw [add_sub_cancel_left, abs_of_pos hη]
+    have hηB : η * B < 1 := by
+      have : η ≤ ε := min_le_right _ _
+      rcases hB.lt_or_eq with hB' | hB'
+      · nlinarith
+      · have hB0 : B = 0 := hB'.symm
+        rw [hB0, mul_zero]; norm_num
+    simp only [h, hd]
+    have : 0 < η - η ^ 2 * B := by nlinarith
+    positivity
+  have hint := Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero
+    (μ := volume.prod volume) hhc hhsupp hh0 hpos
+  have hle : ∫ p : ℝ × ℝ, φ p.1 * φ p.2 * k p ∂(volume.prod volume) ≤
+      ∫ p : ℝ × ℝ, -h p ∂(volume.prod volume) := by
+    refine integral_mono ?_ (hhc.integrable_of_hasCompactSupport hhsupp).neg fun p => ?_
+    · exact hF.re.congr (Filter.Eventually.of_forall hre)
+    · by_cases h1 : φ p.1 = 0
+      · simp [h, h1]
+      by_cases h2 : φ p.2 = 0
+      · simp [h, h2]
+      have hd := hin p h1 h2
+      have hk := re_ccmSoninToeplitzKernel_le_neg (u := p.2 - p.1) (by linarith)
+      have hφφ : 0 ≤ φ p.1 * φ p.2 := mul_nonneg (hnonneg _) (hnonneg _)
+      simp only [h, k]
+      nlinarith
+  rw [integral_neg] at hle
+  linarith
+
 end RHTower

@@ -280,7 +280,7 @@ theorem fullZeroForm_eq_incidenceLedger {F : ℝ → ℝ} {r R : ℝ} (hF : Cont
       ((hasCompactSupport_sq hFc).mul_right.mul_right)
   have hSumi : Integrable fun x => ∑ n ∈ relevantShifts R,
       vonMangoldtAtom n * (F x ^ 2 * P x * (P (x + Real.log n) + P (x - Real.log n))) :=
-    integrable_finset_sum _ fun n _ => (hPri n).const_mul _
+    integrable_finsetSum _ fun n _ => (hPri n).const_mul _
   have hGR : gaugeRemainder P F =
       (∫ x, F x ^ 2 * P x * -poleFreeWeilOperator P x) +
         ∑ n ∈ relevantShifts R, vonMangoldtAtom n *

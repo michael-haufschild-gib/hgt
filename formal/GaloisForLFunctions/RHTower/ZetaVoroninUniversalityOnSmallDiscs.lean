@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.ZetaTypicalHeightApproximationExcludesZeroTar
 /-!
 # Voronin universality of `ζ` on small discs of the strip
 
-Let `z₀` and `ρ` satisfy `1/2 ≤ Re z₀`, `2ρ − 2Re z₀ < −1`, `3ρ < 1 − Re z₀`, and let
+Let `z₀` and `ρ` satisfy `1/2 ≤ Re z₀`, `2ρ − 2Re z₀ < −1`, `ρ < 1 − Re z₀`, `2ρ < 5/12`, and let
 `K = {|z − z₀| ≤ ρ r₁}`, `r₁ < 1`, with `1/2 < Re z₀ − 2ρr₁` and `Re z₀ + 2ρr₁ < 1`.  For every
 function `g` analytic and nonvanishing on the larger disc `|z − z₀| < ρ R₂`, `R₂ > 1`, and every
 `ε > 0`, the heights `τ` at which `ζ(· + iτ)` is within `ε` of `g` on `K` have positive lower
@@ -72,7 +72,8 @@ the Hardy space and the target `g = exp(L((· − z₀)/ρ))` on the disc `|z �
 set `A` of positive Haar measure; the primes in `(y₁, y]` contribute a random Hardy-space sum,
 small on a block event of Haar measure `≥ 1/2` independent of `A`. -/
 theorem exists_uniform_pos_density_eulerTargetReturnSet_exp (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
-    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : 3 * ρ < 1 - z₀.re)
+    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
+    (hρ5 : 2 * ρ < 5 / 12)
     (L : HardyDisk) {r₁ : ℝ} (hr₁0 : 0 ≤ r₁) (hr₁ : r₁ < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ c > 0, ∃ y₁ : ℕ, ∀ y, y₁ ≤ y → ∀ᶠ T in atTop, ENNReal.ofReal (c * T) ≤
       volume (eulerTargetReturnSet y (fun z => Complex.exp (hardyFun L ((z - z₀) / ρ)))
@@ -122,7 +123,7 @@ theorem exists_uniform_pos_density_eulerTargetReturnSet_exp (z₀ : ℂ) {ρ : �
   obtain ⟨y₀, -, hy₀⟩ := exists_remainder_tail_le hσ₁ hC0 hδ'pos 0
   -- the base phases, at a stage `y₁ ≥ y₀`
   obtain ⟨y₁, hy₁, c₁, hc₁, hev₁⟩ := exists_pos_density_eulerTargetReturnSet_exp z₀ hρ hσ hρσ₁
-    hρσ₂ L hr₁0 hr₁ (half_pos hε) y₀
+    hρσ₂ hρ5 L hr₁0 hr₁ (half_pos hε) y₀
   have hne : (eulerTargetReturnSet y₁ g (closedBall z₀ (ρ * r₁)) (ε / 2)).Nonempty := by
     rw [Set.nonempty_iff_ne_empty]
     intro hemp
@@ -258,14 +259,15 @@ theorem eulerTargetReturnSet_diff_eulerDiscTailBadSet_subset_zetaTargetReturnSet
 `exp(L((· − z₀)/ρ))` on `|z − z₀| ≤ ρ r₁` have positive lower density: cutoff-uniform
 Euler-target density minus the Euler tail bad set. -/
 theorem exists_pos_density_zetaTargetReturnSet_exp (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
-    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : 3 * ρ < 1 - z₀.re)
+    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
+    (hρ5 : 2 * ρ < 5 / 12)
     (L : HardyDisk) {r₁ : ℝ} (hr₁0 : 0 < r₁) (hr₁ : r₁ < 1)
     (h0 : 1 / 2 < z₀.re - 2 * (ρ * r₁)) (h1 : z₀.re + 2 * (ρ * r₁) < 1) {ε : ℝ} (hε : 0 < ε) :
     ∃ c > 0, ∀ᶠ T : ℝ in atTop, ENNReal.ofReal (c * T) ≤
       volume (zetaTargetReturnSet (fun z => Complex.exp (hardyFun L ((z - z₀) / ρ)))
         (closedBall z₀ (ρ * r₁)) ε ∩ Icc 0 T) := by
   obtain ⟨c, hc, y₁, hy₁⟩ := exists_uniform_pos_density_eulerTargetReturnSet_exp z₀ hρ hσ hρσ₁
-    hρσ₂ L hr₁0.le hr₁ (half_pos hε)
+    hρσ₂ hρ5 L hr₁0.le hr₁ (half_pos hε)
   have hbad := eventually_eventually_volume_eulerDiscTailBadSet_le (by positivity : 0 < ρ * r₁)
     h0 h1 (half_pos hε) (half_pos hc)
   obtain ⟨y, hy, hyb⟩ := ((eventually_ge_atTop y₁).and hbad).exists
@@ -283,7 +285,8 @@ within `ε` of `g` on the closed disc `|z − z₀| ≤ ρ r₁` have positive l
 logarithm of `g` on the larger disc lies in the Hardy space of the disc coordinate, so `g` is an
 exponential target on the smaller disc. -/
 theorem exists_pos_density_zetaTargetReturnSet_of_analyticOnNhd (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ)
-    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : 3 * ρ < 1 - z₀.re)
+    (hσ : 1 / 2 ≤ z₀.re) (hρσ₁ : 2 * ρ - 2 * z₀.re < -1) (hρσ₂ : ρ < 1 - z₀.re)
+    (hρ5 : 2 * ρ < 5 / 12)
     {R₂ : ℝ} (hR₂ : 1 < R₂) {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g (ball z₀ (ρ * R₂)))
     (hg0 : ∀ z ∈ ball z₀ (ρ * R₂), g z ≠ 0)
     {r₁ : ℝ} (hr₁0 : 0 < r₁) (hr₁ : r₁ < 1)
@@ -335,7 +338,7 @@ theorem exists_pos_density_zetaTargetReturnSet_of_analyticOnNhd (z₀ : ℂ) {ρ
     exact hexpf z hzball
   -- universality for the exponential target, transported to `g`
   obtain ⟨c, hc, hev⟩ :=
-    exists_pos_density_zetaTargetReturnSet_exp z₀ hρ hσ hρσ₁ hρσ₂ L hr₁0 hr₁ h0 h1 hε
+    exists_pos_density_zetaTargetReturnSet_exp z₀ hρ hσ hρσ₁ hρσ₂ hρ5 L hr₁0 hr₁ h0 h1 hε
   refine ⟨c, hc, ?_⟩
   have hset : zetaTargetReturnSet (fun z => Complex.exp (hardyFun L ((z - z₀) / ρ)))
       (closedBall z₀ (ρ * r₁)) ε = zetaTargetReturnSet g (closedBall z₀ (ρ * r₁)) ε := by
@@ -357,22 +360,24 @@ theorem exists_pos_density_zetaTargetReturnSet_of_analyticOnNhd (z₀ : ℂ) {ρ
 with `1/2 < Re z₀ − 4r` and `Re z₀ + 4r < 1` such that every `g` analytic and nonvanishing on
 `|z − z₀| < 4r` is approached by `ζ(· + iτ)` on `|z − z₀| ≤ r`, within any `ε > 0`, on a set of
 heights of positive lower density.  The radius is `r = ρ/2` with
-`ρ = min((Re z₀ − 1/2)/4, (1 − Re z₀)/8)`, `r₁ = 1/2`, `R₂ = 2`. -/
+`ρ = min((Re z₀ − 1/2)/3, (1 − Re z₀)/3, 1/5)`, `r₁ = 1/2`, `R₂ = 2`; the cap `1/5` is the
+natural-rate cap `2ρ < 5/12` of the prime-log divergence input. -/
 theorem exists_radius_zeta_universal {z₀ : ℂ} (h1 : 1 / 2 < z₀.re) (h2 : z₀.re < 1) :
     ∃ r > 0, 1 / 2 < z₀.re - 4 * r ∧ z₀.re + 4 * r < 1 ∧
       ∀ g : ℂ → ℂ, AnalyticOnNhd ℂ g (ball z₀ (4 * r)) → (∀ z ∈ ball z₀ (4 * r), g z ≠ 0) →
         ∀ ε > 0, ∃ c > 0, ∀ᶠ T : ℝ in atTop,
           ENNReal.ofReal (c * T) ≤ volume (zetaTargetReturnSet g (closedBall z₀ r) ε ∩ Icc 0 T) := by
-  set ρ : ℝ := min ((z₀.re - 1 / 2) / 4) ((1 - z₀.re) / 8) with hρdef
-  have hρ : 0 < ρ := lt_min (by linarith) (by linarith)
-  have hρ1 : ρ ≤ (z₀.re - 1 / 2) / 4 := min_le_left _ _
-  have hρ2 : ρ ≤ (1 - z₀.re) / 8 := min_le_right _ _
+  set ρ : ℝ := min ((z₀.re - 1 / 2) / 3) (min ((1 - z₀.re) / 3) (1 / 5)) with hρdef
+  have hρ : 0 < ρ := lt_min (by linarith) (lt_min (by linarith) (by norm_num))
+  have hρ1 : ρ ≤ (z₀.re - 1 / 2) / 3 := min_le_left _ _
+  have hρ2 : ρ ≤ (1 - z₀.re) / 3 := (min_le_right _ _).trans (min_le_left _ _)
+  have hρ3 : ρ ≤ 1 / 5 := (min_le_right _ _).trans (min_le_right _ _)
   refine ⟨ρ * (1 / 2), by positivity, by linarith, by linarith, fun g hg hg0 ε hε => ?_⟩
   have h4 : 4 * (ρ * (1 / 2)) = ρ * 2 := by ring
   rw [h4] at hg hg0
   exact exists_pos_density_zetaTargetReturnSet_of_analyticOnNhd z₀ hρ h1.le (by linarith)
-    (by linarith) (R₂ := 2) (by norm_num) hg hg0 (by norm_num) (by norm_num) (by linarith)
-    (by linarith) hε
+    (by linarith) (by linarith) (R₂ := 2) (by norm_num) hg hg0 (by norm_num) (by norm_num)
+    (by linarith) (by linarith) hε
 
 /-- **`ζ` comes uniformly close to every nonzero constant** on a small disc about every point of
 the strip, on a set of heights of positive lower density. -/
