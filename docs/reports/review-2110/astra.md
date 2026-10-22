@@ -514,6 +514,8 @@ D_T(t)/t^2\longrightarrow
 \]
 and the right-hand horizons are unbounded. Finite signed first work coexists with singular residual curvature. See `tendsto_dual_residual_div_sq` in [DampedChebyshevTangentFormOfTheReceiver.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/DampedChebyshevTangentFormOfTheReceiver.lean).
 
+Renormalizing the energy does not weaken the positive-damping problem. Write \(M_T=\sum_{n\le T}A_t(n)/[n(n+1)]\) and \(W_T=T/(T+1)\). Then \(D_T=E_T-2M_T+W_T\), while \(|M'_T|\le K_a\) uniformly in horizon on each compact interval with \(t\ge a>0\), where one may take \(K_a=\sum_d(\log d)^2/d^{1+a}\). Since \(1+D_T\le3(1+E_T)\) and conversely, a backward bound with coefficient \(b_a\) for either energy gives one with coefficient \(3b_a+2K_a\) for the other. Subtracting the paid scalar \(2r'_t\) likewise leaves the covariance estimate unpaid.
+
 There is a sharper unconditional boundary statement. Put \(D(t)=\sup_TD_T(t)\), allowing \(+\infty\). For every critical-line zero \(\rho\) of multiplicity \(m\ge1\), and every \(c>0\),
 \[
 \liminf_{t\downarrow0}\frac{D(t)}t

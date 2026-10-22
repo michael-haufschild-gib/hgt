@@ -73,7 +73,7 @@ theorem zetaZeroConfig_re_W_heightShift_pos_of_dominance {a : ℝ} (ha : 0 < a) 
       (Real.log (1 + π * |ξ| / 4) - horizonExponent (Real.exp (2 * a)) -
         2 * pairEnergy (1 / 2) a) * ∫ t, ‖f t‖ ^ 2) :
     0 < (zetaZeroConfig.W (heightShift ξ f) (heightShift ξ f)).re := by
-  have hbound := zetaZeroConfig_re_W_heightShift_ge ha hf hfs ξ
+  have hbound := zetaZeroConfig_re_W_heightShift_ge ha.le hf hfs ξ
   linarith
 
 /-- **Quantitative height horizon for strict `L²`-coercivity of `W_ζ`.** For any `C²` test `f`
@@ -102,7 +102,7 @@ theorem exists_height_horizon_zetaZeroConfig_re_W_ge_norm_sq {a : ℝ} (ha : 0 <
     rw [div_le_iff₀ (by positivity)]
     rw [div_le_iff₀ (by positivity)] at h2
     nlinarith [abs_nonneg ξ, Real.pi_pos]
-  have hbound := zetaZeroConfig_re_W_heightShift_ge ha hf hfs ξ
+  have hbound := zetaZeroConfig_re_W_heightShift_ge ha.le hf hfs ξ
   have hcoef : 2 * N ≤ (Real.log (1 + π * |ξ| / 4) - horizonExponent (Real.exp (2 * a)) -
       2 * pairEnergy (1 / 2) a) * N := by
     have : 2 ≤ Real.log (1 + π * |ξ| / 4) - horizonExponent (Real.exp (2 * a)) -
