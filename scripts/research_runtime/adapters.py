@@ -117,9 +117,15 @@ class LocalModels:
             config = AutoConfig.from_pretrained(path, local_files_only=True)
             config.vision_config = None
             config.audio_config = None
+            # SDPA on MPS returns non-finite values for this model whenever a
+            # batch carries real padding, which every mixed-length batch does.
+            # Reproduce with research_runtime.probe_embedding: it needs MPS and
+            # padding and sdpa together; eager is finite in every case and CPU
+            # is unaffected, so sdpa stays wherever it is correct.
+            attention = 'eager' if device == 'mps' else 'sdpa'
             wrapper = AutoModel.from_pretrained(path, config=config, local_files_only=True,
                                                 trust_remote_code=False, dtype=torch.float32,
-                                                attn_implementation='sdpa').eval()
+                                                attn_implementation=attention).eval()
             model = getattr(wrapper, 'language_model', wrapper)
         else:
             model = AutoModelForCausalLM.from_pretrained(path, local_files_only=True, trust_remote_code=False,

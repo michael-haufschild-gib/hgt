@@ -184,10 +184,13 @@ are pinned in `pyproject.toml` and transitively locked in `uv.lock`.
 - [PyTorch MPS](https://docs.pytorch.org/docs/stable/notes/mps.html):
   explicit availability check and device transfer. Search uses float32 on MPS:
   target-machine probes found non-finite mixed-length left-padded batches in
-  float16, bfloat16 and float32. Right-padded embedding batches and unpadded
-  per-text reranking avoid that kernel path. CPU float32 fallback is explicit
-  and reported; automatic
-  hidden per-operator MPS fallback is disabled. Finite output is checked.
+  float16, bfloat16 and float32. The embedder additionally uses eager attention
+  on MPS, because SDPA there returns non-finite values for this model whenever a
+  batch carries real padding; the probe needs MPS and padding and sdpa together
+  to reproduce, and CPU is unaffected, so sdpa stays where it is correct.
+  Unpadded per-text reranking avoids the same kernel path. CPU float32 fallback
+  is explicit and reported; automatic hidden per-operator MPS fallback is
+  disabled. Finite output is checked.
 - [Transformers offline mode](https://huggingface.co/docs/transformers/v5.20.2/installation#offline-mode):
   forced offline flags before imports plus `local_files_only=True`. The child
   additionally denies INET socket creation, DNS resolution, and subprocess
@@ -213,6 +216,11 @@ audio tower configs are nulled before loading, which is required rather than
 merely economical, because `Gemma4AudioModel` has no SDPA kernel and building it
 fails the load. A Lean statement against a natural-language goal, with the
 asymmetric prefixes applied, scored cosine 0.82.
+
+The isolated CPU/MPS probe passes at max absolute difference 1.94e-7 and
+minimum cosine 0.9999998 on mixed-length 5000-character inputs, at 2.22
+documents/second on MPS. The comparable Qwen figure on this probe was
+0.66-1.15 documents/second.
 
 Source extraction measures 50 files/second after batching the ~20 source
 reference rows per declaration into one statement per file, which projects to

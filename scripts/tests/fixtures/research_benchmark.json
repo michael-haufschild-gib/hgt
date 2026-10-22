@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "benchmark_version": "2026-10-22.1",
+  "benchmark_version": "2026-10-22.2",
   "evaluator_version": 2,
   "release_policy": {
     "heldout_split": "test",
@@ -531,7 +531,7 @@
           "line": 53,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_derivative",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         }
       ],
       "rationale": "Source uses t=T-exp(v), real-power chain rule, cube identity and nonzero mass. No terminal derivative is asserted."
@@ -549,7 +549,7 @@
           "line": 129,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawking_half_entropy_before_half_mass",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         }
       ],
       "rationale": "Compares exact elapsed fractions using positive sqrt 2 and remaining lifetime."
@@ -567,7 +567,7 @@
           "line": 53,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_derivative",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         }
       ],
       "rationale": "Held-out evaporation identifier."
@@ -585,7 +585,7 @@
           "line": 53,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_derivative",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         },
         {
           "relpath": "formal/GaloisForLFunctions/HTGeometry/HawkingMassLossClock.lean",
@@ -593,15 +593,15 @@
           "line": 146,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_terminal_limit",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
           "name": "tsum_schwarzschildEvaporationDyadicShellDuration",
           "line": 27,
           "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
           "theorem_family": "evaporation",
-          "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
+          "source_hash": "9e5d75af37f1b7392c25336b7105e8dd64fb167be82810558ade6b06fe168e3d"
         }
       ],
       "rationale": "Landmarks: preterminal ODE, continuous terminal zero, exact sum of shell durations. Incomplete relevance set."
@@ -619,7 +619,7 @@
           "line": 99,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawking_half_mass_time",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         }
       ],
       "rationale": "Elapsed lifetime has same form but different mass fraction hypothesis from half-area event.",
@@ -630,7 +630,7 @@
           "line": 120,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawking_half_entropy_time",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2",
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986",
           "reason": "Uses mass fraction 1/sqrt(2) and elapsed fraction 1-1/(2*sqrt(2)), versus half-mass fraction 7/8."
         }
       ]
@@ -648,7 +648,7 @@
           "line": 38,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_cube",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         },
         {
           "relpath": "formal/GaloisForLFunctions/HTGeometry/HawkingMassLossClock.lean",
@@ -656,7 +656,7 @@
           "line": 31,
           "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_pos",
           "theorem_family": "evaporation",
-          "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+          "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
         }
       ],
       "rationale": "Derivative proof invokes both facts before clearing denominators and using nlinarith.",
@@ -668,7 +668,7 @@
             "line": 38,
             "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_cube",
             "theorem_family": "evaporation",
-            "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+            "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
           }
         ],
         [
@@ -678,7 +678,7 @@
             "line": 31,
             "qualified_name": "GaloisForLFunctions.HTGeometry.hawkingEvaporationMass_pos",
             "theorem_family": "evaporation",
-            "source_hash": "24c528c1f13f7a6cc056eb5181e5a4aba1804763e02d066a4537257075e0eed2"
+            "source_hash": "8f350a3f3798bd5aeb089d27cf37c09efbcfad0687cbb04a35fae2d51b82e986"
           }
         ]
       ]
@@ -810,12 +810,12 @@
             "source_hash": "e25123e57a187fcac6b6e1ff9f9b1f4b588e2a26978c59e3e01b26de327af8f3"
           },
           "target": {
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
             "name": "tsum_schwarzschildEvaporationDyadicShellDuration",
             "line": 27,
             "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
             "theorem_family": "evaporation",
-            "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
+            "source_hash": "9e5d75af37f1b7392c25336b7105e8dd64fb167be82810558ade6b06fe168e3d"
           },
           "source_subject": "random gate-word probability",
           "target_subject": "black-hole evaporation shells",
@@ -841,24 +841,24 @@
       "split": "test",
       "relevant": [
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
           "name": "tsum_schwarzschildEvaporationDyadicShellDuration",
           "line": 27,
           "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
           "theorem_family": "evaporation",
-          "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
+          "source_hash": "9e5d75af37f1b7392c25336b7105e8dd64fb167be82810558ade6b06fe168e3d"
         }
       ],
       "rationale": "Reverse geometric-series transfer with additional combinatorial grouping obligations.",
       "analogy_labels": [
         {
           "source": {
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
             "name": "tsum_schwarzschildEvaporationDyadicShellDuration",
             "line": 27,
             "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
             "theorem_family": "evaporation",
-            "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
+            "source_hash": "9e5d75af37f1b7392c25336b7105e8dd64fb167be82810558ade6b06fe168e3d"
           },
           "target": {
             "relpath": "formal/GaloisForLFunctions/HTGeometry/SelectionSynthesisDivergence.lean",

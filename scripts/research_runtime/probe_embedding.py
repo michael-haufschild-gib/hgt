@@ -17,15 +17,23 @@ from .processes import terminate_owned, cancellation_signals
 
 
 def probe(cache_dir, count=32):
-    from .adapters import enforce_offline
+    from .adapters import enforce_offline, mean_pool
     enforce_offline()
     import torch
-    from transformers import AutoModel, AutoTokenizer
+    from transformers import AutoConfig, AutoModel, AutoTokenizer
     path = installation_status(cache_dir)['models']['embedding']['path']
     tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True, trust_remote_code=False,
                                               padding_side='right')
-    model = AutoModel.from_pretrained(path, local_files_only=True, trust_remote_code=False,
-                                     dtype=torch.float32, attn_implementation='sdpa').eval()
+    # Text tower only, matching the adapter: the audio tower has no SDPA kernel,
+    # so building it fails the load, and the 512->768 projection lives here.
+    config = AutoConfig.from_pretrained(path, local_files_only=True)
+    config.vision_config = None
+    config.audio_config = None
+    wrapper = AutoModel.from_pretrained(path, config=config, local_files_only=True,
+                                        trust_remote_code=False, dtype=torch.float32,
+                                        attn_implementation=('eager' if torch.backends.mps.is_available()
+                                                             else 'sdpa')).eval()
+    model = getattr(wrapper, 'language_model', wrapper)
     texts = ['theorem refl (n : ℕ) : n = n := rfl',
              'theorem add_comm (m n : ℕ) : m + n = n + m := by omega',
              'A spectral gap gives a coercivity estimate on the orthogonal complement. '*8,
@@ -39,9 +47,8 @@ def probe(cache_dir, count=32):
         batch = batch.to(device)
         with torch.inference_mode():
             hidden = model(**batch, use_cache=False).last_hidden_state
-            lengths = batch['attention_mask'].sum(dim=1)-1
-            last = hidden[torch.arange(hidden.shape[0], device=device), lengths]
-            return torch.nn.functional.normalize(last.float(), p=2, dim=1).cpu()
+            return torch.nn.functional.normalize(
+                mean_pool(hidden, batch['attention_mask']), p=2, dim=1).cpu()
 
     cpu = embed(inputs, 'cpu')
     if not torch.backends.mps.is_available():

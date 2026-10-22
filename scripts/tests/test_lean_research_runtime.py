@@ -351,7 +351,9 @@ class AdapterPolicyTests(unittest.TestCase):
         self.assertTrue(kwargs['local_files_only'])
         self.assertFalse(kwargs['trust_remote_code'])
         self.assertIs(kwargs['dtype'], torch.float32)
-        self.assertEqual(kwargs['attn_implementation'], 'sdpa')
+        # SDPA on MPS returns non-finite values for this model once a batch
+        # carries padding, so MPS uses eager and CPU keeps the fused kernel.
+        self.assertEqual(kwargs['attn_implementation'], 'eager')
         config = config_factory.from_pretrained.return_value
         self.assertIs(kwargs['config'], config)
         self.assertIsNone(config.vision_config)
@@ -361,6 +363,13 @@ class AdapterPolicyTests(unittest.TestCase):
         self.assertIs(model, wrapper.language_model.to.return_value)
         wrapper.language_model.to.assert_called_once_with('mps')
         self.assertEqual(tokenizer.from_pretrained.call_args.kwargs['padding_side'], 'right')
+        # The CPU path is unaffected by that kernel and keeps sdpa.
+        factory.from_pretrained.reset_mock()
+        models.loaded.clear()
+        with patch.dict(sys.modules, {'torch': torch, 'transformers': transformer}), patch.object(
+                models, '_path', return_value='/local/snapshot'):
+            models._torch_model('embedding', cpu=True)
+        self.assertEqual(factory.from_pretrained.call_args.kwargs['attn_implementation'], 'sdpa')
 
     def test_nonfinite_mps_retries_once_on_cpu_and_reports_reason(self):
         from unittest.mock import MagicMock
