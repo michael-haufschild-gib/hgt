@@ -51,7 +51,6 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity
 import GaloisForLFunctions.SignChangingScrewGauge
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
 import GaloisForLFunctions.ScaleSignedIncidenceCriticality
-import GaloisForLFunctions.ReverseTwistedArcPoleCompression
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean

@@ -3793,15 +3793,14 @@ theorem displacement_nat_mul_le (hF : Continuous F) (hFc : HasCompactSupport F) 
       (fun i _ => integrable_diff_sq_shift hF hFc ((i : ℝ) * t) t)
   have hmono := MeasureTheory.integral_mono (integrable_diff_sq hF hFc ((k : ℝ) * t))
     (hint_sum.const_mul (k : ℝ)) hpt
-  rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finsetSum _
+  rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finsetSum (Finset.range k)
       (fun i _ => integrable_diff_sq_shift hF hFc ((i : ℝ) * t) t)] at hmono
   simp only [integral_diff_sq_shift hF hFc, Finset.sum_const, Finset.card_range,
     nsmul_eq_mul] at hmono
   have e1 := two_mul_displacement_eq hF hFc ((k : ℝ) * t)
   nlinarith [hmono, e1]
 
-theorem autoCorrelation_zero_nonneg (hF : Continuous F) (hFc : HasCompactSupport F) :
-    0 ≤ autoCorrelation F 0 := by
+theorem autoCorrelation_zero_nonneg (F : ℝ → ℝ) : 0 ≤ autoCorrelation F 0 := by
   rw [autoCorrelation_zero_eq]
   exact MeasureTheory.integral_nonneg fun x => sq_nonneg _
 
@@ -3842,7 +3841,7 @@ theorem autoCorrelation_le_quadratic (hF : Continuous F) (hFc : HasCompactSuppor
     rw [hkR]; linarith
   have hkpos : (0:ℝ) < (k : ℝ) := by rw [hkR]; positivity
   have hmain := autoCorrelation_le_of_nat_mul hF hFc hsupp hk
-  have hA0 := autoCorrelation_zero_nonneg hF hFc
+  have hA0 := autoCorrelation_zero_nonneg F
   have hku : (k : ℝ) * u ≤ 2 * r := by
     have : (k : ℝ) * u ≤ 2 * (r / u) * u := by nlinarith
     rwa [show 2 * (r / u) * u = 2 * r by field_simp] at this
@@ -3855,5 +3854,1007 @@ theorem autoCorrelation_le_quadratic (hF : Continuous F) (hFc : HasCompactSuppor
     apply mul_le_mul_of_nonneg_left _ hA0
     linarith
   linarith
+
+
+/-! ### The cross-prime aggregate
+
+The cross-prime aggregate `Σ_{p ≠ q} w_p w_q A(log(q/p))` is the off-diagonal part of the Gram form
+of the prime field `Φ(x) = Σ_p w_p F(x + log p)`, so it is the mean square of the prime Dirichlet
+polynomial against the test's spectral measure minus its diagonal.  Two consequences come for free
+from the square: the aggregate can never fall below minus the diagonal energy, so no cancellation
+can make it exponentially negative; and for nonnegative weights the weighted Cauchy–Schwarz
+inequality bounds it above by `A(0)((Σ_p w_p)² − Σ_p w_p²)`.  The upper bound is governed entirely
+by the `ℓ¹` norm of the weight family: for the first-power Euler weights `log p/(p−1)` on
+`p ≤ e^{2r}`, Mertens makes that norm `2r + O(1)`, so the aggregate is `O(r²)A(0)` — polynomial.
+It is the half-power family `√p log p/(p−1)`, whose `ℓ¹` norm is exponential while its `ℓ²` norm
+stays polynomial, for which the question is open. -/
+
+/-- The prime field of a weight family: the superposition of translates of the test. -/
+def primeField (F : ℝ → ℝ) (w : ℕ → ℝ) (P : Finset ℕ) (x : ℝ) : ℝ :=
+  ∑ p ∈ P, w p * F (x + Real.log p)
+
+theorem integrable_primeField_sq (hF : Continuous F) (hFc : HasCompactSupport F)
+    (P : Finset ℕ) (w : ℕ → ℝ) : Integrable fun x => primeField F w P x ^ 2 := by
+  have hexp : ∀ x : ℝ, (∑ m ∈ P, ∑ n ∈ P,
+        w m * w n * (F (x + Real.log m) * F (x + Real.log n))) = primeField F w P x ^ 2 := by
+    intro x
+    rw [primeField, sq, Finset.sum_mul_sum]
+    exact Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n _ => by ring
+  exact (MeasureTheory.integrable_finsetSum P fun m _ =>
+    MeasureTheory.integrable_finsetSum P fun n _ =>
+      (integrable_shift_mul hF hFc (Real.log m) (Real.log n)).const_mul (w m * w n)).congr
+    (Filter.Eventually.of_forall hexp)
+
+/-- **The aggregate is the mean square of the prime field minus its diagonal.** -/
+theorem crossAggregate_eq_meanSquare (hF : Continuous F) (hFc : HasCompactSupport F)
+    (P : Finset ℕ) (w : ℕ → ℝ) :
+    ∑ p ∈ P, ∑ q ∈ P.erase p, w p * w q * autoCorrelation F (Real.log q - Real.log p)
+      = (∫ x, primeField F w P x ^ 2) - autoCorrelation F 0 * ∑ p ∈ P, w p ^ 2 := by
+  have hgram := sum_gram_eq_integral_sq hF hFc P w (fun n => Real.log n)
+  have hsplit := sum_gram_split (F := F) P w (fun n => Real.log n)
+  rw [hgram] at hsplit
+  simp only [primeField]
+  linarith
+
+/-- **The aggregate cannot be exponentially negative.** -/
+theorem crossAggregate_ge (hF : Continuous F) (hFc : HasCompactSupport F)
+    (P : Finset ℕ) (w : ℕ → ℝ) :
+    -(autoCorrelation F 0 * ∑ p ∈ P, w p ^ 2)
+      ≤ ∑ p ∈ P, ∑ q ∈ P.erase p, w p * w q * autoCorrelation F (Real.log q - Real.log p) :=
+  sum_gram_offDiag_ge hF hFc P w (fun n => Real.log n)
+
+/-- **The aggregate is bounded by the `ℓ¹` norm of the weights.**  For nonnegative weights the
+mean square of the prime field is at most `(Σ w_p)²A(0)`. -/
+theorem crossAggregate_le (hF : Continuous F) (hFc : HasCompactSupport F)
+    (P : Finset ℕ) (w : ℕ → ℝ) (hw : ∀ p ∈ P, 0 ≤ w p) :
+    ∑ p ∈ P, ∑ q ∈ P.erase p, w p * w q * autoCorrelation F (Real.log q - Real.log p)
+      ≤ autoCorrelation F 0 * ((∑ p ∈ P, w p) ^ 2 - ∑ p ∈ P, w p ^ 2) := by
+  have hmaj : ∀ x : ℝ, primeField F w P x ^ 2
+      ≤ (∑ p ∈ P, w p) * ∑ p ∈ P, w p * F (x + Real.log p) ^ 2 := by
+    intro x
+    exact Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul P hw
+      (fun i hi => mul_nonneg (hw i hi) (sq_nonneg _)) (fun i _ => le_of_eq (by ring))
+  have hterm : ∀ p : ℕ, Integrable fun x => w p * F (x + Real.log p) ^ 2 := by
+    intro p
+    exact ((integrable_sq hF hFc).comp_add_right (Real.log p)).const_mul (w p)
+  have hinner : Integrable fun x => ∑ p ∈ P, w p * F (x + Real.log p) ^ 2 :=
+    MeasureTheory.integrable_finsetSum P fun p _ => hterm p
+  have hmono := MeasureTheory.integral_mono (integrable_primeField_sq hF hFc P w)
+    (hinner.const_mul (∑ p ∈ P, w p)) hmaj
+  rw [MeasureTheory.integral_const_mul,
+    MeasureTheory.integral_finsetSum P (fun p _ => hterm p)] at hmono
+  have hcol : ∀ p ∈ P, (∫ x, w p * F (x + Real.log p) ^ 2) = w p * autoCorrelation F 0 := by
+    intro p _
+    rw [MeasureTheory.integral_const_mul, integral_shift_sq]
+  rw [Finset.sum_congr rfl hcol, ← Finset.sum_mul] at hmono
+  rw [crossAggregate_eq_meanSquare hF hFc P w]
+  nlinarith [hmono]
+
+
+/-! ### Realising a prescribed prefix, and what separates two sources
+
+Differencing a prescribed prefix produces a source realising it, so together with the rigidity of
+the prefix the assignment source ↦ prefix is a bijection onto the functions vanishing at the
+origin: every ledger that a step prefix could describe is the ledger of an actual source.  The
+selectivity question then has an exact answer: the ledgers of two sources differ by the pairing of
+their *prefix difference* with the derivative of the test.  A perturbation of the prefix is read by
+a test exactly through `∫ Δ h′`, so a model with a prescribed growth of its prefix is detected at
+precisely that rate. -/
+
+/-- The source realising a prescribed prefix, by differencing it. -/
+def sourceOfPrefix (g : ℕ → ℝ) : ℕ → ℝ := fun n => if n = 0 then 0 else g n - g (n - 1)
+
+theorem sum_sourceOfPrefix (g : ℕ → ℝ) (N : ℕ) :
+    ∑ k ∈ Finset.Icc 0 N, sourceOfPrefix g k = g N - g 0 := by
+  have key : ∀ M : ℕ, ∑ k ∈ Finset.range (M + 1), sourceOfPrefix g k = g M - g 0 := by
+    intro M
+    induction M with
+    | zero => simp [sourceOfPrefix]
+    | succ M ih =>
+        rw [Finset.sum_range_succ, ih]
+        simp only [sourceOfPrefix, Nat.succ_ne_zero, if_false, Nat.add_sub_cancel]
+        ring
+  have hIcc : Finset.Icc 0 N = Finset.range (N + 1) := by
+    ext k
+    simp
+  rw [hIcc]
+  exact key N
+
+theorem lagPrefix_sourceOfPrefix (g : ℕ → ℝ) (s : ℝ) :
+    lagPrefix (sourceOfPrefix g) s = g ⌊Real.exp s⌋₊ - g 0 :=
+  sum_sourceOfPrefix g _
+
+/-- **Every prefix is realised, by exactly one source.** -/
+theorem existsUnique_source_of_prefix (g : ℕ → ℝ) :
+    ∃! a : ℕ → ℝ, lagPrefix a = fun s => g ⌊Real.exp s⌋₊ - g 0 := by
+  refine ⟨sourceOfPrefix g, funext (lagPrefix_sourceOfPrefix g), fun a ha => ?_⟩
+  exact eq_of_lagPrefix_eq (ha.trans (funext (lagPrefix_sourceOfPrefix g)).symm)
+
+/-- **What separates two sources.**  The ledgers of two sources differ by the pairing of their
+prefix difference with the derivative of the test; the polar density cancels entirely. -/
+theorem ledger_difference_eq (a b : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0)
+    (hb0 : b 0 = 0) (hb1 : b 1 = 0) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ} (hN : Real.exp S ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), a n * h (Real.log n))
+        - ∑ n ∈ Finset.range (N + 1), b n * h (Real.log n)
+      = ∫ s in Ioi (0:ℝ), (lagPrefix b s - lagPrefix a s) * deriv h s := by
+  have ea := sum_weight_sub_polar_eq_defect a ha0 ha1 hh hS hvan hN
+  have eb := sum_weight_sub_polar_eq_defect b hb0 hb1 hh hS hvan hN
+  have hia := integrableOn_Ioi_lagSourceDefect_mul_deriv a hh hS hvan hN
+  have hib := integrableOn_Ioi_lagSourceDefect_mul_deriv b hh hS hvan hN
+  have hsub : (∫ s in Ioi (0:ℝ), lagSourceDefect a s * deriv h s)
+      - (∫ s in Ioi (0:ℝ), lagSourceDefect b s * deriv h s)
+      = ∫ s in Ioi (0:ℝ), (lagPrefix b s - lagPrefix a s) * deriv h s := by
+    rw [← MeasureTheory.integral_sub hia hib]
+    refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+    simp only [lagSourceDefect]
+    ring
+  linarith
+
+/-- A bound on the prefix difference bounds the separation of the two ledgers. -/
+theorem abs_ledger_difference_le (a b : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0)
+    (hb0 : b 0 = 0) (hb1 : b 1 = 0) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ} (hN : Real.exp S ≤ N) :
+    |(∑ n ∈ Finset.range (N + 1), a n * h (Real.log n))
+        - ∑ n ∈ Finset.range (N + 1), b n * h (Real.log n)|
+      ≤ ∫ s in Ioi (0:ℝ), |(lagPrefix b s - lagPrefix a s) * deriv h s| := by
+  rw [ledger_difference_eq a b ha0 ha1 hb0 hb1 hh hS hvan hN]
+  exact abs_integral_le_integral_abs
+
+
+/-! ### The one-point cone: reading the weight index by index
+
+When the admissible cone is a single weight, membership is not an inequality but an
+identification.  The lag ledger supplies it: the prefix recovers the source index by index as a
+difference of two of its values, and a perturbation at one index is read by a test exactly as the
+test's value at that index's lag.  So the ledger separates every single-index perturbation, the
+separating functional is evaluation at `log m`, and a test blind at that lag is blind to that
+index — the exact replacement for a cone-membership proof. -/
+
+/-- The source perturbed at a single index. -/
+def singleIndexPerturb (a : ℕ → ℝ) (m : ℕ) (ε : ℝ) : ℕ → ℝ :=
+  fun n => a n + if n = m then ε else 0
+
+/-- **Reading the weight index by index.**  Consecutive prefix values differ by one atom. -/
+theorem index_eq_prefix_sub (a : ℕ → ℝ) {m : ℕ} (hm : 1 ≤ m) :
+    a (m + 1) = lagPrefix a (Real.log ((m + 1 : ℕ) : ℝ)) - lagPrefix a (Real.log (m : ℝ)) := by
+  rw [lagPrefix_log_nat a (by omega : 1 ≤ m + 1), lagPrefix_log_nat a hm,
+    Finset.sum_Icc_succ_top (Nat.zero_le _)]
+  ring
+
+/-- A single-index perturbation raises the prefix by a step at that index's lag. -/
+theorem lagPrefix_singleIndexPerturb (a : ℕ → ℝ) (m : ℕ) (ε : ℝ) (s : ℝ) :
+    lagPrefix (singleIndexPerturb a m ε) s
+      = lagPrefix a s + if m ≤ ⌊Real.exp s⌋₊ then ε else 0 := by
+  rw [lagPrefix, lagPrefix]
+  have hterm : ∀ k ∈ Finset.Icc 0 ⌊Real.exp s⌋₊,
+      singleIndexPerturb a m ε k = a k + if k = m then ε else 0 := fun k _ => rfl
+  rw [Finset.sum_congr rfl hterm, Finset.sum_add_distrib,
+    Finset.sum_ite_eq' (Finset.Icc 0 ⌊Real.exp s⌋₊) m (fun _ => ε)]
+  simp
+
+/-- A single-index perturbation is read by a test as the test's value at that index's lag. -/
+theorem sum_singleIndexPerturb_sub (a : ℕ → ℝ) {m N : ℕ} (hmN : m ≤ N) (ε : ℝ) (g : ℝ → ℝ) :
+    (∑ n ∈ Finset.range (N + 1), singleIndexPerturb a m ε n * g (Real.log n))
+        - ∑ n ∈ Finset.range (N + 1), a n * g (Real.log n)
+      = ε * g (Real.log (m : ℝ)) := by
+  rw [← Finset.sum_sub_distrib,
+    Finset.sum_eq_single_of_mem m (Finset.mem_range.mpr (by omega))
+      (fun b _ hb => by simp [singleIndexPerturb, hb])]
+  simp only [singleIndexPerturb, if_true]
+  ring
+
+/-- **The step a single index makes in the ledger.**  Pairing the prefix step at `log m` with the
+derivative of the test returns exactly the test's value there. -/
+theorem integral_step_mul_deriv_eq (a : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0)
+    {m : ℕ} (hm : 2 ≤ m) (ε : ℝ) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ} (hmN : m ≤ N) (hN : Real.exp S ≤ N) :
+    (∫ s in Ioi (0:ℝ), (if m ≤ ⌊Real.exp s⌋₊ then ε else 0) * deriv h s)
+      = -(ε * h (Real.log (m : ℝ))) := by
+  have hm0 : (0:ℕ) ≠ m := by omega
+  have hm1 : (1:ℕ) ≠ m := by omega
+  have hp0 : singleIndexPerturb a m ε 0 = 0 := by simp [singleIndexPerturb, ha0, hm0]
+  have hp1 : singleIndexPerturb a m ε 1 = 0 := by simp [singleIndexPerturb, ha1, hm1]
+  have hdiff := ledger_difference_eq (singleIndexPerturb a m ε) a hp0 hp1 ha0 ha1 hh hS hvan hN
+  rw [sum_singleIndexPerturb_sub a hmN ε h] at hdiff
+  have hint : (∫ s in Ioi (0:ℝ), (lagPrefix a s - lagPrefix (singleIndexPerturb a m ε) s)
+        * deriv h s)
+      = ∫ s in Ioi (0:ℝ), -((if m ≤ ⌊Real.exp s⌋₊ then ε else 0) * deriv h s) := by
+    refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+    rw [lagPrefix_singleIndexPerturb]
+    ring
+  rw [hint, MeasureTheory.integral_neg] at hdiff
+  linarith
+
+/-- **The ledger separates single-index perturbations exactly at the lags the test sees.** -/
+theorem ledger_separates_singleIndex (a : ℕ → ℝ) {m N : ℕ} (hmN : m ≤ N) {ε : ℝ} (hε : ε ≠ 0)
+    (g : ℝ → ℝ) :
+    (∑ n ∈ Finset.range (N + 1), singleIndexPerturb a m ε n * g (Real.log n))
+        ≠ ∑ n ∈ Finset.range (N + 1), a n * g (Real.log n)
+      ↔ g (Real.log (m : ℝ)) ≠ 0 := by
+  rw [ne_eq, ← sub_eq_zero, sum_singleIndexPerturb_sub a hmN ε g, mul_eq_zero]
+  simp [hε]
+
+
+/-! ### The ledger of the Beurling system of `λ`-th powers
+
+Reading a source at the lags `λ log n` is reading the Beurling system whose generalised integers
+are the `λ`-th powers.  Its ledger is the original one reparametrised: the polar density becomes
+`λ⁻¹(e^{s/λ} + 1)`, whose pole sits at `1/λ`, and the residue is the original defect read at the
+scale `s/λ`.  The critical line of the `λ`-system is therefore at `1/(2λ)`, while the lag weight
+`e^{−s/2}` of a fixed receiver stays put: no criterion calibrated to the half-line can be
+invariant under dilating the test. -/
+
+theorem contDiff_dilate (hh : ContDiff ℝ 1 h) (lam : ℝ) :
+    ContDiff ℝ 1 fun s => h (lam * s) :=
+  hh.comp (contDiff_const.mul contDiff_id)
+
+theorem deriv_dilate (hh : ContDiff ℝ 1 h) (lam s : ℝ) :
+    deriv (fun y => h (lam * y)) s = deriv h (lam * s) * lam := by
+  have hinner : HasDerivAt (fun y : ℝ => lam * y) lam s := by
+    simpa using (hasDerivAt_id s).const_mul lam
+  exact (((hh.differentiable (by norm_num)).differentiableAt (x := lam * s)).hasDerivAt.comp s
+    hinner).deriv
+
+/-- **The dilated ledger.**  Reading the atoms at the lags `λ log n` is the balance of the
+Beurling system of `λ`-th powers: the polar density has its pole at `1/λ` and the residue is the
+source's own defect read at the scale `s/λ`. -/
+theorem sum_weight_dilate_sub_polar_eq_defect (a : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0)
+    {lam : ℝ} (hlam : 0 < lam) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ} (hN : Real.exp (S / lam) ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), a n * h (lam * Real.log n))
+        - ∫ s in Ioi (0:ℝ), lam⁻¹ * ((Real.exp (s / lam) + 1) * h s)
+      = ∫ s in Ioi (0:ℝ), lagSourceDefect a (s / lam) * deriv h s := by
+  have hSl : 0 < S / lam := div_pos hS hlam
+  have hvanl : ∀ s, S / lam ≤ s → h (lam * s) = 0 := by
+    intro s hs
+    exact hvan _ ((div_le_iff₀ hlam).mp hs |>.trans_eq (mul_comm s lam))
+  have hbase := sum_weight_sub_polar_eq_defect a ha0 ha1 (contDiff_dilate hh lam) hSl hvanl hN
+  have hpolar : (∫ s in Ioi (0:ℝ), (Real.exp s + 1) * h (lam * s))
+      = ∫ s in Ioi (0:ℝ), lam⁻¹ * ((Real.exp (s / lam) + 1) * h s) := by
+    have hcv := integral_comp_mul_left_Ioi
+      (fun u : ℝ => (Real.exp (u / lam) + 1) * h u) 0 hlam
+    rw [mul_zero] at hcv
+    rw [MeasureTheory.integral_const_mul, ← smul_eq_mul, ← hcv]
+    refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+    rw [mul_div_cancel_left₀ s (ne_of_gt hlam)]
+  have hres : (∫ s in Ioi (0:ℝ), lagSourceDefect a s * deriv (fun y => h (lam * y)) s)
+      = ∫ s in Ioi (0:ℝ), lagSourceDefect a (s / lam) * deriv h s := by
+    have hcv := integral_comp_mul_left_Ioi
+      (fun u : ℝ => lagSourceDefect a (u / lam) * deriv h u) 0 hlam
+    rw [mul_zero] at hcv
+    have hleft : (∫ s in Ioi (0:ℝ), lagSourceDefect a s * deriv (fun y => h (lam * y)) s)
+        = lam * ∫ s in Ioi (0:ℝ),
+            (fun u : ℝ => lagSourceDefect a (u / lam) * deriv h u) (lam * s) := by
+      rw [← MeasureTheory.integral_const_mul]
+      refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+      show lagSourceDefect a s * deriv (fun y => h (lam * y)) s
+        = lam * (lagSourceDefect a (lam * s / lam) * deriv h (lam * s))
+      rw [deriv_dilate hh lam s, mul_div_cancel_left₀ s (ne_of_gt hlam)]
+      ring
+    rw [hleft, hcv, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ (ne_of_gt hlam), one_mul]
+  rw [← hpolar, ← hres]
+  exact hbase
+
+
+/-! ### The comparison principle for the ledger
+
+Against a test whose lag weight is nonincreasing, the ledger reading is monotone in the prefix:
+a source that has accumulated at least as much mass at every scale is read at least as high.  The
+strip weight of a compactly supported test is such a weight, so the principle is not vacuous, and
+it upgrades a domination of weights — a sign twist, a character twist, a thinned Beurling weight,
+the shifted pair — from a statement about defects to a statement about the readings themselves. -/
+
+/-- **Monotonicity of the reading in the prefix.** -/
+theorem ledger_mono (a b : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0) (hb0 : b 0 = 0) (hb1 : b 1 = 0)
+    (hpref : ∀ s, lagPrefix a s ≤ lagPrefix b s) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) (hd : ∀ s, 0 < s → deriv h s ≤ 0) {N : ℕ}
+    (hN : Real.exp S ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), a n * h (Real.log n))
+      ≤ ∑ n ∈ Finset.range (N + 1), b n * h (Real.log n) := by
+  have hdiff := ledger_difference_eq a b ha0 ha1 hb0 hb1 hh hS hvan hN
+  have hnp : (∫ s in Ioi (0:ℝ), (lagPrefix b s - lagPrefix a s) * deriv h s) ≤ 0 := by
+    refine MeasureTheory.setIntegral_nonpos measurableSet_Ioi fun s hs => ?_
+    exact mul_nonpos_of_nonneg_of_nonpos (by linarith [hpref s]) (hd s hs)
+  linarith
+
+/-- A source dominated by `Λ` index by index is read no higher than `Λ` by a nonincreasing
+lag weight. -/
+theorem ledger_le_vonMangoldt (a : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0)
+    (ha : ∀ n, a n ≤ (ArithmeticFunction.vonMangoldt n : ℝ)) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) (hd : ∀ s, 0 < s → deriv h s ≤ 0) {N : ℕ}
+    (hN : Real.exp S ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), a n * h (Real.log n))
+      ≤ ∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) * h (Real.log n) :=
+  ledger_mono a _ ha0 ha1 (by simp) (by simp) (fun s => lagPrefix_mono_of_le ha s) hh hS hvan hd hN
+
+
+/-! ### The prime cost and the cross-prime aggregate are two moments of one field
+
+The prime side of the balance is the inner product of the test with its own prime field, and the
+cross-prime aggregate is the energy of that same field.  The `ℓ¹` prime cost and the aggregate are
+therefore the first and second moments of a single object, and the elementary bound
+`2⟨F, Φ⟩ ≤ t‖F‖² + t⁻¹‖Φ‖²` turns any bound on the aggregate into a bound on the prime cost at the
+free parameter `t`.  A polynomial bound on the aggregate buys a polynomial prime cost. -/
+
+theorem integrable_mul_primeField (hF : Continuous F) (hFc : HasCompactSupport F)
+    (T : Finset ℕ) (c : ℕ → ℝ) : Integrable fun x => F x * primeField F c T x := by
+  have hexp : ∀ x : ℝ, (∑ n ∈ T, c n * (F x * F (x + Real.log n)))
+      = F x * primeField F c T x := by
+    intro x
+    rw [primeField, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => by ring
+  exact (MeasureTheory.integrable_finsetSum T fun n _ =>
+    ((hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right).const_mul (c n)).congr (Filter.Eventually.of_forall hexp)
+
+/-- **The prime side is the test against its own prime field.** -/
+theorem sum_lag_eq_integral_primeField (hF : Continuous F) (hFc : HasCompactSupport F)
+    (T : Finset ℕ) (c : ℕ → ℝ) :
+    ∑ n ∈ T, c n * autoCorrelation F (Real.log n) = ∫ x, F x * primeField F c T x := by
+  have hexp : ∀ x : ℝ, (∑ n ∈ T, c n * (F x * F (x + Real.log n)))
+      = F x * primeField F c T x := by
+    intro x
+    rw [primeField, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => by ring
+  have hint : ∀ n ∈ T, Integrable fun x => c n * (F x * F (x + Real.log n)) := fun n _ =>
+    ((hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right).const_mul (c n)
+  rw [← MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hexp),
+    MeasureTheory.integral_finsetSum T hint]
+  exact Finset.sum_congr rfl fun n _ => by rw [MeasureTheory.integral_const_mul, autoCorrelation]
+
+/-- The prime cost against the energy of the prime field, at a free parameter. -/
+theorem two_mul_sum_lag_le_energy (hF : Continuous F) (hFc : HasCompactSupport F)
+    (T : Finset ℕ) (c : ℕ → ℝ) {t : ℝ} (ht : 0 < t) :
+    2 * ∑ n ∈ T, c n * autoCorrelation F (Real.log n)
+      ≤ t * autoCorrelation F 0 + t⁻¹ * ∫ x, primeField F c T x ^ 2 := by
+  have hpt : ∀ x : ℝ, 2 * (F x * primeField F c T x)
+      ≤ t * F x ^ 2 + t⁻¹ * primeField F c T x ^ 2 := by
+    intro x
+    have key : t * (F x - primeField F c T x / t) ^ 2
+        = t * F x ^ 2 - 2 * (F x * primeField F c T x) + t⁻¹ * primeField F c T x ^ 2 := by
+      field_simp
+      ring
+    nlinarith [mul_nonneg ht.le (sq_nonneg (F x - primeField F c T x / t)), key]
+  have hl : Integrable fun x => 2 * (F x * primeField F c T x) :=
+    (integrable_mul_primeField hF hFc T c).const_mul 2
+  have hr : Integrable fun x => t * F x ^ 2 + t⁻¹ * primeField F c T x ^ 2 :=
+    ((integrable_sq hF hFc).const_mul t).add
+      ((integrable_primeField_sq hF hFc T c).const_mul t⁻¹)
+  have hmono := MeasureTheory.integral_mono hl hr hpt
+  rw [MeasureTheory.integral_const_mul,
+    MeasureTheory.integral_add ((integrable_sq hF hFc).const_mul t)
+      ((integrable_primeField_sq hF hFc T c).const_mul t⁻¹),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
+    ← autoCorrelation_zero_eq, ← sum_lag_eq_integral_primeField hF hFc T c] at hmono
+  exact hmono
+
+/-- **The bridge.**  A bound on the cross-prime aggregate bounds the prime cost. -/
+theorem two_mul_sum_lag_le_aggregate (hF : Continuous F) (hFc : HasCompactSupport F)
+    (T : Finset ℕ) (c : ℕ → ℝ) {t : ℝ} (ht : 0 < t) :
+    2 * ∑ n ∈ T, c n * autoCorrelation F (Real.log n)
+      ≤ t * autoCorrelation F 0
+        + t⁻¹ * ((∑ p ∈ T, ∑ q ∈ T.erase p,
+              c p * c q * autoCorrelation F (Real.log q - Real.log p))
+            + autoCorrelation F 0 * ∑ p ∈ T, c p ^ 2) := by
+  have h := two_mul_sum_lag_le_energy hF hFc T c ht
+  rw [crossAggregate_eq_meanSquare hF hFc T c]
+  linarith
+
+
+/-! ### The pole plane factorises, and the pole-free hyperplanes
+
+The difference of squares that the polar pairing produces is the product of the test's two
+half-exponential moments, `(∫F e^{−x/2})(∫F e^{x/2})`.  So the pole plane is a rank-one readout in
+each moment separately: it vanishes exactly on the union of the two hyperplanes where one moment
+is zero, it is positive when the moments agree in sign and negative when they disagree, and on an
+odd test — where the two moments are negatives of each other — it is minus a perfect square.  On a
+pole-free test the balance reads the prime side with no polar subsidy at all. -/
+
+/-- The test's descending half-exponential moment. -/
+def expMomentNeg (F : ℝ → ℝ) : ℝ := ∫ x, F x * Real.exp (-x / 2)
+
+/-- The test's ascending half-exponential moment. -/
+def expMomentPos (F : ℝ → ℝ) : ℝ := ∫ x, F x * Real.exp (x / 2)
+
+/-- **The pole plane is the product of the two half-exponential moments.** -/
+theorem poleplane_eq_moment_mul (hF : Continuous F) (hFc : HasCompactSupport F) :
+    (∫ x, F x * Real.cosh (x / 2)) ^ 2 - (∫ x, F x * Real.sinh (x / 2)) ^ 2
+      = expMomentNeg F * expMomentPos F := by
+  have hc : Integrable fun x => F x * Real.cosh (x / 2) :=
+    (hF.mul (Real.continuous_cosh.comp (continuous_id.div_const 2))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  have hs : Integrable fun x => F x * Real.sinh (x / 2) :=
+    (hF.mul (Real.continuous_sinh.comp (continuous_id.div_const 2))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  have hsub : (∫ x, F x * Real.cosh (x / 2)) - ∫ x, F x * Real.sinh (x / 2)
+      = expMomentNeg F := by
+    rw [← MeasureTheory.integral_sub hc hs, expMomentNeg]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show F x * Real.cosh (x / 2) - F x * Real.sinh (x / 2) = F x * Real.exp (-x / 2)
+    rw [← mul_sub, Real.cosh_sub_sinh, ← neg_div]
+  have hadd : (∫ x, F x * Real.cosh (x / 2)) + ∫ x, F x * Real.sinh (x / 2)
+      = expMomentPos F := by
+    rw [← MeasureTheory.integral_add hc hs, expMomentPos]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show F x * Real.cosh (x / 2) + F x * Real.sinh (x / 2) = F x * Real.exp (x / 2)
+    rw [← mul_add, Real.cosh_add_sinh]
+  rw [← hsub, ← hadd]
+  ring
+
+/-- **The pole-free hyperplanes.**  The pole plane vanishes exactly when one of the two moments
+does. -/
+theorem poleplane_eq_zero_iff (hF : Continuous F) (hFc : HasCompactSupport F) :
+    (∫ x, F x * Real.cosh (x / 2)) ^ 2 - (∫ x, F x * Real.sinh (x / 2)) ^ 2 = 0
+      ↔ expMomentNeg F = 0 ∨ expMomentPos F = 0 := by
+  rw [poleplane_eq_moment_mul hF hFc, mul_eq_zero]
+
+/-- On an odd test the two moments are negatives of each other. -/
+theorem expMomentPos_odd (hF : Continuous F) (hFc : HasCompactSupport F)
+    (hodd : ∀ x, F (-x) = -F x) : expMomentPos F = -expMomentNeg F := by
+  have hint : Integrable fun x => F x * Real.exp (-x / 2) :=
+    (hF.mul (Real.continuous_exp.comp
+      (continuous_neg.div_const 2))).integrable_of_hasCompactSupport hFc.mul_right
+  have hrefl := MeasureTheory.integral_neg_eq_self
+    (μ := (volume : Measure ℝ)) (fun x => F x * Real.exp (-x / 2))
+  rw [expMomentPos, expMomentNeg, ← hrefl, ← MeasureTheory.integral_neg]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show F x * Real.exp (x / 2) = -(F (-x) * Real.exp (-(-x) / 2))
+  rw [hodd x, show -(-x) / 2 = x / 2 by ring]
+  ring
+
+/-- **The pole charge of an odd test is a perfect square.** -/
+theorem poleplane_odd (hF : Continuous F) (hFc : HasCompactSupport F)
+    (hodd : ∀ x, F (-x) = -F x) :
+    (∫ x, F x * Real.cosh (x / 2)) ^ 2 - (∫ x, F x * Real.sinh (x / 2)) ^ 2
+      = -expMomentNeg F ^ 2 := by
+  rw [poleplane_eq_moment_mul hF hFc, expMomentPos_odd hF hFc hodd]
+  ring
+
+/-- **The balance on a pole-free test.**  With one half-exponential moment annihilated the prime
+side is the Chebyshev residue outright, with no polar subsidy. -/
+theorem testBalance_poleFree (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N)
+    (hfree : expMomentNeg F = 0 ∨ expMomentPos F = 0) :
+    (∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) *
+          (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+      = ∫ s in Ioi (0:ℝ), chebyshevTwoPoleDefect s *
+          (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)) := by
+  have hz := (poleplane_eq_zero_iff hF.continuous hFc).mpr hfree
+  have hb := testBalance_poleplane hF hFc hr hsupp hN
+  rw [hz] at hb
+  linarith
+
+
+/-! ### The receiver on the first two cells, exactly
+
+The Chebyshev count is a step function of the lag, so the critical-scale functional is piecewise
+elementary and its first cells can be written out.  Below `log 2` it is `e^s − 1`, the pure polar
+contribution; on `[log 2, log 3)` the first atom switches on and subtracts a linear term
+`(s − log 2)log 2`.  These are the exact values of the receiver at the apertures of the first
+prime window. -/
+
+theorem lagChebyshev_eq_zero_of_lt_log_two {s : ℝ} (hs : s < Real.log 2) : lagChebyshev s = 0 := by
+  have hlt : Real.exp s < 2 := by
+    have := Real.exp_lt_exp.mpr hs
+    rwa [Real.exp_log (by norm_num : (0:ℝ) < 2)] at this
+  have hfl : ⌊Real.exp s⌋₊ ≤ 1 := by
+    rcases le_or_gt (Real.exp s) 0 with h0 | h0
+    · simp [Nat.floor_eq_zero.mpr (lt_of_le_of_lt h0 one_pos)]
+    · exact Nat.lt_succ_iff.mp ((Nat.floor_lt h0.le).mpr (by norm_num; linarith))
+  rw [lagChebyshev]
+  refine Finset.sum_eq_zero fun k hk => ?_
+  rw [Finset.mem_Icc] at hk
+  have hk1 : k ≤ 1 := hk.2.trans hfl
+  interval_cases k <;> simp
+
+/-- On the second cell only the atom at `2` has switched on. -/
+theorem lagChebyshev_eq_log_two {s : ℝ} (h1 : Real.log 2 ≤ s) (h2 : s < Real.log 3) :
+    lagChebyshev s = Real.log 2 := by
+  have hge : (2:ℝ) ≤ Real.exp s := by
+    have := Real.exp_le_exp.mpr h1
+    rwa [Real.exp_log (by norm_num : (0:ℝ) < 2)] at this
+  have hlt : Real.exp s < 3 := by
+    have := Real.exp_lt_exp.mpr h2
+    rwa [Real.exp_log (by norm_num : (0:ℝ) < 3)] at this
+  have hfl : ⌊Real.exp s⌋₊ = 2 := by
+    rw [Nat.floor_eq_iff (by positivity)]
+    constructor
+    · exact_mod_cast hge
+    · exact_mod_cast hlt
+  have hIcc : Finset.Icc 0 2 = Finset.range 3 := by ext k; simp; omega
+  rw [lagChebyshev, hfl, hIcc]
+  simp [Finset.sum_range_succ, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+
+/-- On an interval where the Chebyshev count is constant the critical-scale integrand is
+elementary. -/
+theorem integral_chebyshevError_of_const {a b c : ℝ} (hab : a ≤ b)
+    (hc : ∀ u, a < u → u < b → lagChebyshev u = c) :
+    (∫ u in a..b, (Real.exp u - lagChebyshev u))
+      = (Real.exp b - Real.exp a) - c * (b - a) := by
+  have hae : (∫ u in a..b, (Real.exp u - lagChebyshev u))
+      = ∫ u in a..b, (Real.exp u - c) := by
+    refine intervalIntegral.integral_congr_ae ?_
+    filter_upwards [MeasureTheory.compl_mem_ae_iff.mpr
+      (MeasureTheory.measure_singleton (μ := (volume : Measure ℝ)) b)] with u hu hmem
+    simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at hu
+    rw [Set.uIoc_of_le hab] at hmem
+    rw [hc u hmem.1 (lt_of_le_of_ne hmem.2 hu)]
+  rw [hae, intervalIntegral.integral_sub (Real.continuous_exp.intervalIntegrable a b)
+    intervalIntegrable_const, integral_exp, intervalIntegral.integral_const, smul_eq_mul]
+  ring
+
+/-- **The receiver on the quiet cell.**  Below the first prime the critical-scale functional is
+the pure polar growth. -/
+theorem criticalScalePrefix_first_cell {s : ℝ} (hs0 : 0 ≤ s) (hs : s ≤ Real.log 2) :
+    criticalScalePrefix s = Real.exp s - 1 := by
+  rw [criticalScalePrefix,
+    integral_chebyshevError_of_const hs0
+      (fun u hu1 hu2 => lagChebyshev_eq_zero_of_lt_log_two (lt_of_lt_of_le hu2 hs))]
+  simp
+
+/-- **The receiver on the first prime cell.**  Past `log 2` the first atom subtracts a linear
+term from the polar growth. -/
+theorem criticalScalePrefix_second_cell {s : ℝ} (h1 : Real.log 2 ≤ s) (h2 : s < Real.log 3) :
+    criticalScalePrefix s = Real.exp s - 1 - (s - Real.log 2) * Real.log 2 := by
+  have hsplit : (∫ u in (0:ℝ)..s, (Real.exp u - lagChebyshev u))
+      = (∫ u in (0:ℝ)..Real.log 2, (Real.exp u - lagChebyshev u))
+        + ∫ u in (Real.log 2)..s, (Real.exp u - lagChebyshev u) :=
+    (intervalIntegral.integral_add_adjacent_intervals
+      (intervalIntegrable_criticalScaleIntegrand 0 (Real.log 2))
+      (intervalIntegrable_criticalScaleIntegrand (Real.log 2) s)).symm
+  have hfirst := criticalScalePrefix_first_cell (Real.log_nonneg (by norm_num)) le_rfl
+  have hsecond := integral_chebyshevError_of_const h1
+    (fun u hu1 hu2 => lagChebyshev_eq_log_two (le_of_lt hu1) (lt_trans hu2 h2))
+  rw [criticalScalePrefix] at hfirst ⊢
+  rw [hsplit, hfirst, hsecond, Real.exp_log (by norm_num : (0:ℝ) < 2)]
+  ring
+
+
+/-! ### The receiver as an exact recursion over the integers
+
+Between consecutive integer scales the Chebyshev count is frozen, so the critical-scale functional
+advances by exactly one unit of polar growth minus the frozen count against the logarithmic gap:
+
+    D(log(N+1)) = D(log N) + 1 − ψ(N)·log(1 + 1/N).
+
+Unrolling it writes the receiver at every integer scale in closed form, as the scale minus a sum of
+`ψ(k)log(1+1/k)`.  The Riemann Hypothesis is the one-sided bound `D(T) ≤ B(1+T)e^{T/2}` on this
+sequence, so the receiver is a completely explicit discrete object. -/
+
+theorem lagChebyshev_eq_on_cell {N : ℕ} (hN : 1 ≤ N) {u : ℝ}
+    (h1 : Real.log (N : ℝ) ≤ u) (h2 : u < Real.log ((N : ℝ) + 1)) :
+    lagChebyshev u = ∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ) := by
+  have hNpos : (0:ℝ) < N := by exact_mod_cast hN
+  have hge : (N : ℝ) ≤ Real.exp u := by
+    have := Real.exp_le_exp.mpr h1
+    rwa [Real.exp_log hNpos] at this
+  have hlt : Real.exp u < (N : ℝ) + 1 := by
+    have := Real.exp_lt_exp.mpr h2
+    rwa [Real.exp_log (by linarith)] at this
+  have hfl : ⌊Real.exp u⌋₊ = N := by
+    rw [Nat.floor_eq_iff (by positivity)]
+    exact ⟨hge, by linarith⟩
+  rw [lagChebyshev, hfl]
+
+/-- **One step of the receiver.**  Across one integer cell the polar growth adds exactly one and
+the frozen Chebyshev count subtracts the logarithmic gap. -/
+theorem criticalScalePrefix_succ {N : ℕ} (hN : 1 ≤ N) :
+    criticalScalePrefix (Real.log ((N : ℝ) + 1))
+      = criticalScalePrefix (Real.log (N : ℝ)) + 1
+        - (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+          * (Real.log ((N : ℝ) + 1) - Real.log (N : ℝ)) := by
+  have hNpos : (0:ℝ) < N := by exact_mod_cast hN
+  have hlog : Real.log (N : ℝ) ≤ Real.log ((N : ℝ) + 1) :=
+    Real.log_le_log hNpos (by linarith)
+  have hsplit : (∫ u in (0:ℝ)..Real.log ((N : ℝ) + 1), (Real.exp u - lagChebyshev u))
+      = (∫ u in (0:ℝ)..Real.log (N : ℝ), (Real.exp u - lagChebyshev u))
+        + ∫ u in Real.log (N : ℝ)..Real.log ((N : ℝ) + 1), (Real.exp u - lagChebyshev u) :=
+    (intervalIntegral.integral_add_adjacent_intervals
+      (intervalIntegrable_criticalScaleIntegrand 0 (Real.log (N : ℝ)))
+      (intervalIntegrable_criticalScaleIntegrand (Real.log (N : ℝ))
+        (Real.log ((N : ℝ) + 1)))).symm
+  have hcell := integral_chebyshevError_of_const hlog
+    (fun u hu1 hu2 => lagChebyshev_eq_on_cell hN (le_of_lt hu1) hu2)
+  rw [criticalScalePrefix, criticalScalePrefix, hsplit, hcell,
+    Real.exp_log hNpos, Real.exp_log (by linarith : (0:ℝ) < (N : ℝ) + 1)]
+  ring
+
+/-- **The receiver in closed form at the integer scales.** -/
+theorem criticalScalePrefix_log_natCast_succ (M : ℕ) :
+    criticalScalePrefix (Real.log ((M : ℝ) + 1))
+      = (M : ℝ) - ∑ k ∈ Finset.range M,
+          (∑ j ∈ Finset.Icc 0 (k + 1), (ArithmeticFunction.vonMangoldt j : ℝ))
+            * (Real.log ((k : ℝ) + 2) - Real.log ((k : ℝ) + 1)) := by
+  induction M with
+  | zero => simp [criticalScalePrefix]
+  | succ M ih =>
+      have hstep := criticalScalePrefix_succ (N := M + 1) (by omega)
+      have hcast : ((M + 1 : ℕ) : ℝ) = (M : ℝ) + 1 := by push_cast; ring
+      rw [hcast] at hstep
+      rw [show ((M + 1 : ℕ) : ℝ) + 1 = (M : ℝ) + 2 by push_cast; ring,
+        show ((M : ℝ) + 1) + 1 = (M : ℝ) + 2 by ring] at *
+      rw [hstep, ih, Finset.sum_range_succ]
+      push_cast
+      ring
+
+
+/-! ### The receiver is sawtooth-convex, with the atoms as its kinks
+
+On each integer cell the Chebyshev count is frozen, so the receiver is `e^u − ψ(N)u` up to a
+constant: strictly convex, with slope `e^u − ψ(N)`.  At each integer scale the slope drops by
+exactly the von Mangoldt atom there.  The receiver is therefore a piecewise strictly convex
+function whose kinks *are* the arithmetic: the atoms can be read back off the corners of the
+graph, which is the analytic form of source rigidity. -/
+
+/-- The receiver on a whole integer cell. -/
+theorem criticalScalePrefix_on_cell {N : ℕ} (hN : 1 ≤ N) {s : ℝ}
+    (h1 : Real.log (N : ℝ) ≤ s) (h2 : s ≤ Real.log ((N : ℝ) + 1)) :
+    criticalScalePrefix s = criticalScalePrefix (Real.log (N : ℝ)) + (Real.exp s - N)
+      - (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+        * (s - Real.log (N : ℝ)) := by
+  have hNpos : (0:ℝ) < N := by exact_mod_cast hN
+  have hsplit : (∫ u in (0:ℝ)..s, (Real.exp u - lagChebyshev u))
+      = (∫ u in (0:ℝ)..Real.log (N : ℝ), (Real.exp u - lagChebyshev u))
+        + ∫ u in Real.log (N : ℝ)..s, (Real.exp u - lagChebyshev u) :=
+    (intervalIntegral.integral_add_adjacent_intervals
+      (intervalIntegrable_criticalScaleIntegrand 0 (Real.log (N : ℝ)))
+      (intervalIntegrable_criticalScaleIntegrand (Real.log (N : ℝ)) s)).symm
+  have hcell := integral_chebyshevError_of_const h1
+    (fun u hu1 hu2 => lagChebyshev_eq_on_cell hN (le_of_lt hu1) (lt_of_lt_of_le hu2 h2))
+  rw [criticalScalePrefix, criticalScalePrefix, hsplit, hcell, Real.exp_log hNpos]
+  ring
+
+/-- **The slope of the receiver inside a cell.** -/
+theorem hasDerivAt_criticalScalePrefix_of_mem_cell {N : ℕ} (hN : 1 ≤ N) {s : ℝ}
+    (h1 : Real.log (N : ℝ) < s) (h2 : s < Real.log ((N : ℝ) + 1)) :
+    HasDerivAt criticalScalePrefix
+      (Real.exp s - ∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) s := by
+  set c : ℝ := ∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ) with hc
+  set C : ℝ := criticalScalePrefix (Real.log (N : ℝ)) - N + c * Real.log (N : ℝ) with hC
+  have hbase : HasDerivAt (fun u : ℝ => C + (Real.exp u - c * u)) (Real.exp s - c) s := by
+    have := ((Real.hasDerivAt_exp s).sub ((hasDerivAt_id s).const_mul c)).const_add C
+    simpa using this
+  refine hbase.congr_of_eventuallyEq ?_
+  refine Filter.eventually_of_mem
+    (isOpen_Ioo.mem_nhds (Set.mem_Ioo.mpr ⟨h1, h2⟩)) fun u hu => ?_
+  obtain ⟨hu1, hu2⟩ := Set.mem_Ioo.mp hu
+  rw [criticalScalePrefix_on_cell hN (le_of_lt hu1) (le_of_lt hu2), hC]
+  ring
+
+/-- **The kink is the atom.**  Across an integer scale the slope of the receiver drops by exactly
+the von Mangoldt weight there. -/
+theorem slope_jump_eq_vonMangoldt (N : ℕ) :
+    (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+        - ∑ k ∈ Finset.Icc 0 (N + 1), (ArithmeticFunction.vonMangoldt k : ℝ)
+      = -(ArithmeticFunction.vonMangoldt (N + 1) : ℝ) := by
+  rw [Finset.sum_Icc_succ_top (Nat.zero_le _)]
+  ring
+
+
+/-! ### The ledger calibrated to an arbitrary pole
+
+Nothing in the balance is special to a pole at `1`: for every `ρ ≠ 0` the weight
+`(e^{ρs} − 1)/ρ + s` has derivative `e^{ρs} + 1` and vanishes at the origin, so the same
+integration by parts gives a ledger whose comparison density is `e^{ρs} + 1` and whose residue is
+the source's defect against that calibration.  This is the ledger a Beurling system with its pole
+off `1` must be read with, and at `ρ = 1` it is the two-pole weight. -/
+
+/-- The polar weight calibrated to a pole at `ρ`. -/
+def poleWeightAt (rho s : ℝ) : ℝ := (Real.exp (rho * s) - 1) / rho + s
+
+theorem poleWeightAt_zero (rho : ℝ) : poleWeightAt rho 0 = 0 := by simp [poleWeightAt]
+
+theorem poleWeightAt_one : poleWeightAt 1 = twoPoleWeight := by
+  funext s
+  simp [poleWeightAt, twoPoleWeight]
+  ring
+
+theorem continuous_poleWeightAt (rho : ℝ) : Continuous (poleWeightAt rho) := by
+  unfold poleWeightAt
+  fun_prop
+
+theorem hasDerivAt_poleWeightAt {rho : ℝ} (hrho : rho ≠ 0) (s : ℝ) :
+    HasDerivAt (poleWeightAt rho) (Real.exp (rho * s) + 1) s := by
+  have hmul : HasDerivAt (fun u : ℝ => rho * u) rho s := by
+    simpa using (hasDerivAt_id s).const_mul rho
+  have h1 : HasDerivAt (fun u : ℝ => Real.exp (rho * u)) (Real.exp (rho * s) * rho) s := hmul.exp
+  have h2 : HasDerivAt (fun u : ℝ => (Real.exp (rho * u) - 1) / rho) (Real.exp (rho * s)) s := by
+    have h3 := (h1.sub_const 1).div_const rho
+    rwa [mul_div_assoc, div_self hrho, mul_one] at h3
+  have h4 : HasDerivAt (fun u : ℝ => (Real.exp (rho * u) - 1) / rho + u)
+      (Real.exp (rho * s) + 1) s := h2.add (hasDerivAt_id s)
+  exact h4
+
+/-- The defect of a source against the calibration at `ρ`. -/
+def lagSourceDefectAt (rho : ℝ) (a : ℕ → ℝ) (s : ℝ) : ℝ := poleWeightAt rho s - lagPrefix a s
+
+theorem integral_poleWeightAt_mul_deriv {rho : ℝ} (hrho : rho ≠ 0) (hh : ContDiff ℝ 1 h)
+    (hS : 0 < S) (hvan : ∀ s, S ≤ s → h s = 0) :
+    (∫ s in Ioi (0:ℝ), poleWeightAt rho s * deriv h s)
+      = -∫ s in Ioi (0:ℝ), (Real.exp (rho * s) + 1) * h s := by
+  have hdc : Continuous (deriv h) := hh.continuous_deriv le_rfl
+  have hA : (∫ s in Ioi (0:ℝ), poleWeightAt rho s * deriv h s)
+      = ∫ s in (0:ℝ)..S, poleWeightAt rho s * deriv h s :=
+    integral_Ioi_eq_intervalIntegral ((continuous_poleWeightAt rho).mul hdc) hS
+      (fun s hs => by rw [deriv_eq_zero_of_vanishing hvan hs, mul_zero])
+  have hB : (∫ s in Ioi (0:ℝ), (Real.exp (rho * s) + 1) * h s)
+      = ∫ s in (0:ℝ)..S, (Real.exp (rho * s) + 1) * h s :=
+    integral_Ioi_eq_intervalIntegral (by fun_prop) hS
+      (fun s hs => by rw [hvan s hs.le, mul_zero])
+  have hparts := intervalIntegral.integral_mul_deriv_eq_deriv_mul
+    (u := poleWeightAt rho) (u' := fun s => Real.exp (rho * s) + 1) (v := h) (v' := deriv h)
+    (a := 0) (b := S)
+    (fun x _ => hasDerivAt_poleWeightAt hrho x)
+    (fun x _ => (hh.differentiable one_ne_zero x).hasDerivAt)
+    ((by fun_prop : Continuous fun s : ℝ => Real.exp (rho * s) + 1).intervalIntegrable _ _)
+    (hdc.intervalIntegrable _ _)
+  rw [hA, hB, hparts, hvan S le_rfl, poleWeightAt_zero]
+  ring
+
+/-- **The balance at an arbitrary pole.** -/
+theorem sum_weight_sub_polarAt_eq_defect {rho : ℝ} (hrho : rho ≠ 0) (a : ℕ → ℝ)
+    (ha0 : a 0 = 0) (ha1 : a 1 = 0) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ} (hN : Real.exp S ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), a n * h (Real.log n))
+        - ∫ s in Ioi (0:ℝ), (Real.exp (rho * s) + 1) * h s
+      = ∫ s in Ioi (0:ℝ), lagSourceDefectAt rho a s * deriv h s := by
+  have hdc : Continuous (deriv h) := hh.continuous_deriv le_rfl
+  have hwi : IntegrableOn (fun s => poleWeightAt rho s * deriv h s) (Ioi (0:ℝ)) := by
+    have hdisj : Disjoint (Ioc (0:ℝ) S) (Ioi S) := by
+      rw [Set.disjoint_left]; rintro x ⟨-, hx2⟩ hx3; exact absurd hx3 (not_lt.mpr hx2)
+    have h1 : IntegrableOn (fun s => poleWeightAt rho s * deriv h s) (Ioc (0:ℝ) S) :=
+      (((continuous_poleWeightAt rho).mul hdc).integrableOn_Icc (a := 0) (b := S)).mono_set
+        Ioc_subset_Icc_self
+    have h2 : IntegrableOn (fun s => poleWeightAt rho s * deriv h s) (Ioi S) :=
+      (integrableOn_zero (μ := volume) (s := Ioi S)).congr_fun
+        (fun x hx => by rw [deriv_eq_zero_of_vanishing hvan hx, mul_zero]) measurableSet_Ioi
+    rw [← Set.Ioc_union_Ioi_eq_Ioi hS.le]
+    exact h1.union h2
+  have hpi := integrableOn_Ioi_lagPrefix_mul_deriv a hh hS hvan hN
+  have hsplit : (∫ s in Ioi (0:ℝ), lagSourceDefectAt rho a s * deriv h s)
+      = (∫ s in Ioi (0:ℝ), poleWeightAt rho s * deriv h s)
+        - ∫ s in Ioi (0:ℝ), lagPrefix a s * deriv h s := by
+    rw [← MeasureTheory.integral_sub hwi hpi]
+    exact setIntegral_congr_fun measurableSet_Ioi fun s _ => by
+      simp [lagSourceDefectAt, sub_mul]
+  rw [hsplit, integral_poleWeightAt_mul_deriv hrho hh hS hvan,
+    sum_weight_mul_eq_neg_integral a ha0 ha1 hh hS hvan hN]
+  ring
+
+
+/-! ### The modulus of continuity of the Gram entries
+
+The difference of two autocorrelation values is the test paired with the difference of two of its
+translates, so Cauchy–Schwarz against the displacement metric bounds it:
+
+    |A(s) − A(t)| ≤ √(A(0)·2D(s − t)) .
+
+The Gram entries therefore vary no faster than the square root of the displacement energy at the
+separation of their lags.  Together with the quadratic gap this is a two-sided description of how
+the Gram of the translate family moves with the lag. -/
+
+theorem displacement_neg (F : ℝ → ℝ) (t : ℝ) : displacement F (-t) = displacement F t := by
+  rw [displacement, displacement, autoCorrelation_neg]
+
+theorem integrable_shift_diff_sq (hF : Continuous F) (hFc : HasCompactSupport F) (s t : ℝ) :
+    Integrable fun x => (F (x + s) - F (x + t)) ^ 2 := by
+  refine (integrable_diff_sq_shift hF hFc s (t - s)).congr
+    (Filter.Eventually.of_forall fun x => ?_)
+  show (F (x + s) - F (x + s + (t - s))) ^ 2 = (F (x + s) - F (x + t)) ^ 2
+  rw [show x + s + (t - s) = x + t by ring]
+
+theorem integral_shift_diff_sq (hF : Continuous F) (hFc : HasCompactSupport F) (s t : ℝ) :
+    (∫ x, (F (x + s) - F (x + t)) ^ 2) = 2 * displacement F (t - s) := by
+  rw [← integral_diff_sq_shift hF hFc s (t - s)]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show (F (x + s) - F (x + t)) ^ 2 = (F (x + s) - F (x + s + (t - s))) ^ 2
+  rw [show x + s + (t - s) = x + t by ring]
+
+theorem autoCorrelation_sub (hF : Continuous F) (hFc : HasCompactSupport F) (s t : ℝ) :
+    autoCorrelation F s - autoCorrelation F t = ∫ x, F x * (F (x + s) - F (x + t)) := by
+  have hps : Integrable fun x => F x * F (x + s) :=
+    (hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  have hpt : Integrable fun x => F x * F (x + t) :=
+    (hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  rw [autoCorrelation, autoCorrelation, ← MeasureTheory.integral_sub hps hpt]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show F x * F (x + s) - F x * F (x + t) = F x * (F (x + s) - F (x + t))
+  ring
+
+theorem two_mul_autoCorrelation_sub_le (hF : Continuous F) (hFc : HasCompactSupport F)
+    (s t : ℝ) {ε : ℝ} (hε : 0 < ε) :
+    2 * (autoCorrelation F s - autoCorrelation F t)
+      ≤ ε * autoCorrelation F 0 + ε⁻¹ * (2 * displacement F (t - s)) := by
+  have hpt : ∀ x : ℝ, 2 * (F x * (F (x + s) - F (x + t)))
+      ≤ ε * F x ^ 2 + ε⁻¹ * (F (x + s) - F (x + t)) ^ 2 := by
+    intro x
+    have key : ε * (F x - (F (x + s) - F (x + t)) / ε) ^ 2
+        = ε * F x ^ 2 - 2 * (F x * (F (x + s) - F (x + t)))
+          + ε⁻¹ * (F (x + s) - F (x + t)) ^ 2 := by
+      field_simp
+      ring
+    nlinarith [mul_nonneg hε.le (sq_nonneg (F x - (F (x + s) - F (x + t)) / ε)), key]
+  have hdiff : Integrable fun x => F x * (F (x + s) - F (x + t)) := by
+    have hps : Integrable fun x => F x * F (x + s) :=
+      (hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+        hFc.mul_right
+    have hpt' : Integrable fun x => F x * F (x + t) :=
+      (hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+        hFc.mul_right
+    refine (hps.sub hpt').congr (Filter.Eventually.of_forall fun x => ?_)
+    show F x * F (x + s) - F x * F (x + t) = F x * (F (x + s) - F (x + t))
+    ring
+  have hl : Integrable fun x => 2 * (F x * (F (x + s) - F (x + t))) := hdiff.const_mul 2
+  have hr : Integrable fun x => ε * F x ^ 2 + ε⁻¹ * (F (x + s) - F (x + t)) ^ 2 :=
+    ((integrable_sq hF hFc).const_mul ε).add
+      ((integrable_shift_diff_sq hF hFc s t).const_mul ε⁻¹)
+  have hmono := MeasureTheory.integral_mono hl hr hpt
+  rw [MeasureTheory.integral_const_mul,
+    MeasureTheory.integral_add ((integrable_sq hF hFc).const_mul ε)
+      ((integrable_shift_diff_sq hF hFc s t).const_mul ε⁻¹),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
+    ← autoCorrelation_zero_eq, integral_shift_diff_sq hF hFc s t,
+    ← autoCorrelation_sub hF hFc s t] at hmono
+  exact hmono
+
+/-- **The Gram entries move no faster than the displacement metric.** -/
+theorem abs_autoCorrelation_sub_le (hF : Continuous F) (hFc : HasCompactSupport F) (s t : ℝ) :
+    |autoCorrelation F s - autoCorrelation F t|
+      ≤ Real.sqrt (autoCorrelation F 0 * (2 * displacement F (s - t))) := by
+  have hst : displacement F (t - s) = displacement F (s - t) := by
+    rw [show t - s = -(s - t) by ring, displacement_neg]
+  have hnn : 0 ≤ 2 * displacement F (s - t) := by
+    have := displacement_nonneg hF hFc (s - t); linarith
+  have h1 : autoCorrelation F s - autoCorrelation F t
+      ≤ Real.sqrt (autoCorrelation F 0 * (2 * displacement F (s - t))) := by
+    refine le_sqrt_mul_of_two_mul_le (autoCorrelation_zero_nonneg F) hnn fun ε hε => ?_
+    have := two_mul_autoCorrelation_sub_le hF hFc s t hε
+    rwa [hst] at this
+  have h2 : autoCorrelation F t - autoCorrelation F s
+      ≤ Real.sqrt (autoCorrelation F 0 * (2 * displacement F (s - t))) := by
+    refine le_sqrt_mul_of_two_mul_le (autoCorrelation_zero_nonneg F) hnn fun ε hε => ?_
+    exact two_mul_autoCorrelation_sub_le hF hFc t s hε
+  exact abs_le.mpr ⟨by linarith, h1⟩
+
+
+/-! ### The displacement energy of a regular test, from above
+
+The aperture laws bound the displacement energy from below.  From above it is controlled by the
+test's own regularity alone: a derivative bound `M` and an aperture `r` give
+`2D(t) ≤ M²t²(2r + 2|t|)`, because the increment is at most `M|t|` pointwise and lives on an
+interval of length `2r + 2|t|`.  With the modulus of continuity this makes the Gram entries
+Lipschitz in the lag with an explicit constant — the quantitative form of the banded structure of
+the near-diagonal block. -/
+
+theorem abs_sub_shift_le (hF : ContDiff ℝ 1 F) {M : ℝ} (hM : ∀ x, |deriv F x| ≤ M) (x t : ℝ) :
+    |F x - F (x + t)| ≤ M * |t| := by
+  have hdiff : ∀ y ∈ (Set.univ : Set ℝ), DifferentiableAt ℝ F y :=
+    fun y _ => hF.differentiable one_ne_zero y
+  have hb : ∀ y ∈ (Set.univ : Set ℝ), ‖deriv F y‖ ≤ M := fun y _ => by
+    rw [Real.norm_eq_abs]; exact hM y
+  have hkey := convex_univ.norm_image_sub_le_of_norm_deriv_le hdiff hb
+    (Set.mem_univ (x + t)) (Set.mem_univ x)
+  rw [Real.norm_eq_abs, Real.norm_eq_abs, show x - (x + t) = -t by ring, abs_neg] at hkey
+  exact hkey
+
+/-- **The displacement energy of a regular test, from above.** -/
+theorem two_mul_displacement_le (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r M : ℝ}
+    (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) (hM : ∀ x, |deriv F x| ≤ M) (t : ℝ) :
+    2 * displacement F t ≤ M ^ 2 * t ^ 2 * (2 * r + 2 * |t|) := by
+  have hM0 : 0 ≤ M := le_trans (abs_nonneg _) (hM 0)
+  set R : ℝ := r + |t| with hR
+  have hRr : r ≤ R := by rw [hR]; linarith [abs_nonneg t]
+  have hvanish : ∀ x ∉ Set.Icc (-R) R, (F x - F (x + t)) ^ 2 = 0 := by
+    intro x hx
+    have hcase : x < -R ∨ R < x := by
+      rcases le_or_gt (-R) x with hge | hlt
+      · refine Or.inr ?_
+        by_contra hc
+        exact hx (Set.mem_Icc.mpr ⟨hge, le_of_not_gt hc⟩)
+      · exact Or.inl hlt
+    rcases hcase with hx1 | hx1
+    · have h1 : F x = 0 := by
+        refine hsupp x ?_
+        rw [abs_of_neg (by linarith [abs_nonneg t] : x < 0)]
+        linarith [abs_nonneg t]
+      have h2 : F (x + t) = 0 := by
+        refine hsupp (x + t) ?_
+        have hlt : x + t < -r := by
+          have := le_abs_self t
+          linarith
+        rw [abs_of_neg (by linarith : x + t < 0)]
+        linarith
+      rw [h1, h2]; ring
+    · have h1 : F x = 0 := by
+        refine hsupp x ?_
+        rw [abs_of_pos (by linarith [abs_nonneg t] : (0:ℝ) < x)]
+        linarith [abs_nonneg t]
+      have h2 : F (x + t) = 0 := by
+        refine hsupp (x + t) ?_
+        have hgt : r < x + t := by
+          have := neg_abs_le t
+          linarith
+        rw [abs_of_pos (by linarith : (0:ℝ) < x + t)]
+        linarith
+      rw [h1, h2]; ring
+  have hbound : ∀ x ∈ Set.Icc (-R) R, (F x - F (x + t)) ^ 2 ≤ M ^ 2 * t ^ 2 := by
+    intro x _
+    have h := abs_sub_shift_le hF hM x t
+    have hsq : (F x - F (x + t)) ^ 2 ≤ (M * |t|) ^ 2 := by
+      rw [← sq_abs (F x - F (x + t))]
+      nlinarith [abs_nonneg (F x - F (x + t)), h]
+    calc (F x - F (x + t)) ^ 2 ≤ (M * |t|) ^ 2 := hsq
+      _ = M ^ 2 * t ^ 2 := by rw [mul_pow, sq_abs]
+  have hRnn : (0:ℝ) ≤ R := le_trans hr.le hRr
+  have hmono := MeasureTheory.setIntegral_mono_on
+    ((integrable_diff_sq hF.continuous hFc t).integrableOn)
+    (integrableOn_const (C := M ^ 2 * t ^ 2) (by
+      rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top))
+    measurableSet_Icc hbound
+  rw [MeasureTheory.setIntegral_const, Real.volume_real_Icc, smul_eq_mul,
+    max_eq_left (by linarith : (0:ℝ) ≤ R - -R)] at hmono
+  rw [two_mul_displacement_eq hF.continuous hFc t,
+    ← MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero hvanish]
+  calc (∫ x in Set.Icc (-R) R, (F x - F (x + t)) ^ 2)
+      ≤ (R - -R) * (M ^ 2 * t ^ 2) := hmono
+    _ = M ^ 2 * t ^ 2 * (2 * r + 2 * |t|) := by rw [hR]; ring
+
+/-- **The Gram entries are Lipschitz in the lag.** -/
+theorem abs_autoCorrelation_sub_le_lipschitz (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    {r M : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) (hM : ∀ x, |deriv F x| ≤ M)
+    (s t : ℝ) :
+    |autoCorrelation F s - autoCorrelation F t|
+      ≤ Real.sqrt (autoCorrelation F 0 * (M ^ 2 * (s - t) ^ 2 * (2 * r + 2 * |s - t|))) := by
+  refine le_trans (abs_autoCorrelation_sub_le hF.continuous hFc s t) ?_
+  refine Real.sqrt_le_sqrt ?_
+  exact mul_le_mul_of_nonneg_left
+    (two_mul_displacement_le hF hFc hr hsupp hM (s - t)) (autoCorrelation_zero_nonneg F)
+
+
+/-! ### The horizon of the reading, and the unconditional cost
+
+A test of aperture `r` sees no lag beyond `2r`, so the prime side is a *finite* sum that does not
+depend on the horizon once the horizon passes `e^{2r}`: the ledger is genuinely local in the
+scale.  Bounding each surviving term by the mass gives the unconditional cost of the prime side,
+the `ℓ¹` prime cost against which every positivity statement of the programme is graded — the
+rate `1` of the grading, before any arithmetic is used. -/
+
+/-- **The reading has a horizon.**  Past `e^{2r}` the atoms contribute nothing. -/
+theorem sum_lag_eq_of_horizon (hF : Continuous F) {r : ℝ} (hr : 0 < r)
+    (hsupp : ∀ y, r < |y| → F y = 0) (c : ℕ → ℝ) {N M : ℕ} (hNM : N ≤ M)
+    (hN : Real.exp (2 * r) ≤ N) :
+    ∑ n ∈ Finset.range (M + 1), c n * autoCorrelation F (Real.log n)
+      = ∑ n ∈ Finset.range (N + 1), c n * autoCorrelation F (Real.log n) := by
+  have hsub : Finset.range (N + 1) ⊆ Finset.range (M + 1) :=
+    Finset.range_subset.mpr (by omega)
+  refine (Finset.sum_subset hsub fun n hn hnot => ?_).symm
+  have hNn : N < n := by
+    simp only [Finset.mem_range, not_lt] at hnot
+    omega
+  have hNpos : (0:ℝ) < Real.exp (2 * r) := Real.exp_pos _
+  have hn0 : (0:ℝ) < n := lt_of_lt_of_le hNpos (le_trans hN (by exact_mod_cast hNn.le))
+  have hlog : 2 * r ≤ Real.log n := by
+    rw [← Real.log_exp (2 * r)]
+    exact Real.log_le_log hNpos (le_trans hN (by exact_mod_cast hNn.le))
+  rw [autoCorrelation_eq_zero hF hr hsupp hlog, mul_zero]
+
+/-- **The unconditional cost of the prime side.**  Every surviving atom is read at most at the
+full mass, so the cost is the `ℓ¹` weight of the atoms below the horizon times the mass. -/
+theorem abs_sum_lag_le_l1 (hF : Continuous F) (hFc : HasCompactSupport F) (T : Finset ℕ)
+    (c : ℕ → ℝ) :
+    |∑ n ∈ T, c n * autoCorrelation F (Real.log n)|
+      ≤ autoCorrelation F 0 * ∑ n ∈ T, |c n| := by
+  refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun n _ => ?_
+  rw [abs_mul]
+  calc |c n| * |autoCorrelation F (Real.log n)|
+      ≤ |c n| * autoCorrelation F 0 :=
+        mul_le_mul_of_nonneg_left (abs_autoCorrelation_le hF hFc _) (abs_nonneg _)
+    _ = autoCorrelation F 0 * |c n| := mul_comm _ _
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity

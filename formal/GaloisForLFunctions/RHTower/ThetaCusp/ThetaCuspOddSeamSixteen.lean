@@ -197,59 +197,87 @@ private theorem pd_num7 (i : ModularThetaLyapunovState) :
 attribute [local simp] pd_num2 pd_num3 pd_num4 pd_num5 pd_num6 pd_num7
 
 private theorem eval_q00 (a : ℂ) : eval (seamState a) evenCompactSourceJet12 = 1*q00 a := by
-  simp [evenCompactSourceJet12,seamState,q00]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,seamState,q00]
   ring
 
 private theorem eval_q20 (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .S evenCompactSourceJet12)) = 2*q20 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q20]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q20]
   ring
 
 private theorem eval_q11 (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .W evenCompactSourceJet12)) = 1*q11 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q11]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q11]
   ring
 
 private theorem eval_q02 (a : ℂ) : eval (seamState a) (pderiv .W (pderiv .W evenCompactSourceJet12)) = 2*q02 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q02]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q02]
   ring
 
 private theorem eval_q40 (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .S (pderiv .S (pderiv .S evenCompactSourceJet12)))) = 24*q40 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q40]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q40]
   ring
 
 private theorem eval_q31 (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .S (pderiv .S (pderiv .W evenCompactSourceJet12)))) = 6*q31 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q31]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q31]
   ring
 
 private theorem eval_q22 (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .S (pderiv .W (pderiv .W evenCompactSourceJet12)))) = 4*q22 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q22]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q22]
   ring
 
 private theorem eval_q13 (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .W (pderiv .W (pderiv .W evenCompactSourceJet12)))) = 6*q13 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q13]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q13]
   ring
 
 private theorem eval_q04 (a : ℂ) : eval (seamState a) (pderiv .W (pderiv .W (pderiv .W (pderiv .W evenCompactSourceJet12)))) = 24*q04 a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q04]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q04]
   ring
 
 private theorem eval_q20A (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .S (pderiv .A evenCompactSourceJet12))) = 2*q20A a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q20A]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q20A]
   ring
 
 private theorem eval_q11A (a : ℂ) : eval (seamState a) (pderiv .S (pderiv .W (pderiv .A evenCompactSourceJet12))) = 1*q11A a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q11A]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q11A]
   ring
 
 private theorem eval_q02A (a : ℂ) : eval (seamState a) (pderiv .W (pderiv .W (pderiv .A evenCompactSourceJet12))) = 2*q02A a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q02A]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q02A]
   ring
 
 private theorem eval_q00A (a : ℂ) : eval (seamState a) (pderiv .A evenCompactSourceJet12) = 1*q00A a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q00A]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q00A]
   ring
 
 private theorem eval_q00AA (a : ℂ) : eval (seamState a) (pderiv .A (pderiv .A evenCompactSourceJet12)) = 1*q00AA a := by
-  simp [evenCompactSourceJet12,pderiv_X,seamState,q00AA]
+  simp [evenCompactSourceJet12,evenCompactSourceJet12Part0,evenCompactSourceJet12Part1,
+    evenCompactSourceJet12Part2,evenCompactSourceJet12Part3,evenCompactSourceJet12Part4,
+    evenCompactSourceJet12Part5,evenCompactSourceJet12Part6,pderiv_X,seamState,q00AA]
   ring
 
 def sourceSixteen {K : Type*} [Field K] (a : K) : K :=

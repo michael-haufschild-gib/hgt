@@ -616,7 +616,9 @@ theorem latticeTrain_sample {N n : ℕ} (hn : 1 ≤ n) (j : ℕ) (c : Fin N → 
     ring
   · have hg := hr.trans_le (lag_gap hn i k h)
     have hg' : radius j < |Real.log n + position k - position i| := by
-      convert hg using 1 <;> congr 1
+      rw [show Real.log n + position k - position i = Real.log n - position i + position k by
+        ring]
+      exact hg
     rw [if_neg h, bump_autocorr_vanish j hg', mul_zero, mul_zero]
 
 /-- The selected prime quadratic form before folding the two lattice copies. -/
@@ -794,7 +796,7 @@ theorem radius_resolution_le (N k : ℕ) :
         push_cast at *
         dsimp only [L] at hj
         linarith only [hj])
-    _ = _ := by ring
+    _ = _ := by rw [div_div, mul_comm (2 : ℝ)]
 
 private theorem resolution_error_scale (N k : ℕ) :
     64 * radius (resolution N k) * ((N + 2 : ℕ) : ℝ) ^ 4 ≤ 1 / ((k : ℝ) + 1) := by
@@ -806,6 +808,7 @@ private theorem resolution_error_scale (N k : ℕ) :
         (128 * ((N + 2 : ℕ) : ℝ) ^ 4 * ((k : ℝ) + 1) + 1) := by
     unfold radius
     rw [resolution_cast]
+    field_simp
     ring
   rw [he, div_le_div_iff₀ hd hk]
   nlinarith only [mul_nonneg hL hk.le]
@@ -817,19 +820,21 @@ private theorem lattice_archEnvelope_le (N : ℕ) :
   have hL : 2 ≤ L := by dsimp only [L]; exact_mod_cast (show 2 ≤ N + 2 by omega)
   have hL0 : 0 < L := by linarith only [hL]
   have hL2 : 4 ≤ L ^ 2 := by nlinarith only [hL]
-  have hex : Real.exp (1 / 2 : ℝ) ≤ 2 := by
-    rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2)]
-    exact Real.exp_le_exp.mpr (by linarith [WeilExcess.seventeen_div_twentyfive_lt_log_two])
+  -- `exp (1/2) ≤ exp (log 2) = 2`, since `1/2 < 17/25 < log 2`.
+  have hex : Real.exp (1 / 2 : ℝ) ≤ 2 :=
+    calc Real.exp (1 / 2 : ℝ) ≤ Real.exp (Real.log 2) :=
+          Real.exp_le_exp.mpr (by linarith [WeilExcess.seventeen_div_twentyfive_lt_log_two])
+      _ = 2 := Real.exp_log (by norm_num)
   have he : Real.exp ((2 * Real.log L + 1) / 2) = L * Real.exp (1 / 2) := by
     rw [show (2 * Real.log L + 1) / 2 = Real.log L + 1 / 2 by ring,
       Real.exp_add, Real.exp_log hL0]
   change (2 / (1 / (L ^ 2 + 1)) + 4) * Real.exp ((2 * Real.log L + 1) / 2) ≤ _
-  rw [he, div_div, div_one]
+  rw [he, div_div_eq_mul_div, div_one]
   calc
     _ ≤ (2 * (L ^ 2 + 1) + 4) * (L * 2) :=
       mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hex hL0.le) (by positivity)
     _ ≤ 8 * L ^ 3 := by
-      nlinarith only [mul_le_mul_of_nonneg_right hL2 hL0.le]
+      nlinarith only [mul_le_mul_of_nonneg_right hL2 hL0.le, hL0]
 
 /-- The singular self-energy is common to all packets; its removal has a uniform small error. -/
 theorem archEnergy_latticeTrain_error (N k : ℕ) (c : Fin N → ℝ) :
@@ -849,7 +854,7 @@ theorem archEnergy_latticeTrain_error (N k : ℕ) (c : Fin N → ℝ) :
     (fun i _ l _ => position_span i l)
     (radius_resolution_le N k) ((radius_le_half j).trans (by norm_num))
   simp only [Finset.card_univ, Fintype.card_prod, Fintype.card_fin, Fintype.card_bool,
-    Nat.cast_mul, Nat.cast_ofNat, sum_amplitude_sq, ← latticeTrain] at hb
+    Nat.cast_mul, Nat.cast_ofNat, sum_amplitude_sq, ← latticeTrain.eq_1] at hb
   calc
     _ ≤ (2 * radius j * mass j * ((N : ℝ) * 2) * (2 * coefficientEnergy c)) *
         archEnvelope (1 / (L ^ 2 + 1)) (2 * Real.log L) := hb

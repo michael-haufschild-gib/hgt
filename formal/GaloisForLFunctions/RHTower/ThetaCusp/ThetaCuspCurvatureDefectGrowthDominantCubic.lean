@@ -158,7 +158,8 @@ private def pairShiftP (y : ℝ) : ℝ :=
                                                                     (y ^ 32 * 117546246144 +
                                                                       0))))))))))))))))))))))))))))))))
 
-private theorem dominantPairPolynomial_shift_eq (y : ℝ) :
+/-- The shifted dominant pair polynomial as an explicit polynomial in `y`. -/
+private theorem dominantPairPolynomial_shift_eq_explicit (y : ℝ) :
     dominantPairPolynomial (3/2+y)=pairShiftP y := by
   unfold pairShiftP
   unfold dominantPairPolynomial anchorCoolingNumerator binaryGrowthNumerator binarySlopeNumerator
@@ -173,7 +174,7 @@ private theorem dominantPairPolynomial_shift_eq (y : ℝ) :
 theorem exactCubic_pair_reserve_shift (y : ℝ) (hy : 0 ≤ y) :
     dominantTriplePolynomial (3/2+y) ≤
       (2:ℝ)^8*polynomialMoment (3/2+y) 3 0*dominantPairPolynomial (3/2+y) := by
-  rw [dominantPairPolynomial_shift_eq]
+  rw [dominantPairPolynomial_shift_eq_explicit]
   unfold dominantTriplePolynomial growthNumerator slopeNumerator
   simp only [Finset.sum_range_succ,Finset.sum_range_zero,zero_add]
   norm_num [growthCoefficient,growthCoefficientJet,coolingCoefficient,coolingCoefficientJet,

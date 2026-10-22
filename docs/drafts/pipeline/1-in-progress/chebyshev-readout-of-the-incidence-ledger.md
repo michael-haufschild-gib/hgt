@@ -417,6 +417,84 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         `A(u) ≤ A(0)(1 − 1/(2·4ʲ))` whenever `u` reaches past the aperture in `j` doublings, and
         hence a strict gap at every `u > 0`.  This is the first quantitative control below the
         aperture, where the one-sided ladder is vacuous.
+      * **`crossAggregate_eq_meanSquare`**, **`crossAggregate_ge`**, **`crossAggregate_le`** —
+        **the cross-prime aggregate** (AIP research topic 8).  The aggregate
+        `Σ_{p≠q} w_p w_q A(log(q/p))` is the mean square of the prime field
+        `Φ = Σ_p w_p F(·+log p)` minus its diagonal.  Hence it never falls below
+        `−A(0)Σ_p w_p²` — no cancellation can make it exponentially negative, so the question is
+        one-sided — and for nonnegative weights it is at most `A(0)((Σ_p w_p)² − Σ_p w_p²)`.  The
+        upper bound is governed by the `ℓ¹` norm of the weights: for the first-power Euler
+        weights `log p/(p−1)` on `p ≤ e^{2r}` Mertens gives `Σ_p w_p = 2r + O(1)`, so that family's
+        aggregate is `O(r²)A(0)` — polynomial, as the grading asks.  The open case is the
+        half-power family `√p log p/(p−1)`, whose `ℓ¹` norm is exponential while its `ℓ²` norm
+        stays `≍ r²`.
+      * **`sourceOfPrefix`**, `lagPrefix_sourceOfPrefix`, **`existsUnique_source_of_prefix`**,
+        **`ledger_difference_eq`**, `abs_ledger_difference_le` — **realisation and separation.**
+        Differencing a prescribed prefix realises it by a source, so with rigidity the map
+        source ↦ prefix is a bijection onto the functions vanishing at the origin.  And the
+        ledgers of two sources differ by exactly `∫(prefix difference)·h′`: the polar density
+        cancels, so a perturbation of the prefix is detected at precisely the rate at which it
+        pairs with the derivative of the test.
+      * **`index_eq_prefix_sub`**, `lagPrefix_singleIndexPerturb`, `sum_singleIndexPerturb_sub`,
+        **`integral_step_mul_deriv_eq`**, **`ledger_separates_singleIndex`** — **the one-point
+        cone** (APT research topic 6).  When the cone is a single weight, membership is an
+        identification, and the ledger supplies it: consecutive prefix values differ by one atom,
+        a single-index perturbation is read as `ε·h(log m)`, and the ledger separates it exactly
+        when the test is nonzero at that lag.  That is the replacement for a cone-membership
+        proof.
+      * **`sum_weight_dilate_sub_polar_eq_defect`** (with `deriv_dilate`) — **the ledger of the
+        Beurling system of `λ`-th powers.**  Reading the atoms at the lags `λ log n` gives the
+        balance whose polar density is `λ⁻¹(e^{s/λ}+1)` — pole at `1/λ` — and whose residue is the
+        source's own defect read at scale `s/λ`.  The critical line of the `λ`-system is at
+        `1/(2λ)` while a fixed receiver's lag weight `e^{−s/2}` stays put, so no criterion
+        calibrated to the half-line can be dilation-invariant.
+      * **`ledger_mono`**, `ledger_le_vonMangoldt` — **the comparison principle.**  Against a test
+        whose lag weight is nonincreasing, the reading is monotone in the prefix.  Domination of
+        weights therefore upgrades from a statement about defects to one about the readings
+        themselves; the strip weight of a compactly supported test is such a weight, so the
+        principle is not vacuous.
+      * **`sum_lag_eq_integral_primeField`**, `two_mul_sum_lag_le_energy`,
+        **`two_mul_sum_lag_le_aggregate`** — **the prime cost and the aggregate are two moments
+        of one field.**  The prime side is `∫F·Φ` with `Φ = Σ_n c_nF(·+log n)`, and the
+        cross-prime aggregate is the energy of that same `Φ`.  So `2⟨F,Φ⟩ ≤ t‖F‖² + t⁻¹‖Φ‖²`
+        converts any bound on the aggregate (AIP topic 8) into a bound on the `ℓ¹` prime cost
+        (APT topic 2): the two fields' sharpest questions are the first and second moment of one
+        object.
+      * **`poleplane_eq_moment_mul`**, **`poleplane_eq_zero_iff`**, `expMomentPos_odd`,
+        **`poleplane_odd`**, **`testBalance_poleFree`** — **the pole plane factorises.**  The
+        difference of squares is the product `(∫Fe^{−x/2})(∫Fe^{x/2})` of the two
+        half-exponential moments, so the pole plane is a rank-one readout in each: it vanishes
+        exactly on the union of the two pole-free hyperplanes, its sign is the agreement of the
+        two moments' signs, and on an odd test it is minus a perfect square.  On a pole-free test
+        the prime side equals the Chebyshev residue outright, with no polar subsidy.
+      * **`lagChebyshev_eq_log_two`**, `integral_chebyshevError_of_const`,
+        **`criticalScalePrefix_first_cell`**, **`criticalScalePrefix_second_cell`** — **the
+        receiver on the first two cells, exactly:** `D(s) = e^s − 1` below `log 2`, and
+        `e^s − 1 − (s − log 2)log 2` on `[log 2, log 3)`.  These are the exact receiver values at
+        the apertures of the first prime window.
+      * **`criticalScalePrefix_succ`**, **`criticalScalePrefix_log_natCast_succ`** — **the
+        receiver is an exact recursion over the integers:**
+        `D(log(N+1)) = D(log N) + 1 − ψ(N)log(1+1/N)`, hence the closed form
+        `D(log(M+1)) = M − Σ_{k<M} ψ(k+1)log(1+1/(k+1))`.  RH is the one-sided bound
+        `D(T) ≤ B(1+T)e^{T/2}` on this completely explicit sequence.
+      * **`criticalScalePrefix_on_cell`**, **`hasDerivAt_criticalScalePrefix_of_mem_cell`**,
+        `slope_jump_eq_vonMangoldt` — **the receiver is sawtooth-convex and its kinks are the
+        atoms.**  On each integer cell `D(u) = e^u − ψ(N)u + const`, strictly convex with slope
+        `e^u − ψ(N)`; at each integer scale the slope drops by exactly `Λ(N+1)`.  The arithmetic
+        is recoverable from the corners of the graph — source rigidity in analytic form.
+      * **`poleWeightAt`**, `hasDerivAt_poleWeightAt`, **`sum_weight_sub_polarAt_eq_defect`** —
+        **the ledger at an arbitrary pole.**  For every `ρ ≠ 0` the weight `(e^{ρs} − 1)/ρ + s`
+        gives a balance with comparison density `e^{ρs} + 1`; at `ρ = 1` it is the two-pole
+        weight.  This is the calibration a Beurling system with its pole off `1` must be read
+        with.
+      * **`autoCorrelation_sub`**, `two_mul_autoCorrelation_sub_le`,
+        **`abs_autoCorrelation_sub_le`** — **the modulus of continuity of the Gram:**
+        `|A(s) − A(t)| ≤ √(A(0)·2D(s−t))`.  The Gram entries move no faster than the square root
+        of the displacement energy at the separation of their lags.
+      * **`two_mul_displacement_le`**, **`abs_autoCorrelation_sub_le_lipschitz`** — **the
+        displacement energy from above.**  A derivative bound `M` and aperture `r` give
+        `2D(t) ≤ M²t²(2r+2|t|)`, so the Gram entries are Lipschitz in the lag with explicit
+        constant: the quantitative form of the banded near-diagonal block.
 - [ ] 3 → 4  publication-ready
 
 ## Note on the Lean route

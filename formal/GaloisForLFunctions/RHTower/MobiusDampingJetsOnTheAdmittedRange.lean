@@ -477,8 +477,10 @@ def mobiusDampingJetRealCoeff (k : ℕ) (ε : ℝ) (n : ℕ) : ℝ :=
 
 theorem mobiusDampingJetCoeff_ofReal (k : ℕ) (ε : ℝ) (n : ℕ) :
     mobiusDampingJetCoeff k ε n = (mobiusDampingJetRealCoeff k ε n : ℂ) := by
-  simp only [mobiusDampingJetCoeff_eq, mobiusDampingJetRealCoeff,
-    pmPowerDampedMobiusCoeff, Complex.ofReal_re, Complex.ofReal_mul, Complex.ofReal_pow]
+  -- Take the real part of the real-valued coefficient before splitting the casts.
+  rw [mobiusDampingJetCoeff_eq, mobiusDampingJetRealCoeff, pmPowerDampedMobiusCoeff,
+    Complex.ofReal_re]
+  simp only [Complex.ofReal_mul, Complex.ofReal_pow]
 
 theorem abscissaOfAbsConv_pmPowerDampedMobiusCoeff_le (ε : ℝ) :
     LSeries.abscissaOfAbsConv (pmPowerDampedMobiusCoeff ε) ≤ ((1 - ε : ℝ) : EReal) := by
@@ -598,7 +600,8 @@ theorem hasMellin_mobiusDampingJetSource (k : ℕ) (ε : ℝ) {s : ℂ}
       etaSlope_mul_zetaResidueUnit hsne]
     simp only [ofReal_one, Complex.one_cpow, one_mul]
     ring
-  simpa only [mobiusDampingJetSource, smul_eq_mul, neg_one_mul, hvalue] using hn
+  simp only [smul_eq_mul, neg_one_mul, hvalue] at hn
+  exact hn
 
 /-- The Hardy estimate controls the literal source, uniformly at every jet order. -/
 theorem exists_uniform_mobiusDampingJetSource_budget {a : ℝ}
