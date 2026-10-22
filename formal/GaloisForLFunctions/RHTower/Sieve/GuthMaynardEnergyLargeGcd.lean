@@ -56,7 +56,10 @@ theorem sum_dvd_pairs_eq (N : ℕ) {d : ℕ} (hd : 1 ≤ d) (G : ℝ → ℝ) :
     calc n = n / d * d := (Nat.div_mul_cancel hn').symm
       _ = m / d * d := by rw [h']
       _ = m := Nat.div_mul_cancel hm'
-  have hd0 : (d : ℝ) ≠ 0 := by have : (0 : ℝ) < d := by exact_mod_cast hd; exact this.ne'
+  have hd0 : (d : ℝ) ≠ 0 := by
+    have hdN : 0 < d := hd
+    have hdpos : (0 : ℝ) < d := by exact_mod_cast hdN
+    exact hdpos.ne'
   have hratio : ∀ n ∈ A, ∀ m ∈ A, (((n / d : ℕ) : ℝ) / ((m / d : ℕ) : ℝ)) = (n : ℝ) / m := by
     intro n hn m hm
     rw [Nat.cast_div (mem_filter.mp hn).2 hd0, Nat.cast_div (mem_filter.mp hm).2 hd0]
@@ -100,7 +103,7 @@ theorem multiplesBlock_subset_one {N d : ℕ} (hd : N < d) : multiplesBlock N d 
   obtain ⟨h1, h2⟩ := mem_Ioc.mp hnI
   obtain ⟨k, rfl⟩ := hdn
   have hd0 : 0 < d := by omega
-  rw [Nat.mul_div_cancel_left _ hd0, mem_singleton]
+  rw [Nat.mul_div_cancel_left _ hd0, Finset.mem_singleton]
   rcases Nat.lt_or_ge k 2 with hk | hk
   · rcases Nat.lt_or_ge k 1 with hk1 | hk1
     · have : k = 0 := by omega
@@ -111,7 +114,7 @@ theorem multiplesBlock_subset_one {N d : ℕ} (hd : N < d) : multiplesBlock N d 
 
 /-- **Regrouping by the gcd.** For `D > 0` and `F ≥ 0`:
 `Σ_{p : gcd p ≥ D} F(p) ≤ Σ_{⌈D⌉ ≤ d ≤ 2N} Σ_{p : d | p₁, d | p₂} F(p)`. -/
-theorem sum_largeGcd_le (N : ℕ) {D : ℝ} (hD : 0 < D) {F : ℕ × ℕ → ℝ} (hF : ∀ p, 0 ≤ F p) :
+theorem sum_largeGcd_le (N : ℕ) {D : ℝ} (_hD : 0 < D) {F : ℕ × ℕ → ℝ} (hF : ∀ p, 0 ≤ F p) :
     ∑ p ∈ (Finset.Ioc N (2 * N) ×ˢ Finset.Ioc N (2 * N)).filter
         (fun p => D ≤ ((Nat.gcd p.1 p.2 : ℕ) : ℝ)), F p ≤
       ∑ d ∈ Finset.Icc ⌈D⌉₊ (2 * N), ∑ p ∈ (Finset.Ioc N (2 * N) ×ˢ Finset.Ioc N (2 * N)).filter
@@ -183,6 +186,112 @@ theorem sum_linear_quadratic_le {N : ℕ} (hN : 1 ≤ N) {D α β : ℝ} (hD : 0
   have hN0 : (0 : ℝ) ≤ N := Nat.cast_nonneg _
   gcongr
 
+/-- Harmonic-weight rearrangement: `(b + d) L + 2c ≤ (L + 2)(b + c + d)` for nonnegative data.
+The two sides differ by `L c + 2 b + 2 d ≥ 0`. -/
+theorem harmonic_weight_rearrange {L b c d : ℝ} (hL : 0 ≤ L) (hb : 0 ≤ b) (hc : 0 ≤ c)
+    (hd : 0 ≤ d) : (b + d) * L + 2 * c ≤ (L + 2) * (b + c + d) := by
+  nlinarith [mul_nonneg hL hc]
+
+/-- The small-gcd part of Lemma 11.9: Cauchy–Schwarz over the divisors, the harmonic and
+quadratic divisor sums, and the monomial algebra.  Split out so that each declaration stays
+within the default elaboration budget. -/
+theorem smallGcd_sum_le {Is : Finset ℕ} {A B G : ℕ → ℝ} {N : ℕ}
+    {X E T D C₂ C₄ ε ε₀ K : ℝ} (_hε : 0 < ε) (hε₀0 : 0 < ε₀)
+    (hTε : T ^ ε = T ^ ε₀ * T ^ ε₀) (hC₂ : 0 ≤ C₂) (hC₄ : 0 ≤ C₄)
+    (hK : K = 6 * Real.sqrt (C₂ * C₄) * (3 + 1 / ε₀))
+    (hN1 : 1 ≤ N) (hT1 : 1 ≤ T) (hT0 : 0 < T) (hD0 : 0 < D) (hDdef : D = (N : ℝ) ^ 2 / T)
+    (hX1 : 1 ≤ X) (hXE : X ^ 2 ≤ E) (hE3 : E ≤ 3 * X ^ 3) (hXT : X ≤ 2 * T)
+    (hNT : T ^ (3 / 4 : ℝ) ≤ (N : ℝ)) (hNle : (N : ℝ) ≤ T)
+    (hX0 : (0 : ℝ) ≤ X) (hE0 : (0 : ℝ) ≤ E)
+    (hIs : ∀ d ∈ Is, 1 ≤ d ∧ D ≤ d ∧ d ≤ N)
+    (hA0 : ∀ d : ℕ, 0 ≤ A d) (hB0 : ∀ d : ℕ, 0 ≤ B d)
+    (hA : ∀ d ∈ Is, A d ≤ C₂ * T ^ ε₀ * ((X ^ 2 + X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ)) *
+      ((N : ℝ) / d) + X * ((N : ℝ) / d) ^ 2))
+    (hB : ∀ d ∈ Is, B d ≤ C₄ * T ^ ε₀ * ((X ^ 4 + E ^ (3 / 4 : ℝ) * X * T ^ (1 / 2 : ℝ)) *
+      ((N : ℝ) / d) + E * ((N : ℝ) / d) ^ 2))
+    (hGs : ∀ d ∈ Is, G d ≤ Real.sqrt (A d) * Real.sqrt (B d)) :
+    ∑ d ∈ Is, G d ≤ K * T ^ ε * ((N : ℝ) * X ^ 3 + (N : ℝ) * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ) + Real.sqrt E * Real.sqrt X * (N : ℝ) ^ 2) := by
+  obtain ⟨target, htarget⟩ : ∃ target : ℝ, target = (N : ℝ) * X ^ 3 + (N : ℝ) * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ) + Real.sqrt E * Real.sqrt X * (N : ℝ) ^ 2 := ⟨_, rfl⟩
+  rw [← htarget]
+  have hNr : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN1
+  obtain ⟨L, hLdef⟩ : ∃ L : ℝ, L = 1 + Real.log N := ⟨_, rfl⟩
+  have hL0 : 0 ≤ L := by have := Real.log_nonneg hNr; linarith
+  have hTε₀ : (1 : ℝ) ≤ T ^ ε₀ := Real.one_le_rpow hT1 hε₀0.le
+  have hLT : L + 2 ≤ (3 + 1 / ε₀) * T ^ ε₀ := by
+    rw [hLdef]
+    have h1 : Real.log N ≤ Real.log T := Real.log_le_log (by linarith) hNle
+    have h2 : Real.log T ≤ T ^ ε₀ / ε₀ := Real.log_le_rpow_div hT0.le hε₀0
+    have h3 : T ^ ε₀ / ε₀ = (1 / ε₀) * T ^ ε₀ := by ring
+    nlinarith [hTε₀]
+  obtain ⟨a, hadef⟩ : ∃ a : ℝ, a = X ^ 2 * N + X * T + X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ) * N := ⟨_, rfl⟩
+  obtain ⟨b, hbdef⟩ : ∃ b : ℝ, b = X ^ 4 * N + E * T + E ^ (3 / 4 : ℝ) * X * T ^ (1 / 2 : ℝ) * N := ⟨_, rfl⟩
+  have hNn : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg _
+  have hTn : (0 : ℝ) ≤ T := hT0.le
+  have hXr : (0 : ℝ) ≤ X ^ (5 / 4 : ℝ) := Real.rpow_nonneg hX0 _
+  have hEr : (0 : ℝ) ≤ E ^ (3 / 4 : ℝ) := Real.rpow_nonneg hE0 _
+  have hTr : (0 : ℝ) ≤ T ^ (1 / 2 : ℝ) := Real.rpow_nonneg hTn _
+  have ha0 : 0 ≤ a := by
+    rw [hadef]
+    exact add_nonneg (add_nonneg (mul_nonneg (pow_nonneg hX0 2) hNn) (mul_nonneg hX0 hTn))
+      (mul_nonneg (mul_nonneg hXr hTr) hNn)
+  have hb0 : 0 ≤ b := by
+    rw [hbdef]
+    exact add_nonneg (add_nonneg (mul_nonneg (pow_nonneg hX0 4) hNn) (mul_nonneg hE0 hTn))
+      (mul_nonneg (mul_nonneg (mul_nonneg hEr hX0) hTr) hNn)
+  have hsumA : ∑ d ∈ Is, A d ≤ C₂ * T ^ ε₀ * ((L + 2) * a) := by
+    refine (sum_le_sum hA).trans ?_
+    rw [← mul_sum]
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    refine (sum_linear_quadratic_le hN1 hD0 (by positivity) (by positivity) hIs).trans ?_
+    have e : X * (N : ℝ) ^ 2 * (2 / D) = 2 * (X * T) := by rw [hDdef]; field_simp
+    rw [e]
+    rw [hadef, ← hLdef]
+    have p2 : 0 ≤ X ^ 2 * (N : ℝ) := mul_nonneg (pow_nonneg hX0 2) hNn
+    have p3 : 0 ≤ X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ) * (N : ℝ) :=
+      mul_nonneg (mul_nonneg hXr hTr) hNn
+    have e2 : (X ^ 2 + X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ)) * (N : ℝ) * L
+        = (X ^ 2 * (N : ℝ) + X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ) * (N : ℝ)) * L := by ring
+    rw [e2]
+    exact harmonic_weight_rearrange hL0 p2 (mul_nonneg hX0 hTn) p3
+  have hsumB : ∑ d ∈ Is, B d ≤ C₄ * T ^ ε₀ * ((L + 2) * b) := by
+    refine (sum_le_sum hB).trans ?_
+    rw [← mul_sum]
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    refine (sum_linear_quadratic_le hN1 hD0 (by positivity) (by positivity) hIs).trans ?_
+    have e : E * (N : ℝ) ^ 2 * (2 / D) = 2 * (E * T) := by rw [hDdef]; field_simp
+    rw [e]
+    rw [hbdef, ← hLdef]
+    have q2 : 0 ≤ X ^ 4 * (N : ℝ) := mul_nonneg (pow_nonneg hX0 4) hNn
+    have q3 : 0 ≤ E ^ (3 / 4 : ℝ) * X * T ^ (1 / 2 : ℝ) * (N : ℝ) :=
+      mul_nonneg (mul_nonneg (mul_nonneg hEr hX0) hTr) hNn
+    have e2 : (X ^ 4 + E ^ (3 / 4 : ℝ) * X * T ^ (1 / 2 : ℝ)) * (N : ℝ) * L
+        = (X ^ 4 * (N : ℝ) + E ^ (3 / 4 : ℝ) * X * T ^ (1 / 2 : ℝ) * (N : ℝ)) * L := by ring
+    rw [e2]
+    exact harmonic_weight_rearrange hL0 q2 (mul_nonneg hE0 hTn) q3
+  have halg := largeGcd_algebra_rpow hX1 hT1 hXE hE3 hXT hNT
+  calc ∑ d ∈ Is, G d ≤ ∑ d ∈ Is, Real.sqrt (A d) * Real.sqrt (B d) := sum_le_sum hGs
+    _ ≤ Real.sqrt (∑ d ∈ Is, A d) * Real.sqrt (∑ d ∈ Is, B d) :=
+        Real.sum_sqrt_mul_sqrt_le Is (fun d => hA0 d) (fun d => hB0 d)
+    _ ≤ Real.sqrt (C₂ * T ^ ε₀ * ((L + 2) * a)) * Real.sqrt (C₄ * T ^ ε₀ * ((L + 2) * b)) :=
+        mul_le_mul (Real.sqrt_le_sqrt hsumA) (Real.sqrt_le_sqrt hsumB) (Real.sqrt_nonneg _)
+          (Real.sqrt_nonneg _)
+    _ = Real.sqrt (C₂ * C₄) * (T ^ ε₀ * (L + 2)) * Real.sqrt (a * b) := by
+        have hTL : (0 : ℝ) ≤ T ^ ε₀ * (L + 2) :=
+          mul_nonneg (Real.rpow_nonneg hT0.le _) (by linarith)
+        rw [← Real.sqrt_mul (by positivity)]
+        rw [show C₂ * T ^ ε₀ * ((L + 2) * a) * (C₄ * T ^ ε₀ * ((L + 2) * b)) =
+            (C₂ * C₄) * ((T ^ ε₀ * (L + 2)) ^ 2 * (a * b)) by ring]
+        rw [Real.sqrt_mul (by positivity : (0 : ℝ) ≤ C₂ * C₄)
+            ((T ^ ε₀ * (L + 2)) ^ 2 * (a * b))]
+        rw [Real.sqrt_mul (by positivity : (0 : ℝ) ≤ (T ^ ε₀ * (L + 2)) ^ 2) (a * b)]
+        rw [Real.sqrt_sq hTL]
+        ring
+    _ ≤ Real.sqrt (C₂ * C₄) * (T ^ ε₀ * ((3 + 1 / ε₀) * T ^ ε₀)) * (6 * target) := by
+        have hab : Real.sqrt (a * b) ≤ 6 * target := by
+          rw [hadef, hbdef, htarget]; exact halg
+        gcongr
+    _ = K * T ^ ε * target := by rw [hK, hTε]; ring
+
 /-! ### Lemma 11.9 -/
 
 /-- **Guth–Maynard Lemma 11.9**, unconditionally: for every `ε > 0` there is `C ≥ 0` such that for
@@ -217,26 +326,28 @@ theorem guthMaynard_lemma119 {ε : ℝ} (hε : 0 < ε) :
   have hNr : (1 : ℝ) ≤ N := by exact_mod_cast hN1
   set X : ℝ := (W.card : ℝ) with hXdef
   set E : ℝ := (additiveEnergy W : ℝ) with hEdef
-  set target : ℝ := N * X ^ 3 + N * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ) +
-    Real.sqrt E * Real.sqrt X * (N : ℝ) ^ 2 with htarget
-  have htarget0 : 0 ≤ target := by positivity
+  obtain ⟨target, htarget⟩ : ∃ target : ℝ, target = N * X ^ 3 +
+      N * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ) +
+      Real.sqrt E * Real.sqrt X * (N : ℝ) ^ 2 := ⟨_, rfl⟩
+  rw [← htarget]
+  have htarget0 : 0 ≤ target := by rw [htarget]; positivity
   -- the empty set
   rcases W.eq_empty_or_nonempty with hW0 | hWne
   · have hz : ∀ v, lagSum W v = 0 := fun v => by simp [lagSum, hW0]
-    simp only [hz, norm_zero]
-    rw [sum_const_zero]
-    norm_num
+    simp only [hz, norm_zero, zero_pow (by norm_num : (3 : ℕ) ≠ 0), sum_const_zero]
     positivity
   have hX1 : 1 ≤ X := by
-    have : 1 ≤ W.card := card_pos.mpr hWne
-    exact_mod_cast this
+    have h1 : 1 ≤ W.card := card_pos.mpr hWne
+    rw [hXdef]
+    exact_mod_cast h1
   have hXE : X ^ 2 ≤ E := card_sq_le_additiveEnergy W
   have hE3 : E ≤ 3 * X ^ 3 := additiveEnergy_le_three_mul_card_pow hsep
   have hXT : X ≤ 2 * T := by
     have := card_le_of_separated_subset_Icc hT0.le hW hsep
     linarith
-  set D : ℝ := (N : ℝ) ^ 2 / T with hDdef
-  have hD0 : 0 < D := by positivity
+  obtain ⟨D, hDdef⟩ : ∃ D : ℝ, D = (N : ℝ) ^ 2 / T := ⟨_, rfl⟩
+  rw [← hDdef]
+  have hD0 : 0 < D := by rw [hDdef]; positivity
   have hNTD : (N : ℝ) / D = T / N := by rw [hDdef]; field_simp
   have hTN : T / N ≤ T ^ (1 / 4 : ℝ) := by
     rw [div_le_iff₀ (by linarith)]
@@ -272,7 +383,7 @@ theorem guthMaynard_lemma119 {ε : ℝ} (hε : 0 < ε) :
       have : (I.filter fun d => ¬ d ≤ N) ⊆ Finset.Ioc N (2 * N) := fun d hd => by
         obtain ⟨hdI, hdN⟩ := mem_filter.mp hd
         exact mem_Ioc.mpr ⟨by omega, (mem_Icc.mp hdI).2⟩
-      have h := card_le_card this
+      have h := Finset.card_le_card this
       rw [Nat.card_Ioc, show 2 * N - N = N by omega] at h
       exact_mod_cast h
     calc ∑ d ∈ I.filter (fun d => ¬ d ≤ N), G d ≤ ∑ _d ∈ I.filter (fun d => ¬ d ≤ N), X ^ 3 :=
@@ -326,68 +437,30 @@ theorem guthMaynard_lemma119 {ε : ℝ} (hε : 0 < ε) :
       _ ≤ _ := by gcongr
   have hGs : ∀ d ∈ Is, G d ≤ Real.sqrt (A d) * Real.sqrt (B d) := fun d _ =>
     sum_cube_le_sqrt_mul_sqrt W (multiplesBlock N d)
-  set L : ℝ := 1 + Real.log N
-  have hL0 : 0 ≤ L := by have := Real.log_nonneg hNr; linarith
-  have hLT : L + 2 ≤ (3 + 1 / ε₀) * T ^ ε₀ := by
-    have h1 : Real.log N ≤ Real.log T := Real.log_le_log (by linarith) hNle
-    have h2 : Real.log T ≤ T ^ ε₀ / ε₀ := Real.log_le_rpow_div hT0.le hε₀0
-    have h3 : T ^ ε₀ / ε₀ = (1 / ε₀) * T ^ ε₀ := by ring
-    nlinarith
-  set a : ℝ := X ^ 2 * N + X * T + X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ) * N
-  set b : ℝ := X ^ 4 * N + E * T + E ^ (3 / 4 : ℝ) * X * T ^ (1 / 2 : ℝ) * N
-  have ha0 : 0 ≤ a := by positivity
-  have hb0 : 0 ≤ b := by positivity
-  have hsumA : ∑ d ∈ Is, A d ≤ C₂ * T ^ ε₀ * ((L + 2) * a) := by
-    refine (sum_le_sum hA).trans ?_
-    rw [← mul_sum]
-    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    refine (sum_linear_quadratic_le hN1 hD0 (by positivity) (by positivity) hIs).trans ?_
-    have e : X * (N : ℝ) ^ 2 * (2 / D) = 2 * (X * T) := by rw [hDdef]; field_simp
-    rw [e]
-    have : 0 ≤ X * T := by positivity
-    have : 0 ≤ (X ^ 2 + X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ)) * N := by positivity
-    simp only [a]
-    nlinarith
-  have hsumB : ∑ d ∈ Is, B d ≤ C₄ * T ^ ε₀ * ((L + 2) * b) := by
-    refine (sum_le_sum hB).trans ?_
-    rw [← mul_sum]
-    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    refine (sum_linear_quadratic_le hN1 hD0 (by positivity) (by positivity) hIs).trans ?_
-    have e : E * (N : ℝ) ^ 2 * (2 / D) = 2 * (E * T) := by rw [hDdef]; field_simp
-    rw [e]
-    have : 0 ≤ E * T := by positivity
-    have : 0 ≤ (X ^ 4 + E ^ (3 / 4 : ℝ) * X * T ^ (1 / 2 : ℝ)) * N := by positivity
-    simp only [b]
-    nlinarith
-  have halg := largeGcd_algebra_rpow hX1 hT1 hXE hE3 hXT hNT
+  have hA0 : ∀ d : ℕ, 0 ≤ A d := fun d =>
+    Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => by positivity
+  have hB0 : ∀ d : ℕ, 0 ≤ B d := fun d =>
+    Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => by positivity
+  -- the block data is fixed from here on; keep the tactics from unfolding it
+  clear h115 h116
+  clear_value G I A B X E
   have hsmall : ∑ d ∈ Is, G d ≤ K * T ^ ε * target := by
-    calc ∑ d ∈ Is, G d ≤ ∑ d ∈ Is, Real.sqrt (A d) * Real.sqrt (B d) := sum_le_sum hGs
-      _ ≤ Real.sqrt (∑ d ∈ Is, A d) * Real.sqrt (∑ d ∈ Is, B d) :=
-          Real.sum_sqrt_mul_sqrt_le Is (fun d => by positivity) (fun d => by positivity)
-      _ ≤ Real.sqrt (C₂ * T ^ ε₀ * ((L + 2) * a)) * Real.sqrt (C₄ * T ^ ε₀ * ((L + 2) * b)) :=
-          mul_le_mul (Real.sqrt_le_sqrt hsumA) (Real.sqrt_le_sqrt hsumB) (Real.sqrt_nonneg _)
-            (Real.sqrt_nonneg _)
-      _ = Real.sqrt (C₂ * C₄) * (T ^ ε₀ * (L + 2)) * Real.sqrt (a * b) := by
-          rw [← Real.sqrt_mul (by positivity)]
-          rw [show C₂ * T ^ ε₀ * ((L + 2) * a) * (C₄ * T ^ ε₀ * ((L + 2) * b)) =
-              (C₂ * C₄) * ((T ^ ε₀ * (L + 2)) ^ 2 * (a * b)) by ring,
-            Real.sqrt_mul (by positivity), Real.sqrt_mul (by positivity),
-            Real.sqrt_sq (by positivity)]
-          ring
-      _ ≤ Real.sqrt (C₂ * C₄) * (T ^ ε₀ * ((3 + 1 / ε₀) * T ^ ε₀)) * (6 * target) := by
-          gcongr
-      _ = K * T ^ ε * target := by rw [hK, hTε]; ring
+    rw [htarget]
+    exact smallGcd_sum_le hε hε₀0 hTε hC₂ hC₄ hK hN1 hT1 hT0 hD0 hDdef hX1 hXE hE3 hXT
+      hNT hNle (by rw [hXdef]; exact Nat.cast_nonneg _)
+      (by rw [hEdef]; exact Nat.cast_nonneg _)
+      hIs hA0 hB0 hA hB hGs
   -- assemble
   have hsplit := sum_filter_add_sum_filter_not I (fun d => d ≤ N) G
   have hlarge' : (N : ℝ) * X ^ 3 ≤ T ^ ε * target := by
     have : (N : ℝ) * X ^ 3 ≤ target := by
       have : 0 ≤ N * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ) +
           Real.sqrt E * Real.sqrt X * (N : ℝ) ^ 2 := by positivity
-      simp only [target]; linarith
+      rw [htarget]; linarith
     calc (N : ℝ) * X ^ 3 ≤ target := this
       _ ≤ T ^ ε * target := le_mul_of_one_le_left htarget0 (Real.one_le_rpow hT1 hε.le)
   calc ∑ p ∈ (Finset.Ioc N (2 * N) ×ˢ Finset.Ioc N (2 * N)).filter
-          (fun p => (N : ℝ) ^ 2 / T ≤ ((Nat.gcd p.1 p.2 : ℕ) : ℝ)), ‖lagSum W ((p.1 : ℝ) / p.2)‖ ^ 3
+          (fun p => D ≤ ((Nat.gcd p.1 p.2 : ℕ) : ℝ)), F p
       ≤ ∑ d ∈ I, G d := hreg
     _ = ∑ d ∈ Is, G d + ∑ d ∈ I.filter (fun d => ¬ d ≤ N), G d := hsplit.symm
     _ ≤ K * T ^ ε * target + T ^ ε * target := add_le_add hsmall (hlarge.trans hlarge')

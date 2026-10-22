@@ -25,6 +25,22 @@ namespace RHTower.GuthMaynard
 
 noncomputable section
 
+/-- The final collection of Proposition 11.1 over abstract reals: a bootstrap bound at the half
+exponent is absorbed into the full one.  Split out to keep each declaration inside the default
+elaboration budget. -/
+theorem propElevenOne_collect {E K Tε Tε₁ Q₁ Q₂ Q₃ : ℝ} (hK : 0 ≤ K) (hTε : 0 ≤ Tε)
+    (hTle : Tε₁ ≤ Tε) (hQ₁ : 0 ≤ Q₁) (hQ₂ : 0 ≤ Q₂) (hQ₃ : 0 ≤ Q₃)
+    (hboot : E ≤ 2 * K * Tε₁ * (Q₃ + Q₂) + 9 * K ^ 2 * Tε * Q₁) :
+    E ≤ (2 * K + 9 * K ^ 2) * Tε * (Q₁ + Q₂ + Q₃) := by
+  have h23 : (0 : ℝ) ≤ Q₃ + Q₂ := by linarith
+  have hKK : 2 * K * Tε₁ ≤ 2 * K * Tε := by nlinarith
+  have hstep : 2 * K * Tε₁ * (Q₃ + Q₂) ≤ 2 * K * Tε * (Q₃ + Q₂) :=
+    mul_le_mul_of_nonneg_right hKK h23
+  have t1 : (0 : ℝ) ≤ 2 * K * Tε * Q₁ := mul_nonneg (mul_nonneg (by linarith) hTε) hQ₁
+  have t2 : (0 : ℝ) ≤ 9 * K ^ 2 * Tε * Q₂ := mul_nonneg (mul_nonneg (by positivity) hTε) hQ₂
+  have t3 : (0 : ℝ) ≤ 9 * K ^ 2 * Tε * Q₃ := mul_nonneg (mul_nonneg (by positivity) hTε) hQ₃
+  nlinarith [hboot, hstep, t1, t2, t3]
+
 /-- **Guth–Maynard Proposition 11.1** (bound for the energy), unconditionally: for every `ε > 0`
 there is `C ≥ 0` such that for `T ≥ 2`, `T^{3/4} ≤ N ≤ T`, `|b_n| ≤ 1` and every `1`-separated
 `W ⊆ [T₀, T₀ + T]` with `|D(t)| ≥ N^σ` on `W`:
@@ -45,7 +61,7 @@ theorem guthMaynard_prop111 {ε : ℝ} (hε : 0 < ε) :
   obtain ⟨C₉, hC₉, h119⟩ := guthMaynard_lemma119 hε₁0
   set c₄ := energyThirdMomentConst
   have hc₄ : 0 ≤ c₄ := energyThirdMomentConst_nonneg
-  set K := c₄ * (2 * C₈ + C₉)
+  set K := c₄ * (2 * C₈ + C₉) with hKdef
   have hK : 0 ≤ K := by positivity
   refine ⟨2 * K + 9 * K ^ 2, by positivity, fun N b σ W T T₀ hT hNT hNle hb hW hsep hD => ?_⟩
   have hT1 : 1 ≤ T := by linarith
@@ -85,8 +101,8 @@ theorem guthMaynard_prop111 {ε : ℝ} (hε : 0 < ε) :
   have hsE : 0 ≤ sE := Real.sqrt_nonneg _
   have hc : 0 ≤ (N : ℝ) ^ (-2 * σ) := by positivity
   have hTε₁ : 0 ≤ T ^ ε₁ := by positivity
-  set α : ℝ := K * T ^ ε₁ * (N : ℝ) ^ (-2 * σ) * (N * X ^ 3 + N * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ))
-  set β : ℝ := 3 * K * T ^ ε₁ * (N : ℝ) ^ (-2 * σ) * sX * (N : ℝ) ^ 2
+  set α : ℝ := K * T ^ ε₁ * (N : ℝ) ^ (-2 * σ) * (N * X ^ 3 + N * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ)) with hαdef
+  set β : ℝ := 3 * K * T ^ ε₁ * (N : ℝ) ^ (-2 * σ) * sX * (N : ℝ) ^ 2 with hβdef
   have hβ0 : 0 ≤ β := by positivity
   have hmain : E ≤ α + β * sE := by
     have hsum : ∑ p ∈ P, F p ≤ (2 * C₈ + C₉) * T ^ ε₁ *
@@ -110,7 +126,8 @@ theorem guthMaynard_prop111 {ε : ℝ} (hε : 0 < ε) :
       _ ≤ c₄ * (N : ℝ) ^ (-2 * σ) * ((2 * C₈ + C₉) * T ^ ε₁ *
             ((N * X ^ 3 + N * T ^ (1 / 4 : ℝ) * X ^ (21 / 8 : ℝ)) +
               3 * (sX * (N : ℝ) ^ 2) * sE)) := mul_le_mul_of_nonneg_left hsum (by positivity)
-      _ = α + β * sE := by simp only [α, β, K]; ring
+      _ = α + β * sE := by rw [hαdef, hβdef, hKdef]; ring
+  clear_value α β
   have hsq : sE ^ 2 ≤ 1 * E := by rw [one_mul, Real.sq_sqrt hE0]
   have hboot := Sieve.le_two_mul_add_sq_mul_of_le_add_of_sq_le_mul hE0 hsE hβ0 zero_le_one
     hmain hsq
@@ -127,30 +144,24 @@ theorem guthMaynard_prop111 {ε : ℝ} (hε : 0 < ε) :
   have hsX2 : sX ^ 2 = X := Real.sq_sqrt hX0
   have hα : 2 * α = 2 * K * T ^ ε₁ * ((N : ℝ) ^ (1 - 2 * σ) * X ^ 3 +
       X ^ (21 / 8 : ℝ) * T ^ (1 / 4 : ℝ) * (N : ℝ) ^ (1 - 2 * σ)) := by
-    simp only [α]; rw [← hpow1]; ring
+    rw [hαdef, ← hpow1]; ring
   have hβ2 : β ^ 2 * 1 = 9 * K ^ 2 * (T ^ ε₁) ^ 2 * X * (N : ℝ) ^ (4 - 4 * σ) := by
-    simp only [β]; rw [← hpow4, ← hsX2]; ring
+    rw [hβdef, ← hpow4, ← hsX2]; ring
   rw [hα, hβ2, hTT] at hboot
-  set Q₁ := X * (N : ℝ) ^ (4 - 4 * σ)
-  set Q₂ := X ^ (21 / 8 : ℝ) * T ^ (1 / 4 : ℝ) * (N : ℝ) ^ (1 - 2 * σ)
-  set Q₃ := X ^ 3 * (N : ℝ) ^ (1 - 2 * σ)
+  set Q₁ := X * (N : ℝ) ^ (4 - 4 * σ) with hQ₁def
+  set Q₂ := X ^ (21 / 8 : ℝ) * T ^ (1 / 4 : ℝ) * (N : ℝ) ^ (1 - 2 * σ) with hQ₂def
+  set Q₃ := X ^ 3 * (N : ℝ) ^ (1 - 2 * σ) with hQ₃def
   have hQ₁ : 0 ≤ Q₁ := by positivity
   have hQ₂ : 0 ≤ Q₂ := by positivity
   have hQ₃ : 0 ≤ Q₃ := by positivity
   have hTε : 0 ≤ T ^ ε := by positivity
-  calc E ≤ 2 * K * T ^ ε₁ * ((N : ℝ) ^ (1 - 2 * σ) * X ^ 3 + Q₂) + 9 * K ^ 2 * T ^ ε * X *
-        (N : ℝ) ^ (4 - 4 * σ) := hboot
-    _ ≤ 2 * K * T ^ ε * (Q₃ + Q₂) + 9 * K ^ 2 * T ^ ε * Q₁ := by
-        have e : (N : ℝ) ^ (1 - 2 * σ) * X ^ 3 = Q₃ := by simp only [Q₃]; ring
-        rw [e]
-        have : 9 * K ^ 2 * T ^ ε * X * (N : ℝ) ^ (4 - 4 * σ) = 9 * K ^ 2 * T ^ ε * Q₁ := by
-          simp only [Q₁]; ring
-        rw [this]
-        gcongr
-    _ ≤ (2 * K + 9 * K ^ 2) * T ^ ε * (Q₁ + Q₂ + Q₃) := by
-        nlinarith [mul_nonneg (mul_nonneg hK hTε) hQ₁, mul_nonneg (mul_nonneg hK hTε) hQ₂,
-          mul_nonneg (mul_nonneg hK hTε) hQ₃, mul_nonneg (mul_nonneg (sq_nonneg K) hTε) hQ₂,
-          mul_nonneg (mul_nonneg (sq_nonneg K) hTε) hQ₃]
+  have hTε₁0 : (0 : ℝ) ≤ T ^ ε₁ := by positivity
+  have e1 : (N : ℝ) ^ (1 - 2 * σ) * X ^ 3 = Q₃ := by rw [hQ₃def]; ring
+  have e3 : 9 * K ^ 2 * T ^ ε * X * (N : ℝ) ^ (4 - 4 * σ) = 9 * K ^ 2 * T ^ ε * Q₁ := by
+    rw [hQ₁def]; ring
+  clear_value Q₁ Q₂ Q₃
+  rw [e1, e3] at hboot
+  exact propElevenOne_collect hK hTε hTε₁ε hQ₁ hQ₂ hQ₃ hboot
 
 end
 

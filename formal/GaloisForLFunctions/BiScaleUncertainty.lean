@@ -625,3 +625,4 @@ mathematical objects, five fundamental mechanisms, and nine structural traps of 
 -/
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingDeLaValleePoussinRemainder
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingVinogradovKorobovRemainder
+import GaloisForLFunctions.BiScaleUncertainty.GradedPoleCompressionWidthCriterion

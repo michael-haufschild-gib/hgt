@@ -364,25 +364,28 @@ theorem sum_inv_lowZeros_le_harmonicWeight {X : ℝ} (hX1 : 1 ≤ X) :
     linarith
   gcongr
 
+/-- The inner near sum `Σ_{|γ| ≤ X⁴} d_ρ x^ρ` at a free window ratio `δ`, `η = εδ/16`. -/
+def asymInnerSumAt (δ ε X x : ℝ) : ℂ :=
+  ∑ q ∈ almostAllLowZeros X, multWindowCoeff δ (ε * δ / 16) (q.1 : ℂ) * (x : ℂ) ^ (q.1 : ℂ)
+
+/-- The outer near sum at a free window ratio `δ`. -/
+def asymOuterSumAt (δ ε X x : ℝ) : ℂ :=
+  ∑ q ∈ almostAllLowZeros X, multWindowCoeffOuter δ (ε * δ / 16) (q.1 : ℂ) * (x : ℂ) ^ (q.1 : ℂ)
+
 /-- The inner near sum `Σ_{|γ| ≤ X⁴} d_ρ x^ρ` at `δ = X^{θ-1}`, `η = εδ/16`. -/
-def asymInnerSum (θ ε X x : ℝ) : ℂ :=
-  ∑ q ∈ almostAllLowZeros X, multWindowCoeff (X ^ (θ - 1)) (ε * X ^ (θ - 1) / 16) (q.1 : ℂ)
-    * (x : ℂ) ^ (q.1 : ℂ)
+def asymInnerSum (θ ε X x : ℝ) : ℂ := asymInnerSumAt (X ^ (θ - 1)) ε X x
 
 /-- The outer near sum `Σ_{|γ| ≤ X⁴} e_ρ x^ρ` at `δ = X^{θ-1}`, `η = εδ/16`. -/
-def asymOuterSum (θ ε X x : ℝ) : ℂ :=
-  ∑ q ∈ almostAllLowZeros X, multWindowCoeffOuter (X ^ (θ - 1)) (ε * X ^ (θ - 1) / 16) (q.1 : ℂ)
-    * (x : ℂ) ^ (q.1 : ℂ)
+def asymOuterSum (θ ε X x : ℝ) : ℂ := asymOuterSumAt (X ^ (θ - 1)) ε X x
 
 /-- **The two-sided pointwise bound.**  For `x ∈ [X, 2X]`, `δ = X^{θ-1} ≤ 1/2` and
 `16(64 + 1152 Σ) ≤ ε² X^{2θ}`: `|ψ(x + δx) - ψ(x) - δx| ≤ (3ε/16)δx + |D(x)| + |E(x)|`. -/
-theorem abs_psi_short_sub_le {θ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) (hX : 4 ≤ X)
-    (hδ : X ^ (θ - 1) ≤ 1 / 2)
-    (hbig : 16 * (64 + 1152 * xiSpectralThreeHalvesMass) ≤ ε ^ 2 * X ^ (2 * θ))
+theorem abs_psi_short_sub_le_at {δ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) (hX : 4 ≤ X)
+    (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 2)
+    (hbig : 16 * (64 + 1152 * xiSpectralThreeHalvesMass) ≤ ε ^ 2 * (δ * X) ^ 2)
     (hx : x ∈ Set.Icc X (2 * X)) :
-    |Chebyshev.psi (x + X ^ (θ - 1) * x) - Chebyshev.psi x - X ^ (θ - 1) * x|
-      ≤ 3 * ε / 16 * (X ^ (θ - 1) * x) + ‖asymInnerSum θ ε X x‖ + ‖asymOuterSum θ ε X x‖ := by
-  set δ := X ^ (θ - 1) with hδdef
+    |Chebyshev.psi (x + δ * x) - Chebyshev.psi x - δ * x|
+      ≤ 3 * ε / 16 * (δ * x) + ‖asymInnerSumAt δ ε X x‖ + ‖asymOuterSumAt δ ε X x‖ := by
   set η := ε * δ / 16 with hηdef
   set Ms := xiSpectralThreeHalvesMass with hMs
   have hMs0 : 0 ≤ Ms := xiSpectralThreeHalvesMass_nonneg
@@ -390,13 +393,9 @@ theorem abs_psi_short_sub_le {θ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) 
   have hX1 : 1 ≤ X := by linarith
   have hx0 : 0 < x := by linarith [hx.1]
   have hx4 : 4 ≤ x := le_trans hX hx.1
-  have hδ0 : 0 < δ := by rw [hδdef]; positivity
   have hη0 : 0 < η := by rw [hηdef]; positivity
   have h2η : 2 * η ≤ δ := by rw [hηdef]; nlinarith
   have hη4 : η ≤ 1 / 4 := by rw [hηdef]; nlinarith
-  have hδX : δ * X = X ^ θ := by
-    rw [hδdef, ← Real.rpow_add_one hX0.ne']
-    ring_nf
   set F := almostAllLowZeros X with hF
   have hsq : Real.sqrt (X ^ 4) = X ^ 2 := by
     rw [show X ^ 4 = (X ^ 2) ^ 2 by ring]
@@ -465,14 +464,14 @@ theorem abs_psi_short_sub_le {θ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) 
   have hspD := hsD.sum_add_tsum_compl (s := F)
   have hspE := hsE.sum_add_tsum_compl (s := F)
   have hinD : ∑ q ∈ F, (x : ℂ) ^ (q.1 : ℂ) * multWindowCoeff δ η (q.1 : ℂ)
-      = asymInnerSum θ ε X x := by
-    rw [asymInnerSum]
+      = asymInnerSumAt δ ε X x := by
+    rw [asymInnerSumAt]
     exact Finset.sum_congr rfl fun q _ => mul_comm _ _
   have hinE : ∑ q ∈ F, (x : ℂ) ^ (q.1 : ℂ) * multWindowCoeffOuter δ η (q.1 : ℂ)
-      = asymOuterSum θ ε X x := by
-    rw [asymOuterSum]
+      = asymOuterSumAt δ ε X x := by
+    rw [asymOuterSumAt]
     exact Finset.sum_congr rfl fun q _ => mul_comm _ _
-  have hreD : -‖asymInnerSum θ ε X x‖ - ‖tD‖ ≤
+  have hreD : -‖asymInnerSumAt δ ε X x‖ - ‖tD‖ ≤
       (∑' q : XiZeroCopy, (x : ℂ) ^ (q.1 : ℂ) * multWindowCoeff δ η (q.1 : ℂ)).re := by
     rw [← hspD, Complex.add_re, ← hinD]
     have h1 := Complex.abs_re_le_norm (∑ q ∈ F, (x : ℂ) ^ (q.1 : ℂ) * multWindowCoeff δ η (q.1 : ℂ))
@@ -484,7 +483,7 @@ theorem abs_psi_short_sub_le {θ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) 
     rw [this]
     linarith
   have hreE : (∑' q : XiZeroCopy, (x : ℂ) ^ (q.1 : ℂ) * multWindowCoeffOuter δ η (q.1 : ℂ)).re
-      ≤ ‖asymOuterSum θ ε X x‖ + ‖tE‖ := by
+      ≤ ‖asymOuterSumAt δ ε X x‖ + ‖tE‖ := by
     rw [← hspE, Complex.add_re, ← hinE]
     have h1 := Complex.abs_re_le_norm
       (∑ q ∈ F, (x : ℂ) ^ (q.1 : ℂ) * multWindowCoeffOuter δ η (q.1 : ℂ))
@@ -507,18 +506,12 @@ theorem abs_psi_short_sub_le {θ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) 
     have e1 : 4 / (η * X ^ 2) + 72 * Ms / (η * X) = (4 / X + 72 * Ms) / (η * X) := by
       field_simp
     have e2 : η * X = ε * (δ * X) / 16 := by rw [hηdef]; ring
-    rw [e1, e2, hδX, div_le_iff₀ (by positivity)]
+    rw [e1, e2, div_le_iff₀ (by positivity)]
     have h4X : 4 / X ≤ 4 := by rw [div_le_iff₀ hX0]; linarith
-    have hXθ : 0 < X ^ θ := by positivity
-    have hsq2 : (X ^ θ) ^ 2 = X ^ (2 * θ) := by
-      rw [← Real.rpow_natCast, ← Real.rpow_mul hX0.le]
-      ring_nf
-    have key : 16 * (4 + 72 * Ms) * 16 ≤ ε ^ 2 * (X ^ θ) ^ 2 := by
-      rw [hsq2]
-      linarith
+    have key : 16 * (4 + 72 * Ms) * 16 ≤ ε ^ 2 * (δ * X) ^ 2 := by linarith
     calc 4 / X + 72 * Ms ≤ 4 + 72 * Ms := by linarith
-      _ ≤ ε / 16 * X ^ θ * (ε * X ^ θ / 16) := by
-          have e3 : ε / 16 * X ^ θ * (ε * X ^ θ / 16) = ε ^ 2 * (X ^ θ) ^ 2 / 256 := by ring
+      _ ≤ ε / 16 * (δ * X) * (ε * (δ * X) / 16) := by
+          have e3 : ε / 16 * (δ * X) * (ε * (δ * X) / 16) = ε ^ 2 * (δ * X) ^ 2 / 256 := by ring
           rw [e3]
           linarith
   have hηx : 2 * η * x = ε / 8 * (δ * x) := by rw [hηdef]; ring
@@ -529,12 +522,31 @@ theorem abs_psi_short_sub_le {θ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) 
   constructor
   · -- lower side
     have h1 : (δ - 2 * η) * x = δ * x - 2 * η * x := by ring
-    have hE0 := norm_nonneg (asymOuterSum θ ε X x)
+    have hE0 := norm_nonneg (asymOuterSumAt δ ε X x)
     linarith
   · -- upper side
     have h1 : (δ + 2 * η) * x = δ * x + 2 * η * x := by ring
-    have hD0 := norm_nonneg (asymInnerSum θ ε X x)
+    have hD0 := norm_nonneg (asymInnerSumAt δ ε X x)
     linarith
+
+
+/-- **The two-sided pointwise bound at `δ = X^{θ-1}`.** -/
+theorem abs_psi_short_sub_le {θ ε X x : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) (hX : 4 ≤ X)
+    (hδ : X ^ (θ - 1) ≤ 1 / 2)
+    (hbig : 16 * (64 + 1152 * xiSpectralThreeHalvesMass) ≤ ε ^ 2 * X ^ (2 * θ))
+    (hx : x ∈ Set.Icc X (2 * X)) :
+    |Chebyshev.psi (x + X ^ (θ - 1) * x) - Chebyshev.psi x - X ^ (θ - 1) * x|
+      ≤ 3 * ε / 16 * (X ^ (θ - 1) * x) + ‖asymInnerSum θ ε X x‖ + ‖asymOuterSum θ ε X x‖ := by
+  have hX0 : (0 : ℝ) < X := by linarith
+  have hδX : X ^ (θ - 1) * X = X ^ θ := by
+    rw [← Real.rpow_add_one hX0.ne']
+    ring_nf
+  have hsq2 : (X ^ θ) ^ 2 = X ^ (2 * θ) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hX0.le]
+    ring_nf
+  have hbig' : 16 * (64 + 1152 * xiSpectralThreeHalvesMass)
+      ≤ ε ^ 2 * (X ^ (θ - 1) * X) ^ 2 := by rw [hδX, hsq2]; exact hbig
+  exact abs_psi_short_sub_le_at hε hε1 hX (by positivity) hδ hbig' hx
 
 /-- The coefficient bound shared by the inner and outer sums:
 `|c_ρ|² X^{2β-2} ≤ 25δ² · zeroShortWeight(X², (192/(5ε))(X²)^{1-θ}, ρ)` whenever `|c_ρ| ≤ 5δ` and

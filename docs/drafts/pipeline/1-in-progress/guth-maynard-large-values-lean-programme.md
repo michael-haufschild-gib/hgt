@@ -1232,3 +1232,280 @@ Open for this brick:
    for `δ = X^{-13/15+ε/2}` (split `[x,x+y]` into `⌈y/(δx)⌉` blocks of length `δx` and apply
    Cauchy–Schwarz).  With that one inequality, `exists_volume_psi_almost_all_short_le` gives the
    literal Corollary 1.4 for every fixed `y ≥ X^{2/15+ε}`.
+
+### Lean (2026-10-22): the chain is closed — Theorem 1.1, the 30/13 density and 17/30 are unconditional
+
+`RHTower.GuthMaynard.guthMaynardLargeValuesBound_holds : GuthMaynardLargeValuesBound` is proved with no
+hypotheses, axioms `[propext, Classical.choice, Quot.sound]`. Every downstream result is therefore
+unconditional. New module `RHTower/PrimeShortIntervalsSeventeenThirtiethsUnconditional.lean`:
+* `exists_zeroHeightBox_ncard_le_thirtyThirteenths` — for `0 < ε ≤ 1` there are `D, B, T₀` with
+  `#(zeroHeightBox σ T) ≤ D (1 + log T)^B T^{(30/13+ε)(1−σ)}` for all `T ≥ T₀` and all `σ ∈ [1/2, 1]`.
+* `tendsto_psi_short_window_div_seventeenThirtieths` — `ψ(x + x^α) − ψ(x) ∼ x^α` for `17/30 < α < 1`.
+* `exists_theta_window_lower_seventeenThirtieths`, `eventually_exists_prime_short_interval_seventeenThirtieths`
+  — a prime in `(x, x + x^α]` for all large `x`.
+All four audited `[propext, Classical.choice, Quot.sound]`.
+
+The final assembly is `RHTower/Sieve/GuthMaynardTheoremOneOne.lean`: `propSixOneBound_zeta`
+(Proposition 6.1 for ζ at `(j,k) = (4,2)`, from `prop61_zeta` with `ε/9`, the separation weakened by
+`IsSeparated.mono`, natural powers read as real powers, empty point set by `gmS2_empty`) and
+`propElevenTwoBound_zeta` (Proposition 11.2, `T^ε`-separated implies `1`-separated, the `T^{-100}` tail
+absorbed since the bracket is at least one on a nonempty set, empty case by `allNonzeroCubicSum_empty`),
+fed to `guthMaynardLargeValuesBound_of_S_bounds`.
+
+**Repairs made to land it** (all of them replacing, not raising, the elaboration budget — no
+`set_option maxHeartbeats` anywhere in the programme):
+* `GuthMaynardPropSixOneZeta.lean`: the nine `set` bindings became opaque `obtain ⟨x, hx⟩ : ∃ x, x = e`
+  locals, which removed two `isDefEq`/tactic timeouts; three fold-back sites repaired.
+* `GuthMaynardEnergyLargeGcd.lean`: same conversion for the large compounds, `clear_value` for the block
+  data once it is fixed, `clear` for the two large unused hypotheses, `positivity` replaced by explicit
+  `mul_nonneg`/`add_nonneg` chains, the two slow `nlinarith` calls replaced by the new
+  `harmonic_weight_rearrange`, and the small-gcd tail extracted as `smallGcd_sum_le` so that no single
+  declaration exceeds the default budget.
+* `GuthMaynardPropElevenOne.lean`: `set … with` equations named and used instead of `simp only [x]`,
+  `clear_value` after the facts are established, and the final arithmetic extracted as
+  `propElevenOne_collect`.
+* `GuthMaynardPropElevenTwo.lean`: a power identity reproved without `conv_rhs`, and the square-root
+  subadditivity split into two explicit steps.
+
+Nineteen §6 and §11 modules plus the two new ones were wired into `RHTower.lean`.
+Open: Heath-Brown's exact three-term theorem in a neighbourhood of the self-dual length `T^{1/2}`
+(not used by this chain), the paper's normalization of Corollary 1.4, and the full Chen–Gupta–Li
+identity for `Σ_{m≠0} I_m`.
+
+### Closing verification (2026-10-22)
+
+* **The block reduction for a fixed window is formalized**: `RHTower/ShortIntervalBlockReduction.lean`,
+  `fixedIncr_eq_sum_sub_bdry` (the geometric-grid telescope, algebraic), `sq_fixedIncr_le`
+  (Cauchy–Schwarz), `integral_comp_mul_le` (a dilated block integral is at most the one over `[X,3X]`)
+  and `integral_sq_fixedIncr_le` (`∫_X^{2X} g² ≤ 2J² ∫_X^{3X} f² + 2∫ boundary²`). That is exactly the
+  inequality the Corollary 1.4 brick recorded as missing, which converts the corpus's multiplicative
+  almost-all layer to a fixed window. Compiled, wired, axioms standard.
+* **The Chen–Gupta–Li identity for `Σ_{m≠0} I_m` is NOT needed.**
+  `guthMaynardLargeValuesBound_holds` compiles and audits clean, so its dependency tree is closed;
+  the identity was an alternative route the final proof does not take.
+* **Umbrella integrity**: all 28045 imports of `RHTower.lean` resolve to existing sources, every module
+  wired in this session has an olean, and the nine duplicate import lines are pre-existing and outside
+  this programme.
+* **Lint gate**: two errors in the whole tree, both pre-existing research leaf modules at the package
+  root (`DilutionCrystallizationPincer.lean`, `SmoothBernoulliPoleCalibration.lean`, Project Argon,
+  another agent's area umbrellas wired into `MainTheorems.lean`). None in this programme. No `sorry`,
+  `admit`, `axiom`, `native_decide`, and no `set_option` of any kind beyond `autoImplicit false` in any
+  of the 220 files touched this session.
+* **Correction to the duplication audit**: of the three collisions earlier called genuine duplicates,
+  closer comparison shows all three are near-duplicates with different hypotheses, and in one case
+  (`integral_comp_affine`) the programme's version is strictly more general than the corpus one
+  (no positivity hypothesis, signed scale). Deleting any of them would lose generality; they remain as
+  name collisions in distinct namespaces.
+
+Genuinely open, none of it used by the 30/13 chain: Heath-Brown's exact three-term theorem in a
+multiplicative neighbourhood of the self-dual length `T^{1/2}`, and the assembly of Corollary 1.4 in the
+paper's fixed-`y` normalization on top of the block reduction above.
+
+### Lean (2026-10-22): the block reduction, instantiated at `ψ`
+
+`RHTower/ShortIntervalBlockReductionPsi.lean` (compiled clean, wired, axioms standard) closes the
+integrability side of the fixed-window reduction:
+* `measurable_psi`, `measurable_multIncr_psi`, `measurable_fixedIncr_psi`, `measurable_bdryIncr_psi`
+  (`ψ` is monotone, hence measurable; the three increments are built from it by affine substitution);
+* `intervalIntegrable_sq_of_bound` (a measurable function with a uniform bound on `[a,b]` has an
+  integrable square there);
+* `abs_multIncr_psi_le`, `abs_fixedIncr_psi_le`, `abs_bdryIncr_psi_le` (monotonicity and
+  `Chebyshev.psi_nonneg` give the uniform bounds), hence the three integrability lemmas;
+* **`integral_sq_fixedIncr_psi_le`** — for `0 < δ`, `0 < X`, `0 ≤ y` and `2(1+δ)^J ≤ 3`:
+  `∫_X^{2X} (ψ(x+y) − ψ(x) − y)² ≤ 2J² ∫_X^{3X} (ψ(u+δu) − ψ(u) − δu)² + 2 ∫_X^{2X} (boundary)²`.
+
+That is Guth–Maynard's block/Cauchy–Schwarz reduction for the Chebyshev function, with every
+integrability hypothesis discharged. What now remains for Corollary 1.4 in the paper's fixed-`y`
+normalization is the second moment of the MULTIPLICATIVE increment on `[X, 3X]`, which is the only
+missing input: the corpus's almost-all layer computes it internally but exports only the Chebyshev
+(measure) form. The needed L² ingredient is exported separately as
+`RHTower.integral_norm_sq_zeroSum_div_cube_le` (`∫_X^{2X} ‖Σ_q c_q x^ρ‖²/x³ ≤ 4W Σ_q ‖c_q‖² X^{2Re ρ−2}`,
+`RHTower/ZetaZeroSumMeanSquare.lean`), so the remaining step is to square the pointwise bound
+`abs_psi_short_sub_le`, integrate it against that lemma, and split `[X,3X]` into two dyadic ranges.
+
+### Lean (2026-10-22): the plain second moment of a zero sum
+
+`RHTower/ZetaZeroSumMeanSquarePlain.lean`, compiled clean, wired, axioms standard:
+`integral_norm_sq_zeroSum_le` — for `0 < X`, a finite set `F` of zero copies, coefficients `c` and a
+harmonic weight bound `W`:
+`∫_X^{2X} ‖Σ_{q∈F} c_q x^ρ‖² ≤ (2X)³ · 4W · Σ_{q∈F} ‖c_q‖² X^{2Re ρ − 2}`,
+together with `continuousOn_zeroSum`. This is the cube-weighted mean square of
+`ZetaZeroSumMeanSquare` with the weight removed, which is the form the block reduction needs.
+
+Remaining for Corollary 1.4 in the paper's fixed-`y` normalization, in order:
+1. a free-`δ` version of the two-sided pointwise bound (the corpus's `abs_psi_short_sub_le` ties
+   `δ = X^{θ−1}` to the outer scale, but the block reduction needs one fixed `δ` across `[X, 3X]`;
+   the underlying `psi_mul_window_le` already has `δ` free, so this mirrors `abs_psi_short_sub_le`
+   with `δ` as a parameter);
+2. the L² lift of that pointwise bound against `integral_norm_sq_zeroSum_le`, giving
+   `∫_X^{2X} (ψ(u+δu) − ψ(u) − δu)²`;
+3. the same on `[2X, 4X]`, hence on `[X, 3X]` by monotonicity of the integral of a nonnegative
+   integrand;
+4. `integral_sq_fixedIncr_psi_le` and Chebyshev's inequality.
+
+### Lean (2026-10-22): free window ratio, and the multiplicative second moment
+
+Steps 1 and 2 of the Corollary 1.4 route are done.
+
+* **Step 1, a refactor rather than a copy.** `PrimeAlmostAllShortIntervalsAsymptotic.lean` tied its
+  window ratio to the outer scale (`δ = X^{θ−1}`), which the block reduction cannot use because it
+  needs one ratio across `[X, 3X]`. The pointwise bound is now stated with `δ` free as
+  `abs_psi_short_sub_le_at` (hypotheses `0 < δ`, `δ ≤ 1/2`,
+  `16(64 + 1152 Σ) ≤ ε²(δX)²`), with `asymInnerSumAt`/`asymOuterSumAt` as the free-ratio near sums;
+  `asymInnerSum`/`asymOuterSum` and `abs_psi_short_sub_le` survive unchanged as specialisations at
+  `δ = X^{θ−1}`, so `PrimeAlmostAllShortIntervals.lean` and
+  `PrimeAlmostAllShortIntervalsTwoFifteenths.lean` still compile untouched (verified). The scale
+  identity `X^{θ−1}·X = X^θ` was used in exactly one place and now lives in the wrapper.
+* **Step 2.** `RHTower/PrimeMultWindowSecondMoment.lean`: `multIncr_psi_eq`,
+  `sq_add_add_le_three`, `sq_multIncr_psi_le` (the pointwise square bound), `integral_sq_id`, and
+  **`integral_sq_multIncr_psi_le`** — for `0 < δ ≤ 1/2`, `4 ≤ X` and the size hypothesis,
+  `∫_X^{2X} (ψ(u+δu) − ψ(u) − δu)² ≤ 3((3ε/16)²δ²·7X³/3 + (2X)³·4W·S_D + (2X)³·4W·S_E)`
+  with `W = almostAllHarmonicWeight X` and `S_D`, `S_E` the coefficient sums of the two near sums.
+  Compiled clean, wired, axioms standard.
+
+Steps 3 and 4 remain: the same bound on `[2X, 4X]`, hence on `[X, 3X]`, and then
+`integral_sq_fixedIncr_psi_le` with Chebyshev's inequality.
+
+### Lean (2026-10-22): the fixed-window second moment — the block reduction is complete
+
+Steps 3 and 4 of the Corollary 1.4 route are done, in `RHTower/PrimeMultWindowSecondMoment.lean`:
+
+* `multWindowMoment δ ε X` names the dyadic-range bound (explicit term plus the two near-sum mean
+  squares), and `integral_sq_multIncr_psi_le` is restated against it.
+* `integral_sq_multIncr_psi_tripled_le` — `∫_X^{3X} (ψ(u+δu) − ψ(u) − δu)² ≤ M(X) + M(2X)`, since
+  `[X,3X] ⊆ [X,2X] ∪ [2X,4X]` and the integrand is nonnegative (`integral_add_adjacent_intervals`
+  plus `integral_mono_interval`). The size hypothesis at the scale `2X` follows from the one at `X`.
+* **`integral_sq_fixedIncr_psi_bound`** — for `0 < δ ≤ 1/2`, `4 ≤ X`, `0 ≤ y` and `2(1+δ)^J ≤ 3`:
+  `∫_X^{2X} (ψ(x+y) − ψ(x) − y)² ≤ 2J²(M(X) + M(2X)) + 2∫_X^{2X} (boundary)²`.
+
+That is Guth–Maynard's block/Cauchy–Schwarz reduction fully assembled for the Chebyshev function
+with its multiplicative input supplied: the bridge from the corpus's multiplicative almost-all layer
+to a window of fixed length is complete and unconditional. All three results audit
+`[propext, Classical.choice, Quot.sound]`.
+
+What remains for Corollary 1.4 as the paper states it is the same final analysis that
+`volume_psi_short_asymptotic_le` performs for the multiplicative window — choosing `δ` and `J`,
+bounding the near-sum coefficient sums by `zeroShortWeight` through
+`sq_norm_mul_rpow_le_zeroShortWeight`, feeding in the density estimate, and applying Chebyshev — now
+run against `integral_sq_fixedIncr_psi_bound` instead. No new mathematics and no further refactoring.
+
+### Lean (2026-10-22): the boundary-term design problem, solved
+
+The obstruction recorded above — a single block count cannot serve a whole dyadic range, so the
+boundary window is not short at the top of it — is resolved by separating the two roles the block
+count plays.
+
+* `sq_fixedIncr_le_of_le` (`ShortIntervalBlockReduction.lean`): the telescope keeps the POINTWISE
+  count `J` reaching past `x + y`, while Cauchy–Schwarz is applied with any uniform `J₀ ≥ J`, which
+  is legitimate because the summands are squares (`Finset.sum_le_sum_of_subset_of_nonneg`). So the
+  block sum is taken at one `J₀` for the whole range and the boundary at the pointwise `J`.
+* `abs_bdryIncr_psi_le_multIncr` (`ShortIntervalBlockReductionPsi.lean`): if the last grid point lies
+  in `[x+y, (x+y)(1+δ)]` — which the minimal `J` guarantees, since `x_{J−1} < x + y` forces
+  `x_J < (x+y)(1+δ)` — then monotonicity of `ψ` gives
+  `|boundary| ≤ |ψ((x+y)(1+δ)) − ψ(x+y) − δ(x+y)| + δ(x+y)`,
+  i.e. the boundary is itself a multiplicative increment at `x + y` plus the overshoot. The block
+  count has disappeared from the boundary term.
+
+Consequence: the boundary second moment is a multiplicative second moment over the translated range
+`[X+y, 2X+y]`, which for `y ≤ X` sits inside `[X, 4X]` and is therefore covered by
+`integral_sq_multIncr_psi_le` at the scales `X` and `2X`, exactly as the tripled range was. Both
+results audit `[propext, Classical.choice, Quot.sound]`.
+
+### Lean (2026-10-22): the near-sum coefficients at a free window ratio
+
+`RHTower/PrimeMultWindowCoefficientBound.lean`, compiled, wired, axioms standard.
+
+`sq_norm_mul_rpow_le_zeroShortWeight` is stated with the window ratio in the form `X^{θ−1}`. Rather
+than generalise it, note that every positive ratio IS of that form: `ratioExponent δ X = 1 + log δ /
+log X` satisfies `rpow_ratioExponent_sub_one : X^{θ−1} = δ` for `1 < X`, `0 < δ`, and
+`rpow_ratioExponent_weight : (X²)^{2((1−θ)/2)} = δ^{−2}`, so the weight parameter is `192/(5εδ²)`.
+Specialising there gives
+* `sum_sq_norm_multWindowCoeff_le` and `sum_sq_norm_multWindowCoeffOuter_le` — each near-sum
+  coefficient sum is at most `25δ²` times `Σ_q zeroShortWeight(X², 192/(5εδ²), ρ)`;
+* `almostAllHarmonicWeight_nonneg`;
+* **`multWindowMoment_le`** — the dyadic second moment of the multiplicative increment is at most
+  `3((3ε/16)²δ²·7X³/3 + 2(2X)³·4W·25δ²·Z)`, i.e. entirely in terms of the zero weight.
+
+With `integral_sq_multIncr_psi_tripled_le`, `sq_fixedIncr_le_of_le` and
+`abs_bdryIncr_psi_le_multIncr`, every ingredient of Corollary 1.4 is now expressed through
+`zeroShortWeight`, which is the quantity the density estimate controls. What remains is choosing
+`δ` and the block count against a target saving and applying Chebyshev.
+
+### Lean (2026-10-22): Chebyshev for the fixed-length window
+
+`RHTower/PrimeFixedWindowChebyshev.lean`, compiled, wired, axioms standard:
+* `volume_lt_abs_le_integral_sq` — Chebyshev's inequality on an interval: the measure of
+  `{x ∈ [a,b] : r < |f x|}` is at most `(∫_a^b f²)/r²`, for `f²` interval integrable.
+* **`volume_fixedIncr_psi_gt_le`** — if `∫_X^{2X} (ψ(x+y) − ψ(x) − y)² ≤ S` then
+  `vol {x ∈ [X,2X] : r < |ψ(x+y) − ψ(x) − y|} ≤ S/r²`.
+
+Corollary 1.4's chain is now built end to end in Lean: block decomposition with the count pointwise
+in the telescope and uniform in Cauchy–Schwarz; the boundary increment reduced to a multiplicative
+one; the multiplicative second moment on a dyadic and on the tripled range; the fixed-window second
+moment; the near-sum coefficients expressed through `zeroShortWeight`; and Chebyshev.
+
+The one remaining lemma for the paper's statement is the existence of the pointwise block count:
+for `0 < X ≤ x ≤ 2X`, `0 ≤ y`, `0 < δ`, the minimal `J` with `x(1+δ)^J ≥ x + y` satisfies
+`x + y ≤ x(1+δ)^J ≤ (x+y)(1+δ)` (minimality gives `x_{J−1} < x+y`, hence `x_J < (x+y)(1+δ)`), and is
+bounded by the uniform `J₀` minimal with `X(1+δ)^{J₀} ≥ 2X + y`. With it, `sq_fixedIncr_le_of_le` and
+`abs_bdryIncr_psi_le_multIncr` give a pointwise bound whose integrand no longer depends on `J`, and
+the numeric choice of `δ` and `J₀` against a target saving completes the corollary.
+
+### Lean (2026-10-22): the pointwise block count, and the uniform pointwise bound
+
+The last structural lemma is proved, in `RHTower/ShortIntervalBlockReduction.lean` and
+`…Psi.lean`, both axiom-clean:
+
+* `exists_gridPt_ge` — the geometric grid reaches past `x + y` (`pow_unbounded_of_one_lt`).
+* **`exists_blockCount`** — the LEAST such `J` satisfies `x + y ≤ x(1+δ)^J ≤ (x+y)(1+δ)` and is
+  minimal among all counts that reach. The overshoot bound is exactly minimality: `x_{J−1} < x + y`
+  forces `x_J < (x+y)(1+δ)`; the case `J = 0` forces `y = 0`.
+* **`sq_fixedIncr_psi_le_uniform`** — for `x ∈ [X, 2X]` and any uniform `J₀` with
+  `X + y ≤ X(1+δ)^{J₀}` (so that `J(x) ≤ J₀`, since `x ≥ X` gives `x + y ≤ x(1+δ)^{J₀}`):
+  `(ψ(x+y) − ψ(x) − y)² ≤ 2J₀ Σ_{j<J₀} (ψ(x_j(1+δ)) − ψ(x_j) − δx_j)²
+      + 4(ψ((x+y)(1+δ)) − ψ(x+y) − δ(x+y))² + 4δ²(x+y)²`.
+  The block count has left the boundary term entirely: the integrand depends only on `δ` and `J₀`.
+
+Every lemma of Guth–Maynard's Corollary 1.4 route is now in Lean and unconditional. What is left is
+arithmetic bookkeeping: integrate this pointwise bound term by term (each piece is already known
+integrable, and the middle term is a multiplicative second moment over the translated range
+`[X+y, 2X+y] ⊆ [X, 4X]`), then choose `δ` and `J₀` against the target saving and apply
+`volume_fixedIncr_psi_gt_le`.
+
+### Lean (2026-10-22): Corollary 1.4 in the fixed-length normalization — assembled
+
+`RHTower/PrimeFixedWindowSecondMoment.lean`, compiled, wired, axioms standard:
+* `multWindowMomentTotal δ ε X` — the three dyadic multiplicative moments covering `[X, 8X]`;
+  `integral_sq_multIncr_psi_sub_le` (in the second-moment module) bounds the moment over any
+  subrange of `[X, 8X]` by it.
+* `integral_sq_multIncr_block_le` — one dilated block integral, via
+  `integral_comp_mul_right` and `(1+δ)^{-j} ≤ 1`.
+* **`integral_sq_fixedIncr_psi_total_le`** — integrating `sq_fixedIncr_psi_le_uniform` term by term:
+  `∫_X^{2X} (ψ(x+y) − ψ(x) − y)² ≤ (2J₀² + 4)·MTotal + 4δ²X(2X+y)²`, for `0 ≤ y ≤ X`,
+  `X + y ≤ X(1+δ)^{J₀}` and `(1+δ)^{J₀} ≤ 4`. The shifted term uses `integral_comp_add_right`
+  (the range `[X+y, 2X+y]` sits in `[X, 8X]`); the polynomial term is explicit.
+* **`volume_psi_fixed_window_le`** — Corollary 1.4 in the fixed-length normalization:
+  `vol {x ∈ [X,2X] : r < |ψ(x+y) − ψ(x) − y|} ≤ ((2J₀²+4)·MTotal + 4δ²X(2X+y)²)/r²`.
+
+Every quantity on the right is expressed through `zeroShortWeight` by `multWindowMoment_le`, which is
+exactly what a zero-density estimate controls. The route is complete: what is left is the numeric
+choice of `δ`, `J₀` and `r` against a target saving, which is arithmetic in the already-proved
+inequalities and needs no further lemma.
+
+### Lean (2026-10-22): the block parameters, supplied
+
+`exists_blockParams` — for `0 ≤ y ≤ X` and `0 < δ ≤ 1/2` the minimal count of `exists_blockCount`
+already satisfies both hypotheses of the fixed-window bound: it reaches past `X + y`, and its
+overshoot gives `X(1+δ)^{J₀} ≤ (X+y)(1+δ) ≤ 3X`, hence `(1+δ)^{J₀} ≤ 3 ≤ 4`.
+
+`exists_volume_psi_fixed_window_le` — Corollary 1.4 in the fixed-length normalization with no
+hypothesis on the block count remaining; it is produced from `X`, `y` and `δ`:
+`∃ J₀, vol {x ∈ [X,2X] : r < |ψ(x+y) − ψ(x) − y|}
+   ≤ ((2J₀²+4)·MTotal(δ,ε,X) + 4δ²X(2X+y)²)/r²`,
+for `0 < ε ≤ 1`, `4 ≤ X`, `0 < δ ≤ 1/2`, `0 ≤ y ≤ X`, `0 < r` and the size hypothesis. Both audit
+`[propext, Classical.choice, Quot.sound]`.
+
+With `multWindowMoment_le` expressing `MTotal` through `zeroShortWeight`, the only freedom left is
+the choice of `δ`, `ε` and `r` against a target saving, and a zero-density input making the weight
+sum small. There is no remaining hypothesis to discharge and no remaining lemma to prove on this
+route.

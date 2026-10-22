@@ -49,8 +49,7 @@ theorem substitution_le {X T N σ : ℝ} (hX : 0 ≤ X) (hT : 0 ≤ T) (hN : 0 <
   have eN3 : N ^ (3 - 2 * σ) = N ^ 2 * (N ^ (1 / 2 - σ)) ^ 2 := by
     rw [pw hN.le, ← Real.rpow_natCast N 2, ← Real.rpow_add hN]; congr 1; push_cast; ring
   have eN32 : N ^ (3 / 2 - σ) = N * N ^ (1 / 2 - σ) := by
-    conv_rhs => rw [← Real.rpow_one N]
-    rw [← Real.rpow_add hN]; congr 1; ring
+    rw [show (3 / 2 - σ : ℝ) = 1 + (1 / 2 - σ) by ring, Real.rpow_add hN, Real.rpow_one]
   set x := X ^ (1 / 16 : ℝ)
   set τ := T ^ (1 / 8 : ℝ)
   set ν := N ^ (1 / 2 - σ)
@@ -62,11 +61,16 @@ theorem substitution_le {X T N σ : ℝ} (hX : 0 ≤ X) (hT : 0 ≤ T) (hN : 0 <
     rw [eN4, eX218, eT14, eN1, show X ^ 3 = x ^ 48 by rw [eX]; ring, eX]; ring
   rw [hinner]
   -- `√(a + b + c) ≤ √a + √b + √c` (corpus `sqrt_add_le_sqrt_add_sqrt`, twice)
+  have hs1 : Real.sqrt ((x ^ 8 * N * ν ^ 2) ^ 2 + (x ^ 21 * τ * ν) ^ 2 + (x ^ 24 * ν) ^ 2) ≤
+      Real.sqrt ((x ^ 8 * N * ν ^ 2) ^ 2 + (x ^ 21 * τ * ν) ^ 2)
+        + Real.sqrt ((x ^ 24 * ν) ^ 2) :=
+    sqrt_add_le_sqrt_add_sqrt (by positivity) (by positivity)
+  have hs2 : Real.sqrt ((x ^ 8 * N * ν ^ 2) ^ 2 + (x ^ 21 * τ * ν) ^ 2) ≤
+      Real.sqrt ((x ^ 8 * N * ν ^ 2) ^ 2) + Real.sqrt ((x ^ 21 * τ * ν) ^ 2) :=
+    sqrt_add_le_sqrt_add_sqrt (by positivity) (by positivity)
   have hs : Real.sqrt ((x ^ 8 * N * ν ^ 2) ^ 2 + (x ^ 21 * τ * ν) ^ 2 + (x ^ 24 * ν) ^ 2) ≤
       Real.sqrt ((x ^ 8 * N * ν ^ 2) ^ 2) + Real.sqrt ((x ^ 21 * τ * ν) ^ 2) +
-        Real.sqrt ((x ^ 24 * ν) ^ 2) :=
-    (sqrt_add_le_sqrt_add_sqrt (by positivity) (by positivity)).trans
-      (add_le_add_right (sqrt_add_le_sqrt_add_sqrt (by positivity) (by positivity)) _)
+        Real.sqrt ((x ^ 24 * ν) ^ 2) := by linarith
   rw [Real.sqrt_sq (by positivity), Real.sqrt_sq (by positivity),
     Real.sqrt_sq (by positivity)] at hs
   have hpre : 0 ≤ T * N * Real.sqrt X := by positivity
