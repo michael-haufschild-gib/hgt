@@ -331,7 +331,7 @@ theorem fullAngularRiemannKernel_mixed_green (q : XiZeroCopy) (branch : Bool)
 private theorem physicalEventDir_smooth {phi : ℝ × ℝ → ℂ}
     (hp : ContDiff ℝ ∞ phi) (v : ℝ × ℝ) :
     ContDiff ℝ ∞ (eventDir v phi) :=
-  (hp.fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
+  _root_.RHTower.D4BMGeneralTemporalTransposition.eventDir_smooth hp v
 
 private theorem physicalEventWave_smooth {phi : ℝ × ℝ → ℂ}
     (hp : ContDiff ℝ ∞ phi) : ContDiff ℝ ∞ (eventWave phi) :=
@@ -340,23 +340,16 @@ private theorem physicalEventWave_smooth {phi : ℝ × ℝ → ℂ}
 
 private theorem physicalEventDir_second {phi : ℝ × ℝ → ℂ}
     (hp : ContDiff ℝ ∞ phi) (v w p : ℝ × ℝ) :
-    eventDir v (eventDir w phi) p = fderiv ℝ (fderiv ℝ phi) p v w := by
-  unfold eventDir
-  rw [fderiv_clm_apply ((hp.fderiv_right (m := ∞) (by simp)).differentiable (by simp) p)
-    (differentiableAt_const _)]
-  simp
+    eventDir v (eventDir w phi) p = fderiv ℝ (fderiv ℝ phi) p v w :=
+  _root_.RHTower.D4BMGeneralTemporalTransposition.eventDir_second hp v w p
 
 private theorem physicalPast_u (s y u v : ℝ) :
-    HasDerivAt (fun a => pastVertex s y (a,v)) (-1/2,1/2) u := by
-  have h1 := (((hasDerivAt_id u).add_const v).div_const 2).const_sub s
-  have h2 := (((hasDerivAt_id u).sub_const v).div_const 2).const_add y
-  simpa [pastVertex,neg_div] using h1.prodMk h2
+    HasDerivAt (fun a => pastVertex s y (a,v)) (-1/2,1/2) u :=
+  _root_.RHTower.D4BMGeneralTemporalTransposition.pastVertex_u s y u v
 
 private theorem physicalPast_v (s y u v : ℝ) :
-    HasDerivAt (fun b => pastVertex s y (u,b)) (-1/2,-1/2) v := by
-  have h1 := (((hasDerivAt_id v).const_add u).div_const 2).const_sub s
-  have h2 := (((hasDerivAt_id v).const_sub u).div_const 2).const_add y
-  simpa [pastVertex,neg_div] using h1.prodMk h2
+    HasDerivAt (fun b => pastVertex s y (u,b)) (-1/2,-1/2) v :=
+  _root_.RHTower.D4BMGeneralTemporalTransposition.pastVertex_v s y u v
 
 private theorem physicalPast_mixed_wave {phi : ℝ × ℝ → ℂ}
     (hp : ContDiff ℝ ∞ phi) (p : ℝ × ℝ) :

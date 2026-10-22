@@ -93,31 +93,8 @@ private theorem completed_exists_derivRatio_eq_incrementRatio
     (hgInc : g b - g a ≠ 0)
     (hg' : ∀ x ∈ Set.Ioo a b, g' x ≠ 0) :
     ∃ c ∈ Set.Ioo a b,
-      f' c / g' c = (f b - f a) / (g b - g a) := by
-  let lam := (f b - f a) / (g b - g a)
-  let k : ℝ → ℝ := fun x => f x - lam * g x
-  let k' : ℝ → ℝ := fun x => f' x - lam * g' x
-  have hkcont : ContinuousOn k (Set.Icc a b) :=
-    hfcont.sub (continuousOn_const.mul hgcont)
-  have hkderiv : ∀ x ∈ Set.Ioo a b, HasDerivAt k (k' x) x := by
-    intro x hx
-    have hraw := (hfderiv x hx).sub ((hgderiv x hx).const_mul lam)
-    refine (hraw.congr_of_eventuallyEq
-      (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
-    ring
-  obtain ⟨c, hc, hcslope⟩ :=
-    exists_hasDerivAt_eq_slope k k' hab hkcont hkderiv
-  have hkEnds : k b - k a = 0 := by
-    dsimp only [k, lam]
-    field_simp [hgInc]
-    ring
-  have hk'zero : k' c = 0 := by rw [hcslope, hkEnds]; simp
-  refine ⟨c, hc, ?_⟩
-  have hlinear : f' c = lam * g' c := by
-    dsimp only [k'] at hk'zero
-    linarith
-  rw [div_eq_iff (hg' c hc)]
-  exact hlinear
+      f' c / g' c = (f b - f a) / (g b - g a) :=
+  exists_derivRatio_eq_incrementRatio hab hfcont hgcont hfderiv hgderiv hgInc hg'
 
 private theorem completed_div_derivativeNumerator_neg_of_strictAnti_derivRatio
     {f g f' g' : ℝ → ℝ} {a b x : ℝ}
@@ -129,37 +106,8 @@ private theorem completed_div_derivativeNumerator_neg_of_strictAnti_derivRatio
     (hgderiv : ∀ y ∈ Set.Icc a b, HasDerivAt g (g' y) y)
     (hg'pos : ∀ y ∈ Set.Ioc a b, 0 < g' y)
     (hratio : StrictAntiOn (fun y => f' y / g' y) (Set.Ioc a b)) :
-    f' x * g x - f x * g' x < 0 := by
-  have hxIcc : x ∈ Set.Icc a b := ⟨hx.1.le, hx.2⟩
-  have hgmono : StrictMonoOn g (Set.Icc a b) := by
-    apply strictMonoOn_of_deriv_pos (convex_Icc a b)
-    · intro y hy
-      exact (hgderiv y hy).continuousAt.continuousWithinAt
-    · intro y hy
-      rw [interior_Icc] at hy
-      rw [(hgderiv y ⟨hy.1.le, hy.2.le⟩).deriv]
-      exact hg'pos y ⟨hy.1, hy.2.le⟩
-  have hgx : 0 < g x := by
-    rw [← hga]
-    exact hgmono (show a ∈ Set.Icc a b by exact ⟨le_rfl, hab.le⟩) hxIcc hx.1
-  have hfcontAx : ContinuousOn f (Set.Icc a x) :=
-    hfcont.mono (by intro y hy; exact ⟨hy.1, hy.2.trans hx.2⟩)
-  have hgcontAx : ContinuousOn g (Set.Icc a x) :=
-    hgcont.mono (by intro y hy; exact ⟨hy.1, hy.2.trans hx.2⟩)
-  obtain ⟨c, hc, hcRatio⟩ := completed_exists_derivRatio_eq_incrementRatio
-    hx.1 hfcontAx hgcontAx
-    (fun y hy => hfderiv y ⟨hy.1.le, hy.2.le.trans hx.2⟩)
-    (fun y hy => hgderiv y ⟨hy.1.le, hy.2.le.trans hx.2⟩)
-    (by rw [hga]; simpa only [sub_zero] using hgx.ne')
-    (fun y hy => (hg'pos y ⟨hy.1, hy.2.le.trans hx.2⟩).ne')
-  have hcIoc : c ∈ Set.Ioc a b := ⟨hc.1, hc.2.le.trans hx.2⟩
-  have hratioCx := hratio hcIoc hx hc.2
-  have hquot : f' x / g' x < f x / g x := by
-    change f' x / g' x < f' c / g' c at hratioCx
-    rw [hcRatio, hfa, hga, sub_zero, sub_zero] at hratioCx
-    exact hratioCx
-  have hcross := (div_lt_div_iff₀ (hg'pos x hx) hgx).mp hquot
-  linarith
+    f' x * g x - f x * g' x < 0 :=
+  div_derivativeNumerator_neg_of_strictAnti_derivRatio hab hx hfa hga hfcont hgcont hfderiv hgderiv hg'pos hratio
 
 private theorem completed_strictAntiOn_div_of_strictAnti_derivRatio
     {f g f' g' : ℝ → ℝ} {a b : ℝ}
@@ -171,43 +119,12 @@ private theorem completed_strictAntiOn_div_of_strictAnti_derivRatio
     (hgderiv : ∀ y ∈ Set.Icc a b, HasDerivAt g (g' y) y)
     (hg'pos : ∀ y ∈ Set.Ioc a b, 0 < g' y)
     (hratio : StrictAntiOn (fun y => f' y / g' y) (Set.Ioc a b)) :
-    StrictAntiOn (fun y => f y / g y) (Set.Ioc a b) := by
-  have hgmono : StrictMonoOn g (Set.Icc a b) := by
-    apply strictMonoOn_of_deriv_pos (convex_Icc a b)
-    · intro y hy
-      exact (hgderiv y hy).continuousAt.continuousWithinAt
-    · intro y hy
-      rw [interior_Icc] at hy
-      rw [(hgderiv y ⟨hy.1.le, hy.2.le⟩).deriv]
-      exact hg'pos y ⟨hy.1, hy.2.le⟩
-  apply strictAntiOn_of_deriv_neg (convex_Ioc a b)
-  · intro x hx
-    have hxIcc : x ∈ Set.Icc a b := ⟨hx.1.le, hx.2⟩
-    have hgx : 0 < g x := by
-      rw [← hga]
-      exact hgmono (show a ∈ Set.Icc a b by exact ⟨le_rfl, hab.le⟩) hxIcc hx.1
-    exact ((hfderiv x hxIcc).div (hgderiv x hxIcc) hgx.ne').continuousAt.continuousWithinAt
-  · intro x hx
-    rw [interior_Ioc] at hx
-    have hxIoc : x ∈ Set.Ioc a b := ⟨hx.1, hx.2.le⟩
-    have hxIcc : x ∈ Set.Icc a b := ⟨hx.1.le, hx.2.le⟩
-    have hgx : 0 < g x := by
-      rw [← hga]
-      exact hgmono (show a ∈ Set.Icc a b by exact ⟨le_rfl, hab.le⟩) hxIcc hx.1
-    change deriv (f / g) x < 0
-    rw [((hfderiv x hxIcc).div (hgderiv x hxIcc) hgx.ne').deriv]
-    exact div_neg_of_neg_of_pos
-      (completed_div_derivativeNumerator_neg_of_strictAnti_derivRatio
-        hab hxIoc hfa hga hfcont hgcont hfderiv hgderiv hg'pos hratio)
-      (sq_pos_of_pos hgx)
+    StrictAntiOn (fun y => f y / g y) (Set.Ioc a b) :=
+  strictAntiOn_div_of_strictAnti_derivRatio hab hfa hga hfcont hgcont hfderiv hgderiv hg'pos hratio
 
 private theorem hasDerivAt_completedDecaySlope (x : ℝ) :
-    HasDerivAt thetaCuspLogDecaySlope (thetaCuspLogCurvature x) x := by
-  unfold thetaCuspLogDecaySlope thetaCuspLogCurvature
-  change HasDerivAt (-iteratedDeriv 1 thetaCuspLogSource)
-    (-iteratedDeriv 2 thetaCuspLogSource x) x
-  simpa only [Nat.reduceAdd] using
-    (hasDerivAt_iteratedDeriv_thetaCuspLogSource 1 x).neg
+    HasDerivAt thetaCuspLogDecaySlope (thetaCuspLogCurvature x) x :=
+  hasDerivAt_thetaCuspLogDecaySlope x
 
 private theorem hasDerivAt_completedCurvatureJetThree (x : ℝ) :
     HasDerivAt thetaCuspLogCurvatureJetThree
@@ -360,21 +277,8 @@ private theorem hasDerivAt_completedFirstTransportDenominator (u t : ℝ) :
 private theorem hasDerivAt_thetaCuspReflectedLogCenterJetOne_displacement
     (u t : ℝ) :
     HasDerivAt (thetaCuspReflectedLogCenterJetOne u)
-      (thetaCuspReflectedLogCenterMixedJetOne u t) t := by
-  have hp := (hasDerivAt_completedDecaySlope (u + t)).comp t
-    ((hasDerivAt_const t u).add (hasDerivAt_id t))
-  have hm := (hasDerivAt_completedDecaySlope (u - t)).comp t
-    ((hasDerivAt_const t u).sub (hasDerivAt_id t))
-  unfold thetaCuspReflectedLogCenterJetOne thetaCuspReflectedLogCenterMixedJetOne
-  have hraw := (hp.add hm).sub_const (2 * thetaCuspLogDecaySlope u)
-  convert hraw using 1
-  · apply AddCommGroup.ext
-    rfl
-  · apply Module.ext
-    rfl
-  · funext x
-    rfl
-  · ring
+      (thetaCuspReflectedLogCenterMixedJetOne u t) t :=
+  hasDerivAt_thetaCuspReflectedLogCenterJetOne_displacement_exact u t
 
 private theorem hasDerivAt_completedTransportScaleDenominator (u t : ℝ) :
     HasDerivAt (completedTransportScaleDenominator u)

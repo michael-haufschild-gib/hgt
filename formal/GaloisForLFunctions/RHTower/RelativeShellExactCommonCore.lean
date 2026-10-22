@@ -38,72 +38,8 @@ theorem differentialIndependent_threeBlock_differentialAdjoin_inf
     (habc : DifferentialIndependent F (Sum.elim a (Sum.elim b c))) :
     differentialAdjoin F (Set.range (Sum.elim a b)) ⊓
         differentialAdjoin F (Set.range (Sum.elim a c)) =
-      differentialAdjoin F (Set.range a) := by
-  let aj : A × ℕ → E := fun p => differentialJet p.2 (a p.1)
-  let bj : B × ℕ → E := fun p => differentialJet p.2 (b p.1)
-  let cj : C × ℕ → E := fun p => differentialJet p.2 (c p.1)
-  let embed :
-      (A × ℕ) ⊕ ((B × ℕ) ⊕ (C × ℕ)) →
-        (A ⊕ (B ⊕ C)) × ℕ
-    | Sum.inl p => (Sum.inl p.1, p.2)
-    | Sum.inr (Sum.inl p) => (Sum.inr (Sum.inl p.1), p.2)
-    | Sum.inr (Sum.inr p) => (Sum.inr (Sum.inr p.1), p.2)
-  have hembed : Function.Injective embed := by
-    rintro (p | p) (q | q) hpq
-    · simp [embed] at hpq
-      exact congrArg Sum.inl (Prod.ext hpq.1 hpq.2)
-    · rcases q with q | q <;> simp [embed] at hpq
-    · rcases p with p | p <;> simp [embed] at hpq
-    · rcases p with p | p <;> rcases q with q | q
-      · simp [embed] at hpq
-        exact congrArg (Sum.inr ∘ Sum.inl) (Prod.ext hpq.1 hpq.2)
-      · simp [embed] at hpq
-      · simp [embed] at hpq
-      · simp [embed] at hpq
-        exact congrArg (Sum.inr ∘ Sum.inr) (Prod.ext hpq.1 hpq.2)
-  have hthree : AlgebraicIndependent F (Sum.elim aj (Sum.elim bj cj)) := by
-    unfold DifferentialIndependent at habc
-    have hcomp := habc.comp embed hembed
-    convert hcomp using 1
-    funext p
-    rcases p with p | p
-    · rfl
-    · rcases p with p | p <;> rfl
-  have hmeet := algebraicIndependent_threeBlock_adjoin_inf aj bj cj hthree
-  have habRange :
-      Set.range
-          (fun p : (A ⊕ B) × ℕ =>
-            differentialJet p.2 (Sum.elim a b p.1)) =
-        Set.range (Sum.elim aj bj) := by
-    ext z
-    constructor
-    · rintro ⟨⟨i | j, n⟩, rfl⟩
-      · exact ⟨Sum.inl (i, n), rfl⟩
-      · exact ⟨Sum.inr (j, n), rfl⟩
-    · rintro ⟨p, rfl⟩
-      rcases p with ⟨i, n⟩ | ⟨j, n⟩
-      · exact ⟨(Sum.inl i, n), rfl⟩
-      · exact ⟨(Sum.inr j, n), rfl⟩
-  have hacRange :
-      Set.range
-          (fun p : (A ⊕ C) × ℕ =>
-            differentialJet p.2 (Sum.elim a c p.1)) =
-        Set.range (Sum.elim aj cj) := by
-    ext z
-    constructor
-    · rintro ⟨⟨i | j, n⟩, rfl⟩
-      · exact ⟨Sum.inl (i, n), rfl⟩
-      · exact ⟨Sum.inr (j, n), rfl⟩
-    · rintro ⟨p, rfl⟩
-      rcases p with ⟨i, n⟩ | ⟨j, n⟩
-      · exact ⟨(Sum.inl i, n), rfl⟩
-      · exact ⟨(Sum.inr j, n), rfl⟩
-  simp only [differentialAdjoin, differentialJetSet_range_eq]
-  rw [habRange, hacRange]
-  change IntermediateField.adjoin F (Set.range (Sum.elim aj bj)) ⊓
-      IntermediateField.adjoin F (Set.range (Sum.elim aj cj)) =
-    IntermediateField.adjoin F (Set.range aj)
-  exact hmeet
+      differentialAdjoin F (Set.range a) :=
+  _root_.GaloisForLFunctions.differentialIndependent_threeBlock_differentialAdjoin_inf a b c habc
 
 /-- **Private-sector tensor law.**  Under the same joint differential independence hypothesis,
 the two private differential extensions are linearly disjoint over the common differential

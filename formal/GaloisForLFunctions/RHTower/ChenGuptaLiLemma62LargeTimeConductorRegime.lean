@@ -25,9 +25,8 @@ theorem cglLemma62_largeTime_truncated_conductor_tail_bound
       ‖∫ v : ℝ in -S.truncationWindow.radius..S.truncationWindow.radius,
         cglLemma62FarTailIntegrand w N B t S.tailCutoff.value d v‖ ≤
         C * (1 + |t| + S.truncationWindow.radius) ^
-          (2 * (d.value : ℝ) + 1 / 2) * (2 * S.truncationWindow.radius) := by
-  exact cglLemma62_farTail_truncated_conductor_integral_bound
-    w N B t S.tailCutoff d S.truncationWindow
+          (2 * (d.value : ℝ) + 1 / 2) * (2 * S.truncationWindow.radius) :=
+  cglLemma62_largeTime_truncated_tail_bound S w d
 
 /-- CGL's literal large-time `I₂` integral with every source-sensitive scale
 still displayed, ready for the final depth and exponent calculation. -/

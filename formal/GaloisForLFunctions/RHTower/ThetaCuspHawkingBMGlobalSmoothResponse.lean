@@ -13,7 +13,7 @@ namespace RHTower.D4BMModularCore
 open D4BMGlobalAngularResponse GaloisForLFunctions.HTGeometry
 noncomputable section
 
-private theorem exists_planarChartTest_ne_zero {z : ℂ} (hz : z ∈ {z : ℂ | 0 < z.im}) :
+theorem exists_planarChartTest_ne_zero {z : ℂ} (hz : z ∈ {z : ℂ | 0 < z.im}) :
     ∃ g : PlanarChartTest, g.field z ≠ 0 := by
   obtain ⟨b,hb,hc,hd,_,he⟩ := exists_contDiff_tsupport_subset (n := ⊤) (isOpen_upperHalfPlaneSet.mem_nhds hz)
   have hcc : HasCompactSupport (Complex.ofRealCLM ∘ b) := hc.comp_left rfl
@@ -27,7 +27,7 @@ private theorem exists_planarChartTest_ne_zero {z : ℂ} (hz : z ∈ {z : ℂ | 
 
 /-- Smooth representatives of all compact chart localizations glue across all modular seams.
 The glued field represents the actual globally lifted scalar in planar measure. -/
-private theorem global_smooth_representative_of_localizations (u : Space)
+theorem global_smooth_representative_of_localizations (u : Space)
     (hu : ∀ g : PlanarChartTest, ∃ r : ℂ → ℂ, ContDiff ℝ ∞ r ∧ r =ᵐ[volume] g.localValue u) :
     ∃ f : ℂ → ℂ, ContDiffOn ℝ ∞ f {z : ℂ | 0 < z.im} ∧
       f =ᵐ[volume.restrict {z : ℂ | 0 < z.im}] (fun z : ℂ => globalLift u (ofComplex z)) := by
@@ -117,7 +117,7 @@ theorem globalResponse_ae_lift (q : XiZeroCopy) (branch : Bool) :
   filter_upwards [hn] with z hz
   simpa only [ofComplex_apply,globalResponse] using hz
 
-private theorem chartSmooth_eq_of_ae_eq {f g : UpperHalfPlane → ℂ}
+theorem chartSmooth_eq_of_ae_eq {f g : UpperHalfPlane → ℂ}
     (hf : ChartSmooth f) (hg : ChartSmooth g) (he : f =ᵐ[(volume : Measure UpperHalfPlane)] g) : f = g := by
   have hm : ∀ᵐ z ∂Measure.map UpperHalfPlane.coe (volume : Measure UpperHalfPlane),
       f (ofComplex z) = g (ofComplex z) :=

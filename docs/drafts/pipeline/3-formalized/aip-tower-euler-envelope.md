@@ -237,6 +237,75 @@ any `q ≠ 1` (`moebius_divisor_gram_eq_zero_of_resonant`) while the trivial row
 `τ(q)² A(0)`. So on the divisor lattice of one modulus the Möbius row is exactly the weight that
 annihilates the resonant mode — the mode the eighth and ninth passes identify as the hard one.
 
+### The Liouville twist and the sign of the arithmetic (sixteenth pass)
+
+The tower law now holds for **every** ratio with `|z| < 1`, signed ones included
+(`one_sub_sq_mul_geoLagCharge_le`). At the negative ratio `z = −p^{−1/2}` the tower becomes its
+Liouville twin — weights `λ(p^k) Λ(p^k) p^{−k/2}`, `λ(p^k) = (−1)^k` — and the law reads
+`(p − 1) C⁻_p ≤ log p (A(0) − √p A(log p))` (`sub_one_mul_twistedTowerCharge_le`), against
+`+√p A(log p)` untwisted. The two bounds differ by `2 log p √p A(log p)`: on a resonant first power
+the parity twin is strictly cheaper, and is then paid by the mass alone
+(`sub_one_mul_twistedTowerCharge_le_mass`). This is the selectivity audit the theory asks of every
+positivity statement — the mechanism reads the *sign* of the first-power charge, not only its size.
+
+**Sharpness audit of the tower law.** As a size statement the envelope is comparable to the trivial
+geometric bound `C_p ≤ log p (A(log p)/√p + A(0)/(p − √p))`: the higher powers of one prime are
+geometrically small whatever the test does. What the laws add is not size but *coupling* — a
+relation between charges at different lags, which no term-by-term bound can give. The structural
+content of the chain therefore sits in the Gram and ledger statements (passes three, four, six,
+seven, fourteen, fifteen, seventeen) and in the regime dichotomy (passes eight and nine), with the
+envelope and its resonant witness fixing the sharp constant of the single-tower sector.
+
+### The two-atom law of the first open window (seventeenth pass)
+
+The three-shift Gram form at `{0, a, b}` is `2λ A(a) + 2μ A(b) ≤ (1 + λ² + μ²) A(0) + 2λμ A(b − a)`
+(`three_shift_gram`), and its diagonal discriminant gives the sharp
+`(A(a) + A(b))² ≤ 2 A(0) (A(0) + A(b − a))` (`sq_two_atom_le`). In the first open window
+`r ∈ (221/400, log 2)` the horizon kills `4` and `6`, so the cost side has exactly the two atoms `2`
+and `3`, and the only lag available to pay them is the *atom-free* ratio `log(3/2)`: the law prices
+that single degree of freedom exactly, and the trivial ceiling `2 A(0)` is attainable only at full
+resonance on the ratio lag.
+
+### Withdrawn: the aperture ceiling on resonance (eighteenth pass)
+
+The chord cascade is **already owned** by `BiScaleUncertainty/KreinIncrementAndChordCascade.lean`:
+the subadditive chord triangle inequality, the sublinear multiple law `√δ(mx) ≤ m√δ(x)`, the
+quadratic cascade `δ(mx) ≤ m²δ(x)`, and — as `autocorr_harmonic_subgrid_ge_of_nonpos` — exactly the
+ceiling `A(0)/m² ≤ δ(x₀/m)` at a nonpositive node, which with a node beyond the horizon is the
+aperture ceiling `A(t) ≤ (1 − 1/m²)A(0)`. The pass was withdrawn and its module deleted; the
+defect-coordinate pass below now imports the corpus lemma instead of reproving it.
+
+### The cost side is one prime-comb energy (nineteenth pass)
+
+The reduced cost side is the pairing of the test with its weighted prime comb, so Cauchy–Schwarz
+gives `(Σ_p w_p A(log p))² ≤ A(0) · E_w(F)` with the **prime-comb energy**
+`E_w(F) = Σ_{p,q} w_p w_q A(log q − log p)` (`sq_cost_le_mass_mul_combEnergy`), and
+`E_w = (Σ_p w_p²)A(0) + Σ_{p≠q} w_p w_q A(log(q/p))` (`combEnergy_eq_diagonal_add_cross`). With the
+Euler weights the diagonal `Σ_{p ≤ e^{2r}} (log p)²/p` is **polynomial** in the aperture, against the
+exponential `ℓ¹` norm `≍ e^{r}` of the trivial bound, so a nonpositive cross-prime aggregate already
+yields `Σ_p w_p A(log p) ≤ √(Σ_p w_p²)·A(0)` (`cost_le_sqrt_diagonal_mul_mass`) — a polynomial loss,
+which the grading treats as free. The exponential rate-`1` obstruction of the ledger is therefore
+concentrated in **one scalar**, the weighted cross-prime correlation sum, with no pointwise sign at
+any pair required: in Plancherel form that scalar is the mean square of a prime Dirichlet polynomial
+against the test's spectral measure (research topics 6 and 7).
+
+### The alternating train: the twisted envelope is attained (twentieth pass)
+
+The matching witness of the Liouville-twisted law is the **alternating train**, `M + 1` disjoint
+copies of one bump at the spacing `L` with the signs `(−1)^k`:
+`A_{S⁻}(mL) = (−1)^m (M + 1 − m) A_g(0)` (`autoCorr_alternatingTrain`), so the parity of the signs
+cancels the parity of the negative ratio lag by lag and
+
+    geoLagCharge (−z) L S⁻ = geoLagCharge z L S
+
+(`geoLagCharge_alternatingTrain_eq`): the twisted charge of the alternating train *is* the untwisted
+charge of the resonant train, and sharpness transfers (`geoLagCharge_alternatingTrain_ge`). At
+`L = log p` the extremal test of the twisted law is the parity-signed train on the tower
+`{1, p, p², …}`. So both members of the selectivity pair — the arithmetic envelope and its parity
+model's envelope — are attained by trains on the same multiplicative progression, with the sign
+pattern of the weight: the single-tower sector is closed, and all remaining information is
+cross-tower.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed, source-pure
@@ -307,6 +376,20 @@ Related corpus infrastructure not reused (right-translate convention differs):
 - `ArithmeticIncidencePositivity/TranslatePairingCalculus.lean` — the reusable pairing calculus
   (`testPairing`, `ContCompact`, Gram expansion and bound, `geoTrain`, `geoTail`,
   `geoTrain_resolvent`, Cauchy–Schwarz, `abs_autoCorr_le_autoCorr_zero`)
+- `ArithmeticIncidencePositivity/AlternatingTrainWitness.lean` — the twisted envelope's witness
+  (`alternatingTrain`, `autoCorr_alternatingTrain`, `geoLagCharge_alternatingTrain_eq`,
+  `geoLagCharge_alternatingTrain_ge`)
+- `ArithmeticIncidencePositivity/PrimeDefectCoordinate.lean` — the defect coordinate of the cost
+  side (`shiftDefect`, `primeDefect`, `sum_atom_mul_autoCorr_eq`, `sum_atom_mul_autoCorr_le_iff`,
+  `quarter_le_shiftDefect`, `sum_atom_mul_autoCorr_le_three_quarters`), on BiScale's chord cascade
+- `ArithmeticIncidencePositivity/PrimeCombEnergyReduction.lean` — the cost side as one comb energy
+  (`primeComb`, `combEnergy`, `sq_cost_le_mass_mul_combEnergy`,
+  `combEnergy_eq_diagonal_add_cross`, `cost_le_sqrt_diagonal_mul_mass`)
+- `ArithmeticIncidencePositivity/LiouvilleTwistedTowerLaw.lean` — the signed-ratio tower law
+  (`twistedTowerCharge`, `sub_one_mul_twistedTowerCharge_le`,
+  `sub_one_mul_twistedTowerCharge_le_mass`)
+- `ArithmeticIncidencePositivity/FirstOpenWindowTwoAtomLaw.lean` — the window's two-atom law
+  (`three_shift_gram`, `sq_two_atom_le`)
 - `ArithmeticIncidencePositivity/DivisorLatticeGramPositivity.lean` — the divisor-lattice Gram form
   (`divisorComb`, `divisor_gram_nonneg`, `divisor_gram_eq_of_resonant`,
   `moebius_divisor_gram_eq_zero_of_resonant`)
@@ -354,3 +437,12 @@ Related corpus infrastructure not reused (right-translate convention differs):
   the Finset-indexed Gram expansion added to the calculus
 - 2026-10-22 — fifteenth pass: the divisor-lattice Gram positivity of a modulus and the blindness of
   its Möbius row on the resonant direction
+- 2026-10-22 — sixteenth pass: the tower law for signed ratios, the Liouville-twisted tower law, and
+  the sharpness audit of the envelope against the trivial geometric bound
+- 2026-10-22 — seventeenth pass: the three-shift Gram law and the sharp two-atom law of the first
+  open window
+- 2026-10-22 — eighteenth pass WITHDRAWN (duplicate of BiScale's chord cascade); module deleted
+- 2026-10-22 — nineteenth pass: the cost side bounded by one prime-comb energy, with the whole
+  exponential rate isolated in the cross-prime aggregate
+- 2026-10-22 — twentieth pass: the alternating train attains the Liouville-twisted envelope; the
+  twisted charge of the alternating train equals the untwisted charge of the resonant train

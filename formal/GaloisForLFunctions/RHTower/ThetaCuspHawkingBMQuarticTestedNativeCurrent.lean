@@ -30,7 +30,7 @@ open D4BMModularCore D4BMGlobalAngularResponse D4BMQuarticNativeCuspModes
 open D4BMQuarticNativeCuspComparison D4BMQuarticNativeCuspEnergy
 noncomputable section
 set_option autoImplicit false
-private theorem directional_smooth {F : ℂ → ℂ}
+theorem directional_smooth {F : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im}) (v : ℂ) :
     ContDiffOn ℝ ∞ (directional v F) {z : ℂ | 0 < z.im} :=
   planar_derivative_contDiffOn hf v
@@ -43,7 +43,7 @@ private def cellVariance (f : ℝ → ℂ) : ℝ :=
 private theorem cell_integrable {f : ℝ → ℂ} (hf : Continuous f) : IntegrableOn f cell :=
   hf.integrableOn_Icc.mono_set Ioc_subset_Icc_self
 
-private theorem cell_normSq_integrable {f : ℝ → ℂ} (hf : Continuous f) :
+theorem cell_normSq_integrable {f : ℝ → ℂ} (hf : Continuous f) :
     IntegrableOn (fun x => Complex.normSq (f x)) cell := by
   have h : IntegrableOn (fun x => ‖f x‖ ^ 2) (Ioc 0 1) :=
     (hf.norm.pow 2).integrableOn_Ioc
@@ -54,7 +54,7 @@ private theorem cell_const_real (c : ℝ) : (∫ _x in cell, c)=c := by
   rw [← intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1)]
   simp only [intervalIntegral.integral_const,sub_zero,one_smul]
 
-private theorem cell_centered_square {f : ℝ → ℂ} (hf : Continuous f) :
+theorem cell_centered_square {f : ℝ → ℂ} (hf : Continuous f) :
     (∫ x in cell, Complex.normSq (f x-cellMean f))=cellVariance f := by
   let a := cellMean f
   have hi := cell_normSq_integrable hf
@@ -349,7 +349,7 @@ open D4BMJointSource D4BMAngularSeries
 def physicalTest (q : XiZeroCopy) (z : ℂ) : ℂ :=
   scalar (physicalAngularParameter q) (angularCoordinates z)
 
-private theorem physicalTest_smooth (q : XiZeroCopy) :
+theorem physicalTest_smooth (q : XiZeroCopy) :
     ContDiffOn ℝ ∞ (physicalTest q) {z : ℂ | 0 < z.im} := by
   intro z hz
   have h := (cuspLeg_contDiffOn .scalar (physicalAngularParameter q)).contDiffAt
@@ -357,7 +357,7 @@ private theorem physicalTest_smooth (q : XiZeroCopy) :
       (show 0 < angularCoordinates z 1 from hz))
   exact (h.comp z angularCoordinates.contDiff.contDiffAt).contDiffWithinAt
 
-private theorem physicalTest_periodic (q : XiZeroCopy) (y x : ℝ) :
+theorem physicalTest_periodic (q : XiZeroCopy) (y x : ℝ) :
     physicalTest q (point (x+1) y)=physicalTest q (point x y) := by
   have hp : Function.Periodic (scalar (physicalAngularParameter q)) ![1,0] := by
     intro z
@@ -623,19 +623,19 @@ theorem physicalTest_firstJet_bound (q : XiZeroCopy) :
     exact (hc z hz).trans (by linarith)
 
 
-private theorem coefficient_zero_integral (F : ℂ → ℂ) (y : ℝ) :
+theorem coefficient_zero_integral (F : ℂ → ℂ) (y : ℝ) :
     coefficient 1 0 F y=cellMean (fun x => F (point x y)) :=
   congrFun (mean_eq_coefficient F).symm y
 
 private def variance (F : ℂ → ℂ) (y : ℝ) : ℝ := cellVariance (fun x => F (point x y))
 
-private theorem variance_nonneg {F : ℂ → ℂ}
+theorem variance_nonneg {F : ℂ → ℂ}
     (hf : ContinuousOn F {z : ℂ | 0 < z.im}) {y : ℝ} (hy : 0 < y) : 0 ≤ variance F y := by
   change 0 ≤ cellVariance (fun x => F (point x y))
   rw [← cell_centered_square (slice_continuous hf hy)]
   exact integral_nonneg (fun _ => Complex.normSq_nonneg _)
 
-private theorem native_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
+theorem native_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     variance (D4BMCuspResponse.responsePlanar q b) y=nonconstantMass q b y := by
   have hs := coefficient_mass_hasSum 1 (by norm_num)
     (D4BMCuspResponse.responsePlanar_smooth q b).continuousOn y.2
@@ -648,7 +648,7 @@ private theorem native_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
   change modeMass q b 0 y+nonconstantMass q b y-modeMass q b 0 y=nonconstantMass q b y
   ring
 
-private theorem native_gradient_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
+theorem native_gradient_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     2*variance (directional Complex.I (D4BMCuspResponse.responsePlanar q b)) y+
       variance (directional 1 (D4BMCuspResponse.responsePlanar q b)) y=nonconstantEnergy q b y := by
   let F := D4BMCuspResponse.responsePlanar q b
@@ -672,7 +672,7 @@ private theorem native_gradient_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0
     zero_pow,ne_eq,OfNat.ofNat_ne_zero,not_false_eq_true,zero_mul,add_zero] at he
   linear_combination he
 
-private theorem forcing_variance_bound (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
+theorem forcing_variance_bound (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     variance (globalForcing q b ∘ ofComplex) y ≤ y.val^4*forcingMass q b y := by
   have hs := coefficient_mass_hasSum 1 (by norm_num)
     (globalForcing_smooth q b).planar_contDiffOn.continuousOn y.2
@@ -686,7 +686,7 @@ private theorem forcing_variance_bound (q : XiZeroCopy) (b : Bool) (y : Ioi (0:�
   rw [← intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1),hm]
   nlinarith only [Complex.normSq_nonneg (cellMean (fun x => (globalForcing q b ∘ ofComplex) (point x y)))]
 
-private theorem native_mass_le_energy (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
+theorem native_mass_le_energy (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     nonconstantMass q b y ≤ nonconstantEnergy q b y := by
   have hm := (modeMass_hasSum q b y).summable.subtype (fun n : ℤ => n ≠ 0)
   have he := (modeEnergy_hasSum q b y).summable.subtype (fun n : ℤ => n ≠ 0)
@@ -706,7 +706,7 @@ private theorem native_mass_le_energy (q : XiZeroCopy) (b : Bool) (y : Ioi (0:�
     (signedFrequency 1 n.val)^2*modeMass q b n.val y
   linarith only [h,Complex.normSq_nonneg (deriv (responseMode q b n.val) y)]
 
-private theorem energy_nonneg (q : XiZeroCopy) (b : Bool) (y : ℝ) :
+theorem energy_nonneg (q : XiZeroCopy) (b : Bool) (y : ℝ) :
     0 ≤ nonconstantEnergy q b y := by
   apply tsum_nonneg
   intro n
@@ -752,7 +752,7 @@ private theorem weightedCovariance_bound {T F G : ℂ → ℂ}
   rw [heF,heG] at hm
   linarith only [hnorm,hm]
 
-private theorem native_variance_bounds (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
+theorem native_variance_bounds (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     variance (D4BMCuspResponse.responsePlanar q b) y≤nonconstantEnergy q b y ∧
     variance (directional Complex.I (D4BMCuspResponse.responsePlanar q b)) y≤nonconstantEnergy q b y ∧
     variance (directional 1 (D4BMCuspResponse.responsePlanar q b)) y≤nonconstantEnergy q b y := by
@@ -860,7 +860,7 @@ theorem testedPair_source_bounds (q : XiZeroCopy) :
     nlinarith only [h0,h1,h2,h3,hw,hpm,hfw,hmp,hn0,hn1,hn2,hn3,hn4,hextra,
       norm_nonneg (testedPairDensity q a b y)]
 
-private theorem inverse_square_integrable {T : ℝ} (hT : 0 < T) :
+theorem inverse_square_integrable {T : ℝ} (hT : 0 < T) :
     IntegrableOn (fun y : ℝ => 1/y^2) (Ioi T) := by
   have h := integrableOn_Ioi_rpow_of_lt (by norm_num : (-2:ℝ)< -1) hT
   apply h.congr_fun ?_ measurableSet_Ioi

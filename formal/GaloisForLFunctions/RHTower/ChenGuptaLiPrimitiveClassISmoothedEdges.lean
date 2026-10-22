@@ -89,19 +89,6 @@ theorem exists_norm_cglPrimitiveClassISmoothedHorizontalEdgeIntegral_le
     rw [Set.uIoc_of_le hleft] at hu
     simpa using hbound ⟨u, hu.1.le, hu.2⟩ ε K)
 
-private theorem tendsto_const_mul_pow_mul_exp_neg {δ : ℝ} (hδ : 0 < δ)
-    (N : ℕ) (C : ℝ) :
-    Tendsto (fun T : ℝ => C * T ^ N * Real.exp (-(δ * T))) atTop (𝓝 0) := by
-  have hbase := Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero N
-  have hscale : Tendsto (fun T : ℝ => δ * T) atTop atTop :=
-    Filter.Tendsto.const_mul_atTop hδ tendsto_id
-  have hcomp := hbase.comp hscale
-  have hmul := hcomp.const_mul ((δ ^ N)⁻¹ * C)
-  rw [mul_zero] at hmul
-  refine hmul.congr fun T => ?_
-  simp only [Function.comp_apply, mul_pow]
-  have hδpow : δ ^ N ≠ 0 := pow_ne_zero _ hδ.ne'
-  field_simp [hδpow]
 
 /-- The genuinely smoothed horizontal detector integral at either certified
 class-I orientation tends to zero along the literal canonical heights. -/

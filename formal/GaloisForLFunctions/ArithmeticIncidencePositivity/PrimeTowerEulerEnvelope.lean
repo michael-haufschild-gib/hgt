@@ -74,7 +74,7 @@ charge never exceeds its Euler envelope `z/(1−z) A(0)`, and the gap is at leas
 the first-lag fold defect. The proof is the resolvent identity of the geometric train
 `S_N = Σ_{k ≤ N} z^k F(· + kL)` together with the two-step square `A_S(0) ≥ A_S(2L)`. -/
 theorem one_sub_sq_mul_geoLagCharge_le {B z L : ℝ} (hF : Continuous F) (hB : 0 ≤ B)
-    (hsupp : ∀ x, B < |x| → F x = 0) (hz0 : 0 < z) (hz1 : z < 1) (hL : 0 < L) :
+    (hsupp : ∀ x, B < |x| → F x = 0) (hzabs : |z| < 1) (hL : 0 < L) :
     (1 - z ^ 2) * geoLagCharge z L F ≤ z ^ 2 * autoCorr F 0 + z * autoCorr F L := by
   have hFc : HasCompactSupport F := by
     refine HasCompactSupport.intro (isCompact_Icc (a := -B) (b := B)) fun x hx => hsupp x ?_
@@ -87,19 +87,23 @@ theorem one_sub_sq_mul_geoLagCharge_le {B z L : ℝ} (hF : Continuous F) (hB : 0
       exact hxB
   have hFn : ContCompact F := ⟨hF, hFc⟩
   have h0 : 0 ≤ autoCorr F 0 := autoCorr_zero_nonneg hF hFc
+  have hz1 : z < 1 := (abs_lt.mp hzabs).2
+  have hzA0 : (0 : ℝ) ≤ |z| := abs_nonneg z
+  have hza : |z| ≤ 1 := hzabs.le
   have hz : (0 : ℝ) < 1 - z := by linarith
-  have hM1 : (1 : ℝ) ≤ 1 / (1 - z) := by rw [le_div_iff₀ hz]; linarith
+  have hzA : (0 : ℝ) < 1 - |z| := by linarith
+  have hM1 : (1 : ℝ) ≤ 1 / (1 - |z|) := by rw [le_div_iff₀ hzA]; linarith
   refine le_of_forall_pos_le_add fun ε hε => ?_
   -- choose a truncation whose tail is below `ε`
   obtain ⟨N, hN1, hN2⟩ : ∃ N : ℕ, 2 * B < ((N : ℝ) + 1) * L ∧
-      11 * (1 / (1 - z)) * (autoCorr F 0 + 1) * z ^ (N + 1) < ε := by
+      11 * (1 / (1 - |z|)) * (autoCorr F 0 + 1) * |z| ^ (N + 1) < ε := by
     obtain ⟨N₁, hN₁⟩ := exists_nat_gt (2 * B / L)
     have hpow : Filter.Tendsto
-        (fun n : ℕ => 11 * (1 / (1 - z)) * (autoCorr F 0 + 1) * z ^ (n + 1))
+        (fun n : ℕ => 11 * (1 / (1 - |z|)) * (autoCorr F 0 + 1) * |z| ^ (n + 1))
         Filter.atTop (nhds 0) := by
-      have h := (tendsto_pow_atTop_nhds_zero_of_lt_one hz0.le hz1).comp
+      have h := (tendsto_pow_atTop_nhds_zero_of_lt_one hzA0 hzabs).comp
         (Filter.tendsto_add_atTop_nat 1)
-      simpa using h.const_mul (11 * (1 / (1 - z)) * (autoCorr F 0 + 1))
+      simpa using h.const_mul (11 * (1 / (1 - |z|)) * (autoCorr F 0 + 1))
     obtain ⟨N, hNge, hNlt⟩ := ((Filter.eventually_ge_atTop N₁).and
       (hpow.eventually (gt_mem_nhds hε))).exists
     refine ⟨N, ?_, hNlt⟩
@@ -181,62 +185,62 @@ theorem one_sub_sq_mul_geoLagCharge_le {B z L : ℝ} (hF : Continuous F) (hB : 0
     rw [hcharge, ← hpair, hexp]
     ring
   -- the tail bounds
-  have hzpow : (0 : ℝ) < z ^ (N + 1) := pow_pos hz0 (N + 1)
-  have hmassS : ∑ k ∈ Finset.range (N + 1), |z ^ k| ≤ 1 / (1 - z) :=
-    sum_abs_pow_le_inv_one_sub hz0 hz1 (N + 1)
-  have hmassG : ∑ _j ∈ Finset.range 1, |z ^ (N + 1)| ≤ z ^ (N + 1) := by
-    simp [abs_of_pos hzpow]
-  have hmassG' : ∑ _j ∈ Finset.range 1, |z ^ (N + 1)| ≤ 1 / (1 - z) :=
-    le_trans hmassG (le_trans (pow_le_one₀ hz0.le hz1.le) hM1)
+  have hzpow : (0 : ℝ) ≤ |z| ^ (N + 1) := pow_nonneg hzA0 (N + 1)
+  have hmassS : ∑ k ∈ Finset.range (N + 1), |z ^ k| ≤ 1 / (1 - |z|) :=
+    sum_abs_pow_le_inv_one_sub_abs hzabs (N + 1)
+  have hmassG : ∑ _j ∈ Finset.range 1, |z ^ (N + 1)| ≤ |z| ^ (N + 1) := by
+    simp [abs_pow]
+  have hmassG' : ∑ _j ∈ Finset.range 1, |z ^ (N + 1)| ≤ 1 / (1 - |z|) :=
+    le_trans hmassG (le_trans (pow_le_one₀ hzA0 hza) hM1)
   have bound : ∀ s t : ℝ,
       |testPairing (translateComb F (N + 1) (fun k => z ^ k) (fun k => (k : ℝ) * L + s))
             (translateComb F 1 (fun _ => z ^ (N + 1)) (fun _ => ((N : ℝ) + 1) * L + t))|
-        ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := fun s t =>
-    abs_testPairing_comb_le hFn hmassS hmassG hzpow.le
+        ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := fun s t =>
+    abs_testPairing_comb_le hFn hmassS hmassG hzpow
   have boundGG : ∀ t : ℝ,
       |testPairing G (translateComb F 1 (fun _ => z ^ (N + 1)) (fun _ => ((N : ℝ) + 1) * L + t))|
-        ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+        ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     intro t
     rw [hG, geoTail]
-    exact abs_testPairing_comb_le hFn hmassG' hmassG hzpow.le
+    exact abs_testPairing_comb_le hFn hmassG' hmassG hzpow
   -- all seven tail pairings are below one common bound
-  have key : 0 ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) :=
-    mul_nonneg (by linarith) (mul_nonneg hzpow.le h0)
-  have bSG : |testPairing S G| ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+  have key : 0 ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) :=
+    mul_nonneg (div_nonneg zero_le_one hzA.le) (mul_nonneg hzpow h0)
+  have bSG : |testPairing S G| ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     have h := bound 0 0
     simp only [add_zero] at h
     rw [hS, hG, geoTrain, geoTail]
     exact h
-  have bT1G : |testPairing (fun u => S (u + L)) G| ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+  have bT1G : |testPairing (fun u => S (u + L)) G| ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     have h := bound L 0
     simp only [add_zero] at h
     rw [hS, geoTrain_shift z L F N L, hG, geoTail]
     exact h
   have bT2G : |testPairing (fun u => S (u + 2 * L)) G|
-      ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+      ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     have h := bound (2 * L) 0
     simp only [add_zero] at h
     rw [hS, geoTrain_shift z L F N (2 * L), hG, geoTail]
     exact h
   have bSG1 : |testPairing S (fun u => G (u + L))|
-      ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+      ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     have h := bound 0 L
     simp only [add_zero] at h
     rw [hS, geoTrain, hG, geoTail_shift z L F N L]
     exact h
   have bT1G1 : |testPairing (fun u => S (u + L)) (fun u => G (u + L))|
-      ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+      ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     have h := bound L L
     rw [hS, geoTrain_shift z L F N L, hG, geoTail_shift z L F N L]
     exact h
-  have bGG : |testPairing G G| ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+  have bGG : |testPairing G G| ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     have h := boundGG 0
     simp only [add_zero] at h
     rw [hG] at h ⊢
     rw [geoTail]
     exact h
   have bGG1 : |testPairing G (fun u => G (u + L))|
-      ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := by
+      ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := by
     have h := boundGG L
     rw [hG] at h ⊢
     rw [geoTail_shift z L F N L]
@@ -247,23 +251,21 @@ theorem one_sub_sq_mul_geoLagCharge_le {B z L : ℝ} (hF : Continuous F) (hB : 0
   have hsq : 0 ≤ z ^ 2 * (autoCorr S 0 - autoCorr S (2 * L)) :=
     mul_nonneg (sq_nonneg z) (by linarith only [hXY2])
   -- each tail term is its coefficient times a pairing below the common tail bound
-  have step : ∀ c q C : ℝ, |q| ≤ 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) → |c| ≤ C →
-      0 ≤ C → -(C * (1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0))) ≤ c * q := by
+  have step : ∀ c q C : ℝ, |q| ≤ 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) → |c| ≤ C →
+      0 ≤ C → -(C * (1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0))) ≤ c * q := by
     intro c q C hq hc hC
-    have h1 : |c * q| ≤ C * (1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0)) := by
+    have h1 : |c * q| ≤ C * (1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0)) := by
       rw [abs_mul]
       exact mul_le_mul hc hq (abs_nonneg q) hC
     linarith only [(abs_le.mp h1).1]
-  have hz2le : z ^ 2 ≤ 1 := pow_le_one₀ hz0.le hz1.le
-  have hz3le : z ^ 3 ≤ 1 := pow_le_one₀ hz0.le hz1.le
-  have habs2 : |2 * z ^ 2| ≤ 2 := by
-    rw [abs_of_nonneg (by positivity)]; linarith only [hz2le]
   have habsz2 : |z ^ 2| ≤ 1 := by
-    rw [abs_of_nonneg (by positivity)]; exact hz2le
+    rw [abs_pow]; exact pow_le_one₀ hzA0 hza
+  have habs2 : |2 * z ^ 2| ≤ 2 := by
+    rw [abs_mul, abs_two]; linarith only [habsz2]
   have habs3 : |-(z ^ 3)| ≤ 1 := by
-    rw [abs_neg, abs_of_nonneg (by positivity)]; exact hz3le
+    rw [abs_neg, abs_pow]; exact pow_le_one₀ hzA0 hza
   have habsnz2 : |-(z ^ 2)| ≤ 1 := by rw [abs_neg]; exact habsz2
-  have habsz : |z| ≤ 1 := by rw [abs_of_nonneg hz0.le]; exact hz1.le
+  have habsz : |z| ≤ 1 := hza
   have t1 := step _ _ 2 bSG habs2 (by norm_num)
   have t2 := step _ _ 1 bT1G habs3 zero_le_one
   have t3 := step _ _ 1 bGG habsz2 zero_le_one
@@ -272,7 +274,7 @@ theorem one_sub_sq_mul_geoLagCharge_le {B z L : ℝ} (hF : Continuous F) (hB : 0
   have t6 := step _ _ 1 bT2G habsnz2 zero_le_one
   have t7 := step _ _ 1 bGG1 habsz zero_le_one
   -- collapse the tail into one scalar
-  obtain ⟨P, hP⟩ : ∃ P : ℝ, P = 1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0) := ⟨_, rfl⟩
+  obtain ⟨P, hP⟩ : ∃ P : ℝ, P = 1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0) := ⟨_, rfl⟩
   rw [← hP] at t1 t2 t3 t4 t5 t6 t7
   obtain ⟨E, hE⟩ : ∃ E : ℝ, E = 2 * z ^ 2 * testPairing S G
       + (-(z ^ 3)) * testPairing (fun u => S (u + L)) G
@@ -286,12 +288,13 @@ theorem one_sub_sq_mul_geoLagCharge_le {B z L : ℝ} (hF : Continuous F) (hB : 0
   have hid : z ^ 2 * autoCorr F 0 + z * autoCorr F L - (1 - z ^ 2) * geoLagCharge z L F
       = z ^ 2 * (autoCorr S 0 - autoCorr S (2 * L)) + E := by
     rw [hE, relA, relB, relC]; ring
-  have h8 : 8 * P ≤ 11 * (1 / (1 - z)) * (autoCorr F 0 + 1) * z ^ (N + 1) := by
-    have hc0 : 0 ≤ 1 / (1 - z) * z ^ (N + 1) := by positivity
-    have hrw : 11 * (1 / (1 - z)) * (autoCorr F 0 + 1) * z ^ (N + 1)
-        - 8 * (1 / (1 - z) * (z ^ (N + 1) * autoCorr F 0))
-        = 1 / (1 - z) * z ^ (N + 1) * (3 * autoCorr F 0 + 11) := by ring
-    have hprod : 0 ≤ 1 / (1 - z) * z ^ (N + 1) * (3 * autoCorr F 0 + 11) :=
+  have h8 : 8 * P ≤ 11 * (1 / (1 - |z|)) * (autoCorr F 0 + 1) * |z| ^ (N + 1) := by
+    have hc0 : 0 ≤ 1 / (1 - |z|) * |z| ^ (N + 1) :=
+      mul_nonneg (div_nonneg zero_le_one hzA.le) hzpow
+    have hrw : 11 * (1 / (1 - |z|)) * (autoCorr F 0 + 1) * |z| ^ (N + 1)
+        - 8 * (1 / (1 - |z|) * (|z| ^ (N + 1) * autoCorr F 0))
+        = 1 / (1 - |z|) * |z| ^ (N + 1) * (3 * autoCorr F 0 + 11) := by ring
+    have hprod : 0 ≤ 1 / (1 - |z|) * |z| ^ (N + 1) * (3 * autoCorr F 0 + 11) :=
       mul_nonneg hc0 (by linarith only [h0])
     rw [hP]
     linarith only [hrw, hprod]
@@ -302,7 +305,8 @@ theorem geoLagCharge_le_envelope_sub_discount {B z L : ℝ} (hF : Continuous F) 
     (hsupp : ∀ x, B < |x| → F x = 0) (hz0 : 0 < z) (hz1 : z < 1) (hL : 0 < L) :
     geoLagCharge z L F ≤ z / (1 - z) * autoCorr F 0
       - z / (1 - z ^ 2) * (autoCorr F 0 - autoCorr F L) := by
-  have key := one_sub_sq_mul_geoLagCharge_le hF hB hsupp hz0 hz1 hL
+  have key := one_sub_sq_mul_geoLagCharge_le hF hB hsupp
+    (by rw [abs_of_pos hz0]; exact hz1) hL
   have hpos : (0 : ℝ) < 1 - z ^ 2 := by nlinarith
   have hid : z / (1 - z) * autoCorr F 0 - z / (1 - z ^ 2) * (autoCorr F 0 - autoCorr F L)
       = (z ^ 2 * autoCorr F 0 + z * autoCorr F L) / (1 - z ^ 2) := by
@@ -364,7 +368,8 @@ theorem sub_one_mul_towerCharge_le {p : ℕ} {B : ℝ} (hp : p.Prime) (hF : Cont
   have hz0 : 0 < 1 / Real.sqrt p := by positivity
   have hz1 : 1 / Real.sqrt p < 1 := by rw [div_lt_one hsp0]; exact hsp1
   have hlog : 0 < Real.log p := Real.log_pos hp1
-  have key := one_sub_sq_mul_geoLagCharge_le hF hB hsupp hz0 hz1 hlog
+  have key := one_sub_sq_mul_geoLagCharge_le hF hB hsupp
+    (by rw [abs_of_pos hz0]; exact hz1) hlog
   have hz2 : (1 / Real.sqrt p) ^ 2 = 1 / (p : ℝ) := by rw [div_pow, one_pow, hsq]
   rw [hz2] at key
   have hps : (p : ℝ) / Real.sqrt p = Real.sqrt p := by

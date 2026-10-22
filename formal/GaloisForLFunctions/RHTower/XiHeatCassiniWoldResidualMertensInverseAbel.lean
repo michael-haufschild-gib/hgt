@@ -270,58 +270,6 @@ theorem abs_chebyshevTheta_nat_sub_le_of_mertensA_power
       dsimp only [C]
       nlinarith [hpowPos]
 
-/-- Euler trace correction is negligible at every power strictly below the critical half. -/
-theorem eventually_woldNatTraceCorrection_tail_le_power
-    {eps : ℝ} (heps0 : 0 < eps) :
-    ∀ᶠ N : ℕ in atTop,
-      xiHeatCassiniWoldNatTraceCorrectionMass -
-          xiHeatCassiniWoldNatTraceCorrectionSum N ≤
-        (3 * (1 / (1 / 2 + eps) + 1)) *
-          (N : ℝ) ^ (-(1 / 2 - eps)) := by
-  filter_upwards [eventually_ge_atTop 3] with N hN
-  have htail := xiHeatCassiniWoldNatTraceCorrectionMass_sub_sum_le hN
-  have hNreal : (3 : ℝ) ≤ N := by exact_mod_cast hN
-  have hN0 : (0 : ℝ) < N := by linarith
-  have hN1 : (1 : ℝ) ≤ N := by linarith
-  let alpha : ℝ := 1 / 2 + eps
-  have halpha : 0 < alpha := by dsimp only [alpha]; linarith
-  have hlog := Mertens.log_le_rpow hN0 halpha
-  have hone : (1 : ℝ) ≤ (N : ℝ) ^ alpha := by
-    simpa using Real.rpow_le_rpow_of_exponent_le hN1 halpha.le
-  have hnum : Real.log N + 1 ≤
-      (1 / alpha + 1) * (N : ℝ) ^ alpha := by
-    nlinarith [hlog, hone]
-  have hdiv : (Real.log N + 1) / N ≤
-      (1 / alpha + 1) * (N : ℝ) ^ (-(1 / 2 - eps)) := by
-    rw [div_le_iff₀ hN0]
-    calc
-      Real.log N + 1 ≤ (1 / alpha + 1) * (N : ℝ) ^ alpha := hnum
-      _ = (1 / alpha + 1) * (N : ℝ) ^ (-(1 / 2 - eps)) * N := by
-        symm
-        calc
-          (1 / alpha + 1) * (N : ℝ) ^ (-(1 / 2 - eps)) * N =
-              (1 / alpha + 1) *
-                ((N : ℝ) ^ (-(1 / 2 - eps)) * (N : ℝ) ^ (1 : ℝ)) := by
-            simp only [Real.rpow_one]
-            ring
-          _ = (1 / alpha + 1) *
-              (N : ℝ) ^ (-(1 / 2 - eps) + 1) := by
-            rw [Real.rpow_add hN0]
-          _ = (1 / alpha + 1) * (N : ℝ) ^ alpha := by
-            congr 2
-            dsimp only [alpha]
-            ring
-  calc
-    xiHeatCassiniWoldNatTraceCorrectionMass -
-        xiHeatCassiniWoldNatTraceCorrectionSum N ≤
-      3 * ((Real.log N + 1) / N) := htail
-    _ ≤ 3 * ((1 / alpha + 1) *
-        (N : ℝ) ^ (-(1 / 2 - eps))) :=
-      mul_le_mul_of_nonneg_left hdiv (by norm_num)
-    _ = (3 * (1 / (1 / 2 + eps) + 1)) *
-        (N : ℝ) ^ (-(1 / 2 - eps)) := by
-      dsimp only [alpha]
-      ring
 
 /-- Natural Wold residual decay recovers the centered weighted Mertens decay at the same rate. -/
 theorem exists_mertensA_power_rate_of_woldNatResidual_power_rate

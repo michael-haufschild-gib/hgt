@@ -16,7 +16,7 @@ attribute [-instance] RCLike.innerProductSpace
 def characteristicKernel (nu : ℂ) (y u v : ℝ) : ℂ :=
   riemannKernel nu ((u+v)/2) (y+(u-v)/2) y
 
-private theorem invariant_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
+theorem invariant_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
     (hh : HasDerivAt h dh t) (hx : HasDerivAt x dx t) :
     HasDerivAt (fun r => invariant (h r) (x r) y)
       (dh*invariantTimeFirst (h t) (x t) y+dx*invariantSpaceFirst (h t) (x t) y) t := by
@@ -31,7 +31,7 @@ private theorem invariant_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
   field_simp [hc,hy]
   ring
 
-private theorem invariantTimeFirst_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
+theorem invariantTimeFirst_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
     (hh : HasDerivAt h dh t) (hx : HasDerivAt x dx t) :
     HasDerivAt (fun r => invariantTimeFirst (h r) (x r) y)
       (dh*invariantTimeSecond (h t) (x t) y-
@@ -60,7 +60,7 @@ private def nullInvariantFirst (y u v : ℝ) : ℝ :=
   (invariantTimeFirst ((u+v)/2) (y+(u-v)/2) y+
     invariantSpaceFirst ((u+v)/2) (y+(u-v)/2) y)/2
 
-private theorem nullInvariant_first (y u v : ℝ) :
+theorem nullInvariant_first (y u v : ℝ) :
     HasDerivAt (fun a => invariant ((a+v)/2) (y+(a-v)/2) y)
       (nullInvariantFirst y u v) u := by
   convert! invariant_comp_derivative y u (1/2) (1/2)
@@ -69,7 +69,7 @@ private theorem nullInvariant_first (y u v : ℝ) :
   simp only [nullInvariantFirst,id_eq]
   ring
 
-private theorem nullInvariant_second (y u v : ℝ) :
+theorem nullInvariant_second (y u v : ℝ) :
     HasDerivAt (fun b => invariant ((u+b)/2) (y+(u-b)/2) y)
       ((invariantTimeFirst ((u+v)/2) (y+(u-v)/2) y-
         invariantSpaceFirst ((u+v)/2) (y+(u-v)/2) y)/2) v := by
@@ -79,7 +79,7 @@ private theorem nullInvariant_second (y u v : ℝ) :
   simp only [id_eq]
   ring
 
-private theorem nullInvariant_mixed (y u v : ℝ) :
+theorem nullInvariant_mixed (y u v : ℝ) :
     HasDerivAt (nullInvariantFirst y u)
       ((invariantTimeSecond ((u+v)/2) (y+(u-v)/2) y-
         invariantSpaceSecond ((u+v)/2) (y+(u-v)/2) y)/4) v := by

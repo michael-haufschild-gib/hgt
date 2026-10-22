@@ -18,7 +18,7 @@ equivalences; the theory never asserts such a premise.
 
 ## The shared target: the sign of the critical arithmetic form
 
-Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -45,6 +45,13 @@ of a finite critical energy along a parameter — damping, coefficient cutoff or
 certificate at one parameter becomes a certificate at another, with the observation horizon
 quantified uniformly throughout.
 
+The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
+supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
+from its data to the observables it actually uses — and each reading has an exact resolution limit:
+the best bound on the target invariant that any method reading it can prove. The layer computes
+those limits, so a route can be priced before it is built, and states the separations a reading must
+perform to be admissible at all.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -53,7 +60,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the eight programmes build
+scale. No existing field has its basic objects built with all three; the nine programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -84,18 +91,31 @@ them.
    one complete signed pairing on each compact subinterval, which is weaker than a bound on the
    corresponding norm and already yields an explicit zero-free strip when it covers only part of
    the range (`ArithmeticContinuationAndCriticalEnergy`).
+7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
+   realise the maximum of the invariant it claims to bound. On the zero side this forces the
+   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
+   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
+   separated from each of its single-index perturbations
+   (`ScaleSignedIncidenceCriticality`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
   about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero.
+- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
+  preference: the worst width inside a joint certificate over a family of any cardinality is the
+  trivial one, because the extremal datum is already uniform across the family.
 - *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
   controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram.
+  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
+  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
+  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
 - *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`).
+  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
+  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
+  between; the incidence face admits no sampling at all, since every prime power is individually
+  necessary.
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
 - *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
@@ -103,12 +123,21 @@ them.
   parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction.
+  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
+  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
+  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
+  aperture leaves it intact.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
   `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
-  Identities, finite classifications and nonselective positivity count as zero in these units.
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
+  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
+  classifications and nonselective positivity count as zero in these units.
+- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
+  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
+  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
+  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
+  of the family a partial result reaches.
 - *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
   (`BiScaleUncertainty`).
 - *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
@@ -163,6 +192,18 @@ units (the three faces).
   of the one critical form the three faces state through lags, apertures and incidence; the
   critical-scale receiver `D(T) ≤ B(1+T)e^{T/2}` of `ArithmeticPositivityTheory` is the
   Chebyshev-level form of the same square-root barrier that §1.3 states for rows.
+- **Arithmetic Continuation and Critical Energy differentiates the receiver in the damping.** BVI
+  owns the receiver at a fixed damping and the chain whose time parameter the damping is; the
+  continuation layer owns the transport in that parameter, and the two meet in one identity: the
+  derivative of the critical energy is twice a complete signed pairing, equal to BVI's
+  flux-minus-jump-minus-forcing balance of the arithmetic chain. The damping threshold of the
+  receiver is exactly the zero width, so the chain's small-time limit is the critical end of the
+  transport, and the entrance-tail barrier says which norm cannot carry it there.
+- **Scale-Signed Incidence Criticality prices the Gram and the dispersion.** A new dispersion
+  estimate is admissible only if the reading it uses separates the gate pairs; for the cross-scale
+  form of §3.13 the relevant reading is the pronic Gram at one modulus, and its exact limit in the
+  exponent unit $\theta$ is the quantity a route should report. The coherent prime block of the
+  Type-II no-go is the witness that fixes it.
 - **RHTower supplies the analytic inputs**: the PM lane (power-damped Möbius Ramanujan weights,
   cofactor rows, the receiver's zero-translation converse), the sieve library (Farey-point large
   sieve infrastructure, Kuzmin–Landau, Vinogradov–Korobov, Mertens rates, Selberg and
@@ -471,6 +512,27 @@ counterparts. The **cofactor row** $w_{\varepsilon,Q}$ carries the power-damped 
 $Y_\varepsilon(q)=\operatorname{Re}\sum_{m\ge1}\mu(qm)(qm)^{-1-\varepsilon}$ as its Selberg
 coordinates at level $Q+1$; the pronic mean of its prefix discrepancy is the **energy mean**
 $m(\varepsilon,Q)$ and the pronic variance the **energy variance** $V(\varepsilon,Q)$.
+
+**The damping chain.** The same damped source has a probabilistic reading, and it is exact. The
+Cesàro transform of the damped divisor transition,
+$$
+P_\eta(n,k)=\frac kn\Bigl(k^{-\eta}\,\mathcal A_\eta\!\left(\lfloor n/k\rfloor\right)
+-(k+1)^{-\eta}\,\mathcal A_\eta\!\left(\lfloor n/(k+1)\rfloor\right)\Bigr),
+$$
+with $\mathcal A_\eta$ the damped divisor prefix, is a **stochastic kernel on the positive states**
+at every $\eta\ge0$: its rows are nonnegative, supported on $k\le n$, of total mass one, with
+diagonal $P_\eta(n,n)=n^{-\eta}$, and they compose exactly, $P_sP_t=P_{s+t}$ — an algebraic
+identity for all real parameters and a Markov semigroup law for nonnegative ones. As the starting
+state grows the rows converge to the **entrance law**
+$$
+e_\eta(k)=\rho_\eta\,k\bigl(k^{-1-\eta}-(k+1)^{-1-\eta}\bigr),\qquad \sum_{k\ge1}e_\eta(k)=1,
+\quad\rho_\eta=\operatorname{Re}\frac1{\zeta(1+\eta)} ,
+$$
+the discrete derivative of the zeta power law, size-biased by $k$. Its **entrance tail**
+$\sum_{k>N}e_\eta(k)$ and the row's **total variation** against it are the absolute observables of
+the chain; the **reciprocal observable** divides out the size bias and telescopes exactly. The
+damping is the chain's time parameter, so the receiver's damping limit $\varepsilon\to0^+$ is the
+chain's small-time limit.
 
 The **Fermi–Nyman cells** $I_n=(\frac1{n+1},\frac1n]$ have Lebesgue measure $\frac1{n(n+1)}$: the
 pronic measure is Lebesgue measure on $(0,1]$ read through the cells. The cell response of a row
@@ -1261,6 +1323,53 @@ $(\log T)^{1/10}(\log\log T)^{-5/3}$, and the extra width is paid by Vinogradov'
 theorem, that is by the additive structure of $\mathbb N$. The band is the first receiver
 statement of this programme that is selective against Beurling systems.
 
+### 3.16 The damping chain: compactness, the entrance tail, and the residual cusp
+
+The chain of §2.8 gives the damped source an operator calculus, and the calculus locates the
+obstruction precisely where the martingale analysis puts it: in the signed source, not in the
+absolute size of the rows.
+
+**Centering, compactness and the semigroup.** Coordinatewise convergence of the stochastic rows to
+the entrance law upgrades to convergence in absolute sum, by the counting form of Scheffé's
+theorem: $\sum_k\lvert P_\eta(n+1,k+1)-e_\eta(k+1)\rvert\to0$. Hence the **centered operator**
+$\mathring P_\eta=P_\eta-e_\eta$, acting on sequences vanishing at infinity, is bounded with norm at
+most two — only positivity and the two unit masses are used — and truncating its output coordinates
+converges to it in operator norm, so $\mathring P_\eta$ is a **compact operator on $c_0$** at every
+positive damping. Centering is compatible with composition: the finite transition composes with no
+hypothesis on the input, the centering discrepancy is a coordinate-constant, and both outputs vanish
+at infinity, so the constant is zero and the centered operators form the exact positive-time
+semigroup $\mathring P_s\mathring P_t=\mathring P_{s+t}$. The argument never interchanges two
+infinite sums, which is why the positive-state convention is kept explicit.
+
+**The entrance tail is the absolute barrier, and only the absolute one.** Size bias converts the
+exact reciprocal tail into a lower bound for the probability tail,
+$$
+\rho_\eta\,(N+1)^{-\eta}\ \le\ \sum_{k>N}e_\eta(k),
+$$
+so the entrance tail — and with it the $\ell^1$ row error and the total variation, which dominate it
+— has **non-square-summable** decay at every damping $\eta\le\tfrac12$. The reciprocal observable
+behaves oppositely: its omitted tail is square-summable at every positive damping, with the
+damping-free majorant $1/N$. The threshold $\tfrac12$ of the chain is therefore a statement about
+absolute row control, not about the source the receiver reads: total variation is the wrong norm
+below half damping, and the observable that survives is the one with the size bias removed.
+Compactness, likewise, is a statement on $c_0$ and not on the pronic $\ell^2$ where the critical
+energy lives.
+
+**The residual has a linear cusp.** The Báez-Duarte residual of the damped source at finite horizon,
+$R(\varepsilon,T)=\sum_{n\le T}(\tilde{\mathcal A}_\varepsilon(n)-1)^2/(n(n+1))$, admits an
+unconditional positive floor linear in the damping: there are $\kappa>0$ and $\delta>0$ with
+$$
+\kappa\,\varepsilon\ <\ R(\varepsilon,T)\quad\text{for some finite }T,\qquad
+\text{every }0<\varepsilon<\delta,
+$$
+and the constant is supplied by a critical zero, $\kappa=1/(4\lvert\rho\rvert^2)$. The mechanism is
+a step-source Mellin identity for the residual read on the reciprocal unit interval: the step
+correction contributes $-r\,\zeta(s)/s$ rather than the continuous pole term, and evaluating at
+$s=\rho+\varepsilon$ makes a critical zero detect the residual **at distance exactly the damping**.
+Neither RH nor admission is assumed, and the statement is about finite horizons. So the approach to
+the Báez-Duarte infimum cannot be faster than linear in the damping: any route that needs
+$R(\varepsilon,T)=o(\varepsilon)$ is refuted, and the zeros on the line are what refutes it.
+
 ---
 
 ## 4. Traps and sharp boundaries
@@ -1283,6 +1392,9 @@ statement of this programme that is selective against Beurling systems.
 | The pronic Gram is an infinite, analytic object. | It is a finite cotangent–sawtooth sum in two moduli; its positivity alone yields the cotangent moment law and the Vasyunin reciprocity law with explicit errors. |
 | The three Grams are interchangeable. | $\mathcal G$, $\mathcal G^{\mathrm{ec}}$ and $\mathcal G^{\mathrm{mc}}$ differ by rank-one terms in $\Lambda$ and $\varphi/2-\Lambda$; positivity holds for $\mathcal G^{\mathrm{ec}}$, the dilation laws change their inhomogeneous term with the centering. |
 | The Báez-Duarte criterion is foreign to the theory. | Its residual is the pronic energy of $1+L_N(M,c)$, equal to $(1-\mathcal R(c))^2+Q^{\mathrm{ec}}(c)$; RH is an exact statement about rows. |
+| The damped Báez-Duarte residual can be made $o(\varepsilon)$. | It cannot: a critical zero gives the unconditional floor $\kappa\varepsilon$ with $\kappa=1/(4\lvert\rho\rvert^2)$ at arbitrarily small damping and some finite horizon (§3.16). The approach to the infimum is at best linear in the damping. |
+| Total-variation convergence of the chain's rows controls the receiver. | The entrance tail is at least $\rho_\eta(N+1)^{-\eta}$, so neither it nor the total variation is square-summable for $\eta\le\tfrac12$; what is square-summable at every positive damping is the reciprocal observable's omitted tail, majorant $1/N$. The obstruction is absolute row control, not the signed source. |
+| Compactness of the centered transition bounds the critical energy. | Compactness holds on $c_0$; the receiver is a pronic $\ell^2$ quantity and no $c_0$ statement reaches it. |
 | A small readout defect or a small centered energy alone is progress. | They are coupled by the unconditional floor $\kappa/\log N$ and the uncertainty principle $\kappa\mathcal R^2\le(\log N-\kappa)Q^{\mathrm{ec}}$; only their simultaneous decay is RH. |
 | Summation by parts is an estimate. | Along $n$ it is the product rule in reverse and returns $E_T$ with coefficient $1$; it never yields $(1-\delta)E_T$. |
 | Changing the kernel is harmless. | Replacing $w_T(n)=\frac1{n+1}-\frac1{T+1}$ by $H_T-H_n$, or dropping the second difference of the active component from $\tilde\tau_\varepsilon(n+1)=\Delta I_\varepsilon(n)+\Delta^2S_\varepsilon(n)$, changes the target. |
@@ -1367,6 +1479,16 @@ missing is the signed sum over moduli.
    with $\delta>0$, equivalent to the receiver. Identities cannot produce it; a signed
    arithmetic input across moduli must.
 
+**The damping chain.** The chain is a Markov semigroup in the damping with a compact centered
+generator on $c_0$, an exactly computed entrance law, and an entrance tail that is not
+square-summable below half damping while the reciprocal observable is. What the spectrum of the
+centered compact operator is, whether its eigenvalues or its small-time expansion read the zeros,
+and whether the chain has a version acting on the pronic $\ell^2$ — where compactness would bear on
+the receiver instead of on $c_0$ — are open. The residual's linear cusp fixes the rate on the other
+side: the approach to the Báez-Duarte infimum is at best linear in the damping, with an explicit
+constant from one critical zero, so a quantitative form of RH in these coordinates must be a
+statement about the constant, not about the exponent.
+
 **Other open boundaries.** The sharp observability horizon at arbitrary phase: $\Phi(N)$ is the
 shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the
 gap between a quadratic universal horizon and a linear special one is open, and any linear law
@@ -1396,6 +1518,11 @@ cells, which are positive when the cells share a factor and start together.
    divisor-sum data cannot see (mechanism 5).
 5. **Selectivity.** Each exact law is arithmetic and fails for Beurling systems by construction; say
    for each estimate whether it still distinguishes `ζ` from `ζ(s−a)ζ(s+a)`.
+6. **The chain on the right norm.** Carry the compactness and the semigroup law of the centered
+   damped transition from `c₀` to the pronic `ℓ²`, or show no such version exists. The entrance-tail
+   barrier closes the absolute norms below half damping, so whatever carries the receiver there must
+   be built from the signed source; the chain's small-time expansion is the natural place to look,
+   since the damping is its time.
 
 ---
 

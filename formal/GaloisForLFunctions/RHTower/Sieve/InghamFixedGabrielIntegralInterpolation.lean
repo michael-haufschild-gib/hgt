@@ -84,7 +84,7 @@ theorem inghamFixedGabrielCenterMoment_interpolate
   apply inghamFixedGabrielCenterMoment_interpolate_of_vertical_continuous
     (fun z _ => hf.comp (by fun_prop)) T L R hL hR hd hB hleftMoment hrightMoment
 
-private theorem rpow_le_max_one_of_le
+theorem rpow_le_max_one_of_le
     {x C e : ℝ} (hx : 0 ≤ x) (hxC : x ≤ C) (he0 : 0 ≤ e) (he1 : e ≤ 1) :
     x ^ e ≤ max 1 C := by
   by_cases hx1 : x ≤ 1

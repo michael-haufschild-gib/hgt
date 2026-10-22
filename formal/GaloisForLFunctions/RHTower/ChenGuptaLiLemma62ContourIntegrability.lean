@@ -56,7 +56,7 @@ private theorem cglLemma62_kernel_one_add_abs_cube_integrable
     _ = 4 * (‖cglLemma62MellinTransform w ((σ : ℂ) + (v : ℂ) * I)‖ +
         |v| ^ 3 * ‖cglLemma62MellinTransform w ((σ : ℂ) + (v : ℂ) * I)‖) := by ring
 
-private theorem cglLemma62_shifted_cubic_le
+theorem cglLemma62_shifted_cubic_le
     (t v : ℝ) :
     (2 + |v - t|) ^ 3 ≤ (2 + |t|) ^ 3 * (1 + |v|) ^ 3 := by
   have hbase : 2 + |v - t| ≤ (2 + |t|) * (1 + |v|) := by

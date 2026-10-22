@@ -74,7 +74,7 @@ theorem cglLemma62DirichletHead_differentiable (χ : DirichletCharacter ℂ q) (
   filter_upwards with z
   simp only [Finset.sum_apply]
 
-private theorem cglLemma62FiniteContour_shift_mapsTo (t : ℝ) :
+theorem cglLemma62FiniteContour_shift_mapsTo (t : ℝ) :
     Set.MapsTo (fun z : ℂ => z - (t : ℂ) * I)
       (GaloisForLFunctions.HTGeometry.verticalStrip (-1) (1 / 2))
       (GaloisForLFunctions.HTGeometry.verticalStrip (-1) (1 / 2)) := by

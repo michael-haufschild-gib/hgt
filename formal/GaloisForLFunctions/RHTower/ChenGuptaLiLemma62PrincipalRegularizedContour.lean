@@ -115,11 +115,8 @@ theorem cglLemma62PrincipalRegularizedTailContourIntegrand_eq_line
 private theorem cglLemma62PrincipalRegularizedContour_shift_mapsTo (t : ℝ) :
     Set.MapsTo (fun z : ℂ => z - (t : ℂ) * I)
       (GaloisForLFunctions.HTGeometry.verticalStrip (-1) (1 / 2))
-      (GaloisForLFunctions.HTGeometry.verticalStrip (-1) (1 / 2)) := by
-  intro z hz
-  change (-1 : ℝ) ≤ (z - (t : ℂ) * I).re ∧
-    (z - (t : ℂ) * I).re ≤ (1 / 2 : ℝ)
-  simpa [GaloisForLFunctions.HTGeometry.verticalStrip] using hz
+      (GaloisForLFunctions.HTGeometry.verticalStrip (-1) (1 / 2)) :=
+  cglLemma62FiniteContour_shift_mapsTo t
 
 /-- The principal finite reflected carrier is holomorphic throughout CGL's
 left-to-critical displacement strip. -/

@@ -23,7 +23,7 @@ structure CGLLemma62FiniteVerticalAbscissa where
   lower : (-1 : ℝ) ≤ value
   upper : value ≤ 1 / 2
 
-private theorem cglLemma62_abs_rpow_tail_integrable {r c : ℝ}
+theorem cglLemma62_abs_rpow_tail_integrable {r c : ℝ}
     (hr : r < -1) (hc : 0 < c) :
     IntegrableOn (fun y : ℝ => |y| ^ r) {y : ℝ | c < |y|} := by
   have hset : {y : ℝ | c < |y|} = Iio (-c) ∪ Ioi c := by

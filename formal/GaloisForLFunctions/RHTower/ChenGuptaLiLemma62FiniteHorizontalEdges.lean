@@ -27,7 +27,7 @@ structure CGLLemma62FiniteHorizontalPoint (t : ℝ) where
   y_large : 1 ≤ |y|
   shifted_large : 2 ≤ |y - t|
 
-private theorem cglLemma62_finite_shifted_one_add_absPow_le
+theorem cglLemma62_finite_shifted_one_add_absPow_le
     (t y : ℝ) (n : ℕ) :
     (1 + |y - t|) ^ n ≤ (1 + |t|) ^ n * (1 + |y|) ^ n := by
   have hbase : 1 + |y - t| ≤ (1 + |t|) * (1 + |y|) := by

@@ -344,13 +344,6 @@ private lemma slope_analytic {N : ℕ} (hN : 0 < N) : AnalyticAt ℂ (symSlope N
     have hq' : AnalyticAt ℂ (logDeriv (pairedEtaFiniteLaplacePartition N)) ((fun z : ℂ => 1/2-z) 0) := by simpa only [sub_zero] using hq
     exact hq'.comp (f := fun z : ℂ => 1/2-z) (analyticAt_const.sub analyticAt_id)
   exact hplus.sub hminus
-private lemma sum_range_two (f : ℕ → ℂ) (n : ℕ) :
-    ∑ i ∈ Finset.range (2*n), f i = ∑ j ∈ Finset.range n, (f (2*j) + f (2*j+1)) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [show 2*(n+1)=2*n+1+1 by omega, Finset.sum_range_succ,
-      Finset.sum_range_succ, ih, Finset.sum_range_succ]
     ring
 private lemma sym_recurrence {N : ℕ} (hN : 0 < N) (n : ℕ) :
     iteratedDeriv (2*n+2) (symLaplace N) 0 =
@@ -379,7 +372,7 @@ variable {c : ℕ → ℝ} {R : ℝ}
 private lemma gTerm_nonneg (hc : ∀j, 0<c j) (t : ℝ) (j : ℕ) : 0 ≤ gTerm c t j := by
   rw [gTerm, pow_mul]
   exact mul_nonneg (hc j).le (pow_nonneg (sq_nonneg t) j)
-private lemma norm_gTerm_le (hc : ∀j, 0<c j) (hR : 0 ≤ R)
+lemma norm_gTerm_le (hc : ∀j, 0<c j) (hR : 0 ≤ R)
     (hbound : ∀j, c j  ≤  R^j/(j.factorial:ℝ)) {t T : ℝ} (ht : |t| ≤ T) (j : ℕ) :
     ‖gTerm c t j‖  ≤  (R*T^2)^j/(j.factorial:ℝ) := by
   rw [gTerm, norm_mul, Real.norm_eq_abs, abs_of_pos (hc j), norm_pow, Real.norm_eq_abs]
@@ -388,11 +381,11 @@ private lemma norm_gTerm_le (hc : ∀j, 0<c j) (hR : 0 ≤ R)
       mul_le_mul (hbound j) (pow_le_pow_left₀ (abs_nonneg t) ht _)
         (pow_nonneg (abs_nonneg t) _) (by positivity)
     _ = _ := by rw [mul_pow, ← pow_mul]; ring
-private lemma summable_gTerm (hc : ∀j, 0<c j) (hR : 0 ≤ R)
+lemma summable_gTerm (hc : ∀j, 0<c j) (hR : 0 ≤ R)
     (hbound : ∀j, c j  ≤  R^j/(j.factorial:ℝ)) (t : ℝ) : Summable (gTerm c t) :=
   (Real.summable_pow_div_factorial (R*|t|^2)).of_norm_bounded
     (fun j => norm_gTerm_le hc hR hbound (le_refl |t|) j)
-private lemma summable_degree_pow (r : ℝ) :
+lemma summable_degree_pow (r : ℝ) :
     Summable (fun j : ℕ => (2*j:ℝ)*r^j/(j.factorial:ℝ)) := by
   apply (summable_nat_add_iff 1).1
   have h := (Real.summable_pow_div_factorial r).mul_left (2*r)
@@ -403,7 +396,7 @@ private lemma summable_degree_pow (r : ℝ) :
   have hf : (j.factorial:ℝ) ≠ 0 := by positivity
   have hj : (j+1:ℝ) ≠ 0 := by positivity
   field_simp
-private lemma summable_gWeighted (hc : ∀j, 0<c j) (hR : 0 ≤ R)
+lemma summable_gWeighted (hc : ∀j, 0<c j) (hR : 0 ≤ R)
     (hbound : ∀j, c j  ≤  R^j/(j.factorial:ℝ)) (t : ℝ) :
     Summable (fun j : ℕ => (2*j:ℝ)*gTerm c t j) := by
   apply (summable_degree_pow (R*|t|^2)).of_norm_bounded
@@ -442,7 +435,7 @@ private lemma continuous_gKernel (hc : ∀j, 0<c j) (hR : 0 ≤ R)
     exact le_of_lt (by simpa [Metric.mem_ball, Real.dist_eq] using ht)
   exact hcT.continuousAt (Metric.isOpen_ball.mem_nhds (by simp [Metric.mem_ball, T]))
 private def gDerivTerm (c : ℕ → ℝ) (t : ℝ) (j : ℕ) := c j*(2*j:ℝ)*t^(2*j-1)
-private lemma norm_gDerivTerm_le (hc : ∀j, 0<c j) (hR : 0 ≤ R)
+lemma norm_gDerivTerm_le (hc : ∀j, 0<c j) (hR : 0 ≤ R)
     (hbound : ∀j, c j  ≤  R^j/(j.factorial:ℝ)) {t T : ℝ} (hT : 1 ≤ T) (ht : |t| ≤ T) (j : ℕ) :
     ‖gDerivTerm c t j‖  ≤  (2*j:ℝ)*(R*T^2)^j/(j.factorial:ℝ) := by
   have hpow : |t|^(2*j-1)  ≤  T^(2*j) :=
@@ -457,7 +450,7 @@ private lemma norm_gDerivTerm_le (hc : ∀j, 0<c j) (hR : 0 ≤ R)
       · positivity
       · positivity
     _ = _ := by rw [mul_pow, ← pow_mul]; ring
-private lemma hasDerivAt_gKernel (hc : ∀j, 0<c j) (hR : 0 ≤ R)
+lemma hasDerivAt_gKernel (hc : ∀j, 0<c j) (hR : 0 ≤ R)
     (hbound : ∀j, c j  ≤  R^j/(j.factorial:ℝ)) (t : ℝ) :
     HasDerivAt (gKernel c) (∑'j, gDerivTerm c t j) t := by
   let T : ℝ := |t|+1
@@ -472,7 +465,7 @@ private lemma hasDerivAt_gKernel (hc : ∀j, 0<c j) (hR : 0 ≤ R)
       (le_of_lt (by simpa [Metric.mem_ball, Real.dist_eq] using hy)) j)
     (by simp [Metric.mem_ball, T]; positivity)
     (summable_gTerm hc hR hbound 0) (by simp [Metric.mem_ball, T])
-private lemma gKernel_mul_deriv (hc : ∀j, 0<c j) (hR : 0 ≤ R)
+lemma gKernel_mul_deriv (hc : ∀j, 0<c j) (hR : 0 ≤ R)
     (hbound : ∀j, c j  ≤  R^j/(j.factorial:ℝ)) (t : ℝ) :
     t*deriv (gKernel c) t = gWeighted c t := by
   rw [(hasDerivAt_gKernel hc hR hbound t).deriv, gWeighted, ← tsum_mul_left]
@@ -604,14 +597,14 @@ private def dividedPower (n : ℕ) (t : ℝ) : ℝ := t^n/(n.factorial:ℝ)
 @[fun_prop] private theorem continuous_dividedPower (n : ℕ) : Continuous (dividedPower n) := by
   unfold dividedPower
   fun_prop
-private theorem dividedPower_deriv (n : ℕ) (t : ℝ) :
+theorem dividedPower_deriv (n : ℕ) (t : ℝ) :
     HasDerivAt (dividedPower (n+1)) (dividedPower n t) t := by
   have h := ((hasDerivAt_id t).pow (n+1)).div_const ((n+1).factorial:ℝ)
   convert h using 1 <;> try rfl
   simp only [dividedPower, id_eq, Nat.add_sub_cancel, Nat.factorial_succ,
     Nat.cast_mul, Nat.cast_add, Nat.cast_one, mul_one]
   field_simp
-private theorem integral_dividedPower_convolution (p q : ℕ) (t : ℝ) :
+theorem integral_dividedPower_convolution (p q : ℕ) (t : ℝ) :
     ∫ s in 0..t, dividedPower p s * dividedPower q (t-s) =
       dividedPower (p+q+1) t := by
   induction q generalizing p with
@@ -661,15 +654,15 @@ private def pTerm (p : ℕ→ℝ) (t : ℝ) (j : ℕ) : ℝ := p j*t^(2*j+1)
 private def pResponse (p : ℕ→ℝ) (t : ℝ) : ℝ := ∑'j, pTerm p t j
 private def pBlock (p c : ℕ→ℝ) (t s : ℝ) (n : ℕ) : ℝ :=
   ∑j∈Finset.range (n+1), pTerm p s j*gTerm c (t-s) (n-j)
-private lemma pTerm_bound {p : ℕ→ℝ} {s T : ℝ} (hT : 0 ≤ T) (hs : |s| ≤ T) (j : ℕ) :
+lemma pTerm_bound {p : ℕ→ℝ} {s T : ℝ} (hT : 0 ≤ T) (hs : |s| ≤ T) (j : ℕ) :
     ‖pTerm p s j‖  ≤  ‖pTerm p T j‖ := by
   simp only [pTerm, norm_mul, norm_pow, Real.norm_eq_abs, abs_of_nonneg hT]
   exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (abs_nonneg s) hs _) (abs_nonneg _)
-private lemma pBlock_hasSum {p c : ℕ→ℝ} (hp : ∀t, Summable (fun j=>‖pTerm p t j‖))
+lemma pBlock_hasSum {p c : ℕ→ℝ} (hp : ∀t, Summable (fun j=>‖pTerm p t j‖))
     (hc : ∀j, 0<c j) {R : ℝ} (hR : 0 ≤ R) (hbound : ∀j, c j ≤ R^j/(j.factorial:ℝ)) (t s : ℝ) :
     HasSum (pBlock p c t s) (pResponse p s*gKernel c (t-s)) :=
   hasSum_sum_range_mul_of_summable_norm (hp s) (summable_gTerm hc hR hbound (t-s)).norm
-private lemma integral_pTerm_mul_gTerm (p c : ℕ→ℝ) (j k : ℕ) (t : ℝ) :
+lemma integral_pTerm_mul_gTerm (p c : ℕ→ℝ) (j k : ℕ) (t : ℝ) :
     (∫s in (0:ℝ)..t, pTerm p s j*gTerm c (t-s) k) =
       p j*c k*((2*j+1).factorial:ℝ)*((2*k).factorial:ℝ)*dividedPower (2*j+2*k+2) t := by
   have heq : (fun s : ℝ=>pTerm p s j*gTerm c (t-s) k) =
@@ -684,7 +677,7 @@ private lemma integral_pTerm_mul_gTerm (p c : ℕ→ℝ) (j k : ℕ) (t : ℝ) :
   congr 1
   congr 1
   omega
-private lemma integral_pBlock {p c : ℕ→ℝ}
+lemma integral_pBlock {p c : ℕ→ℝ}
     (hrec : ∀n, 2*(∑j∈Finset.range (n+1), p j*c (n-j)*((2*j+1).factorial:ℝ)*((2*(n-j)).factorial:ℝ)) =
       (2*n+2:ℝ)*c (n+1)*((2*n+2).factorial:ℝ)) (n : ℕ) (t : ℝ) :
     2*(∫s in (0:ℝ)..t, pBlock p c t s n) = (2*(n+1):ℝ)*gTerm c t (n+1) := by
@@ -707,7 +700,7 @@ private lemma integral_pBlock {p c : ℕ→ℝ}
     apply Continuous.intervalIntegrable
     unfold pTerm gTerm
     fun_prop
-private lemma pResponse_volterra {p c : ℕ→ℝ} (hp : ∀t, Summable (fun j=>‖pTerm p t j‖))
+lemma pResponse_volterra {p c : ℕ→ℝ} (hp : ∀t, Summable (fun j=>‖pTerm p t j‖))
     (hc : ∀j, 0<c j) {R : ℝ} (hR : 0 ≤ R) (hbound : ∀j, c j ≤ R^j/(j.factorial:ℝ))
     (hrec : ∀n, 2*(∑j∈Finset.range (n+1), p j*c (n-j)*((2*j+1).factorial:ℝ)*((2*(n-j)).factorial:ℝ)) =
       (2*n+2:ℝ)*c (n+1)*((2*n+2).factorial:ℝ)) {t : ℝ} (ht : 0 ≤ t) :

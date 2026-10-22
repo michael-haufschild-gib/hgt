@@ -571,7 +571,7 @@ theorem thetaTailPacketSeparation_pos : 0 < thetaTailPacketSeparation := by
   linarith
 
 /-- Geometric off-diagonal row sums are bounded by two geometric tails, `2q/(1-q)`. -/
-private theorem geom_row_sum_le {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (n i : ℕ) :
+theorem geom_row_sum_le {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (n i : ℕ) :
     ∑ j ∈ (Finset.range n).erase i, q ^ Nat.dist i j ≤ 2 * (q / (1 - q)) := by
   have h1q : (0 : ℝ) < 1 - q := by linarith
   have htail : ∀ m : ℕ, ∑ k ∈ Finset.range m, q ^ (k + 1) ≤ q / (1 - q) := by

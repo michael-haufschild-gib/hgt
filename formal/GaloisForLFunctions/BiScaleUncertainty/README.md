@@ -20,7 +20,7 @@ through criteria whose premise is an explicit energy bound; no theorem asserts s
 
 ## The shared target: the sign of the critical arithmetic form
 
-Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -47,6 +47,13 @@ of a finite critical energy along a parameter — damping, coefficient cutoff or
 certificate at one parameter becomes a certificate at another, with the observation horizon
 quantified uniformly throughout.
 
+The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
+supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
+from its data to the observables it actually uses — and each reading has an exact resolution limit:
+the best bound on the target invariant that any method reading it can prove. The layer computes
+those limits, so a route can be priced before it is built, and states the separations a reading must
+perform to be admissible at all.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -55,7 +62,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the eight programmes build
+scale. No existing field has its basic objects built with all three; the nine programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -86,18 +93,31 @@ them.
    one complete signed pairing on each compact subinterval, which is weaker than a bound on the
    corresponding norm and already yields an explicit zero-free strip when it covers only part of
    the range (`ArithmeticContinuationAndCriticalEnergy`).
+7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
+   realise the maximum of the invariant it claims to bound. On the zero side this forces the
+   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
+   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
+   separated from each of its single-index perturbations
+   (`ScaleSignedIncidenceCriticality`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
   about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero.
+- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
+  preference: the worst width inside a joint certificate over a family of any cardinality is the
+  trivial one, because the extremal datum is already uniform across the family.
 - *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
   controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram.
+  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
+  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
+  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
 - *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`).
+  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
+  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
+  between; the incidence face admits no sampling at all, since every prime power is individually
+  necessary.
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
 - *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
@@ -105,12 +125,21 @@ them.
   parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction.
+  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
+  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
+  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
+  aperture leaves it intact.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
   `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
-  Identities, finite classifications and nonselective positivity count as zero in these units.
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
+  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
+  classifications and nonselective positivity count as zero in these units.
+- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
+  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
+  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
+  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
+  of the family a partial result reaches.
 - *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
   (`BiScaleUncertainty`).
 - *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
@@ -128,7 +157,10 @@ statement that holds verbatim for a Beurling system with an off-line zero is not
 claimed cofinal sign or cancellation must reproduce its counterpart over `F_q[T]` or name the step
 that uses `ℤ`. It supplies to `ArithmeticIncidencePositivity` and
 `ArithmeticCriticalityTheory` the exact slack of the blind polar class and to `SquareRootThreshold`
-the band energy law.
+the band energy law. It also owns the exponent dictionary of the barrier: the Chebyshev mean square,
+the Laplace energy, the band energy and the two-exponential pole compression all have one
+exponential rate, and that rate is the zero width — so a partial estimate on any of them is read
+off as an explicit zero-free strip rather than as progress towards a sign.
 
 ### How the programme connects to the other programmes
 
@@ -179,6 +211,21 @@ arithmetic.
   theorem with error term, the Selberg and Barban–Vehov diagonals, the Fermi–Nyman generators, the
   CHMD graph mollification and the Weil deletion test kit. The blind symbol slacks of §3.6 refine
   RHTower's prime-blind archimedean constants, whose full-grid zero-pole version is RH.
+- **Arithmetic Continuation and Critical Energy transports what this programme measures.** The
+  continuation layer's own calibration is a BiScale-style model computation: over `F_q[T]` the
+  degree-wise Möbius sums vanish beyond degree one, the centred damped prefix is exactly constant,
+  the critical energy is bounded by one uniformly in the damping and the horizon, and the
+  continuation budget is zero — so the whole number-field difficulty sits in the absence of that
+  cancellation, not in the shape of the transport. In the other direction BiScale's exponent
+  dictionary is what gives the continuation layer its units: a partial transport above a damping
+  `a₀` reports the strip `½ + a₀`, in the same width unit as the band rate.
+- **Scale-Signed Incidence Criticality turns the node criticality into a statement about methods.**
+  Node criticality is the deletion law of §3.16; the admissibility layer proves that no reading
+  unchanged by finitely many nodes resolves node positivity, classifies the positive node sets as
+  the principal up-set generated by the prime powers, and attaches the number `(smallest prime
+  power)⁻¹ = ½` to the face. The `½` of the node face and the `½` of the band's extremal depth are
+  independent arithmetic facts that happen to coincide: the first because `2` is the first prime
+  power, the second because `½` is the deepest an off-line zero can sit.
 - **Calibration duty.** BiScale owns the test models of the shared criteria: the shifted pair
   `ζ(s−a)ζ(s+a)`, Beurling systems with an off-line zero, the Liouville twist and `F_q[T]`. The
   twist invariance of window spectra (§3.16) is the first calibration theorem: window extremes
@@ -764,6 +811,27 @@ dyadic mean square summed through the gauge dictionary), every subexponential ba
 hence $\int_0^L\tilde E^2=e^{o(L)}$ already forces $O(L)$. No growth strictly between linear and
 exponential is possible. Both directions of "RH $\iff$ linear band" are theorems in the field.
 
+**The two-by-two pole criterion reads the same exponent, and it reads a size, not a sign.**
+Compressing the restricted Weil form onto the two polar exponentials leaves a $2\times2$ matrix,
+and RH is the statement that its cross entry never exceeds its diagonal at any aperture. The
+mechanism behind that criterion is an identification: the cross entry *is* the integrated Chebyshev
+deficit $D(2a)=\int_0^{2a}(e^t-\psi(e^t))\,dt$, up to its Gamma boundary mass and an explicit linear
+radius correction. Three consequences follow, all in the band's own unit.
+
+* *Size, not sign.* A bound $\lvert\text{cross}(a)\rvert\le Ce^{a}$ at every aperture already gives
+  RH, with no reference to the diagonal and no sign. Since the diagonal itself satisfies
+  $\lvert\text{diag}(a)\rvert\le C_0e^{a}$, the published positivity criterion is the special case
+  in which the bound happens to be realised by the diagonal: the compression may fail, by as much
+  as the square-root scale $e^{a}$, and still decide the line.
+* *Graded by the width.* For $0\le\alpha<\tfrac12$ a bound
+  $\lvert\text{cross}(a)\rvert\le Ce^{(1+2\alpha)a}$ gives the half-plane
+  $\Re\rho\le\tfrac12+\alpha$; the transport is the one-sided width criterion, which needs the
+  deficit primitive bounded on one side only.
+* *Faithful.* The growth rate of $\lvert\text{cross}(a)\rvert$ is exactly $1+2\cdot\text{width}$,
+  so the matrix is a lossless reading of the width and not merely a sufficient condition. The
+  unconditional input available is Vinogradov–Korobov, $\lvert D(T)\rvert\ll e^{T}e^{-cT^{3/5}}$,
+  that is rate $2$ against the needed $1+2\alpha$.
+
 **The band slope reads the zero energy.** If $\int_0^L\tilde E^2\le C(1+L)+K$, then for every
 finite family of distinct critical ordinates $\gamma_k$, with $n_k$ the order of $(s-1)\zeta(s)$
 at $\rho_k=\tfrac12+i\gamma_k$,
@@ -1159,6 +1227,7 @@ read GRH.
 | Positivity on the whole source graph. | The constant lift has energy $-c^2/2$; a positivity target must name its odd or otherwise constrained family. |
 | Windowed Chebyshev energy is band-limited. | The sharp window creates the jump $\tilde E(L)$ with energy $\asymp\tilde E(L)^2/\xi_0$; the Laplace energy is the band-limited object. |
 | A mean square $\int_0^L\tilde E^2$ strictly between linear and exponential growth. | Impossible: subexponential forces linear; the exponential rate is twice the zero width. |
+| The two-by-two pole inequality needs a sign or positivity mechanism. | Its content is an order of magnitude: $\lvert\text{cross}(a)\rvert\le Ce^{a}$ gives RH on its own, the diagonal is of the same size, and the exact rate of the cross entry is $1+2\cdot\text{width}$. The missing input is a square-root-scale bound on the integrated Chebyshev deficit, not a positivity argument. |
 | The barrier might be $o(L)$. | Never: Hardy's critical zero and the slope law give slope at least $1/|\rho|^2$. |
 | Zeros are read only through quadratic forms. | The linear packet reads them: growth exponent, one-sided bounds and persistence are per-source statements, and a universal probe's single packet is RH-equivalent. |
 | Two-sided control of a packet is needed. | One side suffices, by the one-sided Landau engine and the absence of real zeros in the strip. |
@@ -1249,14 +1318,18 @@ estimates for the mass and edge kernels and the sign of their difference are ope
    against `|Ω(0)|`, with its exact slack, as the input to the sign-changing gauges of mechanism 1.
 3. **The linear band itself**, tested against the four requirements of §5: failure for Beurling
    systems, survival at one character and modulus one, information beyond polynomial length at
-   square-root precision, separation of `log 4` from `log 6`.
+   square-root precision, separation of `log 4` from `log 6`. Equivalent coordinates for the same
+   demand, to be used interchangeably: a square-root-scale bound on the integrated Chebyshev
+   deficit `D(T) = ∫_0^T(e^t − ψ(e^t))dt`, equivalently on the cross entry of the two-exponential
+   pole compression; the unconditional rate there is `2` (Vinogradov–Korobov) against the needed
+   `1 + 2α`, and any improvement of the rate is an explicit strip.
 4. **Packets and multiplicity.** Whether the packet identity `E(U) = W(U)` can be tested through
    finitely many primes, and a one-packet upper bound for the Weil energy without the one-sided
    hypothesis, as the spectral input of mechanism 4.
 5. **Selectivity and calibration models.** A Beurling system with an off-line zero, the shifted pair
    `ζ(s−a)ζ(s+a)`, the Liouville twist and the function-field case `F_q[T]`, each written in the
    coordinates of the shared target (node values, window spectra, packets, the blind cone), so that
-   every positivity or cancellation theorem of the seven programmes can be tested against them. The
+   every positivity or cancellation theorem of the sibling programmes can be tested against them. The
    Beurling deletion and perturbation systems of `RHTower` and `HTGeometry` and the function-field
    window and purity modules are the starting objects; the unit is the list of shared-target
    statements each model refutes.

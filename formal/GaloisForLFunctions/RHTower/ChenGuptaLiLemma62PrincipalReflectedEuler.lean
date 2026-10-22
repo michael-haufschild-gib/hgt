@@ -68,7 +68,7 @@ private theorem cglLemma62PrincipalEulerRightFactorAt_factor_ne_zero
   rw [norm_one] at hnorm
   linarith
 
-private theorem cglLemma62PrincipalEulerLeftFactorAt_differentiable
+theorem cglLemma62PrincipalEulerLeftFactorAt_differentiable
     (Q : CGLPositiveModulus) :
     Differentiable ℂ (cglLemma62PrincipalEulerLeftFactorAt Q) := by
   intro z
@@ -87,7 +87,7 @@ private theorem cglLemma62PrincipalEulerLeftFactorAt_differentiable
   filter_upwards with y
   simp only [Finset.prod_apply]
 
-private theorem cglLemma62PrincipalEulerRightFactorAt_differentiable
+theorem cglLemma62PrincipalEulerRightFactorAt_differentiable
     (Q : CGLPositiveModulus) :
     Differentiable ℂ (cglLemma62PrincipalEulerRightFactorAt Q) := by
   intro z

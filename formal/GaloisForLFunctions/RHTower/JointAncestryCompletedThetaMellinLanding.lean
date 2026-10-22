@@ -594,7 +594,7 @@ theorem abs_thetaCuspFullSource_le_nat_exp_neg
       unfold thetaCuspFullSourceNatExpConstant
       ring
 
-private theorem thetaCuspFullSource_expWeight_memLp (r : ℕ) :
+theorem thetaCuspFullSource_expWeight_memLp (r : ℕ) :
     MemLp (fun x : ℝ => ((Real.exp ((r : ℝ) * x) * thetaCuspFullSource x : ℝ) : ℂ))
       2 volume := by
   let Cneg : ℝ := thetaCuspFullSourceNatExpConstant 1

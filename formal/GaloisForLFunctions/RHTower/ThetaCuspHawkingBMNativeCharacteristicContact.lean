@@ -18,7 +18,7 @@ attribute [-instance] RCLike.innerProductSpace
 private def laplaceMean (q : XiZeroCopy) (d X k : ℝ) : ℂ :=
   average (fun theta => scalarLaplacian (fullSquarePotential q) (logCircle d theta X k))
 
-private theorem laplace_circle_smooth (q : XiZeroCopy) (X k : ℝ) :
+theorem laplace_circle_smooth (q : XiZeroCopy) (X k : ℝ) :
     ContDiff ℝ ∞ (fun p : ℝ × ℝ =>
       scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k)) := by
   have hp (p : ℝ × ℝ) : 0 < logCircle p.1 p.2 X k 1 :=
@@ -66,7 +66,7 @@ private theorem average_continuous {F : ℝ × ℝ → ℂ} (hf : Continuous F) 
         exact (hf.comp (continuous_id.prodMk continuous_const)).continuousAt)
   exact h.const_mul (1/(2*Real.pi:ℂ))
 
-private theorem laplaceMean_continuous (q : XiZeroCopy) (X k : ℝ) :
+theorem laplaceMean_continuous (q : XiZeroCopy) (X k : ℝ) :
     Continuous (fun d => laplaceMean q d X k) :=
   continuous_iff_continuousAt.mpr (fun d => average_continuous (laplace_circle_smooth q X k).continuous d)
 
@@ -113,7 +113,7 @@ private theorem mean_first_zero (q : XiZeroCopy) (X k : ℝ) :
     (tendsto_const_nhds.congr' he.symm)
   simpa using heq
 
-private theorem sinh_ratio_limit {f : ℝ → ℂ} {a : ℂ} (hf : HasDerivAt f a 0) (h0 : f 0=0) :
+theorem sinh_ratio_limit {f : ℝ → ℂ} {a : ℂ} (hf : HasDerivAt f a 0) (h0 : f 0=0) :
     Tendsto (fun d => f d/(Real.sinh d:ℂ)) (𝓝[≠] 0) (𝓝 a) := by
   have h1 : Tendsto (fun d : ℝ => f d/(d:ℂ)) (𝓝[≠] 0) (𝓝 a) := by
     simpa only [zero_add,h0,sub_zero,Complex.real_smul,Complex.ofReal_inv,div_eq_mul_inv,mul_comm]

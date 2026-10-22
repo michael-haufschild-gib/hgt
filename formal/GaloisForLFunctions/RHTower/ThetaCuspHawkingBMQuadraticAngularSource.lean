@@ -35,11 +35,13 @@ def combinedJet (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : CoordinateMetr
 
 private theorem background_metric (r y : ℂ) :
     (D4BMBackground.jet r y).metric = D4BMBackground.metric r y := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_metric r y
 
 private theorem background_first (r y : ℂ) (k : Fin 4) :
     (D4BMBackground.jet r y).first k = Matrix.diagonal
       (if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
        else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_first r y k
 
 private theorem background_second (r y : ℂ) (k l : Fin 4) :
     (D4BMBackground.jet r y).second k l = Matrix.diagonal
@@ -47,6 +49,7 @@ private theorem background_second (r y : ℂ) (k l : Fin 4) :
         2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
        else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
        else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] else 0) := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second r y k l
 
 /-- Scalar--scalar radial coefficient in the actual angular quadratic source. -/
 def scalarWeight (s r : ℂ) : ℂ := s^(2 : ℕ)*((s+1)^(2 : ℕ)-4*r^(2 : ℕ))/(8*r^(4 : ℕ))
@@ -62,65 +65,83 @@ resolved: the big expansion below then never evaluates a decidable branch. -/
 
 private theorem background_first_0 (r y : ℂ) :
     (D4BMBackground.jet r y).first 0 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_first_0 r y
 
 private theorem background_first_1 (r y : ℂ) :
     (D4BMBackground.jet r y).first 1 = Matrix.diagonal ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)] := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_first_1 r y
 
 private theorem background_first_2 (r y : ℂ) :
     (D4BMBackground.jet r y).first 2 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_first_2 r y
 
 private theorem background_first_3 (r y : ℂ) :
     (D4BMBackground.jet r y).first 3 = Matrix.diagonal ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_first_3 r y
 
 private theorem background_second_0_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 0 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_0_0 r y
 
 private theorem background_second_0_1 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 1 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_0_1 r y
 
 private theorem background_second_0_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 2 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_0_2 r y
 
 private theorem background_second_0_3 (r y : ℂ) :
     (D4BMBackground.jet r y).second 0 3 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_0_3 r y
 
 private theorem background_second_1_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 0 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_1_0 r y
 
 private theorem background_second_1_1 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 1 = Matrix.diagonal ![-2, -2*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ)+8*r^(2 : ℕ)*(r^(2 : ℕ)-1)⁻¹^(3 : ℕ), 2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)] := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_1_1 r y
 
 private theorem background_second_1_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 2 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_1_2 r y
 
 private theorem background_second_1_3 (r y : ℂ) :
     (D4BMBackground.jet r y).second 1 3 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_1_3 r y
 
 private theorem background_second_2_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 0 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_2_0 r y
 
 private theorem background_second_2_1 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 1 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_2_1 r y
 
 private theorem background_second_2_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 2 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_2_2 r y
 
 private theorem background_second_2_3 (r y : ℂ) :
     (D4BMBackground.jet r y).second 2 3 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_2_3 r y
 
 private theorem background_second_3_0 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 0 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_3_0 r y
 
 private theorem background_second_3_1 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 1 = Matrix.diagonal ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)] := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_3_1 r y
 
 private theorem background_second_3_2 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 2 = Matrix.diagonal 0 := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_3_2 r y
 
 private theorem background_second_3_3 (r y : ℂ) :
     (D4BMBackground.jet r y).second 3 3 = Matrix.diagonal ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] := rfl
-
-set_option maxRecDepth 32768 in
+  _root_.RHTower.D4BMVectorLinearEquation.background_second_3_3 r y
 set_option maxHeartbeats 8000000 in
 private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :

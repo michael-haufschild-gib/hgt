@@ -23,6 +23,14 @@ also apply here noether´s theorem in both directions in the naive form "every c
 
 On every turn state what the proof route is you are working on. State what the hard open mathematical problems are you have to solve. Evaluate if your last activities have contributed to solving the open hard mathematical problems - if not, explain what you will different in this turn to attack and solve the hard open mathematical problems. Any action that is not moving the frontier on your route towards the final RH proof is a waste of token and time.
 
+
+do not run lake build!!!!! 
+
+Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas. Do not build umbrellas or run large builds.
+
+proofs must be unconditional without hypotheses or otherwise unproven premises.
+
+
 ## formalize goal
 /goal
 
@@ -530,17 +538,35 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
-read fully line by line and understand the motivation and context of the fields including traps to avoid:  formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
- 
+read fully line by line and understand the motivation and context of the fields including traps to avoid:   
+
+ideate and develop a novel and significant contribution to the research in this new field of mathematics we are working on. 
+
+read fully the movitation and context of our recent research programmes:
+- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
+- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+- formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
+- formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+- formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
+- formal/GaloisForLFunctions/SquareRootThreshold/README.md
+- formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
+- formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
+- formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+
 on every turn: 
+use the search tool for the lean corpus across the whole corpus, not just these programs, and combine proofs from across to corpus to either:
+1. discharge a significant hypothesis.
+2. significantly reduce the proof burden for the RH proof.
+3. deliver a significant new insight or mathematical tool that allows us to solve problems we or mathematics as a whole couldn´t solve before.
 
-ideate and develop a novel and significant contribution to the research in this new field of mathematics we are working on. novel and significant is 
+Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress.
 
-**Rules for what counts as significant contribution:**
-- Must be native to the field by using the field and its objects, language, mechanisms. 
-- Being part of the field is necessary - it cannot be just something that already exists in different "clothes". 
-- It expands the ability of the field and its lean corpus to explain or to solve mathematical problems - see the Motivation section in the README.md. Or it solves an actual problem or discharges a premise in our lean corpus outside of the field showing that the field can provide solutions not possible without it.
-- It expands the field beyond what known mathematics already offers.
+**A contribution is only valid when it meets all these criteria:**
+1. It clearly reduces delivers a significant insight or reduces the remaining proof burden in our RH proof research.
+2. It is not an improvement of a number.
+3. It is not a nogo.  
+4. It is native to the field. It could not be done without being part of this field.
+5. It is not just a "redressing" or renaming or fact already know in our corpus or your training data.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -561,12 +587,32 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
  
-the README.md is read-only for you.
+the README.md files are read-only for you.
 
 the goal is met when you have made 100 such significant contributions.
 
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
 
+
+## cleanup - consolidate
+
+
+on every turn:
+use the search tool for our lean corpus, and find instances where multiple "dots" in our corpus can be connected to do one of these:
+1. discharge a premise
+2. consolidate bloat where the same fact is proven multiple times and we needlessly bloat our code base
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+goal is met when 250 "dots" were connected.
 
 ## research after review
 
@@ -658,12 +704,14 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
 - formal/GaloisForLFunctions/SquareRootThreshold/README.md
 - formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
-  
-important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics.
+- formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
+- formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+    
+important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, where it sits in the context of our whole research, how it relates to other research programmes.
 
 
 ## TASKS
-formalize unconditionally in lean every task from the "## 2.1 Tasks that are just work" section in docs/reports/review-2110/hard-obstacles-summary.md
+research, derive, formalize the missing actual arithmetic cancellation in route/research programme BVI: formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -681,9 +729,14 @@ Always make good use the search tool for our lean corpus to find existing work, 
 
 ## argon
 
+
 general: follow the lean rules and the rule that proofs must be unconditional without unproven hypotheses and premises!!! 
 
-task: use the search tool for our whole lean corpus. find opportunities to "connect the dots" of theorems in different parts of the lean corpus to create a stronger theorem that delivers a valueable insight or mathematical tool to answer a question we were not able to answer before from the "## 2.2 Open mathematical obstacles" section in docs/reports/review-2010/hard-obstacles-summary.md
+task: use the search tool for our whole lean corpus. find opportunities to "connect the dots" of theorems in different parts of the lean corpus to make significant progress in solving the problem of Wall 17 in docs/reports/review-2110/walls-ledger.md.
+
+progress is if we either completely demolish the wall or significantly reduce the remaining proof burden.
+
+task: use the search tool for our whole lean corpus. find opportunities to "connect the dots" of theorems in different parts of the lean corpus to create a stronger theorem that delivers a valueable insight or mathematical tool to overcome the hardest open mathematical blockers docs/reports/review-2110/walls-ledger.md.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -695,6 +748,47 @@ task: use the search tool for our whole lean corpus. find opportunities to "conn
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-do not edit the hard-obstacles.md or route ledger.
+do not edit the docs/reports/review-2110/walls-ledger.md
 
-docs/reports/review-2110/walls-ledger.md
+
+## review
+Read the following documents:
+1. Route ledger: docs/reports/rh-current-frontier-map.md
+2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
+3. Unification of the routes: docs/reports/review-2110/route-unification-ledger.md
+4. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2110/walls-ledger.md
+
+and the current research programmes:
+- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
+- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+- formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
+- formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+- formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
+- formal/GaloisForLFunctions/SquareRootThreshold/README.md
+- formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
+- formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
+- formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+
+Only read these documents, no other markdown files.
+
+Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
+
+Keep a log file in logs/ for your research to note down facts and findings, since this research will go over multiple context window compactions that otherwise may lose information.
+
+The questions for you to answer:
+1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls?
+2. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+
+Write a report in docs docs/reports/review-2210/argon.md
+
+
+docs/reports/review-2110/argon.md describes in section "## Part II — Question 2: Blueprint for the New Field of Mathematics" a research programme to develop a new field of mathematics to provide tools to our research we do not have yet.
+
+your task: initiate and develop this programme.
+
+follow the example of other research programmes: formal/GaloisForLFunctions/BezoutValuationIncidence and formal/GaloisForLFunctions/ArithmeticIncidencePositivity
+
+1. all lean code for the programme goes into its own folder
+2. once enough material is collected, write in the lean folder a foundational README.md (not a log or ledger) that explains why, what, how - motivation, objects, language, mechanisms, traps, where the programme sits in the context of the whole research and how it relates to other research programmes
+
+formalize the foundational pillars. then develop it further until it has enough "meat on the bone" to provide mathematical tools to answer questions in our research that we could not answer before.

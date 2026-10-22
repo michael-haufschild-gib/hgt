@@ -1024,7 +1024,7 @@ theorem strictAntiOn_secondTransportRatio
       (thetaCuspLikelihood_secondTransportNumerator_neg ht.1 htu hscaleT)
       (sq_pos_of_pos hdenPos)
 
-private theorem exists_derivRatio_eq_incrementRatio
+theorem exists_derivRatio_eq_incrementRatio
     {f g f' g' : ℝ → ℝ} {a b : ℝ}
     (hab : a < b)
     (hfcont : ContinuousOn f (Set.Icc a b))
@@ -1060,7 +1060,7 @@ private theorem exists_derivRatio_eq_incrementRatio
   rw [div_eq_iff (hg' c hc)]
   exact hlinear
 
-private theorem div_derivativeNumerator_neg_of_strictAnti_derivRatio
+theorem div_derivativeNumerator_neg_of_strictAnti_derivRatio
     {f g f' g' : ℝ → ℝ} {a b x : ℝ}
     (hab : a < b) (hx : x ∈ Set.Ioc a b)
     (hfa : f a = 0) (hga : g a = 0)
@@ -1102,7 +1102,7 @@ private theorem div_derivativeNumerator_neg_of_strictAnti_derivRatio
   have hcross := (div_lt_div_iff₀ (hg'pos x hx) hgx).mp hquot
   linarith
 
-private theorem strictAntiOn_div_of_strictAnti_derivRatio
+theorem strictAntiOn_div_of_strictAnti_derivRatio
     {f g f' g' : ℝ → ℝ} {a b : ℝ}
     (hab : a < b)
     (hfa : f a = 0) (hga : g a = 0)

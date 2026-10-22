@@ -26,7 +26,7 @@ attribute [-instance] RCLike.innerProductSpace
 private abbrev P := Fin 4 → ℝ
 private abbrev A := Fin 2 → ℝ
 
-private theorem coordinate_update {n : ℕ} (f : (Fin n → ℝ) → ℂ)
+theorem coordinate_update {n : ℕ} (f : (Fin n → ℝ) → ℂ)
     (x : Fin n → ℝ) (i : Fin n) (hf : DifferentiableAt ℝ f x) :
     coordDeriv i f x=deriv (fun a => f (Function.update x i a)) (x i) := by
   have hf' : HasFDerivAt f (fderiv ℝ f x) (Function.update x i (x i)) := by

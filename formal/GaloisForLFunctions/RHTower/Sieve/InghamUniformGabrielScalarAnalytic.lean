@@ -16,7 +16,7 @@ open Set Complex Metric MeasureTheory intervalIntegral
 
 noncomputable section
 
-private theorem differentiableOn_intervalIntegral_of_holomorphic_on_open
+theorem differentiableOn_intervalIntegral_of_holomorphic_on_open
     {a b : ℝ} {U : Set ℂ} (hU : IsOpen U) {F : ℝ → ℂ → ℂ}
     (hFc : ContinuousOn (fun q : ℝ × ℂ => F q.1 q.2) (univ ×ˢ U))
     (hFd : ∀ t : ℝ, DifferentiableOn ℂ (F t) U) :
@@ -154,7 +154,7 @@ private theorem continuousOn_inghamUniformGabrielScalarIntegrand
         continuous_snd.continuousAt)
   exact (hfield.mul hdual).continuousWithinAt
 
-private theorem differentiableOn_inghamUniformGabrielScalarIntegrand
+theorem differentiableOn_inghamUniformGabrielScalarIntegrand
     (sigma : ℝ) (X : ℕ) (kappa T : ℝ) (t : ℝ) :
     DifferentiableOn ℂ
       (inghamUniformGabrielScalarIntegrand sigma X kappa T t)

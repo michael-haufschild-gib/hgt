@@ -21,7 +21,7 @@ boundaries lie, and how to work inside it. Mathematics only; no ledger.
 
 ## The shared target: the sign of the critical arithmetic form
 
-Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -48,6 +48,13 @@ of a finite critical energy along a parameter — damping, coefficient cutoff or
 certificate at one parameter becomes a certificate at another, with the observation horizon
 quantified uniformly throughout.
 
+The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
+supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
+from its data to the observables it actually uses — and each reading has an exact resolution limit:
+the best bound on the target invariant that any method reading it can prove. The layer computes
+those limits, so a route can be priced before it is built, and states the separations a reading must
+perform to be admissible at all.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -56,7 +63,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the eight programmes build
+scale. No existing field has its basic objects built with all three; the nine programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -87,18 +94,31 @@ them.
    one complete signed pairing on each compact subinterval, which is weaker than a bound on the
    corresponding norm and already yields an explicit zero-free strip when it covers only part of
    the range (`ArithmeticContinuationAndCriticalEnergy`).
+7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
+   realise the maximum of the invariant it claims to bound. On the zero side this forces the
+   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
+   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
+   separated from each of its single-index perturbations
+   (`ScaleSignedIncidenceCriticality`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
   about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero.
+- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
+  preference: the worst width inside a joint certificate over a family of any cardinality is the
+  trivial one, because the extremal datum is already uniform across the family.
 - *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
   controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram.
+  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
+  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
+  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
 - *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`).
+  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
+  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
+  between; the incidence face admits no sampling at all, since every prime power is individually
+  necessary.
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
 - *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
@@ -106,12 +126,21 @@ them.
   parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction.
+  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
+  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
+  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
+  aperture leaves it intact.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
   `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
-  Identities, finite classifications and nonselective positivity count as zero in these units.
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
+  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
+  classifications and nonselective positivity count as zero in these units.
+- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
+  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
+  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
+  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
+  of the family a partial result reaches.
 - *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
   (`BiScaleUncertainty`).
 - *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
@@ -173,6 +202,20 @@ the two are one theory with two folders. Its outward connections run through the
   `ε` plays the role of SRT's bandwidth and APT's envelope exponent. The critical-scale receiver
   `D(T) ≤ B(1+T)e^{T/2}` of APT is the Chebyshev-level statement whose finite-modulus form is the
   interior pronic energy of §1.2.
+- **Arithmetic Continuation and Critical Energy owns the parameter direction of the receiver.**
+  THIM proves what a bound at one damping is worth and which observables could produce it; the
+  continuation layer proves how a bound travels from an admitted damping towards the critical end,
+  with the horizon quantified uniformly. The two meet in one identity: the derivative of the
+  critical energy in the damping is twice a complete signed pairing, which is the flux–jump–forcing
+  balance of the arithmetic chain, so THIM's dissipation laws are exactly what the continuation
+  must lose. The accumulation criterion of §3.16 is the endpoint statement of that transport.
+- **Scale-Signed Incidence Criticality turns the parity barrier into a floor on methods.** The
+  barrier is, verbatim, failure of resolution for the amplitude reading; the admissibility layer
+  adds the closure of the class (no amplitude-derived family of any cardinality resolves the
+  receiver) and the number `½` in the damping unit, and records that the same `½` is the trivial
+  width of the zero side. In the other direction THIM supplies the weights and the pairs that the
+  admissibility layer uses as witnesses — the floors there are not models but this programme's
+  arithmetic.
 - **RHTower supplies the analytic inputs**: the PM lane (power-damped Möbius Ramanujan weights,
   second moment, small-damping variance, cofactor rows), the sieve library (Levinson's gcd form,
   Möbius harmonic log rate, Gallagher's range, prime-window levels, Matomäki–Teräväinen
@@ -1289,6 +1332,25 @@ vanishing pole value and pole slope
 pole, and the separating observables on the kernel side are the Taylor coefficients of $K$ at
 $s=1-\varepsilon$, the counterpart of the logarithmic hierarchy.
 
+**The damping unit, and the closure of the blind class.** The barrier has a number and a scope.
+The dampings at which the sign-blind data decide the class are exactly $(\tfrac12,\infty)$, and the
+derived set of that range is $[\tfrac12,\infty)$: the threshold is attained from one side only, so
+no limiting argument along admissible dampings reaches it. Blindness is closed under
+post-processing, pairing and families of arbitrary cardinality — a method may read as many
+amplitude-derived observables as it likes, in any combination, and gains nothing — so the barrier
+is a floor on a class of methods and not a list of inadequate statistics, and its value in the
+damping unit is $\tfrac12$.
+
+For the literal damped Möbius receiver the threshold is the zero width itself. The set of
+admissible dampings has infimum of its derived set exactly $\Theta-\tfrac12$
+(`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`), so RH is the accumulation of admissible
+dampings at $0$, equivalently the cofinal budget criterion
+(`riemannHypothesis_iff_cofinal_budget`); and conversely a bound at any single damping is worth
+nothing in the width unit, because one admissible damping only translates zeros along the chains
+$\rho,\rho-\varepsilon,\rho-2\varepsilon,\dots$. The receiver's damping is therefore a genuine
+width coordinate, with the same endpoint behaviour as the aperture: all the content sits at the
+accumulation, none at any interior point.
+
 **Reading.** In every case proved, a pole of the weight's Dirichlet series on or to the right of
 $\operatorname{Re}s=1/2$ leaves the receiver unpaid and zeros never do; in the pole-law cases the
 pole sits at $s=1-\varepsilon$. A parity pair is a pair in which the twist creates such a pole: the
@@ -1367,6 +1429,8 @@ Poincaré law of that theory with its variance bounded below.
 | The PM receiver needs a bound uniform in damping | It needs a bound uniform in the horizon at each arbitrarily small fixed damping; the constant may depend on $\varepsilon$. |
 | Ramanujan amplitudes, translation statistics or pronic mode masses decide the receiver | Only above half damping. For every $\varepsilon\le1/2$ every real character gives an unconditional parity pair; amplitude invariance of boundedness holds iff $\varepsilon>1/2$. |
 | The barrier is "no bound $E_T\le F(\lvert W_c\rvert)$" | That follows from a single divergent weight. The parity content is that the predicate "paid" is not a function of the amplitudes, which needs a pair. |
+| Adding more sign-blind observables narrows the gap | Blindness is closed under post-processing, pairing and families of arbitrary cardinality; the floor in the damping unit stays $\tfrac12$ for every amplitude-derived reading. |
+| One admissible damping bounds the width | It does not: a single admissible damping only translates zeros along $\rho,\rho-\varepsilon,\rho-2\varepsilon,\dots$. The width is the infimum of the derived set of the admissible dampings, exactly $\Theta-\tfrac12$. |
 | Higher-degree translated moments see the parity of squarefree rows | Cubic moments pin odd-modulus signs, but the even flip is invisible at every degree and can break the receiver (the Fermi pair). |
 | Finitely many flipped primes make a parity pair | Local factors with $\lvert a\rvert<\sqrt p$ never change the receiver class, nor do flips on prime sets of convergent $\sum p^{-1/2-\varepsilon}$; a pair needs a prime set of divergent critical-line mass. |
 | Higher prime powers are invisible to the receiver | True for $\mu$-pretentious weights; for $1$-pretentious weights they enter through the local factor $L_p$ at the pole. |
@@ -1439,7 +1503,11 @@ price. Non-dyadic schedules (levels of an odd prime) and weighted traces have no
 classification yet.
 
 **The parity pair.** Below half damping the receiver of a weight is not a function of its
-sign-blind data, and every known pair is decided by a pole at $s=1-\varepsilon$. Open: the pole law
+sign-blind data, and every known pair is decided by a pole at $s=1-\varepsilon$. The equivalence
+half of the lane is settled: the damping threshold of the Möbius receiver is the zero width, so RH
+is admission along any sequence of dampings tending to $0$ and nothing weaker than an accumulation
+is worth anything. What remains is one unconditional bound at one fixed $\varepsilon<\tfrac12$, and
+by the closure of the blind class it must be read from signed data. Open: the pole law
 for kernels outside the critical Wiener algebra, where floor sums lose a logarithm; whether a
 completely multiplicative $\pm1$ sign whose $-1$-primes have relative density $\delta$ is paid at
 half damping exactly when $\delta>1/4$ (the heuristic $F\approx\zeta^{1-2\delta}$; only the sparse

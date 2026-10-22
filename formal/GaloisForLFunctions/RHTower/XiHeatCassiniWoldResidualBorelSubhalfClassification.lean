@@ -275,7 +275,7 @@ theorem exists_mertensA_sub_log_power_rate_of_riemannHypothesis
   refine ⟨B, hB, ?_⟩
   simpa only [hcInt] using hrateInt
 
-private theorem eventually_woldNatTraceCorrection_tail_le_power
+theorem eventually_woldNatTraceCorrection_tail_le_power
     {eps : ℝ} (heps0 : 0 < eps) :
     ∀ᶠ N : ℕ in atTop,
       xiHeatCassiniWoldNatTraceCorrectionMass -

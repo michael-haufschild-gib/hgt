@@ -6,7 +6,7 @@ This search did not identify three mechanisms that are both independent of the c
 
 The task allows open research. A candidate need not already prove RH. It does need a concrete source construction, a specified missing theorem, and a chain explaining how that theorem would imply RH without an excluded step. A new name for an existing endpoint, or an unspecified connection from a general mathematical tool to zeta, is insufficient.
 
-The [working log](/Users/michael/Documents/code/hgt/docs/drafts/pipeline/1-in-progress/rh-three-alternatives-working-log.md) records the evolving audit and exact source-read scope. Raw results, comparison snapshots, and search metadata are retained in this directory.
+The [working log](../bookkeeping/audits-ledgers-and-reviews/rh-three-alternatives-working-log.md) records the evolving audit and exact source-read scope. Raw results, comparison snapshots, and search metadata are retained in this directory.
 
 ## Scope and evidence
 

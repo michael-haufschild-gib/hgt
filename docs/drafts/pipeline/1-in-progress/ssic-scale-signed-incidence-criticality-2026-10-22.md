@@ -51,16 +51,36 @@ programme that owns it.
    declares `RHTower.dilationAverage` twice).
 
 ## Lean modules (formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/)
-- `TheResolutionLimitOfAReading.lean` — the calculus (no corpus dependency).
-- `BoundedApertureReadingsHaveTheTrivialResolutionLimit.lean` — `resolutionLimit_width_aperturePositivity`, `resolutionLimit_width_familyPositivity`, `resolutionLimit_width_fullPositivity`, `apertureResolutionJump`.
-- `AsymptoticNodeReadingsCannotResolveNodePositivity.lean` — `not_resolves_of_asymptoticReading`, `fatal_deleteNode_iff_isPrimePow`.
-- `AmplitudeReadingsCannotResolveTheReceiver.lean` — `not_resolves_amplitudeReading_receiver`, `half_lt_of_resolves_classAmplitudeReading`, `not_resolves_amplitudeDerivedFamily`, `parityWallGate`.
-- `StructuralFlagReadingsCannotResolveCriticality.lean` — `structuralFlags_eq`, `not_riemannHypothesis_of_resolves_structuralFlags`.
-- `BoundedHeightReadingsCannotResolveTheWidth.lean` — `finite_support_heightReading`, `resolutionLimit_width_heightReading`.
-- `TheApertureLadderIsStrictYetEveryStageIsTrivial.lean` — `apertureLadder`.
-- `FiniteRadiusCertificateReadingsCannotResolveTheWeilCone.lean` — `radiusReading_congr_of_agree_below`, `not_riemannHypothesis_of_resolves_radiusReading`.
-- `TheWallGatesOfAResolvingReading.lean` — `theWallGates`.
-- `README.md` — the foundational document (why / what / how / traps / frontier / principles).
+Ten modules, each one result of the programme; all compile, umbrella audit clean.
+- `TheResolutionLimitOfAReading.lean` — the calculus: shadows, `Resolves`, `Invisible`, `Refines`,
+  `resolutionLimit`/`resolutionFloor`, `Certifies`, the resolution interval and the floor theorem
+  (no corpus dependency).
+- `TheApertureCertificateIsBlindInEveryUnit.lean` — vocabulary (`TemperedZeroConfig`, `width`,
+  `aperturePositivity`, `apertureGain`, `familyPositivity`, `fullPositivity`) and the one blindness
+  mechanism: limit `½` and floor `0` at every aperture, every coercivity level, every monotone unit
+  and every family; `resolutionInterval = range width`.
+- `RefutationIsFiniteConfirmationIsNot.lean` — `Refutes`; prime powers are the least positive node
+  set; one membership bit refutes; prime-side completeness
+  (`riemannHypothesis_iff_no_radiusReading_refutes`); asymptotic node readings resolve nothing.
+- `TheSquareRootPrecisionLaw.lean` — `weilFloorThreshold`, the exact level limit
+  `min ½ (arcosh(1 + η/(2L))/L)`, `δ ≤ √(η/L³)`, the deficit-rate law (depth = half the growth
+  rate), `sInf_rateSet = sdDepth` (the scale-free faithful reading), the `β²L³` budget.
+- `TheDepthIsTheCompleteDilationInvariant.lean` — `DilationEquiv`,
+  `dilationEquiv_iff_sdDepth_eq`, and the single-aperture collapse to `½`.
+- `TheHidingLaws.lean` — hiding needs an infinite crystal; mass buys aperture only logarithmically
+  (`massApertureExchange`, `reach_upper`); aliasing is free below `ℓ/2` and exactly there.
+- `TwoAliasingBandsDetermineTheDepth.lean` — `groundEnergy_index_two/three`,
+  `depth_determined_by_two_bands`, `depthFromBands_eq` (closed form, scale-free), and the
+  `√(2η)` conditioning of the ratio.
+- `ThreeBandsDefeatTheMass.lean` — `difference_ratio_eq` (`= 2cosh(δℓ)`, mass and dilution cancel),
+  `depth_determined_by_three_bands`; `pairMoment_doubling` and `depth_from_doubling` for a single
+  off-line pair.
+- `TheMagnitudePairIsFaithfulWhereTheSignIsBlind.lean` — on one family: sign limit `½`, magnitude
+  limit exactly the depth, floor `=` limit.
+- `SparseAperturesSufficeAndTheIncidenceFaceDoesNot.lean` — RH from positivity along any unbounded
+  set of apertures or of radii; no proper subset of the nodes suffices; `theReductionDichotomy`.
+- `README.md` — the foundational document; **stale after the 2026-10-22 consolidation** (it still
+  describes the pre-consolidation module layout) and read-only for the agent.
 
 ## Frontier (open, in the programme's own unit)
 - **F1** (closed 2026-10-22, qualitative part) The prime-side gate: no bounded-radius certificate
@@ -89,3 +109,13 @@ programme that owns it.
   2026-08-23, and `RHTower/FermiNymanHaarApproximationEquivalence.lean:152`, added 2026-10-17) make
   `GaloisForLFunctions.RHTower` — and hence any module combining the `SquareRootThreshold` and
   `TransHorizonIncidenceMechanics` closures — fail to load.
+- 2026-10-22 — consolidation. The programme had grown to 82 modules / 9,821 lines, most of them the
+  same blindness mechanism re-instantiated in a different unit (aperture, height, node,
+  temperedness, prime window, ordinate, graded, family) plus elementary hyperbolic algebra over
+  corpus closed forms. Compressed to the ten modules above: 3,290 lines, 287 declarations, no
+  content lost that was not a restatement. Dropped outright: the per-face unit zoo (`nodeScale`,
+  `horizonFrequency`, `visibilityFrequency`, `weightDefectScale` and their exact limits), the
+  Chebyshev recursion of the aliasing ladder and its geometric growth bound (standard sinh
+  identities), band-minimum uniqueness, the ladder dictionary `T + 1 = e^{2R}`, the subsidy
+  modules, the transport/pushforward calculus, and the ordinate-blindness pair. Indexes
+  regenerated; no module outside the folder imported any deleted module.

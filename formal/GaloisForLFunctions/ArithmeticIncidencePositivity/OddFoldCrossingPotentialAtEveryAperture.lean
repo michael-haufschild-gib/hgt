@@ -75,162 +75,34 @@ include hPc hFc hP0 hP1 hFL hPB hB0 in
 `t ≤ 2B`, `x ≤ B`. -/
 theorem integrable_archLevy_mul_signedShiftJump_prod_everyAperture :
     Integrable (Function.uncurry fun t x => archLevyDensity t * signedShiftJump P F t x)
-      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) := by
-  have hmeas : Measurable (Function.uncurry fun t x => archLevyDensity t * signedShiftJump P F t x) := by
-    refine (measurable_archLevyDensity.comp measurable_fst).mul ?_
-    have : Continuous (Function.uncurry fun t x => signedShiftJump P F t x) := by
-      unfold signedShiftJump; fun_prop
-    exact this.measurable
-  refine integrable_quadrant_of_bound hmeas (C := K ^ 2 * (3 / 2 + 4 * B ^ 2)) (T₁ := 2 * B) (T₂ := B)
-    (fun t x ht hx => ?_) (fun t x ht hx h => ?_)
-  · simp only [Function.uncurry_apply_pair]
-    by_cases hts : t ≤ 2 * B
-    · have hω := archLevyDensity_mul_sq_le ht hts
-      have hJ := signedShiftJump_le hP0 hP1 hFL t x
-      have hJ0 := signedShiftJump_nonneg' hP0 (F := F) t x
-      have hω0 := (archLevyDensity_pos ht).le
-      rw [abs_of_nonneg (mul_nonneg hω0 hJ0)]
-      calc archLevyDensity t * signedShiftJump P F t x ≤ archLevyDensity t * (K ^ 2 * t ^ 2) :=
-            mul_le_mul_of_nonneg_left hJ hω0
-        _ = K ^ 2 * (archLevyDensity t * t ^ 2) := by ring
-        _ ≤ K ^ 2 * (3 / 2 + 4 * B ^ 2) := mul_le_mul_of_nonneg_left hω (sq_nonneg K)
-    · rw [signedShiftJump_eq_zero_of_pos hPB hB0 hx (Or.inl (not_le.mp hts)), mul_zero, abs_zero]
-      positivity
-  · simp only [Function.uncurry_apply_pair]
-    rw [signedShiftJump_eq_zero_of_pos hPB hB0 hx h, mul_zero]
-
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) :=
+  integrable_archLevy_mul_signedShiftJump_prod
 include hPc hFc hP0 hP1 hFL hPB hB0 in
 /-- The folded crossing integrand is integrable on the quadrant at every aperture. -/
 theorem integrable_foldedCrossingIntegrand_everyAperture :
     Integrable (foldedCrossingIntegrand P F)
-      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) := by
-  have hset : MeasurableSet {q : ℝ × ℝ | 0 < q.2 ∧ q.2 < q.1 / 2} := by
-    rw [Set.setOf_and]
-    exact (measurableSet_lt measurable_const measurable_snd).inter
-      (measurableSet_lt measurable_snd (measurable_fst.div_const 2))
-  have hc : Continuous fun q : ℝ × ℝ => crossingDiffJump P F q.1 q.2 := by
-    unfold crossingDiffJump; fun_prop
-  have hmeas : Measurable (foldedCrossingIntegrand P F) :=
-    (measurable_archLevyDensity.comp measurable_fst).mul (hc.measurable.indicator hset)
-  have hK : 0 ≤ K := le_trans (abs_nonneg _) (by
-    have := hFL 1 0; have h1 : |(1 : ℝ) - 0| = 1 := by norm_num
-    rw [h1, mul_one] at this; exact this)
-  refine integrable_quadrant_of_bound hmeas (C := K ^ 2 * (3 / 2 + 4 * B ^ 2)) (T₁ := 2 * B) (T₂ := B)
-    (fun t x ht hx => ?_) (fun t x ht hx h => ?_)
-  · rw [foldedCrossingIntegrand_apply]
-    by_cases hxt : x ∈ Ioo (0 : ℝ) (t / 2)
-    · rw [Set.indicator_of_mem hxt]
-      have hD0 := crossingDiffJump_nonneg hP0 (F := F) t x
-      by_cases hts : t ≤ 2 * B
-      · have hω := archLevyDensity_mul_sq_le ht hts
-        have hD : crossingDiffJump P F t x ≤ K ^ 2 * t ^ 2 := by
-          unfold crossingDiffJump
-          have h := hFL x (t - x)
-          have habs : |x - (t - x)| ≤ t := by
-            rw [abs_le]; constructor <;> linarith [hxt.1, hxt.2]
-          have h2 : |F x - F (t - x)| ≤ K * t := h.trans (mul_le_mul_of_nonneg_left habs hK)
-          have hsq : (F x - F (t - x)) ^ 2 ≤ K ^ 2 * t ^ 2 := by
-            calc (F x - F (t - x)) ^ 2 = |F x - F (t - x)| ^ 2 := (sq_abs _).symm
-              _ ≤ (K * t) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h2 2
-              _ = K ^ 2 * t ^ 2 := by ring
-          calc P x * P (t - x) * (F x - F (t - x)) ^ 2 ≤ 1 * (K ^ 2 * t ^ 2) :=
-                mul_le_mul (mul_le_one₀ (hP1 _) (hP0 _) (hP1 _)) hsq (sq_nonneg _) zero_le_one
-            _ = _ := one_mul _
-        have hω0 := (archLevyDensity_pos ht).le
-        rw [abs_of_nonneg (mul_nonneg hω0 hD0)]
-        calc archLevyDensity t * crossingDiffJump P F t x ≤ archLevyDensity t * (K ^ 2 * t ^ 2) :=
-              mul_le_mul_of_nonneg_left hD hω0
-          _ = K ^ 2 * (archLevyDensity t * t ^ 2) := by ring
-          _ ≤ K ^ 2 * (3 / 2 + 4 * B ^ 2) := mul_le_mul_of_nonneg_left hω (sq_nonneg K)
-      · have hP : P (t - x) = 0 := hPB _ (by
-          rw [abs_of_pos (by linarith [hxt.2])]; linarith [hxt.2, not_le.mp hts])
-        unfold crossingDiffJump
-        rw [hP, mul_zero, zero_mul, mul_zero, abs_zero]
-        positivity
-    · rw [Set.indicator_of_notMem hxt, mul_zero, abs_zero]
-      positivity
-  · rw [foldedCrossingIntegrand_apply]
-    by_cases hxt : x ∈ Ioo (0 : ℝ) (t / 2)
-    · rw [Set.indicator_of_mem hxt]
-      unfold crossingDiffJump
-      rcases h with h | h
-      · rw [hPB (t - x) (by rw [abs_of_pos (by linarith [hxt.2])]; linarith [hxt.2]),
-          mul_zero, zero_mul, mul_zero]
-      · rw [hPB x (by rw [abs_of_pos hx]; linarith), zero_mul, zero_mul, mul_zero]
-    · rw [Set.indicator_of_notMem hxt, mul_zero]
-
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) :=
+  integrable_foldedCrossingIntegrand
 include hPc hFc hP0 hP1 hFL hPB hB0 in
 /-- `D_arch = 2 ∫_{x>0} ∫_{s>0} ω(s + 2x) J_s(x) ds dx` at every aperture. -/
 theorem archCrossingDiffEnergy_eq_everyAperture :
     (∫ t in Ioi (0 : ℝ), archLevyDensity t * ∫ x in Ioo (0 : ℝ) t, crossingDiffJump P F t x) =
       2 * ∫ x in Ioi (0 : ℝ), ∫ s in Ioi (0 : ℝ), archLevyDensity (s + 2 * x) *
-        signedShiftJump P F s x := by
-  have hID := integrable_foldedCrossingIntegrand_everyAperture hPc hFc hP0 hP1 hPB hFL hB0
-  have h1 : (∫ x in Ioi (0 : ℝ), ∫ s in Ioi (0 : ℝ), archLevyDensity (s + 2 * x) *
-      signedShiftJump P F s x) =
-      ∫ x in Ioi (0 : ℝ), ∫ t in Ioi (0 : ℝ), foldedCrossingIntegrand P F (t, x) :=
-    setIntegral_congr_fun measurableSet_Ioi fun x hx =>
-      (integral_foldedCrossingIntegrand_eq (mem_Ioi.mp hx)).symm
-  rw [h1, ← integral_integral_swap (f := fun t x => foldedCrossingIntegrand P F (t, x)) hID,
-    ← integral_const_mul]
-  refine setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
-  rw [integral_crossingDiffJump_eq_two_mul_half hPc hFc (mem_Ioi.mp ht)]
-  have : (∫ x in Ioi (0 : ℝ), foldedCrossingIntegrand P F (t, x)) =
-      archLevyDensity t * ∫ x in Ioo (0 : ℝ) (t / 2), crossingDiffJump P F t x := by
-    simp_rw [foldedCrossingIntegrand_apply]
-    rw [integral_const_mul, setIntegral_indicator measurableSet_Ioo,
-      Set.inter_eq_right.mpr Ioo_subset_Ioi_self]
-  rw [this]
-  ring
-
+        signedShiftJump P F s x :=
+  archCrossingDiffEnergy_eq
 include hPc hFc hP0 hP1 hFL hPB hB0 in
 /-- `S_arch = ∫_{x>0} ∫_{s>0} ω(s) J_s(x) ds dx` at every aperture. -/
 theorem archSameEnergy_eq_everyAperture :
     (∫ t in Ioi (0 : ℝ), archLevyDensity t * ∫ x in Ioi (0 : ℝ), signedShiftJump P F t x) =
-      ∫ x in Ioi (0 : ℝ), ∫ s in Ioi (0 : ℝ), archLevyDensity s * signedShiftJump P F s x := by
-  have hIS := integrable_archLevy_mul_signedShiftJump_prod_everyAperture hPc hFc hP0 hP1 hPB hFL hB0
-  rw [← integral_integral_swap (f := fun t x => archLevyDensity t * signedShiftJump P F t x) hIS]
-  refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-  rw [integral_const_mul]
-
+      ∫ x in Ioi (0 : ℝ), ∫ s in Ioi (0 : ℝ), archLevyDensity s * signedShiftJump P F s x :=
+  archSameEnergy_eq
 include hPc hFc hP0 hP1 hFL hPB hB0 in
 /-- **The exact surplus of the fold at every aperture.** `2 S_arch − D_arch = 2 S_P(F)`. -/
 theorem two_mul_archSame_sub_archCrossingDiff_eq_everyAperture :
     2 * (∫ t in Ioi (0 : ℝ), archLevyDensity t * ∫ x in Ioi (0 : ℝ), signedShiftJump P F t x) -
       (∫ t in Ioi (0 : ℝ), archLevyDensity t * ∫ x in Ioo (0 : ℝ) t, crossingDiffJump P F t x) =
-      2 * surplusEnergy P F := by
-  have hIS := integrable_archLevy_mul_signedShiftJump_prod_everyAperture hPc hFc hP0 hP1 hPB hFL hB0
-  have hID := integrable_foldedCrossingIntegrand_everyAperture hPc hFc hP0 hP1 hPB hFL hB0
-  rw [archCrossingDiffEnergy_eq_everyAperture hPc hFc hP0 hP1 hPB hFL hB0,
-    archSameEnergy_eq_everyAperture hPc hFc hP0 hP1 hPB hFL hB0]
-  have hO1 : Integrable (fun x => ∫ s in Ioi (0 : ℝ), archLevyDensity s * signedShiftJump P F s x)
-      (volume.restrict (Ioi 0)) := hIS.integral_prod_right
-  have hO2 : Integrable (fun x => ∫ s in Ioi (0 : ℝ),
-      archLevyDensity (s + 2 * x) * signedShiftJump P F s x) (volume.restrict (Ioi 0)) := by
-    refine hID.integral_prod_right.congr ?_
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    exact integral_foldedCrossingIntegrand_eq (mem_Ioi.mp hx)
-  unfold surplusEnergy
-  rw [← mul_sub, ← integral_sub hO1 hO2]
-  congr 1
-  refine integral_congr_ae ?_
-  filter_upwards [hIS.prod_left_ae, ae_restrict_mem measurableSet_Ioi] with x hx hx0
-  have hx0' : 0 < x := hx0
-  have hi1 : Integrable (fun s => archLevyDensity s * signedShiftJump P F s x)
-      (volume.restrict (Ioi 0)) := hx
-  have hi2 : Integrable (fun s => archLevyDensity (s + 2 * x) * signedShiftJump P F s x)
-      (volume.restrict (Ioi 0)) := by
-    refine hi1.mono' ((measurable_archLevyDensity.comp (measurable_id.add_const _)).mul
-      (continuous_signedShiftJump_left hPc hFc x).measurable).aestronglyMeasurable ?_
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with s hs
-    have hs0 : 0 < s := hs
-    have hJ := signedShiftJump_nonneg' hP0 (F := F) s x
-    have hω := strictAntiOn_archLevyDensity.antitoneOn hs0 (show (0 : ℝ) < s + 2 * x by linarith)
-      (by linarith)
-    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (archLevyDensity_pos (by linarith)).le hJ)]
-    exact mul_le_mul_of_nonneg_right hω hJ
-  rw [← integral_sub hi1 hi2]
-  exact integral_congr_ae (Eventually.of_forall fun s => by simp only; ring)
+      2 * surplusEnergy P F :=
+  two_mul_archSame_sub_archCrossingDiff_eq
 
 /-! ### The crossing potential of a gauge -/
 

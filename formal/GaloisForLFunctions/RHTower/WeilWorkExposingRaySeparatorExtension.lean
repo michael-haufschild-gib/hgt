@@ -37,7 +37,7 @@ def atomicForm (b : ℕ → ℝ) (C : ℝ) (k : ℝ → ℂ) : ℂ :=
   (C : ℂ) * k 0 - ∑' n : ℕ, ((if 2 ≤ n then b n else 0 : ℝ) : ℂ) *
     (k (Real.log n) + k (-Real.log n))
 
-private theorem atomicForm_add (b : ℕ → ℝ) (C : ℝ) {k l : ℝ → ℂ}
+theorem atomicForm_add (b : ℕ → ℝ) (C : ℝ) {k l : ℝ → ℂ}
     (hk : HasCompactSupport k) (hl : HasCompactSupport l) :
     atomicForm b C (k+l) = atomicForm b C k + atomicForm b C l := by
   have ht := (summable_primeAtoms (fun n => if 2 ≤ n then b n else 0) hk).tsum_add
@@ -54,7 +54,7 @@ private theorem atomicForm_add (b : ℕ → ℝ) (C : ℝ) {k l : ℝ → ℂ}
     apply tsum_congr; intro n; ring
   rw [he]; ring
 
-private theorem atomicForm_smul (b : ℕ → ℝ) (C : ℝ) (a : ℂ) (k : ℝ → ℂ) :
+theorem atomicForm_smul (b : ℕ → ℝ) (C : ℝ) (a : ℂ) (k : ℝ → ℂ) :
     atomicForm b C (a • k) = a * atomicForm b C k := by
   unfold atomicForm
   simp only [Pi.smul_apply, smul_eq_mul]
@@ -63,10 +63,10 @@ private theorem atomicForm_smul (b : ℕ → ℝ) (C : ℝ) (a : ℂ) (k : ℝ �
   · ring
   · apply tsum_congr; intro n; ring
 
-private theorem atomicForm_zero (b : ℕ → ℝ) (C : ℝ) : atomicForm b C 0 = 0 := by
+theorem atomicForm_zero (b : ℕ → ℝ) (C : ℝ) : atomicForm b C 0 = 0 := by
   simp [atomicForm]
 
-private theorem atomicForm_sum (b : ℕ → ℝ) (C : ℝ) {ι : Type*}
+theorem atomicForm_sum (b : ℕ → ℝ) (C : ℝ) {ι : Type*}
     (s : Finset ι) {k : ι → ℝ → ℂ} (hk : ∀ i ∈ s, HasCompactSupport (k i)) :
     atomicForm b C (∑ i ∈ s, k i) = ∑ i ∈ s, atomicForm b C (k i) := by
   classical
@@ -147,7 +147,7 @@ private theorem atomicForm_nonneg {b : ℕ → ℝ} {C : ℝ} (h : FullMassBound
 def atomicKernel (b : ℕ → ℝ) (C : ℝ) (f : ℝ → ℂ) (y : ℝ) : ℂ :=
   atomicForm b C (WeilSpectral.transl y (EF.weilTest f f))
 
-private theorem atomicForm_packet (b : ℕ → ℝ) (C : ℝ) {f : ℝ → ℂ}
+theorem atomicForm_packet (b : ℕ → ℝ) (C : ℝ) {f : ℝ → ℂ}
     (hf : Continuous f) (hs : HasCompactSupport f) {N : ℕ}
     (t : Fin N → ℝ) (c : Fin N → ℂ) :
     atomicForm b C (EF.weilTest (∑ j, c j • WeilSpectral.transl (t j) f) (∑ j, c j • WeilSpectral.transl (t j) f)) =
@@ -206,7 +206,7 @@ theorem polarMassBound_iff_positiveDefinite_atomicKernel (b : ℕ → ℝ) (C : 
 def farSource (X : ℝ) (f : ℝ → ℂ) : ℝ → ℂ :=
   f - ((farPolarCoeff X : ℂ) / 2) • (WeilSpectral.transl X f + WeilSpectral.transl (-X) f)
 
-private theorem farSource_packet (X : ℝ) (f : ℝ → ℂ) :
+theorem farSource_packet (X : ℝ) (f : ℝ → ℂ) :
     farSource X f = ∑ j : Fin 3,
       (![1, -(farPolarCoeff X : ℂ)/2, -(farPolarCoeff X : ℂ)/2] j) •
         WeilSpectral.transl (![0, X, -X] j) f := by
@@ -214,7 +214,7 @@ private theorem farSource_packet (X : ℝ) (f : ℝ → ℂ) :
   simp [farSource, Fin.sum_univ_succ, WeilSpectral.transl, sub_eq_add_neg]
   ring
 
-private theorem atomicForm_farSource (b : ℕ → ℝ) (C : ℝ) {f : ℝ → ℂ}
+theorem atomicForm_farSource (b : ℕ → ℝ) (C : ℝ) {f : ℝ → ℂ}
     (hf : Continuous f) (hs : HasCompactSupport f) (X : ℝ) :
     atomicForm b C (EF.weilTest (farSource X f) (farSource X f)) =
       atomicKernel b C f 0 - (farPolarCoeff X : ℂ) *
@@ -391,7 +391,7 @@ theorem tendsto_integral_density_error_farSource {f : ℝ → ℂ} (hf : ContDif
 
 open WeilOneSided
 
-private theorem density_integrable (f : WeilTestFn) :
+theorem density_integrable (f : WeilTestFn) :
     Integrable (fun τ : ℝ => ‖paperFT f.1 τ‖^2) := by
   obtain ⟨a, _, ha⟩ := exists_aperture f.2.2
   exact integrable_normSq_paperFT f.2.1 ha

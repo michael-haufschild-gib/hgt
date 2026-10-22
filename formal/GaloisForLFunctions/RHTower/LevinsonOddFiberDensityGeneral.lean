@@ -49,57 +49,6 @@ private theorem levinson_coef_bound {κ₀ δ η : ℝ} (hκ₀ : 0 ≤ κ₀) (
   linarith [hPle, hb2, hη0]
 
 
-private theorem levinson_budget_scalar {η R c C K T₁ T₂ Λ S LM LMb σ₀ : ℝ}
-    (hη0 : 0 < η) (hR : 0 < R) (hlogc : 0 ≤ Real.log c)
-    (hΛ0 : 0 < Λ) (hS : S = T₂ * Λ) (hT₁T₂ : T₁ < T₂) (hT₁0 : 0 < T₁)
-    (hK : 0 < K) (hσ₀ : (1 / 2 - σ₀) * Λ = R) (hσ₀b : σ₀ < 1 / 2)
-    (hLM : LM ≤ Real.log c + R * η) (hLMb : LMb ≤ 5 * Λ) (hlogT₂ : Real.log T₂ = Λ) :
-    ((T₂ - T₁) / 2 * LM + C + K * (Real.log T₂ + LMb)) / (1 / 2 - σ₀)
-      ≤ (S / (2 * R)) * Real.log c + (S / 2) * η + (C / R) * Λ + (6 * K / R) * Λ ^ (2 : ℕ) := by
-  have hRne : R ≠ 0 := ne_of_gt hR
-  have hL0 : (0 : ℝ) < T₂ - T₁ := by linarith
-  have hLT : T₂ - T₁ ≤ T₂ := by linarith
-  have hwidthpos : (0 : ℝ) < 1 / 2 - σ₀ := by linarith
-  have hinvR : (1 : ℝ) / (1 / 2 - σ₀) = Λ / R := by
-    rw [div_eq_div_iff (ne_of_gt hwidthpos) (ne_of_gt hR)]
-    linarith [hσ₀]
-  have hnum : (T₂ - T₁) / 2 * LM + C + K * (Real.log T₂ + LMb)
-      ≤ (T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ := by
-    have h1 : (T₂ - T₁) / 2 * LM ≤ (T₂ - T₁) / 2 * (Real.log c + R * η) :=
-      mul_le_mul_of_nonneg_left hLM (by linarith)
-    have h2 : K * (Real.log T₂ + LMb) ≤ 6 * K * Λ := by
-      rw [hlogT₂]
-      nlinarith [hK, hLMb]
-    linarith
-  have hdiv : ((T₂ - T₁) / 2 * LM + C + K * (Real.log T₂ + LMb)) / (1 / 2 - σ₀)
-      ≤ ((T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ) / (1 / 2 - σ₀) := by
-    gcongr
-  refine le_trans hdiv ?_
-  have hrw : ((T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ) / (1 / 2 - σ₀)
-      = ((T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ) * (Λ / R) := by
-    rw [div_eq_mul_one_div, hinvR]
-  rw [hrw]
-  have hR1 : R * η * (Λ / R) = η * Λ := by field_simp
-  have hexpand : ((T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ) * (Λ / R)
-      = ((T₂ - T₁) * Λ / (2 * R)) * Real.log c + ((T₂ - T₁) * Λ / 2) * η
-        + (C / R) * Λ + (6 * K / R) * Λ ^ (2 : ℕ) := by
-    have hsplit : ((T₂ - T₁) / 2 * (Real.log c + R * η) + C + 6 * K * Λ) * (Λ / R)
-        = ((T₂ - T₁) / 2 * Real.log c) * (Λ / R) + ((T₂ - T₁) / 2) * (R * η * (Λ / R))
-          + C * (Λ / R) + 6 * K * Λ * (Λ / R) := by ring
-    rw [hsplit, hR1]
-    ring
-  rw [hexpand]
-  have hle : (T₂ - T₁) * Λ ≤ S := by
-    rw [hS]
-    have := mul_le_mul_of_nonneg_right hLT hΛ0.le
-    linarith
-  have hb1 : ((T₂ - T₁) * Λ / (2 * R)) * Real.log c ≤ (S / (2 * R)) * Real.log c := by
-    have hd : (T₂ - T₁) * Λ / (2 * R) ≤ S / (2 * R) := by gcongr
-    exact mul_le_mul_of_nonneg_right hd hlogc
-  have hb2 : ((T₂ - T₁) * Λ / 2) * η ≤ (S / 2) * η := by
-    have hd : (T₂ - T₁) * Λ / 2 ≤ S / 2 := by linarith
-    exact mul_le_mul_of_nonneg_right hd hη0.le
-  linarith
 
 private theorem levinson_window_scalar
     {κ₀ δ η R c cw C K T₁ T₂ Λ S NU mR LM LMb Θ σ₀ : ℝ}

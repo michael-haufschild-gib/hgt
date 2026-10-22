@@ -17,17 +17,8 @@ structure CGLLemma62TailHorizontalPoint (d : CGLLemma62TailContourDepth) (t : �
   shifted_large : 2 ≤ |y - t|
 
 private theorem cgl_tail_shifted_one_add_abs_pow_le (t y : ℝ) (n : ℕ) :
-    (1 + |y - t|) ^ n ≤ (1 + |t|) ^ n * (1 + |y|) ^ n := by
-  have hbase : 1 + |y-t| ≤ (1+|t|)*(1+|y|) := by
-    rw [abs_sub_comm]
-    have htri : |t-y| ≤ |t|+|y| := by
-      calc |t-y| = |t+(-y)| := by ring
-           _ ≤ |t| + |-y| := abs_add_le _ _
-           _ = _ := by rw [abs_neg]
-    nlinarith [abs_nonneg t, abs_nonneg y]
-  have hpow := pow_le_pow_left₀ (by positivity : (0:ℝ)≤1+|y-t|) hbase n
-  rw [mul_pow] at hpow
-  exact hpow
+    (1 + |y - t|) ^ n ≤ (1 + |t|) ^ n * (1 + |y|) ^ n :=
+  cglLemma62_finite_shifted_one_add_absPow_le t y n
 
 private theorem cgl_tail_one_add_abs_pow_le (y : ℝ) (n : ℕ) (hy : 1≤|y|) :
     (1+|y|)^n ≤ 2^n*|y|^n := by

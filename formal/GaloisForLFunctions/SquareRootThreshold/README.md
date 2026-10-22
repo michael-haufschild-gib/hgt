@@ -13,7 +13,7 @@ witness.
 
 ## The shared target: the sign of the critical arithmetic form
 
-Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -40,6 +40,13 @@ of a finite critical energy along a parameter — damping, coefficient cutoff or
 certificate at one parameter becomes a certificate at another, with the observation horizon
 quantified uniformly throughout.
 
+The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
+supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
+from its data to the observables it actually uses — and each reading has an exact resolution limit:
+the best bound on the target invariant that any method reading it can prove. The layer computes
+those limits, so a route can be priced before it is built, and states the separations a reading must
+perform to be admissible at all.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -48,7 +55,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the eight programmes build
+scale. No existing field has its basic objects built with all three; the nine programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -79,18 +86,31 @@ them.
    one complete signed pairing on each compact subinterval, which is weaker than a bound on the
    corresponding norm and already yields an explicit zero-free strip when it covers only part of
    the range (`ArithmeticContinuationAndCriticalEnergy`).
+7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
+   realise the maximum of the invariant it claims to bound. On the zero side this forces the
+   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
+   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
+   separated from each of its single-index perturbations
+   (`ScaleSignedIncidenceCriticality`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
   about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero.
+- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
+  preference: the worst width inside a joint certificate over a family of any cardinality is the
+  trivial one, because the extremal datum is already uniform across the family.
 - *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
   controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram.
+  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
+  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
+  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
 - *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`).
+  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
+  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
+  between; the incidence face admits no sampling at all, since every prime power is individually
+  necessary.
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
 - *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
@@ -98,12 +118,21 @@ them.
   parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction.
+  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
+  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
+  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
+  aperture leaves it intact.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
   `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
-  Identities, finite classifications and nonselective positivity count as zero in these units.
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
+  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
+  classifications and nonselective positivity count as zero in these units.
+- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
+  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
+  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
+  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
+  of the family a partial result reaches.
 - *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
   (`BiScaleUncertainty`).
 - *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
@@ -116,7 +145,10 @@ SRT is the lag face. It owns the lag family `P_v`, the square-root threshold `X 
 visibility and invisibility, the height localization of the explicit formula, and the
 first-negative-lag law on crystals and finite off-line sets. It supplies the window tests
 (`lagPrimeWindow`) whose internal incidence `ArithmeticIncidencePositivity` classifies, and the
-units `θ`, `V` and `δ(n, R)` in which the shared target measures progress. Its part of mechanism 3
+units `θ`, `V` and `δ(n, R)` in which the shared target measures progress, and it grades the other
+faces in the width unit: an aperture-indexed floor at rate `2σ`, on either the ground-energy path or
+the incidence ledger, is the zero-free strip `½ + σ`, and the endpoint of each such family is RH.
+Its part of mechanism 3
 is the lag version of the no-crossing law: why the actual zero configuration of `ζ` has no first
 negative lag when every crystal and every finite off-line set has one. It also carries the
 every-height criterion of the shared target: statements about the zeros near the line at every
@@ -166,6 +198,20 @@ dictionary, the explicit formula read at a lag.
   zero-free bands below half damping are read here as zero widths, its damping `ε` corresponds to
   the bandwidth, and its every-horizon receiver problem is the every-height problem of this
   programme in finite coordinates.
+- **Arithmetic Continuation and Critical Energy grades the same way in the damping.** SRT grades
+  the aperture-indexed faces by the width: a floor at rate `2σ` is the strip `½ + σ`, and the
+  endpoint `σ = 0` is RH. The continuation layer does the same along the damping: a transport
+  covering only `(0, a₀]` reports `Θ ≤ ½ + a₀`, and the damping threshold of the Möbius receiver is
+  the width itself. The two gradations are one dictionary in two parameters, and a route may be
+  priced in whichever it reaches.
+- **Scale-Signed Incidence Criticality turns the visibility laws into exact limits.** SRT supplies
+  the configurations, the width, the off-line lattices and the on-line shadows; the admissibility
+  layer computes, for each class of readings built from them, the best bound it can prove — `½` at
+  every bounded aperture, every bounded height and every coercivity level, `0` for the unbounded
+  certificate, `(1 + T)⁻¹` for the truncated divisor in the horizon unit, and
+  `min(½, arcosh(1 + η/2L)/L)` for a trans-Nyquist deficit at precision `η`. It also proves the
+  asymmetry SRT's laws suggest: refutation is a finite task on the height and radius faces and
+  complete there, while confirmation is available from no bounded reading at all.
 - **RHTower and Zeta23 supply the analysis**: the explicit formula of the zero configuration, the
   Hodge index and lattice tools, the Landau pair tests and isolated deep-zero detection, the
   zero-free regions and the local zero count, the Lorentzian zero mass, the pair-correlation
@@ -634,6 +680,40 @@ argument becomes quantitative.
     aperture `μ(A) ≥ 0` is the bound `V > 2(A − w)` on the visibility lag of every near-top zero
     (`NearTopZerosForceNegativeGroundEnergyBeyondAnExplicitAperture`).
 
+31. **The width bounds the Weil floor in the energy normalisation.** The arrow from the width to a
+    floor is unconditional once the floor is normalised by an `H¹`-type datum: if
+    `zetaZeroWidth < β` then `Ẑ(F) ≥ −C(1 + A)e^{2βA}(∫F² + D)` for every `C²_c` test supported in
+    `[−A, A]` whose autocorrelation has gauge derivative `a' − a/2` bounded by `D`
+    (`TheWidthBoundsTheEnergyNormalisedWeilFloor`). No hypothesis on the distribution of the zeros
+    appears. The mechanism is that the prime side needs no zero-density input at all: the signed
+    prime–polar pairing of an autocorrelation is a Stieltjes integral against the normalised
+    Chebyshev error, whose size is exactly the width, and the only test datum it costs is that sup;
+    the two inputs are the exact Gamma–Lévy form of the Weil functional (the nonnegative Lévy energy
+    dropped) and generalised von Koch in the Chebyshev gauge. The `L²`-normalised version is the one
+    that needs the local density of the off-line zeros in a single window, and that is the open
+    direction of mechanism 27.
+32. **The incidence ledger graded by the zero width.** The difference tests of the lag family are
+    odd and supported in `[−(v/2 + w), v/2 + w]`, and the lag rate *is* the width (mechanism 29), so
+    every aperture-indexed floor of the odd sector converts into a width statement
+    (`TheIncidenceLedgerGradedByTheZeroWidth`): an odd-sector floor `Ẑ(F) ≥ −C e^{2σ r}∫F²` at every
+    aperture `r` gives the strip `|Re ρ − ½| ≤ σ`; written on the incidence ledger of
+    `ArithmeticIncidencePositivity`, the allocation may *fail* by `C e^{2σ r}∫F²` at aperture `r`
+    and still certify `½ + σ`; and at rate `0` — a constant deficit times the mass at every
+    aperture — it already gives RH. Hence the sign in Weil's criterion may be replaced by any
+    estimate losing less than an exponential in the aperture: polynomial and logarithmic losses are
+    free. The gradation is sharp and not a reduction: the unconditional floor is rate `1` (the prime
+    `ℓ¹` norm `≍ 2e^{r}`, with the smoothed on-line part only polynomial in `r`), one off-line zero
+    of depth `δ` contributes `e^{2δr}`, so the floor's exact rate is `2 · width` and the only
+    obstruction to the criterion is an off-line zero itself. What the gradation buys is a unit: a
+    partial allocation estimate reports an explicit strip instead of nothing. Bounded-aperture
+    windows keep reporting nothing, since the gradation quantifies over every aperture.
+33. **Unsigned depth sampling detects local mass.** A source-uniform bound at one positive aperture
+    already controls squared depths on every unit-height window, with literal complex smooth
+    interior probes (`UnsignedDepthSamplingDetectsLocalMass`). The quantity controlled is the
+    unsigned conjugate-difference energy, not the signed Weil floor, so this is the sampling
+    counterpart of the visibility laws: it bounds how much depth a window can hold without deciding
+    any sign, and it is the shape in which a local non-clustering hypothesis becomes usable.
+
 ---
 
 ## 4. Traps
@@ -671,6 +751,9 @@ argument becomes quantitative.
 | Expecting a twin to hide a record | Nearby coefficients are phase-coherent, so a tight twin adds to the record; hiding needs at least triples, and then a collapsed cluster. |
 | Mixing the visibility lags | `V₀(w, η, δ₀)` is for `P_v` itself and carries the transform amplitude `η`; `V_w(γ₀, δ₀)` is for the bump modulated to the zero's height and carries `log γ₀`. |
 | Treating the ground-energy floor and the lag floor as different problems | `2‖κ_w‖²μ(v/2 + w) ≤ Re P_v`: aperture floors are lag floors, and the two no-crossing laws are one. |
+| Treating the sign of the critical form as the thing to be proved | An estimate losing less than an exponential in the aperture suffices (mechanism 32); the floor's exact rate is `2 · width`, so the demand is an exponent and the criterion is sharp. |
+| Accumulating bounded-aperture windows into a width bound | The gradation quantifies over every aperture. A family of windows with a bounded supremum of apertures reports nothing in the width unit, whatever its constants. |
+| Reading the energy-normalised floor as the `L²` one | The unconditional arrow from the width costs an `H¹` datum, the sup of the gauge derivative of the autocorrelation; the `L²`-normalised floor needs the local density of off-line zeros in one window, which no averaged zero-density theorem supplies. |
 
 ---
 
@@ -740,9 +823,17 @@ argument becomes quantitative.
 6. **Calibration** of the threshold and of the first-negative-lag law over `F_q[T]`.
 7. **Every height.** Conditioned-tail estimates for the orbit `τ ↦ ζ(· + iτ)` on a prescribed disc
    (the Bagchi lane of `RHTower`): recurrence holds on every zero-free disc, RH is local disc
-   recurrence at every point of the strip, and the error to control is the tail conditioned on the
-   return set of the finite Euler head, which no bound on the tail averaged over all heights
-   controls. With it, the control of near-top zeros beyond a finite horizon (mechanism 25).
+   recurrence at every point of the strip, and the object to control is the tail conditioned on the
+   return set of the finite Euler head. The conditioning itself is now free: head-conditioned
+   decoupling (`RHTower/HeadConditionedRoughDecoupling`) proves a mean value theorem at arbitrary
+   *distinct* integer frequencies and, from it, that weighting the heights by any probe built on
+   the primes below `y` — in particular by one concentrated on the return set — leaves a `y`-rough
+   Dirichlet polynomial's mean square unchanged, with the effective error coming from integrality
+   of the frequencies (`|log(A/B)| ≥ 1/max(A, B)`) and therefore native to `ℕ`: a Beurling system
+   keeps the exact diagonal and loses the effective form. The residual is that the rough mean
+   square is *unchanged*, not small, while the lane needs the tail to return: the uncontrolled
+   object remains `log ζ(s) − Σ_{p ≤ y} p^{−s}` at a single fixed `s`. With it, the control of
+   near-top zeros beyond a finite horizon (mechanism 25).
    The orbit lane now has Voronin universality and recurrence modulo the local zero divisor at
    every point (`RHTower/ZetaVoroninUniversalityOnSmallDiscs`,
    `RHTower/ZetaRecurrenceAtEveryPointModuloItsZeros`); the cofactor-return heights fix the phases
@@ -750,6 +841,13 @@ argument becomes quantitative.
    with `Re z > 1/2`, which leave `Σ_{p ≤ N} Λ(p) p^{−1/2} k_f(log p) ω_p` free once `N` exceeds the
    base cutoff: the orbit reads the prime phases at bandwidth zero, the localized criterion needs
    them at `√X ≳ log T`. The two lanes meet only at the square-root threshold (open problem 1).
+8. **The `L²`-normalised width arrow.** Mechanism 31 proves `width < β ⟹` floor at rate `2β` with
+   an `H¹` datum in the normalisation; the `L²` form, which is what the ground-energy path and the
+   graded ledger consume, needs a bound on the off-line zeros in a *single* unit-height window. The
+   unsigned sampling law (mechanism 33) bounds squared depths per window from one aperture, and the
+   log-mean route cannot be pushed further: Littlewood's lemma on a unit window has horizontal edges
+   of size `S(T)`, which mechanism 28 proves unbounded. The unit is the rate the arrow preserves,
+   and the question is which single-window input replaces averaged zero density.
 
 ---
 

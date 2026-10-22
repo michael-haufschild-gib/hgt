@@ -294,7 +294,7 @@ private theorem exterior_admission (α β : ℝ) (hs : α+β < -2) :
   rw [Real.exp_log (by linarith : 0 < -2-α-β)] at h
   simpa only [show -2-α-(-2-α-β) = β by ring] using h
 
-private theorem plane_kernel_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
+theorem plane_kernel_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
     fzzScreeningPlaneKernel α β z*Real.exp (δ*Real.log ‖z‖) =
       fzzScreeningPlaneKernel (α+δ) β z := by
   have hn := norm_pos_iff.mpr hz
@@ -303,7 +303,7 @@ private theorem plane_kernel_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
   rw [Real.rpow_add hn]
   ring
 
-private theorem exterior_shift_analytic (α β : ℝ) (hs : α+β < -2) :
+theorem exterior_shift_analytic (α β : ℝ) (hs : α+β < -2) :
     AnalyticAt ℝ (fun δ => ∫ z : ℂ in fzzScreeningPlaneExterior,
       fzzScreeningPlaneKernel (α+δ) β z) 0 := by
   have hshift : ∀ᶠ δ : ℝ in 𝓝 0, (α+δ)+β < -2 := by
@@ -324,7 +324,7 @@ private theorem exterior_shift_analytic (α β : ℝ) (hs : α+β < -2) :
   filter_upwards [ae_restrict_of_ae (volume.ae_ne (0 : ℂ))] with z hz
   exact plane_kernel_shift α β δ hz
 
-private theorem exterior_analytic (α β : ℝ) (hs : α+β < -2) :
+theorem exterior_analytic (α β : ℝ) (hs : α+β < -2) :
     AnalyticAt ℝ (fun s => ∫ z : ℂ in fzzScreeningPlaneExterior,
       fzzScreeningPlaneKernel s β z) α := by
   have h := (exterior_shift_analytic α β hs).comp_sub α

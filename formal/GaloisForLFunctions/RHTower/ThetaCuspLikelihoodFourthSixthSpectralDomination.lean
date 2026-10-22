@@ -63,7 +63,7 @@ def thetaCuspLikelihoodSourceOrdinaryJetFour (x : ℝ) : ℝ :=
     7 * A ^ (2 : ℕ) * thetaCuspLikelihoodNormalizedMoment B 2 -
     A * thetaCuspLikelihoodMean B)
 
-private theorem integrable_thetaLikelihoodFourthScore_tilted
+theorem integrable_thetaLikelihoodFourthScore_tilted
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     Integrable (fun t : ℝ => thetaLikelihoodFourthScore (A * t))
       (thetaCuspHigherLikelihoodTiltedMeasure B) := by
@@ -91,7 +91,7 @@ private theorem integrable_thetaLikelihoodSixthScore_tilted
   dsimp [thetaLikelihoodSixthScore]
   ring
 
-private theorem integral_thetaLikelihoodFourthScore_tilted_eq
+theorem integral_thetaLikelihoodFourthScore_tilted_eq
     (A : ℝ) {B : ℝ} (hB : 0 < B) :
     (∫ t : ℝ, thetaLikelihoodFourthScore (A * t)
       ∂thetaCuspHigherLikelihoodTiltedMeasure B) =

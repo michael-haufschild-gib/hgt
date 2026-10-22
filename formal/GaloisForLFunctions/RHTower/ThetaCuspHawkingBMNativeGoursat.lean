@@ -25,31 +25,15 @@ attribute [-instance] RCLike.innerProductSpace
 private theorem invariant_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
     (hh : HasDerivAt h dh t) (hx : HasDerivAt x dx t) :
     HasDerivAt (fun r => invariant (h r) (x r) y)
-      (dh*invariantTimeFirst (h t) (x t) y+dx*invariantSpaceFirst (h t) (x t) y) t := by
-  have hc := (Real.cosh_pos (x t)).ne'
-  have hy := (Real.cosh_pos y).ne'
-  apply ((((Real.hasDerivAt_cosh _).comp t hh).add
-    (((Real.hasDerivAt_sinh _).comp t hx).mul_const (Real.sinh y))).div
-    (((Real.hasDerivAt_cosh _).comp t hx).mul_const (Real.cosh y))
-    (mul_ne_zero hc hy)).congr_deriv
-  dsimp [invariantTimeFirst,invariantSpaceFirst,invariant,Real.tanh_eq_sinh_div_cosh]
-  simp only [Real.tanh_eq_sinh_div_cosh]
-  field_simp [hc,hy]
-  ring
+      (dh*invariantTimeFirst (h t) (x t) y+dx*invariantSpaceFirst (h t) (x t) y) t :=
+  _root_.RHTower.D4BMCausalKernel.invariant_comp_derivative y t dh dx hh hx
 
 private theorem invariantTimeFirst_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
     (hh : HasDerivAt h dh t) (hx : HasDerivAt x dx t) :
     HasDerivAt (fun r => invariantTimeFirst (h r) (x r) y)
       (dh*invariantTimeSecond (h t) (x t) y-
-        dx*Real.tanh (x t)*invariantTimeFirst (h t) (x t) y) t := by
-  have hc := (Real.cosh_pos (x t)).ne'
-  have hy := (Real.cosh_pos y).ne'
-  apply (((Real.hasDerivAt_sinh _).comp t hh).div
-    (((Real.hasDerivAt_cosh _).comp t hx).mul_const (Real.cosh y))
-    (mul_ne_zero hc hy)).congr_deriv
-  dsimp [invariantTimeFirst,invariantTimeSecond,Real.tanh_eq_sinh_div_cosh]
-  simp only [Real.tanh_eq_sinh_div_cosh]
-  field_simp [hc,hy]
+        dx*Real.tanh (x t)*invariantTimeFirst (h t) (x t) y) t :=
+  _root_.RHTower.D4BMCausalKernel.invariantTimeFirst_comp_derivative y t dh dx hh hx
 
 private theorem tanh_derivative_local (x : ℝ) :
     HasDerivAt Real.tanh (1-Real.tanh x^(2 : ℕ)) x := by
@@ -68,109 +52,20 @@ private def nullInvariantFirst (y u v : ℝ) : ℝ :=
 
 private theorem nullInvariant_first (y u v : ℝ) :
     HasDerivAt (fun a => invariant ((a+v)/2) (y+(a-v)/2) y)
-      (nullInvariantFirst y u v) u := by
-  convert! invariant_comp_derivative y u (1/2) (1/2)
-    (((hasDerivAt_id u).add_const v).div_const 2)
-    ((((hasDerivAt_id u).sub_const v).div_const 2).const_add y) using 1
-  simp only [nullInvariantFirst,id_eq]
-  ring
+      (nullInvariantFirst y u v) u :=
+  _root_.RHTower.D4BMCausalKernel.nullInvariant_first y u v
 
 private theorem nullInvariant_second (y u v : ℝ) :
     HasDerivAt (fun b => invariant ((u+b)/2) (y+(u-b)/2) y)
       ((invariantTimeFirst ((u+v)/2) (y+(u-v)/2) y-
-        invariantSpaceFirst ((u+v)/2) (y+(u-v)/2) y)/2) v := by
-  convert! invariant_comp_derivative y v (1/2) (-1/2)
-    (((hasDerivAt_id v).const_add u).div_const 2)
-    ((((hasDerivAt_id v).const_sub u).div_const 2).const_add y) using 1
-  simp only [id_eq]
-  ring
+        invariantSpaceFirst ((u+v)/2) (y+(u-v)/2) y)/2) v :=
+  _root_.RHTower.D4BMCausalKernel.nullInvariant_second y u v
 
 private theorem nullInvariant_mixed (y u v : ℝ) :
     HasDerivAt (nullInvariantFirst y u)
       ((invariantTimeSecond ((u+v)/2) (y+(u-v)/2) y-
-        invariantSpaceSecond ((u+v)/2) (y+(u-v)/2) y)/4) v := by
-  let h := (u+v)/2
-  let x := y+(u-v)/2
-  have ht : HasDerivAt (fun b : ℝ => (u+b)/2) (1/2) v := by
-    convert! ((hasDerivAt_id v).const_add u).div_const 2 using 1
-  have hx : HasDerivAt (fun b : ℝ => y+(u-b)/2) (-1/2) v := by
-    convert! (((hasDerivAt_id v).const_sub u).div_const 2).const_add y using 1
-  have hT := invariantTimeFirst_comp_derivative y v (1/2) (-1/2) ht hx
-  have hX := (((tanh_derivative_local x).comp v hx).mul
-    (nullInvariant_second y u v)).const_sub (Real.tanh y)
-  apply ((hT.add hX).div_const 2).congr_deriv
-  dsimp [h,x,invariantSpaceFirst,invariantSpaceSecond]
-  ring
-
-private theorem radius_derivative {z : ℝ} (hz : 1 < z) :
-    HasDerivAt Real.arcosh (1/Real.sinh (Real.arcosh z)) z := by
-  simpa only [one_div,Real.sinh_arcosh hz.le] using Real.hasDerivAt_arcosh hz
-
-private theorem angular_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    HasDerivAt (fun y => angularKernel q y X k) (argumentFirst q z X k) z ∧
-    HasDerivAt (fun y => argumentFirst q y X k) (argumentSecond q z X k) z := by
-  have hs := mean_radial_smooth q X k
-  have hs1 := (contDiff_infty_iff_deriv.mp hs).2
-  have hm := ((hs.contDiffAt (x := Real.arcosh z)).differentiableAt (by simp)).hasDerivAt
-  have hm1 := ((hs1.contDiffAt (x := Real.arcosh z)).differentiableAt (by simp)).hasDerivAt
-  have hd := radius_derivative hz
-  have hn : Real.sinh (Real.arcosh z) ≠ 0 := (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have hnC : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hn
-  have hr := ((Real.hasDerivAt_sinh (Real.arcosh z)).comp z hd).ofReal_comp
-  constructor
-  · apply (hm.scomp z hd).congr_deriv
-    simp only [argumentFirst,Complex.real_smul,Complex.ofReal_div,Complex.ofReal_one]
-    ring
-  · apply ((hm1.scomp z hd).div hr hnC).congr_deriv
-    dsimp [argumentSecond]
-    simp only [Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_one]
-    field_simp [hnC]
-
-private theorem angular_equation (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=angularAction q z X k := by
-  have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
-    have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
-    rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
-  have h := mean_darboux q (Real.arcosh z) X k
-  change _ = (Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*angularAction q z X k at h
-  rw [Real.cosh_arcosh hz.le] at h
-  rw [he]
-  dsimp [argumentSecond,argumentFirst]
-  rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
-
-private theorem laplace_circle_smooth (q : XiZeroCopy) (X k : ℝ) :
-    ContDiff ℝ ∞ (fun p : ℝ × ℝ =>
-      scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k)) := by
-  have hp (p : ℝ × ℝ) : 0 < logCircle p.1 p.2 X k 1 :=
-    mul_pos (Real.exp_pos _) (one_div_pos.mpr (denominator_pos _ _))
-  have he : (fun p : ℝ × ℝ => scalarLaplacian (fullSquarePotential q) (logCircle p.1 p.2 X k))=
-      fun p => (logCircle p.1 p.2 X k 1:ℂ)^(2 : ℕ)*
-        (coordDeriv 0 (coordDeriv 0 (fullSquarePotential q)) (logCircle p.1 p.2 X k)+
-         coordDeriv 1 (coordDeriv 1 (fullSquarePotential q)) (logCircle p.1 p.2 X k)) := by
-    funext p
-    exact scalarLaplacian_eq _ _ (hp p)
-  rw [he]
-  apply contDiff_iff_contDiffAt.mpr
-  intro p
-  have hs : ContDiffAt ℝ ∞ (fullSquarePotential q) (logCircle p.1 p.2 X k) :=
-    contDiffAt_infty.mpr (fun n => fullSquarePotential_smooth q _ (hp p) n)
-  have hj (i : Fin 2) : ContDiffAt ℝ ∞ (coordDeriv i (coordDeriv i (fullSquarePotential q)))
-      (logCircle p.1 p.2 X k) :=
-    coordDeriv_contDiffAt (m := ∞)
-      (by simpa using coordDeriv_contDiffAt (m := ∞) (by simpa using hs) i) i
-  have hc : ContDiffAt ℝ ∞ (fun r : ℝ × ℝ => logCircle r.1 r.2 X k) p := by
-    apply contDiffAt_pi.mpr
-    intro i
-    fin_cases i <;> dsimp [logCircle,circle,offset,height,denominator]
-    all_goals fun_prop (disch := exact (denominator_pos _ _).ne')
-  have hy : ContDiffAt ℝ ∞ (fun r : ℝ × ℝ => (logCircle r.1 r.2 X k 1:ℂ)) p :=
-    Complex.ofRealCLM.contDiff.contDiffAt.comp p (contDiffAt_pi.mp hc 1)
-  exact (hy.pow 2).mul (((hj 0).comp p hc).add ((hj 1).comp p hc))
-
+        invariantSpaceSecond ((u+v)/2) (y+(u-v)/2) y)/4) v :=
+  _root_.RHTower.D4BMCausalKernel.nullInvariant_mixed y u v
 
 private def laplaceMean (q : XiZeroCopy) (d X k : ℝ) : ℂ :=
   average (fun theta => scalarLaplacian (fullSquarePotential q) (logCircle d theta X k))
@@ -186,9 +81,6 @@ private theorem average_parameter_continuous (F : ℝ × ℝ → ℂ) (hF : Cont
   exact continuous_const.mul (intervalIntegral.continuous_parametric_intervalIntegral_of_continuous
     (f := fun t theta => F (t,theta)) hF continuous_const)
 
-private theorem laplaceMean_continuous (q : XiZeroCopy) (X k : ℝ) :
-    Continuous (fun d => laplaceMean q d X k) :=
-  average_parameter_continuous _ (laplace_circle_smooth q X k).continuous
 
 private def closedRadius (z : ℝ) : ℝ := Real.arcosh (max 1 z)
 
@@ -218,7 +110,7 @@ private theorem closedAction_eq (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 �
 
 private abbrev nullZ (y u v : ℝ) := invariant ((u+v)/2) (y+(u-v)/2) y
 
-private theorem nullZ_factor (y u v : ℝ) :
+theorem nullZ_factor (y u v : ℝ) :
     nullZ y u v = 1+2*Real.sinh (u/2)*Real.sinh (v/2)/
       (Real.cosh (y+(u-v)/2)*Real.cosh y) := by
   have hd : Real.cosh ((u+v)/2)-Real.cosh ((y+(u-v)/2)-y) =
@@ -233,7 +125,7 @@ private theorem nullZ_factor (y u v : ℝ) :
   rw [add_mul,one_mul,div_mul_cancel₀ _ hn]
   linarith [hd]
 
-private theorem nullZ_ge (y : ℝ) {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) : 1 ≤ nullZ y u v := by
+theorem nullZ_ge (y : ℝ) {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) : 1 ≤ nullZ y u v := by
   rw [nullZ_factor]
   have hp : 0 ≤ 2*Real.sinh (u/2)*Real.sinh (v/2)/(Real.cosh (y+(u-v)/2)*Real.cosh y) :=
     div_nonneg (mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ 2)
@@ -241,7 +133,7 @@ private theorem nullZ_ge (y : ℝ) {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) : 1
     (mul_pos (Real.cosh_pos (y+(u-v)/2)) (Real.cosh_pos y)).le
   linarith
 
-private theorem nullZ_gt (y : ℝ) {u v : ℝ} (hu : 0 < u) (hv : 0 < v) : 1 < nullZ y u v := by
+theorem nullZ_gt (y : ℝ) {u v : ℝ} (hu : 0 < u) (hv : 0 < v) : 1 < nullZ y u v := by
   rw [nullZ_factor]
   have hp : 0 < 2*Real.sinh (u/2)*Real.sinh (v/2)/(Real.cosh (y+(u-v)/2)*Real.cosh y) :=
     div_pos (mul_pos (mul_pos (by norm_num : (0:ℝ) < 2)

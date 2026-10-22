@@ -85,7 +85,7 @@ private theorem cell_centered_square {f : ℝ → ℂ} (hf : Continuous f) :
         cell_const_real,integral_const_mul,he]
     _ = cellVariance f := by dsimp only [cellVariance,a]; ring
 
-private theorem cellCovariance_centered {f g : ℝ → ℂ} (hf : Continuous f) (hg : Continuous g) :
+theorem cellCovariance_centered {f g : ℝ → ℂ} (hf : Continuous f) (hg : Continuous g) :
     cellCovariance f g=∫ x in cell, (f x-cellMean f)*(g x-cellMean g) := by
   let a := cellMean f
   let b := cellMean g
@@ -141,7 +141,7 @@ def nativePairCurrent (q : XiZeroCopy) (a b : Bool) : ℝ → ℂ :=
   covariance (directional Complex.I (D4BMCuspResponse.responsePlanar q a))
     (D4BMCuspResponse.responsePlanar q b)
 
-private theorem coefficient_zero_linear {F G : ℂ → ℂ}
+theorem coefficient_zero_linear {F G : ℂ → ℂ}
     (hf : ContinuousOn F {z : ℂ | 0 < z.im})
     (hg : ContinuousOn G {z : ℂ | 0 < z.im}) (c d : ℂ)
     {y : ℝ} (hy : 0 < y) :
@@ -151,7 +151,7 @@ private theorem coefficient_zero_linear {F G : ℂ → ℂ}
   rw [integral_add ((cell_integrable (slice_continuous hf hy)).const_mul c)
     ((cell_integrable (slice_continuous hg hy)).const_mul d),integral_const_mul,integral_const_mul]
 
-private theorem covariance_linear_left {F G H : ℂ → ℂ}
+theorem covariance_linear_left {F G H : ℂ → ℂ}
     (hf : ContinuousOn F {z : ℂ | 0 < z.im})
     (hg : ContinuousOn G {z : ℂ | 0 < z.im})
     (hh : ContinuousOn H {z : ℂ | 0 < z.im}) (c d : ℂ)
@@ -165,7 +165,7 @@ private theorem covariance_linear_left {F G H : ℂ → ℂ}
     coefficient_zero_linear hf hg c d hy]
   ring
 
-private theorem covariance_slice_congr {F G H : ℂ → ℂ} {y : ℝ}
+theorem covariance_slice_congr {F G H : ℂ → ℂ} {y : ℝ}
     (he : ∀ x : ℝ, F (point x y)=G (point x y)) : covariance F H y=covariance G H y := by
   simp only [covariance,coefficient_zero_integral,cellMean]
   congr 1
@@ -173,7 +173,7 @@ private theorem covariance_slice_congr {F G H : ℂ → ℂ} {y : ℝ}
   · congr 1
     exact integral_congr_ae (Filter.Eventually.of_forall he)
 
-private theorem covariance_hasDerivAt {F G : ℂ → ℂ}
+theorem covariance_hasDerivAt {F G : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im})
     (hg : ContDiffOn ℝ ∞ G {z : ℂ | 0 < z.im})
     {y : ℝ} (hy : 0 < y) :
@@ -202,7 +202,7 @@ private theorem covariance_hasDerivAt {F G : ℂ → ℂ}
   unfold covariance
   ring
 
-private theorem covariance_horizontal_second {F G : ℂ → ℂ}
+theorem covariance_horizontal_second {F G : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im})
     (hg : ContDiffOn ℝ ∞ G {z : ℂ | 0 < z.im})
     {y : ℝ} (hy : 0 < y)
@@ -483,7 +483,7 @@ private theorem energy_nonneg (q : XiZeroCopy) (b : Bool) (y : ℝ) :
   exact add_nonneg (mul_nonneg (by norm_num) (Complex.normSq_nonneg _))
     (mul_nonneg (sq_nonneg _) (Complex.normSq_nonneg _))
 
-private theorem covariance_continuousOn {F G : ℂ → ℂ}
+theorem covariance_continuousOn {F G : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im})
     (hg : ContDiffOn ℝ ∞ G {z : ℂ | 0 < z.im}) :
     ContinuousOn (covariance F G) (Ioi (0:ℝ)) :=
@@ -645,7 +645,7 @@ theorem nativePairCurrent_weighted_tendsto_zero (q : XiZeroCopy) (a b : Bool) (N
   have hy0 : 0 < y := lt_trans (lt_of_lt_of_le (by norm_num : (0:ℝ)<4) hT) hy
   exact polynomial_pair_hasDerivAt q a b N ⟨y,hy0⟩
 
-private theorem coefficient_zero_cusp_mean (F : ℂ → ℂ) (y : ℝ)
+theorem coefficient_zero_cusp_mean (F : ℂ → ℂ) (y : ℝ)
     (hp : ∀ x : ℝ, F (point (x+1) y)=F (point x y)) :
     coefficient 1 0 F y=D4BMCuspResponse.average F y := by
   rw [coefficient_zero_integral]

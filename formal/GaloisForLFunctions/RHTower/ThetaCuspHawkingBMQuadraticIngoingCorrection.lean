@@ -44,11 +44,13 @@ def correctionJet (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ) : CoordinateMe
 
 private theorem background_metric (r y : ℂ) :
     (D4BMBackground.jet r y).metric = D4BMBackground.metric r y := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_metric r y
 
 private theorem background_first (r y : ℂ) (k : Fin 4) :
     (D4BMBackground.jet r y).first k = Matrix.diagonal
       (if k = 1 then ![-2*r, -2*r*(r^(2 : ℕ)-1)⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ), 2*r*y⁻¹^(2 : ℕ)]
        else if k = 3 then ![0, 0, -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ), -2*r^(2 : ℕ)*y⁻¹^(3 : ℕ)] else 0) := rfl
+  _root_.RHTower.D4BMVectorLinearEquation.background_first r y k
 
 private theorem background_second (r y : ℂ) (k l : Fin 4) :
     (D4BMBackground.jet r y).second k l = Matrix.diagonal
@@ -56,36 +58,15 @@ private theorem background_second (r y : ℂ) (k l : Fin 4) :
         2*y⁻¹^(2 : ℕ), 2*y⁻¹^(2 : ℕ)]
        else if (k = 1 ∧ l = 3) ∨ (k = 3 ∧ l = 1) then ![0,0,-4*r*y⁻¹^(3 : ℕ),-4*r*y⁻¹^(3 : ℕ)]
        else if k = 3 ∧ l = 3 then ![0,0,6*r^(2 : ℕ)*y⁻¹^(4 : ℕ),6*r^(2 : ℕ)*y⁻¹^(4 : ℕ)] else 0) := rfl
-
-
-set_option maxRecDepth 8192 in
+  _root_.RHTower.D4BMVectorLinearEquation.background_second r y k l
 set_option maxHeartbeats 1000000 in
 private theorem ricci_offdiagonal (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y)
       (correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 2 3 =
       B^(2 : ℕ) * (-2*aS^(2 : ℕ)*scalarWeight s r*(S*(Sxy+Sx/y)+Sx*Sy) +
-        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ))/2) := by
-  generalize hK : correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy = K
-  simp only [CoordinateMetricTwoJet.Linearization.ricci,
-    CoordinateMetricTwoJet.Linearization.curvature,
-    CoordinateMetricTwoJet.Linearization.connectionSpatial,
-    CoordinateMetricTwoJet.Linearization.connection,
-    CoordinateMetricTwoJet.Linearization.inverseSpatial,
-    CoordinateMetricTwoJet.Linearization.inverse,
-    CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
-    D4BMBackground.metric_inverse r y hr hy hf]
-  rw [← hK]
-  simp [Fin.sum_univ_succ, Matrix.mul_apply, correctionJet, angular,
-    D4BMVectorLinearEquation.angular0, D4BMVectorLinearEquation.angular1,
-    temporalRadial, coord, ScalarTwoJet.add, ScalarTwoJet.mul, ScalarTwoJet.inv,
-    ScalarTwoJet.constant]
-  simp only [scalarWeight, mixedWeight, ← pow_two, ← sub_eq_add_neg]
-  field_simp [hf, hr, hy]
-  ring
-
-set_option maxRecDepth 8192 in
+        aS*aV*mixedWeight s r*(S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ))/2) :=
+  _root_.RHTower.D4BMQuadraticAngularCorrection.ricci_offdiagonal s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf
 set_option maxHeartbeats 1000000 in
 private theorem ricci_difference (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
@@ -95,25 +76,8 @@ private theorem ricci_difference (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
       (correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy) 3 3 =
       B^(2 : ℕ) * (-2*aS^(2 : ℕ)*scalarWeight s r*
         (S*(2*Sxx-(s+1)*(s+2)*S/y^(2 : ℕ)-2*Sy/y)+Sx^(2 : ℕ)-Sy^(2 : ℕ)) -
-        2*aS*aV*mixedWeight s r*(S*(Sxy+Sx/y)+Sx*Sy)) := by
-  generalize hK : correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy = K
-  simp only [CoordinateMetricTwoJet.Linearization.ricci,
-    CoordinateMetricTwoJet.Linearization.curvature,
-    CoordinateMetricTwoJet.Linearization.connectionSpatial,
-    CoordinateMetricTwoJet.Linearization.connection,
-    CoordinateMetricTwoJet.Linearization.inverseSpatial,
-    CoordinateMetricTwoJet.Linearization.inverse,
-    CoordinateMetricTwoJet.christoffel, CoordinateMetricTwoJet.inverseDerivative,
-    background_metric, background_first, background_second,
-    D4BMBackground.metric_inverse r y hr hy hf]
-  rw [← hK]
-  simp [Fin.sum_univ_succ, Matrix.mul_apply, correctionJet, angular,
-    D4BMVectorLinearEquation.angular0, D4BMVectorLinearEquation.angular1,
-    temporalRadial, coord, ScalarTwoJet.add, ScalarTwoJet.mul, ScalarTwoJet.inv,
-    ScalarTwoJet.constant]
-  simp only [scalarWeight, mixedWeight, ← pow_two, ← sub_eq_add_neg]
-  field_simp [hf, hr, hy]
-  ring
+        2*aS*aV*mixedWeight s r*(S*(Sxy+Sx/y)+Sx*Sy)) :=
+  _root_.RHTower.D4BMQuadraticAngularCorrection.ricci_difference s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf
 
 end
 end RHTower.D4BMQuadraticIngoingCorrection
@@ -136,36 +100,8 @@ theorem linearAngularCoefficient_eq (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : �
     let G := gradientPair Sx Sy
     linearAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
       -(B^(2 : ℕ) • ((2*aS^(2 : ℕ)*scalarWeight s r) • (H+G) +
-        (aS*aV*mixedWeight s r) • rotatePair (H+G))) := by
-  let J := D4BMBackground.jet r y
-  let K := correctionJet s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy
-  have hk22 : K.metric 2 2 = 0 := by simp [K, correctionJet, ScalarTwoJet.constant]
-  have hk33 : K.metric 3 3 = 0 := by simp [K, correctionJet, ScalarTwoJet.constant]
-  have hk23 : K.metric 2 3 = 0 := by simp [K, correctionJet, ScalarTwoJet.constant]
-  have hj23 : J.metric 2 3 = 0 := by simp [J, D4BMBackground.jet, D4BMBackground.metric]
-  have hjd : J.metric 2 2 = J.metric 3 3 := by rfl
-  have hd := ricci_difference s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf
-  have ho := ricci_offdiagonal s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf
-  have hd' : CoordinateMetricTwoJet.Linearization.cosmological J K (-3) 2 2 -
-      CoordinateMetricTwoJet.Linearization.cosmological J K (-3) 3 3 =
-      CoordinateMetricTwoJet.Linearization.ricci J K 2 2 -
-        CoordinateMetricTwoJet.Linearization.ricci J K 3 3 := by
-    simp only [CoordinateMetricTwoJet.Linearization.cosmological,
-      CoordinateMetricTwoJet.Linearization.einstein, hk22, hk33, hjd, mul_zero, add_zero]
-    ring
-  have ho' : CoordinateMetricTwoJet.Linearization.cosmological J K (-3) 2 3 =
-      CoordinateMetricTwoJet.Linearization.ricci J K 2 3 := by
-    simp only [CoordinateMetricTwoJet.Linearization.cosmological,
-      CoordinateMetricTwoJet.Linearization.einstein, hk23, hj23, mul_zero, add_zero, sub_zero]
-  change (CoordinateMetricTwoJet.Linearization.cosmological J K (-3) 2 2 -
-      CoordinateMetricTwoJet.Linearization.cosmological J K (-3) 3 3,
-      CoordinateMetricTwoJet.Linearization.cosmological J K (-3) 2 3) = _
-  rw [hd', ho']
-  change (CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y) _ 2 2 -
-    CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y) _ 3 3,
-    CoordinateMetricTwoJet.Linearization.ricci (D4BMBackground.jet r y) _ 2 3) = _
-  rw [hd, ho]
-  apply Prod.ext <;> dsimp [hessianPair, gradientPair, rotatePair] <;> ring
+        (aS*aV*mixedWeight s r) • rotatePair (H+G))) :=
+  _root_.RHTower.D4BMQuadraticAngularCorrection.linearAngularCoefficient_eq s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf
 
 /-- Literal cosmological Einstein source on the complete corrected metric-jet path. -/
 def correctedSource (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
@@ -187,14 +123,8 @@ theorem correctedAngularCoefficient_eq_sum (s r y B aS aV S Sx Sy Sxx Sxy Sxxx S
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     correctedAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
       linearAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy +
-        angularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy := by
-  have hJ : (D4BMBackground.jet r y).metric.det ≠ 0 := by
-    change (D4BMBackground.metric r y).det ≠ 0
-    rw [D4BMBackground.metric_det r y hf]
-    exact neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero 4 hr) (pow_ne_zero 4 (inv_ne_zero hy)))
-  unfold correctedAngularCoefficient correctedSource
-  simp only [ComplexCoordinateMetricTwoJet.CubicSource.quadratic_coefficient _ _ _ _ hJ]
-  apply Prod.ext <;> (dsimp [linearAngularCoefficient, angularCoefficient] <;> ring)
+        angularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy :=
+  _root_.RHTower.D4BMQuadraticAngularCorrection.correctedAngularCoefficient_eq_sum s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf
 
 /-- Exact remaining angular source after the explicit correction: one gradient
 square with a completely determined radial coefficient. No physical response or
@@ -202,11 +132,8 @@ extinction hypothesis is used. -/
 theorem correctedAngularCoefficient_eq (s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy : ℂ)
     (hr : r ≠ 0) (hy : y ≠ 0) (hf : r^(2 : ℕ)-1 ≠ 0) :
     correctedAngularCoefficient s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy =
-      (B^(2 : ℕ)*(aV^(2 : ℕ)*vectorWeight s r-aS^(2 : ℕ)*scalarWeight s r)) • gradientPair Sx Sy := by
-  rw [correctedAngularCoefficient_eq_sum s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf,
-    linearAngularCoefficient_eq s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf,
-    angularCoefficient_decomposition s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf]
-  apply Prod.ext <;> dsimp [hessianPair, gradientPair, rotatePair] <;> ring
+      (B^(2 : ℕ)*(aV^(2 : ℕ)*vectorWeight s r-aS^(2 : ℕ)*scalarWeight s r)) • gradientPair Sx Sy :=
+  _root_.RHTower.D4BMQuadraticAngularCorrection.correctedAngularCoefficient_eq s r y B aS aV S Sx Sy Sxx Sxy Sxxx Sxxy hr hy hf
 
 end
 end RHTower.D4BMQuadraticIngoingCorrection

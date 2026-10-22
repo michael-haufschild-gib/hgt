@@ -210,7 +210,7 @@ theorem exists_bound_norm_barnesJ_horizontal
             _ = C₁ * C₂ * (B + 1) ^ N₂ * Real.exp (Real.pi * B / 2) * R * T ^ (N₁ + N₂) *
                     Real.exp (-((Real.pi - |Complex.arg η|) * T)) := by rw [hExp]
 
-private theorem tendsto_const_mul_pow_mul_exp_neg {δ : ℝ} (hδ : 0 < δ) (N : ℕ) (C : ℝ) :
+theorem tendsto_const_mul_pow_mul_exp_neg {δ : ℝ} (hδ : 0 < δ) (N : ℕ) (C : ℝ) :
     Tendsto (fun T : ℝ => C * T ^ N * Real.exp (-(δ * T))) atTop (𝓝 0) := by
   have hbase := Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero N
   have hscale : Tendsto (fun T : ℝ => δ * T) atTop atTop :=

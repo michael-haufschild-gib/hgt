@@ -14,7 +14,7 @@ parentheses as entry points.
 
 ## The shared target: the sign of the critical arithmetic form
 
-Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -41,6 +41,13 @@ of a finite critical energy along a parameter — damping, coefficient cutoff or
 certificate at one parameter becomes a certificate at another, with the observation horizon
 quantified uniformly throughout.
 
+The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
+supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
+from its data to the observables it actually uses — and each reading has an exact resolution limit:
+the best bound on the target invariant that any method reading it can prove. The layer computes
+those limits, so a route can be priced before it is built, and states the separations a reading must
+perform to be admissible at all.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -49,7 +56,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the eight programmes build
+scale. No existing field has its basic objects built with all three; the nine programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -80,18 +87,31 @@ them.
    one complete signed pairing on each compact subinterval, which is weaker than a bound on the
    corresponding norm and already yields an explicit zero-free strip when it covers only part of
    the range (`ArithmeticContinuationAndCriticalEnergy`).
+7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
+   realise the maximum of the invariant it claims to bound. On the zero side this forces the
+   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
+   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
+   separated from each of its single-index perturbations
+   (`ScaleSignedIncidenceCriticality`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
   about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero.
+- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
+  preference: the worst width inside a joint certificate over a family of any cardinality is the
+  trivial one, because the extremal datum is already uniform across the family.
 - *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
   controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram.
+  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
+  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
+  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
 - *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`).
+  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
+  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
+  between; the incidence face admits no sampling at all, since every prime power is individually
+  necessary.
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
 - *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
@@ -99,12 +119,21 @@ them.
   parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction.
+  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
+  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
+  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
+  aperture leaves it intact.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
   `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
-  Identities, finite classifications and nonselective positivity count as zero in these units.
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
+  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
+  classifications and nonselective positivity count as zero in these units.
+- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
+  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
+  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
+  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
+  of the family a partial result reaches.
 - *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
   (`BiScaleUncertainty`).
 - *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
@@ -164,6 +193,22 @@ theorems are consumed on both sides of it.
   this theory must at least pay at the nodes it uses, and its `log 4`/`log 6` thresholds are the
   node criticality of the shared target. BVI's receiver and its zero-free bands are the
   finite-modulus form of the same no-crossing law.
+- **Arithmetic Continuation and Critical Energy transports the ground floor.** The no-crossing law
+  of `μ` is the aperture instance of the continuation layer's question: a certificate at one
+  parameter made into a certificate at another. The layer supplies the derivative-free
+  multiplicative transport (bounded relative decay of a positive floor forbids a crossing, with the
+  explicit floor `μ(a)exp(−(β c − β a))`), instantiated from this programme's certified endpoint
+  `μ ≥ 1/5000` at `3/10`; in return ACT supplies the object being transported and the only
+  unconditional initial values it has. The layer's own obstruction — the symbol and the spectral
+  weight sharing their poles — is the damping-side twin of the first negative lag.
+- **Scale-Signed Incidence Criticality prices the aperture face.** It proves that the certificate at
+  a bounded aperture is faithful for the *scale* of a configuration and blind to its *depth*, which
+  is why every interior aperture counts zero in the width unit; that an unbounded sequence of
+  apertures suffices and a margin adds nothing; that a loss constant or linear in the aperture is
+  harmless while one growing with the frequency of the test destroys the criterion; and that past
+  the Nyquist aperture the deficit's size, not its sign, is the informative datum, with the
+  square-root precision law `√(η/L³)` as the exchange rate. ACT supplies the forms and floors those
+  statements are about.
 - **RHTower supplies the analytic inputs**: the harmonic identity of `Θ` and the Weil–Markov–pole
   split with its capacity, the phi-Doob jump energies and half-line folding, the reflected killing
   potential, the CCM restricted and polar ground energies with Suzuki's small-aperture theorem,
@@ -742,6 +787,16 @@ an infinite-dimensional family of approximate ground states (the pole-free theta
 unlike a Schrödinger form whose critical ground state is unique and positive: a new, arithmetic type
 of criticality, with sign-changing null directions.
 
+**What criticality does not forbid.** Criticality is a statement about *subtracting*: no positive
+Hardy weight, no lower prime rate and no smaller variance can be removed while the sign is kept.
+It says nothing against *adding* an allowance and keeping the conclusion, and the conclusion
+tolerates a generous one. On odd compact tests the sign may be replaced by a floor
+`Ẑ(F) ≥ −C_σ e^{2σ r}∫F²` at aperture `r`, which yields the zero-free strip `Θ ≤ ½ + σ`, and a
+loss bounded uniformly in the aperture already yields RH; polynomial and logarithmic losses are
+free. The no-slack theorems therefore forbid a cheaper hypothesis, not a lossy estimate. What they
+do fix is the price: the exact rate of the true floor is `2 · width`, and the unconditionally
+available rate is `1`, the prime `ℓ¹` norm `≍ 2e^{r}`. The demanded object is an exponent.
+
 ### 3.10 Averaging over the shift
 
 The variation inequality is quadratic in `m_a`, and the shift integrals are explicit:
@@ -901,6 +956,34 @@ this one real function of one variable never crosses zero.
   zero, and the contact aperture of a hypothetical near-top zero is at most half its visibility
   lag plus the width.
 
+* **The converse arrow, at an archimedean cost.** The implication "rate of `μ` ⟹ width" has an
+  unconditional converse once the floor is normalised by an `H¹`-type datum rather than by the mass
+  alone: if the zero width is below `β`, then `Ẑ(F) ≥ −C(1 + A)e^{2βA}(∫F² + D)` for every `C²_c`
+  test supported in `[−A, A]` whose autocorrelation has gauge derivative `a' − a/2` bounded by `D`.
+  No hypothesis on the distribution of the zeros enters: the prime side is a Stieltjes integral
+  against the normalised Chebyshev error, whose size *is* the width, and the only test datum it
+  costs is that sup. The two directions of "the rate of the path is the width" therefore match in
+  the archimedean normalisation, and what is open is the normalisation itself — the `L²`-normalised
+  floor needs the off-line zero sum, which is an `H¹` quantity while `μ(A)` is `L²`.
+* **Transport along the aperture.** The no-crossing law has a derivative-free multiplicative form:
+  if the *relative* loss of the floor over `[a, c]` is bounded by a primitive `β`, then
+  `μ(c) ≥ μ(a)·exp(−(β c − β a))`, so a certified endpoint propagates. Instantiated at the
+  certified `μ ≥ 1/5000` on `[0, 3/10]`, the aperture face becomes a question about the *rate* at
+  which the floor may decay, not about its sign at any one aperture.
+* **What a bounded aperture is worth, and what it is not.** Monotonicity makes the certificate
+  cofinal: positivity along any unbounded set of apertures already forces positivity at every
+  aperture, so the path need only be certified along a sequence `a_n → ∞`, with nothing proved in
+  between; and a margin buys nothing, since a floor `μ(A) ≥ η` at every aperture is worth exactly
+  what `η = 0` is worth — both are RH — while a loss constant or linear in the aperture still
+  decides the question. In the other direction every bounded certificate is blind to the width: at
+  a fixed aperture, at every coercivity level, and in every monotone reparametrisation of the
+  depth, a configuration certified there shares its certificate with configurations of every width
+  up to `½`. A certified interior aperture therefore counts zero in the width unit. Past the
+  Nyquist aperture of the configuration addressed, the informative quantity is the *size* of the
+  deficit and never its sign: the sign is constant in the depth on both sides of that threshold,
+  two deficit measurements at consecutive aliasing indices determine the depth in closed form, and
+  controlling the deficit to precision `η` at scale `L` resolves depths only down to `√(η/L³)`.
+
 The path is pinned between explicit floors on `[0, 3/10]` and a doubly exponential ceiling at
 infinity; what is open is the stretch between, where the primes act at full strength.
 
@@ -942,6 +1025,9 @@ explicit `a`-integrals needs no majorant.
 | Treating the shift as information | Every frontier inequality at one shift is RH; the shift is a gauge, and the zero form is the same for all shifts. |
 | Averaging over all shifts to gain a weaker target | The average over all shifts is `Ξ²`-weighted in frequency and blind to off-line zeros. Use single shifts or narrow shift windows. |
 | Expecting a Hardy weight, a lower jump rate or a smaller variance to leave room | The odd form is critical in all three senses; every prime enters at exactly critical strength. |
+| Reading criticality as "no allowance at all" | Criticality forbids subtracting a positive weight while keeping the sign. Adding a loss subexponential in the aperture keeps the *conclusion*: `Ẑ(F) ≥ −C_σ e^{2σ r}∫F²` is the strip `½ + σ`, and a loss uniform in the aperture is RH. The demand is an exponent, not a sign. |
+| A coercive certificate at a bounded aperture is progress on the width | At every fixed aperture and every level `η`, the certified class contains configurations of every width up to `½`, in every monotone unit of the depth. Bounded certified apertures count zero in the width unit; only the unbounded direction moves it. |
+| Past the Nyquist aperture the sign of the form detects the depth | The sign is constant in the depth on both sides of the threshold; what determines the depth is the magnitude of the deficit, in closed form from two consecutive aliasing bands, at precision `L³β²` to exclude depth `β`. |
 | Expecting positivity of the conductance form in a positive gauge | `J_M` alone is negative somewhere in every smeared gauge; the variance `V_μ` is indispensable. |
 | Proving a statement about `Q` on the theta span as new | On the span the Markov form is the pole form (Lorentz, rank one on the odd part) and the Weil form of `Θ`-translates is pole-only; the harmonic span is the radical. |
 | Confusing `Ẑ` with a new form | On compact tests `Ẑ` is the Weil form; what is native is its generator-calculus proof, the exact source of every gauge and the cone criterion. |
@@ -997,7 +1083,10 @@ the prime number theorem enters only through proved corpus forms.
    past `½ log 2`, where the folded conductances across `log 2` are negative on even tests (the odd
    sector is paid through `181/500`); the size of `μ(A)` on the stretch where it is doubly
    exponentially small; and a mechanism excluding contact that sees every prime at critical
-   strength while losing nothing at the archimedean place.
+   strength while losing nothing at the archimedean place. The graded form is the usable target:
+   a floor `μ(A) ≥ −Ce^{2σA}` is the strip `½ + σ`, the converse holds unconditionally in the
+   archimedean normalisation, and only a sequence of apertures tending to infinity need be
+   covered — so what is missing is one `L²`-normalised rate, not a sign at every aperture.
 
 ### Research topics toward the shared target
 
@@ -1016,7 +1105,14 @@ the prime number theorem enters only through proved corpus forms.
 4. **Selectivity audit.** Which theorems of §3 survive `ζ(s−a)ζ(s+a)` and a Beurling system; the
    arithmetic enters only through the equation of motion of `Θ`, and the audit says where.
 5. **Units.** The aperture `A` through which `Ẑ ≥ 0` holds for all profiles; every new positivity
-   statement reports this aperture and the family it covers.
+   statement reports this aperture and the family it covers. Since a bounded aperture is blind to
+   the width, a statement whose aperture does not grow also reports what it *does* measure — the
+   scale it certifies, or the rate of its floor.
+6. **The graded no-crossing problem.** Prove `μ(A) ≥ −Ce^{2σA}` for one `σ < ½` in the `L²`
+   normalisation, along any unbounded set of apertures. The archimedean-normalised arrow is a
+   theorem, the relative-decay transport carries a certified endpoint forward, and a uniform-in-`A`
+   loss is already RH; what is missing is the passage from the `H¹` datum of the off-line zero sum
+   to the `L²` normalisation of the path.
 
 ---
 

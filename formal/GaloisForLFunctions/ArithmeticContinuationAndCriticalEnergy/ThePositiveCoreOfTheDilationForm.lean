@@ -132,7 +132,7 @@ theorem rowDilationForm_split_at_one (ε : ℝ) (T : ℕ) (v : ℕ → ℝ) :
   rw [rowDilationForm_eq_pairing, hv, rowDilationPairing_add_left,
     rowDilationPairing_add_right, rowDilationPairing_add_right,
     rowDilationForm_eq_pairing, rowDilationForm_eq_pairing]
-  ring
+  ring_nf
 
 /-- **The signed work at the constant source.**  The positive core, two explicit linear functionals
 of the deviation, the deviation's own dilation form, and the polar correction. -/

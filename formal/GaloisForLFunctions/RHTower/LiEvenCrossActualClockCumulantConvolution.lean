@@ -10,7 +10,7 @@ literal zeroth raw-source normalization throughout.
 open scoped BigOperators
 namespace RHTower
 noncomputable section
-private lemma sum_range_two (f : ℕ → ℂ) (n : ℕ) :
+lemma sum_range_two (f : ℕ → ℂ) (n : ℕ) :
     ∑ i ∈ Finset.range (2*n), f i = ∑ j ∈ Finset.range n, (f (2*j) + f (2*j+1)) := by
   induction n with
   | zero => simp

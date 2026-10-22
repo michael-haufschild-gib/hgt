@@ -484,32 +484,6 @@ private theorem chartSmooth_star {f : UpperHalfPlane → ℂ} (hf : ChartSmooth 
   filter_upwards with w
   exact (Complex.conjCLE_apply _).symm
 
-private theorem chartSmooth_eq_of_ae_eq {f g : UpperHalfPlane → ℂ}
-    (hf : ChartSmooth f) (hg : ChartSmooth g)
-    (he : f =ᵐ[(volume : Measure UpperHalfPlane)] g) : f = g := by
-  have hm : ∀ᵐ z ∂Measure.map UpperHalfPlane.coe (volume : Measure UpperHalfPlane),
-      f (ofComplex z) = g (ofComplex z) :=
-    UpperHalfPlane.measurableEmbedding_coe.ae_map_iff.mpr (by
-      filter_upwards [he] with z hz
-      simpa only [ofComplex_apply] using hz)
-  rw [map_volume_chart_eq] at hm
-  have hd : Measurable (fun z : ℂ => (chartDensity z : ℝ≥0∞)) := by
-    unfold chartDensity
-    fun_prop
-  have hh := (ae_withDensity_iff hd).mp hm
-  have hae : (fun z : ℂ => f (ofComplex z)) =ᵐ[volume.restrict {z : ℂ | 0 < z.im}]
-      (fun z : ℂ => g (ofComplex z)) := by
-    filter_upwards [hh, ae_restrict_mem isOpen_upperHalfPlaneSet.measurableSet] with z hz hy
-    exact hz (by simp [chartDensity, ne_of_gt hy])
-  have hc (a : UpperHalfPlane → ℂ) (ha : ChartSmooth a) :
-      ContinuousOn (fun z : ℂ => a (ofComplex z)) {z : ℂ | 0 < z.im} := by
-    intro z hz
-    have hh := ha (ofComplex z)
-    rw [ofComplex_apply_of_im_pos hz] at hh
-    exact hh.continuousAt.continuousWithinAt
-  have hp := Measure.eqOn_open_of_ae_eq hae isOpen_upperHalfPlaneSet (hc f hf) (hc g hg)
-  funext z
-  simpa only [ofComplex_apply] using hp z.im_pos
 
 /-- The separately glued smooth response inherits the finite-energy Schwarz involution. -/
 theorem globalResponse_conj (q : XiZeroCopy) (minusBranch : Bool) :

@@ -32,7 +32,7 @@ private theorem routeT_gapMoment_halfBoundary_le_threeQuarters :
   dsimp only [routeTGapMomentNu]
   linarith [maynardLongGlobalAmplitudeDeficit_pos]
 
-private theorem montgomery_two_term_envelope
+theorem montgomery_two_term_envelope
     {W HF B U V A : ℝ} {e : ℕ}
     (hW : 1 ≤ W) (hHF : 1 ≤ HF) (hB : 1 ≤ B)
     (hU : 0 ≤ U) (hV : 0 ≤ V) (hA : A ≤ 3 * HF * B) :
@@ -83,14 +83,14 @@ private theorem montgomery_two_term_envelope
       add_le_add (mul_le_mul_of_nonneg_right hcoef hU) le_rfl
     _ = HF * (12 * W ^ 2 * B ^ (e + 2)) * (U + V) := by ring
 
-private theorem twelve_mul_le_half_of_twentyFour_mul_le
+theorem twelve_mul_le_half_of_twentyFour_mul_le
     {x y z : ℝ} (h : 24 * x * y ≤ z) :
     12 * x * y ≤ (1 / 2 : ℝ) * z := by
   calc
     12 * x * y = (1 / 2 : ℝ) * (24 * x * y) := by ring
     _ ≤ (1 / 2 : ℝ) * z := mul_le_mul_of_nonneg_left h (by norm_num)
 
-private theorem mul_rpow_of_eq_rpow
+theorem mul_rpow_of_eq_rpow
     {T Y r a : ℝ} (hT : 0 < T) (hY : Y = T ^ r) :
     T * Y ^ a = T ^ (1 + r * a) := by
   rw [hY, ← Real.rpow_mul hT.le]
@@ -98,13 +98,13 @@ private theorem mul_rpow_of_eq_rpow
     T * T ^ (r * a) = T ^ (1 : ℝ) * T ^ (r * a) := by rw [Real.rpow_one]
     _ = T ^ (1 + r * a) := (Real.rpow_add hT _ _).symm
 
-private theorem rpow_of_eq_rpow
+theorem rpow_of_eq_rpow
     {T Y r a : ℝ} (hT : 0 ≤ T) (hY : Y = T ^ r) :
     Y ^ a = T ^ (r * a) := by
   rw [hY]
   exact (Real.rpow_mul hT r a).symm
 
-private theorem two_fourHundredths_absorb_into_oneHundredth
+theorem two_fourHundredths_absorb_into_oneHundredth
     {x target : ℝ} (h : x + 1 / 100 ≤ target) :
     1 / 400 + 1 / 400 + x ≤ target - 1 / 200 := by
   linarith

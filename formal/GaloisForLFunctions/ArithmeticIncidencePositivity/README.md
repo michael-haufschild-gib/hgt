@@ -17,7 +17,7 @@ pairs it concerns.
 
 ## The shared target: the sign of the critical arithmetic form
 
-Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -44,6 +44,13 @@ of a finite critical energy along a parameter — damping, coefficient cutoff or
 certificate at one parameter becomes a certificate at another, with the observation horizon
 quantified uniformly throughout.
 
+The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
+supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
+from its data to the observables it actually uses — and each reading has an exact resolution limit:
+the best bound on the target invariant that any method reading it can prove. The layer computes
+those limits, so a route can be priced before it is built, and states the separations a reading must
+perform to be admissible at all.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -52,7 +59,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the eight programmes build
+scale. No existing field has its basic objects built with all three; the nine programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -83,18 +90,31 @@ them.
    one complete signed pairing on each compact subinterval, which is weaker than a bound on the
    corresponding norm and already yields an explicit zero-free strip when it covers only part of
    the range (`ArithmeticContinuationAndCriticalEnergy`).
+7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
+   realise the maximum of the invariant it claims to bound. On the zero side this forces the
+   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
+   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
+   separated from each of its single-index perturbations
+   (`ScaleSignedIncidenceCriticality`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
   about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero.
+- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
+  preference: the worst width inside a joint certificate over a family of any cardinality is the
+  trivial one, because the extremal datum is already uniform across the family.
 - *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
   controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram.
+  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
+  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
+  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
 - *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`).
+  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
+  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
+  between; the incidence face admits no sampling at all, since every prime power is individually
+  necessary.
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
 - *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
@@ -102,12 +122,21 @@ them.
   parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction.
+  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
+  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
+  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
+  aperture leaves it intact.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
   `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
-  Identities, finite classifications and nonselective positivity count as zero in these units.
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
+  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
+  classifications and nonselective positivity count as zero in these units.
+- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
+  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
+  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
+  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
+  of the family a partial result reaches.
 - *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
   (`BiScaleUncertainty`).
 - *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
@@ -124,8 +153,12 @@ the lag tests of `SquareRootThreshold`. It takes the gauge, the generators and t
 `Z = J_M + V_μ` from `ArithmeticCriticalityTheory` and must hand back a profile-level inequality,
 not a pointwise one. In the shared units its odd-sector window reaches `181/500`, past the first
 prime, with the atom `Λ(2)/√2` paid and selective against the shifted pair from the Markov window
-on (mechanisms 24–34); its pointwise classifications, collar constants and the ledger of mechanism
-43 count as zero, and its next unit is the even sector and the ledger past `221/400`.
+on (mechanisms 24–34); its pointwise classifications and collar constants count as zero, and its
+next unit is the even sector and the ledger past `221/400`. The ledger of mechanism 43 is no longer
+a zero-valued object: graded by the zero width it has a unit of its own, since an allocation that
+fails by `C e^{2σ r}∫F²` at aperture `r` still certifies the strip `½ + σ` and a failure bounded
+uniformly in the aperture certifies RH. What AIP owes the shared target is therefore a *rate* on
+the ledger's deficit at every aperture, not the exact sign of the allocation.
 
 ### How the programme connects to the other programmes
 
@@ -168,6 +201,19 @@ hands its results back as windows, atoms paid, and the ledger.
   windows must respect (the lattice pairs `{2,4}` and `{3,3}` of mechanism 22 are where the atoms
   flip a sign); its test models (shifted pair, Beurling, Liouville, `F_q[T]`) are the audit of
   research topic 5.
+- **Arithmetic Continuation and Critical Energy is the same gradation in another parameter.** AIP's
+  ledger is graded by the aperture, the continuation layer's energy by the damping, and both report
+  the same unit: a partial result covering only part of the range is an explicit zero-free strip,
+  with the endpoint RH. The layer also shares AIP's shape of obstruction — the signed work is a
+  dilation autocorrelation of the source against the von Mangoldt weight, which is the translate
+  calculus of mechanisms 44–49 on the arithmetic prefix rather than on a test.
+- **Scale-Signed Incidence Criticality says what an incidence statement must separate.** The node
+  face of the admissibility layer is this programme's own geometry read as a class of methods: the
+  positive node sets are exactly those containing every prime power, so the face is a principal
+  up-set, one membership bit refutes, and no asymptotic or density reading confirms. Its consequence
+  for AIP is the sampling rule: the incidence condition cannot be verified cofinally — every prime
+  power is individually necessary — while a mechanism that checks node by node makes exact progress,
+  measured by the reciprocal of the first node not yet checked.
 - **RHTower supplies** the archimedean density and the von Mangoldt atoms, the reflected killing
   potential and the disjoint-support diagonal, the Lévy–pole Gauss-mode cancellation and the
   plastic crossover, the archimedean anomaly constants, the Euler–Mascheroni bounds, the prime
@@ -277,6 +323,14 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Gauge remainder, pole charge | `∫ F² P (−𝒲P + prime part)`, `2 (∫ F sinh(x/2))²` | `gaugeRemainder`, `poleCharge` |
 | Plateau of an aperture | `1` on `[−r, r]`, `0` outside `(−R, R)` | `aperturePlateau` |
 | Global incidence allocation | costs + pole ≤ pool + crossing potential + gains + remainder | `GlobalIncidenceAllocation` |
+| Pairing, autocorrelation | `⟪A, B⟫ = ∫AB`; `A(t) = ⟪F, F(· + t)⟫` | `testPairing`, `autoCorr` |
+| Translate combination | `Σ_k α_k F(· + c_k)`, over a range or a finite index set | `translateComb`, `finsetComb` |
+| Geometric train | `S_N = Σ_{k ≤ N} z^k F(· + kL)`, `S_N − zS_N(· + L) = F − z^{N+1}F(· + (N+1)L)` | `geoTrain`, `geoTrain_resolvent` |
+| Tower lag charge | `C_p(F) = log p Σ_{k ≥ 1} p^{−k/2} A(k log p)` | `PrimeTowerEulerEnvelope` |
+| Euler envelope, fold defect | `z/(1−z)·A(0)`; `A(0) − A(L)` | `PrimeTowerEulerEnvelope` |
+| Train lag charge | `A_G(s) = Σ_{j,k ≤ N} w^{j+k} A(s + (k − j)b)` | `BiTowerIncidenceLaw` |
+| Divisor-lattice comb | `Σ_{d ∣ q} c_d F(· + log d)` and its Gram `Σ_{d,e ∣ q} c_d c_e A(log e − log d)` | `DivisorLatticeGramPositivity` |
+| Squarefree subset form | `Σ_{S ⊆ s} (−1)^{#S}(Π_{i ∈ S} λ_i) F(· + Σ_{i ∈ S} a_i)` | `SquarefreeIncidencePositivity` |
 
 **Words.**
 * **Pair `(x, y)`:** two points of the real line; **same-side** if `xy > 0`, **crossing** if
@@ -286,7 +340,13 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
   pair means `k(x,y) > 0`.
 * **Lattice pair:** both points in `{± log a : a ≥ 1}`. The lattice pair `(log a, log b)` is a
   **ratio pair** when `a ∣ b`; `(−log a, log b)` is a **product pair** when `ab` is a prime power.
-* **Tower:** the set `{p^i : i ≥ 0}` of powers of one prime. Product pairs live inside towers.
+* **Tower:** the set `{p^i : i ≥ 0}` of powers of one prime. Product pairs live inside towers, and
+  the tower's whole prime charge is one geometric lag charge.
+* **Lag charge:** a weighted sum of the autocorrelation at a progression of lags. The prime side is
+  the sum of the tower lag charges; the translate calculus bounds each by its first-power datum.
+* **Resonant direction:** a test whose autocorrelation is maximal at every lag used, realised by a
+  train of disjoint copies of one bump at that spacing. Envelopes are attained there, so a bound
+  that a resonant train meets with equality carries no information beyond the Euler constants.
 * **Anti-diagonal of `n`:** the segment `{(x, y) : x < 0 < y, |x| + y = log n}` on which the prime
   atom of `n` sits; its lattice points are the factorizations `n = ab`.
 * **Collar:** the set of crossing pairs with negative archimedean conductance; beyond the threshold
@@ -829,6 +889,95 @@ of the innermost strip once per atom.
     nonnegativity is a sufficient condition for the sign of the form, and every window certificate
     of the programme is a proof of it at its aperture with a gauge transform of the pool.
 
+    **The ledger is graded by the width.** The exact sign of the allocation is the endpoint of a
+    one-parameter family, and the interior members are explicit zero-free strips: an allocation
+    deficit `C e^{2σ r}∫F²` at every aperture `r` gives `Θ ≤ ½ + σ`, a deficit bounded uniformly in
+    the aperture gives RH (`SquareRootThreshold.zetaZeroWidth_le_of_gradedIncidenceAllocation`,
+    `riemannHypothesis_of_gradedIncidenceAllocation_zero`). The bridge is the odd difference test of
+    the lag family, whose aperture rate `e^{2σ(v/2+w)}` is the lag rate `e^{σv}`, and the lag rate is
+    the width. So quantitative work on the ledger is scoreable, and the sign is needed only in the
+    limit — provided the estimate holds at *every* aperture: a bounded family of windows reports
+    nothing however good its constants.
+
+    **What the floor is made of at large aperture.** Beyond lag `O(1)` the ledger's balance is the
+    prime–polar difference and nothing else. At lag `t` the prime measure has density
+    `≍ e^{t/2}dt`, the polar measure `2 cosh(t/2)` has the same density, and the archimedean density
+    `ω(t) ≍ e^{−t/2}` is smaller by `e^{t}`: the surplus contributes nothing where the mass is, which
+    is why every window of this programme lives at small aperture and why the remainder cannot pay
+    the strip masses. The far correlations cannot be made small either: the autocorrelation is
+    positive definite and supported in `[−2r, 2r]`, so the Krein chord inequality
+    `a(0) − a(2t) ≤ 4(a(0) − a(t))` with `a(2t) = 0` gives only `a(t) ≤ (3/4)a(0)` — a constant
+    factor, never a power. Nor does oddness help: an odd test concentrated in an `O(1)` window at
+    the edge of its support has edge mass `m(s) ≍ 1`, the lags within `O(1)` of `2r` already carry
+    the full prime mass `≍ e^{r}`, and for that test the pole charge `2(∫F sinh(x/2))² ≍ e^{r}` and
+    the prime correlation `≍ −e^{r}` are of the same size and opposite sign. The rate-`1` floor is
+    the prime-charge-against-pole-charge balance at PNT level, and a sub-trivial rate is a fixed
+    zero-free strip — exactly as hard as what it would prove.
+
+### The translate calculus and the tower laws
+
+Mechanisms 1–43 read the form through the geometry of pairs: which conductance is negative, which
+atom is unpaid, which strip pays it. The mechanisms below read it through a second, independent
+source of unconditional inequalities: the nonnegativity of the energy of a *finite combination of
+translates* of the test. Each one is a single square expanded in the autocorrelation, so each is an
+inequality among the **lag charges** of one test, with no gauge, no fold and no archimedean input.
+
+44. **The pairing calculus.** On continuous compactly supported functions, `⟪A, B⟫ = ∫AB` with its
+    bilinearity, translation invariance and Cauchy–Schwarz; the autocorrelation
+    `A(t) = ⟪F, F(· + t)⟫` with `|A(t)| ≤ A(0)` and `A(t) = 0` beyond the support diameter; the Gram
+    expansion `⟪Σ_k α_k F(· + c_k), Σ_j β_j F(· + d_j)⟫ = Σ_{k,j} α_k β_j A(d_j − c_k)` with the bound
+    by the product of the coefficient masses; and the **geometric train**
+    `S_N = Σ_{k ≤ N} z^k F(· + kL)` with the resolvent identity
+    `S_N − z S_N(· + L) = F − z^{N+1} F(· + (N+1)L)` (`TranslatePairingCalculus`). Every estimate of
+    the prime side in this programme is an estimate of `⟪A, B⟫` for such combinations.
+45. **The prime tower law and its first-power discount.** The prime side of the zero form is
+    `Σ_{n ≥ 2} 2Λ(n)n^{−1/2} A(log n)`. Read tower by tower, the atoms of `p, p², p³, …` sit at the
+    arithmetic progression `k log p` with geometric weights, so a whole tower is one geometric lag
+    charge `C_p(F) = log p Σ_{k ≥ 1} z^k A(k log p)`, `z = p^{−1/2}`. The two-step square
+    `∫(S(u) − S(u + 2L))² ≥ 0`, together with the resolvent identity, collapses to
+    `(1 − z²) Σ_{k ≥ 1} z^k A(kL) ≤ z² A(0) + z A(L)`, that is the **Euler envelope**
+    `z/(1−z)·A(0)` discounted by the **first-power fold defect** `A(0) − A(L)`. At `z = p^{−1/2}`,
+    `L = log p` this is
+    `(p − 1) C_p(F) ≤ log p (A(0) + √p·A(log p))` (`PrimeTowerEulerEnvelope`): the charge of a whole
+    prime tower is controlled by the single datum `A(log p)`. The proper prime powers carry no
+    information of their own beyond the Euler constants, and a test uncorrelated at the prime shift
+    charges the tower `log p/(p − 1)` instead of the envelope `log p/(√p − 1)`.
+46. **The envelope is attained: the resonant train.** `M + 1` disjoint copies of one bump at
+    spacing `L` have `A_S(mL) = (M + 1 − m)A_g(0)`, hence lag charge a fraction
+    `z/(1−z) − z^{M+1}/(1−z) − z/((M+1)(1−z)²)` of the mass (`ResonantTrainWitness`). The envelope is
+    therefore sharp, and its extremal tests are the trains carried by a **multiplicative
+    progression** `{1, p, p², …}`. The content of the tower law is its discount, not its envelope.
+47. **The ledger with the prime powers eliminated.** By the exact even–odd identity of an atom the
+    net charge of a shift is `evenStripGain_n − oddStripCost_n = −2Λ(n)n^{−1/2}A(log n)`, so the net
+    prime charge of the ledger is `−2` times the prime side; the tower law then removes the proper
+    prime powers, bounding the whole cost side by a functional of the **primes** below the horizon
+    and their first-power autocorrelations `A(log p)`, with the Euler constants `log p/(p − 1)` and
+    `√p log p/(p − 1)` (`PrimeTowerLedgerReduction`).
+48. **The bi-tower law: two spacings, with products and ratios as payers.** Reading the `b`-train
+    `G = Σ_{k ≤ N} w^k F(· + kb)` as the test and applying the tower law at spacing `a` gives a law
+    for the whole lattice of lags `ma + jb`, `m ≥ 1`, `j ∈ ℤ`. The train's autocorrelation is the
+    two-sided `b`-ladder `A_G(s) = Σ_{j,k ≤ N} w^{j+k} A(s + (k − j)b)`, and
+    `(1 − z²) Σ_{m ≥ 1} z^m A_G(ma) ≤ z² A_G(0) + z A_G(a)` (`BiTowerIncidenceLaw`). At
+    `z = p^{−1/2}, a = log p, w = q^{−1/2}, b = log q` the lags are the integers `p^m q^{k−j}`, so the
+    **product** shifts `log(p^m q^i)` and the **ratio** shifts `log(p^m/q^i)` both occur, with the
+    Euler weights of both primes: the entire coupling graph between two towers is paid by two ladder
+    charges, and a ladder uncorrelated at the lag `a` pays only `z²/(1−z²)` of its mass.
+49. **The divisor lattice of one modulus.** Fix `q` and weight its divisors by `c`; the comb
+    `Σ_{d ∣ q} c_d F(· + log d)` has nonnegative energy, so the **ratio-incidence matrix of a
+    modulus is positive semidefinite**, `0 ≤ Σ_{d,e ∣ q} c_d c_e A(log e − log d)`
+    (`DivisorLatticeGramPositivity`). Every minor is an unconditional inequality among the charges at
+    the ratios of divisors of one modulus — single modulus, no family average. Two readings: with the
+    **Möbius row** `c = μ` the comb is the divisor-lattice difference operator and on a *resonant*
+    direction the form collapses to `(Σ_{d ∣ q} μ_d)² A(0)`, which vanishes for every `q ≠ 1`, so the
+    Möbius comb annihilates exactly the mode where the charges are largest; with `c ≡ 1` the same
+    collapse gives the maximum `τ(q)² A(0)`. Products over a set of shifts give one term per
+    **subset**: the signed combination `Σ_{S ⊆ s} (−1)^{|S|}(Π_{i ∈ S} λ_i) F(· + Σ_{i ∈ S} a_i)` has
+    nonnegative self-pairing, and at `a_i = log p_i` its shifts are the logarithms of the squarefree
+    divisors of `Π p_i`, so the whole incidence lattice of a squarefree modulus constrains the
+    charges of its primes at once, with weights the allocation may choose freely
+    (`SquarefreeIncidencePositivity`). The cases `|s| = 1, 2` are the one-shift bound
+    `2λ A(a) ≤ (1 + λ²)A(0)` and the two-shift coupling law.
+
 ---
 
 ## 4. Traps
@@ -852,6 +1001,12 @@ of the innermost strip once per atom.
 | Expecting the union allocation to cover every thin family | It fails already for `{23, 25}`: `2Λ(23)/√23 + 2Λ(25)/5 > λ₀`. The shell (mechanism 36) is needed there. |
 | Reading the edge-tent obstruction as a failure of the form | On the edge tent every atom of the band is zero; what fails is the payment of the odd parts alone. The even parts cancel them. |
 | Reading the ledger (mechanism 43) as a positivity theorem | It is an exact identity, and the condition it defines is equivalent to `Ẑ(F) ≥ 0` test by test. Its content is the shape of what must be paid, the costs and the pole, against what can pay, the pool, the crossing potential, the gains and the signed remainder. Positivity is proved only where a certificate bounds the remainder (the windows). |
+| Reading the ledger's exact sign as the only target | Graded by the width it is a one-parameter family: a deficit at rate `2σ` at every aperture is the strip `½ + σ`, a deficit uniform in the aperture is RH. The exact allocation is the endpoint, not the statement. |
+| Grading a bounded family of windows | The gradation quantifies over every aperture; windows with a bounded supremum of apertures stay worth zero in the width unit. |
+| Expecting the tower law to estimate the prime side | Its envelope `z/(1−z)A(0)` is attained, by the resonant train on a multiplicative progression; only the first-power fold defect `A(0) − A(L)` is information. |
+| Expecting the proper prime powers to carry their own obstruction | Beyond the Euler constants they do not: the whole tower of `p` is controlled by `A(log p)`, so the cost side reduces to the primes below the horizon. |
+| Using the Möbius row as a test direction on a divisor lattice | On the resonant direction the divisor-lattice form of the Möbius row is `(Σ_{d ∣ q} μ_d)²A(0) = 0` for every `q ≠ 1`: the comb is blind exactly where the charges are largest. The trivial row gives the maximum `τ(q)²A(0)`. |
+| Expecting oddness, edge decay or the strip structure to give a power saving in the floor | The Krein chord inequality caps the far correlations at `(3/4)a(0)`, a constant; on the edge tent the pole charge and the prime correlation are both `≍ e^{r}` with opposite signs. The rate-`1` obstruction is the prime–polar balance, and a sub-trivial rate is a fixed zero-free strip. |
 
 ---
 
@@ -941,7 +1096,19 @@ of the innermost strip once per atom.
    pointwise floor is the plateau potential of mechanism 27, together with the gains
    `2Λ(n)/√n ∫_{S_n} F²` (the atom pays its own strip at `t = 1`, mechanism 35). The first open
    instance is the window `r ∈ (221/400, log 2)`, where the relevant shifts are still `2` and `3`
-   (open problem 8); the ledger there has two costs, two gains, and the remainder.
+   (open problem 8); the ledger there has two costs, two gains, and the remainder. The scoreable
+   form of the same problem is the **rate**: bound the ledger's deficit by `C e^{2σ r}∫F²` at every
+   aperture for one `σ < ½`, which is the strip `½ + σ`, and by a constant times the mass for RH.
+   The unconditional rate is `1`; the obstruction at that rate is the prime–polar balance, not the
+   allocation of the surplus.
+7. **The discount in the tower laws.** The envelopes of mechanisms 45 and 48 are attained, so the
+   content is the fold defect `A(0) − A(log p)` and, for two towers, the ladder charge at the lag
+   `log p`. Turn the reduced cost side of mechanism 47 — the primes below the horizon weighted by
+   `log p/(p − 1)` and `√p log p/(p − 1)` against `A(log p)` — into a lower bound for the ledger at
+   growing aperture, and determine which choices of the free weights on a squarefree divisor
+   lattice (mechanism 49) make the subset form pay the first-power charges. The unit is the rate
+   obtained in topic 6; the test models of `BiScaleUncertainty` decide selectivity, since the
+   translate calculus itself is blind to the arithmetic of the shifts.
 
 ---
 

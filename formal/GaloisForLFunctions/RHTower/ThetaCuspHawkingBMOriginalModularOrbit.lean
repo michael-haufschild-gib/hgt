@@ -49,7 +49,7 @@ private theorem freeze_partial {U : F} (z : ℂ) (x : P)
   have hv : freezeLinear (Pi.single i 1)=Pi.single i 1 := by
     rcases hi with rfl | rfl <;> ext k <;> fin_cases k <;> simp [freezeLinear]
   rw [hv]
-private theorem smooth_partial {U : F} (hU : ExteriorSmooth U) (i : Fin 4) :
+theorem smooth_partial {U : F} (hU : ExteriorSmooth U) (i : Fin 4) :
     ExteriorSmooth (coordDeriv i U) := by
   intro x hp hr hy
   exact coordDeriv_contDiffAt (hU x hp hr hy) (by simp) i
@@ -88,7 +88,7 @@ private theorem orbit_modular {U : F} (hU : ExteriorSmooth U) (hm : ExteriorModu
   have h1 := modular_partial hU hm 1 (Or.inr rfl) p R hp hr A z
   simp only [orbitDerivative,slice,Matrix.cons_val_one,Matrix.cons_val_zero] at h0 h1 ⊢
   rw [h0,h1]
-private theorem contact_smooth {U : F} (hU : ExteriorSmooth U) : ExteriorSmooth (scalarContact U) := by
+theorem contact_smooth {U : F} (hU : ExteriorSmooth U) : ExteriorSmooth (scalarContact U) := by
   intro x hp hr hy
   have h0 := smooth_partial hU 0 x hp hr hy
   have h1 := smooth_partial hU 1 x hp hr hy
@@ -117,7 +117,7 @@ private theorem contact_modular {U : F} (hU : ExteriorSmooth U) (hm : ExteriorMo
     2*(R:ℂ)*coordDeriv 1 U (slice p R ((A • z:UpperHalfPlane):ℂ))+2*(R:ℂ)*coordDeriv 0 U (slice p R ((A • z:UpperHalfPlane):ℂ))=_
   rw [h0,h1,h01,h10,h11]
   rfl
-private theorem source_smooth (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
+theorem source_smooth (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
     ExteriorSmooth (sourceScalar q branch amp) :=
   D4BMOriginalGreenBoundary.sourceScalar_exterior_smooth q branch amp
 private theorem source_modular (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
@@ -324,7 +324,7 @@ theorem original_metric_top_integral (q r : XiZeroCopy) (branch side outer : Boo
 
 open D4BMOriginalReaderEquation D4BMLeftModeRadialEquation
 
-private theorem lap_smooth {U : F} (hU : ExteriorSmooth U) :
+theorem lap_smooth {U : F} (hU : ExteriorSmooth U) :
     ExteriorSmooth (angularLap U) := by
   intro x hp hr hy
   have hY : ContDiffAt ℝ ∞ (fun z : P => (z 3:ℂ)) x :=
@@ -493,7 +493,7 @@ theorem original_metric_complete_scalar_integral (q r : XiZeroCopy)
   dsimp only [completeTopFlux]
   linear_combination h
 
-private theorem original_forcing_smooth (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
+theorem original_forcing_smooth (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
     ExteriorSmooth (D4BMOriginalSourceContact.originalForcing q branch amp) := by
   intro x hp hr hy
   let U := sourceScalar q branch amp
@@ -627,7 +627,7 @@ theorem original_static_metric_scalar_integral (q r : XiZeroCopy)
   field_simp [hR,hf]
   ring
 
-private theorem mode_smooth (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0) (outer : Bool) :
+theorem mode_smooth (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0) (outer : Bool) :
     ExteriorSmooth (modeScalar q w outer) := by
   intro x hp hr hy
   exact modeScalar_smooth q w hw outer x hr hy
@@ -1121,7 +1121,7 @@ theorem mode_static_top_flux (q r : XiZeroCopy) (branch outer : Bool) (amp w : �
         intervalIntegral.integral_const_mul,intervalIntegral.integral_sub hwu huw]
       simp only [topFlux,neg_div]
 
-private theorem top_rectangle_continuous (U V : F) (hU : ExteriorSmooth U) (hV : ExteriorSmooth V)
+theorem top_rectangle_continuous (U V : F) (hU : ExteriorSmooth U) (hV : ExteriorSmooth V)
     (a b R Y : ℝ) (ha : 0<a) (hr : 1<R) (hy : 0<Y) :
     ContinuousOn (fun z : ℝ×ℝ => transfer U V 1 (slice z.1 R (point z.2 Y)))
       (Icc a b ×ˢ Icc (-1/2:ℝ) (1/2:ℝ)) := by
@@ -1143,7 +1143,7 @@ private theorem top_time_swap (U V : F) (hU : ExteriorSmooth U) (hV : ExteriorSm
   exact ((top_rectangle_continuous U V hU hV a b R Y ha hr hy).integrableOn_compact
     (isCompact_Icc.prod isCompact_Icc)).mono_set (Set.prod_mono Ioc_subset_Icc_self Ioc_subset_Icc_self)
 
-private theorem top_time_integrable (U V : F) (hU : ExteriorSmooth U) (hV : ExteriorSmooth V)
+theorem top_time_integrable (U V : F) (hU : ExteriorSmooth U) (hV : ExteriorSmooth V)
     (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hy : 0<Y) :
     IntervalIntegrable (fun p => topFlux U V p R Y) volume a b := by
   have hi : Integrable (fun z : ℝ×ℝ => transfer U V 1 (slice z.1 R (point z.2 Y)))

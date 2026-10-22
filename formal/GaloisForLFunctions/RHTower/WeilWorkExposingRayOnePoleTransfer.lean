@@ -98,7 +98,6 @@ theorem tendsto_density_exponentialDifferenceQuotient (s : ℝ) (f g : WeilTestF
   have ht := ((tendsto_differenceMultiplier s τ).norm.pow 2).mul_const (‖paperFT g.1 τ‖^2)
   simpa only [paperFT_exponentialDifferenceQuotient,norm_mul,mul_pow,hfg τ,norm_neg] using ht
 
-
 private theorem one_le_logWeight (β τ : ℝ) : 1 ≤ logSpectralWeight β τ := by
   have hl : 0 ≤ Real.log (2+|τ|) := Real.log_nonneg (by linarith [abs_nonneg τ])
   have hp := Real.rpow_nonneg hl β
@@ -174,9 +173,8 @@ private theorem source_aperture (f : WeilTestFn) :
   exact abs_le.mp ((ha x hx).trans (le_abs_self a))
 
 private theorem plainDensity_integrable (f : WeilTestFn) :
-    Integrable (fun τ : ℝ => ‖paperFT f.1 τ‖^2) := by
-  obtain ⟨a,_,ha⟩ := source_aperture f
-  exact integrable_normSq_paperFT f.2.1 ha
+    Integrable (fun τ : ℝ => ‖paperFT f.1 τ‖^2) :=
+  density_integrable f
 
 private theorem plainCos_integrable (f : WeilTestFn) (y : ℝ) :
     Integrable (fun τ : ℝ => ‖paperFT f.1 τ‖^2*Real.cos (τ*y)) := by

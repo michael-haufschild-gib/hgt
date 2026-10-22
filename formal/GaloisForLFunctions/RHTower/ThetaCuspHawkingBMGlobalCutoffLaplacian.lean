@@ -30,11 +30,11 @@ theorem PlanarChartTest.localDistribution_apply (g : PlanarChartTest) (u : Space
   rw [hz]
   rfl
 
-private theorem lift_local_pair_integrable (g : PlanarChartTest) (u : Space) (ψ : 𝓢(ℂ,ℂ)) :
+theorem lift_local_pair_integrable (g : PlanarChartTest) (u : Space) (ψ : 𝓢(ℂ,ℂ)) :
     Integrable (fun z : ℂ => ψ z*g.localValue u z) :=
   (ψ.memLp 2).integrable_mul (g.localValue_memLp u)
 
-private theorem lifted_product_derivative (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (v z : ℂ) :
+theorem lifted_product_derivative (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (v z : ℂ) :
     ((g.mulSmooth ψ (ψ.smooth ⊤)).derivative v).field z =
       (g.derivative v).field z*ψ z+g.field z*(∂_{v} ψ) z := by
   change fderiv ℝ (fun w => ψ w*g.field w) z v = _
@@ -44,7 +44,7 @@ private theorem lifted_product_derivative (g : PlanarChartTest) (ψ : 𝓢(ℂ,�
     SchwartzMap.lineDerivOp_apply_eq_fderiv,PlanarChartTest.derivative]
   ring
 
-private theorem lifted_product_second (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (v z : ℂ) :
+theorem lifted_product_second (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (v z : ℂ) :
     (((g.mulSmooth ψ (ψ.smooth ⊤)).derivative v).derivative v).field z =
       ((g.derivative v).derivative v).field z*ψ z +
       2*(g.derivative v).field z*(∂_{v} ψ) z + g.field z*(∂_{v} (∂_{v} ψ)) z := by
@@ -63,7 +63,7 @@ private theorem lifted_product_second (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ))
     SchwartzMap.lineDerivOp_apply_eq_fderiv,PlanarChartTest.derivative]
   ring
 
-private theorem lifted_product_laplacian (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (z : ℂ) :
+theorem lifted_product_laplacian (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (z : ℂ) :
     (g.mulSmooth ψ (ψ.smooth ⊤)).laplacianTest.field z =
       ψ z*g.laplacianTest.field z +
       2*(∑ i : Fin 2, (∂_{direction i} ψ) z*(g.derivative (direction i)).field z) +
@@ -81,7 +81,7 @@ private theorem lifted_product_laplacian (g : PlanarChartTest) (ψ : 𝓢(ℂ,�
     PlanarChartTest.derivative,Fin.sum_univ_two]
   ring
 
-private theorem lifted_product_laplacian_integral (g : PlanarChartTest) (u : Space)
+theorem lifted_product_laplacian_integral (g : PlanarChartTest) (u : Space)
     (ψ : 𝓢(ℂ,ℂ)) :
     (∫ z : ℂ, (g.mulSmooth ψ (ψ.smooth ⊤)).laplacianTest.localValue u z) =
       g.laplacianTest.localDistribution u ψ +
@@ -101,7 +101,7 @@ private theorem lifted_product_laplacian_integral (g : PlanarChartTest) (u : Spa
   simp only [PlanarChartTest.localValue,lifted_product_laplacian,Fin.sum_univ_two]
   ring
 
-private theorem lifted_product_divHeight_integral (g : PlanarChartTest) (u : Space)
+theorem lifted_product_divHeight_integral (g : PlanarChartTest) (u : Space)
     (ψ : 𝓢(ℂ,ℂ)) (n : ℕ) :
     (∫ z : ℂ, ((g.mulSmooth ψ (ψ.smooth ⊤)).divHeight n).localValue u z) =
       (g.divHeight n).localDistribution u ψ := by

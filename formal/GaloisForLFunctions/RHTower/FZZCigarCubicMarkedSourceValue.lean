@@ -43,15 +43,6 @@ private theorem second_add (f g : ℝ → ℝ) (a : ℝ)
   have h := iteratedDeriv_fun_add (n := 2) hf.contDiffAt hg.contDiffAt
   simpa only [iteratedDeriv_succ,iteratedDeriv_zero] using h
 
-private theorem binomial_succ (β : ℝ) (n : ℕ) :
-    fzzScreeningFifthBinomial β (n+1) =
-      fzzScreeningFifthBinomial β n * (β/2-n)/(n+1) := by
-  unfold fzzScreeningFifthBinomial
-  rw [descPochhammer_succ_right]
-  simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_X,
-    Polynomial.eval_natCast, Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
-  simp only [div_eq_mul_inv, mul_inv_rev]
-  ring
 
 private def exteriorWeight (α β : ℝ) : Measure ℂ :=
   (volume.restrict fzzScreeningPlaneExterior).withDensity
@@ -61,97 +52,16 @@ private theorem kernel_nonnegative (α β : ℝ) (z : ℂ) :
     0 ≤ fzzScreeningPlaneKernel α β z :=
   mul_nonneg (Real.rpow_nonneg (norm_nonneg _) _) (Real.rpow_nonneg (norm_nonneg _) _)
 
-private theorem exterior_admission (α β : ℝ) (hs : α+β < -2) :
-    IntegrableOn (fzzScreeningPlaneKernel α β) fzzScreeningPlaneExterior := by
-  have h := fzzScreeningPlaneExterior_integrable α (Real.log (-2-α-β))
-  rw [Real.exp_log (by linarith : 0 < -2-α-β)] at h
-  simpa only [show -2-α-(-2-α-β)=β by ring] using h
 
-private theorem plane_kernel_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
-    fzzScreeningPlaneKernel α β z*Real.exp (δ*Real.log ‖z‖) =
-      fzzScreeningPlaneKernel (α+δ) β z := by
-  have hn := norm_pos_iff.mpr hz
-  rw [show Real.exp (δ*Real.log ‖z‖)=‖z‖^δ by rw [Real.rpow_def_of_pos hn,mul_comm]]
-  unfold fzzScreeningPlaneKernel
-  rw [Real.rpow_add hn]
-  ring
 
-private theorem exterior_mgf (α β δ : ℝ) :
-    ProbabilityTheory.mgf (fun z : ℂ => Real.log ‖z‖) (exteriorWeight α β) δ =
-      ∫ z : ℂ in fzzScreeningPlaneExterior,fzzScreeningPlaneKernel (α+δ) β z := by
-  rw [ProbabilityTheory.mgf,exteriorWeight,integral_withDensity_eq_integral_toReal_smul
-    (by unfold fzzScreeningPlaneKernel; fun_prop)
-    (by filter_upwards with z; exact ENNReal.ofReal_lt_top)]
-  simp only [ENNReal.toReal_ofReal (kernel_nonnegative α β _),smul_eq_mul]
-  apply integral_congr_ae
-  filter_upwards [ae_restrict_of_ae (volume.ae_ne (0:ℂ))] with z hz
-  exact plane_kernel_shift α β δ hz
 
-private theorem exterior_analytic (α β : ℝ) (hs : α+β < -2) :
-    AnalyticAt ℝ (fun s => ∫ z : ℂ in fzzScreeningPlaneExterior,
-      fzzScreeningPlaneKernel s β z) α := by
-  have hmem : (0:ℝ) ∈ interior (ProbabilityTheory.integrableExpSet
-      (fun z : ℂ => Real.log ‖z‖) (exteriorWeight α β)) := by
-    apply mem_interior_iff_mem_nhds.mpr
-    have hn : ∀ᶠ δ : ℝ in 𝓝 0,(α+δ)+β < -2 :=
-      (isOpen_lt (by fun_prop) continuous_const).mem_nhds (by simpa using hs)
-    filter_upwards [hn] with δ hδ
-    change Integrable (fun z : ℂ => Real.exp (δ*Real.log ‖z‖)) (exteriorWeight α β)
-    rw [exteriorWeight,integrable_withDensity_iff_integrable_smul'
-      (by unfold fzzScreeningPlaneKernel; fun_prop)
-      (by filter_upwards with z; exact ENNReal.ofReal_lt_top)]
-    simp only [ENNReal.toReal_ofReal (kernel_nonnegative α β _),smul_eq_mul]
-    apply (exterior_admission (α+δ) β hδ).congr
-    filter_upwards [ae_restrict_of_ae (volume.ae_ne (0:ℂ))] with z hz
-    exact (plane_kernel_shift α β δ hz).symm
-  have h := (ProbabilityTheory.analyticAt_mgf hmem).comp_sub α
-  simpa only [zero_add,exterior_mgf,show ∀ s : ℝ,α+(s-α)=s by intro s; ring] using h
-
-private theorem exterior_reflection (α β : ℝ) :
-    (∫ z : ℂ in fzzScreeningPlaneExterior,fzzScreeningPlaneKernel α β z) =
-      ∫ z : ℂ in fzzScreeningPlaneExterior,fzzScreeningPlaneKernel β α z := by
-  have hp : (fun z : ℂ => 1-z) ⁻¹' fzzScreeningPlaneExterior = fzzScreeningPlaneExterior := by
-    ext z
-    simp only [fzzScreeningPlaneExterior,mem_preimage,mem_compl_iff,mem_union,
-      mem_ball,dist_eq_norm,sub_zero,sub_sub_cancel_left,norm_neg,norm_sub_rev (1:ℂ) z,or_comm]
-  have h := (Measure.measurePreserving_sub_left (volume : Measure ℂ) 1).setIntegral_preimage_emb
-    (Homeomorph.subLeft (1:ℂ)).measurableEmbedding (fzzScreeningPlaneKernel α β)
-      fzzScreeningPlaneExterior
-  rw [hp] at h
-  simpa only [fzzScreeningPlaneKernel_reflection] using h.symm
-
-private theorem fifth_singular_analytic (α β : ℝ) (ha : -8 < α) :
-    AnalyticAt ℝ (fun s => ∫ z : ℂ in ball 0 (1/2),fzzScreeningFifthSubtracted s β z) α := by
-  have h := fzzScreeningFifthSubtracted_singular_analytic (Real.log (α+8)) β
-  rw [Real.exp_log (by linarith : 0 < α+8)] at h
-  rw [show -8+(α+8)=α by ring] at h
-  have ht := h.comp_sub α
-  simpa only [zero_add,show ∀ s : ℝ,α+(s-α)=s by intro s; ring] using ht
-
-private theorem fifth_regular_analytic (α β : ℝ) (ha : -8 < α) :
-    AnalyticAt ℝ (fun s => ∫ z : ℂ in ball 0 (1/2),fzzScreeningFifthSubtracted α s z) β := by
-  have h := fzzScreeningFifthSubtracted_regular_analytic (Real.log (α+8)) β
-  rw [Real.exp_log (by linarith : 0 < α+8)] at h
-  simpa only [show -8+(α+8)=α by ring] using h
 
 private def originalRegularPart (α β : ℝ) : ℝ :=
   (∫ z : ℂ in ball 0 (1/2),fzzScreeningFifthSubtracted α β z)+
   (∫ z : ℂ in ball 0 (1/2),fzzScreeningFifthSubtracted β α z)+
   (∫ z : ℂ in fzzScreeningPlaneExterior,fzzScreeningPlaneKernel α β z)
 
-private theorem regularPart_symm (α β : ℝ) : originalRegularPart α β = originalRegularPart β α := by
-  unfold originalRegularPart
-  rw [exterior_reflection α β]
   ring
-private theorem regularPart_analytic (α β : ℝ) (ha : -8 < α) (hb : -8 < β) (hs : α+β < -2) :
-    AnalyticAt ℝ (fun s => originalRegularPart s β) α :=
-  ((fifth_singular_analytic α β ha).add (fifth_regular_analytic β α hb)).add
-    (exterior_analytic α β hs)
-private theorem regularPart_analytic_right (α β : ℝ) (ha : -8 < α) (hb : -8 < β) (hs : α+β < -2) :
-    AnalyticAt ℝ (originalRegularPart α) β := by
-  apply (regularPart_analytic β α hb ha (by linarith)).congr
-  filter_upwards with s
-  exact regularPart_symm s α
 
 private theorem factor_deriv : HasDerivAt fzzScreeningHigherPoleFactor 8 (-6) := by
   have h := (((hasDerivAt_id (-6:ℝ)).add_const 2).mul
@@ -159,11 +69,6 @@ private theorem factor_deriv : HasDerivAt fzzScreeningHigherPoleFactor 8 (-6) :=
   exact h.congr_deriv (by norm_num)
 private theorem factor_zero : fzzScreeningHigherPoleFactor (-6) = 0 := by
   norm_num [fzzScreeningHigherPoleFactor]
-private theorem half_power_deriv (α c : ℝ) :
-    HasDerivAt (fun s : ℝ => (1/2:ℝ)^(s+c))
-      (Real.log (1/2)*(1/2:ℝ)^(α+c)) α := by
-  simpa only [mul_one,id_eq] using HasDerivAt.const_rpow (by norm_num : (0:ℝ)<1/2)
-    ((hasDerivAt_id α).add_const c)
 
 private def radialSlope : ℕ → ℝ
   | 0 => -32
@@ -203,12 +108,6 @@ private theorem radial_deriv (k : ℕ) :
 private def countertermSlope (β : ℝ) : ℝ :=
   2*Real.pi*∑ k ∈ Finset.range 6,fzzScreeningFifthAngularCoefficient β k*radialSlope k
 
-private theorem counterterm_deriv (β : ℝ) :
-    HasDerivAt (fun α => fzzScreeningHigherClearedCounterterm α β) (countertermSlope β) (-6) := by
-  apply HasDerivAt.const_mul
-  apply HasDerivAt.fun_sum
-  intro k hk
-  exact (radial_deriv k).const_mul (fzzScreeningFifthAngularCoefficient β k)
 
 private theorem countertermSlope_analytic (β : ℝ) : AnalyticAt ℝ countertermSlope β := by
   apply analyticAt_const.mul
@@ -216,38 +115,6 @@ private theorem countertermSlope_analytic (β : ℝ) : AnalyticAt ℝ counterter
   intro k hk
   exact (fzzScreeningFifthAngularCoefficient_analytic β k).mul analyticAt_const
 
-private theorem counterterm_analytic_right (α β : ℝ) :
-    AnalyticAt ℝ (fun s => fzzScreeningHigherClearedCounterterm α s) β := by
-  apply analyticAt_const.mul
-  apply Finset.analyticAt_fun_sum
-  intro k hk
-  exact (fzzScreeningFifthAngularCoefficient_analytic β k).mul analyticAt_const
-
-private theorem countertermSlope_cubic :
-    countertermSlope (-6) = -14449*Real.pi/8+576*Real.pi*Real.log (1/2) := by
-  simp only [countertermSlope,Finset.sum_range_succ,Finset.sum_range_zero,zero_add,
-    fzzScreeningFifthAngularCoefficient,radialSlope]
-  simp only [binomial_succ (-6) 4,binomial_succ (-6) 3,binomial_succ (-6) 2,
-    binomial_succ (-6) 1,binomial_succ (-6) 0]
-  norm_num [fzzScreeningFifthBinomial]
-  ring
-
-private theorem source_right_deriv (α : ℝ) (ha : α ∈ Ioo (-7) (-5)) :
-    deriv (fun β => fzzScreeningHigherClearedSource α β) (-6) =
-      8*fzzScreeningHigherPoleFactor α*originalRegularPart α (-6)+
-      8*fzzScreeningHigherClearedCounterterm α (-6)+fzzScreeningHigherPoleFactor α*countertermSlope α := by
-  have hr := (regularPart_analytic_right α (-6) (by linarith [ha.1]) (by norm_num)
-    (by linarith [ha.2])).differentiableAt.hasDerivAt
-  have h := (((factor_deriv.const_mul (fzzScreeningHigherPoleFactor α)).fun_mul hr).fun_add
-    (factor_deriv.fun_mul (counterterm_analytic_right α (-6)).differentiableAt.hasDerivAt)).fun_add
-    ((counterterm_deriv α).const_mul (fzzScreeningHigherPoleFactor α))
-  change deriv (fun β =>
-    fzzScreeningHigherPoleFactor α*fzzScreeningHigherPoleFactor β*originalRegularPart α β+
-    fzzScreeningHigherPoleFactor β*fzzScreeningHigherClearedCounterterm α β+
-    fzzScreeningHigherPoleFactor α*fzzScreeningHigherClearedCounterterm β α) (-6) = _
-  rw [h.deriv]
-  simp only [factor_zero,mul_zero,zero_mul,add_zero]
-  ring
 
 private theorem higher_factor_analytic (α : ℝ) :
     AnalyticAt ℝ fzzScreeningHigherPoleFactor α := by
@@ -259,29 +126,6 @@ private theorem half_power_analytic (α c : ℝ) :
   have h : AnalyticAt ℝ (fun s : ℝ => Real.exp (Real.log (1/2)*(s+c))) α := by fun_prop
   simpa only [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 1/2)] using h
 
-private theorem higher_radial_analytic (α : ℝ) (ha : -8 < α) (k : ℕ) :
-    AnalyticAt ℝ (fun s => fzzScreeningHigherClearedRadial s k) α := by
-  rcases k with _ | (_ | (_ | n))
-  · exact (show AnalyticAt ℝ (fun s : ℝ => (s+4)*(s+6)) α by fun_prop).mul
-      (half_power_analytic α 2)
-  · exact (show AnalyticAt ℝ (fun s : ℝ => (s+2)*(s+6)) α by fun_prop).mul
-      (half_power_analytic α 4)
-  · exact (show AnalyticAt ℝ (fun s : ℝ => (s+2)*(s+4)) α by fun_prop).mul
-      (half_power_analytic α 6)
-  · have hp : AnalyticAt ℝ (fun s : ℝ => (1/2 : ℝ)^(s+2*((n+3:ℕ):ℝ)+2)) α := by
-      convert half_power_analytic α (2*((n+3:ℕ):ℝ)+2) using 1; simp only [add_assoc]
-    have hd : α+2*((n+3:ℕ):ℝ)+2 ≠ 0 := by
-      have hn : (0:ℝ) ≤ n := Nat.cast_nonneg n
-      push_cast
-      linarith
-    exact ((higher_factor_analytic α).mul hp).div (by fun_prop) hd
-
-private theorem higher_counterterm_analytic_left (α β : ℝ) (ha : -8 < α) :
-    AnalyticAt ℝ (fun s => fzzScreeningHigherClearedCounterterm s β) α := by
-  apply analyticAt_const.mul
-  apply Finset.analyticAt_fun_sum
-  intro k hk
-  exact analyticAt_const.mul (higher_radial_analytic α ha k)
 
 
 private theorem factor_deriv_all (α : ℝ) :

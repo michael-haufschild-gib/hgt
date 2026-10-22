@@ -14,7 +14,7 @@ private theorem global_local_sobolev_zero (g : PlanarChartTest) (u : Space) :
     MemSobolev 0 2 (g.localDistribution u) :=
   memSobolev_zero_iff.mpr ⟨g.localVector u,rfl⟩
 
-private theorem global_sum_sobolev {s : ℝ} {f : Fin 2 → 𝓢'(ℂ,ℂ)}
+theorem global_sum_sobolev {s : ℝ} {f : Fin 2 → 𝓢'(ℂ,ℂ)}
     (hf : ∀ i, MemSobolev s 2 (f i)) : MemSobolev s 2 (∑ i, f i) := by
   simpa only [Fin.sum_univ_two] using (hf 0).add (hf 1)
 

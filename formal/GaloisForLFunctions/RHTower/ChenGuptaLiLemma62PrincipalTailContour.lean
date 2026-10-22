@@ -103,43 +103,13 @@ theorem cglLemma62PrincipalTailContourIntegrand_eq_farTail
 
 private theorem cglLemma62_principalTail_leftFactor_differentiable
     (Q : CGLPositiveModulus) :
-    Differentiable ℂ (cglLemma62PrincipalEulerLeftFactorAt Q) := by
-  intro z
-  unfold cglLemma62PrincipalEulerLeftFactorAt
-  have hprod : DifferentiableAt ℂ (Finset.prod Q.value.primeFactors
-      (fun p => fun z : ℂ => 1 - (p : ℂ) ^ (-z))) z := by
-    apply DifferentiableAt.finsetProd
-    intro p hp
-    have hpprime : p.Prime := Nat.prime_of_mem_primeFactors hp
-    have hppos : (0 : ℝ) < p := by exact_mod_cast hpprime.pos
-    have hpow : DifferentiableAt ℂ (fun z : ℂ => (p : ℂ) ^ (-z)) z := by
-      exact DifferentiableAt.cpow (differentiableAt_const _) differentiableAt_id.neg
-        (Complex.ofReal_mem_slitPlane.mpr hppos)
-    exact (differentiableAt_const _).sub hpow
-  refine hprod.congr_of_eventuallyEq ?_
-  filter_upwards with y
-  simp only [Finset.prod_apply]
+    Differentiable ℂ (cglLemma62PrincipalEulerLeftFactorAt Q) :=
+  cglLemma62PrincipalEulerLeftFactorAt_differentiable Q
 
 private theorem cglLemma62_principalTail_rightFactor_differentiable
     (Q : CGLPositiveModulus) :
-    Differentiable ℂ (cglLemma62PrincipalEulerRightFactorAt Q) := by
-  intro z
-  unfold cglLemma62PrincipalEulerRightFactorAt
-  have hprod : DifferentiableAt ℂ (Finset.prod Q.value.primeFactors
-      (fun p => fun z : ℂ => 1 - (p : ℂ) ^ (-(1 - z)))) z := by
-    apply DifferentiableAt.finsetProd
-    intro p hp
-    have hpprime : p.Prime := Nat.prime_of_mem_primeFactors hp
-    have hppos : (0 : ℝ) < p := by exact_mod_cast hpprime.pos
-    have hexp : DifferentiableAt ℂ (fun z : ℂ => -(1 - z)) z :=
-      ((differentiableAt_const _).sub differentiableAt_id).neg
-    have hpow : DifferentiableAt ℂ (fun z : ℂ => (p : ℂ) ^ (-(1 - z))) z := by
-      exact DifferentiableAt.cpow (differentiableAt_const _) hexp
-        (Complex.ofReal_mem_slitPlane.mpr hppos)
-    exact (differentiableAt_const _).sub hpow
-  refine hprod.congr_of_eventuallyEq ?_
-  filter_upwards with y
-  simp only [Finset.prod_apply]
+    Differentiable ℂ (cglLemma62PrincipalEulerRightFactorAt Q) :=
+  cglLemma62PrincipalEulerRightFactorAt_differentiable Q
 
 private theorem cglLemma62_principalTail_rightFactor_ne_zero
     (Q : CGLPositiveModulus) {z : ℂ} (hz : z.re ≤ 1 / 2) :

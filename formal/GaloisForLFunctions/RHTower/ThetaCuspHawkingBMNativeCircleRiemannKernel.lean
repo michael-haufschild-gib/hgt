@@ -26,11 +26,11 @@ def angularAction (q : XiZeroCopy) (z X k : ℝ) : ℂ :=
   (Real.exp k:ℂ)^(2 : ℕ)*deriv (deriv (fun r => angularKernel q z r k)) X+
     deriv (deriv (fun r => angularKernel q z X r)) k-deriv (fun r => angularKernel q z X r) k
 
-private theorem radius_derivative {z : ℝ} (hz : 1 < z) :
+theorem radius_derivative {z : ℝ} (hz : 1 < z) :
     HasDerivAt Real.arcosh (1/Real.sinh (Real.arcosh z)) z := by
   simpa only [one_div,Real.sinh_arcosh hz.le] using Real.hasDerivAt_arcosh hz
 
-private theorem angular_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
+theorem angular_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
     HasDerivAt (fun y => angularKernel q y X k) (argumentFirst q z X k) z ∧
     HasDerivAt (fun y => argumentFirst q y X k) (argumentSecond q z X k) z := by
   have hs := mean_radial_smooth q X k
@@ -50,7 +50,7 @@ private theorem angular_derivatives (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz :
     simp only [Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_one]
     field_simp [hnC]
 
-private theorem angular_equation (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
+theorem angular_equation (q : XiZeroCopy) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
     ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q z X k+2*(z:ℂ)*argumentFirst q z X k=angularAction q z X k := by
   have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'

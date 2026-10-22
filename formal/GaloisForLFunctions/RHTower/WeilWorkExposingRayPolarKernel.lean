@@ -107,11 +107,8 @@ private theorem toL1_finsetSum {ι : Type*} (s : Finset ι) (F : ι → ℝ → 
 private theorem integrable_packet_cos {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
     (f : WeilTestFn) (x : ℝ) :
     Integrable (fun τ : ℝ =>
-      (‖paperFT f.1 τ‖^2*logSpectralWeight β τ)*Real.cos (x*τ)) := by
-  apply (integrable_logWeighted_density hβ hβ1 f).mul_bdd
-    (show Continuous (fun τ : ℝ => Real.cos (x*τ)) by fun_prop).aestronglyMeasurable
-  filter_upwards [] with τ
-  simpa only [Real.norm_eq_abs] using Real.abs_cos_le_one (x*τ)
+      (‖paperFT f.1 τ‖^2*logSpectralWeight β τ)*Real.cos (x*τ)) :=
+  integrable_logCos hβ hβ1 f x
 
 /-- Weighted L1 packet expansion; the real functional is applied only after
 this equality in its actual normed domain has been established. -/

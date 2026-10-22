@@ -31,9 +31,11 @@ Nothing here is specific to ζ; the arithmetic instances name their collapse and
 
 namespace GaloisForLFunctions.ScaleSignedIncidenceCriticality
 
+open Set
+
 set_option autoImplicit false
 
-variable {D O O' : Type*}
+variable {D O O' : Type*} {F : Type*}
 
 /-! ### 1. Shadows -/
 
@@ -287,5 +289,71 @@ theorem refines_familyReading {ι : Type*} {O : ι → Type*} (r : ∀ i, D → 
     Refines (familyReading r) (r i) := fun d x hx => by
   have := (shadow_familyReading r d).subset hx
   exact Set.mem_iInter.mp this i
+
+
+/-! ### 9. The resolution interval -/
+
+/-- The **resolution interval**: the exact set of values of `I` a method reading `r` leaves open
+at `d`. -/
+noncomputable def resolutionInterval (I : D → ℝ) (r : D → O) (d : D) : Set ℝ :=
+  Icc (resolutionFloor I r d) (resolutionLimit I r d)
+
+theorem mem_resolutionInterval {I : D → ℝ} {r : D → O} {d : D} (hb : BddBelow (I '' shadow r d))
+    (ha : BddAbove (I '' shadow r d)) : I d ∈ resolutionInterval I r d :=
+  ⟨resolutionFloor_le hb, le_resolutionLimit ha⟩
+
+/-- Refinement shrinks the interval from both ends: more data, fewer open values. -/
+theorem resolutionInterval_subset_of_refines {I : D → ℝ} {r : D → O} {r' : D → O'}
+    (h : Refines r r') {d : D} (hb : BddBelow (I '' shadow r' d))
+    (ha : BddAbove (I '' shadow r' d)) :
+    resolutionInterval I r d ⊆ resolutionInterval I r' d :=
+  Icc_subset_Icc
+    (csInf_le_csInf hb (shadow_image_nonempty I r d) (Set.image_mono (shadow_subset_of_refines h d)))
+    (resolutionLimit_le_of_refines h ha)
+
+/-- **Degeneracy criterion.** The interval collapses to a point exactly when the reading pins the
+invariant on its whole shadow. -/
+theorem resolutionFloor_eq_resolutionLimit_iff {I : D → ℝ} {r : D → O} {d : D}
+    (hb : BddBelow (I '' shadow r d)) (ha : BddAbove (I '' shadow r d)) :
+    resolutionFloor I r d = resolutionLimit I r d ↔ ∀ e ∈ shadow r d, I e = I d := by
+  refine ⟨fun h e he => ?_, fun h => ?_⟩
+  · have h1 : resolutionFloor I r d ≤ I e := csInf_le hb ⟨e, he, rfl⟩
+    have h2 : I e ≤ resolutionLimit I r d := le_csSup ha ⟨e, he, rfl⟩
+    have h3 : resolutionFloor I r d ≤ I d := resolutionFloor_le hb
+    have h4 : I d ≤ resolutionLimit I r d := le_resolutionLimit ha
+    rw [h] at h1 h3
+    linarith
+  · have hfl : resolutionFloor I r d = I d :=
+      le_antisymm (resolutionFloor_le hb)
+        ((certifiesLower_iff_le_resolutionFloor hb).mp fun e he => (h e he).ge)
+    have hli : resolutionLimit I r d = I d :=
+      le_antisymm ((certifies_iff_resolutionLimit_le ha).mp fun e he => (h e he).le)
+        (le_resolutionLimit ha)
+    rw [hfl, hli]
+
+/-! ### 10. The floor theorem: a maximal member in the shadow fixes the limit -/
+
+/-- **The floor theorem.** If `I` has a global maximum `M` attained by some datum in the shadow,
+the limit is exactly `M`: the reading certifies nothing beyond the a priori bound. -/
+theorem resolutionLimit_eq_of_mem_shadow_of_max {I : D → ℝ} {r : D → O} {d e : D} {M : ℝ}
+    (hub : ∀ x : D, I x ≤ M) (he : e ∈ shadow r d) (hval : I e = M) :
+    resolutionLimit I r d = M := by
+  have hbdd : BddAbove (I '' shadow r d) := ⟨M, by rintro x ⟨y, -, rfl⟩; exact hub y⟩
+  refine le_antisymm (csSup_le (shadow_image_nonempty I r d) ?_) ?_
+  · rintro x ⟨y, -, rfl⟩
+    exact hub y
+  · exact hval ▸ le_csSup hbdd ⟨e, he, rfl⟩
+
+/-- A reading that factors through `f` is floored by any maximal member with the same `f`-value. -/
+theorem resolutionLimit_eq_of_factors_of_max {I : D → ℝ} {f : D → F} {r : F → O} {d e : D}
+    {M : ℝ} (hub : ∀ x : D, I x ≤ M) (he : f e = f d) (hval : I e = M) :
+    resolutionLimit I (r ∘ f) d = M :=
+  resolutionLimit_eq_of_mem_shadow_of_max hub (show r (f e) = r (f d) by rw [he]) hval
+
+/-- A constant reading is floored at the maximum: it certifies only the a priori bound. -/
+theorem resolutionLimit_eq_of_constant_reading {I : D → ℝ} {r : D → O}
+    (hconst : ∀ x y : D, r x = r y) {M : ℝ} (hub : ∀ x : D, I x ≤ M) {e : D} (hval : I e = M)
+    (d : D) : resolutionLimit I r d = M :=
+  resolutionLimit_eq_of_mem_shadow_of_max hub (hconst e d) hval
 
 end GaloisForLFunctions.ScaleSignedIncidenceCriticality

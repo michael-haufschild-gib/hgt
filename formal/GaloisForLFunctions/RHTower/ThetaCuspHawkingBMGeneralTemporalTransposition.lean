@@ -292,11 +292,11 @@ def eventDir (v : ℝ × ℝ) (phi : ℝ × ℝ → ℂ) (p : ℝ × ℝ) : ℂ 
 def eventWave (phi : ℝ × ℝ → ℂ) (p : ℝ × ℝ) : ℂ :=
   eventDir (1,0) (eventDir (1,0) phi) p - eventDir (0,1) (eventDir (0,1) phi) p
 
-private theorem eventDir_smooth {phi : ℝ × ℝ → ℂ} (hp : ContDiff ℝ ∞ phi) (v : ℝ × ℝ) :
+theorem eventDir_smooth {phi : ℝ × ℝ → ℂ} (hp : ContDiff ℝ ∞ phi) (v : ℝ × ℝ) :
     ContDiff ℝ ∞ (eventDir v phi) :=
   (hp.fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
 
-private theorem eventDir_second {phi : ℝ × ℝ → ℂ} (hp : ContDiff ℝ ∞ phi)
+theorem eventDir_second {phi : ℝ × ℝ → ℂ} (hp : ContDiff ℝ ∞ phi)
     (v w p : ℝ × ℝ) :
     eventDir v (eventDir w phi) p = fderiv ℝ (fderiv ℝ phi) p v w := by
   unfold eventDir
@@ -320,13 +320,13 @@ private theorem null_mixed_eq_wave {phi : ℝ × ℝ → ℂ} (hp : ContDiff ℝ
   rw [hs]
   ring
 
-private theorem pastVertex_u (s y u v : ℝ) :
+theorem pastVertex_u (s y u v : ℝ) :
     HasDerivAt (fun a => pastVertex s y (a,v)) (-1/2,1/2) u := by
   have h1 := (((hasDerivAt_id u).add_const v).div_const 2).const_sub s
   have h2 := (((hasDerivAt_id u).sub_const v).div_const 2).const_add y
   simpa [pastVertex,neg_div] using h1.prodMk h2
 
-private theorem pastVertex_v (s y u v : ℝ) :
+theorem pastVertex_v (s y u v : ℝ) :
     HasDerivAt (fun b => pastVertex s y (u,b)) (-1/2,-1/2) v := by
   have h1 := (((hasDerivAt_id v).const_add u).div_const 2).const_sub s
   have h2 := (((hasDerivAt_id v).const_sub u).div_const 2).const_add y

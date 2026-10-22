@@ -40,7 +40,7 @@ set_option autoImplicit false
 private theorem directional_smooth {F : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im}) (v : ℂ) :
     ContDiffOn ℝ ∞ (directional v F) {z : ℂ | 0 < z.im} :=
-  planar_derivative_contDiffOn hf v
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.directional_smooth hf v
 
 private def cell : Set ℝ := Ioc 0 1
 private def cellMean (f : ℝ → ℂ) : ℂ := ∫ x in cell, f x
@@ -53,10 +53,8 @@ private theorem cell_integrable {f : ℝ → ℂ} (hf : Continuous f) : Integrab
   hf.integrableOn_Icc.mono_set Ioc_subset_Icc_self
 
 private theorem cell_normSq_integrable {f : ℝ → ℂ} (hf : Continuous f) :
-    IntegrableOn (fun x => Complex.normSq (f x)) cell := by
-  have h : IntegrableOn (fun x => ‖f x‖ ^ 2) (Ioc 0 1) :=
-    (hf.norm.pow 2).integrableOn_Ioc
-  simpa only [cell,Complex.normSq_eq_norm_sq] using h
+    IntegrableOn (fun x => Complex.normSq (f x)) cell :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.cell_normSq_integrable hf
 
 private theorem cellMean_const (c : ℂ) : cellMean (fun _ => c)=c := by
   change (∫ x in Ioc (0:ℝ) 1, c)=c
@@ -69,120 +67,48 @@ private theorem cell_const_real (c : ℝ) : (∫ _x in cell, c)=c := by
   simp only [intervalIntegral.integral_const,sub_zero,one_smul]
 
 private theorem cell_centered_square {f : ℝ → ℂ} (hf : Continuous f) :
-    (∫ x in cell, Complex.normSq (f x-cellMean f))=cellVariance f := by
-  let a := cellMean f
-  have hi := cell_normSq_integrable hf
-  have hr := cell_integrable (hf.mul_const ((starRingEnd ℂ) a))
-  have hj : IntegrableOn (fun x => 2*(f x*(starRingEnd ℂ) a).re) cell := hr.re.const_mul 2
-  have hc : IntegrableOn (fun _ : ℝ => Complex.normSq a) cell :=
-    (continuous_const : Continuous (fun _ : ℝ => Complex.normSq a)).integrableOn_Icc.mono_set
-      Ioc_subset_Icc_self
-  have he : (∫ x in cell, (f x*(starRingEnd ℂ) a).re)=Complex.normSq a := by
-    change (∫ x in cell, RCLike.re (f x*(starRingEnd ℂ) a))=Complex.normSq a
-    rw [integral_re hr,integral_mul_const]
-    change (a*(starRingEnd ℂ) a).re=Complex.normSq a
-    simp only [Complex.mul_conj,Complex.ofReal_re]
-  calc
-    _ = ∫ x in cell, Complex.normSq (f x)+Complex.normSq a-2*(f x*(starRingEnd ℂ) a).re := by
-      apply setIntegral_congr_fun (show MeasurableSet cell from measurableSet_Ioc)
-      intro x _
-      exact Complex.normSq_sub (f x) a
-    _ = (∫ x in cell, Complex.normSq (f x))+Complex.normSq a-2*Complex.normSq a := by
-      have hsum : IntegrableOn (fun x => Complex.normSq (f x)+Complex.normSq a) cell := hi.add hc
-      rw [integral_sub hsum hj, integral_add hi hc,
-        cell_const_real,integral_const_mul,he]
-    _ = cellVariance f := by dsimp only [cellVariance,a]; ring
+    (∫ x in cell, Complex.normSq (f x-cellMean f))=cellVariance f :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.cell_centered_square hf
 
 private theorem cellCovariance_centered {f g : ℝ → ℂ} (hf : Continuous f) (hg : Continuous g) :
-    cellCovariance f g=∫ x in cell, (f x-cellMean f)*(g x-cellMean g) := by
-  let a := cellMean f
-  let b := cellMean g
-  have hfg : IntegrableOn (fun x => f x*g x) cell := cell_integrable (hf.mul hg)
-  have hfb := cell_integrable (hf.mul_const b)
-  have hag := cell_integrable (hg.const_mul a)
-  have hc := cell_integrable (continuous_const : Continuous (fun _ : ℝ => a*b))
-  have he : (fun x => (f x-a)*(g x-b))=(fun x => (f x*g x-f x*b)-(a*g x)+a*b) := by
-    funext x; ring
-  have hsub : IntegrableOn (fun x => f x*g x-f x*b) cell := hfg.sub hfb
-  have hsub' : IntegrableOn (fun x => (f x*g x-f x*b)-a*g x) cell := hsub.sub hag
-  rw [he,integral_add hsub' hc,
-    integral_sub hsub hag,integral_sub hfg hfb,integral_mul_const,integral_const_mul]
-  change cellMean (fun x => f x*g x)-a*b=
-    (cellMean (fun x => f x*g x)-a*b)-a*b+cellMean (fun _ => a*b)
-  rw [cellMean_const]
-  ring
+    cellCovariance f g=∫ x in cell, (f x-cellMean f)*(g x-cellMean g) :=
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.cellCovariance_centered hf hg
 
 private theorem complex_young (z w : ℂ) : 2*‖z*w‖ ≤ Complex.normSq z+Complex.normSq w := by
   rw [norm_mul,Complex.normSq_eq_norm_sq,Complex.normSq_eq_norm_sq]
   nlinarith only [sq_nonneg (‖z‖-‖w‖)]
 
 private theorem coefficient_zero_integral (F : ℂ → ℂ) (y : ℝ) :
-    coefficient 1 0 F y=cellMean (fun x => F (point x y)) := by
-  simp only [coefficient,deningerFourierCoeff,deningerFourierKernel,Int.cast_zero,
-    mul_zero,zero_mul,neg_zero,Complex.exp_zero,Complex.ofReal_one,div_one,one_mul]
-  change (∫ x in (0:ℝ)..1, F (point x y))=∫ x in Ioc (0:ℝ) 1, F (point x y)
-  exact intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1)
+    coefficient 1 0 F y=cellMean (fun x => F (point x y)) :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.coefficient_zero_integral F y
 
 private theorem coefficient_zero_linear {F G : ℂ → ℂ}
     (hf : ContinuousOn F {z : ℂ | 0 < z.im})
     (hg : ContinuousOn G {z : ℂ | 0 < z.im}) (c d : ℂ)
     {y : ℝ} (hy : 0 < y) :
     coefficient 1 0 (fun z => c*F z+d*G z) y =
-      c*coefficient 1 0 F y+d*coefficient 1 0 G y := by
-  simp only [coefficient_zero_integral,cellMean]
-  rw [integral_add ((cell_integrable (slice_continuous hf hy)).const_mul c)
-    ((cell_integrable (slice_continuous hg hy)).const_mul d),integral_const_mul,integral_const_mul]
+      c*coefficient 1 0 F y+d*coefficient 1 0 G y :=
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.coefficient_zero_linear hf hg c d hy
 
 private theorem covariance_linear_left {F G H : ℂ → ℂ}
     (hf : ContinuousOn F {z : ℂ | 0 < z.im})
     (hg : ContinuousOn G {z : ℂ | 0 < z.im})
     (hh : ContinuousOn H {z : ℂ | 0 < z.im}) (c d : ℂ)
     {y : ℝ} (hy : 0 < y) :
-    covariance (fun z => c*F z+d*G z) H y = c*covariance F H y+d*covariance G H y := by
-  have he : (fun z => (c*F z+d*G z)*H z) = (fun z => c*(F z*H z)+d*(G z*H z)) := by
-    funext z; ring
-  unfold covariance
-  rw [he,coefficient_zero_linear (F := fun z => F z*H z) (G := fun z => G z*H z)
-    (hf.mul hh) (hg.mul hh) c d hy,
-    coefficient_zero_linear hf hg c d hy]
-  ring
+    covariance (fun z => c*F z+d*G z) H y = c*covariance F H y+d*covariance G H y :=
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.covariance_linear_left hf hg hh c d hy
 
 private theorem covariance_slice_congr {F G H : ℂ → ℂ} {y : ℝ}
-    (he : ∀ x : ℝ, F (point x y)=G (point x y)) : covariance F H y=covariance G H y := by
-  simp only [covariance,coefficient_zero_integral,cellMean]
-  congr 1
-  · exact integral_congr_ae (Filter.Eventually.of_forall (fun x => congrArg (fun z => z*H (point x y)) (he x)))
-  · congr 1
-    exact integral_congr_ae (Filter.Eventually.of_forall he)
+    (he : ∀ x : ℝ, F (point x y)=G (point x y)) : covariance F H y=covariance G H y :=
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.covariance_slice_congr he
 
 private theorem covariance_hasDerivAt {F G : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im})
     (hg : ContDiffOn ℝ ∞ G {z : ℂ | 0 < z.im})
     {y : ℝ} (hy : 0 < y) :
     HasDerivAt (covariance F G)
-      (covariance (directional Complex.I F) G y+covariance F (directional Complex.I G) y) y := by
-  have hf1 := hf.of_le (show (1 : WithTop ℕ∞) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
-  have hg1 := hg.of_le (show (1 : WithTop ℕ∞) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
-  have hdi := (coefficient_hasDerivAt 1 (by norm_num) 0 (hf1.mul hg1) hy).sub
-    ((coefficient_hasDerivAt 1 (by norm_num) 0 hf1 hy).mul
-      (coefficient_hasDerivAt 1 (by norm_num) 0 hg1 hy))
-  have hp (x : ℝ) : directional Complex.I (fun z => F z*G z) (point x y) =
-      directional Complex.I F (point x y)*G (point x y)+F (point x y)*directional Complex.I G (point x y) :=
-    (slice_vertical (hf1.mul hg1) x hy).unique ((slice_vertical hf1 x hy).mul (slice_vertical hg1 x hy))
-  have hm : coefficient 1 0 (directional Complex.I (fun z => F z*G z)) y =
-      coefficient 1 0 (fun z => directional Complex.I F z*G z) y+
-        coefficient 1 0 (fun z => F z*directional Complex.I G z) y := by
-    simp only [coefficient_zero_integral,cellMean]
-    rw [integral_congr_ae (Filter.Eventually.of_forall hp)]
-    exact integral_add
-      (cell_integrable ((slice_continuous (directional_smooth hf Complex.I).continuousOn hy).mul
-        (slice_continuous hg.continuousOn hy)))
-      (cell_integrable ((slice_continuous hf.continuousOn hy).mul
-        (slice_continuous (directional_smooth hg Complex.I).continuousOn hy)))
-  apply hdi.congr_deriv
-  rw [hm]
-  unfold covariance
-  ring
+      (covariance (directional Complex.I F) G y+covariance F (directional Complex.I G) y) y :=
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.covariance_hasDerivAt hf hg hy
 
 private theorem covariance_horizontal_second {F G : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im})
@@ -191,158 +117,49 @@ private theorem covariance_horizontal_second {F G : ℂ → ℂ}
     (hp : ∀ x, F (point (x+1) y)=F (point x y))
     (hq : ∀ x, G (point (x+1) y)=G (point x y)) :
     covariance (directional 1 (directional 1 F)) G y =
-      -covariance (directional 1 F) (directional 1 G) y := by
-  have hf1 := hf.of_le (show (1 : WithTop ℕ∞) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
-  have hg1 := hg.of_le (show (1 : WithTop ℕ∞) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
-  have hdx := directional_smooth hf (1:ℂ)
-  have hxx := directional_smooth hdx (1:ℂ)
-  have hdy := directional_smooth hg (1:ℂ)
-  have hdx1 := hdx.of_le (show (1 : WithTop ℕ∞) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
-  have hiu : IntegrableOn (fun x => directional 1 (directional 1 F) (point x y)*G (point x y)) cell :=
-    cell_integrable ((slice_continuous hxx.continuousOn hy).mul (slice_continuous hg.continuousOn hy))
-  have hiv : IntegrableOn (fun x => directional 1 F (point x y)*directional 1 G (point x y)) cell :=
-    cell_integrable ((slice_continuous hdx.continuousOn hy).mul (slice_continuous hdy.continuousOn hy))
-  have ht := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := (0:ℝ)) (b := 1)
-    (fun x _ => (slice_horizontal hdx1 hy x).mul (slice_horizontal hg1 hy x))
-    ((((slice_continuous hxx.continuousOn hy).mul (slice_continuous hg.continuousOn hy)).add
-      ((slice_continuous hdx.continuousOn hy).mul (slice_continuous hdy.continuousOn hy))).intervalIntegrable 0 1)
-  have hper : directional 1 F (point 1 y)=directional 1 F (point 0 y) := by
-    simpa only [zero_add] using directional_periodic hf1 hy 1 hp 0
-  have hgper : G (point 1 y)=G (point 0 y) := by simpa only [zero_add] using hq 0
-  simp only [Pi.mul_apply] at ht
-  rw [intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1),hper,hgper,sub_self] at ht
-  change (∫ x in cell, directional 1 (directional 1 F) (point x y)*G (point x y)+
-    directional 1 F (point x y)*directional 1 G (point x y))=0 at ht
-  rw [integral_add hiu hiv] at ht
-  have hm1 : coefficient 1 0 (directional 1 F) y=0 := by
-    rw [coefficient_horizontal 1 (by norm_num) 0 hf1 hy hp]
-    simp only [signedFrequency,Int.cast_zero,mul_zero,zero_div,Complex.ofReal_zero,zero_mul]
-  have hm2 : coefficient 1 0 (directional 1 (directional 1 F)) y=0 := by
-    rw [coefficient_horizontal_second 1 (by norm_num) 0
-      (hf.of_le (WithTop.coe_le_coe.mpr le_top)) hy hp]
-    simp only [signedFrequency,Int.cast_zero,mul_zero,zero_div,Complex.ofReal_zero,zero_pow,ne_eq,OfNat.ofNat_ne_zero,not_false_eq_true,neg_zero,zero_mul]
-  simp only [covariance,hm1,hm2,zero_mul,sub_zero,coefficient_zero_integral,cellMean]
-  linear_combination ht
+      -covariance (directional 1 F) (directional 1 G) y :=
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.covariance_horizontal_second hf hg hy hp hq
 
 private def variance (F : ℂ → ℂ) (y : ℝ) : ℝ := cellVariance (fun x => F (point x y))
 
 private theorem variance_nonneg {F : ℂ → ℂ}
-    (hf : ContinuousOn F {z : ℂ | 0 < z.im}) {y : ℝ} (hy : 0 < y) : 0 ≤ variance F y := by
-  change 0 ≤ cellVariance (fun x => F (point x y))
-  rw [← cell_centered_square (slice_continuous hf hy)]
-  exact integral_nonneg (fun _ => Complex.normSq_nonneg _)
+    (hf : ContinuousOn F {z : ℂ | 0 < z.im}) {y : ℝ} (hy : 0 < y) : 0 ≤ variance F y :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.variance_nonneg hf hy
 
 private theorem native_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
-    variance (D4BMCuspResponse.responsePlanar q b) y=nonconstantMass q b y := by
-  have hs := coefficient_mass_hasSum 1 (by norm_num)
-    (D4BMCuspResponse.responsePlanar_smooth q b).continuousOn y.2
-  simp only [inv_one,one_mul] at hs
-  have he := hs.unique (modeMass_hasSum q b y)
-  unfold variance cellVariance
-  rw [← coefficient_zero_integral]
-  dsimp only [cell]
-  rw [← intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1),he,nativeMass_decomposition q b y]
-  change modeMass q b 0 y+nonconstantMass q b y-modeMass q b 0 y=nonconstantMass q b y
-  ring
+    variance (D4BMCuspResponse.responsePlanar q b) y=nonconstantMass q b y :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.native_variance q b y
 
 private theorem native_gradient_variance (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     2*variance (directional Complex.I (D4BMCuspResponse.responsePlanar q b)) y+
-      variance (directional 1 (D4BMCuspResponse.responsePlanar q b)) y=nonconstantEnergy q b y := by
-  let F := D4BMCuspResponse.responsePlanar q b
-  have hf1 := (D4BMCuspResponse.responsePlanar_smooth q b).of_le
-    (show (1 : WithTop ℕ∞) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
-  have hm : coefficient 1 0 (directional 1 F) y=0 := by
-    rw [coefficient_horizontal 1 (by norm_num) 0 hf1 y.2 (D4BMCuspResponse.responsePlanar_periodic q b y.2)]
-    simp only [signedFrequency,Int.cast_zero,mul_zero,zero_div,Complex.ofReal_zero,zero_mul]
-  have hv := (coefficient_hasDerivAt 1 (by norm_num) 0 hf1 y.2).deriv
-  have he := nativeGradientSlice_decomposition q b y
-  unfold variance cellVariance
-  rw [← coefficient_zero_integral,← coefficient_zero_integral,hm,Complex.normSq_zero,sub_zero]
-  change deriv (responseMode q b 0) y=coefficient 1 0 (directional Complex.I F) y at hv
-  rw [← hv]
-  change 2*((∫ x in Ioc (0:ℝ) 1, Complex.normSq (directional Complex.I F (point x y)))-
-      Complex.normSq (deriv (responseMode q b 0) y))+
-    (∫ x in Ioc (0:ℝ) 1, Complex.normSq (directional 1 F (point x y)))=nonconstantEnergy q b y
-  rw [← intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1),
-    ← intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1)]
-  simp only [nativeGradientSlice,modeEnergy,signedFrequency,Int.cast_zero,mul_zero,zero_div,
-    zero_pow,ne_eq,OfNat.ofNat_ne_zero,not_false_eq_true,zero_mul,add_zero] at he
-  linear_combination he
+      variance (directional 1 (D4BMCuspResponse.responsePlanar q b)) y=nonconstantEnergy q b y :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.native_gradient_variance q b y
 
 private theorem forcing_variance_bound (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
-    variance (globalForcing q b ∘ ofComplex) y ≤ y.val^4*forcingMass q b y := by
-  have hs := coefficient_mass_hasSum 1 (by norm_num)
-    (globalForcing_smooth q b).planar_contDiffOn.continuousOn y.2
-  simp only [inv_one,one_mul] at hs
-  have he := (hs.div_const (y.val^4)).unique (forcingLoss_hasSum q b y)
-  have hy4 : y.val^4 ≠ 0 := pow_ne_zero 4 (ne_of_gt y.2)
-  have hm := (div_eq_iff hy4).mp he
-  unfold variance cellVariance
-  change (∫ x in Ioc (0:ℝ) 1, Complex.normSq ((globalForcing q b ∘ ofComplex) (point x y)))-
-      Complex.normSq (cellMean (fun x => (globalForcing q b ∘ ofComplex) (point x y))) ≤ _
-  rw [← intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1),hm]
-  nlinarith only [Complex.normSq_nonneg (cellMean (fun x => (globalForcing q b ∘ ofComplex) (point x y)))]
+    variance (globalForcing q b ∘ ofComplex) y ≤ y.val^4*forcingMass q b y :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.forcing_variance_bound q b y
 
 private theorem native_mass_le_energy (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
-    nonconstantMass q b y ≤ nonconstantEnergy q b y := by
-  have hm := (modeMass_hasSum q b y).summable.subtype (fun n : ℤ => n ≠ 0)
-  have he := (modeEnergy_hasSum q b y).summable.subtype (fun n : ℤ => n ≠ 0)
-  apply hm.tsum_le_tsum ?_ he
-  intro n
-  have hnZ : (1:ℤ) ≤ n.val^2 := Int.add_one_le_iff.mpr (sq_pos_of_ne_zero n.2)
-  have hnR : (1:ℝ) ≤ (n.val:ℝ)^2 := by exact_mod_cast hnZ
-  have hk : 1 ≤ (signedFrequency 1 n.val)^2 := by
-    have hh := mul_le_mul_of_nonneg_left hnR (sq_nonneg (2*Real.pi))
-    have hp := Real.pi_gt_three
-    dsimp only [signedFrequency]
-    rw [div_one,mul_pow]
-    nlinarith only [hh,hp,sq_nonneg (Real.pi-3)]
-  have h := mul_le_mul_of_nonneg_right hk (Complex.normSq_nonneg (responseMode q b n.val y))
-  change 1*modeMass q b n.val y ≤ (signedFrequency 1 n.val)^2*modeMass q b n.val y at h
-  change modeMass q b n.val y ≤ 2*Complex.normSq (deriv (responseMode q b n.val) y)+
-    (signedFrequency 1 n.val)^2*modeMass q b n.val y
-  linarith only [h,Complex.normSq_nonneg (deriv (responseMode q b n.val) y)]
+    nonconstantMass q b y ≤ nonconstantEnergy q b y :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.native_mass_le_energy q b y
 
 private theorem energy_nonneg (q : XiZeroCopy) (b : Bool) (y : ℝ) :
-    0 ≤ nonconstantEnergy q b y := by
-  apply tsum_nonneg
-  intro n
-  exact add_nonneg (mul_nonneg (by norm_num) (Complex.normSq_nonneg _))
-    (mul_nonneg (sq_nonneg _) (Complex.normSq_nonneg _))
-
+    0 ≤ nonconstantEnergy q b y :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.energy_nonneg q b y
 
 private theorem physicalTest_smooth (q : XiZeroCopy) :
-    ContDiffOn ℝ ∞ (physicalTest q) {z : ℂ | 0 < z.im} := by
-  intro z hz
-  have h := (D4BMAngularSeries.cuspLeg_contDiffOn .scalar (physicalAngularParameter q)).contDiffAt
-    ((isOpen_lt continuous_const (continuous_apply 1)).mem_nhds
-      (show 0 < angularCoordinates z 1 from hz))
-  exact (h.comp z angularCoordinates.contDiff.contDiffAt).contDiffWithinAt
+    ContDiffOn ℝ ∞ (physicalTest q) {z : ℂ | 0 < z.im} :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.physicalTest_smooth q
 
 private theorem physicalTest_periodic (q : XiZeroCopy) (y x : ℝ) :
-    physicalTest q (point (x+1) y)=physicalTest q (point x y) := by
-  have hp : Function.Periodic (scalar (physicalAngularParameter q)) ![1,0] := by
-    intro z
-    simpa [scalar,Pi.add_apply] using d4BM_completedEisensteinCuspLeg_scalar_periodic
-      (physicalAngularParameter q) (z 1) (z 0)
-  have hc : angularCoordinates (point (x+1) y)=angularCoordinates (point x y)+![1,0] := by
-    ext i
-    fin_cases i <;> norm_num [angularCoordinates,point,Pi.add_apply]
-  exact (congrArg (scalar (physicalAngularParameter q)) hc).trans (hp _)
+    physicalTest q (point (x+1) y)=physicalTest q (point x y) :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.physicalTest_periodic q y x
 
 private theorem native_variance_bounds (q : XiZeroCopy) (b : Bool) (y : Ioi (0:ℝ)) :
     variance (D4BMCuspResponse.responsePlanar q b) y≤nonconstantEnergy q b y ∧
     variance (directional Complex.I (D4BMCuspResponse.responsePlanar q b)) y≤nonconstantEnergy q b y ∧
-    variance (directional 1 (D4BMCuspResponse.responsePlanar q b)) y≤nonconstantEnergy q b y := by
-  have hf := D4BMCuspResponse.responsePlanar_smooth q b
-  have hv := variance_nonneg (directional_smooth hf Complex.I).continuousOn y.2
-  have hh := variance_nonneg (directional_smooth hf 1).continuousOn y.2
-  have he := native_gradient_variance q b y
-  refine ⟨?_,by linarith only [he,hv,hh],by linarith only [he,hv]⟩
-  rw [native_variance]
-  exact native_mass_le_energy q b y
-
-
+    variance (directional 1 (D4BMCuspResponse.responsePlanar q b)) y≤nonconstantEnergy q b y :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.native_variance_bounds q b y
 
 private theorem weighted_young (z w : ℂ) {y : ℝ} (hy : 0 < y) :
     2*‖z*w‖ ≤ y^4*Complex.normSq z+Complex.normSq w/y^4 := by
@@ -564,7 +381,7 @@ private theorem covariance_continuousOn {F G : ℂ → ℂ}
     (hf : ContDiffOn ℝ ∞ F {z : ℂ | 0 < z.im})
     (hg : ContDiffOn ℝ ∞ G {z : ℂ | 0 < z.im}) :
     ContinuousOn (covariance F G) (Ioi (0:ℝ)) :=
-  fun _ hy => (covariance_hasDerivAt hf hg hy).continuousAt.continuousWithinAt
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.covariance_continuousOn hf hg
 
 private theorem pair_continuousOn (q r : XiZeroCopy) (b : Bool) :
     ContinuousOn (readerCurrent q r b) (Ioi (0:ℝ)) :=
@@ -587,12 +404,8 @@ private theorem density_continuousOn (q r : XiZeroCopy) (b : Bool) :
     ((continuousOn_const.div hp hn).mul hw)
 
 private theorem inverse_square_integrable {T : ℝ} (hT : 0 < T) :
-    IntegrableOn (fun y : ℝ => 1/y^2) (Ioi T) := by
-  have h := integrableOn_Ioi_rpow_of_lt (by norm_num : (-2:ℝ)< -1) hT
-  apply h.congr_fun ?_ measurableSet_Ioi
-  intro y hy
-  change y^(-(2:ℝ))=1/y^2
-  rw [Real.rpow_neg (le_of_lt (lt_trans hT hy)),Real.rpow_two,one_div]
+    IntegrableOn (fun y : ℝ => 1/y^2) (Ioi T) :=
+  _root_.RHTower.D4BMQuarticTestedNativeCurrent.inverse_square_integrable hT
 
 /-- Both absolute integrabilities follow from original native energy and forcing. -/
 theorem readerCurrent_admission (q r : XiZeroCopy) (b : Bool) :
@@ -743,14 +556,8 @@ theorem nativeMean_derivative_reader_weight_tendsto_zero (q r : XiZeroCopy) (b :
 
 private theorem coefficient_zero_cusp_mean (F : ℂ → ℂ) (y : ℝ)
     (hp : ∀ x : ℝ, F (point (x+1) y)=F (point x y)) :
-    coefficient 1 0 F y=D4BMCuspResponse.average F y := by
-  rw [coefficient_zero_integral]
-  change (∫ x in Ioc (0:ℝ) 1, F (point x y))=
-    ∫ x in Ioc (-1/2:ℝ) (1/2), F (point x y)
-  rw [← intervalIntegral.integral_of_le (by norm_num : (0:ℝ)≤1),
-    ← intervalIntegral.integral_of_le (by norm_num : (-1/2:ℝ)≤1/2)]
-  have hper : Function.Periodic (fun x : ℝ => F (point x y)) 1 := hp
-  simpa only [zero_add,show (-1/2:ℝ)+1=1/2 by ring] using hper.intervalIntegral_add_eq 0 (-1/2)
+    coefficient 1 0 F y=D4BMCuspResponse.average F y :=
+  _root_.RHTower.D4BMQuarticNativeCuspCurrent.coefficient_zero_cusp_mean F y hp
 
 private theorem reader_mean (r : XiZeroCopy) (y : Ioi (0:ℝ)) :
     coefficient 1 0 (physicalTest r) y =

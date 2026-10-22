@@ -29,7 +29,7 @@ def PlanarChartTest.globalForcingTest (g : PlanarChartTest) (q : XiZeroCopy) (br
   compact := g.compact.mul_right
   support := (closure_mono (Function.support_mul_subset_left _ _)).trans g.support
 
-private theorem global_ae_to_planar {P : ℂ → Prop}
+theorem global_ae_to_planar {P : ℂ → Prop}
     (hP : ∀ᵐ z : UpperHalfPlane ∂volume, P (z:ℂ)) :
     ∀ᵐ z ∂((volume : Measure ℂ).restrict {z : ℂ | 0 < z.im}), P z := by
   have hm : ∀ᵐ z ∂Measure.map UpperHalfPlane.coe (volume : Measure UpperHalfPlane), P z :=

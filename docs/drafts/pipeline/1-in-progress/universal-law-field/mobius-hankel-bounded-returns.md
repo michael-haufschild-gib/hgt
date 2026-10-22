@@ -55,7 +55,7 @@ of every critical-line zero. Its diagonal budget is `O(1/(r-1))`; Fatou and
 Cauchy--Schwarz therefore bound `d*Mellin(Phi)(rho+d)` near a critical zero.
 A vanishing zeta derivative would make the other factor in the exact Mellin
 identity tend to zero, contradicting nonzero Gamma. The full proof is in
-[Attempt 5 of the literal renewal attack](../route-e-literal-renewal-energy-attack.md#attempt-5-audit-the-strength-of-collective-diagonal-dominance).
+[Attempt 5 of the literal renewal attack](../rh/numbered-routes/e/route-e-literal-renewal-energy-attack.md#attempt-5-audit-the-strength-of-collective-diagonal-dominance).
 This does not falsify diagonal dominance. No such growth rate or simplicity
 conclusion is required by the weaker bounded-return target.
 

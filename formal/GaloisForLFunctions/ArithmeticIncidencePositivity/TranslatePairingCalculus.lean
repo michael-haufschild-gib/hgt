@@ -264,6 +264,14 @@ theorem sum_abs_pow_le_inv_one_sub {z : ℝ} (hz0 : 0 < z) (hz1 : z < 1) (n : �
   rw [h]
   exact sum_pow_le_inv_one_sub hz0.le hz1 n
 
+/-- Partial sums of `|z^k|` are bounded by `1/(1 − |z|)`, for signed ratios too. -/
+theorem sum_abs_pow_le_inv_one_sub_abs {z : ℝ} (hz : |z| < 1) (n : ℕ) :
+    ∑ k ∈ Finset.range n, |z ^ k| ≤ 1 / (1 - |z|) := by
+  have h : ∑ k ∈ Finset.range n, |z ^ k| = ∑ k ∈ Finset.range n, |z| ^ k :=
+    Finset.sum_congr rfl fun k _ => abs_pow z k
+  rw [h]
+  exact sum_pow_le_inv_one_sub (abs_nonneg z) hz n
+
 /-- The geometric train `S_N(u) = Σ_{k ≤ N} z^k F(u + kL)`: the truncated resolvent of the test
 for the translation by `L`. -/
 def geoTrain (z L : ℝ) (F : ℝ → ℝ) (N : ℕ) : ℝ → ℝ :=

@@ -122,7 +122,7 @@ private theorem exp_cpow (a : ℂ) (k : ℝ) :
 private theorem positive_nhds {z : A} (hy : 0<z 1) : domain∈𝓝 z :=
   (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hy
 
-private theorem power_laplacian_sum {ι : Type*} (s : Finset ι) (F : ι → A → ℂ)
+theorem power_laplacian_sum {ι : Type*} (s : Finset ι) (F : ι → A → ℂ)
     {z : A} (hF : ∀ i∈s, ContDiffAt ℝ 2 (F i) z) :
     L (fun x => ∑ i∈s, F i x) z=∑ i∈s, L (F i) z := by
   classical
@@ -138,7 +138,7 @@ private theorem power_laplacian_sum {ι : Type*} (s : Finset ι) (F : ι → A �
       (ContDiffAt.sum (fun j hj => hF j (Finset.mem_insert_of_mem hj)))).trans
         (congrArg (fun a => L (F i) z+a) (ih (fun j hj => hF j (Finset.mem_insert_of_mem hj))))
 
-private theorem principal_laplacian (q : XiZeroCopy) (z : A) (hy : 0<z 1) :
+theorem principal_laplacian (q : XiZeroCopy) (z : A) (hy : 0<z 1) :
     L (principalSquare q) z=∑ i : Fin 3, principalAmplitude q i*
       principalExponent q i*(principalExponent q i-1)*(z 1:ℂ)^(principalExponent q i) := by
   have he : principalSquare q=ᶠ[𝓝 z] fun v => ∑ i : Fin 3,
@@ -156,14 +156,14 @@ private theorem principal_laplacian (q : XiZeroCopy) (z : A) (hy : 0<z 1) :
     height_cpow_hyperbolicLaplacian _ z hy]
   ring
 
-private theorem square_decomposition (q : XiZeroCopy) :
+theorem square_decomposition (q : XiZeroCopy) :
     D4BMModularCore.fullSquarePotential q=fun z => principalSquare q z+
       (1/2:ℂ)*D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q) z := by
   funext z
   dsimp [D4BMModularCore.fullSquarePotential,principalSquare,D4BMGlobalAngularResponse.squareRemainder]
   ring
 
-private theorem square_laplacian_decomposition (q : XiZeroCopy) (z : A) (hy : 0<z 1) :
+theorem square_laplacian_decomposition (q : XiZeroCopy) (z : A) (hy : 0<z 1) :
     L (D4BMModularCore.fullSquarePotential q) z=L (principalSquare q) z+
       (1/2:ℂ)*L (D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q)) z := by
   have hp : ContDiffAt ℝ 2 (principalSquare q) z :=
@@ -175,7 +175,7 @@ private theorem square_laplacian_decomposition (q : XiZeroCopy) (z : A) (hy : 0<
   rw [square_decomposition q,hyperbolicLaplacian_add hp (contDiffAt_const.mul hs),
     hyperbolicLaplacian_const_mul hs]
 
-private theorem square_jet_exp (q : XiZeroCopy) (word : List (Fin 2)) (X : ℝ → ℝ) (w : ℂ) :
+theorem square_jet_exp (q : XiZeroCopy) (word : List (Fin 2)) (X : ℝ → ℝ) (w : ℂ) :
     Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
       D4BMSquareCuspJets.coordinateJet word
         (D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q))
@@ -184,7 +184,7 @@ private theorem square_jet_exp (q : XiZeroCopy) (word : List (Fin 2)) (X : ℝ �
     (D4BMGlobalAngularResponse.center q) w word (fun y => X (Real.log y))).comp Real.tendsto_exp_atTop
   simpa only [Function.comp_def,Real.log_exp,exp_cpow] using h
 
-private theorem square_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
+theorem square_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
     Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
       (D4BMModularCore.fullSquarePotential q ![X k,Real.exp k]-
         ∑ i : Fin 3, principalAmplitude q i*Complex.exp (principalExponent q i*(k:ℂ))))
@@ -198,7 +198,7 @@ private theorem square_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
     D4BMSquareCuspJets.coordinateJet]
   ring
 
-private theorem square_laplacian_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
+theorem square_laplacian_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
     Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
       (L (D4BMModularCore.fullSquarePotential q) ![X k,Real.exp k]-
         ∑ i : Fin 3, principalAmplitude q i*principalExponent q i*(principalExponent q i-1)*
@@ -369,7 +369,7 @@ private theorem forced_smooth (q : XiZeroCopy) (br : Bool) (amp : ℂ)
   exact (contact_smooth (D4BMOriginalGreenBoundary.sourceScalar_exterior_smooth
     q br amp x hp hr hy)).congr_of_eventuallyEq he.symm
 
-private theorem transfer_subtraction (F G : P → ℂ) (p R Y : ℝ) (c : ℂ)
+theorem transfer_subtraction (F G : P → ℂ) (p R Y : ℝ) (c : ℂ)
     (hF : ∀ X : ℝ, ContDiffAt ℝ ∞ F ![p,R,X,Y])
     (hG : ∀ X : ℝ, ContDiffAt ℝ ∞ G ![p,R,X,Y]) :
     (∫ X in (-1/2:ℝ)..1/2, transfer F G 1 ![p,R,X,Y]-c)=

@@ -188,3 +188,48 @@ This card is the programme card: folder, umbrella, README and the continuation c
     `A^maj ≤ −2^{-(1+ε)} n^{1-ε}` (`majorantCenteredPrefix_le`, via `dyadic_block_le_zeta_tail`), and
     its pronic energy diverges for every `ε ≤ 1/2` (`not_admits_majorantEnergy`): the named,
     unconditional selectivity certificate — a sign-blind estimate proves a false statement.
+- 2026-10-22 (cont. 4) — eleven further modules (all compiled, all wired):
+  - `TheSecondTangentIsAnIteratedDilation` — `pmul_log_mul` (log is a derivation),
+    `(μ log²) * 1 = Λ*Λ − Λ log`, and `dampedChebyshevSecond_eq_dilation`: the second tangent is the
+    source dilated by the second-order prime kernel; the convexity criterion in dilation coordinates.
+  - `TheFunctionFieldCalibration` — the `F_q[T]` model: `fqCenteredPrefix_eq` (the centred source is
+    exactly `q^{-ε}`), `fqEnergy_le_one`, `fqUniformlyAdmitsOn` (budget zero), and
+    `exists_fqPerturbedPrefix_gt`: a single extra degree destroys it. The calibration the README asks
+    for: (C) is vacuous over `F_q[T]`, and the reason is the exact degree-wise Möbius vanishing.
+  - `SecondTangentControlGivesTheAngle` — `pronicNorm_dampedChebyshevError_sub_le` (mean value in the
+    pronic norm) and `riemannHypothesis_of_second_tangent_majorant`.
+  - `TheWorkIsACorrelationWithWindowMeans` — the pronic adjoint of a dilation is a fibre average
+    (`pronicPairing_rowDilate_eq`, `rowFibreAverage_const`), so the work is the correlation of the
+    source with its own window means (`rowDilationForm_eq_fibreAverage_pairing`).
+  - `ReadingsOfTheSignCriterion` — the Markov reading (`riemannHypothesis_of_flux_ge_jump_add_forcing`),
+    the dyadic reading, and `dampedMobiusEnergy_pos` (the criterion is not vacuous).
+  - `ThePositiveCoreOfTheDilationForm` — `rowDilationForm_one_pos` (the constant row has a positive
+    core) and `rowDilationForm_split_at_one`/`signedDampingWork_split_at_one`: the complete
+    decomposition at the constant source, cross terms kept.
+  - `TheTangentFactorsThroughTheMoebiusDilation` — `Λ_ε = μ_ε * (log)_ε`, so
+    `dampedChebyshevError_eq_moebiusDilation`: the tangent is the Möbius dilation of a Möbius-free row.
+  - `AntiCorrelatedDampingsAreFew` — `card_le_of_pairwise_anticorrelated`: at most `1 + 1/δ` dampings
+    can be pairwise `δ`-anti-correlated; the obstruction is finite in the damping parameter.
+  - `TheEscapeIsAnOutAndBackExcursion` — `integral_pronicNorm_tangent_ge`: an interior excursion is
+    paid twice, so failure forces `∫‖E_ε‖ ≥ 2√E_T(ε) − (two paid ends)`: the exact converse of the
+    averaged tangent-norm criterion.
+  - `TheApertureFloorUnderAbsoluteDecay` — the additive aperture transport and the window-positivity
+    corollary in SRT's units.
+  - `TheEscapeIsATailPhenomenon` — `abs_pmPowerDampedCenteredDivisorPrefix_sub_one_le`
+    (`|A_ε(n) − 1| ≤ ε Σ_{d≤n}(log d)⌊n/d⌋ + n m₀(ε)`, from the classical `Σ μ(d)⌊n/d⌋ = 1`) and
+    `exists_damping_head_energy_le`: the escape lives beyond every fixed horizon.
+- 2026-10-22 (cont. 5) — five further modules (all compiled, all wired):
+  - `TheCompleteAccountingOfTheWork` — `rowDilationPairing_right_one` (the right cross term is the
+    pairing with the damped Chebyshev prefix), `rowDilationPairing_left_one` (the left one is the
+    pairing with the prime-weighted window means), `abs_rowDilationForm_le` (the quadratic term is at
+    most the prime-dilation series times the energy), and `signedDampingWork_accounting`.
+  - `TheCoreDominanceCriterion` — `workCore`/`workLinearWindow`/`workLinearPrefix`/`workQuadratic`
+    and `riemannHypothesis_of_core_dominance`: a comparison in explicit units, no unspecified
+    constants; `workCore_pos`.
+  - `TheQuadraticTermIsTheResidualEnergy` — `pronicNorm_deviationRow_sq` (the deviation's energy is
+    the dual residual) and the quadratic term in the units of the residual and of the energy.
+  - `TheCoreGrowsLikeTheInverseDamping` — `dampedPrimePrefix_ge_powersOfTwo` and
+    `dampedPrimePrefix_ge_inv_damping`: the core is of order `1/ε`, but only beyond `2^{1/ε}`.
+  - `TheAveragedCriterionOnSparseHorizons` — `energy_le_of_averaged_horizon` (per-horizon transport)
+    and `riemannHypothesis_of_averaged_dyadic`: the averaged budget only has to be checked at dyadic
+    horizons.

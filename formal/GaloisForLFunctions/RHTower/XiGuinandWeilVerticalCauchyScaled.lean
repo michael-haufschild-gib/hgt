@@ -49,106 +49,15 @@ private theorem I_mul_integral_vertical_cauchyKernel_eq_log_sub_of_lt_at
     {p : ℂ} {R a b : ℝ} (hR : p.re < R) :
     I * (∫ y in a..b, (((R : ℂ) + y * I) - p)⁻¹) =
       Complex.log (((R : ℂ) + b * I) - p) -
-        Complex.log (((R : ℂ) + a * I) - p) := by
-  have hslit : ∀ y : ℝ, (((R : ℂ) + y * I) - p) ∈ slitPlane := by
-    intro y
-    apply Complex.mem_slitPlane_iff.mpr
-    left
-    simp only [sub_re, add_re, ofReal_re, mul_re, ofReal_im, I_re, I_im,
-      zero_mul, mul_zero, sub_zero]
-    linarith
-  have hHD : ∀ y ∈ uIcc a b,
-      HasDerivAt (fun y : ℝ => -I * Complex.log (((R : ℂ) + y * I) - p))
-        ((((R : ℂ) + y * I) - p)⁻¹) y := by
-    intro y _
-    have hin : HasDerivAt (fun y : ℝ => (R : ℂ) + (y : ℂ) * I) I y := by
-      have hmul : HasDerivAt (fun y : ℝ => (y : ℂ) * I) I y := by
-        simpa using (Complex.ofRealCLM.hasDerivAt (x := y)).mul_const I
-      simpa using hmul.const_add (R : ℂ)
-    have hout : HasDerivAt (fun z : ℂ => Complex.log (z - p))
-        (((R : ℂ) + y * I - p)⁻¹) ((R : ℂ) + y * I) := by
-      simpa using! (Complex.hasDerivAt_log (hslit y)).comp
-        ((R : ℂ) + y * I) ((hasDerivAt_id _).sub_const p)
-    have hchain := (hout.comp y hin).const_mul (-I)
-    have hval : -I * ((((R : ℂ) + y * I - p)⁻¹) * I) =
-        (((R : ℂ) + y * I - p)⁻¹) := by
-      calc
-        -I * ((((R : ℂ) + y * I - p)⁻¹) * I) =
-            ((-I) * I) * (((R : ℂ) + y * I - p)⁻¹) := by ring
-        _ = (((R : ℂ) + y * I - p)⁻¹) := by
-          rw [neg_mul, Complex.I_mul_I, neg_neg, one_mul]
-    simpa only [hval] using! hchain
-  have hcont : ContinuousOn
-      (fun y : ℝ => (((R : ℂ) + y * I) - p)⁻¹) (uIcc a b) :=
-    (continuousOn_of_forall_continuousAt (fun y => by fun_prop)).inv₀
-      (fun y _ => Complex.slitPlane_ne_zero (hslit y))
-  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hHD hcont.intervalIntegrable,
-    mul_sub]
-  rw [show I * (-I * Complex.log (((R : ℂ) + b * I) - p)) =
-        Complex.log (((R : ℂ) + b * I) - p) by
-      rw [show I * (-I * Complex.log (((R : ℂ) + b * I) - p)) =
-        (I * -I) * Complex.log (((R : ℂ) + b * I) - p) by ring,
-        mul_neg, Complex.I_mul_I, neg_neg, one_mul],
-    show I * (-I * Complex.log (((R : ℂ) + a * I) - p)) =
-        Complex.log (((R : ℂ) + a * I) - p) by
-      rw [show I * (-I * Complex.log (((R : ℂ) + a * I) - p)) =
-        (I * -I) * Complex.log (((R : ℂ) + a * I) - p) by ring,
-        mul_neg, Complex.I_mul_I, neg_neg, one_mul]]
+        Complex.log (((R : ℂ) + a * I) - p) :=
+  I_mul_integral_vertical_cauchyKernel_eq_log_sub_of_lt hR
 
 private theorem I_mul_integral_vertical_cauchyKernel_eq_log_neg_sub_of_gt_at
     {p : ℂ} {R a b : ℝ} (hR : R < p.re) :
     I * (∫ y in a..b, (((R : ℂ) + y * I) - p)⁻¹) =
       Complex.log (-(((R : ℂ) + b * I) - p)) -
-        Complex.log (-(((R : ℂ) + a * I) - p)) := by
-  have hslit : ∀ y : ℝ, -(((R : ℂ) + y * I) - p) ∈ slitPlane := by
-    intro y
-    apply Complex.mem_slitPlane_iff.mpr
-    left
-    simp only [neg_re, sub_re, add_re, ofReal_re, mul_re, ofReal_im, I_re, I_im,
-      zero_mul, mul_zero, sub_zero]
-    linarith
-  have hHD : ∀ y ∈ uIcc a b,
-      HasDerivAt (fun y : ℝ => -I * Complex.log (-(((R : ℂ) + y * I) - p)))
-        ((((R : ℂ) + y * I) - p)⁻¹) y := by
-    intro y _
-    have hin : HasDerivAt (fun y : ℝ => (R : ℂ) + (y : ℂ) * I) I y := by
-      have hmul : HasDerivAt (fun y : ℝ => (y : ℂ) * I) I y := by
-        simpa using (Complex.ofRealCLM.hasDerivAt (x := y)).mul_const I
-      simpa using hmul.const_add (R : ℂ)
-    have hout0 := (Complex.hasDerivAt_log (hslit y)).comp
-      ((R : ℂ) + y * I) (((hasDerivAt_id ((R : ℂ) + y * I)).sub_const p).neg)
-    have hout : HasDerivAt (fun z : ℂ => Complex.log (-(z - p)))
-        (((R : ℂ) + y * I - p)⁻¹) ((R : ℂ) + y * I) := by
-      have hval : (-(((R : ℂ) + y * I) - p))⁻¹ * (-1) =
-          (((R : ℂ) + y * I) - p)⁻¹ := by
-        rw [inv_neg]
-        ring
-      simpa only [hval] using! hout0
-    have hchain := (hout.comp y hin).const_mul (-I)
-    have hval : -I * ((((R : ℂ) + y * I - p)⁻¹) * I) =
-        (((R : ℂ) + y * I - p)⁻¹) := by
-      calc
-        -I * ((((R : ℂ) + y * I - p)⁻¹) * I) =
-            ((-I) * I) * (((R : ℂ) + y * I - p)⁻¹) := by ring
-        _ = (((R : ℂ) + y * I - p)⁻¹) := by
-          rw [neg_mul, Complex.I_mul_I, neg_neg, one_mul]
-    simpa only [hval] using! hchain
-  have hcont : ContinuousOn
-      (fun y : ℝ => (((R : ℂ) + y * I) - p)⁻¹) (uIcc a b) :=
-    (continuousOn_of_forall_continuousAt (fun y => by fun_prop)).inv₀
-      (fun y _ => neg_ne_zero.mp (Complex.slitPlane_ne_zero (hslit y)))
-  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hHD hcont.intervalIntegrable,
-    mul_sub]
-  rw [show I * (-I * Complex.log (-(((R : ℂ) + b * I) - p))) =
-        Complex.log (-(((R : ℂ) + b * I) - p)) by
-      rw [show I * (-I * Complex.log (-(((R : ℂ) + b * I) - p))) =
-        (I * -I) * Complex.log (-(((R : ℂ) + b * I) - p)) by ring,
-        mul_neg, Complex.I_mul_I, neg_neg, one_mul],
-    show I * (-I * Complex.log (-(((R : ℂ) + a * I) - p))) =
-        Complex.log (-(((R : ℂ) + a * I) - p)) by
-      rw [show I * (-I * Complex.log (-(((R : ℂ) + a * I) - p))) =
-        (I * -I) * Complex.log (-(((R : ℂ) + a * I) - p)) by ring,
-        mul_neg, Complex.I_mul_I, neg_neg, one_mul]]
+        Complex.log (-(((R : ℂ) + a * I) - p)) :=
+  I_mul_integral_vertical_cauchyKernel_eq_log_neg_sub_of_gt hR
 
 /-- The complete depth-`c` Cauchy kernel is uniformly bounded as the vertical edge approaches a
 centered Xi pole horizontally. -/

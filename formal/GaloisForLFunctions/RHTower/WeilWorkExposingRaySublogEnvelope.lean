@@ -27,7 +27,7 @@ noncomputable section
 namespace RHTower.ExposingRayTransfer
 open WeilSpectral WeilOneSided ResonatorProfile
 
-private theorem primitive_square_of_toeplitz {b : ℕ → ℝ} {B : ℝ} {N : ℕ}
+theorem primitive_square_of_toeplitz {b : ℕ → ℝ} {B : ℝ} {N : ℕ}
     (hN : 1 ≤ N) (hB : 0 ≤ B)
     (h : ∀ c : ℕ → ℂ, (∀ m, N < m → c m=0) →
       2*(∑ n ∈ Finset.Icc 2 N, b n*(∑ m ∈ Finset.Icc 1 N, c (n*m)*conj (c m)).re) ≤
@@ -91,7 +91,7 @@ private theorem primitive_square_of_toeplitz {b : ℕ → ℝ} {B : ℝ} {N : �
     have hq' := (div_le_iff₀ hp).mp hq
     nlinarith only [hq']
 
-private theorem log_toeplitz_of_polar_bound {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
+theorem log_toeplitz_of_polar_bound {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
     {b : ℕ → ℝ} {ell : Lp ℝ 1 (volume : Measure ℝ) →L[ℝ] ℝ}
     (h : ∀ f : WeilTestFn, (∃ a, IsPolarTest a f.1) →
       atomValue b f.1 ≤ ell (logDensityL1 hβ hβ1 f))
@@ -173,7 +173,7 @@ private theorem log_toeplitz_of_polar_bound {β : ℝ} (hβ : 0 ≤ β) (hβ1 : 
 
 
 
-private theorem resonator_budget_growth {β : ℝ} (hβ : 0 ≤ β) {N : ℕ} (hN : 1 ≤ N) :
+theorem resonator_budget_growth {β : ℝ} (hβ : 0 ≤ β) {N : ℕ} (hN : 1 ≤ N) :
     1+(Real.log (N:ℝ)+sublogResonatorConstant)^β ≤
       (1+sublogResonatorConstant^β)*(1+Real.log N)^β := by
   have hn := Real.log_nonneg (show (1:ℝ)≤N by exact_mod_cast hN)

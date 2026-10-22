@@ -49,84 +49,39 @@ theorem full_response_global_planar_equation (q : XiZeroCopy)
 
 private theorem lift_local_pair_integrable (g : PlanarChartTest) (u : Space) (ψ : 𝓢(ℂ,ℂ)) :
     Integrable (fun z : ℂ => ψ z*g.localValue u z) :=
-  (ψ.memLp 2).integrable_mul (g.localValue_memLp u)
+  _root_.RHTower.D4BMModularCore.lift_local_pair_integrable g u ψ
 
 private theorem lifted_product_derivative (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (v z : ℂ) :
     ((g.mulSmooth ψ (ψ.smooth ⊤)).derivative v).field z =
-      (g.derivative v).field z*ψ z+g.field z*(∂_{v} ψ) z := by
-  change fderiv ℝ (fun w => ψ w*g.field w) z v = _
-  rw [fderiv_fun_mul ((ψ.smooth ⊤).differentiable (by simp)).differentiableAt
-    (g.smooth.differentiable (by simp)).differentiableAt]
-  simp only [add_apply,smul_apply,smul_eq_mul,
-    SchwartzMap.lineDerivOp_apply_eq_fderiv,PlanarChartTest.derivative]
-  ring
+      (g.derivative v).field z*ψ z+g.field z*(∂_{v} ψ) z :=
+  _root_.RHTower.D4BMModularCore.lifted_product_derivative g ψ v z
 
 private theorem lifted_product_second (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (v z : ℂ) :
     (((g.mulSmooth ψ (ψ.smooth ⊤)).derivative v).derivative v).field z =
       ((g.derivative v).derivative v).field z*ψ z +
-      2*(g.derivative v).field z*(∂_{v} ψ) z + g.field z*(∂_{v} (∂_{v} ψ)) z := by
-  have he : ((g.mulSmooth ψ (ψ.smooth ⊤)).derivative v).field =
-      (fun w => (g.derivative v).field w*ψ w+g.field w*(∂_{v} ψ) w) :=
-    funext (lifted_product_derivative g ψ v)
-  change fderiv ℝ ((g.mulSmooth ψ (ψ.smooth ⊤)).derivative v).field z v = _
-  rw [he]
-  have hg := (g.smooth.differentiable (by simp)).differentiableAt (x := z)
-  have hgd := ((g.derivative v).smooth.differentiable (by simp)).differentiableAt (x := z)
-  have hp := ((ψ.smooth ⊤).differentiable (by simp)).differentiableAt (x := z)
-  have hpd := (((∂_{v} ψ).smooth ⊤).differentiable (by simp)).differentiableAt (x := z)
-  rw [fderiv_fun_add (hgd.fun_mul hp) (hg.fun_mul hpd),
-    fderiv_fun_mul hgd hp,fderiv_fun_mul hg hpd]
-  simp only [add_apply,smul_apply,smul_eq_mul,
-    SchwartzMap.lineDerivOp_apply_eq_fderiv,PlanarChartTest.derivative]
-  ring
+      2*(g.derivative v).field z*(∂_{v} ψ) z + g.field z*(∂_{v} (∂_{v} ψ)) z :=
+  _root_.RHTower.D4BMModularCore.lifted_product_second g ψ v z
 
 private theorem lifted_product_laplacian (g : PlanarChartTest) (ψ : 𝓢(ℂ,ℂ)) (z : ℂ) :
     (g.mulSmooth ψ (ψ.smooth ⊤)).laplacianTest.field z =
       ψ z*g.laplacianTest.field z +
       2*(∑ i : Fin 2, (∂_{direction i} ψ) z*(g.derivative (direction i)).field z) +
-      (Δ ψ) z*g.field z := by
-  have hb (i : Fin 2) : Complex.orthonormalBasisOneI i = direction i := by
-    rw [Complex.coe_orthonormalBasisOneI]
-    rfl
-  have hΔ : (Δ ψ) z = ∑ i : Fin 2, (∂_{direction i} (∂_{direction i} ψ)) z := by
-    rw [SchwartzMap.laplacian_eq_sum Complex.orthonormalBasisOneI]
-    simp only [sum_apply,hb]
-  change (∑ i : Fin 2,
-    (((g.mulSmooth ψ (ψ.smooth ⊤)).derivative (direction i)).derivative (direction i)).field z) = _
-  simp_rw [lifted_product_second]
-  simp only [hΔ,PlanarChartTest.laplacianTest,PlanarChartTest.planarLaplacian,
-    PlanarChartTest.derivative,Fin.sum_univ_two]
-  ring
+      (Δ ψ) z*g.field z :=
+  _root_.RHTower.D4BMModularCore.lifted_product_laplacian g ψ z
 
 private theorem lifted_product_laplacian_integral (g : PlanarChartTest) (u : Space)
     (ψ : 𝓢(ℂ,ℂ)) :
     (∫ z : ℂ, (g.mulSmooth ψ (ψ.smooth ⊤)).laplacianTest.localValue u z) =
       g.laplacianTest.localDistribution u ψ +
       2*(∑ i : Fin 2, (g.derivative (direction i)).localDistribution u (∂_{direction i} ψ)) +
-      g.localDistribution u (Δ ψ) := by
-  simp only [PlanarChartTest.localDistribution_apply]
-  rw [← integral_finsetSum _ (fun i _ => lift_local_pair_integrable _ _ _),← integral_const_mul]
-  have h0 := lift_local_pair_integrable g.laplacianTest u ψ
-  have h1 : Integrable (fun z : ℂ => 2*(∑ i : Fin 2,
-      (∂_{direction i} ψ) z*(g.derivative (direction i)).localValue u z)) :=
-    (integrable_finsetSum Finset.univ (fun (i : Fin 2) _ =>
-      lift_local_pair_integrable (g.derivative (direction i)) u (∂_{direction i} ψ))).const_mul 2
-  have h2 := lift_local_pair_integrable g u (Δ ψ)
-  rw [← integral_add h0 h1,← integral_add (h0.fun_add h1) h2]
-  apply integral_congr_ae
-  filter_upwards [] with z
-  simp only [PlanarChartTest.localValue,lifted_product_laplacian,Fin.sum_univ_two]
-  ring
+      g.localDistribution u (Δ ψ) :=
+  _root_.RHTower.D4BMModularCore.lifted_product_laplacian_integral g u ψ
 
 private theorem lifted_product_divHeight_integral (g : PlanarChartTest) (u : Space)
     (ψ : 𝓢(ℂ,ℂ)) (n : ℕ) :
     (∫ z : ℂ, ((g.mulSmooth ψ (ψ.smooth ⊤)).divHeight n).localValue u z) =
-      (g.divHeight n).localDistribution u ψ := by
-  rw [PlanarChartTest.localDistribution_apply]
-  apply integral_congr_ae
-  filter_upwards [] with z
-  simp only [PlanarChartTest.localValue,PlanarChartTest.divHeight,PlanarChartTest.mulSmooth]
-  ring
+      (g.divHeight n).localDistribution u ψ :=
+  _root_.RHTower.D4BMModularCore.lifted_product_divHeight_integral g u ψ n
 
 /-- The complete cutoff Laplacian is derived from the actual scalar equation.
 Derivatives of localized scalars retain all cutoff terms, without asserting that
@@ -171,17 +126,8 @@ def forcingTest (g : PlanarChartTest) (q : XiZeroCopy) :
 
 private theorem global_ae_to_planar {P : ℂ → Prop}
     (hP : ∀ᵐ z : UpperHalfPlane ∂volume, P (z:ℂ)) :
-    ∀ᵐ z ∂((volume : Measure ℂ).restrict {z : ℂ | 0 < z.im}), P z := by
-  have hm : ∀ᵐ z ∂Measure.map UpperHalfPlane.coe (volume : Measure UpperHalfPlane), P z :=
-    UpperHalfPlane.measurableEmbedding_coe.ae_map_iff.mpr hP
-  rw [map_volume_chart_eq] at hm
-  have hd : Measurable (fun z : ℂ => (chartDensity z : ℝ≥0∞)) := by
-    unfold chartDensity
-    fun_prop
-  have hh := (ae_withDensity_iff hd).mp hm
-  filter_upwards [hh,ae_restrict_mem isOpen_upperHalfPlaneSet.measurableSet] with z hz hy
-  apply hz
-  simp [chartDensity,ne_of_gt hy]
+    ∀ᵐ z ∂((volume : Measure ℂ).restrict {z : ℂ | 0 < z.im}), P z :=
+  _root_.RHTower.D4BMModularCore.global_ae_to_planar hP
 
 /-- Every compact planar localization identifies the smooth glued source with the actual lifted L² forcing. -/
 theorem forcing_localValue_ae (g : PlanarChartTest)
@@ -221,8 +167,8 @@ theorem full_forcing_global_local_sobolev (q : XiZeroCopy)
 
 
 private theorem all_orders_sum_sobolev {s : ℝ} {f : Fin 2 → 𝓢'(ℂ,ℂ)}
-    (hf : ∀ i, MemSobolev s 2 (f i)) : MemSobolev s 2 (∑ i, f i) := by
-  simpa only [Fin.sum_univ_two] using (hf 0).add (hf 1)
+    (hf : ∀ i, MemSobolev s 2 (f i)) : MemSobolev s 2 (∑ i, f i) :=
+  _root_.RHTower.D4BMModularCore.global_sum_sobolev hf
 
 private theorem global_response_all_orders_step (q : XiZeroCopy)
     (s : ℝ)
@@ -265,74 +211,16 @@ theorem full_response_global_local_smooth (q : XiZeroCopy) (g : PlanarChartTest)
 
 
 private theorem exists_planarChartTest_ne_zero {z : ℂ} (hz : z ∈ {z : ℂ | 0 < z.im}) :
-    ∃ g : PlanarChartTest, g.field z ≠ 0 := by
-  obtain ⟨b,hb,hc,hd,_,he⟩ := exists_contDiff_tsupport_subset (n := ⊤) (isOpen_upperHalfPlaneSet.mem_nhds hz)
-  have hcc : HasCompactSupport (Complex.ofRealCLM ∘ b) := hc.comp_left rfl
-  have hdd : ContDiff ℝ ∞ (Complex.ofRealCLM ∘ b) := Complex.ofRealCLM.contDiff.comp hd
-  have hss : tsupport (Complex.ofRealCLM ∘ b) ⊆ {z : ℂ | 0 < z.im} := by
-    apply Subset.trans _ hb
-    exact closure_mono (by intro x hx; simpa using hx)
-  refine ⟨⟨Complex.ofRealCLM ∘ b,hdd,hcc,hss⟩,?_⟩
-  change (b z : ℂ) ≠ 0
-  simp [he]
+    ∃ g : PlanarChartTest, g.field z ≠ 0 :=
+  _root_.RHTower.D4BMModularCore.exists_planarChartTest_ne_zero hz
 
 /-- Smooth representatives of all compact chart localizations glue across all modular seams.
 The glued field represents the actual globally lifted scalar in planar measure. -/
 private theorem global_smooth_representative_of_localizations (u : Space)
     (hu : ∀ g : PlanarChartTest, ∃ r : ℂ → ℂ, ContDiff ℝ ∞ r ∧ r =ᵐ[volume] g.localValue u) :
     ∃ f : ℂ → ℂ, ContDiffOn ℝ ∞ f {z : ℂ | 0 < z.im} ∧
-      f =ᵐ[volume.restrict {z : ℂ | 0 < z.im}] (fun z : ℂ => globalLift u (ofComplex z)) := by
-  classical
-  choose R hR hRa using hu
-  have hcross (g h : PlanarChartTest) (z : ℂ) : g.field z * R h z = h.field z * R g z := by
-    have hae : (fun w : ℂ => g.field w * R h w) =ᵐ[volume]
-        (fun w : ℂ => h.field w * R g w) := by
-      filter_upwards [hRa g,hRa h] with w hgw hhw
-      rw [hgw,hhw]
-      simp only [PlanarChartTest.localValue]
-      ring
-    exact congrFun (Measure.eq_of_ae_eq hae (g.smooth.continuous.mul (hR h).continuous)
-      (h.smooth.continuous.mul (hR g).continuous)) z
-  let chosen (z : ℂ) (hz : z ∈ {z : ℂ | 0 < z.im}) : PlanarChartTest :=
-    Classical.choose (exists_planarChartTest_ne_zero hz)
-  have chosen_ne (z : ℂ) (hz : z ∈ {z : ℂ | 0 < z.im}) : (chosen z hz).field z ≠ 0 :=
-    Classical.choose_spec (exists_planarChartTest_ne_zero hz)
-  let f (z : ℂ) : ℂ := if hz : z ∈ {z : ℂ | 0 < z.im} then
-    R (chosen z hz) z / (chosen z hz).field z else 0
-  have hquot (z : ℂ) (g : PlanarChartTest) (hg : g.field z ≠ 0) : f z = R g z / g.field z := by
-    have hz : z ∈ {z : ℂ | 0 < z.im} := g.support (subset_tsupport g.field hg)
-    dsimp only [f]
-    rw [dif_pos hz]
-    apply (div_eq_div_iff (chosen_ne z hz) hg).mpr
-    have he := hcross (chosen z hz) g z
-    linear_combination -he
-  have hs : ContDiffOn ℝ ∞ f {z : ℂ | 0 < z.im} := by
-    intro z hz
-    let g := chosen z hz
-    have hg : g.field z ≠ 0 := chosen_ne z hz
-    have hq : ContDiffAt ℝ ∞ (fun w : ℂ => R g w / g.field w) z := by
-      simpa only [div_eq_mul_inv] using (hR g).contDiffAt.mul
-        (g.smooth.contDiffAt.fun_inv hg)
-    apply (hq.congr_of_eventuallyEq _).contDiffWithinAt
-    filter_upwards [(isOpen_ne_fun g.smooth.continuous continuous_const).mem_nhds hg] with w hw
-    exact hquot w g hw
-  let U (g : PlanarChartTest) : Set ℂ := {z | g.field z ≠ 0}
-  have hU (g : PlanarChartTest) : IsOpen (U g) := isOpen_ne_fun g.smooth.continuous continuous_const
-  have hcover : {z : ℂ | 0 < z.im} ⊆ ⋃ g : PlanarChartTest, U g := by
-    intro z hz
-    obtain ⟨g,hg⟩ := exists_planarChartTest_ne_zero hz
-    exact mem_iUnion.mpr ⟨g,hg⟩
-  have hpatch (g : PlanarChartTest) : f =ᵐ[volume.restrict (U g)] (fun z : ℂ => globalLift u (ofComplex z)) := by
-    apply (ae_restrict_iff' (hU g).measurableSet).mpr
-    filter_upwards [hRa g] with z hz hg
-    rw [hquot z g hg,hz]
-    simp only [PlanarChartTest.localValue]
-    exact mul_div_cancel_left₀ _ hg
-  obtain ⟨C,hC,hcov⟩ := (HereditarilyLindelofSpace.isLindelof {z : ℂ | 0 < z.im}).elim_countable_subcover
-    U hU hcover
-  have he : f =ᵐ[volume.restrict (⋃ g ∈ C, U g)] (fun z : ℂ => globalLift u (ofComplex z)) :=
-    (ae_restrict_biUnion_iff U hC _).mpr (fun g _ => hpatch g)
-  exact ⟨f,hs,ae_restrict_of_ae_restrict_of_subset hcov he⟩
+      f =ᵐ[volume.restrict {z : ℂ | 0 < z.im}] (fun z : ℂ => globalLift u (ofComplex z)) :=
+  _root_.RHTower.D4BMModularCore.global_smooth_representative_of_localizations u hu
 
 /-- The actual response has a smooth planar representative on the entire upper half-plane. -/
 theorem full_response_global_planar_smooth (q : XiZeroCopy) :
@@ -369,30 +257,8 @@ theorem globalResponse_ae_lift (q : XiZeroCopy) :
   simpa only [ofComplex_apply,globalResponse] using hz
 
 private theorem chartSmooth_eq_of_ae_eq {f g : UpperHalfPlane → ℂ}
-    (hf : ChartSmooth f) (hg : ChartSmooth g) (he : f =ᵐ[(volume : Measure UpperHalfPlane)] g) : f = g := by
-  have hm : ∀ᵐ z ∂Measure.map UpperHalfPlane.coe (volume : Measure UpperHalfPlane),
-      f (ofComplex z) = g (ofComplex z) :=
-    UpperHalfPlane.measurableEmbedding_coe.ae_map_iff.mpr (by
-      filter_upwards [he] with z hz
-      simpa only [ofComplex_apply] using hz)
-  rw [map_volume_chart_eq] at hm
-  have hd : Measurable (fun z : ℂ => (chartDensity z : ℝ≥0∞)) := by
-    unfold chartDensity
-    fun_prop
-  have hh := (ae_withDensity_iff hd).mp hm
-  have hae : (fun z : ℂ => f (ofComplex z)) =ᵐ[volume.restrict {z : ℂ | 0 < z.im}]
-      (fun z : ℂ => g (ofComplex z)) := by
-    filter_upwards [hh,ae_restrict_mem isOpen_upperHalfPlaneSet.measurableSet] with z hz hy
-    exact hz (by simp [chartDensity,ne_of_gt hy])
-  have hc (a : UpperHalfPlane → ℂ) (ha : ChartSmooth a) :
-      ContinuousOn (fun z : ℂ => a (ofComplex z)) {z : ℂ | 0 < z.im} := by
-    intro z hz
-    have hh := ha (ofComplex z)
-    rw [ofComplex_apply_of_im_pos hz] at hh
-    exact hh.continuousAt.continuousWithinAt
-  have hp := Measure.eqOn_open_of_ae_eq hae isOpen_upperHalfPlaneSet (hc f hf) (hc g hg)
-  funext z
-  simpa only [ofComplex_apply] using hp z.im_pos
+    (hf : ChartSmooth f) (hg : ChartSmooth g) (he : f =ᵐ[(volume : Measure UpperHalfPlane)] g) : f = g :=
+  _root_.RHTower.D4BMModularCore.chartSmooth_eq_of_ae_eq hf hg he
 
 /-- The globally smooth response obeys the original modular identifications pointwise. -/
 theorem globalResponse_invariant (q : XiZeroCopy) (γ : PSL2Z)

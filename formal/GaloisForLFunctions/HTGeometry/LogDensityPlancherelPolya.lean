@@ -36,6 +36,16 @@ theorem tsum_log_kernel_le (x : ℝ) :
       logKernelConst * Real.log (|x| + 3) :=
   LogDensity.exists_bound_tsum_log_kernel.choose_spec.2 x
 
+/-- The constant in `Σ_{n ∈ ℤ} (1+(n−x)²)⁻¹ ≤ C`. -/
+def kernelConst : ℝ := LogDensity.exists_bound_tsum_kernel.choose
+
+theorem kernelConst_nonneg : 0 ≤ kernelConst :=
+  LogDensity.exists_bound_tsum_kernel.choose_spec.1
+
+theorem tsum_kernel_le (x : ℝ) :
+    ∑' n : ℤ, (1 + ((n : ℝ) - x) ^ 2)⁻¹ ≤ kernelConst :=
+  LogDensity.exists_bound_tsum_kernel.choose_spec.2 x
+
 /-! ## From a logarithmic density to the logarithmic weight -/
 
 /-- Inside one unit window the kernel changes by at most a factor three. -/
@@ -49,60 +59,115 @@ theorem kernel_window_le {n : ℤ} {x y : ℝ} (hx : (n : ℝ) ≤ x) (hx' : x �
     _ = 3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹ := by field_simp
 
 /-- **A logarithmic sampling density is reproduced by the kernel.**  The kernel summed over a
-finite point set with at most `A₀ log(|n|+3)` points per unit window is `≲ A₀ log(|y|+3)`. -/
-theorem sum_kernel_le {A₀ : ℝ} (hA₀ : 0 ≤ A₀) (T : Finset ℝ)
-    (hcount : ∀ n : ℤ, ((T.filter fun x => (n : ℝ) ≤ x ∧ x ≤ (n : ℝ) + 1).card : ℝ) ≤
+finite family with nonnegative weights whose positions carry weight at most `A₀ log(|n|+3)` per
+unit window is `≲ A₀ log(|y|+3)`, uniformly in `y`. -/
+theorem sum_kernel_le {A₀ : ℝ} (hA₀ : 0 ≤ A₀) {ι : Type*} [DecidableEq ι] (Z : Finset ι)
+    (g : ι → ℝ) (m : ι → ℝ) (hm : ∀ q, 0 ≤ m q)
+    (hcount : ∀ n : ℤ, (∑ q ∈ Z.filter fun q => (n : ℝ) ≤ g q ∧ g q ≤ (n : ℝ) + 1, m q) ≤
       A₀ * Real.log (|(n : ℝ)| + 3)) (y : ℝ) :
-    ∑ x ∈ T, (1 + (x - y) ^ 2)⁻¹ ≤ 3 * A₀ * logKernelConst * Real.log (|y| + 3) := by
+    ∑ q ∈ Z, m q * (1 + (g q - y) ^ 2)⁻¹ ≤
+      3 * A₀ * logKernelConst * Real.log (|y| + 3) := by
   classical
-  have hmaps : ∀ x ∈ T, (⌊x⌋ : ℤ) ∈ T.image fun x => (⌊x⌋ : ℤ) := fun x hx =>
-    Finset.mem_image_of_mem _ hx
+  have hmaps : ∀ q ∈ Z, (⌊g q⌋ : ℤ) ∈ Z.image fun q => (⌊g q⌋ : ℤ) := fun q hq =>
+    Finset.mem_image_of_mem _ hq
   rw [← Finset.sum_fiberwise_of_maps_to hmaps]
   have hnonneg : ∀ n : ℤ, 0 ≤ Real.log (|(n : ℝ)| + 3) * (1 + ((n : ℝ) - y) ^ 2)⁻¹ := by
     intro n
     exact mul_nonneg (Real.log_nonneg (by linarith [abs_nonneg ((n : ℝ))])) (by positivity)
-  have hfib : ∀ n ∈ T.image fun x => (⌊x⌋ : ℤ),
-      ∑ x ∈ T.filter fun x => (⌊x⌋ : ℤ) = n, (1 + (x - y) ^ 2)⁻¹ ≤
+  have hfib : ∀ n ∈ Z.image fun q => (⌊g q⌋ : ℤ),
+      ∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q * (1 + (g q - y) ^ 2)⁻¹ ≤
         3 * A₀ * (Real.log (|(n : ℝ)| + 3) * (1 + ((n : ℝ) - y) ^ 2)⁻¹) := by
     intro n _
-    have hsub : (T.filter fun x => (⌊x⌋ : ℤ) = n) ⊆
-        T.filter fun x => (n : ℝ) ≤ x ∧ x ≤ (n : ℝ) + 1 := by
-      intro x hx
-      simp only [Finset.mem_filter] at hx ⊢
-      refine ⟨hx.1, ?_, ?_⟩
-      · rw [← hx.2]; exact Int.floor_le x
-      · rw [← hx.2]; linarith [Int.lt_floor_add_one x]
-    have hcard : (((T.filter fun x => (⌊x⌋ : ℤ) = n).card : ℝ)) ≤
+    have hsub : (Z.filter fun q => (⌊g q⌋ : ℤ) = n) ⊆
+        Z.filter fun q => (n : ℝ) ≤ g q ∧ g q ≤ (n : ℝ) + 1 := by
+      intro q hq
+      simp only [Finset.mem_filter] at hq ⊢
+      refine ⟨hq.1, ?_, ?_⟩
+      · rw [← hq.2]; exact Int.floor_le (g q)
+      · rw [← hq.2]; linarith [Int.lt_floor_add_one (g q)]
+    have hweight : (∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q) ≤
         A₀ * Real.log (|(n : ℝ)| + 3) :=
-      le_trans (by exact_mod_cast Finset.card_le_card hsub) (hcount n)
-    have hterm : ∀ x ∈ T.filter fun x => (⌊x⌋ : ℤ) = n,
-        (1 + (x - y) ^ 2)⁻¹ ≤ 3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹ := by
-      intro x hx
-      simp only [Finset.mem_filter] at hx
-      refine kernel_window_le ?_ ?_
-      · rw [← hx.2]; exact Int.floor_le x
-      · rw [← hx.2]; linarith [Int.lt_floor_add_one x]
-    calc ∑ x ∈ T.filter fun x => (⌊x⌋ : ℤ) = n, (1 + (x - y) ^ 2)⁻¹
-        ≤ ∑ _x ∈ T.filter fun x => (⌊x⌋ : ℤ) = n, 3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹ :=
+      le_trans (Finset.sum_le_sum_of_subset_of_nonneg hsub (fun q _ _ => hm q)) (hcount n)
+    have hterm : ∀ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n,
+        m q * (1 + (g q - y) ^ 2)⁻¹ ≤ m q * (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) := by
+      intro q hq
+      simp only [Finset.mem_filter] at hq
+      refine mul_le_mul_of_nonneg_left (kernel_window_le ?_ ?_) (hm q)
+      · rw [← hq.2]; exact Int.floor_le (g q)
+      · rw [← hq.2]; linarith [Int.lt_floor_add_one (g q)]
+    calc ∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q * (1 + (g q - y) ^ 2)⁻¹
+        ≤ ∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q * (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) :=
           Finset.sum_le_sum hterm
-      _ = ((T.filter fun x => (⌊x⌋ : ℤ) = n).card : ℝ) * (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) := by
-          rw [Finset.sum_const, nsmul_eq_mul]
+      _ = (∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q) *
+            (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) := by
+          rw [Finset.sum_mul]
       _ ≤ (A₀ * Real.log (|(n : ℝ)| + 3)) * (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) :=
-          mul_le_mul_of_nonneg_right hcard (by positivity)
+          mul_le_mul_of_nonneg_right hweight (by positivity)
       _ = 3 * A₀ * (Real.log (|(n : ℝ)| + 3) * (1 + ((n : ℝ) - y) ^ 2)⁻¹) := by ring
   refine (Finset.sum_le_sum hfib).trans ?_
   rw [← Finset.mul_sum]
-  have hfin : ∑ n ∈ T.image fun x => (⌊x⌋ : ℤ),
+  have hfin : ∑ n ∈ Z.image fun q => (⌊g q⌋ : ℤ),
       Real.log (|(n : ℝ)| + 3) * (1 + ((n : ℝ) - y) ^ 2)⁻¹ ≤
       ∑' n : ℤ, Real.log (|(n : ℝ)| + 3) * (1 + ((n : ℝ) - y) ^ 2)⁻¹ :=
     Summable.sum_le_tsum _ (fun n _ => hnonneg n) (LogDensity.summable_log_kernel y)
-  calc 3 * A₀ * ∑ n ∈ T.image fun x => (⌊x⌋ : ℤ),
+  calc 3 * A₀ * ∑ n ∈ Z.image fun q => (⌊g q⌋ : ℤ),
         Real.log (|(n : ℝ)| + 3) * (1 + ((n : ℝ) - y) ^ 2)⁻¹
       ≤ 3 * A₀ * ∑' n : ℤ, Real.log (|(n : ℝ)| + 3) * (1 + ((n : ℝ) - y) ^ 2)⁻¹ :=
         mul_le_mul_of_nonneg_left hfin (by positivity)
     _ ≤ 3 * A₀ * (logKernelConst * Real.log (|y| + 3)) :=
         mul_le_mul_of_nonneg_left (tsum_log_kernel_le y) (by positivity)
     _ = 3 * A₀ * logKernelConst * Real.log (|y| + 3) := by ring
+
+/-- **A bounded sampling density is reproduced with no weight.**  The companion of
+`sum_kernel_le` for a per-window weight bounded by a constant: the kernel sum is then bounded
+uniformly in `y`. -/
+theorem sum_kernel_le_const {A₀ : ℝ} (hA₀ : 0 ≤ A₀) {ι : Type*} [DecidableEq ι] (Z : Finset ι)
+    (g : ι → ℝ) (m : ι → ℝ) (hm : ∀ q, 0 ≤ m q)
+    (hcount : ∀ n : ℤ, (∑ q ∈ Z.filter fun q => (n : ℝ) ≤ g q ∧ g q ≤ (n : ℝ) + 1, m q) ≤ A₀)
+    (y : ℝ) :
+    ∑ q ∈ Z, m q * (1 + (g q - y) ^ 2)⁻¹ ≤ 3 * A₀ * kernelConst := by
+  classical
+  have hmaps : ∀ q ∈ Z, (⌊g q⌋ : ℤ) ∈ Z.image fun q => (⌊g q⌋ : ℤ) := fun q hq =>
+    Finset.mem_image_of_mem _ hq
+  rw [← Finset.sum_fiberwise_of_maps_to hmaps]
+  have hnonneg : ∀ n : ℤ, 0 ≤ (1 + ((n : ℝ) - y) ^ 2)⁻¹ := fun n => by positivity
+  have hfib : ∀ n ∈ Z.image fun q => (⌊g q⌋ : ℤ),
+      ∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q * (1 + (g q - y) ^ 2)⁻¹ ≤
+        3 * A₀ * (1 + ((n : ℝ) - y) ^ 2)⁻¹ := by
+    intro n _
+    have hsub : (Z.filter fun q => (⌊g q⌋ : ℤ) = n) ⊆
+        Z.filter fun q => (n : ℝ) ≤ g q ∧ g q ≤ (n : ℝ) + 1 := by
+      intro q hq
+      simp only [Finset.mem_filter] at hq ⊢
+      refine ⟨hq.1, ?_, ?_⟩
+      · rw [← hq.2]; exact Int.floor_le (g q)
+      · rw [← hq.2]; linarith [Int.lt_floor_add_one (g q)]
+    have hweight : (∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q) ≤ A₀ :=
+      le_trans (Finset.sum_le_sum_of_subset_of_nonneg hsub (fun q _ _ => hm q)) (hcount n)
+    have hterm : ∀ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n,
+        m q * (1 + (g q - y) ^ 2)⁻¹ ≤ m q * (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) := by
+      intro q hq
+      simp only [Finset.mem_filter] at hq
+      refine mul_le_mul_of_nonneg_left (kernel_window_le ?_ ?_) (hm q)
+      · rw [← hq.2]; exact Int.floor_le (g q)
+      · rw [← hq.2]; linarith [Int.lt_floor_add_one (g q)]
+    calc ∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q * (1 + (g q - y) ^ 2)⁻¹
+        ≤ ∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q * (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) :=
+          Finset.sum_le_sum hterm
+      _ = (∑ q ∈ Z.filter fun q => (⌊g q⌋ : ℤ) = n, m q) *
+            (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) := by rw [Finset.sum_mul]
+      _ ≤ A₀ * (3 * (1 + ((n : ℝ) - y) ^ 2)⁻¹) :=
+          mul_le_mul_of_nonneg_right hweight (by positivity)
+      _ = 3 * A₀ * (1 + ((n : ℝ) - y) ^ 2)⁻¹ := by ring
+  refine (Finset.sum_le_sum hfib).trans ?_
+  rw [← Finset.mul_sum]
+  have hfin : ∑ n ∈ Z.image fun q => (⌊g q⌋ : ℤ), (1 + ((n : ℝ) - y) ^ 2)⁻¹ ≤
+      ∑' n : ℤ, (1 + ((n : ℝ) - y) ^ 2)⁻¹ :=
+    Summable.sum_le_tsum _ (fun n _ => hnonneg n) (LogDensity.summable_kernel y)
+  calc 3 * A₀ * ∑ n ∈ Z.image fun q => (⌊g q⌋ : ℤ), (1 + ((n : ℝ) - y) ^ 2)⁻¹
+      ≤ 3 * A₀ * ∑' n : ℤ, (1 + ((n : ℝ) - y) ^ 2)⁻¹ :=
+        mul_le_mul_of_nonneg_left hfin (by positivity)
+    _ ≤ 3 * A₀ * kernelConst := mul_le_mul_of_nonneg_left (tsum_kernel_le y) (by positivity)
 
 /-! ## The weighted sampling inequality -/
 
@@ -212,7 +277,16 @@ theorem sum_norm_sq_fourier_le {a A₀ : ℝ} (ha : 0 < a) (hA₀ : 0 ≤ A₀) 
       integrable_finsetSum T fun x _ => hdomall x
     rw [← MeasureTheory.integral_const_mul]
     refine integral_mono hL (hint.const_mul _) fun y => ?_
-    have hker := sum_kernel_le hA₀ T hcount y
+    have hker0 := sum_kernel_le hA₀ T id (fun _ => (1:ℝ)) (fun _ => zero_le_one)
+      (fun n => by
+        have h := hcount n
+        rw [Finset.sum_const, nsmul_eq_mul, mul_one] at *
+        exact h) y
+    have hker : ∑ x ∈ T, (1 + (x - y) ^ 2)⁻¹ ≤
+        3 * A₀ * logKernelConst * Real.log (|y| + 3) := by
+      refine le_trans (le_of_eq ?_) hker0
+      refine Finset.sum_congr rfl fun x _ => ?_
+      simp only [id_eq, one_mul]
     have hfactor : ∑ x ∈ T, (1 + (x - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2 =
         (∑ x ∈ T, (1 + (x - y) ^ 2)⁻¹) * ‖𝓕 f y‖ ^ 2 := by
       rw [Finset.sum_mul]

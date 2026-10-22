@@ -50,7 +50,7 @@ private theorem norm_log_le_log_three_add_pi {z : ℂ}
     _ ≤ Real.log 3 + Real.pi :=
       add_le_add habsLog (Complex.abs_arg_le_pi z)
 
-private theorem I_mul_integral_vertical_cauchyKernel_eq_log_sub_of_lt
+theorem I_mul_integral_vertical_cauchyKernel_eq_log_sub_of_lt
     {p : ℂ} {R a b : ℝ} (hR : p.re < R) :
     I * (∫ y in a..b, (((R : ℂ) + y * I) - p)⁻¹) =
       Complex.log (((R : ℂ) + b * I) - p) -
@@ -100,7 +100,7 @@ private theorem I_mul_integral_vertical_cauchyKernel_eq_log_sub_of_lt
         (I * -I) * Complex.log (((R : ℂ) + a * I) - p) by ring,
         mul_neg, Complex.I_mul_I, neg_neg, one_mul]]
 
-private theorem I_mul_integral_vertical_cauchyKernel_eq_log_neg_sub_of_gt
+theorem I_mul_integral_vertical_cauchyKernel_eq_log_neg_sub_of_gt
     {p : ℂ} {R a b : ℝ} (hR : R < p.re) :
     I * (∫ y in a..b, (((R : ℂ) + y * I) - p)⁻¹) =
       Complex.log (-(((R : ℂ) + b * I) - p)) -

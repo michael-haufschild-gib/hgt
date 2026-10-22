@@ -36,11 +36,8 @@ local notation "L" => hyperbolicLaplacian
 
 private theorem coordinate_update {n : ℕ} (f : (Fin n → ℝ) → ℂ)
     (x : Fin n → ℝ) (i : Fin n) (hf : DifferentiableAt ℝ f x) :
-    coordDeriv i f x=deriv (fun a => f (Function.update x i a)) (x i) := by
-  have hf' : HasFDerivAt f (fderiv ℝ f x) (Function.update x i (x i)) := by
-    simpa only [Function.update_eq_self] using hf.hasFDerivAt
-  have h := hf'.comp_hasDerivAt (x i) (hasDerivAt_update x i (x i))
-  simpa only [Function.update_eq_self,coordDeriv,Function.comp_def] using h.deriv.symm
+    coordDeriv i f x=deriv (fun a => f (Function.update x i a)) (x i) :=
+  _root_.RHTower.D4BMOriginalMetricCusp.coordinate_update f x i hf
 
 private theorem exp_cpow (a : ℂ) (k : ℝ) :
     (Real.exp k:ℂ)^a=Complex.exp (a*(k:ℂ)) := by
@@ -54,99 +51,44 @@ private theorem positive_nhds {z : A} (hy : 0<z 1) : domain∈𝓝 z :=
 
 private theorem power_laplacian_sum {ι : Type*} (s : Finset ι) (F : ι → A → ℂ)
     {z : A} (hF : ∀ i∈s, ContDiffAt ℝ 2 (F i) z) :
-    L (fun x => ∑ i∈s, F i x) z=∑ i∈s, L (F i) z := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    simp only [Finset.sum_empty]
-    change (z 1:ℂ)^(2 : ℕ)*(fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 0 1)) z (Pi.single 0 1)+
-      fderiv ℝ (fun x => fderiv ℝ (fun _ : A => (0:ℂ)) x (Pi.single 1 1)) z (Pi.single 1 1))=0
-    simp
-  | @insert i s hi ih =>
-    simp only [Finset.sum_insert hi]
-    exact (hyperbolicLaplacian_add (hF i (Finset.mem_insert_self _ _))
-      (ContDiffAt.sum (fun j hj => hF j (Finset.mem_insert_of_mem hj)))).trans
-        (congrArg (fun a => L (F i) z+a) (ih (fun j hj => hF j (Finset.mem_insert_of_mem hj))))
+    L (fun x => ∑ i∈s, F i x) z=∑ i∈s, L (F i) z :=
+  _root_.RHTower.D4BMOriginalContactCusp.power_laplacian_sum s F hF
 
 private theorem principal_laplacian (q : XiZeroCopy) (z : A) (hy : 0<z 1) :
     L (principalSquare q) z=∑ i : Fin 3, principalAmplitude q i*
-      principalExponent q i*(principalExponent q i-1)*(z 1:ℂ)^(principalExponent q i) := by
-  have he : principalSquare q=ᶠ[𝓝 z] fun v => ∑ i : Fin 3,
-      principalAmplitude q i*(v 1:ℂ)^(principalExponent q i) := by
-    filter_upwards [positive_nhds hy] with v hv
-    exact principalSquare_expansion q v hv
-  have hs (i : Fin 3) : ContDiffAt ℝ 2
-      (fun v : A => principalAmplitude q i*(v 1:ℂ)^(principalExponent q i)) z :=
-    contDiffAt_const.mul ((height_cpow_contDiffOn (principalExponent q i) 2).contDiffAt (positive_nhds hy))
-  rw [hyperbolicLaplacian_congr he,power_laplacian_sum Finset.univ _ (fun i _ => hs i)]
-  apply Finset.sum_congr rfl
-  intro i _
-  rw [hyperbolicLaplacian_const_mul
-    ((height_cpow_contDiffOn (principalExponent q i) 2).contDiffAt (positive_nhds hy)),
-    height_cpow_hyperbolicLaplacian _ z hy]
-  ring
+      principalExponent q i*(principalExponent q i-1)*(z 1:ℂ)^(principalExponent q i) :=
+  _root_.RHTower.D4BMOriginalContactCusp.principal_laplacian q z hy
 
 private theorem square_decomposition (q : XiZeroCopy) :
     D4BMModularCore.fullSquarePotential q=fun z => principalSquare q z+
-      (1/2:ℂ)*D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q) z := by
-  funext z
-  dsimp [D4BMModularCore.fullSquarePotential,principalSquare,D4BMGlobalAngularResponse.squareRemainder]
-  ring
+      (1/2:ℂ)*D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q) z :=
+  _root_.RHTower.D4BMOriginalContactCusp.square_decomposition q
 
 private theorem square_laplacian_decomposition (q : XiZeroCopy) (z : A) (hy : 0<z 1) :
     L (D4BMModularCore.fullSquarePotential q) z=L (principalSquare q) z+
-      (1/2:ℂ)*L (D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q)) z := by
-  have hp : ContDiffAt ℝ 2 (principalSquare q) z :=
-    ((principalSquare_smooth q).contDiffAt (positive_nhds hy)).of_le (WithTop.coe_le_coe.mpr le_top)
-  have hs : ContDiffAt ℝ 2
-      (D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q)) z :=
-    ((D4BMSquareCuspJets.squareRemainder_jet_smooth (D4BMGlobalAngularResponse.center q) []).contDiffAt
-      (positive_nhds hy)).of_le (WithTop.coe_le_coe.mpr le_top)
-  rw [square_decomposition q,hyperbolicLaplacian_add hp (contDiffAt_const.mul hs),
-    hyperbolicLaplacian_const_mul hs]
+      (1/2:ℂ)*L (D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q)) z :=
+  _root_.RHTower.D4BMOriginalContactCusp.square_laplacian_decomposition q z hy
 
 private theorem square_jet_exp (q : XiZeroCopy) (word : List (Fin 2)) (X : ℝ → ℝ) (w : ℂ) :
     Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
       D4BMSquareCuspJets.coordinateJet word
         (D4BMGlobalAngularResponse.squareRemainder (D4BMGlobalAngularResponse.center q))
-        ![X k,Real.exp k]) atTop (𝓝 0) := by
-  have h := (D4BMSquareCuspJets.squareRemainder_jet_tendsto_zero
-    (D4BMGlobalAngularResponse.center q) w word (fun y => X (Real.log y))).comp Real.tendsto_exp_atTop
-  simpa only [Function.comp_def,Real.log_exp,exp_cpow] using h
+        ![X k,Real.exp k]) atTop (𝓝 0) :=
+  _root_.RHTower.D4BMOriginalContactCusp.square_jet_exp q word X w
 
 private theorem square_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
     Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
       (D4BMModularCore.fullSquarePotential q ![X k,Real.exp k]-
         ∑ i : Fin 3, principalAmplitude q i*Complex.exp (principalExponent q i*(k:ℂ))))
-      atTop (𝓝 0) := by
-  have h := (square_jet_exp q [] X w).const_mul (1/2:ℂ)
-  simp only [mul_zero] at h
-  apply h.congr'
-  filter_upwards [] with k
-  rw [square_decomposition q]
-  simp only [principalSquare_expansion q ![X k,Real.exp k] (Real.exp_pos k),Matrix.cons_val,exp_cpow,
-    D4BMSquareCuspJets.coordinateJet]
-  ring
+      atTop (𝓝 0) :=
+  _root_.RHTower.D4BMOriginalContactCusp.square_expansion q X w
 
 private theorem square_laplacian_expansion (q : XiZeroCopy) (X : ℝ → ℝ) (w : ℂ) :
     Tendsto (fun k : ℝ => Complex.exp (w*(k:ℂ))*
       (L (D4BMModularCore.fullSquarePotential q) ![X k,Real.exp k]-
         ∑ i : Fin 3, principalAmplitude q i*principalExponent q i*(principalExponent q i-1)*
-          Complex.exp (principalExponent q i*(k:ℂ)))) atTop (𝓝 0) := by
-  have h := ((square_jet_exp q [0,0] X (w+2)).add
-    (square_jet_exp q [1,1] X (w+2))).const_mul (1/2:ℂ)
-  simp only [zero_add,mul_zero] at h
-  apply h.congr'
-  filter_upwards [] with k
-  rw [square_laplacian_decomposition q _ (Real.exp_pos k),principal_laplacian q _ (Real.exp_pos k)]
-  simp only [Matrix.cons_val,exp_cpow,D4BMSquareCuspJets.coordinateJet]
-  have he : Complex.exp ((w+2)*(k:ℂ))=Complex.exp (w*(k:ℂ))*(Real.exp k:ℂ)^(2 : ℕ) := by
-    rw [show (w+2)*(k:ℂ)=w*(k:ℂ)+2*(k:ℂ) by ring,Complex.exp_add,
-      ← exp_cpow (2:ℂ) k,Complex.cpow_two]
-  rw [he]
-  dsimp only [hyperbolicLaplacian]
-  simp only [Matrix.cons_val]
-  ring
+          Complex.exp (principalExponent q i*(k:ℂ)))) atTop (𝓝 0) :=
+  _root_.RHTower.D4BMOriginalContactCusp.square_laplacian_expansion q X w
 
 private def weightedHeight (w : ℂ) (z : A) : ℂ := Complex.exp (w*(z 1:ℂ))
 private def UniformRapid {ι : Type*} (F : ι → A → ℂ) : Prop :=
@@ -663,120 +605,45 @@ private def ExteriorSmooth (U : F) : Prop :=
   ∀ x : P,0<x 0 → 1<x 1 → 0<x 3 → ContDiffAt ℝ ∞ U x
 
 private theorem smooth_partial {U : F} (hU : ExteriorSmooth U) (i : Fin 4) :
-    ExteriorSmooth (coordDeriv i U) := by
-  intro x hp hr hy
+    ExteriorSmooth (coordDeriv i U) :=
+  _root_.RHTower.D4BMOriginalModularOrbit.smooth_partial hU i
   exact coordDeriv_contDiffAt (hU x hp hr hy) (by simp) i
-private theorem contact_smooth {U : F} (hU : ExteriorSmooth U) : ExteriorSmooth (scalarContact U) := by
-  intro x hp hr hy
-  have h0 := smooth_partial hU 0 x hp hr hy
-  have h1 := smooth_partial hU 1 x hp hr hy
-  have h01 := smooth_partial (smooth_partial hU 1) 0 x hp hr hy
-  have h10 := smooth_partial (smooth_partial hU 0) 1 x hp hr hy
-  have h11 := smooth_partial (smooth_partial hU 1) 1 x hp hr hy
-  have hR : ContDiffAt ℝ ∞ (fun z : P => (z 1:ℂ)) x :=
-    (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ (1:Fin 4))).contDiffAt
-  change ContDiffAt ℝ ∞ (fun z : P =>
-    -(z 1:ℂ)^(2 : ℕ)*((z 1:ℂ)^(2 : ℕ)-1)*coordDeriv 1 (coordDeriv 1 U) z-
-    (z 1:ℂ)^(2 : ℕ)*(coordDeriv 0 (coordDeriv 1 U) z+coordDeriv 1 (coordDeriv 0 U) z)-
-    2*(z 1:ℂ)*coordDeriv 1 U z+2*(z 1:ℂ)*coordDeriv 0 U z) x
-  exact ((((hR.pow 2).neg.mul ((hR.pow 2).sub contDiffAt_const)).mul h11).sub
-    ((hR.pow 2).mul (h01.add h10)) |>.sub ((contDiffAt_const.mul hR).mul h1)).add
+private theorem contact_smooth {U : F} (hU : ExteriorSmooth U) : ExteriorSmooth (scalarContact U) :=
+  _root_.RHTower.D4BMOriginalModularOrbit.contact_smooth hU
       ((contDiffAt_const.mul hR).mul h0)
 private theorem source_smooth (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
     ExteriorSmooth (sourceScalar q branch amp) :=
+  _root_.RHTower.D4BMOriginalModularOrbit.source_smooth q branch amp
   D4BMOriginalGreenBoundary.sourceScalar_exterior_smooth q branch amp
 private theorem lap_smooth {U : F} (hU : ExteriorSmooth U) :
-    ExteriorSmooth (angularLap U) := by
-  intro x hp hr hy
-  have hY : ContDiffAt ℝ ∞ (fun z : P => (z 3:ℂ)) x :=
-    (Complex.ofRealCLM.contDiff.comp (contDiff_apply ℝ ℝ (3:Fin 4))).contDiffAt
-  exact (hY.pow 2).mul ((smooth_partial (smooth_partial hU 2) 2 x hp hr hy).add
-    (smooth_partial (smooth_partial hU 3) 3 x hp hr hy))
+    ExteriorSmooth (angularLap U) :=
+  _root_.RHTower.D4BMOriginalModularOrbit.lap_smooth hU
 
 private theorem original_forcing_smooth (q : XiZeroCopy) (branch : Bool) (amp : ℂ) :
-    ExteriorSmooth (D4BMOriginalSourceContact.originalForcing q branch amp) := by
-  intro x hp hr hy
-  let U := sourceScalar q branch amp
-  have he : D4BMOriginalSourceContact.originalForcing q branch amp =ᶠ[𝓝 x]
-      fun z => (((z 1:ℂ)^(2 : ℕ)-1)/(z 1:ℂ)^(3 : ℕ))*
-        (scalarContact U z-angularLap U z+2*U z) := by
-    filter_upwards [(isOpen_lt continuous_const (continuous_apply 0)).mem_nhds hp,
-      (isOpen_lt continuous_const (continuous_apply 1)).mem_nhds hr,
-      (isOpen_lt continuous_const (continuous_apply 3)).mem_nhds hy] with z hz0 hz1 hz3
-    have hc := original_scalar_contact q branch amp z hz0 hz1 hz3
-    have hh : scalarContact U z-angularLap U z+2*U z=
-        (z 1:ℂ)^(3 : ℕ)/((z 1:ℂ)^(2 : ℕ)-1)*D4BMOriginalSourceContact.originalForcing q branch amp z := by
-      dsimp only [U]
-      linear_combination hc
-    rw [hh]
-    have hR : (z 1:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by linarith)
-    have hf : (z 1:ℂ)^(2 : ℕ)-1≠0 := by exact_mod_cast (show (z 1)^(2 : ℕ)-1≠0 by nlinarith)
-    field_simp [hR,hf]
-  have hR : ContDiffAt ℝ ∞ (fun z : P => z 1) x :=
-    (contDiff_apply ℝ ℝ (1:Fin 4)).contDiffAt
-  have hnum : ContDiffAt ℝ ∞ (fun z : P => (z 1)^(2 : ℕ)-1) x :=
-    (hR.pow 2).sub contDiffAt_const
-  have hreal := hnum.div (hR.pow 3) (pow_ne_zero 3 (show x 1≠0 by linarith))
-  have hs : ContDiffAt ℝ ∞ (fun z : P => ((z 1:ℂ)^(2 : ℕ)-1)/(z 1:ℂ)^(3 : ℕ)) x := by
-    have hc := Complex.ofRealCLM.contDiff.contDiffAt.comp x hreal
-    change ContDiffAt ℝ ∞ (fun z : P => ((((z 1)^(2 : ℕ)-1)/(z 1)^(3 : ℕ):ℝ):ℂ)) x at hc
-    simpa only [Complex.ofReal_div,Complex.ofReal_sub,Complex.ofReal_pow,Complex.ofReal_one] using! hc
-  have hv : ContDiffAt ℝ ∞ (fun z => scalarContact U z-angularLap U z+2*U z) x :=
-    ((contact_smooth (source_smooth q branch amp) x hp hr hy).sub
-      (lap_smooth (source_smooth q branch amp) x hp hr hy)).add
-      (contDiffAt_const.mul (source_smooth q branch amp x hp hr hy))
-  exact (hs.mul hv).congr_of_eventuallyEq he
+    ExteriorSmooth (D4BMOriginalSourceContact.originalForcing q branch amp) :=
+  _root_.RHTower.D4BMOriginalModularOrbit.original_forcing_smooth q branch amp
 
 private theorem mode_smooth (q : XiZeroCopy) (w : ℂ) (hw : w.im≠0) (outer : Bool) :
-    ExteriorSmooth (modeScalar q w outer) := by
-  intro x hp hr hy
-  exact modeScalar_smooth q w hw outer x hr hy
+    ExteriorSmooth (modeScalar q w outer) :=
+  _root_.RHTower.D4BMOriginalModularOrbit.mode_smooth q w hw outer
 
 private theorem top_rectangle_continuous (U V : F) (hU : ExteriorSmooth U) (hV : ExteriorSmooth V)
     (a b R Y : ℝ) (ha : 0<a) (hr : 1<R) (hy : 0<Y) :
     ContinuousOn (fun z : ℝ×ℝ => transfer U V 1 (slice z.1 R (point z.2 Y)))
-      (Icc a b ×ˢ Icc (-1/2:ℝ) (1/2:ℝ)) := by
-  intro z hz
-  have hu := hU (slice z.1 R (point z.2 Y)) (ha.trans_le hz.1.1) hr (by simpa [slice,point] using hy)
-  have hv := smooth_partial hV 3 (slice z.1 R (point z.2 Y)) (ha.trans_le hz.1.1) hr (by simpa [slice,point] using hy)
-  change ContinuousWithinAt (fun z : ℝ×ℝ => U (slice z.1 R (point z.2 Y))*coordDeriv 3 V (slice z.1 R (point z.2 Y))) _ z
-  exact ((hu.continuousAt.mul hv.continuousAt).comp
-    (f:=fun z : ℝ×ℝ => slice z.1 R (point z.2 Y))
-    (show Continuous (fun z : ℝ×ℝ => slice z.1 R (point z.2 Y)) by unfold slice point; fun_prop).continuousAt).continuousWithinAt
+      (Icc a b ×ˢ Icc (-1/2:ℝ) (1/2:ℝ)) :=
+  _root_.RHTower.D4BMOriginalModularOrbit.top_rectangle_continuous U V hU hV a b R Y ha hr hy
 
 private theorem top_time_integrable (U V : F) (hU : ExteriorSmooth U) (hV : ExteriorSmooth V)
     (a b R Y : ℝ) (ha : 0<a) (hab : a≤b) (hr : 1<R) (hy : 0<Y) :
-    IntervalIntegrable (fun p => topFlux U V p R Y) volume a b := by
-  have hi : Integrable (fun z : ℝ×ℝ => transfer U V 1 (slice z.1 R (point z.2 Y)))
-      ((volume.restrict (Ioc a b)).prod (volume.restrict (Ioc (-1/2:ℝ) (1/2:ℝ)))) := by
-    rw [Measure.prod_restrict,← Measure.volume_eq_prod]
-    exact ((top_rectangle_continuous U V hU hV a b R Y ha hr hy).integrableOn_compact
-      (isCompact_Icc.prod isCompact_Icc)).mono_set (Set.prod_mono Ioc_subset_Icc_self Ioc_subset_Icc_self)
-  rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hab]
-  simpa only [topFlux,← neg_div,intervalIntegral.integral_of_le (by norm_num : (-1/2:ℝ)≤1/2),IntegrableOn]
-    using hi.integral_prod_left
+    IntervalIntegrable (fun p => topFlux U V p R Y) volume a b :=
+  _root_.RHTower.D4BMOriginalModularOrbit.top_time_integrable U V hU hV a b R Y ha hab hr hy
 
 private theorem transfer_subtraction (F G : P → ℂ) (p R Y : ℝ) (c : ℂ)
     (hF : ∀ X : ℝ, ContDiffAt ℝ ∞ F ![p,R,X,Y])
     (hG : ∀ X : ℝ, ContDiffAt ℝ ∞ G ![p,R,X,Y]) :
     (∫ X in (-1/2:ℝ)..1/2, transfer F G 1 ![p,R,X,Y]-c)=
-      D4BMOriginalModularOrbit.topFlux F G p R Y-c := by
-  have hm : Continuous (fun X : ℝ => (![p,R,X,Y]:P)) := by fun_prop
-  have hc : Continuous (fun X : ℝ => transfer F G 1 ![p,R,X,Y]) := by
-    apply continuous_iff_continuousAt.mpr
-    intro X
-    change ContinuousAt ((fun z : P => F z*coordDeriv 3 G z) ∘
-      (fun u : ℝ => (![p,R,u,Y]:P))) X
-    exact ((hF X).continuousAt.mul (coordDeriv_contDiffAt (m:=∞) (hG X) (by simp) 3).continuousAt).comp
-      (f:=fun u : ℝ => (![p,R,u,Y]:P)) hm.continuousAt
-  have hslice (X : ℝ) : slice p R (GaloisForLFunctions.RHTower.SelbergMaassMean.point X Y)=![p,R,X,Y] := by
-    simp [slice,GaloisForLFunctions.RHTower.SelbergMaassMean.point]
-  unfold D4BMOriginalModularOrbit.topFlux
-  simp_rw [hslice]
-  rw [intervalIntegral.integral_sub (hc.intervalIntegrable _ _) intervalIntegrable_const,
-    intervalIntegral.integral_const]
-  norm_num [smul_eq_mul]
-
+      D4BMOriginalModularOrbit.topFlux F G p R Y-c :=
+  _root_.RHTower.D4BMOriginalContactCusp.transfer_subtraction F G p R Y c hF hG
 
 private theorem UniformRapid.horizontal_integral {ι : Type*} {F : ι → A → ℂ}
     (hF : UniformRapid F) (p : ι) (w : ℂ) :

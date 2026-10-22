@@ -19,7 +19,7 @@ boundaries lie, and how to work inside it. Mathematics only; no ledger.
 
 ## The shared target: the sign of the critical arithmetic form
 
-Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -46,6 +46,13 @@ of a finite critical energy along a parameter — damping, coefficient cutoff or
 certificate at one parameter becomes a certificate at another, with the observation horizon
 quantified uniformly throughout.
 
+The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
+supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
+from its data to the observables it actually uses — and each reading has an exact resolution limit:
+the best bound on the target invariant that any method reading it can prove. The layer computes
+those limits, so a route can be priced before it is built, and states the separations a reading must
+perform to be admissible at all.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -54,7 +61,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the eight programmes build
+scale. No existing field has its basic objects built with all three; the nine programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -85,18 +92,31 @@ them.
    one complete signed pairing on each compact subinterval, which is weaker than a bound on the
    corresponding norm and already yields an explicit zero-free strip when it covers only part of
    the range (`ArithmeticContinuationAndCriticalEnergy`).
+7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
+   realise the maximum of the invariant it claims to bound. On the zero side this forces the
+   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
+   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
+   separated from each of its single-index perturbations
+   (`ScaleSignedIncidenceCriticality`).
 
 **Criteria every contribution to the shared target must meet.**
 
 - *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
   off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
   about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero.
+- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
+  preference: the worst width inside a joint certificate over a family of any cardinality is the
+  trivial one, because the extremal datum is already uniform across the family.
 - *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
   controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram.
+  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
+  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
+  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
 - *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`).
+  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
+  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
+  between; the incidence face admits no sampling at all, since every prime power is individually
+  necessary.
 - *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
   generic uncertainty arguments are excluded in advance.
 - *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
@@ -104,12 +124,21 @@ them.
   parity pairs exist at every damping `ε ≤ 1/2`.
 - *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
   polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction.
+  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
+  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
+  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
+  aperture leaves it intact.
 - *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
   holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
   `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded.
-  Identities, finite classifications and nonselective positivity count as zero in these units.
+  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
+  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
+  classifications and nonselective positivity count as zero in these units.
+- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
+  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
+  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
+  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
+  of the family a partial result reaches.
 - *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
   (`BiScaleUncertainty`).
 - *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
@@ -129,6 +158,17 @@ CHMD, the finite-aperture operators of Connes–Consani–Moscovici) live in `RH
 the question of which sources and which Hilbert space carry a prime modification as large as
 `S(T)`. Every certificate of positivity of the complete form is the critical-zero measure, so a
 positivity proof and such a realization are one object.
+
+The obligation is graded rather than binary. The sign of the complete form on odd compact tests may
+be replaced by any floor that loses less than an exponential in the aperture: a floor
+`Ẑ(F) ≥ −C ∫F²` on all odd `C²_c` tests is RH, and a loss `C_σ e^{2σ r}` at aperture `r` is the
+zero-free strip `Θ ≤ ½ + σ`. The unconditionally available floor has rate `1` — the prime `ℓ¹` norm
+`Σ_{n ≤ e^{2r}} Λ(n) n^{−1/2} ≍ 2e^{r}` — and the true rate of the floor is `2 · width`. So APT is
+asked for an exponent, not a sign, and the exponent must be bought by a power saving over the
+`ℓ¹` cost. What is excluded is paying for the exponent at the archimedean place: an inequality
+boosted by an archimedean term of exponent `θ > ¼` is satisfied by the all-ones weight, which
+differs from `Λ` already at the index `2`, so a boosted cone pins no source at all while the
+unboosted cone pins `Λ` at every index.
 
 ### How the programme connects to the other programmes
 
@@ -177,6 +217,22 @@ dictionary of §2.2 (one form, five names), and most of its analytic inputs come
   rows stop short of the receiver, and APT's cross-block decay, a size-only Cauchy–Schwarz bound
   over dilations, decouples only lacunary blocks for the same reason. The critical-scale receiver
   `D(T) ≤ B(1+T)e^{T/2}` of §1.2 is the receiver these programmes study at finite modulus.
+- **Arithmetic Continuation and Critical Energy supplies the parameter direction.** APT proves
+  positivity at a fixed scale, a fixed aperture and a fixed damping; the continuation layer owns
+  the transport of such a bound along a parameter towards its critical end, with the observation
+  horizon quantified uniformly. Its aperture instance is APT's own ground-energy path: a bounded
+  *relative* decay of a positive ground floor forbids a crossing, with an explicit floor
+  `μ(a) exp(−(β c − β a))`, and the certified endpoint `3/10` supplies the initial value. In the
+  other direction APT's complete-expression discipline is what forbids the continuation layer from
+  dropping an endpoint or a collar term when it differentiates in the parameter.
+- **Scale-Signed Incidence Criticality prices the receivers.** It proves the two facts APT's
+  central problem turns on: that an archimedean boost of exponent `θ > ¼` admits a weight of
+  maximal defect and therefore removes the criterion, while a loss constant or linear in the
+  aperture leaves it intact; and that the full Weil cone is a single point — a weight in it agrees
+  with `Λ` at every index — so the admissible-source question of mechanism 4 is an identification,
+  index by index, and not an inequality. It also supplies the quiet zone: no arithmetic weight
+  whatsoever fails Weil positivity inside aperture `3/10`, so inside that window a certificate is
+  constant and certifies nothing about any source.
 - **RHTower supplies the analytic infrastructure:** the Weil–Markov–pole split, the full-cone
   Plancherel and Herglotz representations, the von Mangoldt mollifier mean square, van der Corput
   and Poisson summation, the CHMD divisor pairing, Baker's theorem, the Selberg near-line and
@@ -1236,6 +1292,10 @@ see.
 | An endpoint value of the $L^1$ periodisation is a sign witness | The $L^1$ kernel and its continuous representative differ at integers; only pattern integrals matter. |
 | Zero-density bounds exclude a zero | They are upper counts; a single fixed off-line zero survives all of them. |
 | Window or high-height positivity is critical-scale progress | Windows through $3/10$ (all profiles) and $181/500$ (odd) are paid by sign-changing gauges on the archimedean conductance and one prime atom, heights beyond the horizon by the Gamma factor alone; neither sees the critical scale, and the block positivity of the critical family sees no small aperture. |
+| A window through $3/10$ is a theorem about $\zeta$ | No prime power enters an aperture-$3/10$ window ($\log 2>3/5$), so *every* arithmetic weight is Weil-positive there; inside that aperture the certificate is a constant reading and certifies nothing about any source. |
+| A sign is required of the complete form | A floor losing less than an exponential in the aperture already gives RH: $\hat Z(F)\ge-C\int F^2$ on all odd $C^2_c$ tests is RH, and $-C_\sigma e^{2\sigma r}$ at aperture $r$ is the strip $\Theta\le\frac12+\sigma$. The demand is an exponent, not a sign. |
+| Buying the exponent at the archimedean place | An inequality boosted by an archimedean term of exponent $\theta>1/4$ is satisfied by the all-ones weight, of maximal defect; the boost removes the criterion instead of weakening it. A loss constant or linear in the aperture is harmless, one growing with the frequency of the test is fatal. |
+| Enlarging the aperture is free progress | At aperture $a$ the $\ell^1$ prime cost is $\asymp2e^{a}$ while a depth-$\delta$ off-line zero amplifies by $e^{2\delta a}$; the exponents coincide exactly at $\delta=\frac12$, the depth of the polar pair. Every height-uniform aperture method therefore floors at width $\frac12$, and improvement needs a *power* saving in the single-height prime bound, not a constant. |
 | The corrected-source smoothing limit is the ramp limit | Different theorems: $H_{n,k}\to H_n$ concerns the noncompact source, the ramp limit needs the common compact support. |
 | The dyadic stencil is drift-free | It kills the quadratic drift and $4\mid k$; its linear drift is one, the secular ramp. |
 | Rename an RH-equivalent cone, metric or contraction as a hypothesis | The arithmetic work is unchanged; only universal statements proved from source data count. |
@@ -1293,7 +1353,18 @@ detects every actual off-line zero, and doubly collared truncations carry block
 positivity to compact tests of every length. What is missing is the passage to
 the compact tests of the receiver on which RH is decided, those without the
 archimedean gain $\log M$: every positivity theorem on the critical family is paid
-by that gain, and on the RH-complete cone it is absent.
+by that gain, and on the RH-complete cone it is absent. The passage is now a
+quantitative target rather than a sign: a floor on all odd compact tests whose
+loss grows subexponentially in the aperture suffices, and the obstruction is the
+rate. Beyond lag $O(1)$ the floor is exactly the prime–polar difference
+$\psi(e^t)-e^t$ — the prime measure has density $\asymp e^{t/2}dt$ at lag $t$, the
+polar measure $2\cosh(t/2)$ has the same density, and the archimedean density
+$\omega(t)\asymp e^{-t/2}$ is smaller by $e^{t}$ — so the archimedean surplus
+contributes nothing at the lags that carry the mass, and no amount of it buys the
+exponent. Oddness, edge decay of the autocorrelation and the strip structure give
+no power saving either: an odd test concentrated in an $O(1)$ window at the edge
+of its support has pole charge $\asymp e^{r}$ and prime correlation $\asymp-e^{r}$,
+of the same size and opposite sign, so the floor is their PNT-level difference.
 
 **Quantitative detection.** On the lag face the units exist: a near-top zero
 of depth $\delta_0$ with readout at least $\eta$ is visible at an explicit lag
@@ -1317,10 +1388,21 @@ and whether their cell kernels are also sign-definite, is open.
 1. **From the critical family to the receiver without an archimedean subsidy.** Which compact
    approximants of critical sources inherit block positivity with a margin surviving truncation,
    stated so that the gain `log M` of the critical Lévy energy plays no role (mechanism 3 and the
-   criterion of no subsidy).
-2. **Quantitative detection.** Nonnegativity of all grid patterns at scale `n` and radius `R`
+   criterion of no subsidy). The target is graded: a floor whose loss at aperture `r` is
+   `C e^{2σ r}` reports the strip `½ + σ`, and a loss bounded uniformly in the aperture reports RH.
+   A margin that grows with the frequency of the test is not a weaker form of the same statement —
+   it is satisfied by the all-ones weight and reports nothing.
+2. **A power saving over the `ℓ¹` prime cost at a single height.** The certified aperture of
+   single-height positivity is `log log T − log 4`, where the `ℓ¹` cost `≍ 2e^{a}` meets the
+   archimedean `≍ log T`; a depth-`δ` zero at that height is visible from aperture
+   `(log log T)/(2δ)`. Improving the width through the aperture face means certifying aperture
+   `(1+ε) log log T`, that is a single-height prime bound `≪ (log T)^{1+ε}` for
+   `X = (log T)^{2+2ε}`. Uniform-in-height bounds cannot give it, and excluding near-alignment at a
+   given height is a simultaneous-approximation problem on prime logarithms whose effective bounds
+   are far too weak; the question is which arithmetic input replaces them.
+3. **Quantitative detection.** Nonnegativity of all grid patterns at scale `n` and radius `R`
    excludes zeros of depth `> δ(n, R)` below height `T(n, R)`; the unit is `δ(n, R)`.
-3. **The spectral realization (mechanism 4).** In which Schatten or deficiency class, on which
+4. **The spectral realization (mechanism 4).** In which Schatten or deficiency class, on which
    Hilbert space, do the primes modify the archimedean operator so that the spectral measure is the
    critical-zero measure, and under what condition do the finite-aperture ground transforms of the
    Connes–Consani–Moscovici operators converge to `Ξ`. Known constraints: the prime part is not
@@ -1331,8 +1413,13 @@ and whether their cell kernels are also sign-definite, is open.
    `Re Tr ϑG` open. The candidate source class is the complete critical family on blocks, windows,
    compact truncations and lacunary unions; a positivity theorem and a realization theorem would be
    the same theorem.
-4. **Selectivity audit.** Which block-positivity and admissible-source statements fail for
+5. **Selectivity audit.** Which block-positivity and admissible-source statements fail for
    `ζ(s−a)ζ(s+a)` and for a Beurling system, and which survive and are therefore not about RH.
+6. **The source class of the one-point cone.** The full Weil cone contains exactly one weight, so
+   the realization problem is the identification of `Λ` index by index rather than an inequality.
+   Which admissible sources of this theory present a weight whose single-index perturbations are
+   separated by the data the source actually exposes, and what replaces a cone membership proof
+   when the cone is a point.
 
 ---
 

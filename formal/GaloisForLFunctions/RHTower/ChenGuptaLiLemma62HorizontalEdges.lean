@@ -34,20 +34,6 @@ private theorem cglLemma62InducedLStripBudget_bound (B : CGLLemma62InducedCharac
       cglLemma62InducedLStripBudget B * (2 + |v|) ^ 3 :=
   (Classical.choose_spec (cglLemma62_exists_bound_inducedLFunction_strip B)).2 v x hxlo hxhi
 
-private theorem cglLemma62_shifted_cubic_le (t v : ℝ) :
-    (2 + |v - t|) ^ 3 ≤ (2 + |t|) ^ 3 * (1 + |v|) ^ 3 := by
-  have hbase : 2 + |v - t| ≤ (2 + |t|) * (1 + |v|) := by
-    rw [abs_sub_comm]
-    calc
-      2 + |t - v| ≤ 2 + (|t| + |v|) := by
-        gcongr
-        simpa using (abs_sub_le t 0 v)
-      _ ≤ (2 + |t|) * (1 + |v|) := by
-        nlinarith [abs_nonneg t, abs_nonneg v]
-  calc
-    (2 + |v - t|) ^ 3 ≤ ((2 + |t|) * (1 + |v|)) ^ 3 :=
-      pow_le_pow_left₀ (by positivity) hbase 3
-    _ = (2 + |t|) ^ 3 * (1 + |v|) ^ 3 := mul_pow _ _ 3
 
 private theorem cglLemma62_nonprincipalHorizontal_point_bound
     (w : CGLRealSmoothBump) (N : CGLPositiveLength)

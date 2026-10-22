@@ -23,145 +23,29 @@ private theorem abscissa_sqrt_endpoint_data {k : ℕ} (hk : 4 ≤ k) :
     let a := Real.sqrt ((k - 1 : ℕ) : ℝ)
     let b := Real.sqrt (k : ℝ)
     0 < a ∧ 0 < b ∧ a ≤ b ∧
-      (b - a) * (b + a) = 1 ∧ 23 * b ≤ 27 * a := by
-  dsimp
-  have hkR : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
-  have hkpos : (0 : ℝ) < (k : ℝ) := by positivity
-  have hpredpos : (0 : ℝ) < ((k - 1 : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : 0 < k - 1)
-  have hcast : (((k - 1 : ℕ) : ℝ)) = (k : ℝ) - 1 := by
-    rw [Nat.cast_sub (by omega : 1 ≤ k)]
-    norm_num
-  have ha := Real.sqrt_pos.mpr hpredpos
-  have hb := Real.sqrt_pos.mpr hkpos
-  have ha2 := Real.sq_sqrt hpredpos.le
-  have hb2 := Real.sq_sqrt hkpos.le
-  have hpredle : (((k - 1 : ℕ) : ℝ)) ≤ (k : ℝ) := by
-    exact_mod_cast (Nat.sub_le k 1)
-  have hab := Real.sqrt_le_sqrt hpredle
-  have hpoly : (729 : ℝ) ≤ 200 * (k : ℝ) := by nlinarith
-  have hratioSq : (23 * Real.sqrt (k : ℝ)) ^ 2 ≤
-      (27 * Real.sqrt ((k - 1 : ℕ) : ℝ)) ^ 2 := by
-    rw [mul_pow, mul_pow, ha2, hb2, hcast]
-    norm_num
-    nlinarith
-  have hratio : 23 * Real.sqrt (k : ℝ) ≤
-      27 * Real.sqrt ((k - 1 : ℕ) : ℝ) := by
-    nlinarith [sq_nonneg
-      (23 * Real.sqrt (k : ℝ) + 27 * Real.sqrt ((k - 1 : ℕ) : ℝ))]
-  refine ⟨ha, hb, hab, ?_, hratio⟩
-  nlinarith
+      (b - a) * (b + a) = 1 ∧ 23 * b ≤ 27 * a :=
+  jordanEscape_sqrt_endpoint_data hk
 
 private theorem abscissa_integral_checkpoint_pos {k : ℕ} (hk : 3 ≤ k) :
     0 < ∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
-      screwRegularKernel t := by
-  have hpredpos : (0 : ℝ) < ((k - 1 : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : 0 < k - 1)
-  have hkpos : (0 : ℝ) < (k : ℝ) := by positivity
-  have hloglt : Real.log ((k - 1 : ℕ) : ℝ) < Real.log (k : ℝ) := by
-    rw [Real.strictMonoOn_log.lt_iff_lt hpredpos hkpos]
-    exact_mod_cast (by omega : k - 1 < k)
-  have hlog2 : Real.log 2 ≤ Real.log ((k - 1 : ℕ) : ℝ) := by
-    apply Real.strictMonoOn_log.monotoneOn
-    · norm_num
-    · exact hpredpos
-    · exact_mod_cast (by omega : 2 ≤ k - 1)
-  apply intervalIntegral.integral_pos hloglt
-  · exact continuousOn_screwRegularKernel.mono fun t ht =>
-      (Real.log_pos (by norm_num : (1 : ℝ) < 2)).trans_le (hlog2.trans ht.1)
-  · intro t ht
-    exact (suzukiCheckpointReservoirDeriv_curvature_pos_of_log_two_le
-      (hlog2.trans ht.1.le)).le
-  · refine ⟨Real.log (k : ℝ), ⟨hloglt.le, le_rfl⟩, ?_⟩
-    exact suzukiCheckpointReservoirDeriv_curvature_pos_of_log_two_le
-      (hlog2.trans hloglt.le)
+      screwRegularKernel t :=
+  integral_screwRegularKernel_checkpoint_pos hk
 
 private theorem abscissa_integral_checkpoint_upper {k : ℕ} (hk : 3 ≤ k) :
     (∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
         screwRegularKernel t) ≤
-      2 * (Real.sqrt k - Real.sqrt (k - 1 : ℕ)) := by
-  have htail := (suzukiCheckpointWeightedArchTailCell_nonneg_le hk).1
-  have htail0 : 0 ≤
-      ∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
-        suzukiCheckpointArchTail t := by
-    have hkR : (0 : ℝ) < (k : ℝ) := by positivity
-    nlinarith
-  rw [integral_screwRegularKernel_eq_expHalf_sub_archTail hk]
-  have hexp := integral_exp_half_log_cell (k := k - 1) (by omega : 1 ≤ k - 1)
-  rw [Nat.sub_add_cancel (by omega : 1 ≤ k)] at hexp
-  rw [hexp]
-  linarith
+      2 * (Real.sqrt k - Real.sqrt (k - 1 : ℕ)) :=
+  jordanEscape_integral_checkpoint_upper hk
 
 private theorem abscissa_integral_checkpoint_lower {k : ℕ} (hk : 4 ≤ k) :
     (4 / 5 : ℝ) / Real.sqrt k ≤
       ∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
-        screwRegularKernel t := by
-  let a := Real.sqrt ((k - 1 : ℕ) : ℝ)
-  let b := Real.sqrt (k : ℝ)
-  obtain ⟨ha, hb, hab, hgap, _⟩ := abscissa_sqrt_endpoint_data hk
-  have hkR : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
-  have ha2 : a ^ 2 = ((k - 1 : ℕ) : ℝ) := Real.sq_sqrt (by positivity)
-  have hb2 : b ^ 2 = (k : ℝ) := Real.sq_sqrt (by positivity)
-  have hcast : (((k - 1 : ℕ) : ℝ)) = (k : ℝ) - 1 := by
-    rw [Nat.cast_sub (by omega : 1 ≤ k)]
-    norm_num
-  have hgap0 : 0 ≤ b - a := sub_nonneg.mpr hab
-  have hexpLower : 1 / b ≤ 2 * (b - a) := by
-    rw [div_le_iff₀ hb]
-    nlinarith
-  have hprodSq : (b * a) ^ 2 = (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
-    rw [mul_pow, hb2, ha2]
-  have hpoly : (100 : ℝ) ≤ 9 * (k : ℝ) * ((k - 1 : ℕ) : ℝ) := by
-    rw [hcast]
-    nlinarith [mul_nonneg (sub_nonneg.mpr hkR) (by linarith : 0 ≤ (k : ℝ) + 3)]
-  have hprod : 10 ≤ 3 * b * a := by
-    have hsq : (100 : ℝ) ≤ (3 * b * a) ^ 2 := by
-      rw [show (3 * b * a) ^ 2 = 9 * (b * a) ^ 2 by ring, hprodSq]
-      simpa only [mul_assoc] using hpoly
-    nlinarith [mul_nonneg hb.le ha.le]
-  have hbBudget : b ≤ (3 / 10 : ℝ) * (k : ℝ) * a := by
-    have hm := mul_le_mul_of_nonneg_left hprod hb.le
-    nlinarith [hm, hb2]
-  let T := ∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
-    suzukiCheckpointArchTail t
-  have htail := suzukiCheckpointWeightedArchTailCell_nonneg_le (k := k) (by omega : 3 ≤ k)
-  have hT0 : 0 ≤ T := by
-    dsimp only [T]
-    have hkpos : (0 : ℝ) < (k : ℝ) := by positivity
-    nlinarith [htail.1]
-  have hTa : (k : ℝ) * T * a ≤ 2 / 3 := by
-    have hm := mul_le_mul_of_nonneg_right htail.2 ha.le
-    change (k : ℝ) * T * a ≤ (2 / 3 : ℝ) * a⁻¹ * a at hm
-    calc
-      (k : ℝ) * T * a ≤ (2 / 3 : ℝ) * a⁻¹ * a := hm
-      _ = 2 / 3 := by
-        rw [show (2 / 3 : ℝ) * a⁻¹ * a = (2 / 3 : ℝ) * (a⁻¹ * a) by ring,
-          inv_mul_cancel₀ ha.ne', mul_one]
-  have hTb : T * b ≤ 1 / 5 := by
-    have hm := mul_le_mul_of_nonneg_left hbBudget hT0
-    nlinarith
-  have hTUpper : T ≤ (1 / 5 : ℝ) / b := by
-    rw [le_div_iff₀ hb]
-    exact hTb
-  rw [integral_screwRegularKernel_eq_expHalf_sub_archTail (by omega : 3 ≤ k)]
-  have hexp := integral_exp_half_log_cell (k := k - 1) (by omega : 1 ≤ k - 1)
-  rw [Nat.sub_add_cancel (by omega : 1 ≤ k)] at hexp
-  change _ ≤ _ - T
-  rw [hexp]
-  change (4 / 5 : ℝ) / b ≤ 2 * (b - a) - T
-  have hsplit : (4 / 5 : ℝ) / b + (1 / 5 : ℝ) / b = 1 / b := by ring
-  linarith
+        screwRegularKernel t :=
+  jordanEscape_integral_checkpoint_lower hk
 
 private theorem abscissa_expHalf_checkpoint_scaled_le {k : ℕ} (hk : 4 ≤ k) :
-    2 * (Real.sqrt k - Real.sqrt (k - 1 : ℕ)) * Real.sqrt k ≤ 27 / 25 := by
-  let a := Real.sqrt ((k - 1 : ℕ) : ℝ)
-  let b := Real.sqrt (k : ℝ)
-  obtain ⟨ha, hb, hab, hgap, hratio⟩ := abscissa_sqrt_endpoint_data hk
-  have hgap0 : 0 ≤ b - a := sub_nonneg.mpr hab
-  have hlinear : 50 * b ≤ 27 * (b + a) := by linarith
-  have hm := mul_le_mul_of_nonneg_right hlinear hgap0
-  change 2 * (b - a) * b ≤ (27 / 25 : ℝ)
-  nlinarith
+    2 * (Real.sqrt k - Real.sqrt (k - 1 : ℕ)) * Real.sqrt k ≤ 27 / 25 :=
+  jordanEscape_expHalf_checkpoint_scaled_le hk
 
 private theorem abscissa_not_isPrimePow_six_mul_succ (m : ℕ) :
     ¬ IsPrimePow (6 * (m + 1)) := by

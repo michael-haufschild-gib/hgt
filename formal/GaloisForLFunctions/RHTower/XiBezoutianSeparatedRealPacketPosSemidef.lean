@@ -232,65 +232,8 @@ private theorem diag_eq {u : ℝ} (hu : u ≠ 0) :
   ring
 
 theorem natDist_geom_row_sum_le {q : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) (n i : ℕ) :
-    ∑ j ∈ (Finset.range n).erase i, q ^ Nat.dist i j ≤ 2 * (q / (1 - q)) := by
-  have h1q : (0 : ℝ) < 1 - q := by linarith
-  have htail : ∀ m : ℕ, ∑ k ∈ Finset.range m, q ^ (k + 1) ≤ q / (1 - q) := by
-    intro m
-    have hgeom : ∑ k ∈ Finset.range m, q ^ k ≤ 1 / (1 - q) := by
-      rw [geom_sum_eq (ne_of_lt hq1) m,
-        show (q ^ m - 1) / (q - 1) = (1 - q ^ m) / (1 - q) by
-          rw [← neg_div_neg_eq]; ring_nf]
-      have h0 : (0 : ℝ) ≤ q ^ m := by positivity
-      have hnum : (1 : ℝ) - q ^ m ≤ 1 := by linarith
-      have := mul_le_mul_of_nonneg_right hnum (inv_nonneg.mpr h1q.le)
-      simpa [div_eq_mul_inv] using this
-    have hstep : ∑ k ∈ Finset.range m, q ^ (k + 1) =
-        q * ∑ k ∈ Finset.range m, q ^ k := by
-      rw [Finset.mul_sum]
-      exact Finset.sum_congr rfl fun k _ => by rw [pow_succ]; ring
-    rw [hstep]
-    calc q * ∑ k ∈ Finset.range m, q ^ k ≤ q * (1 / (1 - q)) :=
-          mul_le_mul_of_nonneg_left hgeom hq0
-      _ = q / (1 - q) := by ring
-  have hsplit : (Finset.range n).erase i =
-      Finset.range (min i n) ∪ Finset.Ico (i + 1) n := by
-    ext j
-    simp only [Finset.mem_erase, Finset.mem_range, Finset.mem_union, Finset.mem_Ico,
-      lt_min_iff]
-    omega
-  have hdisj : Disjoint (Finset.range (min i n)) (Finset.Ico (i + 1) n) := by
-    rw [Finset.disjoint_left]
-    intro j hj hj'
-    simp only [Finset.mem_range, lt_min_iff] at hj
-    simp only [Finset.mem_Ico] at hj'
-    omega
-  rw [hsplit, Finset.sum_union hdisj]
-  have hleft : ∑ j ∈ Finset.range (min i n), q ^ Nat.dist i j ≤ q / (1 - q) := by
-    have hcongr : ∑ j ∈ Finset.range (min i n), q ^ Nat.dist i j =
-        ∑ j ∈ Finset.range (min i n), q ^ (i - j) := by
-      refine Finset.sum_congr rfl fun j hj => ?_
-      simp only [Finset.mem_range, lt_min_iff] at hj
-      rw [Nat.dist_eq_sub_of_le_right (by omega)]
-    rw [hcongr]
-    calc ∑ j ∈ Finset.range (min i n), q ^ (i - j)
-        ≤ ∑ j ∈ Finset.range (min i n), q ^ (min i n - 1 - j + 1) := by
-          refine Finset.sum_le_sum fun j hj => ?_
-          simp only [Finset.mem_range, lt_min_iff] at hj
-          exact pow_le_pow_of_le_one hq0 hq1.le (by omega)
-      _ = ∑ k ∈ Finset.range (min i n), q ^ (k + 1) :=
-          Finset.sum_range_reflect (fun k => q ^ (k + 1)) (min i n)
-      _ ≤ q / (1 - q) := htail _
-  have hright : ∑ j ∈ Finset.Ico (i + 1) n, q ^ Nat.dist i j ≤ q / (1 - q) := by
-    have hcongr : ∑ j ∈ Finset.Ico (i + 1) n, q ^ Nat.dist i j =
-        ∑ k ∈ Finset.range (n - (i + 1)), q ^ (k + 1) := by
-      rw [Finset.sum_Ico_eq_sum_range]
-      refine Finset.sum_congr rfl fun k _ => ?_
-      rw [Nat.dist_eq_sub_of_le (by omega)]
-      congr 1
-      omega
-    rw [hcongr]
-    exact htail _
-  linarith
+    ∑ j ∈ (Finset.range n).erase i, q ^ Nat.dist i j ≤ 2 * (q / (1 - q)) :=
+  geom_row_sum_le hq0 hq1 n i
 
 /-- **Separated real-packet positivity of the critical logarithmic-derivative kernel.**
 For every real node packet with base at least `xiRayPacketBase` and consecutive

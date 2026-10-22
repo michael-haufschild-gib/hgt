@@ -9,7 +9,7 @@ open MeasureTheory Set
 open GaloisForLFunctions.RHTower
 open scoped Interval
 
-private theorem sqrt_endpoint_data {k : ℕ} (hk : 4 ≤ k) :
+theorem sqrt_endpoint_data {k : ℕ} (hk : 4 ≤ k) :
     let a := Real.sqrt ((k - 1 : ℕ) : ℝ)
     let b := Real.sqrt (k : ℝ)
     0 < a ∧ 0 < b ∧ a ≤ b ∧
@@ -42,7 +42,7 @@ private theorem sqrt_endpoint_data {k : ℕ} (hk : 4 ≤ k) :
   refine ⟨ha, hb, hab, ?_, hratio⟩
   nlinarith
 
-private theorem integral_screwRegularKernel_checkpoint_pos {k : ℕ} (hk : 3 ≤ k) :
+theorem integral_screwRegularKernel_checkpoint_pos {k : ℕ} (hk : 3 ≤ k) :
     0 < ∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
       screwRegularKernel t := by
   have hpredpos : (0 : ℝ) < ((k - 1 : ℕ) : ℝ) := by
@@ -144,7 +144,7 @@ theorem suzukiCheckpointSignedCurvature_forwardBlock_neg_of_atom_gt
   have hbound := suzukiCheckpointSignedCurvature_forwardBlock_le (m := m) hk
   linarith
 
-private theorem integral_screwRegularKernel_checkpoint_lower {k : ℕ} (hk : 4 ≤ k) :
+theorem integral_screwRegularKernel_checkpoint_lower {k : ℕ} (hk : 4 ≤ k) :
     (4 / 5 : ℝ) / Real.sqrt k ≤
       ∫ t in Real.log ((k - 1 : ℕ) : ℝ)..Real.log (k : ℝ),
         screwRegularKernel t := by
@@ -204,7 +204,7 @@ private theorem integral_screwRegularKernel_checkpoint_lower {k : ℕ} (hk : 4 �
   have hsplit : (4 / 5 : ℝ) / b + (1 / 5 : ℝ) / b = 1 / b := by ring
   linarith
 
-private theorem expHalf_checkpoint_scaled_le {k : ℕ} (hk : 4 ≤ k) :
+theorem expHalf_checkpoint_scaled_le {k : ℕ} (hk : 4 ≤ k) :
     2 * (Real.sqrt k - Real.sqrt (k - 1 : ℕ)) * Real.sqrt k ≤ 27 / 25 := by
   let a := Real.sqrt ((k - 1 : ℕ) : ℝ)
   let b := Real.sqrt (k : ℝ)

@@ -21,13 +21,13 @@ structure CGLLemma62TailTruncationWindow (t : ℝ) where
   radius_nonneg : 0 ≤ radius
   separated : 2 + radius ≤ |t|
 
-private theorem cglLemma62_tailWindow_abs_le
+theorem cglLemma62_tailWindow_abs_le
     {t : ℝ} (U : CGLLemma62TailTruncationWindow t)
     {v : ℝ} (hv : v ∈ Set.uIoc (-U.radius) U.radius) : |v| ≤ U.radius := by
   rw [Set.uIoc_of_le (by linarith [U.radius_nonneg])] at hv
   exact abs_le.mpr ⟨by linarith [hv.1], hv.2⟩
 
-private theorem cglLemma62_tailWindow_high
+theorem cglLemma62_tailWindow_high
     {t : ℝ} (U : CGLLemma62TailTruncationWindow t)
     {v : ℝ} (hv : v ∈ Set.uIoc (-U.radius) U.radius) : 2 ≤ |v - t| := by
   have hvabs := cglLemma62_tailWindow_abs_le U hv

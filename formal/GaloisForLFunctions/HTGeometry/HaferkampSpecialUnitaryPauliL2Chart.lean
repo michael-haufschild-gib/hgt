@@ -135,89 +135,14 @@ theorem analyticAt_boolNonidentityTwoQubitPauliCoordinateChart_l2
 /-- The actual L2-operator derivative of the simultaneous Pauli chart is its tangent map. -/
 theorem hasFDerivAt_boolNonidentityTwoQubitPauliCoordinateChart_zero_l2 :
     HasFDerivAt boolNonidentityTwoQubitPauliCoordinateChart
-      boolNonidentityTwoQubitPauliTangentMap 0 := by
-  let f : (boolNonidentityTwoQubitPauliLabel → ℝ) →
-      Matrix (Bool × Bool) (Bool × Bool) ℂ :=
-    boolNonidentityTwoQubitPauliCoordinateChart
-  have hdiff : DifferentiableAt ℝ f 0 :=
-    (analyticAt_boolNonidentityTwoQubitPauliCoordinateChart_l2 0).differentiableAt
-  have hfull : HasFDerivAt f (fderiv ℝ f 0) 0 := hdiff.hasFDerivAt
-  have haxis (pq : boolNonidentityTwoQubitPauliLabel) :
-      (fderiv ℝ f 0) (Pi.single pq (1 : ℝ)) =
-        boolNonidentityTwoQubitPauliTangent pq := by
-    let singleCLM : ℝ →L[ℝ] (boolNonidentityTwoQubitPauliLabel → ℝ) :=
-      ContinuousLinearMap.single ℝ
-        (fun _ : boolNonidentityTwoQubitPauliLabel => ℝ) pq
-    have hsingle : HasFDerivAt
-        (fun t : ℝ => Pi.single pq t) singleCLM 0 := by
-      change HasFDerivAt
-        (singleCLM : ℝ → (boolNonidentityTwoQubitPauliLabel → ℝ)) singleCLM 0
-      exact singleCLM.hasFDerivAt
-    have hbase : HasFDerivAt f (fderiv ℝ f 0) (Pi.single pq (0 : ℝ)) := by
-      simpa using hfull
-    have hcomp := HasFDerivAt.comp
-      (f := fun t : ℝ => Pi.single pq t) (g := f) 0 hbase hsingle
-    have haxisExact : HasFDerivAt
-        (fun t : ℝ => f (Pi.single pq t))
-        (ContinuousLinearMap.toSpanSingleton ℝ
-          (boolNonidentityTwoQubitPauliTangent pq)) 0 := by
-      rw [show (fun t : ℝ => f (Pi.single pq t)) =
-          (fun t : ℝ => (boolNonidentityTwoQubitPauliPath pq t :
-            Matrix (Bool × Bool) (Bool × Bool) ℂ)) by
-          funext t
-          exact boolNonidentityTwoQubitPauliCoordinateChart_single pq t]
-      exact (entrywiseHasDerivAt_boolNonidentityTwoQubitPauliPath pq).hasFDerivAt
-    have hderiv : (fderiv ℝ f 0).comp singleCLM =
-        ContinuousLinearMap.toSpanSingleton ℝ
-          (boolNonidentityTwoQubitPauliTangent pq) := by
-      apply hcomp.unique
-      exact haxisExact
-    have hvalue := congrArg (fun L : ℝ →L[ℝ]
-        Matrix (Bool × Bool) (Bool × Bool) ℂ => L 1) hderiv
-    change (fderiv ℝ f 0) (Pi.single pq (1 : ℝ)) = _ at hvalue
-    simpa [ContinuousLinearMap.toSpanSingleton_apply] using hvalue
-  have hmap : fderiv ℝ f 0 = boolNonidentityTwoQubitPauliTangentMap := by
-    apply ContinuousLinearMap.ext
-    intro x
-    calc
-      (fderiv ℝ f 0) x =
-          (fderiv ℝ f 0) (∑ pq, Pi.single pq (x pq)) := by
-            rw [Finset.univ_sum_single]
-      _ = ∑ pq, (fderiv ℝ f 0) (Pi.single pq (x pq)) := by rw [map_sum]
-      _ = ∑ pq, x pq • boolNonidentityTwoQubitPauliTangent pq := by
-        apply Finset.sum_congr rfl
-        intro pq _
-        have hsingle : Pi.single pq (x pq) = x pq • Pi.single pq (1 : ℝ) := by
-          ext q
-          by_cases hqp : q = pq
-          · subst q
-            simp
-          · simp [hqp]
-        rw [hsingle, map_smul, haxis pq]
-      _ = boolNonidentityTwoQubitPauliTangentMap x := by rfl
-  rw [show boolNonidentityTwoQubitPauliCoordinateChart = f by rfl]
-  exact hfull.congr_fderiv hmap
+      boolNonidentityTwoQubitPauliTangentMap 0 :=
+  hasFDerivAt_boolNonidentityTwoQubitPauliCoordinateChart_zero
 
 /-- The L2-operator Pauli chart has derivative range dimension fifteen at identity. -/
 theorem finrank_range_fderiv_boolNonidentityTwoQubitPauliCoordinateChart_l2 :
     Module.finrank ℝ
-      (fderiv ℝ boolNonidentityTwoQubitPauliCoordinateChart 0).range = 15 := by
-  let D : (boolNonidentityTwoQubitPauliLabel → ℝ) →L[ℝ]
-      Matrix (Bool × Bool) (Bool × Bool) ℂ :=
-    fderiv ℝ boolNonidentityTwoQubitPauliCoordinateChart 0
-  change Module.finrank ℝ D.range = 15
-  apply le_antisymm
-  · calc
-      Module.finrank ℝ D.range ≤
-          Module.finrank ℝ (boolNonidentityTwoQubitPauliLabel → ℝ) :=
-        LinearMap.finrank_range_le D.toLinearMap
-      _ = Fintype.card boolNonidentityTwoQubitPauliLabel := Module.finrank_pi ℝ
-      _ = 15 := card_boolNonidentityTwoQubitPauliLabel
-  · rw [← card_boolNonidentityTwoQubitPauliLabel]
-    have hderiv : D = boolNonidentityTwoQubitPauliTangentMap := by
-      exact hasFDerivAt_boolNonidentityTwoQubitPauliCoordinateChart_zero_l2.fderiv
-    rw [hderiv]
-    exact finrank_range_ge_boolNonidentityTwoQubitPauliTangentMap
+      (fderiv ℝ boolNonidentityTwoQubitPauliCoordinateChart 0).range = 15 :=
+  finrank_range_fderiv_boolNonidentityTwoQubitPauliCoordinateChart
 
 end
 

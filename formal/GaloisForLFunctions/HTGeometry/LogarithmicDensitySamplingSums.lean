@@ -332,6 +332,170 @@ theorem exists_bound_tsum_log_kernel :
     _ ≤ (8 * ∑' k : ℕ, seriesTerm k) * Real.log (|x| + 3) := by
         nlinarith [hlogx, hS0]
 
+/-! ## The unweighted sum: a uniform bound -/
+
+/-- The unweighted comparison term. -/
+def plainTerm (k : ℕ) : ℝ := 2 * (1 + ((k : ℝ) - 1) ^ 2)⁻¹
+
+theorem plainTerm_nonneg (k : ℕ) : 0 ≤ plainTerm k := by
+  unfold plainTerm
+  positivity
+
+theorem summable_plainTerm : Summable plainTerm := by
+  have hbase : Summable fun k : ℕ => ((k : ℝ) ^ 2)⁻¹ := by
+    have h := Real.summable_one_div_nat_pow.mpr (by norm_num : 1 < 2)
+    refine h.congr fun k => ?_
+    rw [one_div]
+  have hdom : Summable fun k : ℕ => (8 : ℝ) * ((((k : ℕ) + 2 : ℝ)) ^ 2)⁻¹ := by
+    have hshift : Summable fun k : ℕ => ((((k : ℕ) + 2 : ℝ)) ^ 2)⁻¹ := by
+      have := (summable_nat_add_iff 2).mpr hbase
+      refine this.congr fun k => ?_
+      push_cast
+      ring_nf
+    exact hshift.mul_left 8
+  rw [← summable_nat_add_iff 2]
+  refine Summable.of_nonneg_of_le (fun k => plainTerm_nonneg (k + 2)) ?_ hdom
+  intro k
+  have hkpos : (0:ℝ) < ((k : ℕ) + 2 : ℝ) := by positivity
+  have hk2 : (2:ℝ) ≤ ((k : ℕ) + 2 : ℝ) := by
+    have : (0:ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+    linarith
+  set K : ℝ := ((k : ℕ) + 2 : ℝ) with hK
+  have hcast : plainTerm (k + 2) = 2 * (1 + (K - 1) ^ 2)⁻¹ := by
+    simp only [plainTerm, hK]
+    push_cast
+    ring_nf
+  have hden : (1 + (K - 1) ^ 2)⁻¹ ≤ 4 * (K ^ 2)⁻¹ := by
+    have hpos1 : (0:ℝ) < 1 + (K - 1) ^ 2 := by positivity
+    have hq : (0:ℝ) < K ^ 2 / 4 := by positivity
+    have hle : K ^ 2 / 4 ≤ 1 + (K - 1) ^ 2 := by nlinarith
+    have hstep : (1:ℝ) / (1 + (K - 1) ^ 2) ≤ 1 / (K ^ 2 / 4) :=
+      one_div_le_one_div_of_le hq hle
+    have heq1 : (1:ℝ) / (1 + (K - 1) ^ 2) = (1 + (K - 1) ^ 2)⁻¹ := one_div _
+    have heq2 : (1:ℝ) / (K ^ 2 / 4) = 4 * (K ^ 2)⁻¹ := by field_simp
+    rw [heq1, heq2] at hstep
+    exact hstep
+  rw [hcast]
+  calc 2 * (1 + (K - 1) ^ 2)⁻¹ ≤ 2 * (4 * (K ^ 2)⁻¹) :=
+        mul_le_mul_of_nonneg_left hden (by norm_num)
+    _ = 8 * (K ^ 2)⁻¹ := by ring
+
+/-- The unweighted `ℤ`-indexed comparison function. -/
+def plainDomTerm (n : ℤ) : ℝ := plainTerm n.natAbs
+
+theorem plainDomTerm_nonneg (n : ℤ) : 0 ≤ plainDomTerm n := plainTerm_nonneg _
+
+theorem plainDomTerm_neg_succ_eq : (fun n : ℕ => plainDomTerm (-((n : ℤ) + 1))) =
+    fun n : ℕ => plainTerm (n + 1) := by
+  funext n
+  simp only [plainDomTerm, natAbs_neg_succ]
+
+theorem plainDomTerm_cast_eq : (fun n : ℕ => plainDomTerm (n : ℤ)) = plainTerm := by
+  funext n
+  simp only [plainDomTerm, natAbs_cast]
+
+theorem summable_plainDomTerm : Summable plainDomTerm := by
+  refine Summable.of_nat_of_neg_add_one ?_ ?_
+  · rw [plainDomTerm_cast_eq]
+    exact summable_plainTerm
+  · rw [plainDomTerm_neg_succ_eq]
+    exact (summable_nat_add_iff 1).mpr summable_plainTerm
+
+/-- One term of the shifted unweighted sum against the comparison term. -/
+theorem kernel_frac_le {y : ℝ} (hy0 : 0 ≤ y) (hy1 : y < 1) (m : ℤ) :
+    (1 + ((m : ℝ) - y) ^ 2)⁻¹ ≤ plainDomTerm m := by
+  have hcast : |(m : ℝ)| = (m.natAbs : ℝ) := by simp
+  have hnn : (0:ℝ) ≤ (m.natAbs : ℝ) := Nat.cast_nonneg _
+  have hlb : (m.natAbs : ℝ) - 1 ≤ |(m : ℝ) - y| := by
+    have h := abs_sub_abs_le_abs_sub (m : ℝ) y
+    rw [hcast, abs_of_nonneg hy0] at h
+    linarith
+  have hdom : plainDomTerm m = 2 * (1 + ((m.natAbs : ℝ) - 1) ^ 2)⁻¹ := by
+    simp only [plainDomTerm, plainTerm]
+  rw [hdom]
+  rcases Nat.lt_or_ge m.natAbs 2 with hklt | hkge
+  · have hk1 : ((m.natAbs : ℝ) - 1) ^ 2 ≤ 1 := by
+      interval_cases h : m.natAbs <;> norm_num
+    have hcomp : (1:ℝ) ≤ 2 * (1 + ((m.natAbs : ℝ) - 1) ^ 2)⁻¹ := by
+      rw [le_mul_inv_iff₀ (by positivity)]
+      linarith
+    have hker : (1 + ((m : ℝ) - y) ^ 2)⁻¹ ≤ 1 := by
+      rw [inv_le_one_iff₀]
+      right
+      nlinarith [sq_nonneg ((m : ℝ) - y)]
+    linarith
+  · have hk2 : (2:ℝ) ≤ (m.natAbs : ℝ) := by exact_mod_cast hkge
+    have hsq : ((m.natAbs : ℝ) - 1) ^ 2 ≤ ((m : ℝ) - y) ^ 2 := by
+      have habs : ((m.natAbs : ℝ) - 1) ^ 2 ≤ |(m : ℝ) - y| ^ 2 := by
+        nlinarith [abs_nonneg ((m : ℝ) - y)]
+      rwa [sq_abs] at habs
+    have hker : (1 + ((m : ℝ) - y) ^ 2)⁻¹ ≤ (1 + ((m.natAbs : ℝ) - 1) ^ 2)⁻¹ := by
+      have h1 : (0:ℝ) < 1 + ((m.natAbs : ℝ) - 1) ^ 2 := by positivity
+      have h := one_div_le_one_div_of_le h1 (by linarith : 1 + ((m.natAbs : ℝ) - 1) ^ 2 ≤
+        1 + ((m : ℝ) - y) ^ 2)
+      rwa [one_div, one_div] at h
+    have hpos : (0:ℝ) ≤ (1 + ((m.natAbs : ℝ) - 1) ^ 2)⁻¹ := by positivity
+    linarith
+
+/-- The shift reduction, with the fractional part explicit. -/
+theorem kernel_le_plainDomTerm (x : ℝ) (n : ℤ) :
+    (1 + ((n : ℝ) - x) ^ 2)⁻¹ ≤ plainDomTerm (n - ⌊x⌋) := by
+  have hy0 : 0 ≤ Int.fract x := Int.fract_nonneg x
+  have hy1 : Int.fract x < 1 := Int.fract_lt_one x
+  have hshift : (n : ℝ) - x = ((n - ⌊x⌋ : ℤ) : ℝ) - Int.fract x := by
+    rw [Int.fract]
+    push_cast
+    ring
+  rw [hshift]
+  exact kernel_frac_le hy0 hy1 (n - ⌊x⌋)
+
+
+/-- Summability of the shifted comparison function, stated so that the shift is pinned. -/
+theorem summable_plainDomTerm_shift (j : ℤ) : Summable fun n : ℤ => plainDomTerm (n - j) := by
+  have h := (Equiv.subRight j).summable_iff (f := plainDomTerm)
+  exact h.mpr summable_plainDomTerm
+
+theorem tsum_plainDomTerm_shift (j : ℤ) :
+    (∑' n : ℤ, plainDomTerm (n - j)) = ∑' n : ℤ, plainDomTerm n :=
+  (Equiv.subRight j).tsum_eq plainDomTerm
+
+/-- The unweighted kernel family is summable over the integers, for every shift. -/
+theorem summable_kernel (x : ℝ) :
+    Summable fun n : ℤ => (1 + ((n : ℝ) - x) ^ 2)⁻¹ :=
+  Summable.of_nonneg_of_le (fun n => by positivity) (kernel_le_plainDomTerm x)
+    (summable_plainDomTerm_shift ⌊x⌋)
+
+/-- The total mass of the `ℤ`-indexed comparison function. -/
+theorem tsum_plainDomTerm_le : ∑' n : ℤ, plainDomTerm n ≤ 2 * ∑' k : ℕ, plainTerm k := by
+  have h1 : Summable fun n : ℕ => plainDomTerm (n : ℤ) := by
+    rw [plainDomTerm_cast_eq]; exact summable_plainTerm
+  have h2 : Summable fun n : ℕ => plainDomTerm (-((n : ℤ) + 1)) := by
+    rw [plainDomTerm_neg_succ_eq]
+    exact (summable_nat_add_iff 1).mpr summable_plainTerm
+  rw [tsum_of_nat_of_neg_add_one h1 h2]
+  have e1 : (∑' n : ℕ, plainDomTerm (n : ℤ)) = ∑' k : ℕ, plainTerm k := by
+    rw [plainDomTerm_cast_eq]
+  have e2 : (∑' n : ℕ, plainDomTerm (-((n : ℤ) + 1))) ≤ ∑' k : ℕ, plainTerm k := by
+    rw [plainDomTerm_neg_succ_eq]
+    have h0 : (∑' k : ℕ, plainTerm k) = plainTerm 0 + ∑' n : ℕ, plainTerm (n + 1) :=
+      summable_plainTerm.tsum_eq_zero_add
+    have hz := plainTerm_nonneg 0
+    linarith
+  linarith
+
+/-- **The kernel summed over the integers is bounded, uniformly in the shift.**  The unweighted
+companion of the logarithmic estimate: a point set of bounded density is reproduced with no
+weight at all. -/
+theorem exists_bound_tsum_kernel :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, ∑' n : ℤ, (1 + ((n : ℝ) - x) ^ 2)⁻¹ ≤ C := by
+  have hS0 : 0 ≤ ∑' k : ℕ, plainTerm k := tsum_nonneg plainTerm_nonneg
+  refine ⟨2 * ∑' k : ℕ, plainTerm k, by linarith, fun x => ?_⟩
+  have hstep : (∑' n : ℤ, (1 + ((n : ℝ) - x) ^ 2)⁻¹) ≤ ∑' n : ℤ, plainDomTerm (n - ⌊x⌋) :=
+    Summable.tsum_le_tsum (kernel_le_plainDomTerm x) (summable_kernel x)
+      (summable_plainDomTerm_shift ⌊x⌋)
+  rw [tsum_plainDomTerm_shift] at hstep
+  exact hstep.trans tsum_plainDomTerm_le
+
 end
 
 end GaloisForLFunctions.HTGeometry.LogDensity

@@ -21,12 +21,11 @@ private def mean (q : XiZeroCopy) (branch : Bool) (d X k : ℝ) : ℂ :=
 
 private theorem mean_radial_smooth (q : XiZeroCopy) (branch : Bool) (x k : ℝ) :
     ContDiff ℝ ∞ (fun d => mean q branch d x k) :=
-  D4BMFullAngularCircle.angularMean_smooth q branch x k
+  _root_.RHTower.D4BMFullAngularCircleAction.mean_radial_smooth q branch x k
 
 private theorem mean_zero (q : XiZeroCopy) (branch : Bool) (x k : ℝ) :
     mean q branch 0 x k=fullAngularField q branch ![x,Real.exp k] :=
-  D4BMFullAngularCircle.angularMean_zero q branch x k
-
+  _root_.RHTower.D4BMFullAngularCircleAction.mean_zero q branch x k
 
 private def angularKernel (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ := mean q branch (Real.arcosh z) X k
 private def argumentFirst (q : XiZeroCopy) (branch : Bool) (z X k : ℝ) : ℂ :=
@@ -78,21 +77,8 @@ private theorem radial_first_zero {f g : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) 
   simpa using hh
 
 private theorem sinh_ratio_limit {f : ℝ → ℂ} {a : ℂ} (hf : HasDerivAt f a 0) (h0 : f 0=0) :
-    Tendsto (fun d => f d/(Real.sinh d:ℂ)) (𝓝[≠] 0) (𝓝 a) := by
-  have h1 : Tendsto (fun d : ℝ => f d/(d:ℂ)) (𝓝[≠] 0) (𝓝 a) := by
-    simpa only [zero_add,h0,sub_zero,Complex.real_smul,Complex.ofReal_inv,div_eq_mul_inv,mul_comm]
-      using hf.tendsto_slope_zero
-  have h2 : Tendsto (fun d : ℝ => (Real.sinh d:ℂ)/(d:ℂ)) (𝓝[≠] 0) (𝓝 (1:ℂ)) := by
-    have h := ((Real.hasDerivAt_sinh 0).ofReal_comp).tendsto_slope_zero
-    simpa only [Real.cosh_zero,Real.sinh_zero,Complex.ofReal_one,Complex.ofReal_zero,
-      zero_add,sub_zero,Complex.real_smul,Complex.ofReal_inv,div_eq_mul_inv,mul_comm] using h
-  have h := h1.div h2 (by simp)
-  simp only [div_one] at h
-  apply h.congr'
-  filter_upwards [self_mem_nhdsWithin] with d hd
-  have hn : (d:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hd
-  change (f d/(d:ℂ))/((Real.sinh d:ℂ)/(d:ℂ))=f d/(Real.sinh d:ℂ)
-  field_simp [hn]
+    Tendsto (fun d => f d/(Real.sinh d:ℂ)) (𝓝[≠] 0) (𝓝 a) :=
+  _root_.RHTower.D4BMNativeCircle.sinh_ratio_limit hf h0
 
 private theorem radial_second_zero {f g : ℝ → ℂ} (hf : ContDiff ℝ ∞ f) (hg : Continuous g)
     (he : ∀ d, (Real.sinh d:ℂ)^(2 : ℕ)*deriv (deriv f) d+
@@ -131,28 +117,13 @@ private theorem mean_second_zero (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
       (mean_equation q branch X k)
 
 private theorem radius_derivative {z : ℝ} (hz : 1 < z) :
-    HasDerivAt Real.arcosh (1/Real.sinh (Real.arcosh z)) z := by
-  simpa only [one_div,Real.sinh_arcosh hz.le] using Real.hasDerivAt_arcosh hz
+    HasDerivAt Real.arcosh (1/Real.sinh (Real.arcosh z)) z :=
+  _root_.RHTower.D4BMNativeCircle.radius_derivative hz
 
 private theorem angular_derivatives (q : XiZeroCopy) (branch : Bool) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
     HasDerivAt (fun y => angularKernel q branch y X k) (argumentFirst q branch z X k) z ∧
-    HasDerivAt (fun y => argumentFirst q branch y X k) (argumentSecond q branch z X k) z := by
-  have hs := mean_radial_smooth q branch X k
-  have hs1 := (contDiff_infty_iff_deriv.mp hs).2
-  have hm := ((hs.contDiffAt (x := Real.arcosh z)).differentiableAt (by simp)).hasDerivAt
-  have hm1 := ((hs1.contDiffAt (x := Real.arcosh z)).differentiableAt (by simp)).hasDerivAt
-  have hd := radius_derivative hz
-  have hn : Real.sinh (Real.arcosh z) ≠ 0 := (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have hnC : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hn
-  have hr := ((Real.hasDerivAt_sinh (Real.arcosh z)).comp z hd).ofReal_comp
-  constructor
-  · apply (hm.scomp z hd).congr_deriv
-    simp only [argumentFirst,Complex.real_smul,Complex.ofReal_div,Complex.ofReal_one]
-    ring
-  · apply ((hm1.scomp z hd).div hr hnC).congr_deriv
-    dsimp [argumentSecond]
-    simp only [Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_one]
-    field_simp [hnC]
+    HasDerivAt (fun y => argumentFirst q branch y X k) (argumentSecond q branch z X k) z :=
+  _root_.RHTower.D4BMFullAngularCircleAction.angular_derivatives q branch X k hz
 
 private theorem argumentFirst_tendsto_characteristic (q : XiZeroCopy) (branch : Bool) (X k : ℝ) :
     Tendsto (fun z => argumentFirst q branch z X k) (𝓝[>] 1)
@@ -204,31 +175,15 @@ theorem onsetAngularKernel_right_derivative (q : XiZeroCopy) (branch : Bool) (a 
 private theorem invariant_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
     (hh : HasDerivAt h dh t) (hx : HasDerivAt x dx t) :
     HasDerivAt (fun r => invariant (h r) (x r) y)
-      (dh*invariantTimeFirst (h t) (x t) y+dx*invariantSpaceFirst (h t) (x t) y) t := by
-  have hc := (Real.cosh_pos (x t)).ne'
-  have hy := (Real.cosh_pos y).ne'
-  apply ((((Real.hasDerivAt_cosh _).comp t hh).add
-    (((Real.hasDerivAt_sinh _).comp t hx).mul_const (Real.sinh y))).div
-    (((Real.hasDerivAt_cosh _).comp t hx).mul_const (Real.cosh y))
-    (mul_ne_zero hc hy)).congr_deriv
-  dsimp [invariantTimeFirst,invariantSpaceFirst,invariant,Real.tanh_eq_sinh_div_cosh]
-  simp only [Real.tanh_eq_sinh_div_cosh]
-  field_simp [hc,hy]
-  ring
+      (dh*invariantTimeFirst (h t) (x t) y+dx*invariantSpaceFirst (h t) (x t) y) t :=
+  _root_.RHTower.D4BMCausalKernel.invariant_comp_derivative y t dh dx hh hx
 
 private theorem invariantTimeFirst_comp_derivative {h x : ℝ → ℝ} (y t dh dx : ℝ)
     (hh : HasDerivAt h dh t) (hx : HasDerivAt x dx t) :
     HasDerivAt (fun r => invariantTimeFirst (h r) (x r) y)
       (dh*invariantTimeSecond (h t) (x t) y-
-        dx*Real.tanh (x t)*invariantTimeFirst (h t) (x t) y) t := by
-  have hc := (Real.cosh_pos (x t)).ne'
-  have hy := (Real.cosh_pos y).ne'
-  apply (((Real.hasDerivAt_sinh _).comp t hh).div
-    (((Real.hasDerivAt_cosh _).comp t hx).mul_const (Real.cosh y))
-    (mul_ne_zero hc hy)).congr_deriv
-  dsimp [invariantTimeFirst,invariantTimeSecond,Real.tanh_eq_sinh_div_cosh]
-  simp only [Real.tanh_eq_sinh_div_cosh]
-  field_simp [hc,hy]
+        dx*Real.tanh (x t)*invariantTimeFirst (h t) (x t) y) t :=
+  _root_.RHTower.D4BMCausalKernel.invariantTimeFirst_comp_derivative y t dh dx hh hx
 
 private theorem tanh_derivative_local (x : ℝ) :
     HasDerivAt Real.tanh (1-Real.tanh x^(2 : ℕ)) x := by
@@ -247,55 +202,24 @@ private def nullInvariantFirst (y u v : ℝ) : ℝ :=
 
 private theorem nullInvariant_first (y u v : ℝ) :
     HasDerivAt (fun a => invariant ((a+v)/2) (y+(a-v)/2) y)
-      (nullInvariantFirst y u v) u := by
-  convert! invariant_comp_derivative y u (1/2) (1/2)
-    (((hasDerivAt_id u).add_const v).div_const 2)
-    ((((hasDerivAt_id u).sub_const v).div_const 2).const_add y) using 1
-  simp only [nullInvariantFirst,id_eq]
-  ring
+      (nullInvariantFirst y u v) u :=
+  _root_.RHTower.D4BMCausalKernel.nullInvariant_first y u v
 
 private theorem nullInvariant_second (y u v : ℝ) :
     HasDerivAt (fun b => invariant ((u+b)/2) (y+(u-b)/2) y)
       ((invariantTimeFirst ((u+v)/2) (y+(u-v)/2) y-
-        invariantSpaceFirst ((u+v)/2) (y+(u-v)/2) y)/2) v := by
-  convert! invariant_comp_derivative y v (1/2) (-1/2)
-    (((hasDerivAt_id v).const_add u).div_const 2)
-    ((((hasDerivAt_id v).const_sub u).div_const 2).const_add y) using 1
-  simp only [id_eq]
-  ring
+        invariantSpaceFirst ((u+v)/2) (y+(u-v)/2) y)/2) v :=
+  _root_.RHTower.D4BMCausalKernel.nullInvariant_second y u v
 
 private theorem nullInvariant_mixed (y u v : ℝ) :
     HasDerivAt (nullInvariantFirst y u)
       ((invariantTimeSecond ((u+v)/2) (y+(u-v)/2) y-
-        invariantSpaceSecond ((u+v)/2) (y+(u-v)/2) y)/4) v := by
-  let h := (u+v)/2
-  let x := y+(u-v)/2
-  have ht : HasDerivAt (fun b : ℝ => (u+b)/2) (1/2) v := by
-    convert! ((hasDerivAt_id v).const_add u).div_const 2 using 1
-  have hx : HasDerivAt (fun b : ℝ => y+(u-b)/2) (-1/2) v := by
-    convert! (((hasDerivAt_id v).const_sub u).div_const 2).const_add y using 1
-  have hT := invariantTimeFirst_comp_derivative y v (1/2) (-1/2) ht hx
-  have hX := (((tanh_derivative_local x).comp v hx).mul
-    (nullInvariant_second y u v)).const_sub (Real.tanh y)
-  apply ((hT.add hX).div_const 2).congr_deriv
-  dsimp [h,x,invariantSpaceFirst,invariantSpaceSecond]
-  ring
+        invariantSpaceSecond ((u+v)/2) (y+(u-v)/2) y)/4) v :=
+  _root_.RHTower.D4BMCausalKernel.nullInvariant_mixed y u v
 
 private theorem angular_equation (q : XiZeroCopy) (branch : Bool) (X k : ℝ) {z : ℝ} (hz : 1 < z) :
-    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q branch z X k+2*(z:ℂ)*argumentFirst q branch z X k=angularAction q branch z X k := by
-  have hn : (Real.sinh (Real.arcosh z):ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.mpr (Real.sinh_pos_iff.mpr (Real.arcosh_pos hz)).ne'
-  have he : (z:ℂ)^(2 : ℕ)-1=(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ) := by
-    have h := Real.cosh_sq_sub_sinh_sq (Real.arcosh z)
-    rw [Real.cosh_arcosh hz.le] at h
-    exact_mod_cast (by linarith : z^(2 : ℕ)-1=Real.sinh (Real.arcosh z)^(2 : ℕ))
-  have h := mean_equation q branch X k (Real.arcosh z)
-  change _ = (Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)*angularAction q branch z X k at h
-  rw [Real.cosh_arcosh hz.le] at h
-  rw [he]
-  dsimp [argumentSecond,argumentFirst]
-  rw [Real.cosh_arcosh hz.le]
-  linear_combination (norm := (field_simp [hn]; ring)) h/(Real.sinh (Real.arcosh z):ℂ)^(2 : ℕ)
+    ((z:ℂ)^(2 : ℕ)-1)*argumentSecond q branch z X k+2*(z:ℂ)*argumentFirst q branch z X k=angularAction q branch z X k :=
+  _root_.RHTower.D4BMFullAngularCircleAction.angular_equation q branch X k hz
 
 private def closedRadius (z : ℝ) : ℝ := Real.arcosh (max 1 z)
 
@@ -327,34 +251,14 @@ private abbrev nullZ (y u v : ℝ) := invariant ((u+v)/2) (y+(u-v)/2) y
 
 private theorem nullZ_factor (y u v : ℝ) :
     nullZ y u v = 1+2*Real.sinh (u/2)*Real.sinh (v/2)/
-      (Real.cosh (y+(u-v)/2)*Real.cosh y) := by
-  have hd : Real.cosh ((u+v)/2)-Real.cosh ((y+(u-v)/2)-y) =
-      2*Real.sinh (u/2)*Real.sinh (v/2) := by
-    rw [show (u+v)/2 = u/2+v/2 by ring,
-      show (y+(u-v)/2)-y = u/2-v/2 by ring,Real.cosh_add,Real.cosh_sub]
-    ring
-  rw [Real.cosh_sub] at hd
-  dsimp only [nullZ,invariant]
-  have hn := mul_ne_zero (Real.cosh_pos (y+(u-v)/2)).ne' (Real.cosh_pos y).ne'
-  apply (div_eq_iff hn).mpr
-  rw [add_mul,one_mul,div_mul_cancel₀ _ hn]
-  linarith [hd]
+      (Real.cosh (y+(u-v)/2)*Real.cosh y) :=
+  _root_.RHTower.D4BMNativeCircle.nullZ_factor y u v
 
-private theorem nullZ_ge (y : ℝ) {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) : 1 ≤ nullZ y u v := by
-  rw [nullZ_factor]
-  have hp : 0 ≤ 2*Real.sinh (u/2)*Real.sinh (v/2)/(Real.cosh (y+(u-v)/2)*Real.cosh y) :=
-    div_nonneg (mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ 2)
-    (Real.sinh_nonneg_iff.mpr (by linarith))) (Real.sinh_nonneg_iff.mpr (by linarith)))
-    (mul_pos (Real.cosh_pos (y+(u-v)/2)) (Real.cosh_pos y)).le
-  linarith
+private theorem nullZ_ge (y : ℝ) {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) : 1 ≤ nullZ y u v :=
+  _root_.RHTower.D4BMNativeCircle.nullZ_ge y hu hv
 
-private theorem nullZ_gt (y : ℝ) {u v : ℝ} (hu : 0 < u) (hv : 0 < v) : 1 < nullZ y u v := by
-  rw [nullZ_factor]
-  have hp : 0 < 2*Real.sinh (u/2)*Real.sinh (v/2)/(Real.cosh (y+(u-v)/2)*Real.cosh y) :=
-    div_pos (mul_pos (mul_pos (by norm_num : (0:ℝ) < 2)
-    (Real.sinh_pos_iff.mpr (by linarith))) (Real.sinh_pos_iff.mpr (by linarith)))
-    (mul_pos (Real.cosh_pos (y+(u-v)/2)) (Real.cosh_pos y))
-  linarith
+private theorem nullZ_gt (y : ℝ) {u v : ℝ} (hu : 0 < u) (hv : 0 < v) : 1 < nullZ y u v :=
+  _root_.RHTower.D4BMNativeCircle.nullZ_gt y hu hv
 
 private theorem nullZ_continuous (y : ℝ) : Continuous (fun z : ℝ × ℝ => nullZ y z.1 z.2) := by
   dsimp only [nullZ,invariant]

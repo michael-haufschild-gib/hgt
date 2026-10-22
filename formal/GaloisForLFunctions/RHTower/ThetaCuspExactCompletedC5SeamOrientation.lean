@@ -679,7 +679,7 @@ private theorem iteratedDeriv_two_thetaCuspReflectedLogAction_exact
   rw [hfun]
   exact (hasDerivAt_thetaCuspReflectedLogJetOne u t).deriv
 
-private theorem hasDerivAt_thetaCuspReflectedLogCenterJetOne_displacement_exact
+theorem hasDerivAt_thetaCuspReflectedLogCenterJetOne_displacement_exact
     (u t : ℝ) :
     HasDerivAt (thetaCuspReflectedLogCenterJetOne u)
       (thetaCuspReflectedLogCenterMixedJetOne u t) t := by

@@ -64,7 +64,7 @@ theorem norm_inghamUniformGabrielScalarFamily_center
     Complex.norm_real,
     Real.norm_of_nonneg (inghamUniformGabrielCenterMoment_nonneg sigma f T)]
 
-private theorem memLp_restrict_Icc_of_continuous
+theorem memLp_restrict_Icc_of_continuous
     {E : Type*} [NormedAddCommGroup E] {g : ℝ → E}
     (hg : Continuous g) (a b : ℝ) (p : ENNReal) :
     MemLp g p (volume.restrict (Icc a b)) := by

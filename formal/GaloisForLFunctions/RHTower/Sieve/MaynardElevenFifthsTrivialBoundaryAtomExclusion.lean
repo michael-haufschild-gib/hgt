@@ -417,77 +417,28 @@ theorem montgomery_two_term_envelope_trivialBoundary
     (hW : 1 ≤ W) (hHF : 1 ≤ HF) (hB : 1 ≤ B)
     (hU : 0 ≤ U) (hV : 0 ≤ V) (hA : A ≤ 3 * HF * B) :
     W * A * B ^ e * (3 * U + W * (4 * B) * V) ≤
-      HF * (12 * W ^ 2 * B ^ (e + 2)) * (U + V) := by
-  have hW0 : 0 ≤ W := zero_le_one.trans hW
-  have hHF0 : 0 ≤ HF := zero_le_one.trans hHF
-  have hB0 : 0 ≤ B := zero_le_one.trans hB
-  have htail0 : 0 ≤ 3 * U + W * (4 * B) * V :=
-    add_nonneg (mul_nonneg (by norm_num) hU)
-      (mul_nonneg (mul_nonneg hW0 (mul_nonneg (by norm_num) hB0)) hV)
-  have hreplace :
-      W * A * B ^ e * (3 * U + W * (4 * B) * V) ≤
-        W * (3 * HF * B) * B ^ e * (3 * U + W * (4 * B) * V) :=
-    mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_left hA hW0) (pow_nonneg hB0 e)) htail0
-  have hpow : B ^ (e + 1) ≤ B ^ (e + 2) :=
-    pow_le_pow_right₀ hB (by omega)
-  have hWsqCore : W ≤ W ^ 2 := by
-    calc
-      W = W * 1 := by ring
-      _ ≤ W * W := mul_le_mul_of_nonneg_left hW hW0
-      _ = W ^ 2 := by ring
-  have hWsq : 9 * W ≤ 12 * W ^ 2 := by
-    calc
-      9 * W ≤ 12 * W := mul_le_mul_of_nonneg_right (by norm_num) hW0
-      _ ≤ 12 * W ^ 2 := mul_le_mul_of_nonneg_left hWsqCore (by norm_num)
-  have hcoef : 9 * W * HF * B ^ (e + 1) ≤
-      12 * W ^ 2 * HF * B ^ (e + 2) := by
-    calc
-      9 * W * HF * B ^ (e + 1) ≤
-          12 * W ^ 2 * HF * B ^ (e + 1) :=
-        mul_le_mul_of_nonneg_right
-          (mul_le_mul_of_nonneg_right hWsq hHF0) (pow_nonneg hB0 _)
-      _ ≤ 12 * W ^ 2 * HF * B ^ (e + 2) :=
-        mul_le_mul_of_nonneg_left hpow
-          (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg W)) hHF0)
-  calc
-    W * A * B ^ e * (3 * U + W * (4 * B) * V) ≤
-        W * (3 * HF * B) * B ^ e * (3 * U + W * (4 * B) * V) := hreplace
-    _ = (9 * W * HF * B ^ (e + 1)) * U +
-        (12 * W ^ 2 * HF * B ^ (e + 2)) * V := by
-      rw [pow_succ, show e + 2 = (e + 1) + 1 by omega, pow_succ]
-      ring
-    _ ≤ (12 * W ^ 2 * HF * B ^ (e + 2)) * U +
-        (12 * W ^ 2 * HF * B ^ (e + 2)) * V :=
-      add_le_add (mul_le_mul_of_nonneg_right hcoef hU) le_rfl
-    _ = HF * (12 * W ^ 2 * B ^ (e + 2)) * (U + V) := by ring
+      HF * (12 * W ^ 2 * B ^ (e + 2)) * (U + V) :=
+  montgomery_two_term_envelope hW hHF hB hU hV hA
 
 theorem twelve_mul_le_half_of_twentyFour_mul_le_trivialBoundary
     {x y z : ℝ} (h : 24 * x * y ≤ z) :
-    12 * x * y ≤ (1 / 2 : ℝ) * z := by
-  calc
-    12 * x * y = (1 / 2 : ℝ) * (24 * x * y) := by ring
-    _ ≤ (1 / 2 : ℝ) * z := mul_le_mul_of_nonneg_left h (by norm_num)
+    12 * x * y ≤ (1 / 2 : ℝ) * z :=
+  twelve_mul_le_half_of_twentyFour_mul_le h
 
 theorem mul_rpow_of_eq_rpow_trivialBoundary_trivialBoundary
     {T Y r a : ℝ} (hT : 0 < T) (hY : Y = T ^ r) :
-    T * Y ^ a = T ^ (1 + r * a) := by
-  rw [hY, ← Real.rpow_mul hT.le]
-  calc
-    T * T ^ (r * a) = T ^ (1 : ℝ) * T ^ (r * a) := by rw [Real.rpow_one]
-    _ = T ^ (1 + r * a) := (Real.rpow_add hT _ _).symm
+    T * Y ^ a = T ^ (1 + r * a) :=
+  mul_rpow_of_eq_rpow hT hY
 
 theorem rpow_of_eq_rpow_trivialBoundary
     {T Y r a : ℝ} (hT : 0 ≤ T) (hY : Y = T ^ r) :
-    Y ^ a = T ^ (r * a) := by
-  rw [hY]
-  exact (Real.rpow_mul hT r a).symm
+    Y ^ a = T ^ (r * a) :=
+  rpow_of_eq_rpow hT hY
 
 theorem two_fourHundredths_absorb_into_oneHundredth_trivialBoundary
     {x target : ℝ} (h : x + 1 / 100 ≤ target) :
-    1 / 400 + 1 / 400 + x ≤ target - 1 / 200 := by
-  linarith
+    1 / 400 + 1 / 400 + x ≤ target - 1 / 200 :=
+  two_fourHundredths_absorb_into_oneHundredth h
 
 /-- **Literal lower-strip selected-cell count.**  First crossing of `T^(4/5)`, exact two-term
 Montgomery cancellation, and one fixed-polylog absorption put every selected-cell fibre with

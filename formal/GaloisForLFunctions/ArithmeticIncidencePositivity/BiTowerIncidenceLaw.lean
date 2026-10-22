@@ -116,7 +116,8 @@ theorem one_sub_sq_mul_tsum_trainLagCharge_le {B z w a b : ℝ} (hF : Continuous
   have hGB : 0 ≤ B + (N : ℝ) * b := by
     have : 0 ≤ (N : ℝ) * b := mul_nonneg (Nat.cast_nonneg N) hb.le
     linarith
-  have key := one_sub_sq_mul_geoLagCharge_le hGc hGB hGsupp hz0 hz1 ha
+  have key := one_sub_sq_mul_geoLagCharge_le hGc hGB hGsupp
+    (by rw [abs_of_pos hz0]; exact hz1) ha
   have hterm : (fun m : ℕ => z ^ (m + 1) * autoCorr (geoTrain w b F N) (((m : ℝ) + 1) * a))
       = fun m : ℕ => z ^ (m + 1) * trainLagCharge w b F N (((m : ℝ) + 1) * a) := by
     funext m

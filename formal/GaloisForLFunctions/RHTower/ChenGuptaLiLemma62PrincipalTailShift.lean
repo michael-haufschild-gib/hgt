@@ -89,46 +89,8 @@ theorem cglLemma62_principalTail_horizontal_bottom
 
 private theorem cglLemma62_principalTail_abs_rpow_tail_integrable {r c : ℝ}
     (hr : r < -1) (hc : 0 < c) :
-    IntegrableOn (fun y : ℝ => |y| ^ r) {y : ℝ | c < |y|} := by
-  have hset : {y : ℝ | c < |y|} = Iio (-c) ∪ Ioi c := by
-    ext y
-    simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_Iio, Set.mem_Ioi]
-    constructor
-    · intro h
-      rcases le_or_gt y 0 with hy | hy
-      · left
-        rw [abs_of_nonpos hy] at h
-        linarith
-      · right
-        rw [abs_of_pos hy] at h
-        exact h
-    · rintro (h | h)
-      · rw [abs_of_nonpos (by linarith)]
-        linarith
-      · rw [abs_of_pos (by linarith)]
-        exact h
-  rw [hset]
-  have hpos : IntegrableOn (fun y : ℝ => |y| ^ r) (Ioi c) := by
-    have hbase : IntegrableOn (fun y : ℝ => y ^ r) (Ioi c) :=
-      (integrableOn_Ioi_rpow_iff hc).mpr hr
-    refine hbase.congr_fun ?_ measurableSet_Ioi
-    intro y hy
-    show y ^ r = |y| ^ r
-    rw [abs_of_pos (lt_trans hc hy)]
-  have hneg : IntegrableOn (fun y : ℝ => |y| ^ r) (Iio (-c)) := by
-    have h := (Measure.measurePreserving_neg (volume : Measure ℝ)).integrableOn_comp_preimage
-      (f := fun y : ℝ => |y| ^ r) (s := Iio (-c)) (measurableEmbedding_neg (α := ℝ))
-    have hpre : (Neg.neg : ℝ → ℝ) ⁻¹' (Iio (-c) : Set ℝ) = Ioi c := by
-      ext y
-      simp
-    rw [hpre] at h
-    have hfun : ((fun y : ℝ => |y| ^ r) ∘ (Neg.neg : ℝ → ℝ)) =
-        fun y : ℝ => |y| ^ r := by
-      funext y
-      simp
-    rw [hfun] at h
-    exact h.mp hpos
-  exact hneg.union hpos
+    IntegrableOn (fun y : ℝ => |y| ^ r) {y : ℝ | c < |y|} :=
+  cglLemma62_abs_rpow_tail_integrable hr hc
 
 /-- The continued principal tail carrier is continuous along every vertical
 line of the deep strip. -/

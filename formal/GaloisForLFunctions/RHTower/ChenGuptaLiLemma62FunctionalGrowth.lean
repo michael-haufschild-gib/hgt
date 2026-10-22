@@ -14,7 +14,7 @@ structure CGLLemma62HighStripPoint where
   upper : value.re ≤ 1 / 2
   high : 2 ≤ |value.im|
 
-private theorem cgl_norm_Gamma_real_sub_I (a r : ℝ) :
+theorem cgl_norm_Gamma_real_sub_I (a r : ℝ) :
     ‖Complex.Gamma ((a : ℂ) - (r : ℂ) * I)‖ =
       ‖Complex.Gamma ((a : ℂ) + (r : ℂ) * I)‖ := by
   rw [show (a : ℂ) - (r : ℂ) * I =

@@ -196,7 +196,7 @@ private theorem levinson_coef_bound {δ η : ℝ} (hδ0 : 0 < δ) (hδ3 : δ < 1
   linarith [hPle, hb2, hη0]
 
 
-private theorem levinson_budget_scalar {η R c C K T₁ T₂ Λ S LM LMb σ₀ : ℝ}
+theorem levinson_budget_scalar {η R c C K T₁ T₂ Λ S LM LMb σ₀ : ℝ}
     (hη0 : 0 < η) (hR : 0 < R) (hlogc : 0 ≤ Real.log c)
     (hΛ0 : 0 < Λ) (hS : S = T₂ * Λ) (hT₁T₂ : T₁ < T₂) (hT₁0 : 0 < T₁)
     (hK : 0 < K) (hσ₀ : (1 / 2 - σ₀) * Λ = R) (hσ₀b : σ₀ < 1 / 2)

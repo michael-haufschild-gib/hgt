@@ -317,11 +317,8 @@ theorem norm_inghamUniformGabrielScalarFamily_center
 private theorem memLp_restrict_Icc_of_continuous
     {E : Type*} [NormedAddCommGroup E] {g : ℝ → E}
     (hg : Continuous g) (a b : ℝ) (p : ENNReal) :
-    MemLp g p (volume.restrict (Icc a b)) := by
-  obtain ⟨K, hK⟩ := isCompact_Icc.bddAbove_image hg.norm.continuousOn
-  apply MemLp.of_bound hg.aestronglyMeasurable K
-  filter_upwards [ae_restrict_mem measurableSet_Icc] with x hx
-  exact hK (mem_image_of_mem (fun u => ‖g u‖) hx)
+    MemLp g p (volume.restrict (Icc a b)) :=
+  _root_.RHTower.Sieve.memLp_restrict_Icc_of_continuous hg a b p
 
 theorem norm_inghamUniformGabrielScalarFamily_left_le_of_vertical_continuous
     {sigma : ℝ} (hsigma0 : 501 / 1001 ≤ sigma) (hsigma1 : sigma ≤ 1)
@@ -770,12 +767,8 @@ theorem inghamUniformGabrielCenterMoment_le_shares_of_vertical_continuous
 
 private theorem rpow_le_max_one_of_le
     {x C e : ℝ} (hx : 0 ≤ x) (hxC : x ≤ C) (he0 : 0 ≤ e) (he1 : e ≤ 1) :
-    x ^ e ≤ max 1 C := by
-  by_cases hx1 : x ≤ 1
-  · exact (Real.rpow_le_one hx hx1 he0).trans (le_max_left _ _)
-  · have h1x : 1 ≤ x := le_of_not_ge hx1
-    exact (Real.rpow_le_self_of_one_le h1x he1).trans
-      (hxC.trans (le_max_right _ _))
+    x ^ e ≤ max 1 C :=
+  _root_.RHTower.Sieve.rpow_le_max_one_of_le hx hxC he0 he1
 
 private theorem norm_uniformGabrielDual_seed_le_max
     {sigma C : ℝ} (hsigma0 : 501 / 1001 ≤ sigma) (hsigma1 : sigma ≤ 1)
@@ -855,65 +848,8 @@ private theorem differentiableOn_intervalIntegral_of_holomorphic_on_open
     {a b : ℝ} {U : Set ℂ} (hU : IsOpen U) {F : ℝ → ℂ → ℂ}
     (hFc : ContinuousOn (fun q : ℝ × ℂ => F q.1 q.2) (univ ×ˢ U))
     (hFd : ∀ t : ℝ, DifferentiableOn ℂ (F t) U) :
-    DifferentiableOn ℂ (fun w => ∫ t in a..b, F t w) U := by
-  intro z hz
-  obtain ⟨ε, hεpos, hεsub⟩ := Metric.isOpen_iff.mp hU z hz
-  let R : ℝ := ε / 2
-  let r : ℝ := ε / 4
-  have hRpos : 0 < R := by dsimp only [R]; linarith
-  have hrpos : 0 < r := by dsimp only [r]; linarith
-  have hbig : closedBall z R ⊆ U := by
-    intro w hw
-    apply hεsub
-    rw [mem_ball]
-    exact (mem_closedBall.mp hw).trans_lt (by dsimp only [R]; linarith)
-  have hslice : ∀ t : ℝ, ContinuousOn (F t) U := fun t =>
-    hFc.comp ((continuous_const.prodMk continuous_id).continuousOn)
-      fun ζ hζ => ⟨mem_univ _, hζ⟩
-  have hfixed : ∀ w ∈ U, Continuous fun t : ℝ => F t w := fun w hw =>
-    hFc.comp_continuous (continuous_id.prodMk continuous_const) fun t => ⟨mem_univ _, hw⟩
-  obtain ⟨M, hM⟩ := ((isCompact_uIcc (a := a) (b := b)).prod
-    (isCompact_closedBall z R)).exists_bound_of_continuousOn
-      (hFc.mono fun q hq => ⟨mem_univ _, hbig hq.2⟩)
-  have hnear : ∀ w ∈ ball z r, closedBall w r ⊆ closedBall z R := by
-    intro w hw
-    refine closedBall_subset_closedBall' ?_
-    have hdist : dist w z < r := mem_ball.mp hw
-    dsimp only [r] at hdist
-    dsimp only [R, r]
-    linarith
-  have hdiffAt : ∀ (t : ℝ), ∀ ζ ∈ closedBall z R,
-      DifferentiableAt ℂ (F t) ζ := by
-    intro t ζ hζ
-    exact (hFd t).differentiableAt (hU.mem_nhds (hbig hζ))
-  have hbound : ∀ (t : ℝ), t ∈ uIcc a b → ∀ w ∈ ball z r,
-      ‖deriv (F t) w‖ ≤ M / r := by
-    intro t ht w hw
-    have hsub := hnear w hw
-    have hdc : DiffContOnCl ℂ (F t) (ball w r) := by
-      refine ⟨fun ζ hζ =>
-          (hdiffAt t ζ (hsub (ball_subset_closedBall hζ))).differentiableWithinAt, ?_⟩
-      rw [closure_ball w hrpos.ne']
-      exact (hslice t).mono fun ζ hζ => hbig (hsub hζ)
-    refine Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hrpos hdc fun ζ hζ => ?_
-    exact hM (t, ζ) ⟨ht, hsub (sphere_subset_closedBall hζ)⟩
-  have hderivCont : Continuous fun t : ℝ => deriv (F t) z := by
-    refine GaloisForLFunctions.HTGeometry.continuous_deriv_parametric_on
-      hRpos hFc hbig fun t ζ hζ => ?_
-    exact hdiffAt t ζ (ball_subset_closedBall hζ)
-  refine (intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
-    (s := ball z r) (bound := fun _ => M / r) (F := fun w t => F t w)
-    (F' := fun w t => deriv (F t) w) (ball_mem_nhds z hrpos)
-    ?_ ?_ ?_ ?_ ?_ ?_).2.differentiableAt.differentiableWithinAt
-  · refine Filter.eventually_of_mem (ball_mem_nhds z hrpos) fun w hw => ?_
-    exact (hfixed w (hbig (hnear w hw (mem_closedBall_self hrpos.le)))).aestronglyMeasurable
-  · exact (hfixed z hz).intervalIntegrable a b
-  · exact hderivCont.aestronglyMeasurable
-  · refine Filter.Eventually.of_forall fun t ht w hw => ?_
-    exact hbound t (uIoc_subset_uIcc ht) w hw
-  · exact intervalIntegrable_const
-  · refine Filter.Eventually.of_forall fun t _ w hw => ?_
-    exact (hdiffAt t w (hnear w hw (mem_closedBall_self hrpos.le))).hasDerivAt
+    DifferentiableOn ℂ (fun w => ∫ t in a..b, F t w) U :=
+  _root_.RHTower.Sieve.differentiableOn_intervalIntegral_of_holomorphic_on_open hU hFc hFd
 
 private def inghamUniformGabrielSafeHalfPlane : Set ℂ := {z | 1 / 4 < z.re}
 
@@ -993,30 +929,8 @@ private theorem differentiableOn_inghamUniformGabrielScalarIntegrand
     (sigma : ℝ) (X : ℕ) (kappa T : ℝ) (t : ℝ) :
     DifferentiableOn ℂ
       (inghamUniformGabrielScalarIntegrand sigma X kappa T t)
-      inghamUniformGabrielSafeHalfPlane := by
-  intro z hz
-  have hshiftPoint : z + (t : ℂ) * I ≠ 0 := by
-    intro hzero
-    have hre := congrArg Complex.re hzero
-    simp at hre
-    have hzpos : 0 < z.re := lt_trans (by norm_num) hz
-    exact hzpos.ne' hre
-  have hshiftDiff : DifferentiableAt ℂ (fun w : ℂ => w + (t : ℂ) * I) z := by
-    fun_prop
-  have hfield : DifferentiableAt ℂ (fun w : ℂ =>
-      inghamGabrielPoleClearedError X kappa T (w + (t : ℂ) * I)) z :=
-    DifferentiableAt.fun_comp' (x := z)
-      (f := fun w : ℂ => w + (t : ℂ) * I)
-      (g := inghamGabrielPoleClearedError X kappa T)
-      (analyticAt_inghamGabrielPoleClearedError X kappa T hshiftPoint).differentiableAt
-      hshiftDiff
-  have hdual : DifferentiableAt ℂ (fun w : ℂ =>
-      inghamUniformGabrielDualPower sigma
-        (inghamUniformGabrielDualSeed sigma
-          (inghamGabrielPoleClearedError X kappa T
-            ((inghamUniformGabrielCenter sigma : ℂ) + (t : ℂ) * I))) w) z :=
-    (analyticAt_inghamUniformGabrielDualPower sigma _ z).differentiableAt
-  exact (hfield.mul hdual).differentiableWithinAt
+      inghamUniformGabrielSafeHalfPlane :=
+  _root_.RHTower.Sieve.differentiableOn_inghamUniformGabrielScalarIntegrand sigma X kappa T t
 
 private theorem differentiableOn_inghamUniformGabrielScalarFamily_poleCleared
     {sigma : ℝ} (hsigma0 : 501 / 1001 ≤ sigma) (hsigma1 : sigma ≤ 1)

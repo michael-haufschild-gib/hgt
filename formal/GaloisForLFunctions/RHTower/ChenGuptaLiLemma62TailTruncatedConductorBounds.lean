@@ -16,20 +16,13 @@ noncomputable section
 
 private theorem cglLemma62_conductorTailWindow_abs_le
     {t : ℝ} (U : CGLLemma62TailTruncationWindow t)
-    {v : ℝ} (hv : v ∈ Set.uIoc (-U.radius) U.radius) : |v| ≤ U.radius := by
-  rw [Set.uIoc_of_le (by linarith [U.radius_nonneg])] at hv
-  exact abs_le.mpr ⟨by linarith [hv.1], hv.2⟩
+    {v : ℝ} (hv : v ∈ Set.uIoc (-U.radius) U.radius) : |v| ≤ U.radius :=
+  cglLemma62_tailWindow_abs_le U hv
 
 private theorem cglLemma62_conductorTailWindow_high
     {t : ℝ} (U : CGLLemma62TailTruncationWindow t)
-    {v : ℝ} (hv : v ∈ Set.uIoc (-U.radius) U.radius) : 2 ≤ |v - t| := by
-  have hvabs := cglLemma62_conductorTailWindow_abs_le U hv
-  have htri : |t| ≤ |t - v| + |v| := by
-    calc
-      |t| = |(t - v) + v| := by congr 1; ring_nf
-      _ ≤ _ := abs_add_le _ _
-  rw [abs_sub_comm]
-  linarith [U.separated]
+    {v : ℝ} (hv : v ∈ Set.uIoc (-U.radius) U.radius) : 2 ≤ |v - t| :=
+  cglLemma62_tailWindow_high U hv
 
 /-- The literal far-left complementary tail integrated over a CGL truncation
 window, with the finite Euler correction restricted to primes of `q / q*`. -/
@@ -41,41 +34,8 @@ theorem cglLemma62_farTail_truncated_conductor_integral_bound
     ∃ C : ℝ, 0 ≤ C ∧
       ‖∫ v : ℝ in -U.radius..U.radius,
         cglLemma62FarTailIntegrand w N B t M.value d v‖ ≤
-        C * (1 + |t| + U.radius) ^ (2 * (d.value : ℝ) + 1 / 2) * (2 * U.radius) := by
-  rcases cglLemma62_farTail_high_conductor_point_bound w N B t M d with ⟨C, hC, hbound⟩
-  refine ⟨C, hC, ?_⟩
-  have hpoint : ∀ v ∈ Set.uIoc (-U.radius) U.radius,
-      ‖cglLemma62FarTailIntegrand w N B t M.value d v‖ ≤
-        C * (1 + |t| + U.radius) ^ (2 * (d.value : ℝ) + 1 / 2) := by
-    intro v hv
-    have hhigh := cglLemma62_conductorTailWindow_high U hv
-    have hvabs := cglLemma62_conductorTailWindow_abs_le U hv
-    have hbase : 1 + |v - t| ≤ 1 + |t| + U.radius := by
-      have htri : |v - t| ≤ |v| + |t| := by
-        calc
-          |v - t| = |v + (-t)| := by ring_nf
-          _ ≤ |v| + |-t| := abs_add_le _ _
-          _ = _ := by rw [abs_neg]
-      linarith
-    have hpow : (1 + |v - t|) ^ (2 * (d.value : ℝ) + 1 / 2) ≤
-        (1 + |t| + U.radius) ^ (2 * (d.value : ℝ) + 1 / 2) := by
-      apply Real.rpow_le_rpow
-      · positivity
-      · exact hbase
-      · positivity
-    exact (hbound v hhigh).trans (mul_le_mul_of_nonneg_left hpow hC)
-  calc
-    ‖∫ v : ℝ in -U.radius..U.radius,
-        cglLemma62FarTailIntegrand w N B t M.value d v‖ ≤
-        (C * (1 + |t| + U.radius) ^ (2 * (d.value : ℝ) + 1 / 2)) *
-          |U.radius - (-U.radius)| :=
-      intervalIntegral.norm_integral_le_of_norm_le_const hpoint
-    _ = C * (1 + |t| + U.radius) ^ (2 * (d.value : ℝ) + 1 / 2) *
-        (2 * U.radius) := by
-      have hwidth : |U.radius - (-U.radius)| = 2 * U.radius := by
-        rw [show U.radius - (-U.radius) = 2 * U.radius by ring_nf,
-          abs_of_nonneg (mul_nonneg (by norm_num) U.radius_nonneg)]
-      rw [hwidth]
+        C * (1 + |t| + U.radius) ^ (2 * (d.value : ℝ) + 1 / 2) * (2 * U.radius) :=
+  cglLemma62_farTail_truncated_integral_bound w N B t M d U
 
 /-- The conductor-sensitive CGL `I₂` window estimate with the Euler and
 complementary-tail scales left explicit for the source exponent arithmetic. -/

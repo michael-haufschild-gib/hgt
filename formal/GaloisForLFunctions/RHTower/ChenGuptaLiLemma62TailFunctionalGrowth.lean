@@ -46,7 +46,7 @@ private theorem cglGamma_reverse_half_bound (K : ℕ) :
     _ ≤ c⁻¹ * y ^ (1 / 2 : ℝ) * ‖Complex.Gamma ((a : ℂ) + (y : ℂ) * I)‖ := by gcongr
     _ = (c⁻¹ * y ^ (1 / 2 : ℝ)) * ‖Complex.Gamma ((a : ℂ) + (y : ℂ) * I)‖ := by ring
 
-private theorem cglGamma_add_nat_eq (B : ℂ) (m : ℕ) (hBim : B.im ≠ 0) :
+theorem cglGamma_add_nat_eq (B : ℂ) (m : ℕ) (hBim : B.im ≠ 0) :
     Complex.Gamma (B + (m : ℂ)) =
       (∏ j ∈ Finset.range m, (B + (j : ℂ))) * Complex.Gamma B := by
   induction m with
@@ -64,11 +64,8 @@ private theorem cglGamma_add_nat_eq (B : ℂ) (m : ℕ) (hBim : B.im ≠ 0) :
 
 private theorem cgl_norm_Gamma_real_sub_I_tail (a r : ℝ) :
     ‖Complex.Gamma ((a : ℂ) - (r : ℂ) * I)‖ =
-      ‖Complex.Gamma ((a : ℂ) + (r : ℂ) * I)‖ := by
-  rw [show (a : ℂ) - (r : ℂ) * I =
-      (starRingEnd ℂ) ((a : ℂ) + (r : ℂ) * I) by
-        apply Complex.ext <;> simp,
-    Complex.Gamma_conj, Complex.norm_conj]
+      ‖Complex.Gamma ((a : ℂ) + (r : ℂ) * I)‖ :=
+  cgl_norm_Gamma_real_sub_I a r
 
 private theorem cglGamma_ratio_tail_high (K : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ z : ℂ, ∀ e : ℝ,

@@ -25,89 +25,6 @@ noncomputable section
 namespace RHTower.ExposingRayTransfer
 open WeilSpectral WeilOneSided
 
-private theorem atomicForm_add (b : ℕ → ℝ) (C : ℝ) {k l : ℝ → ℂ}
-    (hk : HasCompactSupport k) (hl : HasCompactSupport l) :
-    atomicForm b C (k+l) = atomicForm b C k + atomicForm b C l := by
-  have ht := (summable_primeAtoms (fun n => if 2 ≤ n then b n else 0) hk).tsum_add
-    (summable_primeAtoms (fun n => if 2 ≤ n then b n else 0) hl)
-  unfold atomicForm
-  simp only [Pi.add_apply]
-  have he : (∑' n : ℕ, ((if 2 ≤ n then b n else 0 : ℝ) : ℂ) *
-      (k (Real.log n) + l (Real.log n) + (k (-Real.log n) + l (-Real.log n)))) =
-      (∑' n : ℕ, ((if 2 ≤ n then b n else 0 : ℝ) : ℂ) *
-        (k (Real.log n) + k (-Real.log n))) +
-      ∑' n : ℕ, ((if 2 ≤ n then b n else 0 : ℝ) : ℂ) *
-        (l (Real.log n) + l (-Real.log n)) := by
-    rw [← ht]
-    apply tsum_congr; intro n; ring
-  rw [he]; ring
-
-private theorem atomicForm_smul (b : ℕ → ℝ) (C : ℝ) (a : ℂ) (k : ℝ → ℂ) :
-    atomicForm b C (a • k) = a * atomicForm b C k := by
-  unfold atomicForm
-  simp only [Pi.smul_apply, smul_eq_mul]
-  rw [mul_sub, ← tsum_mul_left]
-  congr 1
-  · ring
-  · apply tsum_congr; intro n; ring
-
-private theorem atomicForm_zero (b : ℕ → ℝ) (C : ℝ) : atomicForm b C 0 = 0 := by
-  simp [atomicForm]
-
-private theorem atomicForm_sum (b : ℕ → ℝ) (C : ℝ) {ι : Type*}
-    (s : Finset ι) {k : ι → ℝ → ℂ} (hk : ∀ i ∈ s, HasCompactSupport (k i)) :
-    atomicForm b C (∑ i ∈ s, k i) = ∑ i ∈ s, atomicForm b C (k i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [atomicForm_zero]
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha,
-      atomicForm_add b C (hk a (Finset.mem_insert_self a s))
-        (HasCompactSupport.finset_sum fun i hi => hk i (Finset.mem_insert_of_mem hi)),
-      ih fun i hi => hk i (Finset.mem_insert_of_mem hi)]
-
-/-- Exact atomic quadratic form of every finite complex translate packet. -/
-theorem atomicForm_packet (b : ℕ → ℝ) (C : ℝ) {f : ℝ → ℂ}
-    (hf : Continuous f) (hs : HasCompactSupport f) {N : ℕ}
-    (t : Fin N → ℝ) (c : Fin N → ℂ) :
-    atomicForm b C (EF.weilTest (∑ j, c j • WeilSpectral.transl (t j) f) (∑ j, c j • WeilSpectral.transl (t j) f)) =
-      ∑ i, ∑ j, star (c i) * atomicKernel b C f (t j-t i) * c j := by
-  have hcorr := EF.weilTest_hasCompactSupport hs hs
-  have ht (y : ℝ) : HasCompactSupport (WeilSpectral.transl y (EF.weilTest f f)) :=
-    hcorr.comp_homeomorph (Homeomorph.subRight y)
-  have hterms (i j : Fin N) : HasCompactSupport
-      ((star (c i)*c j) • WeilSpectral.transl (t j-t i) (EF.weilTest f f)) := (ht _).smul_left
-  rw [weilTest_sum_transl hf hs,
-    atomicForm_sum b C Finset.univ (fun i _ =>
-      HasCompactSupport.finset_sum (fun j _ => hterms i j))]
-  apply Finset.sum_congr rfl; intro i _
-  rw [atomicForm_sum b C Finset.univ (fun j _ => hterms i j)]
-  apply Finset.sum_congr rfl; intro j _
-  rw [atomicForm_smul, atomicKernel]
-  ring
-
-private theorem farSource_packet (X : ℝ) (f : ℝ → ℂ) :
-    farSource X f = ∑ j : Fin 3,
-      (![1, -(farPolarCoeff X : ℂ)/2, -(farPolarCoeff X : ℂ)/2] j) •
-        WeilSpectral.transl (![0, X, -X] j) f := by
-  funext x
-  simp [farSource, Fin.sum_univ_succ, WeilSpectral.transl, sub_eq_add_neg]
-  ring
-
-private theorem atomicForm_farSource (b : ℕ → ℝ) (C : ℝ) {f : ℝ → ℂ}
-    (hf : Continuous f) (hs : HasCompactSupport f) (X : ℝ) :
-    atomicForm b C (EF.weilTest (farSource X f) (farSource X f)) =
-      atomicKernel b C f 0 - (farPolarCoeff X : ℂ) *
-        (atomicKernel b C f X + atomicKernel b C f (-X)) +
-      (farPolarCoeff X : ℂ)^2/4 *
-        (2*atomicKernel b C f 0 + atomicKernel b C f (2*X) + atomicKernel b C f (-(2*X))) := by
-  rw [farSource_packet, atomicForm_packet b C hf hs]
-  simp [Fin.sum_univ_succ]
-  rw [show -X-X = -(2*X) by ring, show X+X = 2*X by ring]
-  norm_num [map_ofNat]
-  ring
-
-
 private theorem norm_atomicKernel_le_cutoff (b : ℕ → ℝ) {f : ℝ → ℂ} {a M : ℝ}
     (hs : tsupport f ⊆ Icc (-a) a) (hM : ∀ y, ‖EF.weilTest f f y‖ ≤ M)
     {H : ℕ} (hH : 1 ≤ H) {y : ℝ} (hy : |y|+2*a ≤ Real.log H) :
@@ -149,8 +66,7 @@ private theorem norm_atomicKernel_le_cutoff (b : ℕ → ℝ) {f : ℝ → ℂ} 
       have hm := mul_le_mul_of_nonneg_left hh (abs_nonneg (b n))
       nlinarith only [hm]
 
-
-private theorem integrable_logCos {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
+theorem integrable_logCos {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
     (f : WeilTestFn) (x : ℝ) :
     Integrable (fun τ : ℝ =>
       (‖paperFT f.1 τ‖^2*logSpectralWeight β τ)*Real.cos (x*τ)) := by
@@ -452,7 +368,6 @@ theorem logSeparatorKernel_le_cosh {β : ℝ} (hβ : 0 ≤ β) (hβ1 : β < 1)
   · have hh := sub_nonpos.mp (hpos (-x) (by linarith))
     dsimp [d,k] at hh
     simpa only [logSeparatorKernel_neg,neg_div,Real.cosh_neg] using hh
-
 
 /-- Actual translated difference, retaining its compact C2 regularity. -/
 def translatedDifference (x r : ℝ) (f : WeilTestFn) : WeilTestFn :=

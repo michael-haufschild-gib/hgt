@@ -1,0 +1,99 @@
+# Route-P adjacent-prime primitive recovery
+
+- **ID:** `P-G86`
+- **Stage:** `1-in-progress`
+- **Type:** exact weak-kernel inverse-incidence theorem
+- **Status:** `[CORPUS-NEW] [PAPER-PROVED] [LEAN EXACT-BUILT] [UMBRELLA-WIRED] [NOT RH]`
+- **Parent:** `../../5-failed/route-p-adjacent-local-kernel-identification-no-go.md`
+- **Lean target:**
+  `formal/GaloisForLFunctions/RHTower/GammaValuationSchurAdjacentPrimePrimitiveRecovery.lean`
+
+## Conjecture P-G86.A: cumulative adjacent flux recovers complete covariance
+
+For fixed valuation depth `e`, enumerate primes `p_n` and write
+
+```text
+a_n = a(p_n,e),
+P_e(a) = sum_n (n+1)(a_n-a_(n+1)).
+```
+
+Conjecture: `P_e(a)` is absolutely summable for every Deninger Köthe source vector, terminal flux
+`N a_N` vanishes, `P_e(a)` equals P-G78's all-prime layer sum, and replacing every layer sum by
+`P_e` recovers the full weak kernel.
+
+**Verdict: true, unconditionally proved.**
+
+## Paper proof
+
+Strict prime enumeration and `p_n>=n+2` imply
+
+```text
+(n+1)|a_n| <= H(p_n,e)|a_n|.
+```
+
+The right side is a subseries of first Deninger height seminorm, hence the index-weighted
+coordinates are summable. This proves absolute summability of adjacent primitive terms and
+`N a_N -> 0`.
+
+Finite summation by parts gives
+
+```text
+sum_(n<N) (n+1)(a_n-a_(n+1))
+  = sum_(n<N) a_n - N a_N.
+```
+
+Taking limits yields `P_e(a)=sum_p a(p,e)`. Applying this identity to both entries at every depth
+gives exact kernel equality
+
+```text
+AdjacentPrimitiveKernel(a,b) = gammaValuationWeakKernel(a,b).
+```
+
+In particular cumulative primitive restores the prime-index `0`/`2` covariance that P-G85's local
+edge Gram misses.
+
+## New knowledge
+
+P-G86 supplies precise universal principle behind P-G83--P-G85:
+
+```text
+global Gamma covariance = Gram after inverse incidence,
+not sum of local edge Grams.
+```
+
+Prime path is sufficient and canonical, but only after cumulative integration. Source topology is
+essential twice: zeroth seminorm makes P-G78 weak kernel continuous; first seminorm kills path
+boundary flux. This is exact bridge between ordered adjacent-prime geometry and all-prime weak
+Köthe completion.
+
+## Lean realization
+
+Headline declarations:
+
+- `nthPrimeSubtype_index_add_two_le`;
+- `summable_gammaValuationNthPrimeCoord_indexWeight`;
+- `summable_gammaValuationAdjacentPrimitiveTerm`;
+- `gammaValuationAdjacentPrimitive_eq_layerSum`;
+- `gammaValuationAdjacentPrimitiveKernel_eq_weakKernel`;
+- `gammaValuationAdjacentPrimitiveKernel_indexZero_indexTwo_eq_one`.
+
+```text
+lake build GaloisForLFunctions.RHTower.GammaValuationSchurAdjacentPrimePrimitiveRecovery
+Build completed successfully (12742 jobs).
+```
+
+Capstone `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Successor status
+
+P-G87 proves edgewise scalar depletion cannot repair missing nonadjacent covariance. P-G88 proves
+the positive survivor: cumulative primitive first, then global Gram and cofinal scalar reduction,
+is exactly the reduced P-G86/P-G78 weak response. P-G89 proves that covariance-correct scalar still
+cannot be pushed unchanged to compact reciprocal-gap atoms; node-dependent transfer is forced.
+
+## Honest boundary
+
+P-G86 identifies cumulative adjacent incidence with P-G78's abstract weak kernel exactly. P-G88
+now connects P-G84's scalar residual to this global kernel in correct order. Neither result builds
+the node-dependent physical Schur transfer forced by P-G89, proves completed-seam moment equality,
+completes Julia saturation, or proves RH.
