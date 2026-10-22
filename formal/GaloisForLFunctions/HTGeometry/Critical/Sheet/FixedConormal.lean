@@ -88,6 +88,8 @@ theorem criticalSheet_horizonJacobian_mulVec_fixedConormal (σ : criticalGeometr
   criticalSheet_jacobian_eq_horizon_reduced K σ hsing ▸
     criticalSheet_jacobian_mulVec_conormal K σ hsing _ (criticalSchurBranchNonUnit_mem K)
 
+omit [IsAlgClosed K] in
+omit [IsAlgClosed K] in
 /-- **Corank one for the reduced horizon Jacobian at a singular sheet.** -/
 theorem criticalSheet_finrank_ker_horizonJacobian [DecidableEq K]
     (σ : criticalGeometricSheet K m n)
