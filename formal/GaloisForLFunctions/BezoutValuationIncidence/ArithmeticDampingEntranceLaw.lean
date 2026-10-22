@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanWeights
+import GaloisForLFunctions.BezoutValuationIncidence.ArithmeticDampingTransitionKernel
+import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 /-!
 # The arithmetic entrance distribution and its reciprocal-observable tail
@@ -76,8 +78,9 @@ private theorem entrance_power_hasSum {η : ℝ} (hη : 0 < η) :
 private theorem entrance_boundary_tendsto {η : ℝ} (hη : 0 < η) :
     Tendsto (fun N : ℕ => (N : ℝ) * ((N + 1 : ℕ) : ℝ) ^ (-1 - η))
       atTop (𝓝 0) := by
-  have hp := (Real.tendsto_rpow_neg_atTop hη).comp
-    ((tendsto_natCast_atTop_atTop (R := ℝ)).atTop_add_const 1)
+  have hp := (tendsto_rpow_neg_atTop hη).comp
+    (tendsto_atTop_add_const_right atTop (1 : ℝ)
+      (tendsto_natCast_atTop_atTop (R := ℝ)))
   have hr := (tendsto_natCast_div_add_atTop (𝕜 := ℝ) (1 : ℝ)).mul hp
   simp only [mul_zero] at hr
   apply hr.congr
@@ -85,12 +88,13 @@ private theorem entrance_boundary_tendsto {η : ℝ} (hη : 0 < η) :
   have hN : (0 : ℝ) < (N : ℝ) + 1 := by positivity
   have he : ((N : ℝ) + 1) * ((N : ℝ) + 1) ^ (-1 - η) =
       ((N : ℝ) + 1) ^ (-η) := by
-    rw [← Real.rpow_one ((N : ℝ) + 1), ← Real.rpow_add hN]
-    congr 1
-    ring
+    calc
+      _ = ((N : ℝ) + 1) ^ (1 + (-1 - η)) := by
+        rw [Real.rpow_add hN, Real.rpow_one]
+      _ = _ := by congr 1; ring
   push_cast
-  field_simp
-  nlinarith [congrArg (fun x : ℝ => (N : ℝ) * x) he]
+  rw [← he]
+  field_simp [hN.ne']
 
 /-- Total entrance mass equals one, using the actual reciprocal-zeta density. -/
 theorem hasSum_arithmeticDampingEntrance {η : ℝ} (hη : 0 < η) :
@@ -105,7 +109,7 @@ theorem hasSum_arithmeticDampingEntrance {η : ℝ} (hη : 0 < η) :
     induction N with
     | zero => simp
     | succ N ih =>
-      rw [sum_range_succ, sum_range_succ, ih]
+      rw [Finset.sum_range_succ, Finset.sum_range_succ, ih]
       unfold arithmeticDampingEntrance
       push_cast
       ring
@@ -129,15 +133,63 @@ theorem hasSum_arithmeticDampingEntrance_reciprocal_tail {η : ℝ} (hη : 0 < �
     induction M with
     | zero => simp
     | succ M ih =>
-      rw [sum_range_succ, ih, arithmeticDampingEntrance_div η (by omega)]
+      rw [Finset.sum_range_succ, ih, arithmeticDampingEntrance_div η (by omega)]
       simp only [Nat.add_assoc, Nat.add_comm M 1]
       ring
   simp_rw [he]
-  have hp := (Real.tendsto_rpow_neg_atTop (by linarith : 0 < 1 + η)).comp
-    (((tendsto_natCast_atTop_atTop (R := ℝ)).const_add_atTop N).atTop_add_const 1)
+  have hp := (tendsto_rpow_neg_atTop (by linarith : 0 < 1 + η)).comp
+    (tendsto_atTop_add_const_right atTop (1 : ℝ)
+      (tendsto_atTop_add_const_left atTop (N : ℝ)
+        (tendsto_natCast_atTop_atTop (R := ℝ))))
   have h := (tendsto_const_nhds.sub hp).const_mul (pmPowerDampedDivisorDensity η).re
   simpa only [neg_add_rev, neg_one_mul, Nat.cast_add, Nat.cast_one,
     show -(1 + η) = -1 - η by ring, sub_zero] using h
+
+private theorem tendsto_arithmeticDampingPrefix_quotient {η : ℝ} (hη : 0 < η)
+    {d : ℕ} (hd : 0 < d) :
+    Tendsto (fun n : ℕ => arithmeticDampingPrefix η (n / d) / (n : ℝ))
+      atTop (𝓝 ((pmPowerDampedDivisorDensity η).re / (d : ℝ))) := by
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have h := ((tendsto_pmPowerDampedDivisorSum_div_real hη).comp
+    ((tendsto_natCast_atTop_atTop (R := ℝ)).atTop_div_const hd0)).div_const (d : ℝ)
+  apply h.congr
+  intro n
+  dsimp only [Function.comp_def]
+  rw [pmPowerDampedDivisorSum, Nat.floor_div_eq_div, div_div,
+    div_mul_cancel₀ _ hd0.ne']
+  rfl
+
+/-- Every fixed finite state has the exact arithmetic entrance mass at large cutoffs. -/
+theorem tendsto_arithmeticDampingTransition {η : ℝ} (hη : 0 < η) (k : ℕ) :
+    Tendsto (fun n : ℕ => arithmeticDampingTransition η n k) atTop
+      (𝓝 (arithmeticDampingEntrance η k)) := by
+  rcases eq_or_ne k 0 with rfl | hk
+  · simpa using (tendsto_const_nhds (x := (0 : ℝ)) (f := atTop (α := ℕ)))
+  have hkpos : 0 < k := Nat.pos_of_ne_zero hk
+  have h := (((tendsto_arithmeticDampingPrefix_quotient hη hkpos).const_mul
+      ((k : ℝ) ^ (-η))).sub
+    ((tendsto_arithmeticDampingPrefix_quotient hη (Nat.succ_pos k)).const_mul
+      (((k + 1 : ℕ) : ℝ) ^ (-η)))).const_mul (k : ℝ)
+  have hpow {d : ℕ} (hd : 0 < d) :
+      (d : ℝ) ^ (-η) / d = (d : ℝ) ^ (-1 - η) := by
+    have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+    rw [show -1 - η = -η - 1 by ring, Real.rpow_sub hd0, Real.rpow_one]
+  have hval : (k : ℝ) *
+      ((k : ℝ) ^ (-η) * ((pmPowerDampedDivisorDensity η).re / k) -
+        ((k + 1 : ℕ) : ℝ) ^ (-η) *
+          ((pmPowerDampedDivisorDensity η).re / ((k + 1 : ℕ) : ℝ))) =
+      arithmeticDampingEntrance η k := by
+    unfold arithmeticDampingEntrance
+    calc
+      _ = (pmPowerDampedDivisorDensity η).re * k *
+          ((k : ℝ) ^ (-η) / k -
+            ((k + 1 : ℕ) : ℝ) ^ (-η) / ((k + 1 : ℕ) : ℝ)) := by ring
+      _ = _ := by rw [hpow hkpos, hpow (Nat.succ_pos k)]
+  rw [hval] at h
+  apply h.congr
+  intro n
+  unfold arithmeticDampingTransition
+  ring
 
 end
 end GaloisForLFunctions.BezoutValuationIncidence

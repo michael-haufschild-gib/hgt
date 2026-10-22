@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.Sieve.GuthMaynardSmoothedLagSum
 import GaloisForLFunctions.RHTower.ChenGuptaLiSchwartzFourier
 import GaloisForLFunctions.RHTower.Sieve.HeathBrownSparseMeanValueBasic
 import GaloisForLFunctions.HTGeometry.IntegralCauchySchwarz
+import DifferentialGeometry.External.DeGiorgi.Poincare
 
 set_option autoImplicit false
 
@@ -16,8 +17,9 @@ reproduces every exponential sum whose frequencies lie in `[a − L, a + L]`:
 `f(u) = Σ_i c_i e(u x_i) = ∫ k_{a,L}(η) f(u + η) dη`   (`|x_i − a| ≤ L`).
 
 Consequences proved here:
-* `|f(u)|^p ≤ ‖K‖₁^{p−1} ∫ |k_{a,L}(η)| |f(u + η)|^p dη` for `p = 1, 2, 3` (Cauchy–Schwarz with
-  the weight `|k_{a,L}|`);
+* `|f(u)|^p ≤ ‖K‖₁^{p−1} ∫ |k_{a,L}(η)| |f(u + η)|^p dη` for `p = 1, 2, 3` (weighted
+  Cauchy–Schwarz `HTGeometry.sq_integral_weighted_le` and the weighted power mean
+  `DeGiorgi.weighted_power_mean_setIntegral`);
 * truncation at `|η| = δ`:
   `|f(u)| ≤ L ‖K‖_∞ ∫_{−δ}^{δ} |f(u + η)| dη + (Σ_i |c_i|) ∫_{|ξ| > Lδ} |K(ξ)| dξ`, the tail being
   `O_j((Lδ)^{−j})` by the Schwartz decay of `K` (`bandTail_le`);
@@ -268,44 +270,6 @@ theorem norm_finiteFrequencyPoly_le_integral {ι : Type*} (c : ι → ℂ) (s : 
   refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
   simp_rw [norm_mul]
 
-/-- `(∫ ρg)³ ≤ (∫ρ)² ∫ ρg³` for a nonnegative integrable weight `ρ` and a bounded nonnegative
-measurable `g`: two weighted Cauchy–Schwarz steps `(∫ρg)² ≤ (∫ρ)(∫ρg²)`, `(∫ρg²)² ≤ (∫ρg)(∫ρg³)`. -/
-theorem integral_mul_pow_three_le {ρ g : ℝ → ℝ} {B : ℝ} (hρ : ∀ y, 0 ≤ ρ y) (hρi : Integrable ρ)
-    (hg : ∀ y, 0 ≤ g y) (hgB : ∀ y, g y ≤ B) (hgm : AEStronglyMeasurable g) :
-    (∫ y, ρ y * g y) ^ 3 ≤ (∫ y, ρ y) ^ 2 * ∫ y, ρ y * g y ^ 3 := by
-  have hint : ∀ k : ℕ, Integrable fun y => ρ y * g y ^ k := fun k =>
-    hρi.mul_bdd (c := B ^ k) (hgm.pow k) (Filter.Eventually.of_forall fun y => by
-      rw [Real.norm_of_nonneg (pow_nonneg (hg y) k)]
-      exact pow_le_pow_left₀ (hg y) (hgB y) k)
-  have h1 := GaloisForLFunctions.HTGeometry.sq_integral_weighted_le (μ := volume) hρ
-    hρi.aestronglyMeasurable hgm hρi (hint 2)
-  have h2 := GaloisForLFunctions.HTGeometry.sq_integral_weighted_le (μ := volume)
-    (w := fun y => ρ y * g y) (g := g) (fun y => mul_nonneg (hρ y) (hg y))
-    (by simpa using (hint 1).aestronglyMeasurable) hgm (by simpa using hint 1)
-    (by simpa [pow_succ, mul_assoc] using hint 3)
-  have e2 : ∫ y, ρ y * g y * g y = ∫ y, ρ y * g y ^ 2 := by
-    congr 1; funext y; ring
-  have e3 : ∫ y, ρ y * g y * g y ^ 2 = ∫ y, ρ y * g y ^ 3 := by
-    congr 1; funext y; ring
-  rw [e2, e3] at h2
-  set a := ∫ y, ρ y
-  set b := ∫ y, ρ y * g y
-  set c := ∫ y, ρ y * g y ^ 2
-  set d := ∫ y, ρ y * g y ^ 3
-  have ha : 0 ≤ a := integral_nonneg hρ
-  have hb : 0 ≤ b := integral_nonneg fun y => mul_nonneg (hρ y) (hg y)
-  have hc : 0 ≤ c := integral_nonneg fun y => mul_nonneg (hρ y) (pow_nonneg (hg y) 2)
-  have hd : 0 ≤ d := integral_nonneg fun y => mul_nonneg (hρ y) (pow_nonneg (hg y) 3)
-  rcases hb.eq_or_lt with hb0 | hbpos
-  · rw [← hb0, zero_pow (by norm_num)]; positivity
-  · have h4 : b ^ 4 ≤ a ^ 2 * (b * d) := by
-      calc b ^ 4 = (b ^ 2) ^ 2 := by ring
-        _ ≤ (a * c) ^ 2 := pow_le_pow_left₀ (by positivity) h1 2
-        _ = a ^ 2 * c ^ 2 := by ring
-        _ ≤ a ^ 2 * (b * d) := mul_le_mul_of_nonneg_left h2 (by positivity)
-    have : b * b ^ 3 ≤ b * (a ^ 2 * d) := by nlinarith
-    exact le_of_mul_le_mul_left this hbpos
-
 /-- Square and cube forms of the reproducing inequality:
 `|f(u)|² ≤ ‖K‖₁ ∫ |k| |f(u+·)|²` and `|f(u)|³ ≤ ‖K‖₁² ∫ |k| |f(u+·)|³`. -/
 theorem norm_finiteFrequencyPoly_sq_le {ι : Type*} (c : ι → ℂ) (s : Finset ι)
@@ -335,11 +299,33 @@ theorem norm_finiteFrequencyPoly_cube_le {ι : Type*} (c : ι → ℂ) (s : Fins
       bandMass ^ 2 * ∫ η, ‖bandLimitKernel a L η‖ * ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 3 := by
   have hgc : Continuous fun η => ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ :=
     ((Sieve.continuous_finiteFrequencyPoly c s x).comp (continuous_const.add continuous_id)).norm
+  have hρi : Integrable fun η => ‖bandLimitKernel a L η‖ := (integrable_bandLimitKernel hL a).norm
   have h1 := norm_finiteFrequencyPoly_le_integral c s x hL hx u
-  have h3 := integral_mul_pow_three_le (fun η => norm_nonneg (bandLimitKernel a L η))
-    (integrable_bandLimitKernel hL a).norm (fun η => norm_nonneg _)
-    (fun η => norm_finiteFrequencyPoly_le c s x (u + η)) hgc.aestronglyMeasurable
-  rw [integral_norm_bandLimitKernel hL a] at h3
+  have hr3 : ∀ y : ℝ, y ^ (3 : ℝ) = y ^ 3 := fun y => by
+    rw [show (3 : ℝ) = ((3 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  -- weighted power mean (corpus `DeGiorgi.weighted_power_mean_setIntegral`, `p = 3`)
+  have hint3 : IntegrableOn (fun η => ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ (3 : ℝ) *
+      ‖bandLimitKernel a L η‖) univ := by
+    rw [integrableOn_univ]
+    simp_rw [hr3]
+    refine hρi.bdd_mul (c := (∑ i ∈ s, ‖c i‖) ^ 3) (hgc.pow 3).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun η => ?_)
+    rw [Real.norm_of_nonneg (by positivity)]
+    exact pow_le_pow_left₀ (norm_nonneg _) (norm_finiteFrequencyPoly_le c s x (u + η)) 3
+  have h3 := DeGiorgi.weighted_power_mean_setIntegral (μ := volume) MeasurableSet.univ (p := 3)
+    (by norm_num) (fun η => norm_nonneg (Sieve.finiteFrequencyPoly c s x (u + η)))
+    (fun η => norm_nonneg (bandLimitKernel a L η)) hgc.aemeasurable hρi.integrableOn hint3
+  simp only [Measure.restrict_univ] at h3
+  rw [integral_norm_bandLimitKernel hL a, hr3,
+    show (3 : ℝ) - 1 = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast] at h3
+  simp_rw [hr3] at h3
+  have e1 : ∫ η, ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ * ‖bandLimitKernel a L η‖ =
+      ∫ η, ‖bandLimitKernel a L η‖ * ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ := by
+    congr 1; funext η; ring
+  have e2 : ∫ η, ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 3 * ‖bandLimitKernel a L η‖ =
+      ∫ η, ‖bandLimitKernel a L η‖ * ‖Sieve.finiteFrequencyPoly c s x (u + η)‖ ^ 3 := by
+    congr 1; funext η; ring
+  rw [e1, e2] at h3
   calc _ ≤ (∫ η, ‖bandLimitKernel a L η‖ * ‖Sieve.finiteFrequencyPoly c s x (u + η)‖) ^ 3 :=
         pow_le_pow_left₀ (norm_nonneg _) h1 3
     _ ≤ _ := h3

@@ -107,8 +107,13 @@ theorem hbDualBlock_le {N : ℕ} (hN : 1 ≤ N) {j i : ℕ} (hi : i < 3) {J : �
   have hL : 4 * ((2 : ℝ) ^ j / (4 * Real.pi * (2 * (N : ℝ) + 1 / 4))) =
       (4 * (2 : ℝ) ^ j) / (4 * Real.pi * (2 * (N : ℝ) + 1 / 4)) := by ring
   rw [hL, div_le_div_iff₀ (by positivity) hN0]
+  have hJ0 : (0 : ℝ) < (2 : ℝ) ^ J := by positivity
   have h1 : 4 * (2 : ℝ) ^ j * N ≤ 4 * (2 : ℝ) ^ J * N := by nlinarith
-  nlinarith [pow_pos (show (0 : ℝ) < 2 by norm_num) J]
+  have h2 : 4 * (N : ℝ) ≤ 4 * Real.pi * (2 * (N : ℝ) + 1 / 4) := by nlinarith
+  calc 4 * (2 : ℝ) ^ j * N ≤ 4 * (2 : ℝ) ^ J * N := h1
+    _ = (2 : ℝ) ^ J * (4 * N) := by ring
+    _ ≤ (2 : ℝ) ^ J * (4 * Real.pi * (2 * (N : ℝ) + 1 / 4)) :=
+        mul_le_mul_of_nonneg_left h2 hJ0.le
 
 /-- Dividing the four-term bound by the block length. -/
 private theorem block_div_le {C r s u b v : ℝ} (hC : 0 ≤ C) (hb : 0 < b) (hr : 0 ≤ r)
@@ -282,16 +287,14 @@ theorem hbPairSum_Ioc_le_reflected {W : Finset ℝ} (hW : GuthMaynard.IsSeparate
       intro j hj
       calc ∑ i ∈ Finset.range 3, hbDualTerm W N j i ≤ ∑ _i ∈ Finset.range 3, Db :=
             Finset.sum_le_sum fun i hi => hdual j hj i hi
-        _ = 3 * Db := by
-            rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; norm_num
+        _ = 3 * Db := by simp
+    have hcard : (((Finset.Icc 1 (k + 1)).card : ℕ) : ℝ) = ((k + 1 : ℕ) : ℝ) := by
+      simp
     calc ∑ j ∈ Finset.Icc 1 (k + 1), ∑ i ∈ Finset.range 3, hbDualTerm W N j i
         ≤ ∑ _j ∈ Finset.Icc 1 (k + 1), 3 * Db := Finset.sum_le_sum hrow
-      _ = ((k + 1 : ℕ) : ℝ) * (3 * Db) := by
-          rw [Finset.sum_const, Nat.card_Icc, nsmul_eq_mul]
-          congr 2
-          push_cast
-          ring
-      _ = 3 * ((k + 1 : ℕ) : ℝ) * Db := by ring
+      _ = (((Finset.Icc 1 (k + 1)).card : ℕ) : ℝ) * (3 * Db) := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+      _ = 3 * ((k + 1 : ℕ) : ℝ) * Db := by rw [hcard]; ring
   -- the reflected amplitude
   have hamp : hbAmp W (1 / 2) (Finset.Ioc N (2 * N)) ≤
       2 * N * W.card * hbReflFactor T + 900000 * (1 + Real.logb 2 T) ^ 3 * Db := by
@@ -302,7 +305,16 @@ theorem hbPairSum_Ioc_le_reflected {W : Finset ℝ} (hW : GuthMaynard.IsSeparate
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       have hsq : (1 + ((k + 1 : ℕ) : ℝ)) ^ 2 ≤ (1 + (1 + Real.logb 2 T)) ^ 2 :=
         pow_le_pow_left₀ (by linarith) (by linarith) 2
-      nlinarith [sq_nonneg hbReflConst]
+      have hpos1 : (0 : ℝ) ≤ (1 + ((k + 1 : ℕ) : ℝ)) ^ 2 + 1 := by positivity
+      have hmono : ((k + 1 : ℕ) : ℝ) * ((1 + ((k + 1 : ℕ) : ℝ)) ^ 2 + 1) ≤
+          (1 + Real.logb 2 T) * ((1 + (1 + Real.logb 2 T)) ^ 2 + 1) := by
+        calc ((k + 1 : ℕ) : ℝ) * ((1 + ((k + 1 : ℕ) : ℝ)) ^ 2 + 1)
+            ≤ (1 + Real.logb 2 T) * ((1 + ((k + 1 : ℕ) : ℝ)) ^ 2 + 1) :=
+              mul_le_mul_of_nonneg_right hkL hpos1
+          _ ≤ (1 + Real.logb 2 T) * ((1 + (1 + Real.logb 2 T)) ^ 2 + 1) :=
+              mul_le_mul_of_nonneg_left (by linarith) hL0
+      have hc2 : (0 : ℝ) ≤ 12 * hbReflConst ^ 2 := by positivity
+      nlinarith [mul_le_mul_of_nonneg_left hmono hc2]
     have h2 : 300000 * (((k + 1 : ℕ) : ℝ)) ^ 2 *
         ∑ j ∈ Finset.Icc 1 (k + 1), ∑ i ∈ Finset.range 3, hbDualTerm W N j i ≤
         900000 * (1 + Real.logb 2 T) ^ 3 * Db := by
@@ -374,6 +386,78 @@ theorem hbPairSum_Ioc_le_reflected {W : Finset ℝ} (hW : GuthMaynard.IsSeparate
     _ = hbSelfDualConst T δ * Targ := by
         rw [hbSelfDualConst, ← hCany]
         ring
+
+/-- Nonnegativity of the reflected constant. -/
+theorem hbSelfDualConst_nonneg {T δ : ℝ} (hT : 1 ≤ T) (hδ : 0 < δ) : 0 ≤ hbSelfDualConst T δ := by
+  have hc : 0 ≤ hbReflFactor T := le_trans zero_le_one (one_le_hbReflFactor hT)
+  have hS : 0 ≤ hbSmallConst T δ := le_trans zero_le_one (one_le_hbSmallConst hT hδ)
+  have hB : 0 ≤ hbBlockConst T δ (⌈2 * T⌉₊ ^ 2) := hbBlockConst_nonneg hT _
+  have hL : (0 : ℝ) ≤ 1 + Real.logb 2 T := by
+    have := Real.logb_nonneg (b := 2) (by norm_num) hT; linarith
+  rw [hbSelfDualConst]
+  have h1 : (0 : ℝ) ≤ 3600000 * (1 + Real.logb 2 T) ^ 3 := by positivity
+  nlinarith
+
+/-- **Every block length, with the uniform fourth term `|W|^{3/2}T`.**  Below `(2T)^{1/2}` the
+fourth term of `hbPairSum_Ioc_le_anyBlock` is at most `2|W|^{3/2}T`; above it the reflected bound
+applies.  The term is absorbed into Heath-Brown's three terms when `|W|^{1/4}M ≥ T^{1/2}`, as
+`hbPairSum_Ioc_le_middleBlock` absorbs its own when `|W|^{1/4}M ≤ T^{1/2}`. -/
+theorem hbPairSum_Ioc_le_uniform {W : Finset ℝ} (hW : GuthMaynard.IsSeparated 1 W)
+    {T : ℝ} (hT : 1 ≤ T) (hdiam : ∀ t ∈ W, ∀ t' ∈ W, |t - t'| ≤ T) {M : ℕ} (hM : 1 ≤ M)
+    {δ : ℝ} (hδ : 0 < δ) {a : ℕ → ℂ} (ha : ∀ n ∈ Finset.Ioc M (2 * M), ‖a n‖ ≤ 1) :
+    hbPairSum W (Finset.Ioc M (2 * M)) a ≤
+      2 * (hbSelfDualConst T δ + hbSmallConst T δ + hbBlockConst T δ (M ^ 2)) *
+        ((W.card : ℝ) ^ 2 * M + (W.card : ℝ) * (M : ℝ) ^ 2
+          + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * M
+          + (W.card : ℝ) ^ ((3 : ℝ) / 2) * T) := by
+  have hT0 : (0 : ℝ) < T := by linarith
+  have hR0 : (0 : ℝ) ≤ (W.card : ℝ) := Nat.cast_nonneg _
+  have hSD0 : 0 ≤ hbSelfDualConst T δ := hbSelfDualConst_nonneg hT hδ
+  have hS0 : 0 ≤ hbSmallConst T δ := le_trans zero_le_one (one_le_hbSmallConst hT hδ)
+  have hB0 : 0 ≤ hbBlockConst T δ (M ^ 2) := hbBlockConst_nonneg hT _
+  have hm1 : (0 : ℝ) ≤ (W.card : ℝ) ^ 2 * M := by positivity
+  have hm2 : (0 : ℝ) ≤ (W.card : ℝ) * (M : ℝ) ^ 2 := by positivity
+  have hm3 : (0 : ℝ) ≤ (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * M :=
+    mul_nonneg (mul_nonneg (Real.rpow_nonneg hR0 _) (Real.rpow_nonneg hT0.le _))
+      (Nat.cast_nonneg _)
+  have hm4 : (0 : ℝ) ≤ (W.card : ℝ) ^ ((3 : ℝ) / 2) * T :=
+    mul_nonneg (Real.rpow_nonneg hR0 _) hT0.le
+  rcases lt_or_ge (2 * T) ((M : ℝ) ^ 2) with hcase | hcase
+  · -- above the self-dual length: the reflected bound
+    refine (hbPairSum_Ioc_le_reflected hW hT hdiam hM hcase hδ ha).trans ?_
+    have h1 : hbSelfDualConst T δ ≤
+        2 * (hbSelfDualConst T δ + hbSmallConst T δ + hbBlockConst T δ (M ^ 2)) := by linarith
+    exact mul_le_mul_of_nonneg_right h1 (by linarith)
+  · -- below it: the fourth term of `anyBlock` is at most `2|W|^{3/2}T`
+    refine (hbPairSum_Ioc_le_anyBlock hW hT hdiam hM hδ ha).trans ?_
+    have hfour : (W.card : ℝ) ^ ((3 : ℝ) / 2) * (M : ℝ) ^ 2 ≤
+        2 * ((W.card : ℝ) ^ ((3 : ℝ) / 2) * T) := by
+      have h0 : (0 : ℝ) ≤ (W.card : ℝ) ^ ((3 : ℝ) / 2) := Real.rpow_nonneg hR0 _
+      nlinarith
+    have hsum : (W.card : ℝ) ^ 2 * M + (W.card : ℝ) * (M : ℝ) ^ 2
+        + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * M
+        + (W.card : ℝ) ^ ((3 : ℝ) / 2) * (M : ℝ) ^ 2 ≤
+      2 * ((W.card : ℝ) ^ 2 * M + (W.card : ℝ) * (M : ℝ) ^ 2
+        + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * M
+        + (W.card : ℝ) ^ ((3 : ℝ) / 2) * T) := by linarith
+    have hconst : hbSmallConst T δ + hbBlockConst T δ (M ^ 2) ≤
+        hbSelfDualConst T δ + hbSmallConst T δ + hbBlockConst T δ (M ^ 2) := by linarith
+    calc (hbSmallConst T δ + hbBlockConst T δ (M ^ 2)) *
+          ((W.card : ℝ) ^ 2 * M + (W.card : ℝ) * (M : ℝ) ^ 2
+            + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * M
+            + (W.card : ℝ) ^ ((3 : ℝ) / 2) * (M : ℝ) ^ 2)
+        ≤ (hbSelfDualConst T δ + hbSmallConst T δ + hbBlockConst T δ (M ^ 2)) *
+            (2 * ((W.card : ℝ) ^ 2 * M + (W.card : ℝ) * (M : ℝ) ^ 2
+              + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * M
+              + (W.card : ℝ) ^ ((3 : ℝ) / 2) * T)) := by
+          refine mul_le_mul hconst hsum ?_ (by linarith)
+          have h2 : (0 : ℝ) ≤ (W.card : ℝ) ^ ((3 : ℝ) / 2) * (M : ℝ) ^ 2 :=
+            mul_nonneg (Real.rpow_nonneg hR0 _) (by positivity)
+          linarith
+      _ = 2 * (hbSelfDualConst T δ + hbSmallConst T δ + hbBlockConst T δ (M ^ 2)) *
+            ((W.card : ℝ) ^ 2 * M + (W.card : ℝ) * (M : ℝ) ^ 2
+              + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * M
+              + (W.card : ℝ) ^ ((3 : ℝ) / 2) * T) := by ring
 
 end
 

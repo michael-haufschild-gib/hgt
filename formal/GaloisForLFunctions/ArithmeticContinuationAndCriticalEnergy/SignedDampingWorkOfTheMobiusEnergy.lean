@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.CriticalEnergyFamilies
+import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.TheDampedMobiusCriticalEnergy
 import GaloisForLFunctions.BezoutValuationIncidence.DampingWorkAsArithmeticMarkovBoundaryFlux
 
 /-!

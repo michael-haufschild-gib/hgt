@@ -439,7 +439,7 @@ g_d(n)=\frac{\lfloor n/d\rfloor}{n}-\frac1d
 \]
 To exclude other nonzero eigenvalues, use compactness and an eigenvector \(f\). Subtract \(f(1)\); the first nonzero coordinate of the resulting triangular eigen-equation forces \(\lambda=d^{-t}\). The case \(\lambda=1\) would make the original sequence constant and hence zero in \(c_0\).
 
-These sampled Nyman–Beurling profiles are already present in the corpus's [fractional-part expansion](../../../formal/GaloisForLFunctions/RHTower/PMPowerDampedMobiusNymanSeries.lean). Their norms satisfy
+These sampled Nyman–Beurling profiles are already present in the corpus's [fractional-part expansion](../../../formal/GaloisForLFunctions/RHTower/PMPowerDampedMobiusNymanSeries.lean). For \(d\ge2\), their norms satisfy
 \[
 \|g_d\|_\infty=1/d,\qquad
 \|g_d\|_{\ell^2(w)}^2\asymp1/d.
@@ -453,6 +453,18 @@ converges absolutely in \(c_0\) for all \(t>0\), whereas the unsigned Hilbert tr
 This supplies a precise generic no-go: no finite backward logarithmic-energy coefficient can work uniformly on the whole linear span of the \(g_d\). Their backward quadratic growth rates are \(2\log d\), unbounded. For the affine bound \(b(1+E)\), scale each mode to the same positive energy at the damping being tested; the unscaled profiles alone do not refute that bound. Changing to another fixed positive quadratic norm preserves the eigenrates. The same normalization defeats a generic Osgood bound. It does **not** defeat a bound restricted to the single Möbius orbit.
 
 There is also no bounded imaginary-time extension of these eigenmultipliers on \(c_0\). The normalized vectors \(e_d=dg_d\) have norm 1 and converge coordinatewise to the constant \(-1\). For any bounded linear operator \(T:c_0\to\ell^\infty\), each output coordinate is an \(\ell^1\) functional, so \((Te_d)(n)\) converges by dominated convergence. If \(Tg_d=d^{-i\tau}g_d\), that coordinate equals \(-d^{-i\tau}\) for \(d>n\), which has no limit when \(\tau\ne0\). This is a \(c_0\) obstruction, not a substitute for a Hilbert-space theorem.
+
+The interior nevertheless has a stronger positive result: \(R_z\) is compact and operator-holomorphic on complex \(c_0\) for every \(\Re z>0\). Here the same formulas define a complex kernel and entrance functional. Fix \(0<a<1\) below the real parts on a compact parameter set. Since
+\[
+|f_z(m)|\le\sum_{d\mid m}d^{-a},\qquad |S_z(N)|\le\zeta(1+a)N,
+\]
+splitting the kernel difference into a power difference and a prefix increment gives
+\[
+\sup_n\sum_{k>K}|K_z(n,k)|
+\le\zeta(1+a)\left(
+ |z|\sum_{k>K}k^{-a-1}+\frac1{a(K+1)^a}\right).
+\]
+The second term follows by summing the prefix increments over \(m\le n/(K+1)\) and exchanging \(m=d\ell\). Uniform tails and locally uniform coordinate limits yield locally uniform convergence of centered rows in total variation. Rectangular finite-rank truncations therefore converge locally in operator norm, proving both compactness and holomorphy. These bounds deteriorate as \(a\downarrow0\); no bounded-sector estimate at zero is asserted. Interior analyticity in \(c_0\) still supplies no critical Hilbert bound.
 
 The compact semigroup, spectrum and domain statements above are paper results, not newly compiled Lean theorems. Standard incidence conjugation and Markov oscillation methods have established parent theories. Bounded searches did not establish priority for this exact arithmetic package. [Lorek–Szekli](https://link.springer.com/article/10.1007/s11134-012-9284-z), [Gaubert–Qu](https://arxiv.org/abs/1302.5226)
 
@@ -482,6 +494,8 @@ E'_T(t)=2\sum_{n\le T}\frac{B_t(n)}{n(n+1)}
 \]
 The first term is paid uniformly on compact damping intervals. The second is the precise unpaid covariance.
 
+This is not an information-theoretic failure of all scalar traces. The corpus already proves that the entire logarithmic-moment hierarchy determines a damped coefficient sequence at every \(d\ge2\); the remaining unit mass is invisible to the receiver. For the actual orbit these moments are, up to the derivative signs, the hierarchy \(r_t^{(m+1)}\). Thus every receiver parity pair is separated by some moment. What is missing is a quantitative reconstruction estimate in critical energy, with constants that pay (W). Uniqueness by analytic continuation supplies no such stability estimate. See [LogarithmicMomentsAreACompleteReceiverInvariant.lean](../../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/LogarithmicMomentsAreACompleteReceiverInvariant.lean), especially eq_add_unitMass_of_logMoments_eq and exists_logMoment_ne.
+
 At zero damping, the continuous finite-coordinate limits are \(A_0(n)=1\) and \(B_0(n)=\psi(n)-n\). Existing absolute harmonic cancellation proves
 \[
 \sum_{n\ge1}\frac{\psi(n)-n}{n(n+1)}=-2\gamma.
@@ -499,6 +513,55 @@ D_T(t)/t^2\longrightarrow
 \sum_{n\le T}\frac{(\psi(n)-n)^2}{n(n+1)},
 \]
 and the right-hand horizons are unbounded. Finite signed first work coexists with singular residual curvature. See `tendsto_dual_residual_div_sq` in [DampedChebyshevTangentFormOfTheReceiver.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/DampedChebyshevTangentFormOfTheReceiver.lean).
+
+There is a sharper unconditional boundary statement. Put \(D(t)=\sup_TD_T(t)\), allowing \(+\infty\). For every critical-line zero \(\rho\) of multiplicity \(m\ge1\), and every \(c>0\),
+\[
+\liminf_{t\downarrow0}\frac{D(t)}t
+\ge
+\frac{2c\bigl[1-(c/(c+1))^m\bigr]^2}{|\rho|^2}.
+\tag{Cusp}
+\]
+In particular, \(c=1\) gives a lower bound at least
+\(\kappa_\rho=1/(2|\rho|^2)>0\). Thus the residual has at least linear energy growth, stronger than the failure of a uniform quadratic tangent bound.
+
+Here is a proof that does not assume admission. For each damping with \(D(t)<\infty\), the exact step residual
+\[
+q_t(x)=S_t(\lfloor x\rfloor)-r_t\lfloor x\rfloor-1,\qquad x\ge1,
+\]
+has squared norm \(D(t)\) in \(L^2(dx/x^2)\). Its Mellin transform is holomorphic for \(\Re s>1/2\), and continuation from \(\Re s>1\) gives
+\[
+F_t(s)=\frac{\zeta(s)\bigl(\zeta(s+t)^{-1}-r_t\bigr)-1}{s}.
+\]
+The floor correction is retained: its transform is \(r_t\zeta(s)/s\).
+Cauchy–Schwarz gives
+\[
+D(t)\ge(2\Re s-1)|F_t(s)|^2.
+\]
+Evaluate at \(s=\rho+ct\). Local factorization at the isolated zero gives
+\[
+F_t(\rho+ct)\longrightarrow
+\frac{(c/(c+1))^m-1}{\rho}.
+\]
+For sufficiently small positive \(t\), the denominator zero at \(\rho\) has been shifted away from this evaluation point. Dividing by \(t\) proves (Cusp). When \(D(t)=+\infty\), the lower bound is automatic; continuation was needed only separately at the finite-energy dampings. No interval of admission was assumed.
+
+This object is classical: \(F_t=H_t-1/s\) for the explicit damped Hardy-space family in [Bagchi's 2005 survey, proof of Theorem 2](https://www.isibang.ac.in/~statmath/eprints/2005/isibc200535.pdf). The lower bound above is a deduction from local zero factorization and Hardy evaluation, not a claim of a new proof mechanism or established novelty.
+
+The trace discrepancy can now be quantified. Absolute convergence of (H) gives, in extended values,
+\[
+D(t)=E(t)-2r'_t+1,\qquad E(t)=\sup_TE_T(t).
+\]
+The reciprocal-zeta expansion gives \(r'_t=1-2\gamma t+O(t^2)\). Hence
+\[
+\liminf_{t\downarrow0}\frac{E(t)-1}{t}
+\ge-4\gamma+\kappa_\rho>-4\gamma.
+\]
+Thus (Z) cannot equal a finite right derivative of the full energy. Moreover, the finite-horizon identity \(D'_T=2\sum_{n\le T}(A_t(n)-1)B_t(n)/[n(n+1)]\) implies
+\[
+\limsup_{t\downarrow0}\sup_T
+\sum_{n\le T}\frac{(A_t(n)-1)B_t(n)}{n(n+1)}
+\ge\kappa_\rho/2.
+\]
+Otherwise integrating a smaller uniform upper bound from zero would contradict (Cusp). Each fixed-horizon covariance tends to zero, so positive work escapes to growing horizons. Its sign matters: this is a positive-work lower bound at zero, not a failure of the negative-work estimate (C) on compact positive-damping intervals. These sharper boundary statements are paper results awaiting formalization.
 
 ### 6. Two additional shortcuts fail precisely
 
@@ -520,7 +583,7 @@ It follows absolutely from \(f_t*(j^{-t})=1\) and \(r_t\zeta(1+t)=1\). Applying 
 
 The stronger owned block theorems were also checked. Their improvement is real: for each fixed \(\delta>0\), sufficiently large \(Q\) permits uniform estimates over all eligible growing prime packets and coefficients, with primes above a logarithmic threshold. The dual estimate also retains all sign choices. However, cubic and quartic errors remain; no rate permits choosing \(\delta=\delta(Q)\); and the estimate has neither all composite/cofactor interactions nor the differentiated damping weights needed in (W). Its normalization is the large-sieve packet scale, which can exceed complete energy by an unbounded factor. See [the Möbius Type-II improvement](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/MoebiusBlockBeatsTheTypeTwoBarrier.lean) and [the actual-row dual bound](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/DualNormOfTheActualRowsBeatsTheLargeSieve.lean).
 
-The complementary-sector proof likewise uses more than a qualitative Mertens estimate. For fixed \(0<t<1/2\), its remainder-energy argument gives a constant term plus \(O_t(P^{(1-2t)/2})+O_t(P^{1-2t}/\log^8P)\); the finite denominator approximation also contributes \(O_t(P^{1-3t})\). These still allow positive-power growth. Their pointwise damping asymptotics cannot be differentiated without new uniform estimates. Finally, the owned short-window power-saving statement is equivalent to \(\Theta<1\); its proof transfers an assumed saving \(\delta\) at window exponent \(\alpha\) to width at most \(\max(1-\delta/2,\alpha)\). It does not prove that saving. [Complementary cancellation](../../../formal/GaloisForLFunctions/RHTower/PMRamanujanComplementaryCancellation.lean), [short-window equivalence](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis.lean)
+The complementary-sector proof likewise uses more than a qualitative Mertens estimate. For fixed \(0<t<1/2\), its remainder-energy argument gives a constant term plus \(O_t(P^{(1-2t)/2})+O_t(P^{1-2t}/\log^8P)\); the finite denominator approximation also contributes \(O_t(P^{1-3t})\). These still allow positive-power growth. Their pointwise damping asymptotics cannot be differentiated without new uniform estimates. Finally, the owned short-window power-saving statement is equivalent to \(\Theta<1\); its proof transfers an assumed saving \(\delta\) at window exponent \(\alpha\) to zero abscissa at most \(\max(1-\delta/2,\alpha)\). It does not prove that saving. [Complementary cancellation](../../../formal/GaloisForLFunctions/RHTower/PMRamanujanComplementaryCancellation.lean), [short-window equivalence](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis.lean)
 
 ### 7. A quantitative survivor if the width were positive
 
@@ -555,4 +618,6 @@ The original opportunity is **not retired and not proved**. The strongest remain
 
 The finite generator and exact energy balance are now formalized in [DampingWorkAsArithmeticMarkovBoundaryFlux.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/DampingWorkAsArithmeticMarkovBoundaryFlux.lean). The final targeted Lean audit exited 0 without warnings, and the module is wired into the BVI umbrella. The main result, hasDerivAt_pmPowerDampedDivisorDiscreteEnergy_markov, proves the derivative of the original energy equals the full signed flux minus nonnegative jump energy minus the exact density work. Its flux is expressed as finite jump sums; displayed incoming-column form (MF) is the paper reindexing of that identity. The module also proves the literal source ODE, centering law and rate conservation.
 
-The iterated zero-damping signed-work trace and the finite transition kernel are undergoing separate targeted formalization. The infinite-dimensional semigroup, analytic-family synthesis and energy-exponent laws above remain paper results. No full or umbrella build is being run. These auxiliary results do not close (C).
+The iterated zero-damping signed-work trace is formalized in [ZeroDampingSignedWorkHasFiniteHarmonicTrace.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ZeroDampingSignedWorkHasFiniteHarmonicTrace.lean). Its final targeted Lean audit exited 0 without warnings, and the module is wired into the umbrella. It proves absolute convergence to \(-4\gamma\) after taking damping to zero at each fixed horizon; it does not interchange the limits.
+
+The finite transition kernel and entrance distribution are undergoing separate targeted formalization. The infinite-dimensional semigroup, analytic-family synthesis and energy-exponent laws above remain paper results. No full or umbrella build is being run. These auxiliary results do not close (C).

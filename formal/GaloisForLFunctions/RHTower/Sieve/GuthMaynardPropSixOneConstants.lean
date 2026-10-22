@@ -46,7 +46,7 @@ theorem exists_blockConst_divisor_le {ε a b : ℝ} (hε : 0 < ε) (ha : 4 ≤ a
   have hexpδ : b * δ ≤ ε / 20 := by
     rw [hδdef]
     have he : b * (ε / (20 * (b + 1))) = (b / (b + 1)) * (ε / 20) := by
-      field_simp; ring
+      field_simp
     rw [he]
     nlinarith
   have hexp2 : 2 * b * δ ≤ ε := by
@@ -66,30 +66,24 @@ theorem exists_blockConst_divisor_le {ε a b : ℝ} (hε : 0 < ε) (ha : 4 ≤ a
         _ = (8 * a) ^ δ * (T ^ b) ^ δ := Real.mul_rpow (by positivity) hTb
         _ = (8 * a) ^ δ * T ^ (b * δ) := by rw [← Real.rpow_mul hT0.le]
     have hbd : (0 : ℝ) ≤ (8 * a) ^ δ := Real.rpow_nonneg (by positivity) _
-    have hTbδ : T ^ (b * δ) ≤ T ^ (ε / 20) :=
-      Real.rpow_le_rpow_of_exponent_le hT hexpδ
-    have hTsmall : T ^ (ε / 20) ≤ T ^ (ε / 2) := by
-      refine Real.rpow_le_rpow_of_exponent_le hT ?_
-      linarith
     have hten : (D * ((8 * L : ℕ) : ℝ) ^ δ) ^ 10 ≤ D ^ 10 * (8 * a) ^ (10 * δ) * T ^ (ε / 2) := by
       have hmul : D * ((8 * L : ℕ) : ℝ) ^ δ ≤ D * ((8 * a) ^ δ * T ^ (b * δ)) :=
         mul_le_mul_of_nonneg_left hstep hD
       have h0 : (0 : ℝ) ≤ D * ((8 * L : ℕ) : ℝ) ^ δ := by positivity
-      have hpow := pow_le_pow_left₀ h0 hmul 10
-      refine hpow.trans (le_of_eq ?_ |>.trans ?_)
-      · exact (by ring : (D * ((8 * a) ^ δ * T ^ (b * δ))) ^ 10 =
-          D ^ 10 * ((8 * a) ^ δ) ^ 10 * (T ^ (b * δ)) ^ 10)
-      · have e1 : ((8 * a : ℝ) ^ δ) ^ 10 = (8 * a) ^ (10 * δ) := by
-          rw [← Real.rpow_natCast ((8 * a : ℝ) ^ δ) 10, ← Real.rpow_mul (by positivity)]
-          congr 1; push_cast; ring
-        have e2 : ((T ^ (b * δ)) : ℝ) ^ 10 = T ^ (10 * (b * δ)) := by
-          rw [← Real.rpow_natCast (T ^ (b * δ)) 10, ← Real.rpow_mul hT0.le]
-          congr 1; push_cast; ring
-        rw [e1, e2]
-        have hle : T ^ (10 * (b * δ)) ≤ T ^ (ε / 2) :=
-          Real.rpow_le_rpow_of_exponent_le hT (by linarith)
-        have h0' : (0 : ℝ) ≤ D ^ 10 * (8 * a) ^ (10 * δ) := by positivity
-        exact mul_le_mul_of_nonneg_left hle h0'
+      have e1 : ((8 * a : ℝ) ^ δ) ^ 10 = (8 * a) ^ (10 * δ) := by
+        rw [← Real.rpow_natCast ((8 * a : ℝ) ^ δ) 10, ← Real.rpow_mul (by positivity)]
+        congr 1; push_cast; ring
+      have e2 : ((T ^ (b * δ)) : ℝ) ^ 10 = T ^ (10 * (b * δ)) := by
+        rw [← Real.rpow_natCast (T ^ (b * δ)) 10, ← Real.rpow_mul hT0.le]
+        congr 1; push_cast; ring
+      have hle : T ^ (10 * (b * δ)) ≤ T ^ (ε / 2) :=
+        Real.rpow_le_rpow_of_exponent_le hT (by linarith)
+      have h0' : (0 : ℝ) ≤ D ^ 10 * (8 * a) ^ (10 * δ) := by positivity
+      calc (D * ((8 * L : ℕ) : ℝ) ^ δ) ^ 10 ≤ (D * ((8 * a) ^ δ * T ^ (b * δ))) ^ 10 :=
+            pow_le_pow_left₀ h0 hmul 10
+        _ = D ^ 10 * ((8 * a : ℝ) ^ δ) ^ 10 * ((T ^ (b * δ)) : ℝ) ^ 10 := by ring
+        _ = D ^ 10 * (8 * a) ^ (10 * δ) * T ^ (10 * (b * δ)) := by rw [e1, e2]
+        _ ≤ D ^ 10 * (8 * a) ^ (10 * δ) * T ^ (ε / 2) := mul_le_mul_of_nonneg_left hle h0'
     have hTe2 : (1 : ℝ) ≤ T ^ (ε / 2) := Real.one_le_rpow hT (by positivity)
     have hfirst : (D * ((8 * L : ℕ) : ℝ) ^ δ) ^ 10 + 1 ≤
         (D ^ 10 * (8 * a) ^ (10 * δ) + 1) * T ^ (ε / 2) := by

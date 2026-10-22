@@ -1,4 +1,5 @@
 import GaloisForLFunctions.BezoutValuationIncidence.DampingWorkAsArithmeticMarkovBoundaryFlux
+import GaloisForLFunctions.RHTower.Sieve.MoebiusScaledReindex
 
 /-!
 # Finite arithmetic damping transition kernel
@@ -38,7 +39,7 @@ private theorem adtTwist_one (η : ℝ) : adtTwist η 1 = 1 := by
   ext n
   change (1 : ArithmeticFunction ℝ) n * (n : ℝ) ^ (-η) =
     (1 : ArithmeticFunction ℝ) n
-  by_cases hn : n = 1 <;> simp [hn, ArithmeticFunction.one_apply]
+  by_cases hn : n = 1 <;> simp [hn]
 
 private theorem adtTwist_moebius_zeta (η : ℝ) (n : ℕ) :
     (adtTwist η ((moebius : ArithmeticFunction ℤ) : ArithmeticFunction ℝ) *
@@ -59,7 +60,11 @@ theorem arithmeticDamping_divisor_mass (η : ℝ) {n : ℕ} (hn : 0 < n) :
     rw [← mul_assoc, ← adtTwist_mul, coe_zeta_mul_coe_moebius,
       adtTwist_one, one_mul]
   have he := congrArg (fun f : ArithmeticFunction ℝ => f n) h
-  rw [ArithmeticFunction.mul_apply, Nat.sum_divisorsAntidiagonal] at he
+  rw [ArithmeticFunction.mul_apply,
+    Nat.sum_divisorsAntidiagonal (f := fun a b =>
+      adtTwist η ((zeta : ArithmeticFunction ℕ) : ArithmeticFunction ℝ) a *
+        (adtTwist η ((moebius : ArithmeticFunction ℤ) : ArithmeticFunction ℝ) *
+          ((zeta : ArithmeticFunction ℕ) : ArithmeticFunction ℝ)) b)] at he
   simp_rw [adtTwist_moebius_zeta] at he
   have hz : (((zeta : ArithmeticFunction ℕ) : ArithmeticFunction ℝ) n) = 1 := by
     simp [natCoe_apply, zeta_apply_ne hn.ne']
@@ -68,7 +73,7 @@ theorem arithmeticDamping_divisor_mass (η : ℝ) {n : ℕ} (hn : 0 < n) :
   apply sum_congr rfl
   intro d hd
   have hd0 : d ≠ 0 := (Nat.pos_of_mem_divisors hd).ne'
-  simp [adtTwist, natCoe_apply, zeta_apply_ne hd0]
+  simp [adtTwist, natCoe_apply, hd0]
 
 theorem arithmeticDampingPrefix_nonneg {η : ℝ} (hη : 0 ≤ η) (n : ℕ) :
     0 ≤ arithmeticDampingPrefix η n :=
@@ -153,4 +158,221 @@ theorem arithmeticDampingTransition_sum (η : ℝ) {n : ℕ} (hn : 0 < n) :
   rw [← sum_div, adt_weighted_telescope, arithmeticDampingPrefix_weighted_sum]
   simp [Nat.div_eq_of_lt (Nat.lt_succ_self n), arithmeticDampingPrefix, hn0]
 
+@[simp] theorem arithmeticDampingPrefix_zero (η : ℝ) :
+    arithmeticDampingPrefix η 0 = 0 := by
+  simp [arithmeticDampingPrefix]
+
+@[simp] theorem arithmeticDampingPrefix_one (η : ℝ) :
+    arithmeticDampingPrefix η 1 = 1 := by
+  simp [arithmeticDampingPrefix, pmPowerDampedDivisorCoeff_one]
+
+theorem arithmeticDampingTransition_diagonal (η : ℝ) {n : ℕ} (hn : 0 < n) :
+    arithmeticDampingTransition η n n = (n : ℝ) ^ (-η) := by
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  simp [arithmeticDampingTransition, Nat.div_self hn,
+    Nat.div_eq_of_lt (Nat.lt_succ_self n), hn0]
+
+private theorem adt_prefix_zero_damping {n : ℕ} (hn : 0 < n) :
+    arithmeticDampingPrefix 0 n = 1 := by
+  unfold arithmeticDampingPrefix
+  simp_rw [pmPowerDampedDivisorCoeff_zero_damping]
+  rw [sum_ite_eq']
+  simp [hn.ne']
+
+/-- Zero damping is the identity on every positive finite state space. -/
+theorem arithmeticDampingTransition_zero_damping {n : ℕ} (hn : 0 < n) (k : ℕ) :
+    arithmeticDampingTransition 0 n k = if k = n then 1 else 0 := by
+  by_cases hkn : k = n
+  · subst k
+    simp [arithmeticDampingTransition_diagonal _ hn]
+  rw [if_neg hkn]
+  rcases eq_or_ne k 0 with rfl | hk
+  · simp
+  by_cases hnk : n < k
+  · exact arithmeticDampingTransition_eq_zero_of_lt _ hnk
+  have hkpos : 0 < k := Nat.pos_of_ne_zero hk
+  have hq : 0 < n / k := Nat.div_pos (by omega) hkpos
+  have hq' : 0 < n / (k + 1) := Nat.div_pos (by omega) (by omega)
+  simp [arithmeticDampingTransition, adt_prefix_zero_damping hq,
+    adt_prefix_zero_damping hq']
+
+private theorem adt_telescope (a : ℕ → ℝ) (n : ℕ) :
+    (∑ k ∈ Icc 1 n, (a k - a (k + 1))) = a 1 - a (n + 1) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [sum_Icc_succ_top (by omega), ih]
+    ring
+
+/-- Applying the transition to `1/k` recovers the literal normalized divisor
+prefix, rather than a substituted or freely chosen source. -/
+theorem arithmeticDampingTransition_source (η : ℝ) {n : ℕ} (hn : 0 < n) :
+    (∑ k ∈ Icc 1 n, arithmeticDampingTransition η n k / k) =
+      arithmeticDampingMean η n := by
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  have he (k : ℕ) (hk : k ∈ Icc 1 n) :
+      arithmeticDampingTransition η n k / k =
+        ((k : ℝ) ^ (-η) * arithmeticDampingPrefix η (n / k) -
+          ((k + 1 : ℕ) : ℝ) ^ (-η) * arithmeticDampingPrefix η (n / (k + 1))) / n := by
+    have hkpos : 0 < k := (mem_Icc.mp hk).1
+    have hk0 : (k : ℝ) ≠ 0 := by exact_mod_cast hkpos.ne'
+    unfold arithmeticDampingTransition
+    field_simp
+  rw [sum_congr rfl he, ← sum_div, adt_telescope]
+  simp [Nat.div_eq_of_lt (Nat.lt_succ_self n), arithmeticDampingMean]
+
+/-- The sampled normalized floor profile. -/
+def arithmeticDampingFloorProfile (d n : ℕ) : ℝ := (n / d : ℕ) / (n : ℝ)
+
+private theorem adt_floor_telescope (a : ℕ → ℝ) (n d : ℕ) :
+    (∑ k ∈ Icc 1 n, (a k - a (k + 1)) * (k / d : ℕ)) =
+      (∑ k ∈ Icc 1 n, if d ∣ k then a k else 0) -
+        (n / d : ℕ) * a (n + 1) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [sum_Icc_succ_top (by omega), sum_Icc_succ_top (by omega), ih]
+    by_cases h : d ∣ n + 1 <;> simp [Nat.succ_div, h] <;> ring
+
+/-- Every floor profile is an exact finite eigenfunction. The identity holds
+for all real damping; positivity is needed only for the Markov interpretation. -/
+theorem arithmeticDampingTransition_floorProfile (η : ℝ) {n d : ℕ}
+    (hn : 0 < n) (hd : 0 < d) :
+    (∑ k ∈ Icc 1 n,
+      arithmeticDampingTransition η n k * arithmeticDampingFloorProfile d k) =
+      (d : ℝ) ^ (-η) * arithmeticDampingFloorProfile d n := by
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  have he (k : ℕ) (hk : k ∈ Icc 1 n) :
+      arithmeticDampingTransition η n k * arithmeticDampingFloorProfile d k =
+        (((k : ℝ) ^ (-η) * arithmeticDampingPrefix η (n / k) -
+          ((k + 1 : ℕ) : ℝ) ^ (-η) * arithmeticDampingPrefix η (n / (k + 1))) *
+          (k / d : ℕ)) / n := by
+    have hkpos : 0 < k := (mem_Icc.mp hk).1
+    have hk0 : (k : ℝ) ≠ 0 := by exact_mod_cast hkpos.ne'
+    unfold arithmeticDampingTransition arithmeticDampingFloorProfile
+    field_simp
+  rw [sum_congr rfl he, ← sum_div, adt_floor_telescope]
+  simp only [Nat.div_eq_of_lt (Nat.lt_succ_self n), arithmeticDampingPrefix_zero,
+    mul_zero, sub_zero]
+  rw [← sum_filter, Sieve.sum_filter_dvd_eq_sum_scaled hd]
+  have hm (j : ℕ) :
+      ((d * j : ℕ) : ℝ) ^ (-η) * arithmeticDampingPrefix η (n / (d * j)) =
+        (d : ℝ) ^ (-η) * ((j : ℝ) ^ (-η) *
+          arithmeticDampingPrefix η ((n / d) / j)) := by
+    have hp := (pmNaturalRpowHom η).map_mul d j
+    change ((d * j : ℕ) : ℝ) ^ (-η) = (d : ℝ) ^ (-η) * (j : ℝ) ^ (-η) at hp
+    rw [hp, Nat.div_div_eq_div_mul]
+    ring
+  simp_rw [hm]
+  rw [← mul_sum, arithmeticDampingPrefix_weighted_sum]
+  unfold arithmeticDampingFloorProfile
+  ring
+
+@[simp] theorem arithmeticDampingFloorProfile_zero (d : ℕ) :
+    arithmeticDampingFloorProfile d 0 = 0 := by
+  simp [arithmeticDampingFloorProfile]
+
+theorem arithmeticDampingFloorProfile_eq_zero_of_lt {d n : ℕ} (h : n < d) :
+    arithmeticDampingFloorProfile d n = 0 := by
+  simp [arithmeticDampingFloorProfile, Nat.div_eq_of_lt h]
+
+theorem arithmeticDampingFloorProfile_self {d : ℕ} (hd : 0 < d) :
+    arithmeticDampingFloorProfile d d = 1 / (d : ℝ) := by
+  simp [arithmeticDampingFloorProfile, Nat.div_self hd]
+
+/-- Floor-profile moments determine a finite row. -/
+theorem arithmeticDampingFloorProfile_separates (n : ℕ) (v : ℕ → ℝ)
+    (h : ∀ d : ℕ, 0 < d →
+      (∑ k ∈ Icc 1 n, v k * arithmeticDampingFloorProfile d k) = 0) :
+    ∀ k ∈ Icc 1 n, v k = 0 := by
+  induction n generalizing v with
+  | zero => simp
+  | succ n ih =>
+    have hv : v (n + 1) = 0 := by
+      have hh := h (n + 1) (Nat.succ_pos n)
+      rw [sum_Icc_succ_top (by omega)] at hh
+      have hz : (∑ k ∈ Icc 1 n, v k * arithmeticDampingFloorProfile (n + 1) k) = 0 := by
+        apply sum_eq_zero
+        intro k hk
+        rw [arithmeticDampingFloorProfile_eq_zero_of_lt
+          (show k < n + 1 from Nat.lt_succ_of_le (mem_Icc.mp hk).2), mul_zero]
+      rw [hz, zero_add, arithmeticDampingFloorProfile_self (Nat.succ_pos n)] at hh
+      exact (mul_eq_zero.mp hh).resolve_right (by positivity)
+    have hi : ∀ k ∈ Icc 1 n, v k = 0 := by
+      apply ih v
+      intro d hd
+      have hh := h d hd
+      rw [sum_Icc_succ_top (by omega), hv, zero_mul, add_zero] at hh
+      exact hh
+    intro k hk
+    by_cases he : k = n + 1
+    · simpa only [he] using hv
+    · exact hi k (mem_Icc.mpr ⟨(mem_Icc.mp hk).1, by
+        have := (mem_Icc.mp hk).2
+        omega⟩)
+
+private theorem adt_sum_extension (η : ℝ) (v : ℕ → ℝ) {j n : ℕ} (hjn : j ≤ n) :
+    (∑ k ∈ Icc 1 n, arithmeticDampingTransition η j k * v k) =
+      ∑ k ∈ Icc 1 j, arithmeticDampingTransition η j k * v k := by
+  symm
+  apply sum_subset (Icc_subset_Icc_right hjn)
+  intro k hkn hkj
+  have hjk : j < k := by
+    have hk1 := (mem_Icc.mp hkn).1
+    by_contra h
+    exact hkj (mem_Icc.mpr ⟨hk1, by omega⟩)
+  rw [arithmeticDampingTransition_eq_zero_of_lt _ hjk, zero_mul]
+
+/-- The exact finite transition composition law. This is an algebraic identity
+for all real parameters, and a Markov semigroup law at nonnegative parameters. -/
+theorem arithmeticDampingTransition_semigroup (s t : ℝ) (n k : ℕ) :
+    (∑ j ∈ Icc 1 n,
+      arithmeticDampingTransition s n j * arithmeticDampingTransition t j k) =
+      arithmeticDampingTransition (s + t) n k := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  rcases eq_or_ne k 0 with rfl | hk
+  · simp
+  by_cases hnk : n < k
+  · rw [arithmeticDampingTransition_eq_zero_of_lt _ hnk]
+    apply sum_eq_zero
+    intro j hj
+    rw [arithmeticDampingTransition_eq_zero_of_lt _
+      (lt_of_le_of_lt (mem_Icc.mp hj).2 hnk), mul_zero]
+  have hnpos : 0 < n := Nat.pos_of_ne_zero hn
+  have hmoment (d : ℕ) (hd : 0 < d) :
+      (∑ k ∈ Icc 1 n, (∑ j ∈ Icc 1 n,
+        arithmeticDampingTransition s n j * arithmeticDampingTransition t j k) *
+          arithmeticDampingFloorProfile d k) =
+      ∑ k ∈ Icc 1 n, arithmeticDampingTransition (s + t) n k *
+        arithmeticDampingFloorProfile d k := by
+    calc
+      _ = ∑ j ∈ Icc 1 n, arithmeticDampingTransition s n j *
+          (∑ k ∈ Icc 1 n, arithmeticDampingTransition t j k *
+            arithmeticDampingFloorProfile d k) := by
+        simp only [sum_mul, mul_sum, mul_assoc]
+        rw [sum_comm]
+      _ = ∑ j ∈ Icc 1 n, arithmeticDampingTransition s n j *
+          ((d : ℝ) ^ (-t) * arithmeticDampingFloorProfile d j) := by
+        apply sum_congr rfl
+        intro j hj
+        rw [adt_sum_extension t _ (mem_Icc.mp hj).2,
+          arithmeticDampingTransition_floorProfile t (mem_Icc.mp hj).1 hd]
+      _ = (d : ℝ) ^ (-t) * ((d : ℝ) ^ (-s) * arithmeticDampingFloorProfile d n) := by
+        rw [← arithmeticDampingTransition_floorProfile s hnpos hd, mul_sum]
+        exact sum_congr rfl fun j _ => by ring
+      _ = _ := by
+        rw [arithmeticDampingTransition_floorProfile _ hnpos hd, neg_add,
+          Real.rpow_add (by exact_mod_cast hd)]
+        ring
+  have hzero := arithmeticDampingFloorProfile_separates n
+    (fun k => (∑ j ∈ Icc 1 n,
+      arithmeticDampingTransition s n j * arithmeticDampingTransition t j k) -
+      arithmeticDampingTransition (s + t) n k) (by
+        intro d hd
+        simp only [sub_mul, sum_sub_distrib]
+        exact sub_eq_zero.mpr (hmoment d hd))
+  exact sub_eq_zero.mp (hzero k (mem_Icc.mpr ⟨Nat.pos_of_ne_zero hk, by omega⟩))
+
+end
 end GaloisForLFunctions.BezoutValuationIncidence

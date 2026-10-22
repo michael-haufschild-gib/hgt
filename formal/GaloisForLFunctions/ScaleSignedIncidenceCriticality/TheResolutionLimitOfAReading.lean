@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Archimedean
+import Mathlib.Algebra.Order.Archimedean.Real.Basic
 
 /-!
 # Readings, shadows, and the resolution limit
@@ -112,7 +112,7 @@ def joinReading (r : D → O) (r' : D → O') : D → O × O' := fun d => (r d, 
 theorem shadow_joinReading (r : D → O) (r' : D → O') (d : D) :
     shadow (joinReading r r') d = shadow r d ∩ shadow r' d := by
   ext x
-  simp [shadow, joinReading, Prod.ext_iff, and_comm]
+  simp [shadow, joinReading, Prod.ext_iff]
 
 theorem refines_joinReading_left (r : D → O) (r' : D → O') : Refines (joinReading r r') r :=
   fun d _ he => ((shadow_joinReading r r' d).subset he).1
@@ -134,7 +134,7 @@ what "the reading implies the bound" means, no more and no less. -/
 def Certifies (I : D → ℝ) (r : D → O) (d : D) (β : ℝ) : Prop := ∀ e ∈ shadow r d, I e ≤ β
 
 theorem shadow_image_nonempty (I : D → ℝ) (r : D → O) (d : D) : (I '' shadow r d).Nonempty :=
-  ⟨I d, mem_shadow_self r d, rfl⟩
+  ⟨I d, ⟨d, mem_shadow_self r d, rfl⟩⟩
 
 theorem le_resolutionLimit {r : D → O} {d : D} (hbdd : BddAbove (I '' shadow r d)) :
     I d ≤ resolutionLimit I r d :=
@@ -167,7 +167,7 @@ theorem le_of_certifies_of_invisible {r : D → O} {κ : D → D} {d : D} {β : 
 theorem resolutionLimit_le_of_refines {r : D → O} {r' : D → O'} (h : Refines r r') {d : D}
     (hbdd : BddAbove (I '' shadow r' d)) : resolutionLimit I r d ≤ resolutionLimit I r' d :=
   csSup_le_csSup hbdd (shadow_image_nonempty I r d)
-    (Set.image_subset I (shadow_subset_of_refines h d))
+    (Set.image_mono (shadow_subset_of_refines h d))
 
 /-- Combining two readings certifies at most the better of the two. -/
 theorem resolutionLimit_joinReading_le (r : D → O) (r' : D → O') {d : D}
@@ -218,13 +218,15 @@ theorem certifiesLower_iff_le_resolutionFloor {r : D → O} {d : D} {β : ℝ}
 /-- The floor is the limit of the negated invariant: upper and lower theories are one theory. -/
 theorem resolutionFloor_eq_neg_resolutionLimit (I : D → ℝ) (r : D → O) (d : D) :
     resolutionFloor I r d = -resolutionLimit (fun e => -I e) r d := by
-  rw [resolutionFloor, resolutionLimit, ← Real.sInf_neg]
-  congr 1
-  ext x
-  simp only [Set.mem_image, Set.mem_neg]
-  constructor
-  · rintro ⟨e, he, rfl⟩; exact ⟨e, he, by ring⟩
-  · rintro ⟨e, he, hx⟩; exact ⟨e, he, by rw [← hx]; ring⟩
+  have himg : (fun e => -I e) '' shadow r d = -(I '' shadow r d) := by
+    ext x
+    simp only [Set.mem_image, Set.mem_neg]
+    constructor
+    · rintro ⟨e, he, hx⟩
+      exact ⟨e, he, by rw [← hx]; ring⟩
+    · rintro ⟨e, he, hx⟩
+      exact ⟨e, he, by rw [hx]; ring⟩
+  rw [resolutionFloor, resolutionLimit, himg, Real.sSup_neg, neg_neg]
 
 /-- Every invisible collapse ceilings what a lower bound can claim. -/
 theorem le_of_certifiesLower_of_invisible {r : D → O} {κ : D → D} {d : D} {β : ℝ}

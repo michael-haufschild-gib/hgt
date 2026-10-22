@@ -149,7 +149,7 @@ theorem W_dilutedPatternConfig {ℓ L : ℝ} (hℓ : 0 < ℓ) (hL : 0 < L) {P : 
     (HasSum.add_disjoint (f := Z.Wsummand f f) hd_off hp hm)
   rw [ZeroConfig.W]
   refine hall.tsum_eq.trans ?_
-  rw [lagSum_shiftSymbol hℓ hfc, ← weilTest_self_zero]
+  rw [lagSum_shiftSymbol hℓ hfc, ← _root_.RHTower.weilTest_self_zero, ← hKdef]
   obtain ⟨S, hS⟩ := exists_lag_window (K := K) hℓ hKs
   have hEsum : ∀ (r : Fin P) (x : ℝ), ∑' m : ℤ, K (m * ℓ) * cexp (I * c r * (m * ℓ)) *
       (Real.exp (x * (m * ℓ)) : ℂ) = ∑ m ∈ S, K (m * ℓ) * cexp (I * c r * (m * ℓ)) *
@@ -384,8 +384,9 @@ theorem exists_diluted_pattern_visibility_constants {ℓ : ℝ} (hℓ : 0 < ℓ)
     linarith
   have hm1 : 1 ≤ m := by omega
   have hmn : m < ⌈2 * a / ℓ⌉₊ := by
-    refine lt_of_lt_of_le hmP ?_
-    rw [Nat.le_ceil, le_div_iff₀ hℓ]
+    rw [Nat.lt_ceil, lt_div_iff₀ hℓ]
+    have hm_lt : (m : ℝ) < ((k + P : ℕ) : ℝ) := by exact_mod_cast hmP
+    have : (m : ℝ) * ℓ < ((k + P : ℕ) : ℝ) * ℓ := mul_lt_mul_of_pos_right hm_lt hℓ
     linarith
   have hle := norm_patternSymbol_le_of_diluted_hiding hℓ hL (scaledOffset ℓ θ) d hd0 hd1
     (scaledOffset_injective hℓ hθ) ha0 haL hcon hm1 hmn
@@ -400,6 +401,7 @@ theorem exists_diluted_pattern_visibility_constants {ℓ : ℝ} (hℓ : 0 < ℓ)
       _ = ℓ * (c * Real.exp (S.dmax * (m * ℓ))) := by ring
       _ ≤ ℓ * ‖patternSymbol ℓ (scaledOffset ℓ θ) d m‖ :=
           mul_le_mul_of_nonneg_left hDm hℓ.le
+  change 2 * P * ℓ + 2 * L < c * ℓ * Real.exp (S.dmax * (k * ℓ)) at hlarge
   linarith
 
 end GaloisForLFunctions.DilutionCrystallizationPincer
