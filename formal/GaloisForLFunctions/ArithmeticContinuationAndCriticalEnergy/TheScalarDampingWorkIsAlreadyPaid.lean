@@ -39,6 +39,7 @@ private theorem scalar_uniform_class {a η : ℝ} (haη : a ≤ η) :
   by_cases hd : d = 0
   · subst d
     simp [pmPowerDampedRealWeight, moebiusReal]
+    positivity
   · have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hd
     exact (pmPowerDampedRealWeight_mem_dampedClass η d).trans
       (mul_le_mul_of_nonneg_left

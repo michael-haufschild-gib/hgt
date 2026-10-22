@@ -466,7 +466,7 @@ splitting the kernel difference into a power difference and a prefix increment g
 \]
 The second term follows by summing the prefix increments over \(m\le n/(K+1)\) and exchanging \(m=d\ell\). Uniform tails and locally uniform coordinate limits yield locally uniform convergence of centered rows in total variation. Rectangular finite-rank truncations therefore converge locally in operator norm, proving both compactness and holomorphy. These bounds deteriorate as \(a\downarrow0\); no bounded-sector estimate at zero is asserted. Interior analyticity in \(c_0\) still supplies no critical Hilbert bound.
 
-The compact semigroup, spectrum and domain statements above are paper results, not newly compiled Lean theorems. Standard incidence conjugation and Markov oscillation methods have established parent theories. Bounded searches did not establish priority for this exact arithmetic package. [Lorek–Szekli](https://link.springer.com/article/10.1007/s11134-012-9284-z), [Gaubert–Qu](https://arxiv.org/abs/1302.5226)
+Compactness and positive-time composition are now formalized, as recorded in §8. Strong continuity at zero, spectrum, generator domains and the complex extension remain paper results. Standard incidence conjugation and Markov oscillation methods have established parent theories. Bounded searches did not establish priority for this exact arithmetic package. [Lorek–Szekli](https://link.springer.com/article/10.1007/s11134-012-9284-z), [Gaubert–Qu](https://arxiv.org/abs/1302.5226)
 
 ### 5. Exact scalar cancellation isolates the remaining covariance
 
@@ -563,7 +563,7 @@ Thus (Z) cannot equal a finite right derivative of the full energy. Moreover, th
 \sum_{n\le T}\frac{(A_t(n)-1)B_t(n)}{n(n+1)}
 \ge\kappa_\rho/2.
 \]
-Otherwise integrating a smaller uniform upper bound from zero would contradict (Cusp). Each fixed-horizon covariance tends to zero, so positive work escapes to growing horizons. Its sign matters: this is a positive-work lower bound at zero, not a failure of the negative-work estimate (C) on compact positive-damping intervals. These sharper boundary statements are paper results awaiting formalization.
+Otherwise integrating a smaller uniform upper bound from zero would contradict (Cusp). Each fixed-horizon covariance tends to zero, so positive work escapes to growing horizons. Its sign matters: this is a positive-work lower bound at zero, not a failure of the negative-work estimate (C) on compact positive-damping intervals. These sharper constants remain paper results; the unconditional qualitative escaping-work theorem is formalized in §8.
 
 ### 6. Two additional shortcuts fail precisely
 
@@ -634,7 +634,11 @@ The actual-source residual cusp is formalized in [PowerDampedResidualHasLinearCu
 
 The positive-time centered composition law is formalized in [ArithmeticDampingCenteredSemigroup.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ArithmeticDampingCenteredSemigroup.lean), with a clean targeted audit/export and umbrella import. Finite row composition leaves a coordinate-constant discrepancy; both centered outputs vanish at infinity, forcing that constant to vanish. This proves composition on the actual c₀ space without exchanging infinite double sums.
 
-The escaping-covariance consequence is undergoing targeted formalization. Strong continuity at zero, generator domains, spectrum, complex operator extension, Hilbert analytic-family synthesis, and energy-exponent laws above remain paper results. No full or umbrella build is being run. These auxiliary results do not close (C).
+The escaping-covariance consequence is formalized in [TheResidualCuspForcesEscapingWork.lean](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/TheResidualCuspForcesEscapingWork.lean), with a clean targeted audit/export and programme umbrella import. It proves the exact finite-horizon residual derivative, both fixed-horizon zero limits, and an unconditional constant κ>0 such that every damping neighbourhood and every horizon threshold contain a larger-horizon witness with residual work greater than κ. The mean-value argument stays strictly inside positive damping.
+
+The scalar correction is formalized in [TheScalarDampingWorkIsAlreadyPaid.lean](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/TheScalarDampingWorkIsAlreadyPaid.lean): every positive damping half-line has one bound for all finite absolute first-pronic moments of the actual tangent. [RenormalizationPreservesDampingContinuation.lean](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/RenormalizationPreservesDampingContinuation.lean) proves the exact scalar work difference, both shifted-energy comparisons, admission equivalence and equivalence of the original/residual `LinearContinuation` demands on every positive compact interval. Both modules passed clean targeted audits/exports and are programme umbrella-wired. This formal equivalence concerns the existing differentiable-primitive formulation; neither continuation demand is proved by it.
+
+Strong continuity at zero, generator domains, spectrum, complex operator extension, Hilbert analytic-family synthesis, and energy-exponent laws above remain paper results. No full or umbrella build is being run. These auxiliary results do not close (C).
 
 ### 9. A more concrete mathematical research program
 
@@ -689,15 +693,15 @@ For every \(\alpha>0\), its consequence is
 \|H_R\|_U^2\le(1+\alpha)\|H_Q\|_T^2+
 (1+\alpha^{-1})d_T(Q,R)^2+\mathcal S.
 \]
-No transition cross term has been deleted. With a summable positive geometric choice of \(\alpha_j\), the cutoff-change costs and multiplier product are paid. No bound on the accumulated new physical-shell energy \(\mathcal S_j\) has been proved.
+No transition cross term has been deleted. With \(\alpha_j=2^{-(m\varepsilon-1)j/2}\), the cutoff-change costs and multiplier product are paid. No bound on the accumulated new physical-shell energy \(\mathcal S_j\) has been proved.
 
-The paper boundary is exact: along this sufficiently deep cutoff schedule, the approximation errors on the disjoint physical shells are square-summable. Consequently the sum of those approximate shell energies is finite if and only if the literal source has finite critical energy. The physical-shell obligation retains the arithmetic difficulty. The finite transport estimate, full stage balance and summable schedule are being formalized in the existing continuation programme; the shell-equivalence statement is currently a paper consequence.
+The paper boundary is exact: along this sufficiently deep cutoff schedule, the approximation errors on the disjoint physical shells are square-summable. Consequently the sum of those approximate shell energies is finite if and only if the literal source has finite critical energy. The physical-shell obligation retains the arithmetic difficulty. The finite transport estimate, full stage balance and summable schedule are formalized in [FiniteHeadCutoffTransportAndPhysicalShellCost.lean](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/FiniteHeadCutoffTransportAndPhysicalShellCost.lean), with a clean targeted audit/export and programme umbrella import. The formal schedule uses the slightly looser majorant \(2C_{\varepsilon,\varepsilon/2}\,2^{-(m\varepsilon-1)j/2}\). The shell-equivalence statement remains a paper consequence.
 
 ## Follow-up: Opportunity 3, what unsigned depth sampling can accomplish
 
 **A stronger closure theorem already exists.** The source of [MasterDCIPincerTheorem.lean](../../../formal/GaloisForLFunctions/DilutionCrystallizationPincer/MasterDCIPincerTheorem.lean) permits an aperture-dependent depth-floor factor \(W(A)\), provided the actual ground floor is bounded by its corresponding depth-floor expression and \(W\) has every positive exponential envelope. It then gives ground-rate equality with width. This does not convert a logarithmic loss in height into an aperture-dependent bound: that missing connection is still required. This paragraph records inspected source, not a fresh compiler audit of the concurrently developed module.
 
-There is a sharp paper classification of the method that discards the positive sampling part. Fix any aperture \(A>0\). For finite sets \(S\) of zero copies define
+There is a sharp classification of the method that discards the positive sampling part. Fix any aperture \(A>0\). For finite sets \(S\) of zero copies define
 \[
 D_S(u)=\sum_{q\in S}
 |\widehat u(-z_q)-\widehat u(-\overline{z_q})|^2.
@@ -715,6 +719,29 @@ The forward depth-to-sampling implication is already in [TheWidthIsTheGroundEner
 Indeed, for \(y\ge0\) the real part of the difference is an integral of
 \(\phi(x)\,[e^{yx}-e^{-yx}]\cos((T-t)x)\). On its support the cosine is at least \(1/2\), and the bracket is at least \(2yb\). Conjugating \(z\) handles \(y<0\). Summing the squared lower bound over a window proves the required uniform local depth mass. This uses legitimate complex smooth sources, with multiplicity preserved by the zero-copy index.
 
-Thus even one fixed-aperture, source-uniform bound on the unsigned negative sampling part already reinstates the local-depth hypothesis. Allowing width slack or an aperture-dependent constant does not avoid it. The useful survivor is the exact sampling classification and its explicit detecting family; formalization is in progress in the continuation programme.
+Thus even one fixed-aperture, source-uniform bound on the unsigned negative sampling part already reinstates the local-depth hypothesis. Allowing width slack or an aperture-dependent constant does not avoid it. The useful survivor is the exact sampling classification and its explicit detecting family. Both are formalized in [UnsignedDepthSamplingDetectsLocalMass.lean](../../../formal/GaloisForLFunctions/SquareRootThreshold/UnsignedDepthSamplingDetectsLocalMass.lean), with a clean targeted audit/export and programme umbrella import. The forward bound uses the exact normalization \(B_A=4\operatorname{depthFloorConst}(W,A)\); constants are not claimed optimal.
+
+The existing logarithmic-in-height upper bound proves neither boundedness nor unboundedness of the actual local depth mass. The classification therefore does not refute an unsigned estimate for the actual zeros; it identifies exactly what such an estimate must establish.
 
 This is **not** a necessity theorem for the signed floor (G). The positive sampling term may compensate, and the positive-side bump even demonstrates why a large unsigned difference need not be a negative signed form. A useful new producer must compare the two parts jointly. Existing isolated-pair and diluted-lattice results already quantify compensation by a synthetic positive background; they do not verify (G) for the prime–Gamma–pole source.
+
+## Programme outcome: extend the existing field, sharpen its obligations
+
+The proposed field is already substantially represented by [Arithmetic Continuation and Critical Energy](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md), with its own folder and umbrella. Its existing source includes admission, linear and coercive continuation, actual-source damping criteria, a counterexample to horizon-dependent budgets, complete-sector compensation and recurrence envelopes. Creating another programme for the same objects would duplicate this foundation. The work here extends that programme with actual-source tools and sharp limits on possible estimates.
+
+The resulting questions and answers are concrete:
+
+| Question | Tool developed | Arithmetic obligation left open |
+|---|---|---|
+| Which part of damping work is already controlled at every positive damping? | A horizon-uniform absolute first-pronic-moment bound for the actual tangent; subtraction of the constant source preserves admission and linear continuation. | Lower control of the complete residual covariance. |
+| Can the zero limit at every finite horizon justify uniform vanishing of residual work? | The actual residual cusp forces a fixed amount of positive work arbitrarily near zero and beyond every prescribed horizon. | Negative-work control on strictly positive damping intervals. |
+| Can changing the denominator representation be paid through every scale? | An explicit depth schedule gives summable common-head transport norms, with an exact signed stage balance. | The accumulated new physical-shell energy. |
+| Can an unsigned sampling estimate avoid local depth control? | At every fixed positive aperture it is equivalent to bounded local squared-depth mass; smooth modulated sources explicitly detect that mass. | Compensation between positive and negative sampling in the actual signed floor. |
+
+The programme's foundational README now explains these mechanisms alongside its original calculus, and places them relative to BVI, THIM and SquareRootThreshold. Targeted audit results are recorded with the corresponding tools in the follow-up sections and research log. The stronger paper statements identified earlier retain their paper status.
+
+Source ownership follows the objects: damping and cutoff tools extend ArithmeticContinuationAndCriticalEnergy; kernel and cusp machinery extend BVI; the unsigned aperture classification extends SquareRootThreshold. A combined dependency audit exposed a pre-existing cross-programme naming collision: [SoninDilationAverage.lean](../../../formal/GaloisForLFunctions/RHTower/SoninDilationAverage.lean) and [FermiNymanHaarApproximationEquivalence.lean](../../../formal/GaloisForLFunctions/RHTower/FermiNymanHaarApproximationEquivalence.lean) define different operators with the same full name `RHTower.dilationAverage`. The new aperture module therefore lives with the SquareRootThreshold API it extends, outside the continuation programme's import closure. Checks of the continuation group and aperture group are separate. A single import combining these two legacy branches remains an integration limitation; no global or umbrella build is claimed.
+
+The most promising next proof mechanism remains a **joint arithmetic estimate for signed work**, with the scalar correction already removed and the horizon retained. In the cutoff direction, representation transport is now a controlled input rather than a conjectural step. In the aperture direction, unsigned estimates have an exact acceptance test: a proposed weakening must genuinely retain positive compensation. None of these results establishes the missing continuation bound, physical-shell bound or actual ground-floor bound, and no RH proof is claimed.
+
+The corpus searches used both deep mechanism queries and narrower hybrid queries. Returned candidate lemmas and source arguments were checked for their actual observable, hypotheses and quantifier order. Some deep requests timed out partially; even completed requests reported unmeasured semantic coverage and largely source-only compiler metadata. Hits from the new files written during this work were excluded as independent evidence. Thus this report makes no exhaustive absence claim or worldwide novelty claim. Detailed queries, applicability checks and proof-status changes are retained in [the research log](../../../logs/astra-research.log).

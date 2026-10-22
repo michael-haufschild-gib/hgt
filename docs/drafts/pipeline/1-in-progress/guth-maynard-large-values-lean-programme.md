@@ -1093,3 +1093,142 @@ instead of `≥ B²`.  Equivalently, a fourth-moment bound for a polynomial of l
 to length `≍ B` rather than `B²`.  That is the content of Heath-Brown's 1979 argument at the
 self-dual scale; it is not in Huxley–Jutila IV (whose Lemma 16 is a first-moment statement, see the
 previous entry), and it is not derivable from the two moves above.
+
+### Coverage check: the Heath-Brown residual window does not meet the chain (2026-10-22)
+
+Heath-Brown's exact three-term theorem is proved for every block length outside a multiplicative
+neighbourhood of the self-dual length `T^{1/2}`, of width `|W|^{1/4}` on each side. Every application
+in the Guth–Maynard chain lies outside that window, so the 30/13 result does not depend on it.
+
+* **Lemma 11.9 (large gcd).** `N ≥ T^{3/4}` and `D = N²/T` give `M = N/d ≤ N/D = T/N ≤ T^{1/4}`. Then
+  `M² ≤ T^{1/2} ≤ (2T)^{2/3}`, so `hbPairSum_Ioc_le_smallBlock` applies directly; no window reasoning
+  is needed. `hbPairSum_Ioc_le_of_le_rpow_quarter` packages exactly this hypothesis.
+* **Lemma 1.5.** `M = N > T^{2/3}`, so `N² > T^{4/3} > 2T` and `9N³ > 9T² > 4T²` for `T` large: the
+  hypotheses of `hbPairSum_Ioc_le_of_twoThirds` hold.
+* **§6.** The S₂ reduction yields a block of length `M ≤ (2T)^{1+ε}/N + 1`, lifted to `M^k` by
+  `hbPairSum_le_power_lift`. In the regime of Proposition 3.1, `T = N^{6/5}`, hence `N = T^{5/6}` and
+  `M ≍ T^{1/6+ε}`; with the paper's `k = 4` the lifted length is `M⁴ ≍ T^{2/3+4ε}`. That exceeds
+  `(2T)^{2/3} = 2^{2/3}T^{2/3}` as soon as `T^{4ε} ≥ 2^{2/3}`, i.e. for all large `T` at any fixed
+  `ε > 0`, and then `2T < (M⁴)²` and `4T² ≤ 9(M⁴)³` both hold. So §6 sits in the long-block range.
+
+The window therefore remains open mathematics with no consumer in this programme. What is missing there
+is recorded precisely in the preceding section: Corollary 2.1 at a target length `≍ B` rather than
+`≥ B²`, equivalently a fourth-moment bound for a length-`B` polynomial that returns to length `≍ B`.
+The self-referential route was checked and ruled out: at the self-dual length the reflection gives
+`A ≤ a + K·A` with `K ≥ 1`, which is vacuous, and the square-root form is available exactly when
+`N ≳ (2T)^{2/3}`, where it is already used. Huxley–Jutila Lemma 16 was also ruled out, its constant
+being a first-moment one where Theorem 1.6 needs the second.
+
+Verified this session: `ZetaZeroDensityThirtyThirteenths.lean` and `PrimeShortIntervalsSeventeenThirtieths.lean`
+both compile clean, and `exists_zeroHeightBox_ncard_le_thirty_thirteenths`,
+`tendsto_psi_short_window_div_seventeen_thirtieths`, `exists_theta_window_lower_seventeen_thirtieths`
+and `eventually_exists_prime_short_interval_seventeen_thirtieths` all depend only on
+`propext, Classical.choice, Quot.sound`. A duplicate-declaration scan over the 115 programme modules
+found no genuine collisions.
+
+### Lean (2026-10-22): Corollaries 1.3 and 1.4 with the Vinogradov–Korobov error term
+
+Five new modules, each compiled clean with `lake env lean` (zero errors, zero warnings), `.olean`s
+produced, appended to the `RHTower` umbrella (lines 28036–28040); every theorem audited
+`[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py lint` reports nothing for them.
+
+* `RHTower/VinogradovKorobovWidthComparison.lean` — **the width comparison, unconditional.**
+  `vinogradovKorobovSurrogateWidth T = (max 1 (log T))^{-5/7}/10^{12}` with
+  `vinogradovKorobovSurrogateWidth_pos`, `_nonneg`, `_antitone` (antitone above `1`), `_eq`
+  (it equals `(log T)^{-5/7}/10^{12}` once `log T ≥ 1`).
+  `surrogate_le_vinogradovKorobov_width`: for `L ≥ e` and `L ≤ M ≤ 2L`,
+  `L^{-5/7}/10^{12} ≤ M^{-2/3}(log M)^{-5/3}/10^{8}`.  This settles the point raised in the brief:
+  the corpus region has width `(log γ)^{-2/3}(log log γ)^{-5/3}/10^8`, the paper quotes
+  `(log T)^{-2/3}(log log T)^{-1/3}`, and the proof only needs `c(log T)^{-5/7}`; the comparison
+  holds because `M^{-2/3} ≥ L^{-2/3}/2`, `(log M)^{-5/3} ≥ (1+log L)^{-2}`, and
+  `L^{5/7-2/3} = L^{1/21}` beats `(1+log L)^2 ≤ 4096 L^{1/21}` (corpus `one_add_log_pow_le_rpow`).
+  `exists_zeroHeightBox_zeroFree_fiveSevenths`: `∃ T₁ ≥ 1` with
+  `∀ T ≥ T₁, ∀ σ, (zeroHeightBox σ T).Nonempty → σ ≤ 1 - vinogradovKorobovSurrogateWidth T`,
+  from `Sieve.riemannZeta_ne_zero_vinogradovKorobov` and `riemannZeta_eq_zero_of_xiZeroCopy`.
+* `RHTower/ZeroDensitySupremumVinogradovKorobov.lean` — **the exponential saving, unconditional**
+  (the density bound enters only as data).  `zeroShortWeight_mono_right` and
+  `tsum_zeroShortWeight_mono_right` (the zero weight grows with the cut-off `Y`);
+  `tendsto_exp_quarter_mul_pow_mul_exp_neg_rpow` (`e^{KL^{1/4}}(3L)^n e^{-κL^e} → 0` for every
+  `e > 1/4`) and `tendsto_exp_quarter_mul_logPow_mul_rpow_neg`;
+  `rpow_neg_surrogate_eq_exp`: `x^{-δ w(x^{2u})} = exp(-(δ(2u)^{-5/7}/10^{12})(log x)^{2/7})`
+  exactly;
+  **the main output** `tendsto_exp_quarter_mul_tsum_zeroShortWeight_of_density`: for `0 ≤ A < 4`,
+  `0 < u ≤ 1/2`, `uA < 1`, `c ≥ 1` and any density bound
+  `#(zeroHeightBox σ T) ≤ D(1+log T)^B T^{A(1-σ)}` given as data,
+  `e^{K(log x)^{1/4}} · Σ_ρ x^{β-1}min(1, c x^{2u}/(|ρ||1-ρ|)) → 0` for every constant `K`.
+  This is the paper's `sup_σ x^{σ-1}N(σ,T) ≪_ε exp(-(log x)^{1/4})` in the form the explicit
+  formula consumes; the saving actually obtained is `exp(-κ(log x)^{2/7})` and `2/7 > 1/4`.
+* `RHTower/PrimeShortIntervalsSeventeenThirtiethsSharp.lean` — **Corollary 1.3 for `ψ`.**
+  Unconditional parts: `abs_psi_window_sub_le_of_tsum_le` (for `4 ≤ x`, `0 < η ≤ 1`,
+  `0 < y ≤ x/2`, `128 ≤ xy²η²`, a zero weight `≤ η/16` at the cut-off `64x²/(y²η)` forces
+  `|ψ(x+y) - ψ(x) - y| ≤ yη`; inner window `h' = yη/8`, so `2h' = yη/4`,
+  `4/(xh') = 32/(xyη) ≤ yη/4`, zeros `≤ yη/2`), and `window_cutoff_le_rpow`
+  (`64x²/(y²η) ≤ x^{2(13/30-ε/2)}` once `y ≥ x^{17/30+ε}` and `64/η ≤ x^ε`).
+  `tendsto_exp_quarter_mul_tsum_zeroShortWeight_seventeen_thirtieths hGM` (the saving below the
+  exponent `13/30`, with `ε = min(1,(1/u-30/13)/2)` in the density bound).
+  **Corollary 1.3** `exists_abs_psi_short_interval_le hGM`: for every `ε > 0` and every `K ≥ 0`
+  there is `x₀ ≥ 4` with `|ψ(x+y) - ψ(x) - y| ≤ y exp(-K(log x)^{1/4})` for all `x ≥ x₀` and all
+  `y ∈ [x^{17/30+ε}, x^{99/100}]`.
+* `RHTower/PrimeCountingShortIntervalsSeventeenThirtiethsSharp.lean` — **Corollary 1.3 for `π`.**
+  Unconditional: the plain-real assembly lemmas `abs_sub_div_le_of_between` (a quantity squeezed
+  between `Θ/L'` and `Θ/L` is within `Θ(L'-L)` of `Θ/L`), `abs_div_le_of_abs_le`,
+  `two_mul_le_quarter_of_exp_mul_lt`, `mul_exp_two_mul_le_quarter`,
+  `ten_mul_le_quarter_of_exp_mul_lt`, `transfer_pieces_le`; the window estimates
+  `sqrt_add_le_two_mul_sqrt`, `log_add_le_two_mul_log`, `log_add_sub_log_le_div`,
+  `div_le_rpow_neg_hundredth`, `le_half_of_rpow_le`, `sqrt_le_mul_rpow_neg_fifteenth`,
+  `abs_psi_sub_theta_window_le` (`|(ψ(x+y)-ψ(x)) - (θ(x+y)-θ(x))| ≤ 10√x log x`) and
+  `card_windowPrimes_eq_primeCounting_sub` (`#windowPrimes x y = π(⌊y⌋) - π(⌊x⌋)`, from the corpus
+  `HTGeometry.card_primesInIoc`).
+  **Corollary 1.3 for `π`** `exists_abs_primeCounting_short_interval_le hGM`: for every `ε > 0`
+  there is `x₀ ≥ 4` with `|π(⌊x+y⌋) - π(⌊x⌋) - y/log x| ≤ y exp(-(log x)^{1/4})` for all `x ≥ x₀`
+  and all `y ∈ [x^{17/30+ε}, x^{99/100}]`.  Proof: the corpus sandwich
+  `N log x ≤ θ(x+y) - θ(x) ≤ N log(x+y)` has width `≤ (θ(x+y)-θ(x))·y/x ≤ 2y·x^{-1/100}`, the
+  prime-power defect costs `10√x log x ≤ 10 y x^{-1/15}(log x + 2)`, and the `ψ` bound is taken
+  with `K = 2`.
+* `RHTower/PrimeAlmostAllShortIntervalsTwoFifteenths.lean` — **Corollary 1.4.**
+  Unconditional: `tendsto_pow_mul_exp_neg_rpow` (`(3L)^n e^{-κL^e} → 0` for every `e > 0`),
+  `eventually_log_sq_le_exp_quarter` (`(log X² + 2)² ≤ e^{(log X)^{1/4}}` eventually),
+  `mul_le_pow_four_of_exp` and `second_moment_allocation_le` (the final allocation
+  `25600 ε^{-2}(64(K+2)E)XZ ≤ Xε` once `εE = 1` and `1638400(K+2)Z ≤ ε⁴`).
+  **Corollary 1.4** `exists_volume_psi_almost_all_short_le hGM`: for `2/15 < θ < 1` there is
+  `X₀ ≥ 4` with
+  `vol {x ∈ [X,2X] : |ψ(x + X^{θ-1}x) - ψ(x) - X^{θ-1}x| > e^{-(log X)^{1/4}} X^{θ-1}x}
+     ≤ X e^{-(log X)^{1/4}}`
+  for all `X ≥ X₀`.  Proof: the corpus Chebyshev bound `volume_psi_short_asymptotic_le` with
+  `ε = e^{-(log X)^{1/4}}`, `W(X) ≤ 64(|K|+2)(log X²+2)²` (`almostAllHarmonicWeight_le`), and the
+  zero weight at `u = (1-θ)/2 < 13/30` raised to `u' = (u + 13/30)/2` so as to absorb the
+  sub-polynomial factor `192/(5ε)`; the saving `e^{-κ(log X)^{2/7})` beats `ε³` and the
+  polylogarithm.  The condition `u < 13/30` is exactly `θ > 2/15`.
+
+Theorems carrying the Theorem 1.1 datum `hGM : GuthMaynardLargeValuesBound` (each discharged by
+one `exact … (guthMaynardLargeValuesBound_of_keyProp hkey)` once Proposition 3.1 lands):
+`tendsto_exp_quarter_mul_tsum_zeroShortWeight_seventeen_thirtieths`,
+`exists_abs_psi_short_interval_le`, `exists_abs_primeCounting_short_interval_le`,
+`exists_volume_psi_almost_all_short_le`.  Everything else listed above is unconditional.
+
+Corpus results reused (none of them re-proved):
+`Sieve.riemannZeta_ne_zero_vinogradovKorobov`, `riemannZeta_eq_zero_of_xiZeroCopy`,
+`xiZeroCopy_re_lt_one`, `xiZeroCopy_ne_zero`, `xiZeroCopy_one_sub_ne_zero`, `zeroHeightBox`,
+`one_add_log_pow_le_rpow`, `tsum_zeroShortWeight_le`, `zeroShortWeight`,
+`zeroShortWeight_nonneg`, `summable_zeroShortWeight`, `four_mul_ceil_rpow_le`,
+`majorant_rearrange_le`, `exp_neg_le_factorial_div`, `psi_window_ge_sub_zeroShortWeight`,
+`psi_window_le_add_zeroShortWeight`, `exists_zeroHeightBox_ncard_le_thirty_thirteenths`,
+`volume_psi_short_asymptotic_le`, `almostAllHarmonicWeight`, `almostAllHarmonicWeight_le`,
+`xiSpectralThreeHalvesMass_nonneg`, `xiLineTwoLogDerivConstant`,
+`PrimeCells.card_windowPrimes_mul_log_le`, `PrimeCells.theta_sub_le_card_mul_log`,
+`windowPrimes`, `HTGeometry.card_primesInIoc`, `HTGeometry.primesInIoc`,
+`Chebyshev.psi_sub_theta_le`, `Chebyshev.theta_le_psi`.
+
+Open for this brick:
+1. The datum itself, i.e. Theorem 1.1, now reduced by the §12 brick to `KeyPropBound w`.
+2. **Corollary 1.4 is proved in the multiplicative normalization** `y_x = X^{θ-1}x ∈ [X^θ, 2X^θ]`,
+   not at one fixed `y`.  Reason: the corpus second-moment layer
+   (`volume_psi_short_asymptotic_le`, `integral_norm_sq_zeroSum_div_cube_le`) is built for the
+   window `[x, (1+δ)x]`, whose zero coefficients `d_ρ = ((1+δ)^ρ-1)/ρ` do not depend on `x`, which
+   is what makes the mean square over `x ∈ [X,2X]` computable.  The paper's fixed-`y` form needs
+   the block reduction of TeX 2437–2446, which is **not** in the corpus; the exact missing
+   statement is
+   `∫_X^{2X}(Σ_{n∈[x,x+y]}Λ(n) − y)² dx ≪ (y²/(δ²X²))∫_X^{3X}(Σ_{n∈[x,x+δx]}Λ(n) − δx)² dx + δ²X³`
+   for `δ = X^{-13/15+ε/2}` (split `[x,x+y]` into `⌈y/(δx)⌉` blocks of length `δx` and apply
+   Cauchy–Schwarz).  With that one inequality, `exists_volume_psi_almost_all_short_le` gives the
+   literal Corollary 1.4 for every fixed `y ≥ X^{2/15+ε}`.

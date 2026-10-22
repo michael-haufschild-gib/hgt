@@ -77,3 +77,17 @@ the shared section as the continuation layer with mechanism 6).
 ## Log
 - 2026-10-22 — programme folder, umbrella `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy`
   wired into `MainTheorems`, foundational README written.
+
+## Related cards (not duplicates)
+- `astra-whole-report-programme.md` — audit of all three astra opportunities; extends this programme.
+- `astra-opportunity1-signed-damping-continuation.md` — the conjecture (C) itself, the open
+  arithmetic input consumed by `riemannHypothesis_of_dampingContinuation_endpoint`.
+
+This card is the programme card: folder, umbrella, README and the continuation calculus.
+
+## Log
+- 2026-10-22 — programme co-developed with a second agent in the same folder: the covariance half of
+  (C) is the open demand (scalar half paid, renormalisation neutral), cutoff transport added as the
+  second parameter, and the depth-sampling bridge moved to `SquareRootThreshold`. All 16 modules in
+  the folder carry fresh oleans; umbrella matches the folder and is wired into `MainTheorems`.
+  `scripts/formal_tools.py` `ALLOWED_ROOT_LEAN` extended with the programme umbrella.

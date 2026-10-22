@@ -16,8 +16,8 @@ combines (12.1) (`fullBound`) with the classical bound (1.2) through three facts
   bound for the plateau pieces `N_i ∈ [5N/6, 2N]` (level `V/2`, interval length `2T`) returns to
   `(N, T, σ)`.
 
-`exists_nat_mem_Icc_of_le_sub` is the integer choice of the explicit form (TeX lines 2282–2291):
-an interval `[L, U]` with `U ≥ 1` and `U − L ≥ 1` contains a positive integer.
+`exists_nat_mem_interval_of_length_ge_one` is the integer choice of the explicit form: an
+interval `[L, U]` with `U ≥ 1` and `U − L ≥ 1` contains a positive integer.
 -/
 
 set_option autoImplicit false
@@ -173,7 +173,7 @@ theorem fullBound_le_of_rescale {N T M T' σ σ' : ℝ} {j k : ℕ} (hM : 0 < M)
 /-! ### The integer choice of the explicit form -/
 
 /-- An interval `[L, U]` with `1 ≤ U` and `L ≤ U − 1` contains a positive integer (`⌊U⌋`). -/
-theorem exists_nat_mem_Icc_of_le_sub {L U : ℝ} (hU : 1 ≤ U) (hLU : L ≤ U - 1) :
+theorem exists_nat_mem_interval_of_length_ge_one {L U : ℝ} (hU : 1 ≤ U) (hLU : L ≤ U - 1) :
     ∃ k : ℕ, 1 ≤ k ∧ L ≤ k ∧ (k : ℝ) ≤ U := by
   refine ⟨⌊U⌋₊, ?_, ?_, Nat.floor_le (by linarith)⟩
   · exact Nat.one_le_floor_iff _ |>.mpr hU

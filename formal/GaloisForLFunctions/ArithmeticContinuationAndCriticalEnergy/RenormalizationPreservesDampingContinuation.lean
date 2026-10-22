@@ -96,7 +96,7 @@ private theorem renorm_transport {E F : ℝ → ℕ → ℝ} {E' F' : ℕ → �
   obtain ⟨β, β', hβ, hwork⟩ := h
   refine ⟨fun η => 3 * β η + K * η, fun η => 3 * β' η + K, ?_, ?_⟩
   · intro η hη
-    simpa only [mul_one] using
+    simpa only [Pi.add_def, id_eq, mul_one] using
       ((hβ η hη).const_mul 3).add ((hasDerivAt_id η).const_mul K)
   · intro T η hη
     have hb : 0 ≤ β' η := by
@@ -123,7 +123,7 @@ theorem linearContinuation_residual_iff {a c : ℝ} (ha : 0 < a) :
     exact mul_le_mul_of_nonneg_left (hpaid η hη.1 T) (by norm_num)
   constructor
   · intro h
-    refine renorm_transport (mul_nonneg (by norm_num) hK)
+    refine renorm_transport (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hK)
       dampedMobiusEnergy_nonneg
       (fun η => by simp [pmPowerDampedDualResidual])
       (fun η => by simp [residualDampingWork])
@@ -131,7 +131,7 @@ theorem linearContinuation_residual_iff {a c : ℝ} (ha : 0 < a) :
     intro η hη T
     simpa only [abs_sub_comm] using hdiff η hη T
   · intro h
-    refine renorm_transport (mul_nonneg (by norm_num) hK)
+    refine renorm_transport (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hK)
       (fun η T => Finset.sum_nonneg fun n _ => by positivity)
       (fun η => by simp [dampedMobiusEnergy, pmPowerDampedDivisorDiscreteEnergy])
       (fun η => by simp [signedDampingWork])

@@ -63,7 +63,7 @@ theorem admits_of_dampingContinuation {a c : ℝ} (ha : 0 < a) (hac : a ≤ c)
     (hadm : Admits dampedMobiusEnergy c) (h : DampingContinuation a c) :
     Admits dampedMobiusEnergy a :=
   Admits.of_linearContinuation hac (fun ε _ T => dampedMobiusEnergy_nonneg ε T)
-    (fun T ε hε => hasDerivAt_dampedMobiusEnergy_deriv (lt_of_lt_of_le ha hε.1) T) h hadm
+    (fun T _ hε => hasDerivAt_dampedMobiusEnergy_deriv (lt_of_lt_of_le ha hε.1) T) h hadm
 
 /-- **The damping continuation criterion for the Riemann hypothesis.**  A horizon-free continuation
 budget on every compact interval inside `(0, c]`, for one admitted `c`, gives RH. -/
@@ -72,7 +72,7 @@ theorem riemannHypothesis_of_dampingContinuation_endpoint {c : ℝ} (hc : 0 < c)
     (h : ∀ a : ℝ, 0 < a → a ≤ c → DampingContinuation a c) : RiemannHypothesis :=
   riemannHypothesis_iff_cofinallyAdmits.mpr
     (cofinallyAdmits_of_linearContinuation hc (fun ε _ T => dampedMobiusEnergy_nonneg ε T)
-      (fun T ε hε => hasDerivAt_dampedMobiusEnergy_deriv hε T) h hadm)
+      (fun T _ hε => hasDerivAt_dampedMobiusEnergy_deriv hε T) h hadm)
 
 /-- **The Osgood variant.**  Any coercive scale works; linear control of the loss is not
 necessary. -/
@@ -81,7 +81,7 @@ theorem riemannHypothesis_of_osgoodDampingContinuation_endpoint {c : ℝ} (hc : 
     (h : ∀ a : ℝ, 0 < a → a ≤ c → OsgoodDampingContinuation a c) : RiemannHypothesis :=
   riemannHypothesis_iff_cofinallyAdmits.mpr
     (cofinallyAdmits_of_osgoodContinuation hc (fun ε _ T => dampedMobiusEnergy_nonneg ε T)
-      (fun T ε hε => hasDerivAt_dampedMobiusEnergy_deriv hε T) h hadm)
+      (fun T _ hε => hasDerivAt_dampedMobiusEnergy_deriv hε T) h hadm)
 
 /-! ## §2. The unconditional endpoints -/
 

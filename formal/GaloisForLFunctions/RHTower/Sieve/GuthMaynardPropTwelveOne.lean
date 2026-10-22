@@ -12,7 +12,7 @@ import GaloisForLFunctions.RHTower.Sieve.GuthMaynardKeyPropAssembly
 `|W| ≤ C T^ε (N^{2−2σ} + T^{1/2}N^{3−4σ} + T^{k/(k+1)}N^{(4−6σ)k/(k+1)} + N^{(5−6σ)4k/(4k+3)}T^{2/(4k+3)})`.
 
 This is the first statement of Proposition 12.1 (`prpstn:BigN`), for each fixed `k`, and it needs
-no upper bound on `σ`.  Mechanism (TeX lines 2264–2280): split `(N, 2N]` into two plateau pieces;
+no upper bound on `σ`.  Mechanism (the proof of Proposition 12.1): split `(N, 2N]` into two plateau pieces;
 on a piece of length `N_i ∈ [5N/6, 2N]` with level `V/2` a maximal `T^ε`-separated subset is bounded
 by (12.1) on an interval of length `2T` (`card_le_of_fullBoundStatement`), and the rescaling
 `fullBound_le_of_rescale` returns to `(N, T, σ)`; the 5th, 7th and 8th terms of (12.1) are at most
@@ -139,10 +139,11 @@ theorem propTwelveOne_of_fullBound {w : CGLSmoothBump} {k : ℕ} (hFB : FullBoun
       (W.card : ℝ) ≤ (2 ^ (20 : ℝ) + 1 + 627 + 5 * (2 * C₁ * 2 ^ (13 : ℝ))) * T ^ ε *
         (t1 + t6 + t3 + t4) := fun c _ hc h =>
     h.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hc (by positivity)) hP0)
+  have hc1 : (0 : ℝ) ≤ 5 * (2 * C₁ * 2 ^ (13 : ℝ)) := by positivity
+  have hc2 : (0 : ℝ) ≤ 2 ^ (20 : ℝ) + 1 := by positivity
   -- small `T`: `|W| ≤ T + 1`
   rcases lt_or_ge T (2 ^ (20 : ℝ)) with hTs | hTl
-  · refine hfinal (2 ^ (20 : ℝ) + 1) (by positivity) (by linarith [show (0 : ℝ) ≤ 627 +
-      5 * (2 * C₁ * 2 ^ (13 : ℝ)) by positivity]) ?_
+  · refine hfinal (2 ^ (20 : ℝ) + 1) hc2 (by linarith) ?_
     have : 1 ≤ T ^ ε * (t1 + t6 + t3 + t4) := one_le_mul_of_one_le_of_one_le hTε (by linarith)
     nlinarith
   -- the mean value bound `|W| ≤ 627 (T N^{1−2σ} + t1)`
@@ -157,7 +158,7 @@ theorem propTwelveOne_of_fullBound {w : CGLSmoothBump} {k : ℕ} (hFB : FullBoun
       rw [show 2 - 2 * σ = 2 - σ * 2 by ring, Real.rpow_sub hN0, Real.rpow_mul hN0.le,
         Real.rpow_two, Real.rpow_two]
     have e : u + t1 = (T + N) * N / ((N : ℝ) ^ σ) ^ 2 := by
-      rw [hu, ht1, eu, et]; field_simp; ring
+      rw [hu, ht1, eu, et]; field_simp
     rw [e, mul_div_assoc', le_div_iff₀ (by positivity)]
     linarith [hmv]
   -- the plateau pieces
@@ -200,8 +201,8 @@ theorem propTwelveOne_of_fullBound {w : CGLSmoothBump} {k : ℕ} (hFB : FullBoun
     have hσM : (M : ℝ) ^ (-Real.logb M ((N : ℝ) ^ σ / 2)) = 2 * (N : ℝ) ^ (-σ) := by
       rw [Real.rpow_neg hM0.le, Real.rpow_logb hM0 hMg.ne' (by positivity), Real.rpow_neg hN0.le]
       field_simp
-    have hres := fullBound_le_of_rescale (j := k) (k := k) hM0 hN0 (by linarith) hM2' le_rfl
-      hσM.le
+    have hres := fullBound_le_of_rescale (j := k) (k := k) (T := T) (T' := 2 * T) hM0 hN0
+      (by linarith) hM2' le_rfl hσM.le
     calc C₁ * T ^ ε * fullBound M (2 * T) (Real.logb M ((N : ℝ) ^ σ / 2)) k k
         ≤ C₁ * T ^ ε * (2 ^ (13 : ℝ) * fullBound N T σ k k) :=
           mul_le_mul_of_nonneg_left hres (by positivity)
@@ -245,14 +246,12 @@ theorem propTwelveOne_of_fullBound {w : CGLSmoothBump} {k : ℕ} (hFB : FullBoun
   rcases le_total u ((N : ℝ) ^ (5 - 6 * σ)) with hle | hle
   · -- the mean value bound wins
     have hu6 : u ≤ t6 := (min_eq_left hle) ▸ hmin
-    refine hfinal 627 (by norm_num) (by linarith [show (0 : ℝ) ≤ 2 ^ (20 : ℝ) + 1 +
-      5 * (2 * C₁ * 2 ^ (13 : ℝ)) by positivity]) ?_
+    refine hfinal 627 (by norm_num) (by linarith) ?_
     have : t1 + t6 ≤ T ^ ε * (t1 + t6 + t3 + t4) := by nlinarith
     linarith
   · -- (12.1) wins
     have h26 : (N : ℝ) ^ (5 - 6 * σ) ≤ t6 := (min_eq_right hle) ▸ hmin
-    refine hfinal (5 * (2 * C₁ * 2 ^ (13 : ℝ))) (by positivity)
-      (by linarith [show (0 : ℝ) ≤ 2 ^ (20 : ℝ) + 1 + 627 by positivity]) ?_
+    refine hfinal (5 * (2 * C₁ * 2 ^ (13 : ℝ))) hc1 (by linarith) ?_
     have hfb' : fullBound N T σ k k ≤ 5 * (t1 + t6 + t3 + t4) := by
       rw [hfb]; linarith
     calc (W.card : ℝ) ≤ 2 * C₁ * 2 ^ (13 : ℝ) * T ^ ε * fullBound N T σ k k := hFBW

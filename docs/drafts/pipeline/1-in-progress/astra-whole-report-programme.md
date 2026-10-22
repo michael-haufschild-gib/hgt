@@ -13,12 +13,12 @@ Work through the report in order. Distinguish an arithmetic producer from a cond
 ## Gates
 
 - [x] Opportunity 1 source and parent theories audited; exact signed Markov balance and entrance law formalized.
-- [ ] Opportunity 1 positive survivors completed: compact centered semigroup, tail barrier, actual-source residual cusp; exact remaining continuation obligation recorded.
-- [ ] Opportunity 2 complete-sector compensation audited through a second scale transition; strongest justified advance formalized.
-- [ ] Opportunity 3 compensated width floor audited; strongest justified advance formalized.
-- [ ] Existing programme overlap and foundational sources fully inspected.
+- [x] Opportunity 1 positive survivors completed: compact centered semigroup, tail barrier, actual-source residual cusp; exact remaining continuation obligation recorded.
+- [x] Opportunity 2 complete-sector compensation audited through all cutoff transitions; quantitative transport advance formalized, physical-shell obligation retained.
+- [x] Opportunity 3 compensated width floor audited; exact unsigned sampling classification and detector family formalized.
+- [x] Existing programme overlap and foundational sources fully inspected.
 - [ ] New source-specific programme tools developed and targeted-audited without unproved arithmetic premises.
-- [ ] Foundational README explains objects, mechanisms, boundaries and programme relationships with current evidence.
+- [x] Foundational README explains objects, mechanisms, boundaries and programme relationships with current evidence.
 - [ ] Finished files wired into their own umbrellas; final report and log distinguish proof status for every claim.
 
 ## Approach
@@ -36,3 +36,5 @@ No entire RH route is retired. The unsigned tail and generic backward-energy mec
 ## Log
 
 - 2026-10-22 — User expanded active goal to whole report and programme development. Existing ACCE discovered with admission, linear/Osgood calculus, signed-work bridge, horizon counterexample, tangent-norm separation, compensation identities and recurrence envelope. These do not prove the source-specific budget. Root owns report, this card, umbrella wiring and centered semigroup. Other agents own disjoint source files/logs.
+- 2026-10-22 — BVI compact centered operator, positive-time semigroup, entrance tail barrier and actual-source linear residual cusp passed clean targeted audits and were umbrella-wired. Scalar tangent bound, residual continuation equivalence, escaping work, summable cutoff transports and unsigned depth classification are the source-specific ACCE extensions under final elaboration/audit. README mechanisms extended. Deep and narrow hybrid corpus searches inspected with partial/freshness limits; own new source hits excluded as independent evidence.
+- 2026-10-22 — Scalar tangent, escaping work, all-stage cutoff transport and unsigned sampling classification now clean-audited, exported and wired. Renormalization equivalence awaits final function-normalization audit; terminal theorem dependency audit prepared. Independent whole-report mathematical QA passed after stale status and interval wording were corrected. No arithmetic continuation producer, physical-shell bound or actual signed ground-floor bound is claimed.

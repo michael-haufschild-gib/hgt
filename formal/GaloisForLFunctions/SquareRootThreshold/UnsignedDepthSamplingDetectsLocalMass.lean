@@ -13,9 +13,7 @@ sources. This concerns unsigned difference energy, not the signed Weil floor.
 
 open Complex MeasureTheory Set Filter Topology
 open GaloisForLFunctions.HTGeometry RHTower RHTower.CCMParityQuartet
-open GaloisForLFunctions.SquareRootThreshold
-
-namespace GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
+namespace GaloisForLFunctions.SquareRootThreshold
 noncomputable section
 set_option autoImplicit false
 
@@ -29,7 +27,7 @@ def UnsignedDepthSamplingBound (a : SuzukiPositiveAperture) (B : ℝ) : Prop :=
 private def udsScale (a : SuzukiPositiveAperture) : ℝ := min (a.1 / 4) (1 / 8)
 
 private theorem udsScale_pos (a : SuzukiPositiveAperture) : 0 < udsScale a :=
-  lt_min (by dsimp; linarith [a.2]) (by norm_num)
+  lt_min (by linarith [a.2]) (by norm_num)
 
 private theorem udsScale_support (a : SuzukiPositiveAperture) :
     Metric.closedBall (2 * udsScale a) (udsScale a) ⊆ Ioo (-a.1) a.1 := by
@@ -79,10 +77,17 @@ private theorem udsProbe_integrand_re (a : SuzukiPositiveAperture) (T x : ℝ) (
     (udsProbe a T x * Complex.exp (Complex.I * (-z) * x)).re =
       udsBump a x * Real.exp (z.im * x) * Real.cos ((T - z.re) * x) := by
   rw [udsProbe_apply, mul_assoc, ← Complex.exp_add]
-  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-    Complex.exp_re, Complex.add_re, Complex.add_im, Complex.mul_im,
-    Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im]
-  congr 1 <;> ring
+  have hr : (Complex.I * (T : ℂ) * x + Complex.I * (-z) * x).re = z.im * x := by
+    simp only [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im]
+    ring
+  have hi : (Complex.I * (T : ℂ) * x + Complex.I * (-z) * x).im = (T - z.re) * x := by
+    simp only [Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im]
+    ring
+  rw [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+    Complex.exp_re, hr, hi]
+  ring
 
 private theorem udsProbe_difference_re (a : SuzukiPositiveAperture) (T : ℝ) (z : ℂ) :
     (testTransform (udsProbe a T) (-z) -
@@ -94,7 +99,13 @@ private theorem udsProbe_difference_re (a : SuzukiPositiveAperture) (T : ℝ) (z
   have h2 := integrable_testTransform_integrand (udsProbe a T).continuous
     (udsProbe a T).hasCompactSupport (-(starRingEnd ℂ) z)
   unfold testTransform
-  rw [← integral_sub h1 h2, ← integral_re (h1.sub h2)]
+  rw [← integral_sub h1 h2]
+  have hre : (∫ x : ℝ, udsProbe a T x * Complex.exp (Complex.I * (-z) * x) -
+      udsProbe a T x * Complex.exp (Complex.I * (-(starRingEnd ℂ) z) * x)).re =
+      ∫ x : ℝ, (udsProbe a T x * Complex.exp (Complex.I * (-z) * x) -
+        udsProbe a T x * Complex.exp (Complex.I * (-(starRingEnd ℂ) z) * x)).re :=
+    (Complex.reCLM.integral_comp_comm (h1.sub h2)).symm
+  rw [hre]
   apply integral_congr_ae
   filter_upwards [] with x
   rw [Complex.sub_re, udsProbe_integrand_re, udsProbe_integrand_re]
@@ -107,7 +118,8 @@ private theorem udsProbe_lower_nonneg (a : SuzukiPositiveAperture) (T : ℝ) (z 
       ‖testTransform (udsProbe a T) (-z) -
         testTransform (udsProbe a T) (-(starRingEnd ℂ) z)‖ := by
   have hp := (udsBump a).continuous
-  have hpI := hp.integrable_of_hasCompactSupport (udsBump a).hasCompactSupport
+  have hpI : Integrable (fun x : ℝ => udsBump a x) :=
+    hp.integrable_of_hasCompactSupport (udsBump a).hasCompactSupport
   have hF : Integrable (fun x : ℝ => udsBump a x *
       (Real.exp (z.im * x) - Real.exp (-z.im * x)) * Real.cos ((T - z.re) * x)) :=
     ((hp.mul ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).sub
@@ -132,7 +144,7 @@ private theorem udsProbe_lower_nonneg (a : SuzukiPositiveAperture) (T : ℝ) (z 
     have harg2 : ((T - z.re) * x) ^ 2 ≤ 1 := by
       simpa only [sq_abs, one_pow] using pow_le_pow_left₀ (abs_nonneg _) harg 2
     have hcos : 1 / 2 ≤ Real.cos ((T - z.re) * x) := by
-      linarith [Real.one_sub_sq_div_two_le_cos ((T - z.re) * x)]
+      linarith [Real.one_sub_sq_div_two_le_cos (x := (T - z.re) * x)]
     have hsinh := Real.self_le_sinh_iff.mpr (mul_nonneg hy hx0)
     rw [Real.sinh_eq, ← neg_mul] at hsinh
     have hexp : 2 * (udsScale a * z.im) ≤
@@ -166,7 +178,7 @@ private theorem udsProbe_lower (a : SuzukiPositiveAperture) (T : ℝ) (z : ℂ)
   · have hy' : 0 ≤ ((starRingEnd ℂ) z).im := by simp only [Complex.conj_im]; linarith
     have h := udsProbe_lower_nonneg a T ((starRingEnd ℂ) z)
       (by simpa only [Complex.conj_re] using hT) hy'
-    simpa only [Complex.conj_im, map_neg, starRingEnd_self_apply,
+    simpa only [Complex.conj_im, starRingEnd_self_apply,
       abs_of_nonpos (le_of_not_ge hy), norm_sub_rev] using h
 
 /-- Literal smooth probes detect depths uniformly across height windows. No strip bound is needed. -/
@@ -250,4 +262,4 @@ theorem exists_unsignedDepthSamplingBound_iff (a : SuzukiPositiveAperture) :
     positivity
 
 end
-end GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
+end GaloisForLFunctions.SquareRootThreshold

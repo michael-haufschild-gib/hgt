@@ -22,7 +22,7 @@ which "rearranges" to (12.1) (`fullBound`):
 * With `k = 4` (more generally: second exponent `j = 4`, third exponent `k ≥ 2`) and
   `T = N^{6/5}`, each of the eight terms of (12.1) is at most `N^{(18−20σ)/5} = T N^{(12−20σ)/5}`
   for `σ ∈ [7/10, 8/10]`: the eight linear comparisons `keyExponent_one_le` …
-  `keyExponent_eight_le` (TeX lines 2209–2218), assembled in `fullBound_le_keyBound` and
+  `keyExponent_eight_le` (the simplification at `T = N^{6/5}` in §12), assembled in `fullBound_le_keyBound` and
   `le_keyBound_of_cubic`.
 -/
 

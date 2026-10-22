@@ -95,9 +95,18 @@ theorem ramanujanCutoffTransportEnergy_le {ε β : ℝ} (hε : 0 < ε)
   calc
     _ ≤ ‖pmPowerDampedRamanujanCumulativePrefix ε (R - 1) n -
         pmPowerDampedDivisorRemainder ε n‖ +
+        ‖pmPowerDampedDivisorRemainder ε n -
+          pmPowerDampedRamanujanCumulativePrefix ε (Q - 1) n‖ :=
+      norm_sub_le_norm_sub_add_norm_sub _ _ _
+    _ = ‖pmPowerDampedRamanujanCumulativePrefix ε (R - 1) n -
+        pmPowerDampedDivisorRemainder ε n‖ +
         ‖pmPowerDampedRamanujanCumulativePrefix ε (Q - 1) n -
-          pmPowerDampedDivisorRemainder ε n‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
-    _ ≤ _ := by dsimp [ramanujanCutoffErrorConstant]; nlinarith
+          pmPowerDampedDivisorRemainder ε n‖ := by rw [norm_sub_rev (pmPowerDampedDivisorRemainder ε n)]
+    _ ≤ (n : ℝ) * (R : ℝ) ^ (-β) *
+        (∑' m : ℕ, (m : ℝ) ^ (-(1 + ε - β))) ^ 2 +
+        (n : ℝ) * (Q : ℝ) ^ (-β) *
+          (∑' m : ℕ, (m : ℝ) ^ (-(1 + ε - β))) ^ 2 := add_le_add hr hq
+    _ = _ := by unfold ramanujanCutoffErrorConstant; ring
 
 /-- Cutoff transport is controlled in the finite-head norm itself. -/
 theorem sqrt_ramanujanCutoffTransportEnergy_le {ε β : ℝ} (hε : 0 < ε)
@@ -163,7 +172,7 @@ theorem sqrt_ramanujanCutoffTransportEnergy_dyadic_le {ε : ℝ} (hε : 0 < ε)
   have hTQ : 2 ^ j ≤ (2 : ℕ) ^ (m * j) :=
     pow_le_pow_right₀ (by norm_num) (by nlinarith)
   have hQR : (2 : ℕ) ^ (m * j) ≤ 2 ^ (m * (j + 1)) :=
-    pow_le_pow_right₀ (by norm_num) (by omega)
+    pow_le_pow_right₀ (by norm_num) (Nat.mul_le_mul_left m (Nat.le_succ j))
   have h := sqrt_ramanujanCutoffTransportEnergy_le hε (by positivity : 0 ≤ ε / 2)
     (by linarith : ε / 2 < ε) (by positivity : 0 < (2 : ℕ) ^ (m * j))
     (by positivity : 0 < (2 : ℕ) ^ (m * (j + 1))) hTQ (hTQ.trans hQR)
@@ -174,7 +183,9 @@ theorem sqrt_ramanujanCutoffTransportEnergy_dyadic_le {ε : ℝ} (hε : 0 < ε)
     _ ≤ Real.sqrt ((2 : ℕ) ^ j) *
         (2 * ((((2 : ℕ) ^ (m * j) : ℕ) : ℝ) ^ (-(ε / 2))) *
           ramanujanCutoffErrorConstant ε (ε / 2)) := h.trans (by
-      gcongr
+      push_cast at hp ⊢
+      apply mul_le_mul_of_nonneg_left _ (Real.sqrt_nonneg _)
+      apply mul_le_mul_of_nonneg_right _ (ramanujanCutoffErrorConstant_nonneg _ _)
       linarith)
     _ = _ := by rw [← dyadic_head_scale]; ring
 

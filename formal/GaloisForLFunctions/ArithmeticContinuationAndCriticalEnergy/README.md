@@ -373,6 +373,54 @@ same explicit positive bound holds uniformly on the interval
 budget of finite total on the interval leading to it. This is the no-crossing law of the shared
 target's mechanism 3, stated as an estimate rather than as a sign.
 
+### What is already paid, and what is not
+
+The signed work splits, and only one half of it is open.
+
+Subtracting the constant source is a renormalisation that changes the signed work by a scalar
+moment, and that moment is *uniformly paid*: the absolute first pronic moment of the damped
+Chebyshev tangent has one bound valid for every horizon and every damping above a fixed positive
+number (`exists_uniform_pronic_tangent_l1_bound`, `exists_uniform_scalar_damping_work_bound`). The
+tangent itself need not have bounded critical square energy, so this is strictly less than the
+tangent-norm demand. The renormalisation is moreover neutral: the original energy and its residual
+at the constant source have uniformly comparable shifted energies, admission holds for one exactly
+when it holds for the other, and a linear continuation budget exists for one exactly when it exists
+for the other (`one_add_damped_energy_comparison`, `admits_damped_residual_iff`,
+`signedDampingWork_sub_residualDampingWork`, `linearContinuation_residual_iff`). So the open demand
+is the *covariance* part of the signed work and nothing else; subtracting means does not move it.
+
+The residual half carries a sharp obstruction. The literal residual has a linear cusp, so although
+its work tends to zero at each fixed horizon, the mean value theorem produces positive work at
+arbitrarily small damping and arbitrarily large horizons
+(`exists_positive_residualDampingWork_near_zero`,
+`exists_positive_residualDampingWork_escaping_horizons`). Positive work escaping every fixed horizon
+is exactly what a horizon-free budget has to absorb, and it rules out proving (C) by a fixed-horizon
+limit.
+
+### Cutoff transport
+
+The denominator cutoff is the programme's second parameter. The actual Ramanujan truncation error
+pays every cutoff change along a compatible sequence of growing heads, the exact stage balance
+retains its signed cross term and its new physical shell
+(`ramanujanCutoff_stage_energy_eq`, `ramanujanPhysicalShellEnergy_nonneg`), and the transport depth
+is dyadically summable (`summable_sqrt_ramanujanCutoffTransportEnergy_dyadic`,
+`exists_summable_ramanujanCutoffTransport_depth`). What is *not* asserted is a bound on the sum of
+the physical shells: that sum is the cutoff analogue of the damping budget.
+
+### The aperture parameter: unsigned depth sampling
+
+This bridge is maintained in `SquareRootThreshold/UnsignedDepthSamplingDetectsLocalMass.lean`,
+beside the depth-mass and sampling definitions it extends.
+
+On the aperture side a source-uniform bound at a single positive aperture already controls squared
+off-line depths on every unit-height window, with literal complex smooth interior probes, and the
+converse holds, so the two are equivalent
+(`exists_offLineDepthLocallyBounded_of_unsignedDepthSamplingBound`,
+`unsignedDepthSamplingBound_of_offLineDepthLocallyBounded`, `exists_unsignedDepthSamplingBound_iff`).
+This identifies the hypothesis under which the width equals the ground-energy rate with a sampling
+statement about the source. It is unsigned difference energy, not the signed Weil floor, so it
+bounds the hypothesis of the floor theorem rather than the floor.
+
 ### Iterated compensation
 
 A compensation between a sector and its complement is useful only if it iterates. The abstract shape
@@ -382,6 +430,119 @@ criterion: multipliers below `θ < 1` and sources below `R` give the stage-free 
 `max(F₀, R/(1−θ))` (`affineEnvelope_le_of_contraction`). The contraction is not a formality —
 `affineEnvelope_one_one` shows that unit multipliers with unit sources diverge linearly, so a scheme
 that merely cancels at leading order per stage proves nothing.
+
+### The paid scalar correction and the remaining covariance
+
+Write the actual centered prefix as \(A_\varepsilon(n)\), its damping
+derivative as \(B_\varepsilon(n)\), and use weight \(1/[n(n+1)]\).
+Subtracting the constant source gives a useful second energy:
+
+\[
+D_T(\varepsilon)=\sum_{1\le n\le T}
+  \frac{(A_\varepsilon(n)-1)^2}{n(n+1)},\qquad
+W_T^{\rm res}(\varepsilon)=\sum_{1\le n\le T}
+  \frac{(A_\varepsilon(n)-1)B_\varepsilon(n)}{n(n+1)}.
+\]
+
+The derivative is \(D'_T=2W_T^{\rm res}\). The difference from the original
+work is exactly the scalar moment \(\sum B_\varepsilon(n)/[n(n+1)]\).
+That correction can be paid unconditionally: for every \(a>0\), one
+constant \(K_a\) bounds
+
+\[
+\sup_{\varepsilon\ge a}\sup_T
+\sum_{1\le n\le T}\frac{|B_\varepsilon(n)|}{n(n+1)}\le K_a.
+\]
+
+The mechanism is arithmetic but requires no critical-energy admission.
+The tangent is the negative centered prefix of the logarithmically weighted
+Möbius row. With \(b=\min(a,1)\), the existing damped-class estimate bounds
+that prefix by \(C_b n^{1-b/2}\), uniformly for \(\varepsilon\ge a\).
+Division by the pronic denominator leaves a summable majorant
+\(C_b n^{-1-b/2}\). This is an absolute first-moment bound; it supplies
+no square-energy bound for the tangent.
+
+Elementary square inequalities give
+\(1+D_T\le3(1+E_T)\) and \(1+E_T\le3(1+D_T)\).
+Consequently admission and the linear continuation demand are unchanged
+by this subtraction. A budget primitive \(\beta\) for either energy
+transports to \(3\beta(\varepsilon)+2K_a\varepsilon\) for the other.
+The finite-horizon condition at \(T=0\) supplies \(\beta'\ge0\), so this
+comparison preserves the required direction of the inequality.
+The remaining arithmetic obligation is a lower bound on the complete
+residual covariance, relative to its current energy.
+
+### A source-specific warning at zero damping
+
+At every fixed horizon, both \(D_T(\varepsilon)\) and
+\(W_T^{\rm res}(\varepsilon)\) tend to zero as \(\varepsilon\downarrow0\).
+Yet the actual residual has an unconditional linear cusp: a critical zero
+provides \(c>0\) such that every sufficiently small positive damping has
+some horizon with \(D_T(\varepsilon)>c\varepsilon\).
+The exact step-source Mellin transform, including its floor correction,
+is essential to this assertion.
+
+A finite-horizon mean-value argument then proves that a fixed amount of
+positive residual work occurs arbitrarily near zero and beyond every
+prescribed horizon. Thus vanishing at each finite horizon is incompatible
+with a uniform vanishing-work estimate. This identifies where one limit
+interchange fails without differentiating an infinite energy or assuming
+that energy finite. It does not obstruct the one-sided bound on negative
+work needed for backward continuation.
+
+The kernel, entrance law, compact centered operators and positive-time
+semigroup underlying this analysis belong to
+`BezoutValuationIncidence`. Their compactness concerns \(c_0\). Their
+unsigned row tails fail square summability at half damping, while tails
+tested against the reciprocal observable remain square summable at every
+positive damping. This programme uses that distinction to choose actual
+source observables; compactness in the weaker space alone supplies no
+critical Hilbert estimate.
+
+### Two scales in a compensated representation
+
+Changing a denominator cutoff and admitting new physical observations
+incur different costs. For the actual Ramanujan prefix \(H_Q\), the
+existing arithmetic source estimate implies, whenever \(T\le Q,R\),
+
+\[
+\|H_R-H_Q\|_T\le C_{\varepsilon,\beta}\sqrt T
+  (Q^{-\beta}+R^{-\beta}),\qquad 0\le\beta<\varepsilon.
+\]
+
+Taking \(T_j=2^j\), \(Q_j=2^{mj}\), \(\beta=\varepsilon/2\), and
+\(m\varepsilon>1\) makes all common-head transition norms summable.
+This pays arbitrarily many representation changes at every positive
+damping. The exact energy identity still contains the signed old-head
+cross term and the nonnegative energy on the newly exposed physical shell.
+No bound on the sum of those physical-shell energies follows from the
+transport estimate. A proposed compensated recurrence must identify
+which of these two costs its estimate controls.
+
+### What one aperture can detect about zero depths
+
+For any fixed positive aperture, a source-uniform bound on
+
+\[
+\sum_{q\in S}|\widehat u(-z_q)-\widehat u(-\overline{z_q})|^2
+\]
+
+for all finite sets of zero copies is equivalent to a uniform bound on
+the squared off-line depths in every unit-height window. The forward
+sampling estimate and exact classification belong to `SquareRootThreshold`.
+For the converse,
+a nonnegative smooth bump supported strictly on the positive side of the
+aperture, modulated to height \(T\), has constant norm and detects
+\(|\operatorname{Im}z|\) throughout \(|\operatorname{Re}z-T|\le1\).
+The cosine factor remains positive on that support, and the difference
+of the two real exponentials dominates a fixed multiple of the depth.
+Summing the squared pointwise detection estimate preserves multiplicity.
+
+This gives a precise limit of the unsigned approach: an aperture-dependent
+constant, even at one aperture, already reinstates the local-depth
+condition. It is not a necessity theorem for the signed ground floor.
+The positive sampling term can compensate the negative term. The next
+arithmetic tool must compare both terms for the actual source.
 
 ## 4. Traps
 
@@ -425,11 +586,15 @@ that merely cancels at leading order per stage proves nothing.
 
 ## 5. Open problems
 
-1. **The continuation estimate (C).** For every `0 < a < c` with `c` admitted, produce a
-   nonnegative `β'` integrable on `[a, c]`, independent of the horizon, with
+1. **The covariance half of the continuation estimate (C).** For every `0 < a < c` with `c`
+   admitted, produce a nonnegative `β'` integrable on `[a, c]`, independent of the horizon, with
    `−2 W_T(ε) ≤ β'(ε)(1 + E_T(ε))` for all `T` and almost every `ε ∈ [a, c]`. Dependence on `a`,
-   including arbitrarily bad growth as `a ↓ 0`, is allowed. This is the decisive unproved
-   arithmetic input; `riemannHypothesis_of_dampingContinuation_endpoint` is the consumer.
+   including arbitrarily bad growth as `a ↓ 0`, is allowed. The scalar part of this is proved
+   (`exists_uniform_scalar_damping_work_bound`) and renormalisation is neutral
+   (`linearContinuation_residual_iff`), so the open demand is exactly the covariance of the centred
+   source with the centred tangent. `riemannHypothesis_of_dampingContinuation_endpoint` is the
+   consumer, and `exists_positive_residualDampingWork_escaping_horizons` says no fixed-horizon limit
+   can supply it.
 2. **The superlinear variant.** The same with `(1 + E)(1 + log(1 + E))` in place of `1 + E`, or
    with any coercive scale. `riemannHypothesis_of_superlinear_dampingContinuation` is the consumer.
 3. **Which terms obstruct.** Express `W_T(ε)` through the owned divisor, Vaughan and logarithmic
@@ -445,18 +610,25 @@ that merely cancels at leading order per stage proves nothing.
    `E_± = ¼ Σ_q |a_q ± b_q|²`, decide whether the actual prime–Gamma–pole source forces
    `E_−(u) ≤ E_+(u) + C_σ e^{2σA} ‖u‖₂²` for every `σ` above the width, without assuming bounded
    local off-line depth mass. This would close the reverse ground-rate inequality; it would not show
-   the common rate vanishes.
-6. **The aperture instance.** Instantiate the transport theorems with the aperture as parameter and
+   the common rate vanishes. The stronger local-depth-mass hypothesis is equivalent to a
+   one-aperture unsigned sampling bound (`SquareRootThreshold.exists_unsignedDepthSamplingBound_iff`).
+   Joint signed compensation may avoid that stronger hypothesis; the equivalence does not
+   make the signed floor estimate necessary or sufficient for unsigned sampling.
+6. **The sum of the physical shells.** Bound the accumulated physical shell cost of the
+   cutoff transport along a growing-head sequence; this is the cutoff analogue of the damping
+   budget, and `ramanujanCutoff_stage_energy_eq` is the exact balance it must control.
+7. **The aperture instance.** Instantiate the transport theorems with the aperture as parameter and
    the ground energy of the restricted Weil form as the energy, and identify the aperture analogue
    of the unconditional endpoint.
-7. **A stability theorem for a signed observation.** Find an observation map that is both
+8. **A stability theorem for a signed observation.** Find an observation map that is both
    origin-sensitive and sign-reading, and prove a quantitative stability estimate for it in the
    receiver's norm — the missing half of the recovery theorems.
 
 ### Research topics toward the shared target
 
-- The continuation estimate (C) restricted to the interval `(0, Θ/2]` that Littlewood's endpoint
-  leaves: the shortest form of the obligation currently known.
+- Source-derived continuation below the existing admission frontier. The sharper paper threshold
+  is `Δ = Θ − 1/2`: on `[a, 1/2]`, `a > Δ` supplies continuation and continuation forces
+  `a ≥ Δ`; the positive boundary `a = Δ` remains undecided. The target is every positive `a`.
 - The contraction factor of a sector-compensation scheme for the actual Möbius row, with every
   transition cross term paid, as the input to mechanism 2 of the shared target.
 - Selectivity certificates for any proposed continuation estimate against the shifted pair
@@ -500,7 +672,11 @@ that merely cancels at leading order per stage proves nothing.
 | `GroundFloorNoCrossing` | the floor transport for a positive ground energy; no crossing from a bounded relative decay |
 | `TheDampedMobiusCriticalEnergy` | the arithmetic instance; admission dictionary; RH as cofinal admission |
 | `SignedDampingWorkOfTheMobiusEnergy` | `signedDampingWork`; `∂_ε E_T = 2W_T`; the Markov bridge; Cauchy–Schwarz |
+| `TheScalarDampingWorkIsAlreadyPaid` | the actual tangent as a logarithmic centered prefix; uniform absolute first-pronic-moment control on every positive damping half-line |
+| `TheResidualCuspForcesEscapingWork` | finite-horizon residual derivative and zero limits; fixed positive work arbitrarily near zero beyond every prescribed horizon |
+| `RenormalizationPreservesDampingContinuation` | comparable original/residual energies; exact scalar work difference; equivalence of admission and of linear continuation on positive damping intervals |
 | `TheDampingContinuationCriterion` | the criteria for RH, the admitted endpoints, the partial-continuation zero-free strip, subsumption of the tangent norm |
 | `TheSignedWorkDemandIsStrictlyWeaker` | the rotating two-cell row: constant energy, zero work, unbounded tangent |
 | `SuperlinearOsgoodScale` | the double-logarithmic scale and the superlinear criterion |
 | `CompensationNeedsItsCrossTerms` | the complete signed decomposition; sectors may not be added; ratio smallness is not a bound |
+| `FiniteHeadCutoffTransportAndPhysicalShellCost` | actual Ramanujan cutoff-error bounds, complete stage identity, and a depth schedule with summable common-head transition norms |

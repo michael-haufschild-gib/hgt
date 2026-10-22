@@ -59,7 +59,7 @@ theorem floor_le_of_relative_decay (hac : a ≤ c) {μ μ' β β' : ℝ → ℝ}
     rwa [heq] at hdiv
 
 /-- A budget with nonnegative derivative is monotone on the interval. -/
-theorem monotoneOn_budget (hac : a ≤ c) {β β' : ℝ → ℝ}
+theorem monotoneOn_budget {β β' : ℝ → ℝ}
     (hβ : ∀ A ∈ Icc a c, HasDerivAt β (β' A) A) (hβ0 : ∀ A ∈ Icc a c, 0 ≤ β' A) :
     MonotoneOn β (Icc a c) := by
   refine monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc a c) (f' := β')
@@ -87,7 +87,7 @@ theorem floor_le_of_relative_decay_Ico (hac : a ≤ c) {μ μ' β β' : ℝ → 
   have hstep := floor_le_of_relative_decay hA.1 (μ := μ) (μ' := μ') (β := β) (β' := β')
     (fun x hx => hpos x (hsub hx)) (fun x hx => hμ x (hsub hx)) (fun x hx => hβ x (hsub hx))
     (fun x hx => hdecay x (hsub hx))
-  have hmono := monotoneOn_budget hac hβ hβ0
+  have hmono := monotoneOn_budget hβ hβ0
   have hβA : β A ≤ β c := hmono hA (right_mem_Icc.mpr hac) hA.2
   have hexp : Real.exp (-(β c - β a)) ≤ Real.exp (-(β A - β a)) :=
     Real.exp_le_exp.mpr (by linarith)

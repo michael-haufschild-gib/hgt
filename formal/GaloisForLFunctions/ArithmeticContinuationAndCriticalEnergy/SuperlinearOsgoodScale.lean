@@ -93,7 +93,7 @@ theorem riemannHypothesis_of_superlinear_dampingContinuation
   exact hwork T ε hε
 
 /-- Every linear budget is a superlinear budget: the criterion genuinely weakens the demand. -/
-theorem logLogGrowth_le_iff_mono {u b : ℝ} (hu : 0 ≤ u) (hb : 0 ≤ b) :
+theorem mul_one_add_le_mul_logLogGrowth {u b : ℝ} (hu : 0 ≤ u) (hb : 0 ≤ b) :
     b * (1 + u) ≤ b * logLogGrowth u := by
   have h1 : (0 : ℝ) < 1 + u := by linarith
   have h2 : (1 : ℝ) ≤ 1 + Real.log (1 + u) := one_le_one_add_log_one_add hu

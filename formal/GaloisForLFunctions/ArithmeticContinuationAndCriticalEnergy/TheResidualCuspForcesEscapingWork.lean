@@ -30,8 +30,8 @@ theorem hasDerivAt_pmPowerDampedDualResidual {ε : ℝ} (hε : 0 < ε) (T : ℕ)
     (A' := fun n => 2 * (pmPowerDampedCenteredDivisorPrefix ε n - 1) *
       dampedChebyshevError ε n / ((n : ℝ) * ((n : ℝ) + 1)))
     (fun n _ => by
-      have hp := (((hasDerivAt_pmPowerDampedCenteredDivisorPrefix hε n).sub_const 1).pow 2).
-        div_const ((n : ℝ) * ((n : ℝ) + 1))
+      have hp := (((hasDerivAt_pmPowerDampedCenteredDivisorPrefix hε n).sub_const 1).pow 2).div_const
+        ((n : ℝ) * ((n : ℝ) + 1))
       refine hp.congr_deriv ?_
       push_cast
       ring)
@@ -44,8 +44,8 @@ theorem tendsto_pmPowerDampedDualResidual_zero (T : ℕ) :
   unfold pmPowerDampedDualResidual
   simpa only [sub_self, zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_div, sum_const_zero]
     using tendsto_finsetSum (Icc 1 T) (fun n hn =>
-      (((tendsto_pmPowerDampedCenteredDivisorPrefix_zero (mem_Icc.mp hn).1).
-        sub_const 1).pow 2).div_const ((n : ℝ) * ((n : ℝ) + 1)))
+      (((tendsto_pmPowerDampedCenteredDivisorPrefix_zero (mem_Icc.mp hn).1).sub_const 1).pow 2).div_const
+        ((n : ℝ) * ((n : ℝ) + 1)))
 
 /-- Each fixed horizon has vanishing work, despite the escaping positive lower bound. -/
 theorem tendsto_residualDampingWork_zero (T : ℕ) :
@@ -53,8 +53,8 @@ theorem tendsto_residualDampingWork_zero (T : ℕ) :
   unfold residualDampingWork
   simpa only [sub_self, zero_mul, zero_div, sum_const_zero] using
     tendsto_finsetSum (Icc 1 T) (fun n hn =>
-      (((tendsto_pmPowerDampedCenteredDivisorPrefix_zero (mem_Icc.mp hn).1).
-        sub_const 1).mul (tendsto_dampedChebyshevError_zero n)).div_const
+      (((tendsto_pmPowerDampedCenteredDivisorPrefix_zero (mem_Icc.mp hn).1).sub_const 1).mul
+        (tendsto_dampedChebyshevError_zero n)).div_const
           ((n : ℝ) * ((n : ℝ) + 1)))
 
 private theorem exists_residualDampingWork_gt_of_cusp {c t : ℝ} (ht : 0 < t) (T : ℕ)
@@ -73,7 +73,7 @@ private theorem exists_residualDampingWork_gt_of_cusp {c t : ℝ} (ht : 0 < t) (
   obtain ⟨a, ha, hat, hga⟩ := hsmall.exists
   have hder (u : ℝ) (hu : 0 < u) :
       HasDerivAt g (2 * residualDampingWork u T - c) u := by
-    simpa only [mul_one] using
+    simpa only [g, Pi.sub_def, id_eq, mul_one] using
       (hasDerivAt_pmPowerDampedDualResidual hu T).sub ((hasDerivAt_id u).const_mul c)
   have hcont : ContinuousOn g (Icc a t) := by
     intro u hu

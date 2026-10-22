@@ -233,6 +233,7 @@ THEOREM_AREAS = {
 }
 
 ALLOWED_ROOT_LEAN = {
+    "ArithmeticContinuationAndCriticalEnergy.lean",
     "ArithmeticCriticalityTheory.lean",
     "ArithmeticIncidencePositivity.lean",
     "ArithmeticPositivityTheory.lean",
@@ -250,6 +251,7 @@ ALLOWED_ROOT_LEAN = {
     "QECLean.lean",
     "QuantumAlg.lean",
     "RHTower.lean",
+    "ScaleSignedIncidenceCriticality.lean",
     "SelbergClass.lean",
     "SquareRootThreshold.lean",
     "TransHorizonIncidenceMechanics.lean",

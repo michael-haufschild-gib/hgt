@@ -120,6 +120,132 @@ theorem pow_rpow_inv_two {x : ℝ} (hx : 0 ≤ x) {k : ℕ} (hk : 1 ≤ k) :
     push_cast; field_simp
   rw [he, Real.rpow_natCast]
 
+/-- `T'^θ ≤ 8 (T^θ Tε)` for `0 ≤ θ ≤ 1` when `T' ≤ 8 (T Tε)` and `1 ≤ Tε`. -/
+theorem rpow_le_of_le_mul {T T' Tε θ : ℝ} (hT0 : 0 < T) (hT'0 : 0 < T')
+    (hT'le : T' ≤ 8 * (T * Tε)) (hθ0 : 0 ≤ θ) (hθ1 : θ ≤ 1) (hTε1 : 1 ≤ Tε) :
+    T' ^ θ ≤ 8 * (T ^ θ * Tε) := by
+  have hTε0 : (0 : ℝ) ≤ Tε := by linarith
+  have h2 : (8 * (T * Tε)) ^ θ = (8 : ℝ) ^ θ * (T ^ θ * Tε ^ θ) := by
+    rw [Real.mul_rpow (by norm_num) (by positivity), Real.mul_rpow hT0.le hTε0]
+  have h3 : (8 : ℝ) ^ θ ≤ 8 := by
+    calc (8 : ℝ) ^ θ ≤ (8 : ℝ) ^ (1 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) hθ1
+      _ = 8 := Real.rpow_one 8
+  have h4 : Tε ^ θ ≤ Tε := by
+    calc Tε ^ θ ≤ Tε ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hTε1 hθ1
+      _ = Tε := Real.rpow_one Tε
+  have h5 : (0 : ℝ) ≤ T ^ θ := Real.rpow_nonneg hT0.le _
+  calc T' ^ θ ≤ (8 * (T * Tε)) ^ θ := Real.rpow_le_rpow hT'0.le hT'le hθ0
+    _ = (8 : ℝ) ^ θ * (T ^ θ * Tε ^ θ) := h2
+    _ ≤ 8 * (T ^ θ * Tε) :=
+        mul_le_mul h3 (mul_le_mul_of_nonneg_left h4 h5) (by positivity) (by norm_num)
+
+/-- Monotonicity of the four-term Heath-Brown majorant in the block length and the scale. -/
+theorem majorant_mono {c P Mk M2k TH TH' : ℝ} (hc : 0 ≤ c) (hP : 0 ≤ P)
+    (hPM : P ≤ Mk) (hP2 : P ^ 2 ≤ M2k) (hTH : 0 ≤ TH) (hTH' : TH ≤ TH') :
+    c ^ 2 * P + c * P ^ 2 + c ^ ((5 : ℝ) / 4) * TH * P + c ^ ((3 : ℝ) / 2) * P ^ 2
+      ≤ c ^ 2 * Mk + c * M2k + c ^ ((5 : ℝ) / 4) * TH' * Mk + c ^ ((3 : ℝ) / 2) * M2k := by
+  have h54 : (0 : ℝ) ≤ c ^ ((5 : ℝ) / 4) := Real.rpow_nonneg hc _
+  have h32 : (0 : ℝ) ≤ c ^ ((3 : ℝ) / 2) := Real.rpow_nonneg hc _
+  have hMk : 0 ≤ Mk := le_trans hP hPM
+  have hTH0 : 0 ≤ TH' := le_trans hTH hTH'
+  gcongr
+
+/-- The Proposition 6.1 bracket at the auxiliary scale `T'` against the bracket at `T`. -/
+theorem bracket_mono {N c T T' Tε a b s s' : ℝ} (hN : 0 ≤ N) (_hc : 0 ≤ c) (ha : 0 ≤ a)
+    (hb : 0 ≤ b) (_hs : 0 ≤ s) (_hT : 0 ≤ T) (hTε : 1 ≤ 8 * Tε)
+    (hT'le : T' ≤ 8 * (T * Tε)) (hs'le : s' ≤ 8 * (s * Tε)) :
+    N ^ 2 * c ^ 2 + T' * N * a + N ^ 2 * b * s' ≤
+      8 * Tε * (N ^ 2 * c ^ 2 + T * N * a + N ^ 2 * b * s) := by
+  have hTε0 : (0 : ℝ) ≤ Tε := by linarith
+  have e1 : N ^ 2 * c ^ 2 ≤ 8 * Tε * (N ^ 2 * c ^ 2) := by
+    have h0 : (0 : ℝ) ≤ N ^ 2 * c ^ 2 := by positivity
+    nlinarith
+  have e2 : T' * N * a ≤ 8 * Tε * (T * N * a) := by
+    have h0 : (0 : ℝ) ≤ N * a := by positivity
+    nlinarith [mul_le_mul_of_nonneg_right hT'le h0]
+  have e3 : N ^ 2 * b * s' ≤ 8 * Tε * (N ^ 2 * b * s) := by
+    have h0 : (0 : ℝ) ≤ N ^ 2 * b := by positivity
+    nlinarith [mul_le_mul_of_nonneg_left hs'le h0]
+  linarith
+
+/-- The `k`-th root of the lifted (6.3) constant `Dv^{2k} · 8^{2k} · Cm`. -/
+theorem lifted_root_le {Dv Cm Cδ E : ℝ} {k m : ℕ} (hk : 1 ≤ k) (hm : m = 2 * k)
+    (hDv0 : 0 ≤ Dv) (hCm0 : 0 ≤ Cm) (hCδ : 0 ≤ Cδ) (hE1 : 1 ≤ E)
+    (hDv2 : Dv ^ 2 ≤ Cδ * E) (hCmle : Cm ≤ 2 * Cδ * E) :
+    (Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm)) ^ (1 / (k : ℝ)) ≤
+      Cδ * E * (64 * (max 1 (2 * Cδ) * E)) := by
+  subst hm
+  have hkR : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
+  have hk1nn : (0 : ℝ) ≤ 1 / (k : ℝ) := div_nonneg zero_le_one (by linarith only [hkR])
+  have hexpk : 1 / (k : ℝ) ≤ 1 := by
+    rw [div_le_one (by linarith only [hkR])]; linarith only [hkR]
+  have hE0 : (0 : ℝ) ≤ E := le_trans zero_le_one hE1
+  have hmax0 : (0 : ℝ) ≤ max 1 (2 * Cδ) := le_trans zero_le_one (le_max_left _ _)
+  have h8m0 : (0 : ℝ) ≤ (8 : ℝ) ^ (2 * k) := pow_nonneg (by norm_num) _
+  rw [Real.mul_rpow (pow_nonneg hDv0 _) (mul_nonneg h8m0 hCm0), Real.mul_rpow h8m0 hCm0]
+  have e1 : (Dv ^ (2 * k)) ^ (1 / (k : ℝ)) = Dv ^ 2 := pow_rpow_inv_two hDv0 hk
+  have e2 : ((8 : ℝ) ^ (2 * k)) ^ (1 / (k : ℝ)) = 64 := by
+    rw [pow_rpow_inv_two (by norm_num : (0 : ℝ) ≤ 8) hk]; norm_num
+  rw [e1, e2]
+  have hEk : E ^ (1 / (k : ℝ)) ≤ E := by
+    calc E ^ (1 / (k : ℝ)) ≤ E ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hE1 hexpk
+      _ = E := Real.rpow_one E
+  have e3 : Cm ^ (1 / (k : ℝ)) ≤ max 1 (2 * Cδ) * E := by
+    have h1 : Cm ^ (1 / (k : ℝ)) ≤ (2 * Cδ * E) ^ (1 / (k : ℝ)) :=
+      Real.rpow_le_rpow hCm0 hCmle hk1nn
+    have h2 : (2 * Cδ * E) ^ (1 / (k : ℝ)) = (2 * Cδ) ^ (1 / (k : ℝ)) * E ^ (1 / (k : ℝ)) :=
+      Real.mul_rpow (by linarith only [hCδ]) hE0
+    have h3 : (2 * Cδ) ^ (1 / (k : ℝ)) ≤ max 1 (2 * Cδ) :=
+      rpow_inv_le_max (by linarith only [hCδ]) hk
+    have h5 : (0 : ℝ) ≤ E ^ (1 / (k : ℝ)) := Real.rpow_nonneg hE0 _
+    calc Cm ^ (1 / (k : ℝ)) ≤ (2 * Cδ * E) ^ (1 / (k : ℝ)) := h1
+      _ = (2 * Cδ) ^ (1 / (k : ℝ)) * E ^ (1 / (k : ℝ)) := h2
+      _ ≤ max 1 (2 * Cδ) * E := mul_le_mul h3 hEk h5 hmax0
+  have hc64 : (0 : ℝ) ≤ 64 * Cm ^ (1 / (k : ℝ)) := by
+    have := Real.rpow_nonneg hCm0 (1 / (k : ℝ))
+    linarith only [this]
+  exact mul_le_mul hDv2 (mul_le_mul_of_nonneg_left e3 (by norm_num)) hc64
+    (mul_nonneg hCδ hE0)
+
+/-- The final constant collection of Proposition 6.1, over abstract reals. -/
+theorem prop61_constant_step {S C₆₁ Cδ E RT BRv Xv P6 P9 : ℝ}
+    (hC₆₁ : 0 ≤ C₆₁) (hCδ : 0 ≤ Cδ) (hE : 0 ≤ E) (hP6 : 0 ≤ P6) (hP9 : 0 ≤ P9)
+    (hmain : S ≤ 2 * (C₆₁ * P6 * RT) * BRv)
+    (hRT : RT ≤ Cδ * E * (64 * (max 1 (2 * Cδ) * E)))
+    (hBR : BRv ≤ 8 * E * Xv) (hBR0 : 0 ≤ BRv) (hX0 : 0 ≤ Xv)
+    (hprod : P6 * (E * (E * E)) = P9) :
+    S ≤ (1024 * C₆₁ * (1 + Cδ) * (1 + 2 * Cδ) + C₆₁) * P9 * Xv := by
+  have hmax0 : (0 : ℝ) ≤ max 1 (2 * Cδ) := le_trans zero_le_one (le_max_left _ _)
+  have hme : (0 : ℝ) ≤ max 1 (2 * Cδ) * E := mul_nonneg hmax0 hE
+  have hRTb : (0 : ℝ) ≤ Cδ * E * (64 * (max 1 (2 * Cδ) * E)) :=
+    mul_nonneg (mul_nonneg hCδ hE) (by linarith only [hme])
+  have hCP : (0 : ℝ) ≤ C₆₁ * P6 := mul_nonneg hC₆₁ hP6
+  have hL : 2 * (C₆₁ * P6 * RT) ≤ 2 * (C₆₁ * P6 * (Cδ * E * (64 * (max 1 (2 * Cδ) * E)))) := by
+    have h := mul_le_mul_of_nonneg_left hRT hCP
+    linarith only [h]
+  have hL0 : (0 : ℝ) ≤ 2 * (C₆₁ * P6 * (Cδ * E * (64 * (max 1 (2 * Cδ) * E)))) := by
+    have := mul_nonneg hCP hRTb
+    linarith only [this]
+  have step : S ≤ 2 * (C₆₁ * P6 * (Cδ * E * (64 * (max 1 (2 * Cδ) * E)))) * (8 * E * Xv) :=
+    hmain.trans (mul_le_mul hL hBR hBR0 hL0)
+  have eq1 : 2 * (C₆₁ * P6 * (Cδ * E * (64 * (max 1 (2 * Cδ) * E)))) * (8 * E * Xv)
+      = 1024 * C₆₁ * Cδ * max 1 (2 * Cδ) * (P6 * (E * (E * E))) * Xv := by ring
+  rw [eq1, hprod] at step
+  have hconst : 1024 * C₆₁ * Cδ * max 1 (2 * Cδ) ≤
+      1024 * C₆₁ * (1 + Cδ) * (1 + 2 * Cδ) + C₆₁ := by
+    have hmaxle : max 1 (2 * Cδ) ≤ 1 + 2 * Cδ :=
+      max_le (by linarith only [hCδ]) (by linarith only [hCδ])
+    have hA : 1024 * C₆₁ * Cδ ≤ 1024 * C₆₁ * (1 + Cδ) := by
+      have h := mul_le_mul_of_nonneg_left (by linarith only [] : Cδ ≤ 1 + Cδ)
+        (by linarith only [hC₆₁] : (0 : ℝ) ≤ 1024 * C₆₁)
+      linarith only [h]
+    have hB0 : (0 : ℝ) ≤ 1024 * C₆₁ * (1 + Cδ) :=
+      mul_nonneg (by linarith only [hC₆₁]) (by linarith only [hCδ])
+    have h := mul_le_mul hA hmaxle hmax0 hB0
+    linarith only [h, hC₆₁]
+  exact step.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hconst hP9) hX0)
+
 /-! ### Proposition 6.1 for `ζ` -/
 
 /-- **Guth–Maynard, Proposition 6.1 for `ζ`** (unconditional).  For every `ε ∈ (0,1]` and every
@@ -164,6 +290,16 @@ theorem prop61_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (hε1 : ε
     have : 1 ≤ W.card := Finset.card_pos.mpr hWne
     exact_mod_cast this
   have hTε1 : (1 : ℝ) ≤ T ^ ε := Real.one_le_rpow hT1 hε.le
+  have hTε0 : (0 : ℝ) ≤ T ^ ε := Real.rpow_nonneg hT0.le _
+  have h8Tε : (1 : ℝ) ≤ 8 * T ^ ε := by linarith only [hTε1]
+  have hTe6 : (T ^ ε) ^ 6 = T ^ (6 * ε) := by
+    rw [← Real.rpow_natCast (T ^ ε) 6, ← Real.rpow_mul hT0.le,
+      show ε * ((6 : ℕ) : ℝ) = 6 * ε from by push_cast; ring]
+  have hTsum : T ^ (6 * ε) * (T ^ ε * (T ^ ε * T ^ ε)) = T ^ (9 * ε) := by
+    rw [← Real.rpow_add hT0, ← Real.rpow_add hT0, ← Real.rpow_add hT0,
+      show 6 * ε + (ε + (ε + ε)) = 9 * ε from by ring]
+  have hprod : (T ^ ε) ^ 6 * (T ^ ε * (T ^ ε * T ^ ε)) = T ^ (9 * ε) := by
+    rw [hTe6]; exact hTsum
   -- `W` is 1-separated and of diameter at most `T`
   have hW1 : IsSeparated 1 W := fun t ht t' ht' hne => hTε1.trans (hsep t ht t' ht' hne)
   have hdiam : ∀ t ∈ W, ∀ t' ∈ W, |t - t'| ≤ T := by
@@ -179,7 +315,7 @@ theorem prop61_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (hε1 : ε
     have := Real.rpow_le_rpow_of_exponent_le h2T (by linarith : (1 : ℝ) ≤ 1 + ε)
     rwa [Real.rpow_one] at this
   have hNrpow : N ≤ (2 * T) ^ (1 + ε) := by linarith
-  set T' : ℝ := 2 * (2 * T) ^ (1 + ε) with hT'def
+  obtain ⟨T', hT'def⟩ : ∃ T' : ℝ, T' = 2 * (2 * T) ^ (1 + ε) := ⟨_, rfl⟩
   have hT'0 : (0 : ℝ) < T' := by
     have : (0 : ℝ) < (2 * T) ^ (1 + ε) := Real.rpow_pos_of_pos (by linarith) _
     rw [hT'def]; linarith
@@ -198,9 +334,10 @@ theorem prop61_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (hε1 : ε
     rw [hT'def, hsplit, hTe] at *
     nlinarith [Real.rpow_nonneg hT0.le ε, mul_nonneg hT0.le (Real.rpow_nonneg hT0.le ε)]
   -- the bracket, at `T'` and at `T`
-  set X₂ : ℝ := N ^ 2 * (W.card : ℝ) ^ 2
+  obtain ⟨X₂, hX₂def⟩ : ∃ X₂ : ℝ, X₂ = N ^ 2 * (W.card : ℝ) ^ 2
       + T * N * (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ)))
-      + N ^ 2 * (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))) * T ^ (1 / (2 * (k : ℝ))) with hX₂def
+      + N ^ 2 * (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))) * T ^ (1 / (2 * (k : ℝ))) := ⟨_, rfl⟩
+  rw [← hX₂def]
   have hcard0 : (0 : ℝ) ≤ (W.card : ℝ) := Nat.cast_nonneg _
   have hX₂0 : 0 ≤ X₂ := by
     have h1 : (0 : ℝ) ≤ (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ))) := Real.rpow_nonneg hcard0 _
@@ -263,7 +400,7 @@ theorem prop61_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (hε1 : ε
         _ ≤ _ := mul_le_mul_of_nonneg_right h2 hX₂0
     exact hbound.trans hstep
   · -- the generic block: lift, cover, Heath-Brown at every length
-    set M₀ : ℝ := (2 : ℝ) ^ j with hM₀def
+    obtain ⟨M₀, hM₀def⟩ : ∃ M₀ : ℝ, M₀ = (2 : ℝ) ^ j := ⟨_, rfl⟩
     have hM₀0 : (0 : ℝ) < M₀ := by rw [hM₀def]; positivity
     have hM₀M : M₀ ≤ (M : ℝ) := by
       have h : ((2 ^ j : ℕ) : ℝ) ≤ (M : ℝ) := by exact_mod_cast hjM
@@ -276,23 +413,23 @@ theorem prop61_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (hε1 : ε
       calc M₀ ≤ (M : ℝ) := hM₀M
         _ ≤ 2 * ((2 * T) ^ (1 + ε) / N) := h2
         _ = T' / N := by rw [hT'def]; ring
-    set A : ℕ := 2 ^ j - 1 with hAdef
-    set B : ℕ := 2 * 2 ^ j - 1 with hBdef
+    obtain ⟨A, hAdef⟩ : ∃ A : ℕ, A = 2 ^ j - 1 := ⟨_, rfl⟩
+    obtain ⟨B, hBdef⟩ : ∃ B : ℕ, B = 2 * 2 ^ j - 1 := ⟨_, rfl⟩
     have h2j : 2 ≤ 2 ^ j := by
       calc (2 : ℕ) = 2 ^ 1 := by norm_num
         _ ≤ 2 ^ j := Nat.pow_le_pow_right (by norm_num) hjpos
     have hA1 : 1 ≤ A := by rw [hAdef]; omega
     have hBA : B ≤ 3 * A := by rw [hAdef, hBdef]; omega
-    set P : ℕ := A ^ k with hPdef
-    have hP1 : 1 ≤ P := Nat.one_le_pow _ _ (by omega)
-    set m : ℕ := 2 * k with hmdef
+    obtain ⟨P, hPdef⟩ : ∃ P : ℕ, P = A ^ k := ⟨_, rfl⟩
+    have hP1 : 1 ≤ P := by rw [hPdef]; exact Nat.one_le_pow _ _ (by omega)
+    obtain ⟨m, hmdef⟩ : ∃ m : ℕ, m = 2 * k := ⟨_, rfl⟩
     have hcover : B ^ k ≤ 2 ^ m * P := by
       calc B ^ k ≤ (3 * A) ^ k := Nat.pow_le_pow_left hBA k
         _ = 3 ^ k * A ^ k := by rw [mul_pow]
         _ ≤ 4 ^ k * A ^ k := Nat.mul_le_mul_right _ (Nat.pow_le_pow_left (by norm_num) k)
         _ = 2 ^ m * P := by rw [hmdef, hPdef, pow_mul]; norm_num
     -- the divisor bound on the lifted range
-    set Dv : ℝ := divisorBoundConst δ * ((B ^ k : ℕ) : ℝ) ^ δ with hDvdef
+    obtain ⟨Dv, hDvdef⟩ : ∃ Dv : ℝ, Dv = divisorBoundConst δ * ((B ^ k : ℕ) : ℝ) ^ δ := ⟨_, rfl⟩
     have hDv0 : 0 ≤ Dv := by
       have := (divisorBoundConst_pos hδ).le
       rw [hDvdef]; positivity
@@ -324,8 +461,9 @@ theorem prop61_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (hε1 : ε
     have hmono : hbPairSum W (Finset.Ioc (A ^ k) (B ^ k)) (fun _ => ((1 : ℝ) : ℂ)) ≤
         hbPairSum W (Finset.Ioc P (2 ^ m * P)) (fun _ => ((1 : ℝ) : ℂ)) := by
       refine hbPairSum_ofReal_mono_support W ?_ (fun n _ => zero_le_one)
+      have hcover' : B ^ k ≤ 2 ^ m * A ^ k := by rw [← hPdef]; exact hcover
       rw [hPdef]
-      exact Finset.Ioc_subset_Ioc_right hcover
+      exact Finset.Ioc_subset_Ioc_right hcover'
     have hcoef1 : ∀ n : ℕ, ‖((1 : ℝ) : ℂ)‖ ≤ 1 := by intro n; simp
     have hcov := hbPairSum_Ioc_two_pow_le_majorant hW1 hT1 hdiam hδ hP1 m hcoef1
     -- sizes: `M ≤ 8T²`, hence the lifted lengths are below `32^{4k} T^{4k}`
@@ -429,7 +567,117 @@ theorem prop61_zeta (w : CGLRealSmoothBump) {ε : ℝ} (hε : 0 < ε) (hε1 : ε
         _ ≤ 4 * T ^ (4 * (k : ℝ)) := by linarith
         _ ≤ (32 : ℝ) ^ (4 * k) * T ^ (4 * (k : ℝ)) := by
             exact mul_le_mul_of_nonneg_right h4 hT4k0
-    sorry
+    -- (6.3) at the paper's block length `M₀`
+    obtain ⟨Cm, hCmdef⟩ : ∃ Cm : ℝ, Cm = hbSmallConst T δ + hbBlockConst T δ ((2 ^ m * P) ^ 2) := ⟨_, rfl⟩
+    have hCm0 : 0 ≤ Cm := by
+      have h1 : 0 ≤ hbSmallConst T δ := le_trans zero_le_one (one_le_hbSmallConst hT1 hδ)
+      have h2 := hbBlockConst_nonneg (T := T) (δ := δ) hT1 ((2 ^ m * P) ^ 2)
+      rw [hCmdef]; linarith only [h1, h2]
+    have hc54 : (0 : ℝ) ≤ (W.card : ℝ) ^ ((5 : ℝ) / 4) := Real.rpow_nonneg hcard0 _
+    have hc32 : (0 : ℝ) ≤ (W.card : ℝ) ^ ((3 : ℝ) / 2) := Real.rpow_nonneg hcard0 _
+    have hTleT' : T ≤ T' := by
+      have : (0 : ℝ) < (2 * T) ^ (1 + ε) := Real.rpow_pos_of_pos (by linarith) _
+      rw [hT'def]; linarith only [hrpow1, this]
+    have hTT' : T ^ ((1 : ℝ) / 2) ≤ T' ^ ((1 : ℝ) / 2) :=
+      Real.rpow_le_rpow hT0.le hTleT' (by norm_num)
+    have hmaj : (W.card : ℝ) ^ 2 * ((P : ℕ) : ℝ) + (W.card : ℝ) * ((P : ℕ) : ℝ) ^ 2
+          + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * ((P : ℕ) : ℝ)
+          + (W.card : ℝ) ^ ((3 : ℝ) / 2) * ((P : ℕ) : ℝ) ^ 2 ≤
+        (W.card : ℝ) ^ 2 * M₀ ^ k + (W.card : ℝ) * M₀ ^ (2 * k)
+          + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T' ^ ((1 : ℝ) / 2) * M₀ ^ k
+          + (W.card : ℝ) ^ ((3 : ℝ) / 2) * M₀ ^ (2 * k) := by
+      exact majorant_mono hcard0 (Nat.cast_nonneg _) hPM hP2M
+        (Real.rpow_nonneg hT0.le _) hTT'
+    have hDv2k : (0 : ℝ) ≤ Dv ^ (2 * k) := pow_nonneg hDv0 (2 * k)
+    have h63 : Dv ^ (2 * k) *
+          hbPairSum W (Finset.Ioc (A ^ k) (B ^ k)) (fun _ => ((1 : ℝ) : ℂ)) ≤
+        (Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm)) *
+          ((W.card : ℝ) ^ 2 * M₀ ^ k + (W.card : ℝ) * M₀ ^ (2 * k)
+            + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T' ^ ((1 : ℝ) / 2) * M₀ ^ k
+            + (W.card : ℝ) ^ ((3 : ℝ) / 2) * M₀ ^ (2 * k)) := by
+      have hstep := hmono.trans hcov
+      rw [← hCmdef] at hstep
+      have h8m : (0 : ℝ) ≤ (8 : ℝ) ^ m * Cm := by positivity
+      calc Dv ^ (2 * k) * hbPairSum W (Finset.Ioc (A ^ k) (B ^ k)) (fun _ => ((1 : ℝ) : ℂ))
+          ≤ Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm *
+              ((W.card : ℝ) ^ 2 * ((P : ℕ) : ℝ) + (W.card : ℝ) * ((P : ℕ) : ℝ) ^ 2
+                + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * ((P : ℕ) : ℝ)
+                + (W.card : ℝ) ^ ((3 : ℝ) / 2) * ((P : ℕ) : ℝ) ^ 2)) :=
+            mul_le_mul_of_nonneg_left hstep hDv2k
+        _ ≤ Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm *
+              ((W.card : ℝ) ^ 2 * M₀ ^ k + (W.card : ℝ) * M₀ ^ (2 * k)
+                + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T' ^ ((1 : ℝ) / 2) * M₀ ^ k
+                + (W.card : ℝ) ^ ((3 : ℝ) / 2) * M₀ ^ (2 * k))) := by
+            exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hmaj h8m) hDv2k
+        _ = _ := by ring
+    -- the four-term assembly
+    have h61' : ‖gmS2 w N W‖ ≤ C₆₁ * (T ^ ε) ^ 6 * (N ^ 2 / M₀) *
+        hbPairSum W (dyadicSegmentBlock M j) (fun _ => ((1 : ℝ) : ℂ)) := by
+      rw [hM₀def, mul_assoc]
+      exact hS2
+    have hC₆₁' : (0 : ℝ) ≤ C₆₁ * (T ^ ε) ^ 6 := mul_nonneg hC₆₁ (pow_nonneg hTε0 6)
+    have hC'0 : (0 : ℝ) ≤ Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm) :=
+      mul_nonneg hDv2k (mul_nonneg (pow_nonneg (by norm_num) m) hCm0)
+    have hY0 : (0 : ℝ) ≤ Dv ^ (2 * k) *
+        hbPairSum W (Finset.Ioc (A ^ k) (B ^ k)) (fun _ => ((1 : ℝ) : ℂ)) :=
+      mul_nonneg hDv2k (hbPairSum_nonneg _ _ _)
+    have hmain := prop61_abstract4_absorbed (W := (W.card : ℝ)) (N := N) (M := M₀) (T := T')
+      (S₂ := ‖gmS2 w N W‖)
+      (X := hbPairSum W (dyadicSegmentBlock M j) (fun _ => ((1 : ℝ) : ℂ)))
+      (Y := Dv ^ (2 * k) * hbPairSum W (Finset.Ioc (A ^ k) (B ^ k)) (fun _ => ((1 : ℝ) : ℂ)))
+      (C := C₆₁ * (T ^ ε) ^ 6) (C' := Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm))
+      hk hcard1 hN0 hM₀0 hT'0 hMT' hC₆₁' hC'0 hY0 h61' hlift h63
+    -- the bracket at `T'` against the bracket at `T`
+    have hexp0 : (0 : ℝ) ≤ 1 / (2 * (k : ℝ)) := by positivity
+    have hexp1 : 1 / (2 * (k : ℝ)) ≤ 1 := by
+      rw [div_le_one (by linarith only [hkR])]
+      linarith only [hkR]
+    have hhalf : T' ^ (1 / (2 * (k : ℝ))) ≤ 8 * (T ^ (1 / (2 * (k : ℝ))) * T ^ ε) :=
+      rpow_le_of_le_mul hT0 hT'0 hT'le hexp0 hexp1 hTε1
+    have hbr : N ^ 2 * (W.card : ℝ) ^ 2 + T' * N * (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ)))
+          + N ^ 2 * (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))) * T' ^ (1 / (2 * (k : ℝ)))
+        ≤ 8 * T ^ ε * X₂ := by
+      rw [hX₂def]
+      exact bracket_mono (N := N) (c := (W.card : ℝ)) (T := T) (T' := T') (Tε := T ^ ε)
+        (a := (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ))))
+        (b := (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))))
+        (s := T ^ (1 / (2 * (k : ℝ)))) (s' := T' ^ (1 / (2 * (k : ℝ))))
+        (by linarith) hcard0 (Real.rpow_nonneg hcard0 _) (Real.rpow_nonneg hcard0 _)
+        (Real.rpow_nonneg hT0.le _) hT0.le h8Tε hT'le hhalf
+    -- the constants are `T^{O(ε)}`
+    have hexpk : 1 / (k : ℝ) ≤ 1 := by
+      rw [div_le_one (by linarith only [hkR])]; linarith only [hkR]
+    have hCδ1 := (hblk T hT1).1 ((2 ^ m * P) ^ 2) hPm
+    have hCδ2 := (hblk T hT1).1 (hbLongBlock T) hLong
+    have hCδ3 := (hblk T hT1).2 (B ^ k) hBk
+    have hCmle : Cm ≤ 2 * Cδ * T ^ ε := by
+      rw [hCmdef, hbSmallConst_eq_hbBlockConst]
+      linarith only [hCδ1, hCδ2]
+    have hDv2 : Dv ^ 2 ≤ Cδ * T ^ ε := by rw [hDvdef]; exact hCδ3
+    have hmax0 : (0 : ℝ) ≤ max 1 (2 * Cδ) := le_trans zero_le_one (le_max_left _ _)
+    have hroot : (Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm)) ^ (1 / (k : ℝ)) ≤
+        Cδ * T ^ ε * (64 * (max 1 (2 * Cδ) * T ^ ε)) :=
+      lifted_root_le hk hmdef hDv0 hCm0 hCδ hTε1 hDv2 hCmle
+    -- collect
+    have ha' : (0 : ℝ) ≤ (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ))) := Real.rpow_nonneg hcard0 _
+    have hb' : (0 : ℝ) ≤ (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))) := Real.rpow_nonneg hcard0 _
+    have hs' : (0 : ℝ) ≤ T' ^ (1 / (2 * (k : ℝ))) := Real.rpow_nonneg hT'0.le _
+    have t1 : (0 : ℝ) ≤ N ^ 2 * (W.card : ℝ) ^ 2 := mul_nonneg (sq_nonneg _) (sq_nonneg _)
+    have t2 : (0 : ℝ) ≤ T' * N * (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ))) :=
+      mul_nonneg (mul_nonneg hT'0.le hN0.le) ha'
+    have t3 : (0 : ℝ) ≤ N ^ 2 * (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))) *
+        T' ^ (1 / (2 * (k : ℝ))) := mul_nonneg (mul_nonneg (sq_nonneg _) hb') hs'
+    have hBR0 : (0 : ℝ) ≤ N ^ 2 * (W.card : ℝ) ^ 2
+        + T' * N * (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ)))
+        + N ^ 2 * (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))) * T' ^ (1 / (2 * (k : ℝ))) := by
+      linarith only [t1, t2, t3]
+    exact prop61_constant_step (S := ‖gmS2 w N W‖) (C₆₁ := C₆₁) (Cδ := Cδ) (E := T ^ ε)
+      (RT := (Dv ^ (2 * k) * ((8 : ℝ) ^ m * Cm)) ^ (1 / (k : ℝ)))
+      (BRv := N ^ 2 * (W.card : ℝ) ^ 2 + T' * N * (W.card : ℝ) ^ (2 - 1 / (2 * (k : ℝ)))
+        + N ^ 2 * (W.card : ℝ) ^ (2 - 3 / (4 * (k : ℝ))) * T' ^ (1 / (2 * (k : ℝ))))
+      (Xv := X₂) (P6 := (T ^ ε) ^ 6) (P9 := T ^ (9 * ε))
+      hC₆₁ hCδ hTε0 (pow_nonneg hTε0 6) (Real.rpow_nonneg hT0.le _) hmain hroot hbr hBR0 hX₂0
+      hprod
 
 end
 

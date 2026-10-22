@@ -36,6 +36,8 @@ open GaloisForLFunctions.BezoutValuationIncidence
 
 set_option autoImplicit false
 
+universe u
+
 /-! ### 1. The amplitude reading -/
 
 /-- The amplitude reading: the Ramanujan amplitudes of the weight at every modulus. -/
@@ -50,19 +52,45 @@ theorem weightRamanujanCoeff_zero (c : ℕ → ℝ) : weightRamanujanCoeff c 0 =
 
 /-! ### 2. The actual Möbius datum at half damping -/
 
+/-- The twin and the damped Möbius weight have the same amplitude reading. -/
+theorem amplitudeReading_parityTwin :
+    amplitudeReading (parityTwinWeight (1 / 2)) =
+      amplitudeReading (pmPowerDampedRealWeight (1 / 2)) := by
+  obtain ⟨-, habs, -, -, -⟩ := parityPair_at_half_damping
+  funext e
+  rcases Nat.eq_zero_or_pos e with rfl | he
+  · simp [amplitudeReading, weightRamanujanCoeff_zero]
+  · exact habs e he
+
+/-- The damped Möbius weight has a bounded receiver at half damping. -/
+theorem receiverBoundedAt_pmPowerDamped :
+    ReceiverBoundedAt (dampedDensity (1 / 2)) (pmPowerDampedRealWeight (1 / 2)) :=
+  parityPair_at_half_damping.2.2.2.1
+
+/-- Its parity twin does not: the receiver energies diverge. -/
+theorem not_receiverBoundedAt_parityTwin :
+    ¬ ReceiverBoundedAt (dampedDensity (1 / 2)) (parityTwinWeight (1 / 2)) := by
+  rintro ⟨B, hB⟩
+  obtain ⟨T, hT⟩ := (parityPair_at_half_damping.2.2.2.2.eventually_ge_atTop (B + 1)).exists
+  linarith [hB T]
+
 /-- **The amplitudes do not resolve the receiver.** The damped Möbius weight at half damping and
 its parity twin have the same amplitude reading, bounded receiver against divergent. -/
 theorem not_resolves_amplitudeReading_receiver :
-    ¬ Resolves amplitudeReading (ReceiverBoundedAt (dampedDensity (1 / 2))) := by
-  obtain ⟨-, habs, -, hbdd, hdiv⟩ := parityPair_at_half_damping
-  refine not_resolves_of_pair (d := pmPowerDampedRealWeight (1 / 2))
-    (e := parityTwinWeight (1 / 2)) (funext fun e => ?_) hbdd ?_
-  · rcases Nat.eq_zero_or_pos e with rfl | he
-    · simp [amplitudeReading, weightRamanujanCoeff_zero]
-    · exact habs e he
-  · rintro ⟨B, hB⟩
-    obtain ⟨T, hT⟩ := (hdiv.eventually_ge_atTop (B + 1)).exists
-    linarith [hB T]
+    ¬ Resolves amplitudeReading (ReceiverBoundedAt (dampedDensity (1 / 2))) :=
+  not_resolves_of_pair amplitudeReading_parityTwin receiverBoundedAt_pmPowerDamped
+    not_receiverBoundedAt_parityTwin
+
+/-- **The parity wall gate.** The pair is identified by the amplitude reading, and every reading
+that resolves the receiver separates it. -/
+theorem parityWallGate :
+    amplitudeReading (parityTwinWeight (1 / 2)) =
+        amplitudeReading (pmPowerDampedRealWeight (1 / 2)) ∧
+      ∀ (O : Type u) (r : (ℕ → ℝ) → O),
+        Resolves r (ReceiverBoundedAt (dampedDensity (1 / 2))) →
+          r (parityTwinWeight (1 / 2)) ≠ r (pmPowerDampedRealWeight (1 / 2)) :=
+  ⟨amplitudeReading_parityTwin, fun _ _ hres heq =>
+    not_resolves_of_pair heq receiverBoundedAt_pmPowerDamped not_receiverBoundedAt_parityTwin hres⟩
 
 /-! ### 3. The amplitude floor of the receiver unit -/
 

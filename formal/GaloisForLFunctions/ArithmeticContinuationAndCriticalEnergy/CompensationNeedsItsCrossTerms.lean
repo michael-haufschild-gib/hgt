@@ -75,12 +75,11 @@ theorem exists_ratio_tendsto_zero_and_complete_unbounded :
       Tendsto (fun P => complete P / sector P) atTop (nhds 0) ∧
         Tendsto complete atTop atTop := by
   refine ⟨fun P => (P : ℝ) + 1, fun P => ((P : ℝ) + 1) ^ 2, fun P => by positivity, ?_, ?_⟩
-  · have hpos : ∀ P : ℕ, ((P : ℝ) + 1) ≠ 0 := fun P => by positivity
-    have heq : (fun P : ℕ => ((P : ℝ) + 1) / ((P : ℝ) + 1) ^ 2) =
+  · have heq : (fun P : ℕ => ((P : ℝ) + 1) / ((P : ℝ) + 1) ^ 2) =
         fun P : ℕ => 1 / ((P : ℝ) + 1) := by
       funext P
+      have hp : ((P : ℝ) + 1) ≠ 0 := by positivity
       field_simp
-      ring
     rw [heq]
     exact tendsto_one_div_add_atTop_nhds_zero_nat
   · exact tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop
