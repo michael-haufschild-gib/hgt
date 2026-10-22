@@ -78,6 +78,8 @@ theorem pronicNorm_neg (T : ℕ) (v : ℕ → ℝ) : pronicNorm T (fun n => -v n
 
 theorem pronicNorm_centeredPrefix (ε : ℝ) (T : ℕ) :
     pronicNorm T (pmPowerDampedCenteredDivisorPrefix ε) = Real.sqrt (dampedMobiusEnergy ε T) := by
+  show pronicNorm T (pmPowerDampedCenteredDivisorPrefix ε) =
+    Real.sqrt (pmPowerDampedDivisorDiscreteEnergy ε T)
   rw [pmPowerDampedDivisorDiscreteEnergy_eq_pronicNorm_sq,
     Real.sqrt_sq (pronicNorm_nonneg T _)]
 

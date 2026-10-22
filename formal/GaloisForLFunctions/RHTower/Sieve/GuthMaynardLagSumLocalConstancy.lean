@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardDirichletPolynomialLocalAverage
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardLagSumL2
-import GaloisForLFunctions.RHTower.Sieve.SeparatedCount
+import GaloisForLFunctions.RHTower.ZetaZeroExponentialDetectorTypeTwo
 
 set_option autoImplicit false
 
@@ -15,7 +15,7 @@ Proof. In logarithmic coordinates `R(e^u) = Σ_{t ∈ W} e(u · t/2π)` has its 
 of `T₀/2π`, so the band kernel at scale `L = T` reproduces it (`GuthMaynardBandKernel`):
 `|R(e^u)| ≤ T ‖K‖_∞ ∫_{−δ}^{δ} |R(e^{u+η})| dη + |W| ∫_{|ξ| > Tδ} |K|`, and the same with cubes
 and the factor `‖K‖₁²`. With `δ = T^ε/T` the tail is `O_A(T^{−A−1})` and `|W| ≤ T + 1` by
-separation. The substitution `v' = v e^η` turns the `η`-window into `|v' − v| ≤ 4δ`.
+separation (corpus `card_le_of_separated_subset_Icc`). The substitution `v' = v e^η` turns the `η`-window into `|v' − v| ≤ 4δ`.
 
 The cube form in logarithmic coordinates (`norm_lagSum_exp_cube_le_local`) is the input of
 Lemma 11.8.
@@ -26,13 +26,6 @@ open MeasureTheory Set Finset
 namespace RHTower.GuthMaynard
 
 noncomputable section
-
-/-- `|W| ≤ T + 1` for a `1`-separated `W ⊆ [T₀, T₀ + T]`. -/
-theorem card_le_of_isSeparated_of_mem {W : Finset ℝ} {T₀ T : ℝ} (hT : 0 ≤ T)
-    (hW : ∀ t ∈ W, T₀ ≤ t ∧ t ≤ T₀ + T) (hsep : IsSeparated 1 W) : (W.card : ℝ) ≤ T + 1 := by
-  have h := Sieve.card_le_of_separated (s := W) (u := id) (g := 1) (L := T) (c := T₀) one_pos hT
-    (fun t ht t' ht' hne => hsep t ht t' ht' hne) hW
-  simpa using h
 
 /-- The frequencies `t/2π`, `t ∈ [T₀, T₀ + T]`, lie within `T` of `T₀/2π`. -/
 theorem abs_div_two_pi_sub_le {T₀ T t : ℝ} (hT : 0 ≤ T) (ht : T₀ ≤ t ∧ t ≤ T₀ + T) :
@@ -184,7 +177,7 @@ theorem guthMaynard_lemma117 {ε : ℝ} (hε : 0 < ε) (A : ℝ) :
       exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hTε' hT0.le) (by norm_num)
     exact intervalIntegral.integral_mono_interval (by linarith) (by linarith) (by linarith)
       (Filter.Eventually.of_forall fun _ => norm_nonneg _) (intervalIntegrable_norm_lagSum W _ _)
-  have hcard := card_le_of_isSeparated_of_mem hT0.le hW hsep
+  have hcard := card_le_of_separated_subset_Icc hT0.le hW hsep
   have herr : (W.card : ℝ) * bandTail (T ^ ε') ≤ 2 * C₁ * T ^ (-A) := by
     calc (W.card : ℝ) * bandTail (T ^ ε') ≤ (2 * T) * (C₁ * T ^ (-(A + 1))) :=
           mul_le_mul (by linarith) (htail T hT1) (bandTail_nonneg _) (by positivity)

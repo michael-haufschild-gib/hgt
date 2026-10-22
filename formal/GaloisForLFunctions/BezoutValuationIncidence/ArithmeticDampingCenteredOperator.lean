@@ -43,8 +43,8 @@ private theorem adc_row_hasSum (η : ℝ) (n : ℕ) :
 private theorem adc_abs_summable {η : ℝ} (hη : 0 < η) (n : ℕ) :
     Summable (fun k => |arithmeticDampingCenteredRow η n k|) :=
   GaloisForLFunctions.HTGeometry.summable_abs_sub
-    (fun k => arithmeticDampingTransition_nonneg hη.le _ _)
-    (fun k => arithmeticDampingEntrance_nonneg hη _)
+    (fun k => arithmeticDampingTransition_nonneg hη.le (n + 1) (k + 1))
+    (fun k => arithmeticDampingEntrance_nonneg hη (k + 1))
     (adc_row_hasSum η n).summable (hasSum_arithmeticDampingEntrance hη).summable
 
 /-- Actual stochastic rows converge to the entrance law in absolute sum. -/
@@ -189,7 +189,7 @@ private def adcEmbed (N : ℕ) : (Fin N → ℝ) →L[ℝ] C₀(ℕ, ℝ) :=
       change |if h : k < N then c ⟨k, h⟩ else 0| ≤ ‖c‖
       split_ifs with hk
       · simpa only [Real.norm_eq_abs] using norm_le_pi_norm c ⟨k, hk⟩
-      · simpa using norm_nonneg c
+      · simp
 
 private def adcTrunc {η : ℝ} (hη : 0 < η) (N : ℕ) : C₀(ℕ, ℝ) →L[ℝ] C₀(ℕ, ℝ) :=
   (adcEmbed N).comp ((adcHead N).comp (arithmeticDampingCenteredOperator hη))

@@ -262,7 +262,7 @@ theorem guthMaynard_lemma118 {ε : ℝ} (hε : 0 < ε) :
       constructor <;> linarith [this.1, this.2])
     (fun u => card_smallGcd_near_le hN hD hδ0 u)
   have hcube := setIntegral_Icc_two_lagSum_exp_cube_le (W := W) hsep
-  have hcard := card_le_of_isSeparated_of_mem hT0.le hW hsep
+  have hcard := card_le_of_separated_subset_Icc hT0.le hW hsep
   have hPcard : (P.card : ℝ) ≤ (N : ℝ) ^ 2 := by
     have : P.card ≤ N ^ 2 := by
       refine (card_filter_le _ _).trans ?_

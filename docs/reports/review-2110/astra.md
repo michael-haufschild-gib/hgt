@@ -5,7 +5,7 @@ Research assessment, 22 October 2026.
 
 A second opportunity is **quantitative propagation of the arithmetic cancellation already proved between complementary denominator sectors**. A third, useful independently of an RH proof, is **compensated comparison of zero width with ground-energy growth**, retaining the positive zero contributions discarded by the current local-count argument. These are research directions, not claimed new routes with completed producers.
 
-The field I would try to develop is **arithmetic continuation and critical energy**: a theory of when exact arithmetic identities prevent critical energy from escaping as damping decreases, aperture grows, or cutoffs are removed. Its distinguishing problem is quantitative control of complete signed interactions for one specified arithmetic source. The corpus already contains much of its algebra and many sharp counterexamples. Its missing substance would be continuation and compensation theorems, not another vocabulary for the receiver.
+The proposed field is **arithmetic continuation and critical energy**: a theory of when exact arithmetic identities prevent critical energy from escaping as damping decreases, aperture grows, or cutoffs are removed. The subsequent corpus audit found an existing programme with exactly this scope, [ArithmeticContinuationAndCriticalEnergy](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy.lean). It already formalizes admission, signed work, linear and Osgood continuation, compensation identities, and sharp failures of horizon-dependent budgets. The appropriate next step is to extend that programme with source-specific tools. Its missing substance is the arithmetic estimate that pays for continuation, not the abstract continuation implication.
 
 **Evidence and scope.** During the initial report phase, the four requested ledgers were read across the research team, followed by targeted corpus searches and inspection of actual Lean statements and proofs. No additional existing Markdown files were opened; initial corpus results included indexed prose, after which search output was restricted to Lean modules or filtered to Lean hits. No builds were run in that phase. The subsequent Opportunity 1 investigation, separately requested with targeted Lean audits, is recorded below. Main log: [astra-research.log](../../../logs/astra-research.log); initial detailed audits: [routes](../../../logs/astra-route-opportunities.txt), [kills](../../../logs/astra-killed-audit.txt), [unification](../../../logs/astra-unification-audit.txt). Saved initial search results are `logs/astra-search-*.json`.
 
@@ -125,7 +125,7 @@ Divide (C) by \(1+E_T\) and integrate from \(a\) to \(1/2\):
 \exp\!\left(\int_a^{1/2}b_a(\varepsilon)\,d\varepsilon\right).
 \]
 
-Writing \(B_{1/2}=\sup_T E_T(1/2)<\infty\), the right side is at most \((1+B_{1/2})\exp(\int_a^{1/2}b_a)\), independent of \(T\). Thus every \(a>0\) below half damping is admitted. The existing cofinal-budget theorem gives RH. This elementary continuation implication is proved on paper here; it was not formalized or compiled in this task. **No proof of (C) is claimed.**
+Writing \(B_{1/2}=\sup_T E_T(1/2)<\infty\), the right side is at most \((1+B_{1/2})\exp(\int_a^{1/2}b_a)\), independent of \(T\). Thus every \(a>0\) below half damping is admitted. The existing cofinal-budget theorem gives RH. The corpus already formalizes this implication when the budget is supplied as a pointwise differentiable primitive, in [ContinuationTransportsAdmission.lean](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/ContinuationTransportsAdmission.lean) and [TheDampingContinuationCriterion.lean](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/TheDampingContinuationCriterion.lean). That regularity assumption is stronger than the integrable, almost-everywhere formulation (C) proved on paper here. **No proof of the arithmetic bound (C) is claimed.**
 
 This changes the analytic demand in two useful ways. It starts at a known finite-energy state, rather than trying to enter the critical norm from the singular zero-damping tangent. It also asks only for the energy-increasing part of the derivative when moving backward. Large tangential motion can be harmless if it does not increase energy. The corpus's failure of an undamped \(L^2\) tangent and of uniformly bounded difference quotients at zero does not refute this demand on each compact positive-damping interval. See [PMPowerDampedMobiusDerivativeBoundary.lean](../../../formal/GaloisForLFunctions/RHTower/PMPowerDampedMobiusDerivativeBoundary.lean).
 
@@ -164,10 +164,10 @@ An absolute dilation estimate encounters the critical coefficient sum \(\sum_k\L
 
 The first worthwhile attack is therefore concrete: express \(\langle A_\varepsilon,B_\varepsilon\rangle_T\) using the owned divisor, Vaughan and logarithmic covariance identities; identify a joint cancellation that controls its negative part uniformly in \(T\). Any proposed auxiliary energy must be comparable to the original energy with constants independent of \(T\), and its correction must be paid explicitly.
 
-**Why this passes the scope audit.** It reads signs, keeps the physical origin and every horizon, uses the actual arithmetic row, and requires no finite spectral carrier. It seeks to prove the missing bound in Wall 1, rather than violating Wall 3 or Wall 14. Targeted searches found the derivative and tangent-norm receivers but no identical continuation estimate. That supports investigating this formulation; it does not certify global novelty or suggest that its sign is easy.
+**Why this passes the scope audit.** It reads signs, keeps the physical origin and every horizon, uses the actual arithmetic row, and requires no finite spectral carrier. It seeks to prove the missing bound in Wall 1, rather than violating Wall 3 or Wall 14. The expanded corpus search found an existing programme for precisely this continuation demand, including its strict separation from tangent-norm control. Neither that programme nor this investigation supplies the horizon-uniform arithmetic budget. The opportunity is to prove that budget or develop tools that constrain it; the formulation itself is not a new route.
 
 
-### Opportunity 3: propagate complete-sector compensation.
+### Opportunity 2: propagate complete-sector compensation.
 The existing complementary-sector theorem gives more evidence of a real arithmetic mechanism than a generic appeal to randomness. Its missing ingredient is a rate and a compatible iteration.
 
 Write a complete truncated source as \(H_P=S_P+C_P\). Its energy is
@@ -228,15 +228,15 @@ without assuming bounded local off-line depth mass? Then extend the floor throug
 
 Positive-background compensation already occurs in the synthetic [DilutedOffLineLatticeHidingLaw.lean](../../../formal/GaloisForLFunctions/SquareRootThreshold/DilutedOffLineLatticeHidingLaw.lean). Thus retaining the positive part is not itself a novel theorem. The new content must be a uniform source-specific comparison, or a genuinely weaker structural hypothesis verified independently for the arithmetic source. Nor may the argument subtract two divergent completed energies; the smooth-core identity and the passage to the form domain require separate justification.
 
-## Directions I would not count as new opportunities. 
+## Directions I would not count as new opportunities.
 Bare first-contact noncrossing, generic Schur complements, source reconstruction, or another spectral realization at finite aperture are already extensively developed. The corpus locates first contact in a completion-boundary kernel and has finite movable-source coordinates; this does not prove that the kernel is impossible. See [CCMFirstContactSourceKernel.lean](../../../formal/GaloisForLFunctions/RHTower/CCMFirstContactSourceKernel.lean) and [SuzukiTaMovableReducingExceptionalBlock.lean](../../../formal/GaloisForLFunctions/RHTower/SuzukiTaMovableReducingExceptionalBlock.lean).
 
 I would also reject the shortcut “hidden off-line configurations crystallize; zeta is noncrystalline; therefore RH.” The inspected rigidity theorem concerns fixed-period, fixed-depth synthetic profiles under a scaling limit. The actual anti-crystal statement uses eventual strict ordering of zero copies, which already excludes reflected off-line pairs with the same ordinate. The hypotheses needed for the proposed combination are not available. See [ProfileRigidityAtTheSquareRootThreshold.lean](../../../formal/GaloisForLFunctions/SquareRootThreshold/ProfileRigidityAtTheSquareRootThreshold.lean) and [ZetaZeroAntiCrystalLaw.lean](../../../formal/GaloisForLFunctions/RHTower/ZetaZeroAntiCrystalLaw.lean).
 
 Finally, there is no reason yet to prioritize a new infinite-dimensional carrier over the signed-energy work. Avoiding the finite-carrier no-go is only an admission condition. One would still need source construction, a domain, a renormalized trace/determinant identity, and positivity independent of the target divisor. Naming an infinite or nonintegral object supplies none of these.
 
-## New field - research programme
-**What the proposed field would study.** Arithmetic continuation and critical energy would organize the surviving questions around the following object:
+## Existing programme and the missing mathematical tools
+**What the field studies.** The corpus already has an Arithmetic Continuation and Critical Energy programme, with its own folder, umbrella and foundational README. The proposed scope belongs there. It organizes the surviving questions around the following object:
 
 \[
 \text{exact arithmetic source}
@@ -624,4 +624,97 @@ The iterated zero-damping signed-work trace is formalized in [ZeroDampingSignedW
 
 The finite transition kernel is formalized in [ArithmeticDampingTransitionKernel.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ArithmeticDampingTransitionKernel.lean). Its final targeted audit/export exited 0 without warnings, and the module is umbrella-wired. It proves positivity, exact mass, literal-source action, floor-profile eigenaction and separation, zero-time identity, and the all-real finite semigroup law. The displayed identification of its derivative with the complete generator remains a paper bridge; source action alone does not establish it.
 
-The entrance distribution, compact centered operator, probability-tail obstruction, and linear residual cusp are undergoing targeted formalization. The infinite-dimensional semigroup/domain/spectrum package, complex operator extension, Hilbert analytic-family synthesis, and energy-exponent laws above remain paper results. No full or umbrella build is being run. These auxiliary results do not close (C).
+The entrance law is formalized in [ArithmeticDampingEntranceLaw.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ArithmeticDampingEntranceLaw.lean), with a clean targeted audit/export and umbrella import. It proves positivity, total mass one, the exact omitted tail for the reciprocal observable, and convergence of every finite-state transition probability to that entrance mass.
+
+The compact centered operator is formalized in [ArithmeticDampingCenteredOperator.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ArithmeticDampingCenteredOperator.lean), with a clean targeted audit/export and umbrella import. It proves absolute-row convergence to the entrance law, constructs the actual centered operator on positive states indexed in c₀, bounds its norm by two, and proves compactness for every positive damping.
+
+The tail obstruction and its positive survivor are formalized in [ArithmeticDampingEntranceTailBarrier.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ArithmeticDampingEntranceTailBarrier.lean), also clean-audited and umbrella-wired. Squared probability tails and squared row total-variation errors are nonsummable at or below half damping. In contrast, the reciprocal observable's exact omitted tails have summable squares at every positive damping and a common inverse-cutoff majorant. The obstruction concerns absolute row estimates; it does not prove unboundedness of the centered operator into the critical Hilbert space.
+
+The actual-source residual cusp is formalized in [PowerDampedResidualHasLinearCusp.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/PowerDampedResidualHasLinearCusp.lean), with a clean targeted audit and umbrella import. Its unconditional theorem supplies a critical zero ρ and a positive damping interval such that every damping ε in that interval has a finite horizon with residual greater than ε/(4‖ρ‖²). The proof retains the exact step-source Mellin correction and handles absence of an infinite-energy bound by contradiction. The stronger all-zero liminf constant displayed in (Cusp) remains a paper result; the finite-horizon theorem uses explicit slack.
+
+The positive-time centered composition law is formalized in [ArithmeticDampingCenteredSemigroup.lean](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/ArithmeticDampingCenteredSemigroup.lean), with a clean targeted audit/export and umbrella import. Finite row composition leaves a coordinate-constant discrepancy; both centered outputs vanish at infinity, forcing that constant to vanish. This proves composition on the actual c₀ space without exchanging infinite double sums.
+
+The escaping-covariance consequence is undergoing targeted formalization. Strong continuity at zero, generator domains, spectrum, complex operator extension, Hilbert analytic-family synthesis, and energy-exponent laws above remain paper results. No full or umbrella build is being run. These auxiliary results do not close (C).
+
+### 9. A more concrete mathematical research program
+
+The follow-up sharpens the proposed field's task: **quantitative arithmetic observability in critical energy**. The complete moment hierarchy already identifies the source; a compact holomorphic evolution already exists in a weaker space. The missing theorem must control the critical energy of the identified source, with all horizons retained.
+
+Its basic objects can now be specified: the incidence-generated transition \(K_t\), entrance functional \(\pi_t\), centered evolution \(R_t\), arithmetic eigenprofiles \(g_d\), the literal coefficients \(\mu(d)d^{-t}\), and the observation hierarchy \(r_t^{(m+1)}\). Its central questions are concrete:
+
+1. Which arithmetic identities among those coefficients force a lower bound for the complete covariance (W), relative to current energy?
+2. Can the complete scalar moment hierarchy reconstruct the source with a critical-energy estimate, rather than uniqueness alone? Any proposed observation norm must be bounded independently from arithmetic; defining it as receiver energy would be circular.
+3. Can one prove cancellation between incoming boundary flux and jump energy before taking infinite horizons, with the density work retained?
+4. What describes the positive work escaping to growing horizons in (Cusp), and which part of that description controls negative work at strictly positive damping?
+
+Generic backward operator bounds fail on the eigenprofiles. Unsigned entrance convergence loses the critical exponent. Finite moments lose quantitative stability. These are acceptance tests for proposed tools, with their scopes fixed. A useful first theorem could give a verified improvement for a specified arithmetic source class or a proper positive-damping range; the RH endpoint still requires all positive dampings of the actual Möbius source. Existing semigroup, Hardy-space, incidence-algebra and analytic-number-theory methods are parent theories. A new field would be justified by the missing quantitative theorems, not by this repackaging.
+
+## Follow-up: Opportunity 2, cutoff transport versus physical growth
+
+**The corpus already goes beyond a ratio limit.** It contains exact cutoff quadratic balances and exact successive-prime recurrences. Completing a whole prime aperture, however, gives a divergent Fermi norm below half damping. That obstruction concerns that completion scheme; it does not exclude natural denominator cutoffs on finite physical heads. The distinction between changing a representation cutoff and exposing new physical positions is essential.
+
+There is an unconditional, quantitative way to pay the first change through arbitrarily many stages. Set
+\[
+H_Q(n)=\operatorname{pmPowerDampedRamanujanCumulativePrefix}(\varepsilon,Q-1,n),
+\qquad A(n)=\operatorname{pmPowerDampedDivisorRemainder}(\varepsilon,n).
+\]
+For \(0\le\beta<\varepsilon\), put \(C_{\varepsilon,\beta}=(\sum_{m\ge1}m^{-1-\varepsilon+\beta})^2\). The source theorem in [PMRamanujanComplementarySourceBounds.lean](../../../formal/GaloisForLFunctions/RHTower/PMRamanujanComplementarySourceBounds.lean) proves
+\[
+|H_Q(n)-A(n)|\le C_{\varepsilon,\beta}\,nQ^{-\beta}\qquad(1\le n\le Q).
+\]
+Thus, in the original finite pronic norm,
+\[
+\|H_Q-A\|_T\le C_{\varepsilon,\beta}\sqrt T\,Q^{-\beta},\qquad
+\|H_R-H_Q\|_T\le C_{\varepsilon,\beta}\sqrt T\,(Q^{-\beta}+R^{-\beta})
+\tag{CT}
+\]
+whenever \(T\le Q,R\). This uses no admission assumption.
+
+Choose an integer \(m\ge1\) with \(m\varepsilon>1\), and let \(T_j=2^j\), \(Q_j=2^{mj}\), \(\beta=\varepsilon/2\). Then the successive cutoff-change norms on the common heads have the summable majorant
+\[
+d_j\le C_{\varepsilon,\varepsilon/2}
+(1+2^{-m\varepsilon/2})\,2^{-(m\varepsilon-1)j/2}.
+\]
+The second transition, and every later cutoff transition, can therefore be paid. This is a consequence of an existing arithmetic estimate, not a stronger pointwise cancellation rate.
+
+What remains appears in an exact identity. For \(T\le U\), write \(h=H_R-H_Q\) and
+\(\mathcal S=\sum_{T<n\le U}|H_R(n)|^2/[n(n+1)]\). Then
+\[
+\|H_R\|_U^2=\|H_Q\|_T^2+
+2\Re\langle H_Q,h\rangle_T+\|h\|_T^2+\mathcal S.
+\tag{PS}
+\]
+For every \(\alpha>0\), its consequence is
+\[
+\|H_R\|_U^2\le(1+\alpha)\|H_Q\|_T^2+
+(1+\alpha^{-1})d_T(Q,R)^2+\mathcal S.
+\]
+No transition cross term has been deleted. With a summable positive geometric choice of \(\alpha_j\), the cutoff-change costs and multiplier product are paid. No bound on the accumulated new physical-shell energy \(\mathcal S_j\) has been proved.
+
+The paper boundary is exact: along this sufficiently deep cutoff schedule, the approximation errors on the disjoint physical shells are square-summable. Consequently the sum of those approximate shell energies is finite if and only if the literal source has finite critical energy. The physical-shell obligation retains the arithmetic difficulty. The finite transport estimate, full stage balance and summable schedule are being formalized in the existing continuation programme; the shell-equivalence statement is currently a paper consequence.
+
+## Follow-up: Opportunity 3, what unsigned depth sampling can accomplish
+
+**A stronger closure theorem already exists.** The source of [MasterDCIPincerTheorem.lean](../../../formal/GaloisForLFunctions/DilutionCrystallizationPincer/MasterDCIPincerTheorem.lean) permits an aperture-dependent depth-floor factor \(W(A)\), provided the actual ground floor is bounded by its corresponding depth-floor expression and \(W\) has every positive exponential envelope. It then gives ground-rate equality with width. This does not convert a logarithmic loss in height into an aperture-dependent bound: that missing connection is still required. This paragraph records inspected source, not a fresh compiler audit of the concurrently developed module.
+
+There is a sharp paper classification of the method that discards the positive sampling part. Fix any aperture \(A>0\). For finite sets \(S\) of zero copies define
+\[
+D_S(u)=\sum_{q\in S}
+|\widehat u(-z_q)-\widehat u(-\overline{z_q})|^2.
+\]
+The following are equivalent:
+
+- Some constant \(B_A\) bounds \(D_S(u)\le B_A\|u\|_2^2\) for every smooth strict-interior source \(u\) and every finite \(S\).
+- Squared off-line depths have a uniform bound in every unit-height window.
+
+The forward depth-to-sampling implication is already in [TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster.lean](../../../formal/GaloisForLFunctions/SquareRootThreshold/TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster.lean). The converse has a direct localized witness. Choose a nonzero nonnegative smooth bump \(\phi\) supported in \([b,3b]\), where \(b=\min(A/4,1/8)>0\), and modulate it by \(u_T(x)=\phi(x)e^{iTx}\). Its norm is independent of \(T\). Under the corpus convention \(\widehat u(z)=\int u(x)e^{izx}\,dx\), for \(z=t+iy\) with \(|t-T|\le1\),
+\[
+|\widehat u_T(-z)-\widehat u_T(-\bar z)|
+\ge b\left(\int\phi\right)|y|.
+\]
+Indeed, for \(y\ge0\) the real part of the difference is an integral of
+\(\phi(x)\,[e^{yx}-e^{-yx}]\cos((T-t)x)\). On its support the cosine is at least \(1/2\), and the bracket is at least \(2yb\). Conjugating \(z\) handles \(y<0\). Summing the squared lower bound over a window proves the required uniform local depth mass. This uses legitimate complex smooth sources, with multiplicity preserved by the zero-copy index.
+
+Thus even one fixed-aperture, source-uniform bound on the unsigned negative sampling part already reinstates the local-depth hypothesis. Allowing width slack or an aperture-dependent constant does not avoid it. The useful survivor is the exact sampling classification and its explicit detecting family; formalization is in progress in the continuation programme.
+
+This is **not** a necessity theorem for the signed floor (G). The positive sampling term may compensate, and the positive-side bump even demonstrates why a large unsigned difference need not be a negative signed form. A useful new producer must compare the two parts jointly. Existing isolated-pair and diluted-lattice results already quantify compensation by a synthetic positive background; they do not verify (G) for the prime–Gamma–pole source.

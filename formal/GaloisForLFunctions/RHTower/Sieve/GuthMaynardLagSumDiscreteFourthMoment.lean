@@ -274,10 +274,10 @@ theorem four_pow_mul_heathBrownMajorant_le (W : Finset ℝ) (j : ℕ) {M T' : �
   -- the third term: `B² X^{5/4} ≤ E^{3/4} w`, compared through fourth powers
   have h3 : B ^ 2 * X ^ (5 / 4 : ℝ) ≤ E ^ (3 / 4 : ℝ) * w := by
     have hX5 : (X ^ (5 / 4 : ℝ)) ^ 4 = X ^ 5 := by
-      rw [rpow_pow_eq_rpow_mul hX, show (5 / 4 : ℝ) * ((4 : ℕ) : ℝ) = ((5 : ℕ) : ℝ) by norm_num,
+      rw [← Real.rpow_mul_natCast hX, show (5 / 4 : ℝ) * ((4 : ℕ) : ℝ) = ((5 : ℕ) : ℝ) by norm_num,
         Real.rpow_natCast]
     have hE3 : (E ^ (3 / 4 : ℝ)) ^ 4 = E ^ 3 := by
-      rw [rpow_pow_eq_rpow_mul hE, show (3 / 4 : ℝ) * ((4 : ℕ) : ℝ) = ((3 : ℕ) : ℝ) by norm_num,
+      rw [← Real.rpow_mul_natCast hE, show (3 / 4 : ℝ) * ((4 : ℕ) : ℝ) = ((3 : ℕ) : ℝ) by norm_num,
         Real.rpow_natCast]
     have hl : (B ^ 2 * X ^ (5 / 4 : ℝ)) ^ 4 = (B ^ 2 * X) ^ 3 * (B * X) ^ 2 := by
       rw [mul_pow, hX5]; ring
@@ -379,7 +379,7 @@ theorem sum_lagSum_pow_four_le_of_blockBound_rpow {ε : ℝ} (hε : 0 < ε) :
   have h := sum_lagSum_pow_four_le_of_blockBound hHB hK0 hT0 hM hS hW
   -- the number of classes
   have hJ : (diffClassCount W : ℝ) ≤ a * (2 * T) ^ (ε / 2) := by
-    have hcard := card_le_of_isSeparated_of_mem hT0 hW hsep
+    have hcard := card_le_of_separated_subset_Icc hT0 hW hsep
     have hK : ((W.card ^ 2 : ℕ) : ℝ) ≤ (2 * T) ^ 2 := by
       push_cast
       exact pow_le_pow_left₀ (Nat.cast_nonneg _) (by linarith) 2
@@ -390,7 +390,7 @@ theorem sum_lagSum_pow_four_le_of_blockBound_rpow {ε : ℝ} (hε : 0 < ε) :
   have hJ2 : (diffClassCount W : ℝ) ^ 2 ≤ a ^ 2 * (2 : ℝ) ^ ε * T ^ ε := by
     have h2 := pow_le_pow_left₀ (Nat.cast_nonneg _) hJ 2
     have e : (a * (2 * T) ^ (ε / 2)) ^ 2 = a ^ 2 * (2 : ℝ) ^ ε * T ^ ε := by
-      rw [mul_pow, rpow_pow_eq_rpow_mul (by positivity), Real.mul_rpow (by norm_num) hT0]
+      rw [mul_pow, ← Real.rpow_mul_natCast (by positivity), Real.mul_rpow (by norm_num) hT0]
       push_cast; ring_nf
     rwa [e] at h2
   -- the per-block factor

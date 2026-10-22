@@ -71,8 +71,8 @@ quarter power in the exponent. -/
 theorem eventually_log_sq_le_exp_quarter :
     ∀ᶠ X : ℝ in atTop,
       (Real.log (X ^ 2) + 2) ^ 2 ≤ Real.exp (Real.log X ^ ((1 : ℝ) / 4)) := by
-  have hcomp := (tendsto_pow_mul_exp_neg_rpow 2 (κ := 1)
-    (by norm_num : (0 : ℝ) < 1 / 4)).comp Real.tendsto_log_atTop
+  have hcomp := (tendsto_pow_mul_exp_neg_rpow 2 (κ := 1) (e := 1 / 4)
+    (by norm_num) (by norm_num)).comp Real.tendsto_log_atTop
   have hsmall := hcomp.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1))
   filter_upwards [hsmall, eventually_ge_atTop (Real.exp 2)] with X hX hXe
   have hX0 : (0 : ℝ) < X := lt_of_lt_of_le (Real.exp_pos 2) hXe
@@ -88,8 +88,40 @@ theorem eventually_log_sq_le_exp_quarter :
   have hE0 : (0 : ℝ) < Real.exp (Real.log X ^ ((1 : ℝ) / 4)) := Real.exp_pos _
   have hinv : Real.exp (-(1 * Real.log X ^ ((1 : ℝ) / 4)))
       = 1 / Real.exp (Real.log X ^ ((1 : ℝ) / 4)) := by
-    rw [one_mul, Real.exp_neg, one_div]
+    rw [one_mul, Real.exp_neg]
+    ring
   rw [hinv, mul_one_div, div_lt_one hE0] at hX'
+  linarith
+
+/-- `Cst Z ≤ ε⁴` from `E Z < 1/Cst` and `1 ≤ ε⁴ E`. -/
+theorem mul_le_pow_four_of_exp {Z E5 ε Cst : ℝ} (hZ : 0 ≤ Z) (hCst : 0 < Cst) (hε : 0 < ε)
+    (hprod : 1 ≤ ε ^ 4 * E5) (h : E5 * Z < 1 / Cst) : Cst * Z ≤ ε ^ 4 := by
+  have h1 : Cst * (E5 * Z) < 1 := by
+    rw [lt_div_iff₀ hCst] at h
+    linarith
+  have h2 : Cst * Z ≤ Cst * Z * (ε ^ 4 * E5) :=
+    le_mul_of_one_le_right (by positivity) hprod
+  rw [show Cst * Z * (ε ^ 4 * E5) = ε ^ 4 * (Cst * (E5 * Z)) from by ring] at h2
+  have h4 : ε ^ 4 * (Cst * (E5 * Z)) ≤ ε ^ 4 * 1 :=
+    mul_le_mul_of_nonneg_left h1.le (by positivity)
+  linarith
+
+/-- The allocation of the second-moment bound:  `25600 ε^{-2}(64(K+2)E) X Z ≤ X ε` once
+`ε E = 1` and `1638400(K+2) Z ≤ ε⁴`. -/
+theorem second_moment_allocation_le {ε E1 X Z Kc : ℝ} (hε : 0 < ε) (hX : 0 < X)
+    (hE1 : ε * E1 = 1) (hbd : 1638400 * (Kc + 2) * Z ≤ ε ^ 4) :
+    25600 / ε ^ 2 * (64 * (Kc + 2) * E1) * X * Z ≤ X * ε := by
+  have hεne : ε ≠ 0 := hε.ne'
+  have hE : E1 = 1 / ε := by
+    field_simp
+    linarith
+  rw [hE]
+  have hid : 25600 / ε ^ 2 * (64 * (Kc + 2) * (1 / ε)) * X * Z
+      = (1638400 * (Kc + 2) * Z) * X / ε ^ 3 := by
+    field_simp
+    ring
+  rw [hid, div_le_iff₀ (by positivity)]
+  have h1 : (1638400 * (Kc + 2) * Z) * X ≤ ε ^ 4 * X := mul_le_mul_of_nonneg_right hbd hX.le
   linarith
 
 /-- **Guth–Maynard Corollary 1.4.**  For `2/15 < θ < 1` there is `X₀` with
@@ -161,6 +193,7 @@ theorem exists_volume_psi_almost_all_short_le (hGM : GuthMaynardLargeValuesBound
       simp
     -- the Chebyshev bound of the second-moment layer
     have hbig : 16 * (64 + 1152 * xiSpectralThreeHalvesMass) ≤ ε ^ 2 * X ^ (2 * θ) := by
+      have hmass0 : (0 : ℝ) ≤ xiSpectralThreeHalvesMass := xiSpectralThreeHalvesMass_nonneg
       rw [pow_zero, one_mul] at hthrX
       have hxp : (0 : ℝ) < X ^ (2 * θ) := Real.rpow_pos_of_pos hX0 _
       have hrw : X ^ (-(2 * θ)) = 1 / X ^ (2 * θ) := by rw [Real.rpow_neg hX0.le, one_div]
@@ -176,7 +209,7 @@ theorem exists_volume_psi_almost_all_short_le (hGM : GuthMaynardLargeValuesBound
         positivity
       nlinarith [hthrX, hεsq, hE2, hεsq0, hM0]
     have hvol := volume_psi_short_asymptotic_le hε0 hε1 hX4 hδX hbig
-    rw [← hεdef] at hvol ⊢
+    rw [← hεdef]
     -- the zero weight, after raising the exponent and clearing the harmonic weight
     obtain ⟨Z, hZdef⟩ : ∃ Z : ℝ, Z = ∑' q : XiZeroCopy, zeroShortWeight (X ^ 2)
       (192 / (5 * ε) * (X ^ 2) ^ (2 * ((1 - θ) / 2))) (q.1 : ℂ) := ⟨_, rfl⟩
@@ -191,24 +224,29 @@ theorem exists_volume_psi_almost_all_short_le (hGM : GuthMaynardLargeValuesBound
         congr 1
         ring
       have hfac : 192 / (5 * ε) ≤ (X ^ 2) ^ (2 * (u' - u)) := by
-        rw [pow_zero, one_mul] at habsX
-        have hxp : (0 : ℝ) < X ^ (4 * (u' - u)) := Real.rpow_pos_of_pos hX0 _
+        rw [one_mul, pow_zero, one_mul] at habsX
+        have hA0 : (0 : ℝ) < X ^ (4 * (u' - u)) := Real.rpow_pos_of_pos hX0 _
         have hrw : X ^ (-(4 * (u' - u))) = 1 / X ^ (4 * (u' - u)) := by
-          rw [Real.rpow_neg hX0.le, one_div]
-        rw [hrw, mul_one_div, div_lt_div_iff₀ hxp (by norm_num)] at habsX
+          rw [Real.rpow_neg hX0.le]
+          ring
+        rw [hrw] at habsX
+        have hmul := mul_lt_mul_of_pos_right habsX hA0
+        rw [mul_assoc, one_div_mul_cancel hA0.ne', mul_one] at hmul
         have hXsq : (X ^ 2) ^ (2 * (u' - u)) = X ^ (4 * (u' - u)) := by
           rw [← Real.rpow_natCast X 2, ← Real.rpow_mul hX0.le]
           congr 1
           push_cast
           ring
-        rw [hXsq]
-        have hdiv : (192 : ℝ) / (5 * ε) = 192 / 5 * (1 / ε) := by ring
         have hεinv : 1 / ε = Real.exp (Real.log X ^ ((1 : ℝ) / 4)) := by
           rw [hεdef, Real.exp_neg, one_div, inv_inv]
-        rw [hdiv, hεinv]
+        have hdiv : (192 : ℝ) / (5 * ε) = 192 / 5 * (1 / ε) := by ring
+        rw [hXsq, hdiv, hεinv]
         linarith
       rw [hsplit]
-      exact mul_le_mul_of_nonneg_left hfac (Real.rpow_nonneg hXsq0.le _)
+      calc 192 / (5 * ε) * (X ^ 2) ^ (2 * u)
+          ≤ (X ^ 2) ^ (2 * (u' - u)) * (X ^ 2) ^ (2 * u) :=
+            mul_le_mul_of_nonneg_right hfac (Real.rpow_nonneg hXsq0.le _)
+        _ = (X ^ 2) ^ (2 * u) * (X ^ 2) ^ (2 * (u' - u)) := by ring
     have hZle : Z ≤ Z' := by
       rw [hZdef, hZ'def]
       exact tsum_zeroShortWeight_mono_right hXsq1 (by positivity) hcut
@@ -227,47 +265,43 @@ theorem exists_volume_psi_almost_all_short_le (hGM : GuthMaynardLargeValuesBound
       have hexp : Real.exp (5 * Real.log X ^ ((1 : ℝ) / 4))
           ≤ Real.exp (5 * Real.log (X ^ 2) ^ ((1 : ℝ) / 4)) := by
         rw [Real.exp_le_exp]; linarith
-      nlinarith [hZ'0, hcompX, hexp]
+      have hstep : Real.exp (5 * Real.log X ^ ((1 : ℝ) / 4)) * Z'
+          ≤ Real.exp (5 * Real.log (X ^ 2) ^ ((1 : ℝ) / 4)) * Z' :=
+        mul_le_mul_of_nonneg_right hexp hZ'0
+      linarith
     have hW := almostAllHarmonicWeight_le hX1
     rw [← hKcdef] at hW
     have hW0 : 0 ≤ almostAllHarmonicWeight X := by
+      have hX4p : (1 : ℝ) ≤ X ^ 4 := one_le_pow₀ hX1
       rw [almostAllHarmonicWeight, ← hKcdef]
-      have h1 : 0 ≤ Real.log (3 * X ^ 4 + 4) := Real.log_nonneg (by nlinarith [pow_pos hX0 4])
-      have h2 : 0 ≤ Real.log (2 * X ^ 4 + 1) := Real.log_nonneg (by nlinarith [pow_pos hX0 4])
+      have h1 : 0 ≤ Real.log (3 * X ^ 4 + 4) := Real.log_nonneg (by linarith)
+      have h2 : 0 ≤ Real.log (2 * X ^ 4 + 1) := Real.log_nonneg (by linarith)
       positivity
     -- assemble
+    have hZ0 : 0 ≤ Z := by
+      rw [hZdef]
+      exact tsum_nonneg fun q => zeroShortWeight_nonneg hXsq0.le (by positivity) _
+    have hε4 : ε ^ 4 = Real.exp (-(4 * Real.log X ^ ((1 : ℝ) / 4))) := by
+      rw [hεdef, ← Real.exp_nat_mul]
+      congr 1
+      push_cast
+      ring
+    have hprod : (1 : ℝ) ≤ ε ^ 4 * Real.exp (5 * Real.log X ^ ((1 : ℝ) / 4)) := by
+      rw [hε4, ← Real.exp_add]
+      calc (1 : ℝ) = Real.exp 0 := Real.exp_zero.symm
+        _ ≤ _ := Real.exp_le_exp.mpr (by linarith)
+    have hbd : 1638400 * (Kc + 2) * Z' ≤ ε ^ 4 := by
+      have h := mul_le_pow_four_of_exp hZ'0 hCst0 hε0 hprod hZ'small
+      rwa [hCstdef] at h
     have hkey : 25600 / ε ^ 2 * almostAllHarmonicWeight X * X * Z ≤ X * ε := by
+      have hWle : almostAllHarmonicWeight X
+          ≤ 64 * (Kc + 2) * Real.exp (Real.log X ^ ((1 : ℝ) / 4)) :=
+        le_trans hW (mul_le_mul_of_nonneg_left hwX (by linarith : (0 : ℝ) ≤ 64 * (Kc + 2)))
+      have hpos : (0 : ℝ) < 25600 / ε ^ 2 := by positivity
       have hstep1 : 25600 / ε ^ 2 * almostAllHarmonicWeight X * X * Z
           ≤ 25600 / ε ^ 2 * (64 * (Kc + 2) * Real.exp (Real.log X ^ ((1 : ℝ) / 4))) * X * Z' := by
-        have h1 : almostAllHarmonicWeight X
-            ≤ 64 * (Kc + 2) * Real.exp (Real.log X ^ ((1 : ℝ) / 4)) := by
-          refine le_trans hW ?_
-          have : (0 : ℝ) ≤ 64 * (Kc + 2) := by linarith
-          exact mul_le_mul_of_nonneg_left hwX this
-        have hpos : (0 : ℝ) < 25600 / ε ^ 2 := by positivity
         gcongr
-        · positivity
-      refine le_trans hstep1 ?_
-      -- `25600 ε^{-2} · 64(Kc+2) e^{Lq} · Z' ≤ ε`  from  `Cst · Z' ≤ e^{-5Lq}`
-      have hεcube : ε ^ 2 * ε = Real.exp (-(3 * Real.log X ^ ((1 : ℝ) / 4))) := by
-        rw [hεdef, sq, ← Real.exp_add, ← Real.exp_add]
-        congr 1
-        ring
-      have hE5 : (0 : ℝ) < Real.exp (5 * Real.log X ^ ((1 : ℝ) / 4)) := Real.exp_pos _
-      have hprod : Real.exp (-(3 * Real.log X ^ ((1 : ℝ) / 4)))
-          * Real.exp (5 * Real.log X ^ ((1 : ℝ) / 4))
-          = Real.exp (2 * Real.log X ^ ((1 : ℝ) / 4)) := by
-        rw [← Real.exp_add]
-        congr 1
-        ring
-      have hε2 : (0 : ℝ) < ε ^ 2 := by positivity
-      have hZ'bd : Cst * Z' ≤ 1 := by
-        have h := (div_le_one hCst0).mp (le_of_lt (lt_of_le_of_lt (by nlinarith [hZ'0, hE0]) hZ'small))
-        nlinarith [hZ'small, hE0, hZ'0, hCst0]
-      rw [div_mul_eq_mul_div, div_mul_eq_mul_div, div_mul_eq_mul_div, div_le_iff₀ hε2]
-      have hEge : (1 : ℝ) ≤ Real.exp (2 * Real.log X ^ ((1 : ℝ) / 4)) := by
-        rw [Real.one_le_exp_iff]; linarith
-      nlinarith [hZ'small, hεcube, hprod, hE5, hZ'0, hX0, hKc0, hCst0, hEge, hX1]
+      exact le_trans hstep1 (second_moment_allocation_le hε0 hX0 hεE hbd)
     calc _ ≤ 25600 / ε ^ 2 * almostAllHarmonicWeight X * X * Z := by rw [hZdef]; exact hvol
       _ ≤ X * ε := hkey
   obtain ⟨X₀, hX₀⟩ := eventually_atTop.1 hmain

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardHeathBrownBlocks
+import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenErrorGrowth
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardEnergyDiscreteThirdMoment
 
 set_option autoImplicit false
@@ -73,19 +74,7 @@ theorem sum_normSq_labelledLagSum_eq {ι : Type*} (P : Finset ι) (y : ι → �
   refine (sum_congr rfl fun n₁ _ => sum_comm).trans ?_
   exact sum_comm
 
-/-- The Lemma 11.5 identity: `Σ_{n₁,n₂ ∈ S} |R(n₁/n₂)|² = Σ_{t₁,t₂ ∈ W} |Σ_{n∈S} n^{i(t₁−t₂)}|²`. -/
-theorem sum_normSq_lagSum_eq (W : Finset ℝ) {S : Finset ℕ} (hS : ∀ n ∈ S, 0 < n) :
-    ∑ n₁ ∈ S, ∑ n₂ ∈ S, ‖lagSum W ((n₁ : ℝ) / n₂)‖ ^ 2 =
-      ∑ t₁ ∈ W, ∑ t₂ ∈ W,
-        ‖∑ n ∈ S, Complex.exp (Complex.I * (t₁ - t₂) * Real.log n)‖ ^ 2 :=
-  sum_normSq_labelledLagSum_eq W id hS
-
 /-! ### Heath-Brown on a block with one extra point -/
-
-/-- `‖x + y‖² ≤ 2‖x‖² + 2‖y‖²`. -/
-theorem norm_add_sq_le_two_mul (x y : ℂ) : ‖x + y‖ ^ 2 ≤ 2 * ‖x‖ ^ 2 + 2 * ‖y‖ ^ 2 := by
-  have h := norm_add_le x y
-  nlinarith [norm_nonneg (x + y), norm_nonneg x, norm_nonneg y, sq_nonneg (‖x‖ - ‖y‖)]
 
 /-- **Heath-Brown on `S ⊆ (M, 2M+1]`.** From the per-block bound at `M`: for `|a_n| ≤ 1` and
 `1`-separated `𝒯 ⊆ [T₀, T₀ + T]`,
@@ -137,7 +126,7 @@ theorem pairSum_le_of_blockBound {M : ℕ} {T K : ℝ} (hHB : HeathBrownBlockBou
               Complex.exp (Complex.I * (t₁ - t₂) * Real.log n)‖ ^ 2 + 2 * 1) := by
         refine sum_le_sum fun t₁ _ => sum_le_sum fun t₂ _ => ?_
         rw [hsplit]
-        refine (norm_add_sq_le_two_mul _ _).trans ?_
+        refine (Sieve.norm_add_sq_le_two _ _).trans ?_
         have := htop ((t₁ : ℂ) - t₂)
         have e : ‖Complex.exp (Complex.I * ((t₁ : ℂ) - t₂) *
             Real.log ((2 * M + 1 : ℕ) : ℝ))‖ = 1 := by
@@ -162,8 +151,8 @@ theorem sum_normSq_lagSum_le_of_blockBound {M : ℕ} {T K : ℝ} (hHB : HeathBro
     {T₀ : ℝ} (hW : ∀ t ∈ W, T₀ ≤ t ∧ t ≤ T₀ + T) (hsep : IsSeparated 1 W) :
     ∑ n₁ ∈ S, ∑ n₂ ∈ S, ‖lagSum W ((n₁ : ℝ) / n₂)‖ ^ 2 ≤
       (2 * K + 2) * heathBrownMajorant W.card M T := by
-  have hpos : ∀ n ∈ S, 0 < n := fun n hn => by have := (mem_Ioc.mp (hS hn)).1; omega
-  rw [sum_normSq_lagSum_eq W hpos]
+  have h0 : (0 : ℕ) ∉ S := fun h => by have := (mem_Ioc.mp (hS h)).1; omega
+  rw [Sieve.sum_normSq_lagSum_eq_hbPairSum W h0, Sieve.hbPairSum_eq_sum_exp]
   have := pairSum_le_of_blockBound hHB hT hM hS (a := fun _ => 1) (fun _ => by simp) hW hsep
   simpa only [one_mul] using this
 
@@ -208,11 +197,6 @@ theorem guthMaynard_lemma115_short {ε : ℝ} (hε : 0 < ε) :
 
 /-! ### Lemma 1.5 -/
 
-/-- `(X^a)^k = X^{ak}` for `X ≥ 0`. -/
-theorem rpow_pow_eq_rpow_mul {X : ℝ} (hX : 0 ≤ X) (a : ℝ) (k : ℕ) :
-    (X ^ a) ^ k = X ^ (a * k) := by
-  rw [← Real.rpow_natCast, ← Real.rpow_mul hX]
-
 /-- The third Heath-Brown term is absorbed for `N ≥ T^{2/3}`:
 `|W|^{5/4} T^{1/2} N ≤ |W|² N + |W| N²`. -/
 theorem third_term_le_of_twoThirds {X N T : ℝ} (hX : 0 ≤ X) (hT : 0 ≤ T)
@@ -229,10 +213,10 @@ theorem third_term_le_of_twoThirds {X N T : ℝ} (hX : 0 ≤ X) (hT : 0 ≤ T)
   set ν := N ^ ((1 : ℝ) / 4)
   have hx0 : 0 ≤ x := by positivity
   have hν0 : 0 ≤ ν := by positivity
-  have eX : X = x ^ 4 := by rw [rpow_pow_eq_rpow_mul hX]; norm_num
-  have eN : N = ν ^ 4 := by rw [rpow_pow_eq_rpow_mul hN0]; norm_num
-  have eX5 : X ^ (5 / 4 : ℝ) = x ^ 5 := by rw [rpow_pow_eq_rpow_mul hX]; norm_num
-  have eN3 : N ^ (3 / 4 : ℝ) = ν ^ 3 := by rw [rpow_pow_eq_rpow_mul hN0]; norm_num
+  have eX : X = x ^ 4 := by rw [← Real.rpow_mul_natCast hX]; norm_num
+  have eN : N = ν ^ 4 := by rw [← Real.rpow_mul_natCast hN0]; norm_num
+  have eX5 : X ^ (5 / 4 : ℝ) = x ^ 5 := by rw [← Real.rpow_mul_natCast hX]; norm_num
+  have eN3 : N ^ (3 / 4 : ℝ) = ν ^ 3 := by rw [← Real.rpow_mul_natCast hN0]; norm_num
   calc X ^ (5 / 4 : ℝ) * T ^ (1 / 2 : ℝ) * N ≤ X ^ (5 / 4 : ℝ) * N ^ (3 / 4 : ℝ) * N := by
         gcongr
     _ = x ^ 5 * ν ^ 7 := by rw [eX5, eN3, eN]; ring

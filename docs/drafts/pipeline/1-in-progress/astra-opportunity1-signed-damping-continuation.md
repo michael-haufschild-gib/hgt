@@ -55,3 +55,5 @@ The continuation criterion has exact open threshold `Delta=Theta−1/2`: `a>Delt
 
 - 2026-10-22 — New dependency-closed paper survivor: residual-energy linear cusp forced by any critical zero; finite-horizon trace −4γ differs from any finite full-energy right derivative. Positive escaping covariance does not refute negative-work (C). Classical Hardy-evaluation mechanism; exact source already Bagchi2005, novelty unestablished. route_opportunities owns PowerDampedResidualHasLinearCusp.lean for exact unconditional formalization.
 - 2026-10-22 — killed_audit owns ArithmeticDampingCenteredOperator.lean: shifted positive states, compact c0 operator norm≤2 via existing ScheffeCounting. Root owns entrance mass/tail/coordinate limit. Kernel finite semigroup passed first complete audit; clean export pending.
+
+- 2026-10-22 — ArithmeticDampingTransitionKernel and ArithmeticDampingEntranceLaw now both clean-audited, exported, umbrella-wired. Entrance includes exact mass and reciprocal tail plus all coordinate limits. Downstream compact/tail audits unblocked. Root no active build.

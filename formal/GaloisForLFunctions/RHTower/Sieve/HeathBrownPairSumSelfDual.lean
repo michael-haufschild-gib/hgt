@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Sieve.HeathBrownPairSumMiddleBlock
+import GaloisForLFunctions.RHTower.Sieve.GuthMaynardPropSixOneLifted
 
 /-!
 # Heath-Brown's pair sums: the loss localised at the self-dual length
@@ -39,23 +39,6 @@ noncomputable section
 def hbSelfDualConst (T δ : ℝ) : ℝ :=
   4 * hbReflFactor T + 3600000 * (1 + Real.logb 2 T) ^ 3 *
     (hbSmallConst T δ + hbBlockConst T δ (⌈2 * T⌉₊ ^ 2))
-
-/-- `hbBlockConst` grows with the auxiliary length. -/
-theorem hbBlockConst_mono {T δ : ℝ} (hT : 1 ≤ T) (hδ : 0 < δ) {L L' : ℕ} (hL : L ≤ L') :
-    hbBlockConst T δ L ≤ hbBlockConst T δ L' := by
-  have hc := one_le_hbReflFactor (T := T) hT
-  have hK := hbDualFactor_nonneg T
-  have hC0 : (0 : ℝ) ≤ divisorBoundConst δ := (divisorBoundConst_pos hδ).le
-  have hmono : ((8 * L : ℕ) : ℝ) ^ δ ≤ ((8 * L' : ℕ) : ℝ) ^ δ := by
-    refine Real.rpow_le_rpow (Nat.cast_nonneg _) ?_ hδ.le
-    exact_mod_cast Nat.mul_le_mul_left 8 hL
-  have h1 : divisorBoundConst δ * ((8 * L : ℕ) : ℝ) ^ δ ≤
-      divisorBoundConst δ * ((8 * L' : ℕ) : ℝ) ^ δ := mul_le_mul_of_nonneg_left hmono hC0
-  have h10 : (divisorBoundConst δ * ((8 * L : ℕ) : ℝ) ^ δ) ^ 10 ≤
-      (divisorBoundConst δ * ((8 * L' : ℕ) : ℝ) ^ δ) ^ 10 :=
-    pow_le_pow_left₀ (mul_nonneg hC0 (Real.rpow_nonneg (Nat.cast_nonneg _) _)) h1 10
-  rw [hbBlockConst, hbBlockConst]
-  nlinarith
 
 /-- **The weighted block sum from the unit-coefficient one.**  `n^{−1/2} ≤ B^{−1/2}` on `(B,2B]`. -/
 theorem hbAmp_half_le_hbPairSum_div (W : Finset ℝ) {B : ℕ} (hB : 1 ≤ B) :
@@ -210,7 +193,7 @@ theorem hbDualTerm_le_bound {W : Finset ℝ} (hW : GuthMaynard.IsSeparated 1 W)
         exact h2.trans (Nat.le_ceil _)
       have : B ≤ ⌈2 * T⌉₊ := by exact_mod_cast h1
       exact Nat.pow_le_pow_left this 2
-    have := hbBlockConst_mono (T := T) (δ := δ) hT hδ hBT
+    have := hbBlockConst_mono (T := T) (δ := δ) hδ hT hBT
     linarith
   have hsum0 : (0 : ℝ) ≤ (W.card : ℝ) ^ 2 * B + (W.card : ℝ) * (B : ℝ) ^ 2
       + (W.card : ℝ) ^ ((5 : ℝ) / 4) * T ^ ((1 : ℝ) / 2) * B

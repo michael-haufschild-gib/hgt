@@ -1022,3 +1022,74 @@ impossible since `|W| ≤ T + 1`; the dyadic split with the classical large-valu
 therefore rests on the fourth-moment/Hölder step of that family (Huxley–Jutila Lemmas 7 and 10,
 `E_{2k}(F,U²) ≪ A^{2k}N^k E₂(H,U²)`), which the corpus does not own; building it is the remaining
 task for the exact theorem.
+
+### Lean (2026-10-22, later still): the loss localised at the self-dual length, and why Lemma 16 is not it
+
+`RHTower/Sieve/HeathBrownPairSumSelfDual.lean` (wired, clean, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+* **`hbPairSum_Ioc_le_reflected`**: for `2T < N²`, `Σ_{t₁,t₂∈W}|Σ_{N<n≤2N} a_n n^{i(t₁−t₂)}|² ≤
+  hbSelfDualConst T δ · (|W|²N + |W|N² + |W|^{5/4}T^{1/2}N + |W|^{3/2}T)`.  Proof: `hbAmp_half_le_reflection`
+  sends `(N,2N]` to dual blocks of length `B ≤ 2T/N` (`hbDualBlock_le`); each is bounded by
+  `hbPairSum_Ioc_le_anyBlock` after `hbAmp_half_le_hbPairSum_div` (`𝒜((B,2B]) ≤ P((B,2B])/B`), and
+  `B·(T/B)` collapses the `|W|^{3/2}B²` term to `|W|^{3/2}T`, independent of `N`.
+* **`hbPairSum_Ioc_le_uniform`**: the same four terms for **every** `M ≥ 1`, with the uniform last
+  term `|W|^{3/2}T` (below `(2T)^{1/2}` the `anyBlock` term `|W|^{3/2}M²` is already `≤ 2|W|^{3/2}T`).
+
+**Net effect on the exceptional set.**  `|W|^{3/2}T ≤ |W|^{5/4}T^{1/2}M` exactly when `M ≥ |W|^{1/4}T^{1/2}`,
+and `hbPairSum_Ioc_le_middleBlock` absorbs its own term when `M ≤ T^{1/2}/|W|^{1/4}`.  The exact
+three-term Theorem 1.6 therefore now holds for every block length **outside the window
+`T^{1/2}/|W|^{1/4} < M < T^{1/2}|W|^{1/4}`** (previously: outside `T^{1/2}/|W|^{1/4} < M < (2T)^{2/3}`).
+The window is a neighbourhood of the self-dual length `T^{1/2}`, of multiplicative width `|W|^{1/2}`.
+
+**Huxley–Jutila Lemma 16 does not remove it.**  Read in full (journal p. 308, (4.27)–(4.29)):
+`{B*(M,U²)}^{2b} ≪ R^{4b−1}(DM)^ε(M^b + B*₂(D^{1/2},U^{(1)}))`, where `B* = B*₁` is the **first**-moment
+constant, `E₁(F,U²) = Σ_{t₁,t₂}|F(t₁−t₂)| ≤ A N^{1/2} B*₁`.  Its proof is `(E₁)^{2b} ≤ R^{4b−2}E_{2b}`
+(power mean) plus Lemma 7 — and Lemma 7 for the trivial character is already ours
+(`sum_norm_hbPoly_pow_le`: the `2k`-th moment over pairs is the divisor loss times the pair sum at
+length `M^k`).  Heath-Brown's Theorem 1.6 is the **second** moment `E₂(F,U²)`.  Recovering `E₂` from
+`E₁` costs `max|F| ≤ N`, and at the witness point `M = T^{1/2}`, `|W| = T^{1/2}` that route yields
+`TR^{7/4}`, worse than both the target `TR^{5/4}` and our `TR^{3/2}`.  So the paper's Lemma 16 is not
+the missing second-moment step; what is missing is Heath-Brown's own 1979 argument at `M ≍ T^{1/2}`.
+In the move language of the previous entry, the obstruction is sharp: at the self-dual point `R`
+fixes the length and `S` pays `|W|^{1/2}`, and the residual deficit is exactly `|W|^{1/4}`.
+
+Hölder is not reconstructed anywhere in this brick: the power-mean and Hölder steps come from
+`RHTower.GuthMaynard.sum_pow_le_card_pow_mul_sum_pow` / `sum_le_card_rpow_mul_sum_pow_rpow` and
+mathlib's `sq_sum_le_card_mul_sum_sq`.  `hbBlockConst_mono` was written here and then deleted in
+favour of the identical lemma in another agent's `GuthMaynardPropSixOneLifted`, which this module
+now imports.
+
+### The self-referential inequality at the self-dual length: its exact shape (2026-10-22)
+
+Checked, because it is the natural thing to try and should not be retried.  The solved quadratic
+`A ≤ X + Y·Σq`, `q² ≤ Z·A` ⟹ `A ≤ 2X + Y²|I|²Z` is **already formalized and already used**:
+`le_two_mul_add_of_le_add_mul_sum` (`HeathBrownPairSumCorollary`, on the corpus
+`le_two_mul_add_sq_mul_of_le_add_of_sq_le_mul`) is exactly how `hbAmp_half_Ioc_eight_le_restricted`
+closes the range `N ≥ (2T)^{2/3}`.  So the quadratic solver is not what is missing.
+
+What is missing is its *input* `q² ≤ Z·A`.  Writing `𝒜(L)` for the weighted pair sum at length `L`,
+the two available moves are
+
+* reflection (`hbAmp_half_le_reflection`): `𝒜(N) ≤ 2N|W|c + K Σ_B 𝒜(B)`, dual blocks `B ≤ 2T/N`;
+* squaring (`hbAmp_sq_le_rpow`, Heath-Brown's Corollary 2.1): `𝒜(B)² ≤ C|W|²𝒜(L)` for any `L ≥ B²`.
+
+The square root therefore reaches `𝒜(N)` only if `N ≥ B² = (2T/N)²`, i.e. `N³ ≥ 4T²`, i.e.
+`N ≳ (2T)^{2/3}`.  The availability of the self-referential form is thus *equivalent to the
+two-thirds condition*, not to proximity to `T^{1/2}`.
+
+At the self-dual length `N² ≈ 2T` the dual block has `B ≈ N`, so the reflection relates `𝒜(N)` to
+itself with **no** square root and with coefficient `K ≥ 1`: the shape is `A ≤ a + K·A`, which is
+vacuous, not `A ≤ a + b A^{1/2}`.  Solving it gives nothing.  The square root cannot be imported
+either: squaring lands at `B² ≈ T`, and coming back from `T` to `N ≈ T^{1/2}` would need
+`𝒜(T) ≤ poly·𝒜(T^{1/2})`, i.e. Heath-Brown's monotonicity Lemma 2 used *downward*, which is false
+(`𝒜` increases with the length; that is why the Warwick notes' Corollary 2.1 carries the hypothesis
+`N ∈ (T^{2/3}, T]`).  Reflecting the squared block instead gives `𝒜(T) ⪅ T|W| + |W|²`, which returns
+the same `|W|^{3/2}` and the same `|W|^{1/4}` deficit.
+
+**The one inequality that would close the window**, in this vocabulary: for `B ≍ T/N ≍ N ≍ T^{1/2}`,
+`𝒜((B,2B]) ≤ C_δ T^δ |W| · 𝒜((N,2N])^{1/2}` — Corollary 2.1 with a target block of length `≍ B`
+instead of `≥ B²`.  Equivalently, a fourth-moment bound for a polynomial of length `B` that returns
+to length `≍ B` rather than `B²`.  That is the content of Heath-Brown's 1979 argument at the
+self-dual scale; it is not in Huxley–Jutila IV (whose Lemma 16 is a first-moment statement, see the
+previous entry), and it is not derivable from the two moves above.

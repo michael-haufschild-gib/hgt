@@ -68,21 +68,15 @@ theorem eq_of_mul_eq_mul_of_gcd_eq {n₁ n₂ m₁ m₂ : ℕ} (h₁ : 0 < n₁)
     exact (Nat.eq_of_mul_eq_mul_left (hac' ▸ ha0) hae).symm
   exact ⟨by rw [ha, hc, hac'], by rw [hb, he, hbe]⟩
 
-/-- `|log x − log y| ≥ |x − y|/2` for `0 < x, y ≤ 2`. -/
+/-- `|log x − log y| ≥ |x − y|/2` for `0 < x, y ≤ 2` (from corpus `Sieve.div_le_log_sub`). -/
 theorem abs_sub_div_two_le_abs_log_sub {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (hx2 : x ≤ 2)
     (hy2 : y ≤ 2) : |x - y| / 2 ≤ |Real.log x - Real.log y| := by
   wlog hxy : x ≤ y generalizing x y
   · rw [abs_sub_comm, abs_sub_comm (Real.log x)]
     exact this hy hx hy2 hx2 (le_of_not_ge hxy)
-  have h := Real.one_sub_inv_le_log_of_pos (div_pos hy hx)
-  rw [Real.log_div hy.ne' hx.ne', inv_div] at h
+  have h := Sieve.div_le_log_sub hx hxy
   rw [abs_of_nonpos (by linarith), abs_of_nonpos (by linarith [Real.log_le_log hx hxy])]
-  have hkey : (y - x) / 2 ≤ 1 - x / y := by
-    rw [div_le_iff₀ (by norm_num : (0 : ℝ) < 2)]
-    have : 1 - x / y = (y - x) / y := by field_simp
-    rw [this]
-    rw [div_mul_eq_mul_div, le_div_iff₀ hy]
-    nlinarith
+  have h2 : (y - x) / 2 ≤ (y - x) / y := div_le_div_of_nonneg_left (by linarith) hy hy2
   linarith
 
 /-- **Separation within a gcd class.** For distinct `p, q ∈ (N, 2N]²` with `gcd p = gcd q = d`:

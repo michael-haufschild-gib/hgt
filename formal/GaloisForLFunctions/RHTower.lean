@@ -28032,3 +28032,4 @@ import GaloisForLFunctions.RHTower.Sieve.HeathBrownPairSumMiddleBlock
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardKeyPropFrequencySplit
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardKeyPropTraceBound
 import GaloisForLFunctions.RHTower.Sieve.GuthMaynardKeyPropAssembly
+import GaloisForLFunctions.RHTower.Sieve.HeathBrownPairSumSelfDual

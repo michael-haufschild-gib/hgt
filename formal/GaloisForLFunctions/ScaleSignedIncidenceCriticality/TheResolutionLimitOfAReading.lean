@@ -233,4 +233,59 @@ theorem le_of_certifiesLower_of_invisible {r : D → O} {κ : D → D} {d : D} {
     (hinv : Invisible r κ) (h : CertifiesLower I r d β) : β ≤ I (κ d) :=
   h _ (collapse_mem_shadow hinv d)
 
+/-! ### 7. Resolution is factorization -/
+
+/-- **Resolution is factorization.** A reading resolves a property exactly when the property is a
+function of the reading. This identifies the barrier statements of the corpus — "there is no
+functional `Φ` of the observables with `P ↔ Φ(observables)`" — with failure of resolution. -/
+theorem resolves_iff_exists_factorization {r : D → O} {P : D → Prop} :
+    Resolves r P ↔ ∃ Φ : O → Prop, ∀ d : D, P d ↔ Φ (r d) := by
+  refine ⟨fun hres => ⟨fun o => ∃ d : D, r d = o ∧ P d, fun d => ⟨fun hd => ⟨d, rfl, hd⟩, ?_⟩⟩,
+    fun ⟨Φ, hΦ⟩ d e he => by rw [hΦ, hΦ, mem_shadow_iff.mp he]⟩
+  rintro ⟨e, he, hPe⟩
+  exact (hres d e he).mp hPe
+
+/-- **Witness-pair form of the dichotomy.** One pair with the same reading and opposite verdicts
+destroys resolution; no global collapse map is needed. -/
+theorem not_resolves_of_pair {r : D → O} {P : D → Prop} {d e : D} (h : r e = r d) (hd : P d)
+    (he : ¬ P e) : ¬ Resolves r P := fun hres => he ((hres d e h).mpr hd)
+
+/-- A witness pair floors the resolution limit at the invariant of the witness. -/
+theorem le_resolutionLimit_of_reading_eq {r : D → O} {d e : D} (h : r e = r d)
+    (hbdd : BddAbove (I '' shadow r d)) : I e ≤ resolutionLimit I r d :=
+  le_csSup hbdd ⟨e, h, rfl⟩
+
+/-! ### 8. The algebra of blindness -/
+
+/-- Post-processing a blind reading stays blind: no amount of computation on blind observables
+sees the collapse. -/
+theorem Invisible.comp {r : D → O} {κ : D → D} (h : Invisible r κ) (g : O → O') :
+    Invisible (g ∘ r) κ := fun d => by simp [Function.comp, h d]
+
+/-- Joining two blind readings stays blind. -/
+theorem Invisible.joinReading {r : D → O} {r' : D → O'} {κ : D → D} (h : Invisible r κ)
+    (h' : Invisible r' κ) : Invisible (joinReading r r') κ := fun d => by
+  have hd : (r (κ d), r' (κ d)) = (r d, r' d) := by rw [h d, h' d]
+  exact hd
+
+/-- The joint reading of a whole family of readings. -/
+def familyReading {ι : Type*} {O : ι → Type*} (r : ∀ i, D → O i) : D → ∀ i, O i :=
+  fun d i => r i d
+
+theorem shadow_familyReading {ι : Type*} {O : ι → Type*} (r : ∀ i, D → O i) (d : D) :
+    shadow (familyReading r) d = ⋂ i, shadow (r i) d := by
+  ext x
+  simp [shadow, familyReading, funext_iff]
+
+/-- **Arbitrarily many blind observables stay blind.** A method may read a family of any
+cardinality: if every member misses the collapse, the family misses it. -/
+theorem Invisible.familyReading {ι : Type*} {O : ι → Type*} {r : ∀ i, D → O i} {κ : D → D}
+    (h : ∀ i, Invisible (r i) κ) : Invisible (familyReading r) κ := fun d =>
+  funext fun i => h i d
+
+theorem refines_familyReading {ι : Type*} {O : ι → Type*} (r : ∀ i, D → O i) (i : ι) :
+    Refines (familyReading r) (r i) := fun d x hx => by
+  have := (shadow_familyReading r d).subset hx
+  exact Set.mem_iInter.mp this i
+
 end GaloisForLFunctions.ScaleSignedIncidenceCriticality

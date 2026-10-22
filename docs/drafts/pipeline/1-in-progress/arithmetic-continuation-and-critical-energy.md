@@ -41,3 +41,39 @@ pairing) and nothing about zeros. The continuation machinery itself is unconditi
 
 ## Log
 - 2026-10-22 — created in 1-in-progress; programme initiated from astra.md.
+
+## Lean assets (programme folder `formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy`)
+- `CriticalEnergyFamilies` — `Admits`, `CofinallyAdmits`, `UniformlyAdmitsOn`.
+- `BackwardContinuationCalculus` — `scaledEnergy_add_budget_le` (master monotonicity),
+  `one_add_le_mul_exp_of_linear_work` (Grönwall), `bddAbove_of_tendsto_atTop` (coercive recovery),
+  `monotoneOn_of_hasDerivAt_nonneg_Ici`.
+- `ContinuationTransportsAdmission` — `LinearContinuation`, `OsgoodContinuation`,
+  `Admits.of_linearContinuation`, `Admits.of_osgoodContinuation`,
+  `cofinallyAdmits_of_linearContinuation`, `cofinallyAdmits_of_osgoodContinuation`.
+- `HorizonUniformityIsTheTheorem` — `escapeEnergy`, `hasDerivAt_escapeEnergy`,
+  `not_admits_escapeEnergy`, `not_linearContinuation_escapeEnergy`.
+- `AffineRecurrenceEnvelope` — `affineEnvelope`, `le_affineEnvelope`, `affineEnvelope_eq`,
+  `affineEnvelope_le_of_contraction`, `affineEnvelope_one_one`.
+- `GroundFloorNoCrossing` — `floor_le_of_relative_decay`, `floor_le_of_relative_decay_Ico`.
+- `TheDampedMobiusCriticalEnergy` — `dampedMobiusEnergy`, `mem_receiverDampings_iff_admits`,
+  `riemannHypothesis_iff_cofinallyAdmits`.
+- `SignedDampingWorkOfTheMobiusEnergy` — `signedDampingWork`, `hasDerivAt_dampedMobiusEnergy`
+  (`∂_ε E_T = 2W_T`), `two_mul_signedDampingWork_eq_markov` (bridge to the owned Markov flux form),
+  `neg_two_mul_signedDampingWork_le_of_tangentNorm_le`.
+- `TheDampingContinuationCriterion` — `riemannHypothesis_of_dampingContinuation_endpoint`,
+  `riemannHypothesis_of_dampingContinuation_above_half_abscissa`,
+  `zetaZeroAbscissa_le_half_add_of_partial_dampingContinuation`,
+  `dampingContinuation_of_tangentNorm_le`,
+  `arithmeticDampingTotalJumpEnergy_le_of_continuation_bound`.
+- `TheSignedWorkDemandIsStrictlyWeaker` — `exists_vanishing_signed_work_with_large_tangent`.
+- `SuperlinearOsgoodScale` — `riemannHypothesis_of_superlinear_dampingContinuation`.
+- `CompensationNeedsItsCrossTerms` — `pronicNorm_add_sq`, `exists_sector_count_complete_energy_gt`,
+  `exists_ratio_tendsto_zero_and_complete_unbounded`.
+
+Foundational README: `formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md`
+(shared-target section synchronised across the now eight programme READMEs; new programme added to
+the shared section as the continuation layer with mechanism 6).
+
+## Log
+- 2026-10-22 — programme folder, umbrella `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy`
+  wired into `MainTheorems`, foundational README written.

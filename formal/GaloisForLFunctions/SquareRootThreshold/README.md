@@ -13,7 +13,7 @@ witness.
 
 ## The shared target: the sign of the critical arithmetic form
 
-Seven programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
+Eight programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
 one critical arithmetic form, and the form can be read in three equivalent faces:
 
 - the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
@@ -34,6 +34,12 @@ Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Un
 faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
 mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
 
+The continuation layer (Arithmetic Continuation and Critical Energy,
+`ArithmeticContinuationAndCriticalEnergy`) supplies what no face states on its own: the transport
+of a finite critical energy along a parameter — damping, coefficient cutoff or aperture — so that a
+certificate at one parameter becomes a certificate at another, with the observation horizon
+quantified uniformly throughout.
+
 **Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
 methods see the additive structure of `ℕ` only after averaging over a family, and below half
 damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
@@ -42,7 +48,7 @@ identities hold for every even positive kernel, and positivity on restricted fam
 archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
 operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
 the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the seven programmes build
+scale. No existing field has its basic objects built with all three; the eight programmes build
 them.
 
 **The mechanisms the shared target needs**, with the programme that owns each:
@@ -68,6 +74,11 @@ them.
    odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
    `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
    `log 6`).
+6. A continuation theorem transporting a finite critical energy from the unconditionally admitted
+   end of a parameter range towards the critical end: a horizon-free bound on the negative part of
+   one complete signed pairing on each compact subinterval, which is weaker than a bound on the
+   corresponding norm and already yields an explicit zero-free strip when it covers only part of
+   the range (`ArithmeticContinuationAndCriticalEnergy`).
 
 **Criteria every contribution to the shared target must meet.**
 

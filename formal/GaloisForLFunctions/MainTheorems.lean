@@ -16,6 +16,7 @@ has the following owned theorem areas:
 * `GaloisForLFunctions.BezoutValuationIncidence`
 * `GaloisForLFunctions.TransHorizonIncidenceMechanics`
 * `GaloisForLFunctions.ArithmeticCriticalityTheory`
+* `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy`
 
 and three vendored areas:
 
@@ -43,7 +44,9 @@ import GaloisForLFunctions.BezoutValuationIncidence
 import GaloisForLFunctions.TransHorizonIncidenceMechanics
 import GaloisForLFunctions.ArithmeticCriticalityTheory
 import GaloisForLFunctions.SquareRootThreshold
+import GaloisForLFunctions.DilutionCrystallizationPincer
 import GaloisForLFunctions.ArithmeticIncidencePositivity
+import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean
